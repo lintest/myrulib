@@ -82,6 +82,8 @@ int FbManager::FindAuthor(wxString &full_name) {
 
 	const wxString& whereClause = wxString::Format(_("search_name='%s'"), search_name.c_str());
 
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRow * row = authors.Where(whereClause);
 
@@ -135,12 +137,6 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 	if (!xml.Load(stream, wxT("UTF-8")))
 		return false;
 
-#ifdef FB_DEBUG_PARSING
-	xml.GetRoot()->Print(html);
-#endif //FB_DEBUG_PARSING
-
-	html += wxT("<br>");
-
 	FbNode * node = xml.GetRoot();
 	if (!node) return false;
 
@@ -153,6 +149,10 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 	wxArrayInt book_authors;
 	wxArrayString book_genres;
 	wxString book_title;
+
+#ifdef FB_DEBUG_PARSING
+	xml.GetRoot()->Print(html);
+#endif //FB_DEBUG_PARSING
 
 	node = node->m_child;
     while (node) {

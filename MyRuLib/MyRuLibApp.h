@@ -11,13 +11,12 @@
 #define MYRULIBAPP_H
 
 #include <wx/wx.h>
-
+#include <wx/thread.h>
 #include <DatabaseLayer.h>
 #include <SqliteDatabaseLayer.h>
 #include "Authors.h"
 #include "Books.h"
 #include "Params.h"
-
 
 class MyRuLibApp : public wxApp
 {
@@ -29,6 +28,8 @@ public:
 	bool ConnectToDatabase();
 	bool CreateDatabase();
 	DatabaseLayer * GetDatabase() {return m_Database;};
+public:
+    wxCriticalSection m_critsect;
 };
 
 DECLARE_APP(MyRuLibApp)
