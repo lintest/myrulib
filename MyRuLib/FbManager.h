@@ -14,8 +14,6 @@
 #include <DatabaseLayer.h>
 #include "FbParser.h"
 
-extern wxString alphabet;
-
 class FbManager{
 public:
     static void MakeUpper(wxString & data);

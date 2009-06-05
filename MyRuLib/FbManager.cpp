@@ -67,6 +67,8 @@ int FbManager::NewId(int param)
 	return row->value;
 }
 
+extern wxString alphabet;
+
 int FbManager::FindAuthor(wxString &full_name) {
 
 	wxString search_name = full_name;
