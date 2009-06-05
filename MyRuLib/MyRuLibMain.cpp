@@ -36,7 +36,7 @@ enum {
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("#ÀÁÂÃÄÅÆÇÈÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÝÞß");
+const wxString alphabetRu = _("#ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÝÞß");
 const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
@@ -166,8 +166,7 @@ void MyRuLibMainFrame::FillAuthorsList(const wxString &findText) {
 	m_AuthorsListBox->Clear();
 
 	wxString text = findText;
-	FbManager parser;
-	parser.MakeLower(text);
+	FbManager::MakeLower(text);
 
     AuthorsRowSet * allAuthors;
     const wxString orderBy = wxT("search_name");

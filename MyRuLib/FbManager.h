@@ -11,14 +11,16 @@
 #define FBMANAGER_H
 
 #include <wx/wx.h>
+#include <DatabaseLayer.h>
 #include "FbParser.h"
 
 class FbManager{
 public:
-    void MakeLower(wxString & data);
-	int FindAuthor(wxString &full_name);
-	int NewAuthorId();
-	int NewBookId();
+    static void MakeLower(wxString & data);
+	static int FindAuthor(wxString &full_name);
+	static int NewAuthorId();
+	static int NewBookId();
+	static void InitParams(DatabaseLayer * database);
 	bool ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);

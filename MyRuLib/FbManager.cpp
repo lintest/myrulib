@@ -21,6 +21,14 @@ enum {
 	DB_NEW_BOOK_ID,
 };
 
+void FbManager::InitParams(DatabaseLayer *database) 
+{
+	database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
+	database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
+	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
+	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
+}
+
 void FbManager::MakeLower(wxString & data){
 #ifdef __WIN32__
       int len = data.length() + 1;

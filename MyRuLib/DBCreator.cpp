@@ -8,6 +8,7 @@
  **************************************************************/
 
 #include "DBCreator.h"
+#include "FbManager.h"
 #include <DatabaseLayerException.h>
 
 DBCreator::DBCreator(DatabaseLayer * database) {
@@ -70,10 +71,7 @@ bool DBCreator::CreateDatabase(void){
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
 	try {
-		m_Database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
-		m_Database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
-		m_Database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-		m_Database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
+		FbManager::InitParams(m_Database);
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
