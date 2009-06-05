@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DatabaseLayer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../build/Debug/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../build/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../build/Release/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../build/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="`wx-config --cflags`" />
+			<Add directory="../SQLite" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+		</Linker>
+		<Unit filename="DatabaseErrorCodes.h" />
+		<Unit filename="DatabaseErrorReporter.cpp" />
+		<Unit filename="DatabaseErrorReporter.h" />
+		<Unit filename="DatabaseLayer.cpp" />
+		<Unit filename="DatabaseLayer.h" />
+		<Unit filename="DatabaseLayerException.h" />
+		<Unit filename="DatabaseQueryParser.cpp" />
+		<Unit filename="DatabaseQueryParser.h" />
+		<Unit filename="DatabaseResultSet.cpp" />
+		<Unit filename="DatabaseResultSet.h" />
+		<Unit filename="DatabaseStringConverter.cpp" />
+		<Unit filename="DatabaseStringConverter.h" />
+		<Unit filename="PreparedStatement.cpp" />
+		<Unit filename="PreparedStatement.h" />
+		<Unit filename="ResultSetMetaData.h" />
+		<Unit filename="SqliteDatabaseLayer.cpp" />
+		<Unit filename="SqliteDatabaseLayer.h" />
+		<Unit filename="SqlitePreparedStatement.cpp" />
+		<Unit filename="SqlitePreparedStatement.h" />
+		<Unit filename="SqliteResultSet.cpp" />
+		<Unit filename="SqliteResultSet.h" />
+		<Unit filename="SqliteResultSetMetaData.cpp" />
+		<Unit filename="SqliteResultSetMetaData.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
