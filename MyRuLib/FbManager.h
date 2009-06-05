@@ -19,7 +19,9 @@ public:
 	int FindAuthor(wxString &full_name);
 	int NewAuthorId();
 	int NewBookId();
-	bool Parse(const wxString& filename, wxString& html);
+	bool ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size);
+	bool ParseXml(const wxString& filename, wxString& html);
+	bool ParseZip(const wxString& filename, wxString& html);
 };
 
 #endif //FBMANAGER_H

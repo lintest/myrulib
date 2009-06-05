@@ -7,6 +7,8 @@
  * License:
  **************************************************************/
 
+#include <wx/zipstrm.h>
+#include <wx/txtstrm.h>
 #include "FbManager.h"
 #include "MyRuLibApp.h"
 #include "Authors.h"
@@ -75,10 +77,38 @@ int FbManager::FindAuthor(wxString &full_name) {
 	return row->id;
 }
 
-bool FbManager::Parse(const wxString& filename, wxString& html) {
+bool FbManager::ParseXml(const wxString& filename, wxString& html) 
+{
+    wxFileInputStream stream(filename);
+    if (!stream.Ok())
+        return false;
 
+	wxFile file(filename);
+	wxFileOffset size = file.Length() / 1024;
+
+    return ParseXml(stream, html, filename, size);
+}
+
+bool FbManager::ParseZip(const wxString& filename, wxString& html) 
+{
+
+	wxZipEntry* entry;
+	wxFFileInputStream in(filename);
+	wxZipInputStream zip(in);
+
+	while (entry = zip.GetNextEntry()) {
+		zip.OpenEntry(*entry);
+		ParseXml(zip, html, entry->GetName(), entry->GetSize());
+		delete entry;
+	}
+
+    return true;
+}
+
+bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size) 
+{
     FbDocument xml;
-	if (!xml.Load(filename, wxT("UTF-8")))
+	if (!xml.Load(stream, wxT("UTF-8")))
 		return false;
 
 #ifdef FB_DEBUG_PARSING
@@ -119,9 +149,6 @@ bool FbManager::Parse(const wxString& filename, wxString& html) {
 		node = node->m_next;
     }
 
-	wxFile file(filename);
-	wxFileOffset file_size = file.Length() / 1024;
-
 	Books * books = wxGetApp().GetBooks();
 	int new_id = NewBookId();
 
@@ -131,8 +158,8 @@ bool FbManager::Parse(const wxString& filename, wxString& html) {
 		row->id = new_id;
 		row->id_author = book_authors[i];
 		row->title = book_title;
-		row->file_size = file_size;
-		row->file_name = filename;
+		row->file_size = size /1024;
+		row->file_name = name;
 		row->Save();
 	}
 

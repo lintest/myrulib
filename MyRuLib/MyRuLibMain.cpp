@@ -8,6 +8,7 @@
  **************************************************************/
 
 #include <wx/splitter.h>
+#include <wx/aboutdlg.h>
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
@@ -19,6 +20,7 @@
 #include "res/new.xpm"
 #include "res/find.xpm"
 #include "res/new_dir.xpm"
+#include "res/htmbook.xpm"  
 
 enum {
 	ID_AUTHORS_LISTBOX = 10001,
@@ -26,6 +28,7 @@ enum {
 	ID_BOOKS_INFO_PANEL,
 	ID_NEW_FILE,
 	ID_NEW_DIR,
+	ID_NEW_ZIP,
 	ID_FIND_TEXT,
 	ID_FIND_BTN,
 };
@@ -38,6 +41,7 @@ const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
+	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, MyRuLibMainFrame::OnAuthorsListBoxSelected)
     EVT_LIST_ITEM_SELECTED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
     EVT_SIZE(MyRuLibMainFrame::OnBooksListViewResize)
@@ -46,6 +50,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_TOOL(ID_FIND_BTN, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(ID_NEW_FILE, MyRuLibMainFrame::OnNewFile)
     EVT_TOOL(ID_NEW_DIR, MyRuLibMainFrame::OnNewDir)
+    EVT_TOOL(ID_NEW_ZIP, MyRuLibMainFrame::OnNewZip)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame() {
@@ -67,13 +72,16 @@ void MyRuLibMainFrame::CreateControls() {
 	SetMenuBar(menuBar);
 
 	wxMenu * fileMenu = new wxMenu;
-	wxMenuItem * menuItem1;
-	menuItem1 = fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"));
-	menuItem1 = fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"));
+	fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"));
+	fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"));
+	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
+	menuBar->Append(fileMenu, _("&Файл"));
 
-	menuBar->Append(fileMenu, _("Файл"));
+	wxMenu * helpMenu = new wxMenu;
+	helpMenu->Append(wxID_ABOUT, _("О программе…"));
+	menuBar->Append(helpMenu, _("&?"));
 
 	SetToolBar(CreateButtonBar());
 
@@ -112,10 +120,21 @@ void MyRuLibMainFrame::CreateControls() {
 	Centre();
 }
 
+void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
+{
+	wxAboutDialogInfo info;
+	info.SetName(wxT("MyRuLib"));
+	info.SetVersion(wxT("0.1"));
+	info.SetWebSite(wxT("http://lintest.ru"));
+	info.AddDeveloper(wxT("Kandrashin Denis"));
+	wxAboutBox(info);
+}
+
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
 	toolBar->AddTool(ID_NEW_FILE, _("Файл…"), wxBitmap(new_xpm));
 	toolBar->AddTool(ID_NEW_DIR, _("Папка…"), wxBitmap(new_dir_xpm));
+	toolBar->AddTool(ID_NEW_ZIP, _("Zip файл…"), wxBitmap(htmbook_xpm));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
@@ -267,7 +286,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 			SetTitle(filename);
 			wxString html;
 			FbManager parser;
-			parser.Parse(filename, html);
+			parser.ParseXml(filename, html);
 			m_BooksInfoPanel->AppendToPage(html);
 		}
 	}
@@ -284,6 +303,34 @@ void MyRuLibMainFrame::OnNewDir( wxCommandEvent& event ){
 
 	if (dlg.ShowModal() == wxID_OK) {
 		SetTitle(dlg.GetPath());
+	}
+}
+
+void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
+
+    wxFileDialog dlg (
+		this,
+		_("Выберите zip-файл для добавления в библиотеку…"),
+		wxEmptyString,
+		wxEmptyString,
+		_("Zip file (*.zip)|*.zip"),
+		wxFD_OPEN | wxFD_MULTIPLE,
+		wxDefaultPosition
+    );
+
+	if (dlg.ShowModal() == wxID_OK) {
+		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
+
+		wxArrayString paths;
+		dlg.GetPaths(paths);
+		for (size_t i = 0; i < paths.GetCount(); ++i) {
+			wxString filename = paths[i];
+			SetTitle(filename);
+			wxString html;
+			FbManager parser;
+			parser.ParseZip(filename, html);
+			m_BooksInfoPanel->AppendToPage(html);
+		}
 	}
 }
 

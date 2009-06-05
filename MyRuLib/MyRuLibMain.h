@@ -35,7 +35,7 @@ public:
 
 	DECLARE_EVENT_TABLE()
 	void OnExit(wxCommandEvent & event);
-
+	void OnAbout(wxCommandEvent & event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
 	void OnBooksListViewResize(wxSizeEvent& event);
 	void OnBooksListViewSelected(wxListEvent & event);
@@ -43,6 +43,7 @@ public:
 	void OnFindTextEnter( wxCommandEvent& event );
 	void OnNewFile( wxCommandEvent& event );
 	void OnNewDir( wxCommandEvent& event );
+	void OnNewZip( wxCommandEvent& event );
 	virtual void OnLetterClicked( wxCommandEvent& event );
 };
 

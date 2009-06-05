@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="DatabaseLayer.lib SQLite.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib expat_static.lib"
+				AdditionalDependencies="DatabaseLayer.lib SQLite.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxmsw28ud_adv.lib wxbase28ud.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib expat_static.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(SolutionDir)\build\$(ConfigurationName)&quot;"
 				GenerateManifest="false"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="DatabaseLayer.lib SQLite.lib wxmsw28u_html.lib wxmsw28u_core.lib wxbase28u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib expat_static.lib"
+				AdditionalDependencies="DatabaseLayer.lib SQLite.lib wxmsw28u_html.lib wxmsw28u_core.lib wxmsw28u_adv.lib wxbase28u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib expat_static.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(SolutionDir)\build\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
@@ -285,6 +285,10 @@
 			>
 			<File
 				RelativePath=".\res\find.xpm"
+				>
+			</File>
+			<File
+				RelativePath=".\res\htmbook.xpm"
 				>
 			</File>
 			<File
