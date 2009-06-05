@@ -14,6 +14,8 @@
 #include <DatabaseLayer.h>
 #include "FbParser.h"
 
+#define ID_THREAD_EVENT 40001
+
 class FbManager{
 public:
     static void MakeUpper(wxString & data);
