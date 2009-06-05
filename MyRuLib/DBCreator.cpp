@@ -27,14 +27,16 @@ bool DBCreator::CreateDatabase(void){
 		m_Database->RunQuery(wxT("\
             CREATE TABLE authors(\
                 id integer not null,\
-                search_name varchar(255) not null,\
-                full_name varchar(255) not null,\
+                letter char(1),\
+                search_name varchar(255),\
+                full_name varchar(255),\
                 first_name varchar(128),\
                 middle_name varchar(128),\
                 last_name varchar(128),\
                 description text);\
         "));
 		m_Database->RunQuery(wxT("CREATE INDEX author_id ON authors(id);"));
+		m_Database->RunQuery(wxT("CREATE INDEX author_letter ON authors(letter);"));
 		m_Database->RunQuery(wxT("CREATE INDEX author_name ON authors(search_name);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}

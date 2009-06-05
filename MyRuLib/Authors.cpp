@@ -20,9 +20,9 @@ bool Authors::Create(const wxString& name,const wxString& server,const wxString&
 
 AuthorsRow* Authors::RowFromResult(DatabaseResultSet* result){
 	AuthorsRow* row=new AuthorsRow(this);
-
+	
 	row->GetFromResult(result);
-
+	
 	return row;
 }
 
@@ -74,14 +74,14 @@ AuthorsRow* Authors::Where(const wxString& whereClause){
 		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-
+		
 		if(!result->Next())
 			return NULL;
 		AuthorsRow* row=RowFromResult(result);
-
+		
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
+		m_database->CloseStatement(pStatement);						
 		return row;
 	}
 	catch (DatabaseLayerException& e)
@@ -99,18 +99,18 @@ AuthorsRowSet* Authors::WhereSet(const wxString& whereClause,const wxString& ord
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-
+		
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
 			}
 		}
-
+		
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
+		m_database->CloseStatement(pStatement);	
 		return rowSet;
-
+		
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -127,9 +127,9 @@ AuthorsRowSet* Authors::All(const wxString& orderBy){
 		if(!orderBy.IsEmpty())
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-
+		
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-
+		
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
@@ -137,9 +137,9 @@ AuthorsRowSet* Authors::All(const wxString& orderBy){
 		}
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
+		m_database->CloseStatement(pStatement);	
 		return rowSet;
-
+		
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -164,12 +164,13 @@ AuthorsRow::AuthorsRow(const AuthorsRow& src){
 	if(&src==this)
 		return;
 	newRow=src.newRow;
-
+	
 	full_name=src.full_name;
 	description=src.description;
 	id=src.id;
 	first_name=src.first_name;
 	search_name=src.search_name;
+	letter=src.letter;
 	middle_name=src.middle_name;
 	last_name=src.last_name;
 
@@ -178,18 +179,19 @@ AuthorsRow::AuthorsRow(const AuthorsRow& src){
 AuthorsRow::AuthorsRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
 	newRow=true;
 }
-
+	
 
 AuthorsRow& AuthorsRow::operator=(const AuthorsRow& src){
 	if(&src==this)
 		return *this;
 	newRow=src.newRow;
-
+	
 	full_name=src.full_name;
 	description=src.description;
 	id=src.id;
 	first_name=src.first_name;
 	search_name=src.search_name;
+	letter=src.letter;
 	middle_name=src.middle_name;
 	last_name=src.last_name;
 
@@ -198,52 +200,55 @@ AuthorsRow& AuthorsRow::operator=(const AuthorsRow& src){
 }
 
 bool AuthorsRow::GetFromResult(DatabaseResultSet* result){
-
+	
 	newRow=false;
 		full_name=result->GetResultString(wxT("full_name"));
 	description=result->GetResultString(wxT("description"));
 	id=result->GetResultInt(wxT("id"));
 	first_name=result->GetResultString(wxT("first_name"));
 	search_name=result->GetResultString(wxT("search_name"));
+	letter=result->GetResultString(wxT("letter"));
 	middle_name=result->GetResultString(wxT("middle_name"));
 	last_name=result->GetResultString(wxT("last_name"));
 
 
 	return true;
 }
-
+	
 
 bool AuthorsRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (full_name,description,first_name,search_name,middle_name,last_name,id) VALUES (?,?,?,?,?,?,?)"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (full_name,description,first_name,search_name,letter,middle_name,last_name,id) VALUES (?,?,?,?,?,?,?,?)"),m_table.c_str()));
 			pStatement->SetParamString(1,full_name);
 			pStatement->SetParamString(2,description);
 			pStatement->SetParamString(3,first_name);
 			pStatement->SetParamString(4,search_name);
-			pStatement->SetParamString(5,middle_name);
-			pStatement->SetParamString(6,last_name);
-			pStatement->SetParamInt(7,id);
+			pStatement->SetParamString(5,letter);
+			pStatement->SetParamString(6,middle_name);
+			pStatement->SetParamString(7,last_name);
+			pStatement->SetParamInt(8,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
-
+			
 			newRow=false;
 		}
 		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET full_name=?,description=?,first_name=?,search_name=?,middle_name=?,last_name=? WHERE id=?"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET full_name=?,description=?,first_name=?,search_name=?,letter=?,middle_name=?,last_name=? WHERE id=?"),m_table.c_str()));
 			pStatement->SetParamString(1,full_name);
 			pStatement->SetParamString(2,description);
-			pStatement->SetParamInt(7,id);
+			pStatement->SetParamInt(8,id);
 			pStatement->SetParamString(3,first_name);
 			pStatement->SetParamString(4,search_name);
-			pStatement->SetParamString(5,middle_name);
-			pStatement->SetParamString(6,last_name);
+			pStatement->SetParamString(5,letter);
+			pStatement->SetParamString(6,middle_name);
+			pStatement->SetParamString(7,last_name);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
 		}
-
+		
 		return true;
 	}
 	catch (DatabaseLayerException& e)
@@ -360,6 +365,12 @@ int AuthorsRowSet::CMPFUNC_search_name(wxActiveRecordRow** item1,wxActiveRecordR
 	return (*m_item1)->search_name.Cmp((*m_item2)->search_name);
 }
 
+int AuthorsRowSet::CMPFUNC_letter(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	AuthorsRow** m_item1=(AuthorsRow**)item1;
+	AuthorsRow** m_item2=(AuthorsRow**)item2;
+	return (*m_item1)->letter.Cmp((*m_item2)->letter);
+}
+
 int AuthorsRowSet::CMPFUNC_middle_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	AuthorsRow** m_item1=(AuthorsRow**)item1;
 	AuthorsRow** m_item2=(AuthorsRow**)item2;
@@ -383,11 +394,13 @@ CMPFUNC_proto AuthorsRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_first_name;
 	else if(var==wxT("search_name"))
 		return (CMPFUNC_proto)CMPFUNC_search_name;
+	else if(var==wxT("letter"))
+		return (CMPFUNC_proto)CMPFUNC_letter;
 	else if(var==wxT("middle_name"))
 		return (CMPFUNC_proto)CMPFUNC_middle_name;
 	else if(var==wxT("last_name"))
 		return (CMPFUNC_proto)CMPFUNC_last_name;
-	else
+	else 
 	return (CMPFUNC_proto)CMPFUNC_default;
 }
 
@@ -396,8 +409,5 @@ CMPFUNC_proto AuthorsRowSet::GetCmpFunc(const wxString& var) const{
 /** END ACTIVE RECORD ROW SET **/
 
 ////@@begin custom implementations
-
-
-
 
 ////@@end custom implementations

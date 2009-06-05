@@ -42,6 +42,19 @@ void FbManager::MakeLower(wxString & data){
 #endif
 }
 
+void FbManager::MakeUpper(wxString & data){
+#ifdef __WIN32__
+      int len = data.length() + 1;
+      wxChar * buf = new wxChar[len];
+      wxStrcpy(buf, data.c_str());
+      CharUpper(buf);
+      data = buf;
+      delete [] buf;
+#else
+      data.MakeUpper();
+#endif
+}
+
 int FbManager::NewAuthorId()
 {
 	Params * params = wxGetApp().GetParams();
@@ -71,6 +84,12 @@ int FbManager::FindAuthor(wxString &full_name) {
 	wxString search_name = full_name;
 	MakeLower(search_name);
 
+	wxString letter = full_name.Left(1);
+	MakeUpper(letter);
+
+	if (alphabet.Find(letter) == wxNOT_FOUND)
+		letter = wxT("#");
+
 	const wxString& whereClause = wxString::Format(_("search_name='%s'"), search_name.c_str());
 
 	AuthorsRow * row = authors->Where(whereClause);
@@ -78,6 +97,7 @@ int FbManager::FindAuthor(wxString &full_name) {
 	if (!row) {
 		row = authors->New();
 		row->id = NewAuthorId();
+		row->letter = letter;
 		row->search_name = search_name;
 		row->full_name = full_name;
 		row->Save();

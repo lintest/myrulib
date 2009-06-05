@@ -12,7 +12,6 @@
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
-#include "Authors.h"
 #include "Books.h"
 #include "Params.h"
 #include "FbManager.h"
@@ -36,8 +35,9 @@ enum {
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("#ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÝÞß");
+const wxString alphabetRu = _("#ÀÁÂÃÄÅÆÇÈÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÝÞß");
 const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
+wxString alphabet = alphabetRu + alphabetEn;
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
@@ -58,6 +58,7 @@ MyRuLibMainFrame::MyRuLibMainFrame() {
 }
 
 bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title) {
+//	alphabet = alphabetRu + alphabetEn;
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500));
 	if(res)	{
 		CreateControls();
@@ -162,20 +163,24 @@ void MyRuLibMainFrame::OnExit(wxCommandEvent & event) {
 }
 
 void MyRuLibMainFrame::FillAuthorsList(const wxString &findText) {
-	m_AuthorsListBox->Freeze();
-	m_AuthorsListBox->Clear();
-
-	wxString text = findText;
-	FbManager::MakeLower(text);
 
     AuthorsRowSet * allAuthors;
     const wxString orderBy = wxT("search_name");
     if (findText == wxEmptyString) {
         allAuthors = wxGetApp().GetAuthors()->All(orderBy);
     } else {
+		wxString text = findText;
+		FbManager::MakeLower(text);
         const wxString whereClause = wxString::Format(wxT("search_name like '%s%%'"), text.c_str());
         allAuthors = wxGetApp().GetAuthors()->WhereSet(whereClause, orderBy);
     }
+	FillAuthorsList(allAuthors);
+
+}
+void MyRuLibMainFrame::FillAuthorsList(AuthorsRowSet * allAuthors) {
+
+	m_AuthorsListBox->Freeze();
+	m_AuthorsListBox->Clear();
 
 	for(unsigned long i = 0; i < allAuthors->Count(); ++i) {
 		m_AuthorsListBox->Append(allAuthors->Item(i)->full_name,
@@ -193,7 +198,8 @@ void MyRuLibMainFrame::FillAuthorsList(const wxString &findText) {
 	m_AuthorsListBox->Thaw();
 }
 
-void MyRuLibMainFrame::FillBooksList(int author_id) {
+void MyRuLibMainFrame::FillBooksList(int author_id) 
+{
 	m_BooksListView->Freeze();
 	m_BooksListView->DeleteAllItems();
 	AuthorsRow * thisAuthor = wxGetApp().GetAuthors()->Id(author_id);
@@ -220,7 +226,6 @@ void MyRuLibMainFrame::FillBooksList(int author_id) {
 	}
 	m_BooksListView->Thaw();
 }
-
 
 void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event) {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
@@ -256,11 +261,10 @@ void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event ){
 
     wxString letter = alphabet.Mid(position, 1);
 
-    FillAuthorsList(letter);
-
-    /*
-    wxDynamicCast
-    */
+    const wxString orderBy = wxT("search_name");
+    const wxString whereClause = wxString::Format(wxT("letter = '%s'"), letter.c_str());
+    AuthorsRowSet * allAuthors = wxGetApp().GetAuthors()->WhereSet(whereClause, orderBy);
+	FillAuthorsList(allAuthors);
 }
 
 void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){

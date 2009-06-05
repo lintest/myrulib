@@ -54,9 +54,6 @@ public:
 
 ////@@begin custom arClass
 public:
-
-
-
 ////@@end custom arClass
 };
 ////@@end gen arClass
@@ -76,6 +73,7 @@ public:
 	int id;
 	wxString first_name;
 	wxString search_name;
+	wxString letter;
 	wxString middle_name;
 	wxString last_name;
 
@@ -89,9 +87,6 @@ public:
 	
 ////@@begin custom arRow
 public:
-
-
-
 ////@@end custom arRow	
 
 };
@@ -114,6 +109,7 @@ protected:
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_first_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_search_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_letter(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_middle_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_last_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_global(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
@@ -121,9 +117,6 @@ protected:
 
 ////@@begin custom arSet
 public:
-
-
-
 ////@@end custom arSet
 };
 ////@@end gen arSet

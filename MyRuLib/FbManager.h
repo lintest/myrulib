@@ -14,8 +14,11 @@
 #include <DatabaseLayer.h>
 #include "FbParser.h"
 
+extern wxString alphabet;
+
 class FbManager{
 public:
+    static void MakeUpper(wxString & data);
     static void MakeLower(wxString & data);
 	static int FindAuthor(wxString &full_name);
 	static int NewAuthorId();

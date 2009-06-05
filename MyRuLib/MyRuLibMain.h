@@ -16,6 +16,7 @@
 #include <wx/listctrl.h>
 #include <wx/textctrl.h>
 #include <wx/html/htmlwin.h>
+#include "Authors.h"
 
 class MyRuLibMainFrame: public wxFrame
 {
@@ -27,6 +28,7 @@ class MyRuLibMainFrame: public wxFrame
 	wxToolBar * CreateButtonBar();
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
 	void FillAuthorsList(const wxString & findText);
+	void FillAuthorsList(AuthorsRowSet * allAuthors);
 	void FillBooksList(int groupid);
     bool ParseXML(const wxString & filename);
 public:
