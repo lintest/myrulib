@@ -164,15 +164,17 @@ void MyRuLibMainFrame::OnExit(wxCommandEvent & event) {
 
 void MyRuLibMainFrame::FillAuthorsList(const wxString &findText) {
 
-    AuthorsRowSet * allAuthors;
+	Authors authors(wxGetApp().GetDatabase());
+	AuthorsRowSet * allAuthors;
+
     const wxString orderBy = wxT("search_name");
     if (findText == wxEmptyString) {
-        allAuthors = wxGetApp().GetAuthors()->All(orderBy);
+        allAuthors = authors.All(orderBy);
     } else {
 		wxString text = findText;
 		FbManager::MakeLower(text);
         const wxString whereClause = wxString::Format(wxT("search_name like '%s%%'"), text.c_str());
-        allAuthors = wxGetApp().GetAuthors()->WhereSet(whereClause, orderBy);
+        allAuthors = authors.WhereSet(whereClause, orderBy);
     }
 	FillAuthorsList(allAuthors);
 
@@ -202,7 +204,9 @@ void MyRuLibMainFrame::FillBooksList(int author_id)
 {
 	m_BooksListView->Freeze();
 	m_BooksListView->DeleteAllItems();
-	AuthorsRow * thisAuthor = wxGetApp().GetAuthors()->Id(author_id);
+
+	Authors authors(wxGetApp().GetDatabase());
+	AuthorsRow * thisAuthor = authors.Id(author_id);
 	if(thisAuthor)
 	{
 		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("title"));
@@ -263,7 +267,9 @@ void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event ){
 
     const wxString orderBy = wxT("search_name");
     const wxString whereClause = wxString::Format(wxT("letter = '%s'"), letter.c_str());
-    AuthorsRowSet * allAuthors = wxGetApp().GetAuthors()->WhereSet(whereClause, orderBy);
+
+	Authors authors(wxGetApp().GetDatabase());
+    AuthorsRowSet * allAuthors = authors.WhereSet(whereClause, orderBy);
 	FillAuthorsList(allAuthors);
 }
 

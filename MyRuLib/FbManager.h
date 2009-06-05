@@ -21,10 +21,9 @@ public:
     static void MakeUpper(wxString & data);
     static void MakeLower(wxString & data);
 	static int FindAuthor(wxString &full_name);
-	static int NewAuthorId();
-	static int NewBookId();
+	static int NewId(int param);
 	static void InitParams(DatabaseLayer * database);
-	bool ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size);
+	bool ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size, int id_archive = 0);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);
 };

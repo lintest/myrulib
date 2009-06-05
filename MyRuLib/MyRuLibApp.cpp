@@ -15,8 +15,8 @@
 
 IMPLEMENT_APP(MyRuLibApp)
 
-bool MyRuLibApp::OnInit() {
-
+bool MyRuLibApp::OnInit() 
+{
 	if(!ConnectToDatabase()) {
 		wxFAIL_MSG(_("Error connecting to database!"));
 		return false;
@@ -32,21 +32,11 @@ bool MyRuLibApp::OnInit() {
 	return true;
 }
 
-int MyRuLibApp::OnExit() {
-	wxDELETE(m_Authors);
-	wxDELETE(m_Books);
-	wxDELETE(m_Params);
-	if(m_Database) {
-		if(m_Database->IsOpen())
-		{
-			m_Database->Close();
-		}
-		wxDELETE(m_Database);
-	}
+int MyRuLibApp::OnExit() 
+{
+	wxDELETE(m_Database);
 	return wxApp::OnExit();
 }
-
-
 
 bool MyRuLibApp::ConnectToDatabase()
 {
@@ -64,30 +54,5 @@ bool MyRuLibApp::ConnectToDatabase()
 		wxFAIL_MSG(e.GetErrorMessage());
 		return false;
 	}
-	try	{
-		m_Authors = new Authors(wxGetApp().GetDatabase(), wxT("authors"));
-		m_Books = new Books(wxGetApp().GetDatabase(), wxT("books"));
-		m_Params = new Params(wxGetApp().GetDatabase(), wxT("params"));
-	}
-	catch(DatabaseLayerException & e) {
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
 	return true;
-}
-
-DatabaseLayer * MyRuLibApp::GetDatabase() {
-	return m_Database;
-}
-
-Authors * MyRuLibApp::GetAuthors() {
-	return m_Authors;
-}
-
-Books * MyRuLibApp::GetBooks() {
-	return m_Books;
-}
-
-Params * MyRuLibApp::GetParams() {
-	return m_Params;
 }

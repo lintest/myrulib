@@ -21,9 +21,6 @@
 
 class MyRuLibApp : public wxApp
 {
-	Authors * m_Authors;
-	Books * m_Books;
-	Params * m_Params;
 	DatabaseLayer * m_Database;
 public:
 	virtual bool OnInit();
@@ -31,10 +28,7 @@ public:
 
 	bool ConnectToDatabase();
 	bool CreateDatabase();
-	DatabaseLayer * GetDatabase();
-	Authors * GetAuthors();
-	Books * GetBooks();
-	Params * GetParams();
+	DatabaseLayer * GetDatabase() {return m_Database;};
 };
 
 DECLARE_APP(MyRuLibApp)

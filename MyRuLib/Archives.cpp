@@ -207,10 +207,11 @@ bool ArchivesRow::GetFromResult(DatabaseResultSet* result){
 bool ArchivesRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (description,file_size,file_name) VALUES (?,?,?)"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (description,file_size,file_name,id) VALUES (?,?,?,?)"),m_table.c_str()));
 			pStatement->SetParamString(1,description);
 			pStatement->SetParamInt(2,file_size);
 			pStatement->SetParamString(3,file_name);
+			pStatement->SetParamInt(4,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 

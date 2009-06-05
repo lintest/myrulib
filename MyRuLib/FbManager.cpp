@@ -17,14 +17,16 @@
 
 enum {
 	DB_LIBRARY_TITLE = 1,
-	DB_NEW_AUTHOR_ID,
-	DB_NEW_BOOK_ID,
+	DB_NEW_ARCHIVE,
+	DB_NEW_AUTHOR,
+	DB_NEW_BOOK,
 };
 
 void FbManager::InitParams(DatabaseLayer *database) 
 {
 	database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
 	database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
+	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 }
@@ -55,22 +57,10 @@ void FbManager::MakeUpper(wxString & data){
 #endif
 }
 
-int FbManager::NewAuthorId()
+int FbManager::NewId(int param)
 {
-	Params * params = wxGetApp().GetParams();
-
-	ParamsRow * row = params->Id(DB_NEW_AUTHOR_ID);
-	row->value++;
-	row->Save();
-
-	return row->value;
-}
-
-int FbManager::NewBookId()
-{
-	Params * params = wxGetApp().GetParams();
-
-	ParamsRow * row = params->Id(DB_NEW_BOOK_ID);
+	Params params(wxGetApp().GetDatabase());
+	ParamsRow * row = params.Id(param);
 	row->value++;
 	row->Save();
 
@@ -78,8 +68,6 @@ int FbManager::NewBookId()
 }
 
 int FbManager::FindAuthor(wxString &full_name) {
-
-	Authors * authors = wxGetApp().GetAuthors();
 
 	wxString search_name = full_name;
 	MakeLower(search_name);
@@ -92,11 +80,12 @@ int FbManager::FindAuthor(wxString &full_name) {
 
 	const wxString& whereClause = wxString::Format(_("search_name='%s'"), search_name.c_str());
 
-	AuthorsRow * row = authors->Where(whereClause);
+	Authors authors(wxGetApp().GetDatabase());
+	AuthorsRow * row = authors.Where(whereClause);
 
 	if (!row) {
-		row = authors->New();
-		row->id = NewAuthorId();
+		row = authors.New();
+		row->id = NewId(DB_NEW_AUTHOR);
 		row->letter = letter;
 		row->search_name = search_name;
 		row->full_name = full_name;
@@ -119,21 +108,26 @@ bool FbManager::ParseXml(const wxString& filename, wxString& html)
 
 bool FbManager::ParseZip(const wxString& filename, wxString& html) 
 {
-
 	wxZipEntry* entry;
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
+	Archives archives(wxGetApp().GetDatabase());
+	ArchivesRow * row = archives.New();
+	row->id = NewId(DB_NEW_ARCHIVE);
+	row->file_name = filename;
+	row->Save();
+
 	while (entry = zip.GetNextEntry()) {
 		zip.OpenEntry(*entry);
-		ParseXml(zip, html, entry->GetName(), entry->GetSize());
+		ParseXml(zip, html, entry->GetName(), entry->GetSize(), row->id);
 		delete entry;
 	}
 
     return true;
 }
 
-bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size) 
+bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size, int id_archive) 
 {
     FbDocument xml;
 	if (!xml.Load(stream, wxT("UTF-8")))
@@ -177,17 +171,18 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 		node = node->m_next;
     }
 
-	Books * books = wxGetApp().GetBooks();
-	int new_id = NewBookId();
+	Books books(wxGetApp().GetDatabase());
+	int new_id = NewId(DB_NEW_BOOK);
 
 	size_t iConut = book_authors.Count();
 	for (size_t i = 0; i<iConut; i++) {
-		BooksRow * row = books->New();
+		BooksRow * row = books.New();
 		row->id = new_id;
 		row->id_author = book_authors[i];
 		row->title = book_title;
 		row->file_size = size /1024;
 		row->file_name = name;
+		row->id_archive = id_archive;
 		row->Save();
 	}
 
