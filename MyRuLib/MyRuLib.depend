@@ -1,15 +1,15 @@
 # depslib dependency file v1.0
-1244145221 source:/home/user/projects/MyRuLib/MyRuLib/Archives.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Archives.cpp
 	"Archives.h"
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/Archives.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/Archives.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/datetime.h>
 	"Books.h"
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/wxActiveRecord.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/wxActiveRecord.h
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/wfstream.h>
@@ -1501,7 +1501,7 @@
 	"wx/string.h"
 	"wx/arrstr.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseLayer.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseLayer.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/hashset.h"
@@ -1532,15 +1532,15 @@
 	<ext/hash_set>
 	<hash_set>
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseErrorReporter.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseErrorReporter.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseStringConverter.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseStringConverter.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseResultSet.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseResultSet.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/hashmap.h"
@@ -1550,12 +1550,12 @@
 	"DatabaseStringConverter.h"
 	"ResultSetMetaData.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/ResultSetMetaData.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/ResultSetMetaData.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"DatabaseStringConverter.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/PreparedStatement.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/PreparedStatement.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/hashset.h"
@@ -1564,25 +1564,25 @@
 	"DatabaseResultSet.h"
 	"DatabaseQueryParser.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseQueryParser.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseQueryParser.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseErrorCodes.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseErrorCodes.h
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseLayerException.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/DatabaseLayerException.h
 
-1244131700 /home/user/projects/MyRuLib/DatabaseLayer/SqliteDatabaseLayer.h
+1244380313 /home/user/projects/MyRuLib/DatabaseLayer/SqliteDatabaseLayer.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/arrstr.h"
 	"DatabaseLayer.h"
 	"sqlite3.h"
 
-1244131700 /home/user/projects/MyRuLib/SQLite/sqlite3.h
+1244380313 /home/user/projects/MyRuLib/SQLite/sqlite3.h
 	<stdarg.h>
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/Books.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/Books.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
@@ -1591,65 +1591,68 @@
 	"Genres.h"
 	"Authors.h"
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/Genres.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/Genres.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/Authors.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/Authors.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/datetime.h>
 	"Books.h"
 
-1244145155 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
-1244145221 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
 	"Books.h"
 
-1244145119 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
 	"DBCreator.h"
+	"FbManager.h"
 	<DatabaseLayerException.h>
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/DBCreator.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/DBCreator.h
 	<wx/wx.h>
 	<DatabaseLayer.h>
 	<SqliteDatabaseLayer.h>
 
-1244131700 source:/home/user/projects/MyRuLib/MyRuLib/Genres.cpp
+1244380756 source:/home/user/projects/MyRuLib/MyRuLib/Genres.cpp
 	"Genres.h"
 
-1244131700 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
 	<wx/image.h>
 	<DatabaseLayerException.h>
 	"MyRuLibApp.h"
 	"MyRuLibMain.h"
 	"DBCreator.h"
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.h
 	<wx/wx.h>
+	<wx/thread.h>
 	<DatabaseLayer.h>
 	<SqliteDatabaseLayer.h>
 	"Authors.h"
 	"Books.h"
 	"Params.h"
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/Params.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/Params.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
 	<wx/wx.h>
 	<wx/toolbar.h>
 	<wx/listbox.h>
 	<wx/listctrl.h>
 	<wx/textctrl.h>
 	<wx/html/htmlwin.h>
+	"Authors.h"
 
 1238939810 /usr/include/wx-2.8/wx/html/htmlwin.h
 	"wx/defs.h"
@@ -1747,18 +1750,19 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244147081 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244380709 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
+	<wx/aboutdlg.h>
 	"MyRuLibMain.h"
 	"MyRuLibApp.h"
 	"RecordIDClientData.h"
-	"Authors.h"
 	"Books.h"
 	"Params.h"
 	"FbManager.h"
 	"res/new.xpm"
 	"res/find.xpm"
 	"res/new_dir.xpm"
+	"res/htmbook.xpm"
 
 1238939809 /usr/include/wx-2.8/wx/splitter.h
 	"wx/event.h"
@@ -1775,7 +1779,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/RecordIDClientData.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/RecordIDClientData.h
 	<wx/clntdata.h>
 
 1244059141 /home/user/projects/MyRuLib/MyRuLib/ParserXML.h
@@ -1783,20 +1787,20 @@
 	"myxml.h"
 	"Authors.h"
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/res/new.xpm
+1244380313 /home/user/projects/MyRuLib/MyRuLib/res/new.xpm
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/res/find.xpm
+1244380313 /home/user/projects/MyRuLib/MyRuLib/res/find.xpm
 
-1244131700 /home/user/projects/MyRuLib/MyRuLib/res/new_dir.xpm
+1244380313 /home/user/projects/MyRuLib/MyRuLib/res/new_dir.xpm
 
-1244145233 source:/home/user/projects/MyRuLib/MyRuLib/Params.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Params.cpp
 	"Params.h"
 
 1244059141 source:/home/user/projects/MyRuLib/MyRuLib/ParserXML.cpp
 	"ParserXML.h"
 	"MyRuLibApp.h"
 
-1244131700 source:/home/user/projects/MyRuLib/MyRuLib/wxActiveRecord.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/wxActiveRecord.cpp
 	"wxActiveRecord.h"
 
 1244060637 source:/home/user/projects/MyRuLib/MyRuLib/myxml.cpp
@@ -1820,33 +1824,63 @@
 	"wx/defs.h"
 	"wx/stream.h"
 
-1244147065 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
+1244380313 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
 	<wx/wx.h>
+	<DatabaseLayer.h>
 	"FbParser.h"
 
-1244144266 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
+1244380734 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
+	<wx/wx.h>
 	<wx/defs.h>
 	<wx/string.h>
 	<wx/object.h>
 	<wx/list.h>
 	<wx/stream.h>
 
-1244147065 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+	<wx/zipstrm.h>
+	<wx/progdlg.h>
 	"FbManager.h"
 	"MyRuLibApp.h"
 	"Authors.h"
 	"Books.h"
 	"Params.h"
 
-1244144289 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
-	"wx/wxprec.h"
-	"FbParser.h"
-	"wx/intl.h"
-	"wx/log.h"
-	"wx/app.h"
+1244380313 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
+	<wx/wxprec.h>
 	<wx/wfstream.h>
 	<wx/datstrm.h>
 	<wx/zstream.h>
 	<wx/strconv.h>
+	"FbParser.h"
 	<expat.h>
+
+1238939808 /usr/include/wx-2.8/wx/zipstrm.h
+	"wx/defs.h"
+	"wx/archive.h"
+	"wx/filename.h"
+
+1238939807 /usr/include/wx-2.8/wx/archive.h
+	"wx/defs.h"
+	"wx/stream.h"
+	"wx/filename.h"
+	<iterator>
+	<utility>
+
+1238939809 /usr/include/wx-2.8/wx/progdlg.h
+	"wx/defs.h"
+	"wx/palmos/progdlg.h"
+	"wx/generic/progdlgg.h"
+
+1238939808 /usr/include/wx-2.8/wx/generic/progdlgg.h
+	"wx/defs.h"
+	"wx/progdlg.h"
+	"wx/dialog.h"
+
+1238939809 /usr/include/wx-2.8/wx/aboutdlg.h
+	"wx/defs.h"
+	"wx/app.h"
+	"wx/icon.h"
+
+1244380313 /home/user/projects/MyRuLib/MyRuLib/res/htmbook.xpm
 

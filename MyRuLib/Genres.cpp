@@ -20,9 +20,9 @@ bool Genres::Create(const wxString& name,const wxString& server,const wxString& 
 
 GenresRow* Genres::RowFromResult(DatabaseResultSet* result){
 	GenresRow* row=new GenresRow(this);
-	
+
 	row->GetFromResult(result);
-	
+
 	return row;
 }
 
@@ -74,14 +74,14 @@ GenresRow* Genres::Where(const wxString& whereClause){
 		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(!result->Next())
 			return NULL;
 		GenresRow* row=RowFromResult(result);
-		
+
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);						
+		m_database->CloseStatement(pStatement);
 		return row;
 	}
 	catch (DatabaseLayerException& e)
@@ -99,18 +99,18 @@ GenresRowSet* Genres::WhereSet(const wxString& whereClause,const wxString& order
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
 			}
 		}
-		
+
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);	
+		m_database->CloseStatement(pStatement);
 		return rowSet;
-		
+
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -127,9 +127,9 @@ GenresRowSet* Genres::All(const wxString& orderBy){
 		if(!orderBy.IsEmpty())
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		
+
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
@@ -137,9 +137,9 @@ GenresRowSet* Genres::All(const wxString& orderBy){
 		}
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);	
+		m_database->CloseStatement(pStatement);
 		return rowSet;
-		
+
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -153,18 +153,18 @@ GenresRowSet* Genres::All(const wxString& orderBy){
 /** ACTIVE RECORD ROW **/
 
 GenresRow::GenresRow():wxActiveRecordRow(){
-	bool newRow=true;
+	newRow=true;
 }
 
 GenresRow::GenresRow(Genres* activeRecord):wxActiveRecordRow(activeRecord){
-	bool newRow=true;
+	newRow=true;
 }
 
 GenresRow::GenresRow(const GenresRow& src){
 	if(&src==this)
 		return;
 	newRow=src.newRow;
-	
+
 	id_genre=src.id_genre;
 	id_book=src.id_book;
 
@@ -173,13 +173,13 @@ GenresRow::GenresRow(const GenresRow& src){
 GenresRow::GenresRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
 	newRow=true;
 }
-	
+
 
 GenresRow& GenresRow::operator=(const GenresRow& src){
 	if(&src==this)
 		return *this;
 	newRow=src.newRow;
-	
+
 	id_genre=src.id_genre;
 	id_book=src.id_book;
 
@@ -188,7 +188,7 @@ GenresRow& GenresRow::operator=(const GenresRow& src){
 }
 
 bool GenresRow::GetFromResult(DatabaseResultSet* result){
-	
+
 	newRow=false;
 		id_genre=result->GetResultString(wxT("id_genre"));
 	id_book=result->GetResultInt(wxT("id_book"));
@@ -196,7 +196,7 @@ bool GenresRow::GetFromResult(DatabaseResultSet* result){
 
 	return true;
 }
-	
+
 
 bool GenresRow::Save(){
 	try{
@@ -207,7 +207,7 @@ bool GenresRow::Save(){
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
-			
+
 			newRow=false;
 		}
 		else{
@@ -218,7 +218,7 @@ bool GenresRow::Save(){
 			m_database->CloseStatement(pStatement);
 
 		}
-		
+
 		return true;
 	}
 	catch (DatabaseLayerException& e)
@@ -302,7 +302,7 @@ CMPFUNC_proto GenresRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_id_genre;
 	else if(var==wxT("id_book"))
 		return (CMPFUNC_proto)CMPFUNC_id_book;
-	else 
+	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }
 
