@@ -23,6 +23,7 @@
 
 enum {
 	ID_AUTHORS_LISTBOX = 10001,
+	ID_PROGRESSBAR,
 	ID_BOOKS_LISTCTRL,
 	ID_BOOKS_INFO_PANEL,
 	ID_NEW_FILE,
@@ -35,7 +36,7 @@ enum {
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("#АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ");
+const wxString alphabetRu = _("АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ");
 const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 wxString alphabet = alphabetRu + alphabetEn;
 
@@ -117,12 +118,16 @@ void MyRuLibMainFrame::CreateControls() {
 
 	FillAuthorsList(wxEmptyString);
 
-	CreateStatusBar(2);
+    m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
+	SetStatusBar(m_ProgressBar);
 	Centre();
 }
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
+    m_ProgressBar->SetFieldsCount(4);
+	m_ProgressBar->SetProgress(50);
+
 	wxAboutDialogInfo info;
 	info.SetName(wxT("MyRuLib"));
 	info.SetVersion(wxT("0.1"));

@@ -1645,7 +1645,7 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244380313 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
+1244393635 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
 	<wx/wx.h>
 	<wx/toolbar.h>
 	<wx/listbox.h>
@@ -1653,6 +1653,7 @@
 	<wx/textctrl.h>
 	<wx/html/htmlwin.h>
 	"Authors.h"
+	"ProgressBar.h"
 
 1238939810 /usr/include/wx-2.8/wx/html/htmlwin.h
 	"wx/defs.h"
@@ -1750,7 +1751,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244380709 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244393661 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	"MyRuLibMain.h"
@@ -1883,4 +1884,8 @@
 	"wx/icon.h"
 
 1244380313 /home/user/projects/MyRuLib/MyRuLib/res/htmbook.xpm
+
+1244393618 /home/user/projects/MyRuLib/MyRuLib/ProgressBar.h
+	<wx/wx.h>
+	<wx/statusbr.h>
 

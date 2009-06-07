@@ -17,6 +17,7 @@
 #include <wx/textctrl.h>
 #include <wx/html/htmlwin.h>
 #include "Authors.h"
+#include "ProgressBar.h"
 
 class MyRuLibMainFrame: public wxFrame
 {
@@ -24,6 +25,7 @@ class MyRuLibMainFrame: public wxFrame
 	wxListBox * m_AuthorsListBox;
 	wxListView * m_BooksListView;
 	wxHtmlWindow * m_BooksInfoPanel;
+	ProgressBar * m_ProgressBar;
 	void CreateControls();
 	wxToolBar * CreateButtonBar();
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
