@@ -29,7 +29,7 @@ static bool wxIsWhiteOnly(const wxChar *buf);
 //  FbNode
 //-----------------------------------------------------------------------------
 FbNode::FbNode(const wxString &name, FbNodeType type)
-	: m_parent(NULL), m_child(NULL), m_next(NULL)
+	: m_parent(NULL), m_child(NULL), m_next(NULL), m_properties(NULL)
 {
 	m_name = name;
 	m_type = type;
@@ -43,18 +43,21 @@ FbNode::~FbNode()
 		m_child = node->m_next;
 		delete node;
 	}
+	while (m_properties) {
+		FbProperty * prop = m_properties;
+		m_properties = prop->m_next;
+		delete prop;
+	}
 }
 
 void FbNode::Append(FbNode * node)
 {
 	node->m_parent = this;
-	if (!m_child) {
-		m_child = node;
-		m_last_child = node;
-	} else {
+	if (m_child) 
 		m_last_child->m_next = node;
-		m_last_child = node;
-	}
+	else
+		m_child = node;
+	m_last_child = node;
 }
 
 #ifdef FB_DEBUG_PARSING
@@ -62,7 +65,15 @@ void FbNode::Print(wxString &text, int level)
 {
 	for (int i = 0; i<level; i++) 
 		text += wxT("&nbsp;&nbsp;");
-	text += wxString::Format(wxT("&lt;%s&gt;<b>%s</b>"), m_name.c_str(), m_text.c_str());
+	text += wxString::Format(wxT("&lt;%s"), m_name.c_str());
+
+	FbProperty * prop = m_properties;
+	while (prop) {
+		text += wxString::Format(wxT("&nbsp;%s=%s"), prop->m_name.c_str(), prop->m_value.c_str());
+		prop = prop->m_next;
+	}
+
+	text += wxString::Format(wxT("&gt;<b>%s</b>"), m_text.c_str());
 
 	if (m_child) 
 		text += wxT("<br>");
@@ -89,6 +100,20 @@ FbNode * FbNode::Find(const wxString &name) {
 		else
 			node = node->m_next;
 	return NULL;
+}
+
+void FbNode::AddProperty(const wxString& name, const wxString& value)
+{
+    AddProperty(new FbProperty(name, value));
+}
+
+void FbNode::AddProperty(FbProperty *prop)
+{
+	if (m_properties) 
+		m_last_prop->m_next = prop;
+	else
+        m_properties = prop;
+	m_last_prop = prop;
 }
 
 //-----------------------------------------------------------------------------
@@ -188,6 +213,12 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 		ctx->node->Append(node);
 
 	ctx->node = node;
+
+    const XML_Char **a = atts;
+    while (*a) {
+        node->AddProperty(CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
+        a += 2;
+    }
 }
 }
 

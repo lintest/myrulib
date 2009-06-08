@@ -67,7 +67,7 @@
 				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(SolutionDir)\build\$(ConfigurationName)&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames="libcmt"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -227,6 +227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\treelistctrl.cpp"
+				>
+			</File>
+			<File
 				RelativePath="wxActiveRecord.cpp"
 				>
 			</File>
@@ -282,6 +286,10 @@
 			</File>
 			<File
 				RelativePath="RecordIDClientData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\wx\treelistctrl.h"
 				>
 			</File>
 			<File

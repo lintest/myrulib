@@ -92,10 +92,15 @@ void MyRuLibMainFrame::CreateControls() {
 
 	wxSplitterWindow * books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	books_splitter->SetMinimumPaneSize(100);
-	m_BooksListView = new wxListView(books_splitter, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxSUNKEN_BORDER);
-	m_BooksListView->InsertColumn(0, _("Заголовок"), wxLIST_FORMAT_LEFT, 300);
-	m_BooksListView->InsertColumn(1, _("Имя файла"), wxLIST_FORMAT_LEFT, 100);
-	m_BooksListView->InsertColumn(2, _("Размер, Кб"), wxLIST_FORMAT_RIGHT, 100);
+
+	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES;
+	m_BooksListView = new wxTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, style);
+    m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
+    m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_CENTER);
+    m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
+    m_BooksListView->SetColumnEditable (0, false);
+    m_BooksListView->SetColumnEditable (1, false);
+    m_BooksListView->SetColumnEditable (2, false);
 
 	m_BooksInfoPanel = new wxHtmlWindow(books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxSize(-1,-1), wxSUNKEN_BORDER);
 
@@ -200,7 +205,9 @@ void MyRuLibMainFrame::FillAuthorsList(AuthorsRowSet * allAuthors) {
 void MyRuLibMainFrame::FillBooksList(int author_id)
 {
 	m_BooksListView->Freeze();
-	m_BooksListView->DeleteAllItems();
+
+    m_BooksListView->DeleteRoot();
+    wxTreeItemId root = m_BooksListView->AddRoot (_T("Root"));
 
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRow * thisAuthor = authors.Id(author_id);
@@ -211,20 +218,14 @@ void MyRuLibMainFrame::FillBooksList(int author_id)
 		for(unsigned long i = 0; i < allBooks->Count(); ++i)
 		{
 		    BooksRow * thisBook = allBooks->Item(i);
-			item = m_BooksListView->InsertItem(item + 1, thisBook->title);
-			m_BooksListView->SetItem(item, 1, thisBook->file_name);
-			m_BooksListView->SetItem(item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
-			m_BooksListView->SetItemData(item, (long)thisBook->id);
+			wxTreeItemId item = m_BooksListView->AppendItem (root, thisBook->title);
+			m_BooksListView->SetItemText (item, 1, thisBook->file_name);
+			m_BooksListView->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
 		}
-		if(m_BooksListView->GetItemCount())
-		{
-			m_BooksListView->Select(0);
-		}
-		else
-		{
-			m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
-		}
+		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
 	}
+    m_BooksListView->ExpandAll(root);
+
 	m_BooksListView->Thaw();
 }
 
