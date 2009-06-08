@@ -10,6 +10,7 @@ ProgressBar::ProgressBar(wxWindow *parent, wxWindowID id, long style, const wxSt
 {
     progress_bar = new wxGauge(this, -1, 100, wxPoint(0, 0), wxDefaultSize, wxGA_HORIZONTAL | wxGA_SMOOTH);
     SetProgress(0);
+	Resize();
 }
 
 ProgressBar::~ProgressBar()
@@ -17,10 +18,10 @@ ProgressBar::~ProgressBar()
     wxDELETE(progress_bar);
 }
 
-void ProgressBar::OnSize(wxSizeEvent &event)
+void ProgressBar::Resize()
 {
    wxRect r;
-   GetFieldRect(0, r);
+   GetFieldRect(1, r);
    progress_bar->SetSize(r);
 }
 
@@ -28,5 +29,6 @@ void ProgressBar::SetProgress(int progress)
 {
    progress_bar->Show(progress > 0);
    progress_bar->SetValue(progress);
+   Resize();
 }
 

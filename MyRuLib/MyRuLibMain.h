@@ -19,6 +19,21 @@
 #include "Authors.h"
 #include "ProgressBar.h"
 
+enum {
+	ID_AUTHORS_LISTBOX = 10001,
+	ID_PROGRESSBAR,
+	ID_BOOKS_LISTCTRL,
+	ID_BOOKS_INFO_PANEL,
+	ID_NEW_FILE,
+	ID_NEW_DIR,
+	ID_NEW_ZIP,
+	ID_FIND_TEXT,
+	ID_FIND_BTN,
+	ID_PROGRESS_START,
+	ID_PROGRESS_UPDATE,
+	ID_PROGRESS_FINISH,
+};
+
 class MyRuLibMainFrame: public wxFrame
 {
 	wxTextCtrl * m_FindTextCtrl;
@@ -26,6 +41,7 @@ class MyRuLibMainFrame: public wxFrame
 	wxListView * m_BooksListView;
 	wxHtmlWindow * m_BooksInfoPanel;
 	ProgressBar * m_ProgressBar;
+	wxString m_StatusText;
 	void CreateControls();
 	wxToolBar * CreateButtonBar();
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
@@ -36,7 +52,6 @@ class MyRuLibMainFrame: public wxFrame
 public:
 	MyRuLibMainFrame();
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
-
 	DECLARE_EVENT_TABLE()
 	void OnExit(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
@@ -48,6 +63,9 @@ public:
 	void OnNewFile( wxCommandEvent& event );
 	void OnNewDir( wxCommandEvent& event );
 	void OnNewZip( wxCommandEvent& event );
+	void OnProgressStart(wxCommandEvent& event);
+	void OnProgressUpdate(wxCommandEvent& event);
+	void OnProgressFinish(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 };
 

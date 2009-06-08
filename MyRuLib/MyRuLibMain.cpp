@@ -21,22 +21,10 @@
 #include "res/new_dir.xpm"
 #include "res/htmbook.xpm"
 
-enum {
-	ID_AUTHORS_LISTBOX = 10001,
-	ID_PROGRESSBAR,
-	ID_BOOKS_LISTCTRL,
-	ID_BOOKS_INFO_PANEL,
-	ID_NEW_FILE,
-	ID_NEW_DIR,
-	ID_NEW_ZIP,
-	ID_FIND_TEXT,
-	ID_FIND_BTN,
-};
-
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("ÐÐ‘Ð’Ð“Ð”Ð•Ð–Ð—Ð˜ÐšÐ›ÐœÐÐžÐŸÐ Ð¡Ð¢Ð£Ð¤Ð¥Ð¦Ð§Ð¨Ð©Ð­Ð®Ð¯");
+const wxString alphabetRu = _("ÀÁÂÃÄÅÆÇÈÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÝÞß");
 const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 wxString alphabet = alphabetRu + alphabetEn;
 
@@ -52,14 +40,17 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_TOOL(ID_NEW_FILE, MyRuLibMainFrame::OnNewFile)
     EVT_TOOL(ID_NEW_DIR, MyRuLibMainFrame::OnNewDir)
     EVT_TOOL(ID_NEW_ZIP, MyRuLibMainFrame::OnNewZip)
+    EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
+    EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
+    EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame() {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
 }
 
-bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title) {
-//	alphabet = alphabetRu + alphabetEn;
+bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title) 
+{
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500));
 	if(res)	{
 		CreateControls();
@@ -74,15 +65,15 @@ void MyRuLibMainFrame::CreateControls() {
 	SetMenuBar(menuBar);
 
 	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(ID_NEW_FILE, _("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ñ„Ð°Ð¹Ð»â€¦"));
-	fileMenu->Append(ID_NEW_DIR, _("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸ÑŽâ€¦"));
-	fileMenu->Append(ID_NEW_ZIP, _("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ñ„Ð°Ð¹Ð» ZIPâ€¦"));
+	fileMenu->Append(ID_NEW_FILE, _("Äîáàâèòü ôàéë…"));
+	fileMenu->Append(ID_NEW_DIR, _("Äîáàâèòü äèðåêòîðèþ…"));
+	fileMenu->Append(ID_NEW_ZIP, _("Äîáàâèòü ôàéë ZIP…"));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, _("Ð’Ñ‹Ñ…Ð¾Ð´\tAlt+F4"));
-	menuBar->Append(fileMenu, _("&Ð¤Ð°Ð¹Ð»"));
+	fileMenu->Append(wxID_EXIT, _("Âûõîä\tAlt+F4"));
+	menuBar->Append(fileMenu, _("&Ôàéë"));
 
 	wxMenu * helpMenu = new wxMenu;
-	helpMenu->Append(wxID_ABOUT, _("Ðž Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ðµâ€¦"));
+	helpMenu->Append(wxID_ABOUT, _("Î ïðîãðàììå…"));
 	menuBar->Append(helpMenu, _("&?"));
 
 	SetToolBar(CreateButtonBar());
@@ -102,9 +93,9 @@ void MyRuLibMainFrame::CreateControls() {
 	wxSplitterWindow * books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	books_splitter->SetMinimumPaneSize(100);
 	m_BooksListView = new wxListView(books_splitter, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxSUNKEN_BORDER);
-	m_BooksListView->InsertColumn(0, _("Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº"), wxLIST_FORMAT_LEFT, 300);
-	m_BooksListView->InsertColumn(1, _("Ð˜Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð°"), wxLIST_FORMAT_LEFT, 100);
-	m_BooksListView->InsertColumn(2, _("Ð Ð°Ð·Ð¼ÐµÑ€, ÐšÐ±"), wxLIST_FORMAT_RIGHT, 100);
+	m_BooksListView->InsertColumn(0, _("Çàãîëîâîê"), wxLIST_FORMAT_LEFT, 300);
+	m_BooksListView->InsertColumn(1, _("Èìÿ ôàéëà"), wxLIST_FORMAT_LEFT, 100);
+	m_BooksListView->InsertColumn(2, _("Ðàçìåð, Êá"), wxLIST_FORMAT_RIGHT, 100);
 
 	m_BooksInfoPanel = new wxHtmlWindow(books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxSize(-1,-1), wxSUNKEN_BORDER);
 
@@ -118,16 +109,17 @@ void MyRuLibMainFrame::CreateControls() {
 
 	FillAuthorsList(wxEmptyString);
 
+	const int widths[4] = {-2, -1, -1, -1};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
+    m_ProgressBar->SetFieldsCount(4);
+	m_ProgressBar->SetStatusWidths(4, widths);
 	SetStatusBar(m_ProgressBar);
+
 	Centre();
 }
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-    m_ProgressBar->SetFieldsCount(4);
-	m_ProgressBar->SetProgress(50);
-
 	wxAboutDialogInfo info;
 	info.SetName(wxT("MyRuLib"));
 	info.SetVersion(wxT("0.1"));
@@ -138,13 +130,13 @@ void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_FILE, _("Ð¤Ð°Ð¹Ð»â€¦"), wxBitmap(new_xpm));
-	toolBar->AddTool(ID_NEW_DIR, _("ÐŸÐ°Ð¿ÐºÐ°â€¦"), wxBitmap(new_dir_xpm));
-	toolBar->AddTool(ID_NEW_ZIP, _("Zip Ñ„Ð°Ð¹Ð»â€¦"), wxBitmap(htmbook_xpm));
+	toolBar->AddTool(ID_NEW_FILE, _("Ôàéë…"), wxBitmap(new_xpm));
+	toolBar->AddTool(ID_NEW_DIR, _("Ïàïêà…"), wxBitmap(new_dir_xpm));
+	toolBar->AddTool(ID_NEW_ZIP, _("Zip ôàéë…"), wxBitmap(htmbook_xpm));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("ÐÐ°Ð¹Ñ‚Ð¸"), wxBitmap(find_xpm));
+	toolBar->AddTool(ID_FIND_BTN, _("Íàéòè"), wxBitmap(find_xpm));
 	toolBar->Realize();
 	return toolBar;
 }
@@ -282,7 +274,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ñ„Ð°Ð¹Ð» Ð´Ð»Ñ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð² Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒâ€¦"),
+		_("Âûáåðèòå ôàéë äëÿ äîáàâëåíèÿ â áèáëèîòåêó…"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Fiction books (*.fb2)|*.fb2"),
@@ -310,7 +302,7 @@ void MyRuLibMainFrame::OnNewDir( wxCommandEvent& event ){
 
     wxDirDialog dlg(
         this,
-        _("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸ÑŽ Ð´Ð»Ñ Ð¸Ð¼Ð¿Ð¾Ñ€Ñ‚Ð° Ñ„Ð°Ð¹Ð»Ð¾Ð²"),
+        _("Âûáåðèòå äèðåêòîðèþ äëÿ èìïîðòà ôàéëîâ"),
         wxEmptyString,
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST
     );
@@ -324,7 +316,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ zip-Ñ„Ð°Ð¹Ð» Ð´Ð»Ñ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð² Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒâ€¦"),
+		_("Âûáåðèòå zip-ôàéë äëÿ äîáàâëåíèÿ â áèáëèîòåêó…"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Zip file (*.zip)|*.zip"),
@@ -351,4 +343,29 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 void MyRuLibMainFrame::OnBooksListViewResize(wxSizeEvent& event)
 {
 	event.Skip();
+}
+
+void MyRuLibMainFrame::OnProgressStart(wxCommandEvent& event)
+{
+	wxFileName filename(event.GetString());
+	m_StatusText = filename.GetFullName();
+	m_ProgressBar->SetRange(event.GetInt());
+	m_ProgressBar->SetStatusText(m_StatusText, 0);
+	m_ProgressBar->SetStatusText(wxEmptyString, 2);
+}
+
+void MyRuLibMainFrame::OnProgressUpdate(wxCommandEvent& event)
+{
+	m_ProgressBar->SetProgress(event.GetInt());
+	m_ProgressBar->SetStatusText(m_StatusText, 0);
+	m_ProgressBar->SetStatusText(event.GetString(), 2);
+}
+
+void MyRuLibMainFrame::OnProgressFinish(wxCommandEvent& event)
+{
+	wxFileName filename(event.GetString());
+	m_StatusText = filename.GetFullName();
+	m_ProgressBar->SetProgress(0);
+	m_ProgressBar->SetStatusText(wxEmptyString, 0);
+	m_ProgressBar->SetStatusText(wxEmptyString, 2);
 }

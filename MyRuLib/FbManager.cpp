@@ -11,6 +11,7 @@
 #include <wx/progdlg.h>
 #include "FbManager.h"
 #include "MyRuLibApp.h"
+#include "MyRuLibMain.h"
 #include "Authors.h"
 #include "Books.h"
 #include "Params.h"
@@ -169,13 +170,16 @@ void *FbThread::Entry()
 
 	int id_archive = AddArchive();
 
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_THREAD_EVENT );
-	event.SetExtraLong(zip.GetTotalEntries());
-    wxPostEvent( m_frame, event );
+	{
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
+		event.SetInt(zip.GetTotalEntries());
+		event.SetString(m_filename);
+		wxPostEvent( m_frame, event );
+	}
 
 	int progress = 0;
 	while (entry = zip.GetNextEntry()) {
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_THREAD_EVENT );
+        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE );
 		event.SetString(entry->GetName());
 		event.SetInt(progress++);
         wxPostEvent( m_frame, event );
@@ -183,6 +187,11 @@ void *FbThread::Entry()
 		zip.OpenEntry(*entry);
 		ParseXml(zip, entry->GetName(), entry->GetSize(), id_archive);
 		delete entry;
+	}
+
+	{
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_FINISH );
+		wxPostEvent( m_frame, event );
 	}
 
 	return NULL;
