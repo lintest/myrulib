@@ -120,6 +120,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 	wxArrayInt book_authors;
 	wxArrayString book_genres;
 	wxString book_title;
+	wxString annotation;
 
 	node = node->m_child;
     while (node) {
@@ -134,6 +135,8 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 				book_genres.Add(value);
 			} else if ( name == wxT("book-title") ) {
 				book_title = value;
+			} else if ( name == wxT("annotation") ) {
+				annotation = value;
 			}
         }
 		node = node->m_next;
@@ -149,6 +152,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		row->id = new_id;
 		row->id_author = book_authors[i];
 		row->title = book_title;
+		row->annotation = annotation;
 		row->file_size = size /1024;
 		row->file_name = name;
 		row->id_archive = id_archive;

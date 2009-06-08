@@ -303,6 +303,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\res\checked.xpm"
+				>
+			</File>
+			<File
 				RelativePath=".\res\find.xpm"
 				>
 			</File>
@@ -316,6 +320,10 @@
 			</File>
 			<File
 				RelativePath=".\res\new_dir.xpm"
+				>
+			</File>
+			<File
+				RelativePath=".\res\nocheck.xpm"
 				>
 			</File>
 			<File

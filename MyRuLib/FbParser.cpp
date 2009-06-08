@@ -195,6 +195,7 @@ struct wxXmlParsingContext
     FbNode *node; // the node being parsed
     wxString   encoding;
     wxString   version;
+	bool annotation;
 	XML_Parser parser;
 };
 
@@ -205,20 +206,32 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
     wxString node_name = CharToLowerString(ctx->conv, name);
 
-    FbNode *node = new FbNode(node_name);
+	if (ctx->annotation) {
+		ctx->node->m_text += wxString::Format(wxT("<%s"), node_name.c_str());
+		const XML_Char **a = atts;
+		while (*a) {
+			ctx->node->m_text += wxString::Format(wxT(" %s=%s"), CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
+			a += 2;
+		}
+		ctx->node->m_text += wxT(">");
+	} else {
+		ctx->annotation = node_name == wxT("annotation");
 
-    if (ctx->root == NULL)
-        ctx->root = node;
-    else
-		ctx->node->Append(node);
+		FbNode *node = new FbNode(node_name);
 
-	ctx->node = node;
+		const XML_Char **a = atts;
+		while (*a) {
+			node->AddProperty(CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
+			a += 2;
+		}
 
-    const XML_Char **a = atts;
-    while (*a) {
-        node->AddProperty(CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
-        a += 2;
-    }
+		if (ctx->root == NULL)
+			ctx->root = node;
+		else
+			ctx->node->Append(node);
+
+		ctx->node = node;
+	}
 }
 }
 
@@ -226,13 +239,17 @@ extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
+    wxString node_name = CharToLowerString(ctx->conv, name);
 
-	if (ctx->node->m_parent)
+	if (ctx->annotation)
+		ctx->node->m_text += wxString::Format(wxT("</%s>"), node_name.c_str());
+	else if (ctx->node->m_parent)
 		ctx->node = ctx->node->m_parent;
 
-    wxString node_name = CharToLowerString(ctx->conv, name);
 	if (node_name == wxT("title-info"))
 		XML_StopParser(ctx->parser, XML_FALSE);
+	else if (node_name == wxT("annotation"))
+		ctx->annotation = false;
 }
 }
 

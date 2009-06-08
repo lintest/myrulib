@@ -58,7 +58,9 @@ public:
 	void OnAbout(wxCommandEvent & event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
 	void OnBooksListViewResize(wxSizeEvent& event);
-	void OnBooksListViewSelected(wxListEvent & event);
+	void OnBooksListViewSelected(wxTreeEvent & event);
+	void OnBooksListActivated(wxTreeEvent & event);
+	void OnBooksListKeyDown(wxTreeEvent & event);
 	void OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event);
 	void OnFindTextEnter( wxCommandEvent& event );
 	void OnNewFile( wxCommandEvent& event );

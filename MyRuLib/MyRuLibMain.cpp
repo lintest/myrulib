@@ -9,6 +9,7 @@
 
 #include <wx/splitter.h>
 #include <wx/aboutdlg.h>
+#include <wx/imaglist.h>
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
@@ -20,6 +21,8 @@
 #include "res/find.xpm"
 #include "res/new_dir.xpm"
 #include "res/htmbook.xpm"
+#include "res/checked.xpm"
+#include "res/nocheck.xpm"
 
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
@@ -32,7 +35,9 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, MyRuLibMainFrame::OnAuthorsListBoxSelected)
-    EVT_LIST_ITEM_SELECTED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
+    EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
+	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListActivated)
+	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListKeyDown)
     EVT_SIZE(MyRuLibMainFrame::OnBooksListViewResize)
     EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, MyRuLibMainFrame::OnBooksInfoPanelLinkClicked)
     EVT_TEXT_ENTER(ID_FIND_TEXT, MyRuLibMainFrame::OnFindTextEnter)
@@ -102,6 +107,13 @@ void MyRuLibMainFrame::CreateControls() {
     m_BooksListView->SetColumnEditable (1, false);
     m_BooksListView->SetColumnEditable (2, false);
 
+    wxBitmap size = wxBitmap(checked_xpm);
+	wxImageList *images;
+	images = new wxImageList (size.GetWidth(), size.GetHeight(), true);
+	images->Add (wxBitmap(nocheck_xpm));
+	images->Add (wxBitmap(checked_xpm));
+	m_BooksListView->AssignImageList (images);
+
 	m_BooksInfoPanel = new wxHtmlWindow(books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxSize(-1,-1), wxSUNKEN_BORDER);
 
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
@@ -114,7 +126,7 @@ void MyRuLibMainFrame::CreateControls() {
 
 	FillAuthorsList(wxEmptyString);
 
-	const int widths[4] = {-2, -1, -1, -1};
+	const int widths[4] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
     m_ProgressBar->SetFieldsCount(4);
 	m_ProgressBar->SetStatusWidths(4, widths);
@@ -218,9 +230,11 @@ void MyRuLibMainFrame::FillBooksList(int author_id)
 		for(unsigned long i = 0; i < allBooks->Count(); ++i)
 		{
 		    BooksRow * thisBook = allBooks->Item(i);
-			wxTreeItemId item = m_BooksListView->AppendItem (root, thisBook->title);
+			wxTreeItemId item = m_BooksListView->AppendItem(root, thisBook->title);
 			m_BooksListView->SetItemText (item, 1, thisBook->file_name);
 			m_BooksListView->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+			m_BooksListView->SetItemImage(item, i%2);
+			m_BooksListView->SetItemBold(item, i%3==1);
 		}
 		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
 	}
@@ -236,10 +250,41 @@ void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event) {
 	}
 }
 
-void MyRuLibMainFrame::OnBooksListViewSelected(wxListEvent & event) {
+void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event) 
+{
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+		m_BooksListView->GetItemData(selected);
+		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
+	}
+	event.Skip();  
 }
 
-void MyRuLibMainFrame::OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event) {
+void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
+{
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+		int image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
+		m_BooksListView->SetItemImage(selected, image);
+	}
+	event.Skip();  
+}
+
+void MyRuLibMainFrame::OnBooksListKeyDown(wxTreeEvent & event)
+{
+	if (event.GetKeyCode() == 0x20) {
+		wxTreeItemId selected = m_BooksListView->GetSelection();
+		if (selected.IsOk()) {
+			int image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
+			m_BooksListView->SetItemImage(selected, image);
+		}
+		event.Veto();  
+	} else
+		event.Skip();  
+}
+
+void MyRuLibMainFrame::OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event) 
+{
 }
 
 void MyRuLibMainFrame::OnFindTextEnter( wxCommandEvent& event ){
