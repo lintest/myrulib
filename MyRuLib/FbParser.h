@@ -10,7 +10,7 @@
 #ifndef FBPARSER_H
 #define FBPARSER_H
 
-#define FB_DEBUG_PARSING
+//#define FB_DEBUG_PARSING
 
 #include <wx/wx.h>
 #include <wx/defs.h>
@@ -30,27 +30,13 @@ enum FbNodeType {
 	FB_ANNOTATION,
 };
 
-class FbProperty {
-public:
-    FbProperty() : m_next(NULL) {};
-    FbProperty(const wxString& name, const wxString& value)
-            : m_name(name), m_value(value),  m_next(NULL) {};
-    virtual ~FbProperty() {};
-public:
-    wxString m_name;
-    wxString m_value;
-    FbProperty *m_next;
-};
-
 class FbNode {
 public:
 	FbNode(const wxString &name = wxEmptyString, FbNodeType type = FB_UNKNOWN);
-	virtual ~FbNode();
+	~FbNode();
 	void Append(FbNode *node);
 	FbNode * Find(const wxString &name);
 	wxString GetName() const {return m_name;};
-	void AddProperty(const wxString& name, const wxString& value);
-	void AddProperty(FbProperty *prop);
 #ifdef FB_DEBUG_PARSING
 	void Print(wxString &text, int level = 0);
 #endif //FB_DEBUG_PARSING
@@ -61,9 +47,7 @@ public:
 	FbNode * m_parent;
 	FbNode * m_child;
 	FbNode * m_next;
-	FbProperty * m_properties;
 private:
-	FbProperty * m_last_prop;
 	FbNode * m_last_child;
 };
 

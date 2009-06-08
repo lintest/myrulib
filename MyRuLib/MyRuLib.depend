@@ -1597,14 +1597,14 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244479492 /home/user/projects/MyRuLib/MyRuLib/Authors.h
+1244484135 /home/user/projects/MyRuLib/MyRuLib/Authors.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/datetime.h>
 	"Books.h"
 
-1244479492 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
+1244484135 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
 1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
@@ -1620,7 +1620,7 @@
 	<DatabaseLayer.h>
 	<SqliteDatabaseLayer.h>
 
-1244380756 source:/home/user/projects/MyRuLib/MyRuLib/Genres.cpp
+1244483838 source:/home/user/projects/MyRuLib/MyRuLib/Genres.cpp
 	"Genres.h"
 
 1244380313 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
@@ -1645,7 +1645,7 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244479492 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
+1244484135 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
 	<wx/wx.h>
 	<wx/toolbar.h>
 	<wx/listbox.h>
@@ -1752,7 +1752,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244482007 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244484393 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	<wx/imaglist.h>
@@ -1829,12 +1829,12 @@
 	"wx/defs.h"
 	"wx/stream.h"
 
-1244479492 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
+1244484135 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
 	<wx/wx.h>
 	<DatabaseLayer.h>
 	"FbParser.h"
 
-1244479492 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
+1244484077 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
 	<wx/wx.h>
 	<wx/defs.h>
 	<wx/string.h>
@@ -1842,7 +1842,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244479492 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244484135 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"
@@ -1852,7 +1852,7 @@
 	"Books.h"
 	"Params.h"
 
-1244482804 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
+1244484077 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
 	<wx/wxprec.h>
 	<wx/wfstream.h>
 	<wx/datstrm.h>
@@ -1890,11 +1890,11 @@
 
 1244380313 /home/user/projects/MyRuLib/MyRuLib/res/htmbook.xpm
 
-1244479492 /home/user/projects/MyRuLib/MyRuLib/ProgressBar.h
+1244484135 /home/user/projects/MyRuLib/MyRuLib/ProgressBar.h
 	<wx/wx.h>
 	<wx/statusbr.h>
 
-1244479493 /home/user/projects/MyRuLib/MyRuLib/wx/treelistctrl.h
+1244484135 /home/user/projects/MyRuLib/MyRuLib/wx/treelistctrl.h
 	<wx/treectrl.h>
 	<wx/control.h>
 	<wx/pen.h>
@@ -1924,7 +1924,7 @@
 	"wx/scrolwin.h"
 	"wx/pen.h"
 
-1244479492 source:/home/user/projects/MyRuLib/MyRuLib/ProgressBar.cpp
+1244484135 source:/home/user/projects/MyRuLib/MyRuLib/ProgressBar.cpp
 	"ProgressBar.h"
 
 1238939809 /usr/include/wx-2.8/wx/imaglist.h
@@ -1937,11 +1937,11 @@
 	"wx/list.h"
 	"wx/icon.h"
 
-1244479493 /home/user/projects/MyRuLib/MyRuLib/res/checked.xpm
+1244484135 /home/user/projects/MyRuLib/MyRuLib/res/checked.xpm
 
-1244479493 /home/user/projects/MyRuLib/MyRuLib/res/nocheck.xpm
+1244484135 /home/user/projects/MyRuLib/MyRuLib/res/nocheck.xpm
 
-1244481148 source:/home/user/projects/MyRuLib/MyRuLib/treelistctrl.cpp
+1244484135 source:/home/user/projects/MyRuLib/MyRuLib/treelistctrl.cpp
 	"wx/wxprec.h"
 	"MyRuLibApp.h"
 	<wx/treebase.h>

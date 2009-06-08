@@ -98,7 +98,7 @@ void MyRuLibMainFrame::CreateControls() {
 	wxSplitterWindow * books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	books_splitter->SetMinimumPaneSize(100);
 
-	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER;
+	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksListView = new wxTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_CENTER);
@@ -266,13 +266,14 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
         Books books(wxGetApp().GetDatabase());
         wxString whereClause = wxString::Format(wxT("id=%d"), data->GetId());
         BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
-        wxString annotation;
+        wxString title, annotation;
 		for(unsigned long i = 0; i < allBooks->Count(); ++i)
 		{
 		    BooksRow * thisBook = allBooks->Item(i);
-		    annotation = thisBook->annotation;
+		    title = thisBook->title;
+		    annotation = thisBook->title;
 		}
-		m_BooksInfoPanel->SetPage(wxString::Format(wxT("<html><body>%s</body></html>"), annotation.c_str()));
+		m_BooksInfoPanel->SetPage(wxString::Format(wxT("<html><body><h2>%s</h2><br>%s</body></html>"), title.c_str(), annotation.c_str()));
 	}
 	event.Skip();
 }
@@ -290,9 +291,13 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 void MyRuLibMainFrame::OnBooksListKeyDown(wxTreeEvent & event)
 {
 	if (event.GetKeyCode() == 0x20) {
-		wxTreeItemId selected = m_BooksListView->GetSelection();
-		if (selected.IsOk()) {
-			int image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
+		wxArrayTreeItemIds selections;
+		size_t count = m_BooksListView->GetSelections(selections);
+		int image = 0;
+		for (size_t i=0; i<count; ++i) {
+            wxTreeItemId selected = selections[i];
+		    if (i==0)
+                image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
 			m_BooksListView->SetItemImage(selected, image);
 		}
 		event.Veto();
