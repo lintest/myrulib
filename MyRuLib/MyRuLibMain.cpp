@@ -214,6 +214,15 @@ void MyRuLibMainFrame::FillAuthorsList(AuthorsRowSet * allAuthors) {
 	m_AuthorsListBox->Thaw();
 }
 
+class BookTreeItemData: public wxTreeItemData 
+{
+public:
+	BookTreeItemData(int id): m_id(id) { };
+	int GetId() { return m_id; };
+private:
+	int m_id;
+};
+
 void MyRuLibMainFrame::FillBooksList(int author_id)
 {
 	m_BooksListView->Freeze();
@@ -230,7 +239,7 @@ void MyRuLibMainFrame::FillBooksList(int author_id)
 		for(unsigned long i = 0; i < allBooks->Count(); ++i)
 		{
 		    BooksRow * thisBook = allBooks->Item(i);
-			wxTreeItemId item = m_BooksListView->AppendItem(root, thisBook->title);
+			wxTreeItemId item = m_BooksListView->AppendItem(root, thisBook->title, -1, -1, new BookTreeItemData(thisBook->id));
 			m_BooksListView->SetItemText (item, 1, thisBook->file_name);
 			m_BooksListView->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
 			m_BooksListView->SetItemImage(item, i%2);
@@ -254,7 +263,7 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
-		m_BooksListView->GetItemData(selected);
+		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
 		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
 	}
 	event.Skip();  
