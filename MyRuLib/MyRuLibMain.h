@@ -53,7 +53,6 @@ class MyRuLibMainFrame: public wxFrame
 public:
 	MyRuLibMainFrame();
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
-	DECLARE_EVENT_TABLE()
 	void OnExit(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
@@ -70,6 +69,7 @@ public:
 	void OnProgressUpdate(wxCommandEvent& event);
 	void OnProgressFinish(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
+	DECLARE_EVENT_TABLE()
 };
 
 #endif // MYRULIBMAIN_H

@@ -38,7 +38,6 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListActivated)
 	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListKeyDown)
-    EVT_SIZE(MyRuLibMainFrame::OnBooksListViewResize)
     EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, MyRuLibMainFrame::OnBooksInfoPanelLinkClicked)
     EVT_TEXT_ENTER(ID_FIND_TEXT, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(ID_FIND_BTN, MyRuLibMainFrame::OnFindTextEnter)
@@ -49,6 +48,27 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
 END_EVENT_TABLE()
+
+class MyTreeListCtrl: public wxTreeListCtrl
+{
+public:
+    MyTreeListCtrl(wxWindow *parent, wxWindowID id, long style)
+        :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style) {};
+    void OnSize(wxSizeEvent& event);
+	DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(MyTreeListCtrl, wxTreeListCtrl)
+    EVT_SIZE(MyTreeListCtrl::OnSize)
+END_EVENT_TABLE()
+
+void MyTreeListCtrl::OnSize(wxSizeEvent& event)
+{
+    int w, h;
+    GetClientSize(&w, &h);
+    SetColumnWidth(0, w - 230);
+	event.Skip();
+}
 
 MyRuLibMainFrame::MyRuLibMainFrame() {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
@@ -99,7 +119,7 @@ void MyRuLibMainFrame::CreateControls() {
 	books_splitter->SetMinimumPaneSize(100);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksListView = new wxTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, style);
+	m_BooksListView = new MyTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_CENTER);
     m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
@@ -406,11 +426,6 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 			m_BooksInfoPanel->AppendToPage(html);
 		}
 	}
-}
-
-void MyRuLibMainFrame::OnBooksListViewResize(wxSizeEvent& event)
-{
-	event.Skip();
 }
 
 void MyRuLibMainFrame::OnProgressStart(wxCommandEvent& event)
