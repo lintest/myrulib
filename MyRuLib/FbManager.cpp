@@ -82,20 +82,16 @@ int FbThread::FindAuthor(wxString &full_name) {
 	wxString search_name = full_name;
 	FbManager::MakeLower(search_name);
 
-	wxString letter = full_name.Left(1);
-	FbManager::MakeUpper(letter);
-
-	if (alphabet.Find(letter) == wxNOT_FOUND)
-		letter = wxT("#");
-
-	const wxString& whereClause = wxString::Format(_("search_name='%s'"), search_name.c_str());
-
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 
 	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRow * row = authors.Where(whereClause);
+	AuthorsRow * row = authors.Name(search_name);
 
 	if (!row) {
+		wxString letter = full_name.Left(1);
+		FbManager::MakeUpper(letter);
+		if (alphabet.Find(letter) == wxNOT_FOUND)
+			letter = wxT("#");
 		row = authors.New();
 		row->id = FbManager::NewId(DB_NEW_AUTHOR);
 		row->letter = letter;

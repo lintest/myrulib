@@ -52,7 +52,8 @@ AuthorsRow* Authors::Id(int key){
 		pStatement->SetParamInt(1,key);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
+		if(!result->Next())
+			return NULL;
 		AuthorsRow* row=RowFromResult(result);
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
@@ -65,9 +66,6 @@ AuthorsRow* Authors::Id(int key){
 		return NULL;
 	}
 }
-
-
-
 
 AuthorsRow* Authors::Where(const wxString& whereClause){
 	try{
@@ -409,5 +407,24 @@ CMPFUNC_proto AuthorsRowSet::GetCmpFunc(const wxString& var) const{
 /** END ACTIVE RECORD ROW SET **/
 
 ////@@begin custom implementations
+AuthorsRow* Authors::Name(const wxString& search_name){
+	try{
+		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE search_name=?"),m_table.c_str()));
+		pStatement->SetParamString(1,search_name);
+		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
+		if(!result->Next())
+			return NULL;
+		AuthorsRow* row=RowFromResult(result);
+		garbageRows.Add(row);
+		m_database->CloseResultSet(result);
+		m_database->CloseStatement(pStatement);
+		return row;
+	}
+	catch (DatabaseLayerException& e)
+	{
+		ProcessException(e);
+		return NULL;
+	}
+}
 ////@@end custom implementations

@@ -47,13 +47,13 @@ public:
 
 	
 	AuthorsRow* Id(int key);
-
 	AuthorsRow* Where(const wxString& whereClause);
 	AuthorsRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
 	AuthorsRowSet* All(const wxString& orderBy=wxEmptyString); 
 
 ////@@begin custom arClass
 public:
+	AuthorsRow* Name(const wxString& search_name);
 ////@@end custom arClass
 };
 ////@@end gen arClass
