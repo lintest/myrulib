@@ -1597,14 +1597,14 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244380313 /home/user/projects/MyRuLib/MyRuLib/Authors.h
+1244479492 /home/user/projects/MyRuLib/MyRuLib/Authors.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
 	<wx/datetime.h>
 	"Books.h"
 
-1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
+1244479492 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
 1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
@@ -1645,13 +1645,14 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244393635 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
+1244479492 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
 	<wx/wx.h>
 	<wx/toolbar.h>
 	<wx/listbox.h>
 	<wx/listctrl.h>
 	<wx/textctrl.h>
 	<wx/html/htmlwin.h>
+	"wx/treelistctrl.h"
 	"Authors.h"
 	"ProgressBar.h"
 
@@ -1751,9 +1752,10 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244393661 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244482007 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
+	<wx/imaglist.h>
 	"MyRuLibMain.h"
 	"MyRuLibApp.h"
 	"RecordIDClientData.h"
@@ -1764,6 +1766,8 @@
 	"res/find.xpm"
 	"res/new_dir.xpm"
 	"res/htmbook.xpm"
+	"res/checked.xpm"
+	"res/nocheck.xpm"
 
 1238939809 /usr/include/wx-2.8/wx/splitter.h
 	"wx/event.h"
@@ -1825,12 +1829,12 @@
 	"wx/defs.h"
 	"wx/stream.h"
 
-1244380313 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
+1244479492 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
 	<wx/wx.h>
 	<DatabaseLayer.h>
 	"FbParser.h"
 
-1244380734 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
+1244479492 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
 	<wx/wx.h>
 	<wx/defs.h>
 	<wx/string.h>
@@ -1838,16 +1842,17 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244380313 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244479492 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"
 	"MyRuLibApp.h"
+	"MyRuLibMain.h"
 	"Authors.h"
 	"Books.h"
 	"Params.h"
 
-1244380313 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
+1244482804 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
 	<wx/wxprec.h>
 	<wx/wfstream.h>
 	<wx/datstrm.h>
@@ -1885,7 +1890,101 @@
 
 1244380313 /home/user/projects/MyRuLib/MyRuLib/res/htmbook.xpm
 
-1244393618 /home/user/projects/MyRuLib/MyRuLib/ProgressBar.h
+1244479492 /home/user/projects/MyRuLib/MyRuLib/ProgressBar.h
 	<wx/wx.h>
 	<wx/statusbr.h>
+
+1244479493 /home/user/projects/MyRuLib/MyRuLib/wx/treelistctrl.h
+	<wx/treectrl.h>
+	<wx/control.h>
+	<wx/pen.h>
+	<wx/listctrl.h>
+
+1238939809 /usr/include/wx-2.8/wx/treectrl.h
+	"wx/defs.h"
+	"wx/control.h"
+	"wx/treebase.h"
+	"wx/textctrl.h"
+	"wx/generic/treectlg.h"
+	"wx/palmos/treectrl.h"
+	"wx/msw/treectrl.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+	"wx/generic/treectlg.h"
+
+1238939809 /usr/include/wx-2.8/wx/treebase.h
+	"wx/defs.h"
+	"wx/window.h"
+	"wx/event.h"
+	"wx/dynarray.h"
+
+1238939808 /usr/include/wx-2.8/wx/generic/treectlg.h
+	"wx/scrolwin.h"
+	"wx/pen.h"
+
+1244479492 source:/home/user/projects/MyRuLib/MyRuLib/ProgressBar.cpp
+	"ProgressBar.h"
+
+1238939809 /usr/include/wx-2.8/wx/imaglist.h
+	"wx/generic/imaglist.h"
+	"wx/msw/imaglist.h"
+	"wx/mac/imaglist.h"
+
+1238939809 /usr/include/wx-2.8/wx/generic/imaglist.h
+	"wx/defs.h"
+	"wx/list.h"
+	"wx/icon.h"
+
+1244479493 /home/user/projects/MyRuLib/MyRuLib/res/checked.xpm
+
+1244479493 /home/user/projects/MyRuLib/MyRuLib/res/nocheck.xpm
+
+1244481148 source:/home/user/projects/MyRuLib/MyRuLib/treelistctrl.cpp
+	"wx/wxprec.h"
+	"MyRuLibApp.h"
+	<wx/treebase.h>
+	<wx/timer.h>
+	<wx/textctrl.h>
+	<wx/imaglist.h>
+	<wx/settings.h>
+	<wx/dcclient.h>
+	<wx/dcscreen.h>
+	<wx/scrolwin.h>
+	<wx/dcmemory.h>
+	<wx/renderer.h>
+	<wx/apptrait.h>
+	"wx/mac/private.h"
+	"wx/treelistctrl.h"
+	<wx/dynarray.h>
+	<wx/arrimpl.cpp>
+
+1238939808 /usr/include/wx-2.8/wx/renderer.h
+	"wx/gdicmn.h"
+	"wx/colour.h"
+	"wx/font.h"
+	"wx/bitmap.h"
+	"wx/string.h"
+
+1238939807 /usr/include/wx-2.8/wx/apptrait.h
+	"wx/string.h"
+	"wx/platinfo.h"
+	"wx/palmos/apptbase.h"
+	"wx/msw/apptbase.h"
+	"wx/unix/apptbase.h"
+	"wx/mac/apptbase.h"
+	"wx/os2/apptbase.h"
+	"wx/palmos/apptrait.h"
+	"wx/msw/apptrait.h"
+	"wx/os2/apptrait.h"
+	"wx/unix/apptrait.h"
+	"wx/mac/apptrait.h"
+	"wx/msdos/apptrait.h"
+
+1238939808 /usr/include/wx-2.8/wx/unix/apptbase.h
+
+1238939808 /usr/include/wx-2.8/wx/unix/apptrait.h
+
+1238939807 /usr/include/wx-2.8/wx/arrimpl.cpp
 

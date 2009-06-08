@@ -53,7 +53,7 @@ FbNode::~FbNode()
 void FbNode::Append(FbNode * node)
 {
 	node->m_parent = this;
-	if (m_child) 
+	if (m_child)
 		m_last_child->m_next = node;
 	else
 		m_child = node;
@@ -63,7 +63,7 @@ void FbNode::Append(FbNode * node)
 #ifdef FB_DEBUG_PARSING
 void FbNode::Print(wxString &text, int level)
 {
-	for (int i = 0; i<level; i++) 
+	for (int i = 0; i<level; i++)
 		text += wxT("&nbsp;&nbsp;");
 	text += wxString::Format(wxT("&lt;%s"), m_name.c_str());
 
@@ -75,7 +75,7 @@ void FbNode::Print(wxString &text, int level)
 
 	text += wxString::Format(wxT("&gt;<b>%s</b>"), m_text.c_str());
 
-	if (m_child) 
+	if (m_child)
 		text += wxT("<br>");
 
 	FbNode * node = m_child;
@@ -84,8 +84,8 @@ void FbNode::Print(wxString &text, int level)
 		node = node->m_next;
 	}
 
-	if (m_child) 
-		for (int i = 0; i<level; i++) 
+	if (m_child)
+		for (int i = 0; i<level; i++)
 			text += wxT("&nbsp;&nbsp;");
 
 	text += wxString::Format(wxT("&lt;/%s&gt;<br>"), m_name.c_str());
@@ -109,7 +109,7 @@ void FbNode::AddProperty(const wxString& name, const wxString& value)
 
 void FbNode::AddProperty(FbProperty *prop)
 {
-	if (m_properties) 
+	if (m_properties)
 		m_last_prop->m_next = prop;
 	else
         m_properties = prop;
@@ -163,7 +163,7 @@ static wxString CharToString(wxMBConv *conv, const char *s, size_t len = wxStrin
     return wxString(s, wxConvUTF8, len);
 }
 
-static wxString CharToLowerString(wxMBConv *conv, const char *s, size_t len = wxString::npos)
+static wxString CharToLower(wxMBConv *conv, const char *s, size_t len = wxString::npos)
 {
     wxUnusedVar(conv);
     wxString data = wxString(s, wxConvUTF8, len);
@@ -204,16 +204,18 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
 
-    wxString node_name = CharToLowerString(ctx->conv, name);
+    wxString node_name = CharToLower(ctx->conv, name);
 
 	if (ctx->annotation) {
+
 		ctx->node->m_text += wxString::Format(wxT("<%s"), node_name.c_str());
 		const XML_Char **a = atts;
 		while (*a) {
-			ctx->node->m_text += wxString::Format(wxT(" %s=%s"), CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
+			ctx->node->m_text += wxString::Format(wxT(" %s=%s"), CharToLower(ctx->conv, a[0]).c_str(), CharToString(ctx->conv, a[1]).c_str());
 			a += 2;
 		}
 		ctx->node->m_text += wxT(">");
+
 	} else {
 		ctx->annotation = node_name == wxT("annotation");
 
@@ -239,7 +241,7 @@ extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
-    wxString node_name = CharToLowerString(ctx->conv, name);
+    wxString node_name = CharToLower(ctx->conv, name);
 
 	if (ctx->annotation)
 		ctx->node->m_text += wxString::Format(wxT("</%s>"), node_name.c_str());
