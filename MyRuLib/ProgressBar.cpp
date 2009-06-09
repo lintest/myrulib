@@ -20,9 +20,12 @@ ProgressBar::~ProgressBar()
 
 void ProgressBar::Resize()
 {
-   wxRect r;
-   GetFieldRect(1, r);
-   progress_bar->SetSize(r);
+	if (GetFieldsCount()<=1) 
+		return ;
+
+	wxRect r;
+	GetFieldRect(1, r);
+	progress_bar->SetSize(r);
 }
 
 void ProgressBar::SetProgress(int progress)

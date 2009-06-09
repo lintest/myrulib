@@ -26,10 +26,25 @@ IMPLEMENT_CLASS(FbDocument, wxObject)
 static bool wxIsWhiteOnly(const wxChar *buf);
 
 //-----------------------------------------------------------------------------
+//  FbProperty 
+//-----------------------------------------------------------------------------
+class FbProperty {
+public:
+    FbProperty() : m_next(NULL) {};
+    FbProperty(const wxString& name, const wxString& value)
+            : m_name(name), m_value(value),  m_next(NULL) {};
+    virtual ~FbProperty() {};
+public:
+    wxString m_name;
+    wxString m_value;
+    FbProperty *m_next;
+};
+
+//-----------------------------------------------------------------------------
 //  FbNode
 //-----------------------------------------------------------------------------
 FbNode::FbNode(const wxString &name, FbNodeType type)
-	: m_parent(NULL), m_child(NULL), m_next(NULL)
+	: m_parent(NULL), m_child(NULL), m_next(NULL), m_properties(NULL)
 {
 	m_name = name;
 	m_type = type;
@@ -43,18 +58,21 @@ FbNode::~FbNode()
 		m_child = node->m_next;
 		delete node;
 	}
+	while (m_properties) {
+		FbProperty * prop = m_properties;
+		m_properties = prop->m_next;
+		delete prop;
+	}
 }
 
 void FbNode::Append(FbNode * node)
 {
 	node->m_parent = this;
-	if (!m_child) {
-		m_child = node;
-		m_last_child = node;
-	} else {
+	if (m_child) 
 		m_last_child->m_next = node;
-		m_last_child = node;
-	}
+	else
+		m_child = node;
+	m_last_child = node;
 }
 
 #ifdef FB_DEBUG_PARSING
@@ -62,7 +80,15 @@ void FbNode::Print(wxString &text, int level)
 {
 	for (int i = 0; i<level; i++) 
 		text += wxT("&nbsp;&nbsp;");
-	text += wxString::Format(wxT("&lt;%s&gt;<b>%s</b>"), m_name.c_str(), m_text.c_str());
+	text += wxString::Format(wxT("&lt;%s"), m_name.c_str());
+
+	FbProperty * prop = m_properties;
+	while (prop) {
+		text += wxString::Format(wxT("&nbsp;%s=%s"), prop->m_name.c_str(), prop->m_value.c_str());
+		prop = prop->m_next;
+	}
+
+	text += wxString::Format(wxT("&gt;<b>%s</b>"), m_text.c_str());
 
 	if (m_child) 
 		text += wxT("<br>");
@@ -81,7 +107,8 @@ void FbNode::Print(wxString &text, int level)
 }
 #endif //FB_DEBUG_PARSING
 
-FbNode * FbNode::Find(const wxString &name) {
+FbNode * FbNode::Find(const wxString &name) 
+{
 	FbNode * node = m_child;
 	while (node)
 		if (node->m_name == name)
@@ -89,6 +116,31 @@ FbNode * FbNode::Find(const wxString &name) {
 		else
 			node = node->m_next;
 	return NULL;
+}
+
+wxString FbNode::Prop(const wxString &name)
+{
+	FbProperty * node = m_properties;
+	while (node)
+		if (node->m_name == name)
+			return node->m_value;
+		else
+			node = node->m_next;
+	return wxEmptyString;
+}
+
+void FbNode::AddProperty(const wxString& name, const wxString& value)
+{
+    AddProperty(new FbProperty(name, value));
+}
+
+void FbNode::AddProperty(FbProperty *prop)
+{
+	if (m_properties) 
+		m_last_prop->m_next = prop;
+	else
+        m_properties = prop;
+	m_last_prop = prop;
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +214,8 @@ struct wxXmlParsingContext
     wxXmlParsingContext()
         : conv(NULL),
           root(NULL),
-          node(NULL)
+          node(NULL),
+		  annotation(false)
     {}
 
     wxMBConv  *conv;
@@ -170,6 +223,7 @@ struct wxXmlParsingContext
     FbNode *node; // the node being parsed
     wxString   encoding;
     wxString   version;
+	bool annotation;
 	XML_Parser parser;
 };
 
@@ -180,14 +234,32 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
     wxString node_name = CharToLowerString(ctx->conv, name);
 
-    FbNode *node = new FbNode(node_name);
+	if (ctx->annotation) {
+		ctx->node->m_text += wxString::Format(wxT("<%s"), node_name.c_str());
+		const XML_Char **a = atts;
+		while (*a) {
+			ctx->node->m_text += wxString::Format(wxT(" %s=%s"), CharToString(ctx->conv, a[0]).c_str(), CharToString(ctx->conv, a[1]).c_str());
+			a += 2;
+		}
+		ctx->node->m_text += wxT(">");
+	} else {
+		ctx->annotation = node_name == wxT("annotation");
 
-    if (ctx->root == NULL)
-        ctx->root = node;
-    else
-		ctx->node->Append(node);
+		FbNode *node = new FbNode(node_name);
 
-	ctx->node = node;
+		const XML_Char **a = atts;
+		while (*a) {
+			node->AddProperty(CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
+			a += 2;
+		}
+
+		if (ctx->root == NULL)
+			ctx->root = node;
+		else
+			ctx->node->Append(node);
+
+		ctx->node = node;
+	}
 }
 }
 
@@ -195,13 +267,17 @@ extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
+    wxString node_name = CharToLowerString(ctx->conv, name);
 
-	if (ctx->node->m_parent)
+	if (ctx->annotation)
+		ctx->node->m_text += wxString::Format(wxT("</%s>"), node_name.c_str());
+	else if (ctx->node->m_parent)
 		ctx->node = ctx->node->m_parent;
 
-    wxString node_name = CharToLowerString(ctx->conv, name);
 	if (node_name == wxT("title-info"))
 		XML_StopParser(ctx->parser, XML_FALSE);
+	else if (node_name == wxT("annotation"))
+		ctx->annotation = false;
 }
 }
 

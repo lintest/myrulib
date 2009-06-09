@@ -320,7 +320,7 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 
 	wxArrayInt book_authors;
 	wxArrayString book_genres;
-	wxString book_title;
+	wxString book_title, annotation;
 
 #ifdef FB_DEBUG_PARSING
 	xml.GetRoot()->Print(html);
@@ -339,6 +339,8 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 				book_genres.Add(value);
 			} else if ( name == wxT("book-title") ) {
 				book_title = value;
+			} else if ( name == wxT("annotation") ) {
+				annotation = value;
 			}
         }
         html += wxString::Format(wxT("<b>%s:</b>&nbsp;%s<br>"), name.c_str(), value.c_str());
@@ -354,10 +356,12 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 		row->id = new_id;
 		row->id_author = book_authors[i];
 		row->title = book_title;
+		row->annotation = annotation;
 		row->file_size = size /1024;
 		row->file_name = name;
 		row->id_archive = id_archive;
 		row->Save();
+		annotation.Empty();
 	}
 
     html += wxT("<hr>");
