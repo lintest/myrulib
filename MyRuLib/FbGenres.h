@@ -4,11 +4,12 @@
 #include <wx/wx.h>
 
 struct GenreStruct {
+	wxChar letter;
 	wxString code;
 	wxString name;
 };
 
-extern GenreStruct all_genres[];
+extern const GenreStruct all_genres[];
 
 #endif //FBGENRES_H
- 
+

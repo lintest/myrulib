@@ -56,12 +56,12 @@
 		<Unit filename="Books.h" />
 		<Unit filename="DBCreator.cpp" />
 		<Unit filename="DBCreator.h" />
+		<Unit filename="FbGenres.cpp" />
+		<Unit filename="FbGenres.h" />
 		<Unit filename="FbManager.cpp" />
 		<Unit filename="FbManager.h" />
 		<Unit filename="FbParser.cpp" />
 		<Unit filename="FbParser.h" />
-		<Unit filename="Genres.cpp" />
-		<Unit filename="Genres.h" />
 		<Unit filename="MyRuLibApp.cpp" />
 		<Unit filename="MyRuLibApp.h" />
 		<Unit filename="MyRuLibMain.cpp" />

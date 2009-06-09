@@ -27,7 +27,7 @@
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("ÀÁÂÃÄÅÆÇÈÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÝÞß");
+const wxString alphabetRu = _("ÐÐ‘Ð’Ð“Ð”Ð•Ð–Ð—Ð˜ÐšÐ›ÐœÐÐžÐŸÐ Ð¡Ð¢Ð£Ð¤Ð¥Ð¦Ð§Ð¨Ð©Ð­Ð®Ð¯");
 const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 wxString alphabet = alphabetRu + alphabetEn;
 
@@ -93,15 +93,15 @@ void MyRuLibMainFrame::CreateControls() {
 	SetMenuBar(menuBar);
 
 	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(ID_NEW_FILE, _("Äîáàâèòü ôàéë…"));
-	fileMenu->Append(ID_NEW_DIR, _("Äîáàâèòü äèðåêòîðèþ…"));
-	fileMenu->Append(ID_NEW_ZIP, _("Äîáàâèòü ôàéë ZIP…"));
+	fileMenu->Append(ID_NEW_FILE, _("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ñ„Ð°Ð¹Ð»â€¦"));
+	fileMenu->Append(ID_NEW_DIR, _("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸ÑŽâ€¦"));
+	fileMenu->Append(ID_NEW_ZIP, _("Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ñ„Ð°Ð¹Ð» ZIPâ€¦"));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, _("Âûõîä\tAlt+F4"));
-	menuBar->Append(fileMenu, _("&Ôàéë"));
+	fileMenu->Append(wxID_EXIT, _("Ð’Ñ‹Ñ…Ð¾Ð´\tAlt+F4"));
+	menuBar->Append(fileMenu, _("&Ð¤Ð°Ð¹Ð»"));
 
 	wxMenu * helpMenu = new wxMenu;
-	helpMenu->Append(wxID_ABOUT, _("Î ïðîãðàììå…"));
+	helpMenu->Append(wxID_ABOUT, _("Ðž Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ðµâ€¦"));
 	menuBar->Append(helpMenu, _("&?"));
 
 	SetToolBar(CreateButtonBar());
@@ -123,9 +123,9 @@ void MyRuLibMainFrame::CreateControls() {
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksListView = new MyTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
-    m_BooksListView->AddColumn (_T("Çàãîëîâîê"), 300, wxALIGN_LEFT);
-    m_BooksListView->AddColumn (_T("Èìÿ ôàéëà"), 100, wxALIGN_CENTER);
-    m_BooksListView->AddColumn (_T("Ðàçìåð, Êá"), 100, wxALIGN_RIGHT);
+    m_BooksListView->AddColumn (_T("Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº"), 300, wxALIGN_LEFT);
+    m_BooksListView->AddColumn (_T("Ð˜Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð°"), 100, wxALIGN_CENTER);
+    m_BooksListView->AddColumn (_T("Ð Ð°Ð·Ð¼ÐµÑ€, ÐšÐ±"), 100, wxALIGN_RIGHT);
     m_BooksListView->SetColumnEditable (0, false);
     m_BooksListView->SetColumnEditable (1, false);
     m_BooksListView->SetColumnEditable (2, false);
@@ -170,13 +170,13 @@ void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_FILE, _("Ôàéë…"), wxBitmap(new_xpm));
-	toolBar->AddTool(ID_NEW_DIR, _("Ïàïêà…"), wxBitmap(new_dir_xpm));
-	toolBar->AddTool(ID_NEW_ZIP, _("Zip ôàéë…"), wxBitmap(htmbook_xpm));
+	toolBar->AddTool(ID_NEW_FILE, _("Ð¤Ð°Ð¹Ð»â€¦"), wxBitmap(new_xpm));
+	toolBar->AddTool(ID_NEW_DIR, _("ÐŸÐ°Ð¿ÐºÐ°â€¦"), wxBitmap(new_dir_xpm));
+	toolBar->AddTool(ID_NEW_ZIP, _("Zip Ñ„Ð°Ð¹Ð»â€¦"), wxBitmap(htmbook_xpm));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("Íàéòè"), wxBitmap(find_xpm));
+	toolBar->AddTool(ID_FIND_BTN, _("ÐÐ°Ð¹Ñ‚Ð¸"), wxBitmap(find_xpm));
 	toolBar->Realize();
 	return toolBar;
 }
@@ -375,7 +375,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Âûáåðèòå ôàéë äëÿ äîáàâëåíèÿ â áèáëèîòåêó…"),
+		_("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ñ„Ð°Ð¹Ð» Ð´Ð»Ñ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð² Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒâ€¦"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Fiction books (*.fb2)|*.fb2"),
@@ -403,7 +403,7 @@ void MyRuLibMainFrame::OnNewDir( wxCommandEvent& event ){
 
     wxDirDialog dlg(
         this,
-        _("Âûáåðèòå äèðåêòîðèþ äëÿ èìïîðòà ôàéëîâ"),
+        _("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸ÑŽ Ð´Ð»Ñ Ð¸Ð¼Ð¿Ð¾Ñ€Ñ‚Ð° Ñ„Ð°Ð¹Ð»Ð¾Ð²"),
         wxEmptyString,
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST
     );
@@ -417,7 +417,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Âûáåðèòå zip-ôàéë äëÿ äîáàâëåíèÿ â áèáëèîòåêó…"),
+		_("Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ zip-Ñ„Ð°Ð¹Ð» Ð´Ð»Ñ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð² Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒâ€¦"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Zip file (*.zip)|*.zip"),
@@ -465,3 +465,4 @@ void MyRuLibMainFrame::OnProgressFinish(wxCommandEvent& event)
 	m_ProgressBar->SetStatusText(wxEmptyString, 0);
 	m_ProgressBar->SetStatusText(wxEmptyString, 2);
 }
+

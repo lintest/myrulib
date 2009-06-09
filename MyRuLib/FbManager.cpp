@@ -21,12 +21,14 @@ enum {
 	DB_NEW_ARCHIVE,
 	DB_NEW_AUTHOR,
 	DB_NEW_BOOK,
+	DB_NEW_SERIE,
 };
 
-void FbManager::InitParams(DatabaseLayer *database) 
+void FbManager::InitParams(DatabaseLayer *database)
 {
 	database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
 	database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
+	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
@@ -66,7 +68,7 @@ void FbThread::OnExit()
 {
 }
 
-int FbThread::AddArchive() 
+int FbThread::AddArchive()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 	Archives archives(wxGetApp().GetDatabase());
@@ -102,7 +104,7 @@ int FbThread::FindAuthor(wxString &full_name) {
 	return row->id;
 }
 
-bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive) 
+bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
 {
     FbDocument xml;
 	if (!xml.Load(stream, wxT("UTF-8")))
@@ -178,7 +180,8 @@ void *FbThread::Entry()
 	}
 
 	int progress = 0;
-	while (entry = zip.GetNextEntry()) {
+	entry = zip.GetNextEntry();
+	while (entry) {
         wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE );
 		event.SetString(entry->GetName());
 		event.SetInt(progress++);
@@ -187,6 +190,7 @@ void *FbThread::Entry()
 		zip.OpenEntry(*entry);
 		ParseXml(zip, entry->GetName(), entry->GetSize(), id_archive);
 		delete entry;
+        entry = zip.GetNextEntry();
 	}
 
 	{
@@ -260,7 +264,7 @@ int FbManager::FindAuthor(wxString &full_name) {
 	return row->id;
 }
 
-bool FbManager::ParseXml(const wxString& filename, wxString& html) 
+bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
     wxFileInputStream stream(filename);
     if (!stream.Ok())
@@ -272,7 +276,7 @@ bool FbManager::ParseXml(const wxString& filename, wxString& html)
     return ParseXml(stream, html, filename, size);
 }
 
-bool FbManager::ParseZip(const wxString& filename, wxString& html) 
+bool FbManager::ParseZip(const wxString& filename, wxString& html)
 {
 	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename);
 
@@ -286,7 +290,7 @@ bool FbManager::ParseZip(const wxString& filename, wxString& html)
     return true;
 }
 
-bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size, int id_archive) 
+bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size, int id_archive)
 {
     FbDocument xml;
 	if (!xml.Load(stream, wxT("UTF-8")))

@@ -222,7 +222,7 @@ bool BooksRow::GetFromResult(DatabaseResultSet* result){
 bool BooksRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (description,id_archive,file_size,annotation,file_name,deleted,title,id_author,id) VALUES (?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (description,id_archive,file_size,annotation,file_name,deleted,title,id_author,genres,id) VALUES (?,?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
 			pStatement->SetParamString(1,description);
 			pStatement->SetParamInt(2,id_archive);
 			pStatement->SetParamInt(3,file_size);
@@ -231,7 +231,8 @@ bool BooksRow::Save(){
 			pStatement->SetParamString(6,deleted);
 			pStatement->SetParamString(7,title);
 			pStatement->SetParamInt(8,id_author);
-			pStatement->SetParamInt(9,id);
+			pStatement->SetParamString(9,genres);
+			pStatement->SetParamInt(10,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
@@ -239,9 +240,8 @@ bool BooksRow::Save(){
 			newRow=false;
 		}
 		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET description=?,id_archive=?,file_size=?,annotation=?,file_name=?,deleted=?,title=?,id_author=? WHERE id=?"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET description=?,id_archive=?,file_size=?,annotation=?,file_name=?,deleted=?,title=?,id_author=?,genres=? WHERE id=?"),m_table.c_str()));
 			pStatement->SetParamString(1,description);
-			pStatement->SetParamInt(9,id);
 			pStatement->SetParamInt(2,id_archive);
 			pStatement->SetParamInt(3,file_size);
 			pStatement->SetParamString(4,annotation);
@@ -249,6 +249,8 @@ bool BooksRow::Save(){
 			pStatement->SetParamString(6,deleted);
 			pStatement->SetParamString(7,title);
 			pStatement->SetParamInt(8,id_author);
+			pStatement->SetParamString(9,title);
+			pStatement->SetParamInt(10,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
@@ -291,26 +293,6 @@ ArchivesRow* BooksRow::GetArchive(){
 	m_database->CloseResultSet(result);
 	m_database->CloseStatement(pStatement);
 	return owner;
-}
-
-GenresRowSet* BooksRow::GetGenres(const wxString& orderBy){
-	GenresRowSet* set= new GenresRowSet(m_database,wxT("genres"));
-	wxString str_statement =wxT("SELECT * FROM genres WHERE id_book=?");
-	if(!orderBy.IsEmpty())
-		str_statement+=wxT(" ORDER BY ")+orderBy;
-	PreparedStatement* pStatement=m_database->PrepareStatement(str_statement);
-	pStatement->SetParamInt(1,id);
-	DatabaseResultSet* result= pStatement->ExecuteQuery();
-
-	while(result->Next()){
-		GenresRow* toAdd=new GenresRow(m_database,wxT("genres"));
-		toAdd->GetFromResult(result);
-		set->Add(toAdd);
-	}
-	garbageRowSets.Add(set);
-	m_database->CloseResultSet(result);
-	m_database->CloseStatement(pStatement);
-	return set;
 }
 
 AuthorsRowSet* BooksRow::GetAuthors(const wxString& orderBy){
@@ -444,6 +426,12 @@ int BooksRowSet::CMPFUNC_id_author(wxActiveRecordRow** item1,wxActiveRecordRow**
 		return 0;
 }
 
+int BooksRowSet::CMPFUNC_genres(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	BooksRow** m_item1=(BooksRow**)item1;
+	BooksRow** m_item2=(BooksRow**)item2;
+	return (*m_item1)->genres.Cmp((*m_item2)->genres);
+}
+
 CMPFUNC_proto BooksRowSet::GetCmpFunc(const wxString& var) const{
 	if(var==wxT("description"))
 		return (CMPFUNC_proto)CMPFUNC_description;
@@ -463,6 +451,8 @@ CMPFUNC_proto BooksRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_title;
 	else if(var==wxT("id_author"))
 		return (CMPFUNC_proto)CMPFUNC_id_author;
+	else if(var==wxT("genres"))
+		return (CMPFUNC_proto)CMPFUNC_genres;
 	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }

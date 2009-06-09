@@ -48,6 +48,7 @@ bool DBCreator::CreateDatabase(void){
                 id_author integer not null, \
                 title varchar(255) not null,\
                 annotation text,\
+                genres text,\
                 deleted boolean,\
                 id_archive integer, \
                 file_name varchar(255),\
@@ -68,7 +69,7 @@ bool DBCreator::CreateDatabase(void){
                 file_size integer,\
                 description text);\
         "));
-		m_Database->RunQuery(wxT("CREATE INDEX book_author ON books(id_author);"));
+		m_Database->RunQuery(wxT("CREATE INDEX book_file ON archives(file_name);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
@@ -78,7 +79,7 @@ bool DBCreator::CreateDatabase(void){
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
 	try {
-		m_Database->RunQuery(wxT("CREATE TABLE genres(id_book integer not null, id_genre varchar(255) not null);"));
+		m_Database->RunQuery(wxT("CREATE TABLE series(id_book integer primary key, id_genre varchar(255) not null);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
