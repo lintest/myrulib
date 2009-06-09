@@ -287,48 +287,10 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-        Books books(wxGetApp().GetDatabase());
-        wxString whereClause = wxString::Format(wxT("id=%d"), data->GetId());
-        BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
-        wxString title, annotation, genres;
-		wxStringList authorList;
-		for(size_t i = 0; i < allBooks->Count(); ++i) {
-		    BooksRow * thisBook = allBooks->Item(i);
-			Authors authors(wxGetApp().GetDatabase());
-		    title = thisBook->title;
-            genres = thisBook->genres;
-			if (!thisBook->annotation.IsEmpty()) {
-				annotation = thisBook->annotation;
-			}
-			authorList.Add(authors.Id(thisBook->id_author)->full_name);
-		}
-		authorList.Sort();
-		wxString authorText, genreText;
-		for (size_t i = 0; i<authorList.GetCount(); i++) {
-			if (!authorText.IsEmpty())
-				authorText += wxT(", ");
-			authorText += authorList[i];
-		}
-		for (size_t i = 0; i<genres.Len(); i++) {
-			if (!genreText.IsEmpty())
-				genreText += wxT(", ");
-			genreText +=  FbGenres::Name(genres[i]);
-		}
-
-		wxString html(wxT("<html><body>"));
-
-        html += wxString::Format(wxT("<font size=4><b>%s</b></font>"), authorText.c_str());
-
-		if (!genreText.IsEmpty())
-            html += wxString::Format(wxT("<br><font size=3>%s</font>"), genreText.c_str());
-
-        html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), title.c_str());
-
-        html += annotation;
-
-        html += wxT("</body></html>");
-
-		m_BooksInfoPanel->SetPage(html);
+		if (data)
+            m_BooksInfoPanel->SetPage(FbManager::BookInfo(data->GetId()));
+        else
+            m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
 	}
 	event.Skip();
 }

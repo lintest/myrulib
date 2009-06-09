@@ -26,7 +26,7 @@ IMPLEMENT_CLASS(FbDocument, wxObject)
 static bool wxIsWhiteOnly(const wxChar *buf);
 
 //-----------------------------------------------------------------------------
-//  FbProperty 
+//  FbProperty
 //-----------------------------------------------------------------------------
 class FbProperty {
 public:
@@ -68,7 +68,7 @@ FbNode::~FbNode()
 void FbNode::Append(FbNode * node)
 {
 	node->m_parent = this;
-	if (m_child) 
+	if (m_child)
 		m_last_child->m_next = node;
 	else
 		m_child = node;
@@ -78,7 +78,7 @@ void FbNode::Append(FbNode * node)
 #ifdef FB_DEBUG_PARSING
 void FbNode::Print(wxString &text, int level)
 {
-	for (int i = 0; i<level; i++) 
+	for (int i = 0; i<level; i++)
 		text += wxT("&nbsp;&nbsp;");
 	text += wxString::Format(wxT("&lt;%s"), m_name.c_str());
 
@@ -90,7 +90,7 @@ void FbNode::Print(wxString &text, int level)
 
 	text += wxString::Format(wxT("&gt;<b>%s</b>"), m_text.c_str());
 
-	if (m_child) 
+	if (m_child)
 		text += wxT("<br>");
 
 	FbNode * node = m_child;
@@ -99,15 +99,15 @@ void FbNode::Print(wxString &text, int level)
 		node = node->m_next;
 	}
 
-	if (m_child) 
-		for (int i = 0; i<level; i++) 
+	if (m_child)
+		for (int i = 0; i<level; i++)
 			text += wxT("&nbsp;&nbsp;");
 
 	text += wxString::Format(wxT("&lt;/%s&gt;<br>"), m_name.c_str());
 }
 #endif //FB_DEBUG_PARSING
 
-FbNode * FbNode::Find(const wxString &name) 
+FbNode * FbNode::Find(const wxString &name)
 {
 	FbNode * node = m_child;
 	while (node)
@@ -136,7 +136,7 @@ void FbNode::AddProperty(const wxString& name, const wxString& value)
 
 void FbNode::AddProperty(FbProperty *prop)
 {
-	if (m_properties) 
+	if (m_properties)
 		m_last_prop->m_next = prop;
 	else
         m_properties = prop;
@@ -408,12 +408,16 @@ wxString FbDocument::GetAuthor(FbNode *root) const
     while (node) {
         wxString current_name = node->GetName();
         if (current_name == wxT("first-name"))
-			first = node->m_text;
+			first = node->m_text.Trim(false).Trim(true);
         else if (current_name == wxT("middle-name"))
-            middle = node->m_text;
+            middle = node->m_text.Trim(false).Trim(true);
         else if (current_name == wxT("last-name"))
-            last = node->m_text;
+            last = node->m_text.Trim(false).Trim(true);
 		node = node->m_next;
     }
-    return wxString::Format(wxT("%s %s %s"), last.c_str(), first.c_str(), middle.c_str());
+
+    wxString result = last;
+    if (!first.IsEmpty()) result += (wxT(" ") + first);
+    if (!middle.IsEmpty()) result += (wxT(" ") + middle);
+    return result.Trim(false).Trim(true);
 }
