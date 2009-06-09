@@ -1751,7 +1751,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244578331 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244578754 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	<wx/imaglist.h>
@@ -1843,7 +1843,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244577812 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244578428 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"

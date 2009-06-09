@@ -29,7 +29,8 @@
 #define ID_LETTER_EN 30200
 
 const wxString alphabetRu = _("АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ");
-const wxString alphabetEn = _("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
+const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
+const wxString blank_page = wxT("<html><body></body></html>");
 wxString alphabet = alphabetRu + alphabetEn;
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
@@ -268,7 +269,7 @@ void MyRuLibMainFrame::FillBooksList(int author_id)
 			m_BooksListView->SetItemImage(item, i%2);
 			m_BooksListView->SetItemBold(item, i%3==1);
 		}
-		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
+		m_BooksInfoPanel->SetPage(blank_page);
 	}
     m_BooksListView->ExpandAll(root);
 
@@ -290,7 +291,7 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 		if (data)
             m_BooksInfoPanel->SetPage(FbManager::BookInfo(data->GetId()));
         else
-            m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
+            m_BooksInfoPanel->SetPage(blank_page);
 	}
 	event.Skip();
 }
@@ -368,7 +369,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
+		m_BooksInfoPanel->SetPage(blank_page);
 
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -410,7 +411,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		m_BooksInfoPanel->SetPage(wxT("<html><body></body></html>"));
+		m_BooksInfoPanel->SetPage(blank_page);
 
 		wxArrayString paths;
 		dlg.GetPaths(paths);
