@@ -174,6 +174,7 @@ BooksRow::BooksRow(const BooksRow& src){
 	deleted=src.deleted;
 	title=src.title;
 	id_author=src.id_author;
+	genres=src.genres;
 
 }
 
@@ -196,6 +197,7 @@ BooksRow& BooksRow::operator=(const BooksRow& src){
 	deleted=src.deleted;
 	title=src.title;
 	id_author=src.id_author;
+	genres=src.genres;
 
 
 	return *this;
@@ -213,6 +215,7 @@ bool BooksRow::GetFromResult(DatabaseResultSet* result){
 	deleted=result->GetResultString(wxT("deleted"));
 	title=result->GetResultString(wxT("title"));
 	id_author=result->GetResultInt(wxT("id_author"));
+	genres=result->GetResultString(wxT("genres"));
 
 
 	return true;

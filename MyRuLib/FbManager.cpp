@@ -10,6 +10,7 @@
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
 #include "FbManager.h"
+#include "FbGenres.h"
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
 #include "Authors.h"
@@ -120,9 +121,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 	if (!node) return false;
 
 	wxArrayInt book_authors;
-	wxArrayString book_genres;
-	wxString book_title;
-	wxString annotation;
+	wxString book_title, annotation, genres;
 
 	node = node->m_child;
     while (node) {
@@ -134,7 +133,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		} else {
 			value = node->m_text;
 			if ( name == wxT("genre") ) {
-				book_genres.Add(value);
+				genres += FbGenres::Char(value);
 			} else if ( name == wxT("book-title") ) {
 				book_title = value;
 			} else if ( name == wxT("annotation") ) {
@@ -155,6 +154,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		row->id_author = book_authors[i];
 		row->title = book_title;
 		row->annotation = annotation;
+		row->genres = genres;
 		row->file_size = size /1024;
 		row->file_name = name;
 		row->id_archive = id_archive;
@@ -306,8 +306,7 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 	if (!node) return false;
 
 	wxArrayInt book_authors;
-	wxArrayString book_genres;
-	wxString book_title, annotation;
+	wxString book_title, annotation, genres;
 
 #ifdef FB_DEBUG_PARSING
 	xml.GetRoot()->Print(html);
@@ -323,7 +322,7 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 		} else {
 			value = node->m_text;
 			if ( name == wxT("genre") ) {
-				book_genres.Add(value);
+				genres += FbGenres::Char(value);
 			} else if ( name == wxT("book-title") ) {
 				book_title = value;
 			} else if ( name == wxT("annotation") ) {
@@ -346,6 +345,7 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 		row->id_author = book_authors[i];
 		row->title = book_title;
 		row->annotation = annotation;
+		row->genres = genres;
 		row->file_size = size /1024;
 		row->file_name = name;
 		row->id_archive = id_archive;

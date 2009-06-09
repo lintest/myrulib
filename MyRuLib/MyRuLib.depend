@@ -1606,7 +1606,7 @@
 1244565700 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
-1244569421 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
+1244574561 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
 	"Books.h"
 
 1244568973 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
@@ -1751,7 +1751,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244566099 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244575570 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	<wx/imaglist.h>
@@ -1761,6 +1761,7 @@
 	"Books.h"
 	"Params.h"
 	"FbManager.h"
+	"FbGenres.h"
 	"res/new.xpm"
 	"res/find.xpm"
 	"res/new_dir.xpm"
@@ -1842,10 +1843,11 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244566038 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244574322 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"
+	"FbGenres.h"
 	"MyRuLibApp.h"
 	"MyRuLibMain.h"
 	"Authors.h"
@@ -1988,9 +1990,9 @@
 
 1238939807 /usr/include/wx-2.8/wx/arrimpl.cpp
 
-1244567991 /home/user/projects/MyRuLib/MyRuLib/FbGenres.h
+1244572220 /home/user/projects/MyRuLib/MyRuLib/FbGenres.h
 	<wx/wx.h>
 
-1244568837 source:/home/user/projects/MyRuLib/MyRuLib/FbGenres.cpp
+1244573011 source:/home/user/projects/MyRuLib/MyRuLib/FbGenres.cpp
 	"FbGenres.h"
 

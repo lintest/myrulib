@@ -1,6 +1,12 @@
 #include "FbGenres.h"
 
-const GenreStruct all_genres[] = {
+struct GenreStruct {
+	wxChar letter;
+	wxString code;
+	wxString name;
+};
+
+const GenreStruct genres_list[] = {
     {wxT('0'), wxT("sf_history"), _("Альтернативная история")},
     {wxT('1'), wxT("sf_action"), _("Боевая фантастика")},
     {wxT('2'), wxT("sf_epic"), _("Эпическая фантастика")},
@@ -110,4 +116,32 @@ const GenreStruct all_genres[] = {
     {wxT('к'), wxT("home_sport"), _("Спорт")},
     {wxT('л'), wxT("home_sex"), _("Эротика, Секс")},
     {wxT('м'), wxT("home"), _("Домоводство")},
+    {0, wxEmptyString, wxEmptyString},
 };
+
+const size_t genres_count = sizeof(genres_list) / sizeof(GenreStruct);
+
+wxString FbGenres::Char(wxString &code)
+{
+    for (size_t i=0; genres_list[i].letter; i++)
+        if (genres_list[i].code == code)
+            return genres_list[i].letter;
+    return wxEmptyString;
+}
+
+wxString FbGenres::Code(wxChar &letter)
+{
+    for (size_t i=0; genres_list[i].letter; i++)
+        if (genres_list[i].letter == letter)
+            return genres_list[i].code;
+    return wxEmptyString;
+}
+
+wxString FbGenres::Name(wxChar &letter)
+{
+    for (size_t i=0; genres_list[i].letter; i++)
+        if (genres_list[i].letter == letter)
+            return genres_list[i].name;
+    return wxEmptyString;
+}
+

@@ -3,13 +3,12 @@
 
 #include <wx/wx.h>
 
-struct GenreStruct {
-	wxChar letter;
-	wxString code;
-	wxString name;
+class FbGenres {
+public:
+    static wxString Char(wxString &code);
+    static wxString Code(wxChar &letter);
+    static wxString Name(wxChar &letter);
 };
-
-extern const GenreStruct all_genres[];
 
 #endif //FBGENRES_H
 
