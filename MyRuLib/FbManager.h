@@ -13,6 +13,7 @@
 #include <wx/wx.h>
 #include <DatabaseLayer.h>
 #include "FbParser.h"
+#include "FbGenres.h"
 
 class FbManager{
 public:

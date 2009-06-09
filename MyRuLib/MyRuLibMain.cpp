@@ -149,7 +149,7 @@ void MyRuLibMainFrame::CreateControls() {
 
 	FillAuthorsList(wxEmptyString);
 
-	const int widths[4] = {-92, -57, -35, -22};
+	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
     m_ProgressBar->SetFieldsCount(4);
 	m_ProgressBar->SetStatusWidths(4, widths);
@@ -205,7 +205,7 @@ void MyRuLibMainFrame::FillAuthorsList(const wxString &findText) {
 	AuthorsRowSet * allAuthors;
 
     const wxString orderBy = wxT("search_name");
-    if (findText == wxEmptyString) {
+	if (findText.IsEmpty()) {
         allAuthors = authors.All(orderBy);
     } else {
 		wxString text = findText;

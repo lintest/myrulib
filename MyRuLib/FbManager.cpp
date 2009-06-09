@@ -244,12 +244,10 @@ int FbManager::FindAuthor(wxString &full_name) {
 	if (alphabet.Find(letter) == wxNOT_FOUND)
 		letter = wxT("#");
 
-	const wxString& whereClause = wxString::Format(_("search_name='%s'"), search_name.c_str());
-
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 
 	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRow * row = authors.Where(whereClause);
+	AuthorsRow * row = authors.Name(search_name);
 
 	if (!row) {
 		row = authors.New();
@@ -284,21 +282,6 @@ bool FbManager::ParseZip(const wxString& filename, wxString& html)
     }
 
     thread->Run();
-
-	/*
-    wxProgressDialog * m_dlgProgress = new wxProgressDialog
-                        (
-                         _T("Progress dialog"),
-                         _T("Wait until the thread terminates or press [Cancel]"),
-                         100,
-						 wxGetApp().GetTopWindow(),
-                         wxPD_CAN_ABORT |
-                         wxPD_APP_MODAL |
-                         wxPD_ELAPSED_TIME |
-                         wxPD_ESTIMATED_TIME |
-                         wxPD_REMAINING_TIME
-                        );
-	*/
 
     return true;
 }
@@ -343,8 +326,10 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 				annotation = value;
 			}
         }
-        html += wxString::Format(wxT("<b>%s:</b>&nbsp;%s<br>"), name.c_str(), value.c_str());
 		node = node->m_next;
+#ifdef FB_DEBUG_PARSING
+        html += wxString::Format(wxT("<b>%s:</b>&nbsp;%s<br>"), name.c_str(), value.c_str());
+#endif //FB_DEBUG_PARSING
     }
 
 	Books books(wxGetApp().GetDatabase());
@@ -364,8 +349,9 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 		annotation.Empty();
 	}
 
+#ifdef FB_DEBUG_PARSING
     html += wxT("<hr>");
+#endif //FB_DEBUG_PARSING
 
 	return true;
-
 }

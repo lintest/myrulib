@@ -190,7 +190,7 @@ static wxString CharToString(wxMBConv *conv, const char *s, size_t len = wxStrin
     return wxString(s, wxConvUTF8, len);
 }
 
-static wxString CharToLowerString(wxMBConv *conv, const char *s, size_t len = wxString::npos)
+static wxString CharToLower(wxMBConv *conv, const char *s, size_t len = wxString::npos)
 {
     wxUnusedVar(conv);
     wxString data = wxString(s, wxConvUTF8, len);
@@ -232,13 +232,13 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
 
-    wxString node_name = CharToLowerString(ctx->conv, name);
+    wxString node_name = CharToLower(ctx->conv, name);
 
 	if (ctx->annotation) {
 		ctx->node->m_text += wxString::Format(wxT("<%s"), node_name.c_str());
 		const XML_Char **a = atts;
 		while (*a) {
-			ctx->node->m_text += wxString::Format(wxT(" %s=%s"), CharToString(ctx->conv, a[0]).c_str(), CharToString(ctx->conv, a[1]).c_str());
+			ctx->node->m_text += wxString::Format(wxT(" %s=%s"), CharToLower(ctx->conv, a[0]).c_str(), CharToString(ctx->conv, a[1]).c_str());
 			a += 2;
 		}
 		ctx->node->m_text += wxT(">");
@@ -267,7 +267,7 @@ extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
-    wxString node_name = CharToLowerString(ctx->conv, name);
+    wxString node_name = CharToLower(ctx->conv, name);
 
 	if (ctx->annotation)
 		ctx->node->m_text += wxString::Format(wxT("</%s>"), node_name.c_str());
@@ -403,10 +403,7 @@ bool FbDocument::Load(wxInputStream& stream, const wxString& encoding)
 wxString FbDocument::GetAuthor(FbNode *root) const
 {
 	FbNode * node = root->m_child;
-
-	wxString first  = wxEmptyString;
-	wxString middle = wxEmptyString;
-	wxString last   = wxEmptyString;
+	wxString first, middle, last;
 
     while (node) {
         wxString current_name = node->GetName();

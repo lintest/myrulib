@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbGenres.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbManager.cpp"
 				>
 			</File>
@@ -254,6 +258,10 @@
 			</File>
 			<File
 				RelativePath="DBCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbGenres.h"
 				>
 			</File>
 			<File
