@@ -29,7 +29,7 @@
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("юабцдефгхйклмнопярстужвьыщчъ");
+const wxString alphabetRu = _("юабцдефгхийклмнопярстужвьыщчъ");
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 const wxString blank_page = wxT("<html><body></body></html>");
 wxString alphabet = alphabetRu + alphabetEn;
