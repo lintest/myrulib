@@ -10,7 +10,7 @@
 #ifndef FBPARSER_H
 #define FBPARSER_H
 
-#define FB_DEBUG_PARSING
+//#define FB_DEBUG_PARSING
 
 #include <wx/wx.h>
 #include <wx/defs.h>

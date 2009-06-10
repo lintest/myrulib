@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="LinDebug">
 				<Option output="../build/Debug/MyRuLib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../build/Debug/" />
 				<Option object_output="../build/Debug/" />
@@ -20,7 +20,7 @@
 					<Add directory="../build/Debug" />
 				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="LinRelease">
 				<Option output="../build/Release/MyRuLib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../build/Release/" />
 				<Option object_output="../build/Release/" />
@@ -74,6 +74,8 @@
 		<Unit filename="res/find.xpm" />
 		<Unit filename="res/new.xpm" />
 		<Unit filename="res/new_dir.xpm" />
+		<Unit filename="Sequences.cpp" />
+		<Unit filename="Sequences.h" />
 		<Unit filename="treelistctrl.cpp" />
 		<Unit filename="wx/treelistctrl.h" />
 		<Unit filename="wxActiveRecord.cpp" />

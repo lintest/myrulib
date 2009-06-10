@@ -45,12 +45,13 @@ bool DBCreator::CreateDatabase(void){
 		m_Database->RunQuery(wxT("\
             CREATE TABLE books(\
                 id integer not null,\
-                id_author integer not null, \
+                id_author integer not null,\
                 title varchar(255) not null,\
                 annotation text,\
                 genres text,\
+				id_sequence integer,\
                 deleted boolean,\
-                id_archive integer, \
+                id_archive integer,\
                 file_name varchar(255),\
                 file_size integer,\
                 description text);\
@@ -79,7 +80,8 @@ bool DBCreator::CreateDatabase(void){
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
 	try {
-		m_Database->RunQuery(wxT("CREATE TABLE series(id_book integer primary key, id_genre varchar(255) not null);"));
+		m_Database->RunQuery(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
+		m_Database->RunQuery(wxT("CREATE INDEX sequences_name ON sequences(value);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 

@@ -249,7 +249,9 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
 		const XML_Char **a = atts;
 		while (*a) {
-			node->AddProperty(CharToString(ctx->conv, a[0]), CharToString(ctx->conv, a[1]));
+			wxString name = CharToString(ctx->conv, a[0]).Trim(false).Trim(true);
+			wxString text = CharToString(ctx->conv, a[1]).Trim(false).Trim(true);
+			node->AddProperty(name, text);
 			a += 2;
 		}
 
@@ -268,6 +270,8 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 {
     wxXmlParsingContext *ctx = (wxXmlParsingContext*)userData;
     wxString node_name = CharToLower(ctx->conv, name);
+
+	ctx->node->m_text.Trim(false).Trim(true);
 
 	if (ctx->annotation)
 		ctx->node->m_text += wxString::Format(wxT("</%s>"), node_name.c_str());
@@ -408,11 +412,11 @@ wxString FbDocument::GetAuthor(FbNode *root) const
     while (node) {
         wxString current_name = node->GetName();
         if (current_name == wxT("first-name"))
-			first = node->m_text.Trim(false).Trim(true);
+			first = node->m_text;
         else if (current_name == wxT("middle-name"))
-            middle = node->m_text.Trim(false).Trim(true);
+            middle = node->m_text;
         else if (current_name == wxT("last-name"))
-            last = node->m_text.Trim(false).Trim(true);
+            last = node->m_text;
 		node = node->m_next;
     }
 

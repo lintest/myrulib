@@ -185,19 +185,19 @@
 				>
 			</File>
 			<File
-				RelativePath="SqliteDatabaseLayer.cpp"
+				RelativePath=".\SqliteDatabaseLayer.cpp"
 				>
 			</File>
 			<File
-				RelativePath="SqlitePreparedStatement.cpp"
+				RelativePath=".\SqlitePreparedStatement.cpp"
 				>
 			</File>
 			<File
-				RelativePath="SqliteResultSet.cpp"
+				RelativePath=".\SqliteResultSet.cpp"
 				>
 			</File>
 			<File
-				RelativePath="SqliteResultSetMetaData.cpp"
+				RelativePath=".\SqliteResultSetMetaData.cpp"
 				>
 			</File>
 		</Filter>

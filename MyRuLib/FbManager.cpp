@@ -16,19 +16,22 @@
 #include "Authors.h"
 #include "Books.h"
 #include "Params.h"
+#include "Sequences.h"
 
 enum {
 	DB_LIBRARY_TITLE = 1,
+	DB_LIBRARY_VERSION,
 	DB_NEW_ARCHIVE,
 	DB_NEW_AUTHOR,
 	DB_NEW_BOOK,
-	DB_NEW_SERIE,
+	DB_NEW_SEQUENCE,
 };
 
 void FbManager::InitParams(DatabaseLayer *database)
 {
 	database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
 	database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
+	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
@@ -48,10 +51,10 @@ public:
     // called when the thread exits - whether it terminates normally or is
     // stopped with Delete() (but not when it is Kill()ed!)
     virtual void OnExit();
-private:
-	bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
+	static int FindAuthor(wxString &full_name);
+	static int FindSequence(wxString &name);
+	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
     int AddArchive();
-	int FindAuthor(wxString &full_name);
 private:
     unsigned m_count;
     wxString m_filename;
@@ -94,12 +97,31 @@ int FbThread::FindAuthor(wxString &full_name) {
 		wxString letter = full_name.Left(1);
 		FbManager::MakeUpper(letter);
 		if (alphabet.Find(letter) == wxNOT_FOUND)
-			letter = wxT("#");
+			letter = wxT("*");
 		row = authors.New();
 		row->id = FbManager::NewId(DB_NEW_AUTHOR);
 		row->letter = letter;
 		row->search_name = search_name;
 		row->full_name = full_name;
+		row->Save();
+	}
+	return row->id;
+}
+
+int FbThread::FindSequence(wxString &name) {
+
+	if (name.IsEmpty())
+		return 0;
+
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
+	Sequences sequences(wxGetApp().GetDatabase());
+	SequencesRow * row = sequences.Name(name);
+
+	if (!row) {
+		row = sequences.New();
+		row->id = FbManager::NewId(DB_NEW_SEQUENCE);
+		row->value = name;
 		row->Save();
 	}
 	return row->id;
@@ -122,6 +144,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 
 	wxArrayInt book_authors;
 	wxString book_title, annotation, genres;
+	int sequence = 0;
 
 	node = node->m_child;
     while (node) {
@@ -131,13 +154,15 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
             value = xml.GetAuthor(node);
 			book_authors.Add( FindAuthor(value) );
 		} else {
-			value = (node->m_text).Trim(false).Trim(true);
+			value = (node->m_text);
 			if ( name == wxT("genre") ) {
 				genres += FbGenres::Char(value);
 			} else if ( name == wxT("book-title") ) {
 				book_title = value;
 			} else if ( name == wxT("annotation") ) {
 				annotation = value;
+			} else if ( name == wxT("sequence") ) {
+				sequence = FindSequence(node->Prop(wxT("name")));
 			}
         }
 		node = node->m_next;
@@ -152,10 +177,11 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		BooksRow * row = books.New();
 		row->id = new_id;
 		row->id_author = book_authors[i];
+		row->id_sequence = sequence;
 		row->title = book_title;
 		row->annotation = annotation;
 		row->genres = genres;
-		row->file_size = size /1024;
+		row->file_size = size / 1024;
 		row->file_name = name;
 		row->id_archive = id_archive;
 		row->Save();
@@ -237,33 +263,6 @@ int FbManager::NewId(int param)
 	return row->value;
 }
 
-int FbManager::FindAuthor(wxString &full_name) {
-
-	wxString search_name = full_name;
-	MakeLower(search_name);
-
-	wxString letter = full_name.Left(1);
-	MakeUpper(letter);
-
-	if (alphabet.Find(letter) == wxNOT_FOUND)
-		letter = wxT("#");
-
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
-
-	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRow * row = authors.Name(search_name);
-
-	if (!row) {
-		row = authors.New();
-		row->id = NewId(DB_NEW_AUTHOR);
-		row->letter = letter;
-		row->search_name = search_name;
-		row->full_name = full_name;
-		row->Save();
-	}
-	return row->id;
-}
-
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
     wxFileInputStream stream(filename);
@@ -273,7 +272,7 @@ bool FbManager::ParseXml(const wxString& filename, wxString& html)
 	wxFile file(filename);
 	wxFileOffset size = file.Length() / 1024;
 
-    return ParseXml(stream, html, filename, size);
+	return FbThread::ParseXml(stream, filename, size, 0);
 }
 
 bool FbManager::ParseZip(const wxString& filename, wxString& html)
@@ -289,7 +288,7 @@ bool FbManager::ParseZip(const wxString& filename, wxString& html)
 
     return true;
 }
-
+/*
 bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size, int id_archive)
 {
     FbDocument xml;
@@ -308,9 +307,9 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 	wxArrayInt book_authors;
 	wxString book_title, annotation, genres;
 
-#ifdef FB_DEBUG_PARSING
+*ifdef FB_DEBUG_PARSING
 	xml.GetRoot()->Print(html);
-#endif //FB_DEBUG_PARSING
+*endif //FB_DEBUG_PARSING
 
 	node = node->m_child;
     while (node) {
@@ -318,9 +317,9 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
         wxString value;
         if ( name == wxT("author") ) {
             value = xml.GetAuthor(node);
-			book_authors.Add( FindAuthor(value) );
+			book_authors.Add( FbThread::FindAuthor(value) );
 		} else {
-			value = (node->m_text).Trim(false).Trim(true);
+			value = (node->m_text);
 			if ( name == wxT("genre") ) {
 				genres += FbGenres::Char(value);
 			} else if ( name == wxT("book-title") ) {
@@ -330,9 +329,9 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 			}
         }
 		node = node->m_next;
-#ifdef FB_DEBUG_PARSING
+*ifdef FB_DEBUG_PARSING
         html += wxString::Format(wxT("<b>%s:</b>&nbsp;%s<br>"), name.c_str(), value.c_str());
-#endif //FB_DEBUG_PARSING
+*endif //FB_DEBUG_PARSING
     }
 
 	Books books(wxGetApp().GetDatabase());
@@ -353,13 +352,13 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 		annotation.Empty();
 	}
 
-#ifdef FB_DEBUG_PARSING
+*ifdef FB_DEBUG_PARSING
     html += wxT("<hr>");
-#endif //FB_DEBUG_PARSING
+*endif //FB_DEBUG_PARSING
 
 	return true;
 }
-
+*/
 wxString FbManager::BookInfo(int id)
 {
     Books books(wxGetApp().GetDatabase());

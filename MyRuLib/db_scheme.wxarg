@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database type="sqlite" server="" name="D:\!Docs\MyRuLib\MyRuLib\MyRuLib.db" user="" output_dir="D:\TEMP\MyRuLibDB" use_src_include="true">
-  <node type="table" table="archives" class="Archives" id_field="id" auto_incr="true" read_only="false">
+<database type="sqlite" server="" name="D:\!Docs\MyRuLib\build\Release\MyRuLib.db" user="" output_dir="D:\TEMP\MyRuLibDB" use_src_include="false">
+  <node type="table" table="archives" class="Archives" id_field="id" auto_incr="false" read_only="false">
     <relation type="has_many" item="Books" table="books" foreign_id="id_archive" ar_class="Books" key_id="id"/>
   </node>
-  <node type="table" table="genres" class="Genres" id_field="id_book" auto_incr="false" read_only="false"/>
-  <node type="table" table="params" class="Params" id_field="id" auto_incr="true" read_only="false"/>
-  <node type="table" table="books" class="Books" id_field="id" auto_incr="true" read_only="false">
+  <node type="table" table="sequences" class="Sequences" id_field="id" auto_incr="false" read_only="false"/>
+  <node type="table" table="params" class="Params" id_field="id" auto_incr="false" read_only="false"/>
+  <node type="table" table="books" class="Books" id_field="id" auto_incr="false" read_only="false">
     <relation type="has_many" item="Genres" table="genres" foreign_id="id_book" ar_class="Genres" key_id=""/>
     <relation type="has_many" item="Authors" table="authors" foreign_id="id" ar_class="Authors" key_id="id"/>
     <relation type="belongs_to" item="Archive" table="archives" foreign_id="id_archive" ar_class="Archives" key_id="id"/>
   </node>
-  <node type="table" table="authors" class="Authors" id_field="id" auto_incr="true" read_only="false">
+  <node type="table" table="authors" class="Authors" id_field="id" auto_incr="false" read_only="false">
     <relation type="has_many" item="Books" table="books" foreign_id="id_author" ar_class="Books" key_id="id"/>
   </node>
 </database>

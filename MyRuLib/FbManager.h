@@ -19,11 +19,9 @@ class FbManager{
 public:
     static void MakeUpper(wxString & data);
     static void MakeLower(wxString & data);
-	static int FindAuthor(wxString &full_name);
 	static int NewId(int param);
 	static void InitParams(DatabaseLayer * database);
 	static wxString BookInfo(int id);
-	bool ParseXml(wxInputStream& stream, wxString& html, const wxString &name, const wxFileOffset size, int id_archive = 0);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);
 };

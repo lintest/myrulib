@@ -211,10 +211,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Genres.cpp"
-				>
-			</File>
-			<File
 				RelativePath="MyRuLibApp.cpp"
 				>
 			</File>
@@ -228,6 +224,10 @@
 			</File>
 			<File
 				RelativePath=".\ProgressBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Sequences.cpp"
 				>
 			</File>
 			<File
@@ -273,10 +273,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Genres.h"
-				>
-			</File>
-			<File
 				RelativePath="MyRuLibApp.h"
 				>
 			</File>
@@ -297,6 +293,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Sequences.h"
+				>
+			</File>
+			<File
 				RelativePath=".\wx\treelistctrl.h"
 				>
 			</File>
@@ -312,6 +312,10 @@
 			>
 			<File
 				RelativePath=".\res\checked.xpm"
+				>
+			</File>
+			<File
+				RelativePath=".\res\checkout.xpm"
 				>
 			</File>
 			<File
