@@ -15,9 +15,14 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-Wall" />
+					<Add option="`wx-config --cflags`" />
+					<Add directory="../DatabaseLayer" />
+					<Add directory="../SQLite" />
 				</Compiler>
 				<Linker>
 					<Add directory="../build/Debug" />
+					<Add option="`wx-config --libs`" />
 				</Linker>
 			</Target>
 			<Target title="LinRelease">
@@ -29,6 +34,8 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="`wx-config --cflags`" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -37,8 +44,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
-			<Add option="`wx-config --cflags`" />
 			<Add directory="../DatabaseLayer" />
 			<Add directory="../SQLite" />
 		</Compiler>
