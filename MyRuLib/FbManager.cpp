@@ -190,13 +190,25 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
     }
 
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
+    wxFileName filename (name);
+    wxString shortname = filename.GetName();
+    unsigned long number = 0;
+    long id = 0;
+    if (shortname.ToULong(&number)) {
+        wxString query = wxString::Format(wxT("DELETE FROM books WHERE id=%d"), number);
+        wxGetApp().GetDatabase()->RunQuery(query);
+        id = number;
+    } else {
+        id = - NewId(DB_NEW_BOOK);
+    }
+
 	Books books(wxGetApp().GetDatabase());
-	int new_id = NewId(DB_NEW_BOOK);
 
 	size_t iConut = book_authors.Count();
 	for (size_t i = 0; i<iConut; i++) {
 		BooksRow * row = books.New();
-		row->id = new_id;
+		row->id = id;
 		row->id_author = book_authors[i];
 		row->id_sequence = sequence;
 		row->title = book_title;

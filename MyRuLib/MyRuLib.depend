@@ -1606,7 +1606,7 @@
 1244565700 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
-1244648811 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
+1244650655 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
 	"Books.h"
 
 1244648811 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
@@ -1751,7 +1751,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244649159 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244649764 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	<wx/imaglist.h>
@@ -1846,7 +1846,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244649137 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244652893 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"

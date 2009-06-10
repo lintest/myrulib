@@ -209,7 +209,7 @@ void MyRuLibMainFrame::OnExit(wxCommandEvent & event) {
 	Close();
 }
 
-void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event) 
+void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event)
 {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
 	if(data) {
@@ -410,7 +410,7 @@ void MyRuLibMainFrame::OnBooksListKeyDown(wxTreeEvent & event)
 	if (event.GetKeyCode() == 0x20) {
 		wxArrayTreeItemIds selections;
 		size_t count = m_BooksListView->GetSelections(selections);
-		int image;
+		int image = 0;
 		for (size_t i=0; i<count; ++i) {
             wxTreeItemId selected = selections[i];
 		    if (i==0)
