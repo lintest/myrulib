@@ -27,6 +27,9 @@ enum {
 	DB_NEW_AUTHOR,
 	DB_NEW_BOOK,
 	DB_NEW_SEQUENCE,
+	FB_LIBRARY_DIR,
+	FB_EXTRACT_DIR,
+	FB_EXEC_COMMAND,
 };
 
 void FbManager::InitParams(DatabaseLayer *database)
@@ -39,6 +42,9 @@ void FbManager::InitParams(DatabaseLayer *database)
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
+	database->RunQuery(_("INSERT INTO params(text) VALUES ('');"));
+	database->RunQuery(_("INSERT INTO params(text) VALUES ('');"));
+	database->RunQuery(_("INSERT INTO params(text) VALUES ('');"));
 }
 
 extern wxString strAlphabet;

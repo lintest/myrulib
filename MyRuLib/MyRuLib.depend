@@ -1847,7 +1847,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244663382 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244663980 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"
