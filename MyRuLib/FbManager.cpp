@@ -96,13 +96,13 @@ int FbThread::FindAuthor(wxString &full_name) {
 	if (!row) {
 		wxString letter = full_name.Left(1);
 		FbManager::MakeUpper(letter);
-		if (alphabet.Find(letter) == wxNOT_FOUND)
-			letter = wxT("*");
+		if (letter.IsEmpty()||(alphabet.Find(letter) == wxNOT_FOUND))
+			letter = wxT("#");
 		row = authors.New();
 		row->id = FbManager::NewId(DB_NEW_AUTHOR);
 		row->letter = letter;
 		row->search_name = search_name;
-		row->full_name = full_name;
+		row->full_name = (full_name.IsEmpty() ? _("(без автора)") : full_name);
 		row->Save();
 	}
 	return row->id;
