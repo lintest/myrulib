@@ -48,7 +48,6 @@ class MyRuLibMainFrame: public wxFrame
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
 	void FillAuthorsList(const wxString & findText);
 	void FillAuthorsList(AuthorsRowSet * allAuthors);
-	void FillBooksList(int groupid);
     bool ParseXML(const wxString & filename);
 public:
 	MyRuLibMainFrame();

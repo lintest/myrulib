@@ -136,8 +136,8 @@ void MyRuLibMainFrame::CreateControls() {
     wxBitmap size = wxBitmap(checked_xpm);
 	wxImageList *images;
 	images = new wxImageList (size.GetWidth(), size.GetHeight(), true);
-	images->Add (wxBitmap(checked_xpm));
 	images->Add (wxBitmap(nocheck_xpm));
+	images->Add (wxBitmap(checked_xpm));
 	images->Add (wxBitmap(checkout_xpm));
 	m_BooksListView->AssignImageList (images);
 
@@ -235,53 +235,18 @@ void MyRuLibMainFrame::FillAuthorsList(AuthorsRowSet * allAuthors) {
 		RecordIDClientData * data = (RecordIDClientData *)
 			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
 		if(data) {
-			FillBooksList(data->GetID());
+			FbManager::FillBooks(m_BooksListView, data->GetID());
+			m_BooksInfoPanel->SetPage(blank_page);
 		}
 	}
 	m_AuthorsListBox->Thaw();
 }
 
-class BookTreeItemData: public wxTreeItemData
-{
-public:
-	BookTreeItemData(int id): m_id(id) { };
-	int GetId() { return m_id; };
-private:
-	int m_id;
-};
-
-void MyRuLibMainFrame::FillBooksList(int author_id)
-{
-	m_BooksListView->Freeze();
-
-    m_BooksListView->DeleteRoot();
-    wxTreeItemId root = m_BooksListView->AddRoot (_T("Root"));
-
-	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRow * thisAuthor = authors.Id(author_id);
-	if(thisAuthor)
-	{
-		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("title"));
-		for(unsigned long i = 0; i < allBooks->Count(); ++i)
-		{
-		    BooksRow * thisBook = allBooks->Item(i);
-			wxTreeItemId item = m_BooksListView->AppendItem(root, thisBook->title, -1, -1, new BookTreeItemData(thisBook->id));
-			m_BooksListView->SetItemText (item, 1, thisBook->file_name);
-			m_BooksListView->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
-			m_BooksListView->SetItemImage(item, i%3);
-			m_BooksListView->SetItemBold(item, i%2 == 1);
-		}
-		m_BooksInfoPanel->SetPage(blank_page);
-	}
-    m_BooksListView->ExpandAll(root);
-
-	m_BooksListView->Thaw();
-}
-
 void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event) {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
 	if(data) {
-		FillBooksList(data->GetID());
+		FbManager::FillBooks(m_BooksListView, data->GetID());
+		m_BooksInfoPanel->SetPage(blank_page);
 	}
 }
 

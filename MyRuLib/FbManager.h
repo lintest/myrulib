@@ -14,6 +14,16 @@
 #include <DatabaseLayer.h>
 #include "FbParser.h"
 #include "FbGenres.h"
+#include "wx/treelistctrl.h"
+
+class BookTreeItemData: public wxTreeItemData
+{
+public:
+	BookTreeItemData(int id): m_id(id) { };
+	int GetId() { return m_id; };
+private:
+	int m_id;
+};
 
 class FbManager{
 public:
@@ -22,6 +32,7 @@ public:
 	static int NewId(int param);
 	static void InitParams(DatabaseLayer * database);
 	static wxString BookInfo(int id);
+	static void FillBooks(wxTreeListCtrl * treelist, int id_author);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);
 };

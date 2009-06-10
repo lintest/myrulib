@@ -403,5 +403,112 @@ wxString FbManager::BookInfo(int id)
     html += wxT("</body></html>");
 
     return html;
+}
 
+class SequenceNode {
+public:
+    SequenceNode(const int id, const wxTreeItemId &item)
+            : m_id(id), m_item(item),  m_next(NULL) {};
+	virtual ~SequenceNode() {};
+public:
+    int m_id;
+    wxTreeItemId m_item;
+    SequenceNode *m_next;
+};
+
+class SequenceList {
+public:
+	SequenceList()
+		: m_root(NULL), m_last(NULL) {};
+    virtual ~SequenceList();
+	void Append(const int id, const wxTreeItemId &item);
+	wxTreeItemId Find(const int id, wxTreeItemId root);
+public:
+    SequenceNode *m_root;
+    SequenceNode *m_last;
+};
+
+SequenceList::~SequenceList() 
+{
+	while (m_root) {
+		SequenceNode * node = m_root;
+		m_root = node->m_next;
+		delete node;
+	}
+}
+
+void SequenceList::Append(const int id, const wxTreeItemId &item)
+{
+	SequenceNode * node = new SequenceNode(id, item);
+	if (m_root)
+		m_last->m_next = node;
+	else
+		m_root = node;
+	m_last = node;
+}
+
+wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root) 
+{
+	SequenceNode * node = m_root;
+	while (node) {
+		if (node->m_id == id)
+			return node->m_item;
+		node = node->m_next;
+	}
+	return root;
+}
+
+void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
+
+	treelist->Freeze();
+
+    treelist->DeleteRoot();
+    wxTreeItemId root = treelist->AddRoot (_T("Root"));
+
+	Authors authors(wxGetApp().GetDatabase());
+	AuthorsRow * thisAuthor = authors.Id(id_author);
+	if(thisAuthor)
+	{
+		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("id_sequence, title"));
+
+		int id_sequence = 0;
+		wxString sequencesText;
+		for(size_t i = 0; i < allBooks->Count(); i++){
+		    BooksRow * thisBook = allBooks->Item(i);
+			if (id_sequence != thisBook->id_sequence) {
+				if (!sequencesText.IsEmpty())
+					sequencesText += wxT(",");
+				id_sequence = thisBook->id_sequence;
+				sequencesText += wxString::Format(wxT("%d"), id_sequence);
+			}
+		}
+
+		SequenceList sequencesList;
+
+		if (!sequencesText.IsEmpty()) {
+			wxString whereCause = wxString::Format(wxT("id in(%s)"), sequencesText);
+			Sequences sequences(wxGetApp().GetDatabase());
+			SequencesRowSet * allSequences = sequences.WhereSet(whereCause, wxT("value"));
+
+			for(size_t i = 0; i < allSequences->Count(); i++) {
+				SequencesRow * thisSequence = allSequences->Item(i);
+				wxTreeItemId item = treelist->AppendItem(root, thisSequence->value, 0);
+				treelist->SetItemBold(item, true);
+				sequencesList.Append(thisSequence->id, item);
+			}
+		}
+
+		for(size_t i = 0; i < allBooks->Count(); i++) {
+		    BooksRow * thisBook = allBooks->Item(i);
+			wxTreeItemId parent = root;
+			if (thisBook->id_sequence) 
+				parent = sequencesList.Find(thisBook->id_sequence, root);
+			wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+			treelist->SetItemText (item, 1, thisBook->file_name);
+			treelist->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+		}
+	}
+    treelist->ExpandAll(root);
+
+	treelist->Thaw();
 }
