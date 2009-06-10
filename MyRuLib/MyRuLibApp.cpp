@@ -7,6 +7,7 @@
  * License:
  **************************************************************/
 
+#include <wx/app.h>
 #include <wx/image.h>
 #include <DatabaseLayerException.h>
 #include "MyRuLibApp.h"
@@ -15,7 +16,7 @@
 
 IMPLEMENT_APP(MyRuLibApp)
 
-bool MyRuLibApp::OnInit() 
+bool MyRuLibApp::OnInit()
 {
 	if(!ConnectToDatabase()) {
 		wxFAIL_MSG(_("Error connecting to database!"));
@@ -32,7 +33,7 @@ bool MyRuLibApp::OnInit()
 	return true;
 }
 
-int MyRuLibApp::OnExit() 
+int MyRuLibApp::OnExit()
 {
 	wxDELETE(m_Database);
 	return wxApp::OnExit();
@@ -40,11 +41,19 @@ int MyRuLibApp::OnExit()
 
 bool MyRuLibApp::ConnectToDatabase()
 {
+    wxFileName db_filename;
+    if (wxGetApp().argc) {
+        wxString app_filename = wxString(wxGetApp().argv[0]);
+        db_filename = wxFileName(app_filename);
+        db_filename.SetExt(wxT("db"));
+    } else {
+        db_filename = wxFileName(wxT("MyRuLib.db"));
+    }
+
 	m_Database = new SqliteDatabaseLayer();
-	wxString db_filename(wxT("MyRuLib.db"));
-	bool bCreate = !wxFileExists(db_filename);
+	bool bCreate = !wxFileExists(db_filename.GetFullPath());
 	try	{
-		m_Database->Open(db_filename);
+		m_Database->Open(db_filename.GetFullPath());
 		if(bCreate)	{
 			DBCreator creator(m_Database);
 			creator.CreateDatabase();

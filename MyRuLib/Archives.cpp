@@ -169,6 +169,7 @@ ArchivesRow::ArchivesRow(const ArchivesRow& src){
 	id=src.id;
 	file_size=src.file_size;
 	file_name=src.file_name;
+	file_name=src.file_path;
 
 }
 
@@ -186,6 +187,7 @@ ArchivesRow& ArchivesRow::operator=(const ArchivesRow& src){
 	id=src.id;
 	file_size=src.file_size;
 	file_name=src.file_name;
+	file_name=src.file_path;
 
 
 	return *this;
@@ -198,7 +200,7 @@ bool ArchivesRow::GetFromResult(DatabaseResultSet* result){
 	id=result->GetResultInt(wxT("id"));
 	file_size=result->GetResultInt(wxT("file_size"));
 	file_name=result->GetResultString(wxT("file_name"));
-
+	file_path=result->GetResultString(wxT("file_path"));
 
 	return true;
 }
@@ -207,11 +209,12 @@ bool ArchivesRow::GetFromResult(DatabaseResultSet* result){
 bool ArchivesRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (description,file_size,file_name,id) VALUES (?,?,?,?)"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (description,file_size,file_name,file_path,id) VALUES (?,?,?,?,?)"),m_table.c_str()));
 			pStatement->SetParamString(1,description);
 			pStatement->SetParamInt(2,file_size);
 			pStatement->SetParamString(3,file_name);
-			pStatement->SetParamInt(4,id);
+			pStatement->SetParamString(4,file_path);
+			pStatement->SetParamInt(5,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
@@ -219,11 +222,12 @@ bool ArchivesRow::Save(){
 			newRow=false;
 		}
 		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET description=?,file_size=?,file_name=? WHERE id=?"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET description=?,file_size=?,file_name=?,file_path=? WHERE id=?"),m_table.c_str()));
 			pStatement->SetParamString(1,description);
-			pStatement->SetParamInt(4,id);
 			pStatement->SetParamInt(2,file_size);
 			pStatement->SetParamString(3,file_name);
+			pStatement->SetParamString(4,file_path);
+			pStatement->SetParamInt(5,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
@@ -344,6 +348,12 @@ int ArchivesRowSet::CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRo
 	return (*m_item1)->file_name.Cmp((*m_item2)->file_name);
 }
 
+int ArchivesRowSet::CMPFUNC_file_path(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	ArchivesRow** m_item1=(ArchivesRow**)item1;
+	ArchivesRow** m_item2=(ArchivesRow**)item2;
+	return (*m_item1)->file_path.Cmp((*m_item2)->file_path);
+}
+
 CMPFUNC_proto ArchivesRowSet::GetCmpFunc(const wxString& var) const{
 	if(var==wxT("description"))
 		return (CMPFUNC_proto)CMPFUNC_description;
@@ -353,6 +363,8 @@ CMPFUNC_proto ArchivesRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_file_size;
 	else if(var==wxT("file_name"))
 		return (CMPFUNC_proto)CMPFUNC_file_name;
+	else if(var==wxT("file_path"))
+		return (CMPFUNC_proto)CMPFUNC_file_path;
 	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }

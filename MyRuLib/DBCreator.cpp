@@ -67,6 +67,7 @@ bool DBCreator::CreateDatabase(void){
             CREATE TABLE archives(\
                 id integer primary key,\
                 file_name varchar(255),\
+                file_path varchar(255),\
                 file_size integer,\
                 description text);\
         "));

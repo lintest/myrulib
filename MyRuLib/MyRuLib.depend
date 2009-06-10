@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1244380313 source:/home/user/projects/MyRuLib/MyRuLib/Archives.cpp
+1244653974 source:/home/user/projects/MyRuLib/MyRuLib/Archives.cpp
 	"Archives.h"
 
-1244380313 /home/user/projects/MyRuLib/MyRuLib/Archives.h
+1244653946 /home/user/projects/MyRuLib/MyRuLib/Archives.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
@@ -1609,7 +1609,7 @@
 1244650655 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
 	"Books.h"
 
-1244648811 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
+1244653699 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
 	"DBCreator.h"
 	"FbManager.h"
 	<DatabaseLayerException.h>
@@ -1622,7 +1622,8 @@
 1244483838 source:/home/user/projects/MyRuLib/MyRuLib/Genres.cpp
 	"Genres.h"
 
-1244380313 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
+1244655767 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
+	<wx/app.h>
 	<wx/image.h>
 	<DatabaseLayerException.h>
 	"MyRuLibApp.h"
@@ -1751,7 +1752,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244649764 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244655008 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	<wx/imaglist.h>
@@ -1846,7 +1847,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244652893 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244654181 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"

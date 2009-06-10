@@ -92,12 +92,15 @@ int FbThread::NewId(int param)
 
 int FbThread::AddArchive()
 {
+    wxFileName file_name(m_filename);
+
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 
 	Archives archives(wxGetApp().GetDatabase());
 	ArchivesRow * row = archives.New();
 	row->id = NewId(DB_NEW_ARCHIVE);
-	row->file_name = m_filename;
+	row->file_name = file_name.GetFullName();
+	row->file_path = file_name.GetPath();
 	row->Save();
 	return row->id;
 }

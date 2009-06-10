@@ -81,7 +81,8 @@ void MyTreeListCtrl::OnSize(wxSizeEvent& event)
 	event.Skip();
 }
 
-MyRuLibMainFrame::MyRuLibMainFrame() {
+MyRuLibMainFrame::MyRuLibMainFrame()
+{
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
 }
 
