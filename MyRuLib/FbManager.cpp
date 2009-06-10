@@ -17,6 +17,7 @@
 #include "Books.h"
 #include "Params.h"
 #include "Sequences.h"
+#include "RecordIDClientData.h"
 
 enum {
 	DB_LIBRARY_TITLE = 1,
@@ -56,6 +57,8 @@ public:
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
     int AddArchive();
 private:
+	static int NewId(int param);
+private:
     unsigned m_count;
     wxString m_filename;
     wxEvtHandler *m_frame;
@@ -72,12 +75,23 @@ void FbThread::OnExit()
 {
 }
 
+int FbThread::NewId(int param)
+{
+	Params params(wxGetApp().GetDatabase());
+	ParamsRow * row = params.Id(param);
+	row->value++;
+	row->Save();
+
+	return row->value;
+}
+
 int FbThread::AddArchive()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
 	Archives archives(wxGetApp().GetDatabase());
 	ArchivesRow * row = archives.New();
-	row->id = FbManager::NewId(DB_NEW_ARCHIVE);
+	row->id = NewId(DB_NEW_ARCHIVE);
 	row->file_name = m_filename;
 	row->Save();
 	return row->id;
@@ -99,7 +113,7 @@ int FbThread::FindAuthor(wxString &full_name) {
 		if (letter.IsEmpty()||(alphabet.Find(letter) == wxNOT_FOUND))
 			letter = wxT("#");
 		row = authors.New();
-		row->id = FbManager::NewId(DB_NEW_AUTHOR);
+		row->id = NewId(DB_NEW_AUTHOR);
 		row->letter = letter;
 		row->search_name = search_name;
 		row->full_name = (full_name.IsEmpty() ? _("(без автора)") : full_name);
@@ -120,7 +134,7 @@ int FbThread::FindSequence(wxString &name) {
 
 	if (!row) {
 		row = sequences.New();
-		row->id = FbManager::NewId(DB_NEW_SEQUENCE);
+		row->id = NewId(DB_NEW_SEQUENCE);
 		row->value = name;
 		row->Save();
 	}
@@ -170,7 +184,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 	Books books(wxGetApp().GetDatabase());
-	int new_id = FbManager::NewId(DB_NEW_BOOK);
+	int new_id = NewId(DB_NEW_BOOK);
 
 	size_t iConut = book_authors.Count();
 	for (size_t i = 0; i<iConut; i++) {
@@ -251,16 +265,6 @@ void FbManager::MakeUpper(wxString & data){
 #else
       data.MakeUpper();
 #endif
-}
-
-int FbManager::NewId(int param)
-{
-	Params params(wxGetApp().GetDatabase());
-	ParamsRow * row = params.Id(param);
-	row->value++;
-	row->Save();
-
-	return row->value;
 }
 
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
@@ -361,6 +365,8 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 */
 wxString FbManager::BookInfo(int id)
 {
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
     Books books(wxGetApp().GetDatabase());
     wxString whereClause = wxString::Format(wxT("id=%d"), id);
     BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
@@ -465,6 +471,8 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
     treelist->DeleteRoot();
     wxTreeItemId root = treelist->AddRoot (_T("Root"));
 
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRow * thisAuthor = authors.Id(id_author);
 	if(thisAuthor)
@@ -512,3 +520,51 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 
 	treelist->Thaw();
 }
+
+
+void FbManager::FillAuthors(wxListBox *listbox, const wxChar & findLetter)
+{
+    const wxString orderBy = wxT("search_name");
+	wxString findText = findLetter;
+    const wxString whereClause = wxString::Format(wxT("letter = '%s'"), findText.c_str());
+
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
+	Authors authors(wxGetApp().GetDatabase());
+	AuthorsRowSet * allAuthors = authors.WhereSet(whereClause, orderBy);
+	FillAuthors(listbox, allAuthors);
+}
+
+void FbManager::FillAuthors(wxListBox *listbox, const wxString & findText)
+{
+    const wxString orderBy = wxT("search_name");
+
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
+	Authors authors(wxGetApp().GetDatabase());
+	AuthorsRowSet * allAuthors;
+
+	if (findText.IsEmpty()) {
+        allAuthors = authors.All(orderBy);
+    } else {
+		wxString text = findText;
+		FbManager::MakeLower(text);
+        const wxString whereClause = wxString::Format(wxT("search_name like '%s%%'"), text.c_str());
+        allAuthors = authors.WhereSet(whereClause, orderBy);
+    }
+	FillAuthors(listbox, allAuthors);
+}
+
+void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
+{
+	listbox->Freeze();
+	listbox->Clear();
+
+	for(unsigned long i = 0; i < allAuthors->Count(); i++) {
+		listbox->Append(allAuthors->Item(i)->full_name,
+			new RecordIDClientData(allAuthors->Item(i)->id));
+	}
+
+	listbox->Thaw();
+}
+

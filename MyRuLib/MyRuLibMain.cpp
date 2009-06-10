@@ -151,7 +151,7 @@ void MyRuLibMainFrame::CreateControls() {
 	splitter->SplitVertically(m_AuthorsListBox, books_splitter, 160);
 	books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, books_splitter->GetSize().GetHeight()-220);
 
-	FillAuthorsList(wxEmptyString);
+	FbManager::FillAuthors(m_AuthorsListBox, wxEmptyString);
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
@@ -167,8 +167,9 @@ void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 	wxAboutDialogInfo info;
 	info.SetName(wxT("MyRuLib"));
 	info.SetVersion(wxT("0.1"));
-	info.SetWebSite(wxT("http://lintest.ru"));
-	info.AddDeveloper(wxT("Kandrashin Denis"));
+	info.SetWebSite(wxT("http://www.lintest.ru"));
+	info.AddDeveloper(wxT("Kandrashin Denis <mail@lintest.ru>"));
+	info.SetDescription(_("Оболочка для off-line библиотеки fb2-файлов lib.rus.ec."));
 	wxAboutBox(info);
 }
 
@@ -203,46 +204,8 @@ void MyRuLibMainFrame::OnExit(wxCommandEvent & event) {
 	Close();
 }
 
-void MyRuLibMainFrame::FillAuthorsList(const wxString &findText) {
-
-	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRowSet * allAuthors;
-
-    const wxString orderBy = wxT("search_name");
-	if (findText.IsEmpty()) {
-        allAuthors = authors.All(orderBy);
-    } else {
-		wxString text = findText;
-		FbManager::MakeLower(text);
-        const wxString whereClause = wxString::Format(wxT("search_name like '%s%%'"), text.c_str());
-        allAuthors = authors.WhereSet(whereClause, orderBy);
-    }
-	FillAuthorsList(allAuthors);
-
-}
-void MyRuLibMainFrame::FillAuthorsList(AuthorsRowSet * allAuthors) {
-
-	m_AuthorsListBox->Freeze();
-	m_AuthorsListBox->Clear();
-
-	for(unsigned long i = 0; i < allAuthors->Count(); i++) {
-		m_AuthorsListBox->Append(allAuthors->Item(i)->full_name,
-			new RecordIDClientData(allAuthors->Item(i)->id));
-	}
-
-	if(m_AuthorsListBox->GetCount()) {
-		m_AuthorsListBox->SetSelection(0);
-		RecordIDClientData * data = (RecordIDClientData *)
-			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
-		if(data) {
-			FbManager::FillBooks(m_BooksListView, data->GetID());
-			m_BooksInfoPanel->SetPage(blank_page);
-		}
-	}
-	m_AuthorsListBox->Thaw();
-}
-
-void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event) {
+void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event) 
+{
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
 	if(data) {
 		FbManager::FillBooks(m_BooksListView, data->GetID());
@@ -294,12 +257,30 @@ void MyRuLibMainFrame::OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event)
 {
 }
 
-void MyRuLibMainFrame::OnFindTextEnter( wxCommandEvent& event ){
-    FillAuthorsList(m_FindTextCtrl->GetValue());
+void MyRuLibMainFrame::SelectFirstAuthor()
+{
+	if(m_AuthorsListBox->GetCount()) {
+		m_AuthorsListBox->SetSelection(0);
+		RecordIDClientData * data = (RecordIDClientData *)
+			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
+		if(data) {
+			FbManager::FillBooks(m_BooksListView, data->GetID());
+			m_BooksInfoPanel->SetPage(blank_page);
+		}
+	} else {
+		m_BooksListView->DeleteRoot();
+		m_BooksInfoPanel->SetPage(blank_page);
+	}
 }
 
-void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event ){
+void MyRuLibMainFrame::OnFindTextEnter( wxCommandEvent& event )
+{
+	FbManager::FillAuthors(m_AuthorsListBox, m_FindTextCtrl->GetValue());
+	SelectFirstAuthor();
+}
 
+void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event )
+{
     int id = event.GetId();
 
     wxString alphabet;
@@ -313,14 +294,8 @@ void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event ){
         position = id - ID_LETTER_EN;
     };
 
-    wxString letter = alphabet.Mid(position, 1);
-
-    const wxString orderBy = wxT("search_name");
-    const wxString whereClause = wxString::Format(wxT("letter = '%s'"), letter.c_str());
-
-	Authors authors(wxGetApp().GetDatabase());
-    AuthorsRowSet * allAuthors = authors.WhereSet(whereClause, orderBy);
-	FillAuthorsList(allAuthors);
+	FbManager::FillAuthors(m_AuthorsListBox, alphabet[position]);
+	SelectFirstAuthor();
 }
 
 void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){

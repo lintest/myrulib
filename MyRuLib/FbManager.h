@@ -11,10 +11,13 @@
 #define FBMANAGER_H
 
 #include <wx/wx.h>
+#include <wx/listbox.h>
 #include <DatabaseLayer.h>
 #include "FbParser.h"
 #include "FbGenres.h"
 #include "wx/treelistctrl.h"
+
+class AuthorsRowSet;
 
 class BookTreeItemData: public wxTreeItemData
 {
@@ -29,12 +32,15 @@ class FbManager{
 public:
     static void MakeUpper(wxString & data);
     static void MakeLower(wxString & data);
-	static int NewId(int param);
 	static void InitParams(DatabaseLayer * database);
 	static wxString BookInfo(int id);
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author);
+	static void FillAuthors(wxListBox *listbox, const wxString & findText);
+	static void FillAuthors(wxListBox *listbox, const wxChar & findLetter);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);
+private:
+	static void FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors);
 };
 
 #endif //FBMANAGER_H
