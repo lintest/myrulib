@@ -1,4 +1,4 @@
-/***************************************************************
+п»ї/***************************************************************
  * Name:      MyRuLibMain.cpp
  * Purpose:   Code for Application Frame
  * Author:    Kandrashin Denis (mail@kandr.ru)
@@ -29,13 +29,13 @@
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
+const wxString alphabetRu = _("РђР‘Р’Р“Р”Р•Р–Р—РР™РљР›РњРќРћРџР РЎРўРЈР¤РҐР¦Р§РЁР©Р«Р­Р®РЇ");
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 const wxString blank_page = wxT("<html><body></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
-wxString strNobody = _("(без автора)");
-wxString strRusJE = wxT("е");
-wxString strRusJO = wxT("ё");
+wxString strNobody = _("(Р±РµР· Р°РІС‚РѕСЂР°)");
+wxString strRusJE = wxT("Рµ");
+wxString strRusJO = wxT("С‘");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
@@ -101,15 +101,15 @@ void MyRuLibMainFrame::CreateControls() {
 	SetMenuBar(menuBar);
 
 	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"));
-	fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"));
-	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"));
+	fileMenu->Append(ID_NEW_FILE, _("Р”РѕР±Р°РІРёС‚СЊ С„Р°Р№Р»вЂ¦"));
+	fileMenu->Append(ID_NEW_DIR, _("Р”РѕР±Р°РІРёС‚СЊ РґРёСЂРµРєС‚РѕСЂРёСЋвЂ¦"));
+	fileMenu->Append(ID_NEW_ZIP, _("Р”РѕР±Р°РІРёС‚СЊ С„Р°Р№Р» ZIPвЂ¦"));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
-	menuBar->Append(fileMenu, _("&Файл"));
+	fileMenu->Append(wxID_EXIT, _("Р’С‹С…РѕРґ\tAlt+F4"));
+	menuBar->Append(fileMenu, _("&Р¤Р°Р№Р»"));
 
 	wxMenu * helpMenu = new wxMenu;
-	helpMenu->Append(wxID_ABOUT, _("О программе…"));
+	helpMenu->Append(wxID_ABOUT, _("Рћ РїСЂРѕРіСЂР°РјРјРµвЂ¦"));
 	menuBar->Append(helpMenu, _("&?"));
 
 	SetToolBar(CreateButtonBar());
@@ -131,9 +131,9 @@ void MyRuLibMainFrame::CreateControls() {
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksListView = new MyTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
-    m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
-    m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_CENTER);
-    m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
+    m_BooksListView->AddColumn (_T("Р—Р°РіРѕР»РѕРІРѕРє"), 300, wxALIGN_LEFT);
+    m_BooksListView->AddColumn (_T("РРјСЏ С„Р°Р№Р»Р°"), 100, wxALIGN_CENTER);
+    m_BooksListView->AddColumn (_T("Р Р°Р·РјРµСЂ, РљР±"), 100, wxALIGN_RIGHT);
     m_BooksListView->SetColumnEditable (0, false);
     m_BooksListView->SetColumnEditable (1, false);
     m_BooksListView->SetColumnEditable (2, false);
@@ -156,7 +156,7 @@ void MyRuLibMainFrame::CreateControls() {
 	splitter->SplitVertically(m_AuthorsListBox, books_splitter, 160);
 	books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, books_splitter->GetSize().GetHeight()-220);
 
-	FbManager::FillAuthors(m_AuthorsListBox, _("А"));
+	FbManager::FillAuthors(m_AuthorsListBox, _("Рђ"));
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
@@ -174,19 +174,19 @@ void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 	info.SetVersion(wxT("0.1"));
 	info.SetWebSite(wxT("http://www.lintest.ru"));
 	info.AddDeveloper(wxT("Kandrashin Denis <mail@lintest.ru>"));
-	info.SetDescription(_("Оболочка для off-line библиотеки fb2-файлов lib.rus.ec."));
+	info.SetDescription(_("РћР±РѕР»РѕС‡РєР° РґР»СЏ off-line Р±РёР±Р»РёРѕС‚РµРєРё fb2-С„Р°Р№Р»РѕРІ lib.rus.ec."));
 	wxAboutBox(info);
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_FILE, _("Файл…"), wxBitmap(new_xpm));
-	toolBar->AddTool(ID_NEW_DIR, _("Папка…"), wxBitmap(new_dir_xpm));
-	toolBar->AddTool(ID_NEW_ZIP, _("Zip файл…"), wxBitmap(htmbook_xpm));
+	toolBar->AddTool(ID_NEW_FILE, _("Р¤Р°Р№Р»вЂ¦"), wxBitmap(new_xpm));
+	toolBar->AddTool(ID_NEW_DIR, _("РџР°РїРєР°вЂ¦"), wxBitmap(new_dir_xpm));
+	toolBar->AddTool(ID_NEW_ZIP, _("Zip С„Р°Р№Р»вЂ¦"), wxBitmap(htmbook_xpm));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("Найти"), wxBitmap(find_xpm));
+	toolBar->AddTool(ID_FIND_BTN, _("РќР°Р№С‚Рё"), wxBitmap(find_xpm));
 	toolBar->Realize();
 	return toolBar;
 }
@@ -282,7 +282,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Выберите файл для добавления в библиотеку…"),
+		_("Р’С‹Р±РµСЂРёС‚Рµ С„Р°Р№Р» РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ РІ Р±РёР±Р»РёРѕС‚РµРєСѓвЂ¦"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Fiction books (*.fb2)|*.fb2"),
@@ -310,7 +310,7 @@ void MyRuLibMainFrame::OnNewDir( wxCommandEvent& event ){
 
     wxDirDialog dlg(
         this,
-        _("Выберите директорию для импорта файлов"),
+        _("Р’С‹Р±РµСЂРёС‚Рµ РґРёСЂРµРєС‚РѕСЂРёСЋ РґР»СЏ РёРјРїРѕСЂС‚Р° С„Р°Р№Р»РѕРІ"),
         wxEmptyString,
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST
     );
@@ -324,7 +324,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Выберите zip-файл для добавления в библиотеку…"),
+		_("Р’С‹Р±РµСЂРёС‚Рµ zip-С„Р°Р№Р» РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ РІ Р±РёР±Р»РёРѕС‚РµРєСѓвЂ¦"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Zip file (*.zip)|*.zip"),
@@ -432,4 +432,3 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 	}
 	event.Skip();
 }
-

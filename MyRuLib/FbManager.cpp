@@ -1,4 +1,4 @@
-/***************************************************************
+﻿/***************************************************************
  * Name:      FbManager.cpp
  * Purpose:   Defines Application Frame
  * Author:    Kandrashin Denis (mail@kandr.ru)
