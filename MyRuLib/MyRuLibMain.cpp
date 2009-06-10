@@ -50,6 +50,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
+	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnImageClick)
 END_EVENT_TABLE()
 
 class MyTreeListCtrl: public wxTreeListCtrl
@@ -58,6 +59,7 @@ public:
     MyTreeListCtrl(wxWindow *parent, wxWindowID id, long style)
         :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style) {};
     void OnSize(wxSizeEvent& event);
+	void OnImageClick(wxTreeEvent &event);
 	DECLARE_EVENT_TABLE()
 };
 
@@ -226,33 +228,6 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	event.Skip();
 }
 
-void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
-{
-	wxTreeItemId selected = event.GetItem();
-	if (selected.IsOk()) {
-		int image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
-		m_BooksListView->SetItemImage(selected, image);
-	}
-	event.Skip();
-}
-
-void MyRuLibMainFrame::OnBooksListKeyDown(wxTreeEvent & event)
-{
-	if (event.GetKeyCode() == 0x20) {
-		wxArrayTreeItemIds selections;
-		size_t count = m_BooksListView->GetSelections(selections);
-		int image = 0;
-		for (size_t i=0; i<count; ++i) {
-            wxTreeItemId selected = selections[i];
-		    if (i==0)
-                image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
-			m_BooksListView->SetItemImage(selected, image);
-		}
-		event.Veto();
-	} else
-		event.Skip();
-}
-
 void MyRuLibMainFrame::OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event)
 {
 }
@@ -393,5 +368,65 @@ void MyRuLibMainFrame::OnProgressFinish(wxCommandEvent& event)
 	m_ProgressBar->SetProgress(0);
 	m_ProgressBar->SetStatusText(wxEmptyString, 0);
 	m_ProgressBar->SetStatusText(wxEmptyString, 2);
+}
+
+void MyRuLibMainFrame::OnImageClick(wxTreeEvent &event)
+{
+	wxTreeItemId item = event.GetItem();
+	if (item.IsOk()) {
+		int image = m_BooksListView->GetItemImage(item);
+		image = ( image == 1 ? 0 : 1);
+		if (m_BooksListView->GetItemBold(item)) {
+			m_BooksListView->SetItemImage(item, image);
+			wxTreeItemIdValue cookie;
+			item = m_BooksListView->GetFirstChild(item, cookie);
+			while (item.IsOk()) {
+				m_BooksListView->SetItemImage(item, image);
+				item = m_BooksListView->GetNextSibling (item);
+			}
+		} else {
+			m_BooksListView->SetItemImage(item, image);
+			wxTreeItemId parent = m_BooksListView->GetItemParent(item);
+			wxTreeItemIdValue cookie;
+			item = m_BooksListView->GetFirstChild(parent, cookie);
+			while (item.IsOk()) {
+				if (image != m_BooksListView->GetItemImage(item)) {
+					image = 2;
+					break;
+				}
+				item = m_BooksListView->GetNextSibling (item);
+			}
+			m_BooksListView->SetItemImage(parent, image);
+		}
+	}
+	event.Veto();
+}
+
+void MyRuLibMainFrame::OnBooksListKeyDown(wxTreeEvent & event)
+{
+	if (event.GetKeyCode() == 0x20) {
+		wxArrayTreeItemIds selections;
+		size_t count = m_BooksListView->GetSelections(selections);
+		int image;
+		for (size_t i=0; i<count; ++i) {
+            wxTreeItemId selected = selections[i];
+		    if (i==0)
+                image = (m_BooksListView->GetItemImage(selected) + 1) % 2;
+			m_BooksListView->SetItemImage(selected, image);
+		}
+		event.Veto();
+	} else
+		event.Skip();
+}
+
+void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
+{
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
+		if (data)
+            FbManager::OpenBook(data->GetId());
+	}
+	event.Skip();
 }
 

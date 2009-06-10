@@ -3806,7 +3806,6 @@ bool bSkip = true;
     // set focus if window clicked
     if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
 
-
 // ---------- DETERMINE EVENT ----------
 /*
 wxLogMessage("OnMouse: LMR down=<%d, %d, %d> up=<%d, %d, %d> LDblClick=<%d> dragging=<%d>",
@@ -3838,6 +3837,14 @@ wxLogMessage("OnMouse: LMR down=<%d, %d, %d> up=<%d, %d, %d> LDblClick=<%d> drag
 
 // HANDLE SIMPLE-CLICKS (selection change, contextual menu)
     if (mayClick) {
+
+		//DENIS KANDRASHIN 2009-06-10 - BEGIN - Mouse click on image
+		int X = CalcUnscrolledPosition (p).x;
+		if (item && event.LeftDown() &&  X < item->GetX() + MARGIN + 8) {
+			SendEvent(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, item);
+			return;
+		}
+		//DENIS - END
 
         // left-click on haircross is expand (and no select)
         if (bCrosshair && event.LeftDown()) {

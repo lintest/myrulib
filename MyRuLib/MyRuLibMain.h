@@ -66,6 +66,7 @@ public:
 	void OnProgressStart(wxCommandEvent& event);
 	void OnProgressUpdate(wxCommandEvent& event);
 	void OnProgressFinish(wxCommandEvent& event);
+	void OnImageClick(wxTreeEvent &event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 	DECLARE_EVENT_TABLE()
 };

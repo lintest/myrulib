@@ -37,6 +37,7 @@ public:
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author);
 	static void FillAuthors(wxListBox *listbox, const wxString & findText);
 	static void FillAuthors(wxListBox *listbox, const wxChar & findLetter);
+	static void OpenBook(int id);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);
 private:

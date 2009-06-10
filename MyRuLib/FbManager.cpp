@@ -569,3 +569,7 @@ void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
 	listbox->Thaw();
 }
 
+void FbManager::OpenBook(int id) 
+{
+
+}
