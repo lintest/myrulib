@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
  * Name:      FbManager.cpp
  * Purpose:   Defines Application Frame
  * Author:    Kandrashin Denis (mail@kandr.ru)
@@ -180,7 +180,8 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 			} else if ( name == wxT("annotation") ) {
 				annotation = value;
 			} else if ( name == wxT("sequence") ) {
-				sequence = FindSequence(node->Prop(wxT("name")));
+			    value = node->Prop(wxT("name"));
+				sequence = FindSequence(value);
 			}
         }
 		node = node->m_next;
@@ -438,7 +439,7 @@ public:
     SequenceNode *m_last;
 };
 
-SequenceList::~SequenceList() 
+SequenceList::~SequenceList()
 {
 	while (m_root) {
 		SequenceNode * node = m_root;
@@ -457,7 +458,7 @@ void SequenceList::Append(const int id, const wxTreeItemId &item)
 	m_last = node;
 }
 
-wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root) 
+wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root)
 {
 	SequenceNode * node = m_root;
 	while (node) {
@@ -513,7 +514,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 		for(size_t i = 0; i < allBooks->Count(); i++) {
 		    BooksRow * thisBook = allBooks->Item(i);
 			wxTreeItemId parent = root;
-			if (thisBook->id_sequence) 
+			if (thisBook->id_sequence)
 				parent = sequencesList.Find(thisBook->id_sequence, root);
 			wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
 			treelist->SetItemText (item, 1, thisBook->file_name);
@@ -572,7 +573,7 @@ void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
 	listbox->Thaw();
 }
 
-void FbManager::OpenBook(int id) 
+void FbManager::OpenBook(int id)
 {
 
 }

@@ -1582,7 +1582,7 @@
 1244380313 /home/user/projects/MyRuLib/SQLite/sqlite3.h
 	<stdarg.h>
 
-1244569491 /home/user/projects/MyRuLib/MyRuLib/Books.h
+1244648811 /home/user/projects/MyRuLib/MyRuLib/Books.h
 	"wxActiveRecord.h"
 	<wx/wx.h>
 	<wx/string.h>
@@ -1606,10 +1606,10 @@
 1244565700 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
-1244574561 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
+1244648811 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
 	"Books.h"
 
-1244568973 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
+1244648811 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
 	"DBCreator.h"
 	"FbManager.h"
 	<DatabaseLayerException.h>
@@ -1644,7 +1644,7 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244565700 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
+1244648811 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
 	<wx/wx.h>
 	<wx/toolbar.h>
 	<wx/listbox.h>
@@ -1751,7 +1751,7 @@
 	"wx/defs.h"
 	"wx/filesys.h"
 
-1244578754 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
+1244649159 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.cpp
 	<wx/splitter.h>
 	<wx/aboutdlg.h>
 	<wx/imaglist.h>
@@ -1766,8 +1766,9 @@
 	"res/find.xpm"
 	"res/new_dir.xpm"
 	"res/htmbook.xpm"
-	"res/checked.xpm"
 	"res/nocheck.xpm"
+	"res/checked.xpm"
+	"res/checkout.xpm"
 
 1238939809 /usr/include/wx-2.8/wx/splitter.h
 	"wx/event.h"
@@ -1829,13 +1830,15 @@
 	"wx/defs.h"
 	"wx/stream.h"
 
-1244578353 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
+1244648811 /home/user/projects/MyRuLib/MyRuLib/FbManager.h
 	<wx/wx.h>
+	<wx/listbox.h>
 	<DatabaseLayer.h>
 	"FbParser.h"
 	"FbGenres.h"
+	"wx/treelistctrl.h"
 
-1244565700 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
+1244648811 /home/user/projects/MyRuLib/MyRuLib/FbParser.h
 	<wx/wx.h>
 	<wx/defs.h>
 	<wx/string.h>
@@ -1843,7 +1846,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244578428 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244649137 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"
@@ -1853,8 +1856,10 @@
 	"Authors.h"
 	"Books.h"
 	"Params.h"
+	"Sequences.h"
+	"RecordIDClientData.h"
 
-1244577984 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
+1244648811 source:/home/user/projects/MyRuLib/MyRuLib/FbParser.cpp
 	<wx/wxprec.h>
 	<wx/wfstream.h>
 	<wx/datstrm.h>
@@ -1943,7 +1948,7 @@
 
 1244565700 /home/user/projects/MyRuLib/MyRuLib/res/nocheck.xpm
 
-1244565700 source:/home/user/projects/MyRuLib/MyRuLib/treelistctrl.cpp
+1244648811 source:/home/user/projects/MyRuLib/MyRuLib/treelistctrl.cpp
 	"wx/wxprec.h"
 	"MyRuLibApp.h"
 	<wx/treebase.h>
@@ -1993,6 +1998,17 @@
 1244572220 /home/user/projects/MyRuLib/MyRuLib/FbGenres.h
 	<wx/wx.h>
 
-1244573011 source:/home/user/projects/MyRuLib/MyRuLib/FbGenres.cpp
+1244649067 source:/home/user/projects/MyRuLib/MyRuLib/FbGenres.cpp
 	"FbGenres.h"
+
+1244648811 /home/user/projects/MyRuLib/MyRuLib/Sequences.h
+	"wxActiveRecord.h"
+	<wx/wx.h>
+	<wx/string.h>
+	<wx/datetime.h>
+
+1244648811 /home/user/projects/MyRuLib/MyRuLib/res/checkout.xpm
+
+1244648811 source:/home/user/projects/MyRuLib/MyRuLib/Sequences.cpp
+	"Sequences.h"
 
