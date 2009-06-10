@@ -29,7 +29,7 @@
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("юабцдефгхийклмнопярстужвьыщчъ");
+const wxString alphabetRu = _("юабцдефгхийклмнопярстужвьышщчъ");
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 const wxString blank_page = wxT("<html><body></body></html>");
 wxString alphabet = alphabetRu + alphabetEn;
@@ -151,7 +151,7 @@ void MyRuLibMainFrame::CreateControls() {
 	splitter->SplitVertically(m_AuthorsListBox, books_splitter, 160);
 	books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, books_splitter->GetSize().GetHeight()-220);
 
-	FbManager::FillAuthors(m_AuthorsListBox, wxEmptyString);
+	FbManager::FillAuthors(m_AuthorsListBox, _("ю"));
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
@@ -275,8 +275,10 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 
 void MyRuLibMainFrame::OnFindTextEnter( wxCommandEvent& event )
 {
-	FbManager::FillAuthors(m_AuthorsListBox, m_FindTextCtrl->GetValue());
-	SelectFirstAuthor();
+	if (!m_FindTextCtrl->GetValue().IsEmpty()) {
+		FbManager::FillAuthors(m_AuthorsListBox, m_FindTextCtrl->GetValue());
+		SelectFirstAuthor();
+	}
 }
 
 void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event )

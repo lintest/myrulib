@@ -101,6 +101,7 @@ int FbThread::FindAuthor(wxString &full_name) {
 
 	wxString search_name = full_name;
 	FbManager::MakeLower(search_name);
+	search_name.Replace(wxT("¸"), wxT("å"));
 
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 
@@ -108,7 +109,7 @@ int FbThread::FindAuthor(wxString &full_name) {
 	AuthorsRow * row = authors.Name(search_name);
 
 	if (!row) {
-		wxString letter = full_name.Left(1);
+		wxString letter = search_name.Left(1);
 		FbManager::MakeUpper(letter);
 		if (letter.IsEmpty()||(alphabet.Find(letter) == wxNOT_FOUND))
 			letter = wxT("#");
