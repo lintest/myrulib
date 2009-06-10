@@ -153,11 +153,11 @@ BooksRowSet* Books::All(const wxString& orderBy){
 /** ACTIVE RECORD ROW **/
 
 BooksRow::BooksRow():wxActiveRecordRow(){
-	bool newRow=true;
+	newRow=true;
 }
 
 BooksRow::BooksRow(Books* activeRecord):wxActiveRecordRow(activeRecord){
-	bool newRow=true;
+	newRow=true;
 }
 
 BooksRow::BooksRow(const BooksRow& src){
