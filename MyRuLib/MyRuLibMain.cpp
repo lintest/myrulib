@@ -32,7 +32,10 @@
 const wxString alphabetRu = _("юабцдефгхийклмнопярстужвьышщчъ");
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
 const wxString blank_page = wxT("<html><body></body></html>");
-wxString alphabet = alphabetRu + alphabetEn;
+wxString strAlphabet = alphabetRu + alphabetEn;
+wxString strNobody = _("(АЕГ ЮБРНПЮ)");
+wxString strRusJE = wxT("Е");
+wxString strRusJO = wxT("╦");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)

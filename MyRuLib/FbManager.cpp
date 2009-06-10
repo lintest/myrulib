@@ -39,7 +39,10 @@ void FbManager::InitParams(DatabaseLayer *database)
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
 }
 
-extern wxString alphabet;
+extern wxString strAlphabet;
+extern wxString strNobody;
+extern wxString strRusJO;
+extern wxString strRusJE;
 
 class FbThread : public wxThread
 {
@@ -101,7 +104,7 @@ int FbThread::FindAuthor(wxString &full_name) {
 
 	wxString search_name = full_name;
 	FbManager::MakeLower(search_name);
-	search_name.Replace(wxT("ё"), wxT("е"));
+	search_name.Replace(strRusJO, strRusJE);
 
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
 
@@ -111,13 +114,13 @@ int FbThread::FindAuthor(wxString &full_name) {
 	if (!row) {
 		wxString letter = search_name.Left(1);
 		FbManager::MakeUpper(letter);
-		if (letter.IsEmpty()||(alphabet.Find(letter) == wxNOT_FOUND))
+		if (letter.IsEmpty()||(strAlphabet.Find(letter) == wxNOT_FOUND))
 			letter = wxT("#");
 		row = authors.New();
 		row->id = NewId(DB_NEW_AUTHOR);
 		row->letter = letter;
 		row->search_name = search_name;
-		row->full_name = (full_name.IsEmpty() ? _("(без автора)") : full_name);
+		row->full_name = (full_name.IsEmpty() ? strNobody : full_name);
 		row->Save();
 	}
 	return row->id;
@@ -495,7 +498,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 		SequenceList sequencesList;
 
 		if (!sequencesText.IsEmpty()) {
-			wxString whereCause = wxString::Format(wxT("id in(%s)"), sequencesText);
+			wxString whereCause = wxString::Format(wxT("id in(%s)"), sequencesText.c_str());
 			Sequences sequences(wxGetApp().GetDatabase());
 			SequencesRowSet * allSequences = sequences.WhereSet(whereCause, wxT("value"));
 
