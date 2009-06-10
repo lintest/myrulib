@@ -39,6 +39,16 @@ int MyRuLibApp::OnExit()
 	return wxApp::OnExit();
 }
 
+wxString MyRuLibApp::GetAppPath()
+{
+    if (argc) {
+        wxFileName app_filename = wxString(argv[0]);
+        return app_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    } else {
+        return wxEmptyString;
+    }
+}
+
 bool MyRuLibApp::ConnectToDatabase()
 {
     wxFileName db_filename;

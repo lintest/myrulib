@@ -27,6 +27,7 @@ public:
 
 	bool ConnectToDatabase();
 	bool CreateDatabase();
+    wxString GetAppPath();
 	DatabaseLayer * GetDatabase() {return m_Database;};
 public:
     wxCriticalSection m_critsect;

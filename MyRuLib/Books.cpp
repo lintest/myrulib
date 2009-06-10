@@ -296,7 +296,9 @@ ArchivesRow* BooksRow::GetArchive(){
 	pStatement->SetParamInt(1,id_archive);
 	DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-	result->Next();
+	if(!result->Next())
+		return NULL;
+
 	owner->GetFromResult(result);
 	garbageRows.Add(owner);
 	m_database->CloseResultSet(result);

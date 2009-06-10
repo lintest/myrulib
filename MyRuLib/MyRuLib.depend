@@ -1606,7 +1606,7 @@
 1244565700 source:/home/user/projects/MyRuLib/MyRuLib/Authors.cpp
 	"Authors.h"
 
-1244650655 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
+1244657102 source:/home/user/projects/MyRuLib/MyRuLib/Books.cpp
 	"Books.h"
 
 1244653699 source:/home/user/projects/MyRuLib/MyRuLib/DBCreator.cpp
@@ -1622,7 +1622,7 @@
 1244483838 source:/home/user/projects/MyRuLib/MyRuLib/Genres.cpp
 	"Genres.h"
 
-1244655767 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
+1244657910 source:/home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.cpp
 	<wx/app.h>
 	<wx/image.h>
 	<DatabaseLayerException.h>
@@ -1630,7 +1630,7 @@
 	"MyRuLibMain.h"
 	"DBCreator.h"
 
-1244380313 /home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.h
+1244657819 /home/user/projects/MyRuLib/MyRuLib/MyRuLibApp.h
 	<wx/wx.h>
 	<wx/thread.h>
 	<DatabaseLayer.h>
@@ -1645,7 +1645,7 @@
 	<wx/string.h>
 	<wx/datetime.h>
 
-1244648811 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
+1244657714 /home/user/projects/MyRuLib/MyRuLib/MyRuLibMain.h
 	<wx/wx.h>
 	<wx/toolbar.h>
 	<wx/listbox.h>
@@ -1847,7 +1847,7 @@
 	<wx/list.h>
 	<wx/stream.h>
 
-1244654181 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
+1244663382 source:/home/user/projects/MyRuLib/MyRuLib/FbManager.cpp
 	<wx/zipstrm.h>
 	<wx/progdlg.h>
 	"FbManager.h"

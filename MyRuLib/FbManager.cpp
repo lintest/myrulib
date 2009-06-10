@@ -100,7 +100,7 @@ int FbThread::AddArchive()
 	ArchivesRow * row = archives.New();
 	row->id = NewId(DB_NEW_ARCHIVE);
 	row->file_name = file_name.GetFullName();
-	row->file_path = file_name.GetPath();
+	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 	row->Save();
 	return row->id;
 }
@@ -590,7 +590,44 @@ void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
 	listbox->Thaw();
 }
 
+
 void FbManager::OpenBook(int id)
 {
+    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+
+    Books books(wxGetApp().GetDatabase());
+    BooksRow * bookRow = books.Id(id);
+
+    if (!bookRow) return;
+
+    if (bookRow->id_archive) {
+        ArchivesRow * archiveRow = bookRow->GetArchive();
+        wxFileName filename = archiveRow->file_path + archiveRow->file_name;
+        if (!filename.FileExists()) {
+            filename = wxGetApp().GetAppPath() + archiveRow->file_name;
+            if (!filename.FileExists()) return;
+        }
+        wxFFileInputStream in(filename.GetFullPath());
+        wxZipInputStream zip(in);
+        wxZipEntry * entry = NULL;
+        do {
+            entry = zip.GetNextEntry();
+            if (entry == NULL) return;
+        } while (entry->GetName() != bookRow->file_name);
+        zip.OpenEntry(*entry);
+        wxFileName temp_file = bookRow->file_name;
+        temp_file.SetPath(wxGetApp().GetAppPath() + wxT("extract"));
+        if (!temp_file.DirExists())
+            wxFileName::Mkdir(temp_file.GetPath());
+        wxFileOutputStream out(temp_file.GetFullPath());
+        out.Write(zip);
+        #if defined(__WXMSW__)
+        ShellExecute(NULL, NULL, temp_file.GetFullPath(), NULL, NULL, SW_SHOW);
+        #else
+        wxExecute(wxT("okular ") + temp_file.GetFullPath());
+        #endif
+    } else {
+//        wxFileName file;
+    }
 
 }
