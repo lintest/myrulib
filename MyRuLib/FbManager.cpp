@@ -43,6 +43,7 @@ extern wxString strAlphabet;
 extern wxString strNobody;
 extern wxString strRusJO;
 extern wxString strRusJE;
+extern wxString strParsingInfo;
 
 class FbThread : public wxThread
 {
@@ -239,7 +240,7 @@ void *FbThread::Entry()
 	{
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
 		event.SetInt(zip.GetTotalEntries());
-		event.SetString(m_filename);
+		event.SetString(strParsingInfo + m_filename);
 		wxPostEvent( m_frame, event );
 	}
 

@@ -30,13 +30,14 @@
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-const wxString alphabetRu = _("юабцдефгхийклмнопярстужвьышщчъ");
-const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
-const wxString blank_page = wxT("<html><body></body></html>");
+wxString alphabetRu = _("юабцдефгхийклмнопярстужвьышщчъ");
+wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
+wxString blank_page = wxT("<html><body></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(АЕГ ЮБРНПЮ)");
 wxString strRusJE = wxT("Е");
 wxString strRusJO = wxT("╦");
+wxString strParsingInfo = wxT("нАПЮАНРЙЮ ТЮИКЮ: ");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
