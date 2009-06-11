@@ -44,8 +44,6 @@ bool Params::Delete(int key){
 	}
 }
 
-
-
 ParamsRow* Params::Id(int key){
 	try{
 		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id=?"),m_table.c_str()));
@@ -59,7 +57,7 @@ ParamsRow* Params::Id(int key){
 		} else {
 			row = New();
 			row->id = key;
-			row->value = 1;
+			row->value = 0;
 		}
 		m_database->CloseResultSet(result);
 		m_database->CloseStatement(pStatement);
@@ -195,10 +193,10 @@ ParamsRow& ParamsRow::operator=(const ParamsRow& src){
 bool ParamsRow::GetFromResult(DatabaseResultSet* result){
 
 	newRow=false;
-		value=result->GetResultInt(wxT("value"));
+	
+	value=result->GetResultInt(wxT("value"));
 	id=result->GetResultInt(wxT("id"));
 	text=result->GetResultString(wxT("text"));
-
 
 	return true;
 }
@@ -207,23 +205,22 @@ bool ParamsRow::GetFromResult(DatabaseResultSet* result){
 bool ParamsRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (value,text) VALUES (?,?)"),m_table.c_str()));
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (value,text,id) VALUES (?,?,?)"),m_table.c_str()));
 			pStatement->SetParamInt(1,value);
 			pStatement->SetParamString(2,text);
+			pStatement->SetParamInt(3,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
-
 
 			newRow=false;
 		}
 		else{
 			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET value=?,text=? WHERE id=?"),m_table.c_str()));
 			pStatement->SetParamInt(1,value);
-			pStatement->SetParamInt(3,id);
 			pStatement->SetParamString(2,text);
+			pStatement->SetParamInt(3,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
-
 		}
 
 		return true;

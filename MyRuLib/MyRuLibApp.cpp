@@ -60,10 +60,14 @@ bool MyRuLibApp::ConnectToDatabase()
         db_filename = wxFileName(wxT("MyRuLib.db"));
     }
 
+	wxString db_filepath = db_filename.GetFullPath();
+	if (wxGetApp().argc>1)
+		::wxRemoveFile(db_filepath);
+
 	m_Database = new SqliteDatabaseLayer();
-	bool bCreate = !wxFileExists(db_filename.GetFullPath());
+	bool bCreate = !wxFileExists(db_filepath);
 	try	{
-		m_Database->Open(db_filename.GetFullPath());
+		m_Database->Open(db_filepath);
 		if(bCreate)	{
 			DBCreator creator(m_Database);
 			creator.CreateDatabase();
