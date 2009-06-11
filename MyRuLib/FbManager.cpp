@@ -174,7 +174,8 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
         wxString value;
         if ( name == wxT("author") ) {
             value = xml.GetAuthor(node);
-			book_authors.Add( FindAuthor(value) );
+			if (!value.IsEmpty())
+				book_authors.Add( FindAuthor(value) );
 		} else {
 			value = (node->m_text);
 			if ( name == wxT("genre") ) {
@@ -191,8 +192,10 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		node = node->m_next;
     }
 
-	if (book_authors.Count() == 0) 
-		book_authors.Add(FindAuthor(wxString(wxEmptyString)));
+	if (book_authors.Count() == 0) {
+	    wxString empty = wxEmptyString;
+		book_authors.Add(FindAuthor(empty));
+	}
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -607,7 +610,7 @@ void FbManager::OpenBook(int id)
 
     if (!bookRow) return;
 
-    if (bookRow->id_archive) 
+    if (bookRow->id_archive)
 	{
         ArchivesRow * archiveRow = bookRow->GetArchive();
         wxFileName zip_name = archiveRow->file_path + archiveRow->file_name;
@@ -645,8 +648,8 @@ void FbManager::OpenBook(int id)
         #else
         wxExecute(wxT("okular ") + temp_file.GetFullPath());
         #endif
-    } 
-	else 
+    }
+	else
 	{
 //        wxFileName file;
     }

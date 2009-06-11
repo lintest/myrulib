@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="LinDebug">
-				<Option output="../build/Debug/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\Debug\libDatabaseLayer" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Debug/" />
+				<Option object_output="..\build\Debug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -23,9 +23,9 @@
 				</Linker>
 			</Target>
 			<Target title="LinRelease">
-				<Option output="../build/Release/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\Release\libDatabaseLayer" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Release/" />
+				<Option object_output="..\build\Release\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -39,9 +39,42 @@
 					<Add option="`wx-config --libs`" />
 				</Linker>
 			</Target>
+			<Target title="WinDebug">
+				<Option output="..\build\Debug\libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\Debug\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
+          <Add option="-DwxUSE_UNICODE" />
+        </Compiler>
+			</Target>
+			<Target title="WinRelease">
+				<Option output="..\build\Release\libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\Release\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
+          <Add option="-DwxUSE_UNICODE" />
+        </Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
-			<Add directory="../SQLite" />
+			<Add directory="..\SQLite" />
 		</Compiler>
 		<Unit filename="DatabaseErrorCodes.h" />
 		<Unit filename="DatabaseErrorReporter.cpp" />

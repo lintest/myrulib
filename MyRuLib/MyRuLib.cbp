@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="LinDebug">
-				<Option output="../build/Debug/MyRuLib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/Debug/" />
-				<Option object_output="../build/Debug/" />
+				<Option output="..\build\Debug\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\build\Debug\" />
+				<Option object_output="..\build\Debug\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -17,18 +17,18 @@
 					<Add option="-g" />
 					<Add option="-Wall" />
 					<Add option="`wx-config --cflags`" />
-					<Add directory="../DatabaseLayer" />
-					<Add directory="../SQLite" />
+					<Add directory="..\DatabaseLayer" />
+					<Add directory="..\SQLite" />
 				</Compiler>
 				<Linker>
-					<Add directory="../build/Debug" />
 					<Add option="`wx-config --libs`" />
+					<Add directory="..\build\Debug" />
 				</Linker>
 			</Target>
 			<Target title="LinRelease">
-				<Option output="../build/Release/MyRuLib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/Release/" />
-				<Option object_output="../build/Release/" />
+				<Option output="..\build\Release\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\build\Release\" />
+				<Option object_output="..\build\Release\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -39,13 +39,117 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add directory="../build/Release" />
+					<Add directory="..\build\Release" />
+				</Linker>
+			</Target>
+			<Target title="WinDebug">
+				<Option output="..\build\Debug\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\build\Debug\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
+					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)\contrib\include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
+					<Add directory="$(WXWIN)\include" />
+				</ResourceCompiler>
+				<Linker>
+          <Add library="libwxmsw28u_html.a" />
+          <Add library="libwxmsw28u_core.a" />
+          <Add library="libwxbase28u.a" />
+          <Add library="libwxtiff.a" />
+          <Add library="libwxjpeg.a" />
+          <Add library="libwxpng.a" />
+          <Add library="libwxzlib.a" />
+          <Add library="libwxregexu.a" />
+          <Add library="libwinmm.a" />
+          <Add library="libcomctl32.a" />
+          <Add library="librpcrt4.a" />
+          <Add library="libwsock32.a" />
+          <Add library="liboleacc.a" />
+          <Add library="libkernel32.a" />
+          <Add library="libuser32.a" />
+          <Add library="libgdi32.a" />
+          <Add library="libwinspool.a" />
+          <Add library="libcomdlg32.a" />
+          <Add library="libadvapi32.a" />
+          <Add library="libshell32.a" />
+          <Add library="libole32.a" />
+          <Add library="liboleaut32.a" />
+          <Add library="libuuid.a" />
+          <Add directory="$(WXWIN)\lib\gcc_lib" />
+					<Add directory="..\build\Debug\" />
+				</Linker>
+			</Target>
+			<Target title="WinRelease">
+				<Option output="..\build\Release\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\build\Release\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
+					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)\contrib\include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
+					<Add directory="$(WXWIN)\include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="libwxmsw28u_html.a" />
+					<Add library="libwxmsw28u_core.a" />
+					<Add library="libwxbase28u.a" />
+					<Add library="libwxtiff.a" />
+					<Add library="libwxjpeg.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxregexu.a" />
+					<Add library="libwinmm.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libwsock32.a" />
+					<Add library="liboleacc.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add directory="$(WXWIN)\lib\gcc_lib" />
+					<Add directory="..\build\Release\" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add directory="../DatabaseLayer" />
-			<Add directory="../SQLite" />
+			<Add directory="..\DatabaseLayer" />
+			<Add directory="..\SQLite" />
+			<Add directory="..\Expat" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -57,6 +161,8 @@
 		<Unit filename="Archives.h" />
 		<Unit filename="Authors.cpp" />
 		<Unit filename="Authors.h" />
+		<Unit filename="BookList.cpp" />
+		<Unit filename="BookList.h" />
 		<Unit filename="Books.cpp" />
 		<Unit filename="Books.h" />
 		<Unit filename="DBCreator.cpp" />
@@ -76,15 +182,15 @@
 		<Unit filename="ProgressBar.cpp" />
 		<Unit filename="ProgressBar.h" />
 		<Unit filename="RecordIDClientData.h" />
-		<Unit filename="res/find.xpm" />
-		<Unit filename="res/new.xpm" />
-		<Unit filename="res/new_dir.xpm" />
 		<Unit filename="Sequences.cpp" />
 		<Unit filename="Sequences.h" />
+		<Unit filename="res\find.xpm" />
+		<Unit filename="res\new.xpm" />
+		<Unit filename="res\new_dir.xpm" />
 		<Unit filename="treelistctrl.cpp" />
-		<Unit filename="wx/treelistctrl.h" />
 		<Unit filename="wxActiveRecord.cpp" />
 		<Unit filename="wxActiveRecord.h" />
+		<Unit filename="wx\treelistctrl.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
