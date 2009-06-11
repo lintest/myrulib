@@ -18,6 +18,7 @@
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "BookList.h"
+#include "SettingsDlg.h"
 
 #include "res/new.xpm"
 #include "res/find.xpm"
@@ -147,7 +148,12 @@ void MyRuLibMainFrame::CreateControls() {
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-    wxMessageBox(_("About..."));
+//    wxMessageBox(_("About..."));
+
+    SettingsDlg dlg(this, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
+    dlg.ShowModal();
+
+
     /*
 	wxAboutDialogInfo info;
 	info.SetName(wxT("MyRuLib"));
