@@ -37,14 +37,6 @@ void FbManager::InitParams(DatabaseLayer *database)
 	database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
 	database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
 	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-	database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
-	database->RunQuery(_("INSERT INTO params(text) VALUES ('');"));
-	database->RunQuery(_("INSERT INTO params(text) VALUES ('');"));
-	database->RunQuery(_("INSERT INTO params(text) VALUES ('');"));
 }
 
 extern wxString strAlphabet;
@@ -100,7 +92,7 @@ int FbThread::AddArchive()
 {
     wxFileName file_name(m_filename);
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Archives archives(wxGetApp().GetDatabase());
 	ArchivesRow * row = archives.New();
@@ -117,7 +109,7 @@ int FbThread::FindAuthor(wxString &full_name) {
 	FbManager::MakeLower(search_name);
 	search_name.Replace(strRusJO, strRusJE);
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRow * row = authors.Name(search_name);
@@ -142,7 +134,7 @@ int FbThread::FindSequence(wxString &name) {
 	if (name.IsEmpty())
 		return 0;
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Sequences sequences(wxGetApp().GetDatabase());
 	SequencesRow * row = sequences.Name(name);
@@ -198,7 +190,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		node = node->m_next;
     }
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     wxFileName filename (name);
     wxString shortname = filename.GetName();
@@ -234,7 +226,8 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 
 void *FbThread::Entry()
 {
-	wxZipEntry* entry;
+    wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+
 	wxFFileInputStream in(m_filename);
 	wxZipInputStream zip(in);
 
@@ -248,17 +241,20 @@ void *FbThread::Entry()
 	}
 
 	int progress = 0;
-	entry = zip.GetNextEntry();
-	while (entry) {
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE );
-		event.SetString(entry->GetName());
-		event.SetInt(progress++);
-        wxPostEvent( m_frame, event );
+	while (wxZipEntry * entry = zip.GetNextEntry()) {
+		if (entry->GetSize()) {
+			wxString filename = entry->GetName(wxPATH_UNIX);
+			if (filename.Right(4).Lower() == wxT(".fb2")) {
+				wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE );
+				event.SetString(filename);
+				event.SetInt(progress++);
+				wxPostEvent( m_frame, event );
 
-		zip.OpenEntry(*entry);
-		ParseXml(zip, entry->GetName(), entry->GetSize(), id_archive);
+				zip.OpenEntry(*entry);
+				ParseXml(zip, filename, entry->GetSize(), id_archive);
+			}
+		}
 		delete entry;
-        entry = zip.GetNextEntry();
 	}
 
 	{
@@ -393,7 +389,7 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 */
 wxString FbManager::BookInfo(int id)
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     Books books(wxGetApp().GetDatabase());
     wxString whereClause = wxString::Format(wxT("id=%d"), id);
@@ -499,7 +495,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
     treelist->DeleteRoot();
     wxTreeItemId root = treelist->AddRoot (_T("Root"));
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRow * thisAuthor = authors.Id(id_author);
@@ -556,7 +552,7 @@ void FbManager::FillAuthors(wxListBox *listbox, const wxChar & findLetter)
 	wxString findText = findLetter;
     const wxString whereClause = wxString::Format(wxT("letter = '%s'"), findText.c_str());
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRowSet * allAuthors = authors.WhereSet(whereClause, orderBy);
@@ -567,7 +563,7 @@ void FbManager::FillAuthors(wxListBox *listbox, const wxString & findText)
 {
     const wxString orderBy = wxT("search_name");
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Authors authors(wxGetApp().GetDatabase());
 	AuthorsRowSet * allAuthors;
@@ -599,7 +595,7 @@ void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
 
 void FbManager::OpenBook(int id)
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     Books books(wxGetApp().GetDatabase());
     BooksRow * bookRow = books.Id(id);

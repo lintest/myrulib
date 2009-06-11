@@ -52,9 +52,15 @@ ParamsRow* Params::Id(int key){
 		pStatement->SetParamInt(1,key);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
-		ParamsRow* row=RowFromResult(result);
-		garbageRows.Add(row);
+		ParamsRow* row = NULL;
+		if (result->Next()) {
+			row = RowFromResult(result);
+			garbageRows.Add(row);
+		} else {
+			row = New();
+			row->id = key;
+			row->value = 0;
+		}
 		m_database->CloseResultSet(result);
 		m_database->CloseStatement(pStatement);
 		return row;
@@ -65,9 +71,6 @@ ParamsRow* Params::Id(int key){
 		return NULL;
 	}
 }
-
-
-
 
 ParamsRow* Params::Where(const wxString& whereClause){
 	try{

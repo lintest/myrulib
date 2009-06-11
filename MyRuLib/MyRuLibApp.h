@@ -30,7 +30,8 @@ public:
     wxString GetAppPath();
 	DatabaseLayer * GetDatabase() {return m_Database;};
 public:
-    wxCriticalSection m_critsect;
+    wxCriticalSection m_DbSection;
+    wxCriticalSection m_ThreadQueue;
 };
 
 DECLARE_APP(MyRuLibApp)
