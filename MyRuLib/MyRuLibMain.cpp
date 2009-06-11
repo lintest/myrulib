@@ -17,6 +17,7 @@
 #include "Params.h"
 #include "FbManager.h"
 #include "FbGenres.h"
+#include "BookList.h"
 
 #include "res/new.xpm"
 #include "res/find.xpm"
@@ -55,31 +56,6 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
 	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnImageClick)
 END_EVENT_TABLE()
-
-class MyTreeListCtrl: public wxTreeListCtrl
-{
-public:
-    MyTreeListCtrl(wxWindow *parent, wxWindowID id, long style)
-        :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style) {};
-    void OnSize(wxSizeEvent& event);
-	void OnImageClick(wxTreeEvent &event);
-	DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(MyTreeListCtrl, wxTreeListCtrl)
-    EVT_SIZE(MyTreeListCtrl::OnSize)
-END_EVENT_TABLE()
-
-void MyTreeListCtrl::OnSize(wxSizeEvent& event)
-{
-    int w, h;
-    GetClientSize(&w, &h);
-	w -= 20;
-    SetColumnWidth(0, w * 5 / 8);
-    SetColumnWidth(1, w * 2 / 8);
-    SetColumnWidth(2, w / 8);
-	event.Skip();
-}
 
 MyRuLibMainFrame::MyRuLibMainFrame()
 {
@@ -131,7 +107,7 @@ void MyRuLibMainFrame::CreateControls() {
 	books_splitter->SetMinimumPaneSize(100);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksListView = new MyTreeListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
+	m_BooksListView = new BookListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);

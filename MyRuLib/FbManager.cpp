@@ -190,6 +190,9 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		node = node->m_next;
     }
 
+	if (book_authors.Count() == 0) 
+		book_authors.Add(FindAuthor(wxString(wxEmptyString)));
+
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     wxFileName filename (name);
@@ -602,33 +605,47 @@ void FbManager::OpenBook(int id)
 
     if (!bookRow) return;
 
-    if (bookRow->id_archive) {
+    if (bookRow->id_archive) 
+	{
         ArchivesRow * archiveRow = bookRow->GetArchive();
-        wxFileName filename = archiveRow->file_path + archiveRow->file_name;
-        if (!filename.FileExists()) {
-            filename = wxGetApp().GetAppPath() + archiveRow->file_name;
-            if (!filename.FileExists()) return;
+        wxFileName zip_name = archiveRow->file_path + archiveRow->file_name;
+        if (!zip_name.FileExists()) {
+            zip_name = wxGetApp().GetAppPath() + archiveRow->file_name;
+            if (!zip_name.FileExists()) return;
         }
-        wxFFileInputStream in(filename.GetFullPath());
+
+        wxFFileInputStream in(zip_name.GetFullPath());
         wxZipInputStream zip(in);
-        wxZipEntry * entry = NULL;
-        do {
-            entry = zip.GetNextEntry();
-            if (entry == NULL) return;
-        } while (entry->GetName() != bookRow->file_name);
-        zip.OpenEntry(*entry);
-        wxFileName temp_file = bookRow->file_name;
-        temp_file.SetPath(wxGetApp().GetAppPath() + wxT("extract"));
-        if (!temp_file.DirExists())
-            wxFileName::Mkdir(temp_file.GetPath());
-        wxFileOutputStream out(temp_file.GetFullPath());
+
+		bool find_ok = false;
+		bool open_ok = false;
+		while (wxZipEntry * entry = zip.GetNextEntry()) {
+			if (find_ok = (entry->GetName() == bookRow->file_name)) {
+		        open_ok = zip.OpenEntry(*entry);
+			}
+			delete entry;
+			if (find_ok) break;
+		}
+		if (!find_ok || !open_ok) return;
+
+        wxFileName file_name = bookRow->file_name;
+        file_name.SetPath(wxGetApp().GetAppPath() + wxT("extract"));
+        if (!file_name.DirExists())
+            wxFileName::Mkdir(file_name.GetPath());
+
+        wxString file_path = file_name.GetFullPath();
+        wxFileOutputStream out(file_path);
         out.Write(zip);
+
         #if defined(__WXMSW__)
-        ShellExecute(NULL, NULL, temp_file.GetFullPath(), NULL, NULL, SW_SHOW);
+		wxString fbreader = wxT("c:\\Program Files\\MyHomeLib\\HaaliReader.exe");
+		ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
         #else
         wxExecute(wxT("okular ") + temp_file.GetFullPath());
         #endif
-    } else {
+    } 
+	else 
+	{
 //        wxFileName file;
     }
 

@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BookList.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Books.cpp"
 				>
 			</File>
@@ -250,6 +254,10 @@
 			</File>
 			<File
 				RelativePath="Authors.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BookList.h"
 				>
 			</File>
 			<File
