@@ -275,7 +275,6 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
 			wxString filename = paths[i];
-			SetTitle(filename);
 			wxString html;
 			FbManager parser;
 			parser.ParseXml(filename, html);
@@ -317,7 +316,6 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
 			wxString filename = paths[i];
-			SetTitle(filename);
 			wxString html;
 			FbManager parser;
 			parser.ParseZip(filename, html);
@@ -328,8 +326,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 
 void MyRuLibMainFrame::OnProgressStart(wxCommandEvent& event)
 {
-	wxFileName filename(event.GetString());
-	m_StatusText = filename.GetFullName();
+	m_StatusText = event.GetString();
 	m_ProgressBar->SetRange(event.GetInt());
 	m_ProgressBar->SetStatusText(m_StatusText, 0);
 	m_ProgressBar->SetStatusText(wxEmptyString, 2);
@@ -344,8 +341,7 @@ void MyRuLibMainFrame::OnProgressUpdate(wxCommandEvent& event)
 
 void MyRuLibMainFrame::OnProgressFinish(wxCommandEvent& event)
 {
-	wxFileName filename(event.GetString());
-	m_StatusText = filename.GetFullName();
+	m_StatusText = wxEmptyString;
 	m_ProgressBar->SetProgress(0);
 	m_ProgressBar->SetStatusText(wxEmptyString, 0);
 	m_ProgressBar->SetStatusText(wxEmptyString, 2);

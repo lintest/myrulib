@@ -238,9 +238,10 @@ void *FbThread::Entry()
 	int id_archive = AddArchive();
 
 	{
+		wxFileName filename = m_filename;
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
 		event.SetInt(zip.GetTotalEntries());
-		event.SetString(strParsingInfo + m_filename);
+		event.SetString(strParsingInfo + filename.GetFullName());
 		wxPostEvent( m_frame, event );
 	}
 
