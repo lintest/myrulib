@@ -59,7 +59,7 @@ ParamsRow* Params::Id(int key){
 		} else {
 			row = New();
 			row->id = key;
-			row->value = 0;
+			row->value = 1;
 		}
 		m_database->CloseResultSet(result);
 		m_database->CloseStatement(pStatement);

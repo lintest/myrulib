@@ -26,7 +26,7 @@ bool DBCreator::CreateDatabase(void){
 	try {
 		m_Database->RunQuery(wxT("\
             CREATE TABLE authors(\
-                id integer not null,\
+                id integer primary key,\
                 letter char(1),\
                 search_name varchar(255),\
                 full_name varchar(255),\
