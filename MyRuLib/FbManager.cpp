@@ -625,9 +625,9 @@ void FbManager::OpenBook(int id)
 		bool find_ok = false;
 		bool open_ok = false;
 		while (wxZipEntry * entry = zip.GetNextEntry()) {
-			if (find_ok = (entry->GetName() == bookRow->file_name)) {
+		    find_ok = (entry->GetName() == bookRow->file_name);
+			if (find_ok)
 		        open_ok = zip.OpenEntry(*entry);
-			}
 			delete entry;
 			if (find_ok) break;
 		}
@@ -646,7 +646,7 @@ void FbManager::OpenBook(int id)
 		wxString fbreader = wxT("c:\\Program Files\\MyHomeLib\\HaaliReader.exe");
 		ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
         #else
-        wxExecute(wxT("okular ") + temp_file.GetFullPath());
+        wxExecute(wxT("okular ") + file_path);
         #endif
     }
 	else
