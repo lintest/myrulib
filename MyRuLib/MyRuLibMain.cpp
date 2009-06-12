@@ -20,13 +20,7 @@
 #include "BookList.h"
 #include "SettingsDlg.h"
 
-#include "res/new.xpm"
-#include "res/find.xpm"
-#include "res/new_dir.xpm"
-#include "res/htmbook.xpm"
-#include "res/nocheck.xpm"
-#include "res/checked.xpm"
-#include "res/checkout.xpm"
+#include "XpmBitmaps.h"
 
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200

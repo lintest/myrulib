@@ -312,6 +312,10 @@
 				RelativePath="wxActiveRecord.h"
 				>
 			</File>
+			<File
+				RelativePath="XpmBitmaps.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

@@ -190,6 +190,7 @@
 		<Unit filename="Sequences.h" />
 		<Unit filename="SettingsDlg.cpp" />
 		<Unit filename="SettingsDlg.h" />
+		<Unit filename="XpmBitmaps.h" />
 		<Unit filename="res/find.xpm" />
 		<Unit filename="res/new.xpm" />
 		<Unit filename="res/new_dir.xpm" />
