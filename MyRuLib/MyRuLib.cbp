@@ -175,6 +175,8 @@
 		<Unit filename="FbGenres.h" />
 		<Unit filename="FbManager.cpp" />
 		<Unit filename="FbManager.h" />
+		<Unit filename="FbParams.cpp" />
+		<Unit filename="FbParams.h" />
 		<Unit filename="FbParser.cpp" />
 		<Unit filename="FbParser.h" />
 		<Unit filename="MyRuLibApp.cpp" />

@@ -11,11 +11,11 @@
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
-	EVT_BUTTON( IDS_PROGRAM_BTN, SettingsDlg::OnSelectFileClick )
-	EVT_BUTTON( IDS_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( IDS_INTERNET_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( IDS_TEMPORARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( IDS_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_PROGRAM_BTN, SettingsDlg::OnSelectFileClick )
+	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_INTERNET_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_TEMPORARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
@@ -43,7 +43,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText1->Wrap( -1 );
 	fgSizerTop11->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_textCtrl1 = new wxTextCtrl( m_panel1, IDS_LIBRARY_TITLE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl1 = new wxTextCtrl( m_panel1, ID_LIBRARY_TITLE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl1->SetMinSize( wxSize( 200,-1 ) );
 
 	fgSizerTop11->Add( m_textCtrl1, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -57,12 +57,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer15->SetFlexibleDirection( wxBOTH );
 	fgSizer15->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl5 = new wxTextCtrl( m_panel1, IDS_PROGRAM_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl5 = new wxTextCtrl( m_panel1, ID_PROGRAM_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl5->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer15->Add( m_textCtrl5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton5 = new wxBitmapButton( m_panel1, IDS_PROGRAM_BTN, wxBitmap( exefile_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton5 = new wxBitmapButton( m_panel1, ID_PROGRAM_BTN, wxBitmap( exefile_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer15->Add( m_bpButton5, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer15, 1, wxEXPAND, 5 );
@@ -76,12 +76,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer12->SetFlexibleDirection( wxBOTH );
 	fgSizer12->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl2 = new wxTextCtrl( m_panel1, IDS_LIBRARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl2 = new wxTextCtrl( m_panel1, ID_LIBRARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl2->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer12->Add( m_textCtrl2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton2 = new wxBitmapButton( m_panel1, IDS_LIBRARY_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton2 = new wxBitmapButton( m_panel1, ID_LIBRARY_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer12->Add( m_bpButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer12, 1, wxEXPAND, 5 );
@@ -95,12 +95,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer13->SetFlexibleDirection( wxBOTH );
 	fgSizer13->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl3 = new wxTextCtrl( m_panel1, IDS_INTERNET_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl3 = new wxTextCtrl( m_panel1, ID_INTERNET_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl3->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer13->Add( m_textCtrl3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton3 = new wxBitmapButton( m_panel1, IDS_INTERNET_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton3 = new wxBitmapButton( m_panel1, ID_INTERNET_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer13->Add( m_bpButton3, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer13, 1, wxEXPAND, 5 );
@@ -114,19 +114,19 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer14->SetFlexibleDirection( wxBOTH );
 	fgSizer14->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl4 = new wxTextCtrl( m_panel1, IDS_TEMPORARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl4 = new wxTextCtrl( m_panel1, ID_TEMPORARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl4->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer14->Add( m_textCtrl4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton4 = new wxBitmapButton( m_panel1, IDS_TEMPORARY_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton4 = new wxBitmapButton( m_panel1, ID_TEMPORARY_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer14->Add( m_bpButton4, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer14, 1, wxEXPAND, 5 );
 
 	fgSizer1->Add( fgSizerTop11, 1, wxEXPAND|wxTOP, 5 );
 
-	m_checkBox1 = new wxCheckBox( m_panel1, IDS_TEMPORARY_DEL, wxT("Удалять все временные файлы при выходе из программы."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox1 = new wxCheckBox( m_panel1, ID_TEMPORARY_DEL, wxT("Удалять все временные файлы при выходе из программы."), wxDefaultPosition, wxDefaultSize, 0 );
 
 	fgSizer1->Add( m_checkBox1, 0, wxALL, 5 );
 
@@ -154,12 +154,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer22->SetFlexibleDirection( wxBOTH );
 	fgSizer22->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl6 = new wxTextCtrl( m_panel2, IDS_EXTERNAL_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl6 = new wxTextCtrl( m_panel2, ID_EXTERNAL_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer22->Add( m_textCtrl6, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	m_bpButton6 = new wxBitmapButton( m_panel2, IDS_EXTERNAL_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton6 = new wxBitmapButton( m_panel2, ID_EXTERNAL_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer22->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizer21->Add( fgSizer22, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
@@ -171,23 +171,23 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer23->SetFlexibleDirection( wxBOTH );
 	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_checkBox2 = new wxCheckBox( m_panel2, IDS_TRANSLIT_FOLDER, wxT("Транслитерация имени папки"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox2 = new wxCheckBox( m_panel2, ID_TRANSLIT_FOLDER, wxT("Транслитерация имени папки"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	fgSizer23->Add( m_checkBox2, 0, wxALL, 5 );
 
-	m_checkBox3 = new wxCheckBox( m_panel2, IDS_TRANSLIT_FILE, wxT("Транслитерация имен файлов"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox3 = new wxCheckBox( m_panel2, ID_TRANSLIT_FILE, wxT("Транслитерация имен файлов"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	fgSizer23->Add( m_checkBox3, 0, wxALL, 5 );
 
 	wxString m_radioBox1Choices[] = { wxT("Автор / Книга"), wxT("Автор / Серия / Книга") };
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
-	m_radioBox1 = new wxRadioBox( m_panel2, IDS_FOLDER_FORMAT, wxT("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
+	m_radioBox1 = new wxRadioBox( m_panel2, ID_FOLDER_FORMAT, wxT("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
 	fgSizer23->Add( m_radioBox1, 0, wxALL, 5 );
 
 	wxString m_radioBox2Choices[] = { wxT("filename.fb2"), wxT("filename.fb2.zip") };
 	int m_radioBox2NChoices = sizeof( m_radioBox2Choices ) / sizeof( wxString );
-	m_radioBox2 = new wxRadioBox( m_panel2, IDS_FILE_FORMAT, wxT("Формат выгрузки"), wxDefaultPosition, wxDefaultSize, m_radioBox2NChoices, m_radioBox2Choices, 1, wxRA_SPECIFY_COLS );
+	m_radioBox2 = new wxRadioBox( m_panel2, ID_FILE_FORMAT, wxT("Формат выгрузки"), wxDefaultPosition, wxDefaultSize, m_radioBox2NChoices, m_radioBox2Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox2->SetSelection( 0 );
 	fgSizer23->Add( m_radioBox2, 0, wxALL, 5 );
 
@@ -203,7 +203,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer3->SetFlexibleDirection( wxBOTH );
 	fgSizer3->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_checkBox21 = new wxCheckBox( m_panel3, IDS_USE_PROXY, wxT("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox21 = new wxCheckBox( m_panel3, ID_USE_PROXY, wxT("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	fgSizer3->Add( m_checkBox21, 0, wxALL, 5 );
 
@@ -221,7 +221,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizerProxy32->SetFlexibleDirection( wxBOTH );
 	fgSizerProxy32->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl7 = new wxTextCtrl( m_panel3, IDS_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl7 = new wxTextCtrl( m_panel3, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl7->SetMinSize( wxSize( 180,-1 ) );
 
 	fgSizerProxy32->Add( m_textCtrl7, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
@@ -230,7 +230,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText8->Wrap( -1 );
 	fgSizerProxy32->Add( m_staticText8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_textCtrl8 = new wxTextCtrl( m_panel3, IDS_PROXY_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl8 = new wxTextCtrl( m_panel3, ID_PROXY_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl8->SetMinSize( wxSize( 60,-1 ) );
 
 	fgSizerProxy32->Add( m_textCtrl8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
@@ -246,7 +246,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizerProxy33->SetFlexibleDirection( wxBOTH );
 	fgSizerProxy33->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl9 = new wxTextCtrl( m_panel3, IDS_PROXY_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl9 = new wxTextCtrl( m_panel3, ID_PROXY_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl9->SetMinSize( wxSize( 110,-1 ) );
 
 	fgSizerProxy33->Add( m_textCtrl9, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
@@ -255,7 +255,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText10->Wrap( -1 );
 	fgSizerProxy33->Add( m_staticText10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_textCtrl10 = new wxTextCtrl( m_panel3, IDS_PROXY_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
+	m_textCtrl10 = new wxTextCtrl( m_panel3, ID_PROXY_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
 	m_textCtrl10->SetMinSize( wxSize( 110,-1 ) );
 
 	fgSizerProxy33->Add( m_textCtrl10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
@@ -290,13 +290,19 @@ SettingsDlg::~SettingsDlg()
 
 void SettingsDlg::OnSelectFileClick( wxCommandEvent& event )
 {
+#ifdef __WIN32__
+    wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
+#else
+    wxString wildCard = wxFileSelectorDefaultWildcardStr;
+#endif
+
     wxFileDialog dlg (
 		this,
-		_("Выберите файл для добавления в библиотеку…"),
+		_("Выберите приложение для просмотра FB2 файлов…"),
 		wxEmptyString,
 		wxEmptyString,
-		_("Fiction books (*.fb2)|*.fb2"),
-		wxFD_OPEN | wxFD_MULTIPLE,
+		wildCard,
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
 

@@ -8,7 +8,7 @@
  **************************************************************/
 
 #include "DBCreator.h"
-#include "FbManager.h"
+#include "FbParams.h"
 #include <DatabaseLayerException.h>
 
 DBCreator::DBCreator(DatabaseLayer * database) {
@@ -76,7 +76,7 @@ bool DBCreator::CreateDatabase(void){
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
 	try {
-		FbManager::InitParams(m_Database);
+		FbParams::InitParams(m_Database);
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 

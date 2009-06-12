@@ -266,7 +266,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 		wxEmptyString,
 		wxEmptyString,
 		_("Fiction books (*.fb2)|*.fb2"),
-		wxFD_OPEN | wxFD_MULTIPLE,
+		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
 
@@ -307,7 +307,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		wxEmptyString,
 		wxEmptyString,
 		_("Zip file (*.zip)|*.zip"),
-		wxFD_OPEN | wxFD_MULTIPLE,
+		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
 

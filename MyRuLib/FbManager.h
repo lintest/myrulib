@@ -30,9 +30,6 @@ private:
 
 class FbManager{
 public:
-    static void MakeUpper(wxString & data);
-    static void MakeLower(wxString & data);
-	static void InitParams(DatabaseLayer * database);
 	static wxString BookInfo(int id);
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author);
 	static void FillAuthors(wxListBox *listbox, const wxString & findText);
