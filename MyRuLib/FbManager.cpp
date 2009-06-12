@@ -242,7 +242,7 @@ void *FbThread::Entry()
 
 	{
 		wxFileName filename = m_filename;
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
 		event.SetInt(zip.GetTotalEntries());
 		event.SetString(strParsingInfo + filename.GetFullName());
 		wxPostEvent( m_frame, event );
@@ -253,7 +253,7 @@ void *FbThread::Entry()
 		if (entry->GetSize()) {
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
-				wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE );
+				wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
 				event.SetString(filename);
 				event.SetInt(progress++);
 				wxPostEvent( m_frame, event );
@@ -266,7 +266,7 @@ void *FbThread::Entry()
 	}
 
 	{
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_FINISH );
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_FINISH );
 		wxPostEvent( m_frame, event );
 	}
 

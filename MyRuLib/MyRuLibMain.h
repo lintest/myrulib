@@ -20,23 +20,24 @@
 #include "Authors.h"
 #include "ProgressBar.h"
 
-enum {
-	ID_AUTHORS_LISTBOX = 10001,
-	ID_PROGRESSBAR,
-	ID_BOOKS_LISTCTRL,
-	ID_BOOKS_INFO_PANEL,
-	ID_NEW_FILE,
-	ID_NEW_DIR,
-	ID_NEW_ZIP,
-	ID_FIND_TEXT,
-	ID_FIND_BTN,
-	ID_PROGRESS_START,
-	ID_PROGRESS_UPDATE,
-	ID_PROGRESS_FINISH,
-};
-
 class MyRuLibMainFrame: public wxFrame
 {
+public:
+    enum {
+        ID_AUTHORS_LISTBOX = 10001,
+        ID_PROGRESSBAR,
+        ID_BOOKS_LISTCTRL,
+        ID_BOOKS_INFO_PANEL,
+        ID_NEW_FILE,
+        ID_NEW_DIR,
+        ID_NEW_ZIP,
+        ID_FIND_TEXT,
+        ID_FIND_BTN,
+        ID_PROGRESS_START,
+        ID_PROGRESS_UPDATE,
+        ID_PROGRESS_FINISH,
+    };
+private:
 	wxTextCtrl * m_FindTextCtrl;
 	wxListBox * m_AuthorsListBox;
 	wxTreeListCtrl * m_BooksListView;

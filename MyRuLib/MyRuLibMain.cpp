@@ -8,7 +8,6 @@
  **************************************************************/
 
 #include <wx/splitter.h>
-#include <wx/aboutdlg.h>
 #include <wx/imaglist.h>
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
