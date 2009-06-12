@@ -5,16 +5,17 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
+#include "FbParams.h"
 #include "SettingsDlg.h"
 #include "XpmBitmaps.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
-	EVT_BUTTON( ID_PROGRAM_BTN, SettingsDlg::OnSelectFileClick )
+	EVT_BUTTON( ID_FB2_PROGRAM_BTN, SettingsDlg::OnSelectFileClick )
 	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_INTERNET_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_TEMPORARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_EXTRACT_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 END_EVENT_TABLE()
 
@@ -57,12 +58,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer15->SetFlexibleDirection( wxBOTH );
 	fgSizer15->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl5 = new wxTextCtrl( m_panel1, ID_PROGRAM_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl5 = new wxTextCtrl( m_panel1, ID_FB2_PROGRAM_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl5->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer15->Add( m_textCtrl5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton5 = new wxBitmapButton( m_panel1, ID_PROGRAM_BTN, wxBitmap( exefile_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton5 = new wxBitmapButton( m_panel1, ID_FB2_PROGRAM_BTN, wxBitmap( exefile_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer15->Add( m_bpButton5, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer15, 1, wxEXPAND, 5 );
@@ -95,12 +96,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer13->SetFlexibleDirection( wxBOTH );
 	fgSizer13->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl3 = new wxTextCtrl( m_panel1, ID_INTERNET_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl3 = new wxTextCtrl( m_panel1, ID_DOWNLOAD_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl3->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer13->Add( m_textCtrl3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton3 = new wxBitmapButton( m_panel1, ID_INTERNET_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton3 = new wxBitmapButton( m_panel1, ID_DOWNLOAD_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer13->Add( m_bpButton3, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer13, 1, wxEXPAND, 5 );
@@ -114,19 +115,19 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer14->SetFlexibleDirection( wxBOTH );
 	fgSizer14->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_textCtrl4 = new wxTextCtrl( m_panel1, ID_TEMPORARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl4 = new wxTextCtrl( m_panel1, ID_EXTRACT_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl4->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizer14->Add( m_textCtrl4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton4 = new wxBitmapButton( m_panel1, ID_TEMPORARY_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton4 = new wxBitmapButton( m_panel1, ID_EXTRACT_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer14->Add( m_bpButton4, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer14, 1, wxEXPAND, 5 );
 
 	fgSizer1->Add( fgSizerTop11, 1, wxEXPAND|wxTOP, 5 );
 
-	m_checkBox1 = new wxCheckBox( m_panel1, ID_TEMPORARY_DEL, wxT("Удалять все временные файлы при выходе из программы."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox1 = new wxCheckBox( m_panel1, ID_EXTRACT_DELETE, wxT("Удалять все временные файлы при выходе из программы."), wxDefaultPosition, wxDefaultSize, 0 );
 
 	fgSizer1->Add( m_checkBox1, 0, wxALL, 5 );
 
@@ -328,3 +329,25 @@ void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
 	}
 
 }
+
+
+const SettingsDlg::Struct ids[] = {
+    {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, SettingsDlg::Txt},
+};
+
+SettingsDlg::ID SettingsDlg::GetId(int param)
+{
+/*
+    static SettingStruct ids[] = {
+        {DB_LIBRARY_TITLE, ID_LIBRARY_TITLE, Txt},
+    };
+*/
+};
+
+void SettingsDlg::Load()
+{
+};
+
+void SettingsDlg::Save()
+{
+};

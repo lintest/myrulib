@@ -37,16 +37,16 @@ public:
 	Params(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("params"));
 	Params(DatabaseLayer* database,const wxString& table=wxT("params"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("params"));
-	
+
 	ParamsRow* New();
 	bool Delete(int key);
 
-	
+
 	ParamsRow* Id(int key);
 
 	ParamsRow* Where(const wxString& whereClause);
 	ParamsRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	ParamsRowSet* All(const wxString& orderBy=wxEmptyString); 
+	ParamsRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -74,12 +74,12 @@ public:
 	wxString text;
 
 public:
-	
-	
+    bool IsNew() { return newRow; };
+
 	bool Save();
 	bool Delete();
-	
-	
+
+
 ////@@begin custom arRow
 public:
 
@@ -87,7 +87,7 @@ public:
 
 
 
-////@@end custom arRow	
+////@@end custom arRow
 
 };
 ////@@end gen arRow
@@ -99,10 +99,10 @@ public:
 	ParamsRowSet(wxActiveRecord* activeRecord);
 	ParamsRowSet(DatabaseLayer* database,const wxString& table=wxT("params"));
 	virtual ParamsRow* Item(unsigned long item);
-	
+
 	virtual bool SaveAll();
-	
-	
+
+
 protected:
 	static int CMPFUNC_value(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

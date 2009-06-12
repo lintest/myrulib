@@ -15,7 +15,8 @@ enum {
 	DB_NEW_SEQUENCE,
 	FB_LIBRARY_DIR,
 	FB_EXTRACT_DIR,
-	FB_EXEC_COMMAND,
+	FB_DOWNLOAD_DIR,
+	FB_FB2_PROGRAM,
 };
 
 class FbParams {
@@ -29,11 +30,15 @@ public:
 private:
     DatabaseLayer *m_database;
     wxCriticalSectionLocker m_locker;
+    int DefaultValue(int param);
+    wxString DefaultText(int param);
 public:
     FbParams();
     FbParams(DatabaseLayer *database, wxCriticalSection &section);
     int GetValue(int param);
     wxString GetText(int param);
+    void SetValue(int param, int value);
+    void SetText(int param, wxString &text);
 };
 
 #endif // __FBPARAMS_H__

@@ -179,6 +179,8 @@
 		<Unit filename="FbParams.h" />
 		<Unit filename="FbParser.cpp" />
 		<Unit filename="FbParser.h" />
+		<Unit filename="FbThread.cpp" />
+		<Unit filename="FbThread.h" />
 		<Unit filename="MyRuLibApp.cpp" />
 		<Unit filename="MyRuLibApp.h" />
 		<Unit filename="MyRuLibMain.cpp" />

@@ -7,19 +7,14 @@
  * License:
  **************************************************************/
 
+#include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
-#include "FbParams.h"
-#include "FbManager.h"
-#include "FbGenres.h"
-#include "MyRuLibApp.h"
-#include "MyRuLibMain.h"
-#include "Authors.h"
-#include "Books.h"
-#include "Params.h"
-#include "Sequences.h"
-#include "RecordIDClientData.h"
 #include "FbThread.h"
+#include "FbManager.h"
+#include "MyRuLibApp.h"
+#include "RecordIDClientData.h"
+#include "Sequences.h"
 
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
