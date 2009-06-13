@@ -71,7 +71,7 @@ while ($row = $query->fetch_array()) {
   $letter = utf8_substr($full_name,0,1);
   $letter = strtoupperEx($letter,0,1);
 
-  echo $row['AvtorId']." - ".$full_name." - ".$letter." - ".$search_name."\n";
+  echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
   $sql = "INSERT INTO authors (id, letter, full_name, search_name) VALUES(?,?,?,?)";
   $insert = $sqlite_db->prepare($sql);
