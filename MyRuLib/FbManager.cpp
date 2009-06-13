@@ -11,6 +11,7 @@
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
 #include "FbThread.h"
+#include "FbParams.h"
 #include "FbManager.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
@@ -320,6 +321,8 @@ void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
 
 void FbManager::OpenBook(int id)
 {
+    wxString fbreader = FbParams().GetText(FB_FB2_PROGRAM);
+
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     Books books(wxGetApp().GetDatabase());
@@ -360,10 +363,9 @@ void FbManager::OpenBook(int id)
         out.Write(zip);
 
         #if defined(__WXMSW__)
-		wxString fbreader = wxT("c:\\Program Files\\MyHomeLib\\HaaliReader.exe");
 		ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
         #else
-        wxExecute(wxT("okular ") + file_path);
+        wxExecute(fbreader + wxT(" ") + file_path);
         #endif
     }
 	else

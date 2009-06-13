@@ -101,6 +101,7 @@ private:
     wxStdDialogButtonSizer* m_sdbSizerBtn;
     wxButton* m_sdbSizerBtnOK;
     wxButton* m_sdbSizerBtnCancel;
+    wxButton* m_sdbSizerBtnDefault;
 
 public:
     SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );

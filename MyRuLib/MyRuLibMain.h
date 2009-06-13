@@ -51,8 +51,10 @@ private:
 	void SelectFirstAuthor();
 public:
 	MyRuLibMainFrame();
+private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void OnExit(wxCommandEvent & event);
+    void OnSetup(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
 	void OnBooksListViewResize(wxSizeEvent& event);

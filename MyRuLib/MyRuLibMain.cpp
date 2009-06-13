@@ -35,6 +35,7 @@ wxString strParsingInfo = wxT("Обработка файла: ");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
+	EVT_MENU(wxID_SETUP, MyRuLibMainFrame::OnSetup)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, MyRuLibMainFrame::OnAuthorsListBoxSelected)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
@@ -79,6 +80,10 @@ void MyRuLibMainFrame::CreateControls() {
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
 	menuBar->Append(fileMenu, _("&Файл"));
+
+	wxMenu * serviceMenu = new wxMenu;
+	serviceMenu->Append(wxID_SETUP, _("Настройки"));
+	menuBar->Append(serviceMenu, _("&Сервис"));
 
 	wxMenu * helpMenu = new wxMenu;
 	helpMenu->Append(wxID_ABOUT, _("О программе…"));
@@ -139,9 +144,14 @@ void MyRuLibMainFrame::CreateControls() {
 	Centre();
 }
 
-void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
+void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
 {
     SettingsDlg::Execute(this);
+}
+
+void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
+{
+    wxMessageBox(_T("MyRuLib About..."));
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
