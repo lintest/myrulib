@@ -29,8 +29,7 @@
     #pragma hdrstop
 #endif
 
-#include "MyRuLibApp.h"
-
+#include <wx/app.h>
 #include <wx/treebase.h>
 #include <wx/timer.h>
 #include <wx/textctrl.h>
@@ -1015,7 +1014,7 @@ void wxEditTextCtrl::EndEdit(bool isCancelled) {
 
 bool wxEditTextCtrl::Destroy() {
     Hide();
-    wxGetApp().GetTraits()->ScheduleForDestroy(this);
+    wxTheApp->GetTraits()->ScheduleForDestroy(this);
     return true;
 }
 
