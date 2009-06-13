@@ -330,24 +330,79 @@ void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
 
 }
 
-
-const SettingsDlg::Struct ids[] = {
-    {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, SettingsDlg::Txt},
-};
-
-SettingsDlg::ID SettingsDlg::GetId(int param)
+void SettingsDlg::Assign(bool write)
 {
-/*
-    static SettingStruct ids[] = {
-        {DB_LIBRARY_TITLE, ID_LIBRARY_TITLE, Txt},
+    enum Type {
+        tText,
+        tCheck,
+        tRadio,
     };
-*/
+    struct Struct{
+        int param;
+        ID control;
+        Type type;
+    };
+
+    const Struct ids[] = {
+        {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
+        {FB_FB2_PROGRAM, SettingsDlg::ID_FB2_PROGRAM_TXT, tText},
+        {FB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
+        {FB_DOWNLOAD_DIR, SettingsDlg::ID_DOWNLOAD_DIR_TXT, tText},
+        {FB_EXTRACT_DIR, SettingsDlg::ID_EXTRACT_DIR_TXT, tText},
+        {FB_EXTRACT_DELETE, SettingsDlg::ID_EXTRACT_DELETE, tCheck},
+        {FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
+        {FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
+        {FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
+        {FB_FOLDER_FORMAT, SettingsDlg::ID_FOLDER_FORMAT, tRadio},
+        {FB_FILE_FORMAT, SettingsDlg::ID_FILE_FORMAT, tRadio},
+        {ID_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
+        {FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tText},
+        {FB_PROXY_PORT, SettingsDlg::ID_PROXY_PORT, tText},
+        {FB_PROXY_NAME, SettingsDlg::ID_PROXY_NAME, tText},
+        {FB_PROXY_PASS, SettingsDlg::ID_PROXY_PASS, tText},
+    };
+
+    const size_t idsCount = sizeof(ids) / sizeof(Struct);
+
+    FbParams params;
+
+    for (size_t i=0; i<idsCount; i++) {
+        switch (ids[i].type) {
+            case tText: {
+                wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control);
+                if (control) {
+                    if (write)
+                        params.SetText(ids[i].param, control->GetValue());
+                    else
+                        control->SetValue(params.GetText(ids[i].param));
+                }
+            } break;
+            case tCheck: {
+                wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control);
+                if (control) {
+                    if (write)
+                        params.SetValue(ids[i].param, control->GetValue());
+                    else
+                        control->SetValue(params.GetValue(ids[i].param));
+                }
+            } break;
+            case tRadio: {
+                wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control);
+                if (control) {
+                    if (write)
+                        params.SetValue(ids[i].param, control->GetSelection());
+                    else
+                        control->SetSelection(params.GetValue(ids[i].param));
+                }
+            } break;
+        }
+
+    }
 };
 
-void SettingsDlg::Load()
+void SettingsDlg::Execute(wxWindow* parent)
 {
-};
-
-void SettingsDlg::Save()
-{
+    SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
+    dlg.Assign(false);
+    if (dlg.ShowModal() == wxID_OK) dlg.Assign(true);
 };

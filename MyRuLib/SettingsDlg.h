@@ -34,7 +34,7 @@
 class SettingsDlg : public wxDialog
 {
 DECLARE_EVENT_TABLE()
-public:
+private:
     enum ID {
         ID_LIBRARY_TITLE = 1000,
         ID_FB2_PROGRAM_TXT,
@@ -58,19 +58,8 @@ public:
         ID_PROXY_NAME,
         ID_PROXY_PASS,
     };
-    enum Type {
-        Int,
-        Txt,
-    };
-    struct Struct{
-        int param;
-        ID control;
-        Type type;
-    };
 private:
-    ID GetId(int param);
-    void Load();
-    void Save();
+    void Assign(bool write);
     void OnSelectFileClick( wxCommandEvent& event );
     void OnSelectFolderClick( wxCommandEvent& event );
 private:
@@ -116,6 +105,7 @@ private:
 public:
     SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
     ~SettingsDlg();
+    static void Execute(wxWindow* parent);
 };
 
 #endif //__SettingsDlg__

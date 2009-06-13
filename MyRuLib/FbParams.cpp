@@ -9,7 +9,7 @@ FbParams::FbParams(DatabaseLayer *database, wxCriticalSection &section)
         :    m_database(database), m_locker(section)
 {};
 
-int FbParams::GetValue(int param)
+int FbParams::GetValue(const int &param)
 {
     Params params(m_database);
     ParamsRow * row = params.Id(param);
@@ -19,7 +19,7 @@ int FbParams::GetValue(int param)
         return row->value;
 };
 
-wxString FbParams::GetText(int param)
+wxString FbParams::GetText(const int &param)
 {
     Params params(m_database);
     ParamsRow * row = params.Id(param);
@@ -29,7 +29,7 @@ wxString FbParams::GetText(int param)
         return row->text;
 };
 
-void FbParams::SetValue(int param, int value)
+void FbParams::SetValue(const int &param, int value)
 {
     Params params(m_database);
     ParamsRow * row = params.Id(param);
@@ -41,7 +41,7 @@ void FbParams::SetValue(int param, int value)
     }
 };
 
-void FbParams::SetText(int param, wxString &text)
+void FbParams::SetText(const int &param, wxString text)
 {
     Params params(m_database);
     ParamsRow * row = params.Id(param);

@@ -141,21 +141,7 @@ void MyRuLibMainFrame::CreateControls() {
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-//    wxMessageBox(_("About..."));
-
-    SettingsDlg dlg(this, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
-    dlg.ShowModal();
-
-
-    /*
-	wxAboutDialogInfo info;
-	info.SetName(wxT("MyRuLib"));
-	info.SetVersion(wxT("0.1"));
-	info.SetWebSite(wxT("http://www.lintest.ru"));
-	info.AddDeveloper(wxT("Kandrashin Denis <mail@lintest.ru>"));
-	info.SetDescription(_("Оболочка для off-line библиотеки fb2-файлов lib.rus.ec."));
-	wxAboutBox(info);
-	*/
+    SettingsDlg::Execute(this);
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
