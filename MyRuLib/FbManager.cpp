@@ -318,6 +318,26 @@ void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
 	listbox->Thaw();
 }
 
+class TempFileEraser {
+private:
+    wxStringList filelist;
+    TempFileEraser() {};
+    virtual ~TempFileEraser();
+public:
+    static void Add(const wxString &filename);
+};
+
+TempFileEraser::~TempFileEraser()
+{
+    for (size_t i=0; i<filelist.GetCount(); i++)
+        wxRemoveFile(filelist[i]);
+};
+
+void TempFileEraser::Add(const wxString &filename)
+{
+    static TempFileEraser eraser;
+    eraser.filelist.Add(filename);
+};
 
 void FbManager::OpenBook(int id)
 {
@@ -353,12 +373,12 @@ void FbManager::OpenBook(int id)
 		}
 		if (!find_ok || !open_ok) return;
 
-        wxFileName file_name = bookRow->file_name;
-        file_name.SetPath(wxGetApp().GetAppPath() + wxT("extract"));
-        if (!file_name.DirExists())
-            wxFileName::Mkdir(file_name.GetPath());
+        wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
+        wxRemoveFile(file_name.GetFullPath());
+        file_name.SetExt(wxT("fb2"));
 
         wxString file_path = file_name.GetFullPath();
+        TempFileEraser::Add(file_path);
         wxFileOutputStream out(file_path);
         out.Write(zip);
 

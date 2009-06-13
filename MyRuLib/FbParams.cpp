@@ -1,3 +1,4 @@
+#include <wx/stdpaths.h>
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 
@@ -46,7 +47,7 @@ void FbParams::SetText(const int &param, wxString text)
     Params params(m_database);
     ParamsRow * row = params.Id(param);
     row->Save();
-    if (text == DefaultText(param)) {
+    if (text.IsEmpty() || text == DefaultText(param)) {
         row->Delete();
     } else {
         row->text = text;
@@ -67,7 +68,7 @@ wxString FbParams::DefaultText(int param)
 {
     switch (param) {
         case FB_LIBRARY_DIR: return wxGetApp().GetAppPath();
-        case FB_EXTRACT_DIR: return wxGetApp().GetAppPath() + wxT("extract");
+        case FB_EXTRACT_DIR: return wxStandardPaths().GetTempDir();
         case FB_DOWNLOAD_DIR: return wxGetApp().GetAppPath() + wxT("download");
     }
 

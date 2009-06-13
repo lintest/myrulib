@@ -21,6 +21,45 @@ END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+    wxNotebook* m_notebook;
+    wxPanel* m_panel1;
+    wxStaticText* m_staticText1;
+    wxTextCtrl* m_textCtrl1;
+    wxStaticText* m_staticText5;
+    wxTextCtrl* m_textCtrl5;
+    wxBitmapButton* m_bpButton5;
+    wxStaticText* m_staticText2;
+    wxTextCtrl* m_textCtrl2;
+    wxBitmapButton* m_bpButton2;
+    wxStaticText* m_staticText31;
+    wxTextCtrl* m_textCtrl3;
+    wxBitmapButton* m_bpButton3;
+    wxStaticText* m_staticText4;
+    wxTextCtrl* m_textCtrl4;
+    wxBitmapButton* m_bpButton4;
+    wxCheckBox* m_checkBox1;
+    wxPanel* m_panel2;
+    wxStaticText* m_staticText6;
+    wxTextCtrl* m_textCtrl6;
+    wxBitmapButton* m_bpButton6;
+    wxCheckBox* m_checkBox2;
+    wxCheckBox* m_checkBox3;
+    wxRadioBox* m_radioBox1;
+    wxRadioBox* m_radioBox2;
+    wxPanel* m_panel3;
+    wxCheckBox* m_checkBox21;
+    wxStaticText* m_staticText7;
+    wxTextCtrl* m_textCtrl7;
+    wxStaticText* m_staticText8;
+    wxTextCtrl* m_textCtrl8;
+    wxStaticText* m_staticText9;
+    wxTextCtrl* m_textCtrl9;
+    wxStaticText* m_staticText10;
+    wxTextCtrl* m_textCtrl10;
+    wxStdDialogButtonSizer* m_sdbSizerBtn;
+    wxButton* m_sdbSizerBtnOK;
+    wxButton* m_sdbSizerBtnCancel;
+
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxFlexGridSizer* fgSizerMain;
