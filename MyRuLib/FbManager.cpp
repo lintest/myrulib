@@ -20,8 +20,7 @@
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
     wxFileInputStream stream(filename);
-    if (!stream.Ok())
-        return false;
+    if (!stream.Ok()) return false;
 
 	wxFile file(filename);
 	wxFileOffset size = file.Length() / 1024;

@@ -394,7 +394,7 @@ void SettingsDlg::Assign(bool write)
         {FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
         {FB_FOLDER_FORMAT, SettingsDlg::ID_FOLDER_FORMAT, tRadio},
         {FB_FILE_FORMAT, SettingsDlg::ID_FILE_FORMAT, tRadio},
-        {ID_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
+        {FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
         {FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tText},
         {FB_PROXY_PORT, SettingsDlg::ID_PROXY_PORT, tText},
         {FB_PROXY_NAME, SettingsDlg::ID_PROXY_NAME, tText},

@@ -69,8 +69,7 @@ bool MyRuLibApp::ConnectToDatabase()
 	try	{
 		m_Database->Open(db_filepath);
 		if(bCreate)	{
-			DBCreator creator(m_Database);
-			creator.CreateDatabase();
+			DBCreator(m_Database).CreateDatabase();
 		}
 	}
 	catch(DatabaseLayerException & e) {

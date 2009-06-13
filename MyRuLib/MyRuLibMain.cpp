@@ -69,14 +69,14 @@ bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString &
 	return res;
 }
 
-void MyRuLibMainFrame::CreateControls() {
+void MyRuLibMainFrame::CreateControls()
+{
 	wxMenuBar * menuBar = new wxMenuBar;
-	SetMenuBar(menuBar);
 
 	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"));
-	fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"));
-	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"));
+	fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"))->SetBitmap(wxBitmap(new_xpm));
+	fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"))->SetBitmap(wxBitmap(new_dir_xpm));
+	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
 	menuBar->Append(fileMenu, _("&Файл"));
@@ -88,6 +88,8 @@ void MyRuLibMainFrame::CreateControls() {
 	wxMenu * helpMenu = new wxMenu;
 	helpMenu->Append(wxID_ABOUT, _("О программе…"));
 	menuBar->Append(helpMenu, _("&?"));
+
+	SetMenuBar(menuBar);
 
 	SetToolBar(CreateButtonBar());
 

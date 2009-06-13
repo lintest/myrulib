@@ -58,7 +58,9 @@ void FbParams::SetText(const int &param, wxString text)
 int FbParams::DefaultValue(int param)
 {
     switch (param) {
-        case FB_LIBRARY_DIR: break;
+        case FB_TRANSLIT_FOLDER: return 0;
+        case FB_TRANSLIT_FILE: return 1;
+        case FB_USE_PROXY: return 0;
     }
 
     return 0;
@@ -70,6 +72,9 @@ wxString FbParams::DefaultText(int param)
         case FB_LIBRARY_DIR: return wxGetApp().GetAppPath();
         case FB_EXTRACT_DIR: return wxStandardPaths().GetTempDir();
         case FB_DOWNLOAD_DIR: return wxGetApp().GetAppPath() + wxT("download");
+#ifndef __WIN32__
+        case FB_FB2_PROGRAM: return wxT("fbreader");
+#endif //__WIN32__
     }
 
     return wxEmptyString;
