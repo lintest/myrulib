@@ -255,7 +255,10 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 			}
 		}
 
-		SequenceList sequencesList;
+		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("id_sequence, title"));
+		for(size_t i = 0; i < allBooks->Count(); i++) {
+		    allBooks->Item(i)->added = false;
+		}
 
 		if (!sequencesText.IsEmpty()) {
 			wxString whereCause = wxString::Format(wxT("id in(%s)"), sequencesText.c_str());
@@ -264,34 +267,34 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 
 			for(size_t i = 0; i < allSequences->Count(); i++) {
 				SequencesRow * thisSequence = allSequences->Item(i);
-				wxTreeItemId item = treelist->AppendItem(root, thisSequence->value, 0);
-				treelist->SetItemBold(item, true);
-				sequencesList.Append(thisSequence->id, item);
+				wxTreeItemId parent = treelist->AppendItem(root, thisSequence->value, 0);
+				treelist->SetItemBold(parent, true);
+
+                for (size_t j = 0; j < bookseq->Count(); j++) {
+                    BookseqRow * seqRow = bookseq->Item(j);
+                    if (seqRow->id_seq == thisSequence->id) {
+                        for(size_t k = 0; k < allBooks->Count(); k++) {
+                            BooksRow * thisBook = allBooks->Item(k);
+                            if (seqRow->id_book == thisBook->id) {
+                                wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+                                if (seqRow->number>0) treelist->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
+                                treelist->SetItemText (item, 2, thisBook->file_name);
+                                treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
+                                thisBook->added = true;
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
-		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("id_sequence, title"));
 
 		for(size_t i = 0; i < allBooks->Count(); i++) {
-			wxTreeItemId parent = root;
-		    bool notFound = true;
 		    BooksRow * thisBook = allBooks->Item(i);
-		    for (size_t j = 0; j < bookseq->Count(); j++) {
-		        BookseqRow * seqRow = bookseq->Item(j);
-		        if (seqRow->id_book == thisBook->id) {
-                    parent = sequencesList.Find(seqRow->id_seq, root);
-		            notFound = false;
-                    wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
-                    if (seqRow->number>0) treelist->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
-                    treelist->SetItemText (item, 2, thisBook->file_name);
-                    treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size));
-		        }
-		    }
-			if (notFound) {
-                wxTreeItemId item = treelist->AppendItem(root, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
-                treelist->SetItemText (item, 2, thisBook->file_name);
-                treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size));
-			}
+		    if (thisBook->added) continue;
+            wxTreeItemId item = treelist->AppendItem(root, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+            treelist->SetItemText (item, 2, thisBook->file_name);
+            treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
 		}
 	}
     treelist->ExpandAll(root);
