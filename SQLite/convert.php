@@ -60,7 +60,10 @@ function convert_authors($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("DELETE FROM authors");
 
-  $sqltest = "SELECT * FROM libavtorname";
+  $sqltest = "
+    SELECT * FROM libavtorname
+    WHERE EXISTS(SELECT AvtorId FROM libavtor WHERE libavtor.AvtorId = libavtorname.AvtorId )
+  ";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
@@ -94,26 +97,15 @@ function convert_books($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['BookId']." - ".$row['AvtorId']." - ".$row['Title']."\n";
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_size) VALUES(?,?,?,?,?)";
+    $filename = $row['BookId'].".fb2";
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size) VALUES(?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $row['FileSize']));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
 }
-/*
-                id_author integer not null,\
-                title varchar(255) not null,\
-                annotation text,\
-                genres text,\
-				id_sequence integer,\
-                deleted boolean,\
-                id_archive integer,\
-                file_name varchar(255),\
-                file_size integer,\
-                description text);\
-*/
 
 function fix_avtoraliase($mysql_db, $sqlite_db)
 {
@@ -137,8 +129,8 @@ $sqlite_db = new PDO('sqlite:/home/user/projects/MyRuLib/build/Debug/MyRuLib.db'
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
 $mysql_db->query("SET NAMES utf8");
 
-//convert_authors($mysql_db, $sqlite_db);
-//fix_avtoraliase($mysql_db, $sqlite_db);
+convert_authors($mysql_db, $sqlite_db);
+fix_avtoraliase($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
 
 ?>
