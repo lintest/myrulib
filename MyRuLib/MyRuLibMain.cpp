@@ -48,6 +48,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_TOOL(ID_NEW_FILE, MyRuLibMainFrame::OnNewFile)
     EVT_TOOL(ID_NEW_DIR, MyRuLibMainFrame::OnNewDir)
     EVT_TOOL(ID_NEW_ZIP, MyRuLibMainFrame::OnNewZip)
+    EVT_TOOL(ID_REG_ZIP, MyRuLibMainFrame::OnRegZip)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
@@ -77,6 +78,7 @@ void MyRuLibMainFrame::CreateControls()
 	fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"))->SetBitmap(wxBitmap(new_xpm));
 	fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"))->SetBitmap(wxBitmap(new_dir_xpm));
 	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
+	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
 	menuBar->Append(fileMenu, _("&Файл"));
@@ -111,11 +113,13 @@ void MyRuLibMainFrame::CreateControls()
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksListView = new BookListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
+    m_BooksListView->AddColumn (_T("N"), 30, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
     m_BooksListView->SetColumnEditable (0, false);
     m_BooksListView->SetColumnEditable (1, false);
     m_BooksListView->SetColumnEditable (2, false);
+    m_BooksListView->SetColumnEditable (3, false);
 
     wxBitmap size = wxBitmap(checked_xpm);
 	wxImageList *images;
@@ -319,6 +323,33 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 			wxString html;
 			FbManager parser;
 			parser.ParseZip(filename, html);
+			m_BooksInfoPanel->AppendToPage(html);
+		}
+	}
+}
+
+void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
+
+    wxFileDialog dlg (
+		this,
+		_("Выберите zip-файл для регистрации в библиотеке…"),
+		wxEmptyString,
+		wxEmptyString,
+		_("Zip file (*.zip)|*.zip"),
+		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
+		wxDefaultPosition
+    );
+
+	if (dlg.ShowModal() == wxID_OK) {
+		m_BooksInfoPanel->SetPage(blank_page);
+
+		wxArrayString paths;
+		dlg.GetPaths(paths);
+		for (size_t i = 0; i < paths.GetCount(); ++i) {
+			wxString filename = paths[i];
+			wxString html;
+			FbManager parser;
+			parser.RegisterZip(filename);
 			m_BooksInfoPanel->AppendToPage(html);
 		}
 	}

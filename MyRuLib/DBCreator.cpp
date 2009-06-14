@@ -70,6 +70,8 @@ bool DBCreator::CreateDatabase(void){
                 file_name varchar(255),\
                 file_path varchar(255),\
                 file_size integer,\
+                min_number integer,\
+                max_number integer,\
                 description text);\
         "));
 		m_Database->RunQuery(wxT("CREATE INDEX book_file ON archives(file_name);"));

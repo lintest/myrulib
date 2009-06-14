@@ -29,9 +29,23 @@ bool FbManager::ParseXml(const wxString& filename, wxString& html)
 	return FbThread::ParseXml(stream, filename, size, 0);
 }
 
-bool FbManager::ParseZip(const wxString& filename, wxString& html)
+bool FbManager::RegisterZip(const wxString& filename)
 {
 	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename, true);
+
+    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+        wxLogError(wxT("Can't create thread!"));
+        return false;
+    }
+
+    thread->Run();
+
+    return true;
+}
+
+bool FbManager::ParseZip(const wxString& filename, wxString& html)
+{
+	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
@@ -263,18 +277,20 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 		    bool notFound = true;
 		    BooksRow * thisBook = allBooks->Item(i);
 		    for (size_t j = 0; j < bookseq->Count(); j++) {
-		        if (bookseq->Item(j)->id_book == thisBook->id) {
-                    parent = sequencesList.Find(bookseq->Item(j)->id_seq, root);
+		        BookseqRow * seqRow = bookseq->Item(j);
+		        if (seqRow->id_book == thisBook->id) {
+                    parent = sequencesList.Find(seqRow->id_seq, root);
 		            notFound = false;
                     wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
-                    treelist->SetItemText (item, 1, thisBook->file_name);
-                    treelist->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+                    if (seqRow->number>0) treelist->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
+                    treelist->SetItemText (item, 2, thisBook->file_name);
+                    treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size));
 		        }
 		    }
 			if (notFound) {
                 wxTreeItemId item = treelist->AppendItem(root, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
-                treelist->SetItemText (item, 1, thisBook->file_name);
-                treelist->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+                treelist->SetItemText (item, 2, thisBook->file_name);
+                treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size));
 			}
 		}
 	}

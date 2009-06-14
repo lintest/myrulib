@@ -1,5 +1,9 @@
-for t in libactions libavtoraliase libavtorname libavtor libbook libdonations libgenrelist libgenre libpolka libseq;
+#!/bin/sh
+for t in libactions libavtoraliase libavtorname libavtor libblocked libbook.old libbook libdonations libfilename libgenrelist libgenre libjoinedbooks libpolka libseqname libseq libsrclang libtranslator;
 do
-wget http://lib.rus.ec/sql/lib.$t.sql.gz;
-zcat lib.$t.sql.gz | mysql $DBNAME;
+wget http://rus.ec/sql/$t;
+zcat $t | mysql $DBNAME -u root lib;
 done
+
+
+

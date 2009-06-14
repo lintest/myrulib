@@ -31,6 +31,7 @@ public:
         ID_NEW_FILE,
         ID_NEW_DIR,
         ID_NEW_ZIP,
+        ID_REG_ZIP,
         ID_FIND_TEXT,
         ID_FIND_BTN,
         ID_PROGRESS_START,
@@ -66,6 +67,7 @@ private:
 	void OnNewFile( wxCommandEvent& event );
 	void OnNewDir( wxCommandEvent& event );
 	void OnNewZip( wxCommandEvent& event );
+	void OnRegZip( wxCommandEvent& event );
 	void OnProgressStart(wxCommandEvent& event);
 	void OnProgressUpdate(wxCommandEvent& event);
 	void OnProgressFinish(wxCommandEvent& event);
