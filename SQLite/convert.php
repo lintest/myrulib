@@ -96,15 +96,15 @@ function convert_books($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM books");
 
   $sqltest = "
-    SELECT libbook.BookId, FileSize, Title, Deleted, CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
+    SELECT libbook.BookId, FileSize, Title, Deleted, FileType, CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
     FROM libbook LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId 
     WHERE Deleted<>1
   ";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    echo $row['BookId']." - ".$row['AvtorId']." - ".$row['Title']."\n";
     $filename = $row['BookId'].".".$row['FileType'];
+    echo $row['BookId']." - ".$filename." - ".$row['AvtorId']." - ".$row['Title']."\n";
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type) VALUES(?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
@@ -179,10 +179,10 @@ $sqlite_db = new PDO('sqlite:/home/user/projects/MyRuLib/build/Release/MyRuLib.d
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
 $mysql_db->query("SET NAMES utf8");
 
-convert_authors($mysql_db, $sqlite_db);
+//convert_authors($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
-convert_seqnames($mysql_db, $sqlite_db);
-convert_sequences($mysql_db, $sqlite_db);
+//convert_seqnames($mysql_db, $sqlite_db);
+//convert_sequences($mysql_db, $sqlite_db);
 //fix_avtoraliase($mysql_db, $sqlite_db);
 
 ?>
