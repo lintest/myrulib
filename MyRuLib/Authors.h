@@ -12,6 +12,7 @@
 #include <wx/string.h>
 #include <wx/datetime.h>
 #include "Books.h"
+#include "Bookseq.h"
 
 ////@@end gen include
 
@@ -27,6 +28,10 @@ class Books;
 class BooksRow;
 class BooksRowSet;
 
+class Bookseq;
+class BookseqRow;
+class BookseqRowSet;
+
 ////@@end gen forward
 
 ////@@begin custom forward
@@ -41,15 +46,15 @@ public:
 	Authors(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("authors"));
 	Authors(DatabaseLayer* database,const wxString& table=wxT("authors"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("authors"));
-	
+
 	AuthorsRow* New();
 	bool Delete(int key);
 
-	
+
 	AuthorsRow* Id(int key);
 	AuthorsRow* Where(const wxString& whereClause);
 	AuthorsRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	AuthorsRowSet* All(const wxString& orderBy=wxEmptyString); 
+	AuthorsRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -79,15 +84,15 @@ public:
 
 public:
 	BooksRowSet* GetBooks(const wxString& orderBy=wxEmptyString);
+	BookseqRowSet* GetBookseqs(const wxString& orderBy=wxEmptyString);
 
-	
 	bool Save();
 	bool Delete();
-	
-	
+
+
 ////@@begin custom arRow
 public:
-////@@end custom arRow	
+////@@end custom arRow
 
 };
 ////@@end gen arRow
@@ -99,10 +104,10 @@ public:
 	AuthorsRowSet(wxActiveRecord* activeRecord);
 	AuthorsRowSet(DatabaseLayer* database,const wxString& table=wxT("authors"));
 	virtual AuthorsRow* Item(unsigned long item);
-	
+
 	virtual bool SaveAll();
-	
-	
+
+
 protected:
 	static int CMPFUNC_full_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_description(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

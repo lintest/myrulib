@@ -20,9 +20,9 @@ bool Authors::Create(const wxString& name,const wxString& server,const wxString&
 
 AuthorsRow* Authors::RowFromResult(DatabaseResultSet* result){
 	AuthorsRow* row=new AuthorsRow(this);
-	
+
 	row->GetFromResult(result);
-	
+
 	return row;
 }
 
@@ -72,14 +72,14 @@ AuthorsRow* Authors::Where(const wxString& whereClause){
 		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(!result->Next())
 			return NULL;
 		AuthorsRow* row=RowFromResult(result);
-		
+
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);						
+		m_database->CloseStatement(pStatement);
 		return row;
 	}
 	catch (DatabaseLayerException& e)
@@ -97,18 +97,18 @@ AuthorsRowSet* Authors::WhereSet(const wxString& whereClause,const wxString& ord
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
 			}
 		}
-		
+
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);	
+		m_database->CloseStatement(pStatement);
 		return rowSet;
-		
+
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -125,9 +125,9 @@ AuthorsRowSet* Authors::All(const wxString& orderBy){
 		if(!orderBy.IsEmpty())
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		
+
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
@@ -135,9 +135,9 @@ AuthorsRowSet* Authors::All(const wxString& orderBy){
 		}
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);	
+		m_database->CloseStatement(pStatement);
 		return rowSet;
-		
+
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -162,7 +162,7 @@ AuthorsRow::AuthorsRow(const AuthorsRow& src){
 	if(&src==this)
 		return;
 	newRow=src.newRow;
-	
+
 	full_name=src.full_name;
 	description=src.description;
 	id=src.id;
@@ -177,13 +177,13 @@ AuthorsRow::AuthorsRow(const AuthorsRow& src){
 AuthorsRow::AuthorsRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
 	newRow=true;
 }
-	
+
 
 AuthorsRow& AuthorsRow::operator=(const AuthorsRow& src){
 	if(&src==this)
 		return *this;
 	newRow=src.newRow;
-	
+
 	full_name=src.full_name;
 	description=src.description;
 	id=src.id;
@@ -198,7 +198,7 @@ AuthorsRow& AuthorsRow::operator=(const AuthorsRow& src){
 }
 
 bool AuthorsRow::GetFromResult(DatabaseResultSet* result){
-	
+
 	newRow=false;
 		full_name=result->GetResultString(wxT("full_name"));
 	description=result->GetResultString(wxT("description"));
@@ -212,7 +212,7 @@ bool AuthorsRow::GetFromResult(DatabaseResultSet* result){
 
 	return true;
 }
-	
+
 
 bool AuthorsRow::Save(){
 	try{
@@ -229,7 +229,7 @@ bool AuthorsRow::Save(){
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
-			
+
 			newRow=false;
 		}
 		else{
@@ -246,7 +246,7 @@ bool AuthorsRow::Save(){
 			m_database->CloseStatement(pStatement);
 
 		}
-		
+
 		return true;
 	}
 	catch (DatabaseLayerException& e)
@@ -291,7 +291,25 @@ BooksRowSet* AuthorsRow::GetBooks(const wxString& orderBy){
 	return set;
 }
 
+BookseqRowSet* AuthorsRow::GetBookseqs(const wxString& orderBy){
+	BookseqRowSet* set= new BookseqRowSet(m_database,wxT("bookseq"));
+	wxString str_statement =wxT("SELECT * FROM bookseq WHERE id_author=?");
+	if(!orderBy.IsEmpty())
+		str_statement+=wxT(" ORDER BY ")+orderBy;
+	PreparedStatement* pStatement=m_database->PrepareStatement(str_statement);
+	pStatement->SetParamInt(1,id);
+	DatabaseResultSet* result= pStatement->ExecuteQuery();
 
+	while(result->Next()){
+		BookseqRow* toAdd=new BookseqRow(m_database,wxT("bookseq"));
+		toAdd->GetFromResult(result);
+		set->Add(toAdd);
+	}
+	garbageRowSets.Add(set);
+	m_database->CloseResultSet(result);
+	m_database->CloseStatement(pStatement);
+	return set;
+}
 
 /** END ACTIVE RECORD ROW **/
 
@@ -398,7 +416,7 @@ CMPFUNC_proto AuthorsRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_middle_name;
 	else if(var==wxT("last_name"))
 		return (CMPFUNC_proto)CMPFUNC_last_name;
-	else 
+	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }
 

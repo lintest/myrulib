@@ -32,8 +32,8 @@ class FbManager{
 public:
 	static wxString BookInfo(int id);
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author);
-	static void FillAuthors(wxListBox *listbox, const wxString & findText);
-	static void FillAuthors(wxListBox *listbox, const wxChar & findLetter);
+	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
+	static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
 	static void OpenBook(int id);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);

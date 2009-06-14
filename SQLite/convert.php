@@ -107,7 +107,7 @@ function convert_books($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['BookId']." - ".$row['AvtorId']." - ".$row['Title']."\n";
-    $filename = $row['BookId'].".fb2";
+    $filename = $row['BookId']."."$row['FileType'];
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size) VALUES(?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }

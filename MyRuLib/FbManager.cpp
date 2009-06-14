@@ -16,6 +16,7 @@
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
 #include "Sequences.h"
+#include "Bookseq.h"
 
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
@@ -30,7 +31,7 @@ bool FbManager::ParseXml(const wxString& filename, wxString& html)
 
 bool FbManager::ParseZip(const wxString& filename, wxString& html)
 {
-	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename);
+	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename, true);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
@@ -226,17 +227,17 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 	AuthorsRow * thisAuthor = authors.Id(id_author);
 	if(thisAuthor)
 	{
-		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("id_sequence, title"));
+		BookseqRowSet * bookseq = thisAuthor->GetBookseqs(wxT("number"));
 
-		int id_sequence = 0;
+		int id_seq = 0;
 		wxString sequencesText;
-		for(size_t i = 0; i < allBooks->Count(); i++){
-		    BooksRow * thisBook = allBooks->Item(i);
-			if (id_sequence != thisBook->id_sequence) {
+		for(size_t i = 0; i < bookseq->Count(); i++){
+		    BookseqRow * seqRow = bookseq->Item(i);
+			if (id_seq != seqRow->id_seq) {
 				if (!sequencesText.IsEmpty())
 					sequencesText += wxT(",");
-				id_sequence = thisBook->id_sequence;
-				sequencesText += wxString::Format(wxT("%d"), id_sequence);
+				id_seq = seqRow->id_seq;
+				sequencesText += wxString::Format(wxT("%d"), id_seq);
 			}
 		}
 
@@ -255,14 +256,26 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 			}
 		}
 
+		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("id_sequence, title"));
+
 		for(size_t i = 0; i < allBooks->Count(); i++) {
-		    BooksRow * thisBook = allBooks->Item(i);
 			wxTreeItemId parent = root;
-			if (thisBook->id_sequence)
-				parent = sequencesList.Find(thisBook->id_sequence, root);
-			wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
-			treelist->SetItemText (item, 1, thisBook->file_name);
-			treelist->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+		    bool notFound = true;
+		    BooksRow * thisBook = allBooks->Item(i);
+		    for (size_t j = 0; j < bookseq->Count(); j++) {
+		        if (bookseq->Item(j)->id_book == thisBook->id) {
+                    parent = sequencesList.Find(bookseq->Item(j)->id_seq, root);
+		            notFound = false;
+                    wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+                    treelist->SetItemText (item, 1, thisBook->file_name);
+                    treelist->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+		        }
+		    }
+			if (notFound) {
+                wxTreeItemId item = treelist->AppendItem(root, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+                treelist->SetItemText (item, 1, thisBook->file_name);
+                treelist->SetItemText (item, 2, wxString::Format(wxT("%d"), thisBook->file_size));
+			}
 		}
 	}
     treelist->ExpandAll(root);
@@ -271,7 +284,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 }
 
 
-void FbManager::FillAuthors(wxListBox *listbox, const wxChar & findLetter)
+void FbManager::FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter)
 {
     const wxString orderBy = wxT("search_name");
 	wxString findText = findLetter;
@@ -284,7 +297,7 @@ void FbManager::FillAuthors(wxListBox *listbox, const wxChar & findLetter)
 	FillAuthors(listbox, allAuthors);
 }
 
-void FbManager::FillAuthors(wxListBox *listbox, const wxString & findText)
+void FbManager::FillAuthorsText(wxListBox *listbox, const wxString & findText)
 {
     const wxString orderBy = wxT("search_name");
 

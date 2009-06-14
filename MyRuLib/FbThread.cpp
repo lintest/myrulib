@@ -13,11 +13,10 @@ extern wxString strRusJO;
 extern wxString strRusJE;
 extern wxString strParsingInfo;
 
-FbThread::FbThread(wxEvtHandler *frame, const wxString &filename)
-        : wxThread()
+FbThread::FbThread(wxEvtHandler *frame, const wxString &filename, bool update)
+        : wxThread(), m_filename(filename), m_frame(frame), m_update(update)
 {
-    m_filename = filename;
-    m_frame = frame;
+
 }
 
 void FbThread::MakeLower(wxString & data){
@@ -118,6 +117,22 @@ int FbThread::FindSequence(wxString &name) {
 		row->Save();
 	}
 	return row->id;
+}
+
+bool FbThread::UpdateXml(const wxString &name, int id_archive)
+{
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+    wxFileName filename (name);
+    wxString shortname = filename.GetName();
+    unsigned long number = 0;
+    if (!shortname.ToULong(&number)) return false;
+
+	DatabaseLayer * database = wxGetApp().GetDatabase();
+
+	wxString sql = wxString::Format(wxT("UPDATE books SET id_archive=%d WHERE id=%d"), id_archive, number);
+	database->RunQuery(sql);
+	return true;
 }
 
 bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
@@ -230,7 +245,10 @@ void *FbThread::Entry()
 				wxPostEvent( m_frame, event );
 
 				zip.OpenEntry(*entry);
-				ParseXml(zip, filename, entry->GetSize(), id_archive);
+				if (m_update)
+                    UpdateXml(filename, id_archive);
+				else
+                    ParseXml(zip, filename, entry->GetSize(), id_archive);
 			}
 		}
 		delete entry;

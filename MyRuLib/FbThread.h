@@ -9,7 +9,7 @@ public:
     static void MakeUpper(wxString & data);
     static void MakeLower(wxString & data);
 public:
-    FbThread(wxEvtHandler *frame, const wxString &filename);
+    FbThread(wxEvtHandler *frame, const wxString &filename, bool update = false);
 
     // thread execution starts here
     virtual void *Entry();
@@ -20,6 +20,7 @@ public:
 	static int FindAuthor(wxString &full_name);
 	static int FindSequence(wxString &name);
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
+    static bool UpdateXml(const wxString &name, int id_archive);
     int AddArchive();
 private:
 	static int NewId(int param);
@@ -27,6 +28,8 @@ private:
     unsigned m_count;
     wxString m_filename;
     wxEvtHandler *m_frame;
+    bool m_update;
+
 };
 
 #endif // __FBTHREAD_H__

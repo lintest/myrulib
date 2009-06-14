@@ -135,7 +135,7 @@ void MyRuLibMainFrame::CreateControls()
 	splitter->SplitVertically(m_AuthorsListBox, books_splitter, 160);
 	books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, books_splitter->GetSize().GetHeight()-220);
 
-	FbManager::FillAuthors(m_AuthorsListBox, _("А"));
+	FbManager::FillAuthorsChar(m_AuthorsListBox, _("А")[0]);
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
@@ -232,7 +232,7 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 void MyRuLibMainFrame::OnFindTextEnter( wxCommandEvent& event )
 {
 	if (!m_FindTextCtrl->GetValue().IsEmpty()) {
-		FbManager::FillAuthors(m_AuthorsListBox, m_FindTextCtrl->GetValue());
+		FbManager::FillAuthorsText(m_AuthorsListBox, m_FindTextCtrl->GetValue());
 		SelectFirstAuthor();
 	}
 }
@@ -252,7 +252,7 @@ void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event )
         position = id - ID_LETTER_EN;
     };
 
-	FbManager::FillAuthors(m_AuthorsListBox, alphabet[position]);
+	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabet[position]);
 	SelectFirstAuthor();
 }
 
