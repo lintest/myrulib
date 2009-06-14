@@ -169,6 +169,8 @@
 		<Unit filename="BookList.h" />
 		<Unit filename="Books.cpp" />
 		<Unit filename="Books.h" />
+		<Unit filename="Bookseq.cpp" />
+		<Unit filename="Bookseq.h" />
 		<Unit filename="DBCreator.cpp" />
 		<Unit filename="DBCreator.h" />
 		<Unit filename="FbGenres.cpp" />

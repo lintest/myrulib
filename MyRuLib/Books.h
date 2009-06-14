@@ -78,12 +78,13 @@ public:
 	int id_archive;
 	int id_sequence;
 	int file_size;
-	bool added;
 	wxString annotation;
 	wxString file_name;
 	wxString deleted;
 	wxString title;
 	int id_author;
+
+	bool added;      //For sequences use
 
 public:
 	ArchivesRow* GetArchive();

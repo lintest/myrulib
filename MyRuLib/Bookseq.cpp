@@ -350,6 +350,17 @@ int BookseqRowSet::CMPFUNC_id_author(wxActiveRecordRow** item1,wxActiveRecordRow
 		return 0;
 }
 
+int BookseqRowSet::CMPFUNC_order(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	BookseqRow** m_item1=(BookseqRow**)item1;
+	BookseqRow** m_item2=(BookseqRow**)item2;
+	if((*m_item1)->order<(*m_item2)->order)
+		return -1;
+	else if((*m_item1)->order>(*m_item2)->order)
+		return 1;
+	else
+		return 0;
+}
+
 CMPFUNC_proto BookseqRowSet::GetCmpFunc(const wxString& var) const{
 	if(var==wxT("level"))
 		return (CMPFUNC_proto)CMPFUNC_level;
@@ -361,6 +372,8 @@ CMPFUNC_proto BookseqRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_id_seq;
 	else if(var==wxT("id_author"))
 		return (CMPFUNC_proto)CMPFUNC_id_author;
+	else if(var==wxT("order"))
+		return (CMPFUNC_proto)CMPFUNC_order;
 	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }

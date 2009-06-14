@@ -37,16 +37,16 @@ public:
 	Bookseq(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("bookseq"));
 	Bookseq(DatabaseLayer* database,const wxString& table=wxT("bookseq"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("bookseq"));
-	
+
 	BookseqRow* New();
 	bool Delete(int key);
 
-	
+
 	BookseqRow* IdBook(int key);
 
 	BookseqRow* Where(const wxString& whereClause);
 	BookseqRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	BookseqRowSet* All(const wxString& orderBy=wxEmptyString); 
+	BookseqRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -70,16 +70,17 @@ public:
 	int id_seq;
 	int id_author;
 
+	int order; //For book sorting
 public:
-	
-	
+
+
 	bool Save();
 	bool Delete();
-	
-	
+
+
 ////@@begin custom arRow
 public:
-////@@end custom arRow	
+////@@end custom arRow
 
 };
 ////@@end gen arRow
@@ -91,16 +92,17 @@ public:
 	BookseqRowSet(wxActiveRecord* activeRecord);
 	BookseqRowSet(DatabaseLayer* database,const wxString& table=wxT("bookseq"));
 	virtual BookseqRow* Item(unsigned long item);
-	
+
 	virtual bool SaveAll();
-	
-	
+
+
 protected:
 	static int CMPFUNC_level(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_number(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_seq(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_author(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_order(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_global(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	virtual CMPFUNC_proto GetCmpFunc(const wxString& var) const;
 

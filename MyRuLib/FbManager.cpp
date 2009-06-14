@@ -257,7 +257,8 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 
 		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("id_sequence, title"));
 		for(size_t i = 0; i < allBooks->Count(); i++) {
-		    allBooks->Item(i)->added = false;
+            BooksRow * thisBook = allBooks->Item(i);
+		    thisBook->added = false;
 		}
 
 		if (!sequencesText.IsEmpty()) {
@@ -269,6 +270,17 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 				SequencesRow * thisSequence = allSequences->Item(i);
 				wxTreeItemId parent = treelist->AppendItem(root, thisSequence->value, 0);
 				treelist->SetItemBold(parent, true);
+
+                for (size_t j = 0; j < bookseq->Count(); j++) {
+                    BookseqRow * seqRow = bookseq->Item(j);
+                    if (seqRow->id_seq == thisSequence->id) {
+                        for(size_t k = 0; k < allBooks->Count(); k++) {
+                            BooksRow * thisBook = allBooks->Item(k);
+                            if (seqRow->id_book == thisBook->id) seqRow->order = k;
+                        }
+                    }
+                }
+                bookseq->SortBy(wxT("number,order"));
 
                 for (size_t j = 0; j < bookseq->Count(); j++) {
                     BookseqRow * seqRow = bookseq->Item(j);
@@ -287,7 +299,6 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
                 }
 			}
 		}
-
 
 		for(size_t i = 0; i < allBooks->Count(); i++) {
 		    BooksRow * thisBook = allBooks->Item(i);
