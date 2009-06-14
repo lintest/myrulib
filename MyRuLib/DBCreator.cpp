@@ -33,6 +33,7 @@ bool DBCreator::CreateDatabase(void){
                 first_name varchar(128),\
                 middle_name varchar(128),\
                 last_name varchar(128),\
+                newid integer,\
                 description text);\
         "));
 		m_Database->RunQuery(wxT("CREATE INDEX author_id ON authors(id);"));
