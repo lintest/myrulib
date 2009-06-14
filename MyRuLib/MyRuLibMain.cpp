@@ -337,7 +337,7 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 		_("Выберите zip-файл для регистрации в библиотеке…"),
 		wxEmptyString,
 		wxEmptyString,
-		_("Zip file (*.zip)|*.zip"),
+		_("Файлы Lib.rus.ec (*.zip)|???-??????-??????.zip"),
 		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
