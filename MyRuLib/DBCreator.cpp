@@ -55,6 +55,7 @@ bool DBCreator::CreateDatabase(void){
                 id_archive integer,\
                 file_name varchar(255),\
                 file_size integer,\
+                file_type varchar(20),\
                 description text);\
         "));
 		m_Database->RunQuery(wxT("CREATE INDEX book_id ON books(id);"));
@@ -70,8 +71,9 @@ bool DBCreator::CreateDatabase(void){
                 file_name varchar(255),\
                 file_path varchar(255),\
                 file_size integer,\
-                min_number integer,\
-                max_number integer,\
+                min_id_book integer,\
+                max_id_book integer,\
+                file_type varchar(20),\
                 description text);\
         "));
 		m_Database->RunQuery(wxT("CREATE INDEX book_file ON archives(file_name);"));

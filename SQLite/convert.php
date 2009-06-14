@@ -26,8 +26,8 @@ function strtoupperEx($str){
  $result = $str;
  global $strtoupperEx_pairs;
  if(!isset($strtoupperEx_pairs)){
-  $to =   'А Б В Г Д Е Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Е';
   $from = 'а б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я a b c d e f g h i j k l m n o p q r s t u v w x y z Ё';
+  $to =   'А Б В Г Д Е Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Е';
   $from = explode(' ', trim($from));
   $to = explode(' ', trim($to));
   $cfrom = count($from);
@@ -58,9 +58,9 @@ function utf8_substr($s, $offset, $len = 'all')
 
 function convert_authors($mysql_db, $sqlite_db)
 {
-  $sqlite_db->query("START TRANSACTION;");
-
   $sqlite_db->query("DELETE FROM authors");
+
+  $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(без автора)')");
 
   $sqltest = "
     SELECT * FROM libavtorname
@@ -89,9 +89,6 @@ function convert_authors($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
-
-  $sqlite_db->query("COMMIT TRANSACTION;");
-
 }
 
 function convert_books($mysql_db, $sqlite_db)
@@ -107,11 +104,11 @@ function convert_books($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['BookId']." - ".$row['AvtorId']." - ".$row['Title']."\n";
-    $filename = $row['BookId']."."$row['FileType'];
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size) VALUES(?,?,?,?,?,?)";
+    $filename = $row['BookId'].".".$row['FileType'];
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type) VALUES(?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize']));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize'], $row['FileType']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -178,7 +175,7 @@ function convert_sequences($mysql_db, $sqlite_db)
 //"CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
 
 
-$sqlite_db = new PDO('sqlite:/home/user/projects/MyRuLib/build/Debug/MyRuLib.db');
+$sqlite_db = new PDO('sqlite:/home/user/projects/MyRuLib/build/Release/MyRuLib.db');
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
 $mysql_db->query("SET NAMES utf8");
 
