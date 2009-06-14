@@ -26,8 +26,8 @@ function strtoupperEx($str){
  $result = $str;
  global $strtoupperEx_pairs;
  if(!isset($strtoupperEx_pairs)){
-  $to =   'А Б В Г Д Е Ё Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
-  $from = 'а б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я a b c d e f g h i j k l m n o p q r s t u v w x y z';
+  $to =   'А Б В Г Д Е Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Е';
+  $from = 'а б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я a b c d e f g h i j k l m n o p q r s t u v w x y z Ё';
   $from = explode(' ', trim($from));
   $to = explode(' ', trim($to));
   $cfrom = count($from);
@@ -58,12 +58,16 @@ function utf8_substr($s, $offset, $len = 'all')
 
 function convert_authors($mysql_db, $sqlite_db)
 {
+  $sqlite_db->query("START TRANSACTION;");
+
   $sqlite_db->query("DELETE FROM authors");
 
   $sqltest = "
     SELECT * FROM libavtorname
     WHERE EXISTS(SELECT AvtorId FROM libavtor WHERE libavtor.AvtorId = libavtorname.AvtorId )
   ";
+
+  $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
@@ -74,6 +78,8 @@ function convert_authors($mysql_db, $sqlite_db)
     $letter = utf8_substr($full_name,0,1);
     $letter = strtoupperEx($letter,0,1);
 
+    if (strpos($char_list, $letter) === false) { $letter = "#"; };
+
     echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
     $sql = "INSERT INTO authors (id, letter, full_name, search_name) VALUES(?,?,?,?)";
@@ -83,6 +89,9 @@ function convert_authors($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("COMMIT TRANSACTION;");
+
 }
 
 function convert_books($mysql_db, $sqlite_db)
@@ -92,6 +101,7 @@ function convert_books($mysql_db, $sqlite_db)
   $sqltest = "
     SELECT libbook.BookId, FileSize, Title, Deleted, CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
     FROM libbook LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId 
+    WHERE Deleted<>1
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -125,12 +135,57 @@ function fix_avtoraliase($mysql_db, $sqlite_db)
   }
 }
 
+function convert_seqnames($mysql_db, $sqlite_db)
+{
+  $sqlite_db->query("DELETE FROM sequences");
+
+  $sqltest = "SELECT * FROM libseqname";
+
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+    echo $row['SeqId']." - ".$row['SeqName']."\n";
+    $sql = "INSERT INTO sequences (id, value) VALUES(?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $err= $insert->execute(array($row['SeqId'], $row['SeqName']));
+    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $insert->closeCursor();
+  }
+}
+
+function convert_sequences($mysql_db, $sqlite_db)
+{
+  $sqlite_db->query("DELETE FROM bookseq");
+
+  $sqltest = "
+    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level, libavtor.AvtorId 
+    FROM libseq INNER JOIN libavtor ON libseq.BookId = libavtor.BookId 
+    WHERE NOT libseq.BookId IN (SELECT BookId FROM libbook WHERE Deleted=1)
+  ";
+
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+    echo $row['SeqId']." - ".$row['BookId']."\n";
+    $sql = "INSERT INTO bookseq(id_book, id_seq, number, level, id_author) VALUES(?,?,?,?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['SeqNumb'], $row['Level'], $row['AvtorId']));
+    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $insert->closeCursor();
+  }
+}
+
+//"CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
+
+
 $sqlite_db = new PDO('sqlite:/home/user/projects/MyRuLib/build/Debug/MyRuLib.db');
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
 $mysql_db->query("SET NAMES utf8");
 
 convert_authors($mysql_db, $sqlite_db);
-fix_avtoraliase($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
+convert_seqnames($mysql_db, $sqlite_db);
+convert_sequences($mysql_db, $sqlite_db);
+//fix_avtoraliase($mysql_db, $sqlite_db);
 
 ?>

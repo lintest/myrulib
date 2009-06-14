@@ -87,5 +87,12 @@ bool DBCreator::CreateDatabase(void){
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
+	try {
+		m_Database->RunQuery(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);"));
+		m_Database->RunQuery(wxT("CREATE INDEX bookseq_book ON sequences(id_book);"));
+		m_Database->RunQuery(wxT("CREATE INDEX bookseq_author ON sequences(id_author);"));
+	}
+	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+
 	return true;
 }
