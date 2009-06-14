@@ -32,6 +32,8 @@ wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
 wxString strRusJO = wxT("ё");
 wxString strParsingInfo = wxT("Обработка файла: ");
+wxString strOtherSequence = wxT("(прочие)");
+
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)

@@ -228,6 +228,8 @@ wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root)
 	return root;
 }
 
+extern wxString strOtherSequence;
+
 void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 
 	treelist->Freeze();
@@ -298,10 +300,15 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 			}
 		}
 
+		wxTreeItemId parent = root;
 		for(size_t i = 0; i < allBooks->Count(); i++) {
 		    BooksRow * thisBook = allBooks->Item(i);
 		    if (thisBook->added) continue;
-            wxTreeItemId item = treelist->AppendItem(root, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+		    if (parent == root) {
+                parent = treelist->AppendItem(root, strOtherSequence, 0);
+                treelist->SetItemBold(parent, true);
+		    }
+            wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
             treelist->SetItemText (item, 2, thisBook->file_name);
             treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
 		}

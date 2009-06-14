@@ -212,14 +212,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer23->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	m_checkBox2 = new wxCheckBox( m_panel2, ID_TRANSLIT_FOLDER, wxT("Транслитерация имени папки"), wxDefaultPosition, wxDefaultSize, 0 );
-
 	fgSizer23->Add( m_checkBox2, 0, wxALL, 5 );
 
 	m_checkBox3 = new wxCheckBox( m_panel2, ID_TRANSLIT_FILE, wxT("Транслитерация имен файлов"), wxDefaultPosition, wxDefaultSize, 0 );
-
 	fgSizer23->Add( m_checkBox3, 0, wxALL, 5 );
 
-	wxString m_radioBox1Choices[] = { wxT("Автор / Книга"), wxT("Автор / Серия / Книга") };
+	wxString m_radioBox1Choices[] = { wxT("Автор / Серия / Книга"), wxT("Автор / Книга") };
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
 	m_radioBox1 = new wxRadioBox( m_panel2, ID_FOLDER_FORMAT, wxT("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
