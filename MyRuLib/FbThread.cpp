@@ -238,10 +238,11 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		}
 	}
 
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-	Books books(wxGetApp().GetDatabase());
 	for (size_t i = 0; i<book_authors.Count(); i++) {
+		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+		Books books(wxGetApp().GetDatabase());
+		Bookseq bookseq(wxGetApp().GetDatabase());
+
 		BooksRow * row = books.New();
 		row->id = id_book;
 		row->id_author = book_authors[i];
@@ -254,7 +255,6 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		row->Save();
 
 		for (size_t j = 0; j<seqArray.Count(); j++) {
-			Bookseq bookseq(wxGetApp().GetDatabase());
 			BookseqRow * seqRow = bookseq.New();
 			seqRow->id_book = id_book;
 			seqRow->id_seq = seqArray[j].seq;
