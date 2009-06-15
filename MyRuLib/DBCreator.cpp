@@ -38,7 +38,8 @@ bool DBCreator::CreateDatabase(void){
                 newid integer,\
                 description text);\
         "));
-		m_Database->RunQuery(wxString::Format(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '%s')"), strNobody));
+        wxString sql = wxString::Format(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '%s')"), strNobody.c_str());
+		m_Database->RunQuery(sql);
 		m_Database->RunQuery(wxT("CREATE INDEX author_id ON authors(id);"));
 		m_Database->RunQuery(wxT("CREATE INDEX author_letter ON authors(letter);"));
 		m_Database->RunQuery(wxT("CREATE INDEX author_name ON authors(search_name);"));

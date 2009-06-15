@@ -211,7 +211,8 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 			} else if ( name == wxT("annotation") ) {
 				annotation = value;
 			} else if ( name == wxT("sequence") ) {
-			    int seq = FindSequence(node->Prop(wxT("name")));
+			    wxString name = node->Prop(wxT("name"));
+			    int seq = FindSequence(name);
 				if (seq) {
 					wxString number = node->Prop(wxT("number"));
 					long num = 0;
