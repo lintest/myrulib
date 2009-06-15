@@ -19,6 +19,7 @@ public:
     virtual void OnExit();
 	static int FindAuthor(wxString &full_name);
 	static int FindSequence(wxString &name);
+	static void AddSequence(int id_book, wxString &name, wxString &number);
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
     static bool UpdateXml(const wxString &name, int id_archive);
     int AddArchive();

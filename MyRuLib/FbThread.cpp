@@ -8,7 +8,6 @@
 #include "MyRuLibMain.h"
 
 extern wxString strAlphabet;
-extern wxString strNobody;
 extern wxString strRusJO;
 extern wxString strRusJE;
 extern wxString strParsingInfo;
@@ -76,6 +75,8 @@ int FbThread::AddArchive()
 
 int FbThread::FindAuthor(wxString &full_name) {
 
+	if (full_name.IsEmpty()) return 0;
+
 	wxString search_name = full_name;
 	MakeLower(search_name);
 	search_name.Replace(strRusJO, strRusJE);
@@ -88,13 +89,12 @@ int FbThread::FindAuthor(wxString &full_name) {
 	if (!row) {
 		wxString letter = search_name.Left(1);
 		MakeUpper(letter);
-		if (letter.IsEmpty()||(strAlphabet.Find(letter) == wxNOT_FOUND))
-			letter = wxT("#");
+		if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT("#");
 		row = authors.New();
-		row->id = NewId(DB_NEW_AUTHOR);
+		row->id = (full_name.IsEmpty() ? 0 : NewId(DB_NEW_AUTHOR));
 		row->letter = letter;
 		row->search_name = search_name;
-		row->full_name = (full_name.IsEmpty() ? strNobody : full_name);
+		row->full_name = full_name;
 		row->Save();
 	}
 	return row->id;
@@ -102,21 +102,48 @@ int FbThread::FindAuthor(wxString &full_name) {
 
 int FbThread::FindSequence(wxString &name) {
 
-	if (name.IsEmpty())
-		return 0;
+	if (name.IsEmpty()) return 0;
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Sequences sequences(wxGetApp().GetDatabase());
-	SequencesRow * row = sequences.Name(name);
+	SequencesRow * seqRow = sequences.Name(name);
 
-	if (!row) {
-		row = sequences.New();
-		row->id = NewId(DB_NEW_SEQUENCE);
-		row->value = name;
-		row->Save();
+	if (!seqRow) {
+		seqRow = sequences.New();
+		seqRow->id = - NewId(DB_NEW_SEQUENCE);
+		seqRow->value = name;
+		seqRow->Save();
 	}
-	return row->id;
+
+	return seqRow->id;
+}
+
+void FbThread::AddSequence(int id_book, wxString &name, wxString &number) {
+
+	if (name.IsEmpty()) return;
+
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+	Sequences sequences(wxGetApp().GetDatabase());
+	SequencesRow * seqRow = sequences.Name(name);
+
+	if (!seqRow) {
+		seqRow = sequences.New();
+		seqRow->id = NewId(DB_NEW_SEQUENCE);
+		seqRow->value = name;
+		seqRow->Save();
+	}
+
+	long num = 0;
+	name.ToLong(&num);
+
+	Bookseq bookseq(wxGetApp().GetDatabase());
+	BookseqRow * bookRow = bookseq.New();
+	bookRow->id_book = id_book;
+	bookRow->id_seq = seqRow->id;
+//	bookRow->id_author = ??;
+	bookRow->number = num;
 }
 
 bool FbThread::UpdateXml(const wxString &name, int id_archive)
@@ -135,6 +162,19 @@ bool FbThread::UpdateXml(const wxString &name, int id_archive)
 	return true;
 }
 
+struct SeqItem {
+public:
+	SeqItem(int s, int n): seq(s), num(n) {};
+	int seq;
+	int num;
+
+};
+
+#include <wx/arrimpl.cpp>
+
+WX_DECLARE_OBJARRAY(SeqItem, SeqItemArray);
+WX_DEFINE_OBJARRAY(SeqItemArray);
+
 bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
 {
     FbDocument xml;
@@ -152,7 +192,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 
 	wxArrayInt book_authors;
 	wxString book_title, annotation, genres;
-	int sequence = 0;
+	SeqItemArray seqArray;
 
 	node = node->m_child;
     while (node) {
@@ -171,47 +211,57 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 			} else if ( name == wxT("annotation") ) {
 				annotation = value;
 			} else if ( name == wxT("sequence") ) {
-			    value = node->Prop(wxT("name"));
-				sequence = FindSequence(value);
+			    int seq = FindSequence(node->Prop(wxT("name")));
+				if (seq) {
+					wxString number = node->Prop(wxT("number"));
+					long num = 0;
+					number.ToLong(&num);
+					seqArray.Add(SeqItem(seq, num));
+				}
 			}
         }
 		node = node->m_next;
     }
 
-	if (book_authors.Count() == 0) {
-	    wxString empty = wxEmptyString;
-		book_authors.Add(FindAuthor(empty));
+	if (book_authors.Count() == 0) book_authors.Add(0);
+
+	long id_book = 0;
+	{
+		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+		wxFileName filename (name);
+		wxString shortname = filename.GetName();
+		if (shortname.ToLong(&id_book)) {
+			wxString query = wxString::Format(wxT("DELETE FROM books WHERE id=%d"), id_book);
+			wxGetApp().GetDatabase()->RunQuery(query);
+		} else {
+			id_book = - NewId(DB_NEW_BOOK);
+		}
 	}
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-    wxFileName filename (name);
-    wxString shortname = filename.GetName();
-    unsigned long number = 0;
-    long id = 0;
-    if (shortname.ToULong(&number)) {
-        wxString query = wxString::Format(wxT("DELETE FROM books WHERE id=%d"), number);
-        wxGetApp().GetDatabase()->RunQuery(query);
-        id = number;
-    } else {
-        id = - NewId(DB_NEW_BOOK);
-    }
-
 	Books books(wxGetApp().GetDatabase());
-
-	size_t iConut = book_authors.Count();
-	for (size_t i = 0; i<iConut; i++) {
+	for (size_t i = 0; i<book_authors.Count(); i++) {
 		BooksRow * row = books.New();
-		row->id = id;
+		row->id = id_book;
 		row->id_author = book_authors[i];
-		row->id_sequence = sequence;
 		row->title = book_title;
 		row->annotation = annotation;
 		row->genres = genres;
-		row->file_size = size / 1024;
+		row->file_size = size;
 		row->file_name = name;
 		row->id_archive = id_archive;
 		row->Save();
+
+		for (size_t j = 0; j<seqArray.Count(); j++) {
+			Bookseq bookseq(wxGetApp().GetDatabase());
+			BookseqRow * seqRow = bookseq.New();
+			seqRow->id_book = id_book;
+			seqRow->id_seq = seqArray[j].seq;
+			seqRow->id_author = book_authors[i];
+			seqRow->number = seqArray[j].num;
+			seqRow->Save();
+		}
 	}
 
 	return true;
