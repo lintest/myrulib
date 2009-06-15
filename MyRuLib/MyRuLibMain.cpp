@@ -115,7 +115,7 @@ void MyRuLibMainFrame::CreateControls()
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksListView = new BookListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
-    m_BooksListView->AddColumn (_T("N"), 30, wxALIGN_LEFT);
+    m_BooksListView->AddColumn (_T("№"), 30, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
     m_BooksListView->SetColumnEditable (0, false);

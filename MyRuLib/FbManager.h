@@ -39,7 +39,7 @@ public:
 	bool ParseZip(const wxString& filename, wxString& html);
 	bool RegisterZip(const wxString& filename);
 private:
-	static void FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors);
+	static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };
 
 #endif //FBMANAGER_H

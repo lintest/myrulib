@@ -327,9 +327,12 @@ void FbManager::FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter)
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRowSet * allAuthors = authors.WhereSet(whereClause, orderBy);
-	FillAuthors(listbox, allAuthors);
+	wxString sql = wxT("SELECT id, full_name, first_name, middle_name, last_name FROM authors WHERE letter=? ORDER BY search_name");
+	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	pStatement->SetParamString(1, findLetter);
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
+	FillAuthors(listbox, result);
+	wxGetApp().GetDatabase()->CloseStatement(pStatement);
 }
 
 void FbManager::FillAuthorsText(wxListBox *listbox, const wxString & findText)
@@ -338,28 +341,28 @@ void FbManager::FillAuthorsText(wxListBox *listbox, const wxString & findText)
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRowSet * allAuthors;
-
-	if (findText.IsEmpty()) {
-        allAuthors = authors.All(orderBy);
-    } else {
-		wxString text = findText;
-		FbThread::MakeLower(text);
-        const wxString whereClause = wxString::Format(wxT("search_name like '%s%%'"), text.c_str());
-        allAuthors = authors.WhereSet(whereClause, orderBy);
-    }
-	FillAuthors(listbox, allAuthors);
+	wxString sql = wxT("SELECT id, full_name, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
+	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	pStatement->SetParamString(1, findText + wxT("%"));
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
+	FillAuthors(listbox, result);
+	wxGetApp().GetDatabase()->CloseStatement(pStatement);
 }
 
-void FbManager::FillAuthors(wxListBox *listbox, AuthorsRowSet * allAuthors)
+void FbManager::FillAuthors(wxListBox *listbox, DatabaseResultSet* result)
 {
 	listbox->Freeze();
 	listbox->Clear();
 
-	for(unsigned long i = 0; i < allAuthors->Count(); i++) {
-		listbox->Append(allAuthors->Item(i)->full_name,
-			new RecordIDClientData(allAuthors->Item(i)->id));
+	if(result){
+		while(result->Next()){
+			int id = result->GetResultInt(wxT("id"));
+			wxString full_name = result->GetResultString(wxT("full_name"));
+			wxString first_name  = result->GetResultString(wxT("first_name"));
+			wxString middle_name = result->GetResultString(wxT("middle_name"));
+			wxString last_name = result->GetResultString(wxT("last_name"));
+			listbox->Append(full_name, new RecordIDClientData(id));
+		}
 	}
 
 	listbox->Thaw();
