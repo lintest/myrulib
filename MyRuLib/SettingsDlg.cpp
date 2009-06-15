@@ -420,7 +420,7 @@ void SettingsDlg::Assign(bool write)
                     if (write)
                         params.SetValue(ids[i].param, control->GetValue());
                     else
-                        control->SetValue(params.GetValue(ids[i].param));
+                        control->SetValue((bool)params.GetValue(ids[i].param));
                 }
             } break;
             case tRadio: {

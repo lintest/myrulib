@@ -1,4 +1,4 @@
-#include "FbGenres.h"
+﻿#include "FbGenres.h"
 
 struct GenreStruct {
 	wxChar letter;

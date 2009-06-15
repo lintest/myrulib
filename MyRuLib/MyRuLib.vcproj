@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Bookseq.cpp"
+				>
+			</File>
+			<File
 				RelativePath="DBCreator.cpp"
 				>
 			</File>
@@ -211,7 +215,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbParams.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbThread.cpp"
 				>
 			</File>
 			<File
@@ -232,6 +244,10 @@
 			</File>
 			<File
 				RelativePath=".\Sequences.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SettingsDlg.cpp"
 				>
 			</File>
 			<File
@@ -265,6 +281,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Bookseq.h"
+				>
+			</File>
+			<File
 				RelativePath="DBCreator.h"
 				>
 			</File>
@@ -277,7 +297,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbParams.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbThread.h"
 				>
 			</File>
 			<File
@@ -302,6 +330,10 @@
 			</File>
 			<File
 				RelativePath=".\Sequences.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SettingsDlg.h"
 				>
 			</File>
 			<File
@@ -331,7 +363,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\exefile.xpm"
+				>
+			</File>
+			<File
 				RelativePath=".\res\find.xpm"
+				>
+			</File>
+			<File
+				RelativePath=".\res\folder_open.xpm"
 				>
 			</File>
 			<File

@@ -1,4 +1,4 @@
-/***************************************************************
+﻿/***************************************************************
  * Name:      MyRuLibMain.cpp
  * Purpose:   Code for Application Frame
  * Author:    Kandrashin Denis (mail@kandr.ru)
@@ -439,4 +439,3 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 	}
 	event.Skip();
 }
-
