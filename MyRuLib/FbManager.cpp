@@ -389,6 +389,26 @@ void TempFileEraser::Add(const wxString &filename)
     eraser.filelist.Add(filename);
 };
 
+class ZipReader: public wxZipInputStream
+{
+public:
+	ZipReader(wxFFileInputStream &in): wxZipInputStream(in) {};
+	bool FindEntry(const wxString &entryName);
+};
+
+bool ZipReader::FindEntry(const wxString &entryName)
+{
+	bool find_ok = false;
+	bool open_ok = false;
+	while (wxZipEntry * entry = GetNextEntry()) {
+	    find_ok = (entry->GetName() == entryName);
+		if (find_ok) open_ok = OpenEntry(*entry);
+		delete entry;
+		if (find_ok) break;
+	}
+	return find_ok && open_ok;
+}
+
 void FbManager::OpenBook(int id)
 {
     wxString fbreader = FbParams().GetText(FB_FB2_PROGRAM);
@@ -409,28 +429,17 @@ void FbManager::OpenBook(int id)
             if (!zip_name.FileExists()) return;
         }
 
-        wxFFileInputStream in(zip_name.GetFullPath());
-        wxZipInputStream zip(in);
-
-		bool find_ok = false;
-		bool open_ok = false;
-		while (wxZipEntry * entry = zip.GetNextEntry()) {
-		    find_ok = (entry->GetName() == bookRow->file_name);
-			if (find_ok)
-		        open_ok = zip.OpenEntry(*entry);
-			delete entry;
-			if (find_ok) break;
-		}
-		if (!find_ok || !open_ok) return;
+		wxFFileStream in(zip_name.GetFullPath());
+		ZipReader zip(in);
+		if (!zip.FindEntry(bookRow->file_name)) return;
 
         wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
         wxRemoveFile(file_name.GetFullPath());
         file_name.SetExt(wxT("fb2"));
-
         wxString file_path = file_name.GetFullPath();
         TempFileEraser::Add(file_path);
         wxFileOutputStream out(file_path);
-        out.Write(zip);
+		out.Write(zip);
 
         #if defined(__WXMSW__)
 		ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
@@ -442,5 +451,4 @@ void FbManager::OpenBook(int id)
 	{
 //        wxFileName file;
     }
-
 }
