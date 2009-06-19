@@ -5,7 +5,6 @@ struct GenreStruct {
 	char lo;
 	wxString code;
 	wxString name;
-	wxString letter;
 };
 
 struct HiGenreStruct {
