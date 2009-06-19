@@ -153,10 +153,10 @@ wxString FbManager::BookInfo(int id)
             authorText += wxT(", ");
         authorText += authorList[i];
     }
-    for (size_t i = 0; i<genres.Len(); i++) {
+    for (size_t i = 0; i<genres.Len()/2; i++) {
         if (!genreText.IsEmpty())
             genreText += wxT(", ");
-        genreText +=  FbGenres::Name(genres[i]);
+		genreText +=  FbGenres::Name( genres.SubString(i*2, i*2+1) );
     }
 
     wxString html(wxT("<html><body>"));

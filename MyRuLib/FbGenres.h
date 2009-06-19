@@ -6,8 +6,7 @@
 class FbGenres {
 public:
     static wxString Char(wxString &code);
-    static wxString Code(wxChar &letter);
-    static wxString Name(wxChar &letter);
+    static wxString Name(wxString &letter);
 };
 
 #endif //FBGENRES_H
