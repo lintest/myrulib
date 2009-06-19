@@ -15,6 +15,7 @@
 #include <wx/listbox.h>
 #include <wx/listctrl.h>
 #include <wx/textctrl.h>
+#include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "wx/treelistctrl.h"
 #include "Authors.h"
@@ -37,25 +38,31 @@ public:
         ID_PROGRESS_START,
         ID_PROGRESS_UPDATE,
         ID_PROGRESS_FINISH,
+		ID_SPLIT_HORIZONTAL, 
+		ID_SPLIT_VERTICAL, 
     };
 private:
+	wxString m_html;
 	wxTextCtrl * m_FindTextCtrl;
 	wxListBox * m_AuthorsListBox;
 	wxTreeListCtrl * m_BooksListView;
 	wxHtmlWindow * m_BooksInfoPanel;
 	ProgressBar * m_ProgressBar;
+	wxSplitterWindow * m_books_splitter;
 	wxString m_StatusText;
 	void CreateControls();
 	wxToolBar * CreateButtonBar();
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
     bool ParseXML(const wxString & filename);
 	void SelectFirstAuthor();
+	void CreateBookInfo(wxSplitMode mode);
 public:
 	MyRuLibMainFrame();
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void OnExit(wxCommandEvent & event);
     void OnSetup(wxCommandEvent & event);
+	void OnChangeView(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
 	void OnBooksListViewResize(wxSizeEvent& event);

@@ -38,6 +38,8 @@ wxString strOtherSequence = wxT("(прочие)");
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_SETUP, MyRuLibMainFrame::OnSetup)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, MyRuLibMainFrame::OnChangeView)
+	EVT_MENU(ID_SPLIT_VERTICAL, MyRuLibMainFrame::OnChangeView)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, MyRuLibMainFrame::OnAuthorsListBoxSelected)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
@@ -57,6 +59,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
+	:m_BooksInfoPanel(NULL)
 {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
 }
@@ -89,6 +92,11 @@ void MyRuLibMainFrame::CreateControls()
 	serviceMenu->Append(wxID_SETUP, _("Настройки"));
 	menuBar->Append(serviceMenu, _("&Сервис"));
 
+	wxMenu * viewMenu = new wxMenu;
+	viewMenu->Append(ID_SPLIT_HORIZONTAL, _("&Вертикально"));
+	viewMenu->Append(ID_SPLIT_VERTICAL, _("&Горизонтально"));
+	menuBar->Append(viewMenu, _("&Вид"));
+
 	wxMenu * helpMenu = new wxMenu;
 	helpMenu->Append(wxID_ABOUT, _("О программе…"));
 	menuBar->Append(helpMenu, _("&?"));
@@ -105,15 +113,17 @@ void MyRuLibMainFrame::CreateControls()
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(100);
+	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
 	m_AuthorsListBox = new wxListBox(splitter, ID_AUTHORS_LISTBOX, wxDefaultPosition, wxDefaultSize, 0, NULL, wxSUNKEN_BORDER);
 
-	wxSplitterWindow * books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	books_splitter->SetMinimumPaneSize(100);
+	m_books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
+	m_books_splitter->SetMinimumPaneSize(100);
+	m_books_splitter->SetSashGravity(0.5);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksListView = new BookListCtrl(books_splitter, ID_BOOKS_LISTCTRL, style);
+	m_BooksListView = new BookListCtrl(m_books_splitter, ID_BOOKS_LISTCTRL, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("№"), 30, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
@@ -131,15 +141,9 @@ void MyRuLibMainFrame::CreateControls()
 	images->Add (wxBitmap(checkout_xpm));
 	m_BooksListView->AssignImageList (images);
 
-	m_BooksInfoPanel = new wxHtmlWindow(books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxSize(-1,-1), wxSUNKEN_BORDER);
+	splitter->SplitVertically(m_AuthorsListBox, m_books_splitter, 160);
 
-	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
-	m_BooksInfoPanel->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
-
-	books_splitter->SetSashGravity(1.0);
-
-	splitter->SplitVertically(m_AuthorsListBox, books_splitter, 160);
-	books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, books_splitter->GetSize().GetHeight()-220);
+	CreateBookInfo(wxSPLIT_HORIZONTAL);
 
 	FbManager::FillAuthorsChar(m_AuthorsListBox, _("А")[0]);
 
@@ -152,13 +156,45 @@ void MyRuLibMainFrame::CreateControls()
 	Centre();
 }
 
+void MyRuLibMainFrame::CreateBookInfo(wxSplitMode mode)
+{
+	if (m_BooksInfoPanel) m_books_splitter->Unsplit(m_BooksInfoPanel);
+
+	m_BooksInfoPanel = new wxHtmlWindow(m_books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxSize(-1,-1), wxSUNKEN_BORDER);
+	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
+	m_BooksInfoPanel->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
+
+	switch (mode) {
+		case wxSPLIT_HORIZONTAL: 
+			m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
+			break;
+		case wxSPLIT_VERTICAL: 
+			m_books_splitter->SplitVertically(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetWidth()/2);
+			break;
+	}
+	m_BooksInfoPanel->SetPage(m_html);
+}
+
 void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
 {
     SettingsDlg::Execute(this);
 }
 
+void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
+{
+	switch (event.GetId()) {
+		case ID_SPLIT_HORIZONTAL: 
+			CreateBookInfo(wxSPLIT_HORIZONTAL);
+			break;
+		case ID_SPLIT_VERTICAL: 
+			CreateBookInfo(wxSPLIT_VERTICAL);
+			break;
+	}
+}
+
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
+
     wxMessageBox(_T("MyRuLib About..."));
 }
 
@@ -199,6 +235,7 @@ void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event)
 	if(data) {
 		FbManager::FillBooks(m_BooksListView, data->GetID());
 		m_BooksInfoPanel->SetPage(blank_page);
+		m_html.Empty();
 	}
 }
 
@@ -207,10 +244,8 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		if (data)
-            m_BooksInfoPanel->SetPage(FbManager::BookInfo(data->GetId()));
-        else
-            m_BooksInfoPanel->SetPage(blank_page);
+		m_html = ( data ? FbManager::BookInfo(data->GetId()) : wxEmptyString);
+        m_BooksInfoPanel->SetPage(m_html);
 	}
 	event.Skip();
 }
@@ -228,10 +263,12 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 		if(data) {
 			FbManager::FillBooks(m_BooksListView, data->GetID());
 			m_BooksInfoPanel->SetPage(blank_page);
+			m_html.Empty();
 		}
 	} else {
 		m_BooksListView->DeleteRoot();
 		m_BooksInfoPanel->SetPage(blank_page);
+		m_html.Empty();
 	}
 }
 
@@ -276,6 +313,7 @@ void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
 
 	if (dlg.ShowModal() == wxID_OK) {
 		m_BooksInfoPanel->SetPage(blank_page);
+		m_html.Empty();
 
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -317,6 +355,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 
 	if (dlg.ShowModal() == wxID_OK) {
 		m_BooksInfoPanel->SetPage(blank_page);
+		m_html.Empty();
 
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -344,6 +383,7 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 
 	if (dlg.ShowModal() == wxID_OK) {
 		m_BooksInfoPanel->SetPage(blank_page);
+		m_html.Empty();
 
 		wxArrayString paths;
 		dlg.GetPaths(paths);
