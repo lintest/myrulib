@@ -55,7 +55,7 @@ private:
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
     bool ParseXML(const wxString & filename);
 	void SelectFirstAuthor();
-	void CreateBookInfo(wxSplitMode mode);
+	void CreateBookInfo(bool vertical);
 public:
 	MyRuLibMainFrame();
 private:

@@ -16,6 +16,7 @@
 #include "Params.h"
 #include "FbManager.h"
 #include "FbGenres.h"
+#include "FbParams.h"
 #include "BookList.h"
 #include "SettingsDlg.h"
 
@@ -143,7 +144,7 @@ void MyRuLibMainFrame::CreateControls()
 
 	splitter->SplitVertically(m_AuthorsListBox, m_books_splitter, 160);
 
-	CreateBookInfo(wxSPLIT_HORIZONTAL);
+	CreateBookInfo(FbParams().GetValue(FB_VIEW_TYPE));
 
 	FbManager::FillAuthorsChar(m_AuthorsListBox, _("А")[0]);
 
@@ -156,7 +157,7 @@ void MyRuLibMainFrame::CreateControls()
 	Centre();
 }
 
-void MyRuLibMainFrame::CreateBookInfo(wxSplitMode mode)
+void MyRuLibMainFrame::CreateBookInfo(bool vertical)
 {
 	if (m_BooksInfoPanel) m_books_splitter->Unsplit(m_BooksInfoPanel);
 
@@ -164,14 +165,11 @@ void MyRuLibMainFrame::CreateBookInfo(wxSplitMode mode)
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
 	m_BooksInfoPanel->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
-	switch (mode) {
-		case wxSPLIT_HORIZONTAL: 
-			m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
-			break;
-		case wxSPLIT_VERTICAL: 
-			m_books_splitter->SplitVertically(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetWidth()/2);
-			break;
-	}
+	if (vertical) 
+		m_books_splitter->SplitVertically(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetWidth()/2);
+	else
+		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
+
 	m_BooksInfoPanel->SetPage(m_html);
 }
 
@@ -184,12 +182,15 @@ void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 {
 	switch (event.GetId()) {
 		case ID_SPLIT_HORIZONTAL: 
-			CreateBookInfo(wxSPLIT_HORIZONTAL);
+			CreateBookInfo(true);
 			break;
 		case ID_SPLIT_VERTICAL: 
-			CreateBookInfo(wxSPLIT_VERTICAL);
+			CreateBookInfo(false);
 			break;
 	}
+
+	FbParams params;
+	params.SetValue(FB_VIEW_TYPE, event.GetId() == ID_SPLIT_HORIZONTAL);
 }
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
