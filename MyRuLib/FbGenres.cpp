@@ -150,7 +150,7 @@ wxString FbGenres::Char(wxString &code)
 {
     for (size_t i=0; genres_list[i].hi; i++)
         if (genres_list[i].code == code)
-			return wxString::Format(wxT("%x%x"), genres_list[i].hi, genres_list[i].lo);
+			return wxString::Format(wxT("%X%X"), genres_list[i].hi, genres_list[i].lo);
     return wxEmptyString;
 }
 

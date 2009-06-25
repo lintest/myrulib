@@ -200,7 +200,7 @@
 		<Unit filename="res/find.xpm" />
 		<Unit filename="res/new.xpm" />
 		<Unit filename="res/new_dir.xpm" />
-		<Unit filename="treelistctrl.cpp" />
+		<Unit filename="wx/treelistctrl.cpp" />
 		<Unit filename="wx/treelistctrl.h" />
 		<Unit filename="wxActiveRecord.cpp" />
 		<Unit filename="wxActiveRecord.h" />
