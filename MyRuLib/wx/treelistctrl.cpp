@@ -48,7 +48,7 @@
 #include "wx/mac/private.h"
 #endif
 
-#include "wx/treelistctrl.h"
+#include "treelistctrl.h"
 
 
 // ---------------------------------------------------------------------------

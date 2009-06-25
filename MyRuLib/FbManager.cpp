@@ -18,6 +18,8 @@
 #include "Sequences.h"
 #include "Bookseq.h"
 
+//#include "wx/httpbuilder.h"
+
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
     wxFileInputStream stream(filename);
@@ -127,6 +129,21 @@ bool FbManager::ParseXml(wxInputStream& stream, wxString& html, const wxString &
 	return true;
 }
 */
+
+//! Return specified string with the html special characters encoded.  Similar to PHP's htmlspecialchars() function.
+wxString FbManager::HTMLSpecialChars( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
+{
+  wxString szToReturn = value;
+  szToReturn.Replace(wxT("&"),wxT("&amp;"));
+  if( bSingleQuotes )
+    szToReturn.Replace(wxT("'"),wxT("&#039;"));
+  if( bDoubleQuotes )
+    szToReturn.Replace(wxT("\""), wxT("&quot;"));
+  szToReturn.Replace(wxT("<"),wxT("&lt;"));
+  szToReturn.Replace(wxT(">"),wxT("&gt;"));
+  return szToReturn;
+}
+
 wxString FbManager::BookInfo(int id)
 {
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
@@ -156,19 +173,20 @@ wxString FbManager::BookInfo(int id)
     for (size_t i = 0; i<genres.Len()/2; i++) {
         if (!genreText.IsEmpty())
             genreText += wxT(", ");
-		genreText +=  FbGenres::Name( genres.SubString(i*2, i*2+1) );
+        wxString genreCode = genres.SubString(i*2, i*2+1);
+		genreText +=  FbGenres::Name( genreCode );
     }
 
     wxString html(wxT("<html><body>"));
 
-    html += wxString::Format(wxT("<font size=4><b>%s</b></font>"), authorText.c_str());
+    html += wxString::Format(wxT("<font size=4><b>%s</b></font>"), HTMLSpecialChars(authorText).c_str());
 
     if (!genreText.IsEmpty())
-        html += wxString::Format(wxT("<br><font size=3>%s</font>"), genreText.c_str());
+        html += wxString::Format(wxT("<br><font size=3>%s</font>"), HTMLSpecialChars(genreText).c_str());
 
-    html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), title.c_str());
+    html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
 
-    html += annotation;
+    html += HTMLSpecialChars(annotation);
 
     html += wxT("</body></html>");
 

@@ -1,4 +1,4 @@
-﻿#include "FbGenres.h"
+#include "FbGenres.h"
 
 struct GenreStruct {
 	char hi;
@@ -156,8 +156,8 @@ wxString FbGenres::Char(wxString &code)
 
 wxString FbGenres::Name(wxString &letter)
 {
-	unsigned long code = 0;
-	if (letter.ToULong(&code, 16)) {
+	long code = 0;
+	if (letter.ToLong(&code, 16)) {
 		for (size_t i=0; genres_list[i].hi; i++)
 			if (genres_list[i].hi*16 + genres_list[i].lo == code)
 				return genres_list[i].name;

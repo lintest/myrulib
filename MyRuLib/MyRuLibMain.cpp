@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
  * Name:      MyRuLibMain.cpp
  * Purpose:   Code for Application Frame
  * Author:    Kandrashin Denis (mail@kandr.ru)
@@ -165,7 +165,7 @@ void MyRuLibMainFrame::CreateBookInfo(bool vertical)
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
 	m_BooksInfoPanel->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
-	if (vertical) 
+	if (vertical)
 		m_books_splitter->SplitVertically(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetWidth()/2);
 	else
 		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
@@ -181,10 +181,10 @@ void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
 void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 {
 	switch (event.GetId()) {
-		case ID_SPLIT_HORIZONTAL: 
+		case ID_SPLIT_HORIZONTAL:
 			CreateBookInfo(true);
 			break;
-		case ID_SPLIT_VERTICAL: 
+		case ID_SPLIT_VERTICAL:
 			CreateBookInfo(false);
 			break;
 	}
@@ -245,7 +245,7 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		m_html = ( data ? FbManager::BookInfo(data->GetId()) : wxEmptyString);
+		m_html = ( data ? FbManager::BookInfo(data->GetId()) : (wxString)wxEmptyString);
         m_BooksInfoPanel->SetPage(m_html);
 	}
 	event.Skip();
