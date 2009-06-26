@@ -224,10 +224,18 @@ function convert_books($mysql_db, $sqlite_db)
   while ($row = $query->fetch_array()) {
     $filename = $row['BookId'].".".$row['FileType'];
     echo $row['BookId']." - ".$filename." - ".$row['AvtorId']." - ".$row['Title']."\n";
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type) VALUES(?,?,?,?,?,?,?)";
+
+    $genres = "";
+    $subsql = "SELECT GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId WHERE BookId=".$row['BookId'];
+    $subquery = $mysql_db->query($subsql);
+    while ($subrow = $subquery->fetch_array()) {
+      $genres = $genres.genreCode($subrow['GenreCode']);
+    }
+
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres) VALUES(?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize'], $row['FileType']));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize'], $row['FileType'], $genres));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -291,17 +299,86 @@ function convert_sequences($mysql_db, $sqlite_db)
   }
 }
 
-//"CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
+function create_tables($sqlite_db)
+{
+  $sqlite_db->query("
+    CREATE TABLE authors(
+	id integer primary key,
+	letter char(1),
+	search_name varchar(255),
+	full_name varchar(255),
+	first_name varchar(128),
+	middle_name varchar(128),
+	last_name varchar(128),
+	newid integer,
+	description text);
+  ");
 
+  $sqlite_db->query("
+    CREATE TABLE books(
+      id integer not null,
+      id_author integer not null,
+      title varchar(255) not null,
+      annotation text,
+      genres text,
+      id_sequence integer,
+      deleted boolean,
+      id_archive integer,
+      file_name varchar(255),
+      file_size integer,
+      file_type varchar(20),
+      description text);
+  ");
 
-$sqlite_db = new PDO('sqlite:/home/user/projects/MyRuLib/build/Release/MyRuLib.db');
+  $sqlite_db->query("
+    CREATE TABLE archives(
+      id integer primary key,
+      file_name varchar(255),
+      file_path varchar(255),
+      integer,
+      min_id_book integer,
+      max_id_book integer,
+      file_type varchar(20),
+      description text);
+  ");
+
+  $sqlite_db->query("CREATE TABLE sequences(id integer primary key, value varchar(255) not null);");
+
+  $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);");
+
+  $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
+  $sqlite_db->query("INSERT INTO params(text) VALUES ('Test Library');");
+  $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
+}
+
+function create_indexes($sqlite_db)
+{
+  $sqlite_db->query("CREATE INDEX author_id ON authors(id);");
+  $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
+  $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
+
+  $sqlite_db->query("CREATE INDEX book_id ON books(id);");
+  $sqlite_db->query("CREATE INDEX book_author ON books(id_author);");
+  $sqlite_db->query("CREATE INDEX book_archive ON books(id_archive);");
+
+  $sqlite_db->query("CREATE INDEX book_file ON archives(file_name);");
+
+  $sqlite_db->query("CREATE INDEX sequences_name ON sequences(value);");
+
+  $sqlite_db->query("CREATE INDEX bookseq_book ON sequences(id_book);");
+  $sqlite_db->query("CREATE INDEX bookseq_author ON sequences(id_author);");
+}
+
+$sqlite_db = new PDO('sqlite:./MyRuLib.db');
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
 $mysql_db->query("SET NAMES utf8");
 
-//convert_authors($mysql_db, $sqlite_db);
+create_tables($sqlite_db);
+convert_authors($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
-//convert_seqnames($mysql_db, $sqlite_db);
-//convert_sequences($mysql_db, $sqlite_db);
-//fix_avtoraliase($mysql_db, $sqlite_db);
+convert_seqnames($mysql_db, $sqlite_db);
+convert_sequences($mysql_db, $sqlite_db);
+create_indexes($sqlite_db);
+fix_avtoraliase($mysql_db, $sqlite_db);
 
 ?>
