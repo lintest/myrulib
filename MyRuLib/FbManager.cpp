@@ -18,7 +18,95 @@
 #include "Sequences.h"
 #include "Bookseq.h"
 
-//#include "wx/httpbuilder.h"
+class ZipReader
+{
+private:
+    wxFFileInputStream *m_file;
+    wxZipInputStream *m_zip;
+    bool m_ok;
+private:
+    void FindEntry(wxString file_name);
+    static bool FindZip(wxFileName &zip_name);
+public:
+	ZipReader(int id);
+	ZipReader(wxString zip_name, wxString file_name);
+	virtual ~ZipReader();
+	bool IsOK() {return m_ok;};
+	wxZipInputStream & GetZip() {return *m_zip;};
+};
+
+bool ZipReader::FindZip(wxFileName &zip_name)
+{
+    if (zip_name.FileExists()) return true;
+
+    zip_name.SetPath(FbParams().GetText(FB_LIBRARY_DIR));
+    if (zip_name.FileExists()) return true;
+
+    zip_name.SetPath(wxGetApp().GetAppPath());
+    if (zip_name.FileExists()) return true;
+
+    return false;
+}
+
+ZipReader::ZipReader(int id)
+    :m_file(NULL), m_zip(NULL), m_ok(false)
+{
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+    Books books(wxGetApp().GetDatabase());
+    BooksRow * bookRow = books.Id(id);
+
+    if (!bookRow) return;
+
+    ArchivesRow * archiveRow = NULL;
+
+    if (bookRow->id_archive) {
+        archiveRow = bookRow->GetArchive();
+	} else {
+	    wxString whereClause = wxString::Format(wxT("%d BETWEEN min_id_book AND max_id_book"), id);
+	    Archives archives(wxGetApp().GetDatabase());
+        archiveRow = archives.Where(whereClause);
+	}
+
+    if (!archiveRow) return;
+
+    wxFileName zip_name(archiveRow->file_name);
+    zip_name.SetPath(archiveRow->file_path);
+
+    if (!FindZip(zip_name)) return;
+
+    m_file = new wxFFileInputStream(zip_name.GetFullPath());
+    m_zip = new wxZipInputStream(*m_file);
+
+    FindEntry(bookRow->file_name);
+}
+
+ZipReader::~ZipReader()
+{
+	wxDELETE(m_zip);
+	wxDELETE(m_file);
+}
+
+ZipReader::ZipReader(wxString zip_name, wxString file_name)
+    :m_file(NULL), m_zip(NULL), m_ok(false)
+{
+    m_file = new wxFFileInputStream(zip_name);
+    m_zip = new wxZipInputStream(*m_file);
+    FindEntry(file_name);
+}
+
+void ZipReader::FindEntry(wxString file_name)
+{
+	bool find_ok = false;
+	bool open_ok = false;
+	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
+	    find_ok = (entry->GetName() == file_name);
+		if (find_ok) open_ok = m_zip->OpenEntry(*entry);
+		delete entry;
+		if (find_ok) break;
+	}
+	m_ok = find_ok && open_ok;
+}
 
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
@@ -146,36 +234,42 @@ wxString FbManager::HTMLSpecialChars( const wxString &value, const bool bSingleQ
 
 wxString FbManager::BookInfo(int id)
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-    Books books(wxGetApp().GetDatabase());
-    wxString whereClause = wxString::Format(wxT("id=%d"), id);
-    BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
-    wxString title, annotation, genres;
-    wxStringList authorList;
-    for(size_t i = 0; i < allBooks->Count(); ++i) {
-        BooksRow * thisBook = allBooks->Item(i);
-        Authors authors(wxGetApp().GetDatabase());
-        title = thisBook->title;
-        genres = thisBook->genres;
-        if (!thisBook->annotation.IsEmpty()) {
-            annotation = thisBook->annotation;
-        }
-        authorList.Add(authors.Id(thisBook->id_author)->full_name);
-    }
-    authorList.Sort();
+    wxString title, annotation;
     wxString authorText, genreText;
-    for (size_t i = 0; i<authorList.GetCount(); i++) {
-        if (!authorText.IsEmpty())
-            authorText += wxT(", ");
-        authorText += authorList[i];
+
+    {
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+        Books books(wxGetApp().GetDatabase());
+        wxString whereClause = wxString::Format(wxT("id=%d"), id);
+        BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
+        wxString genres;
+        wxStringList authorList;
+        for(size_t i = 0; i < allBooks->Count(); ++i) {
+            BooksRow * thisBook = allBooks->Item(i);
+            Authors authors(wxGetApp().GetDatabase());
+            title = thisBook->title;
+            genres = thisBook->genres;
+            if (!thisBook->annotation.IsEmpty()) {
+                annotation = thisBook->annotation;
+            }
+            authorList.Add(authors.Id(thisBook->id_author)->full_name);
+        }
+        authorList.Sort();
+        for (size_t i = 0; i<authorList.GetCount(); i++) {
+            if (!authorText.IsEmpty())
+                authorText += wxT(", ");
+            authorText += authorList[i];
+        }
+        for (size_t i = 0; i<genres.Len()/2; i++) {
+            if (!genreText.IsEmpty())
+                genreText += wxT(", ");
+            wxString genreCode = genres.SubString(i*2, i*2+1);
+            genreText +=  FbGenres::Name( genreCode );
+        }
     }
-    for (size_t i = 0; i<genres.Len()/2; i++) {
-        if (!genreText.IsEmpty())
-            genreText += wxT(", ");
-        wxString genreCode = genres.SubString(i*2, i*2+1);
-		genreText +=  FbGenres::Name( genreCode );
-    }
+
+    if (annotation.IsEmpty()) annotation = GetAnnotation(id);
 
     wxString html(wxT("<html><body>"));
 
@@ -186,11 +280,23 @@ wxString FbManager::BookInfo(int id)
 
     html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
 
-    html += HTMLSpecialChars(annotation);
+    html += annotation;
 
     html += wxT("</body></html>");
 
     return html;
+}
+
+wxString FbManager::GetAnnotation(int id)
+{
+    ZipReader reader(id);
+    if (!reader.IsOK()) return wxEmptyString;
+    return wxEmptyString;
+
+    /*
+    FbDocument xml;
+	if (!xml.Load(stream, wxT("UTF-8"))) return wxEmptyString;
+	*/
 }
 
 class SequenceNode {
@@ -407,66 +513,24 @@ void TempFileEraser::Add(const wxString &filename)
     eraser.filelist.Add(filename);
 };
 
-class ZipReader: public wxZipInputStream
-{
-public:
-	ZipReader(wxFFileInputStream &in): wxZipInputStream(in) {};
-	bool FindEntry(const wxString &entryName);
-};
-
-bool ZipReader::FindEntry(const wxString &entryName)
-{
-	bool find_ok = false;
-	bool open_ok = false;
-	while (wxZipEntry * entry = GetNextEntry()) {
-	    find_ok = (entry->GetName() == entryName);
-		if (find_ok) open_ok = OpenEntry(*entry);
-		delete entry;
-		if (find_ok) break;
-	}
-	return find_ok && open_ok;
-}
-
 void FbManager::OpenBook(int id)
 {
+    ZipReader reader(id);
+    if (!reader.IsOK()) return;
+
     wxString fbreader = FbParams().GetText(FB_FB2_PROGRAM);
 
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
+    wxRemoveFile(file_name.GetFullPath());
+    file_name.SetExt(wxT("fb2"));
+    wxString file_path = file_name.GetFullPath();
+    TempFileEraser::Add(file_path);
+    wxFileOutputStream out(file_path);
+    out.Write(reader.GetZip());
 
-    Books books(wxGetApp().GetDatabase());
-    BooksRow * bookRow = books.Id(id);
-
-    if (!bookRow) return;
-
-    if (bookRow->id_archive)
-	{
-        ArchivesRow * archiveRow = bookRow->GetArchive();
-        wxFileName zip_name = archiveRow->file_path + archiveRow->file_name;
-        if (!zip_name.FileExists()) {
-            zip_name = wxGetApp().GetAppPath() + archiveRow->file_name;
-            if (!zip_name.FileExists()) return;
-        }
-
-		wxFFileStream in(zip_name.GetFullPath());
-		ZipReader zip(in);
-		if (!zip.FindEntry(bookRow->file_name)) return;
-
-        wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
-        wxRemoveFile(file_name.GetFullPath());
-        file_name.SetExt(wxT("fb2"));
-        wxString file_path = file_name.GetFullPath();
-        TempFileEraser::Add(file_path);
-        wxFileOutputStream out(file_path);
-		out.Write(zip);
-
-        #if defined(__WXMSW__)
-		ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
-        #else
-        wxExecute(fbreader + wxT(" ") + file_path);
-        #endif
-    }
-	else
-	{
-//        wxFileName file;
-    }
+    #if defined(__WXMSW__)
+    ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
+    #else
+    wxExecute(fbreader + wxT(" ") + file_path);
+    #endif
 }
