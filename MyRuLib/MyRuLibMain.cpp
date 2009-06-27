@@ -94,8 +94,8 @@ void MyRuLibMainFrame::CreateControls()
 	menuBar->Append(serviceMenu, _("&Сервис"));
 
 	wxMenu * viewMenu = new wxMenu;
-	viewMenu->Append(ID_SPLIT_HORIZONTAL, _("&Вертикально"));
-	viewMenu->Append(ID_SPLIT_VERTICAL, _("&Горизонтально"));
+	viewMenu->Append(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
+	viewMenu->Append(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
 	menuBar->Append(viewMenu, _("&Вид"));
 
 	wxMenu * helpMenu = new wxMenu;
