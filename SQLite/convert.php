@@ -335,7 +335,8 @@ function create_tables($sqlite_db)
       id integer primary key,
       file_name varchar(255),
       file_path varchar(255),
-      integer,
+      file_size integer,
+      file_count integer,
       min_id_book integer,
       max_id_book integer,
       file_type varchar(20),
@@ -379,6 +380,5 @@ convert_books($mysql_db, $sqlite_db);
 convert_seqnames($mysql_db, $sqlite_db);
 convert_sequences($mysql_db, $sqlite_db);
 create_indexes($sqlite_db);
-fix_avtoraliase($mysql_db, $sqlite_db);
 
 ?>

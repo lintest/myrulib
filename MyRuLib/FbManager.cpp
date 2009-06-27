@@ -58,13 +58,13 @@ ZipReader::ZipReader(int id)
 
     if (!bookRow) return;
 
+    Archives archives(wxGetApp().GetDatabase());
     ArchivesRow * archiveRow = NULL;
 
     if (bookRow->id_archive) {
         archiveRow = bookRow->GetArchive();
 	} else {
-	    wxString whereClause = wxString::Format(wxT("%d BETWEEN min_id_book AND max_id_book"), id);
-	    Archives archives(wxGetApp().GetDatabase());
+	    wxString whereClause = wxString::Format(wxT("min_id_book<=%d AND %d<=max_id_book"), id, id);
         archiveRow = archives.Where(whereClause);
 	}
 
@@ -101,6 +101,7 @@ void ZipReader::FindEntry(wxString file_name)
 	bool open_ok = false;
 	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
 	    find_ok = (entry->GetName() == file_name);
+//        wxMessageBox(wxString::Format(wxT("<%s>\n<%s>"), entry->GetName().c_str(), file_name.c_str()));
 		if (find_ok) open_ok = m_zip->OpenEntry(*entry);
 		delete entry;
 		if (find_ok) break;
@@ -121,7 +122,7 @@ bool FbManager::ParseXml(const wxString& filename, wxString& html)
 
 bool FbManager::RegisterZip(const wxString& filename)
 {
-	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename, true);
+	RegThread *thread = new RegThread(wxGetApp().GetTopWindow(), filename);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
@@ -268,8 +269,6 @@ wxString FbManager::BookInfo(int id)
             genreText +=  FbGenres::Name( genreCode );
         }
     }
-
-    if (annotation.IsEmpty()) annotation = GetAnnotation(id);
 
     wxString html(wxT("<html><body>"));
 

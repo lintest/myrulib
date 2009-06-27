@@ -383,9 +383,6 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		m_BooksInfoPanel->SetPage(blank_page);
-		m_html.Empty();
-
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
@@ -393,7 +390,6 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 			wxString html;
 			FbManager parser;
 			parser.RegisterZip(filename);
-			m_BooksInfoPanel->AppendToPage(html);
 		}
 	}
 }

@@ -75,6 +75,7 @@ bool DBCreator::CreateDatabase(void){
                 file_name varchar(255),\
                 file_path varchar(255),\
                 file_size integer,\
+                file_count integer,\
                 min_id_book integer,\
                 max_id_book integer,\
                 file_type varchar(20),\
