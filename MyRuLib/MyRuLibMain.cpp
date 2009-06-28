@@ -200,18 +200,17 @@ void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
 
-    wxMessageBox(_T("MyRuLib About..."));
+    wxMessageBox(_T("MyRuLib - version 0.01 (alpha)\n\nhttp://www.lintest.ru\nmail@lintest.ru"));
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_FILE, _("Файл…"), wxBitmap(new_xpm));
-	toolBar->AddTool(ID_NEW_DIR, _("Папка…"), wxBitmap(new_dir_xpm));
-	toolBar->AddTool(ID_NEW_ZIP, _("Zip файл…"), wxBitmap(htmbook_xpm));
+	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxBitmap(new_xpm));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("Найти"), wxBitmap(find_xpm));
+	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxBitmap(find_xpm));
+	toolBar->AddSeparator();
 	toolBar->AddTool(ID_EXTERNAL, _("Запись"), wxBitmap(dir_down_xpm));
 	toolBar->Realize();
 	return toolBar;
