@@ -6,10 +6,7 @@
 class FbThread : public wxThread
 {
 public:
-    static void MakeUpper(wxString & data);
-    static void MakeLower(wxString & data);
-public:
-    FbThread(wxEvtHandler *frame, const wxString &filename, bool update = false);
+    FbThread(wxEvtHandler *frame, const wxString &filename);
 
     // thread execution starts here
     virtual void *Entry();
@@ -24,8 +21,6 @@ private:
     unsigned m_count;
     wxString m_filename;
     wxEvtHandler *m_frame;
-    bool m_update;
-
 };
 
 class RegThread : public wxThread

@@ -25,9 +25,9 @@ private:
     static void MakeLower(wxString & data);
     static void MakeUpper(wxString & data);
 public:
-	wxArrayInt book_authors;
-	wxString book_title, annotation, genres;
-	SeqItemArray seqArray;
+	wxArrayInt authors;
+	wxString title, annotation, genres;
+	SeqItemArray sequences;
 	static int NewId(int param);
 public:
     BookInfo(const FbDocument &xml);

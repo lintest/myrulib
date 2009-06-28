@@ -35,13 +35,13 @@ bool BookInfo::ReadXml(const FbDocument &xml)
         if ( name == wxT("author") ) {
             value = xml.GetAuthor(node);
 			if (!value.IsEmpty())
-				book_authors.Add( FindAuthor(value) );
+				authors.Add( FindAuthor(value) );
 		} else {
 			value = (node->m_text);
 			if ( name == wxT("genre") ) {
 				genres += FbGenres::Char(value);
 			} else if ( name == wxT("book-title") ) {
-				book_title = value;
+				title = value;
 			} else if ( name == wxT("annotation") ) {
 				annotation = value;
 			} else if ( name == wxT("sequence") ) {
@@ -51,14 +51,14 @@ bool BookInfo::ReadXml(const FbDocument &xml)
 					wxString number = node->Prop(wxT("number"));
 					long num = 0;
 					number.ToLong(&num);
-					seqArray.Add(SeqItem(seq, num));
+					sequences.Add(SeqItem(seq, num));
 				}
 			}
         }
 		node = node->m_next;
     }
 
-	if (book_authors.Count() == 0) book_authors.Add(0);
+	if (authors.Count() == 0) authors.Add(0);
 
 	return true;
 }

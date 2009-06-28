@@ -13,36 +13,10 @@ extern wxString strRusJO;
 extern wxString strRusJE;
 extern wxString strParsingInfo;
 
-FbThread::FbThread(wxEvtHandler *frame, const wxString &filename, bool update)
-        : wxThread(), m_filename(filename), m_frame(frame), m_update(update)
+FbThread::FbThread(wxEvtHandler *frame, const wxString &filename)
+        : wxThread(), m_filename(filename), m_frame(frame)
 {
 
-}
-
-void FbThread::MakeLower(wxString & data){
-#ifdef __WIN32__
-      int len = data.length() + 1;
-      wxChar * buf = new wxChar[len];
-      wxStrcpy(buf, data.c_str());
-      CharLower(buf);
-      data = buf;
-      delete [] buf;
-#else
-      data.MakeLower();
-#endif
-}
-
-void FbThread::MakeUpper(wxString & data){
-#ifdef __WIN32__
-      int len = data.length() + 1;
-      wxChar * buf = new wxChar[len];
-      wxStrcpy(buf, data.c_str());
-      CharUpper(buf);
-      data = buf;
-      delete [] buf;
-#else
-      data.MakeUpper();
-#endif
 }
 
 void FbThread::OnExit()
@@ -62,22 +36,6 @@ int FbThread::AddArchive()
 	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 	row->Save();
 	return row->id;
-}
-
-bool FbThread::UpdateXml(const wxString &name, int id_archive)
-{
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-    wxFileName filename (name);
-    wxString shortname = filename.GetName();
-    unsigned long number = 0;
-    if (!shortname.ToULong(&number)) return false;
-
-	DatabaseLayer * database = wxGetApp().GetDatabase();
-
-	wxString sql = wxString::Format(wxT("UPDATE books SET id_archive=%d WHERE id=%d"), id_archive, number);
-	database->RunQuery(sql);
-	return true;
 }
 
 bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
@@ -100,15 +58,15 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		}
 	}
 
-	for (size_t i = 0; i<info.book_authors.Count(); i++) {
+	for (size_t i = 0; i<info.authors.Count(); i++) {
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 		Books books(wxGetApp().GetDatabase());
 		Bookseq bookseq(wxGetApp().GetDatabase());
 
 		BooksRow * row = books.New();
 		row->id = id_book;
-		row->id_author = info.book_authors[i];
-		row->title = info.book_title;
+		row->id_author = info.authors[i];
+		row->title = info.title;
 		row->annotation = info.annotation;
 		row->genres = info.genres;
 		row->file_size = size;
@@ -116,12 +74,12 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		row->id_archive = id_archive;
 		row->Save();
 
-		for (size_t j = 0; j<info.seqArray.Count(); j++) {
+		for (size_t j = 0; j<info.sequences.Count(); j++) {
 			BookseqRow * seqRow = bookseq.New();
 			seqRow->id_book = id_book;
-			seqRow->id_seq = info.seqArray[j].seq;
-			seqRow->id_author = info.book_authors[i];
-			seqRow->number = info.seqArray[j].num;
+			seqRow->id_seq = info.sequences[j].seq;
+			seqRow->id_author = info.authors[i];
+			seqRow->number = info.sequences[j].num;
 			seqRow->Save();
 		}
 	}
