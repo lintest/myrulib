@@ -16,25 +16,28 @@ ZipReader::ZipReader(int id)
 
         m_file_name = bookRow->file_name;
 
-        Archives archives(wxGetApp().GetDatabase());
-        ArchivesRow * archiveRow = NULL;
-
         if (bookRow->id_archive) {
-            archiveRow = bookRow->GetArchive();
+            ArchivesRow * archiveRow = bookRow->GetArchive();
+            if (!archiveRow) return;
+            m_zip_name = archiveRow->file_name;
+            zip_name = archiveRow->file_name;
+            zip_name.SetPath(archiveRow->file_path);
+            m_zipOk = FindZip(zip_name);
         } else {
             wxString whereClause = wxString::Format(wxT("min_id_book<=%d AND %d<=max_id_book"), id, id);
-            archiveRow = archives.Where(whereClause);
+            Archives archives(wxGetApp().GetDatabase());
+            ArchivesRowSet * archiveRowSet = archives.WhereSet(whereClause);
+            for (size_t i=0; i<archiveRowSet->Count(); i++) {
+                ArchivesRow * archiveRow = archiveRowSet->Item(i);
+                m_zip_name = archiveRow->file_name;
+                zip_name = archiveRow->file_name;
+                zip_name.SetPath(archiveRow->file_path);
+                m_zipOk = FindZip(zip_name);
+                if (m_zipOk) break;
+            }
         }
-
-        if (!archiveRow) return;
-
-        m_zip_name = archiveRow->file_name;
-
-        zip_name = archiveRow->file_name;
-        zip_name.SetPath(archiveRow->file_path);
     }
 
-    m_zipOk = FindZip(zip_name);
     if (!m_zipOk) return;
 
     m_file = new wxFFileInputStream(zip_name.GetFullPath());

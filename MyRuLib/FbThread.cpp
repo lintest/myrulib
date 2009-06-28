@@ -34,6 +34,10 @@ int FbThread::AddArchive()
 	row->id = BookInfo::NewId(DB_NEW_ARCHIVE);
 	row->file_name = file_name.GetFullName();
 	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+	row->min_id_book = 0;
+	row->max_id_book = 0;
+	row->file_count = 0;
+	row->file_size = 0;
 	row->Save();
 	return row->id;
 }
@@ -161,6 +165,8 @@ int RegThread::AddArchive(int min, int max)
 	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 	row->min_id_book = min;
 	row->max_id_book = max;
+	row->file_count = 0;
+	row->file_size = 0;
 	row->Save();
 	return row->id;
 }
