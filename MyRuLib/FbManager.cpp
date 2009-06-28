@@ -253,7 +253,8 @@ wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root)
 
 extern wxString strOtherSequence;
 
-void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
+void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only)
+{
 
 	treelist->Freeze();
 
@@ -312,6 +313,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
                     for(size_t k = 0; k < allBooks->Count(); k++) {
                         BooksRow * thisBook = allBooks->Item(k);
                         if (seqRow->id_book != thisBook->id) continue;
+                        if (fb2only && thisBook->file_type != wxT("fb2")) continue;
 
                         wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
                         if (seqRow->number>0) treelist->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
@@ -327,6 +329,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author) {
 		for(size_t i = 0; i < allBooks->Count(); i++) {
 		    BooksRow * thisBook = allBooks->Item(i);
 		    if (thisBook->added) continue;
+            if (fb2only && thisBook->file_type != wxT("fb2")) continue;
 		    if (parent == root) {
                 parent = treelist->AppendItem(root, strOtherSequence, 0);
                 treelist->SetItemBold(parent, true);

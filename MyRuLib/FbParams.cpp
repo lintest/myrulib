@@ -61,6 +61,7 @@ int FbParams::DefaultValue(int param)
         case FB_TRANSLIT_FOLDER: return 0;
         case FB_TRANSLIT_FILE: return 1;
         case FB_USE_PROXY: return 0;
+        case FB_FB2_ONLY: return 1;
     }
 
     return 0;

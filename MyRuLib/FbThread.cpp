@@ -72,6 +72,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		row->genres = info.genres;
 		row->file_size = size;
 		row->file_name = name;
+		row->file_type = wxFileName(name).GetExt();
 		row->id_archive = id_archive;
 		row->Save();
 

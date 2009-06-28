@@ -51,14 +51,13 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, MyRuLibMainFrame::OnBooksInfoPanelLinkClicked)
     EVT_TEXT_ENTER(ID_FIND_TEXT, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(ID_FIND_BTN, MyRuLibMainFrame::OnFindTextEnter)
-    EVT_TOOL(ID_NEW_FILE, MyRuLibMainFrame::OnNewFile)
-    EVT_TOOL(ID_NEW_DIR, MyRuLibMainFrame::OnNewDir)
     EVT_TOOL(ID_NEW_ZIP, MyRuLibMainFrame::OnNewZip)
     EVT_TOOL(ID_REG_ZIP, MyRuLibMainFrame::OnRegZip)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
     EVT_MENU(ID_SET_ANNOTATION, MyRuLibMainFrame::OnSetAnnotation)
+    EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
@@ -106,7 +105,7 @@ void MyRuLibMainFrame::CreateControls()
 
 	SetMenuBar(menuBar);
 
-	SetToolBar(CreateButtonBar());
+	SetToolBar(m_toolBar = CreateButtonBar());
 
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -199,21 +198,39 @@ void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-
     wxMessageBox(_T("MyRuLib - version 0.01 (alpha)\n\nhttp://www.lintest.ru\nmail@lintest.ru"));
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
+
+
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxBitmap(new_xpm));
+	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxBitmap(new_xpm), _("Добавить в библиотеку новые файлы ZIP"));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxBitmap(find_xpm));
+	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxBitmap(find_xpm), _("Поиск по подстроке"));
 	toolBar->AddSeparator();
-	toolBar->AddTool(ID_EXTERNAL, _("Запись"), wxBitmap(dir_down_xpm));
+	toolBar->AddTool(ID_EXTERNAL, _("Запись"), wxBitmap(dir_down_xpm), _("Запись на внешнее устройство"));
+	toolBar->AddSeparator();
+	toolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxBitmap(htmbook_xpm), _("Только файлы Fb2"), wxITEM_CHECK);
+	toolBar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
 	toolBar->Realize();
+
 	return toolBar;
+}
+
+void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
+{
+    FbParams().SetValue(FB_FB2_ONLY, m_toolBar-> GetToolState(ID_FB2_ONLY));
+
+    RecordIDClientData * data = (RecordIDClientData *)
+        m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
+    if(data) {
+        FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
+        m_BooksInfoPanel->SetPage(blank_page);
+        m_html.Empty();
+    }
 }
 
 wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, int toolid) {
@@ -238,7 +255,7 @@ void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event)
 {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
 	if(data) {
-		FbManager::FillBooks(m_BooksListView, data->GetID());
+		FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
 		m_BooksInfoPanel->SetPage(blank_page);
 		m_html.Empty();
 	}
@@ -273,7 +290,7 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 		RecordIDClientData * data = (RecordIDClientData *)
 			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
 		if(data) {
-			FbManager::FillBooks(m_BooksListView, data->GetID());
+			FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
 			m_BooksInfoPanel->SetPage(blank_page);
 			m_html.Empty();
 		}
@@ -309,48 +326,6 @@ void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event )
 
 	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabet[position]);
 	SelectFirstAuthor();
-}
-
-void MyRuLibMainFrame::OnNewFile( wxCommandEvent& event ){
-
-    wxFileDialog dlg (
-		this,
-		_("Выберите файл для добавления в библиотеку…"),
-		wxEmptyString,
-		wxEmptyString,
-		_("Fiction books (*.fb2)|*.fb2"),
-		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
-		wxDefaultPosition
-    );
-
-	if (dlg.ShowModal() == wxID_OK) {
-		m_BooksInfoPanel->SetPage(blank_page);
-		m_html.Empty();
-
-		wxArrayString paths;
-		dlg.GetPaths(paths);
-		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			wxString filename = paths[i];
-			wxString html;
-			FbManager parser;
-			parser.ParseXml(filename, html);
-			m_BooksInfoPanel->AppendToPage(html);
-		}
-	}
-}
-
-void MyRuLibMainFrame::OnNewDir( wxCommandEvent& event ){
-
-    wxDirDialog dlg(
-        this,
-        _("Выберите директорию для импорта файлов"),
-        wxEmptyString,
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST
-    );
-
-	if (dlg.ShowModal() == wxID_OK) {
-		SetTitle(dlg.GetPath());
-	}
 }
 
 void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){

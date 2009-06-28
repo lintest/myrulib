@@ -28,8 +28,6 @@ public:
         ID_PROGRESSBAR,
         ID_BOOKS_LISTCTRL,
         ID_BOOKS_INFO_PANEL,
-        ID_NEW_FILE,
-        ID_NEW_DIR,
         ID_NEW_ZIP,
         ID_REG_ZIP,
         ID_FIND_TEXT,
@@ -41,6 +39,7 @@ public:
 		ID_SPLIT_VERTICAL,
 		ID_SET_ANNOTATION,
 		ID_EXTERNAL,
+		ID_FB2_ONLY,
     };
 private:
 	wxTextCtrl * m_FindTextCtrl;
@@ -50,6 +49,7 @@ private:
 	ProgressBar * m_ProgressBar;
 	wxSplitterWindow * m_books_splitter;
 	wxString m_StatusText;
+	wxToolBar * m_toolBar;
 	void CreateControls();
 	wxToolBar * CreateButtonBar();
 	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
@@ -74,8 +74,6 @@ private:
 	void OnBooksListKeyDown(wxTreeEvent & event);
 	void OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event);
 	void OnFindTextEnter( wxCommandEvent& event );
-	void OnNewFile( wxCommandEvent& event );
-	void OnNewDir( wxCommandEvent& event );
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnProgressStart(wxCommandEvent& event);
@@ -83,6 +81,7 @@ private:
 	void OnProgressFinish(wxCommandEvent& event);
 	void OnImageClick(wxTreeEvent &event);
     void OnSetAnnotation(wxCommandEvent& event);
+    void OnChangeFilter(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 	DECLARE_EVENT_TABLE()
 };

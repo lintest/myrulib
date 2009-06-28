@@ -80,6 +80,7 @@ public:
 	int file_size;
 	wxString annotation;
 	wxString file_name;
+	wxString file_type;
 	wxString deleted;
 	wxString title;
 	int id_author;
@@ -122,6 +123,7 @@ protected:
 	static int CMPFUNC_file_size(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_annotation(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_file_type(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_deleted(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_title(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_author(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

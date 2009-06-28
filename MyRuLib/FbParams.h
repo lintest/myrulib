@@ -29,6 +29,7 @@ enum {
     FB_PROXY_NAME,
     FB_PROXY_PASS,
 	FB_VIEW_TYPE,
+	FB_FB2_ONLY,
 };
 
 class FbParams {
