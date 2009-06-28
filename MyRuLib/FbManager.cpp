@@ -6,108 +6,17 @@
  * Copyright: Kandrashin Denis (www.lintest.ru)
  * License:
  **************************************************************/
-
+#include "FbManager.h"
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
 #include "FbThread.h"
 #include "FbParams.h"
-#include "FbManager.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
 #include "Sequences.h"
 #include "Bookseq.h"
-
-class ZipReader
-{
-private:
-    wxFFileInputStream *m_file;
-    wxZipInputStream *m_zip;
-    bool m_ok;
-private:
-    void FindEntry(wxString file_name);
-    static bool FindZip(wxFileName &zip_name);
-public:
-	ZipReader(int id);
-	ZipReader(wxString zip_name, wxString file_name);
-	virtual ~ZipReader();
-	bool IsOK() {return m_ok;};
-	wxZipInputStream & GetZip() {return *m_zip;};
-};
-
-bool ZipReader::FindZip(wxFileName &zip_name)
-{
-    if (zip_name.FileExists()) return true;
-
-    zip_name.SetPath(FbParams().GetText(FB_LIBRARY_DIR));
-    if (zip_name.FileExists()) return true;
-
-    zip_name.SetPath(wxGetApp().GetAppPath());
-    if (zip_name.FileExists()) return true;
-
-    return false;
-}
-
-ZipReader::ZipReader(int id)
-    :m_file(NULL), m_zip(NULL), m_ok(false)
-{
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-    Books books(wxGetApp().GetDatabase());
-    BooksRow * bookRow = books.Id(id);
-
-    if (!bookRow) return;
-
-    Archives archives(wxGetApp().GetDatabase());
-    ArchivesRow * archiveRow = NULL;
-
-    if (bookRow->id_archive) {
-        archiveRow = bookRow->GetArchive();
-	} else {
-	    wxString whereClause = wxString::Format(wxT("min_id_book<=%d AND %d<=max_id_book"), id, id);
-        archiveRow = archives.Where(whereClause);
-	}
-
-    if (!archiveRow) return;
-
-    wxFileName zip_name(archiveRow->file_name);
-    zip_name.SetPath(archiveRow->file_path);
-
-    if (!FindZip(zip_name)) return;
-
-    m_file = new wxFFileInputStream(zip_name.GetFullPath());
-    m_zip = new wxZipInputStream(*m_file);
-
-    FindEntry(bookRow->file_name);
-}
-
-ZipReader::~ZipReader()
-{
-	wxDELETE(m_zip);
-	wxDELETE(m_file);
-}
-
-ZipReader::ZipReader(wxString zip_name, wxString file_name)
-    :m_file(NULL), m_zip(NULL), m_ok(false)
-{
-    m_file = new wxFFileInputStream(zip_name);
-    m_zip = new wxZipInputStream(*m_file);
-    FindEntry(file_name);
-}
-
-void ZipReader::FindEntry(wxString file_name)
-{
-	bool find_ok = false;
-	bool open_ok = false;
-	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
-	    find_ok = (entry->GetName() == file_name);
-//        wxMessageBox(wxString::Format(wxT("<%s>\n<%s>"), entry->GetName().c_str(), file_name.c_str()));
-		if (find_ok) open_ok = m_zip->OpenEntry(*entry);
-		delete entry;
-		if (find_ok) break;
-	}
-	m_ok = find_ok && open_ok;
-}
+#include "ZipReader.h"
 
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
@@ -515,7 +424,10 @@ void TempFileEraser::Add(const wxString &filename)
 void FbManager::OpenBook(int id)
 {
     ZipReader reader(id);
-    if (!reader.IsOK()) return;
+    if (!reader.IsOK()) {
+        reader.ShowError();
+        return;
+    }
 
     wxString fbreader = FbParams().GetText(FB_FB2_PROGRAM);
 

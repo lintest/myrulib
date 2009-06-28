@@ -34,7 +34,7 @@ wxString strRusJE = wxT("е");
 wxString strRusJO = wxT("ё");
 wxString strParsingInfo = wxT("Обработка файла: ");
 wxString strOtherSequence = wxT("(прочие)");
-
+wxString strBookNotFound = wxT("Не найден архив%s, содержащий файл%s.");
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)

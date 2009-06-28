@@ -17,14 +17,9 @@ public:
     // called when the thread exits - whether it terminates normally or is
     // stopped with Delete() (but not when it is Kill()ed!)
     virtual void OnExit();
-	static int FindAuthor(wxString &full_name);
-	static int FindSequence(wxString &name);
-	static void AddSequence(int id_book, wxString &name, wxString &number);
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
     static bool UpdateXml(const wxString &name, int id_archive);
     int AddArchive();
-private:
-	static int NewId(int param);
 private:
     unsigned m_count;
     wxString m_filename;
