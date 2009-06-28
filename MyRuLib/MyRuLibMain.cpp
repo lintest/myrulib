@@ -83,10 +83,10 @@ void MyRuLibMainFrame::CreateControls()
 	wxMenuBar * menuBar = new wxMenuBar;
 
 	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(ID_NEW_FILE, _("Добавить файл…"))->SetBitmap(wxBitmap(new_xpm));
-	fileMenu->Append(ID_NEW_DIR, _("Добавить директорию…"))->SetBitmap(wxBitmap(new_dir_xpm));
 	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
 	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
+	fileMenu->AppendSeparator();
+	fileMenu->Append(ID_EXTERNAL, _("Записать на устройство"))->SetBitmap(wxBitmap(dir_down_xpm));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
 	menuBar->Append(fileMenu, _("&Файл"));
@@ -207,7 +207,7 @@ wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
 	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxBitmap(new_xpm));
 	toolBar->AddSeparator();
-	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
 	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxBitmap(find_xpm));
 	toolBar->AddSeparator();

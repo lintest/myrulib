@@ -103,5 +103,11 @@ bool DBCreator::CreateDatabase(void){
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
+	try {
+		m_Database->RunQuery(wxT("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);"));
+		m_Database->RunQuery(wxT("CREATE INDEX words_word ON words(word);"));
+	}
+	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+
 	return true;
 }

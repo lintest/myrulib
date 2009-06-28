@@ -361,12 +361,14 @@ void FbManager::FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter)
 void FbManager::FillAuthorsText(wxListBox *listbox, const wxString & findText)
 {
     const wxString orderBy = wxT("search_name");
+    wxString text = findText;
+    BookInfo::MakeLower(text);
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	wxString sql = wxT("SELECT id, full_name, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
 	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
-	pStatement->SetParamString(1, findText + wxT("%"));
+	pStatement->SetParamString(1, text + wxT("%"));
 	DatabaseResultSet* result = pStatement->ExecuteQuery();
 	FillAuthors(listbox, result);
 	wxGetApp().GetDatabase()->CloseStatement(pStatement);

@@ -27,13 +27,13 @@ private:
 	bool ReadXml(const FbDocument &xml, int flags);
 	static int FindAuthor(wxString &full_name);
 	static int FindSequence(wxString &name);
-    static void MakeLower(wxString & data);
-    static void MakeUpper(wxString & data);
 public:
 	wxArrayInt authors;
 	wxString title, annotation, genres;
 	SeqItemArray sequences;
 	static int NewId(int param);
+    static void MakeLower(wxString & data);
+    static void MakeUpper(wxString & data);
 public:
     BookInfo(wxInputStream& stream, int flags = BIF_DESCRIPTION);
 };

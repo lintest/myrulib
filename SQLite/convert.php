@@ -213,6 +213,7 @@ function convert_authors($mysql_db, $sqlite_db)
 function convert_books($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("DELETE FROM books");
+  $sqlite_db->query("DELETE FROM words");
 
   $sqltest = "
     SELECT libbook.BookId, FileSize, Title, Deleted, FileType, CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
@@ -238,6 +239,19 @@ function convert_books($mysql_db, $sqlite_db)
     $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize'], $row['FileType'], $genres));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
+/*
+    $words = explode(' ', trim($row['Title']));
+    $cwords = count($words);
+    $sql = "INSERT INTO words (word, id_book, number) VALUES(?,?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    for($i = 0; $i < $cwords; $i++){
+      if (utf8_strlen($words[$i])<3) continue;
+      if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
+      $err= $insert->execute(array(strtolowerEx($words[$i]), $row['BookId'], $i));
+      if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
+      $insert->closeCursor();
+    }
+*/
   }
 }
 
@@ -350,6 +364,8 @@ function create_tables($sqlite_db)
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('Test Library');");
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
+
+  $sqlite_db->query("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);");
 }
 
 function create_indexes($sqlite_db)
@@ -368,6 +384,8 @@ function create_indexes($sqlite_db)
 
   $sqlite_db->query("CREATE INDEX bookseq_book ON sequences(id_book);");
   $sqlite_db->query("CREATE INDEX bookseq_author ON sequences(id_author);");
+
+  $sqlite_db->query("CREATE INDEX words_word ON words(word);");
 }
 
 $sqlite_db = new PDO('sqlite:./MyRuLib.db');
