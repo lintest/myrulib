@@ -6,6 +6,7 @@
 #include "Sequences.h"
 #include "MyRuLibMain.h"
 #include "BookInfo.h"
+#include "ZipReader.h"
 
 extern wxString strAlphabet;
 extern wxString strRusJO;
@@ -132,7 +133,6 @@ void *FbThread::Entry()
 RegThread::RegThread(wxEvtHandler *frame, const wxString &filename)
         : wxThread(), m_filename(filename), m_frame(frame)
 {
-
 }
 
 int RegThread::AddArchive(int min, int max)
@@ -214,8 +214,31 @@ void *RegThread::Entry()
 	return NULL;
 }
 
-void RegThread::OnExit()
+void InfoThread::Execute(const int id)
+{
+	InfoThread *thread = new InfoThread(wxGetApp().GetTopWindow(), id);
+
+    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
+}
+
+InfoThread::InfoThread(wxEvtHandler *frame, const int id)
+        : wxThread(), m_id(id), m_frame(frame)
 {
 }
 
+void *InfoThread::Entry()
+{
+    ZipReader reader(m_id);
+    if (!reader.IsOK()) return NULL;
 
+    BookInfo info(reader.GetZip(), BIF_ANNOTATION);
+
+    if (!info.annotation.IsEmpty()) {
+        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_SET_ANNOTATION );
+        event.SetInt(m_id);
+        event.SetString(info.annotation);
+        wxPostEvent( m_frame, event );
+    }
+
+	return NULL;
+}

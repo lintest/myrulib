@@ -143,7 +143,7 @@ wxString FbManager::HTMLSpecialChars( const wxString &value, const bool bSingleQ
   return szToReturn;
 }
 
-wxString FbManager::BookInfo(int id)
+wxString FbManager::GetBookInfo(int id)
 {
     wxString title, annotation;
     wxString authorText, genreText;
@@ -189,7 +189,7 @@ wxString FbManager::BookInfo(int id)
 
     html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
 
-    if (annotation.IsEmpty()) annotation = GetAnnotation(id);
+//    if (annotation.IsEmpty()) annotation = GetAnnotation(id);
     html += annotation;
 
     html += wxT("</body></html>");
@@ -202,7 +202,7 @@ wxString FbManager::GetAnnotation(int id)
     ZipReader reader(id);
     if (!reader.IsOK()) return wxEmptyString;
 
-    ::BookInfo info(reader.GetZip(), BIF_ANNOTATION);
+    BookInfo info(reader.GetZip(), BIF_ANNOTATION);
     return info.annotation;
 }
 

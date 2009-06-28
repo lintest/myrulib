@@ -38,11 +38,11 @@ public:
         ID_PROGRESS_START,
         ID_PROGRESS_UPDATE,
         ID_PROGRESS_FINISH,
-		ID_SPLIT_HORIZONTAL, 
-		ID_SPLIT_VERTICAL, 
+		ID_SPLIT_HORIZONTAL,
+		ID_SPLIT_VERTICAL,
+		ID_SET_ANNOTATION,
     };
 private:
-	wxString m_html;
 	wxTextCtrl * m_FindTextCtrl;
 	wxListBox * m_AuthorsListBox;
 	wxTreeListCtrl * m_BooksListView;
@@ -56,6 +56,9 @@ private:
     bool ParseXML(const wxString & filename);
 	void SelectFirstAuthor();
 	void CreateBookInfo(bool vertical);
+private:
+	int m_id_book;
+	wxString m_html;
 public:
 	MyRuLibMainFrame();
 private:
@@ -79,6 +82,7 @@ private:
 	void OnProgressUpdate(wxCommandEvent& event);
 	void OnProgressFinish(wxCommandEvent& event);
 	void OnImageClick(wxTreeEvent &event);
+    void OnSetAnnotation(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 	DECLARE_EVENT_TABLE()
 };

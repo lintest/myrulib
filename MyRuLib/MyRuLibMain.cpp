@@ -19,6 +19,7 @@
 #include "FbParams.h"
 #include "BookList.h"
 #include "SettingsDlg.h"
+#include "FbThread.h"
 
 #include "XpmBitmaps.h"
 
@@ -57,10 +58,11 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
+    EVT_MENU(ID_SET_ANNOTATION, MyRuLibMainFrame::OnSetAnnotation)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
-	:m_BooksInfoPanel(NULL)
+	:m_BooksInfoPanel(NULL), m_id_book(0)
 {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
 }
@@ -171,6 +173,8 @@ void MyRuLibMainFrame::CreateBookInfo(bool vertical)
 		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
 
 	m_BooksInfoPanel->SetPage(m_html);
+	if (m_id_book) InfoThread::Execute(m_id_book);
+
 }
 
 void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
@@ -245,7 +249,14 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		m_html = ( data ? FbManager::BookInfo(data->GetId()) : (wxString)wxEmptyString);
+		if (data) {
+		    m_id_book = data->GetId();
+            m_html = FbManager::GetBookInfo(m_id_book);
+            InfoThread::Execute(m_id_book);
+		} else {
+		    m_id_book = 0;
+		    m_html = (wxString)wxEmptyString;
+		}
         m_BooksInfoPanel->SetPage(m_html);
 	}
 	event.Skip();
@@ -475,4 +486,9 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
             FbManager::OpenBook(data->GetId());
 	}
 	event.Skip();
+}
+
+void MyRuLibMainFrame::OnSetAnnotation(wxCommandEvent& event)
+{
+    if (m_id_book == event.GetInt()) m_BooksInfoPanel->AppendToPage(event.GetString());
 }

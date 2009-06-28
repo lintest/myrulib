@@ -30,7 +30,7 @@ private:
 
 class FbManager{
 public:
-	static wxString BookInfo(int id);
+	static wxString GetBookInfo(int id);
     static wxString GetAnnotation(int id);
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author);
 	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);

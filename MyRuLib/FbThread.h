@@ -27,19 +27,22 @@ class RegThread : public wxThread
 {
 public:
     RegThread(wxEvtHandler *frame, const wxString &filename);
-
-    // thread execution starts here
     virtual void *Entry();
-
-    // called when the thread exits - whether it terminates normally or is
-    // stopped with Delete() (but not when it is Kill()ed!)
-    virtual void OnExit();
     int AddArchive(int min, int max);
-private:
-	static int NewId(int param);
 private:
     unsigned m_count;
     wxString m_filename;
+    wxEvtHandler *m_frame;
+};
+
+class InfoThread : public wxThread
+{
+public:
+    InfoThread(wxEvtHandler *frame, const int id);
+    virtual void *Entry();
+    static void Execute(const int id);
+private:
+    int m_id;
     wxEvtHandler *m_frame;
 };
 
