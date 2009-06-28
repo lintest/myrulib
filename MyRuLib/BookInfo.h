@@ -5,6 +5,11 @@
 #include <wx/arrimpl.cpp>
 #include "FbParser.h"
 
+#define BIF_TITLE_INFO  0x0001
+#define BIF_ANNOTATION  0x0002
+#define BIF_DESCRIPTION 0x0003
+#define BIF_COVER_IMAGE 0x0004
+
 struct SeqItem {
 public:
 	SeqItem(int s, int n): seq(s), num(n) {};
@@ -19,7 +24,7 @@ class BookInfo
 {
 private:
     bool m_ok;
-	bool ReadXml(const FbDocument &xml);
+	bool ReadXml(const FbDocument &xml, int flags);
 	static int FindAuthor(wxString &full_name);
 	static int FindSequence(wxString &name);
     static void MakeLower(wxString & data);
@@ -30,7 +35,7 @@ public:
 	SeqItemArray sequences;
 	static int NewId(int param);
 public:
-    BookInfo(const FbDocument &xml);
+    BookInfo(wxInputStream& stream, int flags = BIF_DESCRIPTION);
 };
 
 #endif // __BOOKINFO_H__

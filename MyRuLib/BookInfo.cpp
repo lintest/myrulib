@@ -10,13 +10,14 @@ extern wxString strAlphabet;
 extern wxString strRusJO;
 extern wxString strRusJE;
 
-BookInfo::BookInfo(const FbDocument &xml)
+BookInfo::BookInfo(wxInputStream& stream, int flags)
     :m_ok(false)
 {
-    m_ok = ReadXml(xml);
+    FbDocument xml;
+	if (xml.Load(stream, wxT("UTF-8"))) m_ok = ReadXml(xml, flags);
 }
 
-bool BookInfo::ReadXml(const FbDocument &xml)
+bool BookInfo::ReadXml(const FbDocument &xml, int flags)
 {
 
 	FbNode * node = xml.GetRoot();
@@ -31,29 +32,30 @@ bool BookInfo::ReadXml(const FbDocument &xml)
 	node = node->m_child;
     while (node) {
 		wxString name = node->GetName();
-        wxString value;
-        if ( name == wxT("author") ) {
-            value = xml.GetAuthor(node);
-			if (!value.IsEmpty())
-				authors.Add( FindAuthor(value) );
-		} else {
-			value = (node->m_text);
-			if ( name == wxT("genre") ) {
-				genres += FbGenres::Char(value);
-			} else if ( name == wxT("book-title") ) {
-				title = value;
-			} else if ( name == wxT("annotation") ) {
-				annotation = value;
-			} else if ( name == wxT("sequence") ) {
-			    wxString name = node->Prop(wxT("name"));
-			    int seq = FindSequence(name);
-				if (seq) {
-					wxString number = node->Prop(wxT("number"));
-					long num = 0;
-					number.ToLong(&num);
-					sequences.Add(SeqItem(seq, num));
-				}
-			}
+        if ((flags & BIF_TITLE_INFO)!=0) {
+            if ( name == wxT("author") ) {
+                wxString value = xml.GetAuthor(node);
+                if (!value.IsEmpty()) authors.Add( FindAuthor(value) );
+            } else {
+                wxString value = (node->m_text);
+                if ( name == wxT("genre") ) {
+                    genres += FbGenres::Char(value);
+                } else if ( name == wxT("book-title") ) {
+                    title = value;
+                } else if ( name == wxT("sequence") ) {
+                    wxString name = node->Prop(wxT("name"));
+                    int seq = FindSequence(name);
+                    if (seq) {
+                        wxString number = node->Prop(wxT("number"));
+                        long num = 0;
+                        number.ToLong(&num);
+                        sequences.Add(SeqItem(seq, num));
+                    }
+                }
+            }
+        }
+        if ((flags & BIF_ANNOTATION)!=0) {
+            if ( name == wxT("annotation")) annotation = node->m_text;
         }
 		node = node->m_next;
     }

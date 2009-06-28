@@ -1,7 +1,6 @@
 #include <wx/zipstrm.h>
 #include "FbThread.h"
 #include "FbParams.h"
-#include "FbParser.h"
 #include "FbGenres.h"
 #include "MyRuLibApp.h"
 #include "Sequences.h"
@@ -44,10 +43,7 @@ int FbThread::AddArchive()
 
 bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
 {
-    FbDocument xml;
-	if (!xml.Load(stream, wxT("UTF-8"))) return false;
-
-	BookInfo info(xml);
+	BookInfo info(stream);
 
 	long id_book = 0;
 	{
@@ -119,14 +115,7 @@ void *FbThread::Entry()
 				wxPostEvent( m_frame, event );
 
 				zip.OpenEntry(*entry);
-				try {
-                    ParseXml(zip, filename, entry->GetSize(), id_archive);
-				}
-                catch(DatabaseLayerException & e) {
-                    wxFAIL_MSG(e.GetErrorMessage());
-                    return false;
-                }
-
+                ParseXml(zip, filename, entry->GetSize(), id_archive);
 			}
 		}
 		delete entry;

@@ -17,6 +17,7 @@
 #include "Sequences.h"
 #include "Bookseq.h"
 #include "ZipReader.h"
+#include "BookInfo.h"
 
 bool FbManager::ParseXml(const wxString& filename, wxString& html)
 {
@@ -188,6 +189,7 @@ wxString FbManager::BookInfo(int id)
 
     html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
 
+    if (annotation.IsEmpty()) annotation = GetAnnotation(id);
     html += annotation;
 
     html += wxT("</body></html>");
@@ -199,12 +201,9 @@ wxString FbManager::GetAnnotation(int id)
 {
     ZipReader reader(id);
     if (!reader.IsOK()) return wxEmptyString;
-    return wxEmptyString;
 
-    /*
-    FbDocument xml;
-	if (!xml.Load(stream, wxT("UTF-8"))) return wxEmptyString;
-	*/
+    ::BookInfo info(reader.GetZip(), BIF_ANNOTATION);
+    return info.annotation;
 }
 
 class SequenceNode {
