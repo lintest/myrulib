@@ -14,8 +14,8 @@
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
-#include "Sequences.h"
-#include "Bookseq.h"
+#include "db/Sequences.h"
+#include "db/Bookseq.h"
 #include "ZipReader.h"
 #include "BookInfo.h"
 
@@ -161,20 +161,15 @@ wxString FbManager::GetBookInfo(int id)
             Authors authors(wxGetApp().GetDatabase());
             title = thisBook->title;
             genres = thisBook->genres;
-            if (!thisBook->annotation.IsEmpty()) {
-                annotation = thisBook->annotation;
-            }
             authorList.Add(authors.Id(thisBook->id_author)->full_name);
         }
         authorList.Sort();
         for (size_t i = 0; i<authorList.GetCount(); i++) {
-            if (!authorText.IsEmpty())
-                authorText += wxT(", ");
+            if (!authorText.IsEmpty()) authorText += wxT(", ");
             authorText += authorList[i];
         }
         for (size_t i = 0; i<genres.Len()/2; i++) {
-            if (!genreText.IsEmpty())
-                genreText += wxT(", ");
+            if (!genreText.IsEmpty()) genreText += wxT(", ");
             wxString genreCode = genres.SubString(i*2, i*2+1);
             genreText +=  FbGenres::Name( genreCode );
         }
@@ -188,9 +183,6 @@ wxString FbManager::GetBookInfo(int id)
         html += wxString::Format(wxT("<br><font size=3>%s</font>"), HTMLSpecialChars(genreText).c_str());
 
     html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
-
-//    if (annotation.IsEmpty()) annotation = GetAnnotation(id);
-    html += annotation;
 
     html += wxT("</body></html>");
 

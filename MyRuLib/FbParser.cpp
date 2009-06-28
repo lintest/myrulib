@@ -152,30 +152,23 @@ FbDocument::FbDocument()
 {
 }
 
-FbDocument::FbDocument(const wxString& filename, const wxString& encoding)
+FbDocument::FbDocument(const wxString& filename)
               :wxObject(), m_root(NULL)
 {
-    if ( !Load(filename, encoding) )
-    {
-        wxDELETE(m_root);
-    }
+    if (!Load(filename)) wxDELETE(m_root);
 }
 
-FbDocument::FbDocument(wxInputStream& stream, const wxString& encoding)
+FbDocument::FbDocument(wxInputStream& stream)
               :wxObject(), m_root(NULL)
 {
-    if ( !Load(stream, encoding) )
-    {
-        wxDELETE(m_root);
-    }
+    if (!Load(stream)) wxDELETE(m_root);
 }
 
-bool FbDocument::Load(const wxString& filename, const wxString& encoding)
+bool FbDocument::Load(const wxString& filename)
 {
     wxFileInputStream stream(filename);
-    if (!stream.Ok())
-        return false;
-    return Load(stream, encoding);
+    if (!stream.Ok()) return false;
+    return Load(stream);
 }
 
 //-----------------------------------------------------------------------------
@@ -351,10 +344,8 @@ static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
 }
 }
 
-bool FbDocument::Load(wxInputStream& stream, const wxString& encoding)
+bool FbDocument::Load(wxInputStream& stream)
 {
-    (void)encoding;
-
     const size_t BUFSIZE = 1024;
     char buf[BUFSIZE];
     wxXmlParsingContext ctx;

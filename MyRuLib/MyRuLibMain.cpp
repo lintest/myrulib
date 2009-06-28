@@ -12,8 +12,8 @@
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
-#include "Books.h"
-#include "Params.h"
+#include "db/Books.h"
+#include "db/Params.h"
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "FbParams.h"
@@ -212,6 +212,7 @@ wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
 	toolBar->AddTool(ID_FIND_BTN, _("Найти"), wxBitmap(find_xpm));
+	toolBar->AddTool(ID_EXTERNAL, _("Запись"), wxBitmap(dir_down_xpm));
 	toolBar->Realize();
 	return toolBar;
 }

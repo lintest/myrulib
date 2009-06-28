@@ -2,7 +2,7 @@
 #include "FbParams.h"
 #include "FbGenres.h"
 #include "MyRuLibApp.h"
-#include "Sequences.h"
+#include "db/Sequences.h"
 
 WX_DEFINE_OBJARRAY(SeqItemArray);
 
@@ -13,8 +13,8 @@ extern wxString strRusJE;
 BookInfo::BookInfo(wxInputStream& stream, int flags)
     :m_ok(false)
 {
-    FbDocument xml;
-	if (xml.Load(stream, wxT("UTF-8"))) m_ok = ReadXml(xml, flags);
+    FbDocument xml(stream);
+	m_ok = ReadXml(xml, flags);
 }
 
 bool BookInfo::ReadXml(const FbDocument &xml, int flags)

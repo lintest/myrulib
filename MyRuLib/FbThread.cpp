@@ -3,7 +3,7 @@
 #include "FbParams.h"
 #include "FbGenres.h"
 #include "MyRuLibApp.h"
-#include "Sequences.h"
+#include "db/Sequences.h"
 #include "MyRuLibMain.h"
 #include "BookInfo.h"
 #include "ZipReader.h"

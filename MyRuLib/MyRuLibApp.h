@@ -14,9 +14,9 @@
 #include <wx/thread.h>
 #include <DatabaseLayer.h>
 #include <SqliteDatabaseLayer.h>
-#include "Authors.h"
-#include "Books.h"
-#include "Params.h"
+#include "db/Authors.h"
+#include "db/Books.h"
+#include "db/Params.h"
 
 class MyRuLibApp : public wxApp
 {

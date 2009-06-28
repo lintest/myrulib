@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <DatabaseLayer.h>
-#include "Params.h"
+#include "db/Params.h"
 
 enum {
 	DB_LIBRARY_TITLE = 1,

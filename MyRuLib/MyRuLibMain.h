@@ -18,7 +18,6 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "wx/treelistctrl.h"
-#include "Authors.h"
 #include "ProgressBar.h"
 
 class MyRuLibMainFrame: public wxFrame
@@ -41,6 +40,7 @@ public:
 		ID_SPLIT_HORIZONTAL,
 		ID_SPLIT_VERTICAL,
 		ID_SET_ANNOTATION,
+		ID_EXTERNAL,
     };
 private:
 	wxTextCtrl * m_FindTextCtrl;

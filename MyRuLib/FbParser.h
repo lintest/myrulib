@@ -62,14 +62,14 @@ class FbDocument : public wxObject
 {
 public:
     FbDocument();
-    FbDocument(const wxString& filename, const wxString& encoding = wxT("UTF-8"));
-    FbDocument(wxInputStream& stream, const wxString& encoding = wxT("UTF-8"));
+    FbDocument(const wxString& filename);
+    FbDocument(wxInputStream& stream);
     virtual ~FbDocument() { wxDELETE(m_root); }
 
     // Parses .xml file and loads data. Returns TRUE on success, FALSE
     // otherwise.
-    virtual bool Load(const wxString& filename, const wxString& encoding = wxT("UTF-8"));
-    virtual bool Load(wxInputStream& stream, const wxString& encoding = wxT("UTF-8"));
+    virtual bool Load(const wxString& filename);
+    virtual bool Load(wxInputStream& stream);
 
     bool IsOk() const { return m_root != NULL; }
 

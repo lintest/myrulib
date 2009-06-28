@@ -161,16 +161,18 @@
 			<Add library="libSQLite.a" />
 			<Add library="libexpat.a" />
 		</Linker>
-		<Unit filename="Archives.cpp" />
-		<Unit filename="Archives.h" />
-		<Unit filename="Authors.cpp" />
-		<Unit filename="Authors.h" />
+		<Unit filename="db/Archives.cpp" />
+		<Unit filename="db/Archives.h" />
+		<Unit filename="db/Authors.cpp" />
+		<Unit filename="db/Authors.h" />
+		<Unit filename="BookInfo.cpp" />
+		<Unit filename="BookInfo.h" />
 		<Unit filename="BookList.cpp" />
 		<Unit filename="BookList.h" />
-		<Unit filename="Books.cpp" />
-		<Unit filename="Books.h" />
-		<Unit filename="Bookseq.cpp" />
-		<Unit filename="Bookseq.h" />
+		<Unit filename="db/Books.cpp" />
+		<Unit filename="db/Books.h" />
+		<Unit filename="db/Bookseq.cpp" />
+		<Unit filename="db/Bookseq.h" />
 		<Unit filename="DBCreator.cpp" />
 		<Unit filename="DBCreator.h" />
 		<Unit filename="FbGenres.cpp" />
@@ -187,18 +189,21 @@
 		<Unit filename="MyRuLibApp.h" />
 		<Unit filename="MyRuLibMain.cpp" />
 		<Unit filename="MyRuLibMain.h" />
-		<Unit filename="Params.cpp" />
-		<Unit filename="Params.h" />
+		<Unit filename="db/Params.cpp" />
+		<Unit filename="db/Params.h" />
 		<Unit filename="ProgressBar.cpp" />
 		<Unit filename="ProgressBar.h" />
 		<Unit filename="RecordIDClientData.h" />
-		<Unit filename="Sequences.cpp" />
-		<Unit filename="Sequences.h" />
+		<Unit filename="db/Sequences.cpp" />
+		<Unit filename="db/Sequences.h" />
 		<Unit filename="SettingsDlg.cpp" />
 		<Unit filename="SettingsDlg.h" />
 		<Unit filename="XpmBitmaps.h" />
+		<Unit filename="ZipReader.cpp" />
+		<Unit filename="ZipReader.h" />
 		<Unit filename="res/checked.xpm" />
 		<Unit filename="res/checkout.xpm" />
+		<Unit filename="res/dir_down.xpm" />
 		<Unit filename="res/exefile.xpm" />
 		<Unit filename="res/find.xpm" />
 		<Unit filename="res/folder_open.xpm" />
@@ -212,8 +217,8 @@
 		</Unit>
 		<Unit filename="wx/treelistctrl.cpp" />
 		<Unit filename="wx/treelistctrl.h" />
-		<Unit filename="wxActiveRecord.cpp" />
-		<Unit filename="wxActiveRecord.h" />
+		<Unit filename="db/wxActiveRecord.cpp" />
+		<Unit filename="db/wxActiveRecord.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
