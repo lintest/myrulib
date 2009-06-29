@@ -22,6 +22,7 @@
 #include "SettingsDlg.h"
 #include "FbThread.h"
 #include "InfoThread.h"
+#include "InfoCash.h"
 
 #include "XpmBitmaps.h"
 
@@ -58,9 +59,9 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
-    EVT_MENU(ID_SET_ANNOTATION, MyRuLibMainFrame::OnSetAnnotation)
     EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
     EVT_MENU(ID_EXTERNAL, MyRuLibMainFrame::OnExternal)
+    EVT_MENU(ID_BOOKINFO_UPDATE, MyRuLibMainFrame::OnInfoUpdate)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
@@ -181,8 +182,9 @@ void MyRuLibMainFrame::CreateBookInfo(bool vertical)
 	else
 		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
 
-	m_BooksInfoPanel->SetPage(m_html);
-	InfoThread::Execute(GetSelectedBook());
+    wxString html = InfoCash::GetInfo(GetSelectedBook());
+    m_BooksInfoPanel->SetPage(html);
+    InfoCash::ShowInfo(this, GetSelectedBook());
 }
 
 void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
@@ -238,7 +240,6 @@ void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
     if(data) {
         FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
         m_BooksInfoPanel->SetPage(blank_page);
-        m_html.Empty();
     }
 }
 
@@ -266,22 +267,19 @@ void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event)
 	if(data) {
 		FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
 		m_BooksInfoPanel->SetPage(blank_page);
-		m_html.Empty();
 	}
 }
 
 void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 {
+    m_BooksInfoPanel->SetPage(wxEmptyString);
+
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
 		if (data) {
-            m_html = FbManager::GetBookInfo(data->GetId());
-            InfoThread::Execute(data->GetId());
-		} else {
-		    m_html = (wxString)wxEmptyString;
+            InfoCash::ShowInfo(this, data->GetId());
 		}
-        m_BooksInfoPanel->SetPage(m_html);
 	}
 	event.Skip();
 }
@@ -298,13 +296,11 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
 		if(data) {
 			FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
-			m_BooksInfoPanel->SetPage(blank_page);
-			m_html.Empty();
+			m_BooksInfoPanel->SetPage(wxEmptyString);
 		}
 	} else {
 		m_BooksListView->DeleteRoot();
-		m_BooksInfoPanel->SetPage(blank_page);
-		m_html.Empty();
+		m_BooksInfoPanel->SetPage(wxEmptyString);
 	}
 }
 
@@ -348,8 +344,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		m_BooksInfoPanel->SetPage(blank_page);
-		m_html.Empty();
+		m_BooksInfoPanel->SetPage(wxEmptyString);
 
 		wxArrayString paths;
 		dlg.GetPaths(paths);
@@ -470,13 +465,15 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 	event.Skip();
 }
 
-void MyRuLibMainFrame::OnSetAnnotation(wxCommandEvent& event)
+void MyRuLibMainFrame::OnInfoUpdate(wxCommandEvent& event)
 {
 	wxTreeItemId selected = m_BooksListView->GetSelection();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		if (data && (data->GetId() == event.GetInt()))
-            m_BooksInfoPanel->AppendToPage(event.GetString());
+		if (data && (data->GetId() == event.GetInt())) {
+            wxString html = InfoCash::GetInfo(event.GetInt());
+            m_BooksInfoPanel->SetPage(html);
+		}
 	}
 }
 

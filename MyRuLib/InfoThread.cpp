@@ -1,9 +1,10 @@
 #include "InfoThread.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
-#include "MyRuLibMain.h"
 #include "BookInfo.h"
 #include "ZipReader.h"
+#include "InfoCash.h"
+#include "FbManager.h"
 
 #define XML_STATIC
 #include <expat.h>
@@ -12,16 +13,30 @@
 
 #include "wx/base64.h"
 
+void TitleThread::Execute(const int id)
+{
+    if (!id) return;
+	TitleThread *thread = new TitleThread(wxGetApp().GetTopWindow(), id);
+    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
+}
+
+void *TitleThread::Entry()
+{
+    wxString html = FbManager::GetBookInfo(m_id);
+    InfoCash::SetTitle(m_id, html);
+
+    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
+    event.SetInt(m_id);
+    wxPostEvent( m_frame, event );
+
+	return NULL;
+}
+
 void InfoThread::Execute(const int id)
 {
     if (!id) return;
 	InfoThread *thread = new InfoThread(wxGetApp().GetTopWindow(), id);
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
-
-InfoThread::InfoThread(wxEvtHandler *frame, const int id)
-        : wxThread(), m_id(id), m_frame(frame)
-{
 }
 
 void *InfoThread::Entry()
@@ -161,6 +176,10 @@ wxString AddMemoryImage(InfoParsingContext *ctx)
     wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, ctx->imagename.c_str());
     if (cash.Index(imagename) != wxNOT_FOUND) return imagename;
 
+
+   return imagename;
+
+
     while (cash.Count()>20) {
         wxMemoryFSHandler::RemoveFile(cash[0]);
         cash.RemoveAt(0);
@@ -185,17 +204,17 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 	} else {
 		wxString path = ctx->Path();
 		if (path == wxT("fictionbook/description/title-info/")) {
+	        InfoCash::SetAnnotation(ctx->m_id, ctx->annotation);
 			if (!ctx->images.Count()) XML_StopParser(ctx->parser, XML_FALSE);
-			wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_SET_ANNOTATION );
+			wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
 			event.SetInt(ctx->m_id);
-			event.SetString(ctx->annotation);
 			wxPostEvent( ctx->m_frame, event );
 			ctx->annotation.Empty();
 		} else if (path == wxT("fictionbook/binary/")) {
 		    if (!ctx->skipimage) {
-                wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_SET_ANNOTATION );
+		        InfoCash::AddImage(ctx->m_id, ctx->imagename, ctx->imagedata, ctx->imagetype);
+                wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
                 event.SetInt(ctx->m_id);
-                event.SetString(wxString::Format(wxT("<table align=center width=100%><tr><td><img src=\"memory:%s\"></td></tr></table>"), AddMemoryImage(ctx).c_str()));
                 wxPostEvent( ctx->m_frame, event );
                 ctx->annotation.Empty();
 		    }

@@ -177,6 +177,8 @@
 		<Unit filename="FbParser.h" />
 		<Unit filename="FbThread.cpp" />
 		<Unit filename="FbThread.h" />
+		<Unit filename="InfoCash.cpp" />
+		<Unit filename="InfoCash.h" />
 		<Unit filename="InfoThread.cpp" />
 		<Unit filename="InfoThread.h" />
 		<Unit filename="MyRuLibApp.cpp" />

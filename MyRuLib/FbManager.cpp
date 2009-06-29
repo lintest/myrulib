@@ -175,7 +175,7 @@ wxString FbManager::GetBookInfo(int id)
         }
     }
 
-    wxString html(wxT("<html><body>"));
+    wxString html;
 
     html += wxString::Format(wxT("<font size=4><b>%s</b></font>"), HTMLSpecialChars(authorText).c_str());
 
@@ -183,8 +183,6 @@ wxString FbManager::GetBookInfo(int id)
         html += wxString::Format(wxT("<br><font size=3>%s</font>"), HTMLSpecialChars(genreText).c_str());
 
     html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
-
-    html += wxT("</body></html>");
 
     return html;
 }

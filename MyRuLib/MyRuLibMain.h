@@ -37,7 +37,6 @@ public:
         ID_PROGRESS_FINISH,
 		ID_SPLIT_HORIZONTAL,
 		ID_SPLIT_VERTICAL,
-		ID_SET_ANNOTATION,
 		ID_EXTERNAL,
 		ID_FB2_ONLY,
     };
@@ -58,7 +57,6 @@ private:
 	void CreateBookInfo(bool vertical);
 private:
 	int GetSelectedBook();
-	wxString m_html;
 public:
 	MyRuLibMainFrame();
 private:
@@ -80,7 +78,7 @@ private:
 	void OnProgressUpdate(wxCommandEvent& event);
 	void OnProgressFinish(wxCommandEvent& event);
 	void OnImageClick(wxTreeEvent &event);
-    void OnSetAnnotation(wxCommandEvent& event);
+    void OnInfoUpdate(wxCommandEvent& event);
     void OnChangeFilter(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );

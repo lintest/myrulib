@@ -7,11 +7,22 @@
 class InfoThread : public wxThread
 {
 public:
-    InfoThread(wxEvtHandler *frame, const int id);
+    InfoThread(wxEvtHandler *frame, const int id): wxThread(), m_id(id), m_frame(frame) {};
     virtual void *Entry();
     static void Execute(const int id);
 private:
 	bool Load(wxInputStream& stream);
+private:
+    int m_id;
+    wxEvtHandler *m_frame;
+};
+
+class TitleThread : public wxThread
+{
+public:
+    TitleThread(wxEvtHandler *frame, const int id): wxThread(), m_id(id), m_frame(frame) {};
+    virtual void *Entry();
+    static void Execute(const int id);
 private:
     int m_id;
     wxEvtHandler *m_frame;
