@@ -57,7 +57,7 @@ private:
 	void SelectFirstAuthor();
 	void CreateBookInfo(bool vertical);
 private:
-	int m_id_book;
+	int GetSelectedBook();
 	wxString m_html;
 public:
 	MyRuLibMainFrame();

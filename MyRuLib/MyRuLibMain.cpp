@@ -61,7 +61,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
-	:m_BooksInfoPanel(NULL), m_id_book(0)
+	:m_BooksInfoPanel(NULL)
 {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
 }
@@ -82,12 +82,15 @@ void MyRuLibMainFrame::CreateControls()
 	wxMenuBar * menuBar = new wxMenuBar;
 
 	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
+	wxMenuItem * tempItem = fileMenu->Append(wxID_ANY, wxT("Непонятная ошибка с картинками в меню"));
+	tempItem->SetBitmap(wxBitmap(new_xpm));
+	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxBitmap(new_xpm));
 	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(ID_EXTERNAL, _("Записать на устройство"))->SetBitmap(wxBitmap(dir_down_xpm));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
+	fileMenu->Delete(tempItem);
 	menuBar->Append(fileMenu, _("&Файл"));
 
 	wxMenu * serviceMenu = new wxMenu;
@@ -172,8 +175,7 @@ void MyRuLibMainFrame::CreateBookInfo(bool vertical)
 		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
 
 	m_BooksInfoPanel->SetPage(m_html);
-	if (m_id_book) InfoThread::Execute(m_id_book);
-
+	InfoThread::Execute(GetSelectedBook());
 }
 
 void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
@@ -267,11 +269,9 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
 		if (data) {
-		    m_id_book = data->GetId();
-            m_html = FbManager::GetBookInfo(m_id_book);
-            InfoThread::Execute(m_id_book);
+            m_html = FbManager::GetBookInfo(data->GetId());
+            InfoThread::Execute(data->GetId());
 		} else {
-		    m_id_book = 0;
 		    m_html = (wxString)wxEmptyString;
 		}
         m_BooksInfoPanel->SetPage(m_html);
@@ -465,5 +465,20 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 
 void MyRuLibMainFrame::OnSetAnnotation(wxCommandEvent& event)
 {
-    if (m_id_book == event.GetInt()) m_BooksInfoPanel->AppendToPage(event.GetString());
+	wxTreeItemId selected = m_BooksListView->GetSelection();
+	if (selected.IsOk()) {
+		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
+		if (data && (data->GetId() == event.GetInt()))
+            m_BooksInfoPanel->AppendToPage(event.GetString());
+	}
+}
+
+int MyRuLibMainFrame::GetSelectedBook()
+{
+	wxTreeItemId selected = m_BooksListView->GetSelection();
+	if (selected.IsOk()) {
+		BookTreeItemData * data = (BookTreeItemData*)m_BooksListView->GetItemData(selected);
+		return data->GetId();
+    } else
+        return 0;
 }

@@ -217,8 +217,8 @@ void *RegThread::Entry()
 
 void InfoThread::Execute(const int id)
 {
+    if (!id) return;
 	InfoThread *thread = new InfoThread(wxGetApp().GetTopWindow(), id);
-
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
