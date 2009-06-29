@@ -69,7 +69,7 @@
 					<Add directory="$(WXWIN)\include" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="libwxmsw28ud_html.a" />
+					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
 					<Add library="libwxbase28u.a" />
 					<Add library="libwxtiff.a" />
@@ -208,12 +208,6 @@
 		<Unit filename="res\checked.xpm" />
 		<Unit filename="res\checkout.xpm" />
 		<Unit filename="res\dir_down.xpm" />
-		<Unit filename="res\exefile.xpm" />
-		<Unit filename="res\find.xpm" />
-		<Unit filename="res\folder_open.xpm" />
-		<Unit filename="res\htmbook.xpm" />
-		<Unit filename="res\new.xpm" />
-		<Unit filename="res\new_dir.xpm" />
 		<Unit filename="res\nocheck.xpm" />
 		<Unit filename="res\resource.rc">
 			<Option compilerVar="WINDRES" />
