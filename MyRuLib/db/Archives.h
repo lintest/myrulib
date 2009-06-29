@@ -41,16 +41,16 @@ public:
 	Archives(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("archives"));
 	Archives(DatabaseLayer* database,const wxString& table=wxT("archives"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("archives"));
-	
+
 	ArchivesRow* New();
 	bool Delete(int key);
 
-	
+
 	ArchivesRow* Id(int key);
 
 	ArchivesRow* Where(const wxString& whereClause);
 	ArchivesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	ArchivesRowSet* All(const wxString& orderBy=wxEmptyString); 
+	ArchivesRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -83,16 +83,16 @@ public:
 public:
 	BooksRowSet* GetBooks(const wxString& orderBy=wxEmptyString);
 
-	
+
 	bool Save();
 	bool Delete();
-	
-	
+
+
 ////@@begin custom arRow
 public:
 
 
-////@@end custom arRow	
+////@@end custom arRow
 
 };
 ////@@end gen arRow
@@ -104,10 +104,10 @@ public:
 	ArchivesRowSet(wxActiveRecord* activeRecord);
 	ArchivesRowSet(DatabaseLayer* database,const wxString& table=wxT("archives"));
 	virtual ArchivesRow* Item(unsigned long item);
-	
+
 	virtual bool SaveAll();
-	
-	
+
+
 protected:
 	static int CMPFUNC_file_count(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_description(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

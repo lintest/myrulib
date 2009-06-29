@@ -183,11 +183,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="Archives.cpp"
+				RelativePath=".\db\Archives.cpp"
 				>
 			</File>
 			<File
-				RelativePath="Authors.cpp"
+				RelativePath=".\db\Authors.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BookInfo.cpp"
 				>
 			</File>
 			<File
@@ -195,11 +199,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Books.cpp"
+				RelativePath=".\db\Books.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Bookseq.cpp"
+				RelativePath=".\db\Bookseq.cpp"
 				>
 			</File>
 			<File
@@ -227,15 +231,15 @@
 				>
 			</File>
 			<File
-				RelativePath="MyRuLibApp.cpp"
+				RelativePath=".\MyRuLibApp.cpp"
 				>
 			</File>
 			<File
-				RelativePath="MyRuLibMain.cpp"
+				RelativePath=".\MyRuLibMain.cpp"
 				>
 			</File>
 			<File
-				RelativePath="Params.cpp"
+				RelativePath=".\db\Params.cpp"
 				>
 			</File>
 			<File
@@ -243,7 +247,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sequences.cpp"
+				RelativePath=".\db\Sequences.cpp"
 				>
 			</File>
 			<File
@@ -251,11 +255,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\treelistctrl.cpp"
+				RelativePath=".\wx\treelistctrl.cpp"
 				>
 			</File>
 			<File
 				RelativePath="wxActiveRecord.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ZipReader.cpp"
 				>
 			</File>
 		</Filter>
@@ -265,11 +273,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="Archives.h"
+				RelativePath=".\db\Archives.h"
 				>
 			</File>
 			<File
-				RelativePath="Authors.h"
+				RelativePath=".\db\Authors.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BookInfo.h"
 				>
 			</File>
 			<File
@@ -277,7 +289,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Books.h"
+				RelativePath=".\db\Books.h"
 				>
 			</File>
 			<File
@@ -285,7 +297,7 @@
 				>
 			</File>
 			<File
-				RelativePath="DBCreator.h"
+				RelativePath=".\DBCreator.h"
 				>
 			</File>
 			<File
@@ -309,15 +321,15 @@
 				>
 			</File>
 			<File
-				RelativePath="MyRuLibApp.h"
+				RelativePath=".\MyRuLibApp.h"
 				>
 			</File>
 			<File
-				RelativePath="MyRuLibMain.h"
+				RelativePath=".\MyRuLibMain.h"
 				>
 			</File>
 			<File
-				RelativePath="Params.h"
+				RelativePath=".\db\Params.h"
 				>
 			</File>
 			<File
@@ -329,7 +341,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sequences.h"
+				RelativePath=".\db\Sequences.h"
 				>
 			</File>
 			<File
@@ -346,6 +358,10 @@
 			</File>
 			<File
 				RelativePath="XpmBitmaps.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ZipReader.h"
 				>
 			</File>
 		</Filter>
