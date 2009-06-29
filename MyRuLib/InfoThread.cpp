@@ -6,7 +6,11 @@
 #include "ZipReader.h"
 
 #define XML_STATIC
-#include <expat.h> 
+#include <expat.h>
+#include <wx/buffer.h>
+#include <wx/fs_mem.h>
+
+#include "wx/base64.h"
 
 void InfoThread::Execute(const int id)
 {
@@ -66,11 +70,14 @@ public:
 	InfoParsingContext():conv(NULL), encoding(wxT("UTF-8")) {};
 	wxString Path(size_t count = 0);
 public:
-    wxMBConv  *conv;
-    wxString   encoding;
-    wxString   version;
-    wxString   annotation;
-    wxString   imagedata;
+    wxMBConv *conv;
+    wxString encoding;
+    wxString version;
+    wxString annotation;
+    wxString imagedata;
+    wxString imagetype;
+    wxString imagename;
+    bool skipimage;
 	XML_Parser parser;
 	wxArrayString tags;
 	wxArrayString images;
@@ -78,7 +85,7 @@ public:
     int m_id;
 };
 
-wxString InfoParsingContext::Path(size_t count) 
+wxString InfoParsingContext::Path(size_t count)
 {
 	size_t lastNum;
 	wxString result;
@@ -118,15 +125,49 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 					wxString name = CharToLower(ctx->conv, a[0]).Trim(false).Trim(true);
 					if (name == wxT("l:href")) {
 						wxString value = CharToLower(ctx->conv, a[1]).Trim(false).Trim(true);
-						ctx->images.Add(value);
+						if (value.Left(1) == wxT("#")) value = value.Mid(1);
+                        wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, value.c_str());
+                        ctx->images.Add(value);
 					}
 					a += 2;
 				}
 			}
-		}
+        } else if ((node_name == wxT("binary")) && path == wxT("fictionbook/")) {
+            ctx->skipimage = true;
+            ctx->imagedata.Empty();
+            ctx->imagetype.Empty();
+            ctx->imagename.Empty();
+            const XML_Char **a = atts;
+            while (*a) {
+                wxString name = CharToLower(ctx->conv, a[0]).Trim(false).Trim(true);
+                wxString value = CharToLower(ctx->conv, a[1]).Trim(false).Trim(true);
+                if (name == wxT("id")) {
+                    ctx->skipimage = (ctx->images.Index(value) == wxNOT_FOUND);
+                    ctx->imagename = value;
+                } else if (name == wxT("content-type")) {
+                    ctx->imagetype = value;
+                }
+                a += 2;
+            }
+        }
 	}
 	ctx->tags.Add(node_name);
 }
+}
+
+wxString AddMemoryImage(InfoParsingContext *ctx)
+{
+    static wxArrayString cash;
+    wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, ctx->imagename.c_str());
+    if (cash.Index(imagename) != wxNOT_FOUND) return imagename;
+
+    while (cash.Count()>20) cash.RemoveAt(0);
+
+    wxMemoryBuffer buffer = wxBase64Decode(ctx->imagedata);
+    wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), ctx->imagetype);
+    cash.Add(imagename);
+
+    return imagename;
 }
 
 extern "C" {
@@ -146,9 +187,15 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 			event.SetInt(ctx->m_id);
 			event.SetString(ctx->annotation);
 			wxPostEvent( ctx->m_frame, event );
-			ctx->annotation = wxEmptyString;
+			ctx->annotation.Empty();
 		} else if (path == wxT("fictionbook/binary/")) {
-
+		    if (!ctx->skipimage) {
+                wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_SET_ANNOTATION );
+                event.SetInt(ctx->m_id);
+                event.SetString(wxString::Format(wxT("<br><img src=\"memory:%s\">"), AddMemoryImage(ctx).c_str()));
+                wxPostEvent( ctx->m_frame, event );
+                ctx->annotation.Empty();
+		    }
 		}
 	}
 
@@ -169,6 +216,9 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
 	    wxString str = CharToString(ctx->conv, s, len);
 	    if (!wxIsWhiteOnly(str)) ctx->annotation += str;
+	} else if (ctx->Path() == wxT("fictionbook/binary/")) {
+	    wxString str = CharToString(ctx->conv, s, len);
+	    if (!wxIsWhiteOnly(str)) ctx->imagedata += str;
 	}
 }
 }

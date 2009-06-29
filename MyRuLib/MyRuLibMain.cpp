@@ -30,7 +30,7 @@
 
 wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
-wxString blank_page = wxT("<html><body><img src=\"memory:IMAGE.PCX\"></body></html>");
+wxString blank_page = wxT("<html><body><img src=\"memory:IMAGE.PNG\"></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
@@ -70,7 +70,7 @@ MyRuLibMainFrame::MyRuLibMainFrame()
 {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
 
-    wxMemoryFSHandler::AddFile(wxT("IMAGE.PCX"), wxArtProvider::GetBitmap(wxART_NEW), wxBITMAP_TYPE_PCX);
+//    wxMemoryFSHandler::AddFile(wxT("IMAGE.PCX"), wxArtProvider::GetBitmap(wxART_NEW), wxBITMAP_TYPE_PCX);
 //  wxMemoryFSHandler::RemoveFile("about.htm");
 //  base64Binary
 }
