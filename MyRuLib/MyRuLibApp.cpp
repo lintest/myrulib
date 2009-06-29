@@ -9,6 +9,7 @@
 
 #include <wx/app.h>
 #include <wx/image.h>
+#include <wx/fs_mem.h>
 #include <DatabaseLayerException.h>
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
@@ -22,10 +23,14 @@ bool MyRuLibApp::OnInit()
 		wxFAIL_MSG(_("Error connecting to database!"));
 		return false;
 	}
-
+/*
 	wxImage::AddHandler(new wxGIFHandler);
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxJPEGHandler);
+*/
+	::wxInitAllImageHandlers();
+
+    wxFileSystem::AddHandler(new wxMemoryFSHandler);
 
 	MyRuLibMainFrame * frame = new MyRuLibMainFrame;
 	SetTopWindow(frame);

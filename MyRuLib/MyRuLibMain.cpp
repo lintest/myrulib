@@ -7,6 +7,7 @@
  * License:
  **************************************************************/
 
+#include <wx/artprov.h>
 #include <wx/splitter.h>
 #include <wx/imaglist.h>
 #include "MyRuLibMain.h"
@@ -29,7 +30,7 @@
 
 wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
-wxString blank_page = wxT("<html><body><img src=\"IMAGE.GIF\"></body></html>");
+wxString blank_page = wxT("<html><body><img src=\"memory:IMAGE.PCX\"></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
@@ -62,10 +63,16 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_EXTERNAL, MyRuLibMainFrame::OnExternal)
 END_EVENT_TABLE()
 
+#include <wx/fs_mem.h>
+
 MyRuLibMainFrame::MyRuLibMainFrame()
 	:m_BooksInfoPanel(NULL)
 {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
+
+    wxMemoryFSHandler::AddFile(wxT("IMAGE.PCX"), wxArtProvider::GetBitmap(wxART_NEW), wxBITMAP_TYPE_PCX);
+//  wxMemoryFSHandler::RemoveFile("about.htm");
+//  base64Binary
 }
 
 bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
@@ -73,8 +80,12 @@ bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString &
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500));
 	if(res)	{
 		CreateControls();
+        #if defined(__WXMSW__)
 		wxIcon icon(wxT("aaaa"));
 		SetIcon(icon);
+        #else
+		SetIcon(wxArtProvider::GetIcon(wxART_FRAME_ICON));
+        #endif
 	}
 	return res;
 }
@@ -85,13 +96,13 @@ void MyRuLibMainFrame::CreateControls()
 
 	wxMenu * fileMenu = new wxMenu;
 	wxMenuItem * tempItem = fileMenu->Append(wxID_ANY, wxT("Непонятная ошибка с картинками в меню"));
-	tempItem->SetBitmap(wxBitmap(new_xpm));
-	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxBitmap(new_xpm));
-	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxBitmap(htmbook_xpm));
+	tempItem->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
+	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_BOOK));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(ID_EXTERNAL, _("Записать на устройство"))->SetBitmap(wxBitmap(dir_down_xpm));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"));
+	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"))->SetBitmap(wxArtProvider::GetBitmap(wxART_QUIT));
 	fileMenu->Delete(tempItem);
 	menuBar->Append(fileMenu, _("&Файл"));
 
@@ -205,19 +216,19 @@ void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
     wxMessageBox(_T("MyRuLib - version 0.01 (alpha)\n\nhttp://www.lintest.ru\nmail@lintest.ru"));
 }
 
-wxToolBar * MyRuLibMainFrame::CreateButtonBar() {
-
+wxToolBar * MyRuLibMainFrame::CreateButtonBar()
+{
 
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxBitmap(new_xpm), _("Добавить в библиотеку новые файлы ZIP"));
+	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы ZIP"));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxBitmap(find_xpm), _("Поиск по подстроке"));
+	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
 	toolBar->AddSeparator();
 	toolBar->AddTool(ID_EXTERNAL, _("Запись"), wxBitmap(dir_down_xpm), _("Запись на внешнее устройство"));
 	toolBar->AddSeparator();
-	toolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxBitmap(htmbook_xpm), _("Только файлы Fb2"), wxITEM_CHECK);
+	toolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
 	toolBar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
 	toolBar->Realize();
 

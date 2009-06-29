@@ -5,9 +5,10 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
+#include <wx/artprov.h>
 #include "FbParams.h"
 #include "SettingsDlg.h"
-#include "XpmBitmaps.h"
+//#include "XpmBitmaps.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +103,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer15->Add( m_textCtrl5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton5 = new wxBitmapButton( m_panel1, ID_FB2_PROGRAM_BTN, wxBitmap( exefile_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton5 = new wxBitmapButton( m_panel1, ID_FB2_PROGRAM_BTN, wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer15->Add( m_bpButton5, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer15, 1, wxEXPAND, 5 );
@@ -121,7 +122,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer12->Add( m_textCtrl2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton2 = new wxBitmapButton( m_panel1, ID_LIBRARY_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton2 = new wxBitmapButton( m_panel1, ID_LIBRARY_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer12->Add( m_bpButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer12, 1, wxEXPAND, 5 );
@@ -140,7 +141,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer13->Add( m_textCtrl3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton3 = new wxBitmapButton( m_panel1, ID_DOWNLOAD_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton3 = new wxBitmapButton( m_panel1, ID_DOWNLOAD_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer13->Add( m_bpButton3, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer13, 1, wxEXPAND, 5 );
@@ -159,7 +160,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer14->Add( m_textCtrl4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton4 = new wxBitmapButton( m_panel1, ID_EXTRACT_DIR_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton4 = new wxBitmapButton( m_panel1, ID_EXTRACT_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer14->Add( m_bpButton4, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizerTop11->Add( fgSizer14, 1, wxEXPAND, 5 );
@@ -199,7 +200,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer22->Add( m_textCtrl6, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	m_bpButton6 = new wxBitmapButton( m_panel2, ID_EXTERNAL_BTN, wxBitmap( folder_open_xpm), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton6 = new wxBitmapButton( m_panel2, ID_EXTERNAL_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	fgSizer22->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	fgSizer21->Add( fgSizer22, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
