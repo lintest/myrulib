@@ -161,7 +161,10 @@ wxString AddMemoryImage(InfoParsingContext *ctx)
     wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, ctx->imagename.c_str());
     if (cash.Index(imagename) != wxNOT_FOUND) return imagename;
 
-    while (cash.Count()>20) cash.RemoveAt(0);
+    while (cash.Count()>20) {
+        wxMemoryFSHandler::RemoveFile(cash[0]);
+        cash.RemoveAt(0);
+    }
 
     wxMemoryBuffer buffer = wxBase64Decode(ctx->imagedata);
     wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), ctx->imagetype);
@@ -192,7 +195,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		    if (!ctx->skipimage) {
                 wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_SET_ANNOTATION );
                 event.SetInt(ctx->m_id);
-                event.SetString(wxString::Format(wxT("<br><img src=\"memory:%s\">"), AddMemoryImage(ctx).c_str()));
+                event.SetString(wxString::Format(wxT("<table align=center width=100%><tr><td><img src=\"memory:%s\"></td></tr></table>"), AddMemoryImage(ctx).c_str()));
                 wxPostEvent( ctx->m_frame, event );
                 ctx->annotation.Empty();
 		    }

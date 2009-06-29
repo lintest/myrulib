@@ -30,7 +30,7 @@
 
 wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
-wxString blank_page = wxT("<html><body><img src=\"memory:IMAGE.PNG\"></body></html>");
+wxString blank_page = wxT("<html><body></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
@@ -63,16 +63,10 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_EXTERNAL, MyRuLibMainFrame::OnExternal)
 END_EVENT_TABLE()
 
-#include <wx/fs_mem.h>
-
 MyRuLibMainFrame::MyRuLibMainFrame()
 	:m_BooksInfoPanel(NULL)
 {
 	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
-
-//    wxMemoryFSHandler::AddFile(wxT("IMAGE.PCX"), wxArtProvider::GetBitmap(wxART_NEW), wxBITMAP_TYPE_PCX);
-//  wxMemoryFSHandler::RemoveFile("about.htm");
-//  base64Binary
 }
 
 bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
