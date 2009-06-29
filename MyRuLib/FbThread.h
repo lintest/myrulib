@@ -35,15 +35,4 @@ private:
     wxEvtHandler *m_frame;
 };
 
-class InfoThread : public wxThread
-{
-public:
-    InfoThread(wxEvtHandler *frame, const int id);
-    virtual void *Entry();
-    static void Execute(const int id);
-private:
-    int m_id;
-    wxEvtHandler *m_frame;
-};
-
 #endif // __FBTHREAD_H__

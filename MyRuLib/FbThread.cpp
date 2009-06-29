@@ -215,31 +215,3 @@ void *RegThread::Entry()
 	return NULL;
 }
 
-void InfoThread::Execute(const int id)
-{
-    if (!id) return;
-	InfoThread *thread = new InfoThread(wxGetApp().GetTopWindow(), id);
-    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
-
-InfoThread::InfoThread(wxEvtHandler *frame, const int id)
-        : wxThread(), m_id(id), m_frame(frame)
-{
-}
-
-void *InfoThread::Entry()
-{
-    ZipReader reader(m_id);
-    if (!reader.IsOK()) return NULL;
-
-    BookInfo info(reader.GetZip(), BIF_ANNOTATION);
-
-    if (!info.annotation.IsEmpty()) {
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_SET_ANNOTATION );
-        event.SetInt(m_id);
-        event.SetString(info.annotation);
-        wxPostEvent( m_frame, event );
-    }
-
-	return NULL;
-}

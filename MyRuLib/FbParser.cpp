@@ -17,8 +17,7 @@
 #include "FbParser.h"
 
 #define XML_STATIC
-
-#include <expat.h> // from Expat
+#include <expat.h> 
 
 IMPLEMENT_CLASS(FbDocument, wxObject)
 
@@ -209,7 +208,7 @@ struct wxXmlParsingContext
           root(NULL),
           node(NULL),
 		  annotation(false)
-    {}
+    {};
 
     wxMBConv  *conv;
     FbNode *root; // root node of document

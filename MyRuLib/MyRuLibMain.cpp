@@ -1,4 +1,4 @@
-/***************************************************************
+﻿/***************************************************************
  * Name:      MyRuLibMain.cpp
  * Purpose:   Code for Application Frame
  * Author:    Kandrashin Denis (mail@kandr.ru)
@@ -20,6 +20,7 @@
 #include "BookList.h"
 #include "SettingsDlg.h"
 #include "FbThread.h"
+#include "InfoThread.h"
 
 #include "XpmBitmaps.h"
 
@@ -28,7 +29,7 @@
 
 wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
-wxString blank_page = wxT("<html><body></body></html>");
+wxString blank_page = wxT("<html><body><img src=\"IMAGE.GIF\"></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
@@ -364,7 +365,7 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 		_("Выберите zip-файл для регистрации в библиотеке…"),
 		wxEmptyString,
 		wxEmptyString,
-		_("Файлы Lib.rus.ec (*.zip)|???-??????-??????.zip"),
+		_("Файлы Lib.rus.ec (*.zip)|*.zip"),
 		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );

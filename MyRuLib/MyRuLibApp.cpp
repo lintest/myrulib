@@ -23,6 +23,7 @@ bool MyRuLibApp::OnInit()
 		return false;
 	}
 
+	wxImage::AddHandler(new wxGIFHandler);
 	wxImage::AddHandler(new wxPNGHandler);
 	wxImage::AddHandler(new wxJPEGHandler);
 

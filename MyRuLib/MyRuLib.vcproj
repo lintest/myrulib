@@ -231,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InfoThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MyRuLibApp.cpp"
 				>
 			</File>
@@ -318,6 +322,10 @@
 			</File>
 			<File
 				RelativePath=".\FbThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InfoThread.h"
 				>
 			</File>
 			<File
