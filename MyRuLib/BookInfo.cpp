@@ -20,10 +20,10 @@ BookInfo::BookInfo(wxInputStream& stream, int flags)
 bool BookInfo::ReadXml(const FbDocument &xml, int flags)
 {
 
-	FbNode * node = xml.GetRoot();
-	if (!node) return false;
+	FbNode * root = xml.GetRoot();
+	if (!root) return false;
 
-	node = node->Find(wxT("description"));
+	FbNode * node = root->Find(wxT("description"));
 	if (!node) return false;
 
 	node = node->Find(wxT("title-info"));

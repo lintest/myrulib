@@ -8,7 +8,6 @@
 #define BIF_TITLE_INFO  0x0001
 #define BIF_ANNOTATION  0x0002
 #define BIF_DESCRIPTION 0x0003
-#define BIF_COVER_IMAGE 0x0004
 
 struct SeqItem {
 public:

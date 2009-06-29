@@ -82,6 +82,7 @@ private:
 	void OnImageClick(wxTreeEvent &event);
     void OnSetAnnotation(wxCommandEvent& event);
     void OnChangeFilter(wxCommandEvent& event);
+    void OnExternal(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 	DECLARE_EVENT_TABLE()
 };

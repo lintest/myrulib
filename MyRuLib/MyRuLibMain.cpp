@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
     EVT_MENU(ID_SET_ANNOTATION, MyRuLibMainFrame::OnSetAnnotation)
     EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
+    EVT_MENU(ID_EXTERNAL, MyRuLibMainFrame::OnExternal)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
@@ -481,4 +482,8 @@ int MyRuLibMainFrame::GetSelectedBook()
 		return data->GetId();
     } else
         return 0;
+}
+
+void MyRuLibMainFrame::OnExternal(wxCommandEvent& event)
+{
 }
