@@ -8,6 +8,5 @@
 			<Depends filename="SQLite\SQLite.cbp" />
 			<Depends filename="DatabaseLayer\DatabaseLayer.cbp" />
 		</Project>
-		<Project filename="..\..\TEMP\ClearUTF\ClearUTF.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
