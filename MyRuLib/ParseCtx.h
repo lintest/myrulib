@@ -17,7 +17,7 @@ public:
 public:
     static wxString CharToString(const char *s, size_t len = wxString::npos);
     static wxString CharToLower(const char *s, size_t len = wxString::npos);
-    static bool ParsingContext::IsWhiteOnly(const wxChar *buf);
+    static bool IsWhiteOnly(const wxChar *buf);
 public:
     wxMBConv *conv;
     wxString encoding;
