@@ -23,6 +23,7 @@
 #include "FbThread.h"
 #include "InfoThread.h"
 #include "InfoCash.h"
+#include "ExternalDlg.h"
 
 #include "XpmBitmaps.h"
 
@@ -457,6 +458,7 @@ void MyRuLibMainFrame::OnInfoUpdate(wxCommandEvent& event)
             m_BooksInfoPanel->SetPage(html);
 		}
 	}
+	event.Skip();
 }
 
 int MyRuLibMainFrame::GetSelectedBook()
@@ -471,4 +473,9 @@ int MyRuLibMainFrame::GetSelectedBook()
 
 void MyRuLibMainFrame::OnExternal(wxCommandEvent& event)
 {
+    int sel = m_AuthorsListBox->GetSelection();
+    if (sel != wxNOT_FOUND) {
+        ExternalDlg ::Execute(this, m_BooksListView, m_AuthorsListBox->GetString(sel));
+    }
+	event.Skip();
 }

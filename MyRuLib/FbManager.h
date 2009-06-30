@@ -15,16 +15,24 @@
 #include <DatabaseLayer.h>
 #include "FbGenres.h"
 #include "wx/treelistctrl.h"
+#include "db/Books.h"
 
 class AuthorsRowSet;
 
 class BookTreeItemData: public wxTreeItemData
 {
 public:
-	BookTreeItemData(int id): m_id(id) { };
+	BookTreeItemData(BooksRow * row, int num=0)
+        : m_id(row->id), title(row->title), file_size(row->file_size), number(num) { };
+	BookTreeItemData(BookTreeItemData * data)
+        : m_id(data->GetId()), title(data->title), file_size(data->file_size), number(data->number) { };
 	int GetId() { return m_id; };
 private:
 	int m_id;
+public:
+	wxString title;
+	int file_size;
+	int number;
 };
 
 class FbManager{

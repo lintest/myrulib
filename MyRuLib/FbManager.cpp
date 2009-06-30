@@ -175,7 +175,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only
                         if (seqRow->id_book != thisBook->id) continue;
                         if (fb2only && thisBook->file_type != wxT("fb2")) continue;
 
-                        wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+                        wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook, seqRow->number));
                         if (seqRow->number>0) treelist->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
                         treelist->SetItemText (item, 2, thisBook->file_name);
                         treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
@@ -194,7 +194,7 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only
                 parent = treelist->AppendItem(root, strOtherSequence, 0);
                 treelist->SetItemBold(parent, true);
 		    }
-            wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook->id));
+            wxTreeItemId item = treelist->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook));
             treelist->SetItemText (item, 2, thisBook->file_name);
             treelist->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
 		}
