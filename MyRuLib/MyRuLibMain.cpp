@@ -337,16 +337,10 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		m_BooksInfoPanel->SetPage(wxEmptyString);
-
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			wxString filename = paths[i];
-			wxString html;
-			FbManager parser;
-			parser.ParseZip(filename, html);
-			m_BooksInfoPanel->AppendToPage(html);
+			FbManager::ParseZip(paths[i]);
 		}
 	}
 }
@@ -367,10 +361,7 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			wxString filename = paths[i];
-			wxString html;
-			FbManager parser;
-			parser.RegisterZip(filename);
+			FbManager::RegisterZip(paths[i]);
 		}
 	}
 }

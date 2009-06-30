@@ -19,7 +19,7 @@
 #include "ZipReader.h"
 #include "BookInfo.h"
 
-bool FbManager::ParseXml(const wxString& filename, wxString& html)
+bool FbManager::ParseXml(const wxString& filename)
 {
     wxFileInputStream stream(filename);
     if (!stream.Ok()) return false;
@@ -44,7 +44,7 @@ bool FbManager::RegisterZip(const wxString& filename)
     return true;
 }
 
-bool FbManager::ParseZip(const wxString& filename, wxString& html)
+bool FbManager::ParseZip(const wxString& filename)
 {
 	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename);
 

@@ -35,9 +35,9 @@ public:
 	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
 	static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
 	static void OpenBook(int id);
-	bool ParseXml(const wxString& filename, wxString& html);
-	bool ParseZip(const wxString& filename, wxString& html);
-	bool RegisterZip(const wxString& filename);
+	static bool ParseXml(const wxString& filename);
+	static bool ParseZip(const wxString& filename);
+	static bool RegisterZip(const wxString& filename);
 private:
 	static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };
