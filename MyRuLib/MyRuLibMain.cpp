@@ -31,7 +31,6 @@
 
 wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
-wxString blank_page = wxT("<html><body></body></html>");
 wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
@@ -232,11 +231,12 @@ void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
         m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
     if(data) {
         FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
-        m_BooksInfoPanel->SetPage(blank_page);
+        m_BooksInfoPanel->SetPage(wxEmptyString);
     }
 }
 
-wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, int toolid) {
+wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, int toolid)
+{
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS);
 	size_t iLength = alphabet.Len();
 	for (size_t i = 0; i<iLength; i++) {
@@ -249,7 +249,8 @@ wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, int tool
 	return toolBar;
 }
 
-void MyRuLibMainFrame::OnExit(wxCommandEvent & event) {
+void MyRuLibMainFrame::OnExit(wxCommandEvent & event)
+{
 	wxUnusedVar(event);
 	Close();
 }
@@ -259,7 +260,7 @@ void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event)
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
 	if(data) {
 		FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
-		m_BooksInfoPanel->SetPage(blank_page);
+		m_BooksInfoPanel->SetPage(wxEmptyString);
 	}
 }
 
@@ -269,10 +270,8 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
-		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		if (data) {
-            InfoCash::ShowInfo(this, data->GetId());
-		}
+		BookTreeItemData * data = (BookTreeItemData*)m_BooksListView->GetItemData(selected);
+		if (data) InfoCash::ShowInfo(this, data->GetId());
 	}
 	event.Skip();
 }
@@ -442,9 +441,8 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
-		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		if (data)
-            FbManager::OpenBook(data->GetId());
+		BookTreeItemData * data = (BookTreeItemData*)m_BooksListView->GetItemData(selected);
+		if (data) FbManager::OpenBook(data->GetId());
 	}
 	event.Skip();
 }
