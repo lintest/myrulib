@@ -5,6 +5,7 @@
 #include "wx/base64.h"
 
 #include "InfoThread.h"
+#include "TitleThread.h"
 
 WX_DEFINE_OBJARRAY(InfoImageArray);
 
@@ -40,7 +41,11 @@ InfoNode * InfoCash::GetNode(int id)
 {
     InfoNodeArray * cash = GetCash();
     for (size_t i=0; i<cash->GetCount(); i++) {
-        if (cash->Item(i).id == id) return &cash->Item(i);
+        if (cash->Item(i).id == id) {
+            InfoNode * node = cash->Detach(i);
+            cash->Insert(node, 0);
+            return node;
+        }
     }
     while ( cash->GetCount()>INFO_CASH_SIZE ) {
         cash->RemoveAt(INFO_CASH_SIZE);
@@ -85,12 +90,22 @@ wxString InfoCash::GetInfo(int id, bool vertical)
     wxCriticalSectionLocker enter(infoLocker);
     InfoNode * node = GetNode(id);
 
-    wxString html = wxT("<html><body><table>");
+    wxString html = wxT("<html><body><table width=100%>");
 
-    html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->title.c_str());
-    html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->annotation.c_str());
-    for (size_t i=0; i<node->images.GetCount(); i++) {
-        html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\"></td></tr>"), node->images[i].name.c_str());
+    if (vertical) {
+        html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), node->title.c_str());
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->annotation.c_str());
+        for (size_t i=0; i<node->images.GetCount(); i++) {
+            html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\"></td></tr>"), node->images[i].name.c_str());
+        }
+    } else {
+        html += wxString::Format(wxT("<tr width=100%><td>%s</td>"), node->title.c_str());
+        html += wxT("<td rowspan=2 align=center>");
+        for (size_t i=0; i<node->images.GetCount(); i++) {
+            html += wxString::Format(wxT("<img src=\"memory:%s\"><br>"), node->images[i].name.c_str());
+        }
+        html += wxT("</td></tr>");
+        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());
     }
     html += wxT("</table></body></html>");
 
@@ -99,14 +114,18 @@ wxString InfoCash::GetInfo(int id, bool vertical)
 
 void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
 {
+    if (!id) return;
+
+    wxCriticalSectionLocker enter(infoLocker);
     InfoNode * node = GetNode(id);
+
     if (node->loaded) {
         wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
         event.SetInt(id);
         wxPostEvent(frame, event);
     } else {
-        TitleThread::Execute(id);
-        InfoThread::Execute(id);
+        TitleThread::Execute(frame, id);
+        InfoThread::Execute(frame, id);
         node->loaded = true;
     }
 }

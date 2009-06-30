@@ -156,7 +156,8 @@ void MyRuLibMainFrame::CreateControls()
 
 	splitter->SplitVertically(m_AuthorsListBox, m_books_splitter, 160);
 
-	CreateBookInfo(FbParams().GetValue(FB_VIEW_TYPE));
+    vertical = FbParams().GetValue(FB_VIEW_TYPE);
+	CreateBookInfo();
 
 	FbManager::FillAuthorsChar(m_AuthorsListBox, _("А")[0]);
 
@@ -169,7 +170,7 @@ void MyRuLibMainFrame::CreateControls()
 	Centre();
 }
 
-void MyRuLibMainFrame::CreateBookInfo(bool vertical)
+void MyRuLibMainFrame::CreateBookInfo()
 {
 	if (m_BooksInfoPanel) m_books_splitter->Unsplit(m_BooksInfoPanel);
 
@@ -182,7 +183,7 @@ void MyRuLibMainFrame::CreateBookInfo(bool vertical)
 	else
 		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
 
-    wxString html = InfoCash::GetInfo(GetSelectedBook());
+    wxString html = InfoCash::GetInfo(GetSelectedBook(), vertical);
     m_BooksInfoPanel->SetPage(html);
     InfoCash::ShowInfo(this, GetSelectedBook());
 }
@@ -194,17 +195,9 @@ void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
 
 void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 {
-	switch (event.GetId()) {
-		case ID_SPLIT_HORIZONTAL:
-			CreateBookInfo(true);
-			break;
-		case ID_SPLIT_VERTICAL:
-			CreateBookInfo(false);
-			break;
-	}
-
-	FbParams params;
-	params.SetValue(FB_VIEW_TYPE, event.GetId() == ID_SPLIT_HORIZONTAL);
+	vertical = (event.GetId() == ID_SPLIT_HORIZONTAL);
+	FbParams().SetValue(FB_VIEW_TYPE, vertical);
+	CreateBookInfo();
 }
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
@@ -471,7 +464,7 @@ void MyRuLibMainFrame::OnInfoUpdate(wxCommandEvent& event)
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BooksListView->GetItemData(selected);
 		if (data && (data->GetId() == event.GetInt())) {
-            wxString html = InfoCash::GetInfo(event.GetInt());
+            wxString html = InfoCash::GetInfo(event.GetInt(), vertical);
             m_BooksInfoPanel->SetPage(html);
 		}
 	}

@@ -30,13 +30,11 @@ private:
 
 class FbManager{
 public:
-	static wxString GetBookInfo(int id);
     static wxString GetAnnotation(int id);
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only);
 	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
 	static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
 	static void OpenBook(int id);
-    static wxString HTMLSpecialChars( const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	bool ParseXml(const wxString& filename, wxString& html);
 	bool ParseZip(const wxString& filename, wxString& html);
 	bool RegisterZip(const wxString& filename);

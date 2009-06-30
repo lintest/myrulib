@@ -40,7 +40,7 @@ class InfoCash
 {
 public:
     static void ShowInfo(wxEvtHandler *frame, const int id);
-    static wxString GetInfo(int id, bool vertical = false);
+    static wxString GetInfo(int id, bool vertical);
 public:
     static void SetTitle(int id, wxString html);
     static void SetAnnotation(int id, wxString html);

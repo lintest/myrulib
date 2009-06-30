@@ -1,43 +1,12 @@
 #include "InfoThread.h"
-#include "FbParams.h"
-#include "MyRuLibApp.h"
-#include "BookInfo.h"
 #include "ZipReader.h"
 #include "InfoCash.h"
-#include "FbManager.h"
 
 #define XML_STATIC
 #include <expat.h>
 #include <wx/buffer.h>
 #include <wx/fs_mem.h>
-
 #include "wx/base64.h"
-
-void TitleThread::Execute(const int id)
-{
-    if (!id) return;
-	TitleThread *thread = new TitleThread(wxGetApp().GetTopWindow(), id);
-    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
-
-void *TitleThread::Entry()
-{
-    wxString html = FbManager::GetBookInfo(m_id);
-    InfoCash::SetTitle(m_id, html);
-
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-    event.SetInt(m_id);
-    wxPostEvent( m_frame, event );
-
-	return NULL;
-}
-
-void InfoThread::Execute(const int id)
-{
-    if (!id) return;
-	InfoThread *thread = new InfoThread(wxGetApp().GetTopWindow(), id);
-    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
 
 void *InfoThread::Entry()
 {
@@ -47,6 +16,13 @@ void *InfoThread::Entry()
 	Load(reader.GetZip());
 
 	return NULL;
+}
+
+void InfoThread::Execute(wxEvtHandler *frame, const int id)
+{
+    if (!id) return;
+	InfoThread *thread = new InfoThread(frame, id);
+    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
 //-----------------------------------------------------------------------------
