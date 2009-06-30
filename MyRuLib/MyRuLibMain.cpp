@@ -18,7 +18,7 @@
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "FbParams.h"
-#include "BookList.h"
+#include "BookListCtrl.h"
 #include "SettingsDlg.h"
 #include "FbThread.h"
 #include "InfoThread.h"

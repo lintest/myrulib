@@ -39,7 +39,7 @@ private:
 	static int FindSequence(wxString &name);
 public:
 	wxArrayInt authors;
-	wxString title, annotation, genres;
+	wxString title, genres;
 	SeqItemArray sequences;
 	static int NewId(int param);
     static void MakeLower(wxString & data);

@@ -49,14 +49,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 	long id_book = 0;
 	{
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-		wxFileName filename (name);
-		wxString shortname = filename.GetName();
-		if (shortname.ToLong(&id_book)) {
-			wxString query = wxString::Format(wxT("DELETE FROM books WHERE id=%d"), id_book);
-			wxGetApp().GetDatabase()->RunQuery(query);
-		} else {
-			id_book = - BookInfo::NewId(DB_NEW_BOOK);
-		}
+		id_book = - BookInfo::NewId(DB_NEW_BOOK);
 	}
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
@@ -68,7 +61,6 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		row->id = id_book;
 		row->id_author = info.authors[i];
 		row->title = info.title;
-		row->annotation = info.annotation;
 		row->genres = info.genres;
 		row->file_size = size;
 		row->file_name = name;

@@ -15,7 +15,6 @@ public:
     // stopped with Delete() (but not when it is Kill()ed!)
     virtual void OnExit();
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
-    static bool UpdateXml(const wxString &name, int id_archive);
     int AddArchive();
 private:
     unsigned m_count;
