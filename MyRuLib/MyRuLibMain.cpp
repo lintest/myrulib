@@ -94,7 +94,7 @@ void MyRuLibMainFrame::CreateControls()
 	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_BOOK));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(ID_EXTERNAL, _("Записать на устройство"))->SetBitmap(wxBitmap(dir_down_xpm));
+	fileMenu->Append(ID_EXTERNAL, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_GO_DIR_UP));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"))->SetBitmap(wxArtProvider::GetBitmap(wxART_QUIT));
 	fileMenu->Delete(tempItem);
@@ -124,14 +124,14 @@ void MyRuLibMainFrame::CreateControls()
 	sizer->Add(CreateAlphaBar(alphabetEn, ID_LETTER_EN), 0, wxEXPAND, 5);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(100);
+	splitter->SetMinimumPaneSize(50);
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
 	m_AuthorsListBox = new wxListBox(splitter, ID_AUTHORS_LISTBOX, wxDefaultPosition, wxDefaultSize, 0, NULL, wxSUNKEN_BORDER);
 
 	m_books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	m_books_splitter->SetMinimumPaneSize(100);
+	m_books_splitter->SetMinimumPaneSize(50);
 	m_books_splitter->SetSashGravity(0.5);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
@@ -173,7 +173,7 @@ void MyRuLibMainFrame::CreateBookInfo()
 {
 	if (m_BooksInfoPanel) m_books_splitter->Unsplit(m_BooksInfoPanel);
 
-	m_BooksInfoPanel = new wxHtmlWindow(m_books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxSize(-1,-1), wxSUNKEN_BORDER);
+	m_BooksInfoPanel = new wxHtmlWindow(m_books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
 	m_BooksInfoPanel->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
@@ -214,7 +214,7 @@ wxToolBar * MyRuLibMainFrame::CreateButtonBar()
 	toolBar->AddControl( m_FindTextCtrl );
 	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
 	toolBar->AddSeparator();
-	toolBar->AddTool(ID_EXTERNAL, _("Запись"), wxBitmap(dir_down_xpm), _("Запись на внешнее устройство"));
+	toolBar->AddTool(ID_EXTERNAL, _("Экспорт"), wxArtProvider::GetBitmap(wxART_GO_DIR_UP), _("Запись на внешнее устройство"));
 	toolBar->AddSeparator();
 	toolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
 	toolBar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );

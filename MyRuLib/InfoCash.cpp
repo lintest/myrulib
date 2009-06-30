@@ -100,7 +100,7 @@ wxString InfoCash::GetInfo(int id, bool vertical)
         }
     } else {
         html += wxString::Format(wxT("<tr width=100%><td>%s</td>"), node->title.c_str());
-        html += wxT("<td rowspan=2 align=center valign=top>");
+        html += wxT("<td rowspan=2 align=right valign=top>");
         for (size_t i=0; i<node->images.GetCount(); i++) {
             html += wxString::Format(wxT("<img src=\"memory:%s\"><br>"), node->images[i].name.c_str());
         }
