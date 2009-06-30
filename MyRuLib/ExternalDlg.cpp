@@ -98,6 +98,11 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
     wxTreeItemId root = bookList->GetRootItem();
     ScanChilds(bookList, root, selections);
 
+    if (!selections.Count()) {
+        wxMessageBox(wxT("No selection"));
+        return false;
+    }
+
     ExternalDlg dlg(parent);
     dlg.FillBooks(author, selections);
     bool result = (dlg.ShowModal() == wxID_OK);
