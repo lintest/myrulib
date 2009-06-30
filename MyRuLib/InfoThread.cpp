@@ -1,12 +1,7 @@
 #include "InfoThread.h"
 #include "ZipReader.h"
 #include "InfoCash.h"
-
-#define XML_STATIC
-#include <expat.h>
-#include <wx/buffer.h>
-#include <wx/fs_mem.h>
-#include "wx/base64.h"
+#include "ParseCtx.h"
 
 void *InfoThread::Entry()
 {
@@ -25,85 +20,31 @@ void InfoThread::Execute(wxEvtHandler *frame, const int id)
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
-//-----------------------------------------------------------------------------
-//  FbDocument loading routines
-//-----------------------------------------------------------------------------
-
-// converts Expat-produced string in UTF-8 into wxString using the specified
-// conv or keep in UTF-8 if conv is NULL
-static wxString CharToString(wxMBConv *conv, const char *s, size_t len = wxString::npos)
-{
-    wxUnusedVar(conv);
-    return wxString(s, wxConvUTF8, len);
-}
-
-static wxString CharToLower(wxMBConv *conv, const char *s, size_t len = wxString::npos)
-{
-    wxUnusedVar(conv);
-    wxString data = wxString(s, wxConvUTF8, len);
-    data.MakeLower();
-
-    return data;
-}
-
-// returns true if the given string contains only whitespaces
-bool wxIsWhiteOnly(const wxChar *buf)
-{
-    for (const wxChar *c = buf; *c != wxT('\0'); c++)
-        if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r'))
-            return false;
-    return true;
-}
-
-class InfoParsingContext
+class InfoParsingContext: public ParsingContext
 {
 public:
-	InfoParsingContext():conv(NULL), encoding(wxT("UTF-8")) {};
-	wxString Path(size_t count = 0);
-public:
-    wxMBConv *conv;
-    wxString encoding;
-    wxString version;
     wxString annotation;
     wxString imagedata;
     wxString imagetype;
     wxString imagename;
     bool skipimage;
-	XML_Parser parser;
-	wxArrayString tags;
 	wxArrayString images;
-    wxEvtHandler *m_frame;
-    int m_id;
 };
-
-wxString InfoParsingContext::Path(size_t count)
-{
-	size_t lastNum;
-	wxString result;
-
-	if (count>tags.Count())
-		lastNum = tags.Count();
-	else
-		lastNum = (count ? count : tags.Count());
-
-	for (size_t i=0; i<lastNum; i++)
-		result += tags[i] + wxT("/");
-
-	return result;
-}
 
 extern "C" {
 static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
 {
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
-    wxString node_name = CharToLower(ctx->conv, name);
+    wxString node_name = ParsingContext::CharToLower(name);
 
 	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
 		ctx->annotation += wxString::Format(wxT("<%s"), node_name.c_str());
 		const XML_Char **a = atts;
 		while (*a) {
-			ctx->annotation += wxString::Format(wxT(" %s=%s"), CharToLower(ctx->conv, a[0]).c_str(), CharToString(ctx->conv, a[1]).c_str());
+            wxString name = ParsingContext::CharToLower(a[0]);
+            wxString value = ParsingContext::CharToLower(a[1]);
+			ctx->annotation += wxString::Format(wxT(" %s=%s"), name.c_str(), value.c_str());
 			a += 2;
 		}
 		ctx->annotation += wxT(">");
@@ -113,9 +54,9 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 			if (node_name == wxT("image")) {
 				const XML_Char **a = atts;
 				while (*a) {
-					wxString name = CharToLower(ctx->conv, a[0]).Trim(false).Trim(true);
+					wxString name = ParsingContext::CharToLower(a[0]);
+                    wxString value = ParsingContext::CharToLower(a[1]);
 					if (name == wxT("l:href")) {
-						wxString value = CharToLower(ctx->conv, a[1]).Trim(false).Trim(true);
 						if (value.Left(1) == wxT("#")) value = value.Mid(1);
                         wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, value.c_str());
                         ctx->images.Add(value);
@@ -130,8 +71,8 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
             ctx->imagename.Empty();
             const XML_Char **a = atts;
             while (*a) {
-                wxString name = CharToLower(ctx->conv, a[0]).Trim(false).Trim(true);
-                wxString value = CharToLower(ctx->conv, a[1]).Trim(false).Trim(true);
+                wxString name = ParsingContext::CharToLower(a[0]);
+                wxString value = ParsingContext::CharToLower(a[1]);
                 if (name == wxT("id")) {
                     ctx->skipimage = (ctx->images.Index(value) == wxNOT_FOUND);
                     ctx->imagename = value;
@@ -142,39 +83,17 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
             }
         }
 	}
-	ctx->tags.Add(node_name);
+	ctx->AppendTag(node_name);
 }
-}
-
-wxString AddMemoryImage(InfoParsingContext *ctx)
-{
-    static wxArrayString cash;
-    wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, ctx->imagename.c_str());
-    if (cash.Index(imagename) != wxNOT_FOUND) return imagename;
-
-
-   return imagename;
-
-
-    while (cash.Count()>20) {
-        wxMemoryFSHandler::RemoveFile(cash[0]);
-        cash.RemoveAt(0);
-    }
-
-    wxMemoryBuffer buffer = wxBase64Decode(ctx->imagedata);
-    wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), ctx->imagetype);
-    cash.Add(imagename);
-
-    return imagename;
 }
 
 extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
-    wxString node_name = CharToLower(ctx->conv, name);
+    wxString node_name = ParsingContext::CharToLower(name);
 
-	if (ctx->tags.Count()>4 && ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
+	if (ctx->Level()>4 && ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
 		ctx->annotation.Trim(false).Trim(true);
 		ctx->annotation += wxString::Format(wxT("</%s>"), node_name.c_str());
 	} else {
@@ -196,13 +115,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		    }
 		}
 	}
-
-	for (size_t i = ctx->tags.Count(); i>0 ; i--) {
-		if ( ctx->tags[i-1] == node_name) {
-			while (ctx->tags.Count()>=i) ctx->tags.RemoveAt(i-1);
-			break;
-		}
-	}
+	ctx->RemoveTag(node_name);
 }
 }
 
@@ -212,11 +125,11 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
 	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
-	    wxString str = CharToString(ctx->conv, s, len);
-	    if (!wxIsWhiteOnly(str)) ctx->annotation += str;
+	    wxString str = ParsingContext::CharToString(s, len);
+	    if (!ParsingContext::IsWhiteOnly(str)) ctx->annotation += str;
 	} else if (ctx->Path() == wxT("fictionbook/binary/")) {
-	    wxString str = CharToString(ctx->conv, s, len);
-	    if (!wxIsWhiteOnly(str)) ctx->imagedata += str;
+	    wxString str = ParsingContext::CharToString(s, len);
+	    if (!ParsingContext::IsWhiteOnly(str)) ctx->imagedata += str;
 	}
 }
 }
@@ -229,7 +142,7 @@ static void DefaultHnd(void *userData, const XML_Char *s, int len)
     {
         InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
-        wxString buf = CharToString(ctx->conv, s, (size_t)len);
+        wxString buf = ParsingContext::CharToString(s, (size_t)len);
         int pos;
         pos = buf.Find(wxT("encoding="));
         if (pos != wxNOT_FOUND)
