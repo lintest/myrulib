@@ -20,9 +20,9 @@ bool Sequences::Create(const wxString& name,const wxString& server,const wxStrin
 
 SequencesRow* Sequences::RowFromResult(DatabaseResultSet* result){
 	SequencesRow* row=new SequencesRow(this);
-	
+
 	row->GetFromResult(result);
-	
+
 	return row;
 }
 
@@ -92,14 +92,14 @@ SequencesRow* Sequences::Where(const wxString& whereClause){
 		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(!result->Next())
 			return NULL;
 		SequencesRow* row=RowFromResult(result);
-		
+
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);						
+		m_database->CloseStatement(pStatement);
 		return row;
 	}
 	catch (DatabaseLayerException& e)
@@ -117,18 +117,18 @@ SequencesRowSet* Sequences::WhereSet(const wxString& whereClause,const wxString&
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
 			}
 		}
-		
+
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);	
+		m_database->CloseStatement(pStatement);
 		return rowSet;
-		
+
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -145,9 +145,9 @@ SequencesRowSet* Sequences::All(const wxString& orderBy){
 		if(!orderBy.IsEmpty())
 			prepStatement+=wxT(" ORDER BY ")+orderBy;
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		
+
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
-		
+
 		if(result){
 			while(result->Next()){
 				rowSet->Add(RowFromResult(result));
@@ -155,9 +155,9 @@ SequencesRowSet* Sequences::All(const wxString& orderBy){
 		}
 		garbageRowSets.Add(rowSet);
 		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);	
+		m_database->CloseStatement(pStatement);
 		return rowSet;
-		
+
 	}
 	catch (DatabaseLayerException& e)
 	{
@@ -182,7 +182,7 @@ SequencesRow::SequencesRow(const SequencesRow& src){
 	if(&src==this)
 		return;
 	newRow=src.newRow;
-	
+
 	value=src.value;
 	id=src.id;
 
@@ -191,13 +191,13 @@ SequencesRow::SequencesRow(const SequencesRow& src){
 SequencesRow::SequencesRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
 	newRow=true;
 }
-	
+
 
 SequencesRow& SequencesRow::operator=(const SequencesRow& src){
 	if(&src==this)
 		return *this;
 	newRow=src.newRow;
-	
+
 	value=src.value;
 	id=src.id;
 
@@ -206,7 +206,7 @@ SequencesRow& SequencesRow::operator=(const SequencesRow& src){
 }
 
 bool SequencesRow::GetFromResult(DatabaseResultSet* result){
-	
+
 	newRow=false;
 		value=result->GetResultString(wxT("value"));
 	id=result->GetResultInt(wxT("id"));
@@ -214,7 +214,7 @@ bool SequencesRow::GetFromResult(DatabaseResultSet* result){
 
 	return true;
 }
-	
+
 
 bool SequencesRow::Save(){
 	try{
@@ -225,7 +225,7 @@ bool SequencesRow::Save(){
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
-			
+
 			newRow=false;
 		}
 		else{
@@ -236,7 +236,7 @@ bool SequencesRow::Save(){
 			m_database->CloseStatement(pStatement);
 
 		}
-		
+
 		return true;
 	}
 	catch (DatabaseLayerException& e)
@@ -320,7 +320,7 @@ CMPFUNC_proto SequencesRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_value;
 	else if(var==wxT("id"))
 		return (CMPFUNC_proto)CMPFUNC_id;
-	else 
+	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }
 

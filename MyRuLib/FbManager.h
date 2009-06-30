@@ -13,7 +13,6 @@
 #include <wx/wx.h>
 #include <wx/listbox.h>
 #include <DatabaseLayer.h>
-#include "FbParser.h"
 #include "FbGenres.h"
 #include "wx/treelistctrl.h"
 

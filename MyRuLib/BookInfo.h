@@ -4,7 +4,6 @@
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
 #include <wx/thread.h>
-#include "FbParser.h"
 
 #define BIF_TITLE_INFO  0x0001
 #define BIF_ANNOTATION  0x0002
@@ -34,7 +33,6 @@ class BookInfo
 {
 private:
     bool m_ok;
-	bool ReadXml(const FbDocument &xml, int flags);
     bool Load(wxInputStream& stream);
 	static int FindAuthor(wxString &full_name);
 	static int FindAuthor(AuthorItem &author);

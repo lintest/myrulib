@@ -231,57 +231,7 @@ bool BookInfo::Load(wxInputStream& stream)
 BookInfo::BookInfo(wxInputStream& stream, int flags)
     :m_ok(false)
 {
-//    FbDocument xml(stream);
-//	m_ok = ReadXml(xml, flags);
     m_ok = Load(stream);
-}
-
-bool BookInfo::ReadXml(const FbDocument &xml, int flags)
-{
-
-	FbNode * root = xml.GetRoot();
-	if (!root) return false;
-
-	FbNode * node = root->Find(wxT("description"));
-	if (!node) return false;
-
-	node = node->Find(wxT("title-info"));
-	if (!node) return false;
-
-	node = node->m_child;
-    while (node) {
-		wxString name = node->GetName();
-        if ((flags & BIF_TITLE_INFO)!=0) {
-            if ( name == wxT("author") ) {
-                wxString value = xml.GetAuthor(node);
-                if (!value.IsEmpty()) authors.Add( FindAuthor(value) );
-            } else {
-                wxString value = (node->m_text);
-                if ( name == wxT("genre") ) {
-                    genres += FbGenres::Char(value);
-                } else if ( name == wxT("book-title") ) {
-                    title = value;
-                } else if ( name == wxT("sequence") ) {
-                    wxString name = node->Prop(wxT("name"));
-                    int seq = FindSequence(name);
-                    if (seq) {
-                        wxString number = node->Prop(wxT("number"));
-                        long num = 0;
-                        number.ToLong(&num);
-                        sequences.Add(SeqItem(seq, num));
-                    }
-                }
-            }
-        }
-        if ((flags & BIF_ANNOTATION)!=0) {
-            if ( name == wxT("annotation")) annotation = node->m_text;
-        }
-		node = node->m_next;
-    }
-
-	if (authors.Count() == 0) authors.Add(0);
-
-	return true;
 }
 
 int BookInfo::FindAuthor(wxString &full_name) {
