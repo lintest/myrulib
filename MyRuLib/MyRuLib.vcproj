@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\wx\base64.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BookInfo.cpp"
 				>
 			</File>
@@ -231,6 +235,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InfoCash.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\InfoThread.cpp"
 				>
 			</File>
@@ -247,6 +255,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ParseCtx.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ProgressBar.cpp"
 				>
 			</File>
@@ -256,6 +268,10 @@
 			</File>
 			<File
 				RelativePath=".\SettingsDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TitleThread.cpp"
 				>
 			</File>
 			<File
@@ -282,6 +298,10 @@
 			</File>
 			<File
 				RelativePath=".\db\Authors.h"
+				>
+			</File>
+			<File
+				RelativePath=".\wx\base64.h"
 				>
 			</File>
 			<File
@@ -325,6 +345,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InfoCash.h"
+				>
+			</File>
+			<File
 				RelativePath=".\InfoThread.h"
 				>
 			</File>
@@ -341,6 +365,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ParseCtx.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ProgressBar.h"
 				>
 			</File>
@@ -354,6 +382,10 @@
 			</File>
 			<File
 				RelativePath=".\SettingsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TitleThread.h"
 				>
 			</File>
 			<File

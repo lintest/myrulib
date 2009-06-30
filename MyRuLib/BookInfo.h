@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
+#include <wx/thread.h>
 #include "FbParser.h"
 
 #define BIF_TITLE_INFO  0x0001
@@ -17,6 +18,16 @@ public:
 
 };
 
+class AuthorItem
+{
+public:
+    wxString GetFullName();
+public:
+    wxString first;
+    wxString middle;
+    wxString last;
+};
+
 WX_DECLARE_OBJARRAY(SeqItem, SeqItemArray);
 
 class BookInfo
@@ -24,7 +35,9 @@ class BookInfo
 private:
     bool m_ok;
 	bool ReadXml(const FbDocument &xml, int flags);
+    bool Load(wxInputStream& stream);
 	static int FindAuthor(wxString &full_name);
+	static int FindAuthor(AuthorItem &author);
 	static int FindSequence(wxString &name);
 public:
 	wxArrayInt authors;

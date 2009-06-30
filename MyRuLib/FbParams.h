@@ -37,8 +37,8 @@ public:
     static void InitParams(DatabaseLayer *database)
     {
         database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
-        database->RunQuery(_("INSERT INTO params(text) VALUES ('Test Library');"));
-        database->RunQuery(_("INSERT INTO params(value) VALUES (1);"));
+        database->RunQuery(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
+        database->RunQuery(_("INSERT INTO params(id, value) VALUES (2, 1);"));
     };
 private:
     DatabaseLayer *m_database;
