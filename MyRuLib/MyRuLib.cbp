@@ -163,8 +163,8 @@
 		</Linker>
 		<Unit filename="BookInfo.cpp" />
 		<Unit filename="BookInfo.h" />
-		<Unit filename="BookList.cpp" />
-		<Unit filename="BookList.h" />
+		<Unit filename="BookListCtrl.cpp" />
+		<Unit filename="BookListCtrl.h" />
 		<Unit filename="DBCreator.cpp" />
 		<Unit filename="DBCreator.h" />
 		<Unit filename="FbGenres.cpp" />
@@ -173,8 +173,6 @@
 		<Unit filename="FbManager.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
-		<Unit filename="FbParser.cpp" />
-		<Unit filename="FbParser.h" />
 		<Unit filename="FbThread.cpp" />
 		<Unit filename="FbThread.h" />
 		<Unit filename="InfoCash.cpp" />
