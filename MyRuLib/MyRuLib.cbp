@@ -211,7 +211,6 @@
 		<Unit filename="db\wxActiveRecord.h" />
 		<Unit filename="res\checked.xpm" />
 		<Unit filename="res\checkout.xpm" />
-		<Unit filename="res\dir_down.xpm" />
 		<Unit filename="res\nocheck.xpm" />
 		<Unit filename="res\resource.rc">
 			<Option compilerVar="WINDRES" />
