@@ -60,7 +60,7 @@ class ExternalDlg : public wxDialog
 		wxButton* m_sdbSizerBtnCancel;
 
 	public:
-		ExternalDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Экспорт на внешнее устройство"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE );
+		ExternalDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 		~ExternalDlg();
 		static bool Execute(wxWindow* parent, wxTreeListCtrl* books, const wxString &author);
 

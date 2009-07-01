@@ -349,23 +349,22 @@ void SettingsDlg::OnSelectFileClick( wxCommandEvent& event )
 	    wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
 	    if (textCtrl) textCtrl->SetValue(dlg.GetPath());
 	}
-
 }
 
 void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
+    wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
+
+    if (!textCtrl) return;
+
     wxDirDialog dlg(
         this,
         _("Выберите директорию"),
-        wxEmptyString,
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST
+        textCtrl->GetValue(),
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
     );
 
-	if (dlg.ShowModal() == wxID_OK) {
-	    wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
-	    if (textCtrl) textCtrl->SetValue(dlg.GetPath());
-	}
-
+	if (dlg.ShowModal() == wxID_OK)  textCtrl->SetValue(dlg.GetPath());
 }
 
 void SettingsDlg::Assign(bool write)

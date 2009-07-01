@@ -8,6 +8,7 @@
 #include <wx/artprov.h>
 #include <wx/arrimpl.cpp>
 #include "ExternalDlg.h"
+#include "FbParams.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -20,7 +21,9 @@ END_EVENT_TABLE()
 
 ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+    SetTitle(_("Экспорт на внешнее устройство"));
+
+	SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -63,6 +66,8 @@ ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
+
+	m_textDir->SetValue( FbParams().GetText(FB_EXTERNAL_DIR) );
 }
 
 ExternalDlg::~ExternalDlg()
@@ -109,7 +114,7 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
     ScanChilds(bookList, root, selections);
 
     if (!selections.Count()) {
-        wxMessageBox(wxT("No selection"));
+        wxMessageBox(wxT("Не выбрано ни одной книги."));
         return false;
     }
 
@@ -124,10 +129,14 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
 
 void ExternalDlg::OnSelectDir( wxCommandEvent& event )
 {
-    wxTreeItemId root = m_books->GetRootItem();
-    m_books->AppendItem(root, wxT("test"));
-    m_books->ExpandAll(root);
-    event.Skip();
+    wxDirDialog dlg(
+        this,
+        _("Выберите папку внешнего устройства"),
+        m_textDir->GetValue(),
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
+    );
+
+	if (dlg.ShowModal() == wxID_OK) m_textDir->SetValue(dlg.GetPath());
 }
 
 void ExternalDlg::OnBookCollapsing(wxTreeEvent & event)

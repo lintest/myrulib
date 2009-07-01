@@ -477,8 +477,11 @@ int MyRuLibMainFrame::GetSelectedBook()
 void MyRuLibMainFrame::OnExternal(wxCommandEvent& event)
 {
     int sel = m_AuthorsListBox->GetSelection();
-    if (sel != wxNOT_FOUND) {
-        ExternalDlg ::Execute(this, m_BooksListView, m_AuthorsListBox->GetString(sel));
-    }
+
+    if (sel == wxNOT_FOUND)
+        wxMessageBox(wxT("Не выбран ни один автор."));
+    else
+        ExternalDlg::Execute(this, m_BooksListView, m_AuthorsListBox->GetString(sel));
+
 	event.Skip();
 }
