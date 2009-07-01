@@ -49,4 +49,12 @@ private:
 	static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };
 
+class BookInfo
+{
+public:
+	static int NewId(int param);
+    static void MakeLower(wxString & data);
+    static void MakeUpper(wxString & data);
+};
+
 #endif //FBMANAGER_H

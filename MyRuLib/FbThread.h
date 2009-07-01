@@ -2,6 +2,7 @@
 #define __FBTHREAD_H__
 
 #include <wx/wx.h>
+#include "ImpContext.h"
 
 class FbThread : public wxThread
 {
@@ -17,17 +18,8 @@ public:
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
     int AddArchive();
 private:
-    unsigned m_count;
-    wxString m_filename;
-    wxEvtHandler *m_frame;
-};
-
-class RegThread : public wxThread
-{
-public:
-    RegThread(wxEvtHandler *frame, const wxString &filename);
-    virtual void *Entry();
-    int AddArchive(int min, int max);
+	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
+	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);
 private:
     unsigned m_count;
     wxString m_filename;

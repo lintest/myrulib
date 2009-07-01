@@ -10,6 +10,7 @@
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
+#include "RegThread.h"
 #include "FbThread.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
@@ -17,7 +18,6 @@
 #include "db/Sequences.h"
 #include "db/Bookseq.h"
 #include "ZipReader.h"
-#include "BookInfo.h"
 
 bool FbManager::ParseXml(const wxString& filename)
 {
@@ -301,3 +301,40 @@ void FbManager::OpenBook(int id)
     wxExecute(fbreader + wxT(" ") + file_path);
     #endif
 }
+
+void BookInfo::MakeLower(wxString & data){
+#ifdef __WIN32__
+      int len = data.length() + 1;
+      wxChar * buf = new wxChar[len];
+      wxStrcpy(buf, data.c_str());
+      CharLower(buf);
+      data = buf;
+      delete [] buf;
+#else
+      data.MakeLower();
+#endif
+}
+
+void BookInfo::MakeUpper(wxString & data){
+#ifdef __WIN32__
+      int len = data.length() + 1;
+      wxChar * buf = new wxChar[len];
+      wxStrcpy(buf, data.c_str());
+      CharUpper(buf);
+      data = buf;
+      delete [] buf;
+#else
+      data.MakeUpper();
+#endif
+}
+
+int BookInfo::NewId(int param)
+{
+	Params params(wxGetApp().GetDatabase());
+	ParamsRow * row = params.Id(param);
+	row->value++;
+	row->Save();
+
+	return row->value;
+}
+
