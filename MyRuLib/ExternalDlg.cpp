@@ -126,7 +126,7 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
     dlg.FillBooks(author, selections);
     bool result = (dlg.ShowModal() == wxID_OK);
 
-    if (result) ExportBooks();
+    if (result) dlg.ExportBooks();
 
     return result;
 }
@@ -146,4 +146,8 @@ void ExternalDlg::OnSelectDir( wxCommandEvent& event )
 void ExternalDlg::OnBookCollapsing(wxTreeEvent & event)
 {
     event.Veto();
+}
+
+void ExternalDlg::ExportBooks()
+{
 }
