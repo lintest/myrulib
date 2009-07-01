@@ -42,7 +42,7 @@ class ExternalDlg : public wxDialog
         void OnBookCollapsing(wxTreeEvent & event);
 	private:
         static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, TreeItemArray &selections);
-        void FillBooks(const wxString &author, TreeItemArray &selections);
+        void FillBooks(const wxString &author, TreeItemArray &itemArray);
 	protected:
 		enum
 		{

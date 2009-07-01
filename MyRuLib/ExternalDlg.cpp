@@ -82,6 +82,14 @@ void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root,
         child = bookList->GetNextChild(root, cookie);
     }
 
+    if (selections.Count()) return;
+
+    wxArrayTreeItemIds itemArray;
+    size_t count = bookList->GetSelections(itemArray);
+    for (size_t i=0; i<count; ++i) {
+        BookTreeItemData * data = (BookTreeItemData*) bookList->GetItemData(itemArray[i]);
+        if (data && data->GetId()) selections.Add(new BookTreeItemData(data));
+    }
 }
 
 void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
@@ -112,7 +120,6 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
     if (result) ;
 
     return result;
-
 }
 
 void ExternalDlg::OnSelectDir( wxCommandEvent& event )
