@@ -39,9 +39,6 @@ WX_DEFINE_OBJARRAY(SequenceArray);
 class TitleParsingContext: public ParsingContext
 {
 public:
-	TitleParsingContext(XML_Parser &parser)
-        : ParsingContext(parser) {};
-public:
     wxString title;
     AuthorArray authors;
     SequenceArray sequences;
@@ -131,32 +128,29 @@ bool BookInfo::Load(wxInputStream& stream)
     char buf[BUFSIZE];
     bool done;
 
-    XML_Parser parser = XML_ParserCreate(NULL);
-    TitleParsingContext ctx(parser);
+    TitleParsingContext ctx;
 
-    XML_SetUserData(parser, (void*)&ctx);
-    XML_SetElementHandler(parser, StartElementHnd, EndElementHnd);
-    XML_SetCharacterDataHandler(parser, TextHnd);
+    XML_SetUserData(ctx.GetParser(), (void*)&ctx);
+    XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
+    XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
 
     bool ok = true;
     do {
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
         done = (len < BUFSIZE);
 
-        if ( !XML_Parse(parser, buf, len, done) ) {
-			XML_Error error_code = XML_GetErrorCode(parser);
+        if ( !XML_Parse(ctx.GetParser(), buf, len, done) ) {
+			XML_Error error_code = XML_GetErrorCode(ctx.GetParser());
 			if ( error_code == XML_ERROR_ABORTED ) {
 				done = true;
 			} else {
 				wxString error(XML_ErrorString(error_code), *wxConvCurrent);
-				wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), XML_GetCurrentLineNumber(parser));
+				wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()));
 				ok = false;
 	            break;
 			}
         }
     } while (!done);
-
-    XML_ParserFree(parser);
 
     title = ctx.title;
 

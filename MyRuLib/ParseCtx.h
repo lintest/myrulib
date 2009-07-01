@@ -9,11 +9,13 @@
 class ParsingContext
 {
 public:
-	ParsingContext(XML_Parser &parser);
+	ParsingContext();
+	virtual ~ParsingContext();
 	wxString Path(size_t count = 0);
 	void AppendTag(wxString &tag);
 	void RemoveTag(wxString &tag);
 	size_t Level() {return m_tags.Count();};
+	XML_Parser & GetParser() {return m_parser;};
 	void Stop();
 public:
     static wxString CharToString(const char *s, size_t len = wxString::npos);
@@ -23,8 +25,6 @@ public:
     wxMBConv *conv;
     wxString encoding;
     wxString version;
-    wxEvtHandler *m_frame;
-    int m_id;
 private:
 	wxArrayString m_tags;
 	XML_Parser m_parser;

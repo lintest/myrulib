@@ -9,19 +9,24 @@
 #define BIF_ANNOTATION  0x0002
 #define BIF_DESCRIPTION 0x0003
 
-struct SeqItem {
+struct SeqItem
+{
 public:
-	SeqItem(int s, int n): seq(s), num(n) {};
-	int seq;
-	int num;
-
+	SeqItem(): id(0), number(0) {};
+	SeqItem(int s, int n): id(s), number(n) {};
+public:
+	int id;
+	wxString seqname;
+	long number;
 };
 
 class AuthorItem
 {
 public:
+    AuthorItem(): id(0) {};
     wxString GetFullName();
 public:
+    int id;
     wxString first;
     wxString middle;
     wxString last;

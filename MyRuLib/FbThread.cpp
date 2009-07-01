@@ -71,9 +71,9 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
 			BookseqRow * seqRow = bookseq.New();
 			seqRow->id_book = id_book;
-			seqRow->id_seq = info.sequences[j].seq;
+			seqRow->id_seq = info.sequences[j].id;
 			seqRow->id_author = info.authors[i];
-			seqRow->number = info.sequences[j].num;
+			seqRow->number = info.sequences[j].number;
 			seqRow->Save();
 		}
 	}
