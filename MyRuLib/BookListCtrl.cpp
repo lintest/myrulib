@@ -6,13 +6,15 @@ END_EVENT_TABLE()
 
 void BookListCtrl::OnSize(wxSizeEvent& event)
 {
-    int w, h;
-    GetClientSize(&w, &h);
-	w -= 20;
-    SetColumnWidth(0, w * 9 / 16);
-    SetColumnWidth(1, w * 1 / 16);
-    SetColumnWidth(2, w * 4 / 16);
-    SetColumnWidth(3, w * 2 / 16);
 	event.Skip();
-}
 
+	int sum = 0;
+	for (size_t i = 0; i<colSizes.Count() && i<GetColumnCount(); i++) {
+        sum += colSizes[i];
+	}
+
+	int w = GetClientSize().x - 20;
+	for (size_t i = 0; i<colSizes.Count() && i<GetColumnCount(); i++) {
+        SetColumnWidth(i, w * colSizes[i] / sum );
+	}
+}

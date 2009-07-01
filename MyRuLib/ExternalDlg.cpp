@@ -15,6 +15,7 @@ WX_DEFINE_OBJARRAY(TreeItemArray);
 
 BEGIN_EVENT_TABLE( ExternalDlg, wxDialog )
 	EVT_BUTTON( ID_DIR_BTN, ExternalDlg::OnSelectDir )
+    EVT_TREE_ITEM_COLLAPSING( ID_BOOKS, ExternalDlg::OnBookCollapsing )
 END_EVENT_TABLE()
 
 ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
@@ -42,11 +43,12 @@ ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 
 	long treeStyle = wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_books = new wxTreeListCtrl( this, ID_BOOKS, wxDefaultPosition, wxDefaultSize, treeStyle );
+	m_books = new BookListCtrl( this, ID_BOOKS, treeStyle );
 	m_books->SetMinSize( wxSize( -1,250 ) );
     m_books->AddColumn (_T("Имя файла"), 400, wxALIGN_LEFT);
     m_books->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
-
+    m_books->colSizes.Add(4);
+    m_books->colSizes.Add(1);
 
 	bSizerMain->Add( m_books, 1, wxALL|wxEXPAND, 5 );
 
@@ -115,8 +117,13 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
 
 void ExternalDlg::OnSelectDir( wxCommandEvent& event )
 {
-    wxTreeItemId root = m_books->AddRoot (_T("Root"));
+    wxTreeItemId root = m_books->GetRootItem();
     m_books->AppendItem(root, wxT("test"));
     m_books->ExpandAll(root);
     event.Skip();
+}
+
+void ExternalDlg::OnBookCollapsing(wxTreeEvent & event)
+{
+    event.Veto();
 }

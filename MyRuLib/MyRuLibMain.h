@@ -19,6 +19,7 @@
 #include <wx/html/htmlwin.h>
 #include "wx/treelistctrl.h"
 #include "ProgressBar.h"
+#include "BookListCtrl.h"
 
 class MyRuLibMainFrame: public wxFrame
 {
@@ -43,7 +44,7 @@ public:
 private:
 	wxTextCtrl * m_FindTextCtrl;
 	wxListBox * m_AuthorsListBox;
-	wxTreeListCtrl * m_BooksListView;
+	BookListCtrl * m_BooksListView;
 	wxHtmlWindow * m_BooksInfoPanel;
 	ProgressBar * m_ProgressBar;
 	wxSplitterWindow * m_books_splitter;

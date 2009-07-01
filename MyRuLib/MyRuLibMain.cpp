@@ -18,7 +18,6 @@
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "FbParams.h"
-#include "BookListCtrl.h"
 #include "SettingsDlg.h"
 #include "FbThread.h"
 #include "InfoThread.h"
@@ -145,6 +144,10 @@ void MyRuLibMainFrame::CreateControls()
     m_BooksListView->SetColumnEditable (1, false);
     m_BooksListView->SetColumnEditable (2, false);
     m_BooksListView->SetColumnEditable (3, false);
+    m_BooksListView->colSizes.Add(9);
+    m_BooksListView->colSizes.Add(1);
+    m_BooksListView->colSizes.Add(4);
+    m_BooksListView->colSizes.Add(2);
 
     wxBitmap size = wxBitmap(checked_xpm);
 	wxImageList *images;

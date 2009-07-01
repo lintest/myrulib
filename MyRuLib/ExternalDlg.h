@@ -24,7 +24,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
-#include "wx/treelistctrl.h"
+#include "BookListCtrl.h"
 #include "FbManager.h"
 
 ///////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,8 @@ class ExternalDlg : public wxDialog
 	DECLARE_EVENT_TABLE()
 	private:
 		void OnSelectDir( wxCommandEvent& event );
+        void OnBookCollapsing(wxTreeEvent & event);
+	private:
         static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, TreeItemArray &selections);
         void FillBooks(const wxString &author, TreeItemArray &selections);
 	protected:
@@ -52,7 +54,7 @@ class ExternalDlg : public wxDialog
 		wxStaticText* m_staticTextDir;
 		wxTextCtrl* m_textDir;
 		wxBitmapButton* m_bpButtonDir;
-		wxTreeListCtrl* m_books;
+		BookListCtrl* m_books;
 		wxStdDialogButtonSizer* m_sdbSizerBtn;
 		wxButton* m_sdbSizerBtnOK;
 		wxButton* m_sdbSizerBtnCancel;
