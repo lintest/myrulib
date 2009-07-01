@@ -23,6 +23,9 @@ void InfoThread::Execute(wxEvtHandler *frame, const int id)
 class InfoParsingContext: public ParsingContext
 {
 public:
+	InfoParsingContext(XML_Parser &parser)
+        : ParsingContext(parser) {};
+public:
     wxString annotation;
     wxString imagedata;
     wxString imagetype;
@@ -36,14 +39,14 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 {
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
-    wxString node_name = ParsingContext::CharToLower(name);
+    wxString node_name = ctx->CharToLower(name);
 
 	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
 		ctx->annotation += wxString::Format(wxT("<%s"), node_name.c_str());
 		const XML_Char **a = atts;
 		while (*a) {
-            wxString name = ParsingContext::CharToLower(a[0]);
-            wxString value = ParsingContext::CharToLower(a[1]);
+            wxString name = ctx->CharToLower(a[0]);
+            wxString value = ctx->CharToLower(a[1]);
 			ctx->annotation += wxString::Format(wxT(" %s=%s"), name.c_str(), value.c_str());
 			a += 2;
 		}
@@ -54,8 +57,8 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 			if (node_name == wxT("image")) {
 				const XML_Char **a = atts;
 				while (*a) {
-					wxString name = ParsingContext::CharToLower(a[0]);
-                    wxString value = ParsingContext::CharToLower(a[1]);
+					wxString name = ctx->CharToLower(a[0]);
+                    wxString value = ctx->CharToLower(a[1]);
 					if (name == wxT("l:href")) {
 						if (value.Left(1) == wxT("#")) value = value.Mid(1);
                         wxString imagename = wxString::Format(wxT("%d/%s"), ctx->m_id, value.c_str());
@@ -71,8 +74,8 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
             ctx->imagename.Empty();
             const XML_Char **a = atts;
             while (*a) {
-                wxString name = ParsingContext::CharToLower(a[0]);
-                wxString value = ParsingContext::CharToLower(a[1]);
+                wxString name = ctx->CharToLower(a[0]);
+                wxString value = ctx->CharToLower(a[1]);
                 if (name == wxT("id")) {
                     ctx->skipimage = (ctx->images.Index(value) == wxNOT_FOUND);
                     ctx->imagename = value;
@@ -91,7 +94,7 @@ extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
-    wxString node_name = ParsingContext::CharToLower(name);
+    wxString node_name = ctx->CharToLower(name);
 
 	if (ctx->Level()>4 && ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
 		ctx->annotation.Trim(false).Trim(true);
@@ -100,7 +103,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		wxString path = ctx->Path();
 		if (path == wxT("fictionbook/description/title-info/")) {
 	        InfoCash::SetAnnotation(ctx->m_id, ctx->annotation);
-			if (!ctx->images.Count()) XML_StopParser(ctx->parser, XML_FALSE);
+			if (!ctx->images.Count()) ctx->Stop();
 			wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
 			event.SetInt(ctx->m_id);
 			wxPostEvent( ctx->m_frame, event );
@@ -125,66 +128,12 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
 	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
-	    wxString str = ParsingContext::CharToString(s, len);
+	    wxString str = ctx->CharToString(s, len);
 	    if (!ParsingContext::IsWhiteOnly(str)) ctx->annotation += str;
 	} else if (ctx->Path() == wxT("fictionbook/binary/")) {
-	    wxString str = ParsingContext::CharToString(s, len);
+	    wxString str = ctx->CharToString(s, len);
 	    if (!ParsingContext::IsWhiteOnly(str)) ctx->imagedata += str;
 	}
-}
-}
-
-extern "C" {
-static void DefaultHnd(void *userData, const XML_Char *s, int len)
-{
-    // XML header:
-    if (len > 6 && memcmp(s, "<?xml ", 6) == 0)
-    {
-        InfoParsingContext *ctx = (InfoParsingContext*)userData;
-
-        wxString buf = ParsingContext::CharToString(s, (size_t)len);
-        int pos;
-        pos = buf.Find(wxT("encoding="));
-        if (pos != wxNOT_FOUND)
-            ctx->encoding = buf.Mid(pos + 10).BeforeFirst(buf[(size_t)pos+9]);
-        pos = buf.Find(wxT("version="));
-        if (pos != wxNOT_FOUND)
-            ctx->version = buf.Mid(pos + 9).BeforeFirst(buf[(size_t)pos+8]);
-    }
-}
-}
-
-extern "C" {
-static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
-                              const XML_Char *name, XML_Encoding *info)
-{
-    // We must build conversion table for expat. The easiest way to do so
-    // is to let wxCSConv convert as string containing all characters to
-    // wide character representation:
-    wxString str(name, wxConvLibc);
-    wxCSConv conv(str);
-    char mbBuf[2];
-    wchar_t wcBuf[10];
-    size_t i;
-
-    mbBuf[1] = 0;
-    info->map[0] = 0;
-    for (i = 0; i < 255; i++)
-    {
-        mbBuf[0] = (char)(i+1);
-        if (conv.MB2WC(wcBuf, mbBuf, 2) == (size_t)-1)
-        {
-            // invalid/undefined byte in the encoding:
-            info->map[i+1] = -1;
-        }
-        info->map[i+1] = (int)wcBuf[0];
-    }
-
-    info->data = NULL;
-    info->convert = NULL;
-    info->release = NULL;
-
-    return 1;
 }
 }
 
@@ -192,19 +141,17 @@ bool InfoThread::Load(wxInputStream& stream)
 {
     const size_t BUFSIZE = 1024;
     char buf[BUFSIZE];
-    InfoParsingContext ctx;
     bool done;
     XML_Parser parser = XML_ParserCreate(NULL);
 
-	ctx.parser = parser;
+    InfoParsingContext ctx(parser);
+
 	ctx.m_frame = m_frame;
 	ctx.m_id = m_id;
 
     XML_SetUserData(parser, (void*)&ctx);
     XML_SetElementHandler(parser, StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(parser, TextHnd);
-    XML_SetDefaultHandler(parser, DefaultHnd);
-    XML_SetUnknownEncodingHandler(parser, UnknownEncodingHnd, NULL);
 
     bool ok = true;
     do {

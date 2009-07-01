@@ -199,7 +199,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BookList.cpp"
+				RelativePath=".\BookListCtrl.cpp"
 				>
 			</File>
 			<File
@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExternalDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbGenres.cpp"
 				>
 			</File>
@@ -224,10 +228,6 @@
 			</File>
 			<File
 				RelativePath=".\FbParams.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbParser.cpp"
 				>
 			</File>
 			<File
@@ -279,7 +279,7 @@
 				>
 			</File>
 			<File
-				RelativePath="wxActiveRecord.cpp"
+				RelativePath=".\db\wxActiveRecord.cpp"
 				>
 			</File>
 			<File
@@ -309,7 +309,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BookList.h"
+				RelativePath=".\BookListCtrl.h"
 				>
 			</File>
 			<File
@@ -325,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExternalDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbGenres.h"
 				>
 			</File>
@@ -334,10 +338,6 @@
 			</File>
 			<File
 				RelativePath=".\FbParams.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbParser.h"
 				>
 			</File>
 			<File
@@ -393,7 +393,7 @@
 				>
 			</File>
 			<File
-				RelativePath="wxActiveRecord.h"
+				RelativePath=".\db\wxActiveRecord.h"
 				>
 			</File>
 			<File

@@ -39,6 +39,9 @@ WX_DEFINE_OBJARRAY(SequenceArray);
 class TitleParsingContext: public ParsingContext
 {
 public:
+	TitleParsingContext(XML_Parser &parser)
+        : ParsingContext(parser) {};
+public:
     wxString title;
     AuthorArray authors;
     SequenceArray sequences;
@@ -105,7 +108,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
             ctx->author->last = ctx->text;
 	} else if (path == wxT("fictionbook/description/")) {
 	    if (node_name == wxT("title-info")) {
-            XML_StopParser(ctx->parser, XML_FALSE);
+	        ctx->Stop();
 	    }
 	}
 }
@@ -122,75 +125,18 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
-extern "C" {
-static void DefaultHnd(void *userData, const XML_Char *s, int len)
-{
-    // XML header:
-    if (len > 6 && memcmp(s, "<?xml ", 6) == 0)
-    {
-        TitleParsingContext *ctx = (TitleParsingContext*)userData;
-
-        wxString buf = ctx->CharToString(s, (size_t)len);
-        int pos;
-        pos = buf.Find(wxT("encoding="));
-        if (pos != wxNOT_FOUND)
-            ctx->encoding = buf.Mid(pos + 10).BeforeFirst(buf[(size_t)pos+9]);
-        pos = buf.Find(wxT("version="));
-        if (pos != wxNOT_FOUND)
-            ctx->version = buf.Mid(pos + 9).BeforeFirst(buf[(size_t)pos+8]);
-    }
-}
-}
-
-extern "C" {
-static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
-                              const XML_Char *name, XML_Encoding *info)
-{
-    // We must build conversion table for expat. The easiest way to do so
-    // is to let wxCSConv convert as string containing all characters to
-    // wide character representation:
-    wxString str(name, wxConvLibc);
-    wxCSConv conv(str);
-    char mbBuf[2];
-    wchar_t wcBuf[10];
-    size_t i;
-
-    mbBuf[1] = 0;
-    info->map[0] = 0;
-    for (i = 0; i < 255; i++)
-    {
-        mbBuf[0] = (char)(i+1);
-        if (conv.MB2WC(wcBuf, mbBuf, 2) == (size_t)-1)
-        {
-            // invalid/undefined byte in the encoding:
-            info->map[i+1] = -1;
-        }
-        info->map[i+1] = (int)wcBuf[0];
-    }
-
-    info->data = NULL;
-    info->convert = NULL;
-    info->release = NULL;
-
-    return 1;
-}
-}
-
 bool BookInfo::Load(wxInputStream& stream)
 {
     const size_t BUFSIZE = 1024;
     char buf[BUFSIZE];
-    TitleParsingContext ctx;
     bool done;
 
     XML_Parser parser = XML_ParserCreate(NULL);
-	ctx.parser = parser;
+    TitleParsingContext ctx(parser);
 
     XML_SetUserData(parser, (void*)&ctx);
     XML_SetElementHandler(parser, StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(parser, TextHnd);
-    XML_SetDefaultHandler(parser, DefaultHnd);
-    XML_SetUnknownEncodingHandler(parser, UnknownEncodingHnd, NULL);
 
     bool ok = true;
     do {
