@@ -107,6 +107,10 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
     m_books->ExpandAll(root);
 }
 
+void ExportBooks(TreeItemArray &itemArray)
+{
+}
+
 bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxString &author)
 {
     TreeItemArray selections;
@@ -122,7 +126,7 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
     dlg.FillBooks(author, selections);
     bool result = (dlg.ShowModal() == wxID_OK);
 
-    if (result) ;
+    if (result) ExportBooks();
 
     return result;
 }
