@@ -39,22 +39,27 @@ class ExternalDlg : public wxDialog
 	DECLARE_EVENT_TABLE()
 	private:
 		void OnSelectDir( wxCommandEvent& event );
-        void OnBookCollapsing(wxTreeEvent & event);
+        void OnBookCollapsing( wxTreeEvent & event );
+		void OnChangeFormat( wxCommandEvent& event );
 	private:
         static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, TreeItemArray &selections);
         void FillBooks(const wxString &author, TreeItemArray &itemArray);
+        void AddBooks(const wxTreeItemId &parent, BookTreeItemData &data);
 	protected:
 		enum
 		{
 			ID_DIR_TXT = 1000,
 			ID_DIR_BTN,
 			ID_BOOKS,
+			ID_FORMAT,
 		};
 
 		wxStaticText* m_staticTextDir;
 		wxTextCtrl* m_textDir;
 		wxBitmapButton* m_bpButtonDir;
 		BookListCtrl* m_books;
+		wxStaticText* m_staticTextFormat;
+		wxChoice* m_choiceFormat;
 		wxStdDialogButtonSizer* m_sdbSizerBtn;
 		wxButton* m_sdbSizerBtnOK;
 		wxButton* m_sdbSizerBtnCancel;

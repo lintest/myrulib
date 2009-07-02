@@ -195,10 +195,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BookInfo.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\BookListCtrl.cpp"
 				>
 			</File>
@@ -235,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ImpContext.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\InfoCash.cpp"
 				>
 			</File>
@@ -260,6 +260,10 @@
 			</File>
 			<File
 				RelativePath=".\ProgressBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RegThread.cpp"
 				>
 			</File>
 			<File
@@ -305,10 +309,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BookInfo.h"
-				>
-			</File>
-			<File
 				RelativePath=".\BookListCtrl.h"
 				>
 			</File>
@@ -345,6 +345,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ImpContext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\InfoCash.h"
 				>
 			</File>
@@ -374,6 +378,10 @@
 			</File>
 			<File
 				RelativePath="RecordIDClientData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RegThread.h"
 				>
 			</File>
 			<File

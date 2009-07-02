@@ -162,7 +162,11 @@ void MyRuLibMainFrame::CreateControls()
     vertical = FbParams().GetValue(FB_VIEW_TYPE);
 	CreateBookInfo();
 
-	FbManager::FillAuthorsChar(m_AuthorsListBox, _("А")[0]);
+    wxDateTime now = wxDateTime::Now();
+    int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
+	random = random % alphabetRu.Len();
+
+	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabetRu[random]);
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
