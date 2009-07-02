@@ -8,8 +8,8 @@
 #ifndef __ExternalDlg__
 #define __ExternalDlg__
 
+#include <wx/wx.h>
 #include <wx/intl.h>
-
 #include <wx/string.h>
 #include <wx/stattext.h>
 #include <wx/gdicmn.h>
@@ -45,6 +45,9 @@ class ExternalDlg : public wxDialog
         static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, TreeItemArray &selections);
         void FillBooks(const wxString &author, TreeItemArray &itemArray);
         void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
+        wxString ConvertFilename(const wxString &filename);
+	protected:
+        wxArrayString filenames;
 	protected:
 		enum
 		{

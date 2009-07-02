@@ -5,6 +5,7 @@
 // PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
+#include <wx/filename.h>
 #include <wx/artprov.h>
 #include <wx/arrimpl.cpp>
 #include "ExternalDlg.h"
@@ -19,6 +20,127 @@ BEGIN_EVENT_TABLE( ExternalDlg, wxDialog )
     EVT_TREE_ITEM_COLLAPSING( ID_BOOKS, ExternalDlg::OnBookCollapsing )
 	EVT_CHOICE( wxID_ANY, ExternalDlg::OnChangeFormat )
 END_EVENT_TABLE()
+
+extern wxString strOtherSequence;
+
+const wxString strAcceptableSymbols = wxT("\
+.()-_0123456789 \
+ABCDEFGHIJKLMNOPQRSTUVWXWZ\
+abcdefghijklmnopqrstuvwxyz\
+АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\
+абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
+");
+
+struct LetterReplace {
+    wxChar ru;
+    wxString en;
+};
+
+const LetterReplace strTranslitArray[] = {
+    {wxT(' '), wxT("_")},
+    {wxT('А'), wxT("A")},
+    {wxT('Б'), wxT("B")},
+    {wxT('В'), wxT("W")},
+    {wxT('Г'), wxT("G")},
+    {wxT('Д'), wxT("D")},
+    {wxT('Е'), wxT("E")},
+    {wxT('Ё'), wxT("E")},
+    {wxT('Ж'), wxT("V")},
+    {wxT('З'), wxT("Z")},
+    {wxT('И'), wxT("I")},
+    {wxT('Й'), wxT("J")},
+    {wxT('К'), wxT("K")},
+    {wxT('Л'), wxT("L")},
+    {wxT('М'), wxT("M")},
+    {wxT('Н'), wxT("N")},
+    {wxT('О'), wxT("O")},
+    {wxT('П'), wxT("P")},
+    {wxT('Р'), wxT("R")},
+    {wxT('С'), wxT("S")},
+    {wxT('Т'), wxT("T")},
+    {wxT('У'), wxT("U")},
+    {wxT('Ф'), wxT("F")},
+    {wxT('Х'), wxT("X")},
+    {wxT('Ц'), wxT("C")},
+    {wxT('Ч'), wxT("CH")},
+    {wxT('Ш'), wxT("SH")},
+    {wxT('Щ'), wxT("SCH")},
+    {wxT('Ъ'), wxT("")},
+    {wxT('Ы'), wxT("Y")},
+    {wxT('Ь'), wxT("")},
+    {wxT('Э'), wxT("E")},
+    {wxT('Ю'), wxT("JU")},
+    {wxT('Я'), wxT("JA")},
+    {wxT('а'), wxT("a")},
+    {wxT('б'), wxT("b")},
+    {wxT('в'), wxT("w")},
+    {wxT('г'), wxT("g")},
+    {wxT('д'), wxT("d")},
+    {wxT('е'), wxT("e")},
+    {wxT('ё'), wxT("e")},
+    {wxT('ж'), wxT("v")},
+    {wxT('з'), wxT("z")},
+    {wxT('и'), wxT("i")},
+    {wxT('й'), wxT("j")},
+    {wxT('к'), wxT("k")},
+    {wxT('л'), wxT("l")},
+    {wxT('м'), wxT("m")},
+    {wxT('н'), wxT("n")},
+    {wxT('о'), wxT("o")},
+    {wxT('п'), wxT("p")},
+    {wxT('р'), wxT("r")},
+    {wxT('с'), wxT("s")},
+    {wxT('т'), wxT("t")},
+    {wxT('у'), wxT("u")},
+    {wxT('ф'), wxT("f")},
+    {wxT('х'), wxT("x")},
+    {wxT('ц'), wxT("c")},
+    {wxT('ч'), wxT("ch")},
+    {wxT('ш'), wxT("sh")},
+    {wxT('щ'), wxT("sch")},
+    {wxT('ъ'), wxT("")},
+    {wxT('ы'), wxT("y")},
+    {wxT('ь'), wxT("")},
+    {wxT('э'), wxT("e")},
+    {wxT('ю'), wxT("ju")},
+    {wxT('я'), wxT("ja")}
+};
+
+wxString ExternalDlg::ConvertFilename(const wxString &filename)
+{
+    size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
+
+    wxString newname;
+    for (size_t i=0; i<filename.Len(); i++) {
+        wxChar letter = filename[i];
+        if (strAcceptableSymbols.Find(letter) != wxNOT_FOUND) {
+            wxString substr = letter;
+            for (size_t j=0; j<size; j++)
+                if (strTranslitArray[j].ru == letter) {
+                    substr = strTranslitArray[j].en;
+                    break;
+                }
+            newname += substr;
+        }
+    }
+
+    while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
+
+    wxFileName result = newname + wxT(".fb2");
+
+    for (int i=1; true; i++) {
+        result.Normalize(wxPATH_NORM_DOTS);
+        wxFileName searchname = result;
+        searchname.Normalize(wxPATH_NORM_CASE);
+        if (filenames.Index(searchname.GetFullName()) == wxNOT_FOUND) {
+            filenames.Add(searchname.GetFullName());
+            break;
+        }
+        result = wxString::Format(wxT("%s(%d)%s"), newname.c_str(), i, wxT(".fb2"));
+    }
+
+    return result.GetFullName();
+}
 
 ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
@@ -113,10 +235,10 @@ void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root,
     }
 }
 
-extern wxString strOtherSequence;
-
 void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
 {
+    filenames.Empty();
+
     wxTreeItemId root = m_books->AddRoot(author);
     m_books->SetItemBold(root, true);
 
@@ -159,7 +281,7 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
 
 void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
 {
-    wxTreeItemId item = m_books->AppendItem(parent, data.title, -1, -1, new BookTreeItemData(data));
+    wxTreeItemId item = m_books->AppendItem(parent, ConvertFilename(data.title), -1, -1, new BookTreeItemData(data));
     m_books->SetItemText (item, 1, wxString::Format(wxT("%d"), data.file_size/1024));
 }
 
@@ -206,4 +328,5 @@ void ExternalDlg::ExportBooks()
 
 void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
 {
+    // при сжатии средний коэффициент 0.43
 }
