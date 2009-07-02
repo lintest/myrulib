@@ -44,7 +44,7 @@ class ExternalDlg : public wxDialog
 	private:
         static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, TreeItemArray &selections);
         void FillBooks(const wxString &author, TreeItemArray &itemArray);
-        void AddBooks(const wxTreeItemId &parent, BookTreeItemData &data);
+        void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
 	protected:
 		enum
 		{

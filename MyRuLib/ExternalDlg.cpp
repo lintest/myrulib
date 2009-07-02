@@ -137,7 +137,7 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
             wxTreeItemId folder = m_books->AppendItem(root, sequences[i]);
             m_books->SetItemBold(folder, true);
             for  (size_t j=0; j<selections.Count(); j++) {
-                if (sequences[i] == selections[j].sequence) AddBooks(folder, selections[j]);
+                if (sequences[i] == selections[j].sequence) AppendBook(folder, selections[j]);
             }
         }
 
@@ -145,19 +145,19 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
             wxTreeItemId folder = m_books->AppendItem(root, strOtherSequence);
             m_books->SetItemBold(folder, true);
             for  (size_t j=0; j<selections.Count(); j++) {
-                if (selections[j].sequence.IsEmpty()) AddBooks(folder, selections[j]);
+                if (selections[j].sequence.IsEmpty()) AppendBook(folder, selections[j]);
             }
         }
     } else {
         for  (size_t j=0; j<selections.Count(); j++) {
-            AddBooks(root, selections[j]);
+            AppendBook(root, selections[j]);
         }
     }
 
     m_books->ExpandAll(root);
 }
 
-void ExternalDlg::AddBooks(const wxTreeItemId &parent, BookTreeItemData &data)
+void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
 {
     wxTreeItemId item = m_books->AppendItem(parent, data.title, -1, -1, new BookTreeItemData(data));
     m_books->SetItemText (item, 1, wxString::Format(wxT("%d"), data.file_size/1024));
