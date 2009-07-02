@@ -23,15 +23,16 @@ class BookTreeItemData: public wxTreeItemData
 {
 public:
 	BookTreeItemData(BooksRow * row, const wxString &seq = wxEmptyString, int num=0)
-        : m_id(row->id), title(row->title), file_size(row->file_size), sequence(seq), number(num) { };
+        : m_id(row->id), title(row->title), file_size(row->file_size), file_type(row->file_type), sequence(seq), number(num) { };
 	BookTreeItemData(BookTreeItemData * data)
-        : m_id(data->GetId()), title(data->title), file_size(data->file_size), sequence(data->sequence), number(data->number) { };
+        : m_id(data->GetId()), title(data->title), file_size(data->file_size), file_type(data->file_type), sequence(data->sequence), number(data->number) { };
 	int GetId() { return m_id; };
 private:
 	int m_id;
 public:
 	wxString title;
 	int file_size;
+	wxString file_type;
 	wxString sequence;
 	int number;
 };

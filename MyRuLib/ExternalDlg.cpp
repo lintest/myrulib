@@ -23,7 +23,7 @@ END_EVENT_TABLE()
 
 extern wxString strOtherSequence;
 
-const wxString strAcceptableSymbols = wxT("\
+const wxString strNormalSymbols = wxT("\
 .()-_0123456789 \
 ABCDEFGHIJKLMNOPQRSTUVWXWZ\
 abcdefghijklmnopqrstuvwxyz\
@@ -106,14 +106,16 @@ const LetterReplace strTranslitArray[] = {
     {wxT('я'), wxT("ja")}
 };
 
-wxString ExternalDlg::ConvertFilename(const wxString &filename)
+wxString ExternalDlg::GetFilename(BookTreeItemData &data)
 {
+    const wxString filename = data.title;
+
     size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
 
     wxString newname;
     for (size_t i=0; i<filename.Len(); i++) {
         wxChar letter = filename[i];
-        if (strAcceptableSymbols.Find(letter) != wxNOT_FOUND) {
+        if (strNormalSymbols.Find(letter) != wxNOT_FOUND) {
             wxString substr = letter;
             for (size_t j=0; j<size; j++)
                 if (strTranslitArray[j].ru == letter) {
@@ -124,22 +126,37 @@ wxString ExternalDlg::ConvertFilename(const wxString &filename)
         }
     }
 
+    while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
     while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
 
-    wxFileName result = newname + wxT(".fb2");
+    wxFileName result = wxString::Format(wxT("%s.%s%s"), newname.c_str(), data.file_type.c_str(), m_ext.c_str());
 
     for (int i=1; true; i++) {
         result.Normalize(wxPATH_NORM_DOTS);
         wxFileName searchname = result;
         searchname.Normalize(wxPATH_NORM_CASE);
-        if (filenames.Index(searchname.GetFullName()) == wxNOT_FOUND) {
-            filenames.Add(searchname.GetFullName());
+        if (m_filenames.Index(searchname.GetFullName()) == wxNOT_FOUND) {
+            m_filenames.Add(searchname.GetFullName());
             break;
         }
-        result = wxString::Format(wxT("%s(%d)%s"), newname.c_str(), i, wxT(".fb2"));
+        result = wxString::Format(wxT("%s(%d).%s%s"), newname.c_str(), i, data.file_type.c_str(), m_ext.c_str());
     }
 
     return result.GetFullName();
+}
+
+wxString ExternalDlg::NormalizeDirname(const wxString &filename)
+{
+    wxString newname;
+    for (size_t i=0; i<filename.Len(); i++) {
+        wxChar letter = filename[i];
+        if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
+    }
+
+    while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
+    while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
+
+    return newname;
 }
 
 ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
@@ -237,9 +254,17 @@ void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root,
 
 void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
 {
-    filenames.Empty();
+    wxString ext;
+    if (m_choiceFormat->GetCurrentSelection() == 0) {
+        m_ext = wxEmptyString;
+        m_scale = 100;
+    } else {
+        m_ext = wxT(".zip");
+        m_scale = 43;
+    }
+    m_filenames.Empty();
 
-    wxTreeItemId root = m_books->AddRoot(author);
+    wxTreeItemId root = m_books->AddRoot(NormalizeDirname(author));
     m_books->SetItemBold(root, true);
 
     if (FbParams().GetValue(FB_FOLDER_FORMAT) == 0) {
@@ -256,7 +281,7 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
         sequences.Sort();
 
         for  (size_t i=0; i<sequences.Count(); i++) {
-            wxTreeItemId folder = m_books->AppendItem(root, sequences[i]);
+            wxTreeItemId folder = m_books->AppendItem(root, NormalizeDirname(sequences[i]));
             m_books->SetItemBold(folder, true);
             for  (size_t j=0; j<selections.Count(); j++) {
                 if (sequences[i] == selections[j].sequence) AppendBook(folder, selections[j]);
@@ -264,7 +289,7 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
         }
 
         if (otherExisis) {
-            wxTreeItemId folder = m_books->AppendItem(root, strOtherSequence);
+            wxTreeItemId folder = m_books->AppendItem(root, NormalizeDirname(strOtherSequence));
             m_books->SetItemBold(folder, true);
             for  (size_t j=0; j<selections.Count(); j++) {
                 if (selections[j].sequence.IsEmpty()) AppendBook(folder, selections[j]);
@@ -281,8 +306,8 @@ void ExternalDlg::FillBooks(const wxString &author, TreeItemArray &selections)
 
 void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
 {
-    wxTreeItemId item = m_books->AppendItem(parent, ConvertFilename(data.title), -1, -1, new BookTreeItemData(data));
-    m_books->SetItemText (item, 1, wxString::Format(wxT("%d"), data.file_size/1024));
+    wxTreeItemId item = m_books->AppendItem(parent, GetFilename(data), -1, -1, new BookTreeItemData(data));
+    m_books->SetItemText (item, 1, wxString::Format(wxT("%d"), data.file_size*m_scale/100/1024));
 }
 
 bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxString &author)
@@ -326,7 +351,33 @@ void ExternalDlg::ExportBooks()
 {
 }
 
+void ExternalDlg::ChangeFilesExt(const wxTreeItemId &parent)
+{
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child = m_books->GetFirstChild(parent, cookie);
+    while (child.IsOk()) {
+        BookTreeItemData * data = (BookTreeItemData*) m_books->GetItemData(child);
+        if (data && data->GetId()) {
+            m_books->SetItemText(child, 0, GetFilename(*data));
+            m_books->SetItemText(child, 1, wxString::Format(wxT("%d"), data->file_size*m_scale/100/1024));
+        }
+        ChangeFilesExt(child);
+        child = m_books->GetNextChild(parent, cookie);
+    }
+}
+
 void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
 {
+    wxString ext;
+    if (m_choiceFormat->GetCurrentSelection() == 0) {
+        m_ext = wxEmptyString;
+        m_scale = 100;
+    } else {
+        m_ext = wxT(".zip");
+        m_scale = 43;
+    }
+    m_filenames.Empty();
+
     // при сжатии средний коэффициент 0.43
+    ChangeFilesExt(m_books->GetRootItem());
 }
