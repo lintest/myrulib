@@ -13,6 +13,8 @@ void BookListCtrl::OnSize(wxSizeEvent& event)
         sum += colSizes[i];
 	}
 
+	if (!sum) return;
+
 	int w = GetClientSize().x - 20;
 	for (size_t i = 0; i<colSizes.Count() && i<GetColumnCount(); i++) {
         SetColumnWidth(i, w * colSizes[i] / sum );
