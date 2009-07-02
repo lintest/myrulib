@@ -11,7 +11,7 @@
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
 #include "RegThread.h"
-#include "FbThread.h"
+#include "ImpThread.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
@@ -27,7 +27,7 @@ bool FbManager::ParseXml(const wxString& filename)
 	wxFile file(filename);
 	wxFileOffset size = file.Length() / 1024;
 
-	return FbThread::ParseXml(stream, filename, size, 0);
+	return ImportThread::ParseXml(stream, filename, size, 0);
 }
 
 bool FbManager::RegisterZip(const wxString& filename)
@@ -46,7 +46,7 @@ bool FbManager::RegisterZip(const wxString& filename)
 
 bool FbManager::ParseZip(const wxString& filename)
 {
-	FbThread *thread = new FbThread(wxGetApp().GetTopWindow(), filename);
+	ImportThread *thread = new ImportThread(wxGetApp().GetTopWindow(), filename);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));

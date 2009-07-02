@@ -82,7 +82,12 @@ extern wxString strBookNotFound;
 
 void ZipReader::ShowError()
 {
+    wxMessageBox(GetErrorText());
+}
+
+wxString ZipReader::GetErrorText()
+{
     wxString zipText = (m_zip_name.IsNull() ? m_zip_name : wxT(" ") + m_zip_name );
     wxString fileText = (m_file_name.IsNull() ? m_file_name : wxT(" ") + m_file_name );
-    wxMessageBox(wxString::Format(strBookNotFound, zipText.c_str(), fileText.c_str()));
+    return wxString::Format(strBookNotFound, zipText.c_str(), fileText.c_str());
 }

@@ -26,6 +26,7 @@
 #include <wx/dialog.h>
 #include "BookListCtrl.h"
 #include "FbManager.h"
+#include "ExpThread.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -48,6 +49,8 @@ class ExternalDlg : public wxDialog
         wxString GetFilename(BookTreeItemData &data);
         wxString NormalizeDirname(const wxString &filename);
         void ChangeFilesExt(const wxTreeItemId &parent);
+        void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir);
+		bool ExportBooks();
 	protected:
         wxArrayString m_filenames;
 		int m_scale;
@@ -74,7 +77,6 @@ class ExternalDlg : public wxDialog
 		ExternalDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 		~ExternalDlg();
 		static bool Execute(wxWindow* parent, wxTreeListCtrl* books, const wxString &author);
-		void ExportBooks();
 };
 
 #endif //__ExternalDlg__

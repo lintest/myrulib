@@ -8,7 +8,6 @@
 #include <wx/artprov.h>
 #include "FbParams.h"
 #include "SettingsDlg.h"
-//#include "XpmBitmaps.h"
 
 ///////////////////////////////////////////////////////////////////////////
 

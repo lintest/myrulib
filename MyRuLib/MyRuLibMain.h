@@ -40,6 +40,7 @@ public:
 		ID_SPLIT_VERTICAL,
 		ID_EXTERNAL,
 		ID_FB2_ONLY,
+		ID_ERROR,
     };
 private:
 	wxTextCtrl * m_FindTextCtrl;
@@ -83,6 +84,7 @@ private:
     void OnInfoUpdate(wxCommandEvent& event);
     void OnChangeFilter(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
+    void OnError(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 	DECLARE_EVENT_TABLE()
 };

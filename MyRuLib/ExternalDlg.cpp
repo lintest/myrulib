@@ -223,6 +223,7 @@ ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Fit( this );
 
 	m_textDir->SetValue( FbParams().GetText(FB_EXTERNAL_DIR) );
+	m_choiceFormat->SetSelection( FbParams().GetValue(FB_FILE_FORMAT) );
 }
 
 ExternalDlg::~ExternalDlg()
@@ -323,11 +324,11 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, const wxSt
 
     ExternalDlg dlg(parent);
     dlg.FillBooks(author, selections);
-    bool result = (dlg.ShowModal() == wxID_OK);
 
-    if (result) dlg.ExportBooks();
-
-    return result;
+    if (dlg.ShowModal() == wxID_OK)
+        return dlg.ExportBooks();
+    else
+        return false;
 }
 
 void ExternalDlg::OnSelectDir( wxCommandEvent& event )
@@ -345,10 +346,6 @@ void ExternalDlg::OnSelectDir( wxCommandEvent& event )
 void ExternalDlg::OnBookCollapsing(wxTreeEvent & event)
 {
     event.Veto();
-}
-
-void ExternalDlg::ExportBooks()
-{
 }
 
 void ExternalDlg::ChangeFilesExt(const wxTreeItemId &parent)
@@ -380,4 +377,51 @@ void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
 
     // при сжатии средний коэффициент 0.43
     ChangeFilesExt(m_books->GetRootItem());
+}
+
+void ExternalDlg::FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir)
+{
+    wxFileName new_dir = m_books->GetItemText(parent);
+    new_dir.SetPath(dir);
+    wxString new_path = new_dir.GetFullPath();
+    if (!wxFileName::DirExists(new_path)) wxFileName::Mkdir(new_path);
+
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child = m_books->GetFirstChild(parent, cookie);
+    while (child.IsOk()) {
+        wxFileName filename = m_books->GetItemText(child);
+        filename.SetPath(new_path);
+        BookTreeItemData * data = (BookTreeItemData*) m_books->GetItemData(child);
+        if (data && data->GetId()) {
+            filelist.Add(new ExportFileItem(filename, data->GetId()));
+        } else {
+            FillFilelist(child, filelist, new_path);
+        }
+        child = m_books->GetNextChild(parent, cookie);
+    }
+}
+
+bool ExternalDlg::ExportBooks()
+{
+    wxString root_dir = m_textDir->GetValue();
+    if (!wxFileName::DirExists(root_dir)) {
+        wxMessageBox(_("Не найдена папка внешнего устройства: ") + root_dir);
+        return false;
+    }
+    if (!wxFileName::IsDirWritable(root_dir)) {
+        wxMessageBox(_("Папка внешнего устройства не доступна для записи: ") + root_dir);
+        return false;
+    }
+
+	ExportThread *thread = new ExportThread(GetParent(), m_choiceFormat->GetCurrentSelection());
+	FillFilelist(m_books->GetRootItem(), thread->m_filelist, m_textDir->GetValue());
+
+    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+        wxLogError(wxT("Can't create thread!"));
+        return false;
+    }
+
+    thread->Run();
+
+    return true;
 }

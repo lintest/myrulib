@@ -1,5 +1,5 @@
 #include <wx/zipstrm.h>
-#include "FbThread.h"
+#include "ImpThread.h"
 #include "FbParams.h"
 #include "FbManager.h"
 #include "FbGenres.h"
@@ -88,16 +88,16 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
-FbThread::FbThread(wxEvtHandler *frame, const wxString &filename)
+ImportThread::ImportThread(wxEvtHandler *frame, const wxString &filename)
         : wxThread(), m_filename(filename), m_frame(frame)
 {
 }
 
-void FbThread::OnExit()
+void ImportThread::OnExit()
 {
 }
 
-int FbThread::AddArchive()
+int ImportThread::AddArchive()
 {
     wxFileName file_name(m_filename);
 
@@ -116,7 +116,7 @@ int FbThread::AddArchive()
 	return row->id;
 }
 
-bool FbThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
+bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 {
     const size_t BUFSIZE = 1024;
     char buf[BUFSIZE];
@@ -156,7 +156,7 @@ bool FbThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     return ok;
 }
 
-void FbThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
+void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
 {
 	long id_book = 0;
 	{
@@ -191,7 +191,7 @@ void FbThread::AppendBook(ImportParsingContext &info, const wxString &name, cons
 	}
 }
 
-bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
+bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
 {
     ImportParsingContext info;
 
@@ -202,7 +202,7 @@ bool FbThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFil
     return false;
 }
 
-void *FbThread::Entry()
+void *ImportThread::Entry()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
 

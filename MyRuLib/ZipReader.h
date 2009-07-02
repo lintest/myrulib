@@ -23,6 +23,7 @@ public:
 	virtual ~ZipReader();
 	bool IsOK() {return m_zipOk && m_fileOk;};
 	void ShowError();
+    wxString GetErrorText();
 	wxZipInputStream & GetZip() {return *m_zip;};
 };
 

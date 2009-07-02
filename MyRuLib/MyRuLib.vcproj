@@ -211,6 +211,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExpThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ExternalDlg.cpp"
 				>
 			</File>
@@ -227,11 +231,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbThread.cpp"
+				RelativePath=".\ImpContext.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ImpContext.cpp"
+				RelativePath=".\ImpThread.cpp"
 				>
 			</File>
 			<File
@@ -325,6 +329,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExpThread.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ExternalDlg.h"
 				>
 			</File>
@@ -341,11 +349,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbThread.h"
+				RelativePath=".\ImpContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ImpContext.h"
+				RelativePath=".\ImpThread.h"
 				>
 			</File>
 			<File

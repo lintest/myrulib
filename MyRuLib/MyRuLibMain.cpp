@@ -19,7 +19,6 @@
 #include "FbGenres.h"
 #include "FbParams.h"
 #include "SettingsDlg.h"
-#include "FbThread.h"
 #include "InfoThread.h"
 #include "InfoCash.h"
 #include "ExternalDlg.h"
@@ -61,6 +60,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
     EVT_MENU(ID_EXTERNAL, MyRuLibMainFrame::OnExternal)
     EVT_MENU(ID_BOOKINFO_UPDATE, MyRuLibMainFrame::OnInfoUpdate)
+    EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
@@ -488,4 +488,10 @@ void MyRuLibMainFrame::OnExternal(wxCommandEvent& event)
         ExternalDlg::Execute(this, m_BooksListView, m_AuthorsListBox->GetString(sel));
 
 	event.Skip();
+}
+
+void MyRuLibMainFrame::OnError(wxCommandEvent& event)
+{
+	event.Skip();
+    wxLogError(event.GetString());
 }

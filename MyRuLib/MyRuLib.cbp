@@ -165,6 +165,8 @@
 		<Unit filename="BookListCtrl.h" />
 		<Unit filename="DBCreator.cpp" />
 		<Unit filename="DBCreator.h" />
+		<Unit filename="ExpThread.cpp" />
+		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
 		<Unit filename="ExternalDlg.h" />
 		<Unit filename="FbGenres.cpp" />
@@ -173,10 +175,10 @@
 		<Unit filename="FbManager.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
-		<Unit filename="FbThread.cpp" />
-		<Unit filename="FbThread.h" />
 		<Unit filename="ImpContext.cpp" />
 		<Unit filename="ImpContext.h" />
+		<Unit filename="ImpThread.cpp" />
+		<Unit filename="ImpThread.h" />
 		<Unit filename="InfoCash.cpp" />
 		<Unit filename="InfoCash.h" />
 		<Unit filename="InfoThread.cpp" />

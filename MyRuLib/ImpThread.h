@@ -4,10 +4,10 @@
 #include <wx/wx.h>
 #include "ImpContext.h"
 
-class FbThread : public wxThread
+class ImportThread : public wxThread
 {
 public:
-    FbThread(wxEvtHandler *frame, const wxString &filename);
+    ImportThread(wxEvtHandler *frame, const wxString &filename);
 
     // thread execution starts here
     virtual void *Entry();
