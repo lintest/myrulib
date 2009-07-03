@@ -130,8 +130,8 @@ void MyRuLibMainFrame::CreateControls()
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
-	sizer->Add(CreateAlphaBar(alphabetRu, ID_LETTER_RU), 0, wxEXPAND, 5);
-	sizer->Add(CreateAlphaBar(alphabetEn, ID_LETTER_EN), 0, wxEXPAND, 5);
+	sizer->Add(m_RuAlphabar = CreateAlphaBar(alphabetRu, ID_LETTER_RU), 0, wxEXPAND, 5);
+	sizer->Add(m_EnAlphabar = CreateAlphaBar(alphabetEn, ID_LETTER_EN), 0, wxEXPAND, 5);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -177,6 +177,7 @@ void MyRuLibMainFrame::CreateControls()
 	random = random % alphabetRu.Len();
 
 	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabetRu[random]);
+	m_RuAlphabar->ToggleTool(ID_LETTER_RU + random, true );
 
 	const int widths[] = {-92, -57, -35, -22};
 
@@ -254,18 +255,32 @@ void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
     }
 }
 
-wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, int toolid)
+wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, const int &toolid)
 {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS);
 	size_t iLength = alphabet.Len();
 	for (size_t i = 0; i<iLength; i++) {
 	    wxString letter = alphabet.Mid(i, 1);
 	    int btnid = toolid + i;
-        toolBar->AddTool(btnid, letter, wxNullBitmap)->SetClientData( (wxObject*) i);
+        toolBar->AddTool(btnid, letter, wxNullBitmap, wxNullBitmap, wxITEM_CHECK)->SetClientData( (wxObject*) i);
         this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( MyRuLibMainFrame::OnLetterClicked ) );
 	}
 	toolBar->Realize();
 	return toolBar;
+}
+
+void MyRuLibMainFrame::ToggleAlphabar(const int &idLetter)
+{
+	size_t iLength = alphabetRu.Len();
+	for (size_t i = 0; i<iLength; i++) {
+	    int id = ID_LETTER_RU + i;
+        m_RuAlphabar->ToggleTool(id, id == idLetter);
+	}
+	iLength = alphabetEn.Len();
+	for (size_t i = 0; i<iLength; i++) {
+	    int id = ID_LETTER_EN + i;
+        m_EnAlphabar->ToggleTool(id, id == idLetter);
+	}
 }
 
 void MyRuLibMainFrame::OnExit(wxCommandEvent & event)
@@ -318,6 +333,7 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 void MyRuLibMainFrame::OnFindTextEnter( wxCommandEvent& event )
 {
 	if (!m_FindTextCtrl->GetValue().IsEmpty()) {
+        ToggleAlphabar(0);
 		FbManager::FillAuthorsText(m_AuthorsListBox, m_FindTextCtrl->GetValue());
 		SelectFirstAuthor();
 	}
@@ -337,6 +353,8 @@ void MyRuLibMainFrame::OnLetterClicked( wxCommandEvent& event )
         alphabet = alphabetEn;
         position = id - ID_LETTER_EN;
     };
+
+    ToggleAlphabar(id);
 
 	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabet[position]);
 	SelectFirstAuthor();
@@ -506,3 +524,4 @@ void MyRuLibMainFrame::OnError(wxCommandEvent& event)
 	event.Skip();
     wxLogError(event.GetString());
 }
+

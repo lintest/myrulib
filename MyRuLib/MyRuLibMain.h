@@ -45,14 +45,17 @@ private:
 	wxHtmlWindow * m_BooksInfoPanel;
 	wxSplitterWindow * m_BooksSplitter;
 	wxToolBar * m_ToolBar;
+    wxToolBar * m_RuAlphabar;
+    wxToolBar * m_EnAlphabar;
 	ProgressBar * m_ProgressBar;
 	void CreateControls();
 	wxToolBar * CreateButtonBar();
-	wxToolBar * CreateAlphaBar(const wxString & alphabet, int toolid);
+	wxToolBar * CreateAlphaBar(const wxString & alphabet, const int &toolid);
     bool ParseXML(const wxString & filename);
 	void SelectFirstAuthor();
 	void CreateBookInfo();
 	wxString m_StatusText;
+	void ToggleAlphabar(const int &idLetter);
 private:
 	int GetSelectedBook();
 	bool vertical;
