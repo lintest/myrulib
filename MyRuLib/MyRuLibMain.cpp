@@ -88,36 +88,44 @@ void MyRuLibMainFrame::CreateControls()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
 	wxMenuItem * tempItem;
+	wxMenu * menu;
 
-	wxMenu * fileMenu = new wxMenu;
-	(tempItem = fileMenu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	fileMenu->Append(wxID_NEW, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	fileMenu->Append(wxID_OPEN, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_OPEN));
-	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_SAVE, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE));
-	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"))->SetBitmap(wxArtProvider::GetBitmap(wxART_QUIT));
-	fileMenu->Delete(tempItem);
-	menuBar->Append(fileMenu, _("&Файл"));
+	menu = new wxMenu;
+	(tempItem = menu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	menu->Append(wxID_NEW, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	menu->Append(wxID_ANY, _("Добавить директорию"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN));
+	menu->Append(wxID_OPEN, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_OPEN));
+	menu->AppendSeparator();
+	menu->Append(wxID_SAVE, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE));
+	menu->AppendSeparator();
+	menu->Append(wxID_EXIT, _("Выход\tAlt+F4"))->SetBitmap(wxArtProvider::GetBitmap(wxART_QUIT));
+	menu->Delete(tempItem);
+	menuBar->Append(menu, _("&Файл"));
 
-	wxMenu * serviceMenu = new wxMenu;
-	serviceMenu->Append(wxID_PREFERENCES, _("Настройки"));
-	menuBar->Append(serviceMenu, _("&Сервис"));
+	menu = new wxMenu;
+	(tempItem = menu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	menu->Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
+	menu->Delete(tempItem);
+	menuBar->Append(menu, _("&Правка"));
 
-	wxMenu * viewMenu = new wxMenu;
-	viewMenu->Append(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
-	viewMenu->Append(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
-	menuBar->Append(viewMenu, _("&Вид"));
+	menu = new wxMenu;
+	menu->Append(wxID_PREFERENCES, _("Настройки"));
+	menuBar->Append(menu, _("&Сервис"));
 
-	wxMenu * helpMenu = new wxMenu;
-	(tempItem = helpMenu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	helpMenu->Append(wxID_ABOUT, _("О программе…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_PAGE));
-	helpMenu->Delete(tempItem);
-	menuBar->Append(helpMenu, _("&?"));
+	menu = new wxMenu;
+	menu->Append(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
+	menu->Append(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
+	menuBar->Append(menu, _("&Вид"));
+
+	menu = new wxMenu;
+	(tempItem = menu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	menu->Append(wxID_ABOUT, _("О программе…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_PAGE));
+	menu->Delete(tempItem);
+	menuBar->Append(menu, _("&?"));
 
 	SetMenuBar(menuBar);
 
-	SetToolBar(m_toolBar = CreateButtonBar());
+	SetToolBar(m_ToolBar = CreateButtonBar());
 
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -132,12 +140,12 @@ void MyRuLibMainFrame::CreateControls()
 
 	m_AuthorsListBox = new wxListBox(splitter, ID_AUTHORS_LISTBOX, wxDefaultPosition, wxDefaultSize, 0, NULL, wxSUNKEN_BORDER);
 
-	m_books_splitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	m_books_splitter->SetMinimumPaneSize(50);
-	m_books_splitter->SetSashGravity(0.5);
+	m_BooksSplitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
+	m_BooksSplitter->SetMinimumPaneSize(50);
+	m_BooksSplitter->SetSashGravity(0.5);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksListView = new BookListCtrl(m_books_splitter, ID_BOOKS_LISTCTRL, style);
+	m_BooksListView = new BookListCtrl(m_BooksSplitter, ID_BOOKS_LISTCTRL, style);
     m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("№"), 30, wxALIGN_LEFT);
     m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
@@ -159,7 +167,7 @@ void MyRuLibMainFrame::CreateControls()
 	images->Add (wxBitmap(checkout_xpm));
 	m_BooksListView->AssignImageList (images);
 
-	splitter->SplitVertically(m_AuthorsListBox, m_books_splitter, 160);
+	splitter->SplitVertically(m_AuthorsListBox, m_BooksSplitter, 160);
 
     vertical = FbParams().GetValue(FB_VIEW_TYPE);
 	CreateBookInfo();
@@ -171,7 +179,8 @@ void MyRuLibMainFrame::CreateControls()
 	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabetRu[random]);
 
 	const int widths[] = {-92, -57, -35, -22};
-    m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
+
+    ProgressBar * m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
     m_ProgressBar->SetFieldsCount(4);
 	m_ProgressBar->SetStatusWidths(4, widths);
 	SetStatusBar(m_ProgressBar);
@@ -181,16 +190,16 @@ void MyRuLibMainFrame::CreateControls()
 
 void MyRuLibMainFrame::CreateBookInfo()
 {
-	if (m_BooksInfoPanel) m_books_splitter->Unsplit(m_BooksInfoPanel);
+	if (m_BooksInfoPanel) m_BooksSplitter->Unsplit(m_BooksInfoPanel);
 
-	m_BooksInfoPanel = new wxHtmlWindow(m_books_splitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
+	m_BooksInfoPanel = new wxHtmlWindow(m_BooksSplitter, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
 	m_BooksInfoPanel->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
 	if (vertical)
-		m_books_splitter->SplitVertically(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetWidth()/2);
+		m_BooksSplitter->SplitVertically(m_BooksListView, m_BooksInfoPanel, m_BooksSplitter->GetSize().GetWidth()/2);
 	else
-		m_books_splitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_books_splitter->GetSize().GetHeight()/2);
+		m_BooksSplitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_BooksSplitter->GetSize().GetHeight()/2);
 
     wxString html = InfoCash::GetInfo(GetSelectedBook(), vertical);
     m_BooksInfoPanel->SetPage(html);
@@ -235,12 +244,12 @@ wxToolBar * MyRuLibMainFrame::CreateButtonBar()
 
 void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
 {
-    FbParams().SetValue(FB_FB2_ONLY, m_toolBar-> GetToolState(ID_FB2_ONLY));
+    FbParams().SetValue(FB_FB2_ONLY, m_ToolBar-> GetToolState(ID_FB2_ONLY));
 
     RecordIDClientData * data = (RecordIDClientData *)
         m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
     if(data) {
-        FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
+        FbManager::FillBooks(m_BooksListView, data->GetID(), m_ToolBar-> GetToolState(ID_FB2_ONLY));
         m_BooksInfoPanel->SetPage(wxEmptyString);
     }
 }
@@ -269,7 +278,7 @@ void MyRuLibMainFrame::OnAuthorsListBoxSelected(wxCommandEvent & event)
 {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
 	if(data) {
-		FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
+		FbManager::FillBooks(m_BooksListView, data->GetID(), m_ToolBar-> GetToolState(ID_FB2_ONLY));
 		m_BooksInfoPanel->SetPage(wxEmptyString);
 	}
 }
@@ -297,7 +306,7 @@ void MyRuLibMainFrame::SelectFirstAuthor()
 		RecordIDClientData * data = (RecordIDClientData *)
 			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
 		if(data) {
-			FbManager::FillBooks(m_BooksListView, data->GetID(), m_toolBar-> GetToolState(ID_FB2_ONLY));
+			FbManager::FillBooks(m_BooksListView, data->GetID(), m_ToolBar-> GetToolState(ID_FB2_ONLY));
 			m_BooksInfoPanel->SetPage(wxEmptyString);
 		}
 	} else {
