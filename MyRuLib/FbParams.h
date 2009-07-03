@@ -2,6 +2,7 @@
 #define __FBPARAMS_H__
 
 #include <wx/wx.h>
+#include <wx/arrimpl.cpp>
 #include <DatabaseLayer.h>
 #include "db/Params.h"
 
@@ -32,26 +33,40 @@ enum {
 	FB_FB2_ONLY,
 };
 
+class ParamItem
+{
+    public:
+        ParamItem(int param): id(param) {};
+        ParamItem(ParamsRow * row): id(row->id), value(row->value), text(row->text) {};
+    public:
+        int id;
+        int value;
+        wxString text;
+};
+
+WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
+
 class FbParams {
-public:
-    static void InitParams(DatabaseLayer *database)
-    {
-        database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
-        database->RunQuery(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
-        database->RunQuery(_("INSERT INTO params(id, value) VALUES (2, 1);"));
-    };
-private:
-    DatabaseLayer *m_database;
-    wxCriticalSectionLocker m_locker;
-    int DefaultValue(int param);
-    wxString DefaultText(int param);
-public:
-    FbParams();
-    FbParams(DatabaseLayer *database, wxCriticalSection &section);
-    int GetValue(const int &param);
-    wxString GetText(const int &param);
-    void SetValue(const int &param, int value);
-    void SetText(const int &param, wxString text);
+    public:
+        static void InitParams(DatabaseLayer *database)
+        {
+            database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
+            database->RunQuery(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
+            database->RunQuery(_("INSERT INTO params(id, value) VALUES (2, 1);"));
+        };
+    private:
+        DatabaseLayer *m_database;
+        int DefaultValue(int param);
+        wxString DefaultText(int param);
+        static ParamArray & GetParams();
+    public:
+        FbParams();
+        FbParams(DatabaseLayer *database, wxCriticalSection &section);
+        static void LoadParams();
+        int GetValue(const int &param);
+        wxString GetText(const int &param);
+        void SetValue(const int &param, int value);
+        void SetText(const int &param, wxString text);
 };
 
 #endif // __FBPARAMS_H__

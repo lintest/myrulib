@@ -9,6 +9,8 @@ ZipReader::ZipReader(int id)
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
+        wxString path = FbParams().GetText(FB_LIBRARY_DIR);
+
         Books books(wxGetApp().GetDatabase());
         BooksRow * bookRow = books.Id(id);
 
@@ -22,7 +24,7 @@ ZipReader::ZipReader(int id)
             m_zip_name = archiveRow->file_name;
             zip_name = archiveRow->file_name;
             zip_name.SetPath(archiveRow->file_path);
-            m_zipOk = FindZip(zip_name);
+            m_zipOk = FindZip(zip_name, path);
         } else {
             wxString whereClause = wxString::Format(wxT("min_id_book<=%d AND %d<=max_id_book"), id, id);
             Archives archives(wxGetApp().GetDatabase());
@@ -32,7 +34,7 @@ ZipReader::ZipReader(int id)
                 m_zip_name = archiveRow->file_name;
                 zip_name = archiveRow->file_name;
                 zip_name.SetPath(archiveRow->file_path);
-                m_zipOk = FindZip(zip_name);
+                m_zipOk = FindZip(zip_name, path);
                 if (m_zipOk) break;
             }
         }
@@ -52,11 +54,11 @@ ZipReader::~ZipReader()
 	wxDELETE(m_file);
 }
 
-bool ZipReader::FindZip(wxFileName &zip_name)
+bool ZipReader::FindZip(wxFileName &zip_name, wxString &path)
 {
     if (zip_name.FileExists()) return true;
 
-    zip_name.SetPath(FbParams().GetText(FB_LIBRARY_DIR));
+    zip_name.SetPath(path);
     if (zip_name.FileExists()) return true;
 
     zip_name.SetPath(wxGetApp().GetAppPath());

@@ -16,7 +16,7 @@ private:
     wxString m_file_name;
     wxString m_zip_name;
 private:
-    bool FindZip(wxFileName &zip_name);
+    bool FindZip(wxFileName &zip_name, wxString &path);
     bool FindEntry(const wxString &file_name);
 public:
 	ZipReader(int id);

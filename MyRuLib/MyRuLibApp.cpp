@@ -14,6 +14,7 @@
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
 #include "DBCreator.h"
+#include "FbParams.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
@@ -23,11 +24,7 @@ bool MyRuLibApp::OnInit()
 		wxFAIL_MSG(_("Error connecting to database!"));
 		return false;
 	}
-/*
-	wxImage::AddHandler(new wxGIFHandler);
-	wxImage::AddHandler(new wxPNGHandler);
-	wxImage::AddHandler(new wxJPEGHandler);
-*/
+
 	::wxInitAllImageHandlers();
 
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
@@ -77,6 +74,7 @@ bool MyRuLibApp::ConnectToDatabase()
 		if(bCreate)	{
 			DBCreator(m_Database).CreateDatabase();
 		}
+		FbParams::LoadParams();
 	}
 	catch(DatabaseLayerException & e) {
 		wxFAIL_MSG(e.GetErrorMessage());
