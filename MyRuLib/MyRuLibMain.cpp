@@ -258,8 +258,7 @@ void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
 wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, const int &toolid)
 {
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS);
-	size_t iLength = alphabet.Len();
-	for (size_t i = 0; i<iLength; i++) {
+	for (size_t i = 0; i<alphabet.Len(); i++) {
 	    wxString letter = alphabet.Mid(i, 1);
 	    int btnid = toolid + i;
         toolBar->AddTool(btnid, letter, wxNullBitmap, wxNullBitmap, wxITEM_CHECK)->SetClientData( (wxObject*) i);
@@ -271,13 +270,11 @@ wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, const in
 
 void MyRuLibMainFrame::ToggleAlphabar(const int &idLetter)
 {
-	size_t iLength = alphabetRu.Len();
-	for (size_t i = 0; i<iLength; i++) {
+	for (size_t i = 0; i<alphabetRu.Len(); i++) {
 	    int id = ID_LETTER_RU + i;
         m_RuAlphabar->ToggleTool(id, id == idLetter);
 	}
-	iLength = alphabetEn.Len();
-	for (size_t i = 0; i<iLength; i++) {
+	for (size_t i = 0; i<alphabetEn.Len(); i++) {
 	    int id = ID_LETTER_EN + i;
         m_EnAlphabar->ToggleTool(id, id == idLetter);
 	}
