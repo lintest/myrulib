@@ -40,7 +40,7 @@ wxString strBookNotFound = wxT("Не найден архив%s, содержащ
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
-	EVT_MENU(wxID_SETUP, MyRuLibMainFrame::OnSetup)
+	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, MyRuLibMainFrame::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, MyRuLibMainFrame::OnChangeView)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
@@ -51,14 +51,14 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
 	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnImageClick)
     EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, MyRuLibMainFrame::OnBooksInfoPanelLinkClicked)
     EVT_TEXT_ENTER(ID_FIND_TEXT, MyRuLibMainFrame::OnFindTextEnter)
-    EVT_TOOL(ID_FIND_BTN, MyRuLibMainFrame::OnFindTextEnter)
-    EVT_TOOL(ID_NEW_ZIP, MyRuLibMainFrame::OnNewZip)
-    EVT_TOOL(ID_REG_ZIP, MyRuLibMainFrame::OnRegZip)
+    EVT_TOOL(wxID_FIND, MyRuLibMainFrame::OnFindTextEnter)
+    EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
+    EVT_TOOL(wxID_OPEN, MyRuLibMainFrame::OnRegZip)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
     EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
-    EVT_MENU(ID_EXTERNAL, MyRuLibMainFrame::OnExternal)
+    EVT_MENU(wxID_SAVE, MyRuLibMainFrame::OnExternal)
     EVT_MENU(ID_BOOKINFO_UPDATE, MyRuLibMainFrame::OnInfoUpdate)
     EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
 END_EVENT_TABLE()
@@ -87,21 +87,21 @@ bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString &
 void MyRuLibMainFrame::CreateControls()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
+	wxMenuItem * tempItem;
 
 	wxMenu * fileMenu = new wxMenu;
-	wxMenuItem * tempItem = fileMenu->Append(wxID_ANY, wxT("Непонятная ошибка с картинками в меню"));
-	tempItem->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
-	fileMenu->Append(ID_NEW_ZIP, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	fileMenu->Append(ID_REG_ZIP, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_BOOK));
+	(tempItem = fileMenu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	fileMenu->Append(wxID_NEW, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	fileMenu->Append(wxID_OPEN, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_OPEN));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(ID_EXTERNAL, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_GO_DIR_UP));
+	fileMenu->Append(wxID_SAVE, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _("Выход\tAlt+F4"))->SetBitmap(wxArtProvider::GetBitmap(wxART_QUIT));
 	fileMenu->Delete(tempItem);
 	menuBar->Append(fileMenu, _("&Файл"));
 
 	wxMenu * serviceMenu = new wxMenu;
-	serviceMenu->Append(wxID_SETUP, _("Настройки"));
+	serviceMenu->Append(wxID_PREFERENCES, _("Настройки"));
 	menuBar->Append(serviceMenu, _("&Сервис"));
 
 	wxMenu * viewMenu = new wxMenu;
@@ -110,7 +110,9 @@ void MyRuLibMainFrame::CreateControls()
 	menuBar->Append(viewMenu, _("&Вид"));
 
 	wxMenu * helpMenu = new wxMenu;
-	helpMenu->Append(wxID_ABOUT, _("О программе…"));
+	(tempItem = helpMenu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	helpMenu->Append(wxID_ABOUT, _("О программе…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_PAGE));
+	helpMenu->Delete(tempItem);
 	menuBar->Append(helpMenu, _("&?"));
 
 	SetMenuBar(menuBar);
@@ -216,13 +218,13 @@ wxToolBar * MyRuLibMainFrame::CreateButtonBar()
 {
 
 	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	toolBar->AddTool(ID_NEW_ZIP, _("Импорт"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы ZIP"));
+	toolBar->AddTool(wxID_NEW, _("Импорт"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы ZIP"));
 	toolBar->AddSeparator();
 	m_FindTextCtrl = new wxTextCtrl( toolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
 	toolBar->AddControl( m_FindTextCtrl );
-	toolBar->AddTool(ID_FIND_BTN, _("Поиск"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
+	toolBar->AddTool(wxID_FIND, _("Поиск"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
 	toolBar->AddSeparator();
-	toolBar->AddTool(ID_EXTERNAL, _("Экспорт"), wxArtProvider::GetBitmap(wxART_GO_DIR_UP), _("Запись на внешнее устройство"));
+	toolBar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolBar->AddSeparator();
 	toolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
 	toolBar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
