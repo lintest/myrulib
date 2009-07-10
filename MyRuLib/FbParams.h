@@ -56,15 +56,15 @@ class FbParams {
         };
     private:
         DatabaseLayer *m_database;
-        int DefaultValue(int param);
-        wxString DefaultText(int param);
+        static int DefaultValue(int param);
+        static wxString DefaultText(int param);
         static ParamArray & GetParams();
     public:
         FbParams();
         FbParams(DatabaseLayer *database, wxCriticalSection &section);
         static void LoadParams();
-        int GetValue(const int &param);
-        wxString GetText(const int &param);
+        static int GetValue(const int &param);
+        static wxString GetText(const int &param);
         void SetValue(const int &param, int value);
         void SetText(const int &param, wxString text);
 };

@@ -5,12 +5,7 @@
 #include <wx/thread.h>
 #include <wx/arrimpl.cpp>
 #include <wx/filename.h>
-/*
-struct ExportFileItem {
-    wxFileName filename;
-    int id;
-};
-*/
+
 class ExportFileItem {
 public:
     ExportFileItem(const wxFileName &n, const int i): filename(n), id(i) {};

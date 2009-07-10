@@ -181,7 +181,7 @@ void MyRuLibMainFrame::CreateControls()
 
 	const int widths[] = {-92, -57, -35, -22};
 
-    ProgressBar * m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
+    m_ProgressBar = new ProgressBar(this, ID_PROGRESSBAR);
     m_ProgressBar->SetFieldsCount(4);
 	m_ProgressBar->SetStatusWidths(4, widths);
 	SetStatusBar(m_ProgressBar);

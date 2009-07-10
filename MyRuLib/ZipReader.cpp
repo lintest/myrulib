@@ -9,7 +9,7 @@ ZipReader::ZipReader(int id)
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-        wxString path = FbParams().GetText(FB_LIBRARY_DIR);
+        wxString path = FbParams::GetText(FB_LIBRARY_DIR);
 
         Books books(wxGetApp().GetDatabase());
         BooksRow * bookRow = books.Id(id);
