@@ -194,9 +194,9 @@ ImportThread::ImportThread(wxEvtHandler *frame, const wxString &filename)
 {
 }
 
-int ImportThread::AddArchive()
+int ParseThread::AddArchive(const wxString &filename)
 {
-    wxFileName file_name(m_filename);
+    wxFileName file_name(filename);
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -220,7 +220,7 @@ void *ImportThread::Entry()
 	wxFFileInputStream in(m_filename);
 	wxZipInputStream zip(in);
 
-	int id_archive = AddArchive();
+	int id_archive = AddArchive(m_filename);
 
 	{
 		wxFileName filename = m_filename;
@@ -276,25 +276,30 @@ private:
     unsigned int m_count;
 };
 
-    class wxDirTraverserSimple : public wxDirTraverser
+class FolderTraverser : public wxDirTraverser
+{
+public:
+    FolderTraverser(FolderThread* thread) : m_thread(thread), m_progress(0) { }
+
+    virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
-    public:
-        wxDirTraverserSimple(FolderThread* thread) : m_thread(thread) { }
+        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
+        event.SetString(wxFileName(filename).GetFullName());
+        event.SetInt(m_progress++);
+        m_thread->PostEvent( event );
 
-        virtual wxDirTraverseResult OnFile(const wxString& filename)
-        {
-//            m_files.Add(filename);
-            return wxDIR_CONTINUE;
-        }
+        return wxDIR_CONTINUE;
+    }
 
-        virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
-        {
-            return wxDIR_CONTINUE;
-        }
+    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
+    {
+        return wxDIR_CONTINUE;
+    }
 
-    private:
-        FolderThread *m_thread;
-    };
+private:
+    FolderThread *m_thread;
+    unsigned int m_progress;
+};
 
 void *FolderThread::Entry()
 {
@@ -304,17 +309,25 @@ void *FolderThread::Entry()
     if ( !dir.IsOpened() ) return NULL;
 
 	{
-        CountTraverser counter(this);
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
+		event.SetString(strParsingInfo + m_dirname);
+		event.SetInt(1);
+		PostEvent( event );
+
+        CountTraverser counter;
         dir.Traverse(counter);
 
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
 		event.SetInt(counter.GetCount());
-		event.SetString(strParsingInfo + m_dirname);
 		PostEvent( event );
 	}
 
-    wxDirTraverserSimple traverser(this);
+    FolderTraverser traverser(this);
     dir.Traverse(traverser);
+
+	{
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_FINISH );
+        PostEvent( event );
+	}
 
 	return NULL;
 }

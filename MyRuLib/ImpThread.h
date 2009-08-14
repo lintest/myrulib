@@ -11,6 +11,7 @@ public:
     virtual void OnExit();
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
 	void PostEvent(wxEvent& event);
+    static int AddArchive(const wxString &filename);
 private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);
@@ -23,7 +24,6 @@ class ImportThread : public ParseThread
 public:
     ImportThread(wxEvtHandler *frame, const wxString &filename);
     virtual void *Entry();
-    int AddArchive();
 private:
     wxString m_filename;
 };
