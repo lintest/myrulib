@@ -1,4 +1,5 @@
 #include <wx/zipstrm.h>
+#include <wx/dir.h>
 #include "ImpThread.h"
 #include "FbParams.h"
 #include "FbManager.h"
@@ -88,35 +89,16 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
-ImportThread::ImportThread(wxEvtHandler *frame, const wxString &filename)
-        : wxThread(), m_filename(filename), m_frame(frame)
+ParseThread::ParseThread(wxEvtHandler *frame)
+        : wxThread(), m_frame(frame)
 {
 }
 
-void ImportThread::OnExit()
+void ParseThread::OnExit()
 {
 }
 
-int ImportThread::AddArchive()
-{
-    wxFileName file_name(m_filename);
-
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-	Archives archives(wxGetApp().GetDatabase());
-	ArchivesRow * row = archives.New();
-	row->id = BookInfo::NewId(DB_NEW_ARCHIVE);
-	row->file_name = file_name.GetFullName();
-	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-	row->min_id_book = 0;
-	row->max_id_book = 0;
-	row->file_count = 0;
-	row->file_size = 0;
-	row->Save();
-	return row->id;
-}
-
-bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
+bool ParseThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 {
     const size_t BUFSIZE = 1024;
     char buf[BUFSIZE];
@@ -156,7 +138,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     return ok;
 }
 
-void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
+void ParseThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
 {
 	long id_book = 0;
 	{
@@ -191,7 +173,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 	}
 }
 
-bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
+bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
 {
     ImportParsingContext info;
 
@@ -200,6 +182,35 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
         return true;
 	}
     return false;
+}
+
+void ParseThread::PostEvent(wxEvent& event)
+{
+	wxPostEvent( m_frame, event );
+}
+
+ImportThread::ImportThread(wxEvtHandler *frame, const wxString &filename)
+        :  ParseThread(frame), m_filename(filename)
+{
+}
+
+int ImportThread::AddArchive()
+{
+    wxFileName file_name(m_filename);
+
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+	Archives archives(wxGetApp().GetDatabase());
+	ArchivesRow * row = archives.New();
+	row->id = BookInfo::NewId(DB_NEW_ARCHIVE);
+	row->file_name = file_name.GetFullName();
+	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+	row->min_id_book = 0;
+	row->max_id_book = 0;
+	row->file_count = 0;
+	row->file_size = 0;
+	row->Save();
+	return row->id;
 }
 
 void *ImportThread::Entry()
@@ -216,7 +227,7 @@ void *ImportThread::Entry()
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
 		event.SetInt(zip.GetTotalEntries());
 		event.SetString(strParsingInfo + filename.GetFullName());
-		wxPostEvent( m_frame, event );
+		PostEvent( event );
 	}
 
 	int progress = 0;
@@ -227,7 +238,7 @@ void *ImportThread::Entry()
 				wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
 				event.SetString(filename);
 				event.SetInt(progress++);
-				wxPostEvent( m_frame, event );
+                PostEvent( event );
 
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, entry->GetSize(), id_archive);
@@ -238,9 +249,72 @@ void *ImportThread::Entry()
 
 	{
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_FINISH );
-		wxPostEvent( m_frame, event );
+        PostEvent( event );
 	}
 
 	return NULL;
 }
 
+FolderThread::FolderThread(wxEvtHandler *frame, const wxString &dirname)
+        :  ParseThread(frame), m_dirname(dirname)
+{
+}
+
+class CountTraverser : public wxDirTraverser
+{
+public:
+    CountTraverser() : m_count(0) { }
+    virtual wxDirTraverseResult OnFile(const wxString& filename) {
+        m_count++;
+        return wxDIR_CONTINUE;
+    }
+    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
+        return wxDIR_CONTINUE;
+    }
+    unsigned int GetCount() { return m_count; }
+private:
+    unsigned int m_count;
+};
+
+    class wxDirTraverserSimple : public wxDirTraverser
+    {
+    public:
+        wxDirTraverserSimple(FolderThread* thread) : m_thread(thread) { }
+
+        virtual wxDirTraverseResult OnFile(const wxString& filename)
+        {
+//            m_files.Add(filename);
+            return wxDIR_CONTINUE;
+        }
+
+        virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
+        {
+            return wxDIR_CONTINUE;
+        }
+
+    private:
+        FolderThread *m_thread;
+    };
+
+void *FolderThread::Entry()
+{
+    wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+
+    wxDir dir(m_dirname);
+    if ( !dir.IsOpened() ) return NULL;
+
+	{
+        CountTraverser counter(this);
+        dir.Traverse(counter);
+
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
+		event.SetInt(counter.GetCount());
+		event.SetString(strParsingInfo + m_dirname);
+		PostEvent( event );
+	}
+
+    wxDirTraverserSimple traverser(this);
+    dir.Traverse(traverser);
+
+	return NULL;
+}

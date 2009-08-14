@@ -4,26 +4,37 @@
 #include <wx/wx.h>
 #include "ImpContext.h"
 
-class ImportThread : public wxThread
+class ParseThread : public wxThread
 {
 public:
-    ImportThread(wxEvtHandler *frame, const wxString &filename);
-
-    // thread execution starts here
-    virtual void *Entry();
-
-    // called when the thread exits - whether it terminates normally or is
-    // stopped with Delete() (but not when it is Kill()ed!)
+    ParseThread(wxEvtHandler *frame);
     virtual void OnExit();
 	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
-    int AddArchive();
+	void PostEvent(wxEvent& event);
 private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);
 private:
-    unsigned m_count;
-    wxString m_filename;
     wxEvtHandler *m_frame;
+};
+
+class ImportThread : public ParseThread
+{
+public:
+    ImportThread(wxEvtHandler *frame, const wxString &filename);
+    virtual void *Entry();
+    int AddArchive();
+private:
+    wxString m_filename;
+};
+
+class FolderThread : public ParseThread
+{
+public:
+    FolderThread(wxEvtHandler *frame, const wxString &dirname);
+    virtual void *Entry();
+private:
+    wxString m_dirname;
 };
 
 #endif // __FBTHREAD_H__
