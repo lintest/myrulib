@@ -10,6 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/splitter.h>
 #include <wx/imaglist.h>
+#include <wx/dirdlg.h>
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
@@ -53,6 +54,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_TEXT_ENTER(ID_FIND_TEXT, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(wxID_FIND, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
+    EVT_MENU(ID_FOLDER, MyRuLibMainFrame::OnFolder)
     EVT_TOOL(wxID_OPEN, MyRuLibMainFrame::OnRegZip)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
@@ -93,7 +95,7 @@ void MyRuLibMainFrame::CreateControls()
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_NEW, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(wxID_ANY, _("Добавить директорию"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN));
+	menu->Append(ID_FOLDER, _("Добавить директорию"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN));
 	menu->Append(wxID_OPEN, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_OPEN));
 	menu->AppendSeparator();
 	menu->Append(wxID_SAVE, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE));
@@ -397,6 +399,22 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 			FbManager::RegisterZip(paths[i]);
 		}
 	}
+}
+
+void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
+
+    wxDirDialog dlg (
+		this,
+		_("Выберите папку для рекурсивного импорта файлов в библиотеку…"),
+		wxEmptyString,
+		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST,
+		wxDefaultPosition
+    );
+
+	if (dlg.ShowModal() == wxID_OK) {
+		FbManager::RegisterPath(dlg.GetPath());
+	}
+
 }
 
 void MyRuLibMainFrame::OnProgressStart(wxCommandEvent& event)

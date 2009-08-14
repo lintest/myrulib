@@ -36,6 +36,7 @@ public:
 		ID_SPLIT_HORIZONTAL,
 		ID_SPLIT_VERTICAL,
 		ID_FB2_ONLY,
+		ID_FOLDER,
 		ID_ERROR,
     };
 private:
@@ -76,6 +77,7 @@ private:
 	void OnFindTextEnter( wxCommandEvent& event );
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
+	void OnFolder( wxCommandEvent& event );
 	void OnProgressStart(wxCommandEvent& event);
 	void OnProgressUpdate(wxCommandEvent& event);
 	void OnProgressFinish(wxCommandEvent& event);

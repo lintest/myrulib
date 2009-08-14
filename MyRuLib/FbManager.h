@@ -47,6 +47,7 @@ public:
 	static bool ParseXml(const wxString& filename);
 	static bool ParseZip(const wxString& filename);
 	static bool RegisterZip(const wxString& filename);
+	static bool RegisterPath(const wxString& filename);
 private:
 	static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };

@@ -129,6 +129,8 @@ wxString ExternalDlg::GetFilename(BookTreeItemData &data)
     while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
     while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
 
+    if (data.number) newname = wxString::Format(wxT("%d_%s"), data.number, newname.c_str());
+
     wxFileName result = wxString::Format(wxT("%s.%s%s"), newname.c_str(), data.file_type.c_str(), m_ext.c_str());
 
     for (int i=1; true; i++) {

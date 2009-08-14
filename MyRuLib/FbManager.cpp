@@ -10,6 +10,7 @@
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
+#include <wx/dir.h>
 #include "RegThread.h"
 #include "ImpThread.h"
 #include "FbParams.h"
@@ -42,6 +43,39 @@ bool FbManager::RegisterZip(const wxString& filename)
     thread->Run();
 
     return true;
+}
+
+    class wxDirTraverserSimple : public wxDirTraverser
+    {
+    public:
+        wxDirTraverserSimple(wxArrayString& files) : m_files(files) { }
+
+        virtual wxDirTraverseResult OnFile(const wxString& filename)
+        {
+            m_files.Add(filename);
+            return wxDIR_CONTINUE;
+        }
+
+        virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
+        {
+            return wxDIR_CONTINUE;
+        }
+
+    private:
+        wxArrayString &m_files;
+    };
+
+bool FbManager::RegisterPath(const wxString& filename)
+{
+    wxDir dir(filename);
+    if ( !dir.IsOpened() ) return false;
+
+    wxArrayString files;
+    wxDirTraverserSimple traverser(files);
+    dir.Traverse(traverser);
+
+    return true;
+
 }
 
 bool FbManager::ParseZip(const wxString& filename)
