@@ -283,10 +283,20 @@ public:
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
+		wxString ext(filename);
+		ext.Right(4).Lower();
+
         wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
         event.SetString(wxFileName(filename).GetFullName());
         event.SetInt(m_progress++);
         m_thread->PostEvent( event );
+
+		if (ext== wxT(".fb2")) {
+		    wxFFileInputStream file(filename);
+            m_thread->ParseXml(file, filename, file.GetLength(), 0);
+        } else if (ext== wxT(".zip")) {
+
+        }
 
         return wxDIR_CONTINUE;
     }
