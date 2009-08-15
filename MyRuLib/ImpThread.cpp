@@ -265,7 +265,13 @@ class CountTraverser : public wxDirTraverser
 public:
     CountTraverser() : m_count(0) { }
     virtual wxDirTraverseResult OnFile(const wxString& filename) {
-        m_count++;
+		wxString ext(filename);
+		ext.Right(4).Lower();
+		if (ext== wxT(".fb2")) {
+            m_count++;
+        } else if (ext== wxT(".zip")) {
+            m_count++;
+        }
         return wxDIR_CONTINUE;
     }
     virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
@@ -286,16 +292,13 @@ public:
 		wxString ext(filename);
 		ext.Right(4).Lower();
 
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
-        event.SetString(wxFileName(filename).GetFullName());
-        event.SetInt(m_progress++);
-        m_thread->PostEvent( event );
-
 		if (ext== wxT(".fb2")) {
+		    Progress(filename);
 		    wxFFileInputStream file(filename);
             m_thread->ParseXml(file, filename, file.GetLength(), 0);
         } else if (ext== wxT(".zip")) {
-
+		    Progress(filename);
+            m_thread->ParseZip(filename);
         }
 
         return wxDIR_CONTINUE;
@@ -305,7 +308,14 @@ public:
     {
         return wxDIR_CONTINUE;
     }
-
+private:
+    void Progress(const wxString &filename)
+    {
+        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
+        event.SetString(wxFileName(filename).GetFullName());
+        event.SetInt(m_progress++);
+        m_thread->PostEvent( event );
+    }
 private:
     FolderThread *m_thread;
     unsigned int m_progress;
@@ -341,3 +351,25 @@ void *FolderThread::Entry()
 
 	return NULL;
 }
+
+bool FolderThread::ParseZip(const wxString &filename)
+{
+	wxFFileInputStream in(filename);
+	wxZipInputStream zip(in);
+
+	int id_archive = AddArchive(filename);
+
+	while (wxZipEntry * entry = zip.GetNextEntry()) {
+		if (entry->GetSize()) {
+			wxString filename = entry->GetName(wxPATH_UNIX);
+			if (filename.Right(4).Lower() == wxT(".fb2")) {
+				zip.OpenEntry(*entry);
+                ParseXml(zip, filename, entry->GetSize(), id_archive);
+			}
+		}
+		delete entry;
+	}
+
+    return true;
+}
+

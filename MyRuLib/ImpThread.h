@@ -33,6 +33,7 @@ class FolderThread : public ParseThread
 public:
     FolderThread(wxEvtHandler *frame, const wxString &dirname);
     virtual void *Entry();
+    static bool ParseZip(const wxString &filename);
 private:
     wxString m_dirname;
 };
