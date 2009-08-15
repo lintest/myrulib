@@ -12,8 +12,11 @@ public:
         :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style) {};
     void OnSize(wxSizeEvent& event);
 	void OnImageClick(wxTreeEvent &event);
+	void SelectAll();
 	wxArrayInt colSizes;
 	DECLARE_EVENT_TABLE()
+private:
+    void SelectChild(const wxTreeItemId &parent);
 };
 
 #endif // __BOOKLISTCTRL_H__

@@ -10,6 +10,7 @@ class ZipReader
 private:
     wxFFileInputStream *m_file;
     wxZipInputStream *m_zip;
+    wxInputStream *m_result;
     bool m_zipOk;
     bool m_fileOk;
     int m_id;
@@ -18,13 +19,15 @@ private:
 private:
     bool FindZip(wxFileName &zip_name, wxString &path);
     bool FindEntry(const wxString &file_name);
+    void OpenZip(const wxString &zipname);
+    void OpenFile(const wxString &filename);
 public:
 	ZipReader(int id);
 	virtual ~ZipReader();
 	bool IsOK() {return m_zipOk && m_fileOk;};
 	void ShowError();
     wxString GetErrorText();
-	wxZipInputStream & GetZip() {return *m_zip;};
+	wxInputStream & GetZip() {return *m_result;};
 };
 
 #endif // __ZIPREADER_H__

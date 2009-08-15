@@ -20,3 +20,20 @@ void BookListCtrl::OnSize(wxSizeEvent& event)
         SetColumnWidth(i, w * colSizes[i] / sum );
 	}
 }
+
+void BookListCtrl::SelectChild(const wxTreeItemId &parent)
+{
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child = GetFirstChild(parent, cookie);
+    while (child.IsOk()) {
+        SetItemImage(child, 1);
+        SelectChild(child);
+        child = GetNextChild(parent, cookie);
+    }
+}
+
+void BookListCtrl::SelectAll()
+{
+    wxTreeItemId root = GetRootItem();
+    if (root.IsOk()) SelectChild(root);
+}

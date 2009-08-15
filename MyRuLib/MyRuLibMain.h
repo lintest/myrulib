@@ -86,6 +86,7 @@ private:
     void OnChangeFilter(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
     void OnError(wxCommandEvent& event);
+    void OnSelectAll(wxCommandEvent& event);
 	virtual void OnLetterClicked( wxCommandEvent& event );
 	DECLARE_EVENT_TABLE()
 };

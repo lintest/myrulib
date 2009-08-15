@@ -265,8 +265,7 @@ class CountTraverser : public wxDirTraverser
 public:
     CountTraverser() : m_count(0) { }
     virtual wxDirTraverseResult OnFile(const wxString& filename) {
-		wxString ext(filename);
-		ext.Right(4).Lower();
+		wxString ext = filename.Right(4).Lower();
 		if (ext== wxT(".fb2")) {
             m_count++;
         } else if (ext== wxT(".zip")) {
@@ -289,8 +288,7 @@ public:
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
-		wxString ext(filename);
-		ext.Right(4).Lower();
+		wxString ext = filename.Right(4).Lower();
 
 		if (ext== wxT(".fb2")) {
 		    Progress(filename);

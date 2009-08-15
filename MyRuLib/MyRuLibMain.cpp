@@ -45,6 +45,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, MyRuLibMainFrame::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, MyRuLibMainFrame::OnChangeView)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
+	EVT_MENU(wxID_SELECTALL, MyRuLibMainFrame::OnSelectAll)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, MyRuLibMainFrame::OnAuthorsListBoxSelected)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListActivated)
@@ -540,3 +541,7 @@ void MyRuLibMainFrame::OnError(wxCommandEvent& event)
     wxLogError(event.GetString());
 }
 
+void MyRuLibMainFrame::OnSelectAll(wxCommandEvent& event)
+{
+    m_BooksListView->SelectAll();
+}

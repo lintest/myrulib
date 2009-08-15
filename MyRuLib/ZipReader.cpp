@@ -25,33 +25,57 @@ ZipReader::ZipReader(int id)
             zip_name = archiveRow->file_name;
             zip_name.SetPath(archiveRow->file_path);
             m_zipOk = FindZip(zip_name, path);
+            if (m_zipOk) {
+                OpenZip(zip_name.GetFullPath());
+            }
         } else {
-            wxString whereClause = wxString::Format(wxT("min_id_book<=%d AND %d<=max_id_book"), id, id);
-            Archives archives(wxGetApp().GetDatabase());
-            ArchivesRowSet * archiveRowSet = archives.WhereSet(whereClause);
-            for (size_t i=0; i<archiveRowSet->Count(); i++) {
-                ArchivesRow * archiveRow = archiveRowSet->Item(i);
-                m_zip_name = archiveRow->file_name;
-                zip_name = archiveRow->file_name;
-                zip_name.SetPath(archiveRow->file_path);
-                m_zipOk = FindZip(zip_name, path);
-                if (m_zipOk) break;
+            wxFileName filename = bookRow->file_name;
+            if (filename.FileExists()) {
+                OpenFile(filename.GetFullPath());
+            } else {
+                wxString whereClause = wxString::Format(wxT("min_id_book<=%d AND %d<=max_id_book"), id, id);
+                Archives archives(wxGetApp().GetDatabase());
+                ArchivesRowSet * archiveRowSet = archives.WhereSet(whereClause);
+                for (size_t i=0; i<archiveRowSet->Count(); i++) {
+                    ArchivesRow * archiveRow = archiveRowSet->Item(i);
+                    m_zip_name = archiveRow->file_name;
+                    zip_name = archiveRow->file_name;
+                    zip_name.SetPath(archiveRow->file_path);
+                    m_zipOk = FindZip(zip_name, path);
+                    if (m_zipOk) {
+                        OpenZip(zip_name.GetFullPath());
+                        break;
+                    }
+                }
             }
         }
     }
-
-    if (!m_zipOk) return;
-
-    m_file = new wxFFileInputStream(zip_name.GetFullPath());
-    m_zip = new wxZipInputStream(*m_file);
-
-    m_fileOk = FindEntry(m_file_name);
 }
 
 ZipReader::~ZipReader()
 {
 	wxDELETE(m_zip);
 	wxDELETE(m_file);
+}
+
+void ZipReader::OpenZip(const wxString &zipname)
+{
+    m_file = new wxFFileInputStream(zipname);
+    m_zip = new wxZipInputStream(*m_file);
+    m_result = m_zip;
+
+    m_zipOk  = m_file->IsOk();
+    m_fileOk = FindEntry(m_file_name);
+}
+
+void ZipReader::OpenFile(const wxString &filename)
+{
+    m_file = new wxFFileInputStream(filename);
+    m_zip = NULL;
+    m_result = m_file;
+
+    m_zipOk  = true;
+    m_fileOk = m_file->IsOk();
 }
 
 bool ZipReader::FindZip(wxFileName &zip_name, wxString &path)
