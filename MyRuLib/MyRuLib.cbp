@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="../build/Debug/MyRuLib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/Debug/" />
-				<Option object_output="../build/Debug/" />
+				<Option output="../build/LinDebug/MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinDebug/" />
+				<Option object_output="../build/LinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -28,9 +28,9 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="../build/Release/MyRuLib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/Release/" />
-				<Option object_output="../build/Release/" />
+				<Option output="../build/LinRelease/MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinRelease/" />
+				<Option object_output="../build/LinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -47,8 +47,9 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="../build/Debug/MyRuLib" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../build/Debug/" />
+				<Option output="../build/WinDebug/MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/WinDebug/" />
+				<Option object_output="../build/WinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -99,8 +100,9 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="../build/Release/MyRuLib" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../build/Release/" />
+				<Option output="../build/WinRelease/MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/WinRelease/" />
+				<Option object_output="../build/WinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />

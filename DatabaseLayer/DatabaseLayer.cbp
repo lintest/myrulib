@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="../build/Debug/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option output="../build/LinDebug/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Debug/" />
+				<Option object_output="../build/LinDebug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -25,9 +25,9 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="../build/Release/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option output="../build/LinRelease/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Release/" />
+				<Option object_output="../build/LinRelease/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -43,9 +43,9 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="../build/Debug/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option output="../build/WinDebug/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Debug/" />
+				<Option object_output="../build/WinDebug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -59,9 +59,9 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="../build/Release/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
+				<Option output="../build/WinRelease/libDatabaseLayer" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Release/" />
+				<Option object_output="../build/WinRelease/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />

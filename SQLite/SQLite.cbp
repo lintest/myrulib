@@ -8,9 +8,8 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="../build/Debug/libSQLite" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="../build/Debug/" />
+				<Option output="../build/LinDebug/libSQLite" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/LinDebug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -21,9 +20,9 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="../build/Release/libSQLite" prefix_auto="1" extension_auto="1" />
+				<Option output="../build/LinRelease/libSQLite" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/Release/" />
+				<Option object_output="../build/LinRelease/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -37,9 +36,8 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="../build/Debug/libSQLite" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="../build/Debug/" />
+				<Option output="../build/WinDebug/libSQLite" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/WinDebug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -52,9 +50,8 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="../build/Release/libSQLite" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="../build/Release/" />
+				<Option output="../build/WinRelease/libSQLite" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/WinRelease/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
