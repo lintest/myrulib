@@ -362,8 +362,9 @@ function create_tables($sqlite_db)
   $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);");
 
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
-  $sqlite_db->query("INSERT INTO params(text) VALUES ('Test Library');");
-  $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
+  $sqlite_db->query("DELETE FROM params;");
+  $sqlite_db->query("INSERT INTO params(1, text) VALUES (1, 'Test Library');");
+  $sqlite_db->query("INSERT INTO params(2, value) VALUES (2, 1);");
 
   $sqlite_db->query("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);");
 }

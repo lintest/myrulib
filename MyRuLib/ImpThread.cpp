@@ -173,6 +173,12 @@ void ParseThread::AppendBook(ImportParsingContext &info, const wxString &name, c
 	}
 }
 
+class AutoTransaction {
+public:
+    AutoTransaction()  { wxGetApp().GetDatabase()->BeginTransaction(); };
+    ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
+};
+
 bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
 {
     ImportParsingContext info;
@@ -216,6 +222,8 @@ int ParseThread::AddArchive(const wxString &filename)
 void *ImportThread::Entry()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+
+    AutoTransaction trans;
 
 	wxFFileInputStream in(m_filename);
 	wxZipInputStream zip(in);
@@ -322,6 +330,8 @@ private:
 void *FolderThread::Entry()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+
+    AutoTransaction trans;
 
     wxDir dir(m_dirname);
     if ( !dir.IsOpened() ) return NULL;
