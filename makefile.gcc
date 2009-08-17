@@ -60,70 +60,92 @@ SQLITE_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include $(CPPFLAGS) \
 	$(CFLAGS)
 SQLITE_OBJECTS =  \
-	SQLite_sqlite3.o
+	build\SQLite_sqlite3.o
 EXPAT_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
 	-DCOMPILED_FROM_DSP $(CPPFLAGS) $(CFLAGS)
 EXPAT_OBJECTS =  \
-	Expat_xmlparse.o \
-	Expat_xmlrole.o \
-	Expat_xmltok.o \
-	Expat_xmltok_impl.o \
-	Expat_xmltok_ns.o
+	build\Expat_xmlparse.o \
+	build\Expat_xmlrole.o \
+	build\Expat_xmltok.o \
+	build\Expat_xmltok_impl.o \
+	build\Expat_xmltok_ns.o
 DATABASELAYER_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -ISQLite \
 	$(CPPFLAGS) $(CXXFLAGS)
 DATABASELAYER_OBJECTS =  \
-	DatabaseLayer_DatabaseErrorReporter.o \
-	DatabaseLayer_DatabaseLayer.o \
-	DatabaseLayer_DatabaseQueryParser.o \
-	DatabaseLayer_DatabaseResultSet.o \
-	DatabaseLayer_DatabaseStringConverter.o \
-	DatabaseLayer_PreparedStatement.o \
-	DatabaseLayer_SqliteDatabaseLayer.o \
-	DatabaseLayer_SqlitePreparedStatement.o \
-	DatabaseLayer_SqliteResultSet.o \
-	DatabaseLayer_SqliteResultSetMetaData.o
+	build\DatabaseLayer_DatabaseErrorReporter.o \
+	build\DatabaseLayer_DatabaseLayer.o \
+	build\DatabaseLayer_DatabaseQueryParser.o \
+	build\DatabaseLayer_DatabaseResultSet.o \
+	build\DatabaseLayer_DatabaseStringConverter.o \
+	build\DatabaseLayer_PreparedStatement.o \
+	build\DatabaseLayer_SqliteDatabaseLayer.o \
+	build\DatabaseLayer_SqlitePreparedStatement.o \
+	build\DatabaseLayer_SqliteResultSet.o \
+	build\DatabaseLayer_SqliteResultSetMetaData.o
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -IExpat \
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -O2 -IExpat \
 	-IDatabaseLayer -ISQLite $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
-	MyRuLib_BookListCtrl.o \
-	MyRuLib_DBCreator.o \
-	MyRuLib_ExpThread.o \
-	MyRuLib_ExternalDlg.o \
-	MyRuLib_FbGenres.o \
-	MyRuLib_FbManager.o \
-	MyRuLib_FbParams.o \
-	MyRuLib_ImpContext.o \
-	MyRuLib_ImpThread.o \
-	MyRuLib_InfoCash.o \
-	MyRuLib_InfoThread.o \
-	MyRuLib_MyRuLibApp.o \
-	MyRuLib_MyRuLibMain.o \
-	MyRuLib_ParseCtx.o \
-	MyRuLib_ProgressBar.o \
-	MyRuLib_RegThread.o \
-	MyRuLib_SettingsDlg.o \
-	MyRuLib_TitleThread.o \
-	MyRuLib_ZipReader.o \
-	MyRuLib_Archives.o \
-	MyRuLib_Authors.o \
-	MyRuLib_Books.o \
-	MyRuLib_Bookseq.o \
-	MyRuLib_Params.o \
-	MyRuLib_Sequences.o \
-	MyRuLib_wxActiveRecord.o \
-	MyRuLib_base64.o \
-	MyRuLib_treelistctrl.o
+	build\MyRuLib_BookListCtrl.o \
+	build\MyRuLib_DBCreator.o \
+	build\MyRuLib_ExpThread.o \
+	build\MyRuLib_ExternalDlg.o \
+	build\MyRuLib_FbGenres.o \
+	build\MyRuLib_FbManager.o \
+	build\MyRuLib_FbParams.o \
+	build\MyRuLib_ImpContext.o \
+	build\MyRuLib_ImpThread.o \
+	build\MyRuLib_InfoCash.o \
+	build\MyRuLib_InfoThread.o \
+	build\MyRuLib_MyRuLibApp.o \
+	build\MyRuLib_MyRuLibMain.o \
+	build\MyRuLib_ParseCtx.o \
+	build\MyRuLib_ProgressBar.o \
+	build\MyRuLib_RegThread.o \
+	build\MyRuLib_SettingsDlg.o \
+	build\MyRuLib_TitleThread.o \
+	build\MyRuLib_ZipReader.o \
+	build\MyRuLib_Archives.o \
+	build\MyRuLib_Authors.o \
+	build\MyRuLib_Books.o \
+	build\MyRuLib_Bookseq.o \
+	build\MyRuLib_Params.o \
+	build\MyRuLib_Sequences.o \
+	build\MyRuLib_wxActiveRecord.o \
+	build\MyRuLib_base64.o \
+	build\MyRuLib_treelistctrl.o \
+	build\MyRuLib_resource_rc.o
 
 ### Conditionally set variables: ###
 
 ifeq ($(WX_DEBUG),1)
 WX3RDPARTYLIBPOSTFIX = d
+endif
+ifeq ($(WX_SHARED),0)
+____WX_SHARED_3_p_1 = 
+endif
+ifeq ($(WX_SHARED),1)
+____WX_SHARED_3_p_1 = --define WXUSINGDLL
+endif
+ifeq ($(WX_UNICODE),1)
+__WXUNICODE_DEFINE_p_4 = --define _UNICODE
+endif
+ifeq ($(WX_DEBUG),1)
+__WXDEBUG_DEFINE_p_4 = --define __WXDEBUG__
+endif
+ifeq ($(WX_MONOLITHIC),0)
+__WXLIB_AUI_NAME_p = -lwxmsw$(WX_VERSION)$(WXLIBPOSTFIX)_aui
+endif
+ifeq ($(WX_MONOLITHIC),0)
+__WXLIB_XRC_NAME_p = -lwxmsw$(WX_VERSION)$(WXLIBPOSTFIX)_xrc
+endif
+ifeq ($(WX_MONOLITHIC),0)
+__WXLIB_HTML_NAME_p = -lwxmsw$(WX_VERSION)$(WXLIBPOSTFIX)_html
 endif
 ifeq ($(WX_MONOLITHIC),0)
 __WXLIB_CORE_NAME_p = -lwxmsw$(WX_VERSION)$(WXLIBPOSTFIX)_core
@@ -169,17 +191,27 @@ WXLIBPATH = \lib\gcc_dll
 endif
 
 
+all: build
+build:
+	-if not exist build mkdir build
+
 ### Targets: ###
 
-all: test_for_selected_wxbuild libSQLite.a libExpat.a libDatabaseLayer.a MyRuLib.exe
+all: prepintdir test_for_selected_wxbuild build\libSQLite.a build\libExpat.a build\libDatabaseLayer.a build\MyRuLib.exe
 
 clean: 
-	-if exist .\*.o del .\*.o
-	-if exist .\*.d del .\*.d
-	-if exist libSQLite.a del libSQLite.a
-	-if exist libExpat.a del libExpat.a
-	-if exist libDatabaseLayer.a del libDatabaseLayer.a
-	-if exist MyRuLib.exe del MyRuLib.exe
+	-if exist build\*.o del build\*.o
+	-if exist build\*.d del build\*.d
+	-if exist build\libSQLite.a del build\libSQLite.a
+	-if exist build\libExpat.a del build\libExpat.a
+	-if exist build\libDatabaseLayer.a del build\libDatabaseLayer.a
+	-if exist build\MyRuLib.exe del build\MyRuLib.exe
+
+build: 
+	if not exist build mkdir build
+
+prepintdir: build
+	echo "Make BUILDDIR before building anything"
 
 test_for_selected_wxbuild: 
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
@@ -193,155 +225,158 @@ test_for_selected_wxbuild:
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
 	exit 1
 
-libSQLite.a: $(SQLITE_OBJECTS)
+build\libSQLite.a: $(SQLITE_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(SQLITE_OBJECTS)
 	ranlib $@
 
-libExpat.a: $(EXPAT_OBJECTS)
+build\libExpat.a: $(EXPAT_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(EXPAT_OBJECTS)
 	ranlib $@
 
-libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
+build\libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(DATABASELAYER_OBJECTS)
 	ranlib $@
 
-MyRuLib.exe: $(MYRULIB_OBJECTS) libExpat.a libDatabaseLayer.a libSQLite.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -mthreads -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows $(LDFLAGS)  libExpat.a libDatabaseLayer.a libSQLite.a $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
+build\MyRuLib.exe: $(MYRULIB_OBJECTS) build\libExpat.a build\libDatabaseLayer.a build\libSQLite.a build\MyRuLib_resource_rc.o
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -mthreads -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows $(LDFLAGS)  build\libExpat.a build\libDatabaseLayer.a build\libSQLite.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_XRC_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
 
-SQLite_sqlite3.o: ./SQLite/sqlite3.c
+build\SQLite_sqlite3.o: ./SQLite/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE_CFLAGS) $(CPPDEPS) $<
 
-Expat_xmlparse.o: ./Expat/xmlparse.c
+build\Expat_xmlparse.o: ./Expat/xmlparse.c
 	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
 
-Expat_xmlrole.o: ./Expat/xmlrole.c
+build\Expat_xmlrole.o: ./Expat/xmlrole.c
 	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
 
-Expat_xmltok.o: ./Expat/xmltok.c
+build\Expat_xmltok.o: ./Expat/xmltok.c
 	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
 
-Expat_xmltok_impl.o: ./Expat/xmltok_impl.c
+build\Expat_xmltok_impl.o: ./Expat/xmltok_impl.c
 	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
 
-Expat_xmltok_ns.o: ./Expat/xmltok_ns.c
+build\Expat_xmltok_ns.o: ./Expat/xmltok_ns.c
 	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_DatabaseErrorReporter.o: ./DatabaseLayer/DatabaseErrorReporter.cpp
+build\DatabaseLayer_DatabaseErrorReporter.o: ./DatabaseLayer/DatabaseErrorReporter.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_DatabaseLayer.o: ./DatabaseLayer/DatabaseLayer.cpp
+build\DatabaseLayer_DatabaseLayer.o: ./DatabaseLayer/DatabaseLayer.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_DatabaseQueryParser.o: ./DatabaseLayer/DatabaseQueryParser.cpp
+build\DatabaseLayer_DatabaseQueryParser.o: ./DatabaseLayer/DatabaseQueryParser.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_DatabaseResultSet.o: ./DatabaseLayer/DatabaseResultSet.cpp
+build\DatabaseLayer_DatabaseResultSet.o: ./DatabaseLayer/DatabaseResultSet.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_DatabaseStringConverter.o: ./DatabaseLayer/DatabaseStringConverter.cpp
+build\DatabaseLayer_DatabaseStringConverter.o: ./DatabaseLayer/DatabaseStringConverter.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_PreparedStatement.o: ./DatabaseLayer/PreparedStatement.cpp
+build\DatabaseLayer_PreparedStatement.o: ./DatabaseLayer/PreparedStatement.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_SqliteDatabaseLayer.o: ./DatabaseLayer/SqliteDatabaseLayer.cpp
+build\DatabaseLayer_SqliteDatabaseLayer.o: ./DatabaseLayer/SqliteDatabaseLayer.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_SqlitePreparedStatement.o: ./DatabaseLayer/SqlitePreparedStatement.cpp
+build\DatabaseLayer_SqlitePreparedStatement.o: ./DatabaseLayer/SqlitePreparedStatement.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_SqliteResultSet.o: ./DatabaseLayer/SqliteResultSet.cpp
+build\DatabaseLayer_SqliteResultSet.o: ./DatabaseLayer/SqliteResultSet.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-DatabaseLayer_SqliteResultSetMetaData.o: ./DatabaseLayer/SqliteResultSetMetaData.cpp
+build\DatabaseLayer_SqliteResultSetMetaData.o: ./DatabaseLayer/SqliteResultSetMetaData.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
+build\MyRuLib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_DBCreator.o: ./MyRuLib/DBCreator.cpp
+build\MyRuLib_DBCreator.o: ./MyRuLib/DBCreator.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ExpThread.o: ./MyRuLib/ExpThread.cpp
+build\MyRuLib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
+build\MyRuLib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_FbGenres.o: ./MyRuLib/FbGenres.cpp
+build\MyRuLib_FbGenres.o: ./MyRuLib/FbGenres.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_FbManager.o: ./MyRuLib/FbManager.cpp
+build\MyRuLib_FbManager.o: ./MyRuLib/FbManager.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_FbParams.o: ./MyRuLib/FbParams.cpp
+build\MyRuLib_FbParams.o: ./MyRuLib/FbParams.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ImpContext.o: ./MyRuLib/ImpContext.cpp
+build\MyRuLib_ImpContext.o: ./MyRuLib/ImpContext.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ImpThread.o: ./MyRuLib/ImpThread.cpp
+build\MyRuLib_ImpThread.o: ./MyRuLib/ImpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_InfoCash.o: ./MyRuLib/InfoCash.cpp
+build\MyRuLib_InfoCash.o: ./MyRuLib/InfoCash.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_InfoThread.o: ./MyRuLib/InfoThread.cpp
+build\MyRuLib_InfoThread.o: ./MyRuLib/InfoThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
+build\MyRuLib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
+build\MyRuLib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
+build\MyRuLib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp
+build\MyRuLib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_RegThread.o: ./MyRuLib/RegThread.cpp
+build\MyRuLib_RegThread.o: ./MyRuLib/RegThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp
+build\MyRuLib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_TitleThread.o: ./MyRuLib/TitleThread.cpp
+build\MyRuLib_TitleThread.o: ./MyRuLib/TitleThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_ZipReader.o: ./MyRuLib/ZipReader.cpp
+build\MyRuLib_ZipReader.o: ./MyRuLib/ZipReader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_Archives.o: ./MyRuLib/db/Archives.cpp
+build\MyRuLib_Archives.o: ./MyRuLib/db/Archives.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_Authors.o: ./MyRuLib/db/Authors.cpp
+build\MyRuLib_Authors.o: ./MyRuLib/db/Authors.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_Books.o: ./MyRuLib/db/Books.cpp
+build\MyRuLib_Books.o: ./MyRuLib/db/Books.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_Bookseq.o: ./MyRuLib/db/Bookseq.cpp
+build\MyRuLib_Bookseq.o: ./MyRuLib/db/Bookseq.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_Params.o: ./MyRuLib/db/Params.cpp
+build\MyRuLib_Params.o: ./MyRuLib/db/Params.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
+build\MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
+build\MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_base64.o: ./MyRuLib/wx/base64.cpp
+build\MyRuLib_base64.o: ./MyRuLib/wx/base64.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-MyRuLib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
+build\MyRuLib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\MyRuLib_resource_rc.o: ./MyRuLib/res/resource.rc
+	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --include-dir Expat --include-dir DatabaseLayer --include-dir SQLite
 
 .PHONY: all clean
 
@@ -349,4 +384,4 @@ MyRuLib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 SHELL := $(COMSPEC)
 
 # Dependencies tracking:
--include ./*.d
+-include build/*.d
