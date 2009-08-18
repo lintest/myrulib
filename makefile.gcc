@@ -64,7 +64,7 @@ SQLITE_OBJECTS =  \
 EXPAT_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
-	-DCOMPILED_FROM_DSP $(CPPFLAGS) $(CFLAGS)
+	-DHAVE_EXPAT_CONFIG_H -IExpat $(CPPFLAGS) $(CFLAGS)
 EXPAT_OBJECTS =  \
 	build\Expat_xmlparse.o \
 	build\Expat_xmlrole.o \
