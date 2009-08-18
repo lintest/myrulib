@@ -86,6 +86,10 @@ DATABASELAYER_OBJECTS =  \
 	build\DatabaseLayer_SqlitePreparedStatement.o \
 	build\DatabaseLayer_SqliteResultSet.o \
 	build\DatabaseLayer_SqliteResultSetMetaData.o
+MYRULIB_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
+	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -O2 -IExpat \
+	-IDatabaseLayer -ISQLite $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -O2 -IExpat \
@@ -117,6 +121,7 @@ MYRULIB_OBJECTS =  \
 	build\MyRuLib_Params.o \
 	build\MyRuLib_Sequences.o \
 	build\MyRuLib_wxActiveRecord.o \
+	build\MyRuLib_sha1.o \
 	build\MyRuLib_base64.o \
 	build\MyRuLib_treelistctrl.o \
 	build\MyRuLib_resource_rc.o
@@ -197,7 +202,7 @@ build:
 
 ### Targets: ###
 
-all: prepintdir test_for_selected_wxbuild build\libSQLite.a build\libExpat.a build\libDatabaseLayer.a build\MyRuLib.exe
+all: test_for_selected_wxbuild build\libSQLite.a build\libExpat.a build\libDatabaseLayer.a build\MyRuLib.exe
 
 clean: 
 	-if exist build\*.o del build\*.o
@@ -206,12 +211,6 @@ clean:
 	-if exist build\libExpat.a del build\libExpat.a
 	-if exist build\libDatabaseLayer.a del build\libDatabaseLayer.a
 	-if exist build\MyRuLib.exe del build\MyRuLib.exe
-
-build: 
-	if not exist build mkdir build
-
-prepintdir: build
-	echo "Make BUILDDIR before building anything"
 
 test_for_selected_wxbuild: 
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
@@ -368,6 +367,9 @@ build\MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
 
 build\MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\MyRuLib_sha1.o: ./MyRuLib/sha1/sha1.c
+	$(CC) -c -o $@ $(MYRULIB_CFLAGS) $(CPPDEPS) $<
 
 build\MyRuLib_base64.o: ./MyRuLib/wx/base64.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<

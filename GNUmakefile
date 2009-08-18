@@ -90,6 +90,8 @@ DATABASELAYER_OBJECTS =  \
 	build/DatabaseLayer_SqlitePreparedStatement.o \
 	build/DatabaseLayer_SqliteResultSet.o \
 	build/DatabaseLayer_SqliteResultSetMetaData.o
+MYRULIB_CFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
@@ -119,6 +121,7 @@ MYRULIB_OBJECTS =  \
 	build/MyRuLib_Params.o \
 	build/MyRuLib_Sequences.o \
 	build/MyRuLib_wxActiveRecord.o \
+	build/MyRuLib_sha1.o \
 	build/MyRuLib_base64.o \
 	build/MyRuLib_treelistctrl.o
 
@@ -150,7 +153,7 @@ build:
 
 ### Targets: ###
 
-all: prepintdir test_for_selected_wxbuild build/libSQLite.a build/libExpat.a build/libDatabaseLayer.a build/MyRuLib
+all: test_for_selected_wxbuild build/libSQLite.a build/libExpat.a build/libDatabaseLayer.a build/MyRuLib
 
 install: 
 
@@ -163,12 +166,6 @@ clean:
 	rm -f build/libExpat.a
 	rm -f build/libDatabaseLayer.a
 	rm -f build/MyRuLib
-
-build: 
-	@mkdir -p build
-
-prepintdir: build
-	echo "Make BUILDDIR before building anything"
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
@@ -316,6 +313,9 @@ build/MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
 
 build/MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/MyRuLib_sha1.o: ./MyRuLib/sha1/sha1.c
+	$(CC) -c -o $@ $(MYRULIB_CFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_base64.o: ./MyRuLib/wx/base64.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<

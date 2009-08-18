@@ -65,6 +65,7 @@ bool DBCreator::CreateDatabase(void){
 		m_Database->RunQuery(wxT("CREATE INDEX book_id ON books(id);"));
 		m_Database->RunQuery(wxT("CREATE INDEX book_author ON books(id_author);"));
 		m_Database->RunQuery(wxT("CREATE INDEX book_archive ON books(id_archive);"));
+		m_Database->RunQuery(wxT("CREATE INDEX book_filesize ON books(file_size);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 

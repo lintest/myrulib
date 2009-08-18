@@ -179,12 +179,12 @@ public:
     ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
 };
 
-bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive)
+bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
 {
     ImportParsingContext info;
 
 	if (LoadXml(stream, info)) {
-        AppendBook(info, name, size, id_archive);
+        AppendBook(info, name, stream.GetLength(), id_archive);
         return true;
 	}
     return false;
@@ -249,7 +249,7 @@ void *ImportThread::Entry()
                 PostEvent( event );
 
 				zip.OpenEntry(*entry);
-                ParseXml(zip, filename, entry->GetSize(), id_archive);
+                ParseXml(zip, filename, id_archive);
 			}
 		}
 		delete entry;
@@ -301,7 +301,7 @@ public:
 		if (ext== wxT(".fb2")) {
 		    Progress(filename);
 		    wxFFileInputStream file(filename);
-            m_thread->ParseXml(file, filename, file.GetLength(), 0);
+            m_thread->ParseXml(file, filename, 0);
         } else if (ext== wxT(".zip")) {
 		    Progress(filename);
             m_thread->ParseZip(filename);
@@ -372,7 +372,7 @@ bool FolderThread::ParseZip(const wxString &filename)
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
 				zip.OpenEntry(*entry);
-                ParseXml(zip, filename, entry->GetSize(), id_archive);
+                ParseXml(zip, filename, id_archive);
 			}
 		}
 		delete entry;

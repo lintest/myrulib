@@ -44,7 +44,6 @@ public:
 	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
 	static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
 	static void OpenBook(int id);
-	static bool ParseXml(const wxString& filename);
 	static bool ParseZip(const wxString& filename);
 	static bool RegisterZip(const wxString& filename);
 	static bool RegisterPath(const wxString& filename);

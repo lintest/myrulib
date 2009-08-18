@@ -162,7 +162,7 @@
 			<Add option="`wx-config --libs`" />
 			<Add library="libDatabaseLayer.a" />
 			<Add library="libSQLite.a" />
-			<Add library="libexpat.a" />
+			<Add library="libExpat.a" />
 		</Linker>
 		<Unit filename="BookListCtrl.cpp" />
 		<Unit filename="BookListCtrl.h" />
@@ -226,6 +226,10 @@
 			<Option target="WinDebug" />
 			<Option target="WinRelease" />
 		</Unit>
+		<Unit filename="sha1\sha1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sha1\sha1.h" />
 		<Unit filename="wx\base64.cpp" />
 		<Unit filename="wx\base64.h" />
 		<Unit filename="wx\treelistctrl.cpp" />

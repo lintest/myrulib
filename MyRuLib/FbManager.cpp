@@ -19,17 +19,6 @@
 #include "db/Bookseq.h"
 #include "ZipReader.h"
 
-bool FbManager::ParseXml(const wxString& filename)
-{
-    wxFileInputStream stream(filename);
-    if (!stream.Ok()) return false;
-
-	wxFile file(filename);
-	wxFileOffset size = file.Length() / 1024;
-
-	return ImportThread::ParseXml(stream, filename, size, 0);
-}
-
 bool FbManager::RegisterZip(const wxString& filename)
 {
 	RegThread *thread = new RegThread(wxGetApp().GetTopWindow(), filename);

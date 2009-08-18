@@ -9,7 +9,7 @@ class ParseThread : public wxThread
 public:
     ParseThread(wxEvtHandler *frame);
     virtual void OnExit();
-	static bool ParseXml(wxInputStream& stream, const wxString &name, const wxFileOffset size, int id_archive);
+	static bool ParseXml(wxInputStream& stream, const wxString &name, int id_archive);
 	void PostEvent(wxEvent& event);
     static int AddArchive(const wxString &filename);
 private:
