@@ -76,13 +76,13 @@ public:
 	wxString description;
 	int id;
 	int id_archive;
-	int id_sequence;
 	int file_size;
 	wxString annotation;
 	wxString file_name;
 	wxString file_type;
 	wxString deleted;
 	wxString title;
+	wxString sha1sum;
 	int id_author;
 
 	bool added;      //For sequences use
@@ -119,13 +119,13 @@ protected:
 	static int CMPFUNC_description(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_archive(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
-	static int CMPFUNC_id_sequence(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_size(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_annotation(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_type(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_deleted(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_title(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_sha1sum(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_author(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_global(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	virtual CMPFUNC_proto GetCmpFunc(const wxString& var) const;

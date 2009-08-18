@@ -170,13 +170,13 @@ BooksRow::BooksRow(const BooksRow& src){
 	description=src.description;
 	id=src.id;
 	id_archive=src.id_archive;
-	id_sequence=src.id_sequence;
 	file_size=src.file_size;
 	annotation=src.annotation;
 	file_name=src.file_name;
 	file_type=src.file_type;
 	deleted=src.deleted;
 	title=src.title;
+	sha1sum=src.sha1sum;
 	id_author=src.id_author;
 
 }
@@ -195,13 +195,13 @@ BooksRow& BooksRow::operator=(const BooksRow& src){
 	description=src.description;
 	id=src.id;
 	id_archive=src.id_archive;
-	id_sequence=src.id_sequence;
 	file_size=src.file_size;
 	annotation=src.annotation;
 	file_name=src.file_name;
 	file_type=src.file_type;
 	deleted=src.deleted;
 	title=src.title;
+	sha1sum=src.sha1sum;
 	id_author=src.id_author;
 
 
@@ -211,38 +211,37 @@ BooksRow& BooksRow::operator=(const BooksRow& src){
 bool BooksRow::GetFromResult(DatabaseResultSet* result){
 
 	newRow=false;
-		genres=result->GetResultString(wxT("genres"));
+    genres=result->GetResultString(wxT("genres"));
 	description=result->GetResultString(wxT("description"));
 	id=result->GetResultInt(wxT("id"));
 	id_archive=result->GetResultInt(wxT("id_archive"));
-	id_sequence=result->GetResultInt(wxT("id_sequence"));
 	file_size=result->GetResultInt(wxT("file_size"));
 	annotation=result->GetResultString(wxT("annotation"));
 	file_name=result->GetResultString(wxT("file_name"));
 	file_type=result->GetResultString(wxT("file_type"));
 	deleted=result->GetResultString(wxT("deleted"));
 	title=result->GetResultString(wxT("title"));
+	sha1sum=result->GetResultString(wxT("sha1sum"));
 	id_author=result->GetResultInt(wxT("id_author"));
 
 
 	return true;
 }
 
-
 bool BooksRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (genres,description,id,id_archive,id_sequence,file_size,annotation,file_name,file_type,deleted,title,id_author) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
-			pStatement->SetParamString(1,genres);
-			pStatement->SetParamString(2,description);
-			pStatement->SetParamInt(3,id);
-			pStatement->SetParamInt(4,id_archive);
-			pStatement->SetParamInt(5,id_sequence);
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (sha1sum,genres,description,id,id_archive,file_size,annotation,file_name,deleted,file_type,title,id_author) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
+			pStatement->SetParamString(1,sha1sum);
+			pStatement->SetParamString(2,genres);
+			pStatement->SetParamString(3,description);
+			pStatement->SetParamInt(4,id);
+			pStatement->SetParamInt(5,id_archive);
 			pStatement->SetParamInt(6,file_size);
 			pStatement->SetParamString(7,annotation);
 			pStatement->SetParamString(8,file_name);
-			pStatement->SetParamString(9,file_type);
-			pStatement->SetParamString(10,deleted);
+			pStatement->SetParamString(9,deleted);
+			pStatement->SetParamString(10,file_type);
 			pStatement->SetParamString(11,title);
 			pStatement->SetParamInt(12,id_author);
 			pStatement->RunQuery();
@@ -252,16 +251,16 @@ bool BooksRow::Save(){
 			newRow=false;
 		}
 		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET genres=?,description=?,id_archive=?,id_sequence=?,file_size=?,annotation=?,file_name=?,file_type=?,deleted=?,title=?,id_author=? WHERE id=?"),m_table.c_str()));
-			pStatement->SetParamString(1,genres);
-			pStatement->SetParamString(2,description);
-			pStatement->SetParamInt(3,id_archive);
-			pStatement->SetParamInt(4,id_sequence);
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET sha1sum=?,genres=?,description=?,id_archive=?,file_size=?,annotation=?,file_name=?,deleted=?,file_type=?,title=?,id_author=? WHERE id=?"),m_table.c_str()));
+			pStatement->SetParamString(1,sha1sum);
+			pStatement->SetParamString(2,genres);
+			pStatement->SetParamString(3,description);
+			pStatement->SetParamInt(4,id_archive);
 			pStatement->SetParamInt(5,file_size);
 			pStatement->SetParamString(6,annotation);
 			pStatement->SetParamString(7,file_name);
-			pStatement->SetParamString(8,file_type);
-			pStatement->SetParamString(9,deleted);
+			pStatement->SetParamString(8,deleted);
+			pStatement->SetParamString(9,file_type);
 			pStatement->SetParamString(10,title);
 			pStatement->SetParamInt(11,id_author);
 			pStatement->SetParamInt(12,id);
@@ -402,17 +401,6 @@ int BooksRowSet::CMPFUNC_id_archive(wxActiveRecordRow** item1,wxActiveRecordRow*
 		return 0;
 }
 
-int BooksRowSet::CMPFUNC_id_sequence(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
-	BooksRow** m_item1=(BooksRow**)item1;
-	BooksRow** m_item2=(BooksRow**)item2;
-	if((*m_item1)->id_sequence<(*m_item2)->id_sequence)
-		return -1;
-	else if((*m_item1)->id_sequence>(*m_item2)->id_sequence)
-		return 1;
-	else
-		return 0;
-}
-
 int BooksRowSet::CMPFUNC_file_size(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	BooksRow** m_item1=(BooksRow**)item1;
 	BooksRow** m_item2=(BooksRow**)item2;
@@ -454,6 +442,12 @@ int BooksRowSet::CMPFUNC_title(wxActiveRecordRow** item1,wxActiveRecordRow** ite
 	return (*m_item1)->title.Cmp((*m_item2)->title);
 }
 
+int BooksRowSet::CMPFUNC_sha1sum(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	BooksRow** m_item1=(BooksRow**)item1;
+	BooksRow** m_item2=(BooksRow**)item2;
+	return (*m_item1)->sha1sum.Cmp((*m_item2)->sha1sum);
+}
+
 int BooksRowSet::CMPFUNC_id_author(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	BooksRow** m_item1=(BooksRow**)item1;
 	BooksRow** m_item2=(BooksRow**)item2;
@@ -474,8 +468,6 @@ CMPFUNC_proto BooksRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_id;
 	else if(var==wxT("id_archive"))
 		return (CMPFUNC_proto)CMPFUNC_id_archive;
-	else if(var==wxT("id_sequence"))
-		return (CMPFUNC_proto)CMPFUNC_id_sequence;
 	else if(var==wxT("file_size"))
 		return (CMPFUNC_proto)CMPFUNC_file_size;
 	else if(var==wxT("annotation"))
@@ -488,6 +480,8 @@ CMPFUNC_proto BooksRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_deleted;
 	else if(var==wxT("title"))
 		return (CMPFUNC_proto)CMPFUNC_title;
+	else if(var==wxT("sha1sum"))
+		return (CMPFUNC_proto)CMPFUNC_sha1sum;
 	else if(var==wxT("id_author"))
 		return (CMPFUNC_proto)CMPFUNC_id_author;
 	else

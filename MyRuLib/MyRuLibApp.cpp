@@ -71,10 +71,10 @@ bool MyRuLibApp::ConnectToDatabase()
 	bool bCreate = !wxFileExists(db_filepath);
 	try	{
 		m_Database->Open(db_filepath);
-		if(bCreate)	{
-			DBCreator(m_Database).CreateDatabase();
-		}
+		DBCreator creator(m_Database);
+		if(bCreate)	creator.CreateDatabase();
 		FbParams::LoadParams();
+		creator.UpgradeDatabase();
 	}
 	catch(DatabaseLayerException & e) {
 		wxFAIL_MSG(e.GetErrorMessage());

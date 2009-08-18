@@ -107,7 +107,6 @@ bool ParseThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     bool done;
 
     sha1_context ctxSHA1;
-    unsigned char sha1[20];
 
     XML_SetUserData(ctx.GetParser(), (void*)&ctx);
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
@@ -143,7 +142,7 @@ bool ParseThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     unsigned char output[20];
     sha1_finish( &ctxSHA1, output );
 
-	ctx.sha1sum = wxBase64Encode(output, 20);
+	ctx.sha1sum = wxBase64Encode(output, 20).Left(27);
 
     for (size_t i=0; i<ctx.authors.Count(); i++) {
         ctx.authors[i].Convert();
@@ -179,7 +178,7 @@ void ParseThread::AppendBook(ImportParsingContext &info, const wxString &name, c
 		row->file_name = name;
 		row->file_type = wxFileName(name).GetExt();
 		row->id_archive = id_archive;
-		row->description = info.sha1sum;
+		row->sha1sum = info.sha1sum;
 		row->Save();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
@@ -218,6 +217,8 @@ bool ParseThread::FindAnalog(wxInputStream& stream)
 	}
 
 	Books books(wxGetApp().GetDatabase());
+
+	return true;
 }
 
 wxString ParseThread::CalcSHA1(wxInputStream& stream )
@@ -243,7 +244,7 @@ wxString ParseThread::CalcSHA1(wxInputStream& stream )
 
 	return  result;
 
-    return wxBase64Encode(output, 20);
+    return wxBase64Encode(output, 20).Left(27);
 }
 
 bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
@@ -447,4 +448,5 @@ bool FolderThread::ParseZip(const wxString &filename)
 
     return true;
 }
+
 

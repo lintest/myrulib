@@ -20,7 +20,8 @@ DBCreator::~DBCreator(void) {
 
 extern wxString strNobody;
 
-bool DBCreator::CreateDatabase(void){
+bool DBCreator::CreateDatabase(void)
+{
 
 	wxMessageBox(_("Database does not exist... recreating."));
 
@@ -54,7 +55,6 @@ bool DBCreator::CreateDatabase(void){
                 title varchar(255) not null,\
                 annotation text,\
                 genres text,\
-				id_sequence integer,\
                 deleted boolean,\
                 id_archive integer,\
                 file_name varchar(255),\
@@ -65,7 +65,6 @@ bool DBCreator::CreateDatabase(void){
 		m_Database->RunQuery(wxT("CREATE INDEX book_id ON books(id);"));
 		m_Database->RunQuery(wxT("CREATE INDEX book_author ON books(id_author);"));
 		m_Database->RunQuery(wxT("CREATE INDEX book_archive ON books(id_archive);"));
-		m_Database->RunQuery(wxT("CREATE INDEX book_filesize ON books(file_size);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
@@ -87,7 +86,9 @@ bool DBCreator::CreateDatabase(void){
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
 	try {
-		FbParams::InitParams(m_Database);
+        m_Database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
+        m_Database->RunQuery(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
+        m_Database->RunQuery(_("INSERT INTO params(id, value) VALUES (2, 1);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
@@ -111,4 +112,25 @@ bool DBCreator::CreateDatabase(void){
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
 	return true;
+}
+
+void DBCreator::UpgradeDatabase()
+{
+    int version = FbParams::GetValue(DB_LIBRARY_VERSION);
+
+    if (version == 1) {
+        try {
+            m_Database->BeginTransaction();
+            m_Database->RunQuery(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
+            m_Database->RunQuery(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
+            m_Database->RunQuery(wxT("CREATE INDEX book_filesize ON books(file_size);"));
+            version ++;
+            FbParams().SetValue(DB_LIBRARY_VERSION, version);
+            m_Database->Commit();
+        }
+        catch(DatabaseLayerException & e) {
+            m_Database->RollBack();
+            wxUnusedVar(e);
+        }
+    }
 }
