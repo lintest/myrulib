@@ -39,8 +39,7 @@ inline wxString wxBase64Encode(const void *src, size_t srcLen)
     wxCharBuffer dst(dstLen);
     wxBase64Encode(dst.data(), dstLen, src, srcLen);
 
-//    return dst;
-    return wxEmptyString;
+    return wxString::From8BitData(dst.data());
 }
 
 inline wxString wxBase64Encode(const wxMemoryBuffer& buf)

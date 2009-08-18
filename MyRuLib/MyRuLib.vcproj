@@ -279,6 +279,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sha1\sha1.c"
+				>
+			</File>
+			<File
 				RelativePath=".\TitleThread.cpp"
 				>
 			</File>
@@ -398,6 +402,10 @@
 			</File>
 			<File
 				RelativePath=".\SettingsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\sha1\sha1.h"
 				>
 			</File>
 			<File

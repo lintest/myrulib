@@ -52,6 +52,7 @@ public:
     wxString genres;
     AuthorItem * author;
     wxString text;
+    wxString sha1sum;
 };
 
 #endif // __IMPCONTEXT_H__

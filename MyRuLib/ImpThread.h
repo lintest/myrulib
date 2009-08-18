@@ -15,6 +15,8 @@ public:
 private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);
+	static bool FindAnalog(wxInputStream& stream);
+	static wxString ParseThread::CalcSHA1(wxInputStream& stream);
 private:
     wxEvtHandler *m_frame;
 };

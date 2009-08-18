@@ -26,6 +26,8 @@
  *  http://www.itl.nist.gov/fipspubs/fip180-1.htm
  */
 
+#define POLARSSL_SHA1_C
+
 #if defined(POLARSSL_SHA1_C)
 
 #include "sha1.h"

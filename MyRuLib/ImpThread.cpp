@@ -8,6 +8,8 @@
 #include "db/Sequences.h"
 #include "MyRuLibMain.h"
 #include "ZipReader.h"
+#include "sha1/sha1.h"
+#include "wx/base64.h"
 
 extern wxString strAlphabet;
 extern wxString strRusJO;
@@ -104,27 +106,44 @@ bool ParseThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     char buf[BUFSIZE];
     bool done;
 
+    sha1_context ctxSHA1;
+    unsigned char sha1[20];
+
     XML_SetUserData(ctx.GetParser(), (void*)&ctx);
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
 
+    sha1_starts( &ctxSHA1 );
+
     bool ok = true;
+    bool abort = false;
+
     do {
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
         done = (len < BUFSIZE);
 
-        if ( !XML_Parse(ctx.GetParser(), buf, len, done) ) {
-			XML_Error error_code = XML_GetErrorCode(ctx.GetParser());
-			if ( error_code == XML_ERROR_ABORTED ) {
-				done = true;
-			} else {
-				wxString error(XML_ErrorString(error_code), *wxConvCurrent);
-				wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()));
-				ok = false;
-	            break;
+		sha1_update( &ctxSHA1, (unsigned char *)buf, (int) len );
+
+		if (!abort) {
+			if ( !XML_Parse(ctx.GetParser(), buf, len, done) ) {
+				XML_Error error_code = XML_GetErrorCode(ctx.GetParser());
+				if ( error_code == XML_ERROR_ABORTED ) {
+					abort = true;
+				} else {
+					wxString error(XML_ErrorString(error_code), *wxConvCurrent);
+					wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()));
+					abort = true;
+					ok = false;
+					break;
+				}
 			}
         }
     } while (!done);
+
+    unsigned char output[20];
+    sha1_finish( &ctxSHA1, output );
+
+	ctx.sha1sum = wxBase64Encode(output, 20);
 
     for (size_t i=0; i<ctx.authors.Count(); i++) {
         ctx.authors[i].Convert();
@@ -160,6 +179,7 @@ void ParseThread::AppendBook(ImportParsingContext &info, const wxString &name, c
 		row->file_name = name;
 		row->file_type = wxFileName(name).GetExt();
 		row->id_archive = id_archive;
+		row->description = info.sha1sum;
 		row->Save();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
@@ -178,6 +198,53 @@ public:
     AutoTransaction()  { wxGetApp().GetDatabase()->BeginTransaction(); };
     ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
 };
+
+bool ParseThread::FindAnalog(wxInputStream& stream)
+{
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+	wxString sql = wxString::Format(wxT("SELECT DISTINCT book_id, description FROM books WHERE file_size=%d"), stream.GetLength());
+	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
+
+	if (!result) return false;
+
+	while(result->Next()){
+		int id = result->GetResultInt(wxT("id"));
+		wxString full_name = result->GetResultString(wxT("full_name"));
+		wxString first_name  = result->GetResultString(wxT("first_name"));
+		wxString middle_name = result->GetResultString(wxT("middle_name"));
+		wxString last_name = result->GetResultString(wxT("last_name"));
+	}
+
+	Books books(wxGetApp().GetDatabase());
+}
+
+wxString ParseThread::CalcSHA1(wxInputStream& stream )
+{
+    sha1_context ctx;
+    const size_t BUFSIZE = 1024;
+    unsigned char buf[BUFSIZE];
+
+    unsigned char output[20];
+
+    sha1_starts( &ctx );
+
+    while( size_t len = stream.Read(buf, BUFSIZE).LastRead() > 0 )
+        sha1_update( &ctx, buf, (int) len );
+
+    sha1_finish( &ctx, output );
+
+    memset( &ctx, 0, sizeof( sha1_context ) );
+
+    wxString result;
+    for (size_t i = 0; i<20; i++)
+    	result += wxString::Format(wxT("%x"), output[i]);
+
+	return  result;
+
+    return wxBase64Encode(output, 20);
+}
 
 bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
 {
