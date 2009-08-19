@@ -46,6 +46,8 @@ WX_DECLARE_OBJARRAY(SequenceItem, SequenceArray);
 class ImportParsingContext: public ParsingContext
 {
 public:
+	ImportParsingContext(): sha1only(false) {};
+public:
     wxString title;
     AuthorArray authors;
     SequenceArray sequences;
@@ -53,6 +55,7 @@ public:
     AuthorItem * author;
     wxString text;
     wxString sha1sum;
+    bool sha1only;
 };
 
 #endif // __IMPCONTEXT_H__

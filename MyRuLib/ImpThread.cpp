@@ -105,22 +105,22 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     unsigned char buf[BUFSIZE];
     bool done;
 
-    sha1_context ctxSHA1;
+    sha1_context sha1;
 
     XML_SetUserData(ctx.GetParser(), (void*)&ctx);
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
 
-    sha1_starts( &ctxSHA1 );
+    sha1_starts( &sha1 );
 
     bool ok = true;
-    bool abort = false;
+    bool abort = ctx.sha1only;
 
     do {
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
         done = (len < BUFSIZE);
 
-		sha1_update( &ctxSHA1, buf, (int) len );
+		sha1_update( &sha1, buf, (int) len );
 
 		if (!abort) {
 			if ( !XML_Parse(ctx.GetParser(), (char *)buf, len, done) ) {
@@ -139,18 +139,17 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     } while (!done);
 
     unsigned char output[20];
-    sha1_finish( &ctxSHA1, output );
-
+    sha1_finish( &sha1, output );
 	ctx.sha1sum = wxBase64Encode(output, 20).Left(27);
 
-    for (size_t i=0; i<ctx.authors.Count(); i++) {
-        ctx.authors[i].Convert();
-    }
-	if (ctx.authors.Count() == 0) ctx.authors.Add(new AuthorItem);
+    for (size_t i=0; i<ctx.authors.Count(); i++)
+		ctx.authors[i].Convert();
 
-    for (size_t i=0; i<ctx.sequences.Count(); i++) {
+	if (ctx.authors.Count() == 0)
+		ctx.authors.Add(new AuthorItem);
+
+    for (size_t i=0; i<ctx.sequences.Count(); i++)
         ctx.sequences[i].Convert();
-    }
 
     return ok;
 }
@@ -226,11 +225,12 @@ bool ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		if (!book.IsOK()) continue;
 
 		ImportParsingContext info;
+		info.sha1only = true;
 		LoadXml(book.GetZip(), info);
 
 		wxString sql = wxT("UPDATE books SET sha1sum=? WHERE id=?");
 		PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
-		pStatement->SetParamString(1, sha1book);
+		pStatement->SetParamString(1, info.sha1sum);
 		pStatement->SetParamInt(2, id);
 		pStatement->ExecuteUpdate();
 		if (info.sha1sum == sha1sum) return true;
