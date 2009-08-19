@@ -102,7 +102,7 @@ void ImportThread::OnExit()
 bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 {
     const size_t BUFSIZE = 1024;
-    char buf[BUFSIZE];
+    unsigned char buf[BUFSIZE];
     bool done;
 
     sha1_context ctxSHA1;
@@ -120,10 +120,10 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
         done = (len < BUFSIZE);
 
-		sha1_update( &ctxSHA1, (unsigned char *)buf, (int) len );
+		sha1_update( &ctxSHA1, buf, (int) len );
 
 		if (!abort) {
-			if ( !XML_Parse(ctx.GetParser(), buf, len, done) ) {
+			if ( !XML_Parse(ctx.GetParser(), (char *)buf, len, done) ) {
 				XML_Error error_code = XML_GetErrorCode(ctx.GetParser());
 				if ( error_code == XML_ERROR_ABORTED ) {
 					abort = true;
@@ -197,7 +197,7 @@ public:
     ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
 };
 
-bool ImportThread::FindAnalog(wxString sha1sum)
+bool ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -209,22 +209,35 @@ bool ImportThread::FindAnalog(wxString sha1sum)
 	return result && result->Next();
 }
 
-wxString ImportThread::CalcSHA1(wxInputStream& stream )
+bool ImportThread::FindBySize(const wxString &sha1xml, wxFileOffset size)
 {
-    sha1_context ctx;
-    const size_t BUFSIZE = 1024;
-    unsigned char buf[BUFSIZE];
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-    unsigned char output[20];
+	wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
+	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	pStatement->SetParamInt(1, size);
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-    sha1_starts( &ctx );
+	if (!result) return false;
 
-    while( size_t len = stream.Read(buf, BUFSIZE).LastRead() > 0 )
-        sha1_update( &ctx, buf, (int) len );
+	while (result->Next()) {
+		int id = result->GetResultInt(wxT("id"));
+		ZipReader book(id);
+		if (!book.IsOK()) continue;
 
-    sha1_finish( &ctx, output );
+		ImportParsingContext info;
+		LoadXml(book.GetZip(), info);
+		wxString sha1book = info.sha1sum;
 
-    return wxBase64Encode(output, 20).Left(27);
+		wxString sql = wxT("UPDATE books SET sha1sum=? WHERE id=?");
+		PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+		pStatement->SetParamString(1, sha1book);
+		pStatement->SetParamInt(2, id);
+		pStatement->ExecuteUpdate();
+		if (sha1book == sha1xml) return true;
+	}
+
+	return false;
 }
 
 bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
@@ -232,7 +245,8 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, int id_
     ImportParsingContext info;
 
 	if (LoadXml(stream, info)) {
-		if (FindAnalog(info.sha1sum)) return false;
+		if (FindBySHA1(info.sha1sum)) return false;
+		if (FindBySize(info.sha1sum, stream.GetLength())) return false;
         AppendBook(info, name, stream.GetLength(), id_archive);
         return true;
 	}
