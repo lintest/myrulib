@@ -114,7 +114,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     sha1_starts( &sha1 );
 
     bool ok = true;
-    bool abort = ctx.sha1only;
+    bool skip = ctx.sha1only;
 
     do {
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
@@ -122,15 +122,15 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 
 		sha1_update( &sha1, buf, (int) len );
 
-		if (!abort) {
+		if (!skip) {
 			if ( !XML_Parse(ctx.GetParser(), (char *)buf, len, done) ) {
 				XML_Error error_code = XML_GetErrorCode(ctx.GetParser());
 				if ( error_code == XML_ERROR_ABORTED ) {
-					abort = true;
+					skip = true;
 				} else {
 					wxString error(XML_ErrorString(error_code), *wxConvCurrent);
 					wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()));
-					abort = true;
+					skip = true;
 					ok = false;
 					break;
 				}
