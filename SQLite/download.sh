@@ -10,5 +10,4 @@ wget http://lib.rus.ec/sql/lib.$t.sql.gz;
 zcat lib.$t.sql.gz | mysql $DBNAME -u root lib;
 done
 
-
-
+php convert.php
