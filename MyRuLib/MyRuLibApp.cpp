@@ -73,10 +73,9 @@ bool MyRuLibApp::ConnectToDatabase()
 		m_Database->Open(db_filepath);
 		DBCreator creator(m_Database);
 		if(bCreate)	creator.CreateDatabase();
-		FbParams::LoadParams();
 		creator.UpgradeDatabase();
-	}
-	catch(DatabaseLayerException & e) {
+	} catch(DatabaseLayerException & e) {
+		wxMessageBox(e.GetErrorMessage());
 		wxFAIL_MSG(e.GetErrorMessage());
 		return false;
 	}

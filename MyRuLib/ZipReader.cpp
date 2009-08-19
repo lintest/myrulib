@@ -96,7 +96,7 @@ bool ZipReader::FindEntry(const wxString &file_name)
 	bool find_ok = false;
 	bool open_ok = false;
 	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
-	    find_ok = (entry->GetName() == file_name);
+	    find_ok = (entry->GetName(wxPATH_UNIX) == file_name);
 		if (find_ok) open_ok = m_zip->OpenEntry(*entry);
 		delete entry;
 		if (find_ok) break;

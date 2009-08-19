@@ -19,38 +19,37 @@
 #include "db/Bookseq.h"
 #include "ZipReader.h"
 
+bool FbManager::ImportZip(const wxString& filename)
+{
+	ZipImportThread *thread = new ZipImportThread(wxGetApp().GetTopWindow(), filename);
+
+    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+        wxLogError(wxT("Can't create thread!"));
+        return false;
+    }
+
+    thread->Run();
+
+    return true;
+}
+
+bool FbManager::ImportDir(const wxString& filename)
+{
+	DirImportThread *thread = new DirImportThread(wxGetApp().GetTopWindow(), filename);
+
+    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+        wxLogError(wxT("Can't create thread!"));
+        return false;
+    }
+
+    thread->Run();
+
+    return true;
+}
+
 bool FbManager::RegisterZip(const wxString& filename)
 {
 	RegThread *thread = new RegThread(wxGetApp().GetTopWindow(), filename);
-
-    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-        wxLogError(wxT("Can't create thread!"));
-        return false;
-    }
-
-    thread->Run();
-
-    return true;
-}
-
-
-bool FbManager::RegisterPath(const wxString& filename)
-{
-	FolderThread *thread = new FolderThread(wxGetApp().GetTopWindow(), filename);
-
-    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-        wxLogError(wxT("Can't create thread!"));
-        return false;
-    }
-
-    thread->Run();
-
-    return true;
-}
-
-bool FbManager::ParseZip(const wxString& filename)
-{
-	ImportThread *thread = new ImportThread(wxGetApp().GetTopWindow(), filename);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));

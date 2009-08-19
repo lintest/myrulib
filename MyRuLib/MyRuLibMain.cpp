@@ -376,7 +376,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			FbManager::ParseZip(paths[i]);
+			FbManager::ImportZip(paths[i]);
 		}
 	}
 }
@@ -413,7 +413,7 @@ void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		FbManager::RegisterPath(dlg.GetPath());
+		FbManager::ImportDir(dlg.GetPath());
 	}
 
 }

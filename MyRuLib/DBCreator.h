@@ -22,7 +22,7 @@ public:
 	DBCreator(DatabaseLayer * database);
 	~DBCreator(void);
 	bool CreateDatabase(void);
-	void UpgradeDatabase();
+	bool UpgradeDatabase();
 };
 
 #endif // DBCREATOR_H

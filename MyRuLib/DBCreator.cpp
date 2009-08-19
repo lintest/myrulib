@@ -10,6 +10,7 @@
 #include "DBCreator.h"
 #include "FbParams.h"
 #include <DatabaseLayerException.h>
+#include <DatabaseErrorReporter.h>
 
 DBCreator::DBCreator(DatabaseLayer * database) {
 	m_Database = database;
@@ -114,12 +115,13 @@ bool DBCreator::CreateDatabase(void)
 	return true;
 }
 
-void DBCreator::UpgradeDatabase()
+bool DBCreator::UpgradeDatabase()
 {
-    int version = FbParams::GetValue(DB_LIBRARY_VERSION);
+	try {
+		FbParams::LoadParams();
+		int version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
-    if (version == 1) {
-        try {
+		if (version == 1) {
             m_Database->BeginTransaction();
             m_Database->RunQuery(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
             m_Database->RunQuery(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
@@ -128,9 +130,18 @@ void DBCreator::UpgradeDatabase()
             FbParams().SetValue(DB_LIBRARY_VERSION, version);
             m_Database->Commit();
         }
-        catch(DatabaseLayerException & e) {
-            m_Database->RollBack();
-            wxUnusedVar(e);
-        }
-    }
+    } catch(DatabaseLayerException & e) {
+		m_Database->RollBack();
+		wxUnusedVar(e);
+		return false;
+	}
+
+	FbParams::LoadParams();
+	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
+
+	if (version != 2) {
+		throw DatabaseLayerException(DATABASE_LAYER_ERROR, wxT("Mismatched database versions."));
+	}
+
+	return true;
 }

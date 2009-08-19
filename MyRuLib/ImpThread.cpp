@@ -91,16 +91,16 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
-ParseThread::ParseThread(wxEvtHandler *frame)
+ImportThread::ImportThread(wxEvtHandler *frame)
         : wxThread(), m_frame(frame)
 {
 }
 
-void ParseThread::OnExit()
+void ImportThread::OnExit()
 {
 }
 
-bool ParseThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
+bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 {
     const size_t BUFSIZE = 1024;
     char buf[BUFSIZE];
@@ -156,7 +156,7 @@ bool ParseThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     return ok;
 }
 
-void ParseThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
+void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
 {
 	long id_book = 0;
 	{
@@ -198,30 +198,19 @@ public:
     ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
 };
 
-bool ParseThread::FindAnalog(wxInputStream& stream)
+bool ImportThread::FindAnalog(wxString sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	wxString sql = wxString::Format(wxT("SELECT DISTINCT book_id, description FROM books WHERE file_size=%d"), stream.GetLength());
+	wxString sql = wxT("SELECT DISTINCT id FROM books WHERE sha1sum=?");
 	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	pStatement->SetParamString(1, sha1sum);
 	DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-	if (!result) return false;
-
-	while(result->Next()){
-		int id = result->GetResultInt(wxT("id"));
-		wxString full_name = result->GetResultString(wxT("full_name"));
-		wxString first_name  = result->GetResultString(wxT("first_name"));
-		wxString middle_name = result->GetResultString(wxT("middle_name"));
-		wxString last_name = result->GetResultString(wxT("last_name"));
-	}
-
-	Books books(wxGetApp().GetDatabase());
-
-	return true;
+	return result && result->Next();
 }
 
-wxString ParseThread::CalcSHA1(wxInputStream& stream )
+wxString ImportThread::CalcSHA1(wxInputStream& stream )
 {
     sha1_context ctx;
     const size_t BUFSIZE = 1024;
@@ -236,39 +225,27 @@ wxString ParseThread::CalcSHA1(wxInputStream& stream )
 
     sha1_finish( &ctx, output );
 
-    memset( &ctx, 0, sizeof( sha1_context ) );
-
-    wxString result;
-    for (size_t i = 0; i<20; i++)
-    	result += wxString::Format(wxT("%x"), output[i]);
-
-	return  result;
-
     return wxBase64Encode(output, 20).Left(27);
 }
 
-bool ParseThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
+bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
 {
     ImportParsingContext info;
 
 	if (LoadXml(stream, info)) {
+		if (FindAnalog(info.sha1sum)) return false;
         AppendBook(info, name, stream.GetLength(), id_archive);
         return true;
 	}
     return false;
 }
 
-void ParseThread::PostEvent(wxEvent& event)
+void ImportThread::PostEvent(wxEvent& event)
 {
 	wxPostEvent( m_frame, event );
 }
 
-ImportThread::ImportThread(wxEvtHandler *frame, const wxString &filename)
-        :  ParseThread(frame), m_filename(filename)
-{
-}
-
-int ParseThread::AddArchive(const wxString &filename)
+int ImportThread::AddArchive(const wxString &filename)
 {
     wxFileName file_name(filename);
 
@@ -287,7 +264,12 @@ int ParseThread::AddArchive(const wxString &filename)
 	return row->id;
 }
 
-void *ImportThread::Entry()
+ZipImportThread::ZipImportThread(wxEvtHandler *frame, const wxString &filename)
+        :  ImportThread(frame), m_filename(filename)
+{
+}
+
+void *ZipImportThread::Entry()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
 
@@ -331,8 +313,8 @@ void *ImportThread::Entry()
 	return NULL;
 }
 
-FolderThread::FolderThread(wxEvtHandler *frame, const wxString &dirname)
-        :  ParseThread(frame), m_dirname(dirname)
+DirImportThread::DirImportThread(wxEvtHandler *frame, const wxString &dirname)
+        :  ImportThread(frame), m_dirname(dirname)
 {
 }
 
@@ -360,17 +342,17 @@ private:
 class FolderTraverser : public wxDirTraverser
 {
 public:
-    FolderTraverser(FolderThread* thread) : m_thread(thread), m_progress(0) { }
+    FolderTraverser(DirImportThread* thread) : m_thread(thread), m_progress(0) { }
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
 		wxString ext = filename.Right(4).Lower();
 
-		if (ext== wxT(".fb2")) {
+		if (ext == wxT(".fb2")) {
 		    Progress(filename);
 		    wxFFileInputStream file(filename);
             m_thread->ParseXml(file, filename, 0);
-        } else if (ext== wxT(".zip")) {
+        } else if (ext == wxT(".zip")) {
 		    Progress(filename);
             m_thread->ParseZip(filename);
         }
@@ -391,11 +373,11 @@ private:
         m_thread->PostEvent( event );
     }
 private:
-    FolderThread *m_thread;
+    DirImportThread *m_thread;
     unsigned int m_progress;
 };
 
-void *FolderThread::Entry()
+void *DirImportThread::Entry()
 {
     wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
 
@@ -428,7 +410,7 @@ void *FolderThread::Entry()
 	return NULL;
 }
 
-bool FolderThread::ParseZip(const wxString &filename)
+bool DirImportThread::ParseZip(const wxString &filename)
 {
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
