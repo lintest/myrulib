@@ -177,6 +177,8 @@ function utf8_substr($s, $offset, $len = 'all')
 
 function convert_authors($mysql_db, $sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("DELETE FROM authors");
 
   $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(без автора)')");
@@ -208,10 +210,14 @@ function convert_authors($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("commit;");
 }
 
 function convert_books($mysql_db, $sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("DELETE FROM books");
   $sqlite_db->query("DELETE FROM words");
 
@@ -253,10 +259,14 @@ function convert_books($mysql_db, $sqlite_db)
     }
 */
   }
+
+  $sqlite_db->query("commit;");
 }
 
 function fix_avtoraliase($mysql_db, $sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("UPDATE authors SET newid=0");
 
   $sqltest = "SELECT * FROM libavtoraliase ORDER BY AliaseId";
@@ -271,10 +281,14 @@ function fix_avtoraliase($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("commit;");
 }
 
 function convert_seqnames($mysql_db, $sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("DELETE FROM sequences");
 
   $sqltest = "SELECT * FROM libseqname";
@@ -289,10 +303,14 @@ function convert_seqnames($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("commit;");
 }
 
 function convert_sequences($mysql_db, $sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("DELETE FROM bookseq");
 
   $sqltest = "
@@ -311,10 +329,14 @@ function convert_sequences($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("commit;");
 }
 
 function create_tables($sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("
     CREATE TABLE authors(
 	id integer primary key,
@@ -367,10 +389,14 @@ function create_tables($sqlite_db)
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
 
   $sqlite_db->query("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);");
+
+  $sqlite_db->query("commit;");
 }
 
 function create_indexes($sqlite_db)
 {
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("CREATE INDEX author_id ON authors(id);");
   $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
   $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
@@ -387,6 +413,8 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX bookseq_author ON sequences(id_author);");
 
   $sqlite_db->query("CREATE INDEX words_word ON words(word);");
+
+  $sqlite_db->query("commit;");
 }
 
 $sqlite_db = new PDO('sqlite:./MyRuLib.db');
