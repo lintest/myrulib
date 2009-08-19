@@ -17,7 +17,7 @@ private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);
 	static bool FindBySHA1(const wxString &sha1sum);
-	static bool FindBySize(const wxString &sha1xml, wxFileOffset size);
+	static bool FindBySize(const wxString &sha1sum, wxFileOffset size);
 private:
     wxEvtHandler *m_frame;
 };

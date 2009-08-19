@@ -209,7 +209,7 @@ bool ImportThread::FindBySHA1(const wxString &sha1sum)
 	return result && result->Next();
 }
 
-bool ImportThread::FindBySize(const wxString &sha1xml, wxFileOffset size)
+bool ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -227,14 +227,13 @@ bool ImportThread::FindBySize(const wxString &sha1xml, wxFileOffset size)
 
 		ImportParsingContext info;
 		LoadXml(book.GetZip(), info);
-		wxString sha1book = info.sha1sum;
 
 		wxString sql = wxT("UPDATE books SET sha1sum=? WHERE id=?");
 		PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
 		pStatement->SetParamString(1, sha1book);
 		pStatement->SetParamInt(2, id);
 		pStatement->ExecuteUpdate();
-		if (sha1book == sha1xml) return true;
+		if (info.sha1sum == sha1sum) return true;
 	}
 
 	return false;
