@@ -8,6 +8,7 @@ class RegThread : public wxThread
 public:
     RegThread(wxEvtHandler *frame, const wxString &filename);
     virtual void *Entry();
+    wxString m_info;
 private:
     int AddArchive(int min, int max);
 private:

@@ -417,6 +417,7 @@ bool ExternalDlg::ExportBooks()
 
 	ExportThread *thread = new ExportThread(GetParent(), m_choiceFormat->GetCurrentSelection());
 	FillFilelist(m_books->GetRootItem(), thread->m_filelist, m_textDir->GetValue());
+	thread->m_info = wxT("Экспорт: ") + root_dir;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));

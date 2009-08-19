@@ -14,7 +14,6 @@
 extern wxString strAlphabet;
 extern wxString strRusJO;
 extern wxString strRusJE;
-extern wxString strParsingInfo;
 
 extern "C" {
 static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
@@ -284,7 +283,7 @@ void *ZipImportThread::Entry()
 		wxFileName filename = m_filename;
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
 		event.SetInt(zip.GetTotalEntries());
-		event.SetString(strParsingInfo + filename.GetFullName());
+		event.SetString(m_info + wxT(" ") + filename.GetFullName());
 		PostEvent( event );
 	}
 
@@ -388,7 +387,7 @@ void *DirImportThread::Entry()
 
 	{
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
-		event.SetString(strParsingInfo + m_dirname);
+		event.SetString(m_info + wxT(" ") + m_dirname);
 		event.SetInt(1);
 		PostEvent( event );
 

@@ -48,7 +48,7 @@ void *RegThread::Entry()
 		wxFileName filename = m_filename;
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
 		event.SetInt(zip.GetTotalEntries());
-		event.SetString(strParsingInfo + filename.GetFullName());
+		event.SetString(m_info + wxT(" ") + filename.GetFullName());
 		wxPostEvent( m_frame, event );
 	}
 

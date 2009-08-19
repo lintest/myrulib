@@ -12,6 +12,7 @@ public:
 	static bool ParseXml(wxInputStream& stream, const wxString &name, int id_archive);
 	void PostEvent(wxEvent& event);
     static int AddArchive(const wxString &filename);
+    wxString m_info;
 private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);

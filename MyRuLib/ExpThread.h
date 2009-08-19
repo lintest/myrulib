@@ -20,6 +20,7 @@ class ExportThread : public wxThread
 {
 public:
     ExportThread(wxEvtHandler *frame, bool compress): wxThread(), m_frame(frame), m_compress(compress) {};
+    wxString m_info;
     virtual void *Entry();
 public:
     ExportFileArray m_filelist;

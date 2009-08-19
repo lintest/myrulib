@@ -35,7 +35,6 @@ wxString strAlphabet = alphabetRu + alphabetEn;
 wxString strNobody = _("(без автора)");
 wxString strRusJE = wxT("е");
 wxString strRusJO = wxT("ё");
-wxString strParsingInfo = wxT("Обработка файла: ");
 wxString strOtherSequence = wxT("(прочие)");
 wxString strBookNotFound = wxT("Не найден архив%s, содержащий файл%s.");
 
@@ -112,6 +111,9 @@ void MyRuLibMainFrame::CreateControls()
 	menuBar->Append(menu, _("&Правка"));
 
 	menu = new wxMenu;
+	menu->Append(wxID_ANY, _("Параметры базы данных"));
+	menu->Append(wxID_ANY, _("Реструктуризация БД"));
+	menu->AppendSeparator();
 	menu->Append(wxID_PREFERENCES, _("Настройки"));
 	menuBar->Append(menu, _("&Сервис"));
 
@@ -224,7 +226,7 @@ void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-    wxMessageBox(_T("MyRuLib - version 0.03 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru"));
+    wxMessageBox(_T("MyRuLib - version 0.04 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru"));
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar()
@@ -376,7 +378,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			FbManager::ImportZip(paths[i]);
+			FbManager::ImportZip(paths[i], wxT("Обработка файла:"));
 		}
 	}
 }
@@ -385,7 +387,7 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
-		_("Выберите zip-файл для регистрации в библиотеке…"),
+		_("Выберите zip-файл lib.rus.ec для регистрации в библиотеке…"),
 		wxEmptyString,
 		wxEmptyString,
 		_("Файлы Lib.rus.ec (*.zip)|*.zip"),
@@ -397,7 +399,7 @@ void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			FbManager::RegisterZip(paths[i]);
+			FbManager::RegisterZip(paths[i], wxT("Регистрация файла:"));
 		}
 	}
 }
@@ -413,7 +415,7 @@ void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		FbManager::ImportDir(dlg.GetPath());
+		FbManager::ImportDir(dlg.GetPath(), wxT("Обработка папки:"));
 	}
 
 }

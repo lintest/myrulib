@@ -5,8 +5,6 @@
 #include "FbParams.h"
 #include "ZipReader.h"
 
-extern wxString strParsingInfo;
-
 WX_DEFINE_OBJARRAY(ExportFileArray);
 
 void ExportThread::WriteFileItem(ExportFileItem &item)
@@ -38,7 +36,7 @@ void *ExportThread::Entry()
 	{
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
 		event.SetInt(m_filelist.Count());
-		event.SetString(strParsingInfo);
+		event.SetString(m_info);
 		wxPostEvent( m_frame, event );
 	}
 

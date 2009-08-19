@@ -19,9 +19,10 @@
 #include "db/Bookseq.h"
 #include "ZipReader.h"
 
-bool FbManager::ImportZip(const wxString& filename)
+bool FbManager::ImportZip(const wxString& filename, const wxString& info)
 {
 	ZipImportThread *thread = new ZipImportThread(wxGetApp().GetTopWindow(), filename);
+	thread->m_info = info;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
@@ -33,9 +34,10 @@ bool FbManager::ImportZip(const wxString& filename)
     return true;
 }
 
-bool FbManager::ImportDir(const wxString& filename)
+bool FbManager::ImportDir(const wxString& filename, const wxString& info)
 {
 	DirImportThread *thread = new DirImportThread(wxGetApp().GetTopWindow(), filename);
+	thread->m_info = info;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
@@ -47,9 +49,10 @@ bool FbManager::ImportDir(const wxString& filename)
     return true;
 }
 
-bool FbManager::RegisterZip(const wxString& filename)
+bool FbManager::RegisterZip(const wxString& filename, const wxString& info)
 {
 	RegThread *thread = new RegThread(wxGetApp().GetTopWindow(), filename);
+	thread->m_info = info;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
