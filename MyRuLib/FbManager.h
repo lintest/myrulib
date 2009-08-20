@@ -46,7 +46,6 @@ public:
 	static void OpenBook(int id);
 	static bool ImportZip(const wxString& filename, const wxString& info);
 	static bool ImportDir(const wxString& filename, const wxString& info);
-	static bool RegisterZip(const wxString& filename, const wxString& info);
 private:
 	static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };

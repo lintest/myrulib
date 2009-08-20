@@ -5,8 +5,6 @@
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "MyRuLibApp.h"
-#include "db/Sequences.h"
-#include "MyRuLibMain.h"
 #include "ZipReader.h"
 #include "sha1/sha1.h"
 #include "wx/base64.h"
@@ -88,11 +86,6 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 
     if (!ctx->IsWhiteOnly(str)) ctx->text += str;
 }
-}
-
-ImportThread::ImportThread(wxEvtHandler *frame)
-        : wxThread(), m_frame(frame)
-{
 }
 
 void ImportThread::OnExit()
@@ -191,9 +184,9 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 }
 
 class AutoTransaction {
-public:
-    AutoTransaction()  { wxGetApp().GetDatabase()->BeginTransaction(); };
-    ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
+    public:
+        AutoTransaction()  { wxGetApp().GetDatabase()->BeginTransaction(); };
+        ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
 };
 
 bool ImportThread::FindBySHA1(const wxString &sha1sum)
@@ -210,28 +203,39 @@ bool ImportThread::FindBySHA1(const wxString &sha1sum)
 
 bool ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 {
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    wxArrayInt books;
 
-	wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
-	pStatement->SetParamInt(1, size);
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
+    {
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	if (!result) return false;
+        wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
+        PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+        pStatement->SetParamInt(1, size);
+        DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-	while (result->Next()) {
-		int id = result->GetResultInt(wxT("id"));
-		ZipReader book(id);
+        if (!result) return false;
+
+        while (result->Next()) {
+            int id = result->GetResultInt(wxT("id"));
+            books.Add(id);
+        }
+    }
+
+    for (size_t i=0; i<books.Count(); i++) {
+
+		ZipReader book(books[i]);
 		if (!book.IsOK()) continue;
 
 		ImportParsingContext info;
 		info.sha1only = true;
 		LoadXml(book.GetZip(), info);
 
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
 		wxString sql = wxT("UPDATE books SET sha1sum=? WHERE id=?");
 		PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
 		pStatement->SetParamString(1, info.sha1sum);
-		pStatement->SetParamInt(2, id);
+		pStatement->SetParamInt(2, books[i]);
 		pStatement->ExecuteUpdate();
 		if (info.sha1sum == sha1sum) return true;
 	}
@@ -250,11 +254,6 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, int id_
         return true;
 	}
     return false;
-}
-
-void ImportThread::PostEvent(wxEvent& event)
-{
-	wxPostEvent( m_frame, event );
 }
 
 int ImportThread::AddArchive(const wxString &filename)
@@ -276,14 +275,9 @@ int ImportThread::AddArchive(const wxString &filename)
 	return row->id;
 }
 
-ZipImportThread::ZipImportThread(wxEvtHandler *frame, const wxString &filename)
-        :  ImportThread(frame), m_filename(filename)
-{
-}
-
 void *ZipImportThread::Entry()
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+    wxCriticalSectionLocker enter(sm_queue);
 
     AutoTransaction trans;
 
@@ -292,24 +286,13 @@ void *ZipImportThread::Entry()
 
 	int id_archive = AddArchive(m_filename);
 
-	{
-		wxFileName filename = m_filename;
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
-		event.SetInt(zip.GetTotalEntries());
-		event.SetString(m_info + wxT(" ") + filename.GetFullName());
-		PostEvent( event );
-	}
+    DoStart(zip.GetTotalEntries(), wxFileName(m_filename).GetFullName());
 
-	int progress = 0;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
-				wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
-				event.SetString(filename);
-				event.SetInt(progress++);
-                PostEvent( event );
-
+			    DoStep(filename);
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);
 			}
@@ -317,17 +300,9 @@ void *ZipImportThread::Entry()
 		delete entry;
 	}
 
-	{
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_FINISH );
-        PostEvent( event );
-	}
+	DoFinish();
 
 	return NULL;
-}
-
-DirImportThread::DirImportThread(wxEvtHandler *frame, const wxString &dirname)
-        :  ImportThread(frame), m_dirname(dirname)
-{
 }
 
 class CountTraverser : public wxDirTraverser
@@ -356,10 +331,8 @@ class FolderTraverser : public wxDirTraverser
 public:
     FolderTraverser(DirImportThread* thread) : m_thread(thread), m_progress(0) { }
 
-    virtual wxDirTraverseResult OnFile(const wxString& filename)
-    {
+    virtual wxDirTraverseResult OnFile(const wxString& filename) {
 		wxString ext = filename.Right(4).Lower();
-
 		if (ext == wxT(".fb2")) {
 		    Progress(filename);
 		    wxFFileInputStream file(filename);
@@ -368,21 +341,15 @@ public:
 		    Progress(filename);
             m_thread->ParseZip(filename);
         }
-
         return wxDIR_CONTINUE;
     }
 
-    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
-    {
+    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))  {
         return wxDIR_CONTINUE;
     }
 private:
-    void Progress(const wxString &filename)
-    {
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
-        event.SetString(wxFileName(filename).GetFullName());
-        event.SetInt(m_progress++);
-        m_thread->PostEvent( event );
+    void Progress(const wxString &filename) {
+        m_thread->DoStep( wxFileName(filename).GetFullName() );
     }
 private:
     DirImportThread *m_thread;
@@ -391,7 +358,7 @@ private:
 
 void *DirImportThread::Entry()
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+    wxCriticalSectionLocker enter(sm_queue);
 
     AutoTransaction trans;
 
@@ -399,25 +366,18 @@ void *DirImportThread::Entry()
     if ( !dir.IsOpened() ) return NULL;
 
 	{
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
-		event.SetString(m_info + wxT(" ") + m_dirname);
-		event.SetInt(1);
-		PostEvent( event );
+        DoStart(0, m_dirname);
 
         CountTraverser counter;
         dir.Traverse(counter);
 
-		event.SetInt(counter.GetCount());
-		PostEvent( event );
+        DoStart(counter.GetCount(), m_info + wxT(" ") + m_dirname);
 	}
 
     FolderTraverser traverser(this);
     dir.Traverse(traverser);
 
-	{
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_FINISH );
-        PostEvent( event );
-	}
+    DoFinish();
 
 	return NULL;
 }

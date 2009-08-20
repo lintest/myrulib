@@ -10,7 +10,6 @@
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
-#include "RegThread.h"
 #include "ImpThread.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
@@ -21,7 +20,7 @@
 
 bool FbManager::ImportZip(const wxString& filename, const wxString& info)
 {
-	ZipImportThread *thread = new ZipImportThread(wxGetApp().GetTopWindow(), filename);
+	ZipImportThread *thread = new ZipImportThread(filename);
 	thread->m_info = info;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
@@ -36,22 +35,7 @@ bool FbManager::ImportZip(const wxString& filename, const wxString& info)
 
 bool FbManager::ImportDir(const wxString& filename, const wxString& info)
 {
-	DirImportThread *thread = new DirImportThread(wxGetApp().GetTopWindow(), filename);
-	thread->m_info = info;
-
-    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-        wxLogError(wxT("Can't create thread!"));
-        return false;
-    }
-
-    thread->Run();
-
-    return true;
-}
-
-bool FbManager::RegisterZip(const wxString& filename, const wxString& info)
-{
-	RegThread *thread = new RegThread(wxGetApp().GetTopWindow(), filename);
+	DirImportThread *thread = new DirImportThread(filename);
 	thread->m_info = info;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {

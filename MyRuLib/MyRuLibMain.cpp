@@ -54,8 +54,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_TEXT_ENTER(ID_FIND_TEXT, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(wxID_FIND, MyRuLibMainFrame::OnFindTextEnter)
     EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
-    EVT_MENU(ID_FOLDER, MyRuLibMainFrame::OnFolder)
-    EVT_TOOL(wxID_OPEN, MyRuLibMainFrame::OnRegZip)
+    EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
@@ -95,8 +94,7 @@ void MyRuLibMainFrame::CreateControls()
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_NEW, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(ID_FOLDER, _("Добавить директорию"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN));
-	menu->Append(wxID_OPEN, _("Зарегистрировать ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_OPEN));
+	menu->Append(wxID_OPEN, _("Добавить директорию"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN));
 	menu->AppendSeparator();
 	menu->Append(wxID_SAVE, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE));
 	menu->AppendSeparator();
@@ -379,27 +377,6 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		dlg.GetPaths(paths);
 		for (size_t i = 0; i < paths.GetCount(); ++i) {
 			FbManager::ImportZip(paths[i], wxT("Обработка файла:"));
-		}
-	}
-}
-
-void MyRuLibMainFrame::OnRegZip( wxCommandEvent& event ){
-
-    wxFileDialog dlg (
-		this,
-		_("Выберите zip-файл lib.rus.ec для регистрации в библиотеке…"),
-		wxEmptyString,
-		wxEmptyString,
-		_("Файлы Lib.rus.ec (*.zip)|*.zip"),
-		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
-		wxDefaultPosition
-    );
-
-	if (dlg.ShowModal() == wxID_OK) {
-		wxArrayString paths;
-		dlg.GetPaths(paths);
-		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			FbManager::RegisterZip(paths[i], wxT("Регистрация файла:"));
 		}
 	}
 }

@@ -95,6 +95,7 @@ MYRULIB_CFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cflags \
 MYRULIB_CXXFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
+	build/MyRuLib_BaseThread.o \
 	build/MyRuLib_BookListCtrl.o \
 	build/MyRuLib_DBCreator.o \
 	build/MyRuLib_ExpThread.o \
@@ -110,7 +111,6 @@ MYRULIB_OBJECTS =  \
 	build/MyRuLib_MyRuLibMain.o \
 	build/MyRuLib_ParseCtx.o \
 	build/MyRuLib_ProgressBar.o \
-	build/MyRuLib_RegThread.o \
 	build/MyRuLib_SettingsDlg.o \
 	build/MyRuLib_TitleThread.o \
 	build/MyRuLib_ZipReader.o \
@@ -238,6 +238,9 @@ build/DatabaseLayer_SqliteResultSet.o: ./DatabaseLayer/SqliteResultSet.cpp
 build/DatabaseLayer_SqliteResultSetMetaData.o: ./DatabaseLayer/SqliteResultSetMetaData.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
+build/MyRuLib_BaseThread.o: ./MyRuLib/BaseThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/MyRuLib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -281,9 +284,6 @@ build/MyRuLib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/MyRuLib_RegThread.o: ./MyRuLib/RegThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp
