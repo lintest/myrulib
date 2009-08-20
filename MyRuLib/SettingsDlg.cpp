@@ -8,6 +8,7 @@
 #include <wx/artprov.h>
 #include "FbParams.h"
 #include "SettingsDlg.h"
+#include "ZipReader.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -416,6 +417,8 @@ void SettingsDlg::Assign(bool write)
         }
 
     }
+
+	ZipReader::Init();
 };
 
 void SettingsDlg::Execute(wxWindow* parent)

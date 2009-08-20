@@ -7,6 +7,19 @@
 
 class ZipReader
 {
+public:
+	ZipReader(int id);
+	virtual ~ZipReader();
+	static void Init();
+	bool IsOK() {return m_zipOk && m_fileOk;};
+	void ShowError();
+    wxString GetErrorText();
+	wxInputStream & GetZip() {return *m_result;};
+private:
+    bool FindZip(wxFileName &zip_name, wxString &path);
+    bool FindEntry(const wxString &file_name);
+    void OpenZip(const wxString &zipname);
+    void OpenFile(const wxString &filename);
 private:
     wxFFileInputStream *m_file;
     wxZipInputStream *m_zip;
@@ -16,18 +29,6 @@ private:
     int m_id;
     wxString m_file_name;
     wxString m_zip_name;
-private:
-    bool FindZip(wxFileName &zip_name, wxString &path);
-    bool FindEntry(const wxString &file_name);
-    void OpenZip(const wxString &zipname);
-    void OpenFile(const wxString &filename);
-public:
-	ZipReader(int id);
-	virtual ~ZipReader();
-	bool IsOK() {return m_zipOk && m_fileOk;};
-	void ShowError();
-    wxString GetErrorText();
-	wxInputStream & GetZip() {return *m_result;};
 };
 
 #endif // __ZIPREADER_H__

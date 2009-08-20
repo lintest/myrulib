@@ -15,6 +15,7 @@
 #include "MyRuLibMain.h"
 #include "DBCreator.h"
 #include "FbParams.h"
+#include "ZipReader.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
@@ -24,6 +25,8 @@ bool MyRuLibApp::OnInit()
 		wxFAIL_MSG(_("Error connecting to database!"));
 		return false;
 	}
+
+	ZipReader::Init();
 
 	::wxInitAllImageHandlers();
 

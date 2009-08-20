@@ -216,6 +216,10 @@
 		<Unit filename="db\Params.h" />
 		<Unit filename="db\Sequences.cpp" />
 		<Unit filename="db\Sequences.h" />
+		<Unit filename="db\ZipBooks.cpp" />
+		<Unit filename="db\ZipBooks.h" />
+		<Unit filename="db\ZipFiles.cpp" />
+		<Unit filename="db\ZipFiles.h" />
 		<Unit filename="db\wxActiveRecord.cpp" />
 		<Unit filename="db\wxActiveRecord.h" />
 		<Unit filename="res\checked.xpm" />
