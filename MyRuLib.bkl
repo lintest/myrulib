@@ -75,6 +75,8 @@
 		<sources>MyRuLib/db/Params.cpp</sources>
 		<sources>MyRuLib/db/Sequences.cpp</sources>
 		<sources>MyRuLib/db/wxActiveRecord.cpp</sources>
+		<sources>MyRuLib/db/ZipBooks.cpp</sources>
+		<sources>MyRuLib/db/ZipFiles.cpp</sources>
 		<sources>MyRuLib/sha1/sha1.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>

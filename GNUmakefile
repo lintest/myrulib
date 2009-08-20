@@ -121,6 +121,8 @@ MYRULIB_OBJECTS =  \
 	build/MyRuLib_Params.o \
 	build/MyRuLib_Sequences.o \
 	build/MyRuLib_wxActiveRecord.o \
+	build/MyRuLib_ZipBooks.o \
+	build/MyRuLib_ZipFiles.o \
 	build/MyRuLib_sha1.o \
 	build/MyRuLib_base64.o \
 	build/MyRuLib_treelistctrl.o
@@ -312,6 +314,12 @@ build/MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/MyRuLib_ZipBooks.o: ./MyRuLib/db/ZipBooks.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/MyRuLib_ZipFiles.o: ./MyRuLib/db/ZipFiles.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_sha1.o: ./MyRuLib/sha1/sha1.c
