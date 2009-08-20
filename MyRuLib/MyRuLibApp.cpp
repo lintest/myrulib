@@ -26,8 +26,6 @@ bool MyRuLibApp::OnInit()
 		return false;
 	}
 
-	ZipReader::Init();
-
 	::wxInitAllImageHandlers();
 
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
@@ -35,6 +33,8 @@ bool MyRuLibApp::OnInit()
 	MyRuLibMainFrame * frame = new MyRuLibMainFrame;
 	SetTopWindow(frame);
 	frame->Show();
+
+	ZipReader::Init();
 
 	return true;
 }

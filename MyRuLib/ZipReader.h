@@ -13,12 +13,12 @@ public:
 	static void Init();
 	bool IsOK() {return m_zipOk && m_fileOk;};
 	void ShowError();
-    wxString GetErrorText();
+    wxString GetErrorText() {return m_info;};
 	wxInputStream & GetZip() {return *m_result;};
 private:
     bool FindZip(wxFileName &zip_name, wxString &path);
     bool FindEntry(const wxString &file_name);
-    void OpenZip(const wxString &zipname);
+    void OpenZip(const wxString &zipname, const wxString &filename);
     void OpenFile(const wxString &filename);
 private:
     wxFFileInputStream *m_file;
@@ -27,8 +27,7 @@ private:
     bool m_zipOk;
     bool m_fileOk;
     int m_id;
-    wxString m_file_name;
-    wxString m_zip_name;
+    wxString m_info;
 };
 
 #endif // __ZIPREADER_H__

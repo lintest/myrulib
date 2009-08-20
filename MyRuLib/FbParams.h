@@ -47,11 +47,6 @@ class ParamItem
 WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
 
 class FbParams {
-    private:
-        DatabaseLayer *m_database;
-        static int DefaultValue(int param);
-        static wxString DefaultText(int param);
-        static ParamArray & GetParams();
     public:
         FbParams();
         FbParams(DatabaseLayer *database, wxCriticalSection &section);
@@ -60,6 +55,11 @@ class FbParams {
         static wxString GetText(const int &param);
         void SetValue(const int &param, int value);
         void SetText(const int &param, wxString text);
+    private:
+        DatabaseLayer *m_database;
+        static int DefaultValue(int param);
+        static wxString DefaultText(int param);
+        static ParamArray sm_params;
 };
 
 #endif // __FBPARAMS_H__

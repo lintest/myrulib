@@ -8,32 +8,26 @@ FbParams::FbParams()
     : m_database(wxGetApp().GetDatabase())
 {};
 
-ParamArray & FbParams::GetParams()
-{
-    static ParamArray params;
-    return params;
-}
+ParamArray FbParams::sm_params;
 
 void FbParams::LoadParams()
 {
-    ParamArray & paramList = GetParams();
-    paramList.Empty();
+    sm_params.Empty();
 
     wxCriticalSectionLocker(wxGetApp().m_DbSection);
 
     Params params(wxGetApp().GetDatabase());
     ParamsRowSet * rowSet = params.All();
     for (size_t i = 0; i<rowSet->Count(); i++) {
-        paramList.Add(new ParamItem(rowSet->Item(i)));
+        sm_params.Add(new ParamItem(rowSet->Item(i)));
     }
 }
 
 int FbParams::GetValue(const int &param)
 {
-    ParamArray & paramList = GetParams();
-    for (size_t i=0; i<paramList.Count(); i++) {
-        if (paramList[i].id == param) {
-            return paramList[i].value;
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            return sm_params[i].value;
         }
     }
     return DefaultValue(param);
@@ -41,10 +35,9 @@ int FbParams::GetValue(const int &param)
 
 wxString FbParams::GetText(const int &param)
 {
-    ParamArray & paramList = GetParams();
-    for (size_t i=0; i<paramList.Count(); i++) {
-        if (paramList[i].id == param) {
-            return paramList[i].text;
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            return sm_params[i].text;
         }
     }
     return DefaultText(param);
@@ -63,17 +56,16 @@ void FbParams::SetValue(const int &param, int value)
         row->Save();
     }
 
-    ParamArray & paramList = GetParams();
-    for (size_t i=0; i<paramList.Count(); i++) {
-        if (paramList[i].id == param) {
-            paramList[i].value = value;
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            sm_params[i].value = value;
             return;
         }
     }
 
     ParamItem * item = new ParamItem(param);
     item->value = value;
-    paramList.Add(item);
+    sm_params.Add(item);
 }
 
 void FbParams::SetText(const int &param, wxString text)
@@ -90,17 +82,16 @@ void FbParams::SetText(const int &param, wxString text)
         row->Save();
     }
 
-    ParamArray & paramList = GetParams();
-    for (size_t i=0; i<paramList.Count(); i++) {
-        if (paramList[i].id == param) {
-            paramList[i].text = text;
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            sm_params[i].text = text;
             return;
         }
     }
 
     ParamItem * item = new ParamItem(param);
     item->text = text;
-    paramList.Add(item);
+    sm_params.Add(item);
 }
 
 int FbParams::DefaultValue(int param)
