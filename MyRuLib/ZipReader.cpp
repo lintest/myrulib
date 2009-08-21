@@ -216,7 +216,6 @@ void ZipCollection::AddZip(const wxString &filename)
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	ZipFiles files(wxGetApp().GetDatabase());
-
 	ZipFilesRow * exist = files.Path(zip_file.GetFullName());
 	if (exist) return;
 
@@ -246,17 +245,25 @@ wxString ZipCollection::FindZip(const wxString &filename)
     wxCriticalSectionLocker enter1(sm_queue);
 	wxCriticalSectionLocker enter2(wxGetApp().m_DbSection);
 
-	ZipBooks books(wxGetApp().GetDatabase());
-	ZipBooksRow * book = books.Book(filename);
-	if (book) {
+	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
+	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	pStatement->SetParamString(1, filename);
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
+
+	if (!result) return wxEmptyString;
+
+	while (result->Next()) {
+		int id = result->GetResultInt(wxT("file"));
 		ZipFiles files(wxGetApp().GetDatabase());
-		ZipFilesRow *file = files.File(book->file);
+		ZipFilesRow *file = files.File(id);
 		if (file) {
 			wxFileName zip_file = file->path;
 			zip_file.SetPath(m_dirname);
-			return zip_file.GetFullPath();
+			if (zip_file.FileExists())
+				return zip_file.GetFullPath();
 		}
 	}
+
 	return wxEmptyString;
 }
 

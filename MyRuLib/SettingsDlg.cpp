@@ -418,7 +418,7 @@ void SettingsDlg::Assign(bool write)
 
     }
 
-	ZipReader::Init();
+	if (write) ZipReader::Init();
 };
 
 void SettingsDlg::Execute(wxWindow* parent)

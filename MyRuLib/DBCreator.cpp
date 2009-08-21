@@ -129,11 +129,7 @@ bool DBCreator::UpgradeDatabase()
 
 			m_Database->RunQuery(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
 			m_Database->RunQuery(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
-			m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON books(book);"));
-
-			m_Database->RunQuery(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
-			m_Database->RunQuery(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
-			m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON books(book);"));
+			m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON zip_books(book);"));
 
             version ++;
             FbParams().SetValue(DB_LIBRARY_VERSION, version);
@@ -141,16 +137,7 @@ bool DBCreator::UpgradeDatabase()
         }
     } catch(DatabaseLayerException & e) {
 		m_Database->RollBack();
-		wxUnusedVar(e);
-		return false;
-	}
-
-	try {
-		m_Database->RunQuery(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
-		m_Database->RunQuery(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
-		m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON books(book);"));
-    } catch(DatabaseLayerException & e) {
-		return false;
+		throw e;
 	}
 
 	FbParams::LoadParams();

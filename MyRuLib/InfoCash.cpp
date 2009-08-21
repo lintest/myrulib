@@ -37,49 +37,55 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 //  InfoCash
 //-----------------------------------------------------------------------------
 
+InfoNodeArray InfoCash::sm_cash;
+
 InfoNode * InfoCash::GetNode(int id)
 {
-    InfoNodeArray * cash = GetCash();
-    for (size_t i=0; i<cash->GetCount(); i++) {
-        if (cash->Item(i).id == id) {
-            InfoNode * node = cash->Detach(i);
-            cash->Insert(node, 0);
+    for (size_t i=0; i<sm_cash.GetCount(); i++) {
+        if (sm_cash.Item(i).id == id) {
+            InfoNode * node = sm_cash.Detach(i);
+            sm_cash.Insert(node, 0);
             return node;
         }
     }
-    while ( cash->GetCount()>INFO_CASH_SIZE ) {
-        cash->RemoveAt(INFO_CASH_SIZE);
+    while ( sm_cash.GetCount()>INFO_CASH_SIZE ) {
+        sm_cash.RemoveAt(INFO_CASH_SIZE);
     }
     InfoNode * node = new InfoNode;
     node->id = id;
-    cash->Insert(node, 0);
+    sm_cash.Insert(node, 0);
     return node;
 }
 
-InfoNodeArray * InfoCash::GetCash()
+void InfoCash::SetLoaded(int id)
 {
-    static InfoNodeArray array;
-    return &array;
+    for (size_t i=0; i<sm_cash.GetCount(); i++) {
+        if (sm_cash.Item(i).id == id) {
+            InfoNode * node = sm_cash.Detach(i);
+            node->loaded = true;
+            return ;
+        }
+    }
 }
 
-static wxCriticalSection infoLocker;
+wxCriticalSection InfoCash::sm_locker;
 
 void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
-    wxCriticalSectionLocker enter(infoLocker);
+    wxCriticalSectionLocker enter(sm_locker);
     InfoNode * node = GetNode(id);
     node->AddImage(id, filename, imagedata, imagetype);
 }
 
 void InfoCash::SetTitle(int id, wxString html)
 {
-    wxCriticalSectionLocker enter(infoLocker);
+    wxCriticalSectionLocker enter(sm_locker);
     GetNode(id)->title = html;
 };
 
 void InfoCash::SetAnnotation(int id, wxString html)
 {
-    wxCriticalSectionLocker enter(infoLocker);
+    wxCriticalSectionLocker enter(sm_locker);
     GetNode(id)->annotation = html;
 };
 
@@ -87,7 +93,7 @@ wxString InfoCash::GetInfo(int id, bool vertical)
 {
     if (!id) return wxEmptyString;
 
-    wxCriticalSectionLocker enter(infoLocker);
+    wxCriticalSectionLocker enter(sm_locker);
     InfoNode * node = GetNode(id);
 
     wxString html = wxT("<html><body><table width=100%>");
@@ -116,7 +122,7 @@ void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
 {
     if (!id) return;
 
-    wxCriticalSectionLocker enter(infoLocker);
+    wxCriticalSectionLocker enter(sm_locker);
     InfoNode * node = GetNode(id);
 
     if (node->loaded) {
@@ -126,6 +132,5 @@ void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
     } else {
         TitleThread::Execute(frame, id);
         InfoThread::Execute(frame, id);
-        node->loaded = true;
     }
 }

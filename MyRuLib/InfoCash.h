@@ -45,9 +45,11 @@ public:
     static void SetTitle(int id, wxString html);
     static void SetAnnotation(int id, wxString html);
     static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
+    static void SetLoaded(int id);
 private:
-    static InfoNodeArray * GetCash();
+    static InfoNodeArray sm_cash;
     static InfoNode * GetNode(int id);
+	static wxCriticalSection sm_locker;
 };
 
 #endif // __INFOCASH_H__
