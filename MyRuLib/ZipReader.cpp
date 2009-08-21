@@ -47,8 +47,6 @@ void *ZipThread::Entry()
 
 	DoFinish();
 
-	InfoCash::Empty();
-
 	return NULL;
 }
 
@@ -247,6 +245,8 @@ void ZipCollection::AddZip(const wxString &filename)
 		file->path = zip_file.GetFullName();
 		file->Save();
 	}
+
+	InfoCash::Empty();
 }
 
 wxString ZipCollection::FindZip(const wxString &filename)
