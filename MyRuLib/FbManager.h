@@ -43,7 +43,7 @@ public:
 	static void FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only);
 	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
 	static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
-	static void OpenBook(int id);
+	static void OpenBook(int id, wxString &file_type);
 	static bool ImportZip(const wxString& filename, const wxString& info);
 	static bool ImportDir(const wxString& filename, const wxString& info);
 private:

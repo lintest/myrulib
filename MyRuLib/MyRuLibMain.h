@@ -20,6 +20,7 @@
 #include "wx/treelistctrl.h"
 #include "ProgressBar.h"
 #include "BookListCtrl.h"
+#include "FbManager.h"
 
 class MyRuLibMainFrame: public wxFrame
 {
@@ -58,7 +59,7 @@ private:
 	wxString m_StatusText;
 	void ToggleAlphabar(const int &idLetter);
 private:
-	int GetSelectedBook();
+	BookTreeItemData * GetSelectedBook();
 	bool vertical;
 public:
 	MyRuLibMainFrame();

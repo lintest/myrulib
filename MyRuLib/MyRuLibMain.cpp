@@ -205,9 +205,14 @@ void MyRuLibMainFrame::CreateBookInfo()
 	else
 		m_BooksSplitter->SplitHorizontally(m_BooksListView, m_BooksInfoPanel, m_BooksSplitter->GetSize().GetHeight()/2);
 
-    wxString html = InfoCash::GetInfo(GetSelectedBook(), vertical);
-    m_BooksInfoPanel->SetPage(html);
-    InfoCash::ShowInfo(this, GetSelectedBook());
+    BookTreeItemData * book = GetSelectedBook();
+    if (!book) {
+        m_BooksInfoPanel->SetPage(wxEmptyString);
+    } else {
+        wxString html = InfoCash::GetInfo(book->GetId(), vertical);
+        m_BooksInfoPanel->SetPage(html);
+        InfoCash::ShowInfo(this, book->GetId(), book->file_type);
+    }
 }
 
 void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
@@ -305,7 +310,7 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data = (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		if (data) InfoCash::ShowInfo(this, data->GetId());
+		if (data) InfoCash::ShowInfo(this, data->GetId(), data->file_type);
 	}
 	event.Skip();
 }
@@ -474,7 +479,7 @@ void MyRuLibMainFrame::OnBooksListActivated(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data = (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		if (data) FbManager::OpenBook(data->GetId());
+		if (data) FbManager::OpenBook(data->GetId(), data->file_type);
 	}
 	event.Skip();
 }
@@ -492,14 +497,13 @@ void MyRuLibMainFrame::OnInfoUpdate(wxCommandEvent& event)
 	event.Skip();
 }
 
-int MyRuLibMainFrame::GetSelectedBook()
+BookTreeItemData * MyRuLibMainFrame::GetSelectedBook()
 {
 	wxTreeItemId selected = m_BooksListView->GetSelection();
 	if (selected.IsOk()) {
-		BookTreeItemData * data = (BookTreeItemData*)m_BooksListView->GetItemData(selected);
-		return data->GetId();
+		return (BookTreeItemData*)m_BooksListView->GetItemData(selected);
     } else
-        return 0;
+        return NULL;
 }
 
 void MyRuLibMainFrame::OnExternal(wxCommandEvent& event)

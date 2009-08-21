@@ -267,7 +267,7 @@ void TempFileEraser::Add(const wxString &filename)
     eraser.filelist.Add(filename);
 };
 
-void FbManager::OpenBook(int id)
+void FbManager::OpenBook(int id, wxString &file_type)
 {
     ZipReader reader(id);
     if (!reader.IsOK()) {
@@ -279,7 +279,7 @@ void FbManager::OpenBook(int id)
 
     wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
     wxRemoveFile(file_name.GetFullPath());
-    file_name.SetExt(wxT("fb2"));
+    file_name.SetExt(file_type);
     wxString file_path = file_name.GetFullPath();
     TempFileEraser::Add(file_path);
     wxFileOutputStream out(file_path);

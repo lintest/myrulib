@@ -125,8 +125,7 @@ void InfoCash::Empty()
     sm_cash.Empty();
 }
 
-
-void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
+void InfoCash::ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_type)
 {
     if (!id) return;
 
@@ -139,7 +138,7 @@ void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
         wxPostEvent(frame, event);
     } else {
         TitleThread::Execute(frame, id);
-        InfoThread::Execute(frame, id);
+        if (file_type == wxT("fb2")) InfoThread::Execute(frame, id);
         node->loaded = true;
     }
 }

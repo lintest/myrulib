@@ -222,9 +222,14 @@ function convert_books($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM words");
 
   $sqltest = "
-    SELECT libbook.BookId, FileSize, Title, Deleted, FileType, CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
-    FROM libbook LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
-    WHERE Deleted<>1
+    SELECT 
+      libbook.BookId, FileSize, Title, Deleted, FileType, 
+      CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId,
+      CASE WHEN libfilename.FileName IS NULL THEN CONCAT(libbook.BookId, '.', libbook.FileType) ELSE libfilename.FileName END AS FileName
+    FROM libbook 
+      LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
+      LEFT JOIN libfilename ON libbook.BookId = libfilename.BookId
+    WHERE Deleted<>1 
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -242,7 +247,7 @@ function convert_books($mysql_db, $sqlite_db)
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres) VALUES(?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $filename, $row['FileSize'], $row['FileType'], $genres));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $row['FileName'], $row['FileSize'], $row['FileType'], $genres));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
 /*
