@@ -135,6 +135,17 @@ bool DBCreator::UpgradeDatabase()
             FbParams().SetValue(DB_LIBRARY_VERSION, version);
             m_Database->Commit();
         }
+
+		if (version == 2) {
+            m_Database->BeginTransaction();
+			m_Database->RunQuery(wxT("CREATE TABLE types(file_type varchar(99), command text);"));
+			m_Database->RunQuery(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
+			m_Database->RunQuery(wxT("DROP INDEX IF EXISTS book_file;"));
+
+            version ++;
+            FbParams().SetValue(DB_LIBRARY_VERSION, version);
+            m_Database->Commit();
+        }
     } catch(DatabaseLayerException & e) {
 		m_Database->RollBack();
 		throw e;
@@ -143,7 +154,7 @@ bool DBCreator::UpgradeDatabase()
 	FbParams::LoadParams();
 	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
-	if (version != 2) {
+	if (version != 3) {
 		throw DatabaseLayerException(DATABASE_LAYER_ERROR, wxT("Mismatched database versions."));
 	}
 
