@@ -229,7 +229,7 @@ void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-    wxMessageBox(_T("MyRuLib - version 0.04 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru"));
+    wxMessageBox(_T("MyRuLib - version 0.05 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru"));
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar()
