@@ -315,8 +315,10 @@ function convert_sequences($mysql_db, $sqlite_db)
 
   $sqltest = "
     SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level, libavtor.AvtorId
-    FROM libseq INNER JOIN libavtor ON libseq.BookId = libavtor.BookId
-    WHERE NOT libseq.BookId IN (SELECT BookId FROM libbook WHERE Deleted=1)
+    FROM libseq 
+	INNER JOIN libavtor ON libseq.BookId = libavtor.BookId
+	INNER JOIN libbook ON libseq.BookId = libbook.BookId 
+    WHERE NOT (libbook.Deleted=1)
   ";
 
   $query = $mysql_db->query($sqltest);
