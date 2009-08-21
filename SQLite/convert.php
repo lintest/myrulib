@@ -15,7 +15,7 @@ function strtolowerEx($str){
  }
  $result = strtr($str, $strtolowerEx_pairs);
  return $result;
-} 
+}
 
 function utf8_strlen($s)
 {
@@ -156,7 +156,7 @@ function strtoupperEx($str){
  }
  $result = strtr($str, $strtoupperEx_pairs);
  return $result;
-} 
+}
 
 function utf8_substr($s, $offset, $len = 'all')
 {
@@ -203,10 +203,10 @@ function convert_authors($mysql_db, $sqlite_db)
 
     echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
-    $sql = "INSERT INTO authors (id, letter, full_name, search_name) VALUES(?,?,?,?)";
+    $sql = "INSERT INTO authors (id, letter, full_name, search_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['AvtorId'], $letter, $full_name, $search_name));
+    $err= $insert->execute(array($row['AvtorId'], $letter, $full_name, $search_name, $row['FirstName'], $row['MiddleName'], $row['LastName']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -223,7 +223,7 @@ function convert_books($mysql_db, $sqlite_db)
 
   $sqltest = "
     SELECT libbook.BookId, FileSize, Title, Deleted, FileType, CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
-    FROM libbook LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId 
+    FROM libbook LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
     WHERE Deleted<>1
   ";
 
@@ -314,8 +314,8 @@ function convert_sequences($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM bookseq");
 
   $sqltest = "
-    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level, libavtor.AvtorId 
-    FROM libseq INNER JOIN libavtor ON libseq.BookId = libavtor.BookId 
+    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level, libavtor.AvtorId
+    FROM libseq INNER JOIN libavtor ON libseq.BookId = libavtor.BookId
     WHERE NOT libseq.BookId IN (SELECT BookId FROM libbook WHERE Deleted=1)
   ";
 
@@ -416,6 +416,7 @@ function create_indexes($sqlite_db)
 
   $sqlite_db->query("commit;");
 }
+
 
 $sqlite_db = new PDO('sqlite:./MyRuLib.db');
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
