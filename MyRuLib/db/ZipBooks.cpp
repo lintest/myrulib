@@ -44,15 +44,13 @@ bool ZipBooks::Delete(wxString key){
 	}
 }
 
-
-
-ZipBooksRow* ZipBooks::Book(wxString key){
+ZipBooksRow* ZipBooks::Book(const wxString& key){
 	try{
 		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE book=?"),m_table.c_str()));
 		pStatement->SetParamString(1,key);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
+		if(!result->Next()) return NULL;
 		ZipBooksRow* row=RowFromResult(result);
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
@@ -66,17 +64,13 @@ ZipBooksRow* ZipBooks::Book(wxString key){
 	}
 }
 
-
-
-
 ZipBooksRow* ZipBooks::Where(const wxString& whereClause){
 	try{
 		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next())
-			return NULL;
+		if(!result->Next()) return NULL;
 		ZipBooksRow* row=RowFromResult(result);
 
 		garbageRows.Add(row);

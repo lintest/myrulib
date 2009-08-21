@@ -52,7 +52,7 @@ ZipFilesRow* ZipFiles::File(int key){
 		pStatement->SetParamInt(1,key);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
+		if(!result->Next()) return NULL;
 		ZipFilesRow* row=RowFromResult(result);
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
@@ -66,8 +66,25 @@ ZipFilesRow* ZipFiles::File(int key){
 	}
 }
 
+ZipFilesRow* ZipFiles::Path(const wxString& key){
+	try{
+		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE path=?"),m_table.c_str()));
+		pStatement->SetParamString(1, key);
+		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-
+		if(!result->Next()) return NULL;
+		ZipFilesRow* row=RowFromResult(result);
+		garbageRows.Add(row);
+		m_database->CloseResultSet(result);
+		m_database->CloseStatement(pStatement);
+		return row;
+	}
+	catch (DatabaseLayerException& e)
+	{
+		ProcessException(e);
+		return NULL;
+	}
+}
 
 ZipFilesRow* ZipFiles::Where(const wxString& whereClause){
 	try{
@@ -75,8 +92,7 @@ ZipFilesRow* ZipFiles::Where(const wxString& whereClause){
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next())
-			return NULL;
+		if(!result->Next()) return NULL;
 		ZipFilesRow* row=RowFromResult(result);
 
 		garbageRows.Add(row);

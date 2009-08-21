@@ -39,13 +39,13 @@ protected:
 public:
 	ZipBooks();
 	ZipBooks(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("books"));
-	ZipBooks(DatabaseLayer* database,const wxString& table=wxT("books"));
+	ZipBooks(DatabaseLayer* database,const wxString& table=wxT("zip_books"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("books"));
 
 	ZipBooksRow* New();
 	bool Delete(wxString key);
 
-	ZipBooksRow* Book(wxString key);
+	ZipBooksRow* Book(const wxString& key);
 
 	ZipBooksRow* Where(const wxString& whereClause);
 	ZipBooksRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);

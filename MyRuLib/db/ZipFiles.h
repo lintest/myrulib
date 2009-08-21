@@ -35,7 +35,7 @@ protected:
 public:
 	ZipFiles();
 	ZipFiles(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("files"));
-	ZipFiles(DatabaseLayer* database,const wxString& table=wxT("files"));
+	ZipFiles(DatabaseLayer* database,const wxString& table=wxT("zip_files"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("files"));
 
 	ZipFilesRow* New();
@@ -43,6 +43,7 @@ public:
 
 
 	ZipFilesRow* File(int key);
+	ZipFilesRow* Path(const wxString& key);
 
 	ZipFilesRow* Where(const wxString& whereClause);
 	ZipFilesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);

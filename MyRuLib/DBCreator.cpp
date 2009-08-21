@@ -126,6 +126,15 @@ bool DBCreator::UpgradeDatabase()
             m_Database->RunQuery(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
             m_Database->RunQuery(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
             m_Database->RunQuery(wxT("CREATE INDEX book_filesize ON books(file_size);"));
+
+			m_Database->RunQuery(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
+			m_Database->RunQuery(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
+			m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON books(book);"));
+
+			m_Database->RunQuery(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
+			m_Database->RunQuery(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
+			m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON books(book);"));
+
             version ++;
             FbParams().SetValue(DB_LIBRARY_VERSION, version);
             m_Database->Commit();
@@ -133,6 +142,14 @@ bool DBCreator::UpgradeDatabase()
     } catch(DatabaseLayerException & e) {
 		m_Database->RollBack();
 		wxUnusedVar(e);
+		return false;
+	}
+
+	try {
+		m_Database->RunQuery(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
+		m_Database->RunQuery(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
+		m_Database->RunQuery(wxT("CREATE INDEX zip_books_name ON books(book);"));
+    } catch(DatabaseLayerException & e) {
 		return false;
 	}
 

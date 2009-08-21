@@ -31,6 +31,7 @@ enum {
     FB_PROXY_PASS,
 	FB_VIEW_TYPE,
 	FB_FB2_ONLY,
+	DB_NEW_ZIPFILE,
 };
 
 class ParamItem
