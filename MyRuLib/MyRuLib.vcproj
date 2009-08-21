@@ -195,6 +195,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BaseThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BookListCtrl.cpp"
 				>
 			</File>
@@ -295,6 +299,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\db\ZipBooks.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\db\ZipFiles.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ZipReader.cpp"
 				>
 			</File>
@@ -317,11 +329,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BaseThread.h"
+				>
+			</File>
+			<File
 				RelativePath=".\BookListCtrl.h"
 				>
 			</File>
 			<File
 				RelativePath=".\db\Books.h"
+				>
+			</File>
+			<File
+				RelativePath=".\db\Bookseq.h"
 				>
 			</File>
 			<File
@@ -422,6 +442,14 @@
 			</File>
 			<File
 				RelativePath="XpmBitmaps.h"
+				>
+			</File>
+			<File
+				RelativePath=".\db\ZipBooks.h"
+				>
+			</File>
+			<File
+				RelativePath=".\db\ZipFiles.h"
 				>
 			</File>
 			<File

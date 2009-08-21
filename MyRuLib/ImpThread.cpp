@@ -183,12 +183,6 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 	}
 }
 
-class AutoTransaction {
-    public:
-        AutoTransaction()  { wxGetApp().GetDatabase()->BeginTransaction(); };
-        ~AutoTransaction() { wxGetApp().GetDatabase()->Commit(); };
-};
-
 bool ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);

@@ -8,6 +8,7 @@
 #include "db/ZipBooks.h"
 #include "db/ZipFiles.h"
 #include "FbManager.h"
+#include "InfoCash.h"
 
 extern wxString strBookNotFound;
 
@@ -45,6 +46,8 @@ void *ZipThread::Entry()
 	zips.SetDir(dir);
 
 	DoFinish();
+
+	InfoCash::Empty();
 
 	return NULL;
 }
@@ -213,31 +216,37 @@ void ZipCollection::AddZip(const wxString &filename)
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+	int id;
+	{
+		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+		ZipFiles files(wxGetApp().GetDatabase());
+		ZipFilesRow * file = files.Path(zip_file.GetFullName());
+		if (file) return;
+		id = BookInfo::NewId(DB_NEW_ZIPFILE);
+	}
 
-	ZipFiles files(wxGetApp().GetDatabase());
-	ZipFilesRow * exist = files.Path(zip_file.GetFullName());
-	if (exist) return;
-
-	wxGetApp().GetDatabase()->BeginTransaction();
-
-	ZipFilesRow *file = files.New();
-	file->file = BookInfo::NewId(DB_NEW_ZIPFILE);
-	file->path = zip_file.GetFullName();
-	file->Save();
+    AutoTransaction trans;
 
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
+			wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 			ZipBooks books(wxGetApp().GetDatabase());
 			ZipBooksRow * book = books.New();
 			book->book = entry->GetName(wxPATH_UNIX);
-			book->file = file->file;
+			book->file = id;
 			book->Save();
 		}
 		delete entry;
 	}
 
-	wxGetApp().GetDatabase()->Commit();
+	{
+		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+		ZipFiles files(wxGetApp().GetDatabase());
+		ZipFilesRow *file = files.New();
+		file->file = id;
+		file->path = zip_file.GetFullName();
+		file->Save();
+	}
 }
 
 wxString ZipCollection::FindZip(const wxString &filename)

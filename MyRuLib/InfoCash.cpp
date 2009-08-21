@@ -29,7 +29,7 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
         if (images[i].name == imagename) return;
     }
     wxMemoryBuffer buffer = wxBase64Decode(imagedata);
-    wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), imagetype);
+	wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), imagetype);
     images.Add(new InfoImage(imagename, wxDefaultSize));
 }
 
@@ -105,7 +105,8 @@ wxString InfoCash::GetInfo(int id, bool vertical)
             html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\"></td></tr>"), node->images[i].name.c_str());
         }
     } else {
-        html += wxString::Format(wxT("<tr width=100%><td>%s</td>"), node->title.c_str());
+        html += wxT("<tr width=100%>");
+        html += wxString::Format(wxT("<td>%s</td>"), node->title.c_str());
         html += wxT("<td rowspan=2 align=right valign=top>");
         for (size_t i=0; i<node->images.GetCount(); i++) {
             html += wxString::Format(wxT("<img src=\"memory:%s\"><br>"), node->images[i].name.c_str());
@@ -117,6 +118,13 @@ wxString InfoCash::GetInfo(int id, bool vertical)
 
     return html;
 }
+
+void InfoCash::Empty()
+{
+    wxCriticalSectionLocker enter(sm_locker);
+    sm_cash.Empty();
+}
+
 
 void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
 {
@@ -132,5 +140,6 @@ void InfoCash::ShowInfo(wxEvtHandler *frame, const int id)
     } else {
         TitleThread::Execute(frame, id);
         InfoThread::Execute(frame, id);
+        node->loaded = true;
     }
 }
