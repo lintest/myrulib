@@ -47,15 +47,20 @@ wxString TitleThread::GetBookInfo(int id)
         Books books(wxGetApp().GetDatabase());
         wxString whereClause = wxString::Format(wxT("id=%d"), id);
         BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
-        wxString genres;
+        wxString genres, file_name, file_type;
         wxStringList authorList;
         for(size_t i = 0; i < allBooks->Count(); ++i) {
             BooksRow * thisBook = allBooks->Item(i);
             Authors authors(wxGetApp().GetDatabase());
             title = thisBook->title;
             genres = thisBook->genres;
+            file_type = thisBook->file_type;
+            file_name = thisBook->file_name;
             authorList.Add(authors.Id(thisBook->id_author)->full_name);
         }
+
+        if (file_type != wxT("fb2")) InfoCash::SetAnnotation(id, file_name);
+
         authorList.Sort();
         for (size_t i = 0; i<authorList.GetCount(); i++) {
             if (!authorText.IsEmpty()) authorText += wxT(", ");
