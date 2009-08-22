@@ -138,7 +138,7 @@ bool DBCreator::UpgradeDatabase()
 
 		if (version == 2) {
             m_Database->BeginTransaction();
-			m_Database->RunQuery(wxT("CREATE TABLE types(file_type varchar(99), command text);"));
+			m_Database->RunQuery(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
 			m_Database->RunQuery(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
 			m_Database->RunQuery(wxT("DROP INDEX IF EXISTS book_file;"));
 

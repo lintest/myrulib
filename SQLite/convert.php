@@ -229,7 +229,6 @@ function convert_books($mysql_db, $sqlite_db)
     FROM libbook 
       LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
       LEFT JOIN libfilename ON libbook.BookId = libfilename.BookId
-    WHERE Deleted<>1 
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -323,7 +322,6 @@ function convert_sequences($mysql_db, $sqlite_db)
     FROM libseq 
 	INNER JOIN libavtor ON libseq.BookId = libavtor.BookId
 	INNER JOIN libbook ON libseq.BookId = libbook.BookId 
-    WHERE NOT (libbook.Deleted=1)
   ";
 
   $query = $mysql_db->query($sqltest);
