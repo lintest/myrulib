@@ -167,7 +167,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 		row->genres = info.genres;
 		row->file_size = size;
 		row->file_name = name;
-		row->file_type = wxFileName(name).GetExt();
+		row->file_type = wxFileName(name).GetExt().Lower();
 		row->id_archive = id_archive;
 		row->sha1sum = info.sha1sum;
 		row->Save();
