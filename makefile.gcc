@@ -26,7 +26,7 @@ CXXFLAGS ?=
 CPPFLAGS ?= 
 
 # Standard linker flags 
-LDFLAGS ?= 
+LDFLAGS ?= -static
 
 # Use DLL build of wx library? [0,1]
 WX_SHARED ?= 0
@@ -242,7 +242,7 @@ build\libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
 	ranlib $@
 
 build\MyRuLib.exe: $(MYRULIB_OBJECTS) build\libExpat.a build\libDatabaseLayer.a build\libSQLite.a build\MyRuLib_resource_rc.o
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -mthreads -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows $(LDFLAGS)  build\libExpat.a build\libDatabaseLayer.a build\libSQLite.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_XRC_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows  $(LDFLAGS)  build\libExpat.a build\libDatabaseLayer.a build\libSQLite.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_XRC_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
 
 build\SQLite_sqlite3.o: ./SQLite/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE_CFLAGS) $(CPPDEPS) $<

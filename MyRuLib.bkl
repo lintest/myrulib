@@ -4,7 +4,9 @@
 <makefile>
 
 	<set var="BUILDDIR">build</set>
-
+	
+	<set var="DEFAULT_LDFLAGS">-static</set>
+	
 	<set var="WX_PORT_DEFAULT"></set>
 	<set var="WX_SHARED_DEFAULT">0</set>
 	<set var="WX_UNICODE_DEFAULT">1</set>
@@ -13,17 +15,17 @@
     <if cond="FORMAT=='gnu'">
 		<set var="WX_VERSION_DEFAULT">2.8</set>
     </if>
-
+	
     <if cond="FORMAT=='mingw'">
 		<set var="WX_VERSION_DEFAULT">28</set>
     </if>
 
     <include file="presets/wx.bkl"/>
-
+	
     <lib id="SQLite" template="wx-lib">
 		<sources>SQLite/sqlite3.c</sources>
     </lib>
-
+	
     <lib id="Expat" template="wx-lib">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<sources>Expat/xmlparse.c</sources>
@@ -81,6 +83,7 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<threading>single</threading>
 		<optimize>speed</optimize>
 		<library>Expat</library>
 		<include>Expat</include>

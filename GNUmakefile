@@ -32,7 +32,7 @@ CXXFLAGS ?=
 CPPFLAGS ?= 
 
 # Standard linker flags 
-LDFLAGS ?= 
+LDFLAGS ?= -static
 
 # Location and arguments of wx-config script 
 WX_CONFIG ?= wx-config
@@ -188,7 +188,7 @@ build/libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
 	$(RANLIB) $@
 
 build/MyRuLib: $(MYRULIB_OBJECTS) build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)   $(LDFLAGS)  build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)    $(LDFLAGS)  build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 
 build/SQLite_sqlite3.o: ./SQLite/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE_CFLAGS) $(CPPDEPS) $<
