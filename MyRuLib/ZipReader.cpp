@@ -1,6 +1,5 @@
 #include <wx/dir.h>
 #include <wx/thread.h>
-#include <wx/arrimpl.cpp>
 #include "BaseThread.h"
 #include "ZipReader.h"
 #include "FbParams.h"

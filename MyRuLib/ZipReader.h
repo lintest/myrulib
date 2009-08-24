@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+#include <wx/arrimpl.cpp>
 
 class ZipReader
 {
