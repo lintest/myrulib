@@ -13,9 +13,10 @@ public:
     static int AddArchive(const wxString &filename);
 private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
-	static void AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive);
-	static bool FindBySHA1(const wxString &sha1sum);
-	static bool FindBySize(const wxString &sha1sum, wxFileOffset size);
+	static void AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, const int id_archive);
+	static void AppendFile(const int id_book, const int id_archive, const wxString &filename);
+	static int FindBySHA1(const wxString &sha1sum);
+	static int FindBySize(const wxString &sha1sum, wxFileOffset size);
 };
 
 class ZipImportThread : public ImportThread

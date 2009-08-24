@@ -8,6 +8,7 @@
 #include "ZipReader.h"
 #include "sha1/sha1.h"
 #include "wx/base64.h"
+#include "db/Files.h"
 
 extern wxString strAlphabet;
 extern wxString strRusJO;
@@ -183,7 +184,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 	}
 }
 
-bool ImportThread::FindBySHA1(const wxString &sha1sum)
+int ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -192,10 +193,14 @@ bool ImportThread::FindBySHA1(const wxString &sha1sum)
 	pStatement->SetParamString(1, sha1sum);
 	DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-	return result && result->Next();
+	if (result) {
+		result->Next();
+		return result->GetResultInt(wxT("id"));
+	} else
+		return 0;
 }
 
-bool ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
+int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 {
     wxArrayInt books;
 
@@ -207,7 +212,7 @@ bool ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
         pStatement->SetParamInt(1, size);
         DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-        if (!result) return false;
+        if (!result) return 0;
 
         while (result->Next()) {
             int id = result->GetResultInt(wxT("id"));
@@ -231,23 +236,39 @@ bool ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		pStatement->SetParamString(1, info.sha1sum);
 		pStatement->SetParamInt(2, books[i]);
 		pStatement->ExecuteUpdate();
-		if (info.sha1sum == sha1sum) return true;
+		if (info.sha1sum == sha1sum) return books[i];
 	}
 
-	return false;
+	return 0;
 }
 
-bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, int id_archive)
+bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive)
 {
     ImportParsingContext info;
 
 	if (LoadXml(stream, info)) {
-		if (FindBySHA1(info.sha1sum)) return false;
-		if (FindBySize(info.sha1sum, stream.GetLength())) return false;
-        AppendBook(info, name, stream.GetLength(), id_archive);
+		int id_book = FindBySHA1(info.sha1sum);
+		if (id_book == 0)
+			id_book = FindBySize(info.sha1sum, stream.GetLength());
+		if (id_book == 0)
+			AppendBook(info, filename, stream.GetLength(), id_archive);
+		else
+			AppendFile(id_book, id_archive, filename);
         return true;
 	}
     return false;
+}
+
+void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &filename)
+{
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+	Files files (wxGetApp().GetDatabase());
+	FilesRow * row = files.New();
+	row->id_book = id_book;
+	row->id_archive = id_archive;
+	row->file_name = filename;
+	row->Save();
 }
 
 int ImportThread::AddArchive(const wxString &filename)

@@ -74,8 +74,10 @@
 		<sources>MyRuLib/db/Authors.cpp</sources>
 		<sources>MyRuLib/db/Books.cpp</sources>
 		<sources>MyRuLib/db/Bookseq.cpp</sources>
+		<sources>MyRuLib/db/Files.cpp</sources>
 		<sources>MyRuLib/db/Params.cpp</sources>
 		<sources>MyRuLib/db/Sequences.cpp</sources>
+		<sources>MyRuLib/db/Types.cpp</sources>
 		<sources>MyRuLib/db/wxActiveRecord.cpp</sources>
 		<sources>MyRuLib/db/ZipBooks.cpp</sources>
 		<sources>MyRuLib/db/ZipFiles.cpp</sources>

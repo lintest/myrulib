@@ -53,12 +53,12 @@ bool DBCreator::CreateDatabase(void)
             CREATE TABLE books(\
                 id integer not null,\
                 id_author integer not null,\
-                title varchar(255) not null,\
+                title text not null,\
                 annotation text,\
                 genres text,\
                 deleted boolean,\
                 id_archive integer,\
-                file_name varchar(255),\
+                file_name text,\
                 file_size integer,\
                 file_type varchar(20),\
                 description text);\
@@ -73,8 +73,8 @@ bool DBCreator::CreateDatabase(void)
 		m_Database->RunQuery(wxT("\
             CREATE TABLE archives(\
                 id integer primary key,\
-                file_name varchar(255),\
-                file_path varchar(255),\
+                file_name text,\
+                file_path text,\
                 file_size integer,\
                 file_count integer,\
                 min_id_book integer,\
@@ -82,7 +82,6 @@ bool DBCreator::CreateDatabase(void)
                 file_type varchar(20),\
                 description text);\
         "));
-		m_Database->RunQuery(wxT("CREATE INDEX book_file ON archives(file_name);"));
 	}
 	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
@@ -141,6 +140,9 @@ bool DBCreator::UpgradeDatabase()
 			m_Database->RunQuery(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
 			m_Database->RunQuery(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
 			m_Database->RunQuery(wxT("DROP INDEX IF EXISTS book_file;"));
+
+			m_Database->RunQuery(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text);"));
+			m_Database->RunQuery(wxT("CREATE INDEX files_book ON files(id_book);"));
 
             version ++;
             FbParams().SetValue(DB_LIBRARY_VERSION, version);

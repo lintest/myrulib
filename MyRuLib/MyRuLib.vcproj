@@ -235,6 +235,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\db\Files.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ImpContext.cpp"
 				>
 			</File>
@@ -271,10 +275,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RegThread.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\db\Sequences.cpp"
 				>
 			</File>
@@ -292,6 +292,10 @@
 			</File>
 			<File
 				RelativePath=".\wx\treelistctrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\db\Types.cpp"
 				>
 			</File>
 			<File
@@ -341,11 +345,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\db\Bookseq.h"
+				RelativePath=".\Bookseq.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Bookseq.h"
+				RelativePath=".\db\Bookseq.h"
 				>
 			</File>
 			<File
@@ -370,6 +374,10 @@
 			</File>
 			<File
 				RelativePath=".\FbParams.h"
+				>
+			</File>
+			<File
+				RelativePath=".\db\Files.h"
 				>
 			</File>
 			<File
@@ -413,10 +421,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RegThread.h"
-				>
-			</File>
-			<File
 				RelativePath=".\db\Sequences.h"
 				>
 			</File>
@@ -434,6 +438,10 @@
 			</File>
 			<File
 				RelativePath=".\wx\treelistctrl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\db\Types.h"
 				>
 			</File>
 			<File

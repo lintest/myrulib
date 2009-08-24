@@ -1,10 +1,12 @@
 #include <wx/dir.h>
 #include <wx/thread.h>
+#include <wx/arrimpl.cpp>
 #include "BaseThread.h"
 #include "ZipReader.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
+#include "db/Files.h"
 #include "db/ZipBooks.h"
 #include "db/ZipFiles.h"
 #include "FbManager.h"
@@ -50,44 +52,69 @@ void *ZipThread::Entry()
 	return NULL;
 }
 
+class ExtractItems
+{
+	public:
+		ExtractItems(BooksRow * book)
+			:id_book(book->id), id_archive(book->id_archive), book_name(book->file_name) {};
+		ExtractItems(FilesRow * file)
+			:id_book(file->id_book), id_archive(file->id_archive), book_name(file->file_name) {};
+	public:
+		int id_book;
+		int id_archive;
+		wxString book_name;
+		wxFileName zip_name;
+};
+
+WX_DECLARE_OBJARRAY(ExtractItems, ExtractInfoArray);
+
+WX_DEFINE_OBJARRAY(ExtractInfoArray);
+
 ZipReader::ZipReader(int id)
     :m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
-    wxString zip_name, zip_path, file_name;
-    int id_archive;
+	ExtractInfoArray items;
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-        zip_path = FbParams::GetText(FB_LIBRARY_DIR);
 
         Books books(wxGetApp().GetDatabase());
         BooksRow * bookRow = books.Id(id);
         if (!bookRow) return;
 
-        file_name = bookRow->file_name;
-        id_archive = bookRow->id_archive;
+        items.Add(bookRow);
 
-        if (bookRow->id_archive) {
-            ArchivesRow * archiveRow = bookRow->GetArchive();
-            if (!archiveRow) return;
-            wxFileName zip_file = archiveRow->file_name;
-            zip_file.SetPath(archiveRow->file_path);
-            zip_name = zip_file.GetFullPath();
+        Files files(wxGetApp().GetDatabase());
+        FilesRowSet * fileRows = files.IdBook(bookRow->id);
+        for (size_t i = 0; i<fileRows->Count(); i++) {
+			items.Add(fileRows->Item(i));
+        }
+
+        for (size_t i = 0; i<items.Count(); i++) {
+        	ExtractItems & item = items[i];
+        	if ( !item.id_archive ) continue;
+			Archives archives(wxGetApp().GetDatabase());
+			ArchivesRow * archiveRow = archives.Id(item.id_archive);
+			if ( !archiveRow ) continue;
+			item.zip_name = archiveRow->file_name;
+			item.zip_name.SetPath(archiveRow->file_path);
         }
     }
 
-    if (id_archive) {
-        m_zipOk = wxFileName::FileExists(zip_name);
-        if (m_zipOk) OpenZip(zip_name, file_name);
-    } else if (wxFileName::FileExists(file_name)) {
-        OpenFile(file_name);
-    } else {
-        zip_name = zips.FindZip(file_name);
-        if (zip_name.IsEmpty()) return;
-        m_zipOk = wxFileName::FileExists(zip_name);
-        if (m_zipOk) OpenZip(zip_name, file_name);
-    }
+	for (size_t i = 0; i<items.Count(); i++) {
+		ExtractItems & item = items[i];
+		if (item.id_archive) {
+			m_zipOk = item.zip_name.FileExists();
+			if (m_zipOk) OpenZip(item.zip_name.GetFullPath(), item.book_name);
+		} else if (wxFileName::FileExists(item.book_name)) {
+			OpenFile(item.book_name);
+		} else {
+			wxString zip_name = zips.FindZip(item.zip_name.GetFullName());
+			m_zipOk = !zip_name.IsEmpty();
+			if (m_zipOk) OpenZip(zip_name, item.book_name);
+		}
+		if (IsOK()) return;
+	}
 }
 
 ZipReader::~ZipReader()
@@ -122,7 +149,6 @@ void ZipReader::OpenZip(const wxString &zipname, const wxString &filename)
     wxString zipText = (zipname.IsNull() ? zipname : wxT(" ") + zipname );
     wxString fileText = (filename.IsNull() ? filename : wxT(" ") + filename );
     m_info = wxString::Format(strBookNotFound, zipText.c_str(), fileText.c_str());
-
 }
 
 void ZipReader::OpenFile(const wxString &filename)

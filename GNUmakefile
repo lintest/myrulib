@@ -118,8 +118,10 @@ MYRULIB_OBJECTS =  \
 	build/MyRuLib_Authors.o \
 	build/MyRuLib_Books.o \
 	build/MyRuLib_Bookseq.o \
+	build/MyRuLib_Files.o \
 	build/MyRuLib_Params.o \
 	build/MyRuLib_Sequences.o \
+	build/MyRuLib_Types.o \
 	build/MyRuLib_wxActiveRecord.o \
 	build/MyRuLib_ZipBooks.o \
 	build/MyRuLib_ZipFiles.o \
@@ -307,10 +309,16 @@ build/MyRuLib_Books.o: ./MyRuLib/db/Books.cpp
 build/MyRuLib_Bookseq.o: ./MyRuLib/db/Bookseq.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/MyRuLib_Files.o: ./MyRuLib/db/Files.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/MyRuLib_Params.o: ./MyRuLib/db/Params.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/MyRuLib_Types.o: ./MyRuLib/db/Types.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp

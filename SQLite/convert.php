@@ -366,7 +366,7 @@ function create_tables($sqlite_db)
       id_sequence integer,
       deleted boolean,
       id_archive integer,
-      file_name varchar(255),
+      file_name text,
       file_size integer,
       file_type varchar(20),
       description text);
