@@ -20,7 +20,7 @@
 		<set var="WX_VERSION_DEFAULT">28</set>
     </if>
 
-    <include file="presets/wx.bkl"/>
+    <include file="./Presets/wx.bkl"/>
 	
     <lib id="SQLite" template="wx-lib">
 		<sources>SQLite/sqlite3.c</sources>
