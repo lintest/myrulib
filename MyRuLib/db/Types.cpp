@@ -153,11 +153,11 @@ TypesRowSet* Types::All(const wxString& orderBy){
 /** ACTIVE RECORD ROW **/
 
 TypesRow::TypesRow():wxActiveRecordRow(){
-	bool newRow=true;
+	newRow=true;
 }
 
 TypesRow::TypesRow(Types* activeRecord):wxActiveRecordRow(activeRecord){
-	bool newRow=true;
+	newRow=true;
 }
 
 TypesRow::TypesRow(const TypesRow& src){
