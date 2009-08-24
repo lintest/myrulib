@@ -62,6 +62,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
     wxTextCtrl* m_textCtrl9;
     wxStaticText* m_staticText10;
     wxTextCtrl* m_textCtrl10;
+	wxPanel* m_panel4;
+	wxToolBar* m_tools;
     wxStdDialogButtonSizer* m_sdbSizerBtn;
     wxButton* m_sdbSizerBtnOK;
     wxButton* m_sdbSizerBtnCancel;
@@ -289,6 +291,33 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_panel3->Layout();
 	fgSizer3->Fit( m_panel3 );
 	m_notebook->AddPage( m_panel3, _("Настройки интернет"), false );
+
+	m_panel4 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxVERTICAL );
+
+	m_tools = new wxToolBar( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NODIVIDER);
+	m_tools->AddTool( wxID_ANY, _("Добавить"), wxArtProvider::GetBitmap(wxART_NEW), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->AddTool( wxID_ANY, _("Изменить"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->AddTool( wxID_ANY, _("Удалить"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->Realize();
+
+	bSizer10->Add( m_tools, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	m_typelist = new wxTreeListCtrl( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
+    m_typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
+    m_typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
+    m_typelist->SetColumnEditable (0, true);
+    m_typelist->SetColumnEditable (1, true);
+//    m_BooksListView->colSizes.Add(9);
+//    m_BooksListView->colSizes.Add(1);
+
+	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	m_panel4->SetSizer( bSizer10 );
+	m_panel4->Layout();
+	bSizer10->Fit( m_panel4 );
+	m_notebook->AddPage( m_panel4, _("Типы файлов"), false );
 
 	fgSizerMain->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 

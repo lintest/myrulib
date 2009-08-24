@@ -27,6 +27,7 @@
 #include <wx/radiobox.h>
 #include <wx/notebook.h>
 #include <wx/dialog.h>
+#include "wx/treelistctrl.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SettingsDlg
@@ -58,14 +59,16 @@ private:
         ID_PROXY_NAME,
         ID_PROXY_PASS,
     };
+public:
+    SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+    virtual ~SettingsDlg();
+    static void Execute(wxWindow* parent);
 private:
     void Assign(bool write);
     void OnSelectFileClick( wxCommandEvent& event );
     void OnSelectFolderClick( wxCommandEvent& event );
-public:
-    SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
-    ~SettingsDlg();
-    static void Execute(wxWindow* parent);
+private:
+	wxTreeListCtrl* m_typelist;
 };
 
 #endif //__SettingsDlg__

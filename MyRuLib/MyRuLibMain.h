@@ -13,7 +13,6 @@
 #include <wx/wx.h>
 #include <wx/toolbar.h>
 #include <wx/listbox.h>
-#include <wx/listctrl.h>
 #include <wx/textctrl.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
