@@ -100,17 +100,23 @@ ZipReader::ZipReader(int id)
         }
     }
 
+	wxString home_dir = FbParams::GetText(FB_LIBRARY_DIR);
+
 	for (size_t i = 0; i<items.Count(); i++) {
 		ExtractItems & item = items[i];
 		if (item.id_archive) {
 			m_zipOk = item.zip_name.FileExists();
+			if (!m_zipOk) {
+				item.zip_name.SetPath(home_dir);
+				m_zipOk = item.zip_name.FileExists();
+			}
 			if (m_zipOk) OpenZip(item.zip_name.GetFullPath(), item.book_name);
-		} else if (wxFileName::FileExists(item.book_name)) {
-			OpenFile(item.book_name);
-		} else {
+		} else if (item.id_book > 0) {
 			wxString zip_name = zips.FindZip(item.zip_name.GetFullName());
 			m_zipOk = !zip_name.IsEmpty();
 			if (m_zipOk) OpenZip(zip_name, item.book_name);
+		} else if (wxFileName::FileExists(item.book_name)) {
+			OpenFile(item.book_name);
 		}
 		if (IsOK()) return;
 	}
