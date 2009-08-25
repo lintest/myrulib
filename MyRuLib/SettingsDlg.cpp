@@ -6,17 +6,13 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include <wx/artprov.h>
+#include "FbManager.h"
 #include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ZipReader.h"
 #include "BookListCtrl.h"
 #include "MyRuLibApp.h"
 #include "db/Types.h"
-
-#if defined(__WIN32__)
-#include <shlwapi.h>
-#endif
-
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -186,9 +182,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 
 	m_tools = new wxToolBar( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NODIVIDER);
-	m_tools->AddTool( wxID_ANY, _("Добавить"), wxArtProvider::GetBitmap(wxART_NEW), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_tools->AddTool( wxID_ANY, _("Изменить"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_tools->AddTool( wxID_ANY, _("Удалить"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->AddTool( wxID_ANY, _("Изменить"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->AddTool( wxID_ANY, _("Удалить"), wxArtProvider::GetBitmap(wxART_DELETE), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_tools->Realize();
 
 	bSizer10->Add( m_tools, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
@@ -473,7 +468,9 @@ void SettingsDlg::FillTypeList()
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	wxString sql = wxT("\
-		SELECT books.file_type, types.command \
+		SELECT \
+			books.file_type, types.command, \
+			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
 		FROM ( \
 			 SELECT DISTINCT file_type FROM BOOKS GROUP BY file_type \
 			 UNION SELECT DISTINCT file_type FROM types \
@@ -482,7 +479,7 @@ void SettingsDlg::FillTypeList()
 			 UNION SELECT 'txt' \
 		) AS books \
 		  LEFT JOIN types ON books.file_type = types.file_type \
-		ORDER BY books.file_type \
+		ORDER BY number, books.file_type \
      ");
 
 	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
@@ -496,18 +493,17 @@ void SettingsDlg::FillTypeList()
 	while ( result && result->Next() ) {
 		wxString file_type = result->GetResultString(wxT("file_type"));
 		wxString command = result->GetResultString(wxT("command"));
+		if (file_type == wxT("exe")) continue;
+
 		wxTreeItemId item = m_typelist->AppendItem(root, file_type);
 		m_typelist->SetItemText (item, 1, command);
 
-		#if defined(__WIN32__)
-		file_type = wxT(".") + file_type;
-		DWORD dwSize = MAX_PATH;
-		AssocQueryString(0, ASSOCSTR_EXECUTABLE, file_type.c_str(), NULL, wxStringBuffer(command, MAX_PATH), &dwSize);
-		m_typelist->SetItemText (item, 1, command);
-		#endif
+		if (FbManager::GetAssociatedCommand(file_type, command))
+			m_typelist->SetItemText (item, 1, command);
 	}
 
     m_typelist->ExpandAll(root);
 
 	m_typelist->Thaw();
 }
+

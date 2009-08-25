@@ -18,6 +18,10 @@
 #include "db/Bookseq.h"
 #include "ZipReader.h"
 
+#if defined(__WIN32__)
+#include <shlwapi.h>
+#endif
+
 bool FbManager::ImportZip(const wxString& filename, const wxString& info)
 {
 	ZipImportThread *thread = new ZipImportThread(filename);
@@ -329,3 +333,20 @@ int BookInfo::NewId(int param)
 	return row->value;
 }
 
+bool FbManager::GetAssociatedCommand(const wxString & file_type, wxString &command)
+{
+#if defined(__WIN32__)
+	wxString ext = wxT(".") + file_type;
+	DWORD dwSize = MAX_PATH;
+	if (AssocQueryString(0, ASSOCSTR_EXECUTABLE, ext.c_str(), wxT("open"), wxStringBuffer(command, MAX_PATH), &dwSize) == S_OK) {
+		if (command.Left(1) == wxT("\"")) {
+			command = command.Mid(1);
+			command = command.Left(command.Find(wxT("\"")));
+		} else {
+			command = command.Left(command.Find(wxT(" ")));
+		}
+		return true;
+	}
+#endif
+	return false;
+}

@@ -37,17 +37,19 @@ public:
 	int number;
 };
 
-class FbManager{
-public:
-    static wxString GetAnnotation(int id);
-	static void FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only);
-	static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
-	static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
-	static void OpenBook(int id, wxString &file_type);
-	static bool ImportZip(const wxString& filename, const wxString& info);
-	static bool ImportDir(const wxString& filename, const wxString& info);
-private:
-	static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
+class FbManager
+{
+	public:
+		static wxString GetAnnotation(int id);
+		static void FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only);
+		static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
+		static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
+		static void OpenBook(int id, wxString &file_type);
+		static bool ImportZip(const wxString& filename, const wxString& info);
+		static bool ImportDir(const wxString& filename, const wxString& info);
+		static bool GetAssociatedCommand(const wxString & file_type, wxString &command);
+	private:
+		static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };
 
 class BookInfo
