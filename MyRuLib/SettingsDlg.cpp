@@ -489,7 +489,8 @@ void SettingsDlg::FillTypeList()
 			 SELECT DISTINCT file_type FROM BOOKS GROUP BY file_type \
 			 UNION SELECT DISTINCT file_type FROM types \
 			 UNION SELECT 'fb2' \
-			 UNION SELECT 'doc' \
+			 UNION SELECT 'pdf' \
+			 UNION SELECT 'djvu' \
 			 UNION SELECT 'txt' \
 		) AS books \
 		  LEFT JOIN types ON books.file_type = types.file_type \
