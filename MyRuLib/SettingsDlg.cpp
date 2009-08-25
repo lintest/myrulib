@@ -10,6 +10,13 @@
 #include "SettingsDlg.h"
 #include "ZipReader.h"
 #include "BookListCtrl.h"
+#include "MyRuLibApp.h"
+#include "db/Types.h"
+
+#if defined(__WIN32__)
+#include <shlwapi.h>
+#endif
+
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -173,6 +180,35 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_panel1->Layout();
 	bSizer1->Fit( m_panel1 );
 	m_notebook->AddPage( m_panel1, _("Папки и файлы"), true );
+
+	m_panel4 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxVERTICAL );
+
+	m_tools = new wxToolBar( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NODIVIDER);
+	m_tools->AddTool( wxID_ANY, _("Добавить"), wxArtProvider::GetBitmap(wxART_NEW), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->AddTool( wxID_ANY, _("Изменить"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->AddTool( wxID_ANY, _("Удалить"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_tools->Realize();
+
+	bSizer10->Add( m_tools, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	BookListCtrl * typelist = new BookListCtrl( m_panel4, wxID_ANY, wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE );
+    typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
+    typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
+    typelist->SetColumnEditable (0, false);
+    typelist->SetColumnEditable (1, false);
+    typelist->colSizes.Add(1);
+    typelist->colSizes.Add(9);
+	m_typelist = typelist;
+
+	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	m_panel4->SetSizer( bSizer10 );
+	m_panel4->Layout();
+	bSizer10->Fit( m_panel4 );
+	m_notebook->AddPage( m_panel4, _("Типы файлов"), false );
+
 	m_panel2 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
@@ -225,6 +261,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_panel2->Layout();
 	bSizer12->Fit( m_panel2 );
 	m_notebook->AddPage( m_panel2, _("Внешнее устройство"), false );
+
+	/*
 	m_panel3 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer3;
 	fgSizer3 = new wxFlexGridSizer( 1, 1, 0, 0 );
@@ -293,33 +331,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer3->Fit( m_panel3 );
 	m_notebook->AddPage( m_panel3, _("Настройки интернет"), false );
 
-	m_panel4 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer10;
-	bSizer10 = new wxBoxSizer( wxVERTICAL );
-
-	m_tools = new wxToolBar( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NODIVIDER);
-	m_tools->AddTool( wxID_ANY, _("Добавить"), wxArtProvider::GetBitmap(wxART_NEW), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_tools->AddTool( wxID_ANY, _("Изменить"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_tools->AddTool( wxID_ANY, _("Удалить"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_tools->Realize();
-
-	bSizer10->Add( m_tools, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
-
-	BookListCtrl * typelist = new BookListCtrl( m_panel4, wxID_ANY, wxTR_DEFAULT_STYLE );
-    typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
-    typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
-    typelist->SetColumnEditable (0, true);
-    typelist->SetColumnEditable (1, true);
-    typelist->colSizes.Add(1);
-    typelist->colSizes.Add(9);
-	m_typelist = typelist;
-
-	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
-
-	m_panel4->SetSizer( bSizer10 );
-	m_panel4->Layout();
-	bSizer10->Fit( m_panel4 );
-	m_notebook->AddPage( m_panel4, _("Типы файлов"), false );
+	*/
 
 	fgSizerMain->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
@@ -339,8 +351,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 SettingsDlg::~SettingsDlg()
 {
 }
-
-
 
 void SettingsDlg::OnSelectFileClick( wxCommandEvent& event )
 {
@@ -451,6 +461,53 @@ void SettingsDlg::Assign(bool write)
 void SettingsDlg::Execute(wxWindow* parent)
 {
     SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
+
     dlg.Assign(false);
+	dlg.FillTypeList();
+
     if (dlg.ShowModal() == wxID_OK) dlg.Assign(true);
 };
+
+void SettingsDlg::FillTypeList()
+{
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+	wxString sql = wxT("\
+		SELECT books.file_type, types.command \
+		FROM ( \
+			 SELECT DISTINCT file_type FROM BOOKS GROUP BY file_type \
+			 UNION SELECT DISTINCT file_type FROM types \
+			 UNION SELECT 'fb2' \
+			 UNION SELECT 'doc' \
+			 UNION SELECT 'txt' \
+		) AS books \
+		  LEFT JOIN types ON books.file_type = types.file_type \
+		ORDER BY books.file_type \
+     ");
+
+	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
+
+	m_typelist->Freeze();
+
+    m_typelist->DeleteRoot();
+    wxTreeItemId root = m_typelist->AddRoot (_T("Root"));
+
+	while ( result && result->Next() ) {
+		wxString file_type = result->GetResultString(wxT("file_type"));
+		wxString command = result->GetResultString(wxT("command"));
+		wxTreeItemId item = m_typelist->AppendItem(root, file_type);
+		m_typelist->SetItemText (item, 1, command);
+
+		#if defined(__WIN32__)
+		file_type = wxT(".") + file_type;
+		DWORD dwSize = MAX_PATH;
+		AssocQueryString(0, ASSOCSTR_EXECUTABLE, file_type.c_str(), NULL, wxStringBuffer(command, MAX_PATH), &dwSize);
+		m_typelist->SetItemText (item, 1, command);
+		#endif
+	}
+
+    m_typelist->ExpandAll(root);
+
+	m_typelist->Thaw();
+}

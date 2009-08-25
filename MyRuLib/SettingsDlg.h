@@ -67,6 +67,7 @@ private:
     void Assign(bool write);
     void OnSelectFileClick( wxCommandEvent& event );
     void OnSelectFolderClick( wxCommandEvent& event );
+	void FillTypeList();
 private:
 	wxTreeListCtrl* m_typelist;
 };
