@@ -486,7 +486,7 @@ void SettingsDlg::FillTypeList()
 			books.file_type, types.command, \
 			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
 		FROM ( \
-			 SELECT DISTINCT file_type FROM BOOKS GROUP BY file_type \
+			 SELECT DISTINCT LOWER(file_type) AS file_type FROM BOOKS GROUP BY file_type \
 			 UNION SELECT DISTINCT file_type FROM types \
 			 UNION SELECT 'fb2' \
 			 UNION SELECT 'pdf' \
