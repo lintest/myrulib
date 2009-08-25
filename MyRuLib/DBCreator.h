@@ -21,7 +21,7 @@ private:
 public:
 	DBCreator(DatabaseLayer * database);
 	~DBCreator(void);
-	bool CreateDatabase(void);
+	bool CreateDatabase(const wxString & filename);
 	bool UpgradeDatabase();
 };
 

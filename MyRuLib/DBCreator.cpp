@@ -21,10 +21,11 @@ DBCreator::~DBCreator(void) {
 
 extern wxString strNobody;
 
-bool DBCreator::CreateDatabase(void)
+bool DBCreator::CreateDatabase(const wxString & filename)
 {
 
-	wxMessageBox(_("Database does not exist... recreating."));
+	wxString msg = _("Database does not exist... recreating:");
+	wxMessageBox(msg + wxT("\n") + filename);
 
 	// Try to recreate tables
 	try {

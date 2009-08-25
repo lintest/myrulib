@@ -285,28 +285,29 @@ void FbManager::OpenBook(int id, wxString &file_type)
     wxFileOutputStream out(file_path);
     out.Write(reader.GetZip());
 
-    #if defined(__WXMSW__)
+#if defined(__WIN32__)
     ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
-    #else
+#else
     wxExecute(fbreader + wxT(" ") + file_path);
-    #endif
+#endif
 }
 
-void BookInfo::MakeLower(wxString & data){
-#ifdef __WIN32__
-      int len = data.length() + 1;
-      wxChar * buf = new wxChar[len];
-      wxStrcpy(buf, data.c_str());
-      CharLower(buf);
-      data = buf;
-      delete [] buf;
+void BookInfo::MakeLower(wxString & data)
+{
+#if defined(__WIN32__)
+	int len = data.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, data.c_str());
+	CharLower(buf);
+	data = buf;
+	delete [] buf;
 #else
       data.MakeLower();
 #endif
 }
 
 void BookInfo::MakeUpper(wxString & data){
-#ifdef __WIN32__
+#if defined(__WIN32__)
       int len = data.length() + 1;
       wxChar * buf = new wxChar[len];
       wxStrcpy(buf, data.c_str());

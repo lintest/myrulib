@@ -9,6 +9,7 @@
 #include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ZipReader.h"
+#include "BookListCtrl.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -304,13 +305,14 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer10->Add( m_tools, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
-	m_typelist = new wxTreeListCtrl( m_panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
-    m_typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
-    m_typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
-    m_typelist->SetColumnEditable (0, true);
-    m_typelist->SetColumnEditable (1, true);
-//    m_BooksListView->colSizes.Add(9);
-//    m_BooksListView->colSizes.Add(1);
+	BookListCtrl * typelist = new BookListCtrl( m_panel4, wxID_ANY, wxTR_DEFAULT_STYLE );
+    typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
+    typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
+    typelist->SetColumnEditable (0, true);
+    typelist->SetColumnEditable (1, true);
+    typelist->colSizes.Add(1);
+    typelist->colSizes.Add(9);
+	m_typelist = typelist;
 
 	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
@@ -337,6 +339,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 SettingsDlg::~SettingsDlg()
 {
 }
+
+
 
 void SettingsDlg::OnSelectFileClick( wxCommandEvent& event )
 {

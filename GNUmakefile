@@ -95,39 +95,39 @@ MYRULIB_CFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cflags \
 MYRULIB_CXXFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
-	build/MyRuLib_BaseThread.o \
-	build/MyRuLib_BookListCtrl.o \
-	build/MyRuLib_DBCreator.o \
-	build/MyRuLib_ExpThread.o \
-	build/MyRuLib_ExternalDlg.o \
-	build/MyRuLib_FbGenres.o \
-	build/MyRuLib_FbManager.o \
-	build/MyRuLib_FbParams.o \
-	build/MyRuLib_ImpContext.o \
-	build/MyRuLib_ImpThread.o \
-	build/MyRuLib_InfoCash.o \
-	build/MyRuLib_InfoThread.o \
-	build/MyRuLib_MyRuLibApp.o \
-	build/MyRuLib_MyRuLibMain.o \
-	build/MyRuLib_ParseCtx.o \
-	build/MyRuLib_ProgressBar.o \
-	build/MyRuLib_SettingsDlg.o \
-	build/MyRuLib_TitleThread.o \
-	build/MyRuLib_ZipReader.o \
-	build/MyRuLib_Archives.o \
-	build/MyRuLib_Authors.o \
-	build/MyRuLib_Books.o \
-	build/MyRuLib_Bookseq.o \
-	build/MyRuLib_Files.o \
-	build/MyRuLib_Params.o \
-	build/MyRuLib_Sequences.o \
-	build/MyRuLib_Types.o \
-	build/MyRuLib_wxActiveRecord.o \
-	build/MyRuLib_ZipBooks.o \
-	build/MyRuLib_ZipFiles.o \
-	build/MyRuLib_sha1.o \
-	build/MyRuLib_base64.o \
-	build/MyRuLib_treelistctrl.o
+	build/myrulib_BaseThread.o \
+	build/myrulib_BookListCtrl.o \
+	build/myrulib_DBCreator.o \
+	build/myrulib_ExpThread.o \
+	build/myrulib_ExternalDlg.o \
+	build/myrulib_FbGenres.o \
+	build/myrulib_FbManager.o \
+	build/myrulib_FbParams.o \
+	build/myrulib_ImpContext.o \
+	build/myrulib_ImpThread.o \
+	build/myrulib_InfoCash.o \
+	build/myrulib_InfoThread.o \
+	build/myrulib_MyRuLibApp.o \
+	build/myrulib_MyRuLibMain.o \
+	build/myrulib_ParseCtx.o \
+	build/myrulib_ProgressBar.o \
+	build/myrulib_SettingsDlg.o \
+	build/myrulib_TitleThread.o \
+	build/myrulib_ZipReader.o \
+	build/myrulib_Archives.o \
+	build/myrulib_Authors.o \
+	build/myrulib_Books.o \
+	build/myrulib_Bookseq.o \
+	build/myrulib_Files.o \
+	build/myrulib_Params.o \
+	build/myrulib_Sequences.o \
+	build/myrulib_Types.o \
+	build/myrulib_wxActiveRecord.o \
+	build/myrulib_ZipBooks.o \
+	build/myrulib_ZipFiles.o \
+	build/myrulib_sha1.o \
+	build/myrulib_base64.o \
+	build/myrulib_treelistctrl.o
 
 ### Conditionally set variables: ###
 
@@ -157,7 +157,7 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libSQLite.a build/libExpat.a build/libDatabaseLayer.a build/MyRuLib
+all: test_for_selected_wxbuild build/libSQLite.a build/libExpat.a build/libDatabaseLayer.a build/myrulib
 
 install: 
 
@@ -169,7 +169,7 @@ clean:
 	rm -f build/libSQLite.a
 	rm -f build/libExpat.a
 	rm -f build/libDatabaseLayer.a
-	rm -f build/MyRuLib
+	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
@@ -189,7 +189,7 @@ build/libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
 	$(AR) rcu $@ $(DATABASELAYER_OBJECTS)
 	$(RANLIB) $@
 
-build/MyRuLib: $(MYRULIB_OBJECTS) build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a
+build/myrulib: $(MYRULIB_OBJECTS) build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)    $(LDFLAGS)  build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 
 build/SQLite_sqlite3.o: ./SQLite/sqlite3.c
@@ -240,103 +240,103 @@ build/DatabaseLayer_SqliteResultSet.o: ./DatabaseLayer/SqliteResultSet.cpp
 build/DatabaseLayer_SqliteResultSetMetaData.o: ./DatabaseLayer/SqliteResultSetMetaData.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_BaseThread.o: ./MyRuLib/BaseThread.cpp
+build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
+build/myrulib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_DBCreator.o: ./MyRuLib/DBCreator.cpp
+build/myrulib_DBCreator.o: ./MyRuLib/DBCreator.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ExpThread.o: ./MyRuLib/ExpThread.cpp
+build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
+build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_FbGenres.o: ./MyRuLib/FbGenres.cpp
+build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_FbManager.o: ./MyRuLib/FbManager.cpp
+build/myrulib_FbManager.o: ./MyRuLib/FbManager.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_FbParams.o: ./MyRuLib/FbParams.cpp
+build/myrulib_FbParams.o: ./MyRuLib/FbParams.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ImpContext.o: ./MyRuLib/ImpContext.cpp
+build/myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ImpThread.o: ./MyRuLib/ImpThread.cpp
+build/myrulib_ImpThread.o: ./MyRuLib/ImpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_InfoCash.o: ./MyRuLib/InfoCash.cpp
+build/myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_InfoThread.o: ./MyRuLib/InfoThread.cpp
+build/myrulib_InfoThread.o: ./MyRuLib/InfoThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
+build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
+build/myrulib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
+build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp
+build/myrulib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp
+build/myrulib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_TitleThread.o: ./MyRuLib/TitleThread.cpp
+build/myrulib_TitleThread.o: ./MyRuLib/TitleThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ZipReader.o: ./MyRuLib/ZipReader.cpp
+build/myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Archives.o: ./MyRuLib/db/Archives.cpp
+build/myrulib_Archives.o: ./MyRuLib/db/Archives.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Authors.o: ./MyRuLib/db/Authors.cpp
+build/myrulib_Authors.o: ./MyRuLib/db/Authors.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Books.o: ./MyRuLib/db/Books.cpp
+build/myrulib_Books.o: ./MyRuLib/db/Books.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Bookseq.o: ./MyRuLib/db/Bookseq.cpp
+build/myrulib_Bookseq.o: ./MyRuLib/db/Bookseq.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Files.o: ./MyRuLib/db/Files.cpp
+build/myrulib_Files.o: ./MyRuLib/db/Files.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Params.o: ./MyRuLib/db/Params.cpp
+build/myrulib_Params.o: ./MyRuLib/db/Params.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Sequences.o: ./MyRuLib/db/Sequences.cpp
+build/myrulib_Sequences.o: ./MyRuLib/db/Sequences.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_Types.o: ./MyRuLib/db/Types.cpp
+build/myrulib_Types.o: ./MyRuLib/db/Types.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
+build/myrulib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ZipBooks.o: ./MyRuLib/db/ZipBooks.cpp
+build/myrulib_ZipBooks.o: ./MyRuLib/db/ZipBooks.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_ZipFiles.o: ./MyRuLib/db/ZipFiles.cpp
+build/myrulib_ZipFiles.o: ./MyRuLib/db/ZipFiles.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_sha1.o: ./MyRuLib/sha1/sha1.c
+build/myrulib_sha1.o: ./MyRuLib/sha1/sha1.c
 	$(CC) -c -o $@ $(MYRULIB_CFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_base64.o: ./MyRuLib/wx/base64.cpp
+build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/MyRuLib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
+build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean

@@ -10,6 +10,7 @@
 #include <wx/app.h>
 #include <wx/image.h>
 #include <wx/fs_mem.h>
+#include <wx/stdpaths.h>
 #include <DatabaseLayerException.h>
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
@@ -45,37 +46,88 @@ int MyRuLibApp::OnExit()
 	return wxApp::OnExit();
 }
 
-wxString MyRuLibApp::GetAppPath()
+class MyStandardPaths: public wxStandardPaths
 {
-    if (argc) {
-        wxFileName app_filename = wxString(argv[0]);
-        return app_filename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+	public:
+		virtual wxString GetDataFile() const;
+		virtual wxString MyStandardPaths::GetAppFileName() const;
+	protected:
+		virtual wxString GetDataDir() const;
+	private:
+		wxFileName GetDatabaseFilename() const;
+};
+
+wxString MyStandardPaths::GetDataDir() const
+{
+#if defined(__WIN32__)
+	return wxStandardPaths::GetUserConfigDir();
+#else
+	return wxStandardPaths::GetUserConfigDir() + wxT("/.local/");
+#endif
+}
+
+wxString MyStandardPaths::GetAppFileName() const
+{
+    if (wxGetApp().argc) {
+        return wxString(wxGetApp().argv[0]);
     } else {
-        return wxEmptyString;
+        return wxGetApp().GetAppName();
     }
+}
+
+wxString MyStandardPaths::GetDataFile() const
+{
+	wxFileName filename = GetDatabaseFilename();
+	filename.Normalize();
+	return filename.GetFullPath();
+}
+
+wxFileName MyStandardPaths::GetDatabaseFilename() const
+{
+	wxFileName filename = GetAppFileName();
+	filename.SetExt(wxT("db"));
+
+	if (wxGetApp().argc > 1) {
+		wxString arg = wxGetApp().argv[1];
+		if (wxFileName::DirExists(arg)) {
+			wxFileName filename = wxGetApp().GetAppName() + wxT(".db");
+			filename.SetPath(arg);
+			return filename;
+		}
+		return wxFileName(arg);
+	}
+
+	if (filename.FileExists())
+		return filename;
+
+	wxString filepath = GetDataDir();
+	if (!wxFileName::DirExists(filepath))
+		wxFileName::Mkdir(filepath);
+
+	filepath = AppendAppName(filepath);
+	if (!wxFileName::DirExists(filepath))
+		wxFileName::Mkdir(filepath);
+
+	filename.SetPath(filepath);
+	return filename;
+}
+
+wxString MyRuLibApp::GetAppPath() const
+{
+	wxFileName filename = m_datafile;
+	return filename.GetPath();
 }
 
 bool MyRuLibApp::ConnectToDatabase()
 {
-    wxFileName db_filename;
-    if (wxGetApp().argc) {
-        wxString app_filename = wxString(wxGetApp().argv[0]);
-        db_filename = wxFileName(app_filename);
-        db_filename.SetExt(wxT("db"));
-    } else {
-        db_filename = wxFileName(wxT("MyRuLib.db"));
-    }
-
-	wxString db_filepath = db_filename.GetFullPath();
-	if (wxGetApp().argc>1)
-		::wxRemoveFile(db_filepath);
+	m_datafile = MyStandardPaths().GetDataFile();
 
 	m_Database = new SqliteDatabaseLayer();
-	bool bCreate = !wxFileExists(db_filepath);
+	bool bCreate = !wxFileExists(m_datafile);
 	try	{
-		m_Database->Open(db_filepath);
+		m_Database->Open(m_datafile);
 		DBCreator creator(m_Database);
-		if(bCreate)	creator.CreateDatabase();
+		if(bCreate)	creator.CreateDatabase(m_datafile);
 		creator.UpgradeDatabase();
 	} catch(DatabaseLayerException & e) {
 		wxMessageBox(e.GetErrorMessage());

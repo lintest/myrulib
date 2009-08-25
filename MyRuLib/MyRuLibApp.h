@@ -20,17 +20,19 @@
 
 class MyRuLibApp : public wxApp
 {
-private:
-	DatabaseLayer * m_Database;
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
 	bool ConnectToDatabase();
 	bool CreateDatabase();
-    wxString GetAppPath();
+    wxString GetAppPath() const;
+    wxString GetAppData() const { return m_datafile; };
 	DatabaseLayer * GetDatabase() {return m_Database;};
 public:
     wxCriticalSection m_DbSection;
+private:
+	DatabaseLayer * m_Database;
+	wxString m_datafile;
 };
 
 DECLARE_APP(MyRuLibApp)

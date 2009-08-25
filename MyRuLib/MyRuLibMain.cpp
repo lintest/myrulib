@@ -69,7 +69,7 @@ END_EVENT_TABLE()
 MyRuLibMainFrame::MyRuLibMainFrame()
 	:m_BooksInfoPanel(NULL)
 {
-	Create(NULL, wxID_ANY, _("MyRuLib - My Russian Library"));
+	Create(NULL, wxID_ANY, wxT("MyRuLib - My Russian Library"));
 }
 
 bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
@@ -235,7 +235,8 @@ void MyRuLibMainFrame::OnChangeView(wxCommandEvent & event)
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
-    wxMessageBox(strVersionInfo);
+    wxMessageBox(strVersionInfo + wxT("\n\nDatabase:\n") + wxGetApp().GetAppData());
+
 }
 
 wxToolBar * MyRuLibMainFrame::CreateButtonBar()

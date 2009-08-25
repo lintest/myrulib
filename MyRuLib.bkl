@@ -50,7 +50,7 @@
 		<include>SQLite</include>
     </lib>
 
-    <exe id="MyRuLib" template="wxgui">
+    <exe id="myrulib" template="wxgui">
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookListCtrl.cpp</sources>
 		<sources>MyRuLib/DBCreator.cpp</sources>
