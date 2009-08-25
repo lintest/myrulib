@@ -24,11 +24,6 @@ BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 END_EVENT_TABLE()
 
-/*
-wxBitmap( wxT("exefile_xpm"), wxBITMAP_TYPE_RESOURCE ) wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE)
-wxBitmap( wxT("folder_open_xpm"), wxBITMAP_TYPE_RESOURCE ) wxArtProvider::GetBitmap(wxART_FOLDER_OPEN)
-*/
-
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
     wxNotebook* m_notebook;
@@ -98,23 +93,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizerTop11->Add( m_textCtrl1, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
 
-	m_staticText5 = new wxStaticText( m_panel1, wxID_ANY, _("Программа для\nчтения книг FB2:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText5->Wrap( -1 );
-	fgSizerTop11->Add( m_staticText5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textCtrl5 = new wxTextCtrl( m_panel1, ID_FB2_PROGRAM_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl5->SetMinSize( wxSize( 300,-1 ) );
-
-	bSizer3->Add( m_textCtrl5, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_bpButton5 = new wxBitmapButton( m_panel1, ID_FB2_PROGRAM_BTN, wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizer3->Add( m_bpButton5, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-	fgSizerTop11->Add( bSizer3, 1, wxEXPAND, 5 );
-
 	m_staticText2 = new wxStaticText( m_panel1, wxID_ANY, _("Папка с файлами zip\nбиблиотеки lib.rus.ec:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	fgSizerTop11->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -149,28 +127,64 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizerTop11->Add( bSizer5, 1, wxEXPAND, 5 );
 
-	m_staticText4 = new wxStaticText( m_panel1, wxID_ANY, _("Папка для хранения\nвременных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText4->Wrap( -1 );
-	fgSizerTop11->Add( m_staticText4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textCtrl4 = new wxTextCtrl( m_panel1, ID_EXTRACT_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl4->SetMinSize( wxSize( 300,-1 ) );
-
-	bSizer6->Add( m_textCtrl4, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_bpButton4 = new wxBitmapButton( m_panel1, ID_EXTRACT_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizer6->Add( m_bpButton4, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-	fgSizerTop11->Add( bSizer6, 1, wxEXPAND, 5 );
-
 	bSizer1->Add( fgSizerTop11, 1, wxEXPAND|wxTOP, 5 );
 
-	m_checkBox1 = new wxCheckBox( m_panel1, ID_EXTRACT_DELETE, _("Удалять все временные файлы при выходе из программы."), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkBox21 = new wxCheckBox( m_panel1, ID_USE_PROXY, _("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
 
-	bSizer1->Add( m_checkBox1, 0, wxALL|wxEXPAND, 5 );
+	bSizer1->Add( m_checkBox21, 0, wxALL|wxEXPAND, 5 );
+
+	wxFlexGridSizer* fgSizer16;
+	fgSizer16 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer16->SetFlexibleDirection( wxBOTH );
+	fgSizer16->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_staticText7 = new wxStaticText( m_panel1, wxID_ANY, _("    Адрес прокси-сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7->Wrap( -1 );
+	fgSizer16->Add( m_staticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_textCtrl7 = new wxTextCtrl( m_panel1, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl7->SetMinSize( wxSize( 100,-1 ) );
+
+	bSizer13->Add( m_textCtrl7, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+	m_staticText8 = new wxStaticText( m_panel1, wxID_ANY, _("Порт:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText8->Wrap( -1 );
+	bSizer13->Add( m_staticText8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_textCtrl8 = new wxTextCtrl( m_panel1, ID_PROXY_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl8->SetMinSize( wxSize( 60,-1 ) );
+
+	bSizer13->Add( m_textCtrl8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+
+	fgSizer16->Add( bSizer13, 0, wxEXPAND, 5 );
+
+	m_staticText9 = new wxStaticText( m_panel1, wxID_ANY, _("    Имя пользователя:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText9->Wrap( -1 );
+	fgSizer16->Add( m_staticText9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxBoxSizer* bSizer14;
+	bSizer14 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_textCtrl9 = new wxTextCtrl( m_panel1, ID_PROXY_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl9->SetMinSize( wxSize( 110,-1 ) );
+
+	bSizer14->Add( m_textCtrl9, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+	m_staticText10 = new wxStaticText( m_panel1, wxID_ANY, _("Пароль:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText10->Wrap( -1 );
+	bSizer14->Add( m_staticText10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_textCtrl10 = new wxTextCtrl( m_panel1, ID_PROXY_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
+	m_textCtrl10->SetMinSize( wxSize( 110,-1 ) );
+
+	bSizer14->Add( m_textCtrl10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+
+	fgSizer16->Add( bSizer14, 0, wxEXPAND, 5 );
+
+	bSizer1->Add( fgSizer16, 0, wxEXPAND, 5 );
 
 	m_panel1->SetSizer( bSizer1 );
 	m_panel1->Layout();

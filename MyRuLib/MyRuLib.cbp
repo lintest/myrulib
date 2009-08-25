@@ -93,6 +93,7 @@
 					<Add library="libole32.a" />
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
+					<Add library="libshlwapi.a" />
 					<Add directory="$(WXWIN)\lib\gcc_lib" />
 					<Add directory="..\build\WinDebug\" />
 				</Linker>
@@ -146,6 +147,7 @@
 					<Add library="libole32.a" />
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
+					<Add library="libshlwapi.a" />
 					<Add directory="$(WXWIN)\lib\gcc_lib" />
 					<Add directory="..\build\WinRelease\" />
 				</Linker>
