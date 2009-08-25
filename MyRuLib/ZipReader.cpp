@@ -112,7 +112,7 @@ ZipReader::ZipReader(int id)
 			}
 			if (m_zipOk) OpenZip(item.zip_name.GetFullPath(), item.book_name);
 		} else if (item.id_book > 0) {
-			wxString zip_name = zips.FindZip(item.zip_name.GetFullName());
+			wxString zip_name = zips.FindZip(item.book_name);
 			m_zipOk = !zip_name.IsEmpty();
 			if (m_zipOk) OpenZip(zip_name, item.book_name);
 		} else if (wxFileName::FileExists(item.book_name)) {
