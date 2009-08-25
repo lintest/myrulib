@@ -32,7 +32,7 @@ CXXFLAGS ?=
 CPPFLAGS ?= 
 
 # Standard linker flags 
-LDFLAGS ?= -static
+LDFLAGS ?= 
 
 # Location and arguments of wx-config script 
 WX_CONFIG ?= wx-config

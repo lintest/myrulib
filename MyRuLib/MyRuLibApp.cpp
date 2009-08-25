@@ -50,7 +50,7 @@ class MyStandardPaths: public wxStandardPaths
 {
 	public:
 		virtual wxString GetDataFile() const;
-		virtual wxString MyStandardPaths::GetAppFileName() const;
+		virtual wxString GetAppFileName() const;
 	protected:
 		virtual wxString GetDataDir() const;
 	private:

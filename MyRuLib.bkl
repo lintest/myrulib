@@ -5,19 +5,18 @@
 
 	<set var="BUILDDIR">build</set>
 	
-	<set var="DEFAULT_LDFLAGS">-static</set>
-	
 	<set var="WX_PORT_DEFAULT"></set>
 	<set var="WX_SHARED_DEFAULT">0</set>
 	<set var="WX_UNICODE_DEFAULT">1</set>
 	<set var="WX_DEBUG_DEFAULT">0</set>
 
     <if cond="FORMAT=='gnu'">
-		<set var="WX_VERSION_DEFAULT">2.8</set>
+	  <set var="WX_VERSION_DEFAULT">2.8</set>
     </if>
 	
     <if cond="FORMAT=='mingw'">
-		<set var="WX_VERSION_DEFAULT">28</set>
+	  <set var="WX_VERSION_DEFAULT">28</set>
+	  <set var="DEFAULT_LDFLAGS">-static</set>
     </if>
 
     <include file="./Presets/wx.bkl"/>
