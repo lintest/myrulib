@@ -97,6 +97,9 @@
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
+		<if cond="FORMAT=='mingw'">
+			<sys-lib>shlwapi</sys-lib>
+		</if>
     </exe>
 
 </makefile>
