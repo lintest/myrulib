@@ -67,6 +67,7 @@ public:
 	wxString convert;
 	wxString file_type;
 	wxString command;
+	bool isOk;
 
 public:
 

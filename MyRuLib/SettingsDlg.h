@@ -9,23 +9,6 @@
 #define __SettingsDlg__
 
 #include <wx/wx.h>
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/textctrl.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/sizer.h>
-#include <wx/checkbox.h>
-#include <wx/panel.h>
-#include <wx/radiobox.h>
-#include <wx/notebook.h>
 #include <wx/dialog.h>
 #include "wx/treelistctrl.h"
 
@@ -54,6 +37,9 @@ private:
         ID_PROXY_NAME,
         ID_PROXY_PASS,
         ID_TYPELIST,
+        ID_APPEND_TYPE,
+        ID_MODIFY_TYPE,
+        ID_DELETE_TYPE,
     };
 public:
     SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
@@ -62,8 +48,11 @@ public:
 private:
     void Assign(bool write);
     void OnSelectFolderClick( wxCommandEvent& event );
+    void OnAppendType( wxCommandEvent& event );
+    void OnModifyType( wxCommandEvent& event );
+    void OnDeleteType( wxCommandEvent& event );
 	void OnTypelistActivated( wxTreeEvent & event );
-	void SelectApplication(const wxTreeItemId &item);
+	void SelectApplication();
 	void FillTypelist();
 	void SaveTypelist();
 private:
