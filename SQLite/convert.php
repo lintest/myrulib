@@ -424,7 +424,7 @@ function create_indexes($sqlite_db)
 }
 
 
-$sqlite_db = new PDO('sqlite:./MyRuLib.db');
+$sqlite_db = new PDO('sqlite:./myrulib.db');
 $mysql_db = new mysqli('localhost', 'root', '', 'lib');
 $mysql_db->query("SET NAMES utf8");
 

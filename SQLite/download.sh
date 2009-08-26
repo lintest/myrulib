@@ -12,8 +12,8 @@ do
     zcat lib.$t.sql.gz | mysql $DBNAME -u root -D lib
 done
 
-rm MyRuLib.db
+rm myrulib.db
 php convert.php
 
-rm MyRuLib.db.zip
-zip MyRuLib.db.zip MyRuLib.db
+rm myrulib.db.zip
+zip myrulib.db.zip myrulib.db
