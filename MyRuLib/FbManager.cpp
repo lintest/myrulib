@@ -16,6 +16,7 @@
 #include "RecordIDClientData.h"
 #include "db/Sequences.h"
 #include "db/Bookseq.h"
+#include "db/Types.h"
 #include "ZipReader.h"
 
 #if defined(__WIN32__)
@@ -279,7 +280,12 @@ void FbManager::OpenBook(int id, wxString &file_type)
         return;
     }
 
-    wxString fbreader = FbParams().GetText(FB_FB2_PROGRAM);
+    wxString command = GetOpenCommand(file_type);
+    if (command.IsEmpty()) {
+    	wxString msg = wxString::Format(_("Не найдено приложение для просмотра файлов типа: %s"), file_type.c_str());
+    	wxMessageBox(msg);
+    	return;
+    }
 
     wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
     wxRemoveFile(file_name.GetFullPath());
@@ -290,9 +296,9 @@ void FbManager::OpenBook(int id, wxString &file_type)
     out.Write(reader.GetZip());
 
 #if defined(__WIN32__)
-    ShellExecute(NULL, NULL, fbreader, file_path, NULL, SW_SHOW);
+    ShellExecute(NULL, NULL, command, file_path, NULL, SW_SHOW);
 #else
-    wxExecute(fbreader + wxT(" ") + file_path);
+    wxExecute(command + wxT(" ") + file_path);
 #endif
 }
 
@@ -333,7 +339,7 @@ int BookInfo::NewId(int param)
 	return row->value;
 }
 
-bool FbManager::GetAssociatedCommand(const wxString & file_type, wxString &command)
+bool FbManager::GetSystemCommand(const wxString & file_type, wxString &command)
 {
 #if defined(__WIN32__)
 	wxString ext = wxT(".") + file_type;
@@ -349,4 +355,19 @@ bool FbManager::GetAssociatedCommand(const wxString & file_type, wxString &comma
 	}
 #endif
 	return false;
+}
+
+wxString FbManager::GetOpenCommand(const wxString & file_type)
+{
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+	Types types(wxGetApp().GetDatabase());
+
+	TypesRow * row = types.FileType(file_type);
+
+	if (row) return row->command;
+
+	wxString sys_command;
+	if (FbManager::GetSystemCommand(file_type, sys_command)) return sys_command;
+
+	return wxEmptyString;
 }

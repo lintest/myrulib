@@ -17,11 +17,10 @@
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
-	EVT_BUTTON( ID_FB2_PROGRAM_BTN, SettingsDlg::OnSelectFileClick )
 	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_EXTRACT_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_TREE_ITEM_ACTIVATED(ID_TYPELIST, SettingsDlg::OnTypelistActivated)
 END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
@@ -202,7 +201,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer10->Add( m_tools, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
-	BookListCtrl * typelist = new BookListCtrl( m_panel4, wxID_ANY, wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE );
+//	BookListCtrl * typelist = new BookListCtrl( m_panel4, ID_TYPELIST, wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE );
+	BookListCtrl * typelist = new BookListCtrl( m_panel4, ID_TYPELIST, wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES );
     typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
     typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
     typelist->SetColumnEditable (0, false);
@@ -271,77 +271,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer12->Fit( m_panel2 );
 	m_notebook->AddPage( m_panel2, _("Внешнее устройство"), false );
 
-	/*
-	m_panel3 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxFlexGridSizer* fgSizer3;
-	fgSizer3 = new wxFlexGridSizer( 1, 1, 0, 0 );
-	fgSizer3->SetFlexibleDirection( wxBOTH );
-	fgSizer3->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-	m_checkBox21 = new wxCheckBox( m_panel3, ID_USE_PROXY, _("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
-
-	fgSizer3->Add( m_checkBox21, 0, wxALL|wxEXPAND, 5 );
-
-	wxFlexGridSizer* fgSizer16;
-	fgSizer16 = new wxFlexGridSizer( 2, 2, 0, 0 );
-	fgSizer16->SetFlexibleDirection( wxBOTH );
-	fgSizer16->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-	m_staticText7 = new wxStaticText( m_panel3, wxID_ANY, _("    Адрес прокси-сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText7->Wrap( -1 );
-	fgSizer16->Add( m_staticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxBoxSizer* bSizer13;
-	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textCtrl7 = new wxTextCtrl( m_panel3, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl7->SetMinSize( wxSize( 100,-1 ) );
-
-	bSizer13->Add( m_textCtrl7, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-
-	m_staticText8 = new wxStaticText( m_panel3, wxID_ANY, _("Порт:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText8->Wrap( -1 );
-	bSizer13->Add( m_staticText8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_textCtrl8 = new wxTextCtrl( m_panel3, ID_PROXY_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl8->SetMinSize( wxSize( 60,-1 ) );
-
-	bSizer13->Add( m_textCtrl8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	fgSizer16->Add( bSizer13, 0, wxEXPAND, 5 );
-
-	m_staticText9 = new wxStaticText( m_panel3, wxID_ANY, _("    Имя пользователя:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText9->Wrap( -1 );
-	fgSizer16->Add( m_staticText9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxBoxSizer* bSizer14;
-	bSizer14 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textCtrl9 = new wxTextCtrl( m_panel3, ID_PROXY_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl9->SetMinSize( wxSize( 110,-1 ) );
-
-	bSizer14->Add( m_textCtrl9, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-
-	m_staticText10 = new wxStaticText( m_panel3, wxID_ANY, _("Пароль:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText10->Wrap( -1 );
-	bSizer14->Add( m_staticText10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_textCtrl10 = new wxTextCtrl( m_panel3, ID_PROXY_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
-	m_textCtrl10->SetMinSize( wxSize( 110,-1 ) );
-
-	bSizer14->Add( m_textCtrl10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	fgSizer16->Add( bSizer14, 0, wxEXPAND, 5 );
-
-	fgSizer3->Add( fgSizer16, 0, wxEXPAND, 5 );
-
-	m_panel3->SetSizer( fgSizer3 );
-	m_panel3->Layout();
-	fgSizer3->Fit( m_panel3 );
-	m_notebook->AddPage( m_panel3, _("Настройки интернет"), false );
-
-	*/
-
 	fgSizerMain->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
 	m_sdbSizerBtn = new wxStdDialogButtonSizer();
@@ -359,30 +288,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 SettingsDlg::~SettingsDlg()
 {
-}
-
-void SettingsDlg::OnSelectFileClick( wxCommandEvent& event )
-{
-#ifdef __WIN32__
-    wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
-#else
-    wxString wildCard = wxFileSelectorDefaultWildcardStr;
-#endif
-
-    wxFileDialog dlg (
-		this,
-		_("Выберите приложение для просмотра FB2 файлов…"),
-		wxEmptyString,
-		wxEmptyString,
-		wildCard,
-		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
-		wxDefaultPosition
-    );
-
-	if (dlg.ShowModal() == wxID_OK) {
-	    wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
-	    if (textCtrl) textCtrl->SetValue(dlg.GetPath());
-	}
 }
 
 void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
@@ -416,11 +321,8 @@ void SettingsDlg::Assign(bool write)
 
     const Struct ids[] = {
         {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
-        {FB_FB2_PROGRAM, SettingsDlg::ID_FB2_PROGRAM_TXT, tText},
         {FB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
         {FB_DOWNLOAD_DIR, SettingsDlg::ID_DOWNLOAD_DIR_TXT, tText},
-        {FB_EXTRACT_DIR, SettingsDlg::ID_EXTRACT_DIR_TXT, tText},
-        {FB_EXTRACT_DELETE, SettingsDlg::ID_EXTRACT_DELETE, tCheck},
         {FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
         {FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
         {FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
@@ -472,12 +374,16 @@ void SettingsDlg::Execute(wxWindow* parent)
     SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
 
     dlg.Assign(false);
-	dlg.FillTypeList();
+	dlg.FillTypelist();
 
-    if (dlg.ShowModal() == wxID_OK) dlg.Assign(true);
+    if (dlg.ShowModal() == wxID_OK) {
+   	    AutoTransaction trans;
+    	dlg.Assign(true);
+    	dlg.SaveTypelist();
+    }
 };
 
-void SettingsDlg::FillTypeList()
+void SettingsDlg::FillTypelist()
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -513,7 +419,7 @@ void SettingsDlg::FillTypeList()
 		wxTreeItemId item = m_typelist->AppendItem(root, file_type);
 		m_typelist->SetItemText (item, 1, command);
 
-		if (FbManager::GetAssociatedCommand(file_type, command))
+		if (FbManager::GetSystemCommand(file_type, command))
 			m_typelist->SetItemText (item, 1, command);
 	}
 
@@ -522,3 +428,78 @@ void SettingsDlg::FillTypeList()
 	m_typelist->Thaw();
 }
 
+void SettingsDlg::OnTypelistActivated( wxTreeEvent & event )
+{
+	wxTreeItemId item = event.GetItem();
+	if (item.IsOk()) SelectApplication(item);
+	event.Skip();
+}
+
+void SettingsDlg::SelectApplication(const wxTreeItemId &item)
+{
+#ifdef __WIN32__
+    wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
+#else
+    wxString wildCard = wxFileSelectorDefaultWildcardStr;
+#endif
+
+	wxString title = _("Выберите приложение для просмотра %s файлов…");
+
+    wxFileDialog dlg (
+		this,
+		title,
+		wxEmptyString,
+		m_typelist->GetItemText (item, 1),
+		wildCard,
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
+		wxDefaultPosition
+    );
+
+	if (dlg.ShowModal() == wxID_OK) {
+		m_typelist->SetItemText(item, 1, dlg.GetPath());
+	}
+}
+
+void SettingsDlg::SaveTypelist()
+{
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+	Types types(wxGetApp().GetDatabase());
+	TypesRowSet * rows = types.All();
+
+	wxTreeItemIdValue cookie;
+	wxTreeItemId root = m_typelist->GetRootItem();
+	wxTreeItemId child = m_typelist->GetFirstChild(root, cookie);
+	while (child.IsOk()) {
+		wxString file_type = m_typelist->GetItemText(child, 0);
+		wxString command = m_typelist->GetItemText(child, 1);
+        child = m_typelist->GetNextChild(root, cookie);
+		bool found = false;
+		for (size_t i = 0; i<rows->Count(); i++) {
+			TypesRow * row = rows->Item(i);
+			if (row->file_type == file_type) {
+				found = true;
+				if (command.IsEmpty()) {
+					row->Delete();
+				} else {
+					wxString sys_command;
+					if (FbManager::GetSystemCommand(file_type, sys_command) && command == sys_command) {
+						row->Delete();
+					} else {
+						row->command = command;
+						row->Save();
+					}
+				}
+				break;
+			}
+		}
+		if (found) continue;
+
+		wxString sys_command;
+		if (FbManager::GetSystemCommand(file_type, sys_command) && command == sys_command) continue;
+
+		TypesRow * row = types.New();
+		row->file_type = file_type;
+		row->command = command;
+		row->Save();
+	}
+}

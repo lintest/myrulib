@@ -52,7 +52,8 @@ TypesRow* Types::FileType(wxString key){
 		pStatement->SetParamString(1,key);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
+		if (!result->Next()) return NULL;
+
 		TypesRow* row=RowFromResult(result);
 		garbageRows.Add(row);
 		m_database->CloseResultSet(result);
@@ -204,12 +205,12 @@ bool TypesRow::GetFromResult(DatabaseResultSet* result){
 bool TypesRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (convert,command) VALUES (?,?)"),m_table.c_str()));
-			pStatement->SetParamString(1,convert);
-			pStatement->SetParamString(2,command);
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (file_type, convert,command) VALUES (?,?,?)"),m_table.c_str()));
+			pStatement->SetParamString(1,file_type);
+			pStatement->SetParamString(2,convert);
+			pStatement->SetParamString(3,command);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
-
 
 			newRow=false;
 		}
@@ -244,10 +245,6 @@ bool TypesRow::Delete(){
 		return false;
 	}
 }
-
-
-
-
 
 /** END ACTIVE RECORD ROW **/
 

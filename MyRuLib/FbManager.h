@@ -47,7 +47,8 @@ class FbManager
 		static void OpenBook(int id, wxString &file_type);
 		static bool ImportZip(const wxString& filename, const wxString& info);
 		static bool ImportDir(const wxString& filename, const wxString& info);
-		static bool GetAssociatedCommand(const wxString & file_type, wxString &command);
+		static bool GetSystemCommand(const wxString & file_type, wxString &command);
+		static wxString GetOpenCommand(const wxString & file_type);
 	private:
 		static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };

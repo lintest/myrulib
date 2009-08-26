@@ -38,15 +38,10 @@ DECLARE_EVENT_TABLE()
 private:
     enum ID {
         ID_LIBRARY_TITLE = 1000,
-        ID_FB2_PROGRAM_TXT,
-        ID_FB2_PROGRAM_BTN,
         ID_LIBRARY_DIR_TXT,
         ID_LIBRARY_DIR_BTN,
         ID_DOWNLOAD_DIR_TXT,
         ID_DOWNLOAD_DIR_BTN,
-        ID_EXTRACT_DIR_TXT,
-        ID_EXTRACT_DIR_BTN,
-        ID_EXTRACT_DELETE,
         ID_EXTERNAL_TXT,
         ID_EXTERNAL_BTN,
         ID_TRANSLIT_FOLDER,
@@ -58,6 +53,7 @@ private:
         ID_PROXY_PORT,
         ID_PROXY_NAME,
         ID_PROXY_PASS,
+        ID_TYPELIST,
     };
 public:
     SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
@@ -65,9 +61,11 @@ public:
     static void Execute(wxWindow* parent);
 private:
     void Assign(bool write);
-    void OnSelectFileClick( wxCommandEvent& event );
     void OnSelectFolderClick( wxCommandEvent& event );
-	void FillTypeList();
+	void OnTypelistActivated( wxTreeEvent & event );
+	void SelectApplication(const wxTreeItemId &item);
+	void FillTypelist();
+	void SaveTypelist();
 private:
 	wxTreeListCtrl* m_typelist;
 };
