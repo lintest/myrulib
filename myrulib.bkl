@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+<!-- $Id: minimal.bkl 32313 2005-02-23 13:12:54Z ABX $ -->
+
+<makefile>
+
+	<set var="BUILDDIR">build</set>
+	
+	<set var="WX_PORT_DEFAULT"></set>
+	<set var="WX_SHARED_DEFAULT">0</set>
+	<set var="WX_UNICODE_DEFAULT">1</set>
+	<set var="WX_DEBUG_DEFAULT">0</set>
+
+    <if cond="FORMAT=='gnu'">
+	  <set var="WX_VERSION_DEFAULT">2.8</set>
+    </if>
+	
+    <if cond="FORMAT=='mingw'">
+	  <set var="WX_VERSION_DEFAULT">28</set>
+	  <set var="DEFAULT_LDFLAGS">-static</set>
+    </if>
+
+    <include file="./Presets/wx.bkl"/>
+	
+    <lib id="SQLite" template="wx-lib">
+		<sources>SQLite/sqlite3.c</sources>
+    </lib>
+	
+    <lib id="Expat" template="wx-lib">
+		<define>HAVE_EXPAT_CONFIG_H</define>
+		<sources>Expat/xmlparse.c</sources>
+		<sources>Expat/xmlrole.c</sources>
+		<sources>Expat/xmltok.c</sources>
+		<sources>Expat/xmltok_impl.c</sources>
+		<sources>Expat/xmltok_ns.c</sources>
+		<include>Expat</include>
+    </lib>
+
+    <lib id="DatabaseLayer" template="wx-lib">
+		<sources>DatabaseLayer/DatabaseErrorReporter.cpp</sources>
+		<sources>DatabaseLayer/DatabaseLayer.cpp</sources>
+		<sources>DatabaseLayer/DatabaseQueryParser.cpp</sources>
+		<sources>DatabaseLayer/DatabaseResultSet.cpp</sources>
+		<sources>DatabaseLayer/DatabaseStringConverter.cpp</sources>
+		<sources>DatabaseLayer/PreparedStatement.cpp</sources>
+		<sources>DatabaseLayer/SqliteDatabaseLayer.cpp</sources>
+		<sources>DatabaseLayer/SqlitePreparedStatement.cpp</sources>
+		<sources>DatabaseLayer/SqliteResultSet.cpp</sources>
+		<sources>DatabaseLayer/SqliteResultSetMetaData.cpp</sources>
+		<include>SQLite</include>
+    </lib>
+
+    <exe id="myrulib" template="wxgui">
+		<sources>MyRuLib/BaseThread.cpp</sources>
+		<sources>MyRuLib/BookListCtrl.cpp</sources>
+		<sources>MyRuLib/ExpThread.cpp</sources>
+		<sources>MyRuLib/ExternalDlg.cpp</sources>
+		<sources>MyRuLib/FbGenres.cpp</sources>
+		<sources>MyRuLib/FbManager.cpp</sources>
+		<sources>MyRuLib/FbParams.cpp</sources>
+		<sources>MyRuLib/ImpContext.cpp</sources>
+		<sources>MyRuLib/ImpThread.cpp</sources>
+		<sources>MyRuLib/InfoCash.cpp</sources>
+		<sources>MyRuLib/InfoThread.cpp</sources>
+		<sources>MyRuLib/MyRuLibApp.cpp</sources>
+		<sources>MyRuLib/MyRuLibMain.cpp</sources>
+		<sources>MyRuLib/MyrulibData.cpp</sources>
+		<sources>MyRuLib/ParseCtx.cpp</sources>
+		<sources>MyRuLib/ProgressBar.cpp</sources>
+		<sources>MyRuLib/SettingsDlg.cpp</sources>
+		<sources>MyRuLib/TitleThread.cpp</sources>
+		<sources>MyRuLib/ZipReader.cpp</sources>
+		<sources>MyRuLib/db/Archives.cpp</sources>
+		<sources>MyRuLib/db/Authors.cpp</sources>
+		<sources>MyRuLib/db/Books.cpp</sources>
+		<sources>MyRuLib/db/Bookseq.cpp</sources>
+		<sources>MyRuLib/db/Files.cpp</sources>
+		<sources>MyRuLib/db/Params.cpp</sources>
+		<sources>MyRuLib/db/Sequences.cpp</sources>
+		<sources>MyRuLib/db/Types.cpp</sources>
+		<sources>MyRuLib/db/wxActiveRecord.cpp</sources>
+		<sources>MyRuLib/db/ZipBooks.cpp</sources>
+		<sources>MyRuLib/db/ZipFiles.cpp</sources>
+		<sources>MyRuLib/sha1/sha1.c</sources>
+		<sources>MyRuLib/wx/base64.cpp</sources>
+		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
+		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<threading>single</threading>
+		<optimize>speed</optimize>
+		<library>Expat</library>
+		<include>Expat</include>
+		<library>DatabaseLayer</library>
+		<include>DatabaseLayer</include>
+		<library>SQLite</library>
+		<include>SQLite</include>
+		<wx-lib>aui</wx-lib>
+		<wx-lib>xrc</wx-lib>
+		<wx-lib>html</wx-lib>
+		<wx-lib>core</wx-lib>
+		<wx-lib>base</wx-lib>
+		<if cond="FORMAT=='mingw'">
+			<sys-lib>shlwapi</sys-lib>
+		</if>
+    </exe>
+
+</makefile>
