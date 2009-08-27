@@ -41,7 +41,7 @@ public:
 	FilesRow* New();
 
 	FilesRowSet* IdBook(int key);
-
+    FilesRow* Find(const int id_book, const int id_archive);
 	FilesRow* Where(const wxString& whereClause);
 	FilesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
 	FilesRowSet* All(const wxString& orderBy=wxEmptyString);

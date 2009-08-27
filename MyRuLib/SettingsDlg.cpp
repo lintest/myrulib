@@ -359,26 +359,26 @@ void SettingsDlg::Assign(bool write)
     for (size_t i=0; i<idsCount; i++) {
         switch (ids[i].type) {
             case tText:
-                if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control))
+                if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
                     if (write)
                         params.SetText(ids[i].param, control->GetValue());
                     else
                         control->SetValue(params.GetText(ids[i].param));
-				break;
+				} break;
             case tCheck:
-                if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control))
+                if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
                     if (write)
                         params.SetValue(ids[i].param, control->GetValue());
                     else
                         control->SetValue((bool)params.GetValue(ids[i].param));
-				break;
+				} break;
             case tRadio:
-                if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control))
+                if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
                     if (write)
                         params.SetValue(ids[i].param, control->GetSelection());
                     else
                         control->SetSelection(params.GetValue(ids[i].param));
-				break;
+				} break;
         }
 
     }

@@ -10,11 +10,11 @@ class ImportThread : public BaseThread
 public:
     virtual void OnExit();
 	static bool ParseXml(wxInputStream& stream, const wxString &name, int id_archive);
-    static int AddArchive(const wxString &filename);
+    static int AddArchive(const wxString &filename, const int file_size, const int file_count);
 private:
 	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	static void AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, const int id_archive);
-	static void AppendFile(const int id_book, const int id_archive, const wxString &filename);
+	static void AppendFile(const int id_book, const int id_archive, const wxString &file_name);
 	static int FindBySHA1(const wxString &sha1sum);
 	static int FindBySize(const wxString &sha1sum, wxFileOffset size);
 };

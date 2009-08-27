@@ -259,33 +259,44 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, con
     return false;
 }
 
-void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &filename)
+void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &file_name)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Files files (wxGetApp().GetDatabase());
-	FilesRow * row = files.New();
-	row->id_book = id_book;
-	row->id_archive = id_archive;
-	row->file_name = filename;
+	FilesRow * row = files.Find(id_book, id_archive);
+
+	if (row) {
+	    if (row->file_name == file_name) return;
+	} else {
+        row = files.New();
+        row->id_book = id_book;
+        row->id_archive = id_archive;
+	}
+
+	row->file_name = file_name;
 	row->Save();
 }
 
-int ImportThread::AddArchive(const wxString &filename)
+int ImportThread::AddArchive(const wxString &filename, const int file_size, const int file_count)
 {
-    wxFileName file_name(filename);
+    wxFileName file(filename);
+    wxString name = file.GetFullName();
+    wxString path = file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	Archives archives(wxGetApp().GetDatabase());
-	ArchivesRow * row = archives.New();
+
+	ArchivesRow * row = archives.FindFile(name, path);
+	if (row) return row->id;
+
+	row = archives.New();
 	row->id = BookInfo::NewId(DB_NEW_ARCHIVE);
-	row->file_name = file_name.GetFullName();
-	row->file_path = file_name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-	row->min_id_book = 0;
-	row->max_id_book = 0;
-	row->file_count = 0;
-	row->file_size = 0;
+	row->file_name = name;
+	row->file_path = path;
+	row->file_size = file_size;
+	row->file_count = file_count;
 	row->Save();
 	return row->id;
 }
@@ -299,7 +310,7 @@ void *ZipImportThread::Entry()
 	wxFFileInputStream in(m_filename);
 	wxZipInputStream zip(in);
 
-	int id_archive = AddArchive(m_filename);
+	int id_archive = AddArchive(m_filename, in.GetLength(), zip.GetTotalEntries());
 
     DoStart(zip.GetTotalEntries(), wxFileName(m_filename).GetFullName());
 
@@ -382,11 +393,9 @@ void *DirImportThread::Entry()
 
 	{
         DoStart(0, m_dirname);
-
         CountTraverser counter;
         dir.Traverse(counter);
-
-        DoStart(counter.GetCount(), m_info + wxT(" ") + m_dirname);
+        DoStart(counter.GetCount(), m_dirname);
 	}
 
     FolderTraverser traverser(this);
@@ -402,7 +411,7 @@ bool DirImportThread::ParseZip(const wxString &filename)
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
-	int id_archive = AddArchive(filename);
+	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
 
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {

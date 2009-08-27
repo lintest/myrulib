@@ -31,6 +31,7 @@ ArchivesRow* Archives::New(){
 	garbageRows.Add(newRow);
 	return newRow;
 }
+
 bool Archives::Delete(int key){
 	try{
 		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
@@ -43,8 +44,6 @@ bool Archives::Delete(int key){
 		return false;
 	}
 }
-
-
 
 ArchivesRow* Archives::Id(int key){
 	try{
@@ -66,13 +65,33 @@ ArchivesRow* Archives::Id(int key){
 	}
 }
 
-
-
-
 ArchivesRow* Archives::Where(const wxString& whereClause){
 	try{
 		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
 		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+		DatabaseResultSet* result= pStatement->ExecuteQuery();
+
+		if(!result->Next())
+			return NULL;
+		ArchivesRow* row=RowFromResult(result);
+
+		garbageRows.Add(row);
+		m_database->CloseResultSet(result);
+		m_database->CloseStatement(pStatement);
+		return row;
+	}
+	catch (DatabaseLayerException& e)
+	{
+		ProcessException(e);
+		return 0;
+	}
+}
+
+ArchivesRow* Archives::FindFile(const wxString& file_name, const wxString& file_path) {
+	try{
+		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE file_name=? AND file_path=?"),m_table.c_str()));
+		pStatement->SetParamString(1, file_name);
+		pStatement->SetParamString(2, file_path);
 		DatabaseResultSet* result= pStatement->ExecuteQuery();
 
 		if(!result->Next())
@@ -119,7 +138,6 @@ ArchivesRowSet* Archives::WhereSet(const wxString& whereClause,const wxString& o
 	}
 }
 
-
 ArchivesRowSet* Archives::All(const wxString& orderBy){
 	ArchivesRowSet* rowSet=new ArchivesRowSet();
 	try{
@@ -165,38 +183,29 @@ ArchivesRow::ArchivesRow(const ArchivesRow& src){
 		return;
 	newRow=src.newRow;
 
-	file_count=src.file_count;
-	description=src.description;
 	id=src.id;
+	file_name=src.file_name;
 	file_path=src.file_path;
 	file_size=src.file_size;
-	min_id_book=src.min_id_book;
-	file_name=src.file_name;
-	max_id_book=src.max_id_book;
-	file_type=src.file_type;
-
+	file_count=src.file_count;
+	description=src.description;
 }
 
 ArchivesRow::ArchivesRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
 	newRow=true;
 }
 
-
 ArchivesRow& ArchivesRow::operator=(const ArchivesRow& src){
 	if(&src==this)
 		return *this;
 	newRow=src.newRow;
 
-	file_count=src.file_count;
-	description=src.description;
 	id=src.id;
+	file_name=src.file_name;
 	file_path=src.file_path;
 	file_size=src.file_size;
-	min_id_book=src.min_id_book;
-	file_name=src.file_name;
-	max_id_book=src.max_id_book;
-	file_type=src.file_type;
-
+	file_count=src.file_count;
+	description=src.description;
 
 	return *this;
 }
@@ -204,16 +213,13 @@ ArchivesRow& ArchivesRow::operator=(const ArchivesRow& src){
 bool ArchivesRow::GetFromResult(DatabaseResultSet* result){
 
 	newRow=false;
-		file_count=result->GetResultInt(wxT("file_count"));
-	description=result->GetResultString(wxT("description"));
+
 	id=result->GetResultInt(wxT("id"));
+	file_name=result->GetResultString(wxT("file_name"));
 	file_path=result->GetResultString(wxT("file_path"));
 	file_size=result->GetResultInt(wxT("file_size"));
-	min_id_book=result->GetResultInt(wxT("min_id_book"));
-	file_name=result->GetResultString(wxT("file_name"));
-	max_id_book=result->GetResultInt(wxT("max_id_book"));
-	file_type=result->GetResultString(wxT("file_type"));
-
+	file_count=result->GetResultInt(wxT("file_count"));
+	description=result->GetResultString(wxT("description"));
 
 	return true;
 }
@@ -222,38 +228,29 @@ bool ArchivesRow::GetFromResult(DatabaseResultSet* result){
 bool ArchivesRow::Save(){
 	try{
 		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (file_count,description,id,file_path,file_size,min_id_book,file_name,max_id_book,file_type) VALUES (?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
-			pStatement->SetParamInt(1,file_count);
-			pStatement->SetParamString(2,description);
-			pStatement->SetParamInt(3,id);
-			pStatement->SetParamString(4,file_path);
-			pStatement->SetParamInt(5,file_size);
-			pStatement->SetParamInt(6,min_id_book);
-			pStatement->SetParamString(7,file_name);
-			pStatement->SetParamInt(8,max_id_book);
-			pStatement->SetParamString(9,file_type);
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (file_name,file_path,file_size,file_count,description,id) VALUES (?,?,?,?,?,?)"),m_table.c_str()));
+			pStatement->SetParamString(1,file_name);
+			pStatement->SetParamString(2,file_path);
+			pStatement->SetParamInt(3,file_size);
+			pStatement->SetParamInt(4,file_count);
+			pStatement->SetParamString(5,description);
+			pStatement->SetParamInt(6,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
-
-
 			newRow=false;
 		}
 		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET file_count=?,description=?,file_path=?,file_size=?,min_id_book=?,file_name=?,max_id_book=?,file_type=? WHERE id=?"),m_table.c_str()));
-			pStatement->SetParamInt(1,file_count);
-			pStatement->SetParamString(2,description);
-			pStatement->SetParamInt(9,id);
-			pStatement->SetParamString(3,file_path);
-			pStatement->SetParamInt(4,file_size);
-			pStatement->SetParamInt(5,min_id_book);
-			pStatement->SetParamString(6,file_name);
-			pStatement->SetParamInt(7,max_id_book);
-			pStatement->SetParamString(8,file_type);
+			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET file_name=?,file_path=?,file_size=?,file_count=?,description=? WHERE id=?"),m_table.c_str()));
+			pStatement->SetParamString(1,file_name);
+			pStatement->SetParamString(2,file_path);
+			pStatement->SetParamInt(3,file_size);
+			pStatement->SetParamInt(4,file_count);
+			pStatement->SetParamString(5,description);
+			pStatement->SetParamInt(6,id);
 			pStatement->RunQuery();
 			m_database->CloseStatement(pStatement);
 
 		}
-
 		return true;
 	}
 	catch (DatabaseLayerException& e)
@@ -275,8 +272,6 @@ bool ArchivesRow::Delete(){
 		return false;
 	}
 }
-
-
 
 BooksRowSet* ArchivesRow::GetBooks(const wxString& orderBy){
 	BooksRowSet* set= new BooksRowSet(m_database,wxT("books"));
@@ -380,38 +375,10 @@ int ArchivesRowSet::CMPFUNC_file_size(wxActiveRecordRow** item1,wxActiveRecordRo
 		return 0;
 }
 
-int ArchivesRowSet::CMPFUNC_min_id_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
-	ArchivesRow** m_item1=(ArchivesRow**)item1;
-	ArchivesRow** m_item2=(ArchivesRow**)item2;
-	if((*m_item1)->min_id_book<(*m_item2)->min_id_book)
-		return -1;
-	else if((*m_item1)->min_id_book>(*m_item2)->min_id_book)
-		return 1;
-	else
-		return 0;
-}
-
 int ArchivesRowSet::CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	ArchivesRow** m_item1=(ArchivesRow**)item1;
 	ArchivesRow** m_item2=(ArchivesRow**)item2;
 	return (*m_item1)->file_name.Cmp((*m_item2)->file_name);
-}
-
-int ArchivesRowSet::CMPFUNC_max_id_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
-	ArchivesRow** m_item1=(ArchivesRow**)item1;
-	ArchivesRow** m_item2=(ArchivesRow**)item2;
-	if((*m_item1)->max_id_book<(*m_item2)->max_id_book)
-		return -1;
-	else if((*m_item1)->max_id_book>(*m_item2)->max_id_book)
-		return 1;
-	else
-		return 0;
-}
-
-int ArchivesRowSet::CMPFUNC_file_type(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
-	ArchivesRow** m_item1=(ArchivesRow**)item1;
-	ArchivesRow** m_item2=(ArchivesRow**)item2;
-	return (*m_item1)->file_type.Cmp((*m_item2)->file_type);
 }
 
 CMPFUNC_proto ArchivesRowSet::GetCmpFunc(const wxString& var) const{
@@ -425,19 +392,11 @@ CMPFUNC_proto ArchivesRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_file_path;
 	else if(var==wxT("file_size"))
 		return (CMPFUNC_proto)CMPFUNC_file_size;
-	else if(var==wxT("min_id_book"))
-		return (CMPFUNC_proto)CMPFUNC_min_id_book;
 	else if(var==wxT("file_name"))
 		return (CMPFUNC_proto)CMPFUNC_file_name;
-	else if(var==wxT("max_id_book"))
-		return (CMPFUNC_proto)CMPFUNC_max_id_book;
-	else if(var==wxT("file_type"))
-		return (CMPFUNC_proto)CMPFUNC_file_type;
 	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }
-
-
 
 /** END ACTIVE RECORD ROW SET **/
 

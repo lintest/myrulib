@@ -45,9 +45,8 @@ public:
 	ArchivesRow* New();
 	bool Delete(int key);
 
-
 	ArchivesRow* Id(int key);
-
+	ArchivesRow* FindFile(const wxString& file_name, const wxString& file_path);
 	ArchivesRow* Where(const wxString& whereClause);
 	ArchivesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
 	ArchivesRowSet* All(const wxString& orderBy=wxEmptyString);
@@ -70,15 +69,12 @@ public:
 	ArchivesRow& operator=(const ArchivesRow& src);
 	bool GetFromResult(DatabaseResultSet* result);
 public:
-	int file_count;
-	wxString description;
 	int id;
-	wxString file_path;
-	int file_size;
-	int min_id_book;
 	wxString file_name;
-	int max_id_book;
-	wxString file_type;
+	wxString file_path;
+	int file_count;
+	int file_size;
+	wxString description;
 
 public:
 	BooksRowSet* GetBooks(const wxString& orderBy=wxEmptyString);
@@ -109,15 +105,12 @@ public:
 
 
 protected:
-	static int CMPFUNC_file_count(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
-	static int CMPFUNC_description(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_path(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_size(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
-	static int CMPFUNC_min_id_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
-	static int CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
-	static int CMPFUNC_max_id_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
-	static int CMPFUNC_file_type(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_file_count(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_description(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_global(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	virtual CMPFUNC_proto GetCmpFunc(const wxString& var) const;
 

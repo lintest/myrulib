@@ -80,6 +80,29 @@ FilesRow* Files::Where(const wxString& whereClause){
 	}
 }
 
+FilesRow* Files::Find(const int id_book, const int id_archive){
+	try{
+		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id_book=? AND id_archive=?"),m_table.c_str()));
+		pStatement->SetParamInt(1, id_book);
+		pStatement->SetParamInt(2, id_archive);
+		DatabaseResultSet* result= pStatement->ExecuteQuery();
+
+		if(!result->Next())
+			return NULL;
+		FilesRow* row=RowFromResult(result);
+
+		garbageRows.Add(row);
+		m_database->CloseResultSet(result);
+		m_database->CloseStatement(pStatement);
+		return row;
+	}
+	catch (DatabaseLayerException& e)
+	{
+		ProcessException(e);
+		return 0;
+	}
+}
+
 FilesRowSet* Files::WhereSet(const wxString& whereClause,const wxString& orderBy){
 	FilesRowSet* rowSet=new FilesRowSet();
 	try{
