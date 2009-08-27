@@ -97,7 +97,6 @@ MYRULIB_CXXFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cxxflags
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_BookListCtrl.o \
-	build/myrulib_DBCreator.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbGenres.o \
@@ -109,6 +108,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_InfoThread.o \
 	build/myrulib_MyRuLibApp.o \
 	build/myrulib_MyRuLibMain.o \
+	build/myrulib_MyrulibData.o \
 	build/myrulib_ParseCtx.o \
 	build/myrulib_ProgressBar.o \
 	build/myrulib_SettingsDlg.o \
@@ -246,9 +246,6 @@ build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 build/myrulib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_DBCreator.o: ./MyRuLib/DBCreator.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -280,6 +277,9 @@ build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_MyrulibData.o: ./MyRuLib/MyrulibData.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
