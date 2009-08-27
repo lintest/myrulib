@@ -255,8 +255,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_typelist = new TypeListCtrl( m_panel4, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
     m_typelist->InsertColumn(0, _T("Тип"), wxLIST_FORMAT_LEFT, 50);
     m_typelist->InsertColumn(1, _T("Программа"), wxLIST_FORMAT_LEFT, 300);
-//    typelist->colSizes.Add(1);
-//    typelist->colSizes.Add(9);
 
 	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
@@ -484,17 +482,13 @@ void SettingsDlg::SelectApplication()
 
 	if (!count) return;
 
-	#ifdef __WIN32__
-    wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
-	#else
-    wxString wildCard = wxFileSelectorDefaultWildcardStr;
-	#endif
-
 	wxString title = _("Выберите приложение для просмотра файлов…");
-
 	wxString command;
     long item = m_typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if ( item >= 0) command = m_commands[m_typelist->GetItemData(item)];
+
+#ifdef __WIN32__
+    wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
 
     wxFileDialog dlg (
 		this,
@@ -517,6 +511,18 @@ void SettingsDlg::SelectApplication()
 			m_typelist->SetItemData(item, index);
 		}
     }
+
+#else
+	command = wxGetTextFromUser(title, _("Настройки:"), command);
+	if (command.IsEmpty()) return;
+	size_t index = m_commands.Add(command);
+    while (true) {
+        item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+        if (item == -1) break;
+        m_typelist->SetItem(item, 1, command);
+        m_typelist->SetItemData(item, index);
+    }
+#endif
 }
 
 void SettingsDlg::SaveTypelist()
@@ -594,13 +600,19 @@ void SettingsDlg::OnModifyType( wxCommandEvent& event )
 
 void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 {
-	/*
-	wxArrayTreeItemIds selections;
-	size_t count = m_typelist->GetSelections(selections);
-	for (size_t i=0; i<count; i++) {
-		m_typelist->Delete(selections[i]);
+	m_typelist->Freeze();
+
+	wxArrayInt items;
+
+	long item = -1;
+	while (true) {
+		item = m_typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (item == -1) break;
+		m_typelist->DeleteItem(item);
+		items.Add(item);
 	}
-	*/
+
+	m_typelist->Thaw();
 }
 
 
