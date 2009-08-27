@@ -90,9 +90,9 @@ DATABASELAYER_OBJECTS =  \
 	build/DatabaseLayer_SqlitePreparedStatement.o \
 	build/DatabaseLayer_SqliteResultSet.o \
 	build/DatabaseLayer_SqliteResultSetMetaData.o
-MYRULIB_CFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cflags \
+MYRULIB_CFLAGS = -O2 -ISQLite -IExpat -IDatabaseLayer `$(WX_CONFIG) --cflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -O2 -IExpat -IDatabaseLayer -ISQLite `$(WX_CONFIG) --cxxflags \
+MYRULIB_CXXFLAGS = -O2 -ISQLite -IExpat -IDatabaseLayer `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
@@ -189,8 +189,8 @@ build/libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
 	$(AR) rcu $@ $(DATABASELAYER_OBJECTS)
 	$(RANLIB) $@
 
-build/myrulib: $(MYRULIB_OBJECTS) build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)    $(LDFLAGS)  build/libExpat.a build/libDatabaseLayer.a build/libSQLite.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
+build/myrulib: $(MYRULIB_OBJECTS) build/libDatabaseLayer.a build/libSQLite.a build/libExpat.a
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)    $(LDFLAGS)  build/libDatabaseLayer.a build/libSQLite.a build/libExpat.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 
 build/SQLite_sqlite3.o: ./SQLite/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE_CFLAGS) $(CPPDEPS) $<

@@ -1,6 +1,4 @@
 <?xml version="1.0" ?>
-<!-- $Id: minimal.bkl 32313 2005-02-23 13:12:54Z ABX $ -->
-
 <makefile>
 
 	<set var="BUILDDIR">build</set>
@@ -20,7 +18,7 @@
     </if>
 
     <include file="./Presets/wx.bkl"/>
-	
+
     <lib id="SQLite" template="wx-lib">
 		<sources>SQLite/sqlite3.c</sources>
     </lib>
@@ -86,12 +84,12 @@
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<threading>single</threading>
 		<optimize>speed</optimize>
-		<library>Expat</library>
-		<include>Expat</include>
-		<library>DatabaseLayer</library>
-		<include>DatabaseLayer</include>
-		<library>SQLite</library>
 		<include>SQLite</include>
+		<include>Expat</include>
+		<include>DatabaseLayer</include>
+		<library>DatabaseLayer</library>
+		<library>SQLite</library>
+		<library>Expat</library>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>xrc</wx-lib>
 		<wx-lib>html</wx-lib>
