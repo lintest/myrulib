@@ -14,7 +14,6 @@
 #include <DatabaseLayerException.h>
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
-#include "DBCreator.h"
 #include "FbParams.h"
 #include "ZipReader.h"
 
@@ -42,7 +41,6 @@ bool MyRuLibApp::OnInit()
 
 int MyRuLibApp::OnExit()
 {
-	wxDELETE(m_Database);
 	return wxApp::OnExit();
 }
 
@@ -122,13 +120,11 @@ bool MyRuLibApp::ConnectToDatabase()
 {
 	m_datafile = MyStandardPaths().GetDataFile();
 
-	m_Database = new SqliteDatabaseLayer();
 	bool bCreate = !wxFileExists(m_datafile);
 	try	{
-		m_Database->Open(m_datafile);
-		DBCreator creator(m_Database);
-		if(bCreate)	creator.CreateDatabase(m_datafile);
-		creator.UpgradeDatabase();
+		m_database.Open(m_datafile);
+		if (bCreate) m_database.CreateDatabase(m_datafile);
+		m_database.UpgradeDatabase();
 	} catch(DatabaseLayerException & e) {
 		wxMessageBox(e.GetErrorMessage());
 		wxFAIL_MSG(e.GetErrorMessage());

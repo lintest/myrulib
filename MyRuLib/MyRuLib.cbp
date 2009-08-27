@@ -168,8 +168,6 @@
 		<Unit filename="BaseThread.h" />
 		<Unit filename="BookListCtrl.cpp" />
 		<Unit filename="BookListCtrl.h" />
-		<Unit filename="DBCreator.cpp" />
-		<Unit filename="DBCreator.h" />
 		<Unit filename="ExpThread.cpp" />
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
@@ -192,6 +190,8 @@
 		<Unit filename="MyRuLibApp.h" />
 		<Unit filename="MyRuLibMain.cpp" />
 		<Unit filename="MyRuLibMain.h" />
+		<Unit filename="MyrulibData.cpp" />
+		<Unit filename="MyrulibData.h" />
 		<Unit filename="ParseCtx.cpp" />
 		<Unit filename="ParseCtx.h" />
 		<Unit filename="ProgressBar.cpp" />

@@ -13,7 +13,7 @@
 #include <wx/wx.h>
 #include <wx/thread.h>
 #include <DatabaseLayer.h>
-#include <SqliteDatabaseLayer.h>
+#include "MyrulibData.h"
 #include "db/Authors.h"
 #include "db/Books.h"
 #include "db/Params.h"
@@ -23,15 +23,16 @@ class MyRuLibApp : public wxApp
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
-	bool ConnectToDatabase();
-	bool CreateDatabase();
     wxString GetAppPath() const;
     wxString GetAppData() const { return m_datafile; };
-	DatabaseLayer * GetDatabase() {return m_Database;};
+	DatabaseLayer * GetDatabase() {return &m_database; };
 public:
     wxCriticalSection m_DbSection;
 private:
-	DatabaseLayer * m_Database;
+	bool ConnectToDatabase();
+	bool CreateDatabase();
+private:
+	MyrulibDatabaseLayer m_database;
 	wxString m_datafile;
 };
 

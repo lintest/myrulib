@@ -339,11 +339,12 @@ int BookInfo::NewId(int param)
 	return row->value;
 }
 
-bool FbManager::GetSystemCommand(const wxString & file_type, wxString &command)
+wxString FbManager::GetSystemCommand(const wxString & file_type)
 {
 #if defined(__WIN32__)
 	wxString ext = wxT(".") + file_type;
 	DWORD dwSize = MAX_PATH;
+	wxString command;
 	if (AssocQueryString(0, ASSOCSTR_EXECUTABLE, ext.c_str(), wxT("open"), wxStringBuffer(command, MAX_PATH), &dwSize) == S_OK) {
 		if (command.Left(1) == wxT("\"")) {
 			command = command.Mid(1);
@@ -351,10 +352,10 @@ bool FbManager::GetSystemCommand(const wxString & file_type, wxString &command)
 		} else {
 			command = command.Left(command.Find(wxT(" ")));
 		}
-		return true;
+		return command;
 	}
 #endif
-	return false;
+	return wxEmptyString;
 }
 
 wxString FbManager::GetOpenCommand(const wxString & file_type)
@@ -364,10 +365,8 @@ wxString FbManager::GetOpenCommand(const wxString & file_type)
 
 	TypesRow * row = types.FileType(file_type);
 
-	if (row) return row->command;
-
-	wxString sys_command;
-	if (FbManager::GetSystemCommand(file_type, sys_command)) return sys_command;
-
-	return wxEmptyString;
+	if (row)
+		return row->command;
+	else
+		return GetSystemCommand(file_type);
 }

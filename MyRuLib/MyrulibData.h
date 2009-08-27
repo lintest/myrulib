@@ -14,15 +14,13 @@
 #include <DatabaseLayer.h>
 #include <SqliteDatabaseLayer.h>
 
-class DBCreator
+class MyrulibDatabaseLayer
+	: public SqliteDatabaseLayer
 {
-private:
-	DatabaseLayer * m_Database;
-public:
-	DBCreator(DatabaseLayer * database);
-	~DBCreator(void);
-	bool CreateDatabase(const wxString & filename);
-	bool UpgradeDatabase();
+	public:
+		virtual bool Open(const wxString& strDatabase);
+		bool CreateDatabase(const wxString & filename);
+		bool UpgradeDatabase();
 };
 
 #endif // DBCREATOR_H

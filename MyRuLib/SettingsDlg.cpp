@@ -29,7 +29,6 @@
 #include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ZipReader.h"
-#include "BookListCtrl.h"
 #include "MyRuLibApp.h"
 #include "db/Types.h"
 
@@ -42,7 +41,7 @@ BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, SettingsDlg::OnDeleteType )
-	EVT_TREE_ITEM_ACTIVATED( ID_TYPELIST, SettingsDlg::OnTypelistActivated )
+	EVT_LIST_ITEM_ACTIVATED(ID_TYPELIST, SettingsDlg::OnTypelistActivated)
 END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
@@ -223,14 +222,11 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer10->Add( m_tools, 0, wxALL|wxEXPAND, 5 );
 
-	BookListCtrl * typelist = new BookListCtrl( m_panel4, ID_TYPELIST, wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES  | wxTR_MULTIPLE);
-    typelist->AddColumn (_T("Тип"), 50, wxALIGN_LEFT);
-    typelist->AddColumn (_T("Программа"), 300, wxALIGN_LEFT);
-    typelist->SetColumnEditable (0, false);
-    typelist->SetColumnEditable (1, false);
-    typelist->colSizes.Add(1);
-    typelist->colSizes.Add(9);
-	m_typelist = typelist;
+	m_typelist = new wxListCtrl( m_panel4, ID_TYPELIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VRULES );
+    m_typelist->InsertColumn(0, _T("Тип"), wxLIST_FORMAT_LEFT, 50);
+    m_typelist->InsertColumn(1, _T("Программа"), wxLIST_FORMAT_LEFT, 300);
+//    typelist->colSizes.Add(1);
+//    typelist->colSizes.Add(9);
 
 	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
@@ -429,27 +425,23 @@ void SettingsDlg::FillTypelist()
 
 	m_typelist->Freeze();
 
-    m_typelist->DeleteRoot();
-    wxTreeItemId root = m_typelist->AddRoot (_T("Root"));
-
+	long item = 0;
 	while ( result && result->Next() ) {
 		wxString file_type = result->GetResultString(wxT("file_type"));
 		wxString command = result->GetResultString(wxT("command"));
 		if (file_type == wxT("exe")) continue;
 
-		wxTreeItemId item = m_typelist->AppendItem(root, file_type);
-		m_typelist->SetItemText (item, 1, command);
+		if (command.IsEmpty())
+			command = FbManager::GetSystemCommand(file_type);
 
-		if (FbManager::GetSystemCommand(file_type, command))
-			m_typelist->SetItemText (item, 1, command);
+		item = m_typelist->InsertItem(item + 1, file_type);
+		m_typelist->SetItem(item, 1, command);
+		m_typelist->SetItemData(item, m_commands.Add(command));
 	}
-
-    m_typelist->ExpandAll(root);
-
 	m_typelist->Thaw();
 }
 
-void SettingsDlg::OnTypelistActivated( wxTreeEvent & event )
+void SettingsDlg::OnTypelistActivated( wxListEvent & event )
 {
 	SelectApplication();
 	event.Skip();
@@ -458,7 +450,7 @@ void SettingsDlg::OnTypelistActivated( wxTreeEvent & event )
 void SettingsDlg::SelectApplication()
 {
 	wxArrayTreeItemIds selections;
-	size_t count = m_typelist->GetSelections(selections);
+	size_t count = m_typelist->GetSelectedItemCount();
 
 	if (!count) return;
 
@@ -470,25 +462,31 @@ void SettingsDlg::SelectApplication()
 
 	wxString title = _("Выберите приложение для просмотра файлов…");
 
-	wxTreeItemId item = m_typelist->GetSelection();
-	wxString path = ( item.IsOk() ? m_typelist->GetItemText(item, 1) : (wxString)wxEmptyString );
+	wxString command;
+    long item = m_typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+	if ( item >= 0) command = m_commands[m_typelist->GetItemData(item)];
 
     wxFileDialog dlg (
 		this,
 		title,
 		wxEmptyString,
-		path,
+		command,
 		wildCard,
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		wxString path = dlg.GetPath();
-		for (size_t i=0; i<count; i++) {
-			m_typelist->SetItemText(selections[i], 1, path);
+		command = dlg.GetPath();
+		size_t index = m_commands.Add(command);
+		long item = -1;
+		while (true) {
+			item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+			if (item == -1) break;
+			m_typelist->SetItem(item, 1, command);
+			m_typelist->SetItemData(item, index);
 		}
-	}
+    }
 }
 
 void SettingsDlg::SaveTypelist()
@@ -500,13 +498,12 @@ void SettingsDlg::SaveTypelist()
 	for (size_t i = 0; i<rows->Count(); i++)
 		rows->Item(i)->isOk = false;
 
-	wxTreeItemIdValue cookie;
-	wxTreeItemId root = m_typelist->GetRootItem();
-	wxTreeItemId child = m_typelist->GetFirstChild(root, cookie);
-	while (child.IsOk()) {
-		wxString file_type = m_typelist->GetItemText(child, 0);
-		wxString command = m_typelist->GetItemText(child, 1);
-        child = m_typelist->GetNextChild(root, cookie);
+	long item = -1;
+	while (true) {
+		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (item == -1) break;
+		wxString file_type = m_typelist->GetItemText(item);
+		wxString command = m_commands[m_typelist->GetItemData(item)];
 		bool found = false;
 		for (size_t i = 0; i<rows->Count(); i++) {
 			TypesRow * row = rows->Item(i);
@@ -516,8 +513,8 @@ void SettingsDlg::SaveTypelist()
 				if (command.IsEmpty()) {
 					row->Delete();
 				} else {
-					wxString sys_command;
-					if (FbManager::GetSystemCommand(file_type, sys_command) && command == sys_command) {
+					wxString sys_command = FbManager::GetSystemCommand(file_type);
+					if (sys_command == command) {
 						row->Delete();
 					} else {
 						row->command = command;
@@ -528,9 +525,10 @@ void SettingsDlg::SaveTypelist()
 			}
 		}
 		if (found) continue;
+		if (command.IsEmpty()) continue;
 
-		wxString sys_command;
-		if (FbManager::GetSystemCommand(file_type, sys_command) && command == sys_command) continue;
+		wxString sys_command = FbManager::GetSystemCommand(file_type);
+		if (sys_command == command) continue;
 
 		TypesRow * row = types.New();
 		row->file_type = file_type;
@@ -550,18 +548,13 @@ void SettingsDlg::OnAppendType( wxCommandEvent& event )
 	if (filetype.IsEmpty()) return;
 	filetype = filetype.Lower();
 
-	wxTreeItemIdValue cookie;
-	wxTreeItemId root = m_typelist->GetRootItem();
-	wxTreeItemId child = m_typelist->GetFirstChild(root, cookie);
-	while (child.IsOk()) {
-		if (filetype == m_typelist->GetItemText(child, 0)) {
-			m_typelist->SelectItem(child);
-			return;
-		}
-        child = m_typelist->GetNextChild(root, cookie);
+	long item = -1;
+	while (true) {
+		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (item == -1) break;
+		if (filetype == m_typelist->GetItemText(item)) return;
 	}
-	child = m_typelist->AppendItem(root, filetype);
-	m_typelist->SelectItem(child);
+	item = m_typelist->InsertItem(-1, filetype);
 }
 
 void SettingsDlg::OnModifyType( wxCommandEvent& event )
@@ -571,11 +564,13 @@ void SettingsDlg::OnModifyType( wxCommandEvent& event )
 
 void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 {
+	/*
 	wxArrayTreeItemIds selections;
 	size_t count = m_typelist->GetSelections(selections);
 	for (size_t i=0; i<count; i++) {
 		m_typelist->Delete(selections[i]);
 	}
+	*/
 }
 
 

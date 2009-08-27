@@ -10,7 +10,8 @@
 
 #include <wx/wx.h>
 #include <wx/dialog.h>
-#include "wx/treelistctrl.h"
+#include <wx/listctrl.h>
+#include <wx/arrimpl.cpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SettingsDlg
@@ -51,12 +52,13 @@ private:
     void OnAppendType( wxCommandEvent& event );
     void OnModifyType( wxCommandEvent& event );
     void OnDeleteType( wxCommandEvent& event );
-	void OnTypelistActivated( wxTreeEvent & event );
+	void OnTypelistActivated( wxListEvent & event );
 	void SelectApplication();
 	void FillTypelist();
 	void SaveTypelist();
 private:
-	wxTreeListCtrl* m_typelist;
+	wxListCtrl* m_typelist;
+	wxArrayString m_commands;
 };
 
 #endif //__SettingsDlg__

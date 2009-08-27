@@ -52,7 +52,6 @@
     <exe id="myrulib" template="wxgui">
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookListCtrl.cpp</sources>
-		<sources>MyRuLib/DBCreator.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
@@ -64,6 +63,7 @@
 		<sources>MyRuLib/InfoThread.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/MyRuLibMain.cpp</sources>
+		<sources>MyRuLib/MyrulibData.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>
 		<sources>MyRuLib/ProgressBar.cpp</sources>
 		<sources>MyRuLib/SettingsDlg.cpp</sources>
