@@ -34,6 +34,36 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
+class TypeListCtrl: public wxListCtrl
+{
+    public:
+        TypeListCtrl( wxWindow *parent, wxWindowID winid = wxID_ANY, long style = wxLC_REPORT);
+        void OnSize(wxSizeEvent& event);
+        DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(TypeListCtrl, wxListCtrl)
+    EVT_SIZE(TypeListCtrl::OnSize)
+END_EVENT_TABLE()
+
+TypeListCtrl::TypeListCtrl( wxWindow *parent, wxWindowID winid, long style)
+    :wxListCtrl( parent, winid, wxDefaultPosition, wxDefaultSize, style)
+{
+}
+
+void TypeListCtrl::OnSize(wxSizeEvent& event)
+{
+	event.Skip();
+
+	if (GetColumnCount() == 2){
+        int w = GetClientSize().x - 20;
+        SetColumnWidth(1, 50);
+        SetColumnWidth(1, w - 50);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
@@ -222,7 +252,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer10->Add( m_tools, 0, wxALL|wxEXPAND, 5 );
 
-	m_typelist = new wxListCtrl( m_panel4, ID_TYPELIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VRULES );
+	m_typelist = new TypeListCtrl( m_panel4, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
     m_typelist->InsertColumn(0, _T("Тип"), wxLIST_FORMAT_LEFT, 50);
     m_typelist->InsertColumn(1, _T("Программа"), wxLIST_FORMAT_LEFT, 300);
 //    typelist->colSizes.Add(1);

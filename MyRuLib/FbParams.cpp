@@ -1,4 +1,5 @@
 #include <wx/stdpaths.h>
+#include <wx/filename.h>
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 
@@ -109,14 +110,21 @@ int FbParams::DefaultValue(int param)
 wxString FbParams::DefaultText(int param)
 {
     switch (param) {
-        case FB_LIBRARY_DIR: return wxGetApp().GetAppPath();
-        case FB_EXTRACT_DIR: return wxStandardPaths().GetTempDir();
-        case FB_DOWNLOAD_DIR: return wxGetApp().GetAppPath() + wxT("download");
+        case FB_LIBRARY_DIR:
+            return wxGetApp().GetAppPath();
+        case FB_EXTRACT_DIR:
+            return wxStandardPaths().GetTempDir();
+        case FB_DOWNLOAD_DIR: {
+            wxFileName filename;
+            filename.SetName(wxT("download"));
+            filename.SetPath(wxGetApp().GetAppPath());
+            return filename.GetFullPath();
+        }
 #ifndef __WIN32__
-        case FB_FB2_PROGRAM: return wxT("fbreader");
+        case FB_FB2_PROGRAM:
+            return wxT("fbreader");
 #endif //__WIN32__
     }
-
     return wxEmptyString;
 };
 
