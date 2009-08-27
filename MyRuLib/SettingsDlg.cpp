@@ -516,6 +516,7 @@ void SettingsDlg::SelectApplication()
 	command = wxGetTextFromUser(title, _("Настройки:"), command);
 	if (command.IsEmpty()) return;
 	size_t index = m_commands.Add(command);
+	item = -1;
     while (true) {
         item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
         if (item == -1) break;
