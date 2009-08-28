@@ -122,6 +122,9 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only
 	AuthorsRow * thisAuthor = authors.Id(id_author);
 	if(thisAuthor)
 	{
+		root = treelist->AppendItem(root, thisAuthor->full_name, 0);
+		treelist->SetItemBold(root, true);
+
 		BookseqRowSet * bookseq = thisAuthor->GetBookseqs();
 
 		int id_seq = 0;

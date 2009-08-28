@@ -73,6 +73,7 @@ private:
 	void OnBooksListViewSelected(wxTreeEvent & event);
 	void OnBooksListActivated(wxTreeEvent & event);
 	void OnBooksListKeyDown(wxTreeEvent & event);
+	void OnBooksListCollapsing(wxTreeEvent & event);
 	void OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event);
 	void OnFindTextEnter( wxCommandEvent& event );
 	void OnNewZip( wxCommandEvent& event );

@@ -50,6 +50,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, MyRuLibMainFrame::OnAuthorsListBoxSelected)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListActivated)
+	EVT_TREE_ITEM_COLLAPSING(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListCollapsing)
 	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnBooksListKeyDown)
 	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, MyRuLibMainFrame::OnImageClick)
     EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, MyRuLibMainFrame::OnBooksInfoPanelLinkClicked)
@@ -322,6 +323,11 @@ void MyRuLibMainFrame::OnBooksListViewSelected(wxTreeEvent & event)
 	event.Skip();
 }
 
+void MyRuLibMainFrame::OnBooksListCollapsing(wxTreeEvent & event)
+{
+	event.Veto();
+}
+
 void MyRuLibMainFrame::OnBooksInfoPanelLinkClicked(wxHtmlLinkEvent & event)
 {
 }
@@ -443,6 +449,12 @@ void MyRuLibMainFrame::OnImageClick(wxTreeEvent &event)
 			wxTreeItemIdValue cookie;
 			item = m_BooksListView->GetFirstChild(item, cookie);
 			while (item.IsOk()) {
+				wxTreeItemIdValue cookie;
+				wxTreeItemId subitem = m_BooksListView->GetFirstChild(item, cookie);
+				while (subitem.IsOk()) {
+					m_BooksListView->SetItemImage(subitem, image);
+					subitem = m_BooksListView->GetNextSibling(subitem);
+				}
 				m_BooksListView->SetItemImage(item, image);
 				item = m_BooksListView->GetNextSibling (item);
 			}

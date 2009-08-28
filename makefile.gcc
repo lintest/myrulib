@@ -26,7 +26,7 @@ CXXFLAGS ?=
 CPPFLAGS ?= 
 
 # Standard linker flags 
-LDFLAGS ?= -static
+LDFLAGS ?= -static 
 
 # Use DLL build of wx library? [0,1]
 WX_SHARED ?= 0
