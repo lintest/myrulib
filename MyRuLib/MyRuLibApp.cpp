@@ -21,6 +21,10 @@ IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
+#ifndef wxHAS_HUGE_FILES
+	wxMessageBox(_("Not support for files larger 2Gb!"));
+#endif
+
 	if(!ConnectToDatabase()) {
 		wxFAIL_MSG(_("Error connecting to database!"));
 		return false;

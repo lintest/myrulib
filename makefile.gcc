@@ -26,7 +26,7 @@ CXXFLAGS ?=
 CPPFLAGS ?= 
 
 # Standard linker flags 
-LDFLAGS ?= -static 
+LDFLAGS ?= -static
 
 # Use DLL build of wx library? [0,1]
 WX_SHARED ?= 0
@@ -88,12 +88,14 @@ DATABASELAYER_OBJECTS =  \
 	build\DatabaseLayer_SqliteResultSetMetaData.o
 MYRULIB_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -O2 -ISQLite \
-	-IExpat -IDatabaseLayer $(CPPFLAGS) $(CFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
+	-D_LARGE_FILES -DwxHAS_HUGE_FILES -O2 -ISQLite -IExpat -IDatabaseLayer \
+	$(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -O2 -ISQLite \
-	-IExpat -IDatabaseLayer $(CPPFLAGS) $(CXXFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
+	-D_LARGE_FILES -DwxHAS_HUGE_FILES -O2 -ISQLite -IExpat -IDatabaseLayer \
+	$(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build\myrulib_BaseThread.o \
 	build\myrulib_BookListCtrl.o \
@@ -394,7 +396,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc
-	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --include-dir SQLite --include-dir Expat --include-dir DatabaseLayer
+	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define _LARGE_FILES --define wxHAS_HUGE_FILES --include-dir SQLite --include-dir Expat --include-dir DatabaseLayer
 
 .PHONY: all clean
 
