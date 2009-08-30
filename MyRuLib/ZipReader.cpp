@@ -256,6 +256,7 @@ void ZipCollection::AddZip(const wxString &filename)
 
     AutoTransaction trans;
 
+    int count = 0;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
 			wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
@@ -264,11 +265,12 @@ void ZipCollection::AddZip(const wxString &filename)
 			book->book = entry->GetName(wxPATH_UNIX);
 			book->file = id;
 			book->Save();
+			count++;
 		}
 		delete entry;
 	}
 
-	{
+	if (count) {
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 		ZipFiles files(wxGetApp().GetDatabase());
 		ZipFilesRow *file = files.New();
