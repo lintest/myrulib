@@ -175,6 +175,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer2->Add( bSizer3, 0, wxEXPAND, 5 );
 
+	/*
+
 	wxStaticLine * m_staticline = new wxStaticLine( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
 	bSizer2->Add( m_staticline, 0, wxEXPAND | wxALL, 5 );
 
@@ -234,6 +236,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer31->Add( bSizer33, 1, wxEXPAND, 5 );
 
 	bSizer2->Add( fgSizer31, 0, wxEXPAND, 5 );
+
+	*/
 
 	m_panel1->SetSizer( bSizer2 );
 	m_panel1->Layout();

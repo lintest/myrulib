@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinDebug\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\LinDebug\myrulib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\build\LinDebug\" />
 				<Option object_output="..\build\LinDebug\" />
 				<Option type="0" />
@@ -28,7 +28,7 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinRelease\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\LinRelease\myrulib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\build\LinRelease\" />
 				<Option object_output="..\build\LinRelease\" />
 				<Option type="0" />
@@ -47,7 +47,7 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinDebug\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\WinDebug\myrulib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\build\WinDebug\" />
 				<Option object_output="..\build\WinDebug\" />
 				<Option type="0" />
@@ -100,7 +100,7 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinRelease\MyRuLib" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\WinRelease\myrulib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\build\WinRelease\" />
 				<Option object_output="..\build\WinRelease\" />
 				<Option type="0" />
