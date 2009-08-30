@@ -385,7 +385,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		_("Выберите zip-файл для добавления в библиотеку…"),
 		wxEmptyString,
 		wxEmptyString,
-		_("Zip file (*.zip)|*.zip"),
+		_("Файлы ZIP (*.zip)|*.zip;*.Zip;*.ZIP|Все файлы (*.*)|*.*"),
 		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
