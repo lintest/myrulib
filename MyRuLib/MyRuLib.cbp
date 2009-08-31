@@ -70,9 +70,9 @@
 					<Add directory="$(WXWIN)\include" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="libwxmsw28u_html.a" />
-					<Add library="libwxmsw28u_core.a" />
-					<Add library="libwxbase28u.a" />
+					<Add library="libwxmsw28ud_html.a" />
+					<Add library="libwxmsw28ud_core.a" />
+					<Add library="libwxbase28ud.a" />
 					<Add library="libwxtiff.a" />
 					<Add library="libwxjpeg.a" />
 					<Add library="libwxpng.a" />
@@ -107,7 +107,6 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-march=i586" />
 					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-pipe" />
