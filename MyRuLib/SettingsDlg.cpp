@@ -414,8 +414,6 @@ void SettingsDlg::Assign(bool write)
         }
 
     }
-
-	if (write) ZipReader::Init();
 };
 
 void SettingsDlg::Execute(wxWindow* parent)
@@ -426,9 +424,9 @@ void SettingsDlg::Execute(wxWindow* parent)
 	dlg.FillTypelist();
 
     if (dlg.ShowModal() == wxID_OK) {
-   	    AutoTransaction trans;
-    	dlg.Assign(true);
-    	dlg.SaveTypelist();
+		dlg.Assign(true);
+		dlg.SaveTypelist();
+		ZipReader::Init();
     }
 };
 
@@ -535,6 +533,8 @@ void SettingsDlg::SaveTypelist()
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 	Types types(wxGetApp().GetDatabase());
 	TypesRowSet * rows = types.All();
+
+	AutoTransaction trans;
 
 	for (size_t i = 0; i<rows->Count(); i++)
 		rows->Item(i)->isOk = false;

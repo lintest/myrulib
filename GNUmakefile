@@ -90,12 +90,10 @@ DATABASELAYER_OBJECTS =  \
 	build/DatabaseLayer_SqlitePreparedStatement.o \
 	build/DatabaseLayer_SqliteResultSet.o \
 	build/DatabaseLayer_SqliteResultSetMetaData.o
-MYRULIB_CFLAGS = -D_LARGE_FILES -DwxHAS_HUGE_FILES -O2 -ISQLite -IExpat \
-	-IDatabaseLayer `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
-	$(CFLAGS)
-MYRULIB_CXXFLAGS = -D_LARGE_FILES -DwxHAS_HUGE_FILES -O2 -ISQLite -IExpat \
-	-IDatabaseLayer `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
-	$(CXXFLAGS)
+MYRULIB_CFLAGS = -O2 -ISQLite -IExpat -IDatabaseLayer `$(WX_CONFIG) --cflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -O2 -ISQLite -IExpat -IDatabaseLayer `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_BookListCtrl.o \

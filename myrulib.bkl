@@ -48,7 +48,6 @@
     </lib>
 
     <exe id="myrulib" template="wxgui">
-		<define>_LARGE_FILES</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookListCtrl.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>

@@ -16,8 +16,11 @@ extern wxString strBookNotFound;
 class ZipThread : public BaseThread
 {
 	public:
+		ZipThread(const wxString &dirname): BaseThread(), m_dirname(dirname) {};
 		virtual void *Entry();
 		void DoStep(const wxString &msg) { BaseThread::DoStep(msg); };
+	private:
+		wxString m_dirname;
 };
 
 class ZipCollection {
@@ -37,14 +40,12 @@ static ZipCollection zips;
 
 void *ZipThread::Entry()
 {
-	wxString dir = FbParams::GetText(FB_LIBRARY_DIR);
-
     wxCriticalSectionLocker enter(zips.sm_queue);
 
-	DoStart(0, dir);
+	DoStart(0, m_dirname);
 
 	zips.m_thread = this;
-	zips.SetDir(dir);
+	zips.SetDir(m_dirname);
 
 	DoFinish();
 
@@ -130,7 +131,8 @@ ZipReader::~ZipReader()
 
 void ZipReader::Init()
 {
-	ZipThread *thread = new ZipThread;
+	wxString dirname = FbParams::GetText(FB_LIBRARY_DIR);
+	ZipThread *thread = new ZipThread(dirname);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));

@@ -107,6 +107,7 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="-march=i586" />
 					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-pipe" />
