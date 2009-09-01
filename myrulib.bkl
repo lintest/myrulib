@@ -82,8 +82,6 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<threading>single</threading>
-		<optimize>speed</optimize>
 		<include>SQLite</include>
 		<include>Expat</include>
 		<include>DatabaseLayer</include>
@@ -98,6 +96,12 @@
 		<if cond="FORMAT=='mingw'">
 			<sys-lib>shlwapi</sys-lib>
 		</if>
+        <app-type>gui</app-type>
+		<threading>single</threading>
+		<optimize>speed</optimize>
+        <debug-info>off</debug-info>
+        <runtime-libs>static</runtime-libs>
+		<postlink-command>strip ./build/myrulib</postlink-command>
     </exe>
 
 </makefile>
