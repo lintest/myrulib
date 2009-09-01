@@ -55,9 +55,10 @@ static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
 }
 
 ParsingContext::ParsingContext()
-        :conv(NULL), encoding(wxT("UTF-8"))
+    : encoding(wxT("UTF-8"))
 {
     m_parser = XML_ParserCreate(NULL);
+    XML_SetUserData(m_parser, (void*)this);
     XML_SetDefaultHandler(m_parser, DefaultHnd);
     XML_SetUnknownEncodingHandler(m_parser, UnknownEncodingHnd, NULL);
 }
@@ -66,7 +67,6 @@ ParsingContext::~ParsingContext()
 {
     XML_ParserFree(m_parser);
 }
-
 
 wxString ParsingContext::Path(size_t count)
 {

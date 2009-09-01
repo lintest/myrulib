@@ -22,7 +22,6 @@ public:
     static wxString CharToLower(const char *s, size_t len = wxString::npos);
     static bool IsWhiteOnly(const wxChar *buf);
 public:
-    wxMBConv *conv;
     wxString encoding;
     wxString version;
 private:

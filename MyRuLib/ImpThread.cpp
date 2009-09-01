@@ -24,20 +24,20 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 	if (path == wxT("fictionbook/description/title-info/")) {
 	    if (node_name == wxT("author")) {
             ctx->author = new AuthorItem;
+	        ctx->authors.Add(ctx->author);
 	    } else if (node_name == wxT("sequence")) {
 	        SequenceItem * seqitem = new SequenceItem;
+            ctx->sequences.Add(seqitem);
             const XML_Char **a = atts;
             while (*a) {
-                wxString attr = ctx->CharToLower(a[0]).Trim(false).Trim(true);
-                wxString text = ctx->CharToString(a[1]).Trim(false).Trim(true);
+                wxString attr = ctx->CharToLower(a[0]).Trim(false).Trim(true); a++;
+                wxString text = ctx->CharToString(a[0]).Trim(false).Trim(true); a++;
                 if (attr == wxT("name")) {
                     seqitem->seqname = text;
                 } else if (attr == wxT("number")) {
                     text.ToLong(&seqitem->number);
                 }
-                a += 2;
             }
-            ctx->sequences.Add(seqitem);
 	    }
 	}
 	ctx->AppendTag(node_name);
@@ -55,9 +55,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 
 	if (path == wxT("fictionbook/description/title-info/")) {
         ctx->text.Trim(false).Trim(true);
-	    if (node_name == wxT("author")) {
-	        ctx->authors.Add(ctx->author);
-	    } else if (node_name == wxT("book-title")) {
+	    if (node_name == wxT("book-title")) {
 	        ctx->title = ctx->text;
 	    } else if (node_name == wxT("genre")) {
             ctx->genres += FbGenres::Char(ctx->text);
@@ -101,7 +99,6 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 
     sha1_context sha1;
 
-    XML_SetUserData(ctx.GetParser(), (void*)&ctx);
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
 

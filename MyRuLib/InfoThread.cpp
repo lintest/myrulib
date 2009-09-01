@@ -148,7 +148,6 @@ bool InfoThread::Load(wxInputStream& stream)
 	ctx.m_frame = m_frame;
 	ctx.m_id = m_id;
 
-    XML_SetUserData(ctx.GetParser(), (void*)&ctx);
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
 

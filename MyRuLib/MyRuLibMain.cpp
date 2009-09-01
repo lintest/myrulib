@@ -29,7 +29,7 @@
 #define ID_LETTER_RU 30100
 #define ID_LETTER_EN 30200
 
-wxString strVersionInfo = _T("MyRuLib - version 0.05 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
+wxString strVersionInfo = _T("MyRuLib - version 0.06 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
 
 wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
