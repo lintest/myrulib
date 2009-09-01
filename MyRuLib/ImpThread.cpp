@@ -21,7 +21,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
     wxString node_name = ctx->CharToLower(name);
     wxString path = ctx->Path();
 
-	if (path == wxT("fictionbook/description/title-info/")) {
+	if (path == wxT("/fictionbook/description/title-info")) {
 	    if (node_name == wxT("author")) {
             ctx->author = new AuthorItem;
 	        ctx->authors.Add(ctx->author);
@@ -53,14 +53,14 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 	ctx->RemoveTag(node_name);
     wxString path = ctx->Path();
 
-	if (path == wxT("fictionbook/description/title-info/")) {
+	if (path == wxT("/fictionbook/description/title-info")) {
         ctx->text.Trim(false).Trim(true);
 	    if (node_name == wxT("book-title")) {
 	        ctx->title = ctx->text;
 	    } else if (node_name == wxT("genre")) {
             ctx->genres += FbGenres::Char(ctx->text);
 	    }
-	} else if (path == wxT("fictionbook/description/title-info/author/")) {
+	} else if (path == wxT("/fictionbook/description/title-info/author")) {
         ctx->text.Trim(false).Trim(true);
         if (node_name == wxT("first-name"))
             ctx->author->first = ctx->text;
@@ -68,7 +68,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
             ctx->author->middle = ctx->text;
         if (node_name == wxT("last-name"))
             ctx->author->last = ctx->text;
-	} else if (path == wxT("fictionbook/description/")) {
+	} else if (path == wxT("/fictionbook/description")) {
 	    if (node_name == wxT("title-info")) {
 	        ctx->Stop();
 	    }

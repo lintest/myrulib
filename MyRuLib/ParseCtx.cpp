@@ -79,7 +79,7 @@ wxString ParsingContext::Path(size_t count)
 		lastNum = (count ? count : m_tags.Count());
 
 	for (size_t i=0; i<lastNum; i++)
-		result += m_tags[i] + wxT("/");
+		result += wxT("/") + m_tags[i];
 
 	return result;
 }

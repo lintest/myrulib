@@ -41,7 +41,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
     wxString node_name = ctx->CharToLower(name);
 
-	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
+	if (ctx->Path(4) == wxT("/fictionbook/description/title-info/annotation")) {
 		ctx->annotation += wxString::Format(wxT("<%s"), node_name.c_str());
 		const XML_Char **a = atts;
 		while (*a) {
@@ -53,7 +53,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 		ctx->annotation += wxT(">");
 	} else {
 		wxString path = ctx->Path();
-		if (path == wxT("fictionbook/description/title-info/coverpage/")) {
+		if (path == wxT("/fictionbook/description/title-info/coverpage")) {
 			if (node_name == wxT("image")) {
 				const XML_Char **a = atts;
 				while (*a) {
@@ -67,7 +67,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 					a += 2;
 				}
 			}
-        } else if ((node_name == wxT("binary")) && path == wxT("fictionbook/")) {
+        } else if ((node_name == wxT("binary")) && path == wxT("/fictionbook")) {
             ctx->skipimage = true;
             ctx->imagedata.Empty();
             ctx->imagetype.Empty();
@@ -96,19 +96,19 @@ static void EndElementHnd(void *userData, const XML_Char* name)
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
     wxString node_name = ctx->CharToLower(name);
 
-	if (ctx->Level()>4 && ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
+	if (ctx->Level()>4 && ctx->Path(4) == wxT("/fictionbook/description/title-info/annotation")) {
 		ctx->annotation.Trim(false).Trim(true);
 		ctx->annotation += wxString::Format(wxT("</%s>"), node_name.c_str());
 	} else {
 		wxString path = ctx->Path();
-		if (path == wxT("fictionbook/description/title-info/")) {
+		if (path == wxT("/fictionbook/description/title-info")) {
 	        InfoCash::SetAnnotation(ctx->m_id, ctx->annotation);
 			if (!ctx->images.Count()) ctx->Stop();
 			wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
 			event.SetInt(ctx->m_id);
 			wxPostEvent( ctx->m_frame, event );
 			ctx->annotation.Empty();
-		} else if (path == wxT("fictionbook/binary/")) {
+		} else if (path == wxT("/fictionbook/binary")) {
 		    if (!ctx->skipimage) {
 		        InfoCash::AddImage(ctx->m_id, ctx->imagename, ctx->imagedata, ctx->imagetype);
                 wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
@@ -127,10 +127,10 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 {
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
-	if (ctx->Path(4) == wxT("fictionbook/description/title-info/annotation/")) {
+	if (ctx->Path(4) == wxT("/fictionbook/description/title-info/annotation")) {
 	    wxString str = ctx->CharToString(s, len);
 	    if (!ParsingContext::IsWhiteOnly(str)) ctx->annotation += str;
-	} else if (ctx->Path() == wxT("fictionbook/binary/")) {
+	} else if (ctx->Path() == wxT("/fictionbook/binary")) {
 	    wxString str = ctx->CharToString(s, len);
 	    if (!ParsingContext::IsWhiteOnly(str)) ctx->imagedata += str;
 	}
