@@ -24,6 +24,15 @@ private:
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
     PreparedStatement * Prepare(const wxString &sql);
 private:
+    enum {
+        PSFindBySize,
+        PSFindBySha1,
+        PSUpdateSha1,
+        PSSearchFile,
+        PSAppendFile,
+        PSSearchArch,
+        PSAppendArch,
+    };
     void InitStatements();
     void CloseStatements();
     DatabaseStatementHashSet m_Statements;
