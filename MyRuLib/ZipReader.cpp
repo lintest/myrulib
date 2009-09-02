@@ -288,14 +288,16 @@ wxString ZipCollection::FindZip(const wxString &filename)
 {
     wxCriticalSectionLocker enter1(sm_queue);
 	wxCriticalSectionLocker enter2(wxGetApp().m_DbSection);
+    DatabaseLayer * database = wxGetApp().GetDatabase();
 
 	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	PreparedStatement* pStatement = database->PrepareStatement(sql);
 	pStatement->SetParamString(1, filename);
 	DatabaseResultSet* result = pStatement->ExecuteQuery();
 
 	if (!result) return wxEmptyString;
 
+    wxString zipname;
 	while (result->Next()) {
 		int id = result->GetResultInt(wxT("file"));
 		ZipFiles files(wxGetApp().GetDatabase());
@@ -303,8 +305,10 @@ wxString ZipCollection::FindZip(const wxString &filename)
 		if (file) {
 			wxFileName zip_file = file->path;
 			zip_file.SetPath(m_dirname);
-			if (zip_file.FileExists())
-				return zip_file.GetFullPath();
+			if (zip_file.FileExists()) {
+				zipname = zip_file.GetFullPath();
+				break;
+			}
 		}
 	}
 
