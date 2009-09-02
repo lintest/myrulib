@@ -2,21 +2,39 @@
 #define __FBTHREAD_H__
 
 #include <wx/wx.h>
+#include <DatabaseLayer.h>
+#include <SqliteDatabaseLayer.h>
+#include <SqlitePreparedStatement.h>
 #include "BaseThread.h"
 #include "ImpContext.h"
 
 class ImportThread : public BaseThread
 {
 public:
+    ImportThread();
+    virtual ~ImportThread();
     virtual void OnExit();
-	static bool ParseXml(wxInputStream& stream, const wxString &name, int id_archive);
-    static int AddArchive(const wxString &filename, const int file_size, const int file_count);
+	bool ParseXml(wxInputStream& stream, const wxString &name, int id_archive);
+    int AddArchive(const wxString &filename, const int file_size, const int file_count);
 private:
-	static bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
-	static void AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, const int id_archive);
-	static void AppendFile(const int id_book, const int id_archive, const wxString &file_name);
-	static int FindBySHA1(const wxString &sha1sum);
-	static int FindBySize(const wxString &sha1sum, wxFileOffset size);
+	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
+	void AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, const int id_archive);
+	void AppendFile(const int id_book, const int id_archive, const wxString &new_name);
+	int FindBySHA1(const wxString &sha1sum);
+	int FindBySize(const wxString &sha1sum, wxFileOffset size);
+    PreparedStatement * Prepare(const wxString &sql);
+private:
+    void InitStatements();
+    void CloseStatements();
+    DatabaseStatementHashSet m_Statements;
+    SqliteDatabaseLayer * m_database;
+    PreparedStatement * m_psFindBySize;
+    PreparedStatement * m_psFindBySha1;
+    PreparedStatement * m_psUpdateSha1;
+    PreparedStatement * m_psSearchFile;
+    PreparedStatement * m_psAppendFile;
+    PreparedStatement * m_psSearchArch;
+    PreparedStatement * m_psAppendArch;
 };
 
 class ZipImportThread : public ImportThread
@@ -33,7 +51,7 @@ class DirImportThread : public ImportThread
 public:
     DirImportThread(const wxString &dirname): m_dirname(dirname) {};
     virtual void *Entry();
-    static bool ParseZip(const wxString &filename);
+    bool ParseZip(const wxString &filename);
     void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
 private:
     wxString m_dirname;

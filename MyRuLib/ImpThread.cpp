@@ -87,6 +87,48 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
+ImportThread::ImportThread()
+    :BaseThread(), m_database(wxGetApp().GetDatabase())
+{
+    InitStatements();
+}
+
+ImportThread::~ImportThread()
+{
+	CloseStatements();
+}
+
+void ImportThread::InitStatements()
+{
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
+    m_psFindBySize = Prepare(wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)"));
+	m_psFindBySha1 = Prepare(wxT("SELECT id FROM books WHERE sha1sum=? LIMIT 1"));
+    m_psUpdateSha1 = Prepare(wxT("UPDATE books SET sha1sum=? WHERE id=?"));
+    m_psSearchFile = Prepare(wxT("SELECT file_name FROM files WHERE id_book=? AND id_archive=?"));
+    m_psAppendFile = Prepare(wxT("INSERT INTO files(id_book, id_archive, file_name) VALUES (?,?,?)"));
+    m_psSearchArch = Prepare(wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?"));
+    m_psAppendArch = Prepare(wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)"));
+}
+
+void ImportThread::CloseStatements()
+{
+	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    m_database->CloseStatement(m_psFindBySize);
+    m_database->CloseStatement(m_psFindBySha1);
+    m_database->CloseStatement(m_psUpdateSha1);
+    m_database->CloseStatement(m_psSearchFile);
+    m_database->CloseStatement(m_psAppendFile);
+    m_database->CloseStatement(m_psSearchArch);
+    m_database->CloseStatement(m_psAppendArch);
+}
+
+PreparedStatement * ImportThread::Prepare(const wxString &sql)
+{
+    PreparedStatement * pStatement = m_database->PrepareStatement(sql);
+    return pStatement;
+}
+
 void ImportThread::OnExit()
 {
 }
@@ -155,8 +197,8 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-		Books books(wxGetApp().GetDatabase());
-		Bookseq bookseq(wxGetApp().GetDatabase());
+		Books books(m_database);
+		Bookseq bookseq(m_database);
 
 		BooksRow * row = books.New();
 		row->id = id_book;
@@ -184,19 +226,15 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 int ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-	DatabaseLayer * database = wxGetApp().GetDatabase();
 
-	wxString sql = wxT("SELECT DISTINCT id FROM books WHERE sha1sum=?");
-	PreparedStatement * pStatement = database->PrepareStatement(sql);
-	pStatement->SetParamString(1, sha1sum);
-	DatabaseResultSet * result = pStatement->ExecuteQuery();
+	m_psFindBySha1->SetParamString(1, sha1sum);
+	DatabaseResultSet * result = m_psFindBySha1->ExecuteQuery();
 
     int id = 0;
 	if (result && result->Next())
         id = result->GetResultInt(wxT("id"));
 
-    database->CloseResultSet(result);
-    database->CloseStatement(pStatement);
+    m_database->CloseResultSet(result);
 	return id;
 }
 
@@ -206,23 +244,18 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        DatabaseLayer * database = wxGetApp().GetDatabase();
 
-        wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
-        PreparedStatement* pStatement = database->PrepareStatement(sql);
-        pStatement->SetParamInt(1, size);
-        DatabaseResultSet* result = pStatement->ExecuteQuery();
+        m_psFindBySize->SetParamInt(1, size);
+        DatabaseResultSet* result = m_psFindBySize->ExecuteQuery();
 
         while (result && result->Next()) {
             int id = result->GetResultInt(wxT("id"));
             books.Add(id);
         }
-        database->CloseResultSet(result);
-        database->CloseStatement(pStatement);
+        m_database->CloseResultSet(result);
     }
 
     for (size_t i=0; i<books.Count(); i++) {
-
 		ZipReader book(books[i]);
 		if (!book.IsOK()) continue;
 
@@ -231,14 +264,10 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		LoadXml(book.GetZip(), info);
 
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        DatabaseLayer * database = wxGetApp().GetDatabase();
 
-		wxString sql = wxT("UPDATE books SET sha1sum=? WHERE id=?");
-		PreparedStatement* pStatement = database->PrepareStatement(sql);
-		pStatement->SetParamString(1, info.sha1sum);
-		pStatement->SetParamInt(2, books[i]);
-		pStatement->ExecuteUpdate();
-        database->CloseStatement(pStatement);
+		m_psUpdateSha1->SetParamString(1, info.sha1sum);
+		m_psUpdateSha1->SetParamInt(2, books[i]);
+		m_psUpdateSha1->ExecuteUpdate();
 		if (info.sha1sum == sha1sum) return books[i];
 	}
 
@@ -262,23 +291,26 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, con
     return false;
 }
 
-void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &file_name)
+void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	Files files (wxGetApp().GetDatabase());
-	FilesRow * row = files.Find(id_book, id_archive);
+    m_psSearchFile->SetParamInt(1, id_book);
+    m_psSearchFile->SetParamInt(2, id_archive);
+    DatabaseResultSet* result = m_psSearchFile->ExecuteQuery();
 
-	if (row) {
-	    if (row->file_name == file_name) return;
-	} else {
-        row = files.New();
-        row->id_book = id_book;
-        row->id_archive = id_archive;
-	}
+    wxString old_name;
+    if (result && result->Next()) {
+        old_name = result->GetResultString(1);
+    }
+    m_database->CloseResultSet(result);
 
-	row->file_name = file_name;
-	row->Save();
+    if (old_name == new_name) return;
+
+    m_psSearchFile->SetParamInt(1, id_book);
+    m_psSearchFile->SetParamInt(2, id_archive);
+    m_psSearchFile->SetParamString(3, new_name);
+    m_psSearchFile->ExecuteUpdate();
 }
 
 int ImportThread::AddArchive(const wxString &filename, const int file_size, const int file_count)
@@ -289,19 +321,27 @@ int ImportThread::AddArchive(const wxString &filename, const int file_size, cons
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	Archives archives(wxGetApp().GetDatabase());
+	Archives archives(m_database);
 
-	ArchivesRow * row = archives.FindFile(name, path);
-	if (row) return row->id;
+    m_psSearchArch->SetParamString(1, name);
+    m_psSearchArch->SetParamString(2, path);
+    DatabaseResultSet* result = m_psSearchFile->ExecuteQuery();
 
-	row = archives.New();
-	row->id = BookInfo::NewId(DB_NEW_ARCHIVE);
-	row->file_name = name;
-	row->file_path = path;
-	row->file_size = file_size;
-	row->file_count = file_count;
-	row->Save();
-	return row->id;
+    int id = 0;
+    if (result && result->Next()) {
+        id = result->GetResultInt(1);
+    }
+    m_database->CloseResultSet(result);
+    if (id) return id;
+
+    id = BookInfo::NewId(DB_NEW_ARCHIVE);
+    m_psAppendArch->SetParamInt(1, id);
+    m_psAppendArch->SetParamString(2, name);
+    m_psAppendArch->SetParamString(3, path);
+    m_psAppendArch->SetParamInt(4, file_size);
+    m_psAppendArch->SetParamInt(5, file_count);
+    m_psAppendArch->ExecuteUpdate();
+	return id;
 }
 
 void *ZipImportThread::Entry()
@@ -311,11 +351,19 @@ void *ZipImportThread::Entry()
     AutoTransaction trans;
 
 	wxFFileInputStream in(m_filename);
+
+	if (m_filename.Right(4).Lower() == wxT(".fb2")) {
+        DoStart(0, m_filename);
+        ParseXml(in, m_filename, 0);
+        DoFinish();
+        return NULL;
+	}
+
 	wxZipInputStream zip(in);
 
 	int id_archive = AddArchive(m_filename, in.GetLength(), zip.GetTotalEntries());
 
-    DoStart(zip.GetTotalEntries(), wxFileName(m_filename).GetFullName());
+    DoStart(zip.GetTotalEntries(), m_filename);
 
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
@@ -429,4 +477,3 @@ bool DirImportThread::ParseZip(const wxString &filename)
 
     return true;
 }
-

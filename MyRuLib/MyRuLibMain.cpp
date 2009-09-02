@@ -96,7 +96,7 @@ void MyRuLibMainFrame::CreateControls()
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(wxID_NEW, _("Добавить файл ZIP…"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	menu->Append(wxID_NEW, _("Добавить файл"))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_OPEN, _("Добавить директорию"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN));
 	menu->AppendSeparator();
 	menu->Append(wxID_SAVE, _("Записать на устройство"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FILE_SAVE));
@@ -385,7 +385,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		_("Выберите zip-файл для добавления в библиотеку…"),
 		wxEmptyString,
 		wxEmptyString,
-		_("Файлы ZIP (*.zip)|*.zip;*.Zip;*.ZIP|Все файлы (*.*)|*.*"),
+		_("Электронные книги и архивы (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*.FB2|Электронные книги FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|Архивы ZIP (*.zip)|*.zip;*.Zip;*.ZIP|Все файлы (*.*)|*.*"),
 		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
     );
