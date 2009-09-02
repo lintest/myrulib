@@ -307,10 +307,10 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 
     if (old_name == new_name) return;
 
-    m_psSearchFile->SetParamInt(1, id_book);
-    m_psSearchFile->SetParamInt(2, id_archive);
-    m_psSearchFile->SetParamString(3, new_name);
-    m_psSearchFile->ExecuteUpdate();
+    m_psAppendFile->SetParamInt(1, id_book);
+    m_psAppendFile->SetParamInt(2, id_archive);
+    m_psAppendFile->SetParamString(3, new_name);
+    m_psAppendFile->ExecuteUpdate();
 }
 
 int ImportThread::AddArchive(const wxString &filename, const int file_size, const int file_count)
