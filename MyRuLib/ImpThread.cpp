@@ -184,17 +184,20 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 int ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+	DatabaseLayer * database = wxGetApp().GetDatabase();
 
 	wxString sql = wxT("SELECT DISTINCT id FROM books WHERE sha1sum=?");
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	PreparedStatement * pStatement = database->PrepareStatement(sql);
 	pStatement->SetParamString(1, sha1sum);
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
+	DatabaseResultSet * result = pStatement->ExecuteQuery();
 
-	if (result) {
-		result->Next();
-		return result->GetResultInt(wxT("id"));
-	} else
-		return 0;
+    int id = 0;
+	if (result && result->Next())
+        id = result->GetResultInt(wxT("id"));
+
+    database->CloseResultSet(result);
+    database->CloseStatement(pStatement);
+	return id;
 }
 
 int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
@@ -203,18 +206,19 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        DatabaseLayer * database = wxGetApp().GetDatabase();
 
         wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
-        PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+        PreparedStatement* pStatement = database->PrepareStatement(sql);
         pStatement->SetParamInt(1, size);
         DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-        if (!result) return 0;
-
-        while (result->Next()) {
+        while (result && result->Next()) {
             int id = result->GetResultInt(wxT("id"));
             books.Add(id);
         }
+        database->CloseResultSet(result);
+        database->CloseStatement(pStatement);
     }
 
     for (size_t i=0; i<books.Count(); i++) {
@@ -227,12 +231,14 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		LoadXml(book.GetZip(), info);
 
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        DatabaseLayer * database = wxGetApp().GetDatabase();
 
 		wxString sql = wxT("UPDATE books SET sha1sum=? WHERE id=?");
-		PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+		PreparedStatement* pStatement = database->PrepareStatement(sql);
 		pStatement->SetParamString(1, info.sha1sum);
 		pStatement->SetParamInt(2, books[i]);
 		pStatement->ExecuteUpdate();
+        database->CloseStatement(pStatement);
 		if (info.sha1sum == sha1sum) return books[i];
 	}
 

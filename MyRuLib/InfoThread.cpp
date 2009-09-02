@@ -41,7 +41,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
     wxString node_name = ctx->CharToLower(name);
 
-	if (ctx->Path(4) == wxT("/fictionbook/description/title-info/annotation")) {
+	if (ctx->IsInclude(wxT("/fictionbook/description/title-info/annotation"))) {
 		ctx->annotation += wxString::Format(wxT("<%s"), node_name.c_str());
 		const XML_Char **a = atts;
 		while (*a) {
@@ -96,7 +96,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
     wxString node_name = ctx->CharToLower(name);
 
-	if (ctx->Level()>4 && ctx->Path(4) == wxT("/fictionbook/description/title-info/annotation")) {
+	if (ctx->IsInclude(wxT("/fictionbook/description/title-info/annotation"))) {
 		ctx->annotation.Trim(false).Trim(true);
 		ctx->annotation += wxString::Format(wxT("</%s>"), node_name.c_str());
 	} else {
@@ -127,7 +127,7 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 {
     InfoParsingContext *ctx = (InfoParsingContext*)userData;
 
-	if (ctx->Path(4) == wxT("/fictionbook/description/title-info/annotation")) {
+	if (ctx->IsInclude(wxT("/fictionbook/description/title-info/annotation"))) {
 	    wxString str = ctx->CharToString(s, len);
 	    if (!ParsingContext::IsWhiteOnly(str)) ctx->annotation += str;
 	} else if (ctx->Path() == wxT("/fictionbook/binary")) {

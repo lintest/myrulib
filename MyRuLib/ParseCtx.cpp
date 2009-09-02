@@ -68,35 +68,29 @@ ParsingContext::~ParsingContext()
     XML_ParserFree(m_parser);
 }
 
-wxString ParsingContext::Path(size_t count)
+bool ParsingContext::IsInclude(const wxString &path)
 {
-	size_t lastNum;
-	wxString result;
-
-	if (count>m_tags.Count())
-		lastNum = m_tags.Count();
-	else
-		lastNum = (count ? count : m_tags.Count());
-
-	for (size_t i=0; i<lastNum; i++)
-		result += wxT("/") + m_tags[i];
-
-	return result;
+    size_t len = path.Length();
+    return (len <= m_path.Length()) && (m_path.Left(len) == path);
 }
 
 void ParsingContext::AppendTag(wxString &tag)
 {
-	m_tags.Add(tag);
+    m_path += wxT("/") + tag;
 }
 
 void ParsingContext::RemoveTag(wxString &tag)
 {
-	for (size_t i = m_tags.Count(); i>0 ; i--) {
-		if ( m_tags[i-1] == tag) {
-			while (m_tags.Count()>=i) m_tags.RemoveAt(i-1);
-			break;
-		}
-	}
+    wxString str = m_path;
+    do {
+        int pos = str.Find(wxT('/'), true);
+        if (pos == -1) break;
+        if (str.Mid(pos + 1) == tag) {
+            m_path = str.Left(pos);
+            return;
+        }
+        str = str.Left(pos);
+    } while (true);
 }
 
 void ParsingContext::Stop()

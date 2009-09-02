@@ -11,7 +11,9 @@ class ParsingContext
 public:
 	ParsingContext();
 	virtual ~ParsingContext();
-	wxString Path(size_t count = 0);
+	wxString Path(size_t count);
+	wxString Path() { return m_path; };
+	bool IsInclude(const wxString &path);
 	void AppendTag(wxString &tag);
 	void RemoveTag(wxString &tag);
 	size_t Level() {return m_tags.Count();};
@@ -27,6 +29,7 @@ public:
 private:
 	wxArrayString m_tags;
 	XML_Parser m_parser;
+	wxString m_path;
 };
 
 #endif // __PARSECTX_H__

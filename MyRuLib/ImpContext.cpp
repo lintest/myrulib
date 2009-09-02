@@ -22,20 +22,26 @@ wxString AuthorItem::GetFullName()
 
 int AuthorItem::FindAuthor(AuthorItem &author)
 {
-	wxString search_name = author.GetFullName();
-	if (search_name.IsEmpty()) return 0;
-	BookInfo::MakeLower(search_name);
-	search_name.Replace(strRusJO, strRusJE);
-
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+	DatabaseLayer * database = wxGetApp().GetDatabase();
 
 	wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? ORDER BY search_name");
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
+	PreparedStatement* pStatement = database->PrepareStatement(sql);
 	pStatement->SetParamString(1, author.first);
 	pStatement->SetParamString(2, author.middle);
 	pStatement->SetParamString(3, author.last);
 	DatabaseResultSet* result = pStatement->ExecuteQuery();
-	if (result->Next()) return result->GetResultInt(1);
+	int id = 0;
+	if (result && result->Next())
+        id = result->GetResultInt(1);
+	database->CloseResultSet(result);
+	database->CloseStatement(pStatement);
+	if (id) return id;
+
+	wxString search_name = author.GetFullName();
+	if (search_name.IsEmpty()) return 0;
+	BookInfo::MakeLower(search_name);
+	search_name.Replace(strRusJO, strRusJE);
 
     wxString letter = search_name.Left(1);
     BookInfo::MakeUpper(letter);
