@@ -21,11 +21,7 @@
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="libwxmsw28ud_richtext.a" />
-					<Add library="libwxmsw28ud_xrc.a" />
 					<Add library="libwxmsw28ud_aui.a" />
-					<Add library="libwxbase28ud_net.a" />
-					<Add library="libwxbase28ud_xml.a" />
 					<Add library="libwxmsw28ud_adv.a" />
 					<Add library="libwxmsw28ud_html.a" />
 					<Add library="libwxmsw28ud_core.a" />
@@ -54,16 +50,7 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="libwxmsw28u_richtext.a" />
-					<Add library="libwxmsw28u_xrc.a" />
 					<Add library="libwxmsw28u_aui.a" />
-					<Add library="libwxmsw28u_dbgrid.a" />
-					<Add library="libwxbase28u_odbc.a" />
-					<Add library="libwxmsw28u_media.a" />
-					<Add library="libwxbase28u_net.a" />
-					<Add library="libwxmsw28u_gl.a" />
-					<Add library="libwxmsw28u_qa.a" />
-					<Add library="libwxbase28u_xml.a" />
 					<Add library="libwxmsw28u_adv.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
@@ -109,6 +96,8 @@
 		</Linker>
 		<Unit filename="AUIDocViewApp.cpp" />
 		<Unit filename="AUIDocViewApp.h" />
+		<Unit filename="AUIDocViewChildFrame.cpp" />
+		<Unit filename="AUIDocViewChildFrame.h" />
 		<Unit filename="AUIDocViewMainFrame.cpp" />
 		<Unit filename="AUIDocViewMainFrame.h" />
 		<Extensions>

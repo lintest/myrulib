@@ -31,7 +31,7 @@ AUIDocViewMainFrame::~AUIDocViewMainFrame()
 
 bool AUIDocViewMainFrame::Create(wxWindow * parent, wxWindowID id,const wxString & title)
 {
-	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition,
+	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, 
 		wxSize(600,500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)
 	{
@@ -44,12 +44,12 @@ bool AUIDocViewMainFrame::Create(wxWindow * parent, wxWindowID id,const wxString
 wxMenuBar * AUIDocViewMainFrame::CreateMainMenuBar()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
-
+	
 	wxMenu * fileMenu = new wxMenu;
 	fileMenu->Append(wxID_EXIT, _("Exit\tAlt+F4"));
 	menuBar->Append(fileMenu, _("File"));
 
-	wxMenu * viewMenu = new wxMenu;
+	wxMenu * viewMenu = new wxMenu;	
 	wxMenu * headerMenu = new wxMenu;
 	headerMenu->AppendRadioItem(ID_HEADER_DEFAULT_STYLE, _("Default"));
 	headerMenu->AppendRadioItem(ID_HEADER_SIMPLE_STYLE, _("Simple"));
@@ -65,22 +65,22 @@ wxMenuBar * AUIDocViewMainFrame::CreateMainMenuBar()
 }
 
 void AUIDocViewMainFrame::CreateControls()
-{
+{	
 	SetMenuBar(AUIDocViewMainFrame::CreateMainMenuBar());
 	CreateStatusBar(2);
-	m_LOGTextCtrl = new wxTextCtrl(this, ID_LOG_TEXTCTRL, wxEmptyString,
-		wxDefaultPosition, wxSize(250, 100),
+	m_LOGTextCtrl = new wxTextCtrl(this, ID_LOG_TEXTCTRL, wxEmptyString, 
+		wxDefaultPosition, wxSize(250, 100), 
 		wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
 
 	for(int i = 0; i < 5; i++)
 	{
-		AUIDocViewChildFrame * frame = new AUIDocViewChildFrame(this, wxID_ANY,
+		AUIDocViewChildFrame * frame = new AUIDocViewChildFrame(this, wxID_ANY, 
 			wxString::Format(wxT("View %i"), i+1), (rand()%2)?true:false);
 		wxUnusedVar(frame);
-	}
+	}	
 	GetNotebook()->SetWindowStyleFlag(wxAUI_NB_TOP|
 		wxAUI_NB_TAB_MOVE |
-		wxAUI_NB_SCROLL_BUTTONS |
+		wxAUI_NB_SCROLL_BUTTONS |		
 		wxNO_BORDER);
 	GetNotebook()->SetSelection(0);
 
@@ -99,6 +99,12 @@ void AUIDocViewMainFrame::OnExit(wxCommandEvent & event)
 
 void AUIDocViewMainFrame::OnAbout(wxCommandEvent & event)
 {
+	wxAboutDialogInfo info;
+	info.SetName(wxT("MultiView Test"));
+	info.SetVersion(wxT("v0.1"));
+	info.SetWebSite(wxT("http://wxwidgets.info"));
+	info.AddDeveloper(wxT("Volodymir (T-Rex) Tryapichko"));
+	wxAboutBox(info);
 }
 
 wxTextCtrl * AUIDocViewMainFrame::GetLOGTextCtrl()
@@ -119,7 +125,7 @@ void AUIDocViewMainFrame::OnSwitchHeaderStyle(wxCommandEvent & event)
 	case ID_HEADER_SIMPLE_STYLE:
 		art = new wxAuiSimpleTabArt;
 		m_HeaderStyle = HS_SIMPLE;
-		break;
+		break;	
 	}
 	if(art)
 	{
@@ -162,7 +168,7 @@ bool AUIDocViewMainFrame::GetPaneVisibility(wxString pane_name)
 	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
 	size_t i, count;
 	for (i = 0, count = all_panes.GetCount(); i < count; ++i)
-	{
+	{		
 		if(all_panes.Item(i).name == pane_name)
 		{
 				return all_panes.Item(i).IsShown();
@@ -176,7 +182,7 @@ void AUIDocViewMainFrame::TogglePaneVisibility(wxString pane_name)
 	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
 	size_t i, count;
 	for (i = 0, count = all_panes.GetCount(); i < count; ++i)
-	{
+	{		
 		if(all_panes.Item(i).name == pane_name)
 		{
 			all_panes.Item(i).Show(!all_panes.Item(i).IsShown());
