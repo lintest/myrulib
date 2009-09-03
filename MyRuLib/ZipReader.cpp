@@ -101,14 +101,19 @@ ZipReader::ZipReader(int id)
         }
     }
 
-	wxString home_dir = FbParams::GetText(FB_LIBRARY_DIR);
+	wxString sLibraryDir = FbParams::GetText(FB_LIBRARY_DIR);
+	wxString sWanraikDir = FbParams::GetText(FB_WANRAIK_DIR);
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		ExtractItems & item = items[i];
 		if (item.id_archive) {
 			m_zipOk = item.zip_name.FileExists();
 			if (!m_zipOk) {
-				item.zip_name.SetPath(home_dir);
+				item.zip_name.SetPath(sLibraryDir);
+				m_zipOk = item.zip_name.FileExists();
+			}
+			if (!m_zipOk) {
+				item.zip_name.SetPath(sWanraikDir);
 				m_zipOk = item.zip_name.FileExists();
 			}
 			if (m_zipOk) OpenZip(item.zip_name.GetFullPath(), item.book_name);
@@ -288,8 +293,8 @@ wxString ZipCollection::FindZip(const wxString &filename)
 {
     wxCriticalSectionLocker enter1(sm_queue);
 	wxCriticalSectionLocker enter2(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
 
+    DatabaseLayer * database = wxGetApp().GetDatabase();
 	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
 	PreparedStatement* pStatement = database->PrepareStatement(sql);
 	pStatement->SetParamString(1, filename);
@@ -298,7 +303,7 @@ wxString ZipCollection::FindZip(const wxString &filename)
 	if (!result) return wxEmptyString;
 
     wxString zipname;
-	while (result->Next()) {
+	while (result && result->Next()) {
 		int id = result->GetResultInt(wxT("file"));
 		ZipFiles files(wxGetApp().GetDatabase());
 		ZipFilesRow *file = files.File(id);
@@ -312,6 +317,9 @@ wxString ZipCollection::FindZip(const wxString &filename)
 		}
 	}
 
-	return wxEmptyString;
+	database->CloseResultSet(result);
+	database->CloseStatement(pStatement);
+
+	return zipname;
 }
 
