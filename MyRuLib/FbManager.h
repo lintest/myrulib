@@ -45,8 +45,6 @@ class FbManager
 		static void FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter);
 		static void FillAuthorsText(wxListBox *listbox, const wxString & findText);
 		static void OpenBook(int id, wxString &file_type);
-		static bool ImportZip(const wxString& filename, const wxString& info);
-		static bool ImportDir(const wxString& filename, const wxString& info);
 		static wxString GetSystemCommand(const wxString & file_type);
 		static wxString GetOpenCommand(const wxString & file_type);
 	private:

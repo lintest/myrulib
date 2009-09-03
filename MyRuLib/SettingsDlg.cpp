@@ -66,7 +66,7 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( FB_WANRAIK_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
@@ -131,7 +131,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_staticText2->Wrap( -1 );
 	bSizer4->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_staticText31 = new wxStaticText( m_panel1, wxID_ANY, _("Файлы скаченные\nчерез интернет:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText31 = new wxStaticText( m_panel1, wxID_ANY, _("Альтернативный путь\nк архивам библиотеки:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText31->Wrap( -1 );
 	bSizer4->Add( m_staticText31, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -161,12 +161,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_textCtrl2 = new wxTextCtrl( m_panel1, ID_DOWNLOAD_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl2 = new wxTextCtrl( m_panel1, FB_WANRAIK_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl2->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizer7->Add( m_textCtrl2, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton2 = new wxBitmapButton( m_panel1, ID_DOWNLOAD_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton2 = new wxBitmapButton( m_panel1, FB_WANRAIK_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	bSizer7->Add( m_bpButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	bSizer5->Add( bSizer7, 1, wxEXPAND, 5 );
@@ -301,7 +301,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer10->Add( m_checkBox3, 0, wxALL, 5 );
 
-	wxString m_radioBox1Choices[] = { _("Автор / Книга"), _("Автор / Серия / Книга") };
+	wxString m_radioBox1Choices[] = { _("Автор / Книга"), _("Автор / Серия / Номер_Книга") };
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
 	m_radioBox1 = new wxRadioBox( m_panel2, ID_FOLDER_FORMAT, _("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
@@ -371,7 +371,7 @@ void SettingsDlg::Assign(bool write)
     const Struct ids[] = {
         {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
         {FB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
-        {FB_DOWNLOAD_DIR, SettingsDlg::ID_DOWNLOAD_DIR_TXT, tText},
+        {FB_WANRAIK_DIR, SettingsDlg::FB_WANRAIK_DIR_TXT, tText},
         {FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
         {FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
         {FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},

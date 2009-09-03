@@ -32,6 +32,7 @@ enum {
 	FB_VIEW_TYPE,
 	FB_FB2_ONLY,
 	DB_NEW_ZIPFILE,
+	FB_WANRAIK_DIR,
 };
 
 class ParamItem

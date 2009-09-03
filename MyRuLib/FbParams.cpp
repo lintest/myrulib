@@ -124,6 +124,8 @@ wxString FbParams::DefaultText(int param)
         case FB_FB2_PROGRAM:
             return wxT("fbreader");
 #endif //__WIN32__
+        case FB_WANRAIK_DIR:
+            return wxGetApp().GetAppPath();
     }
     return wxEmptyString;
 };

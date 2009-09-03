@@ -1,6 +1,6 @@
+#include "ImpThread.h"
 #include <wx/zipstrm.h>
 #include <wx/dir.h>
-#include "ImpThread.h"
 #include "FbParams.h"
 #include "FbManager.h"
 #include "FbGenres.h"
@@ -90,47 +90,43 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 ImportThread::ImportThread()
     :BaseThread(), m_database(wxGetApp().GetDatabase())
 {
-    InitStatements();
+    memset(m_statements, 0, sizeof(m_statements));
+}
+
+PreparedStatement * ImportThread::GetPreparedStatement(PSItem psItem)
+{
+    PreparedStatement * result = m_statements[psItem];
+    if (!result) {
+        result = m_database->PrepareStatement(GetSQL(psItem));
+        m_statements[psItem] = result;
+    }
+    return result;
 }
 
 ImportThread::~ImportThread()
 {
-	CloseStatements();
-}
-
-void ImportThread::InitStatements()
-{
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-    m_psFindBySize = Prepare(wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)"));
-	m_psFindBySha1 = Prepare(wxT("SELECT id FROM books WHERE sha1sum=? LIMIT 1"));
-    m_psUpdateSha1 = Prepare(wxT("UPDATE books SET sha1sum=? WHERE id=?"));
-    m_psSearchFile = Prepare(wxT("SELECT file_name FROM files WHERE id_book=? AND id_archive=?"));
-    m_psAppendFile = Prepare(wxT("INSERT INTO files(id_book, id_archive, file_name) VALUES (?,?,?)"));
-    m_psSearchArch = Prepare(wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?"));
-    m_psAppendArch = Prepare(wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)"));
-}
-
-void ImportThread::CloseStatements()
-{
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    m_database->CloseStatement(m_psFindBySize);
-    m_database->CloseStatement(m_psFindBySha1);
-    m_database->CloseStatement(m_psUpdateSha1);
-    m_database->CloseStatement(m_psSearchFile);
-    m_database->CloseStatement(m_psAppendFile);
-    m_database->CloseStatement(m_psSearchArch);
-    m_database->CloseStatement(m_psAppendArch);
-}
-
-PreparedStatement * ImportThread::Prepare(const wxString &sql)
-{
-    PreparedStatement * pStatement = m_database->PrepareStatement(sql);
-    return pStatement;
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    for (size_t i = 0; i < sizeof(m_statements)/sizeof(PreparedStatement*); i++)
+        if (m_statements[i]) m_database->CloseStatement(m_statements[i]);
 }
 
 void ImportThread::OnExit()
 {
+}
+
+wxString ImportThread::GetSQL(PSItem psItem)
+{
+    switch (psItem) {
+        case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
+        case psFindBySha1: return wxT("SELECT id FROM books WHERE sha1sum=? LIMIT 1");
+        case psUpdateSha1: return wxT("UPDATE books SET sha1sum=? WHERE id=?");
+        case psSearchFile: return wxT("SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
+        case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name) VALUES (?,?,?)");
+        case psSearchArch: return wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
+        case psAppendArch: return wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
+        case psLastMember: return wxEmptyString;
+    }
+    return wxEmptyString;
 }
 
 bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
@@ -227,8 +223,9 @@ int ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	m_psFindBySha1->SetParamString(1, sha1sum);
-	DatabaseResultSet * result = m_psFindBySha1->ExecuteQuery();
+	PreparedStatement * ps = GetPreparedStatement(psFindBySha1);
+	ps->SetParamString(1, sha1sum);
+	DatabaseResultSet * result = ps->ExecuteQuery();
 
     int id = 0;
 	if (result && result->Next())
@@ -244,9 +241,9 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-        m_psFindBySize->SetParamInt(1, size);
-        DatabaseResultSet* result = m_psFindBySize->ExecuteQuery();
+        PreparedStatement * ps = GetPreparedStatement(psFindBySize);
+        ps->SetParamInt(1, size);
+        DatabaseResultSet* result = ps->ExecuteQuery();
 
         while (result && result->Next()) {
             int id = result->GetResultInt(wxT("id"));
@@ -264,10 +261,11 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		LoadXml(book.GetZip(), info);
 
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        PreparedStatement * ps = GetPreparedStatement(psUpdateSha1);
+		ps->SetParamString(1, info.sha1sum);
+		ps->SetParamInt(2, books[i]);
+		ps->ExecuteUpdate();
 
-		m_psUpdateSha1->SetParamString(1, info.sha1sum);
-		m_psUpdateSha1->SetParamInt(2, books[i]);
-		m_psUpdateSha1->ExecuteUpdate();
 		if (info.sha1sum == sha1sum) return books[i];
 	}
 
@@ -294,10 +292,10 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, con
 void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-    m_psSearchFile->SetParamInt(1, id_book);
-    m_psSearchFile->SetParamInt(2, id_archive);
-    DatabaseResultSet* result = m_psSearchFile->ExecuteQuery();
+    PreparedStatement * ps = GetPreparedStatement(psSearchFile);
+    ps->SetParamInt(1, id_book);
+    ps->SetParamInt(2, id_archive);
+    DatabaseResultSet* result = ps->ExecuteQuery();
 
     wxString old_name;
     if (result && result->Next()) {
@@ -307,10 +305,11 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 
     if (old_name == new_name) return;
 
-    m_psAppendFile->SetParamInt(1, id_book);
-    m_psAppendFile->SetParamInt(2, id_archive);
-    m_psAppendFile->SetParamString(3, new_name);
-    m_psAppendFile->ExecuteUpdate();
+    ps = GetPreparedStatement(psAppendFile);
+    ps->SetParamInt(1, id_book);
+    ps->SetParamInt(2, id_archive);
+    ps->SetParamString(3, new_name);
+    ps->ExecuteUpdate();
 }
 
 int ImportThread::AddArchive(const wxString &filename, const int file_size, const int file_count)
@@ -321,11 +320,10 @@ int ImportThread::AddArchive(const wxString &filename, const int file_size, cons
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-	Archives archives(m_database);
-
-    m_psSearchArch->SetParamString(1, name);
-    m_psSearchArch->SetParamString(2, path);
-    DatabaseResultSet* result = m_psSearchFile->ExecuteQuery();
+    PreparedStatement * ps = GetPreparedStatement(psSearchArch);
+    ps->SetParamString(1, name);
+    ps->SetParamString(2, path);
+    DatabaseResultSet* result = ps->ExecuteQuery();
 
     int id = 0;
     if (result && result->Next()) {
@@ -335,35 +333,43 @@ int ImportThread::AddArchive(const wxString &filename, const int file_size, cons
     if (id) return id;
 
     id = BookInfo::NewId(DB_NEW_ARCHIVE);
-    m_psAppendArch->SetParamInt(1, id);
-    m_psAppendArch->SetParamString(2, name);
-    m_psAppendArch->SetParamString(3, path);
-    m_psAppendArch->SetParamInt(4, file_size);
-    m_psAppendArch->SetParamInt(5, file_count);
-    m_psAppendArch->ExecuteUpdate();
+    ps = GetPreparedStatement(psAppendArch);
+    ps->SetParamInt(1, id);
+    ps->SetParamString(2, name);
+    ps->SetParamString(3, path);
+    ps->SetParamInt(4, file_size);
+    ps->SetParamInt(5, file_count);
+    ps->ExecuteUpdate();
 	return id;
 }
 
 void *ZipImportThread::Entry()
 {
+    for (size_t i=0; i<m_filelist.Count(); i++) {
+        ImportFile(m_filelist[i]);
+    }
+    return NULL;
+}
+
+void ZipImportThread::ImportFile(const wxString & filename)
+{
     wxCriticalSectionLocker enter(sm_queue);
 
     AutoTransaction trans;
 
-	wxFFileInputStream in(m_filename);
+	wxFFileInputStream in(filename);
 
-	if (m_filename.Right(4).Lower() == wxT(".fb2")) {
-        DoStart(0, m_filename);
-        ParseXml(in, m_filename, 0);
+	if (filename.Right(4).Lower() == wxT(".fb2")) {
+        DoStart(0, filename);
+        ParseXml(in, filename, 0);
         DoFinish();
-        return NULL;
+        return;
 	}
-
 	wxZipInputStream zip(in);
 
-	int id_archive = AddArchive(m_filename, in.GetLength(), zip.GetTotalEntries());
+	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
 
-    DoStart(zip.GetTotalEntries(), m_filename);
+    DoStart(zip.GetTotalEntries(), filename);
 
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
@@ -376,10 +382,7 @@ void *ZipImportThread::Entry()
 		}
 		delete entry;
 	}
-
 	DoFinish();
-
-	return NULL;
 }
 
 class CountTraverser : public wxDirTraverser

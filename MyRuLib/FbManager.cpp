@@ -23,36 +23,6 @@
 #include <shlwapi.h>
 #endif
 
-bool FbManager::ImportZip(const wxString& filename, const wxString& info)
-{
-	ZipImportThread *thread = new ZipImportThread(filename);
-	thread->m_info = info;
-
-    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-        wxLogError(wxT("Can't create thread!"));
-        return false;
-    }
-
-    thread->Run();
-
-    return true;
-}
-
-bool FbManager::ImportDir(const wxString& filename, const wxString& info)
-{
-	DirImportThread *thread = new DirImportThread(filename);
-	thread->m_info = info;
-
-    if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-        wxLogError(wxT("Can't create thread!"));
-        return false;
-    }
-
-    thread->Run();
-
-    return true;
-}
-
 class SequenceNode {
 public:
     SequenceNode(const int id, const wxTreeItemId &item)

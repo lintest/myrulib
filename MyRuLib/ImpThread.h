@@ -3,8 +3,6 @@
 
 #include <wx/wx.h>
 #include <DatabaseLayer.h>
-#include <SqliteDatabaseLayer.h>
-#include <SqlitePreparedStatement.h>
 #include "BaseThread.h"
 #include "ImpContext.h"
 
@@ -22,37 +20,31 @@ private:
 	void AppendFile(const int id_book, const int id_archive, const wxString &new_name);
 	int FindBySHA1(const wxString &sha1sum);
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
-    PreparedStatement * Prepare(const wxString &sql);
 private:
-    enum {
-        PSFindBySize,
-        PSFindBySha1,
-        PSUpdateSha1,
-        PSSearchFile,
-        PSAppendFile,
-        PSSearchArch,
-        PSAppendArch,
+    enum PSItem {
+        psFindBySize = 0,
+        psFindBySha1,
+        psUpdateSha1,
+        psSearchFile,
+        psAppendFile,
+        psSearchArch,
+        psAppendArch,
+        psLastMember,
     };
-    void InitStatements();
-    void CloseStatements();
-    DatabaseStatementHashSet m_Statements;
-    SqliteDatabaseLayer * m_database;
-    PreparedStatement * m_psFindBySize;
-    PreparedStatement * m_psFindBySha1;
-    PreparedStatement * m_psUpdateSha1;
-    PreparedStatement * m_psSearchFile;
-    PreparedStatement * m_psAppendFile;
-    PreparedStatement * m_psSearchArch;
-    PreparedStatement * m_psAppendArch;
+    PreparedStatement * m_statements[psLastMember];
+    PreparedStatement * GetPreparedStatement(PSItem psItem);
+    wxString GetSQL(PSItem psItem);
+    DatabaseLayer * m_database;
 };
 
 class ZipImportThread : public ImportThread
 {
 public:
-    ZipImportThread(const wxString &filename): ImportThread(), m_filename(filename) {};
+    ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
     virtual void *Entry();
 private:
-    wxString m_filename;
+    void ImportFile(const wxString & filename);
+    const wxArrayString m_filelist;
 };
 
 class DirImportThread : public ImportThread

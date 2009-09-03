@@ -23,6 +23,7 @@
 #include "InfoThread.h"
 #include "InfoCash.h"
 #include "ExternalDlg.h"
+#include "ImpThread.h"
 
 #include "XpmBitmaps.h"
 
@@ -393,9 +394,14 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
-		for (size_t i = 0; i < paths.GetCount(); ++i) {
-			FbManager::ImportZip(paths[i], wxT("Обработка файла:"));
-		}
+
+        ZipImportThread *thread = new ZipImportThread(paths);
+        thread->m_info = wxT("Обработка файла:");
+        if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+            wxLogError(wxT("Can't create thread!"));
+            return;
+        }
+        thread->Run();
 	}
 }
 
@@ -410,9 +416,15 @@ void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
     );
 
 	if (dlg.ShowModal() == wxID_OK) {
-		FbManager::ImportDir(dlg.GetPath(), wxT("Обработка папки:"));
-	}
+        DirImportThread *thread = new DirImportThread(dlg.GetPath());
+        thread->m_info = wxT("Обработка папки:");
 
+        if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+            wxLogError(wxT("Can't create thread!"));
+            return;
+        }
+        thread->Run();
+	}
 }
 
 void MyRuLibMainFrame::OnProgressStart(wxCommandEvent& event)
