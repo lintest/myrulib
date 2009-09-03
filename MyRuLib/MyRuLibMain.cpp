@@ -25,6 +25,8 @@
 #include "ExternalDlg.h"
 #include "ImpThread.h"
 
+#include "AUIDocViewChildFrame.h"
+
 #include "XpmBitmaps.h"
 
 #define ID_LETTER_RU 30100
@@ -41,7 +43,7 @@ wxString strRusJO = wxT("ё");
 wxString strOtherSequence = wxT("(прочие)");
 wxString strBookNotFound = wxT("Не найден архив%s, содержащий файл%s.");
 
-BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
+BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, MyRuLibMainFrame::OnChangeView)
@@ -76,7 +78,7 @@ MyRuLibMainFrame::MyRuLibMainFrame()
 
 bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
-	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500));
+	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
 		CreateControls();
         #if defined(__WXMSW__)
@@ -138,13 +140,15 @@ void MyRuLibMainFrame::CreateControls()
 
 	SetToolBar(m_ToolBar = CreateButtonBar());
 
+	AUIDocViewChildFrame * frame = new AUIDocViewChildFrame(this, wxID_ANY, wxT("Авторы"), false);
+
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
+	frame->SetSizer(sizer);
 
-	sizer->Add(m_RuAlphabar = CreateAlphaBar(alphabetRu, ID_LETTER_RU), 0, wxEXPAND, 5);
-	sizer->Add(m_EnAlphabar = CreateAlphaBar(alphabetEn, ID_LETTER_EN), 0, wxEXPAND, 5);
+	sizer->Add(m_RuAlphabar = CreateAlphaBar(frame, alphabetRu, ID_LETTER_RU), 0, wxEXPAND, 5);
+	sizer->Add(m_EnAlphabar = CreateAlphaBar(frame, alphabetEn, ID_LETTER_EN), 0, wxEXPAND, 5);
 
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
+	wxSplitterWindow * splitter = new wxSplitterWindow(frame, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
@@ -196,6 +200,26 @@ void MyRuLibMainFrame::CreateControls()
     m_ProgressBar->SetFieldsCount(4);
 	m_ProgressBar->SetStatusWidths(4, widths);
 	SetStatusBar(m_ProgressBar);
+
+	m_LOGTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+
+	for(int i = 0; i < 5; i++)
+	{
+		AUIDocViewChildFrame * frame = new AUIDocViewChildFrame(this, wxID_ANY, wxString::Format(wxT("View %i"), i+1), (rand()%2)?true:false);
+		wxUnusedVar(frame);
+	}
+
+	GetNotebook()->SetWindowStyleFlag(wxAUI_NB_TOP|
+		wxAUI_NB_TAB_MOVE |
+		wxAUI_NB_SCROLL_BUTTONS |
+		wxNO_BORDER);
+	GetNotebook()->SetSelection(0);
+
+	m_FrameManager.SetManagedWindow(this);
+	m_FrameManager.AddPane(GetNotebook(), wxAuiPaneInfo().
+		Name(wxT("CenterPane")).CenterPane());
+	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Help")).Caption(_("Help Window")));
+	m_FrameManager.Update();
 
 	Centre();
 }
@@ -272,9 +296,9 @@ void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
     }
 }
 
-wxToolBar * MyRuLibMainFrame::CreateAlphaBar(const wxString & alphabet, const int &toolid)
+wxToolBar * MyRuLibMainFrame::CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid)
 {
-	wxToolBar * toolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS);
+	wxToolBar * toolBar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS);
 	for (size_t i = 0; i<alphabet.Len(); i++) {
 	    wxString letter = alphabet.Mid(i, 1);
 	    int btnid = toolid + i;

@@ -11,6 +11,8 @@
 #define MYRULIBMAIN_H
 
 #include <wx/wx.h>
+#include <wx/aui/aui.h>
+#include <wx/aui/tabmdi.h>
 #include <wx/toolbar.h>
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
@@ -21,7 +23,7 @@
 #include "BookListCtrl.h"
 #include "FbManager.h"
 
-class MyRuLibMainFrame: public wxFrame
+class MyRuLibMainFrame: public wxAuiMDIParentFrame
 {
 public:
     enum {
@@ -38,6 +40,7 @@ public:
 		ID_FB2_ONLY,
 		ID_FOLDER,
 		ID_ERROR,
+        ID_LOG_TEXTCTRL,
     };
 private:
 	wxTextCtrl * m_FindTextCtrl;
@@ -51,12 +54,14 @@ private:
 	ProgressBar * m_ProgressBar;
 	void CreateControls();
 	wxToolBar * CreateButtonBar();
-	wxToolBar * CreateAlphaBar(const wxString & alphabet, const int &toolid);
+	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid);
     bool ParseXML(const wxString & filename);
 	void SelectFirstAuthor();
 	void CreateBookInfo();
 	wxString m_StatusText;
 	void ToggleAlphabar(const int &idLetter);
+	wxAuiManager m_FrameManager;
+	wxTextCtrl m_LOGTextCtrl;
 private:
 	BookTreeItemData * GetSelectedBook();
 	bool vertical;
