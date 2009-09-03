@@ -41,7 +41,7 @@ wxString strRusJO = wxT("ё");
 wxString strOtherSequence = wxT("(прочие)");
 wxString strBookNotFound = wxT("Не найден архив%s, содержащий файл%s.");
 
-BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
+BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, MyRuLibMainFrame::OnChangeView)
@@ -66,6 +66,8 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxFrame)
     EVT_MENU(wxID_SAVE, MyRuLibMainFrame::OnExternal)
     EVT_MENU(ID_BOOKINFO_UPDATE, MyRuLibMainFrame::OnInfoUpdate)
     EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
+    EVT_MENU(ID_TOGGLE_LOGWINDOW, MyRuLibMainFrame::OnToggleLogWindow)
+    EVT_UPDATE_UI(ID_TOGGLE_LOGWINDOW, MyRuLibMainFrame::OnToggleLogWindowUpdateUI)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
@@ -74,9 +76,14 @@ MyRuLibMainFrame::MyRuLibMainFrame()
 	Create(NULL, wxID_ANY, wxT("MyRuLib - My Russian Library"));
 }
 
+MyRuLibMainFrame::~MyRuLibMainFrame()
+{
+	m_FrameManager.UnInit();
+}
+
 bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
-	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500));
+	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
 		CreateControls();
         #if defined(__WXMSW__)
@@ -125,6 +132,7 @@ void MyRuLibMainFrame::CreateControls()
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
 	menu->Append(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
+	menu->AppendCheckItem(ID_TOGGLE_LOGWINDOW, _("Toggle Help Window"));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Вид"));
 
@@ -139,8 +147,6 @@ void MyRuLibMainFrame::CreateControls()
 	SetToolBar(m_ToolBar = CreateButtonBar());
 
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
-
 	sizer->Add(m_RuAlphabar = CreateAlphaBar(alphabetRu, ID_LETTER_RU), 0, wxEXPAND, 5);
 	sizer->Add(m_EnAlphabar = CreateAlphaBar(alphabetEn, ID_LETTER_EN), 0, wxEXPAND, 5);
 
@@ -196,6 +202,15 @@ void MyRuLibMainFrame::CreateControls()
     m_ProgressBar->SetFieldsCount(4);
 	m_ProgressBar->SetStatusWidths(4, widths);
 	SetStatusBar(m_ProgressBar);
+
+	m_LOGTextCtrl = new wxTextCtrl(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+
+//	sizer->Fit( m_panel );
+
+	m_FrameManager.SetManagedWindow(this);
+	m_FrameManager.AddPane(splitter, wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane());
+	m_FrameManager.AddPane(m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Help")).Caption(_("Help Window")));
+	m_FrameManager.Update();
 
 	Centre();
 }
@@ -558,4 +573,43 @@ void MyRuLibMainFrame::OnError(wxCommandEvent& event)
 void MyRuLibMainFrame::OnSelectAll(wxCommandEvent& event)
 {
     m_BooksListView->SelectAll();
+}
+
+void MyRuLibMainFrame::OnToggleLogWindow(wxCommandEvent & event)
+{
+	TogglePaneVisibility(wxT("Help"));
+}
+
+void MyRuLibMainFrame::OnToggleLogWindowUpdateUI(wxUpdateUIEvent & event)
+{
+	event.Check(GetPaneVisibility(wxT("Help")));
+}
+
+bool MyRuLibMainFrame::GetPaneVisibility(wxString pane_name)
+{
+	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
+	size_t i, count;
+	for (i = 0, count = all_panes.GetCount(); i < count; ++i)
+	{
+		if(all_panes.Item(i).name == pane_name)
+		{
+				return all_panes.Item(i).IsShown();
+		}
+	}
+	return false;
+}
+
+void MyRuLibMainFrame::TogglePaneVisibility(wxString pane_name)
+{
+	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
+	size_t i, count;
+	for (i = 0, count = all_panes.GetCount(); i < count; ++i)
+	{
+		if(all_panes.Item(i).name == pane_name)
+		{
+			all_panes.Item(i).Show(!all_panes.Item(i).IsShown());
+			m_FrameManager.Update();
+			break;
+		}
+	}
 }

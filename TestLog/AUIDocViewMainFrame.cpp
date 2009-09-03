@@ -1,4 +1,5 @@
 #include "AUIDocViewMainFrame.h"
+#include "AUIDocViewChildFrame.h"
 #include <wx/aboutdlg.h>
 
 IMPLEMENT_DYNAMIC_CLASS(AUIDocViewMainFrame, wxAuiMDIParentFrame);
@@ -6,7 +7,11 @@ IMPLEMENT_DYNAMIC_CLASS(AUIDocViewMainFrame, wxAuiMDIParentFrame);
 BEGIN_EVENT_TABLE(AUIDocViewMainFrame , wxAuiMDIParentFrame)
 EVT_MENU(wxID_EXIT, AUIDocViewMainFrame::OnExit)
 EVT_MENU(wxID_ABOUT, AUIDocViewMainFrame::OnAbout)
+EVT_MENU(ID_HEADER_DEFAULT_STYLE, AUIDocViewMainFrame::OnSwitchHeaderStyle)
+EVT_MENU(ID_HEADER_SIMPLE_STYLE, AUIDocViewMainFrame::OnSwitchHeaderStyle)
 EVT_MENU(ID_TOGGLE_LOGWINDOW, AUIDocViewMainFrame::OnToggleLogWindow)
+EVT_UPDATE_UI(ID_HEADER_DEFAULT_STYLE, AUIDocViewMainFrame::OnSwitchHeaderStyleUpdateUI)
+EVT_UPDATE_UI(ID_HEADER_SIMPLE_STYLE, AUIDocViewMainFrame::OnSwitchHeaderStyleUpdateUI)
 EVT_UPDATE_UI(ID_TOGGLE_LOGWINDOW, AUIDocViewMainFrame::OnToggleLogWindowUpdateUI)
 END_EVENT_TABLE()
 
@@ -27,10 +32,12 @@ AUIDocViewMainFrame::~AUIDocViewMainFrame()
 bool AUIDocViewMainFrame::Create(wxWindow * parent, wxWindowID id,const wxString & title)
 {
 	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition,
-		wxDefaultSize, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
-
-	if(res) CreateControls();
-
+		wxSize(600,500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
+	if(res)
+	{
+		m_HeaderStyle = HS_DEFAULT;
+		CreateControls();
+	}
 	return res;
 }
 
@@ -43,6 +50,10 @@ wxMenuBar * AUIDocViewMainFrame::CreateMainMenuBar()
 	menuBar->Append(fileMenu, _("File"));
 
 	wxMenu * viewMenu = new wxMenu;
+	wxMenu * headerMenu = new wxMenu;
+	headerMenu->AppendRadioItem(ID_HEADER_DEFAULT_STYLE, _("Default"));
+	headerMenu->AppendRadioItem(ID_HEADER_SIMPLE_STYLE, _("Simple"));
+	viewMenu->Append(wxID_ANY, _("Header"), headerMenu);
 	viewMenu->AppendCheckItem(ID_TOGGLE_LOGWINDOW, _("Toggle Help Window"));
 	menuBar->Append(viewMenu, _("View"));
 
@@ -61,6 +72,12 @@ void AUIDocViewMainFrame::CreateControls()
 		wxDefaultPosition, wxSize(250, 100),
 		wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
 
+	for(int i = 0; i < 5; i++)
+	{
+		AUIDocViewChildFrame * frame = new AUIDocViewChildFrame(this, wxID_ANY,
+			wxString::Format(wxT("View %i"), i+1), (rand()%2)?true:false);
+		wxUnusedVar(frame);
+	}
 	GetNotebook()->SetWindowStyleFlag(wxAUI_NB_TOP|
 		wxAUI_NB_TAB_MOVE |
 		wxAUI_NB_SCROLL_BUTTONS |
@@ -82,17 +99,52 @@ void AUIDocViewMainFrame::OnExit(wxCommandEvent & event)
 
 void AUIDocViewMainFrame::OnAbout(wxCommandEvent & event)
 {
-	wxAboutDialogInfo info;
-	info.SetName(wxT("MultiView Test"));
-	info.SetVersion(wxT("v0.1"));
-	info.SetWebSite(wxT("http://wxwidgets.info"));
-	info.AddDeveloper(wxT("Volodymir (T-Rex) Tryapichko"));
-	wxAboutBox(info);
 }
 
 wxTextCtrl * AUIDocViewMainFrame::GetLOGTextCtrl()
 {
 	return m_LOGTextCtrl;
+}
+
+void AUIDocViewMainFrame::OnSwitchHeaderStyle(wxCommandEvent & event)
+{
+	wxAuiTabArt * art(NULL);
+	switch(event.GetId())
+	{
+	default:
+	case ID_HEADER_DEFAULT_STYLE:
+		art = new wxAuiDefaultTabArt;
+		m_HeaderStyle = HS_DEFAULT;
+		break;
+	case ID_HEADER_SIMPLE_STYLE:
+		art = new wxAuiSimpleTabArt;
+		m_HeaderStyle = HS_SIMPLE;
+		break;
+	}
+	if(art)
+	{
+		GetNotebook()->SetArtProvider(art);
+	}
+}
+
+HeaderStyle AUIDocViewMainFrame::GetHeaderStyle()
+{
+	return m_HeaderStyle;
+}
+
+void AUIDocViewMainFrame::OnSwitchHeaderStyleUpdateUI(wxUpdateUIEvent & event)
+{
+	switch(event.GetId())
+	{
+	case ID_HEADER_DEFAULT_STYLE:
+		event.Check(GetHeaderStyle() == HS_DEFAULT);
+		break;
+	case ID_HEADER_SIMPLE_STYLE:
+		event.Check(GetHeaderStyle() == HS_SIMPLE);
+		break;
+	default:
+		event.Skip();
+	}
 }
 
 void AUIDocViewMainFrame::OnToggleLogWindow(wxCommandEvent & event)

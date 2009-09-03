@@ -17,12 +17,24 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "wx/treelistctrl.h"
+#include <wx/textctrl.h>
+#include <wx/aui/aui.h>
 #include "ProgressBar.h"
 #include "BookListCtrl.h"
 #include "FbManager.h"
 
-class MyRuLibMainFrame: public wxFrame
+class MyRuLibMainFrame: public wxAuiMDIParentFrame
 {
+private:
+	wxTextCtrl * m_LOGTextCtrl;
+	wxAuiManager m_FrameManager;
+	wxTextCtrl * GetLOGTextCtrl();
+public:
+//	wxTextCtrl * GetLOGTextCtrl();
+	bool GetPaneVisibility(wxString pane_name);
+	void TogglePaneVisibility(wxString pane_name);
+	void OnToggleLogWindow(wxCommandEvent & event);
+	void OnToggleLogWindowUpdateUI(wxUpdateUIEvent & event);
 public:
     enum {
         ID_AUTHORS_LISTBOX = 10001,
@@ -38,6 +50,8 @@ public:
 		ID_FB2_ONLY,
 		ID_FOLDER,
 		ID_ERROR,
+        ID_LOG_TEXTCTRL,
+        ID_TOGGLE_LOGWINDOW,
     };
 private:
 	wxTextCtrl * m_FindTextCtrl;
@@ -62,6 +76,7 @@ private:
 	bool vertical;
 public:
 	MyRuLibMainFrame();
+	~MyRuLibMainFrame();
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void OnExit(wxCommandEvent & event);
