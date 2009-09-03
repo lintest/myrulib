@@ -8,28 +8,38 @@
 
 #define AUIDocViewMainFrameTitle wxT("AUI DocView Test")
 
+enum HeaderStyle
+{
+	HS_DEFAULT,
+	HS_SIMPLE
+};
+
 enum
 {
 	ID_LOG_TEXTCTRL = 10001,
+	ID_HEADER_DEFAULT_STYLE,
+	ID_HEADER_SIMPLE_STYLE,
 	ID_TOGGLE_LOGWINDOW
 };
 
 class AUIDocViewMainFrame : public wxAuiMDIParentFrame
-{
+{		
 	DECLARE_DYNAMIC_CLASS(AUIDocViewMainFrame);
+	HeaderStyle m_HeaderStyle;
 	wxTextCtrl * m_LOGTextCtrl;
 	wxAuiManager m_FrameManager;
-	void CreateControls();
+	void CreateControls();	
 	static wxMenuBar * CreateMainMenuBar();
 public:
 	AUIDocViewMainFrame();
-	AUIDocViewMainFrame(wxWindow * parent, wxWindowID id = wxID_ANY,
+	AUIDocViewMainFrame(wxWindow * parent, wxWindowID id = wxID_ANY, 
 		const wxString & title = AUIDocViewMainFrameTitle);
 	~AUIDocViewMainFrame();
-	bool Create(wxWindow * parent, wxWindowID id = wxID_ANY,
+	bool Create(wxWindow * parent, wxWindowID id = wxID_ANY, 
 		const wxString & title = AUIDocViewMainFrameTitle);
 
 	wxTextCtrl * GetLOGTextCtrl();
+	HeaderStyle GetHeaderStyle();
 
 	bool GetPaneVisibility(wxString pane_name);
 	void TogglePaneVisibility(wxString pane_name);
@@ -38,6 +48,8 @@ public:
 	void OnExit(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnToggleLogWindow(wxCommandEvent & event);
+	void OnSwitchHeaderStyle(wxCommandEvent & event);
+	void OnSwitchHeaderStyleUpdateUI(wxUpdateUIEvent & event);
 	void OnToggleLogWindowUpdateUI(wxUpdateUIEvent & event);
 };
 
