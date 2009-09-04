@@ -10,6 +10,7 @@
 #include <wx/arrimpl.cpp>
 #include "ExternalDlg.h"
 #include "FbParams.h"
+#include "FbConst.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -20,8 +21,6 @@ BEGIN_EVENT_TABLE( ExternalDlg, wxDialog )
     EVT_TREE_ITEM_COLLAPSING( ID_BOOKS, ExternalDlg::OnBookCollapsing )
 	EVT_CHOICE( wxID_ANY, ExternalDlg::OnChangeFormat )
 END_EVENT_TABLE()
-
-extern wxString strOtherSequence;
 
 const wxString strNormalSymbols = wxT("\
 .()-_0123456789 \

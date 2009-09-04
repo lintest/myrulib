@@ -4,14 +4,12 @@
 #include "ZipReader.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
-#include "MyRuLibMain.h"
 #include "db/Files.h"
 #include "db/ZipBooks.h"
 #include "db/ZipFiles.h"
 #include "FbManager.h"
 #include "InfoCash.h"
-
-extern wxString strBookNotFound;
+#include "FbConst.h"
 
 class ZipThread : public BaseThread
 {
@@ -252,7 +250,7 @@ void ZipCollection::AddZip(const wxString &filename)
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
-	int id;
+	int id = 0;
 	{
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 		ZipFiles files(wxGetApp().GetDatabase());

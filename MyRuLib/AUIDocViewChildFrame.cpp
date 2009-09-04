@@ -26,7 +26,8 @@ AUIDocViewChildFrame::AUIDocViewChildFrame(wxAuiMDIParentFrame * parent,
 bool AUIDocViewChildFrame::Create(wxAuiMDIParentFrame * parent, wxWindowID id,
 								  const wxString & title, bool has_toolbar)
 {
-	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
+	bool res = wxAuiMDIChildFrame::Create(parent, id, title, wxDefaultPosition, wxDefaultSize, wxMAXIMIZE | wxNO_BORDER);
+
 	if(res)
 	{
 		m_HasToolBar = has_toolbar;

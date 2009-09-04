@@ -10,7 +10,9 @@ private:
 	wxGauge m_progress;
 	void Resize();
 public:
+	ProgressBar::ProgressBar(): wxStatusBar() {};
 	ProgressBar(wxWindow *parent, wxWindowID id, long style = wxST_SIZEGRIP, const wxString &name = wxT("ProgressBar"));
+    bool Create(wxWindow *parent, wxWindowID id = wxID_ANY, long style = wxST_SIZEGRIP, const wxString& name = wxT("ProgressBar"));
 	void OnSize(wxSizeEvent &event) { Resize(); };
 	void SetRange(int range) { m_progress.SetRange(range); };
 	void SetProgress(int progress);

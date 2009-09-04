@@ -18,6 +18,7 @@
 #include "db/Bookseq.h"
 #include "db/Types.h"
 #include "ZipReader.h"
+#include "FbConst.h"
 
 #if defined(__WIN32__)
 #include <shlwapi.h>
@@ -75,8 +76,6 @@ wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root)
 	}
 	return root;
 }
-
-extern wxString strOtherSequence;
 
 void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only)
 {

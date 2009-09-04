@@ -12,8 +12,7 @@
 #include <DatabaseLayerException.h>
 #include <DatabaseErrorReporter.h>
 #include <DatabaseStringConverter.h>
-
-extern wxString strNobody;
+#include "FbConst.h"
 
 bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
 {

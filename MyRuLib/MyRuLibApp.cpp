@@ -14,6 +14,7 @@
 #include <DatabaseLayerException.h>
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
+#include "FbLogStream.h"
 #include "FbParams.h"
 #include "ZipReader.h"
 
@@ -122,6 +123,11 @@ wxString MyRuLibApp::GetAppPath() const
 bool MyRuLibApp::ConnectToDatabase()
 {
 	m_datafile = MyStandardPaths().GetDataFile();
+
+    wxFileName logname = m_datafile;
+    logname.SetExt(wxT("log"));
+    wxLog *logger = new FbLogStream(logname.GetFullPath());
+    wxLog::SetActiveTarget(logger);
 
 	bool bCreate = !wxFileExists(m_datafile);
 	try	{

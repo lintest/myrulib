@@ -357,6 +357,8 @@ void ZipImportThread::ImportFile(const wxString & filename)
 
     AutoTransaction trans;
 
+    wxLogMessage(filename);
+
 	wxFFileInputStream in(filename);
 
 	if (filename.Right(4).Lower() == wxT(".fb2")) {

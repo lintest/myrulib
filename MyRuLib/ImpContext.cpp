@@ -3,10 +3,7 @@
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "db/Sequences.h"
-
-extern wxString strAlphabet;
-extern wxString strRusJO;
-extern wxString strRusJE;
+#include "FbConst.h"
 
 WX_DEFINE_OBJARRAY(SequenceArray);
 
