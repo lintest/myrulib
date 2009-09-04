@@ -26,7 +26,7 @@ public:
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
-    void TogglePaneVisibility(const wxString &pane_name);
+    void TogglePaneVisibility(const wxString &pane_name, bool show);
 	wxToolBar * CreateButtonBar();
 private:
 	wxToolBar m_ToolBar;
@@ -48,6 +48,7 @@ private:
 	void OnProgressFinish(wxCommandEvent& event);
     void OnChangeFilter(wxCommandEvent& event);
     void OnError(wxCommandEvent& event);
+    void OnHideLog(wxCommandEvent& event);
     void OnPanelClosed(wxAuiManagerEvent& event);
 	DECLARE_EVENT_TABLE()
 };

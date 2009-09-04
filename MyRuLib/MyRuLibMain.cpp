@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
     EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
     EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
+    EVT_MENU(ID_LOG_TEXTCTRL, MyRuLibMainFrame::OnHideLog)
     EVT_AUI_PANE_CLOSE(MyRuLibMainFrame::OnPanelClosed)
 END_EVENT_TABLE()
 
@@ -224,20 +225,18 @@ void MyRuLibMainFrame::OnProgressFinish(wxCommandEvent& event)
 
 void MyRuLibMainFrame::OnError(wxCommandEvent& event)
 {
-	event.Skip();
-//    wxLogError(event.GetString());
     m_LOGTextCtrl.AppendText(event.GetString() + wxT("\n"));
-    TogglePaneVisibility(wxT("Log"));
+    TogglePaneVisibility(wxT("Log"), true);
 }
 
-void MyRuLibMainFrame::TogglePaneVisibility(const wxString &pane_name)
+void MyRuLibMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
 {
 	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
 	size_t count = all_panes.GetCount();
 	for (size_t i = 0; i < count; ++i) {
 		if(all_panes.Item(i).name == pane_name) {
-		    if (!all_panes.Item(i).IsShown()) {
-                all_panes.Item(i).Show(true);
+		    if (all_panes.Item(i).IsShown() != show) {
+                all_panes.Item(i).Show(show);
                 m_FrameManager.Update();
 		    }
             break;
@@ -250,4 +249,9 @@ void MyRuLibMainFrame::OnPanelClosed(wxAuiManagerEvent& event)
     if (event.pane->name == wxT("Log")) {
         m_LOGTextCtrl.Clear();
     }
+}
+
+void MyRuLibMainFrame::OnHideLog(wxCommandEvent& event)
+{
+    TogglePaneVisibility(wxT("Log"), false);
 }

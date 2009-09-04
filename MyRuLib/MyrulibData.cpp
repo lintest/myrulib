@@ -20,6 +20,8 @@ bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
 	wxString msg = _("Database does not exist... recreating:");
 	wxMessageBox(msg + wxT("\n") + filename);
 
+    wxLogInfo(wxT("Create database: %s"), filename.c_str());
+
 	// Try to recreate tables
 	try {
 		ExecuteUpdate(wxT("\
@@ -115,6 +117,7 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
 		int version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
 		if (version == 1) {
+            wxLogInfo(wxT("Upgrade database to version 2."));
             BeginTransaction();
             ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
             ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
@@ -130,6 +133,7 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
         }
 
 		if (version == 2) {
+            wxLogInfo(wxT("Upgrade database to version 3."));
             BeginTransaction();
 			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
 			ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
@@ -143,6 +147,7 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
             Commit();
         }
     } catch(DatabaseLayerException & e) {
+        wxLogError(wxT("Database upgrade error: %s"), e.GetErrorMessage().c_str());
 		RollBack();
 		throw e;
 	}
@@ -151,7 +156,8 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
 	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
 	if (version != 3) {
-		throw DatabaseLayerException(DATABASE_LAYER_ERROR, wxT("Mismatched database versions."));
+		wxLogFatalError(_("Mismatched database versions."));
+		return false;
 	}
 
 	return true;

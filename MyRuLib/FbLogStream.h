@@ -12,7 +12,9 @@ class FbLogStream: public wxLog
     public:
         FbLogStream(const wxString & filename);
     protected:
+        virtual void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
         virtual void DoLogString(const wxChar *szString, time_t t);
+        virtual void PostMsg(wxLogLevel level, const wxChar *szString, time_t t);
     private:
         static wxCriticalSection sm_queue;
         wxFileOutputStream m_stream;

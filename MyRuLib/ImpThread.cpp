@@ -351,32 +351,33 @@ void *ZipImportThread::Entry()
     return NULL;
 }
 
-void ZipImportThread::ImportFile(const wxString & filename)
+void ZipImportThread::ImportFile(const wxString & zipname)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
     AutoTransaction trans;
 
-    wxLogMessage(filename);
+    wxLogInfo(_("Import file: %s"), zipname.c_str());
 
-	wxFFileInputStream in(filename);
+	wxFFileInputStream in(zipname);
 
-	if (filename.Right(4).Lower() == wxT(".fb2")) {
-        DoStart(0, filename);
-        ParseXml(in, filename, 0);
+	if (zipname.Right(4).Lower() == wxT(".fb2")) {
+        DoStart(0, zipname);
+        ParseXml(in, zipname, 0);
         DoFinish();
         return;
 	}
 	wxZipInputStream zip(in);
 
-	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
+	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
 
-    DoStart(zip.GetTotalEntries(), filename);
+    DoStart(zip.GetTotalEntries(), zipname);
 
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
+                wxLogInfo(_("Process zip entry: %s"), filename.c_str());
 			    DoStep(filename);
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);

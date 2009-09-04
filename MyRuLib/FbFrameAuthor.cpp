@@ -136,6 +136,8 @@ wxMenuBar * FbFrameAuthor::CreateMenuBar()
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->AppendCheckItem(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
 	menu->AppendCheckItem(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
+	menu->AppendSeparator();
+	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Вид"));
 

@@ -184,6 +184,8 @@
 		<Unit filename="FbFrameSearch.h" />
 		<Unit filename="FbGenres.cpp" />
 		<Unit filename="FbGenres.h" />
+		<Unit filename="FbLogStream.cpp" />
+		<Unit filename="FbLogStream.h" />
 		<Unit filename="FbManager.cpp" />
 		<Unit filename="FbManager.h" />
 		<Unit filename="FbParams.cpp" />

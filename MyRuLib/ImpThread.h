@@ -43,7 +43,7 @@ public:
     ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
     virtual void *Entry();
 private:
-    void ImportFile(const wxString & filename);
+    void ImportFile(const wxString & zipname);
     const wxArrayString m_filelist;
 };
 

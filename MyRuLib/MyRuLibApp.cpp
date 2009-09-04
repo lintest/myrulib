@@ -26,7 +26,7 @@ bool MyRuLibApp::OnInit()
         wxMessageBox(_("Not support for files larger 2Gb!"));
 
 	if(!ConnectToDatabase()) {
-		wxFAIL_MSG(_("Error connecting to database!"));
+		wxLogFatalError(_("Error connecting to database!"));
 		return false;
 	}
 
@@ -128,6 +128,8 @@ bool MyRuLibApp::ConnectToDatabase()
     logname.SetExt(wxT("log"));
     wxLog *logger = new FbLogStream(logname.GetFullPath());
     wxLog::SetActiveTarget(logger);
+
+    wxLogInfo(wxT("Open database: %s"), m_datafile.c_str());
 
 	bool bCreate = !wxFileExists(m_datafile);
 	try	{
