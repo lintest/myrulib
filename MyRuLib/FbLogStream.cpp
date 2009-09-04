@@ -23,10 +23,26 @@ void FbLogStream::DoLogString(const wxChar *szString, time_t t)
 
 void FbLogStream::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
 {
+    wxString prefix;
+    switch ( level ) {
+        case wxLOG_Error:
+            prefix = wxT("E> ");
+            break;
+        case wxLOG_Warning:
+            prefix = wxT("!> ");
+            break;
+        case wxLOG_Info:
+            prefix = wxT("i> ");
+            break;
+        default:
+            prefix = wxEmptyString;
+            break;
+    }
+
     wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_ERROR );
     event.SetInt(level);
     event.SetTimestamp(t);
-    event.SetString(szString);
+    event.SetString(prefix + szString);
     wxPostEvent(wxGetApp().GetTopWindow(), event);
 }
 
@@ -45,17 +61,17 @@ void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
             break;
 
         case wxLOG_Error:
-            DoLogString(wxString(_("Error: ")) + szString, t);
+            DoLogString(wxString(_("E ")) + szString, t);
             PostMsg(level, szString, t);
             break;
 
         case wxLOG_Warning:
-            DoLogString(wxString(_("Warning: ")) + szString, t);
+            DoLogString(wxString(_("! ")) + szString, t);
             PostMsg(level, szString, t);
             break;
 
         case wxLOG_Info:
-            DoLogString(wxString(_("Info: ")) + szString, t);
+            DoLogString(wxString(_("> ")) + szString, t);
             break;
 
         case wxLOG_Message:

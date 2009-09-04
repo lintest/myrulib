@@ -52,13 +52,18 @@
 		<sources>MyRuLib/BookListCtrl.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
+		<sources>MyRuLib/FbConst.cpp</sources>
+		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
+		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
+		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
 		<sources>MyRuLib/ImpThread.cpp</sources>
 		<sources>MyRuLib/InfoCash.cpp</sources>
 		<sources>MyRuLib/InfoThread.cpp</sources>
+		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/MyRuLibMain.cpp</sources>
 		<sources>MyRuLib/MyrulibData.cpp</sources>
@@ -95,13 +100,16 @@
 		<wx-lib>base</wx-lib>
 		<if cond="FORMAT=='mingw'">
 			<sys-lib>shlwapi</sys-lib>
+			<postlink-command>strip ./build/myrulib.exe</postlink-command>
+		</if>
+		<if cond="FORMAT=='gnu'">
+			<postlink-command>strip ./build/myrulib</postlink-command>
 		</if>
         <app-type>gui</app-type>
 		<threading>single</threading>
 		<optimize>speed</optimize>
         <debug-info>off</debug-info>
         <runtime-libs>static</runtime-libs>
-		<postlink-command>strip ./build/myrulib</postlink-command>
     </exe>
 
 </makefile>

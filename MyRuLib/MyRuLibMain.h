@@ -17,6 +17,7 @@
 #include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include "ProgressBar.h"
+#include "LimitedTextCtrl.h"
 
 class MyRuLibMainFrame: public wxAuiMDIParentFrame
 {
@@ -34,7 +35,7 @@ private:
 	ProgressBar m_ProgressBar;
 	wxString m_StatusText;
 	wxAuiManager m_FrameManager;
-	wxTextCtrl m_LOGTextCtrl;
+	LimitedTextCtrl m_LOGTextCtrl;
 private:
 	void OnExit(wxCommandEvent & event);
     void OnSetup(wxCommandEvent & event);

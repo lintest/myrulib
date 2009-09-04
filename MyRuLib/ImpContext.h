@@ -56,6 +56,7 @@ public:
     wxString text;
     wxString sha1sum;
     bool sha1only;
+    wxString filename;
 };
 
 #endif // __IMPCONTEXT_H__

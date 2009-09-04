@@ -9,7 +9,6 @@
 
 #include <wx/artprov.h>
 #include <wx/splitter.h>
-#include <wx/imaglist.h>
 #include <wx/dirdlg.h>
 #include "FbConst.h"
 #include "MyRuLibMain.h"
@@ -20,10 +19,6 @@
 #include "ImpThread.h"
 #include "FbFrameAuthor.h"
 #include "FbFrameSearch.h"
-
-#include "AUIDocViewChildFrame.h"
-
-#include "XpmBitmaps.h"
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
@@ -77,7 +72,7 @@ void MyRuLibMainFrame::CreateControls()
 	m_ProgressBar.SetStatusWidths(4, widths);
 	SetStatusBar(&m_ProgressBar);
 
-	m_LOGTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER);
+	m_LOGTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
 	new FbFrameAuthor(this, wxID_ANY, wxT("Авторы"));
 	new FbFrameSearch(this, wxID_ANY, wxT("Поиск"));
 	new FbFrameSearch(this, wxID_ANY, wxT("Избранное"));

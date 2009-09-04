@@ -99,13 +99,18 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_BookListCtrl.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
+	build/myrulib_FbConst.o \
+	build/myrulib_FbFrameAuthor.o \
+	build/myrulib_FbFrameSearch.o \
 	build/myrulib_FbGenres.o \
+	build/myrulib_FbLogStream.o \
 	build/myrulib_FbManager.o \
 	build/myrulib_FbParams.o \
 	build/myrulib_ImpContext.o \
 	build/myrulib_ImpThread.o \
 	build/myrulib_InfoCash.o \
 	build/myrulib_InfoThread.o \
+	build/myrulib_LimitedTextCtrl.o \
 	build/myrulib_MyRuLibApp.o \
 	build/myrulib_MyRuLibMain.o \
 	build/myrulib_MyrulibData.o \
@@ -253,7 +258,19 @@ build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbConst.o: ./MyRuLib/FbConst.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFrameSearch.o: ./MyRuLib/FbFrameSearch.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbManager.o: ./MyRuLib/FbManager.cpp
@@ -272,6 +289,9 @@ build/myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_InfoThread.o: ./MyRuLib/InfoThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_LimitedTextCtrl.o: ./MyRuLib/LimitedTextCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp

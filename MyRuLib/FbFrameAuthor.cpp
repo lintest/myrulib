@@ -1,5 +1,6 @@
 #include "FbFrameAuthor.h"
 #include <wx/artprov.h>
+#include <wx/imaglist.h>
 #include "ExternalDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
@@ -98,6 +99,10 @@ void FbFrameAuthor::CreateControls()
 	m_RuAlphabar->ToggleTool(ID_LETTER_RU + random, true );
 
 	SetMenuBar(CreateMenuBar());
+
+    #if defined(__WIN32__)
+	m_BooksInfoPanel->SetPage(_("<b>Внимание!</b><br><br>Версия для Windows не поддерживает<br>архивы размером более 2 Gb."));
+    #endif
 }
 
 wxMenuBar * FbFrameAuthor::CreateMenuBar()
@@ -134,8 +139,8 @@ wxMenuBar * FbFrameAuthor::CreateMenuBar()
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->AppendCheckItem(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
-	menu->AppendCheckItem(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
+	menu->AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр справа"));
+	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмтр снизу"));
 	menu->AppendSeparator();
 	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
 	menu->Delete(tempItem);

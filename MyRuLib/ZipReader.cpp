@@ -234,16 +234,24 @@ void ZipCollection::SetDir(const wxString &dirname)
 
     if (dirname.IsEmpty()) return;
 
+    wxLogInfo(_("Start scan directory %s"), m_dirname.c_str());
+
     wxDir dir(dirname);
-    if ( !dir.IsOpened() ) return;
+    if ( !dir.IsOpened() ) {
+        wxLogError(_("Can't open directory %s"), m_dirname.c_str());
+        return;
+    }
 
 	ZipTraverser traverser(this);
 	dir.Traverse(traverser);
 
+    wxLogInfo(_("Finish scan directory %s"), m_dirname.c_str());
 }
 
 void ZipCollection::AddZip(const wxString &filename)
 {
+    wxLogInfo(_("Scan zip %s"), filename.c_str());
+
     wxFileName zip_file = filename;
 	m_thread->DoStep(zip_file.GetFullName());
 

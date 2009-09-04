@@ -158,7 +158,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 					skip = true;
 				} else {
 					wxString error(XML_ErrorString(error_code), *wxConvCurrent);
-					wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()));
+					wxLogError(_("XML parsing error: '%s' at line %d file %s"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()), ctx.filename.c_str());
 					skip = true;
 					ok = false;
 					break;
@@ -276,14 +276,17 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, con
 {
     ImportParsingContext info;
 
+    info.filename = filename;
+
 	if (LoadXml(stream, info)) {
 		int id_book = FindBySHA1(info.sha1sum);
 		if (id_book == 0)
 			id_book = FindBySize(info.sha1sum, stream.GetLength());
 		if (id_book == 0)
 			AppendBook(info, filename, stream.GetLength(), id_archive);
-		else
+		else {
 			AppendFile(id_book, id_archive, filename);
+		}
         return true;
 	}
     return false;
@@ -303,8 +306,12 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
     }
     m_database->CloseResultSet(result);
 
-    if (old_name == new_name) return;
+    if (old_name == new_name) {
+        wxLogWarning(_("File already exists %s"), new_name.c_str());
+        return;
+    }
 
+    wxLogWarning(_("File already exists. Add alternative location %s"), new_name.c_str());
     ps = GetPreparedStatement(psAppendFile);
     ps->SetParamInt(1, id_book);
     ps->SetParamInt(2, id_archive);
@@ -345,9 +352,12 @@ int ImportThread::AddArchive(const wxString &filename, const int file_size, cons
 
 void *ZipImportThread::Entry()
 {
-    for (size_t i=0; i<m_filelist.Count(); i++) {
+    size_t count = m_filelist.Count();
+    wxLogInfo(_("Start import %d file(s)"), count);
+    for (size_t i=0; i<count; i++) {
         ImportFile(m_filelist[i]);
     }
+    wxLogInfo(_("Finish import %d file(s)"), count);
     return NULL;
 }
 
@@ -355,9 +365,9 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
-    AutoTransaction trans;
+    wxLogInfo(_("Import file %s"), zipname.c_str());
 
-    wxLogInfo(_("Import file: %s"), zipname.c_str());
+    AutoTransaction trans;
 
 	wxFFileInputStream in(zipname);
 
@@ -367,6 +377,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
         DoFinish();
         return;
 	}
+
 	wxZipInputStream zip(in);
 
 	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
@@ -377,7 +388,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 		if (entry->GetSize()) {
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
-                wxLogInfo(_("Process zip entry: %s"), filename.c_str());
+                wxLogInfo(_("Import zip entry %s"), filename.c_str());
 			    DoStep(filename);
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);
@@ -418,16 +429,19 @@ public:
 		wxString ext = filename.Right(4).Lower();
 		if (ext == wxT(".fb2")) {
 		    Progress(filename);
+            wxLogInfo(_("Import file %s"), filename.c_str());
 		    wxFFileInputStream file(filename);
             m_thread->ParseXml(file, filename, 0);
         } else if (ext == wxT(".zip")) {
 		    Progress(filename);
+            wxLogInfo(_("Import file %s"), filename.c_str());
             m_thread->ParseZip(filename);
         }
         return wxDIR_CONTINUE;
     }
 
-    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))  {
+    virtual wxDirTraverseResult OnDir(const wxString& dirname)  {
+        wxLogInfo(_("Import subdirectory %s"), dirname.c_str());
         return wxDIR_CONTINUE;
     }
 private:
@@ -445,8 +459,13 @@ void *DirImportThread::Entry()
 
     AutoTransaction trans;
 
+    wxLogInfo(_("Start import directory %s"), m_dirname.c_str());
+
     wxDir dir(m_dirname);
-    if ( !dir.IsOpened() ) return NULL;
+    if ( !dir.IsOpened() ) {
+        wxLogError(_("Can't open directory %s"), m_dirname.c_str());
+        return NULL;
+    }
 
 	{
         DoStart(0, m_dirname);
@@ -459,6 +478,8 @@ void *DirImportThread::Entry()
     dir.Traverse(traverser);
 
     DoFinish();
+
+    wxLogInfo(_("Finish import directory %s"), m_dirname.c_str());
 
 	return NULL;
 }
@@ -474,6 +495,7 @@ bool DirImportThread::ParseZip(const wxString &filename)
 		if (entry->GetSize()) {
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
+                wxLogInfo(_("Import zip entry %s"), filename.c_str());
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);
 			}
