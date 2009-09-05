@@ -9,7 +9,7 @@
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
 
-BEGIN_EVENT_TABLE(FbFrameAuthor, wxAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameAuthor::OnChangeViewUpdateUI)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
@@ -22,20 +22,10 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, wxAuiMDIChildFrame)
     EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameAuthor::OnSubmenu)
 END_EVENT_TABLE()
 
-FbFrameAuthor::FbFrameAuthor()
-{
-}
-
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
+    :FbFrameBase(parent, id, title)
 {
-	Create(parent, id, title);
-}
-
-bool FbFrameAuthor::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-{
-	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
-	if (res) CreateControls();
-	return res;
+    CreateControls();
 }
 
 void FbFrameAuthor::CreateControls()
@@ -69,7 +59,7 @@ void FbFrameAuthor::CreateControls()
 	m_BooksInfoPanel->SetPage(_("<b>Внимание!</b><br><br>Версия для Windows не поддерживает<br>архивы размером более 2 Gb."));
     #endif
 }
-
+/*
 wxMenuBar * FbFrameAuthor::CreateMenuBar()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
@@ -119,7 +109,7 @@ wxMenuBar * FbFrameAuthor::CreateMenuBar()
 
 	return menuBar;
 }
-
+*/
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style)
 {
 	wxToolBar * toolBar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS|style);

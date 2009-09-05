@@ -7,22 +7,21 @@
 #include <wx/listbox.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
+#include "FbFrameBase.h"
 #include "FbAuthorList.h"
 #include "BookListCtrl.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
 
-class FbFrameAuthor : public wxAuiMDIChildFrame
+class FbFrameAuthor : public FbFrameBase
 {
 public:
-	FbFrameAuthor();
-	FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-	bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-	virtual wxToolBar* CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
-    virtual wxToolBar *GetToolBar() const  { return NULL; };
+    FbFrameAuthor() :FbFrameBase() {};
+    FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+protected:
+	virtual void CreateControls();
 private:
-	void CreateControls();
-	wxMenuBar * CreateMenuBar();
+//	wxMenuBar * CreateMenuBar();
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
 	void CreateBookInfo();

@@ -120,10 +120,6 @@ wxString FbParams::DefaultText(int param)
             filename.SetPath(wxGetApp().GetAppPath());
             return filename.GetFullPath();
         }
-#ifndef __WIN32__
-        case FB_FB2_PROGRAM:
-            return wxT("fbreader");
-#endif //__WIN32__
         case FB_WANRAIK_DIR:
             return wxGetApp().GetAppPath();
     }

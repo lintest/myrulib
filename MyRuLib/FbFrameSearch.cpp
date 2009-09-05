@@ -5,20 +5,10 @@
 #include "FbManager.h"
 #include "BooksPanel.h"
 
-FbFrameSearch::FbFrameSearch()
-{
-}
-
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
+    :FbFrameBase(parent, id, title)
 {
-	Create(parent, id, title);
-}
-
-bool FbFrameSearch::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-{
-	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
-	if(res) CreateControls();
-	return res;
+    CreateControls();
 }
 
 void FbFrameSearch::CreateControls()
@@ -100,21 +90,6 @@ void FbFrameSearch::CreateBookInfo()
     }
 */
 
-}
-
-wxMenuBar * FbFrameSearch::CreateMenuBar()
-{
-	wxMenuBar * menuBar = new wxMenuBar;
-
-	wxMenu * fileMenu = new wxMenu;
-	fileMenu->Append(wxID_EXIT, _("Exit\tAlt+F4"));
-	menuBar->Append(fileMenu, _("File"));
-
-	wxMenu * helpMenu = new wxMenu;
-	helpMenu->Append(wxID_ABOUT, _("About..."));
-	menuBar->Append(helpMenu, _("Help"));
-
-	return menuBar;
 }
 
 void FbFrameSearch::OnActivated(wxActivateEvent & event)

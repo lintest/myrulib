@@ -4,19 +4,16 @@
 #include <wx/wx.h>
 #include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
+#include "FbFrameBase.h"
 
-class FbFrameFavorites : public wxAuiMDIChildFrame
+class FbFrameFavorites : public FbFrameBase
 {
-	bool m_HasToolBar;
-	void CreateControls();
-	wxToolBar * m_ToolBar;
-	wxMenuBar * CreateMenuBar();
 public:
-	FbFrameFavorites();
+    FbFrameFavorites(): FbFrameBase() {};
 	FbFrameFavorites(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-	bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-	virtual wxToolBar* CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
-    virtual wxToolBar *GetToolBar() const  { return NULL; };
+//	bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+protected:
+	virtual void CreateControls();
 private:
 	void OnToolButton(wxCommandEvent & event);
 	void OnToggleToolbar(wxCommandEvent & event);
