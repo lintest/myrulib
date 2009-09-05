@@ -170,6 +170,8 @@
 		<Unit filename="BaseThread.h" />
 		<Unit filename="BookListCtrl.cpp" />
 		<Unit filename="BookListCtrl.h" />
+		<Unit filename="BooksPanel.cpp" />
+		<Unit filename="BooksPanel.h" />
 		<Unit filename="ExpThread.cpp" />
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />

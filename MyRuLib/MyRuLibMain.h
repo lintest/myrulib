@@ -23,6 +23,7 @@ class MyRuLibMainFrame: public wxAuiMDIParentFrame
 public:
 	MyRuLibMainFrame();
 	virtual ~MyRuLibMainFrame();
+	wxString GetFindText() { return m_FindTextCtrl.GetValue(); };
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();

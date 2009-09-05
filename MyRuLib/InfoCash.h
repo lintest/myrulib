@@ -4,10 +4,9 @@
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
 #include <wx/thread.h>
+#include "FbConst.h"
 
 #define INFO_CASH_SIZE 20
-
-#define ID_BOOKINFO_UPDATE 40000
 
 class InfoImage
 {

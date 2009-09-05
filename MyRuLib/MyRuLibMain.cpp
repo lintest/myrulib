@@ -22,12 +22,11 @@
 #include "FbFrameFavorites.h"
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
+    EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
+    EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
-    EVT_TOOL(wxID_FIND, MyRuLibMainFrame::OnFind)
-    EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
-    EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
     EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)

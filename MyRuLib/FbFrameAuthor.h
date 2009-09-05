@@ -10,6 +10,7 @@
 #include "FbAuthorList.h"
 #include "BookListCtrl.h"
 #include "FbManager.h"
+#include "BooksPanel.h"
 
 class FbFrameAuthor : public wxAuiMDIChildFrame
 {
@@ -28,28 +29,21 @@ private:
 	void SelectFirstAuthor();
 	BookTreeItemData * GetSelectedBook();
 private:
-	FbAuthorList * m_AuthorsListBox;
-	BookListCtrl * m_BooksListView;
-	wxHtmlWindow * m_BooksInfoPanel;
 	wxSplitterWindow * m_BooksSplitter;
+	FbAuthorList * m_AuthorsListBox;
     wxToolBar * m_RuAlphabar;
     wxToolBar * m_EnAlphabar;
+    BooksPanel * m_BooksPanel;
 private:
+    void OnFindTextEnter(wxCommandEvent& event);
+    void OnFindTool(wxCommandEvent& event);
 	void OnToolButton(wxCommandEvent & event);
 	void OnToggleToolbar(wxCommandEvent & event);
 	void OnLetterClicked(wxCommandEvent& event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
-	void OnBooksListViewSelected(wxTreeEvent & event);
-	void OnBooksListActivated(wxTreeEvent & event);
-	void OnBooksListKeyDown(wxTreeEvent & event);
-	void OnBooksListCollapsing(wxTreeEvent & event);
-	void OnChangeView(wxCommandEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
-	void OnFindTextEnter( wxCommandEvent& event );
-    void OnImageClick(wxTreeEvent &event);
-    void OnInfoUpdate(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
-    void OnSelectAll(wxCommandEvent& event);
+    void OnSubmenu(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

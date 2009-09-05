@@ -50,12 +50,14 @@
     <exe id="myrulib" template="wxgui">
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookListCtrl.cpp</sources>
+		<sources>MyRuLib/BooksPanel.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
+		<sources>MyRuLib/FbFrameFavorites.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>

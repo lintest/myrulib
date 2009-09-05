@@ -8,8 +8,7 @@
 class BookListCtrl: public wxTreeListCtrl
 {
 public:
-    BookListCtrl(wxWindow *parent, wxWindowID id, long style)
-        :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style) {};
+    BookListCtrl(wxWindow *parent, wxWindowID id, long style);
     void OnSize(wxSizeEvent& event);
 	void OnImageClick(wxTreeEvent &event);
 	void SelectAll();

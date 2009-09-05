@@ -1,39 +1,32 @@
 #include "FbFrameAuthor.h"
 #include <wx/artprov.h>
-#include <wx/imaglist.h>
-#include "ExternalDlg.h"
+#include <wx/splitter.h>
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbManager.h"
 #include "InfoCash.h"
-#include "XpmBitmaps.h"
 #include "RecordIDClientData.h"
+#include "MyRuLibApp.h"
+#include "MyRuLibMain.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, wxAuiMDIChildFrame)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnChangeView)
-	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameAuthor::OnChangeView)
     EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameAuthor::OnChangeViewUpdateUI)
-//  EVT_MENU(ID_FB2_ONLY, FbFrameAuthor::OnChangeFilter)
-	EVT_MENU(wxID_SELECTALL, FbFrameAuthor::OnSelectAll)
-    EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
-    EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbFrameAuthor::OnBooksListViewSelected)
-	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbFrameAuthor::OnBooksListActivated)
-	EVT_TREE_ITEM_COLLAPSING(ID_BOOKS_LISTCTRL, FbFrameAuthor::OnBooksListCollapsing)
-	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, FbFrameAuthor::OnBooksListKeyDown)
-	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, FbFrameAuthor::OnImageClick)
-    EVT_TEXT_ENTER(ID_FIND_TEXT, FbFrameAuthor::OnFindTextEnter)
-    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameAuthor::OnInfoUpdate)
+	EVT_TEXT_ENTER(ID_FIND_TEXT, FbFrameAuthor::OnFindTextEnter)
+    EVT_TOOL(wxID_FIND, FbFrameAuthor::OnFindTool)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnSubmenu)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameAuthor::OnSubmenu)
+	EVT_MENU(wxID_SELECTALL, FbFrameAuthor::OnSubmenu)
+    EVT_MENU(wxID_SAVE, FbFrameAuthor::OnSubmenu)
+    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameAuthor::OnSubmenu)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor()
-	:m_BooksInfoPanel(NULL)
 {
 }
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-	:m_BooksInfoPanel(NULL)
 {
 	Create(parent, id, title);
 }
@@ -60,36 +53,8 @@ void FbFrameAuthor::CreateControls()
 
 	m_AuthorsListBox = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
 
-	m_BooksSplitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	m_BooksSplitter->SetMinimumPaneSize(50);
-	m_BooksSplitter->SetSashGravity(0.5);
-
-	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksListView = new BookListCtrl(m_BooksSplitter, ID_BOOKS_LISTCTRL, style);
-    m_BooksListView->AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
-    m_BooksListView->AddColumn (_T("№"), 30, wxALIGN_LEFT);
-    m_BooksListView->AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
-    m_BooksListView->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
-    m_BooksListView->SetColumnEditable (0, false);
-    m_BooksListView->SetColumnEditable (1, false);
-    m_BooksListView->SetColumnEditable (2, false);
-    m_BooksListView->SetColumnEditable (3, false);
-    m_BooksListView->colSizes.Add(9);
-    m_BooksListView->colSizes.Add(1);
-    m_BooksListView->colSizes.Add(4);
-    m_BooksListView->colSizes.Add(2);
-
-    wxBitmap size = wxBitmap(checked_xpm);
-	wxImageList *images;
-	images = new wxImageList (size.GetWidth(), size.GetHeight(), true);
-	images->Add (wxBitmap(nocheck_xpm));
-	images->Add (wxBitmap(checked_xpm));
-	images->Add (wxBitmap(checkout_xpm));
-	m_BooksListView->AssignImageList (images);
-
-	splitter->SplitVertically(m_AuthorsListBox, m_BooksSplitter, 160);
-
-	CreateBookInfo();
+	m_BooksPanel = new BooksPanel(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
+	splitter->SplitVertically(m_AuthorsListBox, m_BooksPanel, 160);
 
     wxDateTime now = wxDateTime::Now();
     int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
@@ -179,7 +144,7 @@ void FbFrameAuthor::ToggleAlphabar(const int &idLetter)
         m_EnAlphabar->ToggleTool(id, id == idLetter);
 	}
 }
-
+/*
 void FbFrameAuthor::CreateBookInfo()
 {
     int vertical = FbParams().GetValue(FB_VIEW_TYPE);
@@ -204,7 +169,7 @@ void FbFrameAuthor::CreateBookInfo()
         InfoCash::ShowInfo(this, book->GetId(), book->file_type);
     }
 }
-
+*/
 void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 {
     int id = event.GetId();
@@ -224,8 +189,9 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	m_AuthorsListBox->FillAuthorsChar(alphabet[position]);
 	SelectFirstAuthor();
-}
 
+}
+/*
 BookTreeItemData * FbFrameAuthor::GetSelectedBook()
 {
 	wxTreeItemId selected = m_BooksListView->GetSelection();
@@ -234,32 +200,25 @@ BookTreeItemData * FbFrameAuthor::GetSelectedBook()
     } else
         return NULL;
 }
-
+*/
 void FbFrameAuthor::SelectFirstAuthor()
 {
 	if(m_AuthorsListBox->GetCount()) {
 		m_AuthorsListBox->SetSelection(0);
-		RecordIDClientData * data = (RecordIDClientData *)
-			m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
-		if(data) {
-			FbManager::FillBooks(m_BooksListView, data->GetID(), false);
-			m_BooksInfoPanel->SetPage(wxEmptyString);
-		}
+		RecordIDClientData * data = (RecordIDClientData *) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
+        if (data) m_BooksPanel->FillByAuthor(data->GetID());
 	} else {
-		m_BooksListView->DeleteRoot();
-		m_BooksInfoPanel->SetPage(wxEmptyString);
+		m_BooksPanel->m_BookList->DeleteRoot();
+		m_BooksPanel->m_BookInfo->SetPage(wxEmptyString);
 	}
 }
 
 void FbFrameAuthor::OnAuthorsListBoxSelected(wxCommandEvent & event)
 {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
-	if(data) {
-		FbManager::FillBooks(m_BooksListView, data->GetID(), false);
-		m_BooksInfoPanel->SetPage(wxEmptyString);
-	}
+	if (data) m_BooksPanel->FillByAuthor(data->GetID());
 }
-
+/*
 void FbFrameAuthor::OnBooksListViewSelected(wxTreeEvent & event)
 {
     m_BooksInfoPanel->SetPage(wxEmptyString);
@@ -275,6 +234,7 @@ void FbFrameAuthor::OnBooksListCollapsing(wxTreeEvent & event)
 {
 	event.Veto();
 }
+*/
 void FbFrameAuthor::OnFindTextEnter( wxCommandEvent& event )
 {
     wxString text = event.GetString();
@@ -284,6 +244,19 @@ void FbFrameAuthor::OnFindTextEnter( wxCommandEvent& event )
     SelectFirstAuthor();
 }
 
+void FbFrameAuthor::OnFindTool(wxCommandEvent& event)
+{
+    MyRuLibMainFrame * mainFrame =  (MyRuLibMainFrame *) wxGetApp().GetTopWindow();
+    wxString text = mainFrame->GetFindText();
+
+	if (text.IsEmpty()) return;
+    ToggleAlphabar(0);
+    m_AuthorsListBox->FillAuthorsText(text);
+    SelectFirstAuthor();
+}
+
+
+/*
 void FbFrameAuthor::OnBooksListActivated(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
@@ -383,7 +356,7 @@ void FbFrameAuthor::OnChangeView(wxCommandEvent & event)
 	FbParams().SetValue(FB_VIEW_TYPE, vertical);
 	CreateBookInfo();
 }
-
+*/
 void FbFrameAuthor::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 {
     int vertical = FbParams().GetValue(FB_VIEW_TYPE);
@@ -394,3 +367,8 @@ void FbFrameAuthor::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
         event.Check(!vertical);
 }
 
+void FbFrameAuthor::OnSubmenu(wxCommandEvent& event)
+{
+    wxPostEvent(m_BooksPanel, event);
+
+}
