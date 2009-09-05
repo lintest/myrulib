@@ -95,8 +95,8 @@ void FbFrameAuthor::CreateControls()
     int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
 	random = random % alphabetRu.Len();
 
-	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabetRu[random]);
-	m_RuAlphabar->ToggleTool(ID_LETTER_RU + random, true );
+    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_LETTER_RU + random );
+    wxPostEvent(this, event);
 
 	SetMenuBar(CreateMenuBar());
 
