@@ -4,7 +4,6 @@
 		<Project filename="SQLite\SQLite.cbp" />
 		<Project filename="Expat\Expat.cbp" />
 		<Project filename="DatabaseLayer\DatabaseLayer.cbp" />
-		<Project filename="TestLog\TestLog.cbp" />
 		<Project filename="MyRuLib\MyRuLib.cbp" active="1">
 			<Depends filename="SQLite\SQLite.cbp" />
 			<Depends filename="Expat\Expat.cbp" />
