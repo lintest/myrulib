@@ -174,10 +174,14 @@
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
 		<Unit filename="ExternalDlg.h" />
+		<Unit filename="FbAuthorList.cpp" />
+		<Unit filename="FbAuthorList.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbFrameAuthor.cpp" />
 		<Unit filename="FbFrameAuthor.h" />
+		<Unit filename="FbFrameFavorites.cpp" />
+		<Unit filename="FbFrameFavorites.h" />
 		<Unit filename="FbFrameSearch.cpp" />
 		<Unit filename="FbFrameSearch.h" />
 		<Unit filename="FbGenres.cpp" />
