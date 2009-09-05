@@ -58,7 +58,7 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_AuthorsListBox = new wxListBox(splitter, ID_AUTHORS_LISTBOX, wxDefaultPosition, wxDefaultSize, 0, NULL, wxSUNKEN_BORDER);
+	m_AuthorsListBox = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
 
 	m_BooksSplitter = new wxSplitterWindow(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	m_BooksSplitter->SetMinimumPaneSize(50);
@@ -222,7 +222,7 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
     ToggleAlphabar(id);
 
-	FbManager::FillAuthorsChar(m_AuthorsListBox, alphabet[position]);
+	m_AuthorsListBox->FillAuthorsChar(alphabet[position]);
 	SelectFirstAuthor();
 }
 
@@ -280,7 +280,7 @@ void FbFrameAuthor::OnFindTextEnter( wxCommandEvent& event )
     wxString text = event.GetString();
 	if (text.IsEmpty()) return;
     ToggleAlphabar(0);
-    FbManager::FillAuthorsText(m_AuthorsListBox, text);
+    m_AuthorsListBox->FillAuthorsText(text);
     SelectFirstAuthor();
 }
 

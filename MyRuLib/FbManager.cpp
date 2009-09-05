@@ -171,58 +171,6 @@ void FbManager::FillBooks(wxTreeListCtrl * treelist, int id_author, bool fb2only
 	treelist->Thaw();
 }
 
-
-void FbManager::FillAuthorsChar(wxListBox *listbox, const wxChar & findLetter)
-{
-    const wxString orderBy = wxT("search_name");
-	wxString findText = findLetter;
-    const wxString whereClause = wxString::Format(wxT("letter = '%s'"), findText.c_str());
-
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-	wxString sql = wxT("SELECT id, full_name, first_name, middle_name, last_name FROM authors WHERE letter=? ORDER BY search_name");
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
-	pStatement->SetParamString(1, findLetter);
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
-	FillAuthors(listbox, result);
-	wxGetApp().GetDatabase()->CloseStatement(pStatement);
-}
-
-void FbManager::FillAuthorsText(wxListBox *listbox, const wxString & findText)
-{
-    const wxString orderBy = wxT("search_name");
-    wxString text = findText;
-    BookInfo::MakeLower(text);
-
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-	wxString sql = wxT("SELECT id, full_name, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
-	pStatement->SetParamString(1, text + wxT("%"));
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
-	FillAuthors(listbox, result);
-	wxGetApp().GetDatabase()->CloseStatement(pStatement);
-}
-
-void FbManager::FillAuthors(wxListBox *listbox, DatabaseResultSet* result)
-{
-	listbox->Freeze();
-	listbox->Clear();
-
-	if(result){
-		while(result->Next()){
-			int id = result->GetResultInt(wxT("id"));
-			wxString full_name = result->GetResultString(wxT("full_name"));
-			wxString first_name  = result->GetResultString(wxT("first_name"));
-			wxString middle_name = result->GetResultString(wxT("middle_name"));
-			wxString last_name = result->GetResultString(wxT("last_name"));
-			listbox->Append(full_name, new RecordIDClientData(id));
-		}
-	}
-
-	listbox->Thaw();
-}
-
 class TempFileEraser {
 private:
     wxStringList filelist;

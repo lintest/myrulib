@@ -7,6 +7,7 @@
 #include <wx/listbox.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
+#include "FbAuthorList.h"
 #include "BookListCtrl.h"
 #include "FbManager.h"
 
@@ -27,7 +28,7 @@ private:
 	void SelectFirstAuthor();
 	BookTreeItemData * GetSelectedBook();
 private:
-	wxListBox * m_AuthorsListBox;
+	FbAuthorList * m_AuthorsListBox;
 	BookListCtrl * m_BooksListView;
 	wxHtmlWindow * m_BooksInfoPanel;
 	wxSplitterWindow * m_BooksSplitter;

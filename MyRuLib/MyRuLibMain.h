@@ -14,7 +14,6 @@
 #include <wx/aui/aui.h>
 #include <wx/aui/tabmdi.h>
 #include <wx/toolbar.h>
-#include <wx/listbox.h>
 #include <wx/textctrl.h>
 #include "ProgressBar.h"
 #include "LimitedTextCtrl.h"
