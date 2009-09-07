@@ -10,6 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/splitter.h>
 #include <wx/dirdlg.h>
+#include <wx/stattext.h>
 #include "FbConst.h"
 #include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
@@ -17,7 +18,6 @@
 #include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ImpThread.h"
-#include "FbFrameAuthor.h"
 #include "FbFrameSearch.h"
 #include "FbFrameFavorites.h"
 
@@ -26,6 +26,9 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
+	EVT_TEXT_ENTER(ID_FIND_BOOK, MyRuLibMainFrame::OnFindBookEnter)
+    EVT_MENU(ID_FIND_BOOK, MyRuLibMainFrame::OnFindBook)
+	EVT_MENU(ID_OPEN_WEB, MyRuLibMainFrame::OnOpenWeb)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
     EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
     EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
@@ -34,6 +37,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
     EVT_MENU(ID_LOG_TEXTCTRL, MyRuLibMainFrame::OnHideLog)
     EVT_AUI_PANE_CLOSE(MyRuLibMainFrame::OnPanelClosed)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, MyRuLibMainFrame::OnNotebookPageClose)
 END_EVENT_TABLE()
 
 MyRuLibMainFrame::MyRuLibMainFrame()
@@ -64,7 +68,7 @@ bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString &
 void MyRuLibMainFrame::CreateControls()
 {
 	SetMenuBar(new wxMenuBar);
-	SetToolBar(CreateButtonBar());
+    CreateButtonBar();
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar.Create(this, ID_PROGRESSBAR);
@@ -73,18 +77,20 @@ void MyRuLibMainFrame::CreateControls()
 	SetStatusBar(&m_ProgressBar);
 
 	m_LOGTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
-	new FbFrameAuthor(this, wxID_ANY, wxT("Авторы"));
-	new FbFrameSearch(this, wxID_ANY, wxT("Поиск"));
-	new FbFrameFavorites(this, wxID_ANY, wxT("Избранное"));
+	new FbFrameAuthor(this, ID_FRAME_AUTHORS, wxT("Авторы"));
+//	new FbFrameSearch(this, wxID_ANY, wxT("Поиск"));
+//	new FbFrameFavorites(this, wxID_ANY, wxT("Избранное"));
 
 	GetNotebook()->SetWindowStyleFlag(
         wxAUI_NB_TOP|
-        wxAUI_NB_TAB_FIXED_WIDTH |
 		wxAUI_NB_SCROLL_BUTTONS |
+		wxAUI_NB_CLOSE_ON_ACTIVE_TAB |
 		wxNO_BORDER);
 	GetNotebook()->SetSelection(0);
 
 	m_FrameManager.SetManagedWindow(this);
+
+	m_FrameManager.AddPane(m_ToolBar, wxAuiPaneInfo().Name(wxT("ToolBar")).Top().Show(true).ToolbarPane().Dockable(false).PaneBorder(false));
 	m_FrameManager.AddPane(GetNotebook(), wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane());
 	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Информационные сообщения")).Show(false));
 	m_FrameManager.Update();
@@ -97,27 +103,39 @@ void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
     SettingsDlg::Execute(this);
 }
 
+void MyRuLibMainFrame::OnOpenWeb(wxCommandEvent & event)
+{
+    wxLaunchDefaultBrowser(wxT("http://myrulib.lintest.ru"));
+}
+
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 {
     wxMessageBox(strVersionInfo + wxT("\n\nDatabase:\n") + wxGetApp().GetAppData());
 }
 
-wxToolBar * MyRuLibMainFrame::CreateButtonBar()
+wxAuiToolBar * MyRuLibMainFrame::CreateButtonBar()
 {
-	m_ToolBar.Create(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT);
-	m_ToolBar.AddTool(wxID_NEW, _("Импорт"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы ZIP"));
-	m_ToolBar.AddSeparator();
-	m_FindTextCtrl.Create(&m_ToolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER);
-	m_ToolBar.AddControl( &m_FindTextCtrl );
-	m_ToolBar.AddTool(wxID_FIND, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
-	m_ToolBar.AddSeparator();
-	m_ToolBar.AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	m_ToolBar.AddSeparator();
-	m_ToolBar.AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
-	m_ToolBar.ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
-	m_ToolBar.Realize();
+	m_ToolBar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE);
+	m_ToolBar->AddTool(wxID_NEW, _("Импорт файла"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы"));
+	m_ToolBar->AddTool(wxID_OPEN, _("Импорт папки"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Добавить в библиотеку директорию"));
+	m_ToolBar->AddSeparator();
+	m_ToolBar->AddLabel(wxID_ANY, _("Автор:"), 50);
+	m_FindTextCtrl.Create(m_ToolBar, ID_FIND_TEXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_ToolBar->AddControl( &m_FindTextCtrl );
+	m_ToolBar->AddTool(wxID_FIND, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
+	m_ToolBar->AddSeparator();
+	m_ToolBar->AddLabel(wxID_ANY, _("Книга:"), 50);
+	m_FindTitle.Create(m_ToolBar, ID_FIND_BOOK, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_ToolBar->AddControl( &m_FindTitle );
+	m_ToolBar->AddTool(wxID_FIND, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск по подстроке"));
+	m_ToolBar->AddSeparator();
+	m_ToolBar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+	m_ToolBar->AddSeparator();
+	m_ToolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
+//	m_ToolBar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
+	m_ToolBar->Realize();
 
-	return &m_ToolBar;
+	return m_ToolBar;
 }
 
 void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
@@ -246,7 +264,34 @@ void MyRuLibMainFrame::OnPanelClosed(wxAuiManagerEvent& event)
     }
 }
 
+void MyRuLibMainFrame::OnNotebookPageClose(wxAuiNotebookEvent& evt)
+{
+    wxAuiNotebook* ctrl = (wxAuiNotebook*)evt.GetEventObject();
+    if (ctrl->GetPage(evt.GetSelection())->IsKindOf(CLASSINFO(FbFrameAuthor)))
+    {
+        int res = wxMessageBox(wxT("Are you sure you want to close/hide this notebook page?"),
+                       wxT("wxAUI"),
+                       wxYES_NO,
+                       this);
+        if (res != wxYES)
+            evt.Veto();
+    }
+}
+
 void MyRuLibMainFrame::OnHideLog(wxCommandEvent& event)
 {
     TogglePaneVisibility(wxT("Log"), false);
 }
+
+void MyRuLibMainFrame::OnFindBook(wxCommandEvent & event)
+{
+	FbFrameSearch * frame = new FbFrameSearch(this, wxID_ANY, wxT("Поиск"));
+	frame->m_BooksPanel->FillByFind( m_FindTitle.GetValue() );
+}
+
+void MyRuLibMainFrame::OnFindBookEnter(wxCommandEvent& event)
+{
+	FbFrameSearch * frame = new FbFrameSearch(this, wxID_ANY, wxT("Поиск"));
+	frame->m_BooksPanel->FillByFind( event.GetString() );
+}
+

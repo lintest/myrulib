@@ -17,6 +17,7 @@ class BooksPanel: public wxSplitterWindow
                      const wxString& name = wxT("bookspanel"));
     public:
         void FillByAuthor(int id_author);
+        void FillByFind(const wxString &title, const wxString &author = wxEmptyString);
     public:
         BookListCtrl * m_BookList;
         wxHtmlWindow * m_BookInfo;

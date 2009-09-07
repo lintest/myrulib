@@ -8,27 +8,29 @@
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
 #include <wx/splitter.h>
-#include "BookListCtrl.h"
 #include "FbFrameBase.h"
+#include "BooksPanel.h"
 
 class FbFrameSearch : public FbFrameBase
 {
 public:
     FbFrameSearch(): FbFrameBase() {};
 	FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+    BooksPanel * m_BooksPanel;
 protected:
 	virtual void CreateControls();
 private:
+    void OnFindTextEnter(wxCommandEvent& event);
 	void OnToolButton(wxCommandEvent & event);
 	void OnToggleToolbar(wxCommandEvent & event);
 	void OnActivated(wxActivateEvent & event);
+	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
+    void OnSubmenu(wxCommandEvent& event);
     void CreateBookInfo();
+	DECLARE_EVENT_TABLE()
 private:
-    wxTextCtrl* m_textTitle;
-    wxTextCtrl* m_textAuthor;
-    BookListCtrl * m_BooksListView;
-    wxSplitterWindow * m_BooksSplitter;
-	wxHtmlWindow * m_BooksInfoPanel;
+    wxTextCtrl * m_textTitle;
+    wxTextCtrl * m_textAuthor;
 };
 
 #endif // __FBFRAMESEARCH_H__

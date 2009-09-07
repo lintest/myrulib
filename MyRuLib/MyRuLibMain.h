@@ -17,6 +17,7 @@
 #include <wx/textctrl.h>
 #include "ProgressBar.h"
 #include "LimitedTextCtrl.h"
+#include "FbFrameAuthor.h"
 
 class MyRuLibMainFrame: public wxAuiMDIParentFrame
 {
@@ -28,10 +29,11 @@ private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
     void TogglePaneVisibility(const wxString &pane_name, bool show);
-	wxToolBar * CreateButtonBar();
+	wxAuiToolBar * CreateButtonBar();
 private:
-	wxToolBar m_ToolBar;
+    wxAuiToolBar * m_ToolBar;
 	wxTextCtrl m_FindTextCtrl;
+	wxTextCtrl m_FindTitle;
 	ProgressBar m_ProgressBar;
 	wxString m_StatusText;
 	wxAuiManager m_FrameManager;
@@ -39,8 +41,11 @@ private:
 private:
 	void OnExit(wxCommandEvent & event);
     void OnSetup(wxCommandEvent & event);
+	void OnOpenWeb(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnFind( wxCommandEvent& event );
+	void OnFindBook(wxCommandEvent & event);
+    void OnFindBookEnter(wxCommandEvent& event);
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );
@@ -51,6 +56,7 @@ private:
     void OnError(wxCommandEvent& event);
     void OnHideLog(wxCommandEvent& event);
     void OnPanelClosed(wxAuiManagerEvent& event);
+    void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 	DECLARE_EVENT_TABLE()
 };
 

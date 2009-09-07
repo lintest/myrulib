@@ -13,6 +13,7 @@
 #include <wx/wx.h>
 #include <wx/listbox.h>
 #include <DatabaseLayer.h>
+#include <DatabaseResultSet.h>
 #include "FbGenres.h"
 #include "wx/treelistctrl.h"
 #include "db/Books.h"
@@ -26,12 +27,14 @@ public:
         : m_id(row->id), title(row->title), file_size(row->file_size), file_type(row->file_type), sequence(seq), number(num) { };
 	BookTreeItemData(BookTreeItemData * data)
         : m_id(data->GetId()), title(data->title), file_size(data->file_size), file_type(data->file_type), sequence(data->sequence), number(data->number) { };
+	BookTreeItemData(DatabaseResultSet * res);
 	int GetId() { return m_id; };
 private:
 	int m_id;
 public:
 	wxString title;
 	int file_size;
+	wxString file_name;
 	wxString file_type;
 	wxString sequence;
 	int number;

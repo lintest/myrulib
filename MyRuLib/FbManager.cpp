@@ -24,6 +24,16 @@
 #include <shlwapi.h>
 #endif
 
+BookTreeItemData::BookTreeItemData(DatabaseResultSet * res):
+    m_id( res->GetResultInt(wxT("id"))),
+    title( res->GetResultString(wxT("title"))),
+    file_size( res->GetResultInt(wxT("file_size"))),
+    file_name( res->GetResultString(wxT("file_name"))),
+    file_type( res->GetResultString(wxT("file_type")))
+{
+}
+
+
 class SequenceNode {
 public:
     SequenceNode(const int id, const wxTreeItemId &item)

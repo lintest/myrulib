@@ -30,6 +30,10 @@ BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, cons
 	m_BookList = new BookListCtrl(this, ID_BOOKS_LISTCTRL, substyle);
 
 	CreateBookInfo();
+
+    #if defined(__WIN32__)
+	m_BookInfo->SetPage(_("<b>Внимание!</b><br><br>Версия для Windows не поддерживает<br>архивы размером более 2 Gb."));
+    #endif
 }
 
 void BooksPanel::CreateBookInfo()
@@ -122,7 +126,7 @@ void BooksPanel::OnImageClick(wxTreeEvent &event)
 
 void BooksPanel::OnChangeView(wxCommandEvent & event)
 {
-	int vertical = (event.GetId() == ID_SPLIT_HORIZONTAL);
+	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
 	FbParams().SetValue(FB_VIEW_TYPE, vertical);
 	CreateBookInfo();
 }
@@ -270,6 +274,53 @@ void BooksPanel::FillByAuthor(int id_author)
 	}
     m_BookList->ExpandAll(root);
 
+	m_BookList->Thaw();
+
+	m_BookInfo->SetPage(wxEmptyString);
+}
+
+void BooksPanel::FillByFind(const wxString &title, const wxString &author)
+{
+	m_BookList->Freeze();
+
+    m_BookList->DeleteRoot();
+    wxString msg = wxString::Format(_T("Поиск: %s %s"), title.c_str(), author.c_str());
+    wxTreeItemId root = m_BookList->AddRoot(msg);
+
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    DatabaseLayer * database = wxGetApp().GetDatabase();
+/*
+    {
+        wxString sql = wxT("SELECT COUNT(id) FROM books");
+        PreparedStatement* ps = database->PrepareStatement(sql);
+        DatabaseResultSet* result = ps->ExecuteQuery();
+        int count = 0;
+        if (result && result->Next()) count = result->GetResultInt(1);
+        database->CloseResultSet(result);
+        database->CloseStatement(ps);
+
+        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
+        event.SetString(msg);
+        event.SetInt(count);
+        wxPostEvent(wxGetApp().GetTopWindow(), event);
+    }
+*/
+	wxString sql = wxT("SELECT id, title, file_name, file_type, file_size FROM books WHERE LOWER(title) like ? LIMIT 1024");
+	PreparedStatement* ps = database->PrepareStatement(sql);
+	ps->SetParamString(1, wxT("%") + title + wxT("%"));
+	DatabaseResultSet* result = ps->ExecuteQuery();
+
+    while (result && result->Next()) {
+        BookTreeItemData * data = new BookTreeItemData(result);
+        wxTreeItemId item = m_BookList->AppendItem(root, data->title, 0, -1, data);
+        m_BookList->SetItemText (item, 2, data->file_name);
+        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d"), data->file_size/1024));
+    }
+
+	database->CloseResultSet(result);
+	database->CloseStatement(ps);
+
+    m_BookList->ExpandAll(root);
 	m_BookList->Thaw();
 
 	m_BookInfo->SetPage(wxEmptyString);

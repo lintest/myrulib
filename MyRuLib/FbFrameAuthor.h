@@ -9,7 +9,6 @@
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
 #include "FbAuthorList.h"
-#include "BookListCtrl.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
 
