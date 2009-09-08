@@ -9,13 +9,15 @@ class BookListCtrl: public wxTreeListCtrl
 {
 public:
     BookListCtrl(wxWindow *parent, wxWindowID id, long style);
-    void OnSize(wxSizeEvent& event);
-	void OnImageClick(wxTreeEvent &event);
 	void SelectAll();
+    void SelectChild(const wxTreeItemId &parent);
+    virtual void AddColumn(const wxString& text, int width, int flag = wxALIGN_LEFT);
+private:
+	void OnImageClick(wxTreeEvent &event);
+    void OnSize(wxSizeEvent& event);
+private:
 	wxArrayInt colSizes;
 	DECLARE_EVENT_TABLE()
-private:
-    void SelectChild(const wxTreeItemId &parent);
 };
 
 #endif // __BOOKLISTCTRL_H__

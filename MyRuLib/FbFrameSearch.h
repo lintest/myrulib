@@ -20,10 +20,6 @@ public:
 protected:
 	virtual void CreateControls();
 private:
-    void OnFindTextEnter(wxCommandEvent& event);
-	void OnToolButton(wxCommandEvent & event);
-	void OnToggleToolbar(wxCommandEvent & event);
-	void OnActivated(wxActivateEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
     void OnSubmenu(wxCommandEvent& event);
     void CreateBookInfo();

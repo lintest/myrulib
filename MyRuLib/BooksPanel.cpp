@@ -61,6 +61,23 @@ void BooksPanel::CreateBookInfo()
     }
 }
 
+void BooksPanel::CreateAuthorColumns()
+{
+    m_BookList->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("№"), 1, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
+}
+
+void BooksPanel::CreateSearchColumns()
+{
+    m_BookList->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("Автор"), 6, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("№"), 1, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
+}
+
 BookTreeItemData * BooksPanel::GetSelectedBook()
 {
 	wxTreeItemId selected = m_BookList->GetSelection();
@@ -305,16 +322,27 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
         wxPostEvent(wxGetApp().GetTopWindow(), event);
     }
 */
-	wxString sql = wxT("SELECT id, title, file_name, file_type, file_size FROM books WHERE LOWER(title) like ? LIMIT 1024");
+    wxString templ = title;
+    templ.Replace(wxT(" "), wxT("%"));
+
+	wxString sql = wxT("\
+        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
+        FROM books \
+            LEFT JOIN authors ON books.id_author = authors.id \
+        WHERE LOWER(books.title) like ? \
+        ORDER BY books.title, authors.full_name\
+        LIMIT 1024 \
+    ");
 	PreparedStatement* ps = database->PrepareStatement(sql);
-	ps->SetParamString(1, wxT("%") + title + wxT("%"));
+	ps->SetParamString(1, wxT("%") + templ + wxT("%"));
 	DatabaseResultSet* result = ps->ExecuteQuery();
 
     while (result && result->Next()) {
         BookTreeItemData * data = new BookTreeItemData(result);
         wxTreeItemId item = m_BookList->AppendItem(root, data->title, 0, -1, data);
-        m_BookList->SetItemText (item, 2, data->file_name);
-        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d"), data->file_size/1024));
+        m_BookList->SetItemText (item, 1, result->GetResultString(wxT("full_name")));
+        m_BookList->SetItemText (item, 3, data->file_name);
+        m_BookList->SetItemText (item, 4, wxString::Format(wxT("%d"), data->file_size/1024));
     }
 
 	database->CloseResultSet(result);

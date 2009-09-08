@@ -11,8 +11,6 @@
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
-	EVT_TEXT_ENTER(ID_FIND_TEXT, FbFrameAuthor::OnFindTextEnter)
-    EVT_TOOL(wxID_FIND, FbFrameAuthor::OnFindTool)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnSubmenu)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameAuthor::OnSubmenu)
 	EVT_MENU(wxID_SELECTALL, FbFrameAuthor::OnSubmenu)
@@ -45,14 +43,8 @@ void FbFrameAuthor::CreateControls()
 	m_AuthorsListBox->SetFocus();
 
 	m_BooksPanel = new BooksPanel(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
+	m_BooksPanel->CreateAuthorColumns();
 	splitter->SplitVertically(m_AuthorsListBox, m_BooksPanel, 160);
-
-    wxDateTime now = wxDateTime::Now();
-    int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
-	random = random % alphabetRu.Len();
-
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_LETTER_RU + random );
-    wxPostEvent(this, event);
 
 	SetMenuBar(CreateMenuBar());
 	Layout();
@@ -123,26 +115,6 @@ void FbFrameAuthor::OnAuthorsListBoxSelected(wxCommandEvent & event)
 	if (data) m_BooksPanel->FillByAuthor(data->GetID());
 }
 
-void FbFrameAuthor::OnFindTextEnter( wxCommandEvent& event )
-{
-    wxString text = event.GetString();
-	if (text.IsEmpty()) return;
-    ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsText(text);
-    SelectFirstAuthor();
-}
-
-void FbFrameAuthor::OnFindTool(wxCommandEvent& event)
-{
-    MyRuLibMainFrame * mainFrame =  (MyRuLibMainFrame *) wxGetApp().GetTopWindow();
-    wxString text = mainFrame->GetFindText();
-
-	if (text.IsEmpty()) return;
-    ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsText(text);
-    SelectFirstAuthor();
-}
-
 void FbFrameAuthor::OnSubmenu(wxCommandEvent& event)
 {
     wxPostEvent(m_BooksPanel, event);
@@ -156,3 +128,25 @@ void FbFrameAuthor::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
         event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
 }
 
+void FbFrameAuthor::ActivateAuthors()
+{
+    m_AuthorsListBox->SetFocus();
+}
+
+void FbFrameAuthor::FindAuthor(const wxString &text)
+{
+	if (text.IsEmpty()) return;
+    ToggleAlphabar(0);
+    m_AuthorsListBox->FillAuthorsText(text);
+    SelectFirstAuthor();
+}
+
+void FbFrameAuthor::SelectRandomLetter()
+{
+    wxDateTime now = wxDateTime::Now();
+    int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
+	random = random % alphabetRu.Len();
+
+    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_LETTER_RU + random );
+    wxPostEvent(this, event);
+}

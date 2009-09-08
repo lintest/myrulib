@@ -17,24 +17,25 @@ class FbFrameAuthor : public FbFrameBase
 public:
     FbFrameAuthor() :FbFrameBase() {};
     FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+    void FindAuthor(const wxString &text);
+    void SelectRandomLetter();
+    void ActivateAuthors();
 protected:
 	virtual void CreateControls();
 private:
-//	wxMenuBar * CreateMenuBar();
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
 	void CreateBookInfo();
 	void SelectFirstAuthor();
 	BookTreeItemData * GetSelectedBook();
 private:
-	wxSplitterWindow * m_BooksSplitter;
 	FbAuthorList * m_AuthorsListBox;
+	wxSplitterWindow * m_BooksSplitter;
     wxToolBar * m_RuAlphabar;
     wxToolBar * m_EnAlphabar;
     BooksPanel * m_BooksPanel;
 private:
-    void OnFindTextEnter(wxCommandEvent& event);
-    void OnFindTool(wxCommandEvent& event);
+    void OnFindAuthorEnter(wxCommandEvent& event);
 	void OnToolButton(wxCommandEvent & event);
 	void OnToggleToolbar(wxCommandEvent & event);
 	void OnLetterClicked(wxCommandEvent& event);

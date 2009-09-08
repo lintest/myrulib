@@ -56,7 +56,8 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 	event.Skip();
 
 	if (GetColumnCount() == 2){
-        int w = GetClientSize().x - 20;
+//        int w = GetClientSize().x - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
+        int w = GetClientSize().x;
         SetColumnWidth(1, 50);
         SetColumnWidth(1, w - 50);
     }

@@ -9,19 +9,6 @@ END_EVENT_TABLE()
 BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
     :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style)
 {
-    AddColumn (_T("Заголовок"), 300, wxALIGN_LEFT);
-    AddColumn (_T("№"), 30, wxALIGN_LEFT);
-    AddColumn (_T("Имя файла"), 100, wxALIGN_LEFT);
-    AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
-    SetColumnEditable (0, false);
-    SetColumnEditable (1, false);
-    SetColumnEditable (2, false);
-    SetColumnEditable (3, false);
-    colSizes.Add(9);
-    colSizes.Add(1);
-    colSizes.Add(4);
-    colSizes.Add(2);
-
     wxBitmap size = wxBitmap(checked_xpm);
 	wxImageList *images;
 	images = new wxImageList (size.GetWidth(), size.GetHeight(), true);
@@ -30,6 +17,12 @@ BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
 	images->Add (wxBitmap(checkout_xpm));
 	AssignImageList (images);
 };
+
+void BookListCtrl::AddColumn (const wxString& text, int width, int flag)
+{
+    wxTreeListCtrl::AddColumn(text, width, flag, -1, true, false);
+    colSizes.Add(width);
+}
 
 void BookListCtrl::OnSize(wxSizeEvent& event)
 {
@@ -42,7 +35,7 @@ void BookListCtrl::OnSize(wxSizeEvent& event)
 
 	if (!sum) return;
 
-	int w = GetClientSize().x - 20;
+	int w = GetClientSize().x - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 	for (size_t i = 0; i<(size_t)colSizes.Count() && i<(size_t)GetColumnCount(); i++) {
         SetColumnWidth(i, w * colSizes[i] / sum );
 	}

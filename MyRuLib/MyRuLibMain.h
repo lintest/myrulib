@@ -12,7 +12,6 @@
 
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
-#include <wx/aui/tabmdi.h>
 #include <wx/toolbar.h>
 #include <wx/textctrl.h>
 #include "ProgressBar.h"
@@ -24,15 +23,17 @@ class MyRuLibMainFrame: public wxAuiMDIParentFrame
 public:
 	MyRuLibMainFrame();
 	virtual ~MyRuLibMainFrame();
-	wxString GetFindText() { return m_FindTextCtrl.GetValue(); };
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
+	wxAuiToolBar * CreateToolBar();
+	wxMenuBar * CreateMenuBar();
     void TogglePaneVisibility(const wxString &pane_name, bool show);
-	wxAuiToolBar * CreateButtonBar();
+    void FindAuthor(const wxString &text);
+    void FindTitle(const wxString &text);
 private:
     wxAuiToolBar * m_ToolBar;
-	wxTextCtrl m_FindTextCtrl;
+	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
 	ProgressBar m_ProgressBar;
 	wxString m_StatusText;
@@ -43,9 +44,10 @@ private:
     void OnSetup(wxCommandEvent & event);
 	void OnOpenWeb(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
-	void OnFind( wxCommandEvent& event );
-	void OnFindBook(wxCommandEvent & event);
-    void OnFindBookEnter(wxCommandEvent& event);
+	void OnFindAuthor(wxCommandEvent& event);
+	void OnFindAuthorEnter(wxCommandEvent& event);
+	void OnFindTitle(wxCommandEvent & event);
+    void OnFindTitleEnter(wxCommandEvent& event);
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );

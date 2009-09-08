@@ -189,10 +189,8 @@ ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	long treeStyle = wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_books = new BookListCtrl( this, ID_BOOKS, treeStyle );
 	m_books->SetMinSize( wxSize( -1,250 ) );
-    m_books->AddColumn (_T("Имя файла"), 400, wxALIGN_LEFT);
-    m_books->AddColumn (_T("Размер, Кб"), 100, wxALIGN_RIGHT);
-    m_books->colSizes.Add(4);
-    m_books->colSizes.Add(1);
+    m_books->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
+    m_books->AddColumn (_T("Размер, Кб"), 1, wxALIGN_RIGHT);
 
 	bSizerMain->Add( m_books, 1, wxALL|wxEXPAND, 5 );
 

@@ -6,7 +6,6 @@
 #include "BooksPanel.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
-	EVT_TEXT_ENTER(ID_FIND_TEXT, FbFrameSearch::OnFindTextEnter)
     EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameSearch::OnSubmenu)
     EVT_MENU(ID_SPLIT_VERTICAL, FbFrameSearch::OnSubmenu)
     EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameSearch::OnSubmenu)
@@ -56,33 +55,14 @@ void FbFrameSearch::CreateControls()
 
 	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	bSizer1->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * m_AuthorsListBox = new wxPanel(splitter, ID_AUTHORS_LISTBOX, wxDefaultPosition, wxDefaultSize,wxSUNKEN_BORDER);
-
-	m_BooksPanel = new BooksPanel(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER);
-	splitter->SplitVertically(m_AuthorsListBox, m_BooksPanel, 160);
+	m_BooksPanel = new BooksPanel(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER);
+	m_BooksPanel->CreateSearchColumns();
+	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
 
 	SetMenuBar(CreateMenuBar());
 
 	SetSizer( bSizer1 );
 	Layout();
-}
-
-void FbFrameSearch::OnActivated(wxActivateEvent & event)
-{
-    /*
-	AUIDocViewMainFrame * frame = wxDynamicCast(GetMDIParentFrame(),
-		AUIDocViewMainFrame);
-	if(frame)
-	{
-		frame->GetLOGTextCtrl()->SetValue(wxString::Format(
-			_("Some help text about '%s'"),	GetTitle().GetData()));
-	}
-	*/
 }
 
 void FbFrameSearch::OnSubmenu(wxCommandEvent& event)
@@ -97,11 +77,3 @@ void FbFrameSearch::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
     else
         event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
 }
-
-void FbFrameSearch::OnFindTextEnter( wxCommandEvent& event )
-{
-    wxString text = event.GetString();
-	if (text.IsEmpty()) return;
-	m_BooksPanel->FillByFind(text);
-}
-
