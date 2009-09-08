@@ -42,7 +42,8 @@ void FbFrameAuthor::CreateControls()
 	m_AuthorsListBox = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
 	m_AuthorsListBox->SetFocus();
 
-	m_BooksPanel = new BooksPanel(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
+	long substyle = wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
+	m_BooksPanel = new BooksPanel(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER, substyle);
 	m_BooksPanel->CreateAuthorColumns();
 	splitter->SplitVertically(m_AuthorsListBox, m_BooksPanel, 160);
 

@@ -20,13 +20,12 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, BooksPanel::OnImageClick)
 END_EVENT_TABLE()
 
-BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-    :wxSplitterWindow(parent, id, pos, size, style, name), m_BookInfo(NULL)
+BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
+    :wxSplitterWindow(parent, id, pos, size, style, wxT("bookspanel")), m_BookInfo(NULL)
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
 
-	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BookList = new BookListCtrl(this, ID_BOOKS_LISTCTRL, substyle);
 
 	CreateBookInfo();
@@ -205,7 +204,6 @@ void BooksPanel::FillByAuthor(int id_author)
 	m_BookList->Freeze();
 
     m_BookList->DeleteRoot();
-    wxTreeItemId root = m_BookList->AddRoot (_T("Root"));
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -214,7 +212,7 @@ void BooksPanel::FillByAuthor(int id_author)
 	if(thisAuthor)
 	{
 	    m_AuthorName = thisAuthor->full_name;
-		root = m_BookList->AppendItem(root, thisAuthor->full_name, 0);
+        wxTreeItemId root = m_BookList->AddRoot(thisAuthor->full_name, 0, 0);
 		m_BookList->SetItemBold(root, true);
 
 		BookseqRowSet * bookseq = thisAuthor->GetBookseqs();
@@ -289,7 +287,7 @@ void BooksPanel::FillByAuthor(int id_author)
             m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
 		}
 	}
-    m_BookList->ExpandAll(root);
+    m_BookList->ExpandAll( m_BookList->GetRootItem() );
 
 	m_BookList->Thaw();
 

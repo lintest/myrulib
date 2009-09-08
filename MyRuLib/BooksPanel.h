@@ -14,6 +14,7 @@ class BooksPanel: public wxSplitterWindow
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
                      long style = wxSP_3D,
+                     long substyle = 0,
                      const wxString& name = wxT("bookspanel"));
     public:
         void FillByAuthor(int id_author);

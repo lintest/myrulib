@@ -33,7 +33,8 @@ void FbFrameSearch::CreateControls()
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizer1->Add( toolbar, 0, wxGROW);
 
-	m_BooksPanel = new BooksPanel(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER);
+	long substyle = wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
+	m_BooksPanel = new BooksPanel(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
 	m_BooksPanel->CreateSearchColumns();
 	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
 
