@@ -71,7 +71,6 @@ bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString &
 void MyRuLibMainFrame::CreateControls()
 {
 	SetMenuBar(CreateMenuBar());
-    CreateToolBar();
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar.Create(this, ID_PROGRESSBAR);
@@ -92,7 +91,7 @@ void MyRuLibMainFrame::CreateControls()
 
 	m_FrameManager.SetManagedWindow(this);
 
-	m_FrameManager.AddPane(m_ToolBar, wxAuiPaneInfo().Name(wxT("ToolBar")).Top().Show(true).ToolbarPane().Dockable(false).PaneBorder(false));
+	m_FrameManager.AddPane(CreateToolBar(), wxAuiPaneInfo().Name(wxT("ToolBar")).Top().Show(true).ToolbarPane().Dockable(false).PaneBorder(false));
 	m_FrameManager.AddPane(GetNotebook(), wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane());
 	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Информационные сообщения")).Show(false));
 	m_FrameManager.Update();
@@ -119,35 +118,35 @@ void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
 
 wxAuiToolBar * MyRuLibMainFrame::CreateToolBar()
 {
-	m_ToolBar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE);
+	wxAuiToolBar * toolbar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE);
 	wxAuiToolBarArt * art = new wxAuiDefaultToolBarArt;
 	art->SetElementSize(wxAUI_TBART_GRIPPER_SIZE, 0);
-	m_ToolBar->SetArtProvider(art);
+	toolbar->SetArtProvider(art);
 
-    wxWindowDC dc(m_ToolBar);
+    wxWindowDC dc(toolbar);
     int text_width = 0, text_height = 0;
     dc.GetTextExtent(wxT("Автор:"), &text_width, &text_height);
 
-	m_ToolBar->AddTool(wxID_NEW, _("Импорт файла"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы"));
-	m_ToolBar->AddTool(wxID_OPEN, _("Импорт папки"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Добавить в библиотеку директорию"));
-	m_ToolBar->AddSeparator();
-	m_ToolBar->AddLabel(wxID_ANY, _("Автор:"), text_width);
-	m_FindAuthor.Create(m_ToolBar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
-	m_ToolBar->AddControl( &m_FindAuthor );
-	m_ToolBar->AddTool(ID_FIND_AUTHOR, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск автора"));
-	m_ToolBar->AddSeparator();
-	m_ToolBar->AddLabel(wxID_ANY, _("Книга:"), text_width);
-	m_FindTitle.Create(m_ToolBar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
-	m_ToolBar->AddControl( &m_FindTitle );
-	m_ToolBar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
-	m_ToolBar->AddSeparator();
-	m_ToolBar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	m_ToolBar->AddSeparator();
-	m_ToolBar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
-//	m_ToolBar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
-	m_ToolBar->Realize();
+	toolbar->AddTool(wxID_NEW, _("Импорт файла"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы"));
+	toolbar->AddTool(wxID_OPEN, _("Импорт папки"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Добавить в библиотеку директорию"));
+	toolbar->AddSeparator();
+	toolbar->AddLabel(wxID_ANY, _("Автор:"), text_width);
+	m_FindAuthor.Create(toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	toolbar->AddControl( &m_FindAuthor );
+	toolbar->AddTool(ID_FIND_AUTHOR, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск автора"));
+	toolbar->AddSeparator();
+	toolbar->AddLabel(wxID_ANY, _("Книга:"), text_width);
+	m_FindTitle.Create(toolbar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	toolbar->AddControl( &m_FindTitle );
+	toolbar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
+	toolbar->AddSeparator();
+	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+	toolbar->AddSeparator();
+	toolbar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
+//	toolbar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
+	toolbar->Realize();
 
-	return m_ToolBar;
+	return toolbar;
 }
 
 wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
@@ -164,6 +163,15 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 	menu->Append(wxID_EXIT, _("Выход\tAlt+F4"))->SetBitmap(wxArtProvider::GetBitmap(wxART_QUIT));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Файл"));
+
+	menu = new wxMenu;
+	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
+	menu->Append(wxID_FIND, _("Расширенный поиск"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
+	menu->AppendSeparator();
+	menu->Append(wxID_ANY, _("по Автору"));
+	menu->Append(wxID_ANY, _("по Заголовку"));
+	menu->Delete(tempItem);
+	menuBar->Append(menu, _("&Поиск"));
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
@@ -187,12 +195,12 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
 {
     /*
-    FbParams().SetValue(FB_FB2_ONLY, m_ToolBar-> GetToolState(ID_FB2_ONLY));
+    FbParams().SetValue(FB_FB2_ONLY, toolbar-> GetToolState(ID_FB2_ONLY));
 
     RecordIDClientData * data = (RecordIDClientData *)
         m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
     if(data) {
-        FbManager::FillBooks(m_BooksListView, data->GetID(), m_ToolBar-> GetToolState(ID_FB2_ONLY));
+        FbManager::FillBooks(m_BooksListView, data->GetID(), toolbar-> GetToolState(ID_FB2_ONLY));
         m_BooksInfoPanel->SetPage(wxEmptyString);
     }
     */

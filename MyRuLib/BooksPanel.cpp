@@ -359,6 +359,7 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
 
     m_BookList->ExpandAll(root);
 	m_BookList->Thaw();
+	m_BookList->SetFocus();
 
 	m_BookInfo->SetPage(wxEmptyString);
 }

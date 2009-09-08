@@ -25,43 +25,17 @@ void FbFrameSearch::CreateControls()
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
-    wxStaticText* m_staticText1;
-    wxStaticText* m_staticText2;
-    wxToolBar* m_toolBar1;
-
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
+	SetMenuBar(CreateMenuBar());
 
-	m_staticText1 = new wxStaticText( this, wxID_ANY, _("Заголовок:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText1->Wrap( -1 );
-	bSizer2->Add( m_staticText1, 0, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_textTitle = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( m_textTitle, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_staticText2 = new wxStaticText( this, wxID_ANY, _("Автор:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText2->Wrap( -1 );
-	bSizer2->Add( m_staticText2, 0, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_textAuthor = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( m_textAuthor, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	m_toolBar1 = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORZ_TEXT | wxTB_NODIVIDER);
-	m_toolBar1->AddTool( ID_SEARCH_BOOK, _(" Найти "), wxArtProvider::GetBitmap(wxART_FIND), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_toolBar1->Realize();
-
-	bSizer2->Add( m_toolBar1, 0, wxEXPAND|wxALL, 5 );
-
-	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
+	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
+	bSizer1->Add( toolbar, 0, wxGROW);
 
 	m_BooksPanel = new BooksPanel(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER);
 	m_BooksPanel->CreateSearchColumns();
 	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
-
-	SetMenuBar(CreateMenuBar());
 
 	SetSizer( bSizer1 );
 	Layout();
@@ -78,4 +52,21 @@ void FbFrameSearch::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
         event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_HORIZONTAL);
     else
         event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
+}
+/*
+wxToolBar * FbFrameSearch::GetToolBar() const
+{
+    wxToolBar * toolbar = new wxToolBar(this, wxID_ANY);
+	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+
+    return toolbar;
+};
+*/
+
+wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxString& name)
+{
+    wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+	toolbar->Realize();
+    return toolbar;
 }

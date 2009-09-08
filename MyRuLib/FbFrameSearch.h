@@ -17,6 +17,7 @@ public:
     FbFrameSearch(): FbFrameBase() {};
 	FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
     BooksPanel * m_BooksPanel;
+	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 protected:
 	virtual void CreateControls();
 private:

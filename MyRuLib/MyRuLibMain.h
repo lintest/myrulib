@@ -32,7 +32,6 @@ private:
     void FindAuthor(const wxString &text);
     void FindTitle(const wxString &text);
 private:
-    wxAuiToolBar * m_ToolBar;
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
 	ProgressBar m_ProgressBar;
