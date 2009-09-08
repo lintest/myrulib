@@ -56,6 +56,7 @@
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
+		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbFrameFavorites.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>

@@ -330,19 +330,28 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
         FROM books \
             LEFT JOIN authors ON books.id_author = authors.id \
         WHERE LOWER(books.title) like ? \
-        ORDER BY books.title, authors.full_name\
+        ORDER BY books.title, books.id, authors.full_name\
         LIMIT 1024 \
     ");
 	PreparedStatement* ps = database->PrepareStatement(sql);
 	ps->SetParamString(1, wxT("%") + templ + wxT("%"));
 	DatabaseResultSet* result = ps->ExecuteQuery();
 
-    while (result && result->Next()) {
+    bool notEOF = result && result->Next();
+    while (notEOF) {
         BookTreeItemData * data = new BookTreeItemData(result);
         wxTreeItemId item = m_BookList->AppendItem(root, data->title, 0, -1, data);
-        m_BookList->SetItemText (item, 1, result->GetResultString(wxT("full_name")));
+        wxString full_name = result->GetResultString(wxT("full_name"));
+        m_BookList->SetItemText (item, 1, full_name);
         m_BookList->SetItemText (item, 3, data->file_name);
         m_BookList->SetItemText (item, 4, wxString::Format(wxT("%d"), data->file_size/1024));
+        do {
+            notEOF = result->Next();
+            if ( ! notEOF ) break;
+            if ( data->GetId() != result->GetResultInt(wxT("id")) ) break;
+            full_name = full_name + wxT(", ") + result->GetResultString(wxT("full_name"));
+            m_BookList->SetItemText (item, 1, full_name);
+        } while (true);
     }
 
 	database->CloseResultSet(result);

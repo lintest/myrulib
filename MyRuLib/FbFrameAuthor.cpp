@@ -94,7 +94,6 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	m_AuthorsListBox->FillAuthorsChar(alphabet[position]);
 	SelectFirstAuthor();
-
 }
 
 void FbFrameAuthor::SelectFirstAuthor()

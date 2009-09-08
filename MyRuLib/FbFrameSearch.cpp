@@ -6,6 +6,8 @@
 #include "BooksPanel.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
+	EVT_MENU(wxID_SELECTALL, FbFrameSearch::OnSubmenu)
+    EVT_MENU(wxID_SAVE, FbFrameSearch::OnSubmenu)
     EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameSearch::OnSubmenu)
     EVT_MENU(ID_SPLIT_VERTICAL, FbFrameSearch::OnSubmenu)
     EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameSearch::OnSubmenu)

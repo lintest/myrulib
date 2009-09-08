@@ -29,10 +29,10 @@ BookTreeItemData::BookTreeItemData(DatabaseResultSet * res):
     title( res->GetResultString(wxT("title"))),
     file_size( res->GetResultInt(wxT("file_size"))),
     file_name( res->GetResultString(wxT("file_name"))),
-    file_type( res->GetResultString(wxT("file_type")))
+    file_type( res->GetResultString(wxT("file_type"))),
+    number(0)
 {
 }
-
 
 class SequenceNode {
 public:

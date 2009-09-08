@@ -103,6 +103,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbAuthorList.o \
 	build\myrulib_FbConst.o \
 	build\myrulib_FbFrameAuthor.o \
+	build\myrulib_FbFrameBase.o \
 	build\myrulib_FbFrameSearch.o \
 	build\myrulib_FbFrameFavorites.o \
 	build\myrulib_FbGenres.o \
@@ -325,6 +326,9 @@ build\myrulib_FbConst.o: ./MyRuLib/FbConst.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameSearch.o: ./MyRuLib/FbFrameSearch.cpp
