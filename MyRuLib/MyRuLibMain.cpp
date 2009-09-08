@@ -108,7 +108,7 @@ void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
 
 void MyRuLibMainFrame::OnOpenWeb(wxCommandEvent & event)
 {
-    wxLaunchDefaultBrowser(wxT("http://myrulib.lintest.ru"));
+    wxLaunchDefaultBrowser(strHomePage);
 }
 
 void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)

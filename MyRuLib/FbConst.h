@@ -28,6 +28,7 @@ enum {
 };
 
 extern const wxString strVersionInfo;
+extern const wxString strHomePage;
 
 extern const wxString alphabetRu;
 extern const wxString alphabetEn;
