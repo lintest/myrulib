@@ -120,7 +120,8 @@ wxString InfoCash::GetInfo(int id, bool vertical)
         }
         html += wxT("</td></tr>");
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
+        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->filelist.c_str());
+//        html += wxT("<tr></td>&nbsp;</td></tr>");
     }
     html += wxT("</table></body></html>");
 

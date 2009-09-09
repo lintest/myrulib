@@ -64,7 +64,7 @@ wxString MyStandardPaths::GetDataDir() const
 #if defined(__WIN32__)
 	return wxStandardPaths::GetUserConfigDir();
 #else
-	return wxStandardPaths::GetUserConfigDir() + wxT("/.local/");
+	return wxStandardPaths::GetUserConfigDir() + wxT("/.config/");
 #endif
 }
 

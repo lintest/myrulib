@@ -12,6 +12,8 @@ public:
     static void Execute(wxEvtHandler *frame, const int id);
 private:
 	static wxString GetBookInfo(int id);
+	static wxString GetBookFiles(int id);
+	static wxString GetArchivePath(int id_archive);
     static wxString HTMLSpecialChars( const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 private:
     int m_id;

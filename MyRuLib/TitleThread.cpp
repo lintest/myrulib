@@ -2,6 +2,8 @@
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "MyRuLibApp.h"
+#include "ZipReader.h"
+#include "db/Files.h"
 
 void TitleThread::Execute(wxEvtHandler *frame, const int id)
 {
@@ -14,7 +16,7 @@ void *TitleThread::Entry()
 {
     InfoCash::SetTitle(m_id, GetBookInfo(m_id));
 
-    InfoCash::SetTitle(m_id, wxEmptyString);
+    InfoCash::SetFilelist(m_id, GetBookFiles(m_id));
 
     wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
     event.SetInt(m_id);
@@ -60,8 +62,6 @@ wxString TitleThread::GetBookInfo(int id)
             authorList.Add(authors.Id(thisBook->id_author)->full_name);
         }
 
-        if (file_type != wxT("fb2")) InfoCash::SetAnnotation(id, file_name);
-
         authorList.Sort();
         for (size_t i = 0; i<authorList.GetCount(); i++) {
             if (!authorText.IsEmpty()) authorText += wxT(", ");
@@ -86,3 +86,44 @@ wxString TitleThread::GetBookInfo(int id)
     return html;
 }
 
+wxString TitleThread::GetBookFiles(int id)
+{
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    DatabaseLayer * database = wxGetApp().GetDatabase();
+
+    Books books(database);
+    BooksRow * bookRow = books.Id(id);
+    if (!bookRow) return wxEmptyString;
+
+    wxString html;
+
+    if ( bookRow->id>0 ) {
+        html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), bookRow->file_name.c_str());
+    } else {
+        html += wxString::Format(wxT("<p>%s%s</p>"), GetArchivePath(bookRow->id_archive).c_str(), bookRow->file_name.c_str());
+    }
+
+    Files files(database);
+    FilesRowSet * fileRows = files.IdBook(bookRow->id);
+    for (size_t i = 0; i<fileRows->Count(); i++) {
+        FilesRow * row = fileRows->Item(i);
+        html += wxString::Format(wxT("<p>%s%s</p>"), GetArchivePath(row->id_archive).c_str(), row->file_name.c_str());
+    }
+    return html;
+}
+
+wxString TitleThread::GetArchivePath(int id_archive)
+{
+    if ( ! id_archive ) return wxEmptyString;
+
+    DatabaseLayer * database = wxGetApp().GetDatabase();
+    Archives archives(database);
+
+    ArchivesRow * archiveRow = archives.Id(id_archive);
+    if (archiveRow) {
+        wxFileName zipname = archiveRow->file_name;
+        zipname.SetPath(archiveRow->file_path);
+        return zipname.GetFullPath() + wxT(": ");
+    }
+    return wxEmptyString;
+}
