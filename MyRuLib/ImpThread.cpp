@@ -120,7 +120,7 @@ wxString ImportThread::GetSQL(PSItem psItem)
         case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
         case psFindBySha1: return wxT("SELECT id FROM books WHERE sha1sum=? LIMIT 1");
         case psUpdateSha1: return wxT("UPDATE books SET sha1sum=? WHERE id=?");
-        case psSearchFile: return wxT("SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
+        case psSearchFile: return wxT("SELECT file_name FROM books WHERE id=? AND id_archive=? UNION SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
         case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name) VALUES (?,?,?)");
         case psSearchArch: return wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
         case psAppendArch: return wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
@@ -295,9 +295,12 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, con
 void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+
     PreparedStatement * ps = GetPreparedStatement(psSearchFile);
     ps->SetParamInt(1, id_book);
     ps->SetParamInt(2, id_archive);
+    ps->SetParamInt(3, id_book);
+    ps->SetParamInt(4, id_archive);
     DatabaseResultSet* result = ps->ExecuteQuery();
 
     wxString old_name;
