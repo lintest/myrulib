@@ -47,6 +47,7 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
+	menu->Append(ID_UNSELECT_ALL, _("Отменить выделение"));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Книги"));
 

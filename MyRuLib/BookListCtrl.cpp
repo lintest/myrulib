@@ -1,9 +1,13 @@
 #include "BookListCtrl.h"
+#include "FbConst.h"
 #include <wx/imaglist.h>
 #include "XpmBitmaps.h"
 
 BEGIN_EVENT_TABLE(BookListCtrl, wxTreeListCtrl)
+	EVT_MENU(wxID_SELECTALL, BookListCtrl::OnSelectAll)
+	EVT_MENU(ID_UNSELECT_ALL, BookListCtrl::OnUnselectAll)
     EVT_SIZE(BookListCtrl::OnSize)
+    EVT_CONTEXT_MENU(BookListCtrl::OnContextMenu)
 END_EVENT_TABLE()
 
 BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
@@ -41,19 +45,59 @@ void BookListCtrl::OnSize(wxSizeEvent& event)
 	}
 }
 
-void BookListCtrl::SelectChild(const wxTreeItemId &parent)
+void BookListCtrl::SelectChild(const wxTreeItemId &parent, int iImageIndex)
 {
+    SetItemImage(parent, iImageIndex);
     wxTreeItemIdValue cookie;
     wxTreeItemId child = GetFirstChild(parent, cookie);
     while (child.IsOk()) {
-        SetItemImage(child, 1);
-        SelectChild(child);
+        SelectChild(child, iImageIndex);
         child = GetNextChild(parent, cookie);
     }
 }
 
-void BookListCtrl::SelectAll()
+void BookListCtrl::SelectAll(int iImageIndex)
 {
     wxTreeItemId root = GetRootItem();
-    if (root.IsOk()) SelectChild(root);
+    if (root.IsOk()) SelectChild(root, iImageIndex);
 }
+
+void BookListCtrl::OnContextMenu(wxContextMenuEvent& event)
+{
+    wxPoint point = event.GetPosition();
+    // If from keyboard
+    if (point.x == -1 && point.y == -1) {
+        wxSize size = GetSize();
+        point.x = size.x / 2;
+        point.y = size.y / 2;
+    } else {
+        point = ScreenToClient(point);
+    }
+    ShowContextMenu(point);
+}
+
+void BookListCtrl::ShowContextMenu(const wxPoint& pos)
+{
+    wxMenu menu;
+
+
+	menu.Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
+	menu.Append(ID_UNSELECT_ALL, _("Отменить выделение"));
+    menu.Append(wxID_ANY, _T("&Test"));
+    menu.Append(wxID_ANY, _T("&About"));
+    menu.AppendSeparator();
+    menu.Append(wxID_ANY, _T("E&xit"));
+
+    PopupMenu(&menu, pos.x, pos.y);
+}
+
+void BookListCtrl::OnSelectAll(wxCommandEvent& event)
+{
+    SelectAll();
+}
+
+void BookListCtrl::OnUnselectAll(wxCommandEvent& event)
+{
+    SelectAll(0);
+}
+

@@ -72,7 +72,7 @@ void BooksPanel::CreateSearchColumns()
 {
     m_BookList->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
     m_BookList->AddColumn (_T("Автор"), 6, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("№"), 1, wxALIGN_LEFT);
+    m_BookList->AddColumn (_T("№"), 1, wxALIGN_RIGHT);
     m_BookList->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
     m_BookList->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
 }

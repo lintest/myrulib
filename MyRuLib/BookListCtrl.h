@@ -9,11 +9,16 @@ class BookListCtrl: public wxTreeListCtrl
 {
 public:
     BookListCtrl(wxWindow *parent, wxWindowID id, long style);
-	void SelectAll();
-    void SelectChild(const wxTreeItemId &parent);
+	void SelectAll(int iImageIndex = 1);
     virtual void AddColumn(const wxString& text, int width, int flag = wxALIGN_LEFT);
 private:
+    void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
+    void ShowContextMenu(const wxPoint& pos);
+private:
+    void OnContextMenu(wxContextMenuEvent& event);
 	void OnImageClick(wxTreeEvent &event);
+    void OnSelectAll(wxCommandEvent& event);
+    void OnUnselectAll(wxCommandEvent& event);
     void OnSize(wxSizeEvent& event);
 private:
 	wxArrayInt colSizes;

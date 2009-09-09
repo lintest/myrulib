@@ -141,8 +141,8 @@ wxAuiToolBar * MyRuLibMainFrame::CreateToolBar()
 	toolbar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->AddSeparator();
-	toolbar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
+//	toolbar->AddSeparator();
+//	toolbar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
 //	toolbar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
 	toolbar->Realize();
 
