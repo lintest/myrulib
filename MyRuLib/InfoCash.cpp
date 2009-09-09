@@ -89,6 +89,12 @@ void InfoCash::SetAnnotation(int id, wxString html)
     GetNode(id)->annotation = html;
 };
 
+void InfoCash::SetFilelist(int id, wxString html)
+{
+    wxCriticalSectionLocker enter(sm_locker);
+    GetNode(id)->filelist = html;
+};
+
 wxString InfoCash::GetInfo(int id, bool vertical)
 {
     if (!id) return wxEmptyString;
@@ -104,15 +110,17 @@ wxString InfoCash::GetInfo(int id, bool vertical)
         for (size_t i=0; i<node->images.GetCount(); i++) {
             html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\"></td></tr>"), node->images[i].name.c_str());
         }
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
     } else {
         html += wxT("<tr width=100%>");
         html += wxString::Format(wxT("<td>%s</td>"), node->title.c_str());
-        html += wxT("<td rowspan=2 align=right valign=top>");
+        html += wxT("<td rowspan=3 align=right valign=top>");
         for (size_t i=0; i<node->images.GetCount(); i++) {
             html += wxString::Format(wxT("<img src=\"memory:%s\"><br>"), node->images[i].name.c_str());
         }
         html += wxT("</td></tr>");
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
     }
     html += wxT("</table></body></html>");
 

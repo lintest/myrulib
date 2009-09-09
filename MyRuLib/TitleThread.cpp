@@ -12,8 +12,9 @@ void TitleThread::Execute(wxEvtHandler *frame, const int id)
 
 void *TitleThread::Entry()
 {
-    wxString html = GetBookInfo(m_id);
-    InfoCash::SetTitle(m_id, html);
+    InfoCash::SetTitle(m_id, GetBookInfo(m_id));
+
+    InfoCash::SetTitle(m_id, wxEmptyString);
 
     wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
     event.SetInt(m_id);

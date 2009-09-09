@@ -180,13 +180,11 @@ void BooksPanel::OnBooksListKeyDown(wxTreeEvent & event)
 
 void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 {
-    int vertical = FbParams().GetValue(FB_VIEW_TYPE);
-
 	wxTreeItemId selected = m_BookList->GetSelection();
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BookList->GetItemData(selected);
 		if (data && (data->GetId() == event.GetInt())) {
-            wxString html = InfoCash::GetInfo(event.GetInt(), vertical);
+            wxString html = InfoCash::GetInfo(event.GetInt(), GetSplitMode() == wxSPLIT_VERTICAL);
             m_BookInfo->SetPage(html);
 		}
 	}

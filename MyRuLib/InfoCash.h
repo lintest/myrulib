@@ -29,6 +29,7 @@ public:
     int id;
     wxString title;
     wxString annotation;
+    wxString filelist;
     InfoImageArray images;
     bool loaded;
 };
@@ -43,6 +44,7 @@ public:
     static void Empty();
 public:
     static void SetTitle(int id, wxString html);
+    static void SetFilelist(int id, wxString html);
     static void SetAnnotation(int id, wxString html);
     static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
     static void SetLoaded(int id);
