@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
+#include "BooksPanel.h"
 
 class FbFrameBase : public wxAuiMDIChildFrame
 {
@@ -15,8 +16,13 @@ public:
 protected:
 	virtual void CreateControls() {};
 	virtual wxMenuBar * CreateMenuBar();
+    BooksPanel m_BooksPanel;
 private:
 	void OnActivated(wxActivateEvent & event);
+	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
+    void OnExternal(wxCommandEvent& event);
+    void OnSubmenu(wxCommandEvent& event);
+	DECLARE_EVENT_TABLE()
 };
 
 #endif //__FBFRAMEBASE_H__

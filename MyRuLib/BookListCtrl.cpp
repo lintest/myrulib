@@ -5,7 +5,7 @@
 
 BEGIN_EVENT_TABLE(BookListCtrl, wxTreeListCtrl)
 	EVT_MENU(wxID_SELECTALL, BookListCtrl::OnSelectAll)
-	EVT_MENU(ID_UNSELECT_ALL, BookListCtrl::OnUnselectAll)
+	EVT_MENU(ID_UNSELECTALL, BookListCtrl::OnUnselectAll)
     EVT_SIZE(BookListCtrl::OnSize)
     EVT_CONTEXT_MENU(BookListCtrl::OnContextMenu)
 END_EVENT_TABLE()
@@ -82,7 +82,7 @@ void BookListCtrl::ShowContextMenu(const wxPoint& pos)
 
 
 	menu.Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
-	menu.Append(ID_UNSELECT_ALL, _("Отменить выделение"));
+	menu.Append(ID_UNSELECTALL, _("Отменить выделение"));
     menu.Append(wxID_ANY, _T("&Test"));
     menu.Append(wxID_ANY, _T("&About"));
     menu.AppendSeparator();

@@ -27,6 +27,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
+    EVT_MENU(ID_MENU_SEARCH, MyRuLibMainFrame::OnMenuSearch)
     EVT_MENU(ID_MENU_AUTHOR, MyRuLibMainFrame::OnMenuAuthor)
     EVT_MENU(ID_MENU_TITLE, MyRuLibMainFrame::OnMenuTitle)
     EVT_MENU(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthor)
@@ -168,7 +169,7 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(wxID_FIND, _("Расширенный поиск"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
+	menu->Append(ID_MENU_SEARCH, _("Расширенный"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
 	menu->AppendSeparator();
 	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
 	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
@@ -231,7 +232,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 		dlg.GetPaths(paths);
 
         ZipImportThread *thread = new ZipImportThread(paths);
-        thread->m_info = wxT("Обработка файла:");
+        thread->m_info = _("Обработка файла:");
         if ( thread->Create() != wxTHREAD_NO_ERROR ) {
             wxLogError(wxT("Can't create thread!"));
             return;
@@ -348,7 +349,7 @@ void MyRuLibMainFrame::FindTitle(const wxString &text)
     wxString caption = wxString::Format(_("Поиск: «%s»"), text.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(this, wxID_ANY, caption);
 	frame->Update();
-	frame->m_BooksPanel->FillByFind(text);
+	frame->FillByFind(text);
 }
 
 void MyRuLibMainFrame::OnFindAuthor(wxCommandEvent& event)
@@ -373,7 +374,7 @@ void MyRuLibMainFrame::FindAuthor(const wxString &text)
 		}
 	}
 	if (!authors) {
-	    authors = new FbFrameAuthor(this, ID_FRAME_AUTHORS, wxT("Авторы"));
+	    authors = new FbFrameAuthor(this, ID_FRAME_AUTHORS, _("Авторы"));
         GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
         authors->Update();
 	}
@@ -401,3 +402,7 @@ void MyRuLibMainFrame::OnMenuTitle(wxCommandEvent& event)
 	FindTitle(text);
 }
 
+void MyRuLibMainFrame::OnMenuSearch(wxCommandEvent& event)
+{
+    wxMessageBox(_("Функционал расширенного поиска\nне реализован в данной версии."));
+}

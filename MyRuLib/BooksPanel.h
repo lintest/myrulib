@@ -10,7 +10,14 @@
 class BooksPanel: public wxSplitterWindow
 {
     public:
+        BooksPanel();
         BooksPanel(wxWindow *parent, wxWindowID id = wxID_ANY,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
+                     long style = wxSP_3D,
+                     long substyle = 0,
+                     const wxString& name = wxT("bookspanel"));
+        bool Create(wxWindow *parent, wxWindowID id = wxID_ANY,
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
                      long style = wxSP_3D,
@@ -37,7 +44,7 @@ class BooksPanel: public wxSplitterWindow
         void OnExternal(wxCommandEvent& event);
         void OnImageClick(wxTreeEvent &event);
         void OnInfoUpdate(wxCommandEvent& event);
-        void OnSelectAll(wxCommandEvent& event);
+        void OnSubmenu(wxCommandEvent& event);
         DECLARE_EVENT_TABLE();
 };
 

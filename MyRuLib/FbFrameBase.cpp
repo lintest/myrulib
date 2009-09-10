@@ -2,6 +2,17 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 
+BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
+	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
+    EVT_MENU(wxID_SAVE, FbFrameBase::OnSubmenu)
+    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameBase::OnSubmenu)
+    EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
+    EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
+END_EVENT_TABLE()
+
 FbFrameBase::FbFrameBase()
 {
 }
@@ -37,7 +48,7 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(wxID_FIND, _("Расширенный"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
+	menu->Append(ID_MENU_SEARCH, _("Расширенный"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
 	menu->AppendSeparator();
 	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
 	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
@@ -47,7 +58,7 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
-	menu->Append(ID_UNSELECT_ALL, _("Отменить выделение"));
+	menu->Append(ID_UNSELECTALL, _("Отменить выделение"));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Книги"));
 
@@ -91,3 +102,17 @@ void FbFrameBase::OnActivated(wxActivateEvent & event)
 	}
 	*/
 }
+
+void FbFrameBase::OnSubmenu(wxCommandEvent& event)
+{
+    wxPostEvent(&m_BooksPanel, event);
+}
+
+void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
+{
+    if (event.GetId() == ID_SPLIT_HORIZONTAL)
+        event.Check(m_BooksPanel.GetSplitMode() == wxSPLIT_HORIZONTAL);
+    else
+        event.Check(m_BooksPanel.GetSplitMode() == wxSPLIT_VERTICAL);
+}
+

@@ -11,13 +11,6 @@
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnSubmenu)
-	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameAuthor::OnSubmenu)
-	EVT_MENU(wxID_SELECTALL, FbFrameAuthor::OnSubmenu)
-    EVT_MENU(wxID_SAVE, FbFrameAuthor::OnSubmenu)
-    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameAuthor::OnSubmenu)
-    EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameAuthor::OnChangeViewUpdateUI)
-    EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameAuthor::OnChangeViewUpdateUI)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
@@ -43,9 +36,9 @@ void FbFrameAuthor::CreateControls()
 	m_AuthorsListBox->SetFocus();
 
 	long substyle = wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel = new BooksPanel(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER, substyle);
-	m_BooksPanel->CreateAuthorColumns();
-	splitter->SplitVertically(m_AuthorsListBox, m_BooksPanel, 160);
+	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER, substyle);
+	m_BooksPanel.CreateAuthorColumns();
+	splitter->SplitVertically(m_AuthorsListBox, &m_BooksPanel, 160);
 
 	SetMenuBar(CreateMenuBar());
 	Layout();
@@ -102,30 +95,17 @@ void FbFrameAuthor::SelectFirstAuthor()
 	if(m_AuthorsListBox->GetCount()) {
 		m_AuthorsListBox->SetSelection(0);
 		RecordIDClientData * data = (RecordIDClientData *) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
-        if (data) m_BooksPanel->FillByAuthor(data->GetID());
+        if (data) m_BooksPanel.FillByAuthor(data->GetID());
 	} else {
-		m_BooksPanel->m_BookList->DeleteRoot();
-		m_BooksPanel->m_BookInfo->SetPage(wxEmptyString);
+		m_BooksPanel.m_BookList->DeleteRoot();
+		m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
 	}
 }
 
 void FbFrameAuthor::OnAuthorsListBoxSelected(wxCommandEvent & event)
 {
 	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
-	if (data) m_BooksPanel->FillByAuthor(data->GetID());
-}
-
-void FbFrameAuthor::OnSubmenu(wxCommandEvent& event)
-{
-    wxPostEvent(m_BooksPanel, event);
-}
-
-void FbFrameAuthor::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
-{
-    if (event.GetId() == ID_SPLIT_HORIZONTAL)
-        event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_HORIZONTAL);
-    else
-        event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
+	if (data) m_BooksPanel.FillByAuthor(data->GetID());
 }
 
 void FbFrameAuthor::ActivateAuthors()

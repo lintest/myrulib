@@ -6,13 +6,6 @@
 #include "BooksPanel.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
-	EVT_MENU(wxID_SELECTALL, FbFrameSearch::OnSubmenu)
-    EVT_MENU(wxID_SAVE, FbFrameSearch::OnSubmenu)
-    EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameSearch::OnSubmenu)
-    EVT_MENU(ID_SPLIT_VERTICAL, FbFrameSearch::OnSubmenu)
-    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameSearch::OnSubmenu)
-    EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameSearch::OnChangeViewUpdateUI)
-    EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameSearch::OnChangeViewUpdateUI)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
@@ -34,35 +27,13 @@ void FbFrameSearch::CreateControls()
 	bSizer1->Add( toolbar, 0, wxGROW);
 
 	long substyle = wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel = new BooksPanel(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
-	m_BooksPanel->CreateSearchColumns();
-	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
+	m_BooksPanel.Create(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
+	m_BooksPanel.CreateSearchColumns();
+	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
 
 	SetSizer( bSizer1 );
 	Layout();
 }
-
-void FbFrameSearch::OnSubmenu(wxCommandEvent& event)
-{
-    wxPostEvent(m_BooksPanel, event);
-}
-
-void FbFrameSearch::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
-{
-    if (event.GetId() == ID_SPLIT_HORIZONTAL)
-        event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_HORIZONTAL);
-    else
-        event.Check(m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
-}
-/*
-wxToolBar * FbFrameSearch::GetToolBar() const
-{
-    wxToolBar * toolbar = new wxToolBar(this, wxID_ANY);
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-
-    return toolbar;
-};
-*/
 
 wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
@@ -70,4 +41,9 @@ wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->Realize();
     return toolbar;
+}
+
+void FbFrameSearch::FillByFind(const wxString &title, const wxString &author)
+{
+	m_BooksPanel.FillByFind(title);
 }

@@ -10,7 +10,8 @@
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, BooksPanel::OnChangeView)
-	EVT_MENU(wxID_SELECTALL, BooksPanel::OnSelectAll)
+	EVT_MENU(wxID_SELECTALL, BooksPanel::OnSubmenu)
+	EVT_MENU(ID_UNSELECTALL, BooksPanel::OnSubmenu)
     EVT_MENU(wxID_SAVE, BooksPanel::OnExternal)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListViewSelected)
@@ -20,19 +21,27 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, BooksPanel::OnImageClick)
 END_EVENT_TABLE()
 
+BooksPanel::BooksPanel()
+    :wxSplitterWindow(), m_BookInfo(NULL)
+{
+}
+
 BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
     :wxSplitterWindow(parent, id, pos, size, style, wxT("bookspanel")), m_BookInfo(NULL)
 {
-	SetMinimumPaneSize(50);
-	SetSashGravity(0.5);
+    Create(parent, id, pos, size, style, substyle, name);
+}
 
-	m_BookList = new BookListCtrl(this, ID_BOOKS_LISTCTRL, substyle);
-
-	CreateBookInfo();
-
-    #if defined(__WIN32__)
-	m_BookInfo->SetPage(_("<b>Внимание!</b><br><br>Версия для Windows не поддерживает<br>архивы размером более 2 Gb."));
-    #endif
+bool BooksPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
+{
+    bool res = wxSplitterWindow::Create(parent, id, pos, size, style, wxT("bookspanel"));
+    if (res) {
+        SetMinimumPaneSize(50);
+        SetSashGravity(0.5);
+        m_BookList = new BookListCtrl(this, ID_BOOKS_LISTCTRL, substyle);
+        CreateBookInfo();
+    }
+    return res;
 }
 
 void BooksPanel::CreateBookInfo()
@@ -145,11 +154,6 @@ void BooksPanel::OnChangeView(wxCommandEvent & event)
 	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
 	FbParams().SetValue(FB_VIEW_TYPE, vertical);
 	CreateBookInfo();
-}
-
-void BooksPanel::OnSelectAll(wxCommandEvent& event)
-{
-    m_BookList->SelectAll();
 }
 
 void BooksPanel::OnBooksListActivated(wxTreeEvent & event)
@@ -358,5 +362,10 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
 	m_BookList->SetFocus();
 
 	m_BookInfo->SetPage(wxEmptyString);
+}
+
+void BooksPanel::OnSubmenu(wxCommandEvent& event)
+{
+    wxPostEvent(m_BookList, event);
 }
 

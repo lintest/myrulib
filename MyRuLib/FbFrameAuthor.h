@@ -10,7 +10,6 @@
 #include "FbFrameBase.h"
 #include "FbAuthorList.h"
 #include "FbManager.h"
-#include "BooksPanel.h"
 
 class FbFrameAuthor : public FbFrameBase
 {
@@ -25,7 +24,6 @@ protected:
 private:
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
-	void CreateBookInfo();
 	void SelectFirstAuthor();
 	BookTreeItemData * GetSelectedBook();
 private:
@@ -33,16 +31,9 @@ private:
 	wxSplitterWindow * m_BooksSplitter;
     wxToolBar * m_RuAlphabar;
     wxToolBar * m_EnAlphabar;
-    BooksPanel * m_BooksPanel;
 private:
-    void OnFindAuthorEnter(wxCommandEvent& event);
-	void OnToolButton(wxCommandEvent & event);
-	void OnToggleToolbar(wxCommandEvent & event);
-	void OnLetterClicked(wxCommandEvent& event);
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
-	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
-    void OnExternal(wxCommandEvent& event);
-    void OnSubmenu(wxCommandEvent& event);
+	void OnLetterClicked(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 
