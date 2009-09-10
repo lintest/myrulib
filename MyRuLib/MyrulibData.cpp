@@ -160,7 +160,6 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
 	return true;
 }
 
-#if defined(__WIN32__)
 static void SQLiteLowerCase(sqlite3_context *p, int nArg, sqlite3_value **apArg)
 {
 	const char * zInput = (const char *) sqlite3_value_text(apArg[0]);
@@ -178,13 +177,10 @@ static void SQLiteLowerCase(sqlite3_context *p, int nArg, sqlite3_value **apArg)
 	wxCharBuffer buffer = conv.ConvertToUnicodeStream(text);
 	sqlite3_result_text(p, buffer, -1, SQLITE_TRANSIENT);
 }
-#endif
 
 bool MyrulibDatabaseLayer::Open(const wxString& strDatabase)
 {
 	bool result = SqliteDatabaseLayer::Open(strDatabase);
-#if defined(__WIN32__)
 	sqlite3_create_function(GetSQLite(), "LOWER", 1, SQLITE_ANY, NULL, SQLiteLowerCase, NULL, NULL);
-#endif
 	return result;
 }
