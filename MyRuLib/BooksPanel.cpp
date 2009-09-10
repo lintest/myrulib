@@ -324,6 +324,7 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
 */
     wxString templ = title;
     templ.Replace(wxT(" "), wxT("%"));
+    templ.Lower();
 
 	wxString sql = wxT("\
         SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
