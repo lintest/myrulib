@@ -20,9 +20,7 @@ bool ZipBooks::Create(const wxString& name,const wxString& server,const wxString
 
 ZipBooksRow* ZipBooks::RowFromResult(DatabaseResultSet* result){
 	ZipBooksRow* row=new ZipBooksRow(this);
-
 	row->GetFromResult(result);
-
 	return row;
 }
 
@@ -31,115 +29,67 @@ ZipBooksRow* ZipBooks::New(){
 	garbageRows.Add(newRow);
 	return newRow;
 }
+
 bool ZipBooks::Delete(wxString key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE book=?"),m_table.c_str()));
-		pStatement->SetParamString(1,key);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE book=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamString(1,key);
+    pStatement->ExecuteUpdate();
+    return true;
 }
 
 ZipBooksRow* ZipBooks::Book(const wxString& key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE book=?"),m_table.c_str()));
-		pStatement->SetParamString(1,key);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE book=?"),m_table.c_str()));
+    if (!pStatement) return NULL;
+    pStatement->SetParamString(1,key);
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next()) return NULL;
-		ZipBooksRow* row=RowFromResult(result);
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return NULL;
-	}
+    ZipBooksRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 ZipBooksRow* ZipBooks::Where(const wxString& whereClause){
-	try{
-		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next()) return NULL;
-		ZipBooksRow* row=RowFromResult(result);
-
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+    ZipBooksRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 ZipBooksRowSet* ZipBooks::WhereSet(const wxString& whereClause,const wxString& orderBy){
-	ZipBooksRowSet* rowSet=new ZipBooksRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+	ZipBooksRowSet* rowSet = new ZipBooksRowSet();
+    wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    if(!orderBy.IsEmpty()) prepStatement+=wxT(" ORDER BY ")+orderBy;
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return rowSet;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
+    if(result){
+        while(result->Next()){
+            rowSet->Add(RowFromResult(result));
+        }
+    }
 
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
-
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
-}
-
-
-ZipBooksRowSet* ZipBooks::All(const wxString& orderBy){
-	ZipBooksRowSet* rowSet=new ZipBooksRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s"),m_table.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
-
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
-
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+	garbageRowSets.Add(rowSet);
+	m_database->CloseResultSet(result);
+	m_database->CloseStatement(pStatement);
+	return rowSet;
 }
 
 /** END ACTIVE RECORD **/
@@ -193,65 +143,33 @@ bool ZipBooksRow::GetFromResult(DatabaseResultSet* result){
 
 
 bool ZipBooksRow::Save(){
-	try{
-		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (book,file) VALUES (?,?)"),m_table.c_str()));
-			pStatement->SetParamString(1,book);
-			pStatement->SetParamInt(2,file);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-
-			newRow=false;
-		}
-		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET ,file=? WHERE book=?"),m_table.c_str()));
-			pStatement->SetParamString(2,book);
-			pStatement->SetParamInt(1,file);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-		}
-
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
+    if(newRow){
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (book,file) VALUES (?,?)"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(1,book);
+        pStatement->SetParamInt(2,file);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+        newRow=false;
+    }
+    else{
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET ,file=? WHERE book=?"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(2,book);
+        pStatement->SetParamInt(1,file);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+    }
+    return true;
 }
 
 bool ZipBooksRow::Delete(){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE book=?"),m_table.c_str()));
-		pStatement->SetParamString(1,book);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE book=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamString(1,book);
+    pStatement->ExecuteUpdate();
+    return true;
 }
-
-
-
-ZipFilesRow* ZipBooksRow::GetFile(){
-	ZipFilesRow* owner= new ZipFilesRow(m_database,wxT("files"));
-	PreparedStatement* pStatement=m_database->PrepareStatement(wxT("SELECT * FROM files WHERE file=?"));
-	pStatement->SetParamInt(1,file);
-	DatabaseResultSet* result= pStatement->ExecuteQuery();
-
-	result->Next();
-	owner->GetFromResult(result);
-	garbageRows.Add(owner);
-	m_database->CloseResultSet(result);
-	m_database->CloseStatement(pStatement);
-	return owner;
-}
-
-
 
 /** END ACTIVE RECORD ROW **/
 
@@ -269,24 +187,6 @@ ZipBooksRowSet::ZipBooksRowSet(DatabaseLayer* database,const wxString& table):wx
 ZipBooksRow* ZipBooksRowSet::Item(unsigned long item){
 	return (ZipBooksRow*)wxActiveRecordRowSet::Item(item);
 }
-
-
-bool ZipBooksRowSet::SaveAll(){
-	try{
-		m_database->BeginTransaction();
-		for(unsigned long i=0;i<Count();i++)
-			Item(i)->Save();
-		m_database->Commit();
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		m_database->RollBack();
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
-}
-
 
 int ZipBooksRowSet::CMPFUNC_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	ZipBooksRow** m_item1=(ZipBooksRow**)item1;

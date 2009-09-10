@@ -7,7 +7,8 @@ BEGIN_EVENT_TABLE(BookListCtrl, wxTreeListCtrl)
 	EVT_MENU(wxID_SELECTALL, BookListCtrl::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, BookListCtrl::OnUnselectAll)
     EVT_SIZE(BookListCtrl::OnSize)
-    EVT_CONTEXT_MENU(BookListCtrl::OnContextMenu)
+//    EVT_CONTEXT_MENU(BookListCtrl::OnContextMenu)
+    EVT_TREE_ITEM_MENU(wxID_ANY, BookListCtrl::OnContextMenu)
 END_EVENT_TABLE()
 
 BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
@@ -62,16 +63,14 @@ void BookListCtrl::SelectAll(int iImageIndex)
     if (root.IsOk()) SelectChild(root, iImageIndex);
 }
 
-void BookListCtrl::OnContextMenu(wxContextMenuEvent& event)
+void BookListCtrl::OnContextMenu(wxTreeEvent& event)
 {
-    wxPoint point = event.GetPosition();
+    wxPoint point = event.GetPoint();
     // If from keyboard
     if (point.x == -1 && point.y == -1) {
         wxSize size = GetSize();
-        point.x = size.x / 2;
-        point.y = size.y / 2;
-    } else {
-        point = ScreenToClient(point);
+        point.x = size.x / 3;
+        point.y = size.y / 3;
     }
     ShowContextMenu(point);
 }

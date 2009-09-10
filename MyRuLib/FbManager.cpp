@@ -16,7 +16,6 @@
 #include "RecordIDClientData.h"
 #include "db/Sequences.h"
 #include "db/Bookseq.h"
-#include "db/Types.h"
 #include "ZipReader.h"
 #include "FbConst.h"
 
@@ -197,12 +196,20 @@ wxString FbManager::GetSystemCommand(const wxString & file_type)
 wxString FbManager::GetOpenCommand(const wxString & file_type)
 {
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-	Types types(wxGetApp().GetDatabase());
+    DatabaseLayer * database = wxGetApp().GetDatabase();
+	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
+	PreparedStatement* pStatement = database->PrepareStatement(sql);
+	pStatement->SetParamString(1, file_type);
+	DatabaseResultSet* result = pStatement->ExecuteQuery();
 
-	TypesRow * row = types.FileType(file_type);
+    wxString command;
+	if (result && result->Next())
+		command = result->GetResultString(1);
+    else
+        command = GetSystemCommand(file_type);
 
-	if (row)
-		return row->command;
-	else
-		return GetSystemCommand(file_type);
+	database->CloseResultSet(result);
+	database->CloseStatement(pStatement);
+
+	return command;
 }

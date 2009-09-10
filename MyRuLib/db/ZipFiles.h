@@ -47,7 +47,6 @@ public:
 
 	ZipFilesRow* Where(const wxString& whereClause);
 	ZipFilesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	ZipFilesRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -97,9 +96,6 @@ public:
 	ZipFilesRowSet(wxActiveRecord* activeRecord);
 	ZipFilesRowSet(DatabaseLayer* database,const wxString& table=wxT("files"));
 	virtual ZipFilesRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_path(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

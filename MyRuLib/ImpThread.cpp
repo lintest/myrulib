@@ -314,7 +314,7 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
         return;
     }
 
-    wxLogWarning(_("File already exists. Add alternative location %s"), new_name.c_str());
+    wxLogWarning(_("Add alternative %s"), new_name.c_str());
     ps = GetPreparedStatement(psAppendFile);
     ps->SetParamInt(1, id_book);
     ps->SetParamInt(2, id_archive);
@@ -373,6 +373,10 @@ void ZipImportThread::ImportFile(const wxString & zipname)
     AutoTransaction trans;
 
 	wxFFileInputStream in(zipname);
+	if ( !in.IsOk() ){
+	    wxLogError(wxT("File read error %s"), zipname.c_str());
+	    return;
+	}
 
 	if (zipname.Right(4).Lower() == wxT(".fb2")) {
         DoStart(0, zipname);
@@ -382,23 +386,34 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 	}
 
 	wxZipInputStream zip(in);
+	if ( !zip.IsOk() ){
+	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
+	    return;
+	}
 
 	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
 
     DoStart(zip.GetTotalEntries(), zipname);
 
+    bool ok = false;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
+		    ok = true;
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
                 wxLogInfo(_("Import zip entry %s"), filename.c_str());
 			    DoStep(filename);
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);
+			} else {
+                wxLogWarning(_("Skip file %s"), filename.c_str());
 			}
 		}
 		delete entry;
 	}
+
+	if ( !ok ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
+
 	DoFinish();
 }
 
@@ -439,6 +454,8 @@ public:
 		    Progress(filename);
             wxLogInfo(_("Import file %s"), filename.c_str());
             m_thread->ParseZip(filename);
+		} else {
+            wxLogWarning(_("Skip file %s"), filename.c_str());
         }
         return wxDIR_CONTINUE;
     }
@@ -487,23 +504,41 @@ void *DirImportThread::Entry()
 	return NULL;
 }
 
-bool DirImportThread::ParseZip(const wxString &filename)
+bool DirImportThread::ParseZip(const wxString &zipname)
 {
-	wxFFileInputStream in(filename);
+	wxFFileInputStream in(zipname);
+	if ( !in.IsOk() ){
+	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
+	    return false;
+	}
+
 	wxZipInputStream zip(in);
+	if ( !zip.IsOk() ){
+	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
+	    return false;
+	}
 
-	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
+	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
 
+    bool ok = false;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
+            ok = true;
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
                 wxLogInfo(_("Import zip entry %s"), filename.c_str());
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);
+			} else {
+                wxLogWarning(_("Skip file %s"), filename.c_str());
 			}
 		}
 		delete entry;
+	}
+
+	if ( !ok ){
+	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
+	    return false;
 	}
 
     return true;

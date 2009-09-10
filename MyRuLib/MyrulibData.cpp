@@ -12,6 +12,7 @@
 #include <DatabaseLayerException.h>
 #include <DatabaseErrorReporter.h>
 #include <DatabaseStringConverter.h>
+#include <SqlitePreparedStatement.h>
 #include "FbConst.h"
 
 bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
@@ -22,9 +23,12 @@ bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
 
     wxLogInfo(wxT("Create database: %s"), filename.c_str());
 
-	// Try to recreate tables
-	try {
-		ExecuteUpdate(wxT("\
+	bool ok = true;
+
+    BeginTransaction();
+
+    /** TABLE authors **/
+	ok &= ExecuteUpdate(wxT("\
             CREATE TABLE authors(\
                 id integer primary key,\
                 letter char(1),\
@@ -37,15 +41,13 @@ bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
                 description text);\
         "));
         wxString sql = wxString::Format(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '%s')"), strNobody.c_str());
-		ExecuteUpdate(sql);
-		ExecuteUpdate(wxT("CREATE INDEX author_id ON authors(id);"));
-		ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter);"));
-		ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name);"));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+	ok &= ExecuteUpdate(sql);
+    ok &= ExecuteUpdate(wxT("CREATE INDEX author_id ON authors(id);"));
+	ok &= ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter);"));
+	ok &= ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name);"));
 
-	try {
-		ExecuteUpdate(wxT("\
+    /** TABLE books **/
+	ok &= ExecuteUpdate(wxT("\
             CREATE TABLE books(\
                 id integer not null,\
                 id_author integer not null,\
@@ -59,14 +61,12 @@ bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
                 file_type varchar(20),\
                 description text);\
         "));
-		ExecuteUpdate(wxT("CREATE INDEX book_id ON books(id);"));
-		ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author);"));
-		ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive);"));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+	ok &= ExecuteUpdate(wxT("CREATE INDEX book_id ON books(id);"));
+	ok &= ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author);"));
+	ok &= ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive);"));
 
-	try {
-		ExecuteUpdate(wxT("\
+    /** TABLE archives **/
+    ok &= ExecuteUpdate(wxT("\
             CREATE TABLE archives(\
                 id integer primary key,\
                 file_name text,\
@@ -78,82 +78,79 @@ bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
                 file_type varchar(20),\
                 description text);\
         "));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
 
-	try {
-        ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
-        ExecuteUpdate(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
-        ExecuteUpdate(_("INSERT INTO params(id, value) VALUES (2, 1);"));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+    /** TABLE sequences **/
+	ok &= ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
+    ok &= ExecuteUpdate(wxT("CREATE INDEX sequences_name ON sequences(value);"));
 
-	try {
-		ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
-		ExecuteUpdate(wxT("CREATE INDEX sequences_name ON sequences(value);"));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+    /** TABLE bookseq **/
+	ok &= ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);"));
+    ok &= ExecuteUpdate(wxT("CREATE INDEX bookseq_book ON bookseq(id_book);"));
+    ok &= ExecuteUpdate(wxT("CREATE INDEX bookseq_author ON bookseq(id_author);"));
 
-	try {
-		ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);"));
-		ExecuteUpdate(wxT("CREATE INDEX bookseq_book ON sequences(id_book);"));
-		ExecuteUpdate(wxT("CREATE INDEX bookseq_author ON sequences(id_author);"));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+    /** TABLE words **/
+    ok &= ExecuteUpdate(wxT("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);"));
+    ok &= ExecuteUpdate(wxT("CREATE INDEX words_word ON words(word);"));
 
-	try {
-		ExecuteUpdate(wxT("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);"));
-		ExecuteUpdate(wxT("CREATE INDEX words_word ON words(word);"));
-	}
-	catch(DatabaseLayerException & e) {wxUnusedVar(e);}
+    /** TABLE params **/
+    ok &= ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
+    ok &= ExecuteUpdate(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
+    ok &= ExecuteUpdate(_("INSERT INTO params(id, value) VALUES (2, 1);"));
 
-	return true;
+    if (ok)
+        Commit();
+    else
+		RollBack();
+
+	return ok;
 }
 
 bool MyrulibDatabaseLayer::UpgradeDatabase()
 {
-	try {
-		FbParams::LoadParams();
-		int version = FbParams::GetValue(DB_LIBRARY_VERSION);
-
-		if (version == 1) {
-            wxLogInfo(wxT("Upgrade database to version 2."));
-            BeginTransaction();
-            ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
-            ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
-            ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size);"));
-
-			ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
-			ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
-			ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book);"));
-
-            version ++;
-            FbParams().SetValue(DB_LIBRARY_VERSION, version);
-            Commit();
-        }
-
-		if (version == 2) {
-            wxLogInfo(wxT("Upgrade database to version 3."));
-            BeginTransaction();
-			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
-			ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
-			ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file;"));
-
-			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text);"));
-			ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book);"));
-
-            version ++;
-            FbParams().SetValue(DB_LIBRARY_VERSION, version);
-            Commit();
-        }
-    } catch(DatabaseLayerException & e) {
-        wxLogError(wxT("Database upgrade error: %s"), e.GetErrorMessage().c_str());
-		RollBack();
-		throw e;
-	}
+	bool ok = true;
 
 	FbParams::LoadParams();
 	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
+
+    if (ok && version == 1) {
+        wxLogInfo(wxT("Upgrade database to version 2."));
+        BeginTransaction();
+        ok &= ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
+        ok &= ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
+        ok &= ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size);"));
+
+        ok &= ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
+        ok &= ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
+        ok &= ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book);"));
+
+        version ++;
+        FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        if (ok)
+            Commit();
+        else
+            RollBack();
+    }
+
+    if (ok && version == 2) {
+        wxLogInfo(wxT("Upgrade database to version 3."));
+        BeginTransaction();
+        ok &= ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
+        ok &= ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
+        ok &= ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file;"));
+
+        ok &= ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text);"));
+        ok &= ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book);"));
+
+        version ++;
+        FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        if (ok)
+            Commit();
+        else
+            RollBack();
+    }
+
+	FbParams::LoadParams();
+	version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
 	if (version != 3) {
 		wxLogFatalError(_("Mismatched database versions."));

@@ -34,6 +34,7 @@
     </lib>
 
     <lib id="DatabaseLayer" template="wx-lib">
+		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
 		<sources>DatabaseLayer/DatabaseErrorReporter.cpp</sources>
 		<sources>DatabaseLayer/DatabaseLayer.cpp</sources>
 		<sources>DatabaseLayer/DatabaseQueryParser.cpp</sources>
@@ -48,6 +49,7 @@
     </lib>
 
     <exe id="myrulib" template="wxgui">
+		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookListCtrl.cpp</sources>
 		<sources>MyRuLib/BooksPanel.cpp</sources>

@@ -20,9 +20,7 @@ bool Sequences::Create(const wxString& name,const wxString& server,const wxStrin
 
 SequencesRow* Sequences::RowFromResult(DatabaseResultSet* result){
 	SequencesRow* row=new SequencesRow(this);
-
 	row->GetFromResult(result);
-
 	return row;
 }
 
@@ -31,139 +29,84 @@ SequencesRow* Sequences::New(){
 	garbageRows.Add(newRow);
 	return newRow;
 }
+
 bool Sequences::Delete(int key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,key);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamInt(1,key);
+    pStatement->ExecuteUpdate();
+    return true;
 }
 
-
-
 SequencesRow* Sequences::Id(int key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,key);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id=?"),m_table.c_str()));
+    pStatement->SetParamInt(1,key);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
-		SequencesRow* row=RowFromResult(result);
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return NULL;
-	}
+    SequencesRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 SequencesRow* Sequences::Name(const wxString& name){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE value=?"),m_table.c_str()));
-		pStatement->SetParamString(1, name);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE value=?"),m_table.c_str()));
+    pStatement->SetParamString(1, name);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next())
-			return NULL;
-		SequencesRow* row=RowFromResult(result);
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return NULL;
-	}
+    SequencesRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 SequencesRow* Sequences::Where(const wxString& whereClause){
-	try{
-		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next())
-			return NULL;
-		SequencesRow* row=RowFromResult(result);
-
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+    SequencesRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 SequencesRowSet* Sequences::WhereSet(const wxString& whereClause,const wxString& orderBy){
-	SequencesRowSet* rowSet=new SequencesRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+	SequencesRowSet* rowSet = new SequencesRowSet();
+    wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    if(!orderBy.IsEmpty()) prepStatement+=wxT(" ORDER BY ")+orderBy;
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return rowSet;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
+    if(result){
+        while(result->Next()){
+            rowSet->Add(RowFromResult(result));
+        }
+    }
 
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
-
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
-}
-
-
-SequencesRowSet* Sequences::All(const wxString& orderBy){
-	SequencesRowSet* rowSet=new SequencesRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s"),m_table.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
-
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
-
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+	garbageRowSets.Add(rowSet);
+	m_database->CloseResultSet(result);
+	m_database->CloseStatement(pStatement);
+	return rowSet;
 }
 
 /** END ACTIVE RECORD **/
@@ -217,51 +160,33 @@ bool SequencesRow::GetFromResult(DatabaseResultSet* result){
 
 
 bool SequencesRow::Save(){
-	try{
-		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (value,id) VALUES (?,?)"),m_table.c_str()));
-			pStatement->SetParamString(1,value);
-			pStatement->SetParamInt(2,id);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-
-			newRow=false;
-		}
-		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET value=? WHERE id=?"),m_table.c_str()));
-			pStatement->SetParamString(1,value);
-			pStatement->SetParamInt(2,id);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-		}
-
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
+    if(newRow){
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (value,id) VALUES (?,?)"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(1,value);
+        pStatement->SetParamInt(2,id);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+        newRow=false;
+    }
+    else{
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET value=? WHERE id=?"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(1,value);
+        pStatement->SetParamInt(2,id);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+    }
+    return true;
 }
 
 bool SequencesRow::Delete(){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,id);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamInt(1,id);
+    pStatement->ExecuteUpdate();
+    return true;
 }
-
-
-
-
 
 /** END ACTIVE RECORD ROW **/
 
@@ -279,24 +204,6 @@ SequencesRowSet::SequencesRowSet(DatabaseLayer* database,const wxString& table):
 SequencesRow* SequencesRowSet::Item(unsigned long item){
 	return (SequencesRow*)wxActiveRecordRowSet::Item(item);
 }
-
-
-bool SequencesRowSet::SaveAll(){
-	try{
-		m_database->BeginTransaction();
-		for(unsigned long i=0;i<Count();i++)
-			Item(i)->Save();
-		m_database->Commit();
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		m_database->RollBack();
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
-}
-
 
 int SequencesRowSet::CMPFUNC_value(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	SequencesRow** m_item1=(SequencesRow**)item1;

@@ -20,9 +20,7 @@ bool Types::Create(const wxString& name,const wxString& server,const wxString& u
 
 TypesRow* Types::RowFromResult(DatabaseResultSet* result){
 	TypesRow* row=new TypesRow(this);
-
 	row->GetFromResult(result);
-
 	return row;
 }
 
@@ -31,122 +29,88 @@ TypesRow* Types::New(){
 	garbageRows.Add(newRow);
 	return newRow;
 }
+
 bool Types::Delete(wxString key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE file_type=?"),m_table.c_str()));
-		pStatement->SetParamString(1,key);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+	PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE file_type=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamString(1,key);
+    pStatement->ExecuteUpdate();
+    return true;
 }
-
-
 
 TypesRow* Types::FileType(wxString key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE file_type=?"),m_table.c_str()));
-		pStatement->SetParamString(1,key);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE file_type=?"),m_table.c_str()));
+    pStatement->SetParamString(1,key);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if (!result->Next()) return NULL;
-
-		TypesRow* row=RowFromResult(result);
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return NULL;
-	}
+    TypesRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
-
-
-
 TypesRow* Types::Where(const wxString& whereClause){
-	try{
-		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next())
-			return NULL;
-		TypesRow* row=RowFromResult(result);
-
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+    TypesRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 TypesRowSet* Types::WhereSet(const wxString& whereClause,const wxString& orderBy){
-	TypesRowSet* rowSet=new TypesRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+	TypesRowSet* rowSet = new TypesRowSet();
 
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
+    wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    if(!orderBy.IsEmpty()) prepStatement+=wxT(" ORDER BY ")+orderBy;
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return rowSet;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
+    if(result){
+        while(result->Next()){
+            rowSet->Add(RowFromResult(result));
+        }
+    }
 
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+	garbageRowSets.Add(rowSet);
+	m_database->CloseResultSet(result);
+	m_database->CloseStatement(pStatement);
+	return rowSet;
 }
-
 
 TypesRowSet* Types::All(const wxString& orderBy){
 	TypesRowSet* rowSet=new TypesRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s"),m_table.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s"),m_table.c_str());
+    if(!orderBy.IsEmpty()) prepStatement+=wxT(" ORDER BY ")+orderBy;
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return NULL;
 
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
-
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+    if(result){
+        while(result->Next()){
+            rowSet->Add(RowFromResult(result));
+        }
+    }
+    garbageRowSets.Add(rowSet);
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return rowSet;
 }
 
 /** END ACTIVE RECORD **/
@@ -169,7 +133,6 @@ TypesRow::TypesRow(const TypesRow& src){
 	convert=src.convert;
 	file_type=src.file_type;
 	command=src.command;
-
 }
 
 TypesRow::TypesRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
@@ -203,47 +166,34 @@ bool TypesRow::GetFromResult(DatabaseResultSet* result){
 
 
 bool TypesRow::Save(){
-	try{
-		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (file_type, convert,command) VALUES (?,?,?)"),m_table.c_str()));
-			pStatement->SetParamString(1,file_type);
-			pStatement->SetParamString(2,convert);
-			pStatement->SetParamString(3,command);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-			newRow=false;
-		}
-		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET convert=?,command=? WHERE file_type=?"),m_table.c_str()));
-			pStatement->SetParamString(1,convert);
-			pStatement->SetParamString(3,file_type);
-			pStatement->SetParamString(2,command);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-		}
-
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
+    if(newRow){
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (file_type, convert,command) VALUES (?,?,?)"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(1,file_type);
+        pStatement->SetParamString(2,convert);
+        pStatement->SetParamString(3,command);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+        newRow=false;
+    }
+    else{
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET convert=?,command=? WHERE file_type=?"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(1,convert);
+        pStatement->SetParamString(3,file_type);
+        pStatement->SetParamString(2,command);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+    }
+    return true;
 }
 
 bool TypesRow::Delete(){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE file_type=?"),m_table.c_str()));
-		pStatement->SetParamString(1,file_type);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE file_type=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamString(1,file_type);
+    pStatement->ExecuteUpdate();
+    return true;
 }
 
 /** END ACTIVE RECORD ROW **/
@@ -262,24 +212,6 @@ TypesRowSet::TypesRowSet(DatabaseLayer* database,const wxString& table):wxActive
 TypesRow* TypesRowSet::Item(unsigned long item){
 	return (TypesRow*)wxActiveRecordRowSet::Item(item);
 }
-
-
-bool TypesRowSet::SaveAll(){
-	try{
-		m_database->BeginTransaction();
-		for(unsigned long i=0;i<Count();i++)
-			Item(i)->Save();
-		m_database->Commit();
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		m_database->RollBack();
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
-}
-
 
 int TypesRowSet::CMPFUNC_convert(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	TypesRow** m_item1=(TypesRow**)item1;

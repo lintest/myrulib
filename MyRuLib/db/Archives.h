@@ -49,7 +49,6 @@ public:
 	ArchivesRow* FindFile(const wxString& file_name, const wxString& file_path);
 	ArchivesRow* Where(const wxString& whereClause);
 	ArchivesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	ArchivesRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -100,9 +99,6 @@ public:
 	ArchivesRowSet(wxActiveRecord* activeRecord);
 	ArchivesRowSet(DatabaseLayer* database,const wxString& table=wxT("archives"));
 	virtual ArchivesRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

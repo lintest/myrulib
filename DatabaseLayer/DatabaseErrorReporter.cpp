@@ -42,6 +42,7 @@ void DatabaseErrorReporter::ThrowDatabaseException()
 #ifndef DONT_USE_DATABASE_LAYER_EXCEPTIONS
   DatabaseLayerException error(GetErrorCode(), GetErrorMessage());
   throw error;
+#else
+  wxLogError(GetErrorMessage());
 #endif
 }
-

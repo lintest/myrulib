@@ -46,10 +46,8 @@ public:
 	bool Delete(wxString key);
 
 	ZipBooksRow* Book(const wxString& key);
-
 	ZipBooksRow* Where(const wxString& whereClause);
 	ZipBooksRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	ZipBooksRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -75,8 +73,6 @@ public:
 	int file;
 
 public:
-	ZipFilesRow* GetFile();
-
 	bool Save();
 	bool Delete();
 
@@ -98,9 +94,6 @@ public:
 	ZipBooksRowSet(wxActiveRecord* activeRecord);
 	ZipBooksRowSet(DatabaseLayer* database,const wxString& table=wxT("books"));
 	virtual ZipBooksRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

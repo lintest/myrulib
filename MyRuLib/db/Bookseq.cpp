@@ -31,121 +31,68 @@ BookseqRow* Bookseq::New(){
 	garbageRows.Add(newRow);
 	return newRow;
 }
+
 bool Bookseq::Delete(int key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id_book=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,key);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamInt(1,key);
+    pStatement->ExecuteUpdate();
+    return true;
 }
-
-
 
 BookseqRow* Bookseq::IdBook(int key){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id_book=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,key);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id=?"),m_table.c_str()));
+    pStatement->SetParamInt(1,key);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		result->Next();
-		BookseqRow* row=RowFromResult(result);
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return NULL;
-	}
+    BookseqRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
-
-
-
 BookseqRow* Bookseq::Where(const wxString& whereClause){
-	try{
-		wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+    wxString prepStatement = wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return NULL;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		if(!result->Next())
-			return NULL;
-		BookseqRow* row=RowFromResult(result);
-
-		garbageRows.Add(row);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return row;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+    BookseqRow* row = NULL;
+    bool ok = result && result->Next();
+    if (ok) {
+        row = RowFromResult(result);
+        garbageRows.Add(row);
+    }
+    m_database->CloseResultSet(result);
+    m_database->CloseStatement(pStatement);
+    return row;
 }
 
 BookseqRowSet* Bookseq::WhereSet(const wxString& whereClause,const wxString& orderBy){
-	BookseqRowSet* rowSet=new BookseqRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
+	BookseqRowSet* rowSet = new BookseqRowSet();
 
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
+    wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s WHERE %s"),m_table.c_str(),whereClause.c_str());
+    if(!orderBy.IsEmpty()) prepStatement+=wxT(" ORDER BY ")+orderBy;
+    PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
+    if (!pStatement) return rowSet;
+    DatabaseResultSet* result= pStatement->ExecuteQuery();
 
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
+    if(result){
+        while(result->Next()){
+            rowSet->Add(RowFromResult(result));
+        }
+    }
 
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
-}
-
-
-BookseqRowSet* Bookseq::All(const wxString& orderBy){
-	BookseqRowSet* rowSet=new BookseqRowSet();
-	try{
-		wxString prepStatement=wxString::Format(wxT("SELECT * FROM %s"),m_table.c_str());
-		if(!orderBy.IsEmpty())
-			prepStatement+=wxT(" ORDER BY ")+orderBy;
-		PreparedStatement* pStatement=m_database->PrepareStatement(prepStatement);
-
-		DatabaseResultSet* result= pStatement->ExecuteQuery();
-
-		if(result){
-			while(result->Next()){
-				rowSet->Add(RowFromResult(result));
-			}
-		}
-		garbageRowSets.Add(rowSet);
-		m_database->CloseResultSet(result);
-		m_database->CloseStatement(pStatement);
-		return rowSet;
-
-	}
-	catch (DatabaseLayerException& e)
-	{
-		ProcessException(e);
-		return 0;
-	}
+	garbageRowSets.Add(rowSet);
+	m_database->CloseResultSet(result);
+	m_database->CloseStatement(pStatement);
+	return rowSet;
 }
 
 /** END ACTIVE RECORD **/
@@ -208,57 +155,39 @@ bool BookseqRow::GetFromResult(DatabaseResultSet* result){
 
 
 bool BookseqRow::Save(){
-	try{
-		if(newRow){
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (level,number,id_book,id_seq,id_author) VALUES (?,?,?,?,?)"),m_table.c_str()));
-			pStatement->SetParamInt(1,level);
-			pStatement->SetParamInt(2,number);
-			pStatement->SetParamInt(3,id_book);
-			pStatement->SetParamInt(4,id_seq);
-			pStatement->SetParamInt(5,id_author);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-
-			newRow=false;
-		}
-		else{
-			PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET level=?,number=?,id_seq=?,id_author=? WHERE id_book=?"),m_table.c_str()));
-			pStatement->SetParamInt(1,level);
-			pStatement->SetParamInt(2,number);
-			pStatement->SetParamInt(5,id_book);
-			pStatement->SetParamInt(3,id_seq);
-			pStatement->SetParamInt(4,id_author);
-			pStatement->RunQuery();
-			m_database->CloseStatement(pStatement);
-
-		}
-
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
+    if(newRow){
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (level,number,id_book,id_seq,id_author) VALUES (?,?,?,?,?)"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamInt(1,level);
+        pStatement->SetParamInt(2,number);
+        pStatement->SetParamInt(3,id_book);
+        pStatement->SetParamInt(4,id_seq);
+        pStatement->SetParamInt(5,id_author);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+        newRow=false;
+    }
+    else{
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET level=?,number=?,id_seq=?,id_author=? WHERE id_book=?"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamInt(1,level);
+        pStatement->SetParamInt(2,number);
+        pStatement->SetParamInt(5,id_book);
+        pStatement->SetParamInt(3,id_seq);
+        pStatement->SetParamInt(4,id_author);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+    }
+    return true;
 }
 
 bool BookseqRow::Delete(){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id_book=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,id_book);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
+    if (!pStatement) return false;
+	pStatement->SetParamInt(1,id_book);
+	pStatement->ExecuteUpdate();
+	return true;
 }
-
-
-
-
 
 /** END ACTIVE RECORD ROW **/
 
@@ -276,24 +205,6 @@ BookseqRowSet::BookseqRowSet(DatabaseLayer* database,const wxString& table):wxAc
 BookseqRow* BookseqRowSet::Item(unsigned long item){
 	return (BookseqRow*)wxActiveRecordRowSet::Item(item);
 }
-
-
-bool BookseqRowSet::SaveAll(){
-	try{
-		m_database->BeginTransaction();
-		for(unsigned long i=0;i<Count();i++)
-			Item(i)->Save();
-		m_database->Commit();
-		return true;
-	}
-	catch (DatabaseLayerException& e)
-	{
-		m_database->RollBack();
-		wxActiveRecord::ProcessException(e);
-		return false;
-	}
-}
-
 
 int BookseqRowSet::CMPFUNC_level(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	BookseqRow** m_item1=(BookseqRow**)item1;

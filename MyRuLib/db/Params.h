@@ -51,10 +51,6 @@ public:
 ////@@begin custom arClass
 public:
 
-
-
-
-
 ////@@end custom arClass
 };
 ////@@end gen arClass
@@ -83,10 +79,6 @@ public:
 ////@@begin custom arRow
 public:
 
-
-
-
-
 ////@@end custom arRow
 
 };
@@ -100,9 +92,6 @@ public:
 	ParamsRowSet(DatabaseLayer* database,const wxString& table=wxT("params"));
 	virtual ParamsRow* Item(unsigned long item);
 
-	virtual bool SaveAll();
-
-
 protected:
 	static int CMPFUNC_value(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
@@ -112,10 +101,6 @@ protected:
 
 ////@@begin custom arSet
 public:
-
-
-
-
 
 ////@@end custom arSet
 };

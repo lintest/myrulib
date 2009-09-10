@@ -37,17 +37,16 @@ public:
 	Sequences(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("sequences"));
 	Sequences(DatabaseLayer* database,const wxString& table=wxT("sequences"));
 	bool Create(const wxString& name,const wxString& server=wxEmptyString,const wxString& user=wxEmptyString,const wxString& password=wxEmptyString,const wxString& table=wxT("sequences"));
-	
+
 	SequencesRow* New();
 	bool Delete(int key);
 
-	
+
 	SequencesRow* Id(int key);
 	SequencesRow* Name(const wxString& name);
 
 	SequencesRow* Where(const wxString& whereClause);
 	SequencesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	SequencesRowSet* All(const wxString& orderBy=wxEmptyString); 
 
 ////@@begin custom arClass
 public:
@@ -69,15 +68,15 @@ public:
 	int id;
 
 public:
-	
-	
+
+
 	bool Save();
 	bool Delete();
-	
-	
+
+
 ////@@begin custom arRow
 public:
-////@@end custom arRow	
+////@@end custom arRow
 
 };
 ////@@end gen arRow
@@ -89,10 +88,7 @@ public:
 	SequencesRowSet(wxActiveRecord* activeRecord);
 	SequencesRowSet(DatabaseLayer* database,const wxString& table=wxT("sequences"));
 	virtual SequencesRow* Item(unsigned long item);
-	
-	virtual bool SaveAll();
-	
-	
+
 protected:
 	static int CMPFUNC_value(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

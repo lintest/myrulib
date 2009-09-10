@@ -89,7 +89,9 @@ public:
         /**
         Shows a dialog message with exception details.
         */
+#ifndef DONT_USE_DATABASE_LAYER_EXCEPTIONS
         static void ProcessException(DatabaseLayerException& e);
+#endif // DONT_USE_DATABASE_LAYER_EXCEPTIONS
 
         void CollectRow(wxActiveRecordRow* row);
         void CollectRowSet(wxActiveRecordRowSet* set);

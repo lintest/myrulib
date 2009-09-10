@@ -58,7 +58,6 @@ public:
 
 ////@@begin custom arClass
 public:
-	AuthorsRow* Name(const wxString& search_name);
 ////@@end custom arClass
 };
 ////@@end gen arClass
@@ -104,9 +103,6 @@ public:
 	AuthorsRowSet(wxActiveRecord* activeRecord);
 	AuthorsRowSet(DatabaseLayer* database,const wxString& table=wxT("authors"));
 	virtual AuthorsRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_full_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

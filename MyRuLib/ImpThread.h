@@ -52,7 +52,7 @@ class DirImportThread : public ImportThread
 public:
     DirImportThread(const wxString &dirname): m_dirname(dirname) {};
     virtual void *Entry();
-    bool ParseZip(const wxString &filename);
+    bool ParseZip(const wxString &zipname);
     void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
 private:
     wxString m_dirname;

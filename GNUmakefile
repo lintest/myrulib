@@ -77,8 +77,8 @@ EXPAT_OBJECTS =  \
 	build/Expat_xmltok.o \
 	build/Expat_xmltok_impl.o \
 	build/Expat_xmltok_ns.o
-DATABASELAYER_CXXFLAGS = -ISQLite `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
-	$(CPPFLAGS) $(CXXFLAGS)
+DATABASELAYER_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite \
+	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 DATABASELAYER_OBJECTS =  \
 	build/DatabaseLayer_DatabaseErrorReporter.o \
 	build/DatabaseLayer_DatabaseLayer.o \
@@ -90,10 +90,12 @@ DATABASELAYER_OBJECTS =  \
 	build/DatabaseLayer_SqlitePreparedStatement.o \
 	build/DatabaseLayer_SqliteResultSet.o \
 	build/DatabaseLayer_SqliteResultSetMetaData.o
-MYRULIB_CFLAGS = -ISQLite -IExpat -IDatabaseLayer -O2 `$(WX_CONFIG) --cflags \
-	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -ISQLite -IExpat -IDatabaseLayer -O2 `$(WX_CONFIG) --cxxflags \
-	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+MYRULIB_CFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat \
+	-IDatabaseLayer -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
+	$(CFLAGS)
+MYRULIB_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat \
+	-IDatabaseLayer -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
+	$(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_BookListCtrl.o \

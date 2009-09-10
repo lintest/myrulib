@@ -334,6 +334,7 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
         LIMIT 1024 \
     ");
 	PreparedStatement* ps = database->PrepareStatement(sql);
+	if (!ps) return;
 	ps->SetParamString(1, wxT("%") + templ + wxT("%"));
 	DatabaseResultSet* result = ps->ExecuteQuery();
 

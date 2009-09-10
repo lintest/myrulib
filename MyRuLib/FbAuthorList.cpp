@@ -16,6 +16,7 @@ void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
 
 	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE letter=? ORDER BY search_name");
 	PreparedStatement* ps = database->PrepareStatement(sql);
+	if (!ps) return;
 	ps->SetParamString(1, findLetter);
 	DatabaseResultSet* result = ps->ExecuteQuery();
 	FillAuthors(result);
@@ -34,6 +35,7 @@ void FbAuthorList::FillAuthorsText(const wxString & findText)
 
 	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
 	PreparedStatement* ps = database->PrepareStatement(sql);
+	if (!ps) return;
 	ps->SetParamString(1, text + wxT("%"));
 	DatabaseResultSet* result = ps->ExecuteQuery();
 	FillAuthors(result);

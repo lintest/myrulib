@@ -40,8 +40,8 @@ DECLARE_APP(MyRuLibApp)
 
 class AutoTransaction {
     public:
-        AutoTransaction() { try { wxGetApp().GetDatabase()->BeginTransaction(); } catch (...) {}; };
-        ~AutoTransaction() { try { wxGetApp().GetDatabase()->Commit(); } catch (...) {}; };
+        AutoTransaction() { wxLogNull log; wxGetApp().GetDatabase()->BeginTransaction(); };
+        ~AutoTransaction() { wxLogNull log; wxGetApp().GetDatabase()->Commit(); };
 };
 
 #endif // MYRULIBAPP_H

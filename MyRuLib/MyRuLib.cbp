@@ -156,6 +156,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-DDONT_USE_DATABASE_LAYER_EXCEPTIONS" />
 			<Add directory="..\DatabaseLayer" />
 			<Add directory="..\SQLite" />
 			<Add directory="..\Expat" />

@@ -132,14 +132,11 @@ bool MyRuLibApp::ConnectToDatabase()
     wxLogInfo(wxT("Open database: %s"), m_datafile.c_str());
 
 	bool bCreate = !wxFileExists(m_datafile);
-	try	{
-		m_database.Open(m_datafile);
-		if (bCreate) m_database.CreateDatabase(m_datafile);
-		m_database.UpgradeDatabase();
-	} catch(DatabaseLayerException & e) {
-		wxMessageBox(e.GetErrorMessage());
-		wxFAIL_MSG(e.GetErrorMessage());
-		return false;
-	}
-	return true;
+
+	bool ok = m_database.Open(m_datafile);
+    if (bCreate) ok &= m_database.CreateDatabase(m_datafile);
+    if (!ok) wxFAIL_MSG(e.GetErrorMessage());
+	ok &= m_database.UpgradeDatabase();
+    if (!ok) wxFAIL_MSG(e.GetErrorMessage());
+	return ok;
 }

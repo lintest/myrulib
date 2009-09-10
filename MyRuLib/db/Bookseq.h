@@ -46,7 +46,6 @@ public:
 
 	BookseqRow* Where(const wxString& whereClause);
 	BookseqRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	BookseqRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -92,9 +91,6 @@ public:
 	BookseqRowSet(wxActiveRecord* activeRecord);
 	BookseqRowSet(DatabaseLayer* database,const wxString& table=wxT("bookseq"));
 	virtual BookseqRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_level(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

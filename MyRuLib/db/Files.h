@@ -41,10 +41,9 @@ public:
 	FilesRow* New();
 
 	FilesRowSet* IdBook(int key);
-    FilesRow* Find(const int id_book, const int id_archive);
+//    FilesRow* Find(const int id_book, const int id_archive);
 	FilesRow* Where(const wxString& whereClause);
 	FilesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
-	FilesRowSet* All(const wxString& orderBy=wxEmptyString);
 
 ////@@begin custom arClass
 public:
@@ -87,9 +86,6 @@ public:
 	FilesRowSet(wxActiveRecord* activeRecord);
 	FilesRowSet(DatabaseLayer* database,const wxString& table=wxT("files"));
 	virtual FilesRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_id_archive(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

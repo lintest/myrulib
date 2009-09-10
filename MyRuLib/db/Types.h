@@ -43,7 +43,6 @@ public:
 
 
 	TypesRow* FileType(wxString key);
-
 	TypesRow* Where(const wxString& whereClause);
 	TypesRowSet* WhereSet(const wxString& whereClause,const wxString& orderBy=wxEmptyString);
 	TypesRowSet* All(const wxString& orderBy=wxEmptyString);
@@ -90,9 +89,6 @@ public:
 	TypesRowSet(wxActiveRecord* activeRecord);
 	TypesRowSet(DatabaseLayer* database,const wxString& table=wxT("types"));
 	virtual TypesRow* Item(unsigned long item);
-
-	virtual bool SaveAll();
-
 
 protected:
 	static int CMPFUNC_convert(wxActiveRecordRow** item1,wxActiveRecordRow** item2);

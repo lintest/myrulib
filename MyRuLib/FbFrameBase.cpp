@@ -64,7 +64,7 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(wxID_ANY, _("Параметры базы данных"));
+	menu->Append(wxID_ANY, _("Информация о коллекции"));
 	menu->Append(wxID_ANY, _("Реструктуризация БД"));
 	menu->AppendSeparator();
 	menu->Append(wxID_PREFERENCES, _("Настройки"));

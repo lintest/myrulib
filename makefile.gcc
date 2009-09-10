@@ -73,8 +73,8 @@ EXPAT_OBJECTS =  \
 	build\Expat_xmltok_ns.o
 DATABASELAYER_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -ISQLite \
-	$(CPPFLAGS) $(CXXFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
+	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite $(CPPFLAGS) $(CXXFLAGS)
 DATABASELAYER_OBJECTS =  \
 	build\DatabaseLayer_DatabaseErrorReporter.o \
 	build\DatabaseLayer_DatabaseLayer.o \
@@ -88,12 +88,14 @@ DATABASELAYER_OBJECTS =  \
 	build\DatabaseLayer_SqliteResultSetMetaData.o
 MYRULIB_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -ISQLite \
-	-IExpat -IDatabaseLayer -O2 $(CPPFLAGS) $(CFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
+	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat -IDatabaseLayer -O2 \
+	$(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -ISQLite \
-	-IExpat -IDatabaseLayer -O2 $(CPPFLAGS) $(CXXFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
+	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat -IDatabaseLayer -O2 \
+	$(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build\myrulib_BaseThread.o \
 	build\myrulib_BookListCtrl.o \
@@ -431,7 +433,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc
-	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --include-dir SQLite --include-dir Expat --include-dir DatabaseLayer
+	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define DONT_USE_DATABASE_LAYER_EXCEPTIONS --include-dir SQLite --include-dir Expat --include-dir DatabaseLayer
 
 .PHONY: all clean
 

@@ -63,9 +63,11 @@ wxString wxActiveRecord::GetTable() const{
 	return m_table;
 }
 
+#ifndef DONT_USE_DATABASE_LAYER_EXCEPTIONS
 void wxActiveRecord::ProcessException(DatabaseLayerException& e){
 	wxMessageBox(wxString::Format(wxT("%d: %s."),e.GetErrorCode(),e.GetErrorMessage().c_str()),wxT("Database Error"));
 }
+#endif // DONT_USE_DATABASE_LAYER_EXCEPTIONS
 
 void wxActiveRecord::CollectRow(wxActiveRecordRow* row){
 	int index =garbageRows.Index(row);
@@ -129,16 +131,11 @@ bool wxActiveRecordRow::Save(){
 }
 
 bool wxActiveRecordRow::Delete(){
-	try{
-		PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
-		pStatement->SetParamInt(1,id);
-		pStatement->ExecuteUpdate();
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("DELETE FROM %s WHERE id=?"),m_table.c_str()));
+    if (!pStatement) return false;
+    pStatement->SetParamInt(1,id);
+    pStatement->ExecuteUpdate();
+    return true;
 }
 
 void wxActiveRecordRow::CollectRow(wxActiveRecordRow* row){
@@ -292,17 +289,11 @@ bool wxSqliteActiveRecord::Create(const wxString& name,const wxString& server,co
 		delete m_database;
 		m_database=0;
 	}
-	try{
-		m_table=table;
-		m_database = new SqliteDatabaseLayer(name);
-		return true;
-	}
-	catch(DatabaseLayerException& e){
-		throw(e);
-		return false;
-	}
+    m_table=table;
+    m_database = new SqliteDatabaseLayer(name);
+    if (!m_database ) return false;
+    return true;
 }
-
 
 #endif //AR_USE_SQLITE
 
