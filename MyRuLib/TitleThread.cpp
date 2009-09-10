@@ -121,9 +121,13 @@ wxString TitleThread::GetArchivePath(int id_archive)
 
     ArchivesRow * archiveRow = archives.Id(id_archive);
     if (archiveRow) {
-        wxFileName zipname = archiveRow->file_name;
-        zipname.SetPath(archiveRow->file_path);
-        return zipname.GetFullPath() + wxT(": ");
+        if (archiveRow->file_path.IsEmpty()) {
+            return wxString::Format(wxT("$(WANRAIK)/%s: "),  archiveRow->file_name.c_str());
+        } else {
+            wxFileName zipname = archiveRow->file_name;
+            zipname.SetPath(archiveRow->file_path);
+            return zipname.GetFullPath() + wxT(": ");
+        }
     }
     return wxEmptyString;
 }

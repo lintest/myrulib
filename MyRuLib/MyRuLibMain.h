@@ -47,6 +47,8 @@ private:
 	void OnFindAuthorEnter(wxCommandEvent& event);
 	void OnFindTitle(wxCommandEvent & event);
     void OnFindTitleEnter(wxCommandEvent& event);
+    void OnMenuAuthor(wxCommandEvent& event);
+    void OnMenuTitle(wxCommandEvent& event);
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );

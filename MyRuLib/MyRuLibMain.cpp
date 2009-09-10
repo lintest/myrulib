@@ -27,6 +27,8 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
     EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
+    EVT_MENU(ID_MENU_AUTHOR, MyRuLibMainFrame::OnMenuAuthor)
+    EVT_MENU(ID_MENU_TITLE, MyRuLibMainFrame::OnMenuTitle)
     EVT_MENU(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthor)
 	EVT_TEXT_ENTER(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthorEnter)
     EVT_MENU(ID_FIND_TITLE, MyRuLibMainFrame::OnFindTitle)
@@ -168,8 +170,8 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_FIND, _("Расширенный поиск"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
 	menu->AppendSeparator();
-	menu->Append(wxID_ANY, _("по Автору"));
-	menu->Append(wxID_ANY, _("по Заголовку"));
+	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
+	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Поиск"));
 
@@ -385,33 +387,17 @@ void MyRuLibMainFrame::FindAuthor(const wxString &text)
 
 }
 
-/*
-void FbFrameAuthor::OnFindTool(wxCommandEvent& event)
+void MyRuLibMainFrame::OnMenuAuthor(wxCommandEvent& event)
 {
-    MyRuLibMainFrame * mainFrame =  (MyRuLibMainFrame *) wxGetApp().GetTopWindow();
-    wxString text = mainFrame->GetFindText();
-
+	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по автору"));
 	if (text.IsEmpty()) return;
-    ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsText(text);
-    SelectFirstAuthor();
+	FindAuthor(text);
 }
 
-void FbFrameAuthor::OnFindAuthorEnter( wxCommandEvent& event )
+void MyRuLibMainFrame::OnMenuTitle(wxCommandEvent& event)
 {
-    wxString text = event.GetString();
+	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по заголовку"));
 	if (text.IsEmpty()) return;
-    ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsText(text);
-    SelectFirstAuthor();
+	FindTitle(text);
 }
-*/
 
-/*
-void MyRuLibMainFrame::OnFind( wxCommandEvent& event )
-{
-    wxCommandEvent subEvent( wxEVT_COMMAND_TEXT_ENTER, ID_FIND_AUTHOR );
-    subEvent.SetString(m_FindAuthor.GetValue());
-    wxPostEvent(this, subEvent);
-}
-*/

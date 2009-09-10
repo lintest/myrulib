@@ -39,8 +39,8 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
 	menu->Append(wxID_FIND, _("Расширенный"))->SetBitmap(wxArtProvider::GetBitmap(wxART_FIND));
 	menu->AppendSeparator();
-	menu->Append(wxID_ANY, _("по Автору"));
-	menu->Append(wxID_ANY, _("по Заголовку"));
+	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
+	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
 	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Поиск"));
 
