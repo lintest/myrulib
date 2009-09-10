@@ -167,12 +167,16 @@ static void SQLiteLowerCase(sqlite3_context *p, int nArg, sqlite3_value **apArg)
 	DatabaseStringConverter conv;
 	wxString text = conv.ConvertFromUnicodeStream( zInput );
 
+#if defined(__WIN32__)
 	int len = text.length() + 1;
 	wxChar * buf = new wxChar[len];
 	wxStrcpy(buf, text.c_str());
 	CharLower(buf);
 	text = buf;
 	delete [] buf;
+#else
+    text.MakeLower();
+#endif
 
 	wxCharBuffer buffer = conv.ConvertToUnicodeStream(text);
 	sqlite3_result_text(p, buffer, -1, SQLITE_TRANSIENT);

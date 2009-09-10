@@ -147,7 +147,7 @@ void BookInfo::MakeLower(wxString & data)
 	data = buf;
 	delete [] buf;
 #else
-      data.MakeLower();
+    data.MakeLower();
 #endif
 }
 
