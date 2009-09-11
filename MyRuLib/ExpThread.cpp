@@ -10,7 +10,7 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 {
     ZipReader reader(item.id);
     if (!reader.IsOK()) {
-		DoError(reader.GetErrorText());
+		wxLogError(reader.GetErrorText());
         return;
     }
 

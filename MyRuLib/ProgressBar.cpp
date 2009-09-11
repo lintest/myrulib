@@ -31,6 +31,12 @@ void ProgressBar::Resize()
 	m_progress.SetSize(r);
 }
 
+void ProgressBar::SetRange(int range)
+{
+    m_progress.SetValue(0);
+    m_progress.SetRange(range);
+}
+
 void ProgressBar::SetProgress(int progress)
 {
    m_progress.Show(progress > 0);

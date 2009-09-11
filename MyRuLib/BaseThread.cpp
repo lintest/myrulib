@@ -6,32 +6,34 @@ wxCriticalSection BaseThread::sm_queue;
 
 void BaseThread::DoStart(const int max, const wxString & msg)
 {
+    m_text = m_info + wxT(" ") + msg;
     m_progress = 0;
     m_max = max;
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
-    event.SetString(m_info + wxT(" ") + msg);
-    event.SetInt(max);
-    wxPostEvent(wxGetApp().GetTopWindow(), event);
-}
 
-void BaseThread::DoError(const wxString & msg)
-{
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_ERROR );
-    event.SetString(msg);
+    wxUpdateUIEvent event( ID_PROGRESS_START );
+    event.SetText(m_text);
+    event.SetString(m_text);
+    event.SetInt(1000);
     wxPostEvent(wxGetApp().GetTopWindow(), event);
 }
 
 void BaseThread::DoStep(const wxString & msg)
 {
-    if (m_max) m_progress++;
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE );
+    int pos = 0;
+    if (m_max) {
+        m_progress++;
+        pos = m_progress * 1000 / m_max;
+    }
+
+    wxUpdateUIEvent event( ID_PROGRESS_UPDATE );
+    event.SetText(m_text);
     event.SetString(msg);
-    event.SetInt(m_progress);
+    event.SetInt(pos);
     wxPostEvent(wxGetApp().GetTopWindow(), event);
 }
 
 void BaseThread::DoFinish()
 {
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_FINISH );
+    wxUpdateUIEvent event( ID_PROGRESS_FINISH );
     wxPostEvent(wxGetApp().GetTopWindow(), event);
 }

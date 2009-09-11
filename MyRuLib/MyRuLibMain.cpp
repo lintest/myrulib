@@ -36,9 +36,9 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
 	EVT_TEXT_ENTER(ID_FIND_TITLE, MyRuLibMainFrame::OnFindTitleEnter)
 	EVT_MENU(ID_OPEN_WEB, MyRuLibMainFrame::OnOpenWeb)
 	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
-    EVT_MENU(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
-    EVT_MENU(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
-    EVT_MENU(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
+    EVT_UPDATE_UI(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
+    EVT_UPDATE_UI(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
+    EVT_UPDATE_UI(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
     EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
     EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
     EVT_MENU(ID_LOG_TEXTCTRL, MyRuLibMainFrame::OnHideLog)
@@ -263,22 +263,21 @@ void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
 	}
 }
 
-void MyRuLibMainFrame::OnProgressStart(wxCommandEvent& event)
+void MyRuLibMainFrame::OnProgressStart(wxUpdateUIEvent& event)
 {
-	m_StatusText = event.GetString();
 	m_ProgressBar.SetRange(event.GetInt());
-	m_ProgressBar.SetStatusText(m_StatusText, 0);
+	m_ProgressBar.SetStatusText(event.GetText(), 0);
 	m_ProgressBar.SetStatusText(wxEmptyString, 2);
 }
 
-void MyRuLibMainFrame::OnProgressUpdate(wxCommandEvent& event)
+void MyRuLibMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
 {
 	m_ProgressBar.SetProgress(event.GetInt());
-	m_ProgressBar.SetStatusText(m_StatusText, 0);
+	m_ProgressBar.SetStatusText(event.GetText(), 0);
 	m_ProgressBar.SetStatusText(event.GetString(), 2);
 }
 
-void MyRuLibMainFrame::OnProgressFinish(wxCommandEvent& event)
+void MyRuLibMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
 {
 	m_StatusText = wxEmptyString;
 	m_ProgressBar.SetProgress(0);

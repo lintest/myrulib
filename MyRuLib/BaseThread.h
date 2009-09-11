@@ -7,9 +7,9 @@ class BaseThread : public wxThread
 {
     public:
         wxString m_info;
+        wxString m_text;
     protected:
         void DoStart(const int max, const wxString & msg);
-        void DoError(const wxString & msg);
         void DoStep(const wxString & msg);
         void DoFinish();
     protected:

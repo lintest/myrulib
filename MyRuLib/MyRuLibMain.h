@@ -53,9 +53,9 @@ private:
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );
-	void OnProgressStart(wxCommandEvent& event);
-	void OnProgressUpdate(wxCommandEvent& event);
-	void OnProgressFinish(wxCommandEvent& event);
+	void OnProgressStart(wxUpdateUIEvent& event);
+	void OnProgressUpdate(wxUpdateUIEvent& event);
+	void OnProgressFinish(wxUpdateUIEvent& event);
     void OnChangeFilter(wxCommandEvent& event);
     void OnError(wxCommandEvent& event);
     void OnHideLog(wxCommandEvent& event);

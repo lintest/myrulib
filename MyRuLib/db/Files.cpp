@@ -33,6 +33,7 @@ FilesRow* Files::New(){
 FilesRowSet* Files::IdBook(int key){
 	FilesRowSet* rowSet = new FilesRowSet();
 	PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("SELECT * FROM %s WHERE id_book=?"),m_table.c_str()));
+    pStatement->SetParamInt(1,key);
     if (!pStatement) return rowSet;
     DatabaseResultSet* result= pStatement->ExecuteQuery();
 
@@ -130,14 +131,12 @@ FilesRow& FilesRow::operator=(const FilesRow& src){
 bool FilesRow::GetFromResult(DatabaseResultSet* result){
 
 	newRow=false;
-		id_archive=result->GetResultInt(wxT("id_archive"));
+    id_archive=result->GetResultInt(wxT("id_archive"));
 	id_book=result->GetResultInt(wxT("id_book"));
 	file_name=result->GetResultString(wxT("file_name"));
 
-
 	return true;
 }
-
 
 bool FilesRow::Save(){
     if(newRow){
