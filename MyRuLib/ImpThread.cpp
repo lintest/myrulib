@@ -385,7 +385,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
         return;
 	}
 
-    wxCSConv conv(wxT("cp-866"));
+    wxCSConv conv(wxT("cp866"));
 	wxZipInputStream zip(in, conv);
 	if ( !zip.IsOk() ){
 	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
@@ -516,7 +516,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	    return false;
 	}
 
-    wxCSConv conv(wxT("cp-866"));
+    wxCSConv conv(wxT("cp866"));
 	wxZipInputStream zip(in, conv);
 	if ( !zip.IsOk() ){
 	    wxLogError(wxT("Zip read error %s"), zipname.c_str());

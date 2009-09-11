@@ -69,7 +69,7 @@ WX_DECLARE_OBJARRAY(ExtractItems, ExtractInfoArray);
 WX_DEFINE_OBJARRAY(ExtractInfoArray);
 
 ZipReader::ZipReader(int id)
-    :conv(wxT("cp-866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
+    :conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	ExtractInfoArray items;
 
