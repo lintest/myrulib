@@ -95,6 +95,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
     wxCheckBox* m_checkBox3;
     wxRadioBox* m_radioBox1;
     wxRadioBox* m_radioBox2;
+/*
     wxCheckBox* m_checkBox21;
     wxStaticText* m_staticText7;
     wxTextCtrl* m_textCtrl7;
@@ -104,6 +105,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
     wxTextCtrl* m_textCtrl9;
     wxStaticText* m_staticText10;
     wxTextCtrl* m_textCtrl10;
+*/
 	wxPanel* m_panel4;
 	wxToolBar* m_tools;
     wxStdDialogButtonSizer* m_sdbSizerBtn;

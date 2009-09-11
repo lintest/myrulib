@@ -196,7 +196,7 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 
 void BooksPanel::OnExternal(wxCommandEvent& event)
 {
-    ExternalDlg::Execute(this, m_BookList, m_AuthorName);
+    ExternalDlg::Execute(this, m_BookList);
 }
 
 void BooksPanel::FillByAuthor(int id_author)
