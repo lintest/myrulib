@@ -22,6 +22,7 @@ private:
     void OpenZip(const wxString &zipname, const wxString &filename);
     void OpenFile(const wxString &filename);
 private:
+    wxCSConv conv;
     wxFFileInputStream *m_file;
     wxZipInputStream *m_zip;
     wxInputStream *m_result;

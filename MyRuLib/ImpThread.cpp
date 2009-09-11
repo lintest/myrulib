@@ -385,7 +385,8 @@ void ZipImportThread::ImportFile(const wxString & zipname)
         return;
 	}
 
-	wxZipInputStream zip(in);
+    wxCSConv conv(wxT("cp-866"));
+	wxZipInputStream zip(in, conv);
 	if ( !zip.IsOk() ){
 	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
 	    return;
@@ -396,11 +397,13 @@ void ZipImportThread::ImportFile(const wxString & zipname)
     DoStart(zip.GetTotalEntries(), zipname);
 
     bool ok = false;
+    bool skip = true;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
 		    ok = true;
-			wxString filename = entry->GetName(wxPATH_UNIX);
+			wxString filename = entry->GetInternalName();
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
+			    skip = false;
                 wxLogInfo(_("Import zip entry %s"), filename.c_str());
 			    DoStep(filename);
 				zip.OpenEntry(*entry);
@@ -412,6 +415,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 		delete entry;
 	}
 
+	if ( ok && skip ) wxLogWarning(wxT("Fb2 not found %s"), zipname.c_str());
 	if ( !ok ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 
 	DoFinish();
@@ -512,7 +516,8 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	    return false;
 	}
 
-	wxZipInputStream zip(in);
+    wxCSConv conv(wxT("cp-866"));
+	wxZipInputStream zip(in, conv);
 	if ( !zip.IsOk() ){
 	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
 	    return false;
@@ -521,11 +526,13 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
 
     bool ok = false;
+    bool skip = true;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
 		if (entry->GetSize()) {
             ok = true;
-			wxString filename = entry->GetName(wxPATH_UNIX);
+			wxString filename = entry->GetInternalName();
 			if (filename.Right(4).Lower() == wxT(".fb2")) {
+			    skip = false;
                 wxLogInfo(_("Import zip entry %s"), filename.c_str());
 				zip.OpenEntry(*entry);
                 ParseXml(zip, filename, id_archive);
@@ -536,10 +543,8 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 		delete entry;
 	}
 
-	if ( !ok ){
-	    wxLogError(wxT("Zip read error %s"), zipname.c_str());
-	    return false;
-	}
+	if ( ok && skip ) wxLogWarning(wxT("Fb2 not found %s"), zipname.c_str());
+	if ( !ok ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 
-    return true;
+    return ok;
 }

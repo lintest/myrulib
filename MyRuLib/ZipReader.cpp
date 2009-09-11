@@ -69,7 +69,7 @@ WX_DECLARE_OBJARRAY(ExtractItems, ExtractInfoArray);
 WX_DEFINE_OBJARRAY(ExtractInfoArray);
 
 ZipReader::ZipReader(int id)
-    :m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
+    :conv(wxT("cp-866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	ExtractInfoArray items;
 
@@ -150,7 +150,7 @@ void ZipReader::Init()
 void ZipReader::OpenZip(const wxString &zipname, const wxString &filename)
 {
     m_file = new wxFFileInputStream(zipname);
-    m_zip = new wxZipInputStream(*m_file);
+    m_zip = new wxZipInputStream(*m_file, conv);
     m_result = m_zip;
 
     m_zipOk  = m_file->IsOk();
@@ -193,7 +193,7 @@ bool ZipReader::FindEntry(const wxString &file_name)
 	bool find_ok = false;
 	bool open_ok = false;
 	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
-	    find_ok = (entry->GetName(wxPATH_UNIX) == file_name);
+	    find_ok = (entry->GetInternalName() == file_name);
 		if (find_ok) open_ok = m_zip->OpenEntry(*entry);
 		delete entry;
 		if (find_ok) break;
