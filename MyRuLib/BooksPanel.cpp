@@ -1,5 +1,4 @@
 #include "BooksPanel.h"
-#include "ExternalDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
 #include "InfoCash.h"
@@ -10,7 +9,6 @@
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, BooksPanel::OnChangeView)
-    EVT_MENU(wxID_SAVE, BooksPanel::OnExternal)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListActivated)
@@ -194,11 +192,6 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
             m_BookInfo->SetPage(html);
 		}
 	}
-}
-
-void BooksPanel::OnExternal(wxCommandEvent& event)
-{
-    ExternalDlg::Execute(this, m_BookList);
 }
 
 void BooksPanel::FillByAuthor(int id_author)
@@ -389,7 +382,7 @@ void BooksPanel::ShowContextMenu(const wxPoint& pos)
 {
     wxMenu menu;
 
-	menu.Append(ID_OPEN_BOOK, _("Открыть книгу"));
+	menu.Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
     menu.AppendSeparator();
 	menu.Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	menu.Append(ID_UNSELECTALL, _("Отменить выделение"));

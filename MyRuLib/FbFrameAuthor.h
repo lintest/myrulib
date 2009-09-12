@@ -34,6 +34,7 @@ private:
 private:
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
 	void OnLetterClicked(wxCommandEvent& event);
+    void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

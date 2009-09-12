@@ -27,6 +27,7 @@
 #include "BookListCtrl.h"
 #include "FbManager.h"
 #include "ExpThread.h"
+#include "FbConst.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ExternalDlg
@@ -34,11 +35,12 @@
 class ExternalDlg : public wxDialog
 {
 	public:
-		ExternalDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);
 		~ExternalDlg();
-		static bool Execute(wxWindow* parent, wxTreeListCtrl* books);
+		static bool Execute(wxTreeListCtrl* books, int iAuthor = ciNoAuthor);
 	private:
-        static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections, int &iCount);
+        static void ScanChecked(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
+        static void ScanSelected(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
         void FillBooks(const wxString &selections);
         void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
@@ -47,9 +49,11 @@ class ExternalDlg : public wxDialog
         void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
 	private:
+	    wxString m_selections;
         wxArrayString m_filenames;
 		int m_scale;
 		wxString m_ext;
+		int m_author;
 	private:
 		enum
 		{
@@ -57,14 +61,17 @@ class ExternalDlg : public wxDialog
 			ID_DIR_BTN,
 			ID_BOOKS,
 			ID_FORMAT,
+			ID_AUTHOR,
 		};
 		wxTextCtrl* m_textDir;
 		BookListCtrl* m_books;
 		wxChoice* m_choiceFormat;
+		wxCheckBox* m_checkAuthor;
 	private:
 		void OnSelectDir( wxCommandEvent& event );
         void OnBookCollapsing( wxTreeEvent & event );
 		void OnChangeFormat( wxCommandEvent& event );
+		void OnCheckAuthor( wxCommandEvent& event );
         DECLARE_EVENT_TABLE()
 };
 

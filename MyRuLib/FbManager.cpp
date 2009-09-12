@@ -111,7 +111,7 @@ void FbManager::OpenBook(int id, wxString &file_type)
 {
     ZipReader reader(id);
     if (!reader.IsOK()) {
-        reader.ShowError();
+		wxLogError(_("Book open error"));
         return;
     }
 

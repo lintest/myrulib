@@ -4,8 +4,10 @@
 #include "FbParams.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
+#include "ExternalDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
+    EVT_MENU(wxID_SAVE, FbFrameSearch::OnExternal)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
@@ -47,3 +49,9 @@ void FbFrameSearch::FillByFind(const wxString &title, const wxString &author)
 {
 	m_BooksPanel.FillByFind(title);
 }
+
+void FbFrameSearch::OnExternal(wxCommandEvent& event)
+{
+    ExternalDlg::Execute(m_BooksPanel.m_BookList);
+}
+

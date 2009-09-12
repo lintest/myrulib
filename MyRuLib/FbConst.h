@@ -44,4 +44,6 @@ extern const wxString strRusJO;
 extern const wxString strOtherSequence;
 extern const wxString strBookNotFound;
 
+extern const int ciNoAuthor;
+
 #endif // __FBCONST_H__

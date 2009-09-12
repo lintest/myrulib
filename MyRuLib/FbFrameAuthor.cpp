@@ -8,9 +8,11 @@
 #include "RecordIDClientData.h"
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
+#include "ExternalDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
+    EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
@@ -130,3 +132,13 @@ void FbFrameAuthor::SelectRandomLetter()
     wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_LETTER_RU + random );
     wxPostEvent(this, event);
 }
+
+void FbFrameAuthor::OnExternal(wxCommandEvent& event)
+{
+    int iSelected = m_AuthorsListBox->GetSelection();
+    if (iSelected == wxNOT_FOUND) return;
+    RecordIDClientData * data = (RecordIDClientData *) m_AuthorsListBox->GetClientObject(iSelected);
+
+    ExternalDlg::Execute(m_BooksPanel.m_BookList, data->GetID());
+}
+

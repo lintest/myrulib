@@ -19,6 +19,7 @@ BEGIN_EVENT_TABLE( ExternalDlg, wxDialog )
 	EVT_BUTTON( ID_DIR_BTN, ExternalDlg::OnSelectDir )
     EVT_TREE_ITEM_COLLAPSING( ID_BOOKS, ExternalDlg::OnBookCollapsing )
 	EVT_CHOICE( wxID_ANY, ExternalDlg::OnChangeFormat )
+	EVT_CHECKBOX( ID_AUTHOR, ExternalDlg::OnCheckAuthor )
 END_EVENT_TABLE()
 
 const wxString strNormalSymbols = wxT("\
@@ -166,10 +167,12 @@ wxString ExternalDlg::NormalizeDirname(const wxString &filename)
     return newname;
 }
 
-ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
+    wxDialog( wxGetApp().GetTopWindow(), wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
+    m_selections(selections),
+    m_author(iAuthor),
+    m_checkAuthor(NULL)
 {
-    SetTitle(_("Экспорт на внешнее устройство"));
-
 	SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizerMain;
@@ -191,6 +194,12 @@ ExternalDlg::ExternalDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerDir->Add( m_bpButtonDir, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
+
+    if (iAuthor != ciNoAuthor) {
+        m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Использовать текущего автора (без соавторов)"), wxDefaultPosition, wxDefaultSize, 0 );
+        bSizerMain->Add( m_checkAuthor, 0, wxALL, 5 );
+        m_checkAuthor->SetValue(1);
+    }
 
 	long treeStyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_books = new BookListCtrl( this, ID_BOOKS, treeStyle );
@@ -235,10 +244,8 @@ ExternalDlg::~ExternalDlg()
 {
 }
 
-void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString &selections, int &iCount)
+void ExternalDlg::ScanChecked(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString &selections)
 {
-    iCount = 0;
-
     wxTreeItemIdValue cookie;
     wxTreeItemId child = bookList->GetFirstChild(root, cookie);
     while (child.IsOk()) {
@@ -247,15 +254,15 @@ void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root,
             if (data && data->GetId()) {
                 if ( !selections.IsEmpty() ) selections += wxT(",");
                 selections += wxString::Format(wxT("%d"), data->GetId());
-                iCount++;
             }
         }
-        ScanChilds(bookList, child, selections, iCount);
+        ScanChecked(bookList, child, selections);
         child = bookList->GetNextChild(root, cookie);
     }
+}
 
-    if (!iCount) return;
-
+void ExternalDlg::ScanSelected(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString &selections)
+{
     wxArrayTreeItemIds itemArray;
     size_t count = bookList->GetSelections(itemArray);
     for (size_t i=0; i<count; ++i) {
@@ -263,7 +270,6 @@ void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root,
         if (data && data->GetId()) {
             if ( !selections.IsEmpty() ) selections += wxT(",");
             selections += wxString::Format(wxT("%d"), data->GetId());
-            iCount++;
         }
     }
 }
@@ -292,10 +298,13 @@ void ExternalDlg::FillBooks(const wxString &selections)
             LEFT JOIN authors ON authors.id=books.id_author \
             LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
             LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
-        WHERE books.id IN (%s) \
+        WHERE books.id IN (%s) %s \
         ORDER BY authors.letter, authors.full_name, books.id_author, sequences.value, books.title \
     ");
-    sql = wxString::Format(sql, selections.c_str());
+    wxString filter;
+    if ( m_checkAuthor && m_checkAuthor->GetValue() )
+        filter = wxString::Format(wxT("AND (books.id_author=%d)"), m_author);
+    sql = wxString::Format(sql, selections.c_str(), filter.c_str());
 
     wxArrayInt books;
     wxString leter, thisAuthor, thisSequence;
@@ -439,19 +448,19 @@ bool ExternalDlg::ExportBooks()
     return true;
 }
 
-bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList)
+bool ExternalDlg::Execute(wxTreeListCtrl* bookList, int iAuthor)
 {
-    int iCount;
     wxString selections;
     wxTreeItemId root = bookList->GetRootItem();
-    ScanChilds(bookList, root, selections, iCount);
+    ScanChecked(bookList, root, selections);
+    if (selections.IsEmpty()) ScanSelected(bookList, root, selections);
 
     if ( selections.IsEmpty() ) {
         wxMessageBox(wxT("Не выбрано ни одной книги."));
         return false;
     }
 
-    ExternalDlg dlg(parent);
+    ExternalDlg dlg(wxGetApp().GetTopWindow(), selections, iAuthor);
     dlg.FillBooks(selections);
 
     if (dlg.ShowModal() == wxID_OK)
@@ -460,3 +469,7 @@ bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList)
         return false;
 }
 
+void ExternalDlg::OnCheckAuthor( wxCommandEvent& event )
+{
+    FillBooks(m_selections);
+}
