@@ -42,6 +42,7 @@ class BooksPanel: public wxSplitterWindow
         void OnBooksListKeyDown(wxTreeEvent & event);
         void OnBooksListCollapsing(wxTreeEvent & event);
         void OnChangeView(wxCommandEvent & event);
+        void OnOpenBook(wxCommandEvent & event);
         void OnExternal(wxCommandEvent& event);
         void OnImageClick(wxTreeEvent &event);
         void OnInfoUpdate(wxCommandEvent& event);

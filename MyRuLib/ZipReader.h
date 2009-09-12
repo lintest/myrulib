@@ -9,7 +9,7 @@
 class ZipReader
 {
 public:
-	ZipReader(int id);
+	ZipReader(int id, bool bShowError = true);
 	virtual ~ZipReader();
 	static void Init();
 	bool IsOK() {return m_zipOk && m_fileOk;};

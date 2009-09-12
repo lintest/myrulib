@@ -235,30 +235,40 @@ ExternalDlg::~ExternalDlg()
 {
 }
 
-void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxArrayInt &selections)
+void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString &selections, int &iCount)
 {
+    iCount = 0;
+
     wxTreeItemIdValue cookie;
     wxTreeItemId child = bookList->GetFirstChild(root, cookie);
     while (child.IsOk()) {
         if (bookList->GetItemImage(child) == 1) {
             BookTreeItemData * data = (BookTreeItemData*) bookList->GetItemData(child);
-            if (data && data->GetId()) selections.Add(data->GetId());
+            if (data && data->GetId()) {
+                if ( !selections.IsEmpty() ) selections += wxT(",");
+                selections += wxString::Format(wxT("%d"), data->GetId());
+                iCount++;
+            }
         }
-        ScanChilds(bookList, child, selections);
+        ScanChilds(bookList, child, selections, iCount);
         child = bookList->GetNextChild(root, cookie);
     }
 
-    if (selections.Count()) return;
+    if (!iCount) return;
 
     wxArrayTreeItemIds itemArray;
     size_t count = bookList->GetSelections(itemArray);
     for (size_t i=0; i<count; ++i) {
         BookTreeItemData * data = (BookTreeItemData*) bookList->GetItemData(itemArray[i]);
-        if (data && data->GetId()) selections.Add(data->GetId());
+        if (data && data->GetId()) {
+            if ( !selections.IsEmpty() ) selections += wxT(",");
+            selections += wxString::Format(wxT("%d"), data->GetId());
+            iCount++;
+        }
     }
 }
 
-void ExternalDlg::FillBooks(wxArrayInt &selections)
+void ExternalDlg::FillBooks(const wxString &selections)
 {
     wxString ext;
     if (m_choiceFormat->GetCurrentSelection() == 0) {
@@ -285,15 +295,7 @@ void ExternalDlg::FillBooks(wxArrayInt &selections)
         WHERE books.id IN (%s) \
         ORDER BY authors.letter, authors.full_name, books.id_author, sequences.value, books.title \
     ");
-
-    {
-        wxString str;
-        for (size_t i=0; i<selections.Count(); i++) {
-            if (i) str += wxT(",");
-            str += wxString::Format(wxT("%d"), selections[i]);
-        }
-        sql = wxString::Format(sql, str.c_str());
-    }
+    sql = wxString::Format(sql, selections.c_str());
 
     wxArrayInt books;
     wxString leter, thisAuthor, thisSequence;
@@ -439,11 +441,12 @@ bool ExternalDlg::ExportBooks()
 
 bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList)
 {
-    wxArrayInt selections;
+    int iCount;
+    wxString selections;
     wxTreeItemId root = bookList->GetRootItem();
-    ScanChilds(bookList, root, selections);
+    ScanChilds(bookList, root, selections, iCount);
 
-    if (!selections.Count()) {
+    if ( selections.IsEmpty() ) {
         wxMessageBox(wxT("Не выбрано ни одной книги."));
         return false;
     }

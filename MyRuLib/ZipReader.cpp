@@ -68,19 +68,24 @@ WX_DECLARE_OBJARRAY(ExtractItems, ExtractInfoArray);
 
 WX_DEFINE_OBJARRAY(ExtractInfoArray);
 
-ZipReader::ZipReader(int id)
+ZipReader::ZipReader(int id, bool bShowError)
     :conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	ExtractInfoArray items;
+	wxString file_name;
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
         Books books(wxGetApp().GetDatabase());
         BooksRow * bookRow = books.Id(id);
-        if (!bookRow) return;
+        if (!bookRow) {
+            if (bShowError) wxLogError(_("Book not found (%d)"), id);
+            return;
+        }
 
         items.Add(bookRow);
+        file_name = bookRow->file_name;
 
         Files files(wxGetApp().GetDatabase());
         FilesRowSet * fileRows = files.IdBook(bookRow->id);
@@ -124,6 +129,7 @@ ZipReader::ZipReader(int id)
 		}
 		if (IsOK()) return;
 	}
+	if (bShowError) wxLogError(_("Book open error (%d) not found %s"), id, file_name.c_str());
 }
 
 ZipReader::~ZipReader()

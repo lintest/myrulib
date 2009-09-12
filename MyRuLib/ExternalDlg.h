@@ -38,8 +38,8 @@ class ExternalDlg : public wxDialog
 		~ExternalDlg();
 		static bool Execute(wxWindow* parent, wxTreeListCtrl* books);
 	private:
-        static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxArrayInt &selections);
-        void FillBooks(wxArrayInt &selections);
+        static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections, int &iCount);
+        void FillBooks(const wxString &selections);
         void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString NormalizeDirname(const wxString &filename);

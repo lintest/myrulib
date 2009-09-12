@@ -5,7 +5,7 @@
 
 void *InfoThread::Entry()
 {
-    ZipReader reader(m_id);
+    ZipReader reader(m_id, false);
     if (!reader.IsOK()) return NULL;
 
 	Load(reader.GetZip());
