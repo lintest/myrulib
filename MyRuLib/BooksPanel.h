@@ -34,6 +34,7 @@ class BooksPanel: public wxSplitterWindow
         BookTreeItemData * GetSelectedBook();
     private:
         void CreateBookInfo();
+        void ShowContextMenu(const wxPoint& pos);
         wxString m_AuthorName;
     private:
         void OnBooksListViewSelected(wxTreeEvent & event);
@@ -45,6 +46,9 @@ class BooksPanel: public wxSplitterWindow
         void OnImageClick(wxTreeEvent &event);
         void OnInfoUpdate(wxCommandEvent& event);
         void OnSubmenu(wxCommandEvent& event);
+        void OnContextMenu(wxTreeEvent& event);
+        void OnSelectAll(wxCommandEvent& event);
+        void OnUnselectAll(wxCommandEvent& event);
         DECLARE_EVENT_TABLE();
 };
 

@@ -15,10 +15,7 @@ private:
     void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
     void ShowContextMenu(const wxPoint& pos);
 private:
-    void OnContextMenu(wxTreeEvent& event);
 	void OnImageClick(wxTreeEvent &event);
-    void OnSelectAll(wxCommandEvent& event);
-    void OnUnselectAll(wxCommandEvent& event);
     void OnSizing(wxSizeEvent& event);
 private:
 	wxArrayInt colSizes;

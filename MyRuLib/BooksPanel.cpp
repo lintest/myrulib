@@ -10,8 +10,6 @@
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, BooksPanel::OnChangeView)
-	EVT_MENU(wxID_SELECTALL, BooksPanel::OnSubmenu)
-	EVT_MENU(ID_UNSELECTALL, BooksPanel::OnSubmenu)
     EVT_MENU(wxID_SAVE, BooksPanel::OnExternal)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListViewSelected)
@@ -19,6 +17,9 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_TREE_ITEM_COLLAPSING(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListCollapsing)
 	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListKeyDown)
 	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, BooksPanel::OnImageClick)
+    EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, BooksPanel::OnContextMenu)
+	EVT_MENU(wxID_SELECTALL, BooksPanel::OnSelectAll)
+	EVT_MENU(ID_UNSELECTALL, BooksPanel::OnUnselectAll)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
@@ -268,7 +269,7 @@ void BooksPanel::FillByAuthor(int id_author)
                         wxTreeItemId item = m_BookList->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook, thisSequence->value, seqRow->number));
                         if (seqRow->number>0) m_BookList->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
                         m_BookList->SetItemText (item, 2, thisBook->file_name);
-                        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
+                        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), thisBook->file_size/1024));
                         thisBook->added = true;
                     }
                 }
@@ -286,7 +287,7 @@ void BooksPanel::FillByAuthor(int id_author)
 		    }
             wxTreeItemId item = m_BookList->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook));
             m_BookList->SetItemText (item, 2, thisBook->file_name);
-            m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d"), thisBook->file_size/1024));
+            m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), thisBook->file_size/1024));
 		}
 	}
     m_BookList->ExpandAll( m_BookList->GetRootItem() );
@@ -346,7 +347,7 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
         wxString full_name = result->GetResultString(wxT("full_name"));
         m_BookList->SetItemText (item, 1, full_name);
         m_BookList->SetItemText (item, 3, data->file_name);
-        m_BookList->SetItemText (item, 4, wxString::Format(wxT("%d"), data->file_size/1024));
+        m_BookList->SetItemText (item, 4, wxString::Format(wxT("%d "), data->file_size/1024));
         do {
             notEOF = result->Next();
             if ( ! notEOF ) break;
@@ -369,5 +370,42 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
 void BooksPanel::OnSubmenu(wxCommandEvent& event)
 {
     wxPostEvent(m_BookList, event);
+}
+
+void BooksPanel::OnContextMenu(wxTreeEvent& event)
+{
+    wxPoint point = event.GetPoint();
+    // If from keyboard
+    if (point.x == -1 && point.y == -1) {
+        wxSize size = GetSize();
+        point.x = size.x / 3;
+        point.y = size.y / 3;
+    }
+    ShowContextMenu(point);
+}
+
+void BooksPanel::ShowContextMenu(const wxPoint& pos)
+{
+    wxMenu menu;
+
+
+	menu.Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
+	menu.Append(ID_UNSELECTALL, _("Отменить выделение"));
+    menu.Append(wxID_ANY, _T("&Test"));
+    menu.Append(wxID_ANY, _T("&About"));
+    menu.AppendSeparator();
+    menu.Append(wxID_ANY, _T("E&xit"));
+
+    PopupMenu(&menu, pos.x, pos.y);
+}
+
+void BooksPanel::OnSelectAll(wxCommandEvent& event)
+{
+    m_BookList->SelectAll();
+}
+
+void BooksPanel::OnUnselectAll(wxCommandEvent& event)
+{
+    m_BookList->SelectAll(0);
 }
 

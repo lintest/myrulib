@@ -104,9 +104,16 @@ const LetterReplace strTranslitArray[] = {
     {wxT('я'), wxT("ja")}
 };
 
-wxString ExternalDlg::GetFilename(BookTreeItemData &data)
+wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &data)
 {
     const wxString filename = data.title;
+
+    wxString filepath = wxT("/");
+    wxTreeItemId node = parent;
+    while (node.IsOk()) {
+        filepath = m_books->GetItemText(node) + wxT("/") + filepath;
+        node = m_books->GetItemParent(node);
+    }
 
     size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
 
@@ -133,10 +140,10 @@ wxString ExternalDlg::GetFilename(BookTreeItemData &data)
 
     for (int i=1; true; i++) {
         result.Normalize(wxPATH_NORM_DOTS);
-        wxFileName searchname = result;
+        wxFileName searchname = filepath + result.GetFullName();
         searchname.Normalize(wxPATH_NORM_CASE);
-        if (m_filenames.Index(searchname.GetFullName()) == wxNOT_FOUND) {
-            m_filenames.Add(searchname.GetFullName());
+        if (m_filenames.Index(searchname.GetFullPath()) == wxNOT_FOUND) {
+            m_filenames.Add(searchname.GetFullPath());
             break;
         }
         result = wxString::Format(wxT("%s(%d).%s%s"), newname.c_str(), i, data.file_type.c_str(), m_ext.c_str());
@@ -270,13 +277,13 @@ void ExternalDlg::FillBooks(wxArrayInt &selections)
     m_books->SetItemBold(root, true);
 
 	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, authors.id, authors.letter, authors.full_name, sequences.value AS sequence\
+        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence\
         FROM books \
             LEFT JOIN authors ON authors.id=books.id_author \
             LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
             LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
         WHERE books.id IN (%s) \
-        ORDER BY authors.letter, authors.full_name, authors.id, sequences.value, books.title \
+        ORDER BY authors.letter, authors.full_name, books.id_author, sequences.value, books.title \
     ");
 
     {
@@ -303,12 +310,12 @@ void ExternalDlg::FillBooks(wxArrayInt &selections)
 	    if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
 	        thisAuthor = nextAuthor;
 	        itemSequence = NULL;
-            itemAuthor = m_books->AppendItem(root, thisAuthor, 1);
+            itemAuthor = m_books->AppendItem(root, thisAuthor);
             m_books->SetItemBold(itemAuthor, true);
 	    }
 	    if (thisSequence != nextSequence || !itemSequence.IsOk()) {
 	        thisSequence = nextSequence;
-            itemSequence = m_books->AppendItem(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence, 1 );
+            itemSequence = m_books->AppendItem(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
             m_books->SetItemBold(itemSequence, true);
 	    }
 //	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
@@ -324,8 +331,8 @@ void ExternalDlg::FillBooks(wxArrayInt &selections)
 
 void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
 {
-    wxTreeItemId item = m_books->AppendItem(parent, GetFilename(data), 1, -1, new BookTreeItemData(data));
-    m_books->SetItemText (item, 1, wxString::Format(wxT("%d"), data.file_size*m_scale/100/1024));
+    wxTreeItemId item = m_books->AppendItem(parent, GetFilename(parent, data), -1, -1, new BookTreeItemData(data));
+    m_books->SetItemText (item, 1, wxString::Format(wxT("%d "), data.file_size*m_scale/100/1024));
 }
 
 void ExternalDlg::OnSelectDir( wxCommandEvent& event )
@@ -352,7 +359,7 @@ void ExternalDlg::ChangeFilesExt(const wxTreeItemId &parent)
     while (child.IsOk()) {
         BookTreeItemData * data = (BookTreeItemData*) m_books->GetItemData(child);
         if (data && data->GetId()) {
-            m_books->SetItemText(child, 0, GetFilename(*data));
+            m_books->SetItemText(child, 0, GetFilename(parent, *data));
             m_books->SetItemText(child, 1, wxString::Format(wxT("%d"), data->file_size*m_scale/100/1024));
         }
         ChangeFilesExt(child);
@@ -378,9 +385,14 @@ void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
 
 void ExternalDlg::FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir)
 {
-    wxFileName new_dir = m_books->GetItemText(parent);
-    new_dir.SetPath(dir);
-    wxString new_path = new_dir.GetFullPath();
+    wxString new_path;
+    if (dir.IsEmpty()) {
+        new_path = m_books->GetItemText(parent);
+    } else {
+        wxFileName new_dir = m_books->GetItemText(parent);
+        new_dir.SetPath(dir);
+        new_path = new_dir.GetFullPath();
+    }
     if (!wxFileName::DirExists(new_path)) wxFileName::Mkdir(new_path);
 
     wxTreeItemIdValue cookie;
@@ -410,8 +422,9 @@ bool ExternalDlg::ExportBooks()
         return false;
     }
 
+    m_books->SetItemText(m_books->GetRootItem(), root_dir);
 	ExportThread *thread = new ExportThread(m_choiceFormat->GetCurrentSelection());
-	FillFilelist(m_books->GetRootItem(), thread->m_filelist, m_textDir->GetValue());
+	FillFilelist(m_books->GetRootItem(), thread->m_filelist);
 	thread->m_info = wxT("Экспорт: ") + root_dir;
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {

@@ -41,10 +41,10 @@ class ExternalDlg : public wxDialog
         static void ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxArrayInt &selections);
         void FillBooks(wxArrayInt &selections);
         void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
-        wxString GetFilename(BookTreeItemData &data);
+        wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString NormalizeDirname(const wxString &filename);
         void ChangeFilesExt(const wxTreeItemId &parent);
-        void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir);
+        void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
 	private:
         wxArrayString m_filenames;
