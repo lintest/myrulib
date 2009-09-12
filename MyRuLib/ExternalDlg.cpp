@@ -251,7 +251,7 @@ void ExternalDlg::ScanChilds(wxTreeListCtrl* bookList, const wxTreeItemId &root,
     }
 }
 
-void ExternalDlg::FillBooks(const wxString &author, wxArrayInt &selections)
+void ExternalDlg::FillBooks(wxArrayInt &selections)
 {
     wxString ext;
     if (m_choiceFormat->GetCurrentSelection() == 0) {
@@ -266,17 +266,17 @@ void ExternalDlg::FillBooks(const wxString &author, wxArrayInt &selections)
 	m_books->Freeze();
     m_books->DeleteRoot();
 
-    wxTreeItemId root = m_books->AddRoot(NormalizeDirname(author));
+    wxTreeItemId root = m_books->AddRoot(wxT("root"));
     m_books->SetItemBold(root, true);
 
 	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_size, books.file_type, authors.id, authors.full_name, sequences.value\
+        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, authors.id, authors.letter, authors.full_name, sequences.value AS sequence\
         FROM books \
             LEFT JOIN authors ON authors.id=books.id_author \
             LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
             LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
         WHERE books.id IN (%s) \
-        ORDER BY authors.search_name, authors.id, sequences.value, books.title \
+        ORDER BY authors.letter, authors.full_name, authors.id, sequences.value, books.title \
     ");
 
     {
@@ -288,48 +288,35 @@ void ExternalDlg::FillBooks(const wxString &author, wxArrayInt &selections)
         sql = wxString::Format(sql, str.c_str());
     }
 
+    wxArrayInt books;
+    wxString leter, thisAuthor, thisSequence;
+    wxTreeItemId itemAuthor, itemSequence;
+
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     DatabaseLayer * database = wxGetApp().GetDatabase();
 	PreparedStatement * ps = database->PrepareStatement(sql);
 	DatabaseResultSet * result = ps->ExecuteQuery();
 	while (result && result->Next()) {
-
-
+	    BookTreeItemData data(result);
+	    wxString nextAuthor = result->GetResultString(wxT("full_name"));
+	    wxString nextSequence = result->GetResultString(wxT("sequence"));
+	    if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
+	        thisAuthor = nextAuthor;
+	        itemSequence = NULL;
+            itemAuthor = m_books->AppendItem(root, thisAuthor, 1);
+            m_books->SetItemBold(itemAuthor, true);
+	    }
+	    if (thisSequence != nextSequence || !itemSequence.IsOk()) {
+	        thisSequence = nextSequence;
+            itemSequence = m_books->AppendItem(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence, 1 );
+            m_books->SetItemBold(itemSequence, true);
+	    }
+//	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
+        AppendBook(itemSequence, data);
+        books.Add(data.GetId());
 	}
-
-    if (FbParams().GetValue(FB_FOLDER_FORMAT) == 0) {
-        wxSortedArrayString sequences;
-        bool otherExisis = false;
-        for  (size_t i=0; i<selections.Count(); i++) {
-            wxString sequence = selections[i].sequence;
-            if (sequence.IsEmpty()) {
-                otherExisis = true;
-            } else if (sequences.Index(sequence, false) == wxNOT_FOUND) {
-                sequences.Add(selections[i].sequence);
-            }
-        }
-        sequences.Sort();
-
-        for  (size_t i=0; i<sequences.Count(); i++) {
-            wxTreeItemId folder = m_books->AppendItem(root, NormalizeDirname(sequences[i]));
-            m_books->SetItemBold(folder, true);
-            for  (size_t j=0; j<selections.Count(); j++) {
-                if (sequences[i] == selections[j].sequence) AppendBook(folder, selections[j]);
-            }
-        }
-
-        if (otherExisis) {
-            wxTreeItemId folder = m_books->AppendItem(root, NormalizeDirname(strOtherSequence));
-            m_books->SetItemBold(folder, true);
-            for  (size_t j=0; j<selections.Count(); j++) {
-                if (selections[j].sequence.IsEmpty()) AppendBook(folder, selections[j]);
-            }
-        }
-    } else {
-        for  (size_t j=0; j<selections.Count(); j++) {
-            AppendBook(root, selections[j]);
-        }
-    }
+	database->CloseResultSet(result);
+	database->CloseStatement(ps);
 
     m_books->ExpandAll(root);
 	m_books->Thaw();
@@ -337,7 +324,7 @@ void ExternalDlg::FillBooks(const wxString &author, wxArrayInt &selections)
 
 void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
 {
-    wxTreeItemId item = m_books->AppendItem(parent, GetFilename(data), -1, -1, new BookTreeItemData(data));
+    wxTreeItemId item = m_books->AppendItem(parent, GetFilename(data), 1, -1, new BookTreeItemData(data));
     m_books->SetItemText (item, 1, wxString::Format(wxT("%d"), data.file_size*m_scale/100/1024));
 }
 

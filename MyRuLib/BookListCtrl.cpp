@@ -6,7 +6,7 @@
 BEGIN_EVENT_TABLE(BookListCtrl, wxTreeListCtrl)
 	EVT_MENU(wxID_SELECTALL, BookListCtrl::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, BookListCtrl::OnUnselectAll)
-    EVT_SIZE(BookListCtrl::OnSize)
+    EVT_SIZE(BookListCtrl::OnSizing)
 //    EVT_CONTEXT_MENU(BookListCtrl::OnContextMenu)
     EVT_TREE_ITEM_MENU(wxID_ANY, BookListCtrl::OnContextMenu)
 END_EVENT_TABLE()
@@ -29,10 +29,8 @@ void BookListCtrl::AddColumn (const wxString& text, int width, int flag)
     colSizes.Add(width);
 }
 
-void BookListCtrl::OnSize(wxSizeEvent& event)
+void BookListCtrl::OnSizing(wxSizeEvent& event)
 {
-	event.Skip();
-
 	int sum = 0;
 	for (size_t i = 0; i<(size_t)colSizes.Count() && i<(size_t)GetColumnCount(); i++) {
         sum += colSizes[i];
@@ -40,10 +38,15 @@ void BookListCtrl::OnSize(wxSizeEvent& event)
 
 	if (!sum) return;
 
-	int w = GetClientSize().x - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
-	for (size_t i = 0; i<(size_t)colSizes.Count() && i<(size_t)GetColumnCount(); i++) {
-        SetColumnWidth(i, w * colSizes[i] / sum );
+	int w = event.GetSize().GetWidth() - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
+    int xx = w;
+	for (size_t i = 1; i<(size_t)colSizes.Count() && i<(size_t)GetColumnCount(); i++) {
+	    int x = w * colSizes[i] / sum;
+        SetColumnWidth(i, x);
+        xx -= x;
 	}
+    SetColumnWidth(0, xx);
+	event.Skip();
 }
 
 void BookListCtrl::SelectChild(const wxTreeItemId &parent, int iImageIndex)

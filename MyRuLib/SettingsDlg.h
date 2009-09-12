@@ -32,6 +32,7 @@ private:
         ID_TRANSLIT_FILE,
         ID_FOLDER_FORMAT,
         ID_FILE_FORMAT,
+        ID_USE_SYMLINKS,
         ID_USE_PROXY,
         ID_PROXY_ADDR,
         ID_PROXY_PORT,

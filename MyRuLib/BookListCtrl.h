@@ -19,7 +19,7 @@ private:
 	void OnImageClick(wxTreeEvent &event);
     void OnSelectAll(wxCommandEvent& event);
     void OnUnselectAll(wxCommandEvent& event);
-    void OnSize(wxSizeEvent& event);
+    void OnSizing(wxSizeEvent& event);
 private:
 	wxArrayInt colSizes;
 	DECLARE_EVENT_TABLE()
