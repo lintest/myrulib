@@ -1,6 +1,7 @@
 #include "BaseThread.h"
 #include "MyRuLibApp.h"
 #include "FbConst.h"
+#include "FbParams.h"
 
 wxCriticalSection BaseThread::sm_queue;
 
@@ -36,4 +37,21 @@ void BaseThread::DoFinish()
 {
     wxUpdateUIEvent event( ID_PROGRESS_FINISH );
     wxPostEvent(wxGetApp().GetTopWindow(), event);
+}
+
+void BaseThread::UpdateBooksCount()
+{
+    int count = 0;
+    {
+        wxCriticalSectionLocker locker(wxGetApp().m_DbSection);
+        wxString sql = wxT("SELECT COUNT(id) FROM books");
+        DatabaseLayer * database = wxGetApp().GetDatabase();
+        PreparedStatement* ps = database->PrepareStatement(sql);
+        if (!ps) return;
+        DatabaseResultSet* result = ps->ExecuteQuery();
+        if (result && result->Next()) count = result->GetResultInt(1);
+        database->CloseResultSet(result);
+        database->CloseStatement(ps);
+    }
+    FbParams().SetValue(DB_BOOKS_COUNT, count);
 }

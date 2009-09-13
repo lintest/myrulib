@@ -344,7 +344,10 @@ void MyRuLibMainFrame::OnFindTitleEnter(wxCommandEvent& event)
 
 void MyRuLibMainFrame::FindTitle(const wxString &text)
 {
-    if ( text.IsEmpty() ) return ;
+    if ( text.IsEmpty() ) return;
+
+    wxLogInfo(_("Search title: %s"), text.c_str());
+
     wxString caption = wxString::Format(_("Поиск: «%s»"), text.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(this, wxID_ANY, caption);
 	frame->Update();
@@ -363,6 +366,8 @@ void MyRuLibMainFrame::OnFindAuthorEnter(wxCommandEvent& event)
 
 void MyRuLibMainFrame::FindAuthor(const wxString &text)
 {
+    wxLogInfo(_("Search author: %s"), text.c_str());
+
     FbFrameAuthor * authors = NULL;
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {

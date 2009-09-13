@@ -296,27 +296,24 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
 	m_BookList->Freeze();
 
     m_BookList->DeleteRoot();
+
     wxString msg = wxString::Format(_T("Поиск: %s %s"), title.c_str(), author.c_str());
     wxTreeItemId root = m_BookList->AddRoot(msg);
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     DatabaseLayer * database = wxGetApp().GetDatabase();
-/*
-    {
-        wxString sql = wxT("SELECT COUNT(id) FROM books");
-        PreparedStatement* ps = database->PrepareStatement(sql);
-        DatabaseResultSet* result = ps->ExecuteQuery();
-        int count = 0;
-        if (result && result->Next()) count = result->GetResultInt(1);
-        database->CloseResultSet(result);
-        database->CloseStatement(ps);
 
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_START );
-        event.SetString(msg);
-        event.SetInt(count);
+    MyrulibDatabaseLayer::sm_Delta = FbParams::GetValue(DB_BOOKS_COUNT) / 100;
+    MyrulibDatabaseLayer::sm_msg = msg;
+    MyrulibDatabaseLayer::sm_Progress = 0;
+    MyrulibDatabaseLayer::sm_Current = 0;
+    {
+        wxUpdateUIEvent event( ID_PROGRESS_START );
+        event.SetText(msg);
+        event.SetInt(100);
         wxPostEvent(wxGetApp().GetTopWindow(), event);
     }
-*/
+
     wxString templ = title;
     templ.Replace(wxT(" "), wxT("%"));
     templ.MakeLower();
@@ -357,6 +354,11 @@ void BooksPanel::FillByFind(const wxString &title, const wxString &author)
     m_BookList->ExpandAll(root);
 	m_BookList->Thaw();
 	m_BookList->SetFocus();
+
+    {
+        wxUpdateUIEvent event( ID_PROGRESS_FINISH );
+        wxPostEvent(wxGetApp().GetTopWindow(), event);
+    }
 
 	m_BookInfo->SetPage(wxEmptyString);
 }

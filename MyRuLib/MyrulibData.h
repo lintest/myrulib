@@ -21,6 +21,10 @@ class MyrulibDatabaseLayer
 		virtual bool Open(const wxString& strDatabase);
 		bool CreateDatabase(const wxString & filename);
 		bool UpgradeDatabase();
+		static int sm_Progress;
+		static int sm_Current;
+		static int sm_Delta;
+		static wxString sm_msg;
 };
 
 #endif // DBCREATOR_H

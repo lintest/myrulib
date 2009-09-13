@@ -58,4 +58,12 @@ private:
     wxString m_dirname;
 };
 
+class BooksCountThread : public BaseThread
+{
+public:
+    static void Execute();
+    BooksCountThread(): BaseThread() {};
+    virtual void *Entry();
+};
+
 #endif // __FBTHREAD_H__

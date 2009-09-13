@@ -17,6 +17,7 @@
 #include "FbLogStream.h"
 #include "FbParams.h"
 #include "ZipReader.h"
+#include "ImpThread.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
@@ -39,6 +40,7 @@ bool MyRuLibApp::OnInit()
 	frame->Show();
 
 	ZipReader::Init();
+	BooksCountThread::Execute();
 
 	return true;
 }

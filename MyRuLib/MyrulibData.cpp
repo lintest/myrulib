@@ -14,6 +14,7 @@
 #include <DatabaseStringConverter.h>
 #include <SqlitePreparedStatement.h>
 #include "FbConst.h"
+#include "MyRuLibApp.h"
 
 bool MyrulibDatabaseLayer::CreateDatabase(const wxString & filename)
 {
@@ -178,6 +179,16 @@ static void SQLiteLowerCase(sqlite3_context *p, int nArg, sqlite3_value **apArg)
     text.MakeLower();
 #endif
 
+    MyrulibDatabaseLayer::sm_Current++;
+    if (MyrulibDatabaseLayer::sm_Current >= MyrulibDatabaseLayer::sm_Delta) {
+        MyrulibDatabaseLayer::sm_Current = 0;
+        MyrulibDatabaseLayer::sm_Progress++;
+        wxUpdateUIEvent event( ID_PROGRESS_UPDATE );
+        event.SetText(MyrulibDatabaseLayer::sm_msg);
+        event.SetInt(MyrulibDatabaseLayer::sm_Progress);
+        wxPostEvent(wxGetApp().GetTopWindow(), event);
+    }
+
 	wxCharBuffer buffer = conv.ConvertToUnicodeStream(text);
 	sqlite3_result_text(p, buffer, -1, SQLITE_TRANSIENT);
 }
@@ -188,3 +199,11 @@ bool MyrulibDatabaseLayer::Open(const wxString& strDatabase)
 	sqlite3_create_function(GetSQLite(), "LOWER", 1, SQLITE_ANY, NULL, SQLiteLowerCase, NULL, NULL);
 	return result;
 }
+
+int MyrulibDatabaseLayer::sm_Progress = 0;
+int MyrulibDatabaseLayer::sm_Current = 0;
+int MyrulibDatabaseLayer::sm_Delta = 0;
+wxString MyrulibDatabaseLayer::sm_msg;
+
+
+
