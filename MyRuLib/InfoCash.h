@@ -11,10 +11,15 @@
 class InfoImage
 {
 public:
-    InfoImage(const wxString &n, const wxSize &s): name(n), size(s) {};
+    InfoImage(const wxString &name, const wxImage &image);
 public:
-    wxString name;
-    wxSize size;
+    const wxString & GetName() { return m_name; };
+    const int GetWidth();
+    const int GetHeight();
+private:
+    wxString m_name;
+    int m_width;
+    int m_height;
 };
 
 WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);

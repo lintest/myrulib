@@ -2,6 +2,7 @@
 
 #include <wx/buffer.h>
 #include <wx/fs_mem.h>
+#include <wx/mstream.h>
 #include "wx/base64.h"
 
 #include "InfoThread.h"
@@ -15,10 +16,26 @@ WX_DEFINE_OBJARRAY(InfoNodeArray);
 //  InfoNode
 //-----------------------------------------------------------------------------
 
+InfoImage::InfoImage(const wxString &name, const wxImage &image)
+    : m_name(name), m_width(image.GetWidth()), m_height(image.GetHeight())
+
+{
+}
+
+const int InfoImage::GetWidth()
+{
+    return m_width > ciMaxImageWidth ? ciMaxImageWidth : m_width;
+}
+
+const int InfoImage::GetHeight()
+{
+    return m_width > ciMaxImageWidth ? m_height * ciMaxImageWidth / m_width : m_height;
+}
+
 InfoNode::~InfoNode()
 {
     for (size_t i=0; i<images.GetCount(); i++) {
-        wxMemoryFSHandler::RemoveFile(images[i].name);
+        wxMemoryFSHandler::RemoveFile(images[i].GetName());
     }
 }
 
@@ -26,11 +43,13 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 {
     wxString imagename = wxString::Format(wxT("%d/%s"), id, filename.c_str());
     for (size_t i=0; i<images.GetCount(); i++) {
-        if (images[i].name == imagename) return;
+        if (images[i].GetName() == imagename) return;
     }
     wxMemoryBuffer buffer = wxBase64Decode(imagedata);
 	wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), imagetype);
-    images.Add(new InfoImage(imagename, wxDefaultSize));
+	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
+	wxImage image(stream);
+    images.Add(new InfoImage(imagename, image));
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +127,8 @@ wxString InfoCash::GetInfo(int id, bool vertical)
         html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), node->title.c_str());
         html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->annotation.c_str());
         for (size_t i=0; i<node->images.GetCount(); i++) {
-            html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\"></td></tr>"), node->images[i].name.c_str());
+            InfoImage & info = node->images[i];
+            html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\" width=%d height=%d></td></tr>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
         }
         html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
     } else {
@@ -116,7 +136,8 @@ wxString InfoCash::GetInfo(int id, bool vertical)
         html += wxString::Format(wxT("<td>%s</td>"), node->title.c_str());
         html += wxT("<td rowspan=3 align=right valign=top>");
         for (size_t i=0; i<node->images.GetCount(); i++) {
-            html += wxString::Format(wxT("<img src=\"memory:%s\"><br>"), node->images[i].name.c_str());
+            InfoImage & info = node->images[i];
+            html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d><br>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
         }
         html += wxT("</td></tr>");
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());

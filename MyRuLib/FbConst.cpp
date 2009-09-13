@@ -13,3 +13,5 @@ const wxString strOtherSequence = wxT("(разное)");
 const wxString strBookNotFound = wxT("Не найден архив%s, содержащий файл%s.");
 
 const int ciNoAuthor = 0x7FFFFFFF;
+
+const int ciMaxImageWidth = 200;
