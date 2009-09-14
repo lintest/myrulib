@@ -19,6 +19,7 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(wxID_SELECTALL, BooksPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, BooksPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
+	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
@@ -389,7 +390,7 @@ void BooksPanel::ShowContextMenu(const wxPoint& pos)
 	menu.Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	menu.Append(ID_UNSELECTALL, _("Отменить выделение"));
     menu.AppendSeparator();
-    menu.Append(wxID_ANY, _T("Добавить в избранное"));
+    menu.Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
 
     PopupMenu(&menu, pos.x, pos.y);
 }
@@ -408,4 +409,9 @@ void BooksPanel::OnOpenBook(wxCommandEvent & event)
 {
     BookTreeItemData * data = GetSelectedBook();
     if (data) FbManager::OpenBook(data->GetId(), data->file_type);
+}
+
+void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
+{
+    wxMessageBox(_("Функционал не реализован в данной версии."));
 }
