@@ -41,7 +41,7 @@ WX_CONFIG ?= wx-config
 WX_PORT ?= 
 
 # Use DLL build of wx library to use? [0,1]
-WX_SHARED ?= 0
+WX_SHARED ?= 1
 
 # Compile Unicode build of wxWidgets? [0,1]
 WX_UNICODE ?= 1
@@ -66,17 +66,6 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-SQLITE_CFLAGS = `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-SQLITE_OBJECTS =  \
-	build/SQLite_sqlite3.o
-EXPAT_CFLAGS = -DHAVE_EXPAT_CONFIG_H -IExpat `$(WX_CONFIG) --cflags \
-	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-EXPAT_OBJECTS =  \
-	build/Expat_xmlparse.o \
-	build/Expat_xmlrole.o \
-	build/Expat_xmltok.o \
-	build/Expat_xmltok_impl.o \
-	build/Expat_xmltok_ns.o
 DATABASELAYER_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite \
 	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 DATABASELAYER_OBJECTS =  \
@@ -169,7 +158,7 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libSQLite.a build/libExpat.a build/libDatabaseLayer.a build/myrulib
+all: test_for_selected_wxbuild build/libDatabaseLayer.a build/myrulib
 
 install: 
 
@@ -178,50 +167,20 @@ uninstall:
 clean: 
 	rm -f build/*.o
 	rm -f build/*.d
-	rm -f build/libSQLite.a
-	rm -f build/libExpat.a
 	rm -f build/libDatabaseLayer.a
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-build/libSQLite.a: $(SQLITE_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(SQLITE_OBJECTS)
-	$(RANLIB) $@
-
-build/libExpat.a: $(EXPAT_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(EXPAT_OBJECTS)
-	$(RANLIB) $@
-
 build/libDatabaseLayer.a: $(DATABASELAYER_OBJECTS)
 	rm -f $@
 	$(AR) rcu $@ $(DATABASELAYER_OBJECTS)
 	$(RANLIB) $@
 
-build/myrulib: $(MYRULIB_OBJECTS) build/libDatabaseLayer.a build/libSQLite.a build/libExpat.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libDatabaseLayer.a build/libSQLite.a build/libExpat.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
+build/myrulib: $(MYRULIB_OBJECTS) build/libDatabaseLayer.a
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libDatabaseLayer.a -lsqlite3 -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 	strip ./build/myrulib
-
-build/SQLite_sqlite3.o: ./SQLite/sqlite3.c
-	$(CC) -c -o $@ $(SQLITE_CFLAGS) $(CPPDEPS) $<
-
-build/Expat_xmlparse.o: ./Expat/xmlparse.c
-	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
-
-build/Expat_xmlrole.o: ./Expat/xmlrole.c
-	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
-
-build/Expat_xmltok.o: ./Expat/xmltok.c
-	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
-
-build/Expat_xmltok_impl.o: ./Expat/xmltok_impl.c
-	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
-
-build/Expat_xmltok_ns.o: ./Expat/xmltok_ns.c
-	$(CC) -c -o $@ $(EXPAT_CFLAGS) $(CPPDEPS) $<
 
 build/DatabaseLayer_DatabaseErrorReporter.o: ./DatabaseLayer/DatabaseErrorReporter.cpp
 	$(CXX) -c -o $@ $(DATABASELAYER_CXXFLAGS) $(CPPDEPS) $<

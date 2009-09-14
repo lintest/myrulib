@@ -3,7 +3,6 @@
 
 #include <wx/wx.h>
 
-#define XML_STATIC
 #include <expat.h>
 
 class ParsingContext
