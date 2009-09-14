@@ -43,6 +43,7 @@ private:
     void OnSetup(wxCommandEvent & event);
 	void OnOpenWeb(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
+	void OnDatabaseInfo(wxCommandEvent & event);
 	void OnFindAuthor(wxCommandEvent& event);
 	void OnFindAuthorEnter(wxCommandEvent& event);
 	void OnFindTitle(wxCommandEvent & event);
@@ -61,6 +62,7 @@ private:
     void OnHideLog(wxCommandEvent& event);
     void OnPanelClosed(wxAuiManagerEvent& event);
     void OnNotebookPageClose(wxAuiNotebookEvent& evt);
+	void OnVacuum(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 

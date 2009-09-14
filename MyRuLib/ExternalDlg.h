@@ -42,6 +42,8 @@ class ExternalDlg : public wxDialog
         static void ScanChecked(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
         static void ScanSelected(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
         void FillBooks(const wxString &selections);
+        void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
+        void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
         void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString NormalizeDirname(const wxString &filename);

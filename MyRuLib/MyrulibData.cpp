@@ -178,7 +178,7 @@ static void SQLiteLowerCase(sqlite3_context *p, int nArg, sqlite3_value **apArg)
 #else
     text.MakeLower();
 #endif
-
+/*
     MyrulibDatabaseLayer::sm_Current++;
     if (MyrulibDatabaseLayer::sm_Current >= MyrulibDatabaseLayer::sm_Delta) {
         MyrulibDatabaseLayer::sm_Current = 0;
@@ -188,7 +188,7 @@ static void SQLiteLowerCase(sqlite3_context *p, int nArg, sqlite3_value **apArg)
         event.SetInt(MyrulibDatabaseLayer::sm_Progress);
         wxPostEvent(wxGetApp().GetTopWindow(), event);
     }
-
+*/
 	wxCharBuffer buffer = conv.ConvertToUnicodeStream(text);
 	sqlite3_result_text(p, buffer, -1, SQLITE_TRANSIENT);
 }

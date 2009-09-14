@@ -77,6 +77,7 @@
 		<sources>MyRuLib/ProgressBar.cpp</sources>
 		<sources>MyRuLib/SettingsDlg.cpp</sources>
 		<sources>MyRuLib/TitleThread.cpp</sources>
+		<sources>MyRuLib/VacuumThread.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
 		<sources>MyRuLib/db/Archives.cpp</sources>
 		<sources>MyRuLib/db/Authors.cpp</sources>

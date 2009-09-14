@@ -292,14 +292,36 @@ void ExternalDlg::FillBooks(const wxString &selections)
     wxTreeItemId root = m_books->AddRoot(wxT("root"));
     m_books->SetItemBold(root, true);
 
+    int iFormat = FbParams::GetValue(FB_FOLDER_FORMAT);
+    switch (iFormat) {
+        case 0:
+            FullBySequences(root, selections, true);
+            break;
+        case 1:
+            FullNoSequences(root, selections, true);
+            break;
+        case 2:
+            FullBySequences(root, selections, false);
+            break;
+        case 3:
+            FullNoSequences(root, selections, false);
+            break;
+    }
+
+    m_books->ExpandAll(root);
+	m_books->Thaw();
+}
+
+void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
+{
 	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence\
+        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence, bookseq.number\
         FROM books \
             LEFT JOIN authors ON authors.id=books.id_author \
             LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
             LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
         WHERE books.id IN (%s) %s \
-        ORDER BY authors.letter, authors.full_name, books.id_author, sequences.value, books.title \
+        ORDER BY authors.letter, authors.full_name, books.id_author, sequences.value, bookseq.number, books.title \
     ");
     wxString filter;
     if ( m_checkAuthor && m_checkAuthor->GetValue() )
@@ -307,8 +329,8 @@ void ExternalDlg::FillBooks(const wxString &selections)
     sql = wxString::Format(sql, selections.c_str(), filter.c_str());
 
     wxArrayInt books;
-    wxString leter, thisAuthor, thisSequence;
-    wxTreeItemId itemAuthor, itemSequence;
+    wxString thisLeter, thisAuthor, thisSequence;
+    wxTreeItemId itemLetter, itemAuthor, itemSequence;
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     DatabaseLayer * database = wxGetApp().GetDatabase();
@@ -316,12 +338,25 @@ void ExternalDlg::FillBooks(const wxString &selections)
 	DatabaseResultSet * result = ps->ExecuteQuery();
 	while (result && result->Next()) {
 	    BookTreeItemData data(result);
+	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
 	    wxString nextAuthor = result->GetResultString(wxT("full_name"));
 	    wxString nextSequence = result->GetResultString(wxT("sequence"));
+	    if (bUseLetter) {
+            wxString nextLetter = result->GetResultString(wxT("letter"));
+            if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
+                thisLeter = nextLetter;
+                itemAuthor = NULL;
+                itemSequence = NULL;
+                itemLetter = m_books->AppendItem(root, thisLeter);
+                m_books->SetItemBold(itemLetter, true);
+            }
+	    } else {
+	        itemLetter = root;
+	    }
 	    if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
 	        thisAuthor = nextAuthor;
 	        itemSequence = NULL;
-            itemAuthor = m_books->AppendItem(root, thisAuthor);
+            itemAuthor = m_books->AppendItem(itemLetter, thisAuthor);
             m_books->SetItemBold(itemAuthor, true);
 	    }
 	    if (thisSequence != nextSequence || !itemSequence.IsOk()) {
@@ -329,15 +364,60 @@ void ExternalDlg::FillBooks(const wxString &selections)
             itemSequence = m_books->AppendItem(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
             m_books->SetItemBold(itemSequence, true);
 	    }
-//	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
         AppendBook(itemSequence, data);
         books.Add(data.GetId());
 	}
 	database->CloseResultSet(result);
 	database->CloseStatement(ps);
+}
 
-    m_books->ExpandAll(root);
-	m_books->Thaw();
+void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
+{
+	wxString sql = wxT("\
+        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name\
+        FROM books \
+            LEFT JOIN authors ON authors.id=books.id_author \
+        WHERE books.id IN (%s) %s \
+        ORDER BY authors.letter, authors.full_name, books.id_author, books.title \
+    ");
+    wxString filter;
+    if ( m_checkAuthor && m_checkAuthor->GetValue() )
+        filter = wxString::Format(wxT("AND (books.id_author=%d)"), m_author);
+    sql = wxString::Format(sql, selections.c_str(), filter.c_str());
+
+    wxArrayInt books;
+    wxString thisLeter, thisAuthor;
+    wxTreeItemId itemLetter, itemAuthor;
+
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    DatabaseLayer * database = wxGetApp().GetDatabase();
+	PreparedStatement * ps = database->PrepareStatement(sql);
+	DatabaseResultSet * result = ps->ExecuteQuery();
+	while (result && result->Next()) {
+	    BookTreeItemData data(result);
+	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
+	    wxString nextAuthor = result->GetResultString(wxT("full_name"));
+	    if (bUseLetter) {
+            wxString nextLetter = result->GetResultString(wxT("letter"));
+            if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
+                thisLeter = nextLetter;
+                itemAuthor = NULL;
+                itemLetter = m_books->AppendItem(root, thisLeter);
+                m_books->SetItemBold(itemLetter, true);
+            }
+	    } else {
+	        itemLetter = root;
+	    }
+	    if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
+	        thisAuthor = nextAuthor;
+            itemAuthor = m_books->AppendItem(itemLetter, thisAuthor);
+            m_books->SetItemBold(itemAuthor, true);
+	    }
+        AppendBook(itemAuthor, data);
+        books.Add(data.GetId());
+	}
+	database->CloseResultSet(result);
+	database->CloseStatement(ps);
 }
 
 void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)

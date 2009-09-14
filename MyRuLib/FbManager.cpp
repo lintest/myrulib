@@ -31,6 +31,9 @@ BookTreeItemData::BookTreeItemData(DatabaseResultSet * res):
     file_type( res->GetResultString(wxT("file_type"))),
     number(0)
 {
+    wxLogNull log;
+    number = res->GetResultInt(wxT("number"));
+    if ( number == -1) number = 0;
 }
 
 class SequenceNode {

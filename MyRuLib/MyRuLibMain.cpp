@@ -21,6 +21,7 @@
 #include "ImpThread.h"
 #include "FbFrameSearch.h"
 #include "FbFrameFavorites.h"
+#include "VacuumThread.h"
 
 BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
@@ -31,6 +32,8 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_MENU_AUTHOR, MyRuLibMainFrame::OnMenuAuthor)
     EVT_MENU(ID_MENU_TITLE, MyRuLibMainFrame::OnMenuTitle)
     EVT_MENU(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthor)
+    EVT_MENU(ID_MENU_DB_INFO, MyRuLibMainFrame::OnDatabaseInfo)
+    EVT_MENU(ID_MENU_VACUUM, MyRuLibMainFrame::OnVacuum)
 	EVT_TEXT_ENTER(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthorEnter)
     EVT_MENU(ID_FIND_TITLE, MyRuLibMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_FIND_TITLE, MyRuLibMainFrame::OnFindTitleEnter)
@@ -178,8 +181,8 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 
 	menu = new wxMenu;
 	(tempItem = menu->Append(wxID_ANY, wxT("X")))->SetBitmap(wxArtProvider::GetBitmap(wxART_NEW));
-	menu->Append(wxID_ANY, _("Информация о коллекции"));
-	menu->Append(wxID_ANY, _("Реструктуризация БД"));
+	menu->Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
+	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
 	menu->AppendSeparator();
 	menu->Append(wxID_PREFERENCES, _("Настройки"));
 	menu->Delete(tempItem);
@@ -409,4 +412,17 @@ void MyRuLibMainFrame::OnMenuTitle(wxCommandEvent& event)
 void MyRuLibMainFrame::OnMenuSearch(wxCommandEvent& event)
 {
     wxMessageBox(_("Функционал расширенного поиска\nне реализован в данной версии."));
+}
+
+void MyRuLibMainFrame::OnDatabaseInfo(wxCommandEvent & event)
+{
+    wxMessageBox(_("Функционал не реализован в данной версии."));
+}
+
+void MyRuLibMainFrame::OnVacuum(wxCommandEvent & event)
+{
+    wxString msg = _("Выполнить реструктуризацию базы данных?");
+    if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) != wxOK) return;
+
+    VacuumThread::Execute();
 }

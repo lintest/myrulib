@@ -302,7 +302,12 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_checkBox3 = new wxCheckBox( m_panel2, ID_TRANSLIT_FILE, _("Транслитерация имен файлов"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer10->Add( m_checkBox3, 0, wxALL, 5 );
 
-	wxString m_radioBox1Choices[] = { _("Автор / Книга"), _("Автор / Серия / №_Книга"), _("А / Автор / Книга"), _("А / Автор / Серия / №_Книга") };
+	wxString m_radioBox1Choices[] = {
+	    _("А / Автор / Серия / №_Книга"),
+	    _("А / Автор / Книга"),
+	    _("Автор / Серия / №_Книга"),
+	    _("Автор / Книга"),
+    };
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
 	m_radioBox1 = new wxRadioBox( m_panel2, ID_FOLDER_FORMAT, _("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
@@ -315,10 +320,10 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer10->Add( m_radioBox2, 0, wxALL, 5 );
 
 	bSizer8->Add( fgSizer10, 0, wxEXPAND, 5 );
-
+/*
 	m_checkBox2 = new wxCheckBox( m_panel2, ID_USE_SYMLINKS, _("Создавть cимвольные ссылки для соавторов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_checkBox2, 0, wxALL, 5 );
-
+*/
 	m_panel2->SetSizer( bSizer8 );
 	m_panel2->Layout();
 	bSizer8->Fit( m_panel2 );

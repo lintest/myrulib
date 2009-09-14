@@ -124,6 +124,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_ProgressBar.o \
 	build/myrulib_SettingsDlg.o \
 	build/myrulib_TitleThread.o \
+	build/myrulib_VacuumThread.o \
 	build/myrulib_ZipReader.o \
 	build/myrulib_Archives.o \
 	build/myrulib_Authors.o \
@@ -331,6 +332,9 @@ build/myrulib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_TitleThread.o: ./MyRuLib/TitleThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_VacuumThread.o: ./MyRuLib/VacuumThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp

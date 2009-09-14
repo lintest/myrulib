@@ -41,6 +41,7 @@ void BaseThread::DoFinish()
 
 void BaseThread::UpdateBooksCount()
 {
+/*
     int count = 0;
     {
         wxCriticalSectionLocker locker(wxGetApp().m_DbSection);
@@ -54,4 +55,5 @@ void BaseThread::UpdateBooksCount()
         database->CloseStatement(ps);
     }
     FbParams().SetValue(DB_BOOKS_COUNT, count);
+*/
 }
