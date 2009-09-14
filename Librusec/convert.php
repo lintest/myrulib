@@ -415,8 +415,8 @@ function create_indexes($sqlite_db)
 
   $sqlite_db->query("CREATE INDEX sequences_name ON sequences(value);");
 
-  $sqlite_db->query("CREATE INDEX bookseq_book ON sequences(id_book);");
-  $sqlite_db->query("CREATE INDEX bookseq_author ON sequences(id_author);");
+  $sqlite_db->query("CREATE INDEX bookseq_book ON bookseq(id_book);");
+  $sqlite_db->query("CREATE INDEX bookseq_author ON bookseq(id_author);");
 
   $sqlite_db->query("CREATE INDEX words_word ON words(word);");
 
