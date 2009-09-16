@@ -4,9 +4,10 @@
 #include <wx/wx.h>
 
 class FbGenres {
-public:
-    static wxString Char(wxString &code);
-    static wxString Name(wxString &letter);
+    public:
+        static wxString Char(const wxString &code);
+        static wxString Name(const wxString &letter);
+        static wxString DecodeList(const wxString &genres);
 };
 
 #endif //FBGENRES_H
