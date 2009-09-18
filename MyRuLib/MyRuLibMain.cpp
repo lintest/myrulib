@@ -354,7 +354,7 @@ void MyRuLibMainFrame::FindTitle(const wxString &text)
     wxString caption = wxString::Format(_("Поиск: «%s»"), text.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(this, wxID_ANY, caption);
 	frame->Update();
-	frame->FillByFind(text);
+	frame->DoSearch(text);
 }
 
 void MyRuLibMainFrame::OnFindAuthor(wxCommandEvent& event)

@@ -15,7 +15,7 @@ class FbFrameSearch : public FbFrameBase
 public:
     FbFrameSearch(): FbFrameBase() {};
 	FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-    void FillByFind(const wxString &title, const wxString &author = wxEmptyString);
+    void DoSearch(const wxString &title, const wxString &author = wxEmptyString);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();

@@ -113,18 +113,23 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
 	FbParams::LoadParams();
 	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
+	wxString sUpgradeMsg = wxT("Upgrade database to version %d");
+
     if (ok && version == 1) {
-        wxLogInfo(wxT("Upgrade database to version 2."));
+        version ++;
+        wxLogInfo(sUpgradeMsg, version);
         BeginTransaction();
+
+        /** TABLE books **/
         ok &= ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
         ok &= ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
         ok &= ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size);"));
 
+        /** TABLE zip_books, zip_files **/
         ok &= ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
         ok &= ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
         ok &= ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book);"));
 
-        version ++;
         FbParams().SetValue(DB_LIBRARY_VERSION, version);
         if (ok)
             Commit();
@@ -133,16 +138,39 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
     }
 
     if (ok && version == 2) {
-        wxLogInfo(wxT("Upgrade database to version 3."));
+        version ++;
+        wxLogInfo(sUpgradeMsg, version);
         BeginTransaction();
+
+        /** TABLE types **/
         ok &= ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
         ok &= ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
         ok &= ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file;"));
 
+        /** TABLE files **/
         ok &= ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text);"));
         ok &= ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book);"));
 
+        FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        if (ok)
+            Commit();
+        else
+            RollBack();
+    }
+
+    if (ok && version == 3) {
         version ++;
+        wxLogInfo(sUpgradeMsg, version);
+        BeginTransaction();
+
+        /** TABLE books **/
+        ok &= ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT;"));
+        ok &= ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER;"));
+
+        /** TABLE comments **/
+        ok &= ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text);"));
+        ok &= ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book);"));
+
         FbParams().SetValue(DB_LIBRARY_VERSION, version);
         if (ok)
             Commit();
@@ -151,10 +179,11 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
     }
 
 	FbParams::LoadParams();
-	version = FbParams::GetValue(DB_LIBRARY_VERSION);
+	int old_version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
-	if (version != 3) {
-		wxLogFatalError(_("Mismatched database versions."));
+    int new_version = 4;
+	if (version != new_version) {
+		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
 		return false;
 	}
 

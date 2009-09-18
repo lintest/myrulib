@@ -3,7 +3,10 @@
 
 #include <wx/wx.h>
 
+<<<<<<< HEAD:MyRuLib/ParseCtx.h
 #define XML_STATIC
+=======
+>>>>>>> test:MyRuLib/ParseCtx.h
 #include <expat.h>
 
 class ParsingContext
