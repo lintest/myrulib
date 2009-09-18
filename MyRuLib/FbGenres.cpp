@@ -146,7 +146,7 @@ GenreStruct genres_list[] = {
 
 const size_t genres_count = sizeof(genres_list) / sizeof(GenreStruct);
 
-wxString FbGenres::Char(wxString &code)
+wxString FbGenres::Char(const wxString &code)
 {
     for (size_t i=0; genres_list[i].hi; i++)
         if (genres_list[i].code == code)
@@ -154,7 +154,7 @@ wxString FbGenres::Char(wxString &code)
     return wxEmptyString;
 }
 
-wxString FbGenres::Name(wxString &letter)
+wxString FbGenres::Name(const wxString &letter)
 {
 	long code = 0;
 	if (letter.ToLong(&code, 16)) {
@@ -163,4 +163,15 @@ wxString FbGenres::Name(wxString &letter)
 				return genres_list[i].name;
 	}
     return wxEmptyString;
+}
+
+wxString FbGenres::DecodeList(const wxString &genres)
+{
+    wxString result;
+    for (size_t i = 0; i<genres.Len()/2; i++) {
+        if (!result.IsEmpty()) result += wxT(", ");
+        wxString code = genres.SubString(i*2, i*2+1);
+        result +=  FbGenres::Name( code );
+    }
+    return result;
 }
