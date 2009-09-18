@@ -64,10 +64,9 @@ public:
 	int id_archive;
 	int id_book;
 	wxString file_name;
+	wxString file_path;
 
 public:
-
-
 	bool Save();
 	bool Delete();
 
@@ -91,6 +90,7 @@ protected:
 	static int CMPFUNC_id_archive(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_id_book(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
+	static int CMPFUNC_file_path(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	static int CMPFUNC_global(wxActiveRecordRow** item1,wxActiveRecordRow** item2);
 	virtual CMPFUNC_proto GetCmpFunc(const wxString& var) const;
 

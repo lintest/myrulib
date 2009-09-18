@@ -107,7 +107,7 @@ FilesRow::FilesRow(const FilesRow& src){
 	id_archive=src.id_archive;
 	id_book=src.id_book;
 	file_name=src.file_name;
-
+	file_name=src.file_path;
 }
 
 FilesRow::FilesRow(DatabaseLayer* database,const wxString& table):wxActiveRecordRow(database,table){
@@ -123,7 +123,7 @@ FilesRow& FilesRow::operator=(const FilesRow& src){
 	id_archive=src.id_archive;
 	id_book=src.id_book;
 	file_name=src.file_name;
-
+	file_name=src.file_path;
 
 	return *this;
 }
@@ -134,30 +134,32 @@ bool FilesRow::GetFromResult(DatabaseResultSet* result){
     id_archive=result->GetResultInt(wxT("id_archive"));
 	id_book=result->GetResultInt(wxT("id_book"));
 	file_name=result->GetResultString(wxT("file_name"));
+	file_name=result->GetResultString(wxT("file_path"));
 
 	return true;
 }
 
 bool FilesRow::Save(){
     if(newRow){
-        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (id_archive,id_book,file_name) VALUES (?,?,?)"),m_table.c_str()));
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (id_archive,id_book,file_name,file_path) VALUES (?,?,?,?)"),m_table.c_str()));
         if (!pStatement) return false;
         pStatement->SetParamInt(1,id_archive);
         pStatement->SetParamInt(2,id_book);
         pStatement->SetParamString(3,file_name);
+        pStatement->SetParamString(3,file_path);
         pStatement->RunQuery();
         m_database->CloseStatement(pStatement);
         newRow=false;
     }
     else{
-        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET file_name=? WHERE id_book=? AND id_archive=?"),m_table.c_str()));
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET file_name=? file_path=? WHERE id_book=? AND id_archive=?"),m_table.c_str()));
         if (!pStatement) return false;
         pStatement->SetParamString(1,file_name);
-        pStatement->SetParamInt(2,id_book);
-        pStatement->SetParamInt(3,id_archive);
+        pStatement->SetParamString(2,file_path);
+        pStatement->SetParamInt(3,id_book);
+        pStatement->SetParamInt(4,id_archive);
         pStatement->RunQuery();
         m_database->CloseStatement(pStatement);
-
     }
     return true;
 }
@@ -215,6 +217,12 @@ int FilesRowSet::CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow**
 	return (*m_item1)->file_name.Cmp((*m_item2)->file_name);
 }
 
+int FilesRowSet::CMPFUNC_file_path(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	FilesRow** m_item1=(FilesRow**)item1;
+	FilesRow** m_item2=(FilesRow**)item2;
+	return (*m_item1)->file_path.Cmp((*m_item2)->file_path);
+}
+
 CMPFUNC_proto FilesRowSet::GetCmpFunc(const wxString& var) const{
 	if(var==wxT("id_archive"))
 		return (CMPFUNC_proto)CMPFUNC_id_archive;
@@ -222,11 +230,11 @@ CMPFUNC_proto FilesRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_id_book;
 	else if(var==wxT("file_name"))
 		return (CMPFUNC_proto)CMPFUNC_file_name;
+	else if(var==wxT("file_path"))
+		return (CMPFUNC_proto)CMPFUNC_file_path;
 	else
 	return (CMPFUNC_proto)CMPFUNC_default;
 }
-
-
 
 /** END ACTIVE RECORD ROW SET **/
 

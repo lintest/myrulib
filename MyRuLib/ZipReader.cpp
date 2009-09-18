@@ -53,16 +53,42 @@ void *ZipThread::Entry()
 class ExtractItems
 {
 	public:
-		ExtractItems(BooksRow * book)
-			:id_book(book->id), id_archive(book->id_archive), book_name(book->file_name) {};
-		ExtractItems(FilesRow * file)
-			:id_book(file->id_book), id_archive(file->id_archive), book_name(file->file_name) {};
+		ExtractItems(DatabaseResultSet* result);
+	public:
+        wxFileName GetBook();
+        wxFileName GetZip(const wxString &path = wxEmptyString);
 	public:
 		int id_book;
 		int id_archive;
 		wxString book_name;
-		wxFileName zip_name;
+		wxString book_path;
+		wxString zip_name;
+		wxString zip_path;
 };
+
+ExtractItems::ExtractItems(DatabaseResultSet* result):
+	id_book(result->GetResultInt(wxT("id"))),
+	id_archive(result->GetResultInt(wxT("id_archive"))),
+    book_name(result->GetResultString(wxT("file_name"))),
+    book_path(result->GetResultString(wxT("file_path")))
+{
+}
+
+wxFileName ExtractItems::GetBook()
+{
+    wxString result = book_path;
+    if (!result.IsEmpty()) result += wxFileName::GetPathSeparator();
+    result += book_name;
+    return result;
+}
+
+wxFileName ExtractItems::GetZip(const wxString &path)
+{
+    wxString result = path.IsEmpty() ? zip_path : path;
+    if (!result.IsEmpty()) result += wxFileName::GetPathSeparator();
+    result += zip_name;
+    return result;
+}
 
 WX_DECLARE_OBJARRAY(ExtractItems, ExtractInfoArray);
 
@@ -76,31 +102,34 @@ ZipReader::ZipReader(int id, bool bShowError)
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        DatabaseLayer * database = wxGetApp().GetDatabase();
 
-        Books books(wxGetApp().GetDatabase());
-        BooksRow * bookRow = books.Id(id);
-        if (!bookRow) {
-            if (bShowError) wxLogError(_("Book not found (%d)"), id);
-            return;
+        wxString sql = wxT("\
+            SELECT DISTINCT id, id_archive, file_name, file_path FROM books WHERE id=? \
+            UNION ALL \
+            SELECT DISTINCT id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+        ");
+
+        PreparedStatement * ps = database->PrepareStatement(sql);
+        if (ps) {
+            ps->SetParamInt(1, id);
+            ps->SetParamInt(2, id);
+            DatabaseResultSet* result = ps->ExecuteQuery();
+            while ( result && result->Next() ) {
+                items.Add(result);
+            }
+            database->CloseResultSet(result);
         }
-
-        items.Add(bookRow);
-        file_name = bookRow->file_name;
-
-        Files files(wxGetApp().GetDatabase());
-        FilesRowSet * fileRows = files.IdBook(bookRow->id);
-        for (size_t i = 0; i<fileRows->Count(); i++) {
-			items.Add(fileRows->Item(i));
-        }
+        database->CloseStatement(ps);
 
         for (size_t i = 0; i<items.Count(); i++) {
         	ExtractItems & item = items[i];
         	if ( !item.id_archive ) continue;
 			Archives archives(wxGetApp().GetDatabase());
-			ArchivesRow * archiveRow = archives.Id(item.id_archive);
-			if ( !archiveRow ) continue;
-			item.zip_name = archiveRow->file_name;
-			item.zip_name.SetPath(archiveRow->file_path);
+			ArchivesRow * row = archives.Id(item.id_archive);
+			if ( !row ) continue;
+			item.zip_name = row->file_name;
+			item.zip_path = row->file_path;
         }
     }
 
@@ -110,22 +139,18 @@ ZipReader::ZipReader(int id, bool bShowError)
 	for (size_t i = 0; i<items.Count(); i++) {
 		ExtractItems & item = items[i];
 		if (item.id_archive) {
-			m_zipOk = item.zip_name.FileExists();
-			if (!m_zipOk) {
-				item.zip_name.SetPath(sLibraryDir);
-				m_zipOk = item.zip_name.FileExists();
-			}
-			if (!m_zipOk) {
-				item.zip_name.SetPath(sWanraikDir);
-				m_zipOk = item.zip_name.FileExists();
-			}
-			if (m_zipOk) OpenZip(item.zip_name.GetFullPath(), item.book_name);
+		    wxFileName zip_file = item.GetZip();
+			m_zipOk = zip_file.FileExists();
+			if (!m_zipOk) m_zipOk = (zip_file = item.GetZip(sLibraryDir)).FileExists();
+			if (!m_zipOk) m_zipOk = (zip_file = item.GetZip(sWanraikDir)).FileExists();
+			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
 		} else if (item.id_book > 0) {
 			wxString zip_name = zips.FindZip(item.book_name);
 			m_zipOk = !zip_name.IsEmpty();
 			if (m_zipOk) OpenZip(zip_name, item.book_name);
-		} else if (wxFileName::FileExists(item.book_name)) {
-			OpenFile(item.book_name);
+		} else {
+		    wxFileName book_file = item.GetBook();
+		    if (book_file.FileExists(item.book_name)) OpenFile(book_file.GetFullPath());
 		}
 		if (IsOK()) return;
 	}

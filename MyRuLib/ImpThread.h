@@ -12,12 +12,12 @@ public:
     ImportThread();
     virtual ~ImportThread();
     virtual void OnExit();
-	bool ParseXml(wxInputStream& stream, const wxString &name, int id_archive);
-    int AddArchive(const wxString &filename, const int file_size, const int file_count);
+	bool ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive);
+    int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
 private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
-	void AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, const int id_archive);
-	void AppendFile(const int id_book, const int id_archive, const wxString &new_name);
+	void AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, const int id_archive);
+	void AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path);
 	int FindBySHA1(const wxString &sha1sum);
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
 private:
@@ -50,12 +50,17 @@ private:
 class DirImportThread : public ImportThread
 {
 public:
-    DirImportThread(const wxString &dirname): m_dirname(dirname) {};
+    DirImportThread(const wxString &dirname);
     virtual void *Entry();
     bool ParseZip(const wxString &zipname);
+    bool ParseXml(const wxString &filename);
     void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
 private:
+    static wxString Normalize(const wxString &filename);
+    wxString Relative(const wxString &filename);
+private:
     wxString m_dirname;
+    int m_position;
 };
 
 class BooksCountThread : public BaseThread

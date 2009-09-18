@@ -167,6 +167,9 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
         ok &= ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT;"));
         ok &= ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER;"));
 
+        /** TABLE files **/
+        ok &= ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT;"));
+
         /** TABLE comments **/
         ok &= ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text);"));
         ok &= ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book);"));

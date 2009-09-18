@@ -120,8 +120,8 @@ wxString ImportThread::GetSQL(PSItem psItem)
         case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
         case psFindBySha1: return wxT("SELECT id FROM books WHERE sha1sum=? LIMIT 1");
         case psUpdateSha1: return wxT("UPDATE books SET sha1sum=? WHERE id=?");
-        case psSearchFile: return wxT("SELECT file_name FROM books WHERE id=? AND id_archive=? UNION SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
-        case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name) VALUES (?,?,?)");
+        case psSearchFile: return wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
+        case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
         case psSearchArch: return wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
         case psAppendArch: return wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
         case psLastMember: return wxEmptyString;
@@ -183,7 +183,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     return ok;
 }
 
-void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxFileOffset size, int id_archive)
+void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, int id_archive)
 {
 	long id_book = 0;
 	{
@@ -203,6 +203,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 		row->genres = info.genres;
 		row->file_size = size;
 		row->file_name = name;
+		row->file_path = path;
 		row->file_type = wxFileName(name).GetExt().Lower();
 		row->id_archive = id_archive;
 		row->sha1sum = info.sha1sum;
@@ -272,27 +273,28 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 	return 0;
 }
 
-bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive)
+bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive)
 {
     ImportParsingContext info;
 
-    info.filename = filename;
+    info.filename = name;
+    info.filepath = path;
 
 	if (LoadXml(stream, info)) {
 		int id_book = FindBySHA1(info.sha1sum);
 		if (id_book == 0)
 			id_book = FindBySize(info.sha1sum, stream.GetLength());
 		if (id_book == 0)
-			AppendBook(info, filename, stream.GetLength(), id_archive);
+			AppendBook(info, name, path, stream.GetLength(), id_archive);
 		else {
-			AppendFile(id_book, id_archive, filename);
+			AppendFile(id_book, id_archive, name, path);
 		}
         return true;
 	}
     return false;
 }
 
-void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
+void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
@@ -303,31 +305,29 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
     ps->SetParamInt(4, id_archive);
     DatabaseResultSet* result = ps->ExecuteQuery();
 
-    wxString old_name;
+    wxString old_name, old_path;
     if (result && result->Next()) {
         old_name = result->GetResultString(1);
+        old_path = result->GetResultString(2);
     }
     m_database->CloseResultSet(result);
 
-    if (old_name == new_name) {
-        wxLogWarning(_("File already exists %s"), new_name.c_str());
+    if (old_name == new_name && old_path == new_path) {
+        wxLogWarning(_("File already exists %s %s"), new_path.c_str(), new_name.c_str());
         return;
     }
 
-    wxLogWarning(_("Add alternative %s"), new_name.c_str());
+    wxLogWarning(_("Add alternative %s %s"), new_path.c_str(), new_name.c_str());
     ps = GetPreparedStatement(psAppendFile);
     ps->SetParamInt(1, id_book);
     ps->SetParamInt(2, id_archive);
     ps->SetParamString(3, new_name);
+    ps->SetParamString(4, new_path);
     ps->ExecuteUpdate();
 }
 
-int ImportThread::AddArchive(const wxString &filename, const int file_size, const int file_count)
+int ImportThread::AddArchive(const wxString &name, const wxString &path, const int size, const int count)
 {
-    wxFileName file(filename);
-    wxString name = file.GetFullName();
-    wxString path = file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     PreparedStatement * ps = GetPreparedStatement(psSearchArch);
@@ -347,8 +347,8 @@ int ImportThread::AddArchive(const wxString &filename, const int file_size, cons
     ps->SetParamInt(1, id);
     ps->SetParamString(2, name);
     ps->SetParamString(3, path);
-    ps->SetParamInt(4, file_size);
-    ps->SetParamInt(5, file_count);
+    ps->SetParamInt(4, size);
+    ps->SetParamInt(5, count);
     ps->ExecuteUpdate();
 	return id;
 }
@@ -381,7 +381,9 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 
 	if (zipname.Right(4).Lower() == wxT(".fb2")) {
         DoStart(0, zipname);
-        ParseXml(in, zipname, 0);
+        wxFileName filename = zipname;
+        filename.Normalize(wxPATH_NORM_ALL);
+        ParseXml(in, filename.GetFullName(), filename.GetPath(wxPATH_UNIX), 0);
         DoFinish();
         return;
 	}
@@ -393,7 +395,9 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 	    return;
 	}
 
-	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
+    wxFileName filename = zipname;
+    filename.Normalize(wxPATH_NORM_ALL);
+	int id_archive = AddArchive(filename.GetFullName(), filename.GetPath(wxPATH_UNIX), in.GetLength(), zip.GetTotalEntries());
 
     DoStart(zip.GetTotalEntries(), zipname);
 
@@ -408,7 +412,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
                 wxLogInfo(_("Import zip entry %s"), filename.c_str());
 			    DoStep(filename);
 				zip.OpenEntry(*entry);
-                ParseXml(zip, filename, id_archive);
+                ParseXml(zip, filename, wxEmptyString, id_archive);
 			} else {
                 wxLogWarning(_("Skip file %s"), filename.c_str());
 			}
@@ -446,15 +450,14 @@ private:
 class FolderTraverser : public wxDirTraverser
 {
 public:
-    FolderTraverser(DirImportThread* thread) : m_thread(thread), m_progress(0) { }
+    FolderTraverser(DirImportThread* thread) : m_thread(thread), m_progress(0) { };
 
     virtual wxDirTraverseResult OnFile(const wxString& filename) {
 		wxString ext = filename.Right(4).Lower();
 		if (ext == wxT(".fb2")) {
 		    Progress(filename);
             wxLogInfo(_("Import file %s"), filename.c_str());
-		    wxFFileInputStream file(filename);
-            m_thread->ParseXml(file, filename, 0);
+            m_thread->ParseXml(filename);
         } else if (ext == wxT(".zip")) {
 		    Progress(filename);
             wxLogInfo(_("Import file %s"), filename.c_str());
@@ -477,6 +480,25 @@ private:
     DirImportThread *m_thread;
     unsigned int m_progress;
 };
+
+wxString DirImportThread::Normalize(const wxString &filename)
+{
+    wxFileName result = filename;
+    result.Normalize(wxPATH_NORM_ALL);
+    return result.GetFullPath();
+}
+
+wxString DirImportThread::Relative(const wxString &filename)
+{
+    wxFileName result = filename;
+    result.Normalize(wxPATH_NORM_ALL);
+    return result.GetFullPath().Mid(m_position);
+}
+
+DirImportThread::DirImportThread(const wxString &dirname)
+    : m_dirname(Normalize(dirname)), m_position(m_dirname.Length() + (m_dirname.IsEmpty() ? 0 : 1) )
+{
+}
 
 void *DirImportThread::Entry()
 {
@@ -525,7 +547,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	    return false;
 	}
 
-	int id_archive = AddArchive(zipname, in.GetLength(), zip.GetTotalEntries());
+	int id_archive = AddArchive(Relative(zipname), m_dirname, in.GetLength(), zip.GetTotalEntries());
 
     bool ok = false;
     bool skip = true;
@@ -537,7 +559,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 			    skip = false;
                 wxLogInfo(_("Import zip entry %s"), filename.c_str());
 				zip.OpenEntry(*entry);
-                ParseXml(zip, filename, id_archive);
+                ImportThread::ParseXml(zip, filename, wxEmptyString, id_archive);
 			} else {
                 wxLogWarning(_("Skip file %s"), filename.c_str());
 			}
@@ -549,6 +571,12 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	if ( !ok ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 
     return ok;
+}
+
+bool DirImportThread::ParseXml(const wxString &filename)
+{
+    wxFFileInputStream file(filename);
+    return ImportThread::ParseXml(file, Relative(filename), m_dirname, 0);
 }
 
 void BooksCountThread::Execute()

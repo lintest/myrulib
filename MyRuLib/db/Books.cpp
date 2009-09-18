@@ -119,6 +119,7 @@ BooksRow::BooksRow(const BooksRow& src){
 	file_size=src.file_size;
 	annotation=src.annotation;
 	file_name=src.file_name;
+	file_path=src.file_path;
 	file_type=src.file_type;
 	deleted=src.deleted;
 	title=src.title;
@@ -144,6 +145,7 @@ BooksRow& BooksRow::operator=(const BooksRow& src){
 	file_size=src.file_size;
 	annotation=src.annotation;
 	file_name=src.file_name;
+	file_path=src.file_path;
 	file_type=src.file_type;
 	deleted=src.deleted;
 	title=src.title;
@@ -164,6 +166,7 @@ bool BooksRow::GetFromResult(DatabaseResultSet* result){
 	file_size=result->GetResultInt(wxT("file_size"));
 	annotation=result->GetResultString(wxT("annotation"));
 	file_name=result->GetResultString(wxT("file_name"));
+	file_path=result->GetResultString(wxT("file_path"));
 	file_type=result->GetResultString(wxT("file_type"));
 	deleted=result->GetResultString(wxT("deleted"));
 	title=result->GetResultString(wxT("title"));
@@ -176,26 +179,7 @@ bool BooksRow::GetFromResult(DatabaseResultSet* result){
 
 bool BooksRow::Save(){
     if(newRow){
-        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (sha1sum,genres,description,id,id_archive,file_size,annotation,file_name,deleted,file_type,title,id_author) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
-        if (!pStatement) return false;
-        pStatement->SetParamString(1,sha1sum);
-        pStatement->SetParamString(2,genres);
-        pStatement->SetParamString(3,description);
-        pStatement->SetParamInt(4,id);
-        pStatement->SetParamInt(5,id_archive);
-        pStatement->SetParamInt(6,file_size);
-        pStatement->SetParamString(7,annotation);
-        pStatement->SetParamString(8,file_name);
-        pStatement->SetParamString(9,deleted);
-        pStatement->SetParamString(10,file_type);
-        pStatement->SetParamString(11,title);
-        pStatement->SetParamInt(12,id_author);
-        pStatement->RunQuery();
-        m_database->CloseStatement(pStatement);
-        newRow=false;
-    }
-    else{
-        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET sha1sum=?,genres=?,description=?,id_archive=?,file_size=?,annotation=?,file_name=?,deleted=?,file_type=?,title=?,id_author=? WHERE id=?"),m_table.c_str()));
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("INSERT INTO %s (sha1sum,genres,description,id_archive,file_size,annotation,file_name,file_path,deleted,file_type,title,id_author,id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"),m_table.c_str()));
         if (!pStatement) return false;
         pStatement->SetParamString(1,sha1sum);
         pStatement->SetParamString(2,genres);
@@ -204,11 +188,32 @@ bool BooksRow::Save(){
         pStatement->SetParamInt(5,file_size);
         pStatement->SetParamString(6,annotation);
         pStatement->SetParamString(7,file_name);
-        pStatement->SetParamString(8,deleted);
-        pStatement->SetParamString(9,file_type);
-        pStatement->SetParamString(10,title);
-        pStatement->SetParamInt(11,id_author);
-        pStatement->SetParamInt(12,id);
+        pStatement->SetParamString(8,file_path);
+        pStatement->SetParamString(9,deleted);
+        pStatement->SetParamString(10,file_type);
+        pStatement->SetParamString(11,title);
+        pStatement->SetParamInt(12,id_author);
+        pStatement->SetParamInt(13,id);
+        pStatement->RunQuery();
+        m_database->CloseStatement(pStatement);
+        newRow=false;
+    }
+    else{
+        PreparedStatement* pStatement=m_database->PrepareStatement(wxString::Format(wxT("UPDATE %s SET sha1sum=?,genres=?,description=?,id_archive=?,file_size=?,annotation=?,file_name=?,file_path=?,deleted=?,file_type=?,title=?,id_author=? WHERE id=?"),m_table.c_str()));
+        if (!pStatement) return false;
+        pStatement->SetParamString(1,sha1sum);
+        pStatement->SetParamString(2,genres);
+        pStatement->SetParamString(3,description);
+        pStatement->SetParamInt(4,id_archive);
+        pStatement->SetParamInt(5,file_size);
+        pStatement->SetParamString(6,annotation);
+        pStatement->SetParamString(7,file_name);
+        pStatement->SetParamString(8,file_path);
+        pStatement->SetParamString(9,deleted);
+        pStatement->SetParamString(10,file_type);
+        pStatement->SetParamString(11,title);
+        pStatement->SetParamInt(12,id_author);
+        pStatement->SetParamInt(13,id);
         pStatement->RunQuery();
         m_database->CloseStatement(pStatement);
 	}
@@ -336,6 +341,12 @@ int BooksRowSet::CMPFUNC_file_name(wxActiveRecordRow** item1,wxActiveRecordRow**
 	return (*m_item1)->file_name.Cmp((*m_item2)->file_name);
 }
 
+int BooksRowSet::CMPFUNC_file_path(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
+	BooksRow** m_item1=(BooksRow**)item1;
+	BooksRow** m_item2=(BooksRow**)item2;
+	return (*m_item1)->file_path.Cmp((*m_item2)->file_path);
+}
+
 int BooksRowSet::CMPFUNC_file_type(wxActiveRecordRow** item1,wxActiveRecordRow** item2){
 	BooksRow** m_item1=(BooksRow**)item1;
 	BooksRow** m_item2=(BooksRow**)item2;
@@ -386,6 +397,8 @@ CMPFUNC_proto BooksRowSet::GetCmpFunc(const wxString& var) const{
 		return (CMPFUNC_proto)CMPFUNC_annotation;
 	else if(var==wxT("file_name"))
 		return (CMPFUNC_proto)CMPFUNC_file_name;
+	else if(var==wxT("file_path"))
+		return (CMPFUNC_proto)CMPFUNC_file_path;
 	else if(var==wxT("file_type"))
 		return (CMPFUNC_proto)CMPFUNC_file_type;
 	else if(var==wxT("deleted"))
