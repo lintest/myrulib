@@ -20,7 +20,7 @@
 
     <include file="./Presets/wx.bkl"/>
 
-    <lib id="sqlite_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+    <lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<sources>SQLite/sqlite3.c</sources>
     </lib>
 	
@@ -34,18 +34,18 @@
 		<include>Expat</include>
     </lib>
 
-    <lib id="DatabaseLayer" template="wx-lib">
+    <lib id="DBLayer" template="wx-lib">
 		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
-		<sources>DatabaseLayer/DatabaseErrorReporter.cpp</sources>
-		<sources>DatabaseLayer/DatabaseLayer.cpp</sources>
-		<sources>DatabaseLayer/DatabaseQueryParser.cpp</sources>
-		<sources>DatabaseLayer/DatabaseResultSet.cpp</sources>
-		<sources>DatabaseLayer/DatabaseStringConverter.cpp</sources>
-		<sources>DatabaseLayer/PreparedStatement.cpp</sources>
-		<sources>DatabaseLayer/SqliteDatabaseLayer.cpp</sources>
-		<sources>DatabaseLayer/SqlitePreparedStatement.cpp</sources>
-		<sources>DatabaseLayer/SqliteResultSet.cpp</sources>
-		<sources>DatabaseLayer/SqliteResultSetMetaData.cpp</sources>
+		<sources>DBLayer/DatabaseErrorReporter.cpp</sources>
+		<sources>DBLayer/DatabaseLayer.cpp</sources>
+		<sources>DBLayer/DatabaseQueryParser.cpp</sources>
+		<sources>DBLayer/DatabaseResultSet.cpp</sources>
+		<sources>DBLayer/DatabaseStringConverter.cpp</sources>
+		<sources>DBLayer/PreparedStatement.cpp</sources>
+		<sources>DBLayer/SqliteDatabaseLayer.cpp</sources>
+		<sources>DBLayer/SqlitePreparedStatement.cpp</sources>
+		<sources>DBLayer/SqliteResultSet.cpp</sources>
+		<sources>DBLayer/SqliteResultSetMetaData.cpp</sources>
 		<include>SQLite</include>
     </lib>
 
@@ -98,9 +98,9 @@
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>SQLite</include>
 		<include>Expat</include>
-		<include>DatabaseLayer</include>
-		<library>DatabaseLayer</library>
-		<library cond="WX_SHARED_DEFAULT=='0'">sqlite_static</library>
+		<include>DBLayer</include>
+		<library>DBLayer</library>
+		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
 		<library cond="WX_SHARED_DEFAULT=='0'">expat_static</library>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>

@@ -1,9 +1,8 @@
 #ifndef __PARSECTX_H__
 #define __PARSECTX_H__
 
-#include <wx/wx.h>
-
 #include <expat.h>
+#include <wx/wx.h>
 
 class ParsingContext
 {
