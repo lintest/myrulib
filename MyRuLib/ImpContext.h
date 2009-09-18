@@ -6,10 +6,6 @@
 #include <wx/thread.h>
 #include "ParseCtx.h"
 
-#define BIF_TITLE_INFO  0x0001
-#define BIF_ANNOTATION  0x0002
-#define BIF_DESCRIPTION 0x0003
-
 class AuthorItem
 {
 private:

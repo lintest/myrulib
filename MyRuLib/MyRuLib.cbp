@@ -18,8 +18,6 @@
 					<Add option="-g" />
 					<Add option="-Wall" />
 					<Add option="`wx-config --cflags`" />
-					<Add directory="..\DatabaseLayer" />
-					<Add directory="..\SQLite" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -157,7 +155,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-DDONT_USE_DATABASE_LAYER_EXCEPTIONS" />
-			<Add directory="..\DatabaseLayer" />
+			<Add directory="..\DBLayer" />
 			<Add directory="..\SQLite" />
 			<Add directory="..\Expat" />
 		</Compiler>

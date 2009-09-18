@@ -3,11 +3,11 @@
 	<Workspace title="Workspace">
 		<Project filename="SQLite\SQLite.cbp" />
 		<Project filename="Expat\Expat.cbp" />
-		<Project filename="DatabaseLayer\DatabaseLayer.cbp" />
+		<Project filename="DBLayer\DatabaseLayer.cbp" />
 		<Project filename="MyRuLib\MyRuLib.cbp" active="1">
 			<Depends filename="SQLite\SQLite.cbp" />
 			<Depends filename="Expat\Expat.cbp" />
-			<Depends filename="DatabaseLayer\DatabaseLayer.cbp" />
+			<Depends filename="DBLayer\DatabaseLayer.cbp" />
 		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

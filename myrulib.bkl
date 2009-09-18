@@ -37,12 +37,12 @@
     <lib id="DBLayer" template="wx-lib">
 		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
 		<sources>DBLayer/DatabaseErrorReporter.cpp</sources>
-		<sources>DBLayer/DBLayer.cpp</sources>
+		<sources>DBLayer/DatabaseLayer.cpp</sources>
 		<sources>DBLayer/DatabaseQueryParser.cpp</sources>
 		<sources>DBLayer/DatabaseResultSet.cpp</sources>
 		<sources>DBLayer/DatabaseStringConverter.cpp</sources>
 		<sources>DBLayer/PreparedStatement.cpp</sources>
-		<sources>DBLayer/SqliteDBLayer.cpp</sources>
+		<sources>DBLayer/SqliteDatabaseLayer.cpp</sources>
 		<sources>DBLayer/SqlitePreparedStatement.cpp</sources>
 		<sources>DBLayer/SqliteResultSet.cpp</sources>
 		<sources>DBLayer/SqliteResultSetMetaData.cpp</sources>
