@@ -1,6 +1,6 @@
 #include "FbConst.h"
 
-const wxString strVersionInfo = _T("MyRuLib - version 0.07 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
+const wxString strVersionInfo = _T("MyRuLib - version 0.08 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
 const wxString strHomePage = _T("http://myrulib.lintest.ru");
 
 const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
