@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinDebug\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\LinDebug\" />
-				<Option object_output="..\build\LinDebug\" />
+				<Option output="../build/LinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinDebug/" />
+				<Option object_output="../build/LinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -21,14 +21,14 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
-					<Add directory="..\build\LinDebug" />
+					<Add directory="../build/LinDebug" />
 				</Linker>
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinRelease\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\LinRelease\" />
-				<Option object_output="..\build\LinRelease\" />
+				<Option output="../build/LinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinRelease/" />
+				<Option object_output="../build/LinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -40,14 +40,14 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="`wx-config --libs`" />
-					<Add directory="..\build\LinRelease" />
+					<Add directory="../build/LinRelease" />
 				</Linker>
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinDebug\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\WinDebug\" />
-				<Option object_output="..\build\WinDebug\" />
+				<Option output="../build/WinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/WinDebug/" />
+				<Option object_output="../build/WinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -59,13 +59,13 @@
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
-					<Add directory="$(WXWIN)\include" />
-					<Add directory="$(WXWIN)\contrib\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
-					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28u_aui.a" />
@@ -93,15 +93,15 @@
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
 					<Add library="libshlwapi.a" />
-					<Add directory="$(WXWIN)\lib\gcc_lib" />
-					<Add directory="..\build\WinDebug\" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinDebug/" />
 				</Linker>
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinRelease\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\WinRelease\" />
-				<Option object_output="..\build\WinRelease\" />
+				<Option output="../build/WinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/WinRelease/" />
+				<Option object_output="../build/WinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -113,13 +113,13 @@
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
-					<Add directory="$(WXWIN)\include" />
-					<Add directory="$(WXWIN)\contrib\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
-					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
@@ -148,16 +148,16 @@
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
 					<Add library="libshlwapi.a" />
-					<Add directory="$(WXWIN)\lib\gcc_lib" />
-					<Add directory="..\build\WinRelease\" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinRelease/" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-DDONT_USE_DATABASE_LAYER_EXCEPTIONS" />
-			<Add directory="..\DBLayer" />
-			<Add directory="..\SQLite" />
-			<Add directory="..\Expat" />
+			<Add directory="../DBLayer" />
+			<Add directory="../SQLite" />
+			<Add directory="../Expat" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -167,6 +167,8 @@
 		</Linker>
 		<Unit filename="BaseThread.cpp" />
 		<Unit filename="BaseThread.h" />
+		<Unit filename="BookExtractInfo.cpp" />
+		<Unit filename="BookExtractInfo.h" />
 		<Unit filename="BookListCtrl.cpp" />
 		<Unit filename="BookListCtrl.h" />
 		<Unit filename="BooksPanel.cpp" />
@@ -225,44 +227,44 @@
 		<Unit filename="XpmBitmaps.h" />
 		<Unit filename="ZipReader.cpp" />
 		<Unit filename="ZipReader.h" />
-		<Unit filename="db\Archives.cpp" />
-		<Unit filename="db\Archives.h" />
-		<Unit filename="db\Authors.cpp" />
-		<Unit filename="db\Authors.h" />
-		<Unit filename="db\Books.cpp" />
-		<Unit filename="db\Books.h" />
-		<Unit filename="db\Bookseq.cpp" />
-		<Unit filename="db\Bookseq.h" />
-		<Unit filename="db\Files.cpp" />
-		<Unit filename="db\Files.h" />
-		<Unit filename="db\Params.cpp" />
-		<Unit filename="db\Params.h" />
-		<Unit filename="db\Sequences.cpp" />
-		<Unit filename="db\Sequences.h" />
-		<Unit filename="db\Types.cpp" />
-		<Unit filename="db\Types.h" />
-		<Unit filename="db\ZipBooks.cpp" />
-		<Unit filename="db\ZipBooks.h" />
-		<Unit filename="db\ZipFiles.cpp" />
-		<Unit filename="db\ZipFiles.h" />
-		<Unit filename="db\wxActiveRecord.cpp" />
-		<Unit filename="db\wxActiveRecord.h" />
-		<Unit filename="res\checked.xpm" />
-		<Unit filename="res\checkout.xpm" />
-		<Unit filename="res\nocheck.xpm" />
-		<Unit filename="res\resource.rc">
+		<Unit filename="db/Archives.cpp" />
+		<Unit filename="db/Archives.h" />
+		<Unit filename="db/Authors.cpp" />
+		<Unit filename="db/Authors.h" />
+		<Unit filename="db/Books.cpp" />
+		<Unit filename="db/Books.h" />
+		<Unit filename="db/Bookseq.cpp" />
+		<Unit filename="db/Bookseq.h" />
+		<Unit filename="db/Files.cpp" />
+		<Unit filename="db/Files.h" />
+		<Unit filename="db/Params.cpp" />
+		<Unit filename="db/Params.h" />
+		<Unit filename="db/Sequences.cpp" />
+		<Unit filename="db/Sequences.h" />
+		<Unit filename="db/Types.cpp" />
+		<Unit filename="db/Types.h" />
+		<Unit filename="db/ZipBooks.cpp" />
+		<Unit filename="db/ZipBooks.h" />
+		<Unit filename="db/ZipFiles.cpp" />
+		<Unit filename="db/ZipFiles.h" />
+		<Unit filename="db/wxActiveRecord.cpp" />
+		<Unit filename="db/wxActiveRecord.h" />
+		<Unit filename="res/checked.xpm" />
+		<Unit filename="res/checkout.xpm" />
+		<Unit filename="res/nocheck.xpm" />
+		<Unit filename="res/resource.rc">
 			<Option compilerVar="WINDRES" />
 			<Option target="WinDebug" />
 			<Option target="WinRelease" />
 		</Unit>
-		<Unit filename="sha1\sha1.c">
+		<Unit filename="sha1/sha1.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="sha1\sha1.h" />
-		<Unit filename="wx\base64.cpp" />
-		<Unit filename="wx\base64.h" />
-		<Unit filename="wx\treelistctrl.cpp" />
-		<Unit filename="wx\treelistctrl.h" />
+		<Unit filename="sha1/sha1.h" />
+		<Unit filename="wx/base64.cpp" />
+		<Unit filename="wx/base64.h" />
+		<Unit filename="wx/treelistctrl.cpp" />
+		<Unit filename="wx/treelistctrl.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
