@@ -4,6 +4,7 @@
 #include "MyRuLibApp.h"
 #include "ZipReader.h"
 #include "db/Files.h"
+#include "BookExtractInfo.h"
 
 void TitleThread::Execute(wxEvtHandler *frame, const int id)
 {
@@ -88,43 +89,49 @@ wxString TitleThread::GetBookFiles(int id)
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     DatabaseLayer * database = wxGetApp().GetDatabase();
 
-    Books books(database);
-    BooksRow * bookRow = books.Id(id);
-    if (!bookRow) return wxEmptyString;
+    wxString sql = wxT("\
+        SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
+        SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+        ORDER BY Key \
+    ");
+
+	BookExtractInfoArray items;
+
+    PreparedStatement * ps = database->PrepareStatement(sql);
+    if (!ps) return wxEmptyString;
+    ps->SetParamInt(1, id);
+    ps->SetParamInt(2, id);
+
+    DatabaseResultSet* result = ps->ExecuteQuery();
+    while ( result && result->Next() ) {
+        items.Add(result);
+    }
+    database->CloseResultSet(result);
+    database->CloseStatement(ps);
+
+    for (size_t i = 0; i<items.Count(); i++) {
+        BookExtractInfo & item = items[i];
+        if (!item.id_archive) continue;
+        Archives archives(wxGetApp().GetDatabase());
+        ArchivesRow * row = archives.Id(item.id_archive);
+        if (!row) continue;
+        item.zip_name = row->file_name;
+        item.zip_path = row->file_path;
+        if (item.zip_path.IsEmpty()) item.zip_path = wxT("$(WANRAIK)");
+    }
 
     wxString html;
 
-    if ( bookRow->id>0 ) {
-        html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), bookRow->file_name.c_str());
-    } else {
-        html += wxString::Format(wxT("<p>%s%s</p>"), GetArchivePath(bookRow->id_archive).c_str(), bookRow->file_name.c_str());
-    }
+	for (size_t i = 0; i<items.Count(); i++) {
+		BookExtractInfo & item = items[i];
+        if ( item.id_book > 0 )
+            html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), item.GetBook().c_str());
+        else if ( item.id_archive )
+            html += wxString::Format(wxT("<p>%s: %s</p>"), item.GetZip().c_str(), item.GetBook().c_str());
+        else
+            html += wxString::Format(wxT("<p>%s</p>"), item.GetBook().c_str());
+	}
 
-    Files files(database);
-    FilesRowSet * fileRows = files.IdBook(bookRow->id);
-    for (size_t i = 0; i<fileRows->Count(); i++) {
-        FilesRow * row = fileRows->Item(i);
-        html += wxString::Format(wxT("<p>%s%s</p>"), GetArchivePath(row->id_archive).c_str(), row->file_name.c_str());
-    }
     return html;
 }
 
-wxString TitleThread::GetArchivePath(int id_archive)
-{
-    if ( ! id_archive ) return wxEmptyString;
-
-    DatabaseLayer * database = wxGetApp().GetDatabase();
-    Archives archives(database);
-
-    ArchivesRow * archiveRow = archives.Id(id_archive);
-    if (archiveRow) {
-        if (archiveRow->file_path.IsEmpty()) {
-            return wxString::Format(wxT("$(WANRAIK)/%s: "),  archiveRow->file_name.c_str());
-        } else {
-            wxFileName zipname = archiveRow->file_name;
-            zipname.SetPath(archiveRow->file_path);
-            return zipname.GetFullPath() + wxT(": ");
-        }
-    }
-    return wxEmptyString;
-}

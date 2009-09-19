@@ -10,6 +10,7 @@
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbConst.h"
+#include "BookExtractInfo.h"
 
 class ZipThread : public BaseThread
 {
@@ -50,54 +51,10 @@ void *ZipThread::Entry()
 	return NULL;
 }
 
-class ExtractItems
-{
-	public:
-		ExtractItems(DatabaseResultSet* result);
-	public:
-        wxFileName GetBook();
-        wxFileName GetZip(const wxString &path = wxEmptyString);
-	public:
-		int id_book;
-		int id_archive;
-		wxString book_name;
-		wxString book_path;
-		wxString zip_name;
-		wxString zip_path;
-};
-
-ExtractItems::ExtractItems(DatabaseResultSet* result):
-	id_book(result->GetResultInt(wxT("id"))),
-	id_archive(result->GetResultInt(wxT("id_archive"))),
-    book_name(result->GetResultString(wxT("file_name"))),
-    book_path(result->GetResultString(wxT("file_path")))
-{
-}
-
-wxFileName ExtractItems::GetBook()
-{
-    wxString result = book_path;
-    if (!result.IsEmpty()) result += wxFileName::GetPathSeparator();
-    result += book_name;
-    return result;
-}
-
-wxFileName ExtractItems::GetZip(const wxString &path)
-{
-    wxString result = path.IsEmpty() ? zip_path : path;
-    if (!result.IsEmpty()) result += wxFileName::GetPathSeparator();
-    result += zip_name;
-    return result;
-}
-
-WX_DECLARE_OBJARRAY(ExtractItems, ExtractInfoArray);
-
-WX_DEFINE_OBJARRAY(ExtractInfoArray);
-
 ZipReader::ZipReader(int id, bool bShowError)
     :conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
-	ExtractInfoArray items;
+	BookExtractInfoArray items;
 	wxString file_name;
 
     {
@@ -105,9 +62,9 @@ ZipReader::ZipReader(int id, bool bShowError)
         DatabaseLayer * database = wxGetApp().GetDatabase();
 
         wxString sql = wxT("\
-            SELECT DISTINCT id, id_archive, file_name, file_path FROM books WHERE id=? \
-            UNION ALL \
-            SELECT DISTINCT id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+            SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
+            SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+            ORDER BY Key \
         ");
 
         PreparedStatement * ps = database->PrepareStatement(sql);
@@ -123,11 +80,12 @@ ZipReader::ZipReader(int id, bool bShowError)
         database->CloseStatement(ps);
 
         for (size_t i = 0; i<items.Count(); i++) {
-        	ExtractItems & item = items[i];
-        	if ( !item.id_archive ) continue;
+        	BookExtractInfo & item = items[i];
+            if (file_name.IsEmpty()) file_name = item.book_name;
+        	if (!item.id_archive) continue;
 			Archives archives(wxGetApp().GetDatabase());
 			ArchivesRow * row = archives.Id(item.id_archive);
-			if ( !row ) continue;
+			if (!row) continue;
 			item.zip_name = row->file_name;
 			item.zip_path = row->file_path;
         }
@@ -137,7 +95,7 @@ ZipReader::ZipReader(int id, bool bShowError)
 	wxString sWanraikDir = FbParams::GetText(FB_WANRAIK_DIR);
 
 	for (size_t i = 0; i<items.Count(); i++) {
-		ExtractItems & item = items[i];
+		BookExtractInfo & item = items[i];
 		if (item.id_archive) {
 		    wxFileName zip_file = item.GetZip();
 			m_zipOk = zip_file.FileExists();

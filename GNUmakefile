@@ -86,6 +86,7 @@ MYRULIB_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat \
 	$(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
+	build/myrulib_BookExtractInfo.o \
 	build/myrulib_BookListCtrl.o \
 	build/myrulib_BooksPanel.o \
 	build/myrulib_ExpThread.o \
@@ -212,6 +213,9 @@ build/DBLayer_SqliteResultSetMetaData.o: ./DBLayer/SqliteResultSetMetaData.cpp
 	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_BookExtractInfo.o: ./MyRuLib/BookExtractInfo.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
