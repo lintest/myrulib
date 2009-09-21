@@ -26,7 +26,7 @@ WX_DECLARE_OBJARRAY(AuthorItem, AuthorArray);
 class SequenceItem
 {
 private:
-    static int FindSequence(wxString &name);
+    static int FindSequence(wxString &value);
 public:
 	SequenceItem(): id(0), number(0) {};
 	SequenceItem(int s, int n): id(s), number(n) {};

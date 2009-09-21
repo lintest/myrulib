@@ -185,7 +185,7 @@ bool MyrulibDatabaseLayer::UpgradeDatabase()
 	int old_version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
     int new_version = 4;
-	if (version != new_version) {
+	if (old_version != new_version) {
 		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
 		return false;
 	}

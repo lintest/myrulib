@@ -4,9 +4,6 @@
 #include "ZipReader.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
-#include "db/Files.h"
-#include "db/ZipBooks.h"
-#include "db/ZipFiles.h"
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbConst.h"
@@ -58,36 +55,34 @@ ZipReader::ZipReader(int id, bool bShowError)
 	wxString file_name;
 
     {
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        DatabaseLayer * database = wxGetApp().GetDatabase();
-
         wxString sql = wxT("\
             SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
             SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
             ORDER BY Key \
         ");
 
-        PreparedStatement * ps = database->PrepareStatement(sql);
-        if (ps) {
-            ps->SetParamInt(1, id);
-            ps->SetParamInt(2, id);
-            DatabaseResultSet* result = ps->ExecuteQuery();
-            while ( result && result->Next() ) {
-                items.Add(result);
-            }
-            database->CloseResultSet(result);
-        }
-        database->CloseStatement(ps);
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        stmt.Bind(1, id);
+        stmt.Bind(2, id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        while ( result.NextRow() ) items.Add(result);
+    }
+
+    {
+        wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
 
         for (size_t i = 0; i<items.Count(); i++) {
-        	BookExtractInfo & item = items[i];
-            if (file_name.IsEmpty()) file_name = item.book_name;
-        	if (!item.id_archive) continue;
-			Archives archives(wxGetApp().GetDatabase());
-			ArchivesRow * row = archives.Id(item.id_archive);
-			if (!row) continue;
-			item.zip_name = row->file_name;
-			item.zip_path = row->file_path;
+            BookExtractInfo & item = items[i];
+            if (!item.id_archive) continue;
+            stmt.Bind(1, item.id_archive);
+            wxSQLite3ResultSet result = stmt.ExecuteQuery();
+            if (result.NextRow()) {
+                item.zip_name = result.GetString(wxT("file_name"));
+                item.zip_path = result.GetString(wxT("file_path"));
+            }
         }
     }
 

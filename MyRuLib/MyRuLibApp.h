@@ -12,11 +12,7 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
-#include <DatabaseLayer.h>
-#include "MyrulibData.h"
-#include "db/Authors.h"
-#include "db/Books.h"
-#include "db/Params.h"
+#include "FbDatabase.h"
 
 class MyRuLibApp : public wxApp
 {
@@ -25,23 +21,17 @@ public:
 	virtual int OnExit();
     wxString GetAppPath() const;
     wxString GetAppData() const { return m_datafile; };
-	SqliteDatabaseLayer * GetDatabase() {return &m_database; };
+    wxSQLite3Database& GetDatabase() { return m_database; };
 public:
     wxCriticalSection m_DbSection;
 private:
 	bool ConnectToDatabase();
 	bool CreateDatabase();
 private:
-	MyrulibDatabaseLayer m_database;
 	wxString m_datafile;
+    FbDatabase m_database;
 };
 
 DECLARE_APP(MyRuLibApp)
-
-class AutoTransaction {
-    public:
-        AutoTransaction() { wxLogNull log; wxGetApp().GetDatabase()->BeginTransaction(); };
-        ~AutoTransaction() { wxLogNull log; wxGetApp().GetDatabase()->Commit(); };
-};
 
 #endif // MYRULIBAPP_H

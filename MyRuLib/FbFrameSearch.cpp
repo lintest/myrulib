@@ -55,27 +55,8 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
 {
     BookListCtrl * booklist = m_BooksPanel.m_BookList;
 
-	booklist->Freeze();
-
-    booklist->DeleteRoot();
-
     wxString msg = wxString::Format(_T("Поиск: %s %s"), title.c_str(), author.c_str());
-    wxTreeItemId root = booklist->AddRoot(msg);
 
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
-/*
-    MyrulibDatabaseLayer::sm_Delta = FbParams::GetValue(DB_BOOKS_COUNT) / 100;
-    MyrulibDatabaseLayer::sm_msg = msg;
-    MyrulibDatabaseLayer::sm_Progress = 0;
-    MyrulibDatabaseLayer::sm_Current = 0;
-    {
-        wxUpdateUIEvent event( ID_PROGRESS_START );
-        event.SetText(msg);
-        event.SetInt(100);
-        wxPostEvent(wxGetApp().GetTopWindow(), event);
-    }
-*/
     wxString templ = title;
     templ.Replace(wxT(" "), wxT("%"));
     templ.MakeLower();
@@ -88,40 +69,36 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
         ORDER BY books.title, books.id, authors.full_name\
         LIMIT 1024 \
     ");
-	PreparedStatement* ps = database->PrepareStatement(sql);
-	if (!ps) return;
-	ps->SetParamString(1, wxT("%") + templ + wxT("%"));
-	DatabaseResultSet* result = ps->ExecuteQuery();
 
-    bool notEOF = result && result->Next();
-    while (notEOF) {
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmt.Bind(1, templ);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	booklist->Freeze();
+    booklist->DeleteRoot();
+    wxTreeItemId root = booklist->AddRoot(msg);
+
+    result.NextRow();
+    while (!result.Eof()) {
         BookTreeItemData * data = new BookTreeItemData(result);
         wxTreeItemId item = booklist->AppendItem(root, data->title, 0, -1, data);
-        wxString full_name = result->GetResultString(wxT("full_name"));
+        wxString full_name = result.GetString(wxT("full_name"));
         booklist->SetItemText (item, 1, full_name);
         booklist->SetItemText (item, 3, data->file_name);
         booklist->SetItemText (item, 4, wxString::Format(wxT("%d "), data->file_size/1024));
         do {
-            notEOF = result->Next();
-            if ( ! notEOF ) break;
-            if ( data->GetId() != result->GetResultInt(wxT("id")) ) break;
-            full_name = full_name + wxT(", ") + result->GetResultString(wxT("full_name"));
+            result.NextRow();
+            if ( data->GetId() != result.GetInt(wxT("id")) ) break;
+            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
             booklist->SetItemText (item, 1, full_name);
-        } while (true);
+        } while (!result.Eof());
     }
-
-	database->CloseResultSet(result);
-	database->CloseStatement(ps);
 
     booklist->ExpandAll(root);
 	booklist->Thaw();
 	booklist->SetFocus();
-/*
-    {
-        wxUpdateUIEvent event( ID_PROGRESS_FINISH );
-        wxPostEvent(wxGetApp().GetTopWindow(), event);
-    }
-*/
+
 	m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
 }
 

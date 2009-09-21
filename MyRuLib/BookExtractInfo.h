@@ -4,12 +4,12 @@
 #include <wx/wx.h>
 #include <wx/filename.h>
 #include <wx/arrimpl.cpp>
-#include <DatabaseResultSet.h>
+#include <wx/wxsqlite3.h>
 
 class BookExtractInfo
 {
 	public:
-		BookExtractInfo(DatabaseResultSet* result);
+		BookExtractInfo(wxSQLite3ResultSet & result);
 	public:
         wxString GetBook();
         wxString GetZip(const wxString &path = wxEmptyString);

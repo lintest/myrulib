@@ -20,6 +20,16 @@
 
     <include file="./Presets/wx.bkl"/>
 
+    <lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+		<define>HAVE_EXPAT_CONFIG_H</define>
+		<sources>Expat/xmlparse.c</sources>
+		<sources>Expat/xmlrole.c</sources>
+		<sources>Expat/xmltok.c</sources>
+		<sources>Expat/xmltok_impl.c</sources>
+		<sources>Expat/xmltok_ns.c</sources>
+		<include>Expat</include>
+    </lib>
+
     <lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<sources>SQLite3/sqlite3.c</sources>
     </lib>
@@ -31,31 +41,6 @@
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
     </lib>
 	
-    <lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
-		<define>HAVE_EXPAT_CONFIG_H</define>
-		<sources>Expat/xmlparse.c</sources>
-		<sources>Expat/xmlrole.c</sources>
-		<sources>Expat/xmltok.c</sources>
-		<sources>Expat/xmltok_impl.c</sources>
-		<sources>Expat/xmltok_ns.c</sources>
-		<include>Expat</include>
-    </lib>
-
-    <lib id="DBLayer" template="wx-lib">
-		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
-		<sources>DBLayer/DatabaseErrorReporter.cpp</sources>
-		<sources>DBLayer/DatabaseLayer.cpp</sources>
-		<sources>DBLayer/DatabaseQueryParser.cpp</sources>
-		<sources>DBLayer/DatabaseResultSet.cpp</sources>
-		<sources>DBLayer/DatabaseStringConverter.cpp</sources>
-		<sources>DBLayer/PreparedStatement.cpp</sources>
-		<sources>DBLayer/SqliteDatabaseLayer.cpp</sources>
-		<sources>DBLayer/SqlitePreparedStatement.cpp</sources>
-		<sources>DBLayer/SqliteResultSet.cpp</sources>
-		<sources>DBLayer/SqliteResultSetMetaData.cpp</sources>
-		<include>SQLite3</include>
-    </lib>
-
     <exe id="myrulib" template="wxgui">
 		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
@@ -67,6 +52,7 @@
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
+		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
@@ -82,38 +68,24 @@
 		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/MyRuLibMain.cpp</sources>
-		<sources>MyRuLib/MyrulibData.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>
 		<sources>MyRuLib/ProgressBar.cpp</sources>
 		<sources>MyRuLib/SettingsDlg.cpp</sources>
 		<sources>MyRuLib/TitleThread.cpp</sources>
 		<sources>MyRuLib/VacuumThread.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
-		<sources>MyRuLib/db/Archives.cpp</sources>
-		<sources>MyRuLib/db/Authors.cpp</sources>
-		<sources>MyRuLib/db/Books.cpp</sources>
-		<sources>MyRuLib/db/Bookseq.cpp</sources>
-		<sources>MyRuLib/db/Files.cpp</sources>
-		<sources>MyRuLib/db/Params.cpp</sources>
-		<sources>MyRuLib/db/Sequences.cpp</sources>
-		<sources>MyRuLib/db/Types.cpp</sources>
-		<sources>MyRuLib/db/wxActiveRecord.cpp</sources>
-		<sources>MyRuLib/db/ZipBooks.cpp</sources>
-		<sources>MyRuLib/db/ZipFiles.cpp</sources>
 		<sources>MyRuLib/sha1/sha1.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<include>SQLite3</include>
-		<include>wxSQLite3</include>
 		<include>Expat</include>
-		<include>DBLayer</include>
-		<library>DBLayer</library>
-		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
+		<include>SQLite3</include>
+		<include>WxSQLite3</include>
 		<library cond="WX_SHARED_DEFAULT=='0'">expat_static</library>
+		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
 		<library cond="WX_SHARED_DEFAULT=='0'">wxsqlite3_static</library>
-		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>
+		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">wxsqlite3</sys-lib>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>xrc</wx-lib>

@@ -30,7 +30,6 @@
 #include "SettingsDlg.h"
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
-#include "db/Types.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -459,15 +458,15 @@ void SettingsDlg::FillTypelist()
 		ORDER BY number, books.file_type \
      ");
 
-	PreparedStatement* pStatement = wxGetApp().GetDatabase()->PrepareStatement(sql);
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
+    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 	m_typelist->Freeze();
 
 	long item = 0;
-	while ( result && result->Next() ) {
-		wxString file_type = result->GetResultString(wxT("file_type"));
-		wxString command = result->GetResultString(wxT("command"));
+	while ( result.NextRow() ) {
+		wxString file_type = result.GetString(wxT("file_type"));
+		wxString command = result.GetString(wxT("command"));
 		if (file_type == wxT("exe")) continue;
 
 		if (command.IsEmpty())
@@ -539,6 +538,7 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
+    /*
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 	Types types(wxGetApp().GetDatabase());
 	TypesRowSet * rows = types.All();
@@ -590,6 +590,7 @@ void SettingsDlg::SaveTypelist()
 	for (size_t i = 0; i<rows->Count(); i++)
 		if (! rows->Item(i)->isOk)
 			rows->Item(i)->Delete();
+    */
 }
 
 void SettingsDlg::OnAppendType( wxCommandEvent& event )

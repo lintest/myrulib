@@ -3,7 +3,6 @@
 #include "InfoCash.h"
 #include "MyRuLibApp.h"
 #include "ZipReader.h"
-#include "db/Files.h"
 #include "BookExtractInfo.h"
 
 void TitleThread::Execute(wxEvtHandler *frame, const int id)
@@ -45,32 +44,33 @@ wxString TitleThread::GetBookInfo(int id)
     wxString authors, title, annotation, genres;
 
     {
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        DatabaseLayer * database = wxGetApp().GetDatabase();
-
         wxString sql = wxT("\
             SELECT authors.full_name FROM authors  \
             WHERE id IN (SELECT id_author FROM books WHERE id=?) \
             ORDER BY authors.full_name \
         ");
-
-        PreparedStatement * ps = database->PrepareStatement(sql);
-        if (ps) {
-            ps->SetParamInt(1, id);
-            DatabaseResultSet* result = ps->ExecuteQuery();
-            while ( result && result->Next() ) {
-                if (!authors.IsEmpty()) authors += wxT(", ");
-                authors += result->GetResultString(1);
-            }
-            database->CloseResultSet(result);
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        stmt.Bind(1, id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        while ( result.NextRow() ) {
+            if (!authors.IsEmpty()) authors += wxT(", ");
+            authors += result.GetString(0);
         }
-        database->CloseStatement(ps);
-
-        Books books(database);
-        BooksRow * thisBook = books.Id(id);
-        title = thisBook->title;
-        genres = FbGenres::DecodeList(thisBook->genres);
     }
+
+    {
+        wxString sql = wxT("SELECT title, genres FROM books WHERE id=? LIMIT 1");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        stmt.Bind(1, id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if ( result.NextRow() ) {
+            title = result.GetString(wxT("title"));
+            genres = result.GetString(wxT("genres"));
+        }
+    }
+    genres = FbGenres::DecodeList(genres);
 
     wxString html;
 
@@ -86,38 +86,38 @@ wxString TitleThread::GetBookInfo(int id)
 
 wxString TitleThread::GetBookFiles(int id)
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
-
-    wxString sql = wxT("\
-        SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
-        SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
-        ORDER BY Key \
-    ");
-
 	BookExtractInfoArray items;
 
-    PreparedStatement * ps = database->PrepareStatement(sql);
-    if (!ps) return wxEmptyString;
-    ps->SetParamInt(1, id);
-    ps->SetParamInt(2, id);
-
-    DatabaseResultSet* result = ps->ExecuteQuery();
-    while ( result && result->Next() ) {
-        items.Add(result);
+    {
+        wxString sql = wxT("\
+            SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
+            SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+            ORDER BY Key \
+        ");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        stmt.Bind(1, id);
+        stmt.Bind(2, id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        while (result.NextRow())  items.Add(result);
     }
-    database->CloseResultSet(result);
-    database->CloseStatement(ps);
 
-    for (size_t i = 0; i<items.Count(); i++) {
-        BookExtractInfo & item = items[i];
-        if (!item.id_archive) continue;
-        Archives archives(wxGetApp().GetDatabase());
-        ArchivesRow * row = archives.Id(item.id_archive);
-        if (!row) continue;
-        item.zip_name = row->file_name;
-        item.zip_path = row->file_path;
-        if (item.zip_path.IsEmpty()) item.zip_path = wxT("$(WANRAIK)");
+    {
+        wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+
+        for (size_t i = 0; i<items.Count(); i++) {
+            BookExtractInfo & item = items[i];
+            if (!item.id_archive) continue;
+            stmt.Bind(1, item.id_archive);
+            wxSQLite3ResultSet result = stmt.ExecuteQuery();
+            if (result.NextRow()) {
+                item.zip_name = result.GetString(wxT("file_name"));
+                item.zip_path = result.GetString(wxT("file_path"));
+            }
+            if (item.zip_path.IsEmpty()) item.zip_path = wxT("$(WANRAIK)");
+        }
     }
 
     wxString html;

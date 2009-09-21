@@ -12,22 +12,18 @@
 
 #include <wx/wx.h>
 #include <wx/listbox.h>
-#include <DatabaseLayer.h>
-#include <DatabaseResultSet.h>
-#include "FbGenres.h"
+#include <wx/wxsqlite3.h>
 #include "wx/treelistctrl.h"
-#include "db/Books.h"
+#include "FbGenres.h"
 
 class AuthorsRowSet;
 
 class BookTreeItemData: public wxTreeItemData
 {
 public:
-	BookTreeItemData(BooksRow * row, const wxString &seq = wxEmptyString, int num=0)
-        : m_id(row->id), title(row->title), file_size(row->file_size), file_type(row->file_type), sequence(seq), number(num) { };
 	BookTreeItemData(BookTreeItemData * data)
         : m_id(data->GetId()), title(data->title), file_size(data->file_size), file_type(data->file_type), sequence(data->sequence), number(data->number) { };
-	BookTreeItemData(DatabaseResultSet * res);
+	BookTreeItemData(wxSQLite3ResultSet & result);
 	int GetId() { return m_id; };
 private:
 	int m_id;
@@ -50,14 +46,12 @@ class FbManager
 		static void OpenBook(int id, wxString &file_type);
 		static wxString GetSystemCommand(const wxString & file_type);
 		static wxString GetOpenCommand(const wxString & file_type);
-	private:
-		static void FillAuthors(wxListBox *listbox, DatabaseResultSet* result);
 };
 
 class BookInfo
 {
 public:
-	static int NewId(int param);
+	static int NewId(int iParam);
     static void MakeLower(wxString & data);
     static void MakeUpper(wxString & data);
 };

@@ -2,7 +2,7 @@
 #define __FBTHREAD_H__
 
 #include <wx/wx.h>
-#include <DatabaseLayer.h>
+#include <wx/wxsqlite3.h>
 #include "BaseThread.h"
 #include "ImpContext.h"
 
@@ -29,12 +29,14 @@ private:
         psAppendFile,
         psSearchArch,
         psAppendArch,
+        psAppendBook,
+        psAppendSeqs,
         psLastMember,
     };
-    PreparedStatement * m_statements[psLastMember];
-    PreparedStatement * GetPreparedStatement(PSItem psItem);
+    wxSQLite3Statement * m_statements[psLastMember];
+    wxSQLite3Statement * GetPreparedStatement(PSItem psItem);
     wxString GetSQL(PSItem psItem);
-    DatabaseLayer * m_database;
+    wxSQLite3Database & m_database;
 };
 
 class ZipImportThread : public ImportThread

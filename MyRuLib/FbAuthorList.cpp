@@ -1,5 +1,4 @@
 #include "FbAuthorList.h"
-#include <DatabaseLayer.h>
 #include "RecordIDClientData.h"
 #include "ImpContext.h"
 #include "FbManager.h"
@@ -7,53 +6,39 @@
 
 void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
 {
-    const wxString orderBy = wxT("search_name");
-	wxString findText = findLetter;
-    const wxString whereClause = wxString::Format(wxT("letter = '%s'"), findText.c_str());
+	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE letter=? ORDER BY search_name");
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
+    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmt.Bind(1, (wxString)findLetter);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE letter=? ORDER BY search_name");
-	PreparedStatement* ps = database->PrepareStatement(sql);
-	if (!ps) return;
-	ps->SetParamString(1, findLetter);
-	DatabaseResultSet* result = ps->ExecuteQuery();
 	FillAuthors(result);
-	database->CloseResultSet(result);
-	database->CloseStatement(ps);
 }
 
 void FbAuthorList::FillAuthorsText(const wxString & findText)
 {
-    const wxString orderBy = wxT("search_name");
-    wxString text = findText;
-    BookInfo::MakeLower(text);
+	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
+    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmt.Bind(1, findText);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
-	PreparedStatement* ps = database->PrepareStatement(sql);
-	if (!ps) return;
-	ps->SetParamString(1, text + wxT("%"));
-	DatabaseResultSet* result = ps->ExecuteQuery();
 	FillAuthors(result);
-	database->CloseResultSet(result);
-	database->CloseStatement(ps);
 }
 
-void FbAuthorList::FillAuthors(DatabaseResultSet* result)
+void FbAuthorList::FillAuthors(wxSQLite3ResultSet & result)
 {
 	Freeze();
 	Clear();
 
-    while(result && result->Next()){
-        int id = result->GetResultInt(wxT("id"));
+    while (result.NextRow()) {
+        int id = result.GetInt(wxT("id"));
         AuthorItem item;
-        item.first  = result->GetResultString(wxT("first_name"));
-        item.middle = result->GetResultString(wxT("middle_name"));
-        item.last   = result->GetResultString(wxT("last_name"));
+        item.first  = result.GetString(wxT("first_name"));
+        item.middle = result.GetString(wxT("middle_name"));
+        item.last   = result.GetString(wxT("last_name"));
         Append(item.GetFullName(), new RecordIDClientData(id));
     }
 

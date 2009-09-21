@@ -14,8 +14,6 @@
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "RecordIDClientData.h"
-#include "db/Sequences.h"
-#include "db/Bookseq.h"
 #include "ZipReader.h"
 #include "FbConst.h"
 
@@ -23,17 +21,19 @@
 #include <shlwapi.h>
 #endif
 
-BookTreeItemData::BookTreeItemData(DatabaseResultSet * res):
-    m_id( res->GetResultInt(wxT("id"))),
-    title( res->GetResultString(wxT("title"))),
-    file_size( res->GetResultInt(wxT("file_size"))),
-    file_name( res->GetResultString(wxT("file_name"))),
-    file_type( res->GetResultString(wxT("file_type"))),
+BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
+    m_id( res.GetInt(wxT("id"))),
+    title( res.GetString(wxT("title"))),
+    file_size( res.GetInt(wxT("file_size"))),
+    file_name( res.GetString(wxT("file_name"))),
+    file_type( res.GetString(wxT("file_type"))),
     number(0)
 {
-    wxLogNull log;
-    number = res->GetResultInt(wxT("number"));
-    if ( number == -1) number = 0;
+    try {
+        number = res.GetInt(wxT("number"));
+    } catch (...) {
+        number = 0;
+    }
 }
 
 class SequenceNode {
@@ -167,14 +167,29 @@ void BookInfo::MakeUpper(wxString & data){
 #endif
 }
 
-int BookInfo::NewId(int param)
+int BookInfo::NewId(int iParam)
 {
-	Params params(wxGetApp().GetDatabase());
-	ParamsRow * row = params.Id(param);
-	row->value++;
-	row->Save();
+    int iValue = 0;
 
-	return row->value;
+	wxString sql = wxT("SELECT value FROM params WHERE id=?");
+    wxSQLite3Statement stmtRead = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmtRead.Bind(1, iParam);
+    wxSQLite3ResultSet result = stmtRead.ExecuteQuery();
+    if (result.NextRow()) {
+        sql = wxT("UPDATE params SET value=? WHERE id=?");
+        iValue = result.GetInt(0);
+    } else {
+        sql = wxT("INSERT INTO params(value, id) VALUES(?,?)");
+    }
+
+    iValue++;
+
+    wxSQLite3Statement stmtWrite = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmtWrite.Bind(1, iValue);
+    stmtWrite.Bind(2, iParam);
+    stmtWrite.ExecuteUpdate();
+
+	return iValue;
 }
 
 wxString FbManager::GetSystemCommand(const wxString & file_type)
@@ -198,21 +213,10 @@ wxString FbManager::GetSystemCommand(const wxString & file_type)
 
 wxString FbManager::GetOpenCommand(const wxString & file_type)
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-	PreparedStatement* pStatement = database->PrepareStatement(sql);
-	pStatement->SetParamString(1, file_type);
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
-
-    wxString command;
-	if (result && result->Next())
-		command = result->GetResultString(1);
-    else
-        command = GetSystemCommand(file_type);
-
-	database->CloseResultSet(result);
-	database->CloseStatement(pStatement);
-
-	return command;
+    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmt.Bind(1, file_type);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+    return result.NextRow() ? result.GetString(0) : GetSystemCommand(file_type);
 }

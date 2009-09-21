@@ -3,11 +3,11 @@
 
 WX_DEFINE_OBJARRAY(BookExtractInfoArray);
 
-BookExtractInfo::BookExtractInfo(DatabaseResultSet* result):
-	id_book(result->GetResultInt(wxT("id"))),
-	id_archive(result->GetResultInt(wxT("id_archive"))),
-    book_name(result->GetResultString(wxT("file_name"))),
-    book_path(result->GetResultString(wxT("file_path")))
+BookExtractInfo::BookExtractInfo(wxSQLite3ResultSet & result):
+	id_book(result.GetInt(wxT("id"))),
+	id_archive(result.GetInt(wxT("id_archive"))),
+    book_name(result.GetString(wxT("file_name"))),
+    book_path(result.GetString(wxT("file_path")))
 {
 }
 

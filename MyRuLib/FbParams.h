@@ -3,8 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
-#include <DatabaseLayer.h>
-#include "db/Params.h"
+#include <wx/wxsqlite3.h>
 
 enum {
 	DB_LIBRARY_TITLE = 1,
@@ -39,8 +38,8 @@ enum {
 class ParamItem
 {
     public:
-        ParamItem(int param): id(param) {};
-        ParamItem(ParamsRow * row): id(row->id), value(row->value), text(row->text) {};
+        ParamItem(int param): id(param), value(0) {};
+        ParamItem(wxSQLite3ResultSet & result);
     public:
         int id;
         int value;
@@ -51,15 +50,13 @@ WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
 
 class FbParams {
     public:
-        FbParams();
-        FbParams(DatabaseLayer *database, wxCriticalSection &section);
+        FbParams() {};
         static void LoadParams();
         static int GetValue(const int &param);
         static wxString GetText(const int &param);
         void SetValue(const int &param, int value);
         void SetText(const int &param, wxString text);
     private:
-        DatabaseLayer *m_database;
         static int DefaultValue(int param);
         static wxString DefaultText(int param);
         static ParamArray sm_params;

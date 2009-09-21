@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/listbox.h>
-#include <DatabaseResultSet.h>
+#include <wx/wxsqlite3.h>
 
 class FbAuthorList: public wxListBox
 {
@@ -13,7 +13,7 @@ class FbAuthorList: public wxListBox
         void FillAuthorsChar(const wxChar & findLetter);
         void FillAuthorsText(const wxString & findText);
     private:
-        void FillAuthors(DatabaseResultSet* result);
+        void FillAuthors(wxSQLite3ResultSet & result);
 };
 
 #endif // __FBAUTHORLIST_H__

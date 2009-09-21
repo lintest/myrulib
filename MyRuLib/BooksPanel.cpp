@@ -3,8 +3,6 @@
 #include "FbParams.h"
 #include "InfoCash.h"
 #include "MyRuLibApp.h"
-#include "db/Sequences.h"
-#include "db/Bookseq.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
@@ -197,96 +195,44 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 
 void BooksPanel::FillByAuthor(int id_author)
 {
-    bool fb2only = false;
-
-	m_BookList->Freeze();
-
-    m_BookList->DeleteRoot();
+	wxString sql = wxT("\
+        SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, sequences.value AS sequence, bookseq.number\
+        FROM books \
+            LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
+            LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
+        WHERE books.id_author = ? \
+        ORDER BY sequences.value, bookseq.number, books.title \
+    ");
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    stmt.Bind(1, id_author);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	Authors authors(wxGetApp().GetDatabase());
-	AuthorsRow * thisAuthor = authors.Id(id_author);
-	if(thisAuthor)
-	{
-	    m_AuthorName = thisAuthor->full_name;
-        wxTreeItemId root = m_BookList->AddRoot(thisAuthor->full_name, 0, 0);
-		m_BookList->SetItemBold(root, true);
+    wxString thisSequence;
+    wxTreeItemId parent;
 
-		BookseqRowSet * bookseq = thisAuthor->GetBookseqs();
+	m_BookList->Freeze();
+    m_BookList->DeleteRoot();
 
-		int id_seq = 0;
-		wxString sequencesText;
-		for(size_t i = 0; i < bookseq->Count(); i++){
-		    BookseqRow * seqRow = bookseq->Item(i);
-			if (id_seq == seqRow->id_seq) continue;
+    wxTreeItemId root = m_BookList->AddRoot(wxT("root"));
+    m_BookList->SetItemBold(root, true);
 
-            if (!sequencesText.IsEmpty()) sequencesText += wxT(",");
-            id_seq = seqRow->id_seq;
-            sequencesText += wxString::Format(wxT("%d"), id_seq);
-		}
-
-		BooksRowSet * allBooks = thisAuthor->GetBooks(wxT("title"));
-		for(size_t i = 0; i < allBooks->Count(); i++) {
-            allBooks->Item(i)->added = false;
-		}
-
-		if (!sequencesText.IsEmpty()) {
-			wxString whereCause = wxString::Format(wxT("id in(%s)"), sequencesText.c_str());
-			Sequences sequences(wxGetApp().GetDatabase());
-			SequencesRowSet * allSequences = sequences.WhereSet(whereCause, wxT("value"));
-
-			for(size_t i = 0; i < allSequences->Count(); i++) {
-				SequencesRow * thisSequence = allSequences->Item(i);
-				wxTreeItemId parent = m_BookList->AppendItem(root, thisSequence->value, 0);
-				m_BookList->SetItemBold(parent, true);
-
-                for (size_t j = 0; j < bookseq->Count(); j++) {
-                    BookseqRow * seqRow = bookseq->Item(j);
-                    if (seqRow->id_seq != thisSequence->id) continue;
-
-                    for(size_t k = 0; k < allBooks->Count(); k++) {
-                        BooksRow * thisBook = allBooks->Item(k);
-                        if (seqRow->id_book == thisBook->id) seqRow->order = k;
-                    }
-                }
-                bookseq->SortBy(wxT("number,order"));
-
-                for (size_t j = 0; j < bookseq->Count(); j++) {
-                    BookseqRow * seqRow = bookseq->Item(j);
-                    if (seqRow->id_seq != thisSequence->id) continue;
-
-                    for(size_t k = 0; k < allBooks->Count(); k++) {
-                        BooksRow * thisBook = allBooks->Item(k);
-                        if (seqRow->id_book != thisBook->id) continue;
-                        if (fb2only && thisBook->file_type != wxT("fb2")) continue;
-
-                        wxTreeItemId item = m_BookList->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook, thisSequence->value, seqRow->number));
-                        if (seqRow->number>0) m_BookList->SetItemText (item, 1, wxString::Format(wxT("%d"), seqRow->number));
-                        m_BookList->SetItemText (item, 2, thisBook->file_name);
-                        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), thisBook->file_size/1024));
-                        thisBook->added = true;
-                    }
-                }
-			}
-		}
-
-		wxTreeItemId parent = root;
-		for(size_t i = 0; i < allBooks->Count(); i++) {
-		    BooksRow * thisBook = allBooks->Item(i);
-		    if (thisBook->added) continue;
-            if (fb2only && thisBook->file_type != wxT("fb2")) continue;
-		    if (parent == root) {
-                parent = m_BookList->AppendItem(root, strOtherSequence, 0);
-                m_BookList->SetItemBold(parent, true);
-		    }
-            wxTreeItemId item = m_BookList->AppendItem(parent, thisBook->title, 0, -1, new BookTreeItemData(thisBook));
-            m_BookList->SetItemText (item, 2, thisBook->file_name);
-            m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), thisBook->file_size/1024));
-		}
+    while (result.NextRow()) {
+	    wxString nextSequence = result.GetString(wxT("sequence"));
+	    if (thisSequence != nextSequence || !parent.IsOk()) {
+	        thisSequence = nextSequence;
+            parent = m_BookList->AppendItem(root, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
+            m_BookList->SetItemBold(parent, true);
+	    }
+	    BookTreeItemData * data = new BookTreeItemData(result);
+        wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
+        m_BookList->SetItemText (item, 1, wxString::Format(wxT("%d"), data->number));
+        m_BookList->SetItemText (item, 2, data->file_name);
+        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
 	}
-    m_BookList->ExpandAll( m_BookList->GetRootItem() );
 
+    m_BookList->ExpandAll( m_BookList->GetRootItem() );
 	m_BookList->Thaw();
 
 	m_BookInfo->SetPage(wxEmptyString);

@@ -10,12 +10,6 @@
 # These are configurable options:
 # -------------------------------------------------------------------------
 
-#  
-AR ?= ar
-
-#  
-RANLIB ?= ranlib
-
 # C compiler 
 CC = gcc
 
@@ -66,24 +60,10 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-DBLAYER_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 \
-	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
-DBLAYER_OBJECTS =  \
-	build/DBLayer_DatabaseErrorReporter.o \
-	build/DBLayer_DatabaseLayer.o \
-	build/DBLayer_DatabaseQueryParser.o \
-	build/DBLayer_DatabaseResultSet.o \
-	build/DBLayer_DatabaseStringConverter.o \
-	build/DBLayer_PreparedStatement.o \
-	build/DBLayer_SqliteDatabaseLayer.o \
-	build/DBLayer_SqlitePreparedStatement.o \
-	build/DBLayer_SqliteResultSet.o \
-	build/DBLayer_SqliteResultSetMetaData.o
 MYRULIB_CFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 -IwxSQLite3 \
-	-IExpat -IDBLayer -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
-	$(CFLAGS)
+	-IExpat -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 -IwxSQLite3 \
-	-IExpat -IDBLayer -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
+	-IExpat -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
 	$(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
@@ -94,6 +74,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbAuthorList.o \
 	build/myrulib_FbConst.o \
+	build/myrulib_FbDatabase.o \
 	build/myrulib_FbFrameAuthor.o \
 	build/myrulib_FbFrameBase.o \
 	build/myrulib_FbFrameSearch.o \
@@ -109,24 +90,12 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_LimitedTextCtrl.o \
 	build/myrulib_MyRuLibApp.o \
 	build/myrulib_MyRuLibMain.o \
-	build/myrulib_MyrulibData.o \
 	build/myrulib_ParseCtx.o \
 	build/myrulib_ProgressBar.o \
 	build/myrulib_SettingsDlg.o \
 	build/myrulib_TitleThread.o \
 	build/myrulib_VacuumThread.o \
 	build/myrulib_ZipReader.o \
-	build/myrulib_Archives.o \
-	build/myrulib_Authors.o \
-	build/myrulib_Books.o \
-	build/myrulib_Bookseq.o \
-	build/myrulib_Files.o \
-	build/myrulib_Params.o \
-	build/myrulib_Sequences.o \
-	build/myrulib_Types.o \
-	build/myrulib_wxActiveRecord.o \
-	build/myrulib_ZipBooks.o \
-	build/myrulib_ZipFiles.o \
 	build/myrulib_sha1.o \
 	build/myrulib_base64.o \
 	build/myrulib_treelistctrl.o
@@ -159,7 +128,7 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libDBLayer.a build/myrulib
+all: test_for_selected_wxbuild build/myrulib
 
 install: 
 
@@ -168,50 +137,14 @@ uninstall:
 clean: 
 	rm -f build/*.o
 	rm -f build/*.d
-	rm -f build/libDBLayer.a
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-build/libDBLayer.a: $(DBLAYER_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(DBLAYER_OBJECTS)
-	$(RANLIB) $@
-
-build/myrulib: $(MYRULIB_OBJECTS) build/libDBLayer.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libDBLayer.a -lsqlite3 -lexpat -lwxsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
+build/myrulib: $(MYRULIB_OBJECTS)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  -lsqlite3 -lexpat -lwxsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 	strip ./build/myrulib
-
-build/DBLayer_DatabaseErrorReporter.o: ./DBLayer/DatabaseErrorReporter.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_DatabaseLayer.o: ./DBLayer/DatabaseLayer.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_DatabaseQueryParser.o: ./DBLayer/DatabaseQueryParser.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_DatabaseResultSet.o: ./DBLayer/DatabaseResultSet.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_DatabaseStringConverter.o: ./DBLayer/DatabaseStringConverter.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_PreparedStatement.o: ./DBLayer/PreparedStatement.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_SqliteDatabaseLayer.o: ./DBLayer/SqliteDatabaseLayer.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_SqlitePreparedStatement.o: ./DBLayer/SqlitePreparedStatement.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_SqliteResultSet.o: ./DBLayer/SqliteResultSet.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
-
-build/DBLayer_SqliteResultSetMetaData.o: ./DBLayer/SqliteResultSetMetaData.cpp
-	$(CXX) -c -o $@ $(DBLAYER_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
@@ -235,6 +168,9 @@ build/myrulib_FbAuthorList.o: ./MyRuLib/FbAuthorList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbConst.o: ./MyRuLib/FbConst.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbDatabase.o: ./MyRuLib/FbDatabase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
@@ -282,9 +218,6 @@ build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
 build/myrulib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_MyrulibData.o: ./MyRuLib/MyrulibData.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -301,39 +234,6 @@ build/myrulib_VacuumThread.o: ./MyRuLib/VacuumThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Archives.o: ./MyRuLib/db/Archives.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Authors.o: ./MyRuLib/db/Authors.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Books.o: ./MyRuLib/db/Books.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Bookseq.o: ./MyRuLib/db/Bookseq.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Files.o: ./MyRuLib/db/Files.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Params.o: ./MyRuLib/db/Params.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Sequences.o: ./MyRuLib/db/Sequences.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_Types.o: ./MyRuLib/db/Types.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_wxActiveRecord.o: ./MyRuLib/db/wxActiveRecord.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_ZipBooks.o: ./MyRuLib/db/ZipBooks.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_ZipFiles.o: ./MyRuLib/db/ZipFiles.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_sha1.o: ./MyRuLib/sha1/sha1.c

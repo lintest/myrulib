@@ -333,16 +333,14 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
     wxTreeItemId itemLetter, itemAuthor, itemSequence;
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
-	PreparedStatement * ps = database->PrepareStatement(sql);
-	DatabaseResultSet * result = ps->ExecuteQuery();
-	while (result && result->Next()) {
+    wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
+    while (result.NextRow()) {
 	    BookTreeItemData data(result);
 	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
-	    wxString nextAuthor = result->GetResultString(wxT("full_name"));
-	    wxString nextSequence = result->GetResultString(wxT("sequence"));
+	    wxString nextAuthor = result.GetString(wxT("full_name"));
+	    wxString nextSequence = result.GetString(wxT("sequence"));
 	    if (bUseLetter) {
-            wxString nextLetter = result->GetResultString(wxT("letter"));
+            wxString nextLetter = result.GetString(wxT("letter"));
             if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
                 thisLeter = nextLetter;
                 itemAuthor = NULL;
@@ -367,8 +365,6 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
         AppendBook(itemSequence, data);
         books.Add(data.GetId());
 	}
-	database->CloseResultSet(result);
-	database->CloseStatement(ps);
 }
 
 void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
@@ -390,15 +386,13 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
     wxTreeItemId itemLetter, itemAuthor;
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    DatabaseLayer * database = wxGetApp().GetDatabase();
-	PreparedStatement * ps = database->PrepareStatement(sql);
-	DatabaseResultSet * result = ps->ExecuteQuery();
-	while (result && result->Next()) {
+    wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
+    while (result.NextRow()) {
 	    BookTreeItemData data(result);
 	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
-	    wxString nextAuthor = result->GetResultString(wxT("full_name"));
+	    wxString nextAuthor = result.GetString(wxT("full_name"));
 	    if (bUseLetter) {
-            wxString nextLetter = result->GetResultString(wxT("letter"));
+            wxString nextLetter = result.GetString(wxT("letter"));
             if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
                 thisLeter = nextLetter;
                 itemAuthor = NULL;
@@ -416,8 +410,6 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
         AppendBook(itemAuthor, data);
         books.Add(data.GetId());
 	}
-	database->CloseResultSet(result);
-	database->CloseStatement(ps);
 }
 
 void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
