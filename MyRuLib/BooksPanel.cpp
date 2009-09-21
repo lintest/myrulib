@@ -217,12 +217,13 @@ void BooksPanel::FillByAuthor(int id_author)
 
     wxTreeItemId root = m_BookList->AddRoot(wxT("root"));
     m_BookList->SetItemBold(root, true);
+    m_BookList->SetItemImage(root, 0);
 
     while (result.NextRow()) {
 	    wxString nextSequence = result.GetString(wxT("sequence"));
 	    if (thisSequence != nextSequence || !parent.IsOk()) {
 	        thisSequence = nextSequence;
-            parent = m_BookList->AppendItem(root, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
+            parent = m_BookList->AppendItem(root, thisSequence.IsEmpty() ? strOtherSequence : thisSequence, 0);
             m_BookList->SetItemBold(parent, true);
 	    }
 	    BookTreeItemData * data = new BookTreeItemData(result);

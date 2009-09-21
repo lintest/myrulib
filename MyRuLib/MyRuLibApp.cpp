@@ -11,7 +11,6 @@
 #include <wx/image.h>
 #include <wx/fs_mem.h>
 #include <wx/stdpaths.h>
-#include <DatabaseLayerException.h>
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
 #include "FbLogStream.h"

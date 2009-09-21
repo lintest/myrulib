@@ -19,10 +19,11 @@ void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
 void FbAuthorList::FillAuthorsText(const wxString & findText)
 {
 	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
+	wxString str = findText + wxT('%');
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
-    stmt.Bind(1, findText);
+    stmt.Bind(1, str);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 	FillAuthors(result);

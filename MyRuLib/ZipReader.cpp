@@ -242,38 +242,45 @@ void ZipCollection::AddZip(const wxString &filename)
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
+	wxSQLite3Database & database = wxGetApp().GetDatabase();
+
 	int id = 0;
 	{
-		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-		ZipFiles files(wxGetApp().GetDatabase());
-		ZipFilesRow * file = files.Path(zip_file.GetFullName());
-		if (file) return;
+        wxString sql = wxT("SELECT id FROM zip_files WHERE path=?");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, filename);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) return ;
 		id = BookInfo::NewId(DB_NEW_ZIPFILE);
 	}
 
-    AutoTransaction trans;
+    wxSQLite3Transaction trans(&database);
 
     int count = 0;
-	while (wxZipEntry * entry = zip.GetNextEntry()) {
-		if (entry->GetSize()) {
-			wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-			ZipBooks books(wxGetApp().GetDatabase());
-			ZipBooksRow * book = books.New();
-			book->book = entry->GetName(wxPATH_UNIX);
-			book->file = id;
-			book->Save();
-			count++;
-		}
-		delete entry;
-	}
+    {
+        wxString sql = wxT("INSERT INTO zip_books(file,book) values(?,?)");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, id);
+        while (wxZipEntry * entry = zip.GetNextEntry()) {
+            if (entry->GetSize()) {
+                stmt.Bind(2, entry->GetName(wxPATH_UNIX));
+                stmt.ExecuteUpdate();
+                count++;
+            }
+            delete entry;
+        }
+    }
 
 	if (count) {
-		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-		ZipFiles files(wxGetApp().GetDatabase());
-		ZipFilesRow *file = files.New();
-		file->file = id;
-		file->path = zip_file.GetFullName();
-		file->Save();
+        wxString sql = wxT("INSERT INTO zip_files(file,path) values(?,?)");
+        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, id);
+        stmt.Bind(2, filename);
+        stmt.ExecuteUpdate();
+        trans.Commit();
 	}
 
 	InfoCash::Empty();
@@ -284,32 +291,30 @@ wxString ZipCollection::FindZip(const wxString &filename)
     wxCriticalSectionLocker enter1(sm_queue);
 	wxCriticalSectionLocker enter2(wxGetApp().m_DbSection);
 
-    DatabaseLayer * database = wxGetApp().GetDatabase();
-	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
-	PreparedStatement* pStatement = database->PrepareStatement(sql);
-	pStatement->SetParamString(1, filename);
-	DatabaseResultSet* result = pStatement->ExecuteQuery();
+	wxSQLite3Database & database = wxGetApp().GetDatabase();
 
-	if (!result) return wxEmptyString;
+    {
+        wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, filename);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+    }
 
-    wxString zipname;
-	while (result && result->Next()) {
-		int id = result->GetResultInt(wxT("file"));
-		ZipFiles files(wxGetApp().GetDatabase());
-		ZipFilesRow *file = files.File(id);
-		if (file) {
-			wxFileName zip_file = file->path;
-			zip_file.SetPath(m_dirname);
-			if (zip_file.FileExists()) {
-				zipname = zip_file.GetFullPath();
-				break;
-			}
-		}
-	}
+    {
+        wxString sql = wxT("SELECT path FROM zip_files WHERE file=?");
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        while (result.NextRow())  {
+            stmt.Bind(1, result.GetInt(0));
+            wxSQLite3ResultSet result = stmt.ExecuteQuery();
+            if (result.NextRow()) {
+                wxFileName zip_file = result.GetString(0);
+                zip_file.SetPath(m_dirname);
+                if (zip_file.FileExists()) return zip_file.GetFullPath();
+            }
+        }
+    }
 
-	database->CloseResultSet(result);
-	database->CloseStatement(pStatement);
-
-	return zipname;
+    return wxEmptyString;
 }
 

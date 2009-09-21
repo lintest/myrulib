@@ -8,8 +8,9 @@
 	<set var="WX_DEBUG_DEFAULT">0</set>
 
     <if cond="FORMAT=='gnu'">
-	  <set var="WX_SHARED_DEFAULT">1</set>
+	  <set var="WX_SHARED_DEFAULT">0</set>
 	  <set var="WX_VERSION_DEFAULT">2.8</set>
+	  <set var="WX_PORT_DEFAULT">gtk2</set>
     </if>
 	
     <if cond="FORMAT=='mingw'">
@@ -34,7 +35,7 @@
 		<sources>SQLite3/sqlite3.c</sources>
     </lib>
 	
-    <lib id="wxsqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+    <lib id="wxsqlite3_static" template="wx-lib">
 		<include>SQLite3</include>
 		<include>WxSQLite3</include>
 		<include>WxSQLite3</include>
@@ -78,15 +79,14 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<include>Expat</include>
-		<include>SQLite3</include>
 		<include>WxSQLite3</include>
+		<library>wxsqlite3_static</library>
+		<include cond="WX_SHARED_DEFAULT=='0'">Expat</include>
+		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
 		<library cond="WX_SHARED_DEFAULT=='0'">expat_static</library>
 		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
-		<library cond="WX_SHARED_DEFAULT=='0'">wxsqlite3_static</library>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
-		<sys-lib cond="WX_SHARED_DEFAULT=='1'">wxsqlite3</sys-lib>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>xrc</wx-lib>
 		<wx-lib>html</wx-lib>
