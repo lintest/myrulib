@@ -61,6 +61,12 @@ SQLITE3_STATIC_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
 	$(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	build\sqlite3_static_sqlite3.o
+WXSQLITE3_STATIC_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
+	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -ISQLite3 \
+	-IWxSQLite3 -IWxSQLite3 $(CPPFLAGS) $(CXXFLAGS)
+WXSQLITE3_STATIC_OBJECTS =  \
+	build\wxsqlite3_static_wxsqlite3.o
 EXPAT_STATIC_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
@@ -74,7 +80,7 @@ EXPAT_STATIC_OBJECTS =  \
 DBLAYER_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
-	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite $(CPPFLAGS) $(CXXFLAGS)
+	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 $(CPPFLAGS) $(CXXFLAGS)
 DBLAYER_OBJECTS =  \
 	build\DBLayer_DatabaseErrorReporter.o \
 	build\DBLayer_DatabaseLayer.o \
@@ -89,13 +95,13 @@ DBLAYER_OBJECTS =  \
 MYRULIB_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
-	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -DXML_STATIC -ISQLite -IExpat -IDBLayer \
-	-O2 $(CPPFLAGS) $(CFLAGS)
+	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -DXML_STATIC -ISQLite3 -IwxSQLite3 \
+	-IExpat -IDBLayer -O2 $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
-	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -DXML_STATIC -ISQLite -IExpat -IDBLayer \
-	-O2 $(CPPFLAGS) $(CXXFLAGS)
+	-DDONT_USE_DATABASE_LAYER_EXCEPTIONS -DXML_STATIC -ISQLite3 -IwxSQLite3 \
+	-IExpat -IDBLayer -O2 $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build\myrulib_BaseThread.o \
 	build\myrulib_BookExtractInfo.o \
@@ -149,16 +155,16 @@ ifeq ($(WX_DEBUG),1)
 WX3RDPARTYLIBPOSTFIX = d
 endif
 ifeq ($(WX_SHARED),0)
-____WX_SHARED_3_p_1 = 
+____WX_SHARED_4_p_1 = 
 endif
 ifeq ($(WX_SHARED),1)
-____WX_SHARED_3_p_1 = --define WXUSINGDLL
+____WX_SHARED_4_p_1 = --define WXUSINGDLL
 endif
 ifeq ($(WX_UNICODE),1)
-__WXUNICODE_DEFINE_p_4 = --define _UNICODE
+__WXUNICODE_DEFINE_p_5 = --define _UNICODE
 endif
 ifeq ($(WX_DEBUG),1)
-__WXDEBUG_DEFINE_p_4 = --define __WXDEBUG__
+__WXDEBUG_DEFINE_p_5 = --define __WXDEBUG__
 endif
 ifeq ($(WX_MONOLITHIC),0)
 __WXLIB_AUI_NAME_p = -lwxmsw$(WX_VERSION)$(WXLIBPOSTFIX)_aui
@@ -219,12 +225,13 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build\libsqlite3_static.a build\libexpat_static.a build\libDBLayer.a build\myrulib.exe
+all: test_for_selected_wxbuild build\libsqlite3_static.a build\libwxsqlite3_static.a build\libexpat_static.a build\libDBLayer.a build\myrulib.exe
 
 clean: 
 	-if exist build\*.o del build\*.o
 	-if exist build\*.d del build\*.d
 	-if exist build\libsqlite3_static.a del build\libsqlite3_static.a
+	-if exist build\libwxsqlite3_static.a del build\libwxsqlite3_static.a
 	-if exist build\libexpat_static.a del build\libexpat_static.a
 	-if exist build\libDBLayer.a del build\libDBLayer.a
 	-if exist build\myrulib.exe del build\myrulib.exe
@@ -246,6 +253,11 @@ build\libsqlite3_static.a: $(SQLITE3_STATIC_OBJECTS)
 	ar rcu $@ $(SQLITE3_STATIC_OBJECTS)
 	ranlib $@
 
+build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
+	if exist $@ del $@
+	ar rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
+	ranlib $@
+
 build\libexpat_static.a: $(EXPAT_STATIC_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(EXPAT_STATIC_OBJECTS)
@@ -256,12 +268,15 @@ build\libDBLayer.a: $(DBLAYER_OBJECTS)
 	ar rcu $@ $(DBLAYER_OBJECTS)
 	ranlib $@
 
-build\myrulib.exe: $(MYRULIB_OBJECTS) build\myrulib_resource_rc.o build\libDBLayer.a build\libsqlite3_static.a build\libexpat_static.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows   $(LDFLAGS)  build\libDBLayer.a build\libsqlite3_static.a build\libexpat_static.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_XRC_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lshlwapi
+build\myrulib.exe: $(MYRULIB_OBJECTS) build\myrulib_resource_rc.o build\libDBLayer.a build\libsqlite3_static.a build\libexpat_static.a build\libwxsqlite3_static.a
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows   $(LDFLAGS)  build\libDBLayer.a build\libsqlite3_static.a build\libexpat_static.a build\libwxsqlite3_static.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_XRC_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lshlwapi
 	strip ./build/myrulib.exe
 
-build\sqlite3_static_sqlite3.o: ./SQLite/sqlite3.c
+build\sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
+
+build\wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
+	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 
 build\expat_static_xmlparse.o: ./Expat/xmlparse.c
 	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
@@ -441,7 +456,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc
-	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define DONT_USE_DATABASE_LAYER_EXCEPTIONS --define XML_STATIC --include-dir SQLite --include-dir Expat --include-dir DBLayer
+	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_4_p_1) $(__WXUNICODE_DEFINE_p_5) $(__WXDEBUG_DEFINE_p_5) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define DONT_USE_DATABASE_LAYER_EXCEPTIONS --define XML_STATIC --include-dir SQLite3 --include-dir wxSQLite3 --include-dir Expat --include-dir DBLayer
 
 .PHONY: all clean
 

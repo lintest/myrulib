@@ -66,8 +66,8 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-DBLAYER_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite `$(WX_CONFIG) \
-	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+DBLAYER_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 \
+	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 DBLAYER_OBJECTS =  \
 	build/DBLayer_DatabaseErrorReporter.o \
 	build/DBLayer_DatabaseLayer.o \
@@ -79,10 +79,11 @@ DBLAYER_OBJECTS =  \
 	build/DBLayer_SqlitePreparedStatement.o \
 	build/DBLayer_SqliteResultSet.o \
 	build/DBLayer_SqliteResultSetMetaData.o
-MYRULIB_CFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat \
-	-IDBLayer -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite -IExpat \
-	-IDBLayer -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
+MYRULIB_CFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 -IwxSQLite3 \
+	-IExpat -IDBLayer -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
+	$(CFLAGS)
+MYRULIB_CXXFLAGS = -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -ISQLite3 -IwxSQLite3 \
+	-IExpat -IDBLayer -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
 	$(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
@@ -179,7 +180,7 @@ build/libDBLayer.a: $(DBLAYER_OBJECTS)
 	$(RANLIB) $@
 
 build/myrulib: $(MYRULIB_OBJECTS) build/libDBLayer.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libDBLayer.a -lsqlite3 -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libDBLayer.a -lsqlite3 -lexpat -lwxsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 	strip ./build/myrulib
 
 build/DBLayer_DatabaseErrorReporter.o: ./DBLayer/DatabaseErrorReporter.cpp
