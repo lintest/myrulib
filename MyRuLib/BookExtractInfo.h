@@ -21,8 +21,19 @@ class BookExtractInfo
 		wxString book_path;
 		wxString zip_name;
 		wxString zip_path;
+		bool librusec;
 };
 
-WX_DECLARE_OBJARRAY(BookExtractInfo, BookExtractInfoArray);
+WX_DECLARE_OBJARRAY(BookExtractInfo, BookExtractArrayBase);
+
+class BookExtractArray
+    : public BookExtractArrayBase
+{
+    public:
+        BookExtractArray(const int id);
+        int GetId() {return m_id; };
+    private:
+        int m_id;
+};
 
 #endif // __BOOKEXTRACTINFO_H__

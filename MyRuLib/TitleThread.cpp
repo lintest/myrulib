@@ -86,54 +86,23 @@ wxString TitleThread::GetBookInfo(int id)
 
 wxString TitleThread::GetBookFiles(int id)
 {
-	BookExtractInfoArray items;
-
-	wxSQLite3Database & database = wxGetApp().GetDatabase();
-
-    {
-        wxString sql = wxT("\
-            SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
-            SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
-            ORDER BY Key \
-        ");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = database.PrepareStatement(sql);
-        stmt.Bind(1, id);
-        stmt.Bind(2, id);
-        wxSQLite3ResultSet result = stmt.ExecuteQuery();
-        while (result.NextRow())  items.Add(result);
-    }
-
-    {
-        wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
-        for (size_t i = 0; i<items.Count(); i++) {
-            BookExtractInfo & item = items[i];
-            if (!item.id_archive) continue;
-            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-            wxSQLite3Statement stmt = database.PrepareStatement(sql);
-            stmt.Bind(1, item.id_archive);
-            wxSQLite3ResultSet result = stmt.ExecuteQuery();
-            if (result.NextRow()) {
-                item.zip_name = result.GetString(wxT("file_name"));
-                item.zip_path = result.GetString(wxT("file_path"));
-            }
-            if (item.zip_path.IsEmpty()) item.zip_path = wxT("$(WANRAIK)");
-        }
-    }
+	BookExtractArray items(id);
 
     wxString html;
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
-        if ( item.id_archive ) {
+		if (item.librusec) {
+            html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), item.GetBook().c_str());
+        } else if ( item.id_archive ) {
+            if (item.zip_path.IsEmpty()) item.zip_path = wxT("$(WANRAIK)");
             if (item.NameIsEqual())
                 html += wxString::Format(wxT("<p>%s</p>"), item.GetZip().c_str());
             else
                 html += wxString::Format(wxT("<p>%s: %s</p>"), item.GetZip().c_str(), item.GetBook().c_str());
-        } else if ( item.id_book > 0 )
-            html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), item.GetBook().c_str());
-        else
+        } else {
             html += wxString::Format(wxT("<p>%s</p>"), item.GetBook().c_str());
+        }
 	}
 
     return html;

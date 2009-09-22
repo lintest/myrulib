@@ -51,39 +51,8 @@ void *ZipThread::Entry()
 ZipReader::ZipReader(int id, bool bShowError)
     :conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
-	BookExtractInfoArray items;
+	BookExtractArray items(id);
 	wxString file_name;
-
-    {
-        wxString sql = wxT("\
-            SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
-            SELECT DISTINCT 1 AS Key, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
-            ORDER BY Key \
-        ");
-
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
-        stmt.Bind(1, id);
-        stmt.Bind(2, id);
-        wxSQLite3ResultSet result = stmt.ExecuteQuery();
-        while ( result.NextRow() ) items.Add(result);
-    }
-
-    {
-        wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
-        for (size_t i = 0; i<items.Count(); i++) {
-            BookExtractInfo & item = items[i];
-            if (!item.id_archive) continue;
-            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-            wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
-            stmt.Bind(1, item.id_archive);
-            wxSQLite3ResultSet result = stmt.ExecuteQuery();
-            if (result.NextRow()) {
-                item.zip_name = result.GetString(wxT("file_name"));
-                item.zip_path = result.GetString(wxT("file_path"));
-            }
-        }
-    }
 
 	wxString sLibraryDir = FbParams::GetText(FB_LIBRARY_DIR);
 	wxString sWanraikDir = FbParams::GetText(FB_WANRAIK_DIR);
@@ -96,7 +65,7 @@ ZipReader::ZipReader(int id, bool bShowError)
 			if (!m_zipOk) m_zipOk = (zip_file = item.GetZip(sLibraryDir)).FileExists();
 			if (!m_zipOk) m_zipOk = (zip_file = item.GetZip(sWanraikDir)).FileExists();
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
-		} else if (item.id_book > 0) {
+		} else if (item.librusec) {
 			wxString zip_name = zips.FindZip(item.book_name);
 			m_zipOk = !zip_name.IsEmpty();
 			if (m_zipOk) OpenZip(zip_name, item.book_name);

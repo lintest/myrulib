@@ -116,7 +116,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_TitleThread.o \
 	build\myrulib_VacuumThread.o \
 	build\myrulib_ZipReader.o \
-	build\myrulib_sha1.o \
+	build\myrulib_md5.o \
 	build\myrulib_base64.o \
 	build\myrulib_treelistctrl.o \
 	build\myrulib_resource_rc.o
@@ -349,7 +349,7 @@ build\myrulib_VacuumThread.o: ./MyRuLib/VacuumThread.cpp
 build\myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_sha1.o: ./MyRuLib/sha1/sha1.c
+build\myrulib_md5.o: ./MyRuLib/md5.c
 	$(CC) -c -o $@ $(MYRULIB_CFLAGS) $(CPPDEPS) $<
 
 build\myrulib_base64.o: ./MyRuLib/wx/base64.cpp
