@@ -43,7 +43,6 @@
     </lib>
 	
     <exe id="myrulib" template="wxgui">
-		<define>DONT_USE_DATABASE_LAYER_EXCEPTIONS</define>
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookExtractInfo.cpp</sources>
