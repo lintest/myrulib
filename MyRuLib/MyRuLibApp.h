@@ -21,7 +21,7 @@ public:
 	virtual int OnExit();
     wxString GetAppPath() const;
     wxString GetAppData() const { return m_datafile; };
-    wxSQLite3Database& GetDatabase() { return m_database; };
+    wxSQLite3Database & GetDatabase() { return m_database; };
 public:
     wxCriticalSection m_DbSection;
 private:

@@ -171,24 +171,30 @@ int BookInfo::NewId(int iParam)
 {
     int iValue = 0;
 
-	wxString sql = wxT("SELECT value FROM params WHERE id=?");
-    wxSQLite3Statement stmtRead = wxGetApp().GetDatabase().PrepareStatement(sql);
-    stmtRead.Bind(1, iParam);
-    wxSQLite3ResultSet result = stmtRead.ExecuteQuery();
-    if (result.NextRow()) {
-        sql = wxT("UPDATE params SET value=? WHERE id=?");
-        iValue = result.GetInt(0);
-    } else {
-        sql = wxT("INSERT INTO params(value, id) VALUES(?,?)");
+    wxSQLite3Database & database = wxGetApp().GetDatabase();
+
+    {
+        wxString sql = wxT("SELECT value FROM params WHERE id=?");
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, iParam);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) iValue = result.GetInt(0);
     }
+
+    wxString sql;
+    if (iValue)
+        sql = wxT("UPDATE params SET value=? WHERE id=?");
+    else
+        sql = wxT("INSERT INTO params(value, id) VALUES(?,?)");
 
     iValue++;
 
-    wxSQLite3Statement stmtWrite = wxGetApp().GetDatabase().PrepareStatement(sql);
-    stmtWrite.Bind(1, iValue);
-    stmtWrite.Bind(2, iParam);
-    stmtWrite.ExecuteUpdate();
-
+    {
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, iValue);
+        stmt.Bind(2, iParam);
+        iParam = stmt.ExecuteUpdate();
+    }
 	return iValue;
 }
 

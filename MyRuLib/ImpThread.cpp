@@ -89,24 +89,11 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 ImportThread::ImportThread()
     :BaseThread(), m_database(wxGetApp().GetDatabase())
 {
-    memset(m_statements, 0, sizeof(m_statements));
 }
 
-wxSQLite3Statement * ImportThread::GetPreparedStatement(PSItem psItem)
+wxSQLite3Statement ImportThread::GetPreparedStatement(PSItem psItem)
 {
-    wxSQLite3Statement * stmt = m_statements[psItem];
-    if (!stmt) {
-        stmt = new wxSQLite3Statement( m_database.PrepareStatement(GetSQL(psItem)) );
-        m_statements[psItem] = stmt;
-    }
-    return stmt;
-}
-
-ImportThread::~ImportThread()
-{
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    for (size_t i = 0; i < sizeof(m_statements)/sizeof(wxSQLite3Statement*); i++)
-        if (m_statements[i]) delete m_statements[i];
+    return m_database.PrepareStatement(GetSQL(psItem));
 }
 
 void ImportThread::OnExit()
@@ -117,7 +104,7 @@ wxString ImportThread::GetSQL(PSItem psItem)
 {
     switch (psItem) {
         case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
-        case psFindBySha1: return wxT("SELECT id FROM books WHERE sha1sum=? LIMIT 1");
+        case psFindBySha1: return wxT("SELECT id FROM books WHERE sha1sum=?");
         case psUpdateSha1: return wxT("UPDATE books SET sha1sum=? WHERE id=?");
         case psSearchFile: return wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
         case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
@@ -194,27 +181,27 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement * stmt = GetPreparedStatement(psAppendBook);
+        wxSQLite3Statement stmt = GetPreparedStatement(psAppendBook);
 
-        stmt->Bind(1, id_book);
-        stmt->Bind(2, id_archive);
-        stmt->Bind(3, info.authors[i].id);
-        stmt->Bind(4, info.title);
-        stmt->Bind(5, info.genres);
-        stmt->Bind(6, name);
-        stmt->Bind(7, path);
-        stmt->Bind(8, (wxLongLong)size);
-        stmt->Bind(9, wxFileName(name).GetExt().Lower());
-        stmt->Bind(10, info.sha1sum);
-        stmt->ExecuteUpdate();
+        stmt.Bind(1, id_book);
+        stmt.Bind(2, id_archive);
+        stmt.Bind(3, info.authors[i].id);
+        stmt.Bind(4, info.title);
+        stmt.Bind(5, info.genres);
+        stmt.Bind(6, name);
+        stmt.Bind(7, path);
+        stmt.Bind(8, (wxLongLong)size);
+        stmt.Bind(9, wxFileName(name).GetExt().Lower());
+        stmt.Bind(10, info.sha1sum);
+        stmt.ExecuteUpdate();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
-            wxSQLite3Statement * stmt = GetPreparedStatement(psAppendSeqs);
-            stmt->Bind(1, id_book);
-            stmt->Bind(2, info.sequences[j].id);
-            stmt->Bind(3, (int)info.sequences[j].number);
-            stmt->Bind(4, info.authors[i].id);
-            stmt->ExecuteUpdate();
+            wxSQLite3Statement stmt = GetPreparedStatement(psAppendSeqs);
+            stmt.Bind(1, id_book);
+            stmt.Bind(2, info.sequences[j].id);
+            stmt.Bind(3, (int)info.sequences[j].number);
+            stmt.Bind(4, info.authors[i].id);
+            stmt.ExecuteUpdate();
 		}
 	}
 }
@@ -222,9 +209,9 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 int ImportThread::FindBySHA1(const wxString &sha1sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Statement * stmt = GetPreparedStatement(psFindBySha1);
-	stmt->Bind(1, sha1sum);
-	wxSQLite3ResultSet result = stmt->ExecuteQuery();
+    wxSQLite3Statement stmt = GetPreparedStatement(psFindBySha1);
+	stmt.Bind(1, sha1sum);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0) : 0;
 }
 
@@ -234,9 +221,9 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 
     {
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement * stmt = GetPreparedStatement(psFindBySize);
-        stmt->Bind(1, (wxLongLong)size);
-        wxSQLite3ResultSet result = stmt->ExecuteQuery();
+        wxSQLite3Statement stmt = GetPreparedStatement(psFindBySize);
+        stmt.Bind(1, (wxLongLong)size);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
         while (result.NextRow()) {
             books.Add(result.GetInt(0));
         }
@@ -251,10 +238,10 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		LoadXml(book.GetZip(), info);
 
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement * stmt = GetPreparedStatement(psUpdateSha1);
-        stmt->Bind(1, info.sha1sum);
-        stmt->Bind(2, books[i]);
-		stmt->ExecuteUpdate();
+        wxSQLite3Statement stmt = GetPreparedStatement(psUpdateSha1);
+        stmt.Bind(1, info.sha1sum);
+        stmt.Bind(2, books[i]);
+		stmt.ExecuteUpdate();
 
 		if (info.sha1sum == sha1sum) return books[i];
 	}
@@ -269,17 +256,20 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
     info.filename = name;
     info.filepath = path;
 
-	if (LoadXml(stream, info)) {
-		int id_book = FindBySHA1(info.sha1sum);
-		if (id_book == 0)
-			id_book = FindBySize(info.sha1sum, stream.GetLength());
-		if (id_book == 0)
-			AppendBook(info, name, path, stream.GetLength(), id_archive);
-		else {
-			AppendFile(id_book, id_archive, name, path);
-		}
-        return true;
-	}
+    try {
+        if (LoadXml(stream, info)) {
+            int id_book = FindBySHA1(info.sha1sum);
+            if (id_book == 0)
+                id_book = FindBySize(info.sha1sum, stream.GetLength());
+            if (id_book == 0)
+                AppendBook(info, name, path, stream.GetLength(), id_archive);
+            else
+                AppendFile(id_book, id_archive, name, path);
+            return true;
+        }
+    } catch (wxSQLite3Exception & e) {
+        wxLogFatalError(e.GetMessage());
+    }
     return false;
 }
 
@@ -287,12 +277,12 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
-    wxSQLite3Statement * stmt = GetPreparedStatement(psSearchFile);
-    stmt->Bind(1, id_book);
-    stmt->Bind(2, id_archive);
-    stmt->Bind(3, id_book);
-    stmt->Bind(4, id_archive);
-    wxSQLite3ResultSet result = stmt->ExecuteQuery();
+    wxSQLite3Statement stmt = GetPreparedStatement(psSearchFile);
+    stmt.Bind(1, id_book);
+    stmt.Bind(2, id_archive);
+    stmt.Bind(3, id_book);
+    stmt.Bind(4, id_archive);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
     wxString old_name, old_path;
     if (result.NextRow()) {
@@ -307,11 +297,11 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 
     wxLogWarning(_("Add alternative %s %s"), new_path.c_str(), new_name.c_str());
     stmt = GetPreparedStatement(psAppendFile);
-    stmt->Bind(1, id_book);
-    stmt->Bind(2, id_archive);
-    stmt->Bind(3, new_name);
-    stmt->Bind(4, new_path);
-    stmt->ExecuteUpdate();
+    stmt.Bind(1, id_book);
+    stmt.Bind(2, id_archive);
+    stmt.Bind(3, new_name);
+    stmt.Bind(4, new_path);
+    stmt.ExecuteUpdate();
 }
 
 int ImportThread::AddArchive(const wxString &name, const wxString &path, const int size, const int count)
@@ -319,22 +309,22 @@ int ImportThread::AddArchive(const wxString &name, const wxString &path, const i
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
     {
-        wxSQLite3Statement * stmt = GetPreparedStatement(psSearchArch);
-        stmt->Bind(1, name);
-        stmt->Bind(2, path);
-        wxSQLite3ResultSet result = stmt->ExecuteQuery();
+        wxSQLite3Statement stmt = GetPreparedStatement(psSearchArch);
+        stmt.Bind(1, name);
+        stmt.Bind(2, path);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
         if (result.NextRow()) return result.GetInt(0);
     }
 
     int id = BookInfo::NewId(DB_NEW_ARCHIVE);
     {
-        wxSQLite3Statement * stmt = GetPreparedStatement(psAppendArch);
-        stmt->Bind(1, id);
-        stmt->Bind(2, name);
-        stmt->Bind(3, path);
-        stmt->Bind(4, size);
-        stmt->Bind(5, (wxLongLong)count);
-        stmt->ExecuteUpdate();
+        wxSQLite3Statement stmt = GetPreparedStatement(psAppendArch);
+        stmt.Bind(1, id);
+        stmt.Bind(2, name);
+        stmt.Bind(3, path);
+        stmt.Bind(4, size);
+        stmt.Bind(5, (wxLongLong)count);
+        stmt.ExecuteUpdate();
     }
 	return id;
 }
@@ -371,6 +361,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
         filename.Normalize(wxPATH_NORM_ALL);
         ParseXml(in, filename.GetFullName(), filename.GetPath(wxPATH_UNIX), 0);
         DoFinish();
+        trans.Commit();
         return;
 	}
 
@@ -410,7 +401,6 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 	if ( !ok ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 
 	DoFinish();
-
 	trans.Commit();
 }
 

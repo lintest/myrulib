@@ -150,11 +150,6 @@ void FbDatabase::UpgradeDatabase()
 	}
 }
 
-class FbLowerFunction : public wxSQLite3ScalarFunction
-{
-    virtual void Execute(wxSQLite3FunctionContext& ctx);
-};
-
 void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
     int argCount = ctx.GetArgCount();
@@ -190,10 +185,7 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 
     try {
         wxSQLite3Database::Open(fileName, key, flags);
-
-        FbLowerFunction lower;
-        CreateFunction(wxT("LOWER"), 1, lower);
-
+        CreateFunction(wxT("LOWER"), 1, m_lower);
         if (!bExists) CreateDatabase();
         UpgradeDatabase();
     }

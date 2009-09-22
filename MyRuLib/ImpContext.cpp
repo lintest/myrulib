@@ -42,7 +42,7 @@ int AuthorItem::FindAuthor(AuthorItem &author)
 
     int newId = - BookInfo::NewId(DB_NEW_AUTHOR);
     {
-        wxString sql = wxT("INSERT INTO authors(id, letter, search_name, full_name, first_name, middle_name, last_name VALUES(?,?,?,?,?,?,?)");
+        wxString sql = wxT("INSERT INTO authors(id, letter, search_name, full_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?)");
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, newId);
         stmt.Bind(2, letter);

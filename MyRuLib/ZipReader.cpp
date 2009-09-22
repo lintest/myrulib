@@ -71,12 +71,11 @@ ZipReader::ZipReader(int id, bool bShowError)
 
     {
         wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
-
         for (size_t i = 0; i<items.Count(); i++) {
             BookExtractInfo & item = items[i];
             if (!item.id_archive) continue;
+            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+            wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
             stmt.Bind(1, item.id_archive);
             wxSQLite3ResultSet result = stmt.ExecuteQuery();
             if (result.NextRow()) {
@@ -246,7 +245,7 @@ void ZipCollection::AddZip(const wxString &filename)
 
 	int id = 0;
 	{
-        wxString sql = wxT("SELECT id FROM zip_files WHERE path=?");
+        wxString sql = wxT("SELECT file FROM zip_files WHERE path=?");
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, filename);
@@ -260,11 +259,11 @@ void ZipCollection::AddZip(const wxString &filename)
     int count = 0;
     {
         wxString sql = wxT("INSERT INTO zip_books(file,book) values(?,?)");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = database.PrepareStatement(sql);
-        stmt.Bind(1, id);
         while (wxZipEntry * entry = zip.GetNextEntry()) {
             if (entry->GetSize()) {
+                wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+                wxSQLite3Statement stmt = database.PrepareStatement(sql);
+                stmt.Bind(1, id);
                 stmt.Bind(2, entry->GetName(wxPATH_UNIX));
                 stmt.ExecuteUpdate();
                 count++;
@@ -293,25 +292,20 @@ wxString ZipCollection::FindZip(const wxString &filename)
 
 	wxSQLite3Database & database = wxGetApp().GetDatabase();
 
-    {
-        wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
-        wxSQLite3Statement stmt = database.PrepareStatement(sql);
-        stmt.Bind(1, filename);
-        wxSQLite3ResultSet result = stmt.ExecuteQuery();
-    }
+    wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
+    stmt.Bind(1, filename);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-    {
+    while (result.NextRow())  {
         wxString sql = wxT("SELECT path FROM zip_files WHERE file=?");
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, result.GetInt(0));
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
-        while (result.NextRow())  {
-            stmt.Bind(1, result.GetInt(0));
-            wxSQLite3ResultSet result = stmt.ExecuteQuery();
-            if (result.NextRow()) {
-                wxFileName zip_file = result.GetString(0);
-                zip_file.SetPath(m_dirname);
-                if (zip_file.FileExists()) return zip_file.GetFullPath();
-            }
+        if (result.NextRow()) {
+            wxFileName zip_file = result.GetString(0);
+            zip_file.SetPath(m_dirname);
+            if (zip_file.FileExists()) return zip_file.GetFullPath();
         }
     }
 

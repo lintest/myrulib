@@ -20,6 +20,7 @@ void FbAuthorList::FillAuthorsText(const wxString & findText)
 {
 	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE search_name like ? ORDER BY search_name");
 	wxString str = findText + wxT('%');
+    BookInfo::MakeLower(str);
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);

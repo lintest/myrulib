@@ -88,6 +88,8 @@ wxString TitleThread::GetBookFiles(int id)
 {
 	BookExtractInfoArray items;
 
+	wxSQLite3Database & database = wxGetApp().GetDatabase();
+
     {
         wxString sql = wxT("\
             SELECT DISTINCT 0 AS Key, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
@@ -95,7 +97,7 @@ wxString TitleThread::GetBookFiles(int id)
             ORDER BY Key \
         ");
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, id);
         stmt.Bind(2, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -104,10 +106,9 @@ wxString TitleThread::GetBookFiles(int id)
 
     {
         wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
-
         for (size_t i = 0; i<items.Count(); i++) {
+            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+            wxSQLite3Statement stmt = database.PrepareStatement(sql);
             BookExtractInfo & item = items[i];
             if (!item.id_archive) continue;
             stmt.Bind(1, item.id_archive);

@@ -10,7 +10,6 @@ class ImportThread : public BaseThread
 {
 public:
     ImportThread();
-    virtual ~ImportThread();
     virtual void OnExit();
 	bool ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive);
     int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
@@ -33,8 +32,7 @@ private:
         psAppendSeqs,
         psLastMember,
     };
-    wxSQLite3Statement * m_statements[psLastMember];
-    wxSQLite3Statement * GetPreparedStatement(PSItem psItem);
+    wxSQLite3Statement GetPreparedStatement(PSItem psItem);
     wxString GetSQL(PSItem psItem);
     wxSQLite3Database & m_database;
 };

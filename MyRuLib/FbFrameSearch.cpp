@@ -57,9 +57,9 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
 
     wxString msg = wxString::Format(_T("Поиск: %s %s"), title.c_str(), author.c_str());
 
-    wxString templ = title;
+    wxString templ = wxT('%') + title + wxT('%');
     templ.Replace(wxT(" "), wxT("%"));
-    templ.MakeLower();
+    BookInfo::MakeLower(templ);
 
 	wxString sql = wxT("\
         SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
@@ -69,6 +69,8 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
         ORDER BY books.title, books.id, authors.full_name\
         LIMIT 1024 \
     ");
+
+    sql.Replace(wxT("/n"), wxT(" "), true);
 
     wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);

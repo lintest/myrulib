@@ -4,6 +4,11 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 
+class FbLowerFunction : public wxSQLite3ScalarFunction
+{
+    virtual void Execute(wxSQLite3FunctionContext& ctx);
+};
+
 class FbDatabase: public wxSQLite3Database
 {
 	public:
@@ -12,6 +17,8 @@ class FbDatabase: public wxSQLite3Database
 	private:
 		void CreateDatabase();
 		void UpgradeDatabase();
+    private:
+        FbLowerFunction m_lower;
 };
 
 #endif // __FBDATABASE_H__

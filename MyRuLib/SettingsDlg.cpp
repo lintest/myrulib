@@ -428,8 +428,13 @@ void SettingsDlg::Execute(wxWindow* parent)
 {
     SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
 
-    dlg.Assign(false);
-	dlg.FillTypelist();
+    try {
+        dlg.Assign(false);
+        dlg.FillTypelist();
+    } catch (wxSQLite3Exception & e) {
+        wxLogFatalError(e.GetMessage());
+        return;
+    }
 
     if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
@@ -458,8 +463,7 @@ void SettingsDlg::FillTypelist()
 		ORDER BY number, books.file_type \
      ");
 
-    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+    wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
 
 	m_typelist->Freeze();
 
