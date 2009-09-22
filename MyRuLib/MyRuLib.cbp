@@ -225,6 +225,9 @@
 		<Unit filename="XpmBitmaps.h" />
 		<Unit filename="ZipReader.cpp" />
 		<Unit filename="ZipReader.h" />
+		<Unit filename="md5.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="res\checked.xpm" />
 		<Unit filename="res\checkout.xpm" />
 		<Unit filename="res\nocheck.xpm" />
@@ -232,9 +235,6 @@
 			<Option compilerVar="WINDRES" />
 			<Option target="WinDebug" />
 			<Option target="WinRelease" />
-		</Unit>
-		<Unit filename="sha1\sha1.c">
-			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sha1\sha1.h" />
 		<Unit filename="wx\base64.cpp" />
