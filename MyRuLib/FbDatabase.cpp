@@ -21,9 +21,9 @@ void FbDatabase::CreateDatabase()
         "));
     wxString sql = wxString::Format(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '%s')"), strNobody.c_str());
     ExecuteUpdate(sql);
-    ExecuteUpdate(wxT("CREATE INDEX author_id ON authors(id);"));
-    ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter);"));
-    ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name);"));
+    ExecuteUpdate(wxT("CREATE INDEX author_id ON authors(id)"));
+    ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter)"));
+    ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name)"));
 
     /** TABLE books **/
     ExecuteUpdate(wxT("\
@@ -40,9 +40,9 @@ void FbDatabase::CreateDatabase()
                 file_type varchar(20),\
                 description text);\
         "));
-    ExecuteUpdate(wxT("CREATE INDEX book_id ON books(id);"));
-    ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author);"));
-    ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive);"));
+    ExecuteUpdate(wxT("CREATE INDEX book_id ON books(id)"));
+    ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author)"));
+    ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive)"));
 
     /** TABLE archives **/
     ExecuteUpdate(wxT("\
@@ -59,22 +59,22 @@ void FbDatabase::CreateDatabase()
         "));
 
     /** TABLE sequences **/
-    ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null);"));
-    ExecuteUpdate(wxT("CREATE INDEX sequences_name ON sequences(value);"));
+    ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null)"));
+    ExecuteUpdate(wxT("CREATE INDEX sequences_name ON sequences(value)"));
 
     /** TABLE bookseq **/
-    ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);"));
-    ExecuteUpdate(wxT("CREATE INDEX bookseq_book ON bookseq(id_book);"));
-    ExecuteUpdate(wxT("CREATE INDEX bookseq_author ON bookseq(id_author);"));
+    ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer)"));
+    ExecuteUpdate(wxT("CREATE INDEX bookseq_book ON bookseq(id_book)"));
+    ExecuteUpdate(wxT("CREATE INDEX bookseq_author ON bookseq(id_author)"));
 
     /** TABLE words **/
-    ExecuteUpdate(wxT("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);"));
-    ExecuteUpdate(wxT("CREATE INDEX words_word ON words(word);"));
+    ExecuteUpdate(wxT("CREATE TABLE words(word varchar(99), id_book integer not null, number integer)"));
+    ExecuteUpdate(wxT("CREATE INDEX words_word ON words(word)"));
 
     /** TABLE params **/
-    ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
-    ExecuteUpdate(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
-    ExecuteUpdate(_("INSERT INTO params(id, value) VALUES (2, 1);"));
+    ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text)"));
+    ExecuteUpdate(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library')"));
+    ExecuteUpdate(_("INSERT INTO params(id, value) VALUES (2, 1)"));
 
     trans.Commit();
 }
@@ -86,60 +86,66 @@ void FbDatabase::UpgradeDatabase()
 
 	wxString sUpgradeMsg = wxT("Upgrade database to version %d");
 
-    wxSQLite3Transaction trans(this);
-
     if (version == 1) {
         version ++;
         wxLogInfo(sUpgradeMsg, version);
+        wxSQLite3Transaction trans(this);
 
         /** TABLE books **/
-        ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27);"));
-        ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum);"));
-        ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size);"));
+        ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27)"));
+        ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum)"));
+        ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size)"));
 
         /** TABLE zip_books, zip_files **/
-        ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer);"));
-        ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text);"));
-        ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book);"));
+        ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer)"));
+        ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
+        ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
 
         FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        trans.Commit();
     }
 
     if (version == 2) {
         version ++;
         wxLogInfo(sUpgradeMsg, version);
+        wxSQLite3Transaction trans(this);
 
         /** TABLE types **/
-        ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text);"));
-        ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type);"));
-        ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file;"));
+        ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
+        ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type)"));
+        ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file"));
 
         /** TABLE files **/
-        ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text);"));
-        ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book);"));
+        ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text)"));
+        ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book)"));
 
         FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        trans.Commit();
     }
 
     if (version == 3) {
         version ++;
         wxLogInfo(sUpgradeMsg, version);
+        wxSQLite3Transaction trans(this);
 
         /** TABLE books **/
-        ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT;"));
-        ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER;"));
+        ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
+        ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
+
+        try { ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)")); } catch (...) {};
+        ExecuteUpdate(wxT("CREATE INDEX books_md5sum ON books(md5sum)"));
+        ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
 
         /** TABLE files **/
-        ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT;"));
+        ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT"));
 
         /** TABLE comments **/
-        ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text);"));
-        ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book);"));
+        ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
+        ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
 
         FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        trans.Commit();
     }
-
-    trans.Commit();
 
 	FbParams::LoadParams();
 	int old_version = FbParams::GetValue(DB_LIBRARY_VERSION);

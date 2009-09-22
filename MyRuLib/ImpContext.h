@@ -50,7 +50,7 @@ public:
     wxString genres;
     AuthorItem * author;
     wxString text;
-    wxString sha1sum;
+    wxString md5sum;
     bool sha1only;
     wxString filename;
     wxString filepath;

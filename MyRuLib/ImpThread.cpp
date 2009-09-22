@@ -6,7 +6,7 @@
 #include "FbGenres.h"
 #include "MyRuLibApp.h"
 #include "ZipReader.h"
-#include "sha1/sha1.h"
+#include "polarssl/md5.h"
 #include "wx/base64.h"
 
 extern wxString strAlphabet;
@@ -103,14 +103,14 @@ void ImportThread::OnExit()
 wxString ImportThread::GetSQL(PSItem psItem)
 {
     switch (psItem) {
-        case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (sha1sum='' OR sha1sum IS NULL)");
-        case psFindBySha1: return wxT("SELECT id FROM books WHERE sha1sum=?");
-        case psUpdateSha1: return wxT("UPDATE books SET sha1sum=? WHERE id=?");
+        case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (md5sum='' OR md5sum IS NULL)");
+        case psFindByMd5: return wxT("SELECT id FROM books WHERE md5sum=?");
+        case psUpdateMd5: return wxT("UPDATE books SET md5sum=? WHERE id=?");
         case psSearchFile: return wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
         case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
         case psSearchArch: return wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
         case psAppendArch: return wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
-        case psAppendBook: return wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, sha1sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
+        case psAppendBook: return wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
         case psAppendSeqs: return wxT("INSERT INTO bookseq(id_book, id_seq, number, id_author) VALUES (?,?,?,?)");
         case psLastMember: return wxEmptyString;
     }
@@ -123,12 +123,12 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     unsigned char buf[BUFSIZE];
     bool done;
 
-    sha1_context sha1;
+    md5_context md5;
 
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
 
-    sha1_starts( &sha1 );
+    md5_starts( &md5 );
 
     bool ok = true;
     bool skip = ctx.sha1only;
@@ -137,7 +137,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
         done = (len < BUFSIZE);
 
-		sha1_update( &sha1, buf, (int) len );
+		md5_update( &md5, buf, (int) len );
 
 		if (!skip) {
 			if ( !XML_Parse(ctx.GetParser(), (char *)buf, len, done) ) {
@@ -155,9 +155,10 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
         }
     } while (!done);
 
-    unsigned char output[20];
-    sha1_finish( &sha1, output );
-	ctx.sha1sum = wxBase64Encode(output, 20).Left(27);
+    unsigned char output[16];
+    md5_finish( &md5, output );
+    ctx.md5sum = wxEmptyString;
+    for (size_t i=0; i<16; i++) ctx.md5sum += wxString::Format(wxT("%x"), output[i]);
 
     for (size_t i=0; i<ctx.authors.Count(); i++)
 		ctx.authors[i].Convert();
@@ -192,7 +193,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
         stmt.Bind(7, path);
         stmt.Bind(8, (wxLongLong)size);
         stmt.Bind(9, wxFileName(name).GetExt().Lower());
-        stmt.Bind(10, info.sha1sum);
+        stmt.Bind(10, info.md5sum);
         stmt.ExecuteUpdate();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
@@ -206,16 +207,16 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 	}
 }
 
-int ImportThread::FindBySHA1(const wxString &sha1sum)
+int ImportThread::FindByMD5(const wxString &md5sum)
 {
 	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Statement stmt = GetPreparedStatement(psFindBySha1);
-	stmt.Bind(1, sha1sum);
+    wxSQLite3Statement stmt = GetPreparedStatement(psFindByMd5);
+	stmt.Bind(1, md5sum);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0) : 0;
 }
 
-int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
+int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 {
     wxArrayInt books;
 
@@ -238,12 +239,12 @@ int ImportThread::FindBySize(const wxString &sha1sum, wxFileOffset size)
 		LoadXml(book.GetZip(), info);
 
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = GetPreparedStatement(psUpdateSha1);
-        stmt.Bind(1, info.sha1sum);
+        wxSQLite3Statement stmt = GetPreparedStatement(psUpdateMd5);
+        stmt.Bind(1, info.md5sum);
         stmt.Bind(2, books[i]);
 		stmt.ExecuteUpdate();
 
-		if (info.sha1sum == sha1sum) return books[i];
+		if (info.md5sum == md5sum) return books[i];
 	}
 
 	return 0;
@@ -258,9 +259,9 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
 
     try {
         if (LoadXml(stream, info)) {
-            int id_book = FindBySHA1(info.sha1sum);
+            int id_book = FindByMD5(info.md5sum);
             if (id_book == 0)
-                id_book = FindBySize(info.sha1sum, stream.GetLength());
+                id_book = FindBySize(info.md5sum, stream.GetLength());
             if (id_book == 0)
                 AppendBook(info, name, path, stream.GetLength(), id_archive);
             else

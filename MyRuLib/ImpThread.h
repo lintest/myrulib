@@ -17,13 +17,13 @@ private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	void AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, const int id_archive);
 	void AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path);
-	int FindBySHA1(const wxString &sha1sum);
+	int FindByMD5(const wxString &sha1sum);
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
 private:
     enum PSItem {
         psFindBySize = 0,
-        psFindBySha1,
-        psUpdateSha1,
+        psFindByMd5,
+        psUpdateMd5,
         psSearchFile,
         psAppendFile,
         psSearchArch,

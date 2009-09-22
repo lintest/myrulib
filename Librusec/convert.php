@@ -223,12 +223,16 @@ function convert_books($mysql_db, $sqlite_db)
 
   $sqltest = "
     SELECT 
-      libbook.BookId, FileSize, Title, Deleted, FileType, 
+      libbook.BookId, FileSize, Title, Deleted, FileType, md5,
       CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId,
-      CASE WHEN libfilename.FileName IS NULL THEN CONCAT(libbook.BookId, '.', libbook.FileType) ELSE libfilename.FileName END AS FileName
+      CASE WHEN libfilename.FileName IS NULL THEN 
+        CASE WHEN oldfilename.FileName IS NULL THEN CONCAT(libbook.BookId, '.', libbook.FileType) ELSE oldfilename.FileName END
+        ELSE libfilename.FileName
+      END AS FileName
     FROM libbook 
       LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
       LEFT JOIN libfilename ON libbook.BookId = libfilename.BookId
+      LEFT JOIN oldfilename ON libbook.BookId = oldfilename.BookId
     WHERE libbook.Deleted<>1
   ";
 
@@ -244,10 +248,10 @@ function convert_books($mysql_db, $sqlite_db)
       $genres = $genres.genreCode($subrow['GenreCode']);
     }
 
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres) VALUES(?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, md5sum) VALUES(?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $row['FileName'], $row['FileSize'], $row['FileType'], $genres));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $row['FileName'], $row['FileSize'], $row['FileType'], $genres, $row['md5']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
 /*
@@ -369,6 +373,7 @@ function create_tables($sqlite_db)
       file_name text,
       file_size integer,
       file_type varchar(20),
+      md5sum char(32),
       description text);
   ");
 
