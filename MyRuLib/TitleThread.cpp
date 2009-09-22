@@ -107,10 +107,10 @@ wxString TitleThread::GetBookFiles(int id)
     {
         wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
         for (size_t i = 0; i<items.Count(); i++) {
-            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-            wxSQLite3Statement stmt = database.PrepareStatement(sql);
             BookExtractInfo & item = items[i];
             if (!item.id_archive) continue;
+            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+            wxSQLite3Statement stmt = database.PrepareStatement(sql);
             stmt.Bind(1, item.id_archive);
             wxSQLite3ResultSet result = stmt.ExecuteQuery();
             if (result.NextRow()) {
@@ -125,10 +125,13 @@ wxString TitleThread::GetBookFiles(int id)
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
-        if ( item.id_book > 0 )
+        if ( item.id_archive ) {
+            if (item.ZipInclude())
+                html += wxString::Format(wxT("<p>%s</p>"), item.GetZip().c_str());
+            else
+                html += wxString::Format(wxT("<p>%s: %s</p>"), item.GetZip().c_str(), item.GetBook().c_str());
+        } else if ( item.id_book > 0 )
             html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), item.GetBook().c_str());
-        else if ( item.id_archive )
-            html += wxString::Format(wxT("<p>%s: %s</p>"), item.GetZip().c_str(), item.GetBook().c_str());
         else
             html += wxString::Format(wxT("<p>%s</p>"), item.GetBook().c_str());
 	}

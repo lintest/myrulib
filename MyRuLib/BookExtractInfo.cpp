@@ -27,3 +27,8 @@ wxString BookExtractInfo::GetZip(const wxString &path)
     return result;
 }
 
+bool BookExtractInfo::ZipInclude()
+{
+    wxFileName filename = zip_name;
+    return filename.GetName() == book_name;
+}

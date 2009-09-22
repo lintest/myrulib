@@ -239,7 +239,7 @@ void BooksPanel::FillByAuthor(int id_author)
 	    }
 	    BookTreeItemData * data = new BookTreeItemData(result);
         wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
-        m_BookList->SetItemText (item, 1, wxString::Format(wxT("%d"), data->number));
+        if (data->number) m_BookList->SetItemText (item, 1, wxString::Format(wxT("%d"), data->number));
         m_BookList->SetItemText (item, 2, data->file_name);
         m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
 	}
