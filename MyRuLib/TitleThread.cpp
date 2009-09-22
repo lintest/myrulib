@@ -126,7 +126,7 @@ wxString TitleThread::GetBookFiles(int id)
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
         if ( item.id_archive ) {
-            if (item.ZipInclude())
+            if (item.NameIsEqual())
                 html += wxString::Format(wxT("<p>%s</p>"), item.GetZip().c_str());
             else
                 html += wxString::Format(wxT("<p>%s: %s</p>"), item.GetZip().c_str(), item.GetBook().c_str());
