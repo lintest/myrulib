@@ -68,12 +68,6 @@ ParsingContext::~ParsingContext()
     XML_ParserFree(m_parser);
 }
 
-bool ParsingContext::IsInclude(const wxString &path)
-{
-    size_t len = path.Length();
-    return (len <= m_path.Length()) && (m_path.Left(len) == path);
-}
-
 void ParsingContext::AppendTag(wxString &tag)
 {
     m_path += wxT("/") + tag;
