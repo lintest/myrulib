@@ -72,7 +72,7 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
 
     sql.Replace(wxT("/n"), wxT(" "), true);
 
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
     stmt.Bind(1, templ);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();

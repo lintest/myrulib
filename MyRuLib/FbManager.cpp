@@ -220,7 +220,7 @@ wxString FbManager::GetSystemCommand(const wxString & file_type)
 wxString FbManager::GetOpenCommand(const wxString & file_type)
 {
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
     stmt.Bind(1, file_type);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();

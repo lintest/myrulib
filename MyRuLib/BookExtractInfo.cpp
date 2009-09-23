@@ -44,7 +44,7 @@ BookExtractArray::BookExtractArray(const int id)
             SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
             ORDER BY file \
         ");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
         stmt.Bind(1, id);
         stmt.Bind(2, id);
@@ -57,7 +57,7 @@ BookExtractArray::BookExtractArray(const int id)
         for (size_t i = 0; i<Count(); i++) {
             BookExtractInfo & item = Item(i);
             if (!item.id_archive) continue;
-            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
             wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
             stmt.Bind(1, item.id_archive);
             wxSQLite3ResultSet result = stmt.ExecuteQuery();

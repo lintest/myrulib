@@ -21,4 +21,17 @@ class FbDatabase: public wxSQLite3Database
         FbLowerFunction m_lower;
 };
 
+class FbAutoCommit
+{
+    public:
+        FbAutoCommit(wxSQLite3Database * database): m_database(database) {
+            try {m_database->Begin(WXSQLITE_TRANSACTION_DEFERRED);} catch (...) {};
+        };
+        virtual ~FbAutoCommit() {
+            try {m_database->Commit();} catch (...) {};
+        };
+    private:
+        wxSQLite3Database * m_database;
+};
+
 #endif // __FBDATABASE_H__

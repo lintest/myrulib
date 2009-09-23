@@ -63,11 +63,13 @@ void FbParams::SetValue(const int &param, int value)
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, value);
         stmt.Bind(2, param);
-        if (!stmt.ExecuteUpdate()) {
+        int updated = stmt.ExecuteUpdate();
+        if (updated == 0) {
             wxString sql = wxT("INSERT INTO params (value, id) VALUES (?,?)");
             wxSQLite3Statement stmt = database.PrepareStatement(sql);
             stmt.Bind(1, value);
             stmt.Bind(2, param);
+            stmt.ExecuteUpdate();
         }
     }
 
@@ -99,11 +101,13 @@ void FbParams::SetText(const int &param, wxString text)
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, text);
         stmt.Bind(2, param);
-        if (!stmt.ExecuteUpdate()) {
+        int updated = stmt.ExecuteUpdate();
+        if (updated == 0) {
             wxString sql = wxT("INSERT INTO params (text, id) VALUES (?,?)");
             wxSQLite3Statement stmt = database.PrepareStatement(sql);
             stmt.Bind(1, text);
             stmt.Bind(2, param);
+            stmt.ExecuteUpdate();
         }
     }
 

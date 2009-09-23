@@ -223,7 +223,7 @@ void ZipCollection::AddZip(const wxString &filename)
 		id = BookInfo::NewId(DB_NEW_ZIPFILE);
 	}
 
-    wxSQLite3Transaction trans(&database);
+    FbAutoCommit transaction(&database);
 
     int count = 0;
     {
@@ -248,7 +248,6 @@ void ZipCollection::AddZip(const wxString &filename)
         stmt.Bind(1, id);
         stmt.Bind(2, filename);
         stmt.ExecuteUpdate();
-        trans.Commit();
 	}
 
 	InfoCash::Empty();
@@ -257,7 +256,6 @@ void ZipCollection::AddZip(const wxString &filename)
 wxString ZipCollection::FindZip(const wxString &filename)
 {
     wxCriticalSectionLocker enter1(sm_queue);
-	wxCriticalSectionLocker enter2(wxGetApp().m_DbSection);
 
 	wxSQLite3Database & database = wxGetApp().GetDatabase();
 

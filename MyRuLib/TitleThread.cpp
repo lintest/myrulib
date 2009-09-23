@@ -49,7 +49,7 @@ wxString TitleThread::GetBookInfo(int id)
             WHERE id IN (SELECT id_author FROM books WHERE id=?) \
             ORDER BY authors.full_name \
         ");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
         stmt.Bind(1, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -61,7 +61,7 @@ wxString TitleThread::GetBookInfo(int id)
 
     {
         wxString sql = wxT("SELECT title, genres FROM books WHERE id=? LIMIT 1");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
         stmt.Bind(1, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();

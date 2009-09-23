@@ -158,7 +158,8 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     unsigned char output[16];
     md5_finish( &md5, output );
     ctx.md5sum = wxEmptyString;
-    for (size_t i=0; i<16; i++) ctx.md5sum += wxString::Format(wxT("%x"), output[i]);
+    for (size_t i=0; i<16; i++) ctx.md5sum += wxString::Format(wxT("%02x"), output[i]);
+    memset( &md5, 0, sizeof( md5_context ) );
 
     for (size_t i=0; i<ctx.authors.Count(); i++)
 		ctx.authors[i].Convert();
@@ -348,7 +349,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 
     wxLogInfo(_("Import file %s"), zipname.c_str());
 
-    wxSQLite3Transaction trans(&wxGetApp().GetDatabase());
+    FbAutoCommit transaction(&wxGetApp().GetDatabase());
 
 	wxFFileInputStream in(zipname);
 	if ( !in.IsOk() ){
@@ -362,7 +363,6 @@ void ZipImportThread::ImportFile(const wxString & zipname)
         filename.Normalize(wxPATH_NORM_ALL);
         ParseXml(in, filename.GetFullName(), filename.GetPath(wxPATH_UNIX), 0);
         DoFinish();
-        trans.Commit();
         return;
 	}
 
@@ -402,7 +402,6 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 	if ( !ok ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 
 	DoFinish();
-	trans.Commit();
 }
 
 class CountTraverser : public wxDirTraverser
@@ -483,7 +482,7 @@ void *DirImportThread::Entry()
 {
     wxCriticalSectionLocker enter(sm_queue);
 
-    wxSQLite3Transaction trans(&wxGetApp().GetDatabase());
+    FbAutoCommit transaction(&wxGetApp().GetDatabase());
 
     wxLogInfo(_("Start import directory %s"), m_dirname.c_str());
 
@@ -507,8 +506,6 @@ void *DirImportThread::Entry()
     DoFinish();
 
     wxLogInfo(_("Finish import directory %s"), m_dirname.c_str());
-
-    trans.Commit();
 
 	return NULL;
 }

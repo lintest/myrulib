@@ -437,6 +437,7 @@ void SettingsDlg::Execute(wxWindow* parent)
     }
 
     if (dlg.ShowModal() == wxID_OK) {
+        FbAutoCommit transaction(&wxGetApp().GetDatabase());
 		dlg.Assign(true);
 		dlg.SaveTypelist();
 		ZipReader::Init();
@@ -445,7 +446,7 @@ void SettingsDlg::Execute(wxWindow* parent)
 
 void SettingsDlg::FillTypelist()
 {
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
 
 	wxString sql = wxT("\
 		SELECT \

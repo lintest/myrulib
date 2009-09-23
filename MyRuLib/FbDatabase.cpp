@@ -199,3 +199,4 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
         wxLogFatalError(e.GetMessage());
     }
 }
+

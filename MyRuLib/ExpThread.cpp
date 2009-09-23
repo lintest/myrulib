@@ -29,7 +29,7 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 
 void *ExportThread::Entry()
 {
-    wxCriticalSectionLocker enter(sm_queue);
+//    wxCriticalSectionLocker enter(sm_queue);
 
     DoStart(m_filelist.Count(), wxEmptyString);
 

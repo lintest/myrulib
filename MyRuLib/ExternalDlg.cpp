@@ -332,7 +332,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
     wxString thisLeter, thisAuthor, thisSequence;
     wxTreeItemId itemLetter, itemAuthor, itemSequence;
 
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
     while (result.NextRow()) {
 	    BookTreeItemData data(result);
@@ -385,7 +385,7 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
     wxString thisLeter, thisAuthor;
     wxTreeItemId itemLetter, itemAuthor;
 
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
+//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
     while (result.NextRow()) {
 	    BookTreeItemData data(result);

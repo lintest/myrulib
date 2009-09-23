@@ -25,6 +25,7 @@ private:
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
 	void SelectFirstAuthor();
+    void FillByAuthor(int id_author);
 	BookTreeItemData * GetSelectedBook();
 private:
 	FbAuthorList * m_AuthorsListBox;

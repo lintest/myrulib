@@ -193,63 +193,6 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 	}
 }
 
-void BooksPanel::FillByAuthor(int id_author)
-{
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Database & database = wxGetApp().GetDatabase();
-
-    wxString sAuthorName = strNobody;
-    {
-        wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
-        wxSQLite3Statement stmt = database.PrepareStatement(sql);
-        stmt.Bind(1, id_author);
-        wxSQLite3ResultSet result = stmt.ExecuteQuery();
-        if (result.NextRow()) sAuthorName = result.GetString(0);
-    }
-
-	wxString sql = wxT("\
-        SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-            books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, sequences.value AS sequence, bookseq.number\
-        FROM books \
-            LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
-            LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
-        WHERE books.id_author = ? \
-        ORDER BY key, sequences.value, bookseq.number, books.title \
-    ");
-
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, id_author);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-    wxString thisSequence;
-    wxTreeItemId parent;
-
-	m_BookList->Freeze();
-    m_BookList->DeleteRoot();
-
-    wxTreeItemId root = m_BookList->AddRoot(sAuthorName, 0);
-    m_BookList->SetItemBold(root, true);
-
-    while (result.NextRow()) {
-	    wxString nextSequence = result.GetString(wxT("sequence"));
-	    if (thisSequence != nextSequence || !parent.IsOk()) {
-	        thisSequence = nextSequence;
-            parent = m_BookList->AppendItem(root, thisSequence.IsEmpty() ? strOtherSequence : thisSequence, 0);
-            m_BookList->SetItemBold(parent, true);
-	    }
-	    BookTreeItemData * data = new BookTreeItemData(result);
-        wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
-        if (data->number) m_BookList->SetItemText (item, 1, wxString::Format(wxT("%d"), data->number));
-        m_BookList->SetItemText (item, 2, data->file_name);
-        m_BookList->SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
-	}
-
-    m_BookList->ExpandAll( m_BookList->GetRootItem() );
-	m_BookList->Thaw();
-
-	m_BookInfo->SetPage(wxEmptyString);
-}
-
 void BooksPanel::OnSubmenu(wxCommandEvent& event)
 {
     wxPostEvent(m_BookList, event);
