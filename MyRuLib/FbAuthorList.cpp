@@ -1,5 +1,5 @@
 #include "FbAuthorList.h"
-#include "RecordIDClientData.h"
+#include "FbClientData.h"
 #include "ImpContext.h"
 #include "FbManager.h"
 #include "MyRuLibApp.h"
@@ -41,7 +41,7 @@ void FbAuthorList::FillAuthors(wxSQLite3ResultSet & result)
         item.first  = result.GetString(wxT("first_name"));
         item.middle = result.GetString(wxT("middle_name"));
         item.last   = result.GetString(wxT("last_name"));
-        Append(item.GetFullName(), new RecordIDClientData(id));
+        Append(item.GetFullName(), new FbClientData(id));
     }
 
 	Thaw();

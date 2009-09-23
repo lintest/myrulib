@@ -195,6 +195,7 @@
 		<Unit filename="FbLogStream.h" />
 		<Unit filename="FbManager.cpp" />
 		<Unit filename="FbManager.h" />
+		<Unit filename="FbMenu.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
 		<Unit filename="ImpContext.cpp" />
@@ -215,7 +216,6 @@
 		<Unit filename="ParseCtx.h" />
 		<Unit filename="ProgressBar.cpp" />
 		<Unit filename="ProgressBar.h" />
-		<Unit filename="RecordIDClientData.h" />
 		<Unit filename="SettingsDlg.cpp" />
 		<Unit filename="SettingsDlg.h" />
 		<Unit filename="TitleThread.cpp" />

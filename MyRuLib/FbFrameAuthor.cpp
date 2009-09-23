@@ -5,7 +5,7 @@
 #include "FbParams.h"
 #include "FbManager.h"
 #include "InfoCash.h"
-#include "RecordIDClientData.h"
+#include "FbClientData.h"
 #include "MyRuLibApp.h"
 #include "MyRuLibMain.h"
 #include "ExternalDlg.h"
@@ -96,7 +96,7 @@ void FbFrameAuthor::SelectFirstAuthor()
 {
 	if(m_AuthorsListBox->GetCount()) {
 		m_AuthorsListBox->SetSelection(0);
-		RecordIDClientData * data = (RecordIDClientData *) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
+		FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
         if (data) m_BooksPanel.FillByAuthor(data->GetID());
 	} else {
 		m_BooksPanel.m_BookList->DeleteRoot();
@@ -106,7 +106,7 @@ void FbFrameAuthor::SelectFirstAuthor()
 
 void FbFrameAuthor::OnAuthorsListBoxSelected(wxCommandEvent & event)
 {
-	RecordIDClientData * data = (RecordIDClientData *)event.GetClientObject();
+	FbClientData * data = (FbClientData*)event.GetClientObject();
 	if (data) m_BooksPanel.FillByAuthor(data->GetID());
 }
 
@@ -137,7 +137,7 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
     int iSelected = m_AuthorsListBox->GetSelection();
     if (iSelected == wxNOT_FOUND) return;
-    RecordIDClientData * data = (RecordIDClientData *) m_AuthorsListBox->GetClientObject(iSelected);
+    FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(iSelected);
 
     ExternalDlg::Execute(m_BooksPanel.m_BookList, data->GetID());
 }
