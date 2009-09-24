@@ -76,8 +76,11 @@ InfoNode * InfoCash::GetNode(int id)
     return node;
 }
 
+wxCriticalSection InfoCash::sm_locker;
+
 void InfoCash::SetLoaded(int id)
 {
+    wxCriticalSectionLocker enter(sm_locker);
     for (size_t i=0; i<sm_cash.GetCount(); i++) {
         if (sm_cash.Item(i).id == id) {
             InfoNode * node = sm_cash.Detach(i);
@@ -86,8 +89,6 @@ void InfoCash::SetLoaded(int id)
         }
     }
 }
-
-wxCriticalSection InfoCash::sm_locker;
 
 void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
