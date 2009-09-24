@@ -30,7 +30,7 @@ BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
     number(0)
 {
     try {
-        number = res.GetInt(wxT("number"));
+//        number = res.GetInt(wxT("number"));
     } catch (...) {
         number = 0;
     }
