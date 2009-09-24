@@ -445,8 +445,6 @@ void SettingsDlg::Execute(wxWindow* parent)
 
 void SettingsDlg::FillTypelist()
 {
-//	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
 	wxString sql = wxT("\
 		SELECT \
 			books.file_type, types.command, \
@@ -542,59 +540,45 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
-    /*
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-	Types types(wxGetApp().GetDatabase());
-	TypesRowSet * rows = types.All();
-
-	AutoTransaction trans;
-
-	for (size_t i = 0; i<rows->Count(); i++)
-		rows->Item(i)->isOk = false;
-
-	long item = -1;
-	while (true) {
-		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (item == -1) break;
-		wxString file_type = m_typelist->GetItemText(item);
-		wxString command = m_commands[m_typelist->GetItemData(item)];
-		bool found = false;
-		for (size_t i = 0; i<rows->Count(); i++) {
-			TypesRow * row = rows->Item(i);
-			if (row->file_type == file_type) {
-				found = true;
-				row->isOk = true;
-				if (command.IsEmpty()) {
-					row->Delete();
-				} else {
-					wxString sys_command = FbManager::GetSystemCommand(file_type);
-					if (sys_command == command) {
-						row->Delete();
-					} else {
-						row->command = command;
-						row->Save();
-					}
-				}
+    wxString sql = wxT("SELECT file_type FROM types");
+    wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+    while (result.NextRow()) {
+    	wxString file_type = result.GetString(0);
+		bool bDeleteType = true;
+		long item = -1;
+		while (true) {
+			item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL);
+			if (item == -1) break;
+			if ( m_typelist->GetItemText(item) == file_type ) {
+				wxString command = m_commands[m_typelist->GetItemData(item)];
+				wxString system = FbManager::GetSystemCommand(file_type);
+				bDeleteType = command.IsEmpty() || command == system;
 				break;
 			}
 		}
-		if (found) continue;
-		if (command.IsEmpty()) continue;
+		if (bDeleteType) {
+			wxString sql = wxT("DELETE FROM types WHERE file_type=?");
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, file_type);
+			stmt.ExecuteUpdate();
+		}
+    }
 
-		wxString sys_command = FbManager::GetSystemCommand(file_type);
-		if (sys_command == command) continue;
-
-		TypesRow * row = types.New();
-		row->file_type = file_type;
-		row->command = command;
-		row->Save();
-		row->isOk = true;
+	long item = -1;
+	while (true) {
+		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL);
+		if (item == -1) break;
+		wxString file_type = m_typelist->GetItemText(item);
+		wxString command = m_commands[m_typelist->GetItemData(item)];
+		wxString system = FbManager::GetSystemCommand(file_type);
+		if ( !command.IsEmpty() && command != system ) {
+			wxString sql = wxT("INSERT OR REPLACE INTO types(file_type, command) values(?,?)");
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, file_type);
+			stmt.Bind(2, command);
+			stmt.ExecuteUpdate();
+		}
 	}
-
-	for (size_t i = 0; i<rows->Count(); i++)
-		if (! rows->Item(i)->isOk)
-			rows->Item(i)->Delete();
-    */
 }
 
 void SettingsDlg::OnAppendType( wxCommandEvent& event )

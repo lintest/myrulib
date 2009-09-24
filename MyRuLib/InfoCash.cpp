@@ -155,6 +155,28 @@ void InfoCash::Empty()
     sm_cash.Empty();
 }
 
+class ShowThread: public wxThread
+{
+	public:
+		ShowThread(wxEvtHandler *frame, int id): m_frame(frame), m_id(id) {};
+		virtual void *Entry() {
+			wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
+			event.SetInt(m_id);
+			wxPostEvent(m_frame, event);
+			return NULL;
+		};
+		static void Execute(wxEvtHandler *frame, const int id)
+		{
+			if (!id) return;
+			TitleThread *thread = new TitleThread(frame, id);
+			if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
+		};
+	private:
+		wxEvtHandler * m_frame;
+		int m_id;
+
+};
+
 void InfoCash::ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_type)
 {
     if (!id) return;
@@ -163,9 +185,7 @@ void InfoCash::ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_
     InfoNode * node = GetNode(id);
 
     if (node->loaded) {
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-        event.SetInt(id);
-        wxPostEvent(frame, event);
+    	ShowThread::Execute(frame, id);
     } else {
         TitleThread::Execute(frame, id);
         if (file_type == wxT("fb2")) InfoThread::Execute(frame, id);
