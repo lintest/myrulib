@@ -143,7 +143,7 @@ class ShowThread: public wxThread
 
 };
 
-void InfoCash::ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_type)
+void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type)
 {
     if (!id) return;
 

@@ -45,7 +45,7 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-    static void ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
+    static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
     static void LoadInfo(wxHtmlWindow * bookinfo, const int id, bool vertical);
     static void Empty();
 public:
