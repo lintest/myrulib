@@ -343,14 +343,7 @@ void MyRuLibMainFrame::OnFindTitleEnter(wxCommandEvent& event)
 
 void MyRuLibMainFrame::FindTitle(const wxString &text)
 {
-    if ( text.IsEmpty() ) return;
-
-    wxLogInfo(_("Search title: %s"), text.c_str());
-
-    wxString caption = wxString::Format(_("Поиск: «%s»"), text.c_str());
-	FbFrameSearch * frame = new FbFrameSearch(this, wxID_ANY, caption);
-	frame->Update();
-	frame->DoSearch(text);
+	FbFrameSearch::Execute(this, text);
 }
 
 void MyRuLibMainFrame::OnFindAuthor(wxCommandEvent& event)

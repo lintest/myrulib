@@ -8,15 +8,15 @@
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
 #include <wx/splitter.h>
+#include <wx/wxsqlite3.h>
 #include "FbFrameBase.h"
-#include "FbDatabase.h"
 
 class FbFrameSearch : public FbFrameBase
 {
 public:
-    FbFrameSearch(): FbFrameBase() {};
-	FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-    void DoSearch(const wxString &title, const wxString &author = wxEmptyString);
+    static void Execute(wxAuiMDIParentFrame * parent, const wxString &title);
+	FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title = wxEmptyString);
+    BookListCtrl * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
@@ -25,7 +25,6 @@ private:
 private:
     wxTextCtrl * m_textTitle;
     wxTextCtrl * m_textAuthor;
-    FbLowerFunction m_lower;
 private:
     void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

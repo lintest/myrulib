@@ -1,6 +1,7 @@
 #include "FbFrameSearch.h"
 #include <wx/artprov.h>
 #include "FbConst.h"
+#include "FbDatabase.h"
 #include "FbParams.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
@@ -10,8 +11,8 @@ BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
     EVT_MENU(wxID_SAVE, FbFrameSearch::OnExternal)
 END_EVENT_TABLE()
 
-FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
+    :FbFrameBase(parent, wxID_ANY, title)
 {
     CreateControls();
 }
@@ -56,13 +57,25 @@ void FbFrameSearch::OnExternal(wxCommandEvent& event)
     ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
 }
 
-void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
+class SearchThread: public wxThread
 {
-    BookListCtrl * booklist = m_BooksPanel.m_BookList;
+    public:
+        SearchThread(FbFrameSearch * frame, const wxString &title)
+			:m_frame(frame), m_booklist(frame->GetBooks()), m_title(title) {};
+        virtual void *Entry();
+    private:
+		void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
+    private:
+		FbFrameSearch * m_frame;
+        BookListCtrl * m_booklist;
+        wxString m_title;
+};
 
-    wxString msg = wxString::Format(_T("Поиск: %s %s"), title.c_str(), author.c_str());
+void * SearchThread::Entry()
+{
+	wxString msg = wxString::Format(_("Поиск: «%s»"), m_title.c_str());
 
-    wxString templ = wxT('%') + title + wxT('%');
+    wxString templ = wxT('%') + m_title + wxT('%');
     templ.Replace(wxT(" "), wxT("%"));
     BookInfo::MakeLower(templ);
 
@@ -77,36 +90,65 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
 
     sql.Replace(wxT("/n"), wxT(" "), true);
 
-    FbCommonDatabase database;
-    database.CreateFunction(wxT("LOWER"), 1, m_lower);
+	FbCommonDatabase database;
+	FbLowerFunction lower;
+    database.CreateFunction(wxT("LOWER"), 1, lower);
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
     stmt.Bind(1, templ);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	booklist->Freeze();
-    booklist->DeleteRoot();
-    wxTreeItemId root = booklist->AddRoot(msg);
+    if (!result.NextRow()) {
+    	wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), m_title.c_str());
+    	wxMessageBox(text, _("Поиск"));
+    	m_frame->Close();
+    	return NULL;
+	}
 
-    result.NextRow();
+	FillBooks(result, msg);
+	return NULL;
+}
+
+void SearchThread::FillBooks(wxSQLite3ResultSet & result, const wxString &caption)
+{
+	m_booklist->Freeze();
+    m_booklist->DeleteRoot();
+    wxTreeItemId root = m_booklist->AddRoot(caption);
+
     while (!result.Eof()) {
         BookTreeItemData * data = new BookTreeItemData(result);
-        wxTreeItemId item = booklist->AppendItem(root, data->title, 0, -1, data);
+        wxTreeItemId item = m_booklist->AppendItem(root, data->title, 0, -1, data);
         wxString full_name = result.GetString(wxT("full_name"));
-        booklist->SetItemText (item, 1, full_name);
-        booklist->SetItemText (item, 3, data->file_name);
-        booklist->SetItemText (item, 4, wxString::Format(wxT("%d "), data->file_size/1024));
+        m_booklist->SetItemText (item, 1, full_name);
+        m_booklist->SetItemText (item, 3, data->file_name);
+        m_booklist->SetItemText (item, 4, wxString::Format(wxT("%d "), data->file_size/1024));
         do {
             result.NextRow();
             if ( data->GetId() != result.GetInt(wxT("id")) ) break;
             full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
-            booklist->SetItemText (item, 1, full_name);
+            m_booklist->SetItemText (item, 1, full_name);
         } while (!result.Eof());
     }
 
-    booklist->ExpandAll(root);
-	booklist->Thaw();
-	booklist->SetFocus();
-
-	m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
+    m_booklist->ExpandAll(root);
+	m_booklist->Thaw();
+	m_booklist->SetFocus();
 }
+
+void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
+{
+    if ( title.IsEmpty() ) return;
+    wxLogInfo(_("Search title: %s"), title.c_str());
+
+	wxString msg = wxString::Format(_("Поиск: «%s»"), title.c_str());
+	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
+	frame->Show(false);
+
+	SearchThread * thread = new SearchThread(frame, title);
+	if ( thread->Create() != wxTHREAD_NO_ERROR ) {
+		wxLogError(wxT("Can't create search thread: ") + title);
+		return;
+	}
+	thread->Run();
+}
+
 

@@ -13,7 +13,7 @@ class FbDatabase: public wxSQLite3Database
 {
 	public:
         virtual void Open(const wxString& fileName, const wxString& key = wxEmptyString,
-                        int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE);
+                        int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
         int NewId(int iParam);
     private:
         static wxCriticalSection sm_queue;
@@ -45,7 +45,7 @@ class FbMainDatabase: public FbDatabase
 {
 	public:
         virtual void Open(const wxString& fileName, const wxString& key = wxEmptyString,
-                        int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE);
+                        int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
 	private:
 		void CreateDatabase();
 		void UpgradeDatabase();
