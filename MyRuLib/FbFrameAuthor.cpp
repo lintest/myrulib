@@ -145,7 +145,9 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 void FbFrameAuthor::FillByAuthor(int id_author)
 {
 //    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Database & database = wxGetApp().GetDatabase();
+//    wxSQLite3Database & database = wxGetApp().GetDatabase();
+//    wxSQLite3Database & database = wxGetApp().GetDatabase();
+    FbCommonDatabase database;
 
     wxString sAuthorName = strNobody;
     {

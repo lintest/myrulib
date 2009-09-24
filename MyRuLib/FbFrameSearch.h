@@ -9,6 +9,7 @@
 #include <wx/sizer.h>
 #include <wx/splitter.h>
 #include "FbFrameBase.h"
+#include "FbDatabase.h"
 
 class FbFrameSearch : public FbFrameBase
 {
@@ -24,6 +25,7 @@ private:
 private:
     wxTextCtrl * m_textTitle;
     wxTextCtrl * m_textAuthor;
+    FbLowerFunction m_lower;
 private:
     void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

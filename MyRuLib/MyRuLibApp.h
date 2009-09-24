@@ -21,7 +21,6 @@ public:
 	virtual int OnExit();
     wxString GetAppPath() const;
     wxString GetAppData() const { return m_datafile; };
-    wxSQLite3Database & GetDatabase() { return m_database; };
 public:
     wxCriticalSection m_DbSection;
 private:
@@ -29,7 +28,7 @@ private:
 	bool CreateDatabase();
 private:
 	wxString m_datafile;
-    FbDatabase m_database;
+    FbMainDatabase m_database;
 };
 
 DECLARE_APP(MyRuLibApp)

@@ -8,8 +8,8 @@ void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
 {
 	wxString sql = wxT("SELECT id, first_name, middle_name, last_name FROM authors WHERE letter=? ORDER BY search_name");
 
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    FbCommonDatabase database;
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
     stmt.Bind(1, (wxString)findLetter);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
@@ -22,8 +22,8 @@ void FbAuthorList::FillAuthorsText(const wxString & findText)
 	wxString str = findText + wxT('%');
     BookInfo::MakeLower(str);
 
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    FbCommonDatabase database;
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
     stmt.Bind(1, str);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 

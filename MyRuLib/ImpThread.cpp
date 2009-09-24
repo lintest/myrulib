@@ -86,11 +86,6 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
-ImportThread::ImportThread()
-    :BaseThread(), m_database(wxGetApp().GetDatabase())
-{
-}
-
 wxSQLite3Statement ImportThread::GetPreparedStatement(PSItem psItem)
 {
     return m_database.PrepareStatement(GetSQL(psItem));
@@ -131,7 +126,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     md5_starts( &md5 );
 
     bool ok = true;
-    bool skip = ctx.sha1only;
+    bool skip = ctx.md5only;
 
     do {
         size_t len = stream.Read(buf, BUFSIZE).LastRead();
@@ -162,13 +157,13 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
     memset( &md5, 0, sizeof( md5_context ) );
 
     for (size_t i=0; i<ctx.authors.Count(); i++)
-		ctx.authors[i].Convert();
+		ctx.authors[i].Convert(m_database);
 
 	if (ctx.authors.Count() == 0)
 		ctx.authors.Add(new AuthorItem);
 
     for (size_t i=0; i<ctx.sequences.Count(); i++)
-        ctx.sequences[i].Convert();
+        ctx.sequences[i].Convert(m_database);
 
     return ok;
 }
@@ -178,7 +173,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 	int id_book = 0;
 	{
 		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-		id_book = - BookInfo::NewId(DB_NEW_BOOK);
+		id_book = - m_database.NewId(DB_NEW_BOOK);
 	}
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
@@ -236,7 +231,7 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 		if (!book.IsOK()) continue;
 
 		ImportParsingContext info;
-		info.sha1only = true;
+		info.md5only = true;
 		LoadXml(book.GetZip(), info);
 
         wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
@@ -318,7 +313,7 @@ int ImportThread::AddArchive(const wxString &name, const wxString &path, const i
         if (result.NextRow()) return result.GetInt(0);
     }
 
-    int id = BookInfo::NewId(DB_NEW_ARCHIVE);
+    int id = m_database.NewId(DB_NEW_ARCHIVE);
     {
         wxSQLite3Statement stmt = GetPreparedStatement(psAppendArch);
         stmt.Bind(1, id);
@@ -349,7 +344,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 
     wxLogInfo(_("Import file %s"), zipname.c_str());
 
-    FbAutoCommit transaction(&wxGetApp().GetDatabase());
+    FbAutoCommit transaction(GetDatabase());
 
 	wxFFileInputStream in(zipname);
 	if ( !in.IsOk() ){
@@ -482,7 +477,7 @@ void *DirImportThread::Entry()
 {
     wxCriticalSectionLocker enter(sm_queue);
 
-    FbAutoCommit transaction(&wxGetApp().GetDatabase());
+    FbAutoCommit transaction(GetDatabase());
 
     wxLogInfo(_("Start import directory %s"), m_dirname.c_str());
 

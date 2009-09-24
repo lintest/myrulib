@@ -8,6 +8,7 @@
 #include "InfoCash.h"
 #include "FbConst.h"
 #include "BookExtractInfo.h"
+#include "FbDatabase.h"
 
 class ZipThread : public BaseThread
 {
@@ -24,7 +25,7 @@ class ZipCollection {
 		void Init(const wxString &dirname);
 		wxString FindZip(const wxString &filename);
 		void SetDir(const wxString &dirname);
-		void AddZip(const wxString &filename);
+		void AddZip(FbCommonDatabase & database, const wxString &filename);
 	public:
 		ZipThread * m_thread;
 		static wxCriticalSection sm_queue;
@@ -51,7 +52,8 @@ void *ZipThread::Entry()
 ZipReader::ZipReader(int id, bool bShowError)
     :conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
-	BookExtractArray items(id);
+    FbCommonDatabase database;
+	BookExtractArray items(database, id);
 	wxString file_name;
 
 	wxString sLibraryDir = FbParams::GetText(FB_LIBRARY_DIR);
@@ -168,7 +170,7 @@ public:
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
 		wxString ext = filename.Right(4).Lower();
-		if (ext == wxT(".zip")) m_collection->AddZip(filename);
+		if (ext == wxT(".zip")) m_collection->AddZip(m_database, filename);
         return wxDIR_CONTINUE;
     }
 
@@ -178,6 +180,7 @@ public:
     }
 private:
     ZipCollection* m_collection;
+	FbCommonDatabase m_database;
 };
 
 void ZipCollection::SetDir(const wxString &dirname)
@@ -200,7 +203,7 @@ void ZipCollection::SetDir(const wxString &dirname)
     wxLogInfo(_("Finish scan directory %s"), m_dirname.c_str());
 }
 
-void ZipCollection::AddZip(const wxString &filename)
+void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename)
 {
     wxLogInfo(_("Scan zip %s"), filename.c_str());
 
@@ -210,17 +213,14 @@ void ZipCollection::AddZip(const wxString &filename)
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
-	wxSQLite3Database & database = wxGetApp().GetDatabase();
-
 	int id = 0;
 	{
         wxString sql = wxT("SELECT file FROM zip_files WHERE path=?");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, filename);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         if (result.NextRow()) return ;
-		id = BookInfo::NewId(DB_NEW_ZIPFILE);
+		id = database.NewId(DB_NEW_ZIPFILE);
 	}
 
     FbAutoCommit transaction(&database);
@@ -230,7 +230,6 @@ void ZipCollection::AddZip(const wxString &filename)
         wxString sql = wxT("INSERT INTO zip_books(file,book) values(?,?)");
         while (wxZipEntry * entry = zip.GetNextEntry()) {
             if (entry->GetSize()) {
-                wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
                 wxSQLite3Statement stmt = database.PrepareStatement(sql);
                 stmt.Bind(1, id);
                 stmt.Bind(2, entry->GetName(wxPATH_UNIX));
@@ -243,7 +242,6 @@ void ZipCollection::AddZip(const wxString &filename)
 
 	if (count) {
         wxString sql = wxT("INSERT INTO zip_files(file,path) values(?,?)");
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, id);
         stmt.Bind(2, filename);
@@ -255,9 +253,7 @@ void ZipCollection::AddZip(const wxString &filename)
 
 wxString ZipCollection::FindZip(const wxString &filename)
 {
-    wxCriticalSectionLocker enter1(sm_queue);
-
-	wxSQLite3Database & database = wxGetApp().GetDatabase();
+    FbCommonDatabase database;
 
     wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -278,4 +274,3 @@ wxString ZipCollection::FindZip(const wxString &filename)
 
     return wxEmptyString;
 }
-

@@ -8,10 +8,10 @@
 #include <wx/filename.h>
 #include <wx/artprov.h>
 #include <wx/arrimpl.cpp>
-#include "MyRuLibApp.h"
 #include "ExternalDlg.h"
 #include "FbParams.h"
 #include "FbConst.h"
+#include "MyRuLibApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -332,8 +332,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
     wxString thisLeter, thisAuthor, thisSequence;
     wxTreeItemId itemLetter, itemAuthor, itemSequence;
 
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
+    wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
     while (result.NextRow()) {
 	    BookTreeItemData data(result);
 	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
@@ -385,8 +384,7 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
     wxString thisLeter, thisAuthor;
     wxTreeItemId itemLetter, itemAuthor;
 
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
+    wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
     while (result.NextRow()) {
 	    BookTreeItemData data(result);
 	    if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;

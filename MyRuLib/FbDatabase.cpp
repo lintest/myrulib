@@ -1,8 +1,11 @@
 #include "FbDatabase.h"
 #include "FbParams.h"
 #include "FbConst.h"
+#include "MyRuLibApp.h"
 
-void FbDatabase::CreateDatabase()
+wxCriticalSection FbDatabase::sm_queue;
+
+void FbMainDatabase::CreateDatabase()
 {
     wxSQLite3Transaction trans(this);
 
@@ -79,7 +82,7 @@ void FbDatabase::CreateDatabase()
     trans.Commit();
 }
 
-void FbDatabase::UpgradeDatabase()
+void FbMainDatabase::UpgradeDatabase()
 {
 	FbParams::LoadParams();
 	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
@@ -179,6 +182,48 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 
 void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 {
+    try {
+        wxSQLite3Database::Open(fileName, key, flags);
+    }
+    catch (wxSQLite3Exception & e) {
+        wxLogError(e.GetMessage());
+        throw e;
+    }
+}
+
+int FbDatabase::NewId(int iParam)
+{
+    wxCriticalSectionLocker enter(sm_queue);
+
+    int iValue = 0;
+    {
+        wxString sql = wxT("SELECT value FROM params WHERE id=?");
+        wxSQLite3Statement stmt = PrepareStatement(sql);
+        stmt.Bind(1, iParam);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) iValue = result.GetInt(0);
+    }
+
+    iValue++;
+
+    {
+        wxString sql = wxT("INSERT OR REPLACE INTO params(value, id) VALUES(?,?)");
+        wxSQLite3Statement stmt = PrepareStatement(sql);
+        stmt.Bind(1, iValue);
+        stmt.Bind(2, iParam);
+        stmt.ExecuteUpdate();
+    }
+	return iValue;
+}
+
+FbCommonDatabase::FbCommonDatabase()
+    :FbDatabase()
+{
+    FbDatabase::Open(wxGetApp().GetAppData());
+}
+
+void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int flags)
+{
     bool bExists = wxFileExists(fileName);
 
     if (bExists)
@@ -190,8 +235,7 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
     }
 
     try {
-        wxSQLite3Database::Open(fileName, key, flags);
-        CreateFunction(wxT("LOWER"), 1, m_lower);
+        FbDatabase::Open(fileName, key, flags);
         if (!bExists) CreateDatabase();
         UpgradeDatabase();
     }

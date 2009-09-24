@@ -5,7 +5,6 @@
 #include "FbManager.h"
 #include "BooksPanel.h"
 #include "ExternalDlg.h"
-#include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
     EVT_MENU(wxID_SAVE, FbFrameSearch::OnExternal)
@@ -72,8 +71,9 @@ void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)
 
     sql.Replace(wxT("/n"), wxT(" "), true);
 
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+    FbCommonDatabase database;
+    database.CreateFunction(wxT("LOWER"), 1, m_lower);
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
     stmt.Bind(1, templ);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 

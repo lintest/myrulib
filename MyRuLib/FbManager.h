@@ -51,7 +51,6 @@ class FbManager
 class BookInfo
 {
 public:
-	static int NewId(int iParam);
     static void MakeLower(wxString & data);
     static void MakeUpper(wxString & data);
 };

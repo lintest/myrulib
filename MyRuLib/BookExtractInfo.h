@@ -5,6 +5,7 @@
 #include <wx/filename.h>
 #include <wx/arrimpl.cpp>
 #include <wx/wxsqlite3.h>
+#include "FbDatabase.h"
 
 class BookExtractInfo
 {
@@ -30,7 +31,7 @@ class BookExtractArray
     : public BookExtractArrayBase
 {
     public:
-        BookExtractArray(const int id);
+        BookExtractArray(FbDatabase & database, const int id);
         int GetId() {return m_id; };
     private:
         int m_id;

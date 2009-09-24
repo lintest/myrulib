@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
 #include <wx/wxsqlite3.h>
+#include "FbDatabase.h"
 
 enum {
 	DB_LIBRARY_TITLE = 1,
@@ -60,6 +61,9 @@ class FbParams {
         static int DefaultValue(int param);
         static wxString DefaultText(int param);
         static ParamArray sm_params;
+    private:
+        FbCommonDatabase m_database;
+        static wxCriticalSection sm_queue;
 };
 
 #endif // __FBPARAMS_H__

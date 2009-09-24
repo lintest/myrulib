@@ -1,7 +1,6 @@
 #include "TitleThread.h"
 #include "FbManager.h"
 #include "InfoCash.h"
-#include "MyRuLibApp.h"
 #include "ZipReader.h"
 #include "BookExtractInfo.h"
 
@@ -49,8 +48,7 @@ wxString TitleThread::GetBookInfo(int id)
             WHERE id IN (SELECT id_author FROM books WHERE id=?) \
             ORDER BY authors.full_name \
         ");
-//        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         while ( result.NextRow() ) {
@@ -61,8 +59,7 @@ wxString TitleThread::GetBookInfo(int id)
 
     {
         wxString sql = wxT("SELECT title, genres FROM books WHERE id=? LIMIT 1");
-//        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         if ( result.NextRow() ) {
@@ -86,7 +83,7 @@ wxString TitleThread::GetBookInfo(int id)
 
 wxString TitleThread::GetBookFiles(int id)
 {
-	BookExtractArray items(id);
+	BookExtractArray items(m_database, id);
 
     wxString html;
 

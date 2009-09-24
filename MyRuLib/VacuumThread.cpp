@@ -14,8 +14,7 @@ void VacuumThread::Execute()
 void * VacuumThread::Entry()
 {
     wxLogInfo(wxT("Start SQLite VACUUM"));
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxGetApp().GetDatabase().ExecuteUpdate(wxT("VACUUM"));
+    FbCommonDatabase().ExecuteUpdate(wxT("VACUUM"));
     wxLogInfo(wxT("Finish SQLite VACUUM"));
     return NULL;
 }

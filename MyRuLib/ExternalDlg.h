@@ -28,6 +28,7 @@
 #include "FbManager.h"
 #include "ExpThread.h"
 #include "FbConst.h"
+#include "FbDatabase.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ExternalDlg
@@ -56,6 +57,7 @@ class ExternalDlg : public wxDialog
 		int m_scale;
 		wxString m_ext;
 		int m_author;
+        FbCommonDatabase m_database;
 	private:
 		enum
 		{

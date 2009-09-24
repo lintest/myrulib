@@ -5,14 +5,16 @@
 #include <wx/wxsqlite3.h>
 #include "BaseThread.h"
 #include "ImpContext.h"
+#include "FbDatabase.h"
 
 class ImportThread : public BaseThread
 {
 public:
-    ImportThread();
     virtual void OnExit();
 	bool ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive);
     int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
+protected:
+    FbCommonDatabase & GetDatabase() { return m_database; };
 private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	void AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, const int id_archive);
@@ -34,7 +36,7 @@ private:
     };
     wxSQLite3Statement GetPreparedStatement(PSItem psItem);
     wxString GetSQL(PSItem psItem);
-    wxSQLite3Database & m_database;
+    FbCommonDatabase m_database;
 };
 
 class ZipImportThread : public ImportThread

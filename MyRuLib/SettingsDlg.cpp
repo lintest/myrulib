@@ -437,7 +437,7 @@ void SettingsDlg::Execute(wxWindow* parent)
     }
 
     if (dlg.ShowModal() == wxID_OK) {
-        FbAutoCommit transaction(&wxGetApp().GetDatabase());
+        FbAutoCommit transaction(&dlg.m_database);
 		dlg.Assign(true);
 		dlg.SaveTypelist();
 		ZipReader::Init();
@@ -464,7 +464,7 @@ void SettingsDlg::FillTypelist()
 		ORDER BY number, books.file_type \
      ");
 
-    wxSQLite3ResultSet result = wxGetApp().GetDatabase().ExecuteQuery(sql);
+    wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 
 	m_typelist->Freeze();
 

@@ -12,6 +12,7 @@
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/arrimpl.cpp>
+#include "FbDatabase.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SettingsDlg
@@ -60,6 +61,7 @@ private:
 private:
 	wxListCtrl* m_typelist;
 	wxArrayString m_commands;
+    FbCommonDatabase m_database;
 };
 
 #endif //__SettingsDlg__

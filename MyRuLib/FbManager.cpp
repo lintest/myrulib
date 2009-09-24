@@ -12,7 +12,7 @@
 #include <wx/progdlg.h>
 #include "ImpThread.h"
 #include "FbParams.h"
-#include "MyRuLibApp.h"
+#include "FbDatabase.h"
 #include "FbClientData.h"
 #include "ZipReader.h"
 #include "FbConst.h"
@@ -167,37 +167,6 @@ void BookInfo::MakeUpper(wxString & data){
 #endif
 }
 
-int BookInfo::NewId(int iParam)
-{
-    int iValue = 0;
-
-    wxSQLite3Database & database = wxGetApp().GetDatabase();
-
-    {
-        wxString sql = wxT("SELECT value FROM params WHERE id=?");
-        wxSQLite3Statement stmt = database.PrepareStatement(sql);
-        stmt.Bind(1, iParam);
-        wxSQLite3ResultSet result = stmt.ExecuteQuery();
-        if (result.NextRow()) iValue = result.GetInt(0);
-    }
-
-    wxString sql;
-    if (iValue)
-        sql = wxT("UPDATE params SET value=? WHERE id=?");
-    else
-        sql = wxT("INSERT INTO params(value, id) VALUES(?,?)");
-
-    iValue++;
-
-    {
-        wxSQLite3Statement stmt = database.PrepareStatement(sql);
-        stmt.Bind(1, iValue);
-        stmt.Bind(2, iParam);
-        iParam = stmt.ExecuteUpdate();
-    }
-	return iValue;
-}
-
 wxString FbManager::GetSystemCommand(const wxString & file_type)
 {
 #if defined(__WIN32__)
@@ -220,8 +189,8 @@ wxString FbManager::GetSystemCommand(const wxString & file_type)
 wxString FbManager::GetOpenCommand(const wxString & file_type)
 {
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-    wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+	FbCommonDatabase database;
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
     stmt.Bind(1, file_type);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
     return result.NextRow() ? result.GetString(0) : GetSystemCommand(file_type);

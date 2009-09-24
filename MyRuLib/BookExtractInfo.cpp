@@ -1,5 +1,4 @@
 #include "BookExtractInfo.h"
-#include "MyRuLibApp.h"
 
 WX_DEFINE_OBJARRAY(BookExtractArrayBase);
 
@@ -35,7 +34,7 @@ bool BookExtractInfo::NameIsEqual()
     return filename.GetName() == book_name;
 }
 
-BookExtractArray::BookExtractArray(const int id)
+BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
     :BookExtractArrayBase(), m_id(id)
 {
     {
@@ -44,8 +43,7 @@ BookExtractArray::BookExtractArray(const int id)
             SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
             ORDER BY file \
         ");
-//        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-        wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, id);
         stmt.Bind(2, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -57,8 +55,7 @@ BookExtractArray::BookExtractArray(const int id)
         for (size_t i = 0; i<Count(); i++) {
             BookExtractInfo & item = Item(i);
             if (!item.id_archive) continue;
-//            wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-            wxSQLite3Statement stmt = wxGetApp().GetDatabase().PrepareStatement(sql);
+            wxSQLite3Statement stmt = database.PrepareStatement(sql);
             stmt.Bind(1, item.id_archive);
             wxSQLite3ResultSet result = stmt.ExecuteQuery();
             if (result.NextRow()) {
