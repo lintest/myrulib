@@ -393,7 +393,7 @@ void SettingsDlg::Assign(bool write)
 
     const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-    FbParams params;
+    FbParams params(&m_database);
 
     for (size_t i=0; i<idsCount; i++) {
         switch (ids[i].type) {

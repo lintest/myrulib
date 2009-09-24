@@ -21,8 +21,7 @@ void FbParams::LoadParams()
     wxCriticalSectionLocker enter(sm_queue);
 
 	wxString sql = wxT("SELECT * FROM params");
-    FbCommonDatabase database;
-    wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+    wxSQLite3ResultSet result = m_database->ExecuteQuery(sql);
 
     sm_params.Empty();
     while (result.NextRow()) {
@@ -58,12 +57,12 @@ void FbParams::SetValue(const int &param, int value)
 
     if (value == DefaultValue(param)) {
         wxString sql = wxT("DELETE FROM params WHERE id=?");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
         stmt.Bind(1, param);
         stmt.ExecuteUpdate();
     } else {
         wxString sql = wxT("INSERT OR REPLACE INTO params (value, id) VALUES (?,?)");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
         stmt.Bind(1, value);
         stmt.Bind(2, param);
         stmt.ExecuteUpdate();
@@ -87,12 +86,12 @@ void FbParams::SetText(const int &param, wxString text)
 
     if (text == DefaultValue(param)) {
         wxString sql = wxT("DELETE FROM params WHERE id=?");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
         stmt.Bind(1, param);
         stmt.ExecuteUpdate();
     } else {
         wxString sql = wxT("INSERT OR REPLACE INTO params (text, id) VALUES (?,?)");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
         stmt.Bind(1, text);
         stmt.Bind(2, param);
         stmt.ExecuteUpdate();

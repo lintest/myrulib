@@ -37,8 +37,13 @@ void FbFrameAuthor::CreateControls()
 
 	long substyle = wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER, substyle);
-	m_BooksPanel.CreateAuthorColumns();
 	splitter->SplitVertically(m_AuthorsListBox, &m_BooksPanel, 160);
+
+    BookListCtrl * booklist = m_BooksPanel.m_BookList;
+    booklist->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
+    booklist->AddColumn (_T("№"), 1, wxALIGN_LEFT);
+    booklist->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
+    booklist->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
 
 	SetMenuBar(CreateMenuBar());
 	Layout();

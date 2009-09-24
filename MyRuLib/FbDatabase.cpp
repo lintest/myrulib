@@ -84,7 +84,8 @@ void FbMainDatabase::CreateDatabase()
 
 void FbMainDatabase::UpgradeDatabase()
 {
-	FbParams::LoadParams();
+	FbParams params(this);
+	params.LoadParams();
 	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
 
 	wxString sUpgradeMsg = wxT("Upgrade database to version %d");
@@ -92,7 +93,7 @@ void FbMainDatabase::UpgradeDatabase()
     if (version == 1) {
         version ++;
         wxLogInfo(sUpgradeMsg, version);
-        wxSQLite3Transaction trans(this);
+        wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
         /** TABLE books **/
         ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27)"));
@@ -104,14 +105,14 @@ void FbMainDatabase::UpgradeDatabase()
         ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
         ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
 
-        FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        params.SetValue(DB_LIBRARY_VERSION, version);
         trans.Commit();
     }
 
     if (version == 2) {
         version ++;
         wxLogInfo(sUpgradeMsg, version);
-        wxSQLite3Transaction trans(this);
+        wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
         /** TABLE types **/
         ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
@@ -122,22 +123,21 @@ void FbMainDatabase::UpgradeDatabase()
         ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text)"));
         ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book)"));
 
-        FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        params.SetValue(DB_LIBRARY_VERSION, version);
         trans.Commit();
     }
 
     if (version == 3) {
         version ++;
         wxLogInfo(sUpgradeMsg, version);
-        wxSQLite3Transaction trans(this);
+        wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
         /** TABLE books **/
         ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
         ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
-
-        try { ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)")); } catch (...) {};
-        ExecuteUpdate(wxT("CREATE INDEX books_md5sum ON books(md5sum)"));
         ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
+        try { ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)")); } catch (...) {};
+        ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 
         /** TABLE files **/
         ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT"));
@@ -146,12 +146,12 @@ void FbMainDatabase::UpgradeDatabase()
         ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
         ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
 
-        FbParams().SetValue(DB_LIBRARY_VERSION, version);
+        params.SetValue(DB_LIBRARY_VERSION, version);
         trans.Commit();
     }
 
-	FbParams::LoadParams();
-	int old_version = FbParams::GetValue(DB_LIBRARY_VERSION);
+	params.LoadParams();
+	int old_version = params.GetValue(DB_LIBRARY_VERSION);
 
     int new_version = 4;
 	if (old_version != new_version) {

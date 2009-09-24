@@ -44,7 +44,8 @@ bool BooksPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, con
 
 void BooksPanel::CreateBookInfo()
 {
-    int vertical = FbParams().GetValue(FB_VIEW_TYPE);
+    FbCommonDatabase database;
+    int vertical = FbParams(&database).GetValue(FB_VIEW_TYPE);
 
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
@@ -65,23 +66,6 @@ void BooksPanel::CreateBookInfo()
         m_BookInfo->SetPage(html);
         InfoCash::ShowInfo(this, book->GetId(), book->file_type);
     }
-}
-
-void BooksPanel::CreateAuthorColumns()
-{
-    m_BookList->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("№"), 1, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
-}
-
-void BooksPanel::CreateSearchColumns()
-{
-    m_BookList->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("Автор"), 6, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("№"), 1, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
-    m_BookList->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
 }
 
 BookTreeItemData * BooksPanel::GetSelectedBook()
@@ -150,7 +134,8 @@ void BooksPanel::OnImageClick(wxTreeEvent &event)
 void BooksPanel::OnChangeView(wxCommandEvent & event)
 {
 	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
-	FbParams().SetValue(FB_VIEW_TYPE, vertical);
+    FbCommonDatabase database;
+	FbParams(&database).SetValue(FB_VIEW_TYPE, vertical);
 	CreateBookInfo();
 }
 

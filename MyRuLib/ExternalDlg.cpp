@@ -235,8 +235,8 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	this->Layout();
 	bSizerMain->Fit( this );
 
-	m_textDir->SetValue( FbParams().GetText(FB_EXTERNAL_DIR) );
-	m_choiceFormat->SetSelection( FbParams().GetValue(FB_FILE_FORMAT) );
+	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
+	m_choiceFormat->SetSelection( FbParams::GetValue(FB_FILE_FORMAT) );
 }
 
 ExternalDlg::~ExternalDlg()

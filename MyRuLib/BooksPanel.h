@@ -24,10 +24,6 @@ class BooksPanel: public wxSplitterWindow
                      long substyle = 0,
                      const wxString& name = wxT("bookspanel"));
     public:
-        void FillByAuthor(int id_author);
-        void CreateAuthorColumns();
-        void CreateSearchColumns();
-    public:
         BookListCtrl * m_BookList;
         wxHtmlWindow * m_BookInfo;
         BookTreeItemData * GetSelectedBook();

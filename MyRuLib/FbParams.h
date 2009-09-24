@@ -51,10 +51,11 @@ WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
 
 class FbParams {
     public:
-        FbParams() {};
-        static void LoadParams();
+//        FbParams() {};
+        FbParams(FbDatabase * database): m_database(database) {};
         static int GetValue(const int &param);
         static wxString GetText(const int &param);
+        void LoadParams();
         void SetValue(const int &param, int value);
         void SetText(const int &param, wxString text);
     private:
@@ -62,7 +63,7 @@ class FbParams {
         static wxString DefaultText(int param);
         static ParamArray sm_params;
     private:
-        FbCommonDatabase m_database;
+        FbDatabase * m_database;
         static wxCriticalSection sm_queue;
 };
 
