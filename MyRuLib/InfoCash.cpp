@@ -115,40 +115,6 @@ void InfoCash::SetFilelist(int id, wxString html)
     GetNode(id)->filelist = html;
 };
 
-wxString InfoCash::GetInfo(int id, bool vertical)
-{
-    if (!id) return wxEmptyString;
-
-    wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = GetNode(id);
-
-    wxString html = wxT("<html><body><table width=100%>");
-
-    if (vertical) {
-        html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), node->title.c_str());
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->annotation.c_str());
-        for (size_t i=0; i<node->images.GetCount(); i++) {
-            InfoImage & info = node->images[i];
-            html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\" width=%d height=%d></td></tr>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
-        }
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
-    } else {
-        html += wxT("<tr width=100%>");
-        html += wxString::Format(wxT("<td>%s</td>"), node->title.c_str());
-        html += wxT("<td rowspan=3 align=right valign=top>");
-        for (size_t i=0; i<node->images.GetCount(); i++) {
-            InfoImage & info = node->images[i];
-            html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d><br>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
-        }
-        html += wxT("</td></tr>");
-        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());
-        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->filelist.c_str());
-    }
-    html += wxT("</table></body></html>");
-
-    return html;
-}
-
 void InfoCash::Empty()
 {
     wxCriticalSectionLocker enter(sm_locker);
@@ -191,4 +157,38 @@ void InfoCash::ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_
         if (file_type == wxT("fb2")) InfoThread::Execute(frame, id);
         node->loaded = true;
     }
+}
+
+void InfoCash::LoadInfo(wxHtmlWindow * bookinfo, const int id, bool vertical)
+{
+    if (!id) return;
+    wxCriticalSectionLocker enter(sm_locker);
+
+    InfoNode * node = GetNode(id);
+
+    wxString html = wxT("<html><body><table width=100%>");
+
+    if (vertical) {
+        html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), node->title.c_str());
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->annotation.c_str());
+        for (size_t i=0; i<node->images.GetCount(); i++) {
+            InfoImage & info = node->images[i];
+            html += wxString::Format(wxT("<tr><td align=center><img src=\"memory:%s\" width=%d height=%d></td></tr>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+        }
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
+    } else {
+        html += wxT("<tr width=100%>");
+        html += wxString::Format(wxT("<td>%s</td>"), node->title.c_str());
+        html += wxT("<td rowspan=3 align=right valign=top>");
+        for (size_t i=0; i<node->images.GetCount(); i++) {
+            InfoImage & info = node->images[i];
+            html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d><br>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+        }
+        html += wxT("</td></tr>");
+        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());
+        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->filelist.c_str());
+    }
+    html += wxT("</table></body></html>");
+
+    bookinfo->SetPage(html);
 }

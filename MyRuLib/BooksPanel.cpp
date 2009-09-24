@@ -62,8 +62,6 @@ void BooksPanel::CreateBookInfo()
     if (!book) {
         m_BookInfo->SetPage(wxEmptyString);
     } else {
-        wxString html = InfoCash::GetInfo(book->GetId(), vertical);
-        m_BookInfo->SetPage(html);
         InfoCash::ShowInfo(this, book->GetId(), book->file_type);
     }
 }
@@ -171,8 +169,7 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BookList->GetItemData(selected);
 		if (data && (data->GetId() == event.GetInt())) {
-            wxString html = InfoCash::GetInfo(event.GetInt(), GetSplitMode() == wxSPLIT_VERTICAL);
-            m_BookInfo->SetPage(html);
+            InfoCash::LoadInfo(m_BookInfo, event.GetInt(), GetSplitMode() == wxSPLIT_VERTICAL);
 		}
 	}
 }

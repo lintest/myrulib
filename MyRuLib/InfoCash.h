@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
 #include <wx/thread.h>
+#include <wx/html/htmlwin.h>
 #include "FbConst.h"
 
 #define INFO_CASH_SIZE 20
@@ -45,7 +46,7 @@ class InfoCash
 {
 public:
     static void ShowInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
-    static wxString GetInfo(int id, bool vertical);
+    static void LoadInfo(wxHtmlWindow * bookinfo, const int id, bool vertical);
     static void Empty();
 public:
     static void SetTitle(int id, wxString html);
