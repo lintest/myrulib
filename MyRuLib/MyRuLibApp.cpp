@@ -115,12 +115,6 @@ wxFileName MyStandardPaths::GetDatabaseFilename() const
 	return filename;
 }
 
-wxString MyRuLibApp::GetAppPath() const
-{
-	wxFileName filename = m_datafile;
-	return filename.GetPath();
-}
-
 bool MyRuLibApp::ConnectToDatabase()
 {
 	m_datafile = MyStandardPaths().GetDataFile();

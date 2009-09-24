@@ -29,7 +29,6 @@
 #include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ZipReader.h"
-#include "MyRuLibApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
 

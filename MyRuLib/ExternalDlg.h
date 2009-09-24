@@ -38,7 +38,7 @@ class ExternalDlg : public wxDialog
 	public:
 		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);
 		~ExternalDlg();
-		static bool Execute(wxTreeListCtrl* books, int iAuthor = ciNoAuthor);
+		static bool Execute(wxWindow* parent, wxTreeListCtrl* books, int iAuthor = ciNoAuthor);
 	private:
         static void ScanChecked(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
         static void ScanSelected(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);

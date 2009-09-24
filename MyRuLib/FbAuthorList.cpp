@@ -2,7 +2,6 @@
 #include "FbClientData.h"
 #include "ImpContext.h"
 #include "FbManager.h"
-#include "MyRuLibApp.h"
 
 void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
 {

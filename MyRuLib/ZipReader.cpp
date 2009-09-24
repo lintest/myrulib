@@ -3,12 +3,12 @@
 #include "BaseThread.h"
 #include "ZipReader.h"
 #include "FbParams.h"
-#include "MyRuLibApp.h"
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbConst.h"
 #include "BookExtractInfo.h"
 #include "FbDatabase.h"
+#include "MyRuLibApp.h"
 
 class ZipThread : public BaseThread
 {

@@ -1,5 +1,4 @@
 #include "ExpThread.h"
-#include "MyRuLibApp.h"
 #include "FbManager.h"
 #include "FbParams.h"
 #include "ZipReader.h"

@@ -4,7 +4,6 @@
 #include "FbParams.h"
 #include "FbManager.h"
 #include "FbGenres.h"
-#include "MyRuLibApp.h"
 #include "ZipReader.h"
 #include "polarssl/md5.h"
 #include "wx/base64.h"
@@ -170,14 +169,9 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 
 void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, int id_archive)
 {
-	int id_book = 0;
-	{
-		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-		id_book = - m_database.NewId(DB_NEW_BOOK);
-	}
+	int id_book = - m_database.NewId(DB_NEW_BOOK);
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
-		wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = GetPreparedStatement(psAppendBook);
 
         stmt.Bind(1, id_book);
@@ -205,7 +199,6 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 
 int ImportThread::FindByMD5(const wxString &md5sum)
 {
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
     wxSQLite3Statement stmt = GetPreparedStatement(psFindByMd5);
 	stmt.Bind(1, md5sum);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -217,7 +210,6 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
     wxArrayInt books;
 
     {
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = GetPreparedStatement(psFindBySize);
         stmt.Bind(1, (wxLongLong)size);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -234,7 +226,6 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 		info.md5only = true;
 		LoadXml(book.GetZip(), info);
 
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
         wxSQLite3Statement stmt = GetPreparedStatement(psUpdateMd5);
         stmt.Bind(1, info.md5sum);
         stmt.Bind(2, books[i]);
@@ -272,8 +263,6 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
 
 void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path)
 {
-	wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
     wxSQLite3Statement stmt = GetPreparedStatement(psSearchFile);
     stmt.Bind(1, id_book);
     stmt.Bind(2, id_archive);
@@ -303,8 +292,6 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 
 int ImportThread::AddArchive(const wxString &name, const wxString &path, const int size, const int count)
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
     {
         wxSQLite3Statement stmt = GetPreparedStatement(psSearchArch);
         stmt.Bind(1, name);

@@ -6,8 +6,6 @@
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbClientData.h"
-#include "MyRuLibApp.h"
-#include "MyRuLibMain.h"
 #include "ExternalDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
@@ -139,14 +137,11 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
     if (iSelected == wxNOT_FOUND) return;
     FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(iSelected);
 
-    ExternalDlg::Execute(m_BooksPanel.m_BookList, data->GetID());
+    ExternalDlg::Execute(this, m_BooksPanel.m_BookList, data->GetID());
 }
 
 void FbFrameAuthor::FillByAuthor(int id_author)
 {
-//    wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-//    wxSQLite3Database & database = wxGetApp().GetDatabase();
-//    wxSQLite3Database & database = wxGetApp().GetDatabase();
     FbCommonDatabase database;
 
     wxString sAuthorName = strNobody;

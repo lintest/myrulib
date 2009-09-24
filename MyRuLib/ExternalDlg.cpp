@@ -11,7 +11,6 @@
 #include "ExternalDlg.h"
 #include "FbParams.h"
 #include "FbConst.h"
-#include "MyRuLibApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -168,7 +167,7 @@ wxString ExternalDlg::NormalizeDirname(const wxString &filename)
 }
 
 ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
-    wxDialog( wxGetApp().GetTopWindow(), wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
+    wxDialog( parent, wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
     m_selections(selections),
     m_author(iAuthor),
     m_checkAuthor(NULL)
@@ -518,7 +517,7 @@ bool ExternalDlg::ExportBooks()
     return true;
 }
 
-bool ExternalDlg::Execute(wxTreeListCtrl* bookList, int iAuthor)
+bool ExternalDlg::Execute(wxWindow* parent, wxTreeListCtrl* bookList, int iAuthor)
 {
     wxString selections;
     wxTreeItemId root = bookList->GetRootItem();
@@ -530,7 +529,7 @@ bool ExternalDlg::Execute(wxTreeListCtrl* bookList, int iAuthor)
         return false;
     }
 
-    ExternalDlg dlg(wxGetApp().GetTopWindow(), selections, iAuthor);
+    ExternalDlg dlg(parent, selections, iAuthor);
     dlg.FillBooks(selections);
 
     if (dlg.ShowModal() == wxID_OK)

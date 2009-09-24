@@ -12,6 +12,7 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
+#include <wx/filename.h>
 #include "FbDatabase.h"
 
 class MyRuLibApp : public wxApp
@@ -19,8 +20,8 @@ class MyRuLibApp : public wxApp
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
-    wxString GetAppPath() const;
     wxString GetAppData() const { return m_datafile; };
+    wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
 public:
     wxCriticalSection m_DbSection;
 private:

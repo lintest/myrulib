@@ -47,7 +47,7 @@ wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxS
 
 void FbFrameSearch::OnExternal(wxCommandEvent& event)
 {
-    ExternalDlg::Execute(m_BooksPanel.m_BookList);
+    ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
 }
 
 void FbFrameSearch::DoSearch(const wxString &title, const wxString &author)

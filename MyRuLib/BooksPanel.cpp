@@ -2,7 +2,6 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include "InfoCash.h"
-#include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
