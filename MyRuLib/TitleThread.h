@@ -12,13 +12,12 @@ public:
     virtual void *Entry();
     static void Execute(wxEvtHandler *frame, const int id);
 private:
-	wxString GetBookInfo(int id);
-	wxString GetBookFiles(int id);
+	wxString GetBookInfo(FbDatabase &database, int id);
+	wxString GetBookFiles(FbDatabase &database, int id);
     static wxString HTMLSpecialChars( const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 private:
     int m_id;
     wxEvtHandler *m_frame;
-    FbCommonDatabase m_database;
 };
 
 

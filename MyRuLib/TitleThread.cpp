@@ -13,9 +13,9 @@ void TitleThread::Execute(wxEvtHandler *frame, const int id)
 
 void *TitleThread::Entry()
 {
-    InfoCash::SetTitle(m_id, GetBookInfo(m_id));
-
-    InfoCash::SetFilelist(m_id, GetBookFiles(m_id));
+    FbCommonDatabase database;
+    InfoCash::SetTitle(m_id, GetBookInfo(database, m_id));
+    InfoCash::SetFilelist(m_id, GetBookFiles(database, m_id));
 
     wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
     event.SetInt(m_id);
@@ -38,7 +38,7 @@ wxString TitleThread::HTMLSpecialChars( const wxString &value, const bool bSingl
   return szToReturn;
 }
 
-wxString TitleThread::GetBookInfo(int id)
+wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
 {
     wxString authors, title, annotation, genres;
 
@@ -48,7 +48,7 @@ wxString TitleThread::GetBookInfo(int id)
             WHERE id IN (SELECT id_author FROM books WHERE id=?) \
             ORDER BY authors.full_name \
         ");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         while ( result.NextRow() ) {
@@ -59,7 +59,7 @@ wxString TitleThread::GetBookInfo(int id)
 
     {
         wxString sql = wxT("SELECT title, genres FROM books WHERE id=? LIMIT 1");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
         stmt.Bind(1, id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         if ( result.NextRow() ) {
@@ -81,9 +81,9 @@ wxString TitleThread::GetBookInfo(int id)
     return html;
 }
 
-wxString TitleThread::GetBookFiles(int id)
+wxString TitleThread::GetBookFiles(FbDatabase &database, int id)
 {
-	BookExtractArray items(m_database, id);
+	BookExtractArray items(database, id);
 
     wxString html;
 
