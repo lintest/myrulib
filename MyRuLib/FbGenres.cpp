@@ -186,8 +186,8 @@ void FbGenres::FillControl(wxTreeListCtrl * control)
     	control->SetItemBold(parent, true);
 		for (size_t j=0; genres_list[j].hi; j++) {
 			if (genres_list[j].hi == hi_genres[i].hi) {
-				wxString code = wxString::Format(wxT("%X%X"), genres_list[j].hi, genres_list[j].lo);
-				control->AppendItem(parent, genres_list[j].name, -1, -1, new FbGenreData(code) );
+			    int code = genres_list[j].hi * 0x10 + genres_list[j].lo;
+				control->AppendItem(parent, genres_list[j].name, -1, -1, new FbGenreData(code));
 			}
 		}
 		control->Expand(parent);

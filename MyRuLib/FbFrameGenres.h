@@ -24,7 +24,7 @@ protected:
 	virtual void CreateControls();
 private:
     void CreateBookInfo();
-	void FillBooks(const wxString & code);
+	void FillBooks(const int code);
 private:
     BookListCtrl * m_GenresList;
 private:

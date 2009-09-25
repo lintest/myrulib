@@ -16,10 +16,10 @@ class FbGenres
 class FbGenreData: public wxTreeItemData
 {
 	public:
-		FbGenreData(const wxString &code): m_code(code) {};
-		const wxString & GetCode() { return m_code; };
+		FbGenreData(const int code): m_code(code) {};
+		const int GetCode() { return m_code; };
 	private:
-		wxString m_code;
+		int m_code;
 };
 
 #endif //FBGENRES_H

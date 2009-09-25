@@ -81,6 +81,7 @@ void BookListCtrl::FillBooks(wxSQLite3ResultSet & result, const wxString &captio
 	BookListUpdater updater(this);
 
     wxTreeItemId root = AddRoot(caption);
+    ScrollTo(root);
 
     while (!result.Eof()) {
         BookTreeItemData * data = new BookTreeItemData(result);

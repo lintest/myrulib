@@ -102,7 +102,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 
 */
 
-void FbFrameGenres::FillBooks(const wxString & code)
+void FbFrameGenres::FillBooks(const int code)
 {
 	wxSafeYield();
 
@@ -119,11 +119,12 @@ void FbFrameGenres::FillBooks(const wxString & code)
 	FbGenreFunction function;
     database.CreateFunction(wxT("GENRE"), 2, function);
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, code);
+    stmt.Bind(1, wxString::Format(wxT("%02X"), code));
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
     if (result.NextRow()) {
 		m_BooksPanel.m_BookList->FillBooks(result, wxEmptyString);
+		m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
 		wxSafeYield();
 	} else {
 		m_BooksPanel.m_BookList->DeleteRoot();
@@ -132,7 +133,6 @@ void FbFrameGenres::FillBooks(const wxString & code)
 
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
-	return;
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);

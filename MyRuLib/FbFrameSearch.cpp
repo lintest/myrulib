@@ -115,7 +115,34 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
 	frame->Show(false);
 
-	FrameSearchThread * thread = new FrameSearchThread(frame, title);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+    wxString templ = wxT('%') + title + wxT('%');
+    templ.Replace(wxT(" "), wxT("%"));
+    templ.Replace(wxT("?"), wxT("_"));
+    templ.Replace(wxT("*"), wxT("%"));
+    BookInfo::MakeLower(templ);
+
+	wxString sql = wxT("\
+        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
+        FROM books LEFT JOIN authors ON books.id_author = authors.id \
+        WHERE LOWER(books.title) like ? \
+        ORDER BY books.title, books.id, authors.full_name\
+        LIMIT 4096 \
+    ");
+
+	FbCommonDatabase database;
+	FbLowerFunction lower;
+    database.CreateFunction(wxT("LOWER"), 1, lower);
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
+    stmt.Bind(1, templ);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+    if (result.NextRow()) {
+		frame->m_BooksPanel.m_BookList->FillBooks(result, msg);
+		frame->m_BooksPanel.m_BookList->SetFocus();
+    } else {
+    	wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), title.c_str());
+    	wxMessageBox(text, _("Поиск"));
+    	frame->Close();
+	}
 }
 

@@ -60,8 +60,9 @@
 		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
-		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbFrameFavorites.cpp</sources>
+		<sources>MyRuLib/FbFrameGenres.cpp</sources>
+		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>
