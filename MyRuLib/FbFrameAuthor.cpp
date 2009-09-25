@@ -40,10 +40,10 @@ void FbFrameAuthor::CreateControls()
 	splitter->SplitVertically(m_AuthorsListBox, &m_BooksPanel, 160);
 
     BookListCtrl * booklist = m_BooksPanel.m_BookList;
-    booklist->AddColumn (_T("Заголовок"), 9, wxALIGN_LEFT);
-    booklist->AddColumn (_T("№"), 1, wxALIGN_LEFT);
-    booklist->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
-    booklist->AddColumn (_T("Размер, Кб"), 2, wxALIGN_RIGHT);
+    booklist->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
+    booklist->AddColumn (_("№"), 1, wxALIGN_LEFT);
+    booklist->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
+    booklist->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
 
 	SetMenuBar(CreateMenuBar());
 	Layout();
@@ -176,9 +176,7 @@ void FbFrameAuthor::FillByAuthor(int id_author)
     wxTreeItemId parent;
 
     BookListCtrl * booklist = m_BooksPanel.m_BookList;
-
-	booklist->Freeze();
-    booklist->DeleteRoot();
+	BookListUpdater updater(booklist);
 
     wxTreeItemId root = booklist->AddRoot(sAuthorName, 0);
     booklist->SetItemBold(root, true);
@@ -196,9 +194,6 @@ void FbFrameAuthor::FillByAuthor(int id_author)
         booklist->SetItemText (item, 2, data->file_name);
         booklist->SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
 	}
-
-    booklist->ExpandAll( booklist->GetRootItem() );
-	booklist->Thaw();
 
 	m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
 }

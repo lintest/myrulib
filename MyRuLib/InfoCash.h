@@ -46,18 +46,28 @@ class InfoCash
 {
 public:
     static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
-    static void LoadInfo(wxHtmlWindow * bookinfo, const int id, bool vertical);
+    static wxString GetInfo(const int id, bool vertical);
     static void Empty();
 public:
     static void SetTitle(int id, wxString html);
     static void SetFilelist(int id, wxString html);
     static void SetAnnotation(int id, wxString html);
     static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
-    static void SetLoaded(int id);
 private:
     static InfoNodeArray sm_cash;
     static InfoNode * GetNode(int id);
 	static wxCriticalSection sm_locker;
+};
+
+class ShowThread: public wxThread
+{
+	public:
+		ShowThread(wxEvtHandler *frame, int id): m_frame(frame), m_id(id) {};
+		virtual void * Entry();
+		static void Execute(wxEvtHandler *frame, const int id);
+	private:
+		wxEvtHandler * m_frame;
+		int m_id;
 };
 
 #endif // __INFOCASH_H__

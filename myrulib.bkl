@@ -6,12 +6,6 @@
 	<set var="WX_PORT_DEFAULT"></set>
 	<set var="WX_UNICODE_DEFAULT">1</set>
 	<set var="WX_DEBUG_DEFAULT">0</set>
-
-    <if cond="FORMAT=='gnu'">
-	  <set var="WX_SHARED_DEFAULT">0</set>
-	  <set var="WX_VERSION_DEFAULT">2.8</set>
-	  <set var="WX_PORT_DEFAULT">gtk2</set>
-    </if>
 	
     <if cond="FORMAT=='mingw'">
 	  <set var="WX_SHARED_DEFAULT">0</set>
@@ -19,6 +13,17 @@
 	  <set var="DEFAULT_LDFLAGS">-static</set>
     </if>
 
+    <if cond="FORMAT=='msvs2008prj'">
+	  <set var="WX_SHARED_DEFAULT">0</set>
+	  <set var="WX_VERSION_DEFAULT">28</set>
+    </if>
+
+    <if cond="FORMAT=='gnu'">
+	  <set var="WX_SHARED_DEFAULT">0</set>
+	  <set var="WX_VERSION_DEFAULT">2.8</set>
+	  <set var="WX_PORT_DEFAULT">gtk2</set>
+    </if>
+	
     <include file="./Presets/wx.bkl"/>
 
     <lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
@@ -94,6 +99,9 @@
 		<if cond="FORMAT=='mingw'">
 			<sys-lib>shlwapi</sys-lib>
 			<postlink-command>strip ./build/myrulib.exe</postlink-command>
+		</if>
+		<if cond="FORMAT=='msvs2008prj'">
+			<sys-lib>shlwapi</sys-lib>
 		</if>
 		<if cond="FORMAT=='gnu'">
 			<postlink-command>strip ./build/myrulib</postlink-command>

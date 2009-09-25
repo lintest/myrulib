@@ -13,6 +13,7 @@ public:
 private:
 	bool Load(wxInputStream& stream);
 private:
+	static wxCriticalSection sm_queue;
     int m_id;
     wxEvtHandler *m_frame;
 };

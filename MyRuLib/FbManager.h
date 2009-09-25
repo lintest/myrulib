@@ -14,7 +14,6 @@
 #include <wx/listbox.h>
 #include <wx/wxsqlite3.h>
 #include "wx/treelistctrl.h"
-#include "FbGenres.h"
 
 class AuthorsRowSet;
 

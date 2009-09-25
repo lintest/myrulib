@@ -1,8 +1,11 @@
 #include "TitleThread.h"
+#include "FbGenres.h"
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "ZipReader.h"
 #include "BookExtractInfo.h"
+
+wxCriticalSection TitleThread::sm_queue;
 
 void TitleThread::Execute(wxEvtHandler *frame, const int id)
 {
@@ -13,13 +16,13 @@ void TitleThread::Execute(wxEvtHandler *frame, const int id)
 
 void *TitleThread::Entry()
 {
+    wxCriticalSectionLocker enter(sm_queue);
+
     FbCommonDatabase database;
     InfoCash::SetTitle(m_id, GetBookInfo(database, m_id));
     InfoCash::SetFilelist(m_id, GetBookFiles(database, m_id));
 
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-    event.SetInt(m_id);
-    wxPostEvent( m_frame, event );
+    ShowThread::Execute(m_frame, m_id);
 
 	return NULL;
 }

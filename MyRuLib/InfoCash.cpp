@@ -67,9 +67,11 @@ InfoNode * InfoCash::GetNode(int id)
             return node;
         }
     }
+
     while ( sm_cash.GetCount()>INFO_CASH_SIZE ) {
         sm_cash.RemoveAt(INFO_CASH_SIZE);
     }
+
     InfoNode * node = new InfoNode;
     node->id = id;
     sm_cash.Insert(node, 0);
@@ -77,18 +79,6 @@ InfoNode * InfoCash::GetNode(int id)
 }
 
 wxCriticalSection InfoCash::sm_locker;
-
-void InfoCash::SetLoaded(int id)
-{
-    wxCriticalSectionLocker enter(sm_locker);
-    for (size_t i=0; i<sm_cash.GetCount(); i++) {
-        if (sm_cash.Item(i).id == id) {
-            InfoNode * node = sm_cash.Detach(i);
-            node->loaded = true;
-            return ;
-        }
-    }
-}
 
 void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
@@ -121,28 +111,6 @@ void InfoCash::Empty()
     sm_cash.Empty();
 }
 
-class ShowThread: public wxThread
-{
-	public:
-		ShowThread(wxEvtHandler *frame, int id): m_frame(frame), m_id(id) {};
-		virtual void *Entry() {
-			wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-			event.SetInt(m_id);
-			wxPostEvent(m_frame, event);
-			return NULL;
-		};
-		static void Execute(wxEvtHandler *frame, const int id)
-		{
-			if (!id) return;
-			TitleThread *thread = new TitleThread(frame, id);
-			if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-		};
-	private:
-		wxEvtHandler * m_frame;
-		int m_id;
-
-};
-
 void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type)
 {
     if (!id) return;
@@ -153,15 +121,15 @@ void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const wxString &fil
     if (node->loaded) {
     	ShowThread::Execute(frame, id);
     } else {
+        node->loaded = true;
         TitleThread::Execute(frame, id);
         if (file_type == wxT("fb2")) InfoThread::Execute(frame, id);
-        node->loaded = true;
     }
 }
 
-void InfoCash::LoadInfo(wxHtmlWindow * bookinfo, const int id, bool vertical)
+wxString InfoCash::GetInfo(const int id, bool vertical)
 {
-    if (!id) return;
+    if (!id) return wxEmptyString;
     wxCriticalSectionLocker enter(sm_locker);
 
     InfoNode * node = GetNode(id);
@@ -190,5 +158,23 @@ void InfoCash::LoadInfo(wxHtmlWindow * bookinfo, const int id, bool vertical)
     }
     html += wxT("</table></body></html>");
 
-    bookinfo->SetPage(html);
+	return html;
 }
+
+void ShowThread::Execute(wxEvtHandler *frame, const int id)
+{
+	if (!id) return;
+	ShowThread *thread = new ShowThread(frame, id);
+	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
+}
+
+void * ShowThread::Entry()
+{
+	wxString html = InfoCash::GetInfo(m_id, false);
+	wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
+	event.SetInt(m_id);
+	event.SetString(html);
+	wxPostEvent(m_frame, event);
+	return NULL;
+}
+

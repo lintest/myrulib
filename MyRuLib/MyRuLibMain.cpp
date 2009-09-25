@@ -20,6 +20,7 @@
 #include "SettingsDlg.h"
 #include "ImpThread.h"
 #include "FbFrameSearch.h"
+#include "FbFrameGenres.h"
 #include "FbFrameFavorites.h"
 #include "VacuumThread.h"
 
@@ -32,6 +33,7 @@ BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_MENU_AUTHOR, MyRuLibMainFrame::OnMenuAuthor)
     EVT_MENU(ID_MENU_TITLE, MyRuLibMainFrame::OnMenuTitle)
     EVT_MENU(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthor)
+    EVT_MENU(ID_MENU_GENRES, MyRuLibMainFrame::OnMenuGenres)
     EVT_MENU(ID_MENU_DB_INFO, MyRuLibMainFrame::OnDatabaseInfo)
     EVT_MENU(ID_MENU_VACUUM, MyRuLibMainFrame::OnVacuum)
 	EVT_TEXT_ENTER(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthorEnter)
@@ -158,7 +160,6 @@ wxAuiToolBar * MyRuLibMainFrame::CreateToolBar()
 wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
-	wxMenuItem * tempItem;
 	FbMenu * menu;
 
 	menu = new FbMenu;
@@ -166,7 +167,6 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 	menu->AppendImg(wxID_OPEN, _("Добавить директорию"), wxART_FOLDER_OPEN);
 	menu->AppendSeparator();
 	menu->AppendImg(wxID_EXIT, _("Выход\tAlt+F4"), wxART_QUIT);
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Файл"));
 
 	menu = new FbMenu;
@@ -174,7 +174,7 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 	menu->AppendSeparator();
 	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
 	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
-	menu->Delete(tempItem);
+	menu->Append(ID_MENU_GENRES, _("по Жанрам"));
 	menuBar->Append(menu, _("&Поиск"));
 
 	menu = new FbMenu;
@@ -182,13 +182,11 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
 	menu->AppendSeparator();
 	menu->Append(wxID_PREFERENCES, _("Настройки"));
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Сервис"));
 
 	menu = new FbMenu;
 	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));
 	menu->AppendImg(wxID_ABOUT, _("О программе…"), wxART_HELP_PAGE);
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&?"));
 
 	return menuBar;
@@ -381,7 +379,6 @@ void MyRuLibMainFrame::FindAuthor(const wxString &text)
         authors->FindAuthor(text);
 
     authors->ActivateAuthors();
-
 }
 
 void MyRuLibMainFrame::OnMenuAuthor(wxCommandEvent& event)
@@ -396,6 +393,27 @@ void MyRuLibMainFrame::OnMenuTitle(wxCommandEvent& event)
 	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по заголовку"));
 	if (text.IsEmpty()) return;
 	FindTitle(text);
+}
+
+void MyRuLibMainFrame::OnMenuGenres(wxCommandEvent & event)
+{
+    FbFrameGenres * genres = NULL;
+
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+        if (GetNotebook()->GetPage(i)->GetId() == ID_FRAME_GENRES) {
+            genres = (FbFrameGenres*) GetNotebook()->GetPage(i);
+            GetNotebook()->SetSelection(i);
+            break;
+		}
+	}
+	if (!genres) {
+	    genres = new FbFrameGenres(this, ID_FRAME_GENRES, _("Жанры"));
+        GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+        genres->Update();
+	}
+
+//    genres->ActivateAuthors();
 }
 
 void MyRuLibMainFrame::OnMenuSearch(wxCommandEvent& event)

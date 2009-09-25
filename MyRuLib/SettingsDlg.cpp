@@ -409,7 +409,7 @@ void SettingsDlg::Assign(bool write)
                     if (write)
                         params.SetValue(ids[i].param, control->GetValue());
                     else
-                        control->SetValue((bool)params.GetValue(ids[i].param));
+                        control->SetValue(params.GetValue(ids[i].param) != 0);
 				} break;
             case tRadio:
                 if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {

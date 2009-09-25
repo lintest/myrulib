@@ -180,6 +180,25 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
     ctx.SetResult(text);
 }
 
+void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+    int argCount = ctx.GetArgCount();
+    if (argCount != 2) {
+        ctx.SetResultError(wxString::Format(_("GENRE called with wrong number of arguments: %d."), argCount));
+        return;
+    }
+    wxString text = ctx.GetString(0);
+    wxString genre = ctx.GetString(1);
+
+    for (size_t i=0; i<text.Length()/2; i++) {
+    	if ( text.Mid(i*2, 2) == genre ) {
+    		ctx.SetResult(true);
+    		return;
+    	}
+    }
+    ctx.SetResult(false);
+}
+
 void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 {
     try {

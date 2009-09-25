@@ -169,7 +169,8 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BookList->GetItemData(selected);
 		if (data && (data->GetId() == event.GetInt())) {
-            InfoCash::LoadInfo(m_BookInfo, event.GetInt(), GetSplitMode() == wxSPLIT_VERTICAL);
+			wxString html = event.GetString();
+			m_BookInfo->SetPage(html);
 		}
 	}
 }

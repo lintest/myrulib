@@ -22,16 +22,16 @@ const HiGenreStruct hi_genres[] = {
 	{ 0x7, _("Поэзия, Драматургия")},
 	{ 0x8, _("Старинное")},
 	{ 0x9, _("Наука, Образование")},
-	{ 0x9, _("Компьютеры и Интернет")},
-	{ 0x9, _("Справочная литература")},
-	{ 0x9, _("Документальная литература")},
-	{ 0x9, _("Религия и духовность")},
-	{ 0x9, _("Юмор")},
-	{ 0x9, _("Домоводство (Дом и семья)")},
+	{ 0xA, _("Компьютеры и Интернет")},
+	{ 0xB, _("Справочная литература")},
+	{ 0xC, _("Документальная литература")},
+	{ 0xF, _("Религия и духовность")},
+	{ 0xE, _("Юмор")},
+	{ 0xF, _("Домоводство (Дом и семья)")},
 	{ 0, wxEmptyString},
 };
 
-GenreStruct genres_list[] = {
+const GenreStruct genres_list[] = {
     { 0x1, 0x1, wxT("sf_history"), _("Альтернативная история")},
     { 0x1, 0x2, wxT("sf_action"), _("Боевая фантастика")},
     { 0x1, 0x3, wxT("sf_epic"), _("Эпическая фантастика")},
@@ -174,4 +174,25 @@ wxString FbGenres::DecodeList(const wxString &genres)
         result +=  FbGenres::Name( code );
     }
     return result;
+}
+
+void FbGenres::FillControl(wxTreeListCtrl * control)
+{
+	control->Freeze();
+    wxTreeItemId root = control->AddRoot(wxEmptyString);
+
+    for (size_t i=0; hi_genres[i].hi; i++) {
+    	wxTreeItemId parent = control->AppendItem(root, hi_genres[i].name);
+    	control->SetItemBold(parent, true);
+		for (size_t j=0; genres_list[j].hi; j++) {
+			if (genres_list[j].hi == hi_genres[i].hi) {
+				wxString code = wxString::Format(wxT("%X%X"), genres_list[j].hi, genres_list[j].lo);
+				control->AppendItem(parent, genres_list[j].name, -1, -1, new FbGenreData(code) );
+			}
+		}
+		control->Expand(parent);
+    }
+    control->ExpandAll(root);
+	control->Thaw();
+	control->Update();
 }

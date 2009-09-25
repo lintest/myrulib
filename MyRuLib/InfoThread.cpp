@@ -3,8 +3,12 @@
 #include "InfoCash.h"
 #include "ParseCtx.h"
 
+wxCriticalSection InfoThread::sm_queue;
+
 void *InfoThread::Entry()
 {
+    wxCriticalSectionLocker enter(sm_queue);
+
     ZipReader reader(m_id, false);
     if (!reader.IsOK()) return NULL;
 
@@ -101,17 +105,13 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 	} else if (path == wxT("/fictionbook/description/title-info")) {
         InfoCash::SetAnnotation(ctx->m_id, ctx->annotation);
         if (!ctx->images.Count()) ctx->Stop();
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-        event.SetInt(ctx->m_id);
-        wxPostEvent( ctx->m_frame, event );
         ctx->annotation.Empty();
+		ShowThread::Execute(ctx->m_frame, ctx->m_id);
     } else if (path == wxT("/fictionbook/binary")) {
         if (!ctx->skipimage) {
             InfoCash::AddImage(ctx->m_id, ctx->imagename, ctx->imagedata, ctx->imagetype);
-            wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-            event.SetInt(ctx->m_id);
-            wxPostEvent( ctx->m_frame, event );
             ctx->annotation.Empty();
+			ShowThread::Execute(ctx->m_frame, ctx->m_id);
         }
     }
 	ctx->RemoveTag(node_name);

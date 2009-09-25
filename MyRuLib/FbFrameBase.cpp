@@ -30,7 +30,6 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 wxMenuBar * FbFrameBase::CreateMenuBar()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
-	wxMenuItem * tempItem;
 	FbMenu * menu;
 
 	menu = new FbMenu;
@@ -40,7 +39,6 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->AppendImg(wxID_SAVE, _("Записать на устройство"), wxART_FILE_SAVE);
 	menu->AppendSeparator();
 	menu->AppendImg(wxID_EXIT, _("Выход\tAlt+F4"), wxART_QUIT);
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Файл"));
 
 	menu = new FbMenu;
@@ -48,13 +46,12 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->AppendSeparator();
 	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
 	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
-	menu->Delete(tempItem);
+	menu->Append(ID_MENU_GENRES, _("по Жанрам"));
 	menuBar->Append(menu, _("&Поиск"));
 
 	menu = new FbMenu;
 	menu->Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	menu->Append(ID_UNSELECTALL, _("Отменить выделение"));
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Книги"));
 
 	menu = new FbMenu;
@@ -62,22 +59,18 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
 	menu->AppendSeparator();
 	menu->Append(wxID_PREFERENCES, _("Настройки"));
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Сервис"));
 
 	menu = new FbMenu;
-	tempItem = menu->AppendRadioItem(wxID_ANY, wxT("X"));
 	menu->AppendCheckItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	menu->AppendCheckItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
 	menu->AppendSeparator();
 	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&Вид"));
 
 	menu = new FbMenu;
 	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));
 	menu->AppendImg(wxID_ABOUT, _("О программе…"), wxART_HELP_PAGE);
-	menu->Delete(tempItem);
 	menuBar->Append(menu, _("&?"));
 
 	return menuBar;

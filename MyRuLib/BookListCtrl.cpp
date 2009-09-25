@@ -1,6 +1,7 @@
+#include <wx/imaglist.h>
 #include "BookListCtrl.h"
 #include "FbConst.h"
-#include <wx/imaglist.h>
+#include "FbManager.h"
 #include "XpmBitmaps.h"
 
 BEGIN_EVENT_TABLE(BookListCtrl, wxTreeListCtrl)
@@ -60,5 +61,40 @@ void BookListCtrl::SelectAll(int iImageIndex)
 {
     wxTreeItemId root = GetRootItem();
     if (root.IsOk()) SelectChild(root, iImageIndex);
+}
+
+BookListUpdater::BookListUpdater(wxTreeListCtrl * list) :m_list(list)
+{
+	m_list->Freeze();
+    m_list->DeleteRoot();
+}
+
+BookListUpdater::~BookListUpdater()
+{
+    m_list->ExpandAll( m_list->GetRootItem() );
+	m_list->Thaw();
+	m_list->Update();
+}
+
+void BookListCtrl::FillBooks(wxSQLite3ResultSet & result, const wxString &caption)
+{
+	BookListUpdater updater(this);
+
+    wxTreeItemId root = AddRoot(caption);
+
+    while (!result.Eof()) {
+        BookTreeItemData * data = new BookTreeItemData(result);
+        wxTreeItemId item = AppendItem(root, data->title, 0, -1, data);
+        wxString full_name = result.GetString(wxT("full_name"));
+        SetItemText (item, 1, full_name);
+        SetItemText (item, 3, data->file_name);
+        SetItemText (item, 4, wxString::Format(wxT("%d "), data->file_size/1024));
+        do {
+            result.NextRow();
+            if ( data->GetId() != result.GetInt(wxT("id")) ) break;
+            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
+            SetItemText (item, 1, full_name);
+        } while (!result.Eof());
+    }
 }
 
