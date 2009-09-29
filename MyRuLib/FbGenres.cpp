@@ -165,6 +165,14 @@ wxString FbGenres::Name(const wxString &letter)
     return wxEmptyString;
 }
 
+wxString FbGenres::Name(const int code)
+{
+	for (size_t i=0; genres_list[i].hi; i++)
+		if (genres_list[i].hi*16 + genres_list[i].lo == code)
+			return genres_list[i].name;
+    return wxEmptyString;
+}
+
 wxString FbGenres::DecodeList(const wxString &genres)
 {
     wxString result;

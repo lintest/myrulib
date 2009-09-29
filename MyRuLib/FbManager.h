@@ -23,6 +23,7 @@ public:
 	BookTreeItemData(BookTreeItemData * data)
         : m_id(data->GetId()), title(data->title), file_size(data->file_size), file_type(data->file_type), sequence(data->sequence), number(data->number) { };
 	BookTreeItemData(wxSQLite3ResultSet & result);
+	BookTreeItemData(int id): m_id(id) {};
 	int GetId() { return m_id; };
 private:
 	int m_id;

@@ -113,7 +113,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 
 	wxString msg = wxString::Format(_("Поиск: «%s»"), title.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
-	frame->Show(false);
+	frame->Update();
 
     wxString templ = wxT('%') + title + wxT('%');
     templ.Replace(wxT(" "), wxT("%"));

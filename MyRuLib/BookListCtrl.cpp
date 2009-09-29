@@ -4,12 +4,13 @@
 #include "FbManager.h"
 #include "XpmBitmaps.h"
 
-BEGIN_EVENT_TABLE(BookListCtrl, wxTreeListCtrl)
-    EVT_SIZE(BookListCtrl::OnSizing)
+BEGIN_EVENT_TABLE(BookListCtrl, FbTreeListCtrl)
+    EVT_UPDATE_UI(ID_EMPTY_BOOKS, BookListCtrl::OnEmptyBooks)
+    EVT_UPDATE_UI(ID_APPEND_BOOK, BookListCtrl::OnAppendBook)
 END_EVENT_TABLE()
 
 BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
-    :wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style)
+    :FbTreeListCtrl(parent, id, style)
 {
     wxBitmap size = wxBitmap(checked_xpm);
 	wxImageList *images;
@@ -19,32 +20,6 @@ BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
 	images->Add (wxBitmap(checkout_xpm));
 	AssignImageList (images);
 };
-
-void BookListCtrl::AddColumn (const wxString& text, int width, int flag)
-{
-    wxTreeListCtrl::AddColumn(text, width, flag, -1, true, false);
-    colSizes.Add(width);
-}
-
-void BookListCtrl::OnSizing(wxSizeEvent& event)
-{
-	int sum = 0;
-	for (size_t i = 0; i<(size_t)colSizes.Count() && i<(size_t)GetColumnCount(); i++) {
-        sum += colSizes[i];
-	}
-
-	if (!sum) return;
-
-	int w = event.GetSize().GetWidth() - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
-    int xx = w;
-	for (size_t i = 1; i<(size_t)colSizes.Count() && i<(size_t)GetColumnCount(); i++) {
-	    int x = w * colSizes[i] / sum;
-        SetColumnWidth(i, x);
-        xx -= x;
-	}
-    SetColumnWidth(0, xx);
-	event.Skip();
-}
 
 void BookListCtrl::SelectChild(const wxTreeItemId &parent, int iImageIndex)
 {
@@ -98,4 +73,18 @@ void BookListCtrl::FillBooks(wxSQLite3ResultSet & result, const wxString &captio
         } while (!result.Eof());
     }
 }
+
+void BookListCtrl::OnEmptyBooks(wxUpdateUIEvent& event)
+{
+	DeleteRoot();
+    wxTreeItemId root = AddRoot(wxEmptyString);
+    ScrollTo(root);
+}
+
+void BookListCtrl::OnAppendBook(wxUpdateUIEvent& event)
+{
+	wxTreeItemId root = GetRootItem();
+	wxTreeItemId item = AppendItem(root, event.GetString(), 0, -1);
+}
+
 

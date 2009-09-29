@@ -201,7 +201,7 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
     }
 
 	long treeStyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_books = new BookListCtrl( this, ID_BOOKS, treeStyle );
+	m_books = new FbTreeListCtrl( this, ID_BOOKS, treeStyle );
 	m_books->SetMinSize( wxSize( -1,250 ) );
     m_books->AddColumn (_T("Имя файла"), 4, wxALIGN_LEFT);
     m_books->AddColumn (_T("Размер, Кб"), 1, wxALIGN_RIGHT);

@@ -24,7 +24,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
-#include "BookListCtrl.h"
+#include "FbTreeListCtrl.h"
 #include "FbManager.h"
 #include "ExpThread.h"
 #include "FbConst.h"
@@ -68,7 +68,7 @@ class ExternalDlg : public wxDialog
 			ID_AUTHOR,
 		};
 		wxTextCtrl* m_textDir;
-		BookListCtrl* m_books;
+		FbTreeListCtrl* m_books;
 		wxChoice* m_choiceFormat;
 		wxCheckBox* m_checkAuthor;
 	private:

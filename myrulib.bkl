@@ -13,11 +13,6 @@
 	  <set var="DEFAULT_LDFLAGS">-static</set>
     </if>
 
-    <if cond="FORMAT=='msvs2008prj'">
-	  <set var="WX_SHARED_DEFAULT">0</set>
-	  <set var="WX_VERSION_DEFAULT">28</set>
-    </if>
-
     <if cond="FORMAT=='gnu'">
 	  <set var="WX_SHARED_DEFAULT">0</set>
 	  <set var="WX_VERSION_DEFAULT">2.8</set>
@@ -67,6 +62,7 @@
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
+		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
 		<sources>MyRuLib/ImpThread.cpp</sources>
 		<sources>MyRuLib/InfoCash.cpp</sources>
@@ -100,9 +96,6 @@
 		<if cond="FORMAT=='mingw'">
 			<sys-lib>shlwapi</sys-lib>
 			<postlink-command>strip ./build/myrulib.exe</postlink-command>
-		</if>
-		<if cond="FORMAT=='msvs2008prj'">
-			<sys-lib>shlwapi</sys-lib>
 		</if>
 		<if cond="FORMAT=='gnu'">
 			<postlink-command>strip ./build/myrulib</postlink-command>

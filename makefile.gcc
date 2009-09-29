@@ -104,6 +104,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbLogStream.o \
 	build\myrulib_FbManager.o \
 	build\myrulib_FbParams.o \
+	build\myrulib_FbTreeListCtrl.o \
 	build\myrulib_ImpContext.o \
 	build\myrulib_ImpThread.o \
 	build\myrulib_InfoCash.o \
@@ -312,6 +313,9 @@ build\myrulib_FbManager.o: ./MyRuLib/FbManager.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbParams.o: ./MyRuLib/FbParams.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbTreeListCtrl.o: ./MyRuLib/FbTreeListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp
