@@ -90,6 +90,8 @@ void MyRuLibMainFrame::CreateControls()
 	FbFrameAuthor * authors = new FbFrameAuthor(this, ID_FRAME_AUTHORS, wxT("Авторы"));
 	authors->SelectRandomLetter();
 
+	new FbFrameGenres(this, ID_FRAME_GENRES, _("Жанры"));
+
 	GetNotebook()->SetWindowStyleFlag(
         wxAUI_NB_TOP|
 		wxAUI_NB_SCROLL_BUTTONS |
