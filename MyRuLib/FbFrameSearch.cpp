@@ -36,7 +36,6 @@ void FbFrameSearch::CreateControls()
     BookListCtrl * booklist = m_BooksPanel.m_BookList;
     booklist->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
     booklist->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-    booklist->AddColumn (_("№"), 1, wxALIGN_LEFT);
     booklist->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
     booklist->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
 
@@ -78,7 +77,7 @@ void * FrameSearchThread::Entry()
     BookInfo::MakeLower(templ);
 
 	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
+        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
         FROM books LEFT JOIN authors ON books.id_author = authors.id \
         WHERE LOWER(books.title) like ? \
         ORDER BY books.title, books.id, authors.full_name\
@@ -122,7 +121,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
     BookInfo::MakeLower(templ);
 
 	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
+        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
         FROM books LEFT JOIN authors ON books.id_author = authors.id \
         WHERE LOWER(books.title) like ? \
         ORDER BY books.title, books.id, authors.full_name\

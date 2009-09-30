@@ -51,6 +51,8 @@
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
+		<sources>MyRuLib/FbBookData.cpp</sources>
+		<sources>MyRuLib/FbBookEvent.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>

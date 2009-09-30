@@ -21,21 +21,6 @@
 #include <shlwapi.h>
 #endif
 
-BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
-    m_id( res.GetInt(wxT("id"))),
-    title( res.GetString(wxT("title"))),
-    file_name( res.GetString(wxT("file_name"))),
-    file_type( res.GetString(wxT("file_type"))),
-    file_size( res.GetInt(wxT("file_size"))),
-    number(0)
-{
-    try {
-//        number = res.GetInt(wxT("number"));
-    } catch (...) {
-        number = 0;
-    }
-}
-
 class SequenceNode {
 public:
     SequenceNode(const int id, const wxTreeItemId &item)

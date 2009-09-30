@@ -1,6 +1,7 @@
 #include "BooksPanel.h"
 #include "FbConst.h"
 #include "FbParams.h"
+#include "FbManager.h"
 #include "InfoCash.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)

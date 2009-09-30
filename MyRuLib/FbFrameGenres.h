@@ -12,13 +12,15 @@
 #include "wx/treelistctrl.h"
 #include "FbFrameBase.h"
 #include "FbTreeListCtrl.h"
+#include "FbBookEvent.h"
 
 class FbFrameGenres : public FbFrameBase
 {
 public:
-    static void Execute(wxAuiMDIParentFrame * parent, const wxString &title);
 	FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
     BookListCtrl * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
+    static void SetCode(const int code);
+    static int GetCode();
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
@@ -26,13 +28,13 @@ private:
     void CreateBookInfo();
     void EmptyBooks();
 	void FillBooks(const int code);
-    const int GetSelectedCode() { return m_code; };
 private:
+	static wxCriticalSection sm_queue;
+    static int sm_code;
     FbTreeListCtrl * m_GenresList;
-    int m_code;
 private:
+    void OnAppendBook(FbBookEvent& event);
     void OnExternal(wxCommandEvent& event);
-    void OnAppendBook(wxCommandEvent& event);
     void OnEmptyBooks(wxCommandEvent& event);
     void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()

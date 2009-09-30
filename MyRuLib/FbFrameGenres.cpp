@@ -10,8 +10,8 @@
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
     EVT_MENU(wxID_SAVE, FbFrameGenres::OnExternal)
-    EVT_COMMAND(ID_EMPTY_BOOKS, myEVT_COMMAND, FbFrameGenres::OnEmptyBooks)
-    EVT_COMMAND(ID_APPEND_BOOK, myEVT_COMMAND, FbFrameGenres::OnAppendBook)
+    EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameGenres::OnEmptyBooks)
+    EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameGenres::OnAppendBook)
     EVT_TREE_SEL_CHANGED(ID_GENRES_TREE, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
@@ -88,30 +88,18 @@ class
 
 wxCriticalSection GenresThread::sm_queue;
 
-class FbGenreEvent: public wxCommandEvent
-{
-	public:
-		FbGenreEvent(wxEventType commandType, wxWindowID commandId = 0, BookTreeItemData * data)
-			: wxCommandEvent(commandType, commandId), m_data(data) {};
-
-		FbGenreEvent(const FbGenreEvent & event)
-			: wxCommandEvent(event), m_data(event.m_data) {};
-
-		virtual wxEvent *Clone() const { return new FbGenreEvent(*this); }
-
-		BookTreeItemData m_data;
-};
-
 void * GenresThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
-	wxCommandEvent event(myEVT_COMMAND, ID_EMPTY_BOOKS);
+	if (FbFrameGenres::GetCode() != m_code) return NULL;
+
+	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_EMPTY_BOOKS);
 	event.SetInt(m_code);
 	wxPostEvent(m_frame, event);
 
 	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
+        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
         FROM books LEFT JOIN authors ON books.id_author = authors.id \
         WHERE GENRE(books.genres, ?) \
         ORDER BY books.title, books.id, authors.full_name\
@@ -126,6 +114,7 @@ void * GenresThread::Entry()
     result.NextRow();
 
     while (!result.Eof()) {
+		if (FbFrameGenres::GetCode() != m_code) return NULL;
         BookTreeItemData data(result);
         wxString full_name = result.GetString(wxT("full_name"));
         do {
@@ -134,12 +123,28 @@ void * GenresThread::Entry()
             full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
         } while (!result.Eof());
 
-		FbGenreEvent event(myEVT_COMMAND, ID_APPEND_BOOK, &data);
+		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
 		event.SetString(full_name);
 		event.SetInt(m_code);
 		wxPostEvent(m_frame, event);
     }
     return NULL;
+}
+
+wxCriticalSection FbFrameGenres::sm_queue;
+
+int FbFrameGenres::sm_code = 0;
+
+int FbFrameGenres::GetCode()
+{
+	wxCriticalSectionLocker locker(sm_queue);
+	return sm_code;
+}
+
+void FbFrameGenres::SetCode(const int code)
+{
+	wxCriticalSectionLocker locker(sm_queue);
+	sm_code = code;
 }
 
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
@@ -149,11 +154,11 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 		EmptyBooks();
 		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
 		if (data) {
-			m_code = data->GetCode();
-			GenresThread * thread = new GenresThread(this, m_code);
+			SetCode(data->GetCode());
+			GenresThread * thread = new GenresThread(this, data->GetCode());
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 		} else {
-			m_code = 0;
+			SetCode(0);
 		}
 	}
 }
@@ -170,14 +175,13 @@ void FbFrameGenres::EmptyBooks()
 
 void FbFrameGenres::OnEmptyBooks(wxCommandEvent& event)
 {
-	if (m_code == event.GetInt()) EmptyBooks();
+	if ( sm_code == event.GetInt() ) EmptyBooks();
 }
 
-void FbFrameGenres::OnAppendBook(wxCommandEvent& event)
+void FbFrameGenres::OnAppendBook(FbBookEvent& event)
 {
-	if ( m_code == event.GetInt() ) {
-		FbGenreEvent & myEvent = (FbGenreEvent&)event;
-        BookTreeItemData * data = new BookTreeItemData(myEvent.m_data);
+	if ( sm_code == event.GetInt() ) {
+        BookTreeItemData * data = new BookTreeItemData(event.m_data);
 		m_BooksPanel.m_BookList->Freeze();
 		wxTreeItemId root = m_BooksPanel.m_BookList->GetRootItem();
 		wxTreeItemId item = m_BooksPanel.m_BookList->AppendItem(root, data->title, 0, -1, data);
@@ -185,7 +189,5 @@ void FbFrameGenres::OnAppendBook(wxCommandEvent& event)
         m_BooksPanel.m_BookList->SetItemText(item, 2, data->file_name);
         m_BooksPanel.m_BookList->SetItemText(item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
 		m_BooksPanel.m_BookList->Thaw();
-	} else {
-		event.SetInt(m_code);
 	}
 }

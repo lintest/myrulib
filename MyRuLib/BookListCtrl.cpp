@@ -1,7 +1,7 @@
 #include <wx/imaglist.h>
 #include "BookListCtrl.h"
 #include "FbConst.h"
-#include "FbManager.h"
+#include "FbBookData.h"
 #include "XpmBitmaps.h"
 
 BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
@@ -55,16 +55,15 @@ void BookListCtrl::FillBooks(wxSQLite3ResultSet & result, const wxString &captio
 
     while (!result.Eof()) {
         BookTreeItemData * data = new BookTreeItemData(result);
-        wxTreeItemId item = AppendItem(root, data->title, 0, -1, data);
         wxString full_name = result.GetString(wxT("full_name"));
-        SetItemText (item, 1, full_name);
-        SetItemText (item, 3, data->file_name);
-        SetItemText (item, 4, wxString::Format(wxT("%d "), data->file_size/1024));
         do {
             result.NextRow();
             if ( data->GetId() != result.GetInt(wxT("id")) ) break;
             full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
-            SetItemText (item, 1, full_name);
         } while (!result.Eof());
+        wxTreeItemId item = AppendItem(root, data->title, 0, -1, data);
+        SetItemText (item, 1, full_name);
+        SetItemText (item, 2, data->file_name);
+        SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
     }
 }

@@ -5,7 +5,7 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "BookListCtrl.h"
-#include "FbManager.h"
+#include "FbBookData.h"
 
 class BooksPanel: public wxSplitterWindow
 {
