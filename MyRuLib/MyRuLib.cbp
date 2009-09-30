@@ -177,6 +177,10 @@
 		<Unit filename="ExternalDlg.h" />
 		<Unit filename="FbAuthorList.cpp" />
 		<Unit filename="FbAuthorList.h" />
+		<Unit filename="FbBookData.cpp" />
+		<Unit filename="FbBookData.h" />
+		<Unit filename="FbBookEvent.cpp" />
+		<Unit filename="FbBookEvent.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbDatabase.cpp" />
