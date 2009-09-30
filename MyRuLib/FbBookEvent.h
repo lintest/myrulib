@@ -7,7 +7,7 @@
 class FbBookEvent: public wxCommandEvent
 {
 	public:
-		FbBookEvent(wxEventType commandType, wxWindowID commandId = 0, BookTreeItemData * data)
+		FbBookEvent(wxEventType commandType, wxWindowID commandId, BookTreeItemData * data)
 			: wxCommandEvent(commandType, commandId), m_data(data) {};
 
 		FbBookEvent(const FbBookEvent & event)
