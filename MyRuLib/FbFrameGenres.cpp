@@ -10,9 +10,9 @@
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
     EVT_MENU(wxID_SAVE, FbFrameGenres::OnExternal)
+    EVT_COMMAND(ID_EMPTY_BOOKS, myEVT_COMMAND, FbFrameGenres::OnEmptyBooks)
+    EVT_COMMAND(ID_APPEND_BOOK, myEVT_COMMAND, FbFrameGenres::OnAppendBook)
     EVT_TREE_SEL_CHANGED(ID_GENRES_TREE, FbFrameGenres::OnGenreSelected)
-    EVT_UPDATE_UI(ID_EMPTY_BOOKS, FbFrameGenres::OnEmptyBooks)
-    EVT_UPDATE_UI(ID_APPEND_BOOK, FbFrameGenres::OnAppendBook)
 END_EVENT_TABLE()
 
 FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id,const wxString & title)
@@ -88,16 +88,27 @@ class
 
 wxCriticalSection GenresThread::sm_queue;
 
-class FbGenreEvent: public wxUpdateUIEvent
+class FbGenreEvent: public wxCommandEvent
 {
 	public:
-		FbGenreEvent(wxWindowID commandId = 0): wxUpdateUIEvent(commandId) {};
-		int id;
+		FbGenreEvent(wxEventType commandType, wxWindowID commandId = 0, BookTreeItemData * data)
+			: wxCommandEvent(commandType, commandId), m_data(data) {};
+
+		FbGenreEvent(const FbGenreEvent & event)
+			: wxCommandEvent(event), m_data(event.m_data) {};
+
+		virtual wxEvent *Clone() const { return new FbGenreEvent(*this); }
+
+		BookTreeItemData m_data;
 };
 
 void * GenresThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
+
+	wxCommandEvent event(myEVT_COMMAND, ID_EMPTY_BOOKS);
+	event.SetInt(m_code);
+	wxPostEvent(m_frame, event);
 
 	wxString sql = wxT("\
         SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
@@ -114,11 +125,6 @@ void * GenresThread::Entry()
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
     result.NextRow();
 
-	wxUpdateUIEvent event( ID_EMPTY_BOOKS);
-	event.SetInt(m_code);
-	wxPostEvent(m_frame, event);
-	if (event.GetInt() == 0) return NULL;
-
     while (!result.Eof()) {
         BookTreeItemData data(result);
         wxString full_name = result.GetString(wxT("full_name"));
@@ -128,110 +134,58 @@ void * GenresThread::Entry()
             full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
         } while (!result.Eof());
 
-		FbGenreEvent event( ID_APPEND_BOOK );
-		event.SetString(data.title);
-		event.SetText(full_name);
+		FbGenreEvent event(myEVT_COMMAND, ID_APPEND_BOOK, &data);
+		event.SetString(full_name);
 		event.SetInt(m_code);
-		event.id = data.GetId();
 		wxPostEvent(m_frame, event);
-		if ( event.GetInt() == 0 ) break;
-/*
-        wxTreeItemId item = AppendItem(root, data->title, 0, -1, data);
-        wxString full_name = result.GetString(wxT("full_name"));
-        SetItemText (item, 1, full_name);
-        SetItemText (item, 2, data->file_name);
-        SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
-*/
     }
     return NULL;
 }
 
-wxCriticalSection FbFrameGenres::sm_queue;
-
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
+		EmptyBooks();
 		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
 		if (data) {
-			GenresThread * thread = new GenresThread(this, data->GetCode());
+			m_code = data->GetCode();
+			GenresThread * thread = new GenresThread(this, m_code);
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+		} else {
+			m_code = 0;
 		}
 	}
 }
 
-const int FbFrameGenres::GetSelectedCode()
+void FbFrameGenres::EmptyBooks()
 {
-	wxTreeItemId selected = m_GenresList->GetSelection();
-	if (selected.IsOk()) {
-		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
-		return data ? data->GetCode() : 0;
-	} else
-		return 0;
+	m_BooksPanel.m_BookList->Freeze();
+	m_BooksPanel.m_BookList->DeleteRoot();
+	wxTreeItemId root = m_BooksPanel.m_BookList->AddRoot(wxEmptyString);
+	m_BooksPanel.m_BookList->ScrollTo(root);
+	m_BooksPanel.m_BookList->Thaw();
+	m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
 }
 
-void FbFrameGenres::OnEmptyBooks(wxUpdateUIEvent& event)
+void FbFrameGenres::OnEmptyBooks(wxCommandEvent& event)
 {
-	if ( GetSelectedCode() == event.GetInt() ) {
-		m_BooksPanel.m_BookList->Freeze();
-		m_BooksPanel.m_BookList->DeleteRoot();
-		wxTreeItemId root = m_BooksPanel.m_BookList->AddRoot(wxEmptyString);
-		m_BooksPanel.m_BookList->ScrollTo(root);
-		m_BooksPanel.m_BookList->Thaw();
-	} else {
-		event.SetInt(0);
-	}
+	if (m_code == event.GetInt()) EmptyBooks();
 }
 
-void FbFrameGenres::OnAppendBook(wxUpdateUIEvent& event)
+void FbFrameGenres::OnAppendBook(wxCommandEvent& event)
 {
-	if ( GetSelectedCode() == event.GetInt() ) {
+	if ( m_code == event.GetInt() ) {
 		FbGenreEvent & myEvent = (FbGenreEvent&)event;
-        BookTreeItemData * data = new BookTreeItemData(myEvent.id);
+        BookTreeItemData * data = new BookTreeItemData(myEvent.m_data);
 		m_BooksPanel.m_BookList->Freeze();
 		wxTreeItemId root = m_BooksPanel.m_BookList->GetRootItem();
-		wxTreeItemId item = m_BooksPanel.m_BookList->AppendItem(root, event.GetString(), 0, -1, data);
-		m_BooksPanel.m_BookList->SetItemText(item, 1, event.GetText());
+		wxTreeItemId item = m_BooksPanel.m_BookList->AppendItem(root, data->title, 0, -1, data);
+        m_BooksPanel.m_BookList->SetItemText(item, 1, event.GetString());
+        m_BooksPanel.m_BookList->SetItemText(item, 2, data->file_name);
+        m_BooksPanel.m_BookList->SetItemText(item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
 		m_BooksPanel.m_BookList->Thaw();
 	} else {
-		event.SetInt(0);
+		event.SetInt(m_code);
 	}
 }
-
-/*
-void FbFrameGenres::FillBooks(const int code)
-{
-	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name \
-        FROM books LEFT JOIN authors ON books.id_author = authors.id \
-        WHERE GENRE(books.genres, ?) \
-        ORDER BY books.title, books.id, authors.full_name\
-    ");
-
-    sql.Replace(wxT("/n"), wxT(" "), true);
-
-	FbCommonDatabase database;
-	FbGenreFunction function;
-    database.CreateFunction(wxT("GENRE"), 2, function);
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, wxString::Format(wxT("%02X"), code));
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-    if (result.NextRow()) {
-		m_BooksPanel.m_BookList->FillBooks(result, wxEmptyString);
-		m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
-		wxSafeYield();
-	} else {
-		m_BooksPanel.m_BookList->DeleteRoot();
-	}
-}
-
-void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
-{
-	wxTreeItemId selected = event.GetItem();
-	if (selected.IsOk()) {
-		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
-		if (data) FillBooks(data->GetCode());
-	}
-}
-*/

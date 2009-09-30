@@ -17,10 +17,7 @@ private:
     void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
     void ShowContextMenu(const wxPoint& pos);
 private:
-    void OnAppendBook(wxUpdateUIEvent& event);
-    void OnEmptyBooks(wxUpdateUIEvent& event);
 	void OnImageClick(wxTreeEvent &event);
-	DECLARE_EVENT_TABLE()
 };
 
 class BookListUpdater

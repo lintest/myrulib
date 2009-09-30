@@ -24,15 +24,16 @@ protected:
 	virtual void CreateControls();
 private:
     void CreateBookInfo();
+    void EmptyBooks();
 	void FillBooks(const int code);
+    const int GetSelectedCode() { return m_code; };
 private:
-	static wxCriticalSection sm_queue;
     FbTreeListCtrl * m_GenresList;
-    const int GetSelectedCode();
+    int m_code;
 private:
     void OnExternal(wxCommandEvent& event);
-    void OnAppendBook(wxUpdateUIEvent& event);
-    void OnEmptyBooks(wxUpdateUIEvent& event);
+    void OnAppendBook(wxCommandEvent& event);
+    void OnEmptyBooks(wxCommandEvent& event);
     void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };

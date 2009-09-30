@@ -4,11 +4,6 @@
 #include "FbManager.h"
 #include "XpmBitmaps.h"
 
-BEGIN_EVENT_TABLE(BookListCtrl, FbTreeListCtrl)
-    EVT_UPDATE_UI(ID_EMPTY_BOOKS, BookListCtrl::OnEmptyBooks)
-    EVT_UPDATE_UI(ID_APPEND_BOOK, BookListCtrl::OnAppendBook)
-END_EVENT_TABLE()
-
 BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
     :FbTreeListCtrl(parent, id, style)
 {
@@ -73,18 +68,3 @@ void BookListCtrl::FillBooks(wxSQLite3ResultSet & result, const wxString &captio
         } while (!result.Eof());
     }
 }
-
-void BookListCtrl::OnEmptyBooks(wxUpdateUIEvent& event)
-{
-	DeleteRoot();
-    wxTreeItemId root = AddRoot(wxEmptyString);
-    ScrollTo(root);
-}
-
-void BookListCtrl::OnAppendBook(wxUpdateUIEvent& event)
-{
-	wxTreeItemId root = GetRootItem();
-	wxTreeItemId item = AppendItem(root, event.GetString(), 0, -1);
-}
-
-

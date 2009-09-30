@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 
 enum {
-    ID_AUTHORS_LISTBOX = 20001,
+    ID_AUTHORS_LISTBOX = wxID_HIGHEST + 1,
     ID_PROGRESSBAR,
     ID_BOOKS_LISTCTRL,
     ID_BOOKS_INFO_PANEL,
@@ -34,12 +34,14 @@ enum {
     ID_MENU_VACUUM,
     ID_FAVORITES_ADD,
     ID_GENRES_TREE,
-    ID_EMPTY_BOOKS,
     ID_APPEND_BOOK,
+    ID_EMPTY_BOOKS,
     ID_LISTBOOK_ADD_BOOK,
-    ID_LETTER_RU = 30100,
-    ID_LETTER_EN = 30200,
+    ID_LETTER_RU = wxID_HIGHEST + 100,
+    ID_LETTER_EN = wxID_HIGHEST + 200,
 };
+
+const wxEventType myEVT_COMMAND = wxNewEventType();
 
 extern const wxString strVersionInfo;
 extern const wxString strHomePage;
