@@ -150,7 +150,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
-		EmptyBooks();
+        m_BooksPanel.EmptyBooks();
 		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
 		if (data) {
 			SetCode(data->GetCode());
@@ -162,19 +162,9 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	}
 }
 
-void FbFrameGenres::EmptyBooks()
-{
-	m_BooksPanel.m_BookList->Freeze();
-	m_BooksPanel.m_BookList->DeleteRoot();
-	wxTreeItemId root = m_BooksPanel.m_BookList->AddRoot(wxEmptyString);
-	m_BooksPanel.m_BookList->ScrollTo(root);
-	m_BooksPanel.m_BookList->Thaw();
-	m_BooksPanel.m_BookInfo->SetPage(wxEmptyString);
-}
-
 void FbFrameGenres::OnEmptyBooks(wxCommandEvent& event)
 {
-	if ( sm_code == event.GetInt() ) EmptyBooks();
+	if ( sm_code == event.GetInt() ) m_BooksPanel.EmptyBooks();
 }
 
 void FbFrameGenres::OnAppendBook(FbBookEvent& event)

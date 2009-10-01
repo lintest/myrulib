@@ -27,6 +27,7 @@ class BooksPanel: public wxSplitterWindow
         BookListCtrl * m_BookList;
         wxHtmlWindow * m_BookInfo;
         BookTreeItemData * GetSelectedBook();
+        void EmptyBooks(const wxString title = wxEmptyString);
     private:
         void CreateBookInfo();
         void ShowContextMenu(const wxPoint& pos);

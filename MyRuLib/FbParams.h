@@ -7,7 +7,7 @@
 #include "FbDatabase.h"
 
 enum FbParamKey {
-	FB_FB2_PROGRAM = 8,
+	FB_NEW_FOLDER = 8,
 	FB_LIBRARY_DIR = 9,
 	FB_DOWNLOAD_DIR = 10,
 	FB_EXTRACT_DIR = 11,

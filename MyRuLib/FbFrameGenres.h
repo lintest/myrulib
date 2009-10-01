@@ -26,7 +26,6 @@ protected:
 	virtual void CreateControls();
 private:
     void CreateBookInfo();
-    void EmptyBooks();
 	void FillBooks(const int code);
 private:
 	static wxCriticalSection sm_queue;

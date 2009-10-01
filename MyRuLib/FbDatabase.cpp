@@ -308,8 +308,8 @@ void FbConfigDatabase::CreateDatabase()
 
     /** TABLE params **/
     ExecuteUpdate(wxT("CREATE TABLE config(id integer primary key, value integer, text text)"));
-    ExecuteUpdate(_("INSERT INTO config(id, text)  VALUES (1, 'MyRuLib local config')"));
-    ExecuteUpdate(_("INSERT INTO config(id, value) VALUES (2, 1)"));
+    ExecuteUpdate(wxT("INSERT INTO config(id, text)  VALUES (1, 'MyRuLib local config')"));
+    ExecuteUpdate(wxT("INSERT INTO config(id, value) VALUES (2, 1)"));
 
 	/** TABLE types **/
 	ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
@@ -323,6 +323,8 @@ void FbConfigDatabase::CreateDatabase()
 	/** TABLE folders **/
     ExecuteUpdate(wxT("CREATE TABLE folders(id integer primary key, value text not null)"));
     ExecuteUpdate(wxT("CREATE INDEX folders_name ON folders(value)"));
+    ExecuteUpdate(wxT("INSERT INTO folders(id, text)  VALUES (-1, 'Лучшее')"));
+    ExecuteUpdate(wxT("INSERT INTO folders(id, text)  VALUES (-2, 'Прочее')"));
 
 	/** TABLE favorites **/
 	ExecuteUpdate(wxT("CREATE TABLE favourites(id_folder integer, md5sum CHAR(32))"));

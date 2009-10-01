@@ -223,7 +223,34 @@ void BooksPanel::OnOpenBook(wxCommandEvent & event)
     if (data) FbManager::OpenBook(data->GetId(), data->file_type);
 }
 
+class FavourThread: public wxThread
+{
+    public:
+        FavourThread(wxString selections, int folder = 0): m_selections(selections), m_folder(folder) {};
+        void * Entry();
+    private:
+        wxString m_selections;
+        int m_folder;
+        FbCommonDatabase m_database;
+};
+
+void * FavourThread::Entry()
+{
+    m_database.AttachConfig();
+    wxString sql = wxString::Format(wxT("INSERT INTO favourites(id_folder,md5sum) SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s)"), m_folder, m_selections.c_str());
+    m_database.ExecuteUpdate(sql);
+    return NULL;
+}
+
 void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
-    wxMessageBox(_("Функционал не реализован в данной версии."));
+    FavourThread * thread = new FavourThread( m_BookList->GetSelected() );
+    if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void BooksPanel::EmptyBooks(const wxString title)
+{
+    BookListUpdater updater(m_BookList);
+	wxTreeItemId root = m_BookList->AddRoot(title);
+	m_BookInfo->SetPage(wxEmptyString);
 }

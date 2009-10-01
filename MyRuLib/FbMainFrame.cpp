@@ -341,15 +341,8 @@ void FbMainFrame::FindAuthor(const wxString &text)
 {
     wxLogInfo(_("Search author: %s"), text.c_str());
 
-    FbFrameAuthor * authors = NULL;
-	size_t count = GetNotebook()->GetPageCount();
-	for (size_t i = 0; i < count; ++i) {
-        if (GetNotebook()->GetPage(i)->GetId() == ID_FRAME_AUTHORS) {
-            authors = (FbFrameAuthor*) GetNotebook()->GetPage(i);
-            GetNotebook()->SetSelection(i);
-            break;
-		}
-	}
+    FbFrameAuthor * authors = (FbFrameAuthor*) FindFrameById(ID_FRAME_AUTHORS);
+
 	if (!authors) {
 	    authors = new FbFrameAuthor(this, ID_FRAME_AUTHORS, _("Авторы"));
         GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
@@ -380,24 +373,28 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 
 void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 {
-    FbFrameGenres * genres = NULL;
+    FbFrameGenres * genres = (FbFrameGenres*) FindFrameById(ID_FRAME_GENRES);
 
-	size_t count = GetNotebook()->GetPageCount();
-	for (size_t i = 0; i < count; ++i) {
-        if (GetNotebook()->GetPage(i)->GetId() == ID_FRAME_GENRES) {
-            genres = (FbFrameGenres*) GetNotebook()->GetPage(i);
-            GetNotebook()->SetSelection(i);
-            break;
-		}
-	}
 	if (!genres) {
 	    genres = new FbFrameGenres(this, ID_FRAME_GENRES, _("Жанры"));
         GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
         genres->Update();
 	}
-
-//    genres->ActivateAuthors();
 }
+
+wxWindow * FbMainFrame::FindFrameById(const int id)
+{
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+        if (GetNotebook()->GetPage(i)->GetId() == ID_FRAME_GENRES) {
+            wxWindow * result = GetNotebook()->GetPage(i);
+            GetNotebook()->SetSelection(i);
+            return result;
+		}
+	}
+	return NULL;
+}
+
 
 void FbMainFrame::OnMenuSearch(wxCommandEvent& event)
 {

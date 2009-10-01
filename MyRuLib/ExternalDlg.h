@@ -24,7 +24,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
-#include "FbTreeListCtrl.h"
+#include "BookListCtrl.h"
 #include "FbBookData.h"
 #include "ExpThread.h"
 #include "FbConst.h"
@@ -38,10 +38,8 @@ class ExternalDlg : public wxDialog
 	public:
 		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);
 		~ExternalDlg();
-		static bool Execute(wxWindow* parent, wxTreeListCtrl* books, int iAuthor = ciNoAuthor);
+		static bool Execute(wxWindow* parent, BookListCtrl* books, int iAuthor = ciNoAuthor);
 	private:
-        static void ScanChecked(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
-        static void ScanSelected(wxTreeListCtrl* bookList, const wxTreeItemId &root, wxString  &selections);
         void FillBooks(const wxString &selections);
         void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
         void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);

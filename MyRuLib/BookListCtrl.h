@@ -13,9 +13,12 @@ public:
     BookListCtrl(wxWindow *parent, wxWindowID id, long style);
 	void SelectAll(int iImageIndex = 1);
 	void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
+	wxString GetSelected();
 private:
     void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
     void ShowContextMenu(const wxPoint& pos);
+    void ScanChecked(const wxTreeItemId &root, wxString  &selections);
+    void ScanSelected(const wxTreeItemId &root, wxString  &selections);
 private:
 	void OnImageClick(wxTreeEvent &event);
 };
