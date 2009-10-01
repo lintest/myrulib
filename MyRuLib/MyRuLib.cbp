@@ -199,6 +199,8 @@
 		<Unit filename="FbGenres.h" />
 		<Unit filename="FbLogStream.cpp" />
 		<Unit filename="FbLogStream.h" />
+		<Unit filename="FbMainFrame.cpp" />
+		<Unit filename="FbMainFrame.h" />
 		<Unit filename="FbManager.cpp" />
 		<Unit filename="FbManager.h" />
 		<Unit filename="FbMenu.h" />
@@ -218,8 +220,6 @@
 		<Unit filename="LimitedTextCtrl.h" />
 		<Unit filename="MyRuLibApp.cpp" />
 		<Unit filename="MyRuLibApp.h" />
-		<Unit filename="MyRuLibMain.cpp" />
-		<Unit filename="MyRuLibMain.h" />
 		<Unit filename="ParseCtx.cpp" />
 		<Unit filename="ParseCtx.h" />
 		<Unit filename="ProgressBar.cpp" />

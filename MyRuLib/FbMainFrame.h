@@ -18,11 +18,11 @@
 #include "LimitedTextCtrl.h"
 #include "FbFrameAuthor.h"
 
-class MyRuLibMainFrame: public wxAuiMDIParentFrame
+class FbMainFrame: public wxAuiMDIParentFrame
 {
 public:
-	MyRuLibMainFrame();
-	virtual ~MyRuLibMainFrame();
+	FbMainFrame();
+	virtual ~FbMainFrame();
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();

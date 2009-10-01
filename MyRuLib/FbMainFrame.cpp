@@ -7,13 +7,13 @@
  * License:
  **************************************************************/
 
+#include "FbMainFrame.h"
 #include <wx/splitter.h>
 #include <wx/dirdlg.h>
 #include <wx/stattext.h>
 #include <wx/dcclient.h>
 #include "FbConst.h"
 #include "FbMenu.h"
-#include "MyRuLibMain.h"
 #include "MyRuLibApp.h"
 #include "FbManager.h"
 #include "FbParams.h"
@@ -24,44 +24,44 @@
 #include "FbFrameFavorites.h"
 #include "VacuumThread.h"
 
-BEGIN_EVENT_TABLE(MyRuLibMainFrame, wxAuiMDIParentFrame)
-    EVT_TOOL(wxID_NEW, MyRuLibMainFrame::OnNewZip)
-    EVT_MENU(wxID_OPEN, MyRuLibMainFrame::OnFolder)
-    EVT_MENU(wxID_EXIT, MyRuLibMainFrame::OnExit)
-	EVT_MENU(wxID_PREFERENCES, MyRuLibMainFrame::OnSetup)
-    EVT_MENU(ID_MENU_SEARCH, MyRuLibMainFrame::OnMenuSearch)
-    EVT_MENU(ID_MENU_AUTHOR, MyRuLibMainFrame::OnMenuAuthor)
-    EVT_MENU(ID_MENU_TITLE, MyRuLibMainFrame::OnMenuTitle)
-    EVT_MENU(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthor)
-    EVT_MENU(ID_MENU_GENRES, MyRuLibMainFrame::OnMenuGenres)
-    EVT_MENU(ID_MENU_DB_INFO, MyRuLibMainFrame::OnDatabaseInfo)
-    EVT_MENU(ID_MENU_VACUUM, MyRuLibMainFrame::OnVacuum)
-	EVT_TEXT_ENTER(ID_FIND_AUTHOR, MyRuLibMainFrame::OnFindAuthorEnter)
-    EVT_MENU(ID_FIND_TITLE, MyRuLibMainFrame::OnFindTitle)
-	EVT_TEXT_ENTER(ID_FIND_TITLE, MyRuLibMainFrame::OnFindTitleEnter)
-	EVT_MENU(ID_OPEN_WEB, MyRuLibMainFrame::OnOpenWeb)
-	EVT_MENU(wxID_ABOUT, MyRuLibMainFrame::OnAbout)
-    EVT_UPDATE_UI(ID_PROGRESS_START, MyRuLibMainFrame::OnProgressStart)
-    EVT_UPDATE_UI(ID_PROGRESS_UPDATE, MyRuLibMainFrame::OnProgressUpdate)
-    EVT_UPDATE_UI(ID_PROGRESS_FINISH, MyRuLibMainFrame::OnProgressFinish)
-    EVT_MENU(ID_FB2_ONLY, MyRuLibMainFrame::OnChangeFilter)
-    EVT_MENU(ID_ERROR, MyRuLibMainFrame::OnError)
-    EVT_MENU(ID_LOG_TEXTCTRL, MyRuLibMainFrame::OnHideLog)
-    EVT_AUI_PANE_CLOSE(MyRuLibMainFrame::OnPanelClosed)
-    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, MyRuLibMainFrame::OnNotebookPageClose)
+BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
+    EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
+    EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
+    EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
+	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
+    EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuSearch)
+    EVT_MENU(ID_MENU_AUTHOR, FbMainFrame::OnMenuAuthor)
+    EVT_MENU(ID_MENU_TITLE, FbMainFrame::OnMenuTitle)
+    EVT_MENU(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthor)
+    EVT_MENU(ID_MENU_GENRES, FbMainFrame::OnMenuGenres)
+    EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
+    EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
+	EVT_TEXT_ENTER(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthorEnter)
+    EVT_MENU(ID_FIND_TITLE, FbMainFrame::OnFindTitle)
+	EVT_TEXT_ENTER(ID_FIND_TITLE, FbMainFrame::OnFindTitleEnter)
+	EVT_MENU(ID_OPEN_WEB, FbMainFrame::OnOpenWeb)
+	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
+    EVT_UPDATE_UI(ID_PROGRESS_START, FbMainFrame::OnProgressStart)
+    EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
+    EVT_UPDATE_UI(ID_PROGRESS_FINISH, FbMainFrame::OnProgressFinish)
+    EVT_MENU(ID_FB2_ONLY, FbMainFrame::OnChangeFilter)
+    EVT_MENU(ID_ERROR, FbMainFrame::OnError)
+    EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
+    EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
 END_EVENT_TABLE()
 
-MyRuLibMainFrame::MyRuLibMainFrame()
+FbMainFrame::FbMainFrame()
 {
 	Create(NULL, wxID_ANY, wxT("MyRuLib - My Russian Library"));
 }
 
-MyRuLibMainFrame::~MyRuLibMainFrame()
+FbMainFrame::~FbMainFrame()
 {
 	m_FrameManager.UnInit();
 }
 
-bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
+bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
 	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
@@ -76,7 +76,7 @@ bool MyRuLibMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString &
 	return res;
 }
 
-void MyRuLibMainFrame::CreateControls()
+void FbMainFrame::CreateControls()
 {
 	SetMenuBar(CreateMenuBar());
 
@@ -111,22 +111,22 @@ void MyRuLibMainFrame::CreateControls()
 	Centre();
 }
 
-void MyRuLibMainFrame::OnSetup(wxCommandEvent & event)
+void FbMainFrame::OnSetup(wxCommandEvent & event)
 {
     SettingsDlg::Execute(this);
 }
 
-void MyRuLibMainFrame::OnOpenWeb(wxCommandEvent & event)
+void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 {
     wxLaunchDefaultBrowser(strHomePage);
 }
 
-void MyRuLibMainFrame::OnAbout(wxCommandEvent & event)
+void FbMainFrame::OnAbout(wxCommandEvent & event)
 {
     wxMessageBox(strVersionInfo + wxT("\n\nDatabase:\n") + wxGetApp().GetAppData());
 }
 
-wxAuiToolBar * MyRuLibMainFrame::CreateToolBar()
+wxAuiToolBar * FbMainFrame::CreateToolBar()
 {
 	wxAuiToolBar * toolbar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE);
 	wxAuiToolBarArt * art = new wxAuiDefaultToolBarArt;
@@ -159,7 +159,7 @@ wxAuiToolBar * MyRuLibMainFrame::CreateToolBar()
 	return toolbar;
 }
 
-wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
+wxMenuBar * FbMainFrame::CreateMenuBar()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
 	FbMenu * menu;
@@ -194,7 +194,7 @@ wxMenuBar * MyRuLibMainFrame::CreateMenuBar()
 	return menuBar;
 }
 
-void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
+void FbMainFrame::OnChangeFilter(wxCommandEvent& event)
 {
     /*
     FbParams().SetValue(FB_FB2_ONLY, toolbar-> GetToolState(ID_FB2_ONLY));
@@ -208,13 +208,13 @@ void MyRuLibMainFrame::OnChangeFilter(wxCommandEvent& event)
     */
 }
 
-void MyRuLibMainFrame::OnExit(wxCommandEvent & event)
+void FbMainFrame::OnExit(wxCommandEvent & event)
 {
 	wxUnusedVar(event);
 	Close();
 }
 
-void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
+void FbMainFrame::OnNewZip( wxCommandEvent& event ){
 
     wxFileDialog dlg (
 		this,
@@ -240,7 +240,7 @@ void MyRuLibMainFrame::OnNewZip( wxCommandEvent& event ){
 	}
 }
 
-void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
+void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 
     wxDirDialog dlg (
 		this,
@@ -262,21 +262,21 @@ void MyRuLibMainFrame::OnFolder( wxCommandEvent& event ) {
 	}
 }
 
-void MyRuLibMainFrame::OnProgressStart(wxUpdateUIEvent& event)
+void FbMainFrame::OnProgressStart(wxUpdateUIEvent& event)
 {
 	m_ProgressBar.SetRange(event.GetInt());
 	m_ProgressBar.SetStatusText(event.GetText(), 0);
 	m_ProgressBar.SetStatusText(wxEmptyString, 2);
 }
 
-void MyRuLibMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
+void FbMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
 {
 	m_ProgressBar.SetProgress(event.GetInt());
 	m_ProgressBar.SetStatusText(event.GetText(), 0);
 	m_ProgressBar.SetStatusText(event.GetString(), 2);
 }
 
-void MyRuLibMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
+void FbMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
 {
 	m_StatusText = wxEmptyString;
 	m_ProgressBar.SetProgress(0);
@@ -284,13 +284,13 @@ void MyRuLibMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
 	m_ProgressBar.SetStatusText(wxEmptyString, 2);
 }
 
-void MyRuLibMainFrame::OnError(wxCommandEvent& event)
+void FbMainFrame::OnError(wxCommandEvent& event)
 {
     m_LOGTextCtrl.AppendText(event.GetString() + wxT("\n"));
     TogglePaneVisibility(wxT("Log"), true);
 }
 
-void MyRuLibMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
+void FbMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
 {
 	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
 	size_t count = all_panes.GetCount();
@@ -305,14 +305,14 @@ void MyRuLibMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show
 	}
 }
 
-void MyRuLibMainFrame::OnPanelClosed(wxAuiManagerEvent& event)
+void FbMainFrame::OnPanelClosed(wxAuiManagerEvent& event)
 {
     if (event.pane->name == wxT("Log")) {
         m_LOGTextCtrl.Clear();
     }
 }
 
-void MyRuLibMainFrame::OnNotebookPageClose(wxAuiNotebookEvent& evt)
+void FbMainFrame::OnNotebookPageClose(wxAuiNotebookEvent& evt)
 {
     wxAuiNotebook* ctrl = (wxAuiNotebook*)evt.GetEventObject();
     if (ctrl->GetPage(evt.GetSelection())->IsKindOf(CLASSINFO(FbFrameAuthor)))
@@ -326,37 +326,37 @@ void MyRuLibMainFrame::OnNotebookPageClose(wxAuiNotebookEvent& evt)
     }
 }
 
-void MyRuLibMainFrame::OnHideLog(wxCommandEvent& event)
+void FbMainFrame::OnHideLog(wxCommandEvent& event)
 {
     TogglePaneVisibility(wxT("Log"), false);
 }
 
-void MyRuLibMainFrame::OnFindTitle(wxCommandEvent & event)
+void FbMainFrame::OnFindTitle(wxCommandEvent & event)
 {
     FindTitle(m_FindTitle.GetValue());
 }
 
-void MyRuLibMainFrame::OnFindTitleEnter(wxCommandEvent& event)
+void FbMainFrame::OnFindTitleEnter(wxCommandEvent& event)
 {
     FindTitle(event.GetString());
 }
 
-void MyRuLibMainFrame::FindTitle(const wxString &text)
+void FbMainFrame::FindTitle(const wxString &text)
 {
 	FbFrameSearch::Execute(this, text);
 }
 
-void MyRuLibMainFrame::OnFindAuthor(wxCommandEvent& event)
+void FbMainFrame::OnFindAuthor(wxCommandEvent& event)
 {
     FindAuthor(m_FindAuthor.GetValue());
 }
 
-void MyRuLibMainFrame::OnFindAuthorEnter(wxCommandEvent& event)
+void FbMainFrame::OnFindAuthorEnter(wxCommandEvent& event)
 {
     FindAuthor(event.GetString());
 }
 
-void MyRuLibMainFrame::FindAuthor(const wxString &text)
+void FbMainFrame::FindAuthor(const wxString &text)
 {
     wxLogInfo(_("Search author: %s"), text.c_str());
 
@@ -383,21 +383,21 @@ void MyRuLibMainFrame::FindAuthor(const wxString &text)
     authors->ActivateAuthors();
 }
 
-void MyRuLibMainFrame::OnMenuAuthor(wxCommandEvent& event)
+void FbMainFrame::OnMenuAuthor(wxCommandEvent& event)
 {
 	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по автору"));
 	if (text.IsEmpty()) return;
 	FindAuthor(text);
 }
 
-void MyRuLibMainFrame::OnMenuTitle(wxCommandEvent& event)
+void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 {
 	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по заголовку"));
 	if (text.IsEmpty()) return;
 	FindTitle(text);
 }
 
-void MyRuLibMainFrame::OnMenuGenres(wxCommandEvent & event)
+void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 {
     FbFrameGenres * genres = NULL;
 
@@ -418,17 +418,17 @@ void MyRuLibMainFrame::OnMenuGenres(wxCommandEvent & event)
 //    genres->ActivateAuthors();
 }
 
-void MyRuLibMainFrame::OnMenuSearch(wxCommandEvent& event)
+void FbMainFrame::OnMenuSearch(wxCommandEvent& event)
 {
     wxMessageBox(_("Функционал расширенного поиска\nне реализован в данной версии."));
 }
 
-void MyRuLibMainFrame::OnDatabaseInfo(wxCommandEvent & event)
+void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 {
     wxMessageBox(_("Функционал не реализован в данной версии."));
 }
 
-void MyRuLibMainFrame::OnVacuum(wxCommandEvent & event)
+void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
     wxString msg = _("Выполнить реструктуризацию базы данных?");
     if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) != wxOK) return;

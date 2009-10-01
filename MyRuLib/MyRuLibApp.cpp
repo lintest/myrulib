@@ -12,7 +12,7 @@
 #include <wx/fs_mem.h>
 #include <wx/stdpaths.h>
 #include "MyRuLibApp.h"
-#include "MyRuLibMain.h"
+#include "FbMainFrame.h"
 #include "FbLogStream.h"
 #include "FbParams.h"
 #include "ZipReader.h"
@@ -34,7 +34,7 @@ bool MyRuLibApp::OnInit()
 
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
 
-	MyRuLibMainFrame * frame = new MyRuLibMainFrame;
+	FbMainFrame * frame = new FbMainFrame;
 	SetTopWindow(frame);
 	frame->Show();
 

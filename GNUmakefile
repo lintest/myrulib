@@ -105,6 +105,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbFrameSearch.o \
 	build/myrulib_FbGenres.o \
 	build/myrulib_FbLogStream.o \
+	build/myrulib_FbMainFrame.o \
 	build/myrulib_FbManager.o \
 	build/myrulib_FbParams.o \
 	build/myrulib_FbTreeListCtrl.o \
@@ -114,7 +115,6 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_InfoThread.o \
 	build/myrulib_LimitedTextCtrl.o \
 	build/myrulib_MyRuLibApp.o \
-	build/myrulib_MyRuLibMain.o \
 	build/myrulib_ParseCtx.o \
 	build/myrulib_ProgressBar.o \
 	build/myrulib_SettingsDlg.o \
@@ -264,6 +264,9 @@ build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp
 build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbMainFrame.o: ./MyRuLib/FbMainFrame.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbManager.o: ./MyRuLib/FbManager.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -289,9 +292,6 @@ build/myrulib_LimitedTextCtrl.o: ./MyRuLib/LimitedTextCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_MyRuLibMain.o: ./MyRuLib/MyRuLibMain.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
