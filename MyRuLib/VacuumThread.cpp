@@ -3,7 +3,7 @@
 
 void VacuumThread::Execute()
 {
-    VacuumThread * thread = new VacuumThread();
+    wxThread * thread = new VacuumThread();
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
         return;

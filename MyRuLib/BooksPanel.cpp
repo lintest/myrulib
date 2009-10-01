@@ -223,10 +223,10 @@ void BooksPanel::OnOpenBook(wxCommandEvent & event)
     if (data) FbManager::OpenBook(data->GetId(), data->file_type);
 }
 
-class FavourThread: public wxThread
+class FbAppendFavouritesThread: public wxThread
 {
     public:
-        FavourThread(wxString selections, int folder = 0): m_selections(selections), m_folder(folder) {};
+        FbAppendFavouritesThread(wxString selections, int folder = 0): m_selections(selections), m_folder(folder) {};
         void * Entry();
     private:
         wxString m_selections;
@@ -234,7 +234,7 @@ class FavourThread: public wxThread
         FbCommonDatabase m_database;
 };
 
-void * FavourThread::Entry()
+void * FbAppendFavouritesThread::Entry()
 {
     m_database.AttachConfig();
     wxString sql = wxString::Format(wxT("INSERT INTO favourites(id_folder,md5sum) SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s)"), m_folder, m_selections.c_str());
@@ -244,7 +244,7 @@ void * FavourThread::Entry()
 
 void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
-    FavourThread * thread = new FavourThread( m_BookList->GetSelected() );
+    wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected() );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 

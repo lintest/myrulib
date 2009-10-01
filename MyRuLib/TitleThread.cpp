@@ -10,7 +10,7 @@ wxCriticalSection TitleThread::sm_queue;
 void TitleThread::Execute(wxEvtHandler *frame, const int id)
 {
     if (!id) return;
-	TitleThread *thread = new TitleThread(frame, id);
+	wxThread *thread = new TitleThread(frame, id);
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 

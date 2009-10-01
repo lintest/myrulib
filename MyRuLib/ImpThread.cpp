@@ -540,7 +540,7 @@ bool DirImportThread::ParseXml(const wxString &filename)
 
 void BooksCountThread::Execute()
 {
-    BooksCountThread * thread = new BooksCountThread();
+    wxThread * thread = new BooksCountThread();
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));
         return;

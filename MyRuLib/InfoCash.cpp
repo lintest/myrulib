@@ -164,7 +164,7 @@ wxString InfoCash::GetInfo(const int id, bool vertical)
 void ShowThread::Execute(wxEvtHandler *frame, const int id)
 {
 	if (!id) return;
-	ShowThread *thread = new ShowThread(frame, id);
+	wxThread *thread = new ShowThread(frame, id);
 	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 

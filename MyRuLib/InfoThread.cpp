@@ -20,7 +20,7 @@ void *InfoThread::Entry()
 void InfoThread::Execute(wxEvtHandler *frame, const int id)
 {
     if (!id) return;
-	InfoThread *thread = new InfoThread(frame, id);
+	wxThread *thread = new InfoThread(frame, id);
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 

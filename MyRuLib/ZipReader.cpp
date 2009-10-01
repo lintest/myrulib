@@ -89,7 +89,7 @@ ZipReader::~ZipReader()
 void ZipReader::Init()
 {
 	wxString dirname = FbParams::GetText(FB_LIBRARY_DIR);
-	ZipThread *thread = new ZipThread(dirname);
+	wxThread *thread = new ZipThread(dirname);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {
         wxLogError(wxT("Can't create thread!"));

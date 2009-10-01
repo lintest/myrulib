@@ -154,7 +154,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
 		if (data) {
 			SetCode(data->GetCode());
-			GenresThread * thread = new GenresThread(this, data->GetCode());
+			wxThread * thread = new GenresThread(this, data->GetCode());
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 		} else {
 			SetCode(0);
