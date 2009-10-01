@@ -7,8 +7,8 @@
  * License:
  **************************************************************/
 
-#ifndef MYRULIBMAIN_H
-#define MYRULIBMAIN_H
+#ifndef __FBMAINFRAME_H__
+#define __FBMAINFRAME_H__
 
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
@@ -67,4 +67,4 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
-#endif // MYRULIBMAIN_H
+#endif // __FBMAINFRAME_H__
