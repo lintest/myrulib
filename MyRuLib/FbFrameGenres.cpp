@@ -47,11 +47,7 @@ void FbFrameGenres::CreateControls()
 	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
 	splitter->SplitVertically(m_GenresList, &m_BooksPanel, 160);
 
-    BookListCtrl * booklist = m_BooksPanel.m_BookList;
-    booklist->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
-    booklist->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-    booklist->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
-    booklist->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
+    m_BooksPanel.CreateColumns(FB2_MODE_LIST);
 
 	SetSizer( bSizer1 );
 	Layout();

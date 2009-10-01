@@ -32,11 +32,7 @@ void FbFrameSearch::CreateControls()
 	m_BooksPanel.Create(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
 	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
 
-    BookListCtrl * booklist = m_BooksPanel.m_BookList;
-    booklist->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
-    booklist->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-    booklist->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
-    booklist->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
+    m_BooksPanel.CreateColumns(FB2_MODE_LIST);
 
 	SetSizer( bSizer1 );
 	Layout();

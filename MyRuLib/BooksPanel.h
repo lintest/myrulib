@@ -7,6 +7,11 @@
 #include "BookListCtrl.h"
 #include "FbBookData.h"
 
+enum FbListMode {
+    FB2_MODE_TREE = 0,
+    FB2_MODE_LIST = 1,
+};
+
 class BooksPanel: public wxSplitterWindow
 {
     public:
@@ -29,10 +34,12 @@ class BooksPanel: public wxSplitterWindow
         BookTreeItemData * GetSelectedBook();
         void EmptyBooks(const wxString title = wxEmptyString);
         void AppendBook(BookTreeItemData * data, const wxString & authors);
+        void CreateColumns(FbListMode mode);
     private:
         void CreateBookInfo();
         void ShowContextMenu(const wxPoint& pos);
         wxString m_AuthorName;
+        FbListMode m_mode;
     private:
         void OnBooksListViewSelected(wxTreeEvent & event);
         void OnBooksListActivated(wxTreeEvent & event);

@@ -386,7 +386,7 @@ wxWindow * FbMainFrame::FindFrameById(const int id)
 {
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-        if (GetNotebook()->GetPage(i)->GetId() == ID_FRAME_GENRES) {
+        if (GetNotebook()->GetPage(i)->GetId() == id) {
             wxWindow * result = GetNotebook()->GetPage(i);
             GetNotebook()->SetSelection(i);
             return result;

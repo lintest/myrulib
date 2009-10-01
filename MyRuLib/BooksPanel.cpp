@@ -265,3 +265,25 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
     m_BookList->SetItemText(item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
     m_BookList->Thaw();
 }
+
+void BooksPanel::CreateColumns(FbListMode mode)
+{
+    m_mode = mode;
+
+    m_BookList->EmptyCols();
+
+    switch (mode) {
+        case FB2_MODE_TREE: {
+            m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("№"), 1, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
+        } break;
+        case FB2_MODE_LIST: {
+            m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
+        } break;
+    }
+}

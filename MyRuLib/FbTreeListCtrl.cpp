@@ -11,8 +11,8 @@ FbTreeListCtrl::FbTreeListCtrl(wxWindow *parent, wxWindowID id, long style)
 
 void FbTreeListCtrl::EmptyCols()
 {
-	for (size_t i = wxTreeListCtrl::GetColumnCount()-1; i>=0; i--) {
-		wxTreeListCtrl::RemoveColumn(i);
+	for (size_t i = wxTreeListCtrl::GetColumnCount(); i>0; i--) {
+		wxTreeListCtrl::RemoveColumn(i-1);
 	}
 	m_ColSizes.Empty();
 }
