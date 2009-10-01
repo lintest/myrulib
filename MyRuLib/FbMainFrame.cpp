@@ -16,7 +16,6 @@
 #include "FbMenu.h"
 #include "MyRuLibApp.h"
 #include "FbManager.h"
-#include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ImpThread.h"
 #include "FbFrameSearch.h"
@@ -44,7 +43,6 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_UPDATE_UI(ID_PROGRESS_START, FbMainFrame::OnProgressStart)
     EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
     EVT_UPDATE_UI(ID_PROGRESS_FINISH, FbMainFrame::OnProgressFinish)
-    EVT_MENU(ID_FB2_ONLY, FbMainFrame::OnChangeFilter)
     EVT_MENU(ID_ERROR, FbMainFrame::OnError)
     EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
     EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
@@ -151,9 +149,6 @@ wxAuiToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-//	toolbar->AddSeparator();
-//	toolbar->AddTool(ID_FB2_ONLY, _("Фильтр"), wxArtProvider::GetBitmap(wxART_HELP_BOOK), _("Только файлы Fb2"), wxITEM_CHECK);
-//	toolbar->ToggleTool(ID_FB2_ONLY, FbParams().GetValue(FB_FB2_ONLY) );
 	toolbar->Realize();
 
 	return toolbar;
@@ -192,20 +187,6 @@ wxMenuBar * FbMainFrame::CreateMenuBar()
 	menuBar->Append(menu, _("&?"));
 
 	return menuBar;
-}
-
-void FbMainFrame::OnChangeFilter(wxCommandEvent& event)
-{
-    /*
-    FbParams().SetValue(FB_FB2_ONLY, toolbar-> GetToolState(ID_FB2_ONLY));
-
-    RecordIDClientData * data = (RecordIDClientData *)
-        m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
-    if(data) {
-        FbManager::FillBooks(m_BooksListView, data->GetID(), toolbar-> GetToolState(ID_FB2_ONLY));
-        m_BooksInfoPanel->SetPage(wxEmptyString);
-    }
-    */
 }
 
 void FbMainFrame::OnExit(wxCommandEvent & event)

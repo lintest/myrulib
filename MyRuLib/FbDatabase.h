@@ -4,6 +4,18 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 
+enum FbDatabaseKey {
+	DB_LIBRARY_TITLE = 1,
+	DB_LIBRARY_VERSION = 2,
+	DB_LIBRARY_TYPE = 3,
+	DB_NEW_ARCHIVE = 4,
+	DB_NEW_AUTHOR = 5,
+	DB_NEW_BOOK = 6,
+	DB_NEW_SEQUENCE = 7,
+	DB_NEW_ZIPFILE = 25,
+	DB_BOOKS_COUNT = 26,
+};
+
 class FbLowerFunction : public wxSQLite3ScalarFunction
 {
     virtual void Execute(wxSQLite3FunctionContext& ctx);
@@ -19,7 +31,9 @@ class FbDatabase: public wxSQLite3Database
 	public:
         virtual void Open(const wxString& fileName, const wxString& key = wxEmptyString,
                         int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
-        int NewId(int iParam);
+        int NewId(FbDatabaseKey iParam);
+	protected:
+		const wxString & GetConfigName();
     private:
         static wxCriticalSection sm_queue;
 };
@@ -44,6 +58,18 @@ class FbCommonDatabase: public FbDatabase
 {
     public:
         FbCommonDatabase();
+        void AttachConfig();
+};
+
+class FbConfigDatabase: public FbDatabase
+{
+	public:
+		void Open();
+	private:
+		void CreateDatabase();
+		void UpgradeDatabase();
+		int GetVersion();
+		void SetVersion(int iValue);
 };
 
 class FbMainDatabase: public FbDatabase
@@ -54,6 +80,8 @@ class FbMainDatabase: public FbDatabase
 	private:
 		void CreateDatabase();
 		void UpgradeDatabase();
+		int GetVersion();
+		void SetVersion(int iValue);
 };
 
 #endif // __FBDATABASE_H__

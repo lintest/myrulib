@@ -1,6 +1,5 @@
 #include "ImpContext.h"
 #include "FbManager.h"
-#include "FbParams.h"
 #include "FbConst.h"
 
 WX_DEFINE_OBJARRAY(SequenceArray);

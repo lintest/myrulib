@@ -46,7 +46,7 @@ bool BooksPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, con
 void BooksPanel::CreateBookInfo()
 {
     FbCommonDatabase database;
-    int vertical = FbParams(&database).GetValue(FB_VIEW_TYPE);
+    int vertical = FbParams().GetValue(FB_VIEW_TYPE);
 
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
@@ -134,7 +134,7 @@ void BooksPanel::OnChangeView(wxCommandEvent & event)
 {
 	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
     FbCommonDatabase database;
-	FbParams(&database).SetValue(FB_VIEW_TYPE, vertical);
+	FbParams().SetValue(FB_VIEW_TYPE, vertical);
 	CreateBookInfo();
 }
 

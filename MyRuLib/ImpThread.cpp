@@ -1,7 +1,6 @@
 #include "ImpThread.h"
 #include <wx/zipstrm.h>
 #include <wx/dir.h>
-#include "FbParams.h"
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "ZipReader.h"

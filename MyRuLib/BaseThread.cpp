@@ -54,6 +54,6 @@ void BaseThread::UpdateBooksCount()
         database->CloseResultSet(result);
         database->CloseStatement(ps);
     }
-    FbParams().SetValue(DB_BOOKS_COUNT, count);
+    database->SetValue(DB_BOOKS_COUNT, count);
 */
 }

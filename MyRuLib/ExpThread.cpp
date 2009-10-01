@@ -1,6 +1,5 @@
 #include "ExpThread.h"
 #include "FbManager.h"
-#include "FbParams.h"
 #include "ZipReader.h"
 
 WX_DEFINE_OBJARRAY(ExportFileArray);

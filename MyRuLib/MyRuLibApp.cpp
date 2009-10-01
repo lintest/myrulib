@@ -10,7 +10,6 @@
 #include <wx/app.h>
 #include <wx/image.h>
 #include <wx/fs_mem.h>
-#include <wx/stdpaths.h>
 #include "MyRuLibApp.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"
@@ -49,24 +48,37 @@ int MyRuLibApp::OnExit()
 	return wxApp::OnExit();
 }
 
-class MyStandardPaths: public wxStandardPaths
+bool MyRuLibApp::ConnectToDatabase()
 {
-	public:
-		virtual wxString GetDataFile() const;
-		virtual wxString GetAppFileName() const;
-	protected:
-		virtual wxString GetDataDir() const;
-	private:
-		wxFileName GetDatabaseFilename() const;
-};
+	m_datafile = MyStandardPaths().GetDataFile();
 
-wxString MyStandardPaths::GetDataDir() const
+    wxFileName logname = m_datafile;
+    logname.SetExt(wxT("log"));
+    wxLog *logger = new FbLogStream(logname.GetFullPath());
+    wxLog::SetActiveTarget(logger);
+
+	m_database.Open(m_datafile);
+	m_config.Open();
+
+	FbParams().LoadParams();
+
+	return true;
+}
+
+wxString MyStandardPaths::GetUserConfigDir() const
 {
 #if defined(__WIN32__)
-	return wxStandardPaths::GetUserConfigDir();
+	wxString result = wxStandardPaths::GetUserConfigDir();
 #else
-	return wxStandardPaths::GetUserConfigDir() + wxT("/.config/");
+	wxString result = wxStandardPaths::GetUserConfigDir() + wxT("/.config/");
 #endif
+
+	if (!wxFileName::DirExists(result)) wxFileName::Mkdir(result);
+
+	result = AppendAppName(result);
+	if (!wxFileName::DirExists(result)) wxFileName::Mkdir(result);
+
+	return result;
 }
 
 wxString MyStandardPaths::GetAppFileName() const
@@ -100,30 +112,17 @@ wxFileName MyStandardPaths::GetDatabaseFilename() const
 		return wxFileName(arg);
 	}
 
-	if (filename.FileExists())
-		return filename;
+	if (filename.FileExists()) return filename;
 
-	wxString filepath = GetDataDir();
-	if (!wxFileName::DirExists(filepath))
-		wxFileName::Mkdir(filepath);
-
-	filepath = AppendAppName(filepath);
-	if (!wxFileName::DirExists(filepath))
-		wxFileName::Mkdir(filepath);
-
-	filename.SetPath(filepath);
+	filename.SetPath(GetUserConfigDir());
 	return filename;
 }
 
-bool MyRuLibApp::ConnectToDatabase()
+wxString MyStandardPaths::GetConfigFile() const
 {
-	m_datafile = MyStandardPaths().GetDataFile();
-
-    wxFileName logname = m_datafile;
-    logname.SetExt(wxT("log"));
-    wxLog *logger = new FbLogStream(logname.GetFullPath());
-    wxLog::SetActiveTarget(logger);
-
-	m_database.Open(m_datafile);
-	return true;
+	wxFileName filename = GetAppFileName();
+	filename.SetExt(wxT("cfg"));
+	filename.SetPath(GetUserConfigDir());
+	filename.Normalize();
+	return filename.GetFullPath();
 }

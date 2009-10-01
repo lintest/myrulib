@@ -58,7 +58,6 @@ private:
 	void OnProgressStart(wxUpdateUIEvent& event);
 	void OnProgressUpdate(wxUpdateUIEvent& event);
 	void OnProgressFinish(wxUpdateUIEvent& event);
-    void OnChangeFilter(wxCommandEvent& event);
     void OnError(wxCommandEvent& event);
     void OnHideLog(wxCommandEvent& event);
     void OnPanelClosed(wxAuiManagerEvent& event);

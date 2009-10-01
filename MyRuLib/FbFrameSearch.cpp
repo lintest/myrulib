@@ -2,7 +2,6 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "FbParams.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
 #include "ExternalDlg.h"

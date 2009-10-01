@@ -1,5 +1,4 @@
 #include "FbDatabase.h"
-#include "FbParams.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
 
@@ -7,7 +6,7 @@ wxCriticalSection FbDatabase::sm_queue;
 
 void FbMainDatabase::CreateDatabase()
 {
-    wxSQLite3Transaction trans(this);
+    wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
     /** TABLE authors **/
     ExecuteUpdate(wxT("\
@@ -82,11 +81,19 @@ void FbMainDatabase::CreateDatabase()
     trans.Commit();
 }
 
+int FbMainDatabase::GetVersion()
+{
+	return ExecuteScalar(wxT("SELECT value FROM params WHERE id=2"));
+}
+
+void FbMainDatabase::SetVersion(int iValue)
+{
+	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO params(id, value) VALUES (2,%d)"), iValue));
+}
+
 void FbMainDatabase::UpgradeDatabase()
 {
-	FbParams params(this);
-	params.LoadParams();
-	int version = FbParams::GetValue(DB_LIBRARY_VERSION);
+	int version = GetVersion();
 
 	wxString sUpgradeMsg = wxT("Upgrade database to version %d");
 
@@ -105,7 +112,7 @@ void FbMainDatabase::UpgradeDatabase()
         ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
         ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
 
-        params.SetValue(DB_LIBRARY_VERSION, version);
+        SetVersion(version);
         trans.Commit();
     }
 
@@ -123,7 +130,7 @@ void FbMainDatabase::UpgradeDatabase()
         ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text)"));
         ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book)"));
 
-        params.SetValue(DB_LIBRARY_VERSION, version);
+        SetVersion(version);
         trans.Commit();
     }
 
@@ -146,14 +153,26 @@ void FbMainDatabase::UpgradeDatabase()
         ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
         ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
 
-        params.SetValue(DB_LIBRARY_VERSION, version);
+        SetVersion(version);
         trans.Commit();
     }
 
-	params.LoadParams();
-	int old_version = params.GetValue(DB_LIBRARY_VERSION);
+    if (version == 4) {
+        version ++;
+        wxLogInfo(sUpgradeMsg, version);
+        wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
-    int new_version = 4;
+        ExecuteUpdate(wxT("DROP TABLE IF EXISTS types"));
+        ExecuteUpdate(wxT("DROP TABLE IF EXISTS comments"));
+        ExecuteUpdate(wxT("DROP TABLE IF EXISTS words"));
+
+        SetVersion(version);
+        trans.Commit();
+    }
+
+    int new_version = 5;
+	int old_version = GetVersion();
+
 	if (old_version != new_version) {
 		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
 	}
@@ -210,7 +229,7 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
     }
 }
 
-int FbDatabase::NewId(int iParam)
+int FbDatabase::NewId(FbDatabaseKey iParam)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
@@ -235,8 +254,7 @@ int FbDatabase::NewId(int iParam)
 	return iValue;
 }
 
-FbCommonDatabase::FbCommonDatabase()
-    :FbDatabase()
+FbCommonDatabase::FbCommonDatabase() :FbDatabase()
 {
     FbDatabase::Open(wxGetApp().GetAppData());
 }
@@ -263,3 +281,66 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
     }
 }
 
+const wxString & FbDatabase::GetConfigName()
+{
+	static wxString filename = MyStandardPaths().GetConfigFile();
+	return filename;
+}
+
+void FbCommonDatabase::AttachConfig()
+{
+	wxString sql = wxString::Format(wxT("ATTACH \"%s\" AS config"), GetConfigName().c_str());
+	ExecuteUpdate(sql);
+}
+
+void FbConfigDatabase::Open()
+{
+	wxString filename = GetConfigName();
+    bool bExists = wxFileExists(filename);
+    FbDatabase::Open(filename, wxEmptyString, WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
+    if (!bExists) CreateDatabase();
+    UpgradeDatabase();
+}
+
+void FbConfigDatabase::CreateDatabase()
+{
+    wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+
+    /** TABLE params **/
+    ExecuteUpdate(wxT("CREATE TABLE config(id integer primary key, value integer, text text)"));
+    ExecuteUpdate(_("INSERT INTO config(id, text)  VALUES (1, 'MyRuLib local config')"));
+    ExecuteUpdate(_("INSERT INTO config(id, value) VALUES (2, 1)"));
+
+	/** TABLE types **/
+	ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
+	ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type)"));
+	ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file"));
+
+	/** TABLE comments **/
+	ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, md5sum CHAR(32), rating integer, posted datetime, caption text, comment text)"));
+	ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(md5sum)"));
+
+	/** TABLE folders **/
+    ExecuteUpdate(wxT("CREATE TABLE folders(id integer primary key, value text not null)"));
+    ExecuteUpdate(wxT("CREATE INDEX folders_name ON folders(value)"));
+
+	/** TABLE favorites **/
+	ExecuteUpdate(wxT("CREATE TABLE favourites(id_folder integer, md5sum CHAR(32))"));
+    ExecuteUpdate(wxT("CREATE INDEX favourites_folder ON favourites(id_folder)"));
+
+    trans.Commit();
+}
+
+void FbConfigDatabase::UpgradeDatabase()
+{
+}
+
+int FbConfigDatabase::GetVersion()
+{
+	return ExecuteScalar(wxT("SELECT value FROM config WHERE id=2"));
+}
+
+void FbConfigDatabase::SetVersion(int iValue)
+{
+	ExecuteUpdate(wxString::Format(wxT("INSERT OR UPDATE INTO config(id, value) VALUES (2,%d)"), iValue));
+}

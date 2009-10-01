@@ -29,6 +29,7 @@
 #include "FbParams.h"
 #include "SettingsDlg.h"
 #include "ZipReader.h"
+#include "MyRuLibApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -75,10 +76,10 @@ END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+	m_database.AttachConfig();
+
     wxNotebook* m_notebook;
     wxPanel* m_panel1;
-    wxStaticText* m_staticText1;
-    wxTextCtrl* m_textCtrl1;
     wxStaticText* m_staticText2;
     wxTextCtrl* m_textCtrl2;
     wxBitmapButton* m_bpButton2;
@@ -124,10 +125,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText1 = new wxStaticText( m_panel1, wxID_ANY, _("Название библиотеки:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText1->Wrap( -1 );
-	bSizer4->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
 	m_staticText2 = new wxStaticText( m_panel1, wxID_ANY, _("Папка с файлами zip\nбиблиотеки lib.rus.ec:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	bSizer4->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -140,11 +137,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
-
-	m_textCtrl1 = new wxTextCtrl( m_panel1, ID_LIBRARY_TITLE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl1->SetMinSize( wxSize( 200,-1 ) );
-
-	bSizer5->Add( m_textCtrl1, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
@@ -370,13 +362,12 @@ void SettingsDlg::Assign(bool write)
         tRadio,
     };
     struct Struct{
-        int param;
+        FbParamKey param;
         ID control;
         Type type;
     };
 
     const Struct ids[] = {
-        {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
         {FB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
         {FB_WANRAIK_DIR, SettingsDlg::FB_WANRAIK_DIR_TXT, tText},
         {FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
@@ -393,7 +384,7 @@ void SettingsDlg::Assign(bool write)
 
     const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-    FbParams params(&m_database);
+    FbParams params;
 
     for (size_t i=0; i<idsCount; i++) {
         switch (ids[i].type) {
@@ -436,7 +427,6 @@ void SettingsDlg::Execute(wxWindow* parent)
     }
 
     if (dlg.ShowModal() == wxID_OK) {
-        FbAutoCommit transaction(&dlg.m_database);
 		dlg.Assign(true);
 		dlg.SaveTypelist();
 		ZipReader::Init();
@@ -457,7 +447,7 @@ void SettingsDlg::FillTypelist()
 			 UNION SELECT 'djvu' \
 			 UNION SELECT 'txt' \
 		) AS books \
-		  LEFT JOIN types ON books.file_type = types.file_type \
+		  LEFT JOIN config.types as types ON books.file_type = types.file_type \
 		ORDER BY number, books.file_type \
      ");
 
@@ -540,6 +530,9 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
+	FbDatabase & m_database = * wxGetApp().GetConfigDatabase();
+    FbAutoCommit transaction(&m_database);
+
     wxString sql = wxT("SELECT file_type FROM types");
     wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
     while (result.NextRow()) {

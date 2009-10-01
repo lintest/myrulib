@@ -11,11 +11,11 @@
 #include <wx/zipstrm.h>
 #include <wx/progdlg.h>
 #include "ImpThread.h"
-#include "FbParams.h"
 #include "FbDatabase.h"
 #include "FbClientData.h"
 #include "ZipReader.h"
 #include "FbConst.h"
+#include "MyRuLibApp.h"
 
 #if defined(__WIN32__)
 #include <shlwapi.h>
@@ -174,8 +174,7 @@ wxString FbManager::GetSystemCommand(const wxString & file_type)
 wxString FbManager::GetOpenCommand(const wxString & file_type)
 {
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-	FbCommonDatabase database;
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
+    wxSQLite3Statement stmt = wxGetApp().GetConfigDatabase()->PrepareStatement(sql);
     stmt.Bind(1, file_type);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
     return result.NextRow() ? result.GetString(0) : GetSystemCommand(file_type);

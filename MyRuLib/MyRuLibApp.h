@@ -13,7 +13,20 @@
 #include <wx/wx.h>
 #include <wx/thread.h>
 #include <wx/filename.h>
+#include <wx/stdpaths.h>
 #include "FbDatabase.h"
+
+class MyStandardPaths: public wxStandardPaths
+{
+	public:
+		virtual wxString GetDataFile() const;
+		virtual wxString GetConfigFile() const;
+		virtual wxString GetAppFileName() const;
+	protected:
+		virtual wxString GetUserConfigDir() const;
+	private:
+		wxFileName GetDatabaseFilename() const;
+};
 
 class MyRuLibApp : public wxApp
 {
@@ -22,6 +35,7 @@ public:
 	virtual int OnExit();
     wxString GetAppData() const { return m_datafile; };
     wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
+    FbConfigDatabase * GetConfigDatabase() { return &m_config; };
 public:
     wxCriticalSection m_DbSection;
 private:
@@ -30,6 +44,7 @@ private:
 private:
 	wxString m_datafile;
     FbMainDatabase m_database;
+    FbConfigDatabase m_config;
 };
 
 DECLARE_APP(MyRuLibApp)
