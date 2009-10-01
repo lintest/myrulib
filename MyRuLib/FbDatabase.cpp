@@ -322,13 +322,10 @@ void FbConfigDatabase::CreateDatabase()
 
 	/** TABLE folders **/
     ExecuteUpdate(wxT("CREATE TABLE folders(id integer primary key, value text not null)"));
-    ExecuteUpdate(wxT("CREATE INDEX folders_name ON folders(value)"));
-    ExecuteUpdate(wxT("INSERT INTO folders(id, text)  VALUES (-1, 'Лучшее')"));
-    ExecuteUpdate(wxT("INSERT INTO folders(id, text)  VALUES (-2, 'Прочее')"));
 
 	/** TABLE favorites **/
-	ExecuteUpdate(wxT("CREATE TABLE favourites(id_folder integer, md5sum CHAR(32))"));
-    ExecuteUpdate(wxT("CREATE INDEX favourites_folder ON favourites(id_folder)"));
+	ExecuteUpdate(wxT("CREATE TABLE favorites(id_folder integer, md5sum CHAR(32))"));
+    ExecuteUpdate(wxT("CREATE INDEX favorites_folder ON favorites(id_folder)"));
 
     trans.Commit();
 }

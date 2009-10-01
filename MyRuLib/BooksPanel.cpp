@@ -237,7 +237,7 @@ class FbAppendFavouritesThread: public wxThread
 void * FbAppendFavouritesThread::Entry()
 {
     m_database.AttachConfig();
-    wxString sql = wxString::Format(wxT("INSERT INTO favourites(id_folder,md5sum) SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s)"), m_folder, m_selections.c_str());
+    wxString sql = wxString::Format(wxT("INSERT INTO favorites(id_folder,md5sum) SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s)"), m_folder, m_selections.c_str());
     m_database.ExecuteUpdate(sql);
     return NULL;
 }
@@ -253,4 +253,15 @@ void BooksPanel::EmptyBooks(const wxString title)
     BookListUpdater updater(m_BookList);
 	wxTreeItemId root = m_BookList->AddRoot(title);
 	m_BookInfo->SetPage(wxEmptyString);
+}
+
+void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
+{
+    m_BookList->Freeze();
+    wxTreeItemId root = m_BookList->GetRootItem();
+    wxTreeItemId item = m_BookList->AppendItem(root, data->title, 0, -1, data);
+    m_BookList->SetItemText(item, 1, authors);
+    m_BookList->SetItemText(item, 2, data->file_name);
+    m_BookList->SetItemText(item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
+    m_BookList->Thaw();
 }

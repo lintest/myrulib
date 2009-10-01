@@ -74,12 +74,12 @@ class GenresThread: public wxThread
 {
     public:
         GenresThread(FbFrameGenres * frame, const int code)
-			:m_frame(frame), m_booklist(frame->GetBooks()), m_code(code) {};
+			:m_frame(frame), m_code(code) {};
         virtual void *Entry();
     private:
 		static wxCriticalSection sm_queue;
 		FbFrameGenres * m_frame;
-        BookListCtrl * m_booklist;
+		BooksPanel * m_books;
         int m_code;
 };
 
@@ -170,13 +170,6 @@ void FbFrameGenres::OnEmptyBooks(wxCommandEvent& event)
 void FbFrameGenres::OnAppendBook(FbBookEvent& event)
 {
 	if ( sm_code == event.GetInt() ) {
-        BookTreeItemData * data = new BookTreeItemData(event.m_data);
-		m_BooksPanel.m_BookList->Freeze();
-		wxTreeItemId root = m_BooksPanel.m_BookList->GetRootItem();
-		wxTreeItemId item = m_BooksPanel.m_BookList->AppendItem(root, data->title, 0, -1, data);
-        m_BooksPanel.m_BookList->SetItemText(item, 1, event.GetString());
-        m_BooksPanel.m_BookList->SetItemText(item, 2, data->file_name);
-        m_BooksPanel.m_BookList->SetItemText(item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
-		m_BooksPanel.m_BookList->Thaw();
+        m_BooksPanel.AppendBook( new BookTreeItemData(event.m_data), event.GetString() );
 	}
 }
