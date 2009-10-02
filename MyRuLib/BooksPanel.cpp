@@ -3,6 +3,7 @@
 #include "FbParams.h"
 #include "FbManager.h"
 #include "InfoCash.h"
+#include "FbBookMenu.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
@@ -190,20 +191,18 @@ void BooksPanel::OnContextMenu(wxTreeEvent& event)
         point.x = size.x / 3;
         point.y = size.y / 3;
     }
-    ShowContextMenu(point);
+    ShowContextMenu(point, event.GetItem());
 }
 
-void BooksPanel::ShowContextMenu(const wxPoint& pos)
+void BooksPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
-    wxMenu menu;
+	int id = 0;
+	if (item.IsOk()) {
+		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(item);
+		if (data) id = data->GetId();
+	}
 
-	menu.Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
-    menu.AppendSeparator();
-	menu.Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
-	menu.Append(ID_UNSELECTALL, _("Отменить выделение"));
-    menu.AppendSeparator();
-    menu.Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
-
+    FbBookMenu menu(id);
     PopupMenu(&menu, pos.x, pos.y);
 }
 

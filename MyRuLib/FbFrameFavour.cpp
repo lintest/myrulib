@@ -29,8 +29,20 @@ void FbFrameFavour::CreateControls()
 
 	SetMenuBar(CreateMenuBar());
 
+	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
+
+	wxToolBar * m_tools = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
+	m_tools->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
+	m_tools->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
+	m_tools->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
+	m_tools->AddSeparator();
+	m_tools->Realize();
+	bToolSizer->Add( m_tools, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bSizer1->Add( toolbar, 0, wxGROW);
+	bToolSizer->Add( toolbar, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+
+	bSizer1->Add( bToolSizer, 0, wxEXPAND);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
