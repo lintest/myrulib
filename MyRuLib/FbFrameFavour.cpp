@@ -7,6 +7,7 @@
 #include "FbGenres.h"
 #include "FbClientData.h"
 #include "MyRuLibApp.h"
+#include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_MENU(ID_MODE_TREE, FbFrameFavour::OnChangeMode)
@@ -60,6 +61,8 @@ void FbFrameFavour::CreateControls()
 
 	SetSizer( bSizer1 );
 	Layout();
+
+	FillByFolder(0);
 }
 
 wxToolBar * FbFrameFavour::CreateToolBar(long style, wxWindowID winid, const wxString& name)
@@ -76,6 +79,7 @@ void FbFrameFavour::FillFolders()
 	m_FolderList->Clear();
 
     m_FolderList->Append(_("Избранное"), new FbClientData(0));
+	m_FolderList->SetSelection(0);
 
 	FbDatabase & m_database = * wxGetApp().GetConfigDatabase();
     wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
@@ -129,11 +133,7 @@ void * FrameFavourThread::Entry()
 void FbFrameFavour::OnFolderSelected(wxCommandEvent & event)
 {
 	FbClientData * data = (FbClientData*)event.GetClientObject();
-
-	if (data) {
-		wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), data->GetID());
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-	}
+	if (data) FillByFolder(data->GetID());
 }
 
 void FbFrameFavour::OnChangeMode(wxCommandEvent& event)
@@ -145,10 +145,13 @@ void FbFrameFavour::OnChangeMode(wxCommandEvent& event)
 
     int iSelected = m_FolderList->GetSelection();
     if (iSelected == wxNOT_FOUND) return;
-    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
 
-	if (data) {
-		wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), data->GetID());
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-	}
+    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
+	if (data) FillByFolder(data->GetID());
+}
+
+void FbFrameFavour::FillByFolder(const int iFolder)
+{
+	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), iFolder);
+	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }

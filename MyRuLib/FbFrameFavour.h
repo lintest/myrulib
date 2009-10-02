@@ -24,6 +24,7 @@ protected:
 private:
     void CreateBookInfo();
 	void FillFolders();
+	void FillByFolder(const int iFolder);
 private:
     wxListBox * m_FolderList;
 private:

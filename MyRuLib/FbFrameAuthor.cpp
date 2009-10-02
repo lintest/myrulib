@@ -6,6 +6,7 @@
 #include "InfoCash.h"
 #include "FbClientData.h"
 #include "ExternalDlg.h"
+#include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)

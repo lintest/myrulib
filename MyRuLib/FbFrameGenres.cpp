@@ -5,6 +5,7 @@
 #include "FbManager.h"
 #include "BooksPanel.h"
 #include "FbGenres.h"
+#include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
     EVT_MENU(ID_MODE_TREE, FbFrameGenres::OnChangeMode)

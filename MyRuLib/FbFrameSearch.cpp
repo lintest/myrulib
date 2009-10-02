@@ -4,6 +4,7 @@
 #include "FbDatabase.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
+#include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
     EVT_MENU(ID_MODE_TREE, FbFrameSearch::OnChangeMode)
