@@ -15,11 +15,11 @@ public:
 	FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
-	static FbListMode GetListMode(FbParamKey key);
-	static void SetListMode(FbParamKey key, FbListMode mode);
 protected:
 	virtual void CreateControls() {};
 	virtual wxMenuBar * CreateMenuBar();
+	static FbListMode GetListMode(FbParamKey key);
+	static void SetListMode(FbParamKey key, FbListMode mode);
 protected:
     BooksPanel m_BooksPanel;
 private:
