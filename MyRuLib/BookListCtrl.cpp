@@ -98,12 +98,69 @@ void BookListCtrl::ScanSelected(const wxTreeItemId &root, wxString &selections)
     }
 }
 
+void BookListCtrl::ScanChecked(const wxTreeItemId &root, wxArrayInt &items)
+{
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child = GetFirstChild(root, cookie);
+    while (child.IsOk()) {
+        if (GetItemImage(child) == 1) {
+            BookTreeItemData * data = (BookTreeItemData*) GetItemData(child);
+            if (data && data->GetId()) items.Add(data->GetId());
+        }
+        ScanChecked(child, items);
+        child = GetNextChild(root, cookie);
+    }
+}
+
+void BookListCtrl::ScanSelected(const wxTreeItemId &root, wxArrayInt &items)
+{
+    wxArrayTreeItemIds itemArray;
+    size_t count = FbTreeListCtrl::GetSelections(itemArray);
+    for (size_t i=0; i<count; ++i) {
+        BookTreeItemData * data = (BookTreeItemData*) GetItemData(itemArray[i]);
+        if (data && data->GetId()) items.Add(data->GetId());
+    }
+}
+
 wxString BookListCtrl::GetSelected()
 {
     wxString selections;
     wxTreeItemId root = GetRootItem();
-    ScanChecked(root, selections);
+    ScanChecked(GetRootItem(), selections);
     if (selections.IsEmpty()) ScanSelected(root, selections);
     return selections;
 }
 
+void BookListCtrl::GetSelected(wxArrayInt &items)
+{
+    wxString selections;
+    wxTreeItemId root = GetRootItem();
+    ScanChecked(root, items);
+    if (selections.IsEmpty()) ScanSelected(root, items);
+}
+
+bool BookListCtrl::DeleteItems(const wxTreeItemId &root, wxArrayInt &items)
+{
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child = GetFirstChild(root, cookie);
+    while (child.IsOk()) {
+		BookTreeItemData * data = (BookTreeItemData*) GetItemData(child);
+		if (data && data->GetId()) {
+			if (items.Index(data->GetId()) != wxNOT_FOUND) {
+				Delete(child);
+				return true;
+			}
+		} else if (!HasChildren(child)) {
+			Delete(child);
+			return true;
+		}
+        if (DeleteItems(child, items)) return true;
+        child = GetNextChild(root, cookie);
+    }
+	return false;
+}
+
+void BookListCtrl::DeleteItems(wxArrayInt &items)
+{
+	while (DeleteItems(GetRootItem(), items)) {};
+}

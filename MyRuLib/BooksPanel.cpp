@@ -202,7 +202,7 @@ void BooksPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		if (data) id = data->GetId();
 	}
 
-    FbBookMenu menu(id);
+    FbBookMenu menu(id, m_favorites);
     PopupMenu(&menu, pos.x, pos.y);
 }
 
@@ -257,18 +257,9 @@ void BooksPanel::EmptyBooks(const wxString title)
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
-class FbBookPanelUpdater
-{
-	public:
-		FbBookPanelUpdater(wxTreeListCtrl * list): m_list(list) { m_list->Freeze(); } ;
-		virtual ~FbBookPanelUpdater() { m_list->Thaw(); };
-	private:
-		wxTreeListCtrl * m_list;
-};
-
 void BooksPanel::AppendAuthor(const wxString title)
 {
-	FbBookPanelUpdater updater(m_BookList);
+	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
 	m_AuthorItem = m_BookList->AppendItem(parent, title, 0);
 	m_BookList->SetItemBold(m_AuthorItem, true);
@@ -277,7 +268,7 @@ void BooksPanel::AppendAuthor(const wxString title)
 void BooksPanel::AppendSequence(const wxString title)
 {
 	wxString text = title.IsEmpty() ? strOtherSequence : title;
-	FbBookPanelUpdater updater(m_BookList);
+	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem();
 	m_SequenceItem = m_BookList->AppendItem(parent, text, 0);
 	m_BookList->SetItemBold(m_SequenceItem, true);
@@ -285,7 +276,7 @@ void BooksPanel::AppendSequence(const wxString title)
 
 void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 {
-	FbBookPanelUpdater updater(m_BookList);
+	FbTreeListUpdater updater(m_BookList);
 
 	wxString file_size = wxString::Format(wxT("%d "), data->file_size/1024);
 

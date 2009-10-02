@@ -7,7 +7,7 @@
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(int id);
+		FbBookMenu(int id, bool bFavorites);
 	private:
 		int m_id;
 };

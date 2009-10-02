@@ -44,6 +44,7 @@ void *ZipThread::Entry()
 	zips.m_thread = this;
 	zips.SetDir(m_dirname);
 
+	InfoCash::Empty();
 	DoFinish();
 
 	return NULL;

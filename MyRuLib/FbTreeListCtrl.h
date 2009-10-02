@@ -21,4 +21,13 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
+class FbTreeListUpdater
+{
+	public:
+		FbTreeListUpdater(wxTreeListCtrl * list): m_list(list) { m_list->Freeze(); } ;
+		virtual ~FbTreeListUpdater() { m_list->Thaw(); };
+	private:
+		wxTreeListCtrl * m_list;
+};
+
 #endif // __FBTREELISTCTRL_H__

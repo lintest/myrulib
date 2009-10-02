@@ -38,6 +38,7 @@ class BooksPanel: public wxSplitterWindow
         void AppendSequence(const wxString title = wxEmptyString);
         void CreateColumns(FbListMode mode);
         FbListMode GetListMode() { return m_ListMode;};
+        void SetFavorites(bool favorites) { m_favorites = favorites; };
     private:
         void CreateBookInfo();
         void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
@@ -45,6 +46,7 @@ class BooksPanel: public wxSplitterWindow
         FbListMode m_ListMode;
         wxTreeItemId m_AuthorItem;
         wxTreeItemId m_SequenceItem;
+        bool m_favorites;
     private:
         void OnBooksListViewSelected(wxTreeEvent & event);
         void OnBooksListActivated(wxTreeEvent & event);

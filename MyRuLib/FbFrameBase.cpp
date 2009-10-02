@@ -75,10 +75,10 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	menu->AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	menu->AppendSeparator();
+	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
+	menu->AppendSeparator();
 	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	menu->AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
-	menu->AppendSeparator();
-	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
 	menuBar->Append(menu, _("&Вид"));
 
 	menu = new FbMenu;

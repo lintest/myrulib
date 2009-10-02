@@ -12,6 +12,7 @@
 BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_MENU(ID_MODE_TREE, FbFrameFavour::OnChangeMode)
     EVT_MENU(ID_MODE_LIST, FbFrameFavour::OnChangeMode)
+	EVT_MENU(ID_FAVORITES_DEL, FbFrameFavour::OnFavoritesDel)
     EVT_LISTBOX(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
@@ -55,6 +56,7 @@ void FbFrameFavour::CreateControls()
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
+	m_BooksPanel.SetFavorites(true);
 	splitter->SplitVertically(m_FolderList, &m_BooksPanel, 160);
 
     m_BooksPanel.CreateColumns(GetListMode(FB_MODE_FAVOUR));
@@ -154,4 +156,20 @@ void FbFrameFavour::FillByFolder(const int iFolder)
 {
 	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), iFolder);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
+{
+	wxString selected = m_BooksPanel.m_BookList->GetSelected();
+	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s))"), selected.c_str());
+
+	FbCommonDatabase database;
+	database.AttachConfig();
+    database.ExecuteUpdate(sql);
+
+	FbTreeListUpdater updater(m_BooksPanel.m_BookList);
+
+    wxArrayInt items;
+    m_BooksPanel.m_BookList->GetSelected(items);
+    m_BooksPanel.m_BookList->DeleteItems(items);
 }

@@ -25,10 +25,12 @@ private:
     void CreateBookInfo();
 	void FillFolders();
 	void FillByFolder(const int iFolder);
+	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 private:
     wxListBox * m_FolderList;
 private:
     void OnChangeMode(wxCommandEvent& event);
+    void OnFavoritesDel(wxCommandEvent & event);
     void OnFolderSelected(wxCommandEvent & event);
     void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
