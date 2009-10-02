@@ -65,12 +65,25 @@ void * FrameSearchThread::Entry()
 	wxString condition = wxT("LOWER(books.title) like ?");
 	wxString sql = GetSQL(condition);
 
+    wxString text = wxT('%') + m_title + wxT('%');
+    text.Replace(wxT(" "), wxT("%"));
+    text.Replace(wxT("?"), wxT("_"));
+    text.Replace(wxT("*"), wxT("%"));
+    BookInfo::MakeLower(text);
+
 	FbCommonDatabase database;
 	FbLowerFunction lower;
     database.CreateFunction(wxT("LOWER"), 1, lower);
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, m_title);
+    stmt.Bind(1, text);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	if (result.Eof()) {
+		wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), m_title.c_str());
+		wxMessageBox(text, _("Поиск"));
+		m_frame->Close();
+		return NULL;
+	}
 
     FillBooks(result);
 
@@ -82,15 +95,9 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
     if ( title.IsEmpty() ) return;
     wxLogInfo(_("Search title: %s"), title.c_str());
 
-    wxString text = wxT('%') + title + wxT('%');
-    text.Replace(wxT(" "), wxT("%"));
-    text.Replace(wxT("?"), wxT("_"));
-    text.Replace(wxT("*"), wxT("%"));
-    BookInfo::MakeLower(text);
-
 	wxString msg = wxString::Format(_("Поиск: «%s»"), title.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
-    frame->m_title = text;
+    frame->m_title = title;
 	frame->Update();
 
 	frame->DoSearch();

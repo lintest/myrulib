@@ -44,11 +44,11 @@ class FbFrameBaseThread: public wxThread
 		void EmptyBooks();
 		void FillBooks(wxSQLite3ResultSet &result);
 		static wxCriticalSection sm_queue;
+        wxWindow * m_frame;
 	private:
 		void CreateList(wxSQLite3ResultSet &result);
 		void CreateTree(wxSQLite3ResultSet &result);
 	private:
-        wxWindow * m_frame;
         FbListMode m_mode;
 };
 
