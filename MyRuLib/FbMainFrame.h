@@ -53,6 +53,7 @@ private:
     void OnMenuAuthor(wxCommandEvent& event);
     void OnMenuTitle(wxCommandEvent& event);
 	void OnMenuGenres(wxCommandEvent & event);
+	void OnMenuFavour(wxCommandEvent & event);
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );

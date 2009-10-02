@@ -191,6 +191,8 @@
 		<Unit filename="FbFrameBase.h" />
 		<Unit filename="FbFrameFavorites.cpp" />
 		<Unit filename="FbFrameFavorites.h" />
+		<Unit filename="FbFrameFavour.cpp" />
+		<Unit filename="FbFrameFavour.h" />
 		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
 		<Unit filename="FbFrameSearch.cpp" />

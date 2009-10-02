@@ -25,7 +25,6 @@ private:
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
 	void SelectFirstAuthor();
-    void FillByAuthor(int id_author);
 	BookTreeItemData * GetSelectedBook();
 private:
 	FbAuthorList * m_AuthorsListBox;
@@ -34,6 +33,7 @@ private:
     wxToolBar * m_EnAlphabar;
 private:
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
+	void OnChangeMode(wxCommandEvent& event);
 	void OnLetterClicked(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

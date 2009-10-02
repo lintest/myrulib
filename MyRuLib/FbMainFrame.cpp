@@ -20,6 +20,7 @@
 #include "ImpThread.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
+#include "FbFrameFavour.h"
 #include "FbFrameFavorites.h"
 #include "VacuumThread.h"
 
@@ -32,7 +33,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_MENU_AUTHOR, FbMainFrame::OnMenuAuthor)
     EVT_MENU(ID_MENU_TITLE, FbMainFrame::OnMenuTitle)
     EVT_MENU(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthor)
-    EVT_MENU(ID_MENU_GENRES, FbMainFrame::OnMenuGenres)
+    EVT_MENU(ID_FRAME_GENRES, FbMainFrame::OnMenuGenres)
+    EVT_MENU(ID_FRAME_FAVOUR, FbMainFrame::OnMenuFavour)
     EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
     EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_TEXT_ENTER(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthorEnter)
@@ -171,7 +173,9 @@ wxMenuBar * FbMainFrame::CreateMenuBar()
 	menu->AppendSeparator();
 	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
 	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
-	menu->Append(ID_MENU_GENRES, _("по Жанрам"));
+	menu->Append(ID_FRAME_GENRES, _("по Жанрам"));
+	menu->AppendSeparator();
+	menu->Append(ID_FRAME_FAVOUR, _("Избранное"));
 	menuBar->Append(menu, _("&Поиск"));
 
 	menu = new FbMenu;
@@ -373,12 +377,23 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 
 void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 {
-    FbFrameGenres * genres = wxDynamicCast(FindFrameById(ID_FRAME_GENRES, true), FbFrameGenres);
+    FbFrameGenres * frame = wxDynamicCast(FindFrameById(ID_FRAME_GENRES, true), FbFrameGenres);
 
-	if (!genres) {
-	    genres = new FbFrameGenres(this, ID_FRAME_GENRES, _("Жанры"));
+	if (!frame) {
+	    frame = new FbFrameGenres(this, ID_FRAME_GENRES, _("Жанры"));
         GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
-        genres->Update();
+        frame->Update();
+	}
+}
+
+void FbMainFrame::OnMenuFavour(wxCommandEvent & event)
+{
+    FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, true), FbFrameFavour);
+
+	if (!frame) {
+	    frame = new FbFrameFavour(this, ID_FRAME_FAVOUR, _("Избранное"));
+        GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+        frame->Update();
 	}
 }
 

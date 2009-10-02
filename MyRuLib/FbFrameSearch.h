@@ -22,12 +22,14 @@ protected:
 	virtual void CreateControls();
 private:
     void CreateBookInfo();
-	void DoSearch(const wxString &title);
+	void DoSearch();
 	void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
 private:
     wxTextCtrl * m_textTitle;
     wxTextCtrl * m_textAuthor;
+    wxString m_title;
 private:
+    void OnChangeMode(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

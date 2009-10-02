@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEGENRES_H__
-#define __FBFRAMEGENRES_H__
+#ifndef __FBFRAMEFAVOUR_H__
+#define __FBFRAMEFAVOUR_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -14,21 +14,23 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
-class FbFrameGenres : public FbFrameBase
+class FbFrameFavour : public FbFrameBase
 {
 public:
-	FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+	FbFrameFavour(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
 private:
     void CreateBookInfo();
+	void FillFolders();
 private:
-    FbTreeListCtrl * m_GenresList;
+    wxListBox * m_FolderList;
 private:
     void OnChangeMode(wxCommandEvent& event);
+    void OnFolderSelected(wxCommandEvent & event);
     void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 
-#endif // __FBFRAMEGENRES_H__
+#endif // __FBFRAMEFAVOUR_H__

@@ -6,6 +6,8 @@
 #include "BooksPanel.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
+    EVT_MENU(ID_MODE_TREE, FbFrameSearch::OnChangeMode)
+    EVT_MENU(ID_MODE_LIST, FbFrameSearch::OnChangeMode)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
@@ -26,11 +28,11 @@ void FbFrameSearch::CreateControls()
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizer1->Add( toolbar, 0, wxGROW);
 
-	long substyle = wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
+	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksPanel.Create(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
 	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
 
-    m_BooksPanel.CreateColumns(FB2_MODE_LIST);
+    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_SEARCH));
 
 	SetSizer( bSizer1 );
 	Layout();
@@ -44,51 +46,33 @@ wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxS
     return toolbar;
 }
 
-class FrameSearchThread: public wxThread
+class FrameSearchThread: public FbFrameBaseThread
 {
     public:
-        FrameSearchThread(FbFrameSearch * frame, const wxString &title)
-			:m_frame(frame), m_booklist(frame->GetBooks()), m_title(title) {};
+        FrameSearchThread(FbFrameSearch * frame, FbListMode mode, const wxString &title)
+			:FbFrameBaseThread(frame, mode), m_title(title) {};
         virtual void *Entry();
     private:
-		FbFrameSearch * m_frame;
-        BookListCtrl * m_booklist;
         wxString m_title;
 };
 
 void * FrameSearchThread::Entry()
 {
-	wxString msg = wxString::Format(_("Поиск: «%s»"), m_title.c_str());
+	wxCriticalSectionLocker locker(sm_queue);
 
-    wxString templ = wxT('%') + m_title + wxT('%');
-    templ.Replace(wxT(" "), wxT("%"));
-    BookInfo::MakeLower(templ);
+	EmptyBooks();
 
-	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
-        FROM books LEFT JOIN authors ON books.id_author = authors.id \
-        WHERE LOWER(books.title) like ? \
-        ORDER BY books.title, books.id, authors.full_name\
-        LIMIT 1024 \
-    ");
-
-    sql.Replace(wxT("/n"), wxT(" "), true);
+	wxString condition = wxT("LOWER(books.title) like ?");
+	wxString sql = GetSQL(condition);
 
 	FbCommonDatabase database;
 	FbLowerFunction lower;
     database.CreateFunction(wxT("LOWER"), 1, lower);
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, templ);
+    stmt.Bind(1, m_title);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-    if (result.NextRow()) {
-		m_booklist->FillBooks(result, msg);
-		m_booklist->SetFocus();
-    } else {
-    	wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), m_title.c_str());
-    	wxMessageBox(text, _("Поиск"));
-    	m_frame->Close();
-	}
+    FillBooks(result);
 
 	return NULL;
 }
@@ -98,38 +82,30 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
     if ( title.IsEmpty() ) return;
     wxLogInfo(_("Search title: %s"), title.c_str());
 
+    wxString text = wxT('%') + title + wxT('%');
+    text.Replace(wxT(" "), wxT("%"));
+    text.Replace(wxT("?"), wxT("_"));
+    text.Replace(wxT("*"), wxT("%"));
+    BookInfo::MakeLower(text);
+
 	wxString msg = wxString::Format(_("Поиск: «%s»"), title.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
+    frame->m_title = text;
 	frame->Update();
 
-    wxString templ = wxT('%') + title + wxT('%');
-    templ.Replace(wxT(" "), wxT("%"));
-    templ.Replace(wxT("?"), wxT("_"));
-    templ.Replace(wxT("*"), wxT("%"));
-    BookInfo::MakeLower(templ);
-
-	wxString sql = wxT("\
-        SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
-        FROM books LEFT JOIN authors ON books.id_author = authors.id \
-        WHERE LOWER(books.title) like ? \
-        ORDER BY books.title, books.id, authors.full_name\
-        LIMIT 4096 \
-    ");
-
-	FbCommonDatabase database;
-	FbLowerFunction lower;
-    database.CreateFunction(wxT("LOWER"), 1, lower);
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, templ);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-    if (result.NextRow()) {
-		frame->m_BooksPanel.m_BookList->FillBooks(result, msg);
-		frame->m_BooksPanel.m_BookList->SetFocus();
-    } else {
-    	wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), title.c_str());
-    	wxMessageBox(text, _("Поиск"));
-    	frame->Close();
-	}
+	frame->DoSearch();
 }
 
+void FbFrameSearch::DoSearch()
+{
+	wxThread * thread = new FrameSearchThread(this, m_BooksPanel.GetListMode(), m_title);
+	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbFrameSearch::OnChangeMode(wxCommandEvent& event)
+{
+	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
+	SetListMode(FB_MODE_SEARCH, mode);
+	m_BooksPanel.CreateColumns(mode);
+	DoSearch();
+}
