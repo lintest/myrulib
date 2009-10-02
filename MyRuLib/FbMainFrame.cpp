@@ -341,7 +341,7 @@ void FbMainFrame::FindAuthor(const wxString &text)
 {
     wxLogInfo(_("Search author: %s"), text.c_str());
 
-    FbFrameAuthor * authors = (FbFrameAuthor*) FindFrameById(ID_FRAME_AUTHORS, true);
+    FbFrameAuthor * authors = wxDynamicCast(FindFrameById(ID_FRAME_AUTHORS, true), FbFrameAuthor);
 
 	if (!authors) {
 	    authors = new FbFrameAuthor(this, ID_FRAME_AUTHORS, _("Авторы"));
@@ -373,7 +373,7 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 
 void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 {
-    FbFrameGenres * genres = (FbFrameGenres*) FindFrameById(ID_FRAME_GENRES, true);
+    FbFrameGenres * genres = wxDynamicCast(FindFrameById(ID_FRAME_GENRES, true), FbFrameGenres);
 
 	if (!genres) {
 	    genres = new FbFrameGenres(this, ID_FRAME_GENRES, _("Жанры"));

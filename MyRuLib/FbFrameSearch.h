@@ -28,7 +28,6 @@ private:
     wxTextCtrl * m_textTitle;
     wxTextCtrl * m_textAuthor;
 private:
-    void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

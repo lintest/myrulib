@@ -4,10 +4,8 @@
 #include "FbDatabase.h"
 #include "FbManager.h"
 #include "BooksPanel.h"
-#include "ExternalDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
-    EVT_MENU(wxID_SAVE, FbFrameSearch::OnExternal)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
@@ -44,11 +42,6 @@ wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->Realize();
     return toolbar;
-}
-
-void FbFrameSearch::OnExternal(wxCommandEvent& event)
-{
-    ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
 }
 
 class FrameSearchThread: public wxThread

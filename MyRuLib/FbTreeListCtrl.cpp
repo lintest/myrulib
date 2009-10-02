@@ -19,8 +19,8 @@ void FbTreeListCtrl::EmptyCols()
 
 void FbTreeListCtrl::AddColumn (const wxString& text, int width, int flag)
 {
-    wxTreeListCtrl::AddColumn(text, width, flag, -1, true, false);
     m_ColSizes.Add(width);
+    wxTreeListCtrl::AddColumn(text, width, flag, -1, true, false);
 }
 
 void FbTreeListCtrl::OnSizing(wxSizeEvent& event)

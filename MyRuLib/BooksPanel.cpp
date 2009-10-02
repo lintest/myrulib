@@ -313,7 +313,10 @@ void BooksPanel::CreateColumns(FbListMode mode)
 {
     m_ListMode = mode;
 
-	FbBookPanelUpdater updater(m_BookList);
+	m_AuthorItem = 0;
+	m_SequenceItem = 0;
+
+    BookListUpdater updater(m_BookList);
 
     m_BookList->EmptyCols();
 
@@ -331,4 +334,7 @@ void BooksPanel::CreateColumns(FbListMode mode)
             m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
         } break;
     }
+
+	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
+	m_BookInfo->SetPage(wxEmptyString);
 }

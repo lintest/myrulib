@@ -1,8 +1,10 @@
 #include "FbFrameBase.h"
 #include "FbConst.h"
 #include "FbMenu.h"
+#include "ExternalDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
+    EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
@@ -11,6 +13,10 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
     EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
     EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
+    EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
+    EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
+    EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
+    EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase()
@@ -81,19 +87,6 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	return menuBar;
 }
 
-void FbFrameBase::OnActivated(wxActivateEvent & event)
-{
-    /*
-	AUIDocViewMainFrame * frame = wxDynamicCast(GetMDIParentFrame(),
-		AUIDocViewMainFrame);
-	if(frame)
-	{
-		frame->GetLOGTextCtrl()->SetValue(wxString::Format(
-			_("Some help text about '%s'"),	GetTitle().GetData()));
-	}
-	*/
-}
-
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 {
     wxPostEvent(&m_BooksPanel, event);
@@ -109,5 +102,30 @@ void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
 {
     if (event.GetId() == ID_MODE_LIST && m_BooksPanel.GetListMode() == FB2_MODE_LIST) event.Check(true);
     if (event.GetId() == ID_MODE_TREE && m_BooksPanel.GetListMode() == FB2_MODE_TREE) event.Check(true);
+}
+
+void FbFrameBase::OnExternal(wxCommandEvent& event)
+{
+    ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
+}
+
+void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
+{
+	m_BooksPanel.EmptyBooks();
+}
+
+void FbFrameBase::OnAppendBook(FbBookEvent& event)
+{
+	m_BooksPanel.AppendBook( new BookTreeItemData(event.m_data), event.GetString() );
+}
+
+void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
+{
+	m_BooksPanel.AppendAuthor( event.GetString() );
+}
+
+void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
+{
+	m_BooksPanel.AppendSequence( event.GetString() );
 }
 
