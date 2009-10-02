@@ -181,6 +181,8 @@
 		<Unit filename="FbBookData.h" />
 		<Unit filename="FbBookEvent.cpp" />
 		<Unit filename="FbBookEvent.h" />
+		<Unit filename="FbBookMenu.cpp" />
+		<Unit filename="FbBookMenu.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbDatabase.cpp" />
