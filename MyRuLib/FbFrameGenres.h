@@ -19,8 +19,7 @@ class FbFrameGenres : public FbFrameBase
 public:
 	FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
     BookListCtrl * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
-    static void SetCode(const int code);
-    static int GetCode();
+    int GetCode();
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
@@ -29,10 +28,12 @@ private:
 	void FillBooks(const int code);
 private:
 	static wxCriticalSection sm_queue;
-    static int sm_code;
     FbTreeListCtrl * m_GenresList;
 private:
     void OnAppendBook(FbBookEvent& event);
+    void OnAppendAuthor(wxCommandEvent& event);
+    void OnAppendSequence(wxCommandEvent& event);
+    void OnChangeMode(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
     void OnEmptyBooks(wxCommandEvent& event);
     void OnGenreSelected(wxTreeEvent & event);

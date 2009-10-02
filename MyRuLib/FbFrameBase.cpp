@@ -9,6 +9,8 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
     EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
+    EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
+    EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase()
@@ -62,8 +64,11 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menuBar->Append(menu, _("&Сервис"));
 
 	menu = new FbMenu;
-	menu->AppendCheckItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
-	menu->AppendCheckItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
+	menu->AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
+	menu->AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
+	menu->AppendSeparator();
+	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
+	menu->AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
 	menu->AppendSeparator();
 	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
 	menuBar->Append(menu, _("&Вид"));
@@ -96,9 +101,13 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 
 void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 {
-    if (event.GetId() == ID_SPLIT_HORIZONTAL)
-        event.Check(m_BooksPanel.GetSplitMode() == wxSPLIT_HORIZONTAL);
-    else
-        event.Check(m_BooksPanel.GetSplitMode() == wxSPLIT_VERTICAL);
+    if (event.GetId() == ID_SPLIT_HORIZONTAL && m_BooksPanel.GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
+    if (event.GetId() == ID_SPLIT_VERTICAL && m_BooksPanel.GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
+}
+
+void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
+{
+    if (event.GetId() == ID_MODE_LIST && m_BooksPanel.GetListMode() == FB2_MODE_LIST) event.Check(true);
+    if (event.GetId() == ID_MODE_TREE && m_BooksPanel.GetListMode() == FB2_MODE_TREE) event.Check(true);
 }
 

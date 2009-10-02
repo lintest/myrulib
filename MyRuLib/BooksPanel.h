@@ -33,13 +33,18 @@ class BooksPanel: public wxSplitterWindow
         wxHtmlWindow * m_BookInfo;
         BookTreeItemData * GetSelectedBook();
         void EmptyBooks(const wxString title = wxEmptyString);
-        void AppendBook(BookTreeItemData * data, const wxString & authors);
+        void AppendBook(BookTreeItemData * data, const wxString & authors = wxEmptyString);
+        void AppendAuthor(const wxString title = wxEmptyString);
+        void AppendSequence(const wxString title = wxEmptyString);
         void CreateColumns(FbListMode mode);
+        FbListMode GetListMode() { return m_ListMode;};
     private:
         void CreateBookInfo();
         void ShowContextMenu(const wxPoint& pos);
         wxString m_AuthorName;
-        FbListMode m_mode;
+        FbListMode m_ListMode;
+        wxTreeItemId m_AuthorItem;
+        wxTreeItemId m_SequenceItem;
     private:
         void OnBooksListViewSelected(wxTreeEvent & event);
         void OnBooksListActivated(wxTreeEvent & event);

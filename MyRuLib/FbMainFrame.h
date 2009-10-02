@@ -31,7 +31,7 @@ private:
     void TogglePaneVisibility(const wxString &pane_name, bool show);
     void FindAuthor(const wxString &text);
     void FindTitle(const wxString &text);
-    wxWindow * FindFrameById(const int id);
+    wxWindow * FindFrameById(const int id, bool bActivate = false);
 private:
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;

@@ -322,6 +322,8 @@ void FbConfigDatabase::CreateDatabase()
 
 	/** TABLE folders **/
     ExecuteUpdate(wxT("CREATE TABLE folders(id integer primary key, value text not null)"));
+    ExecuteUpdate(wxT("INSERT INTO folders(id,value) VALUES (-1, 'Лучшее')"));
+    ExecuteUpdate(wxT("INSERT INTO folders(id,value) VALUES (-2, 'Прочее')"));
 
 	/** TABLE favorites **/
 	ExecuteUpdate(wxT("CREATE TABLE favorites(id_folder integer, md5sum CHAR(32))"));

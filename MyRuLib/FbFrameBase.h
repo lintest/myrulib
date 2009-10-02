@@ -20,6 +20,7 @@ protected:
 private:
 	void OnActivated(wxActivateEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
+	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
     void OnExternal(wxCommandEvent& event);
     void OnSubmenu(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

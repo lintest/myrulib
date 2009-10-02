@@ -250,29 +250,74 @@ void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
 
 void BooksPanel::EmptyBooks(const wxString title)
 {
+	m_AuthorItem = 0;
+	m_SequenceItem = 0;
+
     BookListUpdater updater(m_BookList);
 	wxTreeItemId root = m_BookList->AddRoot(title);
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
+class FbBookPanelUpdater
+{
+	public:
+		FbBookPanelUpdater(wxTreeListCtrl * list): m_list(list) { m_list->Freeze(); } ;
+		virtual ~FbBookPanelUpdater() { m_list->Thaw(); };
+	private:
+		wxTreeListCtrl * m_list;
+};
+
+void BooksPanel::AppendAuthor(const wxString title)
+{
+	FbBookPanelUpdater updater(m_BookList);
+	wxTreeItemId parent = m_BookList->GetRootItem();
+	m_AuthorItem = m_BookList->AppendItem(parent, title, 0);
+	m_BookList->SetItemBold(m_AuthorItem, true);
+}
+
+void BooksPanel::AppendSequence(const wxString title)
+{
+	wxString text = title.IsEmpty() ? strOtherSequence : title;
+	FbBookPanelUpdater updater(m_BookList);
+	wxTreeItemId parent = m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem();
+	m_SequenceItem = m_BookList->AppendItem(parent, text, 0);
+	m_BookList->SetItemBold(m_SequenceItem, true);
+}
+
 void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 {
-    m_BookList->Freeze();
-    wxTreeItemId root = m_BookList->GetRootItem();
-    wxTreeItemId item = m_BookList->AppendItem(root, data->title, 0, -1, data);
-    m_BookList->SetItemText(item, 1, authors);
-    m_BookList->SetItemText(item, 2, data->file_name);
-    m_BookList->SetItemText(item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
-    m_BookList->Thaw();
+	FbBookPanelUpdater updater(m_BookList);
+
+	wxString file_size = wxString::Format(wxT("%d "), data->file_size/1024);
+
+    switch (m_ListMode) {
+        case FB2_MODE_TREE: {
+			wxTreeItemId parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
+			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
+			if (data->number) m_BookList->SetItemText(item, 1, wxString::Format(wxT(" %d "), data->number));
+			m_BookList->SetItemText(item, 2, data->file_name);
+			m_BookList->SetItemText(item, 3, file_size);
+        } break;
+        case FB2_MODE_LIST: {
+			wxTreeItemId parent = m_BookList->GetRootItem();
+			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
+			m_BookList->SetItemText(item, 1, authors);
+			m_BookList->SetItemText(item, 2, data->file_name);
+			m_BookList->SetItemText(item, 3, file_size);
+        } break;
+    }
+    m_BookList->ExpandAll( m_AuthorItem );
 }
 
 void BooksPanel::CreateColumns(FbListMode mode)
 {
-    m_mode = mode;
+    m_ListMode = mode;
+
+	FbBookPanelUpdater updater(m_BookList);
 
     m_BookList->EmptyCols();
 
-    switch (mode) {
+    switch (m_ListMode) {
         case FB2_MODE_TREE: {
             m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
             m_BookList->AddColumn (_("№"), 1, wxALIGN_LEFT);

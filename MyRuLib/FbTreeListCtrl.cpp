@@ -25,6 +25,14 @@ void FbTreeListCtrl::AddColumn (const wxString& text, int width, int flag)
 
 void FbTreeListCtrl::OnSizing(wxSizeEvent& event)
 {
+	DoResizeCols(event.GetSize().GetWidth());
+	event.Skip();
+}
+
+void FbTreeListCtrl::DoResizeCols(int width)
+{
+	int w = width - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
+
 	int sum = 0;
 	for (size_t i = 0; i<(size_t)m_ColSizes.Count() && i<(size_t)GetColumnCount(); i++) {
         sum += m_ColSizes[i];
@@ -32,7 +40,6 @@ void FbTreeListCtrl::OnSizing(wxSizeEvent& event)
 
 	if (!sum) return;
 
-	int w = event.GetSize().GetWidth() - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
     int xx = w;
 	for (size_t i = 1; i<(size_t)m_ColSizes.Count() && i<(size_t)GetColumnCount(); i++) {
 	    int x = w * m_ColSizes[i] / sum;
@@ -40,6 +47,10 @@ void FbTreeListCtrl::OnSizing(wxSizeEvent& event)
         xx -= x;
 	}
     SetColumnWidth(0, xx);
-	event.Skip();
 }
 
+void FbTreeListCtrl::Update()
+{
+	DoResizeCols(GetClientSize().x);
+	wxTreeListCtrl::Update();
+}
