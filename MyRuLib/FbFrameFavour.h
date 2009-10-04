@@ -31,6 +31,9 @@ private:
 private:
     void OnChangeMode(wxCommandEvent& event);
     void OnFavoritesDel(wxCommandEvent & event);
+    void OnFolderAppend(wxCommandEvent & event);
+    void OnFolderModify(wxCommandEvent & event);
+    void OnFolderDelete(wxCommandEvent & event);
     void OnFolderSelected(wxCommandEvent & event);
     void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()

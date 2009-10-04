@@ -13,6 +13,9 @@ BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_MENU(ID_MODE_TREE, FbFrameFavour::OnChangeMode)
     EVT_MENU(ID_MODE_LIST, FbFrameFavour::OnChangeMode)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFavour::OnFavoritesDel)
+    EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
+    EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
+    EVT_MENU(ID_DELETE_FOLDER, FbFrameFavour::OnFolderDelete)
     EVT_LISTBOX(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
@@ -37,7 +40,6 @@ void FbFrameFavour::CreateControls()
 	m_tools->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
 	m_tools->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
 	m_tools->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
-	m_tools->AddSeparator();
 	m_tools->Realize();
 	bToolSizer->Add( m_tools, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
 
@@ -173,3 +175,32 @@ void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
     m_BooksPanel.m_BookList->GetSelected(items);
     m_BooksPanel.m_BookList->DeleteItems(items);
 }
+
+void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
+{
+	wxString name = wxGetTextFromUser(_("Введите имя новой папки:"), _("Добавить папку?"), wxEmptyString, this);
+	if (name.IsEmpty()) return;
+}
+
+void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
+{
+    int iSelected = m_FolderList->GetSelection();
+    if (iSelected <= 0) return;
+
+    wxString name = m_FolderList->GetStringSelection();
+	name = wxGetTextFromUser(_("Введите новое имя папки:"), _("Изменить папку?"), name, this);
+	if (name.IsEmpty()) return;
+
+}
+
+void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
+{
+    int iSelected = m_FolderList->GetSelection();
+    if (iSelected <= 0) return;
+
+    wxString name = m_FolderList->GetStringSelection();
+    wxString msg = wxString::Format(_("Удалить папку \"%s\"?"), name.c_str());
+	int answer = wxMessageBox(msg, _("Удалить папку?"), wxOK | wxCANCEL, this);
+	if (answer != wxOK) return;
+}
+
