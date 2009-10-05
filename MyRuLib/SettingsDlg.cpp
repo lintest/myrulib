@@ -539,7 +539,7 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
-	FbDatabase & m_database = * wxGetApp().GetConfigDatabase();
+	FbDatabase & m_database = wxGetApp().GetConfigDatabase();
     FbAutoCommit transaction(&m_database);
 
     wxString sql = wxT("SELECT file_type FROM types");

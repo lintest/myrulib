@@ -35,7 +35,7 @@ public:
 	virtual int OnExit();
     wxString GetAppData() const { return m_datafile; };
     wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
-    FbConfigDatabase * GetConfigDatabase() { return &m_config; };
+    FbConfigDatabase & GetConfigDatabase() { return m_config; };
 public:
     wxCriticalSection m_DbSection;
 private:

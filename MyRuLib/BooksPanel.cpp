@@ -4,6 +4,8 @@
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbBookMenu.h"
+#include "FbBookEvent.h"
+#include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
@@ -238,6 +240,11 @@ void * FbAppendFavouritesThread::Entry()
     m_database.AttachConfig();
     wxString sql = wxString::Format(wxT("INSERT INTO favorites(id_folder,md5sum) SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s)"), m_folder, m_selections.c_str());
     m_database.ExecuteUpdate(sql);
+
+	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_FOLDER);
+    event.SetInt(m_folder);
+    wxPostEvent(wxGetApp().GetTopWindow(), event);
+
     return NULL;
 }
 

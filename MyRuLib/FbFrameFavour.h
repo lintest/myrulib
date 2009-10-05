@@ -18,12 +18,13 @@ class FbFrameFavour : public FbFrameBase
 {
 public:
 	FbFrameFavour(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+	void UpdateFolder(const int iFolder);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
 private:
     void CreateBookInfo();
-	void FillFolders();
+	void FillFolders(const int iCurrent = 0);
 	void FillByFolder(const int iFolder);
 	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 private:

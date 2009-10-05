@@ -45,11 +45,10 @@ enum {
 	ID_APPEND_FOLDER,
 	ID_MODIFY_FOLDER,
 	ID_DELETE_FOLDER,
+	ID_UPDATE_FOLDER,
     ID_LETTER_RU = wxID_HIGHEST + 100,
     ID_LETTER_EN = wxID_HIGHEST + 200,
 };
-
-const wxEventType myEVT_COMMAND = wxNewEventType();
 
 extern const wxString strVersionInfo;
 extern const wxString strHomePage;

@@ -229,23 +229,21 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
     }
 }
 
-int FbDatabase::NewId(FbDatabaseKey iParam)
+int FbDatabase::NewId(const int iParam)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
     int iValue = 0;
     {
-        wxString sql = wxT("SELECT value FROM params WHERE id=?");
+        wxString sql = wxString::Format(wxT("SELECT value FROM %s WHERE id=?"), GetParamTable().c_str());
         wxSQLite3Statement stmt = PrepareStatement(sql);
         stmt.Bind(1, iParam);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         if (result.NextRow()) iValue = result.GetInt(0);
     }
-
-    iValue++;
-
+	iValue++;
     {
-        wxString sql = wxT("INSERT OR REPLACE INTO params(value, id) VALUES(?,?)");
+        wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(value, id) VALUES(?,?)"), GetParamTable().c_str());
         wxSQLite3Statement stmt = PrepareStatement(sql);
         stmt.Bind(1, iValue);
         stmt.Bind(2, iParam);
@@ -345,3 +343,4 @@ void FbConfigDatabase::SetVersion(int iValue)
 {
 	ExecuteUpdate(wxString::Format(wxT("INSERT OR UPDATE INTO config(id, value) VALUES (2,%d)"), iValue));
 }
+

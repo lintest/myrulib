@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
     EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
     EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
+    EVT_COMMAND(ID_UPDATE_FOLDER, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateFolder)
 END_EVENT_TABLE()
 
 FbMainFrame::FbMainFrame()
@@ -427,4 +428,10 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
     if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) != wxOK) return;
 
     VacuumThread::Execute();
+}
+
+void FbMainFrame::OnUpdateFolder(wxCommandEvent & event)
+{
+    FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
+	if (frame) frame->UpdateFolder(event.GetInt());
 }

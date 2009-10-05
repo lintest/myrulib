@@ -64,6 +64,7 @@ private:
     void OnHideLog(wxCommandEvent& event);
     void OnPanelClosed(wxAuiManagerEvent& event);
     void OnNotebookPageClose(wxAuiNotebookEvent& evt);
+	void OnUpdateFolder(wxCommandEvent & event);
 	void OnVacuum(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };
