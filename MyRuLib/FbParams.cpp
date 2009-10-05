@@ -6,7 +6,7 @@
 WX_DEFINE_OBJARRAY(ParamArray);
 
 ParamItem::ParamItem(wxSQLite3ResultSet & result):
-    id((FbParamKey)result.GetInt(wxT("id"))),
+    id(result.GetInt(wxT("id"))),
     value(result.GetInt(wxT("value"))),
     text(result.GetString(wxT("text")))
 {
@@ -17,24 +17,22 @@ ParamArray FbParams::sm_params;
 wxCriticalSection FbParams::sm_queue;
 
 FbParams::FbParams()
-	:m_database(wxGetApp().GetConfigDatabase())
 {
+	m_database.AttachConfig();
 }
 
 void FbParams::LoadParams()
 {
     wxCriticalSectionLocker enter(sm_queue);
 
-	wxString sql = wxT("SELECT * FROM config");
-    wxSQLite3ResultSet result = m_database->ExecuteQuery(sql);
-
     sm_params.Empty();
-    while (result.NextRow()) {
-        sm_params.Add(new ParamItem(result));
-    }
+
+	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100 UNION ALL SELECT id, value, text FROM params WHERE id<100");
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	while (result.NextRow()) sm_params.Add(new ParamItem(result));
 }
 
-int FbParams::GetValue(const FbParamKey param)
+int FbParams::GetValue(const int param)
 {
     wxCriticalSectionLocker enter(sm_queue);
     for (size_t i=0; i<sm_params.Count(); i++) {
@@ -45,7 +43,7 @@ int FbParams::GetValue(const FbParamKey param)
     return DefaultValue(param);
 };
 
-wxString FbParams::GetText(const FbParamKey param)
+wxString FbParams::GetText(const int param)
 {
     wxCriticalSectionLocker enter(sm_queue);
     for (size_t i=0; i<sm_params.Count(); i++) {
@@ -56,18 +54,20 @@ wxString FbParams::GetText(const FbParamKey param)
     return DefaultText(param);
 };
 
-void FbParams::SetValue(const FbParamKey param, int value)
+void FbParams::SetValue(const int param, int value)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
+    const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+
     if (value == DefaultValue(param)) {
-        wxString sql = wxT("DELETE FROM config WHERE id=?");
-        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
+        wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, param);
         stmt.ExecuteUpdate();
     } else {
-        wxString sql = wxT("INSERT OR REPLACE INTO config (value, id) VALUES (?,?)");
-        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
+        wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, value);
         stmt.Bind(2, param);
         stmt.ExecuteUpdate();
@@ -85,18 +85,20 @@ void FbParams::SetValue(const FbParamKey param, int value)
     sm_params.Add(item);
 }
 
-void FbParams::SetText(const FbParamKey param, wxString text)
+void FbParams::SetText(const int param, wxString text)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
+    const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+
     if (text == DefaultValue(param)) {
-        wxString sql = wxT("DELETE FROM config WHERE id=?");
-        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
+        wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, param);
         stmt.ExecuteUpdate();
     } else {
-        wxString sql = wxT("INSERT OR REPLACE INTO config (text, id) VALUES (?,?)");
-        wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
+        wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, text);
         stmt.Bind(2, param);
         stmt.ExecuteUpdate();
@@ -114,7 +116,7 @@ void FbParams::SetText(const FbParamKey param, wxString text)
     sm_params.Add(item);
 }
 
-int FbParams::DefaultValue(FbParamKey param)
+int FbParams::DefaultValue(int param)
 {
     switch (param) {
         case FB_TRANSLIT_FOLDER: return 0;
@@ -125,7 +127,7 @@ int FbParams::DefaultValue(FbParamKey param)
     }
 };
 
-wxString FbParams::DefaultText(FbParamKey param)
+wxString FbParams::DefaultText(int param)
 {
     switch (param) {
         case FB_LIBRARY_DIR:

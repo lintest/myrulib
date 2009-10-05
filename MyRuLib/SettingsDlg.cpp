@@ -66,7 +66,7 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( FB_WANRAIK_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_WANRAIK_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
@@ -80,6 +80,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
     wxNotebook* m_notebook;
     wxPanel* m_panel1;
+    wxStaticText* m_staticText1;
+    wxTextCtrl* m_textCtrl1;
     wxStaticText* m_staticText2;
     wxTextCtrl* m_textCtrl2;
     wxBitmapButton* m_bpButton2;
@@ -125,6 +127,10 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
+	m_staticText1 = new wxStaticText( m_panel1, wxID_ANY, _("Название библиотеки:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1->Wrap( -1 );
+	bSizer4->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
 	m_staticText2 = new wxStaticText( m_panel1, wxID_ANY, _("Папка с файлами zip\nбиблиотеки lib.rus.ec:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	bSizer4->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -138,28 +144,30 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 
+	m_textCtrl1 = new wxTextCtrl( m_panel1, ID_LIBRARY_TITLE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl1->SetMinSize( wxSize( 200,-1 ) );
+	bSizer5->Add( m_textCtrl1, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_textCtrl3 = new wxTextCtrl( m_panel1, ID_LIBRARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl3->SetMinSize( wxSize( 300,-1 ) );
-
 	bSizer6->Add( m_textCtrl3, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_bpButton3 = new wxBitmapButton( m_panel1, ID_LIBRARY_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	bSizer6->Add( m_bpButton3, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
 	bSizer5->Add( bSizer6, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_textCtrl2 = new wxTextCtrl( m_panel1, FB_WANRAIK_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl2 = new wxTextCtrl( m_panel1, ID_WANRAIK_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl2->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizer7->Add( m_textCtrl2, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_bpButton2 = new wxBitmapButton( m_panel1, FB_WANRAIK_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	m_bpButton2 = new wxBitmapButton( m_panel1, ID_WANRAIK_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	bSizer7->Add( m_bpButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	bSizer5->Add( bSizer7, 1, wxEXPAND, 5 );
@@ -362,14 +370,15 @@ void SettingsDlg::Assign(bool write)
         tRadio,
     };
     struct Struct{
-        FbParamKey param;
+        int param;
         ID control;
         Type type;
     };
 
     const Struct ids[] = {
-        {FB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
-        {FB_WANRAIK_DIR, SettingsDlg::FB_WANRAIK_DIR_TXT, tText},
+        {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
+        {DB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
+        {DB_WANRAIK_DIR, SettingsDlg::ID_WANRAIK_DIR_TXT, tText},
         {FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
         {FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
         {FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
@@ -610,5 +619,4 @@ void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 
 	m_typelist->Thaw();
 }
-
 
