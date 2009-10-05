@@ -57,8 +57,8 @@ ZipReader::ZipReader(int id, bool bShowError)
 	BookExtractArray items(database, id);
 	wxString file_name;
 
-	wxString sLibraryDir = FbParams::GetText(FB_LIBRARY_DIR);
-	wxString sWanraikDir = FbParams::GetText(FB_WANRAIK_DIR);
+	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
+	wxString sWanraikDir = FbParams::GetText(DB_WANRAIK_DIR);
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
@@ -89,7 +89,7 @@ ZipReader::~ZipReader()
 
 void ZipReader::Init()
 {
-	wxString dirname = FbParams::GetText(FB_LIBRARY_DIR);
+	wxString dirname = FbParams::GetText(DB_LIBRARY_DIR);
 	wxThread *thread = new ZipThread(dirname);
 
     if ( thread->Create() != wxTHREAD_NO_ERROR ) {

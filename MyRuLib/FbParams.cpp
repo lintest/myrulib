@@ -130,7 +130,7 @@ int FbParams::DefaultValue(int param)
 wxString FbParams::DefaultText(int param)
 {
     switch (param) {
-        case FB_LIBRARY_DIR:
+        case DB_LIBRARY_DIR:
             return wxGetApp().GetAppPath();
         case FB_DOWNLOAD_DIR: {
             wxFileName filename;
@@ -138,7 +138,7 @@ wxString FbParams::DefaultText(int param)
             filename.SetPath(wxGetApp().GetAppPath());
             return filename.GetFullPath();
         }
-        case FB_WANRAIK_DIR:
+        case DB_WANRAIK_DIR:
             return wxGetApp().GetAppPath();
         default:
 			return wxEmptyString;

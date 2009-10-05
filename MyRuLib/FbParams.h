@@ -10,10 +10,7 @@ enum FbParamKey {
 	FB_CONFIG_TITLE   = 1,
 	FB_CONFIG_VERSION = 2,
 
-	FB_LIBRARY_DIR     = 101,
-	FB_WANRAIK_DIR     = 102,
-
-	FB_NEW_FOLDER      = 110,
+	FB_NEW_FOLDER      = 101,
 
 	FB_DOWNLOAD_DIR    = 120,
 	FB_EXTERNAL_DIR    = 121,
