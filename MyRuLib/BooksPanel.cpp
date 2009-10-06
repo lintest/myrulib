@@ -292,6 +292,7 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 {
 	FbTreeListUpdater updater(m_BookList);
 
+	wxString file_type = data->file_type + wxT(" ");
 	wxString file_size = wxString::Format(wxT("%d "), data->file_size/1024);
 
     switch (m_ListMode) {
@@ -299,14 +300,14 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 			wxTreeItemId parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
 			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			if (data->number) m_BookList->SetItemText(item, 1, wxString::Format(wxT(" %d "), data->number));
-			m_BookList->SetItemText(item, 2, data->file_name);
+			m_BookList->SetItemText(item, 2, file_type);
 			m_BookList->SetItemText(item, 3, file_size);
         } break;
         case FB2_MODE_LIST: {
 			wxTreeItemId parent = m_BookList->GetRootItem();
 			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, authors);
-			m_BookList->SetItemText(item, 2, data->file_name);
+			m_BookList->SetItemText(item, 2, file_type);
 			m_BookList->SetItemText(item, 3, file_size);
         } break;
     }
@@ -326,15 +327,15 @@ void BooksPanel::CreateColumns(FbListMode mode)
 
     switch (m_ListMode) {
         case FB2_MODE_TREE: {
-            m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("№"), 1, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Заголовок"), 10, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("№"), 1, wxALIGN_RIGHT);
+            m_BookList->AddColumn (_("Тип"), 1, wxALIGN_RIGHT);
             m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
         } break;
         case FB2_MODE_LIST: {
-            m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Заголовок"), 7, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Автор"), 4, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Тип"), 1, wxALIGN_RIGHT);
             m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
         } break;
     }

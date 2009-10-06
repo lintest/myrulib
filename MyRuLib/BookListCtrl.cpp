@@ -46,28 +46,6 @@ BookListUpdater::~BookListUpdater()
 	m_list->Update();
 }
 
-void BookListCtrl::FillBooks(wxSQLite3ResultSet & result, const wxString &caption)
-{
-	BookListUpdater updater(this);
-
-    wxTreeItemId root = AddRoot(caption);
-    ScrollTo(root);
-
-    while (!result.Eof()) {
-        BookTreeItemData * data = new BookTreeItemData(result);
-        wxString full_name = result.GetString(wxT("full_name"));
-        do {
-            result.NextRow();
-            if ( data->GetId() != result.GetInt(wxT("id")) ) break;
-            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
-        } while (!result.Eof());
-        wxTreeItemId item = AppendItem(root, data->title, 0, -1, data);
-        SetItemText (item, 1, full_name);
-        SetItemText (item, 2, data->file_name);
-        SetItemText (item, 3, wxString::Format(wxT("%d "), data->file_size/1024));
-    }
-}
-
 void BookListCtrl::ScanChecked(const wxTreeItemId &root, wxString &selections)
 {
     wxTreeItemIdValue cookie;

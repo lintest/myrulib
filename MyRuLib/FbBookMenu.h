@@ -26,7 +26,6 @@ class FbBookMenu: public wxMenu
 		static void Connect(wxWindow * frame, wxObjectEventFunction func);
 	private:
 		static void LoadFolders();
-		wxMenu m_submenu;
 	private:
 		static FbFolderArray sm_folders;
 		int m_id;

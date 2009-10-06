@@ -12,10 +12,11 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 {
     if (sm_folders.Count() == 0) LoadFolders();
 
+	wxMenu * submenu = new wxMenu;
 	for (size_t i=0; i<sm_folders.Count(); i++) {
 		int id = sm_folders[i].id;
 		if (sm_folders[i].folder == iFolder) continue;
-		m_submenu.Append(id, sm_folders[i].name);
+		submenu->Append(id, sm_folders[i].name);
 	}
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
@@ -29,7 +30,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
         Append(ID_FAVORITES_DEL, _T("Удалить закладку"));
 		if (iFolder) Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
     }
-	Append(wxID_ANY, _("Добавить в папку"), &m_submenu);
+	Append(wxID_ANY, _("Добавить в папку"), submenu);
 }
 
 void FbBookMenu::LoadFolders()

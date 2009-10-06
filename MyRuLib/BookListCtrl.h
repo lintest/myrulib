@@ -12,7 +12,6 @@ class BookListCtrl: public FbTreeListCtrl
 public:
     BookListCtrl(wxWindow *parent, wxWindowID id, long style);
 	void SelectAll(int iImageIndex = 1);
-	void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
 	wxString GetSelected();
 	void GetSelected(wxArrayInt &items);
 	void DeleteItems(wxArrayInt &items);
