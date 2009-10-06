@@ -1,5 +1,6 @@
 #include "FbFrameFavour.h"
 #include <wx/artprov.h>
+#include "FbBookMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
@@ -58,7 +59,6 @@ void FbFrameFavour::CreateControls()
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
-	m_BooksPanel.SetFavorites(true);
 	splitter->SplitVertically(m_FolderList, &m_BooksPanel, 160);
 
     m_BooksPanel.CreateColumns(GetListMode(FB_MODE_FAVOUR));
@@ -156,14 +156,21 @@ void FbFrameFavour::OnChangeMode(wxCommandEvent& event)
 
 void FbFrameFavour::FillByFolder(const int iFolder)
 {
+	m_BooksPanel.SetFolder(iFolder);
 	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), iFolder);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
 void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
 {
+    int iSelected = m_FolderList->GetSelection();
+    if (iSelected == wxNOT_FOUND) return;
+    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
+	if (!data) return;
+	int iFolder = data->GetID();
+
 	wxString selected = m_BooksPanel.m_BookList->GetSelected();
-	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s))"), selected.c_str());
+	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), iFolder);
 
 	FbCommonDatabase database;
 	database.AttachConfig();
@@ -191,6 +198,7 @@ void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
     stmt.Bind(2, id);
     stmt.ExecuteUpdate();
 
+    FbBookMenu::EmptyFolders();
     FillFolders(id);
 }
 
@@ -214,6 +222,7 @@ void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
     stmt.Bind(2, id);
     stmt.ExecuteUpdate();
 
+    FbBookMenu::EmptyFolders();
     FillFolders(id);
 }
 
@@ -230,8 +239,6 @@ void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
     FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
 	if (!data) return;
 
-    m_BooksPanel.EmptyBooks();
-
 	int id = data->GetID();
 	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
     wxString sql = wxT("DELETE FROM folders WHERE id=?");
@@ -245,6 +252,9 @@ void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
     stmt.ExecuteUpdate();
 
     m_FolderList->Delete(iSelected);
+
+    FbBookMenu::EmptyFolders();
+    m_BooksPanel.EmptyBooks();
 }
 
 void FbFrameFavour::UpdateFolder(const int iFolder)

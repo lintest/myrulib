@@ -147,7 +147,7 @@ void FbFrameAuthor::SelectRandomLetter()
     int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
 	random = random % alphabetRu.Len();
 
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_LETTER_RU + random );
+    wxCommandEvent event( wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + random );
     wxPostEvent(this, event);
 }
 

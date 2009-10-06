@@ -3,12 +3,32 @@
 
 #include <wx/wx.h>
 #include <wx/menu.h>
+#include <wx/arrimpl.cpp>
+
+#define fbNO_FOLDER (-999)
+
+class FbFolderItem
+{
+	public:
+		int id;
+		int folder;
+		wxString name;
+};
+
+WX_DECLARE_OBJARRAY(FbFolderItem, FbFolderArray);
 
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(int id, bool bFavorites);
+		FbBookMenu(int id, int iFolder);
+		static void EmptyFolders() { sm_folders.Empty(); };
+		static int GetFolder(const int id);
+		static void Connect(wxWindow * frame, wxObjectEventFunction func);
 	private:
+		static void LoadFolders();
+		wxMenu m_submenu;
+	private:
+		static FbFolderArray sm_folders;
 		int m_id;
 };
 

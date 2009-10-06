@@ -24,12 +24,12 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
-    :wxSplitterWindow(), m_BookInfo(NULL)
+    :wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
 {
 }
 
 BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
-    :wxSplitterWindow(parent, id, pos, size, style, wxT("bookspanel")), m_BookInfo(NULL)
+    :wxSplitterWindow(parent, id, pos, size, style, wxT("bookspanel")), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
 {
     Create(parent, id, pos, size, style, substyle, name);
 }
@@ -203,8 +203,8 @@ void BooksPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
-
-    FbBookMenu menu(id, m_favorites);
+	FbBookMenu::Connect(this, wxCommandEventHandler(BooksPanel::OnFolderAdd));
+    FbBookMenu menu(id, m_folder);
     PopupMenu(&menu, pos.x, pos.y);
 }
 
@@ -251,6 +251,13 @@ void * FbAppendFavouritesThread::Entry()
 void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected() );
+    if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void BooksPanel::OnFolderAdd(wxCommandEvent& event)
+{
+	int folder = FbBookMenu::GetFolder(event.GetId());
+    wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected(), folder );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -335,3 +342,4 @@ void BooksPanel::CreateColumns(FbListMode mode)
 	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
 	m_BookInfo->SetPage(wxEmptyString);
 }
+

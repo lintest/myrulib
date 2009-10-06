@@ -46,8 +46,8 @@ enum {
 	ID_UPDATE_FOLDER,
     ID_FAVORITES_DEL,
     ID_LETTER_RU = wxID_HIGHEST + 100,
-    ID_LETTER_EN = wxID_HIGHEST + 200,
-    ID_FAVORITES_ADD = wxID_HIGHEST + 300,
+    ID_LETTER_EN = wxID_HIGHEST + 150,
+    ID_FAVORITES_ADD = wxID_HIGHEST + 200,
 };
 
 extern const wxString strVersionInfo;
