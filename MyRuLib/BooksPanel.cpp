@@ -327,16 +327,16 @@ void BooksPanel::CreateColumns(FbListMode mode)
 
     switch (m_ListMode) {
         case FB2_MODE_TREE: {
-            m_BookList->AddColumn (_("Заголовок"), 10, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("№"), 1, wxALIGN_RIGHT);
-            m_BookList->AddColumn (_("Тип"), 1, wxALIGN_RIGHT);
-            m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
+            m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
+            m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
+            m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
         } break;
         case FB2_MODE_LIST: {
-            m_BookList->AddColumn (_("Заголовок"), 7, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("Автор"), 4, wxALIGN_LEFT);
-            m_BookList->AddColumn (_("Тип"), 1, wxALIGN_RIGHT);
-            m_BookList->AddColumn (_("Размер, Кб"), 2, wxALIGN_RIGHT);
+            m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
+            m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
         } break;
     }
 
