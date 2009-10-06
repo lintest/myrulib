@@ -11,7 +11,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.search_name, authors.full_name, sequences.value AS sequence, bookseq.number\
+					books.id, books.title, books.file_size, books.file_type, books.id_author, authors.search_name, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
@@ -21,7 +21,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 			"); break;
 		case FB2_MODE_LIST:
 			sql = wxT("\
-				SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
+				SELECT books.id, books.title, books.file_size, books.file_type, authors.full_name, 0 as number \
 				FROM books LEFT JOIN authors ON books.id_author = authors.id \
 				WHERE (%s) \
 				ORDER BY books.title, books.id, authors.full_name\
