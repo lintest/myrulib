@@ -169,17 +169,21 @@ void * FrameAuthorThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxT("books.id_author = ?");
+	wxString condition = wxT("id_author = ?");
 	wxString sql = GetSQL(condition);
 
-	FbCommonDatabase database;
-	FbGenreFunction function;
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, m_author);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	try {
+		FbCommonDatabase database;
+		FbGenreFunction function;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_author);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (sm_skiper.Skipped(m_number)) return NULL;
-    FillBooks(result);
+		if (sm_skiper.Skipped(m_number)) return NULL;
+		FillBooks(result);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 
 	return NULL;
 }

@@ -3620,6 +3620,14 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
             wxTreeItemIdValue cookie = 0;
 #endif
             newItem = GetLastChild (GetRootItem(), cookie);
+			//DENIS KANDRASHIN 2009-10-07 - BEGIN - Change keyboard press END key for last child
+            wxTreeItemId child = newItem;
+            while (child.IsOk()) {
+            	newItem = child;
+				wxTreeItemIdValue cookie = 0;
+            	child = GetLastChild(newItem, cookie);
+            }
+            // DENIS - END
         }break;
 
         // <HOME>: go to root
