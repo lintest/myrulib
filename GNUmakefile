@@ -10,6 +10,15 @@
 # These are configurable options:
 # -------------------------------------------------------------------------
 
+# 'install' program location 
+INSTALL ?= install
+
+# Location where the package is installed by 'make install' 
+prefix ?= /usr/local
+
+# Destination root (/ is used if empty) 
+DESTDIR ?= 
+
 #  
 AR ?= ar
 
@@ -157,9 +166,9 @@ build:
 
 all: test_for_selected_wxbuild build/libexpat_static.a build/libsqlite3_static.a build/libwxsqlite3_static.a build/myrulib
 
-install: 
+install: install_myrulib
 
-uninstall: 
+uninstall: uninstall_myrulib
 
 clean: 
 	rm -f build/*.o
@@ -190,6 +199,13 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libexpat_static.a build/libsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libexpat_static.a build/libsqlite3_static.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
 	strip ./build/myrulib
+
+install_myrulib: build/myrulib
+	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	install -c build/myrulib $(DESTDIR)$(prefix)/bin
+
+uninstall_myrulib: 
+	rm -f $(DESTDIR)$(prefix)/bin/myrulib
 
 build/expat_static_xmlparse.o: ./Expat/xmlparse.c
 	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
@@ -329,7 +345,7 @@ build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean
+.PHONY: all install uninstall clean install_myrulib uninstall_myrulib
 
 
 # Dependencies tracking:

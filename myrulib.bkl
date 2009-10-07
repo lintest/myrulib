@@ -7,21 +7,21 @@
 	<set var="WX_UNICODE_DEFAULT">1</set>
 	<set var="WX_DEBUG_DEFAULT">0</set>
 	
-    <if cond="FORMAT=='mingw'">
-	  <set var="WX_SHARED_DEFAULT">0</set>
-	  <set var="WX_VERSION_DEFAULT">28</set>
-	  <set var="DEFAULT_LDFLAGS">-static</set>
-    </if>
+	<if cond="FORMAT=='mingw'">
+		<set var="WX_SHARED_DEFAULT">0</set>
+		<set var="WX_VERSION_DEFAULT">28</set>
+		<set var="DEFAULT_LDFLAGS">-static</set>
+	</if>
 
-    <if cond="FORMAT=='gnu'">
-	  <set var="WX_SHARED_DEFAULT">0</set>
-	  <set var="WX_VERSION_DEFAULT">2.8</set>
-	  <set var="WX_PORT_DEFAULT">gtk2</set>
-    </if>
+	<if cond="FORMAT=='gnu'">
+		<set var="WX_SHARED_DEFAULT">0</set>
+		<set var="WX_VERSION_DEFAULT">2.8</set>
+		<set var="WX_PORT_DEFAULT">gtk2</set>
+	</if>
 	
-    <include file="./Presets/wx.bkl"/>
+	<include file="./Presets/wx.bkl"/>
 
-    <lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<sources>Expat/xmlparse.c</sources>
 		<sources>Expat/xmlrole.c</sources>
@@ -29,20 +29,20 @@
 		<sources>Expat/xmltok_impl.c</sources>
 		<sources>Expat/xmltok_ns.c</sources>
 		<include>Expat</include>
-    </lib>
+	</lib>
 
-    <lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<sources>SQLite3/sqlite3.c</sources>
-    </lib>
+	</lib>
 	
-    <lib id="wxsqlite3_static" template="wx-lib">
+	<lib id="wxsqlite3_static" template="wx-lib">
 		<include>SQLite3</include>
 		<include>WxSQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
-    </lib>
+	</lib>
 	
-    <exe id="myrulib" template="wxgui">
+	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookExtractInfo.cpp</sources>
@@ -104,11 +104,12 @@
 		<if cond="FORMAT=='gnu'">
 			<postlink-command>strip ./build/myrulib</postlink-command>
 		</if>
-        <app-type>gui</app-type>
+		<app-type>gui</app-type>
 		<threading>single</threading>
 		<optimize>speed</optimize>
-        <debug-info>off</debug-info>
-        <runtime-libs>static</runtime-libs>
-    </exe>
+		<debug-info>off</debug-info>
+		<runtime-libs>static</runtime-libs>
+		<install-to cond="FORMAT=='gnu'">$(BINDIR)</install-to>
+	</exe>
 
 </makefile>
