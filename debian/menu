@@ -1,0 +1,2 @@
+?package(myrulib):needs="X11|text|vc|wm" section=Apps/Misc\
+  title="MyRuLib" command="/usr/bin/myrulib"

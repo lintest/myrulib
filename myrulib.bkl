@@ -93,7 +93,6 @@
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>
 		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
 		<wx-lib>aui</wx-lib>
-		<wx-lib>xrc</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
