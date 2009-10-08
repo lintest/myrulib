@@ -14,7 +14,7 @@
 	</if>
 
 	<if cond="FORMAT=='gnu'">
-		<set var="WX_SHARED_DEFAULT">0</set>
+		<set var="WX_SHARED_DEFAULT">1</set>
 		<set var="WX_VERSION_DEFAULT">2.8</set>
 		<set var="WX_PORT_DEFAULT">gtk2</set>
 	</if>
@@ -108,15 +108,15 @@
 		<threading>single</threading>
 		<optimize>speed</optimize>
 		<debug-info>off</debug-info>
-		<runtime-libs>static</runtime-libs>
-		<install-to cond="FORMAT=='gnu'">$(BINDIR)</install-to>
+		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
+		<install-to cond="FORMAT=='gnu'">/bin</install-to>
 	</exe>
 	
 	<if cond="FORMAT=='gnu'">
 		<data-files> 
 			<srcdir>MyRuLib/desktop</srcdir>
-			<files>library-16x16.png library-32x32.png library-48x48.png library-128x128.png</files>
-			<install-to>/usr/local/share/myrulib</install-to>
+			<files>library-32x32.png</files>
+			<install-to>/usr/share/myrulib</install-to>
 		</data-files>
 		<data-files>
 			<srcdir>MyRuLib/desktop</srcdir>

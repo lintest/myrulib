@@ -1,1 +1,0 @@
-shlibs:Depends=libc6 (>= 2.3.6-6~), libc6 (>= 2.4), libexpat1 (>= 1.95.8), libgcc1 (>= 1:4.1.1), libsqlite3-0 (>= 3.6.10), libstdc++6 (>= 4.1.1), libwxbase2.8-0 (>= 2.8.9.1), libwxgtk2.8-0 (>= 2.8.9.1)

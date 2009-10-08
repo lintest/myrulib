@@ -13,9 +13,6 @@
 # 'install' program location 
 INSTALL ?= install
 
-# Location where the package is installed by 'make install' 
-prefix ?= /usr/local
-
 # Destination root (/ is used if empty) 
 DESTDIR ?= 
 
@@ -50,7 +47,7 @@ WX_CONFIG ?= wx-config
 WX_PORT ?= gtk2
 
 # Use DLL build of wx library to use? [0,1]
-WX_SHARED ?= 0
+WX_SHARED ?= 1
 
 # Compile Unicode build of wxWidgets? [0,1]
 WX_UNICODE ?= 1
@@ -75,26 +72,14 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -IExpat `$(WX_CONFIG) --cflags \
-	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-EXPAT_STATIC_OBJECTS =  \
-	build/expat_static_xmlparse.o \
-	build/expat_static_xmlrole.o \
-	build/expat_static_xmltok.o \
-	build/expat_static_xmltok_impl.o \
-	build/expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS = `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
-	$(CFLAGS)
-SQLITE3_STATIC_OBJECTS =  \
-	build/sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -ISQLite3 -IWxSQLite3 -IWxSQLite3 `$(WX_CONFIG) \
 	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	build/wxsqlite3_static_wxsqlite3.o
-MYRULIB_CFLAGS = -DXML_STATIC -IWxSQLite3 -IExpat -ISQLite3 -O2 `$(WX_CONFIG) \
-	--cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -DXML_STATIC -IWxSQLite3 -IExpat -ISQLite3 -O2 `$(WX_CONFIG) \
-	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+MYRULIB_CFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` \
+	$(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
+	$(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_BookExtractInfo.o \
@@ -164,72 +149,42 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libexpat_static.a build/libsqlite3_static.a build/libwxsqlite3_static.a build/myrulib
+all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
 
 install: install_myrulib
-	$(INSTALL) -d $(DESTDIR)/usr/local/share/myrulib
-	(cd MyRuLib/res ; $(INSTALL) -m 644  library-16x16.png library-32x32.png library-48x48.png library-128x128.png $(DESTDIR)/usr/local/share/myrulib)
+	$(INSTALL) -d $(DESTDIR)/usr/share/myrulib
+	(cd MyRuLib/desktop ; $(INSTALL) -m 644  library-32x32.png $(DESTDIR)/usr/share/myrulib)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
-	(cd MyRuLib/res ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
+	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
 
 uninstall: uninstall_myrulib
-	(cd $(DESTDIR)/usr/local/share/myrulib ; rm -f library-16x16.png library-32x32.png library-48x48.png library-128x128.png)
+	(cd $(DESTDIR)/usr/share/myrulib ; rm -f library-32x32.png)
 	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 
 clean: 
 	rm -f build/*.o
 	rm -f build/*.d
-	rm -f build/libexpat_static.a
-	rm -f build/libsqlite3_static.a
 	rm -f build/libwxsqlite3_static.a
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-build/libexpat_static.a: $(EXPAT_STATIC_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(EXPAT_STATIC_OBJECTS)
-	$(RANLIB) $@
-
-build/libsqlite3_static.a: $(SQLITE3_STATIC_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(SQLITE3_STATIC_OBJECTS)
-	$(RANLIB) $@
-
 build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libexpat_static.a build/libsqlite3_static.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libexpat_static.a build/libsqlite3_static.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,base`
+build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,base`
 	strip ./build/myrulib
 
 install_myrulib: build/myrulib
-	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
-	install -c build/myrulib $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -d $(DESTDIR)/bin
+	install -c build/myrulib $(DESTDIR)/bin
 
 uninstall_myrulib: 
-	rm -f $(DESTDIR)$(prefix)/bin/myrulib
-
-build/expat_static_xmlparse.o: ./Expat/xmlparse.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmlrole.o: ./Expat/xmlrole.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmltok.o: ./Expat/xmltok.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmltok_impl.o: ./Expat/xmltok_impl.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmltok_ns.o: ./Expat/xmltok_ns.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
-	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
+	rm -f $(DESTDIR)/bin/myrulib
 
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
