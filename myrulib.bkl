@@ -20,6 +20,7 @@
 	</if>
 	
 	<include file="./Presets/wx.bkl"/>
+    <include file="datafiles.bkl"/>
 
 	<lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
@@ -110,5 +111,18 @@
 		<runtime-libs>static</runtime-libs>
 		<install-to cond="FORMAT=='gnu'">$(BINDIR)</install-to>
 	</exe>
-
+	
+	<if cond="FORMAT=='gnu'">
+		<data-files> 
+			<srcdir>MyRuLib/res</srcdir>
+			<files>library-16x16.png library-32x32.png library-48x48.png library-128x128.png</files>
+			<install-to>/usr/local/share/myrulib</install-to>
+		</data-files>
+		<data-files>
+			<srcdir>MyRuLib/res</srcdir>
+			<files>myrulib.desktop</files>
+			<install-to>/usr/share/applications</install-to>
+		</data-files>
+	</if>
+	
 </makefile>

@@ -167,8 +167,14 @@ build:
 all: test_for_selected_wxbuild build/libexpat_static.a build/libsqlite3_static.a build/libwxsqlite3_static.a build/myrulib
 
 install: install_myrulib
+	$(INSTALL) -d $(DESTDIR)/usr/local/share/myrulib
+	(cd MyRuLib/res ; $(INSTALL) -m 644  library-16x16.png library-32x32.png library-48x48.png library-128x128.png $(DESTDIR)/usr/local/share/myrulib)
+	$(INSTALL) -d $(DESTDIR)/usr/share/applications
+	(cd MyRuLib/res ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
 
 uninstall: uninstall_myrulib
+	(cd $(DESTDIR)/usr/local/share/myrulib ; rm -f library-16x16.png library-32x32.png library-48x48.png library-128x128.png)
+	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 
 clean: 
 	rm -f build/*.o

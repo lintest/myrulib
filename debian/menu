@@ -1,2 +1,2 @@
-?package(myrulib):needs="X11|text|vc|wm" section=Apps/Misc\
-  title="MyRuLib" command="/usr/bin/myrulib"
+?package(myrulib):needs="x11" section="Applications/Viewers" \
+	title="MyRuLib e-book library" command="myrulib"

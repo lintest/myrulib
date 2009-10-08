@@ -9,5 +9,13 @@ Homepage: http://myrulib.lintest.ru
 Package: myrulib
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: MyRuLib is free and open application for organizing your home collection of e-books.
- MyRuLib — свободная (бесплатная и открытая) программа для организации домашней библиотеки (коллекции) электронных книг формата Fb2.
+Description: MyRuLib is your own collection of e-books.
+ MyRuLib is free and open application for organizing 
+ your own collection of e-books.
+ .
+ MyRuLib — свободная (бесплатная и открытая) программа 
+ для организации домашней библиотеки (коллекции) 
+ электронных книг формата fb2.
+ .
+ http://myrulib.lintest.org/
+ 
