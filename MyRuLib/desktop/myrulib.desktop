@@ -11,5 +11,5 @@ Exec=myrulib %F
 StartupNotify=true
 Terminal=false
 Type=Application
-Icon=/usr/local/share/myrulib/library-32x32.png
+Icon=/usr/share/myrulib/library-32x32.png
 Categories=Office;Viewer;Literature;

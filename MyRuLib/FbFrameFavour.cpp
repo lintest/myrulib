@@ -118,7 +118,7 @@ void * FrameFavourThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
+	wxString condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
 	wxString sql = GetSQL(condition);
 
 	FbCommonDatabase database;
