@@ -360,6 +360,7 @@ function create_tables($sqlite_db)
       file_size integer,
       file_type varchar(20),
       md5sum char(32),
+      created char(8),
       description text);
   ");
 
