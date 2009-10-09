@@ -170,7 +170,19 @@ void FbMainDatabase::UpgradeDatabase()
         trans.Commit();
     }
 
-    int new_version = 5;
+    if (version == 5) {
+        version ++;
+        wxLogInfo(sUpgradeMsg, version);
+        wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+
+        /** TABLE books **/
+        try { ExecuteUpdate(wxT("ALTER TABLE books ADD created CHAR(8)")); } catch (...) {};
+
+        SetVersion(version);
+        trans.Commit();
+    }
+
+    int new_version = 6;
 	int old_version = GetVersion();
 
 	if (old_version != new_version) {
