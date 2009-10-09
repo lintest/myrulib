@@ -82,15 +82,20 @@ void * FrameGenresThread::Entry()
 	wxString condition = wxString::Format(wxT("GENRE(books.genres, ?)"), m_code);
 	wxString sql = GetSQL(condition);
 
-	FbCommonDatabase database;
-	FbGenreFunction function;
-    database.CreateFunction(wxT("GENRE"), 2, function);
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, wxString::Format(wxT("%02X"), m_code));
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	try {
+		FbCommonDatabase database;
+		FbGenreFunction function;
+		database.CreateFunction(wxT("GENRE"), 2, function);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, wxString::Format(wxT("%02X"), m_code));
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (sm_skiper.Skipped(m_number)) return NULL;
-    FillBooks(result);
+		if (sm_skiper.Skipped(m_number)) return NULL;
+		FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 
 	return NULL;
 }

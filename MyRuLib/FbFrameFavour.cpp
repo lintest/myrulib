@@ -119,15 +119,21 @@ void * FrameFavourThread::Entry()
 	wxString condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
 	wxString sql = GetSQL(condition);
 
-	FbCommonDatabase database;
-	database.AttachConfig();
-	FbGenreFunction function;
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, m_folder);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	try {
+		FbCommonDatabase database;
+		database.AttachConfig();
+		FbGenreFunction function;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_folder);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (sm_skiper.Skipped(m_number)) return NULL;
-    FillBooks(result);
+		if (sm_skiper.Skipped(m_number)) return NULL;
+		FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+
 
 	return NULL;
 }

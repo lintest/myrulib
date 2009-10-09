@@ -70,21 +70,26 @@ void * FrameSearchThread::Entry()
     text.Replace(wxT("*"), wxT("%"));
     BookInfo::MakeLower(text);
 
-	FbCommonDatabase database;
-	FbLowerFunction lower;
-    database.CreateFunction(wxT("LOWER"), 1, lower);
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, text);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	try {
+		FbCommonDatabase database;
+		FbLowerFunction lower;
+		database.CreateFunction(wxT("LOWER"), 1, lower);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, text);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (result.Eof()) {
-		wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), m_title.c_str());
-		wxMessageBox(text, _("Поиск"));
-		m_frame->Close();
-		return NULL;
+		if (result.Eof()) {
+			wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), m_title.c_str());
+			wxMessageBox(text, _("Поиск"));
+			m_frame->Close();
+			return NULL;
+		}
+		FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
 	}
 
-    FillBooks(result);
 
 	return NULL;
 }

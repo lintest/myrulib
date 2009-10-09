@@ -229,8 +229,8 @@ void * FrameAuthorThread::Entry()
 
         if (sm_skiper.Skipped(m_number)) return NULL;
         FillBooks(result);
-
-	} catch (wxSQLite3Exception & e) {
+	}
+	catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
 
