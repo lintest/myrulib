@@ -176,7 +176,7 @@ void FbMainDatabase::UpgradeDatabase()
         wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
         /** TABLE books **/
-        try { ExecuteUpdate(wxT("ALTER TABLE books ADD created CHAR(8)")); } catch (...) {};
+        try { ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER")); } catch (...) {};
 
         SetVersion(version);
         trans.Commit();

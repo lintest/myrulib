@@ -97,13 +97,13 @@ wxString ImportThread::GetSQL(PSItem psItem)
 {
     switch (psItem) {
         case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (md5sum='' OR md5sum IS NULL)");
-        case psFindByMd5: return wxT("SELECT id FROM books WHERE md5sum=?");
-        case psUpdateMd5: return wxT("UPDATE books SET md5sum=? WHERE id=?");
+        case psFindByMd5:  return wxT("SELECT id FROM books WHERE md5sum=?");
+        case psUpdateMd5:  return wxT("UPDATE books SET md5sum=? WHERE id=?");
         case psSearchFile: return wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
         case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
         case psSearchArch: return wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
         case psAppendArch: return wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
-        case psAppendBook: return wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
+        case psAppendBook: return wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, created, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
         case psAppendSeqs: return wxT("INSERT INTO bookseq(id_book, id_seq, number, id_author) VALUES (?,?,?,?)");
         case psLastMember: return wxEmptyString;
     }
@@ -169,9 +169,12 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, int id_archive)
 {
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
+	long today = 0;
+	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
         wxSQLite3Statement stmt = GetPreparedStatement(psAppendBook);
+
 
         stmt.Bind(1, id_book);
         stmt.Bind(2, id_archive);
@@ -182,7 +185,8 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
         stmt.Bind(7, path);
         stmt.Bind(8, (wxLongLong)size);
         stmt.Bind(9, wxFileName(name).GetExt().Lower());
-        stmt.Bind(10, info.md5sum);
+        stmt.Bind(10, (int) today);
+        stmt.Bind(11, info.md5sum);
         stmt.ExecuteUpdate();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
