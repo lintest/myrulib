@@ -29,6 +29,7 @@ private:
     wxTextCtrl * m_textAuthor;
     wxString m_title;
 private:
+    void OnFoundNothing(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

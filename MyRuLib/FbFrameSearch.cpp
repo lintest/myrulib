@@ -7,6 +7,7 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
+    EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbFrameSearch::OnFoundNothing)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
@@ -79,9 +80,8 @@ void * FrameSearchThread::Entry()
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 		if (result.Eof()) {
-			wxString text = wxString::Format(_("Ничего не найдено по шаблону «%s»."), m_title.c_str());
-			wxMessageBox(text, _("Поиск"));
-			m_frame->Close();
+			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING);
+			wxPostEvent(m_frame, event);
 			return NULL;
 		}
 		FillBooks(result);
@@ -111,4 +111,10 @@ void FbFrameSearch::UpdateBooklist()
 {
 	wxThread * thread = new FrameSearchThread(this, m_BooksPanel.GetListMode(), m_title);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)
+{
+	wxMessageBox(wxT("Ничего не найдено."), wxT("Поиск"));
+	Close();
 }

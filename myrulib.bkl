@@ -119,7 +119,7 @@
 	<if cond="FORMAT=='gnu'">
 		<data-files> 
 			<srcdir>MyRuLib/desktop</srcdir>
-			<files>library-32x32.png</files>
+			<files>home-32x32.png</files>
 			<install-to>/usr/share/myrulib</install-to>
 		</data-files>
 		<data-files>
