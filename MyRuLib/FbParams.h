@@ -24,7 +24,8 @@ enum FbParamKey {
 	FB_MODE_SEARCH     = 132,
 	FB_MODE_FAVOUR     = 133,
 
-	FB_FB2_ONLY        = 140,
+	FB_FILTER_FB2      = 140,
+	FB_FILTER_LIB      = 141,
 
     FB_USE_PROXY       = 150,
     FB_PROXY_ADDR      = 151,

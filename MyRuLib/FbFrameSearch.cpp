@@ -7,8 +7,6 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
-    EVT_MENU(ID_MODE_TREE, FbFrameSearch::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameSearch::OnChangeMode)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
@@ -50,7 +48,7 @@ wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxS
 class FrameSearchThread: public FbFrameBaseThread
 {
     public:
-        FrameSearchThread(FbFrameSearch * frame, FbListMode mode, const wxString &title)
+        FrameSearchThread(FbFrameBase * frame, FbListMode mode, const wxString &title)
 			:FbFrameBaseThread(frame, mode), m_title(title) {};
         virtual void *Entry();
     private:
@@ -101,19 +99,11 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
     frame->m_title = title;
 	frame->Update();
 
-	frame->DoSearch();
+	frame->UpdateBooklist();
 }
 
-void FbFrameSearch::DoSearch()
+void FbFrameSearch::UpdateBooklist()
 {
 	wxThread * thread = new FrameSearchThread(this, m_BooksPanel.GetListMode(), m_title);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-}
-
-void FbFrameSearch::OnChangeMode(wxCommandEvent& event)
-{
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	SetListMode(FB_MODE_SEARCH, mode);
-	m_BooksPanel.CreateColumns(mode);
-	DoSearch();
 }

@@ -8,8 +8,6 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
-    EVT_MENU(ID_MODE_TREE, FbFrameGenres::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameGenres::OnChangeMode)
     EVT_TREE_SEL_CHANGED(ID_GENRES_TREE, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
@@ -110,13 +108,8 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	}
 }
 
-void FbFrameGenres::OnChangeMode(wxCommandEvent& event)
+void FbFrameGenres::UpdateBooklist()
 {
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	SetListMode(FB_MODE_GENRES, mode);
-
-	m_BooksPanel.CreateColumns(mode);
-
 	int code = 0;
 	wxTreeItemId selected = m_GenresList->GetSelection();
 	if (selected.IsOk()) {
@@ -124,8 +117,9 @@ void FbFrameGenres::OnChangeMode(wxCommandEvent& event)
 		if (data) code = data->GetCode();
 	}
 
-	if ( code ) {
+	if (code) {
 		wxThread * thread = new FrameGenresThread(this, m_BooksPanel.GetListMode(), code);
 		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 	}
 }
+

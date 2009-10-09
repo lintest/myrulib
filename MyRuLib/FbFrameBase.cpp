@@ -9,10 +9,16 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
+    EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
+    EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
+    EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
+    EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
     EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
     EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
+    EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterFb2UpdateUI)
+    EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterLibUpdateUI)
     EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
     EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
     EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
@@ -20,10 +26,12 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase()
+    : m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)), m_FilterLib(FbParams::GetValue(FB_FILTER_LIB))
 {
 }
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
+    : m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)), m_FilterLib(FbParams::GetValue(FB_FILTER_LIB))
 {
 	Create(parent, id, title);
 }
@@ -75,10 +83,13 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	menu->AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	menu->AppendSeparator();
-	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
+	menu->AppendCheckItem(ID_FILTER_FB2, _("Фильтр: только fb2-файлы"));
+	menu->AppendCheckItem(ID_FILTER_LIB, _("Фильтр: только файлы Либрусек"));
 	menu->AppendSeparator();
 	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	menu->AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
+	menu->AppendSeparator();
+	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
 	menuBar->Append(menu, _("&Вид"));
 
 	menu = new FbMenu;
@@ -139,5 +150,35 @@ FbListMode FbFrameBase::GetListMode(FbParamKey key)
 void FbFrameBase::SetListMode(FbParamKey key, FbListMode mode)
 {
 	FbParams().SetValue(key, mode == FB2_MODE_TREE);
+}
+
+void FbFrameBase::OnChangeFilterFb2UpdateUI(wxUpdateUIEvent & event)
+{
+    if (event.GetId() == ID_FILTER_FB2) event.Check(m_FilterFb2);
+}
+
+void FbFrameBase::OnChangeFilterLibUpdateUI(wxUpdateUIEvent & event)
+{
+    if (event.GetId() == ID_FILTER_LIB) event.Check(m_FilterLib);
+}
+
+void FbFrameBase::OnChangeMode(wxCommandEvent& event)
+{
+	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
+	m_BooksPanel.CreateColumns(mode);
+	UpdateBooklist();
+}
+
+void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
+{
+    switch (event.GetId()) {
+        case ID_FILTER_FB2:
+            FbParams().SetValue(FB_FILTER_FB2, m_FilterFb2 = !m_FilterFb2);
+            break;
+        case ID_FILTER_LIB:
+            FbParams().SetValue(FB_FILTER_LIB, m_FilterLib = !m_FilterLib);
+            break;
+    }
+	UpdateBooklist();
 }
 

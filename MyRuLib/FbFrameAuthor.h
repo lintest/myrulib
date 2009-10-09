@@ -21,6 +21,7 @@ public:
     void ActivateAuthors();
 protected:
 	virtual void CreateControls();
+	virtual void UpdateBooklist();
 private:
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
@@ -33,7 +34,6 @@ private:
     wxToolBar * m_EnAlphabar;
 private:
 	void OnAuthorsListBoxSelected(wxCommandEvent & event);
-	void OnChangeMode(wxCommandEvent& event);
 	void OnLetterClicked(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

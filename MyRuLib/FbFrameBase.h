@@ -15,16 +15,23 @@ public:
 	FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
+    bool m_FilterFb2;
+    bool m_FilterLib;
 protected:
 	virtual void CreateControls() {};
 	virtual wxMenuBar * CreateMenuBar();
+	virtual void UpdateBooklist() = 0;
 	static FbListMode GetListMode(FbParamKey key);
 	static void SetListMode(FbParamKey key, FbListMode mode);
 protected:
     BooksPanel m_BooksPanel;
 private:
+    void OnChangeFilter(wxCommandEvent& event);
+	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
+	void OnChangeFilterFb2UpdateUI(wxUpdateUIEvent & event);
+	void OnChangeFilterLibUpdateUI(wxUpdateUIEvent & event);
     void OnExternal(wxCommandEvent& event);
     void OnSubmenu(wxCommandEvent& event);
     void OnAppendBook(FbBookEvent& event);

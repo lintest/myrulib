@@ -11,8 +11,6 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
-    EVT_MENU(ID_MODE_TREE, FbFrameFavour::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameFavour::OnChangeMode)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFavour::OnFavoritesDel)
     EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
     EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
@@ -100,7 +98,7 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 class FrameFavourThread: public FbFrameBaseThread
 {
     public:
-        FrameFavourThread(wxWindow * frame, FbListMode mode, const int folder)
+        FrameFavourThread(FbFrameBase * frame, FbListMode mode, const int folder)
 			:FbFrameBaseThread(frame, mode), m_folder(folder), m_number(sm_skiper.NewNumber()) {};
         virtual void *Entry();
     private:
@@ -140,13 +138,8 @@ void FbFrameFavour::OnFolderSelected(wxCommandEvent & event)
 	if (data) FillByFolder(data->GetID());
 }
 
-void FbFrameFavour::OnChangeMode(wxCommandEvent& event)
+void FbFrameFavour::UpdateBooklist()
 {
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	SetListMode(FB_MODE_FAVOUR, mode);
-
-	m_BooksPanel.CreateColumns(mode);
-
     int iSelected = m_FolderList->GetSelection();
     if (iSelected == wxNOT_FOUND) return;
 
@@ -264,3 +257,4 @@ void FbFrameFavour::UpdateFolder(const int iFolder)
     FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
 	if (data && data->GetID()==iFolder) FillByFolder(iFolder);
 }
+
