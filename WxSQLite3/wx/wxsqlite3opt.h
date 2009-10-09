@@ -41,11 +41,4 @@
 #define WXSQLITE3_HAVE_LOAD_EXTENSION 0
 #endif
 
-#ifndef SQLITE_VERSION
-#define SQLITE_VERSION         "3.6.10"
-#endif
-#ifdef SQLITE_VERSION_NUMBER
-#define SQLITE_VERSION_NUMBER  3006010
-#endif
-
 #endif // _WX_SQLITE3_OPT_H_

@@ -1,4 +1,4 @@
-myrulib (0.09-1) unstable; urgency=low
+myrulib (0.09) unstable; urgency=low
 
   * Версия 0.09 (06.10.2009 г.)
   * Выбор режима просмотра книг: простой список или дерево по авторам и сериям.
@@ -7,7 +7,7 @@ myrulib (0.09-1) unstable; urgency=low
 
  -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
 
-myrulib (0.08-1) unstable; urgency=low
+myrulib (0.08) unstable; urgency=low
 
   * Версия 0.08 (30.09.2009 г.)
   * Реализован поиск по жанрам. 
@@ -17,7 +17,7 @@ myrulib (0.08-1) unstable; urgency=low
 
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
 
-myrulib (0.07-1) unstable; urgency=low
+myrulib (0.07) unstable; urgency=low
 
   * Версия 0.07 (14.09.2009 г.)
   * Переход на MDI-интерфейс: внешний вид кардинально изменен.
@@ -33,7 +33,7 @@ myrulib (0.07-1) unstable; urgency=low
 
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
   
-myrulib (0.06-1) unstable; urgency=low
+myrulib (0.06) unstable; urgency=low
 
   * Версия 0.06 (05.09.2009 г.)
   * Обработка ошибок с отображением информации в поддоне программы и записью в лог-файл. 
@@ -43,7 +43,7 @@ myrulib (0.06-1) unstable; urgency=low
 
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
    
-myrulib (0.05-1) unstable; urgency=low
+myrulib (0.05) unstable; urgency=low
 
   * Версия 0.05 (31.08.2009 г.)
   * Для дубликатов книг сохраняется их местоположение, то есть одна база может использоваться одновременно:
@@ -54,7 +54,7 @@ myrulib (0.05-1) unstable; urgency=low
   
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
 
-myrulib (0.04-1) unstable; urgency=low
+myrulib (0.04) unstable; urgency=low
 
   * Версия 0.04 (21.08.2009 г.)
   * Исключение дублирования книг (сравнение размера файлов, затем подсчет хеш-суммы)
@@ -64,7 +64,7 @@ myrulib (0.04-1) unstable; urgency=low
 
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
 
-myrulib (0.03-1) unstable; urgency=low
+myrulib (0.03) unstable; urgency=low
 
   * Версия 0.03 (16.08.2009 г.)
   * Ускорен импорт файлов в библиотеку за счет использования транзакций.
@@ -72,14 +72,15 @@ myrulib (0.03-1) unstable; urgency=low
   
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
 
-myrulib (0.02-1) unstable; urgency=low
+myrulib (0.02) unstable; urgency=low
 
   * Версия 0.02 (15.08.2009 г.)
   * Импорт файлов из каталога, где в древовидной структуре лежит много fb2.zip или fb2. 
   
    -- Kandrashin Denis <mail@lintest>  Wed, 07 Oct 2009 18:00:00 +0400
 
-myrulib (0.01-1) unstable; urgency=low
+myrulib (0.01) unstable; urgency=low
+
   * Версия 0.01 (02.07.2009 г.)
   * Реализована базовая функциональность.
 

@@ -37,7 +37,7 @@
 	</lib>
 	
 	<lib id="wxsqlite3_static" template="wx-lib">
-		<include>SQLite3</include>
+		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
 		<include>WxSQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
@@ -87,21 +87,25 @@
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>WxSQLite3</include>
 		<library>wxsqlite3_static</library>
-		<include cond="WX_SHARED_DEFAULT=='0'">Expat</include>
-		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
-		<library cond="WX_SHARED_DEFAULT=='0'">expat_static</library>
-		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
-		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>
-		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
+		<if cond="WX_SHARED_DEFAULT=='0'">
+			<include>Expat</include>
+			<include>SQLite3</include>
+			<library>expat_static</library>
+			<library>sqlite3_static</library>
+		</if>
+		<if cond="WX_SHARED_DEFAULT=='1'">
+			<sys-lib>expat</sys-lib>
+			<sys-lib>sqlite3</sys-lib>
+		</if>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
-		<if cond="FORMAT=='mingw'">
+		<if cond="PLATFORM_WIN32=='1'">
 			<sys-lib>shlwapi</sys-lib>
 			<postlink-command>strip ./build/myrulib.exe</postlink-command>
 		</if>
-		<if cond="FORMAT=='gnu'">
+		<if cond="PLATFORM_WIN32=='0'">
 			<postlink-command>strip ./build/myrulib</postlink-command>
 		</if>
 		<app-type>gui</app-type>
