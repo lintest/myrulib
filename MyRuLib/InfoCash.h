@@ -28,7 +28,7 @@ WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);
 class InfoNode
 {
 public:
-    InfoNode(): id(0), loaded(false) {};
+    InfoNode(): id(0) {};
     virtual ~InfoNode();
     void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
 public:
@@ -37,7 +37,6 @@ public:
     wxString annotation;
     wxString filelist;
     InfoImageArray images;
-    bool loaded;
 };
 
 WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);

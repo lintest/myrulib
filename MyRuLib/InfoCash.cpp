@@ -102,8 +102,7 @@ void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 void InfoCash::SetTitle(int id, wxString html)
 {
     wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = FindNode(id);
-    if (node) node->title = html;
+    GetNode(id)->title = html;
 };
 
 void InfoCash::SetAnnotation(int id, wxString html)
@@ -131,12 +130,10 @@ void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const wxString &fil
     if (!id) return;
 
     wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = GetNode(id);
-
-    if (node->loaded) {
+    InfoNode * node = FindNode(id);
+    if (node) {
     	ShowThread::Execute(frame, id);
     } else {
-        node->loaded = true;
         TitleThread::Execute(frame, id);
         if (file_type == wxT("fb2")) InfoThread::Execute(frame, id);
     }
