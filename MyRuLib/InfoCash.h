@@ -56,6 +56,7 @@ public:
 private:
     static InfoNodeArray sm_cash;
     static InfoNode * GetNode(int id);
+    static InfoNode * FindNode(int id);
 	static wxCriticalSection sm_locker;
 };
 

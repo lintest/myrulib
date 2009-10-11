@@ -78,31 +78,46 @@ InfoNode * InfoCash::GetNode(int id)
     return node;
 }
 
+InfoNode * InfoCash::FindNode(int id)
+{
+    for (size_t i=0; i<sm_cash.GetCount(); i++) {
+        if (sm_cash.Item(i).id == id) {
+            InfoNode * node = sm_cash.Detach(i);
+            sm_cash.Insert(node, 0);
+            return node;
+        }
+    }
+    return NULL;
+}
+
 wxCriticalSection InfoCash::sm_locker;
 
 void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
     wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = GetNode(id);
-    node->AddImage(id, filename, imagedata, imagetype);
+    InfoNode * node = FindNode(id);
+    if (node) node->AddImage(id, filename, imagedata, imagetype);
 }
 
 void InfoCash::SetTitle(int id, wxString html)
 {
     wxCriticalSectionLocker enter(sm_locker);
-    GetNode(id)->title = html;
+    InfoNode * node = FindNode(id);
+    if (node) node->title = html;
 };
 
 void InfoCash::SetAnnotation(int id, wxString html)
 {
     wxCriticalSectionLocker enter(sm_locker);
-    GetNode(id)->annotation = html;
+    InfoNode * node = FindNode(id);
+    if (node) node->annotation = html;
 };
 
 void InfoCash::SetFilelist(int id, wxString html)
 {
     wxCriticalSectionLocker enter(sm_locker);
-    GetNode(id)->filelist = html;
+    InfoNode * node = FindNode(id);
+    if (node) node->filelist = html;
 };
 
 void InfoCash::Empty()
