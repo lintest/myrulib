@@ -142,6 +142,14 @@ void FbFrameAuthor::FindAuthor(const wxString &text)
     SelectFirstAuthor();
 }
 
+void FbFrameAuthor::OpenAuthor(const int id)
+{
+	if (id == 0) return;
+    ToggleAlphabar(0);
+    m_AuthorsListBox->FillAuthorsCode(id);
+    SelectFirstAuthor();
+}
+
 void FbFrameAuthor::SelectRandomLetter()
 {
     wxDateTime now = wxDateTime::Now();

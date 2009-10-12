@@ -203,8 +203,9 @@ void BooksPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
-	FbBookMenu::Connect(this, wxCommandEventHandler(BooksPanel::OnFolderAdd));
     FbBookMenu menu(id, m_folder);
+	menu.ConnectFolders(this, wxCommandEventHandler(BooksPanel::OnFolderAdd));
+	menu.ConnectAuthors(this, wxCommandEventHandler(BooksPanel::OnOpenAuthor));
     PopupMenu(&menu, pos.x, pos.y);
 }
 
@@ -259,6 +260,16 @@ void BooksPanel::OnFolderAdd(wxCommandEvent& event)
 	int folder = FbBookMenu::GetFolder(event.GetId());
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected(), folder );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void BooksPanel::OnOpenAuthor(wxCommandEvent& event)
+{
+	int author = FbBookMenu::GetAuthor(event.GetId());
+	if (author == 0) return;
+
+	wxCommandEvent subevent(fbEVT_BOOK_ACTION, ID_OPEN_AUTHOR);
+    subevent.SetInt(author);
+    wxPostEvent(wxGetApp().GetTopWindow(), subevent);
 }
 
 void BooksPanel::EmptyBooks(const wxString title)

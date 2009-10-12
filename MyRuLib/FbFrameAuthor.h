@@ -17,6 +17,7 @@ public:
     FbFrameAuthor() :FbFrameBase() {};
     FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
     void FindAuthor(const wxString &text);
+    void OpenAuthor(const int id);
     void SelectRandomLetter();
     void ActivateAuthors();
 protected:

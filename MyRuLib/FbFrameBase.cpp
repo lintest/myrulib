@@ -27,13 +27,17 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
     EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
-FbFrameBase::FbFrameBase()
-    : m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)), m_FilterLib(FbParams::GetValue(FB_FILTER_LIB))
+FbFrameBase::FbFrameBase() :
+	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
+	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
+	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR))
 {
 }
 
-FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-    : m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)), m_FilterLib(FbParams::GetValue(FB_FILTER_LIB))
+FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
+	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
+	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
+	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR))
 {
 	Create(parent, id, title);
 }
@@ -86,7 +90,7 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	menu->AppendSeparator();
 	menu->AppendCheckItem(ID_FILTER_FB2, _("Фильтр: только fb2-файлы"));
-	menu->AppendCheckItem(ID_FILTER_LIB, _("Фильтр: только файлы Либрусек"));
+	menu->AppendCheckItem(ID_FILTER_LIB, _("Фильтр: файлы Либрусек"));
 	menu->AppendCheckItem(ID_FILTER_USR, _("Фильтр: файлы пользователя"));
 	menu->AppendSeparator();
 	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));

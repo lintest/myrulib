@@ -29,6 +29,17 @@ void FbAuthorList::FillAuthorsText(const wxString & findText)
 	FillAuthors(result);
 }
 
+void FbAuthorList::FillAuthorsCode(const int code)
+{
+	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id=?");
+    FbCommonDatabase database;
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
+    stmt.Bind(1, code);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	FillAuthors(result);
+}
+
 void FbAuthorList::FillAuthors(wxSQLite3ResultSet & result)
 {
 	Freeze();

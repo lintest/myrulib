@@ -12,6 +12,7 @@ class FbAuthorList: public wxListBox
             :wxListBox(parent, id, wxDefaultPosition, wxDefaultSize, 0, NULL, style = 0) {};
         void FillAuthorsChar(const wxChar & findLetter);
         void FillAuthorsText(const wxString & findText);
+        void FillAuthorsCode(const int code);
     private:
         void FillAuthors(wxSQLite3ResultSet & result);
 };

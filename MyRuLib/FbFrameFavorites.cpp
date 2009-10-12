@@ -8,6 +8,10 @@ FbFrameFavorites::FbFrameFavorites(wxAuiMDIParentFrame * parent, wxWindowID id, 
 
 void FbFrameFavorites::CreateControls()
 {
-	SetSizer(new wxBoxSizer(wxVERTICAL));
-	SetMenuBar(CreateMenuBar());
+	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
+	m_Info.Create(this);
+	sizer->Add( &m_Info, 1, wxEXPAND, 5 );
+	SetSizer(sizer);
+	Layout();
 }
+

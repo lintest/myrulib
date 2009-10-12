@@ -102,6 +102,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbFrameBase.o \
 	build\myrulib_FbFrameBaseThread.o \
 	build\myrulib_FbFrameFavour.o \
+	build\myrulib_FbFrameInfo.o \
 	build\myrulib_FbFrameGenres.o \
 	build\myrulib_FbFrameSearch.o \
 	build\myrulib_FbGenres.o \
@@ -308,6 +309,9 @@ build\myrulib_FbFrameBaseThread.o: ./MyRuLib/FbFrameBaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameFavour.o: ./MyRuLib/FbFrameFavour.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameGenres.o: ./MyRuLib/FbFrameGenres.cpp

@@ -199,6 +199,8 @@
 		<Unit filename="FbFrameFavour.h" />
 		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
+		<Unit filename="FbFrameInfo.cpp" />
+		<Unit filename="FbFrameInfo.h" />
 		<Unit filename="FbFrameSearch.cpp" />
 		<Unit filename="FbFrameSearch.h" />
 		<Unit filename="FbGenres.cpp" />

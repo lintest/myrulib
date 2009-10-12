@@ -55,6 +55,7 @@ class BooksPanel: public wxSplitterWindow
         void OnChangeView(wxCommandEvent & event);
         void OnFavoritesAdd(wxCommandEvent & event);
         void OnFolderAdd(wxCommandEvent& event);
+        void OnOpenAuthor(wxCommandEvent& event);
         void OnOpenBook(wxCommandEvent & event);
         void OnImageClick(wxTreeEvent &event);
         void OnInfoUpdate(wxCommandEvent& event);

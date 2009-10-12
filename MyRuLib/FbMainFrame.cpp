@@ -21,7 +21,7 @@
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFavour.h"
-#include "FbFrameFavorites.h"
+#include "FbFrameInfo.h"
 #include "VacuumThread.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
@@ -50,6 +50,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
     EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
     EVT_COMMAND(ID_UPDATE_FOLDER, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateFolder)
+    EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
+    EVT_COMMAND(ID_OPEN_AUTHOR, fbEVT_BOOK_ACTION, FbMainFrame::OnOpenAuthor)
 END_EVENT_TABLE()
 
 FbMainFrame::FbMainFrame()
@@ -419,7 +421,12 @@ void FbMainFrame::OnMenuSearch(wxCommandEvent& event)
 
 void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 {
-    wxMessageBox(_("Функционал не реализован в данной версии."));
+	FbFrameInfo::Execute();
+}
+
+void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
+{
+	new FbFrameInfo(this, event.GetString());
 }
 
 void FbMainFrame::OnVacuum(wxCommandEvent & event)
@@ -434,4 +441,16 @@ void FbMainFrame::OnUpdateFolder(wxCommandEvent & event)
 {
     FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
 	if (frame) frame->UpdateFolder(event.GetInt());
+}
+
+void FbMainFrame::OnOpenAuthor(wxCommandEvent & event)
+{
+    FbFrameAuthor * frame = wxDynamicCast(FindFrameById(ID_FRAME_AUTHORS, true), FbFrameAuthor);
+	if (!frame) {
+	    frame = new FbFrameAuthor(this, ID_FRAME_AUTHORS, _("Авторы"));
+        GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+        frame->Update();
+	}
+
+	frame->OpenAuthor(event.GetInt());
 }
