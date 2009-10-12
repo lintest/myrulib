@@ -114,7 +114,7 @@
 		<optimize>speed</optimize>
 		<debug-info>off</debug-info>
 		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
-		<install-to cond="FORMAT=='gnu'">/bin</install-to>
+		<install-to cond="FORMAT=='gnu'">/usr/bin</install-to>
 	</exe>
 	
 	<if cond="FORMAT=='gnu'">

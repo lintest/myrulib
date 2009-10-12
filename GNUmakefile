@@ -181,11 +181,11 @@ build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
 	strip ./build/myrulib
 
 install_myrulib: build/myrulib
-	$(INSTALL) -d $(DESTDIR)/bin
-	install -c build/myrulib $(DESTDIR)/bin
+	$(INSTALL) -d $(DESTDIR)/usr/bin
+	install -c build/myrulib $(DESTDIR)/usr/bin
 
 uninstall_myrulib: 
-	rm -f $(DESTDIR)/bin/myrulib
+	rm -f $(DESTDIR)/usr/bin/myrulib
 
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
