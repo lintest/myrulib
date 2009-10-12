@@ -17,6 +17,7 @@ public:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
     bool m_FilterFb2;
     bool m_FilterLib;
+    bool m_FilterUsr;
 protected:
 	virtual void CreateControls() {};
 	virtual wxMenuBar * CreateMenuBar();
@@ -30,8 +31,7 @@ private:
 	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
-	void OnChangeFilterFb2UpdateUI(wxUpdateUIEvent & event);
-	void OnChangeFilterLibUpdateUI(wxUpdateUIEvent & event);
+	void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);
     void OnExternal(wxCommandEvent& event);
     void OnSubmenu(wxCommandEvent& event);
     void OnAppendBook(FbBookEvent& event);

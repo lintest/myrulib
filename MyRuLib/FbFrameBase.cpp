@@ -13,12 +13,14 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
     EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
     EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
     EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
+    EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
     EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
     EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
     EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
-    EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterFb2UpdateUI)
-    EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterLibUpdateUI)
+    EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
+    EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
+    EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
     EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
     EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
     EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
@@ -85,6 +87,7 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 	menu->AppendSeparator();
 	menu->AppendCheckItem(ID_FILTER_FB2, _("Фильтр: только fb2-файлы"));
 	menu->AppendCheckItem(ID_FILTER_LIB, _("Фильтр: только файлы Либрусек"));
+	menu->AppendCheckItem(ID_FILTER_USR, _("Фильтр: файлы пользователя"));
 	menu->AppendSeparator();
 	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	menu->AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
@@ -152,14 +155,13 @@ void FbFrameBase::SetListMode(FbParamKey key, FbListMode mode)
 	FbParams().SetValue(key, mode == FB2_MODE_TREE);
 }
 
-void FbFrameBase::OnChangeFilterFb2UpdateUI(wxUpdateUIEvent & event)
+void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
 {
-    if (event.GetId() == ID_FILTER_FB2) event.Check(m_FilterFb2);
-}
-
-void FbFrameBase::OnChangeFilterLibUpdateUI(wxUpdateUIEvent & event)
-{
-    if (event.GetId() == ID_FILTER_LIB) event.Check(m_FilterLib);
+	switch (event.GetId()) {
+		case ID_FILTER_FB2: event.Check(m_FilterFb2); break;
+		case ID_FILTER_LIB: event.Check(m_FilterLib); break;
+		case ID_FILTER_USR: event.Check(m_FilterUsr); break;
+	}
 }
 
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
@@ -171,14 +173,25 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 
 void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
 {
+	FbParams params;
     switch (event.GetId()) {
-        case ID_FILTER_FB2:
-            FbParams().SetValue(FB_FILTER_FB2, m_FilterFb2 = !m_FilterFb2);
-            break;
-        case ID_FILTER_LIB:
-            FbParams().SetValue(FB_FILTER_LIB, m_FilterLib = !m_FilterLib);
-            break;
+        case ID_FILTER_FB2: {
+			params.SetValue(FB_FILTER_FB2, m_FilterFb2 = !m_FilterFb2);
+		} break;
+        case ID_FILTER_LIB: {
+			params.SetValue(FB_FILTER_LIB, m_FilterLib = !m_FilterLib);
+			if (m_FilterLib) {
+				params.SetValue(FB_FILTER_USR, false);
+				m_FilterUsr = false;
+			}
+		} break;
+        case ID_FILTER_USR: {
+			params.SetValue(FB_FILTER_USR, m_FilterUsr = !m_FilterUsr);
+			if (m_FilterUsr) {
+				params.SetValue(FB_FILTER_LIB, false);
+				m_FilterLib = false;
+			}
+		} break;
     }
 	UpdateBooklist();
 }
-

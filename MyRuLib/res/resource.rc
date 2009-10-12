@@ -1,3 +1,3 @@
-aaaa ICON "library.ico"
+aaaa ICON "home.ico"
 
 #include "wx/msw/wx.rc"

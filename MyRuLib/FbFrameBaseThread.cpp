@@ -34,7 +34,8 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 
 	wxString str = wxT("(%s)");
 	if (m_FilterFb2) str += wxT("AND(books.file_type='fb2')");
-	if (m_FilterFb2) str += wxT("AND(books.id>0)");
+	if (m_FilterLib) str += wxT("AND(books.id>0)");
+	if (m_FilterUsr) str += wxT("AND(books.id<0)");
 	sql = wxString::Format(sql, str.c_str());
 
 	return wxString::Format(sql, condition.c_str());
