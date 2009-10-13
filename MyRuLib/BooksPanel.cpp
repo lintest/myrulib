@@ -8,8 +8,6 @@
 #include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
-	EVT_MENU(ID_SPLIT_VERTICAL, BooksPanel::OnChangeView)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListActivated)
@@ -28,36 +26,27 @@ BooksPanel::BooksPanel()
 {
 }
 
-BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
-    :wxSplitterWindow(parent, id, pos, size, style, wxT("bookspanel")), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
+bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, bool vertical)
 {
-    Create(parent, id, pos, size, style, substyle, name);
-}
-
-bool BooksPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
-{
-    bool res = wxSplitterWindow::Create(parent, id, pos, size, style, wxT("bookspanel"));
+    bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
     if (res) {
         SetMinimumPaneSize(50);
         SetSashGravity(0.5);
-        m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, substyle);
-        CreateBookInfo();
+        m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
+        CreateBookInfo(vertical);
     }
     return res;
 }
 
-void BooksPanel::CreateBookInfo()
+void BooksPanel::CreateBookInfo(bool bVertical)
 {
-    FbCommonDatabase database;
-    int vertical = FbParams().GetValue(FB_VIEW_TYPE);
-
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
 	m_BookInfo = new wxHtmlWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
 	m_BookInfo->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
-	if (vertical)
+	if (bVertical)
 		SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2);
 	else
 		SplitHorizontally(m_BookList, m_BookInfo, GetSize().GetHeight()/2);
@@ -131,14 +120,6 @@ void BooksPanel::OnImageClick(wxTreeEvent &event)
 		}
 	}
 	event.Veto();
-}
-
-void BooksPanel::OnChangeView(wxCommandEvent & event)
-{
-	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
-    FbCommonDatabase database;
-	FbParams().SetValue(FB_VIEW_TYPE, vertical);
-	CreateBookInfo();
 }
 
 void BooksPanel::OnBooksListActivated(wxTreeEvent & event)

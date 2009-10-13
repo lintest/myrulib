@@ -16,18 +16,7 @@ class BooksPanel: public wxSplitterWindow
 {
     public:
         BooksPanel();
-        BooksPanel(wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxSP_3D,
-                     long substyle = 0,
-                     const wxString& name = wxT("bookspanel"));
-        bool Create(wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxSP_3D,
-                     long substyle = 0,
-                     const wxString& name = wxT("bookspanel"));
+        bool Create(wxWindow *parent, const wxSize& size, long style, bool vertical);
     public:
         FbBookList * m_BookList;
         wxHtmlWindow * m_BookInfo;
@@ -39,8 +28,8 @@ class BooksPanel: public wxSplitterWindow
         void CreateColumns(FbListMode mode);
         FbListMode GetListMode() { return m_ListMode;};
         void SetFolder(int folder) { m_folder = folder; };
+        void CreateBookInfo(bool bVertical);
     private:
-        void CreateBookInfo();
         void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
         wxString m_AuthorName;
         FbListMode m_ListMode;
@@ -52,7 +41,6 @@ class BooksPanel: public wxSplitterWindow
         void OnBooksListActivated(wxTreeEvent & event);
         void OnBooksListKeyDown(wxTreeEvent & event);
         void OnBooksListCollapsing(wxTreeEvent & event);
-        void OnChangeView(wxCommandEvent & event);
         void OnFavoritesAdd(wxCommandEvent & event);
         void OnFolderAdd(wxCommandEvent& event);
         void OnOpenAuthor(wxCommandEvent& event);

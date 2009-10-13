@@ -5,10 +5,10 @@
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
     EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenu)
-	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
     EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
     EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
     EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
@@ -149,6 +149,11 @@ void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 	m_BooksPanel.AppendSequence( event.GetString() );
 }
 
+bool FbFrameBase::GetViewType(FbParamKey key)
+{
+	return (bool) FbParams::GetValue(key);
+}
+
 FbListMode FbFrameBase::GetListMode(FbParamKey key)
 {
 	return (bool)FbParams::GetValue(key) ? FB2_MODE_TREE : FB2_MODE_LIST;
@@ -168,11 +173,35 @@ void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
 	}
 }
 
+void FbFrameBase::OnChangeView(wxCommandEvent & event)
+{
+	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
+	m_BooksPanel.CreateBookInfo((bool)vertical);
+
+	int param = 0;
+	switch (GetId()) {
+		case ID_FRAME_AUTHORS: param = FB_VIEW_AUTHOR; break;
+		case ID_FRAME_GENRES:  param = FB_VIEW_GENRES; break;
+		case ID_FRAME_FAVOUR:  param = FB_VIEW_FAVOUR; break;
+		case ID_FRAME_SEARCH:  param = FB_VIEW_SEARCH; break;
+	}
+	FbParams().SetValue(param, vertical);
+}
+
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 {
 	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
 	m_BooksPanel.CreateColumns(mode);
 	UpdateBooklist();
+
+	int param = 0;
+	switch (GetId()) {
+		case ID_FRAME_AUTHORS: param = FB_MODE_AUTHOR; break;
+		case ID_FRAME_GENRES:  param = FB_MODE_GENRES; break;
+		case ID_FRAME_FAVOUR:  param = FB_MODE_FAVOUR; break;
+		case ID_FRAME_SEARCH:  param = FB_MODE_SEARCH; break;
+	}
+	if (param) FbParams().SetValue(param, mode);
 }
 
 void FbFrameBase::OnChangeFilter(wxCommandEvent& event)

@@ -23,12 +23,14 @@ protected:
 	virtual wxMenuBar * CreateMenuBar();
 	virtual void UpdateBooklist() = 0;
 	static FbListMode GetListMode(FbParamKey key);
+	static bool GetViewType(FbParamKey key);
 	static void SetListMode(FbParamKey key, FbListMode mode);
 protected:
     BooksPanel m_BooksPanel;
 private:
     void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);
+    void OnChangeView(wxCommandEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);
