@@ -1,6 +1,5 @@
 #include "BooksPanel.h"
 #include "FbConst.h"
-#include "FbParams.h"
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbBookMenu.h"
@@ -26,14 +25,15 @@ BooksPanel::BooksPanel()
 {
 }
 
-bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, bool vertical)
+bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 {
     bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
     if (res) {
         SetMinimumPaneSize(50);
         SetSashGravity(0.5);
         m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
-        CreateBookInfo(vertical);
+        CreateBookInfo( (bool) FbParams::GetValue(keyType) );
+		CreateColumns( (bool)FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
     }
     return res;
 }

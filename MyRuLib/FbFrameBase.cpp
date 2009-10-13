@@ -49,6 +49,11 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	return res;
 }
 
+void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
+{
+	m_BooksPanel.Create(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey());
+}
+
 wxMenuBar * FbFrameBase::CreateMenuBar()
 {
 	wxMenuBar * menuBar = new wxMenuBar;
@@ -149,21 +154,6 @@ void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 	m_BooksPanel.AppendSequence( event.GetString() );
 }
 
-bool FbFrameBase::GetViewType(FbParamKey key)
-{
-	return (bool) FbParams::GetValue(key);
-}
-
-FbListMode FbFrameBase::GetListMode(FbParamKey key)
-{
-	return (bool)FbParams::GetValue(key) ? FB2_MODE_TREE : FB2_MODE_LIST;
-}
-
-void FbFrameBase::SetListMode(FbParamKey key, FbListMode mode)
-{
-	FbParams().SetValue(key, mode == FB2_MODE_TREE);
-}
-
 void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
 {
 	switch (event.GetId()) {
@@ -173,19 +163,35 @@ void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
 	}
 }
 
+int FbFrameBase::GetModeKey()
+{
+	switch (GetId()) {
+		case ID_FRAME_AUTHORS: return FB_MODE_AUTHOR;
+		case ID_FRAME_GENRES:  return FB_MODE_GENRES;
+		case ID_FRAME_FAVOUR:  return FB_MODE_FAVOUR;
+		case ID_FRAME_SEARCH:  return FB_MODE_SEARCH;
+		default: return 0;
+	}
+}
+
+int FbFrameBase::GetViewKey()
+{
+	switch (GetId()) {
+		case ID_FRAME_AUTHORS: return FB_VIEW_AUTHOR;
+		case ID_FRAME_GENRES:  return FB_VIEW_GENRES;
+		case ID_FRAME_FAVOUR:  return FB_VIEW_FAVOUR;
+		case ID_FRAME_SEARCH:  return FB_VIEW_SEARCH;
+		default: return 0;
+	}
+}
+
 void FbFrameBase::OnChangeView(wxCommandEvent & event)
 {
 	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
 	m_BooksPanel.CreateBookInfo((bool)vertical);
 
-	int param = 0;
-	switch (GetId()) {
-		case ID_FRAME_AUTHORS: param = FB_VIEW_AUTHOR; break;
-		case ID_FRAME_GENRES:  param = FB_VIEW_GENRES; break;
-		case ID_FRAME_FAVOUR:  param = FB_VIEW_FAVOUR; break;
-		case ID_FRAME_SEARCH:  param = FB_VIEW_SEARCH; break;
-	}
-	FbParams().SetValue(param, vertical);
+	int param = GetViewKey();
+	if (param) FbParams().SetValue(param, vertical);
 }
 
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
@@ -194,13 +200,7 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 	m_BooksPanel.CreateColumns(mode);
 	UpdateBooklist();
 
-	int param = 0;
-	switch (GetId()) {
-		case ID_FRAME_AUTHORS: param = FB_MODE_AUTHOR; break;
-		case ID_FRAME_GENRES:  param = FB_MODE_GENRES; break;
-		case ID_FRAME_FAVOUR:  param = FB_MODE_FAVOUR; break;
-		case ID_FRAME_SEARCH:  param = FB_MODE_SEARCH; break;
-	}
+	int param = GetModeKey();
 	if (param) FbParams().SetValue(param, mode);
 }
 

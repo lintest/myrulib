@@ -6,6 +6,7 @@
 #include <wx/html/htmlwin.h>
 #include "FbBookList.h"
 #include "FbBookData.h"
+#include "FbParams.h"
 
 enum FbListMode {
     FB2_MODE_TREE = 0,
@@ -16,7 +17,7 @@ class BooksPanel: public wxSplitterWindow
 {
     public:
         BooksPanel();
-        bool Create(wxWindow *parent, const wxSize& size, long style, bool vertical);
+        bool Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
     public:
         FbBookList * m_BookList;
         wxHtmlWindow * m_BookInfo;

@@ -29,10 +29,8 @@ void FbFrameSearch::CreateControls()
 	bSizer1->Add( toolbar, 0, wxGROW);
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(this, wxSize(500, 400), substyle, GetViewType(FB_VIEW_SEARCH));
+	CreateBooksPanel(this, substyle);
 	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_SEARCH));
 
 	SetSizer( bSizer1 );
 	Layout();

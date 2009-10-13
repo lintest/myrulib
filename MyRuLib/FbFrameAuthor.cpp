@@ -51,10 +51,8 @@ void FbFrameAuthor::CreateControls()
 	m_AuthorList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(splitter, wxSize(500, 400), substyle, GetViewType(FB_VIEW_AUTHOR));
+	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_AuthorList, &m_BooksPanel, 160);
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_AUTHOR));
 
 	SetMenuBar(CreateMenuBar());
 	Layout();

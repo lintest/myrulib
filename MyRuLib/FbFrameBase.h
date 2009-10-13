@@ -22,10 +22,10 @@ protected:
 	virtual void CreateControls() {};
 	virtual wxMenuBar * CreateMenuBar();
 	virtual void UpdateBooklist() = 0;
-	static FbListMode GetListMode(FbParamKey key);
-	static bool GetViewType(FbParamKey key);
-	static void SetListMode(FbParamKey key, FbListMode mode);
+	int GetModeKey();
+	int GetViewKey();
 protected:
+	void CreateBooksPanel(wxWindow * parent, long substyle);
     BooksPanel m_BooksPanel;
 private:
     void OnChangeFilter(wxCommandEvent& event);

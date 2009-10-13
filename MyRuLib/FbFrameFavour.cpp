@@ -56,10 +56,8 @@ void FbFrameFavour::CreateControls()
 	FillFolders();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(splitter, wxSize(500, 400), substyle, GetViewType(FB_VIEW_FAVOUR));
+	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_FolderList, &m_BooksPanel, 160);
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_FAVOUR));
 
 	SetSizer( bSizer1 );
 	Layout();
