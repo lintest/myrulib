@@ -3,6 +3,12 @@
 #include "ImpContext.h"
 #include "FbManager.h"
 
+FbAuthorList::FbAuthorList(wxWindow * parent, wxWindowID id)
+	:FbTreeListCtrl(parent, id, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER)
+{
+	this->AddColumn(_("Автор"), 10, wxALIGN_LEFT);
+}
+
 void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
 {
 	wxString sql = wxT("SELECT id, full_name FROM authors WHERE letter=? ORDER BY search_name");
@@ -42,14 +48,17 @@ void FbAuthorList::FillAuthorsCode(const int code)
 
 void FbAuthorList::FillAuthors(wxSQLite3ResultSet & result)
 {
-	Freeze();
-	Clear();
+	FbTreeListUpdater(this);
+
+	DeleteRoot();
+	wxTreeItemId root = AddRoot(wxEmptyString);
 
     while (result.NextRow()) {
         int id = result.GetInt(wxT("id"));
+        FbAuthorData * data = new FbAuthorData(id);
         wxString name = result.GetString(wxT("full_name"));
-        Append(name, new FbClientData(id));
+		wxTreeItemId item = AppendItem(root, name, -1, -1, data);
     }
 
-	Thaw();
+    Expand(root);
 }

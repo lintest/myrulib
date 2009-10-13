@@ -29,12 +29,12 @@ private:
 	void SelectFirstAuthor();
 	BookTreeItemData * GetSelectedBook();
 private:
-	FbAuthorList * m_AuthorsListBox;
+	FbAuthorList * m_AuthorList;
 	wxSplitterWindow * m_BooksSplitter;
     wxToolBar * m_RuAlphabar;
     wxToolBar * m_EnAlphabar;
 private:
-	void OnAuthorsListBoxSelected(wxCommandEvent & event);
+    void OnAuthorSelected(wxTreeEvent & event);
 	void OnLetterClicked(wxCommandEvent& event);
     void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

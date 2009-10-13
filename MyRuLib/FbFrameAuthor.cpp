@@ -9,7 +9,7 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
-    EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
+    EVT_TREE_SEL_CHANGED(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorSelected)
     EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 END_EVENT_TABLE()
 
@@ -47,12 +47,12 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_AuthorsListBox = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
-	m_AuthorsListBox->SetFocus();
+	m_AuthorList = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
+	m_AuthorList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER, substyle);
-	splitter->SplitVertically(m_AuthorsListBox, &m_BooksPanel, 160);
+	splitter->SplitVertically(m_AuthorList, &m_BooksPanel, 160);
 
     m_BooksPanel.CreateColumns(FB2_MODE_TREE);
 
@@ -102,43 +102,49 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
     ToggleAlphabar(id);
 
-	m_AuthorsListBox->FillAuthorsChar(alphabet[position]);
+	m_AuthorList->FillAuthorsChar(alphabet[position]);
 	SelectFirstAuthor();
 }
 
 void FbFrameAuthor::SelectFirstAuthor()
 {
-	if(m_AuthorsListBox->GetCount()) {
-		m_AuthorsListBox->SetSelection(0);
-		FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
+	m_BooksPanel.EmptyBooks();
+
+    wxTreeItemIdValue cookie;
+    wxTreeItemId item = m_AuthorList->GetFirstChild(m_AuthorList->GetRootItem(), cookie);
+	if (item.IsOk()) {
+		m_AuthorList->SelectItem(item);
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(item);
         if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetID());
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
         }
-	} else {
-		m_BooksPanel.EmptyBooks();
 	}
 }
 
-void FbFrameAuthor::OnAuthorsListBoxSelected(wxCommandEvent & event)
+void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 {
-	FbClientData * data = (FbClientData*)event.GetClientObject();
-	if (data) {
-		wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetID());
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+        m_BooksPanel.EmptyBooks();
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(selected);
+		if (data) {
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
+			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+		}
 	}
 }
 
 void FbFrameAuthor::ActivateAuthors()
 {
-    m_AuthorsListBox->SetFocus();
+    m_AuthorList->SetFocus();
 }
 
 void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
     ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsText(text);
+    m_AuthorList->FillAuthorsText(text);
     SelectFirstAuthor();
 }
 
@@ -146,7 +152,7 @@ void FbFrameAuthor::OpenAuthor(const int id)
 {
 	if (id == 0) return;
     ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsCode(id);
+    m_AuthorList->FillAuthorsCode(id);
     SelectFirstAuthor();
 }
 
@@ -162,11 +168,11 @@ void FbFrameAuthor::SelectRandomLetter()
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
-    int iSelected = m_AuthorsListBox->GetSelection();
-    if (iSelected == wxNOT_FOUND) return;
-    FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(iSelected);
-
-    ExternalDlg::Execute(this, m_BooksPanel.m_BookList, data->GetID());
+    wxTreeItemId item = m_AuthorList->GetSelection();
+    if (item.IsOk()) {
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(item);
+		if (data) ExternalDlg::Execute(this, m_BooksPanel.m_BookList, data->GetId());
+    }
 }
 
 FbThreadSkiper FrameAuthorThread::sm_skiper;
@@ -267,9 +273,13 @@ void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 
 void FbFrameAuthor::UpdateBooklist()
 {
-	FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
-	if (data) {
-		wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetID());
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	wxTreeItemId selected = m_AuthorList->GetSelection();
+	if (selected.IsOk()) {
+        m_BooksPanel.EmptyBooks();
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(selected);
+		if (data) {
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
+			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+		}
 	}
 }
