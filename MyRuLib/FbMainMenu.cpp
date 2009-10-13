@@ -6,10 +6,10 @@ FbMainMenu::FbMainMenu(): wxMenuBar()
 	FbMenu * menu;
 
 	menu = new FbMenu;
-	menu->AppendImg(wxID_NEW, _("Добавить файл"), wxART_NEW);
-	menu->AppendImg(wxID_OPEN, _("Добавить директорию"), wxART_FOLDER_OPEN);
+	menu->AppendImg(wxID_NEW, _("Добавить файл\tCtrl+N"), wxART_NEW);
+	menu->AppendImg(wxID_OPEN, _("Добавить директорию\tCtrl+O"), wxART_FOLDER_OPEN);
 	menu->AppendSeparator();
-	menu->AppendImg(wxID_EXIT, _("Выход\tAlt+F4"), wxART_QUIT);
+	menu->AppendImg(wxID_EXIT, _("Выход\tAlt-F4"), wxART_QUIT);
 	Append(menu, _("&Файл"));
 
 	menu = new FbMenu;

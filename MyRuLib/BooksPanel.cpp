@@ -282,12 +282,22 @@ void BooksPanel::AppendSequence(const wxString title)
 	m_BookList->Expand(parent);
 }
 
+wxString BooksPanel::F(const int number)
+{
+	int hi = number / 1000;
+	int lo = number % 1000;
+	if (hi)
+		return F(hi) + wxT(" ") + wxString::Format(wxT("%03d"), lo);
+	else
+		return wxString::Format(wxT("%d"), lo);
+}
+
 void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 {
 	FbTreeListUpdater updater(m_BookList);
 
 	wxString file_type = data->file_type + wxT(" ");
-	wxString file_size = wxString::Format(wxT("%d "), data->file_size/1024);
+	wxString file_size = F(data->file_size/1024) + wxT(" ");
 	wxTreeItemId parent;
 
     switch (m_ListMode) {

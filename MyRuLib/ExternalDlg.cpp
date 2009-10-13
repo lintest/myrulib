@@ -261,30 +261,19 @@ void ExternalDlg::FillBooks(const wxString &selections)
     }
     m_filenames.Empty();
 
-	m_books->Freeze();
-    m_books->DeleteRoot();
+    FbTreeListUpdater updater(m_books);
 
+    m_books->DeleteRoot();
     wxTreeItemId root = m_books->AddRoot(wxT("root"));
     m_books->SetItemBold(root, true);
 
     int iFormat = FbParams::GetValue(FB_FOLDER_FORMAT);
     switch (iFormat) {
-        case 0:
-            FullBySequences(root, selections, true);
-            break;
-        case 1:
-            FullNoSequences(root, selections, true);
-            break;
-        case 2:
-            FullBySequences(root, selections, false);
-            break;
-        case 3:
-            FullNoSequences(root, selections, false);
-            break;
+        case 0: FullBySequences(root, selections, true);  break;
+        case 1: FullNoSequences(root, selections, true);  break;
+        case 2: FullBySequences(root, selections, false); break;
+        case 3: FullNoSequences(root, selections, false); break;
     }
-
-    m_books->ExpandAll(root);
-	m_books->Thaw();
 }
 
 void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
@@ -347,6 +336,7 @@ wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxStrin
     if (FbParams::GetValue(FB_TRANSLIT_FOLDER)) newname = Translit(newname);
 	wxTreeItemId item = m_books->AppendItem(parent, newname );
 	m_books->SetItemBold(item, true);
+	m_books->Expand(parent);
 	return item;
 }
 
@@ -398,6 +388,7 @@ void ExternalDlg::AppendBook(const wxTreeItemId &parent, BookTreeItemData &data)
 {
     wxTreeItemId item = m_books->AppendItem(parent, GetFilename(parent, data), -1, -1, new BookTreeItemData(data));
     m_books->SetItemText (item, 1, wxString::Format(wxT("%d "), data.file_size*m_scale/100/1024));
+	m_books->Expand(parent);
 }
 
 void ExternalDlg::OnSelectDir( wxCommandEvent& event )

@@ -32,6 +32,7 @@ class BooksPanel: public wxSplitterWindow
         void CreateBookInfo(bool bVertical);
     private:
         void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
+        wxString F(const int number);
         wxString m_AuthorName;
         FbListMode m_ListMode;
         wxTreeItemId m_AuthorItem;
