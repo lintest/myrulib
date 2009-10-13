@@ -16,7 +16,7 @@ class FbFrameSearch : public FbFrameBase
 public:
     static void Execute(wxAuiMDIParentFrame * parent, const wxString &title);
 	FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title = wxEmptyString);
-    BookListCtrl * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
+    FbBookList * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();

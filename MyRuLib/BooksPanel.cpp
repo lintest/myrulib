@@ -40,7 +40,7 @@ bool BooksPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, con
     if (res) {
         SetMinimumPaneSize(50);
         SetSashGravity(0.5);
-        m_BookList = new BookListCtrl(this, ID_BOOKS_LISTCTRL, substyle);
+        m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, substyle);
         CreateBookInfo();
     }
     return res;

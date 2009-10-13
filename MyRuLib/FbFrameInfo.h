@@ -9,7 +9,8 @@
 class FbFrameInfo: public wxAuiMDIChildFrame
 {
 public:
-	FbFrameInfo(wxAuiMDIParentFrame * parent, const wxString & html);
+	FbFrameInfo(wxAuiMDIParentFrame * parent);
+	void Load(const wxString & html);
 	static void Execute();
 protected:
 	virtual void CreateControls();

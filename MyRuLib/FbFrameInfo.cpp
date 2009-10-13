@@ -8,12 +8,16 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
-FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent, const wxString & html)
+FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
     :wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Информация"))
 {
 	CreateControls();
+}
+
+void FbFrameInfo::Load(const wxString & html)
+{
 	m_info.SetPage(html);
-//	wxRemoveFile(filename);
+    m_info.SetFocus();
 }
 
 void FbFrameInfo::CreateControls()

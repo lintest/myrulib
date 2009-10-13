@@ -487,7 +487,7 @@ bool ExternalDlg::ExportBooks()
     return true;
 }
 
-bool ExternalDlg::Execute(wxWindow* parent, BookListCtrl* bookList, int iAuthor)
+bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
 {
     wxString selections = bookList->GetSelected();
 

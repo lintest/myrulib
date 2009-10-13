@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
-#include "BookListCtrl.h"
+#include "FbBookList.h"
 #include "FbBookData.h"
 
 enum FbListMode {
@@ -29,7 +29,7 @@ class BooksPanel: public wxSplitterWindow
                      long substyle = 0,
                      const wxString& name = wxT("bookspanel"));
     public:
-        BookListCtrl * m_BookList;
+        FbBookList * m_BookList;
         wxHtmlWindow * m_BookInfo;
         BookTreeItemData * GetSelectedBook();
         void EmptyBooks(const wxString title = wxEmptyString);
