@@ -41,10 +41,8 @@ void FbFrameGenres::CreateControls()
 	FbGenres::FillControl(m_GenresList);
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
+	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_GenresList, &m_BooksPanel, 160);
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_GENRES));
 
 	SetSizer( bSizer1 );
 	Layout();

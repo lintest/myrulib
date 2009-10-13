@@ -4,8 +4,9 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
-#include "BookListCtrl.h"
+#include "FbBookList.h"
 #include "FbBookData.h"
+#include "FbParams.h"
 
 enum FbListMode {
     FB2_MODE_TREE = 0,
@@ -16,20 +17,9 @@ class BooksPanel: public wxSplitterWindow
 {
     public:
         BooksPanel();
-        BooksPanel(wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxSP_3D,
-                     long substyle = 0,
-                     const wxString& name = wxT("bookspanel"));
-        bool Create(wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxSP_3D,
-                     long substyle = 0,
-                     const wxString& name = wxT("bookspanel"));
+        bool Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
     public:
-        BookListCtrl * m_BookList;
+        FbBookList * m_BookList;
         wxHtmlWindow * m_BookInfo;
         BookTreeItemData * GetSelectedBook();
         void EmptyBooks(const wxString title = wxEmptyString);
@@ -39,8 +29,8 @@ class BooksPanel: public wxSplitterWindow
         void CreateColumns(FbListMode mode);
         FbListMode GetListMode() { return m_ListMode;};
         void SetFolder(int folder) { m_folder = folder; };
+        void CreateBookInfo(bool bVertical);
     private:
-        void CreateBookInfo();
         void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
         wxString m_AuthorName;
         FbListMode m_ListMode;
@@ -52,7 +42,6 @@ class BooksPanel: public wxSplitterWindow
         void OnBooksListActivated(wxTreeEvent & event);
         void OnBooksListKeyDown(wxTreeEvent & event);
         void OnBooksListCollapsing(wxTreeEvent & event);
-        void OnChangeView(wxCommandEvent & event);
         void OnFavoritesAdd(wxCommandEvent & event);
         void OnFolderAdd(wxCommandEvent& event);
         void OnOpenAuthor(wxCommandEvent& event);

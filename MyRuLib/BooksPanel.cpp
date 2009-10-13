@@ -1,6 +1,5 @@
 #include "BooksPanel.h"
 #include "FbConst.h"
-#include "FbParams.h"
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbBookMenu.h"
@@ -8,8 +7,6 @@
 #include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, BooksPanel::OnChangeView)
-	EVT_MENU(ID_SPLIT_VERTICAL, BooksPanel::OnChangeView)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
     EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListActivated)
@@ -28,36 +25,28 @@ BooksPanel::BooksPanel()
 {
 }
 
-BooksPanel::BooksPanel(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
-    :wxSplitterWindow(parent, id, pos, size, style, wxT("bookspanel")), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
+bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 {
-    Create(parent, id, pos, size, style, substyle, name);
-}
-
-bool BooksPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, long substyle, const wxString& name)
-{
-    bool res = wxSplitterWindow::Create(parent, id, pos, size, style, wxT("bookspanel"));
+    bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
     if (res) {
         SetMinimumPaneSize(50);
         SetSashGravity(0.5);
-        m_BookList = new BookListCtrl(this, ID_BOOKS_LISTCTRL, substyle);
-        CreateBookInfo();
+        m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
+        CreateBookInfo( (bool) FbParams::GetValue(keyType) );
+		CreateColumns( (bool)FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
     }
     return res;
 }
 
-void BooksPanel::CreateBookInfo()
+void BooksPanel::CreateBookInfo(bool bVertical)
 {
-    FbCommonDatabase database;
-    int vertical = FbParams().GetValue(FB_VIEW_TYPE);
-
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
 	m_BookInfo = new wxHtmlWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
 	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
 	m_BookInfo->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
-	if (vertical)
+	if (bVertical)
 		SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2);
 	else
 		SplitHorizontally(m_BookList, m_BookInfo, GetSize().GetHeight()/2);
@@ -131,14 +120,6 @@ void BooksPanel::OnImageClick(wxTreeEvent &event)
 		}
 	}
 	event.Veto();
-}
-
-void BooksPanel::OnChangeView(wxCommandEvent & event)
-{
-	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
-    FbCommonDatabase database;
-	FbParams().SetValue(FB_VIEW_TYPE, vertical);
-	CreateBookInfo();
 }
 
 void BooksPanel::OnBooksListActivated(wxTreeEvent & event)
@@ -288,7 +269,7 @@ void BooksPanel::AppendAuthor(const wxString title)
 	wxTreeItemId parent = m_BookList->GetRootItem();
 	m_AuthorItem = m_BookList->AppendItem(parent, title, 0);
 	m_BookList->SetItemBold(m_AuthorItem, true);
-	m_BookList->Expand( parent );
+	m_BookList->Expand(parent);
 }
 
 void BooksPanel::AppendSequence(const wxString title)
@@ -298,7 +279,7 @@ void BooksPanel::AppendSequence(const wxString title)
 	wxTreeItemId parent = m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem();
 	m_SequenceItem = m_BookList->AppendItem(parent, text, 0);
 	m_BookList->SetItemBold(m_SequenceItem, true);
-	m_BookList->Expand( parent );
+	m_BookList->Expand(parent);
 }
 
 void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
@@ -307,26 +288,25 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 
 	wxString file_type = data->file_type + wxT(" ");
 	wxString file_size = wxString::Format(wxT("%d "), data->file_size/1024);
+	wxTreeItemId parent;
 
     switch (m_ListMode) {
         case FB2_MODE_TREE: {
-			wxTreeItemId parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
+			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
 			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			if (data->number) m_BookList->SetItemText(item, 1, wxString::Format(wxT(" %d "), data->number));
 			m_BookList->SetItemText(item, 2, file_type);
 			m_BookList->SetItemText(item, 3, file_size);
-			m_BookList->Expand( m_AuthorItem );
-			m_BookList->Expand( m_SequenceItem );
         } break;
         case FB2_MODE_LIST: {
-			wxTreeItemId parent = m_BookList->GetRootItem();
+			parent = m_BookList->GetRootItem();
 			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, authors);
 			m_BookList->SetItemText(item, 2, file_type);
 			m_BookList->SetItemText(item, 3, file_size);
         } break;
     }
-	m_BookList->Expand( m_BookList->GetRootItem() );
+	m_BookList->Expand(parent);
 }
 
 void BooksPanel::CreateColumns(FbListMode mode)

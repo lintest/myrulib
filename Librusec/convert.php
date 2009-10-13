@@ -416,9 +416,15 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("commit;");
 }
 
+$mysql_srvr = 'localhost';
+$mysql_user = 'root';
+$mysql_pass = '';
+$mysql_base = 'librusec';
+
+include('settings.php');
 
 $sqlite_db = new PDO('sqlite:./myrulib.db');
-$mysql_db = new mysqli('localhost', 'root', '', 'librusec');
+$mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
 create_tables($sqlite_db);

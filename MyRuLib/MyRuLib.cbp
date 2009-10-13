@@ -167,8 +167,8 @@
 		<Unit filename="BaseThread.h" />
 		<Unit filename="BookExtractInfo.cpp" />
 		<Unit filename="BookExtractInfo.h" />
-		<Unit filename="BookListCtrl.cpp" />
-		<Unit filename="BookListCtrl.h" />
+		<Unit filename="FbBookList.cpp" />
+		<Unit filename="FbBookList.h" />
 		<Unit filename="BooksPanel.cpp" />
 		<Unit filename="BooksPanel.h" />
 		<Unit filename="ExpThread.cpp" />

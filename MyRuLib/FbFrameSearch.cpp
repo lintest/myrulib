@@ -11,7 +11,7 @@ BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
-    :FbFrameBase(parent, wxID_ANY, title)
+    :FbFrameBase(parent, ID_FRAME_SEARCH, title)
 {
     CreateControls();
 }
@@ -29,10 +29,8 @@ void FbFrameSearch::CreateControls()
 	bSizer1->Add( toolbar, 0, wxGROW);
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
+	CreateBooksPanel(this, substyle);
 	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_SEARCH));
 
 	SetSizer( bSizer1 );
 	Layout();
@@ -115,6 +113,7 @@ void FbFrameSearch::UpdateBooklist()
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)
 {
-	wxMessageBox(wxT("Ничего не найдено."), wxT("Поиск"));
+	wxString msg = wxString::Format(_("Ничего не найдено по шаблону «%s»"), m_title.c_str());
+	wxMessageBox(msg, wxT("Поиск"));
 	Close();
 }

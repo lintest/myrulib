@@ -24,7 +24,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
-#include "BookListCtrl.h"
+#include "FbBookList.h"
 #include "FbBookData.h"
 #include "ExpThread.h"
 #include "FbConst.h"
@@ -38,13 +38,15 @@ class ExternalDlg : public wxDialog
 	public:
 		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);
 		~ExternalDlg();
-		static bool Execute(wxWindow* parent, BookListCtrl* books, int iAuthor = ciNoAuthor);
+		static bool Execute(wxWindow* parent, FbBookList* books, int iAuthor = ciNoAuthor);
 	private:
         void FillBooks(const wxString &selections);
         void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
         void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
+        wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
         void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
         wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
+        wxString Translit(const wxString &filename);
         wxString NormalizeDirname(const wxString &filename);
         void ChangeFilesExt(const wxTreeItemId &parent);
         void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);

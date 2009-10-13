@@ -73,7 +73,8 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 		wxIcon icon(wxT("aaaa"));
 		SetIcon(icon);
         #else
-		SetIcon(wxArtProvider::GetIcon(wxART_FRAME_ICON));
+        wxIcon icon(wxT("/usr/share/myrulib/home_32x32.png"));
+        SetIcon(icon, wxBITMAP_TYPE_PNG);
         #endif
 	}
 	return res;
@@ -424,11 +425,6 @@ void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 	FbFrameInfo::Execute();
 }
 
-void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
-{
-	new FbFrameInfo(this, event.GetString());
-}
-
 void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
     wxString msg = _("Выполнить реструктуризацию базы данных?");
@@ -453,4 +449,15 @@ void FbMainFrame::OnOpenAuthor(wxCommandEvent & event)
 	}
 
 	frame->OpenAuthor(event.GetInt());
+}
+
+void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
+{
+    FbFrameInfo * frame = wxDynamicCast(FindFrameById(ID_FRAME_INFO, true), FbFrameInfo);
+	if (!frame) {
+	    frame = new FbFrameInfo(this);
+        GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+        frame->Update();
+	}
+	frame->Load(event.GetString());
 }

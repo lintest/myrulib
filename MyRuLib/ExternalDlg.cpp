@@ -104,22 +104,15 @@ const LetterReplace strTranslitArray[] = {
     {wxT('я'), wxT("ja")}
 };
 
-wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &data)
+
+wxString ExternalDlg::Translit(const wxString &filename)
 {
-    const wxString filename = data.title;
-
-    wxString filepath = wxT("/");
-    wxTreeItemId node = parent;
-    while (node.IsOk()) {
-        filepath = m_books->GetItemText(node) + wxT("/") + filepath;
-        node = m_books->GetItemParent(node);
-    }
-
-    size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
-
     wxString newname;
+    size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
     for (size_t i=0; i<filename.Len(); i++) {
-        wxChar letter = filename[i];
+        wxString str = filename.Mid(i, 1);
+        if (str.IsEmpty()) continue;
+        wxChar letter = str[0];
         if (strNormalSymbols.Find(letter) != wxNOT_FOUND) {
             wxString substr = letter;
             for (size_t j=0; j<size; j++)
@@ -130,7 +123,20 @@ wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &
             newname += substr;
         }
     }
+    return newname;
+}
 
+wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &data)
+{
+    wxString newname = data.title;
+    wxString filepath = wxT("/");
+    wxTreeItemId node = parent;
+    while (node.IsOk()) {
+        filepath = m_books->GetItemText(node) + wxT("/") + filepath;
+        node = m_books->GetItemParent(node);
+    }
+
+    if (FbParams::GetValue(FB_TRANSLIT_FILE)) newname = Translit(newname);
     while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
     while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
 
@@ -313,7 +319,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
                 thisLeter = nextLetter;
                 itemAuthor = NULL;
                 itemSequence = NULL;
-                itemLetter = m_books->AppendItem(root, thisLeter);
+                itemLetter = AppendFolder(root, thisLeter);
                 m_books->SetItemBold(itemLetter, true);
             }
 	    } else {
@@ -322,17 +328,26 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 	    if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
 	        thisAuthor = nextAuthor;
 	        itemSequence = NULL;
-            itemAuthor = m_books->AppendItem(itemLetter, thisAuthor);
+            itemAuthor = AppendFolder(itemLetter, thisAuthor);
             m_books->SetItemBold(itemAuthor, true);
 	    }
 	    if (thisSequence != nextSequence || !itemSequence.IsOk()) {
 	        thisSequence = nextSequence;
-            itemSequence = m_books->AppendItem(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
+            itemSequence = AppendFolder(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
             m_books->SetItemBold(itemSequence, true);
 	    }
         AppendBook(itemSequence, data);
         books.Add(data.GetId());
 	}
+}
+
+wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxString & name)
+{
+	wxString newname = name;
+    if (FbParams::GetValue(FB_TRANSLIT_FOLDER)) newname = Translit(newname);
+	wxTreeItemId item = m_books->AppendItem(parent, newname );
+	m_books->SetItemBold(item, true);
+	return item;
 }
 
 void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
@@ -363,7 +378,7 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
             if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
                 thisLeter = nextLetter;
                 itemAuthor = NULL;
-                itemLetter = m_books->AppendItem(root, thisLeter);
+                itemLetter = AppendFolder(root, thisLeter);
                 m_books->SetItemBold(itemLetter, true);
             }
 	    } else {
@@ -371,7 +386,7 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
 	    }
 	    if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
 	        thisAuthor = nextAuthor;
-            itemAuthor = m_books->AppendItem(itemLetter, thisAuthor);
+            itemAuthor = AppendFolder(itemLetter, thisAuthor);
             m_books->SetItemBold(itemAuthor, true);
 	    }
         AppendBook(itemAuthor, data);
@@ -487,7 +502,7 @@ bool ExternalDlg::ExportBooks()
     return true;
 }
 
-bool ExternalDlg::Execute(wxWindow* parent, BookListCtrl* bookList, int iAuthor)
+bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
 {
     wxString selections = bookList->GetSelected();
 
