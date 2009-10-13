@@ -23,7 +23,7 @@ END_EVENT_TABLE()
 
 const wxString strNormalSymbols = wxT("\
 .()-_0123456789 \
-ABCDEFGHIJKLMNOPQRSTUVWXWZ\
+ABCDEFGHIJKLMNOPQRSTUVWXYZ\
 abcdefghijklmnopqrstuvwxyz\
 АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\
 абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
