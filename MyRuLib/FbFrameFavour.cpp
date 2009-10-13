@@ -26,12 +26,12 @@ FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent, wxWindowID id,const w
 
 void FbFrameFavour::CreateControls()
 {
+	SetMenuBar(new FbFrameBaseMenu);
+
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	SetMenuBar(CreateMenuBar());
 
 	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
 

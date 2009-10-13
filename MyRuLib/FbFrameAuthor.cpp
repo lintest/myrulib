@@ -36,6 +36,8 @@ FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const 
 
 void FbFrameAuthor::CreateControls()
 {
+	SetMenuBar(new FbFrameBaseMenu);
+
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
@@ -54,7 +56,6 @@ void FbFrameAuthor::CreateControls()
 	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_AuthorList, &m_BooksPanel, 160);
 
-	SetMenuBar(CreateMenuBar());
 	Layout();
 }
 

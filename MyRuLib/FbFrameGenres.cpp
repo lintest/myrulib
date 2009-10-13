@@ -19,12 +19,12 @@ FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id,const w
 
 void FbFrameGenres::CreateControls()
 {
+	SetMenuBar(new FbFrameBaseMenu);
+
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	SetMenuBar(CreateMenuBar());
 
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizer1->Add( toolbar, 0, wxGROW);

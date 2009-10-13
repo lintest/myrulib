@@ -45,71 +45,16 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
 {
 	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
-	if (res) CreateControls();
+	if (res) {
+		SetMenuBar(new FbFrameBaseMenu);
+		CreateControls();
+	}
 	return res;
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
 {
 	m_BooksPanel.Create(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey());
-}
-
-wxMenuBar * FbFrameBase::CreateMenuBar()
-{
-	wxMenuBar * menuBar = new wxMenuBar;
-	FbMenu * menu;
-
-	menu = new FbMenu;
-	menu->AppendImg(wxID_NEW, _("Добавить файл"), wxART_NEW);
-	menu->AppendImg(wxID_OPEN, _("Добавить директорию"), wxART_FOLDER_OPEN);
-	menu->AppendSeparator();
-	menu->AppendImg(wxID_SAVE, _("Записать на устройство"), wxART_FILE_SAVE);
-	menu->AppendSeparator();
-	menu->AppendImg(wxID_EXIT, _("Выход\tAlt+F4"), wxART_QUIT);
-	menuBar->Append(menu, _("&Файл"));
-
-	menu = new FbMenu;
-	menu->AppendImg(ID_MENU_SEARCH, _("Расширенный"), wxART_FIND);
-	menu->AppendSeparator();
-	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
-	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
-	menu->Append(ID_FRAME_GENRES, _("по Жанрам"));
-	menu->AppendSeparator();
-	menu->Append(ID_FRAME_FAVOUR, _("Избранное"));
-	menuBar->Append(menu, _("&Поиск"));
-
-	menu = new FbMenu;
-	menu->Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
-	menu->Append(ID_UNSELECTALL, _("Отменить выделение"));
-	menuBar->Append(menu, _("&Книги"));
-
-	menu = new FbMenu;
-	menu->Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
-	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
-	menu->AppendSeparator();
-	menu->Append(wxID_PREFERENCES, _("Настройки"));
-	menuBar->Append(menu, _("&Сервис"));
-
-	menu = new FbMenu;
-	menu->AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
-	menu->AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
-	menu->AppendSeparator();
-	menu->AppendCheckItem(ID_FILTER_FB2, _("Фильтр: только fb2-файлы"));
-	menu->AppendCheckItem(ID_FILTER_LIB, _("Фильтр: файлы Либрусек"));
-	menu->AppendCheckItem(ID_FILTER_USR, _("Фильтр: файлы пользователя"));
-	menu->AppendSeparator();
-	menu->AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
-	menu->AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
-	menu->AppendSeparator();
-	menu->Append(ID_LOG_TEXTCTRL, _("Скрыть окно сообщений\tCtrl+Z"));
-	menuBar->Append(menu, _("&Вид"));
-
-	menu = new FbMenu;
-	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));
-	menu->AppendImg(wxID_ABOUT, _("О программе…"), wxART_HELP_PAGE);
-	menuBar->Append(menu, _("&?"));
-
-	return menuBar;
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)

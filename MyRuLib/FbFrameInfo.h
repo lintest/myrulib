@@ -14,9 +14,11 @@ public:
 	static void Execute();
 protected:
 	virtual void CreateControls();
-	virtual wxMenuBar * CreateMenuBar();
 private:
 	wxHtmlWindow m_info;
+private:
+    void OnSave(wxCommandEvent& event);
+	DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBFRAMEINFO_H__

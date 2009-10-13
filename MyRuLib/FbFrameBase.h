@@ -7,6 +7,7 @@
 #include "BooksPanel.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
+#include "FbFrameBaseMenu.h"
 
 class FbFrameBase : public wxAuiMDIChildFrame
 {
@@ -20,7 +21,6 @@ public:
     bool m_FilterUsr;
 protected:
 	virtual void CreateControls() {};
-	virtual wxMenuBar * CreateMenuBar();
 	virtual void UpdateBooklist() = 0;
 	int GetModeKey();
 	int GetViewKey();

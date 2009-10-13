@@ -27,7 +27,6 @@ private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
 	wxAuiToolBar * CreateToolBar();
-	wxMenuBar * CreateMenuBar();
     void TogglePaneVisibility(const wxString &pane_name, bool show);
     void FindAuthor(const wxString &text);
     void FindTitle(const wxString &text);

@@ -95,6 +95,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbDatabase.o \
 	build/myrulib_FbFrameAuthor.o \
 	build/myrulib_FbFrameBase.o \
+	build/myrulib_FbFrameBaseMenu.o \
 	build/myrulib_FbFrameBaseThread.o \
 	build/myrulib_FbFrameFavour.o \
 	build/myrulib_FbFrameInfo.o \
@@ -103,6 +104,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbGenres.o \
 	build/myrulib_FbLogStream.o \
 	build/myrulib_FbMainFrame.o \
+	build/myrulib_FbMainMenu.o \
 	build/myrulib_FbManager.o \
 	build/myrulib_FbParams.o \
 	build/myrulib_FbTreeListCtrl.o \
@@ -232,6 +234,9 @@ build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
 build/myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbFrameBaseMenu.o: ./MyRuLib/FbFrameBaseMenu.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbFrameBaseThread.o: ./MyRuLib/FbFrameBaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -254,6 +259,9 @@ build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbMainFrame.o: ./MyRuLib/FbMainFrame.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbMainMenu.o: ./MyRuLib/FbMainMenu.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbManager.o: ./MyRuLib/FbManager.cpp

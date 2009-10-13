@@ -2,11 +2,15 @@
 #include "FbDatabase.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include "FbMenu.h"
+#include "FbMainMenu.h"
 #include "BaseThread.h"
 #include "MyRuLibApp.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
+
+BEGIN_EVENT_TABLE(FbFrameInfo, wxAuiMDIChildFrame)
+    EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
+END_EVENT_TABLE()
 
 FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
     :wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Информация"))
@@ -22,67 +26,13 @@ void FbFrameInfo::Load(const wxString & html)
 
 void FbFrameInfo::CreateControls()
 {
-	SetMenuBar(CreateMenuBar());
+	SetMenuBar(new FbMainMenu);
 
 	m_info.Create(this);
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add( &m_info, 1, wxEXPAND, 5 );
 	SetSizer(sizer);
 	Layout();
-}
-
-wxMenuBar * FbFrameInfo::CreateMenuBar()
-{
-	wxMenuBar * menuBar = new wxMenuBar;
-	FbMenu * menu;
-
-	menu = new FbMenu;
-	menu->AppendImg(wxID_NEW, _("Добавить файл"), wxART_NEW);
-	menu->AppendImg(wxID_OPEN, _("Добавить директорию"), wxART_FOLDER_OPEN);
-	menu->AppendSeparator();
-	menu->AppendImg(wxID_EXIT, _("Выход\tAlt+F4"), wxART_QUIT);
-	menuBar->Append(menu, _("&Файл"));
-
-	menu = new FbMenu;
-	menu->AppendImg(ID_MENU_SEARCH, _("Расширенный"), wxART_FIND);
-	menu->AppendSeparator();
-	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
-	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
-	menu->Append(ID_FRAME_GENRES, _("по Жанрам"));
-	menu->AppendSeparator();
-	menu->Append(ID_FRAME_FAVOUR, _("Избранное"));
-	menuBar->Append(menu, _("&Поиск"));
-
-	menu = new FbMenu;
-	menu->Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
-	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
-	menu->AppendSeparator();
-	menu->Append(wxID_PREFERENCES, _("Настройки"));
-	menuBar->Append(menu, _("&Сервис"));
-
-	menu = new FbMenu;
-	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));
-	menu->AppendImg(wxID_ABOUT, _("О программе…"), wxART_HELP_PAGE);
-	menuBar->Append(menu, _("&?"));
-
-	return menuBar;
-}
-
-class FbSizeFunction : public wxSQLite3ScalarFunction
-{
-	public:
-		FbSizeFunction(): m_count(0) {};
-		virtual void Execute(wxSQLite3FunctionContext& ctx);
-		int64_t m_count;
-};
-
-void FbSizeFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-    int argCount = ctx.GetArgCount();
-    if (argCount != 1) return;
-    int size = ctx.GetInt(0);
-    m_count += size;
-    ctx.SetResult(false);
 }
 
 class FrameInfoThread: public BaseThread
@@ -94,9 +44,9 @@ class FrameInfoThread: public BaseThread
 		void WriteCount();
 		void WriteTypes();
 		wxString GetDate(const int number);
+		wxString F(const int number);
 	private:
 		FbCommonDatabase m_database;
-		FbSizeFunction m_size;
 		wxString m_html;
 };
 
@@ -113,6 +63,16 @@ wxString FrameInfoThread::GetDate(const int number)
     return wxString::Format(wxT("%02d.%02d.%04d"), dd, mm, yyyy);
 }
 
+wxString FrameInfoThread::F(const int number)
+{
+	int hi = number / 1000;
+	int lo = number % 1000;
+	if (hi)
+		return F(hi) + wxT("&nbsp;") + wxString::Format(wxT("%03d"), lo);
+	else
+		return wxString::Format(wxT("%d"), lo);
+}
+
 void FrameInfoThread::WriteCount()
 {
     m_html += wxT("<TABLE>");
@@ -123,40 +83,35 @@ void FrameInfoThread::WriteCount()
 
     wxString min, max;
 
+	DoStep(_("Общее количество"));
 	{
 		wxString sql = (wxT("SELECT COUNT(DISTINCT id), MIN(created), MAX(created) FROM books"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			min = GetDate(result.GetInt(1));
 			max = GetDate(result.GetInt(2));
-			m_html += wxString::Format(_("<TR><TD>Общее количество книг:</TD><TD align=center>%d</TD></TR>"), result.GetInt(0));
+			m_html += wxString::Format(_("<TR><TD>Общее количество книг:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
 	}
-
+	DoStep(_("Подсчет авторов"));
     {
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
-			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=center>%d</TD></TR>"), result.GetInt(0));
+			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
     }
-
+	DoStep(_("Размер файлов"));
 	{
-/*
-		m_database.CreateFunction(wxT("SIZE"), 1, m_size);
-		wxString sql = (wxT("SELECT file_size FROM (SELECT DISTINCT id, file_size AS file_size FROM books) AS books WHERE SIZE(file_size)"));
-		m_database.ExecuteQuery(sql);
-		m_html += wxString::Format(_("<TR><TD>Размер библиотеки, байт:</TD><TD align=center>%d</TD></TR>"), m_size.m_count / 1024 / 1024);
-*/
 		wxString sql = (wxT("SELECT SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, file_size FROM books) AS books"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
-			m_html += wxString::Format(_("<TR><TD>Общий размер файлов, Мб:</TD><TD align=center>%d</TD></TR>"), result.GetInt(0));
+			m_html += wxString::Format(_("<TR><TD>Общий размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
 	}
 
-	m_html += wxString::Format(_("<TR><TD>Первое поступление:</TD><TD align=center>%s г.</TD></TR>"), min.c_str());
-	m_html += wxString::Format(_("<TR><TD>Последнее поступление:</TD><TD align=center>%s г.</TD></TR>"), max.c_str());
+	m_html += wxString::Format(_("<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"), min.c_str());
+	m_html += wxString::Format(_("<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"), max.c_str());
 
     m_html += wxT("</TABLE>");
 }
@@ -172,8 +127,7 @@ void FrameInfoThread::WriteTypes()
     m_html += wxT("<TD bgcolor=#FFFFFF><B>Размер, Кб</B></TD>");
     m_html += wxT("</TR>");
 
-    wxString min, max;
-
+	DoStep(_("Типы файлов"));
 	{
 		wxString sql = (wxT("\
 			SELECT file_type, COUNT(DISTINCT id) AS id, SUM(file_size)/1024 \
@@ -182,7 +136,11 @@ void FrameInfoThread::WriteTypes()
 		"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		while (result.NextRow()) {
-			m_html += wxString::Format(_("<TR><TD bgcolor=#FFFFFF>%s</TD><TD align=right bgcolor=#FFFFFF>%d</TD><TD align=right bgcolor=#FFFFFF>%d</TD></TR>"), result.GetString(0).c_str(), result.GetInt(1), result.GetInt(2));
+			m_html += wxT("<TR>");
+			m_html += wxString::Format(_("<TD bgcolor=#FFFFFF>%s</TD>"), result.GetString(0).c_str());
+			m_html += wxString::Format(_("<TD align=right bgcolor=#FFFFFF>%s</TD>"), F(result.GetInt(1)).c_str());
+			m_html += wxString::Format(_("<TD align=right bgcolor=#FFFFFF>%s</TD>"), F(result.GetInt(2)).c_str());
+			m_html += wxT("</TR>");
 		}
 	}
 
@@ -192,7 +150,9 @@ void FrameInfoThread::WriteTypes()
 
 void * FrameInfoThread::Entry()
 {
-//    wxCriticalSectionLocker enter(sm_queue);
+    wxCriticalSectionLocker enter(sm_queue);
+
+    DoStart(4, _("Информация о коллекции"));
 
 	try {
 		WriteTitle();
@@ -205,6 +165,8 @@ void * FrameInfoThread::Entry()
 
 	m_html += wxT("</CENTER></BODY></HTML>");
 
+	DoFinish();
+
 	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_DATABASE_INFO);
 	event.SetString(m_html);
 	wxPostEvent(wxGetApp().GetTopWindow(), event);
@@ -216,4 +178,24 @@ void FbFrameInfo::Execute()
 {
 	wxThread * thread = new FrameInfoThread;
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbFrameInfo::OnSave(wxCommandEvent& event)
+{
+    wxFileDialog dlg (
+		this,
+		_("Выберите файл для экспорта отчета"),
+		wxEmptyString,
+		wxT("lib_info.html"),
+		_("Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"),
+		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+    );
+
+	if (dlg.ShowModal() == wxID_OK) {
+   		wxString html = * m_info.GetParser()->GetSource();
+        wxFileOutputStream stream(dlg.GetPath());
+        wxTextOutputStream text(stream);
+		text.WriteString(html);
+	}
+
 }

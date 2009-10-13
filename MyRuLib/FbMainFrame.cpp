@@ -12,8 +12,8 @@
 #include <wx/dirdlg.h>
 #include <wx/stattext.h>
 #include <wx/dcclient.h>
+#include <wx/artprov.h>
 #include "FbConst.h"
-#include "FbMenu.h"
 #include "MyRuLibApp.h"
 #include "FbManager.h"
 #include "SettingsDlg.h"
@@ -22,6 +22,7 @@
 #include "FbFrameGenres.h"
 #include "FbFrameFavour.h"
 #include "FbFrameInfo.h"
+#include "FbMainMenu.h"
 #include "VacuumThread.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
@@ -74,7 +75,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 		SetIcon(icon);
         #else
         wxIcon icon(wxT("/usr/share/myrulib/home_32x32.png"));
-        SetIcon(icon, wxBITMAP_TYPE_PNG);
+        SetIcon(icon);
         #endif
 	}
 	return res;
@@ -82,7 +83,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 
 void FbMainFrame::CreateControls()
 {
-	SetMenuBar(CreateMenuBar());
+	SetMenuBar(new FbMainMenu);
 
 	const int widths[] = {-92, -57, -35, -22};
     m_ProgressBar.Create(this, ID_PROGRESSBAR);
@@ -158,43 +159,6 @@ wxAuiToolBar * FbMainFrame::CreateToolBar()
 	toolbar->Realize();
 
 	return toolbar;
-}
-
-wxMenuBar * FbMainFrame::CreateMenuBar()
-{
-	wxMenuBar * menuBar = new wxMenuBar;
-	FbMenu * menu;
-
-	menu = new FbMenu;
-	menu->AppendImg(wxID_NEW, _("Добавить файл"), wxART_NEW);
-	menu->AppendImg(wxID_OPEN, _("Добавить директорию"), wxART_FOLDER_OPEN);
-	menu->AppendSeparator();
-	menu->AppendImg(wxID_EXIT, _("Выход\tAlt+F4"), wxART_QUIT);
-	menuBar->Append(menu, _("&Файл"));
-
-	menu = new FbMenu;
-	menu->AppendImg(ID_MENU_SEARCH, _("Расширенный"), wxART_FIND);
-	menu->AppendSeparator();
-	menu->Append(ID_MENU_AUTHOR, _("по Автору"));
-	menu->Append(ID_MENU_TITLE, _("по Заголовку"));
-	menu->Append(ID_FRAME_GENRES, _("по Жанрам"));
-	menu->AppendSeparator();
-	menu->Append(ID_FRAME_FAVOUR, _("Избранное"));
-	menuBar->Append(menu, _("&Поиск"));
-
-	menu = new FbMenu;
-	menu->Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
-	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
-	menu->AppendSeparator();
-	menu->Append(wxID_PREFERENCES, _("Настройки"));
-	menuBar->Append(menu, _("&Сервис"));
-
-	menu = new FbMenu;
-	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));
-	menu->AppendImg(wxID_ABOUT, _("О программе…"), wxART_HELP_PAGE);
-	menuBar->Append(menu, _("&?"));
-
-	return menuBar;
 }
 
 void FbMainFrame::OnExit(wxCommandEvent & event)
