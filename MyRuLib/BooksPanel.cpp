@@ -288,6 +288,7 @@ void BooksPanel::AppendAuthor(const wxString title)
 	wxTreeItemId parent = m_BookList->GetRootItem();
 	m_AuthorItem = m_BookList->AppendItem(parent, title, 0);
 	m_BookList->SetItemBold(m_AuthorItem, true);
+	m_BookList->Expand( parent );
 }
 
 void BooksPanel::AppendSequence(const wxString title)
@@ -297,6 +298,7 @@ void BooksPanel::AppendSequence(const wxString title)
 	wxTreeItemId parent = m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem();
 	m_SequenceItem = m_BookList->AppendItem(parent, text, 0);
 	m_BookList->SetItemBold(m_SequenceItem, true);
+	m_BookList->Expand( parent );
 }
 
 void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
@@ -313,6 +315,8 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 			if (data->number) m_BookList->SetItemText(item, 1, wxString::Format(wxT(" %d "), data->number));
 			m_BookList->SetItemText(item, 2, file_type);
 			m_BookList->SetItemText(item, 3, file_size);
+			m_BookList->Expand( m_AuthorItem );
+			m_BookList->Expand( m_SequenceItem );
         } break;
         case FB2_MODE_LIST: {
 			wxTreeItemId parent = m_BookList->GetRootItem();
@@ -322,7 +326,7 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 			m_BookList->SetItemText(item, 3, file_size);
         } break;
     }
-    m_BookList->ExpandAll( m_AuthorItem );
+	m_BookList->Expand( m_BookList->GetRootItem() );
 }
 
 void BooksPanel::CreateColumns(FbListMode mode)
