@@ -47,13 +47,13 @@
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookExtractInfo.cpp</sources>
-		<sources>MyRuLib/BookListCtrl.cpp</sources>
 		<sources>MyRuLib/BooksPanel.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
 		<sources>MyRuLib/FbBookEvent.cpp</sources>
+		<sources>MyRuLib/FbBookList.cpp</sources>
 		<sources>MyRuLib/FbBookMenu.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
