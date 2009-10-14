@@ -81,15 +81,16 @@ void FrameInfoThread::WriteCount()
     m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
     m_html += wxT("</TD></TR>");
 
-    wxString min, max;
+    wxString min, max, sum;
 
 	DoStep(_("Общее количество"));
 	{
-		wxString sql = (wxT("SELECT COUNT(DISTINCT id), MIN(created), MAX(created) FROM books"));
+		wxString sql = (wxT("SELECT COUNT(id), MIN(created), MAX(created), SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, created, file_size FROM books) AS books"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			min = GetDate(result.GetInt(1));
 			max = GetDate(result.GetInt(2));
+			sum = F(result.GetInt(3));
 			m_html += wxString::Format(_("<TR><TD>Общее количество книг:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
 	}
@@ -101,15 +102,7 @@ void FrameInfoThread::WriteCount()
 			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
     }
-	DoStep(_("Размер файлов"));
-	{
-		wxString sql = (wxT("SELECT SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, file_size FROM books) AS books"));
-		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-		if (result.NextRow()) {
-			m_html += wxString::Format(_("<TR><TD>Общий размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
-		}
-	}
-
+	m_html += wxString::Format(_("<TR><TD>Общий размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), sum.c_str());
 	m_html += wxString::Format(_("<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"), min.c_str());
 	m_html += wxString::Format(_("<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"), max.c_str());
 
@@ -152,7 +145,7 @@ void * FrameInfoThread::Entry()
 {
     wxCriticalSectionLocker enter(sm_queue);
 
-    DoStart(4, _("Информация о коллекции"));
+    DoStart(3, _("Информация о коллекции"));
 
 	try {
 		WriteTitle();
