@@ -247,6 +247,7 @@ function convert_books($mysql_db, $sqlite_db)
     }
     $file_type = trim($row['FileType']);
     $file_type = trim($file_type, ".");
+    $file_type = strtolower($file_type);
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
