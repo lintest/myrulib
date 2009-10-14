@@ -5,6 +5,7 @@
 #include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
 #include "FbFrameBase.h"
+#include "FbFrameHtml.h"
 
 class FbFrameInfo: public wxAuiMDIChildFrame
 {

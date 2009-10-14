@@ -104,6 +104,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbFrameBaseThread.o \
 	build\myrulib_FbFrameFavour.o \
 	build\myrulib_FbFrameInfo.o \
+	build\myrulib_FbFrameHtml.o \
 	build\myrulib_FbFrameGenres.o \
 	build\myrulib_FbFrameSearch.o \
 	build\myrulib_FbGenres.o \
@@ -212,6 +213,19 @@ clean:
 	-if exist build\libsqlite3_static.a del build\libsqlite3_static.a
 	-if exist build\libwxsqlite3_static.a del build\libwxsqlite3_static.a
 	-if exist build\myrulib.exe del build\myrulib.exe
+	-if exist *.*~ del *.*~
+	-if exist Expat/*.*~ del Expat/*.*~
+	-if exist Expat/*.depend~ del Expat/*.depend~
+	-if exist Expat/*.layuot~ del Expat/*.layuot~
+	-if exist SQLite3/*.*~ del SQLite3/*.*~
+	-if exist SQLite3/*.depend~ del SQLite3/*.depend~
+	-if exist SQLite3/*.layuot~ del SQLite3/*.layuot~
+	-if exist WxSQLite3/*.*~ del WxSQLite3/*.*~
+	-if exist WxSQLite3/*.depend~ del WxSQLite3/*.depend~
+	-if exist WxSQLite3/*.layuot~ del WxSQLite3/*.layuot~
+	-if exist MyRuLib/*.*~ del MyRuLib/*.*~
+	-if exist MyRuLib/*.depend~ del MyRuLib/*.depend~
+	-if exist MyRuLib/*.layuot~ del MyRuLib/*.layuot~
 
 test_for_selected_wxbuild: 
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
@@ -317,6 +331,9 @@ build\myrulib_FbFrameFavour.o: ./MyRuLib/FbFrameFavour.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbFrameHtml.o: ./MyRuLib/FbFrameHtml.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameGenres.o: ./MyRuLib/FbFrameGenres.cpp

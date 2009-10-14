@@ -63,6 +63,7 @@
 		<sources>MyRuLib/FbFrameBaseThread.cpp</sources>
 		<sources>MyRuLib/FbFrameFavour.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>
+		<sources>MyRuLib/FbFrameHtml.cpp</sources>
 		<sources>MyRuLib/FbFrameGenres.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
@@ -117,6 +118,20 @@
 		<debug-info>off</debug-info>
 		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
 		<install-to cond="FORMAT=='gnu'">/usr/bin</install-to>
+
+	  <clean-files>*.*~</clean-files>
+	  <clean-files>Expat/*.*~</clean-files>
+	  <clean-files>Expat/*.depend~</clean-files>
+	  <clean-files>Expat/*.layuot~</clean-files>
+	  <clean-files>SQLite3/*.*~</clean-files>
+	  <clean-files>SQLite3/*.depend~</clean-files>
+	  <clean-files>SQLite3/*.layuot~</clean-files>
+	  <clean-files>WxSQLite3/*.*~</clean-files>
+	  <clean-files>WxSQLite3/*.depend~</clean-files>
+	  <clean-files>WxSQLite3/*.layuot~</clean-files>
+	  <clean-files>MyRuLib/*.*~</clean-files>
+	  <clean-files>MyRuLib/*.depend~</clean-files>
+	  <clean-files>MyRuLib/*.layuot~</clean-files>
 	</exe>
 	
 	<if cond="FORMAT=='gnu'">

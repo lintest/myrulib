@@ -99,6 +99,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbFrameBaseThread.o \
 	build/myrulib_FbFrameFavour.o \
 	build/myrulib_FbFrameInfo.o \
+	build/myrulib_FbFrameHtml.o \
 	build/myrulib_FbFrameGenres.o \
 	build/myrulib_FbFrameSearch.o \
 	build/myrulib_FbGenres.o \
@@ -169,6 +170,19 @@ clean:
 	rm -f build/*.d
 	rm -f build/libwxsqlite3_static.a
 	rm -f build/myrulib
+	rm -f *.*~
+	rm -f Expat/*.*~
+	rm -f Expat/*.depend~
+	rm -f Expat/*.layuot~
+	rm -f SQLite3/*.*~
+	rm -f SQLite3/*.depend~
+	rm -f SQLite3/*.layuot~
+	rm -f WxSQLite3/*.*~
+	rm -f WxSQLite3/*.depend~
+	rm -f WxSQLite3/*.layuot~
+	rm -f MyRuLib/*.*~
+	rm -f MyRuLib/*.depend~
+	rm -f MyRuLib/*.layuot~
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
@@ -244,6 +258,9 @@ build/myrulib_FbFrameFavour.o: ./MyRuLib/FbFrameFavour.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFrameHtml.o: ./MyRuLib/FbFrameHtml.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameGenres.o: ./MyRuLib/FbFrameGenres.cpp
