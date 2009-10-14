@@ -7,15 +7,17 @@
 class InfoThread : public wxThread
 {
 public:
-    InfoThread(wxEvtHandler *frame, const int id): wxThread(), m_id(id), m_frame(frame) {};
+    InfoThread(wxEvtHandler *frame, const int id, const bool vertical)
+		: wxThread(), m_frame(frame), m_id(id), m_vertical(vertical) {};
     virtual void *Entry();
-    static void Execute(wxEvtHandler *frame, const int id);
+    static void Execute(wxEvtHandler *frame, const int id, const bool vertical);
 private:
 	bool Load(wxInputStream& stream);
 private:
 	static wxCriticalSection sm_queue;
-    int m_id;
     wxEvtHandler *m_frame;
+    int m_id;
+    bool m_vertical;
 };
 
 #endif // __INFOTHREAD_H__

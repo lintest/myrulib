@@ -43,6 +43,7 @@ class BooksPanel: public wxSplitterWindow
         void OnBooksListActivated(wxTreeEvent & event);
         void OnBooksListKeyDown(wxTreeEvent & event);
         void OnBooksListCollapsing(wxTreeEvent & event);
+        void OnEditComments(wxCommandEvent & event);
         void OnFavoritesAdd(wxCommandEvent & event);
         void OnFolderAdd(wxCommandEvent& event);
         void OnOpenAuthor(wxCommandEvent& event);

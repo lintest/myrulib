@@ -5,17 +5,20 @@
 #include "FbMainMenu.h"
 #include "BaseThread.h"
 #include "MyRuLibApp.h"
+#include "InfoCash.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
 BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
+    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
     EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
 END_EVENT_TABLE()
 
-FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent)
-    :wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Информация"))
+FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
+    :wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Комментарии")), m_id(data.GetId()), m_type(data.file_type)
 {
 	CreateControls();
+	InfoCash::UpdateInfo(this, m_id, m_type, false);
 }
 
 void FbFrameHtml::Load(const wxString & html)
@@ -53,4 +56,12 @@ void FbFrameHtml::OnSave(wxCommandEvent& event)
 		text.WriteString(html);
 	}
 
+}
+
+void FbFrameHtml::OnInfoUpdate(wxCommandEvent& event)
+{
+	if (event.GetInt() == m_id) {
+		wxString html = event.GetString();
+		m_info.SetPage(event.GetString());
+	}
 }

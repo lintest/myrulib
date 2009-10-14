@@ -17,10 +17,10 @@ void *InfoThread::Entry()
 	return NULL;
 }
 
-void InfoThread::Execute(wxEvtHandler *frame, const int id)
+void InfoThread::Execute(wxEvtHandler *frame, const int id, const bool vertical)
 {
     if (!id) return;
-	wxThread *thread = new InfoThread(frame, id);
+	wxThread *thread = new InfoThread(frame, id, vertical);
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
@@ -36,6 +36,7 @@ public:
 public:
     wxEvtHandler *m_frame;
     int m_id;
+    bool m_vertical;
 };
 
 extern "C" {
@@ -106,12 +107,12 @@ static void EndElementHnd(void *userData, const XML_Char* name)
         InfoCash::SetAnnotation(ctx->m_id, ctx->annotation);
         if (!ctx->images.Count()) ctx->Stop();
         ctx->annotation.Empty();
-		ShowThread::Execute(ctx->m_frame, ctx->m_id);
+		ShowThread::Execute(ctx->m_frame, ctx->m_id, ctx->m_vertical);
     } else if (path == wxT("/fictionbook/binary")) {
         if (!ctx->skipimage) {
             InfoCash::AddImage(ctx->m_id, ctx->imagename, ctx->imagedata, ctx->imagetype);
             ctx->annotation.Empty();
-			ShowThread::Execute(ctx->m_frame, ctx->m_id);
+			ShowThread::Execute(ctx->m_frame, ctx->m_id, ctx->m_vertical);
         }
     }
 	ctx->RemoveTag(node_name);
@@ -144,6 +145,7 @@ bool InfoThread::Load(wxInputStream& stream)
 
 	ctx.m_frame = m_frame;
 	ctx.m_id = m_id;
+	ctx.m_vertical = m_vertical;
 
     XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
     XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);

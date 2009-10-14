@@ -37,6 +37,8 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 		if (iFolder) Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
     }
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
+    AppendSeparator();
+	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
 void FbBookMenu::LoadFolders()

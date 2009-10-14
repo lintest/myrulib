@@ -7,10 +7,10 @@
 
 wxCriticalSection TitleThread::sm_queue;
 
-void TitleThread::Execute(wxEvtHandler *frame, const int id)
+void TitleThread::Execute(wxEvtHandler *frame, const int id, bool m_vertical)
 {
     if (!id) return;
-	wxThread *thread = new TitleThread(frame, id);
+	wxThread *thread = new TitleThread(frame, id, m_vertical);
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
@@ -22,7 +22,7 @@ void *TitleThread::Entry()
     InfoCash::SetTitle(m_id, GetBookInfo(database, m_id));
     InfoCash::SetFilelist(m_id, GetBookFiles(database, m_id));
 
-    ShowThread::Execute(m_frame, m_id);
+    ShowThread::Execute(m_frame, m_id, m_vertical);
 
 	return NULL;
 }

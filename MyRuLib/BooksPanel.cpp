@@ -1,6 +1,7 @@
 #include "BooksPanel.h"
 #include "FbConst.h"
 #include "FbManager.h"
+#include "FbFrameHtml.h"
 #include "InfoCash.h"
 #include "FbBookMenu.h"
 #include "FbBookEvent.h"
@@ -18,6 +19,7 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_UNSELECTALL, BooksPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
 	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
+	EVT_MENU(ID_EDIT_COMMENTS, BooksPanel::OnEditComments)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
@@ -55,7 +57,7 @@ void BooksPanel::CreateBookInfo(bool bVertical)
     if (!book) {
         m_BookInfo->SetPage(wxEmptyString);
     } else {
-        InfoCash::UpdateInfo(this, book->GetId(), book->file_type);
+        InfoCash::UpdateInfo(this, book->GetId(), book->file_type, bVertical);
     }
 }
 
@@ -75,7 +77,7 @@ void BooksPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data = (BookTreeItemData*) m_BookList->GetItemData(selected);
-		if (data) InfoCash::UpdateInfo(this, data->GetId(), data->file_type);
+		if (data) InfoCash::UpdateInfo(this, data->GetId(), data->file_type, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
 
@@ -241,6 +243,15 @@ void BooksPanel::OnFolderAdd(wxCommandEvent& event)
 	int folder = FbBookMenu::GetFolder(event.GetId());
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected(), folder );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void BooksPanel::OnEditComments(wxCommandEvent & event)
+{
+	wxTreeItemId selected = m_BookList->GetSelection();
+	if (selected.IsOk()) {
+		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(selected);
+		if (data) new FbFrameHtml((wxAuiMDIParentFrame*)wxGetApp().GetTopWindow(), *data);
+	}
 }
 
 void BooksPanel::OnOpenAuthor(wxCommandEvent& event)

@@ -44,7 +44,7 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-    static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
+    static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type, const bool vertical);
     static wxString GetInfo(const int id, bool vertical);
     static void Empty();
 public:
@@ -62,12 +62,13 @@ private:
 class ShowThread: public wxThread
 {
 	public:
-		ShowThread(wxEvtHandler *frame, int id): m_frame(frame), m_id(id) {};
+		ShowThread(wxEvtHandler *frame, int id, bool vertical): m_frame(frame), m_id(id), m_vertical(vertical) {};
 		virtual void * Entry();
-		static void Execute(wxEvtHandler *frame, const int id);
+		static void Execute(wxEvtHandler *frame, const int id, const bool vertical);
 	private:
 		wxEvtHandler * m_frame;
 		int m_id;
+		bool m_vertical;
 };
 
 #endif // __INFOCASH_H__
