@@ -16,12 +16,17 @@ public:
 protected:
 	virtual void CreateControls();
 private:
+	static wxString GetMd5sum(const int id);
+	wxString GetComments();
+private:
 	wxHtmlWindow m_info;
-	wxTextCtrl* m_Subject;
+	wxTextCtrl* m_Caption;
 	wxTextCtrl* m_Comment;
 	int m_id;
+	wxString m_md5sum;
 	wxString m_type;
 private:
+    void OnComment(wxCommandEvent& event);
     void OnInfoUpdate(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

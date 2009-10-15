@@ -64,7 +64,7 @@ private:
 class ShowThread: public FbBookThread
 {
 	public:
-		ShowThread::ShowThread(wxEvtHandler *frame, int id, bool vertical)
+		ShowThread(wxEvtHandler *frame, int id, bool vertical)
 			: FbBookThread(frame, id, vertical) {};
 		ShowThread(FbBookThread * thread)
 			: FbBookThread(thread) {};

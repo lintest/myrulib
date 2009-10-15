@@ -30,12 +30,15 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
     EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
-    EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuSearch)
+    EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuTitle)
     EVT_MENU(ID_MENU_AUTHOR, FbMainFrame::OnMenuAuthor)
     EVT_MENU(ID_MENU_TITLE, FbMainFrame::OnMenuTitle)
     EVT_MENU(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthor)
     EVT_MENU(ID_FRAME_GENRES, FbMainFrame::OnMenuGenres)
     EVT_MENU(ID_FRAME_FAVOUR, FbMainFrame::OnMenuFavour)
+    EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuSearch)
+    EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuSearch)
+    EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuSearch)
     EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
     EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_TEXT_ENTER(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthorEnter)
@@ -85,7 +88,7 @@ void FbMainFrame::CreateControls()
 {
 	SetMenuBar(new FbMainMenu);
 
-	const int widths[] = {-92, -57, -35, -22};
+	const int widths[] = {-100, -50, -50, -10};
     m_ProgressBar.Create(this, ID_PROGRESSBAR);
     m_ProgressBar.SetFieldsCount(4);
 	m_ProgressBar.SetStatusWidths(4, widths);
@@ -240,7 +243,7 @@ void FbMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
 void FbMainFrame::OnError(wxCommandEvent& event)
 {
     m_LOGTextCtrl.AppendText(event.GetString() + wxT("\n"));
-    TogglePaneVisibility(wxT("Log"), true);
+    ShowPane(wxT("Log"));
 }
 
 void FbMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
@@ -249,10 +252,22 @@ void FbMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
 	size_t count = all_panes.GetCount();
 	for (size_t i = 0; i < count; ++i) {
 		if(all_panes.Item(i).name == pane_name) {
-		    if (all_panes.Item(i).IsShown() != show) {
-                all_panes.Item(i).Show(show);
-                m_FrameManager.Update();
-		    }
+			bool show = ! all_panes.Item(i).IsShown();
+			all_panes.Item(i).Show(show);
+            m_FrameManager.Update();
+            break;
+		}
+	}
+}
+
+void FbMainFrame::ShowPane(const wxString &pane_name)
+{
+	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
+	size_t count = all_panes.GetCount();
+	for (size_t i = 0; i < count; ++i) {
+		if(all_panes.Item(i).name == pane_name) {
+			all_panes.Item(i).Show(true);
+            m_FrameManager.Update();
             break;
 		}
 	}
@@ -260,9 +275,11 @@ void FbMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
 
 void FbMainFrame::OnPanelClosed(wxAuiManagerEvent& event)
 {
+/*
     if (event.pane->name == wxT("Log")) {
         m_LOGTextCtrl.Clear();
     }
+*/
 }
 
 void FbMainFrame::OnNotebookPageClose(wxAuiNotebookEvent& evt)
@@ -317,28 +334,26 @@ void FbMainFrame::FindAuthor(const wxString &text)
 
 	if (!authors) {
 	    authors = new FbFrameAuthor(this, ID_FRAME_AUTHORS, _("Авторы"));
+		if ( text.IsEmpty() ) authors->SelectRandomLetter();
         GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
         authors->Update();
 	}
 
-    if ( text.IsEmpty() )
-        authors->SelectRandomLetter();
-    else
-        authors->FindAuthor(text);
+    if ( !text.IsEmpty() ) authors->FindAuthor(text);
 
     authors->ActivateAuthors();
 }
 
 void FbMainFrame::OnMenuAuthor(wxCommandEvent& event)
 {
-	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по автору"));
-	if (text.IsEmpty()) return;
-	FindAuthor(text);
+//	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по автору"));
+//	if (text.IsEmpty()) return;
+	FindAuthor(wxEmptyString);
 }
 
 void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 {
-	wxString text = wxGetTextFromUser(_("Введите шаблон для поиска:"), _("Поиск по заголовку"));
+	wxString text = wxGetTextFromUser(_("Введите строку для поиска:"), _("Поиск по заголовку"));
 	if (text.IsEmpty()) return;
 	FindTitle(text);
 }
@@ -381,7 +396,7 @@ wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 
 void FbMainFrame::OnMenuSearch(wxCommandEvent& event)
 {
-    wxMessageBox(_("Функционал расширенного поиска\nне реализован в данной версии."));
+    wxMessageBox(_("Функционал не реализован в данной версии."));
 }
 
 void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)

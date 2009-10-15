@@ -162,7 +162,7 @@ wxString InfoNode::GetHTML(bool vertical)
         for (size_t i=0; i<images.GetCount(); i++) {
             InfoImage & info = images[i];
             html += wxT("<tr><td align=center>");
-			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
+			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
             html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
             html += wxT("</td></tr></table>");
@@ -176,7 +176,7 @@ wxString InfoNode::GetHTML(bool vertical)
         html += wxT("<td rowspan=3 align=right valign=top>");
         for (size_t i=0; i<images.GetCount(); i++) {
             InfoImage & info = images[i];
-			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
+			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
             html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
             html += wxT("</td></tr></table>");
@@ -186,7 +186,8 @@ wxString InfoNode::GetHTML(bool vertical)
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), annotation.c_str());
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), filelist.c_str());
     }
-    html += wxT("</table></body></html>");
+//    html += wxT("</table>");
+//    html += wxT("</table></body></html>");
 
 	return html;
 }

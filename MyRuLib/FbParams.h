@@ -11,6 +11,7 @@ enum FbParamKey {
 	FB_CONFIG_VERSION = 2,
 
 	FB_NEW_FOLDER      = 101,
+	FB_NEW_COMMENT     = 102,
 
 	FB_DOWNLOAD_DIR    = 120,
 	FB_EXTERNAL_DIR    = 121,

@@ -156,7 +156,7 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 	if (selected.IsOk()) {
 		BookTreeItemData * data= (BookTreeItemData*)m_BookList->GetItemData(selected);
 		if (data && (data->GetId() == event.GetInt())) {
-			wxString html = event.GetString();
+			wxString html = event.GetString() + wxT("</TABLE></BODY></HTML>");
 			m_BookInfo->SetPage(html);
 		}
 	}
