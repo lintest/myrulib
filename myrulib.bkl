@@ -55,6 +55,7 @@
 		<sources>MyRuLib/FbBookEvent.cpp</sources>
 		<sources>MyRuLib/FbBookList.cpp</sources>
 		<sources>MyRuLib/FbBookMenu.cpp</sources>
+		<sources>MyRuLib/FbBookThread.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
