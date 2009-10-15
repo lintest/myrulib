@@ -19,10 +19,11 @@ void *TitleThread::Entry()
     wxCriticalSectionLocker enter(sm_queue);
 
     FbCommonDatabase database;
+
     InfoCash::SetTitle(m_id, GetBookInfo(database, m_id));
     InfoCash::SetFilelist(m_id, GetBookFiles(database, m_id));
 
-    ShowThread::Execute(m_frame, m_id, m_vertical);
+    UpdateInfo();
 
 	return NULL;
 }

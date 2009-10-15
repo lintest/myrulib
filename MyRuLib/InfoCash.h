@@ -6,6 +6,7 @@
 #include <wx/thread.h>
 #include <wx/html/htmlwin.h>
 #include "FbConst.h"
+#include "FbBookThread.h"
 
 #define INFO_CASH_SIZE 20
 
@@ -31,6 +32,7 @@ public:
     InfoNode(): id(0) {};
     virtual ~InfoNode();
     void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
+    wxString GetHTML(bool vertical);
 public:
     int id;
     wxString title;
@@ -59,16 +61,15 @@ private:
 	static wxCriticalSection sm_locker;
 };
 
-class ShowThread: public wxThread
+class ShowThread: public FbBookThread
 {
 	public:
-		ShowThread(wxEvtHandler *frame, int id, bool vertical): m_frame(frame), m_id(id), m_vertical(vertical) {};
+		ShowThread::ShowThread(wxEvtHandler *frame, int id, bool vertical)
+			: FbBookThread(frame, id, vertical) {};
+		ShowThread(FbBookThread * thread)
+			: FbBookThread(thread) {};
+	protected:
 		virtual void * Entry();
-		static void Execute(wxEvtHandler *frame, const int id, const bool vertical);
-	private:
-		wxEvtHandler * m_frame;
-		int m_id;
-		bool m_vertical;
 };
 
 #endif // __INFOCASH_H__

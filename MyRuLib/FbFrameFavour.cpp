@@ -40,10 +40,10 @@ void FbFrameFavour::CreateControls()
 	m_tools->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
 	m_tools->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
 	m_tools->Realize();
-	bToolSizer->Add( m_tools, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	bToolSizer->Add( m_tools, 0, wxALIGN_CENTER_VERTICAL);
 
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bToolSizer->Add( toolbar, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	bToolSizer->Add( toolbar, 1, wxALIGN_CENTER_VERTICAL);
 
 	bSizer1->Add( bToolSizer, 0, wxEXPAND);
 

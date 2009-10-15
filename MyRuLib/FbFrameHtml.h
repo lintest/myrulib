@@ -17,6 +17,8 @@ protected:
 	virtual void CreateControls();
 private:
 	wxHtmlWindow m_info;
+	wxTextCtrl* m_Subject;
+	wxTextCtrl* m_Comment;
 	int m_id;
 	wxString m_type;
 private:

@@ -132,7 +132,8 @@ void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const wxString &fil
     wxCriticalSectionLocker enter(sm_locker);
     InfoNode * node = FindNode(id);
     if (node) {
-    	ShowThread::Execute(frame, id, vertical);
+		wxThread *thread = new ShowThread(frame, id, vertical);
+		if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
     } else {
         TitleThread::Execute(frame, id, vertical);
         if (file_type == wxT("fb2")) InfoThread::Execute(frame, id, vertical);
@@ -144,46 +145,50 @@ wxString InfoCash::GetInfo(const int id, bool vertical)
     if (!id) return wxEmptyString;
     wxCriticalSectionLocker enter(sm_locker);
 
-    InfoNode * node = GetNode(id);
+    InfoNode * node = FindNode(id);
+    if (node)
+		return node->GetHTML(vertical);
+	else
+		return wxEmptyString;
+}
 
+wxString InfoNode::GetHTML(bool vertical)
+{
     wxString html = wxT("<html><body><table width=100%>");
 
     if (vertical) {
-        html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), node->title.c_str());
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->annotation.c_str());
-        for (size_t i=0; i<node->images.GetCount(); i++) {
-            InfoImage & info = node->images[i];
+        html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), title.c_str());
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), annotation.c_str());
+        for (size_t i=0; i<images.GetCount(); i++) {
+            InfoImage & info = images[i];
             html += wxT("<tr><td align=center>");
-            html += wxT("<table border=1><tr><td>");
+			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
+			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
             html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+            html += wxT("</td></tr></table>");
             html += wxT("</td></tr></table>");
             html += wxT("</td></tr>");
         }
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), node->filelist.c_str());
+        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), filelist.c_str());
     } else {
         html += wxT("<tr width=100%>");
-        html += wxString::Format(wxT("<td>%s</td>"), node->title.c_str());
+        html += wxString::Format(wxT("<td>%s</td>"), title.c_str());
         html += wxT("<td rowspan=3 align=right valign=top>");
-        for (size_t i=0; i<node->images.GetCount(); i++) {
-            InfoImage & info = node->images[i];
-            html += wxT("<table border=1><tr><td>");
+        for (size_t i=0; i<images.GetCount(); i++) {
+            InfoImage & info = images[i];
+			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
+			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
             html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+            html += wxT("</td></tr></table>");
             html += wxT("</td></tr></table>");
         }
         html += wxT("</td></tr>");
-        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->annotation.c_str());
-        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), node->filelist.c_str());
+        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), annotation.c_str());
+        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), filelist.c_str());
     }
     html += wxT("</table></body></html>");
 
 	return html;
-}
-
-void ShowThread::Execute(wxEvtHandler *frame, const int id, const bool vertical)
-{
-	if (!id) return;
-	wxThread *thread = new ShowThread(frame, id, vertical);
-	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
 void * ShowThread::Entry()
