@@ -11,8 +11,8 @@ BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
     EVT_TREE_SEL_CHANGED(ID_GENRES_TREE, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
-FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id,const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
+    :FbFrameBase(parent, ID_FRAME_GENRES, _("Жанры"))
 {
     CreateControls();
 }

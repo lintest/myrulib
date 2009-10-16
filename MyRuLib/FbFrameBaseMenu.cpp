@@ -14,12 +14,12 @@ FbFrameBaseMenu::FbFrameBaseMenu(): wxMenuBar()
 	Append(menu, _("Файл"));
 
 	menu = GetBookMenu();
-	if (menu) Append(menu, _("Книги"));
+	if (menu) Append(menu, _("Список"));
 
 	menu = new FbMenu;
 	menu->AppendImg(ID_MENU_SEARCH, _("Поиск"), wxART_FIND);
 	menu->AppendSeparator();
-	menu->Append(ID_MENU_AUTHOR, _("Авторы"));
+	menu->Append(ID_FRAME_AUTHOR, _("Авторы"));
 	menu->Append(ID_FRAME_GENRES, _("Жанры"));
 	menu->Append(ID_FRAME_SEQ, _("Серии"), wxART_FIND);
 	menu->Append(ID_FRAME_DATE, _("Календарь"), wxART_FIND);
@@ -32,8 +32,8 @@ FbFrameBaseMenu::FbFrameBaseMenu(): wxMenuBar()
 	menu->Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
 	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
 	menu->AppendSeparator();
-	menu->Append(ID_FRAME_ARCH, _("Параметры"));
-	Append(menu, _("Коллекция"));
+	menu->Append(ID_MENU_CONFIG, _("Параметры"));
+	Append(menu, _("Библиотека"));
 
 	menu = new FbMenu;
 	menu->Append(wxID_PREFERENCES, _("Настройки"));
@@ -41,7 +41,6 @@ FbFrameBaseMenu::FbFrameBaseMenu(): wxMenuBar()
 
 	menu = GetViewMenu();
 	if (menu) Append(menu, _("Вид"));
-
 
 	menu = new FbMenu;
 	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));

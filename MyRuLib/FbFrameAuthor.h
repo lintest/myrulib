@@ -15,7 +15,7 @@ class FbFrameAuthor : public FbFrameBase
 {
 public:
     FbFrameAuthor() :FbFrameBase() {};
-    FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+    FbFrameAuthor(wxAuiMDIParentFrame * parent);
     void FindAuthor(const wxString &text);
     void OpenAuthor(const int id);
     void SelectRandomLetter();

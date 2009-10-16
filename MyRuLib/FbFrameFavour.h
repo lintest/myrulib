@@ -17,7 +17,7 @@
 class FbFrameFavour : public FbFrameBase
 {
 public:
-	FbFrameFavour(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+	FbFrameFavour(wxAuiMDIParentFrame * parent);
 	void UpdateFolder(const int iFolder);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);

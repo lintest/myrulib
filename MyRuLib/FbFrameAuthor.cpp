@@ -28,8 +28,8 @@ class FrameAuthorThread: public FbFrameBaseThread
         int m_number;
 };
 
-FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
+    :FbFrameBase(parent, ID_FRAME_AUTHOR, _("Авторы"))
 {
     CreateControls();
 }

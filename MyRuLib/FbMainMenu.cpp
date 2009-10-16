@@ -15,7 +15,7 @@ FbMainMenu::FbMainMenu(): wxMenuBar()
 	menu = new FbMenu;
 	menu->AppendImg(ID_MENU_SEARCH, _("Поиск"), wxART_FIND);
 	menu->AppendSeparator();
-	menu->Append(ID_MENU_AUTHOR, _("Авторы"));
+	menu->Append(ID_FRAME_AUTHOR, _("Авторы"));
 	menu->Append(ID_FRAME_GENRES, _("Жанры"));
 	menu->Append(ID_FRAME_SEQ, _("Серии"), wxART_FIND);
 	menu->Append(ID_FRAME_DATE, _("Календарь"), wxART_FIND);
@@ -28,12 +28,16 @@ FbMainMenu::FbMainMenu(): wxMenuBar()
 	menu->Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
 	menu->Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
 	menu->AppendSeparator();
-	menu->Append(ID_MENU_VACUUM, _("Параметры"));
-	Append(menu, _("Коллекция"));
+	menu->Append(ID_MENU_CONFIG, _("Параметры"));
+	Append(menu, _("Библиотека"));
 
 	menu = new FbMenu;
 	menu->Append(wxID_PREFERENCES, _("Настройки"));
 	Append(menu, _("Сервис"));
+
+	menu = new FbMenu;
+	menu->Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
+	Append(menu, _("Вид"));
 
 	menu = new FbMenu;
 	menu->Append(ID_OPEN_WEB, _("Официальный сайт"));

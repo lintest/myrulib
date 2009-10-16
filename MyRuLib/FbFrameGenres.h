@@ -17,7 +17,7 @@
 class FbFrameGenres : public FbFrameBase
 {
 public:
-	FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+	FbFrameGenres(wxAuiMDIParentFrame * parent);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();

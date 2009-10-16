@@ -18,8 +18,8 @@ BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_LISTBOX(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
-FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent, wxWindowID id,const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent)
+    :FbFrameBase(parent, ID_FRAME_FAVOUR, _("Избранное"))
 {
     CreateControls();
 }
