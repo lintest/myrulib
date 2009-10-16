@@ -269,6 +269,11 @@ FbCommonDatabase::FbCommonDatabase() :FbDatabase()
     FbDatabase::Open(wxGetApp().GetAppData());
 }
 
+FbLocalDatabase::FbLocalDatabase() :FbDatabase()
+{
+    FbDatabase::Open(GetConfigName());
+}
+
 void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 {
     bool bExists = wxFileExists(fileName);

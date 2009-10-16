@@ -125,29 +125,61 @@ void InfoCash::Empty()
     sm_cash.Empty();
 }
 
-void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const bool vertical)
+void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable)
 {
     if (!id) return;
-	wxThread *thread = new ShowThread(frame, id, vertical);
+	wxThread *thread = new ShowThread(frame, id, bVertical, bEditable);
 	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
-wxString InfoCash::GetInfo(const int id, bool vertical)
+wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable)
 {
     wxCriticalSectionLocker enter(sm_locker);
 
     InfoNode * node = FindNode(id);
     if (node)
-		return node->GetHTML(vertical);
+		return node->GetHTML(md5sum, bVertical, bEditable);
 	else
         return wxEmptyString;
 }
 
-wxString InfoNode::GetHTML(bool vertical)
+wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
+{
+	wxString sql = wxT("SELECT id, posted, caption, comment FROM comments WHERE md5sum=? ORDER BY id");
+
+	FbLocalDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, md5sum);
+	wxSQLite3ResultSet res = stmt.ExecuteQuery();
+
+	wxString html;
+	html += wxT("<TABLE>");
+
+	while (res.NextRow()) {
+		int id = res.GetInt(0);
+		wxString caption = FbBookThread::HTMLSpecialChars(res.GetString(2));
+		wxString comment = FbBookThread::HTMLSpecialChars(res.GetString(3));
+		int pos;
+		while ( (pos = comment.Find(wxT('\n'))) != wxNOT_FOUND) {
+			comment = comment.Left(pos) + wxT("<br>") + comment.Mid(pos + 1);
+		}
+		html += wxT("<TR><TD><B>");
+		html += res.GetString(1) + wxT(" ") + caption;
+		if (bEditable) html += wxString::Format(wxT("&nbsp;<A href=%d>&lt;удалить&gt;</A>"), id);
+		html += wxT("</B></TD></TR>");
+		html += wxString::Format(wxT("<TR><TD>%s</TD></TR>"), comment.c_str());
+	}
+
+	html += wxT("</TABLE>");
+
+	return html;
+}
+
+wxString InfoNode::GetHTML(const wxString md5sum, bool bVertical, bool bEditable)
 {
     wxString html = wxT("<html><body><table width=100%>");
 
-    if (vertical) {
+    if (bVertical) {
         html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), title.c_str());
         html += wxString::Format(wxT("<tr><td>%s</td></tr>"), annotation.c_str());
         for (size_t i=0; i<images.GetCount(); i++) {
@@ -161,10 +193,13 @@ wxString InfoNode::GetHTML(bool vertical)
             html += wxT("</td></tr>");
         }
         html += wxString::Format(wxT("<tr><td>%s</td></tr>"), filelist.c_str());
+		html += wxT("<tr><td valign=top>");
+        html += GetComments(md5sum, bEditable);
+		html += wxT("</td></tr>");
     } else {
         html += wxT("<tr width=100%>");
         html += wxString::Format(wxT("<td>%s</td>"), title.c_str());
-        html += wxT("<td rowspan=3 align=right valign=top>");
+        html += wxT("<td rowspan=4 align=right valign=top>");
         for (size_t i=0; i<images.GetCount(); i++) {
             InfoImage & info = images[i];
 			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
@@ -176,8 +211,11 @@ wxString InfoNode::GetHTML(bool vertical)
         html += wxT("</td></tr>");
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), annotation.c_str());
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), filelist.c_str());
+		html += wxT("<tr><td valign=top>");
+        html += GetComments(md5sum, bEditable);
+		html += wxT("</td></tr>");
     }
-//    html += wxT("</table></body></html>");
+    html += wxT("</table></body></html>");
 
 	return html;
 }
@@ -196,7 +234,7 @@ void * ShowThread::Entry()
 		m_md5sum = res.GetString(1);
 	}
 
-	wxString html = InfoCash::GetInfo(m_id, m_vertical);
+	wxString html = InfoCash::GetInfo(m_id, m_md5sum, m_vertical, m_editable);
 
 	if (html.IsEmpty()) {
 		wxThread *thread = new TitleThread(this);

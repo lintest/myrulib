@@ -16,6 +16,8 @@ BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
     EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnComment)
     EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
     EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
+    EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
+	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnComment)
 END_EVENT_TABLE()
 
 wxString FbFrameHtml::GetMd5sum(const int id)
@@ -36,7 +38,7 @@ FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
     m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
 {
 	CreateControls();
-	InfoCash::UpdateInfo(this, m_id, false);
+	InfoCash::UpdateInfo(this, m_id, false, true);
 }
 
 void FbFrameHtml::Load(const wxString & html)
@@ -57,7 +59,7 @@ void FbFrameHtml::CreateControls()
 	splitter->SetSashGravity(1);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_info.Create(splitter, wxID_ANY);
+	m_info.Create(splitter, ID_HTML_DOCUMENT);
 
 	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxSize(-1, 80), wxTAB_TRAVERSAL );
 	wxBoxSizer * bSizerComment = new wxBoxSizer( wxVERTICAL );
@@ -69,7 +71,7 @@ void FbFrameHtml::CreateControls()
 	staticText->Wrap( -1 );
 	bSizerSubject->Add( staticText, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_Caption = new wxTextCtrl( panel, ID_HTML_CAPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_Caption = new wxTextCtrl( panel, ID_HTML_CAPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerSubject->Add( m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxToolBar * toolbar = new wxToolBar( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
@@ -116,7 +118,7 @@ void FbFrameHtml::OnSave(wxCommandEvent& event)
 void FbFrameHtml::OnInfoUpdate(wxCommandEvent& event)
 {
 	if (event.GetInt() == m_id) {
-		wxString html = event.GetString() + GetComments();
+		wxString html = event.GetString();
 		m_info.SetPage(html);
 //		wxMessageBox(html);
 	}
@@ -126,22 +128,30 @@ wxString FbFrameHtml::GetComments()
 {
 	wxString sql = wxT("SELECT id, posted, caption, comment FROM comments WHERE md5sum=? ORDER BY id");
 
-	FbDatabase & database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_md5sum);
 	wxSQLite3ResultSet res = stmt.ExecuteQuery();
 
 	wxString html;
-	html += wxT("<TR><TD>");
+	html += wxT("<TR><TD valign=top>");
 	html += wxT("<TABLE>");
 
 	while (res.NextRow()) {
-		html += wxString::Format(wxT("<TR><TD><B>%s: %s</B></TD></TR>"), res.GetString(1).c_str(), res.GetString(2).c_str());
-		html += wxString::Format(wxT("<TR><TD>%s</TD></TR>"), res.GetString(3).c_str());
+		int id = res.GetInt(0);
+		wxString caption = FbBookThread::HTMLSpecialChars(res.GetString(2));
+		wxString comment = FbBookThread::HTMLSpecialChars(res.GetString(3));
+		int pos;
+		while ( (pos = comment.Find(wxT('\n'))) != wxNOT_FOUND) {
+			comment = comment.Left(pos) + wxT("<br>") + comment.Mid(pos + 1);
+		}
+		html += wxString::Format(wxT("<TR><TD><B>%s: %s&nbsp;<A href=%d>&lt;удалить&gt;</A></B></TD></TR>"), res.GetString(1).c_str(), caption.c_str(), id);
+		html += wxString::Format(wxT("<TR><TD>%s</TD></TR>"), comment.c_str());
 	}
 
 	html += wxT("</TR></TD>");
 	html += wxT("</TABLE></TABLE></BODY></HTML>");
+
 	return html;
 }
 
@@ -166,5 +176,15 @@ void FbFrameHtml::OnComment(wxCommandEvent& event)
 	m_Caption->SetValue(wxEmptyString);
 	m_Comment->SetValue(wxEmptyString);
 
-	InfoCash::UpdateInfo(this, m_id, false);
+	InfoCash::UpdateInfo(this, m_id, false, true);
+}
+
+void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
+{
+	int res = wxMessageBox(_("Удалить комментарий?"), _("Подтверждение"), wxOK|wxCANCEL);
+	if (res != wxOK) return;
+
+	wxString sql = wxT("DELETE FROM comments WHERE id=") + event.GetLinkInfo().GetHref();
+	wxGetApp().GetConfigDatabase().ExecuteUpdate(sql);
+	InfoCash::UpdateInfo(this, m_id, false, true);
 }

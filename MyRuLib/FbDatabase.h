@@ -35,7 +35,7 @@ class FbDatabase: public wxSQLite3Database
                         int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
         int NewId(const int iParam);
 	protected:
-		const wxString & GetConfigName();
+		static const wxString & GetConfigName();
 		virtual const wxString GetParamTable() = 0;
     private:
         static wxCriticalSection sm_queue;
@@ -64,6 +64,14 @@ class FbCommonDatabase: public FbDatabase
         void AttachConfig();
 	protected:
 		virtual const wxString GetParamTable() { return wxT("params"); };
+};
+
+class FbLocalDatabase: public FbDatabase
+{
+    public:
+        FbLocalDatabase();
+	protected:
+		virtual const wxString GetParamTable() { return wxT("config"); };
 };
 
 class FbConfigDatabase: public FbDatabase

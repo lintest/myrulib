@@ -7,16 +7,17 @@
 class FbBookThread: public wxThread
 {
 	public:
-		FbBookThread(wxEvtHandler *frame, int id, bool vertical)
-			: m_frame(frame), m_id(id), m_vertical(vertical) {};
+		FbBookThread(wxEvtHandler *frame, int id, const bool bVertical, const bool bEditable)
+			: m_frame(frame), m_id(id), m_vertical(bVertical), m_editable(bEditable) {};
 		FbBookThread(FbBookThread * thread)
-			: m_frame(thread->m_frame), m_id(thread->m_id), m_vertical(thread->m_vertical) {};
+			: m_frame(thread->m_frame), m_id(thread->m_id), m_vertical(thread->m_vertical), m_editable(thread->m_editable) {};
 		void UpdateInfo();
 		static wxString HTMLSpecialChars(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	protected:
 		wxEvtHandler * m_frame;
 		int m_id;
 		bool m_vertical;
+		bool m_editable;
 };
 
 #endif // __FBBOOKTHREAD_H__

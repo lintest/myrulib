@@ -28,6 +28,7 @@ private:
     void OnComment(wxCommandEvent& event);
     void OnInfoUpdate(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
+	void OnLinkClicked(wxHtmlLinkEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 
