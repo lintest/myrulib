@@ -119,20 +119,6 @@
 		<debug-info>off</debug-info>
 		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
 		<install-to cond="FORMAT=='gnu'">/usr/bin</install-to>
-
-	  <clean-files>*.*~</clean-files>
-	  <clean-files>Expat/*.*~</clean-files>
-	  <clean-files>Expat/Expat.depend</clean-files>
-	  <clean-files>Expat/Expat.layuot</clean-files>
-	  <clean-files>SQLite3/*.*~</clean-files>
-	  <clean-files>SQLite3/SQLite3.depend</clean-files>
-	  <clean-files>SQLite3/SQLite3.layuot</clean-files>
-	  <clean-files>WxSQLite3/*.*~</clean-files>
-	  <clean-files>WxSQLite3/WxSQLite3.depend</clean-files>
-	  <clean-files>WxSQLite3/WxSQLite3.layuot</clean-files>
-	  <clean-files>MyRuLib/*.*~</clean-files>
-	  <clean-files>MyRuLib/myrulib.depend</clean-files>
-	  <clean-files>MyRuLib/myrulib.layuot</clean-files>
 	</exe>
 	
 	<if cond="FORMAT=='gnu'">

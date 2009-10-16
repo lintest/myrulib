@@ -13,11 +13,12 @@
 #include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
-    EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnComment)
+    EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
+    EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
     EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
     EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
     EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
-	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnComment)
+	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnSubmit)
 END_EVENT_TABLE()
 
 wxString FbFrameHtml::GetMd5sum(const int id)
@@ -71,19 +72,21 @@ void FbFrameHtml::CreateControls()
 	staticText->Wrap( -1 );
 	bSizerSubject->Add( staticText, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_Caption = new wxTextCtrl( panel, ID_HTML_CAPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	bSizerSubject->Add( m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_Caption.Create( panel, ID_HTML_CAPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	bSizerSubject->Add( &m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxToolBar * toolbar = new wxToolBar( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
-	toolbar->AddTool( ID_HTML_SUBMIT, wxT("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	toolbar->Realize();
+	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
+	m_ToolBar.AddTool( ID_HTML_SUBMIT, wxT("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.AddTool( ID_HTML_MODIFY, wxT("Изменить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+	m_ToolBar.Realize();
 
-	bSizerSubject->Add( toolbar, 0, wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerSubject->Add( &m_ToolBar, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
 	bSizerComment->Add( bSizerSubject, 0, wxEXPAND, 5 );
 
-	m_Comment = new wxTextCtrl( panel, ID_HTML_COMMENT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
-	bSizerComment->Add( m_Comment, 1, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	m_Comment.Create( panel, ID_HTML_COMMENT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
+	bSizerComment->Add( &m_Comment, 1, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 
 	panel->SetSizer( bSizerComment );
 	panel->Layout();
@@ -155,36 +158,81 @@ wxString FbFrameHtml::GetComments()
 	return html;
 }
 
-void FbFrameHtml::OnComment(wxCommandEvent& event)
+void FbFrameHtml::OnSubmit(wxCommandEvent& event)
 {
-	wxString caption = m_Caption->GetValue();
-	wxString comment = m_Comment->GetValue();
+	wxString caption = m_Caption.GetValue();
+	wxString comment = m_Comment.GetValue();
 	if ( caption.IsEmpty() && comment.IsEmpty() ) return;
 
 	wxString sql = wxT("INSERT INTO comments(id, md5sum, posted, caption, comment) VALUES (?,?,?,?,?)");
 
 	FbDatabase & database = wxGetApp().GetConfigDatabase();
-	int id = database.NewId(FB_NEW_COMMENT);
+	int key = database.NewId(FB_NEW_COMMENT);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, id);
+	stmt.Bind(1, key);
 	stmt.Bind(2, m_md5sum);
 	stmt.Bind(3, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
 	stmt.Bind(4, caption);
 	stmt.Bind(5, comment);
 	stmt.ExecuteUpdate();
 
-	m_Caption->SetValue(wxEmptyString);
-	m_Comment->SetValue(wxEmptyString);
+	m_Caption.SetValue(wxEmptyString);
+	m_Comment.SetValue(wxEmptyString);
+	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+
+	m_key = 0;
+
+	InfoCash::UpdateInfo(this, m_id, false, true);
+}
+
+void FbFrameHtml::OnModify(wxCommandEvent& event)
+{
+	wxString caption = m_Caption.GetValue();
+	wxString comment = m_Comment.GetValue();
+	if ( caption.IsEmpty() && comment.IsEmpty() ) return;
+
+	wxString sql = wxT("UPDATE comments SET posted=?, caption=?, comment=? WHERE id=?");
+
+	FbDatabase & database = wxGetApp().GetConfigDatabase();
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
+	stmt.Bind(2, caption);
+	stmt.Bind(3, comment);
+	stmt.Bind(4, m_key);
+	stmt.ExecuteUpdate();
+
+	m_Caption.SetValue(wxEmptyString);
+	m_Comment.SetValue(wxEmptyString);
+	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+
+	m_key = 0;
 
 	InfoCash::UpdateInfo(this, m_id, false, true);
 }
 
 void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 {
-	int res = wxMessageBox(_("Удалить комментарий?"), _("Подтверждение"), wxOK|wxCANCEL);
-	if (res != wxOK) return;
+	FbLocalDatabase database;
+	wxString id = event.GetLinkInfo().GetHref();
 
-	wxString sql = wxT("DELETE FROM comments WHERE id=") + event.GetLinkInfo().GetHref();
-	wxGetApp().GetConfigDatabase().ExecuteUpdate(sql);
-	InfoCash::UpdateInfo(this, m_id, false, true);
+	if ( event.GetLinkInfo().GetTarget() == wxT("D") )
+	{
+		int res = wxMessageBox(_("Удалить комментарий?"), _("Подтверждение"), wxOK|wxCANCEL);
+		if (res != wxOK) return;
+
+		wxString sql = wxT("DELETE FROM comments WHERE id=") + id;
+		database.ExecuteUpdate(sql);
+		InfoCash::UpdateInfo(this, m_id, false, true);
+	}
+	else if ( event.GetLinkInfo().GetTarget() == wxT("M") )
+	{
+		wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + id;
+		wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+		if (res.NextRow()) {
+			m_key = res.GetInt(0);
+			m_Caption.SetValue( res.GetString(1) );
+			m_Comment.SetValue( res.GetString(2) );
+			m_ToolBar.EnableTool(ID_HTML_MODIFY, true);
+		}
+	}
 }

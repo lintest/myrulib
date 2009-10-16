@@ -214,19 +214,6 @@ clean:
 	-if exist build\libsqlite3_static.a del build\libsqlite3_static.a
 	-if exist build\libwxsqlite3_static.a del build\libwxsqlite3_static.a
 	-if exist build\myrulib.exe del build\myrulib.exe
-	-if exist *.*~ del *.*~
-	-if exist Expat/*.*~ del Expat/*.*~
-	-if exist Expat/Expat.depend del Expat/Expat.depend
-	-if exist Expat/Expat.layuot del Expat/Expat.layuot
-	-if exist SQLite3/*.*~ del SQLite3/*.*~
-	-if exist SQLite3/SQLite3.depend del SQLite3/SQLite3.depend
-	-if exist SQLite3/SQLite3.layuot del SQLite3/SQLite3.layuot
-	-if exist WxSQLite3/*.*~ del WxSQLite3/*.*~
-	-if exist WxSQLite3/WxSQLite3.depend del WxSQLite3/WxSQLite3.depend
-	-if exist WxSQLite3/WxSQLite3.layuot del WxSQLite3/WxSQLite3.layuot
-	-if exist MyRuLib/*.*~ del MyRuLib/*.*~
-	-if exist MyRuLib/myrulib.depend del MyRuLib/myrulib.depend
-	-if exist MyRuLib/myrulib.layuot del MyRuLib/myrulib.layuot
 
 test_for_selected_wxbuild: 
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \

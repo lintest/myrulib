@@ -165,7 +165,10 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 		}
 		html += wxT("<TR><TD><B>");
 		html += res.GetString(1) + wxT(" ") + caption;
-		if (bEditable) html += wxString::Format(wxT("&nbsp;<A href=%d>&lt;удалить&gt;</A>"), id);
+		if (bEditable) {
+			html += wxString::Format(wxT("&nbsp;<A href=%d target=M>&lt;изменить&gt;</A>"), id);
+			html += wxString::Format(wxT("&nbsp;<A href=%d target=D>&lt;удалить&gt;</A>"), id);
+		}
 		html += wxT("</B></TD></TR>");
 		html += wxString::Format(wxT("<TR><TD>%s</TD></TR>"), comment.c_str());
 	}

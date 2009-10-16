@@ -20,12 +20,15 @@ private:
 	wxString GetComments();
 private:
 	wxHtmlWindow m_info;
-	wxTextCtrl* m_Caption;
-	wxTextCtrl* m_Comment;
+	wxTextCtrl m_Caption;
+	wxTextCtrl m_Comment;
+	wxToolBar m_ToolBar;
 	int m_id;
+	int m_key;
 	wxString m_md5sum;
 private:
-    void OnComment(wxCommandEvent& event);
+    void OnSubmit(wxCommandEvent& event);
+    void OnModify(wxCommandEvent& event);
     void OnInfoUpdate(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
 	void OnLinkClicked(wxHtmlLinkEvent& event);
