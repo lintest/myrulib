@@ -7,13 +7,6 @@
 
 wxCriticalSection TitleThread::sm_queue;
 
-void TitleThread::Execute(wxEvtHandler *frame, const int id, bool m_vertical)
-{
-    if (!id) return;
-	wxThread *thread = new TitleThread(frame, id, m_vertical);
-    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
-
 void *TitleThread::Entry()
 {
     wxCriticalSectionLocker enter(sm_queue);
@@ -26,20 +19,6 @@ void *TitleThread::Entry()
     UpdateInfo();
 
 	return NULL;
-}
-
-//! Return specified string with the html special characters encoded.  Similar to PHP's htmlspecialchars() function.
-wxString TitleThread::HTMLSpecialChars( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
-{
-  wxString szToReturn = value;
-  szToReturn.Replace(wxT("&"),wxT("&amp;"));
-  if( bSingleQuotes )
-    szToReturn.Replace(wxT("'"),wxT("&#039;"));
-  if( bDoubleQuotes )
-    szToReturn.Replace(wxT("\""), wxT("&quot;"));
-  szToReturn.Replace(wxT("<"),wxT("&lt;"));
-  szToReturn.Replace(wxT(">"),wxT("&gt;"));
-  return szToReturn;
 }
 
 wxString TitleThread::GetBookInfo(FbDatabase &database, int id)

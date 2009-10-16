@@ -24,7 +24,6 @@ private:
 	wxTextCtrl* m_Comment;
 	int m_id;
 	wxString m_md5sum;
-	wxString m_type;
 private:
     void OnComment(wxCommandEvent& event);
     void OnInfoUpdate(wxCommandEvent& event);

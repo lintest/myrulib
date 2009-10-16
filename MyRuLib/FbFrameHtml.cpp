@@ -33,12 +33,10 @@ wxString FbFrameHtml::GetMd5sum(const int id)
 
 FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
     :wxAuiMDIChildFrame(parent, ID_FRAME_HTML, _("Комментарии")),
-    m_id(data.GetId()),
-    m_md5sum(GetMd5sum(m_id)),
-    m_type(data.file_type)
+    m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
 {
 	CreateControls();
-	InfoCash::UpdateInfo(this, m_id, m_type, false);
+	InfoCash::UpdateInfo(this, m_id, false);
 }
 
 void FbFrameHtml::Load(const wxString & html)
@@ -168,5 +166,5 @@ void FbFrameHtml::OnComment(wxCommandEvent& event)
 	m_Caption->SetValue(wxEmptyString);
 	m_Comment->SetValue(wxEmptyString);
 
-	InfoCash::UpdateInfo(this, m_id, m_type, false);
+	InfoCash::UpdateInfo(this, m_id, false);
 }

@@ -46,7 +46,7 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-    static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type, const bool vertical);
+    static void UpdateInfo(wxEvtHandler *frame, const int id, const bool vertical);
     static wxString GetInfo(const int id, bool vertical);
     static void Empty();
 public:
@@ -70,6 +70,9 @@ class ShowThread: public FbBookThread
 			: FbBookThread(thread) {};
 	protected:
 		virtual void * Entry();
+	private:
+		wxString m_filetype;
+		wxString m_md5sum;
 };
 
 #endif // __INFOCASH_H__

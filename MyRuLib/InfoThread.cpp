@@ -17,13 +17,6 @@ void *InfoThread::Entry()
 	return NULL;
 }
 
-void InfoThread::Execute(wxEvtHandler *frame, const int id, const bool vertical)
-{
-    if (!id) return;
-	wxThread *thread = new InfoThread(frame, id, vertical);
-    if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
-
 extern "C" {
 static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
 {

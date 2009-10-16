@@ -125,31 +125,22 @@ void InfoCash::Empty()
     sm_cash.Empty();
 }
 
-void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type, const bool vertical)
+void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const bool vertical)
 {
     if (!id) return;
-
-    wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = FindNode(id);
-    if (node) {
-		wxThread *thread = new ShowThread(frame, id, vertical);
-		if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-    } else {
-        TitleThread::Execute(frame, id, vertical);
-        if (file_type == wxT("fb2")) InfoThread::Execute(frame, id, vertical);
-    }
+	wxThread *thread = new ShowThread(frame, id, vertical);
+	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
 wxString InfoCash::GetInfo(const int id, bool vertical)
 {
-    if (!id) return wxEmptyString;
     wxCriticalSectionLocker enter(sm_locker);
 
     InfoNode * node = FindNode(id);
     if (node)
 		return node->GetHTML(vertical);
 	else
-		return wxEmptyString;
+        return wxEmptyString;
 }
 
 wxString InfoNode::GetHTML(bool vertical)
@@ -186,7 +177,6 @@ wxString InfoNode::GetHTML(bool vertical)
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), annotation.c_str());
         html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), filelist.c_str());
     }
-//    html += wxT("</table>");
 //    html += wxT("</table></body></html>");
 
 	return html;
@@ -194,11 +184,33 @@ wxString InfoNode::GetHTML(bool vertical)
 
 void * ShowThread::Entry()
 {
+	if (!m_id) return NULL;
+
+	wxString sql = wxT("SELECT file_type, md5sum FROM books WHERE id=?");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_id);
+	wxSQLite3ResultSet res = stmt.ExecuteQuery();
+	if (res.NextRow()) {
+		m_filetype = res.GetString(0);
+		m_md5sum = res.GetString(1);
+	}
+
 	wxString html = InfoCash::GetInfo(m_id, m_vertical);
-	wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-	event.SetInt(m_id);
-	event.SetString(html);
-	wxPostEvent(m_frame, event);
+
+	if (html.IsEmpty()) {
+		wxThread *thread = new TitleThread(this);
+		if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
+
+        if (m_filetype == wxT("fb2")) {
+			wxThread *thread = new InfoThread(this);
+			if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
+        }
+	} else {
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
+		event.SetInt(m_id);
+		event.SetString(html);
+		wxPostEvent(m_frame, event);
+	}
 	return NULL;
 }
-

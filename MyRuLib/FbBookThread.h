@@ -12,6 +12,7 @@ class FbBookThread: public wxThread
 		FbBookThread(FbBookThread * thread)
 			: m_frame(thread->m_frame), m_id(thread->m_id), m_vertical(thread->m_vertical) {};
 		void UpdateInfo();
+		static wxString HTMLSpecialChars(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	protected:
 		wxEvtHandler * m_frame;
 		int m_id;
