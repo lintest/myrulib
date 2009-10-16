@@ -173,17 +173,17 @@ clean:
 	rm -f build/myrulib
 	rm -f *.*~
 	rm -f Expat/*.*~
-	rm -f Expat/*.depend~
-	rm -f Expat/*.layuot~
+	rm -f Expat/Expat.depend
+	rm -f Expat/Expat.layuot
 	rm -f SQLite3/*.*~
-	rm -f SQLite3/*.depend~
-	rm -f SQLite3/*.layuot~
+	rm -f SQLite3/SQLite3.depend
+	rm -f SQLite3/SQLite3.layuot
 	rm -f WxSQLite3/*.*~
-	rm -f WxSQLite3/*.depend~
-	rm -f WxSQLite3/*.layuot~
+	rm -f WxSQLite3/WxSQLite3.depend
+	rm -f WxSQLite3/WxSQLite3.layuot
 	rm -f MyRuLib/*.*~
-	rm -f MyRuLib/*.depend~
-	rm -f MyRuLib/*.layuot~
+	rm -f MyRuLib/myrulib.depend
+	rm -f MyRuLib/myrulib.layuot
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
