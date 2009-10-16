@@ -73,16 +73,22 @@ FbMainFrame::~FbMainFrame()
 	m_FrameManager.UnInit();
 }
 
+#ifndef __WXMSW__
+#include "res/home.xpm"
+#endif
+
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
 	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
 		CreateControls();
-        #if defined(__WXMSW__)
+        #ifdef __WXMSW__
 		wxIcon icon(wxT("aaaa"));
 		SetIcon(icon);
         #else
-        wxIcon icon(wxT("/usr/share/myrulib/home_32x32.png"));
+        wxBitmap bitmap(home_xpm);
+        wxIcon icon;
+        icon.CopyFromBitmap(bitmap);
         SetIcon(icon);
         #endif
 	}

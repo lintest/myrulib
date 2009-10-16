@@ -1,5 +1,5 @@
 /* XPM */
-static char * home_32x32_xpm[] = {
+static const char * home_xpm[] = {
 "32 32 594 2",
 "  	c None",
 ". 	c #A4492E",
