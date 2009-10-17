@@ -1,3 +1,9 @@
+myrulib (0.10-ubuntu904) unstable; urgency=low
+
+  * Update release.
+
+ -- Kandrashin Denis <mail@lintest.ru>  Fri, 16 Oct 2009 22:49:46 +0400
+
 myrulib (0.09-1) unstable; urgency=low
 
   * Initial release.
