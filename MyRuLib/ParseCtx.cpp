@@ -55,9 +55,10 @@ static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData),
 }
 
 ParsingContext::ParsingContext()
-        :conv(NULL), encoding(wxT("UTF-8"))
+    : encoding(wxT("UTF-8"))
 {
     m_parser = XML_ParserCreate(NULL);
+    XML_SetUserData(m_parser, (void*)this);
     XML_SetDefaultHandler(m_parser, DefaultHnd);
     XML_SetUnknownEncodingHandler(m_parser, UnknownEncodingHnd, NULL);
 }
@@ -67,36 +68,23 @@ ParsingContext::~ParsingContext()
     XML_ParserFree(m_parser);
 }
 
-
-wxString ParsingContext::Path(size_t count)
-{
-	size_t lastNum;
-	wxString result;
-
-	if (count>m_tags.Count())
-		lastNum = m_tags.Count();
-	else
-		lastNum = (count ? count : m_tags.Count());
-
-	for (size_t i=0; i<lastNum; i++)
-		result += m_tags[i] + wxT("/");
-
-	return result;
-}
-
 void ParsingContext::AppendTag(wxString &tag)
 {
-	m_tags.Add(tag);
+    m_path += wxT("/") + tag;
 }
 
 void ParsingContext::RemoveTag(wxString &tag)
 {
-	for (size_t i = m_tags.Count(); i>0 ; i--) {
-		if ( m_tags[i-1] == tag) {
-			while (m_tags.Count()>=i) m_tags.RemoveAt(i-1);
-			break;
-		}
-	}
+    wxString str = m_path;
+    do {
+        int pos = str.Find(wxT('/'), true);
+        if (pos == -1) break;
+        if (str.Mid(pos + 1) == tag) {
+            m_path = str.Left(pos);
+            return;
+        }
+        str = str.Left(pos);
+    } while (true);
 }
 
 void ParsingContext::Stop()

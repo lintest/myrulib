@@ -4,18 +4,23 @@
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
 #include <wx/thread.h>
+#include <wx/html/htmlwin.h>
+#include "FbConst.h"
 
 #define INFO_CASH_SIZE 20
-
-#define ID_BOOKINFO_UPDATE 40000
 
 class InfoImage
 {
 public:
-    InfoImage(const wxString &n, const wxSize &s): name(n), size(s) {};
+    InfoImage(const wxString &name, const wxImage &image);
 public:
-    wxString name;
-    wxSize size;
+    const wxString & GetName() { return m_name; };
+    const int GetWidth();
+    const int GetHeight();
+private:
+    wxString m_name;
+    int m_width;
+    int m_height;
 };
 
 WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);
@@ -30,6 +35,7 @@ public:
     int id;
     wxString title;
     wxString annotation;
+    wxString filelist;
     InfoImageArray images;
     bool loaded;
 };
@@ -39,15 +45,29 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-    static void ShowInfo(wxEvtHandler *frame, const int id);
-    static wxString GetInfo(int id, bool vertical);
+    static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
+    static wxString GetInfo(const int id, bool vertical);
+    static void Empty();
 public:
     static void SetTitle(int id, wxString html);
+    static void SetFilelist(int id, wxString html);
     static void SetAnnotation(int id, wxString html);
     static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
 private:
-    static InfoNodeArray * GetCash();
+    static InfoNodeArray sm_cash;
     static InfoNode * GetNode(int id);
+	static wxCriticalSection sm_locker;
+};
+
+class ShowThread: public wxThread
+{
+	public:
+		ShowThread(wxEvtHandler *frame, int id): m_frame(frame), m_id(id) {};
+		virtual void * Entry();
+		static void Execute(wxEvtHandler *frame, const int id);
+	private:
+		wxEvtHandler * m_frame;
+		int m_id;
 };
 
 #endif // __INFOCASH_H__

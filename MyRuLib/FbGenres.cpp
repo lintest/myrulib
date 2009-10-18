@@ -22,16 +22,16 @@ const HiGenreStruct hi_genres[] = {
 	{ 0x7, _("Поэзия, Драматургия")},
 	{ 0x8, _("Старинное")},
 	{ 0x9, _("Наука, Образование")},
-	{ 0x9, _("Компьютеры и Интернет")},
-	{ 0x9, _("Справочная литература")},
-	{ 0x9, _("Документальная литература")},
-	{ 0x9, _("Религия и духовность")},
-	{ 0x9, _("Юмор")},
-	{ 0x9, _("Домоводство (Дом и семья)")},
+	{ 0xA, _("Компьютеры и Интернет")},
+	{ 0xB, _("Справочная литература")},
+	{ 0xC, _("Документальная литература")},
+	{ 0xF, _("Религия и духовность")},
+	{ 0xE, _("Юмор")},
+	{ 0xF, _("Домоводство (Дом и семья)")},
 	{ 0, wxEmptyString},
 };
 
-GenreStruct genres_list[] = {
+const GenreStruct genres_list[] = {
     { 0x1, 0x1, wxT("sf_history"), _("Альтернативная история")},
     { 0x1, 0x2, wxT("sf_action"), _("Боевая фантастика")},
     { 0x1, 0x3, wxT("sf_epic"), _("Эпическая фантастика")},
@@ -146,7 +146,7 @@ GenreStruct genres_list[] = {
 
 const size_t genres_count = sizeof(genres_list) / sizeof(GenreStruct);
 
-wxString FbGenres::Char(wxString &code)
+wxString FbGenres::Char(const wxString &code)
 {
     for (size_t i=0; genres_list[i].hi; i++)
         if (genres_list[i].code == code)
@@ -154,7 +154,7 @@ wxString FbGenres::Char(wxString &code)
     return wxEmptyString;
 }
 
-wxString FbGenres::Name(wxString &letter)
+wxString FbGenres::Name(const wxString &letter)
 {
 	long code = 0;
 	if (letter.ToLong(&code, 16)) {
@@ -163,4 +163,44 @@ wxString FbGenres::Name(wxString &letter)
 				return genres_list[i].name;
 	}
     return wxEmptyString;
+}
+
+wxString FbGenres::Name(const int code)
+{
+	for (size_t i=0; genres_list[i].hi; i++)
+		if (genres_list[i].hi*16 + genres_list[i].lo == code)
+			return genres_list[i].name;
+    return wxEmptyString;
+}
+
+wxString FbGenres::DecodeList(const wxString &genres)
+{
+    wxString result;
+    for (size_t i = 0; i<genres.Len()/2; i++) {
+        if (!result.IsEmpty()) result += wxT(", ");
+        wxString code = genres.SubString(i*2, i*2+1);
+        result +=  FbGenres::Name( code );
+    }
+    return result;
+}
+
+void FbGenres::FillControl(wxTreeListCtrl * control)
+{
+	control->Freeze();
+    wxTreeItemId root = control->AddRoot(wxEmptyString);
+
+    for (size_t i=0; hi_genres[i].hi; i++) {
+    	wxTreeItemId parent = control->AppendItem(root, hi_genres[i].name);
+    	control->SetItemBold(parent, true);
+		for (size_t j=0; genres_list[j].hi; j++) {
+			if (genres_list[j].hi == hi_genres[i].hi) {
+			    int code = genres_list[j].hi * 0x10 + genres_list[j].lo;
+				control->AppendItem(parent, genres_list[j].name, -1, -1, new FbGenreData(code));
+			}
+		}
+		control->Expand(parent);
+    }
+    control->ExpandAll(root);
+	control->Thaw();
+	control->Update();
 }

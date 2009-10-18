@@ -12,26 +12,39 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
-#include <DatabaseLayer.h>
-#include <SqliteDatabaseLayer.h>
-#include "db/Authors.h"
-#include "db/Books.h"
-#include "db/Params.h"
+#include <wx/filename.h>
+#include <wx/stdpaths.h>
+#include "FbDatabase.h"
+
+class MyStandardPaths: public wxStandardPaths
+{
+	public:
+		virtual wxString GetDataFile() const;
+		virtual wxString GetConfigFile() const;
+		virtual wxString GetAppFileName() const;
+	protected:
+		virtual wxString GetUserConfigDir() const;
+	private:
+		wxFileName GetDatabaseFilename() const;
+};
 
 class MyRuLibApp : public wxApp
 {
-private:
-	DatabaseLayer * m_Database;
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
-	bool ConnectToDatabase();
-	bool CreateDatabase();
-    wxString GetAppPath();
-	DatabaseLayer * GetDatabase() {return m_Database;};
+    wxString GetAppData() const { return m_datafile; };
+    wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
+    FbConfigDatabase & GetConfigDatabase() { return m_config; };
 public:
     wxCriticalSection m_DbSection;
-    wxCriticalSection m_ThreadQueue;
+private:
+	bool ConnectToDatabase();
+	bool CreateDatabase();
+private:
+	wxString m_datafile;
+    FbMainDatabase m_database;
+    FbConfigDatabase m_config;
 };
 
 DECLARE_APP(MyRuLibApp)

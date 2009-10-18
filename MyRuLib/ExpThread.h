@@ -5,12 +5,8 @@
 #include <wx/thread.h>
 #include <wx/arrimpl.cpp>
 #include <wx/filename.h>
-/*
-struct ExportFileItem {
-    wxFileName filename;
-    int id;
-};
-*/
+#include "BaseThread.h"
+
 class ExportFileItem {
 public:
     ExportFileItem(const wxFileName &n, const int i): filename(n), id(i) {};
@@ -21,17 +17,16 @@ public:
 
 WX_DECLARE_OBJARRAY(ExportFileItem, ExportFileArray);
 
-class ExportThread : public wxThread
+class ExportThread : public BaseThread
 {
 public:
-    ExportThread(wxEvtHandler *frame, bool compress): wxThread(), m_frame(frame), m_compress(compress) {};
+    ExportThread(bool compress): BaseThread(), m_compress(compress) {};
     virtual void *Entry();
 public:
     ExportFileArray m_filelist;
 private:
     void WriteFileItem(ExportFileItem &item);
 private:
-    wxEvtHandler *m_frame;
     bool m_compress;
 };
 

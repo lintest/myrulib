@@ -1,59 +1,120 @@
 #include <wx/stdpaths.h>
+#include <wx/filename.h>
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 
+WX_DEFINE_OBJARRAY(ParamArray);
+
+ParamItem::ParamItem(wxSQLite3ResultSet & result):
+    id(result.GetInt(wxT("id"))),
+    value(result.GetInt(wxT("value"))),
+    text(result.GetString(wxT("text")))
+{
+}
+
+ParamArray FbParams::sm_params;
+
+wxCriticalSection FbParams::sm_queue;
+
 FbParams::FbParams()
-    : m_database(wxGetApp().GetDatabase()), m_locker(wxGetApp().m_DbSection)
-{};
-
-FbParams::FbParams(DatabaseLayer *database, wxCriticalSection &section)
-        :    m_database(database), m_locker(section)
-{};
-
-int FbParams::GetValue(const int &param)
 {
-    Params params(m_database);
-    ParamsRow * row = params.Id(param);
-    if (row->IsNew())
-        return DefaultValue(param);
-    else
-        return row->value;
+	m_database.AttachConfig();
+}
+
+void FbParams::LoadParams()
+{
+    wxCriticalSectionLocker enter(sm_queue);
+
+    sm_params.Empty();
+
+	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100 UNION ALL SELECT id, value, text FROM params WHERE id<100");
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	while (result.NextRow()) sm_params.Add(new ParamItem(result));
+}
+
+int FbParams::GetValue(const int param)
+{
+    wxCriticalSectionLocker enter(sm_queue);
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            return sm_params[i].value;
+        }
+    }
+    return DefaultValue(param);
 };
 
-wxString FbParams::GetText(const int &param)
+wxString FbParams::GetText(const int param)
 {
-    Params params(m_database);
-    ParamsRow * row = params.Id(param);
-    if (row->IsNew())
-        return DefaultText(param);
-    else
-        return row->text;
+    wxCriticalSectionLocker enter(sm_queue);
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            return sm_params[i].text;
+        }
+    }
+    return DefaultText(param);
 };
 
-void FbParams::SetValue(const int &param, int value)
+void FbParams::SetValue(const int param, int value)
 {
-    Params params(m_database);
-    ParamsRow * row = params.Id(param);
+    wxCriticalSectionLocker enter(sm_queue);
+
+    const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+
     if (value == DefaultValue(param)) {
-        row->Delete();
+        wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, param);
+        stmt.ExecuteUpdate();
     } else {
-        row->value = value;
-        row->Save();
+        wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, value);
+        stmt.Bind(2, param);
+        stmt.ExecuteUpdate();
     }
-};
 
-void FbParams::SetText(const int &param, wxString text)
-{
-    Params params(m_database);
-    ParamsRow * row = params.Id(param);
-    row->Save();
-    if (text.IsEmpty() || text == DefaultText(param)) {
-        row->Delete();
-    } else {
-        row->text = text;
-        row->Save();
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            sm_params[i].value = value;
+            return;
+        }
     }
-};
+
+    ParamItem * item = new ParamItem(param);
+    item->value = value;
+    sm_params.Add(item);
+}
+
+void FbParams::SetText(const int param, wxString text)
+{
+    wxCriticalSectionLocker enter(sm_queue);
+
+    const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+
+    if (text == DefaultValue(param)) {
+        wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, param);
+        stmt.ExecuteUpdate();
+    } else {
+        wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, text);
+        stmt.Bind(2, param);
+        stmt.ExecuteUpdate();
+    }
+
+    for (size_t i=0; i<sm_params.Count(); i++) {
+        if (sm_params[i].id == param) {
+            sm_params[i].text = text;
+            return;
+        }
+    }
+
+    ParamItem * item = new ParamItem(param);
+    item->text = text;
+    sm_params.Add(item);
+}
 
 int FbParams::DefaultValue(int param)
 {
@@ -62,22 +123,25 @@ int FbParams::DefaultValue(int param)
         case FB_TRANSLIT_FILE: return 1;
         case FB_USE_PROXY: return 0;
         case FB_FB2_ONLY: return 1;
+        default: return 0;
     }
-
-    return 0;
 };
 
 wxString FbParams::DefaultText(int param)
 {
     switch (param) {
-        case FB_LIBRARY_DIR: return wxGetApp().GetAppPath();
-        case FB_EXTRACT_DIR: return wxStandardPaths().GetTempDir();
-        case FB_DOWNLOAD_DIR: return wxGetApp().GetAppPath() + wxT("download");
-#ifndef __WIN32__
-        case FB_FB2_PROGRAM: return wxT("fbreader");
-#endif //__WIN32__
+        case DB_LIBRARY_DIR:
+            return wxGetApp().GetAppPath();
+        case FB_DOWNLOAD_DIR: {
+            wxFileName filename;
+            filename.SetName(wxT("download"));
+            filename.SetPath(wxGetApp().GetAppPath());
+            return filename.GetFullPath();
+        }
+        case DB_WANRAIK_DIR:
+            return wxGetApp().GetAppPath();
+        default:
+			return wxEmptyString;
     }
-
-    return wxEmptyString;
 };
 

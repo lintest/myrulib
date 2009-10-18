@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
+#include "FbDatabase.h"
 
 class TitleThread : public wxThread
 {
@@ -11,9 +12,11 @@ public:
     virtual void *Entry();
     static void Execute(wxEvtHandler *frame, const int id);
 private:
-	static wxString GetBookInfo(int id);
+	wxString GetBookInfo(FbDatabase &database, int id);
+	wxString GetBookFiles(FbDatabase &database, int id);
     static wxString HTMLSpecialChars( const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 private:
+	static wxCriticalSection sm_queue;
     int m_id;
     wxEvtHandler *m_frame;
 };

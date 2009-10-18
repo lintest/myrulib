@@ -2,56 +2,65 @@
 #define __FBPARAMS_H__
 
 #include <wx/wx.h>
-#include <DatabaseLayer.h>
-#include "db/Params.h"
+#include <wx/arrimpl.cpp>
+#include <wx/wxsqlite3.h>
+#include "FbDatabase.h"
 
-enum {
-	DB_LIBRARY_TITLE = 1,
-	DB_LIBRARY_VERSION = 2,
-	DB_LIBRARY_TYPE,
-	DB_NEW_ARCHIVE,
-	DB_NEW_AUTHOR,
-	DB_NEW_BOOK,
-	DB_NEW_SEQUENCE,
-	FB_FB2_PROGRAM,
-	FB_LIBRARY_DIR,
-	FB_DOWNLOAD_DIR,
-	FB_EXTRACT_DIR,
-	FB_EXTRACT_DELETE,
-	FB_EXTERNAL_DIR,
-	FB_TRANSLIT_FOLDER,
-	FB_TRANSLIT_FILE,
-	FB_FOLDER_FORMAT,
-	FB_FILE_FORMAT,
-    FB_USE_PROXY,
-    FB_PROXY_ADDR,
-    FB_PROXY_PORT,
-    FB_PROXY_NAME,
-    FB_PROXY_PASS,
-	FB_VIEW_TYPE,
-	FB_FB2_ONLY,
+enum FbParamKey {
+	FB_CONFIG_TITLE   = 1,
+	FB_CONFIG_VERSION = 2,
+
+	FB_NEW_FOLDER      = 101,
+
+	FB_DOWNLOAD_DIR    = 120,
+	FB_EXTERNAL_DIR    = 121,
+	FB_TRANSLIT_FOLDER = 122,
+	FB_TRANSLIT_FILE   = 123,
+	FB_FOLDER_FORMAT   = 124,
+	FB_FILE_FORMAT     = 125,
+
+	FB_VIEW_TYPE       = 130,
+	FB_MODE_GENRES     = 131,
+	FB_MODE_SEARCH     = 132,
+	FB_MODE_FAVOUR     = 133,
+
+	FB_FB2_ONLY        = 140,
+
+    FB_USE_PROXY       = 150,
+    FB_PROXY_ADDR      = 151,
+    FB_PROXY_PORT      = 152,
+    FB_PROXY_NAME      = 153,
+    FB_PROXY_PASS      = 154,
 };
 
+class ParamItem
+{
+    public:
+        ParamItem(const int param): id(param), value(0) {};
+        ParamItem(wxSQLite3ResultSet & result);
+    public:
+        int id;
+        int value;
+        wxString text;
+};
+
+WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
+
 class FbParams {
-public:
-    static void InitParams(DatabaseLayer *database)
-    {
-        database->RunQuery(wxT("CREATE TABLE params(id integer primary key, value integer, text text);"));
-        database->RunQuery(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library');"));
-        database->RunQuery(_("INSERT INTO params(id, value) VALUES (2, 1);"));
-    };
-private:
-    DatabaseLayer *m_database;
-    wxCriticalSectionLocker m_locker;
-    int DefaultValue(int param);
-    wxString DefaultText(int param);
-public:
-    FbParams();
-    FbParams(DatabaseLayer *database, wxCriticalSection &section);
-    int GetValue(const int &param);
-    wxString GetText(const int &param);
-    void SetValue(const int &param, int value);
-    void SetText(const int &param, wxString text);
+    public:
+        FbParams();
+        static int GetValue(const int param);
+        static wxString GetText(const int param);
+        void LoadParams();
+        void SetValue(const int param, int value);
+        void SetText(const int param, wxString text);
+    private:
+        static int DefaultValue(int param);
+        static wxString DefaultText(int param);
+        static ParamArray sm_params;
+    private:
+		FbCommonDatabase m_database;
+        static wxCriticalSection sm_queue;
 };
 
 #endif // __FBPARAMS_H__

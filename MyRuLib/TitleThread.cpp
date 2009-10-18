@@ -1,23 +1,28 @@
 #include "TitleThread.h"
+#include "FbGenres.h"
 #include "FbManager.h"
 #include "InfoCash.h"
-#include "MyRuLibApp.h"
+#include "ZipReader.h"
+#include "BookExtractInfo.h"
+
+wxCriticalSection TitleThread::sm_queue;
 
 void TitleThread::Execute(wxEvtHandler *frame, const int id)
 {
     if (!id) return;
-	TitleThread *thread = new TitleThread(frame, id);
+	wxThread *thread = new TitleThread(frame, id);
     if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
 void *TitleThread::Entry()
 {
-    wxString html = GetBookInfo(m_id);
-    InfoCash::SetTitle(m_id, html);
+    wxCriticalSectionLocker enter(sm_queue);
 
-    wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
-    event.SetInt(m_id);
-    wxPostEvent( m_frame, event );
+    FbCommonDatabase database;
+    InfoCash::SetTitle(m_id, GetBookInfo(database, m_id));
+    InfoCash::SetFilelist(m_id, GetBookFiles(database, m_id));
+
+    ShowThread::Execute(m_frame, m_id);
 
 	return NULL;
 }
@@ -36,46 +41,69 @@ wxString TitleThread::HTMLSpecialChars( const wxString &value, const bool bSingl
   return szToReturn;
 }
 
-wxString TitleThread::GetBookInfo(int id)
+wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
 {
-    wxString title, annotation;
-    wxString authorText, genreText;
+    wxString authors, title, annotation, genres;
 
     {
-        wxCriticalSectionLocker enter(wxGetApp().m_DbSection);
-
-        Books books(wxGetApp().GetDatabase());
-        wxString whereClause = wxString::Format(wxT("id=%d"), id);
-        BooksRowSet * allBooks = books.WhereSet( whereClause, wxT("title"));
-        wxString genres;
-        wxStringList authorList;
-        for(size_t i = 0; i < allBooks->Count(); ++i) {
-            BooksRow * thisBook = allBooks->Item(i);
-            Authors authors(wxGetApp().GetDatabase());
-            title = thisBook->title;
-            genres = thisBook->genres;
-            authorList.Add(authors.Id(thisBook->id_author)->full_name);
-        }
-        authorList.Sort();
-        for (size_t i = 0; i<authorList.GetCount(); i++) {
-            if (!authorText.IsEmpty()) authorText += wxT(", ");
-            authorText += authorList[i];
-        }
-        for (size_t i = 0; i<genres.Len()/2; i++) {
-            if (!genreText.IsEmpty()) genreText += wxT(", ");
-            wxString genreCode = genres.SubString(i*2, i*2+1);
-            genreText +=  FbGenres::Name( genreCode );
+        wxString sql = wxT("\
+            SELECT authors.full_name FROM authors  \
+            WHERE id IN (SELECT id_author FROM books WHERE id=?) \
+            ORDER BY authors.full_name \
+        ");
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        while ( result.NextRow() ) {
+            if (!authors.IsEmpty()) authors += wxT(", ");
+            authors += result.GetString(0);
         }
     }
 
+    {
+        wxString sql = wxT("SELECT title, genres FROM books WHERE id=? LIMIT 1");
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if ( result.NextRow() ) {
+            title = result.GetString(wxT("title"));
+            genres = result.GetString(wxT("genres"));
+        }
+    }
+    genres = FbGenres::DecodeList(genres);
+
     wxString html;
 
-    html += wxString::Format(wxT("<font size=4><b>%s</b></font>"), HTMLSpecialChars(authorText).c_str());
+    html += wxString::Format(wxT("<font size=4><b>%s</b></font>"), HTMLSpecialChars(authors).c_str());
 
-    if (!genreText.IsEmpty())
-        html += wxString::Format(wxT("<br><font size=3>%s</font>"), HTMLSpecialChars(genreText).c_str());
+    if (!genres.IsEmpty())
+        html += wxString::Format(wxT("<br><font size=3>%s</font>"), HTMLSpecialChars(genres).c_str());
 
     html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
+
+    return html;
+}
+
+wxString TitleThread::GetBookFiles(FbDatabase &database, int id)
+{
+	BookExtractArray items(database, id);
+
+    wxString html;
+
+	for (size_t i = 0; i<items.Count(); i++) {
+		BookExtractInfo & item = items[i];
+		if (item.librusec) {
+            html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), item.GetBook().c_str());
+        } else if ( item.id_archive ) {
+            if (item.zip_path.IsEmpty()) item.zip_path = wxT("$(WANRAIK)");
+            if (item.NameIsEqual())
+                html += wxString::Format(wxT("<p>%s</p>"), item.GetZip().c_str());
+            else
+                html += wxString::Format(wxT("<p>%s: %s</p>"), item.GetZip().c_str(), item.GetBook().c_str());
+        } else {
+            html += wxString::Format(wxT("<p>%s</p>"), item.GetBook().c_str());
+        }
+	}
 
     return html;
 }

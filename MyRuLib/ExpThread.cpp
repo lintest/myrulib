@@ -1,11 +1,6 @@
 #include "ExpThread.h"
-#include "MyRuLibApp.h"
-#include "MyRuLibMain.h"
 #include "FbManager.h"
-#include "FbParams.h"
 #include "ZipReader.h"
-
-extern wxString strParsingInfo;
 
 WX_DEFINE_OBJARRAY(ExportFileArray);
 
@@ -13,11 +8,10 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 {
     ZipReader reader(item.id);
     if (!reader.IsOK()) {
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_ERROR );
-		event.SetString(reader.GetErrorText());
-		wxPostEvent( m_frame, event );
+		wxLogError(_("Export error ") + item.filename.GetFullPath());
         return;
     }
+
     wxFileOutputStream out(item.filename.GetFullPath());
 
     if (m_compress) {
@@ -33,31 +27,16 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 
 void *ExportThread::Entry()
 {
-    wxCriticalSectionLocker enter(wxGetApp().m_ThreadQueue);
+//    wxCriticalSectionLocker enter(sm_queue);
 
-	{
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_START );
-		event.SetInt(m_filelist.Count());
-		event.SetString(strParsingInfo);
-		wxPostEvent( m_frame, event );
-	}
+    DoStart(m_filelist.Count(), wxEmptyString);
 
-	int progress = 0;
-	for (size_t i=0; i<m_filelist.Count(); i++)
-	{
-        wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_UPDATE );
-        event.SetString(m_filelist[i].filename.GetFullName());
-        event.SetInt(progress);
-        wxPostEvent( m_frame, event );
-        progress++;
-
+	for (size_t i=0; i<m_filelist.Count(); i++) {
+	    DoStep(m_filelist[i].filename.GetFullName());
 	    WriteFileItem(m_filelist[i]);
 	}
 
-	{
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, MyRuLibMainFrame::ID_PROGRESS_FINISH );
-		wxPostEvent( m_frame, event );
-	}
+	DoFinish();
 
 	return NULL;
 }

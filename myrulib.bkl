@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<makefile>
+
+	<set var="BUILDDIR">build</set>
+	
+	<set var="WX_PORT_DEFAULT"></set>
+	<set var="WX_UNICODE_DEFAULT">1</set>
+	<set var="WX_DEBUG_DEFAULT">0</set>
+	
+    <if cond="FORMAT=='mingw'">
+	  <set var="WX_SHARED_DEFAULT">0</set>
+	  <set var="WX_VERSION_DEFAULT">28</set>
+	  <set var="DEFAULT_LDFLAGS">-static</set>
+    </if>
+
+    <if cond="FORMAT=='gnu'">
+	  <set var="WX_SHARED_DEFAULT">0</set>
+	  <set var="WX_VERSION_DEFAULT">2.8</set>
+	  <set var="WX_PORT_DEFAULT">gtk2</set>
+    </if>
+	
+    <include file="./Presets/wx.bkl"/>
+
+    <lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+		<define>HAVE_EXPAT_CONFIG_H</define>
+		<sources>Expat/xmlparse.c</sources>
+		<sources>Expat/xmlrole.c</sources>
+		<sources>Expat/xmltok.c</sources>
+		<sources>Expat/xmltok_impl.c</sources>
+		<sources>Expat/xmltok_ns.c</sources>
+		<include>Expat</include>
+    </lib>
+
+    <lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+		<sources>SQLite3/sqlite3.c</sources>
+    </lib>
+	
+    <lib id="wxsqlite3_static" template="wx-lib">
+		<include>SQLite3</include>
+		<include>WxSQLite3</include>
+		<include>WxSQLite3</include>
+		<sources>WxSQLite3/wxsqlite3.cpp</sources>
+    </lib>
+	
+    <exe id="myrulib" template="wxgui">
+		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
+		<sources>MyRuLib/BaseThread.cpp</sources>
+		<sources>MyRuLib/BookExtractInfo.cpp</sources>
+		<sources>MyRuLib/BookListCtrl.cpp</sources>
+		<sources>MyRuLib/BooksPanel.cpp</sources>
+		<sources>MyRuLib/ExpThread.cpp</sources>
+		<sources>MyRuLib/ExternalDlg.cpp</sources>
+		<sources>MyRuLib/FbAuthorList.cpp</sources>
+		<sources>MyRuLib/FbBookData.cpp</sources>
+		<sources>MyRuLib/FbBookEvent.cpp</sources>
+		<sources>MyRuLib/FbBookMenu.cpp</sources>
+		<sources>MyRuLib/FbConst.cpp</sources>
+		<sources>MyRuLib/FbDatabase.cpp</sources>
+		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
+		<sources>MyRuLib/FbFrameBase.cpp</sources>
+		<sources>MyRuLib/FbFrameBaseThread.cpp</sources>
+		<sources>MyRuLib/FbFrameFavour.cpp</sources>
+		<sources>MyRuLib/FbFrameGenres.cpp</sources>
+		<sources>MyRuLib/FbFrameSearch.cpp</sources>
+		<sources>MyRuLib/FbGenres.cpp</sources>
+		<sources>MyRuLib/FbLogStream.cpp</sources>
+		<sources>MyRuLib/FbMainFrame.cpp</sources>
+		<sources>MyRuLib/FbManager.cpp</sources>
+		<sources>MyRuLib/FbParams.cpp</sources>
+		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
+		<sources>MyRuLib/ImpContext.cpp</sources>
+		<sources>MyRuLib/ImpThread.cpp</sources>
+		<sources>MyRuLib/InfoCash.cpp</sources>
+		<sources>MyRuLib/InfoThread.cpp</sources>
+		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
+		<sources>MyRuLib/MyRuLibApp.cpp</sources>
+		<sources>MyRuLib/ParseCtx.cpp</sources>
+		<sources>MyRuLib/ProgressBar.cpp</sources>
+		<sources>MyRuLib/SettingsDlg.cpp</sources>
+		<sources>MyRuLib/TitleThread.cpp</sources>
+		<sources>MyRuLib/VacuumThread.cpp</sources>
+		<sources>MyRuLib/ZipReader.cpp</sources>
+		<sources>MyRuLib/md5.c</sources>
+		<sources>MyRuLib/wx/base64.cpp</sources>
+		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
+		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<include>WxSQLite3</include>
+		<library>wxsqlite3_static</library>
+		<include cond="WX_SHARED_DEFAULT=='0'">Expat</include>
+		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
+		<library cond="WX_SHARED_DEFAULT=='0'">expat_static</library>
+		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
+		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>
+		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
+		<wx-lib>aui</wx-lib>
+		<wx-lib>xrc</wx-lib>
+		<wx-lib>html</wx-lib>
+		<wx-lib>core</wx-lib>
+		<wx-lib>base</wx-lib>
+		<if cond="FORMAT=='mingw'">
+			<sys-lib>shlwapi</sys-lib>
+			<postlink-command>strip ./build/myrulib.exe</postlink-command>
+		</if>
+		<if cond="FORMAT=='gnu'">
+			<postlink-command>strip ./build/myrulib</postlink-command>
+		</if>
+        <app-type>gui</app-type>
+		<threading>single</threading>
+		<optimize>speed</optimize>
+        <debug-info>off</debug-info>
+        <runtime-libs>static</runtime-libs>
+    </exe>
+
+</makefile>
