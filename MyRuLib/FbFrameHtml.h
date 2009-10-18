@@ -18,15 +18,18 @@ protected:
 private:
 	static wxString GetMd5sum(const int id);
 	wxString GetComments();
+	void DoModify();
+	void DoSubmit();
 private:
 	wxHtmlWindow m_info;
 	wxTextCtrl m_Caption;
 	wxTextCtrl m_Comment;
 	wxToolBar m_ToolBar;
 	int m_id;
-	int m_key;
+	wxString m_key;
 	wxString m_md5sum;
 private:
+    void OnEnter(wxCommandEvent& event);
     void OnSubmit(wxCommandEvent& event);
     void OnModify(wxCommandEvent& event);
     void OnInfoUpdate(wxCommandEvent& event);

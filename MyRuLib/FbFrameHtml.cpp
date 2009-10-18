@@ -18,7 +18,7 @@ BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
     EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
     EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
     EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
-	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnSubmit)
+	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)
 END_EVENT_TABLE()
 
 wxString FbFrameHtml::GetMd5sum(const int id)
@@ -158,7 +158,7 @@ wxString FbFrameHtml::GetComments()
 	return html;
 }
 
-void FbFrameHtml::OnSubmit(wxCommandEvent& event)
+void FbFrameHtml::DoSubmit()
 {
 	wxString caption = m_Caption.GetValue();
 	wxString comment = m_Comment.GetValue();
@@ -180,13 +180,33 @@ void FbFrameHtml::OnSubmit(wxCommandEvent& event)
 	m_Comment.SetValue(wxEmptyString);
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 
-	m_key = 0;
+	m_key.Empty();
 
 	InfoCash::UpdateInfo(this, m_id, false, true);
 }
 
+void FbFrameHtml::OnSubmit(wxCommandEvent& event)
+{
+	DoSubmit();
+}
+
 void FbFrameHtml::OnModify(wxCommandEvent& event)
 {
+	DoModify();
+}
+
+void FbFrameHtml::OnEnter(wxCommandEvent& event)
+{
+	if (m_key.IsEmpty())
+		DoSubmit();
+	else
+		DoModify();
+}
+
+void FbFrameHtml::DoModify()
+{
+	if (m_key.IsEmpty()) return;
+
 	wxString caption = m_Caption.GetValue();
 	wxString comment = m_Comment.GetValue();
 	if ( caption.IsEmpty() && comment.IsEmpty() ) return;
@@ -205,7 +225,7 @@ void FbFrameHtml::OnModify(wxCommandEvent& event)
 	m_Comment.SetValue(wxEmptyString);
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 
-	m_key = 0;
+	m_key.Empty();
 
 	InfoCash::UpdateInfo(this, m_id, false, true);
 }
@@ -213,23 +233,29 @@ void FbFrameHtml::OnModify(wxCommandEvent& event)
 void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 {
 	FbLocalDatabase database;
-	wxString id = event.GetLinkInfo().GetHref();
+	wxString key = event.GetLinkInfo().GetHref();
 
 	if ( event.GetLinkInfo().GetTarget() == wxT("D") )
 	{
 		int res = wxMessageBox(_("Удалить комментарий?"), _("Подтверждение"), wxOK|wxCANCEL);
 		if (res != wxOK) return;
 
-		wxString sql = wxT("DELETE FROM comments WHERE id=") + id;
+		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
 		database.ExecuteUpdate(sql);
+
+		if (m_key = key) {
+			m_key.Empty();
+			m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+		}
+
 		InfoCash::UpdateInfo(this, m_id, false, true);
 	}
 	else if ( event.GetLinkInfo().GetTarget() == wxT("M") )
 	{
-		wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + id;
+		wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + key;
 		wxSQLite3ResultSet res = database.ExecuteQuery(sql);
 		if (res.NextRow()) {
-			m_key = res.GetInt(0);
+			m_key = res.GetString(0);
 			m_Caption.SetValue( res.GetString(1) );
 			m_Comment.SetValue( res.GetString(2) );
 			m_ToolBar.EnableTool(ID_HTML_MODIFY, true);
