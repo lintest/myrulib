@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Expat" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="LinDebug">
+				<Option output="..\build\Debug\libExpat" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\Debug\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="LinRelease">
+				<Option output="..\build\Release\libExpat" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\Release\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="WinDebug">
+				<Option output="..\build\Debug\libExpat" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\Debug\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DCOMPILED_FROM_DSP" />
+				</Compiler>
+			</Target>
+			<Target title="WinRelease">
+				<Option output="..\build\Release\libExpat" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\Release\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-DCOMPILED_FROM_DSP" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DCOMPILED_FROM_DSP" />
+		</Compiler>
+		<Unit filename="amigaconfig.h" />
+		<Unit filename="ascii.h" />
+		<Unit filename="asciitab.h" />
+		<Unit filename="expat.h" />
+		<Unit filename="expat_external.h" />
+		<Unit filename="iasciitab.h" />
+		<Unit filename="internal.h" />
+		<Unit filename="latin1tab.h" />
+		<Unit filename="libexpat.def" />
+		<Unit filename="macconfig.h" />
+		<Unit filename="nametab.h" />
+		<Unit filename="utf8tab.h" />
+		<Unit filename="watcomconfig.h" />
+		<Unit filename="winconfig.h" />
+		<Unit filename="xmlparse.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="xmlrole.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="xmlrole.h" />
+		<Unit filename="xmltok.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="xmltok.h" />
+		<Unit filename="xmltok_impl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="xmltok_impl.h" />
+		<Unit filename="xmltok_ns.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
