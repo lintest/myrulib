@@ -8,25 +8,23 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
-    EVT_MENU(ID_MODE_TREE, FbFrameGenres::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameGenres::OnChangeMode)
     EVT_TREE_SEL_CHANGED(ID_GENRES_TREE, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
-FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent, wxWindowID id,const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
+    :FbFrameBase(parent, ID_FRAME_GENRES, _("Жанры"))
 {
     CreateControls();
 }
 
 void FbFrameGenres::CreateControls()
 {
+	SetMenuBar(new FbFrameBaseMenu);
+
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	SetMenuBar(CreateMenuBar());
 
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizer1->Add( toolbar, 0, wxGROW);
@@ -43,10 +41,8 @@ void FbFrameGenres::CreateControls()
 	FbGenres::FillControl(m_GenresList);
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
+	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_GenresList, &m_BooksPanel, 160);
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_GENRES));
 
 	SetSizer( bSizer1 );
 	Layout();
@@ -84,15 +80,20 @@ void * FrameGenresThread::Entry()
 	wxString condition = wxString::Format(wxT("GENRE(books.genres, ?)"), m_code);
 	wxString sql = GetSQL(condition);
 
-	FbCommonDatabase database;
-	FbGenreFunction function;
-    database.CreateFunction(wxT("GENRE"), 2, function);
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, wxString::Format(wxT("%02X"), m_code));
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	try {
+		FbCommonDatabase database;
+		FbGenreFunction function;
+		database.CreateFunction(wxT("GENRE"), 2, function);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, wxString::Format(wxT("%02X"), m_code));
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (sm_skiper.Skipped(m_number)) return NULL;
-    FillBooks(result);
+		if (sm_skiper.Skipped(m_number)) return NULL;
+		FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 
 	return NULL;
 }
@@ -110,13 +111,8 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	}
 }
 
-void FbFrameGenres::OnChangeMode(wxCommandEvent& event)
+void FbFrameGenres::UpdateBooklist()
 {
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	SetListMode(FB_MODE_GENRES, mode);
-
-	m_BooksPanel.CreateColumns(mode);
-
 	int code = 0;
 	wxTreeItemId selected = m_GenresList->GetSelection();
 	if (selected.IsOk()) {
@@ -124,8 +120,9 @@ void FbFrameGenres::OnChangeMode(wxCommandEvent& event)
 		if (data) code = data->GetCode();
 	}
 
-	if ( code ) {
+	if (code) {
 		wxThread * thread = new FrameGenresThread(this, m_BooksPanel.GetListMode(), code);
 		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 	}
 }
+

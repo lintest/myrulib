@@ -1,10 +1,10 @@
 #include "FbConst.h"
 
-const wxString strVersionInfo = _T("MyRuLib - version 0.09 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
+const wxString strVersionInfo = _T("MyRuLib - version 0.10 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 
 const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
-const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXWZ");
+const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 const wxString strAlphabet = alphabetRu + alphabetEn;
 const wxString strNobody = _("(без автора)");
 const wxString strRusJE = wxT("е");

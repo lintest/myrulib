@@ -62,6 +62,7 @@ private:
 	wxListCtrl* m_typelist;
 	wxArrayString m_commands;
     FbCommonDatabase m_database;
+    wxArrayString m_deleted;
 };
 
 #endif //__SettingsDlg__

@@ -192,8 +192,7 @@ function convert_authors($mysql_db, $sqlite_db)
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    $full_name = $row['LastName']." ".$row['FirstName']." ".$row['MiddleName'];
-    $full_name = trim($full_name);
+    $full_name = trim($row['LastName'])." ".trim($row['FirstName'])." ".trim($row['MiddleName']);
     $full_name = str_replace("  ", " ", $full_name);
     $search_name = strtolowerEx($full_name);
     $letter = utf8_substr($full_name,0,1);
@@ -206,7 +205,7 @@ function convert_authors($mysql_db, $sqlite_db)
     $sql = "INSERT INTO authors (id, letter, full_name, search_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['AvtorId'], $letter, $full_name, $search_name, $row['FirstName'], $row['MiddleName'], $row['LastName']));
+    $err= $insert->execute(array($row['AvtorId'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -223,7 +222,7 @@ function convert_books($mysql_db, $sqlite_db)
 
   $sqltest = "
     SELECT 
-      libbook.BookId, FileSize, Title, Deleted, FileType, md5,
+      libbook.BookId, FileSize, Title, Deleted, FileType, md5, DATE_FORMAT(libbook.Time,'%y%m%d') as Time, 
       CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId,
       CASE WHEN libfilename.FileName IS NULL THEN 
         CASE WHEN oldfilename.FileName IS NULL THEN CONCAT(libbook.BookId, '.', libbook.FileType) ELSE oldfilename.FileName END
@@ -238,8 +237,7 @@ function convert_books($mysql_db, $sqlite_db)
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    $filename = $row['BookId'].".".$row['FileType'];
-    echo $row['BookId']." - ".$filename." - ".$row['AvtorId']." - ".$row['Title']."\n";
+    echo $row['Time']." - ".$row['BookId']." - ".$row['FileType']." - ".$row['AvtorId']." - ".$row['Title']."\n";
 
     $genres = "";
     $subsql = "SELECT GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId WHERE BookId=".$row['BookId'];
@@ -247,26 +245,15 @@ function convert_books($mysql_db, $sqlite_db)
     while ($subrow = $subquery->fetch_array()) {
       $genres = $genres.genreCode($subrow['GenreCode']);
     }
-
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, md5sum) VALUES(?,?,?,?,?,?,?,?,?)";
+    $file_type = trim($row['FileType']);
+    $file_type = trim($file_type, ".");
+    $file_type = strtolower($file_type);
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], $row['Title'], $row['Deleted'], $row['FileName'], $row['FileSize'], $row['FileType'], $genres, $row['md5']));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], trim($row['Title']), $row['Deleted'], $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $row['md5']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
-/*
-    $words = explode(' ', trim($row['Title']));
-    $cwords = count($words);
-    $sql = "INSERT INTO words (word, id_book, number) VALUES(?,?,?)";
-    $insert = $sqlite_db->prepare($sql);
-    for($i = 0; $i < $cwords; $i++){
-      if (utf8_strlen($words[$i])<3) continue;
-      if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-      $err= $insert->execute(array(strtolowerEx($words[$i]), $row['BookId'], $i));
-      if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
-      $insert->closeCursor();
-    }
-*/
   }
 
   $sqlite_db->query("commit;");
@@ -308,7 +295,7 @@ function convert_seqnames($mysql_db, $sqlite_db)
     $sql = "INSERT INTO sequences (id, value) VALUES(?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['SeqId'], $row['SeqName']));
+    $err= $insert->execute(array($row['SeqId'], trim($row['SeqName'])));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -374,6 +361,7 @@ function create_tables($sqlite_db)
       file_size integer,
       file_type varchar(20),
       md5sum char(32),
+      created integer,
       description text);
   ");
 
@@ -396,7 +384,7 @@ function create_tables($sqlite_db)
 
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
   $sqlite_db->query("DELETE FROM params;");
-  $sqlite_db->query("INSERT INTO params(text) VALUES ('Test Library');");
+  $sqlite_db->query("INSERT INTO params(text) VALUES ('LibRusEc Library');");
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
 
   $sqlite_db->query("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);");
@@ -429,9 +417,15 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("commit;");
 }
 
+$mysql_srvr = 'localhost';
+$mysql_user = 'root';
+$mysql_pass = '';
+$mysql_base = 'librusec';
+
+include('settings.php');
 
 $sqlite_db = new PDO('sqlite:./myrulib.db');
-$mysql_db = new mysqli('localhost', 'root', '', 'lib');
+$mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
 create_tables($sqlite_db);

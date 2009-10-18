@@ -1,10 +1,10 @@
 #include <wx/imaglist.h>
-#include "BookListCtrl.h"
+#include "FbBookList.h"
 #include "FbConst.h"
 #include "FbBookData.h"
 #include "XpmBitmaps.h"
 
-BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
+FbBookList::FbBookList(wxWindow *parent, wxWindowID id, long style)
     :FbTreeListCtrl(parent, id, style)
 {
     wxBitmap size = wxBitmap(checked_xpm);
@@ -16,7 +16,7 @@ BookListCtrl::BookListCtrl(wxWindow *parent, wxWindowID id, long style)
 	AssignImageList (images);
 };
 
-void BookListCtrl::SelectChild(const wxTreeItemId &parent, int iImageIndex)
+void FbBookList::SelectChild(const wxTreeItemId &parent, int iImageIndex)
 {
     SetItemImage(parent, iImageIndex);
     wxTreeItemIdValue cookie;
@@ -27,7 +27,7 @@ void BookListCtrl::SelectChild(const wxTreeItemId &parent, int iImageIndex)
     }
 }
 
-void BookListCtrl::SelectAll(int iImageIndex)
+void FbBookList::SelectAll(int iImageIndex)
 {
     wxTreeItemId root = GetRootItem();
     if (root.IsOk()) SelectChild(root, iImageIndex);
@@ -46,7 +46,7 @@ BookListUpdater::~BookListUpdater()
 	m_list->Update();
 }
 
-void BookListCtrl::ScanChecked(const wxTreeItemId &root, wxString &selections)
+void FbBookList::ScanChecked(const wxTreeItemId &root, wxString &selections)
 {
     wxTreeItemIdValue cookie;
     wxTreeItemId child = GetFirstChild(root, cookie);
@@ -63,7 +63,7 @@ void BookListCtrl::ScanChecked(const wxTreeItemId &root, wxString &selections)
     }
 }
 
-void BookListCtrl::ScanSelected(const wxTreeItemId &root, wxString &selections)
+void FbBookList::ScanSelected(const wxTreeItemId &root, wxString &selections)
 {
     wxArrayTreeItemIds itemArray;
     size_t count = FbTreeListCtrl::GetSelections(itemArray);
@@ -76,7 +76,7 @@ void BookListCtrl::ScanSelected(const wxTreeItemId &root, wxString &selections)
     }
 }
 
-void BookListCtrl::ScanChecked(const wxTreeItemId &root, wxArrayInt &items)
+void FbBookList::ScanChecked(const wxTreeItemId &root, wxArrayInt &items)
 {
     wxTreeItemIdValue cookie;
     wxTreeItemId child = GetFirstChild(root, cookie);
@@ -90,7 +90,7 @@ void BookListCtrl::ScanChecked(const wxTreeItemId &root, wxArrayInt &items)
     }
 }
 
-void BookListCtrl::ScanSelected(const wxTreeItemId &root, wxArrayInt &items)
+void FbBookList::ScanSelected(const wxTreeItemId &root, wxArrayInt &items)
 {
     wxArrayTreeItemIds itemArray;
     size_t count = FbTreeListCtrl::GetSelections(itemArray);
@@ -100,7 +100,7 @@ void BookListCtrl::ScanSelected(const wxTreeItemId &root, wxArrayInt &items)
     }
 }
 
-wxString BookListCtrl::GetSelected()
+wxString FbBookList::GetSelected()
 {
     wxString selections;
     wxTreeItemId root = GetRootItem();
@@ -109,7 +109,7 @@ wxString BookListCtrl::GetSelected()
     return selections;
 }
 
-void BookListCtrl::GetSelected(wxArrayInt &items)
+void FbBookList::GetSelected(wxArrayInt &items)
 {
     wxString selections;
     wxTreeItemId root = GetRootItem();
@@ -117,7 +117,7 @@ void BookListCtrl::GetSelected(wxArrayInt &items)
     if (selections.IsEmpty()) ScanSelected(root, items);
 }
 
-bool BookListCtrl::DeleteItems(const wxTreeItemId &root, wxArrayInt &items)
+bool FbBookList::DeleteItems(const wxTreeItemId &root, wxArrayInt &items)
 {
     wxTreeItemIdValue cookie;
     wxTreeItemId child = GetFirstChild(root, cookie);
@@ -138,7 +138,7 @@ bool BookListCtrl::DeleteItems(const wxTreeItemId &root, wxArrayInt &items)
 	return false;
 }
 
-void BookListCtrl::DeleteItems(wxArrayInt &items)
+void FbBookList::DeleteItems(wxArrayInt &items)
 {
 	while (DeleteItems(GetRootItem(), items)) {};
 }

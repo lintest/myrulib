@@ -6,6 +6,7 @@
 #include <wx/thread.h>
 #include <wx/html/htmlwin.h>
 #include "FbConst.h"
+#include "FbBookThread.h"
 
 #define INFO_CASH_SIZE 20
 
@@ -28,16 +29,18 @@ WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);
 class InfoNode
 {
 public:
-    InfoNode(): id(0), loaded(false) {};
+    InfoNode(): id(0) {};
     virtual ~InfoNode();
     void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
+    wxString GetHTML(const wxString md5sum, bool bVertical, bool bEditable = false);
+private:
+    wxString GetComments(const wxString md5sum, bool bEditable);
 public:
     int id;
     wxString title;
     wxString annotation;
     wxString filelist;
     InfoImageArray images;
-    bool loaded;
 };
 
 WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
@@ -45,8 +48,8 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-    static void UpdateInfo(wxEvtHandler *frame, const int id, const wxString &file_type);
-    static wxString GetInfo(const int id, bool vertical);
+    static void UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable = false);
+    static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable);
     static void Empty();
 public:
     static void SetTitle(int id, wxString html);
@@ -56,18 +59,22 @@ public:
 private:
     static InfoNodeArray sm_cash;
     static InfoNode * GetNode(int id);
+    static InfoNode * FindNode(int id);
 	static wxCriticalSection sm_locker;
 };
 
-class ShowThread: public wxThread
+class ShowThread: public FbBookThread
 {
 	public:
-		ShowThread(wxEvtHandler *frame, int id): m_frame(frame), m_id(id) {};
+		ShowThread(wxEvtHandler *frame, int id, const bool bVertical, const bool bEditable)
+			: FbBookThread(frame, id, bVertical, bEditable) {};
+		ShowThread(FbBookThread * thread)
+			: FbBookThread(thread) {};
+	protected:
 		virtual void * Entry();
-		static void Execute(wxEvtHandler *frame, const int id);
 	private:
-		wxEvtHandler * m_frame;
-		int m_id;
+		wxString m_filetype;
+		wxString m_md5sum;
 };
 
 #endif // __INFOCASH_H__

@@ -4,14 +4,24 @@
 #include <wx/wx.h>
 #include <wx/listbox.h>
 #include <wx/wxsqlite3.h>
+#include "FbTreeListCtrl.h"
 
-class FbAuthorList: public wxListBox
+class FbAuthorData: public wxTreeItemData
+{
+	public:
+		FbAuthorData(const int id): m_id(id) {};
+		const int GetId() { return m_id; };
+	private:
+		int m_id;
+};
+
+class FbAuthorList: public FbTreeListCtrl
 {
     public:
-        FbAuthorList(wxWindow* parent, wxWindowID id, long style = wxSUNKEN_BORDER)
-            :wxListBox(parent, id, wxDefaultPosition, wxDefaultSize, 0, NULL, style = 0) {};
+        FbAuthorList(wxWindow* parent, wxWindowID id);
         void FillAuthorsChar(const wxChar & findLetter);
         void FillAuthorsText(const wxString & findText);
+        void FillAuthorsCode(const int code);
     private:
         void FillAuthors(wxSQLite3ResultSet & result);
 };

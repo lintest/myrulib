@@ -7,21 +7,22 @@
 	<set var="WX_UNICODE_DEFAULT">1</set>
 	<set var="WX_DEBUG_DEFAULT">0</set>
 	
-    <if cond="FORMAT=='mingw'">
-	  <set var="WX_SHARED_DEFAULT">0</set>
-	  <set var="WX_VERSION_DEFAULT">28</set>
-	  <set var="DEFAULT_LDFLAGS">-static</set>
-    </if>
+	<if cond="FORMAT=='mingw'">
+		<set var="WX_SHARED_DEFAULT">0</set>
+		<set var="WX_VERSION_DEFAULT">28</set>
+		<set var="DEFAULT_LDFLAGS">-static</set>
+	</if>
 
-    <if cond="FORMAT=='gnu'">
-	  <set var="WX_SHARED_DEFAULT">0</set>
-	  <set var="WX_VERSION_DEFAULT">2.8</set>
-	  <set var="WX_PORT_DEFAULT">gtk2</set>
-    </if>
+	<if cond="FORMAT=='gnu'">
+		<set var="WX_SHARED_DEFAULT">1</set>
+		<set var="WX_VERSION_DEFAULT">2.8</set>
+		<set var="WX_PORT_DEFAULT">gtk2</set>
+	</if>
 	
-    <include file="./Presets/wx.bkl"/>
+	<include file="./Presets/wx.bkl"/>
+    <include file="datafiles.bkl"/>
 
-    <lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<sources>Expat/xmlparse.c</sources>
 		<sources>Expat/xmlrole.c</sources>
@@ -29,42 +30,47 @@
 		<sources>Expat/xmltok_impl.c</sources>
 		<sources>Expat/xmltok_ns.c</sources>
 		<include>Expat</include>
-    </lib>
+	</lib>
 
-    <lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<sources>SQLite3/sqlite3.c</sources>
-    </lib>
+	</lib>
 	
-    <lib id="wxsqlite3_static" template="wx-lib">
-		<include>SQLite3</include>
+	<lib id="wxsqlite3_static" template="wx-lib">
+		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
 		<include>WxSQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
-    </lib>
+	</lib>
 	
-    <exe id="myrulib" template="wxgui">
+	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/BookExtractInfo.cpp</sources>
-		<sources>MyRuLib/BookListCtrl.cpp</sources>
 		<sources>MyRuLib/BooksPanel.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
 		<sources>MyRuLib/FbBookEvent.cpp</sources>
+		<sources>MyRuLib/FbBookList.cpp</sources>
 		<sources>MyRuLib/FbBookMenu.cpp</sources>
+		<sources>MyRuLib/FbBookThread.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
+		<sources>MyRuLib/FbFrameBaseMenu.cpp</sources>
 		<sources>MyRuLib/FbFrameBaseThread.cpp</sources>
 		<sources>MyRuLib/FbFrameFavour.cpp</sources>
+		<sources>MyRuLib/FbFrameInfo.cpp</sources>
+		<sources>MyRuLib/FbFrameHtml.cpp</sources>
 		<sources>MyRuLib/FbFrameGenres.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
+		<sources>MyRuLib/FbMainMenu.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
@@ -86,29 +92,46 @@
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>WxSQLite3</include>
 		<library>wxsqlite3_static</library>
-		<include cond="WX_SHARED_DEFAULT=='0'">Expat</include>
-		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
-		<library cond="WX_SHARED_DEFAULT=='0'">expat_static</library>
-		<library cond="WX_SHARED_DEFAULT=='0'">sqlite3_static</library>
-		<sys-lib cond="WX_SHARED_DEFAULT=='1'">expat</sys-lib>
-		<sys-lib cond="WX_SHARED_DEFAULT=='1'">sqlite3</sys-lib>
+		<if cond="WX_SHARED_DEFAULT=='0'">
+			<include>Expat</include>
+			<include>SQLite3</include>
+			<library>expat_static</library>
+			<library>sqlite3_static</library>
+		</if>
+		<if cond="WX_SHARED_DEFAULT=='1'">
+			<sys-lib>expat</sys-lib>
+			<sys-lib>sqlite3</sys-lib>
+		</if>
 		<wx-lib>aui</wx-lib>
-		<wx-lib>xrc</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
-		<if cond="FORMAT=='mingw'">
+		<if cond="PLATFORM_WIN32=='1'">
 			<sys-lib>shlwapi</sys-lib>
 			<postlink-command>strip ./build/myrulib.exe</postlink-command>
 		</if>
-		<if cond="FORMAT=='gnu'">
+		<if cond="PLATFORM_WIN32=='0'">
 			<postlink-command>strip ./build/myrulib</postlink-command>
 		</if>
-        <app-type>gui</app-type>
+		<app-type>gui</app-type>
 		<threading>single</threading>
 		<optimize>speed</optimize>
-        <debug-info>off</debug-info>
-        <runtime-libs>static</runtime-libs>
-    </exe>
-
+		<debug-info>off</debug-info>
+		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
+		<install-to cond="FORMAT=='gnu'">/usr/bin</install-to>
+	</exe>
+	
+	<if cond="FORMAT=='gnu'">
+		<data-files> 
+			<srcdir>MyRuLib/desktop</srcdir>
+			<files>home-32x32.png</files>
+			<install-to>/usr/share/myrulib</install-to>
+		</data-files>
+		<data-files>
+			<srcdir>MyRuLib/desktop</srcdir>
+			<files>myrulib.desktop</files>
+			<install-to>/usr/share/applications</install-to>
+		</data-files>
+	</if>
+	
 </makefile>

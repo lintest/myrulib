@@ -11,22 +11,33 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.search_name, authors.full_name, sequences.value AS sequence, bookseq.number\
+					books.id, books.title, books.file_size, books.file_type, books.id_author, \
+					authors.full_name as full_name, sequences.value AS sequence, bookseq.number as number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
 					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
-				WHERE (%s) \
+                WHERE (%s) \
 				ORDER BY authors.search_name, key, sequences.value, bookseq.number, books.title \
 			"); break;
 		case FB2_MODE_LIST:
 			sql = wxT("\
-				SELECT books.id, books.title, books.file_name, books.file_type, books.file_size, authors.full_name, 0 as number \
-				FROM books LEFT JOIN authors ON books.id_author = authors.id \
-				WHERE (%s) \
+				SELECT \
+					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
+					authors.full_name as full_name, 0 as number \
+				FROM books \
+					LEFT JOIN authors ON books.id_author = authors.id \
+                WHERE (%s) \
 				ORDER BY books.title, books.id, authors.full_name\
 			"); break;
 	}
+
+	wxString str = wxT("(%s)");
+	if (m_FilterFb2) str += wxT("AND(books.file_type='fb2')");
+	if (m_FilterLib) str += wxT("AND(books.id>0)");
+	if (m_FilterUsr) str += wxT("AND(books.id<0)");
+	sql = wxString::Format(sql, str.c_str());
+
 	return wxString::Format(sql, condition.c_str());
 }
 

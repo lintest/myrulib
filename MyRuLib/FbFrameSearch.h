@@ -16,20 +16,20 @@ class FbFrameSearch : public FbFrameBase
 public:
     static void Execute(wxAuiMDIParentFrame * parent, const wxString &title);
 	FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title = wxEmptyString);
-    BookListCtrl * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
+    FbBookList * GetBooks() { return FbFrameBase::m_BooksPanel.m_BookList; };
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
+	virtual void UpdateBooklist();
 private:
     void CreateBookInfo();
-	void DoSearch();
 	void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
 private:
     wxTextCtrl * m_textTitle;
     wxTextCtrl * m_textAuthor;
     wxString m_title;
 private:
-    void OnChangeMode(wxCommandEvent& event);
+    void OnFoundNothing(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

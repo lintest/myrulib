@@ -14,10 +14,9 @@ public:
 //	bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 protected:
 	virtual void CreateControls();
+	virtual void UpdateBooklist() {};
 private:
-	void OnToolButton(wxCommandEvent & event);
-	void OnToggleToolbar(wxCommandEvent & event);
-	void OnActivated(wxActivateEvent & event);
+	wxHtmlWindow m_Info;
 };
 
 #endif // __FBFRAMEFAVORITES_H__

@@ -27,8 +27,8 @@ private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
 	wxAuiToolBar * CreateToolBar();
-	wxMenuBar * CreateMenuBar();
     void TogglePaneVisibility(const wxString &pane_name, bool show);
+	void ShowPane(const wxString &pane_name);
     void FindAuthor(const wxString &text);
     void FindTitle(const wxString &text);
     wxWindow * FindFrameById(const int id, bool bActivate = false);
@@ -45,11 +45,12 @@ private:
 	void OnOpenWeb(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnDatabaseInfo(wxCommandEvent & event);
+	void OnInfoCommand(wxCommandEvent & event);
 	void OnFindAuthor(wxCommandEvent& event);
 	void OnFindAuthorEnter(wxCommandEvent& event);
 	void OnFindTitle(wxCommandEvent & event);
     void OnFindTitleEnter(wxCommandEvent& event);
-    void OnMenuSearch(wxCommandEvent& event);
+    void OnMenuNothing(wxCommandEvent& event);
     void OnMenuAuthor(wxCommandEvent& event);
     void OnMenuTitle(wxCommandEvent& event);
 	void OnMenuGenres(wxCommandEvent & event);
@@ -65,6 +66,7 @@ private:
     void OnPanelClosed(wxAuiManagerEvent& event);
     void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 	void OnUpdateFolder(wxCommandEvent & event);
+	void OnOpenAuthor(wxCommandEvent & event);
 	void OnVacuum(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };

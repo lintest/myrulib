@@ -1,5 +1,5 @@
-#ifndef __BOOKLISTCTRL_H__
-#define __BOOKLISTCTRL_H__
+#ifndef __FBBOOKLIST_H__
+#define __FBBOOKLIST_H__
 
 #include <wx/wx.h>
 #include "wx/treelistctrl.h"
@@ -7,10 +7,10 @@
 #include <wx/wxsqlite3.h>
 #include "FbTreeListCtrl.h"
 
-class BookListCtrl: public FbTreeListCtrl
+class FbBookList: public FbTreeListCtrl
 {
 public:
-    BookListCtrl(wxWindow *parent, wxWindowID id, long style);
+    FbBookList(wxWindow *parent, wxWindowID id, long style);
 	void SelectAll(int iImageIndex = 1);
 	wxString GetSelected();
 	void GetSelected(wxArrayInt &items);
@@ -36,4 +36,4 @@ class BookListUpdater
 		wxTreeListCtrl * m_list;
 };
 
-#endif // __BOOKLISTCTRL_H__
+#endif // __FBBOOKLIST_H__

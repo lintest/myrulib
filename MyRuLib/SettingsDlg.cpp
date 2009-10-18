@@ -542,38 +542,26 @@ void SettingsDlg::SaveTypelist()
 	FbDatabase & m_database = wxGetApp().GetConfigDatabase();
     FbAutoCommit transaction(&m_database);
 
-    wxString sql = wxT("SELECT file_type FROM types");
-    wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-    while (result.NextRow()) {
-    	wxString file_type = result.GetString(0);
-		bool bDeleteType = true;
-		long item = -1;
-		while (true) {
-			item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL);
-			if (item == -1) break;
-			if ( m_typelist->GetItemText(item) == file_type ) {
-				wxString command = m_commands[m_typelist->GetItemData(item)];
-				wxString system = FbManager::GetSystemCommand(file_type);
-				bDeleteType = command.IsEmpty() || command == system;
-				break;
-			}
-		}
-		if (bDeleteType) {
-			wxString sql = wxT("DELETE FROM types WHERE file_type=?");
-			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-			stmt.Bind(1, file_type);
-			stmt.ExecuteUpdate();
-		}
-    }
+    for (size_t i=0; i<m_deleted.Count(); i++) {
+		wxString sql = wxT("DELETE FROM types WHERE file_type=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_deleted[i]);
+		stmt.ExecuteUpdate();
+	}
 
 	long item = -1;
 	while (true) {
 		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL);
-		if (item == -1) break;
+		if (item == wxNOT_FOUND) break;
 		wxString file_type = m_typelist->GetItemText(item);
 		wxString command = m_commands[m_typelist->GetItemData(item)];
 		wxString system = FbManager::GetSystemCommand(file_type);
-		if ( !command.IsEmpty() && command != system ) {
+		if ( command.IsEmpty() || command == system ) {
+			wxString sql = wxT("DELETE FROM types WHERE file_type=?");
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, file_type);
+			stmt.ExecuteUpdate();
+		} else {
 			wxString sql = wxT("INSERT OR REPLACE INTO types(file_type, command) values(?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, file_type);
@@ -590,12 +578,23 @@ void SettingsDlg::OnAppendType( wxCommandEvent& event )
 	filetype = filetype.Lower();
 
 	long item = -1;
+	bool bExists = false;
+	long stateMask = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
 	while (true) {
-		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (item == -1) break;
-		if (filetype == m_typelist->GetItemText(item)) return;
+		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL);
+		if (item == wxNOT_FOUND) break;
+		long state = 0;
+		if (m_typelist->GetItemText(item) == filetype) {
+			state = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
+			bExists = true;
+		}
+		m_typelist->SetItemState(item, state, stateMask);
 	}
-	item = m_typelist->InsertItem(-1, filetype);
+
+	if (bExists) return;
+
+	item = m_typelist->InsertItem(0, filetype);
+	m_typelist->SetItemState(item, stateMask, stateMask);
 }
 
 void SettingsDlg::OnModifyType( wxCommandEvent& event )
@@ -607,14 +606,12 @@ void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 {
 	m_typelist->Freeze();
 
-	wxArrayInt items;
-
 	long item = -1;
 	while (true) {
 		item = m_typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (item == -1) break;
+		if (item == wxNOT_FOUND) break;
+		m_deleted.Add(m_typelist->GetItemText(item));
 		m_typelist->DeleteItem(item);
-		items.Add(item);
 	}
 
 	m_typelist->Thaw();

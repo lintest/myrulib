@@ -10,6 +10,12 @@
 # These are configurable options:
 # -------------------------------------------------------------------------
 
+# 'install' program location 
+INSTALL ?= install
+
+# Destination root (/ is used if empty) 
+DESTDIR ?= 
+
 #  
 AR ?= ar
 
@@ -41,7 +47,7 @@ WX_CONFIG ?= wx-config
 WX_PORT ?= gtk2
 
 # Use DLL build of wx library to use? [0,1]
-WX_SHARED ?= 0
+WX_SHARED ?= 1
 
 # Compile Unicode build of wxWidgets? [0,1]
 WX_UNICODE ?= 1
@@ -66,48 +72,41 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -IExpat `$(WX_CONFIG) --cflags \
-	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-EXPAT_STATIC_OBJECTS =  \
-	build/expat_static_xmlparse.o \
-	build/expat_static_xmlrole.o \
-	build/expat_static_xmltok.o \
-	build/expat_static_xmltok_impl.o \
-	build/expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS = `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
-	$(CFLAGS)
-SQLITE3_STATIC_OBJECTS =  \
-	build/sqlite3_static_sqlite3.o
-WXSQLITE3_STATIC_CXXFLAGS = -ISQLite3 -IWxSQLite3 -IWxSQLite3 `$(WX_CONFIG) \
-	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+WXSQLITE3_STATIC_CXXFLAGS = -IWxSQLite3 -IWxSQLite3 `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	build/wxsqlite3_static_wxsqlite3.o
-MYRULIB_CFLAGS = -DXML_STATIC -IWxSQLite3 -IExpat -ISQLite3 -O2 `$(WX_CONFIG) \
-	--cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -DXML_STATIC -IWxSQLite3 -IExpat -ISQLite3 -O2 `$(WX_CONFIG) \
-	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+MYRULIB_CFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` \
+	$(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
+	$(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_BookExtractInfo.o \
-	build/myrulib_BookListCtrl.o \
 	build/myrulib_BooksPanel.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbAuthorList.o \
 	build/myrulib_FbBookData.o \
 	build/myrulib_FbBookEvent.o \
+	build/myrulib_FbBookList.o \
 	build/myrulib_FbBookMenu.o \
+	build/myrulib_FbBookThread.o \
 	build/myrulib_FbConst.o \
 	build/myrulib_FbDatabase.o \
 	build/myrulib_FbFrameAuthor.o \
 	build/myrulib_FbFrameBase.o \
+	build/myrulib_FbFrameBaseMenu.o \
 	build/myrulib_FbFrameBaseThread.o \
 	build/myrulib_FbFrameFavour.o \
+	build/myrulib_FbFrameInfo.o \
+	build/myrulib_FbFrameHtml.o \
 	build/myrulib_FbFrameGenres.o \
 	build/myrulib_FbFrameSearch.o \
 	build/myrulib_FbGenres.o \
 	build/myrulib_FbLogStream.o \
 	build/myrulib_FbMainFrame.o \
+	build/myrulib_FbMainMenu.o \
 	build/myrulib_FbManager.o \
 	build/myrulib_FbParams.o \
 	build/myrulib_FbTreeListCtrl.o \
@@ -155,59 +154,42 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libexpat_static.a build/libsqlite3_static.a build/libwxsqlite3_static.a build/myrulib
+all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
 
-install: 
+install: install_myrulib
+	$(INSTALL) -d $(DESTDIR)/usr/share/myrulib
+	(cd MyRuLib/desktop ; $(INSTALL) -m 644  home-32x32.png $(DESTDIR)/usr/share/myrulib)
+	$(INSTALL) -d $(DESTDIR)/usr/share/applications
+	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
 
-uninstall: 
+uninstall: uninstall_myrulib
+	(cd $(DESTDIR)/usr/share/myrulib ; rm -f home-32x32.png)
+	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 
 clean: 
 	rm -f build/*.o
 	rm -f build/*.d
-	rm -f build/libexpat_static.a
-	rm -f build/libsqlite3_static.a
 	rm -f build/libwxsqlite3_static.a
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-build/libexpat_static.a: $(EXPAT_STATIC_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(EXPAT_STATIC_OBJECTS)
-	$(RANLIB) $@
-
-build/libsqlite3_static.a: $(SQLITE3_STATIC_OBJECTS)
-	rm -f $@
-	$(AR) rcu $@ $(SQLITE3_STATIC_OBJECTS)
-	$(RANLIB) $@
-
 build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libexpat_static.a build/libsqlite3_static.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libexpat_static.a build/libsqlite3_static.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,xrc,html,core,base`
+build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,base`
 	strip ./build/myrulib
 
-build/expat_static_xmlparse.o: ./Expat/xmlparse.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
+install_myrulib: build/myrulib
+	$(INSTALL) -d $(DESTDIR)/usr/bin
+	install -c build/myrulib $(DESTDIR)/usr/bin
 
-build/expat_static_xmlrole.o: ./Expat/xmlrole.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmltok.o: ./Expat/xmltok.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmltok_impl.o: ./Expat/xmltok_impl.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/expat_static_xmltok_ns.o: ./Expat/xmltok_ns.c
-	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<
-
-build/sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
-	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
+uninstall_myrulib: 
+	rm -f $(DESTDIR)/usr/bin/myrulib
 
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
@@ -216,9 +198,6 @@ build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_BookExtractInfo.o: ./MyRuLib/BookExtractInfo.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_BookListCtrl.o: ./MyRuLib/BookListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_BooksPanel.o: ./MyRuLib/BooksPanel.cpp
@@ -239,7 +218,13 @@ build/myrulib_FbBookData.o: ./MyRuLib/FbBookData.cpp
 build/myrulib_FbBookEvent.o: ./MyRuLib/FbBookEvent.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbBookList.o: ./MyRuLib/FbBookList.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbBookMenu.o: ./MyRuLib/FbBookMenu.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbConst.o: ./MyRuLib/FbConst.cpp
@@ -254,10 +239,19 @@ build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
 build/myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbFrameBaseMenu.o: ./MyRuLib/FbFrameBaseMenu.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbFrameBaseThread.o: ./MyRuLib/FbFrameBaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameFavour.o: ./MyRuLib/FbFrameFavour.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFrameHtml.o: ./MyRuLib/FbFrameHtml.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameGenres.o: ./MyRuLib/FbFrameGenres.cpp
@@ -273,6 +267,9 @@ build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbMainFrame.o: ./MyRuLib/FbMainFrame.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbMainMenu.o: ./MyRuLib/FbMainMenu.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbManager.o: ./MyRuLib/FbManager.cpp
@@ -329,7 +326,7 @@ build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean
+.PHONY: all install uninstall clean install_myrulib uninstall_myrulib
 
 
 # Dependencies tracking:

@@ -9,32 +9,35 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
-    EVT_LISTBOX(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorsListBoxSelected)
+    EVT_TREE_SEL_CHANGED(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorSelected)
     EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
-    EVT_MENU(ID_MODE_TREE, FbFrameAuthor::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameAuthor::OnChangeMode)
 END_EVENT_TABLE()
 
 class FrameAuthorThread: public FbFrameBaseThread
 {
     public:
-        FrameAuthorThread(wxWindow * frame, FbListMode mode, const int author)
+        FrameAuthorThread(FbFrameBase * frame, FbListMode mode, const int author)
 			:FbFrameBaseThread(frame, mode), m_author(author), m_number(sm_skiper.NewNumber()) {};
         virtual void *Entry();
+    protected:
+		virtual void CreateTree(wxSQLite3ResultSet &result);
+		virtual wxString GetSQL(const wxString & condition);
     private:
 		static FbThreadSkiper sm_skiper;
         int m_author;
         int m_number;
 };
 
-FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
+    :FbFrameBase(parent, ID_FRAME_AUTHOR, _("Авторы"))
 {
     CreateControls();
 }
 
 void FbFrameAuthor::CreateControls()
 {
+	SetMenuBar(new FbFrameBaseMenu);
+
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
@@ -46,16 +49,13 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_AuthorsListBox = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
-	m_AuthorsListBox->SetFocus();
+	m_AuthorList = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
+	m_AuthorList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER, substyle);
-	splitter->SplitVertically(m_AuthorsListBox, &m_BooksPanel, 160);
+	CreateBooksPanel(splitter, substyle);
+	splitter->SplitVertically(m_AuthorList, &m_BooksPanel, 160);
 
-    m_BooksPanel.CreateColumns(FB2_MODE_TREE);
-
-	SetMenuBar(CreateMenuBar());
 	Layout();
 }
 
@@ -101,43 +101,57 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
     ToggleAlphabar(id);
 
-	m_AuthorsListBox->FillAuthorsChar(alphabet[position]);
+	m_AuthorList->FillAuthorsChar(alphabet[position]);
 	SelectFirstAuthor();
 }
 
 void FbFrameAuthor::SelectFirstAuthor()
 {
-	if(m_AuthorsListBox->GetCount()) {
-		m_AuthorsListBox->SetSelection(0);
-		FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
+	m_BooksPanel.EmptyBooks();
+
+    wxTreeItemIdValue cookie;
+    wxTreeItemId item = m_AuthorList->GetFirstChild(m_AuthorList->GetRootItem(), cookie);
+	if (item.IsOk()) {
+		m_AuthorList->SelectItem(item);
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(item);
         if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetID());
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
         }
-	} else {
-		m_BooksPanel.EmptyBooks();
 	}
 }
 
-void FbFrameAuthor::OnAuthorsListBoxSelected(wxCommandEvent & event)
+void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 {
-	FbClientData * data = (FbClientData*)event.GetClientObject();
-	if (data) {
-		wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetID());
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+        m_BooksPanel.EmptyBooks();
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(selected);
+		if (data) {
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
+			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+		}
 	}
 }
 
 void FbFrameAuthor::ActivateAuthors()
 {
-    m_AuthorsListBox->SetFocus();
+    m_AuthorList->SetFocus();
 }
 
 void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
     ToggleAlphabar(0);
-    m_AuthorsListBox->FillAuthorsText(text);
+    m_AuthorList->FillAuthorsText(text);
+    SelectFirstAuthor();
+}
+
+void FbFrameAuthor::OpenAuthor(const int id)
+{
+	if (id == 0) return;
+    ToggleAlphabar(0);
+    m_AuthorList->FillAuthorsCode(id);
     SelectFirstAuthor();
 }
 
@@ -153,14 +167,51 @@ void FbFrameAuthor::SelectRandomLetter()
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
-    int iSelected = m_AuthorsListBox->GetSelection();
-    if (iSelected == wxNOT_FOUND) return;
-    FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(iSelected);
-
-    ExternalDlg::Execute(this, m_BooksPanel.m_BookList, data->GetID());
+    wxTreeItemId item = m_AuthorList->GetSelection();
+    if (item.IsOk()) {
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(item);
+		if (data) ExternalDlg::Execute(this, m_BooksPanel.m_BookList, data->GetId());
+    }
 }
 
 FbThreadSkiper FrameAuthorThread::sm_skiper;
+
+wxString FrameAuthorThread::GetSQL(const wxString & condition)
+{
+	wxString sql;
+	switch (m_mode) {
+		case FB2_MODE_TREE:
+			sql = wxT("\
+				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
+					books.id, books.title, books.file_size, books.file_type, books.id_author, \
+					sequences.value AS sequence, bookseq.number as number\
+				FROM books \
+					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
+					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
+                WHERE (%s) \
+				ORDER BY key, sequences.value, bookseq.number, books.title \
+			"); break;
+		case FB2_MODE_LIST:
+			sql = wxT("\
+				SELECT \
+					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
+					authors.full_name as full_name, 0 as number \
+				FROM books \
+					LEFT JOIN books as sub ON sub.id=books.id \
+					LEFT JOIN authors ON sub.id_author = authors.id \
+                WHERE (%s) \
+				ORDER BY books.title, books.id, authors.full_name\
+			"); break;
+	}
+
+	wxString str = wxT("(%s)");
+	if (m_FilterFb2) str += wxT("AND(books.file_type='fb2')");
+	if (m_FilterLib) str += wxT("AND(books.id>0)");
+	if (m_FilterUsr) str += wxT("AND(books.id<0)");
+	sql = wxString::Format(sql, str.c_str());
+
+	return wxString::Format(sql, condition.c_str());
+}
 
 void * FrameAuthorThread::Entry()
 {
@@ -169,29 +220,65 @@ void * FrameAuthorThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxT("books.id_author = ?");
-	wxString sql = GetSQL(condition);
+	try {
+		FbCommonDatabase database;
+		if (m_mode == FB2_MODE_TREE) {
+            wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
+            wxSQLite3Statement stmt = database.PrepareStatement(sql);
+            stmt.Bind(1, m_author);
+            wxSQLite3ResultSet result = stmt.ExecuteQuery();
+            if (result.NextRow()) {
+                wxString thisAuthor = result.GetString(wxT("full_name"));
+                wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR);
+                event.SetString(thisAuthor);
+                wxPostEvent(m_frame, event);
+            }
+		}
 
-	FbCommonDatabase database;
-	FbGenreFunction function;
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, m_author);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        wxString sql = GetSQL(wxT("books.id_author=?"));
+        FbGenreFunction function;
+        wxSQLite3Statement stmt = database.PrepareStatement(sql);
+        stmt.Bind(1, m_author);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (sm_skiper.Skipped(m_number)) return NULL;
-    FillBooks(result);
+        if (sm_skiper.Skipped(m_number)) return NULL;
+        FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 
 	return NULL;
 }
 
-void FbFrameAuthor::OnChangeMode(wxCommandEvent& event)
+void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 {
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	m_BooksPanel.CreateColumns(mode);
+    wxString thisSequence = wxT("@@@");
+    while (result.NextRow()) {
+	    wxString nextSequence = result.GetString(wxT("sequence"));
 
-	FbClientData * data = (FbClientData*) m_AuthorsListBox->GetClientObject(m_AuthorsListBox->GetSelection());
-	if (data) {
-		wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetID());
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	    if (thisSequence != nextSequence) {
+	        thisSequence = nextSequence;
+			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE);
+			event.SetString(thisSequence);
+			wxPostEvent(m_frame, event);
+	    }
+
+        BookTreeItemData data(result);
+		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
+		wxPostEvent(m_frame, event);
+    }
+}
+
+void FbFrameAuthor::UpdateBooklist()
+{
+	wxTreeItemId selected = m_AuthorList->GetSelection();
+	if (selected.IsOk()) {
+        m_BooksPanel.EmptyBooks();
+		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(selected);
+		if (data) {
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
+			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+		}
 	}
 }

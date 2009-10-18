@@ -11,6 +11,7 @@ enum FbParamKey {
 	FB_CONFIG_VERSION = 2,
 
 	FB_NEW_FOLDER      = 101,
+	FB_NEW_COMMENT     = 102,
 
 	FB_DOWNLOAD_DIR    = 120,
 	FB_EXTERNAL_DIR    = 121,
@@ -19,12 +20,18 @@ enum FbParamKey {
 	FB_FOLDER_FORMAT   = 124,
 	FB_FILE_FORMAT     = 125,
 
-	FB_VIEW_TYPE       = 130,
-	FB_MODE_GENRES     = 131,
-	FB_MODE_SEARCH     = 132,
-	FB_MODE_FAVOUR     = 133,
+	FB_VIEW_AUTHOR     = 130,
+	FB_VIEW_GENRES     = 131,
+	FB_VIEW_SEARCH     = 132,
+	FB_VIEW_FAVOUR     = 133,
+	FB_MODE_AUTHOR     = 135,
+	FB_MODE_GENRES     = 136,
+	FB_MODE_SEARCH     = 137,
+	FB_MODE_FAVOUR     = 138,
 
-	FB_FB2_ONLY        = 140,
+	FB_FILTER_FB2      = 140,
+	FB_FILTER_LIB      = 141,
+	FB_FILTER_USR      = 142,
 
     FB_USE_PROXY       = 150,
     FB_PROXY_ADDR      = 151,

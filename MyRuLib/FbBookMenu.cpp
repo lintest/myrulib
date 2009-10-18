@@ -3,9 +3,13 @@
 #include "FbDatabase.h"
 #include "MyRuLibApp.h"
 
-WX_DEFINE_OBJARRAY(FbFolderArray);
+WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
-FbFolderArray FbBookMenu::sm_folders;
+WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
+
+FbMenuFolderArray FbBookMenu::sm_folders;
+
+FbMenuAuthorArray FbBookMenu::sm_authors;
 
 FbBookMenu::FbBookMenu(int id, int iFolder)
 	: m_id(id)
@@ -24,6 +28,8 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
     AppendSeparator();
+	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
+    AppendSeparator();
     if (iFolder == fbNO_FOLDER) {
         Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
     } else {
@@ -31,6 +37,8 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 		if (iFolder) Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
     }
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
+    AppendSeparator();
+	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
 void FbBookMenu::LoadFolders()
@@ -39,7 +47,7 @@ void FbBookMenu::LoadFolders()
     wxSQLite3ResultSet result = wxGetApp().GetConfigDatabase().ExecuteQuery(sql);
     int id = ID_FAVORITES_ADD;
     while (result.NextRow()) {
-        FbFolderItem * item = new FbFolderItem;
+        FbMenuFolderItem * item = new FbMenuFolderItem;
         item->id = ++id;
         item->folder = result.GetInt(0);
         item->name = result.GetString(1);
@@ -54,9 +62,44 @@ int FbBookMenu::GetFolder(const int id)
 	return 0;
 }
 
-void FbBookMenu::Connect(wxWindow * frame, wxObjectEventFunction func)
+int FbBookMenu::GetAuthor(const int id)
 {
-    if (sm_folders.Count() == 0) LoadFolders();
+	for (size_t i=0; i<sm_authors.Count(); i++)
+		if ( sm_authors[i].id == id ) return sm_authors[i].author;
+	return 0;
+}
+
+void FbBookMenu::ConnectFolders(wxWindow * frame, wxObjectEventFunction func)
+{
 	for (size_t i=0; i<sm_folders.Count(); i++)
 		frame->Connect(sm_folders[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
 }
+
+void FbBookMenu::ConnectAuthors(wxWindow * frame, wxObjectEventFunction func)
+{
+	for (size_t i=0; i<sm_authors.Count(); i++)
+		frame->Connect(sm_authors[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
+}
+
+wxMenu * FbBookMenu::CreateAuthorMenu()
+{
+    sm_authors.Empty();
+
+    wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
+    FbCommonDatabase database;
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
+    stmt.Bind(1, m_id);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	wxMenu * submenu = new wxMenu;
+    int id = ID_FAVORITES_ADD + sm_folders.Count();
+    while (result.NextRow()) {
+    	FbMenuAuthorItem * item = new FbMenuAuthorItem;
+    	item->id = ++id;
+    	item->author = result.GetInt(0);
+		submenu->Append(item->id, result.GetString(1));
+    	sm_authors.Add(item);
+    }
+    return submenu;
+}
+

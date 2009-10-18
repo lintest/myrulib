@@ -1,0 +1,2 @@
+?package(myrulib):needs="x11" section="Applications/Viewers" \
+	title="MyRuLib e-book library" command="myrulib"

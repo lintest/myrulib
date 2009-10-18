@@ -11,8 +11,6 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
-    EVT_MENU(ID_MODE_TREE, FbFrameFavour::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameFavour::OnChangeMode)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFavour::OnFavoritesDel)
     EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
     EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
@@ -20,20 +18,20 @@ BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_LISTBOX(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
-FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent, wxWindowID id,const wxString & title)
-    :FbFrameBase(parent, id, title)
+FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent)
+    :FbFrameBase(parent, ID_FRAME_FAVOUR, _("Избранное"))
 {
     CreateControls();
 }
 
 void FbFrameFavour::CreateControls()
 {
+	SetMenuBar(new FbFrameBaseMenu);
+
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	SetMenuBar(CreateMenuBar());
 
 	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
 
@@ -42,10 +40,10 @@ void FbFrameFavour::CreateControls()
 	m_tools->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
 	m_tools->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
 	m_tools->Realize();
-	bToolSizer->Add( m_tools, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	bToolSizer->Add( m_tools, 0, wxALIGN_CENTER_VERTICAL);
 
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bToolSizer->Add( toolbar, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL);
+	bToolSizer->Add( toolbar, 1, wxALIGN_CENTER_VERTICAL);
 
 	bSizer1->Add( bToolSizer, 0, wxEXPAND);
 
@@ -58,10 +56,8 @@ void FbFrameFavour::CreateControls()
 	FillFolders();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	m_BooksPanel.Create(splitter, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxNO_BORDER, substyle);
+	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_FolderList, &m_BooksPanel, 160);
-
-    m_BooksPanel.CreateColumns(GetListMode(FB_MODE_FAVOUR));
 
 	SetSizer( bSizer1 );
 	Layout();
@@ -100,7 +96,7 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 class FrameFavourThread: public FbFrameBaseThread
 {
     public:
-        FrameFavourThread(wxWindow * frame, FbListMode mode, const int folder)
+        FrameFavourThread(FbFrameBase * frame, FbListMode mode, const int folder)
 			:FbFrameBaseThread(frame, mode), m_folder(folder), m_number(sm_skiper.NewNumber()) {};
         virtual void *Entry();
     private:
@@ -118,18 +114,24 @@ void * FrameFavourThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
+	wxString condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
 	wxString sql = GetSQL(condition);
 
-	FbCommonDatabase database;
-	database.AttachConfig();
-	FbGenreFunction function;
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, m_folder);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	try {
+		FbCommonDatabase database;
+		database.AttachConfig();
+		FbGenreFunction function;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_folder);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	if (sm_skiper.Skipped(m_number)) return NULL;
-    FillBooks(result);
+		if (sm_skiper.Skipped(m_number)) return NULL;
+		FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+
 
 	return NULL;
 }
@@ -140,13 +142,8 @@ void FbFrameFavour::OnFolderSelected(wxCommandEvent & event)
 	if (data) FillByFolder(data->GetID());
 }
 
-void FbFrameFavour::OnChangeMode(wxCommandEvent& event)
+void FbFrameFavour::UpdateBooklist()
 {
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	SetListMode(FB_MODE_FAVOUR, mode);
-
-	m_BooksPanel.CreateColumns(mode);
-
     int iSelected = m_FolderList->GetSelection();
     if (iSelected == wxNOT_FOUND) return;
 
@@ -264,3 +261,4 @@ void FbFrameFavour::UpdateFolder(const int iFolder)
     FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
 	if (data && data->GetID()==iFolder) FillByFolder(iFolder);
 }
+

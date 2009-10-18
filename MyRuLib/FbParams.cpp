@@ -119,10 +119,10 @@ void FbParams::SetText(const int param, wxString text)
 int FbParams::DefaultValue(int param)
 {
     switch (param) {
+        case FB_MODE_AUTHOR: return 1;
         case FB_TRANSLIT_FOLDER: return 0;
         case FB_TRANSLIT_FILE: return 1;
         case FB_USE_PROXY: return 0;
-        case FB_FB2_ONLY: return 1;
         default: return 0;
     }
 };

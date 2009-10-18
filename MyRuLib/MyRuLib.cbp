@@ -167,8 +167,6 @@
 		<Unit filename="BaseThread.h" />
 		<Unit filename="BookExtractInfo.cpp" />
 		<Unit filename="BookExtractInfo.h" />
-		<Unit filename="BookListCtrl.cpp" />
-		<Unit filename="BookListCtrl.h" />
 		<Unit filename="BooksPanel.cpp" />
 		<Unit filename="BooksPanel.h" />
 		<Unit filename="ExpThread.cpp" />
@@ -181,8 +179,12 @@
 		<Unit filename="FbBookData.h" />
 		<Unit filename="FbBookEvent.cpp" />
 		<Unit filename="FbBookEvent.h" />
+		<Unit filename="FbBookList.cpp" />
+		<Unit filename="FbBookList.h" />
 		<Unit filename="FbBookMenu.cpp" />
 		<Unit filename="FbBookMenu.h" />
+		<Unit filename="FbBookThread.cpp" />
+		<Unit filename="FbBookThread.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbDatabase.cpp" />
@@ -191,6 +193,8 @@
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
+		<Unit filename="FbFrameBaseMenu.cpp" />
+		<Unit filename="FbFrameBaseMenu.h" />
 		<Unit filename="FbFrameBaseThread.cpp" />
 		<Unit filename="FbFrameBaseThread.h" />
 		<Unit filename="FbFrameFavorites.cpp" />
@@ -199,6 +203,10 @@
 		<Unit filename="FbFrameFavour.h" />
 		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
+		<Unit filename="FbFrameHtml.cpp" />
+		<Unit filename="FbFrameHtml.h" />
+		<Unit filename="FbFrameInfo.cpp" />
+		<Unit filename="FbFrameInfo.h" />
 		<Unit filename="FbFrameSearch.cpp" />
 		<Unit filename="FbFrameSearch.h" />
 		<Unit filename="FbGenres.cpp" />
@@ -207,6 +215,8 @@
 		<Unit filename="FbLogStream.h" />
 		<Unit filename="FbMainFrame.cpp" />
 		<Unit filename="FbMainFrame.h" />
+		<Unit filename="FbMainMenu.cpp" />
+		<Unit filename="FbMainMenu.h" />
 		<Unit filename="FbManager.cpp" />
 		<Unit filename="FbManager.h" />
 		<Unit filename="FbMenu.h" />

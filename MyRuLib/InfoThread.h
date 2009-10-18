@@ -3,19 +3,28 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
+#include "FbBookThread.h"
+#include "ParseCtx.h"
 
-class InfoThread : public wxThread
+class InfoThread:
+	public ParsingContext,
+	public FbBookThread
 {
-public:
-    InfoThread(wxEvtHandler *frame, const int id): wxThread(), m_id(id), m_frame(frame) {};
-    virtual void *Entry();
-    static void Execute(wxEvtHandler *frame, const int id);
-private:
-	bool Load(wxInputStream& stream);
-private:
-	static wxCriticalSection sm_queue;
-    int m_id;
-    wxEvtHandler *m_frame;
+	public:
+		InfoThread(FbBookThread * thread): FbBookThread(thread) {};
+		virtual void *Entry();
+		int GetId() { return m_id; };
+	public:
+		wxString annotation;
+		wxString imagedata;
+		wxString imagetype;
+		wxString imagename;
+		bool skipimage;
+		wxArrayString images;
+	private:
+		bool Load(wxInputStream& stream);
+	private:
+		static wxCriticalSection sm_queue;
 };
 
 #endif // __INFOTHREAD_H__
