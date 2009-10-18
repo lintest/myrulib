@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="Expat\Expat.cbp" />
+		<Project filename="SQLite3\SQLite3.cbp" />
+		<Project filename="WxSQLite3\WxSQLite3.cbp" />
+		<Project filename="MyRuLib\MyRuLib.cbp" active="1">
+			<Depends filename="Expat\Expat.cbp" />
+			<Depends filename="SQLite3\SQLite3.cbp" />
+			<Depends filename="WxSQLite3\WxSQLite3.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>
