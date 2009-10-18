@@ -70,7 +70,7 @@ void FbFrameHtml::CreateControls()
 
 	wxStaticText * staticText = new wxStaticText( panel, wxID_ANY, wxT("Комментарий:"), wxDefaultPosition, wxDefaultSize, 0 );
 	staticText->Wrap( -1 );
-	bSizerSubject->Add( staticText, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerSubject->Add( staticText, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
 	m_Caption.Create( panel, ID_HTML_CAPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerSubject->Add( &m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
@@ -81,9 +81,9 @@ void FbFrameHtml::CreateControls()
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 	m_ToolBar.Realize();
 
-	bSizerSubject->Add( &m_ToolBar, 0, wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerSubject->Add( &m_ToolBar, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
-	bSizerComment->Add( bSizerSubject, 0, wxEXPAND, 5 );
+	bSizerComment->Add( bSizerSubject, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	m_Comment.Create( panel, ID_HTML_COMMENT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
 	bSizerComment->Add( &m_Comment, 1, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
