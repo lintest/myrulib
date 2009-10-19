@@ -1,5 +1,4 @@
 #include "FbDownloader.h"
-#include <wx/protocol/http.h>
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/ptr_scpd.h>
@@ -8,42 +7,59 @@
 #include "MyRuLibApp.h"
 
 #include <wx/sstream.h>
+#include <wx/url.h>
 
 void FbDownloadThread::Execute()
 {
-	wxHTTP get;
-	get.SetTimeout(10); // 10 seconds of timeout instead of 10 minutes ...
 
-	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
-	while (!get.Connect(_T("192.168.1.117")))  // only the server, no pages here yet ...
-		wxSleep(5);
+	wxThread * thread = new FbDownloadThread();
+	thread->Create();
+	if (url.GetProtocol().GetError() == wxPROTO_NOERR)
+	thread->Run();
+/*
 
-	wxApp::IsMainLoopRunning(); // should return true
+	wxURL url(wxT("http://192.168.1.117/"));
+	url.GetProtocol().SetTimeout(10);
 
-	wxInputStream *httpStream = get.GetInputStream(_T("/"));
+	wxInputStream * httpStream = url.GetInputStream();
 
-	// wxLogVerbose( wxString(_T(" GetInputStream: ")) << get.GetResponse() << _T("-") << ((resStream)? _T("OK ") : _T("FAILURE ")) << get.GetError() );
-
-	if (get.GetError() == wxPROTO_NOERR)
-	{
+	if (url.GetProtocol().GetError() == wxPROTO_NOERR)
+	{/*
 		wxString res;
 		wxStringOutputStream out_stream(&res);
 		httpStream->Read(out_stream);
-
 		wxMessageBox(res);
-		// wxLogVerbose( wxString(_T(" returned document length: ")) << res.Length() );
+		wxThread * thread = new FbDownloadThread(0, httpStream);
+		thread->Create();
+		thread->Run();
 	}
 	else
 	{
 		wxMessageBox(_T("Unable to connect!"));
 	}
+*/
+}
 
-	wxDELETE(httpStream);
-	get.Close();
+FbDownloadThread::FbDownloadThread()
+{
+	wxURL url(wxT("http://ya.ru/"));
+	url.GetProtocol().SetTimeout(10);
+	m_in = url.GetInputStream();
 }
 
 wxCriticalSection FbDownloadThread::sm_queue;
 
+void * FbDownloadThread::Entry()
+{
+	wxString res;
+	wxStringOutputStream out_stream(&res);
+	m_in->Read(out_stream);
+	wxMessageBox(res);
+	return NULL;
+}
+
+
+/*
 void * FbDownloadThread::Entry()
 {
 
@@ -106,3 +122,4 @@ void * FbDownloadThread::Entry()
 
 	return NULL;
 }
+*/
