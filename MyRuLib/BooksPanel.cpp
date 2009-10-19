@@ -6,6 +6,7 @@
 #include "FbBookMenu.h"
 #include "FbBookEvent.h"
 #include "MyRuLibApp.h"
+#include "FbDownloader.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
@@ -20,6 +21,7 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
 	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, BooksPanel::OnEditComments)
+	EVT_MENU(ID_DOWNLOAD_BOOK, BooksPanel::OnDownloadBook)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
@@ -35,7 +37,7 @@ bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, int ke
         SetSashGravity(0.5);
         m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
         CreateBookInfo( (bool) FbParams::GetValue(keyType) );
-		CreateColumns( (bool)FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
+		CreateColumns( (bool)FbParams::GetValue(keyMode) ? FB2_MODE_LIST : FB2_MODE_TREE );
     }
     return res;
 }
@@ -206,6 +208,18 @@ void BooksPanel::OnOpenBook(wxCommandEvent & event)
 {
     BookTreeItemData * data = GetSelectedBook();
     if (data) FbManager::OpenBook(data->GetId(), data->file_type);
+}
+
+void BooksPanel::OnDownloadBook(wxCommandEvent & event)
+{
+    BookTreeItemData * data = GetSelectedBook();
+    if (data) {
+    	FbDownloadThread::Execute();
+/*
+    	wxThread * thread = new FbDownloadThread(data->GetId());
+		if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
+*/
+	}
 }
 
 class FbAppendFavouritesThread: public wxThread

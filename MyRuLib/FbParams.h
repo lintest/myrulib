@@ -35,9 +35,7 @@ enum FbParamKey {
 
     FB_USE_PROXY       = 150,
     FB_PROXY_ADDR      = 151,
-    FB_PROXY_PORT      = 152,
-    FB_PROXY_NAME      = 153,
-    FB_PROXY_PASS      = 154,
+    FB_LIBRUSEC_ADDR   = 152,
 };
 
 class ParamItem

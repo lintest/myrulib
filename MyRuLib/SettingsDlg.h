@@ -34,11 +34,11 @@ private:
         ID_FOLDER_FORMAT,
         ID_FILE_FORMAT,
         ID_USE_SYMLINKS,
+        ID_DOWNLOAD_DIR_TXT,
+        ID_DOWNLOAD_DIR_BTN,
         ID_USE_PROXY,
         ID_PROXY_ADDR,
-        ID_PROXY_PORT,
-        ID_PROXY_NAME,
-        ID_PROXY_PASS,
+        ID_LIBRUSEC_ADDR,
         ID_TYPELIST,
         ID_APPEND_TYPE,
         ID_MODIFY_TYPE,
@@ -58,11 +58,14 @@ private:
 	void SelectApplication();
 	void FillTypelist();
 	void SaveTypelist();
+	void InitProxy();
 private:
 	wxListCtrl* m_typelist;
 	wxArrayString m_commands;
     FbCommonDatabase m_database;
     wxArrayString m_deleted;
+    wxTextCtrl * m_textProxy;
+    wxCheckBox * m_checkProxy;
 };
 
 #endif //__SettingsDlg__
