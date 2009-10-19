@@ -49,6 +49,8 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
                 a += 2;
             }
         }
+	} else if (path == wxT("/fictionbook/description/title-info")) {
+		ctx->isbn.Empty();
     } else if ((node_name == wxT("binary")) && path == wxT("/fictionbook")) {
         ctx->skipimage = true;
         ctx->imagedata.Empty();
@@ -83,8 +85,11 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		ctx->annotation += wxString::Format(wxT("</%s>"), node_name.c_str());
 	} else if (path == wxT("/fictionbook/description/title-info")) {
         InfoCash::SetAnnotation(ctx->GetId(), ctx->annotation);
-        if (!ctx->images.Count()) ctx->Stop();
         ctx->annotation.Empty();
+	} else if (path == wxT("/fictionbook/description/publish-info/isbn")) {
+        InfoCash::SetISBN(ctx->GetId(), ctx->isbn);
+	} else if (path == wxT("/fictionbook/description/")) {
+        if (!ctx->images.Count()) ctx->Stop();
         ctx->UpdateInfo();
     } else if (path == wxT("/fictionbook/binary")) {
         if (!ctx->skipimage) {
@@ -108,6 +113,9 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 	} else if (path == wxT("/fictionbook/binary")) {
 	    wxString str = ctx->CharToString(s, len);
 	    if (!ParsingContext::IsWhiteOnly(str)) ctx->imagedata += str;
+	} else if (path == wxT("/fictionbook/description/publish-info/isbn")) {
+	    wxString str = ctx->CharToString(s, len);
+	    if (!ParsingContext::IsWhiteOnly(str)) ctx->isbn += str.Trim(true).Trim(false);
 	}
 }
 }

@@ -24,6 +24,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	}
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
+	Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
     AppendSeparator();
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));

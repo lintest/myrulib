@@ -46,6 +46,7 @@ public:
 	ImportParsingContext(): md5only(false) {};
 public:
     wxString title;
+    wxString isbn;
     AuthorArray authors;
     SequenceArray sequences;
     wxString genres;

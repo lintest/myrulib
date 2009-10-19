@@ -29,18 +29,19 @@ WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);
 class InfoNode
 {
 public:
-    InfoNode(): id(0) {};
+    InfoNode(): m_id(0) {};
     virtual ~InfoNode();
     void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
     wxString GetHTML(const wxString md5sum, bool bVertical, bool bEditable = false);
 private:
     wxString GetComments(const wxString md5sum, bool bEditable);
 public:
-    int id;
-    wxString title;
-    wxString annotation;
-    wxString filelist;
-    InfoImageArray images;
+    int m_id;
+    wxString m_isbn;
+    wxString m_title;
+    wxString m_annotation;
+    wxString m_filelist;
+    InfoImageArray m_images;
 };
 
 WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
@@ -52,6 +53,7 @@ public:
     static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable);
     static void Empty();
 public:
+    static void SetISBN(int id, wxString html);
     static void SetTitle(int id, wxString html);
     static void SetFilelist(int id, wxString html);
     static void SetAnnotation(int id, wxString html);

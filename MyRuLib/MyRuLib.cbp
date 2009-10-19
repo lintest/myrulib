@@ -189,6 +189,7 @@
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbDatabase.cpp" />
 		<Unit filename="FbDatabase.h" />
+		<Unit filename="FbDownloader.h" />
 		<Unit filename="FbFrameAuthor.cpp" />
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />

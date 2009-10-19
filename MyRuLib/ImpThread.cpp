@@ -37,6 +37,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
             }
 	    }
 	}
+
 	ctx->AppendTag(node_name);
     ctx->text.Empty();
 }
@@ -65,6 +66,9 @@ static void EndElementHnd(void *userData, const XML_Char* name)
             ctx->author->middle = ctx->text;
         if (node_name == wxT("last-name"))
             ctx->author->last = ctx->text;
+	} else if (path == wxT("/fictionbook/description/publish-info/")) {
+        if (node_name == wxT("isbn"))
+            ctx->isbn = ctx->text.Trim(true).Trim(false);
 	} else if (path == wxT("/fictionbook/description")) {
 	    if (node_name == wxT("title-info")) {
 	        ctx->Stop();

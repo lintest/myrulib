@@ -15,6 +15,7 @@ class InfoThread:
 		virtual void *Entry();
 		int GetId() { return m_id; };
 	public:
+		wxString isbn;
 		wxString annotation;
 		wxString imagedata;
 		wxString imagetype;
