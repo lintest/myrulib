@@ -99,17 +99,15 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
     wxCheckBox* m_checkBox3;
     wxRadioBox* m_radioBox1;
     wxRadioBox* m_radioBox2;
-/*
-    wxCheckBox* m_checkBox21;
+
     wxStaticText* m_staticText7;
     wxTextCtrl* m_textCtrl7;
     wxStaticText* m_staticText8;
-    wxTextCtrl* m_textCtrl8;
     wxStaticText* m_staticText9;
     wxTextCtrl* m_textCtrl9;
     wxStaticText* m_staticText10;
     wxTextCtrl* m_textCtrl10;
-*/
+
 	wxPanel* m_panel4;
 	wxToolBar* m_tools;
     wxStdDialogButtonSizer* m_sdbSizerBtn;
@@ -194,7 +192,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer5->Add( bSizer8, 0, wxEXPAND, 5 );
 
-	wxTextCtrl * m_textURL = new wxTextCtrl( m_panel1, ID_LIBRUSEC_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	wxTextCtrl * m_textURL = new wxTextCtrl( m_panel1, ID_HTTP_SERVER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textURL->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizer5->Add( m_textURL, 0, wxEXPAND|wxALL, 5 );
@@ -203,18 +201,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizer2->Add( bSizer3, 0, wxEXPAND, 5 );
 
-	wxBoxSizer * bSizer9 = new wxBoxSizer( wxHORIZONTAL );
-
 	m_checkProxy = new wxCheckBox( m_panel1, ID_USE_PROXY, _("Использовать прокси-сервер:"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer9->Add( m_checkProxy, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
-
-	m_textProxy = new wxTextCtrl( m_panel1, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textProxy->SetMinSize( wxSize( 300,-1 ) );
-	bSizer9->Add( m_textProxy, 1, wxALL|wxEXPAND, 5 );
-
-	bSizer2->Add( bSizer9, 0, wxEXPAND, 5 );
-
-	/*
+	bSizer2->Add( m_checkProxy, 1, wxALL, 5 );
 
 	wxFlexGridSizer* fgSizer31;
 	fgSizer31 = new wxFlexGridSizer( 2, 2, 0, 0 );
@@ -231,7 +219,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_textCtrl7 = new wxTextCtrl( m_panel1, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl7->SetMinSize( wxSize( 100,-1 ) );
 
-	bSizer32->Add( m_textCtrl7, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer32->Add( m_textCtrl7, 1, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_staticText8 = new wxStaticText( m_panel1, wxID_ANY, _("Порт:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText8->Wrap( -1 );
@@ -254,7 +242,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_textCtrl9 = new wxTextCtrl( m_panel1, ID_PROXY_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl9->SetMinSize( wxSize( 110,-1 ) );
 
-	bSizer33->Add( m_textCtrl9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer33->Add( m_textCtrl9, 0, wxEXPAND|wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_staticText10 = new wxStaticText( m_panel1, wxID_ANY, _("Пароль:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText10->Wrap( -1 );
@@ -268,8 +256,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer31->Add( bSizer33, 1, wxEXPAND, 5 );
 
 	bSizer2->Add( fgSizer31, 0, wxEXPAND, 5 );
-
-	*/
 
 	m_panel1->SetSizer( bSizer2 );
 	m_panel1->Layout();
@@ -302,7 +288,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_panel2 = new wxPanel( m_notebook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 
-	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer * bSizer9 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_staticText6 = new wxStaticText( m_panel2, wxID_ANY, _("Папка внешнего\nустройства:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
@@ -416,7 +402,10 @@ void SettingsDlg::Assign(bool write)
         {FB_DOWNLOAD_DIR, SettingsDlg::ID_DOWNLOAD_DIR_TXT, tText},
         {FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
         {FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tText},
-        {FB_LIBRUSEC_ADDR, SettingsDlg::ID_LIBRUSEC_ADDR, tText},
+        {FB_PROXY_PORT, SettingsDlg::ID_PROXY_PORT, tText},
+        {FB_PROXY_NAME, SettingsDlg::ID_PROXY_NAME, tText},
+        {FB_PROXY_PASS, SettingsDlg::ID_PROXY_PASS, tText},
+        {FB_HTTP_SERVER, SettingsDlg::ID_HTTP_SERVER, tText},
     };
 
     const size_t idsCount = sizeof(ids) / sizeof(Struct);
