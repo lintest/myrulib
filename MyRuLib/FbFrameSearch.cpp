@@ -54,28 +54,89 @@ class FrameSearchThread: public FbFrameBaseThread
         wxString m_title;
 };
 
+class FbSearchFunction: public wxSQLite3ScalarFunction
+{
+	public:
+		FbSearchFunction(const wxString & input);
+	protected:
+		virtual void Execute(wxSQLite3FunctionContext& ctx);
+	private:
+		wxString Lower(const wxString & text);
+		wxArrayString m_strings;
+};
+
+FbSearchFunction::FbSearchFunction(const wxString & input)
+{
+	wxString str = Lower(input);
+	int i = wxNOT_FOUND;
+	do {
+		str = str.Trim(false);
+		i = str.find(wxT(' '));
+		if (i == wxNOT_FOUND) break;
+		m_strings.Add( str.Left(i) );
+		str = str.Mid(i);
+	} while (true);
+	str = str.Trim(true);
+	if (!str.IsEmpty()) m_strings.Add(str);
+
+    wxString log = wxT("Search template: ");
+    size_t count = m_strings.Count();
+    for (size_t i=0; i<count; i++) {
+    	log += wxString::Format(wxT("<%s> "), m_strings[i].c_str());
+	}
+	wxLogInfo(log);
+}
+
+wxString FbSearchFunction::Lower(const wxString & input)
+{
+	wxString output = input;
+#if defined(__WIN32__)
+    int len = output.length() + 1;
+    wxChar * buf = new wxChar[len];
+    wxStrcpy(buf, output.c_str());
+    CharLower(buf);
+    output = buf;
+    delete [] buf;
+#else
+    output.MakeLower();
+#endif
+	return output;
+}
+
+void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+    int argCount = ctx.GetArgCount();
+    if (argCount != 1) {
+        ctx.SetResultError(wxString::Format(_("SEARCH called with wrong number of arguments: %d."), argCount));
+        return;
+    }
+    wxString text = Lower(ctx.GetString(0));
+
+    size_t count = m_strings.Count();
+    for (size_t i=0; i<count; i++) {
+    	if ( text.Find(m_strings[i]) == wxNOT_FOUND ) {
+			ctx.SetResult(false);
+			return;
+    	}
+	}
+    ctx.SetResult(true);
+}
+
 void * FrameSearchThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
 	EmptyBooks();
 
-	wxString condition = wxT("LOWER(books.title) like ?");
+	wxString condition = wxT("SEARCH(books.title)");
 	wxString sql = GetSQL(condition);
-
-    wxString text = wxT('%') + m_title + wxT('%');
-    text.Replace(wxT(" "), wxT("%"));
-    text.Replace(wxT("?"), wxT("_"));
-    text.Replace(wxT("*"), wxT("%"));
-    BookInfo::MakeLower(text);
 
 	try {
 		FbCommonDatabase database;
 		database.AttachConfig();
-		FbLowerFunction lower;
-		database.CreateFunction(wxT("LOWER"), 1, lower);
+		FbSearchFunction search(m_title);
+		database.CreateFunction(wxT("SEARCH"), 1, search);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, text);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 		if (result.Eof()) {
@@ -96,7 +157,6 @@ void * FrameSearchThread::Entry()
 void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 {
     if ( title.IsEmpty() ) return;
-    wxLogInfo(_("Search title: %s"), title.c_str());
 
 	wxString msg = wxString::Format(_("Поиск: «%s»"), title.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
