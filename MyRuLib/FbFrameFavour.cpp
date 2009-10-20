@@ -103,11 +103,11 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 	parent = m_FolderList->AppendItem(root, _("Рейтинг"));
 	m_FolderList->SetItemBold(parent, true);
 
-	m_FolderList->AppendItem(parent, wxT("* * * * *"), -1, -1, NULL);
-	m_FolderList->AppendItem(parent, wxT("* * * *"), -1, -1, NULL);
-	m_FolderList->AppendItem(parent, wxT("* * *"), -1, -1, NULL);
-	m_FolderList->AppendItem(parent, wxT("* *"), -1, -1, NULL);
-	m_FolderList->AppendItem(parent, wxT("*"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("* * * * *"), -1, -1, new FbFolderData(5, FT_RATING));
+	m_FolderList->AppendItem(parent, wxT("* * * *"),   -1, -1, new FbFolderData(4, FT_RATING));
+	m_FolderList->AppendItem(parent, wxT("* * *"),     -1, -1, new FbFolderData(3, FT_RATING));
+	m_FolderList->AppendItem(parent, wxT("* *"),       -1, -1, new FbFolderData(2, FT_RATING));
+	m_FolderList->AppendItem(parent, wxT("*"),         -1, -1, new FbFolderData(1, FT_RATING));
     m_FolderList->Expand(parent);
 
 	parent = m_FolderList->AppendItem(root, _("Закачки"));
@@ -122,13 +122,14 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 class FrameFavourThread: public FbFrameBaseThread
 {
     public:
-        FrameFavourThread(FbFrameBase * frame, FbListMode mode, const int folder)
-			:FbFrameBaseThread(frame, mode), m_folder(folder), m_number(sm_skiper.NewNumber()) {};
+        FrameFavourThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
+			:FbFrameBaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
         virtual void *Entry();
     private:
 		static FbThreadSkiper sm_skiper;
         int m_folder;
         int m_number;
+        FbFolderType m_type;
 };
 
 FbThreadSkiper FrameFavourThread::sm_skiper;
@@ -140,13 +141,21 @@ void * FrameFavourThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
+	wxString condition;
+
+	switch (m_type) {
+		case FT_FOLDER:
+			condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
+			break;
+		case FT_RATING:
+			condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM ratings WHERE rating = ?)");
+			break;
+	}
 	wxString sql = GetSQL(condition);
 
 	try {
 		FbCommonDatabase database;
 		database.AttachConfig();
-		FbGenreFunction function;
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_folder);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -158,7 +167,6 @@ void * FrameFavourThread::Entry()
 		wxLogError(e.GetMessage());
 	}
 
-
 	return NULL;
 }
 
@@ -168,32 +176,26 @@ void FbFrameFavour::OnFolderSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
         m_BooksPanel.EmptyBooks();
 		FbFolderData * data = (FbFolderData*) m_FolderList->GetItemData(selected);
-		if (data) FillByFolder(data->GetId());
+		if (data) FillByFolder(data);
 	}
 }
 
 void FbFrameFavour::UpdateBooklist()
 {
-    wxTreeItemId selected = m_FolderList->GetSelection();
-    if (!selected.IsOk()) return ;
-
-	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(selected);
-	if (data) FillByFolder(data->GetId());
+	FbFolderData * data = GetSelected();
+	if (data) FillByFolder(data);
 }
 
-void FbFrameFavour::FillByFolder(const int iFolder)
+void FbFrameFavour::FillByFolder(FbFolderData * data)
 {
-	m_BooksPanel.SetFolder(iFolder);
-	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), iFolder);
+	if ( data->GetType()==FT_FOLDER ) m_BooksPanel.SetFolder(data->GetId());
+	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), data);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
 void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
 {
-    wxTreeItemId item = m_FolderList->GetSelection();
-    if (!item.IsOk()) return ;
-
-	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
+	FbFolderData * data = GetSelected();
 	if (!data) return;
 	int iFolder = data->GetId();
 
@@ -231,13 +233,13 @@ void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
 
 void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
 {
-    wxTreeItemId item = m_FolderList->GetSelection();
-    if (!item.IsOk()) return ;
-	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
+	FbFolderData * data = GetSelected();
 	if (!data) return;
+	if (data->GetType() != FT_FOLDER) return;
 	int id = data->GetId();
 	if (!id) return;
 
+    wxTreeItemId item = m_FolderList->GetSelection();
     wxString name = m_FolderList->GetItemText(item);;
 	name = wxGetTextFromUser(_("Введите новое имя папки:"), _("Изменить папку?"), name, this);
 	if (name.IsEmpty()) return;
@@ -255,13 +257,13 @@ void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
 
 void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
 {
-    wxTreeItemId item = m_FolderList->GetSelection();
-    if (!item.IsOk()) return ;
-	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
+	FbFolderData * data = GetSelected();
 	if (!data) return;
+	if (data->GetType() != FT_FOLDER) return;
 	int id = data->GetId();
 	if (!id) return;
 
+    wxTreeItemId item = m_FolderList->GetSelection();
     wxString name = m_FolderList->GetItemText(item);;
     wxString msg = wxString::Format(_("Удалить папку «%s»?"), name.c_str());
 	int answer = wxMessageBox(msg, _("Удалить папку?"), wxOK | wxCANCEL, this);
@@ -283,11 +285,31 @@ void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
     FillFolders(0);
 }
 
-void FbFrameFavour::UpdateFolder(const int iFolder)
+FbFolderData * FbFrameFavour::GetSelected()
 {
     wxTreeItemId item = m_FolderList->GetSelection();
-    if (!item.IsOk()) return ;
-	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
-	if (data && data->GetId()==iFolder) FillByFolder(iFolder);
+    if (item.IsOk())
+		return (FbFolderData * ) m_FolderList->GetItemData(item);
+	else
+		return NULL;
+}
+
+void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
+{
+	FbFolderData * data = GetSelected();
+	if (!data) return;
+	if (data->GetType()!= type) return;
+
+	bool bNeedUpdate = false;
+	switch (type) {
+		case FT_FOLDER:
+			bNeedUpdate = data->GetId()==iFolder;
+			break;
+		case FT_RATING:
+			bNeedUpdate = true;
+			break;
+	}
+
+	if (bNeedUpdate) FillByFolder(data);
 }
 

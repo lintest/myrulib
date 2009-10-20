@@ -14,11 +14,28 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
+enum FbFolderType {
+	FT_FOLDER,
+	FT_RATING,
+};
+
+class FbFolderData: public wxTreeItemData
+{
+	public:
+		FbFolderData(const int id, const FbFolderType type = FT_FOLDER)
+			: m_id(id), m_type(type) {};
+		const int GetId() { return m_id; };
+		const FbFolderType GetType() { return m_type; };
+	private:
+		int m_id;
+		FbFolderType m_type;
+};
+
 class FbFrameFavour : public FbFrameBase
 {
 public:
 	FbFrameFavour(wxAuiMDIParentFrame * parent);
-	void UpdateFolder(const int iFolder);
+	void UpdateFolder(const int iFolder, const FbFolderType type);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
@@ -26,8 +43,9 @@ protected:
 private:
     void CreateBookInfo();
 	void FillFolders(const int iCurrent = 0);
-	void FillByFolder(const int iFolder);
+	void FillByFolder(FbFolderData * data);
 	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
+	FbFolderData * GetSelected();
 private:
     FbTreeListCtrl * m_FolderList;
 private:
@@ -37,15 +55,6 @@ private:
     void OnFolderDelete(wxCommandEvent & event);
     void OnFolderSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
-};
-
-class FbFolderData: public wxTreeItemData
-{
-	public:
-		FbFolderData(const int id): m_id(id) {};
-		const int GetId() { return m_id; };
-	private:
-		int m_id;
 };
 
 #endif // __FBFRAMEFAVOUR_H__
