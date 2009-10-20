@@ -43,10 +43,10 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
     AppendSeparator();
     if (iFolder == fbNO_FOLDER) {
-        Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
+        Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
     } else {
-        Append(ID_FAVORITES_DEL, _T("Удалить закладку"));
-		if (iFolder) Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
+        Append(ID_FAVORITES_DEL, _("Удалить закладку"));
+		if (iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
     }
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
 	Append(wxID_ANY, _("Установить рейтинг"), ratings);
