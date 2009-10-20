@@ -1,7 +1,10 @@
+#include "FbParams.h"
 #include <wx/stdpaths.h>
 #include <wx/filename.h>
-#include "FbParams.h"
 #include "MyRuLibApp.h"
+#include "FbParams.h"
+#include "ZipReader.h"
+#include "ImpThread.h"
 
 WX_DEFINE_OBJARRAY(ParamArray);
 
@@ -30,6 +33,8 @@ void FbParams::LoadParams()
 	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100 UNION ALL SELECT id, value, text FROM params WHERE id<100");
 	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 	while (result.NextRow()) sm_params.Add(new ParamItem(result));
+
+	ZipReader::Init();
 }
 
 int FbParams::GetValue(const int param)
@@ -140,6 +145,8 @@ wxString FbParams::DefaultText(int param)
         }
         case DB_WANRAIK_DIR:
             return wxGetApp().GetAppPath();
+		case FB_HTTP_SERVER:
+            return wxT("http://lib.rus.ec");
         default:
 			return wxEmptyString;
     }

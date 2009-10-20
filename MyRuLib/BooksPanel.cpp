@@ -6,6 +6,7 @@
 #include "FbBookMenu.h"
 #include "FbBookEvent.h"
 #include "MyRuLibApp.h"
+#include "FbDownloader.h"
 
 BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
     EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
@@ -20,6 +21,7 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
 	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, BooksPanel::OnEditComments)
+	EVT_MENU(ID_DOWNLOAD_BOOK, BooksPanel::OnDownloadBook)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
@@ -206,6 +208,14 @@ void BooksPanel::OnOpenBook(wxCommandEvent & event)
 {
     BookTreeItemData * data = GetSelectedBook();
     if (data) FbManager::OpenBook(data->GetId(), data->file_type);
+}
+
+void BooksPanel::OnDownloadBook(wxCommandEvent & event)
+{
+    BookTreeItemData * data = GetSelectedBook();
+    if (data) {
+//    	FbDownloadThread::Execute();
+	}
 }
 
 class FbAppendFavouritesThread: public wxThread

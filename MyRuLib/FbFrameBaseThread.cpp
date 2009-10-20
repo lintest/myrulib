@@ -74,11 +74,11 @@ void FbFrameBaseThread::CreateList(wxSQLite3ResultSet &result)
     result.NextRow();
     while (!result.Eof()) {
         BookTreeItemData data(result);
-        wxString full_name = result.GetString(wxT("full_name"));
+        wxString full_name = result.GetString(wxT("full_name")).Trim(false).Trim(true);
         do {
             result.NextRow();
             if ( data.GetId() != result.GetInt(wxT("id")) ) break;
-            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
+            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name")).Trim(false).Trim(true);
         } while (!result.Eof());
 
 		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);

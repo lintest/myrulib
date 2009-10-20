@@ -33,11 +33,12 @@ enum FbParamKey {
 	FB_FILTER_LIB      = 141,
 	FB_FILTER_USR      = 142,
 
-    FB_USE_PROXY       = 150,
-    FB_PROXY_ADDR      = 151,
-    FB_PROXY_PORT      = 152,
-    FB_PROXY_NAME      = 153,
-    FB_PROXY_PASS      = 154,
+    FB_HTTP_SERVER     = 150,
+    FB_USE_PROXY       = 151,
+    FB_PROXY_ADDR      = 152,
+    FB_PROXY_PORT      = 153,
+    FB_PROXY_NAME      = 154,
+    FB_PROXY_PASS      = 155,
 };
 
 class ParamItem
