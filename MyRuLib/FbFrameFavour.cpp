@@ -54,7 +54,7 @@ void FbFrameFavour::CreateControls()
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
 	m_FolderList = new FbTreeListCtrl(splitter, ID_FOLDER_LIST, style);
-    m_FolderList->AddColumn (_("Мои папки"), 100, wxALIGN_LEFT);
+    m_FolderList->AddColumn (_("Папки"), 100, wxALIGN_LEFT);
 	m_FolderList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
@@ -82,7 +82,7 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 
     wxTreeItemId root = m_FolderList->AddRoot(wxEmptyString);
 
-	wxTreeItemId parent = m_FolderList->AppendItem(root, _("Мои папки"));
+	wxTreeItemId parent = m_FolderList->AppendItem(root, _("Закладки"));
 	m_FolderList->SetItemBold(parent, true);
 
     wxTreeItemId item = m_FolderList->AppendItem(parent, _("Избранное"), -1, -1, new FbFolderData(0));
@@ -188,7 +188,7 @@ void FbFrameFavour::UpdateBooklist()
 
 void FbFrameFavour::FillByFolder(FbFolderData * data)
 {
-	if ( data->GetType()==FT_FOLDER ) m_BooksPanel.SetFolder(data->GetId());
+	m_BooksPanel.SetFolder( data->GetType()==FT_FOLDER ? data->GetId() : fbNO_FOLDER );
 	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), data);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
