@@ -54,6 +54,7 @@ class BooksPanel: public wxSplitterWindow
         void OnContextMenu(wxTreeEvent& event);
         void OnSelectAll(wxCommandEvent& event);
         void OnUnselectAll(wxCommandEvent& event);
+        void OnChangeRating(wxCommandEvent& event);
         DECLARE_EVENT_TABLE();
 };
 

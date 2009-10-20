@@ -15,11 +15,11 @@ BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
     EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
     EVT_MENU(ID_DELETE_FOLDER, FbFrameFavour::OnFolderDelete)
-    EVT_LISTBOX(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
+    EVT_TREE_SEL_CHANGED(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
 FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent)
-    :FbFrameBase(parent, ID_FRAME_FAVOUR, _("Избранное"))
+    :FbFrameBase(parent, ID_FRAME_FAVOUR, _("Мои папки"))
 {
     CreateControls();
 }
@@ -52,17 +52,19 @@ void FbFrameFavour::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	m_FolderList = new wxListBox(splitter, ID_FOLDER_LIST);
-	FillFolders();
+	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
+	m_FolderList = new FbTreeListCtrl(splitter, ID_FOLDER_LIST, style);
+    m_FolderList->AddColumn (_("Мои папки"), 100, wxALIGN_LEFT);
+	m_FolderList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_FolderList, &m_BooksPanel, 160);
 
+	FillFolders();
+
 	SetSizer( bSizer1 );
 	Layout();
-
-	FillByFolder(0);
 }
 
 wxToolBar * FbFrameFavour::CreateToolBar(long style, wxWindowID winid, const wxString& name)
@@ -76,19 +78,43 @@ wxToolBar * FbFrameFavour::CreateToolBar(long style, wxWindowID winid, const wxS
 void FbFrameFavour::FillFolders(const int iCurrent)
 {
 	m_FolderList->Freeze();
-	m_FolderList->Clear();
+	m_FolderList->DeleteRoot();
 
-    m_FolderList->Append(_("Избранное"), new FbClientData(0));
-	if (iCurrent == 0) m_FolderList->SetSelection(0);
+    wxTreeItemId root = m_FolderList->AddRoot(wxEmptyString);
+
+	wxTreeItemId parent = m_FolderList->AppendItem(root, _("Мои папки"));
+	m_FolderList->SetItemBold(parent, true);
+
+    wxTreeItemId item = m_FolderList->AppendItem(parent, _("Избранное"), -1, -1, new FbFolderData(0));
+	if (iCurrent == 0) m_FolderList->SelectItem(item);
 
     wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
-    wxSQLite3ResultSet result = wxGetApp().GetConfigDatabase().ExecuteQuery(sql);
+    FbLocalDatabase database;
+    wxSQLite3ResultSet result = database.ExecuteQuery(sql);
     while (result.NextRow()) {
         int id = result.GetInt(0);
         wxString name = result.GetString(1);
-        m_FolderList->Append(name, new FbClientData(id));
-        if (id == iCurrent) m_FolderList->SetSelection(m_FolderList->GetCount() - 1);
+		wxTreeItemId item = m_FolderList->AppendItem(parent, name, -1, -1, new FbFolderData(id));
+		if (iCurrent == id) m_FolderList->SelectItem(item);
     }
+    m_FolderList->Expand(parent);
+    m_FolderList->Expand(root);
+
+	parent = m_FolderList->AppendItem(root, _("Рейтинг"));
+	m_FolderList->SetItemBold(parent, true);
+
+	m_FolderList->AppendItem(parent, wxT("* * * * *"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("* * * *"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("* * *"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("* *"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("*"), -1, -1, NULL);
+    m_FolderList->Expand(parent);
+
+	parent = m_FolderList->AppendItem(root, _("Закачки"));
+	m_FolderList->SetItemBold(parent, true);
+
+	m_FolderList->AppendItem(parent, wxT("Скачивается"), -1, -1, NULL);
+    m_FolderList->Expand(parent);
 
 	m_FolderList->Thaw();
 }
@@ -136,19 +162,23 @@ void * FrameFavourThread::Entry()
 	return NULL;
 }
 
-void FbFrameFavour::OnFolderSelected(wxCommandEvent & event)
+void FbFrameFavour::OnFolderSelected(wxTreeEvent & event)
 {
-	FbClientData * data = (FbClientData*)event.GetClientObject();
-	if (data) FillByFolder(data->GetID());
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+        m_BooksPanel.EmptyBooks();
+		FbFolderData * data = (FbFolderData*) m_FolderList->GetItemData(selected);
+		if (data) FillByFolder(data->GetId());
+	}
 }
 
 void FbFrameFavour::UpdateBooklist()
 {
-    int iSelected = m_FolderList->GetSelection();
-    if (iSelected == wxNOT_FOUND) return;
+    wxTreeItemId selected = m_FolderList->GetSelection();
+    if (!selected.IsOk()) return ;
 
-    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
-	if (data) FillByFolder(data->GetID());
+	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(selected);
+	if (data) FillByFolder(data->GetId());
 }
 
 void FbFrameFavour::FillByFolder(const int iFolder)
@@ -160,11 +190,12 @@ void FbFrameFavour::FillByFolder(const int iFolder)
 
 void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
 {
-    int iSelected = m_FolderList->GetSelection();
-    if (iSelected == wxNOT_FOUND) return;
-    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
+    wxTreeItemId item = m_FolderList->GetSelection();
+    if (!item.IsOk()) return ;
+
+	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
 	if (!data) return;
-	int iFolder = data->GetID();
+	int iFolder = data->GetId();
 
 	wxString selected = m_BooksPanel.m_BookList->GetSelected();
 	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), iFolder);
@@ -185,8 +216,6 @@ void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
 	wxString name = wxGetTextFromUser(_("Введите имя новой папки:"), _("Добавить папку?"), wxEmptyString, this);
 	if (name.IsEmpty()) return;
 
-    m_BooksPanel.EmptyBooks();
-
 	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
 	int id = database.NewId(FB_NEW_FOLDER);
     wxString sql = wxT("INSERT INTO folders(value,id) VALUES(?,?)");
@@ -196,22 +225,23 @@ void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
     stmt.ExecuteUpdate();
 
     FbBookMenu::EmptyFolders();
+    m_BooksPanel.EmptyBooks();
     FillFolders(id);
 }
 
 void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
 {
-    int iSelected = m_FolderList->GetSelection();
-    if (iSelected <= 0) return;
+    wxTreeItemId item = m_FolderList->GetSelection();
+    if (!item.IsOk()) return ;
+	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
+	if (!data) return;
+	int id = data->GetId();
+	if (!id) return;
 
-    wxString name = m_FolderList->GetStringSelection();
+    wxString name = m_FolderList->GetItemText(item);;
 	name = wxGetTextFromUser(_("Введите новое имя папки:"), _("Изменить папку?"), name, this);
 	if (name.IsEmpty()) return;
 
-    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
-	if (!data) return;
-
-	int id = data->GetID();
 	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
     wxString sql = wxT("UPDATE folders SET value=? WHERE id=?");
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -225,18 +255,18 @@ void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
 
 void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
 {
-    int iSelected = m_FolderList->GetSelection();
-    if (iSelected <= 0) return;
+    wxTreeItemId item = m_FolderList->GetSelection();
+    if (!item.IsOk()) return ;
+	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
+	if (!data) return;
+	int id = data->GetId();
+	if (!id) return;
 
-    wxString name = m_FolderList->GetStringSelection();
+    wxString name = m_FolderList->GetItemText(item);;
     wxString msg = wxString::Format(_("Удалить папку «%s»?"), name.c_str());
 	int answer = wxMessageBox(msg, _("Удалить папку?"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
-    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
-	if (!data) return;
-
-	int id = data->GetID();
 	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
     wxString sql = wxT("DELETE FROM folders WHERE id=?");
     wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -248,17 +278,16 @@ void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
     stmt.Bind(1, id);
     stmt.ExecuteUpdate();
 
-    m_FolderList->Delete(iSelected);
-
     FbBookMenu::EmptyFolders();
     m_BooksPanel.EmptyBooks();
+    FillFolders(0);
 }
 
 void FbFrameFavour::UpdateFolder(const int iFolder)
 {
-    int iSelected = m_FolderList->GetSelection();
-    if (iSelected == wxNOT_FOUND) return;
-    FbClientData * data = (FbClientData*) m_FolderList->GetClientObject(iSelected);
-	if (data && data->GetID()==iFolder) FillByFolder(iFolder);
+    wxTreeItemId item = m_FolderList->GetSelection();
+    if (!item.IsOk()) return ;
+	FbFolderData * data = (FbFolderData * ) m_FolderList->GetItemData(item);
+	if (data && data->GetId()==iFolder) FillByFolder(iFolder);
 }
 

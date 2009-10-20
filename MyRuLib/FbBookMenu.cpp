@@ -23,12 +23,23 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 		submenu->Append(id, sm_folders[i].name);
 	}
 
+	wxMenu * ratings = new wxMenu;
+	ratings->Append(ID_RATING_5, wxT("* * * * *"));
+	ratings->Append(ID_RATING_4, wxT("* * * *"));
+	ratings->Append(ID_RATING_3, wxT("* * *"));
+	ratings->Append(ID_RATING_2, wxT("* *"));
+	ratings->Append(ID_RATING_1, wxT("*"));
+    ratings->AppendSeparator();
+	ratings->Append(ID_RATING_0, wxT("Очистить"));
+
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
 	Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
     AppendSeparator();
+
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
     AppendSeparator();
+
 	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
     AppendSeparator();
     if (iFolder == fbNO_FOLDER) {
@@ -38,7 +49,9 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 		if (iFolder) Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
     }
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
+	Append(wxID_ANY, _("Установить рейтинг"), ratings);
     AppendSeparator();
+
 	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 

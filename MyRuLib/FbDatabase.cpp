@@ -349,6 +349,29 @@ void FbConfigDatabase::CreateDatabase()
 
 void FbConfigDatabase::UpgradeDatabase()
 {
+	int version = GetVersion();
+
+	wxString sUpgradeMsg = wxT("Upgrade config to version %d");
+
+    if (version == 1) {
+        version ++;
+        wxLogInfo(sUpgradeMsg, version);
+        wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+
+        /** TABLE ratings **/
+        ExecuteUpdate(wxT("CREATE TABLE ratings(md5sum CHAR(32) primary key, rating INTEGER)"));
+        ExecuteUpdate(wxT("CREATE INDEX ratings_rating ON ratings(rating)"));
+
+        SetVersion(version);
+        trans.Commit();
+    }
+
+    int new_version = 2;
+	int old_version = GetVersion();
+
+	if (old_version != new_version) {
+		wxLogFatalError(_("Config version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
+	}
 }
 
 int FbConfigDatabase::GetVersion()
@@ -358,6 +381,5 @@ int FbConfigDatabase::GetVersion()
 
 void FbConfigDatabase::SetVersion(int iValue)
 {
-	ExecuteUpdate(wxString::Format(wxT("INSERT OR UPDATE INTO config(id, value) VALUES (2,%d)"), iValue));
+	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO config(id, value) VALUES (2,%d)"), iValue));
 }
-

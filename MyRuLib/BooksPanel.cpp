@@ -20,6 +20,12 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
 	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, BooksPanel::OnEditComments)
+	EVT_MENU(ID_RATING_5, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_4, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_3, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_2, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_1, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_0, BooksPanel::OnChangeRating)
 END_EVENT_TABLE()
 
 BooksPanel::BooksPanel()
@@ -214,9 +220,20 @@ class FbAppendFavouritesThread: public wxThread
         FbAppendFavouritesThread(wxString selections, int folder = 0): m_selections(selections), m_folder(folder) {};
         void * Entry();
     private:
+        FbCommonDatabase m_database;
         wxString m_selections;
         int m_folder;
+};
+
+class FbChangeRationThread: public wxThread
+{
+    public:
+        FbChangeRationThread(wxString selections, int rating = 0): m_selections(selections), m_rating(rating) {};
+        void * Entry();
+    private:
         FbCommonDatabase m_database;
+        wxString m_selections;
+        int m_rating;
 };
 
 void * FbAppendFavouritesThread::Entry()
@@ -232,6 +249,24 @@ void * FbAppendFavouritesThread::Entry()
     return NULL;
 }
 
+void * FbChangeRationThread::Entry()
+{
+	wxString sql;
+    if (m_rating)
+		sql = wxString::Format(wxT("INSERT OR REPLACE INTO ratings(md5sum,rating) SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s)"), m_rating, m_selections.c_str());
+	else
+		sql = wxString::Format(wxT("DELETE FROM ratings WHERE md5sum IN (SELECT DISTINCT md5sum FROM books WHERE id IN (%s))"), m_selections.c_str());
+
+    m_database.AttachConfig();
+    m_database.ExecuteUpdate(sql);
+
+	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_RATING);
+    event.SetInt(m_rating);
+    wxPostEvent(wxGetApp().GetTopWindow(), event);
+
+    return NULL;
+}
+
 void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected() );
@@ -242,6 +277,13 @@ void BooksPanel::OnFolderAdd(wxCommandEvent& event)
 {
 	int folder = FbBookMenu::GetFolder(event.GetId());
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected(), folder );
+    if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void BooksPanel::OnChangeRating(wxCommandEvent& event)
+{
+	int rating = event.GetId() - ID_RATING_0;
+    wxThread * thread = new FbChangeRationThread( m_BookList->GetSelected(), rating );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 

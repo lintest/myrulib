@@ -29,15 +29,23 @@ private:
 	void FillByFolder(const int iFolder);
 	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 private:
-    wxListBox * m_FolderList;
+    FbTreeListCtrl * m_FolderList;
 private:
     void OnFavoritesDel(wxCommandEvent & event);
     void OnFolderAppend(wxCommandEvent & event);
     void OnFolderModify(wxCommandEvent & event);
     void OnFolderDelete(wxCommandEvent & event);
-    void OnFolderSelected(wxCommandEvent & event);
-    void OnGenreSelected(wxTreeEvent & event);
+    void OnFolderSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
+};
+
+class FbFolderData: public wxTreeItemData
+{
+	public:
+		FbFolderData(const int id): m_id(id) {};
+		const int GetId() { return m_id; };
+	private:
+		int m_id;
 };
 
 #endif // __FBFRAMEFAVOUR_H__
