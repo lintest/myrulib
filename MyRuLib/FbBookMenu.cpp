@@ -30,7 +30,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	ratings->Append(ID_RATING_2, wxT("* *"));
 	ratings->Append(ID_RATING_1, wxT("*"));
     ratings->AppendSeparator();
-	ratings->Append(ID_RATING_0, wxT("Очистить"));
+	ratings->Append(ID_RATING_0, _("Очистить"));
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
 	Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
