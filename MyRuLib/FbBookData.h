@@ -14,7 +14,8 @@ public:
 		file_type(data->file_type),
 		file_size(data->file_size),
 		sequence(data->sequence),
-		number(data->number)
+		number(data->number),
+		rating(data->rating)
 	{ };
 	BookTreeItemData(wxSQLite3ResultSet & result);
 	BookTreeItemData(int id): m_id(id) {};
@@ -27,6 +28,7 @@ public:
 	int file_size;
 	wxString sequence;
 	int number;
+	int rating;
 };
 
 #endif // __FBBOOKDATA_H__

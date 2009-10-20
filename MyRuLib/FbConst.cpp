@@ -15,3 +15,12 @@ const wxString strBookNotFound = _("Не найден архив%s, содерж
 const int ciNoAuthor = 0x7FFFFFFF;
 
 const int ciMaxImageWidth = 200;
+
+const wxString strRating [] = {
+	_("Очистить"),
+	wxT("*"),
+	wxT("* *"),
+	wxT("* * *"),
+	wxT("* * * *"),
+	wxT("* * * * *"),
+};

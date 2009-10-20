@@ -31,6 +31,8 @@ class BooksPanel: public wxSplitterWindow
         void SetFolder(int folder) { m_folder = folder; };
         void CreateBookInfo(bool bVertical);
     private:
+		int GetRatingColumn();
+		int UpdateChildRating(wxTreeItemId parent, int iRating);
         void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
         wxString F(const int number);
         wxString m_AuthorName;

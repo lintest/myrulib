@@ -103,11 +103,11 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 	parent = m_FolderList->AppendItem(root, _("Рейтинг"));
 	m_FolderList->SetItemBold(parent, true);
 
-	m_FolderList->AppendItem(parent, wxT("* * * * *"), -1, -1, new FbFolderData(5, FT_RATING));
-	m_FolderList->AppendItem(parent, wxT("* * * *"),   -1, -1, new FbFolderData(4, FT_RATING));
-	m_FolderList->AppendItem(parent, wxT("* * *"),     -1, -1, new FbFolderData(3, FT_RATING));
-	m_FolderList->AppendItem(parent, wxT("* *"),       -1, -1, new FbFolderData(2, FT_RATING));
-	m_FolderList->AppendItem(parent, wxT("*"),         -1, -1, new FbFolderData(1, FT_RATING));
+	m_FolderList->AppendItem(parent, strRating[5], -1, -1, new FbFolderData(5, FT_RATING));
+	m_FolderList->AppendItem(parent, strRating[4], -1, -1, new FbFolderData(4, FT_RATING));
+	m_FolderList->AppendItem(parent, strRating[3], -1, -1, new FbFolderData(3, FT_RATING));
+	m_FolderList->AppendItem(parent, strRating[2], -1, -1, new FbFolderData(2, FT_RATING));
+	m_FolderList->AppendItem(parent, strRating[1], -1, -1, new FbFolderData(1, FT_RATING));
     m_FolderList->Expand(parent);
 
 	parent = m_FolderList->AppendItem(root, _("Закачки"));
@@ -145,10 +145,10 @@ void * FrameFavourThread::Entry()
 
 	switch (m_type) {
 		case FT_FOLDER:
-			condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
+			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
 			break;
 		case FT_RATING:
-			condition = wxT("md5sum IN (SELECT DISTINCT md5sum FROM ratings WHERE rating = ?)");
+			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM ratings WHERE rating = ?)");
 			break;
 	}
 	wxString sql = GetSQL(condition);

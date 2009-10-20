@@ -90,4 +90,6 @@ extern const wxString strBookNotFound;
 extern const int ciNoAuthor;
 extern const int ciMaxImageWidth;
 
+extern const wxString strRating [];
+
 #endif // __FBCONST_H__

@@ -24,13 +24,13 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	}
 
 	wxMenu * ratings = new wxMenu;
-	ratings->Append(ID_RATING_5, wxT("* * * * *"));
-	ratings->Append(ID_RATING_4, wxT("* * * *"));
-	ratings->Append(ID_RATING_3, wxT("* * *"));
-	ratings->Append(ID_RATING_2, wxT("* *"));
-	ratings->Append(ID_RATING_1, wxT("*"));
+	ratings->Append(ID_RATING_5, strRating[5]);
+	ratings->Append(ID_RATING_4, strRating[4]);
+	ratings->Append(ID_RATING_3, strRating[3]);
+	ratings->Append(ID_RATING_2, strRating[2]);
+	ratings->Append(ID_RATING_1, strRating[1]);
     ratings->AppendSeparator();
-	ratings->Append(ID_RATING_0, _("Очистить"));
+	ratings->Append(ID_RATING_0, strRating[0]);
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
 	Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
