@@ -9,8 +9,8 @@
 #include "FbParams.h"
 
 enum FbListMode {
-    FB2_MODE_TREE = 0,
-    FB2_MODE_LIST = 1,
+    FB2_MODE_LIST = 0,
+    FB2_MODE_TREE = 1,
 };
 
 class BooksPanel: public wxSplitterWindow

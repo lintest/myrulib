@@ -213,8 +213,7 @@ wxString InfoNode::GetHTML(const wxString md5sum, bool bVertical, bool bEditable
     } else {
         html += wxT("<tr width=100%>");
         html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
-		int width = m_images.GetCount() ? ciMaxImageWidth : 0;
-        html += wxString::Format(wxT("<td rowspan=4 align=right valign=top width=%d>"), width);
+        html += wxT("<td rowspan=4 align=right valign=top width=1>");
 		html += wxT("<table width=100%><tr><td align=center>");
         for (size_t i=0; i<m_images.GetCount(); i++) {
             InfoImage & info = m_images[i];
