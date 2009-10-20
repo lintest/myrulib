@@ -61,7 +61,6 @@
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
 					<Add directory="$(WXWIN)\include" />
 					<Add directory="$(WXWIN)\contrib\include" />
-					<Add directory="..\MyRuLib" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
@@ -69,7 +68,6 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28u_aui.a" />
-					<Add library="libwxbase28u_net.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
 					<Add library="libwxbase28u.a" />
@@ -124,7 +122,6 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="libwxmsw28u_aui.a" />
-					<Add library="libwxbase28u_net.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
 					<Add library="libwxbase28u.a" />
@@ -192,7 +189,6 @@
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbDatabase.cpp" />
 		<Unit filename="FbDatabase.h" />
-		<Unit filename="FbDownloader.cpp" />
 		<Unit filename="FbDownloader.h" />
 		<Unit filename="FbFrameAuthor.cpp" />
 		<Unit filename="FbFrameAuthor.h" />
@@ -268,10 +264,6 @@
 		<Unit filename="sha1\sha1.h" />
 		<Unit filename="wx\base64.cpp" />
 		<Unit filename="wx\base64.h" />
-		<Unit filename="wx\httpbuilder.cpp" />
-		<Unit filename="wx\httpbuilder.h" />
-		<Unit filename="wx\httpbuilderthread.cpp" />
-		<Unit filename="wx\httpbuilderthread.h" />
 		<Unit filename="wx\treelistctrl.cpp" />
 		<Unit filename="wx\treelistctrl.h" />
 		<Extensions>

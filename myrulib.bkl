@@ -58,7 +58,6 @@
 		<sources>MyRuLib/FbBookThread.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
-		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameBaseMenu.cpp</sources>
@@ -88,8 +87,6 @@
 		<sources>MyRuLib/VacuumThread.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
 		<sources>MyRuLib/md5.c</sources>
-		<sources>MyRuLib/wx/httpbuilder.cpp</sources>
-		<sources>MyRuLib/wx/httpbuilderthread.cpp<sources>  
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
@@ -109,7 +106,6 @@
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
-		<wx-lib>net</wx-lib>
 		<if cond="PLATFORM_WIN32=='1'">
 			<sys-lib>shlwapi</sys-lib>
 			<postlink-command>strip ./build/myrulib.exe</postlink-command>

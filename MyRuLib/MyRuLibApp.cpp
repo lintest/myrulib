@@ -13,6 +13,9 @@
 #include "MyRuLibApp.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"
+#include "FbParams.h"
+#include "ZipReader.h"
+#include "ImpThread.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
@@ -33,6 +36,9 @@ bool MyRuLibApp::OnInit()
 	FbMainFrame * frame = new FbMainFrame;
 	SetTopWindow(frame);
 	frame->Show();
+
+	ZipReader::Init();
+	BooksCountThread::Execute();
 
 	return true;
 }

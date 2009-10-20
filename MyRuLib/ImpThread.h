@@ -41,39 +41,36 @@ private:
 
 class ZipImportThread : public ImportThread
 {
-	public:
-		ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
-	protected:
-		virtual void *Entry();
-	private:
-		void ImportFile(const wxString & zipname);
-		const wxArrayString m_filelist;
+public:
+    ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
+    virtual void *Entry();
+private:
+    void ImportFile(const wxString & zipname);
+    const wxArrayString m_filelist;
 };
 
 class DirImportThread : public ImportThread
 {
-	public:
-		DirImportThread(const wxString &dirname);
-		bool ParseZip(const wxString &zipname);
-		bool ParseXml(const wxString &filename);
-		void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
-	protected:
-		virtual void *Entry();
-	private:
-		static wxString Normalize(const wxString &filename);
-		wxString Relative(const wxString &filename);
-	private:
-		wxString m_dirname;
-		int m_position;
+public:
+    DirImportThread(const wxString &dirname);
+    virtual void *Entry();
+    bool ParseZip(const wxString &zipname);
+    bool ParseXml(const wxString &filename);
+    void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
+private:
+    static wxString Normalize(const wxString &filename);
+    wxString Relative(const wxString &filename);
+private:
+    wxString m_dirname;
+    int m_position;
 };
 
 class BooksCountThread : public BaseThread
 {
-	public:
-		static void Execute();
-		BooksCountThread(): BaseThread() {};
-	protected:
-		virtual void *Entry();
+public:
+    static void Execute();
+    BooksCountThread(): BaseThread() {};
+    virtual void *Entry();
 };
 
 #endif // __FBTHREAD_H__

@@ -136,7 +136,7 @@ void FbFrameBase::OnChangeView(wxCommandEvent & event)
 	m_BooksPanel.CreateBookInfo((bool)vertical);
 
 	int param = GetViewKey();
-	if (param) FbParams().SetValue(param, vertical ? 1 : 0);
+	if (param) FbParams().SetValue(param, vertical);
 }
 
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)

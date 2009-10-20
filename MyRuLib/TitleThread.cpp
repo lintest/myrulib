@@ -36,7 +36,7 @@ wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         while ( result.NextRow() ) {
             if (!authors.IsEmpty()) authors += wxT(", ");
-            authors += result.GetString(0).Trim(false).Trim(true);
+            authors += result.GetString(0);
         }
     }
 
