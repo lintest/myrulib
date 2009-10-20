@@ -184,10 +184,11 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
 					books.id, books.title, books.file_size, books.file_type, books.id_author, \
-					sequences.value AS sequence, bookseq.number as number\
+					ratings.rating, sequences.value AS sequence, bookseq.number as number\
 				FROM books \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
 					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
+					LEFT JOIN ratings ON books.md5sum=ratings.md5sum \
                 WHERE (%s) \
 				ORDER BY key, sequences.value, bookseq.number, books.title \
 			"); break;
@@ -195,10 +196,11 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					authors.full_name as full_name, 0 as number \
+					ratings.rating, authors.full_name as full_name, 0 as number \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
 					LEFT JOIN authors ON sub.id_author = authors.id \
+					LEFT JOIN ratings ON books.md5sum=ratings.md5sum \
                 WHERE (%s) \
 				ORDER BY books.title, books.id, authors.full_name\
 			"); break;
@@ -222,6 +224,7 @@ void * FrameAuthorThread::Entry()
 
 	try {
 		FbCommonDatabase database;
+		database.AttachConfig();
 		if (m_mode == FB2_MODE_TREE) {
             wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
             wxSQLite3Statement stmt = database.PrepareStatement(sql);

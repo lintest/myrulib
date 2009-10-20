@@ -71,6 +71,7 @@ void * FrameSearchThread::Entry()
 
 	try {
 		FbCommonDatabase database;
+		database.AttachConfig();
 		FbLowerFunction lower;
 		database.CreateFunction(wxT("LOWER"), 1, lower);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
