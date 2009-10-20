@@ -20,7 +20,22 @@ BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
 	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
 	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, BooksPanel::OnEditComments)
+	EVT_MENU(ID_RATING_5, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_4, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_3, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_2, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_1, BooksPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_0, BooksPanel::OnChangeRating)
 END_EVENT_TABLE()
+
+const wxString strBookRatings [] = {
+	wxEmptyString,
+	wxT(" *"),
+	wxT(" * *"),
+	wxT(" * * *"),
+	wxT(" * * * *"),
+	wxT(" * * * * *"),
+};
 
 BooksPanel::BooksPanel()
     :wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
@@ -214,9 +229,20 @@ class FbAppendFavouritesThread: public wxThread
         FbAppendFavouritesThread(wxString selections, int folder = 0): m_selections(selections), m_folder(folder) {};
         void * Entry();
     private:
+        FbCommonDatabase m_database;
         wxString m_selections;
         int m_folder;
+};
+
+class FbChangeRationThread: public wxThread
+{
+    public:
+        FbChangeRationThread(wxString selections, int rating = 0): m_selections(selections), m_rating(rating) {};
+        void * Entry();
+    private:
         FbCommonDatabase m_database;
+        wxString m_selections;
+        int m_rating;
 };
 
 void * FbAppendFavouritesThread::Entry()
@@ -232,6 +258,24 @@ void * FbAppendFavouritesThread::Entry()
     return NULL;
 }
 
+void * FbChangeRationThread::Entry()
+{
+	wxString sql;
+    if (m_rating)
+		sql = wxString::Format(wxT("INSERT OR REPLACE INTO ratings(md5sum,rating) SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s)"), m_rating, m_selections.c_str());
+	else
+		sql = wxString::Format(wxT("DELETE FROM ratings WHERE md5sum IN (SELECT DISTINCT md5sum FROM books WHERE id IN (%s))"), m_selections.c_str());
+
+    m_database.AttachConfig();
+    m_database.ExecuteUpdate(sql);
+
+	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_RATING);
+    event.SetInt(m_rating);
+    wxPostEvent(wxGetApp().GetTopWindow(), event);
+
+    return NULL;
+}
+
 void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected() );
@@ -242,6 +286,51 @@ void BooksPanel::OnFolderAdd(wxCommandEvent& event)
 {
 	int folder = FbBookMenu::GetFolder(event.GetId());
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected(), folder );
+    if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+int BooksPanel::UpdateChildRating(wxTreeItemId parent, int iRating)
+{
+	int result = 0;
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child = m_BookList->GetFirstChild(parent, cookie);
+	wxString sRating = strBookRatings[iRating];
+    while (child.IsOk()) {
+        if (m_BookList->GetItemImage(child) == 1) {
+            BookTreeItemData * data = (BookTreeItemData*) m_BookList->GetItemData(child);
+            if (data && data->GetId()) {
+				m_BookList->SetItemText(child, GetRatingColumn(), sRating);
+				data->rating = iRating;
+            	result++;
+            }
+        }
+        result += UpdateChildRating(child, iRating);
+        child = m_BookList->GetNextChild(parent, cookie);
+    }
+	return result;
+}
+
+void BooksPanel::OnChangeRating(wxCommandEvent& event)
+{
+	int iRating = event.GetId() - ID_RATING_0;
+
+	int iUpdated = UpdateChildRating( m_BookList->GetRootItem(), iRating);
+	if ( !iUpdated ) {
+		wxString sRating = strBookRatings[iRating];
+		wxArrayTreeItemIds items;
+		size_t count = m_BookList->GetSelections(items);
+		for (size_t i=0; i<count; ++i) {
+			BookTreeItemData * data = (BookTreeItemData*) m_BookList->GetItemData(items[i]);
+			if (data && data->GetId()) {
+				m_BookList->SetItemText(items[i], GetRatingColumn(), sRating);
+				data->rating = iRating;
+			}
+		}
+	}
+
+	m_BookList->Update();
+
+    wxThread * thread = new FbChangeRationThread( m_BookList->GetSelected(), iRating );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -310,21 +399,24 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 	wxString file_type = data->file_type + wxT(" ");
 	wxString file_size = F(data->file_size/1024) + wxT(" ");
 	wxTreeItemId parent;
+	wxString sRating  = strBookRatings[data->rating];
 
     switch (m_ListMode) {
         case FB2_MODE_TREE: {
 			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
 			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
-			if (data->number) m_BookList->SetItemText(item, 1, wxString::Format(wxT(" %d "), data->number));
-			m_BookList->SetItemText(item, 2, file_type);
-			m_BookList->SetItemText(item, 3, file_size);
+			m_BookList->SetItemText(item, 1, sRating);
+			if (data->number) m_BookList->SetItemText(item, 2, wxString::Format(wxT(" %d "), data->number));
+			m_BookList->SetItemText(item, 3, file_type);
+			m_BookList->SetItemText(item, 4, file_size);
         } break;
         case FB2_MODE_LIST: {
 			parent = m_BookList->GetRootItem();
 			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, authors);
-			m_BookList->SetItemText(item, 2, file_type);
-			m_BookList->SetItemText(item, 3, file_size);
+			m_BookList->SetItemText(item, 2, sRating);
+			m_BookList->SetItemText(item, 3, file_type);
+			m_BookList->SetItemText(item, 4, file_size);
         } break;
     }
 	m_BookList->Expand(parent);
@@ -344,6 +436,7 @@ void BooksPanel::CreateColumns(FbListMode mode)
     switch (m_ListMode) {
         case FB2_MODE_TREE: {
             m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
             m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
             m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
             m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
@@ -351,6 +444,7 @@ void BooksPanel::CreateColumns(FbListMode mode)
         case FB2_MODE_LIST: {
             m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
             m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
+            m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
             m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
             m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
         } break;
@@ -358,5 +452,14 @@ void BooksPanel::CreateColumns(FbListMode mode)
 
 	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
 	m_BookInfo->SetPage(wxEmptyString);
+}
+
+int BooksPanel::GetRatingColumn()
+{
+    switch (m_ListMode) {
+        case FB2_MODE_TREE: return 1;
+        case FB2_MODE_LIST: return 2;
+    }
+    return 1;
 }
 

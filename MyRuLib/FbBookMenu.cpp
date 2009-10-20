@@ -23,22 +23,33 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 		submenu->Append(id, sm_folders[i].name);
 	}
 
+	wxMenu * ratings = new wxMenu;
+	ratings->Append(ID_RATING_5, strRating[5]);
+	ratings->Append(ID_RATING_4, strRating[4]);
+	ratings->Append(ID_RATING_3, strRating[3]);
+	ratings->Append(ID_RATING_2, strRating[2]);
+	ratings->Append(ID_RATING_1, strRating[1]);
+    ratings->AppendSeparator();
+	ratings->Append(ID_RATING_0, strRating[0]);
+
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
 	Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
     AppendSeparator();
+
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
     AppendSeparator();
+
 	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
     AppendSeparator();
-    if (iFolder == fbNO_FOLDER) {
-        Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
-    } else {
-        Append(ID_FAVORITES_DEL, _T("Удалить закладку"));
-		if (iFolder) Append(ID_FAVORITES_ADD, _T("Добавить в избранное"));
-    }
+
+    if (iFolder == fbNO_FOLDER) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
+    else if (iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
+	Append(wxID_ANY, _("Установить рейтинг"), ratings);
+    if (iFolder != fbNO_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
     AppendSeparator();
+
 	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 

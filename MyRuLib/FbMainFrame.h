@@ -66,6 +66,7 @@ private:
     void OnPanelClosed(wxAuiManagerEvent& event);
     void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 	void OnUpdateFolder(wxCommandEvent & event);
+	void OnUpdateRating(wxCommandEvent & event);
 	void OnOpenAuthor(wxCommandEvent & event);
 	void OnVacuum(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()

@@ -21,7 +21,7 @@ FbMainMenu::FbMainMenu(): wxMenuBar()
 	menu->Append(ID_FRAME_DATE, _("Календарь"), wxART_FIND);
 	menu->Append(ID_FRAME_ARCH, _("Архив"), wxART_FIND);
 	menu->AppendSeparator();
-	menu->Append(ID_FRAME_FAVOUR, _("Избранное"));
+	menu->Append(ID_FRAME_FAVOUR, _("Мои папки"));
 	Append(menu, _("Картотека"));
 
 	menu = new FbMenu;

@@ -82,6 +82,7 @@ void * FrameGenresThread::Entry()
 
 	try {
 		FbCommonDatabase database;
+		database.AttachConfig();
 		FbGenreFunction function;
 		database.CreateFunction(wxT("GENRE"), 2, function);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
