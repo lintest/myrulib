@@ -72,6 +72,7 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
     if (!book) {
         m_BookInfo->SetPage(wxEmptyString);
     } else {
+		InfoCash::LoadIcon(book->file_type);
         InfoCash::UpdateInfo(this, book->GetId(), bVertical);
     }
 }
@@ -92,7 +93,10 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		BookTreeItemData * data = (BookTreeItemData*) m_BookList->GetItemData(selected);
-		if (data) InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+		if (data) {
+			InfoCash::LoadIcon(data->file_type);
+			InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+		}
 	}
 }
 

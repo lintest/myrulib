@@ -53,6 +53,7 @@ public:
     static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt);
     static void Empty();
     static wxString GetIcon(const wxString &extension);
+    static void LoadIcon(const wxString &extension);
 public:
     static void SetISBN(int id, wxString html);
     static void SetTitle(int id, wxString html);

@@ -153,15 +153,17 @@ wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVert
         return wxEmptyString;
 }
 
-wxString InfoCash::GetIcon(const wxString &extension)
+void InfoCash::LoadIcon(const wxString &extension)
 {
-#ifdef __WIN32__
-	if (extension == wxT("fb2")) return wxEmptyString;
-
+ 	if (extension == wxT("fb2")) return;
 	wxString filename = wxT("icon.") + extension;
-    if (sm_icons.Index(extension) != wxNOT_FOUND) return filename;
-    if (sm_noico.Index(extension) != wxNOT_FOUND) return wxEmptyString;
 
+	wxCriticalSectionLocker enter(sm_locker);
+
+    if (sm_icons.Index(extension) != wxNOT_FOUND) return;
+    if (sm_noico.Index(extension) != wxNOT_FOUND) return;
+
+#ifdef __WIN32__
 	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 	if ( ft ) {
 		wxIconLocation location;
@@ -171,13 +173,21 @@ wxString InfoCash::GetIcon(const wxString &extension)
 			bitmap.CopyFromIcon(icon);
 			wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
 			sm_icons.Add(extension);
-			return filename;
+			return;
 		}
 	}
+#endif
 
 	sm_noico.Add(extension);
-#endif
-	return wxEmptyString;
+}
+
+wxString InfoCash::GetIcon(const wxString &extension)
+{
+	wxString filename = wxT("icon.") + extension;
+    if (sm_icons.Index(extension) != wxNOT_FOUND)
+		return filename;
+	else
+		return wxEmptyString;
 }
 
 wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
