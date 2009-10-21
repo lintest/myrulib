@@ -2,7 +2,6 @@
 #define __FBFRAMEBASETHREAD_H__
 
 #include <wx/wx.h>
-#include "BooksPanel.h"
 #include "FbFrameBase.h"
 
 class FbFrameBaseThread: public wxThread
