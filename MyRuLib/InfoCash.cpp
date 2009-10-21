@@ -163,11 +163,11 @@ void InfoCash::LoadIcon(const wxString &extension)
     if (sm_icons.Index(extension) != wxNOT_FOUND) return;
     if (sm_noico.Index(extension) != wxNOT_FOUND) return;
 
-#ifdef __WIN32__
 	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 	if ( ft ) {
 		wxIconLocation location;
 		if ( ft->GetIcon(&location) ) {
+			wxLogNull log;
 			wxIcon icon(location);
 			wxBitmap bitmap;
 			bitmap.CopyFromIcon(icon);
@@ -176,8 +176,6 @@ void InfoCash::LoadIcon(const wxString &extension)
 			return;
 		}
 	}
-#endif
-
 	sm_noico.Add(extension);
 }
 
