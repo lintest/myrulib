@@ -155,9 +155,8 @@ wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVert
 
 wxString InfoCash::GetIcon(const wxString &extension)
 {
+#ifdef __WIN32__
 	if (extension == wxT("fb2")) return wxEmptyString;
-
-    wxCriticalSectionLocker enter(sm_locker);
 
 	wxString filename = wxT("icon.") + extension;
     if (sm_icons.Index(extension) != wxNOT_FOUND) return filename;
@@ -177,6 +176,7 @@ wxString InfoCash::GetIcon(const wxString &extension)
 	}
 
 	sm_noico.Add(extension);
+#endif
 	return wxEmptyString;
 }
 
