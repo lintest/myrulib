@@ -3,6 +3,7 @@
 #include <wx/buffer.h>
 #include <wx/fs_mem.h>
 #include <wx/mstream.h>
+#include <wx/mimetype.h>
 #include "wx/base64.h"
 
 #include "InfoThread.h"
@@ -57,6 +58,9 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 //-----------------------------------------------------------------------------
 
 InfoNodeArray InfoCash::sm_cash;
+
+wxArrayString InfoCash::sm_icons;
+wxArrayString InfoCash::sm_noico;
 
 InfoNode * InfoCash::GetNode(int id)
 {
@@ -138,15 +142,42 @@ void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertica
 	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
-wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable)
+wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt)
 {
     wxCriticalSectionLocker enter(sm_locker);
 
     InfoNode * node = FindNode(id);
     if (node)
-		return node->GetHTML(md5sum, bVertical, bEditable);
+		return node->GetHTML(md5sum, bVertical, bEditable, sFileExt);
 	else
         return wxEmptyString;
+}
+
+wxString InfoCash::GetIcon(const wxString &extension)
+{
+	if (extension == wxT("fb2")) return wxEmptyString;
+
+    wxCriticalSectionLocker enter(sm_locker);
+
+	wxString filename = wxT("icon.") + extension;
+    if (sm_icons.Index(extension) != wxNOT_FOUND) return filename;
+    if (sm_noico.Index(extension) != wxNOT_FOUND) return wxEmptyString;
+
+	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
+	if ( ft ) {
+		wxIconLocation location;
+		if ( ft->GetIcon(&location) ) {
+			wxIcon icon(location);
+			wxBitmap bitmap;
+			bitmap.CopyFromIcon(icon);
+			wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+			sm_icons.Add(extension);
+			return filename;
+		}
+	}
+
+	sm_noico.Add(extension);
+	return wxEmptyString;
 }
 
 wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
@@ -184,12 +215,24 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 	return html;
 }
 
-wxString InfoNode::GetHTML(const wxString md5sum, bool bVertical, bool bEditable)
+wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt)
 {
     wxString html = wxT("<html><body><table width=100%>");
 
+    html += wxT("<tr>");
+	wxString icon = InfoCash::GetIcon(sFileExt);
+	if (icon.IsEmpty()) {
+        html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
+	} else {
+		icon = wxString::Format(wxT("<img src=\"memory:%s\">"), icon.c_str());
+        html += wxT("<td><table cellspacing=0 cellpadding=0><tr>");
+        html += wxString::Format(wxT("<td valign=top>%s&nbsp;&nbsp;&nbsp;</td>"), icon.c_str());
+        html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
+        html += wxT("</tr></table></td>");
+	}
+
     if (bVertical) {
-        html += wxString::Format(wxT("<tr><td width=100%>%s</td></tr>"), m_title.c_str());
+        html += wxT("</tr>");
         html += wxString::Format(wxT("<tr><td>%s</td></tr>"), m_annotation.c_str());
         for (size_t i=0; i<m_images.GetCount(); i++) {
             InfoImage & info = m_images[i];
@@ -211,8 +254,6 @@ wxString InfoNode::GetHTML(const wxString md5sum, bool bVertical, bool bEditable
         html += GetComments(md5sum, bEditable);
 		html += wxT("</td></tr>");
     } else {
-        html += wxT("<tr width=100%>");
-        html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
         html += wxT("<td rowspan=4 align=right valign=top width=1>");
 		html += wxT("<table width=100%><tr><td align=center>");
         for (size_t i=0; i<m_images.GetCount(); i++) {
@@ -251,7 +292,7 @@ void * ShowThread::Entry()
 		m_md5sum = res.GetString(1);
 	}
 
-	wxString html = InfoCash::GetInfo(m_id, m_md5sum, m_vertical, m_editable);
+	wxString html = InfoCash::GetInfo(m_id, m_md5sum, m_vertical, m_editable, m_filetype);
 
 	if (html.IsEmpty()) {
 		wxThread *thread = new TitleThread(this);

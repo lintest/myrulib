@@ -110,7 +110,8 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 	parent = m_FolderList->AppendItem(root, _("Закачки"));
 	m_FolderList->SetItemBold(parent, true);
 
-	m_FolderList->AppendItem(parent, wxT("Скачивается"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("Очередь"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("Готово"), -1, -1, NULL);
     m_FolderList->Expand(parent);
 
 	m_FolderList->Thaw();

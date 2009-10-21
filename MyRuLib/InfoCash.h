@@ -32,7 +32,7 @@ public:
     InfoNode(): m_id(0) {};
     virtual ~InfoNode();
     void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
-    wxString GetHTML(const wxString md5sum, bool bVertical, bool bEditable = false);
+    wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt);
 private:
     wxString GetComments(const wxString md5sum, bool bEditable);
 public:
@@ -50,8 +50,9 @@ class InfoCash
 {
 public:
     static void UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable = false);
-    static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable);
+    static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt);
     static void Empty();
+    static wxString GetIcon(const wxString &extension);
 public:
     static void SetISBN(int id, wxString html);
     static void SetTitle(int id, wxString html);
@@ -63,6 +64,8 @@ private:
     static InfoNode * GetNode(int id);
     static InfoNode * FindNode(int id);
 	static wxCriticalSection sm_locker;
+	static wxArrayString sm_icons;
+	static wxArrayString sm_noico;
 };
 
 class ShowThread: public FbBookThread
