@@ -9,6 +9,9 @@
 #include "InfoThread.h"
 #include "TitleThread.h"
 
+#include "res/ico_pdf.xpm"
+#include "res/ico_djvu.xpm"
+
 WX_DEFINE_OBJARRAY(InfoImageArray);
 
 WX_DEFINE_OBJARRAY(InfoNodeArray);
@@ -153,12 +156,24 @@ wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVert
         return wxEmptyString;
 }
 
+void InfoCash::AddIcon(wxString extension, wxBitmap bitmap)
+{
+	wxString filename = wxT("icon.") + extension;
+	wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+	sm_icons.Add(extension);
+}
+
 void InfoCash::LoadIcon(const wxString &extension)
 {
  	if (extension == wxT("fb2")) return;
 	wxString filename = wxT("icon.") + extension;
 
 	wxCriticalSectionLocker enter(sm_locker);
+
+	if (!sm_icons.Count()) {
+		AddIcon((wxString)wxT("djvu"), wxBitmap(ico_djvu_xpm));
+		AddIcon((wxString)wxT("pdf"), wxBitmap(ico_pdf_xpm));
+	}
 
     if (sm_icons.Index(extension) != wxNOT_FOUND) return;
     if (sm_noico.Index(extension) != wxNOT_FOUND) return;

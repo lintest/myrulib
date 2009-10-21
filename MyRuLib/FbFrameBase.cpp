@@ -4,6 +4,7 @@
 #include "ExternalDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
+	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
     EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
@@ -172,4 +173,9 @@ void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
 		} break;
     }
 	UpdateBooklist();
+}
+
+void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
+{
+	event.Veto();
 }

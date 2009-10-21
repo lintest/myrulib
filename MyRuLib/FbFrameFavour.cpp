@@ -12,7 +12,7 @@ BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
     EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
     EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
     EVT_MENU(ID_DELETE_FOLDER, FbFrameFavour::OnFolderDelete)
-    EVT_TREE_SEL_CHANGED(ID_FOLDER_LIST, FbFrameFavour::OnFolderSelected)
+    EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
 FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent)
@@ -50,7 +50,7 @@ void FbFrameFavour::CreateControls()
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
-	m_FolderList = new FbTreeListCtrl(splitter, ID_FOLDER_LIST, style);
+	m_FolderList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, style);
     m_FolderList->AddColumn (_("Папки"), 100, wxALIGN_LEFT);
 	m_FolderList->SetFocus();
 

@@ -9,7 +9,7 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
-    EVT_TREE_SEL_CHANGED(ID_AUTHORS_LISTBOX, FbFrameAuthor::OnAuthorSelected)
+    EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
     EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 END_EVENT_TABLE()
 
@@ -49,7 +49,7 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_AuthorList = new FbAuthorList(splitter, ID_AUTHORS_LISTBOX);
+	m_AuthorList = new FbAuthorList(splitter, ID_MASTER_LIST);
 	m_AuthorList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;

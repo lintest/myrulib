@@ -40,6 +40,7 @@ private:
     void OnAppendAuthor(wxCommandEvent& event);
     void OnAppendSequence(wxCommandEvent& event);
     void OnEmptyBooks(wxCommandEvent& event);
+    void OnTreeCollapsing(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 

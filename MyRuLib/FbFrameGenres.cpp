@@ -7,7 +7,7 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
-    EVT_TREE_SEL_CHANGED(ID_GENRES_TREE, FbFrameGenres::OnGenreSelected)
+    EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
 FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
@@ -34,7 +34,7 @@ void FbFrameGenres::CreateControls()
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
-	m_GenresList = new FbTreeListCtrl(splitter, ID_GENRES_TREE, style);
+	m_GenresList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, style);
     m_GenresList->AddColumn (_("Список жанров"), 100, wxALIGN_LEFT);
 	m_GenresList->SetFocus();
 	FbGenres::FillControl(m_GenresList);

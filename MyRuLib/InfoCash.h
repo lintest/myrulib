@@ -60,6 +60,7 @@ public:
     static void SetFilelist(int id, wxString html);
     static void SetAnnotation(int id, wxString html);
     static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
+    static void AddIcon(wxString extension, wxBitmap bitmap);
 private:
     static InfoNodeArray sm_cash;
     static InfoNode * GetNode(int id);
