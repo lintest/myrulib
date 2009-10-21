@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
-#include "BooksPanel.h"
+#include "FbBookPanel.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbFrameBaseMenu.h"
@@ -26,7 +26,7 @@ protected:
 	int GetViewKey();
 protected:
 	void CreateBooksPanel(wxWindow * parent, long substyle);
-    BooksPanel m_BooksPanel;
+    FbBookPanel m_BooksPanel;
 private:
     void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);

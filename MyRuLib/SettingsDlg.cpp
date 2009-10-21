@@ -469,10 +469,6 @@ void SettingsDlg::FillTypelist()
 		wxString file_type = result.GetString(wxT("file_type"));
 		wxString command = result.GetString(wxT("command"));
 		if (file_type == wxT("exe")) continue;
-
-		if (command.IsEmpty())
-			command = FbManager::GetSystemCommand(file_type);
-
 		item = m_typelist->InsertItem(item + 1, file_type);
 		m_typelist->SetItem(item, 1, command);
 		m_typelist->SetItemData(item, m_commands.Add(command));
@@ -555,8 +551,7 @@ void SettingsDlg::SaveTypelist()
 		if (item == wxNOT_FOUND) break;
 		wxString file_type = m_typelist->GetItemText(item);
 		wxString command = m_commands[m_typelist->GetItemData(item)];
-		wxString system = FbManager::GetSystemCommand(file_type);
-		if ( command.IsEmpty() || command == system ) {
+		if ( command.IsEmpty() ) {
 			wxString sql = wxT("DELETE FROM types WHERE file_type=?");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, file_type);

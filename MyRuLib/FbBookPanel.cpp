@@ -1,4 +1,4 @@
-#include "BooksPanel.h"
+#include "FbBookPanel.h"
 #include "FbConst.h"
 #include "FbManager.h"
 #include "FbFrameHtml.h"
@@ -7,25 +7,25 @@
 #include "FbBookEvent.h"
 #include "MyRuLibApp.h"
 
-BEGIN_EVENT_TABLE(BooksPanel, wxSplitterWindow)
-    EVT_MENU(ID_BOOKINFO_UPDATE, BooksPanel::OnInfoUpdate)
-    EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListViewSelected)
-	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListActivated)
-	EVT_TREE_ITEM_COLLAPSING(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListCollapsing)
-	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, BooksPanel::OnBooksListKeyDown)
-	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, BooksPanel::OnImageClick)
-    EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, BooksPanel::OnContextMenu)
-	EVT_MENU(wxID_SELECTALL, BooksPanel::OnSelectAll)
-	EVT_MENU(ID_UNSELECTALL, BooksPanel::OnUnselectAll)
-	EVT_MENU(ID_OPEN_BOOK, BooksPanel::OnOpenBook)
-	EVT_MENU(ID_FAVORITES_ADD, BooksPanel::OnFavoritesAdd)
-	EVT_MENU(ID_EDIT_COMMENTS, BooksPanel::OnEditComments)
-	EVT_MENU(ID_RATING_5, BooksPanel::OnChangeRating)
-	EVT_MENU(ID_RATING_4, BooksPanel::OnChangeRating)
-	EVT_MENU(ID_RATING_3, BooksPanel::OnChangeRating)
-	EVT_MENU(ID_RATING_2, BooksPanel::OnChangeRating)
-	EVT_MENU(ID_RATING_1, BooksPanel::OnChangeRating)
-	EVT_MENU(ID_RATING_0, BooksPanel::OnChangeRating)
+BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
+    EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
+    EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
+	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
+	EVT_TREE_ITEM_COLLAPSING(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListCollapsing)
+	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListKeyDown)
+	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, FbBookPanel::OnImageClick)
+    EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, FbBookPanel::OnContextMenu)
+	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
+	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
+	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
+	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
+	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
+	EVT_MENU(ID_RATING_5, FbBookPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_4, FbBookPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_3, FbBookPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_2, FbBookPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_1, FbBookPanel::OnChangeRating)
+	EVT_MENU(ID_RATING_0, FbBookPanel::OnChangeRating)
 END_EVENT_TABLE()
 
 const wxString strBookRatings [] = {
@@ -37,12 +37,12 @@ const wxString strBookRatings [] = {
 	wxT(" * * * * *"),
 };
 
-BooksPanel::BooksPanel()
+FbBookPanel::FbBookPanel()
     :wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
 {
 }
 
-bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
+bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 {
     bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
     if (res) {
@@ -55,7 +55,7 @@ bool BooksPanel::Create(wxWindow *parent, const wxSize& size, long style, int ke
     return res;
 }
 
-void BooksPanel::CreateBookInfo(bool bVertical)
+void FbBookPanel::CreateBookInfo(bool bVertical)
 {
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
@@ -76,7 +76,7 @@ void BooksPanel::CreateBookInfo(bool bVertical)
     }
 }
 
-BookTreeItemData * BooksPanel::GetSelectedBook()
+BookTreeItemData * FbBookPanel::GetSelectedBook()
 {
 	wxTreeItemId selected = m_BookList->GetSelection();
 	if (selected.IsOk()) {
@@ -85,7 +85,7 @@ BookTreeItemData * BooksPanel::GetSelectedBook()
         return NULL;
 }
 
-void BooksPanel::OnBooksListViewSelected(wxTreeEvent & event)
+void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 {
     m_BookInfo->SetPage(wxEmptyString);
 
@@ -96,12 +96,12 @@ void BooksPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	}
 }
 
-void BooksPanel::OnBooksListCollapsing(wxTreeEvent & event)
+void FbBookPanel::OnBooksListCollapsing(wxTreeEvent & event)
 {
 	event.Veto();
 }
 
-void BooksPanel::OnImageClick(wxTreeEvent &event)
+void FbBookPanel::OnImageClick(wxTreeEvent &event)
 {
 	wxTreeItemId item = event.GetItem();
 	if (item.IsOk()) {
@@ -139,7 +139,7 @@ void BooksPanel::OnImageClick(wxTreeEvent &event)
 	event.Veto();
 }
 
-void BooksPanel::OnBooksListActivated(wxTreeEvent & event)
+void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
@@ -148,7 +148,7 @@ void BooksPanel::OnBooksListActivated(wxTreeEvent & event)
 	}
 }
 
-void BooksPanel::OnBooksListKeyDown(wxTreeEvent & event)
+void FbBookPanel::OnBooksListKeyDown(wxTreeEvent & event)
 {
 	if (event.GetKeyCode() == 0x20) {
 		wxArrayTreeItemIds selections;
@@ -165,7 +165,7 @@ void BooksPanel::OnBooksListKeyDown(wxTreeEvent & event)
 		event.Skip();
 }
 
-void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
+void FbBookPanel::OnInfoUpdate(wxCommandEvent& event)
 {
 	wxTreeItemId selected = m_BookList->GetSelection();
 	if (selected.IsOk()) {
@@ -177,12 +177,12 @@ void BooksPanel::OnInfoUpdate(wxCommandEvent& event)
 	}
 }
 
-void BooksPanel::OnSubmenu(wxCommandEvent& event)
+void FbBookPanel::OnSubmenu(wxCommandEvent& event)
 {
     wxPostEvent(m_BookList, event);
 }
 
-void BooksPanel::OnContextMenu(wxTreeEvent& event)
+void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 {
     wxPoint point = event.GetPoint();
     // If from keyboard
@@ -194,7 +194,7 @@ void BooksPanel::OnContextMenu(wxTreeEvent& event)
     ShowContextMenu(point, event.GetItem());
 }
 
-void BooksPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
+void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	int id = 0;
 	if (item.IsOk()) {
@@ -202,22 +202,22 @@ void BooksPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		if (data) id = data->GetId();
 	}
     FbBookMenu menu(id, m_folder);
-	menu.ConnectFolders(this, wxCommandEventHandler(BooksPanel::OnFolderAdd));
-	menu.ConnectAuthors(this, wxCommandEventHandler(BooksPanel::OnOpenAuthor));
+	menu.ConnectFolders(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
+	menu.ConnectAuthors(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
     PopupMenu(&menu, pos.x, pos.y);
 }
 
-void BooksPanel::OnSelectAll(wxCommandEvent& event)
+void FbBookPanel::OnSelectAll(wxCommandEvent& event)
 {
     m_BookList->SelectAll();
 }
 
-void BooksPanel::OnUnselectAll(wxCommandEvent& event)
+void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 {
     m_BookList->SelectAll(0);
 }
 
-void BooksPanel::OnOpenBook(wxCommandEvent & event)
+void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 {
     BookTreeItemData * data = GetSelectedBook();
     if (data) FbManager::OpenBook(data->GetId(), data->file_type);
@@ -261,12 +261,21 @@ void * FbAppendFavouritesThread::Entry()
 void * FbChangeRationThread::Entry()
 {
 	wxString sql;
-    if (m_rating)
-		sql = wxString::Format(wxT("INSERT OR REPLACE INTO ratings(md5sum,rating) SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s)"), m_rating, m_selections.c_str());
-	else
-		sql = wxString::Format(wxT("DELETE FROM ratings WHERE md5sum IN (SELECT DISTINCT md5sum FROM books WHERE id IN (%s))"), m_selections.c_str());
-
     m_database.AttachConfig();
+
+	sql = wxString::Format(wxT("\
+		INSERT INTO states(md5sum, rating) \
+		SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s) \
+		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
+	"), m_rating, m_selections.c_str());
+
+    m_database.ExecuteUpdate(sql);
+
+	sql = wxString::Format(wxT("\
+		UPDATE states SET rating=%d WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
+	"), m_rating, m_selections.c_str());
+
     m_database.ExecuteUpdate(sql);
 
 	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_RATING);
@@ -276,20 +285,20 @@ void * FbChangeRationThread::Entry()
     return NULL;
 }
 
-void BooksPanel::OnFavoritesAdd(wxCommandEvent & event)
+void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected() );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void BooksPanel::OnFolderAdd(wxCommandEvent& event)
+void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
 {
 	int folder = FbBookMenu::GetFolder(event.GetId());
     wxThread * thread = new FbAppendFavouritesThread( m_BookList->GetSelected(), folder );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-int BooksPanel::UpdateChildRating(wxTreeItemId parent, int iRating)
+int FbBookPanel::UpdateChildRating(wxTreeItemId parent, int iRating)
 {
 	int result = 0;
     wxTreeItemIdValue cookie;
@@ -310,7 +319,7 @@ int BooksPanel::UpdateChildRating(wxTreeItemId parent, int iRating)
 	return result;
 }
 
-void BooksPanel::OnChangeRating(wxCommandEvent& event)
+void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 {
 	int iRating = event.GetId() - ID_RATING_0;
 
@@ -334,7 +343,7 @@ void BooksPanel::OnChangeRating(wxCommandEvent& event)
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void BooksPanel::OnEditComments(wxCommandEvent & event)
+void FbBookPanel::OnEditComments(wxCommandEvent & event)
 {
 	wxTreeItemId selected = m_BookList->GetSelection();
 	if (selected.IsOk()) {
@@ -343,7 +352,7 @@ void BooksPanel::OnEditComments(wxCommandEvent & event)
 	}
 }
 
-void BooksPanel::OnOpenAuthor(wxCommandEvent& event)
+void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 {
 	int author = FbBookMenu::GetAuthor(event.GetId());
 	if (author == 0) return;
@@ -353,7 +362,7 @@ void BooksPanel::OnOpenAuthor(wxCommandEvent& event)
     wxPostEvent(wxGetApp().GetTopWindow(), subevent);
 }
 
-void BooksPanel::EmptyBooks(const wxString title)
+void FbBookPanel::EmptyBooks(const wxString title)
 {
 	m_AuthorItem = 0;
 	m_SequenceItem = 0;
@@ -363,7 +372,7 @@ void BooksPanel::EmptyBooks(const wxString title)
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
-void BooksPanel::AppendAuthor(const wxString title)
+void FbBookPanel::AppendAuthor(const wxString title)
 {
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
@@ -372,7 +381,7 @@ void BooksPanel::AppendAuthor(const wxString title)
 	m_BookList->Expand(parent);
 }
 
-void BooksPanel::AppendSequence(const wxString title)
+void FbBookPanel::AppendSequence(const wxString title)
 {
 	wxString text = title.IsEmpty() ? strOtherSequence : title;
 	FbTreeListUpdater updater(m_BookList);
@@ -382,7 +391,7 @@ void BooksPanel::AppendSequence(const wxString title)
 	m_BookList->Expand(parent);
 }
 
-wxString BooksPanel::F(const int number)
+wxString FbBookPanel::F(const int number)
 {
 	int hi = number / 1000;
 	int lo = number % 1000;
@@ -392,7 +401,7 @@ wxString BooksPanel::F(const int number)
 		return wxString::Format(wxT("%d"), lo);
 }
 
-void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
+void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 {
 	FbTreeListUpdater updater(m_BookList);
 
@@ -422,7 +431,7 @@ void BooksPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 	m_BookList->Expand(parent);
 }
 
-void BooksPanel::CreateColumns(FbListMode mode)
+void FbBookPanel::CreateColumns(FbListMode mode)
 {
     m_ListMode = mode;
 
@@ -454,7 +463,7 @@ void BooksPanel::CreateColumns(FbListMode mode)
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
-int BooksPanel::GetRatingColumn()
+int FbBookPanel::GetRatingColumn()
 {
     switch (m_ListMode) {
         case FB2_MODE_TREE: return 1;

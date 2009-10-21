@@ -4,9 +4,6 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "BooksPanel.h"
-#include "FbGenres.h"
-#include "FbClientData.h"
 #include "MyRuLibApp.h"
 #include "FbFrameBaseThread.h"
 
@@ -148,7 +145,7 @@ void * FrameFavourThread::Entry()
 			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
 			break;
 		case FT_RATING:
-			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM ratings WHERE rating = ?)");
+			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM states WHERE rating = ?)");
 			break;
 	}
 	wxString sql = GetSQL(condition);

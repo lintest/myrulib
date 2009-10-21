@@ -1,5 +1,5 @@
-#ifndef __BOOKSPANEL_H__
-#define __BOOKSPANEL_H__
+#ifndef __FBBOOKPANEL_H__
+#define __FBBOOKPANEL_H__
 
 #include <wx/wx.h>
 #include <wx/splitter.h>
@@ -13,10 +13,10 @@ enum FbListMode {
     FB2_MODE_TREE = 1,
 };
 
-class BooksPanel: public wxSplitterWindow
+class FbBookPanel: public wxSplitterWindow
 {
     public:
-        BooksPanel();
+        FbBookPanel();
         bool Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
     public:
         FbBookList * m_BookList;
@@ -61,4 +61,4 @@ class BooksPanel: public wxSplitterWindow
 };
 
 
-#endif // __BOOKSPANEL_H__
+#endif // __FBBOOKPANEL_H__

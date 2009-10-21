@@ -359,8 +359,8 @@ void FbConfigDatabase::UpgradeDatabase()
         wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
         /** TABLE ratings **/
-        ExecuteUpdate(wxT("CREATE TABLE ratings(md5sum CHAR(32) primary key, rating INTEGER)"));
-        ExecuteUpdate(wxT("CREATE INDEX ratings_rating ON ratings(rating)"));
+        ExecuteUpdate(wxT("CREATE TABLE states(md5sum CHAR(32) primary key, rating INTEGER, download INTEGER)"));
+        ExecuteUpdate(wxT("CREATE INDEX states_rating ON states(rating)"));
 
         SetVersion(version);
         trans.Commit();

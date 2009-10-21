@@ -1,9 +1,9 @@
 #include "FbFrameSearch.h"
 #include <wx/artprov.h>
+#include <wx/mimetype.h>
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "BooksPanel.h"
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)

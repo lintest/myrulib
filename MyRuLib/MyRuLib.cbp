@@ -167,8 +167,6 @@
 		<Unit filename="BaseThread.h" />
 		<Unit filename="BookExtractInfo.cpp" />
 		<Unit filename="BookExtractInfo.h" />
-		<Unit filename="BooksPanel.cpp" />
-		<Unit filename="BooksPanel.h" />
 		<Unit filename="ExpThread.cpp" />
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
@@ -183,6 +181,8 @@
 		<Unit filename="FbBookList.h" />
 		<Unit filename="FbBookMenu.cpp" />
 		<Unit filename="FbBookMenu.h" />
+		<Unit filename="FbBookPanel.cpp" />
+		<Unit filename="FbBookPanel.h" />
 		<Unit filename="FbBookThread.cpp" />
 		<Unit filename="FbBookThread.h" />
 		<Unit filename="FbConst.cpp" />
