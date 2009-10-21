@@ -32,12 +32,12 @@ void FbFrameFavour::CreateControls()
 
 	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	wxToolBar * m_tools = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
-	m_tools->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
-	m_tools->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
-	m_tools->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
-	m_tools->Realize();
-	bToolSizer->Add( m_tools, 0, wxALIGN_CENTER_VERTICAL);
+	m_ToolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
+	m_ToolBar->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
+	m_ToolBar->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
+	m_ToolBar->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
+	m_ToolBar->Realize();
+	bToolSizer->Add( m_ToolBar, 0, wxALIGN_CENTER_VERTICAL);
 
 	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bToolSizer->Add( toolbar, 1, wxALIGN_CENTER_VERTICAL);
@@ -177,7 +177,12 @@ void FbFrameFavour::OnFolderSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
         m_BooksPanel.EmptyBooks();
 		FbFolderData * data = (FbFolderData*) m_FolderList->GetItemData(selected);
-		if (data) FillByFolder(data);
+		if (data) {
+			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
+			m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
+			m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
+			FillByFolder(data);
+		}
 	}
 }
 

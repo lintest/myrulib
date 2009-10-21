@@ -309,7 +309,7 @@ void * FbStartDownloadThread::Entry()
 
 	sql = wxString::Format(wxT("\
 		INSERT INTO states(md5sum, download) \
-		SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s) \
+		SELECT DISTINCT md5sum, %d FROM books WHERE id>0 AND id IN (%s) \
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), downId, m_selections.c_str());
 
@@ -317,7 +317,7 @@ void * FbStartDownloadThread::Entry()
 
 	sql = wxString::Format(wxT("\
 		UPDATE states SET download=%d WHERE md5sum IN \
-		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
+		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), downId, m_selections.c_str());
 
     m_database.ExecuteUpdate(sql);
