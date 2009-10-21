@@ -7,93 +7,31 @@
  * License:
  **************************************************************/
 #include "FbManager.h"
-#include <wx/wfstream.h>
 #include <wx/zipstrm.h>
-#include <wx/progdlg.h>
-#include "ImpThread.h"
 #include "FbDatabase.h"
-#include "FbClientData.h"
 #include "ZipReader.h"
-#include "FbConst.h"
-#include "MyRuLibApp.h"
-
-#if defined(__WIN32__)
-#include <shlwapi.h>
-#endif
-
-class SequenceNode {
-public:
-    SequenceNode(const int id, const wxTreeItemId &item)
-            : m_id(id), m_item(item),  m_next(NULL) {};
-	virtual ~SequenceNode() {};
-public:
-    int m_id;
-    wxTreeItemId m_item;
-    SequenceNode *m_next;
-};
-
-class SequenceList {
-public:
-	SequenceList()
-		: m_root(NULL), m_last(NULL) {};
-    virtual ~SequenceList();
-	void Append(const int id, const wxTreeItemId &item);
-	wxTreeItemId Find(const int id, wxTreeItemId root);
-public:
-    SequenceNode *m_root;
-    SequenceNode *m_last;
-};
-
-SequenceList::~SequenceList()
-{
-	while (m_root) {
-		SequenceNode * node = m_root;
-		m_root = node->m_next;
-		delete node;
-	}
-}
-
-void SequenceList::Append(const int id, const wxTreeItemId &item)
-{
-	SequenceNode * node = new SequenceNode(id, item);
-	if (m_root)
-		m_last->m_next = node;
-	else
-		m_root = node;
-	m_last = node;
-}
-
-wxTreeItemId SequenceList::Find(const int id, wxTreeItemId root)
-{
-	SequenceNode * node = m_root;
-	while (node) {
-		if (node->m_id == id)
-			return node->m_item;
-		node = node->m_next;
-	}
-	return root;
-}
+#include <wx/mimetype.h>
 
 class TempFileEraser {
-private:
-    wxStringList filelist;
-    TempFileEraser() {};
-    virtual ~TempFileEraser();
-public:
-    static void Add(const wxString &filename);
+	private:
+		wxStringList filelist;
+		TempFileEraser() {};
+		virtual ~TempFileEraser();
+	public:
+		static void Add(const wxString &filename);
 };
 
 TempFileEraser::~TempFileEraser()
 {
     for (size_t i=0; i<filelist.GetCount(); i++)
         wxRemoveFile(filelist[i]);
-};
+}
 
 void TempFileEraser::Add(const wxString &filename)
 {
     static TempFileEraser eraser;
     eraser.filelist.Add(filename);
-};
+}
 
 void FbManager::OpenBook(int id, wxString &file_type)
 {
@@ -103,26 +41,42 @@ void FbManager::OpenBook(int id, wxString &file_type)
         return;
     }
 
-    wxString command = GetOpenCommand(file_type);
-    if (command.IsEmpty()) {
-    	wxString msg = wxString::Format(_("Не найдено приложение для просмотра файлов типа: %s"), file_type.c_str());
-    	wxMessageBox(msg);
-    	return;
-    }
-
     wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
     wxRemoveFile(file_name.GetFullPath());
     file_name.SetExt(file_type);
+
     wxString file_path = file_name.GetFullPath();
     TempFileEraser::Add(file_path);
     wxFileOutputStream out(file_path);
     out.Write(reader.GetZip());
 
-#if defined(__WIN32__)
-    ShellExecute(NULL, NULL, command, file_path, NULL, SW_SHOW);
-#else
-    wxExecute(command + wxT(" ") + file_path);
-#endif
+	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
+	FbLocalDatabase database;
+    wxSQLite3Statement stmt = database.PrepareStatement(sql);
+    stmt.Bind(1, file_type);
+    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+    if ( result.NextRow() ) {
+    	wxString command = result.GetString(0);
+		#if defined(__WIN32__)
+		ShellExecute(NULL, NULL, command, file_path, NULL, SW_SHOW);
+		#else
+		wxExecute(command + wxT(" ") + file_path);
+		#endif
+		return;
+    }
+
+	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(file_type);
+	if ( ft ) {
+		wxString cmd;
+		if (ft->GetOpenCommand(&cmd, wxFileType::MessageParameters(file_path, wxEmptyString))) {
+			wxExecute(cmd);
+			return;
+		}
+		delete ft;
+	}
+
+	wxString msg = _("Не найдено приложение для просмотра файлов типа ") + file_type;
+	wxMessageBox(msg);
 }
 
 void BookInfo::MakeLower(wxString & data)
@@ -139,7 +93,8 @@ void BookInfo::MakeLower(wxString & data)
 #endif
 }
 
-void BookInfo::MakeUpper(wxString & data){
+void BookInfo::MakeUpper(wxString & data)
+{
 #if defined(__WIN32__)
       int len = data.length() + 1;
       wxChar * buf = new wxChar[len];
@@ -152,30 +107,3 @@ void BookInfo::MakeUpper(wxString & data){
 #endif
 }
 
-wxString FbManager::GetSystemCommand(const wxString & file_type)
-{
-#if defined(__WIN32__)
-	wxString ext = wxT(".") + file_type;
-	DWORD dwSize = MAX_PATH;
-	wxString command;
-	if (AssocQueryString(0, ASSOCSTR_EXECUTABLE, ext.c_str(), wxT("open"), wxStringBuffer(command, MAX_PATH), &dwSize) == S_OK) {
-		if (command.Left(1) == wxT("\"")) {
-			command = command.Mid(1);
-			command = command.Left(command.Find(wxT("\"")));
-		} else {
-			command = command.Left(command.Find(wxT(" ")));
-		}
-		return command;
-	}
-#endif
-	return wxEmptyString;
-}
-
-wxString FbManager::GetOpenCommand(const wxString & file_type)
-{
-	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-    wxSQLite3Statement stmt = wxGetApp().GetConfigDatabase().PrepareStatement(sql);
-    stmt.Bind(1, file_type);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
-    return result.NextRow() ? result.GetString(0) : GetSystemCommand(file_type);
-}

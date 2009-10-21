@@ -3,7 +3,6 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "BooksPanel.h"
 #include "FbGenres.h"
 #include "FbFrameBaseThread.h"
 

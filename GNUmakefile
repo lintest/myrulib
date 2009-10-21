@@ -83,7 +83,6 @@ MYRULIB_CXXFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` 
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_BookExtractInfo.o \
-	build/myrulib_BooksPanel.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbAuthorList.o \
@@ -91,6 +90,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbBookEvent.o \
 	build/myrulib_FbBookList.o \
 	build/myrulib_FbBookMenu.o \
+	build/myrulib_FbBookPanel.o \
 	build/myrulib_FbBookThread.o \
 	build/myrulib_FbConst.o \
 	build/myrulib_FbDatabase.o \
@@ -200,9 +200,6 @@ build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 build/myrulib_BookExtractInfo.o: ./MyRuLib/BookExtractInfo.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_BooksPanel.o: ./MyRuLib/BooksPanel.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -222,6 +219,9 @@ build/myrulib_FbBookList.o: ./MyRuLib/FbBookList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbBookMenu.o: ./MyRuLib/FbBookMenu.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbBookPanel.o: ./MyRuLib/FbBookPanel.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp
