@@ -245,9 +245,11 @@ int FbDatabase::NewId(const int iParam)
 {
     wxCriticalSectionLocker enter(sm_queue);
 
+    const wchar_t * table = iParam < 100 ? wxT("params") : wxT("config");
+
     int iValue = 0;
     {
-        wxString sql = wxString::Format(wxT("SELECT value FROM %s WHERE id=?"), GetParamTable().c_str());
+        wxString sql = wxString::Format(wxT("SELECT value FROM %s WHERE id=?"), table);
         wxSQLite3Statement stmt = PrepareStatement(sql);
         stmt.Bind(1, iParam);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -255,7 +257,7 @@ int FbDatabase::NewId(const int iParam)
     }
 	iValue++;
     {
-        wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(value, id) VALUES(?,?)"), GetParamTable().c_str());
+        wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(value, id) VALUES(?,?)"), table);
         wxSQLite3Statement stmt = PrepareStatement(sql);
         stmt.Bind(1, iValue);
         stmt.Bind(2, iParam);

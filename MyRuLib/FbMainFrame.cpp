@@ -60,6 +60,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 
     EVT_COMMAND(ID_UPDATE_FOLDER, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateFolder)
     EVT_COMMAND(ID_UPDATE_RATING, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateRating)
+    EVT_COMMAND(ID_UPDATE_DOWNLOAD, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateDownload)
     EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
     EVT_COMMAND(ID_OPEN_AUTHOR, fbEVT_BOOK_ACTION, FbMainFrame::OnOpenAuthor)
 END_EVENT_TABLE()
@@ -426,6 +427,12 @@ void FbMainFrame::OnUpdateRating(wxCommandEvent & event)
 {
     FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
 	if (frame) frame->UpdateFolder(event.GetInt(), FT_RATING);
+}
+
+void FbMainFrame::OnUpdateDownload(wxCommandEvent & event)
+{
+    FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
+	if (frame) frame->UpdateFolder(event.GetInt(), FT_DOWNLOAD);
 }
 
 void FbMainFrame::OnOpenAuthor(wxCommandEvent & event)

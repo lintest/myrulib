@@ -18,6 +18,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
+	EVT_MENU(ID_DOWNLOAD_BOOK, FbBookPanel::OnDownloadBook)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
 	EVT_MENU(ID_RATING_5, FbBookPanel::OnChangeRating)
@@ -249,6 +250,16 @@ class FbChangeRationThread: public wxThread
         int m_rating;
 };
 
+class FbStartDownloadThread: public wxThread
+{
+    public:
+        FbStartDownloadThread(wxString selections): m_selections(selections) {};
+        void * Entry();
+    private:
+        FbCommonDatabase m_database;
+        wxString m_selections;
+};
+
 void * FbAppendFavouritesThread::Entry()
 {
     m_database.AttachConfig();
@@ -284,6 +295,35 @@ void * FbChangeRationThread::Entry()
 
 	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_RATING);
     event.SetInt(m_rating);
+    wxPostEvent(wxGetApp().GetTopWindow(), event);
+
+    return NULL;
+}
+
+void * FbStartDownloadThread::Entry()
+{
+	wxString sql;
+    m_database.AttachConfig();
+
+    int downId = m_database.NewId(FB_NEW_DOWNLOAD);
+
+	sql = wxString::Format(wxT("\
+		INSERT INTO states(md5sum, download) \
+		SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s) \
+		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
+	"), downId, m_selections.c_str());
+
+    m_database.ExecuteUpdate(sql);
+
+	sql = wxString::Format(wxT("\
+		UPDATE states SET download=%d WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
+	"), downId, m_selections.c_str());
+
+    m_database.ExecuteUpdate(sql);
+
+	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_DOWNLOAD);
+    event.SetInt(1);
     wxPostEvent(wxGetApp().GetTopWindow(), event);
 
     return NULL;
@@ -344,6 +384,12 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 	m_BookList->Update();
 
     wxThread * thread = new FbChangeRationThread( m_BookList->GetSelected(), iRating );
+    if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
+{
+    wxThread * thread = new FbStartDownloadThread( m_BookList->GetSelected() );
     if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 

@@ -110,8 +110,8 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 	parent = m_FolderList->AppendItem(root, _("Закачки"));
 	m_FolderList->SetItemBold(parent, true);
 
-	m_FolderList->AppendItem(parent, wxT("Очередь"), -1, -1, NULL);
-	m_FolderList->AppendItem(parent, wxT("Готово"), -1, -1, NULL);
+	m_FolderList->AppendItem(parent, wxT("Очередь"), -1, -1, new FbFolderData(1, FT_DOWNLOAD));
+	m_FolderList->AppendItem(parent, wxT("Готово"), -1, -1, new FbFolderData(-1, FT_DOWNLOAD));
     m_FolderList->Expand(parent);
 
 	m_FolderList->Thaw();
@@ -147,6 +147,9 @@ void * FrameFavourThread::Entry()
 			break;
 		case FT_RATING:
 			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM states WHERE rating = ?)");
+			break;
+		case FT_DOWNLOAD:
+			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM states WHERE (? * download) > 0)");
 			break;
 	}
 	wxString sql = GetSQL(condition);
@@ -305,6 +308,9 @@ void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
 			break;
 		case FT_RATING:
 			bNeedUpdate = true;
+			break;
+		case FT_DOWNLOAD:
+			bNeedUpdate = data->GetId()*iFolder > 0;
 			break;
 	}
 
