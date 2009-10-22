@@ -118,10 +118,6 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	this->Layout();
 }
 
-FbConfigDlg::~FbConfigDlg()
-{
-}
-
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
 	wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);

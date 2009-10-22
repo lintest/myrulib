@@ -17,7 +17,6 @@ protected:
 	virtual void CreateControls();
 private:
 	static wxString GetMd5sum(const int id);
-	wxString GetComments();
 	void DoModify();
 	void DoSubmit();
 	void DoUpdate();

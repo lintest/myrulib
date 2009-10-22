@@ -1,8 +1,10 @@
 #include "FbConst.h"
 
-const wxString strProgramName = _T("MyRuLib 0.11");
-const wxString strVersionInfo = _T("MyRuLib - version 0.11 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
+const wxString strProgramName = wxT("MyRuLib 0.11");
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
+const wxString strMailAddr = wxT("mail@lintest.ru");
+
+const wxString strVersionInfo = strProgramName + wxT("(alpha)\n\n") + strHomePage +  wxT("\n") + strMailAddr;
 
 const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");

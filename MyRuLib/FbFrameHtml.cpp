@@ -1,3 +1,4 @@
+#include <wx/fs_mem.h>
 #include "FbFrameHtml.h"
 #include "FbDatabase.h"
 #include "FbConst.h"
@@ -11,6 +12,8 @@
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include "res/modify.xpm"
+#include "res/delete.xpm"
 
 BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
 	EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
@@ -38,6 +41,12 @@ FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
 	:wxAuiMDIChildFrame(parent, ID_FRAME_HTML, _("Комментарии")),
 	m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
 {
+	static bool bNotLoaded = true;
+	if (bNotLoaded) {
+		wxMemoryFSHandler::AddFile(wxT("modify"), wxBitmap(modify_xpm), wxBITMAP_TYPE_PNG);
+		wxMemoryFSHandler::AddFile(wxT("delete"), wxBitmap(delete_xpm), wxBITMAP_TYPE_PNG);
+		bNotLoaded = false;
+	}
 	CreateControls();
 	InfoCash::UpdateInfo(this, m_id, false, true);
 }
@@ -125,37 +134,6 @@ void FbFrameHtml::OnInfoUpdate(wxCommandEvent& event)
 		m_info.SetPage(html);
 //		wxMessageBox(html);
 	}
-}
-
-wxString FbFrameHtml::GetComments()
-{
-	wxString sql = wxT("SELECT id, posted, caption, comment FROM comments WHERE md5sum=? ORDER BY id");
-
-	FbLocalDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_md5sum);
-	wxSQLite3ResultSet res = stmt.ExecuteQuery();
-
-	wxString html;
-	html += wxT("<TR><TD valign=top>");
-	html += wxT("<TABLE>");
-
-	while (res.NextRow()) {
-		int id = res.GetInt(0);
-		wxString caption = FbBookThread::HTMLSpecialChars(res.GetString(2));
-		wxString comment = FbBookThread::HTMLSpecialChars(res.GetString(3));
-		int pos;
-		while ( (pos = comment.Find(wxT('\n'))) != wxNOT_FOUND) {
-			comment = comment.Left(pos) + wxT("<br>") + comment.Mid(pos + 1);
-		}
-		html += wxString::Format(wxT("<TR><TD><B>%s: %s&nbsp;<A href=%d>&lt;удалить&gt;</A></B></TD></TR>"), res.GetString(1).c_str(), caption.c_str(), id);
-		html += wxString::Format(wxT("<TR><TD>%s</TD></TR>"), comment.c_str());
-	}
-
-	html += wxT("</TR></TD>");
-	html += wxT("</TABLE></TABLE></BODY></HTML>");
-
-	return html;
 }
 
 void FbFrameHtml::DoSubmit()

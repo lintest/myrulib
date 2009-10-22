@@ -29,15 +29,6 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_RATING_0, FbBookPanel::OnChangeRating)
 END_EVENT_TABLE()
 
-const wxString strBookRatings [] = {
-	wxEmptyString,
-	wxT(" *"),
-	wxT(" * *"),
-	wxT(" * * *"),
-	wxT(" * * * *"),
-	wxT(" * * * * *"),
-};
-
 FbBookPanel::FbBookPanel()
 	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
 {
@@ -279,12 +270,11 @@ void FbBookPanel::DoFolderAdd(const int folder)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-int FbBookPanel::UpdateChildRating(wxTreeItemId parent, int iRating)
+int FbBookPanel::UpdateChildRating(wxTreeItemId parent, int iRating, const wxString &sRating)
 {
 	int result = 0;
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_BookList->GetFirstChild(parent, cookie);
-	wxString sRating = strBookRatings[iRating];
 	while (child.IsOk()) {
 		if (m_BookList->GetItemImage(child) == 1) {
 			BookTreeItemData * data = (BookTreeItemData*) m_BookList->GetItemData(child);
@@ -294,15 +284,14 @@ int FbBookPanel::UpdateChildRating(wxTreeItemId parent, int iRating)
 				result++;
 			}
 		}
-		result += UpdateChildRating(child, iRating);
+		result += UpdateChildRating(child, iRating, sRating);
 		child = m_BookList->GetNextChild(parent, cookie);
 	}
 	return result;
 }
 
-int FbBookPanel::UpdateSelectionRating(int iRating)
+int FbBookPanel::UpdateSelectionRating(int iRating, const wxString &sRating)
 {
-	wxString sRating = strBookRatings[iRating];
 	wxArrayTreeItemIds items;
 	size_t count = m_BookList->GetSelections(items);
 	for (size_t i=0; i<count; ++i) {
@@ -317,10 +306,12 @@ int FbBookPanel::UpdateSelectionRating(int iRating)
 
 void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 {
-	int rating = event.GetId() - ID_RATING_0;
+	int iRating = event.GetId() - ID_RATING_0;
 
-	int iUpdated = UpdateChildRating( m_BookList->GetRootItem(), rating);
-	if ( !iUpdated ) UpdateSelectionRating(rating);
+	wxString sRating;
+	if (iRating) sRating = wxT(" ") + strRating[iRating];
+	int iUpdated = UpdateChildRating( m_BookList->GetRootItem(), iRating, sRating);
+	if ( !iUpdated ) UpdateSelectionRating(iRating, sRating);
 
 	m_BookList->Update();
 
@@ -331,17 +322,17 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		INSERT INTO states(md5sum, rating) \
 		SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s) \
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
-	"), rating, sel.c_str());
+	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql, rating, FT_RATING );
+	wxThread * thread = new FbFolderUpdateThread( sql, iRating, FT_RATING );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 
 	sql = wxString::Format(wxT("\
 		UPDATE states SET rating=%d WHERE md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
-	"), rating, sel.c_str());
+	"), iRating, sel.c_str());
 
-	thread = new FbFolderUpdateThread( sql, rating, FT_RATING );
+	thread = new FbFolderUpdateThread( sql, iRating, FT_RATING );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -445,7 +436,8 @@ void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 	wxString file_type = data->file_type + wxT(" ");
 	wxString file_size = F(data->file_size/1024) + wxT(" ");
 	wxTreeItemId parent;
-	wxString sRating  = strBookRatings[data->rating];
+	wxString sRating;
+	if (data->rating) sRating = wxT(" ") + strRating[data->rating];
 
 	switch (m_ListMode) {
 		case FB2_MODE_TREE: {

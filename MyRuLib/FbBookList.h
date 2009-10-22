@@ -9,22 +9,22 @@
 
 class FbBookList: public FbTreeListCtrl
 {
-public:
-	FbBookList(wxWindow *parent, wxWindowID id, long style);
-	void SelectAll(int iImageIndex = 1);
-	wxString GetSelected();
-	void GetSelected(wxArrayInt &items);
-	void DeleteItems(wxArrayInt &items);
-private:
-	bool DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-	void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
-	void ShowContextMenu(const wxPoint& pos);
-	void ScanChecked(const wxTreeItemId &root, wxString  &selections);
-	void ScanSelected(const wxTreeItemId &root, wxString  &selections);
-	void ScanChecked(const wxTreeItemId &root, wxArrayInt &items);
-	void ScanSelected(const wxTreeItemId &root, wxArrayInt &items);
-private:
-	void OnImageClick(wxTreeEvent &event);
+	public:
+		FbBookList(wxWindow *parent, wxWindowID id, long style);
+		void SelectAll(int iImageIndex = 1);
+		wxString GetSelected();
+		void GetSelected(wxArrayInt &items);
+		void DeleteItems(wxArrayInt &items);
+	private:
+		bool DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
+		void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
+		void ShowContextMenu(const wxPoint& pos);
+		void ScanChecked(const wxTreeItemId &root, wxString  &selections);
+		void ScanSelected(const wxTreeItemId &root, wxString  &selections);
+		void ScanChecked(const wxTreeItemId &root, wxArrayInt &items);
+		void ScanSelected(const wxTreeItemId &root, wxArrayInt &items);
+	private:
+		void OnImageClick(wxTreeEvent &event);
 };
 
 class BookListUpdater
