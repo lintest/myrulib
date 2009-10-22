@@ -59,9 +59,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
     EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
 
-    EVT_COMMAND(ID_UPDATE_FOLDER, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateFolder)
-    EVT_COMMAND(ID_UPDATE_RATING, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateRating)
-    EVT_COMMAND(ID_UPDATE_DOWNLOAD, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateDownload)
+    EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
     EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
     EVT_COMMAND(ID_OPEN_AUTHOR, fbEVT_BOOK_ACTION, FbMainFrame::OnOpenAuthor)
 END_EVENT_TABLE()
@@ -429,22 +427,10 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
     VacuumThread::Execute();
 }
 
-void FbMainFrame::OnUpdateFolder(wxCommandEvent & event)
+void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
     FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
-	if (frame) frame->UpdateFolder(event.GetInt(), FT_FOLDER);
-}
-
-void FbMainFrame::OnUpdateRating(wxCommandEvent & event)
-{
-    FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
-	if (frame) frame->UpdateFolder(event.GetInt(), FT_RATING);
-}
-
-void FbMainFrame::OnUpdateDownload(wxCommandEvent & event)
-{
-    FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
-	if (frame) frame->UpdateFolder(event.GetInt(), FT_DOWNLOAD);
+	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 }
 
 void FbMainFrame::OnOpenAuthor(wxCommandEvent & event)

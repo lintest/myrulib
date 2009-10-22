@@ -182,7 +182,7 @@ void FbFrameHtml::DoSubmit()
 
 	m_key.Empty();
 
-	InfoCash::UpdateInfo(this, m_id, false, true);
+	DoUpdate();
 }
 
 void FbFrameHtml::OnSubmit(wxCommandEvent& event)
@@ -227,7 +227,7 @@ void FbFrameHtml::DoModify()
 
 	m_key.Empty();
 
-	InfoCash::UpdateInfo(this, m_id, false, true);
+	DoUpdate();
 }
 
 void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
@@ -247,8 +247,7 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 			m_key.Empty();
 			m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 		}
-
-		InfoCash::UpdateInfo(this, m_id, false, true);
+		DoUpdate();
 	}
 	else if ( event.GetLinkInfo().GetTarget() == wxT("M") )
 	{
@@ -261,4 +260,10 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 			m_ToolBar.EnableTool(ID_HTML_MODIFY, true);
 		}
 	}
+}
+
+void FbFrameHtml::DoUpdate()
+{
+	InfoCash::UpdateInfo(this, m_id, false, true);
+	FbFolderEvent(ID_UPDATE_FOLDER, 1, FT_COMMENT).Post();
 }

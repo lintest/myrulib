@@ -4,7 +4,6 @@
 #include "FbFrameHtml.h"
 #include "InfoCash.h"
 #include "FbBookMenu.h"
-#include "FbBookEvent.h"
 #include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
@@ -266,9 +265,7 @@ void * FbAppendFavouritesThread::Entry()
     wxString sql = wxString::Format(wxT("INSERT INTO favorites(id_folder,md5sum) SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s)"), m_folder, m_selections.c_str());
     m_database.ExecuteUpdate(sql);
 
-	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_FOLDER);
-    event.SetInt(m_folder);
-    wxPostEvent(wxGetApp().GetTopWindow(), event);
+	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, FT_FOLDER).Post();
 
     return NULL;
 }
@@ -293,9 +290,7 @@ void * FbChangeRationThread::Entry()
 
     m_database.ExecuteUpdate(sql);
 
-	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_RATING);
-    event.SetInt(m_rating);
-    wxPostEvent(wxGetApp().GetTopWindow(), event);
+	FbFolderEvent(ID_UPDATE_FOLDER, m_rating, FT_RATING).Post();
 
     return NULL;
 }
@@ -322,9 +317,7 @@ void * FbStartDownloadThread::Entry()
 
     m_database.ExecuteUpdate(sql);
 
-	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_DOWNLOAD);
-    event.SetInt(1);
-    wxPostEvent(wxGetApp().GetTopWindow(), event);
+	FbFolderEvent(ID_UPDATE_FOLDER, 1, FT_DOWNLOAD).Post();
 
     return NULL;
 }

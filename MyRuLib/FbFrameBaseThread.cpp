@@ -65,28 +65,27 @@ void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)
 			wxPostEvent(m_frame, event);
 	    }
 
-        BookTreeItemData data(result);
-		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
-		wxPostEvent(m_frame, event);
+		BookTreeItemData data(result);
+		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
     }
 }
 
 void FbFrameBaseThread::CreateList(wxSQLite3ResultSet &result)
 {
-    result.NextRow();
-    while (!result.Eof()) {
-        BookTreeItemData data(result);
-        wxString full_name = result.GetString(wxT("full_name"));
-        do {
-            result.NextRow();
-            if ( data.GetId() != result.GetInt(wxT("id")) ) break;
-            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
-        } while (!result.Eof());
+	result.NextRow();
+	while (!result.Eof()) {
+		BookTreeItemData data(result);
+		wxString full_name = result.GetString(wxT("full_name"));
+		do {
+			result.NextRow();
+			if ( data.GetId() != result.GetInt(wxT("id")) ) break;
+			full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
+		} while (!result.Eof());
 
-		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
+		FbBookEvent event(ID_APPEND_BOOK, &data);
 		event.SetString(full_name);
-		wxPostEvent(m_frame, event);
-    }
+		event.Post(m_frame);
+	}
 }
 
 void FbFrameBaseThread::EmptyBooks()

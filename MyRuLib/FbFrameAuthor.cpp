@@ -256,20 +256,19 @@ void * FrameAuthorThread::Entry()
 
 void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 {
-    wxString thisSequence = wxT("@@@");
-    while (result.NextRow()) {
-	    wxString nextSequence = result.GetString(wxT("sequence"));
+	wxString thisSequence = wxT("@@@");
+	while (result.NextRow()) {
+		wxString nextSequence = result.GetString(wxT("sequence"));
 
-	    if (thisSequence != nextSequence) {
-	        thisSequence = nextSequence;
+		if (thisSequence != nextSequence) {
+			thisSequence = nextSequence;
 			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE);
 			event.SetString(thisSequence);
 			wxPostEvent(m_frame, event);
-	    }
+		}
 
-        BookTreeItemData data(result);
-		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
-		wxPostEvent(m_frame, event);
+		BookTreeItemData data(result);
+		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
     }
 }
 

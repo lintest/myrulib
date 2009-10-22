@@ -97,9 +97,10 @@ void FbFrameFavour::FillFolders(const int iCurrent)
     m_FolderList->Expand(parent);
     m_FolderList->Expand(root);
 
-	parent = m_FolderList->AppendItem(root, _("Рейтинг"));
+	parent = m_FolderList->AppendItem(root, _("Пометки"));
 	m_FolderList->SetItemBold(parent, true);
 
+	m_FolderList->AppendItem(parent, _("Комментарии"), -1, -1, new FbFolderData(1, FT_COMMENT));
 	m_FolderList->AppendItem(parent, strRating[5], -1, -1, new FbFolderData(5, FT_RATING));
 	m_FolderList->AppendItem(parent, strRating[4], -1, -1, new FbFolderData(4, FT_RATING));
 	m_FolderList->AppendItem(parent, strRating[3], -1, -1, new FbFolderData(3, FT_RATING));
@@ -143,13 +144,16 @@ void * FrameFavourThread::Entry()
 
 	switch (m_type) {
 		case FT_FOLDER:
-			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM favorites WHERE id_folder = ?)");
+			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM favorites WHERE id_folder=?)");
 			break;
 		case FT_RATING:
-			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM states WHERE rating = ?)");
+			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE rating=?)");
+			break;
+		case FT_COMMENT:
+			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM comments WHERE ?>0)");
 			break;
 		case FT_DOWNLOAD:
-			condition = wxT("books.md5sum IN (SELECT DISTINCT md5sum FROM states WHERE (? * download) > 0)");
+			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE (? * download)>0)");
 			break;
 	}
 	wxString sql = GetSQL(condition);
@@ -312,6 +316,9 @@ void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
 			bNeedUpdate = data->GetId()==iFolder;
 			break;
 		case FT_RATING:
+			bNeedUpdate = true;
+			break;
+		case FT_COMMENT:
 			bNeedUpdate = true;
 			break;
 		case FT_DOWNLOAD:

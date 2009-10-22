@@ -14,12 +14,6 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
-enum FbFolderType {
-	FT_FOLDER,
-	FT_RATING,
-	FT_DOWNLOAD,
-};
-
 class FbFolderData: public wxTreeItemData
 {
 	public:

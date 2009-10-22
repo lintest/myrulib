@@ -20,6 +20,7 @@ private:
 	wxString GetComments();
 	void DoModify();
 	void DoSubmit();
+	void DoUpdate();
 private:
 	wxHtmlWindow m_info;
 	wxTextCtrl m_Caption;
