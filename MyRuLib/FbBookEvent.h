@@ -15,53 +15,59 @@ enum FbFolderType {
 	FT_DOWNLOAD,
 };
 
-class FbBookEvent: public wxCommandEvent
+class FbCommandEvent: public wxCommandEvent
 {
 	public:
-		FbBookEvent(wxWindowID commandId, BookTreeItemData * data)
-			: wxCommandEvent(fbEVT_BOOK_ACTION, commandId), m_data(data) {};
+		FbCommandEvent(wxEventType commandType, int winid, const wxString &sting = wxEmptyString)
+			: wxCommandEvent(commandType, winid) { SetString(sting); };
+		FbCommandEvent(const wxCommandEvent& event)
+			: wxCommandEvent(event) {};
+	public:
+		void Post(wxEvtHandler *dest);
+		void Post();
+};
+
+class FbBookEvent: public FbCommandEvent
+{
+	public:
+		FbBookEvent(wxWindowID commandId, BookTreeItemData * data, const wxString &sting = wxEmptyString)
+			: FbCommandEvent(fbEVT_BOOK_ACTION, commandId, sting), m_data(data) {};
 
 		FbBookEvent(const FbBookEvent & event)
-			: wxCommandEvent(event), m_data(event.m_data) {};
+			: FbCommandEvent(event), m_data(event.m_data) {};
 
 		virtual wxEvent *Clone() const { return new FbBookEvent(*this); }
-
-		void Post(wxEvtHandler *dest);
 
 	public:
 		BookTreeItemData m_data;
 };
 
-class FbOpenEvent: public wxCommandEvent
+class FbOpenEvent: public FbCommandEvent
 {
 	public:
 		FbOpenEvent(wxWindowID commandId, int author, int book)
-			: wxCommandEvent(fbEVT_OPEN_ACTION, commandId), m_author(author), m_book(book) {};
+			: FbCommandEvent(fbEVT_OPEN_ACTION, commandId), m_author(author), m_book(book) {};
 
 		FbOpenEvent(const FbOpenEvent & event)
-			: wxCommandEvent(event), m_author(event.m_author), m_book(event.m_book) {};
+			: FbCommandEvent(event), m_author(event.m_author), m_book(event.m_book) {};
 
 		virtual wxEvent *Clone() const { return new FbOpenEvent(*this); }
-
-		void Post();
 
 	public:
 		int m_author;
 		int m_book;
 };
 
-class FbFolderEvent: public wxCommandEvent
+class FbFolderEvent: public FbCommandEvent
 {
 	public:
 		FbFolderEvent(wxWindowID commandId, int folder, FbFolderType type)
-			: wxCommandEvent(fbEVT_FOLDER_ACTION, commandId), m_folder(folder), m_type(type) {};
+			: FbCommandEvent(fbEVT_FOLDER_ACTION, commandId), m_folder(folder), m_type(type) {};
 
 		FbFolderEvent(const FbFolderEvent & event)
-			: wxCommandEvent(event), m_folder(event.m_folder), m_type(event.m_type) {};
+			: FbCommandEvent(event), m_folder(event.m_folder), m_type(event.m_type) {};
 
 		virtual wxEvent *Clone() const { return new FbFolderEvent(*this); }
-
-		void Post();
 
 	public:
 		int m_folder;

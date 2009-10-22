@@ -223,9 +223,7 @@ void * FrameAuthorThread::Entry()
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.NextRow()) {
 				wxString thisAuthor = result.GetString(wxT("full_name"));
-				wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR);
-				event.SetString(thisAuthor);
-				wxPostEvent(m_frame, event);
+				FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisAuthor).Post(m_frame);
 			}
 		}
 
@@ -253,9 +251,7 @@ void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
-			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE);
-			event.SetString(thisSequence);
-			wxPostEvent(m_frame, event);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
 		}
 
 		BookTreeItemData data(result);

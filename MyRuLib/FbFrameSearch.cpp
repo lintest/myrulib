@@ -140,8 +140,7 @@ void * FrameSearchThread::Entry()
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 		if (result.Eof()) {
-			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING);
-			wxPostEvent(m_frame, event);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(m_frame);
 			return NULL;
 		}
 		FillBooks(result);

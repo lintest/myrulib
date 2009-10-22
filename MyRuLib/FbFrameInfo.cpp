@@ -160,9 +160,7 @@ void * FrameInfoThread::Entry()
 
 	DoFinish();
 
-	wxCommandEvent event(fbEVT_BOOK_ACTION, ID_DATABASE_INFO);
-	event.SetString(m_html);
-	wxPostEvent(wxGetApp().GetTopWindow(), event);
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_DATABASE_INFO, m_html).Post();
 
 	return NULL;
 }
