@@ -15,9 +15,9 @@ wxString FbBookThread::HTMLSpecialChars( const wxString &value, const bool bSing
   wxString szToReturn = value;
   szToReturn.Replace(wxT("&"),wxT("&amp;"));
   if( bSingleQuotes )
-    szToReturn.Replace(wxT("'"),wxT("&#039;"));
+	szToReturn.Replace(wxT("'"),wxT("&#039;"));
   if( bDoubleQuotes )
-    szToReturn.Replace(wxT("\""), wxT("&quot;"));
+	szToReturn.Replace(wxT("\""), wxT("&quot;"));
   szToReturn.Replace(wxT("<"),wxT("&lt;"));
   szToReturn.Replace(wxT(">"),wxT("&gt;"));
   return szToReturn;

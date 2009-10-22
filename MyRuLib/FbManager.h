@@ -1,7 +1,7 @@
 /***************************************************************
- * Name:      FbManager.h
+ * Name:	  FbManager.h
  * Purpose:   Defines Application Frame
- * Author:    Kandrashin Denis (mail@kandr.ru)
+ * Author:	Kandrashin Denis (mail@kandr.ru)
  * Created:   2009-05-22
  * Copyright: Kandrashin Denis (www.lintest.ru)
  * License:
@@ -24,8 +24,8 @@ class FbManager
 class BookInfo
 {
 public:
-    static void MakeLower(wxString & data);
-    static void MakeUpper(wxString & data);
+	static void MakeLower(wxString & data);
+	static void MakeUpper(wxString & data);
 };
 
 #endif //FBMANAGER_H

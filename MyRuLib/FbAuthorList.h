@@ -17,13 +17,13 @@ class FbAuthorData: public wxTreeItemData
 
 class FbAuthorList: public FbTreeListCtrl
 {
-    public:
-        FbAuthorList(wxWindow* parent, wxWindowID id);
-        void FillAuthorsChar(const wxChar & findLetter);
-        void FillAuthorsText(const wxString & findText);
-        void FillAuthorsCode(const int code);
-    private:
-        void FillAuthors(wxSQLite3ResultSet & result);
+	public:
+		FbAuthorList(wxWindow* parent, wxWindowID id);
+		void FillAuthorsChar(const wxChar & findLetter);
+		void FillAuthorsText(const wxString & findText);
+		void FillAuthorsCode(const int code);
+	private:
+		void FillAuthors(wxSQLite3ResultSet & result);
 };
 
 #endif // __FBAUTHORLIST_H__

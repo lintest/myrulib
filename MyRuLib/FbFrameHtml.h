@@ -30,11 +30,11 @@ private:
 	wxString m_key;
 	wxString m_md5sum;
 private:
-    void OnEnter(wxCommandEvent& event);
-    void OnSubmit(wxCommandEvent& event);
-    void OnModify(wxCommandEvent& event);
-    void OnInfoUpdate(wxCommandEvent& event);
-    void OnSave(wxCommandEvent& event);
+	void OnEnter(wxCommandEvent& event);
+	void OnSubmit(wxCommandEvent& event);
+	void OnModify(wxCommandEvent& event);
+	void OnInfoUpdate(wxCommandEvent& event);
+	void OnSave(wxCommandEvent& event);
 	void OnLinkClicked(wxHtmlLinkEvent& event);
 	DECLARE_EVENT_TABLE()
 };

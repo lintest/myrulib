@@ -35,18 +35,18 @@
 
 class TypeListCtrl: public wxListCtrl
 {
-    public:
-        TypeListCtrl( wxWindow *parent, wxWindowID winid = wxID_ANY, long style = wxLC_REPORT);
-        void OnSize(wxSizeEvent& event);
-        DECLARE_EVENT_TABLE()
+	public:
+		TypeListCtrl( wxWindow *parent, wxWindowID winid = wxID_ANY, long style = wxLC_REPORT);
+		void OnSize(wxSizeEvent& event);
+		DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(TypeListCtrl, wxListCtrl)
-    EVT_SIZE(TypeListCtrl::OnSize)
+	EVT_SIZE(TypeListCtrl::OnSize)
 END_EVENT_TABLE()
 
 TypeListCtrl::TypeListCtrl( wxWindow *parent, wxWindowID winid, long style)
-    :wxListCtrl( parent, winid, wxDefaultPosition, wxDefaultSize, style)
+	:wxListCtrl( parent, winid, wxDefaultPosition, wxDefaultSize, style)
 {
 }
 
@@ -55,11 +55,11 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 	event.Skip();
 
 	if (GetColumnCount() == 2){
-//        int w = GetClientSize().x - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
-        int w = GetClientSize().x;
-        SetColumnWidth(1, 50);
-        SetColumnWidth(1, w - 50);
-    }
+//		int w = GetClientSize().x - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
+		int w = GetClientSize().x;
+		SetColumnWidth(1, 50);
+		SetColumnWidth(1, w - 50);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -79,40 +79,40 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 {
 	m_database.AttachConfig();
 
-    wxNotebook* m_notebook;
-    wxPanel* m_panel1;
-    wxStaticText* m_staticText1;
-    wxTextCtrl* m_textCtrl1;
-    wxStaticText* m_staticText2;
-    wxTextCtrl* m_textCtrl2;
-    wxBitmapButton* m_bpButton2;
-    wxStaticText* m_staticText31;
-    wxTextCtrl* m_textCtrl3;
-    wxBitmapButton* m_bpButton3;
-    wxPanel* m_panel2;
-    wxStaticText* m_staticText6;
-    wxTextCtrl* m_textCtrl6;
-    wxBitmapButton* m_bpButton6;
-    wxCheckBox* m_checkBox2;
-    wxCheckBox* m_checkBox3;
-    wxRadioBox* m_radioBox1;
-    wxRadioBox* m_radioBox2;
+	wxNotebook* m_notebook;
+	wxPanel* m_panel1;
+	wxStaticText* m_staticText1;
+	wxTextCtrl* m_textCtrl1;
+	wxStaticText* m_staticText2;
+	wxTextCtrl* m_textCtrl2;
+	wxBitmapButton* m_bpButton2;
+	wxStaticText* m_staticText31;
+	wxTextCtrl* m_textCtrl3;
+	wxBitmapButton* m_bpButton3;
+	wxPanel* m_panel2;
+	wxStaticText* m_staticText6;
+	wxTextCtrl* m_textCtrl6;
+	wxBitmapButton* m_bpButton6;
+	wxCheckBox* m_checkBox2;
+	wxCheckBox* m_checkBox3;
+	wxRadioBox* m_radioBox1;
+	wxRadioBox* m_radioBox2;
 /*
-    wxCheckBox* m_checkBox21;
-    wxStaticText* m_staticText7;
-    wxTextCtrl* m_textCtrl7;
-    wxStaticText* m_staticText8;
-    wxTextCtrl* m_textCtrl8;
-    wxStaticText* m_staticText9;
-    wxTextCtrl* m_textCtrl9;
-    wxStaticText* m_staticText10;
-    wxTextCtrl* m_textCtrl10;
+	wxCheckBox* m_checkBox21;
+	wxStaticText* m_staticText7;
+	wxTextCtrl* m_textCtrl7;
+	wxStaticText* m_staticText8;
+	wxTextCtrl* m_textCtrl8;
+	wxStaticText* m_staticText9;
+	wxTextCtrl* m_textCtrl9;
+	wxStaticText* m_staticText10;
+	wxTextCtrl* m_textCtrl10;
 */
 	wxPanel* m_panel4;
 	wxToolBar* m_tools;
-    wxStdDialogButtonSizer* m_sdbSizerBtn;
-    wxButton* m_sdbSizerBtnOK;
-    wxButton* m_sdbSizerBtnCancel;
+	wxStdDialogButtonSizer* m_sdbSizerBtn;
+	wxButton* m_sdbSizerBtnOK;
+	wxButton* m_sdbSizerBtnCancel;
 
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -136,7 +136,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer31->SetFlexibleDirection( wxBOTH );
 	fgSizer31->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_staticText7 = new wxStaticText( m_panel1, wxID_ANY, _("    Адрес прокси-сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( m_panel1, wxID_ANY, _("	Адрес прокси-сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	fgSizer31->Add( m_staticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -159,7 +159,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	fgSizer31->Add( bSizer32, 0, wxEXPAND, 5 );
 
-	m_staticText9 = new wxStaticText( m_panel1, wxID_ANY, _("    Имя пользователя:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText9 = new wxStaticText( m_panel1, wxID_ANY, _("	Имя пользователя:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText9->Wrap( -1 );
 	fgSizer31->Add( m_staticText9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -204,8 +204,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer10->Add( m_tools, 0, wxALL|wxEXPAND, 5 );
 
 	m_typelist = new TypeListCtrl( m_panel4, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
-    m_typelist->InsertColumn(0, _T("Тип"), wxLIST_FORMAT_LEFT, 50);
-    m_typelist->InsertColumn(1, _T("Программа"), wxLIST_FORMAT_LEFT, 300);
+	m_typelist->InsertColumn(0, _T("Тип"), wxLIST_FORMAT_LEFT, 50);
+	m_typelist->InsertColumn(1, _T("Программа"), wxLIST_FORMAT_LEFT, 300);
 
 	bSizer10->Add( m_typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
@@ -247,11 +247,11 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	fgSizer10->Add( m_checkBox3, 0, wxALL, 5 );
 
 	wxString m_radioBox1Choices[] = {
-	    _("А / Автор / Серия / №_Книга"),
-	    _("А / Автор / Книга"),
-	    _("Автор / Серия / №_Книга"),
-	    _("Автор / Книга"),
-    };
+		_("А / Автор / Серия / №_Книга"),
+		_("А / Автор / Книга"),
+		_("Автор / Серия / №_Книга"),
+		_("Автор / Книга"),
+	};
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
 	m_radioBox1 = new wxRadioBox( m_panel2, ID_FOLDER_FORMAT, _("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
@@ -294,98 +294,98 @@ SettingsDlg::~SettingsDlg()
 
 void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
-    wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
+	wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
 
-    if (!textCtrl) return;
+	if (!textCtrl) return;
 
-    wxDirDialog dlg(
-        this,
-        _("Выберите директорию"),
-        textCtrl->GetValue(),
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
-    );
+	wxDirDialog dlg(
+		this,
+		_("Выберите директорию"),
+		textCtrl->GetValue(),
+		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
+	);
 
 	if (dlg.ShowModal() == wxID_OK)  textCtrl->SetValue(dlg.GetPath());
 }
 
 void SettingsDlg::Assign(bool write)
 {
-    enum Type {
-        tText,
-        tCheck,
-        tRadio,
-    };
-    struct Struct{
-        int param;
-        ID control;
-        Type type;
-    };
+	enum Type {
+		tText,
+		tCheck,
+		tRadio,
+	};
+	struct Struct{
+		int param;
+		ID control;
+		Type type;
+	};
 
-    const Struct ids[] = {
-        {DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
-        {DB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
-        {DB_WANRAIK_DIR, SettingsDlg::ID_WANRAIK_DIR_TXT, tText},
-        {FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
-        {FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
-        {FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
-        {FB_FOLDER_FORMAT, SettingsDlg::ID_FOLDER_FORMAT, tRadio},
-        {FB_FILE_FORMAT, SettingsDlg::ID_FILE_FORMAT, tRadio},
-        {FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
-        {FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tText},
-        {FB_PROXY_PORT, SettingsDlg::ID_PROXY_PORT, tText},
-        {FB_PROXY_NAME, SettingsDlg::ID_PROXY_NAME, tText},
-        {FB_PROXY_PASS, SettingsDlg::ID_PROXY_PASS, tText},
-    };
+	const Struct ids[] = {
+		{DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
+		{DB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
+		{DB_WANRAIK_DIR, SettingsDlg::ID_WANRAIK_DIR_TXT, tText},
+		{FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
+		{FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
+		{FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
+		{FB_FOLDER_FORMAT, SettingsDlg::ID_FOLDER_FORMAT, tRadio},
+		{FB_FILE_FORMAT, SettingsDlg::ID_FILE_FORMAT, tRadio},
+		{FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
+		{FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tText},
+		{FB_PROXY_PORT, SettingsDlg::ID_PROXY_PORT, tText},
+		{FB_PROXY_NAME, SettingsDlg::ID_PROXY_NAME, tText},
+		{FB_PROXY_PASS, SettingsDlg::ID_PROXY_PASS, tText},
+	};
 
-    const size_t idsCount = sizeof(ids) / sizeof(Struct);
+	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-    FbParams params;
+	FbParams params;
 
-    for (size_t i=0; i<idsCount; i++) {
-        switch (ids[i].type) {
-            case tText:
-                if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
-                    if (write)
-                        params.SetText(ids[i].param, control->GetValue());
-                    else
-                        control->SetValue(params.GetText(ids[i].param));
+	for (size_t i=0; i<idsCount; i++) {
+		switch (ids[i].type) {
+			case tText:
+				if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetText(ids[i].param, control->GetValue());
+					else
+						control->SetValue(params.GetText(ids[i].param));
 				} break;
-            case tCheck:
-                if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
-                    if (write)
-                        params.SetValue(ids[i].param, control->GetValue());
-                    else
-                        control->SetValue(params.GetValue(ids[i].param) != 0);
+			case tCheck:
+				if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetValue(ids[i].param, control->GetValue());
+					else
+						control->SetValue(params.GetValue(ids[i].param) != 0);
 				} break;
-            case tRadio:
-                if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
-                    if (write)
-                        params.SetValue(ids[i].param, control->GetSelection());
-                    else
-                        control->SetSelection(params.GetValue(ids[i].param));
+			case tRadio:
+				if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetValue(ids[i].param, control->GetSelection());
+					else
+						control->SetSelection(params.GetValue(ids[i].param));
 				} break;
-        }
+		}
 
-    }
+	}
 };
 
 void SettingsDlg::Execute(wxWindow* parent)
 {
-    SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
+	SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
 
-    try {
-        dlg.Assign(false);
-        dlg.FillTypelist();
-    } catch (wxSQLite3Exception & e) {
-        wxLogFatalError(e.GetMessage());
-        return;
-    }
+	try {
+		dlg.Assign(false);
+		dlg.FillTypelist();
+	} catch (wxSQLite3Exception & e) {
+		wxLogFatalError(e.GetMessage());
+		return;
+	}
 
-    if (dlg.ShowModal() == wxID_OK) {
+	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
 		dlg.SaveTypelist();
 		ZipReader::Init();
-    }
+	}
 };
 
 void SettingsDlg::FillTypelist()
@@ -404,9 +404,9 @@ void SettingsDlg::FillTypelist()
 		) AS books \
 		  LEFT JOIN config.types as types ON books.file_type = types.file_type \
 		ORDER BY number, books.file_type \
-     ");
+	 ");
 
-    wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 
 	m_typelist->Freeze();
 
@@ -437,13 +437,13 @@ void SettingsDlg::SelectApplication()
 
 	wxString title = _("Выберите приложение для просмотра файлов…");
 	wxString command;
-    long item = m_typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+	long item = m_typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if ( item >= 0) command = m_commands[m_typelist->GetItemData(item)];
 
 #ifdef __WIN32__
-    wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
+	wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
 
-    wxFileDialog dlg (
+	wxFileDialog dlg (
 		this,
 		title,
 		wxEmptyString,
@@ -451,7 +451,7 @@ void SettingsDlg::SelectApplication()
 		wildCard,
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
-    );
+	);
 
 	if (dlg.ShowModal() == wxID_OK) {
 		command = dlg.GetPath();
@@ -463,28 +463,28 @@ void SettingsDlg::SelectApplication()
 			m_typelist->SetItem(item, 1, command);
 			m_typelist->SetItemData(item, index);
 		}
-    }
+	}
 
 #else
 	command = wxGetTextFromUser(title, _("Настройки:"), command);
 	if (command.IsEmpty()) return;
 	size_t index = m_commands.Add(command);
 	item = -1;
-    while (true) {
-        item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-        if (item == -1) break;
-        m_typelist->SetItem(item, 1, command);
-        m_typelist->SetItemData(item, index);
-    }
+	while (true) {
+		item = m_typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if (item == -1) break;
+		m_typelist->SetItem(item, 1, command);
+		m_typelist->SetItemData(item, index);
+	}
 #endif
 }
 
 void SettingsDlg::SaveTypelist()
 {
 	FbDatabase & m_database = wxGetApp().GetConfigDatabase();
-    FbAutoCommit transaction(&m_database);
+	FbAutoCommit transaction(&m_database);
 
-    for (size_t i=0; i<m_deleted.Count(); i++) {
+	for (size_t i=0; i<m_deleted.Count(); i++) {
 		wxString sql = wxT("DELETE FROM types WHERE file_type=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_deleted[i]);

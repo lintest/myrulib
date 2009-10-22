@@ -36,20 +36,20 @@ protected:
 	virtual void CreateControls();
 	virtual void UpdateBooklist();
 private:
-    void CreateBookInfo();
+	void CreateBookInfo();
 	void FillFolders(const int iCurrent = 0);
 	void FillByFolder(FbFolderData * data);
 	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 	FbFolderData * GetSelected();
 private:
 	wxToolBar * m_ToolBar;
-    FbTreeListCtrl * m_FolderList;
+	FbTreeListCtrl * m_FolderList;
 private:
-    void OnFavoritesDel(wxCommandEvent & event);
-    void OnFolderAppend(wxCommandEvent & event);
-    void OnFolderModify(wxCommandEvent & event);
-    void OnFolderDelete(wxCommandEvent & event);
-    void OnFolderSelected(wxTreeEvent & event);
+	void OnFavoritesDel(wxCommandEvent & event);
+	void OnFolderAppend(wxCommandEvent & event);
+	void OnFolderModify(wxCommandEvent & event);
+	void OnFolderDelete(wxCommandEvent & event);
+	void OnFolderSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 

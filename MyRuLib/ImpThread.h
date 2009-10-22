@@ -10,11 +10,11 @@
 class ImportThread : public BaseThread
 {
 public:
-    virtual void OnExit();
+	virtual void OnExit();
 	bool ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive);
-    int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
+	int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
 protected:
-    FbCommonDatabase & GetDatabase() { return m_database; };
+	FbCommonDatabase & GetDatabase() { return m_database; };
 private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	void AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, const int id_archive);
@@ -22,55 +22,55 @@ private:
 	int FindByMD5(const wxString &sha1sum);
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
 private:
-    enum PSItem {
-        psFindBySize = 0,
-        psFindByMd5,
-        psUpdateMd5,
-        psSearchFile,
-        psAppendFile,
-        psSearchArch,
-        psAppendArch,
-        psAppendBook,
-        psAppendSeqs,
-        psLastMember,
-    };
-    wxSQLite3Statement GetPreparedStatement(PSItem psItem);
-    wxString GetSQL(PSItem psItem);
-    FbCommonDatabase m_database;
+	enum PSItem {
+		psFindBySize = 0,
+		psFindByMd5,
+		psUpdateMd5,
+		psSearchFile,
+		psAppendFile,
+		psSearchArch,
+		psAppendArch,
+		psAppendBook,
+		psAppendSeqs,
+		psLastMember,
+	};
+	wxSQLite3Statement GetPreparedStatement(PSItem psItem);
+	wxString GetSQL(PSItem psItem);
+	FbCommonDatabase m_database;
 };
 
 class ZipImportThread : public ImportThread
 {
 public:
-    ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
-    virtual void *Entry();
+	ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
+	virtual void *Entry();
 private:
-    void ImportFile(const wxString & zipname);
-    const wxArrayString m_filelist;
+	void ImportFile(const wxString & zipname);
+	const wxArrayString m_filelist;
 };
 
 class DirImportThread : public ImportThread
 {
 public:
-    DirImportThread(const wxString &dirname);
-    virtual void *Entry();
-    bool ParseZip(const wxString &zipname);
-    bool ParseXml(const wxString &filename);
-    void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
+	DirImportThread(const wxString &dirname);
+	virtual void *Entry();
+	bool ParseZip(const wxString &zipname);
+	bool ParseXml(const wxString &filename);
+	void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
 private:
-    static wxString Normalize(const wxString &filename);
-    wxString Relative(const wxString &filename);
+	static wxString Normalize(const wxString &filename);
+	wxString Relative(const wxString &filename);
 private:
-    wxString m_dirname;
-    int m_position;
+	wxString m_dirname;
+	int m_position;
 };
 
 class BooksCountThread : public BaseThread
 {
 public:
-    static void Execute();
-    BooksCountThread(): BaseThread() {};
-    virtual void *Entry();
+	static void Execute();
+	BooksCountThread(): BaseThread() {};
+	virtual void *Entry();
 };
 
 #endif // __FBTHREAD_H__

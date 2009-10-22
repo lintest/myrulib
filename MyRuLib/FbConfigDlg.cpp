@@ -124,78 +124,78 @@ FbConfigDlg::~FbConfigDlg()
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
-    wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
+	wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
 
-    if (!textCtrl) return;
+	if (!textCtrl) return;
 
-    wxDirDialog dlg(
-        this,
-        _("Выберите директорию"),
-        textCtrl->GetValue(),
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
-    );
+	wxDirDialog dlg(
+		this,
+		_("Выберите директорию"),
+		textCtrl->GetValue(),
+		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
+	);
 
 	if (dlg.ShowModal() == wxID_OK)  textCtrl->SetValue(dlg.GetPath());
 }
 
 void FbConfigDlg::Assign(bool write)
 {
-    enum Type {
-        tText,
-        tCheck,
-        tRadio,
-    };
-    struct Struct{
-        int param;
-        ID control;
-        Type type;
-    };
+	enum Type {
+		tText,
+		tCheck,
+		tRadio,
+	};
+	struct Struct{
+		int param;
+		ID control;
+		Type type;
+	};
 
-    const Struct ids[] = {
-        {DB_LIBRARY_TITLE, FbConfigDlg::ID_LIBRARY_TITLE, tText},
-        {DB_LIBRARY_DIR,   FbConfigDlg::ID_LIBRARY_DIR_TXT, tText},
-        {DB_WANRAIK_DIR,   FbConfigDlg::ID_WANRAIK_DIR_TXT, tText},
-        {DB_LIBRARY_DESCR, FbConfigDlg::ID_LIBRARY_DESCR, tText},
-    };
+	const Struct ids[] = {
+		{DB_LIBRARY_TITLE, FbConfigDlg::ID_LIBRARY_TITLE, tText},
+		{DB_LIBRARY_DIR,   FbConfigDlg::ID_LIBRARY_DIR_TXT, tText},
+		{DB_WANRAIK_DIR,   FbConfigDlg::ID_WANRAIK_DIR_TXT, tText},
+		{DB_LIBRARY_DESCR, FbConfigDlg::ID_LIBRARY_DESCR, tText},
+	};
 
-    const size_t idsCount = sizeof(ids) / sizeof(Struct);
+	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-    FbParams params;
+	FbParams params;
 
-    for (size_t i=0; i<idsCount; i++) {
-        switch (ids[i].type) {
-            case tText:
-                if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
-                    if (write)
-                        params.SetText(ids[i].param, control->GetValue());
-                    else
-                        control->SetValue(params.GetText(ids[i].param));
+	for (size_t i=0; i<idsCount; i++) {
+		switch (ids[i].type) {
+			case tText:
+				if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetText(ids[i].param, control->GetValue());
+					else
+						control->SetValue(params.GetText(ids[i].param));
 				} break;
-            case tCheck:
-                if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
-                    if (write)
-                        params.SetValue(ids[i].param, control->GetValue());
-                    else
-                        control->SetValue(params.GetValue(ids[i].param) != 0);
+			case tCheck:
+				if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetValue(ids[i].param, control->GetValue());
+					else
+						control->SetValue(params.GetValue(ids[i].param) != 0);
 				} break;
-            case tRadio:
-                if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
-                    if (write)
-                        params.SetValue(ids[i].param, control->GetSelection());
-                    else
-                        control->SetSelection(params.GetValue(ids[i].param));
+			case tRadio:
+				if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetValue(ids[i].param, control->GetSelection());
+					else
+						control->SetSelection(params.GetValue(ids[i].param));
 				} break;
-        }
+		}
 
-    }
+	}
 }
 
 void FbConfigDlg::Execute(wxWindow* parent)
 {
-    FbConfigDlg dlg(parent, wxID_ANY, _("Параметры библиотеки"), wxDefaultPosition, wxSize(400, 300));
+	FbConfigDlg dlg(parent, wxID_ANY, _("Параметры библиотеки"), wxDefaultPosition, wxSize(400, 300));
 
-    dlg.Assign(false);
-    if (dlg.ShowModal() == wxID_OK) {
+	dlg.Assign(false);
+	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
-    }
+	}
 }

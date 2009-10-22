@@ -53,13 +53,13 @@ typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
 typedef void (wxEvtHandler::*FbFolderEventFunction)(FbFolderEvent&);
 
 #define EVT_FB_BOOK(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY( fbEVT_BOOK_ACTION, id, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( FbBookEventFunction, & fn ), (wxObject *) NULL ),
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_BOOK_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbBookEventFunction, & fn ), (wxObject *) NULL ),
 
 #define EVT_FB_FOLDER(id, fn) \
-    DECLARE_EVENT_TABLE_ENTRY( fbEVT_FOLDER_ACTION, id, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( FbFolderEventFunction, & fn ), (wxObject *) NULL ),
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_FOLDER_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbFolderEventFunction, & fn ), (wxObject *) NULL ),
 
 #endif // __FBBOOKEVENT_H__

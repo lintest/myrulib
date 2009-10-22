@@ -13,11 +13,11 @@
 #include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
-    EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
-    EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
-    EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
-    EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
-    EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
+	EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
+	EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
+	EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
+	EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
+	EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
 	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)
 END_EVENT_TABLE()
 
@@ -35,8 +35,8 @@ wxString FbFrameHtml::GetMd5sum(const int id)
 }
 
 FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
-    :wxAuiMDIChildFrame(parent, ID_FRAME_HTML, _("Комментарии")),
-    m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
+	:wxAuiMDIChildFrame(parent, ID_FRAME_HTML, _("Комментарии")),
+	m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
 {
 	CreateControls();
 	InfoCash::UpdateInfo(this, m_id, false, true);
@@ -45,7 +45,7 @@ FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
 void FbFrameHtml::Load(const wxString & html)
 {
 	m_info.SetPage(html);
-    m_info.SetFocus();
+	m_info.SetFocus();
 }
 
 void FbFrameHtml::CreateControls()
@@ -100,19 +100,19 @@ void FbFrameHtml::CreateControls()
 
 void FbFrameHtml::OnSave(wxCommandEvent& event)
 {
-    wxFileDialog dlg (
+	wxFileDialog dlg (
 		this,
 		_("Выберите файл для экспорта отчета"),
 		wxEmptyString,
 		wxT("lib_info.html"),
 		_("Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
-    );
+	);
 
 	if (dlg.ShowModal() == wxID_OK) {
    		wxString html = * m_info.GetParser()->GetSource();
-        wxFileOutputStream stream(dlg.GetPath());
-        wxTextOutputStream text(stream);
+		wxFileOutputStream stream(dlg.GetPath());
+		wxTextOutputStream text(stream);
 		text.WriteString(html);
 	}
 

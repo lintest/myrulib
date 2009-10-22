@@ -7,11 +7,11 @@
 
 class NoWarnings
 {
-    NoWarnings() {
-        wxUnusedVar(nocheck_xpm);
-        wxUnusedVar(checked_xpm);
-        wxUnusedVar(checkout_xpm);
-    };
+	NoWarnings() {
+		wxUnusedVar(nocheck_xpm);
+		wxUnusedVar(checked_xpm);
+		wxUnusedVar(checkout_xpm);
+	};
 };
 
 #endif // __XPMBITMAPS_H__

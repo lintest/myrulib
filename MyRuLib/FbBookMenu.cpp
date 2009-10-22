@@ -14,7 +14,7 @@ FbMenuAuthorArray FbBookMenu::sm_authors;
 FbBookMenu::FbBookMenu(int id, int iFolder)
 	: m_id(id)
 {
-    if (sm_folders.Count() == 0) LoadFolders();
+	if (sm_folders.Count() == 0) LoadFolders();
 
 	wxMenu * submenu = new wxMenu;
 	for (size_t i=0; i<sm_folders.Count(); i++) {
@@ -29,7 +29,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	ratings->Append(ID_RATING_3, strRating[3]);
 	ratings->Append(ID_RATING_2, strRating[2]);
 	ratings->Append(ID_RATING_1, strRating[1]);
-    ratings->AppendSeparator();
+	ratings->AppendSeparator();
 	ratings->Append(ID_RATING_0, strRating[0]);
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
@@ -37,36 +37,36 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
 	else
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
-    AppendSeparator();
+	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
-    AppendSeparator();
+	AppendSeparator();
 
 	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
-    AppendSeparator();
+	AppendSeparator();
 
-    if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
+	if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
 	Append(wxID_ANY, _("Установить рейтинг"), ratings);
-    if (iFolder != fbNO_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
-    AppendSeparator();
+	if (iFolder != fbNO_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
+	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
 void FbBookMenu::LoadFolders()
 {
-    wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
-    wxSQLite3ResultSet result = wxGetApp().GetConfigDatabase().ExecuteQuery(sql);
-    int id = ID_FAVORITES_ADD;
-    while (result.NextRow()) {
-        FbMenuFolderItem * item = new FbMenuFolderItem;
-        item->id = ++id;
-        item->folder = result.GetInt(0);
-        item->name = result.GetString(1);
-        sm_folders.Add(item);
-    }
+	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
+	wxSQLite3ResultSet result = wxGetApp().GetConfigDatabase().ExecuteQuery(sql);
+	int id = ID_FAVORITES_ADD;
+	while (result.NextRow()) {
+		FbMenuFolderItem * item = new FbMenuFolderItem;
+		item->id = ++id;
+		item->folder = result.GetInt(0);
+		item->name = result.GetString(1);
+		sm_folders.Add(item);
+	}
 }
 
 int FbBookMenu::GetFolder(const int id)
@@ -97,23 +97,23 @@ void FbBookMenu::ConnectAuthors(wxWindow * frame, wxObjectEventFunction func)
 
 wxMenu * FbBookMenu::CreateAuthorMenu()
 {
-    sm_authors.Empty();
+	sm_authors.Empty();
 
-    wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
-    FbCommonDatabase database;
-    wxSQLite3Statement stmt = database.PrepareStatement(sql);
-    stmt.Bind(1, m_id);
-    wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 	wxMenu * submenu = new wxMenu;
-    int id = ID_FAVORITES_ADD + sm_folders.Count();
-    while (result.NextRow()) {
-    	FbMenuAuthorItem * item = new FbMenuAuthorItem;
-    	item->id = ++id;
-    	item->author = result.GetInt(0);
+	int id = ID_FAVORITES_ADD + sm_folders.Count();
+	while (result.NextRow()) {
+		FbMenuAuthorItem * item = new FbMenuAuthorItem;
+		item->id = ++id;
+		item->author = result.GetInt(0);
 		submenu->Append(item->id, result.GetString(1));
-    	sm_authors.Add(item);
-    }
-    return submenu;
+		sm_authors.Add(item);
+	}
+	return submenu;
 }
 

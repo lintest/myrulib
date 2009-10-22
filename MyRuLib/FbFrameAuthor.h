@@ -14,12 +14,12 @@
 class FbFrameAuthor : public FbFrameBase
 {
 public:
-    FbFrameAuthor() :FbFrameBase() {};
-    FbFrameAuthor(wxAuiMDIParentFrame * parent);
-    void FindAuthor(const wxString &text);
-    void OpenAuthor(const int id);
-    void SelectRandomLetter();
-    void ActivateAuthors();
+	FbFrameAuthor() :FbFrameBase() {};
+	FbFrameAuthor(wxAuiMDIParentFrame * parent);
+	void FindAuthor(const wxString &text);
+	void OpenAuthor(const int id);
+	void SelectRandomLetter();
+	void ActivateAuthors();
 protected:
 	virtual void CreateControls();
 	virtual void UpdateBooklist();
@@ -31,12 +31,12 @@ private:
 private:
 	FbAuthorList * m_AuthorList;
 	wxSplitterWindow * m_BooksSplitter;
-    wxToolBar * m_RuAlphabar;
-    wxToolBar * m_EnAlphabar;
+	wxToolBar * m_RuAlphabar;
+	wxToolBar * m_EnAlphabar;
 private:
-    void OnAuthorSelected(wxTreeEvent & event);
+	void OnAuthorSelected(wxTreeEvent & event);
 	void OnLetterClicked(wxCommandEvent& event);
-    void OnExternal(wxCommandEvent& event);
+	void OnExternal(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

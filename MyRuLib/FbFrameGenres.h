@@ -23,11 +23,11 @@ protected:
 	virtual void CreateControls();
 	virtual void UpdateBooklist();
 private:
-    void CreateBookInfo();
+	void CreateBookInfo();
 private:
-    FbTreeListCtrl * m_GenresList;
+	FbTreeListCtrl * m_GenresList;
 private:
-    void OnGenreSelected(wxTreeEvent & event);
+	void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 

@@ -6,11 +6,11 @@ DEFINE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION )
 
 void FbBookEvent::Post(wxEvtHandler *dest)
 {
-    wxPostEvent(dest, *this);
+	wxPostEvent(dest, *this);
 }
 
 void FbFolderEvent::Post()
 {
-    wxPostEvent(wxGetApp().GetTopWindow(), *this);
+	wxPostEvent(wxGetApp().GetTopWindow(), *this);
 }
 

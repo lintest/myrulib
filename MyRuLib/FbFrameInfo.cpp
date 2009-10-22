@@ -9,11 +9,11 @@
 #include <wx/txtstrm.h>
 
 BEGIN_EVENT_TABLE(FbFrameInfo, wxAuiMDIChildFrame)
-    EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
+	EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
 END_EVENT_TABLE()
 
 FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
-    :wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Информация"))
+	:wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Информация"))
 {
 	CreateControls();
 }
@@ -21,7 +21,7 @@ FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
 void FbFrameInfo::Load(const wxString & html)
 {
 	m_info.SetPage(html);
-    m_info.SetFocus();
+	m_info.SetFocus();
 }
 
 void FbFrameInfo::CreateControls()
@@ -52,15 +52,15 @@ class FrameInfoThread: public BaseThread
 
 void FrameInfoThread::WriteTitle()
 {
-    m_html += _("<HTML><HEAD><TITLE>Информация о коллекции</TITLE></HEAD><BODY><CENTER>");
+	m_html += _("<HTML><HEAD><TITLE>Информация о коллекции</TITLE></HEAD><BODY><CENTER>");
 }
 
 wxString FrameInfoThread::GetDate(const int number)
 {
-    int dd = number % 100;
-    int mm = number / 100 % 100;
-    int yyyy = number / 10000 % 100 + 2000;
-    return wxString::Format(wxT("%02d.%02d.%04d"), dd, mm, yyyy);
+	int dd = number % 100;
+	int mm = number / 100 % 100;
+	int yyyy = number / 10000 % 100 + 2000;
+	return wxString::Format(wxT("%02d.%02d.%04d"), dd, mm, yyyy);
 }
 
 wxString FrameInfoThread::F(const int number)
@@ -75,13 +75,13 @@ wxString FrameInfoThread::F(const int number)
 
 void FrameInfoThread::WriteCount()
 {
-    m_html += wxT("<TABLE>");
-    m_html += wxT("<TR><TD colspan=2 align=center>Информация о коллекции</TD></TR>");
-    m_html += wxT("<TR><TD colspan=2 align=center>");
-    m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
-    m_html += wxT("</TD></TR>");
+	m_html += wxT("<TABLE>");
+	m_html += wxT("<TR><TD colspan=2 align=center>Информация о коллекции</TD></TR>");
+	m_html += wxT("<TR><TD colspan=2 align=center>");
+	m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
+	m_html += wxT("</TD></TR>");
 
-    wxString min, max, sum;
+	wxString min, max, sum;
 
 	DoStep(_("Общее количество"));
 	{
@@ -95,30 +95,30 @@ void FrameInfoThread::WriteCount()
 		}
 	}
 	DoStep(_("Подсчет авторов"));
-    {
+	{
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
-    }
+	}
 	m_html += wxString::Format(_("<TR><TD>Суммарный размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), sum.c_str());
 	m_html += wxString::Format(_("<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"), min.c_str());
 	m_html += wxString::Format(_("<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"), max.c_str());
 
-    m_html += wxT("</TABLE>");
+	m_html += wxT("</TABLE>");
 }
 
 void FrameInfoThread::WriteTypes()
 {
-    m_html += wxT("<BR><BR>");
-    m_html += wxT("<TABLE border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
-    m_html += wxT("<TABLE border=0 cellspacing=1 cellpadding=5 width=100%>");
-    m_html += wxT("<TR>");
-    m_html += wxT("<TD bgcolor=#FFFFFF><B>Тип файла</B></TD>");
-    m_html += wxT("<TD bgcolor=#FFFFFF><B>Количество</B></TD>");
-    m_html += wxT("<TD bgcolor=#FFFFFF><B>Размер, Кб</B></TD>");
-    m_html += wxT("</TR>");
+	m_html += wxT("<BR><BR>");
+	m_html += wxT("<TABLE border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
+	m_html += wxT("<TABLE border=0 cellspacing=1 cellpadding=5 width=100%>");
+	m_html += wxT("<TR>");
+	m_html += wxT("<TD bgcolor=#FFFFFF><B>Тип файла</B></TD>");
+	m_html += wxT("<TD bgcolor=#FFFFFF><B>Количество</B></TD>");
+	m_html += wxT("<TD bgcolor=#FFFFFF><B>Размер, Кб</B></TD>");
+	m_html += wxT("</TR>");
 
 	DoStep(_("Типы файлов"));
 	{
@@ -137,15 +137,15 @@ void FrameInfoThread::WriteTypes()
 		}
 	}
 
-    m_html += wxT("</TABLE>");
-    m_html += wxT("</TD></TR></TABLE>");
+	m_html += wxT("</TABLE>");
+	m_html += wxT("</TD></TR></TABLE>");
 }
 
 void * FrameInfoThread::Entry()
 {
-    wxCriticalSectionLocker enter(sm_queue);
+	wxCriticalSectionLocker enter(sm_queue);
 
-    DoStart(3, _("Информация о коллекции"));
+	DoStart(3, _("Информация о коллекции"));
 
 	try {
 		WriteTitle();
@@ -164,7 +164,7 @@ void * FrameInfoThread::Entry()
 	event.SetString(m_html);
 	wxPostEvent(wxGetApp().GetTopWindow(), event);
 
-    return NULL;
+	return NULL;
 }
 
 void FbFrameInfo::Execute()
@@ -175,19 +175,19 @@ void FbFrameInfo::Execute()
 
 void FbFrameInfo::OnSave(wxCommandEvent& event)
 {
-    wxFileDialog dlg (
+	wxFileDialog dlg (
 		this,
 		_("Выберите файл для экспорта отчета"),
 		wxEmptyString,
 		wxT("lib_info.html"),
 		_("Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
-    );
+	);
 
 	if (dlg.ShowModal() == wxID_OK) {
    		wxString html = * m_info.GetParser()->GetSource();
-        wxFileOutputStream stream(dlg.GetPath());
-        wxTextOutputStream text(stream);
+		wxFileOutputStream stream(dlg.GetPath());
+		wxTextOutputStream text(stream);
 		text.WriteString(html);
 	}
 

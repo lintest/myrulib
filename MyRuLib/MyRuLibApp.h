@@ -1,7 +1,7 @@
 /***************************************************************
- * Name:      MyRuLibApp.h
+ * Name:	  MyRuLibApp.h
  * Purpose:   Defines Application Class
- * Author:    Kandrashin Denis (mail@kandr.ru)
+ * Author:	Kandrashin Denis (mail@kandr.ru)
  * Created:   2009-05-05
  * Copyright: Kandrashin Denis (www.lintest.ru)
  * License:
@@ -33,18 +33,18 @@ class MyRuLibApp : public wxApp
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
-    wxString GetAppData() const { return m_datafile; };
-    wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
-    FbConfigDatabase & GetConfigDatabase() { return m_config; };
+	wxString GetAppData() const { return m_datafile; };
+	wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
+	FbConfigDatabase & GetConfigDatabase() { return m_config; };
 public:
-    wxCriticalSection m_DbSection;
+	wxCriticalSection m_DbSection;
 private:
 	bool ConnectToDatabase();
 	bool CreateDatabase();
 private:
 	wxString m_datafile;
-    FbMainDatabase m_database;
-    FbConfigDatabase m_config;
+	FbMainDatabase m_database;
+	FbConfigDatabase m_config;
 };
 
 DECLARE_APP(MyRuLibApp)

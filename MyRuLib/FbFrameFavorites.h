@@ -9,7 +9,7 @@
 class FbFrameFavorites : public FbFrameBase
 {
 public:
-    FbFrameFavorites(): FbFrameBase() {};
+	FbFrameFavorites(): FbFrameBase() {};
 	FbFrameFavorites(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 //	bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 protected:

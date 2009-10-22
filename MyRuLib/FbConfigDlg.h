@@ -21,23 +21,23 @@ class FbConfigDlg : private wxDialog
 {
 DECLARE_EVENT_TABLE()
 private:
-    enum ID {
-        ID_LIBRARY_TITLE = 1000,
-        ID_LIBRARY_DIR_TXT,
-        ID_LIBRARY_DIR_BTN,
-        ID_WANRAIK_DIR_TXT,
-        ID_WANRAIK_DIR_BTN,
+	enum ID {
+		ID_LIBRARY_TITLE = 1000,
+		ID_LIBRARY_DIR_TXT,
+		ID_LIBRARY_DIR_BTN,
+		ID_WANRAIK_DIR_TXT,
+		ID_WANRAIK_DIR_BTN,
 		ID_LIBRARY_DESCR,
-    };
+	};
 public:
-    FbConfigDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
-    virtual ~FbConfigDlg();
-    static void Execute(wxWindow* parent);
+	FbConfigDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
+	virtual ~FbConfigDlg();
+	static void Execute(wxWindow* parent);
 private:
-    void Assign(bool write);
-    void OnSelectFolderClick( wxCommandEvent& event );
+	void Assign(bool write);
+	void OnSelectFolderClick( wxCommandEvent& event );
 private:
-    FbCommonDatabase m_database;
+	FbCommonDatabase m_database;
 };
 
 #endif //__FBCONFIGDLG_H__

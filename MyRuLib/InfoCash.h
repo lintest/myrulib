@@ -13,15 +13,15 @@
 class InfoImage
 {
 public:
-    InfoImage(const wxString &name, const wxImage &image);
+	InfoImage(const wxString &name, const wxImage &image);
 public:
-    const wxString & GetName() { return m_name; };
-    const int GetWidth();
-    const int GetHeight();
+	const wxString & GetName() { return m_name; };
+	const int GetWidth();
+	const int GetHeight();
 private:
-    wxString m_name;
-    int m_width;
-    int m_height;
+	wxString m_name;
+	int m_width;
+	int m_height;
 };
 
 WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);
@@ -29,19 +29,19 @@ WX_DECLARE_OBJARRAY(InfoImage, InfoImageArray);
 class InfoNode
 {
 public:
-    InfoNode(): m_id(0) {};
-    virtual ~InfoNode();
-    void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
-    wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt);
+	InfoNode(): m_id(0) {};
+	virtual ~InfoNode();
+	void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
+	wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt);
 private:
-    wxString GetComments(const wxString md5sum, bool bEditable);
+	wxString GetComments(const wxString md5sum, bool bEditable);
 public:
-    int m_id;
-    wxString m_isbn;
-    wxString m_title;
-    wxString m_annotation;
-    wxString m_filelist;
-    InfoImageArray m_images;
+	int m_id;
+	wxString m_isbn;
+	wxString m_title;
+	wxString m_annotation;
+	wxString m_filelist;
+	InfoImageArray m_images;
 };
 
 WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
@@ -49,22 +49,22 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-    static void UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable = false);
-    static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt);
-    static void Empty();
-    static wxString GetIcon(const wxString &extension);
-    static void LoadIcon(const wxString &extension);
+	static void UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable = false);
+	static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt);
+	static void Empty();
+	static wxString GetIcon(const wxString &extension);
+	static void LoadIcon(const wxString &extension);
 public:
-    static void SetISBN(int id, wxString html);
-    static void SetTitle(int id, wxString html);
-    static void SetFilelist(int id, wxString html);
-    static void SetAnnotation(int id, wxString html);
-    static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
-    static void AddIcon(wxString extension, wxBitmap bitmap);
+	static void SetISBN(int id, wxString html);
+	static void SetTitle(int id, wxString html);
+	static void SetFilelist(int id, wxString html);
+	static void SetAnnotation(int id, wxString html);
+	static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
+	static void AddIcon(wxString extension, wxBitmap bitmap);
 private:
-    static InfoNodeArray sm_cash;
-    static InfoNode * GetNode(int id);
-    static InfoNode * FindNode(int id);
+	static InfoNodeArray sm_cash;
+	static InfoNode * GetNode(int id);
+	static InfoNode * FindNode(int id);
 	static wxCriticalSection sm_locker;
 	static wxArrayString sm_icons;
 	static wxArrayString sm_noico;
