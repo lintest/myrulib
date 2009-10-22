@@ -7,13 +7,13 @@
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
-    EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
 FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
-    :FbFrameBase(parent, ID_FRAME_GENRES, _("Жанры"))
+	:FbFrameBase(parent, ID_FRAME_GENRES, _("Жанры"))
 {
-    CreateControls();
+	CreateControls();
 }
 
 void FbFrameGenres::CreateControls()
@@ -35,7 +35,7 @@ void FbFrameGenres::CreateControls()
 
 	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
 	m_GenresList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, style);
-    m_GenresList->AddColumn (_("Список жанров"), 100, wxALIGN_LEFT);
+	m_GenresList->AddColumn (_("Список жанров"), 100, wxALIGN_LEFT);
 	m_GenresList->SetFocus();
 	FbGenres::FillControl(m_GenresList);
 
@@ -49,22 +49,22 @@ void FbFrameGenres::CreateControls()
 
 wxToolBar * FbFrameGenres::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
-    wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->Realize();
-    return toolbar;
+	return toolbar;
 }
 
 class FrameGenresThread: public FbFrameBaseThread
 {
-    public:
-        FrameGenresThread(FbFrameGenres * frame, FbListMode mode, const int code)
+	public:
+		FrameGenresThread(FbFrameGenres * frame, FbListMode mode, const int code)
 			:FbFrameBaseThread(frame, mode), m_code(code), m_number(sm_skiper.NewNumber()) {};
-        virtual void *Entry();
-    private:
+		virtual void *Entry();
+	private:
 		static FbThreadSkiper sm_skiper;
-        int m_code;
-        int m_number;
+		int m_code;
+		int m_number;
 };
 
 FbThreadSkiper FrameGenresThread::sm_skiper;
@@ -102,7 +102,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
-        m_BooksPanel.EmptyBooks();
+		m_BooksPanel.EmptyBooks();
 		FbGenreData * data = (FbGenreData*) m_GenresList->GetItemData(selected);
 		if (data) {
 			wxThread * thread = new FrameGenresThread(this, m_BooksPanel.GetListMode(), data->GetCode());

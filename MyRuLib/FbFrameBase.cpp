@@ -5,27 +5,27 @@
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
-    EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
+	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
-    EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
-    EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
-    EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
-    EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
-    EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
-    EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
-    EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
-    EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
-    EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
-    EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
-    EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
-    EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
-    EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
-    EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
-    EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
-    EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
+	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
+	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
+	EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
+	EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
+	EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
+	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
+	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
+	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase() :
@@ -60,24 +60,24 @@ void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 {
-    wxPostEvent(&m_BooksPanel, event);
+	wxPostEvent(&m_BooksPanel, event);
 }
 
 void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 {
-    if (event.GetId() == ID_SPLIT_HORIZONTAL && m_BooksPanel.GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
-    if (event.GetId() == ID_SPLIT_VERTICAL && m_BooksPanel.GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
+	if (event.GetId() == ID_SPLIT_HORIZONTAL && m_BooksPanel.GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
+	if (event.GetId() == ID_SPLIT_VERTICAL && m_BooksPanel.GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
 }
 
 void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
 {
-    if (event.GetId() == ID_MODE_LIST && m_BooksPanel.GetListMode() == FB2_MODE_LIST) event.Check(true);
-    if (event.GetId() == ID_MODE_TREE && m_BooksPanel.GetListMode() == FB2_MODE_TREE) event.Check(true);
+	if (event.GetId() == ID_MODE_LIST && m_BooksPanel.GetListMode() == FB2_MODE_LIST) event.Check(true);
+	if (event.GetId() == ID_MODE_TREE && m_BooksPanel.GetListMode() == FB2_MODE_TREE) event.Check(true);
 }
 
 void FbFrameBase::OnExternal(wxCommandEvent& event)
 {
-    ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
+	ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
 }
 
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
@@ -153,25 +153,25 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
 {
 	FbParams params;
-    switch (event.GetId()) {
-        case ID_FILTER_FB2: {
+	switch (event.GetId()) {
+		case ID_FILTER_FB2: {
 			params.SetValue(FB_FILTER_FB2, m_FilterFb2 = !m_FilterFb2);
 		} break;
-        case ID_FILTER_LIB: {
+		case ID_FILTER_LIB: {
 			params.SetValue(FB_FILTER_LIB, m_FilterLib = !m_FilterLib);
 			if (m_FilterLib) {
 				params.SetValue(FB_FILTER_USR, false);
 				m_FilterUsr = false;
 			}
 		} break;
-        case ID_FILTER_USR: {
+		case ID_FILTER_USR: {
 			params.SetValue(FB_FILTER_USR, m_FilterUsr = !m_FilterUsr);
 			if (m_FilterUsr) {
 				params.SetValue(FB_FILTER_LIB, false);
 				m_FilterLib = false;
 			}
 		} break;
-    }
+	}
 	UpdateBooklist();
 }
 

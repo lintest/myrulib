@@ -18,7 +18,7 @@ protected:
 private:
 	wxHtmlWindow m_info;
 private:
-    void OnSave(wxCommandEvent& event);
+	void OnSave(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

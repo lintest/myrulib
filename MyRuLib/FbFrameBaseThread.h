@@ -7,7 +7,7 @@
 class FbFrameBaseThread: public wxThread
 {
 	public:
-        FbFrameBaseThread(FbFrameBase * frame, FbListMode mode)
+		FbFrameBaseThread(FbFrameBase * frame, FbListMode mode)
 			:m_frame(frame), m_mode(mode),
 			m_FilterFb2(frame->m_FilterFb2),
 			m_FilterLib(frame->m_FilterLib),
@@ -21,11 +21,11 @@ class FbFrameBaseThread: public wxThread
 		void FillBooks(wxSQLite3ResultSet &result);
 	protected:
 		static wxCriticalSection sm_queue;
-        wxWindow * m_frame;
-        FbListMode m_mode;
-        bool m_FilterFb2;
-        bool m_FilterLib;
-        bool m_FilterUsr;
+		wxWindow * m_frame;
+		FbListMode m_mode;
+		bool m_FilterFb2;
+		bool m_FilterLib;
+		bool m_FilterUsr;
 };
 
 class FbThreadSkiper

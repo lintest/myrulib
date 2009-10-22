@@ -21,39 +21,39 @@ WX_DEFINE_OBJARRAY(InfoNodeArray);
 //-----------------------------------------------------------------------------
 
 InfoImage::InfoImage(const wxString &name, const wxImage &image)
-    : m_name(name), m_width(image.GetWidth()), m_height(image.GetHeight())
+	: m_name(name), m_width(image.GetWidth()), m_height(image.GetHeight())
 
 {
 }
 
 const int InfoImage::GetWidth()
 {
-    return m_width > ciMaxImageWidth ? ciMaxImageWidth : m_width;
+	return m_width > ciMaxImageWidth ? ciMaxImageWidth : m_width;
 }
 
 const int InfoImage::GetHeight()
 {
-    return m_width > ciMaxImageWidth ? m_height * ciMaxImageWidth / m_width : m_height;
+	return m_width > ciMaxImageWidth ? m_height * ciMaxImageWidth / m_width : m_height;
 }
 
 InfoNode::~InfoNode()
 {
-    for (size_t i=0; i<m_images.GetCount(); i++) {
-        wxMemoryFSHandler::RemoveFile(m_images[i].GetName());
-    }
+	for (size_t i=0; i<m_images.GetCount(); i++) {
+		wxMemoryFSHandler::RemoveFile(m_images[i].GetName());
+	}
 }
 
 void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
-    wxString imagename = wxString::Format(wxT("%d/%s"), id, filename.c_str());
-    for (size_t i=0; i<m_images.GetCount(); i++) {
-        if (m_images[i].GetName() == imagename) return;
-    }
-    wxMemoryBuffer buffer = wxBase64Decode(imagedata);
+	wxString imagename = wxString::Format(wxT("%d/%s"), id, filename.c_str());
+	for (size_t i=0; i<m_images.GetCount(); i++) {
+		if (m_images[i].GetName() == imagename) return;
+	}
+	wxMemoryBuffer buffer = wxBase64Decode(imagedata);
 	wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), imagetype);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
 	wxImage image(stream);
-    m_images.Add(new InfoImage(imagename, image));
+	m_images.Add(new InfoImage(imagename, image));
 }
 
 //-----------------------------------------------------------------------------
@@ -67,93 +67,93 @@ wxArrayString InfoCash::sm_noico;
 
 InfoNode * InfoCash::GetNode(int id)
 {
-    for (size_t i=0; i<sm_cash.GetCount(); i++) {
-        if (sm_cash.Item(i).m_id == id) {
-            InfoNode * node = sm_cash.Detach(i);
-            sm_cash.Insert(node, 0);
-            return node;
-        }
-    }
+	for (size_t i=0; i<sm_cash.GetCount(); i++) {
+		if (sm_cash.Item(i).m_id == id) {
+			InfoNode * node = sm_cash.Detach(i);
+			sm_cash.Insert(node, 0);
+			return node;
+		}
+	}
 
-    while ( sm_cash.GetCount()>INFO_CASH_SIZE ) {
-        sm_cash.RemoveAt(INFO_CASH_SIZE);
-    }
+	while ( sm_cash.GetCount()>INFO_CASH_SIZE ) {
+		sm_cash.RemoveAt(INFO_CASH_SIZE);
+	}
 
-    InfoNode * node = new InfoNode;
-    node->m_id = id;
-    sm_cash.Insert(node, 0);
-    return node;
+	InfoNode * node = new InfoNode;
+	node->m_id = id;
+	sm_cash.Insert(node, 0);
+	return node;
 }
 
 InfoNode * InfoCash::FindNode(int id)
 {
-    for (size_t i=0; i<sm_cash.GetCount(); i++) {
-        if (sm_cash.Item(i).m_id == id) {
-            InfoNode * node = sm_cash.Detach(i);
-            sm_cash.Insert(node, 0);
-            return node;
-        }
-    }
-    return NULL;
+	for (size_t i=0; i<sm_cash.GetCount(); i++) {
+		if (sm_cash.Item(i).m_id == id) {
+			InfoNode * node = sm_cash.Detach(i);
+			sm_cash.Insert(node, 0);
+			return node;
+		}
+	}
+	return NULL;
 }
 
 wxCriticalSection InfoCash::sm_locker;
 
 void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
-    wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = FindNode(id);
-    if (node) node->AddImage(id, filename, imagedata, imagetype);
+	wxCriticalSectionLocker enter(sm_locker);
+	InfoNode * node = FindNode(id);
+	if (node) node->AddImage(id, filename, imagedata, imagetype);
 }
 
 void InfoCash::SetTitle(int id, wxString html)
 {
-    wxCriticalSectionLocker enter(sm_locker);
-    GetNode(id)->m_title = html;
+	wxCriticalSectionLocker enter(sm_locker);
+	GetNode(id)->m_title = html;
 };
 
 void InfoCash::SetISBN(int id, wxString html)
 {
-    wxCriticalSectionLocker enter(sm_locker);
-    GetNode(id)->m_isbn = html;
+	wxCriticalSectionLocker enter(sm_locker);
+	GetNode(id)->m_isbn = html;
 };
 
 void InfoCash::SetAnnotation(int id, wxString html)
 {
-    wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = FindNode(id);
-    if (node) node->m_annotation = html;
+	wxCriticalSectionLocker enter(sm_locker);
+	InfoNode * node = FindNode(id);
+	if (node) node->m_annotation = html;
 };
 
 void InfoCash::SetFilelist(int id, wxString html)
 {
-    wxCriticalSectionLocker enter(sm_locker);
-    InfoNode * node = FindNode(id);
-    if (node) node->m_filelist = html;
+	wxCriticalSectionLocker enter(sm_locker);
+	InfoNode * node = FindNode(id);
+	if (node) node->m_filelist = html;
 };
 
 void InfoCash::Empty()
 {
-    wxCriticalSectionLocker enter(sm_locker);
-    sm_cash.Empty();
+	wxCriticalSectionLocker enter(sm_locker);
+	sm_cash.Empty();
 }
 
 void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable)
 {
-    if (!id) return;
+	if (!id) return;
 	wxThread *thread = new ShowThread(frame, id, bVertical, bEditable);
 	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
 }
 
 wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt)
 {
-    wxCriticalSectionLocker enter(sm_locker);
+	wxCriticalSectionLocker enter(sm_locker);
 
-    InfoNode * node = FindNode(id);
-    if (node)
+	InfoNode * node = FindNode(id);
+	if (node)
 		return node->GetHTML(md5sum, bVertical, bEditable, sFileExt);
 	else
-        return wxEmptyString;
+		return wxEmptyString;
 }
 
 void InfoCash::AddIcon(wxString extension, wxBitmap bitmap)
@@ -175,8 +175,8 @@ void InfoCash::LoadIcon(const wxString &extension)
 		AddIcon((wxString)wxT("pdf"), wxBitmap(ico_pdf_xpm));
 	}
 
-    if (sm_icons.Index(extension) != wxNOT_FOUND) return;
-    if (sm_noico.Index(extension) != wxNOT_FOUND) return;
+	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
+	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
 
 	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 	if ( ft ) {
@@ -197,7 +197,7 @@ void InfoCash::LoadIcon(const wxString &extension)
 wxString InfoCash::GetIcon(const wxString &extension)
 {
 	wxString filename = wxT("icon.") + extension;
-    if (sm_icons.Index(extension) != wxNOT_FOUND)
+	if (sm_icons.Index(extension) != wxNOT_FOUND)
 		return filename;
 	else
 		return wxEmptyString;
@@ -240,63 +240,63 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 
 wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt)
 {
-    wxString html = wxT("<html><body><table width=100%>");
+	wxString html = wxT("<html><body><table width=100%>");
 
-    html += wxT("<tr>");
+	html += wxT("<tr>");
 	wxString icon = InfoCash::GetIcon(sFileExt);
 	if (icon.IsEmpty()) {
-        html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
+		html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
 	} else {
 		icon = wxString::Format(wxT("<img src=\"memory:%s\">"), icon.c_str());
-        html += wxT("<td><table cellspacing=0 cellpadding=0><tr>");
-        html += wxString::Format(wxT("<td valign=top>%s&nbsp;&nbsp;&nbsp;</td>"), icon.c_str());
-        html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
-        html += wxT("</tr></table></td>");
+		html += wxT("<td><table cellspacing=0 cellpadding=0><tr>");
+		html += wxString::Format(wxT("<td valign=top>%s&nbsp;&nbsp;&nbsp;</td>"), icon.c_str());
+		html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
+		html += wxT("</tr></table></td>");
 	}
 
-    if (bVertical) {
-        html += wxT("</tr>");
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), m_annotation.c_str());
-        for (size_t i=0; i<m_images.GetCount(); i++) {
-            InfoImage & info = m_images[i];
-            html += wxT("<tr><td align=center>");
+	if (bVertical) {
+		html += wxT("</tr>");
+		html += wxString::Format(wxT("<tr><td>%s</td></tr>"), m_annotation.c_str());
+		for (size_t i=0; i<m_images.GetCount(); i++) {
+			InfoImage & info = m_images[i];
+			html += wxT("<tr><td align=center>");
 			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
-            html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
-            html += wxT("</td></tr></table>");
-            html += wxT("</td></tr></table>");
-            html += wxT("</td></tr>");
-        }
-        if (!m_isbn.IsEmpty()) {
-            html += wxT("<tr><td align=center>");
-        	html += wxT("ISBN:&nbsp;") + m_isbn;
-            html += wxT("</td></tr>");
-        }
-        html += wxString::Format(wxT("<tr><td>%s</td></tr>"), m_filelist.c_str());
+			html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+			html += wxT("</td></tr></table>");
+			html += wxT("</td></tr></table>");
+			html += wxT("</td></tr>");
+		}
+		if (!m_isbn.IsEmpty()) {
+			html += wxT("<tr><td align=center>");
+			html += wxT("ISBN:&nbsp;") + m_isbn;
+			html += wxT("</td></tr>");
+		}
+		html += wxString::Format(wxT("<tr><td>%s</td></tr>"), m_filelist.c_str());
 		html += wxT("<tr><td valign=top>");
-        html += GetComments(md5sum, bEditable);
+		html += GetComments(md5sum, bEditable);
 		html += wxT("</td></tr>");
-    } else {
-        html += wxT("<td rowspan=4 align=right valign=top width=1>");
+	} else {
+		html += wxT("<td rowspan=4 align=right valign=top width=1>");
 		html += wxT("<table width=100%><tr><td align=center>");
-        for (size_t i=0; i<m_images.GetCount(); i++) {
-            InfoImage & info = m_images[i];
+		for (size_t i=0; i<m_images.GetCount(); i++) {
+			InfoImage & info = m_images[i];
 			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
-            html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
-            html += wxT("</td></tr></table>");
-            html += wxT("</td></tr></table>");
-        }
-        html += wxT("</td></tr>");
-        if (!m_isbn.IsEmpty()) html += wxString::Format(wxT("<tr><td align=center>ISBN:&nbsp;%s</td></tr>"), m_isbn.c_str());
-        html += wxT("</table></td></tr>");
-        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), m_annotation.c_str());
-        html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), m_filelist.c_str());
-		html += wxT("<tr><td valign=top>");
-        html += GetComments(md5sum, bEditable);
+			html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+			html += wxT("</td></tr></table>");
+			html += wxT("</td></tr></table>");
+		}
 		html += wxT("</td></tr>");
-    }
-    html += wxT("</table></body></html>");
+		if (!m_isbn.IsEmpty()) html += wxString::Format(wxT("<tr><td align=center>ISBN:&nbsp;%s</td></tr>"), m_isbn.c_str());
+		html += wxT("</table></td></tr>");
+		html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), m_annotation.c_str());
+		html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), m_filelist.c_str());
+		html += wxT("<tr><td valign=top>");
+		html += GetComments(md5sum, bEditable);
+		html += wxT("</td></tr>");
+	}
+	html += wxT("</table></body></html>");
 
 	return html;
 }
@@ -321,10 +321,10 @@ void * ShowThread::Entry()
 		wxThread *thread = new TitleThread(this);
 		if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
 
-        if (m_filetype == wxT("fb2")) {
+		if (m_filetype == wxT("fb2")) {
 			wxThread *thread = new InfoThread(this);
 			if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
-        }
+		}
 	} else {
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
 		event.SetInt(m_id);

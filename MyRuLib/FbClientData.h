@@ -5,11 +5,11 @@
 
 class FbClientData : public wxClientData
 {
-    public:
-        FbClientData(const int id) : m_ID(id) {}
-        const int GetID() {return m_ID;}
-    private:
-        int m_ID;
+	public:
+		FbClientData(const int id) : m_ID(id) {}
+		const int GetID() {return m_ID;}
+	private:
+		int m_ID;
 };
 
 #endif // __FBCLIENTDATA_H__

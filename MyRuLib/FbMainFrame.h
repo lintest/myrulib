@@ -1,7 +1,7 @@
 /***************************************************************
- * Name:      MyRuLibMain.h
+ * Name:	  MyRuLibMain.h
  * Purpose:   Defines Application Frame
- * Author:    Kandrashin Denis (mail@kandr.ru)
+ * Author:	Kandrashin Denis (mail@kandr.ru)
  * Created:   2009-05-05
  * Copyright: Kandrashin Denis (www.lintest.ru)
  * License:
@@ -27,11 +27,12 @@ private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
 	wxAuiToolBar * CreateToolBar();
-    void TogglePaneVisibility(const wxString &pane_name, bool show);
+	void TogglePaneVisibility(const wxString &pane_name, bool show);
 	void ShowPane(const wxString &pane_name);
-    void FindAuthor(const wxString &text);
-    void FindTitle(const wxString &text);
-    wxWindow * FindFrameById(const int id, bool bActivate = false);
+	void FindAuthor(const wxString &text);
+	void FindTitle(const wxString &text);
+	virtual wxString GetTitle() const;
+	wxWindow * FindFrameById(const int id, bool bActivate = false);
 private:
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
@@ -41,7 +42,7 @@ private:
 	LimitedTextCtrl m_LOGTextCtrl;
 private:
 	void OnExit(wxCommandEvent & event);
-    void OnSetup(wxCommandEvent & event);
+	void OnSetup(wxCommandEvent & event);
 	void OnOpenWeb(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnDatabaseInfo(wxCommandEvent & event);
@@ -49,10 +50,11 @@ private:
 	void OnFindAuthor(wxCommandEvent& event);
 	void OnFindAuthorEnter(wxCommandEvent& event);
 	void OnFindTitle(wxCommandEvent & event);
-    void OnFindTitleEnter(wxCommandEvent& event);
-    void OnMenuNothing(wxCommandEvent& event);
-    void OnMenuAuthor(wxCommandEvent& event);
-    void OnMenuTitle(wxCommandEvent& event);
+	void OnFindTitleEnter(wxCommandEvent& event);
+	void OnMenuNothing(wxCommandEvent& event);
+	void OnMenuAuthor(wxCommandEvent& event);
+	void OnMenuConfig(wxCommandEvent& event);
+	void OnMenuTitle(wxCommandEvent& event);
 	void OnMenuGenres(wxCommandEvent & event);
 	void OnMenuFavour(wxCommandEvent & event);
 	void OnNewZip( wxCommandEvent& event );
@@ -61,13 +63,11 @@ private:
 	void OnProgressStart(wxUpdateUIEvent& event);
 	void OnProgressUpdate(wxUpdateUIEvent& event);
 	void OnProgressFinish(wxUpdateUIEvent& event);
-    void OnError(wxCommandEvent& event);
-    void OnHideLog(wxCommandEvent& event);
-    void OnPanelClosed(wxAuiManagerEvent& event);
-    void OnNotebookPageClose(wxAuiNotebookEvent& evt);
-	void OnUpdateFolder(wxCommandEvent & event);
-	void OnUpdateRating(wxCommandEvent & event);
-	void OnUpdateDownload(wxCommandEvent & event);
+	void OnError(wxCommandEvent& event);
+	void OnHideLog(wxCommandEvent& event);
+	void OnPanelClosed(wxAuiManagerEvent& event);
+	void OnNotebookPageClose(wxAuiNotebookEvent& evt);
+	void OnUpdateFolder(FbFolderEvent & event);
 	void OnOpenAuthor(wxCommandEvent & event);
 	void OnVacuum(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()

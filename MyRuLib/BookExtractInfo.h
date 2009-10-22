@@ -12,9 +12,9 @@ class BookExtractInfo
 	public:
 		BookExtractInfo(wxSQLite3ResultSet & result);
 	public:
-        wxString GetBook();
-        wxString GetZip(const wxString &path = wxEmptyString);
-        bool NameIsEqual();
+		wxString GetBook();
+		wxString GetZip(const wxString &path = wxEmptyString);
+		bool NameIsEqual();
 	public:
 		int id_book;
 		int id_archive;
@@ -28,13 +28,13 @@ class BookExtractInfo
 WX_DECLARE_OBJARRAY(BookExtractInfo, BookExtractArrayBase);
 
 class BookExtractArray
-    : public BookExtractArrayBase
+	: public BookExtractArrayBase
 {
-    public:
-        BookExtractArray(FbDatabase & database, const int id);
-        int GetId() {return m_id; };
-    private:
-        int m_id;
+	public:
+		BookExtractArray(FbDatabase & database, const int id);
+		int GetId() {return m_id; };
+	private:
+		int m_id;
 };
 
 #endif // __BOOKEXTRACTINFO_H__

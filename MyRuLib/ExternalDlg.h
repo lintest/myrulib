@@ -40,24 +40,24 @@ class ExternalDlg : public wxDialog
 		~ExternalDlg();
 		static bool Execute(wxWindow* parent, FbBookList* books, int iAuthor = ciNoAuthor);
 	private:
-        void FillBooks(const wxString &selections);
-        void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
-        void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
-        wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
-        void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
-        wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
-        wxString Translit(const wxString &filename);
-        wxString NormalizeDirname(const wxString &filename);
-        void ChangeFilesExt(const wxTreeItemId &parent);
-        void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
+		void FillBooks(const wxString &selections);
+		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
+		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
+		wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
+		void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
+		wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
+		wxString Translit(const wxString &filename);
+		wxString NormalizeDirname(const wxString &filename);
+		void ChangeFilesExt(const wxTreeItemId &parent);
+		void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
 	private:
-	    wxString m_selections;
-        wxArrayString m_filenames;
+		wxString m_selections;
+		wxArrayString m_filenames;
 		int m_scale;
 		wxString m_ext;
 		int m_author;
-        FbCommonDatabase m_database;
+		FbCommonDatabase m_database;
 	private:
 		enum
 		{
@@ -73,10 +73,10 @@ class ExternalDlg : public wxDialog
 		wxCheckBox* m_checkAuthor;
 	private:
 		void OnSelectDir( wxCommandEvent& event );
-        void OnBookCollapsing( wxTreeEvent & event );
+		void OnBookCollapsing( wxTreeEvent & event );
 		void OnChangeFormat( wxCommandEvent& event );
 		void OnCheckAuthor( wxCommandEvent& event );
-        DECLARE_EVENT_TABLE()
+		DECLARE_EVENT_TABLE()
 };
 
 #endif //__ExternalDlg__

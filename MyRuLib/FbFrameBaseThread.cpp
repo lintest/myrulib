@@ -18,7 +18,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
 					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
-                WHERE (%s) \
+				WHERE (%s) \
 				ORDER BY authors.search_name, key, sequences.value, bookseq.number, books.title \
 			"); break;
 		case FB2_MODE_LIST:
@@ -29,7 +29,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
-                WHERE (%s) \
+				WHERE (%s) \
 				ORDER BY books.title, books.id, authors.full_name\
 			"); break;
 	}
@@ -45,48 +45,47 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 
 void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)
 {
-    wxString thisAuthor = wxT("@@@");
-    wxString thisSequence = wxT("@@@");
-    while (result.NextRow()) {
-	    wxString nextAuthor = result.GetString(wxT("full_name"));
-	    wxString nextSequence = result.GetString(wxT("sequence"));
+	wxString thisAuthor = wxT("@@@");
+	wxString thisSequence = wxT("@@@");
+	while (result.NextRow()) {
+		wxString nextAuthor = result.GetString(wxT("full_name"));
+		wxString nextSequence = result.GetString(wxT("sequence"));
 
-	    if (thisAuthor != nextAuthor) {
-	        thisAuthor = nextAuthor;
-	        thisSequence = wxT("@@@");
+		if (thisAuthor != nextAuthor) {
+			thisAuthor = nextAuthor;
+			thisSequence = wxT("@@@");
 			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR);
 			event.SetString(thisAuthor);
 			wxPostEvent(m_frame, event);
-	    }
-	    if (thisSequence != nextSequence) {
-	        thisSequence = nextSequence;
+		}
+		if (thisSequence != nextSequence) {
+			thisSequence = nextSequence;
 			wxCommandEvent event(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE);
 			event.SetString(thisSequence);
 			wxPostEvent(m_frame, event);
-	    }
+		}
 
-        BookTreeItemData data(result);
-		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
-		wxPostEvent(m_frame, event);
-    }
+		BookTreeItemData data(result);
+		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
+	}
 }
 
 void FbFrameBaseThread::CreateList(wxSQLite3ResultSet &result)
 {
-    result.NextRow();
-    while (!result.Eof()) {
-        BookTreeItemData data(result);
-        wxString full_name = result.GetString(wxT("full_name"));
-        do {
-            result.NextRow();
-            if ( data.GetId() != result.GetInt(wxT("id")) ) break;
-            full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
-        } while (!result.Eof());
+	result.NextRow();
+	while (!result.Eof()) {
+		BookTreeItemData data(result);
+		wxString full_name = result.GetString(wxT("full_name"));
+		do {
+			result.NextRow();
+			if ( data.GetId() != result.GetInt(wxT("id")) ) break;
+			full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
+		} while (!result.Eof());
 
-		FbBookEvent event(fbEVT_BOOK_ACTION, ID_APPEND_BOOK, &data);
+		FbBookEvent event(ID_APPEND_BOOK, &data);
 		event.SetString(full_name);
-		wxPostEvent(m_frame, event);
-    }
+		event.Post(m_frame);
+	}
 }
 
 void FbFrameBaseThread::EmptyBooks()

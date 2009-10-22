@@ -1,9 +1,9 @@
 #include "FbFrameFavorites.h"
 
 FbFrameFavorites::FbFrameFavorites(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
-    :FbFrameBase(parent, id, title)
+	:FbFrameBase(parent, id, title)
 {
-    CreateControls();
+	CreateControls();
 }
 
 void FbFrameFavorites::CreateControls()

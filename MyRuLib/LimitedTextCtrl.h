@@ -7,8 +7,8 @@
 
 class LimitedTextCtrl: public wxTextCtrl
 {
-    public:
-        virtual void AppendText(const wxString& text);
+	public:
+		virtual void AppendText(const wxString& text);
 };
 
 #endif // __LIMITEDTEXTCTRL_H__

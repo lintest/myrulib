@@ -185,6 +185,8 @@
 		<Unit filename="FbBookPanel.h" />
 		<Unit filename="FbBookThread.cpp" />
 		<Unit filename="FbBookThread.h" />
+		<Unit filename="FbConfigDlg.cpp" />
+		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
 		<Unit filename="FbDatabase.cpp" />

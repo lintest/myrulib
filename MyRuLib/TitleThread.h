@@ -10,7 +10,7 @@ class TitleThread : public FbBookThread
 {
 public:
 	TitleThread (FbBookThread * thread): FbBookThread(thread) {};
-    virtual void *Entry();
+	virtual void *Entry();
 private:
 	wxString GetBookInfo(FbDatabase &database, int id);
 	wxString GetBookFiles(FbDatabase &database, int id);

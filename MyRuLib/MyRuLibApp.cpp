@@ -1,7 +1,7 @@
 /***************************************************************
- * Name:      MyRuLibApp.cpp
+ * Name:	  MyRuLibApp.cpp
  * Purpose:   Code for Application Class
- * Author:    Kandrashin Denis (mail@kandr.ru)
+ * Author:	Kandrashin Denis (mail@kandr.ru)
  * Created:   2009-05-05
  * Copyright: Kandrashin Denis (www.lintest.ru)
  * License:
@@ -21,8 +21,8 @@ IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
-    if (sizeof(wxFileOffset)<8)
-        wxMessageBox(_("Not support for files larger 2Gb!"));
+	if (sizeof(wxFileOffset)<8)
+		wxMessageBox(_("Not support for files larger 2Gb!"));
 
 	if(!ConnectToDatabase()) {
 		wxLogFatalError(_("Error connecting to database!"));
@@ -31,7 +31,7 @@ bool MyRuLibApp::OnInit()
 
 	::wxInitAllImageHandlers();
 
-    wxFileSystem::AddHandler(new wxMemoryFSHandler);
+	wxFileSystem::AddHandler(new wxMemoryFSHandler);
 
 	FbMainFrame * frame = new FbMainFrame;
 	SetTopWindow(frame);
@@ -52,10 +52,10 @@ bool MyRuLibApp::ConnectToDatabase()
 {
 	m_datafile = MyStandardPaths().GetDataFile();
 
-    wxFileName logname = m_datafile;
-    logname.SetExt(wxT("log"));
-    wxLog *logger = new FbLogStream(logname.GetFullPath());
-    wxLog::SetActiveTarget(logger);
+	wxFileName logname = m_datafile;
+	logname.SetExt(wxT("log"));
+	wxLog *logger = new FbLogStream(logname.GetFullPath());
+	wxLog::SetActiveTarget(logger);
 
 	m_database.Open(m_datafile);
 	m_config.Open();
@@ -83,11 +83,11 @@ wxString MyStandardPaths::GetUserConfigDir() const
 
 wxString MyStandardPaths::GetAppFileName() const
 {
-    if (wxGetApp().argc) {
-        return wxString(wxGetApp().argv[0]);
-    } else {
-        return wxGetApp().GetAppName();
-    }
+	if (wxGetApp().argc) {
+		return wxString(wxGetApp().argv[0]);
+	} else {
+		return wxGetApp().GetAppName();
+	}
 }
 
 wxString MyStandardPaths::GetDataFile() const
