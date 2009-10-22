@@ -52,6 +52,7 @@ private:
     void OnFindTitleEnter(wxCommandEvent& event);
     void OnMenuNothing(wxCommandEvent& event);
     void OnMenuAuthor(wxCommandEvent& event);
+    void OnMenuConfig(wxCommandEvent& event);
     void OnMenuTitle(wxCommandEvent& event);
 	void OnMenuGenres(wxCommandEvent & event);
 	void OnMenuFavour(wxCommandEvent & event);

@@ -24,6 +24,7 @@
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "VacuumThread.h"
+#include "FbConfigDlg.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -38,7 +39,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
     EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
     EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
-    EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuNothing)
+    EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
 	EVT_MENU(ID_OPEN_WEB, FbMainFrame::OnOpenWeb)
 	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
@@ -135,6 +136,11 @@ void FbMainFrame::CreateControls()
 void FbMainFrame::OnSetup(wxCommandEvent & event)
 {
     SettingsDlg::Execute(this);
+}
+
+void FbMainFrame::OnMenuConfig(wxCommandEvent& event)
+{
+    FbConfigDlg::Execute(this);
 }
 
 void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
