@@ -6,6 +6,8 @@
 #include <wx/arrimpl.cpp>
 
 #define fbNO_FOLDER (-999)
+#define fbFLDR_DOWN (-998)
+
 
 class FbMenuFolderItem
 {

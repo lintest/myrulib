@@ -198,7 +198,20 @@ void FbFrameFavour::UpdateBooklist()
 
 void FbFrameFavour::FillByFolder(FbFolderData * data)
 {
-	m_BooksPanel.SetFolder( data->GetType()==FT_FOLDER ? data->GetId() : fbNO_FOLDER );
+	int iFolder = fbNO_FOLDER;
+	switch (data->GetType()) {
+		case FT_FOLDER:
+			iFolder = data->GetId();
+			break;
+		case FT_DOWNLOAD:
+			iFolder = fbFLDR_DOWN;
+			break;
+		default:
+			iFolder = fbNO_FOLDER;
+			break;
+	}
+	m_BooksPanel.SetFolder( iFolder );
+
 	wxThread * thread = new FrameFavourThread(this, m_BooksPanel.GetListMode(), data);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
@@ -315,14 +328,8 @@ void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
 		case FT_FOLDER:
 			bNeedUpdate = data->GetId()==iFolder;
 			break;
-		case FT_RATING:
+		default:
 			bNeedUpdate = true;
-			break;
-		case FT_COMMENT:
-			bNeedUpdate = true;
-			break;
-		case FT_DOWNLOAD:
-			bNeedUpdate = data->GetId()*iFolder > 0;
 			break;
 	}
 

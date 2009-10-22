@@ -33,7 +33,10 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	ratings->Append(ID_RATING_0, strRating[0]);
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
-	Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
+	if (iFolder == fbFLDR_DOWN)
+		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
+	else
+		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
     AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
@@ -43,8 +46,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
     AppendSeparator();
 
-    if (iFolder == fbNO_FOLDER) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
-    else if (iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
+    if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
 	Append(wxID_ANY, _("Добавить в папку"), submenu);
 	Append(wxID_ANY, _("Установить рейтинг"), ratings);
     if (iFolder != fbNO_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
