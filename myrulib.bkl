@@ -20,7 +20,7 @@
 	</if>
 	
 	<include file="./Presets/wx.bkl"/>
-    <include file="datafiles.bkl"/>
+	<include file="datafiles.bkl"/>
 
 	<lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
@@ -56,6 +56,7 @@
 		<sources>MyRuLib/FbBookMenu.cpp</sources>
 		<sources>MyRuLib/FbBookPanel.cpp</sources>
 		<sources>MyRuLib/FbBookThread.cpp</sources>
+		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
