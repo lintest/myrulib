@@ -102,6 +102,7 @@ void FbFrameHtml::CreateControls()
 	bSizerComment->Fit( panel );
 
 	splitter->SplitHorizontally(&m_info, panel, GetClientRect().y - 150);
+	m_Caption.SetFocus();
 
 	SetSizer(sizer);
 	Layout();
