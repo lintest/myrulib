@@ -102,7 +102,7 @@ void FrameInfoThread::WriteCount()
 			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
 		}
     }
-	m_html += wxString::Format(_("<TR><TD>Общий размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), sum.c_str());
+	m_html += wxString::Format(_("<TR><TD>Суммарный размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), sum.c_str());
 	m_html += wxString::Format(_("<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"), min.c_str());
 	m_html += wxString::Format(_("<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"), max.c_str());
 

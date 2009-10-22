@@ -66,9 +66,14 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
     EVT_COMMAND(ID_OPEN_AUTHOR, fbEVT_BOOK_ACTION, FbMainFrame::OnOpenAuthor)
 END_EVENT_TABLE()
 
+wxString FbMainFrame::GetTitle() const
+{
+	return FbParams::GetText(DB_LIBRARY_TITLE) + wxT(" - ") + strProgramName;
+}
+
 FbMainFrame::FbMainFrame()
 {
-	Create(NULL, wxID_ANY, wxT("MyRuLib - My Russian Library"));
+	Create(NULL, wxID_ANY, GetTitle());
 }
 
 FbMainFrame::~FbMainFrame()
@@ -141,6 +146,7 @@ void FbMainFrame::OnSetup(wxCommandEvent & event)
 void FbMainFrame::OnMenuConfig(wxCommandEvent& event)
 {
     FbConfigDlg::Execute(this);
+    SetTitle(GetTitle());
 }
 
 void FbMainFrame::OnOpenWeb(wxCommandEvent & event)

@@ -1,5 +1,6 @@
 #include "FbConst.h"
 
+const wxString strProgramName = _T("MyRuLib 0.11");
 const wxString strVersionInfo = _T("MyRuLib - version 0.11 (alpha)\n\nhttp://myrulib.lintest.ru\nmail@lintest.ru");
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 

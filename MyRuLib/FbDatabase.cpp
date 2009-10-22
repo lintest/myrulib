@@ -75,7 +75,7 @@ void FbMainDatabase::CreateDatabase()
 
     /** TABLE params **/
     ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text)"));
-    ExecuteUpdate(_("INSERT INTO params(id, text)  VALUES (1, 'Test Library')"));
+    ExecuteUpdate(_("INSERT INTO params(id, text)  VALUES (1, 'My own Library')"));
     ExecuteUpdate(_("INSERT INTO params(id, value) VALUES (2, 1)"));
 
     trans.Commit();

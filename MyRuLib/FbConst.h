@@ -74,6 +74,7 @@ enum {
     ID_FAVORITES_ADD = wxID_HIGHEST + 200,
 };
 
+extern const wxString strProgramName;
 extern const wxString strVersionInfo;
 extern const wxString strHomePage;
 

@@ -31,6 +31,7 @@ private:
 	void ShowPane(const wxString &pane_name);
     void FindAuthor(const wxString &text);
     void FindTitle(const wxString &text);
+    virtual wxString GetTitle() const;
     wxWindow * FindFrameById(const int id, bool bActivate = false);
 private:
 	wxTextCtrl m_FindAuthor;
