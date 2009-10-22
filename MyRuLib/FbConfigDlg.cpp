@@ -102,7 +102,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Add( m_staticText4, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	m_textCtrl4 = new wxTextCtrl( this, ID_LIBRARY_DESCR, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-	m_textCtrl4->SetMinSize( wxSize( 200, 100 ) );
+	m_textCtrl4->SetMinSize( wxSize( 200, 60 ) );
 
 	bSizerMain->Add( m_textCtrl4, 1, wxALL|wxEXPAND, 5 );
 

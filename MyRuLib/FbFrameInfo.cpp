@@ -53,6 +53,14 @@ class FrameInfoThread: public BaseThread
 void FrameInfoThread::WriteTitle()
 {
 	m_html += _("<HTML><HEAD><TITLE>Информация о коллекции</TITLE></HEAD><BODY><CENTER>");
+
+	m_html += wxT("<TABLE>");
+	m_html += wxT("<TR><TD colspan=2 align=center>Информация о коллекции</TD></TR>");
+	m_html += wxT("<TR><TD colspan=2 align=center>");
+	m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
+	m_html += wxT("</TD></TR>");
+	m_html += wxString::Format(_("<TR><TD colspan=2>%s</TD></TR>"), wxGetApp().GetAppData().c_str());
+	m_html += wxT("</TABLE>");
 }
 
 wxString FrameInfoThread::GetDate(const int number)
@@ -76,10 +84,6 @@ wxString FrameInfoThread::F(const int number)
 void FrameInfoThread::WriteCount()
 {
 	m_html += wxT("<TABLE>");
-	m_html += wxT("<TR><TD colspan=2 align=center>Информация о коллекции</TD></TR>");
-	m_html += wxT("<TR><TD colspan=2 align=center>");
-	m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
-	m_html += wxT("</TD></TR>");
 
 	wxString min, max, sum;
 
@@ -96,7 +100,7 @@ void FrameInfoThread::WriteCount()
 	}
 	DoStep(_("Подсчет авторов"));
 	{
-		wxString sql = (wxT("SELECT COUNT(id) FROM authors"));
+		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
