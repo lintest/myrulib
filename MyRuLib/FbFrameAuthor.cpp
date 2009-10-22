@@ -105,20 +105,13 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 	SelectFirstAuthor();
 }
 
-void FbFrameAuthor::SelectFirstAuthor()
+void FbFrameAuthor::SelectFirstAuthor(const int book)
 {
-	m_BooksPanel.EmptyBooks();
+	m_BooksPanel.EmptyBooks(book);
 
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = m_AuthorList->GetFirstChild(m_AuthorList->GetRootItem(), cookie);
-	if (item.IsOk()) {
-		m_AuthorList->SelectItem(item);
-		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(item);
-		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
-			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-		}
-	}
+	if (item.IsOk()) m_AuthorList->SelectItem(item);
 }
 
 void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
@@ -147,12 +140,11 @@ void FbFrameAuthor::FindAuthor(const wxString &text)
 	SelectFirstAuthor();
 }
 
-void FbFrameAuthor::OpenAuthor(const int id)
+void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
-	if (id == 0) return;
 	ToggleAlphabar(0);
-	m_AuthorList->FillAuthorsCode(id);
-	SelectFirstAuthor();
+	m_AuthorList->FillAuthorsCode(author);
+	SelectFirstAuthor(book);
 }
 
 void FbFrameAuthor::SelectRandomLetter()
@@ -220,7 +212,6 @@ void * FrameAuthorThread::Entry()
 	wxCriticalSectionLocker locker(sm_queue);
 
 	if (sm_skiper.Skipped(m_number)) return NULL;
-	EmptyBooks();
 
 	try {
 		FbCommonDatabase database;

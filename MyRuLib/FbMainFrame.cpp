@@ -59,9 +59,9 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
 
+	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
-	EVT_COMMAND(ID_OPEN_AUTHOR, fbEVT_BOOK_ACTION, FbMainFrame::OnOpenAuthor)
 END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
@@ -433,7 +433,7 @@ void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 }
 
-void FbMainFrame::OnOpenAuthor(wxCommandEvent & event)
+void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
 {
 	FbFrameAuthor * frame = wxDynamicCast(FindFrameById(ID_FRAME_AUTHOR, true), FbFrameAuthor);
 	if (!frame) {
@@ -441,7 +441,7 @@ void FbMainFrame::OnOpenAuthor(wxCommandEvent & event)
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
 		frame->Update();
 	}
-	frame->OpenAuthor(event.GetInt());
+	frame->OpenAuthor(event.m_author, event.m_book);
 }
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)

@@ -22,7 +22,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbBookList * m_BookList;
 		wxHtmlWindow * m_BookInfo;
 		BookTreeItemData * GetSelectedBook();
-		void EmptyBooks(const wxString title = wxEmptyString);
+		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData * data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(const wxString title = wxEmptyString);
 		void AppendSequence(const wxString title = wxEmptyString);
@@ -43,6 +43,7 @@ class FbBookPanel: public wxSplitterWindow
 		wxTreeItemId m_AuthorItem;
 		wxTreeItemId m_SequenceItem;
 		int m_folder;
+		int m_selected;
 	private:
 		void OnBooksListViewSelected(wxTreeEvent & event);
 		void OnBooksListActivated(wxTreeEvent & event);

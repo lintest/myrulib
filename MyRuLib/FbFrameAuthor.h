@@ -17,7 +17,7 @@ public:
 	FbFrameAuthor() :FbFrameBase() {};
 	FbFrameAuthor(wxAuiMDIParentFrame * parent);
 	void FindAuthor(const wxString &text);
-	void OpenAuthor(const int id);
+	void OpenAuthor(const int author, const int book);
 	void SelectRandomLetter();
 	void ActivateAuthors();
 protected:
@@ -26,7 +26,7 @@ protected:
 private:
 	wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 	void ToggleAlphabar(const int &idLetter);
-	void SelectFirstAuthor();
+	void SelectFirstAuthor(const int book = 0);
 	BookTreeItemData * GetSelectedBook();
 private:
 	FbAuthorList * m_AuthorList;

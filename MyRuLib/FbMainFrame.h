@@ -68,7 +68,7 @@ private:
 	void OnPanelClosed(wxAuiManagerEvent& event);
 	void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 	void OnUpdateFolder(FbFolderEvent & event);
-	void OnOpenAuthor(wxCommandEvent & event);
+	void OnOpenAuthor(FbOpenEvent & event);
 	void OnVacuum(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };

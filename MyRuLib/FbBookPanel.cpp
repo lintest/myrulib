@@ -30,7 +30,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel()
-	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER)
+	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_selected(0)
 {
 }
 
@@ -385,18 +385,23 @@ void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 	int author = FbBookMenu::GetAuthor(event.GetId());
 	if (author == 0) return;
 
-	wxCommandEvent subevent(fbEVT_BOOK_ACTION, ID_OPEN_AUTHOR);
-	subevent.SetInt(author);
-	wxPostEvent(wxGetApp().GetTopWindow(), subevent);
+	BookTreeItemData * data = GetSelectedBook();
+	if (data) FbOpenEvent(ID_BOOK_AUTHOR, author, data->GetId()).Post();
 }
 
-void FbBookPanel::EmptyBooks(const wxString title)
+void FbBookPanel::EmptyBooks(const int selected)
 {
 	m_AuthorItem = 0;
 	m_SequenceItem = 0;
+	if (selected) {
+		m_selected = selected;
+	} else {
+		BookTreeItemData * data = GetSelectedBook();
+		if (data) m_selected = data->GetId();
+	}
 
 	BookListUpdater updater(m_BookList);
-	wxTreeItemId root = m_BookList->AddRoot(title);
+	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
@@ -439,10 +444,11 @@ void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 	wxString sRating;
 	if (data->rating) sRating = wxT(" ") + strRating[data->rating];
 
+	wxTreeItemId item;
 	switch (m_ListMode) {
 		case FB2_MODE_TREE: {
 			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
-			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
+			item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, sRating);
 			if (data->number) m_BookList->SetItemText(item, 2, wxString::Format(wxT(" %d "), data->number));
 			m_BookList->SetItemText(item, 3, file_type);
@@ -450,7 +456,7 @@ void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 		} break;
 		case FB2_MODE_LIST: {
 			parent = m_BookList->GetRootItem();
-			wxTreeItemId item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
+			item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, authors);
 			m_BookList->SetItemText(item, 2, sRating);
 			m_BookList->SetItemText(item, 3, file_type);
@@ -458,6 +464,7 @@ void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 		} break;
 	}
 	m_BookList->Expand(parent);
+	if (data->GetId() == m_selected) m_BookList->SelectItem(item);
 }
 
 void FbBookPanel::CreateColumns(FbListMode mode)
