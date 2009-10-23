@@ -222,15 +222,17 @@ void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 class FbFolderUpdateThread: public wxThread
 {
 	public:
-		FbFolderUpdateThread(const wxString &sql, const int folder, const FbFolderType type)
-			:m_sql(sql), m_folder(folder), m_type(type) {};
+		FbFolderUpdateThread(const wxString &sql, const int folder, const FbFolderType type, const wxString &sql2 = wxEmptyString)
+			:m_sql(sql), m_folder(folder), m_type(type), m_sql2(sql2) {};
 	protected:
 		static wxCriticalSection sm_queue;
+		void ExecSQL(const wxString &sql);
 		void * Entry();
 	private:
 		wxString m_sql;
 		int m_folder;
 		FbFolderType m_type;
+		wxString m_sql2;
 };
 
 wxCriticalSection FbFolderUpdateThread::sm_queue;
@@ -239,13 +241,23 @@ void * FbFolderUpdateThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
-	FbCommonDatabase database;
-	database.AttachConfig();
-	database.ExecuteUpdate(m_sql);
+	ExecSQL(m_sql);
+	if (!m_sql2.IsEmpty()) ExecSQL(m_sql2);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
 
 	return NULL;
+}
+
+void FbFolderUpdateThread::ExecSQL(const wxString &sql)
+{
+	try {
+		FbCommonDatabase database;
+		database.AttachConfig();
+		database.ExecuteUpdate(sql);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 }
 
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
@@ -315,47 +327,39 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 
 	m_BookList->Update();
 
-	wxString sql ;
 	wxString sel = m_BookList->GetSelected();
 
-	sql = wxString::Format(wxT("\
+	wxString sql1 = wxString::Format(wxT("\
+		UPDATE states SET rating=%d WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
+	"), iRating, sel.c_str());
+
+	wxString sql2 = wxString::Format(wxT("\
 		INSERT INTO states(md5sum, rating) \
 		SELECT DISTINCT md5sum, %d FROM books WHERE id IN (%s) \
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql, iRating, FT_RATING );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-
-	sql = wxString::Format(wxT("\
-		UPDATE states SET rating=%d WHERE md5sum IN \
-		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
-	"), iRating, sel.c_str());
-
-	thread = new FbFolderUpdateThread( sql, iRating, FT_RATING );
+	wxThread * thread = new FbFolderUpdateThread( sql1, iRating, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
 void FbBookPanel::DoDownload(const int folder)
 {
-	wxString sql;
 	wxString sel = m_BookList->GetSelected();
 
-	sql = wxString::Format(wxT("\
+	wxString sql1 = wxString::Format(wxT("\
+		UPDATE states SET download=%d WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
+	"), folder, sel.c_str());
+
+	wxString sql2 = wxString::Format(wxT("\
 		INSERT INTO states(md5sum, download) \
 		SELECT DISTINCT md5sum, %d FROM books WHERE id>0 AND id IN (%s) \
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_DOWNLOAD );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-
-	sql = wxString::Format(wxT("\
-		UPDATE states SET download=%d WHERE md5sum IN \
-		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
-	"), folder, sel.c_str());
-
-	thread = new FbFolderUpdateThread( sql, folder, FT_DOWNLOAD );
+	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 

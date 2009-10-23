@@ -152,10 +152,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 		}
 	} while (!done);
 
-	unsigned char output[16];
-	md5_finish( &md5, output );
-	ctx.md5sum = wxEmptyString;
-	for (size_t i=0; i<16; i++) ctx.md5sum += wxString::Format(wxT("%02x"), output[i]);
+	ctx.md5sum = CalcMd5(md5);
 	memset( &md5, 0, sizeof( md5_context ) );
 
 	for (size_t i=0; i<ctx.authors.Count(); i++)

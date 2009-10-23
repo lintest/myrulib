@@ -145,7 +145,7 @@ void FbFrameHtml::DoSubmit()
 
 	wxString sql = wxT("INSERT INTO comments(id, md5sum, posted, caption, comment) VALUES (?,?,?,?,?)");
 
-	FbDatabase & database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	int key = database.NewId(FB_NEW_COMMENT);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, key);
@@ -192,7 +192,7 @@ void FbFrameHtml::DoModify()
 
 	wxString sql = wxT("UPDATE comments SET posted=?, caption=?, comment=? WHERE id=?");
 
-	FbDatabase & database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
 	stmt.Bind(2, caption);

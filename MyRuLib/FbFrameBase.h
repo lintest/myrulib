@@ -28,6 +28,7 @@ protected:
 	void CreateBooksPanel(wxWindow * parent, long substyle);
 	FbBookPanel m_BooksPanel;
 private:
+	void OnActivated(wxActivateEvent & event);
 	void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeView(wxCommandEvent & event);

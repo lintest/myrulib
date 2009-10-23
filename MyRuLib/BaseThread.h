@@ -2,9 +2,12 @@
 #define __BASETHREAD_H__
 
 #include <wx/wx.h>
+#include "polarssl/md5.h"
 
 class BaseThread : public wxThread
 {
+	public:
+		static wxString CalcMd5(md5_context &md5);
 	public:
 		wxString m_info;
 		wxString m_text;

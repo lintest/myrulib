@@ -25,6 +25,7 @@
 #include "FbMainMenu.h"
 #include "VacuumThread.h"
 #include "FbConfigDlg.h"
+#include "FbDownloader.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -429,6 +430,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
+	if (event.m_type = FT_DOWNLOAD) FbDownloader::Start();
 	FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
 	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 }

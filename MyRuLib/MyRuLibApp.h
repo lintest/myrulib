@@ -16,13 +16,12 @@
 #include <wx/stdpaths.h>
 #include "FbDatabase.h"
 
-class MyStandardPaths: public wxStandardPaths
+class FbStandardPaths: public wxStandardPaths
 {
 	public:
 		virtual wxString GetDataFile() const;
 		virtual wxString GetConfigFile() const;
 		virtual wxString GetAppFileName() const;
-	protected:
 		virtual wxString GetUserConfigDir() const;
 	private:
 		wxFileName GetDatabaseFilename() const;

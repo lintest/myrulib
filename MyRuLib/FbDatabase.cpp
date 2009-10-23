@@ -300,7 +300,7 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 
 const wxString & FbDatabase::GetConfigName()
 {
-	static wxString filename = MyStandardPaths().GetConfigFile();
+	static wxString filename = FbStandardPaths().GetConfigFile();
 	return filename;
 }
 

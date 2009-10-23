@@ -30,7 +30,6 @@ bool MyRuLibApp::OnInit()
 	}
 
 	::wxInitAllImageHandlers();
-
 	wxFileSystem::AddHandler(new wxMemoryFSHandler);
 
 	FbMainFrame * frame = new FbMainFrame;
@@ -38,7 +37,6 @@ bool MyRuLibApp::OnInit()
 	frame->Show();
 
 	ZipReader::Init();
-	BooksCountThread::Execute();
 
 	return true;
 }
@@ -50,7 +48,7 @@ int MyRuLibApp::OnExit()
 
 bool MyRuLibApp::ConnectToDatabase()
 {
-	m_datafile = MyStandardPaths().GetDataFile();
+	m_datafile = FbStandardPaths().GetDataFile();
 
 	wxFileName logname = m_datafile;
 	logname.SetExt(wxT("log"));
@@ -65,7 +63,7 @@ bool MyRuLibApp::ConnectToDatabase()
 	return true;
 }
 
-wxString MyStandardPaths::GetUserConfigDir() const
+wxString FbStandardPaths::GetUserConfigDir() const
 {
 #if defined(__WIN32__)
 	wxString result = wxStandardPaths::GetUserConfigDir();
@@ -81,7 +79,7 @@ wxString MyStandardPaths::GetUserConfigDir() const
 	return result;
 }
 
-wxString MyStandardPaths::GetAppFileName() const
+wxString FbStandardPaths::GetAppFileName() const
 {
 	if (wxGetApp().argc) {
 		return wxString(wxGetApp().argv[0]);
@@ -90,14 +88,14 @@ wxString MyStandardPaths::GetAppFileName() const
 	}
 }
 
-wxString MyStandardPaths::GetDataFile() const
+wxString FbStandardPaths::GetDataFile() const
 {
 	wxFileName filename = GetDatabaseFilename();
 	filename.Normalize();
 	return filename.GetFullPath();
 }
 
-wxFileName MyStandardPaths::GetDatabaseFilename() const
+wxFileName FbStandardPaths::GetDatabaseFilename() const
 {
 	wxFileName filename = GetAppFileName();
 	filename.SetExt(wxT("db"));
@@ -118,7 +116,7 @@ wxFileName MyStandardPaths::GetDatabaseFilename() const
 	return filename;
 }
 
-wxString MyStandardPaths::GetConfigFile() const
+wxString FbStandardPaths::GetConfigFile() const
 {
 	wxFileName filename = GetAppFileName();
 	filename.SetExt(wxT("cfg"));

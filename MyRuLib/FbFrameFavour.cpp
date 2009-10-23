@@ -4,7 +4,6 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "MyRuLibApp.h"
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
@@ -241,7 +240,7 @@ void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
 	wxString name = wxGetTextFromUser(_("Введите имя новой папки:"), _("Добавить папку?"), wxEmptyString, this);
 	if (name.IsEmpty()) return;
 
-	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	int id = database.NewId(FB_NEW_FOLDER);
 	wxString sql = wxT("INSERT INTO folders(value,id) VALUES(?,?)");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -267,7 +266,7 @@ void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
 	name = wxGetTextFromUser(_("Введите новое имя папки:"), _("Изменить папку?"), name, this);
 	if (name.IsEmpty()) return;
 
-	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	wxString sql = wxT("UPDATE folders SET value=? WHERE id=?");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, name);
@@ -292,7 +291,7 @@ void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
 	int answer = wxMessageBox(msg, _("Удалить папку?"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
-	FbConfigDatabase & database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	wxString sql = wxT("DELETE FROM folders WHERE id=?");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, id);

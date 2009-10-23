@@ -2,8 +2,10 @@
 #include "FbConst.h"
 #include "FbMenu.h"
 #include "ExternalDlg.h"
+#include "FbMainFrame.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
+	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
@@ -179,3 +181,12 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 {
 	event.Veto();
 }
+
+void FbFrameBase::OnActivated(wxActivateEvent & event)
+{
+	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
+	if (frame) {
+
+	}
+}
+
