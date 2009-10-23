@@ -19,6 +19,7 @@ public:
 	bool m_FilterFb2;
 	bool m_FilterLib;
 	bool m_FilterUsr;
+	FbBookPanel * GetBookPanel() { return &m_BooksPanel; };
 protected:
 	virtual void CreateControls() {};
 	virtual void UpdateBooklist() = 0;

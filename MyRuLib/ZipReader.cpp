@@ -55,8 +55,11 @@ ZipReader::ZipReader(int id, bool bShowError)
 {
 	FbCommonDatabase database;
 	BookExtractArray items(database, id);
-	wxString file_name;
 
+	OpenDownload(items.md5sum);
+	if (IsOK()) return;
+
+	wxString file_name;
 	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
 	wxString sWanraikDir = FbParams::GetText(DB_WANRAIK_DIR);
 
@@ -100,6 +103,24 @@ void ZipReader::Init()
 	thread->Run();
 
 	return;
+}
+
+void ZipReader::OpenDownload(const wxString &md5sum)
+{
+	wxFileName zip_file = md5sum + wxT(".zip");
+	zip_file.SetPath( FbStandardPaths().GetUserConfigDir() );
+
+	m_zipOk = zip_file.FileExists();
+	if (!m_zipOk) return;
+
+	m_file = new wxFFileInputStream(zip_file.GetFullPath());
+	m_zip = new wxZipInputStream(*m_file, conv);
+	m_result = m_zip;
+
+	if (wxZipEntry * entry = m_zip->GetNextEntry()) {
+		m_fileOk = m_zip->OpenEntry(*entry);
+		delete entry;
+	}
 }
 
 void ZipReader::OpenZip(const wxString &zipname, const wxString &filename)

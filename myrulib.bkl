@@ -107,6 +107,7 @@
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
+		<wx-lib>net</wx-lib>
 		<wx-lib>base</wx-lib>
 		<if cond="PLATFORM_WIN32=='1'">
 			<postlink-command>strip ./build/myrulib.exe</postlink-command>

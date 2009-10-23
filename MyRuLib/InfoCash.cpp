@@ -106,6 +106,18 @@ void InfoCash::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 	if (node) node->AddImage(id, filename, imagedata, imagetype);
 }
 
+void InfoCash::EmptyInfo(int id)
+{
+	wxCriticalSectionLocker enter(sm_locker);
+
+	for (size_t i=0; i<sm_cash.GetCount(); i++) {
+		if (sm_cash.Item(i).m_id == id) {
+			sm_cash.RemoveAt(i);
+			return;
+		}
+	}
+}
+
 void InfoCash::SetTitle(int id, wxString html)
 {
 	wxCriticalSectionLocker enter(sm_locker);

@@ -71,6 +71,7 @@ private:
 	void OnOpenAuthor(FbOpenEvent & event);
 	void OnVacuum(wxCommandEvent & event);
 	void OnProgress(FbProgressEvent & event);
+	void OnUpdateAll(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 

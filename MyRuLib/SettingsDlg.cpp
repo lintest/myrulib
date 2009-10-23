@@ -81,14 +81,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	wxNotebook* m_notebook;
 	wxPanel* m_panel1;
-	wxStaticText* m_staticText1;
-	wxTextCtrl* m_textCtrl1;
-	wxStaticText* m_staticText2;
-	wxTextCtrl* m_textCtrl2;
-	wxBitmapButton* m_bpButton2;
-	wxStaticText* m_staticText31;
-	wxTextCtrl* m_textCtrl3;
-	wxBitmapButton* m_bpButton3;
 	wxPanel* m_panel2;
 	wxStaticText* m_staticText6;
 	wxTextCtrl* m_textCtrl6;
@@ -97,17 +89,6 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxCheckBox* m_checkBox3;
 	wxRadioBox* m_radioBox1;
 	wxRadioBox* m_radioBox2;
-/*
-	wxCheckBox* m_checkBox21;
-	wxStaticText* m_staticText7;
-	wxTextCtrl* m_textCtrl7;
-	wxStaticText* m_staticText8;
-	wxTextCtrl* m_textCtrl8;
-	wxStaticText* m_staticText9;
-	wxTextCtrl* m_textCtrl9;
-	wxStaticText* m_staticText10;
-	wxTextCtrl* m_textCtrl10;
-*/
 	wxPanel* m_panel4;
 	wxToolBar* m_tools;
 	wxStdDialogButtonSizer* m_sdbSizerBtn;
@@ -122,69 +103,34 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
-	/*
+	wxBoxSizer* bSizer12;
+	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticLine * m_staticline = new wxStaticLine( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-	bSizer2->Add( m_staticline, 0, wxEXPAND | wxALL, 5 );
+	wxStaticText* m_staticText11 = new wxStaticText( m_panel1, wxID_ANY, _("Адрес сайта Либрусек:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText11->Wrap( -1 );
+	bSizer12->Add( m_staticText11, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	m_checkBox21 = new wxCheckBox( m_panel1, ID_USE_PROXY, _("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxComboBox * m_comboBox1 = new wxComboBox( m_panel1, ID_LIBRUSEC_URL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	m_comboBox1->Append( _("http://lib.rus.ec") );
+	m_comboBox1->Append( _("http://lib.ololo.cc") );
+	bSizer12->Add( m_comboBox1, 1, wxALL, 5 );
 
-	bSizer2->Add( m_checkBox21, 0, wxALL|wxEXPAND, 5 );
+	bSizer2->Add( bSizer12, 0, wxEXPAND|wxLEFT, 5 );
 
-	wxFlexGridSizer* fgSizer31;
-	fgSizer31 = new wxFlexGridSizer( 2, 2, 0, 0 );
-	fgSizer31->SetFlexibleDirection( wxBOTH );
-	fgSizer31->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText7 = new wxStaticText( m_panel1, wxID_ANY, _("	Адрес прокси-сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText7->Wrap( -1 );
-	fgSizer31->Add( m_staticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	wxCheckBox * m_checkBox12 = new wxCheckBox( m_panel1, ID_USE_PROXY, _("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
 
-	wxBoxSizer* bSizer32;
-	bSizer32 = new wxBoxSizer( wxHORIZONTAL );
+	bSizer13->Add( m_checkBox12, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	m_textCtrl7 = new wxTextCtrl( m_panel1, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl7->SetMinSize( wxSize( 100,-1 ) );
+	wxComboBox * m_comboBox2 = new wxComboBox( m_panel1, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	m_comboBox2->Append( _("192.168.0.1:3128") );
+	m_comboBox2->Append( _("172.16.0.1:3128") );
+	m_comboBox2->Append( _("10.0.0.1:3128") );
+	bSizer13->Add( m_comboBox2, 1, wxALL, 5 );
 
-	bSizer32->Add( m_textCtrl7, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_staticText8 = new wxStaticText( m_panel1, wxID_ANY, _("Порт:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText8->Wrap( -1 );
-	bSizer32->Add( m_staticText8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_textCtrl8 = new wxTextCtrl( m_panel1, ID_PROXY_PORT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl8->SetMinSize( wxSize( 60,-1 ) );
-
-	bSizer32->Add( m_textCtrl8, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	fgSizer31->Add( bSizer32, 0, wxEXPAND, 5 );
-
-	m_staticText9 = new wxStaticText( m_panel1, wxID_ANY, _("	Имя пользователя:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText9->Wrap( -1 );
-	fgSizer31->Add( m_staticText9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxBoxSizer* bSizer33;
-	bSizer33 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textCtrl9 = new wxTextCtrl( m_panel1, ID_PROXY_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl9->SetMinSize( wxSize( 110,-1 ) );
-
-	bSizer33->Add( m_textCtrl9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_staticText10 = new wxStaticText( m_panel1, wxID_ANY, _("Пароль:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText10->Wrap( -1 );
-	bSizer33->Add( m_staticText10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_textCtrl10 = new wxTextCtrl( m_panel1, ID_PROXY_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
-	m_textCtrl10->SetMinSize( wxSize( 110,-1 ) );
-
-	bSizer33->Add( m_textCtrl10, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	fgSizer31->Add( bSizer33, 1, wxEXPAND, 5 );
-
-	bSizer2->Add( fgSizer31, 0, wxEXPAND, 5 );
-
-	*/
+	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
 
 	m_panel1->SetSizer( bSizer2 );
 	m_panel1->Layout();
@@ -314,6 +260,7 @@ void SettingsDlg::Assign(bool write)
 		tText,
 		tCheck,
 		tRadio,
+		tCombo,
 	};
 	struct Struct{
 		int param;
@@ -331,10 +278,8 @@ void SettingsDlg::Assign(bool write)
 		{FB_FOLDER_FORMAT, SettingsDlg::ID_FOLDER_FORMAT, tRadio},
 		{FB_FILE_FORMAT, SettingsDlg::ID_FILE_FORMAT, tRadio},
 		{FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
-		{FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tText},
-		{FB_PROXY_PORT, SettingsDlg::ID_PROXY_PORT, tText},
-		{FB_PROXY_NAME, SettingsDlg::ID_PROXY_NAME, tText},
-		{FB_PROXY_PASS, SettingsDlg::ID_PROXY_PASS, tText},
+		{FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tCombo},
+		{FB_LIBRUSEC_URL, SettingsDlg::ID_LIBRUSEC_URL, tCombo},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
@@ -364,6 +309,14 @@ void SettingsDlg::Assign(bool write)
 					else
 						control->SetSelection(params.GetValue(ids[i].param));
 				} break;
+			case tCombo:
+				if (wxComboBox * control = (wxComboBox*)FindWindowById(ids[i].control)) {
+					if (write)
+						params.SetText(ids[i].param, control->GetValue());
+					else
+						control->SetValue(params.GetText(ids[i].param));
+				} break;
+
 		}
 
 	}

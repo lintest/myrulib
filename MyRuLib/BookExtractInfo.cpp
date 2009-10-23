@@ -38,6 +38,14 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 	:BookExtractArrayBase(), m_id(id)
 {
 	{
+		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if ( result.NextRow() ) md5sum = result.GetString(0);
+	}
+
+	{
 		wxString sql = wxT("\
 			SELECT DISTINCT 0 AS file, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
 			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \

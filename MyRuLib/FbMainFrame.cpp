@@ -26,6 +26,7 @@
 #include "VacuumThread.h"
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
+#include "InfoCash.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -64,6 +65,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
+	EVT_COMMAND(ID_UPDATE_ALLBOOKS, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateAll)
 END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
@@ -462,4 +464,17 @@ void FbMainFrame::OnProgress(FbProgressEvent & event)
 	m_ProgressBar.SetProgress(event.m_pos);
 	m_ProgressBar.SetStatusText(event.m_str, 0);
 	m_ProgressBar.SetStatusText(event.m_text, 2);
+}
+
+void FbMainFrame::OnUpdateAll(wxCommandEvent & event)
+{
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		if (frame) {
+			FbBookPanel * books = frame->GetBookPanel();
+			InfoCash::UpdateInfo(frame->GetBookPanel(), event.GetInt(), books->GetSplitMode() == wxSPLIT_VERTICAL);
+		}
+	}
+
 }

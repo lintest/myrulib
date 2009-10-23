@@ -33,6 +33,7 @@ class BookExtractArray
 	public:
 		BookExtractArray(FbDatabase & database, const int id);
 		int GetId() {return m_id; };
+		wxString md5sum;
 	private:
 		int m_id;
 };

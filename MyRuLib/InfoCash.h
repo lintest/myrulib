@@ -55,6 +55,7 @@ public:
 	static wxString GetIcon(const wxString &extension);
 	static void LoadIcon(const wxString &extension);
 public:
+	static void EmptyInfo(int id);
 	static void SetISBN(int id, wxString html);
 	static void SetTitle(int id, wxString html);
 	static void SetFilelist(int id, wxString html);
