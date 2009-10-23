@@ -5,12 +5,17 @@
 #include "FbDatabase.h"
 #include "FbManager.h"
 #include "FbFrameBaseThread.h"
+#include "FbDownloader.h"
+#include "res/start.xpm"
+#include "res/pause.xpm"
 
 BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFavour::OnFavoritesDel)
 	EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
 	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
 	EVT_MENU(ID_DELETE_FOLDER, FbFrameFavour::OnFolderDelete)
+	EVT_MENU(ID_START, FbFrameFavour::OnStart)
+	EVT_MENU(ID_PAUSE, FbFrameFavour::OnPause)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFavour::OnFolderSelected)
 END_EVENT_TABLE()
 
@@ -67,6 +72,8 @@ wxToolBar * FbFrameFavour::CreateToolBar(long style, wxWindowID winid, const wxS
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+	toolbar->AddTool(ID_START, _("Старт"), wxBitmap(start_xpm), _("Начать загрузку файлов через интернет"));
+	toolbar->AddTool(ID_PAUSE, _("Стоп"), wxBitmap(pause_xpm), _("Остановить загрузку файлов через интернет"));
 	toolbar->Realize();
 	return toolbar;
 }
@@ -112,6 +119,7 @@ void FbFrameFavour::FillFolders(const int iCurrent)
 
 	m_FolderList->AppendItem(parent, wxT("Очередь"), -1, -1, new FbFolderData(1, FT_DOWNLOAD));
 	m_FolderList->AppendItem(parent, wxT("Готово"), -1, -1, new FbFolderData(-1, FT_DOWNLOAD));
+	m_FolderList->AppendItem(parent, wxT("Ошибки"), -1, -1, new FbFolderData(-2, FT_DOWNLOAD));
 	m_FolderList->Expand(parent);
 
 	m_FolderList->Thaw();
@@ -151,9 +159,10 @@ void * FrameFavourThread::Entry()
 		case FT_COMMENT:
 			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM comments WHERE ?>0)");
 			break;
-		case FT_DOWNLOAD:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE (? * download)>0)");
-			break;
+		case FT_DOWNLOAD: {
+			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
+			condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
+			} break;
 	}
 	wxString sql = GetSQL(condition);
 
@@ -335,3 +344,12 @@ void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
 	if (bNeedUpdate) FillByFolder(data);
 }
 
+void FbFrameFavour::OnStart(wxCommandEvent & event)
+{
+	FbDownloader::Start();
+}
+
+void FbFrameFavour::OnPause(wxCommandEvent & event)
+{
+	FbDownloader::Pause();
+}

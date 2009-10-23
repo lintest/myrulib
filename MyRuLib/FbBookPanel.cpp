@@ -359,7 +359,7 @@ void FbBookPanel::DoDownload(const int folder)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_RATING, sql2 );
+	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 

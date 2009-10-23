@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 
 	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
+	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
 END_EVENT_TABLE()
 
@@ -409,7 +410,6 @@ wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 	return NULL;
 }
 
-
 void FbMainFrame::OnMenuNothing(wxCommandEvent& event)
 {
 	wxMessageBox(_("Функционал не реализован в данной версии."));
@@ -430,7 +430,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
-	if (event.m_type = FT_DOWNLOAD) FbDownloader::Start();
+	if (event.m_type == FT_DOWNLOAD) FbDownloader::Start();
 	FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
 	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 }
@@ -455,4 +455,11 @@ void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
 		frame->Update();
 	}
 	frame->Load(event.GetString());
+}
+
+void FbMainFrame::OnProgress(FbProgressEvent & event)
+{
+	m_ProgressBar.SetProgress(event.m_pos);
+	m_ProgressBar.SetStatusText(event.m_str, 0);
+	m_ProgressBar.SetStatusText(event.m_text, 2);
 }

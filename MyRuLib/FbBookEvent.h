@@ -7,6 +7,7 @@
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION, 1 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_OPEN_ACTION, 2 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION, 3 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION, 4 )
 
 enum FbFolderType {
 	FT_FOLDER,
@@ -30,8 +31,8 @@ class FbCommandEvent: public wxCommandEvent
 class FbBookEvent: public FbCommandEvent
 {
 	public:
-		FbBookEvent(wxWindowID commandId, BookTreeItemData * data, const wxString &sting = wxEmptyString)
-			: FbCommandEvent(fbEVT_BOOK_ACTION, commandId, sting), m_data(data) {};
+		FbBookEvent(wxWindowID id, BookTreeItemData * data, const wxString &sting = wxEmptyString)
+			: FbCommandEvent(fbEVT_BOOK_ACTION, id, sting), m_data(data) {};
 
 		FbBookEvent(const FbBookEvent & event)
 			: FbCommandEvent(event), m_data(event.m_data) {};
@@ -45,8 +46,8 @@ class FbBookEvent: public FbCommandEvent
 class FbOpenEvent: public FbCommandEvent
 {
 	public:
-		FbOpenEvent(wxWindowID commandId, int author, int book)
-			: FbCommandEvent(fbEVT_OPEN_ACTION, commandId), m_author(author), m_book(book) {};
+		FbOpenEvent(wxWindowID id, int author, int book)
+			: FbCommandEvent(fbEVT_OPEN_ACTION, id), m_author(author), m_book(book) {};
 
 		FbOpenEvent(const FbOpenEvent & event)
 			: FbCommandEvent(event), m_author(event.m_author), m_book(event.m_book) {};
@@ -61,8 +62,8 @@ class FbOpenEvent: public FbCommandEvent
 class FbFolderEvent: public FbCommandEvent
 {
 	public:
-		FbFolderEvent(wxWindowID commandId, int folder, FbFolderType type)
-			: FbCommandEvent(fbEVT_FOLDER_ACTION, commandId), m_folder(folder), m_type(type) {};
+		FbFolderEvent(wxWindowID id, int folder, FbFolderType type)
+			: FbCommandEvent(fbEVT_FOLDER_ACTION, id), m_folder(folder), m_type(type) {};
 
 		FbFolderEvent(const FbFolderEvent & event)
 			: FbCommandEvent(event), m_folder(event.m_folder), m_type(event.m_type) {};
@@ -74,9 +75,30 @@ class FbFolderEvent: public FbCommandEvent
 		FbFolderType m_type;
 };
 
+class FbProgressEvent: public FbCommandEvent
+{
+	public:
+		FbProgressEvent(wxWindowID id, const wxString &str = wxEmptyString, const int pos = 0, const wxString &text = wxEmptyString)
+			: FbCommandEvent(fbEVT_PROGRESS_ACTION, id), m_str(str), m_pos(pos), m_text(text) {};
+
+		FbProgressEvent(const FbProgressEvent & event)
+			: FbCommandEvent(event), m_str(event.m_str), m_pos(event.m_pos), m_text(event.m_text) {};
+
+		virtual wxEvent *Clone() const { return new FbProgressEvent(*this); }
+
+	public:
+		wxString m_str;
+		int m_pos;
+		wxString m_text;
+};
+
 typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
+
 typedef void (wxEvtHandler::*FbOpenEventFunction)(FbOpenEvent&);
+
 typedef void (wxEvtHandler::*FbFolderEventFunction)(FbFolderEvent&);
+
+typedef void (wxEvtHandler::*FbProgressEventFunction)(FbProgressEvent&);
 
 #define EVT_FB_BOOK(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_BOOK_ACTION, id, -1, \
@@ -92,5 +114,10 @@ typedef void (wxEvtHandler::*FbFolderEventFunction)(FbFolderEvent&);
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_FOLDER_ACTION, id, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbFolderEventFunction, & fn ), (wxObject *) NULL ),
+
+#define EVT_FB_PROGRESS(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_PROGRESS_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbProgressEventFunction, & fn ), (wxObject *) NULL ),
 
 #endif // __FBBOOKEVENT_H__

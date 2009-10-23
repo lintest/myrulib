@@ -9,10 +9,12 @@ class FbDownloader: public wxThread
 {
 	public:
 		static void Start();
-		static void Stop();
+		static void Pause();
 		bool IsRunning();
 	protected:
 		virtual void *Entry();
+	private:
+		void GetBooklist(wxArrayString &md5sum);
 	private:
 		static wxCriticalSection sm_queue;
 		static bool sm_running;

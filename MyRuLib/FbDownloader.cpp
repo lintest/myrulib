@@ -13,12 +13,12 @@
 class FbInternetBook
 {
 	public:
-		FbInternetBook();
+		FbInternetBook(const wxString& md5sum);
 		bool Execute();
 	private:
 		bool DoDownload();
 		bool CheckMD5();
-		bool SaveFile();
+		void SaveFile(const bool success);
 	private:
 		int m_id;
 		wxString m_url;
@@ -40,18 +40,18 @@ FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 	GetProtocol().SetTimeout(10);
 }
 
-FbInternetBook::FbInternetBook()
-	: m_id(0)
+FbInternetBook::FbInternetBook(const wxString& md5sum)
+	: m_id(0), m_md5sum(md5sum)
 {
-	wxString sql = wxT("SELECT id, books.md5sum, file_type FROM books JOIN states ON books.md5sum=states.md5sum WHERE download>0 ORDER BY download LIMIT 1");
+	wxString sql = wxT("SELECT id, file_type FROM books WHERE md5sum=? AND id>0");
 	try {
 		FbCommonDatabase database;
-		database.AttachConfig();
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, md5sum);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if ( result.NextRow() ) {
 			m_id = result.GetInt(0);
-			m_md5sum = result.GetString(1);
-			m_filetype = result.GetString(2);
+			m_filetype = result.GetString(1);
 			m_url = FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), m_id);
 			m_url = wxT("http://lib.ololo.cc") + wxString::Format(wxT("/b/%d/download/"), m_id);
 		}
@@ -62,7 +62,9 @@ FbInternetBook::FbInternetBook()
 
 bool FbInternetBook::Execute()
 {
-	return m_id && DoDownload() && CheckMD5() && SaveFile();
+	bool result = m_id && DoDownload() && CheckMD5();
+	SaveFile(result);
+	return result;
 }
 
 bool FbInternetBook::DoDownload()
@@ -87,9 +89,21 @@ bool FbInternetBook::DoDownload()
 
 	m_filename = wxFileName::CreateTempFileName(wxT("~"));
 	wxFileOutputStream out(m_filename);
-	in->Read(out);
 
+	const size_t BUFSIZE = 1024;
+	unsigned char buf[BUFSIZE];
 	size_t size = in->GetSize();
+	size_t count = 0;
+	size_t pos = 0;
+
+	do {
+		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos*1000/size, _("Загрузка файла")).Post();
+		count = in->Read(buf, BUFSIZE).LastRead();
+		out.Write(buf, count);
+		pos += count;
+	} while (count);
+	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
+
 	if (size != (size_t)-1 && out.GetSize() !=size) {
 		wxLogError(wxT("HTTP read error, read %d of %d bytes: %s"), out.GetSize(), size, m_url.c_str());
 		return false;
@@ -125,35 +139,37 @@ bool FbInternetBook::CheckMD5()
 
 	wxString md5sum = BaseThread::CalcMd5(md5);
 	if ( md5sum != m_md5sum ) {
-		wxRemoveFile(m_filename);
 		wxLogError(wxT("Wrong MD5 sum: "), m_url.c_str());
 		return false;
 	}
 	return true;
 }
 
-bool FbInternetBook::SaveFile()
+void FbInternetBook::SaveFile(const bool success)
 {
-	wxFileName zipname = m_md5sum + wxT(".zip");
-	zipname.SetPath( FbStandardPaths().GetUserConfigDir() );
-	wxRenameFile(m_filename, zipname.GetFullPath(), true);
+	if (success) {
+		wxFileName zipname = m_md5sum + wxT(".zip");
+		zipname.SetPath( FbStandardPaths().GetUserConfigDir() );
+		wxRenameFile(m_filename, zipname.GetFullPath(), true);
+	} else {
+		wxRemoveFile(m_filename);
+	}
 
-	wxString sql = wxT("UPDATE states SET download=-1 WHERE md5sum=?");
+	wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
 
 	try {
 		FbLocalDatabase database;
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_md5sum);
+		stmt.Bind(1, success ? -1 : -2);
+		stmt.Bind(2, m_md5sum);
 		stmt.ExecuteUpdate();
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
-		return false;
 	}
 
 	wxLogInfo(wxT("Download finished: ")+ m_url);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, 0, FT_DOWNLOAD).Post();
-	return true;
 }
 
 bool FbDownloader::sm_running = false;
@@ -175,10 +191,10 @@ void FbDownloader::Start()
 	sm_running = true;
 }
 
-void FbDownloader::Stop()
+void FbDownloader::Pause()
 {
 	wxCriticalSectionLocker locker(sm_queue);
-	sm_running = true;
+	sm_running = false;
 }
 
 bool FbDownloader::IsRunning()
@@ -193,13 +209,28 @@ void * FbDownloader::Entry()
 	wxString md5sum;
 	wxString ext;
 
-	wxString sql = wxT("SELECT id, books.md5sum, file_type FROM books JOIN states ON books.md5sum=states.md5sum WHERE download>0 ORDER BY download LIMIT 1");
-
 	while (true) {
-		if (IsRunning())
-			FbInternetBook().Execute();
-		else
-			wxSleep(3);
+		if (IsRunning()) {
+			wxArrayString md5sum;
+			GetBooklist(md5sum);
+			size_t count = md5sum.Count();
+			if (!count) Pause();
+			for (size_t i=0; i<count; i++) {
+				FbInternetBook(md5sum[i]).Execute();
+			}
+		}
+		wxSleep(3);
 	}
 	return NULL;
 }
+
+void FbDownloader::GetBooklist(wxArrayString &md5sum)
+{
+	wxString sql = wxT("SELECT md5sum FROM states WHERE download>0 ORDER BY download");
+	FbLocalDatabase database;
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	while ( result.NextRow() ) {
+		md5sum.Add( result.GetString(0) );
+	}
+}
+
