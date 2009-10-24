@@ -18,6 +18,7 @@
 #include "FbManager.h"
 #include "SettingsDlg.h"
 #include "ImpThread.h"
+#include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFavour.h"
@@ -40,6 +41,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
+	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
@@ -82,10 +84,6 @@ FbMainFrame::~FbMainFrame()
 {
 	m_FrameManager.UnInit();
 }
-
-#ifndef __WXMSW__
-#include "res/home.xpm"
-#endif
 
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
@@ -197,8 +195,8 @@ void FbMainFrame::OnExit(wxCommandEvent & event)
 	Close();
 }
 
-void FbMainFrame::OnNewZip( wxCommandEvent& event ){
-
+void FbMainFrame::OnNewZip( wxCommandEvent& event )
+{
 	wxFileDialog dlg (
 		this,
 		_("Выберите zip-файл для добавления в библиотеку…"),
@@ -477,4 +475,10 @@ void FbMainFrame::OnUpdateAll(wxCommandEvent & event)
 		}
 	}
 
+}
+
+void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
+{
+	FbDataOpenDlg dlg(this);
+	dlg.ShowModal();
 }

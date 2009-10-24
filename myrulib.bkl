@@ -59,10 +59,10 @@
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
+		<sources>MyRuLib/FbDataOpenDlg.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
-		<sources>MyRuLib/FbFrameBaseMenu.cpp</sources>
 		<sources>MyRuLib/FbFrameBaseThread.cpp</sources>
 		<sources>MyRuLib/FbFrameFavour.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>

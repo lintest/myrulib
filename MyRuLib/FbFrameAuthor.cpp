@@ -7,6 +7,7 @@
 #include "FbClientData.h"
 #include "ExternalDlg.h"
 #include "FbFrameBaseThread.h"
+#include "FbMainMenu.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
@@ -36,7 +37,7 @@ FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
 
 void FbFrameAuthor::CreateControls()
 {
-	SetMenuBar(new FbFrameBaseMenu);
+	SetMenuBar(new FbFrameMenu);
 
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);

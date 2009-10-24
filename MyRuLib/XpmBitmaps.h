@@ -5,12 +5,17 @@
 #include "res/checked.xpm"
 #include "res/checkout.xpm"
 
+#ifndef __WXMSW__
+#include "res/home.xpm"
+#endif
+
 class NoWarnings
 {
 	NoWarnings() {
 		wxUnusedVar(nocheck_xpm);
 		wxUnusedVar(checked_xpm);
 		wxUnusedVar(checkout_xpm);
+		wxUnusedVar(home_xpm);
 	};
 };
 

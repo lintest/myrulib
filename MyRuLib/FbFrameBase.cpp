@@ -1,6 +1,6 @@
 #include "FbFrameBase.h"
 #include "FbConst.h"
-#include "FbMenu.h"
+#include "FbMainMenu.h"
 #include "ExternalDlg.h"
 #include "FbMainFrame.h"
 
@@ -49,7 +49,7 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 {
 	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
 	if (res) {
-		SetMenuBar(new FbFrameBaseMenu);
+		SetMenuBar(new FbFrameMenu);
 		CreateControls();
 	}
 	return res;

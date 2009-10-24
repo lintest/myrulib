@@ -4,6 +4,7 @@
 #include "FbDatabase.h"
 #include "FbManager.h"
 #include "FbGenres.h"
+#include "FbMainMenu.h"
 #include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
@@ -18,7 +19,7 @@ FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
 
 void FbFrameGenres::CreateControls()
 {
-	SetMenuBar(new FbFrameBaseMenu);
+	SetMenuBar(new FbFrameMenu);
 
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 

@@ -7,7 +7,6 @@
 #include "FbBookPanel.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
-#include "FbFrameBaseMenu.h"
 
 class FbFrameBase : public wxAuiMDIChildFrame
 {

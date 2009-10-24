@@ -1,6 +1,7 @@
 #include "FbFrameFavour.h"
 #include <wx/artprov.h>
 #include "FbBookMenu.h"
+#include "FbMainMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
@@ -27,7 +28,7 @@ FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent)
 
 void FbFrameFavour::CreateControls()
 {
-	SetMenuBar(new FbFrameBaseMenu);
+	SetMenuBar(new FbFrameMenu);
 
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
