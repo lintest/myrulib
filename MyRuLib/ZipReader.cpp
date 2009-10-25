@@ -54,10 +54,11 @@ ZipReader::ZipReader(int id, bool bShowError)
 	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	FbCommonDatabase database;
-	BookExtractArray items(database, id);
 
-	OpenDownload(items.md5sum);
+	OpenDownload(database);
 	if (IsOK()) return;
+
+	BookExtractArray items(database, id);
 
 	wxString file_name;
 	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
@@ -105,8 +106,19 @@ void ZipReader::Init()
 	return;
 }
 
-void ZipReader::OpenDownload(const wxString &md5sum)
+void ZipReader::OpenDownload(FbDatabase &database)
 {
+	wxString md5sum;
+
+	{
+		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if ( result.NextRow() ) md5sum = result.GetString(0);
+		else return;
+	}
+
 	wxFileName zip_file = md5sum + wxT(".zip");
 	zip_file.SetPath( FbStandardPaths().GetUserConfigDir() );
 

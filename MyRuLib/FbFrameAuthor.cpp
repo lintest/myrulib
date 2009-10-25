@@ -229,7 +229,6 @@ void * FrameAuthorThread::Entry()
 		}
 
 		wxString sql = GetSQL(wxT("books.id_author=?"));
-		FbGenreFunction function;
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_author);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();

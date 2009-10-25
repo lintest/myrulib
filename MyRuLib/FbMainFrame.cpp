@@ -21,7 +21,7 @@
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
-#include "FbFrameFavour.h"
+#include "FbFrameFolder.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "VacuumThread.h"
@@ -389,9 +389,9 @@ void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuFavour(wxCommandEvent & event)
 {
-	FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, true), FbFrameFavour);
+	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, true), FbFrameFolder);
 	if (!frame) {
-		frame = new FbFrameFavour(this);
+		frame = new FbFrameFolder(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
 		frame->Update();
 	}
@@ -431,7 +431,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
 	if (event.m_type == FT_DOWNLOAD) FbDownloader::Start();
-	FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
+	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFolder);
 	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 }
 

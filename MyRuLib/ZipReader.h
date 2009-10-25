@@ -5,6 +5,7 @@
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/arrimpl.cpp>
+#include "FbDatabase.h"
 
 class ZipReader
 {
@@ -21,7 +22,7 @@ private:
 	bool FindEntry(const wxString &file_name);
 	void OpenZip(const wxString &zipname, const wxString &filename);
 	void OpenFile(const wxString &filename);
-	void OpenDownload(const wxString &md5sum);
+	void OpenDownload(FbDatabase &database);
 private:
 	wxCSConv conv;
 	wxFFileInputStream *m_file;

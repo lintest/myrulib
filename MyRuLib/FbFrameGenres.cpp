@@ -7,6 +7,30 @@
 #include "FbMainMenu.h"
 #include "FbFrameBaseThread.h"
 
+class FbGenreFunction : public wxSQLite3ScalarFunction
+{
+	virtual void Execute(wxSQLite3FunctionContext& ctx);
+};
+
+void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	int argCount = ctx.GetArgCount();
+	if (argCount != 2) {
+		ctx.SetResultError(wxString::Format(_("GENRE called with wrong number of arguments: %d."), argCount));
+		return;
+	}
+	wxString text = ctx.GetString(0);
+	wxString genre = ctx.GetString(1);
+
+	for (size_t i=0; i<text.Length()/2; i++) {
+		if ( text.Mid(i*2, 2) == genre ) {
+			ctx.SetResult(true);
+			return;
+		}
+	}
+	ctx.SetResult(false);
+}
+
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()

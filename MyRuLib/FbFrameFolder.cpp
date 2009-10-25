@@ -1,4 +1,4 @@
-#include "FbFrameFavour.h"
+#include "FbFrameFolder.h"
 #include <wx/artprov.h>
 #include "FbBookMenu.h"
 #include "FbMainMenu.h"
@@ -10,23 +10,23 @@
 #include "res/start.xpm"
 #include "res/pause.xpm"
 
-BEGIN_EVENT_TABLE(FbFrameFavour, FbFrameBase)
-	EVT_MENU(ID_FAVORITES_DEL, FbFrameFavour::OnFavoritesDel)
-	EVT_MENU(ID_APPEND_FOLDER, FbFrameFavour::OnFolderAppend)
-	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFavour::OnFolderModify)
-	EVT_MENU(ID_DELETE_FOLDER, FbFrameFavour::OnFolderDelete)
-	EVT_MENU(ID_START, FbFrameFavour::OnStart)
-	EVT_MENU(ID_PAUSE, FbFrameFavour::OnPause)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFavour::OnFolderSelected)
+BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
+	EVT_MENU(ID_FAVORITES_DEL, FbFrameFolder::OnFavoritesDel)
+	EVT_MENU(ID_APPEND_FOLDER, FbFrameFolder::OnFolderAppend)
+	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFolder::OnFolderModify)
+	EVT_MENU(ID_DELETE_FOLDER, FbFrameFolder::OnFolderDelete)
+	EVT_MENU(ID_START, FbFrameFolder::OnStart)
+	EVT_MENU(ID_PAUSE, FbFrameFolder::OnPause)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFolder::OnFolderSelected)
 END_EVENT_TABLE()
 
-FbFrameFavour::FbFrameFavour(wxAuiMDIParentFrame * parent)
+FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
 	:FbFrameBase(parent, ID_FRAME_FAVOUR, _("Мои папки"))
 {
 	CreateControls();
 }
 
-void FbFrameFavour::CreateControls()
+void FbFrameFolder::CreateControls()
 {
 	SetMenuBar(new FbFrameMenu);
 
@@ -69,7 +69,7 @@ void FbFrameFavour::CreateControls()
 	Layout();
 }
 
-wxToolBar * FbFrameFavour::CreateToolBar(long style, wxWindowID winid, const wxString& name)
+wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
@@ -79,7 +79,7 @@ wxToolBar * FbFrameFavour::CreateToolBar(long style, wxWindowID winid, const wxS
 	return toolbar;
 }
 
-void FbFrameFavour::FillFolders(const int iCurrent)
+void FbFrameFolder::FillFolders(const int iCurrent)
 {
 	m_FolderList->Freeze();
 	m_FolderList->DeleteRoot();
@@ -184,7 +184,7 @@ void * FrameFavourThread::Entry()
 	return NULL;
 }
 
-void FbFrameFavour::OnFolderSelected(wxTreeEvent & event)
+void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
@@ -199,13 +199,13 @@ void FbFrameFavour::OnFolderSelected(wxTreeEvent & event)
 	}
 }
 
-void FbFrameFavour::UpdateBooklist()
+void FbFrameFolder::UpdateBooklist()
 {
 	FbFolderData * data = GetSelected();
 	if (data) FillByFolder(data);
 }
 
-void FbFrameFavour::FillByFolder(FbFolderData * data)
+void FbFrameFolder::FillByFolder(FbFolderData * data)
 {
 	int iFolder = fbNO_FOLDER;
 	switch (data->GetType()) {
@@ -225,7 +225,7 @@ void FbFrameFavour::FillByFolder(FbFolderData * data)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
+void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 {
 	FbFolderData * data = GetSelected();
 	if (!data) return;
@@ -245,7 +245,7 @@ void FbFrameFavour::OnFavoritesDel(wxCommandEvent & event)
 	m_BooksPanel.m_BookList->DeleteItems(items);
 }
 
-void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
+void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 {
 	wxString name = wxGetTextFromUser(_("Введите имя новой папки:"), _("Добавить папку?"), wxEmptyString, this);
 	if (name.IsEmpty()) return;
@@ -263,7 +263,7 @@ void FbFrameFavour::OnFolderAppend(wxCommandEvent & event)
 	FillFolders(id);
 }
 
-void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
+void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 {
 	FbFolderData * data = GetSelected();
 	if (!data) return;
@@ -287,7 +287,7 @@ void FbFrameFavour::OnFolderModify(wxCommandEvent & event)
 	FillFolders(id);
 }
 
-void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
+void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 {
 	FbFolderData * data = GetSelected();
 	if (!data) return;
@@ -317,7 +317,7 @@ void FbFrameFavour::OnFolderDelete(wxCommandEvent & event)
 	FillFolders(0);
 }
 
-FbFolderData * FbFrameFavour::GetSelected()
+FbFolderData * FbFrameFolder::GetSelected()
 {
 	wxTreeItemId item = m_FolderList->GetSelection();
 	if (item.IsOk())
@@ -326,7 +326,7 @@ FbFolderData * FbFrameFavour::GetSelected()
 		return NULL;
 }
 
-void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
+void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
 {
 	FbFolderData * data = GetSelected();
 	if (!data) return;
@@ -345,12 +345,12 @@ void FbFrameFavour::UpdateFolder(const int iFolder, const FbFolderType type)
 	if (bNeedUpdate) FillByFolder(data);
 }
 
-void FbFrameFavour::OnStart(wxCommandEvent & event)
+void FbFrameFolder::OnStart(wxCommandEvent & event)
 {
 	FbDownloader::Start();
 }
 
-void FbFrameFavour::OnPause(wxCommandEvent & event)
+void FbFrameFolder::OnPause(wxCommandEvent & event)
 {
 	FbDownloader::Pause();
 }

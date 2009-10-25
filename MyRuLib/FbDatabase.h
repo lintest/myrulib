@@ -24,11 +24,6 @@ class FbLowerFunction : public wxSQLite3ScalarFunction
 	virtual void Execute(wxSQLite3FunctionContext& ctx);
 };
 
-class FbGenreFunction : public wxSQLite3ScalarFunction
-{
-	virtual void Execute(wxSQLite3FunctionContext& ctx);
-};
-
 class FbDatabase: public wxSQLite3Database
 {
 	public:

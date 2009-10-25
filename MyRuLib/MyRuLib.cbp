@@ -203,10 +203,8 @@
 		<Unit filename="FbFrameBase.h" />
 		<Unit filename="FbFrameBaseThread.cpp" />
 		<Unit filename="FbFrameBaseThread.h" />
-		<Unit filename="FbFrameFavorites.cpp" />
-		<Unit filename="FbFrameFavorites.h" />
-		<Unit filename="FbFrameFavour.cpp" />
-		<Unit filename="FbFrameFavour.h" />
+		<Unit filename="FbFrameFolder.cpp" />
+		<Unit filename="FbFrameFolder.h" />
 		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
 		<Unit filename="FbFrameHtml.cpp" />

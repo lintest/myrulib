@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEFAVOUR_H__
-#define __FBFRAMEFAVOUR_H__
+#ifndef __FBFRAMEFOLDER_H__
+#define __FBFRAMEFOLDER_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -26,10 +26,10 @@ class FbFolderData: public wxTreeItemData
 		FbFolderType m_type;
 };
 
-class FbFrameFavour : public FbFrameBase
+class FbFrameFolder : public FbFrameBase
 {
 public:
-	FbFrameFavour(wxAuiMDIParentFrame * parent);
+	FbFrameFolder(wxAuiMDIParentFrame * parent);
 	void UpdateFolder(const int iFolder, const FbFolderType type);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
@@ -55,4 +55,4 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
-#endif // __FBFRAMEFAVOUR_H__
+#endif // __FBFRAMEFOLDER_H__
