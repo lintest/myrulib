@@ -1,6 +1,6 @@
 #include "FbDataOpenDlg.h"
 #include <wx/artprov.h>
-#include "XpmBitmaps.h"
+#include "FbLogoBitmap.h"
 #include "FbConst.h"
 
 BEGIN_EVENT_TABLE( FbDataOpenDlg, wxDialog )
@@ -18,15 +18,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, wxWindowID id )
 	wxBoxSizer* bSizerTop;
 	bSizerTop = new wxBoxSizer( wxHORIZONTAL );
 
-	#ifdef __WXMSW__
-	wxIcon icon(wxT("aaaa"));
-	wxBitmap bitmap;
-	bitmap.CopyFromIcon(icon);
-	#else
-	wxBitmap bitmap(home_xpm);
-	#endif
-
-	wxStaticBitmap * m_bitmap = new wxStaticBitmap( this, wxID_ANY, bitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticBitmap * m_bitmap = new wxStaticBitmap( this, wxID_ANY, FbLogoBitmap(), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerTop->Add( m_bitmap, 0, wxALL|wxALIGN_CENTER_VERTICAL, 10 );
 
 	wxBoxSizer* bSizerCtrl;

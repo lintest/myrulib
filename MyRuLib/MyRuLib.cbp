@@ -173,6 +173,8 @@
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
 		<Unit filename="ExternalDlg.h" />
+		<Unit filename="FbAboutDlg.cpp" />
+		<Unit filename="FbAboutDlg.h" />
 		<Unit filename="FbAuthorList.cpp" />
 		<Unit filename="FbAuthorList.h" />
 		<Unit filename="FbBookData.cpp" />

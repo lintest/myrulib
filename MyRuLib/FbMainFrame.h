@@ -17,7 +17,7 @@
 #include "ProgressBar.h"
 #include "LimitedTextCtrl.h"
 #include "FbFrameAuthor.h"
-#include "XpmBitmaps.h"
+#include "FbLogoBitmap.h"
 
 class FbMainFrame: public wxAuiMDIParentFrame
 {

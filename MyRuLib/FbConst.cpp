@@ -4,7 +4,7 @@ const wxString strProgramName = wxT("MyRuLib 0.12");
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 const wxString strMailAddr = wxT("mail@lintest.ru");
 
-const wxString strVersionInfo = strProgramName + wxT("(alpha)\n\n") + strHomePage +  wxT("\n") + strMailAddr;
+const wxString strVersionInfo = strHomePage +  wxT("\n") + strMailAddr;
 
 const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");

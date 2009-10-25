@@ -28,6 +28,7 @@
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
 #include "InfoCash.h"
+#include "FbAboutDlg.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -156,7 +157,8 @@ void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 
 void FbMainFrame::OnAbout(wxCommandEvent & event)
 {
-	wxMessageBox(strVersionInfo + wxT("\n\nDatabase:\n") + wxGetApp().GetAppData());
+	FbAboutDlg about(this);
+	about.ShowModal();
 }
 
 wxAuiToolBar * FbMainFrame::CreateToolBar()
