@@ -93,7 +93,7 @@ FbFrameMenu::MenuView::MenuView()
 	AppendCheckItem(ID_FILTER_USR, _("Фильтр: файлы пользователя"));
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
-	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмтр снизу"));
+	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
 	AppendSeparator();
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
 }
