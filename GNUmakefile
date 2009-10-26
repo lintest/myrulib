@@ -85,6 +85,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_BookExtractInfo.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
+	build/myrulib_FbAboutDlg.o \
 	build/myrulib_FbAuthorList.o \
 	build/myrulib_FbBookData.o \
 	build/myrulib_FbBookEvent.o \
@@ -206,6 +207,9 @@ build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbAboutDlg.o: ./MyRuLib/FbAboutDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbAuthorList.o: ./MyRuLib/FbAuthorList.cpp

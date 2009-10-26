@@ -92,7 +92,7 @@ bool FbInternetBook::DoDownload()
 
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
-	size_t size = in->GetSize();
+	size_t size = in->GetSize() ? in->GetSize() : 0xFFFFF;
 	size_t count = 0;
 	size_t pos = 0;
 

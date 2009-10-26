@@ -91,11 +91,11 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
 		CreateControls();
-		#ifdef __WXMSW__
+		#ifdef __WIN32__
 		wxIcon icon(wxT("aaaa"));
 		SetIcon(icon);
 		#else
-		wxBitmap bitmap(home_xpm);
+		FbLogoBitmap bitmap;
 		wxIcon icon;
 		icon.CopyFromBitmap(bitmap);
 		SetIcon(icon);

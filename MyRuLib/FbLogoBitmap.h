@@ -5,7 +5,7 @@
 #include "res/checked.xpm"
 #include "res/checkout.xpm"
 
-#ifndef __WXMSW__
+#ifndef __WIN32__
 #include "res/home.xpm"
 #endif
 
@@ -15,11 +15,11 @@ class FbLogoBitmap: public wxBitmap
 {
 	public:
 		FbLogoBitmap()
-			#ifndef __WXMSW__
+			#ifndef __WIN32__
 			:wxBitmap(home_xpm)
 			#endif
 		{
-			#ifdef __WXMSW__
+			#ifdef __WIN32__
 			wxIcon icon(wxT("aaaa"));
 			CopyFromIcon(icon);
 			#endif
@@ -31,7 +31,6 @@ class FbLogoBitmap: public wxBitmap
 			wxUnusedVar(nocheck_xpm);
 			wxUnusedVar(checked_xpm);
 			wxUnusedVar(checkout_xpm);
-			wxUnusedVar(home_xpm);
 		};
 };
 
