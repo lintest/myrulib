@@ -12,6 +12,7 @@
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
+	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
 END_EVENT_TABLE()
 
 class FrameAuthorThread: public FbFrameBaseThread
@@ -270,4 +271,8 @@ void FbFrameAuthor::UpdateBooklist()
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 		}
 	}
+}
+
+void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
+{
 }

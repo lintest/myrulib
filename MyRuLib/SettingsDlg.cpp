@@ -434,7 +434,7 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
-	FbDatabase & m_database = wxGetApp().GetConfigDatabase();
+	FbLocalDatabase database;
 	FbAutoCommit transaction(&m_database);
 
 	for (size_t i=0; i<m_deleted.Count(); i++) {

@@ -247,6 +247,20 @@ int FbDatabase::NewId(const int iParam)
 	return iValue;
 }
 
+wxString FbDatabase::GetText(const int param)
+{
+	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+
+	wxString sql = wxString::Format( wxT("SELECT text FROM %s WHERE id=?"), table);
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, param);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow())
+		return result.GetString(0);
+	else
+		return wxEmptyString;
+}
+
 FbCommonDatabase::FbCommonDatabase() :FbDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetAppData());

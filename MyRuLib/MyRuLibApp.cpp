@@ -21,9 +21,6 @@ IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
-	if (sizeof(wxFileOffset)<8)
-		wxMessageBox(_("Not support for files larger 2Gb!"));
-
 	if(!ConnectToDatabase()) {
 		wxLogFatalError(_("Error connecting to database!"));
 		return false;
@@ -48,6 +45,9 @@ int MyRuLibApp::OnExit()
 
 bool MyRuLibApp::ConnectToDatabase()
 {
+	FbConfigDatabase dbConfig;
+	dbConfig.Open();
+
 	m_datafile = FbStandardPaths().GetDataFile();
 
 	wxFileName logname = m_datafile;
@@ -55,8 +55,8 @@ bool MyRuLibApp::ConnectToDatabase()
 	wxLog *logger = new FbLogStream(logname.GetFullPath());
 	wxLog::SetActiveTarget(logger);
 
-	m_database.Open(m_datafile);
-	m_config.Open();
+	FbMainDatabase dbMain;
+	dbMain.Open(m_datafile);
 
 	FbParams().LoadParams();
 

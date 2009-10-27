@@ -34,7 +34,6 @@ public:
 	virtual int OnExit();
 	wxString GetAppData() const { return m_datafile; };
 	wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
-	FbConfigDatabase & GetConfigDatabase() { return m_config; };
 public:
 	wxCriticalSection m_DbSection;
 private:
@@ -42,8 +41,6 @@ private:
 	bool CreateDatabase();
 private:
 	wxString m_datafile;
-	FbMainDatabase m_database;
-	FbConfigDatabase m_config;
 };
 
 DECLARE_APP(MyRuLibApp)
