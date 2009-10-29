@@ -279,7 +279,7 @@ void ExternalDlg::FillBooks(const wxString &selections)
 void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
 {
 	wxString sql = wxT("\
-		SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence, bookseq.number, 0 as rating\
+		SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence, bookseq.number\
 		FROM books \
 			LEFT JOIN authors ON authors.id=books.id_author \
 			LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
@@ -343,7 +343,7 @@ wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxStrin
 void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
 {
 	wxString sql = wxT("\
-		SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, 0 as rating\
+		SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name\
 		FROM books \
 			LEFT JOIN authors ON authors.id=books.id_author \
 		WHERE books.id IN (%s) %s \

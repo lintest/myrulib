@@ -25,7 +25,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, authors.full_name as full_name, 0 as number \
+					states.rating, authors.full_name as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
