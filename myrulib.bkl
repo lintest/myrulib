@@ -65,6 +65,7 @@
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameBaseThread.cpp</sources>
+		<sources>MyRuLib/FbFrameDownld.cpp</sources>
 		<sources>MyRuLib/FbFrameFolder.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>
 		<sources>MyRuLib/FbFrameHtml.cpp</sources>

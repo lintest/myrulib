@@ -7,8 +7,6 @@
 #include "FbManager.h"
 #include "FbFrameBaseThread.h"
 #include "FbDownloader.h"
-#include "res/start.xpm"
-#include "res/pause.xpm"
 
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFolder::OnFavoritesDel)
@@ -73,8 +71,6 @@ wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxS
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->AddTool(ID_START, _("Старт"), wxBitmap(start_xpm), _("Начать загрузку файлов через интернет"));
-	toolbar->AddTool(ID_PAUSE, _("Стоп"), wxBitmap(pause_xpm), _("Остановить загрузку файлов через интернет"));
 	toolbar->Realize();
 	return toolbar;
 }
@@ -113,14 +109,6 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	m_FolderList->AppendItem(parent, strRating[3], -1, -1, new FbFolderData(3, FT_RATING));
 	m_FolderList->AppendItem(parent, strRating[2], -1, -1, new FbFolderData(2, FT_RATING));
 	m_FolderList->AppendItem(parent, strRating[1], -1, -1, new FbFolderData(1, FT_RATING));
-	m_FolderList->Expand(parent);
-
-	parent = m_FolderList->AppendItem(root, _("Закачки"));
-	m_FolderList->SetItemBold(parent, true);
-
-	m_FolderList->AppendItem(parent, wxT("Очередь"), -1, -1, new FbFolderData(1, FT_DOWNLOAD));
-	m_FolderList->AppendItem(parent, wxT("Готово"), -1, -1, new FbFolderData(-1, FT_DOWNLOAD));
-	m_FolderList->AppendItem(parent, wxT("Ошибки"), -1, -1, new FbFolderData(-2, FT_DOWNLOAD));
 	m_FolderList->Expand(parent);
 
 	m_FolderList->Thaw();

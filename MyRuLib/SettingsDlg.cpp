@@ -367,6 +367,7 @@ void SettingsDlg::FillTypelist()
 	while ( result.NextRow() ) {
 		wxString file_type = result.GetString(wxT("file_type"));
 		wxString command = result.GetString(wxT("command"));
+		if (file_type.IsEmpty()) continue;
 		if (file_type == wxT("exe")) continue;
 		item = m_typelist->InsertItem(item + 1, file_type);
 		m_typelist->SetItem(item, 1, command);

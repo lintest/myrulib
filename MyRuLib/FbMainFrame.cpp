@@ -22,6 +22,7 @@
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFolder.h"
+#include "FbFrameDownld.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "VacuumThread.h"
@@ -37,7 +38,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuTitle)
 	EVT_MENU(ID_FRAME_AUTHOR, FbMainFrame::OnMenuAuthor)
 	EVT_MENU(ID_FRAME_GENRES, FbMainFrame::OnMenuGenres)
-	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFavour)
+	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFolder)
+	EVT_MENU(ID_FRAME_DOWNLD, FbMainFrame::OnMenuDownld)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
@@ -389,11 +391,21 @@ void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 	}
 }
 
-void FbMainFrame::OnMenuFavour(wxCommandEvent & event)
+void FbMainFrame::OnMenuFolder(wxCommandEvent & event)
 {
 	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, true), FbFrameFolder);
 	if (!frame) {
 		frame = new FbFrameFolder(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
+	}
+}
+
+void FbMainFrame::OnMenuDownld(wxCommandEvent & event)
+{
+	FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameDownld);
+	if (!frame) {
+		frame = new FbFrameDownld(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
 		frame->Update();
 	}
@@ -432,9 +444,14 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
-	if (event.m_type == FT_DOWNLOAD) FbDownloader::Start();
-	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
-	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	if (event.m_type == FT_DOWNLOAD) {
+		FbDownloader::Start();
+		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameDownld);
+		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	} else {
+		FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
+		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	}
 }
 
 void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)

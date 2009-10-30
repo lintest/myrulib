@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEFOLDER_H__
-#define __FBFRAMEFOLDER_H__
+#ifndef __FBFRAMEDOWNLD_H__
+#define __FBFRAMEDOWNLD_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -14,10 +14,10 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
-class FbFrameFolder : public FbFrameBase
+class FbFrameDownld : public FbFrameBase
 {
 public:
-	FbFrameFolder(wxAuiMDIParentFrame * parent);
+	FbFrameDownld(wxAuiMDIParentFrame * parent);
 	void UpdateFolder(const int iFolder, const FbFolderType type);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
@@ -30,7 +30,6 @@ private:
 	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 	FbFolderData * GetSelected();
 private:
-	wxToolBar * m_ToolBar;
 	FbTreeListCtrl * m_FolderList;
 private:
 	void OnFavoritesDel(wxCommandEvent & event);
@@ -43,4 +42,4 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
-#endif // __FBFRAMEFOLDER_H__
+#endif // __FBFRAMEDOWNLD_H__
