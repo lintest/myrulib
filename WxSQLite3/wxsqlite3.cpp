@@ -175,7 +175,7 @@ inline wxLongLong ConvertStringToLongLong(const wxString& str, wxLongLong defVal
 }
 
 // ----------------------------------------------------------------------------
-// wxSQLite3Exception: class 
+// wxSQLite3Exception: class
 // ----------------------------------------------------------------------------
 
 wxSQLite3Exception::wxSQLite3Exception(int errorCode, const wxString& errorMsg)
@@ -407,6 +407,9 @@ int wxSQLite3ResultSet::GetInt(int columnIndex, int nullValue /* = 0 */)
 int wxSQLite3ResultSet::GetInt(const wxString& columnName, int nullValue /* = 0 */)
 {
   int columnIndex = FindColumnIndex(columnName);
+  //DENIS KANDRASHIN 2009-10-29 - BEGIN - If field not found return NULL
+  if (columnIndex == wxNOT_FOUND) return nullValue;
+  //DENIS KANDRASHIN - END
   return GetInt(columnIndex, nullValue);
 }
 
@@ -462,6 +465,9 @@ wxString wxSQLite3ResultSet::GetString(int columnIndex, const wxString& nullValu
 wxString wxSQLite3ResultSet::GetString(const wxString& columnName, const wxString& nullValue /* = wxEmptyString */)
 {
   int columnIndex = FindColumnIndex(columnName);
+  //DENIS KANDRASHIN 2009-10-29 - BEGIN - If field not found return NULL
+  if (columnIndex == wxNOT_FOUND) return nullValue;
+  // DENIS - END
   return GetString(columnIndex, nullValue);
 }
 
@@ -690,6 +696,10 @@ int wxSQLite3ResultSet::FindColumnIndex(const wxString& columnName)
       }
     }
   }
+
+  //DENIS KANDRASHIN 2009-10-29 - BEGIN - If field not found return wxNOT_FOUND
+  return wxNOT_FOUND;
+  // DENIS - END
 
   throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
 }
@@ -1420,7 +1430,7 @@ int wxSQLite3Statement::GetParamCount()
 int wxSQLite3Statement::GetParamIndex(const wxString& paramName)
 {
   CheckStmt();
-  
+
   wxCharBuffer strParamName = wxConvUTF8.cWC2MB(paramName.wc_str(*wxConvCurrent));
   const char* localParamName = strParamName;
 
@@ -2177,7 +2187,7 @@ void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxMemoryBu
 #else
   wxUnusedVar(key);
 #endif
-  
+
   pBackup = sqlite3_backup_init((sqlite3*) m_db, localTargetDatabaseName, pSrc, "main");
   if (pBackup == 0)
   {
@@ -2515,25 +2525,25 @@ wxLongLong wxSQLite3Database::GetLastRowId()
   return wxLongLong(sqlite3_last_insert_rowid((sqlite3*) m_db));
 }
 
-wxSQLite3Blob wxSQLite3Database::GetReadOnlyBlob(wxLongLong rowId, 
-                                                 const wxString& columnName, 
-                                                 const wxString& tableName, 
+wxSQLite3Blob wxSQLite3Database::GetReadOnlyBlob(wxLongLong rowId,
+                                                 const wxString& columnName,
+                                                 const wxString& tableName,
                                                  const wxString& dbName)
 {
   return GetBlob(rowId, columnName, tableName, dbName, false);
 }
 
-wxSQLite3Blob wxSQLite3Database::GetWritableBlob(wxLongLong rowId, 
-                                                 const wxString& columnName, 
-                                                 const wxString& tableName, 
+wxSQLite3Blob wxSQLite3Database::GetWritableBlob(wxLongLong rowId,
+                                                 const wxString& columnName,
+                                                 const wxString& tableName,
                                                  const wxString& dbName)
 {
   return GetBlob(rowId, columnName, tableName, dbName, true);
 }
 
-wxSQLite3Blob wxSQLite3Database::GetBlob(wxLongLong rowId, 
-                                         const wxString& columnName, 
-                                         const wxString& tableName, 
+wxSQLite3Blob wxSQLite3Database::GetBlob(wxLongLong rowId,
+                                         const wxString& columnName,
+                                         const wxString& tableName,
                                          const wxString& dbName,
                                          bool writable)
 {
@@ -2610,8 +2620,8 @@ bool wxSQLite3Database::CreateFunction(const wxString& funcName, int argCount, w
   const char* localFuncName = strFuncName;
   int rc = sqlite3_create_function((sqlite3*) m_db, localFuncName, argCount,
                                    SQLITE_UTF8, &function,
-                                   NULL, 
-                                   (void (*)(sqlite3_context*,int,sqlite3_value**)) wxSQLite3FunctionContext::ExecAggregateStep, 
+                                   NULL,
+                                   (void (*)(sqlite3_context*,int,sqlite3_value**)) wxSQLite3FunctionContext::ExecAggregateStep,
                                    (void (*)(sqlite3_context*)) wxSQLite3FunctionContext::ExecAggregateFinalize);
   return rc == SQLITE_OK;
 }
@@ -2956,7 +2966,7 @@ bool wxSQLite3Database::Randomness(int n, wxMemoryBuffer& random)
 }
 
 // ----------------------------------------------------------------------------
-// wxSQLite3FunctionContext: class providing the function context 
+// wxSQLite3FunctionContext: class providing the function context
 //                           for user defined functions
 // ----------------------------------------------------------------------------
 
@@ -3224,8 +3234,8 @@ void wxSQLite3FunctionContext::ExecRollbackHook(void* hook)
 }
 
 /* static */
-void wxSQLite3FunctionContext::ExecUpdateHook(void* hook, int type, 
-                                              const char* database, const char* table, 
+void wxSQLite3FunctionContext::ExecUpdateHook(void* hook, int type,
+                                              const char* database, const char* table,
                                               wxsqlite_int64 rowid)
 {
 #if wxUSE_UNICODE
@@ -3249,13 +3259,13 @@ static const wxChar* authCodeString[] =
 { wxT("SQLITE_COPY"),              wxT("SQLITE_CREATE_INDEX"),      wxT("SQLITE_CREATE_TABLE"),
   wxT("SQLITE_CREATE_TEMP_INDEX"), wxT("SQLITE_CREATE_TEMP_TABLE"), wxT("SQLITE_CREATE_TEMP_TRIGGER"),
   wxT("SQLITE_CREATE_TEMP_VIEW"),  wxT("SQLITE_CREATE_TRIGGER"),    wxT("SQLITE_CREATE_VIEW"),
-  wxT("SQLITE_DELETE"),            wxT("SQLITE_DROP_INDEX"),        wxT("SQLITE_DROP_TABLE"), 
-  wxT("SQLITE_DROP_TEMP_INDEX"),   wxT("SQLITE_DROP_TEMP_TABLE"),   wxT("SQLITE_DROP_TEMP_TRIGGER"), 
-  wxT("SQLITE_DROP_TEMP_VIEW"),    wxT("SQLITE_DROP_TRIGGER"),      wxT("SQLITE_DROP_VIEW"), 
-  wxT("SQLITE_INSERT"),            wxT("SQLITE_PRAGMA"),            wxT("SQLITE_READ"), 
-  wxT("SQLITE_SELECT"),            wxT("SQLITE_TRANSACTION"),       wxT("SQLITE_UPDATE"), 
-  wxT("SQLITE_ATTACH"),            wxT("SQLITE_DETACH"),            wxT("SQLITE_ALTER_TABLE"), 
-  wxT("SQLITE_REINDEX"),           wxT("SQLITE_ANALYZE"),           wxT("SQLITE_CREATE_VTABLE"), 
+  wxT("SQLITE_DELETE"),            wxT("SQLITE_DROP_INDEX"),        wxT("SQLITE_DROP_TABLE"),
+  wxT("SQLITE_DROP_TEMP_INDEX"),   wxT("SQLITE_DROP_TEMP_TABLE"),   wxT("SQLITE_DROP_TEMP_TRIGGER"),
+  wxT("SQLITE_DROP_TEMP_VIEW"),    wxT("SQLITE_DROP_TRIGGER"),      wxT("SQLITE_DROP_VIEW"),
+  wxT("SQLITE_INSERT"),            wxT("SQLITE_PRAGMA"),            wxT("SQLITE_READ"),
+  wxT("SQLITE_SELECT"),            wxT("SQLITE_TRANSACTION"),       wxT("SQLITE_UPDATE"),
+  wxT("SQLITE_ATTACH"),            wxT("SQLITE_DETACH"),            wxT("SQLITE_ALTER_TABLE"),
+  wxT("SQLITE_REINDEX"),           wxT("SQLITE_ANALYZE"),           wxT("SQLITE_CREATE_VTABLE"),
   wxT("SQLITE_DROP_VTABLE"),       wxT("SQLITE_FUNCTION"),          wxT("SQLITE_SAVEPOINT")
 };
 
@@ -3282,7 +3292,7 @@ wxSQLite3Transaction::wxSQLite3Transaction(wxSQLite3Database* db, wxSQLite3Trans
   try
   {
     m_database->Begin(transactionType);
-  } 
+  }
   catch (...)
   {
     m_database = NULL; // Flag that transaction is not active
@@ -3305,7 +3315,7 @@ void wxSQLite3Transaction::Commit()
   }
   catch (...)
   {
-    m_database->Rollback();		
+    m_database->Rollback();
   }
   m_database = NULL;
 }
@@ -3318,7 +3328,7 @@ void wxSQLite3Transaction::Rollback()
   }
   catch (...)
   {
-    m_database->Rollback();		
+    m_database->Rollback();
   }
   m_database = NULL;
 }

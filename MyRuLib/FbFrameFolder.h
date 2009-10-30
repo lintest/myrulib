@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEFAVOUR_H__
-#define __FBFRAMEFAVOUR_H__
+#ifndef __FBFRAMEFOLDER_H__
+#define __FBFRAMEFOLDER_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -14,22 +14,10 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
-class FbFolderData: public wxTreeItemData
-{
-	public:
-		FbFolderData(const int id, const FbFolderType type = FT_FOLDER)
-			: m_id(id), m_type(type) {};
-		const int GetId() { return m_id; };
-		const FbFolderType GetType() { return m_type; };
-	private:
-		int m_id;
-		FbFolderType m_type;
-};
-
-class FbFrameFavour : public FbFrameBase
+class FbFrameFolder : public FbFrameBase
 {
 public:
-	FbFrameFavour(wxAuiMDIParentFrame * parent);
+	FbFrameFolder(wxAuiMDIParentFrame * parent);
 	void UpdateFolder(const int iFolder, const FbFolderType type);
 protected:
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
@@ -55,4 +43,4 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
-#endif // __FBFRAMEFAVOUR_H__
+#endif // __FBFRAMEFOLDER_H__

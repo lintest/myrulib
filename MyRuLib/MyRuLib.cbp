@@ -173,6 +173,8 @@
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
 		<Unit filename="ExternalDlg.h" />
+		<Unit filename="FbAboutDlg.cpp" />
+		<Unit filename="FbAboutDlg.h" />
 		<Unit filename="FbAuthorList.cpp" />
 		<Unit filename="FbAuthorList.h" />
 		<Unit filename="FbBookData.cpp" />
@@ -191,6 +193,8 @@
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
+		<Unit filename="FbDataOpenDlg.cpp" />
+		<Unit filename="FbDataOpenDlg.h" />
 		<Unit filename="FbDatabase.cpp" />
 		<Unit filename="FbDatabase.h" />
 		<Unit filename="FbDownloader.cpp" />
@@ -199,14 +203,10 @@
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
-		<Unit filename="FbFrameBaseMenu.cpp" />
-		<Unit filename="FbFrameBaseMenu.h" />
 		<Unit filename="FbFrameBaseThread.cpp" />
 		<Unit filename="FbFrameBaseThread.h" />
-		<Unit filename="FbFrameFavorites.cpp" />
-		<Unit filename="FbFrameFavorites.h" />
-		<Unit filename="FbFrameFavour.cpp" />
-		<Unit filename="FbFrameFavour.h" />
+		<Unit filename="FbFrameFolder.cpp" />
+		<Unit filename="FbFrameFolder.h" />
 		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
 		<Unit filename="FbFrameHtml.cpp" />
@@ -219,6 +219,7 @@
 		<Unit filename="FbGenres.h" />
 		<Unit filename="FbLogStream.cpp" />
 		<Unit filename="FbLogStream.h" />
+		<Unit filename="FbLogoBitmap.h" />
 		<Unit filename="FbMainFrame.cpp" />
 		<Unit filename="FbMainFrame.h" />
 		<Unit filename="FbMainMenu.cpp" />

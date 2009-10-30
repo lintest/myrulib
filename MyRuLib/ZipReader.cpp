@@ -54,10 +54,11 @@ ZipReader::ZipReader(int id, bool bShowError)
 	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	FbCommonDatabase database;
-	BookExtractArray items(database, id);
 
-	OpenDownload(items.md5sum);
+	OpenDownload(database);
 	if (IsOK()) return;
+
+	BookExtractArray items(database, id);
 
 	wxString file_name;
 	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
@@ -105,21 +106,40 @@ void ZipReader::Init()
 	return;
 }
 
-void ZipReader::OpenDownload(const wxString &md5sum)
+void ZipReader::OpenDownload(FbDatabase &database)
 {
-	wxFileName zip_file = md5sum + wxT(".zip");
+	wxString md5sum;
+
+	{
+		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if ( result.NextRow() ) md5sum = result.GetString(0);
+		else return;
+	}
+
+	wxFileName zip_file = md5sum;
 	zip_file.SetPath( FbStandardPaths().GetUserConfigDir() );
-
 	m_zipOk = zip_file.FileExists();
-	if (!m_zipOk) return;
+	if (m_zipOk) {
+		m_file = new wxFFileInputStream(zip_file.GetFullPath());
+		m_zip = NULL;
+		m_result = m_file;
+		m_fileOk = true;
+		return;
+	}
 
-	m_file = new wxFFileInputStream(zip_file.GetFullPath());
-	m_zip = new wxZipInputStream(*m_file, conv);
-	m_result = m_zip;
-
-	if (wxZipEntry * entry = m_zip->GetNextEntry()) {
-		m_fileOk = m_zip->OpenEntry(*entry);
-		delete entry;
+	zip_file.SetExt(wxT(".zip"));
+	m_zipOk = zip_file.FileExists();
+	if (m_zipOk) {
+		m_file = new wxFFileInputStream(zip_file.GetFullPath());
+		m_zip = new wxZipInputStream(*m_file, conv);
+		m_result = m_zip;
+		if (wxZipEntry * entry = m_zip->GetNextEntry()) {
+			m_fileOk = m_zip->OpenEntry(*entry);
+			delete entry;
+		}
 	}
 }
 
@@ -245,7 +265,7 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		id = database.NewId(DB_NEW_ZIPFILE);
 	}
 
-	FbAutoCommit transaction(&database);
+	FbAutoCommit transaction(database);
 
 	int count = 0;
 	{

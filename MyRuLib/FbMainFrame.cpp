@@ -18,15 +18,18 @@
 #include "FbManager.h"
 #include "SettingsDlg.h"
 #include "ImpThread.h"
+#include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
-#include "FbFrameFavour.h"
+#include "FbFrameFolder.h"
+#include "FbFrameDownld.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "VacuumThread.h"
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
 #include "InfoCash.h"
+#include "FbAboutDlg.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -35,11 +38,13 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuTitle)
 	EVT_MENU(ID_FRAME_AUTHOR, FbMainFrame::OnMenuAuthor)
 	EVT_MENU(ID_FRAME_GENRES, FbMainFrame::OnMenuGenres)
-	EVT_MENU(ID_FRAME_FAVOUR, FbMainFrame::OnMenuFavour)
+	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFolder)
+	EVT_MENU(ID_FRAME_DOWNLD, FbMainFrame::OnMenuDownld)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
+	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
@@ -83,20 +88,16 @@ FbMainFrame::~FbMainFrame()
 	m_FrameManager.UnInit();
 }
 
-#ifndef __WXMSW__
-#include "res/home.xpm"
-#endif
-
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
 	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
 		CreateControls();
-		#ifdef __WXMSW__
+		#ifdef __WIN32__
 		wxIcon icon(wxT("aaaa"));
 		SetIcon(icon);
 		#else
-		wxBitmap bitmap(home_xpm);
+		FbLogoBitmap bitmap;
 		wxIcon icon;
 		icon.CopyFromBitmap(bitmap);
 		SetIcon(icon);
@@ -158,7 +159,8 @@ void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 
 void FbMainFrame::OnAbout(wxCommandEvent & event)
 {
-	wxMessageBox(strVersionInfo + wxT("\n\nDatabase:\n") + wxGetApp().GetAppData());
+	FbAboutDlg about(this);
+	about.ShowModal();
 }
 
 wxAuiToolBar * FbMainFrame::CreateToolBar()
@@ -197,8 +199,8 @@ void FbMainFrame::OnExit(wxCommandEvent & event)
 	Close();
 }
 
-void FbMainFrame::OnNewZip( wxCommandEvent& event ){
-
+void FbMainFrame::OnNewZip( wxCommandEvent& event )
+{
 	wxFileDialog dlg (
 		this,
 		_("Выберите zip-файл для добавления в библиотеку…"),
@@ -389,11 +391,21 @@ void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 	}
 }
 
-void FbMainFrame::OnMenuFavour(wxCommandEvent & event)
+void FbMainFrame::OnMenuFolder(wxCommandEvent & event)
 {
-	FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, true), FbFrameFavour);
+	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, true), FbFrameFolder);
 	if (!frame) {
-		frame = new FbFrameFavour(this);
+		frame = new FbFrameFolder(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
+	}
+}
+
+void FbMainFrame::OnMenuDownld(wxCommandEvent & event)
+{
+	FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameDownld);
+	if (!frame) {
+		frame = new FbFrameDownld(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
 		frame->Update();
 	}
@@ -432,9 +444,14 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
-	if (event.m_type == FT_DOWNLOAD) FbDownloader::Start();
-	FbFrameFavour * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFavour);
-	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	if (event.m_type == FT_DOWNLOAD) {
+		FbDownloader::Start();
+		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameDownld);
+		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	} else {
+		FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
+		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	}
 }
 
 void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
@@ -477,4 +494,10 @@ void FbMainFrame::OnUpdateAll(wxCommandEvent & event)
 		}
 	}
 
+}
+
+void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
+{
+	FbDataOpenDlg dlg(this);
+	dlg.ShowModal();
 }

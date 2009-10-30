@@ -132,12 +132,6 @@ wxString FbParams::DefaultText(int param)
 	switch (param) {
 		case DB_LIBRARY_DIR:
 			return wxGetApp().GetAppPath();
-		case FB_DOWNLOAD_DIR: {
-			wxFileName filename;
-			filename.SetName(wxT("download"));
-			filename.SetPath(wxGetApp().GetAppPath());
-			return filename.GetFullPath();
-		}
 		case DB_WANRAIK_DIR:
 			return wxGetApp().GetAppPath();
 		case FB_LIBRUSEC_URL:

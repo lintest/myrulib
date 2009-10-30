@@ -37,6 +37,7 @@ private:
 	void OnAuthorSelected(wxTreeEvent & event);
 	void OnLetterClicked(wxCommandEvent& event);
 	void OnExternal(wxCommandEvent& event);
+	void OnCharEvent(wxKeyEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

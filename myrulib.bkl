@@ -49,6 +49,7 @@
 		<sources>MyRuLib/BookExtractInfo.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
+		<sources>MyRuLib/FbAboutDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
 		<sources>MyRuLib/FbBookEvent.cpp</sources>
@@ -59,12 +60,13 @@
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
+		<sources>MyRuLib/FbDataOpenDlg.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
-		<sources>MyRuLib/FbFrameBaseMenu.cpp</sources>
 		<sources>MyRuLib/FbFrameBaseThread.cpp</sources>
-		<sources>MyRuLib/FbFrameFavour.cpp</sources>
+		<sources>MyRuLib/FbFrameDownld.cpp</sources>
+		<sources>MyRuLib/FbFrameFolder.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>
 		<sources>MyRuLib/FbFrameHtml.cpp</sources>
 		<sources>MyRuLib/FbFrameGenres.cpp</sources>

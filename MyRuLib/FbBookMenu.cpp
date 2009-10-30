@@ -1,7 +1,6 @@
 #include "FbBookMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "MyRuLibApp.h"
 
 WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
@@ -58,7 +57,8 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 void FbBookMenu::LoadFolders()
 {
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
-	wxSQLite3ResultSet result = wxGetApp().GetConfigDatabase().ExecuteQuery(sql);
+	FbLocalDatabase database;
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	int id = ID_FAVORITES_ADD;
 	while (result.NextRow()) {
 		FbMenuFolderItem * item = new FbMenuFolderItem;

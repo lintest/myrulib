@@ -367,6 +367,7 @@ void SettingsDlg::FillTypelist()
 	while ( result.NextRow() ) {
 		wxString file_type = result.GetString(wxT("file_type"));
 		wxString command = result.GetString(wxT("command"));
+		if (file_type.IsEmpty()) continue;
 		if (file_type == wxT("exe")) continue;
 		item = m_typelist->InsertItem(item + 1, file_type);
 		m_typelist->SetItem(item, 1, command);
@@ -434,8 +435,8 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
-	FbDatabase & m_database = wxGetApp().GetConfigDatabase();
-	FbAutoCommit transaction(&m_database);
+	FbLocalDatabase database;
+	FbAutoCommit transaction(m_database);
 
 	for (size_t i=0; i<m_deleted.Count(); i++) {
 		wxString sql = wxT("DELETE FROM types WHERE file_type=?");

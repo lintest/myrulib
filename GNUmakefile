@@ -85,6 +85,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_BookExtractInfo.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
+	build/myrulib_FbAboutDlg.o \
 	build/myrulib_FbAuthorList.o \
 	build/myrulib_FbBookData.o \
 	build/myrulib_FbBookEvent.o \
@@ -95,12 +96,13 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbConfigDlg.o \
 	build/myrulib_FbConst.o \
 	build/myrulib_FbDatabase.o \
+	build/myrulib_FbDataOpenDlg.o \
 	build/myrulib_FbDownloader.o \
 	build/myrulib_FbFrameAuthor.o \
 	build/myrulib_FbFrameBase.o \
-	build/myrulib_FbFrameBaseMenu.o \
 	build/myrulib_FbFrameBaseThread.o \
-	build/myrulib_FbFrameFavour.o \
+	build/myrulib_FbFrameDownld.o \
+	build/myrulib_FbFrameFolder.o \
 	build/myrulib_FbFrameInfo.o \
 	build/myrulib_FbFrameHtml.o \
 	build/myrulib_FbFrameGenres.o \
@@ -208,6 +210,9 @@ build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbAboutDlg.o: ./MyRuLib/FbAboutDlg.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbAuthorList.o: ./MyRuLib/FbAuthorList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -238,6 +243,9 @@ build/myrulib_FbConst.o: ./MyRuLib/FbConst.cpp
 build/myrulib_FbDatabase.o: ./MyRuLib/FbDatabase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbDataOpenDlg.o: ./MyRuLib/FbDataOpenDlg.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -247,13 +255,13 @@ build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
 build/myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameBaseMenu.o: ./MyRuLib/FbFrameBaseMenu.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build/myrulib_FbFrameBaseThread.o: ./MyRuLib/FbFrameBaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameFavour.o: ./MyRuLib/FbFrameFavour.cpp
+build/myrulib_FbFrameDownld.o: ./MyRuLib/FbFrameDownld.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFrameFolder.o: ./MyRuLib/FbFrameFolder.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp

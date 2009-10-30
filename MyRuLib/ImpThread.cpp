@@ -88,30 +88,8 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
-wxSQLite3Statement ImportThread::GetPreparedStatement(PSItem psItem)
-{
-	return m_database.PrepareStatement(GetSQL(psItem));
-}
-
 void ImportThread::OnExit()
 {
-}
-
-wxString ImportThread::GetSQL(PSItem psItem)
-{
-	switch (psItem) {
-		case psFindBySize: return wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (md5sum='' OR md5sum IS NULL)");
-		case psFindByMd5:  return wxT("SELECT id FROM books WHERE md5sum=?");
-		case psUpdateMd5:  return wxT("UPDATE books SET md5sum=? WHERE id=?");
-		case psSearchFile: return wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
-		case psAppendFile: return wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
-		case psSearchArch: return wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
-		case psAppendArch: return wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
-		case psAppendBook: return wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, created, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-		case psAppendSeqs: return wxT("INSERT INTO bookseq(id_book, id_seq, number, id_author) VALUES (?,?,?,?)");
-		case psLastMember: return wxEmptyString;
-	}
-	return wxEmptyString;
 }
 
 bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
@@ -169,14 +147,14 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 
 void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, int id_archive)
 {
+	wxString sql = wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, created, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	long today = 0;
 	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
-		wxSQLite3Statement stmt = GetPreparedStatement(psAppendBook);
-
-
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, id_archive);
 		stmt.Bind(3, info.authors[i].id);
@@ -191,7 +169,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 		stmt.ExecuteUpdate();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
-			wxSQLite3Statement stmt = GetPreparedStatement(psAppendSeqs);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, info.sequences[j].id);
 			stmt.Bind(3, (int)info.sequences[j].number);
@@ -203,7 +181,8 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 
 int ImportThread::FindByMD5(const wxString &md5sum)
 {
-	wxSQLite3Statement stmt = GetPreparedStatement(psFindByMd5);
+	wxString sql = wxT("SELECT id FROM books WHERE md5sum=?");
+	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, md5sum);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0) : 0;
@@ -214,7 +193,8 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 	wxArrayInt books;
 
 	{
-		wxSQLite3Statement stmt = GetPreparedStatement(psFindBySize);
+		wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (md5sum='' OR md5sum IS NULL)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, (wxLongLong)size);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		while (result.NextRow()) {
@@ -230,7 +210,8 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 		info.md5only = true;
 		LoadXml(book.GetZip(), info);
 
-		wxSQLite3Statement stmt = GetPreparedStatement(psUpdateMd5);
+		wxString sql = wxT("UPDATE books SET md5sum=? WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, info.md5sum);
 		stmt.Bind(2, books[i]);
 		stmt.ExecuteUpdate();
@@ -267,7 +248,9 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
 
 void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path)
 {
-	wxSQLite3Statement stmt = GetPreparedStatement(psSearchFile);
+	wxString sql = wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
+
+	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, id_book);
 	stmt.Bind(2, id_archive);
 	stmt.Bind(3, id_book);
@@ -279,25 +262,27 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 		old_name = result.GetString(0);
 		old_path = result.GetString(1);
 	}
-
 	if (old_name == new_name && old_path == new_path) {
 		wxLogWarning(_("File already exists %s %s"), new_path.c_str(), new_name.c_str());
 		return;
 	}
-
 	wxLogWarning(_("Add alternative %s %s"), new_path.c_str(), new_name.c_str());
-	stmt = GetPreparedStatement(psAppendFile);
-	stmt.Bind(1, id_book);
-	stmt.Bind(2, id_archive);
-	stmt.Bind(3, new_name);
-	stmt.Bind(4, new_path);
-	stmt.ExecuteUpdate();
+	{
+		wxString sql = wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, id_book);
+		stmt.Bind(2, id_archive);
+		stmt.Bind(3, new_name);
+		stmt.Bind(4, new_path);
+		stmt.ExecuteUpdate();
+	}
 }
 
 int ImportThread::AddArchive(const wxString &name, const wxString &path, const int size, const int count)
 {
 	{
-		wxSQLite3Statement stmt = GetPreparedStatement(psSearchArch);
+		wxString sql = wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, name);
 		stmt.Bind(2, path);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -306,7 +291,8 @@ int ImportThread::AddArchive(const wxString &name, const wxString &path, const i
 
 	int id = m_database.NewId(DB_NEW_ARCHIVE);
 	{
-		wxSQLite3Statement stmt = GetPreparedStatement(psAppendArch);
+		wxString sql = wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id);
 		stmt.Bind(2, name);
 		stmt.Bind(3, path);
@@ -334,8 +320,6 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 	wxCriticalSectionLocker enter(sm_queue);
 
 	wxLogInfo(_("Import file %s"), zipname.c_str());
-
-	FbAutoCommit transaction(GetDatabase());
 
 	wxFFileInputStream in(zipname);
 	if ( !in.IsOk() ){
@@ -467,8 +451,6 @@ DirImportThread::DirImportThread(const wxString &dirname)
 void *DirImportThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
-
-	FbAutoCommit transaction(GetDatabase());
 
 	wxLogInfo(_("Start import directory %s"), m_dirname.c_str());
 

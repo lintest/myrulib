@@ -10,33 +10,19 @@
 class ImportThread : public BaseThread
 {
 public:
+	ImportThread(): m_transaction(m_database) {};
 	virtual void OnExit();
 	bool ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive);
 	int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
 protected:
-	FbCommonDatabase & GetDatabase() { return m_database; };
+	FbCommonDatabase m_database;
+	FbAutoCommit m_transaction;
 private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	void AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, const int id_archive);
 	void AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path);
 	int FindByMD5(const wxString &sha1sum);
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
-private:
-	enum PSItem {
-		psFindBySize = 0,
-		psFindByMd5,
-		psUpdateMd5,
-		psSearchFile,
-		psAppendFile,
-		psSearchArch,
-		psAppendArch,
-		psAppendBook,
-		psAppendSeqs,
-		psLastMember,
-	};
-	wxSQLite3Statement GetPreparedStatement(PSItem psItem);
-	wxString GetSQL(PSItem psItem);
-	FbCommonDatabase m_database;
 };
 
 class ZipImportThread : public ImportThread

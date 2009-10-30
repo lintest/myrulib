@@ -211,25 +211,6 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 	ctx.SetResult(text);
 }
 
-void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-	int argCount = ctx.GetArgCount();
-	if (argCount != 2) {
-		ctx.SetResultError(wxString::Format(_("GENRE called with wrong number of arguments: %d."), argCount));
-		return;
-	}
-	wxString text = ctx.GetString(0);
-	wxString genre = ctx.GetString(1);
-
-	for (size_t i=0; i<text.Length()/2; i++) {
-		if ( text.Mid(i*2, 2) == genre ) {
-			ctx.SetResult(true);
-			return;
-		}
-	}
-	ctx.SetResult(false);
-}
-
 void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 {
 	try {
@@ -264,6 +245,20 @@ int FbDatabase::NewId(const int iParam)
 		stmt.ExecuteUpdate();
 	}
 	return iValue;
+}
+
+wxString FbDatabase::GetText(const int param)
+{
+	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+
+	wxString sql = wxString::Format( wxT("SELECT text FROM %s WHERE id=?"), table);
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, param);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow())
+		return result.GetString(0);
+	else
+		return wxEmptyString;
 }
 
 FbCommonDatabase::FbCommonDatabase() :FbDatabase()

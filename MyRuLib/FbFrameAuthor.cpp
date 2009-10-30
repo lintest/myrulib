@@ -7,10 +7,12 @@
 #include "FbClientData.h"
 #include "ExternalDlg.h"
 #include "FbFrameBaseThread.h"
+#include "FbMainMenu.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
+	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
 END_EVENT_TABLE()
 
 class FrameAuthorThread: public FbFrameBaseThread
@@ -36,7 +38,7 @@ FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
 
 void FbFrameAuthor::CreateControls()
 {
-	SetMenuBar(new FbFrameBaseMenu);
+	SetMenuBar(new FbFrameMenu);
 
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -188,7 +190,7 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, authors.full_name as full_name, 0 as number \
+					states.rating, authors.full_name as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
 					LEFT JOIN authors ON sub.id_author = authors.id \
@@ -228,7 +230,6 @@ void * FrameAuthorThread::Entry()
 		}
 
 		wxString sql = GetSQL(wxT("books.id_author=?"));
-		FbGenreFunction function;
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_author);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -270,4 +271,8 @@ void FbFrameAuthor::UpdateBooklist()
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 		}
 	}
+}
+
+void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
+{
 }

@@ -2,7 +2,7 @@
 #include "FbBookList.h"
 #include "FbConst.h"
 #include "FbBookData.h"
-#include "XpmBitmaps.h"
+#include "FbLogoBitmap.h"
 
 FbBookList::FbBookList(wxWindow *parent, wxWindowID id, long style)
 	:FbTreeListCtrl(parent, id, style)

@@ -17,12 +17,14 @@
 #include "ProgressBar.h"
 #include "LimitedTextCtrl.h"
 #include "FbFrameAuthor.h"
+#include "FbLogoBitmap.h"
 
 class FbMainFrame: public wxAuiMDIParentFrame
 {
 public:
 	FbMainFrame();
 	virtual ~FbMainFrame();
+	virtual wxString GetTitle() const;
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
@@ -31,7 +33,6 @@ private:
 	void ShowPane(const wxString &pane_name);
 	void FindAuthor(const wxString &text);
 	void FindTitle(const wxString &text);
-	virtual wxString GetTitle() const;
 	wxWindow * FindFrameById(const int id, bool bActivate = false);
 private:
 	wxTextCtrl m_FindAuthor;
@@ -46,6 +47,7 @@ private:
 	void OnOpenWeb(wxCommandEvent & event);
 	void OnAbout(wxCommandEvent & event);
 	void OnDatabaseInfo(wxCommandEvent & event);
+	void OnDatabaseOpen(wxCommandEvent & event);
 	void OnInfoCommand(wxCommandEvent & event);
 	void OnFindAuthor(wxCommandEvent& event);
 	void OnFindAuthorEnter(wxCommandEvent& event);
@@ -56,7 +58,8 @@ private:
 	void OnMenuConfig(wxCommandEvent& event);
 	void OnMenuTitle(wxCommandEvent& event);
 	void OnMenuGenres(wxCommandEvent & event);
-	void OnMenuFavour(wxCommandEvent & event);
+	void OnMenuFolder(wxCommandEvent & event);
+	void OnMenuDownld(wxCommandEvent & event);
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );
