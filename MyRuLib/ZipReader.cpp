@@ -130,7 +130,7 @@ void ZipReader::OpenDownload(FbDatabase &database)
 		return;
 	}
 
-	zip_file.SetExt(wxT(".zip"));
+	zip_file.SetExt(wxT("zip"));
 	m_zipOk = zip_file.FileExists();
 	if (m_zipOk) {
 		m_file = new wxFFileInputStream(zip_file.GetFullPath());
