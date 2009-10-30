@@ -31,6 +31,7 @@ enum FbParamKey {
 	FB_VIEW_GENRES	 = 131,
 	FB_VIEW_SEARCH	 = 132,
 	FB_VIEW_FOLDER	 = 133,
+	FB_VIEW_DOWNLD	 = 134,
 	FB_MODE_AUTHOR	 = 135,
 	FB_MODE_GENRES	 = 136,
 	FB_MODE_SEARCH	 = 137,
@@ -43,6 +44,7 @@ enum FbParamKey {
 	FB_LIBRUSEC_URL   = 150,
 	FB_USE_PROXY	  = 151,
 	FB_PROXY_ADDR	  = 152,
+	FB_AUTO_DOWNLD    = 153,
 };
 
 class ParamItem

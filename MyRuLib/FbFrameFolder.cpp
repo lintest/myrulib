@@ -13,8 +13,6 @@ BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 	EVT_MENU(ID_APPEND_FOLDER, FbFrameFolder::OnFolderAppend)
 	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFolder::OnFolderModify)
 	EVT_MENU(ID_DELETE_FOLDER, FbFrameFolder::OnFolderDelete)
-	EVT_MENU(ID_START, FbFrameFolder::OnStart)
-	EVT_MENU(ID_PAUSE, FbFrameFolder::OnPause)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFolder::OnFolderSelected)
 END_EVENT_TABLE()
 
@@ -333,12 +331,3 @@ void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
 	if (bNeedUpdate) FillByFolder(data);
 }
 
-void FbFrameFolder::OnStart(wxCommandEvent & event)
-{
-	FbDownloader::Start();
-}
-
-void FbFrameFolder::OnPause(wxCommandEvent & event)
-{
-	FbDownloader::Pause();
-}

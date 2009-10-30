@@ -222,7 +222,7 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 	}
 }
 
-int FbDatabase::NewId(const int iParam)
+int FbDatabase::NewId(const int iParam, int iIncrement)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -236,7 +236,8 @@ int FbDatabase::NewId(const int iParam)
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.NextRow()) iValue = result.GetInt(0);
 	}
-	iValue++;
+
+	iValue += iIncrement;
 	{
 		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(value, id) VALUES(?,?)"), table);
 		wxSQLite3Statement stmt = PrepareStatement(sql);

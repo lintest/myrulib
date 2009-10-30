@@ -344,10 +344,8 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void FbBookPanel::DoDownload(const int folder)
+void FbBookPanel::DoDownload(const wxString &sel, const int folder)
 {
-	wxString sel = m_BookList->GetSelected();
-
 	wxString sql1 = wxString::Format(wxT("\
 		UPDATE states SET download=%d WHERE md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
@@ -365,14 +363,17 @@ void FbBookPanel::DoDownload(const int folder)
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 {
-	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD);
+	wxString sel;
+	size_t count = m_BookList->GetSelected(sel);
+	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count);
 
-	DoDownload(folder);
+	DoDownload(sel, folder);
 }
 
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 {
-	DoDownload(0);
+	wxString sel = m_BookList->GetSelected();
+	DoDownload(sel, 0);
 }
 
 void FbBookPanel::OnEditComments(wxCommandEvent & event)

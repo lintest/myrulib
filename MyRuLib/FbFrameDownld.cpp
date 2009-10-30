@@ -61,6 +61,9 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_START, _("Старт"), wxBitmap(start_xpm), _("Начать загрузку файлов через интернет"));
 	toolbar->AddTool(ID_PAUSE, _("Стоп"), wxBitmap(pause_xpm), _("Остановить загрузку файлов через интернет"));
+	toolbar->AddSeparator();
+	toolbar->AddTool(wxID_UP, _("Вверх"), wxArtProvider::GetBitmap(wxART_GO_UP), _("Передвинуть в начало очереди"));
+	toolbar->AddTool(wxID_DOWN, _("Вниз"), wxArtProvider::GetBitmap(wxART_GO_DOWN), _("Передвинуть в конец очереди"));
 	toolbar->Realize();
 	return toolbar;
 }
@@ -102,23 +105,11 @@ void * FrameDownldThread::Entry()
 	EmptyBooks();
 
 	wxString condition;
+	condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
+	condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
+	wxString order = m_folder==1 ? wxT("download") : wxEmptyString;
 
-	switch (m_type) {
-		case FT_FOLDER:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM favorites WHERE id_folder=?)");
-			break;
-		case FT_RATING:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE rating=?)");
-			break;
-		case FT_COMMENT:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM comments WHERE ?>0)");
-			break;
-		case FT_DOWNLOAD: {
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
-			condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
-			} break;
-	}
-	wxString sql = GetSQL(condition);
+	wxString sql = GetSQL(condition, order);
 
 	try {
 		FbCommonDatabase database;

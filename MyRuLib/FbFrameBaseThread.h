@@ -14,7 +14,7 @@ class FbFrameBaseThread: public wxThread
 			m_FilterUsr(frame->m_FilterUsr)
 		{};
 	protected:
-		virtual wxString GetSQL(const wxString & condition);
+		virtual wxString GetSQL(const wxString & condition, const wxString & order = wxEmptyString);
 		virtual void CreateList(wxSQLite3ResultSet &result);
 		virtual void CreateTree(wxSQLite3ResultSet &result);
 		void EmptyBooks();

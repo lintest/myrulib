@@ -103,6 +103,9 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
+	wxCheckBox * m_checkBox13 = new wxCheckBox( m_panel1, ID_AUTO_DOWNLD, _("Автоматически стартовать загрузку файлов"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
+
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -280,6 +283,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
 		{FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tCombo},
 		{FB_LIBRUSEC_URL, SettingsDlg::ID_LIBRUSEC_URL, tCombo},
+		{FB_AUTO_DOWNLD, SettingsDlg::ID_AUTO_DOWNLD, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

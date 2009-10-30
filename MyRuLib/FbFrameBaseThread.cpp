@@ -4,11 +4,11 @@
 
 wxCriticalSection FbFrameBaseThread::sm_queue;
 
-wxString FbFrameBaseThread::GetSQL(const wxString & condition)
+wxString FbFrameBaseThread::GetSQL(const wxString & condition, const wxString & order)
 {
 	wxString sql;
 	switch (m_mode) {
-		case FB2_MODE_TREE:
+		case FB2_MODE_TREE: {
 			sql = wxT("\
 				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
 					books.id, books.title, books.file_size, books.file_type, books.id_author, \
@@ -20,8 +20,9 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
 				ORDER BY authors.search_name, key, sequences.value, bookseq.number, books.title \
-			"); break;
-		case FB2_MODE_LIST:
+			");
+		} break;
+		case FB2_MODE_LIST: {
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
@@ -30,8 +31,10 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 					LEFT JOIN authors ON books.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
-				ORDER BY books.title, books.id, authors.full_name\
-			"); break;
+				ORDER BY \
+			");
+			sql += order.IsEmpty() ? wxT("books.title, books.id, authors.full_name") : order;
+		} break;
 	}
 
 	wxString str = wxT("(%s)");
