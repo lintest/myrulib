@@ -119,19 +119,27 @@ void ZipReader::OpenDownload(FbDatabase &database)
 		else return;
 	}
 
-	wxFileName zip_file = md5sum + wxT(".zip");
+	wxFileName zip_file = md5sum;
 	zip_file.SetPath( FbStandardPaths().GetUserConfigDir() );
-
 	m_zipOk = zip_file.FileExists();
-	if (!m_zipOk) return;
+	if (m_zipOk) {
+		m_file = new wxFFileInputStream(zip_file.GetFullPath());
+		m_zip = NULL;
+		m_result = m_file;
+		m_fileOk = true;
+		return;
+	}
 
-	m_file = new wxFFileInputStream(zip_file.GetFullPath());
-	m_zip = new wxZipInputStream(*m_file, conv);
-	m_result = m_zip;
-
-	if (wxZipEntry * entry = m_zip->GetNextEntry()) {
-		m_fileOk = m_zip->OpenEntry(*entry);
-		delete entry;
+	zip_file.SetExt(wxT(".zip"));
+	m_zipOk = zip_file.FileExists();
+	if (m_zipOk) {
+		m_file = new wxFFileInputStream(zip_file.GetFullPath());
+		m_zip = new wxZipInputStream(*m_file, conv);
+		m_result = m_zip;
+		if (wxZipEntry * entry = m_zip->GetNextEntry()) {
+			m_fileOk = m_zip->OpenEntry(*entry);
+			delete entry;
+		}
 	}
 }
 

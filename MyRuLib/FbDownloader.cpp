@@ -26,6 +26,7 @@ class FbInternetBook
 		wxString m_md5sum;
 		wxString m_filetype;
 		wxString m_filename;
+		bool m_zipped;
 };
 
 class FbURL: public wxURL
@@ -42,7 +43,7 @@ FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 }
 
 FbInternetBook::FbInternetBook(const wxString& md5sum)
-	: m_id(0), m_md5sum(md5sum)
+	: m_id(0), m_md5sum(md5sum), m_zipped(false)
 {
 	wxString sql = wxT("SELECT id, file_type FROM books WHERE md5sum=? AND id>0");
 	try {
@@ -62,7 +63,7 @@ FbInternetBook::FbInternetBook(const wxString& md5sum)
 
 bool FbInternetBook::Execute()
 {
-	bool result = m_id && DoDownload() && CheckMD5();
+	bool result = m_id && DoDownload();
 	SaveFile(result);
 	return result;
 }
@@ -96,9 +97,15 @@ bool FbInternetBook::DoDownload()
 	size_t count = 0;
 	size_t pos = 0;
 
+//	http.GetHeader(wxT("Content-Type")) == "application/zip"
+//	Content-Type	application/zip
+
+	md5_context md5;
+	md5_starts( &md5 );
 	do {
 		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos*1000/size, _("Загрузка файла")).Post();
 		count = in->Read(buf, BUFSIZE).LastRead();
+		if (count) md5_update( &md5, buf, (int) count );
 		out.Write(buf, count);
 		pos += count;
 	} while (count);
@@ -109,7 +116,11 @@ bool FbInternetBook::DoDownload()
 		return false;
 	}
 
-	return true;
+	wxString md5sum = BaseThread::CalcMd5(md5);
+	if ( md5sum == m_md5sum )
+		return true;
+	else
+		return CheckMD5();
 }
 
 bool FbInternetBook::CheckMD5()
@@ -123,7 +134,7 @@ bool FbInternetBook::CheckMD5()
 		delete entry;
 	}
 	if (bNotFound) {
-		wxLogError(wxT("Entry not found: ") + m_url);
+		wxLogError(wxT("Zip read error: ") + m_url);
 		return false;
 	}
 
@@ -138,7 +149,9 @@ bool FbInternetBook::CheckMD5()
 	} while (count);
 
 	wxString md5sum = BaseThread::CalcMd5(md5);
-	if ( md5sum != m_md5sum ) {
+	if ( md5sum == m_md5sum ) {
+		m_zipped = true;
+	} else {
 		wxLogError(wxT("Wrong MD5 sum: "), m_url.c_str());
 		return false;
 	}
@@ -148,7 +161,7 @@ bool FbInternetBook::CheckMD5()
 void FbInternetBook::SaveFile(const bool success)
 {
 	if (success) {
-		wxFileName zipname = m_md5sum + wxT(".zip");
+		wxFileName zipname = m_md5sum + (m_zipped ? wxT(".zip") : wxEmptyString);
 		zipname.SetPath( FbStandardPaths().GetUserConfigDir() );
 		wxRenameFile(m_filename, zipname.GetFullPath(), true);
 	} else {
