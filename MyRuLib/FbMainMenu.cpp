@@ -7,11 +7,12 @@ FbMenuBar::MenuFrame::MenuFrame()
 	AppendSeparator();
 	Append(ID_FRAME_AUTHOR, _("Авторы"));
 	Append(ID_FRAME_GENRES, _("Жанры"));
-	Append(ID_FRAME_SEQ, _("Серии"), wxART_FIND);
-	Append(ID_FRAME_DATE, _("Календарь"), wxART_FIND);
-	Append(ID_FRAME_ARCH, _("Архив"), wxART_FIND);
+	Append(ID_FRAME_SEQ,    _("Серии"));
+	Append(ID_FRAME_DATE,   _("Календарь"));
+	Append(ID_FRAME_ARCH,   _("Архив"));
 	AppendSeparator();
-	Append(ID_FRAME_FAVOUR, _("Мои папки"));
+	Append(ID_FRAME_FOLDER, _("Мои папки"));
+	Append(ID_FRAME_DOWNLD, _("Загрузки"));
 }
 
 FbMenuBar::MenuLib::MenuLib()

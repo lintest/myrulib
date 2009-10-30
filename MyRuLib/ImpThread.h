@@ -10,9 +10,13 @@
 class ImportThread : public BaseThread
 {
 public:
+	ImportThread(): m_transaction(m_database) {};
 	virtual void OnExit();
 	bool ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive);
 	int AddArchive(const wxString &name, const wxString &path, const int size, const int count);
+protected:
+	FbCommonDatabase m_database;
+	FbAutoCommit m_transaction;
 private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
 	void AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, const int id_archive);

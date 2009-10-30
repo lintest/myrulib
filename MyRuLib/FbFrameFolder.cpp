@@ -21,7 +21,7 @@ BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_FAVOUR, _("Мои папки"))
+	:FbFrameBase(parent, ID_FRAME_FOLDER, _("Мои папки"))
 {
 	CreateControls();
 }

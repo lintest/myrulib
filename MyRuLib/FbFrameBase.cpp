@@ -115,9 +115,9 @@ int FbFrameBase::GetModeKey()
 {
 	switch (GetId()) {
 		case ID_FRAME_AUTHOR: return FB_MODE_AUTHOR;
-		case ID_FRAME_GENRES:  return FB_MODE_GENRES;
-		case ID_FRAME_FAVOUR:  return FB_MODE_FAVOUR;
-		case ID_FRAME_SEARCH:  return FB_MODE_SEARCH;
+		case ID_FRAME_GENRES: return FB_MODE_GENRES;
+		case ID_FRAME_FOLDER: return FB_MODE_FOLDER;
+		case ID_FRAME_SEARCH: return FB_MODE_SEARCH;
 		default: return 0;
 	}
 }
@@ -126,9 +126,9 @@ int FbFrameBase::GetViewKey()
 {
 	switch (GetId()) {
 		case ID_FRAME_AUTHOR: return FB_VIEW_AUTHOR;
-		case ID_FRAME_GENRES:  return FB_VIEW_GENRES;
-		case ID_FRAME_FAVOUR:  return FB_VIEW_FAVOUR;
-		case ID_FRAME_SEARCH:  return FB_VIEW_SEARCH;
+		case ID_FRAME_GENRES: return FB_VIEW_GENRES;
+		case ID_FRAME_FOLDER: return FB_VIEW_FOLDER;
+		case ID_FRAME_SEARCH: return FB_VIEW_SEARCH;
 		default: return 0;
 	}
 }

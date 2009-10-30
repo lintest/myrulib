@@ -257,7 +257,7 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		id = database.NewId(DB_NEW_ZIPFILE);
 	}
 
-	FbAutoCommit transaction(&database);
+	FbAutoCommit transaction(database);
 
 	int count = 0;
 	{

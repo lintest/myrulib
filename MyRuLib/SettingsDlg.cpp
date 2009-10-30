@@ -435,7 +435,7 @@ void SettingsDlg::SelectApplication()
 void SettingsDlg::SaveTypelist()
 {
 	FbLocalDatabase database;
-	FbAutoCommit transaction(&m_database);
+	FbAutoCommit transaction(m_database);
 
 	for (size_t i=0; i<m_deleted.Count(); i++) {
 		wxString sql = wxT("DELETE FROM types WHERE file_type=?");

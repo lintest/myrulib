@@ -37,7 +37,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuTitle)
 	EVT_MENU(ID_FRAME_AUTHOR, FbMainFrame::OnMenuAuthor)
 	EVT_MENU(ID_FRAME_GENRES, FbMainFrame::OnMenuGenres)
-	EVT_MENU(ID_FRAME_FAVOUR, FbMainFrame::OnMenuFavour)
+	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFavour)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
@@ -391,7 +391,7 @@ void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuFavour(wxCommandEvent & event)
 {
-	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, true), FbFrameFolder);
+	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, true), FbFrameFolder);
 	if (!frame) {
 		frame = new FbFrameFolder(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
@@ -433,7 +433,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
 	if (event.m_type == FT_DOWNLOAD) FbDownloader::Start();
-	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FAVOUR, false), FbFrameFolder);
+	FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
 	if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 }
 

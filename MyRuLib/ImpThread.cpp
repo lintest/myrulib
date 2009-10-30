@@ -133,16 +133,14 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 	ctx.md5sum = CalcMd5(md5);
 	memset( &md5, 0, sizeof( md5_context ) );
 
-	FbCommonDatabase database;
-
 	for (size_t i=0; i<ctx.authors.Count(); i++)
-		ctx.authors[i].Convert(database);
+		ctx.authors[i].Convert(m_database);
 
 	if (ctx.authors.Count() == 0)
 		ctx.authors.Add(new AuthorItem);
 
 	for (size_t i=0; i<ctx.sequences.Count(); i++)
-		ctx.sequences[i].Convert(database);
+		ctx.sequences[i].Convert(m_database);
 
 	return ok;
 }
@@ -151,14 +149,12 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 {
 	wxString sql = wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, created, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 
-	FbCommonDatabase database;
-
-	int id_book = - database.NewId(DB_NEW_BOOK);
+	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	long today = 0;
 	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
 
 	for (size_t i = 0; i<info.authors.Count(); i++) {
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, id_archive);
 		stmt.Bind(3, info.authors[i].id);
@@ -173,7 +169,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 		stmt.ExecuteUpdate();
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, info.sequences[j].id);
 			stmt.Bind(3, (int)info.sequences[j].number);
@@ -186,8 +182,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, 
 int ImportThread::FindByMD5(const wxString &md5sum)
 {
 	wxString sql = wxT("SELECT id FROM books WHERE md5sum=?");
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, md5sum);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0) : 0;
@@ -197,11 +192,9 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 {
 	wxArrayInt books;
 
-	FbCommonDatabase database;
-
 	{
 		wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (md5sum='' OR md5sum IS NULL)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, (wxLongLong)size);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		while (result.NextRow()) {
@@ -218,7 +211,7 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 		LoadXml(book.GetZip(), info);
 
 		wxString sql = wxT("UPDATE books SET md5sum=? WHERE id=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, info.md5sum);
 		stmt.Bind(2, books[i]);
 		stmt.ExecuteUpdate();
@@ -257,9 +250,7 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 {
 	wxString sql = wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
 
-	FbCommonDatabase database;
-
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, id_book);
 	stmt.Bind(2, id_archive);
 	stmt.Bind(3, id_book);
@@ -278,7 +269,7 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 	wxLogWarning(_("Add alternative %s %s"), new_path.c_str(), new_name.c_str());
 	{
 		wxString sql = wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, id_archive);
 		stmt.Bind(3, new_name);
@@ -289,20 +280,19 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 
 int ImportThread::AddArchive(const wxString &name, const wxString &path, const int size, const int count)
 {
-	FbCommonDatabase database;
 	{
 		wxString sql = wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, name);
 		stmt.Bind(2, path);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.NextRow()) return result.GetInt(0);
 	}
 
-	int id = database.NewId(DB_NEW_ARCHIVE);
+	int id = m_database.NewId(DB_NEW_ARCHIVE);
 	{
 		wxString sql = wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id);
 		stmt.Bind(2, name);
 		stmt.Bind(3, path);

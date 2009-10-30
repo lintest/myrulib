@@ -40,17 +40,14 @@ class FbDatabase: public wxSQLite3Database
 class FbAutoCommit
 {
 	public:
-		FbAutoCommit(wxSQLite3Database * database): m_database(database) {
-			try {m_database->Begin(WXSQLITE_TRANSACTION_DEFERRED);} catch (...) {};
-		};
-		FbAutoCommit(wxSQLite3Database & database): m_database(&database) {
-			try {m_database->Begin(WXSQLITE_TRANSACTION_DEFERRED);} catch (...) {};
+		FbAutoCommit(wxSQLite3Database & database): m_database(database) {
+			try {m_database.Begin(WXSQLITE_TRANSACTION_DEFERRED);} catch (...) {};
 		};
 		virtual ~FbAutoCommit() {
-			try {m_database->Commit();} catch (...) {};
+			try {m_database.Commit();} catch (...) {};
 		};
 	private:
-		wxSQLite3Database * m_database;
+		wxSQLite3Database & m_database;
 };
 
 class FbCommonDatabase: public FbDatabase
