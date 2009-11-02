@@ -396,8 +396,8 @@ void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 
 void FbBookPanel::EmptyBooks(const int selected)
 {
-	m_AuthorItem = 0;
-	m_SequenceItem = 0;
+	m_AuthorItem = 0L;
+	m_SequenceItem = 0L;
 	if (selected) {
 		m_selected = selected;
 	} else {
@@ -476,8 +476,8 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 {
 	m_ListMode = mode;
 
-	m_AuthorItem = 0;
-	m_SequenceItem = 0;
+	m_AuthorItem = 0L;
+	m_SequenceItem = 0L;
 
 	BookListUpdater updater(m_BookList);
 
