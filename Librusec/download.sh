@@ -9,7 +9,7 @@ rm *.sql.gz
 for t in libavtoraliase libavtorname libavtor libbook libfilename libgenrelist libgenre libjoinedbooks libpolka libseqname libseq libsrclang libtranslator;
 do
     wget http://lib.rus.ec/sql/lib.$t.sql.gz;
-    zcat lib.$t.sql.gz | mysql $DBNAME -u root -D librusec
+    zcat lib.$t.sql.gz | sed -e 's/USING BTREE//g' | mysql $DBNAME -u root -D librusec
 done
 
 rm myrulib.db
