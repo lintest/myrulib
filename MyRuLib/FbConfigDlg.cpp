@@ -24,6 +24,7 @@
 #include <wx/textdlg.h>
 #include "FbConfigDlg.h"
 #include "FbParams.h"
+#include "ZipReader.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -193,5 +194,6 @@ void FbConfigDlg::Execute(wxWindow* parent)
 	dlg.Assign(false);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
+		ZipReader::Init();
 	}
 }
