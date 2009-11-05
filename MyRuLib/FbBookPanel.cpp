@@ -226,7 +226,7 @@ class FbFolderUpdateThread: public wxThread
 			:m_sql(sql), m_folder(folder), m_type(type), m_sql2(sql2) {};
 	protected:
 		static wxCriticalSection sm_queue;
-		void ExecSQL(const wxString &sql);
+		virtual void ExecSQL(const wxString &sql);
 		void * Entry();
 	private:
 		wxString m_sql;

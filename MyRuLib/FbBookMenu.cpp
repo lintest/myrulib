@@ -32,10 +32,12 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	ratings->Append(ID_RATING_0, strRating[0]);
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
-	if (iFolder == fbFLDR_DOWN)
+	if (iFolder == fbFLDR_DOWN) {
 		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
-	else
+	} else if ( id>0 ) {
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
+		Append(ID_SYSTEM_DOWNLOAD, _("Скачать в браузере"));
+	}
 	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
