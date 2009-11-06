@@ -45,6 +45,7 @@ enum FbParamKey {
 	FB_USE_PROXY	  = 151,
 	FB_PROXY_ADDR	  = 152,
 	FB_AUTO_DOWNLD    = 153,
+	FB_DOWNLOAD_DIR   = 154,
 };
 
 class ParamItem

@@ -237,14 +237,15 @@ int FbDatabase::NewId(const int iParam, int iIncrement)
 		if (result.NextRow()) iValue = result.GetInt(0);
 	}
 
-	iValue += iIncrement;
-	{
+	if (iIncrement) {
+		iValue += iIncrement;
 		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(value, id) VALUES(?,?)"), table);
 		wxSQLite3Statement stmt = PrepareStatement(sql);
 		stmt.Bind(1, iValue);
 		stmt.Bind(2, iParam);
 		stmt.ExecuteUpdate();
 	}
+
 	return iValue;
 }
 

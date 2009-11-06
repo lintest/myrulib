@@ -228,13 +228,21 @@ class FbFolderUpdateThread: public wxThread
 			:m_sql(sql), m_folder(folder), m_type(type), m_sql2(sql2) {};
 	protected:
 		static wxCriticalSection sm_queue;
-		virtual void ExecSQL(const wxString &sql);
+		virtual void ExecSQL(FbDatabase &database, const wxString &sql);
 		void * Entry();
-	private:
 		wxString m_sql;
 		int m_folder;
 		FbFolderType m_type;
 		wxString m_sql2;
+};
+
+class FbCreateDownloadThread: public FbFolderUpdateThread
+{
+	public:
+		FbCreateDownloadThread(const wxString &sql, const int folder, const FbFolderType type, const wxString &sql2 = wxEmptyString)
+			:FbFolderUpdateThread(sql, folder, type, sql2) {};
+	protected:
+		void * Entry();
 };
 
 wxCriticalSection FbFolderUpdateThread::sm_queue;
@@ -243,23 +251,65 @@ void * FbFolderUpdateThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
-	ExecSQL(m_sql);
-	if (!m_sql2.IsEmpty()) ExecSQL(m_sql2);
+	FbCommonDatabase database;
+	database.AttachConfig();
+
+	ExecSQL(database, m_sql);
+	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
 
 	return NULL;
 }
 
-void FbFolderUpdateThread::ExecSQL(const wxString &sql)
+void FbFolderUpdateThread::ExecSQL(FbDatabase &database, const wxString &sql)
 {
 	try {
-		FbCommonDatabase database;
-		database.AttachConfig();
 		database.ExecuteUpdate(sql);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
+}
+
+
+class FbIncrementFunction : public wxSQLite3ScalarFunction
+{
+	public:
+		FbIncrementFunction(): m_increment(0) {};
+		virtual void Execute(wxSQLite3FunctionContext& ctx);
+	private:
+		int m_increment;
+};
+
+void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	int argCount = ctx.GetArgCount();
+	if (argCount != 1) {
+		ctx.SetResultError(wxString::Format(_("INCREMENT called with wrong number of arguments: %d."), argCount));
+		return;
+	}
+
+	m_increment++;
+	int id = ctx.GetInt(0);
+	id += m_increment;
+	ctx.SetResult(id);
+}
+
+void * FbCreateDownloadThread::Entry()
+{
+	wxCriticalSectionLocker locker(sm_queue);
+
+	FbCommonDatabase database;
+	FbIncrementFunction function;
+	database.CreateFunction(wxT("INCREMENT"), 1, function);
+	database.AttachConfig();
+
+	ExecSQL(database, m_sql);
+	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
+
+	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
+
+	return NULL;
 }
 
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
@@ -346,20 +396,31 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void FbBookPanel::DoDownload(const wxString &sel, const int folder)
+void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 {
 	wxString sql1 = wxString::Format(wxT("\
 		UPDATE states SET download=%d WHERE md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxString sql2 = wxString::Format(wxT("\
+	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD );
+	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbBookPanel::DoCreateDownload(const wxString &sel, const int folder)
+{
+	wxString sql1 = wxString::Format(wxT("\
 		INSERT INTO states(md5sum, download) \
-		SELECT DISTINCT md5sum, %d FROM books WHERE id>0 AND id IN (%s) \
+		SELECT DISTINCT md5sum, 1 FROM books WHERE id>0 AND id IN (%s) \
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
+	"), sel.c_str());
+
+	wxString sql2 = wxString::Format(wxT("\
+		UPDATE states SET download=INCREMENT(%d) WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD, sql2 );
+	wxThread * thread = new FbCreateDownloadThread( sql1, folder, FT_DOWNLOAD, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -367,15 +428,16 @@ void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 {
 	wxString sel;
 	size_t count = m_BookList->GetSelected(sel);
-	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count);
-
-	DoDownload(sel, folder);
+	if (count) {
+		int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
+		DoCreateDownload(sel, folder);
+	}
 }
 
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 {
 	wxString sel = m_BookList->GetSelected();
-	DoDownload(sel, 0);
+	DoDeleteDownload(sel, 0);
 }
 
 void FbBookPanel::OnEditComments(wxCommandEvent & event)

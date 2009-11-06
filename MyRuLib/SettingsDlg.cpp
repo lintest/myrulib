@@ -65,8 +65,7 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
-	EVT_BUTTON( ID_LIBRARY_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_WANRAIK_DIR_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
@@ -134,6 +133,22 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer13->Add( m_comboBox2, 1, wxALL, 5 );
 
 	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
+
+	m_staticText6 = new wxStaticText( m_panel1, wxID_ANY, _("Папка для хранения скачиваемых файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText6->Wrap( -1 );
+	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer14 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_textCtrl6 = new wxTextCtrl( m_panel1, ID_DOWNLOAD_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
+
+	bSizer14->Add( m_textCtrl6, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_bpButton6 = new wxBitmapButton( m_panel1, ID_DOWNLOAD_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+	bSizer14->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
+
+	bSizer2->Add( bSizer14, 0, wxEXPAND, 5 );
 
 	m_panel1->SetSizer( bSizer2 );
 	m_panel1->Layout();
@@ -272,18 +287,16 @@ void SettingsDlg::Assign(bool write)
 	};
 
 	const Struct ids[] = {
-		{DB_LIBRARY_TITLE, SettingsDlg::ID_LIBRARY_TITLE, tText},
-		{DB_LIBRARY_DIR, SettingsDlg::ID_LIBRARY_DIR_TXT, tText},
-		{DB_WANRAIK_DIR, SettingsDlg::ID_WANRAIK_DIR_TXT, tText},
+		{FB_AUTO_DOWNLD, SettingsDlg::ID_AUTO_DOWNLD, tCheck},
+		{FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
+		{FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tCombo},
+		{FB_LIBRUSEC_URL, SettingsDlg::ID_LIBRUSEC_URL, tCombo},
+		{FB_DOWNLOAD_DIR, SettingsDlg::ID_DOWNLOAD_DIR_TXT, tText},
 		{FB_EXTERNAL_DIR, SettingsDlg::ID_EXTERNAL_TXT, tText},
 		{FB_TRANSLIT_FOLDER, SettingsDlg::ID_TRANSLIT_FOLDER, tCheck},
 		{FB_TRANSLIT_FILE, SettingsDlg::ID_TRANSLIT_FILE, tCheck},
 		{FB_FOLDER_FORMAT, SettingsDlg::ID_FOLDER_FORMAT, tRadio},
 		{FB_FILE_FORMAT, SettingsDlg::ID_FILE_FORMAT, tRadio},
-		{FB_USE_PROXY, SettingsDlg::ID_USE_PROXY, tCheck},
-		{FB_PROXY_ADDR, SettingsDlg::ID_PROXY_ADDR, tCombo},
-		{FB_LIBRUSEC_URL, SettingsDlg::ID_LIBRUSEC_URL, tCombo},
-		{FB_AUTO_DOWNLD, SettingsDlg::ID_AUTO_DOWNLD, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
