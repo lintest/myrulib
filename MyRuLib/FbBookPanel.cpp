@@ -18,6 +18,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
 	EVT_MENU(ID_DOWNLOAD_BOOK, FbBookPanel::OnDownloadBook)
+	EVT_MENU(ID_SYSTEM_DOWNLOAD, FbBookPanel::OnSystemDownload)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbBookPanel::OnDeleteDownload)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
@@ -513,3 +514,11 @@ int FbBookPanel::GetRatingColumn()
 	return 1;
 }
 
+void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
+{
+	BookTreeItemData * data = GetSelectedBook();
+	if (data && data->GetId()>0) {
+		wxString url = FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), data->GetId());
+		wxLaunchDefaultBrowser(url);
+	}
+}

@@ -56,6 +56,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnFolderAdd(wxCommandEvent& event);
 		void OnOpenAuthor(wxCommandEvent& event);
 		void OnOpenBook(wxCommandEvent & event);
+		void OnSystemDownload(wxCommandEvent & event);
 		void OnImageClick(wxTreeEvent &event);
 		void OnInfoUpdate(wxCommandEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
