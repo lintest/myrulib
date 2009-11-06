@@ -29,6 +29,7 @@ class FbBookPanel: public wxSplitterWindow
 		void CreateColumns(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode;};
 		void SetFolder(int folder) { m_folder = folder; };
+		void SetType(int type) { m_type = type; };
 		void CreateBookInfo(bool bVertical);
 	private:
 		void DoFolderAdd(const int folder);
@@ -44,6 +45,7 @@ class FbBookPanel: public wxSplitterWindow
 		wxTreeItemId m_AuthorItem;
 		wxTreeItemId m_SequenceItem;
 		int m_folder;
+		int m_type;
 		int m_selected;
 	private:
 		void OnBooksListViewSelected(wxTreeEvent & event);

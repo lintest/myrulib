@@ -32,7 +32,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel()
-	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_selected(0)
+	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
 {
 }
 
@@ -199,7 +199,7 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
-	FbBookMenu menu(id, m_folder);
+	FbBookMenu menu(id, m_folder, m_type);
 	menu.ConnectFolders(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
 	menu.ConnectAuthors(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
 	PopupMenu(&menu, pos.x, pos.y);

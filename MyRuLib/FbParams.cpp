@@ -137,6 +137,8 @@ wxString FbParams::DefaultText(int param)
 			return wxGetApp().GetAppPath();
 		case FB_LIBRUSEC_URL:
 			return wxT("http://lib.rus.ec");
+		case FB_DOWNLOAD_DIR:
+			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
 		default:
 			return wxEmptyString;
 	}

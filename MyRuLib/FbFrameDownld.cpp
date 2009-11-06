@@ -151,19 +151,8 @@ void FbFrameDownld::UpdateBooklist()
 
 void FbFrameDownld::FillByFolder(FbFolderData * data)
 {
-	int iFolder = fbNO_FOLDER;
-	switch (data->GetType()) {
-		case FT_FOLDER:
-			iFolder = data->GetId();
-			break;
-		case FT_DOWNLOAD:
-			iFolder = fbFLDR_DOWN;
-			break;
-		default:
-			iFolder = fbNO_FOLDER;
-			break;
-	}
-	m_BooksPanel.SetFolder( iFolder );
+	m_BooksPanel.SetFolder( data->GetId() );
+	m_BooksPanel.SetType( FT_DOWNLOAD );
 
 	wxThread * thread = new FrameDownldThread(this, m_BooksPanel.GetListMode(), data);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();

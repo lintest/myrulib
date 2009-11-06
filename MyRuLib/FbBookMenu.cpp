@@ -1,6 +1,7 @@
 #include "FbBookMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
+#include "FbBookEvent.h"
 
 WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
@@ -10,7 +11,7 @@ FbMenuFolderArray FbBookMenu::sm_folders;
 
 FbMenuAuthorArray FbBookMenu::sm_authors;
 
-FbBookMenu::FbBookMenu(int id, int iFolder)
+FbBookMenu::FbBookMenu(int id, int iFolder, int iType)
 	: m_id(id)
 {
 	if (sm_folders.Count() == 0) LoadFolders();
@@ -32,12 +33,13 @@ FbBookMenu::FbBookMenu(int id, int iFolder)
 	ratings->Append(ID_RATING_0, strRating[0]);
 
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
-	if (iFolder == fbFLDR_DOWN) {
+	if (iType == FT_DOWNLOAD) {
 		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
-	} else if ( id>0 ) {
+		if (iFolder == -2) Append(ID_DOWNLOAD_BOOK, _("Скачать повторно"));
+	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
-		Append(ID_SYSTEM_DOWNLOAD, _("Скачать в браузере"));
 	}
+	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Скачать в браузере"));
 	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
