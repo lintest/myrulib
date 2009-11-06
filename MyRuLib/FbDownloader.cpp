@@ -15,6 +15,7 @@ class FbInternetBook
 {
 	public:
 		FbInternetBook(const wxString& md5sum);
+		static wxString GetURL(const int id);
 		bool Execute();
 	private:
 		bool DoDownload();
@@ -54,7 +55,7 @@ FbInternetBook::FbInternetBook(const wxString& md5sum)
 		if ( result.NextRow() ) {
 			m_id = result.GetInt(0);
 			m_filetype = result.GetString(1);
-			m_url = FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), m_id);
+			m_url = FbDownloader::GetURL(m_id);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
@@ -251,4 +252,9 @@ void FbDownloader::GetBooklist(wxArrayString &md5sum)
 	while ( result.NextRow() ) {
 		md5sum.Add( result.GetString(0) );
 	}
+}
+
+wxString FbDownloader::GetURL(const int id)
+{
+	return FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), id);
 }

@@ -5,6 +5,7 @@
 #include "InfoCash.h"
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
+#include "FbDownloader.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
@@ -518,7 +519,7 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 {
 	BookTreeItemData * data = GetSelectedBook();
 	if (data && data->GetId()>0) {
-		wxString url = FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), data->GetId());
+		wxString url = FbDownloader::GetURL(data->GetId());
 		wxLaunchDefaultBrowser(url);
 	}
 }

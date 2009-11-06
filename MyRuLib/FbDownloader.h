@@ -8,6 +8,7 @@
 class FbDownloader: public wxThread
 {
 	public:
+		static wxString GetURL(const int id);
 		static void Start();
 		static void Pause();
 		bool IsRunning();
