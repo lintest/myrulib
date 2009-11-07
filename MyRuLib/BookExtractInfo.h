@@ -12,16 +12,14 @@ class BookExtractInfo
 	public:
 		BookExtractInfo(wxSQLite3ResultSet & result);
 	public:
-		wxString GetBook();
-		wxString GetZip(const wxString &path = wxEmptyString);
+		wxFileName GetBook(const wxString &path = wxEmptyString);
+		wxFileName GetZip(const wxString &path = wxEmptyString);
 		bool NameIsEqual();
 	public:
 		int id_book;
 		int id_archive;
 		wxString book_name;
-		wxString book_path;
 		wxString zip_name;
-		wxString zip_path;
 		bool librusec;
 };
 

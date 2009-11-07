@@ -63,23 +63,20 @@ ZipReader::ZipReader(int id, bool bShowError)
 
 	wxString file_name;
 	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
-	wxString sWanraikDir = FbParams::GetText(DB_WANRAIK_DIR);
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
 		if (item.id_archive) {
-			wxFileName zip_file = item.GetZip();
+			wxFileName zip_file = item.GetZip(sLibraryDir);
 			m_zipOk = zip_file.FileExists();
-			if (!m_zipOk) m_zipOk = (zip_file = item.GetZip(sLibraryDir)).FileExists();
-			if (!m_zipOk) m_zipOk = (zip_file = item.GetZip(sWanraikDir)).FileExists();
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
 		} else if (item.librusec) {
 			wxString zip_name = zips.FindZip(item.book_name);
 			m_zipOk = !zip_name.IsEmpty();
 			if (m_zipOk) OpenZip(zip_name, item.book_name);
 		} else {
-			wxFileName book_file = item.GetBook();
-			if (book_file.FileExists(item.book_name)) OpenFile(book_file.GetFullPath());
+			wxFileName book_file = item.GetBook(sLibraryDir);
+			if (book_file.FileExists()) OpenFile(book_file.GetFullPath());
 		}
 		if (IsOK()) return;
 	}

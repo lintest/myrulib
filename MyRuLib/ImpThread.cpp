@@ -3,6 +3,7 @@
 #include <wx/dir.h>
 #include "FbManager.h"
 #include "FbGenres.h"
+#include "FbParams.h"
 #include "ZipReader.h"
 #include "polarssl/md5.h"
 #include "wx/base64.h"
@@ -88,8 +89,21 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 }
 
+ImportThread::ImportThread()
+	: m_transaction(m_database), m_basepath(FbParams::GetText(DB_LIBRARY_DIR))
+{
+}
+
 void ImportThread::OnExit()
 {
+}
+
+wxString ImportThread::GetRelative(const wxString &filename)
+{
+	wxFileName result = filename;
+	result.Normalize(wxPATH_NORM_ALL);
+	result.MakeRelativeTo(m_basepath);
+	return result.GetFullPath(wxPATH_UNIX);
 }
 
 bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
@@ -145,31 +159,33 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 	return ok;
 }
 
-void ImportThread::AppendBook(ImportParsingContext &info, const wxString &name, const wxString &path, const wxFileOffset size, int id_archive)
+void ImportThread::AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, int id_archive)
 {
-	wxString sql = wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_path, file_size, file_type, created, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	long today = 0;
 	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
 
+	wxString sql_book = wxT("INSERT INTO books(id, id_archive, id_author, title, genres, file_name, file_size, file_type, created, md5sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
+	wxString sql_seq = wxT("INSERT INTO bookseq(id_book, id_seq, number, id_author) VALUES (?,?,?,?)");
+
 	for (size_t i = 0; i<info.authors.Count(); i++) {
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, id_book);
-		stmt.Bind(2, id_archive);
-		stmt.Bind(3, info.authors[i].id);
-		stmt.Bind(4, info.title);
-		stmt.Bind(5, info.genres);
-		stmt.Bind(6, name);
-		stmt.Bind(7, path);
-		stmt.Bind(8, (wxLongLong)size);
-		stmt.Bind(9, wxFileName(name).GetExt().Lower());
-		stmt.Bind(10, (int) today);
-		stmt.Bind(11, info.md5sum);
-		stmt.ExecuteUpdate();
+		{
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql_book);
+			stmt.Bind(1, id_book);
+			stmt.Bind(2, id_archive);
+			stmt.Bind(3, info.authors[i].id);
+			stmt.Bind(4, info.title);
+			stmt.Bind(5, info.genres);
+			stmt.Bind(6, filename);
+			stmt.Bind(7, (wxLongLong)size);
+			stmt.Bind(8, wxFileName(filename).GetExt().Lower());
+			stmt.Bind(9, (int) today);
+			stmt.Bind(10, info.md5sum);
+			stmt.ExecuteUpdate();
+		}
 
 		for (size_t j = 0; j<info.sequences.Count(); j++) {
-			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql_seq);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, info.sequences[j].id);
 			stmt.Bind(3, (int)info.sequences[j].number);
@@ -222,12 +238,10 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 	return 0;
 }
 
-bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const wxString &path, const int id_archive)
+bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive)
 {
 	ImportParsingContext info;
-
-	info.filename = name;
-	info.filepath = path;
+	info.filename = filename;
 
 	try {
 		if (LoadXml(stream, info)) {
@@ -235,9 +249,9 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
 			if (id_book == 0)
 				id_book = FindBySize(info.md5sum, stream.GetLength());
 			if (id_book == 0)
-				AppendBook(info, name, path, stream.GetLength(), id_archive);
+				AppendBook(info, filename, stream.GetLength(), id_archive);
 			else
-				AppendFile(id_book, id_archive, name, path);
+				AppendFile(id_book, id_archive, filename);
 			return true;
 		}
 	} catch (wxSQLite3Exception & e) {
@@ -246,9 +260,9 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &name, const w
 	return false;
 }
 
-void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name, const wxString &new_path)
+void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
 {
-	wxString sql = wxT("SELECT file_name, file_path FROM books WHERE id=? AND id_archive=? UNION SELECT file_name, file_path FROM files WHERE id_book=? AND id_archive=?");
+	wxString sql = wxT("SELECT file_name FROM books WHERE id=? AND id_archive=? UNION SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
 
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, id_book);
@@ -257,47 +271,43 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 	stmt.Bind(4, id_archive);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	wxString old_name, old_path;
+	wxString old_name;
 	if (result.NextRow()) {
 		old_name = result.GetString(0);
-		old_path = result.GetString(1);
 	}
-	if (old_name == new_name && old_path == new_path) {
-		wxLogWarning(_("File already exists %s %s"), new_path.c_str(), new_name.c_str());
+	if (old_name == new_name) {
+		wxLogWarning(_("File already exists %s"), new_name.c_str());
 		return;
 	}
-	wxLogWarning(_("Add alternative %s %s"), new_path.c_str(), new_name.c_str());
+	wxLogWarning(_("Add alternative %s"), new_name.c_str());
 	{
-		wxString sql = wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
+		wxString sql = wxT("INSERT INTO files(id_book, id_archive, file_name) VALUES (?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, id_archive);
 		stmt.Bind(3, new_name);
-		stmt.Bind(4, new_path);
 		stmt.ExecuteUpdate();
 	}
 }
 
-int ImportThread::AddArchive(const wxString &name, const wxString &path, const int size, const int count)
+int ImportThread::AddArchive(const wxString &filename, const int size, const int count)
 {
 	{
-		wxString sql = wxT("SELECT id FROM archives WHERE file_name=? AND file_path=?");
+		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, name);
-		stmt.Bind(2, path);
+		stmt.Bind(1, filename);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.NextRow()) return result.GetInt(0);
 	}
 
 	int id = m_database.NewId(DB_NEW_ARCHIVE);
 	{
-		wxString sql = wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
+		wxString sql = wxT("INSERT INTO archives(id, file_name, file_size, file_count) VALUES (?,?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id);
-		stmt.Bind(2, name);
-		stmt.Bind(3, path);
-		stmt.Bind(4, size);
-		stmt.Bind(5, (wxLongLong)count);
+		stmt.Bind(2, filename);
+		stmt.Bind(3, size);
+		stmt.Bind(4, (wxLongLong)count);
 		stmt.ExecuteUpdate();
 	}
 	return id;
@@ -327,11 +337,11 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 		return;
 	}
 
+	wxString filename = GetRelative(zipname);
+
 	if (zipname.Right(4).Lower() == wxT(".fb2")) {
 		DoStart(0, zipname);
-		wxFileName filename = zipname;
-		filename.Normalize(wxPATH_NORM_ALL);
-		ParseXml(in, filename.GetFullName(), filename.GetPath(wxPATH_UNIX), 0);
+		ParseXml(in, filename, 0);
 		DoFinish();
 		return;
 	}
@@ -343,9 +353,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 		return;
 	}
 
-	wxFileName filename = zipname;
-	filename.Normalize(wxPATH_NORM_ALL);
-	int id_archive = AddArchive(filename.GetFullName(), filename.GetPath(wxPATH_UNIX), in.GetLength(), zip.GetTotalEntries());
+	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
 
 	DoStart(zip.GetTotalEntries(), zipname);
 
@@ -360,7 +368,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 				wxLogInfo(_("Import zip entry %s"), filename.c_str());
 				DoStep(filename);
 				zip.OpenEntry(*entry);
-				ParseXml(zip, filename, wxEmptyString, id_archive);
+				ParseXml(zip, filename, id_archive);
 			} else {
 				wxLogWarning(_("Skip file %s"), filename.c_str());
 			}
@@ -429,25 +437,6 @@ private:
 	unsigned int m_progress;
 };
 
-wxString DirImportThread::Normalize(const wxString &filename)
-{
-	wxFileName result = filename;
-	result.Normalize(wxPATH_NORM_ALL);
-	return result.GetFullPath();
-}
-
-wxString DirImportThread::Relative(const wxString &filename)
-{
-	wxFileName result = filename;
-	result.Normalize(wxPATH_NORM_ALL);
-	return result.GetFullPath().Mid(m_position);
-}
-
-DirImportThread::DirImportThread(const wxString &dirname)
-	: m_dirname(Normalize(dirname)), m_position(m_dirname.Length() + (m_dirname.IsEmpty() ? 0 : 1) )
-{
-}
-
 void *DirImportThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
@@ -493,7 +482,8 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 		return false;
 	}
 
-	int id_archive = AddArchive(Relative(zipname), m_dirname, in.GetLength(), zip.GetTotalEntries());
+	wxString filename = GetRelative(zipname);
+	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
 
 	bool ok = false;
 	bool skip = true;
@@ -505,7 +495,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 				skip = false;
 				wxLogInfo(_("Import zip entry %s"), filename.c_str());
 				zip.OpenEntry(*entry);
-				ImportThread::ParseXml(zip, filename, wxEmptyString, id_archive);
+				ImportThread::ParseXml(zip, filename, id_archive);
 			} else {
 				wxLogWarning(_("Skip file %s"), filename.c_str());
 			}
@@ -521,8 +511,8 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 
 bool DirImportThread::ParseXml(const wxString &filename)
 {
-	wxFFileInputStream file(filename);
-	return ImportThread::ParseXml(file, Relative(filename), m_dirname, 0);
+	wxFFileInputStream in(filename);
+	return ImportThread::ParseXml(in, GetRelative(filename), 0);
 }
 
 void BooksCountThread::Execute()

@@ -55,7 +55,6 @@ public:
 	wxString md5sum;
 	bool md5only;
 	wxString filename;
-	wxString filepath;
 };
 
 #endif // __IMPCONTEXT_H__

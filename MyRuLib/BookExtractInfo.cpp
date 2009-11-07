@@ -6,25 +6,22 @@ BookExtractInfo::BookExtractInfo(wxSQLite3ResultSet & result):
 	id_book(result.GetInt(wxT("id"))),
 	id_archive(result.GetInt(wxT("id_archive"))),
 	book_name(result.GetString(wxT("file_name"))),
-	book_path(result.GetString(wxT("file_path"))),
 	librusec(false)
 {
 	librusec = (id_book>0 && result.GetInt(wxT("file")) == 0);
 }
 
-wxString BookExtractInfo::GetBook()
+wxFileName BookExtractInfo::GetBook(const wxString &path)
 {
-	wxString result = book_path;
-	if (!result.IsEmpty()) result += wxFileName::GetPathSeparator();
-	result += book_name;
+	wxFileName result = book_name;
+	result.Normalize(wxPATH_NORM_ALL, path);
 	return result;
 }
 
-wxString BookExtractInfo::GetZip(const wxString &path)
+wxFileName BookExtractInfo::GetZip(const wxString &path)
 {
-	wxString result = path.IsEmpty() ? zip_path : path;
-	if (!result.IsEmpty()) result += wxFileName::GetPathSeparator();
-	result += zip_name;
+	wxFileName result = zip_name;
+	result.Normalize(wxPATH_NORM_ALL, path);
 	return result;
 }
 
@@ -39,8 +36,8 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 {
 	{
 		wxString sql = wxT("\
-			SELECT DISTINCT 0 AS file, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
-			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+			SELECT DISTINCT 0 AS file, id, id_archive, file_name FROM books WHERE id=? UNION ALL \
+			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name FROM files WHERE id_book=? \
 			ORDER BY file \
 		");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -51,7 +48,7 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 	}
 
 	{
-		wxString sql = wxT("SELECT file_name, file_path FROM archives WHERE id=?");
+		wxString sql = wxT("SELECT file_name FROM archives WHERE id=?");
 		for (size_t i = 0; i<Count(); i++) {
 			BookExtractInfo & item = Item(i);
 			if (!item.id_archive) continue;
@@ -60,7 +57,6 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.NextRow()) {
 				item.zip_name = result.GetString(wxT("file_name"));
-				item.zip_path = result.GetString(wxT("file_path"));
 			}
 		}
 	}

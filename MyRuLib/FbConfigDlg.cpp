@@ -41,9 +41,6 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxStaticText* m_staticText2;
 	wxTextCtrl* m_textCtrl2;
 	wxBitmapButton* m_bpButton2;
-	wxStaticText* m_staticText31;
-	wxTextCtrl* m_textCtrl3;
-	wxBitmapButton* m_bpButton3;
 	wxStaticText* m_staticText4;
 	wxTextCtrl* m_textCtrl4;
 	wxStdDialogButtonSizer* m_sdbSizerBtn;
@@ -80,23 +77,6 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer2->Add( m_bpButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	bSizerMain->Add( bSizer2, 0, wxEXPAND, 5 );
-
-	m_staticText31 = new wxStaticText( this, wxID_ANY, _("Альтернативное размещение файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText31->Wrap( -1 );
-	bSizerMain->Add( m_staticText31, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
-
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_textCtrl3 = new wxTextCtrl( this, ID_WANRAIK_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl3->SetMinSize( wxSize( 200,-1 ) );
-
-	bSizer3->Add( m_textCtrl3, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_bpButton3 = new wxBitmapButton( this, ID_WANRAIK_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizer3->Add( m_bpButton3, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-	bSizerMain->Add( bSizer3, 0, wxEXPAND, 5 );
 
 	m_staticText4 = new wxStaticText( this, wxID_ANY, _("Краткое описание:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText4->Wrap( -1 );
