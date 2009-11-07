@@ -7,12 +7,15 @@
 #include "FbManager.h"
 #include "FbFrameBaseThread.h"
 #include "FbDownloader.h"
+#include "FbUpdateThread.h"
 #include "res/start.xpm"
 #include "res/pause.xpm"
 
 BEGIN_EVENT_TABLE(FbFrameDownld, FbFrameBase)
 	EVT_MENU(ID_START, FbFrameDownld::OnStart)
 	EVT_MENU(ID_PAUSE, FbFrameDownld::OnPause)
+	EVT_MENU(wxID_UP, FbFrameDownld::OnMoveUp)
+	EVT_MENU(wxID_DOWN, FbFrameDownld::OnMoveDown)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameDownld::OnFolderSelected)
 END_EVENT_TABLE()
 
@@ -194,4 +197,32 @@ void FbFrameDownld::OnStart(wxCommandEvent & event)
 void FbFrameDownld::OnPause(wxCommandEvent & event)
 {
 	FbDownloader::Pause();
+}
+
+void FbFrameDownld::OnMoveUp(wxCommandEvent& event)
+{
+	wxString sel = m_BooksPanel.m_BookList->GetSelected();
+	if (sel.IsEmpty()) return;
+
+	wxString sql1 = wxString::Format(wxT("\
+		UPDATE states SET download=download+1 WHERE download>0 AND md5sum NOT IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
+	"), sel.c_str());
+
+	wxThread * thread = new FbUpdateThread( sql1, 1, FT_DOWNLOAD );
+	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbFrameDownld::OnMoveDown(wxCommandEvent& event)
+{
+	wxString sel = m_BooksPanel.m_BookList->GetSelected();
+	if (sel.IsEmpty()) return;
+
+	wxString sql1 = wxString::Format(wxT("\
+		UPDATE states SET download=download+1 WHERE download>0 AND md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
+	"), sel.c_str());
+
+	wxThread * thread = new FbUpdateThread( sql1, 1, FT_DOWNLOAD );
+	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }

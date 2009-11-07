@@ -1,6 +1,7 @@
 #include "FbDatabase.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
+#include "FbDataPath.h"
 
 wxCriticalSection FbDatabase::sm_queue;
 

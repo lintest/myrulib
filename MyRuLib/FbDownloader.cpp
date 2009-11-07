@@ -10,6 +10,7 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+#include "FbDataPath.h"
 
 class FbInternetBook
 {
@@ -163,7 +164,7 @@ void FbInternetBook::SaveFile(const bool success)
 {
 	if (success) {
 		wxFileName zipname = m_md5sum + (m_zipped ? wxT(".zip") : wxEmptyString);
-		zipname.SetPath( FbStandardPaths().GetUserConfigDir() );
+		zipname.SetPath( FbStandardPaths().GetDownloadDir(true) );
 		wxRenameFile(m_filename, zipname.GetFullPath(), true);
 	} else {
 		wxRemoveFile(m_filename);

@@ -6,6 +6,7 @@
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
 #include "FbDownloader.h"
+#include "FbUpdateThread.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
@@ -221,97 +222,6 @@ void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 	if (data) FbManager::OpenBook(data->GetId(), data->file_type);
 }
 
-class FbFolderUpdateThread: public wxThread
-{
-	public:
-		FbFolderUpdateThread(const wxString &sql, const int folder, const FbFolderType type, const wxString &sql2 = wxEmptyString)
-			:m_sql(sql), m_folder(folder), m_type(type), m_sql2(sql2) {};
-	protected:
-		static wxCriticalSection sm_queue;
-		virtual void ExecSQL(FbDatabase &database, const wxString &sql);
-		void * Entry();
-		wxString m_sql;
-		int m_folder;
-		FbFolderType m_type;
-		wxString m_sql2;
-};
-
-class FbCreateDownloadThread: public FbFolderUpdateThread
-{
-	public:
-		FbCreateDownloadThread(const wxString &sql, const int folder, const FbFolderType type, const wxString &sql2 = wxEmptyString)
-			:FbFolderUpdateThread(sql, folder, type, sql2) {};
-	protected:
-		void * Entry();
-};
-
-wxCriticalSection FbFolderUpdateThread::sm_queue;
-
-void * FbFolderUpdateThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	FbCommonDatabase database;
-	database.AttachConfig();
-
-	ExecSQL(database, m_sql);
-	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
-
-	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
-
-	return NULL;
-}
-
-void FbFolderUpdateThread::ExecSQL(FbDatabase &database, const wxString &sql)
-{
-	try {
-		database.ExecuteUpdate(sql);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-}
-
-
-class FbIncrementFunction : public wxSQLite3ScalarFunction
-{
-	public:
-		FbIncrementFunction(): m_increment(0) {};
-		virtual void Execute(wxSQLite3FunctionContext& ctx);
-	private:
-		int m_increment;
-};
-
-void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-	int argCount = ctx.GetArgCount();
-	if (argCount != 1) {
-		ctx.SetResultError(wxString::Format(_("INCREMENT called with wrong number of arguments: %d."), argCount));
-		return;
-	}
-
-	m_increment++;
-	int id = ctx.GetInt(0);
-	id += m_increment;
-	ctx.SetResult(id);
-}
-
-void * FbCreateDownloadThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	FbCommonDatabase database;
-	FbIncrementFunction function;
-	database.CreateFunction(wxT("INCREMENT"), 1, function);
-	database.AttachConfig();
-
-	ExecSQL(database, m_sql);
-	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
-
-	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
-
-	return NULL;
-}
-
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
 	DoFolderAdd( 0 );
@@ -330,7 +240,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
+	wxThread * thread = new FbUpdateThread( sql, folder, FT_FOLDER );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -392,7 +302,7 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql1, iRating, FT_RATING, sql2 );
+	wxThread * thread = new FbUpdateThread( sql1, iRating, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -403,7 +313,7 @@ void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD );
+	wxThread * thread = new FbUpdateThread( sql1, folder, FT_DOWNLOAD );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -585,3 +495,4 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 		wxLaunchDefaultBrowser(url);
 	}
 }
+

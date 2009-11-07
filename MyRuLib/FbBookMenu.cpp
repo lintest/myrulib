@@ -35,7 +35,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType)
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
 	if (iType == FT_DOWNLOAD) {
 		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
-		if (iFolder == -2) Append(ID_DOWNLOAD_BOOK, _("Скачать повторно"));
+		if (iFolder < 0) Append(ID_DOWNLOAD_BOOK, _("Скачать повторно"));
 	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
 	}

@@ -2,6 +2,7 @@
 #include <wx/filename.h>
 #include "FbParams.h"
 #include "MyRuLibApp.h"
+#include "FbDataPath.h"
 
 WX_DEFINE_OBJARRAY(ParamArray);
 

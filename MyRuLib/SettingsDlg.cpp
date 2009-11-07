@@ -136,7 +136,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_staticText6 = new wxStaticText( m_panel1, wxID_ANY, _("Папка для хранения скачиваемых файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
-	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer14 = new wxBoxSizer( wxHORIZONTAL );
 

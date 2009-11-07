@@ -40,6 +40,8 @@ private:
 	void OnStart(wxCommandEvent & event);
 	void OnPause(wxCommandEvent & event);
 	void OnFolderSelected(wxTreeEvent & event);
+	void OnMoveUp(wxCommandEvent& event);
+	void OnMoveDown(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 
