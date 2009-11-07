@@ -31,6 +31,7 @@ private:
 	FbFolderData * GetSelected();
 private:
 	FbTreeListCtrl * m_FolderList;
+	wxToolBar * m_toolbar;
 private:
 	void OnFavoritesDel(wxCommandEvent & event);
 	void OnFolderAppend(wxCommandEvent & event);
@@ -39,6 +40,8 @@ private:
 	void OnStart(wxCommandEvent & event);
 	void OnPause(wxCommandEvent & event);
 	void OnFolderSelected(wxTreeEvent & event);
+	void OnMoveUp(wxCommandEvent& event);
+	void OnMoveDown(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

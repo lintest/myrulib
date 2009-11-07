@@ -6,8 +6,6 @@
 #include <wx/arrimpl.cpp>
 
 #define fbNO_FOLDER (-999)
-#define fbFLDR_DOWN (-998)
-
 
 class FbMenuFolderItem
 {
@@ -31,7 +29,7 @@ WX_DECLARE_OBJARRAY(FbMenuAuthorItem, FbMenuAuthorArray);
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(int id, int iFolder);
+		FbBookMenu(int id, int iFolder, int iType);
 		static void EmptyFolders() { sm_folders.Empty(); };
 		static int GetFolder(const int id);
 		static int GetAuthor(const int id);

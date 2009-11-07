@@ -29,10 +29,12 @@ class FbBookPanel: public wxSplitterWindow
 		void CreateColumns(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode;};
 		void SetFolder(int folder) { m_folder = folder; };
+		void SetType(int type) { m_type = type; };
 		void CreateBookInfo(bool bVertical);
 	private:
 		void DoFolderAdd(const int folder);
-		void DoDownload(const int folder);
+		void DoCreateDownload(const wxString &sel, const int folder);
+		void DoDeleteDownload(const wxString &sel, const int folder);
 		int GetRatingColumn();
 		int UpdateChildRating(wxTreeItemId parent, int iRating, const wxString &sRating);
 		int UpdateSelectionRating(int iRating, const wxString &sRating);
@@ -43,6 +45,7 @@ class FbBookPanel: public wxSplitterWindow
 		wxTreeItemId m_AuthorItem;
 		wxTreeItemId m_SequenceItem;
 		int m_folder;
+		int m_type;
 		int m_selected;
 	private:
 		void OnBooksListViewSelected(wxTreeEvent & event);
@@ -56,6 +59,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnFolderAdd(wxCommandEvent& event);
 		void OnOpenAuthor(wxCommandEvent& event);
 		void OnOpenBook(wxCommandEvent & event);
+		void OnSystemDownload(wxCommandEvent & event);
 		void OnImageClick(wxTreeEvent &event);
 		void OnInfoUpdate(wxCommandEvent& event);
 		void OnSubmenu(wxCommandEvent& event);

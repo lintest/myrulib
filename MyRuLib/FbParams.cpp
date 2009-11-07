@@ -2,6 +2,7 @@
 #include <wx/filename.h>
 #include "FbParams.h"
 #include "MyRuLibApp.h"
+#include "FbDataPath.h"
 
 WX_DEFINE_OBJARRAY(ParamArray);
 
@@ -123,6 +124,7 @@ int FbParams::DefaultValue(int param)
 		case FB_TRANSLIT_FOLDER: return 0;
 		case FB_TRANSLIT_FILE: return 1;
 		case FB_USE_PROXY: return 0;
+		case FB_AUTO_DOWNLD: return 1;
 		default: return 0;
 	}
 };
@@ -136,6 +138,8 @@ wxString FbParams::DefaultText(int param)
 			return wxGetApp().GetAppPath();
 		case FB_LIBRUSEC_URL:
 			return wxT("http://lib.rus.ec");
+		case FB_DOWNLOAD_DIR:
+			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
 		default:
 			return wxEmptyString;
 	}

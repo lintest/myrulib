@@ -306,8 +306,8 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 			wxString nextLetter = result.GetString(wxT("letter"));
 			if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
 				thisLeter = nextLetter;
-				itemAuthor = NULL;
-				itemSequence = NULL;
+				itemAuthor = 0L;
+				itemSequence = 0L;
 				itemLetter = AppendFolder(root, thisLeter);
 				m_books->SetItemBold(itemLetter, true);
 			}
@@ -316,7 +316,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 		}
 		if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
 			thisAuthor = nextAuthor;
-			itemSequence = NULL;
+			itemSequence = 0L;
 			itemAuthor = AppendFolder(itemLetter, thisAuthor);
 			m_books->SetItemBold(itemAuthor, true);
 		}
@@ -367,7 +367,7 @@ void ExternalDlg::FullNoSequences(wxTreeItemId root, const wxString &selections,
 			wxString nextLetter = result.GetString(wxT("letter"));
 			if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
 				thisLeter = nextLetter;
-				itemAuthor = NULL;
+				itemAuthor = 0L;
 				itemLetter = AppendFolder(root, thisLeter);
 				m_books->SetItemBold(itemLetter, true);
 			}

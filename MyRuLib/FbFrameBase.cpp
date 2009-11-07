@@ -129,6 +129,7 @@ int FbFrameBase::GetViewKey()
 		case ID_FRAME_GENRES: return FB_VIEW_GENRES;
 		case ID_FRAME_FOLDER: return FB_VIEW_FOLDER;
 		case ID_FRAME_SEARCH: return FB_VIEW_SEARCH;
+		case ID_FRAME_DOWNLD: return FB_VIEW_DOWNLD;
 		default: return 0;
 	}
 }

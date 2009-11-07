@@ -5,6 +5,8 @@
 #include "InfoCash.h"
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
+#include "FbDownloader.h"
+#include "FbUpdateThread.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
@@ -18,6 +20,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
 	EVT_MENU(ID_DOWNLOAD_BOOK, FbBookPanel::OnDownloadBook)
+	EVT_MENU(ID_SYSTEM_DOWNLOAD, FbBookPanel::OnSystemDownload)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbBookPanel::OnDeleteDownload)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
@@ -30,7 +33,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel()
-	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_selected(0)
+	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
 {
 }
 
@@ -197,7 +200,7 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
-	FbBookMenu menu(id, m_folder);
+	FbBookMenu menu(id, m_folder, m_type);
 	menu.ConnectFolders(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
 	menu.ConnectAuthors(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
 	PopupMenu(&menu, pos.x, pos.y);
@@ -219,47 +222,6 @@ void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 	if (data) FbManager::OpenBook(data->GetId(), data->file_type);
 }
 
-class FbFolderUpdateThread: public wxThread
-{
-	public:
-		FbFolderUpdateThread(const wxString &sql, const int folder, const FbFolderType type, const wxString &sql2 = wxEmptyString)
-			:m_sql(sql), m_folder(folder), m_type(type), m_sql2(sql2) {};
-	protected:
-		static wxCriticalSection sm_queue;
-		void ExecSQL(const wxString &sql);
-		void * Entry();
-	private:
-		wxString m_sql;
-		int m_folder;
-		FbFolderType m_type;
-		wxString m_sql2;
-};
-
-wxCriticalSection FbFolderUpdateThread::sm_queue;
-
-void * FbFolderUpdateThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	ExecSQL(m_sql);
-	if (!m_sql2.IsEmpty()) ExecSQL(m_sql2);
-
-	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
-
-	return NULL;
-}
-
-void FbFolderUpdateThread::ExecSQL(const wxString &sql)
-{
-	try {
-		FbCommonDatabase database;
-		database.AttachConfig();
-		database.ExecuteUpdate(sql);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-}
-
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
 {
 	DoFolderAdd( 0 );
@@ -278,7 +240,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
+	wxThread * thread = new FbUpdateThread( sql, folder, FT_FOLDER );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -340,39 +302,52 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql1, iRating, FT_RATING, sql2 );
+	wxThread * thread = new FbUpdateThread( sql1, iRating, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void FbBookPanel::DoDownload(const int folder)
+void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 {
-	wxString sel = m_BookList->GetSelected();
-
 	wxString sql1 = wxString::Format(wxT("\
 		UPDATE states SET download=%d WHERE md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxString sql2 = wxString::Format(wxT("\
+	wxThread * thread = new FbUpdateThread( sql1, folder, FT_DOWNLOAD );
+	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+}
+
+void FbBookPanel::DoCreateDownload(const wxString &sel, const int folder)
+{
+	wxString sql1 = wxString::Format(wxT("\
 		INSERT INTO states(md5sum, download) \
-		SELECT DISTINCT md5sum, %d FROM books WHERE id>0 AND id IN (%s) \
+		SELECT DISTINCT md5sum, 1 FROM books WHERE id>0 AND id IN (%s) \
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
+	"), sel.c_str());
+
+	wxString sql2 = wxString::Format(wxT("\
+		UPDATE states SET download=INCREMENT(%d) WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD, sql2 );
+	wxThread * thread = new FbCreateDownloadThread( sql1, folder, FT_DOWNLOAD, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 {
-	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD);
-
-	DoDownload(folder);
+	wxString sel;
+	size_t count = m_BookList->GetSelected(sel);
+	if (count) {
+		int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
+		DoCreateDownload(sel, folder);
+	}
 }
 
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 {
-	DoDownload(0);
+	wxString sel = m_BookList->GetSelected();
+	DoDeleteDownload(sel, 0);
 }
 
 void FbBookPanel::OnEditComments(wxCommandEvent & event)
@@ -395,8 +370,8 @@ void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 
 void FbBookPanel::EmptyBooks(const int selected)
 {
-	m_AuthorItem = 0;
-	m_SequenceItem = 0;
+	m_AuthorItem = 0L;
+	m_SequenceItem = 0L;
 	if (selected) {
 		m_selected = selected;
 	} else {
@@ -475,8 +450,8 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 {
 	m_ListMode = mode;
 
-	m_AuthorItem = 0;
-	m_SequenceItem = 0;
+	m_AuthorItem = 0L;
+	m_SequenceItem = 0L;
 
 	BookListUpdater updater(m_BookList);
 
@@ -510,5 +485,14 @@ int FbBookPanel::GetRatingColumn()
 		case FB2_MODE_LIST: return 2;
 	}
 	return 1;
+}
+
+void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
+{
+	BookTreeItemData * data = GetSelectedBook();
+	if (data && data->GetId()>0) {
+		wxString url = FbDownloader::GetURL(data->GetId());
+		wxLaunchDefaultBrowser(url);
+	}
 }
 

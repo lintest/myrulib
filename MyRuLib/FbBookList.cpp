@@ -46,8 +46,9 @@ BookListUpdater::~BookListUpdater()
 	m_list->Update();
 }
 
-void FbBookList::ScanChecked(const wxTreeItemId &root, wxString &selections)
+size_t FbBookList::ScanChecked(const wxTreeItemId &root, wxString &selections)
 {
+	size_t result = 0;
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(root, cookie);
 	while (child.IsOk()) {
@@ -56,15 +57,18 @@ void FbBookList::ScanChecked(const wxTreeItemId &root, wxString &selections)
 			if (data && data->GetId()) {
 				if ( !selections.IsEmpty() ) selections += wxT(",");
 				selections += wxString::Format(wxT("%d"), data->GetId());
+				result++;
 			}
 		}
-		ScanChecked(child, selections);
+		result += ScanChecked(child, selections);
 		child = GetNextChild(root, cookie);
 	}
+	return result;
 }
 
-void FbBookList::ScanSelected(const wxTreeItemId &root, wxString &selections)
+size_t FbBookList::ScanSelected(const wxTreeItemId &root, wxString &selections)
 {
+	size_t result = 0;
 	wxArrayTreeItemIds itemArray;
 	size_t count = FbTreeListCtrl::GetSelections(itemArray);
 	for (size_t i=0; i<count; ++i) {
@@ -72,8 +76,10 @@ void FbBookList::ScanSelected(const wxTreeItemId &root, wxString &selections)
 		if (data && data->GetId()) {
 			if ( !selections.IsEmpty() ) selections += wxT(",");
 			selections += wxString::Format(wxT("%d"), data->GetId());
+			result++;
 		}
 	}
+	return result;
 }
 
 void FbBookList::ScanChecked(const wxTreeItemId &root, wxArrayInt &items)
@@ -103,18 +109,26 @@ void FbBookList::ScanSelected(const wxTreeItemId &root, wxArrayInt &items)
 wxString FbBookList::GetSelected()
 {
 	wxString selections;
-	wxTreeItemId root = GetRootItem();
-	ScanChecked(GetRootItem(), selections);
-	if (selections.IsEmpty()) ScanSelected(root, selections);
+	GetSelected(selections);
 	return selections;
 }
 
-void FbBookList::GetSelected(wxArrayInt &items)
+size_t FbBookList::GetSelected(wxString &selections)
 {
-	wxString selections;
+	selections.Empty();
+	wxTreeItemId root = GetRootItem();
+	size_t count = ScanChecked(GetRootItem(), selections);
+	if (selections.IsEmpty()) count = ScanSelected(root, selections);
+	return count;
+}
+
+size_t FbBookList::GetSelected(wxArrayInt &items)
+{
+	items.Empty();
 	wxTreeItemId root = GetRootItem();
 	ScanChecked(root, items);
-	if (selections.IsEmpty()) ScanSelected(root, items);
+	if (items.IsEmpty()) ScanSelected(root, items);
+	return items.Count();
 }
 
 bool FbBookList::DeleteItems(const wxTreeItemId &root, wxArrayInt &items)

@@ -10,11 +10,13 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+#include "FbDataPath.h"
 
 class FbInternetBook
 {
 	public:
 		FbInternetBook(const wxString& md5sum);
+		static wxString GetURL(const int id);
 		bool Execute();
 	private:
 		bool DoDownload();
@@ -54,7 +56,7 @@ FbInternetBook::FbInternetBook(const wxString& md5sum)
 		if ( result.NextRow() ) {
 			m_id = result.GetInt(0);
 			m_filetype = result.GetString(1);
-			m_url = FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), m_id);
+			m_url = FbDownloader::GetURL(m_id);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
@@ -162,7 +164,7 @@ void FbInternetBook::SaveFile(const bool success)
 {
 	if (success) {
 		wxFileName zipname = m_md5sum + (m_zipped ? wxT(".zip") : wxEmptyString);
-		zipname.SetPath( FbStandardPaths().GetUserConfigDir() );
+		zipname.SetPath( FbStandardPaths().GetDownloadDir(true) );
 		wxRenameFile(m_filename, zipname.GetFullPath(), true);
 	} else {
 		wxRemoveFile(m_filename);
@@ -251,4 +253,9 @@ void FbDownloader::GetBooklist(wxArrayString &md5sum)
 	while ( result.NextRow() ) {
 		md5sum.Add( result.GetString(0) );
 	}
+}
+
+wxString FbDownloader::GetURL(const int id)
+{
+	return FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), id);
 }

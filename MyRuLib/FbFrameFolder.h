@@ -37,8 +37,6 @@ private:
 	void OnFolderAppend(wxCommandEvent & event);
 	void OnFolderModify(wxCommandEvent & event);
 	void OnFolderDelete(wxCommandEvent & event);
-	void OnStart(wxCommandEvent & event);
-	void OnPause(wxCommandEvent & event);
 	void OnFolderSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };
