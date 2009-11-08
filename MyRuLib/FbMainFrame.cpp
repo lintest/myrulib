@@ -271,8 +271,8 @@ void FbMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
 
 void FbMainFrame::OnError(wxCommandEvent& event)
 {
-	m_LOGTextCtrl.AppendText(event.GetString() + wxT("\n"));
 	ShowPane(wxT("Log"));
+	m_LOGTextCtrl.AppendText(event.GetString() + wxT("\n"));
 }
 
 void FbMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)

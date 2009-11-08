@@ -18,7 +18,6 @@ protected:
 	wxString GetRelative(const wxString &filename);
 protected:
 	FbCommonDatabase m_database;
-	FbAutoCommit m_transaction;
 	wxString m_basepath;
 private:
 	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);

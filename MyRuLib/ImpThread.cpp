@@ -90,7 +90,7 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 }
 
 ImportThread::ImportThread()
-	: m_transaction(m_database), m_basepath(FbParams::GetText(DB_LIBRARY_DIR))
+	: m_basepath(FbParams::GetText(DB_LIBRARY_DIR))
 {
 }
 
@@ -337,6 +337,8 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 		return;
 	}
 
+	FbAutoCommit transaction(m_database);
+
 	wxString filename = GetRelative(zipname);
 
 	if (zipname.Right(4).Lower() == wxT(".fb2")) {
@@ -482,6 +484,8 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 		return false;
 	}
 
+	FbAutoCommit transaction(m_database);
+
 	wxString filename = GetRelative(zipname);
 	int id_archive = AddArchive(filename, in.GetLength(), zip.GetTotalEntries());
 
@@ -511,6 +515,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 
 bool DirImportThread::ParseXml(const wxString &filename)
 {
+	FbAutoCommit transaction(m_database);
 	wxFFileInputStream in(filename);
 	return ImportThread::ParseXml(in, GetRelative(filename), 0);
 }
