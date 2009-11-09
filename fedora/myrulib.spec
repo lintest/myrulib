@@ -10,6 +10,7 @@ Group: Applications/Office
 License: GPL
 Source0: %{name}_%{version}.tar.gz
 BuildRoot: %{_tmppath}
+Requires: wxGTK >= 2.8.10
 
 %description
 MyRuLib — свободная (бесплатная и открытая) программа
