@@ -145,3 +145,11 @@ wxString FbParams::DefaultText(int param)
 	}
 };
 
+wxFont FbParams::GetFont(const int param)
+{
+	wxString info = GetText(param);
+	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxFont font;
+	font.SetNativeFontInfo(info);
+	return font;
+}

@@ -14,11 +14,12 @@
 #include <wx/arrimpl.cpp>
 #include <wx/fontpicker.h>
 #include "FbDatabase.h"
+#include "FbWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class SettingsDlg
 ///////////////////////////////////////////////////////////////////////////////
-class SettingsDlg : private wxDialog
+class SettingsDlg : private FbDialog
 {
 DECLARE_EVENT_TABLE()
 private:
@@ -40,6 +41,7 @@ private:
 		ID_APPEND_TYPE,
 		ID_MODIFY_TYPE,
 		ID_DELETE_TYPE,
+		ID_FONT_CLEAR,
 		ID_FONT_MAIN,
 		ID_FONT_DLG,
 	};
@@ -54,6 +56,7 @@ private:
 	void OnModifyType( wxCommandEvent& event );
 	void OnDeleteType( wxCommandEvent& event );
 	void OnTypelistActivated( wxListEvent & event );
+	void OnFontClear( wxCommandEvent& event );
 	void SelectApplication();
 	void FillTypelist();
 	void SaveTypelist();

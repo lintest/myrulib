@@ -44,6 +44,7 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 		SetMinimumPaneSize(50);
 		SetSashGravity(0.5);
 		m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
+		m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 		CreateBookInfo( (bool) FbParams::GetValue(keyType) );
 		CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 	}

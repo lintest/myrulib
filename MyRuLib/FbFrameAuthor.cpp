@@ -8,6 +8,7 @@
 #include "ExternalDlg.h"
 #include "FbFrameBaseThread.h"
 #include "FbMainMenu.h"
+#include "FbWindow.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
@@ -53,6 +54,7 @@ void FbFrameAuthor::CreateControls()
 
 	m_AuthorList = new FbAuthorList(splitter, ID_MASTER_LIST);
 	m_AuthorList->SetFocus();
+	m_AuthorList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);

@@ -29,11 +29,12 @@
 #include "ExpThread.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
+#include "FbWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ExternalDlg
 ///////////////////////////////////////////////////////////////////////////////
-class ExternalDlg : public wxDialog
+class ExternalDlg : public FbDialog
 {
 	public:
 		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);

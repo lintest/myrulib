@@ -117,10 +117,6 @@ void FbMainFrame::CreateControls()
 	SetStatusBar(&m_ProgressBar);
 
 	m_LOGTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
-	FbFrameAuthor * authors = new FbFrameAuthor(this);
-	authors->SelectRandomLetter();
-
-	new FbFrameGenres(this);
 
 	GetNotebook()->SetWindowStyleFlag(
 		wxAUI_NB_TOP|
@@ -139,6 +135,8 @@ void FbMainFrame::CreateControls()
 	m_FindAuthor.SetFocus();
 
 	Centre();
+
+	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTHOR).Post(this);
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)

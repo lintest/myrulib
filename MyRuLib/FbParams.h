@@ -48,7 +48,9 @@ enum FbParamKey {
 	FB_DOWNLOAD_DIR = 154,
 
 	FB_FONT_MAIN = 160,
-	FB_FONT_DLG  = 161,
+	FB_FONT_HTML = 161,
+	FB_FONT_TOOL = 162,
+	FB_FONT_DLG  = 163,
 };
 
 class ParamItem
@@ -69,6 +71,7 @@ class FbParams {
 		FbParams();
 		static int GetValue(const int param);
 		static wxString GetText(const int param);
+		static wxFont GetFont(const int param);
 		void LoadParams();
 		void SetValue(const int param, int value);
 		void SetText(const int param, wxString text);

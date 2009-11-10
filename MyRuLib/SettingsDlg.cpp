@@ -25,6 +25,7 @@
 #include <wx/radiobox.h>
 #include <wx/notebook.h>
 #include <wx/textdlg.h>
+#include <wx/settings.h>
 #include "FbManager.h"
 #include "FbParams.h"
 #include "SettingsDlg.h"
@@ -67,6 +68,7 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_FONT_CLEAR, SettingsDlg::OnFontClear )
 	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, SettingsDlg::OnDeleteType )
@@ -74,14 +76,8 @@ BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: wxDialog( parent, id, title, pos, size, style )
+	: FbDialog( parent, id, title, pos, size, style )
 {
-
-	wxFont font;
-	wxString text = FbParams::GetText(FB_FONT_DLG);
-	font.SetNativeFontInfoUserDesc(text);
-	SetFont(font);
-
 	m_database.AttachConfig();
 
 	wxNotebook* m_notebook;
@@ -136,6 +132,9 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerFont->Add( bSizerFont2, 1, wxEXPAND, 5 );
 
 	bSizer1->Add( bSizerFont, 0, wxEXPAND, 5 );
+
+	wxButton * btnClear = new wxButton( panel, ID_FONT_CLEAR, _("Сбросить все шрифты"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1->Add( btnClear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	panel->SetSizer( bSizer1 );
 	panel->Layout();
@@ -385,13 +384,15 @@ void SettingsDlg::Assign(bool write)
 				if (wxFontPickerCtrl * control = (wxFontPickerCtrl*)FindWindowById(ids[i].control)) {
 					if (write) {
 						wxFont font = control->GetSelectedFont();
-						wxString text = font.GetNativeFontInfoUserDesc();
+						wxString text = font.GetNativeFontInfoDesc();
 						params.SetText(ids[i].param, text);
 					} else {
-						wxFont font;
 						wxString text = params.GetText(ids[i].param);;
-						font.SetNativeFontInfoUserDesc(text);
-						control->SetSelectedFont(font);
+						if (!text.IsEmpty()) {
+							wxFont font;
+							font.SetNativeFontInfo(text);
+							control->SetSelectedFont(font);
+						}
 					}
 				} break;
 		}
@@ -593,3 +594,9 @@ void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 	m_typelist->Thaw();
 }
 
+void SettingsDlg::OnFontClear( wxCommandEvent& event )
+{
+	wxFont font = wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	m_FontMain->SetSelectedFont(font);
+	m_FontDlg->SetSelectedFont(font);
+}

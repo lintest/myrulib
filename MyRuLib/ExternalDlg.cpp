@@ -173,7 +173,7 @@ wxString ExternalDlg::NormalizeDirname(const wxString &filename)
 }
 
 ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
-	wxDialog( parent, wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
+	FbDialog( parent, wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
 	m_selections(selections),
 	m_author(iAuthor),
 	m_checkAuthor(NULL)

@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE( FbConfigDlg, wxDialog )
 END_EVENT_TABLE()
 
 FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: wxDialog( parent, id, title, pos, size, style )
+	: FbDialog( parent, id, title, pos, size, style )
 {
 	wxStaticText* m_staticText1;
 	wxTextCtrl* m_textCtrl1;

@@ -237,6 +237,8 @@
 		<Unit filename="FbTreeListCtrl.h" />
 		<Unit filename="FbUpdateThread.cpp" />
 		<Unit filename="FbUpdateThread.h" />
+		<Unit filename="FbWindow.cpp" />
+		<Unit filename="FbWindow.h" />
 		<Unit filename="ImpContext.cpp" />
 		<Unit filename="ImpContext.h" />
 		<Unit filename="ImpThread.cpp" />
