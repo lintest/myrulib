@@ -12,6 +12,7 @@
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/arrimpl.cpp>
+#include <wx/fontpicker.h>
 #include "FbDatabase.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,6 +40,8 @@ private:
 		ID_APPEND_TYPE,
 		ID_MODIFY_TYPE,
 		ID_DELETE_TYPE,
+		ID_FONT_MAIN,
+		ID_FONT_DLG,
 	};
 public:
 	SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
@@ -55,6 +58,8 @@ private:
 	void FillTypelist();
 	void SaveTypelist();
 private:
+	wxFontPickerCtrl * m_FontMain;
+	wxFontPickerCtrl * m_FontDlg;
 	wxListCtrl* m_typelist;
 	wxArrayString m_commands;
 	FbCommonDatabase m_database;
