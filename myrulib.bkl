@@ -80,6 +80,7 @@
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
+		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
 		<sources>MyRuLib/ImpThread.cpp</sources>
 		<sources>MyRuLib/InfoCash.cpp</sources>
