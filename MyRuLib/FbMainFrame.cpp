@@ -501,7 +501,7 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 {
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
 		frame->UpdateFonts();
 	}
 }

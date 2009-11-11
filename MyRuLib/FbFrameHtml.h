@@ -4,15 +4,18 @@
 #include <wx/wx.h>
 #include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
+#include <wx/splitter.h>
+#include <wx/html/htmlwin.h>
 #include "FbBookData.h"
-#include "FbFrameBase.h"
+#include "FbWindow.h"
 
-class FbFrameHtml: public wxAuiMDIChildFrame
+class FbFrameHtml: public FbAuiMDIChildFrame
 {
 public:
 	FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data);
 	void Load(const wxString & html);
 	static void Execute();
+	virtual void UpdateFonts(bool refresh = true);
 protected:
 	virtual void CreateControls();
 private:

@@ -505,25 +505,13 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 	if (refresh) m_BookList->Update();
 
-	wxFont font = FbParams::GetFont(FB_FONT_HTML);
-
-	int fontsizes[7] = {6, 8, 9, 10, 12, 16, 18};
-	int size = font.GetPointSize();
-
-	fontsizes[0] = size - 2;
-	fontsizes[1] = size;
-	fontsizes[2] = size + 1;
-	fontsizes[3] = size + 2;
-	fontsizes[4] = size + 4;
-	fontsizes[5] = size + 8;
-	fontsizes[6] = size + 10;
-
-	m_BookInfo->SetPage(wxEmptyString);
-	m_BookInfo->SetFonts(font.GetFaceName(), font.GetFaceName(), fontsizes);
-
-	BookTreeItemData * data = GetSelectedBook();
-	if (data && data->GetId()) {
-		InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+	if (refresh) m_BookInfo->SetPage(wxEmptyString);
+	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
+	if (refresh) {
+		BookTreeItemData * data = GetSelectedBook();
+		if (data && data->GetId()) {
+			InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+		}
 	}
 }
 

@@ -31,14 +31,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
-FbFrameBase::FbFrameBase() :
-	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
-	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
-	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL), m_BooksPanel(NULL)
-{
-}
-
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),

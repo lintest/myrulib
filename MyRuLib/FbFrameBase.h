@@ -7,6 +7,7 @@
 #include "FbBookPanel.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
+#include "FbWindow.h"
 
 class FbFolderData: public wxTreeItemData
 {
@@ -20,10 +21,9 @@ class FbFolderData: public wxTreeItemData
 		FbFolderType m_type;
 };
 
-class FbFrameBase : public wxAuiMDIChildFrame
+class FbFrameBase : public FbAuiMDIChildFrame
 {
 public:
-	FbFrameBase();
 	FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
