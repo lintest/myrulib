@@ -50,7 +50,6 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 		SetMinimumPaneSize(50);
 		SetSashGravity(0.5);
 		m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
-		m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 		CreateBookInfo( (bool) FbParams::GetValue(keyType) );
 		CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 	}
@@ -62,8 +61,6 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
 	m_BookInfo = new wxHtmlWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
-	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
-	m_BookInfo->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
 	if (bVertical)
 		SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2);
@@ -507,6 +504,27 @@ void FbBookPanel::UpdateFonts(bool refresh)
 {
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 	if (refresh) m_BookList->Update();
+
+	wxFont font = FbParams::GetFont(FB_FONT_HTML);
+
+	int fontsizes[7] = {6, 8, 9, 10, 12, 16, 18};
+	int size = font.GetPointSize();
+
+	fontsizes[0] = size - 2;
+	fontsizes[1] = size;
+	fontsizes[2] = size + 1;
+	fontsizes[3] = size + 2;
+	fontsizes[4] = size + 4;
+	fontsizes[5] = size + 8;
+	fontsizes[6] = size + 10;
+
+	m_BookInfo->SetPage(wxEmptyString);
+	m_BookInfo->SetFonts(font.GetFaceName(), font.GetFaceName(), fontsizes);
+
+	BookTreeItemData * data = GetSelectedBook();
+	if (data && data->GetId()) {
+		InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+	}
 }
 
 void FbBookPanel::UpdateInfo(int id)

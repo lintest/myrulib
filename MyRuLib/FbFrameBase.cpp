@@ -60,7 +60,7 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateControls()
 {
-	UpdateFonts();
+	UpdateFonts(false);
 	Layout();
 }
 
