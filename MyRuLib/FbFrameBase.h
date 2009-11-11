@@ -33,7 +33,7 @@ public:
 	void UpdateInfo(int id);
 	virtual void UpdateFonts(bool refresh = true);
 protected:
-	virtual void CreateControls() {};
+	virtual void CreateControls();
 	virtual void UpdateBooklist() = 0;
 	int GetModeKey();
 	int GetViewKey();

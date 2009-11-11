@@ -54,13 +54,12 @@ void FbFrameAuthor::CreateControls()
 
 	m_MasterList = new FbAuthorList(splitter, ID_MASTER_LIST);
 	m_MasterList->SetFocus();
-	m_MasterList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
-	Layout();
+	FbFrameBase::CreateControls();
 }
 
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style)

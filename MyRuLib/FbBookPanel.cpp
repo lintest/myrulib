@@ -508,3 +508,11 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 	if (refresh) m_BookList->Update();
 }
+
+void FbBookPanel::UpdateInfo(int id)
+{
+	BookTreeItemData * data = GetSelectedBook();
+	if (data && data->GetId()==id) {
+		InfoCash::UpdateInfo(this, id, GetSplitMode() == wxSPLIT_VERTICAL);
+	}
+}

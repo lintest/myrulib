@@ -245,4 +245,8 @@ void FbFrameHtml::DoUpdate()
 {
 	InfoCash::UpdateInfo(this, m_id, false, true);
 	FbFolderEvent(ID_UPDATE_FOLDER, 1, FT_COMMENT).Post();
+
+	FbCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_ALLBOOKS);
+	event.SetInt(m_id);
+	event.Post();
 }

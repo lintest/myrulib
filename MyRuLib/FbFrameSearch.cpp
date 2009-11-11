@@ -34,7 +34,8 @@ void FbFrameSearch::CreateControls()
 	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
 
 	SetSizer( bSizer1 );
-	Layout();
+
+	FbFrameBase::CreateControls();
 }
 
 wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxString& name)

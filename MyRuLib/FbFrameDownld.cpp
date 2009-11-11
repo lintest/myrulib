@@ -54,7 +54,8 @@ void FbFrameDownld::CreateControls()
 	FillFolders();
 
 	SetSizer( bSizer1 );
-	Layout();
+
+	FbFrameBase::CreateControls();
 }
 
 wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxString& name)

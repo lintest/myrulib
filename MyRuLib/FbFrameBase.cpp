@@ -35,7 +35,7 @@ FbFrameBase::FbFrameBase() :
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL)
 {
 }
 
@@ -43,7 +43,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL)
 {
 	Create(parent, id, title);
 }
@@ -56,6 +56,12 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 		CreateControls();
 	}
 	return res;
+}
+
+void FbFrameBase::CreateControls()
+{
+	UpdateFonts();
+	Layout();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
@@ -200,10 +206,12 @@ void FbFrameBase::UpdateFonts(bool refresh)
 		m_MasterList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 		if (refresh) m_MasterList->Update();
 	}
-	m_BooksPanel->UpdateFonts(refresh);
+	if (m_BooksPanel) {
+		m_BooksPanel->UpdateFonts(refresh);
+	}
 }
 
 void FbFrameBase::UpdateInfo(int id)
 {
-	InfoCash::UpdateInfo(m_BooksPanel, id, m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
+	if (m_BooksPanel) m_BooksPanel->UpdateInfo(id);
 }
