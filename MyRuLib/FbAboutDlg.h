@@ -2,8 +2,9 @@
 #define __FBABOUTDLG_H__
 
 #include <wx/wx.h>
+#include "FbWindow.h"
 
-class FbAboutDlg : public wxDialog
+class FbAboutDlg : public FbDialog
 {
 	public:
 		FbAboutDlg( wxWindow* parent);

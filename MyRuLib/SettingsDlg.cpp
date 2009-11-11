@@ -80,6 +80,7 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	AppendItem(fgSizerList, _("Основное окно:"), ID_FONT_MAIN);
+	AppendItem(fgSizerList, _("Панель инструментов:"), ID_FONT_DLG);
 	AppendItem(fgSizerList, _("Информация:"), ID_FONT_HTML);
 	AppendItem(fgSizerList, _("Диалоги:"), ID_FONT_DLG);
 
@@ -609,6 +610,7 @@ void SettingsDlg::OnFontClear( wxCommandEvent& event )
 {
 	wxFont font = wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	SetFont(ID_FONT_MAIN, font);
+	SetFont(ID_FONT_TOOL, font);
 	SetFont(ID_FONT_HTML, font);
 	SetFont(ID_FONT_DLG, font);
 }
