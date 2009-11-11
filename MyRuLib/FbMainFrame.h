@@ -73,6 +73,7 @@ private:
 	void OnUpdateFolder(FbFolderEvent & event);
 	void OnOpenAuthor(FbOpenEvent & event);
 	void OnVacuum(wxCommandEvent & event);
+	void OnUpdateFonts(wxCommandEvent & event);
 	void OnProgress(FbProgressEvent & event);
 	void OnUpdateAll(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()

@@ -25,8 +25,6 @@ protected:
 private:
 	void CreateBookInfo();
 private:
-	FbTreeListCtrl * m_GenresList;
-private:
 	void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()
 };

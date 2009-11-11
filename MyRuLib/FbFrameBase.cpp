@@ -3,6 +3,7 @@
 #include "FbMainMenu.h"
 #include "ExternalDlg.h"
 #include "FbMainFrame.h"
+#include "InfoCash.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
@@ -33,14 +34,16 @@ END_EVENT_TABLE()
 FbFrameBase::FbFrameBase() :
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
-	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR))
+	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
+	m_MasterList(NULL)
 {
 }
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
-	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR))
+	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
+	m_MasterList(NULL)
 {
 	Create(parent, id, title);
 }
@@ -57,49 +60,49 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
 {
-	m_BooksPanel.Create(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey());
+	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey());
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 {
-	wxPostEvent(&m_BooksPanel, event);
+	wxPostEvent(m_BooksPanel, event);
 }
 
 void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 {
-	if (event.GetId() == ID_SPLIT_HORIZONTAL && m_BooksPanel.GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
-	if (event.GetId() == ID_SPLIT_VERTICAL && m_BooksPanel.GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
+	if (event.GetId() == ID_SPLIT_HORIZONTAL && m_BooksPanel->GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
+	if (event.GetId() == ID_SPLIT_VERTICAL && m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
 }
 
 void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
 {
-	if (event.GetId() == ID_MODE_LIST && m_BooksPanel.GetListMode() == FB2_MODE_LIST) event.Check(true);
-	if (event.GetId() == ID_MODE_TREE && m_BooksPanel.GetListMode() == FB2_MODE_TREE) event.Check(true);
+	if (event.GetId() == ID_MODE_LIST && m_BooksPanel->GetListMode() == FB2_MODE_LIST) event.Check(true);
+	if (event.GetId() == ID_MODE_TREE && m_BooksPanel->GetListMode() == FB2_MODE_TREE) event.Check(true);
 }
 
 void FbFrameBase::OnExternal(wxCommandEvent& event)
 {
-	ExternalDlg::Execute(this, m_BooksPanel.m_BookList);
+	ExternalDlg::Execute(this, m_BooksPanel->m_BookList);
 }
 
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 {
-	m_BooksPanel.EmptyBooks();
+	m_BooksPanel->EmptyBooks();
 }
 
 void FbFrameBase::OnAppendBook(FbBookEvent& event)
 {
-	m_BooksPanel.AppendBook( new BookTreeItemData(event.m_data), event.GetString() );
+	m_BooksPanel->AppendBook( new BookTreeItemData(event.m_data), event.GetString() );
 }
 
 void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 {
-	m_BooksPanel.AppendAuthor( event.GetString() );
+	m_BooksPanel->AppendAuthor( event.GetString() );
 }
 
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
-	m_BooksPanel.AppendSequence( event.GetString() );
+	m_BooksPanel->AppendSequence( event.GetString() );
 }
 
 void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
@@ -137,7 +140,7 @@ int FbFrameBase::GetViewKey()
 void FbFrameBase::OnChangeView(wxCommandEvent & event)
 {
 	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
-	m_BooksPanel.CreateBookInfo((bool)vertical);
+	m_BooksPanel->CreateBookInfo((bool)vertical);
 
 	int param = GetViewKey();
 	if (param) FbParams().SetValue(param, vertical);
@@ -146,7 +149,7 @@ void FbFrameBase::OnChangeView(wxCommandEvent & event)
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 {
 	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	m_BooksPanel.CreateColumns(mode);
+	m_BooksPanel->CreateColumns(mode);
 	UpdateBooklist();
 
 	int param = GetModeKey();
@@ -191,3 +194,16 @@ void FbFrameBase::OnActivated(wxActivateEvent & event)
 	}
 }
 
+void FbFrameBase::UpdateFonts(bool refresh)
+{
+	if (m_MasterList) {
+		m_MasterList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+		if (refresh) m_MasterList->Update();
+	}
+	m_BooksPanel->UpdateFonts(refresh);
+}
+
+void FbFrameBase::UpdateInfo(int id)
+{
+	InfoCash::UpdateInfo(m_BooksPanel, id, m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL);
+}

@@ -31,7 +31,6 @@ private:
 	FbFolderData * GetSelected();
 private:
 	wxToolBar * m_ToolBar;
-	FbTreeListCtrl * m_FolderList;
 private:
 	void OnFavoritesDel(wxCommandEvent & event);
 	void OnFolderAppend(wxCommandEvent & event);

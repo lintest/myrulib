@@ -37,6 +37,12 @@ FbBookPanel::FbBookPanel()
 {
 }
 
+FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
+	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
+{
+	Create(parent, size, style, keyType, keyMode);
+}
+
 bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 {
 	bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
@@ -497,3 +503,8 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 	}
 }
 
+void FbBookPanel::UpdateFonts(bool refresh)
+{
+	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+	if (refresh) m_BookList->Update();
+}

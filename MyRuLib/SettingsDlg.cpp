@@ -28,6 +28,8 @@
 #include <wx/settings.h>
 #include "FbManager.h"
 #include "FbParams.h"
+#include "FbConst.h"
+#include "FbBookEvent.h"
 #include "SettingsDlg.h"
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
@@ -386,6 +388,8 @@ void SettingsDlg::Assign(bool write)
 				} break;
 		}
 	}
+
+	if (write) FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_UPDATE_FONTS).Post();
 };
 
 void SettingsDlg::Execute(wxWindow* parent)

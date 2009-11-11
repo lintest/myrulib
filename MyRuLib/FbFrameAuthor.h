@@ -29,7 +29,6 @@ private:
 	void SelectFirstAuthor(const int book = 0);
 	BookTreeItemData * GetSelectedBook();
 private:
-	FbAuthorList * m_AuthorList;
 	wxSplitterWindow * m_BooksSplitter;
 	wxToolBar * m_RuAlphabar;
 	wxToolBar * m_EnAlphabar;

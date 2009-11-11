@@ -30,7 +30,8 @@ public:
 	bool m_FilterFb2;
 	bool m_FilterLib;
 	bool m_FilterUsr;
-	FbBookPanel * GetBookPanel() { return &m_BooksPanel; };
+	void UpdateInfo(int id);
+	virtual void UpdateFonts(bool refresh = true);
 protected:
 	virtual void CreateControls() {};
 	virtual void UpdateBooklist() = 0;
@@ -38,7 +39,8 @@ protected:
 	int GetViewKey();
 protected:
 	void CreateBooksPanel(wxWindow * parent, long substyle);
-	FbBookPanel m_BooksPanel;
+	FbTreeListCtrl * m_MasterList;
+	FbBookPanel * m_BooksPanel;
 private:
 	void OnActivated(wxActivateEvent & event);
 	void OnChangeFilter(wxCommandEvent& event);

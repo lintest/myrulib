@@ -286,6 +286,8 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		stmt.Bind(1, id);
 		stmt.Bind(2, filename);
 		stmt.ExecuteUpdate();
+	} else {
+		wxLogError(wxT("Zip read error %s"), filename.c_str());
 	}
 
 	InfoCash::Empty();

@@ -52,13 +52,13 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_AuthorList = new FbAuthorList(splitter, ID_MASTER_LIST);
-	m_AuthorList->SetFocus();
-	m_AuthorList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+	m_MasterList = new FbAuthorList(splitter, ID_MASTER_LIST);
+	m_MasterList->SetFocus();
+	m_MasterList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
-	splitter->SplitVertically(m_AuthorList, &m_BooksPanel, 160);
+	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	Layout();
 }
@@ -105,27 +105,27 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	ToggleAlphabar(id);
 
-	m_AuthorList->FillAuthorsChar(alphabet[position]);
+	((FbAuthorList*)m_MasterList)->FillAuthorsChar(alphabet[position]);
 	SelectFirstAuthor();
 }
 
 void FbFrameAuthor::SelectFirstAuthor(const int book)
 {
-	m_BooksPanel.EmptyBooks(book);
+	m_BooksPanel->EmptyBooks(book);
 
 	wxTreeItemIdValue cookie;
-	wxTreeItemId item = m_AuthorList->GetFirstChild(m_AuthorList->GetRootItem(), cookie);
-	if (item.IsOk()) m_AuthorList->SelectItem(item);
+	wxTreeItemId item = m_MasterList->GetFirstChild(m_MasterList->GetRootItem(), cookie);
+	if (item.IsOk()) m_MasterList->SelectItem(item);
 }
 
 void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
-		m_BooksPanel.EmptyBooks();
-		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(selected);
+		m_BooksPanel->EmptyBooks();
+		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
 		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId());
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 		}
 	}
@@ -133,21 +133,21 @@ void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 
 void FbFrameAuthor::ActivateAuthors()
 {
-	m_AuthorList->SetFocus();
+	m_MasterList->SetFocus();
 }
 
 void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
 	ToggleAlphabar(0);
-	m_AuthorList->FillAuthorsText(text);
+	((FbAuthorList*)m_MasterList)->FillAuthorsText(text);
 	SelectFirstAuthor();
 }
 
 void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
 	ToggleAlphabar(0);
-	m_AuthorList->FillAuthorsCode(author);
+	((FbAuthorList*)m_MasterList)->FillAuthorsCode(author);
 	SelectFirstAuthor(book);
 }
 
@@ -163,10 +163,10 @@ void FbFrameAuthor::SelectRandomLetter()
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
-	wxTreeItemId item = m_AuthorList->GetSelection();
+	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(item);
-		if (data) ExternalDlg::Execute(this, m_BooksPanel.m_BookList, data->GetId());
+		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(item);
+		if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetId());
 	}
 }
 
@@ -264,12 +264,12 @@ void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 
 void FbFrameAuthor::UpdateBooklist()
 {
-	wxTreeItemId selected = m_AuthorList->GetSelection();
+	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) {
-		m_BooksPanel.EmptyBooks();
-		FbAuthorData * data = (FbAuthorData*) m_AuthorList->GetItemData(selected);
+		m_BooksPanel->EmptyBooks();
+		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
 		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel.GetListMode(), data->GetId());
+			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId());
 			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 		}
 	}
@@ -278,3 +278,4 @@ void FbFrameAuthor::UpdateBooklist()
 void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
 {
 }
+

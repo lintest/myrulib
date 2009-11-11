@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
 	EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
+	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 
 	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
@@ -486,16 +487,21 @@ void FbMainFrame::OnUpdateAll(wxCommandEvent & event)
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
-		if (frame) {
-			FbBookPanel * books = frame->GetBookPanel();
-			InfoCash::UpdateInfo(frame->GetBookPanel(), event.GetInt(), books->GetSplitMode() == wxSPLIT_VERTICAL);
-		}
+		if (frame) frame->UpdateInfo(event.GetInt());
 	}
-
 }
 
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 {
 	FbDataOpenDlg dlg(this);
 	dlg.ShowModal();
+}
+
+void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
+{
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		frame->UpdateFonts();
+	}
 }

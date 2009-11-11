@@ -31,7 +31,7 @@ void FbFrameSearch::CreateControls()
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(this, substyle);
-	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
+	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
 
 	SetSizer( bSizer1 );
 	Layout();
@@ -168,7 +168,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 
 void FbFrameSearch::UpdateBooklist()
 {
-	wxThread * thread = new FrameSearchThread(this, m_BooksPanel.GetListMode(), m_title);
+	wxThread * thread = new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title);
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
