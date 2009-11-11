@@ -3,12 +3,12 @@
 #include "FbLogoBitmap.h"
 #include "FbConst.h"
 
-BEGIN_EVENT_TABLE( FbDataOpenDlg, wxDialog )
+BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_BUTTON( ID_FILE_BTN, FbDataOpenDlg::OnSelectFileClick )
 END_EVENT_TABLE()
 
 FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, wxWindowID id )
-	: wxDialog( parent, id, GetTitle(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+	: FbDialog( parent, id, GetTitle(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 

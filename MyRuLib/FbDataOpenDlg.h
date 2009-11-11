@@ -2,8 +2,9 @@
 #define __FBDATAOPENDLG_H__
 
 #include <wx/wx.h>
+#include "FbWindow.h"
 
-class FbDataOpenDlg : public wxDialog
+class FbDataOpenDlg : public FbDialog
 {
 	public:
 		FbDataOpenDlg( wxWindow* parent, wxWindowID id = wxID_ANY);
