@@ -33,6 +33,7 @@
 #include "SettingsDlg.h"
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
+#include "FbViewerDlg.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -473,21 +474,8 @@ void SettingsDlg::SelectApplication()
 	long item = typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if ( item >= 0) command = m_commands[typelist->GetItemData(item)];
 
-#ifdef __WIN32__
-	wxString wildCard = _("Исполняемые файлы (*.exe)|*.exe");
-
-	wxFileDialog dlg (
-		this,
-		title,
-		wxEmptyString,
-		command,
-		wildCard,
-		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
-		wxDefaultPosition
-	);
-
-	if (dlg.ShowModal() == wxID_OK) {
-		command = dlg.GetPath();
+	if ( FbViewerDlg::Execute( this, wxEmptyString, command) )
+	{
 		size_t index = m_commands.Add(command);
 		long item = -1;
 		while (true) {
@@ -497,19 +485,6 @@ void SettingsDlg::SelectApplication()
 			typelist->SetItemData(item, index);
 		}
 	}
-
-#else
-	command = wxGetTextFromUser(title, _("Настройки:"), command);
-	if (command.IsEmpty()) return;
-	size_t index = m_commands.Add(command);
-	item = -1;
-	while (true) {
-		item = typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (item == -1) break;
-		typelist->SetItem(item, 1, command);
-		typelist->SetItemData(item, index);
-	}
-#endif
 }
 
 void SettingsDlg::SaveTypelist()
