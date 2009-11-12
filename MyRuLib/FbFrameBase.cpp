@@ -138,20 +138,22 @@ int FbFrameBase::GetViewKey()
 void FbFrameBase::OnChangeView(wxCommandEvent & event)
 {
 	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
-	m_BooksPanel->CreateBookInfo((bool)vertical);
 
 	int param = GetViewKey();
 	if (param) FbParams().SetValue(param, vertical);
+
+	m_BooksPanel->CreateBookInfo((bool)vertical);
 }
 
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 {
 	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	m_BooksPanel->CreateColumns(mode);
-	UpdateBooklist();
 
 	int param = GetModeKey();
 	if (param) FbParams().SetValue(param, mode);
+
+	m_BooksPanel->CreateColumns(mode);
+	UpdateBooklist();
 }
 
 void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
