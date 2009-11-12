@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Maintainer:  $Author: pgriddev $
 // Created:     01/02/97
-// RCS-ID:      $Id: treelistctrl.cpp,v 1.105 2008/12/01 17:23:41 pgriddev Exp $
+// RCS-ID:      $Id: treelistctrl.cpp,v 1.107 2009/03/19 07:51:49 pgriddev Exp $
 // Copyright:   (c) 2004-2008 Robert Roebling, Julian Smart, Alberto Griggio,
 //              Vadim Zeitlin, Otto Wyss, Ronan Chartois
 // Licence:     wxWindows
@@ -29,7 +29,7 @@
     #pragma hdrstop
 #endif
 
-#include <wx/app.h>
+
 #include <wx/treebase.h>
 #include <wx/timer.h>
 #include <wx/textctrl.h>
@@ -43,13 +43,14 @@
 #include <wx/renderer.h>
 #endif
 #include <wx/apptrait.h>
+#include <wx/dcbuffer.h>
 
 #ifdef __WXMAC__
 #include "wx/mac/private.h"
 #endif
 
 #include "treelistctrl.h"
-
+#include <wx/app.h>
 
 // ---------------------------------------------------------------------------
 // array types
@@ -83,7 +84,7 @@ static const int BTNWIDTH = 9;
 static const int BTNHEIGHT = 9;
 static const int EXTRA_WIDTH = 4;
 static const int EXTRA_HEIGHT = 4;
-static const int HEADER_OFFSET_X = 1;
+static const int HEADER_OFFSET_X = 0;  // changed from 1 to 0 on 2009.03.10 for Windows (other OS untested)
 static const int HEADER_OFFSET_Y = 1;
 
 static const int DRAG_TIMER_TICKS = 250; // minimum drag wait time in ms
@@ -151,6 +152,7 @@ public:
     void AdjustDC(wxDC& dc);
 
     void OnPaint( wxPaintEvent &event );
+    void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
     void OnMouse( wxMouseEvent &event );
     void OnSetFocus( wxFocusEvent &event );
 
@@ -570,6 +572,7 @@ public:
 
     // callbacks
     void OnPaint( wxPaintEvent &event );
+    void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // to reduce flicker
     void OnSetFocus( wxFocusEvent &event );
     void OnKillFocus( wxFocusEvent &event );
     void OnChar( wxKeyEvent &event );
@@ -1078,6 +1081,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxTreeListHeaderWindow,wxWindow);
 
 BEGIN_EVENT_TABLE(wxTreeListHeaderWindow,wxWindow)
     EVT_PAINT         (wxTreeListHeaderWindow::OnPaint)
+    EVT_ERASE_BACKGROUND(wxTreeListHeaderWindow::OnEraseBackground) // reduce flicker
     EVT_MOUSE_EVENTS  (wxTreeListHeaderWindow::OnMouse)
     EVT_SET_FOCUS     (wxTreeListHeaderWindow::OnSetFocus)
 END_EVENT_TABLE()
@@ -1092,6 +1096,9 @@ void wxTreeListHeaderWindow::Init()
 #if wxCHECK_VERSION_FULL(2, 7, 0, 1)
     m_hotTrackCol = -1;
 #endif
+
+    // prevent any background repaint in order to reducing flicker
+    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 }
 
 wxTreeListHeaderWindow::wxTreeListHeaderWindow()
@@ -1176,13 +1183,7 @@ void wxTreeListHeaderWindow::AdjustDC(wxDC& dc)
 
 void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 {
-#ifdef __WXGTK__
-    wxClientDC dc( this );
-#else
-    wxPaintDC dc( this );
-#endif
-
-    PrepareDC( dc );
+    wxAutoBufferedPaintDC dc( this );
     AdjustDC( dc );
 
     int x = HEADER_OFFSET_X;
@@ -1787,6 +1788,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxTreeListMainWindow, wxScrolledWindow)
 
 BEGIN_EVENT_TABLE(wxTreeListMainWindow, wxScrolledWindow)
     EVT_PAINT          (wxTreeListMainWindow::OnPaint)
+    EVT_ERASE_BACKGROUND(wxTreeListMainWindow::OnEraseBackground) // to reduce flicker
     EVT_MOUSE_EVENTS   (wxTreeListMainWindow::OnMouse)
     EVT_CHAR           (wxTreeListMainWindow::OnChar)
     EVT_SET_FOCUS      (wxTreeListMainWindow::OnSetFocus)
@@ -1862,6 +1864,9 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetUnderlined(),
                          m_normalFont.GetFaceName(),
                          m_normalFont.GetEncoding());
+
+    // prevent any background repaint in order to reducing flicker
+    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 }
 
 bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
@@ -2258,20 +2263,18 @@ wxTreeItemId wxTreeListMainWindow::GetNext (const wxTreeItemId& item, bool fullt
 wxTreeItemId wxTreeListMainWindow::GetPrev (const wxTreeItemId& item, bool fulltree) const {
     wxCHECK_MSG (item.IsOk(), wxTreeItemId(), _T("invalid tree item"));
 
-    // if there are any children, return last child
-    if (fulltree || ((wxTreeListItem*)item.m_pItem)->IsExpanded()) {
-        wxArrayTreeListItems& children = ((wxTreeListItem*)item.m_pItem)->GetChildren();
-        if (children.GetCount() > 0) return children.Item (children.GetCount()-1);
+    // if there are no previous sibling get parent
+    wxTreeItemId prev = GetPrevSibling (item);
+    if (! prev.IsOk()) return GetItemParent (item);
+
+    // while previous sibling has children, return last
+    while (fulltree || ((wxTreeListItem*)prev.m_pItem)->IsExpanded()) {
+        wxArrayTreeListItems& children = ((wxTreeListItem*)prev.m_pItem)->GetChildren();
+        if (children.GetCount() == 0) break;
+        prev = children.Item (children.GetCount() - 1);
     }
 
-    // get sibling of this item or of the ancestors instead
-    wxTreeItemId next;
-    wxTreeItemId parent = item;
-    do {
-        next = GetPrevSibling (parent);
-        parent = GetItemParent (parent);
-    } while (!next.IsOk() && parent.IsOk());
-    return next;
+    return prev;
 }
 
 wxTreeItemId wxTreeListMainWindow::GetFirstExpandedItem() const {
@@ -2503,9 +2506,7 @@ void wxTreeListMainWindow::DoDeleteItem(wxTreeListItem *item) {
     // don't stay with invalid m_selectItem: default to current item
     if (item == m_selectItem) {
         m_selectItem = m_curItem;
-		//DENIS KANDRASHIN 2009-11-02 - BEGIN - Fix small error
-        SelectItem(m_selectItem, 0L, true);  // unselect others
-		//END DENIS
+        SelectItem(m_selectItem, NULL, true);  // unselect others
     }
 
     // recurse children, starting from the right to prevent multiple selection
@@ -3404,8 +3405,12 @@ void wxTreeListMainWindow::PaintLevel (wxTreeListItem *item, wxDC &dc,
 
 void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event)) {
 
-    wxPaintDC dc (this);
-    PrepareDC (dc);
+    // init device context, clear background (BEFORE changing DC origin...)
+    wxAutoBufferedPaintDC dc (this);
+    wxBrush brush(GetBackgroundColour(), wxSOLID);
+    dc.SetBackground(brush);
+    dc.Clear();
+    DoPrepareDC (dc);
 
     if (!m_rootItem || (GetColumnCount() <= 0)) return;
 
@@ -3482,13 +3487,9 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
 #else
             wxTreeItemIdValue cookie = 0;
 #endif
-			//DENIS KANDRASHIN 2009-11-02 - BEGIN - Fix small error
-            m_curItem = (wxTreeListItem*)(void*)GetFirstChild (m_curItem, cookie).m_pItem;
-			//END DENIS
+            m_curItem = (wxTreeListItem*)GetFirstChild (m_curItem, cookie).m_pItem;
         }
-		//DENIS KANDRASHIN 2009-11-02 - BEGIN - Fix small error
-        SelectItem(m_curItem, 0L, true);  // unselect others
-		//END DENIS
+        SelectItem(m_curItem, NULL, true);  // unselect others
         curItemSet = true;
     }
 
@@ -3819,6 +3820,7 @@ bool bSkip = true;
     // set focus if window clicked
     if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
 
+
 // ---------- DETERMINE EVENT ----------
 /*
 wxLogMessage("OnMouse: LMR down=<%d, %d, %d> up=<%d, %d, %d> LDblClick=<%d> dragging=<%d>",
@@ -3949,9 +3951,7 @@ wxLogMessage("OnMouse: LMR down=<%d, %d, %d> up=<%d, %d, %d> LDblClick=<%d> drag
         m_lastOnSame = false;
 
         // selection reset to that single item which was double-clicked
-		//DENIS KANDRASHIN 2009-11-02 - BEGIN - Fix small error
-        if (SelectItem(item, 0L, true)) {  // unselect others --return false if vetoed
-		//END DENIS 
+        if (SelectItem(item, NULL, true)) {  // unselect others --return false if vetoed
 
             // selection change not vetoed, send activate event
             if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, item)) {
@@ -4433,7 +4433,7 @@ void wxTreeListCtrl::DoHeaderLayout()
         m_header_win->Refresh();
     }
     if (m_main_win) {
-        m_main_win->SetSize (0, m_headerHeight + 1, w, h - m_headerHeight - 1);
+        m_main_win->SetSize (0, m_headerHeight, w, h - m_headerHeight);
     }
 }
 

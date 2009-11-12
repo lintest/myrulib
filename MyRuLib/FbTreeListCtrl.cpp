@@ -35,16 +35,18 @@ void FbTreeListCtrl::DoResizeCols(int width)
 
 	int sum = 0;
 	for (size_t i = 0; i<(size_t)m_ColSizes.Count() && i<(size_t)GetColumnCount(); i++) {
-		sum += m_ColSizes[i];
+		if (IsColumnShown(i)) sum += m_ColSizes[i];
 	}
 
 	if (!sum) return;
 
 	int xx = w;
 	for (size_t i = 1; i<(size_t)m_ColSizes.Count() && i<(size_t)GetColumnCount(); i++) {
-		int x = w * m_ColSizes[i] / sum;
-		SetColumnWidth(i, x);
-		xx -= x;
+		if (IsColumnShown(i)) {
+			int x = w * m_ColSizes[i] / sum;
+			SetColumnWidth(i, x);
+			xx -= x;
+		}
 	}
 	SetColumnWidth(0, xx);
 }

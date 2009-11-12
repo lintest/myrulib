@@ -51,6 +51,15 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 		SetSashGravity(0.5);
 		m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
 		CreateBookInfo( (bool) FbParams::GetValue(keyType) );
+		{
+			BookListUpdater updater(m_BookList);
+			m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
+			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
+			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+		}
 		CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 	}
 	return res;
@@ -432,18 +441,18 @@ void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 		case FB2_MODE_TREE: {
 			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
 			item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
-			m_BookList->SetItemText(item, 1, sRating);
-			if (data->number) m_BookList->SetItemText(item, 2, wxString::Format(wxT(" %d "), data->number));
-			m_BookList->SetItemText(item, 3, file_type);
-			m_BookList->SetItemText(item, 4, file_size);
+			m_BookList->SetItemText(item, 2, sRating);
+			if (data->number) m_BookList->SetItemText(item, 3, wxString::Format(wxT(" %d "), data->number));
+			m_BookList->SetItemText(item, 4, file_type);
+			m_BookList->SetItemText(item, 5, file_size);
 		} break;
 		case FB2_MODE_LIST: {
 			parent = m_BookList->GetRootItem();
 			item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, authors);
 			m_BookList->SetItemText(item, 2, sRating);
-			m_BookList->SetItemText(item, 3, file_type);
-			m_BookList->SetItemText(item, 4, file_size);
+			m_BookList->SetItemText(item, 4, file_type);
+			m_BookList->SetItemText(item, 5, file_size);
 		} break;
 	}
 	m_BookList->Expand(parent);
@@ -459,22 +468,14 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 
 	BookListUpdater updater(m_BookList);
 
-	m_BookList->EmptyCols();
-
 	switch (m_ListMode) {
 		case FB2_MODE_TREE: {
-			m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+			m_BookList->SetColumnShown(1, false);
+			m_BookList->SetColumnShown(3, true);
 		} break;
 		case FB2_MODE_LIST: {
-			m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+			m_BookList->SetColumnShown(1, true);
+			m_BookList->SetColumnShown(3, false);
 		} break;
 	}
 
@@ -484,11 +485,7 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 
 int FbBookPanel::GetRatingColumn()
 {
-	switch (m_ListMode) {
-		case FB2_MODE_TREE: return 1;
-		case FB2_MODE_LIST: return 2;
-	}
-	return 1;
+	return 2;
 }
 
 void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
