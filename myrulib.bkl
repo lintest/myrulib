@@ -77,6 +77,7 @@
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>
+		<sources>MyRuLib/FbMenu.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>

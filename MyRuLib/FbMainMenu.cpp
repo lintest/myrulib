@@ -89,9 +89,8 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	AppendSeparator();
-	AppendCheckItem(ID_FILTER_FB2, _("Фильтр: только fb2-файлы"));
-	AppendCheckItem(ID_FILTER_LIB, _("Фильтр: файлы Либрусек"));
-	AppendCheckItem(ID_FILTER_USR, _("Фильтр: файлы пользователя"));
+	Append(wxID_ANY, _("Сортировка"), new FbMenuSort());
+	Append(wxID_ANY, _("Фильтр"), new FbMenuFilter());
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));

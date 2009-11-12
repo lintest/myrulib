@@ -8,6 +8,7 @@
 class FbDownloader: public wxThread
 {
 	public:
+		static wxString GetFilename(const wxString &md5sum, bool bCreateFolder = false);
 		static wxString GetURL(const int id);
 		static void Start();
 		static void Pause();

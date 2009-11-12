@@ -68,6 +68,8 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddSeparator();
 	toolbar->AddTool(wxID_UP, _("Вверх"), wxArtProvider::GetBitmap(wxART_GO_UP), _("Передвинуть в начало очереди"));
 	toolbar->AddTool(wxID_DOWN, _("Вниз"), wxArtProvider::GetBitmap(wxART_GO_DOWN), _("Передвинуть в конец очереди"));
+	toolbar->AddSeparator();
+	toolbar->AddTool(ID_DELETE_DOWNLOAD, _("Удалить"), wxArtProvider::GetBitmap(wxART_DELETE), _("Удалить загрузку"));
 	toolbar->Realize();
 	return toolbar;
 }
@@ -117,7 +119,7 @@ void * FrameDownldThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		database.AttachConfig();
+		InitDatabase(database);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_folder);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();

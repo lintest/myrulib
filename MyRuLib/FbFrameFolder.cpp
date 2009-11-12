@@ -234,7 +234,7 @@ void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 	stmt.Bind(2, id);
 	stmt.ExecuteUpdate();
 
-	FbBookMenu::EmptyFolders();
+	FbMenuFolders::EmptyFolders();
 	m_BooksPanel->EmptyBooks();
 	FillFolders(id);
 }
@@ -259,7 +259,7 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 	stmt.Bind(2, id);
 	stmt.ExecuteUpdate();
 
-	FbBookMenu::EmptyFolders();
+	FbMenuFolders::EmptyFolders();
 	FillFolders(id);
 }
 
@@ -288,7 +288,7 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 	stmt.Bind(1, id);
 	stmt.ExecuteUpdate();
 
-	FbBookMenu::EmptyFolders();
+	FbMenuFolders::EmptyFolders();
 	m_BooksPanel->EmptyBooks();
 	FillFolders(0);
 }

@@ -163,8 +163,8 @@ bool FbInternetBook::CheckMD5()
 void FbInternetBook::SaveFile(const bool success)
 {
 	if (success) {
-		wxFileName zipname = m_md5sum + (m_zipped ? wxT(".zip") : wxEmptyString);
-		zipname.SetPath( FbStandardPaths().GetDownloadDir(true) );
+		wxFileName zipname = FbDownloader::GetFilename(m_md5sum, true);
+		if (m_zipped) zipname.SetExt(wxT("zip"));
 		wxRenameFile(m_filename, zipname.GetFullPath(), true);
 	} else {
 		wxRemoveFile(m_filename);
@@ -258,4 +258,24 @@ void FbDownloader::GetBooklist(wxArrayString &md5sum)
 wxString FbDownloader::GetURL(const int id)
 {
 	return FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), id);
+}
+
+wxString FbDownloader::GetFilename(const wxString &md5sum, bool bCreateFolder)
+{
+	wxString path = FbStandardPaths().GetDownloadDir(false);
+
+	wxString name = md5sum;
+	for (int i=1; i<=3; i++) {
+		path += wxFileName::GetPathSeparator();
+		path += name.Left(2);
+		name = name.Mid(2);
+	}
+
+	if ( !wxFileName::DirExists(path))
+		wxFileName::Mkdir(path, 0777, wxPATH_MKDIR_FULL);
+
+	path += wxFileName::GetPathSeparator();
+	path += name;
+
+	return path;
 }

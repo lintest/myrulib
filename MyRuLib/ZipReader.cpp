@@ -10,6 +10,7 @@
 #include "FbDatabase.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
+#include "FbDownloader.h"
 
 class ZipThread : public BaseThread
 {
@@ -117,8 +118,7 @@ void ZipReader::OpenDownload(FbDatabase &database)
 		else return;
 	}
 
-	wxFileName zip_file = md5sum;
-	zip_file.SetPath( FbStandardPaths().GetDownloadDir() );
+	wxFileName zip_file = FbDownloader::GetFilename(md5sum, false);
 	m_zipOk = zip_file.FileExists();
 	if (m_zipOk) {
 		m_file = new wxFFileInputStream(zip_file.GetFullPath());
