@@ -135,7 +135,7 @@ void * FrameSearchThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		database.AttachConfig();
+		InitDatabase(database);
 		FbSearchFunction search(m_title);
 		database.CreateFunction(wxT("SEARCH"), 1, search);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);

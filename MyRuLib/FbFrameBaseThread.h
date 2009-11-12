@@ -4,6 +4,13 @@
 #include <wx/wx.h>
 #include "FbFrameBase.h"
 
+class FbAggregateFunction : public wxSQLite3AggregateFunction
+{
+	public:
+		virtual void Aggregate(wxSQLite3FunctionContext& ctx);
+		virtual void Finalize(wxSQLite3FunctionContext& ctx);
+};
+
 class FbFrameBaseThread: public wxThread
 {
 	public:
@@ -17,10 +24,12 @@ class FbFrameBaseThread: public wxThread
 		virtual wxString GetSQL(const wxString & condition, const wxString & order = wxEmptyString);
 		virtual void CreateList(wxSQLite3ResultSet &result);
 		virtual void CreateTree(wxSQLite3ResultSet &result);
+		virtual void InitDatabase(FbCommonDatabase &database);
 		void EmptyBooks();
 		void FillBooks(wxSQLite3ResultSet &result);
 	protected:
 		static wxCriticalSection sm_queue;
+		FbAggregateFunction m_aggregate;
 		wxWindow * m_frame;
 		FbListMode m_mode;
 		bool m_FilterFb2;

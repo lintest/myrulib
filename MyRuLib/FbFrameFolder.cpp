@@ -156,7 +156,7 @@ void * FrameFavourThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		database.AttachConfig();
+		InitDatabase(database);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_folder);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();

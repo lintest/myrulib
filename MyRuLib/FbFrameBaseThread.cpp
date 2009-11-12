@@ -2,6 +2,46 @@
 #include "FbConst.h"
 #include "FbBookEvent.h"
 
+// Concatenate all values
+void FbAggregateFunction::Aggregate(wxSQLite3FunctionContext& ctx)
+{
+	// Get the temporary memory for storing the intermediate result
+	wxArrayString** acc = (wxArrayString**) ctx.GetAggregateStruct(sizeof (wxArrayString**));
+
+	// Allocate a wxString instance in the first aggregate step
+	if (*acc == NULL) {
+	  *acc = new wxArrayString;
+	}
+
+	// Concatenate all arguments
+	for (int i = 0; i < ctx.GetArgCount(); i++) {
+	   (*acc)->Add(ctx.GetString(i));
+}
+}
+
+  // Set the result of the aggregate function
+void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
+{
+	// Get the temporary memory conatining the result
+	wxArrayString** acc = (wxArrayString**) ctx.GetAggregateStruct(sizeof (wxArrayString**));
+
+	(*acc)->Sort();
+
+	wxString result;
+	size_t iCount = (*acc)->Count();
+	for (size_t i=0; i<iCount; i++) {
+		if (!result.IsEmpty()) result += wxT(", ");
+		result += (*acc)->Item(i);
+	}
+
+	// Set the result
+	ctx.SetResult(result);
+
+	// Important: Free the allocated wxString
+	delete *acc;
+	*acc = 0;
+}
+
 wxCriticalSection FbFrameBaseThread::sm_queue;
 
 wxString FbFrameBaseThread::GetSQL(const wxString & condition, const wxString & order)
@@ -26,11 +66,12 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition, const wxString & 
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, authors.full_name as full_name \
+					states.rating, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
+				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating \
 				ORDER BY \
 			");
 			sql += order.IsEmpty() ? wxT("books.title, books.id, authors.full_name") : order;
@@ -71,16 +112,9 @@ void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)
 
 void FbFrameBaseThread::CreateList(wxSQLite3ResultSet &result)
 {
-	result.NextRow();
-	while (!result.Eof()) {
+	while (result.NextRow()) {
 		BookTreeItemData data(result);
 		wxString full_name = result.GetString(wxT("full_name"));
-		do {
-			result.NextRow();
-			if ( data.GetId() != result.GetInt(wxT("id")) ) break;
-			full_name = full_name + wxT(", ") + result.GetString(wxT("full_name"));
-		} while (!result.Eof());
-
 		FbBookEvent(ID_APPEND_BOOK, &data, full_name).Post(m_frame);
 	}
 }
@@ -96,4 +130,10 @@ void FbFrameBaseThread::FillBooks(wxSQLite3ResultSet &result)
 		case FB2_MODE_TREE: CreateTree(result); break;
 		case FB2_MODE_LIST: CreateList(result); break;
 	}
+}
+
+void FbFrameBaseThread::InitDatabase(FbCommonDatabase &database)
+{
+	database.AttachConfig();
+	database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
 }
