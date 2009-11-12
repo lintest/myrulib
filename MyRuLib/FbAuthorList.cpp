@@ -6,7 +6,8 @@
 FbAuthorList::FbAuthorList(wxWindow * parent, wxWindowID id)
 	:FbTreeListCtrl(parent, id, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER)
 {
-	this->AddColumn(_("Автор"), 10, wxALIGN_LEFT);
+	this->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
+	this->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 }
 
 void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)

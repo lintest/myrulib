@@ -7,6 +7,7 @@
 #include "BaseThread.h"
 #include "MyRuLibApp.h"
 #include "InfoCash.h"
+#include "FbBookEvent.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/panel.h>
@@ -15,7 +16,7 @@
 #include "res/modify.xpm"
 #include "res/delete.xpm"
 
-BEGIN_EVENT_TABLE(FbFrameHtml, wxAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameHtml, FbAuiMDIChildFrame)
 	EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
 	EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbFrameHtml::OnInfoUpdate)
@@ -38,9 +39,9 @@ wxString FbFrameHtml::GetMd5sum(const int id)
 }
 
 FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
-	:wxAuiMDIChildFrame(parent, ID_FRAME_HTML, _("Комментарии")),
-	m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
+	:m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
 {
+	FbAuiMDIChildFrame::Create(parent, ID_FRAME_HTML, _("Комментарии"));
 	static bool bNotLoaded = true;
 	if (bNotLoaded) {
 		wxMemoryFSHandler::AddFile(wxT("modify"), wxBitmap(modify_xpm), wxBITMAP_TYPE_PNG);
@@ -48,6 +49,7 @@ FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
 		bNotLoaded = false;
 	}
 	CreateControls();
+	UpdateFonts(false);
 	InfoCash::UpdateInfo(this, m_id, false, true);
 }
 
@@ -249,4 +251,11 @@ void FbFrameHtml::DoUpdate()
 	FbCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_ALLBOOKS);
 	event.SetInt(m_id);
 	event.Post();
+}
+
+void FbFrameHtml::UpdateFonts(bool refresh)
+{
+	if (refresh) m_info.SetPage(wxEmptyString);
+	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
+	if (refresh) InfoCash::UpdateInfo(this, m_id, false, true);
 }

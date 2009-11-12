@@ -14,7 +14,6 @@
 class FbFrameAuthor : public FbFrameBase
 {
 public:
-	FbFrameAuthor() :FbFrameBase() {};
 	FbFrameAuthor(wxAuiMDIParentFrame * parent);
 	void FindAuthor(const wxString &text);
 	void OpenAuthor(const int author, const int book);

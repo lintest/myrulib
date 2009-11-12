@@ -1,5 +1,6 @@
 #include "FbFrameInfo.h"
 #include "FbDatabase.h"
+#include "FbBookEvent.h"
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbMainMenu.h"
@@ -13,9 +14,10 @@ BEGIN_EVENT_TABLE(FbFrameInfo, wxAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
-	:wxAuiMDIChildFrame(parent, ID_FRAME_INFO, _("Информация"))
 {
+	FbAuiMDIChildFrame::Create(parent, ID_FRAME_INFO, _("Информация"));
 	CreateControls();
+	UpdateFonts(false);
 }
 
 void FbFrameInfo::Load(const wxString & html)
@@ -193,4 +195,9 @@ void FbFrameInfo::OnSave(wxCommandEvent& event)
 		text.WriteString(html);
 	}
 
+}
+
+void FbFrameInfo::UpdateFonts(bool refresh)
+{
+	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
 }
