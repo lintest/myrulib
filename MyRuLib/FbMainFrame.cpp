@@ -186,6 +186,9 @@ wxAuiToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddControl( &m_FindTitle );
 	toolbar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
 	toolbar->AddSeparator();
+	toolbar->AddTool(ID_MODE_TREE, _("Иерархия"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Иерархия авторов и серий"));
+	toolbar->AddTool(ID_MODE_LIST, _("Список"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Простой список"));
+	toolbar->AddSeparator();
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->Realize();
 
