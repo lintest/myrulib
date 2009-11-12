@@ -44,11 +44,11 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 
 wxCriticalSection FbFrameBaseThread::sm_queue;
 
-wxString FbFrameBaseThread::GetSQL(const wxString & condition, const wxString & order)
+wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 {
 	wxString sql;
 	switch (m_mode) {
-		case FB2_MODE_TREE: {
+		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
 					books.id, books.title, books.file_size, books.file_type, books.id_author, \
@@ -61,21 +61,20 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition, const wxString & 
 				WHERE (%s) \
 				ORDER BY authors.search_name, key, sequences.value, bookseq.number, books.title \
 			");
-		} break;
-		case FB2_MODE_LIST: {
+			break;
+		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, AGGREGATE(authors.full_name) as full_name \
+					states.rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
-				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating \
+				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating, books.created \
 				ORDER BY \
-			");
-			sql += order.IsEmpty() ? wxT("books.title, books.id, authors.full_name") : order;
-		} break;
+			") + GetOrder();
+			break;
 	}
 
 	wxString str = wxT("(%s)");
@@ -85,6 +84,18 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition, const wxString & 
 	sql = wxString::Format(sql, str.c_str());
 
 	return wxString::Format(sql, condition.c_str());
+}
+
+wxString FbFrameBaseThread::GetOrder()
+{
+	switch (m_ListOrder) {
+		case ID_ORDER_AUTHOR: return wxT("full_name, title");
+		case ID_ORDER_TITLE: return wxT("title, full_name");
+		case ID_ORDER_SIZE: return wxT("file_size");
+		case ID_ORDER_TYPE: return wxT("file_type, full_name, title");
+		case ID_ORDER_DATE: return wxT("created, full_name, title");
+		default: return wxT("title, full_name");
+	}
 }
 
 void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)

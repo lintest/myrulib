@@ -18,10 +18,12 @@ class FbFrameBaseThread: public wxThread
 			:m_frame(frame), m_mode(mode),
 			m_FilterFb2(frame->m_FilterFb2),
 			m_FilterLib(frame->m_FilterLib),
-			m_FilterUsr(frame->m_FilterUsr)
+			m_FilterUsr(frame->m_FilterUsr),
+			m_ListOrder(frame->m_ListOrder)
 		{};
 	protected:
-		virtual wxString GetSQL(const wxString & condition, const wxString & order = wxEmptyString);
+		virtual wxString GetSQL(const wxString & condition);
+		virtual wxString GetOrder();
 		virtual void CreateList(wxSQLite3ResultSet &result);
 		virtual void CreateTree(wxSQLite3ResultSet &result);
 		virtual void InitDatabase(FbCommonDatabase &database);
@@ -35,6 +37,7 @@ class FbFrameBaseThread: public wxThread
 		bool m_FilterFb2;
 		bool m_FilterLib;
 		bool m_FilterUsr;
+		int m_ListOrder;
 };
 
 class FbThreadSkiper

@@ -30,6 +30,7 @@ public:
 	bool m_FilterFb2;
 	bool m_FilterLib;
 	bool m_FilterUsr;
+	int m_ListOrder;
 	void UpdateInfo(int id);
 	virtual void UpdateFonts(bool refresh = true);
 protected:
@@ -43,9 +44,11 @@ protected:
 	FbBookPanel * m_BooksPanel;
 private:
 	void OnActivated(wxActivateEvent & event);
+	void OnChangeOrder(wxCommandEvent& event);
 	void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeView(wxCommandEvent & event);
+	void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);

@@ -94,6 +94,8 @@ class FrameDownldThread: public FbFrameBaseThread
 		FrameDownldThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
 			:FbFrameBaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
 		virtual void *Entry();
+	protected:
+		virtual wxString GetOrder();
 	private:
 		static FbThreadSkiper sm_skiper;
 		int m_folder;
@@ -102,6 +104,12 @@ class FrameDownldThread: public FbFrameBaseThread
 };
 
 FbThreadSkiper FrameDownldThread::sm_skiper;
+
+wxString FrameDownldThread::GetOrder()
+{
+	if (m_folder==1) return wxT("download");
+	return FbFrameBaseThread::GetOrder();
+}
 
 void * FrameDownldThread::Entry()
 {
@@ -113,9 +121,8 @@ void * FrameDownldThread::Entry()
 	wxString condition;
 	condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
 	condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
-	wxString order = m_folder==1 ? wxT("download") : wxEmptyString;
 
-	wxString sql = GetSQL(condition, order);
+	wxString sql = GetSQL(condition);
 
 	try {
 		FbCommonDatabase database;

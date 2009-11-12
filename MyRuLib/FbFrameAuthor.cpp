@@ -186,20 +186,22 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
 				ORDER BY key, sequences.value, bookseq.number, books.title \
-			"); break;
+			");
+			break;
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, AGGREGATE(authors.full_name) as full_name \
+					states.rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
 					LEFT JOIN authors ON sub.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
-				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating \
-				ORDER BY books.title, books.id, authors.full_name\
-			"); break;
+				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating, books.created \
+				ORDER BY \
+			") + GetOrder();
+			break;
 	}
 
 	wxString str = wxT("(%s)");

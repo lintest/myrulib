@@ -18,6 +18,11 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
 	EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
 	EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
+	EVT_MENU(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_ORDER_TITLE, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_ORDER_DATE, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_ORDER_SIZE, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_ORDER_TYPE, FbFrameBase::OnChangeOrder)
 	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
@@ -25,6 +30,11 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_TITLE, FbFrameBase::OnChangeOrderUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_DATE, FbFrameBase::OnChangeOrderUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_SIZE, FbFrameBase::OnChangeOrderUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_TYPE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
 	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
 	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
@@ -35,6 +45,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
+	m_ListOrder(ID_ORDER_TITLE),
 	m_MasterList(NULL), m_BooksPanel(NULL)
 {
 	Create(parent, id, title);
@@ -112,6 +123,11 @@ void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
 	}
 }
 
+void FbFrameBase::OnChangeOrderUpdateUI(wxUpdateUIEvent & event)
+{
+	if (event.GetId() == m_ListOrder) event.Check(true);
+}
+
 int FbFrameBase::GetModeKey()
 {
 	switch (GetId()) {
@@ -143,6 +159,12 @@ void FbFrameBase::OnChangeView(wxCommandEvent & event)
 	if (param) FbParams().SetValue(param, vertical);
 
 	m_BooksPanel->CreateBookInfo((bool)vertical);
+}
+
+void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
+{
+	m_ListOrder = event.GetId();
+	UpdateBooklist();
 }
 
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
