@@ -1866,7 +1866,10 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetEncoding());
 
     // prevent any background repaint in order to reducing flicker
-    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+	
+	// DENIS KANDRASHIN 2009-11-13 - BEGIN - Fix background error
+    //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+	// END DENIS
 }
 
 bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,

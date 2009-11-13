@@ -9,11 +9,12 @@
 class FbAuthorThread: public wxThread
 {
 	public:
-		FbAuthorThread(wxControl * frame): m_number(sm_skiper.NewNumber()), m_frame(frame) {};
+		FbAuthorThread(wxWindow * frame): m_number(sm_skiper.NewNumber()), m_frame(frame) {};
 		void Execute();
 	protected:
-		virtual void * FbAuthorThread::Entry();
-		virtual wxSQLite3ResultSet GetResult(wxSQLite3Database &database) = 0;
+		virtual void * Entry();
+		virtual void GetResult(wxSQLite3Database &database) = 0;
+		void FillAuthors(wxSQLite3ResultSet &result);
 	private:
 		static wxCriticalSection sm_queue;
 		static FbThreadSkiper sm_skiper;
@@ -24,10 +25,10 @@ class FbAuthorThread: public wxThread
 class FbAuthorThreadChar: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadChar(wxControl * frame, const wxChar & letter)
+		FbAuthorThreadChar(wxWindow * frame, const wxChar & letter)
 			:FbAuthorThread(frame), m_letter(letter) {};
 	protected:
-		virtual wxSQLite3ResultSet GetResult(wxSQLite3Database &database);
+		virtual void GetResult(wxSQLite3Database &database);
 	private:
 		wxChar m_letter;
 };
@@ -35,10 +36,10 @@ class FbAuthorThreadChar: public FbAuthorThread
 class FbAuthorThreadText: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadText(wxControl * frame, const wxString & text)
+		FbAuthorThreadText(wxWindow * frame, const wxString & text)
 			:FbAuthorThread(frame), m_text(text) {};
 	protected:
-		virtual wxSQLite3ResultSet GetResult(wxSQLite3Database &database);
+		virtual void GetResult(wxSQLite3Database &database);
 	private:
 		wxString m_text;
 };
@@ -46,10 +47,10 @@ class FbAuthorThreadText: public FbAuthorThread
 class FbAuthorThreadCode: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadCode(wxControl * frame, const int code)
+		FbAuthorThreadCode(wxWindow * frame, const int code)
 			:FbAuthorThread(frame), m_code(code) {};
 	protected:
-		virtual wxSQLite3ResultSet GetResult(wxSQLite3Database &database);
+		virtual void GetResult(wxSQLite3Database &database);
 	private:
 		int m_code;
 };

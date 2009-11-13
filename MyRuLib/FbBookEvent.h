@@ -48,19 +48,17 @@ class FbBookEvent: public FbCommandEvent
 class FbAuthorEvent: public FbCommandEvent
 {
 	public:
-		FbAuthorEvent(wxWindowID id, int author, int parent, const wxString &name = wxEmptyString)
-			: FbCommandEvent(fbEVT_AUTHOR_ACTION, id, name), m_author(author), m_parent(parent) {};
-
 		FbAuthorEvent(const FbAuthorEvent & event)
-			: FbCommandEvent(event), m_author(event.m_author), m_parent(event.m_parent) {};
+			: FbCommandEvent(event), m_author(event.m_author), m_parent(event.m_parent), m_number(event.m_number) {};
 
 		FbAuthorEvent(wxWindowID id, wxSQLite3ResultSet &result);
 
 		virtual wxEvent *Clone() const { return new FbAuthorEvent(*this); }
 
 	public:
-		BookTreeItemData m_author;
-		BookTreeItemData m_parent;
+		int m_author;
+		int m_parent;
+		int m_number;
 };
 
 class FbOpenEvent: public FbCommandEvent

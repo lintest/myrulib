@@ -24,6 +24,7 @@ void FbCommandEvent::Post()
 FbAuthorEvent::FbAuthorEvent(wxWindowID id, wxSQLite3ResultSet &result):
 	FbCommandEvent(fbEVT_AUTHOR_ACTION, id, result.GetString(wxT("full_name"))),
 	m_author(result.GetInt(wxT("id"))),
-	m_parent(0)
+	m_parent(0),
+	m_number(result.GetInt(wxT("number")))
 {
 }

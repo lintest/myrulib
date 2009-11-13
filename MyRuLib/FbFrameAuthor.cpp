@@ -9,6 +9,7 @@
 #include "FbFrameBaseThread.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
+#include "FbAuthorThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
@@ -110,7 +111,9 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	ToggleAlphabar(id);
 
-	((FbAuthorList*)m_MasterList)->FillAuthorsChar(alphabet[position]);
+	FbAuthorThread * thread = new FbAuthorThreadChar(this, alphabet[position]);
+	thread->Execute();
+
 	SelectFirstAuthor();
 }
 
@@ -290,6 +293,11 @@ void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
 
 void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
 {
+	FbTreeListUpdater updater(m_MasterList);
+	wxTreeItemId parent = m_MasterList->GetRootItem();
+	wxTreeItemId item = m_MasterList->AppendItem(parent, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
+	wxString number = wxString::Format(wxT("%d"), event.m_number);
+	m_MasterList->SetItemText(item, 1, number);
 }
 
 void FbFrameAuthor::OnEmptyAuthors(wxCommandEvent& event)

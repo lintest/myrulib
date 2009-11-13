@@ -14,13 +14,7 @@ void * FbAuthorThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		wxSQLite3ResultSet result = GetResult(database);
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FbCommandEvent(fbEVT_AUTHOR_ACTION, ID_EMPTY_AUTHORS).Post(m_frame);
-		while (result.NextRow()) {
-			FbAuthorEvent( ID_APPEND_AUTHOR, result).Post(m_frame);
-			if (sm_skiper.Skipped(m_number)) return NULL;
-		}
+		GetResult(database);
 	}
 	catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
@@ -34,26 +28,46 @@ void FbAuthorThread::Execute()
 	if ( Create() == wxTHREAD_NO_ERROR ) Run();
 }
 
-wxSQLite3ResultSet FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
+void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 {
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE letter=? ORDER BY search_name");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, (wxString)m_letter);
-	return stmt.ExecuteQuery();
+	if (sm_skiper.Skipped(m_number)) return;
+	FbCommandEvent(fbEVT_AUTHOR_ACTION, ID_EMPTY_AUTHORS).Post(m_frame);
+	while (result.NextRow()) {
+		FbAuthorEvent(ID_APPEND_AUTHOR, result).Post(m_frame);
+		if (sm_skiper.Skipped(m_number)) return;
+	}
 }
 
-wxSQLite3ResultSet FbAuthorThreadText::GetResult(wxSQLite3Database &database)
+void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
+{
+	wxString sql = wxT("\
+		SELECT authors.id as id, full_name, search_name, COUNT(books.id) AS number FROM \
+		(SELECT id, full_name, search_name FROM authors WHERE letter=?) AS authors \
+		LEFT JOIN books ON authors.id = books.id_author \
+		GROUP BY authors.id, full_name, search_name \
+		HAVING COUNT(books.id)>0 \
+		ORDER BY search_name \
+	");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, (wxString)m_letter);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FillAuthors(result);
+}
+
+void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name FROM authors WHERE search_name like ? ORDER BY search_name");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_text + wxT("%"));
-	return stmt.ExecuteQuery();
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FillAuthors(result);
 }
 
-wxSQLite3ResultSet FbAuthorThreadCode::GetResult(wxSQLite3Database &database)
+void FbAuthorThreadCode::GetResult(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id=?");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_code);
-	return stmt.ExecuteQuery();
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FillAuthors(result);
 }
