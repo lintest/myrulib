@@ -38,16 +38,21 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 	}
 }
 
-void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
+wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	wxString sql = wxT("\
+	return wxString::Format( wxT("\
 		SELECT authors.id as id, full_name, search_name, COUNT(books.id) AS number FROM \
-		(SELECT id, full_name, search_name FROM authors WHERE letter=?) AS authors \
+		(SELECT id, full_name, search_name FROM authors WHERE %s) AS authors \
 		LEFT JOIN books ON authors.id = books.id_author \
 		GROUP BY authors.id, full_name, search_name \
 		HAVING COUNT(books.id)>0 \
 		ORDER BY search_name \
-	");
+	"), condition.c_str());
+}
+
+void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
+{
+	wxString sql = GetSQL(wxT("letter=?"));
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, (wxString)m_letter);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -56,7 +61,7 @@ void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
 
 void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE search_name like ? ORDER BY search_name");
+	wxString sql = GetSQL(wxT("search_name like ?"));
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_text + wxT("%"));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -65,7 +70,7 @@ void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 
 void FbAuthorThreadCode::GetResult(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id=?");
+	wxString sql = GetSQL(wxT("id=?"));
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_code);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();

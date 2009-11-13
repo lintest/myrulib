@@ -111,10 +111,7 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	ToggleAlphabar(id);
 
-	FbAuthorThread * thread = new FbAuthorThreadChar(this, alphabet[position]);
-	thread->Execute();
-
-	SelectFirstAuthor();
+	(new FbAuthorThreadChar(this, alphabet[position]))->Execute();
 }
 
 void FbFrameAuthor::SelectFirstAuthor(const int book)
@@ -148,15 +145,14 @@ void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
 	ToggleAlphabar(0);
-	((FbAuthorList*)m_MasterList)->FillAuthorsText(text);
-	SelectFirstAuthor();
+	(new FbAuthorThreadText(this, text))->Execute();
 }
 
 void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
 	ToggleAlphabar(0);
+	(new FbAuthorThreadCode(this, author))->Execute();
 	((FbAuthorList*)m_MasterList)->FillAuthorsCode(author);
-	SelectFirstAuthor(book);
 }
 
 void FbFrameAuthor::SelectRandomLetter()
@@ -294,10 +290,16 @@ void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
 void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
 {
 	FbTreeListUpdater updater(m_MasterList);
-	wxTreeItemId parent = m_MasterList->GetRootItem();
-	wxTreeItemId item = m_MasterList->AppendItem(parent, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
+	wxTreeItemId root = m_MasterList->GetRootItem();
+
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
+
+	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
 	wxString number = wxString::Format(wxT("%d"), event.m_number);
 	m_MasterList->SetItemText(item, 1, number);
+
+	if (!child.IsOk()) m_MasterList->SelectItem(item);
 }
 
 void FbFrameAuthor::OnEmptyAuthors(wxCommandEvent& event)

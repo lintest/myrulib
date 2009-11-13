@@ -15,6 +15,7 @@ class FbAuthorThread: public wxThread
 		virtual void * Entry();
 		virtual void GetResult(wxSQLite3Database &database) = 0;
 		void FillAuthors(wxSQLite3ResultSet &result);
+		virtual wxString GetSQL(const wxString & condition);
 	private:
 		static wxCriticalSection sm_queue;
 		static FbThreadSkiper sm_skiper;
