@@ -26,7 +26,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 public:
 	FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
+	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	bool m_FilterFb2;
 	bool m_FilterLib;
 	bool m_FilterUsr;

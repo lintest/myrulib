@@ -67,15 +67,6 @@ void FbFrameFolder::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->Realize();
-	return toolbar;
-}
-
 void FbFrameFolder::FillFolders(const int iCurrent)
 {
 	m_MasterList->Freeze();

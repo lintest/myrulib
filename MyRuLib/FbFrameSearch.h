@@ -17,7 +17,6 @@ public:
 	static void Execute(wxAuiMDIParentFrame * parent, const wxString &title);
 	FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title = wxEmptyString);
 protected:
-	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
 	virtual void UpdateBooklist();
 private:
