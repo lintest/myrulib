@@ -89,7 +89,7 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	AppendSeparator();
-	Append(wxID_ANY, _("Сортировка"), new FbMenuSort());
+	Append(ID_ORDER_MENU, _("Сортировка"), new FbMenuSort());
 	Append(wxID_ANY, _("Фильтр"), new FbMenuFilter());
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));

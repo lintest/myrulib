@@ -271,7 +271,7 @@ wxString FbDownloader::GetFilename(const wxString &md5sum, bool bCreateFolder)
 		name = name.Mid(2);
 	}
 
-	if ( !wxFileName::DirExists(path))
+	if ( bCreateFolder && !wxFileName::DirExists(path))
 		wxFileName::Mkdir(path, 0777, wxPATH_MKDIR_FULL);
 
 	path += wxFileName::GetPathSeparator();

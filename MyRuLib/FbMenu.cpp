@@ -8,8 +8,6 @@ FbMenuSort::FbMenuSort()
 	AppendRadioItem(ID_ORDER_SIZE,   _("Размер"));
 	AppendRadioItem(ID_ORDER_DATE,   _("Дата"));
 	AppendRadioItem(ID_ORDER_TYPE,   _("Тип"));
-	AppendSeparator();
-	AppendCheckItem(ID_DIRECTION,   _("Обратный порядок"));
 }
 
 FbMenuFilter::FbMenuFilter()

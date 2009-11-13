@@ -386,6 +386,7 @@ function create_tables($sqlite_db)
   $sqlite_db->query("DELETE FROM params;");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('LibRusEc Library');");
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
+  $sqlite_db->query("INSERT INTO params(text) VALUES ('LIBRUSEC');");
 
   $sqlite_db->query("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);");
 

@@ -30,6 +30,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_TITLE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_DATE, FbFrameBase::OnChangeOrderUpdateUI)
@@ -231,3 +232,9 @@ void FbFrameBase::UpdateInfo(int id)
 {
 	if (m_BooksPanel) m_BooksPanel->UpdateInfo(id);
 }
+
+void FbFrameBase::OnMenuOrderUpdateUI(wxUpdateUIEvent & event)
+{
+	event.Enable( m_BooksPanel->GetListMode() == FB2_MODE_LIST );
+}
+

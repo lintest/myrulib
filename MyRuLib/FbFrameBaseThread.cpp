@@ -52,7 +52,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
 					books.id, books.title, books.file_size, books.file_type, books.id_author, \
-					states.rating, authors.full_name as full_name, sequences.value AS sequence, bookseq.number as number\
+					states.rating, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
@@ -65,8 +65,8 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT \
-					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
+					books.id, books.title, books.file_size, books.file_type, \
+					states.rating, books.created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \

@@ -48,6 +48,7 @@ private:
 	void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeView(wxCommandEvent & event);
+	void OnMenuOrderUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
