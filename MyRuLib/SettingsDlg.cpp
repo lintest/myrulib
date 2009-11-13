@@ -80,7 +80,7 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppendItem(fgSizerList, _("Основное окно:"), ID_FONT_MAIN);
+	AppendItem(fgSizerList, _("Списки книг, авторов:"), ID_FONT_MAIN);
 	AppendItem(fgSizerList, _("Панель инструментов:"), ID_FONT_TOOL);
 	AppendItem(fgSizerList, _("Информация:"), ID_FONT_HTML);
 	AppendItem(fgSizerList, _("Диалоги:"), ID_FONT_DLG);

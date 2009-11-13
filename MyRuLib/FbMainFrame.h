@@ -28,6 +28,7 @@ public:
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
+	void LoadIcon();
 	wxAuiToolBar * CreateToolBar();
 	void TogglePaneVisibility(const wxString &pane_name, bool show);
 	void ShowPane(const wxString &pane_name);
@@ -38,6 +39,7 @@ private:
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
 	ProgressBar m_ProgressBar;
+	wxAuiToolBar * m_ToolBar;
 	wxString m_StatusText;
 	wxAuiManager m_FrameManager;
 	LimitedTextCtrl m_LOGTextCtrl;

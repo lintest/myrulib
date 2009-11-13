@@ -87,6 +87,7 @@ void FbFrameHtml::CreateControls()
 	bSizerSubject->Add( &m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
+	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
 	m_ToolBar.AddTool( ID_HTML_SUBMIT, wxT("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_ToolBar.AddTool( ID_HTML_MODIFY, wxT("Изменить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);

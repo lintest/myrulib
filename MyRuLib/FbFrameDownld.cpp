@@ -62,6 +62,8 @@ void FbFrameDownld::CreateControls()
 wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
+
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_START, _("Старт"), wxBitmap(start_xpm), _("Начать загрузку файлов через интернет"));
@@ -72,6 +74,7 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_DELETE_DOWNLOAD, _("Удалить"), wxArtProvider::GetBitmap(wxART_DELETE), _("Удалить загрузку"));
 	toolbar->Realize();
+
 	return toolbar;
 }
 

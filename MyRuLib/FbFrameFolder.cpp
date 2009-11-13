@@ -34,6 +34,7 @@ void FbFrameFolder::CreateControls()
 	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
 
 	m_ToolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
+	m_ToolBar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
 	m_ToolBar->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
 	m_ToolBar->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
 	m_ToolBar->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
@@ -69,6 +70,7 @@ void FbFrameFolder::CreateControls()
 wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->Realize();
 	return toolbar;

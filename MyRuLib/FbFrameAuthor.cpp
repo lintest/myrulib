@@ -47,6 +47,10 @@ void FbFrameAuthor::CreateControls()
 	sizer->Add(m_RuAlphabar = CreateAlphaBar(this, alphabetRu, ID_LETTER_RU, wxTB_NODIVIDER), 0, wxEXPAND, 5);
 	sizer->Add(m_EnAlphabar = CreateAlphaBar(this, alphabetEn, ID_LETTER_EN, 0), 0, wxEXPAND, 5);
 
+	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
+	m_RuAlphabar->SetFont(font);
+	m_EnAlphabar->SetFont(font);
+
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
 	splitter->SetSashGravity(0.33);
