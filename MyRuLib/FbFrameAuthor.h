@@ -36,6 +36,8 @@ private:
 	void OnLetterClicked(wxCommandEvent& event);
 	void OnExternal(wxCommandEvent& event);
 	void OnCharEvent(wxKeyEvent& event);
+	void OnEmptyAuthors(wxCommandEvent& event);
+	void OnAppendAuthor(FbAuthorEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

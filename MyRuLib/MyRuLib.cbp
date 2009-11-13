@@ -177,6 +177,8 @@
 		<Unit filename="FbAboutDlg.h" />
 		<Unit filename="FbAuthorList.cpp" />
 		<Unit filename="FbAuthorList.h" />
+		<Unit filename="FbAuthorThread.cpp" />
+		<Unit filename="FbAuthorThread.h" />
 		<Unit filename="FbBookData.cpp" />
 		<Unit filename="FbBookData.h" />
 		<Unit filename="FbBookEvent.cpp" />
@@ -234,6 +236,7 @@
 		<Unit filename="FbMenu.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
+		<Unit filename="FbThread.h" />
 		<Unit filename="FbTreeListCtrl.cpp" />
 		<Unit filename="FbTreeListCtrl.h" />
 		<Unit filename="FbUpdateThread.cpp" />
