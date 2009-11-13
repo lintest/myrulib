@@ -63,27 +63,39 @@ class FbLocalDatabase: public FbDatabase
 		FbLocalDatabase();
 };
 
-class FbConfigDatabase: public FbDatabase
+class FbMasterDatabase: public FbDatabase
 {
-	public:
-		void Open();
+	protected:
+		void UpgradeDatabase(int new_version);
+	protected:
+		virtual void DoUpgrade(int version) = 0;
+		virtual wxString GetMaster() = 0;
 	private:
-		void CreateDatabase();
-		void UpgradeDatabase();
 		int GetVersion();
 		void SetVersion(int iValue);
 };
 
-class FbMainDatabase: public FbDatabase
+class FbConfigDatabase: public FbMasterDatabase
+{
+	public:
+		void Open();
+	protected:
+		virtual void DoUpgrade(int version);
+		virtual wxString GetMaster() { return wxT("config"); };
+	private:
+		void CreateDatabase();
+};
+
+class FbMainDatabase: public FbMasterDatabase
 {
 	public:
 		virtual void Open(const wxString& fileName, const wxString& key = wxEmptyString,
 						int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
+	protected:
+		virtual void DoUpgrade(int version);
+		virtual wxString GetMaster() { return wxT("params"); };
 	private:
 		void CreateDatabase();
-		void UpgradeDatabase();
-		int GetVersion();
-		void SetVersion(int iValue);
 };
 
 #endif // __FBDATABASE_H__

@@ -31,7 +31,7 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 	size_t iCount = (*acc)->Count();
 	for (size_t i=0; i<iCount; i++) {
 		if (!result.IsEmpty()) result += wxT(", ");
-		result += (*acc)->Item(i);
+		result += (*acc)->Item(i).Trim(true).Trim(false);
 	}
 
 	// Set the result
@@ -91,7 +91,7 @@ wxString FbFrameBaseThread::GetOrder()
 	switch (m_ListOrder) {
 		case ID_ORDER_AUTHOR: return wxT("full_name, title");
 		case ID_ORDER_TITLE: return wxT("title, full_name");
-		case ID_ORDER_SIZE: return wxT("file_size");
+		case ID_ORDER_SIZE: return wxT("file_size desc, full_name, title");
 		case ID_ORDER_TYPE: return wxT("file_type, full_name, title");
 		case ID_ORDER_DATE: return wxT("created, full_name, title");
 		default: return wxT("title, full_name");

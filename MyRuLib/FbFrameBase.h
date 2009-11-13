@@ -39,6 +39,7 @@ protected:
 	int GetModeKey();
 	int GetViewKey();
 protected:
+	void OnSubmenu(wxCommandEvent& event);
 	void CreateBooksPanel(wxWindow * parent, long substyle);
 	FbTreeListCtrl * m_MasterList;
 	FbBookPanel * m_BooksPanel;
@@ -54,7 +55,6 @@ private:
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);
 	void OnExternal(wxCommandEvent& event);
-	void OnSubmenu(wxCommandEvent& event);
 	void OnAppendBook(FbBookEvent& event);
 	void OnAppendAuthor(wxCommandEvent& event);
 	void OnAppendSequence(wxCommandEvent& event);

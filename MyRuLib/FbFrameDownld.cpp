@@ -17,6 +17,7 @@ BEGIN_EVENT_TABLE(FbFrameDownld, FbFrameBase)
 	EVT_MENU(wxID_UP, FbFrameDownld::OnMoveUp)
 	EVT_MENU(wxID_DOWN, FbFrameDownld::OnMoveDown)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameDownld::OnFolderSelected)
+	EVT_MENU(ID_DELETE_DOWNLOAD, FbFrameDownld::OnSubmenu)
 END_EVENT_TABLE()
 
 FbFrameDownld::FbFrameDownld(wxAuiMDIParentFrame * parent)
