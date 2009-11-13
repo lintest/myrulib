@@ -9,6 +9,7 @@
 enum FbParamKey {
 	FB_CONFIG_TITLE   = 1,
 	FB_CONFIG_VERSION = 2,
+	FB_CONFIG_TYPE    = 3,
 
 	FB_NEW_FOLDER	  = 101,
 	FB_NEW_COMMENT	 = 102,
@@ -51,6 +52,10 @@ enum FbParamKey {
 	FB_FONT_HTML = 161,
 	FB_FONT_TOOL = 162,
 	FB_FONT_DLG  = 163,
+
+	FB_FRAME_MAXIMIZE = 170,
+	FB_FRAME_WIDTH    = 700,
+	FB_FRAME_HEIGHT   = 500,
 };
 
 class ParamItem
@@ -69,17 +74,16 @@ WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
 class FbParams {
 	public:
 		FbParams();
+		void LoadParams();
 		static int GetValue(const int param);
 		static wxString GetText(const int param);
 		static wxFont GetFont(const int param);
-		void LoadParams();
 		void SetValue(const int param, int value);
 		void SetText(const int param, wxString text);
-	private:
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
-		static ParamArray sm_params;
 	private:
+		static ParamArray sm_params;
 		FbCommonDatabase m_database;
 		static wxCriticalSection sm_queue;
 };

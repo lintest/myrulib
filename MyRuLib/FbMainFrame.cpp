@@ -86,13 +86,28 @@ FbMainFrame::FbMainFrame()
 
 FbMainFrame::~FbMainFrame()
 {
+	FbParams params;
+	wxSize size = GetSize();
+	params.SetValue(FB_FRAME_MAXIMIZE, IsMaximized());
+	params.SetValue(FB_FRAME_WIDTH, size.x);
+	params.SetValue(FB_FRAME_HEIGHT, size.y);
+
 	m_FrameManager.UnInit();
 }
 
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
-	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, wxSize(700, 500), wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
+	wxSize size;
+	bool maximized = FbParams::GetValue(FB_FRAME_MAXIMIZE);
+	if (maximized) {
+		size = wxSize( FbParams::DefaultValue(FB_FRAME_WIDTH), FbParams::DefaultValue(FB_FRAME_HEIGHT) );
+	} else {
+		size = wxSize( FbParams::GetValue(FB_FRAME_WIDTH), FbParams::GetValue(FB_FRAME_HEIGHT) );
+	}
+
+	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
+		if (maximized) Maximize();
 		CreateControls();
 		#ifdef __WIN32__
 		wxIcon icon(wxT("aaaa"));
@@ -103,6 +118,10 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 		icon.CopyFromBitmap(bitmap);
 		SetIcon(icon);
 		#endif
+		if (maximized) {
+			size.x = GetBestSize().x;
+			SetSize(size);
+		}
 	}
 	return res;
 }
