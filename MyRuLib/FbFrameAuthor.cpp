@@ -129,10 +129,7 @@ void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
-		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId());
-			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-		}
+		if (data) ( new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
 
@@ -276,10 +273,7 @@ void FbFrameAuthor::UpdateBooklist()
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
-		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId());
-			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-		}
+		if (data) (new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 	}
 }
 

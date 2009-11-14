@@ -161,8 +161,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 
 void FbFrameSearch::UpdateBooklist()
 {
-	wxThread * thread = new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title) )->Execute();
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)

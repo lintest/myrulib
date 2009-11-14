@@ -6,11 +6,10 @@
 #include "FbThread.h"
 #include "FbBookEvent.h"
 
-class FbAuthorThread: public wxThread
+class FbAuthorThread: public FbThread
 {
 	public:
 		FbAuthorThread(wxWindow * frame): m_number(sm_skiper.NewNumber()), m_frame(frame) {};
-		void Execute();
 	protected:
 		virtual void * Entry();
 		virtual void GetResult(wxSQLite3Database &database) = 0;

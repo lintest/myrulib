@@ -12,7 +12,7 @@ class FbAggregateFunction : public wxSQLite3AggregateFunction
 		virtual void Finalize(wxSQLite3FunctionContext& ctx);
 };
 
-class FbFrameBaseThread: public wxThread
+class FbFrameBaseThread: public FbThread
 {
 	public:
 		FbFrameBaseThread(FbFrameBase * frame, FbListMode mode)

@@ -2,6 +2,7 @@
 #define __BASETHREAD_H__
 
 #include <wx/wx.h>
+#include "FbThread.h"
 #include "polarssl/md5.h"
 
 class BaseThread : public wxThread

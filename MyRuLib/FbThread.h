@@ -12,4 +12,10 @@ class FbThreadSkiper
 		int m_number;
 };
 
+class FbThread: public wxThread
+{
+	public:
+		void Execute() { if ( Create() == wxTHREAD_NO_ERROR ) Run(); };
+};
+
 #endif // __FBTHREAD_H__

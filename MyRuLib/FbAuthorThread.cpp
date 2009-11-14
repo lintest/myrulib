@@ -23,11 +23,6 @@ void * FbAuthorThread::Entry()
 	return NULL;
 }
 
-void FbAuthorThread::Execute()
-{
-	if ( Create() == wxTHREAD_NO_ERROR ) Run();
-}
-
 void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 {
 	if (sm_skiper.Skipped(m_number)) return;
@@ -40,14 +35,7 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 
 wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	return wxString::Format( wxT("\
-		SELECT authors.id as id, full_name, search_name, COUNT(books.id) AS number FROM \
-		(SELECT id, full_name, search_name FROM authors WHERE %s) AS authors \
-		LEFT JOIN books ON authors.id = books.id_author \
-		GROUP BY authors.id, full_name, search_name \
-		HAVING COUNT(books.id)>0 \
-		ORDER BY search_name \
-	"), condition.c_str());
+	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %sORDER BY search_name"), condition.c_str());
 }
 
 void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)

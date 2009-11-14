@@ -190,8 +190,7 @@ void FbFrameFolder::FillByFolder(FbFolderData * data)
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( data->GetType() );
 
-	wxThread * thread = new FrameFavourThread(this, m_BooksPanel->GetListMode(), data);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FrameFavourThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)

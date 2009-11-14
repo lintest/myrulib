@@ -253,7 +253,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql, folder, FT_FOLDER );
+	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -315,7 +315,7 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, iRating, FT_RATING, sql2 );
+	wxThread * thread = new FbFolderUpdateThread( sql1, iRating, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -326,7 +326,7 @@ void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, folder, FT_DOWNLOAD );
+	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
