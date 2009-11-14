@@ -142,7 +142,7 @@ void FbMainDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
 			try {
 				ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
-				ExecuteUpdate(wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)"));
+				ExecuteUpdate(strUpdateCountSQL);
 			} catch (...) {};
 		} break;
 	}

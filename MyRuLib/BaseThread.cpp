@@ -49,21 +49,7 @@ void BaseThread::DoFinish()
 	wxPostEvent(wxGetApp().GetTopWindow(), event);
 }
 
-void BaseThread::UpdateBooksCount()
+void BaseThread::UpdateBooksCount(wxSQLite3Database &database)
 {
-/*
-	int count = 0;
-	{
-		wxCriticalSectionLocker locker(wxGetApp().m_DbSection);
-		wxString sql = wxT("SELECT COUNT(id) FROM books");
-		DatabaseLayer * database = wxGetApp().GetDatabase();
-		PreparedStatement* ps = database->PrepareStatement(sql);
-		if (!ps) return;
-		DatabaseResultSet* result = ps->ExecuteQuery();
-		if (result && result->Next()) count = result->GetResultInt(1);
-		database->CloseResultSet(result);
-		database->CloseStatement(ps);
-	}
-	database->SetValue(DB_BOOKS_COUNT, count);
-*/
+	database.ExecuteUpdate(strUpdateCountSQL);
 }

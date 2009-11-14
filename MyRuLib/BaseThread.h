@@ -2,6 +2,7 @@
 #define __BASETHREAD_H__
 
 #include <wx/wx.h>
+#include <wx/wxsqlite3.h>
 #include "FbThread.h"
 #include "polarssl/md5.h"
 
@@ -13,7 +14,7 @@ class BaseThread : public wxThread
 		wxString m_info;
 		wxString m_text;
 	protected:
-		void UpdateBooksCount();
+		void UpdateBooksCount(wxSQLite3Database &database);
 		void DoStart(const int max, const wxString & msg);
 		void DoStep(const wxString & msg);
 		void DoFinish();

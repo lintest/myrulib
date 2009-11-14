@@ -105,4 +105,6 @@ extern const int ciMaxImageWidth;
 
 extern const wxString strRating [];
 
+extern const wxString strUpdateCountSQL;
+
 #endif // __FBCONST_H__
