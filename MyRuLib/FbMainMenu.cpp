@@ -17,9 +17,11 @@ FbMenuBar::MenuFrame::MenuFrame()
 
 FbMenuBar::MenuLib::MenuLib()
 {
-	Append(ID_MENU_DB_OPEN, _("Открыть (создать) коллекцию"));
+	Append(ID_MENU_DB_NEW,  _("Создать новую коллекцию"));
+	Append(ID_MENU_DB_OPEN, _("Открыть коллекцию"));
+	AppendSeparator();
 	Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
-	Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
+	Append(ID_MENU_VACUUM,  _("Реструктуризация БД"));
 	AppendSeparator();
 	Append(ID_MENU_CONFIG, _("Параметры"));
 }

@@ -23,7 +23,7 @@ public:
 	wxString GetAppData() const { return m_datafile; };
 	wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
 	bool OpenConfig();
-	bool OpenDatabase(const wxString &filename);
+	bool OpenDatabase(const wxString &filename, bool bCreateNew);
 public:
 	wxCriticalSection m_DbSection;
 private:

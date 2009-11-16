@@ -70,11 +70,16 @@ bool MyRuLibApp::OpenConfig()
 	return true;
 }
 
-bool MyRuLibApp::OpenDatabase(const wxString &filename)
+bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
 {
+	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE;
+	if (bCreateNew) flags |= WXSQLITE_OPEN_CREATE;
+
+	if (bCreateNew) wxRemoveFile(filename);
+
 	try {
 		FbMainDatabase dbMain;
-		dbMain.Open(filename);
+		dbMain.Open(filename, wxEmptyString, flags);
 		FbParams().LoadParams();
 		m_datafile = filename;
 	} catch (wxSQLite3Exception & e) {
