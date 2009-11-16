@@ -72,6 +72,8 @@ bool MyRuLibApp::OpenConfig()
 
 bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
 {
+	wxCriticalSectionLocker locker(m_section);
+
 	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE;
 	if (bCreateNew) flags |= WXSQLITE_OPEN_CREATE;
 
@@ -88,3 +90,15 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
 	}
 	return true;
 }
+
+wxString MyRuLibApp::GetAppData()
+{
+	wxCriticalSectionLocker locker(m_section);
+	return m_datafile;
+};
+
+wxString MyRuLibApp::GetAppPath()
+{
+	wxCriticalSectionLocker locker(m_section);
+	return wxFileName(m_datafile).GetPath();
+};

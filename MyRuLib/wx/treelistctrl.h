@@ -541,6 +541,9 @@ private:
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxTreeListCtrl)
+
+public:
+	void SetSortedColumn(int column);
 };
 
 #endif // TREELISTCTRL_H

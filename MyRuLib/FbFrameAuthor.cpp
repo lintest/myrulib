@@ -194,7 +194,7 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
+					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
 					LEFT JOIN authors ON sub.id_author = authors.id \

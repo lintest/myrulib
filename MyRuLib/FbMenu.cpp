@@ -5,9 +5,10 @@ FbMenuSort::FbMenuSort()
 {
 	AppendRadioItem(ID_ORDER_AUTHOR, _("Автор"));
 	AppendRadioItem(ID_ORDER_TITLE,  _("Заголовок"));
+	AppendRadioItem(ID_ORDER_RATING, _("Рейтинг"));
+	AppendRadioItem(ID_ORDER_TYPE,   _("Тип"));
 	AppendRadioItem(ID_ORDER_SIZE,   _("Размер"));
 	AppendRadioItem(ID_ORDER_DATE,   _("Дата"));
-	AppendRadioItem(ID_ORDER_TYPE,   _("Тип"));
 }
 
 FbMenuFilter::FbMenuFilter()

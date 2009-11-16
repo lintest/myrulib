@@ -233,6 +233,8 @@ private:
 
     DECLARE_DYNAMIC_CLASS(wxTreeListHeaderWindow)
     DECLARE_EVENT_TABLE()
+public:
+	int m_SortedColumn;
 };
 
 
@@ -1223,7 +1225,11 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         if ((image != -1) && imageList)
             params.m_labelBitmap = imageList->GetBitmap(image);
 
-        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, flags, wxHDR_SORT_ICON_NONE, &params);
+		wxHeaderSortIconType sortArrow = wxHDR_SORT_ICON_NONE;
+		if (m_SortedColumn == i+1) sortArrow = wxHDR_SORT_ICON_DOWN;
+		if (m_SortedColumn == -i-1) sortArrow = wxHDR_SORT_ICON_UP;
+
+        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, flags, sortArrow, &params);
     }
 
     if (x < w) {
@@ -1475,7 +1481,7 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event) {
             m_minX = xpos;
         }
 
-        if (event.LeftDown() || event.RightUp()) {
+        if (event.LeftDown() || event.LeftUp() || event.RightUp()) {
             if (hit_border && event.LeftDown()) {
                 m_isDragging = true;
                 CaptureMouse();
@@ -1483,7 +1489,7 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event) {
                 DrawCurrent();
                 SendListEvent (wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, event.GetPosition());
             }else{ // click on a column
-                wxEventType evt = event.LeftDown()? wxEVT_COMMAND_LIST_COL_CLICK:
+                wxEventType evt = event.LeftUp() ? wxEVT_COMMAND_LIST_COL_CLICK:
                                                     wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
                 SendListEvent (evt, event.GetPosition());
             }
@@ -4915,3 +4921,8 @@ wxString wxTreeListCtrl::OnGetItemText( wxTreeItemData* WXUNUSED(item), long WXU
     return wxEmptyString;
 }
 
+void wxTreeListCtrl::SetSortedColumn(int column)
+{
+	wxTreeListHeaderWindow* header_win = GetHeaderWindow();
+	header_win->m_SortedColumn = column;
+}

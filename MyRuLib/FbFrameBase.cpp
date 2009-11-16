@@ -166,6 +166,7 @@ void FbFrameBase::OnChangeView(wxCommandEvent & event)
 void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
 {
 	m_ListOrder = event.GetId();
+	m_BooksPanel->m_BookList->SetSortedColumn(m_BooksPanel->GetOrderCol(m_ListOrder) + 1);
 	UpdateBooklist();
 }
 
@@ -175,6 +176,8 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 
 	int param = GetModeKey();
 	if (param) FbParams().SetValue(param, mode);
+
+	if (mode == FB2_MODE_TREE) m_BooksPanel->m_BookList->SetSortedColumn(0);
 
 	m_BooksPanel->CreateColumns(mode);
 	UpdateBooklist();
@@ -250,7 +253,9 @@ wxToolBar * FbFrameBase::CreateToolBar(long style, wxWindowID winid, const wxStr
 
 void FbFrameBase::OnColClick(wxListEvent& event)
 {
+	if (m_BooksPanel->GetListMode() != FB2_MODE_LIST) return;
 	m_ListOrder = m_BooksPanel->GetColOrder(event.GetColumn());
+	m_BooksPanel->m_BookList->SetSortedColumn(event.GetColumn()+1);
 	UpdateBooklist();
 }
 

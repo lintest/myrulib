@@ -70,9 +70,22 @@ int FbBookPanel::GetColOrder(int col)
 	switch (col) {
 		case 0: return ID_ORDER_TITLE;
 		case 1: return ID_ORDER_AUTHOR;
+		case 2: return ID_ORDER_RATING;
 		case 4: return ID_ORDER_TYPE;
 		case 5: return ID_ORDER_SIZE;
 		default: return ID_ORDER_AUTHOR;
+	}
+}
+
+int FbBookPanel::GetOrderCol(int col)
+{
+	switch (col) {
+		case ID_ORDER_TITLE: return 0;
+		case ID_ORDER_AUTHOR: return 1;
+		case ID_ORDER_RATING: return 2;
+		case ID_ORDER_TYPE: return 4;
+		case ID_ORDER_SIZE: return 5;
+		default: return 0;
 	}
 }
 
