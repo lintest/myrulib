@@ -1489,8 +1489,14 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event) {
                 DrawCurrent();
                 SendListEvent (wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, event.GetPosition());
             }else{ // click on a column
-                wxEventType evt = event.LeftUp() ? wxEVT_COMMAND_LIST_COL_CLICK:
-                                                    wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
+                wxEventType evt = event.LeftUp() ? wxEVT_COMMAND_LIST_COL_CLICK: wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
+                if (event.LeftUp()) {
+                	if (abs(m_SortedColumn) == m_column+1) {
+                		m_SortedColumn = - m_SortedColumn;
+					} else {
+						m_SortedColumn = m_column+1;
+					}
+				}
                 SendListEvent (evt, event.GetPosition());
             }
         }else if (event.LeftDClick() && hit_border) {
@@ -4926,3 +4932,10 @@ void wxTreeListCtrl::SetSortedColumn(int column)
 	wxTreeListHeaderWindow* header_win = GetHeaderWindow();
 	header_win->m_SortedColumn = column;
 }
+
+int wxTreeListCtrl::GetSortedColumn()
+{
+	wxTreeListHeaderWindow* header_win = GetHeaderWindow();
+	return header_win->m_SortedColumn;
+}
+

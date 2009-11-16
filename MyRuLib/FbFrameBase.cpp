@@ -254,8 +254,7 @@ wxToolBar * FbFrameBase::CreateToolBar(long style, wxWindowID winid, const wxStr
 void FbFrameBase::OnColClick(wxListEvent& event)
 {
 	if (m_BooksPanel->GetListMode() != FB2_MODE_LIST) return;
-	m_ListOrder = m_BooksPanel->GetColOrder(event.GetColumn());
-	m_BooksPanel->m_BookList->SetSortedColumn(event.GetColumn()+1);
+	m_ListOrder = m_BooksPanel->GetColOrder(abs(event.GetColumn()));
 	UpdateBooklist();
 }
 

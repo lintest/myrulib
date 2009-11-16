@@ -544,6 +544,7 @@ private:
 
 public:
 	void SetSortedColumn(int column);
+	int GetSortedColumn();
 };
 
 #endif // TREELISTCTRL_H
