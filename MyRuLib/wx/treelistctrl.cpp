@@ -1866,7 +1866,7 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetEncoding());
 
     // prevent any background repaint in order to reducing flicker
-	
+
 	// DENIS KANDRASHIN 2009-11-13 - BEGIN - Fix background error
     //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	// END DENIS
@@ -3039,7 +3039,10 @@ void wxTreeListMainWindow::AdjustMyScrollbars() {
         int y_pos = GetScrollPos (wxVERTICAL);
         x = m_owner->GetHeaderWindow()->GetWidth() + 2;
         if (x < GetClientSize().GetWidth()) x_pos = 0;
-        SetScrollbars (xUnit, yUnit, x/xUnit, y/yUnit, x_pos, y_pos);
+		// DENIS KANDRASHIN 2009-11-16 - BEGIN - Set fixed gorizontal scroll bar
+		//SetScrollbars (xUnit, yUnit, x/xUnit, y/yUnit, x_pos, y_pos);
+        SetScrollbars (0, yUnit, 0, y/yUnit, 0, y_pos);
+		// END DENIS
     }else{
         SetScrollbars (0, 0, 0, 0);
     }

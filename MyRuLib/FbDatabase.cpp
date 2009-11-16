@@ -239,8 +239,8 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 		wxLogInfo(wxT("Open database: %s"), fileName.c_str());
 	else {
 		wxLogInfo(wxT("Create database: %s"), fileName.c_str());
-		wxString msg = _("Database does not exist... recreating:");
-		wxMessageBox(msg + wxT("\n") + fileName);
+		wxString msg = strProgramName + wxT(" - Create new database…\n\n") + fileName;
+		wxMessageBox(msg);
 	}
 
 	try {
@@ -249,7 +249,7 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 		UpgradeDatabase(DB_DATABASE_VERSION);
 	}
 	catch (wxSQLite3Exception & e) {
-		wxLogFatalError(e.GetMessage());
+		wxLogError(e.GetMessage());
 	}
 }
 

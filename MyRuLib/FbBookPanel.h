@@ -20,6 +20,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
 		bool Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
 		void UpdateInfo(int id);
+		int GetColOrder(int col);
 	public:
 		FbBookList * m_BookList;
 		wxHtmlWindow * m_BookInfo;

@@ -65,6 +65,17 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 	return res;
 }
 
+int FbBookPanel::GetColOrder(int col)
+{
+	switch (col) {
+		case 0: return ID_ORDER_TITLE;
+		case 1: return ID_ORDER_AUTHOR;
+		case 4: return ID_ORDER_TYPE;
+		case 5: return ID_ORDER_SIZE;
+		default: return ID_ORDER_AUTHOR;
+	}
+}
+
 void FbBookPanel::CreateBookInfo(bool bVertical)
 {
 	if (m_BookInfo) Unsplit(m_BookInfo);
@@ -519,3 +530,4 @@ void FbBookPanel::UpdateInfo(int id)
 		InfoCash::UpdateInfo(this, id, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
+
