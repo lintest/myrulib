@@ -11,6 +11,8 @@ FbLogStream::FbLogStream(const wxString & filename)
 
 void FbLogStream::DoLogString(const wxChar *szString, time_t t)
 {
+	m_stream.SeekO(0, wxFromEnd);
+
 	wxDateTime datetime(t);
 	wxString text = datetime.FormatISODate() + wxT(" ");
 	text += datetime.FormatISOTime() + wxT(" ");

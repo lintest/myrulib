@@ -84,3 +84,8 @@ void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )
 		m_FileBox->SetValue(dlg.GetPath());
 	}
 }
+
+wxString FbDataOpenDlg::GetFilename()
+{
+	return m_FileBox->GetValue();
+}

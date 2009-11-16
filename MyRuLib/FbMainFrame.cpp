@@ -71,7 +71,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
-	EVT_COMMAND(ID_UPDATE_ALLBOOKS, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateAll)
+	EVT_COMMAND(ID_UPDATE_BOOK, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateBook)
 END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
@@ -474,9 +474,7 @@ void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
 	wxString msg = _("Выполнить реструктуризацию базы данных?");
-	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) != wxOK) return;
-
-	VacuumThread::Execute();
+	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK) (new VacuumThread)->Execute();
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
@@ -520,7 +518,7 @@ void FbMainFrame::OnProgress(FbProgressEvent & event)
 	m_ProgressBar.SetStatusText(event.m_text, 2);
 }
 
-void FbMainFrame::OnUpdateAll(wxCommandEvent & event)
+void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
 {
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
@@ -532,7 +530,13 @@ void FbMainFrame::OnUpdateAll(wxCommandEvent & event)
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 {
 	FbDataOpenDlg dlg(this);
-	dlg.ShowModal();
+	if (dlg.ShowModal() == wxID_OK) {
+		wxGetApp().OpenDatabase( dlg.GetFilename() );
+		SetTitle(GetTitle());
+		InfoCash::Empty();
+		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
+		FindAuthor(wxEmptyString);
+	}
 }
 
 void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)

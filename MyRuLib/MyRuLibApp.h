@@ -22,6 +22,8 @@ public:
 	virtual int OnExit();
 	wxString GetAppData() const { return m_datafile; };
 	wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
+	bool OpenConfig();
+	bool OpenDatabase(const wxString &filename);
 public:
 	wxCriticalSection m_DbSection;
 private:

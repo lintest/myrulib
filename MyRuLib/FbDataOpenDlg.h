@@ -9,6 +9,7 @@ class FbDataOpenDlg : public FbDialog
 	public:
 		FbDataOpenDlg( wxWindow* parent, wxWindowID id = wxID_ANY);
 		virtual wxString GetTitle() const;
+		wxString GetFilename();
 	private:
 		enum
 		{

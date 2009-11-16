@@ -7,8 +7,9 @@
 class VacuumThread : public wxThread
 {
 	public:
-		static void Execute();
+		void Execute();
 		VacuumThread (): wxThread() {};
+	protected:
 		virtual void *Entry();
 };
 

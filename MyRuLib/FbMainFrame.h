@@ -77,7 +77,7 @@ private:
 	void OnVacuum(wxCommandEvent & event);
 	void OnUpdateFonts(wxCommandEvent & event);
 	void OnProgress(FbProgressEvent & event);
-	void OnUpdateAll(wxCommandEvent & event);
+	void OnUpdateBook(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 
