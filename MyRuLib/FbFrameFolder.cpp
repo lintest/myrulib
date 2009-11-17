@@ -34,6 +34,7 @@ void FbFrameFolder::CreateControls()
 	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
 
 	m_ToolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
+	m_ToolBar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
 	m_ToolBar->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
 	m_ToolBar->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
 	m_ToolBar->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
@@ -64,14 +65,6 @@ void FbFrameFolder::CreateControls()
 	SetSizer( bSizer1 );
 
 	FbFrameBase::CreateControls();
-}
-
-wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->Realize();
-	return toolbar;
 }
 
 void FbFrameFolder::FillFolders(const int iCurrent)
@@ -197,8 +190,7 @@ void FbFrameFolder::FillByFolder(FbFolderData * data)
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( data->GetType() );
 
-	wxThread * thread = new FrameFavourThread(this, m_BooksPanel->GetListMode(), data);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FrameFavourThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)

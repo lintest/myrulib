@@ -80,7 +80,7 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppendItem(fgSizerList, _("Основное окно:"), ID_FONT_MAIN);
+	AppendItem(fgSizerList, _("Списки книг, авторов:"), ID_FONT_MAIN);
 	AppendItem(fgSizerList, _("Панель инструментов:"), ID_FONT_TOOL);
 	AppendItem(fgSizerList, _("Информация:"), ID_FONT_HTML);
 	AppendItem(fgSizerList, _("Диалоги:"), ID_FONT_DLG);
@@ -136,7 +136,6 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxCheckBox * m_checkBox12 = new wxCheckBox( this, ID_USE_PROXY, _("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
-
 	bSizer13->Add( m_checkBox12, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxComboBox * m_comboBox2 = new wxComboBox( this, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
@@ -162,6 +161,9 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	bSizer14->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
 	bSizer2->Add( bSizer14, 0, wxEXPAND, 5 );
+
+	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Удалять скаченные файлы при удалении загрузок из списка"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_checkBox14, 0, wxALL, 5 );
 
 	this->SetSizer( bSizer2 );
 	this->Layout();
@@ -336,6 +338,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_PROXY_ADDR, ID_PROXY_ADDR, tCombo},
 		{FB_LIBRUSEC_URL, ID_LIBRUSEC_URL, tCombo},
 		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR_TXT, tText},
+		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD, tCheck},
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
 		{FB_TRANSLIT_FOLDER, ID_TRANSLIT_FOLDER, tCheck},
 		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE, tCheck},

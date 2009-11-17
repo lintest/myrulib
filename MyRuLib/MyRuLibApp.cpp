@@ -22,6 +22,8 @@ IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
+	OpenConfig();
+
 	if(!ConnectToDatabase()) {
 		wxLogFatalError(_("Error connecting to database!"));
 		return false;
@@ -46,21 +48,57 @@ int MyRuLibApp::OnExit()
 
 bool MyRuLibApp::ConnectToDatabase()
 {
-	FbConfigDatabase dbConfig;
-	dbConfig.Open();
-
 	m_datafile = FbStandardPaths().GetDataFile();
-
-	wxFileName logname = m_datafile;
-	logname.SetExt(wxT("log"));
-	wxLog *logger = new FbLogStream(logname.GetFullPath());
-	wxLog::SetActiveTarget(logger);
 
 	FbMainDatabase dbMain;
 	dbMain.Open(m_datafile);
-
 	FbParams().LoadParams();
 
 	return true;
 }
 
+bool MyRuLibApp::OpenConfig()
+{
+	FbConfigDatabase dbConfig;
+	dbConfig.Open();
+
+	wxFileName logname = FbDatabase::GetConfigName();
+	logname.SetExt(wxT("log"));
+	wxLog * logger = new FbLogStream(logname.GetFullPath());
+	wxLog::SetActiveTarget(logger);
+
+	return true;
+}
+
+bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
+{
+	wxCriticalSectionLocker locker(m_section);
+
+	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE;
+	if (bCreateNew) flags |= WXSQLITE_OPEN_CREATE;
+
+	if (bCreateNew) wxRemoveFile(filename);
+
+	try {
+		FbMainDatabase dbMain;
+		dbMain.Open(filename, wxEmptyString, flags);
+		FbParams().LoadParams();
+		m_datafile = filename;
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(wxT("Database open error: ") + e.GetMessage());
+		return false;
+	}
+	return true;
+}
+
+wxString MyRuLibApp::GetAppData()
+{
+	wxCriticalSectionLocker locker(m_section);
+	return m_datafile;
+};
+
+wxString MyRuLibApp::GetAppPath()
+{
+	wxCriticalSectionLocker locker(m_section);
+	return wxFileName(m_datafile).GetPath();
+};

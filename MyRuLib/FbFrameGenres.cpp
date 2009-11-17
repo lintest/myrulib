@@ -73,14 +73,6 @@ void FbFrameGenres::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-wxToolBar * FbFrameGenres::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->Realize();
-	return toolbar;
-}
-
 class FrameGenresThread: public FbFrameBaseThread
 {
 	public:
@@ -130,10 +122,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
-		if (data) {
-			wxThread * thread = new FrameGenresThread(this, m_BooksPanel->GetListMode(), data->GetCode());
-			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-		}
+		if (data) ( new FrameGenresThread(this, m_BooksPanel->GetListMode(), data->GetCode()) )->Execute();
 	}
 }
 
@@ -145,10 +134,6 @@ void FbFrameGenres::UpdateBooklist()
 		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
 		if (data) code = data->GetCode();
 	}
-
-	if (code) {
-		wxThread * thread = new FrameGenresThread(this, m_BooksPanel->GetListMode(), code);
-		if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-	}
+	if (code) ( new FrameGenresThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
 }
 

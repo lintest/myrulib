@@ -140,6 +140,10 @@ void FbMainDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS aliases(id_author integer not null, id_alias integer not null);"));
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_author ON aliases(id_author);"));
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
+			try {
+				ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
+				ExecuteUpdate(strUpdateCountSQL);
+			} catch (...) {};
 		} break;
 	}
 }
@@ -235,8 +239,8 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 		wxLogInfo(wxT("Open database: %s"), fileName.c_str());
 	else {
 		wxLogInfo(wxT("Create database: %s"), fileName.c_str());
-		wxString msg = _("Database does not exist... recreating:");
-		wxMessageBox(msg + wxT("\n") + fileName);
+		wxString msg = strProgramName + wxT(" - Create new database…\n\n") + fileName;
+		wxMessageBox(msg);
 	}
 
 	try {
@@ -245,7 +249,7 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 		UpgradeDatabase(DB_DATABASE_VERSION);
 	}
 	catch (wxSQLite3Exception & e) {
-		wxLogFatalError(e.GetMessage());
+		wxLogError(e.GetMessage());
 	}
 }
 

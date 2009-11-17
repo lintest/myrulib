@@ -20,10 +20,12 @@ class MyRuLibApp : public wxApp
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
-	wxString GetAppData() const { return m_datafile; };
-	wxString GetAppPath() const { return wxFileName(m_datafile).GetPath(); };
+	wxString GetAppData();
+	wxString GetAppPath();
+	bool OpenConfig();
+	bool OpenDatabase(const wxString &filename, bool bCreateNew);
 public:
-	wxCriticalSection m_DbSection;
+	wxCriticalSection m_section;
 private:
 	bool ConnectToDatabase();
 	bool CreateDatabase();

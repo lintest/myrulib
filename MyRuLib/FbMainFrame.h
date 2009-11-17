@@ -28,16 +28,19 @@ public:
 private:
 	bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 	void CreateControls();
+	void LoadIcon();
 	wxAuiToolBar * CreateToolBar();
 	void TogglePaneVisibility(const wxString &pane_name, bool show);
 	void ShowPane(const wxString &pane_name);
 	void FindAuthor(const wxString &text);
 	void FindTitle(const wxString &text);
 	wxWindow * FindFrameById(const int id, bool bActivate = false);
+	void OpenDatabase(const wxString &title, bool bCreateNew);
 private:
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
 	ProgressBar m_ProgressBar;
+	wxAuiToolBar * m_ToolBar;
 	wxString m_StatusText;
 	wxAuiManager m_FrameManager;
 	LimitedTextCtrl m_LOGTextCtrl;
@@ -48,6 +51,7 @@ private:
 	void OnAbout(wxCommandEvent & event);
 	void OnDatabaseInfo(wxCommandEvent & event);
 	void OnDatabaseOpen(wxCommandEvent & event);
+	void OnDatabaseNew(wxCommandEvent & event);
 	void OnInfoCommand(wxCommandEvent & event);
 	void OnFindAuthor(wxCommandEvent& event);
 	void OnFindAuthorEnter(wxCommandEvent& event);
@@ -75,7 +79,7 @@ private:
 	void OnVacuum(wxCommandEvent & event);
 	void OnUpdateFonts(wxCommandEvent & event);
 	void OnProgress(FbProgressEvent & event);
-	void OnUpdateAll(wxCommandEvent & event);
+	void OnUpdateBook(wxCommandEvent & event);
 	DECLARE_EVENT_TABLE()
 };
 

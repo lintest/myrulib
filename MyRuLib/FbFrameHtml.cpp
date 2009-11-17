@@ -87,6 +87,7 @@ void FbFrameHtml::CreateControls()
 	bSizerSubject->Add( &m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
+	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
 	m_ToolBar.AddTool( ID_HTML_SUBMIT, wxT("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_ToolBar.AddTool( ID_HTML_MODIFY, wxT("Изменить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
@@ -247,10 +248,7 @@ void FbFrameHtml::DoUpdate()
 {
 	InfoCash::UpdateInfo(this, m_id, false, true);
 	FbFolderEvent(ID_UPDATE_FOLDER, 1, FT_COMMENT).Post();
-
-	FbCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_ALLBOOKS);
-	event.SetInt(m_id);
-	event.Post();
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, m_id).Post();
 }
 
 void FbFrameHtml::UpdateFonts(bool refresh)

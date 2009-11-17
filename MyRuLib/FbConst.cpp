@@ -15,6 +15,9 @@ const wxString strRusJO = wxT("ё");
 const wxString strOtherSequence = _("(разное)");
 const wxString strBookNotFound = _("Не найден архив%s, содержащий файл%s.");
 
+const wxString strUpdateCountSQL = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
+
+
 const int ciNoAuthor = 0x7FFFFFFF;
 
 const int ciMaxImageWidth = 200;

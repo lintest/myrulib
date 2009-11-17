@@ -23,7 +23,7 @@ enum {
 	ID_ERROR,
 	ID_LOG_TEXTCTRL,
 	ID_BOOKINFO_UPDATE,
-	ID_UPDATE_ALLBOOKS,
+	ID_UPDATE_BOOK,
 	ID_SEARCH_BOOK,
 	ID_OPEN_WEB,
 	ID_FRAME_AUTHOR,
@@ -43,8 +43,10 @@ enum {
 	ID_MENU_AUTHOR,
 	ID_MENU_DB_INFO,
 	ID_MENU_DB_OPEN,
+	ID_MENU_DB_NEW,
 	ID_MENU_VACUUM,
 	ID_MENU_CONFIG,
+	ID_EMPTY_AUTHORS,
 	ID_EMPTY_BOOKS,
 	ID_APPEND_BOOK,
 	ID_APPEND_AUTHOR,
@@ -78,6 +80,7 @@ enum {
 	ID_ORDER_MENU,
 	ID_ORDER_AUTHOR,
 	ID_ORDER_TITLE,
+	ID_ORDER_RATING,
 	ID_ORDER_SIZE,
 	ID_ORDER_DATE,
 	ID_ORDER_TYPE,
@@ -103,5 +106,7 @@ extern const int ciNoAuthor;
 extern const int ciMaxImageWidth;
 
 extern const wxString strRating [];
+
+extern const wxString strUpdateCountSQL;
 
 #endif // __FBCONST_H__

@@ -95,8 +95,8 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_sdbSizerBtn->Realize();
 	bSizerMain->Add( m_sdbSizerBtn, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 }
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )

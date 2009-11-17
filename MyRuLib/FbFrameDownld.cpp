@@ -62,6 +62,8 @@ void FbFrameDownld::CreateControls()
 wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
+
 	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_START, _("Старт"), wxBitmap(start_xpm), _("Начать загрузку файлов через интернет"));
@@ -72,6 +74,7 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_DELETE_DOWNLOAD, _("Удалить"), wxArtProvider::GetBitmap(wxART_DELETE), _("Удалить загрузку"));
 	toolbar->Realize();
+
 	return toolbar;
 }
 
@@ -167,9 +170,7 @@ void FbFrameDownld::FillByFolder(FbFolderData * data)
 {
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( FT_DOWNLOAD );
-
-	wxThread * thread = new FrameDownldThread(this, m_BooksPanel->GetListMode(), data);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FrameDownldThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
 FbFolderData * FbFrameDownld::GetSelected()
@@ -215,13 +216,12 @@ void FbFrameDownld::OnMoveUp(wxCommandEvent& event)
 	wxString sel = m_BooksPanel->m_BookList->GetSelected();
 	if (sel.IsEmpty()) return;
 
-	wxString sql1 = wxString::Format(wxT("\
+	wxString sql = wxString::Format(wxT("\
 		UPDATE states SET download=download+1 WHERE download>0 AND md5sum NOT IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
 	"), sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, 1, FT_DOWNLOAD );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FbFolderUpdateThread(sql, 1, FT_DOWNLOAD) )->Execute();
 }
 
 void FbFrameDownld::OnMoveDown(wxCommandEvent& event)
@@ -229,12 +229,11 @@ void FbFrameDownld::OnMoveDown(wxCommandEvent& event)
 	wxString sel = m_BooksPanel->m_BookList->GetSelected();
 	if (sel.IsEmpty()) return;
 
-	wxString sql1 = wxString::Format(wxT("\
+	wxString sql = wxString::Format(wxT("\
 		UPDATE states SET download=download+1 WHERE download>0 AND md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
 	"), sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, 1, FT_DOWNLOAD );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FbFolderUpdateThread(sql, 1, FT_DOWNLOAD))->Execute();
 }
 

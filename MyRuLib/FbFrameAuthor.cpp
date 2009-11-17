@@ -9,11 +9,14 @@
 #include "FbFrameBaseThread.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
+#include "FbAuthorThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
+	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameAuthor::OnEmptyAuthors)
+	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameAuthor::OnAppendAuthor)
 END_EVENT_TABLE()
 
 class FrameAuthorThread: public FbFrameBaseThread
@@ -46,6 +49,10 @@ void FbFrameAuthor::CreateControls()
 
 	sizer->Add(m_RuAlphabar = CreateAlphaBar(this, alphabetRu, ID_LETTER_RU, wxTB_NODIVIDER), 0, wxEXPAND, 5);
 	sizer->Add(m_EnAlphabar = CreateAlphaBar(this, alphabetEn, ID_LETTER_EN, 0), 0, wxEXPAND, 5);
+
+	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
+	m_RuAlphabar->SetFont(font);
+	m_EnAlphabar->SetFont(font);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -104,8 +111,7 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	ToggleAlphabar(id);
 
-	((FbAuthorList*)m_MasterList)->FillAuthorsChar(alphabet[position]);
-	SelectFirstAuthor();
+	(new FbAuthorThreadChar(this, alphabet[position]))->Execute();
 }
 
 void FbFrameAuthor::SelectFirstAuthor(const int book)
@@ -123,10 +129,7 @@ void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
-		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId());
-			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-		}
+		if (data) ( new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
 
@@ -139,15 +142,14 @@ void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
 	ToggleAlphabar(0);
-	((FbAuthorList*)m_MasterList)->FillAuthorsText(text);
-	SelectFirstAuthor();
+	(new FbAuthorThreadText(this, text))->Execute();
 }
 
 void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
 	ToggleAlphabar(0);
+	(new FbAuthorThreadCode(this, author))->Execute();
 	((FbAuthorList*)m_MasterList)->FillAuthorsCode(author);
-	SelectFirstAuthor(book);
 }
 
 void FbFrameAuthor::SelectRandomLetter()
@@ -192,7 +194,7 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 			sql = wxT("\
 				SELECT \
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
+					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
 					LEFT JOIN authors ON sub.id_author = authors.id \
@@ -271,10 +273,7 @@ void FbFrameAuthor::UpdateBooklist()
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
-		if (data) {
-			wxThread * thread = new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId());
-			if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-		}
+		if (data) (new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 	}
 }
 
@@ -282,3 +281,23 @@ void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
 {
 }
 
+void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
+{
+	FbTreeListUpdater updater(m_MasterList);
+	wxTreeItemId root = m_MasterList->GetRootItem();
+
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
+
+	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
+	wxString number = wxString::Format(wxT("%d"), event.m_number);
+	m_MasterList->SetItemText(item, 1, number);
+
+	if (!child.IsOk()) m_MasterList->SelectItem(item);
+}
+
+void FbFrameAuthor::OnEmptyAuthors(wxCommandEvent& event)
+{
+	BookListUpdater updater(m_MasterList);
+	m_MasterList->AddRoot(wxEmptyString);
+}

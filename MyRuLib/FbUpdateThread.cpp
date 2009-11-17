@@ -14,8 +14,6 @@ void * FbUpdateThread::Entry()
 	ExecSQL(database, m_sql);
 	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
 
-	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
-
 	return NULL;
 }
 
@@ -27,7 +25,6 @@ void FbUpdateThread::ExecSQL(FbDatabase &database, const wxString &sql)
 		wxLogError(e.GetMessage());
 	}
 }
-
 
 class FbIncrementFunction : public wxSQLite3ScalarFunction
 {
@@ -44,6 +41,21 @@ void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
 	m_increment++;
 	id += m_increment;
 	ctx.SetResult(id);
+}
+
+void * FbFolderUpdateThread::Entry()
+{
+	wxCriticalSectionLocker locker(sm_queue);
+
+	FbCommonDatabase database;
+	database.AttachConfig();
+
+	ExecSQL(database, m_sql);
+	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
+
+	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
+
+	return NULL;
 }
 
 void * FbCreateDownloadThread::Entry()

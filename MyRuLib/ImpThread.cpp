@@ -320,7 +320,7 @@ void *ZipImportThread::Entry()
 	for (size_t i=0; i<count; i++) {
 		ImportFile(m_filelist[i]);
 	}
-	UpdateBooksCount();
+	UpdateBooksCount(m_database);
 	wxLogInfo(_("Finish import %d file(s)"), count);
 	return NULL;
 }
@@ -461,7 +461,7 @@ void *DirImportThread::Entry()
 	FolderTraverser traverser(this);
 	dir.Traverse(traverser);
 
-	UpdateBooksCount();
+	UpdateBooksCount(m_database);
 	DoFinish();
 
 	wxLogInfo(_("Finish import directory %s"), m_dirname.c_str());
@@ -520,19 +520,3 @@ bool DirImportThread::ParseXml(const wxString &filename)
 	return ImportThread::ParseXml(in, GetRelative(filename), 0);
 }
 
-void BooksCountThread::Execute()
-{
-	wxThread * thread = new BooksCountThread();
-	if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-		wxLogError(wxT("Can't create thread!"));
-		return;
-	}
-	thread->Run();
-}
-
-void * BooksCountThread::Entry()
-{
-	wxCriticalSectionLocker enter(sm_queue);
-	UpdateBooksCount();
-	return NULL;
-}

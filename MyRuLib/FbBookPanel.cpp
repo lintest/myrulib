@@ -65,6 +65,65 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 	return res;
 }
 
+int FbBookPanel::GetOrderID()
+{
+	int col = abs( m_BookList->GetSortedColumn() );
+	switch (col) {
+		case 1: return ID_ORDER_TITLE;
+		case 2: return ID_ORDER_AUTHOR;
+		case 3: return ID_ORDER_RATING;
+		case 4: return ID_ORDER_TYPE;
+		case 6: return ID_ORDER_SIZE;
+		default: return ID_ORDER_AUTHOR;
+	}
+}
+
+void FbBookPanel::SetOrderID(int id)
+{
+	int col = 0;
+	switch (id) {
+		case ID_ORDER_TITLE:  col = 1; break;
+		case ID_ORDER_AUTHOR: col = 2; break;
+		case ID_ORDER_RATING: col = 3; break;
+		case ID_ORDER_TYPE:   col = 5; break;
+		case ID_ORDER_SIZE:   col = 6; break;
+		default: col = 0;
+	}
+	if (IsOrderDesc()) col *= -1;
+	m_BookList->SetSortedColumn(col);
+}
+
+wxString FbBookPanel::GetOrderSQL()
+{
+	int col = m_BookList->GetSortedColumn();
+	switch (col) {
+		case -7: return wxT("created desc,full_name desc,title desc");
+		case -6: return wxT("file_size desc,full_name desc,title desc");
+		case -5: return wxT("file_type desc,full_name desc,title desc");
+		case -3: return wxT("rating desc,full_name desc,title desc");
+		case -2: return wxT("full_name desc,title desc");
+		case -1: return wxT("title desc,full_name desc");
+		case  1: return wxT("title,full_name");
+		case  2: return wxT("full_name,title");
+		case  3: return wxT("rating,full_name,title");
+		case  5: return wxT("file_type,full_name,title");
+		case  6: return wxT("file_size,full_name,title");
+		case  7: return wxT("created,full_name,title");
+		default: return wxT("title,full_name");
+	}
+}
+
+bool FbBookPanel::IsOrderDesc()
+{
+	return m_BookList->GetSortedColumn() < 0;
+}
+
+void FbBookPanel::RevertOrder()
+{
+	int col = - m_BookList->GetSortedColumn();
+	m_BookList->SetSortedColumn(col);
+}
+
 void FbBookPanel::CreateBookInfo(bool bVertical)
 {
 	if (m_BookInfo) Unsplit(m_BookInfo);
@@ -253,7 +312,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql, folder, FT_FOLDER );
+	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -315,7 +374,7 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, iRating, FT_RATING, sql2 );
+	wxThread * thread = new FbFolderUpdateThread( sql1, iRating, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -326,7 +385,7 @@ void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, folder, FT_DOWNLOAD );
+	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -481,6 +540,8 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 
 	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
 	m_BookInfo->SetPage(wxEmptyString);
+
+	m_BookList->SetSortedColumn( m_ListMode == FB2_MODE_LIST ? 1 : 0 );
 }
 
 int FbBookPanel::GetRatingColumn()
@@ -519,3 +580,4 @@ void FbBookPanel::UpdateInfo(int id)
 		InfoCash::UpdateInfo(this, id, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
+

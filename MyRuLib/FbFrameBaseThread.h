@@ -2,6 +2,7 @@
 #define __FBFRAMEBASETHREAD_H__
 
 #include <wx/wx.h>
+#include "FbThread.h"
 #include "FbFrameBase.h"
 
 class FbAggregateFunction : public wxSQLite3AggregateFunction
@@ -11,7 +12,7 @@ class FbAggregateFunction : public wxSQLite3AggregateFunction
 		virtual void Finalize(wxSQLite3FunctionContext& ctx);
 };
 
-class FbFrameBaseThread: public wxThread
+class FbFrameBaseThread: public FbThread
 {
 	public:
 		FbFrameBaseThread(FbFrameBase * frame, FbListMode mode)
@@ -19,7 +20,7 @@ class FbFrameBaseThread: public wxThread
 			m_FilterFb2(frame->m_FilterFb2),
 			m_FilterLib(frame->m_FilterLib),
 			m_FilterUsr(frame->m_FilterUsr),
-			m_ListOrder(frame->m_ListOrder)
+			m_ListOrder(frame->GetOrderSQL())
 		{};
 	protected:
 		virtual wxString GetSQL(const wxString & condition);
@@ -37,18 +38,7 @@ class FbFrameBaseThread: public wxThread
 		bool m_FilterFb2;
 		bool m_FilterLib;
 		bool m_FilterUsr;
-		int m_ListOrder;
-};
-
-class FbThreadSkiper
-{
-	public:
-		FbThreadSkiper(): m_number(0) {};
-		bool Skipped(const int number) { return number != m_number; };
-		int NewNumber() { return ++m_number; };
-	private:
-		wxCriticalSection m_queue;
-		int m_number;
+		wxString m_ListOrder;
 };
 
 #endif // __FBFRAMEBASETHREAD_H__

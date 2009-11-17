@@ -187,10 +187,7 @@ void FbInternetBook::SaveFile(const bool success)
 	InfoCash::EmptyInfo(m_id);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, 0, FT_DOWNLOAD).Post();
-
-	FbCommandEvent event(fbEVT_BOOK_ACTION, ID_UPDATE_ALLBOOKS);
-	event.SetInt(m_id);
-	event.Post();
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, m_id).Post();
 }
 
 bool FbDownloader::sm_running = false;

@@ -7,6 +7,7 @@ END_EVENT_TABLE()
 FbTreeListCtrl::FbTreeListCtrl(wxWindow *parent, wxWindowID id, long style)
 	:wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, style)
 {
+	SetSortedColumn(0);
 }
 
 void FbTreeListCtrl::EmptyCols()

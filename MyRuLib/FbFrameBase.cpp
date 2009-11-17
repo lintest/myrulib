@@ -18,8 +18,10 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
 	EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
 	EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
+	EVT_MENU(ID_DIRECTION, FbFrameBase::OnDirection)
 	EVT_MENU(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TITLE, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_ORDER_RATING, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_DATE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_SIZE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TYPE, FbFrameBase::OnChangeOrder)
@@ -30,12 +32,15 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_TITLE, FbFrameBase::OnChangeOrderUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_RATING, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_DATE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_SIZE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_TYPE, FbFrameBase::OnChangeOrderUpdateUI)
+    EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
 	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
 	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
 	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
@@ -46,7 +51,6 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_ListOrder(ID_ORDER_TITLE),
 	m_MasterList(NULL), m_BooksPanel(NULL)
 {
 	Create(parent, id, title);
@@ -124,11 +128,6 @@ void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
 	}
 }
 
-void FbFrameBase::OnChangeOrderUpdateUI(wxUpdateUIEvent & event)
-{
-	if (event.GetId() == m_ListOrder) event.Check(true);
-}
-
 int FbFrameBase::GetModeKey()
 {
 	switch (GetId()) {
@@ -164,7 +163,13 @@ void FbFrameBase::OnChangeView(wxCommandEvent & event)
 
 void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
 {
-	m_ListOrder = event.GetId();
+	m_BooksPanel->SetOrderID( event.GetId() );
+	UpdateBooklist();
+}
+
+void FbFrameBase::OnDirection(wxCommandEvent& event)
+{
+	m_BooksPanel->RevertOrder();
 	UpdateBooklist();
 }
 
@@ -174,6 +179,8 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 
 	int param = GetModeKey();
 	if (param) FbParams().SetValue(param, mode);
+
+	if (mode == FB2_MODE_TREE) m_BooksPanel->m_BookList->SetSortedColumn(0);
 
 	m_BooksPanel->CreateColumns(mode);
 	UpdateBooklist();
@@ -233,8 +240,33 @@ void FbFrameBase::UpdateInfo(int id)
 	if (m_BooksPanel) m_BooksPanel->UpdateInfo(id);
 }
 
+void FbFrameBase::OnDirectionUpdateUI(wxUpdateUIEvent & event)
+{
+	event.Check( m_BooksPanel->IsOrderDesc() );
+}
+
 void FbFrameBase::OnMenuOrderUpdateUI(wxUpdateUIEvent & event)
 {
 	event.Enable( m_BooksPanel->GetListMode() == FB2_MODE_LIST );
+}
+
+void FbFrameBase::OnChangeOrderUpdateUI(wxUpdateUIEvent & event)
+{
+	if (event.GetId() == m_BooksPanel->GetOrderID()) event.Check(true);
+}
+
+wxToolBar * FbFrameBase::CreateToolBar(long style, wxWindowID winid, const wxString& name)
+{
+	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+	toolbar->Realize();
+	return toolbar;
+}
+
+void FbFrameBase::OnColClick(wxListEvent& event)
+{
+	if (m_BooksPanel->GetListMode() != FB2_MODE_LIST) return;
+	UpdateBooklist();
 }
 

@@ -38,14 +38,6 @@ void FbFrameSearch::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->Realize();
-	return toolbar;
-}
-
 class FrameSearchThread: public FbFrameBaseThread
 {
 	public:
@@ -169,8 +161,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 
 void FbFrameSearch::UpdateBooklist()
 {
-	wxThread * thread = new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title) )->Execute();
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)

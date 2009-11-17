@@ -31,7 +31,6 @@ class FbDatabase: public wxSQLite3Database
 						int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
 		int NewId(const int iParam, int iIncrement = 1);
 		wxString GetText(const int param);
-	protected:
 		static const wxString & GetConfigName();
 	private:
 		static wxCriticalSection sm_queue;

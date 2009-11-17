@@ -233,6 +233,10 @@ private:
 
     DECLARE_DYNAMIC_CLASS(wxTreeListHeaderWindow)
     DECLARE_EVENT_TABLE()
+// DENIS KANDRASHIN 2009-11-17 - BEGIN - Sort column
+public:
+	int m_SortedColumn;
+// END DENIS
 };
 
 
@@ -1102,6 +1106,9 @@ void wxTreeListHeaderWindow::Init()
 }
 
 wxTreeListHeaderWindow::wxTreeListHeaderWindow()
+// DENIS KANDRASHIN 2009-11-17 - BEGIN - Sort column
+	:m_SortedColumn(0)
+// END DENIS
 {
     Init();
 
@@ -1117,6 +1124,9 @@ wxTreeListHeaderWindow::wxTreeListHeaderWindow( wxWindow *win,
                                                 long style,
                                                 const wxString &name )
     : wxWindow( win, id, pos, size, style, name )
+// DENIS KANDRASHIN 2009-11-17 - BEGIN - Sort column
+	, m_SortedColumn(0)
+// END DENIS
 {
     Init();
 
@@ -1223,7 +1233,13 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         if ((image != -1) && imageList)
             params.m_labelBitmap = imageList->GetBitmap(image);
 
-        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, flags, wxHDR_SORT_ICON_NONE, &params);
+		// DENIS KANDRASHIN 2009-11-17 - BEGIN - Sort column
+		wxHeaderSortIconType sortArrow = wxHDR_SORT_ICON_NONE;
+		if (m_SortedColumn == i+1) sortArrow = wxHDR_SORT_ICON_DOWN;
+		if (m_SortedColumn == -i-1) sortArrow = wxHDR_SORT_ICON_UP;
+		// END DENIS
+
+        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, flags, sortArrow, &params);
     }
 
     if (x < w) {
@@ -1475,7 +1491,7 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event) {
             m_minX = xpos;
         }
 
-        if (event.LeftDown() || event.RightUp()) {
+        if (event.LeftDown() || event.LeftUp() || event.RightUp()) {
             if (hit_border && event.LeftDown()) {
                 m_isDragging = true;
                 CaptureMouse();
@@ -1483,8 +1499,14 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event) {
                 DrawCurrent();
                 SendListEvent (wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, event.GetPosition());
             }else{ // click on a column
-                wxEventType evt = event.LeftDown()? wxEVT_COMMAND_LIST_COL_CLICK:
-                                                    wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
+                wxEventType evt = event.LeftUp() ? wxEVT_COMMAND_LIST_COL_CLICK: wxEVT_COMMAND_LIST_COL_RIGHT_CLICK;
+                if (event.LeftUp() && m_SortedColumn) {
+                	if (abs(m_SortedColumn) == m_column+1) {
+                		m_SortedColumn = - m_SortedColumn;
+					} else {
+						m_SortedColumn = m_column+1;
+					}
+				}
                 SendListEvent (evt, event.GetPosition());
             }
         }else if (event.LeftDClick() && hit_border) {
@@ -1866,7 +1888,10 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetEncoding());
 
     // prevent any background repaint in order to reducing flicker
-    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+
+	// DENIS KANDRASHIN 2009-11-13 - BEGIN - Fix background error
+    //SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+	// END DENIS
 }
 
 bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
@@ -3036,7 +3061,10 @@ void wxTreeListMainWindow::AdjustMyScrollbars() {
         int y_pos = GetScrollPos (wxVERTICAL);
         x = m_owner->GetHeaderWindow()->GetWidth() + 2;
         if (x < GetClientSize().GetWidth()) x_pos = 0;
-        SetScrollbars (xUnit, yUnit, x/xUnit, y/yUnit, x_pos, y_pos);
+		// DENIS KANDRASHIN 2009-11-16 - BEGIN - Set fixed gorizontal scroll bar
+		//SetScrollbars (xUnit, yUnit, x/xUnit, y/yUnit, x_pos, y_pos);
+        SetScrollbars (0, yUnit, 0, y/yUnit, 0, y_pos);
+		// END DENIS
     }else{
         SetScrollbars (0, 0, 0, 0);
     }
@@ -4909,3 +4937,16 @@ wxString wxTreeListCtrl::OnGetItemText( wxTreeItemData* WXUNUSED(item), long WXU
     return wxEmptyString;
 }
 
+// DENIS KANDRASHIN 2009-11-17 - BEGIN - Sort column
+void wxTreeListCtrl::SetSortedColumn(int column)
+{
+	wxTreeListHeaderWindow* header_win = GetHeaderWindow();
+	header_win->m_SortedColumn = column;
+}
+
+int wxTreeListCtrl::GetSortedColumn()
+{
+	wxTreeListHeaderWindow* header_win = GetHeaderWindow();
+	return header_win->m_SortedColumn;
+}
+// END DENIS

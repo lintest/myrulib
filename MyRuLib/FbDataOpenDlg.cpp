@@ -7,8 +7,8 @@ BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_BUTTON( ID_FILE_BTN, FbDataOpenDlg::OnSelectFileClick )
 END_EVENT_TABLE()
 
-FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, wxWindowID id )
-	: FbDialog( parent, id, GetTitle(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, const wxString& title, bool bMustExists )
+	: FbDialog( parent, wxID_ANY, GetTitle(title), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -24,26 +24,26 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, wxWindowID id )
 	wxBoxSizer* bSizerCtrl;
 	bSizerCtrl = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizerFIle;
-	bSizerFIle = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizerFile;
+	bSizerFile = new wxBoxSizer( wxHORIZONTAL );
 
 	wxStaticText * m_FileText = new wxStaticText( this, wxID_ANY, _("Имя файла:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FileText->Wrap( -1 );
-	bSizerFIle->Add( m_FileText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizerFile->Add( m_FileText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_FileBox = new wxComboBox( this, ID_FILE_TXT, wxEmptyString, wxDefaultPosition, wxSize( 300,-1 ), 0, NULL, 0 );
-	bSizerFIle->Add( m_FileBox, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
+	bSizerFile->Add( m_FileBox, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
 	wxBitmapButton * m_FileButton = new wxBitmapButton( this, ID_FILE_BTN, wxArtProvider::GetBitmap(wxART_FILE_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizerFIle->Add( m_FileButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerFile->Add( m_FileButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	bSizerCtrl->Add( bSizerFIle, 1, wxEXPAND, 5 );
-
+	bSizerCtrl->Add( bSizerFile, 1, wxEXPAND, 5 );
+/*
 	m_FileCheck = new wxCheckBox( this, ID_DOWNLOAD, _("Скачать коллекцию с сайта программы"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FileCheck->SetValue(false);
 
 	bSizerCtrl->Add( m_FileCheck, 0, wxALL|wxEXPAND, 5 );
-
+*/
 	bSizerTop->Add( bSizerCtrl, 1, wxEXPAND, 5 );
 
 	bSizerMain->Add( bSizerTop, 0, wxEXPAND, 5 );
@@ -63,24 +63,35 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, wxWindowID id )
 	bSizerMain->Fit( this );
 }
 
-wxString FbDataOpenDlg::GetTitle() const
+wxString FbDataOpenDlg::GetTitle(const wxString& title) const
 {
-	return strProgramName + wxT(" - ") + _("Открыть (создать) коллекцию");
+	return strProgramName + wxT(" - ") + title;
 }
 
 void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )
 {
+	long style = wxFD_OPEN;
+	if (m_MustExitst)
+		style |= wxFILE_MUST_EXIST;
+	else
+		style |= wxOVERWRITE_PROMPT;
+
 	wxFileDialog dlg (
 		this,
 		_("Выберите имя файла коллекции…"),
 		wxEmptyString,
 		m_FileBox->GetValue(),
 		_("Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"),
-		wxFD_OPEN,
+		style,
 		wxDefaultPosition
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
 		m_FileBox->SetValue(dlg.GetPath());
 	}
+}
+
+wxString FbDataOpenDlg::GetFilename()
+{
+	return m_FileBox->GetValue();
 }
