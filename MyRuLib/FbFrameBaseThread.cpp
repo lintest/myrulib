@@ -88,15 +88,7 @@ wxString FbFrameBaseThread::GetSQL(const wxString & condition)
 
 wxString FbFrameBaseThread::GetOrder()
 {
-	switch (m_ListOrder) {
-		case ID_ORDER_AUTHOR: return wxT("full_name, title");
-		case ID_ORDER_TITLE:  return wxT("title, full_name");
-		case ID_ORDER_RATING: return wxT("rating desc, full_name, title");
-		case ID_ORDER_SIZE: return wxT("file_size desc, full_name, title");
-		case ID_ORDER_TYPE: return wxT("file_type, full_name, title");
-		case ID_ORDER_DATE: return wxT("created, full_name, title");
-		default: return wxT("title, full_name");
-	}
+	return m_ListOrder;
 }
 
 void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)

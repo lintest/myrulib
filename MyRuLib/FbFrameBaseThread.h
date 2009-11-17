@@ -20,7 +20,7 @@ class FbFrameBaseThread: public FbThread
 			m_FilterFb2(frame->m_FilterFb2),
 			m_FilterLib(frame->m_FilterLib),
 			m_FilterUsr(frame->m_FilterUsr),
-			m_ListOrder(frame->m_ListOrder)
+			m_ListOrder(frame->GetOrderSQL())
 		{};
 	protected:
 		virtual wxString GetSQL(const wxString & condition);
@@ -38,7 +38,7 @@ class FbFrameBaseThread: public FbThread
 		bool m_FilterFb2;
 		bool m_FilterLib;
 		bool m_FilterUsr;
-		int m_ListOrder;
+		wxString m_ListOrder;
 };
 
 #endif // __FBFRAMEBASETHREAD_H__

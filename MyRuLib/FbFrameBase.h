@@ -30,9 +30,9 @@ public:
 	bool m_FilterFb2;
 	bool m_FilterLib;
 	bool m_FilterUsr;
-	int m_ListOrder;
 	void UpdateInfo(int id);
 	virtual void UpdateFonts(bool refresh = true);
+	wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
 protected:
 	virtual void CreateControls();
 	virtual void UpdateBooklist() = 0;
@@ -46,12 +46,14 @@ protected:
 	FbBookPanel * m_BooksPanel;
 private:
 	void OnActivated(wxActivateEvent & event);
+	void OnDirection(wxCommandEvent& event);
 	void OnChangeOrder(wxCommandEvent& event);
 	void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeView(wxCommandEvent & event);
 	void OnColClick(wxListEvent& event);
 	void OnMenuOrderUpdateUI(wxUpdateUIEvent & event);
+	void OnDirectionUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
