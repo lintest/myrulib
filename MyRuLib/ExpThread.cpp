@@ -15,7 +15,8 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 	wxFileOutputStream out(item.filename.GetFullPath());
 
 	if (m_compress) {
-		wxZipOutputStream zip(out);
+		wxCSConv conv(wxT("cp866"));
+		wxZipOutputStream zip(out, -1, conv);
 		wxString entryName = item.filename.GetFullName();
 		entryName = entryName.Left(entryName.Len()-4);
 		zip.PutNextEntry(entryName);

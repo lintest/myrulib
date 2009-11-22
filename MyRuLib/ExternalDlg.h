@@ -48,7 +48,7 @@ class ExternalDlg : public FbDialog
 		void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
 		wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
 		wxString Translit(const wxString &filename);
-		wxString NormalizeDirname(const wxString &filename);
+		wxString Normalize(const wxString &filename);
 		void ChangeFilesExt(const wxTreeItemId &parent);
 		void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();

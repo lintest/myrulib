@@ -1,3 +1,15 @@
+myrulib (0.15-debian50) unstable; urgency=low
+
+  * Update release
+
+ -- user <user@ubuntu>  Sun, 22 Nov 2009 21:38:29 +0300
+
+myrulib (0.14-ubuntu904) unstable; urgency=low
+
+  * Update release
+
+ -- Kandrashin Denis <mail@lintest.ru>  Tue, 17 Nov 2009 12:26:51 +0300
+
 myrulib (0.13-ubuntu904) unstable; urgency=low
 
   * Update release.
