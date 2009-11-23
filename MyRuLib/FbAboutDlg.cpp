@@ -43,6 +43,7 @@ FbAboutDlg::FbAboutDlg( wxWindow* parent )
 
 	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
+	m_sdbSizerBtnOK->SetDefault();
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
 	m_sdbSizerBtn->Realize();
 	bSizerMain->Add( m_sdbSizerBtn, 1, wxEXPAND|wxALL, 5 );

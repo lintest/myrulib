@@ -286,6 +286,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
+	m_sdbSizerBtnOK->SetDefault();
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
 	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
@@ -295,6 +296,9 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
+
+	SetAffirmativeId(wxID_OK);
+	SetEscapeId(wxID_CANCEL);
 }
 
 SettingsDlg::~SettingsDlg()

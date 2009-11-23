@@ -235,9 +235,13 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
+	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
+	m_choiceFormat->SetSelection( FbParams::GetValue(FB_FILE_FORMAT) );
+
 	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
+	m_sdbSizerBtnOK->SetDefault();
 	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
 	m_sdbSizerBtn->Realize();
@@ -247,8 +251,8 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	this->Layout();
 	bSizerMain->Fit( this );
 
-	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
-	m_choiceFormat->SetSelection( FbParams::GetValue(FB_FILE_FORMAT) );
+	SetAffirmativeId(wxID_OK);
+	SetEscapeId(wxID_CANCEL);
 }
 
 ExternalDlg::~ExternalDlg()

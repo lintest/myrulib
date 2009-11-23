@@ -36,6 +36,7 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 */
 	wxStdDialogButtonSizer* sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton* sdbSizerBtnOK = new wxButton( this, wxID_OK );
+	sdbSizerBtnOK->SetDefault();
 	sdbSizerBtn->AddButton( sdbSizerBtnOK );
 	wxButton* sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	sdbSizerBtn->AddButton( sdbSizerBtnCancel );
@@ -45,6 +46,9 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
+
+	SetAffirmativeId(wxID_OK);
+	SetEscapeId(wxID_CANCEL);
 }
 
 void FbViewerDlg::OnBtnClick( wxCommandEvent& event )
