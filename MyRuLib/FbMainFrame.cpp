@@ -1,10 +1,10 @@
 /***************************************************************
  * Name:	  MyRuLibMain.cpp
  * Purpose:   Code for Application Frame
- * Author:	Kandrashin Denis (mail@kandr.ru)
+ * Author:	  Kandrashin Denis (mail@lintest.ru)
  * Created:   2009-05-05
  * Copyright: Kandrashin Denis (www.lintest.ru)
- * License:
+ * License:   GPL
  **************************************************************/
 
 #include "FbMainFrame.h"
@@ -333,8 +333,10 @@ void FbMainFrame::ShowPane(const wxString &pane_name)
 	size_t count = all_panes.GetCount();
 	for (size_t i = 0; i < count; ++i) {
 		if(all_panes.Item(i).name == pane_name) {
-			all_panes.Item(i).Show(true);
-			m_FrameManager.Update();
+			if (!all_panes.Item(i).IsShown()) {
+				all_panes.Item(i).Show(true);
+				m_FrameManager.Update();
+			}
 			break;
 		}
 	}

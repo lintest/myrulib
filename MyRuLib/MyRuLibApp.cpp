@@ -72,8 +72,6 @@ bool MyRuLibApp::OpenConfig()
 
 bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
 {
-	wxCriticalSectionLocker locker(m_section);
-
 	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE;
 	if (bCreateNew) flags |= WXSQLITE_OPEN_CREATE;
 
@@ -83,6 +81,7 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
 		FbMainDatabase dbMain;
 		dbMain.Open(filename, wxEmptyString, flags);
 		FbParams().LoadParams();
+		wxCriticalSectionLocker locker(m_section);
 		m_datafile = filename;
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(wxT("Database open error: ") + e.GetMessage());
