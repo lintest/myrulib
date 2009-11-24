@@ -90,7 +90,7 @@ void FbParams::SetValue(const int param, int value)
 	sm_params.Add(item);
 }
 
-void FbParams::SetText(const int param, wxString text)
+void FbParams::SetText(const int param, const wxString &text)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -163,3 +163,23 @@ wxFont FbParams::GetFont(const int param)
 	font.SetNativeFontInfo(info);
 	return font;
 }
+
+void FbParams::AddRecent(const wxString &text)
+{
+	int i = 0;
+
+	while (i<5) {
+		wxString file = GetText(FB_RECENT_0 + i);
+		if (file == text) break;
+		i++;
+	}
+
+	while (i>0){
+		wxString file = GetText(FB_RECENT_0 + i - 1);
+		SetText(FB_RECENT_0 + i, file);
+		i--;
+	}
+
+	SetText(FB_RECENT_0 + i, text);
+}
+

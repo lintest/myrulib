@@ -56,6 +56,17 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FIND_TITLE, FbMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_FIND_TITLE, FbMainFrame::OnFindTitleEnter)
 
+	EVT_MENU(ID_RECENT_1, FbMainFrame::OnMenuRecent)
+	EVT_MENU(ID_RECENT_2, FbMainFrame::OnMenuRecent)
+	EVT_MENU(ID_RECENT_3, FbMainFrame::OnMenuRecent)
+	EVT_MENU(ID_RECENT_4, FbMainFrame::OnMenuRecent)
+	EVT_MENU(ID_RECENT_5, FbMainFrame::OnMenuRecent)
+	EVT_UPDATE_UI(ID_RECENT_1, FbMainFrame::OnRecentUpdate)
+	EVT_UPDATE_UI(ID_RECENT_2, FbMainFrame::OnRecentUpdate)
+	EVT_UPDATE_UI(ID_RECENT_3, FbMainFrame::OnRecentUpdate)
+	EVT_UPDATE_UI(ID_RECENT_4, FbMainFrame::OnRecentUpdate)
+	EVT_UPDATE_UI(ID_RECENT_5, FbMainFrame::OnRecentUpdate)
+
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
@@ -515,13 +526,8 @@ void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 {
 	FbDataOpenDlg dlg(this);
-	if (dlg.ShowModal() == wxID_OK) {
-		wxGetApp().OpenDatabase(dlg.GetFilename());
-		SetTitle(GetTitle());
-		InfoCash::Empty();
-		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
-		FindAuthor(wxEmptyString);
-	}
+	if (dlg.ShowModal() != wxID_OK) return;
+	OpenDatabase(dlg.GetFilename());
 }
 
 void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
@@ -530,5 +536,31 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 	for (size_t i = 0; i < count; ++i) {
 		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
 		frame->UpdateFonts();
+	}
+}
+
+void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
+{
+	int param = event.GetId() - ID_RECENT_0 + FB_RECENT_0;
+	wxString filename = FbParams::GetText(param);
+	if (filename.IsEmpty()) return;
+	OpenDatabase(filename);
+}
+
+void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
+{
+	int param = event.GetId() - ID_RECENT_0 + FB_RECENT_0;
+	wxString filename = FbParams::GetText(param);
+	event.SetText(filename);
+	event.Show(!filename.IsEmpty());
+}
+
+void FbMainFrame::OpenDatabase(const wxString &filename)
+{
+	if (wxGetApp().OpenDatabase(filename)) {
+		SetTitle(GetTitle());
+		InfoCash::Empty();
+		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
+		FindAuthor(wxEmptyString);
 	}
 }

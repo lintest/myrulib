@@ -35,6 +35,7 @@ private:
 	void FindAuthor(const wxString &text);
 	void FindTitle(const wxString &text);
 	wxWindow * FindFrameById(const int id, bool bActivate = false);
+	void OpenDatabase(const wxString &filename);
 private:
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
@@ -75,6 +76,8 @@ private:
 	void OnUpdateFonts(wxCommandEvent & event);
 	void OnProgress(FbProgressEvent & event);
 	void OnUpdateBook(wxCommandEvent & event);
+	void OnMenuRecent(wxCommandEvent & event);
+	void OnRecentUpdate(wxUpdateUIEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

@@ -18,6 +18,7 @@ FbMenuBar::MenuFrame::MenuFrame()
 FbMenuBar::MenuLib::MenuLib()
 {
 	Append(ID_MENU_DB_OPEN, _("Открыть (создать) коллекцию"));
+	Append(wxID_ANY, _("Открыть повторно"), new MenuRecent());
 	AppendSeparator();
 	Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
 	Append(ID_MENU_VACUUM,  _("Реструктуризация БД"));
@@ -99,3 +100,11 @@ FbFrameMenu::MenuView::MenuView()
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
 }
 
+FbMenuBar::MenuRecent::MenuRecent()
+{
+	Append(ID_RECENT_1);
+	Append(ID_RECENT_2);
+	Append(ID_RECENT_3);
+	Append(ID_RECENT_4);
+	Append(ID_RECENT_5);
+}

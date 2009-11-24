@@ -80,9 +80,10 @@ class FbParams {
 		static wxString GetText(const int param);
 		static wxFont GetFont(const int param);
 		void SetValue(const int param, int value);
-		void SetText(const int param, wxString text);
+		void SetText(const int param, const wxString &text);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
+		void AddRecent(const wxString &text);
 	private:
 		static ParamArray sm_params;
 		FbCommonDatabase m_database;
