@@ -41,6 +41,8 @@ void *ZipThread::Entry()
 {
 	wxCriticalSectionLocker enter(zips.sm_queue);
 
+	wxSleep(3);
+
 	DoStart(0, m_dirname);
 
 	zips.m_thread = this;

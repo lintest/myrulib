@@ -17,17 +17,20 @@
 #include "FbParams.h"
 #include "ZipReader.h"
 #include "ImpThread.h"
+#include "FbDataOpenDlg.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
-	OpenConfig();
+	FbConfigDatabase config;
+	config.Open();
 
-	if(!ConnectToDatabase()) {
-		wxLogFatalError(_("Error connecting to database!"));
-		return false;
-	}
+	OpenLog();
+
+	wxFileName filename = GetDatabaseFilename(config);
+	filename.Normalize();
+	OpenDatabase(filename.GetFullPath());
 
 	::wxInitAllImageHandlers();
 	wxFileSystem::AddHandler(new wxMemoryFSHandler);
@@ -36,9 +39,37 @@ bool MyRuLibApp::OnInit()
 	SetTopWindow(frame);
 	frame->Show();
 
-	ZipReader::Init();
-
 	return true;
+}
+
+wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)
+{
+	FbStandardPaths paths;
+	wxFileName filename = paths.GetExecutablePath();
+	filename.SetExt(wxT("db"));
+
+	if (wxGetApp().argc > 1) {
+		wxString arg = wxGetApp().argv[1];
+		if (wxFileName::DirExists(arg)) {
+			filename.SetPath(arg);
+			return filename;
+		}
+		return wxFileName(arg);
+	}
+
+	if (filename.FileExists()) return filename;
+
+	wxString recent = database.GetText(FB_RECENT_0);
+	if (!recent.IsEmpty()) {
+		wxFileName filename = recent;
+		if (filename.FileExists()) return filename;
+	}
+
+	FbDataOpenDlg dlg(NULL);
+	if (dlg.ShowModal() == wxID_OK) return dlg.GetFilename();
+
+	filename.SetPath(paths.GetUserConfigDir());
+	return filename;
 }
 
 int MyRuLibApp::OnExit()
@@ -46,42 +77,24 @@ int MyRuLibApp::OnExit()
 	return wxApp::OnExit();
 }
 
-bool MyRuLibApp::ConnectToDatabase()
+void MyRuLibApp::OpenLog()
 {
-	m_datafile = FbStandardPaths().GetDataFile();
-
-	FbMainDatabase dbMain;
-	dbMain.Open(m_datafile);
-	FbParams().LoadParams();
-
-	return true;
-}
-
-bool MyRuLibApp::OpenConfig()
-{
-	FbConfigDatabase dbConfig;
-	dbConfig.Open();
-
 	wxFileName logname = FbDatabase::GetConfigName();
 	logname.SetExt(wxT("log"));
 	wxLog * logger = new FbLogStream(logname.GetFullPath());
 	wxLog::SetActiveTarget(logger);
-
-	return true;
 }
 
-bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
+bool MyRuLibApp::OpenDatabase(const wxString &filename)
 {
-	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE;
-	if (bCreateNew) flags |= WXSQLITE_OPEN_CREATE;
-
-	if (bCreateNew) wxRemoveFile(filename);
+	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE;
 
 	try {
 		FbMainDatabase dbMain;
 		dbMain.Open(filename, wxEmptyString, flags);
 		SetAppData(filename);
 		FbParams().LoadParams();
+		ZipReader::Init();
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(wxT("Database error: ") + e.GetMessage());
 		return false;

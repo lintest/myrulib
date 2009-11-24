@@ -7,7 +7,7 @@
 class FbDataOpenDlg : public FbDialog
 {
 	public:
-		FbDataOpenDlg( wxWindow* parent, const wxString& title, bool bMustWxists);
+		FbDataOpenDlg( wxWindow* parent);
 		wxString GetFilename();
 	private:
 		enum
@@ -16,13 +16,12 @@ class FbDataOpenDlg : public FbDialog
 			ID_FILE_BTN,
 			ID_DOWNLOAD,
 		};
-		wxString GetTitle(const wxString& title) const;
+		wxString GetTitle() const;
 		void OnSelectFileClick( wxCommandEvent& event );
 	private:
 		wxComboBox* m_FileBox;
 		wxCheckBox* m_FileCheck;
 		DECLARE_EVENT_TABLE()
-		bool m_MustExitst;
 };
 
 

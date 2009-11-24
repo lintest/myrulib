@@ -35,7 +35,6 @@ private:
 	void FindAuthor(const wxString &text);
 	void FindTitle(const wxString &text);
 	wxWindow * FindFrameById(const int id, bool bActivate = false);
-	void OpenDatabase(const wxString &title, bool bCreateNew);
 private:
 	wxTextCtrl m_FindAuthor;
 	wxTextCtrl m_FindTitle;
@@ -50,7 +49,6 @@ private:
 	void OnAbout(wxCommandEvent & event);
 	void OnDatabaseInfo(wxCommandEvent & event);
 	void OnDatabaseOpen(wxCommandEvent & event);
-	void OnDatabaseNew(wxCommandEvent & event);
 	void OnInfoCommand(wxCommandEvent & event);
 	void OnFindAuthor(wxCommandEvent& event);
 	void OnFindAuthorEnter(wxCommandEvent& event);

@@ -44,7 +44,6 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
-	EVT_MENU(ID_MENU_DB_NEW, FbMainFrame::OnDatabaseNew)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
@@ -513,21 +512,11 @@ void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
 	}
 }
 
-void FbMainFrame::OnDatabaseNew(wxCommandEvent & event)
-{
-	OpenDatabase(wxT("Создать новую коллекцию"), true);
-}
-
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 {
-	OpenDatabase(wxT("Открыть коллекцию"), false);
-}
-
-void FbMainFrame::OpenDatabase(const wxString &title, bool bCreateNew)
-{
-	FbDataOpenDlg dlg(this, title, not bCreateNew);
+	FbDataOpenDlg dlg(this);
 	if (dlg.ShowModal() == wxID_OK) {
-		wxGetApp().OpenDatabase( dlg.GetFilename(), bCreateNew);
+		wxGetApp().OpenDatabase(dlg.GetFilename());
 		SetTitle(GetTitle());
 		InfoCash::Empty();
 		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);

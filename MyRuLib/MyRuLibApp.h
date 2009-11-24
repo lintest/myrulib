@@ -20,14 +20,13 @@ class MyRuLibApp : public wxApp
 public:
 	virtual bool OnInit();
 	virtual int OnExit();
-	bool OpenConfig();
-	bool OpenDatabase(const wxString &filename, bool bCreateNew);
+	bool OpenDatabase(const wxString &filename);
 	const wxString GetAppData();
 	const wxString GetAppPath();
 private:
+	void OpenLog();
+	wxFileName GetDatabaseFilename(FbDatabase &database);
 	void SetAppData(const wxString &filename);
-	bool ConnectToDatabase();
-	bool CreateDatabase();
 private:
 	wxCriticalSection m_section;
 	wxString m_datafile;

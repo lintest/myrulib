@@ -7,8 +7,8 @@ BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_BUTTON( ID_FILE_BTN, FbDataOpenDlg::OnSelectFileClick )
 END_EVENT_TABLE()
 
-FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, const wxString& title, bool bMustExists )
-	: FbDialog( parent, wxID_ANY, GetTitle(title), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
+	: FbDialog( parent, wxID_ANY, GetTitle(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -50,6 +50,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, const wxString& title, bool bMus
 
 	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
+	m_sdbSizerBtnOK->SetDefault();
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
 	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
@@ -63,26 +64,20 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent, const wxString& title, bool bMus
 	bSizerMain->Fit( this );
 }
 
-wxString FbDataOpenDlg::GetTitle(const wxString& title) const
+wxString FbDataOpenDlg::GetTitle() const
 {
-	return strProgramName + wxT(" - ") + title;
+	return strProgramName + wxT(" - ") + _("Открыть (создать) коллекцию");
 }
 
 void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )
 {
-	long style = wxFD_OPEN;
-	if (m_MustExitst)
-		style |= wxFILE_MUST_EXIST;
-	else
-		style |= wxOVERWRITE_PROMPT;
-
 	wxFileDialog dlg (
 		this,
 		_("Выберите имя файла коллекции…"),
 		wxEmptyString,
 		m_FileBox->GetValue(),
 		_("Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"),
-		style,
+		wxFD_OPEN,
 		wxDefaultPosition
 	);
 
