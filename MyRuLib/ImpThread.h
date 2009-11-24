@@ -7,14 +7,15 @@
 #include "ImpContext.h"
 #include "FbDatabase.h"
 
-class ImportThread : public BaseThread
+class FbImportThread : public BaseThread
 {
 public:
-	ImportThread();
+	FbImportThread();
 	virtual void OnExit();
-	bool ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive);
-	int AddArchive(const wxString &filename, const int size, const int count);
 protected:
+	bool ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive = 0, const wxString &md5sum = wxEmptyString);
+	wxString ParseMd5(wxInputStream& stream);
+	int AppendZip(const wxString &filename, const int size, const int count);
 	wxString GetRelative(const wxString &filename);
 protected:
 	FbCommonDatabase m_database;
@@ -27,24 +28,24 @@ private:
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
 };
 
-class ZipImportThread : public ImportThread
+class ZipImportThread : public FbImportThread
 {
 public:
-	ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
+	ZipImportThread(const wxArrayString &filelist): FbImportThread(), m_filelist(filelist) {};
 	virtual void *Entry();
 private:
 	void ImportFile(const wxString & zipname);
 	const wxArrayString m_filelist;
 };
 
-class DirImportThread : public ImportThread
+class DirImportThread : public FbImportThread
 {
 public:
 	DirImportThread(const wxString &dirname): m_dirname(dirname) {};
 	virtual void *Entry();
 	bool ParseZip(const wxString &zipname);
 	bool ParseXml(const wxString &filename);
-	void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
+	void DoStep(const wxString &msg) { FbImportThread::DoStep(msg); };
 private:
 	wxString m_dirname;
 };

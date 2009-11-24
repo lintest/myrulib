@@ -10,7 +10,7 @@
 class ZipReader
 {
 public:
-	ZipReader(int id, bool bShowError = true);
+	ZipReader(int id, bool bShowError = true, bool bInfoOnly = false);
 	virtual ~ZipReader();
 	static void Init();
 	bool IsOK() {return m_zipOk && m_fileOk;};
@@ -18,6 +18,7 @@ public:
 	wxString GetErrorText() {return m_info;};
 	wxInputStream & GetZip() {return *m_result;};
 private:
+	wxString GetInfoName(const wxString &filename);
 	bool FindZip(wxFileName &zip_name, wxString &path);
 	bool FindEntry(const wxString &file_name);
 	void OpenZip(const wxString &zipname, const wxString &filename);

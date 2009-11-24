@@ -52,7 +52,7 @@ void *ZipThread::Entry()
 	return NULL;
 }
 
-ZipReader::ZipReader(int id, bool bShowError)
+ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	FbCommonDatabase database;
@@ -68,6 +68,8 @@ ZipReader::ZipReader(int id, bool bShowError)
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
 		if (item.id_archive) {
+			if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )
+				item.book_name = GetInfoName(item.book_name);
 			wxFileName zip_file = item.GetZip(sLibraryDir);
 			m_zipOk = zip_file.FileExists();
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
@@ -88,6 +90,20 @@ ZipReader::~ZipReader()
 {
 	wxDELETE(m_zip);
 	wxDELETE(m_file);
+}
+
+wxString ZipReader::GetInfoName(const wxString &filename)
+{
+	wxString result = filename;
+	size_t pos = filename.Length();
+	while (pos) {
+		if ( filename[pos] == wxT('.') ) {
+			result = result.Left(pos);
+			break;
+		}
+		pos--;
+	}
+	return result + wxT(".fbd");
 }
 
 void ZipReader::Init()

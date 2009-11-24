@@ -9,7 +9,7 @@ void *InfoThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
-	ZipReader reader(m_id, false);
+	ZipReader reader(m_id, false, true);
 	if (!reader.IsOK()) return NULL;
 
 	Load(reader.GetZip());

@@ -14,7 +14,6 @@ class BaseThread : public wxThread
 		wxString m_info;
 		wxString m_text;
 	protected:
-		void UpdateBooksCount(wxSQLite3Database &database);
 		void DoStart(const int max, const wxString & msg);
 		void DoStep(const wxString & msg);
 		void DoFinish();

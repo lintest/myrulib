@@ -13,6 +13,7 @@ class FbBookThread: public wxThread
 			: m_frame(thread->m_frame), m_id(thread->m_id), m_vertical(thread->m_vertical), m_editable(thread->m_editable) {};
 		void UpdateInfo();
 		static wxString HTMLSpecialChars(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
+		void Execute() { if (Create() == wxTHREAD_NO_ERROR) Run(); };
 	protected:
 		wxEvtHandler * m_frame;
 		int m_id;

@@ -41,7 +41,6 @@ private:
 	wxTextCtrl m_FindTitle;
 	ProgressBar m_ProgressBar;
 	wxAuiToolBar * m_ToolBar;
-	wxString m_StatusText;
 	wxAuiManager m_FrameManager;
 	LimitedTextCtrl m_LOGTextCtrl;
 private:
@@ -67,9 +66,7 @@ private:
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );
-	void OnProgressStart(wxUpdateUIEvent& event);
 	void OnProgressUpdate(wxUpdateUIEvent& event);
-	void OnProgressFinish(wxUpdateUIEvent& event);
 	void OnError(wxCommandEvent& event);
 	void OnHideLog(wxCommandEvent& event);
 	void OnPanelClosed(wxAuiManagerEvent& event);

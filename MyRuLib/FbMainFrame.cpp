@@ -57,9 +57,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FIND_TITLE, FbMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_FIND_TITLE, FbMainFrame::OnFindTitleEnter)
 
-	EVT_UPDATE_UI(ID_PROGRESS_START, FbMainFrame::OnProgressStart)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
-	EVT_UPDATE_UI(ID_PROGRESS_FINISH, FbMainFrame::OnProgressFinish)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
 	EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
@@ -285,26 +283,11 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 	}
 }
 
-void FbMainFrame::OnProgressStart(wxUpdateUIEvent& event)
-{
-	m_ProgressBar.SetRange(event.GetInt());
-	m_ProgressBar.SetStatusText(event.GetText(), 0);
-	m_ProgressBar.SetStatusText(wxEmptyString, 2);
-}
-
 void FbMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
 {
 	m_ProgressBar.SetProgress(event.GetInt());
 	m_ProgressBar.SetStatusText(event.GetText(), 0);
 	m_ProgressBar.SetStatusText(event.GetString(), 2);
-}
-
-void FbMainFrame::OnProgressFinish(wxUpdateUIEvent& event)
-{
-	m_StatusText = wxEmptyString;
-	m_ProgressBar.SetProgress(0);
-	m_ProgressBar.SetStatusText(wxEmptyString, 0);
-	m_ProgressBar.SetStatusText(wxEmptyString, 2);
 }
 
 void FbMainFrame::OnError(wxCommandEvent& event)
