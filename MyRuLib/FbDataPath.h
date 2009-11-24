@@ -10,7 +10,6 @@ class FbStandardPaths: public wxStandardPaths
 	public:
 		virtual wxString GetDataFile() const;
 		virtual wxString GetConfigFile() const;
-		virtual wxString GetAppFileName() const;
 		virtual wxString GetUserConfigDir() const;
 		virtual wxString GetDownloadDir(bool bMustExist = false) const;
 	private:

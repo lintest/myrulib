@@ -267,7 +267,6 @@
 		<Unit filename="TitleThread.h" />
 		<Unit filename="VacuumThread.cpp" />
 		<Unit filename="VacuumThread.h" />
-		<Unit filename="XpmBitmaps.h" />
 		<Unit filename="ZipReader.cpp" />
 		<Unit filename="ZipReader.h" />
 		<Unit filename="md5.c">

@@ -261,8 +261,10 @@ const wxString & FbDatabase::GetConfigName()
 
 void FbCommonDatabase::AttachConfig()
 {
-	wxString sql = wxString::Format(wxT("ATTACH \"%s\" AS config"), GetConfigName().c_str());
-	ExecuteUpdate(sql);
+	wxString sql = wxT("ATTACH ? AS config");
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, GetConfigName());
+	stmt.ExecuteUpdate();
 }
 
 void FbConfigDatabase::Open()

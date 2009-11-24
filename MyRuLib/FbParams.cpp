@@ -61,17 +61,21 @@ void FbParams::SetValue(const int param, int value)
 
 	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
 
-	if (value == DefaultValue(param)) {
-		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, param);
-		stmt.ExecuteUpdate();
-	} else {
-		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, value);
-		stmt.Bind(2, param);
-		stmt.ExecuteUpdate();
+	try {
+		if (value == DefaultValue(param)) {
+			wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, param);
+			stmt.ExecuteUpdate();
+		} else {
+			wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, value);
+			stmt.Bind(2, param);
+			stmt.ExecuteUpdate();
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogInfo(wxT("Database error: ") + e.GetMessage());
 	}
 
 	for (size_t i=0; i<sm_params.Count(); i++) {
@@ -92,17 +96,21 @@ void FbParams::SetText(const int param, wxString text)
 
 	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
 
-	if (text == DefaultValue(param)) {
-		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, param);
-		stmt.ExecuteUpdate();
-	} else {
-		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, text);
-		stmt.Bind(2, param);
-		stmt.ExecuteUpdate();
+	try {
+		if (text == DefaultValue(param)) {
+			wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, param);
+			stmt.ExecuteUpdate();
+		} else {
+			wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, text);
+			stmt.Bind(2, param);
+			stmt.ExecuteUpdate();
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogInfo(wxT("Database error: ") + e.GetMessage());
 	}
 
 	for (size_t i=0; i<sm_params.Count(); i++) {

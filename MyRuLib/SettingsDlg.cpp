@@ -409,14 +409,18 @@ void SettingsDlg::Execute(wxWindow* parent)
 		dlg.Assign(false);
 		dlg.FillTypelist();
 	} catch (wxSQLite3Exception & e) {
-		wxLogFatalError(e.GetMessage());
+		wxLogError(e.GetMessage());
 		return;
 	}
 
 	if (dlg.ShowModal() == wxID_OK) {
-		dlg.Assign(true);
-		dlg.SaveTypelist();
-		ZipReader::Init();
+		try {
+			dlg.SaveTypelist();
+			dlg.Assign(true);
+			ZipReader::Init();
+		} catch (wxSQLite3Exception & e) {
+			wxLogError(wxT("Database open error: ") + e.GetMessage());
+		}
 	}
 };
 

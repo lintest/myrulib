@@ -83,7 +83,7 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename, bool bCreateNew)
 		SetAppData(filename);
 		FbParams().LoadParams();
 	} catch (wxSQLite3Exception & e) {
-		wxLogError(wxT("Database open error: ") + e.GetMessage());
+		wxLogError(wxT("Database error: ") + e.GetMessage());
 		return false;
 	}
 	return true;
