@@ -29,6 +29,7 @@ class SequenceItem
 public:
 	SequenceItem(): id(0), number(0) {};
 	SequenceItem(int s, int n): id(s), number(n) {};
+	SequenceItem(const XML_Char **atts);
 	void Convert(FbDatabase & database){ id = FindSequence(database); }
 public:
 	int id;
@@ -43,7 +44,7 @@ WX_DECLARE_OBJARRAY(SequenceItem, SequenceArray);
 class ImportParsingContext: public ParsingContext
 {
 public:
-	ImportParsingContext(): md5only(false) {};
+	ImportParsingContext(): m_md5only(false), m_md5calc(true) {};
 public:
 	wxString title;
 	wxString isbn;
@@ -53,8 +54,10 @@ public:
 	AuthorItem * author;
 	wxString text;
 	wxString md5sum;
-	bool md5only;
 	wxString filename;
+public:
+	bool m_md5only;
+	bool m_md5calc;
 };
 
 #endif // __IMPCONTEXT_H__

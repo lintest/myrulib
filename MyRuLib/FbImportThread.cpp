@@ -1,4 +1,4 @@
-#include "ImpThread.h"
+#include "FbImportThread.h"
 #include <wx/zipstrm.h>
 #include <wx/dir.h>
 #include <wx/list.h>
@@ -13,7 +13,7 @@
 extern "C" {
 static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
 {
-	ImportParsingContext *ctx = (ImportParsingContext*)userData;
+	FbImportBook *ctx = (FbImportBook*)userData;
 	wxString node_name = ctx->CharToLower(name);
 	wxString path = ctx->Path();
 
@@ -35,7 +35,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 extern "C" {
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
-	ImportParsingContext *ctx = (ImportParsingContext*)userData;
+	FbImportBook *ctx = (FbImportBook*)userData;
 	wxString node_name = ctx->CharToLower(name);
 	ctx->RemoveTag(node_name);
 	wxString path = ctx->Path();
@@ -69,62 +69,52 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 extern "C" {
 static void TextHnd(void *userData, const XML_Char *s, int len)
 {
-	ImportParsingContext *ctx = (ImportParsingContext*)userData;
-
+	FbImportBook *ctx = (FbImportBook*)userData;
 	wxString str = ctx->CharToString(s, len);
-
 	if (!ctx->IsWhiteOnly(str)) ctx->text += str;
 }
 }
 
-ImportThread::ImportThread()
-	: m_basepath(FbParams::GetText(DB_LIBRARY_DIR))
+//-----------------------------------------------------------------------------
+//  FbImportBook
+//-----------------------------------------------------------------------------
+
+FbImportBook::FbImportBook(FbDatabase &database, const wxString &filename, const wxFileOffset filesize, const wxString &md5sum)
+	: m_database(database), m_filesize(filesize), m_md5sum(md5sum)
 {
+	m_md5calc = m_md5sum.IsEmpty();
+	this->filename = filename;
 }
 
-void ImportThread::OnExit()
-{
-	m_database.ExecuteUpdate(strUpdateCountSQL);
-}
-
-wxString ImportThread::GetRelative(const wxString &filename)
-{
-	wxFileName result = filename;
-	result.Normalize(wxPATH_NORM_ALL);
-	result.MakeRelativeTo(m_basepath);
-	return result.GetFullPath(wxPATH_UNIX);
-}
-
-bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
+bool FbImportBook::Load(wxInputStream& stream)
 {
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
-	bool done;
 
 	md5_context md5;
+	if (m_md5calc) md5_starts( &md5 );
 
-	XML_SetElementHandler(ctx.GetParser(), StartElementHnd, EndElementHnd);
-	XML_SetCharacterDataHandler(ctx.GetParser(), TextHnd);
+	XML_SetElementHandler(GetParser(), StartElementHnd, EndElementHnd);
+	XML_SetCharacterDataHandler(GetParser(), TextHnd);
 
-	md5_starts( &md5 );
-
+	bool done;
 	bool ok = true;
-	bool skip = ctx.m_md5only;
+	bool skip = false;
 
 	do {
 		size_t len = stream.Read(buf, BUFSIZE).LastRead();
 		done = (len < BUFSIZE);
 
-		md5_update( &md5, buf, (int) len );
+		if (m_md5calc) md5_update( &md5, buf, (int) len );
 
 		if (!skip) {
-			if ( !XML_Parse(ctx.GetParser(), (char *)buf, len, done) ) {
-				XML_Error error_code = XML_GetErrorCode(ctx.GetParser());
+			if ( !XML_Parse(GetParser(), (char *)buf, len, done) ) {
+				XML_Error error_code = XML_GetErrorCode(GetParser());
 				if ( error_code == XML_ERROR_ABORTED ) {
 					skip = true;
 				} else {
 					wxString error(XML_ErrorString(error_code), *wxConvCurrent);
-					wxLogError(_("XML parsing error: '%s' at line %d file %s"), error.c_str(), XML_GetCurrentLineNumber(ctx.GetParser()), ctx.filename.c_str());
+					wxLogError(_("XML parsing error: '%s' at line %d file %s"), error.c_str(), XML_GetCurrentLineNumber(GetParser()), filename.c_str());
 					skip = true;
 					ok = false;
 					break;
@@ -133,30 +123,64 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 		}
 	} while (!done);
 
-	ctx.md5sum = CalcMd5(md5);
-	memset( &md5, 0, sizeof( md5_context ) );
-
-	for (size_t i=0; i<ctx.authors.Count(); i++)
-		ctx.authors[i].Convert(m_database);
-
-	if (ctx.authors.Count() == 0)
-		ctx.authors.Add(new AuthorItem);
-
-	for (size_t i=0; i<ctx.sequences.Count(); i++)
-		ctx.sequences[i].Convert(m_database);
+	if (m_md5calc) md5sum = BaseThread::CalcMd5(md5);
 
 	return ok;
 }
 
-wxString ImportThread::ParseMd5(wxInputStream& stream)
+wxString FbImportBook::CalcMd5(wxInputStream& stream)
 {
-	ImportParsingContext info;
-	info.m_md5only = true;
-	LoadXml(stream, info);
-	return info.md5sum;
+	const size_t BUFSIZE = 1024;
+	unsigned char buf[BUFSIZE];
+
+	md5_context md5;
+	md5_starts( &md5 );
+
+	bool done;
+	do {
+		size_t len = stream.Read(buf, BUFSIZE).LastRead();
+		done = (len < BUFSIZE);
+		md5_update( &md5, buf, (int) len );
+	} while (!done);
+
+	return BaseThread::CalcMd5(md5);
 }
 
-void ImportThread::AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, int id_archive)
+void FbImportBook::Convert()
+{
+	for (size_t i=0; i<authors.Count(); i++)
+		authors[i].Convert(m_database);
+
+	if (authors.Count() == 0)
+		authors.Add(new AuthorItem);
+
+	for (size_t i=0; i<sequences.Count(); i++)
+		sequences[i].Convert(m_database);
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportThread
+//-----------------------------------------------------------------------------
+
+FbImportThread::FbImportThread()
+	: m_basepath(FbParams::GetText(DB_LIBRARY_DIR))
+{
+}
+
+void FbImportThread::OnExit()
+{
+	m_database.ExecuteUpdate(strUpdateCountSQL);
+}
+
+wxString FbImportThread::GetRelative(const wxString &filename)
+{
+	wxFileName result = filename;
+	result.Normalize(wxPATH_NORM_ALL);
+	result.MakeRelativeTo(m_basepath);
+	return result.GetFullPath(wxPATH_UNIX);
+}
+
+void FbImportThread::AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, int id_archive)
 {
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	long today = 0;
@@ -191,7 +215,7 @@ void ImportThread::AppendBook(ImportParsingContext &info, const wxString &filena
 	}
 }
 
-int ImportThread::FindByMD5(const wxString &md5sum)
+int FbImportThread::FindByMD5(const wxString &md5sum)
 {
 	wxString sql = wxT("SELECT id FROM books WHERE md5sum=?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -200,7 +224,7 @@ int ImportThread::FindByMD5(const wxString &md5sum)
 	return result.NextRow() ? result.GetInt(0) : 0;
 }
 
-int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
+int FbImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 {
 	wxArrayInt books;
 
@@ -235,7 +259,7 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 	return 0;
 }
 
-bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive, const wxString &md5sum)
+bool FbImportThread::ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive, const wxString &md5sum)
 {
 	ImportParsingContext info;
 	info.filename = filename;
@@ -258,7 +282,7 @@ bool ImportThread::ParseXml(wxInputStream& stream, const wxString &filename, con
 	return false;
 }
 
-void ImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
+void FbImportThread::AppendFile(const int id_book, const int id_archive, const wxString &new_name)
 {
 	wxString sql = wxT("SELECT file_name FROM books WHERE id=? AND id_archive=? UNION SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -286,7 +310,7 @@ void ImportThread::AppendFile(const int id_book, const int id_archive, const wxS
 	}
 }
 
-int ImportThread::AppendZip(const wxString &filename, const int size, const int count)
+int FbImportThread::AppendZip(const wxString &filename, const int size, const int count)
 {
 	{
 		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
@@ -309,7 +333,7 @@ int ImportThread::AppendZip(const wxString &filename, const int size, const int 
 	return id;
 }
 
-void *ZipImportThread::Entry()
+void *FbZipImportThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -322,26 +346,26 @@ void *ZipImportThread::Entry()
 	return NULL;
 }
 
-WX_DECLARE_STRING_HASH_MAP(wxZipEntry*, ZipEntryMap);
+WX_DECLARE_STRING_HASH_MAP(wxZipEntry*, FbZipEntryMap);
 
-WX_DECLARE_OBJARRAY(wxZipEntry*, ZipEntryList);
+WX_DECLARE_OBJARRAY(wxZipEntry*, FbZipEntryList);
 
-WX_DEFINE_OBJARRAY(ZipEntryList);
+WX_DEFINE_OBJARRAY(FbZipEntryList);
 
-class ZipCatalog
+class FbZipCatalog
 {
 	public:
-		ZipCatalog(wxZipInputStream &zip);
+		FbZipCatalog(wxZipInputStream &zip);
 		size_t Count() { return m_list.Count(); };
 		wxZipEntry * GetNext();
 		wxZipEntry * GetInfo(const wxString & filename);
 	private:
-		ZipEntryList m_list;
-		ZipEntryMap m_map;
+		FbZipEntryList m_list;
+		FbZipEntryMap m_map;
 		size_t m_pos;
 };
 
-ZipCatalog::ZipCatalog(wxZipInputStream &zip)
+FbZipCatalog::FbZipCatalog(wxZipInputStream &zip)
 	:m_pos(0)
 {
     while (wxZipEntry * entry = zip.GetNextEntry()) {
@@ -359,19 +383,19 @@ ZipCatalog::ZipCatalog(wxZipInputStream &zip)
     }
 }
 
-wxZipEntry * ZipCatalog::GetNext()
+wxZipEntry * FbZipCatalog::GetNext()
 {
 	if (m_pos >= m_list.Count()) return NULL;
 	return m_list[m_pos++];
 }
 
-wxZipEntry * ZipCatalog::GetInfo(const wxString & filename)
+wxZipEntry * FbZipCatalog::GetInfo(const wxString & filename)
 {
 	size_t pos = filename.Length();
 	while (pos) {
 		if ( filename[pos] == wxT('.') ) {
 			wxString infoname = filename.Left(pos);
-			ZipEntryMap::iterator it = m_map.find(infoname);
+			FbZipEntryMap::iterator it = m_map.find(infoname);
 			if (it != m_map.end()) return it->second;
 			break;
 		}
@@ -380,7 +404,7 @@ wxZipEntry * ZipCatalog::GetInfo(const wxString & filename)
 	return NULL;
 }
 
-void ZipImportThread::ImportFile(const wxString & zipname)
+void FbZipImportThread::ImportFile(const wxString & zipname)
 {
 	wxLogInfo(_("Import file %s"), zipname.c_str());
 
@@ -411,7 +435,7 @@ void ZipImportThread::ImportFile(const wxString & zipname)
 	DoStart(0, zipname);
 	int id_archive = AppendZip(filename, in.GetLength(), zip.GetTotalEntries());
 
-    ZipCatalog cat(zip);
+    FbZipCatalog cat(zip);
 	size_t existed = cat.Count();
 	DoStart(existed, zipname);
 
@@ -468,7 +492,7 @@ private:
 class FolderTraverser : public wxDirTraverser
 {
 public:
-	FolderTraverser(DirImportThread* thread) : m_thread(thread), m_progress(0) { };
+	FolderTraverser(FbDirImportThread* thread) : m_thread(thread), m_progress(0) { };
 
 	virtual wxDirTraverseResult OnFile(const wxString& filename) {
 		wxString ext = filename.Right(4).Lower();
@@ -495,11 +519,11 @@ private:
 		m_thread->DoStep( wxFileName(filename).GetFullName() );
 	}
 private:
-	DirImportThread *m_thread;
+	FbDirImportThread *m_thread;
 	unsigned int m_progress;
 };
 
-void *DirImportThread::Entry()
+void *FbDirImportThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -528,7 +552,7 @@ void *DirImportThread::Entry()
 	return NULL;
 }
 
-bool DirImportThread::ParseZip(const wxString &zipname)
+bool FbDirImportThread::ParseZip(const wxString &zipname)
 {
 	wxFFileInputStream in(zipname);
 	if ( !in.IsOk() ){
@@ -548,7 +572,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	wxString filename = GetRelative(zipname);
 	int id_archive = AppendZip(filename, in.GetLength(), zip.GetTotalEntries());
 
-    ZipCatalog cat(zip);
+    FbZipCatalog cat(zip);
 	size_t existed = cat.Count();
 	size_t skipped = 0;
 	while (wxZipEntry * entry = cat.GetNext()) {
@@ -569,7 +593,7 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 			}
 		}
 		wxLogInfo(_("Import zip entry %s"), filename.c_str());
-		ImportThread::ParseXml(zip, filename, id_archive, md5sum);
+		FbImportThread::ParseXml(zip, filename, id_archive, md5sum);
 	}
 
 	if ( existed && skipped ) wxLogWarning(wxT("FB2 and FBD not found %s"), zipname.c_str());
@@ -578,10 +602,10 @@ bool DirImportThread::ParseZip(const wxString &zipname)
 	return existed;
 }
 
-bool DirImportThread::ParseXml(const wxString &filename)
+bool FbDirImportThread::ParseXml(const wxString &filename)
 {
 	FbAutoCommit transaction(m_database);
 	wxFFileInputStream in(filename);
-	return ImportThread::ParseXml(in, GetRelative(filename));
+	return FbImportThread::ParseXml(in, GetRelative(filename));
 }
 

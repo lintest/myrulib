@@ -1,5 +1,5 @@
-#ifndef __IMPTHREAD_H__
-#define __IMPTHREAD_H__
+#ifndef __FBIMPORTTHREAD_H__
+#define __FBIMPORTTHREAD_H__
 
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
@@ -7,10 +7,29 @@
 #include "ImpContext.h"
 #include "FbDatabase.h"
 
-class ImportThread : public BaseThread
+class FbImportBook: public ImportParsingContext
+{
+	public:
+		FbImportBook(FbDatabase &database, const wxString &filename, const wxFileOffset filesize, const wxString &md5sum = wxEmptyString);
+		bool Load(wxInputStream& stream);
+		void Save(const wxString &filename, int archive = 0);
+		static wxString CalcMd5(wxInputStream& stream);
+	private:
+		int FindByMD5();
+		int FindBySize();
+		void AppendBook();
+		void AppendFile();
+		void Convert();
+	private:
+		FbDatabase &m_database;
+		wxFileOffset m_filesize;
+		wxString m_md5sum;
+};
+
+class FbImportThread : public BaseThread
 {
 public:
-	ImportThread();
+	FbImportThread();
 	virtual void OnExit();
 protected:
 	bool ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive = 0, const wxString &md5sum = wxEmptyString);
@@ -28,26 +47,26 @@ private:
 	int FindBySize(const wxString &sha1sum, wxFileOffset size);
 };
 
-class ZipImportThread : public ImportThread
+class FbZipImportThread : public FbImportThread
 {
 public:
-	ZipImportThread(const wxArrayString &filelist): ImportThread(), m_filelist(filelist) {};
+	FbZipImportThread(const wxArrayString &filelist): FbImportThread(), m_filelist(filelist) {};
 	virtual void *Entry();
 private:
 	void ImportFile(const wxString & zipname);
 	const wxArrayString m_filelist;
 };
 
-class DirImportThread : public ImportThread
+class FbDirImportThread : public FbImportThread
 {
 public:
-	DirImportThread(const wxString &dirname): m_dirname(dirname) {};
+	FbDirImportThread(const wxString &dirname): m_dirname(dirname) {};
 	virtual void *Entry();
 	bool ParseZip(const wxString &zipname);
 	bool ParseXml(const wxString &filename);
-	void DoStep(const wxString &msg) { ImportThread::DoStep(msg); };
+	void DoStep(const wxString &msg) { FbImportThread::DoStep(msg); };
 private:
 	wxString m_dirname;
 };
 
-#endif // __IMPTHREAD_H__
+#endif // __FBIMPORTTHREAD_H__
