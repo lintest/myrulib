@@ -14,7 +14,7 @@ public:
 	virtual void OnExit();
 protected:
 	bool ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive = 0, const wxString &md5sum = wxEmptyString);
-	wxString ParseMd5(wxInputStream& stream);
+	static wxString ParseMd5(wxInputStream& stream);
 	int AppendZip(const wxString &filename, const int size, const int count);
 	wxString GetRelative(const wxString &filename);
 protected:

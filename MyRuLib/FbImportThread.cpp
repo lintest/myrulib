@@ -80,10 +80,10 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 //-----------------------------------------------------------------------------
 
 FbImportBook::FbImportBook(FbDatabase &database, const wxString &filename, const wxFileOffset filesize, const wxString &md5sum)
-	: m_database(database), m_filesize(filesize), m_md5sum(md5sum)
+	: m_database(database), m_filesize(filesize)
 {
-	m_md5calc = m_md5sum.IsEmpty();
 	this->filename = filename;
+	this->md5sum = md5sum;
 }
 
 bool FbImportBook::Load(wxInputStream& stream)
@@ -92,7 +92,7 @@ bool FbImportBook::Load(wxInputStream& stream)
 	unsigned char buf[BUFSIZE];
 
 	md5_context md5;
-	if (m_md5calc) md5_starts( &md5 );
+	if (md5sum.IsEmpty()) md5_starts( &md5 );
 
 	XML_SetElementHandler(GetParser(), StartElementHnd, EndElementHnd);
 	XML_SetCharacterDataHandler(GetParser(), TextHnd);
@@ -105,7 +105,7 @@ bool FbImportBook::Load(wxInputStream& stream)
 		size_t len = stream.Read(buf, BUFSIZE).LastRead();
 		done = (len < BUFSIZE);
 
-		if (m_md5calc) md5_update( &md5, buf, (int) len );
+		if (md5sum.IsEmpty()) md5_update( &md5, buf, (int) len );
 
 		if (!skip) {
 			if ( !XML_Parse(GetParser(), (char *)buf, len, done) ) {
@@ -123,7 +123,7 @@ bool FbImportBook::Load(wxInputStream& stream)
 		}
 	} while (!done);
 
-	if (m_md5calc) md5sum = BaseThread::CalcMd5(md5);
+	if (md5sum.IsEmpty()) md5sum = BaseThread::CalcMd5(md5);
 
 	return ok;
 }
@@ -243,17 +243,15 @@ int FbImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 		ZipReader book(id);
 		if (!book.IsOK()) continue;
 
-		ImportParsingContext info;
-		info.m_md5only = true;
-		LoadXml(book.GetZip(), info);
+		wxString md5sum0 = FbImportBook::CalcMd5(book.GetZip());
 
 		wxString sql = wxT("UPDATE books SET md5sum=? WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, info.md5sum);
+		stmt.Bind(1, md5sum0);
 		stmt.Bind(2, id);
 		stmt.ExecuteUpdate();
 
-		if (info.md5sum == md5sum) return id;
+		if (md5sum0 == md5sum) return id;
 	}
 
 	return 0;

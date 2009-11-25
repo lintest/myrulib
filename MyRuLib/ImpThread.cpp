@@ -109,7 +109,7 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 	md5_starts( &md5 );
 
 	bool ok = true;
-	bool skip = ctx.m_md5only;
+	bool skip = false;
 
 	do {
 		size_t len = stream.Read(buf, BUFSIZE).LastRead();
@@ -150,10 +150,20 @@ bool ImportThread::LoadXml(wxInputStream& stream, ImportParsingContext &ctx)
 
 wxString ImportThread::ParseMd5(wxInputStream& stream)
 {
-	ImportParsingContext info;
-	info.m_md5only = true;
-	LoadXml(stream, info);
-	return info.md5sum;
+	const size_t BUFSIZE = 1024;
+	unsigned char buf[BUFSIZE];
+
+	md5_context md5;
+	md5_starts( &md5 );
+
+	bool done;
+	do {
+		size_t len = stream.Read(buf, BUFSIZE).LastRead();
+		done = (len < BUFSIZE);
+		md5_update( &md5, buf, (int) len );
+	} while (!done);
+
+	return BaseThread::CalcMd5(md5);
 }
 
 void ImportThread::AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, int id_archive)
@@ -219,17 +229,15 @@ int ImportThread::FindBySize(const wxString &md5sum, wxFileOffset size)
 		ZipReader book(id);
 		if (!book.IsOK()) continue;
 
-		ImportParsingContext info;
-		info.m_md5only = true;
-		LoadXml(book.GetZip(), info);
+		wxString md5sum0 = ParseMd5(book.GetZip());
 
 		wxString sql = wxT("UPDATE books SET md5sum=? WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, info.md5sum);
+		stmt.Bind(1, md5sum0);
 		stmt.Bind(2, id);
 		stmt.ExecuteUpdate();
 
-		if (info.md5sum == md5sum) return id;
+		if (md5sum0 == md5sum) return id;
 	}
 
 	return 0;

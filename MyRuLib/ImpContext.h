@@ -43,21 +43,16 @@ WX_DECLARE_OBJARRAY(SequenceItem, SequenceArray);
 
 class ImportParsingContext: public ParsingContext
 {
-public:
-	ImportParsingContext(): m_md5only(false), m_md5calc(true) {};
-public:
-	wxString title;
-	wxString isbn;
-	AuthorArray authors;
-	SequenceArray sequences;
-	wxString genres;
-	AuthorItem * author;
-	wxString text;
-	wxString md5sum;
-	wxString filename;
-public:
-	bool m_md5only;
-	bool m_md5calc;
+	public:
+		wxString title;
+		wxString isbn;
+		AuthorArray authors;
+		SequenceArray sequences;
+		wxString genres;
+		AuthorItem * author;
+		wxString text;
+		wxString md5sum;
+		wxString filename;
 };
 
 #endif // __IMPCONTEXT_H__
