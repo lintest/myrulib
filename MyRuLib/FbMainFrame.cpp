@@ -17,7 +17,7 @@
 #include "MyRuLibApp.h"
 #include "FbManager.h"
 #include "SettingsDlg.h"
-#include "ImpThread.h"
+#include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
@@ -261,7 +261,7 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 		wxArrayString paths;
 		dlg.GetPaths(paths);
 
-		ZipImportThread *thread = new ZipImportThread(paths);
+		FbImportThread *thread = new FbZipImportThread(paths);
 		thread->m_info = _("Обработка файла:");
 		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
 			wxLogError(wxT("Can't create thread!"));
@@ -282,7 +282,7 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		DirImportThread *thread = new DirImportThread(dlg.GetPath());
+		FbImportThread *thread = new FbDirImportThread(dlg.GetPath());
 		thread->m_info = wxT("Обработка папки:");
 
 		if ( thread->Create() != wxTHREAD_NO_ERROR ) {

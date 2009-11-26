@@ -7,22 +7,30 @@
 #include "ImpContext.h"
 #include "FbDatabase.h"
 
-class FbImportBook: public ImportParsingContext
+class FbImportBook: public ParsingContext
 {
 	public:
-		FbImportBook(FbDatabase &database, const wxString &filename, const wxFileOffset filesize, const wxString &md5sum = wxEmptyString);
+		FbImportBook(FbDatabase &database, const wxString &message, const wxString &md5sum = wxEmptyString);
 		bool Load(wxInputStream& stream);
-		void Save(const wxString &filename, int archive = 0);
+		void Save(const wxString &filename, wxFileOffset filesize, int id_archive = 0);
 		static wxString CalcMd5(wxInputStream& stream);
+	public:
+		wxString title;
+		wxString isbn;
+		AuthorArray authors;
+		SequenceArray sequences;
+		wxString genres;
+		AuthorItem * author;
+		wxString text;
 	private:
 		int FindByMD5();
-		int FindBySize();
-		void AppendBook();
-		void AppendFile();
+		int FindBySize(wxFileOffset filesize);
+		void AppendBook(const wxString &filename, wxFileOffset size, int id_archive);
+		void AppendFile(int id_book, const wxString &filename, int id_archive);
 		void Convert();
 	private:
 		FbDatabase &m_database;
-		wxFileOffset m_filesize;
+		wxString m_message;
 		wxString m_md5sum;
 };
 
@@ -62,8 +70,8 @@ class FbDirImportThread : public FbImportThread
 public:
 	FbDirImportThread(const wxString &dirname): m_dirname(dirname) {};
 	virtual void *Entry();
-	bool ParseZip(const wxString &zipname);
-	bool ParseXml(const wxString &filename);
+	void ParseZip(const wxString &zipname);
+	void ParseXml(const wxString &filename);
 	void DoStep(const wxString &msg) { FbImportThread::DoStep(msg); };
 private:
 	wxString m_dirname;
