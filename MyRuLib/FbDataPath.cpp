@@ -18,48 +18,11 @@ wxString FbStandardPaths::GetUserConfigDir() const
 	return result;
 }
 
-wxString FbStandardPaths::GetAppFileName() const
-{
-	if (wxGetApp().argc) {
-		return wxString(wxGetApp().argv[0]);
-	} else {
-		return wxGetApp().GetAppName();
-	}
-}
-
-wxString FbStandardPaths::GetDataFile() const
-{
-	wxFileName filename = GetDatabaseFilename();
-	filename.Normalize();
-	return filename.GetFullPath();
-}
-
-wxFileName FbStandardPaths::GetDatabaseFilename() const
-{
-	wxFileName filename = GetAppFileName();
-	filename.SetExt(wxT("db"));
-
-	if (wxGetApp().argc > 1) {
-		wxString arg = wxGetApp().argv[1];
-		if (wxFileName::DirExists(arg)) {
-			wxFileName filename = wxGetApp().GetAppName() + wxT(".db");
-			filename.SetPath(arg);
-			return filename;
-		}
-		return wxFileName(arg);
-	}
-
-	if (filename.FileExists()) return filename;
-
-	filename.SetPath(GetUserConfigDir());
-	return filename;
-}
-
 wxString FbStandardPaths::GetConfigFile() const
 {
-	wxFileName filename = GetAppFileName();
+	wxFileName filename = GetExecutablePath();
 	filename.SetExt(wxT("cfg"));
-	filename.SetPath(GetUserConfigDir());
+	if ( !filename.FileExists() ) filename.SetPath(GetUserConfigDir());
 	filename.Normalize();
 	return filename.GetFullPath();
 }

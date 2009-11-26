@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE( FbConfigDlg, wxDialog )
 END_EVENT_TABLE()
 
 FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: wxDialog( parent, id, title, pos, size, style )
+	: FbDialog( parent, id, title, pos, size, style )
 {
 	wxStaticText* m_staticText1;
 	wxTextCtrl* m_textCtrl1;
@@ -89,6 +89,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
+	m_sdbSizerBtnOK->SetDefault();
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
 	m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
@@ -97,6 +98,10 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
+	bSizerMain->Fit( this );
+
+	SetAffirmativeId(wxID_OK);
+	SetEscapeId(wxID_CANCEL);
 }
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
@@ -170,10 +175,10 @@ void FbConfigDlg::Assign(bool write)
 void FbConfigDlg::Execute(wxWindow* parent)
 {
 	FbConfigDlg dlg(parent, wxID_ANY, _("Параметры библиотеки"), wxDefaultPosition, wxSize(400, 300));
-
 	dlg.Assign(false);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
 		ZipReader::Init();
 	}
 }
+

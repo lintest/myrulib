@@ -29,19 +29,35 @@ WX_DECLARE_OBJARRAY(FbMenuAuthorItem, FbMenuAuthorArray);
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(int id, int iFolder, int iType);
-		static void EmptyFolders() { sm_folders.Empty(); };
-		static int GetFolder(const int id);
-		static int GetAuthor(const int id);
-		static void ConnectFolders(wxWindow * frame, wxObjectEventFunction func);
-		static void ConnectAuthors(wxWindow * frame, wxObjectEventFunction func);
+		FbBookMenu(int id, int iFolder, int iType, bool bShowOrder);
 	private:
+		int m_id;
+};
+
+class FbMenuAuthors: public wxMenu
+{
+	public:
+		static int GetAuthor(const int id);
+		static void Connect(wxWindow * frame, wxObjectEventFunction func);
+	public:
+		FbMenuAuthors(int book);
+	private:
+		static FbMenuAuthorArray sm_authors;
+};
+
+class FbMenuFolders: public wxMenu
+{
+	public:
+		static void Init();
+		static void EmptyFolders() { sm_folders.Empty(); };
+		static size_t GetCount();
 		static void LoadFolders();
-		wxMenu * CreateAuthorMenu();
+		static int GetFolder(const int id);
+		static void Connect(wxWindow * frame, wxObjectEventFunction func);
+	public:
+		FbMenuFolders(int folder);
 	private:
 		static FbMenuFolderArray sm_folders;
-		static FbMenuAuthorArray sm_authors;
-		int m_id;
 };
 
 #endif // __FBBOOKMENU_H__

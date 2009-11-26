@@ -74,3 +74,14 @@ int SequenceItem::FindSequence(FbDatabase & database)
 	return newId;
 }
 
+SequenceItem::SequenceItem(const XML_Char **atts)
+	: id(0), number(0)
+{
+	const XML_Char **a = atts;
+	while (*a) {
+		wxString attr = ParsingContext::CharToLower(a[0]).Trim(false).Trim(true); a++;
+		wxString text = ParsingContext::CharToString(a[0]).Trim(false).Trim(true); a++;
+		if (attr == wxT("name")) seqname = text;
+		else if (attr == wxT("number")) text.ToLong(&number);
+	}
+}

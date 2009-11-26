@@ -31,18 +31,11 @@ void FbFrameSearch::CreateControls()
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(this, substyle);
-	bSizer1->Add( &m_BooksPanel, 1, wxEXPAND, 5 );
+	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
 
 	SetSizer( bSizer1 );
-	Layout();
-}
 
-wxToolBar * FbFrameSearch::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
-	toolbar->Realize();
-	return toolbar;
+	FbFrameBase::CreateControls();
 }
 
 class FrameSearchThread: public FbFrameBaseThread
@@ -134,7 +127,7 @@ void * FrameSearchThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		database.AttachConfig();
+		InitDatabase(database);
 		FbSearchFunction search(m_title);
 		database.CreateFunction(wxT("SEARCH"), 1, search);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -168,8 +161,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 
 void FbFrameSearch::UpdateBooklist()
 {
-	wxThread * thread = new FrameSearchThread(this, m_BooksPanel.GetListMode(), m_title);
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	( new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title) )->Execute();
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)

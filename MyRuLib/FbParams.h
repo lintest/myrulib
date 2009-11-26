@@ -9,6 +9,7 @@
 enum FbParamKey {
 	FB_CONFIG_TITLE   = 1,
 	FB_CONFIG_VERSION = 2,
+	FB_CONFIG_TYPE    = 3,
 
 	FB_NEW_FOLDER	  = 101,
 	FB_NEW_COMMENT	 = 102,
@@ -21,11 +22,11 @@ enum FbParamKey {
 	FB_RECENT_4 = 114,
 	FB_RECENT_5 = 115,
 
-	FB_EXTERNAL_DIR	= 121,
+	FB_EXTERNAL_DIR	   = 121,
 	FB_TRANSLIT_FOLDER = 122,
 	FB_TRANSLIT_FILE   = 123,
 	FB_FOLDER_FORMAT   = 124,
-	FB_FILE_FORMAT	 = 125,
+	FB_FILE_FORMAT	   = 125,
 
 	FB_VIEW_AUTHOR	 = 130,
 	FB_VIEW_GENRES	 = 131,
@@ -37,15 +38,25 @@ enum FbParamKey {
 	FB_MODE_SEARCH	 = 137,
 	FB_MODE_FOLDER	 = 138,
 
-	FB_FILTER_FB2	  = 140,
-	FB_FILTER_LIB	  = 141,
-	FB_FILTER_USR	  = 142,
+	FB_FILTER_FB2  = 140,
+	FB_FILTER_LIB  = 141,
+	FB_FILTER_USR  = 142,
 
-	FB_LIBRUSEC_URL   = 150,
-	FB_USE_PROXY	  = 151,
-	FB_PROXY_ADDR	  = 152,
-	FB_AUTO_DOWNLD    = 153,
-	FB_DOWNLOAD_DIR   = 154,
+	FB_LIBRUSEC_URL = 150,
+	FB_USE_PROXY	= 151,
+	FB_PROXY_ADDR	= 152,
+	FB_AUTO_DOWNLD  = 153,
+	FB_DOWNLOAD_DIR = 154,
+	FB_DEL_DOWNLOAD = 155,
+
+	FB_FONT_MAIN = 160,
+	FB_FONT_HTML = 161,
+	FB_FONT_TOOL = 162,
+	FB_FONT_DLG  = 163,
+
+	FB_FRAME_MAXIMIZE = 170,
+	FB_FRAME_WIDTH    = 700,
+	FB_FRAME_HEIGHT   = 500,
 };
 
 class ParamItem
@@ -64,16 +75,17 @@ WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
 class FbParams {
 	public:
 		FbParams();
+		void LoadParams();
 		static int GetValue(const int param);
 		static wxString GetText(const int param);
-		void LoadParams();
+		static wxFont GetFont(const int param);
 		void SetValue(const int param, int value);
-		void SetText(const int param, wxString text);
-	private:
+		void SetText(const int param, const wxString &text);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
-		static ParamArray sm_params;
+		void AddRecent(const wxString &text);
 	private:
+		static ParamArray sm_params;
 		FbCommonDatabase m_database;
 		static wxCriticalSection sm_queue;
 };

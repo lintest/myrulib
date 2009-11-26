@@ -9,7 +9,7 @@ void *InfoThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
-	ZipReader reader(m_id, false);
+	ZipReader reader(m_id, false, true);
 	if (!reader.IsOK()) return NULL;
 
 	Load(reader.GetZip());
@@ -26,48 +26,15 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
 	wxString path = ctx->Path();
 	if (path.StartsWith(wxT("/fictionbook/description/title-info/annotation"))) {
-		ctx->annotation += wxString::Format(wxT("<%s"), node_name.c_str());
-		const XML_Char **a = atts;
-		while (*a) {
-			wxString name = ctx->CharToLower(a[0]);
-			wxString value = ctx->CharToLower(a[1]);
-			ctx->annotation += wxString::Format(wxT(" %s=%s"), name.c_str(), value.c_str());
-			a += 2;
-		}
-		ctx->annotation += wxT(">");
-	} else if (path == wxT("/fictionbook/description/title-info/coverpage")) {
-		if (node_name == wxT("image")) {
-			const XML_Char **a = atts;
-			while (*a) {
-				wxString name = ctx->CharToLower(a[0]);
-				wxString value = ctx->CharToLower(a[1]);
-				if (name == wxT("l:href")) {
-					if (value.Left(1) == wxT("#")) value = value.Mid(1);
-					wxString imagename = wxString::Format(wxT("%d/%s"), ctx->GetId(), value.c_str());
-					ctx->images.Add(value);
-				}
-				a += 2;
-			}
-		}
+		ctx->StartTag(node_name, atts);
+	} else if (ctx->parsebody && path.StartsWith(wxT("/fictionbook/body"))) {
+		ctx->StartTag(node_name, atts);
 	} else if (path == wxT("/fictionbook/description/title-info")) {
 		ctx->isbn.Empty();
+	} else if ((node_name == wxT("image")) && path == wxT("/fictionbook/description/title-info/coverpage")) {
+		ctx->AppendImg(atts);
 	} else if ((node_name == wxT("binary")) && path == wxT("/fictionbook")) {
-		ctx->skipimage = true;
-		ctx->imagedata.Empty();
-		ctx->imagetype.Empty();
-		ctx->imagename.Empty();
-		const XML_Char **a = atts;
-		while (*a) {
-			wxString name = ctx->CharToLower(a[0]);
-			wxString value = ctx->CharToLower(a[1]);
-			if (name == wxT("id")) {
-				ctx->skipimage = (ctx->images.Index(value) == wxNOT_FOUND);
-				ctx->imagename = value;
-			} else if (name == wxT("content-type")) {
-				ctx->imagetype = value;
-			}
-			a += 2;
-		}
+		ctx->StartImg(atts);
 	}
 	ctx->AppendTag(node_name);
 }
@@ -81,15 +48,16 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 
 	wxString path = ctx->Path();
 	if (path.StartsWith(wxT("/fictionbook/description/title-info/annotation"))) {
-		ctx->annotation.Trim(false).Trim(true);
-		ctx->annotation += wxString::Format(wxT("</%s>"), node_name.c_str());
+		ctx->FinishTag(node_name);
+	} else if (ctx->parsebody && path.StartsWith(wxT("/fictionbook/body"))) {
+		ctx->FinishTag(node_name);
 	} else if (path == wxT("/fictionbook/description/title-info")) {
 		InfoCash::SetAnnotation(ctx->GetId(), ctx->annotation);
-		ctx->annotation.Empty();
 	} else if (path == wxT("/fictionbook/description/publish-info/isbn")) {
 		InfoCash::SetISBN(ctx->GetId(), ctx->isbn);
-	} else if (path == wxT("/fictionbook/description/")) {
-		if (!ctx->images.Count()) ctx->Stop();
+	} else if (path == wxT("/fictionbook/description")) {
+		ctx->parsebody = ctx->annotation.IsEmpty();
+		if (ctx->images.Count()==0 && !ctx->parsebody) ctx->Stop();
 		ctx->UpdateInfo();
 	} else if (path == wxT("/fictionbook/binary")) {
 		if (!ctx->skipimage) {
@@ -108,16 +76,96 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 
 	wxString path = ctx->Path();
 	if (path.StartsWith(wxT("/fictionbook/description/title-info/annotation"))) {
-		wxString str = ctx->CharToString(s, len);
-		if (!ParsingContext::IsWhiteOnly(str)) ctx->annotation += str;
+		ctx->WriteText(s, len);
+	} else if (ctx->parsebody && path.StartsWith(wxT("/fictionbook/body"))) {
+		ctx->WriteText(s, len);
+		ctx->CheckLength();
 	} else if (path == wxT("/fictionbook/binary")) {
-		wxString str = ctx->CharToString(s, len);
-		if (!ParsingContext::IsWhiteOnly(str)) ctx->imagedata += str;
+		ctx->WriteImg(s, len);
 	} else if (path == wxT("/fictionbook/description/publish-info/isbn")) {
 		wxString str = ctx->CharToString(s, len);
 		if (!ParsingContext::IsWhiteOnly(str)) ctx->isbn += str.Trim(true).Trim(false);
 	}
 }
+}
+
+void InfoThread::WriteText(const XML_Char *s, int len)
+{
+	wxString str = CharToString(s, len);
+	if (!ParsingContext::IsWhiteOnly(str)) annotation += str;
+}
+
+void InfoThread::CheckLength()
+{
+	if (annotation.Length()>1024) {
+		InfoCash::SetAnnotation(GetId(), annotation + wxT("…"));
+		if (!images.Count()) Stop();
+		parsebody = false;
+		UpdateInfo();
+	}
+}
+
+void InfoThread::WriteImg(const XML_Char *s, int len)
+{
+	if (skipimage) return ;
+	wxString str = CharToString(s, len);
+	if (!ParsingContext::IsWhiteOnly(str)) imagedata += str;
+}
+
+void InfoThread::StartTag(wxString &name, const XML_Char **atts)
+{
+	wxString result = wxString::Format(wxT("<%s"), name.c_str());
+
+	const XML_Char **a = atts;
+	while (*a) {
+		wxString name = CharToLower(a[0]);
+		wxString value = CharToLower(a[1]);
+		result += wxString::Format(wxT(" %s=%s"), name.c_str(), value.c_str());
+		a += 2;
+	}
+	result += wxT(">");
+
+	annotation += result;
+}
+
+void InfoThread::FinishTag(wxString &name)
+{
+	annotation += wxString::Format(wxT("</%s>"), name.c_str());
+}
+
+void InfoThread::AppendImg(const XML_Char **atts)
+{
+	const XML_Char **a = atts;
+	while (*a) {
+		wxString name = CharToLower(a[0]);
+		wxString value = CharToLower(a[1]);
+		if (name.Right(5) == wxT(":href")) {
+			if (value.Left(1) == wxT("#")) value = value.Mid(1);
+			wxString imagename = wxString::Format(wxT("%d/%s"), GetId(), value.c_str());
+			images.Add(value);
+		}
+		a += 2;
+	}
+}
+
+void InfoThread::StartImg(const XML_Char **atts)
+{
+	skipimage = true;
+	imagedata.Empty();
+	imagetype.Empty();
+	imagename.Empty();
+	const XML_Char **a = atts;
+	while (*a) {
+		wxString name = CharToLower(a[0]);
+		wxString value = CharToLower(a[1]);
+		if (name == wxT("id")) {
+			skipimage = (images.Index(value) == wxNOT_FOUND);
+			imagename = value;
+		} else if (name == wxT("content-type")) {
+			imagetype = value;
+		}
+		a += 2;
+	}
 }
 
 bool InfoThread::Load(wxInputStream& stream)

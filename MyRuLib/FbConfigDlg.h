@@ -13,11 +13,12 @@
 #include <wx/listctrl.h>
 #include <wx/arrimpl.cpp>
 #include "FbDatabase.h"
+#include "FbWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class FbConfigDlg
 ///////////////////////////////////////////////////////////////////////////////
-class FbConfigDlg : private wxDialog
+class FbConfigDlg : private FbDialog
 {
 	public:
 		FbConfigDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);

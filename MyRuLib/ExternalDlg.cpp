@@ -107,10 +107,16 @@ const LetterReplace strTranslitArray[] = {
 
 wxString ExternalDlg::Translit(const wxString &filename)
 {
+	wxString oldname = filename;
+	oldname = oldname.Trim(false).Trim(true);
+
+	while (oldname.Left(1) == wxT(".")) oldname = oldname.Mid(1);
+	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
+
 	wxString newname;
 	size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
-	for (size_t i=0; i<filename.Len(); i++) {
-		wxString str = filename.Mid(i, 1);
+	for (size_t i=0; i<=filename.Len()-1; i++) {
+		wxString str = oldname.Mid(i, 1);
 		if (str.IsEmpty()) continue;
 		wxChar letter = str[0];
 		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) {
@@ -126,6 +132,22 @@ wxString ExternalDlg::Translit(const wxString &filename)
 	return newname;
 }
 
+wxString ExternalDlg::Normalize(const wxString &filename)
+{
+	wxString oldname = filename;
+	oldname = oldname.Trim(false).Trim(true);
+
+	while (oldname.Left(1) == wxT(".")) oldname = oldname.Mid(1);
+	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
+
+	wxString newname;
+	for (size_t i=0; i<filename.Len(); i++) {
+		wxChar letter = filename[i];
+		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
+	}
+	return newname;
+}
+
 wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &data)
 {
 	wxString newname = data.title;
@@ -136,9 +158,7 @@ wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &
 		node = m_books->GetItemParent(node);
 	}
 
-	if (FbParams::GetValue(FB_TRANSLIT_FILE)) newname = Translit(newname);
-	while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
-	while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
+	newname = FbParams::GetValue(FB_TRANSLIT_FILE) ? Translit(newname) : Normalize(newname);
 
 	if (data.number) newname = wxString::Format(wxT("%d_%s"), data.number, newname.c_str());
 
@@ -158,22 +178,8 @@ wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &
 	return result.GetFullName();
 }
 
-wxString ExternalDlg::NormalizeDirname(const wxString &filename)
-{
-	wxString newname;
-	for (size_t i=0; i<filename.Len(); i++) {
-		wxChar letter = filename[i];
-		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
-	}
-
-	while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
-	while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
-
-	return newname;
-}
-
 ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
-	wxDialog( parent, wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
+	FbDialog( parent, wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
 	m_selections(selections),
 	m_author(iAuthor),
 	m_checkAuthor(NULL)
@@ -229,9 +235,13 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
+	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
+	m_choiceFormat->SetSelection( FbParams::GetValue(FB_FILE_FORMAT) );
+
 	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
+	m_sdbSizerBtnOK->SetDefault();
 	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
 	m_sdbSizerBtn->Realize();
@@ -241,8 +251,8 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	this->Layout();
 	bSizerMain->Fit( this );
 
-	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
-	m_choiceFormat->SetSelection( FbParams::GetValue(FB_FILE_FORMAT) );
+	SetAffirmativeId(wxID_OK);
+	SetEscapeId(wxID_CANCEL);
 }
 
 ExternalDlg::~ExternalDlg()
@@ -333,7 +343,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxString & name)
 {
 	wxString newname = name;
-	if (FbParams::GetValue(FB_TRANSLIT_FOLDER)) newname = Translit(newname);
+	newname = FbParams::GetValue(FB_TRANSLIT_FOLDER) ? Translit(newname) : Normalize(newname);
 	wxTreeItemId item = m_books->AppendItem(parent, newname );
 	m_books->SetItemBold(item, true);
 	m_books->Expand(parent);

@@ -7,6 +7,7 @@
 #include "FbBookPanel.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
+#include "FbWindow.h"
 
 class FbFolderData: public wxTreeItemData
 {
@@ -20,35 +21,44 @@ class FbFolderData: public wxTreeItemData
 		FbFolderType m_type;
 };
 
-class FbFrameBase : public wxAuiMDIChildFrame
+class FbFrameBase : public FbAuiMDIChildFrame
 {
 public:
-	FbFrameBase();
 	FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 	virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& WXUNUSED(name)) { return NULL; };
+	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	bool m_FilterFb2;
 	bool m_FilterLib;
 	bool m_FilterUsr;
-	FbBookPanel * GetBookPanel() { return &m_BooksPanel; };
+	void UpdateInfo(int id);
+	virtual void UpdateFonts(bool refresh = true);
+	wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
 protected:
-	virtual void CreateControls() {};
+	virtual void CreateControls();
 	virtual void UpdateBooklist() = 0;
 	int GetModeKey();
 	int GetViewKey();
 protected:
+	void OnSubmenu(wxCommandEvent& event);
 	void CreateBooksPanel(wxWindow * parent, long substyle);
-	FbBookPanel m_BooksPanel;
+	int GetColOrder(int col);
+	FbTreeListCtrl * m_MasterList;
+	FbBookPanel * m_BooksPanel;
 private:
 	void OnActivated(wxActivateEvent & event);
+	void OnDirection(wxCommandEvent& event);
+	void OnChangeOrder(wxCommandEvent& event);
 	void OnChangeFilter(wxCommandEvent& event);
 	void OnChangeMode(wxCommandEvent& event);
 	void OnChangeView(wxCommandEvent & event);
+	void OnColClick(wxListEvent& event);
+	void OnMenuOrderUpdateUI(wxUpdateUIEvent & event);
+	void OnDirectionUpdateUI(wxUpdateUIEvent & event);
+	void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 	void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);
 	void OnExternal(wxCommandEvent& event);
-	void OnSubmenu(wxCommandEvent& event);
 	void OnAppendBook(FbBookEvent& event);
 	void OnAppendAuthor(wxCommandEvent& event);
 	void OnAppendSequence(wxCommandEvent& event);

@@ -4,15 +4,16 @@
 #include <wx/wx.h>
 #include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
-#include "FbFrameBase.h"
+#include "FbWindow.h"
 #include "FbFrameHtml.h"
 
-class FbFrameInfo: public wxAuiMDIChildFrame
+class FbFrameInfo: public FbAuiMDIChildFrame
 {
 public:
 	FbFrameInfo(wxAuiMDIParentFrame * parent);
 	void Load(const wxString & html);
 	static void Execute();
+	virtual void UpdateFonts(bool refresh = true);
 protected:
 	virtual void CreateControls();
 private:

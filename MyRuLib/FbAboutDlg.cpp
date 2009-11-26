@@ -5,7 +5,7 @@
 #include "MyRuLibApp.h"
 
 FbAboutDlg::FbAboutDlg( wxWindow* parent )
-	: wxDialog(parent, wxID_ANY, (wxString)_("О программе…"))
+	: FbDialog(parent, wxID_ANY, (wxString)_("О программе…"))
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -37,12 +37,17 @@ FbAboutDlg::FbAboutDlg( wxWindow* parent )
 	m_text3->Wrap( -1 );
 	bSizerCtrl->Add( m_text3, 0, wxALL|wxEXPAND, 10 );
 
+	wxStaticText * m_text4 = new wxStaticText( this, wxID_ANY, FbDatabase::GetConfigName(), wxDefaultPosition, wxDefaultSize, 0 );
+	m_text3->Wrap( -1 );
+	bSizerCtrl->Add( m_text4, 0, wxALL|wxEXPAND, 10 );
+
 	bSizerTop->Add( bSizerCtrl, 1, wxEXPAND, 5 );
 
 	bSizerMain->Add( bSizerTop, 0, wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
 	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
+	m_sdbSizerBtnOK->SetDefault();
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
 	m_sdbSizerBtn->Realize();
 	bSizerMain->Add( m_sdbSizerBtn, 1, wxEXPAND|wxALL, 5 );

@@ -150,20 +150,18 @@ void InfoCash::Empty()
 	sm_cash.Empty();
 }
 
-void InfoCash::UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable)
+void InfoCash::UpdateInfo(wxEvtHandler *frame, int id, bool bVertical, bool bEditable)
 {
-	if (!id) return;
-	wxThread *thread = new ShowThread(frame, id, bVertical, bEditable);
-	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
+	if (id) (new ShowThread(frame, id, bVertical, bEditable))->Execute();
 }
 
-wxString InfoCash::GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt)
+wxString InfoCash::GetInfo(int id, const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype)
 {
 	wxCriticalSectionLocker enter(sm_locker);
 
 	InfoNode * node = FindNode(id);
 	if (node)
-		return node->GetHTML(md5sum, bVertical, bEditable, sFileExt);
+		return node->GetHTML(md5sum, bVertical, bEditable, filetype);
 	else
 		return wxEmptyString;
 }
@@ -250,12 +248,12 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 	return html;
 }
 
-wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt)
+wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype)
 {
 	wxString html = wxT("<html><body><table width=100%>");
 
 	html += wxT("<tr>");
-	wxString icon = InfoCash::GetIcon(sFileExt);
+	wxString icon = InfoCash::GetIcon(filetype);
 	if (icon.IsEmpty()) {
 		html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
 	} else {
@@ -330,13 +328,8 @@ void * ShowThread::Entry()
 	wxString html = InfoCash::GetInfo(m_id, m_md5sum, m_vertical, m_editable, m_filetype);
 
 	if (html.IsEmpty()) {
-		wxThread *thread = new TitleThread(this);
-		if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
-
-		if (m_filetype == wxT("fb2")) {
-			wxThread *thread = new InfoThread(this);
-			if (thread->Create() == wxTHREAD_NO_ERROR) thread->Run();
-		}
+		(new TitleThread(this))->Execute();
+		(new InfoThread(this))->Execute();
 	} else {
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
 		event.SetInt(m_id);

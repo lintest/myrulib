@@ -1,4 +1,5 @@
 #include "FbBookMenu.h"
+#include "FbMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
@@ -7,31 +8,9 @@ WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
 WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
 
-FbMenuFolderArray FbBookMenu::sm_folders;
-
-FbMenuAuthorArray FbBookMenu::sm_authors;
-
-FbBookMenu::FbBookMenu(int id, int iFolder, int iType)
+FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 	: m_id(id)
 {
-	if (sm_folders.Count() == 0) LoadFolders();
-
-	wxMenu * submenu = new wxMenu;
-	for (size_t i=0; i<sm_folders.Count(); i++) {
-		int id = sm_folders[i].id;
-		if (sm_folders[i].folder == iFolder) continue;
-		submenu->Append(id, sm_folders[i].name);
-	}
-
-	wxMenu * ratings = new wxMenu;
-	ratings->Append(ID_RATING_5, strRating[5]);
-	ratings->Append(ID_RATING_4, strRating[4]);
-	ratings->Append(ID_RATING_3, strRating[3]);
-	ratings->Append(ID_RATING_2, strRating[2]);
-	ratings->Append(ID_RATING_1, strRating[1]);
-	ratings->AppendSeparator();
-	ratings->Append(ID_RATING_0, strRating[0]);
-
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
 	if (iType == FT_DOWNLOAD) {
 		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
@@ -46,20 +25,70 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType)
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
 	AppendSeparator();
 
-	Append(wxID_ANY, _("Перейти к автору"), CreateAuthorMenu());
+	if (bShowOrder) Append(wxID_ANY, _("Сортировка"), new FbMenuSort);
+	Append(wxID_ANY, _("Перейти к автору"), new FbMenuAuthors(m_id));
 	AppendSeparator();
 
 	if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
-	Append(wxID_ANY, _("Добавить в папку"), submenu);
-	Append(wxID_ANY, _("Установить рейтинг"), ratings);
+	Append(wxID_ANY, _("Добавить в папку"), new FbMenuFolders(iFolder));
+	Append(wxID_ANY, _("Установить рейтинг"), new FbMenuRating);
 	if (iFolder != fbNO_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
 	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
-void FbBookMenu::LoadFolders()
+FbMenuAuthorArray FbMenuAuthors::sm_authors;
+
+FbMenuAuthors::FbMenuAuthors(int book)
 {
+	sm_authors.Empty();
+
+	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, book);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	int id = ID_FAVORITES_ADD + FbMenuFolders::GetCount();
+	while (result.NextRow()) {
+		FbMenuAuthorItem * item = new FbMenuAuthorItem;
+		item->id = ++id;
+		item->author = result.GetInt(0);
+		Append(item->id, result.GetString(1));
+		sm_authors.Add(item);
+	}
+}
+
+int FbMenuAuthors::GetAuthor(const int id)
+{
+	for (size_t i=0; i<sm_authors.Count(); i++)
+		if ( sm_authors[i].id == id ) return sm_authors[i].author;
+	return 0;
+}
+
+void FbMenuAuthors::Connect(wxWindow * frame, wxObjectEventFunction func)
+{
+	for (size_t i=0; i<sm_authors.Count(); i++)
+		frame->Connect(sm_authors[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
+}
+
+FbMenuFolderArray FbMenuFolders::sm_folders;
+
+FbMenuFolders::FbMenuFolders(int folder)
+{
+	if (sm_folders.IsEmpty()) LoadFolders();
+
+	for (size_t i=0; i<sm_folders.Count(); i++) {
+		int id = sm_folders[i].id;
+		if (sm_folders[i].folder == folder) continue;
+		Append(id, sm_folders[i].name);
+	}
+}
+
+void FbMenuFolders::LoadFolders()
+{
+	sm_folders.Empty();
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
 	FbLocalDatabase database;
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -73,51 +102,23 @@ void FbBookMenu::LoadFolders()
 	}
 }
 
-int FbBookMenu::GetFolder(const int id)
+int FbMenuFolders::GetFolder(const int id)
 {
 	for (size_t i=0; i<sm_folders.Count(); i++)
 		if ( sm_folders[i].id == id ) return sm_folders[i].folder;
 	return 0;
 }
 
-int FbBookMenu::GetAuthor(const int id)
+void FbMenuFolders::Connect(wxWindow * frame, wxObjectEventFunction func)
 {
-	for (size_t i=0; i<sm_authors.Count(); i++)
-		if ( sm_authors[i].id == id ) return sm_authors[i].author;
-	return 0;
-}
-
-void FbBookMenu::ConnectFolders(wxWindow * frame, wxObjectEventFunction func)
-{
+	if (sm_folders.IsEmpty()) LoadFolders();
 	for (size_t i=0; i<sm_folders.Count(); i++)
 		frame->Connect(sm_folders[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
 }
 
-void FbBookMenu::ConnectAuthors(wxWindow * frame, wxObjectEventFunction func)
+size_t FbMenuFolders::GetCount()
 {
-	for (size_t i=0; i<sm_authors.Count(); i++)
-		frame->Connect(sm_authors[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
-}
-
-wxMenu * FbBookMenu::CreateAuthorMenu()
-{
-	sm_authors.Empty();
-
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	wxMenu * submenu = new wxMenu;
-	int id = ID_FAVORITES_ADD + sm_folders.Count();
-	while (result.NextRow()) {
-		FbMenuAuthorItem * item = new FbMenuAuthorItem;
-		item->id = ++id;
-		item->author = result.GetInt(0);
-		submenu->Append(item->id, result.GetString(1));
-		sm_authors.Add(item);
-	}
-	return submenu;
-}
+	if (sm_folders.IsEmpty()) LoadFolders();
+	return sm_folders.Count();
+};
 

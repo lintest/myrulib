@@ -3,6 +3,9 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 
+#define DB_DATABASE_VERSION 7
+#define DB_CONFIG_VERSION 2
+
 wxCriticalSection FbDatabase::sm_queue;
 
 void FbMainDatabase::CreateDatabase()
@@ -82,112 +85,66 @@ void FbMainDatabase::CreateDatabase()
 	trans.Commit();
 }
 
-int FbMainDatabase::GetVersion()
+void FbMainDatabase::DoUpgrade(int version)
 {
-	return ExecuteScalar(wxT("SELECT value FROM params WHERE id=2"));
-}
+	switch (version) {
 
-void FbMainDatabase::SetVersion(int iValue)
-{
-	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO params(id, value) VALUES (2,%d)"), iValue));
-}
+		case 2: {
+			/** TABLE books **/
+			ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27)"));
+			ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum)"));
+			ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size)"));
+			/** TABLE zip_books, zip_files **/
+			ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer)"));
+			ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
+			ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
+		} break;
 
-void FbMainDatabase::UpgradeDatabase()
-{
-	int version = GetVersion();
+		case 3: {
+			/** TABLE types **/
+			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
+			ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type)"));
+			ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file"));
+			/** TABLE files **/
+			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text)"));
+			ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book)"));
+		} break;
 
-	wxString sUpgradeMsg = wxT("Upgrade database to version %d");
+		case 4: {
+			/** TABLE books **/
+			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
+			ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
+			ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
+			try { ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)")); } catch (...) {};
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
+			/** TABLE files **/
+			ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT"));
+			/** TABLE comments **/
+			ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
+			ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
+		} break;
 
-	if (version == 1) {
-		version ++;
-		wxLogInfo(sUpgradeMsg, version);
-		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+		case 5: {
+			ExecuteUpdate(wxT("DROP TABLE IF EXISTS types"));
+			ExecuteUpdate(wxT("DROP TABLE IF EXISTS comments"));
+			ExecuteUpdate(wxT("DROP TABLE IF EXISTS words"));
+		} break;
 
-		/** TABLE books **/
-		ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27)"));
-		ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum)"));
-		ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size)"));
+		case 6: {
+			/** TABLE books **/
+			try { ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER")); } catch (...) {};
+		} break;
 
-		/** TABLE zip_books, zip_files **/
-		ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer)"));
-		ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
-		ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
-
-		SetVersion(version);
-		trans.Commit();
-	}
-
-	if (version == 2) {
-		version ++;
-		wxLogInfo(sUpgradeMsg, version);
-		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-		/** TABLE types **/
-		ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
-		ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type)"));
-		ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file"));
-
-		/** TABLE files **/
-		ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text)"));
-		ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book)"));
-
-		SetVersion(version);
-		trans.Commit();
-	}
-
-	if (version == 3) {
-		version ++;
-		wxLogInfo(sUpgradeMsg, version);
-		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-		/** TABLE books **/
-		ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
-		ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
-		ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
-		try { ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)")); } catch (...) {};
-		ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
-
-		/** TABLE files **/
-		ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT"));
-
-		/** TABLE comments **/
-		ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
-		ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
-
-		SetVersion(version);
-		trans.Commit();
-	}
-
-	if (version == 4) {
-		version ++;
-		wxLogInfo(sUpgradeMsg, version);
-		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-		ExecuteUpdate(wxT("DROP TABLE IF EXISTS types"));
-		ExecuteUpdate(wxT("DROP TABLE IF EXISTS comments"));
-		ExecuteUpdate(wxT("DROP TABLE IF EXISTS words"));
-
-		SetVersion(version);
-		trans.Commit();
-	}
-
-	if (version == 5) {
-		version ++;
-		wxLogInfo(sUpgradeMsg, version);
-		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-		/** TABLE books **/
-		try { ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER")); } catch (...) {};
-
-		SetVersion(version);
-		trans.Commit();
-	}
-
-	int new_version = 6;
-	int old_version = GetVersion();
-
-	if (old_version != new_version) {
-		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
+		case 7: {
+			/** TABLE aliases **/
+			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS aliases(id_author integer not null, id_alias integer not null);"));
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_author ON aliases(id_author);"));
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
+			try {
+				ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
+				ExecuteUpdate(strUpdateCountSQL);
+			} catch (...) {};
+		} break;
 	}
 }
 
@@ -282,17 +239,17 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 		wxLogInfo(wxT("Open database: %s"), fileName.c_str());
 	else {
 		wxLogInfo(wxT("Create database: %s"), fileName.c_str());
-		wxString msg = _("Database does not exist... recreating:");
-		wxMessageBox(msg + wxT("\n") + fileName);
+		wxString msg = strProgramName + wxT(" - Create new database…\n\n") + fileName;
+		wxMessageBox(msg);
 	}
 
 	try {
 		FbDatabase::Open(fileName, key, flags);
 		if (!bExists) CreateDatabase();
-		UpgradeDatabase();
+		UpgradeDatabase(DB_DATABASE_VERSION);
 	}
 	catch (wxSQLite3Exception & e) {
-		wxLogFatalError(e.GetMessage());
+		wxLogError(e.GetMessage());
 	}
 }
 
@@ -304,8 +261,10 @@ const wxString & FbDatabase::GetConfigName()
 
 void FbCommonDatabase::AttachConfig()
 {
-	wxString sql = wxString::Format(wxT("ATTACH \"%s\" AS config"), GetConfigName().c_str());
-	ExecuteUpdate(sql);
+	wxString sql = wxT("ATTACH ? AS config");
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, GetConfigName());
+	stmt.ExecuteUpdate();
 }
 
 void FbConfigDatabase::Open()
@@ -314,7 +273,7 @@ void FbConfigDatabase::Open()
 	bool bExists = wxFileExists(filename);
 	FbDatabase::Open(filename, wxEmptyString, WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
 	if (!bExists) CreateDatabase();
-	UpgradeDatabase();
+	UpgradeDatabase(DB_CONFIG_VERSION);
 }
 
 void FbConfigDatabase::CreateDatabase()
@@ -347,39 +306,43 @@ void FbConfigDatabase::CreateDatabase()
 	trans.Commit();
 }
 
-void FbConfigDatabase::UpgradeDatabase()
+void FbConfigDatabase::DoUpgrade(int version)
+{
+	switch (version) {
+		case 2: {
+			/** TABLE states **/
+			ExecuteUpdate(wxT("CREATE TABLE states(md5sum CHAR(32) primary key, rating INTEGER, download INTEGER)"));
+			ExecuteUpdate(wxT("CREATE INDEX states_rating ON states(rating)"));
+		} break;
+	}
+}
+
+int FbMasterDatabase::GetVersion()
+{
+	return ExecuteScalar(wxString::Format(wxT("SELECT value FROM %s WHERE id=2"), GetMaster().c_str()));
+}
+
+void FbMasterDatabase::SetVersion(int iValue)
+{
+	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO %s(id, value) VALUES (2,%d)"), GetMaster().c_str(), iValue));
+}
+
+void FbMasterDatabase::UpgradeDatabase(int new_version)
 {
 	int version = GetVersion();
 
-	wxString sUpgradeMsg = wxT("Upgrade config to version %d");
-
-	if (version == 1) {
-		version ++;
-		wxLogInfo(sUpgradeMsg, version);
+	while ( version < new_version ) {
+		version++;
+		wxLogInfo(wxT("Upgrade database to version %d"), version);
 		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-		/** TABLE ratings **/
-		ExecuteUpdate(wxT("CREATE TABLE states(md5sum CHAR(32) primary key, rating INTEGER, download INTEGER)"));
-		ExecuteUpdate(wxT("CREATE INDEX states_rating ON states(rating)"));
-
+		DoUpgrade(version);
 		SetVersion(version);
 		trans.Commit();
 	}
 
-	int new_version = 2;
 	int old_version = GetVersion();
-
 	if (old_version != new_version) {
-		wxLogFatalError(_("Config version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
+		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
 	}
 }
 
-int FbConfigDatabase::GetVersion()
-{
-	return ExecuteScalar(wxT("SELECT value FROM config WHERE id=2"));
-}
-
-void FbConfigDatabase::SetVersion(int iValue)
-{
-	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO config(id, value) VALUES (2,%d)"), iValue));
-}

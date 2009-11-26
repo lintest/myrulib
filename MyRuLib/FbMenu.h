@@ -15,4 +15,22 @@ class FbMenu: public wxMenu
 		};
 };
 
+class FbMenuSort: public FbMenu
+{
+	public:
+		FbMenuSort();
+};
+
+class FbMenuFilter: public FbMenu
+{
+	public:
+		FbMenuFilter();
+};
+
+class FbMenuRating: public FbMenu
+{
+	public:
+		FbMenuRating();
+};
+
 #endif // __FBMENU_H__

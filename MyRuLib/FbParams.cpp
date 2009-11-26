@@ -61,17 +61,21 @@ void FbParams::SetValue(const int param, int value)
 
 	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
 
-	if (value == DefaultValue(param)) {
-		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, param);
-		stmt.ExecuteUpdate();
-	} else {
-		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, value);
-		stmt.Bind(2, param);
-		stmt.ExecuteUpdate();
+	try {
+		if (value == DefaultValue(param)) {
+			wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, param);
+			stmt.ExecuteUpdate();
+		} else {
+			wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, value);
+			stmt.Bind(2, param);
+			stmt.ExecuteUpdate();
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogInfo(wxT("Database error: ") + e.GetMessage());
 	}
 
 	for (size_t i=0; i<sm_params.Count(); i++) {
@@ -86,23 +90,27 @@ void FbParams::SetValue(const int param, int value)
 	sm_params.Add(item);
 }
 
-void FbParams::SetText(const int param, wxString text)
+void FbParams::SetText(const int param, const wxString &text)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
 	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
 
-	if (text == DefaultValue(param)) {
-		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, param);
-		stmt.ExecuteUpdate();
-	} else {
-		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, text);
-		stmt.Bind(2, param);
-		stmt.ExecuteUpdate();
+	try {
+		if (text == DefaultValue(param)) {
+			wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, param);
+			stmt.ExecuteUpdate();
+		} else {
+			wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, text);
+			stmt.Bind(2, param);
+			stmt.ExecuteUpdate();
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogInfo(wxT("Database error: ") + e.GetMessage());
 	}
 
 	for (size_t i=0; i<sm_params.Count(); i++) {
@@ -125,6 +133,8 @@ int FbParams::DefaultValue(int param)
 		case FB_TRANSLIT_FILE: return 1;
 		case FB_USE_PROXY: return 0;
 		case FB_AUTO_DOWNLD: return 1;
+		case FB_FRAME_WIDTH: return 640;
+		case FB_FRAME_HEIGHT: return 480;
 		default: return 0;
 	}
 };
@@ -144,4 +154,32 @@ wxString FbParams::DefaultText(int param)
 			return wxEmptyString;
 	}
 };
+
+wxFont FbParams::GetFont(const int param)
+{
+	wxString info = GetText(param);
+	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxFont font;
+	font.SetNativeFontInfo(info);
+	return font;
+}
+
+void FbParams::AddRecent(const wxString &text)
+{
+	int i = 0;
+
+	while (i<5) {
+		wxString file = GetText(FB_RECENT_0 + i);
+		if (file == text) break;
+		i++;
+	}
+
+	while (i>0){
+		wxString file = GetText(FB_RECENT_0 + i - 1);
+		SetText(FB_RECENT_0 + i, file);
+		i--;
+	}
+
+	SetText(FB_RECENT_0 + i, text);
+}
 

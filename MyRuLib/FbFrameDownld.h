@@ -30,7 +30,6 @@ private:
 	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 	FbFolderData * GetSelected();
 private:
-	FbTreeListCtrl * m_FolderList;
 	wxToolBar * m_toolbar;
 private:
 	void OnFavoritesDel(wxCommandEvent & event);

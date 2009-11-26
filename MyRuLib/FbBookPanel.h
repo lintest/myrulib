@@ -17,7 +17,14 @@ class FbBookPanel: public wxSplitterWindow
 {
 	public:
 		FbBookPanel();
+		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
 		bool Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
+		void UpdateInfo(int id);
+		void SetOrderID(int id);
+		int GetOrderID();
+		bool IsOrderDesc();
+		void RevertOrder();
+		wxString GetOrderSQL();
 	public:
 		FbBookList * m_BookList;
 		wxHtmlWindow * m_BookInfo;
@@ -31,6 +38,7 @@ class FbBookPanel: public wxSplitterWindow
 		void SetFolder(int folder) { m_folder = folder; };
 		void SetType(int type) { m_type = type; };
 		void CreateBookInfo(bool bVertical);
+		void UpdateFonts(bool refresh = true);
 	private:
 		void DoFolderAdd(const int folder);
 		void DoCreateDownload(const wxString &sel, const int folder);

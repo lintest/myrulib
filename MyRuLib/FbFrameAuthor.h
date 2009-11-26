@@ -14,7 +14,6 @@
 class FbFrameAuthor : public FbFrameBase
 {
 public:
-	FbFrameAuthor() :FbFrameBase() {};
 	FbFrameAuthor(wxAuiMDIParentFrame * parent);
 	void FindAuthor(const wxString &text);
 	void OpenAuthor(const int author, const int book);
@@ -29,7 +28,6 @@ private:
 	void SelectFirstAuthor(const int book = 0);
 	BookTreeItemData * GetSelectedBook();
 private:
-	FbAuthorList * m_AuthorList;
 	wxSplitterWindow * m_BooksSplitter;
 	wxToolBar * m_RuAlphabar;
 	wxToolBar * m_EnAlphabar;
@@ -38,6 +36,8 @@ private:
 	void OnLetterClicked(wxCommandEvent& event);
 	void OnExternal(wxCommandEvent& event);
 	void OnCharEvent(wxKeyEvent& event);
+	void OnEmptyAuthors(wxCommandEvent& event);
+	void OnAppendAuthor(FbAuthorEvent& event);
 	DECLARE_EVENT_TABLE()
 };
 

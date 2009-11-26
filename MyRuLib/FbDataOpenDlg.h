@@ -2,12 +2,13 @@
 #define __FBDATAOPENDLG_H__
 
 #include <wx/wx.h>
+#include "FbWindow.h"
 
-class FbDataOpenDlg : public wxDialog
+class FbDataOpenDlg : public FbDialog
 {
 	public:
-		FbDataOpenDlg( wxWindow* parent, wxWindowID id = wxID_ANY);
-		virtual wxString GetTitle() const;
+		FbDataOpenDlg( wxWindow* parent);
+		wxString GetFilename();
 	private:
 		enum
 		{
@@ -15,6 +16,7 @@ class FbDataOpenDlg : public wxDialog
 			ID_FILE_BTN,
 			ID_DOWNLOAD,
 		};
+		wxString GetTitle() const;
 		void OnSelectFileClick( wxCommandEvent& event );
 	private:
 		wxComboBox* m_FileBox;

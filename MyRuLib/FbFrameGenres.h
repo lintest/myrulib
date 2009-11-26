@@ -19,13 +19,10 @@ class FbFrameGenres : public FbFrameBase
 public:
 	FbFrameGenres(wxAuiMDIParentFrame * parent);
 protected:
-	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	virtual void CreateControls();
 	virtual void UpdateBooklist();
 private:
 	void CreateBookInfo();
-private:
-	FbTreeListCtrl * m_GenresList;
 private:
 	void OnGenreSelected(wxTreeEvent & event);
 	DECLARE_EVENT_TABLE()

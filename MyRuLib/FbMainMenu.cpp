@@ -17,9 +17,11 @@ FbMenuBar::MenuFrame::MenuFrame()
 
 FbMenuBar::MenuLib::MenuLib()
 {
-//	Append(ID_MENU_DB_OPEN, _("Открыть (создать) коллекцию"));
+	Append(ID_MENU_DB_OPEN, _("Открыть (создать) коллекцию"));
+	Append(wxID_ANY, _("Открыть повторно"), new MenuRecent());
+	AppendSeparator();
 	Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
-	Append(ID_MENU_VACUUM, _("Реструктуризация БД"));
+	Append(ID_MENU_VACUUM,  _("Реструктуризация БД"));
 	AppendSeparator();
 	Append(ID_MENU_CONFIG, _("Параметры"));
 }
@@ -89,9 +91,8 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	AppendSeparator();
-	AppendCheckItem(ID_FILTER_FB2, _("Фильтр: только fb2-файлы"));
-	AppendCheckItem(ID_FILTER_LIB, _("Фильтр: файлы Либрусек"));
-	AppendCheckItem(ID_FILTER_USR, _("Фильтр: файлы пользователя"));
+	Append(ID_ORDER_MENU, _("Сортировка"), new FbMenuSort());
+	Append(wxID_ANY, _("Фильтр"), new FbMenuFilter());
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
@@ -99,3 +100,11 @@ FbFrameMenu::MenuView::MenuView()
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
 }
 
+FbMenuBar::MenuRecent::MenuRecent()
+{
+	Append(ID_RECENT_1);
+	Append(ID_RECENT_2);
+	Append(ID_RECENT_3);
+	Append(ID_RECENT_4);
+	Append(ID_RECENT_5);
+}

@@ -10,6 +10,7 @@
 #include "FbDatabase.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
+#include "FbDownloader.h"
 
 class ZipThread : public BaseThread
 {
@@ -40,6 +41,8 @@ void *ZipThread::Entry()
 {
 	wxCriticalSectionLocker enter(zips.sm_queue);
 
+	wxSleep(3);
+
 	DoStart(0, m_dirname);
 
 	zips.m_thread = this;
@@ -51,7 +54,7 @@ void *ZipThread::Entry()
 	return NULL;
 }
 
-ZipReader::ZipReader(int id, bool bShowError)
+ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	FbCommonDatabase database;
@@ -67,6 +70,8 @@ ZipReader::ZipReader(int id, bool bShowError)
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
 		if (item.id_archive) {
+			if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )
+				item.book_name = GetInfoName(item.book_name);
 			wxFileName zip_file = item.GetZip(sLibraryDir);
 			m_zipOk = zip_file.FileExists();
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
@@ -87,6 +92,20 @@ ZipReader::~ZipReader()
 {
 	wxDELETE(m_zip);
 	wxDELETE(m_file);
+}
+
+wxString ZipReader::GetInfoName(const wxString &filename)
+{
+	wxString result = filename;
+	size_t pos = filename.Length();
+	while (pos) {
+		if ( filename[pos] == wxT('.') ) {
+			result = result.Left(pos);
+			break;
+		}
+		pos--;
+	}
+	return result + wxT(".fbd");
 }
 
 void ZipReader::Init()
@@ -117,8 +136,7 @@ void ZipReader::OpenDownload(FbDatabase &database)
 		else return;
 	}
 
-	wxFileName zip_file = md5sum;
-	zip_file.SetPath( FbStandardPaths().GetDownloadDir() );
+	wxFileName zip_file = FbDownloader::GetFilename(md5sum, false);
 	m_zipOk = zip_file.FileExists();
 	if (m_zipOk) {
 		m_file = new wxFFileInputStream(zip_file.GetFullPath());
@@ -286,6 +304,8 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		stmt.Bind(1, id);
 		stmt.Bind(2, filename);
 		stmt.ExecuteUpdate();
+	} else {
+		wxLogError(wxT("Zip read error %s"), filename.c_str());
 	}
 
 	InfoCash::Empty();

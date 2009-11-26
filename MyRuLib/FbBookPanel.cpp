@@ -37,6 +37,12 @@ FbBookPanel::FbBookPanel()
 {
 }
 
+FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
+	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
+{
+	Create(parent, size, style, keyType, keyMode);
+}
+
 bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 {
 	bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
@@ -45,9 +51,77 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 		SetSashGravity(0.5);
 		m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
 		CreateBookInfo( (bool) FbParams::GetValue(keyType) );
+		{
+			BookListUpdater updater(m_BookList);
+			m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
+			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
+			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+		}
 		CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 	}
 	return res;
+}
+
+int FbBookPanel::GetOrderID()
+{
+	int col = abs( m_BookList->GetSortedColumn() );
+	switch (col) {
+		case 1: return ID_ORDER_TITLE;
+		case 2: return ID_ORDER_AUTHOR;
+		case 3: return ID_ORDER_RATING;
+		case 4: return ID_ORDER_TYPE;
+		case 6: return ID_ORDER_SIZE;
+		default: return ID_ORDER_AUTHOR;
+	}
+}
+
+void FbBookPanel::SetOrderID(int id)
+{
+	int col = 0;
+	switch (id) {
+		case ID_ORDER_TITLE:  col = 1; break;
+		case ID_ORDER_AUTHOR: col = 2; break;
+		case ID_ORDER_RATING: col = 3; break;
+		case ID_ORDER_TYPE:   col = 5; break;
+		case ID_ORDER_SIZE:   col = 6; break;
+		default: col = 0;
+	}
+	if (IsOrderDesc()) col *= -1;
+	m_BookList->SetSortedColumn(col);
+}
+
+wxString FbBookPanel::GetOrderSQL()
+{
+	int col = m_BookList->GetSortedColumn();
+	switch (col) {
+		case -7: return wxT("created desc,full_name desc,title desc");
+		case -6: return wxT("file_size desc,full_name desc,title desc");
+		case -5: return wxT("file_type desc,full_name desc,title desc");
+		case -3: return wxT("rating desc,full_name desc,title desc");
+		case -2: return wxT("full_name desc,title desc");
+		case -1: return wxT("title desc,full_name desc");
+		case  1: return wxT("title,full_name");
+		case  2: return wxT("full_name,title");
+		case  3: return wxT("rating,full_name,title");
+		case  5: return wxT("file_type,full_name,title");
+		case  6: return wxT("file_size,full_name,title");
+		case  7: return wxT("created,full_name,title");
+		default: return wxT("title,full_name");
+	}
+}
+
+bool FbBookPanel::IsOrderDesc()
+{
+	return m_BookList->GetSortedColumn() < 0;
+}
+
+void FbBookPanel::RevertOrder()
+{
+	int col = - m_BookList->GetSortedColumn();
+	m_BookList->SetSortedColumn(col);
 }
 
 void FbBookPanel::CreateBookInfo(bool bVertical)
@@ -55,8 +129,6 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
 	m_BookInfo = new wxHtmlWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
-	int fontsizes[] = {6, 8, 9, 10, 12, 16, 18};
-	m_BookInfo->SetFonts(wxT("Tahoma"), wxT("Tahoma"), fontsizes);
 
 	if (bVertical)
 		SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2);
@@ -200,9 +272,9 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 		BookTreeItemData * data = (BookTreeItemData*)m_BookList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
-	FbBookMenu menu(id, m_folder, m_type);
-	menu.ConnectFolders(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
-	menu.ConnectAuthors(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
+	FbBookMenu menu(id, m_folder, m_type, GetListMode()==FB2_MODE_LIST);
+	FbMenuFolders::Connect(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
+	FbMenuAuthors::Connect(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
 	PopupMenu(&menu, pos.x, pos.y);
 }
 
@@ -229,7 +301,7 @@ void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
 
 void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
 {
-	DoFolderAdd( FbBookMenu::GetFolder(event.GetId()) );
+	DoFolderAdd( FbMenuFolders::GetFolder(event.GetId()) );
 }
 
 void FbBookPanel::DoFolderAdd(const int folder)
@@ -240,7 +312,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql, folder, FT_FOLDER );
+	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -302,7 +374,7 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), iRating, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, iRating, FT_RATING, sql2 );
+	wxThread * thread = new FbFolderUpdateThread( sql1, iRating, FT_RATING, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -313,7 +385,7 @@ void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbUpdateThread( sql1, folder, FT_DOWNLOAD );
+	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
@@ -361,7 +433,7 @@ void FbBookPanel::OnEditComments(wxCommandEvent & event)
 
 void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 {
-	int author = FbBookMenu::GetAuthor(event.GetId());
+	int author = FbMenuAuthors::GetAuthor(event.GetId());
 	if (author == 0) return;
 
 	BookTreeItemData * data = GetSelectedBook();
@@ -428,18 +500,18 @@ void FbBookPanel::AppendBook(BookTreeItemData * data, const wxString & authors)
 		case FB2_MODE_TREE: {
 			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
 			item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
-			m_BookList->SetItemText(item, 1, sRating);
-			if (data->number) m_BookList->SetItemText(item, 2, wxString::Format(wxT(" %d "), data->number));
-			m_BookList->SetItemText(item, 3, file_type);
-			m_BookList->SetItemText(item, 4, file_size);
+			m_BookList->SetItemText(item, 2, sRating);
+			if (data->number) m_BookList->SetItemText(item, 3, wxString::Format(wxT(" %d "), data->number));
+			m_BookList->SetItemText(item, 4, file_type);
+			m_BookList->SetItemText(item, 5, file_size);
 		} break;
 		case FB2_MODE_LIST: {
 			parent = m_BookList->GetRootItem();
 			item = m_BookList->AppendItem(parent, data->title, 0, -1, data);
 			m_BookList->SetItemText(item, 1, authors);
 			m_BookList->SetItemText(item, 2, sRating);
-			m_BookList->SetItemText(item, 3, file_type);
-			m_BookList->SetItemText(item, 4, file_size);
+			m_BookList->SetItemText(item, 4, file_type);
+			m_BookList->SetItemText(item, 5, file_size);
 		} break;
 	}
 	m_BookList->Expand(parent);
@@ -455,36 +527,26 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 
 	BookListUpdater updater(m_BookList);
 
-	m_BookList->EmptyCols();
-
 	switch (m_ListMode) {
 		case FB2_MODE_TREE: {
-			m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+			m_BookList->SetColumnShown(1, false);
+			m_BookList->SetColumnShown(3, true);
 		} break;
 		case FB2_MODE_LIST: {
-			m_BookList->AddColumn (_("Заголовок"), 9, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+			m_BookList->SetColumnShown(1, true);
+			m_BookList->SetColumnShown(3, false);
 		} break;
 	}
 
 	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
 	m_BookInfo->SetPage(wxEmptyString);
+
+	m_BookList->SetSortedColumn( m_ListMode == FB2_MODE_LIST ? 1 : 0 );
 }
 
 int FbBookPanel::GetRatingColumn()
 {
-	switch (m_ListMode) {
-		case FB2_MODE_TREE: return 1;
-		case FB2_MODE_LIST: return 2;
-	}
-	return 1;
+	return 2;
 }
 
 void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
@@ -493,6 +555,29 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 	if (data && data->GetId()>0) {
 		wxString url = FbDownloader::GetURL(data->GetId());
 		wxLaunchDefaultBrowser(url);
+	}
+}
+
+void FbBookPanel::UpdateFonts(bool refresh)
+{
+	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+	if (refresh) m_BookList->Update();
+
+	if (refresh) m_BookInfo->SetPage(wxEmptyString);
+	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
+	if (refresh) {
+		BookTreeItemData * data = GetSelectedBook();
+		if (data && data->GetId()) {
+			InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+		}
+	}
+}
+
+void FbBookPanel::UpdateInfo(int id)
+{
+	BookTreeItemData * data = GetSelectedBook();
+	if (data && data->GetId()==id) {
+		InfoCash::UpdateInfo(this, id, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
 

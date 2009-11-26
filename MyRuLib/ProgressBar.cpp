@@ -16,6 +16,7 @@ bool ProgressBar::Create(wxWindow* parent, wxWindowID id, long style, const wxSt
 	bool res = wxStatusBar::Create(parent, id, style, name);
 	if (res) {
 		m_progress.Create(this, -1, 100, wxPoint(0, 0), wxDefaultSize, wxGA_HORIZONTAL | wxGA_SMOOTH);
+		m_progress.SetRange(1000);
 		SetProgress(0);
 		Resize();
 	}
@@ -29,12 +30,6 @@ void ProgressBar::Resize()
 	wxRect r;
 	GetFieldRect(1, r);
 	m_progress.SetSize(r);
-}
-
-void ProgressBar::SetRange(int range)
-{
-	m_progress.SetValue(0);
-	m_progress.SetRange(range);
 }
 
 void ProgressBar::SetProgress(int progress)
