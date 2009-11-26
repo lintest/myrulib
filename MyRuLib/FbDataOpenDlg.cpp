@@ -84,7 +84,7 @@ void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )
 	if (dlg.ShowModal() == wxID_OK) {
 		wxFileName filename = dlg.GetPath();
 		filename.SetExt(wxT("db"));
-		m_FileBox->SetValue(filename.GetFullName());
+		m_FileBox->SetValue(filename.GetFullPath());
 	}
 }
 
@@ -92,5 +92,5 @@ wxString FbDataOpenDlg::GetFilename()
 {
 	wxFileName filename = m_FileBox->GetValue();
 	filename.SetExt(wxT("db"));
-	return filename.GetFullName();
+	return filename.GetFullPath();
 }
