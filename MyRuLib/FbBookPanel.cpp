@@ -468,6 +468,10 @@ void FbBookPanel::AppendAuthor(const wxString title)
 
 void FbBookPanel::AppendSequence(const wxString title)
 {
+	if (title.IsEmpty() && !m_SequenceItem.IsOk()) {
+		m_SequenceItem = m_AuthorItem;
+		return;
+	}
 	wxString text = title.IsEmpty() ? strOtherSequence : title;
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem();
