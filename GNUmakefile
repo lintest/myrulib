@@ -110,6 +110,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbFrameGenres.o \
 	build/myrulib_FbFrameSearch.o \
 	build/myrulib_FbGenres.o \
+	build/myrulib_FbImportThread.o \
 	build/myrulib_FbLogStream.o \
 	build/myrulib_FbMainFrame.o \
 	build/myrulib_FbMainMenu.o \
@@ -121,7 +122,6 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbViewerDlg.o \
 	build/myrulib_FbWindow.o \
 	build/myrulib_ImpContext.o \
-	build/myrulib_ImpThread.o \
 	build/myrulib_InfoCash.o \
 	build/myrulib_InfoThread.o \
 	build/myrulib_LimitedTextCtrl.o \
@@ -291,6 +291,9 @@ build/myrulib_FbFrameSearch.o: ./MyRuLib/FbFrameSearch.cpp
 build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbImportThread.o: ./MyRuLib/FbImportThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -322,9 +325,6 @@ build/myrulib_FbWindow.o: ./MyRuLib/FbWindow.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_ImpThread.o: ./MyRuLib/ImpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp
