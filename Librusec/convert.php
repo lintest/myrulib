@@ -259,18 +259,18 @@ function convert_books($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function fix_avtoraliase($mysql_db, $sqlite_db)
+function convert_aliases($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("UPDATE authors SET newid=0");
+  $sqlite_db->query("DELETE FROM aliases");
 
   $sqltest = "SELECT * FROM libavtoraliase ORDER BY AliaseId";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    echo "replace: ".$row['BadId']." - ".$row['GoodId']."\n";
-    $sql = "UPDATE authors SET newid = ? WHERE id = ?";
+    echo "alias: ".$row['BadId']." - ".$row['GoodId']."\n";
+    $sql = "INSERT INTO aliases(id_author, id_alias) values(?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['BadId'], $row['GoodId']));
@@ -386,8 +386,9 @@ function create_tables($sqlite_db)
   $sqlite_db->query("DELETE FROM params;");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('LibRusEc Library');");
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
+  $sqlite_db->query("INSERT INTO params(text) VALUES ('LIBRUSEC');");
 
-  $sqlite_db->query("CREATE TABLE words(word varchar(99), id_book integer not null, number integer);");
+  $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
 
   $sqlite_db->query("commit;");
 }
@@ -412,7 +413,8 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX bookseq_book ON bookseq(id_book);");
   $sqlite_db->query("CREATE INDEX bookseq_author ON bookseq(id_author);");
 
-  $sqlite_db->query("CREATE INDEX words_word ON words(word);");
+  $sqlite_db->query("CREATE INDEX aliases_author ON aliases(id_author);");
+  $sqlite_db->query("CREATE INDEX aliases_alias ON aliases(id_alias);");
 
   $sqlite_db->query("commit;");
 }
@@ -433,6 +435,7 @@ convert_authors($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
 convert_seqnames($mysql_db, $sqlite_db);
 convert_sequences($mysql_db, $sqlite_db);
+convert_aliases($mysql_db, $sqlite_db);
 create_indexes($sqlite_db);
 
 ?>

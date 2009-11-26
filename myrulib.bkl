@@ -51,6 +51,7 @@
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorList.cpp</sources>
+		<sources>MyRuLib/FbAuthorThread.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
 		<sources>MyRuLib/FbBookEvent.cpp</sources>
 		<sources>MyRuLib/FbBookList.cpp</sources>
@@ -73,15 +74,18 @@
 		<sources>MyRuLib/FbFrameGenres.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
+		<sources>MyRuLib/FbImportThread.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
 		<sources>MyRuLib/FbManager.cpp</sources>
+		<sources>MyRuLib/FbMenu.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
+		<sources>MyRuLib/FbViewerDlg.cpp</sources>
+		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
-		<sources>MyRuLib/ImpThread.cpp</sources>
 		<sources>MyRuLib/InfoCash.cpp</sources>
 		<sources>MyRuLib/InfoThread.cpp</sources>
 		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
