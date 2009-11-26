@@ -544,7 +544,13 @@ void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
 	int param = event.GetId() - ID_RECENT_0 + FB_RECENT_0;
 	wxString filename = FbParams::GetText(param);
 	if (filename.IsEmpty()) return;
-	OpenDatabase(filename);
+
+	if (wxFileName::FileExists(filename)) {
+		OpenDatabase(filename);
+	} else {
+		wxLogWarning(wxT("File not found: ") + filename);
+		FbParams().SetText(param, wxEmptyString);
+	}
 }
 
 void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
