@@ -57,7 +57,8 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		InfoCash::SetISBN(ctx->GetId(), ctx->isbn);
 	} else if (path == wxT("/fictionbook/description")) {
 		ctx->parsebody = ctx->annotation.IsEmpty();
-		if (!ctx->images.Count() && !ctx->parsebody) ctx->Stop();
+		if (ctx->images.Count()==0 && !ctx->parsebody)
+			ctx->Stop();
 		ctx->UpdateInfo();
 	} else if (path == wxT("/fictionbook/binary")) {
 		if (!ctx->skipimage) {
@@ -139,7 +140,7 @@ void InfoThread::AppendImg(const XML_Char **atts)
 	while (*a) {
 		wxString name = CharToLower(a[0]);
 		wxString value = CharToLower(a[1]);
-		if (name == wxT("l:href")) {
+		if (name.Right(5) == wxT(":href")) {
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			wxString imagename = wxString::Format(wxT("%d/%s"), GetId(), value.c_str());
 			images.Add(value);

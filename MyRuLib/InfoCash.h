@@ -32,7 +32,7 @@ public:
 	InfoNode(): m_id(0) {};
 	virtual ~InfoNode();
 	void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
-	wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &sFileExt);
+	wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype);
 private:
 	wxString GetComments(const wxString md5sum, bool bEditable);
 public:
@@ -49,8 +49,8 @@ WX_DECLARE_OBJARRAY(InfoNode, InfoNodeArray);
 class InfoCash
 {
 public:
-	static void UpdateInfo(wxEvtHandler *frame, const int id, const bool bVertical, const bool bEditable = false);
-	static wxString GetInfo(const int id, const wxString md5sum, const bool bVertical, const bool bEditable, const wxString &sFileExt);
+	static void UpdateInfo(wxEvtHandler *frame, int id, bool bVertical, bool bEditable = false);
+	static wxString GetInfo(int id, const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype);
 	static void Empty();
 	static wxString GetIcon(const wxString &extension);
 	static void LoadIcon(const wxString &extension);
