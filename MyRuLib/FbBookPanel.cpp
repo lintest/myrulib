@@ -30,6 +30,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_RATING_2, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_1, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_0, FbBookPanel::OnChangeRating)
+	EVT_MENU(wxID_DELETE, FbBookPanel::OnDeleteBooks)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel()
@@ -581,3 +582,19 @@ void FbBookPanel::UpdateInfo(int id)
 	}
 }
 
+void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
+{
+	wxString sel;
+	wxArrayInt items;
+	m_BookList->GetSelected(items);
+	size_t count = m_BookList->GetSelected(sel);
+	if (!count) return;
+
+	wxString msg = wxString::Format(_("Удалить выделенные книги (%d шт.)?"), count);
+	int answer = wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this);
+	if (answer != wxOK) return;
+
+	wxString sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), sel.c_str());
+	(new FbUpdateThread(sql, strUpdateCountSQL))->Execute();
+	m_BookList->DeleteItems(items);
+}

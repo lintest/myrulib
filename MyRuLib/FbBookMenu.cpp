@@ -25,6 +25,10 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
 	AppendSeparator();
 
+	Append(wxID_EDIT, _("Редактировать"));
+	Append(wxID_DELETE, _("Удалить книгу"));
+	AppendSeparator();
+
 	if (bShowOrder) Append(wxID_ANY, _("Сортировка"), new FbMenuSort);
 	Append(wxID_ANY, _("Перейти к автору"), new FbMenuAuthors(m_id));
 	AppendSeparator();
@@ -121,4 +125,3 @@ size_t FbMenuFolders::GetCount()
 	if (sm_folders.IsEmpty()) LoadFolders();
 	return sm_folders.Count();
 };
-
