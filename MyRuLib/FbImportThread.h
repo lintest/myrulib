@@ -47,12 +47,6 @@ protected:
 protected:
 	FbCommonDatabase m_database;
 	wxString m_basepath;
-private:
-	bool LoadXml(wxInputStream& stream, ImportParsingContext &ctx);
-	void AppendBook(ImportParsingContext &info, const wxString &filename, const wxFileOffset size, const int id_archive);
-	void AppendFile(const int id_book, const int id_archive, const wxString &new_name);
-	int FindByMD5(const wxString &sha1sum);
-	int FindBySize(const wxString &sha1sum, wxFileOffset size);
 };
 
 class FbZipImportThread : public FbImportThread

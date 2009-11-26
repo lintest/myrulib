@@ -16,7 +16,6 @@
 #include "FbLogStream.h"
 #include "FbParams.h"
 #include "ZipReader.h"
-#include "ImpThread.h"
 #include "FbDataOpenDlg.h"
 
 IMPLEMENT_APP(MyRuLibApp)

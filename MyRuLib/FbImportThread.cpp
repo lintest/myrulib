@@ -3,7 +3,6 @@
 #include <wx/dir.h>
 #include <wx/list.h>
 #include "FbConst.h"
-#include "FbManager.h"
 #include "FbGenres.h"
 #include "FbParams.h"
 #include "ZipReader.h"
@@ -199,19 +198,21 @@ void FbImportBook::AppendBook(const wxString &filename, wxFileOffset size, int i
 	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
 
 	for (size_t i = 0; i<authors.Count(); i++) {
-		wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_size,file_type,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, id_book);
-		stmt.Bind(2, id_archive);
-		stmt.Bind(3, authors[i].id);
-		stmt.Bind(4, title);
-		stmt.Bind(5, genres);
-		stmt.Bind(6, filename);
-		stmt.Bind(7, (wxLongLong)size);
-		stmt.Bind(8, wxFileName(filename).GetExt().Lower());
-		stmt.Bind(9, (int) today);
-		stmt.Bind(10, m_md5sum);
-		stmt.ExecuteUpdate();
+		{
+			wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_size,file_type,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, id_book);
+			stmt.Bind(2, id_archive);
+			stmt.Bind(3, authors[i].id);
+			stmt.Bind(4, title);
+			stmt.Bind(5, genres);
+			stmt.Bind(6, filename);
+			stmt.Bind(7, (wxLongLong)size);
+			stmt.Bind(8, wxFileName(filename).GetExt().Lower());
+			stmt.Bind(9, (int) today);
+			stmt.Bind(10, m_md5sum);
+			stmt.ExecuteUpdate();
+		}
 		for (size_t j = 0; j<sequences.Count(); j++) {
 			wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number,id_author) VALUES (?,?,?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -536,7 +537,7 @@ void FbDirImportThread::ParseXml(const wxString &filename)
 	FbAutoCommit transaction(m_database);
 	wxFFileInputStream in(filename);
 	FbImportBook book(m_database, filename);
-	if (book.Load(in)) book.Save(filename, in.GetLength());
+	if (book.Load(in)) book.Save(GetRelative(filename), in.GetLength());
 }
 
 void FbDirImportThread::ParseZip(const wxString &zipname)
@@ -587,4 +588,3 @@ void FbDirImportThread::ParseZip(const wxString &zipname)
 	if ( existed && skipped ) wxLogWarning(wxT("FB2 and FBD not found %s"), zipname.c_str());
 	if ( !existed ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 }
-
