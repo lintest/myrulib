@@ -57,8 +57,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		InfoCash::SetISBN(ctx->GetId(), ctx->isbn);
 	} else if (path == wxT("/fictionbook/description")) {
 		ctx->parsebody = ctx->annotation.IsEmpty();
-		if (ctx->images.Count()==0 && !ctx->parsebody)
-			ctx->Stop();
+		if (ctx->images.Count()==0 && !ctx->parsebody) ctx->Stop();
 		ctx->UpdateInfo();
 	} else if (path == wxT("/fictionbook/binary")) {
 		if (!ctx->skipimage) {
