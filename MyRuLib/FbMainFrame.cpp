@@ -25,9 +25,9 @@
 #include "FbFrameDownld.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
-#include "VacuumThread.h"
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
+#include "FbUpdateThread.h"
 #include "InfoCash.h"
 #include "FbAboutDlg.h"
 
@@ -470,7 +470,8 @@ void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
 	wxString msg = _("Выполнить реструктуризацию базы данных?");
-	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK) (new VacuumThread)->Execute();
+	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK)
+		(new FbUpdateThread(strUpdateCountSQL, wxT("VACUUM")))->Execute();
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)

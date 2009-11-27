@@ -28,7 +28,6 @@ class SequenceItem
 {
 public:
 	SequenceItem(): id(0), number(0) {};
-	SequenceItem(int s, int n): id(s), number(n) {};
 	SequenceItem(const XML_Char **atts);
 	void Convert(FbDatabase & database){ id = FindSequence(database); }
 public:
@@ -40,19 +39,5 @@ private:
 };
 
 WX_DECLARE_OBJARRAY(SequenceItem, SequenceArray);
-
-class ImportParsingContext: public ParsingContext
-{
-	public:
-		wxString title;
-		wxString isbn;
-		AuthorArray authors;
-		SequenceArray sequences;
-		wxString genres;
-		AuthorItem * author;
-		wxString text;
-		wxString md5sum;
-		wxString filename;
-};
 
 #endif // __IMPCONTEXT_H__

@@ -94,7 +94,6 @@
 		<sources>MyRuLib/ProgressBar.cpp</sources>
 		<sources>MyRuLib/SettingsDlg.cpp</sources>
 		<sources>MyRuLib/TitleThread.cpp</sources>
-		<sources>MyRuLib/VacuumThread.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
 		<sources>MyRuLib/md5.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
