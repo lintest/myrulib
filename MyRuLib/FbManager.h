@@ -24,8 +24,8 @@ class FbManager
 class BookInfo
 {
 public:
-	static void MakeLower(wxString & data);
-	static void MakeUpper(wxString & data);
+	static wxString MakeLower(wxString & data);
+	static wxString MakeUpper(wxString & data);
 };
 
 #endif //FBMANAGER_H

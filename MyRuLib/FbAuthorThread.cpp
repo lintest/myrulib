@@ -1,6 +1,7 @@
 #include "FbAuthorThread.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
+#include "FbManager.h"
 
 wxCriticalSection FbAuthorThread::sm_queue;
 
@@ -51,7 +52,7 @@ void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
 	wxString sql = GetSQL(wxT("search_name like ?"));
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_text + wxT("%"));
+	stmt.Bind(1, BookInfo::MakeLower(m_text) + wxT("%"));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }
