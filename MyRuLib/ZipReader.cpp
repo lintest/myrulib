@@ -77,8 +77,12 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
 		} else if (item.librusec) {
 			wxString zip_name = zips.FindZip(item.book_name);
-			m_zipOk = !zip_name.IsEmpty();
-			if (m_zipOk) OpenZip(zip_name, item.book_name);
+			if (!zip_name.IsEmpty()) {
+				wxFileName zip_file = zip_name;
+				zip_file.SetPath(sLibraryDir);
+				m_zipOk = zip_file.FileExists();
+				if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
+			}
 		} else {
 			wxFileName book_file = item.GetBook(sLibraryDir);
 			if (book_file.FileExists()) OpenFile(book_file.GetFullPath());
@@ -185,19 +189,6 @@ void ZipReader::OpenFile(const wxString &filename)
 	wxString zipText = wxEmptyString;
 	wxString fileText = (filename.IsNull() ? filename : wxT(" ") + filename );
 	m_info = wxString::Format(strBookNotFound, zipText.c_str(), fileText.c_str());
-}
-
-bool ZipReader::FindZip(wxFileName &zip_name, wxString &path)
-{
-	if (zip_name.FileExists()) return true;
-
-	zip_name.SetPath(path);
-	if (zip_name.FileExists()) return true;
-
-	zip_name.SetPath(wxGetApp().GetAppPath());
-	if (zip_name.FileExists()) return true;
-
-	return false;
 }
 
 bool ZipReader::FindEntry(const wxString &file_name)
