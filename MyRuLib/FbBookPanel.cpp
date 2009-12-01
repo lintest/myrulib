@@ -327,7 +327,6 @@ int FbBookPanel::UpdateChildRating(wxTreeItemId parent, int iRating, const wxStr
 			FbBookData * data = (FbBookData*) m_BookList->GetItemData(child);
 			if (data && data->GetId()) {
 				m_BookList->SetItemText(child, GetRatingColumn(), sRating);
-				data->m_rating = iRating;
 				result++;
 			}
 		}
@@ -345,7 +344,6 @@ int FbBookPanel::UpdateSelectionRating(int iRating, const wxString &sRating)
 		FbBookData * data = (FbBookData*) m_BookList->GetItemData(items[i]);
 		if (data && data->GetId()) {
 			m_BookList->SetItemText(items[i], GetRatingColumn(), sRating);
-			data->m_rating = iRating;
 		}
 	}
 	return count;

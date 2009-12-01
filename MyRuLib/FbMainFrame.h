@@ -62,6 +62,7 @@ private:
 	void OnMenuGenres(wxCommandEvent & event);
 	void OnMenuFolder(wxCommandEvent & event);
 	void OnMenuDownld(wxCommandEvent & event);
+	void OnMenuCalendar(wxCommandEvent & event);
 	void OnNewZip( wxCommandEvent& event );
 	void OnRegZip( wxCommandEvent& event );
 	void OnFolder( wxCommandEvent& event );

@@ -68,6 +68,7 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28u_aui.a" />
+					<Add library="libwxmsw28u_adv.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
 					<Add library="libwxbase28u_net.a" />
@@ -122,6 +123,7 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="libwxmsw28u_adv.a" />
 					<Add library="libwxmsw28u_aui.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
@@ -191,6 +193,8 @@
 		<Unit filename="FbBookPanel.h" />
 		<Unit filename="FbBookThread.cpp" />
 		<Unit filename="FbBookThread.h" />
+		<Unit filename="FbCalendar.cpp" />
+		<Unit filename="FbCalendar.h" />
 		<Unit filename="FbConfigDlg.cpp" />
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
@@ -209,6 +213,8 @@
 		<Unit filename="FbFrameBase.h" />
 		<Unit filename="FbFrameBaseThread.cpp" />
 		<Unit filename="FbFrameBaseThread.h" />
+		<Unit filename="FbFrameDate.cpp" />
+		<Unit filename="FbFrameDate.h" />
 		<Unit filename="FbFrameDownld.cpp" />
 		<Unit filename="FbFrameDownld.h" />
 		<Unit filename="FbFrameFolder.cpp" />

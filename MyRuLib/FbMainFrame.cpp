@@ -20,6 +20,7 @@
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
+#include "FbFrameDate.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFolder.h"
 #include "FbFrameDownld.h"
@@ -42,7 +43,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_DOWNLD, FbMainFrame::OnMenuDownld)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
-	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
+	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuCalendar)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
@@ -569,5 +570,15 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 		InfoCash::Empty();
 		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
 		FindAuthor(wxEmptyString);
+	}
+}
+
+void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
+{
+	FbFrameDate * frame = wxDynamicCast(FindFrameById(ID_FRAME_DATE, true), FbFrameDate);
+	if (!frame) {
+		frame = new FbFrameDate(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
 	}
 }
