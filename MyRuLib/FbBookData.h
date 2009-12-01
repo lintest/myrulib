@@ -31,4 +31,17 @@ class BookTreeItemData: public wxTreeItemData
 		int rating;
 };
 
+class FbBookData: public wxTreeItemData
+{
+	public:
+		FbBookData(int id): m_id(id) {};
+		FbBookData(BookTreeItemData & data): m_id(data.GetId()), m_rating(data.rating), m_filetype(data.file_type) {};
+		int GetId() { return m_id; };
+	private:
+		int m_id;
+	public:
+		int m_rating;
+		wxString m_filetype;
+};
+
 #endif // __FBBOOKDATA_H__

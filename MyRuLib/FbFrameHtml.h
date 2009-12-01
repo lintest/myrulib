@@ -12,7 +12,7 @@
 class FbFrameHtml: public FbAuiMDIChildFrame
 {
 public:
-	FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data);
+	FbFrameHtml(wxAuiMDIParentFrame * parent, int id);
 	void Load(const wxString & html);
 	static void Execute();
 	virtual void UpdateFonts(bool refresh = true);

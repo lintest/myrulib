@@ -106,7 +106,7 @@ void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 
 void FbFrameBase::OnAppendBook(FbBookEvent& event)
 {
-	m_BooksPanel->AppendBook( new BookTreeItemData(event.m_data), event.GetString() );
+	m_BooksPanel->AppendBook( event.m_data, event.GetString() );
 }
 
 void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)

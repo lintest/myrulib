@@ -38,8 +38,8 @@ wxString FbFrameHtml::GetMd5sum(const int id)
 		return wxEmptyString;
 }
 
-FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, BookTreeItemData & data)
-	:m_id(data.GetId()), m_md5sum(GetMd5sum(m_id))
+FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id)
+	:m_id(id), m_md5sum(GetMd5sum(id))
 {
 	FbAuiMDIChildFrame::Create(parent, ID_FRAME_HTML, _("Комментарии"));
 	static bool bNotLoaded = true;
