@@ -21,7 +21,7 @@ FbCalendar::FbCalendar( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	m_Calendar = new wxCalendarCtrl( this, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxCAL_MONDAY_FIRST|wxCAL_SHOW_HOLIDAYS|wxCAL_SHOW_SURROUNDING_WEEKS );
+	m_Calendar = new wxCalendarCtrl( this, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxCAL_MONDAY_FIRST|wxCAL_SHOW_HOLIDAYS );
 	bSizerMain->Add( m_Calendar, 0, wxALL|wxEXPAND, 5 );
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
