@@ -7,6 +7,7 @@
 #include "MyRuLibApp.h"
 #include "FbDownloader.h"
 #include "FbUpdateThread.h"
+#include "FbEditBook.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
@@ -30,6 +31,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_RATING_2, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_1, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_0, FbBookPanel::OnChangeRating)
+	EVT_MENU(wxID_EDIT, FbBookPanel::OnModifyBooks)
 	EVT_MENU(wxID_DELETE, FbBookPanel::OnDeleteBooks)
 END_EVENT_TABLE()
 
@@ -599,4 +601,9 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 	wxString sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), sel.c_str());
 	(new FbUpdateThread(sql, strUpdateCountSQL))->Execute();
 	m_BookList->DeleteItems(items);
+}
+
+void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
+{
+	FbEditDlg::Execute();
 }

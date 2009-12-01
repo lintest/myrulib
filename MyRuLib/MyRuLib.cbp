@@ -207,6 +207,8 @@
 		<Unit filename="FbDatabase.h" />
 		<Unit filename="FbDownloader.cpp" />
 		<Unit filename="FbDownloader.h" />
+		<Unit filename="FbEditBook.cpp" />
+		<Unit filename="FbEditBook.h" />
 		<Unit filename="FbFrameAuthor.cpp" />
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />

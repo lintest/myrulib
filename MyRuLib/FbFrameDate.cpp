@@ -30,8 +30,8 @@ void FbFrameDate::CreateControls()
 	bSizer1->Add( toolbar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
+	splitter->SetMinimumPaneSize(80);
+	splitter->SetSashGravity(0);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
 	FbCalendar * calendar = new FbCalendar(splitter);
@@ -40,7 +40,7 @@ void FbFrameDate::CreateControls()
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
-	splitter->SplitVertically(calendar, m_BooksPanel, 160);
+	splitter->SplitVertically(calendar, m_BooksPanel, 200);
 
 	SetSizer( bSizer1 );
 
