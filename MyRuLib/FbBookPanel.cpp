@@ -605,5 +605,5 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 
 void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
 {
-	FbEditDlg::Execute();
+	FbEditBookDlg::Execute();
 }

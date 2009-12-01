@@ -17,7 +17,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-FbEditDlg::FbEditDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
+FbEditBookDlg::FbEditBookDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
 	: FbDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -58,11 +58,11 @@ FbEditDlg::FbEditDlg( wxWindow* parent, wxWindowID id, const wxString& title, co
 	this->SetSize(newSize);
 }
 
-FbEditDlg::~FbEditDlg()
+FbEditBookDlg::~FbEditBookDlg()
 {
 }
 
-void FbEditDlg::AppenTitle(wxFlexGridSizer * sizer)
+void FbEditBookDlg::AppenTitle(wxFlexGridSizer * sizer)
 {
 	wxCheckBox * cbTitle = new wxCheckBox( this, ID_TITLE_CHECK, wxT("Заголовок"), wxDefaultPosition, wxDefaultSize, 0 );
 	sizer->Add( cbTitle, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
@@ -76,7 +76,7 @@ void FbEditDlg::AppenTitle(wxFlexGridSizer * sizer)
 	sizer->Add( stEmpty, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 }
 
-void FbEditDlg::AppenItem(wxFlexGridSizer * sizer, wxWindowID id, const wxString &caption)
+void FbEditBookDlg::AppenItem(wxFlexGridSizer * sizer, wxWindowID id, const wxString &caption)
 {
 	wxCheckBox * check = new wxCheckBox( this, id, caption, wxDefaultPosition, wxDefaultSize, 0 );
 	sizer->Add( check, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
@@ -89,9 +89,9 @@ void FbEditDlg::AppenItem(wxFlexGridSizer * sizer, wxWindowID id, const wxString
 	sizer->Add( button, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 }
 
-bool FbEditDlg::Execute()
+bool FbEditBookDlg::Execute()
 {
-	FbEditDlg dlg(NULL);
+	FbEditBookDlg dlg(NULL);
 	bool result = dlg.ShowModal() == wxID_OK;
 	return result;
 }

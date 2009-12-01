@@ -4,16 +4,11 @@
 #include "FbWindow.h"
 #include <wx/sizer.h>
 
-///////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class FbEditDlg
-///////////////////////////////////////////////////////////////////////////////
-class FbEditDlg : public FbDialog
+class FbEditBookDlg : public FbDialog
 {
 	public:
-		FbEditDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
-		~FbEditDlg();
+		FbEditBookDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+		~FbEditBookDlg();
 		static bool Execute();
 	protected:
 		enum
