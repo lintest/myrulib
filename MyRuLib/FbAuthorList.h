@@ -23,11 +23,11 @@ class FbAuthorList: public FbTreeListCtrl
 	private:
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 	private:
-		void FbAuthorList::OnContextMenu(wxTreeEvent& event);
 		void OnAuthorAppend(wxCommandEvent& event);
 		void OnAuthorModify(wxCommandEvent& event);
 		void OnAuthorDelete(wxCommandEvent& event);
 		void OnAuthorReplace(wxCommandEvent& event);
+		void OnContextMenu(wxTreeEvent& event);
 		DECLARE_EVENT_TABLE();
 };
 
