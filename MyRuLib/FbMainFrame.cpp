@@ -575,10 +575,13 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 
 void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
 {
+	OnMenuNothing(event);
+/*
 	FbFrameDate * frame = wxDynamicCast(FindFrameById(ID_FRAME_DATE, true), FbFrameDate);
 	if (!frame) {
 		frame = new FbFrameDate(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
 		frame->Update();
 	}
+*/
 }

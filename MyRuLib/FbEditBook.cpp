@@ -26,7 +26,7 @@ FbEditBookDlg::FbEditBookDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* fgSizerGrid;
-	fgSizerGrid = new wxFlexGridSizer( 2, 3, 0, 0 );
+	fgSizerGrid = new wxFlexGridSizer( 2, 2, 0, 0 );
 	fgSizerGrid->AddGrowableCol( 1 );
 	fgSizerGrid->SetFlexibleDirection( wxBOTH );
 	fgSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -69,24 +69,24 @@ void FbEditBookDlg::AppenTitle(wxFlexGridSizer * sizer)
 
 	wxTextCtrl * tcTitle = new wxTextCtrl( this, ID_TITLE_EDIT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	tcTitle->SetMinSize( wxSize( 200,-1 ) );
-	sizer->Add( tcTitle, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxTOP|wxBOTTOM, 5 );
-
-	wxStaticText * stEmpty = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	stEmpty->Wrap( -1 );
-	sizer->Add( stEmpty, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	sizer->Add( tcTitle, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxTOP|wxBOTTOM|wxRIGHT, 5 );
 }
 
-void FbEditBookDlg::AppenItem(wxFlexGridSizer * sizer, wxWindowID id, const wxString &caption)
+void FbEditBookDlg::AppenItem(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption)
 {
 	wxCheckBox * check = new wxCheckBox( this, id, caption, wxDefaultPosition, wxDefaultSize, 0 );
-	sizer->Add( check, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	parent->Add( check, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
 
 	wxTextCtrl * text = new wxTextCtrl( this, ++id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
 	text->SetMinSize( wxSize( 300,-1 ) );
-	sizer->Add( text, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxEXPAND, 5 );
+	sizer->Add( text, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
 	wxBitmapButton * button = new wxBitmapButton( this, ++id, wxArtProvider::GetBitmap(wxART_FILE_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	sizer->Add( button, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	parent->Add( sizer, 0, wxEXPAND, 5 );
 }
 
 bool FbEditBookDlg::Execute()

@@ -86,6 +86,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbAboutDlg.o \
+	build/myrulib_FbAuthorDlg.o \
 	build/myrulib_FbAuthorList.o \
 	build/myrulib_FbAuthorThread.o \
 	build/myrulib_FbBookData.o \
@@ -99,6 +100,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbDatabase.o \
 	build/myrulib_FbDataOpenDlg.o \
 	build/myrulib_FbDataPath.o \
+	build/myrulib_FbEditBook.o \
 	build/myrulib_FbDownloader.o \
 	build/myrulib_FbFrameAuthor.o \
 	build/myrulib_FbFrameBase.o \
@@ -218,6 +220,9 @@ build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
 build/myrulib_FbAboutDlg.o: ./MyRuLib/FbAboutDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbAuthorDlg.o: ./MyRuLib/FbAuthorDlg.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbAuthorList.o: ./MyRuLib/FbAuthorList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -255,6 +260,9 @@ build/myrulib_FbDataOpenDlg.o: ./MyRuLib/FbDataOpenDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp

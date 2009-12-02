@@ -149,7 +149,6 @@ void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
 	ToggleAlphabar(0);
 	(new FbAuthorThreadCode(this, author))->Execute();
-	((FbAuthorList*)m_MasterList)->FillAuthorsCode(author);
 }
 
 void FbFrameAuthor::SelectRandomLetter()

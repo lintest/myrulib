@@ -2,6 +2,32 @@
 #include "FbClientData.h"
 #include "ImpContext.h"
 #include "FbManager.h"
+#include "FbConst.h"
+#include "FbAuthorDlg.h"
+
+class FbAuthorMenu: public wxMenu
+{
+	public:
+		FbAuthorMenu(int id);
+};
+
+FbAuthorMenu::FbAuthorMenu(int id)
+{
+	Append(ID_AUTHOR_APPEND, _("Добавить"));
+	if (id == 0) return;
+	Append(ID_AUTHOR_MODIFY, _("Изменить"));
+	Append(ID_AUTHOR_DELETE, _("Удалить"));
+	AppendSeparator();
+	Append(ID_AUTHOR_REPLACE, _("Заменить"));
+}
+
+BEGIN_EVENT_TABLE(FbAuthorList, FbTreeListCtrl)
+	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbAuthorList::OnContextMenu)
+	EVT_MENU(ID_AUTHOR_APPEND, FbAuthorList::OnAuthorAppend)
+	EVT_MENU(ID_AUTHOR_MODIFY, FbAuthorList::OnAuthorModify)
+	EVT_MENU(ID_AUTHOR_DELETE, FbAuthorList::OnAuthorDelete)
+	EVT_MENU(ID_AUTHOR_REPLACE, FbAuthorList::OnAuthorReplace)
+END_EVENT_TABLE()
 
 FbAuthorList::FbAuthorList(wxWindow * parent, wxWindowID id)
 	:FbTreeListCtrl(parent, id, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER)
@@ -10,56 +36,54 @@ FbAuthorList::FbAuthorList(wxWindow * parent, wxWindowID id)
 	this->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 }
 
-void FbAuthorList::FillAuthorsChar(const wxChar & findLetter)
+void FbAuthorList::OnContextMenu(wxTreeEvent& event)
 {
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE letter=? ORDER BY search_name");
-
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, (wxString)findLetter);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	FillAuthors(result);
-}
-
-void FbAuthorList::FillAuthorsText(const wxString & findText)
-{
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE search_name like ? ORDER BY search_name");
-	wxString str = findText + wxT('%');
-	BookInfo::MakeLower(str);
-
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, str);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	FillAuthors(result);
-}
-
-void FbAuthorList::FillAuthorsCode(const int code)
-{
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id=?");
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, code);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	FillAuthors(result);
-}
-
-void FbAuthorList::FillAuthors(wxSQLite3ResultSet & result)
-{
-	FbTreeListUpdater(this);
-
-	DeleteRoot();
-	wxTreeItemId root = AddRoot(wxEmptyString);
-
-	while (result.NextRow()) {
-		int id = result.GetInt(wxT("id"));
-		FbAuthorData * data = new FbAuthorData(id);
-		wxString name = result.GetString(wxT("full_name"));
-		wxTreeItemId item = AppendItem(root, name, -1, -1, data);
+	wxPoint point = event.GetPoint();
+	// If from keyboard
+	if (point.x == -1 && point.y == -1) {
+		wxSize size = GetSize();
+		point.x = size.x / 3;
+		point.y = size.y / 3;
 	}
+	ShowContextMenu(point, event.GetItem());
+}
 
-	Expand(root);
+void FbAuthorList::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
+{
+	int id = 0;
+	if (item.IsOk()) {
+		FbAuthorData * data = (FbAuthorData*)GetItemData(item);
+		if (data) id = data->GetId();
+	}
+	FbAuthorMenu menu(id);
+	PopupMenu(&menu, pos.x, pos.y);
+}
+
+FbAuthorData * FbAuthorList::GetSelected()
+{
+	wxTreeItemId selected = GetSelection();
+	if (selected.IsOk()) {
+		return (FbAuthorData*) GetItemData(selected);
+	} else
+		return NULL;
+}
+
+void FbAuthorList::OnAuthorAppend(wxCommandEvent& event)
+{
+	FbAuthorDlg::Append();
+}
+
+void FbAuthorList::OnAuthorModify(wxCommandEvent& event)
+{
+	FbAuthorData * data = (FbAuthorData*) GetSelected();
+	if (!data) return;
+	FbAuthorDlg::Modify(data->GetId());
+}
+
+void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
+{
+}
+
+void FbAuthorList::OnAuthorReplace(wxCommandEvent& event)
+{
 }

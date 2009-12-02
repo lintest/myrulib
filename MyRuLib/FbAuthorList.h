@@ -19,11 +19,16 @@ class FbAuthorList: public FbTreeListCtrl
 {
 	public:
 		FbAuthorList(wxWindow* parent, wxWindowID id);
-		void FillAuthorsChar(const wxChar & findLetter);
-		void FillAuthorsText(const wxString & findText);
-		void FillAuthorsCode(const int code);
+		FbAuthorData * GetSelected();
 	private:
-		void FillAuthors(wxSQLite3ResultSet & result);
+		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
+	private:
+		void FbAuthorList::OnContextMenu(wxTreeEvent& event);
+		void OnAuthorAppend(wxCommandEvent& event);
+		void OnAuthorModify(wxCommandEvent& event);
+		void OnAuthorDelete(wxCommandEvent& event);
+		void OnAuthorReplace(wxCommandEvent& event);
+		DECLARE_EVENT_TABLE();
 };
 
 #endif // __FBAUTHORLIST_H__
