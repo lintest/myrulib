@@ -37,7 +37,7 @@ FbEditBookDlg::FbEditBookDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	AppenItem(fgSizerGrid, ID_SEQUENCE_CHECK, _("Серия"));
 	AppenItem(fgSizerGrid, ID_GENRE_CHECK,    _("Жанр"));
 
-	bSizerMain->Add( fgSizerGrid, 0, wxEXPAND, 5 );
+	bSizerMain->Add( fgSizerGrid, 1, wxEXPAND, 5 );
 
 //	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 //	bSizerMain->Add( panel, 1, wxEXPAND | wxALL, 5 );

@@ -1,8 +1,19 @@
 #include "FbAuthorDlg.h"
+#include <wx/intl.h>
+#include <wx/string.h>
+#include <wx/stattext.h>
+#include <wx/gdicmn.h>
+#include <wx/font.h>
+#include <wx/colour.h>
+#include <wx/settings.h>
+#include <wx/textctrl.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
 #include "FbDatabase.h"
 
 FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
-	: wxDialog( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
+	: FbDialog( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
