@@ -22,6 +22,7 @@ class FbAuthorList: public FbTreeListCtrl
 		FbAuthorData * GetSelected();
 	private:
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
+		bool SelectItem(const wxTreeItemId &root, int id);
 	private:
 		void OnAuthorAppend(wxCommandEvent& event);
 		void OnAuthorModify(wxCommandEvent& event);

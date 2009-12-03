@@ -14,20 +14,44 @@ wxString AuthorItem::GetFullName()
 	return result.Trim(false).Trim(true);
 }
 
-int AuthorItem::FindAuthor(FbDatabase & database)
+void AuthorItem::Convert(FbDatabase & database)
 {
-	{
-		wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? ORDER BY search_name");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, first);
-		stmt.Bind(2, middle);
-		stmt.Bind(3, last);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return result.GetInt(0);
-	}
+	if (!Find(database)) Save(database);
+}
 
-	wxString search_name = GetFullName();
-	if (search_name.IsEmpty()) return 0;
+int AuthorItem::Find(FbDatabase & database)
+{
+	wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? AND id<>? ORDER BY search_name");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, first);
+	stmt.Bind(2, middle);
+	stmt.Bind(3, last);
+	stmt.Bind(4, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return id = result.NextRow() ? result.GetInt(0) : 0;
+}
+
+int AuthorItem::Load(FbDatabase & database)
+{
+	wxString sql = wxT("SELECT first_name, middle_name, last_name FROM authors WHERE id=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if ( result.NextRow() ) {
+		first  = result.GetString(0);
+		middle = result.GetString(1);
+		last   = result.GetString(2);
+		return id;
+	}
+	return 0;
+}
+
+int AuthorItem::Save(FbDatabase & database)
+{
+	wxString full_name = GetFullName();
+	if (full_name.IsEmpty()) { return id = 0; }
+
+	wxString search_name = full_name;
 	BookInfo::MakeLower(search_name);
 	search_name.Replace(strRusJO, strRusJE);
 
@@ -35,20 +59,25 @@ int AuthorItem::FindAuthor(FbDatabase & database)
 	BookInfo::MakeUpper(letter);
 	if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT("#");
 
-	int newId = - database.NewId(DB_NEW_AUTHOR);
-	{
-		wxString sql = wxT("INSERT INTO authors(id, letter, search_name, full_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, newId);
-		stmt.Bind(2, letter);
-		stmt.Bind(3, search_name);
-		stmt.Bind(4, GetFullName());
-		stmt.Bind(5, first);
-		stmt.Bind(6, middle);
-		stmt.Bind(7, last);
-		stmt.ExecuteUpdate();
+	wxString sql;
+	if (id) {
+		sql = wxT("UPDATE authors SET letter=?, search_name=?, full_name=?, first_name=?, middle_name=?, last_name=? WHERE id=?");
+	} else {
+		id = - database.NewId(DB_NEW_AUTHOR);
+		sql = wxT("INSERT INTO authors(letter, search_name, full_name, first_name, middle_name, last_name, id) VALUES(?,?,?,?,?,?,?)");
 	}
-	return newId;
+
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, letter);
+	stmt.Bind(2, search_name);
+	stmt.Bind(3, full_name);
+	stmt.Bind(4, first);
+	stmt.Bind(5, middle);
+	stmt.Bind(6, last);
+	stmt.Bind(7, id);
+	stmt.ExecuteUpdate();
+
+	return id;
 }
 
 int SequenceItem::FindSequence(FbDatabase & database)

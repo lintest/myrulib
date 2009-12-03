@@ -10,16 +10,19 @@
 class AuthorItem
 {
 public:
-	AuthorItem(): id(0) {};
+	AuthorItem(int id = 0): id(id) {};
 	wxString GetFullName();
-	void Convert(FbDatabase & database) { id = FindAuthor(database); }
+	void Convert(FbDatabase & database);
+	int Find(FbDatabase & database);
+	int Load(FbDatabase & database);
+	int Save(FbDatabase & database);
+private:
+	void SetNames();
 public:
 	int id;
 	wxString first;
 	wxString middle;
 	wxString last;
-private:
-	int FindAuthor(FbDatabase & database);
 };
 
 WX_DECLARE_OBJARRAY(AuthorItem, AuthorArray);

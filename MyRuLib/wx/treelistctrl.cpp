@@ -2753,6 +2753,9 @@ bool wxTreeListMainWindow::SelectItem (const wxTreeItemId& itemId,
         RefreshLine (item);
         if (unselect_others) {
             m_selectItem = (item->IsSelected())? item: (wxTreeListItem*)NULL;
+			// DENIS KANDRASHIN 2009-12-03 - BEGIN - Select item
+            m_curItem = m_selectItem;
+			// END DENIS
         }
 
     // or select nothing

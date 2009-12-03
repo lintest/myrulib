@@ -1,19 +1,8 @@
 #include "FbAuthorDlg.h"
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/textctrl.h>
-#include <wx/sizer.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-#include "FbDatabase.h"
+#include "FbConst.h"
 
 FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
-	: FbDialog( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
+	: FbDialog ( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -48,10 +37,6 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	this->SetSize(newSize);
 }
 
-FbAuthorDlg::~FbAuthorDlg()
-{
-}
-
 void FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption)
 {
 	wxStaticText * text = new wxStaticText( this, wxID_ANY, caption, wxDefaultPosition, wxDefaultSize, 0 );
@@ -63,41 +48,135 @@ void FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxStr
 	parent->Add( edit, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
 }
 
-bool FbAuthorDlg::Append()
+int FbAuthorDlg::Append()
 {
 	FbAuthorDlg dlg(_("Добавить автора"));
-	bool result = dlg.ShowModal() == wxID_OK;
-	return result;
+	bool ok = dlg.ShowModal() == wxID_OK;
+	return ok ? dlg.DoAppend() : 0;
 }
 
-bool FbAuthorDlg::Modify(int id)
+int FbAuthorDlg::Modify(int id)
 {
 	FbAuthorDlg dlg(_("Изменить автора"), id);
 	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
-	return ok;
+	return ok ? dlg.DoUpdate() : 0;
 }
 
 bool FbAuthorDlg::Load(int id)
 {
-	wxString sql = wxT("SELECT last_name, first_name, middle_name FROM authors WHERE id=?");
-
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	bool ok = result.NextRow();
-	if ( ok ) {
-		SetValue(ID_LAST_NAME, result.GetString(0));
-		SetValue(ID_FIRST_NAME, result.GetString(1));
-		SetValue(ID_MIDDLE_NAME, result.GetString(2));
-	}
+	AuthorItem author(id);
+	bool ok = author.Load(m_database);
+	SetValue(ID_LAST_NAME, author.last);
+	SetValue(ID_FIRST_NAME, author.first);
+	SetValue(ID_MIDDLE_NAME, author.middle);
 	return ok;
+}
+
+wxString FbAuthorDlg::GetValue(wxWindowID id)
+{
+	wxTextCtrl * control = (wxTextCtrl*) FindWindowById(id);
+	return control ? control->GetValue() : wxString(wxEmptyString);
 }
 
 void FbAuthorDlg::SetValue(wxWindowID id, const wxString &text)
 {
-	if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(id)) {
-		control->SetValue(text);
+	wxTextCtrl * control = (wxTextCtrl*) FindWindowById(id);
+	if (control) control->SetValue(text);
+}
+
+int FbAuthorDlg::FindAuthor()
+{
+	AuthorItem author(m_id);
+	GetValues(author);
+	return author.Find(m_database);
+}
+
+int FbAuthorDlg::DoAppend()
+{
+	AuthorItem author;
+	GetValues(author);
+	return author.Save(m_database);
+}
+
+int FbAuthorDlg::DoUpdate()
+{
+	if (m_exists) {
+		ReplaceAuthor(m_id, m_exists);
+		return m_exists;
+	} else {
+		DoModify();
+		return m_id;
 	}
+}
+
+void FbAuthorDlg::GetValues(AuthorItem &author)
+{
+	author.last   = GetValue(ID_LAST_NAME).Trim(false).Trim(true);
+	author.first  = GetValue(ID_FIRST_NAME).Trim(false).Trim(true);
+	author.middle = GetValue(ID_MIDDLE_NAME).Trim(false).Trim(true);
+}
+
+void FbAuthorDlg::DoModify()
+{
+	AuthorItem author(m_id);
+	GetValues(author);
+	author.Save(m_database);
+}
+
+void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
+{
+	FbCommonDatabase m_database;
+	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_DEFERRED);
+
+	{
+		wxString sql = wxT("UPDATE books SET id_author=? WHERE id_author=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, new_id);
+		stmt.Bind(2, old_id);
+		stmt.ExecuteUpdate();
+	}
+
+	{
+		wxString sql = strUpdateCountSQL + wxT("WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, new_id);
+		stmt.ExecuteUpdate();
+	}
+
+	{
+		wxString sql = wxT("DELETE FROM authors WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, old_id);
+		stmt.ExecuteUpdate();
+	}
+
+	trans.Commit();
+}
+
+bool FbAuthorDlg::IsEmpty()
+{
+	return GetValue(ID_LAST_NAME).IsEmpty() && GetValue(ID_FIRST_NAME).IsEmpty() && GetValue(ID_MIDDLE_NAME).IsEmpty();
+}
+
+void FbAuthorDlg::EndModal(int retCode)
+{
+	if ( retCode == wxID_OK) {
+		if (IsEmpty()) {
+			wxMessageBox(_("Пустые реквизиты автора."), GetTitle());
+			return;
+		}
+		m_exists = FindAuthor();
+		if (m_exists) {
+			wxString msg = _("Автор с такими реквизитами уже существует.");
+			if (m_id) {
+				msg += _("\nОбъединить двух авторов?");
+				bool ok = wxMessageBox(msg, GetTitle(), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+				if (!ok) return;
+			} else {
+				wxMessageBox(msg, GetTitle(), wxICON_EXCLAMATION);
+				return;
+			}
+		}
+	}
+	FbDialog::EndModal(retCode);
 }

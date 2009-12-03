@@ -4,6 +4,7 @@
 #include "FbManager.h"
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
+#include "FbBookEvent.h"
 
 class FbAuthorMenu: public wxMenu
 {
@@ -70,14 +71,18 @@ FbAuthorData * FbAuthorList::GetSelected()
 
 void FbAuthorList::OnAuthorAppend(wxCommandEvent& event)
 {
-	FbAuthorDlg::Append();
+	int id = FbAuthorDlg::Append();
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
 void FbAuthorList::OnAuthorModify(wxCommandEvent& event)
 {
+	wxTreeItemId selected = GetSelection();
 	FbAuthorData * data = (FbAuthorData*) GetSelected();
 	if (!data) return;
-	FbAuthorDlg::Modify(data->GetId());
+
+	int id = FbAuthorDlg::Modify(data->GetId());
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
 void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
@@ -87,3 +92,21 @@ void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
 void FbAuthorList::OnAuthorReplace(wxCommandEvent& event)
 {
 }
+
+bool FbAuthorList::SelectItem(const wxTreeItemId &root, int id)
+{
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = GetFirstChild(root, cookie);
+	while (child.IsOk()) {
+		FbAuthorData * data = (FbAuthorData*) GetItemData(child);
+		if (data && data->GetId() == id) {
+			wxTreeListCtrl::SelectItem(child);
+			wxTreeListCtrl::ScrollTo(child);
+			return true;
+		}
+		if (SelectItem(child, id)) return true;
+		child = GetNextChild(root, cookie);
+	}
+	return false;
+}
+

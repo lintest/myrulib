@@ -2,33 +2,39 @@
 #define __FBAUTHORDLG_H__
 
 #include "FbWindow.h"
+#include "ImpContext.h"
+#include "FbDatabase.h"
 
-///////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class FbAuthorDlg
-///////////////////////////////////////////////////////////////////////////////
 class FbAuthorDlg : public FbDialog
 {
 	public:
-		static bool Append();
-		static bool Modify(int id);
-	public:
 		FbAuthorDlg( const wxString& title = wxEmptyString, int id = 0 );
-		~FbAuthorDlg();
+		static int Append();
+		static int Modify(int id);
+		static void ReplaceAuthor(int old_id, int new_id);
 	protected:
+		virtual void EndModal(int retCode);
+	private:
 		enum
 		{
 			ID_LAST_NAME = 1000,
 			ID_FIRST_NAME,
 			ID_MIDDLE_NAME,
 		};
-	private:
 		bool Load(int id);
-		int m_id;
-	private:
 		void AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption);
 		void SetValue(wxWindowID id, const wxString &text);
+		wxString GetValue(wxWindowID id);
+		int FindAuthor();
+		bool IsEmpty();
+		int DoUpdate();
+		int DoAppend();
+		void DoModify();
+		void GetValues(AuthorItem &author);
+	private:
+		FbCommonDatabase m_database;
+		int m_id;
+		int m_exists;
 };
 
 #endif //__FBAUTHORDLG_H__

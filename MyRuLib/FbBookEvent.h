@@ -66,7 +66,7 @@ class FbAuthorEvent: public FbCommandEvent
 class FbOpenEvent: public FbCommandEvent
 {
 	public:
-		FbOpenEvent(wxWindowID id, int author, int book)
+		FbOpenEvent(wxWindowID id, int author, int book = 0)
 			: FbCommandEvent(fbEVT_OPEN_ACTION, id), m_author(author), m_book(book) {};
 
 		FbOpenEvent(const FbOpenEvent & event)
