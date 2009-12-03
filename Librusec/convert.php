@@ -321,7 +321,7 @@ function convert_sequences($mysql_db, $sqlite_db)
     $sql = "INSERT INTO bookseq(id_book, id_seq, number, level) VALUES(?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['SeqNumb'], $row['Level'], $row['AvtorId']));
+    $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['SeqNumb'], $row['Level']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
