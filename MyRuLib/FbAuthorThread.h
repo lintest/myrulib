@@ -36,12 +36,12 @@ class FbAuthorThreadChar: public FbAuthorThread
 class FbAuthorThreadText: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadText(wxWindow * frame, const wxString & text)
-			:FbAuthorThread(frame), m_text(text) {};
+		FbAuthorThreadText(wxWindow * frame, const wxString & mask)
+			:FbAuthorThread(frame), m_mask(mask) {};
 	protected:
 		virtual void GetResult(wxSQLite3Database &database);
 	private:
-		wxString m_text;
+		wxString m_mask;
 };
 
 class FbAuthorThreadCode: public FbAuthorThread

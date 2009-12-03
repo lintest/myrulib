@@ -366,17 +366,17 @@ void FbMainFrame::OnHideLog(wxCommandEvent& event)
 
 void FbMainFrame::OnFindTitle(wxCommandEvent & event)
 {
-	FindTitle(m_FindTitle.GetValue());
+	FindTitle(m_FindTitle.GetValue(), m_FindAuthor.GetValue());
 }
 
 void FbMainFrame::OnFindTitleEnter(wxCommandEvent& event)
 {
-	FindTitle(event.GetString());
+	FindTitle(event.GetString(), m_FindAuthor.GetValue());
 }
 
-void FbMainFrame::FindTitle(const wxString &text)
+void FbMainFrame::FindTitle(const wxString &title, const wxString &author)
 {
-	FbFrameSearch::Execute(this, text);
+	FbFrameSearch::Execute(this, title, author);
 }
 
 void FbMainFrame::OnFindAuthor(wxCommandEvent& event)
@@ -412,7 +412,7 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 {
 	wxString text = wxGetTextFromUser(_("Введите строку для поиска:"), _("Поиск по заголовку"));
 	if (text.IsEmpty()) return;
-	FindTitle(text);
+	FindTitle(text, wxEmptyString);
 }
 
 void FbMainFrame::OnMenuGenres(wxCommandEvent & event)

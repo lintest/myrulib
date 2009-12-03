@@ -33,7 +33,7 @@ private:
 	void TogglePaneVisibility(const wxString &pane_name, bool show);
 	void ShowPane(const wxString &pane_name);
 	void FindAuthor(const wxString &text);
-	void FindTitle(const wxString &text);
+	void FindTitle(const wxString &title, const wxString &author);
 	wxWindow * FindFrameById(const int id, bool bActivate = false);
 	void OpenDatabase(const wxString &filename);
 private:

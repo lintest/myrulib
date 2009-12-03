@@ -24,6 +24,18 @@ class FbLowerFunction : public wxSQLite3ScalarFunction
 	virtual void Execute(wxSQLite3FunctionContext& ctx);
 };
 
+class FbSearchFunction: public wxSQLite3ScalarFunction
+{
+	public:
+		FbSearchFunction(const wxString & input);
+	protected:
+		virtual void Execute(wxSQLite3FunctionContext& ctx);
+	private:
+		void Decompose(const wxString &text, wxArrayString &list);
+		wxString Lower(const wxString & text);
+		wxArrayString m_masks;
+};
+
 class FbDatabase: public wxSQLite3Database
 {
 	public:

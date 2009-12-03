@@ -14,7 +14,7 @@
 class FbFrameSearch : public FbFrameBase
 {
 public:
-	static void Execute(wxAuiMDIParentFrame * parent, const wxString &title);
+	static void Execute(wxAuiMDIParentFrame * parent, const wxString &title, const wxString &author);
 	FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title = wxEmptyString);
 protected:
 	virtual void CreateControls();
@@ -25,6 +25,7 @@ private:
 private:
 	wxTextCtrl * m_textTitle;
 	wxTextCtrl * m_textAuthor;
+	wxString m_author;
 	wxString m_title;
 private:
 	void OnFoundNothing(wxCommandEvent& event);

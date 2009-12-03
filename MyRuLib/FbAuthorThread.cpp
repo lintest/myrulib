@@ -36,7 +36,7 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 
 wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %sORDER BY search_name"), condition.c_str());
+	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %s ORDER BY search_name"), condition.c_str());
 }
 
 void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
@@ -50,9 +50,10 @@ void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
 
 void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
-	wxString sql = GetSQL(wxT("search_name like ?"));
+	wxString sql = GetSQL(wxT("SEARCH(search_name)"));
+	FbSearchFunction search(m_mask);
+	database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, BookInfo::MakeLower(m_text) + wxT("%"));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }

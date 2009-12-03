@@ -41,80 +41,13 @@ void FbFrameSearch::CreateControls()
 class FrameSearchThread: public FbFrameBaseThread
 {
 	public:
-		FrameSearchThread(FbFrameBase * frame, FbListMode mode, const wxString &title)
-			:FbFrameBaseThread(frame, mode), m_title(title) {};
+		FrameSearchThread(FbFrameBase * frame, FbListMode mode, const wxString &title, const wxString &author)
+			:FbFrameBaseThread(frame, mode), m_title(title), m_author(author) {};
 		virtual void *Entry();
 	private:
 		wxString m_title;
+		wxString m_author;
 };
-
-class FbSearchFunction: public wxSQLite3ScalarFunction
-{
-	public:
-		FbSearchFunction(const wxString & input);
-	protected:
-		virtual void Execute(wxSQLite3FunctionContext& ctx);
-	private:
-		wxString Lower(const wxString & text);
-		wxArrayString m_strings;
-};
-
-FbSearchFunction::FbSearchFunction(const wxString & input)
-{
-	wxString str = Lower(input);
-	int i = wxNOT_FOUND;
-	do {
-		str = str.Trim(false);
-		i = str.find(wxT(' '));
-		if (i == wxNOT_FOUND) break;
-		m_strings.Add( str.Left(i) );
-		str = str.Mid(i);
-	} while (true);
-	str = str.Trim(true);
-	if (!str.IsEmpty()) m_strings.Add(str);
-
-	wxString log = wxT("Search template: ");
-	size_t count = m_strings.Count();
-	for (size_t i=0; i<count; i++) {
-		log += wxString::Format(wxT("<%s> "), m_strings[i].c_str());
-	}
-	wxLogInfo(log);
-}
-
-wxString FbSearchFunction::Lower(const wxString & input)
-{
-	wxString output = input;
-#if defined(__WIN32__)
-	int len = output.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, output.c_str());
-	CharLower(buf);
-	output = buf;
-	delete [] buf;
-#else
-	output.MakeLower();
-#endif
-	return output;
-}
-
-void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-	int argCount = ctx.GetArgCount();
-	if (argCount != 1) {
-		ctx.SetResultError(wxString::Format(_("SEARCH called with wrong number of arguments: %d."), argCount));
-		return;
-	}
-	wxString text = Lower(ctx.GetString(0));
-
-	size_t count = m_strings.Count();
-	for (size_t i=0; i<count; i++) {
-		if ( text.Find(m_strings[i]) == wxNOT_FOUND ) {
-			ctx.SetResult(false);
-			return;
-		}
-	}
-	ctx.SetResult(true);
-}
 
 void * FrameSearchThread::Entry()
 {
@@ -122,14 +55,17 @@ void * FrameSearchThread::Entry()
 
 	EmptyBooks();
 
-	wxString condition = wxT("SEARCH(books.title)");
+	wxString condition = wxT("SEARCH_T(books.title)");
+	if (!m_author.IsEmpty()) condition += wxT(" AND SEARCH_A(authors.search_name)");
 	wxString sql = GetSQL(condition);
 
 	try {
 		FbCommonDatabase database;
 		InitDatabase(database);
-		FbSearchFunction search(m_title);
-		database.CreateFunction(wxT("SEARCH"), 1, search);
+		FbSearchFunction sfTitle(m_title);
+		FbSearchFunction sfAuthor(m_author);
+		database.CreateFunction(wxT("SEARCH_T"), 1, sfTitle);
+		database.CreateFunction(wxT("SEARCH_A"), 1, sfAuthor);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
@@ -147,12 +83,13 @@ void * FrameSearchThread::Entry()
 	return NULL;
 }
 
-void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
+void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title, const wxString &author)
 {
 	if ( title.IsEmpty() ) return;
 
 	wxString msg = wxString::Format(_("Поиск: «%s»"), title.c_str());
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
+	frame->m_author = author;
 	frame->m_title = title;
 	frame->Update();
 
@@ -161,7 +98,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title)
 
 void FbFrameSearch::UpdateBooklist()
 {
-	( new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title) )->Execute();
+	( new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title, m_author) )->Execute();
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)
