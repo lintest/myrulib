@@ -310,16 +310,15 @@ function convert_sequences($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM bookseq");
 
   $sqltest = "
-    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level, libavtor.AvtorId
+    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level
     FROM libseq 
-	INNER JOIN libavtor ON libseq.BookId = libavtor.BookId
 	INNER JOIN libbook ON libseq.BookId = libbook.BookId AND libbook.Deleted<>1
   ";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['SeqId']." - ".$row['BookId']."\n";
-    $sql = "INSERT INTO bookseq(id_book, id_seq, number, level, id_author) VALUES(?,?,?,?,?)";
+    $sql = "INSERT INTO bookseq(id_book, id_seq, number, level) VALUES(?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['SeqNumb'], $row['Level'], $row['AvtorId']));

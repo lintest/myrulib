@@ -178,11 +178,11 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 	switch (m_mode) {
 		case FB2_MODE_TREE:
 			sql = wxT("\
-				SELECT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
+				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
 					books.id, books.title, books.file_size, books.file_type, books.id_author, \
 					states.rating, sequences.value AS sequence, bookseq.number as number\
 				FROM books \
-					LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
+					LEFT JOIN bookseq ON bookseq.id_book=books.id \
 					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
@@ -191,7 +191,7 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 			break;
 		case FB2_MODE_LIST:
 			sql = wxT("\
-				SELECT \
+				SELECT DISTINCT\
 					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
 					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \

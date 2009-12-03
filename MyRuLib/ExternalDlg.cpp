@@ -289,10 +289,10 @@ void ExternalDlg::FillBooks(const wxString &selections)
 void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
 {
 	wxString sql = wxT("\
-		SELECT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence, bookseq.number\
+		SELECT DISTINCT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence, bookseq.number\
 		FROM books \
 			LEFT JOIN authors ON authors.id=books.id_author \
-			LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author = books.id_author \
+			LEFT JOIN bookseq ON bookseq.id_book=books.id \
 			LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
 		WHERE books.id IN (%s) %s \
 		ORDER BY authors.letter, authors.full_name, books.id_author, sequences.value, bookseq.number, books.title \
