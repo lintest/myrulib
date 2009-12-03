@@ -598,8 +598,7 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 	int answer = wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
-	wxString sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), sel.c_str());
-	(new FbUpdateThread(sql, strUpdateCountSQL))->Execute();
+	(new FbDeleteThread(sel))->Execute();
 	m_BookList->DeleteItems(items);
 }
 

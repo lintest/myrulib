@@ -39,4 +39,15 @@ class FbCreateDownloadThread: public FbFolderUpdateThread
 		virtual void * Entry();
 };
 
+class FbDeleteThread: public FbUpdateThread
+{
+	public:
+		FbDeleteThread(const wxString &sel)
+			: FbUpdateThread(wxEmptyString), m_sel(sel) {};
+	protected:
+		virtual void * Entry();
+	private:
+		wxString m_sel;
+};
+
 #endif // __FBUPDATETHREAD_H__

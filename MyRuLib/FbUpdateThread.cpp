@@ -75,3 +75,31 @@ void * FbCreateDownloadThread::Entry()
 	return NULL;
 }
 
+void * FbDeleteThread::Entry()
+{
+	wxCriticalSectionLocker locker(sm_queue);
+
+	FbCommonDatabase database;
+
+	try {
+		wxString sql = wxString::Format(wxT("SELECT books.file_name, archives.file_name FROM books LEFT JOIN archives ON archives.id=books.id_archive WHERE books.id IN (%s)"), m_sel.c_str());
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while (result.NextRow()) {
+			wxString file = result.GetString(0);
+			wxString zip = result.GetString(1);
+			wxString msg = wxT("Delete: ");
+			if (!zip.IsEmpty()) msg += zip + wxT(": ");
+			msg += file;
+			wxLogInfo(msg);
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+
+	wxString sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
+	ExecSQL(database, sql);
+
+	ExecSQL(database, strUpdateCountSQL);
+
+	return NULL;
+}
