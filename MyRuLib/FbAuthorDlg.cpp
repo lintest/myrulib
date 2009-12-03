@@ -15,7 +15,7 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	bSizerGrid->SetFlexibleDirection( wxBOTH );
 	bSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppenName(bSizerGrid, ID_LAST_NAME,   _("Фамилия"));
+	AppenName(bSizerGrid, ID_LAST_NAME,   _("Фамилия"))->SetFocus();
 	AppenName(bSizerGrid, ID_FIRST_NAME,  _("Имя"));
 	AppenName(bSizerGrid, ID_MIDDLE_NAME, _("Отчество"));
 
@@ -37,7 +37,7 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	this->SetSize(newSize);
 }
 
-void FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption)
+wxTextCtrl * FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption)
 {
 	wxStaticText * text = new wxStaticText( this, wxID_ANY, caption, wxDefaultPosition, wxDefaultSize, 0 );
 	text->Wrap( -1 );
@@ -46,6 +46,7 @@ void FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxStr
 	wxTextCtrl * edit = new wxTextCtrl( this, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	edit->SetMinSize( wxSize( 300,-1 ) );
 	parent->Add( edit, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	return edit;
 }
 
 int FbAuthorDlg::Append()
@@ -153,27 +154,23 @@ void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
 	trans.Commit();
 }
 
-bool FbAuthorDlg::IsEmpty()
-{
-	return GetValue(ID_LAST_NAME).IsEmpty() && GetValue(ID_FIRST_NAME).IsEmpty() && GetValue(ID_MIDDLE_NAME).IsEmpty();
-}
-
 void FbAuthorDlg::EndModal(int retCode)
 {
 	if ( retCode == wxID_OK) {
-		if (IsEmpty()) {
-			wxMessageBox(_("Пустые реквизиты автора."), GetTitle());
+		if (GetValue(ID_LAST_NAME).IsEmpty()) {
+			wxMessageBox(_("Не заполнена фамилия автора."), GetTitle());
 			return;
 		}
 		m_exists = FindAuthor();
 		if (m_exists) {
 			wxString msg = _("Автор с такими реквизитами уже существует.");
+			wxString title = GetTitle() + wxT("…");
 			if (m_id) {
 				msg += _("\nОбъединить двух авторов?");
-				bool ok = wxMessageBox(msg, GetTitle(), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+				bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 				if (!ok) return;
 			} else {
-				wxMessageBox(msg, GetTitle(), wxICON_EXCLAMATION);
+				wxMessageBox(msg, title, wxICON_EXCLAMATION);
 				return;
 			}
 		}

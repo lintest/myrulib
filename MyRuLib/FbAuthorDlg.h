@@ -22,11 +22,10 @@ class FbAuthorDlg : public FbDialog
 			ID_MIDDLE_NAME,
 		};
 		bool Load(int id);
-		void AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption);
+		wxTextCtrl * AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption);
 		void SetValue(wxWindowID id, const wxString &text);
 		wxString GetValue(wxWindowID id);
 		int FindAuthor();
-		bool IsEmpty();
 		int DoUpdate();
 		int DoAppend();
 		void DoModify();
