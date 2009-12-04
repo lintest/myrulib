@@ -24,6 +24,16 @@ void * FbAuthorThread::Entry()
 	return NULL;
 }
 
+wxString FbAuthorThread::GetOrder()
+{
+	switch (m_order) {
+		case -2: return wxT("number desc, search_name desc");
+		case -1: return wxT("search_name desc");
+		case  2: return wxT("number, search_name");
+		default: return wxT("search_name");
+	}
+}
+
 void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 {
 	if (sm_skiper.Skipped(m_number)) return;
@@ -36,14 +46,14 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 
 wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %s ORDER BY search_name"), condition.c_str());
+	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %s ORDER BY ") + GetOrder(), condition.c_str());
 }
 
 void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
 {
 	wxString sql = GetSQL(wxT("letter=?"));
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, (wxString)m_letter);
+	stmt.Bind(1, m_letter);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }

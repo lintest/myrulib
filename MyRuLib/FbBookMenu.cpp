@@ -31,6 +31,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 
 	if (bShowOrder) Append(wxID_ANY, _("Сортировка"), new FbMenuSort);
 	Append(wxID_ANY, _("Перейти к автору"), new FbMenuAuthors(m_id));
+	Append(wxID_ANY, _("Открыть серию"), NULL);
 	AppendSeparator();
 
 	if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));

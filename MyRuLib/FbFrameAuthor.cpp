@@ -13,6 +13,7 @@
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
+    EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
 	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameAuthor::OnEmptyAuthors)
@@ -61,6 +62,7 @@ void FbFrameAuthor::CreateControls()
 
 	m_MasterList = new FbAuthorList(splitter, ID_MASTER_LIST);
 	m_MasterList->SetFocus();
+	m_MasterList->SetSortedColumn(1);
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
@@ -111,7 +113,9 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	ToggleAlphabar(id);
 
-	(new FbAuthorThreadChar(this, alphabet[position]))->Execute();
+	(new FbAuthorThreadChar(this, alphabet[position], m_MasterList->GetSortedColumn()))->Execute();
+	m_AuthorMode = FB_AUTHOR_MODE_CHAR;
+	m_AuthorText = alphabet[position];
 }
 
 void FbFrameAuthor::SelectFirstAuthor(const int book)
@@ -142,13 +146,17 @@ void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
 	ToggleAlphabar(0);
-	(new FbAuthorThreadText(this, text))->Execute();
+	(new FbAuthorThreadText(this, text, m_MasterList->GetSortedColumn()))->Execute();
+	m_AuthorMode = FB_AUTHOR_MODE_TEXT;
+	m_AuthorText = text;
 }
 
 void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
 	ToggleAlphabar(0);
-	(new FbAuthorThreadCode(this, author))->Execute();
+	(new FbAuthorThreadCode(this, author, m_MasterList->GetSortedColumn()))->Execute();
+	m_AuthorMode = FB_AUTHOR_MODE_CODE;
+	m_AuthorCode = author;
 }
 
 void FbFrameAuthor::SelectRandomLetter()
@@ -299,4 +307,16 @@ void FbFrameAuthor::OnEmptyAuthors(wxCommandEvent& event)
 {
 	BookListUpdater updater(m_MasterList);
 	m_MasterList->AddRoot(wxEmptyString);
+}
+
+void FbFrameAuthor::OnColClick(wxListEvent& event)
+{
+	int order = m_MasterList->GetSortedColumn();
+	FbThread * thread = NULL;
+	switch (m_AuthorMode) {
+		case FB_AUTHOR_MODE_CHAR: thread = new FbAuthorThreadChar(this, m_AuthorText, order); break;
+		case FB_AUTHOR_MODE_TEXT: thread = new FbAuthorThreadText(this, m_AuthorText, order); break;
+		case FB_AUTHOR_MODE_CODE: thread = new FbAuthorThreadCode(this, m_AuthorCode, order); break;
+	}
+	if (thread) thread->Execute();
 }
