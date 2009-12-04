@@ -399,7 +399,6 @@ void FbMainFrame::FindAuthor(const wxString &text)
 		authors->Update();
 	}
 	if ( !text.IsEmpty() ) authors->FindAuthor(text);
-
 	authors->ActivateAuthors();
 }
 

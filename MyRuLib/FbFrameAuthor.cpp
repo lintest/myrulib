@@ -78,7 +78,7 @@ wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, const wxString & al
 	for (size_t i = 0; i<alphabet.Len(); i++) {
 		wxString letter = alphabet.Mid(i, 1);
 		int btnid = toolid + i;
-		toolBar->AddTool(btnid, letter, wxNullBitmap, wxNullBitmap, wxITEM_CHECK)->SetClientData( (wxObject*) i);
+		toolBar->AddTool(btnid, letter, wxNullBitmap, wxNullBitmap, wxITEM_CHECK);
 		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( FbFrameAuthor::OnLetterClicked ) );
 	}
 	toolBar->Realize();
