@@ -46,6 +46,17 @@ class FbAuthorThreadText: public FbAuthorThread
 		wxString m_mask;
 };
 
+class FbAuthorThreadLast: public FbAuthorThread
+{
+	public:
+		FbAuthorThreadLast(wxWindow * frame, const wxString & last)
+			:FbAuthorThread(frame, 1), m_last(last) {};
+	protected:
+		virtual void GetResult(wxSQLite3Database &database);
+	private:
+		wxString m_last;
+};
+
 class FbAuthorThreadCode: public FbAuthorThread
 {
 	public:

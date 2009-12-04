@@ -246,6 +246,8 @@
 		<Unit filename="FbMenu.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
+		<Unit filename="FbReplaceDlg.cpp" />
+		<Unit filename="FbReplaceDlg.h" />
 		<Unit filename="FbThread.h" />
 		<Unit filename="FbTreeListCtrl.cpp" />
 		<Unit filename="FbTreeListCtrl.h" />

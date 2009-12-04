@@ -76,3 +76,13 @@ void FbAuthorThreadCode::GetResult(wxSQLite3Database &database)
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }
+
+void FbAuthorThreadLast::GetResult(wxSQLite3Database &database)
+{
+	wxString sql = GetSQL(wxT("last_name=?"));
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_last);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FillAuthors(result);
+}
+

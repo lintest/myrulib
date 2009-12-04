@@ -5,6 +5,7 @@
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
 #include "FbBookEvent.h"
+#include "FbReplaceDlg.h"
 
 class FbAuthorMenu: public wxMenu
 {
@@ -33,8 +34,8 @@ END_EVENT_TABLE()
 FbAuthorList::FbAuthorList(wxWindow * parent, wxWindowID id)
 	:FbTreeListCtrl(parent, id, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER)
 {
-	this->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
-	this->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
+	AddColumn(_("Автор"), 40, wxALIGN_LEFT);
+	AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 }
 
 void FbAuthorList::OnContextMenu(wxTreeEvent& event)
@@ -89,7 +90,6 @@ void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
 	wxTreeItemId selected = GetSelection();
 	FbAuthorData * data = (FbAuthorData*) GetSelected();
 	if (!data) return;
-
 	int id = data->GetId();
 
 	wxString sql = wxT("SELECT count(id) FROM books WHERE id_author=?");
@@ -111,6 +111,12 @@ void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
 
 void FbAuthorList::OnAuthorReplace(wxCommandEvent& event)
 {
+	wxTreeItemId selected = GetSelection();
+	FbAuthorData * data = (FbAuthorData*) GetSelected();
+	if (!data) return;
+
+	int id = FbReplaceDlg::Execute(data->GetId());
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
 void * FbAuthorList::DeleteThread::Entry()
