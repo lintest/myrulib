@@ -82,20 +82,8 @@ void * FbDeleteThread::Entry()
 	FbCommonDatabase database;
 	wxString sql;
 
-	try {
-		wxString sql = wxString::Format(wxT("SELECT books.file_name, archives.file_name FROM books LEFT JOIN archives ON archives.id=books.id_archive WHERE books.id IN (%s)"), m_sel.c_str());
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		while (result.NextRow()) {
-			wxString file = result.GetString(0);
-			wxString zip = result.GetString(1);
-			wxString msg = wxT("Delete: ");
-			if (!zip.IsEmpty()) msg += zip + wxT(": ");
-			msg += file;
-			wxLogInfo(msg);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	sql = wxString::Format(wxT("books.id IN (%s)"), m_sel.c_str());
+	LogDelete(database, sql);
 
 	sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
 	ExecSQL(database, sql);
@@ -109,4 +97,22 @@ void * FbDeleteThread::Entry()
 	ExecSQL(database, strUpdateCountSQL);
 
 	return NULL;
+}
+
+void FbUpdateThread::LogDelete(FbDatabase &database, const wxString &where)
+{
+	wxString sql = wxT("SELECT books.file_name, archives.file_name FROM books LEFT JOIN archives ON archives.id=books.id_archive WHERE ") + where;
+	try {
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while (result.NextRow()) {
+			wxString file = result.GetString(0);
+			wxString zip = result.GetString(1);
+			wxString msg = wxT("Delete: ");
+			if (!zip.IsEmpty()) msg += zip + wxT(": ");
+			msg += file;
+			wxLogInfo(msg);
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 }

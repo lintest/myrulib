@@ -5,6 +5,7 @@
 #include <wx/listbox.h>
 #include <wx/wxsqlite3.h>
 #include "FbTreeListCtrl.h"
+#include "FbUpdateThread.h"
 
 class FbAuthorData: public wxTreeItemData
 {
@@ -30,6 +31,16 @@ class FbAuthorList: public FbTreeListCtrl
 		void OnAuthorReplace(wxCommandEvent& event);
 		void OnContextMenu(wxTreeEvent& event);
 		DECLARE_EVENT_TABLE();
+	private:
+		class DeleteThread: public FbUpdateThread
+		{
+			public:
+				DeleteThread(int author): FbUpdateThread(wxEmptyString), m_author(author) {};
+			protected:
+				virtual void * Entry();
+			private:
+				int m_author;
+		};
 };
 
 #endif // __FBAUTHORLIST_H__

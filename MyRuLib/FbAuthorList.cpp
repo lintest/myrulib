@@ -77,7 +77,6 @@ void FbAuthorList::OnAuthorAppend(wxCommandEvent& event)
 
 void FbAuthorList::OnAuthorModify(wxCommandEvent& event)
 {
-	wxTreeItemId selected = GetSelection();
 	FbAuthorData * data = (FbAuthorData*) GetSelected();
 	if (!data) return;
 
@@ -87,26 +86,54 @@ void FbAuthorList::OnAuthorModify(wxCommandEvent& event)
 
 void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
 {
+	wxTreeItemId selected = GetSelection();
+	FbAuthorData * data = (FbAuthorData*) GetSelected();
+	if (!data) return;
+
+	int id = data->GetId();
+
+	wxString sql = wxT("SELECT count(id) FROM books WHERE id_author=?");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	int count = result.NextRow() ? result.GetInt(0) : 0;
+
+	wxString msg = _("Удалить автора: ") + GetItemText(selected);
+	if (count) msg += wxString::Format(_("\nи все его книги в количестве %d шт.?"), count);
+	bool ok = wxMessageBox(msg, _("Удаление"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (ok) {
+		(new DeleteThread(id))->Execute();
+		Delete(selected);
+	}
 }
+
 
 void FbAuthorList::OnAuthorReplace(wxCommandEvent& event)
 {
 }
 
-bool FbAuthorList::SelectItem(const wxTreeItemId &root, int id)
+void * FbAuthorList::DeleteThread::Entry()
 {
-	wxTreeItemIdValue cookie;
-	wxTreeItemId child = GetFirstChild(root, cookie);
-	while (child.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*) GetItemData(child);
-		if (data && data->GetId() == id) {
-			wxTreeListCtrl::SelectItem(child);
-			wxTreeListCtrl::ScrollTo(child);
-			return true;
-		}
-		if (SelectItem(child, id)) return true;
-		child = GetNextChild(root, cookie);
-	}
-	return false;
-}
+	wxCriticalSectionLocker locker(sm_queue);
 
+	FbCommonDatabase database;
+	wxString sql;
+
+	sql = wxString::Format(wxT("books.id_author=%d"), m_author);
+	LogDelete(database, sql);
+
+	sql = wxString::Format(wxT("DELETE FROM bookseq WHERE id_book IN (SELECT id FROM books WHERE id_author=%d)"), m_author);
+	ExecSQL(database, sql);
+
+	sql = wxString::Format(wxT("DELETE FROM files WHERE id_book IN (SELECT id FROM books WHERE id_author=%d)"), m_author);
+	ExecSQL(database, sql);
+
+	sql = wxString::Format(wxT("DELETE FROM books WHERE id_author=%d"), m_author);
+	ExecSQL(database, sql);
+
+	sql = wxString::Format(wxT("DELETE FROM authors WHERE id=%d"), m_author);
+	ExecSQL(database, sql);
+
+	return NULL;
+}

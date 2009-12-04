@@ -14,6 +14,7 @@ class FbUpdateThread: public FbThread
 	protected:
 		static wxCriticalSection sm_queue;
 		void ExecSQL(FbDatabase &database, const wxString &sql);
+		void LogDelete(FbDatabase &database, const wxString &where);
 		virtual void * Entry();
 		wxString m_sql;
 		wxString m_sql2;
