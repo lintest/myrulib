@@ -52,6 +52,21 @@ class FbFrameAuthor : public FbFrameBase
 		void OnEmptyAuthors(wxCommandEvent& event);
 		void OnAppendAuthor(FbAuthorEvent& event);
 		DECLARE_EVENT_TABLE()
+	protected:
+		class AuthorThread: public BaseThread
+		{
+			public:
+				AuthorThread(FbFrameBase * frame, FbListMode mode, const int author)
+					:BaseThread(frame, mode), m_author(author), m_number(sm_skiper.NewNumber()) {};
+				virtual void *Entry();
+			protected:
+				virtual void CreateTree(wxSQLite3ResultSet &result);
+				virtual wxString GetSQL(const wxString & condition);
+			private:
+				static FbThreadSkiper sm_skiper;
+				int m_author;
+				int m_number;
+		};
 };
 
 #endif // __FBFRAMEAUTHOR_H__

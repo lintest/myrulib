@@ -5,7 +5,6 @@
 #include "FbManager.h"
 #include "FbMainMenu.h"
 #include "FbCalendar.h"
-#include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameDate::OnGenreSelected)
@@ -47,21 +46,9 @@ void FbFrameDate::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-class FrameDateThread: public FbFrameBaseThread
-{
-	public:
-		FrameDateThread(FbFrameDate * frame, FbListMode mode, const int code)
-			:FbFrameBaseThread(frame, mode), m_code(code), m_number(sm_skiper.NewNumber()) {};
-		virtual void *Entry();
-	private:
-		static FbThreadSkiper sm_skiper;
-		int m_code;
-		int m_number;
-};
+FbThreadSkiper FbFrameDate::DateThread::sm_skiper;
 
-FbThreadSkiper FrameDateThread::sm_skiper;
-
-void * FrameDateThread::Entry()
+void * FbFrameDate::DateThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
@@ -94,7 +81,7 @@ void FbFrameDate::OnGenreSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 //		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
-//		if (data) ( new FrameDateThread(this, m_BooksPanel->GetListMode(), data->GetCode()) )->Execute();
+//		if (data) ( new DateThread(this, m_BooksPanel->GetListMode(), data->GetCode()) )->Execute();
 	}
 }
 
@@ -106,6 +93,6 @@ void FbFrameDate::UpdateBooklist()
 //		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
 //		if (data) code = data->GetCode();
 	}
-	if (code) ( new FrameDateThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
+	if (code) ( new DateThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
 }
 

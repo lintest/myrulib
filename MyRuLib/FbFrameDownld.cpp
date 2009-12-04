@@ -5,7 +5,6 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "FbFrameBaseThread.h"
 #include "FbDownloader.h"
 #include "FbUpdateThread.h"
 #include "res/start.xpm"
@@ -92,30 +91,15 @@ void FbFrameDownld::FillFolders(const int iCurrent)
 	m_MasterList->Thaw();
 }
 
-class FrameDownldThread: public FbFrameBaseThread
-{
-	public:
-		FrameDownldThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
-			:FbFrameBaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
-		virtual void *Entry();
-	protected:
-		virtual wxString GetOrder();
-	private:
-		static FbThreadSkiper sm_skiper;
-		int m_folder;
-		int m_number;
-		FbFolderType m_type;
-};
+FbThreadSkiper FbFrameDownld::DownldThread::sm_skiper;
 
-FbThreadSkiper FrameDownldThread::sm_skiper;
-
-wxString FrameDownldThread::GetOrder()
+wxString FbFrameDownld::DownldThread::GetOrder()
 {
 	if (m_folder==1) return wxT("download");
-	return FbFrameBaseThread::GetOrder();
+	return BaseThread::GetOrder();
 }
 
-void * FrameDownldThread::Entry()
+void * FbFrameDownld::DownldThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
@@ -170,7 +154,7 @@ void FbFrameDownld::FillByFolder(FbFolderData * data)
 {
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( FT_DOWNLOAD );
-	( new FrameDownldThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
+	( new DownldThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
 FbFolderData * FbFrameDownld::GetSelected()

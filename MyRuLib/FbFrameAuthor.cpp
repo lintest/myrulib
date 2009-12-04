@@ -6,7 +6,6 @@
 #include "InfoCash.h"
 #include "FbClientData.h"
 #include "ExternalDlg.h"
-#include "FbFrameBaseThread.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
 #include "FbAuthorThread.h"
@@ -20,21 +19,6 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameAuthor::OnAppendAuthor)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
 END_EVENT_TABLE()
-
-class FrameAuthorThread: public FbFrameBaseThread
-{
-	public:
-		FrameAuthorThread(FbFrameBase * frame, FbListMode mode, const int author)
-			:FbFrameBaseThread(frame, mode), m_author(author), m_number(sm_skiper.NewNumber()) {};
-		virtual void *Entry();
-	protected:
-		virtual void CreateTree(wxSQLite3ResultSet &result);
-		virtual wxString GetSQL(const wxString & condition);
-	private:
-		static FbThreadSkiper sm_skiper;
-		int m_author;
-		int m_number;
-};
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
 	:FbFrameBase(parent, ID_FRAME_AUTHOR, _("Авторы"))
@@ -134,7 +118,7 @@ void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
-		if (data) ( new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
+		if (data) ( new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
 
@@ -179,9 +163,9 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 	}
 }
 
-FbThreadSkiper FrameAuthorThread::sm_skiper;
+FbThreadSkiper FbFrameAuthor::AuthorThread::sm_skiper;
 
-wxString FrameAuthorThread::GetSQL(const wxString & condition)
+wxString FbFrameAuthor::AuthorThread::GetSQL(const wxString & condition)
 {
 	wxString sql;
 	switch (m_mode) {
@@ -223,7 +207,7 @@ wxString FrameAuthorThread::GetSQL(const wxString & condition)
 	return wxString::Format(sql, condition.c_str());
 }
 
-void * FrameAuthorThread::Entry()
+void * FbFrameAuthor::AuthorThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
@@ -259,7 +243,7 @@ void * FrameAuthorThread::Entry()
 	return NULL;
 }
 
-void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
+void FbFrameAuthor::AuthorThread::CreateTree(wxSQLite3ResultSet &result)
 {
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
@@ -282,7 +266,7 @@ void FbFrameAuthor::UpdateBooklist()
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
-		if (data) (new FrameAuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
+		if (data) (new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 	}
 }
 

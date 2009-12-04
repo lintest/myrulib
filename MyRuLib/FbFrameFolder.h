@@ -16,27 +16,40 @@
 
 class FbFrameFolder : public FbFrameBase
 {
-public:
-	FbFrameFolder(wxAuiMDIParentFrame * parent);
-	void UpdateFolder(const int iFolder, const FbFolderType type);
-protected:
-	virtual void CreateControls();
-	virtual void UpdateBooklist();
-private:
-	void CreateBookInfo();
-	void FillFolders(const int iCurrent = 0);
-	void FillByFolder(FbFolderData * data);
-	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-	FbFolderData * GetSelected();
-private:
-	wxToolBar * m_ToolBar;
-private:
-	void OnFavoritesDel(wxCommandEvent & event);
-	void OnFolderAppend(wxCommandEvent & event);
-	void OnFolderModify(wxCommandEvent & event);
-	void OnFolderDelete(wxCommandEvent & event);
-	void OnFolderSelected(wxTreeEvent & event);
-	DECLARE_EVENT_TABLE()
+	public:
+		FbFrameFolder(wxAuiMDIParentFrame * parent);
+		void UpdateFolder(const int iFolder, const FbFolderType type);
+	protected:
+		virtual void CreateControls();
+		virtual void UpdateBooklist();
+	private:
+		void CreateBookInfo();
+		void FillFolders(const int iCurrent = 0);
+		void FillByFolder(FbFolderData * data);
+		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
+		FbFolderData * GetSelected();
+	private:
+		wxToolBar * m_ToolBar;
+	private:
+		void OnFavoritesDel(wxCommandEvent & event);
+		void OnFolderAppend(wxCommandEvent & event);
+		void OnFolderModify(wxCommandEvent & event);
+		void OnFolderDelete(wxCommandEvent & event);
+		void OnFolderSelected(wxTreeEvent & event);
+		DECLARE_EVENT_TABLE()
+	protected:
+		class FolderThread: public BaseThread
+		{
+			public:
+				FolderThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
+					:BaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
+				virtual void *Entry();
+			private:
+				static FbThreadSkiper sm_skiper;
+				int m_folder;
+				int m_number;
+				FbFolderType m_type;
+		};
 };
 
 #endif // __FBFRAMEFOLDER_H__

@@ -16,16 +16,28 @@
 
 class FbFrameDate : public FbFrameBase
 {
-public:
-	FbFrameDate(wxAuiMDIParentFrame * parent);
-protected:
-	virtual void CreateControls();
-	virtual void UpdateBooklist();
-private:
-	void CreateBookInfo();
-private:
-	void OnGenreSelected(wxTreeEvent & event);
-	DECLARE_EVENT_TABLE()
+	public:
+		FbFrameDate(wxAuiMDIParentFrame * parent);
+	protected:
+		virtual void CreateControls();
+		virtual void UpdateBooklist();
+	private:
+		void CreateBookInfo();
+	private:
+		void OnGenreSelected(wxTreeEvent & event);
+		DECLARE_EVENT_TABLE()
+	protected:
+		class DateThread: public BaseThread
+		{
+			public:
+				DateThread(FbFrameDate * frame, FbListMode mode, const int code)
+					:BaseThread(frame, mode), m_code(code), m_number(sm_skiper.NewNumber()) {};
+				virtual void *Entry();
+			private:
+				static FbThreadSkiper sm_skiper;
+				int m_code;
+				int m_number;
+		};
 };
 
 #endif // __FBFRAMEDATE_H__

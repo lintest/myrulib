@@ -5,7 +5,6 @@
 #include "FbMainMenu.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "FbFrameBaseThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
 	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbFrameSearch::OnFoundNothing)
@@ -38,18 +37,7 @@ void FbFrameSearch::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-class FrameSearchThread: public FbFrameBaseThread
-{
-	public:
-		FrameSearchThread(FbFrameBase * frame, FbListMode mode, const wxString &title, const wxString &author)
-			:FbFrameBaseThread(frame, mode), m_title(title), m_author(author) {};
-		virtual void *Entry();
-	private:
-		wxString m_title;
-		wxString m_author;
-};
-
-void * FrameSearchThread::Entry()
+void * FbFrameSearch::SearchThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
@@ -98,7 +86,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title,
 
 void FbFrameSearch::UpdateBooklist()
 {
-	( new FrameSearchThread(this, m_BooksPanel->GetListMode(), m_title, m_author) )->Execute();
+	( new SearchThread(this, m_BooksPanel->GetListMode(), m_title, m_author) )->Execute();
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)
