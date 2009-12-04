@@ -18,7 +18,7 @@ class FbBookList: public FbTreeListCtrl
 		size_t GetSelected(wxArrayInt &items);
 		void DeleteItems(wxArrayInt &items);
 	private:
-		size_t GetCount(const wxTreeItemId &parent);
+		size_t GetCount(const wxTreeItemId &parent, wxArrayInt &items);
 		bool DeleteItems(const wxTreeItemId &parent, wxArrayInt &items);
 		void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
 		void ShowContextMenu(const wxPoint& pos);
