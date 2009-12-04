@@ -80,6 +80,7 @@ void * FbDeleteThread::Entry()
 	wxCriticalSectionLocker locker(sm_queue);
 
 	FbCommonDatabase database;
+	wxString sql;
 
 	try {
 		wxString sql = wxString::Format(wxT("SELECT books.file_name, archives.file_name FROM books LEFT JOIN archives ON archives.id=books.id_archive WHERE books.id IN (%s)"), m_sel.c_str());
@@ -96,7 +97,13 @@ void * FbDeleteThread::Entry()
 		wxLogError(e.GetMessage());
 	}
 
-	wxString sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
+	sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
+	ExecSQL(database, sql);
+
+	sql = wxString::Format(wxT("DELETE FROM bookseq WHERE id_book IN (%s)"), m_sel.c_str());
+	ExecSQL(database, sql);
+
+	sql = wxString::Format(wxT("DELETE FROM files WHERE id_book IN (%s)"), m_sel.c_str());
 	ExecSQL(database, sql);
 
 	ExecSQL(database, strUpdateCountSQL);
