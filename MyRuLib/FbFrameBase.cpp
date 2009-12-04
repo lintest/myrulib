@@ -52,7 +52,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL), m_BooksPanel(NULL), m_BooksCount(0)
+	m_MasterList(NULL), m_BooksPanel(NULL)
 {
 	Create(parent, id, title);
 }
@@ -103,7 +103,6 @@ void FbFrameBase::OnExternal(wxCommandEvent& event)
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 {
 	m_BooksPanel->EmptyBooks();
-	m_BooksCount = 0;
 }
 
 void FbFrameBase::OnAppendBook(FbBookEvent& event)
@@ -271,14 +270,14 @@ void FbFrameBase::OnColClick(wxListEvent& event)
 
 void FbFrameBase::OnBooksCount(wxCommandEvent& event)
 {
-	m_BooksCount = event.GetInt();
 	UpdateStatus();
 }
 
 wxString FbFrameBase::GetStatus()
 {
-	wxString msg = wxString::Format(wxT(" %d "), m_BooksCount);
-	msg += Naming(m_BooksCount, _("книга"), _("книги"), _("книг"));
+	size_t count = GetBookCount();
+	wxString msg = wxString::Format(wxT(" %d "), count);
+	msg += Naming(count, _("книга"), _("книги"), _("книг"));
 	return msg;
 }
 
@@ -298,7 +297,7 @@ wxString FbFrameBase::Naming(int count, const wxString &single, const wxString &
 			return plural;
 	}
 
-	switch (m_BooksCount % 10) {
+	switch (count % 10) {
 		case 1:
 			return single;
 		case 2:
@@ -308,4 +307,9 @@ wxString FbFrameBase::Naming(int count, const wxString &single, const wxString &
 		default:
 			return plural;
 	}
+}
+
+int FbFrameBase::GetBookCount()
+{
+	return (m_BooksPanel) ? m_BooksPanel->m_BookList->GetCount() : 0;
 }

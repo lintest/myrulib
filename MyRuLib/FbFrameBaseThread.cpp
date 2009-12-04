@@ -93,7 +93,6 @@ wxString FbFrameBaseThread::GetOrder()
 
 void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)
 {
-	int count = 0;
 	wxString thisAuthor = wxT("@@@");
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
@@ -111,21 +110,18 @@ void FbFrameBaseThread::CreateTree(wxSQLite3ResultSet &result)
 		}
 		BookTreeItemData data(result);
 		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
-		count++;
 	}
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT, count).Post(m_frame);
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT).Post(m_frame);
 }
 
 void FbFrameBaseThread::CreateList(wxSQLite3ResultSet &result)
 {
-	int count = 0;
 	while (result.NextRow()) {
 		BookTreeItemData data(result);
 		wxString full_name = result.GetString(wxT("full_name"));
 		FbBookEvent(ID_APPEND_BOOK, &data, full_name).Post(m_frame);
-		count++;
 	}
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT, count).Post(m_frame);
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT).Post(m_frame);
 }
 
 void FbFrameBaseThread::EmptyBooks()

@@ -44,10 +44,10 @@ protected:
 	void CreateBooksPanel(wxWindow * parent, long substyle);
 	int GetColOrder(int col);
 	wxString Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural);
+	int GetBookCount();
 protected:
 	FbTreeListCtrl * m_MasterList;
 	FbBookPanel * m_BooksPanel;
-	int m_BooksCount;
 private:
 	void OnActivated(wxActivateEvent & event);
 	void OnBooksCount(wxCommandEvent& event);
