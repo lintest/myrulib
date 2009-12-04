@@ -44,6 +44,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
 	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
 	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
+	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameBase::OnBooksCount)
 	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
@@ -51,7 +52,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL), m_BooksPanel(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL), m_BooksCount(0)
 {
 	Create(parent, id, title);
 }
@@ -102,6 +103,7 @@ void FbFrameBase::OnExternal(wxCommandEvent& event)
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 {
 	m_BooksPanel->EmptyBooks();
+	m_BooksCount = 0;
 }
 
 void FbFrameBase::OnAppendBook(FbBookEvent& event)
@@ -218,10 +220,7 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
-	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
-	if (frame) {
-
-	}
+	UpdateStatus();
 }
 
 void FbFrameBase::UpdateFonts(bool refresh)
@@ -270,3 +269,43 @@ void FbFrameBase::OnColClick(wxListEvent& event)
 	UpdateBooklist();
 }
 
+void FbFrameBase::OnBooksCount(wxCommandEvent& event)
+{
+	m_BooksCount = event.GetInt();
+	UpdateStatus();
+}
+
+wxString FbFrameBase::GetStatus()
+{
+	wxString msg = wxString::Format(wxT(" %d "), m_BooksCount);
+	msg += Naming(m_BooksCount, _("книга"), _("книги"), _("книг"));
+	return msg;
+}
+
+void FbFrameBase::UpdateStatus()
+{
+	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
+	if (frame) frame->SetStatus(GetStatus());
+}
+
+wxString FbFrameBase::Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural)
+{
+	switch (count % 100) {
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+			return plural;
+	}
+
+	switch (m_BooksCount % 10) {
+		case 1:
+			return single;
+		case 2:
+		case 3:
+		case 4:
+			return genitive;
+		default:
+			return plural;
+	}
+}

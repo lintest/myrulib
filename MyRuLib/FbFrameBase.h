@@ -33,19 +33,24 @@ public:
 	void UpdateInfo(int id);
 	virtual void UpdateFonts(bool refresh = true);
 	wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
+	void UpdateStatus();
 protected:
 	virtual void CreateControls();
 	virtual void UpdateBooklist() = 0;
+	virtual wxString GetStatus();
 	int GetModeKey();
 	int GetViewKey();
-protected:
 	void OnSubmenu(wxCommandEvent& event);
 	void CreateBooksPanel(wxWindow * parent, long substyle);
 	int GetColOrder(int col);
+	wxString Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural);
+protected:
 	FbTreeListCtrl * m_MasterList;
 	FbBookPanel * m_BooksPanel;
+	int m_BooksCount;
 private:
 	void OnActivated(wxActivateEvent & event);
+	void OnBooksCount(wxCommandEvent& event);
 	void OnDirection(wxCommandEvent& event);
 	void OnChangeOrder(wxCommandEvent& event);
 	void OnChangeFilter(wxCommandEvent& event);

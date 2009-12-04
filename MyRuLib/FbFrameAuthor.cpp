@@ -18,6 +18,7 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
 	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameAuthor::OnEmptyAuthors)
 	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameAuthor::OnAppendAuthor)
+	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
 END_EVENT_TABLE()
 
 class FrameAuthorThread: public FbFrameBaseThread
@@ -260,6 +261,7 @@ void * FrameAuthorThread::Entry()
 
 void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 {
+	int count = 0;
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
 		wxString nextSequence = result.GetString(wxT("sequence"));
@@ -271,7 +273,9 @@ void FrameAuthorThread::CreateTree(wxSQLite3ResultSet &result)
 
 		BookTreeItemData data(result);
 		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
+		count++;
 	}
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT, count).Post(m_frame);
 }
 
 void FbFrameAuthor::UpdateBooklist()
@@ -320,3 +324,12 @@ void FbFrameAuthor::OnColClick(wxListEvent& event)
 	}
 	if (thread) thread->Execute();
 }
+
+void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
+{
+	wxTreeItemId item = m_MasterList->GetSelection();
+	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d"), event.GetInt()));
+
+	event.Skip();
+}
+

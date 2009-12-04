@@ -573,6 +573,11 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 	}
 }
 
+void FbMainFrame::SetStatus(const wxString &text)
+{
+	m_ProgressBar.SetStatusText(text, 2);
+}
+
 void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
 {
 	OnMenuNothing(event);
@@ -585,3 +590,4 @@ void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
 	}
 */
 }
+
