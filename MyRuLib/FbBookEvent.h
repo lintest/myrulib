@@ -23,8 +23,8 @@ class FbCommandEvent: public wxCommandEvent
 	public:
 		FbCommandEvent(wxEventType commandType, int winid, const wxString &sting = wxEmptyString)
 			: wxCommandEvent(commandType, winid) { SetString(sting); };
-		FbCommandEvent(wxEventType commandType, int winid, int id)
-			: wxCommandEvent(commandType, winid) { SetInt(id); };
+		FbCommandEvent(wxEventType commandType, int winid, int id, const wxString &sting = wxEmptyString)
+			: wxCommandEvent(commandType, winid) { SetInt(id); SetString(sting); };
 		FbCommandEvent(const wxCommandEvent& event)
 			: wxCommandEvent(event) {};
 	public:
