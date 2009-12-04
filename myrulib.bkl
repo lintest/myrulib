@@ -74,6 +74,7 @@
 		<sources>MyRuLib/FbFrameHtml.cpp</sources>
 		<sources>MyRuLib/FbFrameGenres.cpp</sources>
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
+		<sources>MyRuLib/FbFrameSequen.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbImportThread.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
