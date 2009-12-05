@@ -27,10 +27,10 @@ void * FbAuthorThread::Entry()
 wxString FbAuthorThread::GetOrder()
 {
 	switch (m_order) {
-		case -2: return wxT("number desc, search_name desc");
-		case -1: return wxT("search_name desc");
-		case  2: return wxT("number, search_name");
-		default: return wxT("search_name");
+		case -2: return wxT("number desc, name desc");
+		case -1: return wxT("name desc");
+		case  2: return wxT("number, name");
+		default: return wxT("name ");
 	}
 }
 

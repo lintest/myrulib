@@ -35,10 +35,10 @@ class FbFrameSequen : public FbFrameBase
 		void OnBooksCount(wxCommandEvent& event);
 		void OnColClick(wxListEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
-		void OnExternal(wxCommandEvent& event);
 		void OnCharEvent(wxKeyEvent& event);
 		void OnEmptyAuthors(wxCommandEvent& event);
 		void OnAppendAuthor(FbAuthorEvent& event);
+		void OnFindEnter(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 	protected:
 		class SequenThread: public BaseThread
@@ -55,13 +55,14 @@ class FbFrameSequen : public FbFrameBase
 		class MasterThread: public FbThread
 		{
 			public:
-				MasterThread(wxWindow * frame, const wxString &text, int order):  m_frame(frame), m_order(order) {};
+				MasterThread(wxWindow * frame, const wxString &text, int order): m_frame(frame), m_text(text), m_order(order) {};
 			protected:
 				virtual void * Entry();
 				wxString GetOrder();
 			private:
 				static wxCriticalSection sm_queue;
 				wxWindow * m_frame;
+				wxString m_text;
 				int m_order;
 		};
 };

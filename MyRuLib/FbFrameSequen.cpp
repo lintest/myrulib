@@ -12,10 +12,11 @@
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnAuthorSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
-	EVT_MENU(wxID_SAVE, FbFrameSequen::OnExternal)
 	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameSequen::OnEmptyAuthors)
 	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameSequen::OnAppendAuthor)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
+	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
+	EVT_MENU(ID_SEQUENCE_BTN, FbFrameSequen::OnFindEnter )
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
@@ -122,15 +123,6 @@ void FbFrameSequen::SelectRandomLetter()
 	wxPostEvent(this, event);
 }
 
-void FbFrameSequen::OnExternal(wxCommandEvent& event)
-{
-	wxTreeItemId item = m_MasterList->GetSelection();
-	if (item.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(item);
-		if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetId());
-	}
-}
-
 FbThreadSkiper FbFrameSequen::SequenThread::sm_skiper;
 
 void * FbFrameSequen::SequenThread::Entry()
@@ -198,7 +190,6 @@ void FbFrameSequen::OnBooksCount(wxCommandEvent& event)
 {
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d"), GetBookCount()));
-
 	event.Skip();
 }
 
@@ -210,10 +201,14 @@ void * FbFrameSequen::MasterThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		wxString sql = wxT("SELECT id, value as name, number FROM sequences ORDER BY name");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-//		stmt.Bind(1, m_letter);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FbSearchFunction search(m_text);
+		wxString sql = wxT("SELECT id, value as name, number FROM sequences");
+		if (!m_text.IsEmpty()) {
+			sql += wxT(" WHERE SEARCH(value)");
+			database.CreateFunction(wxT("SEARCH"), 1, search);
+		}
+		sql += wxT(" ORDER BY ") + GetOrder();
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 		FbCommandEvent(fbEVT_AUTHOR_ACTION, ID_EMPTY_AUTHORS).Post(m_frame);
 		while (result.NextRow()) {
 			FbAuthorEvent(ID_APPEND_AUTHOR, result).Post(m_frame);
@@ -226,3 +221,17 @@ void * FbFrameSequen::MasterThread::Entry()
 	return NULL;
 }
 
+wxString FbFrameSequen::MasterThread::GetOrder()
+{
+	switch (m_order) {
+		case -2: return wxT("number desc, name desc");
+		case -1: return wxT("name desc");
+		case  2: return wxT("number, name");
+		default: return wxT("name ");
+	}
+}
+
+void FbFrameSequen::OnFindEnter(wxCommandEvent& event)
+{
+	FindSequence(m_FindText->GetValue());
+}

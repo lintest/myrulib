@@ -148,6 +148,7 @@ void FbMainDatabase::DoUpgrade(int version)
 
 		case 8: {
 			/** TABLE aliases **/
+			ExecuteUpdate(wxT("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
 			try {
 				ExecuteUpdate(wxT("ALTER TABLE bookseq ADD number INTEGER"));
 				ExecuteUpdate(strUpdateSequenCount);

@@ -311,7 +311,6 @@ void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
 {
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d"), GetBookCount()));
-
 	event.Skip();
 }
 
