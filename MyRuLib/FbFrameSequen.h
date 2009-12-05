@@ -44,12 +44,12 @@ class FbFrameSequen : public FbFrameBase
 		class SequenThread: public BaseThread
 		{
 			public:
-				SequenThread(FbFrameBase * frame, FbListMode mode, const int author)
-					:BaseThread(frame, mode), m_author(author), m_number(sm_skiper.NewNumber()) {};
+				SequenThread(FbFrameBase * frame, FbListMode mode, const int master)
+					:BaseThread(frame, mode), m_master(master), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
 			private:
 				static FbThreadSkiper sm_skiper;
-				int m_author;
+				int m_master;
 				int m_number;
 		};
 		class MasterThread: public FbThread
