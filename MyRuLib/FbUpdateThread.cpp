@@ -94,7 +94,8 @@ void * FbDeleteThread::Entry()
 	sql = wxString::Format(wxT("DELETE FROM files WHERE id_book IN (%s)"), m_sel.c_str());
 	ExecSQL(database, sql);
 
-	ExecSQL(database, strUpdateCountSQL);
+	ExecSQL(database, strUpdateAuthorCount);
+	ExecSQL(database, strUpdateSequenCount);
 
 	return NULL;
 }

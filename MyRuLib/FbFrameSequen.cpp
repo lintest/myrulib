@@ -64,6 +64,8 @@ void FbFrameSequen::CreateControls()
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	FbFrameBase::CreateControls();
+
+	FindSequence(wxEmptyString);
 }
 
 wxToolBar * FbFrameSequen::CreateToolBar(long style, wxWindowID winid, const wxString& name)
@@ -131,48 +133,6 @@ void FbFrameSequen::OnExternal(wxCommandEvent& event)
 
 FbThreadSkiper FbFrameSequen::SequenThread::sm_skiper;
 
-wxString FbFrameSequen::SequenThread::GetSQL(const wxString & condition)
-{
-	wxString sql;
-	switch (m_mode) {
-		case FB2_MODE_TREE:
-			sql = wxT("\
-				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.id_author, \
-					states.rating, sequences.value AS sequence, bookseq.number as number\
-				FROM books \
-					LEFT JOIN bookseq ON bookseq.id_book=books.id \
-					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
-					LEFT JOIN states ON books.md5sum=states.md5sum \
-				WHERE (%s) \
-				ORDER BY key, sequences.value, bookseq.number, books.title \
-			");
-			break;
-		case FB2_MODE_LIST:
-			sql = wxT("\
-				SELECT DISTINCT\
-					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
-					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
-				FROM books \
-					LEFT JOIN books as sub ON sub.id=books.id \
-					LEFT JOIN authors ON sub.id_author = authors.id \
-					LEFT JOIN states ON books.md5sum=states.md5sum \
-				WHERE (%s) \
-				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating, books.created \
-				ORDER BY \
-			") + GetOrder();
-			break;
-	}
-
-	wxString str = wxT("(%s)");
-	if (m_FilterFb2) str += wxT("AND(books.file_type='fb2')");
-	if (m_FilterLib) str += wxT("AND(books.id>0)");
-	if (m_FilterUsr) str += wxT("AND(books.id<0)");
-	sql = wxString::Format(sql, str.c_str());
-
-	return wxString::Format(sql, condition.c_str());
-}
-
 void * FbFrameSequen::SequenThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
@@ -183,18 +143,7 @@ void * FbFrameSequen::SequenThread::Entry()
 		FbCommonDatabase database;
 		InitDatabase(database);
 
-		if (m_mode == FB2_MODE_TREE) {
-			wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, m_author);
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
-			if (result.NextRow()) {
-				wxString thisAuthor = result.GetString(wxT("full_name"));
-				FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisAuthor).Post(m_frame);
-			}
-		}
-
-		wxString sql = GetSQL(wxT("books.id_author=?"));
+		wxString sql = GetSQL(wxT("bookseq.id_seq=?"));
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_author);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -207,23 +156,6 @@ void * FbFrameSequen::SequenThread::Entry()
 	}
 
 	return NULL;
-}
-
-void FbFrameSequen::SequenThread::CreateTree(wxSQLite3ResultSet &result)
-{
-	wxString thisSequence = wxT("@@@");
-	while (result.NextRow()) {
-		wxString nextSequence = result.GetString(wxT("sequence"));
-
-		if (thisSequence != nextSequence) {
-			thisSequence = nextSequence;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
-		}
-
-		BookTreeItemData data(result);
-		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
-	}
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT).Post(m_frame);
 }
 
 void FbFrameSequen::UpdateBooklist()
@@ -278,7 +210,7 @@ void * FbFrameSequen::MasterThread::Entry()
 
 	try {
 		FbCommonDatabase database;
-		wxString sql = wxT("SELECT id, value FROM sequences ORDER BY value");
+		wxString sql = wxT("SELECT id, value as name, number FROM sequences ORDER BY name");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 //		stmt.Bind(1, m_letter);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();

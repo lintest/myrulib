@@ -278,7 +278,8 @@ FbImportThread::FbImportThread()
 
 void FbImportThread::OnExit()
 {
-	m_database.ExecuteUpdate(strUpdateCountSQL);
+	m_database.ExecuteUpdate(strUpdateAuthorCount);
+	m_database.ExecuteUpdate(strUpdateSequenCount);
 }
 
 wxString FbImportThread::GetRelative(const wxString &filename)

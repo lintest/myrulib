@@ -3,7 +3,7 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 
-#define DB_DATABASE_VERSION 7
+#define DB_DATABASE_VERSION 8
 #define DB_CONFIG_VERSION 2
 
 wxCriticalSection FbDatabase::sm_queue;
@@ -142,9 +142,18 @@ void FbMainDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
 			try {
 				ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
-				ExecuteUpdate(strUpdateCountSQL);
+				ExecuteUpdate(strUpdateAuthorCount);
 			} catch (...) {};
 		} break;
+
+		case 8: {
+			/** TABLE aliases **/
+			try {
+				ExecuteUpdate(wxT("ALTER TABLE bookseq ADD number INTEGER"));
+				ExecuteUpdate(strUpdateSequenCount);
+			} catch (...) {};
+		} break;
+
 	}
 }
 

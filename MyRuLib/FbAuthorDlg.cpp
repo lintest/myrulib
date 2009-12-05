@@ -138,7 +138,7 @@ void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	{
-		wxString sql = strUpdateCountSQL + wxT("WHERE id=?");
+		wxString sql = strUpdateAuthorCount + wxT("WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, new_id);
 		stmt.ExecuteUpdate();

@@ -46,7 +46,7 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 
 wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %s ORDER BY ") + GetOrder(), condition.c_str());
+	return wxString::Format( wxT("SELECT id, full_name as name, number FROM authors WHERE %s ORDER BY ") + GetOrder(), condition.c_str());
 }
 
 void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)

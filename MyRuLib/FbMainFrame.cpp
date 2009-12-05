@@ -482,7 +482,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
 	wxString msg = _("Выполнить реструктуризацию базы данных?");
 	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK)
-		(new FbUpdateThread(strUpdateCountSQL, wxT("VACUUM")))->Execute();
+		(new FbUpdateThread(strUpdateAuthorCount, wxT("VACUUM")))->Execute();
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
