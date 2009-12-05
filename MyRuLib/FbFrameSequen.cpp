@@ -135,7 +135,7 @@ void * FbFrameSequen::SequenThread::Entry()
 		FbCommonDatabase database;
 		InitDatabase(database);
 
-		wxString sql = GetSQL(wxT("bookseq.id_seq=?"));
+		wxString sql = GetSQL(wxT("books.id IN (SELECT id_book FROM bookseq WHERE id_seq=?)"));
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_author);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
