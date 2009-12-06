@@ -135,13 +135,12 @@ void * FbFrameSequen::SequenThread::Entry()
 		FbCommonDatabase database;
 		InitDatabase(database);
 
-		wxString sql = GetSQL(wxT("books.id IN (SELECT id_book FROM bookseq WHERE id_seq=?)"));
-		if (m_mode == FB2_MODE_TREE)
-			sql += wxT("AND bookseq.id_seq=?");
+		wxString condition = wxT("books.id IN (SELECT id_book FROM bookseq WHERE id_seq=?)");
+		if (m_mode == FB2_MODE_TREE) condition += wxT("AND bookseq.id_seq=?");
+		wxString sql = GetSQL(condition);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_master);
-		if (m_mode == FB2_MODE_TREE)
-			stmt.Bind(2, m_master);
+		if (m_mode == FB2_MODE_TREE) stmt.Bind(2, m_master);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 		if (sm_skiper.Skipped(m_number)) return NULL;

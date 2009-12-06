@@ -216,6 +216,7 @@ void FbImportBook::AppendBook(const wxString &filename, wxFileOffset size, int i
 	}
 
 	for (size_t i = 0; i<sequences.Count(); i++) {
+		if (sequences[i].id == 0) continue;
 		wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
