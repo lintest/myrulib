@@ -25,13 +25,13 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
 	AppendSeparator();
 
-	Append(wxID_EDIT, _("Редактировать"));
+//	Append(wxID_EDIT, _("Редактировать"));
 	Append(wxID_DELETE, _("Удалить книгу"));
 	AppendSeparator();
 
 	if (bShowOrder) Append(wxID_ANY, _("Сортировка"), new FbMenuSort);
 	Append(wxID_ANY, _("Перейти к автору"), new FbMenuAuthors(m_id));
-	Append(wxID_ANY, _("Открыть серию"), NULL);
+//	Append(wxID_ANY, _("Открыть серию"), NULL);
 	AppendSeparator();
 
 	if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
