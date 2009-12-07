@@ -65,7 +65,9 @@ wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)
 	}
 
 	FbDataOpenDlg dlg(NULL);
-	if (dlg.ShowModal() == wxID_OK) return dlg.GetFilename();
+	if (dlg.ShowModal() == wxID_OK) {
+		return dlg.GetFilename();
+	}
 
 	filename.SetPath(paths.GetUserConfigDir());
 	return filename;

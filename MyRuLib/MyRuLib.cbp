@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinDebug\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\LinDebug\" />
-				<Option object_output="..\build\LinDebug\" />
+				<Option output="../build/LinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinDebug/" />
+				<Option object_output="../build/LinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -21,14 +21,14 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
-					<Add directory="..\build\LinDebug" />
+					<Add directory="../build/LinDebug" />
 				</Linker>
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinRelease\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\LinRelease\" />
-				<Option object_output="..\build\LinRelease\" />
+				<Option output="../build/LinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinRelease/" />
+				<Option object_output="../build/LinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -40,14 +40,14 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="`wx-config --libs`" />
-					<Add directory="..\build\LinRelease" />
+					<Add directory="../build/LinRelease" />
 				</Linker>
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinDebug\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\WinDebug\" />
-				<Option object_output="..\build\WinDebug\" />
+				<Option output="../build/WinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/WinDebug/" />
+				<Option object_output="../build/WinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -58,16 +58,17 @@
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
-					<Add directory="$(WXWIN)\include" />
-					<Add directory="$(WXWIN)\contrib\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
-					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28u_aui.a" />
+					<Add library="libwxmsw28u_adv.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
 					<Add library="libwxbase28u_net.a" />
@@ -93,15 +94,15 @@
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
 					<Add library="libshlwapi.a" />
-					<Add directory="$(WXWIN)\lib\gcc_lib" />
-					<Add directory="..\build\WinDebug\" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinDebug/" />
 				</Linker>
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinRelease\myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\WinRelease\" />
-				<Option object_output="..\build\WinRelease\" />
+				<Option output="../build/WinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/WinRelease/" />
+				<Option object_output="../build/WinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -112,16 +113,17 @@
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
-					<Add directory="$(WXWIN)\include" />
-					<Add directory="$(WXWIN)\contrib\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
-					<Add directory="$(WXWIN)\include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="libwxmsw28u_adv.a" />
 					<Add library="libwxmsw28u_aui.a" />
 					<Add library="libwxmsw28u_html.a" />
 					<Add library="libwxmsw28u_core.a" />
@@ -148,16 +150,16 @@
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
 					<Add library="libshlwapi.a" />
-					<Add directory="$(WXWIN)\lib\gcc_lib" />
-					<Add directory="..\build\WinRelease\" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinRelease/" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-DDONT_USE_DATABASE_LAYER_EXCEPTIONS" />
-			<Add directory="..\SQLite3" />
-			<Add directory="..\Expat" />
-			<Add directory="..\WxSQLite3" />
+			<Add directory="../SQLite3" />
+			<Add directory="../Expat" />
+			<Add directory="../WxSQLite3" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -175,6 +177,8 @@
 		<Unit filename="ExternalDlg.h" />
 		<Unit filename="FbAboutDlg.cpp" />
 		<Unit filename="FbAboutDlg.h" />
+		<Unit filename="FbAuthorDlg.cpp" />
+		<Unit filename="FbAuthorDlg.h" />
 		<Unit filename="FbAuthorList.cpp" />
 		<Unit filename="FbAuthorList.h" />
 		<Unit filename="FbAuthorThread.cpp" />
@@ -191,6 +195,8 @@
 		<Unit filename="FbBookPanel.h" />
 		<Unit filename="FbBookThread.cpp" />
 		<Unit filename="FbBookThread.h" />
+		<Unit filename="FbCalendar.cpp" />
+		<Unit filename="FbCalendar.h" />
 		<Unit filename="FbConfigDlg.cpp" />
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
@@ -203,12 +209,14 @@
 		<Unit filename="FbDatabase.h" />
 		<Unit filename="FbDownloader.cpp" />
 		<Unit filename="FbDownloader.h" />
+		<Unit filename="FbEditBook.cpp" />
+		<Unit filename="FbEditBook.h" />
 		<Unit filename="FbFrameAuthor.cpp" />
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
-		<Unit filename="FbFrameBaseThread.cpp" />
-		<Unit filename="FbFrameBaseThread.h" />
+		<Unit filename="FbFrameDate.cpp" />
+		<Unit filename="FbFrameDate.h" />
 		<Unit filename="FbFrameDownld.cpp" />
 		<Unit filename="FbFrameDownld.h" />
 		<Unit filename="FbFrameFolder.cpp" />
@@ -221,6 +229,8 @@
 		<Unit filename="FbFrameInfo.h" />
 		<Unit filename="FbFrameSearch.cpp" />
 		<Unit filename="FbFrameSearch.h" />
+		<Unit filename="FbFrameSequen.cpp" />
+		<Unit filename="FbFrameSequen.h" />
 		<Unit filename="FbGenres.cpp" />
 		<Unit filename="FbGenres.h" />
 		<Unit filename="FbImportThread.cpp" />
@@ -238,6 +248,8 @@
 		<Unit filename="FbMenu.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
+		<Unit filename="FbReplaceDlg.cpp" />
+		<Unit filename="FbReplaceDlg.h" />
 		<Unit filename="FbThread.h" />
 		<Unit filename="FbTreeListCtrl.cpp" />
 		<Unit filename="FbTreeListCtrl.h" />
@@ -265,26 +277,24 @@
 		<Unit filename="SettingsDlg.h" />
 		<Unit filename="TitleThread.cpp" />
 		<Unit filename="TitleThread.h" />
-		<Unit filename="VacuumThread.cpp" />
-		<Unit filename="VacuumThread.h" />
 		<Unit filename="ZipReader.cpp" />
 		<Unit filename="ZipReader.h" />
 		<Unit filename="md5.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="res\checked.xpm" />
-		<Unit filename="res\checkout.xpm" />
-		<Unit filename="res\nocheck.xpm" />
-		<Unit filename="res\resource.rc">
+		<Unit filename="res/checked.xpm" />
+		<Unit filename="res/checkout.xpm" />
+		<Unit filename="res/nocheck.xpm" />
+		<Unit filename="res/resource.rc">
 			<Option compilerVar="WINDRES" />
 			<Option target="WinDebug" />
 			<Option target="WinRelease" />
 		</Unit>
-		<Unit filename="sha1\sha1.h" />
-		<Unit filename="wx\base64.cpp" />
-		<Unit filename="wx\base64.h" />
-		<Unit filename="wx\treelistctrl.cpp" />
-		<Unit filename="wx\treelistctrl.h" />
+		<Unit filename="sha1/sha1.h" />
+		<Unit filename="wx/base64.cpp" />
+		<Unit filename="wx/base64.h" />
+		<Unit filename="wx/treelistctrl.cpp" />
+		<Unit filename="wx/treelistctrl.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

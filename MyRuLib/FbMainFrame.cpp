@@ -20,14 +20,16 @@
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
+#include "FbFrameDate.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFolder.h"
 #include "FbFrameDownld.h"
+#include "FbFrameSequen.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
-#include "VacuumThread.h"
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
+#include "FbUpdateThread.h"
 #include "InfoCash.h"
 #include "FbAboutDlg.h"
 
@@ -40,9 +42,9 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_GENRES, FbMainFrame::OnMenuGenres)
 	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFolder)
 	EVT_MENU(ID_FRAME_DOWNLD, FbMainFrame::OnMenuDownld)
+	EVT_MENU(ID_FRAME_SEQUEN, FbMainFrame::OnMenuSequen)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
-	EVT_MENU(ID_FRAME_SEQ, FbMainFrame::OnMenuNothing)
-	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
+	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuCalendar)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
@@ -365,17 +367,17 @@ void FbMainFrame::OnHideLog(wxCommandEvent& event)
 
 void FbMainFrame::OnFindTitle(wxCommandEvent & event)
 {
-	FindTitle(m_FindTitle.GetValue());
+	FindTitle(m_FindTitle.GetValue(), m_FindAuthor.GetValue());
 }
 
 void FbMainFrame::OnFindTitleEnter(wxCommandEvent& event)
 {
-	FindTitle(event.GetString());
+	FindTitle(event.GetString(), m_FindAuthor.GetValue());
 }
 
-void FbMainFrame::FindTitle(const wxString &text)
+void FbMainFrame::FindTitle(const wxString &title, const wxString &author)
 {
-	FbFrameSearch::Execute(this, text);
+	FbFrameSearch::Execute(this, title, author);
 }
 
 void FbMainFrame::OnFindAuthor(wxCommandEvent& event)
@@ -398,7 +400,6 @@ void FbMainFrame::FindAuthor(const wxString &text)
 		authors->Update();
 	}
 	if ( !text.IsEmpty() ) authors->FindAuthor(text);
-
 	authors->ActivateAuthors();
 }
 
@@ -411,7 +412,7 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 {
 	wxString text = wxGetTextFromUser(_("Введите строку для поиска:"), _("Поиск по заголовку"));
 	if (text.IsEmpty()) return;
-	FindTitle(text);
+	FindTitle(text, wxEmptyString);
 }
 
 void FbMainFrame::OnMenuGenres(wxCommandEvent & event)
@@ -444,6 +445,16 @@ void FbMainFrame::OnMenuDownld(wxCommandEvent & event)
 	}
 }
 
+void FbMainFrame::OnMenuSequen(wxCommandEvent & event)
+{
+	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameSequen);
+	if (!frame) {
+		frame = new FbFrameSequen(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
+	}
+}
+
 wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 {
 	size_t count = GetNotebook()->GetPageCount();
@@ -470,7 +481,8 @@ void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
 	wxString msg = _("Выполнить реструктуризацию базы данных?");
-	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK) (new VacuumThread)->Execute();
+	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK)
+		(new FbUpdateThread(strUpdateAuthorCount, wxT("VACUUM")))->Execute();
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
@@ -570,3 +582,22 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 		FindAuthor(wxEmptyString);
 	}
 }
+
+void FbMainFrame::SetStatus(const wxString &text)
+{
+	m_ProgressBar.SetStatusText(text, 2);
+}
+
+void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
+{
+	OnMenuNothing(event);
+/*
+	FbFrameDate * frame = wxDynamicCast(FindFrameById(ID_FRAME_DATE, true), FbFrameDate);
+	if (!frame) {
+		frame = new FbFrameDate(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
+	}
+*/
+}
+

@@ -5,7 +5,6 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbManager.h"
-#include "FbFrameBaseThread.h"
 #include "FbDownloader.h"
 
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
@@ -106,22 +105,9 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	m_MasterList->Thaw();
 }
 
-class FrameFavourThread: public FbFrameBaseThread
-{
-	public:
-		FrameFavourThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
-			:FbFrameBaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
-		virtual void *Entry();
-	private:
-		static FbThreadSkiper sm_skiper;
-		int m_folder;
-		int m_number;
-		FbFolderType m_type;
-};
+FbThreadSkiper FbFrameFolder::FolderThread::sm_skiper;
 
-FbThreadSkiper FrameFavourThread::sm_skiper;
-
-void * FrameFavourThread::Entry()
+void * FbFrameFolder::FolderThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
@@ -190,7 +176,7 @@ void FbFrameFolder::FillByFolder(FbFolderData * data)
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( data->GetType() );
 
-	( new FrameFavourThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
+	( new FolderThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)

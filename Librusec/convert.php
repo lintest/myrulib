@@ -184,8 +184,12 @@ function convert_authors($mysql_db, $sqlite_db)
   $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(без автора)')");
 
   $sqltest = "
-    SELECT * FROM libavtorname
-    WHERE EXISTS(SELECT AvtorId FROM libavtor WHERE libavtor.AvtorId = libavtorname.AvtorId )
+	SELECT libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.BookId) as Number
+	FROM libavtorname INNER JOIN (
+	  SELECT DISTINCT libavtor.AvtorId, libavtor.BookId 
+	  FROM libavtor INNER JOIN libbook ON libbook.BookId=libavtor.BookId AND libbook.Deleted<>1 
+	) AS libavtor ON libavtorname.AvtorId=libavtor.AvtorId 
+	GROUP BY libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
   ";
 
   $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
@@ -202,10 +206,10 @@ function convert_authors($mysql_db, $sqlite_db)
 
     echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
-    $sql = "INSERT INTO authors (id, letter, full_name, search_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO authors (id, number, letter, full_name, search_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['AvtorId'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
+    $err= $insert->execute(array($row['AvtorId'], $row['Number'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -287,15 +291,22 @@ function convert_seqnames($mysql_db, $sqlite_db)
 
   $sqlite_db->query("DELETE FROM sequences");
 
-  $sqltest = "SELECT * FROM libseqname";
+  $sqltest = "
+	SELECT libseqname.SeqId, libseqname.SeqName, COUNT(libseq.BookId) as Number
+	FROM libseqname INNER JOIN (
+	  SELECT DISTINCT libseq.SeqId, libseq.BookId 
+	  FROM libseq INNER JOIN libbook ON libbook.BookId=libseq.BookId AND libbook.Deleted<>1 
+	) AS libseq ON libseqname.SeqId=libseq.SeqId AND libseq.SeqId<>0
+	GROUP BY libseqname.SeqId, libseqname.SeqName
+  ";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['SeqId']." - ".$row['SeqName']."\n";
-    $sql = "INSERT INTO sequences (id, value) VALUES(?,?)";
+    $sql = "INSERT INTO sequences (id, number, value) VALUES(?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['SeqId'], trim($row['SeqName'])));
+    $err= $insert->execute(array($row['SeqId'], $row['Number'], trim($row['SeqName'])));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -310,19 +321,18 @@ function convert_sequences($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM bookseq");
 
   $sqltest = "
-    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level, libavtor.AvtorId
+    SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level
     FROM libseq 
-	INNER JOIN libavtor ON libseq.BookId = libavtor.BookId
 	INNER JOIN libbook ON libseq.BookId = libbook.BookId AND libbook.Deleted<>1
   ";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['SeqId']." - ".$row['BookId']."\n";
-    $sql = "INSERT INTO bookseq(id_book, id_seq, number, level, id_author) VALUES(?,?,?,?,?)";
+    $sql = "INSERT INTO bookseq(id_book, id_seq, number, level) VALUES(?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['SeqNumb'], $row['Level'], $row['AvtorId']));
+    $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['SeqNumb'], $row['Level']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -343,6 +353,7 @@ function create_tables($sqlite_db)
 	first_name varchar(128),
 	middle_name varchar(128),
 	last_name varchar(128),
+	number integer,
 	newid integer,
 	description text);
   ");
@@ -378,7 +389,7 @@ function create_tables($sqlite_db)
       description text);
   ");
 
-  $sqlite_db->query("CREATE TABLE sequences(id integer primary key, value varchar(255) not null);");
+  $sqlite_db->query("CREATE TABLE sequences(id integer primary key, number integer, value varchar(255) not null);");
 
   $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);");
 
@@ -435,7 +446,6 @@ convert_authors($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
 convert_seqnames($mysql_db, $sqlite_db);
 convert_sequences($mysql_db, $sqlite_db);
-convert_aliases($mysql_db, $sqlite_db);
 create_indexes($sqlite_db);
 
 ?>

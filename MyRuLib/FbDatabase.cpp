@@ -3,7 +3,7 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 
-#define DB_DATABASE_VERSION 7
+#define DB_DATABASE_VERSION 8
 #define DB_CONFIG_VERSION 2
 
 wxCriticalSection FbDatabase::sm_queue;
@@ -142,9 +142,20 @@ void FbMainDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
 			try {
 				ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
-				ExecuteUpdate(strUpdateCountSQL);
+				ExecuteUpdate(strUpdateAuthorCount);
 			} catch (...) {};
 		} break;
+
+		case 8: {
+			/** TABLE aliases **/
+			ExecuteUpdate(wxT("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
+			try {
+				ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
+				ExecuteUpdate(wxT("DELETE FROM sequences WHERE NOT EXISTS (SELECT id_seq FROM bookseq WHERE sequences.id=id_seq) OR id=0"));
+				ExecuteUpdate(strUpdateSequenCount);
+			} catch (...) {};
+		} break;
+
 	}
 }
 
@@ -167,6 +178,80 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 	text.MakeLower();
 #endif
 	ctx.SetResult(text);
+}
+
+void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
+{
+	wxString str = Lower(text);
+	int i = wxNOT_FOUND;
+	do {
+		str.Trim(false);
+		i = str.find(wxT(' '));
+		if (i == wxNOT_FOUND) break;
+		list.Add( str.Left(i) );
+		str = str.Mid(i);
+	} while (true);
+	str.Trim(true);
+	if (!str.IsEmpty()) list.Add(str);
+}
+
+FbSearchFunction::FbSearchFunction(const wxString & input)
+{
+	Decompose(input, m_masks);
+	wxString log = wxT("Search template: ");
+	size_t count = m_masks.Count();
+	for (size_t i=0; i<count; i++) {
+		log += wxString::Format(wxT("<%s> "), m_masks[i].c_str());
+	}
+	wxLogInfo(log);
+}
+
+wxString FbSearchFunction::Lower(const wxString & input)
+{
+	wxString output = input;
+#if defined(__WIN32__)
+	int len = output.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, output.c_str());
+	CharLower(buf);
+	output = buf;
+	delete [] buf;
+#else
+	output.MakeLower();
+#endif
+	return output;
+}
+
+void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	int argCount = ctx.GetArgCount();
+	if (argCount != 1) {
+		ctx.SetResultError(wxString::Format(_("SEARCH called with wrong number of arguments: %d."), argCount));
+		return;
+	}
+	wxString text = Lower(ctx.GetString(0));
+
+	wxArrayString words;
+	Decompose(text, words);
+
+	size_t maskCount = m_masks.Count();
+	size_t wordCount = words.Count();
+
+	for (size_t i=0; i<maskCount; i++) {
+		bool bNotFound = true;
+		wxString mask = m_masks[i] + wxT("*");
+		for (size_t j=0; j<wordCount; j++) {
+			if ( words[j].Matches(mask) ) {
+				bNotFound = false;
+				break;
+			}
+		}
+		if (bNotFound) {
+			ctx.SetResult(false);
+			return;
+		}
+	}
+	ctx.SetResult(true);
 }
 
 void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)

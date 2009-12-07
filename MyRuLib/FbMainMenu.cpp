@@ -7,7 +7,7 @@ FbMenuBar::MenuFrame::MenuFrame()
 	AppendSeparator();
 	Append(ID_FRAME_AUTHOR, _("Авторы"));
 	Append(ID_FRAME_GENRES, _("Жанры"));
-	Append(ID_FRAME_SEQ,    _("Серии"));
+	Append(ID_FRAME_SEQUEN, _("Серии"));
 	Append(ID_FRAME_DATE,   _("Календарь"));
 	Append(ID_FRAME_ARCH,   _("Архив"));
 	AppendSeparator();

@@ -23,8 +23,8 @@ class FbCommandEvent: public wxCommandEvent
 	public:
 		FbCommandEvent(wxEventType commandType, int winid, const wxString &sting = wxEmptyString)
 			: wxCommandEvent(commandType, winid) { SetString(sting); };
-		FbCommandEvent(wxEventType commandType, int winid, int id)
-			: wxCommandEvent(commandType, winid) { SetInt(id); };
+		FbCommandEvent(wxEventType commandType, int winid, int id, const wxString &sting = wxEmptyString)
+			: wxCommandEvent(commandType, winid) { SetInt(id); SetString(sting); };
 		FbCommandEvent(const wxCommandEvent& event)
 			: wxCommandEvent(event) {};
 	public:
@@ -66,7 +66,7 @@ class FbAuthorEvent: public FbCommandEvent
 class FbOpenEvent: public FbCommandEvent
 {
 	public:
-		FbOpenEvent(wxWindowID id, int author, int book)
+		FbOpenEvent(wxWindowID id, int author, int book = 0)
 			: FbCommandEvent(fbEVT_OPEN_ACTION, id), m_author(author), m_book(book) {};
 
 		FbOpenEvent(const FbOpenEvent & event)

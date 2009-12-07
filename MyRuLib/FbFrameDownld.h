@@ -16,32 +16,47 @@
 
 class FbFrameDownld : public FbFrameBase
 {
-public:
-	FbFrameDownld(wxAuiMDIParentFrame * parent);
-	void UpdateFolder(const int iFolder, const FbFolderType type);
-protected:
-	virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
-	virtual void CreateControls();
-	virtual void UpdateBooklist();
-private:
-	void CreateBookInfo();
-	void FillFolders(const int iCurrent = 0);
-	void FillByFolder(FbFolderData * data);
-	void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-	FbFolderData * GetSelected();
-private:
-	wxToolBar * m_toolbar;
-private:
-	void OnFavoritesDel(wxCommandEvent & event);
-	void OnFolderAppend(wxCommandEvent & event);
-	void OnFolderModify(wxCommandEvent & event);
-	void OnFolderDelete(wxCommandEvent & event);
-	void OnStart(wxCommandEvent & event);
-	void OnPause(wxCommandEvent & event);
-	void OnFolderSelected(wxTreeEvent & event);
-	void OnMoveUp(wxCommandEvent& event);
-	void OnMoveDown(wxCommandEvent& event);
-	DECLARE_EVENT_TABLE()
+	public:
+		FbFrameDownld(wxAuiMDIParentFrame * parent);
+		void UpdateFolder(const int iFolder, const FbFolderType type);
+	protected:
+		virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
+		virtual void CreateControls();
+		virtual void UpdateBooklist();
+	private:
+		void CreateBookInfo();
+		void FillFolders(const int iCurrent = 0);
+		void FillByFolder(FbFolderData * data);
+		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
+		FbFolderData * GetSelected();
+	private:
+		wxToolBar * m_toolbar;
+	private:
+		void OnFavoritesDel(wxCommandEvent & event);
+		void OnFolderAppend(wxCommandEvent & event);
+		void OnFolderModify(wxCommandEvent & event);
+		void OnFolderDelete(wxCommandEvent & event);
+		void OnStart(wxCommandEvent & event);
+		void OnPause(wxCommandEvent & event);
+		void OnFolderSelected(wxTreeEvent & event);
+		void OnMoveUp(wxCommandEvent& event);
+		void OnMoveDown(wxCommandEvent& event);
+		DECLARE_EVENT_TABLE()
+	protected:
+		class DownldThread: public BaseThread
+		{
+			public:
+				DownldThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
+					:BaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
+				virtual void *Entry();
+			protected:
+				virtual wxString GetOrder();
+			private:
+				static FbThreadSkiper sm_skiper;
+				int m_folder;
+				int m_number;
+				FbFolderType m_type;
+		};
 };
 
 #endif // __FBFRAMEDOWNLD_H__

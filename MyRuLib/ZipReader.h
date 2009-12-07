@@ -19,7 +19,6 @@ public:
 	wxInputStream & GetZip() {return *m_result;};
 private:
 	wxString GetInfoName(const wxString &filename);
-	bool FindZip(wxFileName &zip_name, wxString &path);
 	bool FindEntry(const wxString &file_name);
 	void OpenZip(const wxString &zipname, const wxString &filename);
 	void OpenFile(const wxString &filename);

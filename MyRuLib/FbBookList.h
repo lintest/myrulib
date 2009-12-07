@@ -13,17 +13,19 @@ class FbBookList: public FbTreeListCtrl
 		FbBookList(wxWindow *parent, wxWindowID id, long style);
 		void SelectAll(int iImageIndex = 1);
 		wxString GetSelected();
+		size_t GetCount();
 		size_t GetSelected(wxString &selections);
 		size_t GetSelected(wxArrayInt &items);
 		void DeleteItems(wxArrayInt &items);
 	private:
-		bool DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
+		size_t GetCount(const wxTreeItemId &parent, wxArrayInt &items);
+		bool DeleteItems(const wxTreeItemId &parent, wxArrayInt &items);
 		void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
 		void ShowContextMenu(const wxPoint& pos);
-		size_t ScanChecked(const wxTreeItemId &root, wxString  &selections);
-		size_t ScanSelected(const wxTreeItemId &root, wxString  &selections);
-		void ScanChecked(const wxTreeItemId &root, wxArrayInt &items);
-		void ScanSelected(const wxTreeItemId &root, wxArrayInt &items);
+		size_t ScanChecked(const wxTreeItemId &parent, wxString  &selections);
+		size_t ScanSelected(const wxTreeItemId &parent, wxString  &selections);
+		void ScanChecked(const wxTreeItemId &parent, wxArrayInt &items);
+		void ScanSelected(const wxTreeItemId &parent, wxArrayInt &items);
 	private:
 		void OnImageClick(wxTreeEvent &event);
 };

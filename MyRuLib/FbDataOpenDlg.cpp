@@ -82,11 +82,23 @@ void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		m_FileBox->SetValue(dlg.GetPath());
+		m_FileBox->SetValue( CheckExt(dlg.GetPath()) );
 	}
 }
 
 wxString FbDataOpenDlg::GetFilename()
 {
-	return m_FileBox->GetValue();
+	return CheckExt(m_FileBox->GetValue());
+}
+
+wxString FbDataOpenDlg::CheckExt(const wxString &filename)
+{
+	wxString result = filename;
+	const wxChar * ext = wxT(".db");
+#ifdef __WIN32__
+	if (filename.Right(3).Lower() != ext) result += ext;
+#else
+	if (filename.Right(3) != ext) result += ext;
+#endif
+	return result;
 }

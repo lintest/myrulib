@@ -1,6 +1,6 @@
 #include "FbConst.h"
 
-const wxString strProgramName = wxT("MyRuLib 0.15");
+const wxString strProgramName = wxT("MyRuLib 0.16");
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 const wxString strMailAddr = wxT("mail@lintest.ru");
 
@@ -15,8 +15,8 @@ const wxString strRusJO = wxT("ё");
 const wxString strOtherSequence = _("(разное)");
 const wxString strBookNotFound = _("Не найден архив%s, содержащий файл%s.");
 
-const wxString strUpdateCountSQL = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
-
+const wxString strUpdateAuthorCount = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
+const wxString strUpdateSequenCount = wxT("UPDATE sequences SET number=(SELECT COUNT(id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id)");
 
 const int ciNoAuthor = 0x7FFFFFFF;
 

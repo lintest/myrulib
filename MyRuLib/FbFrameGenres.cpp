@@ -5,7 +5,6 @@
 #include "FbManager.h"
 #include "FbGenres.h"
 #include "FbMainMenu.h"
-#include "FbFrameBaseThread.h"
 
 class FbGenreFunction : public wxSQLite3ScalarFunction
 {
@@ -73,21 +72,9 @@ void FbFrameGenres::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-class FrameGenresThread: public FbFrameBaseThread
-{
-	public:
-		FrameGenresThread(FbFrameGenres * frame, FbListMode mode, const int code)
-			:FbFrameBaseThread(frame, mode), m_code(code), m_number(sm_skiper.NewNumber()) {};
-		virtual void *Entry();
-	private:
-		static FbThreadSkiper sm_skiper;
-		int m_code;
-		int m_number;
-};
+FbThreadSkiper FbFrameGenres::GenresThread::sm_skiper;
 
-FbThreadSkiper FrameGenresThread::sm_skiper;
-
-void * FrameGenresThread::Entry()
+void * FbFrameGenres::GenresThread::Entry()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 
@@ -122,7 +109,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
-		if (data) ( new FrameGenresThread(this, m_BooksPanel->GetListMode(), data->GetCode()) )->Execute();
+		if (data) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), data->GetCode()) )->Execute();
 	}
 }
 
@@ -134,6 +121,6 @@ void FbFrameGenres::UpdateBooklist()
 		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
 		if (data) code = data->GetCode();
 	}
-	if (code) ( new FrameGenresThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
+	if (code) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
 }
 

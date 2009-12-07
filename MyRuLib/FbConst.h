@@ -29,9 +29,9 @@ enum {
 	ID_FRAME_FOLDER,
 	ID_FRAME_SEARCH,
 	ID_FRAME_DOWNLD,
+	ID_FRAME_SEQUEN,
 	ID_FRAME_INFO,
 	ID_FRAME_HTML,
-	ID_FRAME_SEQ,
 	ID_FRAME_DATE,
 	ID_FRAME_ARCH,
 	ID_UNSELECTALL,
@@ -48,6 +48,8 @@ enum {
 	ID_APPEND_BOOK,
 	ID_APPEND_AUTHOR,
 	ID_APPEND_SEQUENCE,
+	ID_SEQUENCE_TXT,
+	ID_SEQUENCE_BTN,
 	ID_FOUND_NOTHING,
 	ID_EDIT_COMMENTS,
 	ID_APPEND_FOLDER,
@@ -67,6 +69,11 @@ enum {
 	ID_FAVORITES_DEL,
 	ID_START,
 	ID_PAUSE,
+	ID_AUTHOR_APPEND,
+	ID_AUTHOR_MODIFY,
+	ID_AUTHOR_DELETE,
+	ID_AUTHOR_REPLACE,
+	ID_BOOKS_COUNT,
 	ID_RATING_0,
 	ID_RATING_1,
 	ID_RATING_2,
@@ -110,6 +117,7 @@ extern const int ciMaxImageWidth;
 
 extern const wxString strRating [];
 
-extern const wxString strUpdateCountSQL;
+extern const wxString strUpdateAuthorCount;
+extern const wxString strUpdateSequenCount;
 
 #endif // __FBCONST_H__

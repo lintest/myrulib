@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEGENRES_H__
-#define __FBFRAMEGENRES_H__
+#ifndef __FBFRAMEDATE_H__
+#define __FBFRAMEDATE_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -14,10 +14,10 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
-class FbFrameGenres : public FbFrameBase
+class FbFrameDate : public FbFrameBase
 {
 	public:
-		FbFrameGenres(wxAuiMDIParentFrame * parent);
+		FbFrameDate(wxAuiMDIParentFrame * parent);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
@@ -27,10 +27,10 @@ class FbFrameGenres : public FbFrameBase
 		void OnGenreSelected(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
 	protected:
-		class GenresThread: public BaseThread
+		class DateThread: public BaseThread
 		{
 			public:
-				GenresThread(FbFrameGenres * frame, FbListMode mode, const int code)
+				DateThread(FbFrameDate * frame, FbListMode mode, const int code)
 					:BaseThread(frame, mode), m_code(code), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
 			private:
@@ -40,4 +40,4 @@ class FbFrameGenres : public FbFrameBase
 		};
 };
 
-#endif // __FBFRAMEGENRES_H__
+#endif // __FBFRAMEDATE_H__

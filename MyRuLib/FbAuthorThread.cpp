@@ -1,6 +1,7 @@
 #include "FbAuthorThread.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
+#include "FbManager.h"
 
 wxCriticalSection FbAuthorThread::sm_queue;
 
@@ -23,6 +24,16 @@ void * FbAuthorThread::Entry()
 	return NULL;
 }
 
+wxString FbAuthorThread::GetOrder()
+{
+	switch (m_order) {
+		case -2: return wxT("number desc, name desc");
+		case -1: return wxT("name desc");
+		case  2: return wxT("number, name");
+		default: return wxT("name ");
+	}
+}
+
 void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 {
 	if (sm_skiper.Skipped(m_number)) return;
@@ -35,23 +46,24 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 
 wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	return wxString::Format( wxT("SELECT id, full_name, number FROM authors WHERE %sORDER BY search_name"), condition.c_str());
+	return wxString::Format( wxT("SELECT id, full_name as name, number FROM authors WHERE %s ORDER BY ") + GetOrder(), condition.c_str());
 }
 
 void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
 {
 	wxString sql = GetSQL(wxT("letter=?"));
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, (wxString)m_letter);
+	stmt.Bind(1, m_letter);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }
 
 void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
-	wxString sql = GetSQL(wxT("search_name like ?"));
+	wxString sql = GetSQL(wxT("SEARCH(search_name)"));
+	FbSearchFunction search(m_mask);
+	database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_text + wxT("%"));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }
@@ -64,3 +76,13 @@ void FbAuthorThreadCode::GetResult(wxSQLite3Database &database)
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	FillAuthors(result);
 }
+
+void FbAuthorThreadLast::GetResult(wxSQLite3Database &database)
+{
+	wxString sql = GetSQL(wxT("last_name=?"));
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_last);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FillAuthors(result);
+}
+

@@ -17,6 +17,7 @@ class FbDataOpenDlg : public FbDialog
 			ID_DOWNLOAD,
 		};
 		wxString GetTitle() const;
+		wxString CheckExt(const wxString &filename);
 		void OnSelectFileClick( wxCommandEvent& event );
 	private:
 		wxComboBox* m_FileBox;

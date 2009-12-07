@@ -213,16 +213,18 @@ void FbImportBook::AppendBook(const wxString &filename, wxFileOffset size, int i
 			stmt.Bind(10, m_md5sum);
 			stmt.ExecuteUpdate();
 		}
-		for (size_t j = 0; j<sequences.Count(); j++) {
-			wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number,id_author) VALUES (?,?,?,?)");
-			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-			stmt.Bind(1, id_book);
-			stmt.Bind(2, sequences[j].id);
-			stmt.Bind(3, (int)sequences[j].number);
-			stmt.Bind(4, authors[i].id);
-			stmt.ExecuteUpdate();
-		}
 	}
+
+	for (size_t i = 0; i<sequences.Count(); i++) {
+		if (sequences[i].id == 0) continue;
+		wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, id_book);
+		stmt.Bind(2, sequences[i].id);
+		stmt.Bind(3, (int)sequences[i].number);
+		stmt.ExecuteUpdate();
+	}
+
 }
 void FbImportBook::AppendFile(int id_book, const wxString &filename, int id_archive)
 {
@@ -277,7 +279,8 @@ FbImportThread::FbImportThread()
 
 void FbImportThread::OnExit()
 {
-	m_database.ExecuteUpdate(strUpdateCountSQL);
+	m_database.ExecuteUpdate(strUpdateAuthorCount);
+	m_database.ExecuteUpdate(strUpdateSequenCount);
 }
 
 wxString FbImportThread::GetRelative(const wxString &filename)

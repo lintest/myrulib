@@ -79,7 +79,7 @@ void FbManager::OpenBook(int id, wxString &file_type)
 	wxMessageBox(msg);
 }
 
-void BookInfo::MakeLower(wxString & data)
+wxString BookInfo::MakeLower(wxString & data)
 {
 #if defined(__WIN32__)
 	int len = data.length() + 1;
@@ -91,19 +91,21 @@ void BookInfo::MakeLower(wxString & data)
 #else
 	data.MakeLower();
 #endif
+	return data;
 }
 
-void BookInfo::MakeUpper(wxString & data)
+wxString BookInfo::MakeUpper(wxString & data)
 {
 #if defined(__WIN32__)
-	  int len = data.length() + 1;
-	  wxChar * buf = new wxChar[len];
-	  wxStrcpy(buf, data.c_str());
-	  CharUpper(buf);
-	  data = buf;
-	  delete [] buf;
+	int len = data.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, data.c_str());
+	CharUpper(buf);
+	data = buf;
+	delete [] buf;
 #else
-	  data.MakeUpper();
+	data.MakeUpper();
 #endif
+	return data;
 }
 
