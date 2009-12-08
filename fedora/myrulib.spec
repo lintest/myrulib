@@ -1,5 +1,5 @@
 %define name     myrulib
-%define version  0.13
+%define version  0.16
 %define release  fedora11
 
 Name: %{name}
