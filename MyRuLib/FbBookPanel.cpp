@@ -69,6 +69,11 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 	return res;
 }
 
+int FbBookPanel::GetRatingColumn()
+{
+	return 4;
+}
+
 int FbBookPanel::GetOrderID()
 {
 	int col = abs( m_BookList->GetSortedColumn() );
@@ -553,11 +558,6 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 	m_BookInfo->SetPage(wxEmptyString);
 
 	m_BookList->SetSortedColumn( m_ListMode == FB2_MODE_LIST ? 1 : 0 );
-}
-
-int FbBookPanel::GetRatingColumn()
-{
-	return 2;
 }
 
 void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
