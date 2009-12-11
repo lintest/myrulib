@@ -56,10 +56,11 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 		CreateBookInfo( (bool) FbParams::GetValue(keyType) );
 		{
 			BookListUpdater updater(m_BookList);
-			m_BookList->AddColumn (_("Заголовок"), 13, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Заголовок"), 10, wxALIGN_LEFT);
 			m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
 			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
+			m_BookList->AddColumn (_("Жанр"), 4, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
 			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
 			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
 		}
@@ -73,10 +74,11 @@ int FbBookPanel::GetOrderID()
 	int col = abs( m_BookList->GetSortedColumn() );
 	switch (col) {
 		case 1: return ID_ORDER_TITLE;
-		case 2: return ID_ORDER_AUTHOR;
-		case 3: return ID_ORDER_RATING;
-		case 4: return ID_ORDER_TYPE;
-		case 6: return ID_ORDER_SIZE;
+		case 3: return ID_ORDER_AUTHOR;
+		case 4: return ID_ORDER_GENRE;
+		case 5: return ID_ORDER_RATING;
+		case 6: return ID_ORDER_TYPE;
+		case 7: return ID_ORDER_SIZE;
 		default: return ID_ORDER_AUTHOR;
 	}
 }
@@ -86,10 +88,11 @@ void FbBookPanel::SetOrderID(int id)
 	int col = 0;
 	switch (id) {
 		case ID_ORDER_TITLE:  col = 1; break;
-		case ID_ORDER_AUTHOR: col = 2; break;
-		case ID_ORDER_RATING: col = 3; break;
-		case ID_ORDER_TYPE:   col = 5; break;
-		case ID_ORDER_SIZE:   col = 6; break;
+		case ID_ORDER_AUTHOR: col = 3; break;
+		case ID_ORDER_GENRE:  col = 4; break;
+		case ID_ORDER_RATING: col = 5; break;
+		case ID_ORDER_TYPE:   col = 6; break;
+		case ID_ORDER_SIZE:   col = 7; break;
 		default: col = 0;
 	}
 	if (IsOrderDesc()) col *= -1;
@@ -100,18 +103,22 @@ wxString FbBookPanel::GetOrderSQL()
 {
 	int col = m_BookList->GetSortedColumn();
 	switch (col) {
-		case -7: return wxT("created desc,full_name desc,title desc");
-		case -6: return wxT("file_size desc,full_name desc,title desc");
-		case -5: return wxT("file_type desc,full_name desc,title desc");
-		case -3: return wxT("rating desc,full_name desc,title desc");
+		case -8: return wxT("created desc,full_name desc,title desc");
+		case -7: return wxT("file_size desc,full_name desc,title desc");
+		case -6: return wxT("file_type desc,full_name desc,title desc");
+		case -5: return wxT("rating desc,full_name desc,title desc");
+		case -4: return wxT("genres desc,full_name desc,title desc");
+		case -3: return wxT("full_name desc,title desc");
 		case -2: return wxT("full_name desc,title desc");
 		case -1: return wxT("title desc,full_name desc");
 		case  1: return wxT("title,full_name");
 		case  2: return wxT("full_name,title");
-		case  3: return wxT("rating,full_name,title");
-		case  5: return wxT("file_type,full_name,title");
-		case  6: return wxT("file_size,full_name,title");
-		case  7: return wxT("created,full_name,title");
+		case  3: return wxT("full_name,title");
+		case  4: return wxT("genres,full_name,title");
+		case  5: return wxT("rating,full_name,title");
+		case  6: return wxT("file_type,full_name,title");
+		case  7: return wxT("file_size,full_name,title");
+		case  8: return wxT("created,full_name,title");
 		default: return wxT("title,full_name");
 	}
 }
@@ -505,20 +512,19 @@ void FbBookPanel::AppendBook(BookTreeItemData & data, const wxString & authors)
 		case FB2_MODE_TREE: {
 			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
 			item = m_BookList->AppendItem(parent, data.title, 0, -1, new FbBookData(data));
-			m_BookList->SetItemText(item, 2, sRating);
-			if (data.number) m_BookList->SetItemText(item, 3, wxString::Format(wxT(" %d "), data.number));
-			m_BookList->SetItemText(item, 4, file_type);
-			m_BookList->SetItemText(item, 5, file_size);
+			if (data.number) m_BookList->SetItemText(item, 2, wxString::Format(wxT(" %d "), data.number));
 		} break;
 		case FB2_MODE_LIST: {
 			parent = m_BookList->GetRootItem();
 			item = m_BookList->AppendItem(parent, data.title, 0, -1, new FbBookData(data));
 			m_BookList->SetItemText(item, 1, authors);
-			m_BookList->SetItemText(item, 2, sRating);
-			m_BookList->SetItemText(item, 4, file_type);
-			m_BookList->SetItemText(item, 5, file_size);
 		} break;
 	}
+	m_BookList->SetItemText(item, 3, data.genres);
+	m_BookList->SetItemText(item, 4, sRating);
+	m_BookList->SetItemText(item, 5, file_type);
+	m_BookList->SetItemText(item, 6, file_size);
+
 	m_BookList->Expand(parent);
 	if (data.GetId() == m_selected) m_BookList->SelectItem(item);
 }
@@ -535,11 +541,11 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 	switch (m_ListMode) {
 		case FB2_MODE_TREE: {
 			m_BookList->SetColumnShown(1, false);
-			m_BookList->SetColumnShown(3, true);
+			m_BookList->SetColumnShown(2, true);
 		} break;
 		case FB2_MODE_LIST: {
 			m_BookList->SetColumnShown(1, true);
-			m_BookList->SetColumnShown(3, false);
+			m_BookList->SetColumnShown(2, false);
 		} break;
 	}
 

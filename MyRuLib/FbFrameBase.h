@@ -101,6 +101,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 			protected:
 				static wxCriticalSection sm_queue;
 				AggregateFunction m_aggregate;
+				FbGenreFunction m_genre;
 				wxWindow * m_frame;
 				FbListMode m_mode;
 				bool m_FilterFb2;

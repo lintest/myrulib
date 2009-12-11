@@ -172,7 +172,7 @@ wxString FbFrameAuthor::AuthorThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.id_author, \
+					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres, books.id_author, \
 					states.rating, sequences.value AS sequence, bookseq.number as number\
 				FROM books \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id \
@@ -185,7 +185,7 @@ wxString FbFrameAuthor::AuthorThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT DISTINCT\
-					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
+					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, GENRE(books.genres) AS genres, \
 					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \

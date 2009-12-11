@@ -349,8 +349,8 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.id_author, \
-					states.rating, authors.full_name, sequences.value AS sequence, bookseq.number\
+					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
+					states.rating, books.id_author, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id \
@@ -363,7 +363,7 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT DISTINCT \
-					books.id, books.title, books.file_size, books.file_type, \
+					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
 					states.rating as rating, books.created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
@@ -439,4 +439,5 @@ void FbFrameBase::BaseThread::InitDatabase(FbCommonDatabase &database)
 {
 	database.AttachConfig();
 	database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
+	database.CreateFunction(wxT("GENRE"), 1, m_genre);
 }
