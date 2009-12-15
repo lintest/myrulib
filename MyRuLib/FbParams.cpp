@@ -97,7 +97,7 @@ void FbParams::SetText(const int param, const wxString &text)
 	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
 
 	try {
-		if (text == DefaultValue(param)) {
+		if (text == DefaultText(param)) {
 			wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, param);
