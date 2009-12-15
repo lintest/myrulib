@@ -225,7 +225,7 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
 		database.ExecuteUpdate(sql);
 
-		if (m_key = key) {
+		if (m_key == key) {
 			m_key.Empty();
 			m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 		}
