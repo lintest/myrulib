@@ -222,6 +222,7 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
 	UpdateStatus();
+	event.Skip();
 }
 
 void FbFrameBase::UpdateFonts(bool refresh)
