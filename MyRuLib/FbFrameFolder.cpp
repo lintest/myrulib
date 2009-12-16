@@ -158,8 +158,8 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 		FbFolderData * data = (FbFolderData*) m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
-			m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
-			m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
+			m_FolderBar->EnableTool(ID_MODIFY_FOLDER, enabled);
+			m_FolderBar->EnableTool(ID_DELETE_FOLDER, enabled);
 			FillByFolder(data);
 		}
 	}
