@@ -37,6 +37,7 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void FindTitle(const wxString &title, const wxString &author);
 		wxWindow * FindFrameById(const int id, bool bActivate = false);
 		void OpenDatabase(const wxString &filename);
+		void SetAccelerators();
 	private:
 		wxTextCtrl m_FindAuthor;
 		wxTextCtrl m_FindTitle;

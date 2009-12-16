@@ -122,6 +122,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 	if(res)	{
 		if (maximized) Maximize();
 		CreateControls();
+		SetAccelerators();
 		LoadIcon();
 		if (maximized) {
 			size.x = GetBestSize().x;
@@ -129,6 +130,18 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 		}
 	}
 	return res;
+}
+
+
+void FbMainFrame::SetAccelerators()
+{
+	wxAcceleratorEntry entries[4];
+	entries[0].Set(wxACCEL_CTRL, (int) wxT('N'), wxID_NEW);
+	entries[1].Set(wxACCEL_CTRL, (int) wxT('X'), wxID_EXIT);
+	entries[2].Set(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN);
+	entries[3].Set(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL);
+	wxAcceleratorTable accel(4, entries);
+	SetAcceleratorTable(accel);
 }
 
 void FbMainFrame::LoadIcon()
