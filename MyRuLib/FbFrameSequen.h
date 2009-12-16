@@ -19,6 +19,7 @@ class FbFrameSequen : public FbFrameBase
 		void OpenSequence(const int sequence, const int book);
 		void SelectRandomLetter();
 		void ActivateAuthors();
+		virtual void ShowFullScreen(bool show);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
@@ -29,6 +30,7 @@ class FbFrameSequen : public FbFrameBase
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxTextCtrl * m_FindText;
+		wxStaticText * m_FindInfo;
 		wxString m_SequenceText;
 	private:
 		void OnAuthorSelected(wxTreeEvent & event);

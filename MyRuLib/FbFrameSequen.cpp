@@ -20,7 +20,7 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_SEQUEN, _("Серии"))
+	:FbFrameBase(parent, ID_FRAME_SEQUEN, _("Серии")), m_FindText(NULL), m_FindInfo(NULL)
 {
 	CreateControls();
 }
@@ -35,9 +35,9 @@ void FbFrameSequen::CreateControls()
 	wxBoxSizer* bSizerSeq;
 	bSizerSeq = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Серия:"), wxDefaultPosition, wxDefaultSize, 0 );
-	text->Wrap( -1 );
-	bSizerSeq->Add( text, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_FindInfo = new wxStaticText( this, wxID_ANY, _("Серия:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_FindInfo->Wrap( -1 );
+	bSizerSeq->Add( m_FindInfo, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_FindText = new wxTextCtrl( this, ID_SEQUENCE_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
@@ -237,4 +237,12 @@ wxString FbFrameSequen::MasterThread::GetOrder()
 void FbFrameSequen::OnFindEnter(wxCommandEvent& event)
 {
 	FindSequence(m_FindText->GetValue());
+}
+
+void FbFrameSequen::ShowFullScreen(bool show)
+{
+	m_FindText->Show(!show);
+	m_FindInfo->Show(!show);
+	if (m_ToolBar) m_ToolBar->Show(!show);
+	Layout();
 }
