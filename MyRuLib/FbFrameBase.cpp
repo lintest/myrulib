@@ -3,6 +3,7 @@
 #include "FbMainMenu.h"
 #include "ExternalDlg.h"
 #include "FbMainFrame.h"
+#include "MyRuLibApp.h"
 #include "InfoCash.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
@@ -52,7 +53,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL), m_BooksPanel(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
 {
 	Create(parent, id, title);
 }
@@ -69,8 +70,9 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateControls()
 {
-	UpdateFonts(false);
-	Layout();
+	this->UpdateFonts(false);
+	this->ShowFullScreen(IsFullScreen());
+	this->Layout();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
@@ -440,4 +442,16 @@ void FbFrameBase::BaseThread::InitDatabase(FbCommonDatabase &database)
 	database.AttachConfig();
 	database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
 	database.CreateFunction(wxT("GENRE"), 1, m_genre);
+}
+
+void FbFrameBase::ShowFullScreen(bool show)
+{
+	if (m_ToolBar) m_ToolBar->Show(!show);
+	Layout();
+}
+
+bool FbFrameBase::IsFullScreen()
+{
+	wxTopLevelWindow * frame = (wxTopLevelWindow*) wxGetApp().GetTopWindow();
+	return frame->IsFullScreen();
 }

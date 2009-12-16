@@ -74,6 +74,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
 	EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
+	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
+	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 
 	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
@@ -447,7 +449,7 @@ void FbMainFrame::OnMenuDownld(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuSequen(wxCommandEvent & event)
 {
-	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameSequen);
+	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_SEQUEN, true), FbFrameSequen);
 	if (!frame) {
 		frame = new FbFrameSequen(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
@@ -547,7 +549,7 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
-		frame->UpdateFonts();
+		if (frame) frame->UpdateFonts();
 	}
 }
 
@@ -599,5 +601,22 @@ void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
 		frame->Update();
 	}
 */
+}
+
+void FbMainFrame::OnFullScreen(wxCommandEvent& event)
+{
+	bool show = !IsFullScreen();
+	long style = wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION;
+	ShowFullScreen(show, style);
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		if (frame) frame->ShowFullScreen(show);
+	}
+}
+
+void FbMainFrame::OnFullScreenUpdate(wxUpdateUIEvent& event)
+{
+	event.Check(IsFullScreen());
 }
 

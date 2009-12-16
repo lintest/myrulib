@@ -314,3 +314,9 @@ void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
 	event.Skip();
 }
 
+void FbFrameAuthor::ShowFullScreen(bool show)
+{
+	if (m_RuAlphabar) m_RuAlphabar->Show(!show);
+	if (m_EnAlphabar) m_EnAlphabar->Show(!show);
+	Layout();
+}

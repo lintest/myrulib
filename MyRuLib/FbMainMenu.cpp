@@ -57,7 +57,8 @@ FbMainMenu::MenuFile::MenuFile()
 
 FbMainMenu::MenuView::MenuView()
 {
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
+	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
 FbFrameMenu::FbFrameMenu()
@@ -97,7 +98,8 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
 	AppendSeparator();
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
+	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()

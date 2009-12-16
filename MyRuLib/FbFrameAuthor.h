@@ -26,6 +26,7 @@ class FbFrameAuthor : public FbFrameBase
 		void OpenAuthor(const int author, const int book);
 		void SelectRandomLetter();
 		void ActivateAuthors();
+		void ShowFullScreen(bool show);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();

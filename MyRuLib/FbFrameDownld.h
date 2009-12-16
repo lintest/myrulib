@@ -30,8 +30,6 @@ class FbFrameDownld : public FbFrameBase
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 		FbFolderData * GetSelected();
 	private:
-		wxToolBar * m_toolbar;
-	private:
 		void OnFavoritesDel(wxCommandEvent & event);
 		void OnFolderAppend(wxCommandEvent & event);
 		void OnFolderModify(wxCommandEvent & event);

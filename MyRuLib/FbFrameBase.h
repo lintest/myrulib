@@ -27,7 +27,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 	public:
 		FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-		virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);
+		virtual wxToolBar * CreateToolBar(long style, wxWindowID winid, const wxString& name);
 		bool m_FilterFb2;
 		bool m_FilterLib;
 		bool m_FilterUsr;
@@ -35,6 +35,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
 		void UpdateStatus();
+		virtual void ShowFullScreen(bool show);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist() = 0;
@@ -46,9 +47,11 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		int GetColOrder(int col);
 		wxString Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural);
 		int GetBookCount();
+		bool IsFullScreen();
 	protected:
 		FbTreeListCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
+		wxToolBar * m_ToolBar;
 	private:
 		void OnActivated(wxActivateEvent & event);
 		void OnBooksCount(wxCommandEvent& event);

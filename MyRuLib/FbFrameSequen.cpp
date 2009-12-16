@@ -20,7 +20,7 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_AUTHOR, _("Серии"))
+	:FbFrameBase(parent, ID_FRAME_SEQUEN, _("Серии"))
 {
 	CreateControls();
 }
@@ -44,8 +44,8 @@ void FbFrameSequen::CreateControls()
 
 	bSizerSeq->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bSizerSeq->Add( toolbar, 1, wxALIGN_CENTER_VERTICAL);
+	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
+	bSizerSeq->Add( m_ToolBar, 1, wxALIGN_CENTER_VERTICAL);
 
 	sizer->Add(bSizerSeq, 0, wxEXPAND, 5);
 
