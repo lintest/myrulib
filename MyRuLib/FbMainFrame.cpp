@@ -77,6 +77,11 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 
+	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
+	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
+	EVT_MENU(ID_WINDOW_NEXT, FbMainFrame::OnWindowNext)
+	EVT_MENU(ID_WINDOW_PREV, FbMainFrame::OnWindowPrev)
+
 	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
 
@@ -135,11 +140,12 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 
 void FbMainFrame::SetAccelerators()
 {
-	wxAcceleratorEntry entries[4];
+	wxAcceleratorEntry entries[5];
 	entries[0].Set(wxACCEL_CTRL, (int) wxT('N'), wxID_NEW);
 	entries[1].Set(wxACCEL_CTRL, (int) wxT('X'), wxID_EXIT);
-	entries[2].Set(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN);
-	entries[3].Set(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL);
+	entries[2].Set(wxACCEL_CTRL, (int) wxT('W'), ID_WINDOW_CLOSE);
+	entries[3].Set(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN);
+	entries[4].Set(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL);
 	wxAcceleratorTable accel(4, entries);
 	SetAcceleratorTable(accel);
 }
@@ -633,3 +639,22 @@ void FbMainFrame::OnFullScreenUpdate(wxUpdateUIEvent& event)
 	event.Check(IsFullScreen());
 }
 
+void FbMainFrame::OnWindowClose(wxCommandEvent & event)
+{
+	if (GetActiveChild()) GetActiveChild()->Close();
+}
+
+void FbMainFrame::OnWindowCloseAll(wxCommandEvent & event)
+{
+	while (GetActiveChild()) GetActiveChild()->Close();
+}
+
+void FbMainFrame::OnWindowNext(wxCommandEvent & event)
+{
+	ActivateNext();
+}
+
+void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
+{
+	ActivatePrevious();
+}

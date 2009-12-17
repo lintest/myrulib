@@ -84,6 +84,10 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnUpdateBook(wxCommandEvent & event);
 		void OnMenuRecent(wxCommandEvent & event);
 		void OnRecentUpdate(wxUpdateUIEvent& event);
+		void OnWindowClose(wxCommandEvent & event);
+		void OnWindowCloseAll(wxCommandEvent & event);
+		void OnWindowNext(wxCommandEvent & event);
+		void OnWindowPrev(wxCommandEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 

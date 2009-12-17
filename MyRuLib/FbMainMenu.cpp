@@ -63,13 +63,14 @@ FbMainMenu::MenuView::MenuView()
 
 FbFrameMenu::FbFrameMenu()
 {
-	Append(new MenuFile,  _("Файл"));
-	Append(new MenuBook,  _("Список"));
-	Append(new MenuFrame, _("Картотека"));
-	Append(new MenuLib,   _("Библиотека"));
-	Append(new MenuSetup, _("Сервис"));
-	Append(new MenuView,  _("Вид"));
-	Append(new MenuHelp,  _("?"));
+	Append(new MenuFile,   _("Файл"));
+	Append(new MenuBook,   _("Список"));
+	Append(new MenuFrame,  _("Картотека"));
+	Append(new MenuLib,    _("Библиотека"));
+	Append(new MenuSetup,  _("Сервис"));
+	Append(new MenuView,   _("Вид"));
+	Append(new MenuWindow, _("Окно"));
+	Append(new MenuHelp,   _("?"));
 }
 
 FbFrameMenu::MenuFile::MenuFile()
@@ -109,4 +110,13 @@ FbMenuBar::MenuRecent::MenuRecent()
 	Append(ID_RECENT_3);
 	Append(ID_RECENT_4);
 	Append(ID_RECENT_5);
+}
+
+FbMenuBar::MenuWindow::MenuWindow()
+{
+	Append(ID_WINDOW_CLOSE,    _("Закрыть окно"));
+	Append(ID_WINDOW_CLOSEALL, _("Закрыть все"));
+	AppendSeparator();
+	Append(ID_WINDOW_NEXT,     _("Следующее"));
+	Append(ID_WINDOW_PREV,     _("Предыдущее"));
 }
