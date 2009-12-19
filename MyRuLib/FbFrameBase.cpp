@@ -67,6 +67,7 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateControls()
 {
+	SetMenuBar(new FbFrameMenu);
 	this->UpdateFonts(false);
 	this->ShowFullScreen(IsFullScreen());
 	this->Layout();
