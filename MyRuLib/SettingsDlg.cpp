@@ -83,7 +83,7 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	AppendItem(fgSizerList, _("Списки книг, авторов:"), ID_FONT_MAIN);
 	AppendItem(fgSizerList, _("Панель инструментов:"), ID_FONT_TOOL);
 	AppendItem(fgSizerList, _("Информация:"), ID_FONT_HTML);
-	AppendItem(fgSizerList, _("Диалоги:"), ID_FONT_DLG);
+	AppendItem(fgSizerList, _("Окна диалогов:"), ID_FONT_DLG);
 
 	bSizerMain->Add( fgSizerList, 0, wxEXPAND, 5 );
 
@@ -304,8 +304,13 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_LEFT );
+	#if defined(__WIN32__)
+	long nbStyle = wxNB_MULTILINE;
+	#else
+	long nbStyle = wxNB_LEFT;
+	#endif
 
+	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, nbStyle );
 	notebook->AddPage( new FbPanelInterface(notebook), _("Внешний вид"), true );
 	notebook->AddPage( new FbPanelInternet(notebook), _("Интернет"), false );
 	notebook->AddPage( new FbPanelTypes(notebook), _("Типы файлов"), false );
