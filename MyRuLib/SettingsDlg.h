@@ -46,6 +46,10 @@ class SettingsDlg : private FbDialog
 			ID_FONT_HTML,
 			ID_FONT_TOOL,
 			ID_FONT_DLG,
+			ID_COLUMN_TYPE,
+			ID_COLUMN_SYZE,
+			ID_COLUMN_GENRE,
+			ID_COLUMN_RATING,
 		};
 		class FbPanelFont: public wxPanel
 		{
@@ -68,6 +72,11 @@ class SettingsDlg : private FbDialog
 		{
 			public:
 				FbPanelTypes(wxWindow *parent);
+		};
+		class FbPanelInterface: public wxPanel
+		{
+			public:
+				FbPanelInterface(wxWindow *parent);
 		};
 	public:
 		SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
