@@ -26,6 +26,8 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		virtual ~FbMainFrame();
 		virtual wxString GetTitle() const;
 		void SetStatus(const wxString &text);
+	protected:
+		virtual void SetMenuBar(wxMenuBar *pMenuBar);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		void CreateControls();

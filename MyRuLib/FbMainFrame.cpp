@@ -140,13 +140,13 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 
 void FbMainFrame::SetAccelerators()
 {
-	wxAcceleratorEntry entries[5];
-	entries[0].Set(wxACCEL_CTRL, (int) wxT('N'), wxID_NEW);
-	entries[1].Set(wxACCEL_CTRL, (int) wxT('X'), wxID_EXIT);
-	entries[2].Set(wxACCEL_CTRL, (int) wxT('W'), ID_WINDOW_CLOSE);
-	entries[3].Set(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN);
-	entries[4].Set(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL);
-	wxAcceleratorTable accel(4, entries);
+	wxAcceleratorEntry entries[] = {
+		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('X'), wxID_EXIT),
+		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('W'), ID_WINDOW_CLOSE),
+//		wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN),
+//		wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL),
+	};
+	wxAcceleratorTable accel(sizeof(entries) / sizeof(wxAcceleratorEntry), entries);
 	SetAcceleratorTable(accel);
 }
 
@@ -657,4 +657,13 @@ void FbMainFrame::OnWindowNext(wxCommandEvent & event)
 void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
 {
 	ActivatePrevious();
+}
+
+void FbMainFrame::SetMenuBar(wxMenuBar *pMenuBar)
+{
+	if (pMenuBar && (m_pMyMenuBar == pMenuBar)) {
+		wxDELETE(m_pMyMenuBar);
+		pMenuBar = new FbMainMenu;
+	}
+	wxAuiMDIParentFrame::SetMenuBar(pMenuBar);
 }
