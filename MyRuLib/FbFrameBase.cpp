@@ -61,10 +61,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
 {
 	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
-	if (res) {
-		SetMenuBar(new FbFrameMenu);
-		CreateControls();
-	}
+	if (res) CreateControls();
 	return res;
 }
 
@@ -221,6 +218,7 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
+	SetMenuBar(new FbFrameMenu);
 	UpdateStatus();
 	event.Skip();
 }
