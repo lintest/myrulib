@@ -572,6 +572,10 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 void FbBookPanel::UpdateFonts(bool refresh)
 {
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+	m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
+	m_BookList->SetColumnShown(4, FbParams::GetValue(FB_COLUMN_RATING));
+	m_BookList->SetColumnShown(5, FbParams::GetValue(FB_COLUMN_TYPE));
+	m_BookList->SetColumnShown(6, FbParams::GetValue(FB_COLUMN_SYZE));
 	if (refresh) m_BookList->Update();
 
 	if (refresh) m_BookInfo->SetPage(wxEmptyString);
@@ -582,11 +586,6 @@ void FbBookPanel::UpdateFonts(bool refresh)
 			InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
 		}
 	}
-
-	m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
-	m_BookList->SetColumnShown(4, FbParams::GetValue(FB_COLUMN_RATING));
-	m_BookList->SetColumnShown(5, FbParams::GetValue(FB_COLUMN_TYPE));
-	m_BookList->SetColumnShown(6, FbParams::GetValue(FB_COLUMN_SYZE));
 }
 
 void FbBookPanel::UpdateInfo(int id)
