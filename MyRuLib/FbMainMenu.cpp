@@ -40,10 +40,10 @@ FbMenuBar::MenuHelp::MenuHelp()
 FbMainMenu::FbMainMenu(): FbMenuBar()
 {
 	Append(new MenuFile,  _("Файл"));
-	Append(new MenuFrame, _("Картотека"));
 	Append(new MenuLib,   _("Библиотека"));
-	Append(new MenuSetup, _("Сервис"));
+	Append(new MenuFrame, _("Картотека"));
 	Append(new MenuView,  _("Вид"));
+	Append(new MenuSetup, _("Сервис"));
 	Append(new MenuHelp,  _("?"));
 }
 
@@ -61,18 +61,6 @@ FbMainMenu::MenuView::MenuView()
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
-FbFrameMenu::FbFrameMenu()
-{
-	Append(new MenuFile,   _("Файл"));
-	Append(new MenuBook,   _("Список"));
-	Append(new MenuFrame,  _("Картотека"));
-	Append(new MenuLib,    _("Библиотека"));
-	Append(new MenuSetup,  _("Сервис"));
-	Append(new MenuView,   _("Вид"));
-	Append(new MenuWindow, _("Окно"));
-	Append(new MenuHelp,   _("?"));
-}
-
 FbFrameMenu::MenuFile::MenuFile()
 {
 	AppendImg(wxID_NEW,  _("Добавить файл\tCtrl+N"), wxART_NEW);
@@ -86,6 +74,8 @@ FbFrameMenu::MenuBook::MenuBook()
 {
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
+	AppendSeparator();
+	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
 FbFrameMenu::MenuView::MenuView()

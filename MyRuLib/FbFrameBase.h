@@ -9,6 +9,7 @@
 #include "FbParams.h"
 #include "FbWindow.h"
 #include "FbThread.h"
+#include "FbMainMenu.h"
 
 class FbFolderData: public wxTreeItemData
 {
@@ -39,6 +40,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist() = 0;
+		virtual wxMenuBar * CreateMenuBar();
 		virtual wxString GetStatus();
 		int GetModeKey();
 		int GetViewKey();
@@ -113,6 +115,12 @@ class FbFrameBase : public FbAuiMDIChildFrame
 				wxString m_ListOrder;
 		};
 
+	private:
+		class MenuBar: public FbFrameMenu
+		{
+			public:
+				MenuBar();
+		};
 };
 
 #endif //__FBFRAMEBASE_H__

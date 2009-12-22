@@ -1,6 +1,5 @@
 #include "FbFrameBase.h"
 #include "FbConst.h"
-#include "FbMainMenu.h"
 #include "ExternalDlg.h"
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
@@ -12,6 +11,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
@@ -67,7 +67,7 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateControls()
 {
-	SetMenuBar(new FbFrameMenu);
+	SetMenuBar(CreateMenuBar());
 	this->UpdateFonts(false);
 	this->ShowFullScreen(IsFullScreen());
 	this->Layout();
@@ -219,7 +219,7 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
-	SetMenuBar(new FbFrameMenu);
+	SetMenuBar(CreateMenuBar());
 	UpdateStatus();
 	event.Skip();
 }
@@ -455,3 +455,21 @@ bool FbFrameBase::IsFullScreen()
 	wxTopLevelWindow * frame = (wxTopLevelWindow*) wxGetApp().GetTopWindow();
 	return frame->IsFullScreen();
 }
+
+FbFrameBase::MenuBar::MenuBar()
+{
+	Append(new MenuFile,   _("Файл"));
+	Append(new MenuLib,    _("Библиотека"));
+	Append(new MenuFrame,  _("Картотека"));
+	Append(new MenuBook,   _("Книга"));
+	Append(new MenuView,   _("Вид"));
+	Append(new MenuSetup,  _("Сервис"));
+	Append(new MenuWindow, _("Окно"));
+	Append(new MenuHelp,   _("?"));
+}
+
+wxMenuBar * FbFrameBase::CreateMenuBar()
+{
+	return new MenuBar;
+}
+

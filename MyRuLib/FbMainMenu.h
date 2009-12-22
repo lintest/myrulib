@@ -55,9 +55,9 @@ class FbMainMenu: public FbMenuBar
 class FbFrameMenu: public FbMenuBar
 {
 	public:
-		FbFrameMenu();
+		FbFrameMenu() {};
 
-	private:
+	protected:
 
 		class MenuFile: public FbMenu {
 			public: MenuFile();

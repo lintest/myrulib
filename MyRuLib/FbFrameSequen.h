@@ -21,6 +21,7 @@ class FbFrameSequen : public FbFrameBase
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
+		virtual wxMenuBar * CreateMenuBar();
 		virtual wxToolBar * CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	private:
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
@@ -102,6 +103,15 @@ class FbFrameSequen : public FbFrameBase
 				int m_exists;
 		};
 
+	private:
+		class MenuBar: public FbFrameMenu
+		{
+			public:
+				MenuBar();
+		};
+		class MenuMaster: public FbMenu {
+			public: MenuMaster();
+		};
 
 };
 

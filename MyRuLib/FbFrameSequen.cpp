@@ -440,3 +440,28 @@ void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 	}
 }
 
+FbFrameSequen::MenuBar::MenuBar()
+{
+	Append(new MenuFile,   _("Файл"));
+	Append(new MenuLib,    _("Библиотека"));
+	Append(new MenuFrame,  _("Картотека"));
+	Append(new MenuMaster, _("Серии"));
+	Append(new MenuBook,   _("Книга"));
+	Append(new MenuView,   _("Вид"));
+	Append(new MenuSetup,  _("Сервис"));
+	Append(new MenuWindow, _("Окно"));
+	Append(new MenuHelp,   _("?"));
+}
+
+FbFrameSequen::MenuMaster::MenuMaster()
+{
+	Append(ID_MASTER_APPEND, _("Добавить"));
+	Append(ID_MASTER_MODIFY, _("Изменить"));
+	Append(ID_MASTER_DELETE, _("Удалить"));
+}
+
+wxMenuBar * FbFrameSequen::CreateMenuBar()
+{
+	return new MenuBar;
+}
+
