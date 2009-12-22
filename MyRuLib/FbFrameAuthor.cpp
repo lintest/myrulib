@@ -117,7 +117,7 @@ void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
 		if (data) ( new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
@@ -158,7 +158,7 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(item);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(item);
 		if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetId());
 	}
 }
@@ -265,7 +265,7 @@ void FbFrameAuthor::UpdateBooklist()
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
 		if (data) (new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 	}
 }
@@ -282,7 +282,7 @@ void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
 
-	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
+	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_author));
 	wxString number = wxString::Format(wxT("%d"), event.m_number);
 	m_MasterList->SetItemText(item, 1, number);
 

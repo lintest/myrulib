@@ -100,7 +100,7 @@ void FbReplaceDlg::OnAppendAuthor(FbAuthorEvent& event)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_FindList->GetFirstChild(root, cookie);
 
-	wxTreeItemId item = m_FindList->AppendItem(root, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
+	wxTreeItemId item = m_FindList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_author));
 	wxString number = wxString::Format(wxT("%d"), event.m_number);
 	m_FindList->SetItemText(item, 1, number);
 
@@ -124,7 +124,7 @@ int FbReplaceDlg::GetSelected()
 {
 	wxTreeItemId selected = m_FindList->GetSelection();
 	if (selected.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*) m_FindList->GetItemData(selected);
+		FbMasterData * data = (FbMasterData*) m_FindList->GetItemData(selected);
 		if (data) return data->GetId();
 	};
 	return 0;

@@ -86,6 +86,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
 
 	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
+	EVT_FB_OPEN(ID_BOOK_SEQUENCE, FbMainFrame::OnOpenSequence)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
@@ -528,6 +529,18 @@ void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
 	}
 	frame->OpenAuthor(event.m_author, event.m_book);
 }
+
+void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
+{
+	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_SEQUEN, true), FbFrameSequen);
+	if (!frame) {
+		frame = new FbFrameSequen(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
+	}
+	frame->OpenSequence(event.m_author, event.m_book);
+}
+
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
 {

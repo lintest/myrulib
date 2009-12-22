@@ -80,6 +80,7 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 		void OnUpdateFolder(FbFolderEvent & event);
 		void OnOpenAuthor(FbOpenEvent & event);
+		void OnOpenSequence(FbOpenEvent & event);
 		void OnVacuum(wxCommandEvent & event);
 		void OnUpdateFonts(wxCommandEvent & event);
 		void OnProgress(FbProgressEvent & event);

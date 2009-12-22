@@ -15,20 +15,20 @@ class FbAuthorMenu: public wxMenu
 
 FbAuthorMenu::FbAuthorMenu(int id)
 {
-	Append(ID_AUTHOR_APPEND, _("Добавить"));
+	Append(ID_MASTER_APPEND, _("Добавить"));
 	if (id == 0) return;
-	Append(ID_AUTHOR_MODIFY, _("Изменить"));
-	Append(ID_AUTHOR_DELETE, _("Удалить"));
+	Append(ID_MASTER_MODIFY, _("Изменить"));
+	Append(ID_MASTER_DELETE, _("Удалить"));
 	AppendSeparator();
-	Append(ID_AUTHOR_REPLACE, _("Заменить"));
+	Append(ID_MASTER_REPLACE, _("Заменить"));
 }
 
 BEGIN_EVENT_TABLE(FbAuthorList, FbTreeListCtrl)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbAuthorList::OnContextMenu)
-	EVT_MENU(ID_AUTHOR_APPEND, FbAuthorList::OnAuthorAppend)
-	EVT_MENU(ID_AUTHOR_MODIFY, FbAuthorList::OnAuthorModify)
-	EVT_MENU(ID_AUTHOR_DELETE, FbAuthorList::OnAuthorDelete)
-	EVT_MENU(ID_AUTHOR_REPLACE, FbAuthorList::OnAuthorReplace)
+	EVT_MENU(ID_MASTER_APPEND, FbAuthorList::OnMasterAppend)
+	EVT_MENU(ID_MASTER_MODIFY, FbAuthorList::OnMasterModify)
+	EVT_MENU(ID_MASTER_DELETE, FbAuthorList::OnMasterDelete)
+	EVT_MENU(ID_MASTER_REPLACE, FbAuthorList::OnMasterReplace)
 END_EVENT_TABLE()
 
 FbAuthorList::FbAuthorList(wxWindow * parent, wxWindowID id)
@@ -54,41 +54,41 @@ void FbAuthorList::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	int id = 0;
 	if (item.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*)GetItemData(item);
+		FbMasterData * data = (FbMasterData*)GetItemData(item);
 		if (data) id = data->GetId();
 	}
 	FbAuthorMenu menu(id);
 	PopupMenu(&menu, pos.x, pos.y);
 }
 
-FbAuthorData * FbAuthorList::GetSelected()
+FbMasterData * FbAuthorList::GetSelected()
 {
 	wxTreeItemId selected = GetSelection();
 	if (selected.IsOk()) {
-		return (FbAuthorData*) GetItemData(selected);
+		return (FbMasterData*) GetItemData(selected);
 	} else
 		return NULL;
 }
 
-void FbAuthorList::OnAuthorAppend(wxCommandEvent& event)
+void FbAuthorList::OnMasterAppend(wxCommandEvent& event)
 {
 	int id = FbAuthorDlg::Append();
 	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
-void FbAuthorList::OnAuthorModify(wxCommandEvent& event)
+void FbAuthorList::OnMasterModify(wxCommandEvent& event)
 {
-	FbAuthorData * data = (FbAuthorData*) GetSelected();
+	FbMasterData * data = (FbMasterData*) GetSelected();
 	if (!data) return;
 
 	int id = FbAuthorDlg::Modify(data->GetId());
 	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
-void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
+void FbAuthorList::OnMasterDelete(wxCommandEvent& event)
 {
 	wxTreeItemId selected = GetSelection();
-	FbAuthorData * data = (FbAuthorData*) GetSelected();
+	FbMasterData * data = (FbMasterData*) GetSelected();
 	if (!data) return;
 	int id = data->GetId();
 
@@ -108,11 +108,10 @@ void FbAuthorList::OnAuthorDelete(wxCommandEvent& event)
 	}
 }
 
-
-void FbAuthorList::OnAuthorReplace(wxCommandEvent& event)
+void FbAuthorList::OnMasterReplace(wxCommandEvent& event)
 {
 	wxTreeItemId selected = GetSelection();
-	FbAuthorData * data = (FbAuthorData*) GetSelected();
+	FbMasterData * data = (FbMasterData*) GetSelected();
 	if (!data) return;
 
 	int id = FbReplaceDlg::Execute(data->GetId());
@@ -128,12 +127,6 @@ void * FbAuthorList::DeleteThread::Entry()
 
 	sql = wxString::Format(wxT("books.id_author=%d"), m_author);
 	LogDelete(database, sql);
-
-	sql = wxString::Format(wxT("DELETE FROM bookseq WHERE id_book IN (SELECT id FROM books WHERE id_author=%d)"), m_author);
-	ExecSQL(database, sql);
-
-	sql = wxString::Format(wxT("DELETE FROM files WHERE id_book IN (SELECT id FROM books WHERE id_author=%d)"), m_author);
-	ExecSQL(database, sql);
 
 	sql = wxString::Format(wxT("DELETE FROM books WHERE id_author=%d"), m_author);
 	ExecSQL(database, sql);
