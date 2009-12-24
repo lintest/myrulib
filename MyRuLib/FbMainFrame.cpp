@@ -197,7 +197,9 @@ void FbMainFrame::CreateControls()
 	Layout();
 	Centre();
 
-	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTHOR).Post(this);
+	FbFrameAuthor * authors = new FbFrameAuthor(this);
+	authors->SelectRandomLetter();
+	authors->ActivateAuthors();
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)

@@ -8,7 +8,6 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
-#include "FbAuthorList.h"
 #include "FbManager.h"
 
 enum FbAuthorListMode
@@ -30,11 +29,13 @@ class FbFrameAuthor : public FbFrameBase
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
+		virtual wxMenuBar * CreateMenuBar();
 	private:
 		wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
 		void ToggleAlphabar(const int &idLetter);
 		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
+		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxToolBar * m_RuAlphabar;
@@ -52,6 +53,11 @@ class FbFrameAuthor : public FbFrameBase
 		void OnCharEvent(wxKeyEvent& event);
 		void OnEmptyAuthors(wxCommandEvent& event);
 		void OnAppendAuthor(FbAuthorEvent& event);
+		void OnMasterAppend(wxCommandEvent& event);
+		void OnMasterModify(wxCommandEvent& event);
+		void OnMasterDelete(wxCommandEvent& event);
+		void OnMasterReplace(wxCommandEvent& event);
+		void OnContextMenu(wxTreeEvent& event);
 		DECLARE_EVENT_TABLE()
 	protected:
 		class AuthorThread: public BaseThread
@@ -67,6 +73,20 @@ class FbFrameAuthor : public FbFrameBase
 				static FbThreadSkiper sm_skiper;
 				int m_author;
 				int m_number;
+		};
+		class MasterMenu: public wxMenu
+		{
+			public:
+				MasterMenu(int id);
+		};
+	private:
+		class MenuBar: public FbFrameMenu
+		{
+			public:
+				MenuBar();
+		};
+		class MenuMaster: public FbMenu {
+			public: MenuMaster();
 		};
 };
 

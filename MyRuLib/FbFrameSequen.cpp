@@ -32,8 +32,6 @@ FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
 
 void FbFrameSequen::CreateControls()
 {
-	SetMenuBar(new FbFrameMenu);
-
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
@@ -446,7 +444,7 @@ FbFrameSequen::MenuBar::MenuBar()
 	Append(new MenuLib,    _("Библиотека"));
 	Append(new MenuFrame,  _("Картотека"));
 	Append(new MenuMaster, _("Серии"));
-	Append(new MenuBook,   _("Книга"));
+	Append(new MenuBook,   _("Книги"));
 	Append(new MenuView,   _("Вид"));
 	Append(new MenuSetup,  _("Сервис"));
 	Append(new MenuWindow, _("Окно"));

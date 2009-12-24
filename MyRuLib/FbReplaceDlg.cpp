@@ -1,7 +1,6 @@
 #include "FbReplaceDlg.h"
 #include <wx/artprov.h>
 #include "FbAuthorThread.h"
-#include "FbAuthorList.h"
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
 
