@@ -26,6 +26,7 @@ class FbAuiMDIChildFrame : public wxAuiMDIChildFrame
 					const wxString& name = wxFrameNameStr);
 		virtual void UpdateFonts(bool refresh = true) {};
 		static void UpdateFont(wxHtmlWindow * html, bool refresh);
+		virtual void ShowFullScreen(bool show) {};
 };
 
 #endif // __FBWINDOW_H__

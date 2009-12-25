@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_FOLDER, _("Мои папки"))
+	:FbFrameBase(parent, ID_FRAME_FOLDER, _("Мои папки")), m_FolderBar(NULL)
 {
 	CreateControls();
 }
@@ -32,16 +32,16 @@ void FbFrameFolder::CreateControls()
 
 	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_ToolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
-	m_ToolBar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
-	m_ToolBar->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
-	m_ToolBar->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
-	m_ToolBar->Realize();
-	bToolSizer->Add( m_ToolBar, 0, wxALIGN_CENTER_VERTICAL);
+	m_FolderBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
+	m_FolderBar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	m_FolderBar->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
+	m_FolderBar->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
+	m_FolderBar->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
+	m_FolderBar->Realize();
+	bToolSizer->Add( m_FolderBar, 0, wxALIGN_CENTER_VERTICAL);
 
-	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bToolSizer->Add( toolbar, 1, wxALIGN_CENTER_VERTICAL);
+	m_ToolBar  = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
+	bToolSizer->Add( m_ToolBar, 1, wxALIGN_CENTER_VERTICAL);
 
 	bSizer1->Add( bToolSizer, 0, wxEXPAND);
 
@@ -158,8 +158,8 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 		FbFolderData * data = (FbFolderData*) m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
-			m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
-			m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
+			m_FolderBar->EnableTool(ID_MODIFY_FOLDER, enabled);
+			m_FolderBar->EnableTool(ID_DELETE_FOLDER, enabled);
 			FillByFolder(data);
 		}
 	}
@@ -299,3 +299,9 @@ void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
 	if (bNeedUpdate) FillByFolder(data);
 }
 
+void FbFrameFolder::ShowFullScreen(bool show)
+{
+	if (m_FolderBar) m_FolderBar->Show(!show);
+	if (m_ToolBar) m_ToolBar->Show(!show);
+	Layout();
+}

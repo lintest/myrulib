@@ -15,10 +15,10 @@ class BookTreeItemData: public wxTreeItemData
 			file_size(data->file_size),
 			sequence(data->sequence),
 			number(data->number),
+			genres(data->genres),
 			rating(data->rating)
 		{ };
 		BookTreeItemData(wxSQLite3ResultSet & result);
-		BookTreeItemData(int id): m_id(id) {};
 		int GetId() { return m_id; };
 	private:
 		int m_id;
@@ -28,6 +28,7 @@ class BookTreeItemData: public wxTreeItemData
 		int file_size;
 		wxString sequence;
 		int number;
+		wxString genres;
 		int rating;
 };
 

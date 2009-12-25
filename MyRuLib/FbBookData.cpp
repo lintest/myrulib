@@ -6,6 +6,7 @@ BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	file_type( res.GetString(wxT("file_type"))),
 	file_size( res.GetInt(wxT("file_size"))),
 	number( res.GetInt(wxT("number"))),
+	genres( res.GetString(wxT("genres"))),
 	rating(0)
 {
 	int r = res.GetInt(wxT("rating"));

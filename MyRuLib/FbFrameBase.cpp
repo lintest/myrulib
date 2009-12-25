@@ -1,8 +1,8 @@
 #include "FbFrameBase.h"
 #include "FbConst.h"
-#include "FbMainMenu.h"
 #include "ExternalDlg.h"
 #include "FbMainFrame.h"
+#include "MyRuLibApp.h"
 #include "InfoCash.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
@@ -11,6 +11,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
@@ -52,7 +53,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
 	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
 	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
-	m_MasterList(NULL), m_BooksPanel(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
 {
 	Create(parent, id, title);
 }
@@ -60,17 +61,16 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
 {
 	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
-	if (res) {
-		SetMenuBar(new FbFrameMenu);
-		CreateControls();
-	}
+	if (res) CreateControls();
 	return res;
 }
 
 void FbFrameBase::CreateControls()
 {
-	UpdateFonts(false);
-	Layout();
+	SetMenuBar(CreateMenuBar());
+	this->UpdateFonts(false);
+	this->ShowFullScreen(IsFullScreen());
+	this->Layout();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
@@ -219,7 +219,9 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
+	SetMenuBar(CreateMenuBar());
 	UpdateStatus();
+	event.Skip();
 }
 
 void FbFrameBase::UpdateFonts(bool refresh)
@@ -349,8 +351,8 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.id_author, \
-					states.rating, authors.full_name, sequences.value AS sequence, bookseq.number\
+					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
+					states.rating, books.id_author, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id \
@@ -363,7 +365,7 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT DISTINCT \
-					books.id, books.title, books.file_size, books.file_type, \
+					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
 					states.rating as rating, books.created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
@@ -439,4 +441,35 @@ void FbFrameBase::BaseThread::InitDatabase(FbCommonDatabase &database)
 {
 	database.AttachConfig();
 	database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
+	database.CreateFunction(wxT("GENRE"), 1, m_genre);
 }
+
+void FbFrameBase::ShowFullScreen(bool show)
+{
+	if (m_ToolBar) m_ToolBar->Show(!show);
+	Layout();
+}
+
+bool FbFrameBase::IsFullScreen()
+{
+	wxTopLevelWindow * frame = (wxTopLevelWindow*) wxGetApp().GetTopWindow();
+	return frame->IsFullScreen();
+}
+
+FbFrameBase::MenuBar::MenuBar()
+{
+	Append(new MenuFile,   _("Файл"));
+	Append(new MenuLib,    _("Библиотека"));
+	Append(new MenuFrame,  _("Картотека"));
+	Append(new MenuBook,   _("Книга"));
+	Append(new MenuView,   _("Вид"));
+	Append(new MenuSetup,  _("Сервис"));
+	Append(new MenuWindow, _("Окно"));
+	Append(new MenuHelp,   _("?"));
+}
+
+wxMenuBar * FbFrameBase::CreateMenuBar()
+{
+	return new MenuBar;
+}
+

@@ -97,7 +97,7 @@ void FbParams::SetText(const int param, const wxString &text)
 	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
 
 	try {
-		if (text == DefaultValue(param)) {
+		if (text == DefaultText(param)) {
 			wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, param);
@@ -147,7 +147,7 @@ wxString FbParams::DefaultText(int param)
 		case DB_WANRAIK_DIR:
 			return wxGetApp().GetAppPath();
 		case FB_LIBRUSEC_URL:
-			return wxT("http://lib.rus.ec");
+			return wxT("http://flibusta.net");
 		case FB_DOWNLOAD_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
 		default:

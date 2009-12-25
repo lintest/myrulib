@@ -6,23 +6,22 @@
 #include "FbGenres.h"
 #include "FbMainMenu.h"
 
-class FbGenreFunction : public wxSQLite3ScalarFunction
+FbFrameGenres::SubgenreFunction::SubgenreFunction(int code)
+	: m_code( wxString::Format(wxT("%02X"), code) )
 {
-	virtual void Execute(wxSQLite3FunctionContext& ctx);
-};
+}
 
-void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
+void FbFrameGenres::SubgenreFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	int argCount = ctx.GetArgCount();
-	if (argCount != 2) {
-		ctx.SetResultError(wxString::Format(_("GENRE called with wrong number of arguments: %d."), argCount));
+	if (argCount != 1) {
+		ctx.SetResultError(wxString::Format(_("SUBGENRE called with wrong number of arguments: %d."), argCount));
 		return;
 	}
 	wxString text = ctx.GetString(0);
-	wxString genre = ctx.GetString(1);
 
 	for (size_t i=0; i<text.Length()/2; i++) {
-		if ( text.Mid(i*2, 2) == genre ) {
+		if ( text.Mid(i*2, 2) == m_code ) {
 			ctx.SetResult(true);
 			return;
 		}
@@ -49,8 +48,8 @@ void FbFrameGenres::CreateControls()
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bSizer1->Add( toolbar, 0, wxGROW);
+	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
+	bSizer1->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -81,17 +80,14 @@ void * FbFrameGenres::GenresThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxString::Format(wxT("GENRE(books.genres, ?)"), m_code);
+	wxString condition = wxT("SUBGENRE(books.genres)");
 	wxString sql = GetSQL(condition);
 
 	try {
 		FbCommonDatabase database;
 		InitDatabase(database);
-		FbGenreFunction function;
-		database.CreateFunction(wxT("GENRE"), 2, function);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, wxString::Format(wxT("%02X"), m_code));
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		database.CreateFunction(wxT("SUBGENRE"), 1, m_subgenre);
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 
 		if (sm_skiper.Skipped(m_number)) return NULL;
 		FillBooks(result);

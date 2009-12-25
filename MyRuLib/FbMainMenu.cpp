@@ -40,10 +40,10 @@ FbMenuBar::MenuHelp::MenuHelp()
 FbMainMenu::FbMainMenu(): FbMenuBar()
 {
 	Append(new MenuFile,  _("Файл"));
-	Append(new MenuFrame, _("Картотека"));
 	Append(new MenuLib,   _("Библиотека"));
-	Append(new MenuSetup, _("Сервис"));
+	Append(new MenuFrame, _("Картотека"));
 	Append(new MenuView,  _("Вид"));
+	Append(new MenuSetup, _("Сервис"));
 	Append(new MenuHelp,  _("?"));
 }
 
@@ -57,18 +57,8 @@ FbMainMenu::MenuFile::MenuFile()
 
 FbMainMenu::MenuView::MenuView()
 {
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
-}
-
-FbFrameMenu::FbFrameMenu()
-{
-	Append(new MenuFile,  _("Файл"));
-	Append(new MenuBook,  _("Список"));
-	Append(new MenuFrame, _("Картотека"));
-	Append(new MenuLib,   _("Библиотека"));
-	Append(new MenuSetup, _("Сервис"));
-	Append(new MenuView,  _("Вид"));
-	Append(new MenuHelp,  _("?"));
+	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
 FbFrameMenu::MenuFile::MenuFile()
@@ -84,6 +74,8 @@ FbFrameMenu::MenuBook::MenuBook()
 {
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
+	AppendSeparator();
+	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
 FbFrameMenu::MenuView::MenuView()
@@ -97,7 +89,8 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
 	AppendSeparator();
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tCtrl+Z"));
+	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()
@@ -107,4 +100,13 @@ FbMenuBar::MenuRecent::MenuRecent()
 	Append(ID_RECENT_3);
 	Append(ID_RECENT_4);
 	Append(ID_RECENT_5);
+}
+
+FbMenuBar::MenuWindow::MenuWindow()
+{
+	Append(ID_WINDOW_CLOSE,    _("Закрыть окно"));
+	Append(ID_WINDOW_CLOSEALL, _("Закрыть все"));
+	AppendSeparator();
+	Append(ID_WINDOW_NEXT,     _("Следующее"));
+	Append(ID_WINDOW_PREV,     _("Предыдущее"));
 }

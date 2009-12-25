@@ -26,6 +26,8 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		virtual ~FbMainFrame();
 		virtual wxString GetTitle() const;
 		void SetStatus(const wxString &text);
+	protected:
+		virtual void SetMenuBar(wxMenuBar *pMenuBar);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		void CreateControls();
@@ -37,6 +39,7 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void FindTitle(const wxString &title, const wxString &author);
 		wxWindow * FindFrameById(const int id, bool bActivate = false);
 		void OpenDatabase(const wxString &filename);
+		void SetAccelerators();
 	private:
 		wxTextCtrl m_FindAuthor;
 		wxTextCtrl m_FindTitle;
@@ -56,6 +59,8 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnFindAuthorEnter(wxCommandEvent& event);
 		void OnFindTitle(wxCommandEvent & event);
 		void OnFindTitleEnter(wxCommandEvent& event);
+		void OnFullScreen(wxCommandEvent& event);
+		void OnFullScreenUpdate(wxUpdateUIEvent& event);
 		void OnMenuNothing(wxCommandEvent& event);
 		void OnMenuAuthor(wxCommandEvent& event);
 		void OnMenuConfig(wxCommandEvent& event);
@@ -75,12 +80,17 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 		void OnUpdateFolder(FbFolderEvent & event);
 		void OnOpenAuthor(FbOpenEvent & event);
+		void OnOpenSequence(FbOpenEvent & event);
 		void OnVacuum(wxCommandEvent & event);
 		void OnUpdateFonts(wxCommandEvent & event);
 		void OnProgress(FbProgressEvent & event);
 		void OnUpdateBook(wxCommandEvent & event);
 		void OnMenuRecent(wxCommandEvent & event);
 		void OnRecentUpdate(wxUpdateUIEvent& event);
+		void OnWindowClose(wxCommandEvent & event);
+		void OnWindowCloseAll(wxCommandEvent & event);
+		void OnWindowNext(wxCommandEvent & event);
+		void OnWindowPrev(wxCommandEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 

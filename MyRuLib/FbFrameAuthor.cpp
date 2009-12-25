@@ -9,6 +9,9 @@
 #include "FbMainMenu.h"
 #include "FbWindow.h"
 #include "FbAuthorThread.h"
+#include "FbAuthorDlg.h"
+#include "FbReplaceDlg.h"
+#include "FbUpdateThread.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
@@ -18,6 +21,11 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameAuthor::OnEmptyAuthors)
 	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameAuthor::OnAppendAuthor)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
+	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuthor::OnContextMenu)
+	EVT_MENU(ID_MASTER_APPEND, FbFrameAuthor::OnMasterAppend)
+	EVT_MENU(ID_MASTER_MODIFY, FbFrameAuthor::OnMasterModify)
+	EVT_MENU(ID_MASTER_DELETE, FbFrameAuthor::OnMasterDelete)
+	EVT_MENU(ID_MASTER_REPLACE, FbFrameAuthor::OnMasterReplace)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
@@ -28,8 +36,6 @@ FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
 
 void FbFrameAuthor::CreateControls()
 {
-	SetMenuBar(new FbFrameMenu);
-
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
@@ -45,7 +51,9 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbAuthorList(splitter, ID_MASTER_LIST);
+	m_MasterList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
+	m_MasterList->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
+	m_MasterList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);
 
@@ -117,7 +125,7 @@ void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
 		if (data) ( new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
@@ -158,7 +166,7 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) {
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(item);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(item);
 		if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetId());
 	}
 }
@@ -172,7 +180,7 @@ wxString FbFrameAuthor::AuthorThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.id_author, \
+					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres, books.id_author, \
 					states.rating, sequences.value AS sequence, bookseq.number as number\
 				FROM books \
 					LEFT JOIN bookseq ON bookseq.id_book=books.id \
@@ -185,7 +193,7 @@ wxString FbFrameAuthor::AuthorThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT DISTINCT\
-					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, \
+					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, GENRE(books.genres) AS genres, \
 					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
@@ -265,7 +273,7 @@ void FbFrameAuthor::UpdateBooklist()
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbAuthorData * data = (FbAuthorData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
 		if (data) (new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 	}
 }
@@ -282,7 +290,7 @@ void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
 
-	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbAuthorData(event.m_author));
+	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_author));
 	wxString number = wxString::Format(wxT("%d"), event.m_number);
 	m_MasterList->SetItemText(item, 1, number);
 
@@ -312,5 +320,125 @@ void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d"), GetBookCount()));
 	event.Skip();
+}
+
+void FbFrameAuthor::ShowFullScreen(bool show)
+{
+	if (m_RuAlphabar) m_RuAlphabar->Show(!show);
+	if (m_EnAlphabar) m_EnAlphabar->Show(!show);
+	Layout();
+}
+
+void FbFrameAuthor::OnContextMenu(wxTreeEvent& event)
+{
+	wxPoint point = event.GetPoint();
+	// If from keyboard
+	if (point.x == -1 && point.y == -1) {
+		wxSize size = m_MasterList->GetSize();
+		point.x = size.x / 3;
+		point.y = size.y / 3;
+	}
+	ShowContextMenu(point, event.GetItem());
+}
+
+void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
+{
+	int id = 0;
+	if (item.IsOk()) {
+		FbMasterData * data = (FbMasterData*)m_MasterList->GetItemData(item);
+		if (data) id = data->GetId();
+	}
+	MasterMenu menu(id);
+	PopupMenu(&menu, pos.x, pos.y);
+}
+
+void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
+{
+	int id = FbAuthorDlg::Append();
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
+}
+
+void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
+{
+	wxTreeItemId selected = m_MasterList->GetSelection();
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+	if (!data) return;
+	int id = FbAuthorDlg::Modify(data->GetId());
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
+}
+
+void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
+{
+	wxTreeItemId selected = m_MasterList->GetSelection();
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+	if (!data) return;
+	int id = data->GetId();
+	if (!id) return;
+
+	wxString sql = wxT("SELECT count(id) FROM books WHERE id_author=?");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	int count = result.NextRow() ? result.GetInt(0) : 0;
+
+	wxString msg = _("Удалить автора: ") + m_MasterList->GetItemText(selected);
+	if (count) msg += wxString::Format(_("\nи все его книги в количестве %d шт.?"), count);
+	bool ok = wxMessageBox(msg, _("Удаление"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (ok) {
+		wxString sql1 = wxString::Format(wxT("DELETE FROM books WHERE id_author=%d"), id);
+		wxString sql2 = wxString::Format(wxT("DELETE FROM authors WHERE id=%d"), id);
+		(new FbUpdateThread(sql1, sql2))->Execute();
+		m_MasterList->Delete(selected);
+	}
+}
+
+void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
+{
+	wxTreeItemId selected = m_MasterList->GetSelection();
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+	if (!data) return;
+	int id = data->GetId();
+	if (!id) return;
+
+	id = FbReplaceDlg::Execute(id);
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
+}
+
+FbFrameAuthor::MasterMenu::MasterMenu(int id)
+{
+	Append(ID_MASTER_APPEND, _("Добавить"));
+	if (id == 0) return;
+	Append(ID_MASTER_MODIFY, _("Изменить"));
+	Append(ID_MASTER_DELETE, _("Удалить"));
+	AppendSeparator();
+	Append(ID_MASTER_REPLACE, _("Заменить"));
+}
+
+FbFrameAuthor::MenuBar::MenuBar()
+{
+	Append(new MenuFile,   _("Файл"));
+	Append(new MenuLib,    _("Библиотека"));
+	Append(new MenuFrame,  _("Картотека"));
+	Append(new MenuMaster, _("Авторы"));
+	Append(new MenuBook,   _("Книги"));
+	Append(new MenuView,   _("Вид"));
+	Append(new MenuSetup,  _("Сервис"));
+	Append(new MenuWindow, _("Окно"));
+	Append(new MenuHelp,   _("?"));
+}
+
+FbFrameAuthor::MenuMaster::MenuMaster()
+{
+	Append(ID_MASTER_APPEND, _("Добавить"));
+	Append(ID_MASTER_MODIFY, _("Изменить"));
+	Append(ID_MASTER_DELETE, _("Удалить"));
+	AppendSeparator();
+	Append(ID_MASTER_REPLACE, _("Заменить"));
+}
+
+wxMenuBar * FbFrameAuthor::CreateMenuBar()
+{
+	return new MenuBar;
 }
 

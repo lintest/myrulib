@@ -29,6 +29,10 @@ class FbMenuBar: public wxMenuBar
 		class MenuRecent: public FbMenu {
 			public: MenuRecent();
 		};
+
+		class MenuWindow: public FbMenu {
+			public: MenuWindow();
+		};
 };
 
 class FbMainMenu: public FbMenuBar
@@ -51,9 +55,9 @@ class FbMainMenu: public FbMenuBar
 class FbFrameMenu: public FbMenuBar
 {
 	public:
-		FbFrameMenu();
+		FbFrameMenu() {};
 
-	private:
+	protected:
 
 		class MenuFile: public FbMenu {
 			public: MenuFile();

@@ -19,6 +19,7 @@ class FbFrameFolder : public FbFrameBase
 	public:
 		FbFrameFolder(wxAuiMDIParentFrame * parent);
 		void UpdateFolder(const int iFolder, const FbFolderType type);
+		virtual void ShowFullScreen(bool show);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
@@ -29,7 +30,7 @@ class FbFrameFolder : public FbFrameBase
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 		FbFolderData * GetSelected();
 	private:
-		wxToolBar * m_ToolBar;
+		wxToolBar * m_FolderBar;
 	private:
 		void OnFavoritesDel(wxCommandEvent & event);
 		void OnFolderAppend(wxCommandEvent & event);

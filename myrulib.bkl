@@ -51,7 +51,6 @@
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorDlg.cpp</sources>
-		<sources>MyRuLib/FbAuthorList.cpp</sources>
 		<sources>MyRuLib/FbAuthorThread.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
 		<sources>MyRuLib/FbBookEvent.cpp</sources>

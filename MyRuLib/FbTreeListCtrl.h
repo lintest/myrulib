@@ -30,4 +30,13 @@ class FbTreeListUpdater
 		wxTreeListCtrl * m_list;
 };
 
+class FbMasterData: public wxTreeItemData
+{
+	public:
+		FbMasterData(const int id): m_id(id) {};
+		const int GetId() { return m_id; };
+	private:
+		int m_id;
+};
+
 #endif // __FBTREELISTCTRL_H__

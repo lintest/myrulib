@@ -74,11 +74,19 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
 	EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
+	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
+	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
+
+	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
+	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
+	EVT_MENU(ID_WINDOW_NEXT, FbMainFrame::OnWindowNext)
+	EVT_MENU(ID_WINDOW_PREV, FbMainFrame::OnWindowPrev)
 
 	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
 
 	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
+	EVT_FB_OPEN(ID_BOOK_SEQUENCE, FbMainFrame::OnOpenSequence)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
@@ -120,6 +128,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 	if(res)	{
 		if (maximized) Maximize();
 		CreateControls();
+		SetAccelerators();
 		LoadIcon();
 		if (maximized) {
 			size.x = GetBestSize().x;
@@ -127,6 +136,19 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 		}
 	}
 	return res;
+}
+
+
+void FbMainFrame::SetAccelerators()
+{
+	wxAcceleratorEntry entries[] = {
+		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('X'), wxID_EXIT),
+		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('W'), ID_WINDOW_CLOSE),
+//		wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN),
+//		wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL),
+	};
+	wxAcceleratorTable accel(sizeof(entries) / sizeof(wxAcceleratorEntry), entries);
+	SetAcceleratorTable(accel);
 }
 
 void FbMainFrame::LoadIcon()
@@ -175,7 +197,9 @@ void FbMainFrame::CreateControls()
 	Layout();
 	Centre();
 
-	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTHOR).Post(this);
+	FbFrameAuthor * authors = new FbFrameAuthor(this);
+	authors->SelectRandomLetter();
+	authors->ActivateAuthors();
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)
@@ -447,7 +471,7 @@ void FbMainFrame::OnMenuDownld(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuSequen(wxCommandEvent & event)
 {
-	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, true), FbFrameSequen);
+	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_SEQUEN, true), FbFrameSequen);
 	if (!frame) {
 		frame = new FbFrameSequen(this);
 		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
@@ -508,6 +532,18 @@ void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
 	frame->OpenAuthor(event.m_author, event.m_book);
 }
 
+void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
+{
+	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_SEQUEN, true), FbFrameSequen);
+	if (!frame) {
+		frame = new FbFrameSequen(this);
+		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame->Update();
+	}
+	frame->OpenSequence(event.m_author, event.m_book);
+}
+
+
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
 {
 	FbFrameInfo * frame = wxDynamicCast(FindFrameById(ID_FRAME_INFO, true), FbFrameInfo);
@@ -547,7 +583,7 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
-		frame->UpdateFonts();
+		if (frame) frame->UpdateFonts();
 	}
 }
 
@@ -601,3 +637,48 @@ void FbMainFrame::OnMenuCalendar(wxCommandEvent & event)
 */
 }
 
+void FbMainFrame::OnFullScreen(wxCommandEvent& event)
+{
+	bool show = !IsFullScreen();
+	long style = wxFULLSCREEN_NOTOOLBAR | wxFULLSCREEN_NOSTATUSBAR | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION;
+	ShowFullScreen(show, style);
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
+		if (frame) frame->ShowFullScreen(show);
+	}
+}
+
+void FbMainFrame::OnFullScreenUpdate(wxUpdateUIEvent& event)
+{
+	event.Check(IsFullScreen());
+}
+
+void FbMainFrame::OnWindowClose(wxCommandEvent & event)
+{
+	if (GetActiveChild()) GetActiveChild()->Close();
+}
+
+void FbMainFrame::OnWindowCloseAll(wxCommandEvent & event)
+{
+	while (GetActiveChild()) GetActiveChild()->Close();
+}
+
+void FbMainFrame::OnWindowNext(wxCommandEvent & event)
+{
+	ActivateNext();
+}
+
+void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
+{
+	ActivatePrevious();
+}
+
+void FbMainFrame::SetMenuBar(wxMenuBar *pMenuBar)
+{
+	if (pMenuBar && (m_pMyMenuBar == pMenuBar)) {
+		wxDELETE(m_pMyMenuBar);
+		pMenuBar = new FbMainMenu;
+	}
+	wxAuiMDIParentFrame::SetMenuBar(pMenuBar);
+}

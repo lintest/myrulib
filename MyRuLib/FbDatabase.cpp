@@ -2,6 +2,7 @@
 #include "FbConst.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
+#include "FbGenres.h"
 
 #define DB_DATABASE_VERSION 8
 #define DB_CONFIG_VERSION 2
@@ -252,6 +253,16 @@ void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
 		}
 	}
 	ctx.SetResult(true);
+}
+
+void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	int argCount = ctx.GetArgCount();
+	if (argCount != 1) {
+		ctx.SetResultError(wxString::Format(_("GENRE called with wrong number of arguments: %d."), argCount));
+		return;
+	}
+	ctx.SetResult( FbGenres::DecodeList( ctx.GetString(0) ) );
 }
 
 void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)

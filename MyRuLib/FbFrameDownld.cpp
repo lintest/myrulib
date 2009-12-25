@@ -34,8 +34,8 @@ void FbFrameDownld::CreateControls()
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_toolbar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, wxEmptyString);
-	bSizer1->Add( m_toolbar, 0, wxGROW);
+	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, wxEmptyString);
+	bSizer1->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -137,8 +137,8 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 		FbFolderData * data = (FbFolderData*) m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetId() > 0;
-			m_toolbar->EnableTool(wxID_UP,   enabled);
-			m_toolbar->EnableTool(wxID_DOWN, enabled);
+			m_ToolBar->EnableTool(wxID_UP,   enabled);
+			m_ToolBar->EnableTool(wxID_DOWN, enabled);
 			FillByFolder(data);
 		}
 	}

@@ -83,7 +83,7 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	AppendItem(fgSizerList, _("Списки книг, авторов:"), ID_FONT_MAIN);
 	AppendItem(fgSizerList, _("Панель инструментов:"), ID_FONT_TOOL);
 	AppendItem(fgSizerList, _("Информация:"), ID_FONT_HTML);
-	AppendItem(fgSizerList, _("Диалоги:"), ID_FONT_DLG);
+	AppendItem(fgSizerList, _("Окна диалогов:"), ID_FONT_DLG);
 
 	bSizerMain->Add( fgSizerList, 0, wxEXPAND, 5 );
 
@@ -121,13 +121,14 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText* m_staticText11 = new wxStaticText( this, wxID_ANY, _("Адрес сайта Либрусек:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText* m_staticText11 = new wxStaticText( this, wxID_ANY, _("Адрес для скачивания:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
 	bSizer12->Add( m_staticText11, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxComboBox * m_comboBox1 = new wxComboBox( this, ID_LIBRUSEC_URL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	m_comboBox1->Append( _("http://lib.rus.ec") );
-	m_comboBox1->Append( _("http://lib.ololo.cc") );
+	m_comboBox1->Append( wxT("http://flibusta.net") );
+	m_comboBox1->Append( wxT("http://lib.rus.ec") );
+	m_comboBox1->Append( wxT("http://lib.ololo.cc") );
 	bSizer12->Add( m_comboBox1, 1, wxALL, 5 );
 
 	bSizer2->Add( bSizer12, 0, wxEXPAND|wxLEFT, 5 );
@@ -195,18 +196,47 @@ SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	bSizer->Fit( this );
 }
 
+SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
+	:wxPanel(parent)
+{
+	wxCheckBox * checkbox;
+	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
+
+	wxStaticBoxSizer* sbSizerCols;
+	sbSizerCols = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Видимость колонок") ), wxVERTICAL );
+
+	checkbox = new wxCheckBox( this, ID_COLUMN_GENRE, wxT("Жанр"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+
+	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, wxT("Рейтинг"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+
+	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, wxT("Тип файла"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+
+	checkbox = new wxCheckBox( this, ID_COLUMN_SYZE, wxT("Размер файла"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+
+	bSizer->Add( sbSizerCols, 1, wxALL|wxEXPAND, 5 );
+
+	this->SetSizer( bSizer );
+	this->Layout();
+	bSizer->Fit( this );
+}
+
 SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 
+	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка внешнего устройства:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText6->Wrap( -1 );
+	bSizer8->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка внешнего\nустройства:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText6->Wrap( -1 );
-	bSizer9->Add( m_staticText6, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
 	wxTextCtrl * m_textCtrl6 = new wxTextCtrl( this, ID_EXTERNAL_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
@@ -275,11 +305,17 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	#if defined(__WIN32__)
+	long nbStyle = wxNB_MULTILINE;
+	#else
+	long nbStyle = wxNB_LEFT;
+	#endif
 
-	notebook->AddPage( new FbPanelInternet(notebook), _("Интернет"), true );
+	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, nbStyle );
+	notebook->AddPage( new FbPanelInterface(notebook), _("Внешний вид"), true );
+	notebook->AddPage( new FbPanelInternet(notebook), _("Интернет"), false );
 	notebook->AddPage( new FbPanelTypes(notebook), _("Типы файлов"), false );
-	notebook->AddPage( new FbPanelExport(notebook), _("Внешнее устройство"), false );
+	notebook->AddPage( new FbPanelExport(notebook), _("Экспорт"), false );
 	notebook->AddPage( new FbPanelFont(notebook), _("Шрифты"), false );
 
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
@@ -352,6 +388,10 @@ void SettingsDlg::Assign(bool write)
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
 		{FB_FONT_DLG, ID_FONT_DLG, tFont},
+		{FB_COLUMN_TYPE, ID_COLUMN_TYPE, tCheck},
+		{FB_COLUMN_SYZE, ID_COLUMN_SYZE, tCheck},
+		{FB_COLUMN_GENRE, ID_COLUMN_GENRE, tCheck},
+		{FB_COLUMN_RATING, ID_COLUMN_RATING, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
