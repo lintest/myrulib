@@ -40,12 +40,11 @@ void FbFrameSequen::CreateControls()
 
 	m_FindInfo = new wxStaticText( this, wxID_ANY, _("Серия:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FindInfo->Wrap( -1 );
-	bSizerSeq->Add( m_FindInfo, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerSeq->Add( m_FindInfo, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_FindText = new wxTextCtrl( this, ID_SEQUENCE_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-
-	bSizerSeq->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizerSeq->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2 );
 
 	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizerSeq->Add( m_ToolBar, 1, wxALIGN_CENTER_VERTICAL);

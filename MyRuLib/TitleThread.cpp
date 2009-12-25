@@ -2,6 +2,7 @@
 #include "FbGenres.h"
 #include "FbManager.h"
 #include "InfoCash.h"
+#include "FbParams.h"
 #include "ZipReader.h"
 #include "BookExtractInfo.h"
 
@@ -13,17 +14,17 @@ void *TitleThread::Entry()
 
 	FbCommonDatabase database;
 
-	InfoCash::SetTitle(m_id, GetBookInfo(database, m_id));
-	InfoCash::SetFilelist(m_id, GetBookFiles(database, m_id));
+	GetBookInfo(database);
+	GetBookFiles(database);
 
 	UpdateInfo();
 
 	return NULL;
 }
 
-wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
+wxString TitleThread::GetBookInfo(FbDatabase &database)
 {
-	wxString authors, title, annotation, genres;
+	wxString authors, title, description, genres;
 
 	{
 		wxString sql = wxT("\
@@ -32,7 +33,7 @@ wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
 			ORDER BY authors.full_name \
 		");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, id);
+		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		while ( result.NextRow() ) {
 			if (!authors.IsEmpty()) authors += wxT(", ");
@@ -41,13 +42,14 @@ wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
 	}
 
 	{
-		wxString sql = wxT("SELECT title, genres FROM books WHERE id=? LIMIT 1");
+		wxString sql = wxT("SELECT title, genres, description FROM books WHERE id=? LIMIT 1");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, id);
+		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if ( result.NextRow() ) {
-			title = result.GetString(wxT("title"));
-			genres = result.GetString(wxT("genres"));
+			title = result.GetString(0);
+			genres = result.GetString(1);
+			description = result.GetString(2);
 		}
 	}
 	genres = FbGenres::DecodeList(genres);
@@ -61,19 +63,21 @@ wxString TitleThread::GetBookInfo(FbDatabase &database, int id)
 
 	html += wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTMLSpecialChars(title).c_str());
 
+	InfoCash::SetTitle(m_id, html, description);
+
 	return html;
 }
 
-wxString TitleThread::GetBookFiles(FbDatabase &database, int id)
+wxString TitleThread::GetBookFiles(FbDatabase &database)
 {
-	BookExtractArray items(database, id);
+	BookExtractArray items(database, m_id);
 
 	wxString html;
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
 		if (item.librusec) {
-			html += wxString::Format(wxT("<p>$(LIBRUSEC)/%s</p>"), item.book_name.c_str());
+			html += wxString::Format(wxT("<p>$(%s)/%s</p>"), FbParams::GetText(FB_CONFIG_TYPE).c_str(), item.book_name.c_str());
 		} else if ( item.id_archive ) {
 			if (item.NameIsEqual())
 				html += wxString::Format(wxT("<p>%s</p>"), item.zip_name.c_str());
@@ -83,6 +87,8 @@ wxString TitleThread::GetBookFiles(FbDatabase &database, int id)
 			html += wxString::Format(wxT("<p>%s</p>"), item.book_name.c_str());
 		}
 	}
+
+	InfoCash::SetFilelist(m_id, html);
 
 	return html;
 }

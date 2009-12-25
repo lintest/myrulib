@@ -46,6 +46,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
 	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameBase::OnBooksCount)
+	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnAuthorInfo)
 	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
@@ -118,6 +119,11 @@ void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
 	m_BooksPanel->AppendSequence( event.GetString() );
+}
+
+void FbFrameBase::OnAuthorInfo(wxCommandEvent& event)
+{
+	m_BooksPanel->m_BookInfo->SetPage( event.GetString() );
 }
 
 void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)

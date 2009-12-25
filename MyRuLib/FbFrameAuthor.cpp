@@ -225,14 +225,14 @@ void * FbFrameAuthor::AuthorThread::Entry()
 		FbCommonDatabase database;
 		InitDatabase(database);
 
-		if (m_mode == FB2_MODE_TREE) {
-			wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
+		{
+			wxString sql = wxT("SELECT full_name, description FROM authors WHERE id=?");
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, m_author);
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.NextRow()) {
-				wxString thisAuthor = result.GetString(wxT("full_name"));
-				FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisAuthor).Post(m_frame);
+				if (m_mode == FB2_MODE_TREE) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, result.GetString(0)).Post(m_frame);
+				FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, result.GetString(1)).Post(m_frame);
 			}
 		}
 

@@ -70,6 +70,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);
 		void OnExternal(wxCommandEvent& event);
+		void OnAuthorInfo(wxCommandEvent& event);
 		void OnAppendBook(FbBookEvent& event);
 		void OnAppendAuthor(wxCommandEvent& event);
 		void OnAppendSequence(wxCommandEvent& event);
