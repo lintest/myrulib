@@ -476,7 +476,7 @@ void FbBookPanel::AppendAuthor(int id, const wxString title)
 {
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
-	m_AuthorItem = m_BookList->AppendItem(parent, title, 0);
+	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1, new FbBookData(0, id));
 	m_BookList->SetItemBold(m_AuthorItem, true);
 	m_BookList->Expand(parent);
 }
