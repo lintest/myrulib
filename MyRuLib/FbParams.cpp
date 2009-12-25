@@ -147,7 +147,7 @@ wxString FbParams::DefaultText(int param)
 		case DB_WANRAIK_DIR:
 			return wxGetApp().GetAppPath();
 		case FB_LIBRUSEC_URL:
-			return wxT("http://lib.rus.ec");
+			return wxT("http://flibusta.net");
 		case FB_DOWNLOAD_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
 		default:

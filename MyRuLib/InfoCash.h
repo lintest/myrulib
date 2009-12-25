@@ -40,6 +40,7 @@ public:
 	wxString m_isbn;
 	wxString m_title;
 	wxString m_annotation;
+	wxString m_description;
 	wxString m_filelist;
 	InfoImageArray m_images;
 };
@@ -57,7 +58,7 @@ public:
 public:
 	static void EmptyInfo(int id);
 	static void SetISBN(int id, wxString html);
-	static void SetTitle(int id, wxString html);
+	static void SetTitle(int id, wxString title, wxString body);
 	static void SetFilelist(int id, wxString html);
 	static void SetAnnotation(int id, wxString html);
 	static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);

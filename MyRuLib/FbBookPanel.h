@@ -7,6 +7,7 @@
 #include "FbBookList.h"
 #include "FbBookData.h"
 #include "FbParams.h"
+#include "FbThread.h"
 
 enum FbListMode {
 	FB2_MODE_LIST = 0,
@@ -24,6 +25,7 @@ class FbBookPanel: public wxSplitterWindow
 		int GetOrderID();
 		bool IsOrderDesc();
 		void RevertOrder();
+		void ShowHTML(const wxString &html);
 		wxString GetOrderSQL();
 	public:
 		FbBookList * m_BookList;
@@ -31,7 +33,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbBookData * GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
-		void AppendAuthor(const wxString title = wxEmptyString);
+		void AppendAuthor(int id, const wxString title = wxEmptyString);
 		void AppendSequence(const wxString title = wxEmptyString);
 		void CreateColumns(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode;};
@@ -77,7 +79,20 @@ class FbBookPanel: public wxSplitterWindow
 		void OnChangeRating(wxCommandEvent& event);
 		void OnDeleteBooks(wxCommandEvent& event);
 		void OnModifyBooks(wxCommandEvent& event);
+		void OnLinkClicked(wxHtmlLinkEvent& event);
 		DECLARE_EVENT_TABLE();
+	private:
+		class AuthorThread: public FbThread
+		{
+			public:
+				AuthorThread(wxWindow * frame, int author): m_frame(frame), m_author(author) {};
+			protected:
+				virtual void * Entry();
+			private:
+				wxWindow * m_frame;
+				int m_author;
+		};
+
 };
 
 

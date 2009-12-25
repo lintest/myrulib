@@ -12,8 +12,8 @@ public:
 	TitleThread (FbBookThread * thread): FbBookThread(thread) {};
 	virtual void *Entry();
 private:
-	wxString GetBookInfo(FbDatabase &database, int id);
-	wxString GetBookFiles(FbDatabase &database, int id);
+	wxString GetBookInfo(FbDatabase &database);
+	wxString GetBookFiles(FbDatabase &database);
 private:
 	static wxCriticalSection sm_queue;
 };

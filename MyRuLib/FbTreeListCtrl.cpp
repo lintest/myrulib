@@ -57,3 +57,9 @@ void FbTreeListCtrl::Update()
 	DoResizeCols(GetClientSize().x);
 	wxTreeListCtrl::Update();
 }
+
+wxTreeItemData * FbTreeListCtrl::GetSelectedData() const
+{
+    wxTreeItemId selected = GetSelection();
+    return selected.IsOk() ? GetItemData(selected) : NULL;
+}
