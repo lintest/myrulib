@@ -162,11 +162,7 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
 
 FbBookData * FbBookPanel::GetSelectedBook()
 {
-	wxTreeItemId selected = m_BookList->GetSelection();
-	if (selected.IsOk()) {
-		return (FbBookData*) m_BookList->GetItemData(selected);
-	} else
-		return NULL;
+	return (FbBookData*) m_BookList->GetSelectedData();
 }
 
 void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
@@ -177,8 +173,12 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		FbBookData * data = (FbBookData*) m_BookList->GetItemData(selected);
 		if (data) {
-			InfoCash::LoadIcon(data->m_filetype);
-			InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+			if (data->GetId()) {
+				InfoCash::LoadIcon(data->m_filetype);
+				InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
+			} else if (data->GetAuthor()) {
+				(new AuthorThread(this->GetParent(), data->GetAuthor()))->Execute();
+			}
 		}
 	}
 }
@@ -254,13 +254,9 @@ void FbBookPanel::OnBooksListKeyDown(wxTreeEvent & event)
 
 void FbBookPanel::OnInfoUpdate(wxCommandEvent& event)
 {
-	wxTreeItemId selected = m_BookList->GetSelection();
-	if (selected.IsOk()) {
-		FbBookData * data= (FbBookData*)m_BookList->GetItemData(selected);
-		if (data && (data->GetId() == event.GetInt())) {
-			wxString html = event.GetString();
-			m_BookInfo->SetPage(html);
-		}
+	FbBookData * data= GetSelectedBook();
+	if (data && (data->GetId() == event.GetInt())) {
+		m_BookInfo->SetPage(event.GetString());
 	}
 }
 
@@ -627,4 +623,15 @@ void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
 void FbBookPanel::OnLinkClicked(wxHtmlLinkEvent& event)
 {
 	wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
+}
+
+void * FbBookPanel::AuthorThread::Entry()
+{
+	FbCommonDatabase database;
+	wxString sql = wxT("SELECT description FROM authors WHERE id=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_author);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
+	return NULL;
 }

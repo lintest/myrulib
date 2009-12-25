@@ -7,6 +7,7 @@
 #include "FbBookList.h"
 #include "FbBookData.h"
 #include "FbParams.h"
+#include "FbThread.h"
 
 enum FbListMode {
 	FB2_MODE_LIST = 0,
@@ -80,6 +81,18 @@ class FbBookPanel: public wxSplitterWindow
 		void OnModifyBooks(wxCommandEvent& event);
 		void OnLinkClicked(wxHtmlLinkEvent& event);
 		DECLARE_EVENT_TABLE();
+	private:
+		class AuthorThread: public FbThread
+		{
+			public:
+				AuthorThread(wxWindow * frame, int author): m_frame(frame), m_author(author) {};
+			protected:
+				virtual void * Entry();
+			private:
+				wxWindow * m_frame;
+				int m_author;
+		};
+
 };
 
 
