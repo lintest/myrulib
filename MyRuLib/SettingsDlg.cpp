@@ -121,13 +121,14 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText* m_staticText11 = new wxStaticText( this, wxID_ANY, _("Адрес сайта Либрусек:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText* m_staticText11 = new wxStaticText( this, wxID_ANY, _("Адрес для скачивания:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
 	bSizer12->Add( m_staticText11, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxComboBox * m_comboBox1 = new wxComboBox( this, ID_LIBRUSEC_URL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	m_comboBox1->Append( _("http://lib.rus.ec") );
-	m_comboBox1->Append( _("http://lib.ololo.cc") );
+	m_comboBox1->Append( wxT("http://flibusta.net") );
+	m_comboBox1->Append( wxT("http://lib.rus.ec") );
+	m_comboBox1->Append( wxT("http://lib.ololo.cc") );
 	bSizer12->Add( m_comboBox1, 1, wxALL, 5 );
 
 	bSizer2->Add( bSizer12, 0, wxEXPAND|wxLEFT, 5 );
