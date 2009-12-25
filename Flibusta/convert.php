@@ -1,5 +1,7 @@
 <?php
 
+require_once 'bbcode/bbcode.lib.php';
+
 function strtolowerEx($str){
  $result = $str;
  global $strtolowerEx_pairs;
@@ -214,14 +216,21 @@ function convert_authors($mysql_db, $sqlite_db)
     $insert->closeCursor();
   }
 
+  $bb = new bbcode;
   $sqltest = "SELECT * FROM libaannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['Title']."\n";
     $sql = "UPDATE authors SET description=? where id=?";
     $insert = $sqlite_db->prepare($sql);
-    $insert->execute(array($row['Body'], $row['AvtorId']));
+    $bb -> parse($row['Body']);
+	$body = $bb->get_html();
+#    $body = str_replace("&lt;", "<", $body);
+#    $body = str_replace("&gt;", "<", $body);
+    $insert->execute(array($body, $row['AvtorId']));
   }
+
+#  $sqlite_db->query("delete from authors where description is null;");
 
   $sqlite_db->query("commit;");
 }
@@ -271,14 +280,21 @@ function convert_books($mysql_db, $sqlite_db)
 
   $sqlite_db->query("CREATE INDEX book_id ON books(id);");
 
+  $bb = new bbcode;
   $sqltest = "SELECT * FROM libbannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['Title']."\n";
     $sql = "UPDATE books SET description=? where id=?";
     $insert = $sqlite_db->prepare($sql);
-    $insert->execute(array($row['Body'], $row['BookId']));
+    $bb -> parse($row['Body']);
+	$body = $bb->get_html();
+#    $body = str_replace("&lt;", "<", $body);
+#    $body = str_replace("&gt;", "<", $body);
+    $insert->execute(array($body, $row['BookId']));
   }
+
+#  $sqlite_db->query("delete from books where description is null;");
 
   $sqlite_db->query("commit;");
 }
