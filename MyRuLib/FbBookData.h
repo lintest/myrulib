@@ -35,11 +35,13 @@ class BookTreeItemData: public wxTreeItemData
 class FbBookData: public wxTreeItemData
 {
 	public:
-		FbBookData(int id): m_id(id) {};
-		FbBookData(BookTreeItemData & data): m_id(data.GetId()), m_filetype(data.file_type) {};
-		int GetId() { return m_id; };
+		FbBookData(int book, int author = 0): m_book(book), m_author(author) {};
+		FbBookData(BookTreeItemData & data): m_book(data.GetId()), m_author(0), m_filetype(data.file_type) {};
+		int GetId() { return m_book; };
+		int GetAuthor() { return m_author; };
 	private:
-		int m_id;
+		int m_book;
+		int m_author;
 	public:
 		wxString m_filetype;
 };

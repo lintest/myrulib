@@ -113,7 +113,7 @@ void FbFrameBase::OnAppendBook(FbBookEvent& event)
 
 void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 {
-	m_BooksPanel->AppendAuthor( event.GetString() );
+	m_BooksPanel->AppendAuthor( event.GetInt(), event.GetString() );
 }
 
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
@@ -123,7 +123,7 @@ void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 
 void FbFrameBase::OnAuthorInfo(wxCommandEvent& event)
 {
-	m_BooksPanel->m_BookInfo->SetPage( event.GetString() );
+	m_BooksPanel->ShowHTML( event.GetString() );
 }
 
 void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
@@ -357,7 +357,7 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
+					books.id, books.id_author, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
 					states.rating, books.id_author, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
@@ -402,13 +402,14 @@ void FbFrameBase::BaseThread::CreateTree(wxSQLite3ResultSet &result)
 	wxString thisAuthor = wxT("@@@");
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
+		int id_author = result.GetInt(wxT("id_author"));
 		wxString nextAuthor = result.GetString(wxT("full_name"));
 		wxString nextSequence = result.GetString(wxT("sequence"));
 
 		if (thisAuthor != nextAuthor) {
 			thisAuthor = nextAuthor;
 			thisSequence = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisAuthor).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, thisAuthor).Post(m_frame);
 		}
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;

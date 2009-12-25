@@ -24,6 +24,7 @@ class FbBookPanel: public wxSplitterWindow
 		int GetOrderID();
 		bool IsOrderDesc();
 		void RevertOrder();
+		void ShowHTML(const wxString &html);
 		wxString GetOrderSQL();
 	public:
 		FbBookList * m_BookList;
@@ -31,7 +32,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbBookData * GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
-		void AppendAuthor(const wxString title = wxEmptyString);
+		void AppendAuthor(int id, const wxString title = wxEmptyString);
 		void AppendSequence(const wxString title = wxEmptyString);
 		void CreateColumns(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode;};
@@ -77,6 +78,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnChangeRating(wxCommandEvent& event);
 		void OnDeleteBooks(wxCommandEvent& event);
 		void OnModifyBooks(wxCommandEvent& event);
+		void OnLinkClicked(wxHtmlLinkEvent& event);
 		DECLARE_EVENT_TABLE();
 };
 

@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_RATING_0, FbBookPanel::OnChangeRating)
 	EVT_MENU(wxID_EDIT, FbBookPanel::OnModifyBooks)
 	EVT_MENU(wxID_DELETE, FbBookPanel::OnDeleteBooks)
+	EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, FbBookPanel::OnLinkClicked)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel()
@@ -453,6 +454,12 @@ void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 	if (data) FbOpenEvent(ID_BOOK_AUTHOR, author, data->GetId()).Post();
 }
 
+void FbBookPanel::ShowHTML(const wxString &html)
+{
+	m_BookInfo->SetPage( html );
+	m_selected = 0;
+}
+
 void FbBookPanel::EmptyBooks(const int selected)
 {
 	m_AuthorItem = 0L;
@@ -469,7 +476,7 @@ void FbBookPanel::EmptyBooks(const int selected)
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
-void FbBookPanel::AppendAuthor(const wxString title)
+void FbBookPanel::AppendAuthor(int id, const wxString title)
 {
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
@@ -615,4 +622,9 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
 {
 	FbEditBookDlg::Execute();
+}
+
+void FbBookPanel::OnLinkClicked(wxHtmlLinkEvent& event)
+{
+	wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
 }
