@@ -57,7 +57,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Add( m_staticText1, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	m_textCtrl1 = new wxTextCtrl( this, ID_LIBRARY_TITLE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl1->SetMinSize( wxSize( 200,-1 ) );
+	m_textCtrl1->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizerMain->Add( m_textCtrl1, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxALL, 5 );
 
@@ -69,7 +69,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_textCtrl2 = new wxTextCtrl( this, ID_LIBRARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl2->SetMinSize( wxSize( 200,-1 ) );
+	m_textCtrl2->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizer2->Add( m_textCtrl2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -94,7 +94,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
 	m_sdbSizerBtn->Realize();
-	bSizerMain->Add( m_sdbSizerBtn, 0, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	bSizerMain->Add( m_sdbSizerBtn, 0, wxEXPAND|wxALL, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
