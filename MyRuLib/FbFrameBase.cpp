@@ -123,7 +123,10 @@ void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 
 void FbFrameBase::OnAuthorInfo(wxCommandEvent& event)
 {
-	m_BooksPanel->ShowHTML( event.GetString() );
+	try {
+		m_BooksPanel->ShowHTML( event.GetString() );
+	} catch (...) {
+	}
 }
 
 void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)

@@ -342,7 +342,8 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 
 wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxString & name)
 {
-	wxString newname = name.Trim(false).Trim(true);
+	wxString newname = name;
+	newname = newname.Trim(false).Trim(true);
 	newname = FbParams::GetValue(FB_TRANSLIT_FOLDER) ? Translit(newname) : Normalize(newname);
 	wxTreeItemId item = m_books->AppendItem(parent, newname );
 	m_books->SetItemBold(item, true);
