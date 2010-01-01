@@ -217,6 +217,7 @@ function convert_authors($mysql_db, $sqlite_db)
   }
 
   $bb = new bbcode;
+  $bb->autolinks = false;
   $sqltest = "SELECT * FROM libaannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
@@ -224,9 +225,9 @@ function convert_authors($mysql_db, $sqlite_db)
     $sql = "UPDATE authors SET description=? where id=?";
     $insert = $sqlite_db->prepare($sql);
     $bb -> parse($row['Body']);
-	$body = $bb->get_html();
-#    $body = str_replace("&lt;", "<", $body);
-#    $body = str_replace("&gt;", "<", $body);
+    $body = $bb->get_html();
+    $body = str_replace("&lt;", "<", $body);
+    $body = str_replace("&gt;", ">", $body);
     $insert->execute(array($body, $row['AvtorId']));
   }
 
@@ -281,6 +282,7 @@ function convert_books($mysql_db, $sqlite_db)
   $sqlite_db->query("CREATE INDEX book_id ON books(id);");
 
   $bb = new bbcode;
+  $bb->autolinks = false;
   $sqltest = "SELECT * FROM libbannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
@@ -289,8 +291,8 @@ function convert_books($mysql_db, $sqlite_db)
     $insert = $sqlite_db->prepare($sql);
     $bb -> parse($row['Body']);
 	$body = $bb->get_html();
-#    $body = str_replace("&lt;", "<", $body);
-#    $body = str_replace("&gt;", "<", $body);
+    $body = str_replace("&lt;", "<", $body);
+    $body = str_replace("&gt;", ">", $body);
     $insert->execute(array($body, $row['BookId']));
   }
 
