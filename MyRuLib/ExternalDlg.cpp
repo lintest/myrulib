@@ -141,8 +141,8 @@ wxString ExternalDlg::Normalize(const wxString &filename)
 	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
 
 	wxString newname;
-	for (size_t i=0; i<filename.Len(); i++) {
-		wxChar letter = filename[i];
+	for (size_t i=0; i<oldname.Len(); i++) {
+		wxChar letter = oldname[i];
 		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
 	}
 	return newname;
