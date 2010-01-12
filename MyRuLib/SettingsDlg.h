@@ -46,6 +46,7 @@ class SettingsDlg : private FbDialog
 			ID_FONT_HTML,
 			ID_FONT_TOOL,
 			ID_FONT_DLG,
+			ID_COLUMN_LANG,
 			ID_COLUMN_TYPE,
 			ID_COLUMN_SYZE,
 			ID_COLUMN_GENRE,

@@ -196,6 +196,9 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, wxT("Рейтинг"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
 
+	checkbox = new wxCheckBox( this, ID_COLUMN_LANG, wxT("Язык"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+
 	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, wxT("Тип файла"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
 
@@ -372,6 +375,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
 		{FB_FONT_DLG, ID_FONT_DLG, tFont},
+		{FB_COLUMN_LANG, ID_COLUMN_LANG, tCheck},
 		{FB_COLUMN_TYPE, ID_COLUMN_TYPE, tCheck},
 		{FB_COLUMN_SYZE, ID_COLUMN_SYZE, tCheck},
 		{FB_COLUMN_GENRE, ID_COLUMN_GENRE, tCheck},

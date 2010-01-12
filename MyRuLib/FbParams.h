@@ -62,6 +62,7 @@ enum FbParamKey {
 	FB_COLUMN_SYZE   = 181,
 	FB_COLUMN_GENRE  = 182,
 	FB_COLUMN_RATING = 183,
+	FB_COLUMN_LANG   = 184,
 };
 
 class ParamItem

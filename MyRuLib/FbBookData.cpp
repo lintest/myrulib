@@ -7,7 +7,8 @@ BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	file_size( res.GetInt(wxT("file_size"))),
 	number( res.GetInt(wxT("number"))),
 	genres( res.GetString(wxT("genres"))),
-	rating(0)
+	rating(0),
+	language( res.GetString(wxT("lang")))
 {
 	int r = res.GetInt(wxT("rating"));
 	if ( r>=0 && r<=5 ) rating = r;

@@ -62,7 +62,8 @@ bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int k
 			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
 			m_BookList->AddColumn (_("Жанр"), 4, wxALIGN_LEFT);
 			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_RIGHT);
+			m_BookList->AddColumn (_("Язык"), 2, wxALIGN_LEFT);
+			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_LEFT);
 			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
 		}
 		CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
@@ -83,8 +84,9 @@ int FbBookPanel::GetOrderID()
 		case 3: return ID_ORDER_AUTHOR;
 		case 4: return ID_ORDER_GENRE;
 		case 5: return ID_ORDER_RATING;
-		case 6: return ID_ORDER_TYPE;
-		case 7: return ID_ORDER_SIZE;
+		case 6: return ID_ORDER_LANG;
+		case 7: return ID_ORDER_TYPE;
+		case 8: return ID_ORDER_SIZE;
 		default: return ID_ORDER_AUTHOR;
 	}
 }
@@ -97,8 +99,9 @@ void FbBookPanel::SetOrderID(int id)
 		case ID_ORDER_AUTHOR: col = 3; break;
 		case ID_ORDER_GENRE:  col = 4; break;
 		case ID_ORDER_RATING: col = 5; break;
-		case ID_ORDER_TYPE:   col = 6; break;
-		case ID_ORDER_SIZE:   col = 7; break;
+		case ID_ORDER_LANG:   col = 6; break;
+		case ID_ORDER_TYPE:   col = 7; break;
+		case ID_ORDER_SIZE:   col = 8; break;
 		default: col = 0;
 	}
 	if (IsOrderDesc()) col *= -1;
@@ -109,9 +112,10 @@ wxString FbBookPanel::GetOrderSQL()
 {
 	int col = m_BookList->GetSortedColumn();
 	switch (col) {
-		case -8: return wxT("created desc,full_name desc,title desc");
-		case -7: return wxT("file_size desc,full_name desc,title desc");
-		case -6: return wxT("file_type desc,full_name desc,title desc");
+		case -9: return wxT("created desc,full_name desc,title desc");
+		case -8: return wxT("file_size desc,full_name desc,title desc");
+		case -7: return wxT("file_type desc,full_name desc,title desc");
+		case -6: return wxT("lang desc,full_name desc,title desc");
 		case -5: return wxT("rating desc,full_name desc,title desc");
 		case -4: return wxT("genres desc,full_name desc,title desc");
 		case -3: return wxT("full_name desc,title desc");
@@ -122,9 +126,10 @@ wxString FbBookPanel::GetOrderSQL()
 		case  3: return wxT("full_name,title");
 		case  4: return wxT("genres,full_name,title");
 		case  5: return wxT("rating,full_name,title");
-		case  6: return wxT("file_type,full_name,title");
-		case  7: return wxT("file_size,full_name,title");
-		case  8: return wxT("created,full_name,title");
+		case  6: return wxT("lang,full_name,title");
+		case  7: return wxT("file_type,full_name,title");
+		case  8: return wxT("file_size,full_name,title");
+		case  9: return wxT("created,full_name,title");
 		default: return wxT("title,full_name");
 	}
 }
@@ -509,7 +514,6 @@ void FbBookPanel::AppendBook(BookTreeItemData & data, const wxString & authors)
 {
 	FbTreeListUpdater updater(m_BookList);
 
-	wxString file_type = data.file_type + wxT(" ");
 	wxString file_size = F(data.file_size/1024) + wxT(" ");
 	wxTreeItemId parent;
 	wxString sRating;
@@ -530,8 +534,9 @@ void FbBookPanel::AppendBook(BookTreeItemData & data, const wxString & authors)
 	}
 	m_BookList->SetItemText(item, 3, data.genres);
 	m_BookList->SetItemText(item, 4, sRating);
-	m_BookList->SetItemText(item, 5, file_type);
-	m_BookList->SetItemText(item, 6, file_size);
+	m_BookList->SetItemText(item, 5, data.language);
+	m_BookList->SetItemText(item, 6, data.file_type);
+	m_BookList->SetItemText(item, 7, file_size);
 
 	m_BookList->Expand(parent);
 	if (data.GetId() == m_selected) m_BookList->SelectItem(item);
@@ -577,8 +582,9 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 	m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
 	m_BookList->SetColumnShown(4, FbParams::GetValue(FB_COLUMN_RATING));
-	m_BookList->SetColumnShown(5, FbParams::GetValue(FB_COLUMN_TYPE));
-	m_BookList->SetColumnShown(6, FbParams::GetValue(FB_COLUMN_SYZE));
+	m_BookList->SetColumnShown(5, FbParams::GetValue(FB_COLUMN_LANG));
+	m_BookList->SetColumnShown(6, FbParams::GetValue(FB_COLUMN_TYPE));
+	m_BookList->SetColumnShown(7, FbParams::GetValue(FB_COLUMN_SYZE));
 	if (refresh) m_BookList->Update();
 
 	if (refresh) m_BookInfo->SetPage(wxEmptyString);

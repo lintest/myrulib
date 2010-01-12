@@ -16,7 +16,8 @@ class BookTreeItemData: public wxTreeItemData
 			sequence(data->sequence),
 			number(data->number),
 			genres(data->genres),
-			rating(data->rating)
+			rating(data->rating),
+			language(data->language)
 		{ };
 		BookTreeItemData(wxSQLite3ResultSet & result);
 		int GetId() { return m_id; };
@@ -30,6 +31,7 @@ class BookTreeItemData: public wxTreeItemData
 		int number;
 		wxString genres;
 		int rating;
+		wxString language;
 };
 
 class FbBookData: public wxTreeItemData
