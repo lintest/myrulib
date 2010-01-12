@@ -80,6 +80,7 @@ bool FbInternetBook::DoDownload()
 	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
 	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
+	wxLogInfo(wxT("Download: ") + addr);
 
 	FbURL url(addr);
 	if (url.GetError() != wxURL_NOERR) {
@@ -98,13 +99,10 @@ bool FbInternetBook::DoDownload()
 		return false;
 	}
 
-	wxLogError(wxT("Cookie: ") + http.GetHeader(wxT("Set-Cookie")));
 	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
-
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
-		wxLogError(wxT("Address: ") + addr);
-		wxLogError(wxT("Redirect: ") + m_url);
+		wxLogInfo(wxT("Redirect: ") + m_url);
 		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
@@ -127,7 +125,7 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 	}
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
-		wxLogError(wxT("Redirect: ") + m_url);
+ 		wxLogInfo(wxT("Redirect: ") + m_url);
 		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
@@ -178,9 +176,11 @@ bool FbInternetBook::CheckZip()
 	wxZipInputStream zip(in);
 
 	bool bNotFound = true;
-	if (wxZipEntry * entry = zip.GetNextEntry()) {
-		bNotFound = ! zip.OpenEntry(*entry);
+	while (wxZipEntry * entry = zip.GetNextEntry()) {
+		bool ok = (entry->GetInternalName().Right(4).Lower() != wxT(".fbd"));
+		if (ok) bNotFound = ! zip.OpenEntry(*entry);
 		delete entry;
+		if (ok) break;
 	}
 	if (bNotFound) {
 		wxLogError(wxT("Zip read error: ") + m_url);

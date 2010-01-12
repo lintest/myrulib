@@ -59,7 +59,7 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 {
 	FbCommonDatabase database;
 
-	OpenDownload(database);
+	OpenDownload(database, bInfoOnly);
 	if (IsOK()) return;
 
 	BookExtractArray items(database, id);
@@ -127,22 +127,24 @@ void ZipReader::Init()
 	return;
 }
 
-void ZipReader::OpenDownload(FbDatabase &database)
+void ZipReader::OpenDownload(FbDatabase &database, bool bInfoOnly)
 {
 	wxString md5sum;
 
 	{
-		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		wxString sql = wxT("SELECT md5sum, file_type FROM books WHERE id=?");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if ( result.NextRow() ) md5sum = result.GetString(0);
-		else return;
+		if ( result.NextRow() ) {
+			md5sum = result.GetString(0);
+			if (result.GetString(1).Lower() == wxT("fb2")) bInfoOnly = false;
+		} else return;
 	}
 
 	wxFileName zip_file = FbDownloader::GetFilename(md5sum, false);
 	m_zipOk = zip_file.FileExists();
-	if (m_zipOk) {
+	if (m_zipOk && !bInfoOnly) {
 		m_file = new wxFFileInputStream(zip_file.GetFullPath());
 		m_zip = NULL;
 		m_result = m_file;
@@ -156,9 +158,11 @@ void ZipReader::OpenDownload(FbDatabase &database)
 		m_file = new wxFFileInputStream(zip_file.GetFullPath());
 		m_zip = new wxZipInputStream(*m_file, conv);
 		m_result = m_zip;
-		if (wxZipEntry * entry = m_zip->GetNextEntry()) {
-			m_fileOk = m_zip->OpenEntry(*entry);
+		while (wxZipEntry * entry = m_zip->GetNextEntry()) {
+			bool ok = (entry->GetInternalName().Right(4).Lower() == wxT(".fbd")) == bInfoOnly;
+			if (ok) m_fileOk = m_zip->OpenEntry(*entry);
 			delete entry;
+			if (ok) break;
 		}
 	}
 }
