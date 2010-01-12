@@ -93,7 +93,7 @@ bool FbInternetBook::DoDownload()
     wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
     http.SetPostBuffer(buffer);
 
-	url.GetInputStream();
+	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
 		wxLogError(wxT("Connect error: ") + m_url);
 		return false;
@@ -106,8 +106,9 @@ bool FbInternetBook::DoDownload()
 		return DownloadUrl(cookie);
 	}
 
-	wxLogError(wxT("Autentification failure: ") + m_url);
-	return false;
+	bool ok = ReadFile(in);
+	if ( !ok ) wxLogError(wxT("Authentication failure: ") + m_url);
+	return ok;
 }
 
 bool FbInternetBook::DownloadUrl(const wxString &cookie)
