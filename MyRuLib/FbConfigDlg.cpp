@@ -107,7 +107,7 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	text3->Wrap( -1 );
 	fgSizerMain->Add( text3, 0, wxALL, 5 );
 
-	wxTextCtrl * editPass = new wxTextCtrl( this, ID_DOWNLOAD_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	wxTextCtrl * editPass = new wxTextCtrl( this, ID_DOWNLOAD_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
 	fgSizerMain->Add( editPass, 0, wxALL|wxEXPAND, 5 );
 
 	this->SetSizer( fgSizerMain );
