@@ -84,7 +84,7 @@ bool FbInternetBook::DoDownload()
 	wxHTTP http;
     http.SetTimeout(10);
     http.SetHeader(_T("Content-type"), _T("application/x-www-form-urlencoded"));
-    wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=\"%s\"&pass=\"%s\""), user.c_str(), pass.c_str());
+    wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
     http.SetPostBuffer(buffer);
     while(!http.Connect(host))
     {
@@ -98,12 +98,13 @@ bool FbInternetBook::DoDownload()
     }
 
 	wxLogError(wxT("Cookie: ") + http.GetHeader(wxT("Set-Cookie")));
+	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
 
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
 		wxLogError(wxT("Address: ") + addr);
 		wxLogError(wxT("Redirect: ") + m_url);
-		return DownloadUrl();
+		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
 }
@@ -116,6 +117,7 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
+	if ( !cookie.IsEmpty() ) http.SetHeader(wxT("Cookie"), cookie);
 
 	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
@@ -125,7 +127,7 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
 		wxLogError(wxT("Redirect: ") + m_url);
-		return DownloadUrl();
+		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
 }
