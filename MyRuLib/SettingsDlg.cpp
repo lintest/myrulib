@@ -118,21 +118,6 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	wxCheckBox * m_checkBox13 = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Автоматически стартовать загрузку файлов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
 
-	wxBoxSizer* bSizer12;
-	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
-
-	wxStaticText* m_staticText11 = new wxStaticText( this, wxID_ANY, _("Адрес для скачивания:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText11->Wrap( -1 );
-	bSizer12->Add( m_staticText11, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
-
-	wxComboBox * m_comboBox1 = new wxComboBox( this, ID_LIBRUSEC_URL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	m_comboBox1->Append( wxT("http://flibusta.net") );
-	m_comboBox1->Append( wxT("http://lib.rus.ec") );
-	m_comboBox1->Append( wxT("http://lib.ololo.cc") );
-	bSizer12->Add( m_comboBox1, 1, wxALL, 5 );
-
-	bSizer2->Add( bSizer12, 0, wxEXPAND|wxLEFT, 5 );
-
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -376,7 +361,6 @@ void SettingsDlg::Assign(bool write)
 		{FB_AUTO_DOWNLD, ID_AUTO_DOWNLD, tCheck},
 		{FB_USE_PROXY, ID_USE_PROXY, tCheck},
 		{FB_PROXY_ADDR, ID_PROXY_ADDR, tCombo},
-		{FB_LIBRUSEC_URL, ID_LIBRUSEC_URL, tCombo},
 		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR_TXT, tText},
 		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD, tCheck},
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},

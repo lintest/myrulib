@@ -398,6 +398,7 @@ function create_tables($sqlite_db)
   $sqlite_db->query("INSERT INTO params(text) VALUES ('LibRusEc Library');");
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('LIBRUSEC');");
+  $sqlite_db->query("INSERT INTO params(id,text) VALUES (11,'lib.rus.ec');");
 
   $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
 

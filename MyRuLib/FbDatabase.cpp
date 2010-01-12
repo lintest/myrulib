@@ -4,7 +4,7 @@
 #include "FbDataPath.h"
 #include "FbGenres.h"
 
-#define DB_DATABASE_VERSION 8
+#define DB_DATABASE_VERSION 9
 #define DB_CONFIG_VERSION 2
 
 wxCriticalSection FbDatabase::sm_queue;
@@ -154,6 +154,14 @@ void FbMainDatabase::DoUpgrade(int version)
 				ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
 				ExecuteUpdate(wxT("DELETE FROM sequences WHERE NOT EXISTS (SELECT id_seq FROM bookseq WHERE sequences.id=id_seq) OR id=0"));
 				ExecuteUpdate(strUpdateSequenCount);
+			} catch (...) {};
+		} break;
+
+		case 9: {
+			/** TABLE books **/
+			try {
+				ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
+				ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
 			} catch (...) {};
 		} break;
 
