@@ -74,28 +74,29 @@ bool FbInternetBook::Execute()
 
 bool FbInternetBook::DoDownload()
 {
-	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 	wxString user = FbParams::GetText(DB_DOWNLOAD_USER);
-	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
 	if ( user.IsEmpty() ) return DownloadUrl();
 
-	wxString addr = wxString::Format(wxT("/b/%d/get?destination=b/%d/get"), m_id, m_id);
+	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
+	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
+	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
 
-	wxHTTP http;
+	FbURL url(addr);
+	if (url.GetError() != wxURL_NOERR) {
+		wxLogError(wxT("URL error: ") + m_url);
+		return false;
+	}
+	wxHTTP & http = (wxHTTP&)url.GetProtocol();
     http.SetTimeout(10);
     http.SetHeader(_T("Content-type"), _T("application/x-www-form-urlencoded"));
     wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
     http.SetPostBuffer(buffer);
-    while(!http.Connect(host))
-    {
-        wxLogMessage(_("Waiting for connection..."));
-    }
-    wxInputStream * in = http.GetInputStream(addr);
-    if(!in || http.Error() != wxPROTO_NOERR )
-    {
-        wxLogError(_("Unable to retrieve stream from URL."));
-        return false;
-    }
+
+	wxInputStream * in = url.GetInputStream();
+	if (url.GetError() != wxURL_NOERR) {
+		wxLogError(wxT("Connect error: ") + m_url);
+		return false;
+	}
 
 	wxLogError(wxT("Cookie: ") + http.GetHeader(wxT("Set-Cookie")));
 	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
