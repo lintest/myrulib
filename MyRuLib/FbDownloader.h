@@ -5,11 +5,31 @@
 #include <wx/url.h>
 #include <wx/sstream.h>
 
+class FbInternetBook
+{
+	public:
+		FbInternetBook(const wxString& md5sum);
+		static wxString GetURL(const int id);
+		bool Execute();
+	private:
+		bool DoDownload();
+		bool DownloadUrl(const wxString &cookie = wxEmptyString);
+		bool CheckZip();
+		bool ReadFile(wxInputStream * in);
+		void SaveFile(const bool success);
+	private:
+		int m_id;
+		wxString m_url;
+		wxString m_md5sum;
+		wxString m_filetype;
+		wxString m_filename;
+		bool m_zipped;
+};
+
 class FbDownloader: public wxThread
 {
 	public:
 		static wxString GetFilename(const wxString &md5sum, bool bCreateFolder = false);
-		static wxString GetURL(const int id);
 		static void Start();
 		static void Pause();
 		bool IsRunning();

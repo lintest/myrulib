@@ -12,27 +12,6 @@
 #include <wx/zipstrm.h>
 #include "FbDataPath.h"
 
-class FbInternetBook
-{
-	public:
-		FbInternetBook(const wxString& md5sum);
-		static wxString GetURL(const int id);
-		bool Execute();
-	private:
-		bool DoDownload();
-		bool DownloadUrl(const wxString &cookie = wxEmptyString);
-		bool CheckZip();
-		bool ReadFile(wxInputStream * in);
-		void SaveFile(const bool success);
-	private:
-		int m_id;
-		wxString m_url;
-		wxString m_md5sum;
-		wxString m_filetype;
-		wxString m_filename;
-		bool m_zipped;
-};
-
 class FbURL: public wxURL
 {
 	public:
@@ -44,6 +23,11 @@ FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 	if (FbParams::GetValue(FB_USE_PROXY))
 		SetProxy(FbParams::GetText(FB_PROXY_ADDR));
 	GetProtocol().SetTimeout(10);
+}
+
+wxString FbInternetBook::GetURL(const int id)
+{
+	return wxT("http://") + FbParams::GetText(DB_DOWNLOAD_HOST) + wxString::Format(wxT("/b/%d/download"), id);
 }
 
 FbInternetBook::FbInternetBook(const wxString& md5sum)
@@ -58,7 +42,7 @@ FbInternetBook::FbInternetBook(const wxString& md5sum)
 		if ( result.NextRow() ) {
 			m_id = result.GetInt(0);
 			m_filetype = result.GetString(1);
-			m_url = FbDownloader::GetURL(m_id);
+			m_url = GetURL(m_id);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
@@ -141,7 +125,7 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
-	size_t size = in->GetSize() ? in->GetSize() : 0xFFFFF;
+	size_t size = in->GetSize() ? in->GetSize() : 0xFFFFFF;
 	size_t count = 0;
 	size_t pos = 0;
 
@@ -149,7 +133,7 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 	md5_context md5;
 	md5_starts( &md5 );
 	do {
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos*1000/size, _("Загрузка файла")).Post();
+		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos/(size/1000), _("Загрузка файла")).Post();
 		count = in->Read(buf, BUFSIZE).LastRead();
 		if ( count ) md5_update( &md5, buf, (int) count );
 		if ( pos==0 && count>1 && buf[0]=='P' && buf[1]=='K') zipped = true;
@@ -300,11 +284,6 @@ void FbDownloader::GetBooklist(wxArrayString &md5sum)
 	while ( result.NextRow() ) {
 		md5sum.Add( result.GetString(0) );
 	}
-}
-
-wxString FbDownloader::GetURL(const int id)
-{
-	return wxT("http://") + FbParams::GetText(DB_DOWNLOAD_HOST) + wxString::Format(wxT("/b/%d/download"), id);
 }
 
 wxString FbDownloader::GetFilename(const wxString &md5sum, bool bCreateFolder)

@@ -572,7 +572,7 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 {
 	FbBookData * data = GetSelectedBook();
 	if (data && data->GetId()>0) {
-		wxString url = FbDownloader::GetURL(data->GetId());
+		wxString url = FbInternetBook::GetURL(data->GetId());
 		wxLaunchDefaultBrowser(url);
 	}
 }
