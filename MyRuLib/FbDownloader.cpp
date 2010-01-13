@@ -262,7 +262,7 @@ void * FbDownloader::Entry()
 	wxString ext;
 
 	while (true) {
-		if (IsRunning()) {
+		if (IsRunning()) try {
 			wxArrayString md5sum;
 			GetBooklist(md5sum);
 			size_t count = md5sum.Count();
@@ -270,7 +270,7 @@ void * FbDownloader::Entry()
 			for (size_t i=0; i<count; i++) {
 				FbInternetBook(md5sum[i]).Execute();
 			}
-		}
+		} catch (...) {};
 		wxSleep(3);
 	}
 	return NULL;

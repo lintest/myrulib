@@ -252,7 +252,7 @@ function convert_books($mysql_db, $sqlite_db)
     $file_type = trim($row['FileType']);
     $file_type = trim($file_type, ".");
     $file_type = strtolower($file_type);
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['BookId'], $row['AvtorId'], trim($row['Title']), $row['Deleted'], $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $row['Lang'], $row['Year'], $row['md5']));
@@ -373,6 +373,8 @@ function create_tables($sqlite_db)
       file_type varchar(20),
       md5sum char(32),
       created integer,
+      lang char(2),
+      year integer,
       description text);
   ");
 

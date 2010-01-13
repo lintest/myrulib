@@ -45,6 +45,8 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 			ctx->title = ctx->text;
 		} else if (node_name == wxT("genre")) {
 			ctx->genres += FbGenres::Char(ctx->text);
+		} else if (node_name == wxT("lang")) {
+			ctx->lang = ctx->text;
 		}
 	} else if (path == wxT("/fictionbook/description/title-info/author")) {
 		ctx->text.Trim(false).Trim(true);
@@ -199,7 +201,7 @@ void FbImportBook::AppendBook(const wxString &filename, wxFileOffset size, int i
 
 	for (size_t i = 0; i<authors.Count(); i++) {
 		{
-			wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_size,file_type,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?)");
+			wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_size,file_type,lang,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, id_archive);
@@ -209,8 +211,9 @@ void FbImportBook::AppendBook(const wxString &filename, wxFileOffset size, int i
 			stmt.Bind(6, filename);
 			stmt.Bind(7, (wxLongLong)size);
 			stmt.Bind(8, wxFileName(filename).GetExt().Lower());
-			stmt.Bind(9, (int) today);
-			stmt.Bind(10, m_md5sum);
+			stmt.Bind(9, lang);
+			stmt.Bind(10, (int) today);
+			stmt.Bind(11, m_md5sum);
 			stmt.ExecuteUpdate();
 		}
 	}
