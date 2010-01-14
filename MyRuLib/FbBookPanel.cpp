@@ -81,7 +81,7 @@ int FbBookPanel::GetOrderID()
 	int col = abs( m_BookList->GetSortedColumn() );
 	switch (col) {
 		case 1: return ID_ORDER_TITLE;
-		case 3: return ID_ORDER_AUTHOR;
+		case 2: return ID_ORDER_AUTHOR;
 		case 4: return ID_ORDER_GENRE;
 		case 5: return ID_ORDER_RATING;
 		case 6: return ID_ORDER_LANG;
@@ -96,7 +96,7 @@ void FbBookPanel::SetOrderID(int id)
 	int col = 0;
 	switch (id) {
 		case ID_ORDER_TITLE:  col = 1; break;
-		case ID_ORDER_AUTHOR: col = 3; break;
+		case ID_ORDER_AUTHOR: col = 2; break;
 		case ID_ORDER_GENRE:  col = 4; break;
 		case ID_ORDER_RATING: col = 5; break;
 		case ID_ORDER_LANG:   col = 6; break;
@@ -106,6 +106,7 @@ void FbBookPanel::SetOrderID(int id)
 	}
 	if (IsOrderDesc()) col *= -1;
 	m_BookList->SetSortedColumn(col);
+	m_BookList->Update();
 }
 
 wxString FbBookPanel::GetOrderSQL()

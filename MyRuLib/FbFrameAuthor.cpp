@@ -186,7 +186,7 @@ wxString FbFrameAuthor::AuthorThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT DISTINCT\
-					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, books.lang, GENRE(books.genres) AS genres, \
+					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, books.lang as lang, GENRE(books.genres) AS genres, \
 					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN books as sub ON sub.id=books.id \
