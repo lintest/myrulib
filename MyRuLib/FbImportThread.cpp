@@ -46,7 +46,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		} else if (node_name == wxT("genre")) {
 			ctx->genres += FbGenres::Char(ctx->text);
 		} else if (node_name == wxT("lang")) {
-			ctx->lang = ctx->text;
+			ctx->lang = ctx->text.Lower();
 		}
 	} else if (path == wxT("/fictionbook/description/title-info/author")) {
 		ctx->text.Trim(false).Trim(true);
