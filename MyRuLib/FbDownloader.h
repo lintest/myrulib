@@ -32,6 +32,8 @@ class FbDownloader: public wxThread
 		static wxString GetFilename(const wxString &md5sum, bool bCreateFolder = false);
 		static void Start();
 		static void Pause();
+		static void Push(const wxString & md5sum);
+		static void IsWaiting(const wxString & md5sum);
 		bool IsRunning();
 	protected:
 		virtual void *Entry();
@@ -40,7 +42,7 @@ class FbDownloader: public wxThread
 	private:
 		static wxCriticalSection sm_queue;
 		static bool sm_running;
-
+		static wxArrayString sm_waitings;
 };
 
 #endif // __FBDOWNLOADER_H__

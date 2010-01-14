@@ -8,6 +8,7 @@
 #include "FbDownloader.h"
 #include "FbUpdateThread.h"
 #include "FbEditBook.h"
+#include "ZipReader.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
@@ -237,7 +238,7 @@ void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		FbBookData * data = (FbBookData*)m_BookList->GetItemData(selected);
-		if (data) FbManager::OpenBook(data->GetId(), data->m_filetype);
+		if (data) DoOpenBook(data->GetId(), data->m_filetype);
 	}
 }
 
@@ -309,7 +310,7 @@ void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 {
 	FbBookData * data = GetSelectedBook();
-	if (data) FbManager::OpenBook(data->GetId(), data->m_filetype);
+	if (data) DoOpenBook(data->GetId(), data->m_filetype);
 }
 
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
@@ -405,8 +406,10 @@ void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void FbBookPanel::DoCreateDownload(const wxString &sel, const int folder)
+void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 {
+	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
+
 	wxString sql1 = wxString::Format(wxT("\
 		INSERT INTO states(md5sum, download) \
 		SELECT DISTINCT md5sum, 1 FROM books WHERE id>0 AND id IN (%s) \
@@ -422,14 +425,58 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, const int folder)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
+void FbBookPanel::DoOpenDownload(int id)
+{
+	if (id<0) return;
+
+	wxString md5sum;
+
+	try {
+		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		FbCommonDatabase database;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) md5sum = result.GetAsString(0);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
+
+	if (md5sum.IsEmpty()) return;
+
+	try {
+		bool ok = false;
+		FbLocalDatabase database;
+		int folder = database.NewId(FB_NEW_DOWNLOAD);
+		{
+			wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			stmt.Bind(1, folder);
+			stmt.Bind(2, md5sum);
+			ok = stmt.ExecuteUpdate();
+		}
+		if (!ok) {
+			wxString sql = wxT("INSERT INTO states(download, md5sum) VALUES (?,?)");
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			stmt.Bind(1, folder);
+			stmt.Bind(2, md5sum);
+			stmt.ExecuteUpdate();
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
+
+	FbDownloader::Push(md5sum);
+	FbDownloader::Start();
+}
+
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 {
 	wxString sel;
 	size_t count = m_BookList->GetSelected(sel);
-	if (count) {
-		int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
-		DoCreateDownload(sel, folder);
-	}
+	if (count) DoCreateDownload(sel, count);
 }
 
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
@@ -642,3 +689,14 @@ void * FbBookPanel::AuthorThread::Entry()
 	if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
 	return NULL;
 }
+
+void FbBookPanel::DoOpenBook(int id, const wxString &file_type)
+{
+	ZipReader reader(id, id<0);
+	if ( reader.IsOK() ) {
+		FbManager::OpenBook( reader.GetZip(), file_type);
+	} else if ( id>0 ) {
+		if ( wxMessageBox(_("Скачать книгу?"), _("Подтверждение"), wxOK | wxCANCEL) == wxOK) DoOpenDownload(id);
+	}
+}
+

@@ -64,11 +64,12 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 
 	BookExtractArray items(database, id);
 
-	wxString file_name;
+	wxString name_info;
 	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		BookExtractInfo & item = items[i];
+		if (i==0) name_info = item.NameInfo();
 		if (item.id_archive) {
 			if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )
 				item.book_name = GetInfoName(item.book_name);
@@ -89,7 +90,7 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 		}
 		if (IsOK()) return;
 	}
-	if (bShowError) wxLogError(_("Book open error (%d) not found %s"), id, file_name.c_str());
+	if (bShowError) wxLogError(_("Book not found %s"), name_info.c_str());
 }
 
 ZipReader::~ZipReader()

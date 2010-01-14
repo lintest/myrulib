@@ -42,9 +42,11 @@ class FbBookPanel: public wxSplitterWindow
 		void CreateBookInfo(bool bVertical);
 		void UpdateFonts(bool refresh = true);
 	private:
+		static void DoOpenBook(int id, const wxString &file_type);
 		void DoFolderAdd(const int folder);
-		void DoCreateDownload(const wxString &sel, const int folder);
-		void DoDeleteDownload(const wxString &sel, const int folder);
+		static void DoDeleteDownload(const wxString &sel, const int folder);
+		static void DoCreateDownload(const wxString &sel, int count = 1);
+		static void DoOpenDownload(int id);
 		int GetRatingColumn();
 		int UpdateChildRating(wxTreeItemId parent, int iRating, const wxString &sRating);
 		int UpdateSelectionRating(int iRating, const wxString &sRating);

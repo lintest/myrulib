@@ -75,17 +75,7 @@ wxString TitleThread::GetBookFiles(FbDatabase &database)
 	wxString html;
 
 	for (size_t i = 0; i<items.Count(); i++) {
-		BookExtractInfo & item = items[i];
-		if (item.librusec) {
-			html += wxString::Format(wxT("<p>$(%s)/%s</p>"), FbParams::GetText(FB_CONFIG_TYPE).c_str(), item.book_name.c_str());
-		} else if ( item.id_archive ) {
-			if (item.NameIsEqual())
-				html += wxString::Format(wxT("<p>%s</p>"), item.zip_name.c_str());
-			else
-				html += wxString::Format(wxT("<p>%s: %s</p>"), item.zip_name.c_str(), item.book_name.c_str());
-		} else {
-			html += wxString::Format(wxT("<p>%s</p>"), item.book_name.c_str());
-		}
+		html += wxString::Format(wxT("<p>%s</p>"), items[i].NameInfo().c_str());
 	}
 
 	InfoCash::SetFilelist(m_id, html);

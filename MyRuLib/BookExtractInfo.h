@@ -14,7 +14,7 @@ class BookExtractInfo
 	public:
 		wxFileName GetBook(const wxString &path = wxEmptyString);
 		wxFileName GetZip(const wxString &path = wxEmptyString);
-		bool NameIsEqual();
+		wxString NameInfo();
 	public:
 		int id_book;
 		int id_archive;

@@ -1,4 +1,5 @@
 #include "BookExtractInfo.h"
+#include "FbParams.h"
 
 WX_DEFINE_OBJARRAY(BookExtractArrayBase);
 
@@ -25,10 +26,18 @@ wxFileName BookExtractInfo::GetZip(const wxString &path)
 	return result;
 }
 
-bool BookExtractInfo::NameIsEqual()
+wxString BookExtractInfo::NameInfo()
 {
-	wxFileName filename = zip_name;
-	return filename.GetName() == book_name;
+	if (librusec) {
+		return wxString::Format(wxT("$(%s)/%s"), FbParams::GetText(FB_CONFIG_TYPE).c_str(), book_name.c_str());
+	} else if ( id_archive ) {
+		if ( wxFileName(zip_name).GetName() == book_name )
+			return zip_name.c_str();
+		else
+			return wxString::Format(wxT("%s: %s"), zip_name.c_str(), book_name.c_str());
+	} else {
+		return book_name.c_str();
+	}
 }
 
 BookExtractArray::BookExtractArray(FbDatabase & database, const int id)

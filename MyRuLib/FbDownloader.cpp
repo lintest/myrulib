@@ -228,6 +228,8 @@ bool FbDownloader::sm_running = false;
 
 wxCriticalSection FbDownloader::sm_queue;
 
+wxArrayString FbDownloader::sm_waitings;
+
 void FbDownloader::Start()
 {
 	wxCriticalSectionLocker locker(sm_queue);
@@ -253,6 +255,12 @@ bool FbDownloader::IsRunning()
 {
 	wxCriticalSectionLocker locker(sm_queue);
 	return sm_running;
+}
+
+void FbDownloader::Push(const wxString & md5sum)
+{
+	wxCriticalSectionLocker locker(sm_queue);
+	if (sm_waitings.Index(md5sum) == wxNOT_FOUND) sm_waitings.Add(md5sum);
 }
 
 void * FbDownloader::Entry()
