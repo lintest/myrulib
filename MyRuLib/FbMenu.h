@@ -21,12 +21,6 @@ class FbMenuSort: public FbMenu
 		FbMenuSort();
 };
 
-class FbMenuFilter: public FbMenu
-{
-	public:
-		FbMenuFilter();
-};
-
 class FbMenuRating: public FbMenu
 {
 	public:

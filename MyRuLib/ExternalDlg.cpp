@@ -116,7 +116,7 @@ wxString ExternalDlg::Translit(const wxString &filename)
 	wxString newname;
 	size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
 	for (size_t i=0; i<oldname.Len(); i++) {
-		wxChar letter = oldname[0];
+		wxChar letter = oldname[i];
 		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) {
 			wxString substr = letter;
 			for (size_t j=0; j<size; j++)

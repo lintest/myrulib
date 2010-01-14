@@ -4,6 +4,7 @@
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
 #include "InfoCash.h"
+#include "FbFilterDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
@@ -16,9 +17,8 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
-	EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
-	EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
-	EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
+	EVT_MENU(ID_FILTER_USE, FbFrameBase::OnFilterUse)
+	EVT_MENU(ID_FILTER_NOT, FbFrameBase::OnFilterNot)
 	EVT_MENU(ID_DIRECTION, FbFrameBase::OnDirection)
 	EVT_MENU(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TITLE, FbFrameBase::OnChangeOrder)
@@ -31,9 +31,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
-	EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
-	EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
-	EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
@@ -53,9 +51,10 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
-	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
-	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
-	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
+	m_UseFilter(false),
+	m_FilterFb2(false),
+	m_FilterLib(false),
+	m_FilterUsr(false),
 	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
 {
 	Create(parent, id, title);
@@ -131,15 +130,6 @@ void FbFrameBase::OnAuthorInfo(wxCommandEvent& event)
 	}
 }
 
-void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
-{
-	switch (event.GetId()) {
-		case ID_FILTER_FB2: event.Check(m_FilterFb2); break;
-		case ID_FILTER_LIB: event.Check(m_FilterLib); break;
-		case ID_FILTER_USR: event.Check(m_FilterUsr); break;
-	}
-}
-
 int FbFrameBase::GetModeKey()
 {
 	switch (GetId()) {
@@ -195,31 +185,6 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 	if (mode == FB2_MODE_TREE) m_BooksPanel->m_BookList->SetSortedColumn(0);
 
 	m_BooksPanel->CreateColumns(mode);
-	UpdateBooklist();
-}
-
-void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
-{
-	FbParams params;
-	switch (event.GetId()) {
-		case ID_FILTER_FB2: {
-			params.SetValue(FB_FILTER_FB2, m_FilterFb2 = !m_FilterFb2);
-		} break;
-		case ID_FILTER_LIB: {
-			params.SetValue(FB_FILTER_LIB, m_FilterLib = !m_FilterLib);
-			if (m_FilterLib) {
-				params.SetValue(FB_FILTER_USR, false);
-				m_FilterUsr = false;
-			}
-		} break;
-		case ID_FILTER_USR: {
-			params.SetValue(FB_FILTER_USR, m_FilterUsr = !m_FilterUsr);
-			if (m_FilterUsr) {
-				params.SetValue(FB_FILTER_LIB, false);
-				m_FilterLib = false;
-			}
-		} break;
-	}
 	UpdateBooklist();
 }
 
@@ -483,5 +448,23 @@ FbFrameBase::MenuBar::MenuBar()
 wxMenuBar * FbFrameBase::CreateMenuBar()
 {
 	return new MenuBar;
+}
+
+void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
+{
+	event.Check(m_UseFilter);
+}
+
+void FbFrameBase::OnFilterUse(wxCommandEvent& event)
+{
+	FbFilterDlg dlg(this);
+	dlg.ShowModal();
+	UpdateBooklist();
+}
+
+void FbFrameBase::OnFilterNot(wxCommandEvent& event)
+{
+	m_UseFilter = false;
+	UpdateBooklist();
 }
 

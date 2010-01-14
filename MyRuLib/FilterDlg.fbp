@@ -6,17 +6,17 @@
         <property name="code_generation">C++</property>
         <property name="disconnect_events">1</property>
         <property name="encoding">UTF-8</property>
-        <property name="event_generation">connect</property>
-        <property name="file"></property>
+        <property name="event_generation">table</property>
+        <property name="file">FbFilterDlg</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
-        <property name="internationalize">0</property>
+        <property name="internationalize">1</property>
         <property name="name">MyProject1</property>
         <property name="namespace"></property>
         <property name="path">.</property>
         <property name="precompiled_header"></property>
         <property name="relative_path">1</property>
-        <property name="use_enum">0</property>
+        <property name="use_enum">1</property>
         <property name="use_microsoft_bom">0</property>
         <object class="Dialog" expanded="1">
             <property name="bg"></property>
@@ -72,7 +72,7 @@
             <event name="OnUpdateUI"></event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
-                <property name="name">bSizer1</property>
+                <property name="name">bSizerMain</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
                 <object class="sizeritem" expanded="1">
@@ -83,7 +83,7 @@
                         <property name="id">wxID_ANY</property>
                         <property name="label">Отбор книг по принадлежности</property>
                         <property name="minimum_size"></property>
-                        <property name="name">sbSizer1</property>
+                        <property name="name">sbSizerOwner</property>
                         <property name="orient">wxHORIZONTAL</property>
                         <property name="permission">none</property>
                         <event name="OnUpdateUI"></event>
@@ -99,11 +99,11 @@
                                 <property name="fg"></property>
                                 <property name="font"></property>
                                 <property name="hidden">0</property>
-                                <property name="id">ID_BOOKS_LIB</property>
+                                <property name="id">ID_CHECK_MAIN</property>
                                 <property name="label">Библиотечные</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_checkBox1</property>
+                                <property name="name">m_checkMain</property>
                                 <property name="permission">protected</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
@@ -151,11 +151,11 @@
                                 <property name="fg"></property>
                                 <property name="font"></property>
                                 <property name="hidden">0</property>
-                                <property name="id">wxID_ANY</property>
+                                <property name="id">ID_CHECK_USER</property>
                                 <property name="label">Собственные</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">m_checkBox2</property>
+                                <property name="name">m_checkUser</property>
                                 <property name="permission">protected</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
@@ -199,7 +199,7 @@
                     <property name="proportion">1</property>
                     <object class="wxBoxSizer" expanded="1">
                         <property name="minimum_size"></property>
-                        <property name="name">bSizer3</property>
+                        <property name="name">bSizerList</property>
                         <property name="orient">wxHORIZONTAL</property>
                         <property name="permission">none</property>
                         <object class="sizeritem" expanded="1">
@@ -213,10 +213,10 @@
                                 <property name="fg"></property>
                                 <property name="font"></property>
                                 <property name="hidden">0</property>
-                                <property name="id">wxID_ANY</property>
+                                <property name="id">ID_TREE_LANG</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size">100,100</property>
-                                <property name="name">m_treeCtrl1</property>
+                                <property name="name">m_treeLang</property>
                                 <property name="permission">protected</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
@@ -283,10 +283,10 @@
                                 <property name="fg"></property>
                                 <property name="font"></property>
                                 <property name="hidden">0</property>
-                                <property name="id">wxID_ANY</property>
+                                <property name="id">ID_TREE_TYPE</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size">100,100</property>
-                                <property name="name">m_treeCtrl2</property>
+                                <property name="name">m_treeType</property>
                                 <property name="permission">protected</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
@@ -358,7 +358,7 @@
                         <property name="Save">0</property>
                         <property name="Yes">1</property>
                         <property name="minimum_size"></property>
-                        <property name="name">m_sdbSizer1</property>
+                        <property name="name">sdbSizer</property>
                         <property name="permission">protected</property>
                         <event name="OnApplyButtonClick"></event>
                         <event name="OnCancelButtonClick"></event>

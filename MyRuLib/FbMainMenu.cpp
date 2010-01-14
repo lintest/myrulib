@@ -84,7 +84,8 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	AppendSeparator();
 	Append(ID_ORDER_MENU, _("Сортировка"), new FbMenuSort());
-	Append(wxID_ANY, _("Фильтр"), new FbMenuFilter());
+	AppendCheckItem(ID_FILTER_USE, _("Использовать фильтр"));
+	Append(ID_FILTER_NOT, _("Удалить фильтр"));
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));

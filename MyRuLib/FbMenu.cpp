@@ -14,13 +14,6 @@ FbMenuSort::FbMenuSort()
 	AppendCheckItem(ID_DIRECTION, _("Обратный порядок"));
 }
 
-FbMenuFilter::FbMenuFilter()
-{
-	AppendCheckItem(ID_FILTER_FB2, _("Только fb2-файлы"));
-	AppendCheckItem(ID_FILTER_LIB, _("Файлы Либрусек"));
-	AppendCheckItem(ID_FILTER_USR, _("Файлы пользователя"));
-}
-
 FbMenuRating::FbMenuRating()
 {
 	Append(ID_RATING_5, strRating[5]);

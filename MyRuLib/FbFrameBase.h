@@ -29,6 +29,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual wxToolBar * CreateToolBar(long style, wxWindowID winid, const wxString& name);
+		bool m_UseFilter;
 		bool m_FilterFb2;
 		bool m_FilterLib;
 		bool m_FilterUsr;
@@ -59,16 +60,17 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnBooksCount(wxCommandEvent& event);
 		void OnDirection(wxCommandEvent& event);
 		void OnChangeOrder(wxCommandEvent& event);
-		void OnChangeFilter(wxCommandEvent& event);
 		void OnChangeMode(wxCommandEvent& event);
 		void OnChangeView(wxCommandEvent & event);
 		void OnColClick(wxListEvent& event);
+		void OnFilterUse(wxCommandEvent& event);
+		void OnFilterNot(wxCommandEvent& event);
+		void OnFilterUseUpdateUI(wxUpdateUIEvent & event);
 		void OnMenuOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnDirectionUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
-		void OnChangeFilterUpdateUI(wxUpdateUIEvent & event);
 		void OnExternal(wxCommandEvent& event);
 		void OnAuthorInfo(wxCommandEvent& event);
 		void OnAppendBook(FbBookEvent& event);
