@@ -30,6 +30,7 @@ class FbFilterDlg : public FbDialog
 		~FbFilterDlg();
 
 	private:
+		FbTreeListCtrl * CreateTree(const wxString & title);
 
 	protected:
 		enum

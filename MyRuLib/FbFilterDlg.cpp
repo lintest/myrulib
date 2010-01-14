@@ -1,5 +1,7 @@
 #include "FbFilterDlg.h"
+#include <wx/imaglist.h>
 #include "FbBookList.h"
+#include "FbLogoBitmap.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -25,17 +27,11 @@ FbFilterDlg::FbFilterDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerList;
 	bSizerList = new wxBoxSizer( wxHORIZONTAL );
 
-	m_treeLang = new FbBookList( this, ID_TREE_LANG, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER );
-	m_treeLang->SetMinSize( wxSize( 100,100 ) );
+	m_treeLang = CreateTree(_("Язык"));;
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
-	m_treeLang->AddColumn (_("Язык"), 10, wxALIGN_LEFT);
-	m_treeLang->AddRoot(wxT("Все"));
 
-	m_treeType = new FbBookList( this, ID_TREE_TYPE, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER );
-	m_treeType->SetMinSize( wxSize( 100,100 ) );
+	m_treeType = CreateTree(_("Тип файла"));;
 	bSizerList->Add( m_treeType, 1, wxEXPAND|wxALL, 5 );
-	m_treeType->AddColumn (_("Тип файла"), 10, wxALIGN_LEFT);
-	m_treeType->AddRoot(wxT("Все"));
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );
 
@@ -55,6 +51,24 @@ FbFilterDlg::FbFilterDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	SetAffirmativeId(wxID_YES);
 	SetEscapeId(wxID_CANCEL);
+}
+
+FbTreeListCtrl * FbFilterDlg::CreateTree(const wxString & title)
+{
+	FbBookList * treelist = new FbBookList( this, ID_TREE_TYPE, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER );
+	treelist->AddColumn (title, 10, wxALIGN_LEFT);
+	treelist->SetMinSize( wxSize( 100,100 ) );
+	treelist->SetItemBold( treelist->AddRoot(wxT("Все"), 0), true );
+
+	wxBitmap size = wxBitmap(checked_xpm);
+	wxImageList *images;
+	images = new wxImageList (size.GetWidth(), size.GetHeight(), true);
+	images->Add (wxBitmap(nocheck_xpm));
+	images->Add (wxBitmap(checked_xpm));
+	images->Add (wxBitmap(checkout_xpm));
+	treelist->AssignImageList (images);
+
+	return treelist;
 }
 
 FbFilterDlg::~FbFilterDlg()
