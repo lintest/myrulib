@@ -446,6 +446,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 
 	int old_version = GetVersion();
 	if (old_version != new_version) {
+		wxMessageBox(_("Несоответствие верси базы данных."), strProgramName, wxOK | wxICON_ERROR);
 		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
 	}
 }
