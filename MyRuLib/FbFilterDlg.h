@@ -17,6 +17,7 @@
 #include <wx/dialog.h>
 #include "FbWindow.h"
 #include "FbTreeListCtrl.h"
+#include "FbFilterObj.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
