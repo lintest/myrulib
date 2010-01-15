@@ -24,8 +24,9 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuthor::OnContextMenu)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameAuthor::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameAuthor::OnMasterModify)
-	EVT_MENU(ID_MASTER_DELETE, FbFrameAuthor::OnMasterDelete)
 	EVT_MENU(ID_MASTER_REPLACE, FbFrameAuthor::OnMasterReplace)
+	EVT_MENU(ID_MASTER_DELETE, FbFrameAuthor::OnMasterDelete)
+	EVT_MENU(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPage)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
@@ -389,14 +390,27 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
+void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)
+{
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	if (data && data->GetId()>0) {
+		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
+		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetId());
+		wxLaunchDefaultBrowser(url);
+	}
+}
+
 FbFrameAuthor::MasterMenu::MasterMenu(int id)
 {
-	Append(ID_MASTER_APPEND, _("Добавить"));
+	Append(ID_MASTER_APPEND,  _("Добавить"));
 	if (id == 0) return;
-	Append(ID_MASTER_MODIFY, _("Изменить"));
-	Append(ID_MASTER_DELETE, _("Удалить"));
-	AppendSeparator();
+	Append(ID_MASTER_MODIFY,  _("Изменить"));
 	Append(ID_MASTER_REPLACE, _("Заменить"));
+	Append(ID_MASTER_DELETE,  _("Удалить"));
+	if (id > 0) {
+		AppendSeparator();
+		Append(ID_MASTER_PAGE, _("Страница автора"));
+	}
 }
 
 FbFrameAuthor::MenuBar::MenuBar()

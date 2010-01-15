@@ -21,6 +21,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
+	EVT_MENU(ID_BOOK_PAGE, FbBookPanel::OnBookPage)
 	EVT_MENU(ID_DOWNLOAD_BOOK, FbBookPanel::OnDownloadBook)
 	EVT_MENU(ID_SYSTEM_DOWNLOAD, FbBookPanel::OnSystemDownload)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbBookPanel::OnDeleteDownload)
@@ -621,6 +622,16 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 	FbBookData * data = GetSelectedBook();
 	if (data && data->GetId()>0) {
 		wxString url = FbInternetBook::GetURL(data->GetId());
+		wxLaunchDefaultBrowser(url);
+	}
+}
+
+void FbBookPanel::OnBookPage(wxCommandEvent & event)
+{
+	FbBookData * data = GetSelectedBook();
+	if (data && data->GetId()>0) {
+		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
+		wxString url = wxString::Format(wxT("http://%s/b/%d"), host.c_str(), data->GetId());
 		wxLaunchDefaultBrowser(url);
 	}
 }

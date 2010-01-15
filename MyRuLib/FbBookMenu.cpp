@@ -19,6 +19,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
 	}
 	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Скачать в браузере"));
+	if ( id>0 ) Append(ID_BOOK_PAGE, _("Страница книги"));
 	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
