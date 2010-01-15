@@ -99,6 +99,7 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 	if (id < ID_LETTER_EN) {
 		alphabet = alphabetRu;
 		position = id - ID_LETTER_RU;
+		FbParams().SetValue(FB_LAST_LETTER, position);
 	} else {
 		alphabet = alphabetEn;
 		position = id - ID_LETTER_EN;
@@ -150,11 +151,8 @@ void FbFrameAuthor::OpenAuthor(const int author, const int book)
 
 void FbFrameAuthor::SelectRandomLetter()
 {
-	wxDateTime now = wxDateTime::Now();
-	int random = now.GetHour() * 60 * 60 + now.GetMinute() * 60 + now.GetSecond();
-	random = random % alphabetRu.Len();
-
-	wxCommandEvent event( wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + random );
+	int position = FbParams().GetValue(FB_LAST_LETTER);
+	wxCommandEvent event( wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + position );
 	wxPostEvent(this, event);
 }
 

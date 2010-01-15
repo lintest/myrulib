@@ -75,6 +75,10 @@ FbFrameMenu::MenuBook::MenuBook()
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
 	AppendSeparator();
+	Append(ID_ORDER_MENU, _("Сортировка"), new FbMenuSort());
+	AppendCheckItem(ID_FILTER_USE, _("Использовать фильтр"));
+	Append(ID_FILTER_NOT, _("Удалить фильтр"));
+	AppendSeparator();
 	Append(ID_EDIT_COMMENTS, _("Комментарии"));
 }
 
@@ -83,15 +87,11 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	AppendSeparator();
-	Append(ID_ORDER_MENU, _("Сортировка"), new FbMenuSort());
-	AppendCheckItem(ID_FILTER_USE, _("Использовать фильтр"));
-	Append(ID_FILTER_NOT, _("Удалить фильтр"));
+	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
-	AppendSeparator();
-	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()
