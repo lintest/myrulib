@@ -1,6 +1,7 @@
 #include "FbFilterDlg.h"
 #include <wx/imaglist.h>
 #include "FbBookList.h"
+#include "FbParams.h"
 #include "FbLogoBitmap.h"
 
 ///////////////////////////////////////////////////////////////////////////
@@ -69,20 +70,36 @@ void FbFilterDlg::OnNoButton( wxCommandEvent& event )
 	wxDialog::EndModal( wxID_NO );
 }
 
+void FbFilterDlg::Assign(FbFilterObj & filter, bool write)
+{
+	if (write) {
+		filter.m_lib = m_checkLib->GetValue();
+		filter.m_usr = m_checkUsr->GetValue();
+	} else {
+		m_checkLib->SetValue( filter.m_lib );
+		m_checkUsr->SetValue( filter.m_usr );
+	}
+}
+
 bool FbFilterDlg::Execute(FbFilterObj & filter)
 {
 	FbFilterDlg dlg(filter);
+	dlg.Assign(filter, false);
 	int res = dlg.ShowModal();
 
 	switch ( res ) {
 		case wxID_YES: {
+			dlg.Assign(filter, true);
 			filter.m_enabled = true;
+			filter.Save();
 		} break;
 		case wxID_NO: {
 			filter.m_enabled = false;
+			FbParams().SetValue(FB_USE_FILTER, 0);
 		} break;
 	}
 
 	return  res != wxID_CANCEL;
 }
+
 

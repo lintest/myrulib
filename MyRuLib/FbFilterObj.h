@@ -9,10 +9,11 @@ class FbFilterObj
 		friend class FbFilterDlg;
 	public:
 		FbFilterObj();
-		FbFilterObj(const FbFilterObj & obj);
-		void Save();
+		wxString GetSQL();
 		bool IsEnabled() { return m_enabled; };
-		void SetEnable(bool enabled) { m_enabled = enabled; };
+		void Disable() { m_enabled = false; };
+	private:
+		void Save();
 	private:
 		bool m_enabled;
 		bool m_lib;

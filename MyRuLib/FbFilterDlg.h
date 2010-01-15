@@ -29,9 +29,9 @@ class FbFilterDlg : public FbDialog
 	public:
 		FbFilterDlg(FbFilterObj & filter);
 		static bool Execute(FbFilterObj & filter);
-
 	private:
 		FbTreeListCtrl * CreateTree(const wxString & title);
+		void Assign(FbFilterObj & filter, bool write);
 
 	private:
 		enum

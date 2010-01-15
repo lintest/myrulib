@@ -30,10 +30,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual wxToolBar * CreateToolBar(long style, wxWindowID winid, const wxString& name);
-		bool m_UseFilter;
-		bool m_FilterFb2;
-		bool m_FilterLib;
-		bool m_FilterUsr;
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
@@ -95,9 +91,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 			public:
 				BaseThread(FbFrameBase * frame, FbListMode mode)
 					:m_frame(frame), m_mode(mode),
-					m_FilterFb2(frame->m_FilterFb2),
-					m_FilterLib(frame->m_FilterLib),
-					m_FilterUsr(frame->m_FilterUsr),
+					m_filter(frame->m_filter.GetSQL()),
 					m_ListOrder(frame->GetOrderSQL())
 				{};
 			protected:
@@ -114,9 +108,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 				FbGenreFunction m_genre;
 				wxWindow * m_frame;
 				FbListMode m_mode;
-				bool m_FilterFb2;
-				bool m_FilterLib;
-				bool m_FilterUsr;
+				wxString m_filter;
 				wxString m_ListOrder;
 		};
 

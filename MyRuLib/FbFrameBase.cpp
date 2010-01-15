@@ -51,10 +51,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
-	m_UseFilter(false),
-	m_FilterFb2(false),
-	m_FilterLib(false),
-	m_FilterUsr(false),
 	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
 {
 	Create(parent, id, title);
@@ -353,13 +349,8 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 			break;
 	}
 
-	wxString str = wxT("(%s)");
-	if (m_FilterFb2) str += wxT("AND(books.file_type='fb2')");
-	if (m_FilterLib) str += wxT("AND(books.id>0)");
-	if (m_FilterUsr) str += wxT("AND(books.id<0)");
-	sql = wxString::Format(sql, str.c_str());
-
-	return wxString::Format(sql, condition.c_str());
+	wxString str = wxString::Format(wxT("(%s)%s"), condition.c_str(), m_filter.c_str());
+	return wxString::Format(sql, str.c_str());
 }
 
 wxString FbFrameBase::BaseThread::GetOrder()
@@ -462,7 +453,8 @@ void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 
 void FbFrameBase::OnFilterNot(wxCommandEvent& event)
 {
-	m_filter.SetEnable(false);
+	FbParams().SetValue(FB_USE_FILTER, 0);
+	m_filter.Disable();
 	UpdateBooklist();
 }
 
