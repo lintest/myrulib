@@ -452,19 +452,17 @@ wxMenuBar * FbFrameBase::CreateMenuBar()
 
 void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
 {
-	event.Check(m_UseFilter);
+	event.Check(m_filter.IsEnabled());
 }
 
 void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 {
-	FbFilterDlg dlg(this);
-	dlg.ShowModal();
-	UpdateBooklist();
+	if (FbFilterDlg::Execute(m_filter)) UpdateBooklist();
 }
 
 void FbFrameBase::OnFilterNot(wxCommandEvent& event)
 {
-	m_UseFilter = false;
+	m_filter.SetEnable(false);
 	UpdateBooklist();
 }
 

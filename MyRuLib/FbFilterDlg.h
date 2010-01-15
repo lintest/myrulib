@@ -27,13 +27,13 @@
 class FbFilterDlg : public FbDialog
 {
 	public:
-		FbFilterDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Настройка фильтра"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
-		~FbFilterDlg();
+		FbFilterDlg(FbFilterObj & filter);
+		static bool Execute(FbFilterObj & filter);
 
 	private:
 		FbTreeListCtrl * CreateTree(const wxString & title);
 
-	protected:
+	private:
 		enum
 		{
 			ID_CHECK_LIB = 1000,
@@ -41,12 +41,14 @@ class FbFilterDlg : public FbDialog
 			ID_TREE_LANG,
 			ID_TREE_TYPE,
 		};
-
 		wxCheckBox* m_checkLib;
 		wxCheckBox* m_checkUsr;
 		FbTreeListCtrl* m_treeLang;
 		FbTreeListCtrl* m_treeType;
 
+	private:
+		void OnNoButton( wxCommandEvent& event );
+		DECLARE_EVENT_TABLE()
 };
 
 #endif //__FBFILTERDLG_H__

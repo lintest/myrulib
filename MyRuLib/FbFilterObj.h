@@ -6,9 +6,13 @@
 class FbFilterObj
 {
 	public:
+		friend class FbFilterDlg;
+	public:
 		FbFilterObj();
 		FbFilterObj(const FbFilterObj & obj);
 		void Save();
+		bool IsEnabled() { return m_enabled; };
+		void SetEnable(bool enabled) { m_enabled = enabled; };
 	private:
 		bool m_enabled;
 		bool m_lib;

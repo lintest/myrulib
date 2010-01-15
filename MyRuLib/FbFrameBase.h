@@ -56,7 +56,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbTreeListCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
-		FbFilterObj * m_filter;
+		FbFilterObj m_filter;
 	private:
 		void OnActivated(wxActivateEvent & event);
 		void OnBooksCount(wxCommandEvent& event);

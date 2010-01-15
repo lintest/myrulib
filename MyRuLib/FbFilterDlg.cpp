@@ -5,8 +5,12 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-FbFilterDlg::FbFilterDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog( parent, id, title, pos, size, style )
+BEGIN_EVENT_TABLE( FbFilterDlg, wxDialog )
+	EVT_BUTTON( wxID_NO, FbFilterDlg::OnNoButton )
+END_EVENT_TABLE()
+
+FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
+	: FbDialog( NULL, wxID_ANY, _("Настройка фильтра"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -35,22 +39,11 @@ FbFilterDlg::FbFilterDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );
 
-	wxStdDialogButtonSizer * sdbSizer = new wxStdDialogButtonSizer();
-	wxButton * sdbSizerYes = new wxButton( this, wxID_YES );
-	sdbSizer->AddButton( sdbSizerYes );
-	sdbSizerYes->SetDefault();
-	wxButton * sdbSizerNo = new wxButton( this, wxID_NO );
-	sdbSizer->AddButton( sdbSizerNo );
-	wxButton * sdbSizerCancel = new wxButton( this, wxID_CANCEL );
-	sdbSizer->AddButton( sdbSizerCancel );
-	sdbSizer->Realize();
+	wxStdDialogButtonSizer * sdbSizer = CreateStdDialogButtonSizer( wxYES | wxNO | wxCANCEL );
 	bSizerMain->Add( sdbSizer, 0, wxEXPAND|wxALL, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
-
-	SetAffirmativeId(wxID_YES);
-	SetEscapeId(wxID_CANCEL);
 }
 
 FbTreeListCtrl * FbFilterDlg::CreateTree(const wxString & title)
@@ -71,6 +64,25 @@ FbTreeListCtrl * FbFilterDlg::CreateTree(const wxString & title)
 	return treelist;
 }
 
-FbFilterDlg::~FbFilterDlg()
+void FbFilterDlg::OnNoButton( wxCommandEvent& event )
 {
+	wxDialog::EndModal( wxID_NO );
 }
+
+bool FbFilterDlg::Execute(FbFilterObj & filter)
+{
+	FbFilterDlg dlg(filter);
+	int res = dlg.ShowModal();
+
+	switch ( res ) {
+		case wxID_YES: {
+			filter.m_enabled = true;
+		} break;
+		case wxID_NO: {
+			filter.m_enabled = false;
+		} break;
+	}
+
+	return  res != wxID_CANCEL;
+}
+
