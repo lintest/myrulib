@@ -65,7 +65,8 @@
 		<sources>MyRuLib/FbDataPath.cpp</sources>
 		<sources>MyRuLib/FbEditBook.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
-		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
+		<sources>MyRuLib/FbFilterDlg.cpp</sources>
+		<sources>MyRuLib/FbFilterObj.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameDownld.cpp</sources>
 		<sources>MyRuLib/FbFrameFolder.cpp</sources>

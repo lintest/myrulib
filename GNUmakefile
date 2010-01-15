@@ -101,7 +101,8 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbDataPath.o \
 	build/myrulib_FbEditBook.o \
 	build/myrulib_FbDownloader.o \
-	build/myrulib_FbFrameAuthor.o \
+	build/myrulib_FbFilterDlg.o \
+	build/myrulib_FbFilterObj.o \
 	build/myrulib_FbFrameBase.o \
 	build/myrulib_FbFrameDownld.o \
 	build/myrulib_FbFrameFolder.o \
@@ -265,7 +266,10 @@ build/myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp
 build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
+build/myrulib_FbFilterDlg.o: ./MyRuLib/FbFilterDlg.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFilterObj.o: ./MyRuLib/FbFilterObj.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp
