@@ -14,9 +14,6 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
-	EVT_TREE_ITEM_COLLAPSING(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListCollapsing)
-	EVT_TREE_KEY_DOWN(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListKeyDown)
-	EVT_TREE_STATE_IMAGE_CLICK(ID_BOOKS_LISTCTRL, FbBookPanel::OnImageClick)
 	EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, FbBookPanel::OnContextMenu)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
@@ -191,49 +188,6 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	}
 }
 
-void FbBookPanel::OnBooksListCollapsing(wxTreeEvent & event)
-{
-	event.Veto();
-}
-
-void FbBookPanel::OnImageClick(wxTreeEvent &event)
-{
-	wxTreeItemId item = event.GetItem();
-	if (item.IsOk()) {
-		int image = m_BookList->GetItemImage(item);
-		image = ( image == 1 ? 0 : 1);
-		if (m_BookList->GetItemBold(item)) {
-			m_BookList->SetItemImage(item, image);
-			wxTreeItemIdValue cookie;
-			item = m_BookList->GetFirstChild(item, cookie);
-			while (item.IsOk()) {
-				wxTreeItemIdValue cookie;
-				wxTreeItemId subitem = m_BookList->GetFirstChild(item, cookie);
-				while (subitem.IsOk()) {
-					m_BookList->SetItemImage(subitem, image);
-					subitem = m_BookList->GetNextSibling(subitem);
-				}
-				m_BookList->SetItemImage(item, image);
-				item = m_BookList->GetNextSibling (item);
-			}
-		} else {
-			m_BookList->SetItemImage(item, image);
-			wxTreeItemId parent = m_BookList->GetItemParent(item);
-			wxTreeItemIdValue cookie;
-			item = m_BookList->GetFirstChild(parent, cookie);
-			while (item.IsOk()) {
-				if (image != m_BookList->GetItemImage(item)) {
-					image = 2;
-					break;
-				}
-				item = m_BookList->GetNextSibling (item);
-			}
-			m_BookList->SetItemImage(parent, image);
-		}
-	}
-	event.Veto();
-}
-
 void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
@@ -241,23 +195,6 @@ void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 		FbBookData * data = (FbBookData*)m_BookList->GetItemData(selected);
 		if (data) DoOpenBook(data->GetId(), data->m_filetype);
 	}
-}
-
-void FbBookPanel::OnBooksListKeyDown(wxTreeEvent & event)
-{
-	if (event.GetKeyCode() == 0x20) {
-		wxArrayTreeItemIds selections;
-		size_t count = m_BookList->GetSelections(selections);
-		int image = 0;
-		for (size_t i=0; i<count; ++i) {
-			wxTreeItemId selected = selections[i];
-			if (i==0)
-				image = (m_BookList->GetItemImage(selected) + 1) % 2;
-			m_BookList->SetItemImage(selected, image);
-		}
-		event.Veto();
-	} else
-		event.Skip();
 }
 
 void FbBookPanel::OnInfoUpdate(wxCommandEvent& event)

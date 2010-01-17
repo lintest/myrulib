@@ -4,6 +4,12 @@
 #include "FbBookData.h"
 #include "FbLogoBitmap.h"
 
+BEGIN_EVENT_TABLE(FbBookList, FbTreeListCtrl)
+	EVT_TREE_KEY_DOWN(wxID_ANY, FbBookList::OnKeyDown)
+	EVT_TREE_STATE_IMAGE_CLICK(wxID_ANY, FbBookList::OnImageClick)
+	EVT_TREE_ITEM_COLLAPSING(wxID_ANY, FbBookList::OnCollapsing)
+END_EVENT_TABLE()
+
 FbBookList::FbBookList(wxWindow *parent, wxWindowID id, long style)
 	:FbTreeListCtrl(parent, id, style)
 {
@@ -179,3 +185,64 @@ size_t FbBookList::GetCount()
 	wxArrayInt items;
 	return GetCount(GetRootItem(), items);
 }
+
+void FbBookList::OnImageClick(wxTreeEvent &event)
+{
+	wxTreeItemId item = event.GetItem();
+	if (item.IsOk()) {
+		int image = GetItemImage(item);
+		image = ( image == 1 ? 0 : 1);
+		if (GetItemBold(item)) {
+			SetItemImage(item, image);
+			wxTreeItemIdValue cookie;
+			item = GetFirstChild(item, cookie);
+			while (item.IsOk()) {
+				wxTreeItemIdValue cookie;
+				wxTreeItemId subitem = GetFirstChild(item, cookie);
+				while (subitem.IsOk()) {
+					SetItemImage(subitem, image);
+					subitem = GetNextSibling(subitem);
+				}
+				SetItemImage(item, image);
+				item = GetNextSibling (item);
+			}
+		} else {
+			SetItemImage(item, image);
+			wxTreeItemId parent = GetItemParent(item);
+			wxTreeItemIdValue cookie;
+			item = GetFirstChild(parent, cookie);
+			while (item.IsOk()) {
+				if (image != GetItemImage(item)) {
+					image = 2;
+					break;
+				}
+				item = GetNextSibling (item);
+			}
+			SetItemImage(parent, image);
+		}
+	}
+	event.Veto();
+}
+
+void FbBookList::OnKeyDown(wxTreeEvent & event)
+{
+	if (event.GetKeyCode() == 0x20) {
+		wxArrayTreeItemIds selections;
+		size_t count = GetSelections(selections);
+		int image = 0;
+		for (size_t i=0; i<count; ++i) {
+			wxTreeItemId selected = selections[i];
+			if (i==0)
+				image = (GetItemImage(selected) + 1) % 2;
+			SetItemImage(selected, image);
+		}
+		event.Veto();
+	} else event.Skip();
+}
+
+void FbBookList::OnCollapsing(wxTreeEvent & event)
+{
+	event.Veto();
+}
+
+

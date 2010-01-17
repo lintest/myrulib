@@ -11,7 +11,6 @@ public:
 	FbTreeListCtrl(wxWindow *parent, wxWindowID id, long style);
 	virtual void AddColumn(const wxString& text, int width, int flag = wxALIGN_LEFT);
     wxTreeItemData * GetSelectedData() const;
-	void EmptyCols();
 	virtual void Update();
 private:
 	void DoResizeCols(int width);

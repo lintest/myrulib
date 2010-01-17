@@ -46,10 +46,10 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxString sql;
 	FbCommonDatabase database;
 
-	sql = wxT("SELECT distinct file_type, CASE WHEN file_type='fb2' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, file_type");
+	sql = wxT("SELECT DISTINCT lang, CASE WHEN lang='ru' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, lang");
 	FillTree(database, m_treeLang, sql);
 
-	sql = wxT("SELECT DISTINCT lang, CASE WHEN lang='ru' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, lang");
+	sql = wxT("SELECT distinct file_type, CASE WHEN file_type='fb2' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, file_type");
 	FillTree(database, m_treeType, sql);
 
 	this->SetSizer( bSizerMain );
@@ -113,7 +113,6 @@ bool FbFilterDlg::Execute(FbFilterObj & filter)
 
 void FbFilterDlg::FillTree(FbDatabase & database, FbTreeListCtrl * treelist, const wxString & sql)
 {
-
 	wxTreeItemId root = treelist->GetRootItem();
 	treelist->Freeze();
 	try {

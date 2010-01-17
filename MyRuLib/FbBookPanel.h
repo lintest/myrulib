@@ -62,8 +62,6 @@ class FbBookPanel: public wxSplitterWindow
 	private:
 		void OnBooksListViewSelected(wxTreeEvent & event);
 		void OnBooksListActivated(wxTreeEvent & event);
-		void OnBooksListKeyDown(wxTreeEvent & event);
-		void OnBooksListCollapsing(wxTreeEvent & event);
 		void OnDeleteDownload(wxCommandEvent & event);
 		void OnDownloadBook(wxCommandEvent & event);
 		void OnEditComments(wxCommandEvent & event);
@@ -73,7 +71,6 @@ class FbBookPanel: public wxSplitterWindow
 		void OnOpenBook(wxCommandEvent & event);
 		void OnBookPage(wxCommandEvent & event);
 		void OnSystemDownload(wxCommandEvent & event);
-		void OnImageClick(wxTreeEvent &event);
 		void OnInfoUpdate(wxCommandEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
 		void OnContextMenu(wxTreeEvent& event);

@@ -27,7 +27,10 @@ class FbBookList: public FbTreeListCtrl
 		void ScanChecked(const wxTreeItemId &parent, wxArrayInt &items);
 		void ScanSelected(const wxTreeItemId &parent, wxArrayInt &items);
 	private:
+		void OnKeyDown(wxTreeEvent & event);
+		void OnCollapsing(wxTreeEvent & event);
 		void OnImageClick(wxTreeEvent &event);
+		DECLARE_EVENT_TABLE();
 };
 
 class BookListUpdater
