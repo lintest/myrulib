@@ -18,6 +18,7 @@
 #include "FbWindow.h"
 #include "FbTreeListCtrl.h"
 #include "FbFilterObj.h"
+#include "FbDatabase.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +33,7 @@ class FbFilterDlg : public FbDialog
 	private:
 		FbTreeListCtrl * CreateTree(const wxString & title);
 		void Assign(FbFilterObj & filter, bool write);
+		void FillTree(FbDatabase & database, FbTreeListCtrl* treelist, const wxString & sql);
 
 	private:
 		enum
