@@ -132,7 +132,7 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
 
-	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка для хранения скачиваемых файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка для хранения скачанных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
@@ -148,7 +148,7 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer14, 0, wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Удалять скаченные файлы при удалении загрузок из списка"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Удалять скачанные файлы при удалении загрузок из списка"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox14, 0, wxALL, 5 );
 
 	this->SetSizer( bSizer2 );
