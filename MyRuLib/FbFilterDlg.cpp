@@ -2,7 +2,6 @@
 #include <wx/imaglist.h>
 #include "FbBookList.h"
 #include "FbParams.h"
-#include "FbLogoBitmap.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -58,19 +57,10 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 
 FbTreeListCtrl * FbFilterDlg::CreateTree(const wxString & title)
 {
-	FbBookList * treelist = new FbBookList( this, ID_TREE_TYPE, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER );
+	FbCheckList * treelist = new FbCheckList( this, ID_TREE_TYPE, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER );
 	treelist->AddColumn (title, 10, wxALIGN_LEFT);
 	treelist->SetMinSize( wxSize( 100,100 ) );
 	treelist->SetItemBold( treelist->AddRoot(wxT("Все"), 0), true );
-
-	wxBitmap size = wxBitmap(checked_xpm);
-	wxImageList *images;
-	images = new wxImageList (size.GetWidth(), size.GetHeight(), true);
-	images->Add (wxBitmap(nocheck_xpm));
-	images->Add (wxBitmap(checked_xpm));
-	images->Add (wxBitmap(checkout_xpm));
-	treelist->AssignImageList (images);
-
 	return treelist;
 }
 
