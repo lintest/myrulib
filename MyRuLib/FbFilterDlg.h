@@ -32,8 +32,9 @@ class FbFilterDlg : public FbDialog
 		static bool Execute(FbFilterObj & filter);
 	private:
 		FbTreeListCtrl * CreateTree(const wxString & title);
-		void Assign(FbFilterObj & filter, bool write);
-		void FillTree(FbDatabase & database, FbTreeListCtrl* treelist, const wxString & sql);
+		void Assign(FbFilterObj & filter);
+		void FillTree(FbDatabase & database, FbTreeListCtrl* treelist, const wxString & sql, const wxString & filter);
+		wxString GetText(FbTreeListCtrl* treelist);
 
 	private:
 		enum
