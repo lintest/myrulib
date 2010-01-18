@@ -20,6 +20,9 @@ enum FbDatabaseKey {
 	DB_NEW_ZIPFILE = 25,
 	DB_WANRAIK_DIR = 26,
 	DB_BOOKS_COUNT = 27,
+	DB_LAST_BOOK = 30,
+	DB_LANG_LIST = 31,
+	DB_TYPE_LIST = 32,
 };
 
 class FbLowerFunction : public wxSQLite3ScalarFunction

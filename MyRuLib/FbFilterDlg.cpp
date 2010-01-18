@@ -1,7 +1,90 @@
 #include "FbFilterDlg.h"
 #include <wx/imaglist.h>
-#include "FbBookList.h"
-#include "FbParams.h"
+
+///////////////////////////////////////////////////////////////////////////
+
+FbFilterList::FbFilterList(wxWindow *parent, wxWindowID id, const wxString &title)
+	:FbCheckList(parent, id, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER)
+{
+	SetFont( FbParams::GetFont(FB_FONT_DLG) );
+	AddColumn (title, 10, wxALIGN_LEFT);
+	SetMinSize( wxSize(100, 100) );
+	SetItemBold( AddRoot(wxT("Все"), 0), true );
+}
+
+int FbFilterList::Append(wxTreeItemId parent, wxString &text, const wxString & filter)
+{
+	text.Replace(wxT(","), wxEmptyString, true);
+	text.Replace(wxT("'"), wxEmptyString, true);
+	text.Replace(wxT("\""), wxEmptyString, true);
+	if (text.IsEmpty()) return -1;
+	int image = filter.IsEmpty() ? 1 : filter.Find(wxT("'") + text + wxT("'")) == wxNOT_FOUND ? 0 : 1;
+	AppendItem(parent, text, image);
+	return image;
+}
+
+wxString FbFilterList::Load(FbDatabase & database, const wxString & sql, const wxString & filter)
+{
+	wxString list;
+	wxTreeItemId root = GetRootItem();
+	Freeze();
+	try {
+		int all = -1;
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while ( result.NextRow() ) {
+			wxString text = result.GetString(0);
+			int image = Append(root, text, filter);
+			if (image<0) continue;
+			if (!list.IsEmpty()) list += wxT(",");
+			list += text;
+			if (all < 0) all = image; else if (all != image) all = 2;
+		}
+		if (all > 0) SetItemImage(root, all);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	Expand(root);
+	Thaw();
+	return list;
+}
+
+void FbFilterList::Read(const wxString & filter, int key)
+{
+	wxTreeItemId root = GetRootItem();
+	Freeze();
+	wxString list = FbParams::GetText(key);
+	int all = -1;
+
+	int pos;
+	do {
+		pos = list.Find(wxT(','));
+		wxString text = pos == wxNOT_FOUND ? list : list.Left(pos);
+		list = list.Mid(pos + 1);
+		int image = Append(root, text, filter);
+		if (all < 0) all = image; else if (all != image && image>=0) all = 2;
+	} while (pos != wxNOT_FOUND);
+
+	if (all > 0) SetItemImage(root, all);
+	Expand(root);
+	Thaw();
+}
+
+wxString FbFilterList::GetValue()
+{
+	wxString result;
+	bool all = true;
+	wxTreeItemIdValue cookie;
+	wxTreeItemId parent = GetRootItem();
+	wxTreeItemId child = GetFirstChild(parent, cookie);
+	while (child.IsOk()) {
+		if (GetItemImage(child) == 1) {
+			if (!result.IsEmpty()) result += wxT(",");
+			result += wxT("'") + GetItemText(child) + wxT("'");
+		} else all = false;
+		child = GetNextChild(parent, cookie);
+	}
+	return all ? wxString(wxEmptyString) : result;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -33,10 +116,10 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxBoxSizer* bSizerList;
 	bSizerList = new wxBoxSizer( wxHORIZONTAL );
 
-	m_treeLang = CreateTree(_("Язык"));;
+	m_treeLang = new FbFilterList(this, ID_TREE_LANG, _("Язык"));
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	m_treeType = CreateTree(_("Тип файла"));;
+	m_treeType = new FbFilterList(this, ID_TREE_TYPE, _("Тип файла"));
 	bSizerList->Add( m_treeType, 1, wxEXPAND|wxALL, 5 );
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );
@@ -44,27 +127,22 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxStdDialogButtonSizer * sdbSizer = CreateStdDialogButtonSizer( wxYES | wxNO | wxCANCEL );
 	bSizerMain->Add( sdbSizer, 0, wxEXPAND|wxALL, 5 );
 
-	wxString sql;
-	FbCommonDatabase database;
-
-	sql = wxT("SELECT DISTINCT lang, CASE WHEN lang='ru' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, lang");
-	FillTree(database, m_treeLang, sql, filter.m_lang);
-
-	sql = wxT("SELECT distinct file_type, CASE WHEN file_type='fb2' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, file_type");
-	FillTree(database, m_treeType, sql, filter.m_type);
+	int last = FbParams::GetValue(DB_NEW_BOOK) + 1;
+	if ( FbParams::GetValue(DB_LAST_BOOK) != last ) {
+		FbCommonDatabase database;
+		wxString sql_lang = wxT("SELECT DISTINCT lang, CASE WHEN lang='ru' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, lang");
+		wxString sql_type = wxT("SELECT distinct file_type, CASE WHEN file_type='fb2' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, file_type");
+		FbParams params;
+		params.SetText(DB_LANG_LIST, m_treeLang->Load(database, sql_lang, filter.m_lang));
+		params.SetText(DB_TYPE_LIST, m_treeType->Load(database, sql_type, filter.m_type));
+		params.SetValue(DB_LAST_BOOK, last);
+	} else {
+		m_treeLang->Read(filter.m_lang, DB_LANG_LIST);
+		m_treeType->Read(filter.m_type, DB_TYPE_LIST);
+	}
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
-}
-
-FbTreeListCtrl * FbFilterDlg::CreateTree(const wxString & title)
-{
-	FbCheckList * treelist = new FbCheckList( this, ID_TREE_TYPE, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER );
-	treelist->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
-	treelist->AddColumn (title, 10, wxALIGN_LEFT);
-	treelist->SetMinSize( wxSize( 100,100 ) );
-	treelist->SetItemBold( treelist->AddRoot(wxT("Все"), 0), true );
-	return treelist;
 }
 
 void FbFilterDlg::OnNoButton( wxCommandEvent& event )
@@ -72,29 +150,12 @@ void FbFilterDlg::OnNoButton( wxCommandEvent& event )
 	wxDialog::EndModal( wxID_NO );
 }
 
-wxString FbFilterDlg::GetText(FbTreeListCtrl* treelist)
-{
-	wxString result;
-	bool all = true;
-	wxTreeItemIdValue cookie;
-	wxTreeItemId parent = treelist->GetRootItem();
-	wxTreeItemId child = treelist->GetFirstChild(parent, cookie);
-	while (child.IsOk()) {
-		if (treelist->GetItemImage(child) == 1) {
-			if (!result.IsEmpty()) result += wxT(",");
-			result += wxT("'") + treelist->GetItemText(child) + wxT("'");
-		} else all = false;
-		child = treelist->GetNextChild(parent, cookie);
-	}
-	return all ? wxString(wxEmptyString) : result;
-}
-
 void FbFilterDlg::Assign(FbFilterObj & filter)
 {
 	filter.m_lib = m_checkLib->GetValue();
 	filter.m_usr = m_checkUsr->GetValue();
-	filter.m_lang = GetText(m_treeLang);
-	filter.m_type = GetText(m_treeType);
+	filter.m_lang = m_treeLang->GetValue();
+	filter.m_type = m_treeType->GetValue();
 }
 
 bool FbFilterDlg::Execute(FbFilterObj & filter)
@@ -115,27 +176,5 @@ bool FbFilterDlg::Execute(FbFilterObj & filter)
 	}
 
 	return  res != wxID_CANCEL;
-}
-
-void FbFilterDlg::FillTree(FbDatabase & database, FbTreeListCtrl * treelist, const wxString & sql, const wxString & filter)
-{
-	wxTreeItemId root = treelist->GetRootItem();
-	treelist->Freeze();
-	try {
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		while ( result.NextRow() ) {
-			wxString text = result.GetString(0);
-			text.Replace(wxT(","), wxEmptyString, true);
-			text.Replace(wxT("'"), wxEmptyString, true);
-			text.Replace(wxT("\""), wxEmptyString, true);
-			if (text.IsEmpty()) continue;
-			int image = filter.Find(wxT("'") + text + wxT("'")) == wxNOT_FOUND ? 0 : 1;
-			treelist->AppendItem(root, text, image);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	treelist->Expand(root);
-	treelist->Thaw();
 }
 

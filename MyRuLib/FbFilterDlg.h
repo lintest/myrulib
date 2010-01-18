@@ -19,8 +19,21 @@
 #include "FbTreeListCtrl.h"
 #include "FbFilterObj.h"
 #include "FbDatabase.h"
+#include "FbBookList.h"
+#include "FbParams.h"
 
+///////////////////////////////////////////////////////////////////////////////
+/// Class FbFilterList
 ///////////////////////////////////////////////////////////////////////////
+class FbFilterList: public FbCheckList
+{
+	public:
+		FbFilterList(wxWindow *parent, wxWindowID id, const wxString &title);
+		wxString Load(FbDatabase & database, const wxString & sql, const wxString & filter);
+		void Read(const wxString & filter, int key);
+		int Append(wxTreeItemId parent, wxString &text, const wxString & filter);
+		wxString GetValue();
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class FbFilterDlg
@@ -34,7 +47,6 @@ class FbFilterDlg : public FbDialog
 		FbTreeListCtrl * CreateTree(const wxString & title);
 		void Assign(FbFilterObj & filter);
 		void FillTree(FbDatabase & database, FbTreeListCtrl* treelist, const wxString & sql, const wxString & filter);
-		wxString GetText(FbTreeListCtrl* treelist);
 
 	private:
 		enum
@@ -46,8 +58,8 @@ class FbFilterDlg : public FbDialog
 		};
 		wxCheckBox* m_checkLib;
 		wxCheckBox* m_checkUsr;
-		FbTreeListCtrl* m_treeLang;
-		FbTreeListCtrl* m_treeType;
+		FbFilterList* m_treeLang;
+		FbFilterList* m_treeType;
 
 	private:
 		void OnNoButton( wxCommandEvent& event );
