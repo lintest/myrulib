@@ -10,6 +10,43 @@
 #include "FbEditBook.h"
 #include "ZipReader.h"
 
+class FbURI: public wxURI
+{
+	public:
+		FbURI(const wxString& uri): wxURI(uri) {};
+		friend class FbHtmlWindow;
+};
+
+class FbHtmlWindow: public wxHtmlWindow
+{
+	public:
+		FbHtmlWindow(wxWindow *parent, wxWindowID id = wxID_ANY);
+	protected:
+		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
+};
+
+FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id)
+	: wxHtmlWindow(parent, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
+{
+}
+
+wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const
+{
+	if (type != wxHTML_URL_IMAGE) return wxHTML_OPEN;
+
+	wxString addr = url;
+	FbURI uri = addr;
+
+	if (uri.GetScheme() == wxT("http")) {
+		if ( !FbParams::GetValue(FB_HTTP_IMAGES) ) {
+			*redirect = wxT("memory:blank");
+			return wxHTML_REDIRECT;
+		}
+	}
+
+	return wxHTML_OPEN;
+}
+
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
@@ -149,7 +186,7 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
 {
 	if (m_BookInfo) Unsplit(m_BookInfo);
 
-	m_BookInfo = new wxHtmlWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
+	m_BookInfo = new FbHtmlWindow(this, ID_BOOKS_INFO_PANEL);
 
 	if (bVertical)
 		SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2);

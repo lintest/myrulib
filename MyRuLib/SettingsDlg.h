@@ -28,6 +28,7 @@ class SettingsDlg : private FbDialog
 			ID_DOWNLOAD_DIR_BTN,
 			ID_USE_PROXY,
 			ID_PROXY_ADDR,
+			ID_HTTP_IMAGES,
 			ID_LIBRUSEC_URL,
 			ID_EXTERNAL_TXT,
 			ID_EXTERNAL_BTN,

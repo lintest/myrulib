@@ -132,6 +132,9 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
 
+	wxCheckBox * checkBox3 = new wxCheckBox( this, ID_HTTP_IMAGES, _("Загружать изображения для описаний авторов"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( checkBox3, 0, wxALL, 5 );
+
 	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка для хранения скачанных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
@@ -380,6 +383,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_COLUMN_SYZE, ID_COLUMN_SYZE, tCheck},
 		{FB_COLUMN_GENRE, ID_COLUMN_GENRE, tCheck},
 		{FB_COLUMN_RATING, ID_COLUMN_RATING, tCheck},
+		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

@@ -27,6 +27,7 @@ private:
 	void OpenLog();
 	wxFileName GetDatabaseFilename(FbDatabase &database);
 	void SetAppData(const wxString &filename);
+	void LoadBlankImage();
 private:
 	wxCriticalSection m_section;
 	wxString m_datafile;
