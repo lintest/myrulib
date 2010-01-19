@@ -1,5 +1,6 @@
 #include "FbCheckList.h"
 #include "FbLogoBitmap.h"
+#include <wx/imaglist.h>
 
 BEGIN_EVENT_TABLE(FbCheckList, FbTreeListCtrl)
 	EVT_TREE_KEY_DOWN(wxID_ANY, FbCheckList::OnKeyDown)
