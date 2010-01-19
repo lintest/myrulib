@@ -37,11 +37,19 @@ class BookTreeItemData: public wxTreeItemData
 class FbItemData: public wxTreeItemData
 {
 	public:
-		FbItemData(int id): m_id(id) {};
-		FbItemData(const FbItemData & data): m_id(data.m_id), m_filetype(data.m_filetype) {};
-		FbItemData(const BookTreeItemData & data): m_id(data.GetId()), m_filetype(data.file_type) {};
-		bool operator == (const FbItemData & data) const { return m_id == data.m_id; };
-		int GetId() const { return m_id; };
+		virtual void Show(wxEvtHandler * frame, bool bVertical, bool bEditable = false) const = 0;
+		virtual void Open() const = 0;
+		virtual int GetId() const { return 0; };
+};
+
+class FbBookData: public FbItemData
+{
+	public:
+		FbBookData(int id): m_id(id) {};
+		FbBookData(const FbBookData & data): m_id(data.m_id), m_filetype(data.m_filetype) {};
+		FbBookData(const BookTreeItemData & data): m_id(data.GetId()), m_filetype(data.file_type) {};
+		bool operator == (const FbBookData & data) const { return m_id == data.m_id; };
+		virtual int GetId() const { return m_id; };
 		virtual void Show(wxEvtHandler * frame, bool bVertical, bool bEditable = false) const;
 		virtual void Open() const;
 	private:

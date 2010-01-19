@@ -148,12 +148,8 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
 		SplitHorizontally(m_BookList, m_BookInfo, GetSize().GetHeight()/2);
 
 	FbItemData * book = GetSelectedBook();
-	if (!book) {
-		m_BookInfo->SetPage(wxEmptyString);
-	} else {
-		InfoCash::LoadIcon(book->m_filetype);
-		InfoCash::UpdateInfo(this, book->GetId(), bVertical);
-	}
+	if (book) book->Show(this, bVertical);
+	else m_BookInfo->SetPage(wxEmptyString);
 }
 
 FbItemData * FbBookPanel::GetSelectedBook()
@@ -168,12 +164,7 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		FbItemData * data = (FbItemData*) m_BookList->GetItemData(selected);
-		if (data) {
-			if (data->GetId()) {
-				InfoCash::LoadIcon(data->m_filetype);
-				InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
-			}
-		}
+		if (data) data->Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
 
@@ -419,12 +410,12 @@ void FbBookPanel::AppendBook(BookTreeItemData & data, const wxString & authors)
 	switch (m_ListMode) {
 		case FB2_MODE_TREE: {
 			parent = m_SequenceItem.IsOk() ? m_SequenceItem : ( m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem() );
-			item = m_BookList->AppendItem(parent, data.title, 0, -1, new FbItemData(data));
+			item = m_BookList->AppendItem(parent, data.title, 0, -1, new FbBookData(data));
 			if (data.number) m_BookList->SetItemText(item, 2, wxString::Format(wxT(" %d "), data.number));
 		} break;
 		case FB2_MODE_LIST: {
 			parent = m_BookList->GetRootItem();
-			item = m_BookList->AppendItem(parent, data.title, 0, -1, new FbItemData(data));
+			item = m_BookList->AppendItem(parent, data.title, 0, -1, new FbBookData(data));
 			m_BookList->SetItemText(item, 1, authors);
 		} break;
 	}

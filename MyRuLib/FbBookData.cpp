@@ -3,6 +3,7 @@
 #include "ZipReader.h"
 #include "FbParams.h"
 #include "FbDownloader.h"
+#include "InfoCash.h"
 
 BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	m_id( res.GetInt(wxT("id"))),
@@ -18,11 +19,7 @@ BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	if ( r>=0 && r<=5 ) rating = r;
 }
 
-void FbItemData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
-{
-}
-
-void FbItemData::Open() const
+void FbBookData::Open() const
 {
 	ZipReader reader(m_id, m_id<0);
 	if ( reader.IsOK() ) {
@@ -32,7 +29,7 @@ void FbItemData::Open() const
 	}
 }
 
-void FbItemData::DoDownload() const
+void FbBookData::DoDownload() const
 {
 	if (m_id<0) return;
 	wxString md5sum = FbCommonDatabase().GetMd5(m_id);
@@ -65,3 +62,8 @@ void FbItemData::DoDownload() const
 	FbDownloader::Start();
 }
 
+void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
+{
+	InfoCash::LoadIcon(m_filetype);
+	InfoCash::UpdateInfo(frame, m_id, bVertical);
+}
