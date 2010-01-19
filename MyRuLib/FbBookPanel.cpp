@@ -149,7 +149,6 @@ void FbBookPanel::CreateBookInfo(bool bVertical)
 
 	FbItemData * book = GetSelectedBook();
 	if (book) book->Show(this, bVertical);
-	else m_BookInfo->SetPage(wxEmptyString);
 }
 
 FbItemData * FbBookPanel::GetSelectedBook()
@@ -488,9 +487,7 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
 	if (refresh) {
 		FbItemData * data = GetSelectedBook();
-		if (data && data->GetId()) {
-			InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
-		}
+		if (data) data->Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
 
