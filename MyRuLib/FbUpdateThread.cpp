@@ -1,6 +1,7 @@
 #include "FbUpdateThread.h"
 #include "FbConst.h"
-
+#include "FbParams.h"
+#include "BookExtractInfo.h"
 
 wxCriticalSection FbUpdateThread::sm_queue;
 
@@ -83,7 +84,7 @@ void * FbDeleteThread::Entry()
 	wxString sql;
 
 	sql = wxString::Format(wxT("books.id IN (%s)"), m_sel.c_str());
-	LogDelete(database, sql);
+	if (FbParams::GetValue(FB_REMOVE_FILES)) DoDelete(database, sql);
 
 	sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
 	ExecSQL(database, sql);
@@ -100,18 +101,15 @@ void * FbDeleteThread::Entry()
 	return NULL;
 }
 
-void FbUpdateThread::LogDelete(FbDatabase &database, const wxString &where)
+void FbDeleteThread::DoDelete(FbDatabase &database, const wxString &where)
 {
-	wxString sql = wxT("SELECT books.file_name, archives.file_name FROM books LEFT JOIN archives ON archives.id=books.id_archive WHERE ") + where;
+	bool remove = FbParams::GetValue(FB_REMOVE_FILES);
+	wxString basepath = FbParams::GetText(DB_LIBRARY_DIR);
+	wxString sql = wxT("SELECT id FROM books WHERE ") + where;
 	try {
 		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 		while (result.NextRow()) {
-			wxString file = result.GetString(0);
-			wxString zip = result.GetString(1);
-			wxString msg = wxT("Delete: ");
-			if (!zip.IsEmpty()) msg += zip + wxT(": ");
-			msg += file;
-			wxLogInfo(msg);
+			if (remove) BookExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());

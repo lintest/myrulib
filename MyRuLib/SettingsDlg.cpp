@@ -210,6 +210,9 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 
 	bSizer->Add( sbSizerCols, 1, wxALL|wxEXPAND, 5 );
 
+	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( checkbox, 0, wxALL|wxEXPAND, 5 );
+
 	this->SetSizer( bSizer );
 	this->Layout();
 	bSizer->Fit( this );
@@ -303,7 +306,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	#endif
 
 	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, nbStyle );
-	notebook->AddPage( new FbPanelInterface(notebook), _("Внешний вид"), true );
+	notebook->AddPage( new FbPanelInterface(notebook), _("Основные"), true );
 	notebook->AddPage( new FbPanelInternet(notebook), _("Интернет"), false );
 	notebook->AddPage( new FbPanelTypes(notebook), _("Типы файлов"), false );
 	notebook->AddPage( new FbPanelExport(notebook), _("Экспорт"), false );
@@ -384,6 +387,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_COLUMN_GENRE, ID_COLUMN_GENRE, tCheck},
 		{FB_COLUMN_RATING, ID_COLUMN_RATING, tCheck},
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
+		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

@@ -1,5 +1,7 @@
 #include "BookExtractInfo.h"
 #include "FbParams.h"
+#include <wx/zipstrm.h>
+#include <wx/wfstream.h>
 
 WX_DEFINE_OBJARRAY(BookExtractArrayBase);
 
@@ -12,21 +14,21 @@ BookExtractInfo::BookExtractInfo(wxSQLite3ResultSet & result):
 	librusec = (id_book>0 && result.GetInt(wxT("file")) == 0);
 }
 
-wxFileName BookExtractInfo::GetBook(const wxString &path)
+wxFileName BookExtractInfo::GetBook(const wxString &path) const
 {
 	wxFileName result = book_name;
 	result.Normalize(wxPATH_NORM_ALL, path);
 	return result;
 }
 
-wxFileName BookExtractInfo::GetZip(const wxString &path)
+wxFileName BookExtractInfo::GetZip(const wxString &path) const
 {
 	wxFileName result = zip_name;
 	result.Normalize(wxPATH_NORM_ALL, path);
 	return result;
 }
 
-wxString BookExtractInfo::NameInfo()
+wxString BookExtractInfo::NameInfo() const
 {
 	if (librusec) {
 		return wxString::Format(wxT("$(%s)/%s"), FbParams::GetText(FB_CONFIG_TYPE).c_str(), book_name.c_str());
@@ -38,6 +40,32 @@ wxString BookExtractInfo::NameInfo()
 	} else {
 		return book_name.c_str();
 	}
+}
+
+void BookExtractInfo::DeleteFile(const wxString &basepath) const
+{
+	if (librusec) return;
+
+	wxFileName filename = id_archive ? GetZip(basepath) : GetBook(basepath);
+
+	if (!filename.FileExists()) return;
+
+	if (id_archive) {
+		wxCSConv conv(wxT("cp866"));
+		wxFFileInputStream file(filename.GetFullPath());
+		wxZipInputStream zip(file, conv);
+		size_t count = 0;
+		while (wxZipEntry * entry = zip.GetNextEntry()) {
+			if (entry->GetSize()) {
+				if (entry->GetInternalName().Right(4).Lower() != wxT(".fbd")) count++;
+				delete entry;
+				if (count>1) return;
+			}
+		}
+	}
+
+	wxLogWarning(wxT("Delete: ") + NameInfo());
+	wxRemoveFile(filename.GetFullPath());
 }
 
 BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
@@ -68,5 +96,14 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 				item.zip_name = result.GetString(wxT("file_name"));
 			}
 		}
+	}
+}
+
+void BookExtractArray::DeleteFiles(const wxString &basepath) const
+{
+	for (size_t i = 0; i<Count(); i++) {
+		BookExtractInfo & item = Item(i);
+		if (item.librusec) continue;
+		item.DeleteFile(basepath);
 	}
 }

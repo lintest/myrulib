@@ -52,6 +52,7 @@ class SettingsDlg : private FbDialog
 			ID_COLUMN_SYZE,
 			ID_COLUMN_GENRE,
 			ID_COLUMN_RATING,
+			ID_REMOVE_FILES,
 		};
 		class FbPanelFont: public wxPanel
 		{

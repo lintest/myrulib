@@ -12,9 +12,10 @@ class BookExtractInfo
 	public:
 		BookExtractInfo(wxSQLite3ResultSet & result);
 	public:
-		wxFileName GetBook(const wxString &path = wxEmptyString);
-		wxFileName GetZip(const wxString &path = wxEmptyString);
-		wxString NameInfo();
+		wxFileName GetBook(const wxString &path = wxEmptyString) const;
+		wxFileName GetZip(const wxString &path = wxEmptyString) const;
+		wxString NameInfo() const;
+		void DeleteFile(const wxString &basepath) const;
 	public:
 		int id_book;
 		int id_archive;
@@ -30,7 +31,8 @@ class BookExtractArray
 {
 	public:
 		BookExtractArray(FbDatabase & database, const int id);
-		int GetId() {return m_id; };
+		int GetId() const {return m_id; };
+		void DeleteFiles(const wxString &basepath) const;
 	private:
 		int m_id;
 };
