@@ -28,7 +28,7 @@ class FbBookPanel: public wxSplitterWindow
 	public:
 		FbBookList * m_BookList;
 		wxHtmlWindow * m_BookInfo;
-		FbBookData * GetSelectedBook();
+		FbItemData * GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title = wxEmptyString);

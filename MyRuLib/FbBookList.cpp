@@ -116,19 +116,23 @@ BookListUpdater::~BookListUpdater()
 	m_list->Update();
 }
 
+int FbBookList::GetItemBook(const wxTreeItemId &item) const
+{
+	FbItemData * data = (FbItemData*) GetItemData(item);
+	return data ? data->GetId() : 0;
+}
+
 size_t FbBookList::ScanChecked(const wxTreeItemId &parent, wxString &selections)
 {
 	size_t result = 0;
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);
 	while (child.IsOk()) {
-		if (GetItemImage(child) == 1) {
-			FbBookData * data = (FbBookData*) GetItemData(child);
-			if (data && data->GetId()) {
-				if ( !selections.IsEmpty() ) selections += wxT(",");
-				selections += wxString::Format(wxT("%d"), data->GetId());
-				result++;
-			}
+		int id;
+		if ( GetItemImage(child) == 1 && (id = GetItemBook(child)) ) {
+			if ( !selections.IsEmpty() ) selections += wxT(",");
+			selections += wxString::Format(wxT("%d"), id);
+			result++;
 		}
 		result += ScanChecked(child, selections);
 		child = GetNextChild(parent, cookie);
@@ -139,13 +143,13 @@ size_t FbBookList::ScanChecked(const wxTreeItemId &parent, wxString &selections)
 size_t FbBookList::ScanSelected(const wxTreeItemId &parent, wxString &selections)
 {
 	size_t result = 0;
-	wxArrayTreeItemIds itemArray;
-	size_t count = FbTreeListCtrl::GetSelections(itemArray);
+	wxArrayTreeItemIds array;
+	size_t count = FbTreeListCtrl::GetSelections(array);
 	for (size_t i=0; i<count; ++i) {
-		FbBookData * data = (FbBookData*) GetItemData(itemArray[i]);
-		if (data && data->GetId()) {
+		int id;
+		if (id = GetItemBook(array[i])) {
 			if ( !selections.IsEmpty() ) selections += wxT(",");
-			selections += wxString::Format(wxT("%d"), data->GetId());
+			selections += wxString::Format(wxT("%d"), id);
 			result++;
 		}
 	}
@@ -157,10 +161,8 @@ void FbBookList::ScanChecked(const wxTreeItemId &parent, wxArrayInt &items)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);
 	while (child.IsOk()) {
-		if (GetItemImage(child) == 1) {
-			FbBookData * data = (FbBookData*) GetItemData(child);
-			if (data && data->GetId()) items.Add(data->GetId());
-		}
+		int id;
+		if ( GetItemImage(child) == 1 && (id = GetItemBook(child)) ) items.Add(id);
 		ScanChecked(child, items);
 		child = GetNextChild(parent, cookie);
 	}
@@ -168,11 +170,11 @@ void FbBookList::ScanChecked(const wxTreeItemId &parent, wxArrayInt &items)
 
 void FbBookList::ScanSelected(const wxTreeItemId &parent, wxArrayInt &items)
 {
-	wxArrayTreeItemIds itemArray;
-	size_t count = FbTreeListCtrl::GetSelections(itemArray);
+	wxArrayTreeItemIds array;
+	size_t count = FbTreeListCtrl::GetSelections(array);
 	for (size_t i=0; i<count; ++i) {
-		FbBookData * data = (FbBookData*) GetItemData(itemArray[i]);
-		if (data && data->GetId()) items.Add(data->GetId());
+		int id;
+		if (id = GetItemBook(array[i])) items.Add(id);
 	}
 }
 
@@ -206,7 +208,7 @@ bool FbBookList::DeleteItems(const wxTreeItemId &parent, wxArrayInt &items)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);
 	while (child.IsOk()) {
-		FbBookData * data = (FbBookData*) GetItemData(child);
+		FbItemData * data = (FbItemData*) GetItemData(child);
 		if (data && data->GetId()) {
 			if (items.Index(data->GetId()) != wxNOT_FOUND) {
 				Delete(child);
@@ -233,7 +235,7 @@ size_t FbBookList::GetCount(const wxTreeItemId &parent, wxArrayInt &items)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);
 	while (child.IsOk()) {
-		FbBookData * data = (FbBookData*) GetItemData(child);
+		FbItemData * data = (FbItemData*) GetItemData(child);
 		if (data && data->GetId() && items.Index(data->GetId()) == wxNOT_FOUND) {
 			items.Add(data->GetId());
 			count++;

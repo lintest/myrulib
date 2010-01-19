@@ -26,6 +26,7 @@ class FbBookList: public FbCheckList
 	public:
 		FbBookList(wxWindow *parent, wxWindowID id, long style);
 		wxString GetSelected();
+		int GetItemBook(const wxTreeItemId &item) const;
 		size_t GetCount();
 		size_t GetSelected(wxString &selections);
 		size_t GetSelected(wxArrayInt &items);

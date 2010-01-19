@@ -18,11 +18,11 @@ BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	if ( r>=0 && r<=5 ) rating = r;
 }
 
-void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
+void FbItemData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
 {
 }
 
-void FbBookData::Open() const
+void FbItemData::Open() const
 {
 	ZipReader reader(m_id, m_id<0);
 	if ( reader.IsOK() ) {
@@ -32,7 +32,7 @@ void FbBookData::Open() const
 	}
 }
 
-void FbBookData::DoDownload() const
+void FbItemData::DoDownload() const
 {
 	if (m_id<0) return;
 	wxString md5sum = FbCommonDatabase().GetMd5(m_id);
