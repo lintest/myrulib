@@ -94,6 +94,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbBookMenu.o \
 	build/myrulib_FbBookPanel.o \
 	build/myrulib_FbBookThread.o \
+	build/myrulib_FbCheckList.o \
 	build/myrulib_FbConfigDlg.o \
 	build/myrulib_FbConst.o \
 	build/myrulib_FbDatabase.o \
@@ -245,6 +246,9 @@ build/myrulib_FbBookPanel.o: ./MyRuLib/FbBookPanel.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbCheckList.o: ./MyRuLib/FbCheckList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbConfigDlg.o: ./MyRuLib/FbConfigDlg.cpp

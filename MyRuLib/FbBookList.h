@@ -1,26 +1,7 @@
 #ifndef __FBBOOKLIST_H__
 #define __FBBOOKLIST_H__
 
-#include <wx/wx.h>
-#include "wx/treelistctrl.h"
-#include <wx/arrimpl.cpp>
-#include <wx/wxsqlite3.h>
-#include "FbTreeListCtrl.h"
-
-class FbCheckList: public FbTreeListCtrl
-{
-	public:
-		FbCheckList(wxWindow *parent, wxWindowID id, long style);
-		void SelectAll(int image = 1);
-	private:
-		void SelectChild(const wxTreeItemId &parent, int image);
-		void SelectParent(const wxTreeItemId &item);
-	private:
-		void OnKeyDown(wxTreeEvent & event);
-		void OnCollapsing(wxTreeEvent & event);
-		void OnImageClick(wxTreeEvent &event);
-		DECLARE_EVENT_TABLE();
-};
+#include "FbCheckList.h"
 
 class FbBookList: public FbCheckList
 {

@@ -262,33 +262,31 @@ void FbBookPanel::DoFolderAdd(const int folder)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-int FbBookPanel::UpdateChildRating(wxTreeItemId parent, int iRating, const wxString &sRating)
+int FbBookPanel::UpdateChildRating(wxTreeItemId parent, const wxString &rating)
 {
 	int result = 0;
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_BookList->GetFirstChild(parent, cookie);
 	while (child.IsOk()) {
 		if (m_BookList->GetItemImage(child) == 1) {
-			FbItemData * data = (FbItemData*) m_BookList->GetItemData(child);
-			if (data && data->GetId()) {
-				m_BookList->SetItemText(child, GetRatingColumn(), sRating);
+			if ( m_BookList->GetItemBook(child) ) {
+				m_BookList->SetItemText(child, GetRatingColumn(), rating);
 				result++;
 			}
 		}
-		result += UpdateChildRating(child, iRating, sRating);
+		result += UpdateChildRating(child, rating);
 		child = m_BookList->GetNextChild(parent, cookie);
 	}
 	return result;
 }
 
-int FbBookPanel::UpdateSelectionRating(int iRating, const wxString &sRating)
+int FbBookPanel::UpdateSelectionRating(const wxString &rating)
 {
 	wxArrayTreeItemIds items;
 	size_t count = m_BookList->GetSelections(items);
 	for (size_t i=0; i<count; ++i) {
-		FbItemData * data = (FbItemData*) m_BookList->GetItemData(items[i]);
-		if (data && data->GetId()) {
-			m_BookList->SetItemText(items[i], GetRatingColumn(), sRating);
+		if ( m_BookList->GetItemBook(items[i]) ) {
+			m_BookList->SetItemText(items[i], GetRatingColumn(), rating);
 		}
 	}
 	return count;
@@ -300,8 +298,9 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 
 	wxString sRating;
 	if (iRating) sRating = wxT(" ") + strRating[iRating];
-	int iUpdated = UpdateChildRating( m_BookList->GetRootItem(), iRating, sRating);
-	if ( !iUpdated ) UpdateSelectionRating(iRating, sRating);
+	int ok = UpdateChildRating( m_BookList->GetRootItem(), sRating);
+	if ( !ok ) ok = UpdateSelectionRating(sRating);
+	if ( !ok ) return;
 
 	m_BookList->Update();
 

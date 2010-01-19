@@ -195,6 +195,8 @@
 		<Unit filename="FbBookThread.h" />
 		<Unit filename="FbCalendar.cpp" />
 		<Unit filename="FbCalendar.h" />
+		<Unit filename="FbCheckList.cpp" />
+		<Unit filename="FbCheckList.h" />
 		<Unit filename="FbConfigDlg.cpp" />
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
