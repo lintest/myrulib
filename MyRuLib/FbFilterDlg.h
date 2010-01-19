@@ -19,7 +19,7 @@
 #include "FbTreeListCtrl.h"
 #include "FbFilterObj.h"
 #include "FbDatabase.h"
-#include "FbBookList.h"
+#include "FbCheckList.h"
 #include "FbParams.h"
 
 ///////////////////////////////////////////////////////////////////////////////
