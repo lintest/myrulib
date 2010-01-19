@@ -1,5 +1,5 @@
-#ifndef __BOOKEXTRACTINFO_H__
-#define __BOOKEXTRACTINFO_H__
+#ifndef __FBEXTRACTINFO_H__
+#define __FBEXTRACTINFO_H__
 
 #include <wx/wx.h>
 #include <wx/filename.h>
@@ -7,10 +7,10 @@
 #include <wx/wxsqlite3.h>
 #include "FbDatabase.h"
 
-class BookExtractInfo
+class FbExtractItem
 {
 	public:
-		BookExtractInfo(wxSQLite3ResultSet & result);
+		FbExtractItem(wxSQLite3ResultSet & result);
 	public:
 		wxFileName GetBook(const wxString &path = wxEmptyString) const;
 		wxFileName GetZip(const wxString &path = wxEmptyString) const;
@@ -24,17 +24,17 @@ class BookExtractInfo
 		bool librusec;
 };
 
-WX_DECLARE_OBJARRAY(BookExtractInfo, BookExtractArrayBase);
+WX_DECLARE_OBJARRAY(FbExtractItem, FbExtractArrayBase);
 
-class BookExtractArray
-	: public BookExtractArrayBase
+class FbExtractArray
+	: public FbExtractArrayBase
 {
 	public:
-		BookExtractArray(FbDatabase & database, const int id);
+		FbExtractArray(FbDatabase & database, const int id);
 		int GetId() const {return m_id; };
 		void DeleteFiles(const wxString &basepath) const;
 	private:
 		int m_id;
 };
 
-#endif // __BOOKEXTRACTINFO_H__
+#endif // __FBEXTRACTINFO_H__

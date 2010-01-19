@@ -6,7 +6,7 @@
 #include "FbManager.h"
 #include "InfoCash.h"
 #include "FbConst.h"
-#include "BookExtractInfo.h"
+#include "FbExtractInfo.h"
 #include "FbDatabase.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
@@ -62,13 +62,13 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 	OpenDownload(database, bInfoOnly);
 	if (IsOK()) return;
 
-	BookExtractArray items(database, id);
+	FbExtractArray items(database, id);
 
 	wxString name_info;
 	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
 
 	for (size_t i = 0; i<items.Count(); i++) {
-		BookExtractInfo & item = items[i];
+		FbExtractItem & item = items[i];
 		if (i==0) name_info = item.NameInfo();
 		if (item.id_archive) {
 			if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )

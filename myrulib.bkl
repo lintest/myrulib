@@ -46,7 +46,6 @@
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<sources>MyRuLib/BaseThread.cpp</sources>
-		<sources>MyRuLib/BookExtractInfo.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
@@ -65,6 +64,7 @@
 		<sources>MyRuLib/FbDataOpenDlg.cpp</sources>
 		<sources>MyRuLib/FbDataPath.cpp</sources>
 		<sources>MyRuLib/FbEditBook.cpp</sources>
+		<sources>MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFilterDlg.cpp</sources>
 		<sources>MyRuLib/FbFilterObj.cpp</sources>

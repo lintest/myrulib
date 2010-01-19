@@ -1,7 +1,7 @@
 #include "FbUpdateThread.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include "BookExtractInfo.h"
+#include "FbExtractInfo.h"
 
 wxCriticalSection FbUpdateThread::sm_queue;
 
@@ -109,7 +109,7 @@ void FbDeleteThread::DoDelete(FbDatabase &database, const wxString &where)
 	try {
 		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 		while (result.NextRow()) {
-			if (remove) BookExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
+			if (remove) FbExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());

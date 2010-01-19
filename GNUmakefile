@@ -82,7 +82,6 @@ MYRULIB_CXXFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` 
 	$(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
-	build/myrulib_BookExtractInfo.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbAboutDlg.o \
@@ -101,6 +100,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbDataOpenDlg.o \
 	build/myrulib_FbDataPath.o \
 	build/myrulib_FbEditBook.o \
+	build/myrulib_FbExtractInfo.o \
 	build/myrulib_FbDownloader.o \
 	build/myrulib_FbFilterDlg.o \
 	build/myrulib_FbFilterObj.o \
@@ -212,9 +212,6 @@ build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_BookExtractInfo.o: ./MyRuLib/BookExtractInfo.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -267,6 +264,9 @@ build/myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbExtractInfo.o: ./MyRuLib/FbExtractInfo.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp

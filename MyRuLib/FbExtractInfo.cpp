@@ -1,11 +1,11 @@
-#include "BookExtractInfo.h"
+#include "FbExtractInfo.h"
 #include "FbParams.h"
 #include <wx/zipstrm.h>
 #include <wx/wfstream.h>
 
-WX_DEFINE_OBJARRAY(BookExtractArrayBase);
+WX_DEFINE_OBJARRAY(FbExtractArrayBase);
 
-BookExtractInfo::BookExtractInfo(wxSQLite3ResultSet & result):
+FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result):
 	id_book(result.GetInt(wxT("id"))),
 	id_archive(result.GetInt(wxT("id_archive"))),
 	book_name(result.GetString(wxT("file_name"))),
@@ -14,21 +14,21 @@ BookExtractInfo::BookExtractInfo(wxSQLite3ResultSet & result):
 	librusec = (id_book>0 && result.GetInt(wxT("file")) == 0);
 }
 
-wxFileName BookExtractInfo::GetBook(const wxString &path) const
+wxFileName FbExtractItem::GetBook(const wxString &path) const
 {
 	wxFileName result = book_name;
 	result.Normalize(wxPATH_NORM_ALL, path);
 	return result;
 }
 
-wxFileName BookExtractInfo::GetZip(const wxString &path) const
+wxFileName FbExtractItem::GetZip(const wxString &path) const
 {
 	wxFileName result = zip_name;
 	result.Normalize(wxPATH_NORM_ALL, path);
 	return result;
 }
 
-wxString BookExtractInfo::NameInfo() const
+wxString FbExtractItem::NameInfo() const
 {
 	if (librusec) {
 		return wxString::Format(wxT("$(%s)/%s"), FbParams::GetText(FB_CONFIG_TYPE).c_str(), book_name.c_str());
@@ -42,7 +42,7 @@ wxString BookExtractInfo::NameInfo() const
 	}
 }
 
-void BookExtractInfo::DeleteFile(const wxString &basepath) const
+void FbExtractItem::DeleteFile(const wxString &basepath) const
 {
 	if (librusec) return;
 
@@ -68,8 +68,8 @@ void BookExtractInfo::DeleteFile(const wxString &basepath) const
 	wxRemoveFile(filename.GetFullPath());
 }
 
-BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
-	:BookExtractArrayBase(), m_id(id)
+FbExtractArray::FbExtractArray(FbDatabase & database, const int id)
+	:FbExtractArrayBase(), m_id(id)
 {
 	{
 		wxString sql = wxT("\
@@ -87,7 +87,7 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 	{
 		wxString sql = wxT("SELECT file_name FROM archives WHERE id=?");
 		for (size_t i = 0; i<Count(); i++) {
-			BookExtractInfo & item = Item(i);
+			FbExtractItem & item = Item(i);
 			if (!item.id_archive) continue;
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, item.id_archive);
@@ -99,10 +99,10 @@ BookExtractArray::BookExtractArray(FbDatabase & database, const int id)
 	}
 }
 
-void BookExtractArray::DeleteFiles(const wxString &basepath) const
+void FbExtractArray::DeleteFiles(const wxString &basepath) const
 {
 	for (size_t i = 0; i<Count(); i++) {
-		BookExtractInfo & item = Item(i);
+		FbExtractItem & item = Item(i);
 		if (item.librusec) continue;
 		item.DeleteFile(basepath);
 	}

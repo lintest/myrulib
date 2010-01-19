@@ -4,7 +4,7 @@
 #include "InfoCash.h"
 #include "FbParams.h"
 #include "ZipReader.h"
-#include "BookExtractInfo.h"
+#include "FbExtractInfo.h"
 
 wxCriticalSection TitleThread::sm_queue;
 
@@ -70,7 +70,7 @@ wxString TitleThread::GetBookInfo(FbDatabase &database)
 
 wxString TitleThread::GetBookFiles(FbDatabase &database)
 {
-	BookExtractArray items(database, m_id);
+	FbExtractArray items(database, m_id);
 
 	wxString html;
 

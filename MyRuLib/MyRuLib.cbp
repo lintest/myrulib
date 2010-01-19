@@ -169,8 +169,6 @@
 		</Linker>
 		<Unit filename="BaseThread.cpp" />
 		<Unit filename="BaseThread.h" />
-		<Unit filename="BookExtractInfo.cpp" />
-		<Unit filename="BookExtractInfo.h" />
 		<Unit filename="ExpThread.cpp" />
 		<Unit filename="ExpThread.h" />
 		<Unit filename="ExternalDlg.cpp" />
@@ -211,6 +209,8 @@
 		<Unit filename="FbDownloader.h" />
 		<Unit filename="FbEditBook.cpp" />
 		<Unit filename="FbEditBook.h" />
+		<Unit filename="FbExtractInfo.cpp" />
+		<Unit filename="FbExtractInfo.h" />
 		<Unit filename="FbFilterDlg.cpp" />
 		<Unit filename="FbFilterDlg.h" />
 		<Unit filename="FbFilterObj.cpp" />
