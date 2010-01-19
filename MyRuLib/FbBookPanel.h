@@ -75,7 +75,6 @@ class FbBookPanel: public wxSplitterWindow
 		void OnChangeRating(wxCommandEvent& event);
 		void OnDeleteBooks(wxCommandEvent& event);
 		void OnModifyBooks(wxCommandEvent& event);
-		void OnLinkClicked(wxHtmlLinkEvent& event);
 		DECLARE_EVENT_TABLE();
 	private:
 		class AuthorThread: public FbThread

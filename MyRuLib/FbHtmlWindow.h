@@ -9,6 +9,9 @@ class FbHtmlWindow: public wxHtmlWindow
 		FbHtmlWindow(wxWindow *parent, wxWindowID id = wxID_ANY);
 	protected:
 		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
+	private:
+		void OnLinkClicked(wxHtmlLinkEvent& event);
+		DECLARE_EVENT_TABLE();
 };
 
 #endif // __FBHTMLWINDOW_H__
