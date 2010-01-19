@@ -97,28 +97,32 @@ void FbBookPanel::SetOrderID(int id)
 
 wxString FbBookPanel::GetOrderSQL()
 {
+	wxString order;
 	int col = m_BookList->GetSortedColumn();
-	switch (col) {
-		case -9: return wxT("created desc,full_name desc,title desc");
-		case -8: return wxT("file_size desc,full_name desc,title desc");
-		case -7: return wxT("file_type desc,full_name desc,title desc");
-		case -6: return wxT("lang desc,full_name desc,title desc");
-		case -5: return wxT("rating desc,full_name desc,title desc");
-		case -4: return wxT("genres desc,full_name desc,title desc");
-		case -3: return wxT("full_name desc,title desc");
-		case -2: return wxT("full_name desc,title desc");
-		case -1: return wxT("title desc,full_name desc");
-		case  1: return wxT("title,full_name");
-		case  2: return wxT("full_name,title");
-		case  3: return wxT("full_name,title");
-		case  4: return wxT("genres,full_name,title");
-		case  5: return wxT("rating,full_name,title");
-		case  6: return wxT("lang,full_name,title");
-		case  7: return wxT("file_type,full_name,title");
-		case  8: return wxT("file_size,full_name,title");
-		case  9: return wxT("created,full_name,title");
-		default: return wxT("title,full_name");
+	switch ( abs(col) ) {
+		case  1: order = wxT("title,full_name"); break;
+		case  2: order = wxT("full_name,title"); break;
+		case  3: order = wxT("full_name,title"); break;
+		case  4: order = wxT("genres,full_name,title"); break;
+		case  5: order = wxT("rating,full_name,title"); break;
+		case  6: order = wxT("lang,full_name,title"); break;
+		case  7: order = wxT("file_type,full_name,title"); break;
+		case  8: order = wxT("file_size,full_name,title"); break;
+		case  9: order = wxT("created,full_name,title"); break;
+		default: order = wxT("title,full_name");
 	}
+	if ( col >= 0 ) return order;
+
+	int pos;
+	wxString result;
+	do {
+		pos = order.Find(wxT(","));
+		if ( !result.IsEmpty() ) result += wxT(",");
+		result += pos == wxNOT_FOUND ? order : order.Left(pos);
+		result += wxT(" desc");
+		order = order.Mid(pos + 1);
+	} while (pos != wxNOT_FOUND);
+	return result;
 }
 
 bool FbBookPanel::IsOrderDesc()
@@ -561,12 +565,16 @@ void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
 
 void * FbBookPanel::AuthorThread::Entry()
 {
-	FbCommonDatabase database;
-	wxString sql = wxT("SELECT description FROM authors WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_author);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
+	try {
+		FbCommonDatabase database;
+		wxString sql = wxT("SELECT description FROM authors WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_author);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 	return NULL;
 }
 
