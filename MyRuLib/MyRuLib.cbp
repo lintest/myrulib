@@ -235,6 +235,9 @@
 		<Unit filename="FbFrameSequen.h" />
 		<Unit filename="FbGenres.cpp" />
 		<Unit filename="FbGenres.h" />
+		<Unit filename="FbHTMLWindow.h" />
+		<Unit filename="FbHtmlWindow.cpp" />
+		<Unit filename="FbHtmlWindow.h" />
 		<Unit filename="FbImportThread.cpp" />
 		<Unit filename="FbImportThread.h" />
 		<Unit filename="FbLogStream.cpp" />

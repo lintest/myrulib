@@ -77,6 +77,7 @@ class FbCommonDatabase: public FbDatabase
 	public:
 		FbCommonDatabase();
 		void AttachConfig();
+		wxString GetMd5(int id);
 };
 
 class FbLocalDatabase: public FbDatabase

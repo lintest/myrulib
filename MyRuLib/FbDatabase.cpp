@@ -451,3 +451,16 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 	}
 }
 
+wxString FbCommonDatabase::GetMd5(int id)
+{
+	try {
+		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		wxSQLite3Statement stmt = PrepareStatement(sql);
+		stmt.Bind(1, id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) return result.GetAsString(0);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return wxEmptyString;
+}

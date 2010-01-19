@@ -9,43 +9,7 @@
 #include "FbUpdateThread.h"
 #include "FbEditBook.h"
 #include "ZipReader.h"
-
-class FbURI: public wxURI
-{
-	public:
-		FbURI(const wxString& uri): wxURI(uri) {};
-		friend class FbHtmlWindow;
-};
-
-class FbHtmlWindow: public wxHtmlWindow
-{
-	public:
-		FbHtmlWindow(wxWindow *parent, wxWindowID id = wxID_ANY);
-	protected:
-		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
-};
-
-FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id)
-	: wxHtmlWindow(parent, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
-{
-}
-
-wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const
-{
-	if (type != wxHTML_URL_IMAGE) return wxHTML_OPEN;
-
-	wxString addr = url;
-	FbURI uri = addr;
-
-	if (uri.GetScheme() == wxT("http")) {
-		if ( !FbParams::GetValue(FB_HTTP_IMAGES) ) {
-			*redirect = wxT("memory:blank");
-			return wxHTML_REDIRECT;
-		}
-	}
-
-	return wxHTML_OPEN;
-}
+#include "FbHtmlWindow.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
@@ -72,39 +36,26 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, FbBookPanel::OnLinkClicked)
 END_EVENT_TABLE()
 
-FbBookPanel::FbBookPanel()
-	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
-{
-}
-
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
-	:wxSplitterWindow(), m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
+	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
+		m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
 {
-	Create(parent, size, style, keyType, keyMode);
-}
-
-bool FbBookPanel::Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
-{
-	bool res = wxSplitterWindow::Create(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"));
-	if (res) {
-		SetMinimumPaneSize(50);
-		SetSashGravity(0.5);
-		m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
-		CreateBookInfo( (bool) FbParams::GetValue(keyType) );
-		{
-			BookListUpdater updater(m_BookList);
-			m_BookList->AddColumn (_("Заголовок"), 10, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
-			m_BookList->AddColumn (_("Жанр"), 4, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Язык"), 2, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Тип"), 2, wxALIGN_LEFT);
-			m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
-		}
-		CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
+	SetMinimumPaneSize(50);
+	SetSashGravity(0.5);
+	m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
+	CreateBookInfo( (bool) FbParams::GetValue(keyType) );
+	{
+		BookListUpdater updater(m_BookList);
+		m_BookList->AddColumn (_("Заголовок"), 10, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
+		m_BookList->AddColumn (_("Жанр"), 4, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Язык"), 2, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Тип"), 2, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
 	}
-	return res;
+	CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 }
 
 int FbBookPanel::GetRatingColumn()
@@ -218,8 +169,6 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 			if (data->GetId()) {
 				InfoCash::LoadIcon(data->m_filetype);
 				InfoCash::UpdateInfo(this, data->GetId(), GetSplitMode() == wxSPLIT_VERTICAL);
-			} else if (data->GetAuthor()) {
-				(new AuthorThread(this->GetParent(), data->GetAuthor()))->Execute();
 			}
 		}
 	}
@@ -230,7 +179,7 @@ void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		FbBookData * data = (FbBookData*)m_BookList->GetItemData(selected);
-		if (data) DoOpenBook(data->GetId(), data->m_filetype);
+		if (data) data->Open();
 	}
 }
 
@@ -285,7 +234,7 @@ void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 {
 	FbBookData * data = GetSelectedBook();
-	if (data) DoOpenBook(data->GetId(), data->m_filetype);
+	if (data) data->Open();
 }
 
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
@@ -400,53 +349,6 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
 }
 
-void FbBookPanel::DoOpenDownload(int id)
-{
-	if (id<0) return;
-
-	wxString md5sum;
-
-	try {
-		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
-		FbCommonDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, id);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) md5sum = result.GetAsString(0);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
-	}
-
-	if (md5sum.IsEmpty()) return;
-
-	try {
-		bool ok = false;
-		FbLocalDatabase database;
-		int folder = database.NewId(FB_NEW_DOWNLOAD);
-		{
-			wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, folder);
-			stmt.Bind(2, md5sum);
-			ok = stmt.ExecuteUpdate();
-		}
-		if (!ok) {
-			wxString sql = wxT("INSERT INTO states(download, md5sum) VALUES (?,?)");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, folder);
-			stmt.Bind(2, md5sum);
-			stmt.ExecuteUpdate();
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
-	}
-
-	FbDownloader::Push(md5sum);
-	FbDownloader::Start();
-}
-
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 {
 	wxString sel;
@@ -504,7 +406,7 @@ void FbBookPanel::AppendAuthor(int id, const wxString title)
 {
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
-	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1, new FbBookData(0, id));
+	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1);
 	m_BookList->SetItemBold(m_AuthorItem, true);
 	m_BookList->Expand(parent);
 }
@@ -673,15 +575,5 @@ void * FbBookPanel::AuthorThread::Entry()
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
 	return NULL;
-}
-
-void FbBookPanel::DoOpenBook(int id, const wxString &file_type)
-{
-	ZipReader reader(id, id<0);
-	if ( reader.IsOK() ) {
-		FbManager::OpenBook( reader.GetZip(), file_type);
-	} else if ( id>0 ) {
-		if ( wxMessageBox(_("Скачать книгу?"), _("Подтверждение"), wxOK | wxCANCEL) == wxOK) DoOpenDownload(id);
-	}
 }
 

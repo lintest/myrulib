@@ -17,9 +17,7 @@ enum FbListMode {
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
-		FbBookPanel();
 		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
-		bool Create(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
 		void UpdateInfo(int id);
 		void SetOrderID(int id);
 		int GetOrderID();
@@ -42,11 +40,9 @@ class FbBookPanel: public wxSplitterWindow
 		void CreateBookInfo(bool bVertical);
 		void UpdateFonts(bool refresh = true);
 	private:
-		static void DoOpenBook(int id, const wxString &file_type);
 		void DoFolderAdd(const int folder);
 		static void DoDeleteDownload(const wxString &sel, const int folder);
 		static void DoCreateDownload(const wxString &sel, int count = 1);
-		static void DoOpenDownload(int id);
 		int GetRatingColumn();
 		int UpdateChildRating(wxTreeItemId parent, int iRating, const wxString &sRating);
 		int UpdateSelectionRating(int iRating, const wxString &sRating);
@@ -92,7 +88,6 @@ class FbBookPanel: public wxSplitterWindow
 				wxWindow * m_frame;
 				int m_author;
 		};
-
 };
 
 

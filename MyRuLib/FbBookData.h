@@ -20,7 +20,7 @@ class BookTreeItemData: public wxTreeItemData
 			language(data->language)
 		{ };
 		BookTreeItemData(wxSQLite3ResultSet & result);
-		int GetId() { return m_id; };
+		int GetId() const { return m_id; };
 	private:
 		int m_id;
 	public:
@@ -37,13 +37,17 @@ class BookTreeItemData: public wxTreeItemData
 class FbBookData: public wxTreeItemData
 {
 	public:
-		FbBookData(int book, int author = 0): m_book(book), m_author(author) {};
-		FbBookData(BookTreeItemData & data): m_book(data.GetId()), m_author(0), m_filetype(data.file_type) {};
-		int GetId() { return m_book; };
-		int GetAuthor() { return m_author; };
+		FbBookData(int id): m_id(id) {};
+		FbBookData(const FbBookData & data): m_id(data.m_id), m_filetype(data.m_filetype) {};
+		FbBookData(const BookTreeItemData & data): m_id(data.GetId()), m_filetype(data.file_type) {};
+		bool operator == (const FbBookData & data) const { return m_id == data.m_id; };
+		int GetId() const { return m_id; };
+		virtual void Show(wxEvtHandler * frame, bool bVertical, bool bEditable = false) const;
+		virtual void Open() const;
 	private:
-		int m_book;
-		int m_author;
+		void DoDownload() const;
+	private:
+		int m_id;
 	public:
 		wxString m_filetype;
 };
