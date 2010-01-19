@@ -11,9 +11,10 @@ class FbCheckList: public FbTreeListCtrl
 {
 	public:
 		FbCheckList(wxWindow *parent, wxWindowID id, long style);
-		void SelectAll(int iImageIndex = 1);
+		void SelectAll(int image = 1);
 	private:
-		void SelectChild(const wxTreeItemId &parent, int iImageIndex = 1);
+		void SelectChild(const wxTreeItemId &parent, int image);
+		void SelectParent(const wxTreeItemId &item);
 	private:
 		void OnKeyDown(wxTreeEvent & event);
 		void OnCollapsing(wxTreeEvent & event);

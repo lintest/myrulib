@@ -22,46 +22,48 @@ FbCheckList::FbCheckList(wxWindow *parent, wxWindowID id, long style)
 	AssignImageList (images);
 };
 
-void FbCheckList::SelectAll(int iImageIndex)
+void FbCheckList::SelectAll(int image)
 {
 	wxTreeItemId root = GetRootItem();
-	if (root.IsOk()) SelectChild(root, iImageIndex);
+	if (root.IsOk()) SelectChild(root, image);
+}
+
+void FbCheckList::SelectChild(const wxTreeItemId &parent, int image)
+{
+	SetItemImage(parent, image);
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = GetFirstChild(parent, cookie);
+	while (child.IsOk()) {
+		SelectChild(child, image);
+		child = GetNextChild(parent, cookie);
+	}
+}
+
+void FbCheckList::SelectParent(const wxTreeItemId &item)
+{
+	wxTreeItemId parent = GetItemParent(item);
+	if (!parent.IsOk()) return;
+
+	int all = -1;
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = GetFirstChild(parent, cookie);
+	while (child.IsOk()) {
+		int image = GetItemImage(child);
+		if (all < 0) all = image; else if (all != image) all = 2;
+		child = GetNextChild(parent, cookie);
+	}
+	SetItemImage(parent, all);
+	SelectParent(parent);
 }
 
 void FbCheckList::OnImageClick(wxTreeEvent &event)
 {
-	wxTreeItemId item = event.GetItem();
-	if (item.IsOk()) {
-		int image = GetItemImage(item);
+	wxTreeItemId selected = event.GetItem();
+	if (selected.IsOk()) {
+		int image = GetItemImage(selected);
 		image = ( image == 1 ? 0 : 1);
-		if (GetItemBold(item)) {
-			SetItemImage(item, image);
-			wxTreeItemIdValue cookie;
-			item = GetFirstChild(item, cookie);
-			while (item.IsOk()) {
-				wxTreeItemIdValue cookie;
-				wxTreeItemId subitem = GetFirstChild(item, cookie);
-				while (subitem.IsOk()) {
-					SetItemImage(subitem, image);
-					subitem = GetNextSibling(subitem);
-				}
-				SetItemImage(item, image);
-				item = GetNextSibling (item);
-			}
-		} else {
-			SetItemImage(item, image);
-			wxTreeItemId parent = GetItemParent(item);
-			wxTreeItemIdValue cookie;
-			item = GetFirstChild(parent, cookie);
-			while (item.IsOk()) {
-				if (image != GetItemImage(item)) {
-					image = 2;
-					break;
-				}
-				item = GetNextSibling (item);
-			}
-			SetItemImage(parent, image);
-		}
+		SelectChild(selected, image);
+		SelectParent(selected);
 	}
 	event.Veto();
 }
@@ -74,9 +76,9 @@ void FbCheckList::OnKeyDown(wxTreeEvent & event)
 		int image = 0;
 		for (size_t i=0; i<count; ++i) {
 			wxTreeItemId selected = selections[i];
-			if (i==0)
-				image = (GetItemImage(selected) + 1) % 2;
-			SetItemImage(selected, image);
+			if (i==0) image = (GetItemImage(selected) + 1) % 2;
+			SelectChild(selected, image);
+			SelectParent(selected);
 		}
 		event.Veto();
 	} else event.Skip();
@@ -85,17 +87,6 @@ void FbCheckList::OnKeyDown(wxTreeEvent & event)
 void FbCheckList::OnCollapsing(wxTreeEvent & event)
 {
 	event.Veto();
-}
-
-void FbCheckList::SelectChild(const wxTreeItemId &parent, int iImageIndex)
-{
-	SetItemImage(parent, iImageIndex);
-	wxTreeItemIdValue cookie;
-	wxTreeItemId child = GetFirstChild(parent, cookie);
-	while (child.IsOk()) {
-		SelectChild(child, iImageIndex);
-		child = GetNextChild(parent, cookie);
-	}
 }
 
 FbBookList::FbBookList(wxWindow *parent, wxWindowID id, long style)
