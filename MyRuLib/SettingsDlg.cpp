@@ -191,7 +191,7 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
 
 	wxStaticBoxSizer* sbSizerCols;
-	sbSizerCols = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Видимость колонок") ), wxVERTICAL );
+	sbSizerCols = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Колонки") ), wxVERTICAL );
 
 	checkbox = new wxCheckBox( this, ID_COLUMN_GENRE, wxT("Жанр"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
@@ -208,10 +208,10 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_COLUMN_SYZE, wxT("Размер файла"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
 
-	bSizer->Add( sbSizerCols, 1, wxALL|wxEXPAND, 5 );
+	bSizer->Add( sbSizerCols, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( checkbox, 0, wxALL|wxEXPAND, 5 );
+	bSizer->Add( checkbox, 0, wxALL, 5 );
 
 	this->SetSizer( bSizer );
 	this->Layout();
