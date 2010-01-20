@@ -10,7 +10,7 @@ class FbTreeListCtrl: public wxTreeListCtrl
 public:
 	FbTreeListCtrl(wxWindow *parent, wxWindowID id, long style);
 	virtual void AddColumn(const wxString& text, int width, int flag = wxALIGN_LEFT);
-	void EmptyCols();
+    wxTreeItemData * GetSelectedData() const;
 	virtual void Update();
 private:
 	void DoResizeCols(int width);

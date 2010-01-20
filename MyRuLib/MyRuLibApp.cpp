@@ -10,6 +10,7 @@
 #include <wx/app.h>
 #include <wx/image.h>
 #include <wx/fs_mem.h>
+#include <wx/fs_inet.h>
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbMainFrame.h"
@@ -33,12 +34,29 @@ bool MyRuLibApp::OnInit()
 
 	::wxInitAllImageHandlers();
 	wxFileSystem::AddHandler(new wxMemoryFSHandler);
+	wxFileSystem::AddHandler(new wxInternetFSHandler);
+	LoadBlankImage();
 
 	FbMainFrame * frame = new FbMainFrame;
 	SetTopWindow(frame);
 	frame->Show();
 
 	return true;
+}
+
+void MyRuLibApp::LoadBlankImage()
+{
+	/* XPM */
+	static const char * blank_xpm[] = {
+	/* columns rows colors chars-per-pixel */
+	"1 1 1 1",
+	"- c None",
+	/* pixels */
+	"-",
+	};
+
+	wxBitmap bitmap(blank_xpm);
+	wxMemoryFSHandler::AddFile(wxT("blank"), bitmap, wxBITMAP_TYPE_PNG);
 }
 
 wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)

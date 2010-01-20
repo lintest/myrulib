@@ -22,7 +22,7 @@ private:
 	bool FindEntry(const wxString &file_name);
 	void OpenZip(const wxString &zipname, const wxString &filename);
 	void OpenFile(const wxString &filename);
-	void OpenDownload(FbDatabase &database);
+	void OpenDownload(FbDatabase &database, bool bInfoOnly);
 private:
 	wxCSConv conv;
 	wxFFileInputStream *m_file;

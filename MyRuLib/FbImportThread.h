@@ -17,6 +17,7 @@ class FbImportBook: public ParsingContext
 	public:
 		wxString title;
 		wxString isbn;
+		wxString lang;
 		AuthorArray authors;
 		SequenceArray sequences;
 		wxString genres;

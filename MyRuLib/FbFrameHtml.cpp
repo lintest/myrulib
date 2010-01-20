@@ -25,21 +25,8 @@ BEGIN_EVENT_TABLE(FbFrameHtml, FbAuiMDIChildFrame)
 	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)
 END_EVENT_TABLE()
 
-wxString FbFrameHtml::GetMd5sum(const int id)
-{
-	FbCommonDatabase database;
-	wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, id);
-	wxSQLite3ResultSet res = stmt.ExecuteQuery();
-	if (res.NextRow())
-		return res.GetString(0);
-	else
-		return wxEmptyString;
-}
-
 FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id)
-	:m_id(id), m_md5sum(GetMd5sum(id))
+	:m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id))
 {
 	FbAuiMDIChildFrame::Create(parent, ID_FRAME_HTML, _("Комментарии"));
 	static bool bNotLoaded = true;

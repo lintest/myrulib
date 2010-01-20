@@ -132,6 +132,7 @@ int FbParams::DefaultValue(int param)
 		case FB_TRANSLIT_FOLDER: return 0;
 		case FB_TRANSLIT_FILE: return 1;
 		case FB_USE_PROXY: return 0;
+		case FB_HTTP_IMAGES: return 0;
 		case FB_AUTO_DOWNLD: return 1;
 		case FB_FRAME_WIDTH: return 640;
 		case FB_FRAME_HEIGHT: return 480;
@@ -146,8 +147,8 @@ wxString FbParams::DefaultText(int param)
 			return wxGetApp().GetAppPath();
 		case DB_WANRAIK_DIR:
 			return wxGetApp().GetAppPath();
-		case FB_LIBRUSEC_URL:
-			return wxT("http://flibusta.net");
+		case DB_DOWNLOAD_HOST:
+			return wxT("flibusta.net");
 		case FB_DOWNLOAD_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
 		default:

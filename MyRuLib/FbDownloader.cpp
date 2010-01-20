@@ -12,25 +12,6 @@
 #include <wx/zipstrm.h>
 #include "FbDataPath.h"
 
-class FbInternetBook
-{
-	public:
-		FbInternetBook(const wxString& md5sum);
-		static wxString GetURL(const int id);
-		bool Execute();
-	private:
-		bool DoDownload();
-		bool CheckMD5();
-		void SaveFile(const bool success);
-	private:
-		int m_id;
-		wxString m_url;
-		wxString m_md5sum;
-		wxString m_filetype;
-		wxString m_filename;
-		bool m_zipped;
-};
-
 class FbURL: public wxURL
 {
 	public:
@@ -42,6 +23,11 @@ FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 	if (FbParams::GetValue(FB_USE_PROXY))
 		SetProxy(FbParams::GetText(FB_PROXY_ADDR));
 	GetProtocol().SetTimeout(10);
+}
+
+wxString FbInternetBook::GetURL(const int id)
+{
+	return wxT("http://") + FbParams::GetText(DB_DOWNLOAD_HOST) + wxString::Format(wxT("/b/%d/download"), id);
 }
 
 FbInternetBook::FbInternetBook(const wxString& md5sum)
@@ -56,7 +42,7 @@ FbInternetBook::FbInternetBook(const wxString& md5sum)
 		if ( result.NextRow() ) {
 			m_id = result.GetInt(0);
 			m_filetype = result.GetString(1);
-			m_url = FbDownloader::GetURL(m_id);
+			m_url = GetURL(m_id);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
@@ -72,42 +58,85 @@ bool FbInternetBook::Execute()
 
 bool FbInternetBook::DoDownload()
 {
-	FbURL url(m_url);
+	wxString user = FbParams::GetText(DB_DOWNLOAD_USER);
+	if ( user.IsEmpty() ) return DownloadUrl();
+
+	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
+	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
+	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
+	wxLogInfo(wxT("Download: ") + addr);
+
+	FbURL url(addr);
 	if (url.GetError() != wxURL_NOERR) {
 		wxLogError(wxT("URL error: ") + m_url);
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
+    http.SetTimeout(10);
+    http.SetHeader(_T("Content-type"), _T("application/x-www-form-urlencoded"));
+    wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
+    http.SetPostBuffer(buffer);
 
 	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
 		wxLogError(wxT("Connect error: ") + m_url);
 		return false;
 	}
-	int responce = http.GetResponse();
-	if (responce == 302) {
+
+	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
+	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
-		return DoDownload();
+		wxLogInfo(wxT("Redirect: ") + m_url);
+		return DownloadUrl(cookie);
 	}
 
+	bool ok = ReadFile(in);
+	if ( !ok ) wxLogError(wxT("Authentication failure: ") + m_url);
+	return ok;
+}
+
+bool FbInternetBook::DownloadUrl(const wxString &cookie)
+{
+	FbURL url(m_url);
+	if (url.GetError() != wxURL_NOERR) {
+		wxLogError(wxT("URL error: ") + m_url);
+		return false;
+	}
+	wxHTTP & http = (wxHTTP&)url.GetProtocol();
+	if ( !cookie.IsEmpty() ) http.SetHeader(wxT("Cookie"), cookie);
+
+	wxInputStream * in = url.GetInputStream();
+	if (url.GetError() != wxURL_NOERR) {
+		wxLogError(wxT("Connect error: ") + m_url);
+		return false;
+	}
+	if (http.GetResponse() == 302) {
+		m_url = http.GetHeader(wxT("Location"));
+ 		wxLogInfo(wxT("Redirect: ") + m_url);
+		return DownloadUrl(cookie);
+	}
+	return ReadFile(in);
+}
+
+bool FbInternetBook::ReadFile(wxInputStream * in)
+{
 	m_filename = wxFileName::CreateTempFileName(wxT("~"));
 	wxFileOutputStream out(m_filename);
 
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
-	size_t size = in->GetSize() ? in->GetSize() : 0xFFFFF;
+	size_t size = in->GetSize() ? in->GetSize() : 0xFFFFFF;
 	size_t count = 0;
 	size_t pos = 0;
 
-//	http.GetHeader(wxT("Content-Type")) == "application/zip"
-//	Content-Type	application/zip
-
+	bool zipped = false;
 	md5_context md5;
 	md5_starts( &md5 );
 	do {
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos*1000/size, _("Загрузка файла")).Post();
+		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos/(size/1000), _("Загрузка файла")).Post();
 		count = in->Read(buf, BUFSIZE).LastRead();
-		if (count) md5_update( &md5, buf, (int) count );
+		if ( count ) md5_update( &md5, buf, (int) count );
+		if ( pos==0 && count>1 && buf[0]=='P' && buf[1]=='K') zipped = true;
 		out.Write(buf, count);
 		pos += count;
 	} while (count);
@@ -121,19 +150,24 @@ bool FbInternetBook::DoDownload()
 	wxString md5sum = BaseThread::CalcMd5(md5);
 	if ( md5sum == m_md5sum )
 		return true;
-	else
-		return CheckMD5();
+	else if ( zipped )
+		return CheckZip();
+
+	wxLogError(wxT("Download error: %s"), m_url.c_str());
+	return false;
 }
 
-bool FbInternetBook::CheckMD5()
+bool FbInternetBook::CheckZip()
 {
 	wxFFileInputStream in(m_filename);
 	wxZipInputStream zip(in);
 
 	bool bNotFound = true;
-	if (wxZipEntry * entry = zip.GetNextEntry()) {
-		bNotFound = ! zip.OpenEntry(*entry);
+	while (wxZipEntry * entry = zip.GetNextEntry()) {
+		bool ok = (entry->GetInternalName().Right(4).Lower() != wxT(".fbd"));
+		if (ok) bNotFound = ! zip.OpenEntry(*entry);
 		delete entry;
+		if (ok) break;
 	}
 	if (bNotFound) {
 		wxLogError(wxT("Zip read error: ") + m_url);
@@ -194,6 +228,8 @@ bool FbDownloader::sm_running = false;
 
 wxCriticalSection FbDownloader::sm_queue;
 
+wxArrayString FbDownloader::sm_waitings;
+
 void FbDownloader::Start()
 {
 	wxCriticalSectionLocker locker(sm_queue);
@@ -221,6 +257,12 @@ bool FbDownloader::IsRunning()
 	return sm_running;
 }
 
+void FbDownloader::Push(const wxString & md5sum)
+{
+	wxCriticalSectionLocker locker(sm_queue);
+	if (sm_waitings.Index(md5sum) == wxNOT_FOUND) sm_waitings.Add(md5sum);
+}
+
 void * FbDownloader::Entry()
 {
 	wxString addr;
@@ -228,7 +270,7 @@ void * FbDownloader::Entry()
 	wxString ext;
 
 	while (true) {
-		if (IsRunning()) {
+		if (IsRunning()) try {
 			wxArrayString md5sum;
 			GetBooklist(md5sum);
 			size_t count = md5sum.Count();
@@ -236,7 +278,7 @@ void * FbDownloader::Entry()
 			for (size_t i=0; i<count; i++) {
 				FbInternetBook(md5sum[i]).Execute();
 			}
-		}
+		} catch (...) {};
 		wxSleep(3);
 	}
 	return NULL;
@@ -250,11 +292,6 @@ void FbDownloader::GetBooklist(wxArrayString &md5sum)
 	while ( result.NextRow() ) {
 		md5sum.Add( result.GetString(0) );
 	}
-}
-
-wxString FbDownloader::GetURL(const int id)
-{
-	return FbParams::GetText(FB_LIBRUSEC_URL) + wxString::Format(wxT("/b/%d/download"), id);
 }
 
 wxString FbDownloader::GetFilename(const wxString &md5sum, bool bCreateFolder)

@@ -10,14 +10,6 @@ FbTreeListCtrl::FbTreeListCtrl(wxWindow *parent, wxWindowID id, long style)
 	SetSortedColumn(0);
 }
 
-void FbTreeListCtrl::EmptyCols()
-{
-	for (size_t i = wxTreeListCtrl::GetColumnCount(); i>0; i--) {
-		wxTreeListCtrl::RemoveColumn(i-1);
-	}
-	m_ColSizes.Empty();
-}
-
 void FbTreeListCtrl::AddColumn (const wxString& text, int width, int flag)
 {
 	m_ColSizes.Add(width);
@@ -56,4 +48,10 @@ void FbTreeListCtrl::Update()
 {
 	DoResizeCols(GetClientSize().x);
 	wxTreeListCtrl::Update();
+}
+
+wxTreeItemData * FbTreeListCtrl::GetSelectedData() const
+{
+    wxTreeItemId selected = GetSelection();
+    return selected.IsOk() ? GetItemData(selected) : NULL;
 }

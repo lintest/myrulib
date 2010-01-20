@@ -60,14 +60,8 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 	m_FindList->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
 	m_FindList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 
-	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
-	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
-	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
-	m_sdbSizerBtnOK->SetDefault();
-	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
-	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
-	m_sdbSizerBtn->Realize();
-	bSizerMain->Add( m_sdbSizerBtn, 0, wxEXPAND|wxALL, 5 );
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();

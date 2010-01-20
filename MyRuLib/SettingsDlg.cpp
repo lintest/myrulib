@@ -118,21 +118,6 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	wxCheckBox * m_checkBox13 = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Автоматически стартовать загрузку файлов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
 
-	wxBoxSizer* bSizer12;
-	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
-
-	wxStaticText* m_staticText11 = new wxStaticText( this, wxID_ANY, _("Адрес для скачивания:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText11->Wrap( -1 );
-	bSizer12->Add( m_staticText11, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
-
-	wxComboBox * m_comboBox1 = new wxComboBox( this, ID_LIBRUSEC_URL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	m_comboBox1->Append( wxT("http://flibusta.net") );
-	m_comboBox1->Append( wxT("http://lib.rus.ec") );
-	m_comboBox1->Append( wxT("http://lib.ololo.cc") );
-	bSizer12->Add( m_comboBox1, 1, wxALL, 5 );
-
-	bSizer2->Add( bSizer12, 0, wxEXPAND|wxLEFT, 5 );
-
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -147,7 +132,10 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
 
-	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка для хранения скачиваемых файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * checkBox3 = new wxCheckBox( this, ID_HTTP_IMAGES, _("Загружать изображения для описаний авторов"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( checkBox3, 0, wxALL, 5 );
+
+	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка для хранения скачанных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
@@ -163,7 +151,7 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer14, 0, wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Удалять скаченные файлы при удалении загрузок из списка"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Удалять скачанные файлы при удалении загрузок из списка"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox14, 0, wxALL, 5 );
 
 	this->SetSizer( bSizer2 );
@@ -211,6 +199,9 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, wxT("Рейтинг"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
 
+	checkbox = new wxCheckBox( this, ID_COLUMN_LANG, wxT("Язык"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+
 	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, wxT("Тип файла"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
 
@@ -218,6 +209,9 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
 
 	bSizer->Add( sbSizerCols, 1, wxALL|wxEXPAND, 5 );
+
+	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( checkbox, 0, wxALL|wxEXPAND, 5 );
 
 	this->SetSizer( bSizer );
 	this->Layout();
@@ -312,7 +306,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	#endif
 
 	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, nbStyle );
-	notebook->AddPage( new FbPanelInterface(notebook), _("Внешний вид"), true );
+	notebook->AddPage( new FbPanelInterface(notebook), _("Основные"), true );
 	notebook->AddPage( new FbPanelInternet(notebook), _("Интернет"), false );
 	notebook->AddPage( new FbPanelTypes(notebook), _("Типы файлов"), false );
 	notebook->AddPage( new FbPanelExport(notebook), _("Экспорт"), false );
@@ -376,7 +370,6 @@ void SettingsDlg::Assign(bool write)
 		{FB_AUTO_DOWNLD, ID_AUTO_DOWNLD, tCheck},
 		{FB_USE_PROXY, ID_USE_PROXY, tCheck},
 		{FB_PROXY_ADDR, ID_PROXY_ADDR, tCombo},
-		{FB_LIBRUSEC_URL, ID_LIBRUSEC_URL, tCombo},
 		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR_TXT, tText},
 		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD, tCheck},
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
@@ -388,10 +381,13 @@ void SettingsDlg::Assign(bool write)
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
 		{FB_FONT_DLG, ID_FONT_DLG, tFont},
+		{FB_COLUMN_LANG, ID_COLUMN_LANG, tCheck},
 		{FB_COLUMN_TYPE, ID_COLUMN_TYPE, tCheck},
 		{FB_COLUMN_SYZE, ID_COLUMN_SYZE, tCheck},
 		{FB_COLUMN_GENRE, ID_COLUMN_GENRE, tCheck},
 		{FB_COLUMN_RATING, ID_COLUMN_RATING, tCheck},
+		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
+		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

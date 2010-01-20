@@ -4,6 +4,7 @@
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
 #include "InfoCash.h"
+#include "FbFilterDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
@@ -12,33 +13,33 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
+	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
-	EVT_MENU(ID_FILTER_FB2, FbFrameBase::OnChangeFilter)
-	EVT_MENU(ID_FILTER_LIB, FbFrameBase::OnChangeFilter)
-	EVT_MENU(ID_FILTER_USR, FbFrameBase::OnChangeFilter)
+	EVT_MENU(ID_FILTER_USE, FbFrameBase::OnFilterUse)
+	EVT_MENU(ID_FILTER_NOT, FbFrameBase::OnFilterNot)
 	EVT_MENU(ID_DIRECTION, FbFrameBase::OnDirection)
 	EVT_MENU(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TITLE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_RATING, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_DATE, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_ORDER_LANG, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_SIZE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TYPE, FbFrameBase::OnChangeOrder)
 	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
-	EVT_UPDATE_UI(ID_FILTER_FB2, FbFrameBase::OnChangeFilterUpdateUI)
-	EVT_UPDATE_UI(ID_FILTER_LIB, FbFrameBase::OnChangeFilterUpdateUI)
-	EVT_UPDATE_UI(ID_FILTER_USR, FbFrameBase::OnChangeFilterUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_TITLE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_RATING, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_DATE, FbFrameBase::OnChangeOrderUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_LANG, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_SIZE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_TYPE, FbFrameBase::OnChangeOrderUpdateUI)
     EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
@@ -50,9 +51,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
-	m_FilterFb2(FbParams::GetValue(FB_FILTER_FB2)),
-	m_FilterLib(FbParams::GetValue(FB_FILTER_LIB)),
-	m_FilterUsr(FbParams::GetValue(FB_FILTER_USR)),
 	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
 {
 	Create(parent, id, title);
@@ -112,21 +110,12 @@ void FbFrameBase::OnAppendBook(FbBookEvent& event)
 
 void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 {
-	m_BooksPanel->AppendAuthor( event.GetString() );
+	m_BooksPanel->AppendAuthor( event.GetInt(), event.GetString() );
 }
 
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
 	m_BooksPanel->AppendSequence( event.GetString() );
-}
-
-void FbFrameBase::OnChangeFilterUpdateUI(wxUpdateUIEvent & event)
-{
-	switch (event.GetId()) {
-		case ID_FILTER_FB2: event.Check(m_FilterFb2); break;
-		case ID_FILTER_LIB: event.Check(m_FilterLib); break;
-		case ID_FILTER_USR: event.Check(m_FilterUsr); break;
-	}
 }
 
 int FbFrameBase::GetModeKey()
@@ -184,31 +173,6 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 	if (mode == FB2_MODE_TREE) m_BooksPanel->m_BookList->SetSortedColumn(0);
 
 	m_BooksPanel->CreateColumns(mode);
-	UpdateBooklist();
-}
-
-void FbFrameBase::OnChangeFilter(wxCommandEvent& event)
-{
-	FbParams params;
-	switch (event.GetId()) {
-		case ID_FILTER_FB2: {
-			params.SetValue(FB_FILTER_FB2, m_FilterFb2 = !m_FilterFb2);
-		} break;
-		case ID_FILTER_LIB: {
-			params.SetValue(FB_FILTER_LIB, m_FilterLib = !m_FilterLib);
-			if (m_FilterLib) {
-				params.SetValue(FB_FILTER_USR, false);
-				m_FilterUsr = false;
-			}
-		} break;
-		case ID_FILTER_USR: {
-			params.SetValue(FB_FILTER_USR, m_FilterUsr = !m_FilterUsr);
-			if (m_FilterUsr) {
-				params.SetValue(FB_FILTER_LIB, false);
-				m_FilterLib = false;
-			}
-		} break;
-	}
 	UpdateBooklist();
 }
 
@@ -351,7 +315,7 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_TREE:
 			sql = wxT("\
 				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
+					books.id, books.id_author, books.title, books.file_size, books.file_type, books.lang, GENRE(books.genres) AS genres,\
 					states.rating, books.id_author, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id  \
@@ -365,7 +329,7 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 		case FB2_MODE_LIST:
 			sql = wxT("\
 				SELECT DISTINCT \
-					books.id, books.title, books.file_size, books.file_type, GENRE(books.genres) AS genres,\
+					books.id, books.title, books.file_size, books.file_type, books.lang, GENRE(books.genres) AS genres,\
 					states.rating as rating, books.created, AGGREGATE(authors.full_name) as full_name \
 				FROM books \
 					LEFT JOIN authors ON books.id_author = authors.id \
@@ -377,13 +341,8 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 			break;
 	}
 
-	wxString str = wxT("(%s)");
-	if (m_FilterFb2) str += wxT("AND(books.file_type='fb2')");
-	if (m_FilterLib) str += wxT("AND(books.id>0)");
-	if (m_FilterUsr) str += wxT("AND(books.id<0)");
-	sql = wxString::Format(sql, str.c_str());
-
-	return wxString::Format(sql, condition.c_str());
+	wxString str = wxString::Format(wxT("(%s)%s"), condition.c_str(), m_filter.c_str());
+	return wxString::Format(sql, str.c_str());
 }
 
 wxString FbFrameBase::BaseThread::GetOrder()
@@ -396,13 +355,14 @@ void FbFrameBase::BaseThread::CreateTree(wxSQLite3ResultSet &result)
 	wxString thisAuthor = wxT("@@@");
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
+		int id_author = result.GetInt(wxT("id_author"));
 		wxString nextAuthor = result.GetString(wxT("full_name"));
 		wxString nextSequence = result.GetString(wxT("sequence"));
 
 		if (thisAuthor != nextAuthor) {
 			thisAuthor = nextAuthor;
 			thisSequence = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisAuthor).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, thisAuthor).Post(m_frame);
 		}
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
@@ -461,7 +421,7 @@ FbFrameBase::MenuBar::MenuBar()
 	Append(new MenuFile,   _("Файл"));
 	Append(new MenuLib,    _("Библиотека"));
 	Append(new MenuFrame,  _("Картотека"));
-	Append(new MenuBook,   _("Книга"));
+	Append(new MenuBook,   _("Книги"));
 	Append(new MenuView,   _("Вид"));
 	Append(new MenuSetup,  _("Сервис"));
 	Append(new MenuWindow, _("Окно"));
@@ -471,5 +431,22 @@ FbFrameBase::MenuBar::MenuBar()
 wxMenuBar * FbFrameBase::CreateMenuBar()
 {
 	return new MenuBar;
+}
+
+void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
+{
+	event.Check(m_filter.IsEnabled());
+}
+
+void FbFrameBase::OnFilterUse(wxCommandEvent& event)
+{
+	if (FbFilterDlg::Execute(m_filter)) UpdateBooklist();
+}
+
+void FbFrameBase::OnFilterNot(wxCommandEvent& event)
+{
+	FbParams().SetValue(FB_USE_FILTER, 0);
+	m_filter.Disable();
+	UpdateBooklist();
 }
 

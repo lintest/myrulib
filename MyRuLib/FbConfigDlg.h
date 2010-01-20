@@ -34,6 +34,19 @@ class FbConfigDlg : private FbDialog
 			ID_WANRAIK_DIR_TXT,
 			ID_WANRAIK_DIR_BTN,
 			ID_LIBRARY_DESCR,
+			ID_DOWNLOAD_HOST,
+			ID_DOWNLOAD_USER,
+			ID_DOWNLOAD_PASS,
+		};
+		class PanelMain: public wxPanel
+		{
+			public:
+				PanelMain(wxWindow *parent);
+		};
+		class PanelInternet: public wxPanel
+		{
+			public:
+				PanelInternet(wxWindow *parent);
 		};
 	private:
 		void OnSelectFolderClick( wxCommandEvent& event );

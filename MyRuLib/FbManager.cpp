@@ -10,6 +10,7 @@
 #include <wx/zipstrm.h>
 #include "FbDatabase.h"
 #include "ZipReader.h"
+#include "FbParams.h"
 #include <wx/mimetype.h>
 
 class TempFileEraser {
@@ -33,14 +34,8 @@ void TempFileEraser::Add(const wxString &filename)
 	eraser.filelist.Add(filename);
 }
 
-void FbManager::OpenBook(int id, wxString &file_type)
+void FbManager::OpenBook(wxInputStream & in, const wxString &file_type)
 {
-	ZipReader reader(id);
-	if (!reader.IsOK()) {
-		wxLogError(_("Book open error"));
-		return;
-	}
-
 	wxFileName file_name = wxFileName::CreateTempFileName(wxT("~"));
 	wxRemoveFile(file_name.GetFullPath());
 	file_name.SetExt(file_type);
@@ -48,7 +43,7 @@ void FbManager::OpenBook(int id, wxString &file_type)
 	wxString file_path = file_name.GetFullPath();
 	TempFileEraser::Add(file_path);
 	wxFileOutputStream out(file_path);
-	out.Write(reader.GetZip());
+	out.Write(in);
 
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
 	FbLocalDatabase database;

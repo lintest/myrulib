@@ -18,7 +18,7 @@
 class FbManager
 {
 	public:
-		static void OpenBook(int id, wxString &file_type);
+		static void OpenBook(wxInputStream & in, const wxString &file_type);
 };
 
 class BookInfo

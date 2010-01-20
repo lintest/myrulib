@@ -40,12 +40,11 @@ void FbFrameSequen::CreateControls()
 
 	m_FindInfo = new wxStaticText( this, wxID_ANY, _("Серия:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FindInfo->Wrap( -1 );
-	bSizerSeq->Add( m_FindInfo, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerSeq->Add( m_FindInfo, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_FindText = new wxTextCtrl( this, ID_SEQUENCE_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-
-	bSizerSeq->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizerSeq->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2 );
 
 	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizerSeq->Add( m_ToolBar, 1, wxALIGN_CENTER_VERTICAL);
@@ -152,12 +151,9 @@ void * FbFrameSequen::SequenThread::Entry()
 
 void FbFrameSequen::UpdateBooklist()
 {
-	wxTreeItemId selected = m_MasterList->GetSelection();
-	if (selected.IsOk()) {
-		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
-		if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
-	}
+	m_BooksPanel->EmptyBooks();
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
 void FbFrameSequen::OnAppendAuthor(FbAuthorEvent& event)
@@ -200,6 +196,8 @@ wxCriticalSection FbFrameSequen::MasterThread::sm_queue;
 
 void * FbFrameSequen::MasterThread::Entry()
 {
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_EMPTY_BOOKS).Post(m_frame);
+
 	wxCriticalSectionLocker locker(sm_queue);
 
 	try {
@@ -411,22 +409,20 @@ void FbFrameSequen::OnMasterAppend(wxCommandEvent& event)
 
 void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 {
-	wxTreeItemId selected = m_MasterList->GetSelection();
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
 	if (!data) return;
-
 	int id = EditDlg::Modify(data->GetId());
 	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, id).Post();
 }
 
 void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 {
-	wxTreeItemId selected = m_MasterList->GetSelection();
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
 	if (!data) return;
 	int id = data->GetId();
 	if (!id) return;
 
+	wxTreeItemId selected = m_MasterList->GetSelection();
 	wxString name = m_MasterList->GetItemText(selected);
 	wxString msg = wxString::Format(_("Удалить серию «%s»?"), name.c_str());
 	bool ok = wxMessageBox(msg, _("Удаление"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;

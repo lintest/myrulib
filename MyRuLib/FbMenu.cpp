@@ -6,18 +6,12 @@ FbMenuSort::FbMenuSort()
 	AppendRadioItem(ID_ORDER_TITLE,  _("Заголовок"));
 	AppendRadioItem(ID_ORDER_AUTHOR, _("Автор"));
 	AppendRadioItem(ID_ORDER_RATING, _("Рейтинг"));
+	AppendRadioItem(ID_ORDER_LANG,   _("Язык"));
 	AppendRadioItem(ID_ORDER_TYPE,   _("Тип"));
 	AppendRadioItem(ID_ORDER_SIZE,   _("Размер"));
 	AppendRadioItem(ID_ORDER_DATE,   _("Дата"));
 	AppendSeparator();
 	AppendCheckItem(ID_DIRECTION, _("Обратный порядок"));
-}
-
-FbMenuFilter::FbMenuFilter()
-{
-	AppendCheckItem(ID_FILTER_FB2, _("Только fb2-файлы"));
-	AppendCheckItem(ID_FILTER_LIB, _("Файлы Либрусек"));
-	AppendCheckItem(ID_FILTER_USR, _("Файлы пользователя"));
 }
 
 FbMenuRating::FbMenuRating()

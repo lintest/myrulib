@@ -34,14 +34,8 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 	wxCheckBox* cbRelative = new wxCheckBox( this, wxID_ANY, _("Сохранить только относительный путь"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( cbRelative, 0, wxALL, 5 );
 */
-	wxStdDialogButtonSizer* sdbSizerBtn = new wxStdDialogButtonSizer();
-	wxButton* sdbSizerBtnOK = new wxButton( this, wxID_OK );
-	sdbSizerBtnOK->SetDefault();
-	sdbSizerBtn->AddButton( sdbSizerBtnOK );
-	wxButton* sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
-	sdbSizerBtn->AddButton( sdbSizerBtnCancel );
-	sdbSizerBtn->Realize();
-	bSizerMain->Add( sdbSizerBtn, 1, wxEXPAND, 5 );
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();

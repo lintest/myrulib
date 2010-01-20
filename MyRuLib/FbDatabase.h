@@ -14,9 +14,15 @@ enum FbDatabaseKey {
 	DB_NEW_SEQUENCE = 7,
 	DB_LIBRARY_DIR = 9,
 	DB_LIBRARY_DESCR = 10,
+	DB_DOWNLOAD_HOST = 11,
+	DB_DOWNLOAD_USER = 12,
+	DB_DOWNLOAD_PASS = 13,
 	DB_NEW_ZIPFILE = 25,
 	DB_WANRAIK_DIR = 26,
 	DB_BOOKS_COUNT = 27,
+	DB_LAST_BOOK = 30,
+	DB_LANG_LIST = 31,
+	DB_TYPE_LIST = 32,
 };
 
 class FbLowerFunction : public wxSQLite3ScalarFunction
@@ -71,6 +77,7 @@ class FbCommonDatabase: public FbDatabase
 	public:
 		FbCommonDatabase();
 		void AttachConfig();
+		wxString GetMd5(int id);
 };
 
 class FbLocalDatabase: public FbDatabase

@@ -1,5 +1,7 @@
 <?php
 
+require_once 'bbcode/bbcode.lib.php';
+
 function strtolowerEx($str){
  $result = $str;
  global $strtolowerEx_pairs;
@@ -214,6 +216,23 @@ function convert_authors($mysql_db, $sqlite_db)
     $insert->closeCursor();
   }
 
+  $bb = new bbcode;
+  $bb->autolinks = false;
+  $sqltest = "SELECT * FROM libaannotations";
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+    echo $row['Title']."\n";
+    $sql = "UPDATE authors SET description=? where id=?";
+    $insert = $sqlite_db->prepare($sql);
+    $bb -> parse($row['Body']);
+    $body = $bb->get_html();
+    $body = str_replace("&lt;", "<", $body);
+    $body = str_replace("&gt;", ">", $body);
+    $insert->execute(array($body, $row['AvtorId']));
+  }
+
+#  $sqlite_db->query("delete from authors where description is null;");
+
   $sqlite_db->query("commit;");
 }
 
@@ -263,6 +282,25 @@ function convert_books($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("CREATE INDEX book_id ON books(id);");
+
+  $bb = new bbcode;
+  $bb->autolinks = false;
+  $sqltest = "SELECT * FROM libbannotations";
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+    echo $row['Title']."\n";
+    $sql = "UPDATE books SET description=? where id=?";
+    $insert = $sqlite_db->prepare($sql);
+    $bb -> parse($row['Body']);
+	$body = $bb->get_html();
+    $body = str_replace("&lt;", "<", $body);
+    $body = str_replace("&gt;", ">", $body);
+    $insert->execute(array($body, $row['BookId']));
+  }
+
+#  $sqlite_db->query("delete from books where description is null;");
 
   $sqlite_db->query("commit;");
 }
@@ -401,10 +439,10 @@ function create_tables($sqlite_db)
 
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
   $sqlite_db->query("DELETE FROM params;");
-  $sqlite_db->query("INSERT INTO params(text) VALUES ('LibRusEc Library');");
+  $sqlite_db->query("INSERT INTO params(text) VALUES ('Flibusta library');");
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
-  $sqlite_db->query("INSERT INTO params(text) VALUES ('LIBRUSEC');");
-  $sqlite_db->query("INSERT INTO params(id,text) VALUES (11,'lib.rus.ec');");
+  $sqlite_db->query("INSERT INTO params(text) VALUES ('FLIBUSTA');");
+  $sqlite_db->query("INSERT INTO params(id,text) VALUES (11,'flibusta.net');");
 
   $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
 
@@ -415,7 +453,6 @@ function create_indexes($sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("CREATE INDEX author_id ON authors(id);");
   $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
   $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
 
@@ -435,16 +472,19 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX aliases_alias ON aliases(id_alias);");
 
   $sqlite_db->query("commit;");
+
+  $sqlite_db->query("vacuum;");
 }
 
 $mysql_srvr = 'localhost';
 $mysql_user = 'root';
 $mysql_pass = '';
-$mysql_base = 'librusec';
+$mysql_base = 'flibusta';
+$sqlitefile = './myrulib.db';
 
 include('settings.php');
 
-$sqlite_db = new PDO('sqlite:./myrulib.db');
+$sqlite_db = new PDO('sqlite:'.$sqlitefile);
 $mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 

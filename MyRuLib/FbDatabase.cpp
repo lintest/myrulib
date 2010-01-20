@@ -4,7 +4,7 @@
 #include "FbDataPath.h"
 #include "FbGenres.h"
 
-#define DB_DATABASE_VERSION 8
+#define DB_DATABASE_VERSION 9
 #define DB_CONFIG_VERSION 2
 
 wxCriticalSection FbDatabase::sm_queue;
@@ -154,6 +154,14 @@ void FbMainDatabase::DoUpgrade(int version)
 				ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
 				ExecuteUpdate(wxT("DELETE FROM sequences WHERE NOT EXISTS (SELECT id_seq FROM bookseq WHERE sequences.id=id_seq) OR id=0"));
 				ExecuteUpdate(strUpdateSequenCount);
+			} catch (...) {};
+		} break;
+
+		case 9: {
+			/** TABLE books **/
+			try {
+				ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
+				ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
 			} catch (...) {};
 		} break;
 
@@ -438,7 +446,21 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 
 	int old_version = GetVersion();
 	if (old_version != new_version) {
+		wxMessageBox(_("Несоответствие верси базы данных."), strProgramName, wxOK | wxICON_ERROR);
 		wxLogFatalError(_("Database version mismatch. Need a new version %d, but used the old %d."), new_version, old_version);
 	}
 }
 
+wxString FbCommonDatabase::GetMd5(int id)
+{
+	try {
+		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+		wxSQLite3Statement stmt = PrepareStatement(sql);
+		stmt.Bind(1, id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) return result.GetAsString(0);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return wxEmptyString;
+}

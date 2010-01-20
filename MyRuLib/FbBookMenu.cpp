@@ -19,6 +19,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
 	}
 	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Скачать в браузере"));
+	if ( id>0 ) Append(ID_BOOK_PAGE, _("Страница книги"));
 	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
@@ -30,6 +31,10 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 	AppendSeparator();
 
 	if (bShowOrder) Append(wxID_ANY, _("Сортировка"), new FbMenuSort);
+	AppendCheckItem(ID_FILTER_USE, _("Использовать фильтр"));
+	Append(ID_FILTER_NOT, _("Удалить фильтр"));
+	AppendSeparator();
+
 	Append(wxID_ANY, _("Перейти к автору"), new FbMenuAuthors(m_id));
 //	Append(wxID_ANY, _("Открыть серию"), NULL);
 	AppendSeparator();

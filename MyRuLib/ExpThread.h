@@ -25,6 +25,7 @@ class ExportThread : public BaseThread
 		virtual void *Entry();
 	public:
 		ExportFileArray m_filelist;
+		bool Execute();
 	private:
 		void WriteFileItem(ExportFileItem &item);
 	private:

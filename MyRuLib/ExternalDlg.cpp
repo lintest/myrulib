@@ -115,10 +115,8 @@ wxString ExternalDlg::Translit(const wxString &filename)
 
 	wxString newname;
 	size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
-	for (size_t i=0; i<=filename.Len()-1; i++) {
-		wxString str = oldname.Mid(i, 1);
-		if (str.IsEmpty()) continue;
-		wxChar letter = str[0];
+	for (size_t i=0; i<oldname.Len(); i++) {
+		wxChar letter = oldname[i];
 		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) {
 			wxString substr = letter;
 			for (size_t j=0; j<size; j++)
@@ -141,8 +139,8 @@ wxString ExternalDlg::Normalize(const wxString &filename)
 	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
 
 	wxString newname;
-	for (size_t i=0; i<filename.Len(); i++) {
-		wxChar letter = filename[i];
+	for (size_t i=0; i<oldname.Len(); i++) {
+		wxChar letter = oldname[i];
 		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
 	}
 	return newname;
@@ -343,6 +341,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxString & name)
 {
 	wxString newname = name;
+	newname = newname.Trim(false).Trim(true);
 	newname = FbParams::GetValue(FB_TRANSLIT_FOLDER) ? Translit(newname) : Normalize(newname);
 	wxTreeItemId item = m_books->AppendItem(parent, newname );
 	m_books->SetItemBold(item, true);
@@ -492,15 +491,7 @@ bool ExternalDlg::ExportBooks()
 	ExportThread *thread = new ExportThread(m_choiceFormat->GetCurrentSelection());
 	FillFilelist(m_books->GetRootItem(), thread->m_filelist);
 	thread->m_info = wxT("Экспорт: ") + root_dir;
-
-	if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-		wxLogError(wxT("Can't create thread!"));
-		return false;
-	}
-
-	thread->Run();
-
-	return true;
+	return thread->Execute();
 }
 
 bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
@@ -514,11 +505,7 @@ bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
 
 	ExternalDlg dlg(parent, selections, iAuthor);
 	dlg.FillBooks(selections);
-
-	if (dlg.ShowModal() == wxID_OK)
-		return dlg.ExportBooks();
-	else
-		return false;
+	return (dlg.ShowModal() == wxID_OK) && dlg.ExportBooks();
 }
 
 void ExternalDlg::OnCheckAuthor( wxCommandEvent& event )

@@ -82,7 +82,6 @@ MYRULIB_CXXFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` 
 	$(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
-	build/myrulib_BookExtractInfo.o \
 	build/myrulib_ExpThread.o \
 	build/myrulib_ExternalDlg.o \
 	build/myrulib_FbAboutDlg.o \
@@ -94,13 +93,17 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbBookMenu.o \
 	build/myrulib_FbBookPanel.o \
 	build/myrulib_FbBookThread.o \
+	build/myrulib_FbCheckList.o \
 	build/myrulib_FbConfigDlg.o \
 	build/myrulib_FbConst.o \
 	build/myrulib_FbDatabase.o \
 	build/myrulib_FbDataOpenDlg.o \
 	build/myrulib_FbDataPath.o \
 	build/myrulib_FbEditBook.o \
+	build/myrulib_FbExtractInfo.o \
 	build/myrulib_FbDownloader.o \
+	build/myrulib_FbFilterDlg.o \
+	build/myrulib_FbFilterObj.o \
 	build/myrulib_FbFrameAuthor.o \
 	build/myrulib_FbFrameBase.o \
 	build/myrulib_FbFrameDownld.o \
@@ -111,6 +114,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbFrameSearch.o \
 	build/myrulib_FbFrameSequen.o \
 	build/myrulib_FbGenres.o \
+	build/myrulib_FbHtmlWindow.o \
 	build/myrulib_FbImportThread.o \
 	build/myrulib_FbLogStream.o \
 	build/myrulib_FbMainFrame.o \
@@ -208,9 +212,6 @@ build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_BookExtractInfo.o: ./MyRuLib/BookExtractInfo.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -244,6 +245,9 @@ build/myrulib_FbBookPanel.o: ./MyRuLib/FbBookPanel.cpp
 build/myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbCheckList.o: ./MyRuLib/FbCheckList.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbConfigDlg.o: ./MyRuLib/FbConfigDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -262,7 +266,16 @@ build/myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp
 build/myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbExtractInfo.o: ./MyRuLib/FbExtractInfo.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFilterDlg.o: ./MyRuLib/FbFilterDlg.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbFilterObj.o: ./MyRuLib/FbFilterObj.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
@@ -293,6 +306,9 @@ build/myrulib_FbFrameSequen.o: ./MyRuLib/FbFrameSequen.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbHtmlWindow.o: ./MyRuLib/FbHtmlWindow.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbImportThread.o: ./MyRuLib/FbImportThread.cpp

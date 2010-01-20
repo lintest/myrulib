@@ -28,6 +28,7 @@ class SettingsDlg : private FbDialog
 			ID_DOWNLOAD_DIR_BTN,
 			ID_USE_PROXY,
 			ID_PROXY_ADDR,
+			ID_HTTP_IMAGES,
 			ID_LIBRUSEC_URL,
 			ID_EXTERNAL_TXT,
 			ID_EXTERNAL_BTN,
@@ -46,10 +47,12 @@ class SettingsDlg : private FbDialog
 			ID_FONT_HTML,
 			ID_FONT_TOOL,
 			ID_FONT_DLG,
+			ID_COLUMN_LANG,
 			ID_COLUMN_TYPE,
 			ID_COLUMN_SYZE,
 			ID_COLUMN_GENRE,
 			ID_COLUMN_RATING,
+			ID_REMOVE_FILES,
 		};
 		class FbPanelFont: public wxPanel
 		{
