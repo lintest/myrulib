@@ -1,6 +1,6 @@
 #include "FbConst.h"
 
-const wxString strProgramName = wxT("MyRuLib 0.18");
+const wxString strProgramName = wxT("MyRuLib 0.19");
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 const wxString strMailAddr = wxT("mail@lintest.ru");
 

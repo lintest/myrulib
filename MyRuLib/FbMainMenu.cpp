@@ -111,3 +111,4 @@ FbMenuBar::MenuWindow::MenuWindow()
 	Append(ID_WINDOW_NEXT,     _("Следующее"));
 	Append(ID_WINDOW_PREV,     _("Предыдущее"));
 }
+

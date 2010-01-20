@@ -27,6 +27,7 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_MENU(ID_MASTER_REPLACE, FbFrameAuthor::OnMasterReplace)
 	EVT_MENU(ID_MASTER_DELETE, FbFrameAuthor::OnMasterDelete)
 	EVT_MENU(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPage)
+	EVT_UPDATE_UI(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPageUpdateUI)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
@@ -428,15 +429,22 @@ FbFrameAuthor::MenuBar::MenuBar()
 
 FbFrameAuthor::MenuMaster::MenuMaster()
 {
-	Append(ID_MASTER_APPEND, _("Добавить"));
-	Append(ID_MASTER_MODIFY, _("Изменить"));
-	Append(ID_MASTER_DELETE, _("Удалить"));
-	AppendSeparator();
+	Append(ID_MASTER_APPEND,  _("Добавить"));
+	Append(ID_MASTER_MODIFY,  _("Изменить"));
 	Append(ID_MASTER_REPLACE, _("Заменить"));
+	Append(ID_MASTER_DELETE,  _("Удалить"));
+	AppendSeparator();
+	Append(ID_MASTER_PAGE, _("Страница автора"));
 }
 
 wxMenuBar * FbFrameAuthor::CreateMenuBar()
 {
 	return new MenuBar;
+}
+
+void FbFrameAuthor::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
+{
+	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	event.Enable( data && data->GetId()>0 );
 }
 

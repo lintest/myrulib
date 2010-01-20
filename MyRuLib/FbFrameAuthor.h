@@ -58,6 +58,7 @@ class FbFrameAuthor : public FbFrameBase
 		void OnMasterDelete(wxCommandEvent& event);
 		void OnMasterReplace(wxCommandEvent& event);
 		void OnMasterPage(wxCommandEvent& event);
+		void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
 		void OnContextMenu(wxTreeEvent& event);
 		DECLARE_EVENT_TABLE()
 	protected:
