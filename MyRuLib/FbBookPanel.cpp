@@ -13,6 +13,7 @@
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
+	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbBookPanel::OnAuthorInfo)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
 	EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, FbBookPanel::OnContextMenu)
@@ -216,7 +217,7 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 
 void FbBookPanel::OnSelectAll(wxCommandEvent& event)
 {
-	m_BookList->SelectAll();
+	m_BookList->SelectAll(1);
 }
 
 void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
@@ -341,12 +342,6 @@ void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 	if (data) FbOpenEvent(ID_BOOK_AUTHOR, author, data->GetId()).Post();
 }
 
-void FbBookPanel::ShowHTML(const wxString &html)
-{
-	m_BookInfo->SetPage( html );
-	m_selected = 0;
-}
-
 void FbBookPanel::EmptyBooks(const int selected)
 {
 	m_AuthorItem = 0L;
@@ -367,7 +362,7 @@ void FbBookPanel::AppendAuthor(int id, const wxString title)
 {
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
-	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1);
+	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1, new FbAuthorData(id));
 	m_BookList->SetItemBold(m_AuthorItem, true);
 	m_BookList->Expand(parent);
 }
@@ -520,18 +515,12 @@ void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
 	FbEditBookDlg::Execute();
 }
 
-void * FbBookPanel::AuthorThread::Entry()
+void FbBookPanel::OnAuthorInfo(wxCommandEvent& event)
 {
 	try {
-		FbCommonDatabase database;
-		wxString sql = wxT("SELECT description FROM authors WHERE id=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_author);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+		m_BookInfo->SetPage( event.GetString() );
+		m_selected = 0;
+	} catch (...) {
 	}
-	return NULL;
 }
 

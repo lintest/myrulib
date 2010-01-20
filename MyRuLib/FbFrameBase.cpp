@@ -13,6 +13,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
+	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
@@ -46,7 +47,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
 	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameBase::OnBooksCount)
-	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnAuthorInfo)
 	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
@@ -116,14 +116,6 @@ void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
 	m_BooksPanel->AppendSequence( event.GetString() );
-}
-
-void FbFrameBase::OnAuthorInfo(wxCommandEvent& event)
-{
-	try {
-		m_BooksPanel->ShowHTML( event.GetString() );
-	} catch (...) {
-	}
 }
 
 int FbFrameBase::GetModeKey()

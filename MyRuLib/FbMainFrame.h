@@ -40,6 +40,7 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		wxWindow * FindFrameById(const int id, bool bActivate = false);
 		void OpenDatabase(const wxString &filename);
 		void SetAccelerators();
+		void OpenLastPage();
 	private:
 		wxTextCtrl m_FindAuthor;
 		wxTextCtrl m_FindTitle;
@@ -61,6 +62,7 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnFindTitleEnter(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
+		void OnMenuFrame(wxCommandEvent& event);
 		void OnMenuNothing(wxCommandEvent& event);
 		void OnMenuAuthor(wxCommandEvent& event);
 		void OnMenuConfig(wxCommandEvent& event);

@@ -1,6 +1,7 @@
 #include "FbBookData.h"
 #include "FbManager.h"
 #include "ZipReader.h"
+#include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbDownloader.h"
 #include "InfoCash.h"
@@ -67,3 +68,24 @@ void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) cons
 	InfoCash::LoadIcon(m_filetype);
 	InfoCash::UpdateInfo(frame, m_id, bVertical);
 }
+
+void FbAuthorData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
+{
+	(new ShowThread(frame, m_author))->Execute();
+}
+
+void * FbAuthorData::ShowThread::Entry()
+{
+	try {
+		FbCommonDatabase database;
+		wxString sql = wxT("SELECT description FROM authors WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_author);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return NULL;
+}
+
