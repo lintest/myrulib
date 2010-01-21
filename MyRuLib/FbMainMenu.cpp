@@ -109,10 +109,10 @@ FbMenuBar::MenuRecent::MenuRecent()
 
 FbMenuBar::MenuTabArt::MenuTabArt()
 {
-	AppendRadioItem(ID_ART_DEFAULT, _("Объемные"));
-	AppendRadioItem(ID_ART_SIMPLE, _("Простые"));
-	AppendRadioItem(ID_ART_DEFAULT_MY, _("Мои Объемные"));
-	AppendRadioItem(ID_ART_SIMPLE_MY, _("Мои Простые"));
+	AppendRadioItem(ID_ART_DEFAULT,  _("Стандартные"));
+	AppendRadioItem(ID_ART_COMPACT,  _("Компактные"));
+	AppendRadioItem(ID_ART_STANDART, _("Выпуклые"));
+	AppendRadioItem(ID_ART_TOOLBAR,  _("Кнопочные"));
 }
 
 FbMenuBar::MenuWindow::MenuWindow()

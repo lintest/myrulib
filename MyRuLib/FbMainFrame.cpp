@@ -77,13 +77,13 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
 	EVT_MENU(ID_ART_DEFAULT, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_SIMPLE, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_DEFAULT_MY, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_SIMPLE_MY, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_COMPACT, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_STANDART, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_TOOLBAR, FbMainFrame::OnTabArt)
 	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_SIMPLE, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_DEFAULT_MY, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_SIMPLE_MY, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_COMPACT, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_STANDART, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_TOOLBAR, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
@@ -226,13 +226,14 @@ void FbMainFrame::SetTabArt(int id)
 {
 	wxAuiTabArt * art;
 	switch (id) {
-		case ID_ART_SIMPLE: art = new wxAuiSimpleTabArt; break;
-		case ID_ART_SIMPLE_MY: art = new FbAuiSimpleTabArt; break;
-		case ID_ART_DEFAULT_MY: art = new FbAuiDefaultTabArt; break;
-		default: art = new wxAuiDefaultTabArt;
+//		case ID_ART_TOOLBAR:   art = new wxAuiSimpleTabArt; break;
+		case ID_ART_COMPACT:  art = new FbAuiSimpleTabArt; break;
+		case ID_ART_STANDART: art = new wxAuiDefaultTabArt; break;
+		default: art = new FbAuiDefaultTabArt;
 	}
+	GetNotebook()->SetTabCtrlHeight(0);
 	GetNotebook()->SetArtProvider(art);
-	Update();
+	GetNotebook()->SetTabCtrlHeight(-1);
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)

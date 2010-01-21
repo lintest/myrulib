@@ -26,8 +26,6 @@
 
 wxColor wxAuiStepColour(const wxColor& c, int percent);
 
-wxBitmap wxAuiBitmapFromBits(const unsigned char bits[], int w, int h, const wxColour& color);
-
 wxString wxAuiChopText(wxDC& dc, const wxString& text, int max_size);
 
 static void DrawButtons(wxDC& dc,
@@ -184,90 +182,6 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
     dc.SetLogicalFunction(wxCOPY);
 #endif
 }
-#if defined( __WXMAC__ )
- static unsigned char close_bits[]={
-     0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0xFE, 0x03, 0xF8, 0x01, 0xF0, 0x19, 0xF3,
-     0xB8, 0xE3, 0xF0, 0xE1, 0xE0, 0xE0, 0xF0, 0xE1, 0xB8, 0xE3, 0x19, 0xF3,
-     0x01, 0xF0, 0x03, 0xF8, 0x0F, 0xFE, 0xFF, 0xFF };
-#elif defined( __WXGTK__)
- static unsigned char close_bits[]={
-     0xff, 0xff, 0xff, 0xff, 0x07, 0xf0, 0xfb, 0xef, 0xdb, 0xed, 0x8b, 0xe8,
-     0x1b, 0xec, 0x3b, 0xee, 0x1b, 0xec, 0x8b, 0xe8, 0xdb, 0xed, 0xfb, 0xef,
-     0x07, 0xf0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-#else
- static unsigned char close_bits[]={
-     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe7, 0xf3, 0xcf, 0xf9,
-     0x9f, 0xfc, 0x3f, 0xfe, 0x3f, 0xfe, 0x9f, 0xfc, 0xcf, 0xf9, 0xe7, 0xf3,
-     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-#endif
-
-static unsigned char left_bits[] = {
-   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0x7f, 0xfe, 0x3f, 0xfe,
-   0x1f, 0xfe, 0x0f, 0xfe, 0x1f, 0xfe, 0x3f, 0xfe, 0x7f, 0xfe, 0xff, 0xfe,
-   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-static unsigned char right_bits[] = {
-   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xdf, 0xff, 0x9f, 0xff, 0x1f, 0xff,
-   0x1f, 0xfe, 0x1f, 0xfc, 0x1f, 0xfe, 0x1f, 0xff, 0x9f, 0xff, 0xdf, 0xff,
-   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-static unsigned char list_bits[] = {
-   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-   0x0f, 0xf8, 0xff, 0xff, 0x0f, 0xf8, 0x1f, 0xfc, 0x3f, 0xfe, 0x7f, 0xff,
-   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-FbAuiDefaultTabArt::FbAuiDefaultTabArt()
-{
-    m_normal_font = *wxNORMAL_FONT;
-    m_selected_font = *wxNORMAL_FONT;
-    m_selected_font.SetWeight(wxBOLD);
-    m_measuring_font = m_selected_font;
-
-    m_fixed_tab_width = 100;
-    m_tab_ctrl_height = 0;
-
-#ifdef __WXMAC__
-    wxBrush toolbarbrush;
-    toolbarbrush.MacSetTheme( kThemeBrushToolbarBackground );
-    wxColor base_colour = toolbarbrush.GetColour();
-#else
-    wxColor base_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
-#endif
-
-    // the base_colour is too pale to use as our base colour,
-    // so darken it a bit --
-    if ((255-base_colour.Red()) +
-        (255-base_colour.Green()) +
-        (255-base_colour.Blue()) < 60)
-    {
-        base_colour = wxAuiStepColour(base_colour, 92);
-    }
-
-    m_base_colour = base_colour;
-    wxColor border_colour = wxAuiStepColour(base_colour, 75);
-
-    m_border_pen = wxPen(border_colour);
-    m_base_colour_pen = wxPen(m_base_colour);
-    m_base_colour_brush = wxBrush(m_base_colour);
-
-    m_active_close_bmp = wxAuiBitmapFromBits(close_bits, 16, 16, *wxBLACK);
-    m_disabled_close_bmp = wxAuiBitmapFromBits(close_bits, 16, 16, wxColour(128,128,128));
-
-    m_active_left_bmp = wxAuiBitmapFromBits(left_bits, 16, 16, *wxBLACK);
-    m_disabled_left_bmp = wxAuiBitmapFromBits(left_bits, 16, 16, wxColour(128,128,128));
-
-    m_active_right_bmp = wxAuiBitmapFromBits(right_bits, 16, 16, *wxBLACK);
-    m_disabled_right_bmp = wxAuiBitmapFromBits(right_bits, 16, 16, wxColour(128,128,128));
-
-    m_active_windowlist_bmp = wxAuiBitmapFromBits(list_bits, 16, 16, *wxBLACK);
-    m_disabled_windowlist_bmp = wxAuiBitmapFromBits(list_bits, 16, 16, wxColour(128,128,128));
-
-    m_flags = 0;
-}
-
-FbAuiDefaultTabArt::~FbAuiDefaultTabArt()
-{
-}
 
 wxAuiTabArt* FbAuiDefaultTabArt::Clone()
 {
@@ -278,42 +192,6 @@ wxAuiTabArt* FbAuiDefaultTabArt::Clone()
 
     return art;
 }
-
-void FbAuiDefaultTabArt::SetFlags(unsigned int flags)
-{
-    m_flags = flags;
-}
-
-void FbAuiDefaultTabArt::SetSizingInfo(const wxSize& tab_ctrl_size,
-                                       size_t tab_count)
-{
-    m_fixed_tab_width = 100;
-
-    int tot_width = (int)tab_ctrl_size.x - GetIndentSize() - 4;
-
-    if (m_flags & wxAUI_NB_CLOSE_BUTTON)
-        tot_width -= m_active_close_bmp.GetWidth();
-    if (m_flags & wxAUI_NB_WINDOWLIST_BUTTON)
-        tot_width -= m_active_windowlist_bmp.GetWidth();
-
-    if (tab_count > 0)
-    {
-        m_fixed_tab_width = tot_width/(int)tab_count;
-    }
-
-
-    if (m_fixed_tab_width < 100)
-        m_fixed_tab_width = 100;
-
-    if (m_fixed_tab_width > tot_width/2)
-        m_fixed_tab_width = tot_width/2;
-
-    if (m_fixed_tab_width > 220)
-        m_fixed_tab_width = 220;
-
-    m_tab_ctrl_height = tab_ctrl_size.y;
-}
-
 
 void FbAuiDefaultTabArt::DrawBackground(wxDC& dc,
                                         wxWindow* WXUNUSED(wnd),
@@ -646,283 +524,27 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     dc.DestroyClippingRegion();
 }
 
-int FbAuiDefaultTabArt::GetIndentSize()
-{
-    return 5;
-}
-
-wxSize FbAuiDefaultTabArt::GetTabSize(wxDC& dc,
-                                      wxWindow* WXUNUSED(wnd),
-                                      const wxString& caption,
-                                      const wxBitmap& bitmap,
-                                      bool WXUNUSED(active),
-                                      int close_button_state,
-                                      int* x_extent)
-{
-    wxCoord measured_textx, measured_texty, tmp;
-
-    dc.SetFont(m_measuring_font);
-    dc.GetTextExtent(caption, &measured_textx, &measured_texty);
-
-    dc.GetTextExtent(wxT("ABCDEFXj"), &tmp, &measured_texty);
-
-    // add padding around the text
-    wxCoord tab_width = measured_textx;
-    wxCoord tab_height = measured_texty;
-
-    // if the close button is showing, add space for it
-    if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
-        tab_width += m_active_close_bmp.GetWidth() + 3;
-
-    // if there's a bitmap, add space for it
-    if (bitmap.IsOk())
-    {
-        tab_width += bitmap.GetWidth();
-        tab_width += 3; // right side bitmap padding
-        tab_height = wxMax(tab_height, bitmap.GetHeight());
-    }
-
-    // add padding
-    tab_width += 16;
-    tab_height += 10;
-
-    if (m_flags & wxAUI_NB_TAB_FIXED_WIDTH)
-    {
-        tab_width = m_fixed_tab_width;
-    }
-
-    *x_extent = tab_width;
-
-    return wxSize(tab_width, tab_height);
-}
-
-
-void FbAuiDefaultTabArt::DrawButton(wxDC& dc,
-                                    wxWindow* WXUNUSED(wnd),
-                                    const wxRect& in_rect,
-                                    int bitmap_id,
-                                    int button_state,
-                                    int orientation,
-                                    wxRect* out_rect)
-{
-    wxBitmap bmp;
-    wxRect rect;
-
-    switch (bitmap_id)
-    {
-        case wxAUI_BUTTON_CLOSE:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_close_bmp;
-                 else
-                bmp = m_active_close_bmp;
-            break;
-        case wxAUI_BUTTON_LEFT:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_left_bmp;
-                 else
-                bmp = m_active_left_bmp;
-            break;
-        case wxAUI_BUTTON_RIGHT:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_right_bmp;
-                 else
-                bmp = m_active_right_bmp;
-            break;
-        case wxAUI_BUTTON_WINDOWLIST:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_windowlist_bmp;
-                 else
-                bmp = m_active_windowlist_bmp;
-            break;
-    }
-
-
-    if (!bmp.IsOk())
-        return;
-
-    rect = in_rect;
-
-    if (orientation == wxLEFT)
-    {
-        rect.SetX(in_rect.x);
-        rect.SetY(((in_rect.y + in_rect.height)/2) - (bmp.GetHeight()/2));
-        rect.SetWidth(bmp.GetWidth());
-        rect.SetHeight(bmp.GetHeight());
-    }
-     else
-    {
-        rect = wxRect(in_rect.x + in_rect.width - bmp.GetWidth(),
-                      ((in_rect.y + in_rect.height)/2) - (bmp.GetHeight()/2),
-                      bmp.GetWidth(), bmp.GetHeight());
-    }
-
-    IndentPressedBitmap(&rect, button_state);
-    dc.DrawBitmap(bmp, rect.x, rect.y, true);
-
-    *out_rect = rect;
-}
-
-
-int FbAuiDefaultTabArt::GetBestTabCtrlSize(wxWindow* wnd,
-                                           const wxAuiNotebookPageArray& pages,
-                                           const wxSize& required_bmp_size)
-{
-    wxClientDC dc(wnd);
-    dc.SetFont(m_measuring_font);
-
-    // sometimes a standard bitmap size needs to be enforced, especially
-    // if some tabs have bitmaps and others don't.  This is important because
-    // it prevents the tab control from resizing when tabs are added.
-    wxBitmap measure_bmp;
-    if (required_bmp_size.IsFullySpecified())
-    {
-        measure_bmp.Create(required_bmp_size.x,
-                           required_bmp_size.y);
-    }
-
-
-    int max_y = 0;
-    size_t i, page_count = pages.GetCount();
-    for (i = 0; i < page_count; ++i)
-    {
-        wxAuiNotebookPage& page = pages.Item(i);
-
-        wxBitmap bmp;
-        if (measure_bmp.IsOk())
-            bmp = measure_bmp;
-             else
-            bmp = page.bitmap;
-
-        // we don't use the caption text because we don't
-        // want tab heights to be different in the case
-        // of a very short piece of text on one tab and a very
-        // tall piece of text on another tab
-        int x_ext = 0;
-        wxSize s = GetTabSize(dc,
-                              wnd,
-                              wxT("ABCDEFGHIj"),
-                              bmp,
-                              true,
-                              wxAUI_BUTTON_STATE_HIDDEN,
-                              &x_ext);
-
-        max_y = wxMax(max_y, s.y);
-    }
-
-    return max_y+2;
-}
-
-void FbAuiDefaultTabArt::SetNormalFont(const wxFont& font)
-{
-    m_normal_font = font;
-}
-
-void FbAuiDefaultTabArt::SetSelectedFont(const wxFont& font)
-{
-    m_selected_font = font;
-}
-
-void FbAuiDefaultTabArt::SetMeasuringFont(const wxFont& font)
-{
-    m_measuring_font = font;
-}
-
-
 // -- FbAuiSimpleTabArt class implementation --
 
 FbAuiSimpleTabArt::FbAuiSimpleTabArt()
 {
-    m_normal_font = *wxNORMAL_FONT;
-    m_selected_font = *wxNORMAL_FONT;
-    m_selected_font.SetWeight(wxBOLD);
-    m_measuring_font = m_selected_font;
-
-    m_flags = 0;
-    m_fixed_tab_width = 100;
-
-    wxColour base_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
-
+    wxColour base_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
+	wxColour normaltab_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT);
     wxColour background_colour = base_colour;
-    wxColour normaltab_colour = base_colour;
-    wxColour selectedtab_colour = *wxWHITE;
+    wxColour selectedtab_colour = base_colour;
 
+    m_base_colour = base_colour;
     m_bkbrush = wxBrush(background_colour);
     m_normal_bkbrush = wxBrush(normaltab_colour);
     m_normal_bkpen = wxPen(normaltab_colour);
     m_selected_bkbrush = wxBrush(selectedtab_colour);
     m_selected_bkpen = wxPen(selectedtab_colour);
-
-    m_active_close_bmp = wxAuiBitmapFromBits(close_bits, 16, 16, *wxBLACK);
-    m_disabled_close_bmp = wxAuiBitmapFromBits(close_bits, 16, 16, wxColour(128,128,128));
-
-    m_active_left_bmp = wxAuiBitmapFromBits(left_bits, 16, 16, *wxBLACK);
-    m_disabled_left_bmp = wxAuiBitmapFromBits(left_bits, 16, 16, wxColour(128,128,128));
-
-    m_active_right_bmp = wxAuiBitmapFromBits(right_bits, 16, 16, *wxBLACK);
-    m_disabled_right_bmp = wxAuiBitmapFromBits(right_bits, 16, 16, wxColour(128,128,128));
-
-    m_active_windowlist_bmp = wxAuiBitmapFromBits(list_bits, 16, 16, *wxBLACK);
-    m_disabled_windowlist_bmp = wxAuiBitmapFromBits(list_bits, 16, 16, wxColour(128,128,128));
-
-}
-
-FbAuiSimpleTabArt::~FbAuiSimpleTabArt()
-{
 }
 
 wxAuiTabArt* FbAuiSimpleTabArt::Clone()
 {
     return wx_static_cast(wxAuiTabArt*, new FbAuiSimpleTabArt);
 }
-
-
-void FbAuiSimpleTabArt::SetFlags(unsigned int flags)
-{
-    m_flags = flags;
-}
-
-void FbAuiSimpleTabArt::SetSizingInfo(const wxSize& tab_ctrl_size,
-                                      size_t tab_count)
-{
-    m_fixed_tab_width = 100;
-
-    int tot_width = (int)tab_ctrl_size.x - GetIndentSize() - 4;
-
-    if (m_flags & wxAUI_NB_CLOSE_BUTTON)
-        tot_width -= m_active_close_bmp.GetWidth();
-    if (m_flags & wxAUI_NB_WINDOWLIST_BUTTON)
-        tot_width -= m_active_windowlist_bmp.GetWidth();
-
-    if (tab_count > 0)
-    {
-        m_fixed_tab_width = tot_width/(int)tab_count;
-    }
-
-
-    if (m_fixed_tab_width < 100)
-        m_fixed_tab_width = 100;
-
-    if (m_fixed_tab_width > tot_width/2)
-        m_fixed_tab_width = tot_width/2;
-
-    if (m_fixed_tab_width > 220)
-        m_fixed_tab_width = 220;
-}
-
-void FbAuiSimpleTabArt::DrawBackground(wxDC& dc,
-                                       wxWindow* WXUNUSED(wnd),
-                                       const wxRect& rect)
-{
-    // draw background
-    dc.SetBrush(m_bkbrush);
-    dc.SetPen(*wxTRANSPARENT_PEN);
-    dc.DrawRectangle(-1, -1, rect.GetWidth()+2, rect.GetHeight()+2);
-
-    // draw base line
-    dc.SetPen(*wxGREY_PEN);
-    dc.DrawLine(0, rect.GetHeight()-1, rect.GetWidth(), rect.GetHeight()-1);
-}
-
 
 // DrawTab() draws an individual tab.
 //
@@ -1010,6 +632,9 @@ void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
     points[5].y = tab_y + tab_height - 1;
     points[6] = points[0];
 
+    if (page.active) points[6] = points[5];
+
+
     dc.SetClippingRegion(in_rect);
 
     dc.DrawPolygon(WXSIZEOF(points) - 1, points);
@@ -1074,7 +699,7 @@ void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
                     tab_y + (tab_height/2) - (bmp.GetHeight()/2) + 1,
                     close_button_width,
                     tab_height - 1);
-        DrawButtons(dc, rect, bmp, *wxWHITE, close_button_state);
+        DrawButtons(dc, rect, bmp, m_base_colour, close_button_state);
 
         *out_button_rect = rect;
     }
@@ -1084,136 +709,3 @@ void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
 
     dc.DestroyClippingRegion();
 }
-
-int FbAuiSimpleTabArt::GetIndentSize()
-{
-    return 0;
-}
-
-wxSize FbAuiSimpleTabArt::GetTabSize(wxDC& dc,
-                                     wxWindow* WXUNUSED(wnd),
-                                     const wxString& caption,
-                                     const wxBitmap& WXUNUSED(bitmap),
-                                     bool WXUNUSED(active),
-                                     int close_button_state,
-                                     int* x_extent)
-{
-    wxCoord measured_textx, measured_texty;
-
-    dc.SetFont(m_measuring_font);
-    dc.GetTextExtent(caption, &measured_textx, &measured_texty);
-
-    wxCoord tab_height = measured_texty + 4;
-    wxCoord tab_width = measured_textx + tab_height + 5;
-
-    if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
-        tab_width += m_active_close_bmp.GetWidth();
-
-    if (m_flags & wxAUI_NB_TAB_FIXED_WIDTH)
-    {
-        tab_width = m_fixed_tab_width;
-    }
-
-    *x_extent = tab_width - (tab_height/2) - 1;
-
-    return wxSize(tab_width, tab_height);
-}
-
-
-void FbAuiSimpleTabArt::DrawButton(wxDC& dc,
-                                   wxWindow* WXUNUSED(wnd),
-                                   const wxRect& in_rect,
-                                   int bitmap_id,
-                                   int button_state,
-                                   int orientation,
-                                   wxRect* out_rect)
-{
-    wxBitmap bmp;
-    wxRect rect;
-
-    switch (bitmap_id)
-    {
-        case wxAUI_BUTTON_CLOSE:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_close_bmp;
-                 else
-                bmp = m_active_close_bmp;
-            break;
-        case wxAUI_BUTTON_LEFT:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_left_bmp;
-                 else
-                bmp = m_active_left_bmp;
-            break;
-        case wxAUI_BUTTON_RIGHT:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_right_bmp;
-                 else
-                bmp = m_active_right_bmp;
-            break;
-        case wxAUI_BUTTON_WINDOWLIST:
-            if (button_state & wxAUI_BUTTON_STATE_DISABLED)
-                bmp = m_disabled_windowlist_bmp;
-                 else
-                bmp = m_active_windowlist_bmp;
-            break;
-    }
-
-    if (!bmp.IsOk())
-        return;
-
-    rect = in_rect;
-
-    if (orientation == wxLEFT)
-    {
-        rect.SetX(in_rect.x);
-        rect.SetY(((in_rect.y + in_rect.height)/2) - (bmp.GetHeight()/2));
-        rect.SetWidth(bmp.GetWidth());
-        rect.SetHeight(bmp.GetHeight());
-    }
-     else
-    {
-        rect = wxRect(in_rect.x + in_rect.width - bmp.GetWidth(),
-                      ((in_rect.y + in_rect.height)/2) - (bmp.GetHeight()/2),
-                      bmp.GetWidth(), bmp.GetHeight());
-    }
-
-
-    DrawButtons(dc, rect, bmp, *wxWHITE, button_state);
-
-    *out_rect = rect;
-}
-
-
-int FbAuiSimpleTabArt::GetBestTabCtrlSize(wxWindow* wnd,
-                                          const wxAuiNotebookPageArray& WXUNUSED(pages),
-                                          const wxSize& WXUNUSED(required_bmp_size))
-{
-    wxClientDC dc(wnd);
-    dc.SetFont(m_measuring_font);
-    int x_ext = 0;
-    wxSize s = GetTabSize(dc,
-                          wnd,
-                          wxT("ABCDEFGHIj"),
-                          wxNullBitmap,
-                          true,
-                          wxAUI_BUTTON_STATE_HIDDEN,
-                          &x_ext);
-    return s.y+3;
-}
-
-void FbAuiSimpleTabArt::SetNormalFont(const wxFont& font)
-{
-    m_normal_font = font;
-}
-
-void FbAuiSimpleTabArt::SetSelectedFont(const wxFont& font)
-{
-    m_selected_font = font;
-}
-
-void FbAuiSimpleTabArt::SetMeasuringFont(const wxFont& font)
-{
-    m_measuring_font = font;
-}
-
