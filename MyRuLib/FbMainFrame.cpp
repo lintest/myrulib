@@ -75,7 +75,10 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
+	EVT_MENU(ID_ART_DEFAULT, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_SIMPLE, FbMainFrame::OnTabArt)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
+	EVT_UPDATE_UI(ID_ART_SIMPLE, FbMainFrame::OnTabArtUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
@@ -184,10 +187,11 @@ void FbMainFrame::CreateControls()
 	GetNotebook()->SetSelection(0);
 
 	m_FrameManager.SetManagedWindow(this);
+	int art = FbParams::GetValue(FB_NOTEBOOK_ART);
+	if (art) SetTabArt(art + ID_ART_DEFAULT);
 
-	m_ToolBar = CreateToolBar();
+	SetToolBar(CreateToolBar());
 
-	m_FrameManager.AddPane(m_ToolBar, wxAuiPaneInfo().Name(wxT("ToolBar")).Top().Show(true).ToolbarPane().Dockable(false).PaneBorder(false));
 	m_FrameManager.AddPane(GetNotebook(), wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane());
 	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Информационные сообщения")).Show(false));
 	m_FrameManager.Update();
@@ -200,6 +204,29 @@ void FbMainFrame::CreateControls()
 	FbFrameAuthor * authors = new FbFrameAuthor(this);
 	authors->SelectRandomLetter();
 	authors->ActivateAuthors();
+}
+
+void FbMainFrame::OnTabArt(wxCommandEvent & event)
+{
+	int id = event.GetId();
+	SetTabArt(event.GetId());
+	FbParams().SetValue(FB_NOTEBOOK_ART, id - ID_ART_DEFAULT);
+}
+
+void FbMainFrame::OnTabArtUpdate(wxUpdateUIEvent& event)
+{
+	int id = FbParams::GetValue(FB_NOTEBOOK_ART) + ID_ART_DEFAULT;
+	if ( event.GetId() == id ) event.Check(true);
+}
+
+void FbMainFrame::SetTabArt(int id)
+{
+	wxAuiTabArt * art;
+	switch (id) {
+		case ID_ART_SIMPLE: art = new wxAuiSimpleTabArt; break;
+		default: art = new wxAuiDefaultTabArt;
+	}
+	GetNotebook()->SetArtProvider(art);
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)
@@ -224,15 +251,10 @@ void FbMainFrame::OnAbout(wxCommandEvent & event)
 	about.ShowModal();
 }
 
-wxAuiToolBar * FbMainFrame::CreateToolBar()
+wxToolBar * FbMainFrame::CreateToolBar()
 {
-	wxAuiToolBar * toolbar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE);
-
+	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
 	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
-
-	wxAuiToolBarArt * art = new wxAuiDefaultToolBarArt;
-	art->SetElementSize(wxAUI_TBART_GRIPPER_SIZE, 0);
-	toolbar->SetArtProvider(art);
 
 	wxWindowDC dc(toolbar);
 	int text_width = 0, text_height = 0;
@@ -242,16 +264,27 @@ wxAuiToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddTool(wxID_NEW, _("Импорт файла"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы"));
 	toolbar->AddTool(wxID_OPEN, _("Импорт папки"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Добавить в библиотеку директорию"));
 	toolbar->AddSeparator();
-	toolbar->AddLabel(wxID_ANY, _("Автор:"), text_width);
+
+	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Автор: "), wxDefaultPosition, wxDefaultSize, 0 );
+	text1->Wrap( -1 );
+	text1->SetFont(font);
+	toolbar->AddControl( text1 );
+
 	m_FindAuthor.Create(toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor.SetFont(font);
 	toolbar->AddControl( &m_FindAuthor );
 	toolbar->AddTool(ID_FIND_AUTHOR, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск автора"));
 	toolbar->AddSeparator();
-	toolbar->AddLabel(wxID_ANY, _("Книга:"), text_width);
+
+	wxStaticText * text2 = new wxStaticText( toolbar, wxID_ANY, _(" Книга: "), wxDefaultPosition, wxDefaultSize, 0 );
+	text2->Wrap( -1 );
+	text2->SetFont(font);
+	toolbar->AddControl( text2 );
+
 	m_FindTitle.Create(toolbar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindTitle.SetFont(font);
 	toolbar->AddControl( &m_FindTitle );
+
 	toolbar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_MODE_TREE, _("Иерархия"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Иерархия авторов и серий"));

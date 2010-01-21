@@ -57,6 +57,8 @@ FbMainMenu::MenuFile::MenuFile()
 
 FbMainMenu::MenuView::MenuView()
 {
+	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
+	AppendSeparator();
 	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
@@ -87,11 +89,13 @@ FbFrameMenu::MenuView::MenuView()
 	AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
 	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
 	AppendSeparator();
-	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
+	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
+	AppendSeparator();
+	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()
@@ -101,6 +105,12 @@ FbMenuBar::MenuRecent::MenuRecent()
 	Append(ID_RECENT_3);
 	Append(ID_RECENT_4);
 	Append(ID_RECENT_5);
+}
+
+FbMenuBar::MenuTabArt::MenuTabArt()
+{
+	AppendRadioItem(ID_ART_DEFAULT, _("Объемные"));
+	AppendRadioItem(ID_ART_SIMPLE, _("Простые"));
 }
 
 FbMenuBar::MenuWindow::MenuWindow()

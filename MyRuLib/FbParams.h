@@ -69,6 +69,7 @@ enum FbParamKey {
 	FB_COLUMN_LANG   = 184,
 
 	FB_LAST_LETTER   = 190,
+	FB_NOTEBOOK_ART  = 191,
 };
 
 class ParamItem

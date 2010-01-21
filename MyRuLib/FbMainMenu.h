@@ -33,6 +33,10 @@ class FbMenuBar: public wxMenuBar
 		class MenuWindow: public FbMenu {
 			public: MenuWindow();
 		};
+
+		class MenuTabArt: public FbMenu {
+			public: MenuTabArt();
+		};
 };
 
 class FbMainMenu: public FbMenuBar
