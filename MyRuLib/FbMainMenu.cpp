@@ -111,6 +111,8 @@ FbMenuBar::MenuTabArt::MenuTabArt()
 {
 	AppendRadioItem(ID_ART_DEFAULT, _("Объемные"));
 	AppendRadioItem(ID_ART_SIMPLE, _("Простые"));
+	AppendRadioItem(ID_ART_DEFAULT_MY, _("Мои Объемные"));
+	AppendRadioItem(ID_ART_SIMPLE_MY, _("Мои Простые"));
 }
 
 FbMenuBar::MenuWindow::MenuWindow()

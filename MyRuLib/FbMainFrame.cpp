@@ -32,6 +32,7 @@
 #include "FbUpdateThread.h"
 #include "InfoCash.h"
 #include "FbAboutDlg.h"
+#include "FbNotebook.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -77,8 +78,13 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
 	EVT_MENU(ID_ART_DEFAULT, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_SIMPLE, FbMainFrame::OnTabArt)
-	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
+	EVT_MENU(ID_ART_DEFAULT_MY, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_SIMPLE_MY, FbMainFrame::OnTabArt)
+	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_SIMPLE, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_DEFAULT_MY, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_SIMPLE_MY, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
@@ -179,11 +185,8 @@ void FbMainFrame::CreateControls()
 
 	m_LOGTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
 
-	GetNotebook()->SetWindowStyleFlag(
-		wxAUI_NB_TOP|
-		wxAUI_NB_SCROLL_BUTTONS |
-		wxAUI_NB_CLOSE_ON_ACTIVE_TAB |
-		wxNO_BORDER);
+//	long flags = wxAUI_NB_TAB_EXTERNAL_MOVE | wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_CLOSE_ON_ACTIVE_TAB | wxAUI_NB_TAB_MOVE | wxNO_BORDER;
+//	GetNotebook()->SetWindowStyleFlag(flags);
 	GetNotebook()->SetSelection(0);
 
 	m_FrameManager.SetManagedWindow(this);
@@ -224,9 +227,12 @@ void FbMainFrame::SetTabArt(int id)
 	wxAuiTabArt * art;
 	switch (id) {
 		case ID_ART_SIMPLE: art = new wxAuiSimpleTabArt; break;
+		case ID_ART_SIMPLE_MY: art = new FbAuiSimpleTabArt; break;
+		case ID_ART_DEFAULT_MY: art = new FbAuiDefaultTabArt; break;
 		default: art = new wxAuiDefaultTabArt;
 	}
 	GetNotebook()->SetArtProvider(art);
+	Update();
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)
@@ -504,10 +510,7 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 			frame = new FbFrameSequen(this);
 		} break;
 	}
-	if (frame) {
-		frame->Update();
-		OpenLastPage();
-	}
+	if (frame) frame->Update();
 }
 
 wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
