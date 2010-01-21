@@ -134,9 +134,6 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
-
-	SetAffirmativeId(wxID_OK);
-	SetEscapeId(wxID_CANCEL);
 }
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )

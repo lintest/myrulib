@@ -40,9 +40,6 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
-
-	SetAffirmativeId(wxID_OK);
-	SetEscapeId(wxID_CANCEL);
 }
 
 void FbViewerDlg::OnBtnClick( wxCommandEvent& event )
