@@ -30,7 +30,7 @@ class FbAuiSimpleTabArt : public wxAuiSimpleTabArt
 {
 
 public:
-	FbAuiSimpleTabArt::FbAuiSimpleTabArt();
+	FbAuiSimpleTabArt();
 
     wxAuiTabArt* Clone();
 

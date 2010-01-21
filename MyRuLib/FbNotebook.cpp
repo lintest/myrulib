@@ -10,6 +10,7 @@
 #include <wx/image.h>
 #include <wx/menu.h>
 
+/*
 #ifdef __WXMSW__
 #include  "wx/msw/private.h"
 #endif
@@ -22,7 +23,7 @@
 #include <gtk/gtk.h>
 #include "wx/gtk/win_gtk.h"
 #endif
-
+*/
 
 wxColor wxAuiStepColour(const wxColor& c, int percent);
 
@@ -67,6 +68,7 @@ static void IndentPressedBitmap(wxRect* rect, int button_state)
 
 static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags)
 {
+/*
 #ifdef __WXMSW__
     wxUnusedVar(win);
     wxUnusedVar(flags);
@@ -181,6 +183,7 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
 
     dc.SetLogicalFunction(wxCOPY);
 #endif
+*/
 }
 
 wxAuiTabArt* FbAuiDefaultTabArt::Clone()
