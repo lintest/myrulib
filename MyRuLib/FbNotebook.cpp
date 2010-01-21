@@ -404,7 +404,7 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
         // -- draw top gradient fill for glossy look
         wxColor top_color = m_base_colour;
         wxColor bottom_color = wxAuiStepColour(top_color, 90);
-        dc.GradientFillLinear(r, m_base_colour, m_base_colour, wxNORTH);
+        dc.GradientFillLinear(r, bottom_color, bottom_color, wxNORTH);
 
         r.y += r.height;
         r.y--;
@@ -412,7 +412,7 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
         // -- draw bottom fill for glossy look
         top_color = m_base_colour;
         bottom_color = wxAuiStepColour(top_color, 90);
-        dc.GradientFillLinear(r, m_base_colour, m_base_colour, wxSOUTH);
+        dc.GradientFillLinear(r, bottom_color, bottom_color, wxSOUTH);
     }
 
     // draw tab outline

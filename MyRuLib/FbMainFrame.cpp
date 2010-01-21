@@ -187,11 +187,10 @@ void FbMainFrame::CreateControls()
 
 //	long flags = wxAUI_NB_TAB_EXTERNAL_MOVE | wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_CLOSE_ON_ACTIVE_TAB | wxAUI_NB_TAB_MOVE | wxNO_BORDER;
 //	GetNotebook()->SetWindowStyleFlag(flags);
-	GetNotebook()->SetSelection(0);
+//	GetNotebook()->SetSelection(0);
 
 	m_FrameManager.SetManagedWindow(this);
-	int art = FbParams::GetValue(FB_NOTEBOOK_ART);
-	if (art) SetTabArt(art + ID_ART_DEFAULT);
+	SetTabArt(FbParams::GetValue(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
 
 	SetToolBar(CreateToolBar());
 
