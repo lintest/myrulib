@@ -20,8 +20,9 @@ FbMenuBar::MenuLib::MenuLib()
 	Append(ID_MENU_DB_OPEN, _("Открыть (создать) коллекцию"));
 	Append(wxID_ANY, _("Открыть повторно"), new MenuRecent());
 	AppendSeparator();
-	Append(ID_MENU_DB_INFO, _("Информация о коллекции"));
-	Append(ID_MENU_VACUUM,  _("Реструктуризация БД"));
+	Append(ID_MENU_DB_INFO,  _("Информация о коллекции"));
+	Append(ID_MENU_OPTIMIZE, _("Удалить пустые значения"));
+	Append(ID_MENU_VACUUM,   _("Реструктуризация БД"));
 	AppendSeparator();
 	Append(ID_MENU_CONFIG, _("Параметры"));
 }
