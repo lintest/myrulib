@@ -34,8 +34,8 @@ class FbBookPanel: public wxSplitterWindow
 		FbItemData * GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
-		void AppendAuthor(int id, const wxString title = wxEmptyString);
-		void AppendSequence(int id, const wxString title = wxEmptyString);
+		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
+		void AppendSequence(int id, const wxString title, wxTreeItemData * data = NULL);
 		void CreateColumns(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode;};
 		void SetFolder(int folder) { m_folder = folder; };

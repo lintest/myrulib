@@ -46,6 +46,8 @@ class FbFrameSequen : public FbFrameBase
 		void OnMasterAppend(wxCommandEvent& event);
 		void OnMasterModify(wxCommandEvent& event);
 		void OnMasterDelete(wxCommandEvent& event);
+		void OnAppendAuthor(wxCommandEvent& event);
+		void OnAppendSequence(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 	protected:
 		class SequenThread: public BaseThread

@@ -22,6 +22,8 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameSequen::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameSequen::OnMasterModify)
 	EVT_MENU(ID_MASTER_DELETE, FbFrameSequen::OnMasterDelete)
+	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameSequen::OnAppendAuthor)
+	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameSequen::OnAppendSequence)
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
@@ -161,11 +163,11 @@ void FbFrameSequen::SequenThread::CreateTree(wxSQLite3ResultSet &result)
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
 			thisAuthor = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, thisSequence).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
 		}
 		if (thisAuthor != nextAuthor) {
 			thisAuthor = nextAuthor;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, nextAuthor).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, nextAuthor).Post(m_frame);
 		}
 		BookTreeItemData data(result);
 		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
@@ -324,14 +326,8 @@ FbFrameSequen::EditDlg::EditDlg( const wxString& title, int id )
 	m_edit.SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( &m_edit, 0, wxEXPAND|wxALL, 5 );
 
-	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
-	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
-	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
-	m_sdbSizerBtnOK->SetDefault();
-	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
-	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
-	m_sdbSizerBtn->Realize();
-	bSizerMain->Add( m_sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
@@ -489,5 +485,17 @@ FbFrameSequen::MenuMaster::MenuMaster()
 wxMenuBar * FbFrameSequen::CreateMenuBar()
 {
 	return new MenuBar;
+}
+
+void FbFrameSequen::OnAppendSequence(wxCommandEvent& event)
+{
+	wxString title = event.GetString();
+	if (title.IsEmpty()) title = strOtherSequence;
+	m_BooksPanel->AppendAuthor( event.GetInt(), title );
+}
+
+void FbFrameSequen::OnAppendAuthor(wxCommandEvent& event)
+{
+	m_BooksPanel->AppendSequence( event.GetInt(), event.GetString(), new FbAuthorData(event.GetInt()));
 }
 

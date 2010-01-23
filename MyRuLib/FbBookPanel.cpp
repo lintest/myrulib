@@ -371,25 +371,24 @@ void FbBookPanel::EmptyBooks(const int selected)
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
-void FbBookPanel::AppendAuthor(int id, const wxString title)
+void FbBookPanel::AppendAuthor(int id, const wxString title, wxTreeItemData * data)
 {
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_BookList->GetRootItem();
-	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1, new FbAuthorData(id));
+	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1, data);
 	m_BookList->SetItemBold(m_AuthorItem, true);
 	m_BookList->Expand(parent);
 }
 
-void FbBookPanel::AppendSequence(int id, const wxString title)
+void FbBookPanel::AppendSequence(int id, const wxString title, wxTreeItemData * data)
 {
 	if (title.IsEmpty() && !m_SequenceItem.IsOk()) {
 		m_SequenceItem = m_AuthorItem;
 		return;
 	}
-	wxString text = title.IsEmpty() ? strOtherSequence : title;
 	FbTreeListUpdater updater(m_BookList);
 	wxTreeItemId parent = m_AuthorItem.IsOk() ? m_AuthorItem : m_BookList->GetRootItem();
-	m_SequenceItem = m_BookList->AppendItem(parent, text, 0);
+	m_SequenceItem = m_BookList->AppendItem(parent, title, 0, -1, data);
 	m_BookList->SetItemBold(m_SequenceItem, true);
 	m_BookList->Expand(parent);
 }
