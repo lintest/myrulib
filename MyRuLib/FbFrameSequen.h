@@ -41,7 +41,7 @@ class FbFrameSequen : public FbFrameBase
 		void OnLetterClicked(wxCommandEvent& event);
 		void OnCharEvent(wxKeyEvent& event);
 		void OnEmptyAuthors(wxCommandEvent& event);
-		void OnAppendAuthor(FbAuthorEvent& event);
+		void OnAppendMaster(FbAuthorEvent& event);
 		void OnFindEnter(wxCommandEvent& event);
 		void OnMasterAppend(wxCommandEvent& event);
 		void OnMasterModify(wxCommandEvent& event);
@@ -54,6 +54,9 @@ class FbFrameSequen : public FbFrameBase
 				SequenThread(FbFrameBase * frame, FbListMode mode, const int master)
 					:BaseThread(frame, mode), m_master(master), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
+			protected:
+				virtual void CreateTree(wxSQLite3ResultSet &result);
+				virtual wxString GetOrder();
 			private:
 				static FbThreadSkiper sm_skiper;
 				int m_master;

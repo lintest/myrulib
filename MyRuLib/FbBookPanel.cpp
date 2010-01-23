@@ -380,7 +380,7 @@ void FbBookPanel::AppendAuthor(int id, const wxString title)
 	m_BookList->Expand(parent);
 }
 
-void FbBookPanel::AppendSequence(const wxString title)
+void FbBookPanel::AppendSequence(int id, const wxString title)
 {
 	if (title.IsEmpty() && !m_SequenceItem.IsOk()) {
 		m_SequenceItem = m_AuthorItem;

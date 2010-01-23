@@ -14,7 +14,7 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnAuthorSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
 	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameSequen::OnEmptyAuthors)
-	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameSequen::OnAppendAuthor)
+	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameSequen::OnAppendMaster)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
 	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
 	EVT_MENU(ID_SEQUENCE_BTN, FbFrameSequen::OnFindEnter )
@@ -149,6 +149,38 @@ void * FbFrameSequen::SequenThread::Entry()
 	return NULL;
 }
 
+void FbFrameSequen::SequenThread::CreateTree(wxSQLite3ResultSet &result)
+{
+	wxString thisSequence = wxT("@@@");
+	wxString thisAuthor = wxT("@@@");
+	while (result.NextRow()) {
+		int id_author = result.GetInt(wxT("id_author"));
+		wxString nextSequence = result.GetString(wxT("sequence"));
+		wxString nextAuthor = result.GetString(wxT("full_name"));
+
+		if (thisSequence != nextSequence) {
+			thisSequence = nextSequence;
+			thisAuthor = wxT("@@@");
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, thisSequence).Post(m_frame);
+		}
+		if (thisAuthor != nextAuthor) {
+			thisAuthor = nextAuthor;
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, nextAuthor).Post(m_frame);
+		}
+		BookTreeItemData data(result);
+		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
+	}
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT).Post(m_frame);
+}
+
+wxString FbFrameSequen::SequenThread::GetOrder()
+{
+	if (m_mode == FB2_MODE_TREE)
+		return  wxT("sequences.value, authors.search_name, key, bookseq.number, books.title");
+	else
+		return m_ListOrder;
+}
+
 void FbFrameSequen::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
@@ -156,7 +188,7 @@ void FbFrameSequen::UpdateBooklist()
 	if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
-void FbFrameSequen::OnAppendAuthor(FbAuthorEvent& event)
+void FbFrameSequen::OnAppendMaster(FbAuthorEvent& event)
 {
 	FbTreeListUpdater updater(m_MasterList);
 	wxTreeItemId root = m_MasterList->GetRootItem();

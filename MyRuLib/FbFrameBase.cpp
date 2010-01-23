@@ -110,7 +110,7 @@ void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
-	m_BooksPanel->AppendSequence( event.GetString() );
+	m_BooksPanel->AppendSequence( event.GetInt(), event.GetString() );
 }
 
 void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
@@ -285,8 +285,8 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
 					LEFT JOIN states ON books.md5sum=states.md5sum \
 				WHERE (%s) \
-				ORDER BY authors.search_name, key, sequences.value, bookseq.number, books.title \
-			");
+				ORDER BY \
+			") + GetOrder();
 			break;
 		case FB2_MODE_LIST:
 			sql = wxT("\
@@ -309,7 +309,10 @@ wxString FbFrameBase::BaseThread::GetSQL(const wxString & condition)
 
 wxString FbFrameBase::BaseThread::GetOrder()
 {
-	return m_ListOrder;
+	if (m_mode == FB2_MODE_TREE)
+		return  wxT("authors.search_name, key, sequences.value, bookseq.number, books.title");
+	else
+		return m_ListOrder;
 }
 
 void FbFrameBase::BaseThread::CreateTree(wxSQLite3ResultSet &result)
@@ -324,11 +327,11 @@ void FbFrameBase::BaseThread::CreateTree(wxSQLite3ResultSet &result)
 		if (thisAuthor != nextAuthor) {
 			thisAuthor = nextAuthor;
 			thisSequence = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, thisAuthor).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisSequence).Post(m_frame);
 		}
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, id_author, thisAuthor).Post(m_frame);
 		}
 		BookTreeItemData data(result);
 		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
