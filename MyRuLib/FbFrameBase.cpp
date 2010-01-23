@@ -14,8 +14,9 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
 	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnSubmenu)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeView)
-	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeView)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_FILTER_USE, FbFrameBase::OnFilterUse)
@@ -28,8 +29,9 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_ORDER_LANG, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_SIZE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TYPE, FbFrameBase::OnChangeOrder)
-	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenuUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
@@ -81,10 +83,9 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 	wxPostEvent(m_BooksPanel, event);
 }
 
-void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
+void FbFrameBase::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 {
-	if (event.GetId() == ID_SPLIT_HORIZONTAL && m_BooksPanel->GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
-	if (event.GetId() == ID_SPLIT_VERTICAL && m_BooksPanel->GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
+	wxPostEvent(m_BooksPanel, event);
 }
 
 void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
@@ -116,39 +117,6 @@ void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
 	m_BooksPanel->AppendSequence( event.GetString() );
-}
-
-int FbFrameBase::GetModeKey()
-{
-	switch (GetId()) {
-		case ID_FRAME_AUTHOR: return FB_MODE_AUTHOR;
-		case ID_FRAME_GENRES: return FB_MODE_GENRES;
-		case ID_FRAME_FOLDER: return FB_MODE_FOLDER;
-		case ID_FRAME_SEARCH: return FB_MODE_SEARCH;
-		default: return 0;
-	}
-}
-
-int FbFrameBase::GetViewKey()
-{
-	switch (GetId()) {
-		case ID_FRAME_AUTHOR: return FB_VIEW_AUTHOR;
-		case ID_FRAME_GENRES: return FB_VIEW_GENRES;
-		case ID_FRAME_FOLDER: return FB_VIEW_FOLDER;
-		case ID_FRAME_SEARCH: return FB_VIEW_SEARCH;
-		case ID_FRAME_DOWNLD: return FB_VIEW_DOWNLD;
-		default: return 0;
-	}
-}
-
-void FbFrameBase::OnChangeView(wxCommandEvent & event)
-{
-	int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
-
-	int param = GetViewKey();
-	if (param) FbParams().SetValue(param, vertical);
-
-	m_BooksPanel->CreateBookInfo((bool)vertical);
 }
 
 void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
@@ -448,5 +416,28 @@ void FbFrameBase::OnFilterNot(wxCommandEvent& event)
 	FbParams().SetValue(FB_USE_FILTER, 0);
 	m_filter.Disable();
 	UpdateBooklist();
+}
+
+int FbFrameBase::GetModeKey()
+{
+	switch (GetId()) {
+		case ID_FRAME_AUTHOR: return FB_MODE_AUTHOR;
+		case ID_FRAME_GENRES: return FB_MODE_GENRES;
+		case ID_FRAME_FOLDER: return FB_MODE_FOLDER;
+		case ID_FRAME_SEARCH: return FB_MODE_SEARCH;
+		default: return 0;
+	}
+}
+
+int FbFrameBase::GetViewKey()
+{
+	switch (GetId()) {
+		case ID_FRAME_AUTHOR: return FB_VIEW_AUTHOR;
+		case ID_FRAME_GENRES: return FB_VIEW_GENRES;
+		case ID_FRAME_FOLDER: return FB_VIEW_FOLDER;
+		case ID_FRAME_SEARCH: return FB_VIEW_SEARCH;
+		case ID_FRAME_DOWNLD: return FB_VIEW_DOWNLD;
+		default: return 0;
+	}
 }
 

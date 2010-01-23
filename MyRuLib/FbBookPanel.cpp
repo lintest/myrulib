@@ -17,6 +17,12 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
 	EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, FbBookPanel::OnContextMenu)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeView)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeView)
+	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbBookPanel::OnChangeViewUpdateUI)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
@@ -38,11 +44,13 @@ END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0)
+		m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0), m_ViewKey(keyType)
 {
-	SetMinimumPaneSize(50);
+//	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
 	m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
+	m_BookInfo = new FbHtmlWindow(this, ID_BOOKS_INFO_PANEL);
+
 	CreateBookInfo( (bool) FbParams::GetValue(keyType) );
 	{
 		BookListUpdater updater(m_BookList);
@@ -139,9 +147,9 @@ void FbBookPanel::RevertOrder()
 
 void FbBookPanel::CreateBookInfo(bool bVertical)
 {
-	if (m_BookInfo) Unsplit(m_BookInfo);
-
-	m_BookInfo = new FbHtmlWindow(this, ID_BOOKS_INFO_PANEL);
+	if (m_BookInfo) {
+		Unsplit(m_BookInfo);
+	}
 
 	if (bVertical)
 		SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2);
@@ -524,3 +532,23 @@ void FbBookPanel::OnAuthorInfo(wxCommandEvent& event)
 	}
 }
 
+void FbBookPanel::OnChangeView(wxCommandEvent & event)
+{
+	if (event.GetId() == ID_SPLIT_NOTHING) {
+		Unsplit(m_BookInfo);
+	} else {
+		int vertical = (event.GetId() == ID_SPLIT_VERTICAL);
+		if (m_ViewKey) FbParams().SetValue(m_ViewKey, vertical);
+		CreateBookInfo((bool)vertical);
+	}
+}
+
+void FbBookPanel::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
+{
+	if (IsSplit()) {
+		if (event.GetId() == ID_SPLIT_NOTHING) event.Check(true);
+	} else {
+		if (event.GetId() == ID_SPLIT_HORIZONTAL && GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
+		if (event.GetId() == ID_SPLIT_VERTICAL && GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
+	}
+}
