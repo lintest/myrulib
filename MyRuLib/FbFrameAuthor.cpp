@@ -22,6 +22,7 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameAuthor::OnAppendAuthor)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuthor::OnContextMenu)
+	EVT_MENU(ID_LETTER_ALL, FbFrameAuthor::OnAllClicked)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameAuthor::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameAuthor::OnMasterModify)
 	EVT_MENU(ID_MASTER_REPLACE, FbFrameAuthor::OnMasterReplace)
@@ -69,6 +70,7 @@ void FbFrameAuthor::CreateControls()
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style)
 {
 	wxToolBar * toolBar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS|style);
+	if (toolid == ID_LETTER_EN) toolBar->AddTool(ID_LETTER_ALL, wxT("*"), wxNullBitmap, wxNullBitmap, wxITEM_CHECK, _("Все авторы коллекции"));
 	for (size_t i = 0; i<alphabet.Len(); i++) {
 		wxString letter = alphabet.Mid(i, 1);
 		int btnid = toolid + i;
@@ -89,6 +91,7 @@ void FbFrameAuthor::ToggleAlphabar(const int &idLetter)
 		int id = ID_LETTER_EN + i;
 		m_EnAlphabar->ToggleTool(id, id == idLetter);
 	}
+	m_EnAlphabar->ToggleTool(ID_LETTER_ALL, ID_LETTER_ALL == idLetter);
 }
 
 void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
@@ -112,6 +115,16 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 	(new FbAuthorThreadChar(this, alphabet[position], m_MasterList->GetSortedColumn()))->Execute();
 	m_AuthorMode = FB_AUTHOR_MODE_CHAR;
 	m_AuthorText = alphabet[position];
+}
+
+void FbFrameAuthor::OnAllClicked(wxCommandEvent& event)
+{
+	wxString text = wxT("*");
+	FbFrameAuthor::ToggleAlphabar(ID_LETTER_ALL);
+	(new FbAuthorThreadText(this, text, m_MasterList->GetSortedColumn()))->Execute();
+	m_AuthorMode = FB_AUTHOR_MODE_TEXT;
+	m_AuthorText = text;
+	FbParams().SetValue(FB_LAST_LETTER, -1);
 }
 
 void FbFrameAuthor::SelectFirstAuthor(const int book)

@@ -151,6 +151,11 @@ wxString FbParams::DefaultText(int param)
 			return wxT("flibusta.net");
 		case FB_DOWNLOAD_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
+		case FB_FONT_MAIN:
+		case FB_FONT_HTML:
+		case FB_FONT_TOOL:
+		case FB_FONT_DLG:
+			return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT).GetNativeFontInfoDesc();
 		default:
 			return wxEmptyString;
 	}
