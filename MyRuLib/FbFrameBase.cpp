@@ -32,8 +32,8 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenuUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenuUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenuUpdateUI)
-	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
-	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnSubmenuUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
@@ -86,12 +86,6 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 void FbFrameBase::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 {
 	wxPostEvent(m_BooksPanel, event);
-}
-
-void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
-{
-	if (event.GetId() == ID_MODE_LIST && m_BooksPanel->GetListMode() == FB2_MODE_LIST) event.Check(true);
-	if (event.GetId() == ID_MODE_TREE && m_BooksPanel->GetListMode() == FB2_MODE_TREE) event.Check(true);
 }
 
 void FbFrameBase::OnExternal(wxCommandEvent& event)
@@ -198,7 +192,7 @@ wxToolBar * FbFrameBase::CreateToolBar(long style, wxWindowID winid, const wxStr
 
 void FbFrameBase::OnColClick(wxListEvent& event)
 {
-	if (m_BooksPanel->GetListMode() != FB2_MODE_LIST) return;
+	if (m_BooksPanel->GetListMode() == FB2_MODE_TREE) return;
 	UpdateBooklist();
 }
 

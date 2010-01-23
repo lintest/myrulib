@@ -13,6 +13,12 @@ enum FbListMode {
 	FB2_MODE_TREE = 1,
 };
 
+enum FbViewMode {
+	FB2_VIEW_HORISONTAL = 0,
+	FB2_VIEW_VERTICAL = 1,
+	FB2_VIEW_NOTHING = 2,
+};
+
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
@@ -25,7 +31,6 @@ class FbBookPanel: public wxSplitterWindow
 		wxString GetOrderSQL();
 	public:
 		FbBookList * m_BookList;
-		wxHtmlWindow * m_BookInfo;
 		FbItemData * GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
@@ -35,9 +40,10 @@ class FbBookPanel: public wxSplitterWindow
 		FbListMode GetListMode() { return m_ListMode;};
 		void SetFolder(int folder) { m_folder = folder; };
 		void SetType(int type) { m_type = type; };
-		void CreateBookInfo(bool bVertical);
 		void UpdateFonts(bool refresh = true);
 	private:
+		wxHtmlWindow * m_BookInfo;
+		void SetViewMode(int mode);
 		void DoFolderAdd(const int folder);
 		static void DoDeleteDownload(const wxString &sel, const int folder);
 		static void DoCreateDownload(const wxString &sel, int count = 1);
@@ -51,7 +57,7 @@ class FbBookPanel: public wxSplitterWindow
 		int m_folder;
 		int m_type;
 		int m_selected;
-		int m_ViewKey;
+		int m_KeyView;
 	private:
 		void OnAuthorInfo(wxCommandEvent& event);
 		void OnBooksListViewSelected(wxTreeEvent & event);
@@ -75,6 +81,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnDeleteBooks(wxCommandEvent& event);
 		void OnModifyBooks(wxCommandEvent& event);
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
+		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 		DECLARE_EVENT_TABLE();
 	private:
 };
