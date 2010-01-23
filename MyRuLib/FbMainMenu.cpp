@@ -93,6 +93,7 @@ FbFrameMenu::MenuView::MenuView()
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
 	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Просмотр снизу"));
+	AppendRadioItem(ID_SPLIT_NOTHING, _("&Просмотр отсутствует"));
 	AppendSeparator();
 	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));

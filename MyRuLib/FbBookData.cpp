@@ -65,13 +65,15 @@ void FbBookData::DoDownload() const
 
 void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
 {
-	InfoCash::LoadIcon(m_filetype);
-	InfoCash::UpdateInfo(frame, m_id, bVertical);
+	if (frame) {
+		InfoCash::LoadIcon(m_filetype);
+		InfoCash::UpdateInfo(frame, m_id, bVertical);
+	}
 }
 
 void FbAuthorData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
 {
-	(new ShowThread(frame, m_author))->Execute();
+	if (frame) (new ShowThread(frame, m_author))->Execute();
 }
 
 void * FbAuthorData::ShowThread::Entry()
