@@ -28,6 +28,10 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_MENU(ID_MASTER_REPLACE, FbFrameAuthor::OnMasterReplace)
 	EVT_MENU(ID_MASTER_DELETE, FbFrameAuthor::OnMasterDelete)
 	EVT_MENU(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPage)
+	EVT_MENU(ID_ALPHABET_RU, FbFrameAuthor::OnViewAlphavet)
+	EVT_MENU(ID_ALPHABET_EN, FbFrameAuthor::OnViewAlphavet)
+	EVT_UPDATE_UI(ID_ALPHABET_RU, FbFrameAuthor::OnViewAlphavetUpdateUI)
+	EVT_UPDATE_UI(ID_ALPHABET_EN, FbFrameAuthor::OnViewAlphavetUpdateUI)
 	EVT_UPDATE_UI(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPageUpdateUI)
 END_EVENT_TABLE()
 
@@ -42,8 +46,8 @@ void FbFrameAuthor::CreateControls()
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
-	sizer->Add(m_RuAlphabar = CreateAlphaBar(this, alphabetRu, ID_LETTER_RU, wxTB_NODIVIDER), 0, wxEXPAND, 5);
-	sizer->Add(m_EnAlphabar = CreateAlphaBar(this, alphabetEn, ID_LETTER_EN, 0), 0, wxEXPAND, 5);
+	sizer->Add(m_RuAlphabar = CreateAlphaBar(this, ID_ALPHABET_RU, alphabetRu, ID_LETTER_RU, wxTB_NODIVIDER), 0, wxEXPAND, 5);
+	sizer->Add(m_EnAlphabar = CreateAlphaBar(this, ID_ALPHABET_EN, alphabetEn, ID_LETTER_EN, 0), 0, wxEXPAND, 5);
 
 	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
 	m_RuAlphabar->SetFont(font);
@@ -65,11 +69,14 @@ void FbFrameAuthor::CreateControls()
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	FbFrameBase::CreateControls();
+
+	m_RuAlphabar->Show( FbParams::GetValue(FB_ALPHABET_RU) );
+	m_EnAlphabar->Show( FbParams::GetValue(FB_ALPHABET_EN) );
 }
 
-wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style)
+wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style)
 {
-	wxToolBar * toolBar = new wxToolBar(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS|style);
+	wxToolBar * toolBar = new wxToolBar(parent, id, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS|style);
 	if (toolid == ID_LETTER_EN) toolBar->AddTool(ID_LETTER_ALL, wxT("*"), wxNullBitmap, wxNullBitmap, wxITEM_CHECK, _("Все авторы коллекции"));
 	for (size_t i = 0; i<alphabet.Len(); i++) {
 		wxString letter = alphabet.Mid(i, 1);
@@ -324,8 +331,8 @@ void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
 
 void FbFrameAuthor::ShowFullScreen(bool show)
 {
-	if (m_RuAlphabar) m_RuAlphabar->Show(!show);
-	if (m_EnAlphabar) m_EnAlphabar->Show(!show);
+	if (m_RuAlphabar) m_RuAlphabar->Show(!show && FbParams::GetValue(FB_ALPHABET_RU));
+	if (m_EnAlphabar) m_EnAlphabar->Show(!show && FbParams::GetValue(FB_ALPHABET_EN));
 	Layout();
 }
 
@@ -459,5 +466,35 @@ void FbFrameAuthor::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 {
 	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
 	event.Enable( data && data->GetId()>0 );
+}
+
+FbFrameAuthor::MenuBar::MenuView::MenuView()
+{
+	InsertCheckItem(0, ID_ALPHABET_RU, _("Русский алфавит"));
+	InsertCheckItem(1, ID_ALPHABET_EN, _("Английский алфавит"));
+	InsertSeparator(2);
+}
+
+void FbFrameAuthor::OnViewAlphavet(wxCommandEvent& event)
+{
+	wxToolBar * control = (wxToolBar*) FindWindowById(event.GetId());
+	if (!control) return;
+
+	bool show = ! control->IsShown();
+	control->Show(show);
+	Layout();
+
+	int key = 0;
+	switch ( event.GetId() ) {
+		case ID_ALPHABET_RU: key = FB_ALPHABET_RU;
+		case ID_ALPHABET_EN: key = FB_ALPHABET_EN;
+	}
+	if (key) FbParams().SetValue(key, show);
+}
+
+void FbFrameAuthor::OnViewAlphavetUpdateUI(wxUpdateUIEvent & event)
+{
+	wxToolBar * control = (wxToolBar*) FindWindowById(event.GetId());
+	event.Check(control->IsShown());
 }
 

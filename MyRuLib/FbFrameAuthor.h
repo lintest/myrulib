@@ -31,7 +31,7 @@ class FbFrameAuthor : public FbFrameBase
 		virtual void UpdateBooklist();
 		virtual wxMenuBar * CreateMenuBar();
 	private:
-		wxToolBar * CreateAlphaBar(wxWindow * parent, const wxString & alphabet, const int &toolid, long style);
+		wxToolBar * CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style);
 		void ToggleAlphabar(const int &idLetter);
 		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
@@ -52,6 +52,8 @@ class FbFrameAuthor : public FbFrameBase
 		void OnLetterClicked(wxCommandEvent& event);
 		void OnExternal(wxCommandEvent& event);
 		void OnCharEvent(wxKeyEvent& event);
+		void OnViewAlphavet(wxCommandEvent& event);
+		void OnViewAlphavetUpdateUI(wxUpdateUIEvent & event);
 		void OnEmptyAuthors(wxCommandEvent& event);
 		void OnAppendAuthor(FbAuthorEvent& event);
 		void OnMasterAppend(wxCommandEvent& event);
@@ -87,6 +89,10 @@ class FbFrameAuthor : public FbFrameBase
 		{
 			public:
 				MenuBar();
+			private:
+				class MenuView: public FbFrameMenu::MenuView {
+					public: MenuView();
+				};
 		};
 		class MenuMaster: public FbMenu {
 			public: MenuMaster();

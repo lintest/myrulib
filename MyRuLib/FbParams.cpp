@@ -136,6 +136,8 @@ int FbParams::DefaultValue(int param)
 		case FB_AUTO_DOWNLD: return 1;
 		case FB_FRAME_WIDTH: return 640;
 		case FB_FRAME_HEIGHT: return 480;
+		case FB_ALPHABET_RU: return 1;
+		case FB_ALPHABET_EN: return 1;
 		default: return 0;
 	}
 };

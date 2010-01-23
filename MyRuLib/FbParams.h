@@ -70,6 +70,8 @@ enum FbParamKey {
 
 	FB_LAST_LETTER   = 190,
 	FB_NOTEBOOK_ART  = 191,
+	FB_ALPHABET_RU   = 192,
+	FB_ALPHABET_EN   = 193,
 };
 
 class ParamItem
