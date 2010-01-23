@@ -329,11 +329,11 @@ void FbFrameBase::BaseThread::CreateTree(wxSQLite3ResultSet &result)
 		if (thisAuthor != nextAuthor) {
 			thisAuthor = nextAuthor;
 			thisSequence = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, thisSequence).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, nextAuthor).Post(m_frame);
 		}
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, id_author, thisAuthor).Post(m_frame);
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, id_author, thisSequence).Post(m_frame);
 		}
 		BookTreeItemData data(result);
 		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
