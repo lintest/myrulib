@@ -47,7 +47,7 @@ void FbFrameAuthor::CreateControls()
 	SetSizer(sizer);
 
 	sizer->Add(m_RuAlphabar = CreateAlphaBar(this, ID_ALPHABET_RU, alphabetRu, ID_LETTER_RU, wxTB_NODIVIDER), 0, wxEXPAND, 5);
-	sizer->Add(m_EnAlphabar = CreateAlphaBar(this, ID_ALPHABET_EN, alphabetEn, ID_LETTER_EN, 0), 0, wxEXPAND, 5);
+	sizer->Add(m_EnAlphabar = CreateAlphaBar(this, ID_ALPHABET_EN, alphabetEn, ID_LETTER_EN, wxTB_NODIVIDER), 0, wxEXPAND, 5);
 
 	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
 	m_RuAlphabar->SetFont(font);

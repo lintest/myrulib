@@ -423,6 +423,7 @@ int FbFrameBase::GetModeKey()
 		case ID_FRAME_FOLDER: return FB_MODE_FOLDER;
 		case ID_FRAME_SEARCH: return FB_MODE_SEARCH;
 		case ID_FRAME_DOWNLD: return FB_MODE_DOWNLD;
+		case ID_FRAME_SEQUEN: return FB_MODE_SEQUEN;
 		default: return 0;
 	}
 }
@@ -435,6 +436,7 @@ int FbFrameBase::GetViewKey()
 		case ID_FRAME_FOLDER: return FB_VIEW_FOLDER;
 		case ID_FRAME_SEARCH: return FB_VIEW_SEARCH;
 		case ID_FRAME_DOWNLD: return FB_VIEW_DOWNLD;
+		case ID_FRAME_SEQUEN: return FB_VIEW_SEQUEN;
 		default: return 0;
 	}
 }
