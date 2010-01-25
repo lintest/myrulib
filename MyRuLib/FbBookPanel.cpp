@@ -20,11 +20,6 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
-	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbBookPanel::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_MODE_LIST, FbBookPanel::OnChangeModeUpdateUI)
-	EVT_UPDATE_UI(ID_MODE_TREE, FbBookPanel::OnChangeModeUpdateUI)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
@@ -535,12 +530,6 @@ void FbBookPanel::OnAuthorInfo(wxCommandEvent& event)
 	} catch (...) { }
 }
 
-void FbBookPanel::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
-{
-	if (event.GetId() == ID_MODE_LIST && GetListMode() == FB2_MODE_LIST) event.Check(true);
-	if (event.GetId() == ID_MODE_TREE && GetListMode() == FB2_MODE_TREE) event.Check(true);
-}
-
 void FbBookPanel::OnChangeView(wxCommandEvent & event)
 {
 	int mode = FB2_VIEW_HORISONTAL;
@@ -552,12 +541,12 @@ void FbBookPanel::OnChangeView(wxCommandEvent & event)
 	if (m_KeyView) FbParams().SetValue(m_KeyView, mode);
 }
 
-void FbBookPanel::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
+FbViewMode FbBookPanel::GetViewMode()
 {
-	if (IsSplit()) {
-		if (event.GetId() == ID_SPLIT_HORIZONTAL && GetSplitMode() == wxSPLIT_HORIZONTAL) event.Check(true);
-		if (event.GetId() == ID_SPLIT_VERTICAL && GetSplitMode() == wxSPLIT_VERTICAL) event.Check(true);
-	} else {
-		if (event.GetId() == ID_SPLIT_NOTHING) event.Check(true);
-	}
+	if (IsSplit())
+		switch (GetSplitMode()) {
+			case wxSPLIT_HORIZONTAL: return FB2_VIEW_HORISONTAL;
+			case wxSPLIT_VERTICAL: return FB2_VIEW_VERTICAL;
+		}
+	return FB2_VIEW_NOTHING;
 }

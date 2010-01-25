@@ -87,9 +87,8 @@ FbFrameMenu::MenuBook::MenuBook()
 
 FbFrameMenu::MenuView::MenuView()
 {
-	AppendRadioItem(ID_MODE_TREE, _("&Иерархия авторов и серий"));
-	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
-	AppendSeparator();
+	Append(wxID_ANY, _("Список книг"), new MenuListMode());
+	Append(wxID_ANY, _("Область просмотра"), new MenuPreview());
 	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
 	AppendSeparator();
 	AppendRadioItem(ID_SPLIT_VERTICAL, _("&Просмотр справа"));
@@ -109,12 +108,25 @@ FbMenuBar::MenuRecent::MenuRecent()
 	Append(ID_RECENT_5);
 }
 
+FbMenuBar::MenuListMode::MenuListMode()
+{
+	AppendRadioItem(ID_MODE_TREE, _("&Иерархический"));
+	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
+}
+
 FbMenuBar::MenuTabArt::MenuTabArt()
 {
 	AppendRadioItem(ID_ART_DEFAULT,  _("Стандартные"));
 	AppendRadioItem(ID_ART_COMPACT,  _("Компактные"));
 	AppendRadioItem(ID_ART_STANDART, _("Выпуклые"));
 	AppendRadioItem(ID_ART_TOOLBAR,  _("Кнопочные"));
+}
+
+FbMenuBar::MenuPreview::MenuPreview()
+{
+	AppendRadioItem(ID_SPLIT_VERTICAL,   _("&Справа"));
+	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Внизу"));
+	AppendRadioItem(ID_SPLIT_NOTHING,    _("&Отсутствует"));
 }
 
 FbMenuBar::MenuWindow::MenuWindow()

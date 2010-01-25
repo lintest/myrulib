@@ -29,11 +29,14 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_ORDER_LANG, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_SIZE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TYPE, FbFrameBase::OnChangeOrder)
-	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenuUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenuUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenuUpdateUI)
-	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnSubmenuUpdateUI)
-	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
@@ -79,11 +82,6 @@ void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
-{
-	wxPostEvent(m_BooksPanel, event);
-}
-
-void FbFrameBase::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 {
 	wxPostEvent(m_BooksPanel, event);
 }
@@ -424,6 +422,7 @@ int FbFrameBase::GetModeKey()
 		case ID_FRAME_GENRES: return FB_MODE_GENRES;
 		case ID_FRAME_FOLDER: return FB_MODE_FOLDER;
 		case ID_FRAME_SEARCH: return FB_MODE_SEARCH;
+		case ID_FRAME_DOWNLD: return FB_MODE_DOWNLD;
 		default: return 0;
 	}
 }
@@ -440,3 +439,21 @@ int FbFrameBase::GetViewKey()
 	}
 }
 
+void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
+{
+	FbListMode mode = m_BooksPanel->GetListMode();
+	switch (event.GetId()) {
+		case ID_MODE_LIST: if (mode == FB2_MODE_LIST) event.Check(true); break;
+		case ID_MODE_TREE: if (mode == FB2_MODE_TREE) event.Check(true); break;
+	}
+}
+
+void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
+{
+	FbViewMode mode = m_BooksPanel->GetViewMode();
+	switch (event.GetId()) {
+		case ID_SPLIT_HORIZONTAL: if (mode == FB2_VIEW_HORISONTAL) event.Check(true); break;
+		case ID_SPLIT_VERTICAL: if (mode == FB2_VIEW_VERTICAL) event.Check(true); break;
+		case ID_SPLIT_NOTHING: if (mode == FB2_VIEW_NOTHING) event.Check(true); break;
+	}
+}

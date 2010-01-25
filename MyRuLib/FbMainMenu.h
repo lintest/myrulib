@@ -34,8 +34,16 @@ class FbMenuBar: public wxMenuBar
 			public: MenuWindow();
 		};
 
+		class MenuListMode: public FbMenu {
+			public: MenuListMode();
+		};
+
 		class MenuTabArt: public FbMenu {
 			public: MenuTabArt();
+		};
+
+		class MenuPreview: public FbMenu {
+			public: MenuPreview();
 		};
 };
 

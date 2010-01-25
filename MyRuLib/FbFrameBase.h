@@ -43,7 +43,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		int GetModeKey();
 		int GetViewKey();
 		void OnSubmenu(wxCommandEvent& event);
-		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		void CreateBooksPanel(wxWindow * parent, long substyle);
 		int GetColOrder(int col);
 		wxString Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural);
@@ -68,6 +67,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnDirectionUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
+		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnExternal(wxCommandEvent& event);
 		void OnAppendBook(FbBookEvent& event);
 		void OnAppendAuthor(wxCommandEvent& event);
