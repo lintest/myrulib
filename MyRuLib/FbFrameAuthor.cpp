@@ -486,8 +486,8 @@ void FbFrameAuthor::OnViewAlphavet(wxCommandEvent& event)
 
 	int key = 0;
 	switch ( event.GetId() ) {
-		case ID_ALPHABET_RU: key = FB_ALPHABET_RU;
-		case ID_ALPHABET_EN: key = FB_ALPHABET_EN;
+		case ID_ALPHABET_RU: key = FB_ALPHABET_RU; break;
+		case ID_ALPHABET_EN: key = FB_ALPHABET_EN; break;
 	}
 	if (key) FbParams().SetValue(key, show);
 }
