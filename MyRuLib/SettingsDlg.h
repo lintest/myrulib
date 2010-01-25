@@ -13,6 +13,7 @@
 #include <wx/listctrl.h>
 #include <wx/arrimpl.cpp>
 #include <wx/fontpicker.h>
+#include <wx/spinctrl.h>
 #include "FbDatabase.h"
 #include "FbWindow.h"
 
@@ -53,6 +54,9 @@ class SettingsDlg : private FbDialog
 			ID_COLUMN_GENRE,
 			ID_COLUMN_RATING,
 			ID_REMOVE_FILES,
+			ID_AUTOHIDE_COLUMN,
+			ID_MAX_LIST_CHECK,
+			ID_MAX_LIST_COUNT,
 		};
 		class FbPanelFont: public wxPanel
 		{

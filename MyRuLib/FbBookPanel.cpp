@@ -48,9 +48,11 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 	m_BookList = new FbBookList(this, ID_BOOKS_LISTCTRL, style);
 	m_BookInfo = new FbHtmlWindow(this, ID_BOOKS_INFO_PANEL);
 
-	SplitHorizontally(m_BookList, m_BookInfo, GetSize().GetHeight()/2);
 	int mode = FbParams::GetValue(keyType);
-	if (mode) SetViewMode(mode);
+	if (mode == FB2_VIEW_NOTHING)
+		Initialize(m_BookList);
+	else
+		SetViewMode(mode);
 
 	{
 		BookListUpdater updater(m_BookList);
