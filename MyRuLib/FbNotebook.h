@@ -7,6 +7,8 @@ class FbAuiDefaultTabArt : public wxAuiDefaultTabArt
 {
 
 public:
+	FbAuiDefaultTabArt();
+
     wxAuiTabArt* Clone();
 
     void DrawBackground(

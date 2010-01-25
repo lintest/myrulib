@@ -186,6 +186,20 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
 */
 }
 
+FbAuiDefaultTabArt::FbAuiDefaultTabArt()
+{
+    m_normal_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
+    m_selected_font = wxFont(
+		m_normal_font.GetPointSize(),
+        m_normal_font.GetFamily(),
+        m_normal_font.GetStyle(),
+        wxBOLD,
+        m_normal_font.GetUnderlined(),
+        m_normal_font.GetFaceName(),
+        m_normal_font.GetEncoding()
+	);
+}
+
 wxAuiTabArt* FbAuiDefaultTabArt::Clone()
 {
     FbAuiDefaultTabArt* art = new FbAuiDefaultTabArt;
@@ -471,6 +485,7 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
                           caption,
                           tab_width - (text_offset-tab_x) - close_button_width);
 
+    dc.SetTextForeground (wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ));
     // draw tab text
     dc.DrawText(draw_text,
                 text_offset,
@@ -544,6 +559,17 @@ FbAuiSimpleTabArt::FbAuiSimpleTabArt()
     m_normal_bkpen = wxPen(normaltab_colour);
     m_selected_bkbrush = wxBrush(selectedtab_colour);
     m_selected_bkpen = wxPen(selectedtab_colour);
+
+    m_normal_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
+    m_selected_font = wxFont(
+		m_normal_font.GetPointSize(),
+        m_normal_font.GetFamily(),
+        m_normal_font.GetStyle(),
+        wxBOLD,
+        m_normal_font.GetUnderlined(),
+        m_normal_font.GetFaceName(),
+        m_normal_font.GetEncoding()
+	);
 }
 
 wxAuiTabArt* FbAuiSimpleTabArt::Clone()
@@ -671,6 +697,8 @@ void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
     wxString draw_text = wxAuiChopText(dc,
                           caption,
                           tab_width - (text_offset-tab_x) - close_button_width);
+
+    dc.SetTextForeground (wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ));
 
     // draw tab text
     dc.DrawText(draw_text,
