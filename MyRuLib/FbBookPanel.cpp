@@ -150,6 +150,7 @@ void FbBookPanel::RevertOrder()
 void FbBookPanel::SetViewMode(int mode)
 {
 	Unsplit(m_BookInfo);
+	m_BookInfo->SetPage(wxEmptyString);
 
 	switch (mode) {
 		case FB2_VIEW_NOTHING: return;
