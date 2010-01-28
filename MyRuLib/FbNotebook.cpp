@@ -215,26 +215,24 @@ void FbAuiDefaultTabArt::DrawBackground(wxDC& dc,
                                         const wxRect& rect)
 {
     // draw background
-   wxColor top_color       = wxAuiStepColour(m_base_colour, 90);
-   wxColor bottom_color   = wxAuiStepColour(m_base_colour, 170);
    wxRect r;
-
    if (m_flags &wxAUI_NB_BOTTOM)
        r = wxRect(rect.x, rect.y, rect.width+2, rect.height);
    // TODO: else if (m_flags &wxAUI_NB_LEFT) {}
    // TODO: else if (m_flags &wxAUI_NB_RIGHT) {}
    else //for wxAUI_NB_TOP
        r = wxRect(rect.x, rect.y, rect.width+2, rect.height-3);
-    dc.GradientFillLinear(r, m_base_colour, m_base_colour, wxSOUTH);
+   dc.GradientFillLinear(r, m_base_colour, m_base_colour, wxSOUTH);
 
    // draw base lines
-   dc.SetPen(m_border_pen);
+	wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), 0, wxSOLID);
+   dc.SetPen(pen_shadow);
    int y = rect.GetHeight();
    int w = rect.GetWidth();
 
    if (m_flags &wxAUI_NB_BOTTOM)
    {
-       dc.SetBrush(wxBrush(bottom_color));
+       dc.SetBrush(m_base_colour_brush);
        dc.DrawRectangle(-1, 0, w+2, 4);
    }
    // TODO: else if (m_flags &wxAUI_NB_LEFT) {}
@@ -370,20 +368,22 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     if (page.active)
     {
         // draw active tab
+		wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), 0, wxSOLID);
+        wxPen pen_light (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNHIGHLIGHT), 0, wxSOLID);
 
         // draw base background color
         wxRect r(tab_x, tab_y, tab_width, tab_height);
-        dc.SetPen(*wxWHITE_PEN);
-        dc.SetBrush(*wxWHITE_BRUSH);
+        dc.SetPen(pen_shadow);
+        dc.SetBrush(m_base_colour_brush);
         dc.DrawRectangle(r.x+1, r.y+1, r.width-1, r.height-4);
 
         // this white helps fill out the gradient at the top of the tab
-        dc.SetPen(m_base_colour_pen);
+        dc.SetPen(pen_light);
         dc.SetBrush(m_base_colour_brush);
         dc.DrawRectangle(r.x+2, r.y+2, r.width-3, r.height-4);
 
         // these two points help the rounded corners appear more antialiased
-        dc.SetPen(m_base_colour_pen);
+        dc.SetPen(pen_shadow);
         dc.DrawPoint(r.x+2, r.y+1);
         dc.DrawPoint(r.x+r.width-2, r.y+1);
 /*
@@ -431,8 +431,10 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
         dc.GradientFillLinear(r, bottom_color, bottom_color, wxSOUTH);
     }
 
+	wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), 0, wxSOLID);
+
     // draw tab outline
-    dc.SetPen(m_border_pen);
+    dc.SetPen(pen_shadow);
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     dc.DrawPolygon(WXSIZEOF(border_points), border_points);
 
