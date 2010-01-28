@@ -33,6 +33,8 @@
 	</lib>
 
 	<lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+		<define>SQLITE_ENABLE_ICU</define>
+		<include>SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
 	

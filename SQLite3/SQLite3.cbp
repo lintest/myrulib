@@ -8,8 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="../build/LinDebug/libSQLite3" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../build/LinDebug/" />
+				<Option output="..\build\LinDebug\libSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\LinDebug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -20,9 +21,9 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="../build/LinRelease/libSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="..\build\LinRelease\libSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../build/LinRelease/" />
+				<Option object_output="..\build\LinRelease\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -36,8 +37,9 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="../build/WinDebug/libSQLite3" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../build/WinDebug/" />
+				<Option output="..\build\WinDebug\libSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\WinDebug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -51,8 +53,9 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="../build/WinRelease/libSQLite3" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../build/WinRelease/" />
+				<Option output="..\build\WinRelease\libSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="..\build\WinRelease\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -66,6 +69,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-DSQLITE_ENABLE_ICU" />
+		</Compiler>
 		<Unit filename="sqlite3.c">
 			<Option compilerVar="CC" />
 		</Unit>
