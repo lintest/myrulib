@@ -119,6 +119,7 @@ class FbMainDatabase: public FbMasterDatabase
 		virtual wxString GetMaster() { return wxT("params"); };
 	private:
 		void CreateDatabase();
+		void CreateFullText();
 };
 
 #endif // __FBDATABASE_H__

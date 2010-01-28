@@ -4,10 +4,36 @@
 #include "FbDataPath.h"
 #include "FbGenres.h"
 
-#define DB_DATABASE_VERSION 9
+#define DB_DATABASE_VERSION 10
 #define DB_CONFIG_VERSION 2
 
 wxCriticalSection FbDatabase::sm_queue;
+
+void FbMainDatabase::CreateFullText()
+{
+	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+
+	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_auth"));
+
+	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_book"));
+
+	ExecuteUpdate(wxT("\
+			CREATE VIRTUAL TABLE fts_auth USING fts3(\
+				id integer,\
+				first_name varchar(128),\
+				middle_name varchar(128),\
+				last_name varchar(128),\
+				tokenize=icu ru_RU);\
+		"));
+
+	ExecuteUpdate(wxT("\
+			CREATE VIRTUAL TABLE fts_book USING fts3(\
+				id integer,\
+				title text not null,\
+				description text,\
+				tokenize=icu ru_RU);\
+		"));
+}
 
 void FbMainDatabase::CreateDatabase()
 {
@@ -163,6 +189,12 @@ void FbMainDatabase::DoUpgrade(int version)
 				ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
 				ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
 			} catch (...) {};
+		} break;
+
+		case 10: {
+			CreateFullText();
+			ExecuteUpdate(wxT("INSERT INTO fts_auth(id,first_name,middle_name,last_name) SELECT id,first_name,middle_name,last_name FROM authors"));
+			ExecuteUpdate(wxT("INSERT INTO fts_book(id,title) SELECT id,title FROM books"));
 		} break;
 
 	}

@@ -32,14 +32,14 @@
 		<include>Expat</include>
 	</lib>
 
-	<lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="sqlite3_static" template="wx-lib">
+		<define>SQLITE_ENABLE_FTS3</define>
 		<define>SQLITE_ENABLE_ICU</define>
-		<include>SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
 	
 	<lib id="wxsqlite3_static" template="wx-lib">
-		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
+		<include>SQLite3</include>
 		<include>WxSQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
@@ -109,18 +109,18 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<include>SQLite3</include>
 		<include>WxSQLite3</include>
 		<library>wxsqlite3_static</library>
+		<library>sqlite3_static</library>
 		<if cond="WX_SHARED_DEFAULT=='0'">
 			<include>Expat</include>
-			<include>SQLite3</include>
 			<library>expat_static</library>
-			<library>sqlite3_static</library>
 		</if>
 		<if cond="WX_SHARED_DEFAULT=='1'">
 			<sys-lib>expat</sys-lib>
-			<sys-lib>sqlite3</sys-lib>
 		</if>
+		<sys-lib>icuio</sys-lib>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
