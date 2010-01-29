@@ -37,37 +37,75 @@ void FbFrameSearch::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
+static bool FullText(const wxString &text)
+{
+	return ( text.Find(wxT("*")) == wxNOT_FOUND ) && ( text.Find(wxT("?")) == wxNOT_FOUND );
+}
+
+static wxString AppendAsterisk(wxString str)
+{
+	wxString result;
+	int i = wxNOT_FOUND;
+	do {
+		str.Trim(false);
+		i = str.find(wxT(' '));
+		if (i == wxNOT_FOUND) break;
+		result += str.Left(i) + wxT("* ");
+		str = str.Mid(i);
+	} while (true);
+	str.Trim(true);
+	if (!str.IsEmpty()) result += str.Left(i) + wxT("*");
+	return result;
+}
+
 void * FbFrameSearch::SearchThread::Entry()
 {
+
 	wxCriticalSectionLocker locker(sm_queue);
 
 	EmptyBooks();
-
-	wxString condition = wxT("SEARCH_T(books.title)");
-	if (!m_author.IsEmpty()) condition += wxT(" AND SEARCH_A(authors.search_name)");
-	wxString sql = GetSQL(condition);
+	bool bUseAuthor = !m_author.IsEmpty();
+	bool bFullText = FullText(m_title) && FullText(m_author);
 
 	try {
 		FbCommonDatabase database;
 		InitDatabase(database);
-		FbSearchFunction sfTitle(m_title);
-		FbSearchFunction sfAuthor(m_author);
-		database.CreateFunction(wxT("SEARCH_T"), 1, sfTitle);
-		database.CreateFunction(wxT("SEARCH_A"), 1, sfAuthor);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if ( bFullText ) {
+			wxString condition = wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
+			if (bUseAuthor) condition += wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
+			wxString sql = GetSQL(condition);
 
-		if (result.Eof()) {
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(m_frame);
-			return NULL;
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			stmt.Bind(1, AppendAsterisk(m_title));
+			if (bUseAuthor) stmt.Bind(2, AppendAsterisk(m_author));
+
+			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			if (result.Eof()) {
+				FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(m_frame);
+				return NULL;
+			}
+			FillBooks(result);
+		} else {
+			wxString condition = wxT("SEARCH_T(books.title)");
+			if (bUseAuthor) condition += wxT("AND SEARCH_A(authors.search_name)");
+			wxString sql = GetSQL(condition);
+
+			FbSearchFunction sfTitle(m_title);
+			FbSearchFunction sfAuthor(m_author);
+			database.CreateFunction(wxT("SEARCH_T"), 1, sfTitle);
+			if (bUseAuthor) database.CreateFunction(wxT("SEARCH_A"), 1, sfAuthor);
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+
+			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			if (result.Eof()) {
+				FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(m_frame);
+				return NULL;
+			}
+			FillBooks(result);
 		}
-		FillBooks(result);
-	}
-	catch (wxSQLite3Exception & e) {
+	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
-
-
 	return NULL;
 }
 
