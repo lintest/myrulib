@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:	  MyRuLibMain.h
- * Purpose:   Defines Application Frame
- * Author:	Kandrashin Denis (mail@kandr.ru)
- * Created:   2009-05-05
- * Copyright: Kandrashin Denis (www.lintest.ru)
- * License:
- **************************************************************/
-
 #ifndef __FBMAINFRAME_H__
 #define __FBMAINFRAME_H__
 

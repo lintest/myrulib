@@ -1,17 +1,8 @@
-/***************************************************************
- * Name:	  MyRuLibApp.cpp
- * Purpose:   Code for Application Class
- * Author:	Kandrashin Denis (mail@kandr.ru)
- * Created:   2009-05-05
- * Copyright: Kandrashin Denis (www.lintest.ru)
- * License:
- **************************************************************/
-
+#include "MyRuLibApp.h"
 #include <wx/app.h>
 #include <wx/image.h>
 #include <wx/fs_mem.h>
 #include <wx/fs_inet.h>
-#include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"

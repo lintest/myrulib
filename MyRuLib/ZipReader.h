@@ -17,6 +17,7 @@ public:
 	void ShowError();
 	wxString GetErrorText() {return m_info;};
 	wxInputStream & GetZip() {return *m_result;};
+	wxString GetMd5() {return m_md5sum;};
 private:
 	wxString GetInfoName(const wxString &filename);
 	bool FindEntry(const wxString &file_name);
@@ -32,6 +33,7 @@ private:
 	bool m_fileOk;
 	int m_id;
 	wxString m_info;
+	wxString m_md5sum;
 };
 
 #endif // __ZIPREADER_H__

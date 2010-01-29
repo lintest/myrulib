@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:	  MyRuLibMain.cpp
- * Purpose:   Code for Application Frame
- * Author:	  Kandrashin Denis (mail@lintest.ru)
- * Created:   2009-05-05
- * Copyright: Kandrashin Denis (www.lintest.ru)
- * License:   GPL
- **************************************************************/
-
 #include "FbMainFrame.h"
 #include <wx/splitter.h>
 #include <wx/dirdlg.h>

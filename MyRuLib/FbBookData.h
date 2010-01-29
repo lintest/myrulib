@@ -55,6 +55,7 @@ class FbBookData: public FbItemData
 		virtual void Open() const;
 	private:
 		void DoDownload() const;
+		void DoOpen(wxInputStream & in, const wxString &md5sum) const;
 	private:
 		int m_id;
 	public:

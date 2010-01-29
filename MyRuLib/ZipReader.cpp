@@ -130,20 +130,18 @@ void ZipReader::Init()
 
 void ZipReader::OpenDownload(FbDatabase &database, bool bInfoOnly)
 {
-	wxString md5sum;
-
 	{
 		wxString sql = wxT("SELECT md5sum, file_type FROM books WHERE id=?");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if ( result.NextRow() ) {
-			md5sum = result.GetString(0);
+			m_md5sum = result.GetString(0);
 			if (result.GetString(1).Lower() == wxT("fb2")) bInfoOnly = false;
 		} else return;
 	}
 
-	wxFileName zip_file = FbDownloader::GetFilename(md5sum, false);
+	wxFileName zip_file = FbDownloader::GetFilename(m_md5sum, false);
 	m_zipOk = zip_file.FileExists();
 	if (m_zipOk && !bInfoOnly) {
 		m_file = new wxFFileInputStream(zip_file.GetFullPath());

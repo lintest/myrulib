@@ -1,25 +1,7 @@
-/***************************************************************
- * Name:	  FbManager.h
- * Purpose:   Defines Application Frame
- * Author:	Kandrashin Denis (mail@kandr.ru)
- * Created:   2009-05-22
- * Copyright: Kandrashin Denis (www.lintest.ru)
- * License:
- **************************************************************/
-
-#ifndef FBMANAGER_H
-#define FBMANAGER_H
+#ifndef __FBMANAGER_H__
+#define __FBMANAGER_H__
 
 #include <wx/wx.h>
-#include <wx/listbox.h>
-#include <wx/wxsqlite3.h>
-#include "wx/treelistctrl.h"
-
-class FbManager
-{
-	public:
-		static void OpenBook(wxInputStream & in, const wxString &file_type);
-};
 
 class BookInfo
 {
@@ -28,4 +10,4 @@ public:
 	static wxString MakeUpper(wxString & data);
 };
 
-#endif //FBMANAGER_H
+#endif //__FBMANAGER_H__
