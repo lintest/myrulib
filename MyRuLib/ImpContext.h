@@ -32,7 +32,7 @@ class SequenceItem
 public:
 	SequenceItem(): id(0), number(0) {};
 	SequenceItem(const XML_Char **atts);
-	void Convert(FbDatabase & database){ id = FindSequence(database); }
+	int Convert(FbDatabase & database);
 public:
 	int id;
 	wxString seqname;

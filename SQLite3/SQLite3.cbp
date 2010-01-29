@@ -70,7 +70,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-DSQLITE_ENABLE_ICU" />
 			<Add option="-DSQLITE_ENABLE_FTS3" />
 			<Add option="-DU_DISABLE_RENAMING" />
 			<Add directory="..\ICU" />

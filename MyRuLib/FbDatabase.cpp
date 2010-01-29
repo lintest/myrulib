@@ -14,32 +14,13 @@ void FbMainDatabase::CreateFullText()
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_auth"));
+	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
 
 	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_book"));
+	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_book USING fts3"));
 
 	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_seqn"));
-
-	ExecuteUpdate(wxT("\
-			CREATE VIRTUAL TABLE fts_auth USING fts3(\
-				first_name varchar(128),\
-				middle_name varchar(128),\
-				last_name varchar(128),\
-				tokenize=icu ru_RU);\
-		"));
-
-	ExecuteUpdate(wxT("\
-			CREATE VIRTUAL TABLE fts_book USING fts3(\
-				title text,\
-				description text,\
-				tokenize=icu ru_RU);\
-		"));
-
-	ExecuteUpdate(wxT("\
-			CREATE VIRTUAL TABLE fts_seqn USING fts3(\
-				seqname text,\
-				description text,\
-				tokenize=icu ru_RU);\
-		"));
+	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
 }
 
 void FbMainDatabase::CreateDatabase()
@@ -200,10 +181,12 @@ void FbMainDatabase::DoUpgrade(int version)
 
 		case 10: {
 			CreateFullText();
-			ExecuteUpdate(wxT("INSERT INTO fts_auth(docid,first_name,middle_name,last_name) SELECT DISTINC id,first_name,middle_name,last_name FROM authors"));
-			ExecuteUpdate(wxT("INSERT INTO fts_book(docid,title) SELECT DISTINC id,title FROM books"));
+			FbLowerFunction	lower;
+			CreateFunction(wxT("LOW"), 1, lower);
+			ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(search_name) FROM authors"));
+			ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
+			ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
 		} break;
-
 	}
 }
 

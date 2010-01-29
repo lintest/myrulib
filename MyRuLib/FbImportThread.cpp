@@ -4,6 +4,7 @@
 #include <wx/list.h>
 #include "FbConst.h"
 #include "FbGenres.h"
+#include "FbManager.h"
 #include "FbParams.h"
 #include "ZipReader.h"
 #include "polarssl/md5.h"
@@ -228,6 +229,15 @@ void FbImportBook::AppendBook(const wxString &filename, wxFileOffset size, int i
 		stmt.ExecuteUpdate();
 	}
 
+	{
+		wxString content = title;
+		BookInfo::MakeLower(content);
+		wxString sql = wxT("INSERT INTO fts_book(content, docid) VALUES(?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, content);
+		stmt.Bind(2, id_book);
+		stmt.ExecuteUpdate();
+	}
 }
 void FbImportBook::AppendFile(int id_book, const wxString &filename, int id_archive)
 {

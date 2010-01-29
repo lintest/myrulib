@@ -72,8 +72,8 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_ICU `$(WX_CONFIG) \
-	--cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 `$(WX_CONFIG) --cflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	build/sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -ISQLite3 -IWxSQLite3 -IWxSQLite3 `$(WX_CONFIG) \
@@ -208,7 +208,7 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libsqlite3_static.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libsqlite3_static.a -lexpat -licuio `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libsqlite3_static.a -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip ./build/myrulib
 
 install_myrulib: build/myrulib
