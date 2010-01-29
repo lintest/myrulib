@@ -17,9 +17,10 @@ void FbMainDatabase::CreateFullText()
 
 	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_book"));
 
+	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_seqn"));
+
 	ExecuteUpdate(wxT("\
 			CREATE VIRTUAL TABLE fts_auth USING fts3(\
-				id integer,\
 				first_name varchar(128),\
 				middle_name varchar(128),\
 				last_name varchar(128),\
@@ -28,8 +29,14 @@ void FbMainDatabase::CreateFullText()
 
 	ExecuteUpdate(wxT("\
 			CREATE VIRTUAL TABLE fts_book USING fts3(\
-				id integer,\
-				title text not null,\
+				title text,\
+				description text,\
+				tokenize=icu ru_RU);\
+		"));
+
+	ExecuteUpdate(wxT("\
+			CREATE VIRTUAL TABLE fts_seqn USING fts3(\
+				seqname text,\
 				description text,\
 				tokenize=icu ru_RU);\
 		"));
@@ -193,8 +200,8 @@ void FbMainDatabase::DoUpgrade(int version)
 
 		case 10: {
 			CreateFullText();
-			ExecuteUpdate(wxT("INSERT INTO fts_auth(id,first_name,middle_name,last_name) SELECT id,first_name,middle_name,last_name FROM authors"));
-			ExecuteUpdate(wxT("INSERT INTO fts_book(id,title) SELECT id,title FROM books"));
+			ExecuteUpdate(wxT("INSERT INTO fts_auth(docid,first_name,middle_name,last_name) SELECT DISTINC id,first_name,middle_name,last_name FROM authors"));
+			ExecuteUpdate(wxT("INSERT INTO fts_book(docid,title) SELECT DISTINC id,title FROM books"));
 		} break;
 
 	}
