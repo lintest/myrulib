@@ -60,12 +60,21 @@ void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
 
 void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
-	wxString sql = GetSQL(wxT("SEARCH(search_name)"));
-	FbSearchFunction search(m_mask);
-	database.CreateFunction(wxT("SEARCH"), 1, search);
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	FillAuthors(result);
+	bool bFullText = FbSearchFunction::IsFullText(m_mask);
+	if ( bFullText ) {
+		wxString sql = GetSQL(wxT("id IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)"));
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, FbSearchFunction::AddAsterisk(m_mask));
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FillAuthors(result);
+	} else {
+		wxString sql = GetSQL(wxT("SEARCH(search_name)"));
+		FbSearchFunction search(m_mask);
+		database.CreateFunction(wxT("SEARCH"), 1, search);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FillAuthors(result);
+	}
 }
 
 void FbAuthorThreadCode::GetResult(wxSQLite3Database &database)

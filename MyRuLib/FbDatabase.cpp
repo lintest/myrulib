@@ -285,6 +285,28 @@ void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
 	ctx.SetResult(true);
 }
 
+bool FbSearchFunction::IsFullText(const wxString &text)
+{
+	return ( text.Find(wxT("*")) == wxNOT_FOUND ) && ( text.Find(wxT("?")) == wxNOT_FOUND );
+}
+
+wxString FbSearchFunction::AddAsterisk(const wxString &text)
+{
+	wxString str = Lower(text);
+	wxString result;
+	int i = wxNOT_FOUND;
+	do {
+		str.Trim(false);
+		i = str.find(wxT(' '));
+		if (i == wxNOT_FOUND) break;
+		result += str.Left(i) + wxT("* ");
+		str = str.Mid(i);
+	} while (true);
+	str.Trim(true);
+	if (!str.IsEmpty()) result += str.Left(i) + wxT("*");
+	return result;
+}
+
 void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	int argCount = ctx.GetArgCount();

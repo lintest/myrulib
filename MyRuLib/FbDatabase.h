@@ -39,11 +39,13 @@ class FbSearchFunction: public wxSQLite3ScalarFunction
 {
 	public:
 		FbSearchFunction(const wxString & input);
+		static bool IsFullText(const wxString &text);
+		static wxString AddAsterisk(const wxString &text);
 	protected:
 		virtual void Execute(wxSQLite3FunctionContext& ctx);
 	private:
-		void Decompose(const wxString &text, wxArrayString &list);
-		wxString Lower(const wxString & text);
+		static void Decompose(const wxString &text, wxArrayString &list);
+		static wxString Lower(const wxString & text);
 		wxArrayString m_masks;
 };
 

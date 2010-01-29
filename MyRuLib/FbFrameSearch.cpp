@@ -37,27 +37,6 @@ void FbFrameSearch::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-static bool FullText(const wxString &text)
-{
-	return ( text.Find(wxT("*")) == wxNOT_FOUND ) && ( text.Find(wxT("?")) == wxNOT_FOUND );
-}
-
-static wxString AppendAsterisk(wxString str)
-{
-	wxString result;
-	int i = wxNOT_FOUND;
-	do {
-		str.Trim(false);
-		i = str.find(wxT(' '));
-		if (i == wxNOT_FOUND) break;
-		result += str.Left(i) + wxT("* ");
-		str = str.Mid(i);
-	} while (true);
-	str.Trim(true);
-	if (!str.IsEmpty()) result += str.Left(i) + wxT("*");
-	return result;
-}
-
 void * FbFrameSearch::SearchThread::Entry()
 {
 
@@ -65,7 +44,7 @@ void * FbFrameSearch::SearchThread::Entry()
 
 	EmptyBooks();
 	bool bUseAuthor = !m_author.IsEmpty();
-	bool bFullText = FullText(m_title) && FullText(m_author);
+	bool bFullText = FbSearchFunction::IsFullText(m_title) && FbSearchFunction::IsFullText(m_author);
 
 	try {
 		FbCommonDatabase database;
@@ -76,8 +55,8 @@ void * FbFrameSearch::SearchThread::Entry()
 			wxString sql = GetSQL(condition);
 
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, AppendAsterisk(m_title));
-			if (bUseAuthor) stmt.Bind(2, AppendAsterisk(m_author));
+			stmt.Bind(1, FbSearchFunction::AddAsterisk(m_title));
+			if (bUseAuthor) stmt.Bind(2, FbSearchFunction::AddAsterisk(m_author));
 
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.Eof()) {
