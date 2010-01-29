@@ -5,18 +5,22 @@
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Summary: Create your own collection of e-books
-Group: Applications/Office
+Summary: E-Book Library Manager
+URL: http://myrulib.lintest.ru
+Group: Productivity/Other
 License: GPL
 Source0: %{name}_%{version}.tar.gz
-BuildRoot: %{_tmppath}
 Requires: wxGTK >= 2.8.10
+BuildRequires:  wxGTK-devel >= 2.8.10 sqlite3-devel libexpat-devel gcc-c++
+BuildRequires:  update-desktop-files
+BuildRoot: %{_tmppath}
 
 %description
-MyRuLib — свободная (бесплатная и открытая) программа
-для организации домашней библиотеки (коллекции)
-электронных книг формата fb2.
-http://myrulib.lintest.ru
+MyRuLib is an application for organizing your own collection of e-books.
+
+Authors:
+--------
+    Denis Kandrashin <mail@lintest.ru>
 
 %prep
 %setup -q -a 0
@@ -25,13 +29,13 @@ http://myrulib.lintest.ru
 make
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+%{makeinstall}
 
 %files
 %defattr(-,root,root)
 %{_bindir}/myrulib
-/usr/share/applications/myrulib.desktop
-/usr/share/myrulib/home-32x32.png
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/pixmaps/%{name}.png
 
 %clean
 make clean

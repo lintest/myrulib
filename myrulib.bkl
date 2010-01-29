@@ -141,13 +141,13 @@
 	<if cond="FORMAT=='gnu'">
 		<data-files> 
 			<srcdir>MyRuLib/desktop</srcdir>
-			<files>home-32x32.png</files>
-			<install-to>/usr/share/myrulib</install-to>
+			<files>myrulib.png</files>
+			<install-to>$(DATADIR)/pixmaps</install-to>
 		</data-files>
 		<data-files>
 			<srcdir>MyRuLib/desktop</srcdir>
 			<files>myrulib.desktop</files>
-			<install-to>/usr/share/applications</install-to>
+			<install-to>$(DATADIR)/applications</install-to>
 		</data-files>
 	</if>
 	

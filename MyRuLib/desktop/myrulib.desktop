@@ -1,15 +1,13 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=MyRuLib e-book collection
-Name[ru]=MyRuLib: моя библиотека
-GenericName=E-book collection
-GenericName[ru]=Электронная библотека
-Comment=MyRuLib is free and open application for organizing your own collection of e-books.
-Comment[ru]=MyRuLib — свободная (бесплатная и открытая) программа для организации домашней библиотеки (коллекции) электронных книг формата fb2.
-TryExec=myrulib
-Exec=myrulib %F
+Name=MyRuLib
+GenericName=E-Book Library Manager
+GenericName[ru]=Каталогизатор электронных книг
+Comment=Organizer of your collection of e-books
+Comment[ru]=Организатор домашней библиотеки электронных книг
+Type=Application
+Categories=Office;Database;
+Exec=myrulib
+Icon=myrulib
 StartupNotify=true
 Terminal=false
-Type=Application
-Icon=/usr/share/myrulib/home-32x32.png
-Categories=Office;Viewer;Literature;
