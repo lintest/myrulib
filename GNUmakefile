@@ -215,11 +215,11 @@ build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libsqlite3_s
 	strip ./build/myrulib
 
 install_myrulib: build/myrulib
-	$(INSTALL) -d $(DESTDIR)/usr/bin
-	install -c build/myrulib $(DESTDIR)/usr/bin
+	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	install -c build/myrulib $(DESTDIR)$(prefix)/bin
 
 uninstall_myrulib: 
-	rm -f $(DESTDIR)/usr/bin/myrulib
+	rm -f $(DESTDIR)$(prefix)/bin/myrulib
 
 build/sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
