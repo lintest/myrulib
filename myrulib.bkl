@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <makefile>
 
+	<set var="PREFIX">/usr</set>
 	<set var="BUILDDIR">build</set>
 	
 	<set var="WX_PORT_DEFAULT"></set>

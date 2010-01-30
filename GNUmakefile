@@ -13,9 +13,6 @@
 # 'install' program location 
 INSTALL ?= install
 
-# Location where the package is installed by 'make install' 
-prefix ?= /usr/local
-
 # Destination root (/ is used if empty) 
 DESTDIR ?= 
 
@@ -181,14 +178,14 @@ build:
 all: test_for_selected_wxbuild build/libsqlite3_static.a build/libwxsqlite3_static.a build/myrulib
 
 install: install_myrulib
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/pixmaps
-	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)$(prefix)/share/pixmaps)
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/applications
-	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)$(prefix)/share/applications)
+	$(INSTALL) -d $(DESTDIR)/usr/share/pixmaps
+	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/pixmaps)
+	$(INSTALL) -d $(DESTDIR)/usr/share/applications
+	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
 
 uninstall: uninstall_myrulib
-	(cd $(DESTDIR)$(prefix)/share/pixmaps ; rm -f myrulib.png)
-	(cd $(DESTDIR)$(prefix)/share/applications ; rm -f myrulib.desktop)
+	(cd $(DESTDIR)/usr/share/pixmaps ; rm -f myrulib.png)
+	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 
 clean: 
 	rm -f build/*.o
@@ -215,11 +212,11 @@ build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libsqlite3_s
 	strip ./build/myrulib
 
 install_myrulib: build/myrulib
-	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
-	install -c build/myrulib $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -d $(DESTDIR)/usr/bin
+	install -c build/myrulib $(DESTDIR)/usr/bin
 
 uninstall_myrulib: 
-	rm -f $(DESTDIR)$(prefix)/bin/myrulib
+	rm -f $(DESTDIR)/usr/bin/myrulib
 
 build/sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
 	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
