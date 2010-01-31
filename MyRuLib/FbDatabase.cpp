@@ -9,8 +9,10 @@
 
 wxCriticalSection FbDatabase::sm_queue;
 
-void FbMainDatabase::CreateFullText()
+void FbCommonDatabase::CreateFullText()
 {
+	if ( TableExists(wxT("fts_book")) ) return;
+
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_auth"));
@@ -21,6 +23,14 @@ void FbMainDatabase::CreateFullText()
 
 	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_seqn"));
 	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
+
+	FbLowerFunction	lower;
+	CreateFunction(wxT("LOW"), 1, lower);
+	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(search_name) FROM authors"));
+	ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
+	ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
+
+	trans.Commit();
 }
 
 void FbMainDatabase::CreateDatabase()
@@ -179,14 +189,6 @@ void FbMainDatabase::DoUpgrade(int version)
 			} catch (...) {};
 		} break;
 
-		case 10: {
-			CreateFullText();
-			FbLowerFunction	lower;
-			CreateFunction(wxT("LOW"), 1, lower);
-			ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(search_name) FROM authors"));
-			ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
-			ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
-		} break;
 	}
 }
 
@@ -321,6 +323,7 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 {
 	try {
 		wxSQLite3Database::Open(fileName, key, flags);
+		ExecuteUpdate(wxT("PRAGMA journal_mode = MEMORY"));
 	}
 	catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());

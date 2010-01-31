@@ -9,7 +9,7 @@
 class FbUpdateThread: public FbThread
 {
 	public:
-		FbUpdateThread(const wxString &sql, const wxString &sql2 = wxEmptyString)
+		FbUpdateThread(const wxString &sql = wxEmptyString, const wxString &sql2 = wxEmptyString)
 			:m_sql(sql), m_sql2(sql2) {};
 	protected:
 		static wxCriticalSection sm_queue;
@@ -42,13 +42,20 @@ class FbCreateDownloadThread: public FbFolderUpdateThread
 class FbDeleteThread: public FbUpdateThread
 {
 	public:
-		FbDeleteThread(const wxString &sel)
-			: FbUpdateThread(wxEmptyString), m_sel(sel) {};
+		FbDeleteThread(const wxString &sel): m_sel(sel) {};
 	protected:
 		virtual void * Entry();
 	private:
 		void DoDelete(FbDatabase &database, const wxString &where);
 		wxString m_sel;
+};
+
+class FbTextThread: public FbUpdateThread
+{
+	public:
+		FbTextThread() {};
+	protected:
+		virtual void * Entry();
 };
 
 #endif // __FBUPDATETHREAD_H__

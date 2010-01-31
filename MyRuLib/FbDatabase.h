@@ -80,6 +80,7 @@ class FbCommonDatabase: public FbDatabase
 		FbCommonDatabase();
 		void AttachConfig();
 		wxString GetMd5(int id);
+		void CreateFullText();
 };
 
 class FbLocalDatabase: public FbDatabase
@@ -121,7 +122,6 @@ class FbMainDatabase: public FbMasterDatabase
 		virtual wxString GetMaster() { return wxT("params"); };
 	private:
 		void CreateDatabase();
-		void CreateFullText();
 };
 
 #endif // __FBDATABASE_H__

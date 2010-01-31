@@ -9,6 +9,7 @@
 #include "FbParams.h"
 #include "ZipReader.h"
 #include "FbDataOpenDlg.h"
+#include "FbUpdateThread.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
@@ -27,6 +28,8 @@ bool MyRuLibApp::OnInit()
 	wxFileSystem::AddHandler(new wxMemoryFSHandler);
 	wxFileSystem::AddHandler(new wxInternetFSHandler);
 	LoadBlankImage();
+
+	(new FbTextThread)->Execute();
 
 	FbMainFrame * frame = new FbMainFrame;
 	SetTopWindow(frame);

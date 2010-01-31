@@ -115,3 +115,19 @@ void FbDeleteThread::DoDelete(FbDatabase &database, const wxString &where)
 		wxLogError(e.GetMessage());
 	}
 }
+
+void * FbTextThread::Entry()
+{
+	wxCriticalSectionLocker locker(sm_queue);
+
+	Sleep(2000);
+
+	try {
+		FbCommonDatabase().CreateFullText();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+
+	return NULL;
+}
+
