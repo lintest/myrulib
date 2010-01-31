@@ -235,17 +235,25 @@ void * FbFrameSequen::MasterThread::Entry()
 	wxCriticalSectionLocker locker(sm_queue);
 
 	try {
+		bool bBindText = false;
 		FbCommonDatabase database;
 		FbSearchFunction search(m_text);
-		wxString sql = wxT("SELECT id, value as name, number FROM sequences");
+		wxString sql = wxT("SELECT id, value as name, number FROM sequences ");
 		if (m_code) {
-			sql += wxString::Format(wxT(" WHERE id=%d"), m_code);
-		} else if (!m_text.IsEmpty()) {
-			sql += wxT(" WHERE SEARCH(value)");
+			sql += wxString::Format(wxT("WHERE id=%d"), m_code);
+		} else if ( m_text.IsEmpty() ) {
+			// Nothing to do !
+		} else if ( FbSearchFunction::IsFullText(m_text) ) {
+			sql += wxT("WHERE id IN (SELECT docid FROM fts_seqn WHERE fts_seqn MATCH ?)");
+			bBindText = true;
+		} else {
+			sql += wxT("WHERE SEARCH(value)");
 			database.CreateFunction(wxT("SEARCH"), 1, search);
 		}
 		sql += wxT(" ORDER BY ") + GetOrder();
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		if (bBindText) stmt.Bind(1, FbSearchFunction::AddAsterisk(m_text));
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		FbCommandEvent(fbEVT_AUTHOR_ACTION, ID_EMPTY_AUTHORS).Post(m_frame);
 		while (result.NextRow()) {
 			FbAuthorEvent(ID_APPEND_AUTHOR, result).Post(m_frame);
