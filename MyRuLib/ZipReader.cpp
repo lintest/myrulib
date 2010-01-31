@@ -11,6 +11,7 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbDownloader.h"
+#include <wx/wxsqlite3.h>
 
 class ZipThread : public BaseThread
 {
@@ -41,7 +42,7 @@ void *ZipThread::Entry()
 {
 	wxCriticalSectionLocker enter(zips.sm_queue);
 
-	wxSleep(3000);
+	Sleep(3000);
 
 	DoStart(0, m_dirname);
 
@@ -249,8 +250,12 @@ void ZipCollection::SetDir(const wxString &dirname)
 		return;
 	}
 
-	ZipTraverser traverser(this);
-	dir.Traverse(traverser);
+	try {
+		ZipTraverser traverser(this);
+		dir.Traverse(traverser);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 
 	wxLogInfo(_("Finish scan directory %s"), m_dirname.c_str());
 }
@@ -258,6 +263,8 @@ void ZipCollection::SetDir(const wxString &dirname)
 void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename)
 {
 	wxLogInfo(_("Scan zip %s"), filename.c_str());
+
+	wxSQLite3Transaction trans(&database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	wxFileName zip_file = filename;
 	m_thread->DoStep(zip_file.GetFullName());
@@ -274,8 +281,6 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		if (result.NextRow()) return ;
 		id = database.NewId(DB_NEW_ZIPFILE);
 	}
-
-	FbAutoCommit transaction(database);
 
 	int count = 0;
 	{
@@ -303,6 +308,8 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 	}
 
 	InfoCash::Empty();
+
+	trans.Commit();
 }
 
 wxString ZipCollection::FindZip(const wxString &filename)
