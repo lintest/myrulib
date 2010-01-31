@@ -143,7 +143,7 @@
 		<data-files> 
 			<srcdir>MyRuLib/desktop</srcdir>
 			<files>myrulib.png</files>
-			<install-to>$(DATADIR)/pixmaps</install-to>
+			<install-to>$(DATADIR)/icons/hicolor/48x48/apps</install-to>
 		</data-files>
 		<data-files>
 			<srcdir>MyRuLib/desktop</srcdir>
