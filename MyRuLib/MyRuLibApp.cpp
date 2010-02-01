@@ -29,8 +29,6 @@ bool MyRuLibApp::OnInit()
 	wxFileSystem::AddHandler(new wxInternetFSHandler);
 	LoadBlankImage();
 
-	(new FbTextThread)->Execute();
-
 	FbMainFrame * frame = new FbMainFrame;
 	SetTopWindow(frame);
 	frame->Show();
@@ -110,6 +108,7 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 		params.LoadParams();
 		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
 		ZipReader::Init();
+		(new FbTextThread)->Execute();
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(wxT("Database error: ") + e.GetMessage());
 		return false;

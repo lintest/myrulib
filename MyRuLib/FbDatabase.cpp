@@ -323,7 +323,8 @@ void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
 {
 	try {
 		wxSQLite3Database::Open(fileName, key, flags);
-		ExecuteUpdate(wxT("PRAGMA journal_mode = MEMORY"));
+//		ExecuteUpdate(wxT("PRAGMA journal_mode = MEMORY"));
+//		ExecuteUpdate(wxT("PRAGMA synchronous = OFF"));
 	}
 	catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
