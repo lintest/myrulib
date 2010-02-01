@@ -12,10 +12,10 @@ class FbExtractItem
 	public:
 		FbExtractItem(wxSQLite3ResultSet & result);
 	public:
-		wxFileName GetBook(const wxString &path = wxEmptyString) const;
-		wxFileName GetZip(const wxString &path = wxEmptyString) const;
 		wxString NameInfo() const;
 		void DeleteFile(const wxString &basepath) const;
+		bool FindZip(const wxString &basepath, wxFileName &filename) const;
+		bool FindBook(const wxString &basepath, wxFileName &filename) const;
 	public:
 		int id_book;
 		int id_archive;
@@ -24,6 +24,9 @@ class FbExtractItem
 		wxString zip_name;
 		wxString zip_path;
 		bool librusec;
+	private:
+		wxFileName GetBook(const wxString &path = wxEmptyString) const;
+		wxFileName GetZip(const wxString &path = wxEmptyString) const;
 };
 
 WX_DECLARE_OBJARRAY(FbExtractItem, FbExtractArrayBase);

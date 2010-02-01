@@ -29,6 +29,24 @@ wxFileName FbExtractItem::GetZip(const wxString &path) const
 	return result;
 }
 
+bool FbExtractItem::FindZip(const wxString &basepath, wxFileName &filename) const
+{
+	filename = GetZip(basepath);
+	if (filename.FileExists()) return true;
+	if (zip_path.IsEmpty()) return false;
+	filename = zip_path;
+	return filename.FileExists();
+}
+
+bool FbExtractItem::FindBook(const wxString &basepath, wxFileName &filename) const
+{
+	filename = GetBook(basepath);
+	if (filename.FileExists()) return true;
+	if (book_path.IsEmpty()) return false;
+	filename = book_path;
+	return filename.FileExists();
+}
+
 wxString FbExtractItem::NameInfo() const
 {
 	if (librusec) {
@@ -109,3 +127,4 @@ void FbExtractArray::DeleteFiles(const wxString &basepath) const
 		item.DeleteFile(basepath);
 	}
 }
+

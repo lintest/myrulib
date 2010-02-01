@@ -74,20 +74,20 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 		if (item.id_archive) {
 			if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )
 				item.book_name = GetInfoName(item.book_name);
-			wxFileName zip_file = item.GetZip(sLibraryDir);
-			m_zipOk = zip_file.FileExists();
+			wxFileName zip_file;
+			m_zipOk = item.FindZip(sLibraryDir, zip_file);
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
 		} else if (item.librusec) {
 			wxString zip_name = zips.FindZip(item.book_name);
-			if (!zip_name.IsEmpty()) {
-				wxFileName zip_file = zip_name;
-				zip_file.SetPath(sLibraryDir);
-				m_zipOk = zip_file.FileExists();
-				if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
-			}
+			if (zip_name.IsEmpty()) continue;
+			wxFileName zip_file = zip_name;
+			zip_file.SetPath(sLibraryDir);
+			m_zipOk = zip_file.FileExists();
+			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
 		} else {
-			wxFileName book_file = item.GetBook(sLibraryDir);
-			if (book_file.FileExists()) OpenFile(book_file.GetFullPath());
+			wxFileName book_file;
+			m_zipOk = item.FindBook(sLibraryDir, book_file);
+			if (m_zipOk) OpenFile(book_file.GetFullPath());
 		}
 		if (IsOK()) return;
 	}
