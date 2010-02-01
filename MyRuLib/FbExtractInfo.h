@@ -20,7 +20,9 @@ class FbExtractItem
 		int id_book;
 		int id_archive;
 		wxString book_name;
+		wxString book_path;
 		wxString zip_name;
+		wxString zip_path;
 		bool librusec;
 };
 
