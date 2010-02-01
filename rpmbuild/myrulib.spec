@@ -5,10 +5,10 @@
 Name: %{name}
 Version: %{version}
 Release: %{release}
+License: GPL
 Summary: E-Book Library Manager
 URL: http://myrulib.lintest.ru
 Group: Productivity/Other
-License: GPL
 Source0: %{name}_%{version}.tar.gz
 Requires: wxGTK >= 2.8.10
 BuildRequires:  wxGTK-devel >= 2.8.10 sqlite3-devel libexpat-devel gcc-c++
@@ -35,7 +35,7 @@ make
 %defattr(-,root,root)
 %{_bindir}/myrulib
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/pixmaps/%{name}.png
+%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
 
 %clean
 make clean

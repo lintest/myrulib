@@ -68,122 +68,6 @@ static void IndentPressedBitmap(wxRect* rect, int button_state)
 
 static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags)
 {
-/*
-#ifdef __WXMSW__
-    wxUnusedVar(win);
-    wxUnusedVar(flags);
-
-    RECT rc;
-    wxCopyRectToRECT(rect, rc);
-
-    ::DrawFocusRect(GetHdcOf(dc), &rc);
-
-#elif defined(__WXGTK20__)
-    GdkWindow* gdk_window = dc.GetGDKWindow();
-    wxASSERT_MSG( gdk_window,
-                  wxT("cannot draw focus rectangle on wxDC of this type") );
-
-    GtkStateType state;
-    //if (flags & wxCONTROL_SELECTED)
-    //    state = GTK_STATE_SELECTED;
-    //else
-        state = GTK_STATE_NORMAL;
-
-    gtk_paint_focus( win->m_widget->style,
-                     gdk_window,
-                     state,
-                     NULL,
-                     win->m_wxwindow,
-                     NULL,
-                     dc.LogicalToDeviceX(rect.x),
-                     dc.LogicalToDeviceY(rect.y),
-                     rect.width,
-                     rect.height );
-#elif (defined(__WXMAC__))
-
-#if wxMAC_USE_CORE_GRAPHICS
-    {
-        CGRect cgrect = CGRectMake( rect.x , rect.y , rect.width, rect.height ) ;
-
-#if 0
-        Rect bounds ;
-        win->GetPeer()->GetRect( &bounds ) ;
-
-        wxLogDebug(wxT("Focus rect %d, %d, %d, %d"), rect.x, rect.y, rect.width, rect.height);
-        wxLogDebug(wxT("Peer rect %d, %d, %d, %d"), bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
-#endif
-
-        HIThemeFrameDrawInfo info ;
-        memset( &info, 0 , sizeof(info) ) ;
-
-        info.version = 0 ;
-        info.kind = 0 ;
-        info.state = kThemeStateActive;
-        info.isFocused = true ;
-
-        CGContextRef cgContext = (CGContextRef) win->MacGetCGContextRef() ;
-        wxASSERT( cgContext ) ;
-
-        HIThemeDrawFocusRect( &cgrect , true , cgContext , kHIThemeOrientationNormal ) ;
-    }
- #else
-    {
-        Rect r;
-        r.left = rect.x; r.top = rect.y; r.right = rect.GetRight(); r.bottom = rect.GetBottom();
-        wxTopLevelWindowMac* top = win->MacGetTopLevelWindow();
-        if ( top )
-        {
-            wxPoint pt(0, 0) ;
-            wxMacControl::Convert( &pt , win->GetPeer() , top->GetPeer() ) ;
-            OffsetRect( &r , pt.x , pt.y ) ;
-        }
-
-        DrawThemeFocusRect( &r , true ) ;
-    }
-#endif
-#else
-    wxUnusedVar(win);
-    wxUnusedVar(flags);
-
-    // draw the pixels manually because the "dots" in wxPen with wxDOT style
-    // may be short traits and not really dots
-    //
-    // note that to behave in the same manner as DrawRect(), we must exclude
-    // the bottom and right borders from the rectangle
-    wxCoord x1 = rect.GetLeft(),
-            y1 = rect.GetTop(),
-            x2 = rect.GetRight(),
-            y2 = rect.GetBottom();
-
-    dc.SetPen(*wxBLACK_PEN);
-
-#ifdef __WXMAC__
-    dc.SetLogicalFunction(wxCOPY);
-#else
-    // this seems to be closer than what Windows does than wxINVERT although
-    // I'm still not sure if it's correct
-    dc.SetLogicalFunction(wxAND_REVERSE);
-#endif
-
-    wxCoord z;
-    for ( z = x1 + 1; z < x2; z += 2 )
-        dc.DrawPoint(z, rect.GetTop());
-
-    wxCoord shift = z == x2 ? 0 : 1;
-    for ( z = y1 + shift; z < y2; z += 2 )
-        dc.DrawPoint(x2, z);
-
-    shift = z == y2 ? 0 : 1;
-    for ( z = x2 - shift; z > x1; z -= 2 )
-        dc.DrawPoint(z, y2);
-
-    shift = z == x1 ? 0 : 1;
-    for ( z = y2 - shift; z > y1; z -= 2 )
-        dc.DrawPoint(x1, z);
-
-    dc.SetLogicalFunction(wxCOPY);
-#endif
-*/
 }
 
 FbAuiDefaultTabArt::FbAuiDefaultTabArt()
@@ -318,26 +202,9 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     if (tab_x + clip_width > in_rect.x + in_rect.width)
         clip_width = (in_rect.x + in_rect.width) - tab_x;
 
-/*
-    wxPoint clip_points[6];
-    clip_points[0] = wxPoint(tab_x,              tab_y+tab_height-3);
-    clip_points[1] = wxPoint(tab_x,              tab_y+2);
-    clip_points[2] = wxPoint(tab_x+2,            tab_y);
-    clip_points[3] = wxPoint(tab_x+clip_width-1, tab_y);
-    clip_points[4] = wxPoint(tab_x+clip_width+1, tab_y+2);
-    clip_points[5] = wxPoint(tab_x+clip_width+1, tab_y+tab_height-3);
-
-    // FIXME: these ports don't provide wxRegion ctor from array of points
-#if !defined(__WXDFB__) && !defined(__WXCOCOA__)
-    // set the clipping region for the tab --
-    wxRegion clipping_region(WXSIZEOF(clip_points), clip_points);
-    dc.SetClippingRegion(clipping_region);
-#endif // !wxDFB && !wxCocoa
-*/
     // since the above code above doesn't play well with WXDFB or WXCOCOA,
     // we'll just use a rectangle for the clipping region for now --
     dc.SetClippingRegion(tab_x, tab_y, clip_width+1, tab_height-3);
-
 
     wxPoint border_points[6];
     if (m_flags &wxAUI_NB_BOTTOM)
@@ -368,67 +235,18 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     if (page.active)
     {
         // draw active tab
-		wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), 0, wxSOLID);
         wxPen pen_light (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNHIGHLIGHT), 0, wxSOLID);
 
         // draw base background color
         wxRect r(tab_x, tab_y, tab_width, tab_height);
-        dc.SetPen(pen_shadow);
+        dc.SetPen(pen_light);
         dc.SetBrush(m_base_colour_brush);
         dc.DrawRectangle(r.x+1, r.y+1, r.width-1, r.height-4);
 
-        // this white helps fill out the gradient at the top of the tab
-        dc.SetPen(pen_light);
-        dc.SetBrush(m_base_colour_brush);
-        dc.DrawRectangle(r.x+2, r.y+2, r.width-3, r.height-4);
-
         // these two points help the rounded corners appear more antialiased
-        dc.SetPen(pen_shadow);
+        dc.SetPen(pen_light);
         dc.DrawPoint(r.x+2, r.y+1);
         dc.DrawPoint(r.x+r.width-2, r.y+1);
-/*
-        // set rectangle down a bit for gradient drawing
-        r.SetHeight(r.GetHeight()/2);
-        r.x += 2;
-        r.width -= 2;
-        r.y += r.height;
-        r.y -= 2;
-
-        // draw gradient background
-        wxColor top_color = *wxWHITE;
-        wxColor bottom_color = m_base_colour;
-        dc.GradientFillLinear(r, bottom_color, bottom_color, wxNORTH);
-*/
-    }
-     else
-    {
-        // draw inactive tab
-
-        wxRect r(tab_x, tab_y+1, tab_width, tab_height-3);
-
-        // start the gradent up a bit and leave the inside border inset
-        // by a pixel for a 3D look.  Only the top half of the inactive
-        // tab will have a slight gradient
-        r.x += 3;
-        r.y++;
-        r.width -= 4;
-        r.height /= 2;
-        r.height--;
-
-        // -- draw top gradient fill for glossy look
-        wxColor top_color = m_base_colour;
-        wxColor bottom_color = wxAuiStepColour(top_color, 90);
-        bottom_color = m_base_colour;
-        dc.GradientFillLinear(r, bottom_color, bottom_color, wxNORTH);
-
-        r.y += r.height;
-        r.y--;
-
-        // -- draw bottom fill for glossy look
-        top_color = m_base_colour;
-        bottom_color = wxAuiStepColour(top_color, 90);
-        bottom_color = m_base_colour;
-        dc.GradientFillLinear(r, bottom_color, bottom_color, wxSOUTH);
     }
 
 	wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), 0, wxSOLID);
