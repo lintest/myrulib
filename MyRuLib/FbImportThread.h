@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
+#include <wx/zipstrm.h>
 #include "BaseThread.h"
 #include "ImpContext.h"
 #include "FbDatabase.h"
@@ -10,7 +11,7 @@
 class FbImportBook: public ParsingContext
 {
 	public:
-		FbImportBook(FbDatabase &database, const wxString &message, const wxString &md5sum = wxEmptyString);
+		FbImportBook(FbDatabase &database, const wxString &message, const wxString &filepath = wxEmptyString);
 		bool Load(wxInputStream& stream);
 		void Save(const wxString &filename, wxFileOffset filesize, int id_archive = 0);
 		static wxString CalcMd5(wxInputStream& stream);
@@ -33,6 +34,30 @@ class FbImportBook: public ParsingContext
 		FbDatabase &m_database;
 		wxString m_message;
 		wxString m_md5sum;
+		wxString m_filepath;
+};
+
+WX_DECLARE_STRING_HASH_MAP(wxZipEntry*, FbZipEntryMap);
+
+WX_DECLARE_OBJARRAY(wxZipEntry*, FbZipEntryList);
+
+class FbZipCatalog
+{
+	public:
+		FbZipCatalog(FbDatabase &database, wxZipInputStream &zip, const wxString &filepath);
+		int Save(const wxString &filename, const int size, const int count);
+	public:
+		size_t Count() { return m_list.Count(); };
+		wxZipEntry * GetNext();
+		wxZipEntry * GetInfo(const wxString & filename);
+		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
+	private:
+		FbDatabase &m_database;
+		FbZipEntryList m_list;
+		FbZipEntryMap m_map;
+		size_t m_pos;
+		wxZipInputStream &m_zip;
+		wxString m_filepath;
 };
 
 class FbImportThread : public BaseThread
@@ -43,11 +68,12 @@ public:
 protected:
 	bool ParseXml(wxInputStream& stream, const wxString &filename, const int id_archive = 0, const wxString &md5sum = wxEmptyString);
 	wxString ParseMd5(wxInputStream& stream);
-	int AppendZip(const wxString &filename, const int size, const int count);
 	wxString GetRelative(const wxString &filename);
+	wxString GetAbsolute(const wxString &filename);
 protected:
 	FbCommonDatabase m_database;
 	wxString m_basepath;
+	bool m_fullpath;
 };
 
 class FbZipImportThread : public FbImportThread

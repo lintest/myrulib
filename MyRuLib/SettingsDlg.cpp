@@ -210,6 +210,9 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 
 	bSizer->Add( sbSizerCols, 0, wxALL, 5 );
 
+	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, wxT("Сохранять полный путь файла при импорте"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( checkbox, 0, wxALL, 5 );
+
 	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
@@ -395,6 +398,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_COLUMN_RATING, ID_COLUMN_RATING, tCheck},
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
 		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
+		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH, tCheck},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
