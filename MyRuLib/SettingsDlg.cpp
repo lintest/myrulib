@@ -218,11 +218,11 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 
 	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
 
-	checkbox = new wxCheckBox( this, ID_MAX_LIST_CHECK, _("Органичить максимальный размер списков:"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_MAX_LIST_COUNT, _("Органичить максимальный размер списков:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	wxSpinCtrl  * spinedit = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0 );
-	bSizerLimit->Add( spinedit, 1, wxRIGHT, 5 );
+	wxTextCtrl * maxedit = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerLimit->Add( maxedit, 1, wxRIGHT | wxLEFT, 5 );
 
 	bSizer->Add( bSizerLimit, 0, wxEXPAND, 5 );
 

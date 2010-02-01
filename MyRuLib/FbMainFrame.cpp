@@ -55,12 +55,15 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_RECENT_3, FbMainFrame::OnMenuRecent)
 	EVT_MENU(ID_RECENT_4, FbMainFrame::OnMenuRecent)
 	EVT_MENU(ID_RECENT_5, FbMainFrame::OnMenuRecent)
+
+	EVT_UPDATE_UI(ID_RECENT_ALL, FbMainFrame::OnRecentUpdate)
+/*
 	EVT_UPDATE_UI(ID_RECENT_1, FbMainFrame::OnRecentUpdate)
 	EVT_UPDATE_UI(ID_RECENT_2, FbMainFrame::OnRecentUpdate)
 	EVT_UPDATE_UI(ID_RECENT_3, FbMainFrame::OnRecentUpdate)
 	EVT_UPDATE_UI(ID_RECENT_4, FbMainFrame::OnRecentUpdate)
 	EVT_UPDATE_UI(ID_RECENT_5, FbMainFrame::OnRecentUpdate)
-
+*/
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
@@ -628,10 +631,22 @@ void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
 
 void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
 {
-	int param = event.GetId() - ID_RECENT_0 + FB_RECENT_0;
-	wxString filename = FbParams::GetText(param);
-	event.SetText(filename);
-	event.Show(!filename.IsEmpty());
+	wxMenuBar * menubar = GetMenuBar();
+	if (!menubar) return;
+
+	wxMenuItem * menuitem = menubar->FindItem(ID_RECENT_ALL);
+	if (!menuitem) return;
+
+	wxMenu * submenu = menuitem->GetSubMenu();
+	if (!submenu) return;
+
+	for (size_t i = 1; i<=5; i++) {
+		submenu->Delete(ID_RECENT_0 + i);
+		wxString filename = FbParams::GetText(i + FB_RECENT_0);
+		if (filename.IsEmpty()) continue;
+		wxString fileinfo = FbParams::GetText(i + FB_TITLE_0);
+		submenu->Append(ID_RECENT_0 + i, filename, fileinfo);
+	}
 }
 
 void FbMainFrame::OpenDatabase(const wxString &filename)

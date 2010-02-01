@@ -172,7 +172,7 @@ wxFont FbParams::GetFont(const int param)
 	return font;
 }
 
-void FbParams::AddRecent(const wxString &text)
+void FbParams::AddRecent(const wxString &text, const wxString &title)
 {
 	int i = 0;
 
@@ -185,9 +185,12 @@ void FbParams::AddRecent(const wxString &text)
 	while (i>0){
 		wxString file = GetText(FB_RECENT_0 + i - 1);
 		SetText(FB_RECENT_0 + i, file);
+		wxString info = GetText(FB_TITLE_0 + i - 1);
+		SetText(FB_TITLE_0 + i, info);
 		i--;
 	}
 
 	SetText(FB_RECENT_0 + i, text);
+	SetText(FB_TITLE_0 + i, title);
 }
 

@@ -75,6 +75,13 @@ enum FbParamKey {
 	FB_NOTEBOOK_ART  = 191,
 	FB_ALPHABET_RU   = 192,
 	FB_ALPHABET_EN   = 193,
+
+	FB_TITLE_0 = 220,
+	FB_TITLE_1 = 221,
+	FB_TITLE_2 = 222,
+	FB_TITLE_3 = 223,
+	FB_TITLE_4 = 224,
+	FB_TITLE_5 = 225,
 };
 
 class ParamItem
@@ -101,7 +108,7 @@ class FbParams {
 		void SetText(const int param, const wxString &text);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
-		void AddRecent(const wxString &text);
+		void AddRecent(const wxString &text, const wxString &title);
 	private:
 		static ParamArray sm_params;
 		FbCommonDatabase m_database;
