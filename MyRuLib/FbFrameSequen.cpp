@@ -243,7 +243,7 @@ void * FbFrameSequen::MasterThread::Entry()
 			sql += wxString::Format(wxT("WHERE id=%d"), m_code);
 		} else if ( m_text.IsEmpty() ) {
 			// Nothing to do !
-		} else if ( FbSearchFunction::IsFullText(m_text) ) {
+		} else if ( FbSearchFunction::IsFullText(m_text) && database.TableExists(wxT("fts_seqn")) ) {
 			sql += wxT("WHERE id IN (SELECT docid FROM fts_seqn WHERE fts_seqn MATCH ?)");
 			bBindText = true;
 		} else {

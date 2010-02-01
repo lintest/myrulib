@@ -60,7 +60,7 @@ void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)
 
 void FbAuthorThreadText::GetResult(wxSQLite3Database &database)
 {
-	bool bFullText = FbSearchFunction::IsFullText(m_mask);
+	bool bFullText = FbSearchFunction::IsFullText(m_mask) && database.TableExists(wxT("fts_auth"));
 	if ( bFullText ) {
 		wxString sql = GetSQL(wxT("id IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)"));
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);

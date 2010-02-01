@@ -107,8 +107,8 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 		FbParams params;
 		params.LoadParams();
 		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
-		ZipReader::Init();
 		(new FbTextThread)->Execute();
+		ZipReader::Init();
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(wxT("Database error: ") + e.GetMessage());
 		return false;

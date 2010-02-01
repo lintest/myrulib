@@ -49,7 +49,7 @@ void * FbFrameSearch::SearchThread::Entry()
 	try {
 		FbCommonDatabase database;
 		InitDatabase(database);
-		if ( bFullText ) {
+		if ( bFullText && database.TableExists(wxT("fts_book")) ) {
 			wxString condition = wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
 			if (bUseAuthor) condition += wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
 			wxString sql = GetSQL(condition);
