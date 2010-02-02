@@ -477,13 +477,12 @@ void FbZipImportThread::ImportFile(const wxString & zipname)
 		FbImportBook book(this, in, zipname);
 		if (book.IsOk()) book.Save();
 		DoFinish();
-		return;
-	}
-
-    FbImpotrZip zip(this, in, zipname);
-	if (zip.IsOk()) {
-		zip.Save();
-		zip.Make(this);
+	} else {
+		FbImpotrZip zip(this, in, zipname);
+		if (zip.IsOk()) {
+			zip.Save();
+			zip.Make(this);
+		}
 	}
 }
 
@@ -521,11 +520,9 @@ public:
 		wxString ext = filename.Right(4).Lower();
 		if (ext == wxT(".fb2")) {
 			Progress(filename);
-			wxLogInfo(_("Import file %s"), filename.c_str());
 			m_thread->ParseXml(filename);
 		} else if (ext == wxT(".zip")) {
 			Progress(filename);
-			wxLogInfo(_("Import file %s"), filename.c_str());
 			m_thread->ParseZip(filename);
 		} else {
 			wxLogWarning(_("Skip file %s"), filename.c_str());
@@ -577,22 +574,27 @@ void *FbDirImportThread::Entry()
 
 void FbDirImportThread::ParseXml(const wxString &filename)
 {
-	FbAutoCommit transaction(m_database);
 	wxFFileInputStream in(filename);
-	FbImportBook book(this, in, filename);
-	if (book.IsOk()) book.Save();
+	if ( in.IsOk() ) {
+		FbAutoCommit transaction(m_database);
+		FbImportBook book(this, in, filename);
+		if (book.IsOk()) book.Save();
+	} else {
+		wxLogError(wxT("File read error %s"), filename.c_str());
+	}
 }
 
 void FbDirImportThread::ParseZip(const wxString &zipname)
 {
 	wxFFileInputStream in(zipname);
-	if (!in.IsOk()) return;
-
-	FbAutoCommit transaction(m_database);
-
-    FbImpotrZip zip(this, in, zipname);
-	if (zip.IsOk()) {
-		zip.Save();
-		zip.Make();
+	if ( in.IsOk() ){
+		FbAutoCommit transaction(m_database);
+		FbImpotrZip zip(this, in, zipname);
+		if (zip.IsOk()) {
+			zip.Save();
+			zip.Make();
+		}
+	} else {
+		wxLogError(wxT("File read error %s"), zipname.c_str());
 	}
 }

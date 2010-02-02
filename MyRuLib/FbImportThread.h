@@ -36,10 +36,11 @@ class FbImpotrZip
 		FbImpotrZip(FbImportThread *owner, wxInputStream &in, const wxString &zipname);
 		int Save();
 	public:
-		wxZipEntry * GetInfo(const wxString & filename);
-		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
 		bool IsOk() { return m_ok; };
 		void Make(FbImportThread *owner = NULL);
+	private:
+		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
+		wxZipEntry * GetInfo(const wxString & filename);
 	private:
 		FbDatabase &m_database;
 		FbZipEntryList m_list;
@@ -61,7 +62,6 @@ class FbImportBook: public ParsingContext
 		FbImportBook(FbImpotrZip *owner, wxZipEntry *entry);
 		bool Load(wxInputStream& stream);
 		void Save();
-		static wxString CalcMd5(wxInputStream& stream);
 		bool IsOk() { return m_ok; };
 	public:
 		wxString title;
@@ -73,6 +73,7 @@ class FbImportBook: public ParsingContext
 		AuthorItem * author;
 		wxString text;
 	private:
+		static wxString CalcMd5(wxInputStream& stream);
 		int FindByMD5();
 		int FindBySize();
 		void AppendBook();
