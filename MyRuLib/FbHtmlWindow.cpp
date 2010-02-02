@@ -17,6 +17,14 @@ END_EVENT_TABLE()
 FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id)
 	: wxHtmlWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
 {
+	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+}
+
+bool FbHtmlWindow::SetPage(const wxString& source)
+{
+	bool ok = wxHtmlWindow::SetPage(source);
+	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+	return ok;
 }
 
 wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const

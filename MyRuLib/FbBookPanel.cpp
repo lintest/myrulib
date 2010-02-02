@@ -48,10 +48,12 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 	m_BookInfo = new FbHtmlWindow(this, ID_BOOKS_INFO_PANEL);
 
 	int mode = FbParams::GetValue(keyType);
-	if (mode == FB2_VIEW_NOTHING)
+	if (mode == FB2_VIEW_NOTHING) {
 		Initialize(m_BookList);
-	else
+		m_BookInfo->Show(false);
+	} else {
 		SetViewMode(mode);
+	}
 
 	{
 		BookListUpdater updater(m_BookList);
