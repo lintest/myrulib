@@ -18,7 +18,7 @@ wxString Lower(const wxString & input)
 	delete [] buf;
 	return output;
 #else
-	return data.Lower();
+	return input.Lower();
 #endif
 }
 
@@ -33,7 +33,7 @@ wxString Upper(const wxString & input)
 	delete [] buf;
 	return output;
 #else
-	return data.Upper();
+	return input.Upper();
 #endif
 }
 
