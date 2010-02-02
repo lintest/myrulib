@@ -26,7 +26,6 @@
 #include <wx/notebook.h>
 #include <wx/textdlg.h>
 #include <wx/settings.h>
-#include "FbManager.h"
 #include "FbParams.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"

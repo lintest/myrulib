@@ -1,5 +1,4 @@
 #include "ImpContext.h"
-#include "FbManager.h"
 #include "FbConst.h"
 
 WX_DEFINE_OBJARRAY(SequenceArray);
@@ -51,12 +50,10 @@ int AuthorItem::Save(FbDatabase & database)
 	wxString full_name = GetFullName();
 	if (full_name.IsEmpty()) { return id = 0; }
 
-	wxString search_name = full_name;
-	BookInfo::MakeLower(search_name);
+	wxString search_name = Lower(full_name);
 	search_name.Replace(strRusJO, strRusJE);
 
-	wxString letter = search_name.Left(1);
-	BookInfo::MakeUpper(letter);
+	wxString letter = Upper(full_name.Left(1));
 	if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT("#");
 
 	wxString sql_data;
@@ -83,8 +80,7 @@ int AuthorItem::Save(FbDatabase & database)
 	}
 
 	{
-		wxString content = search_name;
-		BookInfo::MakeLower(content);
+		wxString content = Lower(search_name);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_fts3);
 		stmt.Bind(1, content);
 		stmt.Bind(2, id);
@@ -116,8 +112,7 @@ int SequenceItem::Convert(FbDatabase & database)
 	}
 
 	{
-		wxString content = seqname;
-		BookInfo::MakeLower(content);
+		wxString content = Lower(seqname);
 		wxString sql = wxT("INSERT INTO fts_seqn(content, docid) VALUES(?,?)");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, content);

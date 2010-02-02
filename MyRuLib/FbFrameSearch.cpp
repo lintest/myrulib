@@ -4,7 +4,6 @@
 #include "FbConst.h"
 #include "FbMainMenu.h"
 #include "FbDatabase.h"
-#include "FbManager.h"
 
 BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
 	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbFrameSearch::OnFoundNothing)

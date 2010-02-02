@@ -3,7 +3,6 @@
 #include "BaseThread.h"
 #include "ZipReader.h"
 #include "FbParams.h"
-#include "FbManager.h"
 #include "InfoCash.h"
 #include "FbConst.h"
 #include "FbExtractInfo.h"

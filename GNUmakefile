@@ -124,7 +124,6 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbLogStream.o \
 	build/myrulib_FbMainFrame.o \
 	build/myrulib_FbMainMenu.o \
-	build/myrulib_FbManager.o \
 	build/myrulib_FbMenu.o \
 	build/myrulib_FbNotebook.o \
 	build/myrulib_FbParams.o \
@@ -339,9 +338,6 @@ build/myrulib_FbMainFrame.o: ./MyRuLib/FbMainFrame.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbMainMenu.o: ./MyRuLib/FbMainMenu.cpp
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_FbManager.o: ./MyRuLib/FbManager.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbMenu.o: ./MyRuLib/FbMenu.cpp

@@ -8,7 +8,6 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
-#include "FbManager.h"
 
 enum FbAuthorListMode
 {

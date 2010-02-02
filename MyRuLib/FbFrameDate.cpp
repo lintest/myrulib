@@ -2,7 +2,6 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "FbManager.h"
 #include "FbMainMenu.h"
 #include "FbCalendar.h"
 

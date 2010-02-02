@@ -1,6 +1,5 @@
 #include "TitleThread.h"
 #include "FbGenres.h"
-#include "FbManager.h"
 #include "InfoCash.h"
 #include "FbParams.h"
 #include "ZipReader.h"

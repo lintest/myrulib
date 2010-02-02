@@ -4,6 +4,14 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 
+wxString Lower(const wxString & input);
+
+wxString Upper(const wxString & input);
+
+wxString & MakeLower(wxString & data);
+
+wxString & MakeUpper(wxString & data);
+
 enum FbDatabaseKey {
 	DB_LIBRARY_TITLE = 1,
 	DB_LIBRARY_VERSION = 2,
@@ -45,7 +53,6 @@ class FbSearchFunction: public wxSQLite3ScalarFunction
 		virtual void Execute(wxSQLite3FunctionContext& ctx);
 	private:
 		static void Decompose(const wxString &text, wxArrayString &list);
-		static wxString Lower(const wxString & text);
 		wxArrayString m_masks;
 };
 

@@ -4,7 +4,6 @@
 #include "FbMainMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "FbManager.h"
 #include "FbDownloader.h"
 
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)

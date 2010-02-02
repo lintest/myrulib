@@ -3,7 +3,6 @@
 #include <wx/list.h>
 #include "FbConst.h"
 #include "FbGenres.h"
-#include "FbManager.h"
 #include "FbParams.h"
 #include "ZipReader.h"
 #include "polarssl/md5.h"
@@ -267,7 +266,7 @@ void FbImportBook::AppendBook()
 
 	{
 		wxString content = title;
-		BookInfo::MakeLower(content);
+		MakeLower(content);
 		wxString sql = wxT("INSERT INTO fts_book(content, docid) VALUES(?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, content);

@@ -1,5 +1,4 @@
 #include "FbBookData.h"
-#include "FbManager.h"
 #include "ZipReader.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"

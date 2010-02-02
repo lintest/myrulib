@@ -1,6 +1,5 @@
 #include "FbBookPanel.h"
 #include "FbConst.h"
-#include "FbManager.h"
 #include "FbFrameHtml.h"
 #include "InfoCash.h"
 #include "FbBookMenu.h"

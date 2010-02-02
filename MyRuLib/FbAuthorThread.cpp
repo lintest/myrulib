@@ -1,7 +1,6 @@
 #include "FbAuthorThread.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "FbManager.h"
 
 wxCriticalSection FbAuthorThread::sm_queue;
 

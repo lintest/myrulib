@@ -86,7 +86,6 @@
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
-		<sources>MyRuLib/FbManager.cpp</sources>
 		<sources>MyRuLib/FbMenu.cpp</sources>
 		<sources>MyRuLib/FbNotebook.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>

@@ -2,7 +2,6 @@
 #include <wx/artprov.h>
 #include <wx/splitter.h>
 #include "FbConst.h"
-#include "FbManager.h"
 #include "InfoCash.h"
 #include "FbClientData.h"
 #include "ExternalDlg.h"

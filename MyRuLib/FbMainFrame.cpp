@@ -6,7 +6,6 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "MyRuLibApp.h"
-#include "FbManager.h"
 #include "SettingsDlg.h"
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"

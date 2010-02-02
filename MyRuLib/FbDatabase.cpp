@@ -7,6 +7,66 @@
 #define DB_DATABASE_VERSION 10
 #define DB_CONFIG_VERSION 2
 
+wxString Lower(const wxString & input)
+{
+#if defined(__WIN32__)
+	int len = input.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, input.c_str());
+	CharLower(buf);
+	wxString output = buf;
+	delete [] buf;
+	return output;
+#else
+	return data.Lower();
+#endif
+}
+
+wxString Upper(const wxString & input)
+{
+#if defined(__WIN32__)
+	int len = input.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, input.c_str());
+	CharUpper(buf);
+	wxString output = buf;
+	delete [] buf;
+	return output;
+#else
+	return data.Upper();
+#endif
+}
+
+wxString & MakeLower(wxString & data)
+{
+#if defined(__WIN32__)
+	int len = data.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, data.c_str());
+	CharLower(buf);
+	data = buf;
+	delete [] buf;
+#else
+	data.MakeLower();
+#endif
+	return data;
+}
+
+wxString & MakeUpper(wxString & data)
+{
+#if defined(__WIN32__)
+	int len = data.length() + 1;
+	wxChar * buf = new wxChar[len];
+	wxStrcpy(buf, data.c_str());
+	CharUpper(buf);
+	data = buf;
+	delete [] buf;
+#else
+	data.MakeUpper();
+#endif
+	return data;
+}
+
 wxCriticalSection FbDatabase::sm_queue;
 
 void FbCommonDatabase::CreateFullText()
@@ -195,22 +255,11 @@ void FbMainDatabase::DoUpgrade(int version)
 void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	int argCount = ctx.GetArgCount();
-	if (argCount != 1) {
+	if (argCount == 1) {
+		ctx.SetResult(Lower(ctx.GetString(0)));
+	} else {
 		ctx.SetResultError(wxString::Format(_("LOWER called with wrong number of arguments: %d."), argCount));
-		return;
 	}
-	wxString text = ctx.GetString(0);
-#if defined(__WIN32__)
-	int len = text.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, text.c_str());
-	CharLower(buf);
-	text = buf;
-	delete [] buf;
-#else
-	text.MakeLower();
-#endif
-	ctx.SetResult(text);
 }
 
 void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
@@ -237,22 +286,6 @@ FbSearchFunction::FbSearchFunction(const wxString & input)
 		log += wxString::Format(wxT("<%s> "), m_masks[i].c_str());
 	}
 	wxLogInfo(log);
-}
-
-wxString FbSearchFunction::Lower(const wxString & input)
-{
-	wxString output = input;
-#if defined(__WIN32__)
-	int len = output.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, output.c_str());
-	CharLower(buf);
-	output = buf;
-	delete [] buf;
-#else
-	output.MakeLower();
-#endif
-	return output;
 }
 
 void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
