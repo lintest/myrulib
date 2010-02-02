@@ -377,21 +377,26 @@ int FbImpotrZip::Save()
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_filename);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return m_id = result.GetInt(0);
+		m_id = result.NextRow() ? result.GetInt(0) : 0;
 	}
 
-	m_id = m_database.NewId(DB_NEW_ARCHIVE);
+	wxString sql = m_id ?
+		wxT("UPDATE archives SET file_name=?,file_path=?,file_size=?,file_count=? WHERE id=?") :
+		wxT("INSERT INTO archives(file_name,file_path,file_size,file_count,id) VALUES (?,?,?,?,?)") ;
+
+	if (!m_id) m_id = m_database.NewId(DB_NEW_ARCHIVE);
+
 	{
 		wxLongLong count = m_zip.GetTotalEntries();
-		wxString sql = wxT("INSERT INTO archives(id, file_name, file_path, file_size, file_count) VALUES (?,?,?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, m_id);
-		stmt.Bind(2, m_filename);
-		stmt.Bind(3, m_filepath);
-		stmt.Bind(4, (wxLongLong)m_filesize);
-		stmt.Bind(5, count);
+		stmt.Bind(1, m_filename);
+		stmt.Bind(2, m_filepath);
+		stmt.Bind(3, (wxLongLong)m_filesize);
+		stmt.Bind(4, count);
+		stmt.Bind(5, m_id);
 		stmt.ExecuteUpdate();
 	}
+
 	return m_id;
 }
 
@@ -465,7 +470,7 @@ void FbZipImportThread::ImportFile(const wxString & zipname)
 	wxLogInfo(_("Import file %s"), zipname.c_str());
 
 	wxFFileInputStream in(zipname);
-	if ( !in.IsOk() ){
+	if ( !in.IsOk() ) {
 		wxLogError(wxT("File read error %s"), zipname.c_str());
 		return;
 	}
@@ -496,11 +501,7 @@ public:
 	CountTraverser() : m_count(0) { }
 	virtual wxDirTraverseResult OnFile(const wxString& filename) {
 		wxString ext = filename.Right(4).Lower();
-		if (ext== wxT(".fb2")) {
-			m_count++;
-		} else if (ext== wxT(".zip")) {
-			m_count++;
-		}
+		if (ext==wxT(".fb2") || ext==wxT(".zip")) m_count++;
 		return wxDIR_CONTINUE;
 	}
 	virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
