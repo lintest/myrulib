@@ -36,16 +36,14 @@ class FbImpotrZip
 		FbImpotrZip(FbImportThread *owner, wxInputStream &in, const wxString &zipname);
 		int Save();
 	public:
-		size_t Count() { return m_list.Count(); };
-		wxZipEntry * GetNext();
 		wxZipEntry * GetInfo(const wxString & filename);
 		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
 		bool IsOk() { return m_ok; };
+		void Make(FbImportThread *owner = NULL);
 	private:
 		FbDatabase &m_database;
 		FbZipEntryList m_list;
 		FbZipEntryMap m_map;
-		size_t m_pos;
 		wxCSConv m_conv;
 		wxZipInputStream m_zip;
 		wxString m_filename;

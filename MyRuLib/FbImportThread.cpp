@@ -171,12 +171,12 @@ wxString FbImportBook::CalcMd5(wxInputStream& stream)
 	md5_context md5;
 	md5_starts( &md5 );
 
-	bool done;
+	bool eof;
 	do {
 		size_t len = stream.Read(buf, BUFSIZE).LastRead();
-		done = (len < BUFSIZE);
+		eof = (len < BUFSIZE);
 		md5_update( &md5, buf, (int) len );
-	} while (!done);
+	} while (!eof);
 
 	return BaseThread::CalcMd5(md5);
 }
@@ -327,7 +327,6 @@ WX_DEFINE_OBJARRAY(FbZipEntryList);
 
 FbImpotrZip::FbImpotrZip(FbImportThread *owner, wxInputStream &in, const wxString &zipname):
 	m_database(owner->m_database),
-	m_pos(0),
 	m_conv(wxT("cp866")),
 	m_zip(in, m_conv),
 	m_filename(owner->GetRelative(zipname)),
@@ -354,12 +353,6 @@ FbImpotrZip::FbImpotrZip(FbImportThread *owner, wxInputStream &in, const wxStrin
 			}
 		}
     }
-}
-
-wxZipEntry * FbImpotrZip::GetNext()
-{
-	if (m_pos >= m_list.Count()) return NULL;
-	return m_list[m_pos++];
 }
 
 wxZipEntry * FbImpotrZip::GetInfo(const wxString & filename)
@@ -400,6 +393,25 @@ int FbImpotrZip::Save()
 		stmt.ExecuteUpdate();
 	}
 	return m_id;
+}
+
+void FbImpotrZip::Make(FbImportThread *owner)
+{
+	size_t skipped = 0;
+	size_t existed = m_list.Count();
+	if (owner) owner->DoStart(existed, m_filename);
+
+	for (size_t i=0; i<existed; i++) {
+		wxZipEntry * entry = m_list[i];
+		if (owner) owner->DoStep(entry->GetInternalName());
+		FbImportBook book(this, entry);
+		if (book.IsOk()) book.Save(); else skipped++;
+	}
+
+	if ( existed && skipped ) wxLogWarning(wxT("FB2 and FBD not found %s"), m_filename.c_str());
+	if ( !existed ) wxLogError(wxT("Zip read error %s"), m_filename.c_str());
+
+	if (owner) owner->DoFinish();
 }
 
 //-----------------------------------------------------------------------------
@@ -469,23 +481,10 @@ void FbZipImportThread::ImportFile(const wxString & zipname)
 	}
 
     FbImpotrZip zip(this, in, zipname);
-	if (!zip.IsOk()) return;
-	zip.Save();
-
-	size_t skipped = 0;
-	size_t existed = zip.Count();
-	DoStart(existed, zipname);
-	while (wxZipEntry * entry = zip.GetNext()) {
-		wxString filename = entry->GetInternalName();
-		DoStep(filename);
-		FbImportBook book(&zip, entry);
-		if ( book.IsOk() ) book.Save(); else skipped++;
+	if (zip.IsOk()) {
+		zip.Save();
+		zip.Make(this);
 	}
-
-	if ( existed && skipped ) wxLogWarning(wxT("FB2 and FBD not found %s"), zipname.c_str());
-	if ( !existed ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
-
-	DoFinish();
 }
 
 //-----------------------------------------------------------------------------
@@ -592,17 +591,8 @@ void FbDirImportThread::ParseZip(const wxString &zipname)
 	FbAutoCommit transaction(m_database);
 
     FbImpotrZip zip(this, in, zipname);
-	if (!zip.IsOk()) return;
-	zip.Save();
-
-	size_t skipped = 0;
-	size_t existed = zip.Count();
-	while (wxZipEntry * entry = zip.GetNext()) {
-		wxString filename = entry->GetInternalName();
-		FbImportBook book(&zip, entry);
-		if ( book.IsOk() ) book.Save(); else skipped++;
+	if (zip.IsOk()) {
+		zip.Save();
+		zip.Make();
 	}
-
-	if ( existed && skipped ) wxLogWarning(wxT("FB2 and FBD not found %s"), zipname.c_str());
-	if ( !existed ) wxLogError(wxT("Zip read error %s"), zipname.c_str());
 }
