@@ -64,6 +64,7 @@ class FbDatabase: public wxSQLite3Database
 		int NewId(const int iParam, int iIncrement = 1);
 		wxString GetText(const int param);
 		static const wxString & GetConfigName();
+		void CreateFullText();
 	private:
 		static wxCriticalSection sm_queue;
 };
@@ -87,7 +88,6 @@ class FbCommonDatabase: public FbDatabase
 		FbCommonDatabase();
 		void AttachConfig();
 		wxString GetMd5(int id);
-		void CreateFullText();
 };
 
 class FbLocalDatabase: public FbDatabase

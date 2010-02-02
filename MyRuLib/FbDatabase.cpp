@@ -69,7 +69,7 @@ wxString & MakeUpper(wxString & data)
 
 wxCriticalSection FbDatabase::sm_queue;
 
-void FbCommonDatabase::CreateFullText()
+void FbDatabase::CreateFullText()
 {
 	if ( TableExists(wxT("fts_book")) ) return;
 
@@ -168,6 +168,8 @@ void FbMainDatabase::CreateDatabase()
 	ExecuteUpdate(_("INSERT INTO params(id, value) VALUES (2, 1)"));
 
 	trans.Commit();
+
+	CreateFullText();
 }
 
 void FbMainDatabase::DoUpgrade(int version)
