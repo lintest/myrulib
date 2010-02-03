@@ -17,7 +17,7 @@ public:
 protected:
 	virtual void CreateControls();
 private:
-	wxHtmlWindow m_info;
+	FbHtmlWindow m_info;
 private:
 	void OnSave(wxCommandEvent& event);
 	DECLARE_EVENT_TABLE()

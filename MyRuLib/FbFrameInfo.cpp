@@ -117,13 +117,16 @@ void FrameInfoThread::WriteCount()
 
 void FrameInfoThread::WriteTypes()
 {
+	wxString colourBack = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW).GetAsString(wxC2S_HTML_SYNTAX);
+	wxString colourGrid = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW).GetAsString(wxC2S_HTML_SYNTAX);
+
 	m_html += wxT("<BR><BR>");
-	m_html += wxT("<TABLE border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><TR><TD>");
+	m_html += wxString::Format(wxT("<TABLE border=0 cellspacing=0 cellpadding=0 bgcolor=%s><TR><TD>"), colourGrid.c_str());
 	m_html += wxT("<TABLE border=0 cellspacing=1 cellpadding=5 width=100%>");
 	m_html += wxT("<TR>");
-	m_html += wxT("<TD bgcolor=#FFFFFF><B>Тип файла</B></TD>");
-	m_html += wxT("<TD bgcolor=#FFFFFF><B>Количество</B></TD>");
-	m_html += wxT("<TD bgcolor=#FFFFFF><B>Размер, Кб</B></TD>");
+	m_html += wxString::Format(wxT("<TD bgcolor=%s><B>Тип файла</B></TD>"), colourBack.c_str());
+	m_html += wxString::Format(wxT("<TD bgcolor=%s><B>Количество</B></TD>"), colourBack.c_str());
+	m_html += wxString::Format(wxT("<TD bgcolor=%s><B>Размер, Кб</B></TD>"), colourBack.c_str());
 	m_html += wxT("</TR>");
 
 	DoStep(_("Типы файлов"));
@@ -136,9 +139,9 @@ void FrameInfoThread::WriteTypes()
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		while (result.NextRow()) {
 			m_html += wxT("<TR>");
-			m_html += wxString::Format(_("<TD bgcolor=#FFFFFF>%s</TD>"), result.GetString(0).c_str());
-			m_html += wxString::Format(_("<TD align=right bgcolor=#FFFFFF>%s</TD>"), F(result.GetInt(1)).c_str());
-			m_html += wxString::Format(_("<TD align=right bgcolor=#FFFFFF>%s</TD>"), F(result.GetInt(2)).c_str());
+			m_html += wxString::Format(_("<TD bgcolor=%s>%s</TD>"), colourBack.c_str(), result.GetString(0).c_str());
+			m_html += wxString::Format(_("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(1)).c_str());
+			m_html += wxString::Format(_("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(2)).c_str());
 			m_html += wxT("</TR>");
 		}
 	}
