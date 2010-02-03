@@ -17,12 +17,19 @@ END_EVENT_TABLE()
 FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id)
 	: wxHtmlWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
 {
-	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 }
+
+bool FbHtmlWindow::Create(wxWindow *parent, wxWindowID id)
+{
+	return wxHtmlWindow::Create(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
+}
+
 
 bool FbHtmlWindow::SetPage(const wxString& source)
 {
-	bool ok = wxHtmlWindow::SetPage(source);
+	wxString colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT).GetAsString(wxC2S_HTML_SYNTAX);
+	wxString html = wxString::Format(wxT("<html><body text=%s>%s</html>"), colour.c_str(), source.c_str());
+	bool ok = wxHtmlWindow::SetPage(html);
 	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 	return ok;
 }

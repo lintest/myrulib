@@ -54,7 +54,7 @@ class FrameInfoThread: public BaseThread
 
 void FrameInfoThread::WriteTitle()
 {
-	m_html += _("<HTML><HEAD><TITLE>Информация о коллекции</TITLE></HEAD><BODY><CENTER>");
+	m_html += _("<CENTER>");
 
 	m_html += wxT("<TABLE>");
 	m_html += wxT("<TR><TD colspan=2 align=center>Информация о коллекции</TD></TR>");
@@ -162,7 +162,7 @@ void * FrameInfoThread::Entry()
 		wxLogError(e.GetMessage());
 	}
 
-	m_html += wxT("</CENTER></BODY></HTML>");
+	m_html += wxT("</CENTER>");
 
 	DoFinish();
 

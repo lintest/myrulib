@@ -252,9 +252,7 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 
 wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype)
 {
-	wxString html = wxT("<html><body><table width=100%>");
-
-	html += wxT("<tr>");
+	wxString html = wxT("<table width=100%><tr>");
 	wxString icon = InfoCash::GetIcon(filetype);
 	if (icon.IsEmpty()) {
 		html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
@@ -310,7 +308,7 @@ wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditabl
 		html += GetComments(md5sum, bEditable);
 		html += wxT("</td></tr>");
 	}
-	html += wxT("</table></body></html>");
+	html += wxT("</table></body>");
 
 	return html;
 }

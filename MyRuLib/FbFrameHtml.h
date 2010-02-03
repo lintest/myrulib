@@ -8,6 +8,7 @@
 #include <wx/html/htmlwin.h>
 #include "FbBookData.h"
 #include "FbWindow.h"
+#include "FbHtmlWindow.h"
 
 class FbFrameHtml: public FbAuiMDIChildFrame
 {
@@ -24,7 +25,7 @@ private:
 	void DoSubmit();
 	void DoUpdate();
 private:
-	wxHtmlWindow m_info;
+	FbHtmlWindow m_info;
 	wxTextCtrl m_Caption;
 	wxTextCtrl m_Comment;
 	wxToolBar m_ToolBar;

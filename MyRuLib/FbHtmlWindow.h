@@ -6,7 +6,9 @@
 class FbHtmlWindow: public wxHtmlWindow
 {
 	public:
+		FbHtmlWindow() {};
 		FbHtmlWindow(wxWindow *parent, wxWindowID id = wxID_ANY);
+		bool Create(wxWindow *parent, wxWindowID id = wxID_ANY);
 		virtual bool SetPage(const wxString& source);
 	protected:
 		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
