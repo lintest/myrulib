@@ -90,6 +90,7 @@ FbFrameMenu::MenuView::MenuView()
 	Append(wxID_ANY, _("Список книг"), new MenuListMode());
 	Append(wxID_ANY, _("Область просмотра"), new MenuPreview());
 	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
+	Append(ID_SHOW_COLUMNS, _("Колонки таблицы"));
 	AppendSeparator();
 	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));

@@ -27,8 +27,7 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	this->SetSizer( bSizerMain );
 	this->Layout();
 
-	wxSize newSize = GetBestSize();
-	this->SetSize(newSize);
+	this->SetSize(GetBestSize());
 }
 
 wxTextCtrl * FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption)

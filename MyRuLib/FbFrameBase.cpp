@@ -5,6 +5,7 @@
 #include "MyRuLibApp.h"
 #include "InfoCash.h"
 #include "FbFilterDlg.h"
+#include "FbColumnDlg.h"
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
@@ -29,6 +30,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
 	EVT_MENU(ID_ORDER_LANG, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_SIZE, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TYPE, FbFrameBase::OnChangeOrder)
+	EVT_MENU(ID_SHOW_COLUMNS, FbFrameBase::OnShowColumns)
 	EVT_UPDATE_UI(ID_MODE_LIST, FbFrameBase::OnChangeModeUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_TREE, FbFrameBase::OnChangeModeUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
@@ -458,4 +460,9 @@ void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 		case ID_SPLIT_VERTICAL: if (mode == FB2_VIEW_VERTICAL) event.Check(true); break;
 		case ID_SPLIT_NOTHING: if (mode == FB2_VIEW_NOTHING) event.Check(true); break;
 	}
+}
+
+void FbFrameBase::OnShowColumns(wxCommandEvent& event)
+{
+	FbColumnDlg::Execute(this);
 }

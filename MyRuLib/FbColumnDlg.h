@@ -11,6 +11,10 @@ class FbColumnDlg : public FbDialog
 {
 	public:
 		FbColumnDlg( wxWindow* parent, wxWindowID id = wxID_ANY );
+		static void Execute(wxWindow* parent);
+
+	private:
+		void Assign(bool write);
 
 	private:
 		enum ID {
@@ -21,8 +25,6 @@ class FbColumnDlg : public FbDialog
 			ID_COLUMN_RATING,
 			ID_REMOVE_FILES,
 		};
-
-
 };
 
 #endif // __FBCOLUMNDLG_H__

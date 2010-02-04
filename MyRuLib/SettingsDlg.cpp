@@ -189,26 +189,6 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	wxCheckBox * checkbox;
 	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticBoxSizer* sbSizerCols;
-	sbSizerCols = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Колонки") ), wxVERTICAL );
-
-	checkbox = new wxCheckBox( this, ID_COLUMN_GENRE, wxT("Жанр"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
-
-	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, wxT("Рейтинг"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
-
-	checkbox = new wxCheckBox( this, ID_COLUMN_LANG, wxT("Язык"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
-
-	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, wxT("Тип файла"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
-
-	checkbox = new wxCheckBox( this, ID_COLUMN_SYZE, wxT("Размер файла"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
-
-	bSizer->Add( sbSizerCols, 0, wxALL, 5 );
-
 	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, wxT("Сохранять полный путь файла при импорте"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
@@ -390,11 +370,6 @@ void SettingsDlg::Assign(bool write)
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
 		{FB_FONT_DLG, ID_FONT_DLG, tFont},
-		{FB_COLUMN_LANG, ID_COLUMN_LANG, tCheck},
-		{FB_COLUMN_TYPE, ID_COLUMN_TYPE, tCheck},
-		{FB_COLUMN_SYZE, ID_COLUMN_SYZE, tCheck},
-		{FB_COLUMN_GENRE, ID_COLUMN_GENRE, tCheck},
-		{FB_COLUMN_RATING, ID_COLUMN_RATING, tCheck},
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
 		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH, tCheck},

@@ -24,6 +24,7 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 
 	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Отменить выделение"));
+	Append(ID_SHOW_COLUMNS, _("Колонки таблицы"));
 	AppendSeparator();
 
 //	Append(wxID_EDIT, _("Редактировать"));

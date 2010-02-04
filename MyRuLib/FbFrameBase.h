@@ -59,6 +59,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnDirection(wxCommandEvent& event);
 		void OnChangeOrder(wxCommandEvent& event);
 		void OnChangeMode(wxCommandEvent& event);
+		void OnShowColumns(wxCommandEvent& event);
 		void OnColClick(wxListEvent& event);
 		void OnFilterUse(wxCommandEvent& event);
 		void OnFilterNot(wxCommandEvent& event);
