@@ -1,32 +1,44 @@
-%define name     myrulib
-%define version  0.19
-%define relrase  1
+#
+# spec file for package myrulib (Version 0.19)
+#
+# Copyright (c) 2009 Denis Kandrashin, Kyrill Detinov
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
+#
 
-Name: %{name}
-Version: %{version}
-Release: 1
-License: GPL
-Summary: E-Book Library Manager
-URL: http://myrulib.lintest.ru
-Group: Productivity/Other
-Source0: %{name}_%{version}.tar.gz
-Requires: wxGTK >= 2.8.10
-BuildRequires: wxGTK-devel >= 2.8.10 
-BuildRequires: gcc-c++
-BuildRoot: %{_tmppath}/%{name}-%{version}-build  
+Name:		myrulib
+Version:	0.19
+Release:	0
+License:	GPL
+Summary:	E-Book Library Manager
+URL:		http://myrulib.lintest.ru
+Group:		Productivity/Other
+Source0:	%{name}_%{version}.tar.gz
+BuildRequires:	gcc-c++
+BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %if 0%{?suse_version}
-BuildRequires: sqlite3-devel 
-BuildRequires: libexpat-devel 
-BuildRequires: update-desktop-files
+BuildRequires:	wxGTK-devel >= 2.8.10
+BuildRequires:	sqlite3-devel
+BuildRequires:	libexpat-devel
+BuildRequires:	update-desktop-files
 %endif
-%if 0%{?mdkversion_version}
-BuildRequires: sqlite-devel
-BuildRequires: libexpat-devel 
+
+%if 0%{?mandriva_version}
+BuildRequires:	libwxgtku2.8-devel >= 2.8.10
+BuildRequires:	libexpat-devel
+%if %{_arch} == x86_64
+BuildRequires:	lib64sqlite3-devel
+%else
+BuildRequires:	libsqlite3-devel
 %endif
+%endif
+
 %if 0%{?fedora_version}
-BuildRequires: sqlite-devel 
-BuildRequires: expat-devel
+BuildRequires:	wxGTK-devel >= 2.8.10
+BuildRequires:	sqlite-devel
+BuildRequires:	expat-devel
+BuildRequires:	desktop-file-utils
 %endif
 
 %description
@@ -42,13 +54,32 @@ Authors:
 %build
 export CXXFLAGS="%{optflags}"
 export CFLAGS="%{optflags}"
-make
+make %{?_smp_mflags}
 
 %install
-make DESTDIR=%buildroot install 
-%if 0%{?suse_version}
-%suse_update_desktop_file %name
+%if 0%{?fedora_version} || 0%{?mandriva_version}
+rm -rf %{buildroot}
 %endif
+make DESTDIR=%{buildroot} install
+
+%if 0%{?suse_version}
+%suse_update_desktop_file %{name}
+%endif
+
+%if 0%{?fedora_version}
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+%endif
+
+%if 0%{?mandriva_version}
+%post
+%update_menus
+
+%postun
+%clean_menus
+%endif
+
+%clean
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
@@ -56,11 +87,4 @@ make DESTDIR=%buildroot install
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/48x48/apps/%{name}.png
 
-%clean
-rm -rf %{buildroot}
-
 %changelog
-* Wed Jan 20 2010 Denis Kandrashin
-- Update release
-* Sat Nov 07 2009 Denis Kandrashin
-- Initial build

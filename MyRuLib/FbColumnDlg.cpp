@@ -6,7 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 FbColumnDlg::FbColumnDlg( wxWindow* parent, wxWindowID id)
-	: FbDialog( parent, id, _("Видимость колонок"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+	: FbDialog( parent, id, _("Колонки"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -15,25 +15,20 @@ FbColumnDlg::FbColumnDlg( wxWindow* parent, wxWindowID id)
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticBoxSizer* sbSizerCols;
-	sbSizerCols = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Колонки") ), wxVERTICAL );
-
 	checkbox = new wxCheckBox( this, ID_COLUMN_GENRE, wxT("Жанр"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, wxT("Рейтинг"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_COLUMN_LANG, wxT("Язык"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, wxT("Тип файла"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_COLUMN_SYZE, wxT("Размер файла"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbSizerCols->Add( checkbox, 0, wxALL, 5 );
-
-	bSizerMain->Add( sbSizerCols, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
