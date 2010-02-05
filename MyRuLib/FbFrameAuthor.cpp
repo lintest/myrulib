@@ -368,8 +368,18 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 {
 	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
 	if (data && data->GetId()) {
-		int id = FbAuthorDlg::Modify(data->GetId());
-		if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
+		wxString newname;
+		int old_id = data->GetId();
+		int new_id = FbAuthorDlg::Modify(data->GetId(), newname);
+		if (new_id) {
+			wxTreeItemId selected = m_MasterList->GetSelection();
+			if (selected.IsOk()) m_MasterList->SetItemText(selected, newname);
+			if (old_id != new_id) {
+//				m_MasterList->Delete(old_id);
+				data->SetId(new_id);
+				data->Show(m_BooksPanel);
+			}
+		}
 	}
 }
 

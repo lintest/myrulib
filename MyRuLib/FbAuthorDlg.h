@@ -10,7 +10,7 @@ class FbAuthorDlg : public FbDialog
 	public:
 		FbAuthorDlg( const wxString& title = wxEmptyString, int id = 0 );
 		static int Append();
-		static int Modify(int id);
+		static int Modify(int id, wxString &newname);
 		static void ReplaceAuthor(int old_id, int new_id);
 	protected:
 		virtual void EndModal(int retCode);

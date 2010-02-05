@@ -49,10 +49,15 @@ int FbAuthorDlg::Append()
 	return ok ? dlg.DoAppend() : 0;
 }
 
-int FbAuthorDlg::Modify(int id)
+int FbAuthorDlg::Modify(int id, wxString &newname)
 {
 	FbAuthorDlg dlg(_("Изменить автора"), id);
 	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
+	if (ok) {
+		AuthorItem author;
+		dlg.GetValues(author);
+		newname = author.GetFullName();
+	}
 	return ok ? dlg.DoUpdate() : 0;
 }
 

@@ -35,6 +35,8 @@ class FbMasterData: public wxTreeItemData
 	public:
 		FbMasterData(const int id): m_id(id) {};
 		const int GetId() { return m_id; };
+		void SetId(int id) { m_id = id; };
+		void Show(wxEvtHandler * frame) {};
 	private:
 		int m_id;
 };
