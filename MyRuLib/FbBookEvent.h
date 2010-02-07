@@ -16,6 +16,9 @@ enum FbFolderType {
 	FT_RATING,
 	FT_COMMENT,
 	FT_DOWNLOAD,
+	FT_AUTHOR,
+	FT_GENRE,
+	FT_SEQNAME,
 };
 
 class FbCommandEvent: public wxCommandEvent
