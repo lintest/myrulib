@@ -34,8 +34,8 @@ class FbReplaceDlg : public FbDialog
 		int m_id;
 	private:
 		void OnFindEnter( wxCommandEvent& event );
-		void OnEmptyAuthors(wxCommandEvent& event);
-		void OnAppendAuthor(FbAuthorEvent& event);
+		void OnEmptyMasters(FbMasterEvent& event);
+		void OnAppendMaster(FbMasterEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 

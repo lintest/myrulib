@@ -42,10 +42,11 @@ wxTextCtrl * FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, con
 	return edit;
 }
 
-int FbAuthorDlg::Append()
+int FbAuthorDlg::Append(wxString &newname)
 {
 	FbAuthorDlg dlg(_("Добавить автора"));
 	bool ok = dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoAppend() : 0;
 }
 
@@ -53,12 +54,15 @@ int FbAuthorDlg::Modify(int id, wxString &newname)
 {
 	FbAuthorDlg dlg(_("Изменить автора"), id);
 	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
-	if (ok) {
-		AuthorItem author;
-		dlg.GetValues(author);
-		newname = author.GetFullName();
-	}
+	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoUpdate() : 0;
+}
+
+wxString FbAuthorDlg::GetFullName()
+{
+	AuthorItem author;
+	GetValues(author);
+	return author.GetFullName();
 }
 
 bool FbAuthorDlg::Load(int id)

@@ -9,7 +9,7 @@ DEFINE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION )
 
 DEFINE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION )
 
-DEFINE_LOCAL_EVENT_TYPE( fbEVT_AUTHOR_ACTION )
+DEFINE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION )
 
 void FbCommandEvent::Post(wxEvtHandler *dest)
 {
@@ -21,9 +21,9 @@ void FbCommandEvent::Post()
 	wxPostEvent(wxGetApp().GetTopWindow(), *this);
 }
 
-FbAuthorEvent::FbAuthorEvent(wxWindowID id, wxSQLite3ResultSet &result):
-	FbCommandEvent(fbEVT_AUTHOR_ACTION, id, result.GetString(wxT("name"))),
-	m_author(result.GetInt(wxT("id"))),
+FbMasterEvent::FbMasterEvent(wxWindowID id, wxSQLite3ResultSet &result):
+	FbCommandEvent(fbEVT_MASTER_ACTION, id, result.GetString(wxT("name"))),
+	m_master(result.GetInt(wxT("id"))),
 	m_parent(0),
 	m_number(result.GetInt(wxT("number")))
 {

@@ -11,18 +11,7 @@
 #include "FbThread.h"
 #include "FbMainMenu.h"
 #include "FbFilterObj.h"
-
-class FbFolderData: public wxTreeItemData
-{
-	public:
-		FbFolderData(const int id, const FbFolderType type = FT_FOLDER)
-			: m_id(id), m_type(type) {};
-		const int GetId() { return m_id; };
-		const FbFolderType GetType() { return m_type; };
-	private:
-		int m_id;
-		FbFolderType m_type;
-};
+#include "FbMasterData.h"
 
 class FbFrameBase : public FbAuiMDIChildFrame
 {

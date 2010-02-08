@@ -7,6 +7,7 @@
 #include "FbBookList.h"
 #include "FbBookData.h"
 #include "FbParams.h"
+#include "FbMasterData.h"
 
 enum FbListMode {
 	FB2_MODE_LIST = 0,
@@ -57,6 +58,7 @@ class FbBookPanel: public wxSplitterWindow
 		wxTreeItemId m_SequenceItem;
 		int m_folder;
 		int m_type;
+		FbMasterData m_master;
 		int m_selected;
 		int m_KeyView;
 	private:

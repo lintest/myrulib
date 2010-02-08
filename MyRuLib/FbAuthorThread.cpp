@@ -36,9 +36,9 @@ wxString FbAuthorThread::GetOrder()
 void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 {
 	if (sm_skiper.Skipped(m_number)) return;
-	FbCommandEvent(fbEVT_AUTHOR_ACTION, ID_EMPTY_AUTHORS).Post(m_frame);
+	FbMasterEvent(ID_EMPTY_MASTERS).Post(m_frame);
 	while (result.NextRow()) {
-		FbAuthorEvent(ID_APPEND_AUTHOR, result).Post(m_frame);
+		FbMasterEvent(ID_APPEND_MASTER, result).Post(m_frame);
 		if (sm_skiper.Skipped(m_number)) return;
 	}
 }

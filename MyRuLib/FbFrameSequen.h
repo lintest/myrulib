@@ -39,8 +39,8 @@ class FbFrameSequen : public FbFrameBase
 		void OnContextMenu(wxTreeEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
 		void OnCharEvent(wxKeyEvent& event);
-		void OnEmptyAuthors(wxCommandEvent& event);
-		void OnAppendMaster(FbAuthorEvent& event);
+		void OnEmptyMasters(FbMasterEvent& event);
+		void OnAppendMaster(FbMasterEvent& event);
 		void OnFindEnter(wxCommandEvent& event);
 		void OnMasterAppend(wxCommandEvent& event);
 		void OnMasterModify(wxCommandEvent& event);

@@ -26,9 +26,9 @@ class FbFrameFolder : public FbFrameBase
 	private:
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
-		void FillByFolder(FbFolderData * data);
+		void FillByFolder(FbMasterData * data);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-		FbFolderData * GetSelected();
+		FbMasterData * GetSelected();
 	private:
 		wxToolBar * m_FolderBar;
 	private:
@@ -42,7 +42,7 @@ class FbFrameFolder : public FbFrameBase
 		class FolderThread: public BaseThread
 		{
 			public:
-				FolderThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
+				FolderThread(FbFrameBase * frame, FbListMode mode, FbMasterData * data)
 					:BaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
 				virtual void *Entry();
 			private:

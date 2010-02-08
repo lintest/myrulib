@@ -153,6 +153,8 @@ wxString FbParams::DefaultText(int param)
 			return wxT("flibusta.net");
 		case FB_DOWNLOAD_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
+		case FB_LOCAL_DIR:
+			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("local");
 		case FB_FONT_MAIN:
 		case FB_FONT_HTML:
 		case FB_FONT_TOOL:

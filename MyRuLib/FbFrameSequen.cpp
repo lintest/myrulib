@@ -12,8 +12,8 @@
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnAuthorSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
-	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameSequen::OnEmptyAuthors)
-	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameSequen::OnAppendMaster)
+	EVT_FB_AUTHOR(ID_EMPTY_MASTERS, FbFrameSequen::OnEmptyMasters)
+	EVT_FB_AUTHOR(ID_APPEND_MASTER, FbFrameSequen::OnAppendMaster)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
 	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
 	EVT_MENU(ID_SEQUENCE_BTN, FbFrameSequen::OnFindEnter )
@@ -189,7 +189,7 @@ void FbFrameSequen::UpdateBooklist()
 	if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
-void FbFrameSequen::OnAppendMaster(FbAuthorEvent& event)
+void FbFrameSequen::OnAppendMaster(FbMasterEvent& event)
 {
 	FbTreeListUpdater updater(m_MasterList);
 	wxTreeItemId root = m_MasterList->GetRootItem();
@@ -197,14 +197,14 @@ void FbFrameSequen::OnAppendMaster(FbAuthorEvent& event)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
 
-	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_author));
+	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_master, FT_SEQNAME));
 	wxString number = wxString::Format(wxT("%d"), event.m_number);
 	m_MasterList->SetItemText(item, 1, number);
 
 	if (!child.IsOk()) m_MasterList->SelectItem(item);
 }
 
-void FbFrameSequen::OnEmptyAuthors(wxCommandEvent& event)
+void FbFrameSequen::OnEmptyMasters(FbMasterEvent& event)
 {
 	BookListUpdater updater(m_MasterList);
 	m_MasterList->AddRoot(wxEmptyString);
@@ -253,9 +253,9 @@ void * FbFrameSequen::MasterThread::Entry()
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		if (bBindText) stmt.Bind(1, FbSearchFunction::AddAsterisk(m_text));
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		FbCommandEvent(fbEVT_AUTHOR_ACTION, ID_EMPTY_AUTHORS).Post(m_frame);
+		FbMasterEvent(ID_EMPTY_MASTERS).Post(m_frame);
 		while (result.NextRow()) {
-			FbAuthorEvent(ID_APPEND_AUTHOR, result).Post(m_frame);
+			FbMasterEvent(ID_APPEND_MASTER, result).Post(m_frame);
 		}
 	}
 	catch (wxSQLite3Exception & e) {

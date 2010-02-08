@@ -26,9 +26,9 @@ class FbFrameDownld : public FbFrameBase
 	private:
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
-		void FillByFolder(FbFolderData * data);
+		void FillByFolder(FbMasterData * data);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-		FbFolderData * GetSelected();
+		FbMasterData * GetSelected();
 	private:
 		void OnFavoritesDel(wxCommandEvent & event);
 		void OnFolderAppend(wxCommandEvent & event);
@@ -44,7 +44,7 @@ class FbFrameDownld : public FbFrameBase
 		class DownldThread: public BaseThread
 		{
 			public:
-				DownldThread(FbFrameBase * frame, FbListMode mode, FbFolderData * data)
+				DownldThread(FbFrameBase * frame, FbListMode mode, FbMasterData * data)
 					:BaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
 				virtual void *Entry();
 			protected:

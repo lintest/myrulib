@@ -17,8 +17,8 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
-	EVT_COMMAND(ID_EMPTY_AUTHORS, fbEVT_AUTHOR_ACTION, FbFrameAuthor::OnEmptyAuthors)
-	EVT_FB_AUTHOR(ID_APPEND_AUTHOR, FbFrameAuthor::OnAppendAuthor)
+	EVT_FB_AUTHOR(ID_EMPTY_MASTERS, FbFrameAuthor::OnEmptyMasters)
+	EVT_FB_AUTHOR(ID_APPEND_MASTER, FbFrameAuthor::OnAppendMaster)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuthor::OnContextMenu)
 	EVT_MENU(ID_LETTER_ALL, FbFrameAuthor::OnAllClicked)
@@ -240,7 +240,7 @@ void * FbFrameAuthor::AuthorThread::Entry()
 			stmt.Bind(1, m_author);
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.NextRow()) {
-				if (m_mode == FB2_MODE_TREE) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, m_author, result.GetString(0)).Post(m_frame);
+				if (m_mode == FB2_MODE_TREE) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_MASTER, m_author, result.GetString(0)).Post(m_frame);
 				FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(1)).Post(m_frame);
 			}
 		}
@@ -288,7 +288,7 @@ void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
 {
 }
 
-void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
+void FbFrameAuthor::OnAppendMaster(FbMasterEvent& event)
 {
 	FbTreeListUpdater updater(m_MasterList);
 	wxTreeItemId root = m_MasterList->GetRootItem();
@@ -296,14 +296,14 @@ void FbFrameAuthor::OnAppendAuthor(FbAuthorEvent& event)
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
 
-	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_author));
+	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_master, FT_AUTHOR));
 	wxString number = wxString::Format(wxT("%d"), event.m_number);
 	m_MasterList->SetItemText(item, 1, number);
 
 	if (!child.IsOk()) m_MasterList->SelectItem(item);
 }
 
-void FbFrameAuthor::OnEmptyAuthors(wxCommandEvent& event)
+void FbFrameAuthor::OnEmptyMasters(FbMasterEvent& event)
 {
 	BookListUpdater updater(m_MasterList);
 	m_MasterList->AddRoot(wxEmptyString);
@@ -360,7 +360,8 @@ void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 
 void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 {
-	int id = FbAuthorDlg::Append();
+	wxString newname;
+	int id = FbAuthorDlg::Append(newname);
 	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 

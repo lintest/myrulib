@@ -103,8 +103,8 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
-		if (data) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), data->GetCode()) )->Execute();
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		if (data) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
 
@@ -113,8 +113,8 @@ void FbFrameGenres::UpdateBooklist()
 	int code = 0;
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) {
-		FbGenreData * data = (FbGenreData*) m_MasterList->GetItemData(selected);
-		if (data) code = data->GetCode();
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		if (data) code = data->GetId();
 	}
 	if (code) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
 }

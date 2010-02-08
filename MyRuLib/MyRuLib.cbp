@@ -253,6 +253,8 @@
 		<Unit filename="FbMainFrame.h" />
 		<Unit filename="FbMainMenu.cpp" />
 		<Unit filename="FbMainMenu.h" />
+		<Unit filename="FbMasterData.cpp" />
+		<Unit filename="FbMasterData.h" />
 		<Unit filename="FbMenu.cpp" />
 		<Unit filename="FbMenu.h" />
 		<Unit filename="FbNotebook.cpp" />

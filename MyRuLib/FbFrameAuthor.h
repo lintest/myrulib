@@ -53,8 +53,8 @@ class FbFrameAuthor : public FbFrameBase
 		void OnCharEvent(wxKeyEvent& event);
 		void OnViewAlphavet(wxCommandEvent& event);
 		void OnViewAlphavetUpdateUI(wxUpdateUIEvent & event);
-		void OnEmptyAuthors(wxCommandEvent& event);
-		void OnAppendAuthor(FbAuthorEvent& event);
+		void OnEmptyMasters(FbMasterEvent& event);
+		void OnAppendMaster(FbMasterEvent& event);
 		void OnMasterAppend(wxCommandEvent& event);
 		void OnMasterModify(wxCommandEvent& event);
 		void OnMasterDelete(wxCommandEvent& event);

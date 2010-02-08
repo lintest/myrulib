@@ -9,7 +9,7 @@ class FbAuthorDlg : public FbDialog
 {
 	public:
 		FbAuthorDlg( const wxString& title = wxEmptyString, int id = 0 );
-		static int Append();
+		static int Append(wxString &newname);
 		static int Modify(int id, wxString &newname);
 		static void ReplaceAuthor(int old_id, int new_id);
 	protected:
@@ -30,6 +30,7 @@ class FbAuthorDlg : public FbDialog
 		int DoAppend();
 		void DoModify();
 		void GetValues(AuthorItem &author);
+		wxString GetFullName();
 	private:
 		FbCommonDatabase m_database;
 		int m_id;

@@ -82,9 +82,9 @@ void FbFrameDownld::FillFolders(const int iCurrent)
 	m_MasterList->DeleteRoot();
 
 	wxTreeItemId root = m_MasterList->AddRoot(wxEmptyString);
-	m_MasterList->AppendItem(root, wxT("Очередь"), -1, -1, new FbFolderData(1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, wxT("Готово"), -1, -1, new FbFolderData(-1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, wxT("Ошибки"), -1, -1, new FbFolderData(-2, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, wxT("Очередь"), -1, -1, new FbMasterData(1, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, wxT("Готово"), -1, -1, new FbMasterData(-1, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, wxT("Ошибки"), -1, -1, new FbMasterData(-2, FT_DOWNLOAD));
 	m_MasterList->Expand(root);
 
 	m_MasterList->Thaw();
@@ -133,7 +133,7 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbFolderData * data = (FbFolderData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetId() > 0;
 			m_ToolBar->EnableTool(wxID_UP,   enabled);
@@ -145,29 +145,29 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 
 void FbFrameDownld::UpdateBooklist()
 {
-	FbFolderData * data = GetSelected();
+	FbMasterData * data = GetSelected();
 	if (data) FillByFolder(data);
 }
 
-void FbFrameDownld::FillByFolder(FbFolderData * data)
+void FbFrameDownld::FillByFolder(FbMasterData * data)
 {
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( FT_DOWNLOAD );
 	( new DownldThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
-FbFolderData * FbFrameDownld::GetSelected()
+FbMasterData * FbFrameDownld::GetSelected()
 {
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk())
-		return (FbFolderData * ) m_MasterList->GetItemData(item);
+		return (FbMasterData * ) m_MasterList->GetItemData(item);
 	else
 		return NULL;
 }
 
 void FbFrameDownld::UpdateFolder(const int iFolder, const FbFolderType type)
 {
-	FbFolderData * data = GetSelected();
+	FbMasterData * data = GetSelected();
 	if (!data) return;
 	if (data->GetType()!= type) return;
 

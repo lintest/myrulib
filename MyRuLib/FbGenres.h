@@ -14,14 +14,5 @@ class FbGenres
 		static void FillControl(wxTreeListCtrl * control);
 };
 
-class FbGenreData: public wxTreeItemData
-{
-	public:
-		FbGenreData(const int code): m_code(code) {};
-		const int GetCode() { return m_code; };
-	private:
-		int m_code;
-};
-
 #endif //FBGENRES_H
 
