@@ -5,12 +5,13 @@
 #include "FbTreeListCtrl.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
+#include "FbMasterList.h"
 
 class FbReplaceDlg : public FbDialog
 {
 	public:
 		FbReplaceDlg(const wxString& title, int id);
-		static int Execute(int author);
+		static int Execute(int author, wxString& newname);
 	protected:
 		virtual void EndModal(int retCode);
 	protected:
@@ -24,12 +25,13 @@ class FbReplaceDlg : public FbDialog
 		wxTextCtrl* m_Text;
 		wxTextCtrl* m_FindText;
 		wxBitmapButton* m_FindBtn;
-		FbTreeListCtrl* m_FindList;
+		FbMasterList* m_FindList;
 	private:
 		void Init();
 		int GetSelected();
 		bool Load();
 		int DoUpdate();
+		wxString GetFullName();
 		FbCommonDatabase m_database;
 		int m_id;
 	private:

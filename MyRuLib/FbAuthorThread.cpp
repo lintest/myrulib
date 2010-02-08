@@ -94,3 +94,24 @@ void FbAuthorThreadLast::GetResult(wxSQLite3Database &database)
 	FillAuthors(result);
 }
 
+void FbAuthorThreadRepl::GetResult(wxSQLite3Database &database)
+{
+	bool bFullText = FbSearchFunction::IsFullText(m_mask) && database.TableExists(wxT("fts_auth"));
+	if ( bFullText ) {
+		wxString sql = GetSQL(wxT("id IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?) AND id<>?"));
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, FbSearchFunction::AddAsterisk(m_mask));
+		stmt.Bind(2, m_id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FillAuthors(result);
+	} else {
+		wxString sql = GetSQL(wxT("SEARCH(search_name) AND id<>?"));
+		FbSearchFunction search(m_mask);
+		database.CreateFunction(wxT("SEARCH"), 1, search);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FillAuthors(result);
+	}
+}
+

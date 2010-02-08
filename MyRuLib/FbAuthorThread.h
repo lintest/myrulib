@@ -68,4 +68,16 @@ class FbAuthorThreadCode: public FbAuthorThread
 		int m_code;
 };
 
+class FbAuthorThreadRepl: public FbAuthorThread
+{
+	public:
+		FbAuthorThreadRepl(wxEvtHandler * frame, const wxString & mask, int id)
+			:FbAuthorThread(frame, 1), m_mask(mask), m_id(id) {};
+	protected:
+		virtual void GetResult(wxSQLite3Database &database);
+	private:
+		wxString m_mask;
+		int m_id;
+};
+
 #endif // __FBAUTHORTHREAD_H__

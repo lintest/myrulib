@@ -340,7 +340,13 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 {
 	wxString newname;
 	int id = FbAuthorDlg::Append(newname);
-	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
+
+	if (id) {
+		wxTreeItemId selected = m_MasterList->GetSelection();
+		FbMasterData * data = new FbMasterData(id, FT_AUTHOR);
+		wxTreeItemId item = m_MasterList->InsertItem(m_MasterList->GetRootItem(), selected, newname, -1, -1, data);
+		m_MasterList->SelectItem(item);
+	}
 }
 
 void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
@@ -350,15 +356,30 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 		wxString newname;
 		int old_id = data->GetId();
 		int new_id = FbAuthorDlg::Modify(data->GetId(), newname);
-		if (new_id) {
-			wxTreeItemId selected = m_MasterList->GetSelection();
-			if (selected.IsOk()) m_MasterList->SetItemText(selected, newname);
-			if (old_id != new_id) {
-//				m_MasterList->Delete(old_id);
-				data->SetId(new_id);
-				data->Show(m_BooksPanel);
-			}
-		}
+		if (new_id) ReplaceData(old_id, new_id, data, newname);
+	}
+}
+
+void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
+{
+	FbMasterData * data = m_MasterList->GetSelectedData();
+	if (data && data->GetId()) {
+		wxString newname;
+		int old_id = data->GetId();
+		int new_id = FbReplaceDlg::Execute(old_id, newname);
+		if (new_id) ReplaceData(old_id, new_id, data, newname);
+	}
+}
+
+void FbFrameAuthor::ReplaceData(int old_id, int new_id, FbMasterData * data, const wxString &newname)
+{
+	wxTreeItemId selected = m_MasterList->GetSelection();
+	if (selected.IsOk()) m_MasterList->SetItemText(selected, newname);
+	if (old_id != new_id) {
+		FbMasterData deleted(new_id, FT_AUTHOR);
+		m_MasterList->DeleteItem(deleted);
+		*data = FbMasterData(new_id, FT_AUTHOR);
+		data->Show(this);
 	}
 }
 
@@ -386,17 +407,6 @@ void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 		(new FbUpdateThread(sql1, sql2))->Execute();
 		m_MasterList->Delete(selected);
 	}
-}
-
-void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
-{
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	int id = data->GetId();
-	if (!id) return;
-
-	id = FbReplaceDlg::Execute(id);
-	if (id) FbOpenEvent(ID_BOOK_AUTHOR, id).Post();
 }
 
 void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)

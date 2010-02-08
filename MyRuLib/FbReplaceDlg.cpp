@@ -4,7 +4,6 @@
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
 #include "FbMasterData.h"
-#include "FbMasterList.h"
 
 BEGIN_EVENT_TABLE( FbReplaceDlg, wxDialog )
 	EVT_TEXT_ENTER( ID_FIND_TXT, FbReplaceDlg::OnFindEnter )
@@ -86,14 +85,14 @@ bool FbReplaceDlg::Load()
 void FbReplaceDlg::OnFindEnter( wxCommandEvent& event )
 {
 	wxString text = m_FindText->GetValue();
-	if (!text.IsEmpty()) (new FbAuthorThreadText(m_FindList, text, 1))->Execute();
+	if (!text.IsEmpty()) (new FbAuthorThreadRepl(m_FindList, text, m_id))->Execute();
 }
 
 int FbReplaceDlg::GetSelected()
 {
 	wxTreeItemId selected = m_FindList->GetSelection();
 	if (selected.IsOk()) {
-		FbMasterData * data = (FbMasterData*) m_FindList->GetItemData(selected);
+		FbMasterData * data = m_FindList->GetItemData(selected);
 		if (data) return data->GetId();
 	};
 	return 0;
@@ -123,10 +122,17 @@ int FbReplaceDlg::DoUpdate()
 	return selected;
 }
 
-int FbReplaceDlg::Execute(int author)
+wxString FbReplaceDlg::GetFullName()
+{
+	wxTreeItemId selected = m_FindList->GetSelection();
+	return selected.IsOk() ? m_FindList->GetItemText(selected) : (wxString)wxEmptyString;
+}
+
+int FbReplaceDlg::Execute(int author, wxString& newname)
 {
 	FbReplaceDlg dlg(_("Заменить автора"), author);
 	bool ok = dlg.Load() && dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoUpdate() : 0;
 }
 

@@ -35,6 +35,7 @@ class FbFrameAuthor : public FbFrameBase
 		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
+		void ReplaceData(int old_id, int new_id, FbMasterData * data, const wxString &newname);
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxToolBar * m_RuAlphabar;
