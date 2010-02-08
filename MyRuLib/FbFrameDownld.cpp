@@ -41,8 +41,7 @@ void FbFrameDownld::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
-	m_MasterList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, style);
+	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
 	m_MasterList->AddColumn (_("Папки"), 100, wxALIGN_LEFT);
 	m_MasterList->SetFocus();
 
@@ -133,7 +132,7 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetId() > 0;
 			m_ToolBar->EnableTool(wxID_UP,   enabled);
@@ -145,7 +144,7 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 
 void FbFrameDownld::UpdateBooklist()
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) FillByFolder(data);
 }
 
@@ -156,18 +155,9 @@ void FbFrameDownld::FillByFolder(FbMasterData * data)
 	( new DownldThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
 }
 
-FbMasterData * FbFrameDownld::GetSelected()
-{
-	wxTreeItemId item = m_MasterList->GetSelection();
-	if (item.IsOk())
-		return (FbMasterData * ) m_MasterList->GetItemData(item);
-	else
-		return NULL;
-}
-
 void FbFrameDownld::UpdateFolder(const int iFolder, const FbFolderType type)
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	if (data->GetType()!= type) return;
 

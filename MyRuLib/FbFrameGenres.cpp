@@ -55,8 +55,7 @@ void FbFrameGenres::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
-	m_MasterList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, style);
+	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
 	m_MasterList->AddColumn (_("Список жанров"), 100, wxALIGN_LEFT);
 	m_MasterList->SetFocus();
 	FbGenres::FillControl(m_MasterList);
@@ -103,7 +102,7 @@ void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = m_MasterList->GetItemData(selected);
 		if (data) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
@@ -113,7 +112,7 @@ void FbFrameGenres::UpdateBooklist()
 	int code = 0;
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) {
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = m_MasterList->GetItemData(selected);
 		if (data) code = data->GetId();
 	}
 	if (code) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), code) )->Execute();

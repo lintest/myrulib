@@ -28,7 +28,6 @@ class FbFrameFolder : public FbFrameBase
 		void FillFolders(const int iCurrent = 0);
 		void FillByFolder(FbMasterData * data);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-		FbMasterData * GetSelected();
 	private:
 		wxToolBar * m_FolderBar;
 	private:

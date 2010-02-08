@@ -33,3 +33,29 @@ void FbMasterList::OnEmptyMasters(FbMasterEvent& event)
 	AddRoot(wxEmptyString);
 }
 
+FbMasterData * FbMasterList::GetSelectedData() const
+{
+    wxTreeItemId selected = GetSelection();
+    return selected.IsOk() ? GetItemData(selected) : NULL;
+}
+
+FbMasterData * FbMasterList::GetItemData(const wxTreeItemId& item) const
+{
+    return (FbMasterData*) FbTreeListCtrl::GetItemData(item);
+}
+
+void FbMasterList::DeleteItem(FbMasterData &data, wxTreeItemId parent)
+{
+	if (!parent.IsOk()) parent = GetRootItem();
+	wxTreeItemIdValue cookie;
+	wxTreeItemId child = GetFirstChild(parent, cookie);
+	while (child.IsOk()) {
+		FbMasterData * value = (FbMasterData*) GetItemData(child);
+		if (value && *value == data) {
+			Delete(child);
+			return;
+		}
+		child = GetNextChild(parent, cookie);
+	}
+}
+

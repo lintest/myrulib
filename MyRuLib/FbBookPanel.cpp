@@ -40,7 +40,7 @@ END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0), m_KeyView(keyType)
+		m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0), m_KeyView(keyType), m_master(NULL)
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);

@@ -143,7 +143,7 @@ void FbFrameAuthor::SelectFirstAuthor(const int book)
 
 void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) (new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
@@ -178,7 +178,7 @@ void FbFrameAuthor::SelectRandomLetter()
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetId());
 }
 
@@ -279,7 +279,7 @@ void FbFrameAuthor::AuthorThread::CreateTree(wxSQLite3ResultSet &result)
 void FbFrameAuthor::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) (new AuthorThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
@@ -329,7 +329,7 @@ void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	int id = 0;
 	if (item.IsOk()) {
-		FbMasterData * data = (FbMasterData*)m_MasterList->GetItemData(item);
+		FbMasterData * data = m_MasterList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
 	MasterMenu menu(id);
@@ -345,7 +345,7 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data && data->GetId()) {
 		wxString newname;
 		int old_id = data->GetId();
@@ -364,7 +364,7 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	int id = data->GetId();
 	if (!id) return;
@@ -390,7 +390,7 @@ void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	int id = data->GetId();
 	if (!id) return;
@@ -401,7 +401,7 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data && data->GetId()>0) {
 		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetId());
@@ -452,7 +452,7 @@ wxMenuBar * FbFrameAuthor::CreateMenuBar()
 
 void FbFrameAuthor::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	event.Enable( data && data->GetId()>0 );
 }
 

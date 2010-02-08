@@ -49,8 +49,7 @@ void FbFrameFolder::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
-	m_MasterList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, style);
+	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
 	m_MasterList->AddColumn (_("Папки"), 100, wxALIGN_LEFT);
 	m_MasterList->SetFocus();
 
@@ -154,7 +153,7 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
 			m_FolderBar->EnableTool(ID_MODIFY_FOLDER, enabled);
@@ -166,7 +165,7 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 
 void FbFrameFolder::UpdateBooklist()
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) FillByFolder(data);
 }
 
@@ -180,7 +179,7 @@ void FbFrameFolder::FillByFolder(FbMasterData * data)
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	int iFolder = data->GetId();
 
@@ -218,7 +217,7 @@ void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 
 void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	if (data->GetType() != FT_FOLDER) return;
 	int id = data->GetId();
@@ -242,7 +241,7 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 
 void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	if (data->GetType() != FT_FOLDER) return;
 	int id = data->GetId();
@@ -270,18 +269,9 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 	FillFolders(0);
 }
 
-FbMasterData * FbFrameFolder::GetSelected()
-{
-	wxTreeItemId item = m_MasterList->GetSelection();
-	if (item.IsOk())
-		return (FbMasterData * ) m_MasterList->GetItemData(item);
-	else
-		return NULL;
-}
-
 void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
 {
-	FbMasterData * data = GetSelected();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	if (data->GetType()!= type) return;
 

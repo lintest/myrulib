@@ -12,6 +12,7 @@
 #include "FbMainMenu.h"
 #include "FbFilterObj.h"
 #include "FbMasterData.h"
+#include "FbMasterList.h"
 
 class FbFrameBase : public FbAuiMDIChildFrame
 {
@@ -38,7 +39,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		int GetBookCount();
 		bool IsFullScreen();
 	protected:
-		FbTreeListCtrl * m_MasterList;
+		FbMasterList * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
 		FbFilterObj m_filter;

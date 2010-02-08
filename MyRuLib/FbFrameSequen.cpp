@@ -95,7 +95,7 @@ void FbFrameSequen::OnAuthorSelected(wxTreeEvent & event)
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(selected);
+		FbMasterData * data = m_MasterList->GetItemData(selected);
 		if (data) ( new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
 	}
 }
@@ -184,7 +184,7 @@ wxString FbFrameSequen::SequenThread::GetOrder()
 void FbFrameSequen::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
@@ -289,7 +289,7 @@ void FbFrameSequen::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	int id = 0;
 	if (item.IsOk()) {
-		FbMasterData * data = (FbMasterData*) m_MasterList->GetItemData(item);
+		FbMasterData * data = m_MasterList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
 	MasterMenu menu(id);
@@ -422,7 +422,7 @@ void FbFrameSequen::OnMasterAppend(wxCommandEvent& event)
 
 void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	int id = EditDlg::Modify(data->GetId());
 	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, id).Post();
@@ -430,7 +430,7 @@ void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 
 void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 {
-	FbMasterData * data = (FbMasterData*) m_MasterList->GetSelectedData();
+	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	int id = data->GetId();
 	if (!id) return;

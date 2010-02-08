@@ -24,8 +24,7 @@ FbCalendar::FbCalendar( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	m_Calendar = new wxCalendarCtrl( this, wxID_ANY, wxDefaultDateTime, wxDefaultPosition, wxDefaultSize, wxCAL_MONDAY_FIRST|wxCAL_SHOW_HOLIDAYS );
 	bSizerMain->Add( m_Calendar, 0, wxALL|wxEXPAND, 5 );
 
-	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxSUNKEN_BORDER | wxTR_NO_BUTTONS;
-	m_DateList = new FbTreeListCtrl(this, ID_MASTER_LIST, substyle);
+	m_DateList = new FbMasterList(this, ID_MASTER_LIST);
 	m_DateList->AddColumn (_("Дата"), 100, wxALIGN_LEFT);
 	m_DateList->SetFocus();
 

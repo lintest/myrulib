@@ -10,6 +10,8 @@ class FbMasterList: public FbTreeListCtrl
 	public:
 		FbMasterList(wxWindow *parent, wxWindowID id);
 		FbMasterData * GetSelectedData() const;
+		FbMasterData * GetItemData (const wxTreeItemId& item) const;
+		void DeleteItem(FbMasterData &data, wxTreeItemId parent = 0L);
 	private:
 		void OnEmptyMasters(FbMasterEvent& event);
 		void OnAppendMaster(FbMasterEvent& event);

@@ -19,6 +19,7 @@
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include "FbTreeListCtrl.h"
+#include "FbMasterList.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +34,7 @@ class FbCalendar : public wxPanel
 
 	public:
 		wxCalendarCtrl* m_Calendar;
-		FbTreeListCtrl* m_DateList;
+		FbMasterList* m_DateList;
 
 	protected:
 		void OnCalendar( wxCalendarEvent& event ){ event.Skip(); }
