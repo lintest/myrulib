@@ -7,13 +7,12 @@
 #include "ExternalDlg.h"
 #include "FbMainMenu.h"
 #include "FbUpdateThread.h"
+#include "FbMasterList.h"
 #include "FbWindow.h"
 
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnAuthorSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
-	EVT_FB_AUTHOR(ID_EMPTY_MASTERS, FbFrameSequen::OnEmptyMasters)
-	EVT_FB_AUTHOR(ID_APPEND_MASTER, FbFrameSequen::OnAppendMaster)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
 	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
 	EVT_MENU(ID_SEQUENCE_BTN, FbFrameSequen::OnFindEnter )
@@ -57,7 +56,7 @@ void FbFrameSequen::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbTreeListCtrl(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
+	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
 	m_MasterList->AddColumn(_("Серия"), 40, wxALIGN_LEFT);
 	m_MasterList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 	m_MasterList->SetFocus();
@@ -110,14 +109,14 @@ void FbFrameSequen::FindSequence(const wxString &text)
 {
 	m_SequenceText = text;
 	m_SequenceCode = 0;
-	(new MasterThread(this, m_SequenceText, m_MasterList->GetSortedColumn()))->Execute();
+	(new MasterThread(m_MasterList, m_SequenceText, m_MasterList->GetSortedColumn()))->Execute();
 }
 
 void FbFrameSequen::OpenSequence(const int sequence, const int book)
 {
 	m_SequenceText = wxEmptyString;
 	m_SequenceCode = sequence;
-	(new MasterThread(this, m_SequenceCode, m_MasterList->GetSortedColumn()))->Execute();
+	(new MasterThread(m_MasterList, m_SequenceCode, m_MasterList->GetSortedColumn()))->Execute();
 }
 
 FbThreadSkiper FbFrameSequen::SequenThread::sm_skiper;
@@ -189,33 +188,12 @@ void FbFrameSequen::UpdateBooklist()
 	if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
 }
 
-void FbFrameSequen::OnAppendMaster(FbMasterEvent& event)
-{
-	FbTreeListUpdater updater(m_MasterList);
-	wxTreeItemId root = m_MasterList->GetRootItem();
-
-	wxTreeItemIdValue cookie;
-	wxTreeItemId child = m_MasterList->GetFirstChild(root, cookie);
-
-	wxTreeItemId item = m_MasterList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_master, FT_SEQNAME));
-	wxString number = wxString::Format(wxT("%d"), event.m_number);
-	m_MasterList->SetItemText(item, 1, number);
-
-	if (!child.IsOk()) m_MasterList->SelectItem(item);
-}
-
-void FbFrameSequen::OnEmptyMasters(FbMasterEvent& event)
-{
-	BookListUpdater updater(m_MasterList);
-	m_MasterList->AddRoot(wxEmptyString);
-}
-
 void FbFrameSequen::OnColClick(wxListEvent& event)
 {
 	if (m_SequenceCode)
-		(new MasterThread(this, m_SequenceCode, m_MasterList->GetSortedColumn()))->Execute();
+		(new MasterThread(m_MasterList, m_SequenceCode, m_MasterList->GetSortedColumn()))->Execute();
 	else
-		(new MasterThread(this, m_SequenceText, m_MasterList->GetSortedColumn()))->Execute();
+		(new MasterThread(m_MasterList, m_SequenceText, m_MasterList->GetSortedColumn()))->Execute();
 }
 
 void FbFrameSequen::OnBooksCount(wxCommandEvent& event)

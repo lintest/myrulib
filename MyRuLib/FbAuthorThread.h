@@ -9,7 +9,7 @@
 class FbAuthorThread: public FbThread
 {
 	public:
-		FbAuthorThread(wxWindow * frame, int order):  m_frame(frame), m_number(sm_skiper.NewNumber()), m_order(order) {};
+		FbAuthorThread(wxEvtHandler * frame, int order):  m_frame(frame), m_number(sm_skiper.NewNumber()), m_order(order) {};
 	protected:
 		virtual void * Entry();
 		virtual void GetResult(wxSQLite3Database &database) = 0;
@@ -19,7 +19,7 @@ class FbAuthorThread: public FbThread
 	private:
 		static wxCriticalSection sm_queue;
 		static FbThreadSkiper sm_skiper;
-		wxWindow * m_frame;
+		wxEvtHandler * m_frame;
 		int m_number;
 		int m_order;
 };
@@ -27,7 +27,7 @@ class FbAuthorThread: public FbThread
 class FbAuthorThreadChar: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadChar(wxWindow * frame, const wxString & letter, int order)
+		FbAuthorThreadChar(wxEvtHandler * frame, const wxString & letter, int order)
 			:FbAuthorThread(frame, order), m_letter(letter) {};
 	protected:
 		virtual void GetResult(wxSQLite3Database &database);
@@ -38,7 +38,7 @@ class FbAuthorThreadChar: public FbAuthorThread
 class FbAuthorThreadText: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadText(wxWindow * frame, const wxString & mask, int order)
+		FbAuthorThreadText(wxEvtHandler * frame, const wxString & mask, int order)
 			:FbAuthorThread(frame, order), m_mask(mask) {};
 	protected:
 		virtual void GetResult(wxSQLite3Database &database);
@@ -49,7 +49,7 @@ class FbAuthorThreadText: public FbAuthorThread
 class FbAuthorThreadLast: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadLast(wxWindow * frame, const wxString & last)
+		FbAuthorThreadLast(wxEvtHandler * frame, const wxString & last)
 			:FbAuthorThread(frame, 1), m_last(last) {};
 	protected:
 		virtual void GetResult(wxSQLite3Database &database);
@@ -60,7 +60,7 @@ class FbAuthorThreadLast: public FbAuthorThread
 class FbAuthorThreadCode: public FbAuthorThread
 {
 	public:
-		FbAuthorThreadCode(wxWindow * frame, const int code, int order)
+		FbAuthorThreadCode(wxEvtHandler * frame, const int code, int order)
 			:FbAuthorThread(frame, order), m_code(code) {};
 	protected:
 		virtual void GetResult(wxSQLite3Database &database);

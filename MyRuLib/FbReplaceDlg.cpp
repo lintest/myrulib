@@ -4,12 +4,11 @@
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
 #include "FbMasterData.h"
+#include "FbMasterList.h"
 
 BEGIN_EVENT_TABLE( FbReplaceDlg, wxDialog )
 	EVT_TEXT_ENTER( ID_FIND_TXT, FbReplaceDlg::OnFindEnter )
 	EVT_BUTTON( ID_FIND_BTN, FbReplaceDlg::OnFindEnter )
-	EVT_FB_AUTHOR(ID_EMPTY_MASTERS, FbReplaceDlg::OnEmptyMasters)
-	EVT_FB_AUTHOR(ID_APPEND_MASTER, FbReplaceDlg::OnAppendMaster)
 END_EVENT_TABLE()
 
 FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
@@ -56,7 +55,7 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	bSizerMain->Add( fgSizerGrid, 0, wxEXPAND, 5 );
 
-	m_FindList = new FbTreeListCtrl(this, ID_FIND_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
+	m_FindList = new FbMasterList(this, ID_FIND_LIST);
 	bSizerMain->Add( m_FindList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 	m_FindList->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
 	m_FindList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
@@ -84,34 +83,10 @@ bool FbReplaceDlg::Load()
 	return false;
 }
 
-void FbReplaceDlg::OnAppendMaster(FbMasterEvent& event)
-{
-	if (event.m_master == m_id) return;
-
-	FbTreeListUpdater updater(m_FindList);
-	wxTreeItemId root = m_FindList->GetRootItem();
-
-	wxTreeItemIdValue cookie;
-	wxTreeItemId child = m_FindList->GetFirstChild(root, cookie);
-
-	wxTreeItemId item = m_FindList->AppendItem(root, event.GetString(), -1, -1, new FbMasterData(event.m_master, FT_AUTHOR));
-	wxString number = wxString::Format(wxT("%d"), event.m_number);
-	m_FindList->SetItemText(item, 1, number);
-
-	if (!child.IsOk()) m_FindList->SelectItem(item);
-}
-
-void FbReplaceDlg::OnEmptyMasters(FbMasterEvent& event)
-{
-	FbTreeListUpdater updater(m_FindList);
-	m_FindList->DeleteRoot();
-	m_FindList->AddRoot(wxEmptyString);
-}
-
 void FbReplaceDlg::OnFindEnter( wxCommandEvent& event )
 {
 	wxString text = m_FindText->GetValue();
-	if (!text.IsEmpty()) (new FbAuthorThreadText(this, text, 1))->Execute();
+	if (!text.IsEmpty()) (new FbAuthorThreadText(m_FindList, text, 1))->Execute();
 }
 
 int FbReplaceDlg::GetSelected()

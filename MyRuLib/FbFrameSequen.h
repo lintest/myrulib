@@ -39,8 +39,6 @@ class FbFrameSequen : public FbFrameBase
 		void OnContextMenu(wxTreeEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
 		void OnCharEvent(wxKeyEvent& event);
-		void OnEmptyMasters(FbMasterEvent& event);
-		void OnAppendMaster(FbMasterEvent& event);
 		void OnFindEnter(wxCommandEvent& event);
 		void OnMasterAppend(wxCommandEvent& event);
 		void OnMasterModify(wxCommandEvent& event);
@@ -66,14 +64,14 @@ class FbFrameSequen : public FbFrameBase
 		class MasterThread: public FbThread
 		{
 			public:
-				MasterThread(wxWindow * frame, const wxString &text, int order): m_frame(frame), m_text(text), m_code(0), m_order(order) {};
-				MasterThread(wxWindow * frame, const int code, int order): m_frame(frame), m_code(code), m_order(order) {};
+				MasterThread(wxEvtHandler * frame, const wxString &text, int order): m_frame(frame), m_text(text), m_code(0), m_order(order) {};
+				MasterThread(wxEvtHandler * frame, const int code, int order): m_frame(frame), m_code(code), m_order(order) {};
 			protected:
 				virtual void * Entry();
 				wxString GetOrder();
 			private:
 				static wxCriticalSection sm_queue;
-				wxWindow * m_frame;
+				wxEvtHandler * m_frame;
 				wxString m_text;
 				int m_code;
 				int m_order;
