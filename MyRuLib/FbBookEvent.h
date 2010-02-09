@@ -45,23 +45,19 @@ class FbMasterEvent: public FbCommandEvent
 {
 	public:
 		FbMasterEvent(wxWindowID id)
-			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_master(0), m_parent(0), m_number(0), m_data(NULL) {};
+			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_data(NULL), m_number(0) {};
 
 		FbMasterEvent(const FbMasterEvent & event)
-			: FbCommandEvent(event), m_master(event.m_master), m_parent(event.m_parent), m_number(event.m_number), m_data(event.m_data) {};
-
-		FbMasterEvent(wxWindowID id, wxSQLite3ResultSet &result);
+			: FbCommandEvent(event), m_data(event.m_data), m_number(event.m_number) {};
 
 		FbMasterEvent(wxWindowID id, const wxString &text, FbMasterData * data, int number = 0)
-			: FbCommandEvent(fbEVT_MASTER_ACTION, id, text), m_master(0), m_parent(0), m_number(number), m_data(data) {};
+			: FbCommandEvent(fbEVT_MASTER_ACTION, id, text), m_data(data), m_number(number) {};
 
 		virtual wxEvent *Clone() const { return new FbMasterEvent(*this); }
 
 	public:
-		int m_master;
-		int m_parent;
-		int m_number;
 		FbMasterData * m_data;
+		int m_number;
 };
 
 class FbOpenEvent: public FbCommandEvent

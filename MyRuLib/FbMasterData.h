@@ -33,8 +33,7 @@ class FbMasterAuthor: public FbMasterData
 			{ return GetType() == data.GetType() && operator==((FbMasterAuthor&)data); };
 		bool operator ==(const FbMasterAuthor & data) const
 			{ return m_id == data.m_id; };
-		FbMasterAuthor & operator =(const FbMasterAuthor & data)
-			{ m_id = data.m_id; return *this; };
+	public:
 		virtual const int GetId() const { return m_id; };
 		virtual const FbFolderType GetType() const { return FT_AUTHOR; };
 		virtual void Show(wxEvtHandler * frame) const {};
@@ -53,8 +52,6 @@ class FbMasterSeqname: public FbMasterData
 			{ return GetType() == data.GetType() && operator==((FbMasterSeqname&)data); };
 		bool operator ==(const FbMasterSeqname & data) const
 			{ return m_id == data.m_id; };
-		FbMasterSeqname & operator =(const FbMasterSeqname & data)
-			{ m_id = data.m_id; return *this; };
 	public:
 		virtual const int GetId() const { return m_id; };
 		virtual const FbFolderType GetType() const { return FT_SEQNAME; };
@@ -72,8 +69,6 @@ class FbMasterFolder: public FbMasterData
 			: m_id(data.m_id), m_type(data.m_type) {};
 		virtual bool operator ==(const FbMasterData & data) const
 			{ return GetType() == data.GetType() && m_id == ((FbMasterFolder&)data).m_id; };
-		FbMasterFolder & operator =(const FbMasterFolder & data)
-			{ m_id = data.m_id; m_type = data.m_type; return *this; };
 	public:
 		virtual const int GetId() const { return m_id; };
 		virtual const FbFolderType GetType() const { return m_type; };

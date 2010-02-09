@@ -21,10 +21,3 @@ void FbCommandEvent::Post()
 	wxPostEvent(wxGetApp().GetTopWindow(), *this);
 }
 
-FbMasterEvent::FbMasterEvent(wxWindowID id, wxSQLite3ResultSet &result):
-	FbCommandEvent(fbEVT_MASTER_ACTION, id, result.GetString(wxT("name"))),
-	m_master(result.GetInt(wxT("id"))),
-	m_parent(0),
-	m_number(result.GetInt(wxT("number")))
-{
-}

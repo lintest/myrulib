@@ -357,7 +357,7 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 		wxString newname;
 		int old_id = data->GetId();
 		int new_id = FbAuthorDlg::Modify(data->GetId(), newname);
-		if (new_id) ReplaceData(old_id, new_id, data, newname);
+		if (new_id) ReplaceData(old_id, new_id, selected, newname);
 	}
 }
 
@@ -369,7 +369,7 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 		wxString newname;
 		int old_id = data->GetId();
 		int new_id = FbReplaceDlg::Execute(old_id, newname);
-		if (new_id) ReplaceData(old_id, new_id, data, newname);
+		if (new_id) ReplaceData(old_id, new_id, selected, newname);
 	}
 }
 
@@ -382,7 +382,7 @@ void FbFrameAuthor::ReplaceData(int old_id, int new_id, wxTreeItemId selected, c
 		delete m_MasterList->GetItemData(selected);
 		FbMasterData * data = new FbMasterAuthor(new_id);
 		m_MasterList->SetItemData(selected, data);
-		data->Show(this);
+		m_MasterList->SelectItem(selected);
 	}
 }
 
