@@ -294,6 +294,9 @@ void * FbMasterFolder::FolderThread::Entry()
 			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
 			condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
 			} break;
+		default:{
+			condition = wxT("books.md5sum = ?");
+			} break;
 	}
 	wxString sql = GetSQL(condition);
 
@@ -480,7 +483,7 @@ wxString FbMasterSeqname::SequenThread::GetOrder()
 
 void FbMasterAuthor::Show(FbFrameBase * frame) const
 {
-	(new AuthorThread(frame, m_id))->Execute();
+	(new AuthorThread(frame, *this))->Execute();
 }
 
 void FbMasterDownld::Show(FbFrameBase * frame) const
@@ -490,22 +493,22 @@ void FbMasterDownld::Show(FbFrameBase * frame) const
 
 void FbMasterFolder::Show(FbFrameBase * frame) const
 {
-	( new FolderThread(frame, *this))->Execute();
+	(new FolderThread(frame, *this))->Execute();
 }
 
 void FbMasterGenre::Show(FbFrameBase * frame) const
 {
-	(new GenresThread(frame, m_id))->Execute();
+	(new GenresThread(frame, *this))->Execute();
 }
 
 void FbMasterSearch::Show(FbFrameBase * frame) const
 {
-	(new SearchThread(frame, m_title, m_author))->Execute();
+	(new SearchThread(frame, *this))->Execute();
 }
 
 void FbMasterSeqname::Show(FbFrameBase * frame) const
 {
-	(new SequenThread(frame, m_id))->Execute();
+	(new SequenThread(frame, *this))->Execute();
 }
 
 
