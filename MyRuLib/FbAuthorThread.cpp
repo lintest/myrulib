@@ -38,7 +38,8 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 	if (sm_skiper.Skipped(m_number)) return;
 	FbMasterEvent(ID_EMPTY_MASTERS).Post(m_frame);
 	while (result.NextRow()) {
-		FbMasterEvent(ID_APPEND_MASTER, result).Post(m_frame);
+		FbMasterAuthor * data = new FbMasterAuthor( result.GetInt(0) );
+		FbMasterEvent(ID_APPEND_MASTER, result.GetString(1), data, result.GetInt(2)).Post(m_frame);
 		if (sm_skiper.Skipped(m_number)) return;
 	}
 }

@@ -45,12 +45,15 @@ class FbMasterEvent: public FbCommandEvent
 {
 	public:
 		FbMasterEvent(wxWindowID id)
-			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_master(0), m_parent(0), m_number(0) {};
+			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_master(0), m_parent(0), m_number(0), m_data(NULL) {};
 
 		FbMasterEvent(const FbMasterEvent & event)
-			: FbCommandEvent(event), m_master(event.m_master), m_parent(event.m_parent), m_number(event.m_number) {};
+			: FbCommandEvent(event), m_master(event.m_master), m_parent(event.m_parent), m_number(event.m_number), m_data(event.m_data) {};
 
 		FbMasterEvent(wxWindowID id, wxSQLite3ResultSet &result);
+
+		FbMasterEvent(wxWindowID id, const wxString &text, FbMasterData * data, int number = 0)
+			: FbCommandEvent(fbEVT_MASTER_ACTION, id, text), m_master(0), m_parent(0), m_number(number), m_data(data) {};
 
 		virtual wxEvent *Clone() const { return new FbMasterEvent(*this); }
 
@@ -58,6 +61,7 @@ class FbMasterEvent: public FbCommandEvent
 		int m_master;
 		int m_parent;
 		int m_number;
+		FbMasterData * m_data;
 };
 
 class FbOpenEvent: public FbCommandEvent
@@ -139,7 +143,7 @@ typedef void (wxEvtHandler::*FbMasterEventFunction)(FbMasterEvent&);
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbProgressEventFunction, & fn ), (wxObject *) NULL ),
 
-#define EVT_FB_AUTHOR(id, fn) \
+#define EVT_FB_MASTER(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_MASTER_ACTION, id, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbMasterEventFunction, & fn ), (wxObject *) NULL ),

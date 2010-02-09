@@ -74,7 +74,7 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	wxTreeItemId parent = m_MasterList->AppendItem(root, _("Закладки"));
 	m_MasterList->SetItemBold(parent, true);
 
-	wxTreeItemId item = m_MasterList->AppendItem(parent, _("Избранное"), -1, -1, new FbMasterData(0, FT_FOLDER));
+	wxTreeItemId item = m_MasterList->AppendItem(parent, _("Избранное"), -1, -1, new FbMasterFolder(0, FT_FOLDER));
 	if (iCurrent == 0) m_MasterList->SelectItem(item);
 
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
@@ -83,7 +83,7 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	while (result.NextRow()) {
 		int id = result.GetInt(0);
 		wxString name = result.GetString(1);
-		wxTreeItemId item = m_MasterList->AppendItem(parent, name, -1, -1, new FbMasterData(id, FT_FOLDER));
+		wxTreeItemId item = m_MasterList->AppendItem(parent, name, -1, -1, new FbMasterFolder(id, FT_FOLDER));
 		if (iCurrent == id) m_MasterList->SelectItem(item);
 	}
 	m_MasterList->Expand(parent);
@@ -92,12 +92,12 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	parent = m_MasterList->AppendItem(root, _("Пометки"));
 	m_MasterList->SetItemBold(parent, true);
 
-	m_MasterList->AppendItem(parent, _("Комментарии"), -1, -1, new FbMasterData(1, FT_COMMENT));
-	m_MasterList->AppendItem(parent, strRating[5], -1, -1, new FbMasterData(5, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[4], -1, -1, new FbMasterData(4, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[3], -1, -1, new FbMasterData(3, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[2], -1, -1, new FbMasterData(2, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[1], -1, -1, new FbMasterData(1, FT_RATING));
+	m_MasterList->AppendItem(parent, _("Комментарии"), -1, -1, new FbMasterFolder(1, FT_COMMENT));
+	m_MasterList->AppendItem(parent, strRating[5], -1, -1, new FbMasterFolder(5, FT_RATING));
+	m_MasterList->AppendItem(parent, strRating[4], -1, -1, new FbMasterFolder(4, FT_RATING));
+	m_MasterList->AppendItem(parent, strRating[3], -1, -1, new FbMasterFolder(3, FT_RATING));
+	m_MasterList->AppendItem(parent, strRating[2], -1, -1, new FbMasterFolder(2, FT_RATING));
+	m_MasterList->AppendItem(parent, strRating[1], -1, -1, new FbMasterFolder(1, FT_RATING));
 	m_MasterList->Expand(parent);
 
 	m_MasterList->Thaw();

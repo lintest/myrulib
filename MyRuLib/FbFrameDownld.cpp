@@ -81,9 +81,9 @@ void FbFrameDownld::FillFolders(const int iCurrent)
 	m_MasterList->DeleteRoot();
 
 	wxTreeItemId root = m_MasterList->AddRoot(wxEmptyString);
-	m_MasterList->AppendItem(root, wxT("Очередь"), -1, -1, new FbMasterData(1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, wxT("Готово"), -1, -1, new FbMasterData(-1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, wxT("Ошибки"), -1, -1, new FbMasterData(-2, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, wxT("Очередь"), -1, -1, new FbMasterFolder(1, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, wxT("Готово"), -1, -1, new FbMasterFolder(-1, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, wxT("Ошибки"), -1, -1, new FbMasterFolder(-2, FT_DOWNLOAD));
 	m_MasterList->Expand(root);
 
 	m_MasterList->Thaw();

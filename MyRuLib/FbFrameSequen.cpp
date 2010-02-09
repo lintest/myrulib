@@ -233,7 +233,8 @@ void * FbFrameSequen::MasterThread::Entry()
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		FbMasterEvent(ID_EMPTY_MASTERS).Post(m_frame);
 		while (result.NextRow()) {
-			FbMasterEvent(ID_APPEND_MASTER, result).Post(m_frame);
+			FbMasterSeqname * data = new FbMasterSeqname( result.GetInt(0) );
+			FbMasterEvent(ID_APPEND_MASTER, result.GetString(1), data, result.GetInt(2)).Post(m_frame);
 		}
 	}
 	catch (wxSQLite3Exception & e) {

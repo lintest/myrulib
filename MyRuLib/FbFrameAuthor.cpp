@@ -343,7 +343,7 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 
 	if (id) {
 		wxTreeItemId selected = m_MasterList->GetSelection();
-		FbMasterData * data = new FbMasterData(id, FT_AUTHOR);
+		FbMasterData * data = new FbMasterAuthor(id);
 		wxTreeItemId item = m_MasterList->InsertItem(m_MasterList->GetRootItem(), selected, newname, -1, -1, data);
 		m_MasterList->SelectItem(item);
 	}
@@ -351,7 +351,8 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
+    wxTreeItemId selected = m_MasterList->GetSelection();
+	FbMasterData * data = selected.IsOk() ? m_MasterList->GetItemData(selected) : NULL;
 	if (data && data->GetId()) {
 		wxString newname;
 		int old_id = data->GetId();
@@ -362,7 +363,8 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
+    wxTreeItemId selected = m_MasterList->GetSelection();
+	FbMasterData * data = selected.IsOk() ? m_MasterList->GetItemData(selected) : NULL;
 	if (data && data->GetId()) {
 		wxString newname;
 		int old_id = data->GetId();
@@ -371,14 +373,15 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 	}
 }
 
-void FbFrameAuthor::ReplaceData(int old_id, int new_id, FbMasterData * data, const wxString &newname)
+void FbFrameAuthor::ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname)
 {
-	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) m_MasterList->SetItemText(selected, newname);
 	if (old_id != new_id) {
-		FbMasterData deleted(new_id, FT_AUTHOR);
+		FbMasterAuthor deleted(new_id);
 		m_MasterList->DeleteItem(deleted);
-		*data = FbMasterData(new_id, FT_AUTHOR);
+		delete m_MasterList->GetItemData(selected);
+		FbMasterData * data = new FbMasterAuthor(new_id);
+		m_MasterList->SetItemData(selected, data);
 		data->Show(this);
 	}
 }
