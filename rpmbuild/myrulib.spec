@@ -1,5 +1,5 @@
 %define name     myrulib
-%define version  0.18
+%define version  0.19
 %define release  fedora12
 
 Name: %{name}
@@ -43,6 +43,8 @@ make clean
 %post
 
 %changelog
+* Tue Feb 09 2010 Denis Kandrashin
+- Update release
 * Wed Jan 20 2010 Denis Kandrashin
 - Update release
 * Sat Nov 07 2009 Denis Kandrashin
