@@ -14,7 +14,12 @@ do
 done
 
 rm myrulib.db
-php convert.php
+php conv_book.php
 
-rm myrulib.db.zip
-zip myrulib.db.zip myrulib.db
+rm flibusta.db.zip
+zip flibusta.db.zip myrulib.db
+
+php conv_info.php
+
+rm flibusta.db.full.zip
+zip flibusta.db.full.zip myrulib.db

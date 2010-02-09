@@ -215,6 +215,11 @@ function convert_authors($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+}  
+
+function author_info($mysql_db, $sqlite_db)
+{
+  
 
   $bb = new bbcode;
   $bb->autolinks = false;
@@ -230,8 +235,6 @@ function convert_authors($mysql_db, $sqlite_db)
     $body = str_replace("&gt;", ">", $body);
     $insert->execute(array($body, $row['AvtorId']));
   }
-
-#  $sqlite_db->query("delete from authors where description is null;");
 
   $sqlite_db->query("commit;");
 }
@@ -284,7 +287,10 @@ function convert_books($mysql_db, $sqlite_db)
   }
 
   $sqlite_db->query("CREATE INDEX book_id ON books(id);");
+}  
 
+function book_info($mysql_db, $sqlite_db)
+{
   $bb = new bbcode;
   $bb->autolinks = false;
   $sqltest = "SELECT * FROM libbannotations";
@@ -299,8 +305,6 @@ function convert_books($mysql_db, $sqlite_db)
     $body = str_replace("&gt;", ">", $body);
     $insert->execute(array($body, $row['BookId']));
   }
-
-#  $sqlite_db->query("delete from books where description is null;");
 
   $sqlite_db->query("commit;");
 }
