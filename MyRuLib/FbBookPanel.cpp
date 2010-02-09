@@ -559,5 +559,18 @@ FbViewMode FbBookPanel::GetViewMode()
 void FbBookPanel::SetMasterData(FbMasterData const * master)
 {
 	wxDELETE(m_master);
-	if (master) m_master = master->Clone();
+	if (master) m_master = master->Clone(); else return;
+
+	switch ( master->GetType() ) {
+		case FT_AUTHOR: {
+			m_BookList->SetColumnShown(1, false);
+		} break;
+		case FT_GENRE: {
+			m_BookList->SetColumnShown(3, false);
+		} break;
+		default: {
+			m_BookList->SetColumnShown(2, GetListMode() == FB2_MODE_LIST);
+			m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
+		}
+	}
 };

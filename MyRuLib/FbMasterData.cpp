@@ -195,7 +195,7 @@ void * FbMasterAuthor::AuthorThread::Entry()
 			stmt.Bind(1, m_author);
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.NextRow()) {
-				if (m_mode == FB2_MODE_TREE) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_MASTER, m_author, result.GetString(0)).Post(m_frame);
+				if (m_mode == FB2_MODE_TREE) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, m_author, result.GetString(0)).Post(m_frame);
 				FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(1)).Post(m_frame);
 			}
 		}
