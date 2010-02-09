@@ -23,6 +23,7 @@ class FbFrameSequen : public FbFrameBase
 		virtual wxMenuBar * CreateMenuBar();
 		virtual wxToolBar * CreateToolBar(long style, wxWindowID winid, const wxString& name);
 	private:
+		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
@@ -85,8 +86,8 @@ class FbFrameSequen : public FbFrameBase
 		{
 			public:
 				EditDlg( const wxString& title = wxEmptyString, int id = 0 );
-				static int Append();
-				static int Modify(int id);
+				static int Append(wxString &newname);
+				static int Modify(int id, wxString &newname);
 			protected:
 				virtual void EndModal(int retCode);
 			private:

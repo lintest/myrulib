@@ -342,9 +342,8 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 	int id = FbAuthorDlg::Append(newname);
 
 	if (id) {
-		wxTreeItemId selected = m_MasterList->GetSelection();
 		FbMasterData * data = new FbMasterAuthor(id);
-		wxTreeItemId item = m_MasterList->InsertItem(m_MasterList->GetRootItem(), selected, newname, -1, -1, data);
+		wxTreeItemId item = m_MasterList->InsertItem(m_MasterList->GetRootItem(), m_MasterList->GetSelection(), newname, -1, -1, data);
 		m_MasterList->SelectItem(item);
 	}
 }

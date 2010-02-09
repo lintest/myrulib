@@ -6,6 +6,16 @@
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
 
+class FbTempEraser {
+	public:
+		static void Add(const wxString &filename);
+		static bool sm_erase;
+	private:
+		wxStringList filelist;
+		FbTempEraser() {};
+		virtual ~FbTempEraser();
+};
+
 class BookTreeItemData: public wxTreeItemData
 {
 	public:

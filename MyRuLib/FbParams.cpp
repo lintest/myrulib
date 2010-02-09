@@ -3,6 +3,7 @@
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
+#include "FbBookData.h"
 
 WX_DEFINE_OBJARRAY(ParamArray);
 
@@ -31,6 +32,8 @@ void FbParams::LoadParams()
 	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100 UNION ALL SELECT id, value, text FROM params WHERE id<100");
 	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 	while (result.NextRow()) sm_params.Add(new ParamItem(result));
+
+	FbTempEraser::sm_erase = GetValue(FB_TEMP_DEL);
 }
 
 int FbParams::GetValue(const int param)
@@ -128,6 +131,7 @@ void FbParams::SetText(const int param, const wxString &text)
 int FbParams::DefaultValue(int param)
 {
 	switch (param) {
+		case FB_TEMP_DEL: return 1;
 		case FB_MODE_AUTHOR: return 1;
 		case FB_TRANSLIT_FOLDER: return 0;
 		case FB_TRANSLIT_FILE: return 1;
@@ -153,7 +157,7 @@ wxString FbParams::DefaultText(int param)
 			return wxT("flibusta.net");
 		case FB_DOWNLOAD_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
-		case FB_LOCAL_DIR:
+		case FB_TEMP_DIR:
 			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("local");
 		case FB_FONT_MAIN:
 		case FB_FONT_HTML:

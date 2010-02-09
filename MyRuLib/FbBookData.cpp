@@ -7,24 +7,18 @@
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
 
-class TempFileEraser {
-	private:
-		wxStringList filelist;
-		TempFileEraser() {};
-		virtual ~TempFileEraser();
-	public:
-		static void Add(const wxString &filename);
-};
+bool FbTempEraser::sm_erase = true;
 
-TempFileEraser::~TempFileEraser()
+FbTempEraser::~FbTempEraser()
 {
-	for (size_t i=0; i<filelist.GetCount(); i++)
-		wxRemoveFile(filelist[i]);
+	if (sm_erase)
+		for (size_t i=0; i<filelist.GetCount(); i++)
+			wxRemoveFile(filelist[i]);
 }
 
-void TempFileEraser::Add(const wxString &filename)
+void FbTempEraser::Add(const wxString &filename)
 {
-	static TempFileEraser eraser;
+	static FbTempEraser eraser;
 	eraser.filelist.Add(filename);
 }
 
@@ -55,13 +49,13 @@ void FbBookData::Open() const
 void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 {
 	wxFileName file_name = md5sum;
-	file_name.SetPath( FbParams::GetText(FB_LOCAL_DIR) );
+	file_name.SetPath( FbParams::GetText(FB_TEMP_DIR) );
 	file_name.SetExt(m_filetype);
 
 	if ( !file_name.DirExists()) file_name.Mkdir(0777, wxPATH_MKDIR_FULL);
 
 	wxString file_path = file_name.GetFullPath();
-	TempFileEraser::Add(file_path);
+	FbTempEraser::Add(file_path);
 	wxFileOutputStream out(file_path);
 	out.Write(in);
 

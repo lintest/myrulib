@@ -25,6 +25,9 @@ class SettingsDlg : private FbDialog
 	private:
 		enum ID {
 			ID_AUTO_DOWNLD = 1000,
+			ID_TEMP_DEL,
+			ID_TEMP_DIR_TXT,
+			ID_TEMP_DIR_BTN,
 			ID_DOWNLOAD_DIR_TXT,
 			ID_DOWNLOAD_DIR_BTN,
 			ID_USE_PROXY,

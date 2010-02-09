@@ -320,19 +320,23 @@ FbFrameSequen::EditDlg::EditDlg( const wxString& title, int id )
 
 	wxSize newSize = GetBestSize();
 	this->SetSize(newSize);
+
+	m_edit.SetFocus();
 }
 
-int FbFrameSequen::EditDlg::Append()
+int FbFrameSequen::EditDlg::Append(wxString &newname)
 {
 	EditDlg dlg(_("Добавить серию"));
 	bool ok = dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetValue();
 	return ok ? dlg.DoAppend() : 0;
 }
 
-int FbFrameSequen::EditDlg::Modify(int id)
+int FbFrameSequen::EditDlg::Modify(int id, wxString &newname)
 {
 	EditDlg dlg(_("Изменить серию"), id);
 	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetValue();
 	return ok ? dlg.DoUpdate() : 0;
 }
 
@@ -417,16 +421,38 @@ void FbFrameSequen::EditDlg::EndModal(int retCode)
 }
 void FbFrameSequen::OnMasterAppend(wxCommandEvent& event)
 {
-	int id = EditDlg::Append();
-	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, id).Post();
+	wxString newname;
+	int id = EditDlg::Append(newname);
+	if (id) {
+		FbMasterData * data = new FbMasterSeqname(id);
+		wxTreeItemId item = m_MasterList->InsertItem(m_MasterList->GetRootItem(), m_MasterList->GetSelection(), newname, -1, -1, data);
+		m_MasterList->SelectItem(item);
+	}
 }
 
 void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	int id = EditDlg::Modify(data->GetId());
-	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, id).Post();
+    wxTreeItemId selected = m_MasterList->GetSelection();
+	FbMasterData * data = selected.IsOk() ? m_MasterList->GetItemData(selected) : NULL;
+	if (data && data->GetId()) {
+		wxString newname;
+		int old_id = data->GetId();
+		int new_id = EditDlg::Modify(old_id, newname);
+		if (new_id) ReplaceData(old_id, new_id, selected, newname);
+	}
+}
+
+void FbFrameSequen::ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname)
+{
+	if (selected.IsOk()) m_MasterList->SetItemText(selected, newname);
+	if (old_id != new_id) {
+		FbMasterSeqname deleted(new_id);
+		m_MasterList->DeleteItem(deleted);
+		delete m_MasterList->GetItemData(selected);
+		FbMasterData * data = new FbMasterSeqname(new_id);
+		m_MasterList->SetItemData(selected, data);
+		m_MasterList->SelectItem(selected);
+	}
 }
 
 void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)

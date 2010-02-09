@@ -142,7 +142,6 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	wxTextCtrl * m_textCtrl6 = new wxTextCtrl( this, ID_DOWNLOAD_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
-
 	bSizer14->Add( m_textCtrl6, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxBitmapButton * m_bpButton6 = new wxBitmapButton( this, ID_DOWNLOAD_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
@@ -192,9 +191,29 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, wxT("Сохранять полный путь файла при импорте"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Папка для временных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	text->Wrap( -1 );
+	bSizer->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
+
+	{
+		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
+
+		wxTextCtrl * edit = new wxTextCtrl( this, ID_TEMP_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+		edit->SetMinSize( wxSize( 300,-1 ) );
+		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+		wxBitmapButton * button = new wxBitmapButton( this, ID_TEMP_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+		bSizerDir->Add( button, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
+
+		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
+	}
+
+	checkbox = new wxCheckBox( this, ID_TEMP_DEL, wxT("Удалять временные файлы при выходе из программы"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
+	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( checkbox, 0, wxALL, 5 );
+/*
 	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, wxT("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
@@ -205,9 +224,8 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 
 	wxTextCtrl * maxedit = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( maxedit, 1, wxRIGHT | wxLEFT, 5 );
-
 	bSizer->Add( bSizerLimit, 0, wxEXPAND, 5 );
-
+*/
 	this->SetSizer( bSizer );
 	this->Layout();
 	bSizer->Fit( this );
@@ -279,6 +297,7 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
+	EVT_BUTTON( ID_TEMP_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_FONT_CLEAR, SettingsDlg::OnFontClear )
@@ -359,6 +378,8 @@ void SettingsDlg::Assign(bool write)
 		{FB_AUTO_DOWNLD, ID_AUTO_DOWNLD, tCheck},
 		{FB_USE_PROXY, ID_USE_PROXY, tCheck},
 		{FB_PROXY_ADDR, ID_PROXY_ADDR, tCombo},
+		{FB_TEMP_DEL, ID_TEMP_DEL, tCheck},
+		{FB_TEMP_DIR, ID_TEMP_DIR_TXT, tText},
 		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR_TXT, tText},
 		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD, tCheck},
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
@@ -439,6 +460,7 @@ void SettingsDlg::Execute(wxWindow* parent)
 			dlg.SaveTypelist();
 			dlg.Assign(true);
 			ZipReader::Init();
+			FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
 		} catch (wxSQLite3Exception & e) {
 			wxLogError(wxT("Database open error: ") + e.GetMessage());
 		}
