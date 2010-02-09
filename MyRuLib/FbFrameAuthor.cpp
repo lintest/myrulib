@@ -56,7 +56,7 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
+	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
 	m_MasterList->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
 	m_MasterList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 	m_MasterList->SetFocus();

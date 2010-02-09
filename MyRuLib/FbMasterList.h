@@ -9,7 +9,7 @@ class FbMasterEvent;
 class FbMasterList: public FbTreeListCtrl
 {
 	public:
-		FbMasterList(wxWindow *parent, wxWindowID id);
+		FbMasterList(wxWindow *parent, wxWindowID id, long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
 		FbMasterData * GetSelectedData() const;
 		FbMasterData * GetItemData (const wxTreeItemId& item) const;
 		void DeleteItem(FbMasterData &data, wxTreeItemId parent = 0L);

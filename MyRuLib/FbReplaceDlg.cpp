@@ -54,7 +54,7 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	bSizerMain->Add( fgSizerGrid, 0, wxEXPAND, 5 );
 
-	m_FindList = new FbMasterList(this, ID_FIND_LIST);
+	m_FindList = new FbMasterList(this, ID_FIND_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
 	bSizerMain->Add( m_FindList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 	m_FindList->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
 	m_FindList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);

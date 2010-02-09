@@ -7,8 +7,8 @@ BEGIN_EVENT_TABLE(FbMasterList, FbTreeListCtrl)
 	EVT_FB_MASTER(ID_APPEND_MASTER, FbMasterList::OnAppendMaster)
 END_EVENT_TABLE()
 
-FbMasterList::FbMasterList(wxWindow *parent, wxWindowID id)
-	:FbTreeListCtrl(parent, id, wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER)
+FbMasterList::FbMasterList(wxWindow *parent, wxWindowID id, long style)
+	:FbTreeListCtrl(parent, id, style)
 {
 }
 
