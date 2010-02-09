@@ -216,16 +216,17 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 /*
 	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, wxT("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
+*/
 
 	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
 
-	checkbox = new wxCheckBox( this, ID_MAX_LIST_COUNT, _("Органичить максимальный размер списков:"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_LIMIT_CHECK, _("Органичить максимальный размер списков:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	wxTextCtrl * maxedit = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	wxTextCtrl * maxedit = new wxTextCtrl( this, ID_LIMIT_COUNT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( maxedit, 1, wxRIGHT | wxLEFT, 5 );
-	bSizer->Add( bSizerLimit, 0, wxEXPAND, 5 );
-*/
+	bSizer->Add( bSizerLimit, 0, 0, 5 );
+
 	this->SetSizer( bSizer );
 	this->Layout();
 	bSizer->Fit( this );
@@ -367,7 +368,9 @@ void SettingsDlg::Assign(bool write)
 		tRadio,
 		tCombo,
 		tFont,
+		tCount,
 	};
+
 	struct Struct{
 		int param;
 		ID control;
@@ -394,6 +397,8 @@ void SettingsDlg::Assign(bool write)
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
 		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH, tCheck},
+		{FB_LIMIT_CHECK, ID_LIMIT_CHECK, tCheck},
+		{FB_LIMIT_COUNT, ID_LIMIT_COUNT, tCount},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
@@ -436,6 +441,21 @@ void SettingsDlg::Assign(bool write)
 						params.SetText(ids[i].param, control->GetSelectedFont().GetNativeFontInfoDesc());
 					else
 						control->SetSelectedFont(FbParams::GetFont(ids[i].param) );
+				} break;
+			case tCount:
+				if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
+					if (write) {
+						wxString text = control->GetValue();
+						long value = 0;
+						if (text.ToLong(&value) && value>0)
+							params.SetValue(ids[i].param, value);
+						else
+							params.ResetValue(ids[i].param);
+					} else {
+						int count = params.GetValue(ids[i].param);
+						wxString text = wxString::Format(wxT("%d"), count);
+						control->SetValue(text);
+					}
 				} break;
 		}
 	}

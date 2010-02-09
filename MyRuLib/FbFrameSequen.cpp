@@ -9,6 +9,7 @@
 #include "FbUpdateThread.h"
 #include "FbMasterList.h"
 #include "FbWindow.h"
+#include "FbParams.h"
 
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnAuthorSelected)
@@ -165,7 +166,7 @@ void * FbFrameSequen::MasterThread::Entry()
 			sql += wxT("WHERE SEARCH(value)");
 			database.CreateFunction(wxT("SEARCH"), 1, search);
 		}
-		sql += wxT(" ORDER BY ") + GetOrder();
+		sql += wxT(" ORDER BY ") + GetOrder() + FbParams::GetLimit();
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		if (bBindText) stmt.Bind(1, FbSearchFunction::AddAsterisk(m_text));
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();

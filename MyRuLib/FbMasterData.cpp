@@ -72,6 +72,8 @@ wxString FbMasterData::BaseThread::GetSQL(const wxString & condition)
 			break;
 	}
 
+	sql += FbParams::GetLimit();
+
 	wxString str = wxString::Format(wxT("(%s)%s"), condition.c_str(), m_filter.c_str());
 	return wxString::Format(sql, str.c_str());
 }
@@ -172,6 +174,8 @@ wxString FbMasterAuthor::AuthorThread::GetSQL(const wxString & condition)
 			") + GetOrder();
 			break;
 	}
+
+	sql += FbParams::GetLimit();
 
 	wxString str = wxString::Format(wxT("(%s)%s"), condition.c_str(), m_filter.c_str());
 	return wxString::Format(sql, str.c_str());

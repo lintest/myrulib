@@ -142,6 +142,8 @@ int FbParams::DefaultValue(int param)
 		case FB_FRAME_HEIGHT: return 480;
 		case FB_ALPHABET_RU: return 1;
 		case FB_ALPHABET_EN: return 1;
+		case FB_LIMIT_CHECK: return 1;
+		case FB_LIMIT_COUNT: return 5000;
 		default: return 0;
 	}
 };
@@ -200,3 +202,13 @@ void FbParams::AddRecent(const wxString &text, const wxString &title)
 	SetText(FB_TITLE_0 + i, title);
 }
 
+wxString FbParams::GetLimit()
+{
+	int limit = GetValue(FB_LIMIT_CHECK) ? GetValue(FB_LIMIT_COUNT) : 0;
+	return limit ? wxString::Format(wxT(" LIMIT %d "), limit) : (wxString)wxEmptyString;
+}
+
+void FbParams::ResetValue(const int param)
+{
+	SetValue(param, DefaultValue(param));
+}

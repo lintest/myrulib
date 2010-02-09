@@ -53,8 +53,8 @@ class SettingsDlg : private FbDialog
 			ID_FONT_DLG,
 			ID_REMOVE_FILES,
 			ID_AUTOHIDE_COLUMN,
-			ID_MAX_LIST_CHECK,
-			ID_MAX_LIST_COUNT,
+			ID_LIMIT_CHECK,
+			ID_LIMIT_COUNT,
 			ID_SAVE_FULLPATH,
 		};
 		class FbPanelFont: public wxPanel

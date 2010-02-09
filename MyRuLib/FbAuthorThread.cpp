@@ -1,6 +1,7 @@
 #include "FbAuthorThread.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
+#include "FbParams.h"
 
 wxCriticalSection FbAuthorThread::sm_queue;
 
@@ -46,7 +47,13 @@ void FbAuthorThread::FillAuthors(wxSQLite3ResultSet &result)
 
 wxString FbAuthorThread::GetSQL(const wxString & condition)
 {
-	return wxString::Format( wxT("SELECT id, full_name as name, number FROM authors WHERE %s ORDER BY ") + GetOrder(), condition.c_str());
+	wxString sql = wxT("SELECT id, full_name as name, number FROM authors");
+
+	sql += wxT(" WHERE ") + condition;
+	sql += wxT(" ORDER BY ") + GetOrder();
+	sql += FbParams::GetLimit();
+
+	return 	sql;
 }
 
 void FbAuthorThreadChar::GetResult(wxSQLite3Database &database)

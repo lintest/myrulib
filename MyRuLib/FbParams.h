@@ -79,6 +79,9 @@ enum FbParamKey {
 	FB_ALPHABET_RU   = 192,
 	FB_ALPHABET_EN   = 193,
 
+	FB_LIMIT_CHECK   = 210,
+	FB_LIMIT_COUNT   = 211,
+
 	FB_TITLE_0 = 220,
 	FB_TITLE_1 = 221,
 	FB_TITLE_2 = 222,
@@ -109,8 +112,10 @@ class FbParams {
 		static wxFont GetFont(const int param);
 		void SetValue(const int param, int value);
 		void SetText(const int param, const wxString &text);
+		void ResetValue(const int param);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
+		static wxString GetLimit();
 		void AddRecent(const wxString &text, const wxString &title);
 	private:
 		static ParamArray sm_params;
