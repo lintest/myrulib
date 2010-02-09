@@ -40,7 +40,7 @@ END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_folder(fbNO_FOLDER), m_type(0), m_selected(0), m_KeyView(keyType), m_master(NULL)
+		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_master(NULL)
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
@@ -217,12 +217,13 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 
 void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
+	if (!m_master) return;
 	int id = 0;
 	if (item.IsOk()) {
 		FbItemData * data = (FbItemData*)m_BookList->GetItemData(item);
 		if (data) id = data->GetId();
 	}
-	FbBookMenu menu(id, m_folder, m_type, GetListMode()==FB2_MODE_LIST);
+	FbBookMenu menu(id, *m_master, GetListMode()==FB2_MODE_LIST);
 	FbMenuFolders::Connect(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
 	FbMenuAuthors::Connect(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
 	PopupMenu(&menu, pos.x, pos.y);
@@ -555,7 +556,7 @@ FbViewMode FbBookPanel::GetViewMode()
 	return FB2_VIEW_NOTHING;
 }
 
-void FbBookPanel::SetMasterData(FbMasterData * master)
+void FbBookPanel::SetMasterData(FbMasterData const * master)
 {
 	wxDELETE(m_master);
 	if (master) m_master = master->Clone();

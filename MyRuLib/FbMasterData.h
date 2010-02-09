@@ -38,7 +38,7 @@ class FbMasterData: public wxTreeItemData
 		class BaseThread: public FbThread
 		{
 			public:
-				BaseThread(FbFrameBase * frame);
+				BaseThread(FbFrameBase * frame, FbMasterData const * data);
 			protected:
 				virtual wxString GetSQL(const wxString & condition);
 				virtual wxString GetOrder();
@@ -51,7 +51,7 @@ class FbMasterData: public wxTreeItemData
 				static wxCriticalSection sm_queue;
 				AggregateFunction m_aggregate;
 				FbGenreFunction m_genre;
-				wxWindow * m_frame;
+				FbFrameBase * m_frame;
 				FbListMode m_mode;
 				wxString m_filter;
 				wxString m_order;
@@ -79,8 +79,8 @@ class FbMasterAuthor: public FbMasterData
 		class AuthorThread: public BaseThread
 		{
 			public:
-				AuthorThread(FbFrameBase * frame, const FbMasterAuthor &data)
-					:BaseThread(frame), m_author(data.m_id), m_number(sm_skiper.NewNumber()) {};
+				AuthorThread(FbFrameBase * frame, FbMasterAuthor const * data)
+					: BaseThread(frame, data), m_author(data->m_id), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
 			protected:
 				virtual void CreateTree(wxSQLite3ResultSet &result);
@@ -115,8 +115,8 @@ class FbMasterSeqname: public FbMasterData
 		class SequenThread: public BaseThread
 		{
 			public:
-				SequenThread(FbFrameBase * frame, const FbMasterSeqname &data)
-					:BaseThread(frame), m_master(data.m_id), m_number(sm_skiper.NewNumber()) {};
+				SequenThread(FbFrameBase * frame, FbMasterSeqname const * data)
+					: BaseThread(frame, data), m_master(data->m_id), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
 			protected:
 				virtual void CreateTree(wxSQLite3ResultSet &result);
@@ -161,8 +161,8 @@ class FbMasterGenre: public FbMasterData
 		class GenresThread: public BaseThread
 		{
 			public:
-				GenresThread(FbFrameBase * frame, const FbMasterGenre &data)
-					:BaseThread(frame), m_subgenre(data.m_id), m_number(sm_skiper.NewNumber()) {};
+				GenresThread(FbFrameBase * frame, FbMasterGenre const * data)
+					: BaseThread(frame, data), m_subgenre(data->m_id), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
 			private:
 				static FbThreadSkiper sm_skiper;
@@ -194,8 +194,8 @@ class FbMasterDownld: public FbMasterData
 		class DownldThread: public BaseThread
 		{
 			public:
-				DownldThread(FbFrameBase * frame, const FbMasterDownld &data)
-					:BaseThread(frame), m_folder(data.m_id), m_number(sm_skiper.NewNumber()) {};
+				DownldThread(FbFrameBase * frame, FbMasterDownld const * data)
+					: BaseThread(frame, data), m_folder(data->m_id), m_number(sm_skiper.NewNumber()) {};
 				virtual void *Entry();
 			protected:
 				virtual wxString GetOrder();
@@ -230,8 +230,8 @@ class FbMasterSearch: public FbMasterData
 		class SearchThread: public BaseThread
 		{
 			public:
-				SearchThread(FbFrameBase * frame, const FbMasterSearch &data)
-					: BaseThread(frame), m_title(data.m_title), m_author(data.m_author) {};
+				SearchThread(FbFrameBase * frame, FbMasterSearch const * data)
+					: BaseThread(frame, data), m_title(data->m_title), m_author(data->m_author) {};
 				virtual void *Entry();
 			private:
 				wxString m_title;
@@ -261,8 +261,8 @@ class FbMasterFolder: public FbMasterData
 		class FolderThread: public BaseThread
 		{
 			public:
-				FolderThread(FbFrameBase * frame, const FbMasterFolder &data)
-					:BaseThread(frame), m_folder(data.m_id), m_number(sm_skiper.NewNumber()), m_type(data.m_type) {};
+				FolderThread(FbFrameBase * frame, FbMasterFolder const * data)
+					: BaseThread(frame, data), m_folder(data->m_id), m_number(sm_skiper.NewNumber()), m_type(data->m_type) {};
 				virtual void *Entry();
 			private:
 				static FbThreadSkiper sm_skiper;

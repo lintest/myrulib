@@ -26,7 +26,6 @@ class FbFrameDownld : public FbFrameBase
 	private:
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
-		void FillByFolder(FbMasterData * data);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
 	private:
 		void OnFavoritesDel(wxCommandEvent & event);

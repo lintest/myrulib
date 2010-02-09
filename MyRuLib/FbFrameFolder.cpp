@@ -113,7 +113,7 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
 			m_FolderBar->EnableTool(ID_MODIFY_FOLDER, enabled);
 			m_FolderBar->EnableTool(ID_DELETE_FOLDER, enabled);
-			FillByFolder(data);
+			data->Show(this);
 		}
 	}
 }
@@ -121,14 +121,7 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 void FbFrameFolder::UpdateBooklist()
 {
 	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) FillByFolder(data);
-}
-
-void FbFrameFolder::FillByFolder(FbMasterData * data)
-{
-	m_BooksPanel->SetFolder( data->GetId() );
-	m_BooksPanel->SetType( data->GetType() );
-	data->Show(this);
+	if (data) data->Show(this);
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
@@ -239,7 +232,7 @@ void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
 			break;
 	}
 
-	if (bNeedUpdate) FillByFolder(data);
+	if (bNeedUpdate) data->Show(this);
 }
 
 void FbFrameFolder::ShowFullScreen(bool show)

@@ -25,6 +25,8 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
+		void SetMasterData(FbMasterData const * data) { m_BooksPanel->SetMasterData(data); };
+		FbMasterData const * GetMasterData() { return m_BooksPanel->GetMasterData(); };
 		void UpdateStatus();
 		virtual void ShowFullScreen(bool show);
 	protected:

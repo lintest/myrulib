@@ -5,7 +5,7 @@
 #include <wx/menu.h>
 #include <wx/arrimpl.cpp>
 
-#define fbNO_FOLDER (-999)
+class FbMasterData;
 
 class FbMenuFolderItem
 {
@@ -29,7 +29,7 @@ WX_DECLARE_OBJARRAY(FbMenuAuthorItem, FbMenuAuthorArray);
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(int id, int iFolder, int iType, bool bShowOrder);
+		FbBookMenu(int id, const FbMasterData &data, bool bShowOrder);
 	private:
 		int m_id;
 };
@@ -55,7 +55,7 @@ class FbMenuFolders: public wxMenu
 		static int GetFolder(const int id);
 		static void Connect(wxWindow * frame, wxObjectEventFunction func);
 	public:
-		FbMenuFolders(int folder);
+		FbMenuFolders(const FbMasterData &data);
 	private:
 		static FbMenuFolderArray sm_folders;
 };

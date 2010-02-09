@@ -99,7 +99,7 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 			bool enabled = data->GetId() > 0;
 			m_ToolBar->EnableTool(wxID_UP,   enabled);
 			m_ToolBar->EnableTool(wxID_DOWN, enabled);
-			FillByFolder(data);
+			data->Show(this);
 		}
 	}
 }
@@ -107,14 +107,7 @@ void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 void FbFrameDownld::UpdateBooklist()
 {
 	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) FillByFolder(data);
-}
-
-void FbFrameDownld::FillByFolder(FbMasterData * data)
-{
-	m_BooksPanel->SetFolder( data->GetId() );
-	m_BooksPanel->SetType( FT_DOWNLOAD );
-	data->Show(this);
+	if (data) data->Show(this);
 }
 
 void FbFrameDownld::UpdateFolder(const int iFolder, const FbFolderType type)
@@ -133,7 +126,7 @@ void FbFrameDownld::UpdateFolder(const int iFolder, const FbFolderType type)
 			break;
 	}
 
-	if (bNeedUpdate) FillByFolder(data);
+	if (bNeedUpdate) data->Show(this);
 }
 
 void FbFrameDownld::OnStart(wxCommandEvent & event)

@@ -3,18 +3,19 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
+#include "FbMasterData.h"
 
 WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
 WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
 
-FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
+FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	: m_id(id)
 {
 	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
-	if (iType == FT_DOWNLOAD) {
+	if (data.GetType() == FT_DOWNLOAD) {
 		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
-		if (iFolder < 0) Append(ID_DOWNLOAD_BOOK, _("Скачать повторно"));
+		if ( data.GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Скачать повторно"));
 	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
 	}
@@ -40,10 +41,10 @@ FbBookMenu::FbBookMenu(int id, int iFolder, int iType, bool bShowOrder)
 //	Append(wxID_ANY, _("Открыть серию"), NULL);
 	AppendSeparator();
 
-	if (iFolder == fbNO_FOLDER || iFolder) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
-	Append(wxID_ANY, _("Добавить в папку"), new FbMenuFolders(iFolder));
+	if (data.GetType() == FT_FOLDER && data.GetId()) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
+	Append(wxID_ANY, _("Добавить в папку"), new FbMenuFolders(data));
 	Append(wxID_ANY, _("Установить рейтинг"), new FbMenuRating);
-	if (iFolder != fbNO_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
+	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
 	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Комментарии"));
@@ -86,13 +87,13 @@ void FbMenuAuthors::Connect(wxWindow * frame, wxObjectEventFunction func)
 
 FbMenuFolderArray FbMenuFolders::sm_folders;
 
-FbMenuFolders::FbMenuFolders(int folder)
+FbMenuFolders::FbMenuFolders(const FbMasterData &data)
 {
 	if (sm_folders.IsEmpty()) LoadFolders();
 
 	for (size_t i=0; i<sm_folders.Count(); i++) {
 		int id = sm_folders[i].id;
-		if (sm_folders[i].folder == folder) continue;
+		if (data.GetType() == FT_FOLDER && sm_folders[i].folder == data.GetId()) continue;
 		Append(id, sm_folders[i].name);
 	}
 }

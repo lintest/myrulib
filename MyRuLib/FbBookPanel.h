@@ -20,8 +20,8 @@ class FbBookPanel: public wxSplitterWindow
 		bool IsOrderDesc();
 		void RevertOrder();
 		wxString GetOrderSQL();
-		void SetMasterData(FbMasterData * master);
-		FbMasterData * GetMasterData() const { return m_master; };
+		void SetMasterData(FbMasterData const * master);
+		FbMasterData const * GetMasterData() const { return m_master; };
 	public:
 		FbBookList * m_BookList;
 		FbItemData * GetSelectedBook();
@@ -32,8 +32,6 @@ class FbBookPanel: public wxSplitterWindow
 		void CreateColumns(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode;};
 		FbViewMode GetViewMode();
-		void SetFolder(int folder) { m_folder = folder; };
-		void SetType(int type) { m_type = type; };
 		void UpdateFonts(bool refresh = true);
 	private:
 		wxHtmlWindow * m_BookInfo;
@@ -48,8 +46,6 @@ class FbBookPanel: public wxSplitterWindow
 		FbListMode m_ListMode;
 		wxTreeItemId m_AuthorItem;
 		wxTreeItemId m_SequenceItem;
-		int m_folder;
-		int m_type;
 		int m_selected;
 		int m_KeyView;
 		FbMasterData * m_master;

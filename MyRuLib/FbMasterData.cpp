@@ -3,12 +3,13 @@
 #include "FbBookEvent.h"
 #include "FbConst.h"
 
-FbMasterData::BaseThread::BaseThread(FbFrameBase * frame) :
+FbMasterData::BaseThread::BaseThread(FbFrameBase * frame, FbMasterData const * data) :
 	m_frame(frame),
 	m_mode(frame->GetListMode()),
 	m_filter(frame->GetFilterSQL()),
 	m_order(frame->GetOrderSQL())
 {
+	frame->SetMasterData(data);
 }
 
 void FbMasterData::AggregateFunction::Aggregate(wxSQLite3FunctionContext& ctx)
@@ -483,32 +484,32 @@ wxString FbMasterSeqname::SequenThread::GetOrder()
 
 void FbMasterAuthor::Show(FbFrameBase * frame) const
 {
-	(new AuthorThread(frame, *this))->Execute();
+	(new AuthorThread(frame, this))->Execute();
 }
 
 void FbMasterDownld::Show(FbFrameBase * frame) const
 {
-	(new DownldThread(frame, *this))->Execute();
+	(new DownldThread(frame, this))->Execute();
 }
 
 void FbMasterFolder::Show(FbFrameBase * frame) const
 {
-	(new FolderThread(frame, *this))->Execute();
+	(new FolderThread(frame, this))->Execute();
 }
 
 void FbMasterGenre::Show(FbFrameBase * frame) const
 {
-	(new GenresThread(frame, *this))->Execute();
+	(new GenresThread(frame, this))->Execute();
 }
 
 void FbMasterSearch::Show(FbFrameBase * frame) const
 {
-	(new SearchThread(frame, *this))->Execute();
+	(new SearchThread(frame, this))->Execute();
 }
 
 void FbMasterSeqname::Show(FbFrameBase * frame) const
 {
-	(new SequenThread(frame, *this))->Execute();
+	(new SequenThread(frame, this))->Execute();
 }
 
 
