@@ -39,21 +39,6 @@ class FbFrameDownld : public FbFrameBase
 		void OnMoveUp(wxCommandEvent& event);
 		void OnMoveDown(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
-	protected:
-		class DownldThread: public BaseThread
-		{
-			public:
-				DownldThread(FbFrameBase * frame, FbListMode mode, FbMasterData * data)
-					:BaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
-				virtual void *Entry();
-			protected:
-				virtual wxString GetOrder();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_folder;
-				int m_number;
-				FbFolderType m_type;
-		};
 };
 
 #endif // __FBFRAMEDOWNLD_H__

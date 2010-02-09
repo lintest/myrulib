@@ -23,6 +23,8 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
+		wxString GetFilterSQL() { return m_filter.GetSQL(); };
+		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
 		void UpdateStatus();
 		virtual void ShowFullScreen(bool show);
 	protected:
@@ -66,40 +68,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnEmptyBooks(wxCommandEvent& event);
 		void OnTreeCollapsing(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
-
-	protected:
-		class AggregateFunction : public wxSQLite3AggregateFunction
-		{
-			public:
-				virtual void Aggregate(wxSQLite3FunctionContext& ctx);
-				virtual void Finalize(wxSQLite3FunctionContext& ctx);
-		};
-
-		class BaseThread: public FbThread
-		{
-			public:
-				BaseThread(FbFrameBase * frame, FbListMode mode)
-					:m_frame(frame), m_mode(mode),
-					m_filter(frame->m_filter.GetSQL()),
-					m_ListOrder(frame->GetOrderSQL())
-				{};
-			protected:
-				virtual wxString GetSQL(const wxString & condition);
-				virtual wxString GetOrder();
-				virtual void CreateList(wxSQLite3ResultSet &result);
-				virtual void CreateTree(wxSQLite3ResultSet &result);
-				virtual void InitDatabase(FbCommonDatabase &database);
-				void EmptyBooks();
-				void FillBooks(wxSQLite3ResultSet &result);
-			protected:
-				static wxCriticalSection sm_queue;
-				AggregateFunction m_aggregate;
-				FbGenreFunction m_genre;
-				wxWindow * m_frame;
-				FbListMode m_mode;
-				wxString m_filter;
-				wxString m_ListOrder;
-		};
 
 	private:
 		class MenuBar: public FbFrameMenu

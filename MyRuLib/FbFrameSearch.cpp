@@ -36,57 +36,6 @@ void FbFrameSearch::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-void * FbFrameSearch::SearchThread::Entry()
-{
-
-	wxCriticalSectionLocker locker(sm_queue);
-
-	EmptyBooks();
-	bool bUseAuthor = !m_author.IsEmpty();
-	bool bFullText = FbSearchFunction::IsFullText(m_title) && FbSearchFunction::IsFullText(m_author);
-
-	try {
-		FbCommonDatabase database;
-		InitDatabase(database);
-		if ( bFullText && database.TableExists(wxT("fts_book")) ) {
-			wxString condition = wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
-			if (bUseAuthor) condition += wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
-			wxString sql = GetSQL(condition);
-
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, FbSearchFunction::AddAsterisk(m_title));
-			if (bUseAuthor) stmt.Bind(2, FbSearchFunction::AddAsterisk(m_author));
-
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
-			if (result.Eof()) {
-				FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(m_frame);
-				return NULL;
-			}
-			FillBooks(result);
-		} else {
-			wxString condition = wxT("SEARCH_T(books.title)");
-			if (bUseAuthor) condition += wxT("AND SEARCH_A(authors.search_name)");
-			wxString sql = GetSQL(condition);
-
-			FbSearchFunction sfTitle(m_title);
-			FbSearchFunction sfAuthor(m_author);
-			database.CreateFunction(wxT("SEARCH_T"), 1, sfTitle);
-			if (bUseAuthor) database.CreateFunction(wxT("SEARCH_A"), 1, sfAuthor);
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
-			if (result.Eof()) {
-				FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(m_frame);
-				return NULL;
-			}
-			FillBooks(result);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	return NULL;
-}
-
 void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title, const wxString &author)
 {
 	if ( title.IsEmpty() ) return;
@@ -102,7 +51,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title,
 
 void FbFrameSearch::UpdateBooklist()
 {
-	( new SearchThread(this, m_BooksPanel->GetListMode(), m_title, m_author) )->Execute();
+	FbMasterSearch(m_title, m_author).Show(this);
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)

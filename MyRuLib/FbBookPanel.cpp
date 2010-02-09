@@ -554,3 +554,9 @@ FbViewMode FbBookPanel::GetViewMode()
 		}
 	return FB2_VIEW_NOTHING;
 }
+
+void FbBookPanel::SetMasterData(FbMasterData * master)
+{
+	wxDELETE(m_master);
+	if (master) m_master = master->Clone();
+};

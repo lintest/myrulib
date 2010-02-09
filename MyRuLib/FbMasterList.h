@@ -3,7 +3,8 @@
 
 #include "FbTreeListCtrl.h"
 #include "FbMasterData.h"
-#include "FbBookEvent.h"
+
+class FbMasterEvent;
 
 class FbMasterList: public FbTreeListCtrl
 {

@@ -48,20 +48,6 @@ class FbFrameSequen : public FbFrameBase
 		void OnAppendSequence(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 	protected:
-		class SequenThread: public BaseThread
-		{
-			public:
-				SequenThread(FbFrameBase * frame, FbListMode mode, const int master)
-					:BaseThread(frame, mode), m_master(master), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			protected:
-				virtual void CreateTree(wxSQLite3ResultSet &result);
-				virtual wxString GetOrder();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_master;
-				int m_number;
-		};
 		class MasterThread: public FbThread
 		{
 			public:

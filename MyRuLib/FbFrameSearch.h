@@ -30,17 +30,6 @@ class FbFrameSearch : public FbFrameBase
 	private:
 		void OnFoundNothing(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
-	protected:
-		class SearchThread: public BaseThread
-		{
-			public:
-				SearchThread(FbFrameBase * frame, FbListMode mode, const wxString &title, const wxString &author)
-					: BaseThread(frame, mode), m_title(title), m_author(author) {};
-				virtual void *Entry();
-			private:
-				wxString m_title;
-				wxString m_author;
-		};
 };
 
 #endif // __FBFRAMESEARCH_H__

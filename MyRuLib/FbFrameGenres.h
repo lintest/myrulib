@@ -26,27 +26,6 @@ class FbFrameGenres : public FbFrameBase
 	private:
 		void OnGenreSelected(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
-	protected:
-		class SubgenreFunction : public wxSQLite3ScalarFunction
-		{
-			public:
-				SubgenreFunction(int code);
-			protected:
-				virtual void Execute(wxSQLite3FunctionContext& ctx);
-			private:
-				wxString m_code;
-		};
-		class GenresThread: public BaseThread
-		{
-			public:
-				GenresThread(FbFrameGenres * frame, FbListMode mode, const int code)
-					:BaseThread(frame, mode), m_subgenre(code), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			private:
-				static FbThreadSkiper sm_skiper;
-				SubgenreFunction m_subgenre;
-				int m_number;
-		};
 };
 
 #endif // __FBFRAMEGENRES_H__

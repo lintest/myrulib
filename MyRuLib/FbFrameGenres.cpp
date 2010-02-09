@@ -5,29 +5,6 @@
 #include "FbGenres.h"
 #include "FbMainMenu.h"
 
-FbFrameGenres::SubgenreFunction::SubgenreFunction(int code)
-	: m_code( wxString::Format(wxT("%02X"), code) )
-{
-}
-
-void FbFrameGenres::SubgenreFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-	int argCount = ctx.GetArgCount();
-	if (argCount != 1) {
-		ctx.SetResultError(wxString::Format(_("SUBGENRE called with wrong number of arguments: %d."), argCount));
-		return;
-	}
-	wxString text = ctx.GetString(0);
-
-	for (size_t i=0; i<text.Length()/2; i++) {
-		if ( text.Mid(i*2, 2) == m_code ) {
-			ctx.SetResult(true);
-			return;
-		}
-	}
-	ctx.SetResult(false);
-}
-
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
@@ -69,52 +46,22 @@ void FbFrameGenres::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-FbThreadSkiper FbFrameGenres::GenresThread::sm_skiper;
-
-void * FbFrameGenres::GenresThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	if (sm_skiper.Skipped(m_number)) return NULL;
-	EmptyBooks();
-
-	wxString condition = wxT("SUBGENRE(books.genres)");
-	wxString sql = GetSQL(condition);
-
-	try {
-		FbCommonDatabase database;
-		InitDatabase(database);
-		database.CreateFunction(wxT("SUBGENRE"), 1, m_subgenre);
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FillBooks(result);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
-	return NULL;
-}
-
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
+		if (data) data->Show(this);
 	}
 }
 
 void FbFrameGenres::UpdateBooklist()
 {
-	int code = 0;
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) {
 		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) code = data->GetId();
+		if (data) data->Show(this);
 	}
-	if (code) ( new FbFrameGenres::GenresThread(this, m_BooksPanel->GetListMode(), code) )->Execute();
 }
 

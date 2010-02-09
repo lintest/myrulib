@@ -1,5 +1,6 @@
 #include "FbMasterList.h"
 #include "FbConst.h"
+#include "FbBookEvent.h"
 
 BEGIN_EVENT_TABLE(FbMasterList, FbTreeListCtrl)
 	EVT_FB_MASTER(ID_EMPTY_MASTERS, FbMasterList::OnEmptyMasters)

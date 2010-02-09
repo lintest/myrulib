@@ -37,19 +37,6 @@ class FbFrameFolder : public FbFrameBase
 		void OnFolderDelete(wxCommandEvent & event);
 		void OnFolderSelected(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
-	protected:
-		class FolderThread: public BaseThread
-		{
-			public:
-				FolderThread(FbFrameBase * frame, FbListMode mode, FbMasterData * data)
-					:BaseThread(frame, mode), m_folder(data->GetId()), m_number(sm_skiper.NewNumber()), m_type(data->GetType()) {};
-				virtual void *Entry();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_folder;
-				int m_number;
-				FbFolderType m_type;
-		};
 };
 
 #endif // __FBFRAMEFOLDER_H__

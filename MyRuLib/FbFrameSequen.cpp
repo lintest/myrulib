@@ -96,7 +96,7 @@ void FbFrameSequen::OnAuthorSelected(wxTreeEvent & event)
 	if (selected.IsOk()) {
 		m_BooksPanel->EmptyBooks();
 		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) ( new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()) )->Execute();
+		if (data) data->Show(this);
 	}
 }
 
@@ -119,73 +119,11 @@ void FbFrameSequen::OpenSequence(const int sequence, const int book)
 	(new MasterThread(m_MasterList, m_SequenceCode, m_MasterList->GetSortedColumn()))->Execute();
 }
 
-FbThreadSkiper FbFrameSequen::SequenThread::sm_skiper;
-
-void * FbFrameSequen::SequenThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	if (sm_skiper.Skipped(m_number)) return NULL;
-
-	try {
-		FbCommonDatabase database;
-		InitDatabase(database);
-
-		wxString condition = wxT("books.id IN (SELECT id_book FROM bookseq WHERE id_seq=?)");
-		if (m_mode == FB2_MODE_TREE) condition += wxT("AND bookseq.id_seq=?");
-		wxString sql = GetSQL(condition);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_master);
-		if (m_mode == FB2_MODE_TREE) stmt.Bind(2, m_master);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FillBooks(result);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
-	return NULL;
-}
-
-void FbFrameSequen::SequenThread::CreateTree(wxSQLite3ResultSet &result)
-{
-	wxString thisSequence = wxT("@@@");
-	wxString thisAuthor = wxT("@@@");
-	while (result.NextRow()) {
-		int id_author = result.GetInt(wxT("id_author"));
-		wxString nextSequence = result.GetString(wxT("sequence"));
-		wxString nextAuthor = result.GetString(wxT("full_name"));
-
-		if (thisSequence != nextSequence) {
-			thisSequence = nextSequence;
-			thisAuthor = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
-		}
-		if (thisAuthor != nextAuthor) {
-			thisAuthor = nextAuthor;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, nextAuthor).Post(m_frame);
-		}
-		BookTreeItemData data(result);
-		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
-	}
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT).Post(m_frame);
-}
-
-wxString FbFrameSequen::SequenThread::GetOrder()
-{
-	if (m_mode == FB2_MODE_TREE)
-		return  wxT("sequences.value, authors.search_name, key, bookseq.number, books.title");
-	else
-		return m_ListOrder;
-}
-
 void FbFrameSequen::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
 	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) (new SequenThread(this, m_BooksPanel->GetListMode(), data->GetId()))->Execute();
+	if (data) data->Show(this);
 }
 
 void FbFrameSequen::OnColClick(wxListEvent& event)

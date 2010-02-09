@@ -89,44 +89,6 @@ void FbFrameDownld::FillFolders(const int iCurrent)
 	m_MasterList->Thaw();
 }
 
-FbThreadSkiper FbFrameDownld::DownldThread::sm_skiper;
-
-wxString FbFrameDownld::DownldThread::GetOrder()
-{
-	if (m_folder==1) return wxT("download");
-	return BaseThread::GetOrder();
-}
-
-void * FbFrameDownld::DownldThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	if (sm_skiper.Skipped(m_number)) return NULL;
-	EmptyBooks();
-
-	wxString condition;
-	condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
-	condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
-
-	wxString sql = GetSQL(condition);
-
-	try {
-		FbCommonDatabase database;
-		InitDatabase(database);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_folder);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FillBooks(result);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
-	return NULL;
-}
-
 void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
@@ -152,7 +114,7 @@ void FbFrameDownld::FillByFolder(FbMasterData * data)
 {
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( FT_DOWNLOAD );
-	( new DownldThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
+	data->Show(this);
 }
 
 void FbFrameDownld::UpdateFolder(const int iFolder, const FbFolderType type)

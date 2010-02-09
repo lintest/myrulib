@@ -3,6 +3,17 @@
 
 #include "FbCheckList.h"
 
+enum FbListMode {
+	FB2_MODE_LIST = 0,
+	FB2_MODE_TREE = 1,
+};
+
+enum FbViewMode {
+	FB2_VIEW_HORISONTAL = 0,
+	FB2_VIEW_VERTICAL = 1,
+	FB2_VIEW_NOTHING = 2,
+};
+
 class FbBookList: public FbCheckList
 {
 	public:

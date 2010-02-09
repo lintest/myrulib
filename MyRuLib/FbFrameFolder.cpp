@@ -103,51 +103,6 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	m_MasterList->Thaw();
 }
 
-FbThreadSkiper FbFrameFolder::FolderThread::sm_skiper;
-
-void * FbFrameFolder::FolderThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	if (sm_skiper.Skipped(m_number)) return NULL;
-	EmptyBooks();
-
-	wxString condition;
-
-	switch (m_type) {
-		case FT_FOLDER:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM favorites WHERE id_folder=?)");
-			break;
-		case FT_RATING:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE rating=?)");
-			break;
-		case FT_COMMENT:
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM comments WHERE ?>0)");
-			break;
-		case FT_DOWNLOAD: {
-			condition = wxT("books.md5sum IN(SELECT DISTINCT md5sum FROM states WHERE download");
-			condition += ( m_folder==1 ? wxT(">=?)") : wxT("=?)") );
-			} break;
-	}
-	wxString sql = GetSQL(condition);
-
-	try {
-		FbCommonDatabase database;
-		InitDatabase(database);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_folder);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FillBooks(result);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
-	return NULL;
-}
-
 void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
@@ -173,8 +128,7 @@ void FbFrameFolder::FillByFolder(FbMasterData * data)
 {
 	m_BooksPanel->SetFolder( data->GetId() );
 	m_BooksPanel->SetType( data->GetType() );
-
-	( new FolderThread(this, m_BooksPanel->GetListMode(), data) )->Execute();
+	data->Show(this);
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)

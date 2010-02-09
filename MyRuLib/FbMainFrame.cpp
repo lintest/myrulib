@@ -10,7 +10,6 @@
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
-#include "FbFrameDate.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFolder.h"
 #include "FbFrameDownld.h"
