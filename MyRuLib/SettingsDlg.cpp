@@ -217,14 +217,13 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, wxT("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 */
-
 	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
 
 	checkbox = new wxCheckBox( this, ID_LIMIT_CHECK, _("Органичить максимальный размер списков:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxTextCtrl * maxedit = new wxTextCtrl( this, ID_LIMIT_COUNT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerLimit->Add( maxedit, 1, wxRIGHT | wxLEFT, 5 );
+	bSizerLimit->Add( maxedit, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	bSizer->Add( bSizerLimit, 0, 0, 5 );
 
 	this->SetSizer( bSizer );

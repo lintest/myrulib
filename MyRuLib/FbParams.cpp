@@ -8,9 +8,9 @@
 WX_DEFINE_OBJARRAY(ParamArray);
 
 ParamItem::ParamItem(wxSQLite3ResultSet & result):
-	id(result.GetInt(wxT("id"))),
-	value(result.GetInt(wxT("value"))),
-	text(result.GetString(wxT("text")))
+	id(result.GetInt(0)),
+	value(result.GetInt(1)),
+	text(result.GetString(2))
 {
 }
 
@@ -31,9 +31,11 @@ void FbParams::LoadParams()
 
 	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100 UNION ALL SELECT id, value, text FROM params WHERE id<100");
 	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-	while (result.NextRow()) sm_params.Add(new ParamItem(result));
-
-	FbTempEraser::sm_erase = GetValue(FB_TEMP_DEL);
+	while (result.NextRow()) {
+		ParamItem * param = new ParamItem(result);
+		if (param->id == FB_TEMP_DEL) FbTempEraser::sm_erase = param->value;
+		sm_params.Add(param);
+	}
 }
 
 int FbParams::GetValue(const int param)
