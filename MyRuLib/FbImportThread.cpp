@@ -412,8 +412,8 @@ void FbImpotrZip::Make(FbImportThread *owner)
 		if (book.IsOk()) book.Save(); else skipped++;
 	}
 
-	if ( existed && skipped ) wxLogWarning(wxT("FB2 and FBD not found %s"), m_filename.c_str());
-	if ( !existed ) wxLogError(wxT("Zip read error %s"), m_filename.c_str());
+	if ( existed && skipped ) wxLogWarning(_("FB2 and FBD not found %s"), m_filename.c_str());
+	if ( !existed ) wxLogError(_("Zip read error %s"), m_filename.c_str());
 
 	if (owner) owner->DoFinish();
 }

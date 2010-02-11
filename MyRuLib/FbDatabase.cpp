@@ -282,7 +282,7 @@ void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
 FbSearchFunction::FbSearchFunction(const wxString & input)
 {
 	Decompose(input, m_masks);
-	wxString log = wxT("Search template: ");
+	wxString log = _("Search template: ");
 	size_t count = m_masks.Count();
 	for (size_t i=0; i<count; i++) {
 		log += wxString::Format(wxT("<%s> "), m_masks[i].c_str());
@@ -421,10 +421,10 @@ void FbMainDatabase::Open(const wxString& fileName, const wxString& key, int fla
 	bool bExists = wxFileExists(fileName);
 
 	if (bExists)
-		wxLogInfo(wxT("Open database: %s"), fileName.c_str());
+		wxLogInfo(_("Open database: %s"), fileName.c_str());
 	else {
-		wxLogInfo(wxT("Create database: %s"), fileName.c_str());
-		wxString msg = strProgramName + wxT(" - Create new database…\n\n") + fileName;
+		wxLogInfo(_("Create database: %s"), fileName.c_str());
+		wxString msg = strProgramName + _(" - Create new database…\n\n") + fileName;
 		wxMessageBox(msg);
 	}
 
@@ -518,7 +518,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 
 	while ( version < new_version ) {
 		version++;
-		wxLogInfo(wxT("Upgrade database to version %d"), version);
+		wxLogInfo(_("Upgrade database to version %d"), version);
 		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 		DoUpgrade(version);
 		SetVersion(version);

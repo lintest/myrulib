@@ -73,7 +73,7 @@ bool FbInternetBook::DoDownload()
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
     http.SetTimeout(10);
-    http.SetHeader(_T("Content-type"), _T("application/x-www-form-urlencoded"));
+    http.SetHeader(_("Content-type"), _("application/x-www-form-urlencoded"));
     wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
     http.SetPostBuffer(buffer);
 

@@ -172,8 +172,8 @@ SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	bSizer->Add( tools, 0, wxALL|wxEXPAND, 5 );
 
 	TypeListCtrl * typelist = new TypeListCtrl( this, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
-	typelist->InsertColumn(0, _T("Тип"), wxLIST_FORMAT_LEFT, 50);
-	typelist->InsertColumn(1, _T("Программа"), wxLIST_FORMAT_LEFT, 300);
+	typelist->InsertColumn(0, _("Тип"), wxLIST_FORMAT_LEFT, 50);
+	typelist->InsertColumn(1, _("Программа"), wxLIST_FORMAT_LEFT, 300);
 
 	bSizer->Add( typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
