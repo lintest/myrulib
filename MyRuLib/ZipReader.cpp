@@ -119,7 +119,7 @@ void ZipReader::Init()
 	wxThread *thread = new ZipThread(dirname);
 
 	if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-		wxLogError(wxT("Can't create thread!"));
+		wxLogError(_("Can't create thread!"));
 		return;
 	}
 
@@ -303,7 +303,7 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		stmt.Bind(2, filename);
 		stmt.ExecuteUpdate();
 	} else {
-		wxLogError(wxT("Zip read error %s"), filename.c_str());
+		wxLogError(_("Zip read error %s"), filename.c_str());
 	}
 
 	InfoCash::Empty();

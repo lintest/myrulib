@@ -83,7 +83,7 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 		}
 	}
 
-	wxLogWarning(wxT("Delete: ") + NameInfo());
+	wxLogWarning(_("Delete: ") + NameInfo());
 	wxRemoveFile(filename.GetFullPath());
 }
 

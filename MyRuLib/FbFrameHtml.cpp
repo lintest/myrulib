@@ -66,7 +66,7 @@ void FbFrameHtml::CreateControls()
 	wxBoxSizer* bSizerSubject;
 	bSizerSubject = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * staticText = new wxStaticText( panel, wxID_ANY, wxT("Комментарий:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * staticText = new wxStaticText( panel, wxID_ANY, _("Комментарий:"), wxDefaultPosition, wxDefaultSize, 0 );
 	staticText->Wrap( -1 );
 	bSizerSubject->Add( staticText, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
@@ -75,8 +75,8 @@ void FbFrameHtml::CreateControls()
 
 	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar.AddTool( ID_HTML_SUBMIT, wxT("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_ToolBar.AddTool( ID_HTML_MODIFY, wxT("Изменить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.AddTool( ID_HTML_SUBMIT, _("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.AddTool( ID_HTML_MODIFY, _("Изменить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 	m_ToolBar.Realize();
 

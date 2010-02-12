@@ -8,7 +8,7 @@ void VacuumThread::Execute()
 
 void * VacuumThread::Entry()
 {
-	wxLogInfo(wxT("Start SQLite VACUUM"));
+	wxLogInfo(_("Start SQLite VACUUM"));
 	FbCommonDatabase().ExecuteUpdate(wxT("VACUUM"));
 	FbConfigDatabase().ExecuteUpdate(wxT("VACUUM"));
 	wxLogInfo(wxT("Finish SQLite VACUUM"));

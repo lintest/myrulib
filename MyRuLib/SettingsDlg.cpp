@@ -188,7 +188,7 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	wxCheckBox * checkbox;
 	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
 
-	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, wxT("Сохранять полный путь файла при импорте"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, _("Сохранять полный путь файла при импорте"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
 	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Папка для временных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -208,13 +208,13 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
 	}
 
-	checkbox = new wxCheckBox( this, ID_TEMP_DEL, wxT("Удалять временные файлы при выходе из программы"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_TEMP_DEL, _("Удалять временные файлы при выходе из программы"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, wxT("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, _("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 /*
-	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, wxT("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, _("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 */
 	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
@@ -481,7 +481,7 @@ void SettingsDlg::Execute(wxWindow* parent)
 			ZipReader::Init();
 			FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
 		} catch (wxSQLite3Exception & e) {
-			wxLogError(wxT("Database open error: ") + e.GetMessage());
+			wxLogError(_("Database open error: ") + e.GetMessage());
 		}
 	}
 };

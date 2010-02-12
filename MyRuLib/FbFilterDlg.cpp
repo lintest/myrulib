@@ -9,7 +9,7 @@ FbFilterList::FbFilterList(wxWindow *parent, wxWindowID id, const wxString &titl
 	SetFont( FbParams::GetFont(FB_FONT_DLG) );
 	AddColumn (title, 10, wxALIGN_LEFT);
 	SetMinSize( wxSize(100, 100) );
-	SetItemBold( AddRoot(wxT("Все"), 0), true );
+	SetItemBold( AddRoot(_("Все"), 0), true );
 }
 
 int FbFilterList::Append(wxTreeItemId parent, wxString &text, const wxString & filter)

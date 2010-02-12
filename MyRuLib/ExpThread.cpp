@@ -44,7 +44,7 @@ void *ExportThread::Entry()
 bool ExportThread::Execute()
 {
 	if ( Create() != wxTHREAD_NO_ERROR ) {
-		wxLogError(wxT("Can't create export thread!"));
+		wxLogError(_("Can't create export thread!"));
 		return false;
 	}
 	Run();

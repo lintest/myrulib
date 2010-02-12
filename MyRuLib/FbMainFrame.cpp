@@ -83,9 +83,6 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_WINDOW_NEXT, FbMainFrame::OnWindowNext)
 	EVT_MENU(ID_WINDOW_PREV, FbMainFrame::OnWindowPrev)
 
-	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPanelClosed)
-	EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, FbMainFrame::OnNotebookPageClose)
-
 	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
 	EVT_FB_OPEN(ID_BOOK_SEQUENCE, FbMainFrame::OnOpenSequence)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
@@ -257,7 +254,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	wxWindowDC dc(toolbar);
 	int text_width = 0, text_height = 0;
 	dc.SetFont(font);
-	dc.GetTextExtent(wxT("Автор:"), &text_width, &text_height);
+	dc.GetTextExtent(_("Автор:"), &text_width, &text_height);
 
 	toolbar->AddTool(wxID_NEW, _("Импорт файла"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы"));
 	toolbar->AddTool(wxID_OPEN, _("Импорт папки"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Добавить в библиотеку директорию"));
@@ -321,7 +318,7 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 		FbImportThread *thread = new FbZipImportThread(paths);
 		thread->m_info = _("Обработка файла:");
 		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-			wxLogError(wxT("Can't create thread!"));
+			wxLogError(_("Can't create thread!"));
 			return;
 		}
 		thread->Run();
@@ -340,10 +337,10 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		FbImportThread *thread = new FbDirImportThread(dlg.GetPath());
-		thread->m_info = wxT("Обработка папки:");
+		thread->m_info = _("Обработка папки:");
 
 		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-			wxLogError(wxT("Can't create thread!"));
+			wxLogError(_("Can't create thread!"));
 			return;
 		}
 		thread->Run();
@@ -389,29 +386,6 @@ void FbMainFrame::ShowPane(const wxString &pane_name)
 			}
 			break;
 		}
-	}
-}
-
-void FbMainFrame::OnPanelClosed(wxAuiManagerEvent& event)
-{
-/*
-	if (event.pane->name == wxT("Log")) {
-		m_LOGTextCtrl.Clear();
-	}
-*/
-}
-
-void FbMainFrame::OnNotebookPageClose(wxAuiNotebookEvent& evt)
-{
-	wxAuiNotebook* ctrl = (wxAuiNotebook*)evt.GetEventObject();
-	if (ctrl->GetPage(evt.GetSelection())->IsKindOf(CLASSINFO(FbFrameAuthor)))
-	{
-		int res = wxMessageBox(wxT("Are you sure you want to close/hide this notebook page?"),
-					   wxT("wxAUI"),
-					   wxYES_NO,
-					   this);
-		if (res != wxYES)
-			evt.Veto();
 	}
 }
 
@@ -622,7 +596,7 @@ void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
 	if (wxFileName::FileExists(filename)) {
 		OpenDatabase(filename);
 	} else {
-		wxLogWarning(wxT("File not found: ") + filename);
+		wxLogWarning(_("File not found: ") + filename);
 		FbParams().SetText(param, wxEmptyString);
 	}
 }
