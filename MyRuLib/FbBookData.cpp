@@ -67,9 +67,10 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 	if ( result.NextRow() ) {
 		wxString command = result.GetString(0);
 		#if defined(__WIN32__)
+		file_path = wxT('"') + file_path + wxT('"');
 		ShellExecute(NULL, NULL, command, file_path, NULL, SW_SHOW);
 		#else
-		wxExecute(command + wxT(" ") + file_path);
+		wxExecute(command + wxT(" \"") + file_path + wxT("\""));
 		#endif
 		return;
 	}
