@@ -156,13 +156,11 @@
 	</if>
 
 	<modify-target target="install">
-	  <command>cd $(DATADIR)/pixmaps</command>
-	  <command>ln -s ../icons/hicolor/48x48/apps/myrulib.png myrulib.png</command>
+	  <command>ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DATADIR)/pixmaps/myrulib.png</command>
 	</modify-target>
 
 	<modify-target target="uninstall">
-	  <command>cd $(DATADIR)/pixmaps</command>
-	  <command>rm -f myrulib.png</command>
+	  <command>rm -f $(DATADIR)/pixmaps/myrulib.png</command>
 	</modify-target>
 	
 </makefile>
