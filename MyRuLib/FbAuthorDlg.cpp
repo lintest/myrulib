@@ -166,9 +166,10 @@ void FbAuthorDlg::EndModal(int retCode)
 		m_exists = FindAuthor();
 		if (m_exists) {
 			wxString msg = _("Автор с такими реквизитами уже существует.");
-			wxString title = GetTitle() + wxT("…");
+			wxString title = GetTitle() + wxT('…');
 			if (m_id) {
-				msg += _("\nОбъединить двух авторов?");
+				msg += wxT('\n');
+				msg += _("Объединить двух авторов?");
 				bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 				if (!ok) return;
 			} else {

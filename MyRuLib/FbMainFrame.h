@@ -69,8 +69,6 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnProgressUpdate(wxUpdateUIEvent& event);
 		void OnError(wxCommandEvent& event);
 		void OnHideLog(wxCommandEvent& event);
-		void OnPanelClosed(wxAuiManagerEvent& event);
-		void OnNotebookPageClose(wxAuiNotebookEvent& evt);
 		void OnUpdateFolder(FbFolderEvent & event);
 		void OnOpenAuthor(FbOpenEvent & event);
 		void OnOpenSequence(FbOpenEvent & event);

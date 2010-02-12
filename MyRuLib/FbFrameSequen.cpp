@@ -244,7 +244,7 @@ FbFrameSequen::EditDlg::EditDlg( const wxString& title, int id )
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	m_text.Create( this, wxID_ANY, wxT("Наименование серии:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_text.Create( this, wxID_ANY, _("Наименование серии:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( &m_text, 0, wxEXPAND|wxALL, 5 );
 
 	m_edit.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );

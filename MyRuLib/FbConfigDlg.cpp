@@ -86,7 +86,7 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	fgSizerMain->SetFlexibleDirection( wxBOTH );
 	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxStaticText * text1 = new wxStaticText( this, wxID_ANY, wxT("Адрес сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( this, wxID_ANY, _("Адрес сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	fgSizerMain->Add( text1, 0, wxALL, 5 );
 
@@ -96,14 +96,14 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	comboHost->Append( wxT("lib.ololo.cc") );
 	fgSizerMain->Add( comboHost, 0, wxALL|wxEXPAND, 5 );
 
-	wxStaticText * text2 = new wxStaticText( this, wxID_ANY, wxT("Имя пользователя:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text2 = new wxStaticText( this, wxID_ANY, _("User name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	fgSizerMain->Add( text2, 0, wxALL, 5 );
 
 	wxTextCtrl * editUser = new wxTextCtrl( this, ID_DOWNLOAD_USER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizerMain->Add( editUser, 0, wxALL|wxEXPAND, 5 );
 
-	wxStaticText * text3 = new wxStaticText( this, wxID_ANY, wxT("Пароль:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text3 = new wxStaticText( this, wxID_ANY, _("Password:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text3->Wrap( -1 );
 	fgSizerMain->Add( text3, 0, wxALL, 5 );
 

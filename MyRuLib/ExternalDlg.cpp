@@ -490,7 +490,7 @@ bool ExternalDlg::ExportBooks()
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
 	ExportThread *thread = new ExportThread(m_choiceFormat->GetCurrentSelection());
 	FillFilelist(m_books->GetRootItem(), thread->m_filelist);
-	thread->m_info = wxT("Экспорт: ") + root_dir;
+	thread->m_info = _("Экспорт: ") + root_dir;
 	return thread->Execute();
 }
 
@@ -499,7 +499,7 @@ bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
 	wxString selections = bookList->GetSelected();
 
 	if ( selections.IsEmpty() ) {
-		wxMessageBox(wxT("Не выбрано ни одной книги."));
+		wxMessageBox(_("Не выбрано ни одной книги."));
 		return false;
 	}
 

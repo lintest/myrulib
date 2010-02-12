@@ -80,7 +80,7 @@ void FbParams::SetValue(const int param, int value)
 			stmt.ExecuteUpdate();
 		}
 	} catch (wxSQLite3Exception & e) {
-		wxLogInfo(wxT("Database error: ") + e.GetMessage());
+		wxLogInfo(_("Database error: ") + e.GetMessage());
 	}
 
 	for (size_t i=0; i<sm_params.Count(); i++) {
@@ -115,7 +115,7 @@ void FbParams::SetText(const int param, const wxString &text)
 			stmt.ExecuteUpdate();
 		}
 	} catch (wxSQLite3Exception & e) {
-		wxLogInfo(wxT("Database error: ") + e.GetMessage());
+		wxLogInfo(_("Database error: ") + e.GetMessage());
 	}
 
 	for (size_t i=0; i<sm_params.Count(); i++) {

@@ -334,7 +334,7 @@ FbImpotrZip::FbImpotrZip(FbImportThread *owner, wxInputStream &in, const wxStrin
 	m_ok(m_zip.IsOk())
 {
 	if (!m_ok) {
-		wxLogError(wxT("Zip read error %s"), zipname.c_str());
+		wxLogError(_("Zip read error %s"), zipname.c_str());
 		return;
 	}
 	wxLogInfo(_("Import zip %s"), m_filename.c_str());
@@ -470,7 +470,7 @@ void FbZipImportThread::ImportFile(const wxString & zipname)
 
 	wxFFileInputStream in(zipname);
 	if ( !in.IsOk() ) {
-		wxLogError(wxT("File read error %s"), zipname.c_str());
+		wxLogError(_("File read error %s"), zipname.c_str());
 		return;
 	}
 
@@ -580,7 +580,7 @@ void FbDirImportThread::ParseXml(const wxString &filename)
 		FbImportBook book(this, in, filename);
 		if (book.IsOk()) book.Save();
 	} else {
-		wxLogError(wxT("File read error %s"), filename.c_str());
+		wxLogError(_("File read error %s"), filename.c_str());
 	}
 }
 
@@ -595,6 +595,6 @@ void FbDirImportThread::ParseZip(const wxString &zipname)
 			zip.Make();
 		}
 	} else {
-		wxLogError(wxT("File read error %s"), zipname.c_str());
+		wxLogError(_("File read error %s"), zipname.c_str());
 	}
 }

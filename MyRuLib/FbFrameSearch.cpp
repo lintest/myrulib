@@ -57,6 +57,6 @@ void FbFrameSearch::UpdateBooklist()
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)
 {
 	wxString msg = wxString::Format(_("Ничего не найдено по шаблону «%s»"), m_title.c_str());
-	wxMessageBox(msg, wxT("Поиск"));
+	wxMessageBox(msg, _("Поиск"));
 	Close();
 }
