@@ -15,9 +15,9 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_DATAVIEWCTRL
+//#if wxUSE_DATAVIEWCTRL
 
-#include "wx/dataview.h"
+#include "./wx/dataview.h"
 
 #ifndef WX_PRECOMP
     #include "wx/dc.h"
@@ -698,7 +698,7 @@ bool wxDataViewRendererBase::StartEditing( const wxDataViewItem &item, wxRect la
     // there might be no editor control for the given item
     if (!m_editorCtrl)
         return false;
-        
+
 #if defined(__WXGTK20__) && !defined(wxUSE_GENERICDATAVIEWCTRL)
     handler->SetFocusOnIdle();
 #else
@@ -1413,7 +1413,7 @@ void wxDataViewListStore::PrependItem( const wxVector<wxVariant> &values, wxClie
     RowPrepended();
 }
 
-void wxDataViewListStore::InsertItem(  unsigned int row, const wxVector<wxVariant> &values, 
+void wxDataViewListStore::InsertItem(  unsigned int row, const wxVector<wxVariant> &values,
                                        wxClientData *data )
 {
     wxDataViewListStoreLine *line = new wxDataViewListStoreLine( data );
@@ -1529,7 +1529,7 @@ bool wxDataViewListCtrl::AppendColumn( wxDataViewColumn *col )
     return AppendColumn( col, "string" );
 }
 
-wxDataViewColumn *wxDataViewListCtrl::AppendTextColumn( const wxString &label, 
+wxDataViewColumn *wxDataViewListCtrl::AppendTextColumn( const wxString &label,
           wxDataViewCellMode mode, int width, wxAlignment align, int flags )
 {
     GetStore()->AppendColumn( wxT("string") );
@@ -1543,7 +1543,7 @@ wxDataViewColumn *wxDataViewListCtrl::AppendTextColumn( const wxString &label,
     return ret;
 }
 
-wxDataViewColumn *wxDataViewListCtrl::AppendToggleColumn( const wxString &label, 
+wxDataViewColumn *wxDataViewListCtrl::AppendToggleColumn( const wxString &label,
           wxDataViewCellMode mode, int width, wxAlignment align, int flags )
 {
     GetStore()->AppendColumn( wxT("bool") );
@@ -1557,7 +1557,7 @@ wxDataViewColumn *wxDataViewListCtrl::AppendToggleColumn( const wxString &label,
     return ret;
 }
 
-wxDataViewColumn *wxDataViewListCtrl::AppendProgressColumn( const wxString &label, 
+wxDataViewColumn *wxDataViewListCtrl::AppendProgressColumn( const wxString &label,
           wxDataViewCellMode mode, int width, wxAlignment align, int flags )
 {
     GetStore()->AppendColumn( wxT("long") );
@@ -1571,7 +1571,7 @@ wxDataViewColumn *wxDataViewListCtrl::AppendProgressColumn( const wxString &labe
     return ret;
 }
 
-wxDataViewColumn *wxDataViewListCtrl::AppendIconTextColumn( const wxString &label, 
+wxDataViewColumn *wxDataViewListCtrl::AppendIconTextColumn( const wxString &label,
           wxDataViewCellMode mode, int width, wxAlignment align, int flags )
 {
     GetStore()->AppendColumn( wxT("wxDataViewIconText") );
@@ -2132,7 +2132,7 @@ wxDataViewItem wxDataViewTreeCtrl::InsertContainer( const wxDataViewItem& parent
 }
 
 void wxDataViewTreeCtrl::SetItemText( const wxDataViewItem& item, const wxString &text )
-{ 
+{
     GetStore()->SetItemText(item,text);
 
     // notify control
@@ -2140,7 +2140,7 @@ void wxDataViewTreeCtrl::SetItemText( const wxDataViewItem& item, const wxString
 }
 
 void wxDataViewTreeCtrl::SetItemIcon( const wxDataViewItem& item, const wxIcon &icon )
-{ 
+{
     GetStore()->SetItemIcon(item,icon);
 
     // notify control
@@ -2148,7 +2148,7 @@ void wxDataViewTreeCtrl::SetItemIcon( const wxDataViewItem& item, const wxIcon &
 }
 
 void wxDataViewTreeCtrl::SetItemExpandedIcon( const wxDataViewItem& item, const wxIcon &icon )
-{ 
+{
     GetStore()->SetItemExpandedIcon(item,icon);
 
     // notify control
@@ -2156,7 +2156,7 @@ void wxDataViewTreeCtrl::SetItemExpandedIcon( const wxDataViewItem& item, const 
 }
 
 void wxDataViewTreeCtrl::DeleteItem( const wxDataViewItem& item )
-{ 
+{
     wxDataViewItem parent_item = GetStore()->GetParent( item );
 
     GetStore()->DeleteItem(item);
@@ -2166,7 +2166,7 @@ void wxDataViewTreeCtrl::DeleteItem( const wxDataViewItem& item )
 }
 
 void wxDataViewTreeCtrl::DeleteChildren( const wxDataViewItem& item )
-{ 
+{
     wxDataViewTreeStoreContainerNode *node = GetStore()->FindContainerNode( item );
     if (!node) return;
 
@@ -2185,7 +2185,7 @@ void wxDataViewTreeCtrl::DeleteChildren( const wxDataViewItem& item )
 }
 
 void  wxDataViewTreeCtrl::DeleteAllItems()
-{ 
+{
     GetStore()->DeleteAllItems();
 
     GetStore()->Cleared();
@@ -2228,5 +2228,5 @@ void wxDataViewTreeCtrl::OnSize( wxSizeEvent &event )
     event.Skip( true );
 }
 
-#endif // wxUSE_DATAVIEWCTRL
+//#endif // wxUSE_DATAVIEWCTRL
 

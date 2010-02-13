@@ -54,14 +54,14 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-DATAVIEW_CXXFLAGS = -I. `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) \
-	$(CXXFLAGS)
+DATAVIEW_CXXFLAGS = -Isources `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
+	$(CPPFLAGS) $(CXXFLAGS)
 DATAVIEW_OBJECTS =  \
-	build/dataview_datavcmn.o \
-	build/dataview_datavgen.o \
-	build/dataview_dataview.o \
-	build/dataview_datasamp.o \
-	build/dataview_mymodels.o 
+	../build/dataview_mymodels.o \
+	../build/dataview_datasamp.o \
+	../build/dataview_datavcmn.o \
+	../build/dataview_datavgen.o \
+	../build/dataview_dataview.o
 
 ### Conditionally set variables: ###
 
@@ -85,46 +85,46 @@ WX_CONFIG_SHARED_FLAG = --static=no
 endif
 
 
-all: build
-build:
-	@mkdir -p build
+all: ../build
+../build:
+	@mkdir -p ../build
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/dataview
+all: test_for_selected_wxbuild ../build/dataview
 
 install: 
 
 uninstall: 
 
 clean: 
-	rm -f build/*.o
-	rm -f build/*.d
-	rm -f build/dataview
+	rm -f ../build/*.o
+	rm -f ../build/*.d
+	rm -f ../build/dataview
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-build/dataview: $(DATAVIEW_OBJECTS)
+../build/dataview: $(DATAVIEW_OBJECTS)
 	$(CXX) -o $@ $(DATAVIEW_OBJECTS)   $(LDFLAGS)
 
-build/dataview_mymodels.o: ./mymodels.cpp
+../build/dataview_mymodels.o: ./sample/mymodels.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-build/dataview_datavcmn.o: ./datavcmn.cpp
+../build/dataview_datasamp.o: ./sample/datasamp.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-build/dataview_datavgen.o: ./datavgen.cpp
+../build/dataview_datavcmn.o: ./sources/datavcmn.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-build/dataview_dataview.o: ./dataview.cpp
+../build/dataview_datavgen.o: ./sources/datavgen.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-build/dataview_datasamp.o: ./datasamp.cpp
+../build/dataview_dataview.o: ./sources/dataview.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean
 
 
 # Dependencies tracking:
--include build/*.d
+-include ../build/*.d

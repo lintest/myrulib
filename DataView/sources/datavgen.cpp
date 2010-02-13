@@ -15,9 +15,9 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_DATAVIEWCTRL
+//#if wxUSE_DATAVIEWCTRL
 
-#include "wx/dataview.h"
+#include "./wx/dataview.h"
 
 #ifdef wxUSE_GENERICDATAVIEWCTRL
 
@@ -4435,4 +4435,4 @@ void wxDataViewCtrl::StartEditor( const wxDataViewItem & item, unsigned int colu
 
 #endif // !wxUSE_GENERICDATAVIEWCTRL
 
-#endif // wxUSE_DATAVIEWCTRL
+//#endif // wxUSE_DATAVIEWCTRL

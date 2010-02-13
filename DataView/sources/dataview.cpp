@@ -10,9 +10,9 @@
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
-#if wxUSE_DATAVIEWCTRL
+//#if wxUSE_DATAVIEWCTRL
 
-#include "wx/dataview.h"
+#include "./wx/dataview.h"
 
 #ifndef wxUSE_GENERICDATAVIEWCTRL
 
@@ -856,7 +856,7 @@ typedef struct _GtkWxCellRendererTextClass GtkWxCellRendererTextClass;
 struct _GtkWxCellRendererText
 {
   GtkCellRendererText parent;
-  
+
   wxDataViewRenderer *wx_renderer;
 };
 
@@ -972,7 +972,7 @@ static GtkCellEditable *gtk_wx_cell_renderer_text_start_editing(
     event.SetColumn( wx_renderer->GetOwner()->GetModelColumn() );
     event.SetItem( item );
     dv->HandleWindowEvent( event );
-    
+
     if (event.IsAllowed())
         return GTK_CELL_RENDERER_CLASS(text_cell_parent_class)->
            start_editing( gtk_renderer, gdk_event, widget, path, background_area, cell_area, flags );
@@ -3033,10 +3033,10 @@ void wxGtkTreeModelNode::Resort()
     // Sort the ptrs
     gs_internal = m_internal;
     ptrs.Sort( &wxGtkTreeModelChildPtrCmp );
- 
+
     wxGtkTreeModelChildren temp;
     void** base_ptr = &(m_children[0]);
-    // Transfer positions to new_order array and 
+    // Transfer positions to new_order array and
     // IDs to temp
     for (i = 0; i < child_count; i++)
     {
@@ -3076,13 +3076,13 @@ void wxGtkTreeModelNode::Resort()
 
 #if 0
     // Too slow
-    
+
     wxGtkTreeModelChildren temp;
     WX_APPEND_ARRAY( temp, m_children );
 
     gs_internal = m_internal;
     m_children.Sort( &wxGtkTreeModelChildCmp );
-    
+
     unsigned int pos;
     for (pos = 0; pos < child_count; pos++)
     {
@@ -3105,7 +3105,7 @@ void wxGtkTreeModelNode::Resort()
     gtk_tree_path_free (path);
 
     delete [] new_order;
-    
+
     unsigned int pos;
     for (pos = 0; pos < node_count; pos++)
     {
@@ -4638,5 +4638,5 @@ wxDataViewCtrl::GetClassDefaultAttributes(wxWindowVariant WXUNUSED(variant))
 #endif
     // !wxUSE_GENERICDATAVIEWCTRL
 
-#endif
+//#endif
     // wxUSE_DATAVIEWCTRL

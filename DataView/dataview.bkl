@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<makefile>
+
+	<set var="BUILDDIR">../build</set>
+
+	<set var="WX_UNICODE_DEFAULT">1</set>
+	<set var="WX_DEBUG_DEFAULT">0</set>
+	<set var="WX_SHARED_DEFAULT">1</set>
+	<set var="WX_VERSION_DEFAULT">2.8</set>
+	<set var="WX_PORT_DEFAULT">gtk2</set>
+
+
+	<include file="../Presets/wx.bkl"/>
+
+	<exe id="dataview" template="wxgui">
+		<include>sources</include>
+		<sources>sample/mymodels.cpp</sources>
+		<sources>sample/datasamp.cpp</sources>
+		<sources>sources/datavcmn.cpp</sources>
+		<sources>sources/datavgen.cpp</sources>
+		<sources>sources/dataview.cpp</sources>
+	</exe>
+	
+</makefile>

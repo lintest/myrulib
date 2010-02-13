@@ -14,7 +14,7 @@
 // MyMusicTreeModelNode: a node inside MyMusicTreeModel
 // ----------------------------------------------------------------------------
 
-#include "wx/dataview.h"
+#include "../sources/wx/dataview.h"
 
 class MyMusicTreeModelNode;
 WX_DEFINE_ARRAY_PTR( MyMusicTreeModelNode*, MyMusicTreeModelNodePtrArray );

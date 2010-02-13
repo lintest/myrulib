@@ -9,12 +9,12 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_DATAVIEW_H_BASE_
-#define _WX_DATAVIEW_H_BASE_
+#ifndef _WX_DATAVIEW_H_BASE_X_
+#define _WX_DATAVIEW_H_BASE_X_
 
 #include "wx/defs.h"
 
-#if wxUSE_DATAVIEWCTRL
+//#if wxUSE_DATAVIEWCTRL
 
 #include "wx/textctrl.h"
 #include "wx/headercol.h"
@@ -525,7 +525,7 @@ public:
         { m_owner = owner; }
 
     // getters:
-    unsigned int GetModelColumn() const 
+    unsigned int GetModelColumn() const
         { return static_cast<unsigned int>(m_model_column); }
     wxDataViewCtrl *GetOwner() const        { return m_owner; }
     wxDataViewRenderer* GetRenderer() const { return m_renderer; }
@@ -1319,7 +1319,7 @@ private:
     DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxDataViewTreeCtrl)
 };
 
-#endif // wxUSE_DATAVIEWCTRL
+//#endif // wxUSE_DATAVIEWCTRL
 
 #endif
     // _WX_DATAVIEW_H_BASE_

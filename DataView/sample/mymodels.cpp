@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -21,7 +21,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "wx/dataview.h"
+#include "../sources/wx/dataview.h"
 #include "mymodels.h"
 
 // ----------------------------------------------------------------------------

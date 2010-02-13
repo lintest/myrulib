@@ -41,7 +41,7 @@
 // ----------------------------------------------------------------------------
 
 #ifndef __WXMSW__
-    #include "../sample.xpm"
+    #include "sample.xpm"
 #endif
 
 #include "wx_small.xpm"
