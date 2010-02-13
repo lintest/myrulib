@@ -132,7 +132,6 @@
 		</if>
 		<if cond="PLATFORM_WIN32=='0'">
 			<postlink-command>strip ./build/myrulib</postlink-command>
-			<postlink-command>rm -f ./build/myrulib.png</postlink-command>
 		</if>
 		<app-type>gui</app-type>
 		<threading>single</threading>
@@ -148,11 +147,6 @@
 			<files>myrulib.png</files>
 			<install-to>$(DATADIR)/icons/hicolor/48x48/apps</install-to>
 		</data-files>
-		<data-files> 
-			<srcdir>MyRuLib/desktop</srcdir>
-			<files>myrulib.png</files>
-			<install-to>$(DATADIR)/pixmaps</install-to>
-		</data-files>
 		<data-files>
 			<srcdir>MyRuLib/desktop</srcdir>
 			<files>myrulib.desktop</files>
@@ -160,4 +154,12 @@
 		</data-files>
 	</if>
 
+	<modify-target target="install">
+	  <command>ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)$(DATADIR)/pixmaps/myrulib.png</command>
+	</modify-target>
+
+	<modify-target target="uninstall">
+	  <command>rm -f $(DESTDIR)$(DATADIR)/pixmaps/myrulib.png</command>
+	</modify-target>
+	
 </makefile>

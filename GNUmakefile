@@ -177,15 +177,14 @@ all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/icons/hicolor/48x48/apps
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
-	$(INSTALL) -d $(DESTDIR)/usr/share/pixmaps
-	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/pixmaps)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
+	ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)/usr/share/pixmaps/myrulib.png
 
 uninstall: uninstall_myrulib
 	(cd $(DESTDIR)/usr/share/icons/hicolor/48x48/apps ; rm -f myrulib.png)
-	(cd $(DESTDIR)/usr/share/pixmaps ; rm -f myrulib.png)
 	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
+	rm -f $(DESTDIR)/usr/share/pixmaps/myrulib.png
 
 clean: 
 	rm -f build/*.o
@@ -204,7 +203,6 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip ./build/myrulib
-	rm -f ./build/myrulib.png
 
 install_myrulib: build/myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/bin
