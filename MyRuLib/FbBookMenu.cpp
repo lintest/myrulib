@@ -41,7 +41,7 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 //	Append(wxID_ANY, _("Открыть серию"), NULL);
 	AppendSeparator();
 
-	if (data.GetType() == FT_FOLDER && data.GetId()) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
+	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
 	Append(wxID_ANY, _("Добавить в папку"), new FbMenuFolders(data));
 	Append(wxID_ANY, _("Установить рейтинг"), new FbMenuRating);
 	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
