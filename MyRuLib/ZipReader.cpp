@@ -156,7 +156,7 @@ void ZipReader::OpenDownload(FbDatabase &database, bool bInfoOnly)
 			}
 			m_file->SeekI(0);
 		}
-		m_zip = NULL;
+		wxDELETE(m_zip);
 		m_result = m_file;
 		m_fileOk = true;
 		return;
