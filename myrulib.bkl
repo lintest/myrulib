@@ -160,7 +160,7 @@
 	</modify-target>
 
 	<modify-target target="uninstall">
-	  <command>rm -f $(DESTDIR)$(DATADIR)/pixmaps/myrulib.png</command>
+	  <command>(cd $(DESTDIR)$(DATADIR)/pixmaps ; rm -f myrulib.png)</command>
 	</modify-target>
 	
 </makefile>

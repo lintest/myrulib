@@ -185,7 +185,7 @@ install: install_myrulib
 uninstall: uninstall_myrulib
 	(cd $(DESTDIR)/usr/share/icons/hicolor/48x48/apps ; rm -f myrulib.png)
 	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
-	rm -f $(DESTDIR)/usr/share/pixmaps/myrulib.png
+	(cd $(DESTDIR)/usr/share/pixmaps ; rm -f myrulib.png)
 
 clean: 
 	rm -f build/*.o
