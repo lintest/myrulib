@@ -179,6 +179,7 @@ install: install_myrulib
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
+	$(INSTALL) -d $(DESTDIR)/usr/share/pixmaps/
 	ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)/usr/share/pixmaps/myrulib.png
 
 uninstall: uninstall_myrulib

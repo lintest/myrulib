@@ -155,6 +155,7 @@
 	</if>
 
 	<modify-target target="install">
+	  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/pixmaps/</command>
 	  <command>ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)$(DATADIR)/pixmaps/myrulib.png</command>
 	</modify-target>
 
