@@ -13,7 +13,9 @@
 	<include file="../Presets/wx.bkl"/>
 
 	<exe id="dataview" template="wxgui">
-		<include>sources</include>
+		<define>wxUSE_DATAVIEWCTRL</define>
+		<define>wxUSE_HEADERCTRL</define>
+		<include>./sources</include>
 		<sources>sample/mymodels.cpp</sources>
 		<sources>sample/datasamp.cpp</sources>
 		<sources>sources/datavcmn.cpp</sources>

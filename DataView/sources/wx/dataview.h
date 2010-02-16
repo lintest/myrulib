@@ -9,20 +9,21 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_DATAVIEW_H_BASE_X_
-#define _WX_DATAVIEW_H_BASE_X_
+#ifndef _WX_DATAVIEW_H_BASE_XX
+#define _WX_DATAVIEW_H_BASE_XX
+#define _WX_DATAVIEW_H_BASE_
 
 #include "wx/defs.h"
 
-//#if wxUSE_DATAVIEWCTRL
+#if wxUSE_DATAVIEWCTRL==0
 
 #include "wx/textctrl.h"
-#include "wx/headercol.h"
-#include "wx/variant.h"
+#include "headercol.h"
+#include "variant.h"
 #include "wx/dynarray.h"
 #include "wx/icon.h"
 #include "wx/weakref.h"
-#include "wx/vector.h"
+#include "vector.h"
 #include "wx/dataobj.h"
 
 class WXDLLIMPEXP_FWD_CORE wxImageList;
@@ -31,6 +32,9 @@ class WXDLLIMPEXP_FWD_CORE wxImageList;
 // #if !(defined(__WXMAC__)) || defined(__WXUNIVERSAL__)
     #define wxHAS_GENERIC_DATAVIEWCTRL
 #endif
+
+#define wxHAS_GENERIC_DATAVIEWCTRL
+
 
 // ----------------------------------------------------------------------------
 // wxDataViewCtrl globals
@@ -835,7 +839,7 @@ protected:
 private:
     DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxDataViewEvent)
 };
-
+/*
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEvent );
 
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, wxDataViewEvent );
@@ -858,7 +862,7 @@ wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_COMMAND_DATAVIEW_COLUMN_REORDER
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_COMMAND_DATAVIEW_ITEM_BEGIN_DRAG, wxDataViewEvent );
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_COMMAND_DATAVIEW_ITEM_DROP_POSSIBLE, wxDataViewEvent );
 wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_COMMAND_DATAVIEW_ITEM_DROP, wxDataViewEvent );
-
+*/
 typedef void (wxEvtHandler::*wxDataViewEventFunction)(wxDataViewEvent&);
 
 #define wxDataViewEventHandler(func) \
@@ -897,11 +901,11 @@ typedef void (wxEvtHandler::*wxDataViewEventFunction)(wxDataViewEvent&);
     // and use wxHAS_GENERIC_DATAVIEWCTRL instead
     #define wxUSE_GENERICDATAVIEWCTRL
 
-    #include "wx/generic/dataview.h"
+    #include "./generic/dataview.h"
 #elif defined(__WXGTK20__)
-    #include "wx/gtk/dataview.h"
+    #include "./gtk/dataview.h"
 #elif defined(__WXMAC__)
-    #include "wx/osx/dataview.h"
+    #include "./osx/dataview.h"
 #else
     #error "unknown native wxDataViewCtrl implementation"
 #endif
@@ -1319,7 +1323,7 @@ private:
     DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxDataViewTreeCtrl)
 };
 
-//#endif // wxUSE_DATAVIEWCTRL
+#endif // wxUSE_DATAVIEWCTRL
 
 #endif
     // _WX_DATAVIEW_H_BASE_

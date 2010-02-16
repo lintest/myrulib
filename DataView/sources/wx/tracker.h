@@ -8,8 +8,8 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_TRACKER_H_
-#define _WX_TRACKER_H_
+#ifndef _WX_TRACKER_H_XX
+#define _WX_TRACKER_H_XX
 
 #include "wx/defs.h"
 

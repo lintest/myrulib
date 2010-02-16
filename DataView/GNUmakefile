@@ -54,8 +54,8 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-DATAVIEW_CXXFLAGS = -Isources `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
-	$(CPPFLAGS) $(CXXFLAGS)
+DATAVIEW_CXXFLAGS = -DwxUSE_DATAVIEWCTRL -DwxUSE_HEADERCTRL -I./sources \
+	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 DATAVIEW_OBJECTS =  \
 	../build/dataview_mymodels.o \
 	../build/dataview_datasamp.o \

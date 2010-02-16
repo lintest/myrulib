@@ -7,8 +7,8 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_GTKDATAVIEWCTRL_H_
-#define _WX_GTKDATAVIEWCTRL_H_
+#ifndef _WX_GTKDATAVIEWCTRL_H_NEW
+#define _WX_GTKDATAVIEWCTRL_H_NEW
 
 #include "wx/list.h"
 

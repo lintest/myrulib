@@ -33,6 +33,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="`wx-config --cflags`" />
+			<Add option="-DwxUSE_DATAVIEWCTRL" />
 			<Add directory="../sources" />
 		</Compiler>
 		<Linker>

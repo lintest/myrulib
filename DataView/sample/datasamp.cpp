@@ -24,6 +24,8 @@
     #include "wx/wx.h"
 #endif
 
+#include "mymodels.h"
+
 #include "wx/dataview.h"
 #include "wx/datetime.h"
 #include "wx/splitter.h"
@@ -33,8 +35,6 @@
 #include "wx/spinctrl.h"
 #include "wx/imaglist.h"
 #include "wx/notebook.h"
-
-#include "mymodels.h"
 
 // ----------------------------------------------------------------------------
 // resources
@@ -435,7 +435,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, int x, int y, int w, int
 
     mainSizer->Add( m_notebook, 1, wxGROW );
     mainSizer->Add( m_log, 0, wxGROW );
-    
+
     SetSizerAndFit(mainSizer);
 }
 
@@ -850,10 +850,10 @@ void MyFrame::OnStartEditing( wxDataViewEvent &event )
     if (artist == "Ludwig van Beethoven")
     {
         event.Veto();
-        
+
         if (!m_log)
            return;
-           
+
         wxLogMessage( "wxEVT_COMMAND_DATAVIEW_ITEM_START_EDITING vetoed, Item: %s", artist );
     }
 }
