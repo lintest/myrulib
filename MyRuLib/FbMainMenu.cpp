@@ -35,7 +35,7 @@ FbMenuBar::MenuSetup::MenuSetup()
 FbMenuBar::MenuHelp::MenuHelp()
 {
 	Append(ID_OPEN_WEB, _("Официальный сайт"));
-	AppendImg(wxID_ABOUT, _("О программе…"), wxART_HELP_PAGE);
+	AppendImg(wxID_ABOUT, _("About"), wxART_HELP_PAGE);
 }
 
 FbMainMenu::FbMainMenu(): FbMenuBar()
@@ -75,14 +75,14 @@ FbFrameMenu::MenuFile::MenuFile()
 
 FbFrameMenu::MenuBook::MenuBook()
 {
-	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
-	Append(ID_UNSELECTALL, _("Отменить выделение"));
+	Append(wxID_SELECTALL, _("Select all") + wxT("\tCtrl+A"));
+	Append(ID_UNSELECTALL, _("Undo selection"));
 	AppendSeparator();
-	Append(ID_ORDER_MENU, _("Сортировка"), new FbMenuSort());
-	AppendCheckItem(ID_FILTER_USE, _("Использовать фильтр"));
-	Append(ID_FILTER_NOT, _("Удалить фильтр"));
+	Append(ID_ORDER_MENU, _("Sort by"), new FbMenuSort());
+	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
+	Append(ID_FILTER_NOT, _("Clear filter"));
 	AppendSeparator();
-	Append(ID_EDIT_COMMENTS, _("Комментарии"));
+	Append(ID_EDIT_COMMENTS, _("Comments"));
 }
 
 FbFrameMenu::MenuView::MenuView()
@@ -90,7 +90,7 @@ FbFrameMenu::MenuView::MenuView()
 	Append(wxID_ANY, _("Список книг"), new MenuListMode());
 	Append(wxID_ANY, _("Область просмотра"), new MenuPreview());
 	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
-	Append(ID_SHOW_COLUMNS, _("Колонки таблицы"));
+	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
 	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
 	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));

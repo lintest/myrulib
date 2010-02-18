@@ -116,7 +116,7 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxBoxSizer* bSizerList;
 	bSizerList = new wxBoxSizer( wxHORIZONTAL );
 
-	m_treeLang = new FbFilterList(this, ID_TREE_LANG, _("Язык"));
+	m_treeLang = new FbFilterList(this, ID_TREE_LANG, _("Language"));
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	m_treeType = new FbFilterList(this, ID_TREE_TYPE, _("Тип файла"));

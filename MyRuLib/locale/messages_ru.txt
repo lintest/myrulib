@@ -248,6 +248,10 @@ msgstr "Размещение файлов:"
 msgid "Short description:"
 msgstr "Краткое описание:"
 
+#: FbConfigDlg.cpp:68
+msgid "Host name:"
+msgstr "Интернет адрес:"
+
 #: FbConfigDlg.cpp:127 SettingsDlg.cpp:323
 msgid "General"
 msgstr "Основные"
@@ -278,60 +282,30 @@ msgstr "(разное)"
 
 #: FbConst.cpp:16
 #, c-format
-msgid "Not found an archive (%s), containing file (%s)"
-msgstr "Не найден архив%s, содержащий файл%s."
+msgid "Not found an archive (%s), containing file (%s)."
+msgstr "Не найден архив (%s), содержащий файл (%s)."
 
 #: FbConst.cpp:26
 msgid "Clear"
 msgstr "Очистить"
 
-#: FbDatabase.cpp:167
-msgid "INSERT INTO params(id, text)  VALUES (1, 'My own Library')"
-msgstr ""
-
-#: FbDatabase.cpp:168
-msgid "INSERT INTO params(id, value) VALUES (2, 1)"
-msgstr ""
-
-#: FbDatabase.cpp:263
-#, c-format
-msgid "LOWER called with wrong number of arguments: %d."
-msgstr ""
-
 #: FbDatabase.cpp:285
-msgid "Search template: "
-msgstr ""
-
-#: FbDatabase.cpp:297
-#, c-format
-msgid "SEARCH called with wrong number of arguments: %d."
-msgstr ""
-
-#: FbDatabase.cpp:351
-#, c-format
-msgid "GENRE called with wrong number of arguments: %d."
-msgstr ""
+msgid "Search template"
+msgstr "Шаблон для поиска"
 
 #: FbDatabase.cpp:424
 #, c-format
-msgid "Open database: %s"
-msgstr ""
-
-#: FbDatabase.cpp:426
-#, c-format
-msgid "Create database: %s"
-msgstr ""
+msgid "Open database"
+msgstr "Открыть базу данных"
 
 #: FbDatabase.cpp:427
-msgid ""
-" - Create new database…\n"
-"\n"
-msgstr ""
+msgid "Create new database"
+msgstr "Создать новую базу данных"
 
 #: FbDatabase.cpp:521
 #, c-format
 msgid "Upgrade database to version %d"
-msgstr ""
+msgstr "Обновить базу данных до версии %d"
 
 #: FbDatabase.cpp:530
 msgid "Database version mismatch"
@@ -339,8 +313,8 @@ msgstr "Несоответствие верси базы данных."
 
 #: FbDatabase.cpp:531
 #, c-format
-msgid "Database version mismatch. Need a new version %d, but used the old %d."
-msgstr ""
+msgid "Need a new version %d, but used the old %d."
+msgstr "Требуется новая версия %d, обнаружена старая %d"
 
 #: FbDataOpenDlg.cpp:30
 msgid "File name:"

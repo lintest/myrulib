@@ -39,7 +39,7 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticText * m_staticText1 = new wxStaticText( this, wxID_ANY, _("Название библиотеки:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText1 = new wxStaticText( this, wxID_ANY, _("Library name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	bSizerMain->Add( m_staticText1, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
@@ -48,7 +48,7 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 
 	bSizerMain->Add( m_textCtrl1, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxALL, 5 );
 
-	wxStaticText * m_staticText2 = new wxStaticText( this, wxID_ANY, _("Размещение файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText2 = new wxStaticText( this, wxID_ANY, _("Library folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
 	bSizerMain->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
@@ -65,7 +65,7 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 
 	bSizerMain->Add( bSizer2, 0, wxEXPAND, 5 );
 
-	wxStaticText * m_staticText4 = new wxStaticText( this, wxID_ANY, _("Краткое описание:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText4 = new wxStaticText( this, wxID_ANY, _("Short description:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText4->Wrap( -1 );
 	bSizerMain->Add( m_staticText4, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
@@ -86,7 +86,7 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	fgSizerMain->SetFlexibleDirection( wxBOTH );
 	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxStaticText * text1 = new wxStaticText( this, wxID_ANY, _("Адрес сервера:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( this, wxID_ANY, _("Host name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	fgSizerMain->Add( text1, 0, wxALL, 5 );
 
@@ -124,8 +124,8 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	notebook->AddPage( new PanelMain(notebook), _("Основные"), true );
-	notebook->AddPage( new PanelInternet(notebook), _("Интернет"), false );
+	notebook->AddPage( new PanelMain(notebook), _("General"), true );
+	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
@@ -144,7 +144,7 @@ void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 
 	wxDirDialog dlg(
 		this,
-		_("Выберите директорию"),
+		_("Select folder"),
 		textCtrl->GetValue(),
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
 	);
@@ -217,7 +217,7 @@ void FbConfigDlg::Assign(bool write)
 
 void FbConfigDlg::Execute(wxWindow* parent)
 {
-	FbConfigDlg dlg(parent, wxID_ANY, _("Параметры библиотеки"), wxDefaultPosition, wxSize(400, 300));
+	FbConfigDlg dlg(parent, wxID_ANY, _("Library options"), wxDefaultPosition, wxDefaultSize);
 	dlg.Assign(false);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);

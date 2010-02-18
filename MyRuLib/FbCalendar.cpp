@@ -25,7 +25,7 @@ FbCalendar::FbCalendar( wxWindow* parent, wxWindowID id, const wxPoint& pos, con
 	bSizerMain->Add( m_Calendar, 0, wxALL|wxEXPAND, 5 );
 
 	m_DateList = new FbMasterList(this, ID_MASTER_LIST);
-	m_DateList->AddColumn (_("Дата"), 100, wxALIGN_LEFT);
+	m_DateList->AddColumn (_("Date"), 100, wxALIGN_LEFT);
 	m_DateList->SetFocus();
 
 	bSizerMain->Add( m_DateList, 1, wxALL|wxEXPAND, 5 );

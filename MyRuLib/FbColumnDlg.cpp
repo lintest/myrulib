@@ -15,19 +15,19 @@ FbColumnDlg::FbColumnDlg( wxWindow* parent, wxWindowID id)
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	checkbox = new wxCheckBox( this, ID_COLUMN_GENRE, _("Жанр"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_COLUMN_GENRE, _("Genre"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, _("Рейтинг"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_COLUMN_RATING, _("Rating"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_COLUMN_LANG, _("Язык"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_COLUMN_LANG, _("Language"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, _("Тип файла"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_COLUMN_TYPE, _("Extension"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_COLUMN_SYZE, _("Размер файла"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_COLUMN_SYZE, _("Size, Kb"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );

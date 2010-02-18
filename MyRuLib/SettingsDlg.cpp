@@ -237,7 +237,7 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка внешнего устройства:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Destination folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer8->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
@@ -351,7 +351,7 @@ void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
 
 	wxDirDialog dlg(
 		this,
-		_("Выберите директорию"),
+		_("Select folder"),
 		textCtrl->GetValue(),
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
 	);

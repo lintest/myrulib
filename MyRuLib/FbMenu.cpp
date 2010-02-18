@@ -3,10 +3,10 @@
 
 FbMenuSort::FbMenuSort()
 {
-	AppendRadioItem(ID_ORDER_TITLE,  _("Заголовок"));
-	AppendRadioItem(ID_ORDER_AUTHOR, _("Автор"));
-	AppendRadioItem(ID_ORDER_RATING, _("Рейтинг"));
-	AppendRadioItem(ID_ORDER_LANG,   _("Язык"));
+	AppendRadioItem(ID_ORDER_TITLE,  _("Title"));
+	AppendRadioItem(ID_ORDER_AUTHOR, _("Author"));
+	AppendRadioItem(ID_ORDER_RATING, _("Rating"));
+	AppendRadioItem(ID_ORDER_LANG,   _("Language"));
 	AppendRadioItem(ID_ORDER_TYPE,   _("Тип"));
 	AppendRadioItem(ID_ORDER_SIZE,   _("Размер"));
 	AppendRadioItem(ID_ORDER_DATE,   _("Дата"));

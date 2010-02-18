@@ -33,9 +33,9 @@ FbEditBookDlg::FbEditBookDlg( wxWindow* parent, wxWindowID id, const wxString& t
 
 	AppenTitle(fgSizerGrid);
 
-	AppenItem(fgSizerGrid, ID_AUTHOR_CHECK,   _("Автор"));
+	AppenItem(fgSizerGrid, ID_AUTHOR_CHECK,   _("Author"));
 	AppenItem(fgSizerGrid, ID_SEQUENCE_CHECK, _("Серия"));
-	AppenItem(fgSizerGrid, ID_GENRE_CHECK,    _("Жанр"));
+	AppenItem(fgSizerGrid, ID_GENRE_CHECK,    _("Genre"));
 
 	bSizerMain->Add( fgSizerGrid, 1, wxEXPAND, 5 );
 

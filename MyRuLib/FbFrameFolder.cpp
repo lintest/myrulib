@@ -92,7 +92,7 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	parent = m_MasterList->AppendItem(root, _("Пометки"));
 	m_MasterList->SetItemBold(parent, true);
 
-	m_MasterList->AppendItem(parent, _("Комментарии"), -1, -1, new FbMasterFolder(1, FT_COMMENT));
+	m_MasterList->AppendItem(parent, _("Comments"), -1, -1, new FbMasterFolder(1, FT_COMMENT));
 	m_MasterList->AppendItem(parent, strRating[5], -1, -1, new FbMasterFolder(5, FT_RATING));
 	m_MasterList->AppendItem(parent, strRating[4], -1, -1, new FbMasterFolder(4, FT_RATING));
 	m_MasterList->AppendItem(parent, strRating[3], -1, -1, new FbMasterFolder(3, FT_RATING));

@@ -28,7 +28,7 @@ END_EVENT_TABLE()
 FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id)
 	:m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id))
 {
-	FbAuiMDIChildFrame::Create(parent, ID_FRAME_HTML, _("Комментарии"));
+	FbAuiMDIChildFrame::Create(parent, ID_FRAME_HTML, _("Comments"));
 	static bool bNotLoaded = true;
 	if (bNotLoaded) {
 		wxMemoryFSHandler::AddFile(wxT("modify"), wxBitmap(modify_xpm), wxBITMAP_TYPE_PNG);
@@ -206,7 +206,7 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 
 	if ( event.GetLinkInfo().GetTarget() == wxT("D") )
 	{
-		int res = wxMessageBox(_("Удалить комментарий?"), _("Подтверждение"), wxOK|wxCANCEL);
+		int res = wxMessageBox(_("Удалить комментарий?"), _("Confirmation"), wxOK|wxCANCEL);
 		if (res != wxOK) return;
 
 		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;

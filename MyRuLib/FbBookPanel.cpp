@@ -57,14 +57,14 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 
 	{
 		BookListUpdater updater(m_BookList);
-		m_BookList->AddColumn (_("Заголовок"), 10, wxALIGN_LEFT);
-		m_BookList->AddColumn (_("Автор"), 6, wxALIGN_LEFT);
-		m_BookList->AddColumn (_("№"), 2, wxALIGN_RIGHT);
-		m_BookList->AddColumn (_("Жанр"), 4, wxALIGN_LEFT);
-		m_BookList->AddColumn (_("Рейтинг"), 3, wxALIGN_LEFT);
-		m_BookList->AddColumn (_("Язык"), 2, wxALIGN_LEFT);
-		m_BookList->AddColumn (_("Тип"), 2, wxALIGN_LEFT);
-		m_BookList->AddColumn (_("Размер, Кб"), 3, wxALIGN_RIGHT);
+		m_BookList->AddColumn (_("Title"), 10, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Author"), 6, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("#"), 2, wxALIGN_RIGHT);
+		m_BookList->AddColumn (_("Genre"), 4, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Rating"), 3, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Language"), 2, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Extension"), 2, wxALIGN_LEFT);
+		m_BookList->AddColumn (_("Size, Kb"), 3, wxALIGN_RIGHT);
 	}
 	CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 }
@@ -514,8 +514,8 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 	size_t count = m_BookList->GetSelected(sel);
 	if (!count) return;
 
-	wxString msg = wxString::Format(_("Удалить выделенные книги (%d шт.)?"), count);
-	int answer = wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this);
+	wxString msg = wxString::Format(_("Delete selected books (%d pcs)?"), count);
+	int answer = wxMessageBox(msg, _("Confirmation"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
 	(new FbDeleteThread(sel))->Execute();

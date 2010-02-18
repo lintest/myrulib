@@ -201,73 +201,77 @@ msgid "Comments"
 msgstr "Каментары"
 
 #: FbBookPanel.cpp:60 FbMenu.cpp:6
-msgid "Заголовок"
+msgid "Title"
 msgstr "Загаловак"
 
 #: FbBookPanel.cpp:61 FbEditBook.cpp:36 FbFrameAuthor.cpp:60 FbMenu.cpp:7
 #: FbReplaceDlg.cpp:59
-msgid "Автор"
+msgid "Author"
 msgstr "Аўтар"
 
 #: FbBookPanel.cpp:62
-msgid "№"
+msgid "#"
 msgstr "№"
 
 #: FbBookPanel.cpp:63 FbEditBook.cpp:38
-msgid "Жанр"
+msgid "Genre"
 msgstr "Жанр"
 
 #: FbBookPanel.cpp:64 FbMenu.cpp:8
-msgid "Рейтинг"
+msgid "Rating"
 msgstr "Рэйтынг"
 
 #: FbBookPanel.cpp:65 FbFilterDlg.cpp:119 FbMenu.cpp:9
-msgid "Язык"
+msgid "Language"
 msgstr "Мова"
 
 #: FbBookPanel.cpp:66 FbMenu.cpp:10 SettingsDlg.cpp:175
-msgid "Тип"
+msgid "Extension"
 msgstr "Тып"
 
 #: FbBookPanel.cpp:517
 #, c-format
-msgid "Удалить выделенные книги (%d шт.)?"
+msgid "Delete selected books (%d pcs)?"
 msgstr "Знішчыць адзначаныя кнігі (%d шт.)?"
 
 #: FbCalendar.cpp:28 FbMenu.cpp:12
-msgid "Дата"
+msgid "Date"
 msgstr "Час"
 
 #: FbColumnDlg.cpp:9
-msgid "Колонки"
+msgid "Columns"
 msgstr "Калонкі"
 
 #: FbConfigDlg.cpp:42
-msgid "Название библиотеки:"
+msgid "Library name:"
 msgstr "Назва бібліятэкі:"
 
 #: FbConfigDlg.cpp:51
-msgid "Размещение файлов:"
+msgid "Library folder:"
 msgstr "Месцазнаходжанне файлаў:"
 
 #: FbConfigDlg.cpp:68
-msgid "Краткое описание:"
+msgid "Short description:"
 msgstr "Краткае апісанне:"
 
+#: FbConfigDlg.cpp:68
+msgid "Host name:"
+msgstr "Вэб-сайт:"
+
 #: FbConfigDlg.cpp:127 SettingsDlg.cpp:323
-msgid "Основные"
+msgid "General"
 msgstr "Асноўныя"
 
 #: FbConfigDlg.cpp:128 FbGenres.cpp:110 SettingsDlg.cpp:324
-msgid "Интернет"
+msgid "Network"
 msgstr "Інтэрнэт"
 
 #: FbConfigDlg.cpp:147 SettingsDlg.cpp:354
-msgid "Выберите директорию"
+msgid "Select folder"
 msgstr "Азначце дырэкторыю"
 
 #: FbConfigDlg.cpp:220
-msgid "Параметры библиотеки"
+msgid "Library options"
 msgstr "Наладкі бібліятэкі"
 
 #: FbConst.cpp:9
@@ -275,7 +279,7 @@ msgid "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ"
 msgstr "АБВГДЕЖЗІЙКЛМНОПРСТУЎФХЦЧШЫЭЮЯ"
 
 #: FbConst.cpp:12
-msgid "(без автора)"
+msgid "(Misc.)"
 msgstr "(без аўтару)"
 
 #: FbConst.cpp:15
@@ -284,55 +288,25 @@ msgstr "(рознае)"
 
 #: FbConst.cpp:16
 #, c-format
-msgid "Не найден архив%s, содержащий файл%s."
-msgstr "Не знойдзены архіў%s, які змяшчае файл%s."
+msgid "Not found an archive (%s), containing file (%s)."
+msgstr "Не знойдзены архіў (%s), які змяшчае файл (%s)."
 
 #: FbConst.cpp:26
-msgid "Очистить"
+msgid "Clear"
 msgstr "Ачысціць"
 
-#: FbDatabase.cpp:167
-msgid "INSERT INTO params(id, text)  VALUES (1, 'My own Library')"
-msgstr ""
-
-#: FbDatabase.cpp:168
-msgid "INSERT INTO params(id, value) VALUES (2, 1)"
-msgstr ""
-
-#: FbDatabase.cpp:263
-#, c-format
-msgid "LOWER called with wrong number of arguments: %d."
-msgstr ""
-
 #: FbDatabase.cpp:285
-msgid "Search template: "
-msgstr "Шукаць шаблён?"
-
-#: FbDatabase.cpp:297
-#, c-format
-msgid "SEARCH called with wrong number of arguments: %d."
-msgstr ""
-
-#: FbDatabase.cpp:351
-#, c-format
-msgid "GENRE called with wrong number of arguments: %d."
-msgstr ""
+msgid "Search template"
+msgstr "Шукаць шаблён"
 
 #: FbDatabase.cpp:424
 #, c-format
-msgid "Open database: %s"
-msgstr "Адчыніць базу: %s"
-
-#: FbDatabase.cpp:426
-#, c-format
-msgid "Create database: %s"
-msgstr "Стварыць базу: %s"
+msgid "Open database"
+msgstr "Адчыніць базу"
 
 #: FbDatabase.cpp:427
-msgid ""
-" - Create new database…\n"
-"\n"
-msgstr "Стварыць новую базу:"
+msgid "Create new database"
+msgstr "Стварыць новую базу"
 
 #: FbDatabase.cpp:521
 #, c-format
@@ -340,13 +314,13 @@ msgid "Upgrade database to version %d"
 msgstr "Абнавіць базу да версіі %d"
 
 #: FbDatabase.cpp:530
-msgid "Несоответствие верси базы данных."
+msgid "Database version mismatch"
 msgstr "Версія базы не адпавядае"
 
 #: FbDatabase.cpp:531
 #, c-format
-msgid "Database version mismatch. Need a new version %d, but used the old %d."
-msgstr "Версія базы не адпавядае. Патрэбна новая версія %d, але выкарыстоўваецца старая %d."
+msgid "Need a new version %d, but used the old %d."
+msgstr "Патрэбна новая версія %d, але выкарыстоўваецца старая %d."
 
 #: FbDataOpenDlg.cpp:30
 msgid "Имя файла:"
