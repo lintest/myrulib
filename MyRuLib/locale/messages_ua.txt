@@ -119,79 +119,79 @@ msgid "Associated application not found"
 msgstr "Не знайдена програма для перегляду файлів типу"
 
 #: FbBookMenu.cpp:15
-msgid "Открыть книгу\tEnter"
-msgstr "Відкрити книгу\tEnter"
+msgid "Open book"
+msgstr "Відкрити книгу"
 
 #: FbBookMenu.cpp:17
-msgid "Удалить закачку"
+msgid "Delete download query"
 msgstr "Видалити закачку"
 
 #: FbBookMenu.cpp:18
-msgid "Скачать повторно"
+msgid "Retry rownload"
 msgstr "Завантажити повторно"
 
 #: FbBookMenu.cpp:20
-msgid "Скачать файл"
+msgid "Download a file"
 msgstr "Завантажити файл"
 
 #: FbBookMenu.cpp:22
-msgid "Скачать в браузере"
+msgid "Download via browser"
 msgstr "Завантажити в браузері"
 
 #: FbBookMenu.cpp:23
-msgid "Страница книги"
+msgid "Online books page"
 msgstr "Сторінка книги"
 
 #: FbBookMenu.cpp:26 FbMainMenu.cpp:78
-msgid "Выделить все\tCtrl+A"
-msgstr "Виділити всі\tCtrl+A"
+msgid "Select all"
+msgstr "Виділити всі"
 
 #: FbBookMenu.cpp:27 FbMainMenu.cpp:79
-msgid "Отменить выделение"
+msgid "Undo selection"
 msgstr "Відмінити виділення"
 
 #: FbBookMenu.cpp:28 FbMainMenu.cpp:93
-msgid "Колонки таблицы"
+msgid "Table columns"
 msgstr "Колонки таблиці"
 
 #: FbBookMenu.cpp:32
-msgid "Удалить книгу"
+msgid "Delete book"
 msgstr "Видалити книгу"
 
 #: FbBookMenu.cpp:35 FbMainMenu.cpp:81
-msgid "Сортировка"
+msgid "Sort by"
 msgstr "Сортування"
 
 #: FbBookMenu.cpp:36 FbMainMenu.cpp:82
-msgid "Использовать фильтр"
+msgid "Use filter"
 msgstr "Використовувати фільтр"
 
 #: FbBookMenu.cpp:37 FbMainMenu.cpp:83
-msgid "Удалить фильтр"
+msgid "Clear filter"
 msgstr "Видалити фільтр"
 
 #: FbBookMenu.cpp:40
-msgid "Перейти к автору"
+msgid "Jump to author"
 msgstr "Перейти до автора"
 
 #: FbBookMenu.cpp:44
-msgid "Добавить в избранное"
+msgid "Add to favourites"
 msgstr "Додати у вибране"
 
 #: FbBookMenu.cpp:45
-msgid "Добавить в папку"
+msgid "Add to folders"
 msgstr "Додати у папку"
 
 #: FbBookMenu.cpp:46
-msgid "Установить рейтинг"
+msgid "Rate this book"
 msgstr "Установити рейтинг"
 
 #: FbBookMenu.cpp:47
-msgid "Удалить закладку"
+msgid "Delete bookmark"
 msgstr "Видалити закладку"
 
 #: FbBookMenu.cpp:50 FbFrameFolder.cpp:95 FbFrameHtml.cpp:31 FbMainMenu.cpp:85
-msgid "Комментарии"
+msgid "Comments"
 msgstr "Коментарі"
 
 #: FbBookPanel.cpp:60 FbMenu.cpp:6

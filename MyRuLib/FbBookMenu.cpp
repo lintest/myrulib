@@ -12,42 +12,42 @@ WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
 FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	: m_id(id)
 {
-	Append(ID_OPEN_BOOK, _("Открыть книгу\tEnter"));
+	Append(ID_OPEN_BOOK, _("Открыть книгу" + wxT("\tEnter")));
 	if (data.GetType() == FT_DOWNLOAD) {
-		Append(ID_DELETE_DOWNLOAD, _("Удалить закачку"));
-		if ( data.GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Скачать повторно"));
+		Append(ID_DELETE_DOWNLOAD, _("Delete download query"));
+		if ( data.GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
 	} else {
-		Append(ID_DOWNLOAD_BOOK, _("Скачать файл"));
+		Append(ID_DOWNLOAD_BOOK, _("Download a file"));
 	}
-	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Скачать в браузере"));
-	if ( id>0 ) Append(ID_BOOK_PAGE, _("Страница книги"));
+	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
+	if ( id>0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
 
-	Append(wxID_SELECTALL, _("Выделить все\tCtrl+A"));
-	Append(ID_UNSELECTALL, _("Отменить выделение"));
-	Append(ID_SHOW_COLUMNS, _("Колонки таблицы"));
+	Append(wxID_SELECTALL, _("Select all") + wxT("\tCtrl+A"));
+	Append(ID_UNSELECTALL, _("Undo selection"));
+	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
 
 //	Append(wxID_EDIT, _("Редактировать"));
-	Append(wxID_DELETE, _("Удалить книгу"));
+	Append(wxID_DELETE, _("Delete book"));
 	AppendSeparator();
 
-	if (bShowOrder) Append(wxID_ANY, _("Сортировка"), new FbMenuSort);
-	AppendCheckItem(ID_FILTER_USE, _("Использовать фильтр"));
-	Append(ID_FILTER_NOT, _("Удалить фильтр"));
+	if (bShowOrder) Append(wxID_ANY, _("Sort by"), new FbMenuSort);
+	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
+	Append(ID_FILTER_NOT, _("Clear filter"));
 	AppendSeparator();
 
-	Append(wxID_ANY, _("Перейти к автору"), new FbMenuAuthors(m_id));
+	Append(wxID_ANY, _("Jump to author"), new FbMenuAuthors(m_id));
 //	Append(wxID_ANY, _("Открыть серию"), NULL);
 	AppendSeparator();
 
-	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Добавить в избранное"));
-	Append(wxID_ANY, _("Добавить в папку"), new FbMenuFolders(data));
-	Append(wxID_ANY, _("Установить рейтинг"), new FbMenuRating);
-	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Удалить закладку"));
+	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Add to favourites"));
+	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(data));
+	Append(wxID_ANY, _("Rate this book"), new FbMenuRating);
+	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
 	AppendSeparator();
 
-	Append(ID_EDIT_COMMENTS, _("Комментарии"));
+	Append(ID_EDIT_COMMENTS, _("Comments"));
 }
 
 FbMenuAuthorArray FbMenuAuthors::sm_authors;

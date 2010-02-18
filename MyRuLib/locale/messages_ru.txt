@@ -119,8 +119,8 @@ msgid "Associated application not found"
 msgstr "Не найдено приложение для просмотра файлов типа"
 
 #: FbBookMenu.cpp:15
-msgid "Open book\tEnter"
-msgstr "Открыть книгу\tEnter"
+msgid "Open book"
+msgstr "Открыть книгу"
 
 #: FbBookMenu.cpp:17
 msgid "Delete download query"
@@ -139,12 +139,12 @@ msgid "Download via browser"
 msgstr "Скачать в браузере"
 
 #: FbBookMenu.cpp:23
-msgid "Page"
-msgstr "Страница книги"
+msgid "Online books page"
+msgstr "Книга на сайте библиотеки"
 
 #: FbBookMenu.cpp:26 FbMainMenu.cpp:78
-msgid "Select all\tCtrl+A"
-msgstr "Выделить все\tCtrl+A"
+msgid "Select all"
+msgstr "Выделить все"
 
 #: FbBookMenu.cpp:27 FbMainMenu.cpp:79
 msgid "Undo selection"
