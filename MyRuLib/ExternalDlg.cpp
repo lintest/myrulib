@@ -177,7 +177,7 @@ wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &
 }
 
 ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
-	FbDialog( parent, wxID_ANY, _("Экспорт на внешнее устройство"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
+	FbDialog( parent, wxID_ANY, _("Export to external storage"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
 	m_selections(selections),
 	m_author(iAuthor),
 	m_checkAuthor(NULL)
@@ -190,7 +190,7 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	wxBoxSizer* bSizerDir;
 	bSizerDir = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * m_staticTextDir = new wxStaticText( this, wxID_ANY, _("Папка внешнего устройства:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticTextDir = new wxStaticText( this, wxID_ANY, _("Destination folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticTextDir->Wrap( -1 );
 	bSizerDir->Add( m_staticTextDir, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -205,7 +205,7 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 
 	if (iAuthor != ciNoAuthor) {
-		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Использовать текущего автора (без соавторов)"), wxDefaultPosition, wxDefaultSize, 0 );
+		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Use Author (without co-Authors)"), wxDefaultPosition, wxDefaultSize, 0 );
 		bSizerMain->Add( m_checkAuthor, 0, wxALL, 5 );
 		m_checkAuthor->SetValue(1);
 	}
@@ -213,15 +213,15 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	long treeStyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	m_books = new FbTreeListCtrl( this, ID_BOOKS, treeStyle );
 	m_books->SetMinSize( wxSize( -1,250 ) );
-	m_books->AddColumn (_("Имя файла"), 4, wxALIGN_LEFT);
-	m_books->AddColumn (_("Размер, Кб"), 1, wxALIGN_RIGHT);
+	m_books->AddColumn (_("File name"), 4, wxALIGN_LEFT);
+	m_books->AddColumn (_("Size, Kb"), 1, wxALIGN_RIGHT);
 
 	bSizerMain->Add( m_books, 1, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerFormat;
 	bSizerFormat = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * m_staticTextFormat = new wxStaticText( this, wxID_ANY, _("Формат выгрузки файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticTextFormat = new wxStaticText( this, wxID_ANY, _("Export As..."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticTextFormat->Wrap( -1 );
 	bSizerFormat->Add( m_staticTextFormat, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -404,7 +404,7 @@ void ExternalDlg::OnSelectDir( wxCommandEvent& event )
 {
 	wxDirDialog dlg(
 		this,
-		_("Выберите папку внешнего устройства"),
+		_("Select a destination folder"),
 		m_textDir->GetValue(),
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
 	);
@@ -479,18 +479,18 @@ bool ExternalDlg::ExportBooks()
 {
 	wxString root_dir = m_textDir->GetValue();
 	if (!wxFileName::DirExists(root_dir)) {
-		wxMessageBox(_("Не найдена папка внешнего устройства: ") + root_dir);
+		wxMessageBox(_("Destination folder not found") + wxT(": ") + root_dir);
 		return false;
 	}
 	if (!wxFileName::IsDirWritable(root_dir)) {
-		wxMessageBox(_("Папка внешнего устройства не доступна для записи: ") + root_dir);
+		wxMessageBox(_("Unable write files to destination folder") + wxT(": ") +  + root_dir);
 		return false;
 	}
 
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
 	ExportThread *thread = new ExportThread(m_choiceFormat->GetCurrentSelection());
 	FillFilelist(m_books->GetRootItem(), thread->m_filelist);
-	thread->m_info = _("Экспорт: ") + root_dir;
+	thread->m_info = _("Export") + wxT(": ") + root_dir;
 	return thread->Execute();
 }
 
@@ -499,7 +499,7 @@ bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
 	wxString selections = bookList->GetSelected();
 
 	if ( selections.IsEmpty() ) {
-		wxMessageBox(_("Не выбрано ни одной книги."));
+		wxMessageBox(_("Not selected any book"));
 		return false;
 	}
 

@@ -17,31 +17,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ExpThread.cpp:10
-msgid "Export error "
+msgid "Export error"
 msgstr "Памылка экспарту"
 
 #: ExternalDlg.cpp:180
-msgid "Экспорт на внешнее устройство"
+msgid "Export to external storage"
 msgstr "Экспарт на знешнюю прыладу"
 
 #: ExternalDlg.cpp:193 SettingsDlg.cpp:240
-msgid "Папка внешнего устройства:"
+msgid "Destination folder:"
 msgstr "Папка знешняй прылады:"
 
 #: ExternalDlg.cpp:208
-msgid "Использовать текущего автора (без соавторов)"
+msgid "Use Author (without co-Authors)"
 msgstr "Выкарыстоўваць бягучага аўтара (без суаўтараў)"
 
 #: ExternalDlg.cpp:216
-msgid "Имя файла"
+msgid "File name"
 msgstr "Імя файла"
 
 #: ExternalDlg.cpp:217 FbBookPanel.cpp:67
-msgid "Размер, Кб"
+msgid "Size, Kb"
 msgstr "Памер, Кб"
 
 #: ExternalDlg.cpp:224
-msgid "Формат выгрузки файлов:"
+msgid "Export As..."
 msgstr "Фармат выгрузкі файлаў:"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
@@ -53,27 +53,35 @@ msgid "filename.fb2.zip"
 msgstr "filename.fb2.zip"
 
 #: ExternalDlg.cpp:407
-msgid "Выберите папку внешнего устройства"
+msgid "Select a destination folder"
 msgstr "Абарыце папку знешняй прылады"
 
 #: ExternalDlg.cpp:482
-msgid "Не найдена папка внешнего устройства: "
+msgid "Destination folder not found"
 msgstr "Не знойдзена папка знешняй прылады"
 
 #: ExternalDlg.cpp:486
-msgid "Папка внешнего устройства не доступна для записи: "
-msgstr "Немагчыма запісаць у папку знешняй прылады: "
+msgid "Unable write files to destination folder"
+msgstr "Немагчыма запісаць у папку знешняй прылады"
+
+#: ExternalDlg.cpp:486
+msgid "Not selected any book"
+msgstr "Не выбрано ни одной книги"
+
+#: ExternalDlg.cpp:486
+msgid "Not selected any book"
+msgstr "Не выбрана ні адной кнігі"
 
 #: FbAboutDlg.cpp:8 FbMainMenu.cpp:38
-msgid "О программе…"
+msgid "About"
 msgstr "Аб праграме:"
 
 #: FbAuthorDlg.cpp:18
-msgid "Фамилия"
+msgid "Surname"
 msgstr "Прозвішча"
 
 #: FbAuthorDlg.cpp:19
-msgid "Имя"
+msgid "Middle-Name"
 msgstr "Імя"
 
 #: FbAuthorDlg.cpp:20
@@ -81,19 +89,20 @@ msgid "Отчество"
 msgstr "Імя па бацьку"
 
 #: FbAuthorDlg.cpp:47
-msgid "Добавить автора"
+msgid "Add author"
 msgstr "Дадаць аўтара"
 
 #: FbAuthorDlg.cpp:55
-msgid "Изменить автора"
+msgid "Change author"
 msgstr "Змяніць аўтара"
 
 #: FbAuthorDlg.cpp:163
-msgid "Не заполнена фамилия автора."
+#, c-format
+msgid "\"Surname\" field is empty"
 msgstr "Не запоўнена прозвішча аўітара"
 
 #: FbAuthorDlg.cpp:168
-msgid "Автор с такими реквизитами уже существует."
+msgid "Autor with same details aleready exists"
 msgstr "Аўтар з такімі рэквізітамі ужо існуе"
 
 #: FbAuthorDlg.cpp:171
@@ -103,17 +112,17 @@ msgid ""
 msgstr "Аб'яднаць двух автораў?"
 
 #: FbBookData.cpp:45
-msgid "Скачать книгу?"
+msgid "Download book file?"
 msgstr "Зліць кнігу?"
 
 #: FbBookData.cpp:45 FbBookPanel.cpp:518 FbFrameHtml.cpp:209
 #: FbMainFrame.cpp:534
-msgid "Подтверждение"
+msgid "Confirmation"
 msgstr "Пацьверджанне"
 
 #: FbBookData.cpp:87
-msgid "Не найдено приложение для просмотра файлов типа "
-msgstr "Не знойдзена праграма для прагляду файлаў тыпу "
+msgid "Associated application not found"
+msgstr "Не знойдзена праграма для прагляду файлаў тыпу"
 
 #: FbBookMenu.cpp:15
 msgid "Открыть книгу\tEnter"
@@ -354,14 +363,6 @@ msgstr "Абярыце імя файла калекцыі:"
 #: FbDataOpenDlg.cpp:73
 msgid "Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"
 msgstr "Файл базы (*.db)|*.db|Усі файлы (*.*)|*.*"
-
-#: FbDownloader.cpp:76
-msgid "Content-type"
-msgstr ""
-
-#: FbDownloader.cpp:76
-msgid "application/x-www-form-urlencoded"
-msgstr ""
 
 #: FbDownloader.cpp:136
 msgid "Загрузка файла"

@@ -42,7 +42,7 @@ void FbBookData::Open() const
 	if ( reader.IsOK() ) {
 		DoOpen( reader.GetZip(), reader.GetMd5() );
 	} else if ( m_id>0 ) {
-		if ( wxMessageBox(_("Скачать книгу?"), _("Подтверждение"), wxOK | wxCANCEL) == wxOK) DoDownload();
+		if ( wxMessageBox(_("Download book file?"), _("Confirmation"), wxOK | wxCANCEL) == wxOK) DoDownload();
 	}
 }
 
@@ -85,7 +85,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		delete ft;
 	}
 
-	wxString msg = _("Не найдено приложение для просмотра файлов типа ") + m_filetype;
+	wxString msg = _("Associated application not found") + wxT(": ") + m_filetype;
 	wxMessageBox(msg);
 }
 

@@ -17,8 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ExpThread.cpp:10
-msgid "Export error "
-msgstr ""
+msgid "Export error"
+msgstr "Ошибка экспорта"
 
 #: ExternalDlg.cpp:180
 msgid "Export to external storage"
@@ -46,23 +46,27 @@ msgstr "Формат выгрузки файлов:"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
 msgid "filename.fb2"
-msgstr "filename.fb2"
+msgstr "имя_файла.fb2"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
 msgid "filename.fb2.zip"
-msgstr "filename.fb2.zip"
+msgstr "имя_файла.fb2.zip"
 
 #: ExternalDlg.cpp:407
-msgid "Select a destination folder:"
+msgid "Select a destination folder"
 msgstr "Выберите папку внешнего устройства"
 
 #: ExternalDlg.cpp:482
-msgid "Destination folder not found: "
-msgstr "Не найдена папка внешнего устройства: "
+msgid "Destination folder not found"
+msgstr "Не найдена папка внешнего устройства"
 
 #: ExternalDlg.cpp:486
-msgid "Unable write files to destination folder: "
-msgstr "Папка внешнего устройства не доступна для записи: "
+msgid "Unable write files to destination folder"
+msgstr "Папка внешнего устройства не доступна для записи"
+
+#: ExternalDlg.cpp:486
+msgid "Not selected any book"
+msgstr "Не выбрано ни одной книги"
 
 #: FbAboutDlg.cpp:8 FbMainMenu.cpp:38
 msgid "About"
@@ -89,23 +93,20 @@ msgid "Change author"
 msgstr "Изменить автора"
 
 #: FbAuthorDlg.cpp:163
-msgid "\"Surname\" field is empty."
-msgstr "Не заполнена фамилия автора."
+#, c-format
+msgid "\"Surname\" field is empty"
+msgstr "Не заполнена фамилия автора"
 
 #: FbAuthorDlg.cpp:168
-msgid "Autor with same details aleready exists."
-msgstr "Автор с такими реквизитами уже существует."
+msgid "Autor with same details aleready exists"
+msgstr "Автор с такими реквизитами уже существует"
 
 #: FbAuthorDlg.cpp:171
-msgid ""
-"\n"
-"Merge authors?"
-msgstr ""
-"\n"
-"Объединить двух авторов?"
+msgid "Merge authors?"
+msgstr "Объединить двух авторов?"
 
 #: FbBookData.cpp:45
-msgid "Download file?"
+msgid "Download book file?"
 msgstr "Скачать книгу?"
 
 #: FbBookData.cpp:45 FbBookPanel.cpp:518 FbFrameHtml.cpp:209
@@ -115,7 +116,7 @@ msgstr "Подтверждение"
 
 #: FbBookData.cpp:87
 msgid "Associated application not found"
-msgstr "Не найдено приложение для просмотра файлов типа "
+msgstr "Не найдено приложение для просмотра файлов типа"
 
 #: FbBookMenu.cpp:15
 msgid "Open book\tEnter"
@@ -357,14 +358,6 @@ msgstr "Выберите имя файла коллекции…"
 msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
 msgstr "Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"
 
-#: FbDownloader.cpp:76
-msgid "Content-type"
-msgstr ""
-
-#: FbDownloader.cpp:76
-msgid "application/x-www-form-urlencoded"
-msgstr ""
-
 #: FbDownloader.cpp:136
 msgid "File download"
 msgstr "Загрузка файла"
@@ -413,10 +406,10 @@ msgstr "Удалить автора: "
 #, c-format
 msgid ""
 "\n"
-"и все его книги в количестве %d шт.?"
+"...and all of author's books (%d pcs.)?"
 msgstr ""
 "\n"
-"...and all of author's books (%d pcs.)?"
+"и все его книги в количестве %d шт.?"
 
 #: FbFrameAuthor.cpp:311 FbFrameSequen.cpp:407
 msgid "Removing in progress"

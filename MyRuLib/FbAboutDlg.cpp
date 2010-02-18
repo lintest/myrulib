@@ -5,7 +5,7 @@
 #include "MyRuLibApp.h"
 
 FbAboutDlg::FbAboutDlg( wxWindow* parent )
-	: FbDialog(parent, wxID_ANY, (wxString)_("О программе…"))
+	: FbDialog(parent, wxID_ANY, (wxString)_("About"))
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 

@@ -15,9 +15,9 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	bSizerGrid->SetFlexibleDirection( wxBOTH );
 	bSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppenName(bSizerGrid, ID_LAST_NAME,   _("Фамилия"))->SetFocus();
-	AppenName(bSizerGrid, ID_FIRST_NAME,  _("Имя"));
-	AppenName(bSizerGrid, ID_MIDDLE_NAME, _("Отчество"));
+	AppenName(bSizerGrid, ID_LAST_NAME,   _("Surname"))->SetFocus();
+	AppenName(bSizerGrid, ID_FIRST_NAME,  _("Name"));
+	AppenName(bSizerGrid, ID_MIDDLE_NAME, _("Middle-Name"));
 
 	bSizerMain->Add( bSizerGrid, 1, wxEXPAND, 5 );
 
@@ -44,7 +44,7 @@ wxTextCtrl * FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, con
 
 int FbAuthorDlg::Append(wxString &newname)
 {
-	FbAuthorDlg dlg(_("Добавить автора"));
+	FbAuthorDlg dlg(_("Add author"));
 	bool ok = dlg.ShowModal() == wxID_OK;
 	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoAppend() : 0;
@@ -52,7 +52,7 @@ int FbAuthorDlg::Append(wxString &newname)
 
 int FbAuthorDlg::Modify(int id, wxString &newname)
 {
-	FbAuthorDlg dlg(_("Изменить автора"), id);
+	FbAuthorDlg dlg(_("Change author"), id);
 	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
 	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoUpdate() : 0;
@@ -160,16 +160,16 @@ void FbAuthorDlg::EndModal(int retCode)
 {
 	if ( retCode == wxID_OK) {
 		if (GetValue(ID_LAST_NAME).IsEmpty()) {
-			wxMessageBox(_("Не заполнена фамилия автора."), GetTitle());
+			wxMessageBox(_("\"Surname\" field is empty"), GetTitle());
 			return;
 		}
 		m_exists = FindAuthor();
 		if (m_exists) {
-			wxString msg = _("Автор с такими реквизитами уже существует.");
+			wxString msg = _("Autor with same details aleready exists");
 			wxString title = GetTitle() + wxT('…');
 			if (m_id) {
 				msg += wxT('\n');
-				msg += _("Объединить двух авторов?");
+				msg += _("Merge authors?");
 				bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 				if (!ok) return;
 			} else {
