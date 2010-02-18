@@ -40,12 +40,13 @@ FbMenuBar::MenuHelp::MenuHelp()
 
 FbMainMenu::FbMainMenu(): FbMenuBar()
 {
-	Append(new MenuFile,  _("Файл"));
-	Append(new MenuLib,   _("Библиотека"));
-	Append(new MenuFrame, _("Картотека"));
-	Append(new MenuView,  _("Вид"));
-	Append(new MenuSetup, _("Сервис"));
-	Append(new MenuHelp,  _("?"));
+	Append(new MenuFile,   _("&File"));
+	Append(new MenuLib,    _("&Library"));
+	Append(new MenuFrame,  _("&Catalog"));
+	Append(new MenuView,   _("&View"));
+	Append(new MenuSetup,  _("&Tools"));
+	Append(new MenuWindow, _("&Window"));
+	Append(new MenuHelp,   _("&?"));
 }
 
 FbMainMenu::MenuFile::MenuFile()

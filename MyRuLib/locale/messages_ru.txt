@@ -415,40 +415,48 @@ msgstr "Страница автора"
 
 #: FbFrameAuthor.cpp:345 FbFrameBase.cpp:261 FbFrameSequen.cpp:418
 #: FbMainMenu.cpp:43
-msgid "File"
+msgid "&File"
 msgstr "Файл"
+
+#: FbFrameAuthor.cpp:345 FbFrameBase.cpp:261 FbFrameSequen.cpp:418
+msgid "&Authors"
+msgstr "Авторы"
+
+#: FbFrameSequen.cpp:29 FbFrameSequen.cpp:421 FbMainMenu.cpp:10
+msgid "&Series"
+msgstr "Серии"
 
 #: FbFrameAuthor.cpp:346 FbFrameBase.cpp:262 FbFrameSequen.cpp:419
 #: FbMainMenu.cpp:44
-msgid "Library"
+msgid "&Library"
 msgstr "Библиотека"
 
 #: FbFrameAuthor.cpp:347 FbFrameBase.cpp:263 FbFrameSequen.cpp:420
 #: FbMainMenu.cpp:45
-msgid "Catalog"
+msgid "&Catalog"
 msgstr "Картотека"
 
 #: FbFrameAuthor.cpp:349 FbFrameBase.cpp:264 FbFrameSequen.cpp:422
-msgid "Books"
+msgid "&Books"
 msgstr "Книги"
 
 #: FbFrameAuthor.cpp:350 FbFrameBase.cpp:265 FbFrameSequen.cpp:423
 #: FbMainMenu.cpp:46
-msgid "Appearance"
+msgid "&View"
 msgstr "Вид"
 
 #: FbFrameAuthor.cpp:351 FbFrameBase.cpp:266 FbFrameSequen.cpp:424
 #: FbMainMenu.cpp:47
-msgid "Service"
+msgid "&Tools"
 msgstr "Сервис"
 
 #: FbFrameAuthor.cpp:352 FbFrameBase.cpp:267 FbFrameSequen.cpp:425
-msgid "Window"
+msgid "&Window"
 msgstr "Окно"
 
 #: FbFrameAuthor.cpp:353 FbFrameBase.cpp:268 FbFrameSequen.cpp:426
 #: FbMainMenu.cpp:48
-msgid "?"
+msgid "&?"
 msgstr "?"
 
 #: FbFrameAuthor.cpp:379
@@ -457,7 +465,7 @@ msgstr "Русский алфавит"
 
 #: FbFrameAuthor.cpp:380
 msgid "Latin alphabet"
-msgstr "Английский алфавит"
+msgstr "Латинский алфавит"
 
 #: FbFrameBase.cpp:190 FbFrameDownld.cpp:64 FbFrameSequen.cpp:80
 #: FbMainFrame.cpp:291 SettingsDlg.cpp:326
