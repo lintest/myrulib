@@ -34,7 +34,7 @@ FbEditBookDlg::FbEditBookDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	AppenTitle(fgSizerGrid);
 
 	AppenItem(fgSizerGrid, ID_AUTHOR_CHECK,   _("Author"));
-	AppenItem(fgSizerGrid, ID_SEQUENCE_CHECK, _("Серия"));
+	AppenItem(fgSizerGrid, ID_SEQUENCE_CHECK, _("Series"));
 	AppenItem(fgSizerGrid, ID_GENRE_CHECK,    _("Genre"));
 
 	bSizerMain->Add( fgSizerGrid, 1, wxEXPAND, 5 );
@@ -64,7 +64,7 @@ FbEditBookDlg::~FbEditBookDlg()
 
 void FbEditBookDlg::AppenTitle(wxFlexGridSizer * sizer)
 {
-	wxCheckBox * cbTitle = new wxCheckBox( this, ID_TITLE_CHECK, _("Заголовок"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * cbTitle = new wxCheckBox( this, ID_TITLE_CHECK, _("Title"), wxDefaultPosition, wxDefaultSize, 0 );
 	sizer->Add( cbTitle, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	wxTextCtrl * tcTitle = new wxTextCtrl( this, ID_TITLE_EDIT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );

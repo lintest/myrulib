@@ -208,10 +208,11 @@ void FbFrameSequen::ShowFullScreen(bool show)
 
 FbFrameSequen::MasterMenu::MasterMenu(int id)
 {
-	Append(ID_MASTER_APPEND, _("Добавить"));
+	Append(ID_MASTER_APPEND,  _("Append"));
 	if (id == 0) return;
-	Append(ID_MASTER_MODIFY, _("Изменить"));
-	Append(ID_MASTER_DELETE, _("Удалить"));
+	Append(ID_MASTER_MODIFY,  _("Modify"));
+	Append(ID_MASTER_REPLACE, _("Replace"));
+	Append(ID_MASTER_DELETE,  _("Delete"));
 }
 
 void FbFrameSequen::OnContextMenu(wxTreeEvent& event)
@@ -428,9 +429,10 @@ FbFrameSequen::MenuBar::MenuBar()
 
 FbFrameSequen::MenuMaster::MenuMaster()
 {
-	Append(ID_MASTER_APPEND, _("Добавить"));
-	Append(ID_MASTER_MODIFY, _("Изменить"));
-	Append(ID_MASTER_DELETE, _("Удалить"));
+	Append(ID_MASTER_APPEND,  _("Append"));
+	Append(ID_MASTER_MODIFY,  _("Modify"));
+	Append(ID_MASTER_REPLACE, _("Replace"));
+	Append(ID_MASTER_DELETE,  _("Delete"));
 }
 
 wxMenuBar * FbFrameSequen::CreateMenuBar()

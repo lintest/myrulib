@@ -9,7 +9,7 @@ FbFilterList::FbFilterList(wxWindow *parent, wxWindowID id, const wxString &titl
 	SetFont( FbParams::GetFont(FB_FONT_DLG) );
 	AddColumn (title, 10, wxALIGN_LEFT);
 	SetMinSize( wxSize(100, 100) );
-	SetItemBold( AddRoot(_("Все"), 0), true );
+	SetItemBold( AddRoot(_("All"), 0), true );
 }
 
 int FbFilterList::Append(wxTreeItemId parent, wxString &text, const wxString & filter)
@@ -93,7 +93,7 @@ BEGIN_EVENT_TABLE( FbFilterDlg, wxDialog )
 END_EVENT_TABLE()
 
 FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
-	: FbDialog( NULL, wxID_ANY, _("Настройка фильтра"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+	: FbDialog( NULL, wxID_ANY, _("Filter settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -101,13 +101,13 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxStaticBoxSizer* sbSizerOwner;
-	sbSizerOwner = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Отбор книг по принадлежности") ), wxHORIZONTAL );
+	sbSizerOwner = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Show books by allocation") ), wxHORIZONTAL );
 
-	m_checkLib = new wxCheckBox( this, ID_CHECK_LIB, _("Библиотечные"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkLib = new wxCheckBox( this, ID_CHECK_LIB, _("Library books (web)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_checkLib->SetValue( filter.m_lib );
 	sbSizerOwner->Add( m_checkLib, 0, wxALL|wxEXPAND, 5 );
 
-	m_checkUsr = new wxCheckBox( this, ID_CHECK_USR, _("Собственные"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkUsr = new wxCheckBox( this, ID_CHECK_USR, _("Local books"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_checkUsr->SetValue( filter.m_usr );
 	sbSizerOwner->Add( m_checkUsr, 0, wxALL|wxEXPAND, 5 );
 
@@ -119,7 +119,7 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	m_treeLang = new FbFilterList(this, ID_TREE_LANG, _("Language"));
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	m_treeType = new FbFilterList(this, ID_TREE_TYPE, _("Тип файла"));
+	m_treeType = new FbFilterList(this, ID_TREE_TYPE, _("File extension"));
 	bSizerList->Add( m_treeType, 1, wxEXPAND|wxALL, 5 );
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );

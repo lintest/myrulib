@@ -339,82 +339,84 @@ msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
 msgstr "Файл базы (*.db)|*.db|Усі файлы (*.*)|*.*"
 
 #: FbDownloader.cpp:136
-msgid "Загрузка файла"
+msgid "File download"
 msgstr "Загрузка файла"
 
 #: FbEditBook.cpp:37 FbFrameSequen.cpp:61
-msgid "Серия"
+msgid "Series"
 msgstr "Серыя"
 
+#: FbFilterDlg.cpp:12
+msgid "All"
+msgstr "Усе"
+
 #: FbFilterDlg.cpp:96
-msgid "Настройка фильтра"
+msgid "Filter settings"
 msgstr "Наладка фільтру"
 
 #: FbFilterDlg.cpp:104
-msgid "Отбор книг по принадлежности"
+msgid "Show books by allocation"
 msgstr "Адбор кніг па прыналежнасці"
 
 #: FbFilterDlg.cpp:106
-msgid "Библиотечные"
+msgid "Library books (web)"
 msgstr "Бібліятэчныя"
 
 #: FbFilterDlg.cpp:110
-msgid "Собственные"
+msgid "Local books"
 msgstr "Уласныя"
 
 #: FbFilterDlg.cpp:122
-msgid "Тип файла"
+msgid "File extension"
 msgstr "Тып файла"
 
 #: FbFrameAuthor.cpp:37 FbFrameAuthor.cpp:348 FbMainMenu.cpp:8
-msgid "Авторы"
+msgid "Authors"
 msgstr "Аўтары"
 
 #: FbFrameAuthor.cpp:61 FbFrameSequen.cpp:62 FbReplaceDlg.cpp:60
-msgid "Кол."
+msgid "Num."
 msgstr "Колькасць"
 
 #: FbFrameAuthor.cpp:78
-msgid "Все авторы коллекции"
+msgid "All collected authors"
 msgstr "Усі аўтары калекцыі"
 
 #: FbFrameAuthor.cpp:309
-msgid "Удалить автора: "
+msgid "Delete author"
 msgstr "Знішчыць аўтара:"
 
 #: FbFrameAuthor.cpp:310
 #, c-format
-msgid ""
-"\n"
-"и все его книги в количестве %d шт.?"
+msgid "and all of author's books (%d pcs.)?"
 msgstr "і ўсі яго кнігі у колькасці %d шт.?"
 
 #: FbFrameAuthor.cpp:311 FbFrameSequen.cpp:407
-msgid "Удаление"
+msgid "Removing"
 msgstr "Знішчэнне"
 
 #: FbFrameAuthor.cpp:332 FbFrameAuthor.cpp:358 FbFrameFolder.cpp:36
 #: FbFrameSequen.cpp:211 FbFrameSequen.cpp:431 SettingsDlg.cpp:167
-msgid "Добавить"
+msgid "Append"
 msgstr "Дадаць"
 
 #: FbFrameAuthor.cpp:334 FbFrameAuthor.cpp:359 FbFrameFolder.cpp:37
 #: FbFrameSequen.cpp:213 FbFrameSequen.cpp:432 SettingsDlg.cpp:168
-msgid "Изменить"
+msgid "Modify"
 msgstr "Змяніць"
 
 #: FbFrameAuthor.cpp:335 FbFrameAuthor.cpp:360
-msgid "Заменить"
+msgid "Replace"
 msgstr "Замяніць"
 
 #: FbFrameAuthor.cpp:336 FbFrameAuthor.cpp:361 FbFrameDownld.cpp:72
 #: FbFrameFolder.cpp:38 FbFrameSequen.cpp:214 FbFrameSequen.cpp:433
 #: SettingsDlg.cpp:169
-msgid "Удалить"
+msgid "Delete"
 msgstr "Знішчыць"
 
 #: FbFrameAuthor.cpp:339 FbFrameAuthor.cpp:363
-msgid "Страница автора"
+msgid "Online authors page"
 msgstr "Старонка аўтару"
 
 #: FbFrameAuthor.cpp:345 FbFrameBase.cpp:261 FbFrameSequen.cpp:418

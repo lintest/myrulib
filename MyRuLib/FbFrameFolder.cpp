@@ -33,9 +33,9 @@ void FbFrameFolder::CreateControls()
 
 	m_FolderBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
 	m_FolderBar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_FolderBar->AddTool( ID_APPEND_FOLDER, _("Добавить"), wxNullBitmap);
-	m_FolderBar->AddTool( ID_MODIFY_FOLDER, _("Изменить"), wxNullBitmap);
-	m_FolderBar->AddTool( ID_DELETE_FOLDER, _("Удалить"), wxNullBitmap);
+	m_FolderBar->AddTool( ID_APPEND_FOLDER, _("Append"), wxNullBitmap);
+	m_FolderBar->AddTool( ID_MODIFY_FOLDER, _("Modify"), wxNullBitmap);
+	m_FolderBar->AddTool( ID_DELETE_FOLDER, _("Delete"), wxNullBitmap);
 	m_FolderBar->Realize();
 	bToolSizer->Add( m_FolderBar, 0, wxALIGN_CENTER_VERTICAL);
 

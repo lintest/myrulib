@@ -340,8 +340,12 @@ msgstr "Загрузка файла"
 msgid "Series"
 msgstr "Серия"
 
+#: FbFilterDlg.cpp:12
+msgid "All"
+msgstr "Все"
+
 #: FbFilterDlg.cpp:96
-msgid "Filter Settings"
+msgid "Filter settings"
 msgstr "Настройка фильтра"
 
 #: FbFilterDlg.cpp:104
@@ -357,7 +361,7 @@ msgid "Local books"
 msgstr "Собственные"
 
 #: FbFilterDlg.cpp:122
-msgid "File type"
+msgid "File extension"
 msgstr "Тип файла"
 
 #: FbFrameAuthor.cpp:37 FbFrameAuthor.cpp:348 FbMainMenu.cpp:8
@@ -374,29 +378,25 @@ msgstr "Все авторы коллекции"
 
 #: FbFrameAuthor.cpp:309
 msgid "Delete author"
-msgstr "Удалить автора: "
+msgstr "Удалить автора"
 
 #: FbFrameAuthor.cpp:310
 #, c-format
-msgid ""
-"\n"
-"...and all of author's books (%d pcs.)?"
-msgstr ""
-"\n"
-"и все его книги в количестве %d шт.?"
+msgid "and all of author's books (%d pcs.)?"
+msgstr "и все его книги в количестве %d шт.?"
 
 #: FbFrameAuthor.cpp:311 FbFrameSequen.cpp:407
-msgid "Removing in progress"
+msgid "Removing"
 msgstr "Удаление"
 
 #: FbFrameAuthor.cpp:332 FbFrameAuthor.cpp:358 FbFrameFolder.cpp:36
 #: FbFrameSequen.cpp:211 FbFrameSequen.cpp:431 SettingsDlg.cpp:167
-msgid "Add"
+msgid "Append"
 msgstr "Добавить"
 
 #: FbFrameAuthor.cpp:334 FbFrameAuthor.cpp:359 FbFrameFolder.cpp:37
 #: FbFrameSequen.cpp:213 FbFrameSequen.cpp:432 SettingsDlg.cpp:168
-msgid "Change"
+msgid "Modify"
 msgstr "Изменить"
 
 #: FbFrameAuthor.cpp:335 FbFrameAuthor.cpp:360
@@ -410,7 +410,7 @@ msgid "Delete"
 msgstr "Удалить"
 
 #: FbFrameAuthor.cpp:339 FbFrameAuthor.cpp:363
-msgid "Author's website"
+msgid "Online authors page"
 msgstr "Страница автора"
 
 #: FbFrameAuthor.cpp:345 FbFrameBase.cpp:261 FbFrameSequen.cpp:418

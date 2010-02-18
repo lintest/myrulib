@@ -86,7 +86,7 @@ bool FbInternetBook::DoDownload()
 	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
-		wxLogInfo(_("Redirect: ") + m_url);
+		wxLogInfo(_("Redirect") + COLON + m_url);
 		return DownloadUrl(cookie);
 	}
 
@@ -99,7 +99,7 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 {
 	FbURL url(m_url);
 	if (url.GetError() != wxURL_NOERR) {
-		wxLogError(_("URL error: ") + m_url);
+		wxLogError(_("URL error") + COLON + m_url);
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
@@ -107,12 +107,12 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 
 	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
-		wxLogError(_("Connect error: ") + m_url);
+		wxLogError(_("Connect error") + COLON + m_url);
 		return false;
 	}
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
- 		wxLogInfo(_("Redirect: ") + m_url);
+ 		wxLogInfo(_("Redirect") + COLON + m_url);
 		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
@@ -133,7 +133,7 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 	md5_context md5;
 	md5_starts( &md5 );
 	do {
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos/(size/1000), _("Загрузка файла")).Post();
+		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos/(size/1000), _("File download")).Post();
 		count = in->Read(buf, BUFSIZE).LastRead();
 		if ( count ) md5_update( &md5, buf, (int) count );
 		if ( pos==0 && count>1 && buf[0]=='P' && buf[1]=='K') zipped = true;

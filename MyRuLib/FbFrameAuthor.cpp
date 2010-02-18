@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_AUTHOR, _("Авторы"))
+	:FbFrameBase(parent, ID_FRAME_AUTHOR, _("Authors"))
 {
 	CreateControls();
 }
@@ -58,7 +58,7 @@ void FbFrameAuthor::CreateControls()
 
 	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
 	m_MasterList->AddColumn(_("Author"), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(_("Num."), 10, wxALIGN_RIGHT);
 	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);
 
@@ -75,7 +75,7 @@ void FbFrameAuthor::CreateControls()
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style)
 {
 	wxToolBar * toolBar = new wxToolBar(parent, id, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS|style);
-	if (toolid == ID_LETTER_EN) toolBar->AddTool(ID_LETTER_ALL, wxT("*"), wxNullBitmap, wxNullBitmap, wxITEM_CHECK, _("Все авторы коллекции"));
+	if (toolid == ID_LETTER_EN) toolBar->AddTool(ID_LETTER_ALL, wxT("*"), wxNullBitmap, wxNullBitmap, wxITEM_CHECK, _("All collected authors"));
 	for (size_t i = 0; i<alphabet.Len(); i++) {
 		wxString letter = alphabet.Mid(i, 1);
 		int btnid = toolid + i;
@@ -306,9 +306,9 @@ void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 	int count = result.NextRow() ? result.GetInt(0) : 0;
 
 	wxTreeItemId selected = m_MasterList->GetSelection();
-	wxString msg = _("Удалить автора: ") + m_MasterList->GetItemText(selected);
-	if (count) msg += wxString::Format(_("\nи все его книги в количестве %d шт.?"), count);
-	bool ok = wxMessageBox(msg, _("Удаление"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	wxString msg = _("Delete author") + COLON + m_MasterList->GetItemText(selected);
+	if (count) msg += (wxString)wxT("\n") +  wxString::Format(_("and all of author's books (%d pcs.)?"), count);
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (ok) {
 		wxString sql1 = wxString::Format(wxT("DELETE FROM books WHERE id_author=%d"), id);
 		wxString sql2 = wxString::Format(wxT("DELETE FROM authors WHERE id=%d"), id);
@@ -329,14 +329,14 @@ void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)
 
 FbFrameAuthor::MasterMenu::MasterMenu(int id)
 {
-	Append(ID_MASTER_APPEND,  _("Добавить"));
+	Append(ID_MASTER_APPEND,  _("Append"));
 	if (id == 0) return;
-	Append(ID_MASTER_MODIFY,  _("Изменить"));
-	Append(ID_MASTER_REPLACE, _("Заменить"));
-	Append(ID_MASTER_DELETE,  _("Удалить"));
+	Append(ID_MASTER_MODIFY,  _("Modify"));
+	Append(ID_MASTER_REPLACE, _("Replace"));
+	Append(ID_MASTER_DELETE,  _("Delete"));
 	if (id > 0) {
 		AppendSeparator();
-		Append(ID_MASTER_PAGE, _("Страница автора"));
+		Append(ID_MASTER_PAGE, _("Online authors page"));
 	}
 }
 
@@ -355,12 +355,12 @@ FbFrameAuthor::MenuBar::MenuBar()
 
 FbFrameAuthor::MenuMaster::MenuMaster()
 {
-	Append(ID_MASTER_APPEND,  _("Добавить"));
-	Append(ID_MASTER_MODIFY,  _("Изменить"));
-	Append(ID_MASTER_REPLACE, _("Заменить"));
-	Append(ID_MASTER_DELETE,  _("Удалить"));
+	Append(ID_MASTER_APPEND,  _("Append"));
+	Append(ID_MASTER_MODIFY,  _("Modify"));
+	Append(ID_MASTER_REPLACE, _("Replace"));
+	Append(ID_MASTER_DELETE,  _("Delete"));
 	AppendSeparator();
-	Append(ID_MASTER_PAGE, _("Страница автора"));
+	Append(ID_MASTER_PAGE, _("Online authors page"));
 }
 
 wxMenuBar * FbFrameAuthor::CreateMenuBar()
