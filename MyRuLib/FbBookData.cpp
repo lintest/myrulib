@@ -85,7 +85,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		delete ft;
 	}
 
-	wxString msg = _("Associated application not found") + wxT(": ") + m_filetype;
+	wxString msg = _("Associated application not found") + COLON + m_filetype;
 	wxMessageBox(msg);
 }
 

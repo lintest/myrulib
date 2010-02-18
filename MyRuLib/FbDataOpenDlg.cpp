@@ -27,7 +27,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	wxBoxSizer* bSizerFile;
 	bSizerFile = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * m_FileText = new wxStaticText( this, wxID_ANY, _("Имя файла:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_FileText = new wxStaticText( this, wxID_ANY, _("File name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FileText->Wrap( -1 );
 	bSizerFile->Add( m_FileText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -60,17 +60,17 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 
 wxString FbDataOpenDlg::GetTitle() const
 {
-	return strProgramName + wxT(" - ") + _("Открыть (создать) коллекцию");
+	return strProgramName + wxT(" - ") + _("Open (or create) collection");
 }
 
 void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )
 {
 	wxFileDialog dlg (
 		this,
-		_("Выберите имя файла коллекции…"),
+		_("Enter collection filename"),
 		wxEmptyString,
 		m_FileBox->GetValue(),
-		_("Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"),
+		_("Database file (*.db)|*.db|All files (*.*)|*.*"),
 		wxFD_OPEN,
 		wxDefaultPosition
 	);

@@ -326,7 +326,7 @@ msgstr "Открыть (создать) коллекцию"
 
 #: FbDataOpenDlg.cpp:70
 msgid "Enter collection filename"
-msgstr "Выберите имя файла коллекции…"
+msgstr "Выберите имя файла коллекции"
 
 #: FbDataOpenDlg.cpp:73
 msgid "Database file (*.db)|*.db|All files (*.*)|*.*"

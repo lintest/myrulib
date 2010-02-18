@@ -146,4 +146,6 @@ extern const wxString strRating [];
 extern const wxString strUpdateAuthorCount;
 extern const wxString strUpdateSequenCount;
 
+#define COLON wxString(wxT(": "))
+
 #endif // __FBCONST_H__

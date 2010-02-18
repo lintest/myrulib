@@ -12,7 +12,7 @@ WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
 FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	: m_id(id)
 {
-	Append(ID_OPEN_BOOK, _("Открыть книгу" + wxT("\tEnter")));
+	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
 	if (data.GetType() == FT_DOWNLOAD) {
 		Append(ID_DELETE_DOWNLOAD, _("Delete download query"));
 		if ( data.GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
@@ -23,7 +23,7 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	if ( id>0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
 
-	Append(wxID_SELECTALL, _("Select all") + wxT("\tCtrl+A"));
+	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();

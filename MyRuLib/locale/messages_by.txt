@@ -323,19 +323,19 @@ msgid "Need a new version %d, but used the old %d."
 msgstr "Патрэбна новая версія %d, але выкарыстоўваецца старая %d."
 
 #: FbDataOpenDlg.cpp:30
-msgid "Имя файла:"
+msgid "File name:"
 msgstr "Імя файла:"
 
 #: FbDataOpenDlg.cpp:63 FbMainMenu.cpp:20
-msgid "Открыть (создать) коллекцию"
+msgid "Open (or create) collection"
 msgstr "Адчыніць (стварыць) калекцыю"
 
 #: FbDataOpenDlg.cpp:70
-msgid "Выберите имя файла коллекции…"
-msgstr "Абярыце імя файла калекцыі:"
+msgid "Enter collection filename"
+msgstr "Абярыце імя файла калекцыі"
 
 #: FbDataOpenDlg.cpp:73
-msgid "Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"
+msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
 msgstr "Файл базы (*.db)|*.db|Усі файлы (*.*)|*.*"
 
 #: FbDownloader.cpp:136

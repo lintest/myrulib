@@ -282,7 +282,7 @@ void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
 FbSearchFunction::FbSearchFunction(const wxString & input)
 {
 	Decompose(input, m_masks);
-	wxString log = _("Search template") + wxT(": ");
+	wxString log = _("Search template") + COLON;
 	size_t count = m_masks.Count();
 	for (size_t i=0; i<count; i++) {
 		log += wxString::Format(wxT("<%s> "), m_masks[i].c_str());
@@ -421,11 +421,11 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	bool bExists = wxFileExists(filename);
 
 	if (bExists)
-		wxLogInfo(_("Open database") + wxT(": ") + filename.c_str());
+		wxLogInfo(_("Open database") + COLON + filename.c_str());
 	else {
 	    wxString info = _("Create new database");
-		wxLogInfo(info + wxT(": ") + filename.c_str());
-		wxString msg = strProgramName + wxT(" - ") + info + wxT("\n") + filename;
+		wxLogInfo(info + (wxString)wxT(": ") + filename.c_str());
+		wxString msg = strProgramName + (wxString)wxT(" - ") + info + (wxString)wxT("\n") + filename;
 		wxMessageBox(msg);
 	}
 
@@ -530,8 +530,8 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 	if (old_version != new_version) {
 	    wxString msg = _("Database version mismatch");
 		wxMessageBox(msg, strProgramName, wxOK | wxICON_ERROR);
-		msg += wxT(". ") + _("Need a new version %d, but used the old %d.");
-		wxLogFatalError(msg, new_version, old_version);
+		wxLogError(msg);
+		wxLogFatalError(_("Need a new version %d, but used the old %d."), new_version, old_version);
 	}
 }
 

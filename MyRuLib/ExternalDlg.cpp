@@ -479,18 +479,18 @@ bool ExternalDlg::ExportBooks()
 {
 	wxString root_dir = m_textDir->GetValue();
 	if (!wxFileName::DirExists(root_dir)) {
-		wxMessageBox(_("Destination folder not found") + wxT(": ") + root_dir);
+		wxMessageBox(_("Destination folder not found") + COLON + root_dir);
 		return false;
 	}
 	if (!wxFileName::IsDirWritable(root_dir)) {
-		wxMessageBox(_("Unable write files to destination folder") + wxT(": ") +  + root_dir);
+		wxMessageBox(_("Unable write files to destination folder") + COLON + root_dir);
 		return false;
 	}
 
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
 	ExportThread *thread = new ExportThread(m_choiceFormat->GetCurrentSelection());
 	FillFilelist(m_books->GetRootItem(), thread->m_filelist);
-	thread->m_info = _("Export") + wxT(": ") + root_dir;
+	thread->m_info = _("Export") + COLON + root_dir;
 	return thread->Execute();
 }
 

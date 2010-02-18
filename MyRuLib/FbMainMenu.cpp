@@ -75,7 +75,7 @@ FbFrameMenu::MenuFile::MenuFile()
 
 FbFrameMenu::MenuBook::MenuBook()
 {
-	Append(wxID_SELECTALL, _("Select all") + wxT("\tCtrl+A"));
+	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	AppendSeparator();
 	Append(ID_ORDER_MENU, _("Sort by"), new FbMenuSort());
