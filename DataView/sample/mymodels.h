@@ -14,7 +14,16 @@
 // MyMusicTreeModelNode: a node inside MyMusicTreeModel
 // ----------------------------------------------------------------------------
 
+
+#define wxUSE_VARIANT 0
+#define wxUSE_STL 1
+#define WXWIN_COMPATIBILITY_2_8 1
+
+#include "../sources/wx/headercol.h"
 #include "../sources/wx/dataview.h"
+#include "../sources/wx/headercol.h"
+#include "../sources/wx/tracker.h"
+#include "../sources/wx/weakref.h"
 
 class MyMusicTreeModelNode;
 WX_DEFINE_ARRAY_PTR( MyMusicTreeModelNode*, MyMusicTreeModelNodePtrArray );

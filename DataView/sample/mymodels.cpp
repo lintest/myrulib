@@ -21,7 +21,6 @@
     #include "wx/wx.h"
 #endif
 
-#include "../sources/wx/dataview.h"
 #include "mymodels.h"
 
 // ----------------------------------------------------------------------------

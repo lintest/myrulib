@@ -8,8 +8,8 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_WEAKREF_H_
-#define _WX_WEAKREF_H_
+#ifndef _WX_WEAKREF_H_XX
+#define _WX_WEAKREF_H_XX
 
 #include "wx/tracker.h"
 

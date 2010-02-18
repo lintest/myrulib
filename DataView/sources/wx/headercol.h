@@ -8,12 +8,12 @@
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_HEADERCOL_H_
-#define _WX_HEADERCOL_H_
+#ifndef _WX_HEADERCOL_H_XX
+#define _WX_HEADERCOL_H_XX
 
 #include "wx/bitmap.h"
 
-#if wxUSE_HEADERCTRL
+#if wxUSE_HEADERCTRL==0
 
 // ----------------------------------------------------------------------------
 // constants
