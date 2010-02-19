@@ -44,11 +44,18 @@
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
-	
+
+	<mkdir id="locale_dir"> 
+		<dir>$(BUILDDIR)/ru</dir>
+		<dir>$(BUILDDIR)/ua</dir>
+		<dir>$(BUILDDIR)/by</dir>
+	</mkdir>
+
 	<action id="locale">
-		<command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/myrulib_ru.mo</command>
-		<command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/myrulib_ua.mo</command>
-		<command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/myrulib_by.mo</command>
+		<depends>locale_dir</depends>
+		<command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/ru/myrulib.mo</command>
+		<command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/ua/myrulib.mo</command>
+		<command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/by/myrulib.mo</command>
 		<depends-on-file>MyRuLib/locale/ru.po</depends-on-file>
 		<depends-on-file>MyRuLib/locale/ua.po</depends-on-file>
 		<depends-on-file>MyRuLib/locale/by.po</depends-on-file>

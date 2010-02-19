@@ -201,10 +201,15 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-locale: MyRuLib/locale/ru.po MyRuLib/locale/ua.po MyRuLib/locale/by.po
-	msgfmt MyRuLib/locale/ru.po -o build/myrulib_ru.mo
-	msgfmt MyRuLib/locale/ua.po -o build/myrulib_ua.mo
-	msgfmt MyRuLib/locale/by.po -o build/myrulib_by.mo
+build/by: 
+	@mkdir -p build/ru
+	@mkdir -p build/ua
+	@mkdir -p build/by
+
+locale: build/by MyRuLib/locale/ru.po MyRuLib/locale/ua.po MyRuLib/locale/by.po
+	msgfmt MyRuLib/locale/ru.po -o build/ru/myrulib.mo
+	msgfmt MyRuLib/locale/ua.po -o build/ua/myrulib.mo
+	msgfmt MyRuLib/locale/by.po -o build/by/myrulib.mo
 
 build/myrulib: $(MYRULIB_OBJECTS) locale build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`

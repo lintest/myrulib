@@ -25,7 +25,12 @@ IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
-    m_locale.AddCatalog(wxT("myrulib_ru"));
+	wxString appname = GetAppName();
+	if (appname.IsEmpty()) appname = wxT("myrulib");
+
+    m_locale.Init();
+//	m_locale.AddCatalogLookupPathPrefix(wxT("/usr/share/locale/"));
+    m_locale.AddCatalog(appname);
 
 	FbConfigDatabase config;
 	config.Open();
