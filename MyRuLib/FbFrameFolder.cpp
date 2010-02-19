@@ -50,7 +50,7 @@ void FbFrameFolder::CreateControls()
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
 	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
-	m_MasterList->AddColumn (_("Папки"), 100, wxALIGN_LEFT);
+	m_MasterList->AddColumn (_("Folders"), 100, wxALIGN_LEFT);
 	m_MasterList->SetFocus();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;

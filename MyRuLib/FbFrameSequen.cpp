@@ -77,7 +77,7 @@ wxToolBar * FbFrameSequen::CreateToolBar(long style, wxWindowID winid, const wxS
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
 	toolbar->AddTool(ID_SEQUENCE_BTN, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Найти серию по наименованию"));
-	toolbar->AddTool(wxID_SAVE, _("Экспорт"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Запись на внешнее устройство"));
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 	toolbar->Realize();
 	return toolbar;
 }

@@ -5,14 +5,14 @@ FbMenuBar::MenuFrame::MenuFrame()
 {
 	AppendImg(ID_MENU_SEARCH, _("Поиск"), wxART_FIND);
 	AppendSeparator();
-	Append(ID_FRAME_AUTHOR, _("Авторы"));
+	Append(ID_FRAME_AUTHOR, _("Authors"));
 	Append(ID_FRAME_GENRES, _("Жанры"));
 	Append(ID_FRAME_SEQUEN, _("Серии"));
 	Append(ID_FRAME_DATE,   _("Календарь"));
-	Append(ID_FRAME_ARCH,   _("Архив"));
+	Append(ID_FRAME_ARCH,   _("Archive"));
 	AppendSeparator();
 	Append(ID_FRAME_FOLDER, _("Мои папки"));
-	Append(ID_FRAME_DOWNLD, _("Загрузки"));
+	Append(ID_FRAME_DOWNLD, _("Downloads"));
 }
 
 FbMenuBar::MenuLib::MenuLib()

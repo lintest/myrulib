@@ -376,8 +376,8 @@ void FbFrameAuthor::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 
 FbFrameAuthor::MenuBar::MenuView::MenuView()
 {
-	InsertCheckItem(0, ID_ALPHABET_RU, _("Русский алфавит"));
-	InsertCheckItem(1, ID_ALPHABET_EN, _("Английский алфавит"));
+	InsertCheckItem(0, ID_ALPHABET_RU, _("Russian aplhabet"));
+	InsertCheckItem(1, ID_ALPHABET_EN, _("Latin alphabet"));
 	InsertSeparator(2);
 }
 
