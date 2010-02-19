@@ -45,8 +45,19 @@
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
 	
+	<action id="locale">
+		<command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/myrulib_ru.mo</command>
+		<command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/myrulib_ua.mo</command>
+		<command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/myrulib_by.mo</command>
+		<depends-on-file>MyRuLib/locale/ru.po</depends-on-file>
+		<depends-on-file>MyRuLib/locale/ua.po</depends-on-file>
+		<depends-on-file>MyRuLib/locale/by.po</depends-on-file>
+		<is-phony/>
+	</action>
+
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
+		<depends>locale</depends>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
@@ -141,12 +152,6 @@
 		<install-to cond="FORMAT=='gnu'">$(BINDIR)</install-to>
 	</exe>
 	
-	<action id="locale">
-	  <command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/myrulib_ru.mo</command>
-	  <command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/myrulib_ua.mo</command>
-	  <command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/myrulib_by.mo</command>
-	</action>
-
 	<if cond="FORMAT=='gnu'">
 		<data-files> 
 			<srcdir>MyRuLib/desktop</srcdir>

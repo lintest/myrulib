@@ -201,7 +201,12 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
+locale: MyRuLib/locale/ru.po MyRuLib/locale/ua.po MyRuLib/locale/by.po
+	msgfmt MyRuLib/locale/ru.po -o build/myrulib_ru.mo
+	msgfmt MyRuLib/locale/ua.po -o build/myrulib_ua.mo
+	msgfmt MyRuLib/locale/by.po -o build/myrulib_by.mo
+
+build/myrulib: $(MYRULIB_OBJECTS) locale build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip ./build/myrulib
 
@@ -211,11 +216,6 @@ install_myrulib: build/myrulib
 
 uninstall_myrulib: 
 	rm -f $(DESTDIR)/usr/bin/myrulib
-
-locale: 
-	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
-	msgfmt MyRuLib/locale/ua.po -o build/ua.mo
-	msgfmt MyRuLib/locale/by.po -o build/by.mo
 
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
@@ -406,7 +406,7 @@ build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean install_myrulib uninstall_myrulib
+.PHONY: all install uninstall clean locale install_myrulib uninstall_myrulib
 
 
 # Dependencies tracking:
