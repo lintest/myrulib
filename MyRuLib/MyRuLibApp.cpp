@@ -25,7 +25,7 @@ IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
-    m_locale.AddCatalog(wxT("mylib_ru"));
+    m_locale.AddCatalog(wxT("myrulib_ru"));
 
 	FbConfigDatabase config;
 	config.Open();

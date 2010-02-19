@@ -268,9 +268,9 @@ build\myrulib.exe: $(MYRULIB_OBJECTS) build\libwxsqlite3_static.a build\myrulib_
 	strip ./build/myrulib.exe
 
 locale: 
-	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
-	msgfmt MyRuLib/locale/ua.po -o build/ua.mo
-	msgfmt MyRuLib/locale/by.po -o build/by.mo
+	msgfmt MyRuLib/locale/ru.po -o build/myrulib_ru.mo
+	msgfmt MyRuLib/locale/ua.po -o build/myrulib_ua.mo
+	msgfmt MyRuLib/locale/by.po -o build/myrulib_by.mo
 
 build\expat_static_xmlparse.o: ./Expat/xmlparse.c
 	$(CC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(CPPDEPS) $<

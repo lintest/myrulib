@@ -142,9 +142,9 @@
 	</exe>
 	
 	<action id="locale">
-	  <command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/ru.mo</command>
-	  <command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/ua.mo</command>
-	  <command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/by.mo</command>
+	  <command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/myrulib_ru.mo</command>
+	  <command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/myrulib_ua.mo</command>
+	  <command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/myrulib_by.mo</command>
 	</action>
 
 	<if cond="FORMAT=='gnu'">

@@ -577,7 +577,7 @@ msgstr "Змінити каталог?"
 #: FbFrameFolder.cpp:199
 #, c-format
 msgid "Удалить папку «%s»?"
-msgstr "Видалити каталог "%s"?"
+msgstr "Видалити каталог \"%s\"?"
 
 #: FbFrameFolder.cpp:200
 msgid "Удалить папку?"
@@ -675,12 +675,12 @@ msgstr "Інформація про колекцію"
 #: FbFrameSearch.cpp:43
 #, c-format
 msgid "Поиск: «%s»"
-msgstr "Пошук: "%s""
+msgstr "Пошук: \"%s\""
 
 #: FbFrameSearch.cpp:59
 #, c-format
 msgid "Ничего не найдено по шаблону «%s»"
-msgstr "Нічого не знайдено по шаблону "%s""
+msgstr "Нічого не знайдено по шаблону \"%s\""
 
 #: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
 msgid "Найти"
@@ -717,7 +717,7 @@ msgstr ""
 #: FbFrameSequen.cpp:406
 #, c-format
 msgid "Удалить серию «%s»?"
-msgstr "Видалити серію "%s"?"
+msgstr "Видалити серію \"%s\"?"
 
 #: FbGenres.cpp:17
 msgid "Фантастика"
