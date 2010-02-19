@@ -8,7 +8,7 @@ BEGIN_EVENT_TABLE( FbViewerDlg, FbDialog )
 END_EVENT_TABLE()
 
 FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString& value )
-	: FbDialog( parent, wxID_ANY, _("Настройка"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+	: FbDialog( parent, wxID_ANY, _("Customize"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 

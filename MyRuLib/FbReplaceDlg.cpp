@@ -103,7 +103,7 @@ void FbReplaceDlg::EndModal(int retCode)
 	if ( retCode == wxID_OK) {
 		int author = GetSelected();
 		if (author) {
-			wxString msg = _("Объединить двух авторов?");
+			wxString msg = _("Merge authors?");
 			wxString title = GetTitle() + wxT("…");
 			bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 			if (!ok) return;

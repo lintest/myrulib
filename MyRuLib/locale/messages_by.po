@@ -108,9 +108,7 @@ msgid "Autor with same details aleready exists"
 msgstr "Аўтар з такімі рэквізітамі ужо існуе"
 
 #: FbAuthorDlg.cpp:171
-msgid ""
-"\n"
-"Объединить двух авторов?"
+msgid "Merge authors?"
 msgstr "Аб'яднаць двух автораў?"
 
 #: FbBookData.cpp:45
@@ -487,7 +485,7 @@ msgstr "Запіс на знешнюю прыладу"
 
 #: FbFrameBase.cpp:210
 msgid "book"
-msgid_plural "book"
+msgid_plural "books"
 msgstr[0] "кніга"
 msgstr[1] "кнігі"
 msgstr[2] "кніг"
@@ -1526,10 +1524,6 @@ msgstr "Замяніць:"
 msgid "Найти:"
 msgstr "Знайсці:"
 
-#: FbReplaceDlg.cpp:106
-msgid "Объединить двух авторов?"
-msgstr "Аб'яднаць двух аўтараў?"
-
 #: FbReplaceDlg.cpp:111
 msgid "Не выбран автор для замены."
 msgstr "Не адзначаны аўтар для заменты"
@@ -1539,7 +1533,7 @@ msgid "Заменить автора"
 msgstr "Замяніць аўтара"
 
 #: FbViewerDlg.cpp:11
-msgid "Настройка"
+msgid "Customize"
 msgstr "Наладка"
 
 #: FbViewerDlg.cpp:17

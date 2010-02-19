@@ -489,7 +489,7 @@ msgstr "Запис на зовнішній пристрій"
 
 #: FbFrameBase.cpp:210
 msgid "book"
-msgid_plural "book"
+msgid_plural "books"
 msgstr[0] "книга"
 msgstr[1] "книги"
 msgstr[2] "книг"
@@ -1530,10 +1530,6 @@ msgstr "Замінити:"
 msgid "Найти:"
 msgstr "Знайти:"
 
-#: FbReplaceDlg.cpp:106
-msgid "Объединить двух авторов?"
-msgstr "Об'єднати двох авторів?"
-
 #: FbReplaceDlg.cpp:111
 msgid "Не выбран автор для замены."
 msgstr "Не обраний автор для заміни."
@@ -1543,7 +1539,7 @@ msgid "Заменить автора"
 msgstr "Замінити автора"
 
 #: FbViewerDlg.cpp:11
-msgid "Настройка"
+msgid "Customize"
 msgstr "Настройка"
 
 #: FbViewerDlg.cpp:17
