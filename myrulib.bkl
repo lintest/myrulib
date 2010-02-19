@@ -141,6 +141,12 @@
 		<install-to cond="FORMAT=='gnu'">$(BINDIR)</install-to>
 	</exe>
 	
+	<action id="locale">
+	  <command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/ru.mo</command>
+	  <command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/ua.mo</command>
+	  <command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/by.mo</command>
+	</action>
+
 	<if cond="FORMAT=='gnu'">
 		<data-files> 
 			<srcdir>MyRuLib/desktop</srcdir>

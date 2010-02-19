@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_SEQUEN, _("Серии")), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
+	:FbFrameBase(parent, ID_FRAME_SEQUEN, _("Series")), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
 	CreateControls();
 }
@@ -39,7 +39,8 @@ void FbFrameSequen::CreateControls()
 	wxBoxSizer* bSizerSeq;
 	bSizerSeq = new wxBoxSizer( wxHORIZONTAL );
 
-	m_FindInfo = new wxStaticText( this, wxID_ANY, _("Серия:"), wxDefaultPosition, wxDefaultSize, 0 );
+
+	m_FindInfo = new wxStaticText( this, wxID_ANY, (wxString)_("Ser.") + wxT(':'), wxDefaultPosition, wxDefaultSize, 0 );
 	m_FindInfo->Wrap( -1 );
 	bSizerSeq->Add( m_FindInfo, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -58,7 +59,7 @@ void FbFrameSequen::CreateControls()
 	sizer->Add(splitter, 1, wxEXPAND);
 
 	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
-	m_MasterList->AddColumn(_("Серия"), 40, wxALIGN_LEFT);
+	m_MasterList->AddColumn(_("Ser."), 40, wxALIGN_LEFT);
 	m_MasterList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
 	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);

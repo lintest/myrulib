@@ -11,10 +11,22 @@
 #include "FbDataOpenDlg.h"
 #include "FbUpdateThread.h"
 
+// language data
+static const wxLanguage languages[] =
+{
+    wxLANGUAGE_DEFAULT,
+    wxLANGUAGE_ENGLISH,
+    wxLANGUAGE_RUSSIAN,
+    wxLANGUAGE_UKRAINIAN,
+    wxLANGUAGE_BELARUSIAN,
+};
+
 IMPLEMENT_APP(MyRuLibApp)
 
 bool MyRuLibApp::OnInit()
 {
+    m_locale.AddCatalog(wxT("mylib_ru"));
+
 	FbConfigDatabase config;
 	config.Open();
 

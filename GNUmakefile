@@ -212,6 +212,11 @@ install_myrulib: build/myrulib
 uninstall_myrulib: 
 	rm -f $(DESTDIR)/usr/bin/myrulib
 
+locale: 
+	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
+	msgfmt MyRuLib/locale/ua.po -o build/ua.mo
+	msgfmt MyRuLib/locale/by.po -o build/by.mo
+
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 

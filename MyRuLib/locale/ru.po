@@ -18,6 +18,21 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: FbFrameBase.cpp:210
+msgid "book"
+msgid_plural "books"
+msgstr[0] "книга"
+msgstr[1] "книги"
+msgstr[2] "книг"
+
+#: FbEditBook.cpp:37 FbFrameSequen.cpp:61
+msgid "Ser."
+msgstr "Серия"
+
+#: FbFrameSequen.cpp:29 FbFrameSequen.cpp:421 FbMainMenu.cpp:10
+msgid "Series"
+msgstr "Серии"
+
 #: ExpThread.cpp:10
 msgid "Export error"
 msgstr "Ошибка экспорта"
@@ -338,10 +353,6 @@ msgstr "Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"
 msgid "File download"
 msgstr "Загрузка файла"
 
-#: FbEditBook.cpp:37 FbFrameSequen.cpp:61
-msgid "Series"
-msgstr "Серия"
-
 #: FbFilterDlg.cpp:12
 msgid "All"
 msgstr "Все"
@@ -478,13 +489,6 @@ msgstr "Экспорт"
 #: FbMainFrame.cpp:291
 msgid "Export to external device"
 msgstr "Запись на внешнее устройство"
-
-#: FbFrameBase.cpp:210
-msgid "book"
-msgid_plural "books"
-msgstr[0] "книга"
-msgstr[1] "книги"
-msgstr[2] "книг"
 
 #: FbFrameDownld.cpp:22 FbMainMenu.cpp:15
 msgid "Downloads"
@@ -669,14 +673,6 @@ msgstr "Поиск: «%s»"
 #, c-format
 msgid "Nothing was found on pattern «%s»"
 msgstr "Ничего не найдено по шаблону «%s»"
-
-#: FbFrameSequen.cpp:29 FbFrameSequen.cpp:421 FbMainMenu.cpp:10
-msgid "Series"
-msgstr "Серии"
-
-#: FbFrameSequen.cpp:42
-msgid "Ser.:"
-msgstr "Серия:"
 
 #: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
 msgid "Find"

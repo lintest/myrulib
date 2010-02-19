@@ -22,6 +22,7 @@ private:
 private:
 	wxCriticalSection m_section;
 	wxString m_datafile;
+	wxLocale m_locale;
 };
 
 DECLARE_APP(MyRuLibApp)
