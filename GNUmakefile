@@ -176,10 +176,10 @@ all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES
-	$(INSTALL) -d $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES
-	$(INSTALL) -d $(DESTDIR)/usr/share/locale/be/LC_MESSAGES
 	(cd build/ru ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES)
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES
 	(cd build/uk ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES)
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/be/LC_MESSAGES
 	(cd build/be ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/be/LC_MESSAGES)
 	$(INSTALL) -d $(DESTDIR)/usr/share/icons/hicolor/48x48/apps
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
@@ -200,6 +200,9 @@ clean:
 	rm -f build/*.o
 	rm -f build/*.d
 	rm -f build/libwxsqlite3_static.a
+	rm -f build/ru/myrulib.mo
+	rm -f build/uk/myrulib.mo
+	rm -f build/be/myrulib.mo
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
@@ -210,17 +213,15 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/be: 
+build/be: MyRuLib/locale/ru.po MyRuLib/locale/uk.po MyRuLib/locale/be.po
 	@mkdir -p build/ru
-	@mkdir -p build/uk
-	@mkdir -p build/be
-
-locale: build/be MyRuLib/locale/ru.po MyRuLib/locale/uk.po MyRuLib/locale/be.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru/myrulib.mo
+	@mkdir -p build/uk
 	msgfmt MyRuLib/locale/uk.po -o build/uk/myrulib.mo
+	@mkdir -p build/be
 	msgfmt MyRuLib/locale/be.po -o build/be/myrulib.mo
 
-build/myrulib: $(MYRULIB_OBJECTS) locale build/libwxsqlite3_static.a
+build/myrulib: $(MYRULIB_OBJECTS) build/be build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip build/myrulib
 
@@ -420,7 +421,7 @@ build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean locale install_myrulib uninstall_myrulib
+.PHONY: all install uninstall clean build/be install_myrulib uninstall_myrulib
 
 
 # Dependencies tracking:

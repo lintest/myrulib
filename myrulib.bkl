@@ -45,37 +45,28 @@
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
 
-	<mkdir id="locale_dir"> 
-		<dir>$(BUILDDIR)/ru</dir>
-		<dir>$(BUILDDIR)/uk</dir>
-		<dir>$(BUILDDIR)/be</dir>
-	</mkdir>
-
-	<action id="locale">
-		<depends>locale_dir</depends>
-		<command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/ru/myrulib.mo</command>
-		<command>msgfmt MyRuLib/locale/uk.po -o $(BUILDDIR)/uk/myrulib.mo</command>
-		<command>msgfmt MyRuLib/locale/be.po -o $(BUILDDIR)/be/myrulib.mo</command>
-		<depends-on-file>MyRuLib/locale/ru.po</depends-on-file>
-		<depends-on-file>MyRuLib/locale/uk.po</depends-on-file>
-		<depends-on-file>MyRuLib/locale/be.po</depends-on-file>
-		<is-phony/>
+    <define-tag name="language" rules="mkdir">
+		<dir>$(BUILDDIR)/$(value)</dir>
+		<clean-files>$(BUILDDIR)/$(value)/myrulib.mo</clean-files>
+		<command>msgfmt MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value)/myrulib.mo</command>
+		<depends-on-file>MyRuLib/locale/$(value).po</depends-on-file>
 		<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 			<modify-target target="install">
-			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/ru/LC_MESSAGES</command>
-			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/uk/LC_MESSAGES</command>
-			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/be/LC_MESSAGES</command>
-			  <command>(cd $(BUILDDIR)/ru ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/ru/LC_MESSAGES)</command>
-			  <command>(cd $(BUILDDIR)/uk ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/uk/LC_MESSAGES)</command>
-			  <command>(cd $(BUILDDIR)/be ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/be/LC_MESSAGES)</command>
+				<command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES</command>
+				<command>(cd $(BUILDDIR)/$(value) ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES)</command>
 			</modify-target>
 			<modify-target target="uninstall">
-			  <command>(cd $(DESTDIR)$(DATADIR)/locale/ru/LC_MESSAGES ; rm -f myrulib.mo)</command>
-			  <command>(cd $(DESTDIR)$(DATADIR)/locale/uk/LC_MESSAGES ; rm -f myrulib.mo)</command>
-			  <command>(cd $(DESTDIR)$(DATADIR)/locale/be/LC_MESSAGES ; rm -f myrulib.mo)</command>
+			  <command>(cd $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES ; rm -f myrulib.mo)</command>
 			</modify-target>
 		</if>
-	</action>
+    </define-tag>
+
+	<mkdir id="locale"> 
+		<is-phony/>
+		<language>ru</language>
+		<language>uk</language>
+		<language>be</language>
+	</mkdir>
 
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
