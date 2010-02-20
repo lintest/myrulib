@@ -45,31 +45,45 @@
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
 
-    <define-tag name="language" rules="mkdir">
-		<dir>$(BUILDDIR)/$(value)</dir>
-		<clean-files>$(BUILDDIR)/$(value)/myrulib.mo</clean-files>
-		<command>msgfmt MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value)/myrulib.mo</command>
+    <define-tag name="locale" rules="action">
+		<depends>bin2c</depends>
+		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
+		<command>msgfmt MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
 		<depends-on-file>MyRuLib/locale/$(value).po</depends-on-file>
 		<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 			<modify-target target="install">
 				<command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES</command>
-				<command>(cd $(BUILDDIR)/$(value) ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES)</command>
+				<command>(cd $(BUILDDIR) ; $(INSTALL) -m 644 -T $(value).mo $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES/myrulib.mo)</command>
 			</modify-target>
 			<modify-target target="uninstall">
-			  <command>(cd $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES ; rm -f myrulib.mo)</command>
+				<command>(cd $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES ; rm -f myrulib.mo)</command>
 			</modify-target>
 		</if>
+		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc $(value)</command>
     </define-tag>
 
-	<mkdir id="locale"> 
-		<language>ru</language>
-		<language>uk</language>
-		<language>be</language>
-	</mkdir>
+	<exe id="bin2c">
+		<sources>Bin2c/bin2c.c</sources>
+	</exe>
+
+	<action id="build/ru.mo"> 
+		<locale>ru</locale>
+	</action>
+
+	<action id="build/uk.mo"> 
+		<locale>uk</locale>
+	</action>
+
+	<action id="build/be.mo"> 
+		<locale>be</locale>
+	</action>
+
 
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
-		<depends>locale</depends>
+		<depends>$(BUILDDIR)/ru.mo</depends>
+		<depends>$(BUILDDIR)/uk.mo</depends>
+		<depends>$(BUILDDIR)/be.mo</depends>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
