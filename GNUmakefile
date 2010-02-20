@@ -207,6 +207,9 @@ clean:
 	rm -f build/ru.mo
 	rm -f build/uk.mo
 	rm -f build/be.mo
+	rm -f build/ru.inc
+	rm -f build/uk.inc
+	rm -f build/be.inc
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
@@ -222,17 +225,23 @@ build/bin2c: $(BIN2C_OBJECTS)
 
 build/ru.mo: build/bin2c MyRuLib/locale/ru.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
-	build/bin2c build/ru.mo build/ru.inc ru
 
 build/uk.mo: build/bin2c MyRuLib/locale/uk.po
 	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
-	build/bin2c build/uk.mo build/uk.inc uk
 
 build/be.mo: build/bin2c MyRuLib/locale/be.po
 	msgfmt MyRuLib/locale/be.po -o build/be.mo
+
+build/ru.inc: build/ru.mo
+	build/bin2c build/ru.mo build/ru.inc ru
+
+build/uk.inc: build/uk.mo
+	build/bin2c build/uk.mo build/uk.inc uk
+
+build/be.inc: build/be.mo
 	build/bin2c build/be.mo build/be.inc be
 
-build/myrulib: $(MYRULIB_OBJECTS) build/ru.mo build/uk.mo build/be.mo build/libwxsqlite3_static.a
+build/myrulib: $(MYRULIB_OBJECTS) build/ru.inc build/uk.inc build/be.inc build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip build/myrulib
 

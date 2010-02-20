@@ -59,12 +59,17 @@
 				<command>(cd $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES ; rm -f myrulib.mo)</command>
 			</modify-target>
 		</if>
-		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc $(value)</command>
     </define-tag>
 
 	<exe id="bin2c">
 		<sources>Bin2c/bin2c.c</sources>
 	</exe>
+
+    <define-tag name="bin2c" rules="action">
+		<depends>$(BUILDDIR)/$(value).mo</depends>
+		<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
+		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc $(value)</command>
+    </define-tag>
 
 	<action id="build/ru.mo"> 
 		<locale>ru</locale>
@@ -78,12 +83,23 @@
 		<locale>be</locale>
 	</action>
 
+	<action id="build/ru.inc"> 
+		<bin2c>ru</bin2c>
+	</action>
+
+	<action id="build/uk.inc"> 
+		<bin2c>uk</bin2c>
+	</action>
+
+	<action id="build/be.inc"> 
+		<bin2c>be</bin2c>
+	</action>
 
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
-		<depends>$(BUILDDIR)/ru.mo</depends>
-		<depends>$(BUILDDIR)/uk.mo</depends>
-		<depends>$(BUILDDIR)/be.mo</depends>
+		<depends>$(BUILDDIR)/ru.inc</depends>
+		<depends>$(BUILDDIR)/uk.inc</depends>
+		<depends>$(BUILDDIR)/be.inc</depends>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
