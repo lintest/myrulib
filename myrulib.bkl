@@ -62,7 +62,6 @@
     </define-tag>
 
 	<mkdir id="locale"> 
-		<is-phony/>
 		<language>ru</language>
 		<language>uk</language>
 		<language>be</language>

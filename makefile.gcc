@@ -488,7 +488,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc
 	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_3_p_1) $(__WXUNICODE_DEFINE_p_4) $(__WXDEBUG_DEFINE_p_4) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define XML_STATIC --include-dir WxSQLite3 --include-dir Expat --include-dir SQLite3
 
-.PHONY: all clean build\be
+.PHONY: all clean
 
 
 SHELL := $(COMSPEC)

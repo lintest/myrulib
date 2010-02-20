@@ -421,7 +421,7 @@ build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean build/be install_myrulib uninstall_myrulib
+.PHONY: all install uninstall clean install_myrulib uninstall_myrulib
 
 
 # Dependencies tracking:
