@@ -47,32 +47,32 @@
 
 	<mkdir id="locale_dir"> 
 		<dir>$(BUILDDIR)/ru</dir>
-		<dir>$(BUILDDIR)/ua</dir>
-		<dir>$(BUILDDIR)/by</dir>
+		<dir>$(BUILDDIR)/uk</dir>
+		<dir>$(BUILDDIR)/be</dir>
 	</mkdir>
 
 	<action id="locale">
 		<depends>locale_dir</depends>
 		<command>msgfmt MyRuLib/locale/ru.po -o $(BUILDDIR)/ru/myrulib.mo</command>
-		<command>msgfmt MyRuLib/locale/ua.po -o $(BUILDDIR)/ua/myrulib.mo</command>
-		<command>msgfmt MyRuLib/locale/by.po -o $(BUILDDIR)/by/myrulib.mo</command>
+		<command>msgfmt MyRuLib/locale/uk.po -o $(BUILDDIR)/uk/myrulib.mo</command>
+		<command>msgfmt MyRuLib/locale/be.po -o $(BUILDDIR)/be/myrulib.mo</command>
 		<depends-on-file>MyRuLib/locale/ru.po</depends-on-file>
-		<depends-on-file>MyRuLib/locale/ua.po</depends-on-file>
-		<depends-on-file>MyRuLib/locale/by.po</depends-on-file>
+		<depends-on-file>MyRuLib/locale/uk.po</depends-on-file>
+		<depends-on-file>MyRuLib/locale/be.po</depends-on-file>
 		<is-phony/>
 		<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 			<modify-target target="install">
 			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/ru/LC_MESSAGES</command>
-			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/ua/LC_MESSAGES</command>
-			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/by/LC_MESSAGES</command>
+			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/uk/LC_MESSAGES</command>
+			  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/be/LC_MESSAGES</command>
 			  <command>(cd $(BUILDDIR)/ru ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/ru/LC_MESSAGES)</command>
-			  <command>(cd $(BUILDDIR)/ua ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/ua/LC_MESSAGES)</command>
-			  <command>(cd $(BUILDDIR)/by ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/by/LC_MESSAGES)</command>
+			  <command>(cd $(BUILDDIR)/uk ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/uk/LC_MESSAGES)</command>
+			  <command>(cd $(BUILDDIR)/be ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)$(DATADIR)/locale/be/LC_MESSAGES)</command>
 			</modify-target>
 			<modify-target target="uninstall">
 			  <command>(cd $(DESTDIR)$(DATADIR)/locale/ru/LC_MESSAGES ; rm -f myrulib.mo)</command>
-			  <command>(cd $(DESTDIR)$(DATADIR)/locale/ua/LC_MESSAGES ; rm -f myrulib.mo)</command>
-			  <command>(cd $(DESTDIR)$(DATADIR)/locale/by/LC_MESSAGES ; rm -f myrulib.mo)</command>
+			  <command>(cd $(DESTDIR)$(DATADIR)/locale/uk/LC_MESSAGES ; rm -f myrulib.mo)</command>
+			  <command>(cd $(DESTDIR)$(DATADIR)/locale/be/LC_MESSAGES ; rm -f myrulib.mo)</command>
 			</modify-target>
 		</if>
 	</action>

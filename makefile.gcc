@@ -263,15 +263,15 @@ build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	ar rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	ranlib $@
 
-build\by: 
+build\be: 
 	if not exist build\ru mkdir build\ru
-	if not exist build\ua mkdir build\ua
-	if not exist build\by mkdir build\by
+	if not exist build\uk mkdir build\uk
+	if not exist build\be mkdir build\be
 
-locale: build\by MyRuLib\locale\ru.po MyRuLib\locale\ua.po MyRuLib\locale\by.po
+locale: build\be MyRuLib\locale\ru.po MyRuLib\locale\uk.po MyRuLib\locale\be.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru/myrulib.mo
-	msgfmt MyRuLib/locale/ua.po -o build/ua/myrulib.mo
-	msgfmt MyRuLib/locale/by.po -o build/by/myrulib.mo
+	msgfmt MyRuLib/locale/uk.po -o build/uk/myrulib.mo
+	msgfmt MyRuLib/locale/be.po -o build/be/myrulib.mo
 
 build\myrulib.exe: $(MYRULIB_OBJECTS) locale build\libwxsqlite3_static.a build\myrulib_resource_rc.o build\libexpat_static.a build\libsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows   $(LDFLAGS)  build\libwxsqlite3_static.a build\libexpat_static.a build\libsqlite3_static.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_NET_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32

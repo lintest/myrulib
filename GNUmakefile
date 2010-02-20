@@ -176,23 +176,22 @@ all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES
-	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ua/LC_MESSAGES
-	$(INSTALL) -d $(DESTDIR)/usr/share/locale/by/LC_MESSAGES
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/be/LC_MESSAGES
 	(cd build/ru ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES)
-	(cd build/ua ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/ua/LC_MESSAGES)
-	(cd build/by ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/by/LC_MESSAGES)
+	(cd build/uk ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES)
+	(cd build/be ; $(INSTALL) -m 644  myrulib.mo $(DESTDIR)/usr/share/locale/be/LC_MESSAGES)
 	$(INSTALL) -d $(DESTDIR)/usr/share/icons/hicolor/48x48/apps
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
-	ln -s ../icons/hicolor/48x48/apps/myrulib.png build/myrulib.png
 	$(INSTALL) -d $(DESTDIR)/usr/share/pixmaps/
-	(cd build ; $(INSTALL) myrulib.png $(DESTDIR)/usr/share/pixmaps/
+	ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)/usr/share/pixmaps/myrulib.png
 
 uninstall: uninstall_myrulib
 	(cd $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES ; rm -f myrulib.mo)
-	(cd $(DESTDIR)/usr/share/locale/ua/LC_MESSAGES ; rm -f myrulib.mo)
-	(cd $(DESTDIR)/usr/share/locale/by/LC_MESSAGES ; rm -f myrulib.mo)
+	(cd $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES ; rm -f myrulib.mo)
+	(cd $(DESTDIR)/usr/share/locale/be/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)/usr/share/icons/hicolor/48x48/apps ; rm -f myrulib.png)
 	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 	(cd $(DESTDIR)/usr/share/pixmaps ; rm -f myrulib.png)
@@ -211,15 +210,15 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/by: 
+build/be: 
 	@mkdir -p build/ru
-	@mkdir -p build/ua
-	@mkdir -p build/by
+	@mkdir -p build/uk
+	@mkdir -p build/be
 
-locale: build/by MyRuLib/locale/ru.po MyRuLib/locale/ua.po MyRuLib/locale/by.po
+locale: build/be MyRuLib/locale/ru.po MyRuLib/locale/uk.po MyRuLib/locale/be.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru/myrulib.mo
-	msgfmt MyRuLib/locale/ua.po -o build/ua/myrulib.mo
-	msgfmt MyRuLib/locale/by.po -o build/by/myrulib.mo
+	msgfmt MyRuLib/locale/uk.po -o build/uk/myrulib.mo
+	msgfmt MyRuLib/locale/be.po -o build/be/myrulib.mo
 
 build/myrulib: $(MYRULIB_OBJECTS) locale build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
