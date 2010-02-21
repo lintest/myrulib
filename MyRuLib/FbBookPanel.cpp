@@ -444,16 +444,8 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 
 	BookListUpdater updater(m_BookList);
 
-	switch (m_ListMode) {
-		case FB2_MODE_TREE: {
-			m_BookList->SetColumnShown(1, false);
-			m_BookList->SetColumnShown(2, true);
-		} break;
-		case FB2_MODE_LIST: {
-			m_BookList->SetColumnShown(1, true);
-			m_BookList->SetColumnShown(2, false);
-		} break;
-	}
+	m_BookList->SetColumnShown(1, GetListMode() == FB2_MODE_LIST);
+	m_BookList->SetColumnShown(2, GetListMode() == FB2_MODE_TREE);
 
 	wxTreeItemId root = m_BookList->AddRoot(wxEmptyString);
 	m_BookInfo->SetPage(wxEmptyString);
@@ -569,7 +561,6 @@ void FbBookPanel::SetMasterData(FbMasterData const * master)
 			m_BookList->SetColumnShown(3, false);
 		} break;
 		default: {
-			m_BookList->SetColumnShown(2, GetListMode() == FB2_MODE_LIST);
 			m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
 		}
 	}
