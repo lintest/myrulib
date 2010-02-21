@@ -1,6 +1,31 @@
 <?xml version="1.0" ?>
 <makefile>
 
+    <option name="SHARED">
+        <values>0,1</values>
+        <values-description>Static,Shared</values-description>
+        <default-value cond="FORMAT=='mingw'">0</default-value>
+        <default-value cond="FORMAT!='mingw'">1</default-value>
+        <description>
+            What type of application to build?
+        </description>
+    </option>
+
+    <set var="WX_SHARED_DEFAULT">
+        <if cond="SHARED=='0'">0</if>
+        <if cond="SHARED=='1'">1</if>
+    </set>
+
+    <set var="INCLUDE_SQLITE">
+        <if cond="SHARED=='0'">SQLite3</if>
+        <if cond="SHARED=='1'"></if>
+    </set>
+
+    <set var="XML_STATIC">
+        <if cond="SHARED=='1'"></if>
+        <if cond="SHARED=='0'">XML_STATIC</if>
+    </set>
+
 	<set var="PREFIX">/usr</set>
 	<set var="BUILDDIR">build</set>
 	
@@ -9,13 +34,11 @@
 	<set var="WX_DEBUG_DEFAULT">0</set>
 	
 	<if cond="FORMAT=='mingw'">
-		<set var="WX_SHARED_DEFAULT">0</set>
 		<set var="WX_VERSION_DEFAULT">28</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
 	</if>
 
 	<if cond="FORMAT=='gnu'">
-		<set var="WX_SHARED_DEFAULT">1</set>
 		<set var="WX_VERSION_DEFAULT">2.8</set>
 		<set var="WX_PORT_DEFAULT">gtk2</set>
 	</if>
@@ -23,7 +46,7 @@
 	<include file="./Presets/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
-	<lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="expat_static" template="wx-lib" cond="SHARED=='0'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<sources>Expat/xmlparse.c</sources>
 		<sources>Expat/xmlrole.c</sources>
@@ -33,14 +56,13 @@
 		<include>Expat</include>
 	</lib>
 
-	<lib id="sqlite3_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="sqlite3_static" template="wx-lib" cond="SHARED=='0'">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
 	
-	<lib id="wxsqlite3_static" template="wx-lib">
-		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
-		<include>WxSQLite3</include>
+	<lib id="wxsqlite3_static" template="wx-lib" cond="SHARED=='0'">
+		<include>$(INCLUDE_SQLITE)</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
@@ -96,7 +118,7 @@
 	</action>
 
 	<exe id="myrulib" template="wxgui">
-		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
+		<define>$(XML_STATIC)</define>
 		<depends>$(BUILDDIR)/ru.inc</depends>
 		<depends>$(BUILDDIR)/uk.inc</depends>
 		<depends>$(BUILDDIR)/be.inc</depends>
