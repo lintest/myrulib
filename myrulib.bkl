@@ -180,12 +180,7 @@
 		<wx-lib>core</wx-lib>
 		<wx-lib>net</wx-lib>
 		<wx-lib>base</wx-lib>
-		<if cond="PLATFORM_WIN32=='1'">
-			<postlink-command>strip $(BUILDDIR)/myrulib.exe</postlink-command>
-		</if>
-		<if cond="PLATFORM_WIN32=='0'">
-			<postlink-command>strip $(BUILDDIR)/myrulib</postlink-command>
-		</if>
+		<postlink-command>strip $(BUILDDIR)/$(__targetname)</postlink-command>
 		<app-type>gui</app-type>
 		<threading>single</threading>
 		<optimize>speed</optimize>
