@@ -14,6 +14,7 @@
 	</if>
 
 	<if cond="FORMAT=='gnu'">
+		<set var="WX_PORT_DEFAULT">gtk2</set>
 		<set var="WX_SHARED_DEFAULT">1</set>
 		<set var="WX_VERSION_DEFAULT">2.8</set>
 	</if>

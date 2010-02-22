@@ -44,7 +44,7 @@ LDFLAGS ?=
 WX_CONFIG ?= wx-config
 
 # Port of the wx library to build against [gtk1,gtk2,msw,x11,motif,mgl,mac,dfb]
-WX_PORT ?= $(shell $(WX_CONFIG) --query-toolkit)
+WX_PORT ?= gtk2
 
 # Use DLL build of wx library to use? [0,1]
 WX_SHARED ?= 1
