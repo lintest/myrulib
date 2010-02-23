@@ -40,7 +40,6 @@
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
 		<include>WxSQLite3</include>
-		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
 
