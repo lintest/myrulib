@@ -179,12 +179,11 @@
 		<wx-lib>net</wx-lib>
 		<wx-lib>base</wx-lib>
 		<postlink-command>strip $(BUILDDIR)/$(__targetname)</postlink-command>
-		<app-type>gui</app-type>
 		<threading>single</threading>
 		<optimize>speed</optimize>
 		<debug-info>off</debug-info>
 		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
-		<install-to cond="FORMAT=='gnu'">$(BINDIR)</install-to>
+		<install-to cond="FORMAT_HAS_MAKE_INSTALL=='1'">$(BINDIR)</install-to>
 	</exe>
 	
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
