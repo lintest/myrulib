@@ -72,6 +72,10 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 `$(WX_CONFIG) --cflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
+SQLITE3_STATIC_OBJECTS =  \
+	build/sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -IWxSQLite3 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
@@ -79,10 +83,10 @@ WXSQLITE3_STATIC_OBJECTS =  \
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	build/bin2c_bin2c.o
-MYRULIB_CFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags $(WX_CONFIG_FLAGS)` \
-	$(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` \
-	$(CPPFLAGS) $(CXXFLAGS)
+MYRULIB_CFLAGS = -ISQLite3 -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -ISQLite3 -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
 	build/myrulib_ExpThread.o \
@@ -175,7 +179,7 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/bin2c build/myrulib
+all: test_for_selected_wxbuild build/libsqlite3_static.a build/libwxsqlite3_static.a build/bin2c build/myrulib
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES
@@ -202,6 +206,7 @@ uninstall: uninstall_myrulib
 clean: 
 	rm -f build/*.o
 	rm -f build/*.d
+	rm -f build/libsqlite3_static.a
 	rm -f build/libwxsqlite3_static.a
 	rm -f build/bin2c
 	rm -f build/ru.mo
@@ -214,6 +219,11 @@ clean:
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
+
+build/libsqlite3_static.a: $(SQLITE3_STATIC_OBJECTS)
+	rm -f $@
+	$(AR) rcu $@ $(SQLITE3_STATIC_OBJECTS)
+	$(RANLIB) $@
 
 build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
@@ -241,8 +251,8 @@ build/uk.inc: build/uk.mo
 build/be.inc: build/be.mo
 	build/bin2c build/be.mo build/be.inc be
 
-build/myrulib: $(MYRULIB_OBJECTS) build/ru.inc build/uk.inc build/be.inc build/libwxsqlite3_static.a
-	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lexpat -lsqlite3 `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
+build/myrulib: $(MYRULIB_OBJECTS) build/ru.inc build/uk.inc build/be.inc build/libwxsqlite3_static.a build/libsqlite3_static.a
+	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libsqlite3_static.a -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip build/myrulib
 
 install_myrulib: build/myrulib
@@ -251,6 +261,9 @@ install_myrulib: build/myrulib
 
 uninstall_myrulib: 
 	rm -f $(DESTDIR)/usr/bin/myrulib
+
+build/sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
+	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
 
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
