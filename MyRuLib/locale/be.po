@@ -515,24 +515,36 @@ msgid "Stop downloading"
 msgstr "Спыніць запампоўку файлаз праў інтэрнэт"
 
 #: FbFrameDownld.cpp:69
-msgid "Вверх"
+msgid "Up"
 msgstr "Уверх"
 
 #: FbFrameDownld.cpp:69
-msgid "Передвинуть в начало очереди"
+msgid "Move up in queue"
 msgstr "Рухаць у пачатак чаргі"
 
 #: FbFrameDownld.cpp:70
-msgid "Вниз"
+msgid "Down"
 msgstr "Уніз"
 
 #: FbFrameDownld.cpp:70
-msgid "Передвинуть в конец очереди"
+msgid "Move down in queue"
 msgstr "Рухаць у канец чаргі"
 
 #: FbFrameDownld.cpp:72
-msgid "Удалить загрузку"
+msgid "Remove download"
 msgstr "Знішчыць запампоўку"
+
+#: FbFrameDownld.cpp:84
+msgid "Queue"
+msgstr "Чаргу"
+
+#: FbFrameDownld.cpp:85
+msgid "Ready"
+msgstr "Гатова"
+
+#: FbFrameDownld.cpp:86
+msgid "Fault"
+msgstr "Памылкі"
 
 #: FbFrameFolder.cpp:18 FbMainMenu.cpp:14
 msgid "Мои папки"

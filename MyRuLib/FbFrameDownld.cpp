@@ -66,10 +66,10 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 	toolbar->AddTool(ID_START, _("Start"), wxBitmap(start_xpm), _("Start downloading"));
 	toolbar->AddTool(ID_PAUSE, _("Stop"), wxBitmap(pause_xpm), _("Stop downloading"));
 	toolbar->AddSeparator();
-	toolbar->AddTool(wxID_UP, _("Вверх"), wxArtProvider::GetBitmap(wxART_GO_UP), _("Передвинуть в начало очереди"));
-	toolbar->AddTool(wxID_DOWN, _("Вниз"), wxArtProvider::GetBitmap(wxART_GO_DOWN), _("Передвинуть в конец очереди"));
+	toolbar->AddTool(wxID_UP, _("Up"), wxArtProvider::GetBitmap(wxART_GO_UP), _("Move up in queue"));
+	toolbar->AddTool(wxID_DOWN, _("Down"), wxArtProvider::GetBitmap(wxART_GO_DOWN), _("Move down in queue"));
 	toolbar->AddSeparator();
-	toolbar->AddTool(ID_DELETE_DOWNLOAD, _("Удалить"), wxArtProvider::GetBitmap(wxART_DELETE), _("Удалить загрузку"));
+	toolbar->AddTool(ID_DELETE_DOWNLOAD, _("Delete"), wxArtProvider::GetBitmap(wxART_DELETE), _("Remove download"));
 	toolbar->Realize();
 
 	return toolbar;
@@ -81,9 +81,9 @@ void FbFrameDownld::FillFolders(const int iCurrent)
 	m_MasterList->DeleteRoot();
 
 	wxTreeItemId root = m_MasterList->AddRoot(wxEmptyString);
-	m_MasterList->AppendItem(root, _("Очередь"), -1, -1, new FbMasterFolder(1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, _("Готово"), -1, -1, new FbMasterFolder(-1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, _("Ошибки"), -1, -1, new FbMasterFolder(-2, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, _("Queue"), -1, -1, new FbMasterFolder(1, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, _("Ready"), -1, -1, new FbMasterFolder(-1, FT_DOWNLOAD));
+	m_MasterList->AppendItem(root, _("Fault"), -1, -1, new FbMasterFolder(-2, FT_DOWNLOAD));
 	m_MasterList->Expand(root);
 
 	m_MasterList->Thaw();

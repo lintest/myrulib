@@ -514,24 +514,36 @@ msgid "Stop downloading"
 msgstr "Остановить загрузку файлов через интернет"
 
 #: FbFrameDownld.cpp:69
-msgid "Move up in queue"
+msgid "Up"
 msgstr "Вверх"
 
 #: FbFrameDownld.cpp:69
-msgid "Move to first position in queue"
+msgid "Move up in queue"
 msgstr "Передвинуть в начало очереди"
 
 #: FbFrameDownld.cpp:70
-msgid "Move down in queue"
+msgid "Down"
 msgstr "Вниз"
 
 #: FbFrameDownld.cpp:70
-msgid "Move to last position in queue"
+msgid "Move down in queue"
 msgstr "Передвинуть в конец очереди"
 
 #: FbFrameDownld.cpp:72
 msgid "Remove download"
 msgstr "Удалить загрузку"
+
+#: FbFrameDownld.cpp:84
+msgid "Queue"
+msgstr "Очередь"
+
+#: FbFrameDownld.cpp:85
+msgid "Ready"
+msgstr "Готово"
+
+#: FbFrameDownld.cpp:86
+msgid "Fault"
+msgstr "Ошибки"
 
 #: FbFrameFolder.cpp:18 FbMainMenu.cpp:14
 msgid "My folders"
