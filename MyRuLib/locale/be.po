@@ -547,44 +547,44 @@ msgid "Fault"
 msgstr "Памылкі"
 
 #: FbFrameFolder.cpp:18 FbMainMenu.cpp:14
-msgid "Мои папки"
+msgid "My folders"
 msgstr "Мае папкі"
 
 #: FbFrameFolder.cpp:74
-msgid "Закладки"
+msgid "Bookmarks"
 msgstr "Закладка"
 
 #: FbFrameFolder.cpp:77
-msgid "Избранное"
+msgid "Favorites"
 msgstr "Абранае"
 
 #: FbFrameFolder.cpp:92
-msgid "Пометки"
+msgid "Remarks"
 msgstr "Пазнакі"
 
 #: FbFrameFolder.cpp:149
-msgid "Введите имя новой папки:"
+msgid "Input name of new folder:"
 msgstr "Увядзіце імя новай папцы:"
 
 #: FbFrameFolder.cpp:149
-msgid "Добавить папку?"
+msgid "Add folder?"
 msgstr "Дадаць папку?"
 
 #: FbFrameFolder.cpp:175
-msgid "Введите новое имя папки:"
+msgid "Input new folder name:"
 msgstr "Увядзіце новае імя папкі:"
 
 #: FbFrameFolder.cpp:175
-msgid "Изменить папку?"
+msgid "Change folder?"
 msgstr "Змяніць папку?"
 
 #: FbFrameFolder.cpp:199
 #, c-format
-msgid "Удалить папку «%s»?"
+msgid "Delete folder \"%s\"?"
 msgstr "Знішчыць папку «%s»?"
 
 #: FbFrameFolder.cpp:200
-msgid "Удалить папку?"
+msgid "Delete folder?"
 msgstr "Знішчыць папку?"
 
 #: FbFrameGenres.cpp:13 FbMainMenu.cpp:9

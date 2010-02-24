@@ -15,7 +15,7 @@ BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_FOLDER, _("Мои папки")), m_FolderBar(NULL)
+	:FbFrameBase(parent, ID_FRAME_FOLDER, _("My folders")), m_FolderBar(NULL)
 {
 	CreateControls();
 }
@@ -71,10 +71,10 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 
 	wxTreeItemId root = m_MasterList->AddRoot(wxEmptyString);
 
-	wxTreeItemId parent = m_MasterList->AppendItem(root, _("Закладки"));
+	wxTreeItemId parent = m_MasterList->AppendItem(root, _("Bookmarks"));
 	m_MasterList->SetItemBold(parent, true);
 
-	wxTreeItemId item = m_MasterList->AppendItem(parent, _("Избранное"), -1, -1, new FbMasterFolder(0, FT_FOLDER));
+	wxTreeItemId item = m_MasterList->AppendItem(parent, _("Favorites"), -1, -1, new FbMasterFolder(0, FT_FOLDER));
 	if (iCurrent == 0) m_MasterList->SelectItem(item);
 
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
@@ -89,7 +89,7 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	m_MasterList->Expand(parent);
 	m_MasterList->Expand(root);
 
-	parent = m_MasterList->AppendItem(root, _("Пометки"));
+	parent = m_MasterList->AppendItem(root, _("Remarks"));
 	m_MasterList->SetItemBold(parent, true);
 
 	m_MasterList->AppendItem(parent, _("Comments"), -1, -1, new FbMasterFolder(1, FT_COMMENT));
@@ -146,7 +146,7 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 
 void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 {
-	wxString name = wxGetTextFromUser(_("Введите имя новой папки:"), _("Добавить папку?"), wxEmptyString, this);
+	wxString name = wxGetTextFromUser(_("Input name of new folder:"), _("Add folder?"), wxEmptyString, this);
 	if (name.IsEmpty()) return;
 
 	FbLocalDatabase database;
@@ -172,7 +172,7 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 
 	wxTreeItemId item = m_MasterList->GetSelection();
 	wxString name = m_MasterList->GetItemText(item);;
-	name = wxGetTextFromUser(_("Введите новое имя папки:"), _("Изменить папку?"), name, this);
+	name = wxGetTextFromUser(_("Input new folder name:"), _("Change folder?"), name, this);
 	if (name.IsEmpty()) return;
 
 	FbLocalDatabase database;
@@ -196,8 +196,8 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 
 	wxTreeItemId item = m_MasterList->GetSelection();
 	wxString name = m_MasterList->GetItemText(item);;
-	wxString msg = wxString::Format(_("Удалить папку «%s»?"), name.c_str());
-	int answer = wxMessageBox(msg, _("Удалить папку?"), wxOK | wxCANCEL, this);
+	wxString msg = wxString::Format(_("Delete folder \"%s\"?"), name.c_str());
+	int answer = wxMessageBox(msg, _("Delete folder?"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
 	FbLocalDatabase database;

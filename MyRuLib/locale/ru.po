@@ -579,7 +579,7 @@ msgstr "Изменить папку?"
 
 #: FbFrameFolder.cpp:199
 #, c-format
-msgid "Delete folder «%s»?"
+msgid "Delete folder \"%s\"?"
 msgstr "Удалить папку «%s»?"
 
 #: FbFrameFolder.cpp:200
