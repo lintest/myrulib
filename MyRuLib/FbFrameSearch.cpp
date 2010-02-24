@@ -40,7 +40,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title,
 {
 	if ( title.IsEmpty() ) return;
 
-	wxString msg = wxString::Format(_("Searching: \"%s\""), title.c_str());
+	wxString msg = _("Searching") + COLON + title;
 	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
 	frame->m_author = author;
 	frame->m_title = title;
@@ -57,6 +57,6 @@ void FbFrameSearch::UpdateBooklist()
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)
 {
 	wxString msg = wxString::Format(_("Nothing was found on pattern \"%s\""), m_title.c_str());
-	wxMessageBox(msg, _("Find"));
+	wxMessageBox(msg, _("Searching"));
 	Close();
 }

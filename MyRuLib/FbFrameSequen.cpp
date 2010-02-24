@@ -60,7 +60,7 @@ void FbFrameSequen::CreateControls()
 
 	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
 	m_MasterList->AddColumn(_("Ser."), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(_("Num."), 10, wxALIGN_RIGHT);
 	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);
 
@@ -77,7 +77,7 @@ wxToolBar * FbFrameSequen::CreateToolBar(long style, wxWindowID winid, const wxS
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	toolbar->AddTool(ID_SEQUENCE_BTN, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Найти серию по наименованию"));
+	toolbar->AddTool(ID_SEQUENCE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Найти серию по наименованию"));
 	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 	toolbar->Realize();
 	return toolbar;

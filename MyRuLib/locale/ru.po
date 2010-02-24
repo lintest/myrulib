@@ -661,8 +661,8 @@ msgstr "Информация о коллекции"
 
 #: FbFrameSearch.cpp:43
 #, c-format
-msgid "Searching: \"%s\""
-msgstr "Поиск: «%s»"
+msgid "Searching"
+msgstr "Поиск"
 
 #: FbFrameSearch.cpp:59
 #, c-format

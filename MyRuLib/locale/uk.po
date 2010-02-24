@@ -674,8 +674,8 @@ msgstr "Кількість"
 
 #: FbFrameSearch.cpp:43
 #, c-format
-msgid "Searching: \"%s\""
-msgstr "Пошук: \"%s\""
+msgid "Searching"
+msgstr "Пошук"
 
 #: FbFrameSearch.cpp:59
 #, c-format
