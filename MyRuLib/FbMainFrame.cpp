@@ -268,7 +268,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindAuthor.Create(toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor.SetFont(font);
 	toolbar->AddControl( &m_FindAuthor );
-	toolbar->AddTool(ID_FIND_AUTHOR, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск автора"));
+	toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск автора"));
 	toolbar->AddSeparator();
 
 	wxStaticText * text2 = new wxStaticText( toolbar, wxID_ANY, _(" Книга: "), wxDefaultPosition, wxDefaultSize, 0 );
@@ -280,7 +280,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindTitle.SetFont(font);
 	toolbar->AddControl( &m_FindTitle );
 
-	toolbar->AddTool(ID_FIND_TITLE, _("Найти"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
+	toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(ID_MODE_TREE, _("Иерархия"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Иерархия авторов и серий"));
 	toolbar->AddTool(ID_MODE_LIST, _("Список"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Простой список"));

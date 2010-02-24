@@ -663,16 +663,16 @@ msgstr "Даведка па калекцыі"
 
 #: FbFrameSearch.cpp:43
 #, c-format
-msgid "Поиск: «%s»"
+msgid "Searching: \"%s\""
 msgstr "Пошук: «%s»"
 
 #: FbFrameSearch.cpp:59
 #, c-format
-msgid "Ничего не найдено по шаблону «%s»"
+msgid "Nothing was found on pattern \"%s\""
 msgstr "Нічога не знойдзена па шаблёну «%s»"
 
 #: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
-msgid "Найти"
+msgid "Find"
 msgstr "Знайсці"
 
 #: FbFrameSequen.cpp:79

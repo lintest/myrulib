@@ -674,16 +674,16 @@ msgstr "Кількість"
 
 #: FbFrameSearch.cpp:43
 #, c-format
-msgid "Поиск: «%s»"
+msgid "Searching: \"%s\""
 msgstr "Пошук: \"%s\""
 
 #: FbFrameSearch.cpp:59
 #, c-format
-msgid "Ничего не найдено по шаблону «%s»"
+msgid "Nothing was found on pattern \"%s\""
 msgstr "Нічого не знайдено по шаблону \"%s\""
 
 #: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
-msgid "Найти"
+msgid "Find"
 msgstr "Знайти"
 
 #: FbFrameSequen.cpp:79

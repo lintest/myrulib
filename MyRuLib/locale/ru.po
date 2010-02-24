@@ -661,12 +661,12 @@ msgstr "Информация о коллекции"
 
 #: FbFrameSearch.cpp:43
 #, c-format
-msgid "Searching: «%s»"
+msgid "Searching: \"%s\""
 msgstr "Поиск: «%s»"
 
 #: FbFrameSearch.cpp:59
 #, c-format
-msgid "Nothing was found on pattern «%s»"
+msgid "Nothing was found on pattern \"%s\""
 msgstr "Ничего не найдено по шаблону «%s»"
 
 #: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
