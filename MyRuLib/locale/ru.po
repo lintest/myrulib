@@ -594,6 +594,10 @@ msgstr "Жанры"
 msgid "List of genres"
 msgstr "Список жанров"
 
+#: FbFrameHtml.cpp:69
+msgid "Comment:"
+msgstr "Комментарий:"
+
 #: FbFrameHtml.cpp:105 FbFrameInfo.cpp:187
 msgid "Select a file to export report"
 msgstr "Выберите файл для экспорта отчета"
@@ -610,19 +614,9 @@ msgstr "Удалить комментарий?"
 msgid "Information"
 msgstr "Информация"
 
-#: FbFrameInfo.cpp:57
-msgid "<CENTER>"
-msgstr "<CENTER>"
-
-#: FbFrameInfo.cpp:62
-#, c-format
-msgid "<B>%s</B>"
-msgstr "<B>%s</B>"
-
-#: FbFrameInfo.cpp:64
-#, c-format
-msgid "<TR><TD colspan=2>%s</TD></TR>"
-msgstr "<TR><TD colspan=2>%s</TD></TR>"
+#: FbFrameInfo.cpp:60
+msgid "Information about collection"
+msgstr "Информация о коллекции"
 
 #: FbFrameInfo.cpp:92
 msgid "Total quantity"
@@ -630,46 +624,36 @@ msgstr "Общее количество"
 
 #: FbFrameInfo.cpp:100
 #, c-format
-msgid "<TR><TD>Total books count:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Общее количество книг:</TD><TD align=right>%s</TD></TR>"
+msgid "Total books count:"
+msgstr "Общее количество книг:"
 
 #: FbFrameInfo.cpp:103
 msgid "Authors counting"
 msgstr "Подсчет авторов"
 
 #: FbFrameInfo.cpp:108
-#, c-format
-msgid "<TR><TD>Authors count:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"
+msgid "Authors count:"
+msgstr "Количество авторов:"
 
 #: FbFrameInfo.cpp:111
-#, c-format
-msgid "<TR><TD>Total files size, Mb:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Суммарный размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"
+msgid "Total files size, Mb:"
+msgstr "Суммарный размер файлов, Мб:"
 
 #: FbFrameInfo.cpp:112
-#, c-format
-msgid "<TR><TD>First reciept:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"
+msgid "First reciept:"
+msgstr "Первое поступление:"
 
 #: FbFrameInfo.cpp:113
-#, c-format
-msgid "<TR><TD>Last reciept:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"
+msgid "Last reciept:"
+msgstr "Последнее поступление:"
 
 #: FbFrameInfo.cpp:132 SettingsDlg.cpp:325
 msgid "File types"
 msgstr "Типы файлов"
 
-#: FbFrameInfo.cpp:142
-#, c-format
-msgid "<TD bgcolor=%s>%s</TD>"
-msgstr "<TD bgcolor=%s>%s</TD>"
-
-#: FbFrameInfo.cpp:143 FbFrameInfo.cpp:144
-#, c-format
-msgid "<TD align=right bgcolor=%s>%s</TD>"
-msgstr "<TD align=right bgcolor=%s>%s</TD>"
+#: FbFrameInfo.cpp:132
+msgid "Count"
+msgstr "Количество"
 
 #: FbFrameInfo.cpp:157 FbMainMenu.cpp:23
 msgid "Collection info"

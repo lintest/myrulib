@@ -394,7 +394,7 @@ int FbDatabase::NewId(const int iParam, int iIncrement)
 
 wxString FbDatabase::GetText(const int param)
 {
-	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
+	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
 
 	wxString sql = wxString::Format( wxT("SELECT text FROM %s WHERE id=?"), table);
 	wxSQLite3Statement stmt = PrepareStatement(sql);

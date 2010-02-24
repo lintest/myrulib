@@ -15,7 +15,7 @@ END_EVENT_TABLE()
 
 FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
 {
-	FbAuiMDIChildFrame::Create(parent, ID_FRAME_INFO, _("Информация"));
+	FbAuiMDIChildFrame::Create(parent, ID_FRAME_INFO, _("Information"));
 	CreateControls();
 	UpdateFonts(false);
 }
@@ -56,8 +56,10 @@ void FrameInfoThread::WriteTitle()
 {
 	m_html += _("<CENTER>");
 
+	const wxChar * title = _("Information about collection");
+
 	m_html += wxT("<TABLE>");
-	m_html += wxT("<TR><TD colspan=2 align=center>Информация о коллекции</TD></TR>");
+	m_html += wxString::Format(wxT("<TR><TD colspan=2 align=center>%s</TD></TR>"), title);
 	m_html += wxT("<TR><TD colspan=2 align=center>");
 	m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
 	m_html += wxT("</TD></TR>");
@@ -89,7 +91,8 @@ void FrameInfoThread::WriteCount()
 
 	wxString min, max, sum;
 
-	DoStep(_("Общее количество"));
+	DoStep(_("Total quantity"));
+
 	{
 		wxString sql = (wxT("SELECT COUNT(id), MIN(created), MAX(created), SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, created, file_size FROM books) AS books"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
@@ -97,20 +100,36 @@ void FrameInfoThread::WriteCount()
 			min = GetDate(result.GetInt(1));
 			max = GetDate(result.GetInt(2));
 			sum = F(result.GetInt(3));
-			m_html += wxString::Format(_("<TR><TD>Общее количество книг:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
+			const wxChar * title = _("Total books count:");
+			m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, F(result.GetInt(0)).c_str());
 		}
 	}
-	DoStep(_("Подсчет авторов"));
+
+	DoStep(_("Authors counting"));
+
 	{
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
-			m_html += wxString::Format(_("<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"), F(result.GetInt(0)).c_str());
+			const wxChar * title = _("Authors count:");
+			m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, F(result.GetInt(0)).c_str());
 		}
 	}
-	m_html += wxString::Format(_("<TR><TD>Суммарный размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"), sum.c_str());
-	m_html += wxString::Format(_("<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"), min.c_str());
-	m_html += wxString::Format(_("<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"), max.c_str());
+
+	{
+		const wxChar * title = _("Total files size, Mb:");
+		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, sum.c_str());
+	}
+
+	{
+		const wxChar * title = _("First reciept:");
+		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s г.</TD></TR>"), title, min.c_str());
+	}
+
+	{
+		const wxChar * title = _("Last reciept:");
+		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s г.</TD></TR>"), title, max.c_str());
+	}
 
 	m_html += wxT("</TABLE>");
 }
@@ -120,16 +139,21 @@ void FrameInfoThread::WriteTypes()
 	wxString colourBack = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW).GetAsString(wxC2S_HTML_SYNTAX);
 	wxString colourGrid = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW).GetAsString(wxC2S_HTML_SYNTAX);
 
+	const wxChar * text = wxT("<TD bgcolor=%s><B>%s</B></TD>");
+	const wxChar * msg1 = _("File extension");
+	const wxChar * msg2 = _("Count");
+	const wxChar * msg3 = _("Size, Kb");
+
 	m_html += wxT("<BR><BR>");
 	m_html += wxString::Format(wxT("<TABLE border=0 cellspacing=0 cellpadding=0 bgcolor=%s><TR><TD>"), colourGrid.c_str());
 	m_html += wxT("<TABLE border=0 cellspacing=1 cellpadding=5 width=100%>");
 	m_html += wxT("<TR>");
-	m_html += wxString::Format(wxT("<TD bgcolor=%s><B>Тип файла</B></TD>"), colourBack.c_str());
-	m_html += wxString::Format(wxT("<TD bgcolor=%s><B>Количество</B></TD>"), colourBack.c_str());
-	m_html += wxString::Format(wxT("<TD bgcolor=%s><B>Размер, Кб</B></TD>"), colourBack.c_str());
+	m_html += wxString::Format(text, colourBack.c_str(), msg1);
+	m_html += wxString::Format(text, colourBack.c_str(), msg2);
+	m_html += wxString::Format(text, colourBack.c_str(), msg3);
 	m_html += wxT("</TR>");
 
-	DoStep(_("Типы файлов"));
+	DoStep(_("File types"));
 	{
 		wxString sql = (wxT("\
 			SELECT file_type, COUNT(DISTINCT id) AS id, SUM(file_size)/1024 \
@@ -139,9 +163,9 @@ void FrameInfoThread::WriteTypes()
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		while (result.NextRow()) {
 			m_html += wxT("<TR>");
-			m_html += wxString::Format(_("<TD bgcolor=%s>%s</TD>"), colourBack.c_str(), result.GetString(0).c_str());
-			m_html += wxString::Format(_("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(1)).c_str());
-			m_html += wxString::Format(_("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(2)).c_str());
+			m_html += wxString::Format(wxT("<TD bgcolor=%s>%s</TD>"), colourBack.c_str(), result.GetString(0).c_str());
+			m_html += wxString::Format(wxT("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(1)).c_str());
+			m_html += wxString::Format(wxT("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(2)).c_str());
 			m_html += wxT("</TR>");
 		}
 	}
@@ -154,7 +178,7 @@ void * FrameInfoThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
-	DoStart(3, _("Информация о коллекции"));
+	DoStart(3, _("Collection info"));
 
 	try {
 		WriteTitle();
@@ -184,10 +208,10 @@ void FbFrameInfo::OnSave(wxCommandEvent& event)
 {
 	wxFileDialog dlg (
 		this,
-		_("Выберите файл для экспорта отчета"),
+		_("Select a file to export report"),
 		wxEmptyString,
 		wxT("lib_info.html"),
-		_("Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"),
+		_("HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
 	);
 

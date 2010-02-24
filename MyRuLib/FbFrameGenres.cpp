@@ -10,7 +10,7 @@ BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_GENRES, _("Жанры"))
+	:FbFrameBase(parent, ID_FRAME_GENRES, _("Genres"))
 {
 	CreateControls();
 }
@@ -33,7 +33,7 @@ void FbFrameGenres::CreateControls()
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
 	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
-	m_MasterList->AddColumn (_("Список жанров"), 100, wxALIGN_LEFT);
+	m_MasterList->AddColumn (_("List of genres"), 100, wxALIGN_LEFT);
 	m_MasterList->SetFocus();
 	FbGenres::FillControl(m_MasterList);
 

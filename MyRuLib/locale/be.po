@@ -588,92 +588,77 @@ msgid "Delete folder?"
 msgstr "Знішчыць папку?"
 
 #: FbFrameGenres.cpp:13 FbMainMenu.cpp:9
-msgid "Жанры"
+msgid "Genres"
 msgstr "Жанры"
 
 #: FbFrameGenres.cpp:36
-msgid "Список жанров"
+msgid "List of genres"
 msgstr "Спіс жанраў"
 
+#: FbFrameHtml.cpp:69
+msgid "Comment:"
+msgstr "Каментар:"
+
 #: FbFrameHtml.cpp:105 FbFrameInfo.cpp:187
-msgid "Выберите файл для экспорта отчета"
+msgid "Select a file to export report"
 msgstr "Азначце файл для экспарту справаздачы"
 
 #: FbFrameHtml.cpp:108 FbFrameInfo.cpp:190
-msgid "Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"
+msgid "HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
 msgstr "Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Усе файлы (*.*)|*.*"
 
 #: FbFrameHtml.cpp:209
-msgid "Удалить комментарий?"
+msgid "Remove comment?"
 msgstr "Знішчыць каментар?"
 
 #: FbFrameInfo.cpp:18
 msgid "Информация"
 msgstr "Даведка"
 
-#: FbFrameInfo.cpp:57
-msgid "<CENTER>"
-msgstr ""
-
-#: FbFrameInfo.cpp:62
-#, c-format
-msgid "<B>%s</B>"
-msgstr ""
-
-#: FbFrameInfo.cpp:64
-#, c-format
-msgid "<TR><TD colspan=2>%s</TD></TR>"
-msgstr ""
+#: FbFrameInfo.cpp:60
+msgid "Information about collection"
+msgstr "Даведка аб калекцыі"
 
 #: FbFrameInfo.cpp:92
-msgid "Общее количество"
+msgid "Total quantity"
 msgstr "Агульная колькасць"
 
 #: FbFrameInfo.cpp:100
 #, c-format
-msgid "<TR><TD>Общее количество книг:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Агушльная колькасць кніг:</TD><TD align=right>%s</TD></TR>"
+msgid "Total books count:"
+msgstr "Агушльная колькасць кніг:"
 
 #: FbFrameInfo.cpp:103
-msgid "Подсчет авторов"
+msgid "Authors counting"
 msgstr "Падлік аўтараў"
 
 #: FbFrameInfo.cpp:108
 #, c-format
-msgid "<TR><TD>Количество авторов:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Колькасць аўтараў:</TD><TD align=right>%s</TD></TR>"
+msgid "Authors count:"
+msgstr "Колькасць аўтараў:"
 
 #: FbFrameInfo.cpp:111
-#, c-format
-msgid "<TR><TD>Суммарный размер файлов, Мб:</TD><TD align=right>%s</TD></TR>"
-msgstr "<TR><TD>Агульны памер файлаў, Мб:</TD><TD align=right>%s</TD></TR>"
+msgid "Total files size, Mb:"
+msgstr "Агульны памер файлаў, Мб:"
 
 #: FbFrameInfo.cpp:112
-#, c-format
-msgid "<TR><TD>Первое поступление:</TD><TD align=right>%s г.</TD></TR>"
-msgstr "<TR><TD>Першае паступленне:</TD><TD align=right>%s г.</TD></TR>"
+msgid "First reciept:"
+msgstr "Першае паступленне:"
 
 #: FbFrameInfo.cpp:113
-#, c-format
-msgid "<TR><TD>Последнее поступление:</TD><TD align=right>%s г.</TD></TR>"
-msgstr "<TR><TD>Апошняе паступленне:</TD><TD align=right>%s г.</TD></TR>"
+msgid "Last reciept:"
+msgstr "Апошняе паступленне:"
 
 #: FbFrameInfo.cpp:132 SettingsDlg.cpp:325
-msgid "Типы файлов"
+msgid "File types"
 msgstr "Тыпы файлаў"
 
-#: FbFrameInfo.cpp:142
-#, c-format
-msgid "<TD bgcolor=%s>%s</TD>"
-msgstr ""
-
-#: FbFrameInfo.cpp:143 FbFrameInfo.cpp:144
-#, c-format
-msgid "<TD align=right bgcolor=%s>%s</TD>"
-msgstr ""
+#: FbFrameInfo.cpp:132
+msgid "Count"
+msgstr "Колькасць"
 
 #: FbFrameInfo.cpp:157 FbMainMenu.cpp:23
-msgid "Информация о коллекции"
+msgid "Collection info"
 msgstr "Даведка па калекцыі"
 
 #: FbFrameSearch.cpp:43

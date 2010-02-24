@@ -66,7 +66,7 @@ void FbFrameHtml::CreateControls()
 	wxBoxSizer* bSizerSubject;
 	bSizerSubject = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * staticText = new wxStaticText( panel, wxID_ANY, _("Комментарий:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * staticText = new wxStaticText( panel, wxID_ANY, _("Comment:"), wxDefaultPosition, wxDefaultSize, 0 );
 	staticText->Wrap( -1 );
 	bSizerSubject->Add( staticText, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
@@ -75,8 +75,8 @@ void FbFrameHtml::CreateControls()
 
 	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar.AddTool( ID_HTML_SUBMIT, _("Добавить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_ToolBar.AddTool( ID_HTML_MODIFY, _("Изменить"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.AddTool( ID_HTML_SUBMIT, _("Append"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.AddTool( ID_HTML_MODIFY, _("Modify"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 	m_ToolBar.Realize();
 
@@ -102,10 +102,10 @@ void FbFrameHtml::OnSave(wxCommandEvent& event)
 {
 	wxFileDialog dlg (
 		this,
-		_("Выберите файл для экспорта отчета"),
+		_("Select a file to export report"),
 		wxEmptyString,
 		wxT("lib_info.html"),
-		_("Файы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"),
+		_("HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
 	);
 
@@ -123,7 +123,6 @@ void FbFrameHtml::OnInfoUpdate(wxCommandEvent& event)
 	if (event.GetInt() == m_id) {
 		wxString html = event.GetString();
 		m_info.SetPage(html);
-//		wxMessageBox(html);
 	}
 }
 
@@ -206,7 +205,7 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 
 	if ( event.GetLinkInfo().GetTarget() == wxT("D") )
 	{
-		int res = wxMessageBox(_("Удалить комментарий?"), _("Confirmation"), wxOK|wxCANCEL);
+		int res = wxMessageBox(_("Remove comment?"), _("Confirmation"), wxOK|wxCANCEL);
 		if (res != wxOK) return;
 
 		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
