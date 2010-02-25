@@ -677,16 +677,20 @@ msgstr "Найти"
 msgid "Find series by name"
 msgstr "Найти серию по наименованию"
 
+#: FbFrameSequen.cpp:249
+msgid "Series name:"
+msgstr "Наименование серии:"
+
 #: FbFrameSequen.cpp:268
-msgid "Add series"
+msgid "Append series"
 msgstr "Добавить серию"
 
 #: FbFrameSequen.cpp:276
-msgid "Change series"
+msgid "Modify series"
 msgstr "Изменить серию"
 
 #: FbFrameSequen.cpp:342
-msgid "\"Series name\" field not filled"
+msgid "\"Series name\" field is empty"
 msgstr "Не заполнено наименование серии."
 
 #: FbFrameSequen.cpp:347
@@ -694,12 +698,8 @@ msgid "Series aleready exists"
 msgstr "Такая серия уже существует."
 
 #: FbFrameSequen.cpp:350
-msgid ""
-"\n"
-"Merge series?"
-msgstr ""
-"\n"
-"Объединить две серии?"
+msgid "Merge series?"
+msgstr "Объединить две серии?"
 
 #: FbFrameSequen.cpp:406
 #, c-format
@@ -1181,102 +1181,90 @@ msgstr "Домоводство"
 #: FbImportThread.cpp:91 FbImportThread.cpp:469
 #, c-format
 msgid "Import file %s"
-msgstr ""
+msgstr "Импорт файла %s"
 
 #: FbImportThread.cpp:113
 #, c-format
 msgid "Skip entry %s"
-msgstr ""
+msgstr "Пропущен элемент %s"
 
 #: FbImportThread.cpp:118
 #, c-format
 msgid "Import zip entry %s"
-msgstr ""
+msgstr "Импорт элемента %s"
 
 #: FbImportThread.cpp:151
 #, c-format
 msgid "XML parsing error: '%s' at line %d file %s"
-msgstr ""
+msgstr "Ошибка чтения XML: '%s' в строке %d файла %s"
 
 #: FbImportThread.cpp:289
 #, c-format
 msgid "File already exists %s"
-msgstr ""
+msgstr "Файл уже импортирован %s"
 
 #: FbImportThread.cpp:294
 #, c-format
 msgid "Add alternative %s"
-msgstr ""
+msgstr "Добавлено альтернативное размещение %s"
 
 #: FbImportThread.cpp:340
 #, c-format
 msgid "Import zip %s"
-msgstr ""
+msgstr "Импорт файла zip %s"
 
 #: FbImportThread.cpp:415
 #, c-format
 msgid "FB2 and FBD not found %s"
-msgstr ""
+msgstr "Не найдены файлы FB2 и FBD"
 
 #: FbImportThread.cpp:416
 #, c-format
 msgid "Zip read error %s"
-msgstr ""
+msgstr "Ошибка чтения zip %s"
 
 #: FbImportThread.cpp:459
 #, c-format
 msgid "Start import %d file(s)"
-msgstr ""
+msgstr "Начат импорт %d файл(ов)"
 
 #: FbImportThread.cpp:463
 #, c-format
 msgid "Finish import %d file(s)"
-msgstr ""
+msgstr "Завершен импорт %d файл(ов)"
 
 #: FbImportThread.cpp:528
 #, c-format
 msgid "Skip file %s"
-msgstr ""
+msgstr "Пропущен файл %s"
 
 #: FbImportThread.cpp:534
 #, c-format
 msgid "Import subdirectory %s"
-msgstr ""
+msgstr "Импорт поддиректории %s"
 
 #: FbImportThread.cpp:550
 #, c-format
 msgid "Start import directory %s"
-msgstr ""
+msgstr "Начат импорт директории %s"
 
 #: FbImportThread.cpp:554 ZipReader.cpp:248
 #, c-format
 msgid "Can't open directory %s"
-msgstr ""
+msgstr "Не удалось открыть директорию %s"
 
 #: FbImportThread.cpp:570
 #, c-format
 msgid "Finish import directory %s"
-msgstr ""
+msgstr "Завершен импорт директории %s"
 
 #: FbLogStream.cpp:55
-msgid "Fatal error: "
-msgstr ""
+msgid "Fatal error"
+msgstr "Фатальная ошибка"
 
 #: FbLogStream.cpp:56
 msgid "Program aborted."
-msgstr ""
-
-#: FbLogStream.cpp:66
-msgid "E "
-msgstr ""
-
-#: FbLogStream.cpp:71
-msgid "! "
-msgstr ""
-
-#: FbLogStream.cpp:76
-msgid "> "
-msgstr ""
+msgstr "Программа прервана."
 
 #: FbMainFrame.cpp:190
 msgid "Info messages"

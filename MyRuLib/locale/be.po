@@ -676,505 +676,509 @@ msgid "Find"
 msgstr "Знайсці"
 
 #: FbFrameSequen.cpp:79
-msgid "Найти серию по наименованию"
+msgid "Find series by name"
 msgstr "Знайсці серыя па найменню"
 
+#: FbFrameSequen.cpp:249
+msgid "Series name:"
+msgstr "Найменне серыі:"
+
 #: FbFrameSequen.cpp:268
-msgid "Добавить серию"
+msgid "Append series"
 msgstr "Дадаць серыю"
 
 #: FbFrameSequen.cpp:276
-msgid "Изменить серию"
+msgid "Modify series"
 msgstr "Змяніць серыю"
 
 #: FbFrameSequen.cpp:342
-msgid "Не заполнено наименование серии."
+msgid "\"Series name\" field is empty"
 msgstr "Не запоўнена найменне серыі"
 
 #: FbFrameSequen.cpp:347
-msgid "Такая серия уже существует."
+msgid "Series aleready exists"
 msgstr "Такая серыя ўжо існуе"
 
 #: FbFrameSequen.cpp:350
-msgid "Объединить две серии?"
+msgid "Merge series?"
 msgstr "Аб'яднаць дзве серыі?"
 
 #: FbFrameSequen.cpp:406
 #, c-format
-msgid "Удалить серию «%s»?"
+msgid "Delete series «%s»?"
 msgstr "Знішчыць серыю «%s»?"
 
 #: FbGenres.cpp:17
-msgid "Фантастика"
-msgstr ""
+msgid "Fiction"
+msgstr "Фантастика"
 
 #: FbGenres.cpp:18
-msgid "Детективы и Триллеры"
-msgstr ""
+msgid "Mysteries and Thrillers"
+msgstr "Детективы и Триллеры"
 
 #: FbGenres.cpp:19
-msgid "Проза"
-msgstr ""
+msgid "Prose"
+msgstr "Проза"
 
 #: FbGenres.cpp:20
-msgid "Любовные романы"
-msgstr ""
+msgid "Romance"
+msgstr "Любовные романы"
 
 #: FbGenres.cpp:21 FbGenres.cpp:77
-msgid "Приключения"
-msgstr ""
+msgid "Adventures"
+msgstr "Приключения"
 
 #: FbGenres.cpp:22 FbGenres.cpp:85
-msgid "Детская литература"
-msgstr ""
+msgid "Children literature"
+msgstr "Детская литература"
 
 #: FbGenres.cpp:23
-msgid "Поэзия, Драматургия"
-msgstr ""
+msgid "Poetry, dramaturgy"
+msgstr "Поэзия, Драматургия"
 
 #: FbGenres.cpp:24
-msgid "Старинное"
-msgstr ""
+msgid "Antique"
+msgstr "Старинное"
 
 #: FbGenres.cpp:25
-msgid "Наука, Образование"
-msgstr ""
+msgid "Science, Education"
+msgstr "Наука, Образование"
 
 #: FbGenres.cpp:26
-msgid "Компьютеры и Интернет"
-msgstr ""
+msgid "PC, Internet"
+msgstr "Компьютеры и Интернет"
 
 #: FbGenres.cpp:27 FbGenres.cpp:121
-msgid "Справочная литература"
-msgstr ""
+msgid "References"
+msgstr "Справочная литература"
 
 #: FbGenres.cpp:28 FbGenres.cpp:126
-msgid "Документальная литература"
-msgstr ""
+msgid "Documentary literature"
+msgstr "Документальная литература"
 
 #: FbGenres.cpp:29
-msgid "Религия и духовность"
-msgstr ""
+msgid "Religion and Spirituality"
+msgstr "Религия и духовность"
 
 #: FbGenres.cpp:30 FbGenres.cpp:134
-msgid "Юмор"
-msgstr ""
+msgid "Humour"
+msgstr "Юмор"
 
 #: FbGenres.cpp:31
-msgid "Домоводство (Дом и семья)"
-msgstr ""
+msgid "Home Economics (Home and Family)"
+msgstr "Домоводство (Дом и семья)"
 
 #: FbGenres.cpp:36
-msgid "Альтернативная история"
-msgstr ""
+msgid "Alternative History"
+msgstr "Альтернативная история"
 
 #: FbGenres.cpp:37
-msgid "Боевая фантастика"
-msgstr ""
+msgid "Fighting fantasy"
+msgstr "Боевая фантастика"
 
 #: FbGenres.cpp:38
-msgid "Эпическая фантастика"
-msgstr ""
+msgid "Epic fantasy"
+msgstr "Эпическая фантастика"
 
 #: FbGenres.cpp:39
-msgid "Героическая фантастика"
-msgstr ""
+msgid "Heroic fantasy"
+msgstr "Героическая фантастика"
 
 #: FbGenres.cpp:40
-msgid "Детективная фантастика"
-msgstr ""
+msgid "Detective Fiction"
+msgstr "Детективная фантастика"
 
 #: FbGenres.cpp:41
-msgid "Киберпанк"
-msgstr ""
+msgid "Cyberpunk"
+msgstr "Киберпанк"
 
 #: FbGenres.cpp:42
-msgid "Космическая фантастика"
-msgstr ""
+msgid "Space Fiction"
+msgstr "Космическая фантастика"
 
 #: FbGenres.cpp:43
-msgid "Социально-психологическая фантастика"
-msgstr ""
+msgid "Socio-psychological fiction"
+msgstr "Социально-психологическая фантастика"
 
 #: FbGenres.cpp:44
-msgid "Ужасы и Мистика"
-msgstr ""
+msgid "Horror and Mysticism"
+msgstr "Ужасы и Мистика"
 
 #: FbGenres.cpp:45
-msgid "Юмористическая фантастика"
-msgstr ""
+msgid "Humorous Fiction"
+msgstr "Юмористическая фантастика"
 
 #: FbGenres.cpp:46
-msgid "Фэнтези"
-msgstr ""
+msgid "Fantasy"
+msgstr "Фэнтези"
 
 #: FbGenres.cpp:47
-msgid "Научная Фантастика"
-msgstr ""
+msgid "Science Fiction"
+msgstr "Научная Фантастика"
 
 #: FbGenres.cpp:48
-msgid "Классический детектив"
-msgstr ""
+msgid "Classic mystery"
+msgstr "Классический детектив"
 
 #: FbGenres.cpp:49
-msgid "Полицейский детектив"
-msgstr ""
+msgid "Police mystery"
+msgstr "Полицейский детектив"
 
 #: FbGenres.cpp:50
-msgid "Боевик"
-msgstr ""
+msgid "Action"
+msgstr "Боевик"
 
 #: FbGenres.cpp:51
-msgid "Иронический детектив"
-msgstr ""
+msgid "Ironic mystery"
+msgstr "Иронический детектив"
 
 #: FbGenres.cpp:52
-msgid "Исторический детектив"
-msgstr ""
+msgid "Historical mystery"
+msgstr "Исторический детектив"
 
 #: FbGenres.cpp:53
 msgid "Шпионский детектив"
-msgstr ""
+msgstr "Spy mystery"
 
 #: FbGenres.cpp:54
 msgid "Криминальный детектив"
-msgstr ""
+msgstr "Criminal mystery"
 
 #: FbGenres.cpp:55
 msgid "Политический детектив"
-msgstr ""
+msgstr "Political mystery"
 
 #: FbGenres.cpp:56
-msgid "Маньяки"
-msgstr ""
+msgid "Maniacs"
+msgstr "Маньяки"
 
 #: FbGenres.cpp:57
-msgid "Крутой детектив"
-msgstr ""
+msgid "Action mystery"
+msgstr "Крутой детектив"
 
 #: FbGenres.cpp:58
-msgid "Триллер"
-msgstr ""
+msgid "Thriller"
+msgstr "Триллер"
 
 #: FbGenres.cpp:59
-msgid "Детектив"
-msgstr ""
+msgid "Mystery"
+msgstr "Детектив"
 
 #: FbGenres.cpp:60
-msgid "Классическая проза"
-msgstr ""
+msgid "Classical prose"
+msgstr "Классическая проза"
 
 #: FbGenres.cpp:61
-msgid "Историческая проза"
-msgstr ""
+msgid "Historical prose"
+msgstr "Историческая проза"
 
 #: FbGenres.cpp:62
-msgid "Современная проза"
-msgstr ""
+msgid "Modern prose"
+msgstr "Современная проза"
 
 #: FbGenres.cpp:63
-msgid "Контркультура"
-msgstr ""
+msgid "Counterculture"
+msgstr "Контркультура"
 
 #: FbGenres.cpp:64
-msgid "Русская классическая проза"
-msgstr ""
+msgid "Russian Classical prose"
+msgstr "Русская классическая проза"
 
 #: FbGenres.cpp:65
-msgid "Советская классическая проза"
-msgstr ""
+msgid "Soviet Classical prose"
+msgstr "Советская классическая проза"
 
 #: FbGenres.cpp:66
-msgid "Современные любовные романы"
-msgstr ""
+msgid "Modern romance novels"
+msgstr "Современные любовные романы"
 
 #: FbGenres.cpp:67
-msgid "Исторические любовные романы"
-msgstr ""
+msgid "historical romance novels"
+msgstr "Исторические любовные романы"
 
 #: FbGenres.cpp:68
-msgid "Остросюжетные любовные романы"
-msgstr ""
+msgid "Action romance novels"
+msgstr "Остросюжетные любовные романы"
 
 #: FbGenres.cpp:69
-msgid "Короткие любовные романы"
-msgstr ""
+msgid "Short romance novels"
+msgstr "Короткие любовные романы"
 
 #: FbGenres.cpp:70
-msgid "Эротика"
-msgstr ""
+msgid "Erotic novels"
+msgstr "Эротика"
 
 #: FbGenres.cpp:71
-msgid "Вестерн"
-msgstr ""
+msgid "Western"
+msgstr "Вестерн"
 
 #: FbGenres.cpp:72
-msgid "Исторические приключения"
-msgstr ""
+msgid "Historical adventures"
+msgstr "Исторические приключения"
 
 #: FbGenres.cpp:73
-msgid "Приключения про индейцев"
-msgstr ""
+msgid "Adventures about Indians"
+msgstr "Приключения про индейцев"
 
 #: FbGenres.cpp:74
-msgid "Морские приключения"
-msgstr ""
+msgid "Sea adventures"
+msgstr "Морские приключения"
 
 #: FbGenres.cpp:75
-msgid "Путешествия и география"
-msgstr ""
+msgid "Travel and Geography"
+msgstr "Путешествия и география"
 
 #: FbGenres.cpp:76
-msgid "Природа и животные"
-msgstr ""
+msgid "Nature and Animals"
+msgstr "Природа и животные"
 
 #: FbGenres.cpp:78
-msgid "Сказка"
-msgstr ""
+msgid "Tales"
+msgstr "Сказка"
 
 #: FbGenres.cpp:79
-msgid "Детские стихи"
-msgstr ""
+msgid "Children poetry"
+msgstr "Детские стихи"
 
 #: FbGenres.cpp:80
-msgid "Детскиая проза"
-msgstr ""
+msgid "Childern prose"
+msgstr "Детскиая проза"
 
 #: FbGenres.cpp:81
-msgid "Детская фантастика"
-msgstr ""
+msgid "Children fiction"
+msgstr "Детская фантастика"
 
 #: FbGenres.cpp:82
-msgid "Детские остросюжетные"
-msgstr ""
+msgid "Children action"
+msgstr "Детские остросюжетные"
 
 #: FbGenres.cpp:83
-msgid "Детские приключения"
-msgstr ""
+msgid "Children adventures"
+msgstr "Детские приключения"
 
 #: FbGenres.cpp:84
-msgid "Детская образовательная литература"
-msgstr ""
+msgid "Children education"
+msgstr "Детская образовательная литература"
 
 #: FbGenres.cpp:86
-msgid "Поэзия"
-msgstr ""
+msgid "Poetry"
+msgstr "Поэзия"
 
 #: FbGenres.cpp:87
-msgid "Драматургия"
-msgstr ""
+msgid "Dramaturgy"
+msgstr "Драматургия"
 
 #: FbGenres.cpp:88
-msgid "Античная литература"
-msgstr ""
+msgid "Antique Literature"
+msgstr "Античная литература"
 
 #: FbGenres.cpp:89
-msgid "Европейская старинная литература"
-msgstr ""
+msgid "European ancient literature"
+msgstr "Европейская старинная литература"
 
 #: FbGenres.cpp:90
-msgid "Древнерусская литература"
-msgstr ""
+msgid "Russian ancient literature"
+msgstr "Древнерусская литература"
 
 #: FbGenres.cpp:91
-msgid "Древневосточная литература"
-msgstr ""
+msgid "Oriental ancient literature"
+msgstr "Древневосточная литература"
 
 #: FbGenres.cpp:92
-msgid "Мифы. Легенды. Эпос"
-msgstr ""
+msgid "Myths. Legends. Epic."
+msgstr "Мифы. Легенды. Эпос."
 
 #: FbGenres.cpp:93
-msgid "Старинная литература"
-msgstr ""
+msgid "Ancient literature"
+msgstr "Старинная литература"
 
 #: FbGenres.cpp:94
-msgid "История"
-msgstr ""
+msgid "History"
+msgstr "История"
 
 #: FbGenres.cpp:95
-msgid "Психология"
-msgstr ""
+msgid "Psychology"
+msgstr "Психология"
 
 #: FbGenres.cpp:96
-msgid "Культурология"
-msgstr ""
+msgid "Cultural"
+msgstr "Культурология"
 
 #: FbGenres.cpp:97
-msgid "Религиоведение"
-msgstr ""
+msgid "Religious"
+msgstr "Религиоведение"
 
 #: FbGenres.cpp:98
-msgid "Философия"
-msgstr ""
+msgid "Philosophy"
+msgstr "Философия"
 
 #: FbGenres.cpp:99
-msgid "Политика"
-msgstr ""
+msgid "Politology"
+msgstr "Политика"
 
 #: FbGenres.cpp:100
-msgid "Деловая литература"
-msgstr ""
+msgid "Business literature"
+msgstr "Деловая литература"
 
 #: FbGenres.cpp:101
-msgid "Юриспруденция"
-msgstr ""
+msgid "Law"
+msgstr "Юриспруденция"
 
 #: FbGenres.cpp:102
-msgid "Языкознание"
-msgstr ""
+msgid "Linguistics"
+msgstr "Языкознание"
 
 #: FbGenres.cpp:103
-msgid "Медицина"
-msgstr ""
+msgid "Medical"
+msgstr "Медицина"
 
 #: FbGenres.cpp:104
-msgid "Физика"
-msgstr ""
+msgid "Physics"
+msgstr "Физика"
 
 #: FbGenres.cpp:105
-msgid "Математика"
-msgstr ""
+msgid "Mathematics"
+msgstr "Математика"
 
 #: FbGenres.cpp:106
-msgid "Химия"
-msgstr ""
+msgid "Chemistry"
+msgstr "Химия"
 
 #: FbGenres.cpp:107
-msgid "Биология"
-msgstr ""
+msgid "Biology"
+msgstr "Биология"
 
 #: FbGenres.cpp:108
-msgid "Технические науки"
-msgstr ""
+msgid "Engineering"
+msgstr "Технические науки"
 
 #: FbGenres.cpp:109
-msgid "Научная литература"
-msgstr ""
+msgid "Scientific literature"
+msgstr "Научная литература"
 
 #: FbGenres.cpp:111
-msgid "Программирование"
-msgstr ""
+msgid "Programming"
+msgstr "Программирование"
 
 #: FbGenres.cpp:112
-msgid "Компьютерное железо (аппаратное обеспечение)"
-msgstr ""
+msgid "Computer hardware"
+msgstr "Компьютерное железо (аппаратное обеспечение)"
 
 #: FbGenres.cpp:113
-msgid "Программы"
-msgstr ""
+msgid "Software"
+msgstr "Программы"
 
 #: FbGenres.cpp:114
-msgid "Базы данных"
-msgstr ""
+msgid "Databases"
+msgstr "Базы данных"
 
 #: FbGenres.cpp:115
-msgid "ОС и Сети"
-msgstr ""
+msgid "OS and Network"
+msgstr "ОС и Сети"
 
 #: FbGenres.cpp:116
-msgid "Компьтерная литература"
-msgstr ""
+msgid "Computer literature"
+msgstr "Компьтерная литература"
 
 #: FbGenres.cpp:117
-msgid "Энциклопедии"
-msgstr ""
+msgid "Encyclopedias"
+msgstr "Энциклопедии"
 
 #: FbGenres.cpp:118
-msgid "Словари"
-msgstr ""
+msgid "Dictionaries"
+msgstr "Словари"
 
 #: FbGenres.cpp:119
-msgid "Справочники"
-msgstr ""
+msgid "Directories"
+msgstr "Справочники"
 
 #: FbGenres.cpp:120
-msgid "Руководства"
-msgstr ""
+msgid "Manuals"
+msgstr "Руководства"
 
 #: FbGenres.cpp:122
-msgid "Биографии и Мемуары"
-msgstr ""
+msgid "Biographies and Memoirs"
+msgstr "Биографии и Мемуары"
 
 #: FbGenres.cpp:123
-msgid "Публицистика"
-msgstr ""
+msgid "Publicism"
+msgstr "Публицистика"
 
 #: FbGenres.cpp:124
-msgid "Критика"
-msgstr ""
+msgid "Criticism"
+msgstr "Критика"
 
 #: FbGenres.cpp:125
-msgid "Искусство и Дизайн"
-msgstr ""
+msgid "Art and Design"
+msgstr "Искусство и Дизайн"
 
 #: FbGenres.cpp:127
-msgid "Религия"
-msgstr ""
+msgid "Religion"
+msgstr "Религия"
 
 #: FbGenres.cpp:128
-msgid "Эзотерика"
-msgstr ""
+msgid "Esoterica"
+msgstr "Эзотерика"
 
 #: FbGenres.cpp:129
-msgid "Самосовершенствование"
-msgstr ""
+msgid "Self-improvement"
+msgstr "Самосовершенствование"
 
 #: FbGenres.cpp:130
-msgid "Религионая литература"
-msgstr ""
+msgid "Religious Literature"
+msgstr "Религиозная литература"
 
 #: FbGenres.cpp:131
-msgid "Анекдоты"
-msgstr ""
+msgid "Jokes"
+msgstr "Анекдоты"
 
 #: FbGenres.cpp:132
-msgid "Юмористическая проза"
-msgstr ""
+msgid "Humorous prose"
+msgstr "Юмористическая проза"
 
 #: FbGenres.cpp:133
-msgid "Юмористические стихи"
-msgstr ""
+msgid "Humorous poetry"
+msgstr "Юмористические стихи"
 
 #: FbGenres.cpp:135
-msgid "Кулинария"
-msgstr ""
+msgid "Cooking"
+msgstr "Кулинария"
 
 #: FbGenres.cpp:136
-msgid "Домашние животные"
-msgstr ""
+msgid "Pets"
+msgstr "Домашние животные"
 
 #: FbGenres.cpp:137
-msgid "Хобби и ремесла"
-msgstr ""
+msgid "Hobbies and Crafts"
+msgstr "Хобби и ремесла"
 
 #: FbGenres.cpp:138
-msgid "Развлечения"
-msgstr ""
+msgid "Entertainment"
+msgstr "Развлечения"
 
 #: FbGenres.cpp:139
-msgid "Здоровье"
-msgstr ""
+msgid "Health"
+msgstr "Здоровье"
 
 #: FbGenres.cpp:140
-msgid "Сад и огород"
-msgstr ""
+msgid "Gardening"
+msgstr "Сад и огород"
 
 #: FbGenres.cpp:141
-msgid "Сделай сам"
-msgstr ""
+msgid "Handmade"
+msgstr "Сделай сам"
 
 #: FbGenres.cpp:142
-msgid "Спорт"
-msgstr ""
+msgid "Sport"
+msgstr "Спорт"
 
 #: FbGenres.cpp:143
-msgid "Эротика, Секс"
-msgstr ""
+msgid "Erotic, sex"
+msgstr "Эротика, Секс"
 
 #: FbGenres.cpp:144
-msgid "Домоводство"
-msgstr ""
+msgid "Household"
+msgstr "Домоводство"
 
 #: FbImportThread.cpp:91 FbImportThread.cpp:469
 #, c-format
@@ -1257,24 +1261,12 @@ msgid "Finish import directory %s"
 msgstr "Завершаны імпарт дырэкторыі %s"
 
 #: FbLogStream.cpp:55
-msgid "Fatal error: "
-msgstr "Смяротная памылка: "
+msgid "Fatal error"
+msgstr "Смяротная памылка"
 
 #: FbLogStream.cpp:56
 msgid "Program aborted."
 msgstr "Праграма перапынена"
-
-#: FbLogStream.cpp:66
-msgid "E "
-msgstr ""
-
-#: FbLogStream.cpp:71
-msgid "! "
-msgstr ""
-
-#: FbLogStream.cpp:76
-msgid "> "
-msgstr ""
 
 #: FbMainFrame.cpp:190
 msgid "Информационные сообщения"
