@@ -1272,24 +1272,12 @@ msgid "Finish import directory %s"
 msgstr "Кінець імпорту каталогу %s"
 
 #: FbLogStream.cpp:55
-msgid "Fatal error: "
-msgstr "Фатальна помилка: "
+msgid "Fatal error"
+msgstr "Фатальна помилка"
 
 #: FbLogStream.cpp:56
 msgid "Program aborted."
 msgstr "Програма перервана. "
-
-#: FbLogStream.cpp:66
-msgid "E "
-msgstr "E "
-
-#: FbLogStream.cpp:71
-msgid "! "
-msgstr "! "
-
-#: FbLogStream.cpp:76
-msgid "> "
-msgstr "> "
 
 #: FbMainFrame.cpp:190
 msgid "Информационные сообщения"
