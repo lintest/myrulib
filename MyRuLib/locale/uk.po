@@ -1420,91 +1420,91 @@ msgid "Website"
 msgstr "Офіційний сайт"
 
 #: FbMainMenu.cpp:53 FbMainMenu.cpp:69
-msgid "Добавить файл\tCtrl+N"
-msgstr "Додати файл\tCtrl+N"
+msgid "Add file"
+msgstr "Додати файл"
 
 #: FbMainMenu.cpp:54 FbMainMenu.cpp:70
-msgid "Добавить директорию\tCtrl+O"
-msgstr "Додати каталог\tCtrl+O"
+msgid "Add folder"
+msgstr "Додати каталог"
 
 #: FbMainMenu.cpp:56 FbMainMenu.cpp:73
-msgid "Выход\tAlt-F4"
-msgstr "Вихід\tAlt-F4"
+msgid "Exit"
+msgstr "Вихід"
 
 #: FbMainMenu.cpp:61 FbMainMenu.cpp:92
-msgid "Вкладки"
+msgid "Tabs"
 msgstr "Вкладки"
 
 #: FbMainMenu.cpp:63 FbMainMenu.cpp:95
-msgid "Полноэкранный режим\tF11"
-msgstr "Повноекранний режим\tF11"
+msgid "Fullscreen mode"
+msgstr "Повноекранний режим"
 
 #: FbMainMenu.cpp:64 FbMainMenu.cpp:96
-msgid "Окно сообщений\tF12"
-msgstr "Вікно повідомлень\tF12"
+msgid "Show log window"
+msgstr "Вікно повідомлень"
 
 #: FbMainMenu.cpp:72
-msgid "Экспорт книг\tCtrl+S"
-msgstr "Експорт книг\tCtrl+S"
+msgid "Export books"
+msgstr "Експорт книг"
 
 #: FbMainMenu.cpp:90
-msgid "Список книг"
+msgid "List of books"
 msgstr "Список книг"
 
 #: FbMainMenu.cpp:91
-msgid "Область просмотра"
+msgid "Preview area"
 msgstr "Область перегляду"
 
 #: FbMainMenu.cpp:110
-msgid "&Иерархический"
-msgstr "&Ієрархічний"
+msgid "Hierarchical"
+msgstr "Ієрархічний"
 
 #: FbMainMenu.cpp:111
-msgid "&Простой список"
-msgstr "&Простий список"
+msgid "Simple list"
+msgstr "Простий список"
 
 #: FbMainMenu.cpp:116
-msgid "Стандартные"
+msgid "Standart"
 msgstr "Стандартні"
 
 #: FbMainMenu.cpp:117
-msgid "Компактные"
+msgid "Compact"
 msgstr "Компактні"
 
 #: FbMainMenu.cpp:118
-msgid "Выпуклые"
+msgid "Convex"
 msgstr "Опуклі"
 
 #: FbMainMenu.cpp:119
-msgid "Кнопочные"
+msgid "Buttons"
 msgstr "Кнопкові"
 
 #: FbMainMenu.cpp:124
-msgid "&Справа"
-msgstr "&Праворуч"
+msgid "Right"
+msgstr "Праворуч"
 
 #: FbMainMenu.cpp:125
-msgid "&Внизу"
-msgstr "&Внизу"
+msgid "Bottom"
+msgstr "Внизу"
 
 #: FbMainMenu.cpp:126
-msgid "&Отсутствует"
-msgstr "&Відсутній"
+msgid "Not specified"
+msgstr "Відсутній"
 
 #: FbMainMenu.cpp:131
-msgid "Закрыть окно"
+msgid "Close window"
 msgstr "Закрити вікно"
 
 #: FbMainMenu.cpp:132
-msgid "Закрыть все"
+msgid "Close all"
 msgstr "Закрити всі"
 
 #: FbMainMenu.cpp:134
-msgid "Следующее"
+msgid "Next"
 msgstr "Наступне"
 
 #: FbMainMenu.cpp:135
-msgid "Предыдущее"
+msgid "Previous"
 msgstr "Попереднє"
 
 #: FbMasterData.cpp:334

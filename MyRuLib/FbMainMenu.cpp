@@ -51,27 +51,27 @@ FbMainMenu::FbMainMenu(): FbMenuBar()
 
 FbMainMenu::MenuFile::MenuFile()
 {
-	AppendImg(wxID_NEW,  _("Добавить файл\tCtrl+N"), wxART_NEW);
-	AppendImg(wxID_OPEN, _("Добавить директорию\tCtrl+O"), wxART_FOLDER_OPEN);
+	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
+	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
 	AppendSeparator();
-	AppendImg(wxID_EXIT, _("Выход\tAlt-F4"), wxART_QUIT);
+	AppendImg(wxID_EXIT, _("Выход") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
 FbMainMenu::MenuView::MenuView()
 {
-	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
+	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	AppendSeparator();
-	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
+	Append(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 
 FbFrameMenu::MenuFile::MenuFile()
 {
-	AppendImg(wxID_NEW,  _("Добавить файл\tCtrl+N"), wxART_NEW);
-	AppendImg(wxID_OPEN, _("Добавить директорию\tCtrl+O"), wxART_FOLDER_OPEN);
+	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
+	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
 	AppendSeparator();
-	AppendImg(wxID_SAVE, _("Экспорт книг\tCtrl+S"), wxART_FILE_SAVE);
-	AppendImg(wxID_EXIT, _("Выход\tAlt-F4"), wxART_QUIT);
+	AppendImg(wxID_SAVE, _("Export books") + (wxString)wxT("\tCtrl+S"), wxART_FILE_SAVE);
+	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
 FbFrameMenu::MenuBook::MenuBook()
@@ -88,13 +88,13 @@ FbFrameMenu::MenuBook::MenuBook()
 
 FbFrameMenu::MenuView::MenuView()
 {
-	Append(wxID_ANY, _("Список книг"), new MenuListMode());
-	Append(wxID_ANY, _("Область просмотра"), new MenuPreview());
-	Append(wxID_ANY, _("Вкладки"), new MenuTabArt());
+	Append(wxID_ANY, _("List of books"), new MenuListMode());
+	Append(wxID_ANY, _("Preview area"), new MenuPreview());
+	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
-	Append(ID_FULLSCREEN, _("Полноэкранный режим\tF11"));
-	Append(ID_LOG_TEXTCTRL, _("Окно сообщений\tF12"));
+	Append(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
+	Append(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()
@@ -108,31 +108,31 @@ FbMenuBar::MenuRecent::MenuRecent()
 
 FbMenuBar::MenuListMode::MenuListMode()
 {
-	AppendRadioItem(ID_MODE_TREE, _("&Иерархический"));
-	AppendRadioItem(ID_MODE_LIST, _("&Простой список"));
+	AppendRadioItem(ID_MODE_TREE, _("Hierarchical"));
+	AppendRadioItem(ID_MODE_LIST, _("Simple list"));
 }
 
 FbMenuBar::MenuTabArt::MenuTabArt()
 {
-	AppendRadioItem(ID_ART_DEFAULT,  _("Стандартные"));
-	AppendRadioItem(ID_ART_COMPACT,  _("Компактные"));
-	AppendRadioItem(ID_ART_STANDART, _("Выпуклые"));
-	AppendRadioItem(ID_ART_TOOLBAR,  _("Кнопочные"));
+	AppendRadioItem(ID_ART_DEFAULT,  _("Standart"));
+	AppendRadioItem(ID_ART_COMPACT,  _("Compact"));
+	AppendRadioItem(ID_ART_STANDART, _("Convex"));
+	AppendRadioItem(ID_ART_TOOLBAR,  _("Buttons"));
 }
 
 FbMenuBar::MenuPreview::MenuPreview()
 {
-	AppendRadioItem(ID_SPLIT_VERTICAL,   _("&Справа"));
-	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("&Внизу"));
-	AppendRadioItem(ID_SPLIT_NOTHING,    _("&Отсутствует"));
+	AppendRadioItem(ID_SPLIT_VERTICAL,   _("Right"));
+	AppendRadioItem(ID_SPLIT_HORIZONTAL, _("Bottom"));
+	AppendRadioItem(ID_SPLIT_NOTHING,    _("Not specified"));
 }
 
 FbMenuBar::MenuWindow::MenuWindow()
 {
-	Append(ID_WINDOW_CLOSE,    _("Закрыть окно"));
-	Append(ID_WINDOW_CLOSEALL, _("Закрыть все"));
+	Append(ID_WINDOW_CLOSE,    _("Close window"));
+	Append(ID_WINDOW_CLOSEALL, _("Close all"));
 	AppendSeparator();
-	Append(ID_WINDOW_NEXT,     _("Следующее"));
-	Append(ID_WINDOW_PREV,     _("Предыдущее"));
+	Append(ID_WINDOW_NEXT,     _("Next"));
+	Append(ID_WINDOW_PREV,     _("Previous"));
 }
 

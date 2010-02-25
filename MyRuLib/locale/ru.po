@@ -1407,32 +1407,32 @@ msgid "Website"
 msgstr "Официальный сайт"
 
 #: FbMainMenu.cpp:53 FbMainMenu.cpp:69
-msgid "Add file\tCtrl+N"
-msgstr "Добавить файл\tCtrl+N"
+msgid "Add file"
+msgstr "Добавить файл"
 
 #: FbMainMenu.cpp:54 FbMainMenu.cpp:70
-msgid "Add folder\tCtrl+O"
-msgstr "Добавить директорию\tCtrl+O"
+msgid "Add folder"
+msgstr "Добавить директорию"
 
 #: FbMainMenu.cpp:56 FbMainMenu.cpp:73
-msgid "Exit\tAlt-F4"
-msgstr "Выход\tAlt-F4"
+msgid "Exit"
+msgstr "Выход"
 
 #: FbMainMenu.cpp:61 FbMainMenu.cpp:92
 msgid "Tabs"
 msgstr "Вкладки"
 
 #: FbMainMenu.cpp:63 FbMainMenu.cpp:95
-msgid "Fullscreen mode\tF11"
-msgstr "Полноэкранный режим\tF11"
+msgid "Fullscreen mode"
+msgstr "Полноэкранный режим"
 
 #: FbMainMenu.cpp:64 FbMainMenu.cpp:96
-msgid "Open log window\tF12"
-msgstr "Окно сообщений\tF12"
+msgid "Show log window"
+msgstr "Окно сообщений"
 
 #: FbMainMenu.cpp:72
-msgid "Export\tCtrl+S"
-msgstr "Экспорт книг\tCtrl+S"
+msgid "Export books"
+msgstr "Экспорт книг"
 
 #: FbMainMenu.cpp:90
 msgid "List of books"
@@ -1443,12 +1443,12 @@ msgid "Preview area"
 msgstr "Область просмотра"
 
 #: FbMainMenu.cpp:110
-msgid "&Hierarchical"
-msgstr "&Иерархический"
+msgid "Hierarchical"
+msgstr "Иерархический"
 
 #: FbMainMenu.cpp:111
-msgid "&Simple list"
-msgstr "&Простой список"
+msgid "Simple list"
+msgstr "Простой список"
 
 #: FbMainMenu.cpp:116
 msgid "Standart"
@@ -1468,15 +1468,15 @@ msgstr "Кнопочные"
 
 #: FbMainMenu.cpp:124
 msgid "Right"
-msgstr "&Справа"
+msgstr "Справа"
 
 #: FbMainMenu.cpp:125
 msgid "Bottom"
-msgstr "&Внизу"
+msgstr "Внизу"
 
 #: FbMainMenu.cpp:126
 msgid "Not specified"
-msgstr "&Отсутствует"
+msgstr "Отсутствует"
 
 #: FbMainMenu.cpp:131
 msgid "Close window"
