@@ -77,7 +77,7 @@ wxToolBar * FbFrameSequen::CreateToolBar(long style, wxWindowID winid, const wxS
 {
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
 	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	toolbar->AddTool(ID_SEQUENCE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Найти серию по наименованию"));
+	toolbar->AddTool(ID_SEQUENCE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find series by name"));
 	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 	toolbar->Realize();
 	return toolbar;
@@ -246,7 +246,7 @@ FbFrameSequen::EditDlg::EditDlg( const wxString& title, int id )
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	m_text.Create( this, wxID_ANY, _("Наименование серии:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_text.Create( this, wxID_ANY, _("Series name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( &m_text, 0, wxEXPAND|wxALL, 5 );
 
 	m_edit.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -267,7 +267,7 @@ FbFrameSequen::EditDlg::EditDlg( const wxString& title, int id )
 
 int FbFrameSequen::EditDlg::Append(wxString &newname)
 {
-	EditDlg dlg(_("Добавить серию"));
+	EditDlg dlg(_("Append series"));
 	bool ok = dlg.ShowModal() == wxID_OK;
 	if (ok) newname = dlg.GetValue();
 	return ok ? dlg.DoAppend() : 0;
@@ -275,7 +275,7 @@ int FbFrameSequen::EditDlg::Append(wxString &newname)
 
 int FbFrameSequen::EditDlg::Modify(int id, wxString &newname)
 {
-	EditDlg dlg(_("Изменить серию"), id);
+	EditDlg dlg(_("Modify series"), id);
 	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
 	if (ok) newname = dlg.GetValue();
 	return ok ? dlg.DoUpdate() : 0;
@@ -341,15 +341,15 @@ void FbFrameSequen::EditDlg::EndModal(int retCode)
 {
 	if ( retCode == wxID_OK) {
 		if (GetValue().IsEmpty()) {
-			wxMessageBox(_("Не заполнено наименование серии."), GetTitle());
+			wxMessageBox(_("\"Series name\" field is empty"), GetTitle());
 			return;
 		}
 		m_exists = Find();
 		if (m_exists) {
-			wxString msg = _("Такая серия уже существует.");
+			wxString msg = _("Series aleready exists");
 			wxString title = GetTitle() + wxT("…");
 			if (m_id) {
-				msg += _("\nОбъединить две серии?");
+				msg += _("Merge series?");
 				bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 				if (!ok) return;
 			} else {
@@ -405,8 +405,8 @@ void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	wxString name = m_MasterList->GetItemText(selected);
-	wxString msg = wxString::Format(_("Удалить серию «%s»?"), name.c_str());
-	bool ok = wxMessageBox(msg, _("Удаление"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	wxString msg = wxString::Format(_("Delete series «%s»?"), name.c_str());
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (ok) {
 		wxString sql1 = wxString::Format(wxT("DELETE FROM sequences WHERE id=%d"), id);
 		wxString sql2 = wxString::Format(wxT("DELETE FROM bookseq WHERE id_seq=%d"), id);

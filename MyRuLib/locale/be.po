@@ -676,32 +676,36 @@ msgid "Find"
 msgstr "Знайсці"
 
 #: FbFrameSequen.cpp:79
-msgid "Найти серию по наименованию"
+msgid "Find series by name"
 msgstr "Знайсці серыя па найменню"
 
+#: FbFrameSequen.cpp:249
+msgid "Series name:"
+msgstr "Найменне серыі:"
+
 #: FbFrameSequen.cpp:268
-msgid "Добавить серию"
+msgid "Append series"
 msgstr "Дадаць серыю"
 
 #: FbFrameSequen.cpp:276
-msgid "Изменить серию"
+msgid "Modify series"
 msgstr "Змяніць серыю"
 
 #: FbFrameSequen.cpp:342
-msgid "Не заполнено наименование серии."
+msgid "\"Series name\" field is empty"
 msgstr "Не запоўнена найменне серыі"
 
 #: FbFrameSequen.cpp:347
-msgid "Такая серия уже существует."
+msgid "Series aleready exists"
 msgstr "Такая серыя ўжо існуе"
 
 #: FbFrameSequen.cpp:350
-msgid "Объединить две серии?"
+msgid "Merge series?"
 msgstr "Аб'яднаць дзве серыі?"
 
 #: FbFrameSequen.cpp:406
 #, c-format
-msgid "Удалить серию «%s»?"
+msgid "Delete series «%s»?"
 msgstr "Знішчыць серыю «%s»?"
 
 #: FbGenres.cpp:17
