@@ -1291,7 +1291,7 @@ msgid " Author: "
 msgstr " Автор: "
 
 #: FbMainFrame.cpp:274
-msgid "Find Author"
+msgid "Find author"
 msgstr "Поиск автора"
 
 #: FbMainFrame.cpp:277
@@ -1323,14 +1323,20 @@ msgid "Select archive to add to the library"
 msgstr "Выберите zip-файл для добавления в библиотеку…"
 
 #: FbMainFrame.cpp:312
-msgid ""
-"Digital books and archives (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*."
-"FB2| Digital books in FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|ZIP archives (*.zip)|*.zip;"
-"*.Zip;*.ZIP|All files (*.*)|*.*"
-msgstr ""
-"Электронные книги и архивы (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*."
-"FB2|Электронные книги FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|Архивы ZIP (*.zip)|*.zip;"
-"*.Zip;*.ZIP|Все файлы (*.*)|*.*"
+msgid "Digital books and archives"
+msgstr "Электронные книги и архивы"
+
+#: FbMainFrame.cpp:312
+msgid "Digital books in FB2"
+msgstr "Электронные книги FB2"
+
+#: FbMainFrame.cpp:312
+msgid "ZIP archives"
+msgstr "Архивы ZIP"
+
+#: FbMainFrame.cpp:312
+msgid "All files"
+msgstr "Все файлы"
 
 #: FbMainFrame.cpp:322
 msgid "Processing file:"
@@ -1338,10 +1344,14 @@ msgstr "Обработка файла:"
 
 #: FbMainFrame.cpp:335
 msgid "Select folder to recursive import"
-msgstr "Выберите папку для рекурсивного импорта файлов в библиотеку…"
+msgstr "Выберите папку для рекурсивного импорта файлов в библиотеку"
+
+#: FbMainFrame.cpp:335
+msgid "Processing folder:"
+msgstr "Обработка папки:"
 
 #: FbMainFrame.cpp:468
-msgid "Input search string"
+msgid "Input search string:"
 msgstr "Введите строку для поиска:"
 
 #: FbMainFrame.cpp:468
@@ -1349,12 +1359,16 @@ msgid "Find title"
 msgstr "Поиск по заголовку"
 
 #: FbMainFrame.cpp:523
-msgid "This function is not available yet in this version"
+msgid "This function is not available yet in this version."
 msgstr "Функционал не реализован в данной версии."
 
 #: FbMainFrame.cpp:533
 msgid "Optimize database?"
 msgstr "Выполнить реструктуризацию базы данных?"
+
+#: FbMainFrame.cpp:592
+msgid "File not found"
+msgstr "Файл не найден"
 
 #: FbMainMenu.cpp:6
 msgid "Search"

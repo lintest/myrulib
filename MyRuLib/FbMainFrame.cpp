@@ -55,13 +55,6 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_RECENT_5, FbMainFrame::OnMenuRecent)
 
 	EVT_UPDATE_UI(ID_RECENT_ALL, FbMainFrame::OnRecentUpdate)
-/*
-	EVT_UPDATE_UI(ID_RECENT_1, FbMainFrame::OnRecentUpdate)
-	EVT_UPDATE_UI(ID_RECENT_2, FbMainFrame::OnRecentUpdate)
-	EVT_UPDATE_UI(ID_RECENT_3, FbMainFrame::OnRecentUpdate)
-	EVT_UPDATE_UI(ID_RECENT_4, FbMainFrame::OnRecentUpdate)
-	EVT_UPDATE_UI(ID_RECENT_5, FbMainFrame::OnRecentUpdate)
-*/
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
@@ -184,7 +177,7 @@ void FbMainFrame::CreateControls()
 	SetToolBar(CreateToolBar());
 
 	m_FrameManager.AddPane(GetNotebook(), wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane());
-	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Информационные сообщения")).Show(false));
+	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Info messages")).Show(false));
 	m_FrameManager.Update();
 
 	m_FindAuthor.SetFocus();
@@ -251,16 +244,11 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
 	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
 
-	wxWindowDC dc(toolbar);
-	int text_width = 0, text_height = 0;
-	dc.SetFont(font);
-	dc.GetTextExtent(_("Автор:"), &text_width, &text_height);
-
-	toolbar->AddTool(wxID_NEW, _("Импорт файла"), wxArtProvider::GetBitmap(wxART_NEW), _("Добавить в библиотеку новые файлы"));
-	toolbar->AddTool(wxID_OPEN, _("Импорт папки"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Добавить в библиотеку директорию"));
+	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
+	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
 	toolbar->AddSeparator();
 
-	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Автор: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
 	toolbar->AddControl( text1 );
@@ -268,10 +256,10 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindAuthor.Create(toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor.SetFont(font);
 	toolbar->AddControl( &m_FindAuthor );
-	toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск автора"));
+	toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
 	toolbar->AddSeparator();
 
-	wxStaticText * text2 = new wxStaticText( toolbar, wxID_ANY, _(" Книга: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text2 = new wxStaticText( toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	text2->SetFont(font);
 	toolbar->AddControl( text2 );
@@ -280,10 +268,10 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindTitle.SetFont(font);
 	toolbar->AddControl( &m_FindTitle );
 
-	toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Поиск книги по заголовку"));
+	toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
 	toolbar->AddSeparator();
-	toolbar->AddTool(ID_MODE_TREE, _("Иерархия"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Иерархия авторов и серий"));
-	toolbar->AddTool(ID_MODE_LIST, _("Список"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Простой список"));
+	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Hierarchy of authors and series"));
+	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Simple list"));
 	toolbar->AddSeparator();
 	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 	toolbar->Realize();
@@ -301,12 +289,17 @@ void FbMainFrame::OnExit(wxCommandEvent & event)
 
 void FbMainFrame::OnNewZip( wxCommandEvent& event )
 {
+	wxString mask = _("Digital books and archives") + wxT(" (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*.FB2");
+	mask += wxT('|') + _("Digital books in FB2") + wxT(" (*.fb2)|*.fb2;*.Fb2;*.FB2");
+	mask += wxT('|') + _("ZIP archives")+ wxT(" (*.zip)|*.zip;*.Zip;*.ZIP");
+	mask += wxT('|') + _("All files") + wxT(" (*.*)|*.*");
+
 	wxFileDialog dlg (
 		this,
-		_("Выберите zip-файл для добавления в библиотеку…"),
+		_("Select archive to add to the library"),
 		wxEmptyString,
 		wxEmptyString,
-		_("Электронные книги и архивы (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*.FB2|Электронные книги FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|Архивы ZIP (*.zip)|*.zip;*.Zip;*.ZIP|Все файлы (*.*)|*.*"),
+		mask,
 		wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST,
 		wxDefaultPosition
 	);
@@ -316,7 +309,7 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 		dlg.GetPaths(paths);
 
 		FbImportThread *thread = new FbZipImportThread(paths);
-		thread->m_info = _("Обработка файла:");
+		thread->m_info = _("Processing file:");
 		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
 			wxLogError(_("Can't create thread!"));
 			return;
@@ -329,7 +322,7 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 
 	wxDirDialog dlg (
 		this,
-		_("Выберите папку для рекурсивного импорта файлов в библиотеку…"),
+		_("Select folder to recursive import"),
 		wxEmptyString,
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST,
 		wxDefaultPosition
@@ -337,7 +330,7 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		FbImportThread *thread = new FbDirImportThread(dlg.GetPath());
-		thread->m_info = _("Обработка папки:");
+		thread->m_info = _("Processing folder:");
 
 		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
 			wxLogError(_("Can't create thread!"));
@@ -439,7 +432,7 @@ void FbMainFrame::OnMenuAuthor(wxCommandEvent& event)
 
 void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 {
-	wxString text = wxGetTextFromUser(_("Введите строку для поиска:"), _("Поиск по заголовку"));
+	wxString text = wxGetTextFromUser(_("Input search string:"), _("Find title"));
 	if (text.IsEmpty()) return;
 	FindTitle(text, wxEmptyString);
 }
@@ -494,7 +487,7 @@ wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 
 void FbMainFrame::OnMenuNothing(wxCommandEvent& event)
 {
-	wxMessageBox(_("Функционал не реализован в данной версии."));
+	wxMessageBox(_("This function is not available yet in this version."));
 }
 
 void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
@@ -504,8 +497,8 @@ void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 
 void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
-	wxString msg = _("Выполнить реструктуризацию базы данных?");
-	if (wxMessageBox(msg, _("Подтверждение"), wxOK | wxCANCEL, this) == wxOK)
+	wxString msg = _("Optimize database?");
+	if (wxMessageBox(msg, _("Confirmation"), wxOK | wxCANCEL, this) == wxOK)
 		(new FbUpdateThread(strUpdateAuthorCount, wxT("VACUUM")))->Execute();
 }
 
