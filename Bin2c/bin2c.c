@@ -46,9 +46,7 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  if ((c = fgetc(fi)) != EOF) {
-    fprintf(fo, "volatile unsigned char locale_binary_%s[] = {\n", argv[3]);
-  }
+  fprintf(fo, "const unsigned char locale_binary_%s[] = {\n", argv[3]);
 
   i = 0;
   while ((c = fgetc(fi)) != EOF) {

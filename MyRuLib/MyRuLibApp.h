@@ -5,6 +5,7 @@
 #include <wx/thread.h>
 #include <wx/filename.h>
 #include "FbDatabase.h"
+#include "FbLocale.h"
 
 class MyRuLibApp : public wxApp
 {
@@ -17,12 +18,13 @@ public:
 private:
 	void OpenLog();
 	wxFileName GetDatabaseFilename(FbDatabase &database);
+	wxFileName GetLocaleFilename(FbConfigDatabase &config);
 	void SetAppData(const wxString &filename);
 	void LoadBlankImage();
 private:
 	wxCriticalSection m_section;
 	wxString m_datafile;
-	wxLocale m_locale;
+	FbLocale m_locale;
 };
 
 DECLARE_APP(MyRuLibApp)

@@ -66,7 +66,7 @@
     <define-tag name="bin2c" rules="action">
 		<depends>$(BUILDDIR)/$(value).mo</depends>
 		<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
-		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc $(value)</command>
+		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
     </define-tag>
 
 	<action id="build/ru.mo"> 
@@ -95,6 +95,7 @@
 
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
+		<define cond="WX_SHARED_DEFAULT=='0'">FB_INCLUDE_LOCALE</define>
 		<depends>$(BUILDDIR)/ru.inc</depends>
 		<depends>$(BUILDDIR)/uk.inc</depends>
 		<depends>$(BUILDDIR)/be.inc</depends>
@@ -134,6 +135,7 @@
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbHtmlWindow.cpp</sources>
 		<sources>MyRuLib/FbImportThread.cpp</sources>
+		<sources>MyRuLib/FbLocale.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
@@ -161,6 +163,7 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<include>$(BUILDDIR)</include>
 		<include>SQLite3</include>
 		<include>WxSQLite3</include>
 		<library>wxsqlite3_static</library>

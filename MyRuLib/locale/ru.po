@@ -1490,11 +1490,6 @@ msgstr "Следующее"
 msgid "Previous"
 msgstr "Предыдущее"
 
-#: FbMasterData.cpp:334
-#, c-format
-msgid "SUBGENRE called with wrong number of arguments: %d."
-msgstr ""
-
 #: FbMenu.cpp:11
 msgid "Size"
 msgstr "Размер"

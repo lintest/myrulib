@@ -83,9 +83,9 @@ WXSQLITE3_STATIC_OBJECTS =  \
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	build/bin2c_bin2c.o
-MYRULIB_CFLAGS = -ISQLite3 -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags \
+MYRULIB_CFLAGS = -Ibuild -ISQLite3 -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -ISQLite3 -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags \
+MYRULIB_CXXFLAGS = -Ibuild -ISQLite3 -IWxSQLite3 -O2 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
@@ -124,6 +124,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbGenres.o \
 	build/myrulib_FbHtmlWindow.o \
 	build/myrulib_FbImportThread.o \
+	build/myrulib_FbLocale.o \
 	build/myrulib_FbLogStream.o \
 	build/myrulib_FbMainFrame.o \
 	build/myrulib_FbMainMenu.o \
@@ -243,13 +244,13 @@ build/be.mo: build/bin2c MyRuLib/locale/be.po
 	msgfmt MyRuLib/locale/be.po -o build/be.mo
 
 build/ru.inc: build/ru.mo
-	build/bin2c build/ru.mo build/ru.inc ru
+	build/bin2c build/ru.mo build/ru.inc file
 
 build/uk.inc: build/uk.mo
-	build/bin2c build/uk.mo build/uk.inc uk
+	build/bin2c build/uk.mo build/uk.inc file
 
 build/be.inc: build/be.mo
-	build/bin2c build/be.mo build/be.inc be
+	build/bin2c build/be.mo build/be.inc file
 
 build/myrulib: $(MYRULIB_OBJECTS) build/ru.inc build/uk.inc build/be.inc build/libwxsqlite3_static.a build/libsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libsqlite3_static.a -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
@@ -377,6 +378,9 @@ build/myrulib_FbHtmlWindow.o: ./MyRuLib/FbHtmlWindow.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbImportThread.o: ./MyRuLib/FbImportThread.cpp
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbLocale.o: ./MyRuLib/FbLocale.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
