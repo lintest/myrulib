@@ -11,7 +11,7 @@ FbMenuBar::MenuFrame::MenuFrame()
 	Append(ID_FRAME_DATE,   _("Calendar"));
 	Append(ID_FRAME_ARCH,   _("Archive"));
 	AppendSeparator();
-	Append(ID_FRAME_FOLDER, _("My filders"));
+	Append(ID_FRAME_FOLDER, _("My folders"));
 	Append(ID_FRAME_DOWNLD, _("Downloads"));
 }
 
