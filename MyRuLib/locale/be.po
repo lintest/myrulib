@@ -1325,7 +1325,7 @@ msgid "Select archive to add to the library"
 msgstr "Адзначце zip-файл, які неабходна дадаць у бібліятэку:"
 
 #: FbMainFrame.cpp:312
-msgid "ZIP archives"
+msgid "Digital books and archives"
 msgstr "Электронныя кнігі і архівы"
 
 #: FbMainFrame.cpp:312
@@ -1447,10 +1447,6 @@ msgstr "Прагляд"
 #: FbMainMenu.cpp:110
 msgid "Hierarchical"
 msgstr "Іерархічны"
-
-#: FbMainMenu.cpp:111
-msgid "Simple list"
-msgstr "Просты спіс"
 
 #: FbMainMenu.cpp:116
 msgid "Standart"

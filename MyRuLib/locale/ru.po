@@ -1446,10 +1446,6 @@ msgstr "Область просмотра"
 msgid "Hierarchical"
 msgstr "Иерархический"
 
-#: FbMainMenu.cpp:111
-msgid "Simple list"
-msgstr "Простой список"
-
 #: FbMainMenu.cpp:116
 msgid "Standart"
 msgstr "Стандартные"
