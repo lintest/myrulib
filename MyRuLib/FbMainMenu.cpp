@@ -3,38 +3,38 @@
 
 FbMenuBar::MenuFrame::MenuFrame()
 {
-	AppendImg(ID_MENU_SEARCH, _("Поиск"), wxART_FIND);
+	AppendImg(ID_MENU_SEARCH, _("Search"), wxART_FIND);
 	AppendSeparator();
 	Append(ID_FRAME_AUTHOR, _("Authors"));
 	Append(ID_FRAME_GENRES, _("Жанры"));
 	Append(ID_FRAME_SEQUEN, _("Серии"));
-	Append(ID_FRAME_DATE,   _("Календарь"));
+	Append(ID_FRAME_DATE,   _("Calendar"));
 	Append(ID_FRAME_ARCH,   _("Archive"));
 	AppendSeparator();
-	Append(ID_FRAME_FOLDER, _("Мои папки"));
+	Append(ID_FRAME_FOLDER, _("My filders"));
 	Append(ID_FRAME_DOWNLD, _("Downloads"));
 }
 
 FbMenuBar::MenuLib::MenuLib()
 {
-	Append(ID_MENU_DB_OPEN, _("Открыть (создать) коллекцию"));
-	Append(ID_RECENT_ALL, _("Открыть повторно"), new MenuRecent());
+	Append(ID_MENU_DB_OPEN, _("Open (or create) collection"));
+	Append(ID_RECENT_ALL, _("Open recent"), new MenuRecent());
 	AppendSeparator();
-	Append(ID_MENU_DB_INFO,  _("Информация о коллекции"));
-	Append(ID_MENU_OPTIMIZE, _("Удалить пустые значения"));
-	Append(ID_MENU_VACUUM,   _("Реструктуризация БД"));
+	Append(ID_MENU_DB_INFO,  _("Information about collection"));
+	Append(ID_MENU_OPTIMIZE, _("Clear empty variables"));
+	Append(ID_MENU_VACUUM,   _("Optimize DB"));
 	AppendSeparator();
-	Append(ID_MENU_CONFIG, _("Параметры"));
+	Append(ID_MENU_CONFIG, _("Options"));
 }
 
 FbMenuBar::MenuSetup::MenuSetup()
 {
-	Append(wxID_PREFERENCES, _("Настройки"));
+	Append(wxID_PREFERENCES, _("Settings"));
 }
 
 FbMenuBar::MenuHelp::MenuHelp()
 {
-	Append(ID_OPEN_WEB, _("Официальный сайт"));
+	Append(ID_OPEN_WEB, _("Website"));
 	AppendImg(wxID_ABOUT, _("About"), wxART_HELP_PAGE);
 }
 

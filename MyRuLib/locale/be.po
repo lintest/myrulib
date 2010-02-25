@@ -1373,39 +1373,39 @@ msgid "File not found"
 msgstr "Файл не знойдзены"
 
 #: FbMainMenu.cpp:6
-msgid "Поиск"
+msgid "Search"
 msgstr "Пошук"
 
 #: FbMainMenu.cpp:11
-msgid "Календарь"
+msgid "Calendar"
 msgstr "Календар"
 
 #: FbMainMenu.cpp:12
-msgid "Архив"
+msgid "Archive"
 msgstr "Архіў"
 
 #: FbMainMenu.cpp:21
-msgid "Открыть повторно"
+msgid "Open recent"
 msgstr "Адчыніць паўторна"
 
 #: FbMainMenu.cpp:24
-msgid "Удалить пустые значения"
+msgid "Clear empty variables"
 msgstr "Знішчыць пустыя значэнні"
 
 #: FbMainMenu.cpp:25
-msgid "Реструктуризация БД"
+msgid "Optimize DB"
 msgstr "Рэструктурызацыя базы"
 
 #: FbMainMenu.cpp:27
-msgid "Параметры"
+msgid "Options"
 msgstr "Параметры"
 
 #: FbMainMenu.cpp:32
-msgid "Настройки"
+msgid "Settings"
 msgstr "Наладкі"
 
 #: FbMainMenu.cpp:37
-msgid "Официальный сайт"
+msgid "Website"
 msgstr "Афіцыйны сайт"
 
 #: FbMainMenu.cpp:53 FbMainMenu.cpp:69
