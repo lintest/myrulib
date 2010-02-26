@@ -153,8 +153,8 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
-	SetMenuBar(CreateMenuBar());
 	UpdateStatus();
+	event.Skip();
 }
 
 void FbFrameBase::UpdateFonts(bool refresh)
