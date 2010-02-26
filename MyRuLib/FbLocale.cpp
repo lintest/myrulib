@@ -7,6 +7,8 @@ bool FbLocale::Init(int language, int flags)
 {
 	wxFileName filename = FbConfigDatabase::GetConfigName();
 
+    wxString locale = wxT("en");
+
     #ifdef FB_INCLUDE_LOCALE
 
 	filename.SetExt(wxT("mo"));
@@ -30,6 +32,10 @@ bool FbLocale::Init(int language, int flags)
 	}
 
 	if (ok) AddCatalogLookupPathPrefix(filename.GetPath());
+
+	#else
+
+    bool ok = true;
 
     #endif //FB_INCLUDE_LOCALE
 

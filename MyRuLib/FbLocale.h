@@ -12,6 +12,7 @@ class FbLocale: public wxLocale
 	private:
 		bool Save(const wxFileName &filename, const void *data, size_t size);
         wxFileName GetLocaleFilename();
+        int m_language;
 };
 
 #endif // __FBLOCALE_H__
