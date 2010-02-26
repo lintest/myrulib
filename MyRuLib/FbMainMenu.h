@@ -45,6 +45,10 @@ class FbMenuBar: public wxMenuBar
 		class MenuPreview: public FbMenu {
 			public: MenuPreview();
 		};
+
+		class MenuLocalize: public FbMenu {
+			public: MenuLocalize();
+		};
 };
 
 class FbMainMenu: public FbMenuBar

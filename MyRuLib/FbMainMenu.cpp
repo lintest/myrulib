@@ -63,6 +63,7 @@ FbMainMenu::MenuView::MenuView()
 	AppendSeparator();
 	Append(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
 	Append(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	Append(wxID_ANY, _("Language"), new MenuLocalize());
 }
 
 FbFrameMenu::MenuFile::MenuFile()
@@ -95,6 +96,7 @@ FbFrameMenu::MenuView::MenuView()
 	AppendSeparator();
 	Append(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
 	Append(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	Append(wxID_ANY, _("Language"), new MenuLocalize());
 }
 
 FbMenuBar::MenuRecent::MenuRecent()
@@ -136,3 +138,10 @@ FbMenuBar::MenuWindow::MenuWindow()
 	Append(ID_WINDOW_PREV,     _("Previous"));
 }
 
+FbMenuBar::MenuLocalize::MenuLocalize()
+{
+    AppendRadioItem(ID_MENU_ENGLISH, _("English"));
+    AppendRadioItem(ID_MENU_RUSSIAN, _("Russian"));
+    AppendRadioItem(ID_MENU_UKRAINIAN, _("Ukrainian"));
+    AppendRadioItem(ID_MENU_BELARUSIAN, _("Belarusian"));
+}

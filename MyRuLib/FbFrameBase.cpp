@@ -78,6 +78,14 @@ void FbFrameBase::CreateControls()
 	this->Layout();
 }
 
+void FbFrameBase::Localize(bool bUpdateMenu)
+{
+    if (bUpdateMenu) {
+        SetMenuBar(CreateMenuBar());
+        UpdateStatus();
+    }
+}
+
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
 {
 	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey());

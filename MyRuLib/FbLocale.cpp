@@ -1,35 +1,61 @@
 #include "FbLocale.h"
 #include <wx/wfstream.h>
+#include "FbDatabase.h"
+#include "FbConst.h"
 
-bool FbLocale::Init(const wxFileName &filename)
+bool FbLocale::Init(int language, int flags)
 {
-#ifdef FB_INCLUDE_LOCALE
+	wxFileName filename = FbConfigDatabase::GetConfigName();
 
-	switch (GetSystemLanguage()) {
+    #ifdef FB_INCLUDE_LOCALE
+
+	filename.SetExt(wxT("mo"));
+
+	if (language == wxLANGUAGE_DEFAULT) language = GetSystemLanguage();
+
+    bool ok = false;
+	switch (language) {
 		case wxLANGUAGE_RUSSIAN: {
 			#include "ru.inc"
-			Save(filename, locale_binary_file, sizeof(locale_binary_file));
+			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 		case wxLANGUAGE_UKRAINIAN: {
 			#include "uk.inc"
-			Save(filename, locale_binary_file, sizeof(locale_binary_file));
+			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 		case wxLANGUAGE_BELARUSIAN: {
 			#include "be.inc"
-			Save(filename, locale_binary_file, sizeof(locale_binary_file));
+			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 	}
 
-	AddCatalogLookupPathPrefix(filename.GetPath());
+	if (ok) AddCatalogLookupPathPrefix(filename.GetPath());
 
-#endif
+    #endif //FB_INCLUDE_LOCALE
 
-    return wxLocale::Init(wxLANGUAGE_DEFAULT, wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
+    bool res = wxLocale::Init(language, flags);
+
+    if (ok) AddCatalog(filename.GetName());
+
+    return res;
 }
 
-void FbLocale::Save(const wxFileName &filename, const unsigned char *data, size_t size)
+bool FbLocale::Save(const wxFileName &filename, const void *data, size_t size)
 {
-	wxFileOutputStream out(filename.GetFullPath());
-	out.Write(data, size);
+    wxLogNull log;
+    wxFileOutputStream out(filename.GetFullPath());
+    out.Write(data, size);
+    return true;
 }
 
+int FbLocale::MenuToLang(wxWindowID id)
+{
+    switch ( id ) {
+        case ID_MENU_DEFAULT:    return wxLANGUAGE_DEFAULT;
+        case ID_MENU_ENGLISH:    return wxLANGUAGE_ENGLISH;
+        case ID_MENU_RUSSIAN:    return wxLANGUAGE_RUSSIAN;
+        case ID_MENU_UKRAINIAN:  return wxLANGUAGE_UKRAINIAN;
+        case ID_MENU_BELARUSIAN: return wxLANGUAGE_BELARUSIAN;
+        default: return wxLANGUAGE_DEFAULT;
+    }
+}

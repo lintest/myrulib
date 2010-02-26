@@ -7,9 +7,11 @@
 class FbLocale: public wxLocale
 {
 	public:
-		bool Init(const wxFileName &filename);
+        virtual bool Init(int language = wxLANGUAGE_DEFAULT, int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
+        static int MenuToLang(wxWindowID id);
 	private:
-		void Save(const wxFileName &filename, const unsigned char *data, size_t size);
+		bool Save(const wxFileName &filename, const void *data, size_t size);
+        wxFileName GetLocaleFilename();
 };
 
 #endif // __FBLOCALE_H__

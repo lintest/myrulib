@@ -22,6 +22,7 @@
 #include "InfoCash.h"
 #include "FbAboutDlg.h"
 #include "FbNotebook.h"
+#include "FbLocale.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -70,6 +71,17 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_UPDATE_UI(ID_ART_STANDART, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_TOOLBAR, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
+
+	EVT_MENU(ID_MENU_DEFAULT, FbMainFrame::OnLocalize)
+	EVT_MENU(ID_MENU_ENGLISH, FbMainFrame::OnLocalize)
+	EVT_MENU(ID_MENU_RUSSIAN, FbMainFrame::OnLocalize)
+    EVT_MENU(ID_MENU_UKRAINIAN, FbMainFrame::OnLocalize)
+    EVT_MENU(ID_MENU_BELARUSIAN, FbMainFrame::OnLocalize)
+	EVT_UPDATE_UI(ID_MENU_DEFAULT, FbMainFrame::OnLocalizeUpdate)
+	EVT_UPDATE_UI(ID_MENU_ENGLISH, FbMainFrame::OnLocalizeUpdate)
+	EVT_UPDATE_UI(ID_MENU_RUSSIAN, FbMainFrame::OnLocalizeUpdate)
+    EVT_UPDATE_UI(ID_MENU_UKRAINIAN, FbMainFrame::OnLocalizeUpdate)
+    EVT_UPDATE_UI(ID_MENU_BELARUSIAN, FbMainFrame::OnLocalizeUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
@@ -180,7 +192,7 @@ void FbMainFrame::CreateControls()
 	m_FrameManager.AddPane(&m_LOGTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Info messages")).Show(false));
 	m_FrameManager.Update();
 
-	m_FindAuthor.SetFocus();
+	m_FindAuthor->SetFocus();
 
 	Layout();
 	Centre();
@@ -241,44 +253,44 @@ void FbMainFrame::OnAbout(wxCommandEvent & event)
 
 wxToolBar * FbMainFrame::CreateToolBar()
 {
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
+	m_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
 	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
 
-	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
-	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
-	toolbar->AddSeparator();
+	m_toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
+	m_toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
+	m_toolbar->AddSeparator();
 
-	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( m_toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
-	toolbar->AddControl( text1 );
+	m_toolbar->AddControl( text1 );
 
-	m_FindAuthor.Create(toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
-	m_FindAuthor.SetFont(font);
-	toolbar->AddControl( &m_FindAuthor );
-	toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
-	toolbar->AddSeparator();
+	m_FindAuthor = new wxTextCtrl(m_toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindAuthor->SetFont(font);
+	m_toolbar->AddControl( m_FindAuthor );
+	m_toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
+	m_toolbar->AddSeparator();
 
-	wxStaticText * text2 = new wxStaticText( toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text2 = new wxStaticText( m_toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	text2->SetFont(font);
-	toolbar->AddControl( text2 );
+	m_toolbar->AddControl( text2 );
 
-	m_FindTitle.Create(toolbar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
-	m_FindTitle.SetFont(font);
-	toolbar->AddControl( &m_FindTitle );
+	m_FindTitle = new wxTextCtrl(m_toolbar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindTitle->SetFont(font);
+	m_toolbar->AddControl( m_FindTitle );
 
-	toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
-	toolbar->AddSeparator();
-	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Hierarchy of authors and series"));
-	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Simple list"));
-	toolbar->AddSeparator();
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
-	toolbar->Realize();
+	m_toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
+	m_toolbar->AddSeparator();
+	m_toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Hierarchy of authors and series"));
+	m_toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Simple list"));
+	m_toolbar->AddSeparator();
+	m_toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
+	m_toolbar->Realize();
 
-	toolbar->SetFont(font);
+	m_toolbar->SetFont(font);
 
-	return toolbar;
+	return m_toolbar;
 }
 
 void FbMainFrame::OnExit(wxCommandEvent & event)
@@ -389,12 +401,12 @@ void FbMainFrame::OnHideLog(wxCommandEvent& event)
 
 void FbMainFrame::OnFindTitle(wxCommandEvent & event)
 {
-	FindTitle(m_FindTitle.GetValue(), m_FindAuthor.GetValue());
+	FindTitle(m_FindTitle->GetValue(), m_FindAuthor->GetValue());
 }
 
 void FbMainFrame::OnFindTitleEnter(wxCommandEvent& event)
 {
-	FindTitle(event.GetString(), m_FindAuthor.GetValue());
+	FindTitle(event.GetString(), m_FindAuthor->GetValue());
 }
 
 void FbMainFrame::FindTitle(const wxString &title, const wxString &author)
@@ -404,7 +416,7 @@ void FbMainFrame::FindTitle(const wxString &title, const wxString &author)
 
 void FbMainFrame::OnFindAuthor(wxCommandEvent& event)
 {
-	FindAuthor(m_FindAuthor.GetValue());
+	FindAuthor(m_FindAuthor->GetValue());
 }
 
 void FbMainFrame::OnFindAuthorEnter(wxCommandEvent& event)
@@ -673,4 +685,28 @@ void FbMainFrame::SetMenuBar(wxMenuBar *pMenuBar)
 		pMenuBar = new FbMainMenu;
 	}
 	wxAuiMDIParentFrame::SetMenuBar(pMenuBar);
+}
+
+void FbMainFrame::OnLocalize(wxCommandEvent& event)
+{
+    int language = FbLocale::MenuToLang(event.GetId());
+    wxGetApp().Localize(language);
+
+    wxToolBar * toolbar = m_toolbar;
+	SetToolBar(CreateToolBar());
+    wxDELETE(toolbar);
+
+    GetNotebook()->
+	size_t count = GetNotebook()->GetPageCount();
+	size_t index = GetNotebook()->GetPageIndex();
+	for (size_t i = 0; i < count; ++i) {
+		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
+		if (frame) frame->Localize(i == index);
+	}
+	if (count == 0) SetMenuBar(new FbMainMenu);
+}
+
+void FbMainFrame::OnLocalizeUpdate(wxUpdateUIEvent& event)
+{
+    if ( FbLocale::MenuToLang(event.GetId()) == wxGetApp().GetLanguage() )  event.Check(true);
 }

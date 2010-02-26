@@ -6,33 +6,43 @@
 #include "FbDataPath.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"
+#include "FbLocale.h"
 #include "FbParams.h"
 #include "ZipReader.h"
 #include "FbDataOpenDlg.h"
 #include "FbUpdateThread.h"
 
-// language data
-static const wxLanguage languages[] =
-{
-    wxLANGUAGE_DEFAULT,
-    wxLANGUAGE_ENGLISH,
-    wxLANGUAGE_RUSSIAN,
-    wxLANGUAGE_UKRAINIAN,
-    wxLANGUAGE_BELARUSIAN,
-};
-
 IMPLEMENT_APP(MyRuLibApp)
+
+MyRuLibApp::MyRuLibApp()
+    :m_locale(NULL)
+{
+}
+
+MyRuLibApp::~MyRuLibApp()
+{
+    wxDELETE(m_locale);
+}
+
+void MyRuLibApp::Localize(int language)
+{
+    wxDELETE(m_locale);
+    FbLocale * locale = new FbLocale;
+    locale->Init(language);
+    m_locale = locale;
+}
+
+int MyRuLibApp::GetLanguage()
+{
+    return m_locale ? m_locale->GetLanguage() : wxLANGUAGE_DEFAULT;
+}
 
 bool MyRuLibApp::OnInit()
 {
-	wxString appname = GetAppName();
-	if (appname.IsEmpty()) appname = wxT("myrulib");
+    Localize();
 
 	FbConfigDatabase config;
 	config.Open();
-
-    m_locale.Init(GetLocaleFilename(config));
-    m_locale.AddCatalog(appname);
 
 	OpenLog();
 
@@ -50,13 +60,6 @@ bool MyRuLibApp::OnInit()
 	frame->Show();
 
 	return true;
-}
-
-wxFileName MyRuLibApp::GetLocaleFilename(FbConfigDatabase &config)
-{
-	wxFileName result = config.GetConfigName();
-	result.SetExt(wxT("mo"));
-	return result;
 }
 
 void MyRuLibApp::LoadBlankImage()
@@ -156,3 +159,4 @@ void MyRuLibApp::SetAppData(const wxString &filename)
 	wxCriticalSectionLocker locker(m_section);
 	m_datafile = filename;
 };
+
