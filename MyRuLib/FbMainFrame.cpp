@@ -696,9 +696,8 @@ void FbMainFrame::OnLocalize(wxCommandEvent& event)
 	SetToolBar(CreateToolBar());
     wxDELETE(toolbar);
 
-    GetNotebook()->
 	size_t count = GetNotebook()->GetPageCount();
-	size_t index = GetNotebook()->GetPageIndex();
+	size_t index = GetNotebook()->GetSelection();
 	for (size_t i = 0; i < count; ++i) {
 		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
 		if (frame) frame->Localize(i == index);
