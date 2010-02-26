@@ -1498,14 +1498,6 @@ msgstr "Размер"
 msgid "Reverse order"
 msgstr "Обратный порядок"
 
-#: FbReplaceDlg.cpp:27
-msgid "Replace:"
-msgstr "Заменить:"
-
-#: FbReplaceDlg.cpp:37
-msgid "Find:"
-msgstr "Найти:"
-
 #: FbReplaceDlg.cpp:111
 msgid "Author not selected by replacement."
 msgstr "Не выбран автор для замены."
@@ -1519,21 +1511,17 @@ msgid "Customize"
 msgstr "Настройка"
 
 #: FbViewerDlg.cpp:17
-msgid "Select the application to view files "
-msgstr "Выберите приложение для просмотра файлов "
-
-#: FbViewerDlg.cpp:47 SettingsDlg.cpp:545
-msgid "Select the application to view files..."
-msgstr "Выберите приложение для просмотра файлов…"
+msgid "Select the application to view files"
+msgstr "Выберите приложение для просмотра файлов"
 
 #: FbViewerDlg.cpp:49
-msgid "Executable files (*.exe)|*.exe"
-msgstr "Исполняемые файлы (*.exe)|*.exe"
+msgid "Executable files"
+msgstr "Исполняемые файлы"
 
 #: InfoThread.cpp:191
 #, c-format
 msgid "XML parsing error: '%s' at line %d"
-msgstr ""
+msgstr "Ошибка чтения XML: '%s' в строке %d"
 
 #: SettingsDlg.cpp:82
 msgid "List of authors and books:"
@@ -1580,8 +1568,20 @@ msgid "Program"
 msgstr "Программа"
 
 #: SettingsDlg.cpp:194
+msgid "Save full path of the file when importing"
+msgstr "Сохранять полный путь файла при импорте"
+
+#: SettingsDlg.cpp:194
 msgid "Temporary folder:"
 msgstr "Папка для временных файлов:"
+
+#: SettingsDlg.cpp:194
+msgid "Delete temporary files when you exit the program"
+msgstr "Удалять временные файлы при выходе из программы"
+
+#: SettingsDlg.cpp:194
+msgid "Delete files when you delete a book"
+msgstr "Удалять файлы при удалении книги"
 
 #: SettingsDlg.cpp:222
 msgid "Limit the maximum size of lists:"
@@ -1624,33 +1624,29 @@ msgid "Fonts"
 msgstr "Шрифты"
 
 #: SettingsDlg.cpp:467
-msgid "Program options"
+msgid "Program settings"
 msgstr "Настройка параметров программы"
 
 #: SettingsDlg.cpp:604
 msgid "Input new filetype"
-msgstr "Введите новый тип файла:"
-
-#: SettingsDlg.cpp:604
-msgid "Settings:"
-msgstr "Настройки:"
+msgstr "Введите новый тип файла"
 
 #: ZipReader.cpp:93
 #, c-format
 msgid "Book not found %s"
-msgstr ""
+msgstr "Книга не найдена %s"
 
 #: ZipReader.cpp:244
 #, c-format
 msgid "Start scan directory %s"
-msgstr ""
+msgstr "Начата обработка директории %s"
 
 #: ZipReader.cpp:259
 #, c-format
 msgid "Finish scan directory %s"
-msgstr ""
+msgstr "Завершена обработка директории %s"
 
 #: ZipReader.cpp:264
 #, c-format
 msgid "Scan zip %s"
-msgstr ""
+msgstr "Обработка zip-файла %s"

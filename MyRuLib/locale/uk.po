@@ -1504,27 +1504,19 @@ msgid "Previous"
 msgstr "Попереднє"
 
 #: FbMenu.cpp:11
-msgid "Размер"
+msgid "Size"
 msgstr "Розмір"
 
 #: FbMenu.cpp:14
-msgid "Обратный порядок"
+msgid "Reverse order"
 msgstr "Зворотний порядок"
 
-#: FbReplaceDlg.cpp:27
-msgid "Заменить:"
-msgstr "Замінити:"
-
-#: FbReplaceDlg.cpp:37
-msgid "Найти:"
-msgstr "Знайти:"
-
 #: FbReplaceDlg.cpp:111
-msgid "Не выбран автор для замены."
+msgid "Author not selected by replacement."
 msgstr "Не обраний автор для заміни."
 
 #: FbReplaceDlg.cpp:133
-msgid "Заменить автора"
+msgid "Replace author"
 msgstr "Замінити автора"
 
 #: FbViewerDlg.cpp:11
@@ -1532,16 +1524,12 @@ msgid "Customize"
 msgstr "Настройка"
 
 #: FbViewerDlg.cpp:17
-msgid "Выберите приложение для просмотра файлов "
-msgstr "Виберіть програму для перегляду файлів "
-
-#: FbViewerDlg.cpp:47 SettingsDlg.cpp:545
-msgid "Выберите приложение для просмотра файлов…"
-msgstr "Виберіть програму для перегляду файлів…"
+msgid "Select the application to view files"
+msgstr "Виберіть програму для перегляду файлів"
 
 #: FbViewerDlg.cpp:49
-msgid "Исполняемые файлы (*.exe)|*.exe"
-msgstr "Файли програм (*.exe)|*.exe"
+msgid "Executable files"
+msgstr "Файли програм"
 
 #: InfoThread.cpp:191
 #, c-format
@@ -1549,104 +1537,112 @@ msgid "XML parsing error: '%s' at line %d"
 msgstr "Помилка розбіру XML: '%s' at line %d"
 
 #: SettingsDlg.cpp:82
-msgid "Списки книг, авторов:"
+msgid "List of authors and books:"
 msgstr "Списки книг, авторів:"
 
 #: SettingsDlg.cpp:83
-msgid "Панель инструментов:"
+msgid "Toolbar:"
 msgstr "Панель інструментів:"
 
 #: SettingsDlg.cpp:84
-msgid "Информация:"
+msgid "Information:"
 msgstr "Інформація:"
 
 #: SettingsDlg.cpp:85
-msgid "Окна диалогов:"
+msgid "Dialog windows:"
 msgstr "Вікна діалогів:"
 
 #: SettingsDlg.cpp:89
-msgid "Сбросить все шрифты"
+msgid "Reset fonts settings"
 msgstr "Скинути всі шрифти"
 
 #: SettingsDlg.cpp:117
-msgid "Автоматически стартовать загрузку файлов"
+msgid "Automatically begin files downloading"
 msgstr "Автоматично стартувати завантаження файлів"
 
 #: SettingsDlg.cpp:123
-msgid "Использовать прокси-сервер"
+msgid "Use proxy-server"
 msgstr "Використовувати проксі-сервер"
 
 #: SettingsDlg.cpp:134
-msgid "Загружать изображения для описаний авторов"
+msgid "Load images for author's description"
 msgstr "Завантажувати зображення для описів авторів"
 
 #: SettingsDlg.cpp:137
-msgid "Папка для хранения скачанных файлов:"
+msgid "Folder to save downloads:"
 msgstr "Каталог для зберігання завантажених файлів:"
 
 #: SettingsDlg.cpp:152
-msgid "Удалять скачанные файлы при удалении загрузок из списка"
+msgid "Delete downloaded files when download query removed"
 msgstr "Видаляти завантажені файли при видаленні завантажень зі списку"
 
 #: SettingsDlg.cpp:176
-msgid "Программа"
+msgid "Program"
 msgstr "Програма"
 
 #: SettingsDlg.cpp:194
-msgid "Папка для временных файлов:"
+msgid "Save full path of the file when importing"
+msgstr "Зберігати повний шлях до файлу при імпорті"
+
+#: SettingsDlg.cpp:194
+msgid "Temporary folder:"
 msgstr "Каталог для тимчасових файлів:"
 
+#: SettingsDlg.cpp:194
+msgid "Delete temporary files when you exit the program"
+msgstr "Видаляти тимчасові файли при виході з програми"
+
+#: SettingsDlg.cpp:194
+msgid "Delete files when you delete a book"
+msgstr "Видаляти файли при видаленні книги"
+
 #: SettingsDlg.cpp:222
-msgid "Органичить максимальный размер списков:"
+msgid "Limit the maximum size of lists:"
 msgstr "Обмежити максимальний розмір списків:"
 
 #: SettingsDlg.cpp:264
-msgid "Транслитерация имени папки"
+msgid "Transliterate folder name"
 msgstr "Транслітерація найменування каталогу"
 
 #: SettingsDlg.cpp:267
-msgid "Транслитерация имен файлов"
+msgid "Transliterate filename"
 msgstr "Транслітерація найменування файлу"
 
 #: SettingsDlg.cpp:271
-msgid "А / Автор / Серия / №_Книга"
+msgid "A / Author / Series / #_book"
 msgstr "А / Автор / Серія / №_Книга"
 
 #: SettingsDlg.cpp:272
-msgid "А / Автор / Книга"
+msgid "A / Author / Book"
 msgstr "А / Автор / Книга"
 
 #: SettingsDlg.cpp:273
-msgid "Автор / Серия / №_Книга"
+msgid "Author / Series / #_book"
 msgstr "Автор / Серія / №_Книга"
 
 #: SettingsDlg.cpp:274
-msgid "Автор / Книга"
+msgid "Author / Book"
 msgstr "Автор / Книга"
 
 #: SettingsDlg.cpp:277
-msgid "Организация папок и файлов"
+msgid "Exported collection structure"
 msgstr "Організація каталогів і файлів"
 
 #: SettingsDlg.cpp:283
-msgid "Формат выгрузки"
+msgid "Format of exporting collection"
 msgstr "Формат експорту"
 
 #: SettingsDlg.cpp:327
-msgid "Шрифты"
+msgid "Fonts"
 msgstr "Шрифти"
 
 #: SettingsDlg.cpp:467
-msgid "Настройка параметров программы"
+msgid "Program settings"
 msgstr "Настройка параметрів програми"
 
 #: SettingsDlg.cpp:604
-msgid "Введите новый тип файла:"
-msgstr "Введіть новий тип файлу:"
-
-#: SettingsDlg.cpp:604
-msgid "Настройки:"
-msgstr "Настройка"
+msgid "Input new filetype"
+msgstr "Введіть новий тип файлу"
 
 #: ZipReader.cpp:93
 #, c-format

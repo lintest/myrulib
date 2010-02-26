@@ -79,14 +79,14 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppendItem(fgSizerList, _("Списки книг, авторов:"), ID_FONT_MAIN);
-	AppendItem(fgSizerList, _("Панель инструментов:"), ID_FONT_TOOL);
-	AppendItem(fgSizerList, _("Информация:"), ID_FONT_HTML);
-	AppendItem(fgSizerList, _("Окна диалогов:"), ID_FONT_DLG);
+	AppendItem(fgSizerList, _("List of authors and books:"), ID_FONT_MAIN);
+	AppendItem(fgSizerList, _("Toolbar:"), ID_FONT_TOOL);
+	AppendItem(fgSizerList, _("Information:"), ID_FONT_HTML);
+	AppendItem(fgSizerList, _("Dialog windows:"), ID_FONT_DLG);
 
 	bSizerMain->Add( fgSizerList, 0, wxEXPAND, 5 );
 
-	wxButton * btnClear = new wxButton( this, ID_FONT_CLEAR, _("Сбросить все шрифты"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxButton * btnClear = new wxButton( this, ID_FONT_CLEAR, _("Reset fonts settings"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( btnClear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	this->SetSizer( bSizerMain );
@@ -114,13 +114,13 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
-	wxCheckBox * m_checkBox13 = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Автоматически стартовать загрузку файлов"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox13 = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Automatically begin files downloading"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
 
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxCheckBox * m_checkBox12 = new wxCheckBox( this, ID_USE_PROXY, _("Использовать прокси-сервер"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox12 = new wxCheckBox( this, ID_USE_PROXY, _("Use proxy-server"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer13->Add( m_checkBox12, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxComboBox * m_comboBox2 = new wxComboBox( this, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
@@ -131,10 +131,10 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
 
-	wxCheckBox * checkBox3 = new wxCheckBox( this, ID_HTTP_IMAGES, _("Загружать изображения для описаний авторов"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * checkBox3 = new wxCheckBox( this, ID_HTTP_IMAGES, _("Load images for author's description"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( checkBox3, 0, wxALL, 5 );
 
-	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Папка для хранения скачанных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Folder to save downloads:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
 	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
@@ -149,7 +149,7 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 
 	bSizer2->Add( bSizer14, 0, wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Удалять скачанные файлы при удалении загрузок из списка"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox14, 0, wxALL, 5 );
 
 	this->SetSizer( bSizer2 );
@@ -172,8 +172,8 @@ SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	bSizer->Add( tools, 0, wxALL|wxEXPAND, 5 );
 
 	TypeListCtrl * typelist = new TypeListCtrl( this, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
-	typelist->InsertColumn(0, _("Тип"), wxLIST_FORMAT_LEFT, 50);
-	typelist->InsertColumn(1, _("Программа"), wxLIST_FORMAT_LEFT, 300);
+	typelist->InsertColumn(0, _("Extension"), wxLIST_FORMAT_LEFT, 50);
+	typelist->InsertColumn(1, _("Program"), wxLIST_FORMAT_LEFT, 300);
 
 	bSizer->Add( typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
@@ -188,10 +188,10 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	wxCheckBox * checkbox;
 	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
 
-	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, _("Сохранять полный путь файла при импорте"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, _("Save full path of the file when importing"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
-	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Папка для временных файлов:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Temporary folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text->Wrap( -1 );
 	bSizer->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
@@ -208,10 +208,10 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
 	}
 
-	checkbox = new wxCheckBox( this, ID_TEMP_DEL, _("Удалять временные файлы при выходе из программы"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_TEMP_DEL, _("Delete temporary files when you exit the program"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
-	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, _("Удалять файлы при удалении книги"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, _("Delete files when you delete a book"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 /*
 	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, _("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -219,7 +219,7 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 */
 	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
 
-	checkbox = new wxCheckBox( this, ID_LIMIT_CHECK, _("Органичить максимальный размер списков:"), wxDefaultPosition, wxDefaultSize, 0 );
+	checkbox = new wxCheckBox( this, ID_LIMIT_CHECK, _("Limit the maximum size of lists:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxTextCtrl * maxedit = new wxTextCtrl( this, ID_LIMIT_COUNT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -261,26 +261,26 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	fgSizer10->AddGrowableCol( 0 );
 	fgSizer10->AddGrowableCol( 1 );
 
-	wxCheckBox * m_checkBox2 = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Транслитерация имени папки"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox2 = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Transliterate folder name"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer10->Add( m_checkBox2, 0, wxALL|wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox3 = new wxCheckBox( this, ID_TRANSLIT_FILE, _("Транслитерация имен файлов"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * m_checkBox3 = new wxCheckBox( this, ID_TRANSLIT_FILE, _("Transliterate filename"), wxDefaultPosition, wxDefaultSize, 0 );
 	fgSizer10->Add( m_checkBox3, 0, wxALL|wxEXPAND, 5 );
 
 	wxString m_radioBox1Choices[] = {
-		_("А / Автор / Серия / №_Книга"),
-		_("А / Автор / Книга"),
-		_("Автор / Серия / №_Книга"),
-		_("Автор / Книга"),
+		_("A / Author / Series / #_book"),
+		_("A / Author / Book"),
+		_("Author / Series / #_book"),
+		_("Author / Book"),
 	};
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
-	wxRadioBox * m_radioBox1 = new wxRadioBox( this, ID_FOLDER_FORMAT, _("Организация папок и файлов"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
+	wxRadioBox * m_radioBox1 = new wxRadioBox( this, ID_FOLDER_FORMAT, _("Exported collection structure"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
 	fgSizer10->Add( m_radioBox1, 0, wxALL|wxEXPAND, 5 );
 
 	wxString m_radioBox2Choices[] = { _("filename.fb2"), _("filename.fb2.zip") };
 	int m_radioBox2NChoices = sizeof( m_radioBox2Choices ) / sizeof( wxString );
-	wxRadioBox * m_radioBox2 = new wxRadioBox( this, ID_FILE_FORMAT, _("Формат выгрузки"), wxDefaultPosition, wxDefaultSize, m_radioBox2NChoices, m_radioBox2Choices, 1, wxRA_SPECIFY_COLS );
+	wxRadioBox * m_radioBox2 = new wxRadioBox( this, ID_FILE_FORMAT, _("Format of exporting collection"), wxDefaultPosition, wxDefaultSize, m_radioBox2NChoices, m_radioBox2Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox2->SetSelection( 0 );
 	fgSizer10->Add( m_radioBox2, 0, wxALL|wxEXPAND, 5 );
 
@@ -320,11 +320,11 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	#endif
 
 	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, nbStyle );
-	notebook->AddPage( new FbPanelInterface(notebook), _("Основные"), true );
-	notebook->AddPage( new FbPanelInternet(notebook), _("Интернет"), false );
-	notebook->AddPage( new FbPanelTypes(notebook), _("Типы файлов"), false );
-	notebook->AddPage( new FbPanelExport(notebook), _("Экспорт"), false );
-	notebook->AddPage( new FbPanelFont(notebook), _("Шрифты"), false );
+	notebook->AddPage( new FbPanelInterface(notebook), _("General"), true );
+	notebook->AddPage( new FbPanelInternet(notebook), _("Network"), false );
+	notebook->AddPage( new FbPanelTypes(notebook), _("File types"), false );
+	notebook->AddPage( new FbPanelExport(notebook), _("Export"), false );
+	notebook->AddPage( new FbPanelFont(notebook), _("Fonts"), false );
 
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 
@@ -464,7 +464,7 @@ void SettingsDlg::Assign(bool write)
 
 void SettingsDlg::Execute(wxWindow* parent)
 {
-	SettingsDlg dlg(parent, wxID_ANY, _("Настройка параметров программы"), wxDefaultPosition, wxDefaultSize);
+	SettingsDlg dlg(parent, wxID_ANY, _("Program settings"), wxDefaultPosition, wxDefaultSize);
 
 	try {
 		dlg.Assign(false);
@@ -542,7 +542,7 @@ void SettingsDlg::SelectApplication()
 
 	if (!count) return;
 
-	wxString title = _("Выберите приложение для просмотра файлов…");
+	wxString title = _("Select the application to view files");
 	wxString command;
 	long item = typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if ( item >= 0) command = m_commands[typelist->GetItemData(item)];
@@ -601,7 +601,7 @@ void SettingsDlg::OnAppendType( wxCommandEvent& event )
 	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPELIST);
 	if (!typelist) return;
 
-	wxString filetype = wxGetTextFromUser(_("Введите новый тип файла:"), _("Настройки:"));
+	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
 	if (filetype.IsEmpty()) return;
 	filetype = filetype.Lower();
 

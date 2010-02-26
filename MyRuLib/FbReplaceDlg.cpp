@@ -24,7 +24,7 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 	fgSizerGrid->SetFlexibleDirection( wxBOTH );
 	fgSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxStaticText * m_static1 = new wxStaticText( this, wxID_ANY, _("Заменить:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_static1 = new wxStaticText( this, wxID_ANY, _("Replace") + COLON, wxDefaultPosition, wxDefaultSize, 0 );
 	m_static1->Wrap( -1 );
 	fgSizerGrid->Add( m_static1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -34,7 +34,7 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	fgSizerGrid->Add( m_Text, 0, wxEXPAND|wxTOP|wxBOTTOM|wxRIGHT, 5 );
 
-	wxStaticText * m_static2 = new wxStaticText( this, wxID_ANY, _("Найти:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_static2 = new wxStaticText( this, wxID_ANY, _("Find") + COLON, wxDefaultPosition, wxDefaultSize, 0 );
 	m_static2->Wrap( -1 );
 	fgSizerGrid->Add( m_static2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -56,8 +56,8 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	m_FindList = new FbMasterList(this, ID_FIND_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
 	bSizerMain->Add( m_FindList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
-	m_FindList->AddColumn(_("Автор"), 40, wxALIGN_LEFT);
-	m_FindList->AddColumn(_("Кол."), 10, wxALIGN_RIGHT);
+	m_FindList->AddColumn(_("Author"), 40, wxALIGN_LEFT);
+	m_FindList->AddColumn(_("Num."), 10, wxALIGN_RIGHT);
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -108,7 +108,7 @@ void FbReplaceDlg::EndModal(int retCode)
 			bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 			if (!ok) return;
 		} else {
-			wxMessageBox(_("Не выбран автор для замены."), GetTitle());
+			wxMessageBox(_("Author not selected by replacement."), GetTitle());
 			return;
 		}
 	}
@@ -130,9 +130,8 @@ wxString FbReplaceDlg::GetFullName()
 
 int FbReplaceDlg::Execute(int author, wxString& newname)
 {
-	FbReplaceDlg dlg(_("Заменить автора"), author);
+	FbReplaceDlg dlg(_("Replace author"), author);
 	bool ok = dlg.Load() && dlg.ShowModal() == wxID_OK;
 	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoUpdate() : 0;
 }
-
