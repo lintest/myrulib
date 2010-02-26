@@ -20,16 +20,20 @@ bool FbLocale::Init(int language, int flags)
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 		case wxLANGUAGE_UKRAINIAN: {
-			#include "uk.inc"
+			#include "uk_UA.inc"
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 		case wxLANGUAGE_BELARUSIAN: {
-			#include "be.inc"
+			#include "be_BY.inc"
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 	}
 
 	if (ok) AddCatalogLookupPathPrefix(filename.GetPath());
+
+	#else
+
+    bool ok = true;
 
     #endif //FB_INCLUDE_LOCALE
 

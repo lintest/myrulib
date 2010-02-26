@@ -242,11 +242,11 @@ clean:
 	-if exist build\libwxsqlite3_static.a del build\libwxsqlite3_static.a
 	-if exist build\bin2c.exe del build\bin2c.exe
 	-if exist build/ru.mo del build/ru.mo
-	-if exist build/uk.mo del build/uk.mo
-	-if exist build/be.mo del build/be.mo
+	-if exist build/uk_UA.mo del build/uk_UA.mo
+	-if exist build/be_BY.mo del build/be_BY.mo
 	-if exist build/ru.inc del build/ru.inc
-	-if exist build/uk.inc del build/uk.inc
-	-if exist build/be.inc del build/be.inc
+	-if exist build/uk_UA.inc del build/uk_UA.inc
+	-if exist build/be_BY.inc del build/be_BY.inc
 	-if exist build\myrulib.exe del build\myrulib.exe
 
 test_for_selected_wxbuild: 
@@ -282,22 +282,22 @@ build\bin2c.exe: $(BIN2C_OBJECTS)
 build/ru.mo: build\bin2c.exe MyRuLib\locale\ru.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
 
-build/uk.mo: build\bin2c.exe MyRuLib\locale\uk.po
-	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
+build/uk_UA.mo: build\bin2c.exe MyRuLib\locale\uk_UA.po
+	msgfmt MyRuLib/locale/uk_UA.po -o build/uk_UA.mo
 
-build/be.mo: build\bin2c.exe MyRuLib\locale\be.po
-	msgfmt MyRuLib/locale/be.po -o build/be.mo
+build/be_BY.mo: build\bin2c.exe MyRuLib\locale\be_BY.po
+	msgfmt MyRuLib/locale/be_BY.po -o build/be_BY.mo
 
 build/ru.inc: build/ru.mo
 	build/bin2c build/ru.mo build/ru.inc file
 
-build/uk.inc: build/uk.mo
-	build/bin2c build/uk.mo build/uk.inc file
+build/uk_UA.inc: build/uk_UA.mo
+	build/bin2c build/uk_UA.mo build/uk_UA.inc file
 
-build/be.inc: build/be.mo
-	build/bin2c build/be.mo build/be.inc file
+build/be_BY.inc: build/be_BY.mo
+	build/bin2c build/be_BY.mo build/be_BY.inc file
 
-build\myrulib.exe: $(MYRULIB_OBJECTS) build/ru.inc build/uk.inc build/be.inc build\libwxsqlite3_static.a build\libsqlite3_static.a build\myrulib_resource_rc.o build\libexpat_static.a
+build\myrulib.exe: $(MYRULIB_OBJECTS) build/ru.inc build/uk_UA.inc build/be_BY.inc build\libwxsqlite3_static.a build\libsqlite3_static.a build\myrulib_resource_rc.o build\libexpat_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows   $(LDFLAGS)  build\libwxsqlite3_static.a build\libsqlite3_static.a build\libexpat_static.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_NET_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
 	strip build/myrulib.exe
 

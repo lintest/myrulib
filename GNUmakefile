@@ -185,10 +185,10 @@ all: test_for_selected_wxbuild build/libsqlite3_static.a build/libwxsqlite3_stat
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES
 	(cd build ; $(INSTALL) -m 644 -T ru.mo $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES/myrulib.mo)
-	$(INSTALL) -d $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES
-	(cd build ; $(INSTALL) -m 644 -T uk.mo $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES/myrulib.mo)
-	$(INSTALL) -d $(DESTDIR)/usr/share/locale/be/LC_MESSAGES
-	(cd build ; $(INSTALL) -m 644 -T be.mo $(DESTDIR)/usr/share/locale/be/LC_MESSAGES/myrulib.mo)
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/uk_UA/LC_MESSAGES
+	(cd build ; $(INSTALL) -m 644 -T uk_UA.mo $(DESTDIR)/usr/share/locale/uk_UA/LC_MESSAGES/myrulib.mo)
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/be_BY/LC_MESSAGES
+	(cd build ; $(INSTALL) -m 644 -T be_BY.mo $(DESTDIR)/usr/share/locale/be_BY/LC_MESSAGES/myrulib.mo)
 	$(INSTALL) -d $(DESTDIR)/usr/share/icons/hicolor/48x48/apps
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
@@ -198,8 +198,8 @@ install: install_myrulib
 
 uninstall: uninstall_myrulib
 	(cd $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES ; rm -f myrulib.mo)
-	(cd $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES ; rm -f myrulib.mo)
-	(cd $(DESTDIR)/usr/share/locale/be/LC_MESSAGES ; rm -f myrulib.mo)
+	(cd $(DESTDIR)/usr/share/locale/uk_UA/LC_MESSAGES ; rm -f myrulib.mo)
+	(cd $(DESTDIR)/usr/share/locale/be_BY/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)/usr/share/icons/hicolor/48x48/apps ; rm -f myrulib.png)
 	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 	(cd $(DESTDIR)/usr/share/pixmaps ; rm -f myrulib.png)
@@ -211,11 +211,11 @@ clean:
 	rm -f build/libwxsqlite3_static.a
 	rm -f build/bin2c
 	rm -f build/ru.mo
-	rm -f build/uk.mo
-	rm -f build/be.mo
+	rm -f build/uk_UA.mo
+	rm -f build/be_BY.mo
 	rm -f build/ru.inc
-	rm -f build/uk.inc
-	rm -f build/be.inc
+	rm -f build/uk_UA.inc
+	rm -f build/be_BY.inc
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
@@ -237,22 +237,22 @@ build/bin2c: $(BIN2C_OBJECTS)
 build/ru.mo: build/bin2c MyRuLib/locale/ru.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
 
-build/uk.mo: build/bin2c MyRuLib/locale/uk.po
-	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
+build/uk_UA.mo: build/bin2c MyRuLib/locale/uk_UA.po
+	msgfmt MyRuLib/locale/uk_UA.po -o build/uk_UA.mo
 
-build/be.mo: build/bin2c MyRuLib/locale/be.po
-	msgfmt MyRuLib/locale/be.po -o build/be.mo
+build/be_BY.mo: build/bin2c MyRuLib/locale/be_BY.po
+	msgfmt MyRuLib/locale/be_BY.po -o build/be_BY.mo
 
 build/ru.inc: build/ru.mo
 	build/bin2c build/ru.mo build/ru.inc file
 
-build/uk.inc: build/uk.mo
-	build/bin2c build/uk.mo build/uk.inc file
+build/uk_UA.inc: build/uk_UA.mo
+	build/bin2c build/uk_UA.mo build/uk_UA.inc file
 
-build/be.inc: build/be.mo
-	build/bin2c build/be.mo build/be.inc file
+build/be_BY.inc: build/be_BY.mo
+	build/bin2c build/be_BY.mo build/be_BY.inc file
 
-build/myrulib: $(MYRULIB_OBJECTS) build/ru.inc build/uk.inc build/be.inc build/libwxsqlite3_static.a build/libsqlite3_static.a
+build/myrulib: $(MYRULIB_OBJECTS) build/ru.inc build/uk_UA.inc build/be_BY.inc build/libwxsqlite3_static.a build/libsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libsqlite3_static.a -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip build/myrulib
 

@@ -73,32 +73,32 @@
 		<locale>ru</locale>
 	</action>
 
-	<action id="build/uk.mo"> 
-		<locale>uk</locale>
+	<action id="build/uk_UA.mo"> 
+		<locale>uk_UA</locale>
 	</action>
 
-	<action id="build/be.mo"> 
-		<locale>be</locale>
+	<action id="build/be_BY.mo"> 
+		<locale>be_BY</locale>
 	</action>
 
 	<action id="build/ru.inc"> 
 		<bin2c>ru</bin2c>
 	</action>
 
-	<action id="build/uk.inc"> 
-		<bin2c>uk</bin2c>
+	<action id="build/uk_UA.inc"> 
+		<bin2c>uk_UA</bin2c>
 	</action>
 
-	<action id="build/be.inc"> 
-		<bin2c>be</bin2c>
+	<action id="build/be_BY.inc"> 
+		<bin2c>be_BY</bin2c>
 	</action>
 
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<define cond="WX_SHARED_DEFAULT=='0'">FB_INCLUDE_LOCALE</define>
 		<depends>$(BUILDDIR)/ru.inc</depends>
-		<depends>$(BUILDDIR)/uk.inc</depends>
-		<depends>$(BUILDDIR)/be.inc</depends>
+		<depends>$(BUILDDIR)/uk_UA.inc</depends>
+		<depends>$(BUILDDIR)/be_BY.inc</depends>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
