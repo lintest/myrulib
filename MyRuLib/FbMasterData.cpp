@@ -331,7 +331,7 @@ void FbMasterGenre::SubgenreFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	int argCount = ctx.GetArgCount();
 	if (argCount != 1) {
-		ctx.SetResultError(wxString::Format(_("SUBGENRE called with wrong number of arguments: %d."), argCount));
+		ctx.SetResultError(wxString::Format(wxT("SUBGENRE called with wrong number of arguments: %d."), argCount));
 		return;
 	}
 	wxString text = ctx.GetString(0);

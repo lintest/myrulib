@@ -1291,7 +1291,7 @@ msgid " Author: "
 msgstr " Автор: "
 
 #: FbMainFrame.cpp:274
-msgid "Find Author"
+msgid "Find author"
 msgstr "Поиск автора"
 
 #: FbMainFrame.cpp:277
@@ -1323,14 +1323,20 @@ msgid "Select archive to add to the library"
 msgstr "Выберите zip-файл для добавления в библиотеку…"
 
 #: FbMainFrame.cpp:312
-msgid ""
-"Digital books and archives (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*."
-"FB2| Digital books in FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|ZIP archives (*.zip)|*.zip;"
-"*.Zip;*.ZIP|All files (*.*)|*.*"
-msgstr ""
-"Электронные книги и архивы (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*."
-"FB2|Электронные книги FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|Архивы ZIP (*.zip)|*.zip;"
-"*.Zip;*.ZIP|Все файлы (*.*)|*.*"
+msgid "Digital books and archives"
+msgstr "Электронные книги и архивы"
+
+#: FbMainFrame.cpp:312
+msgid "Digital books in FB2"
+msgstr "Электронные книги FB2"
+
+#: FbMainFrame.cpp:312
+msgid "ZIP archives"
+msgstr "Архивы ZIP"
+
+#: FbMainFrame.cpp:312
+msgid "All files"
+msgstr "Все файлы"
 
 #: FbMainFrame.cpp:322
 msgid "Processing file:"
@@ -1338,10 +1344,14 @@ msgstr "Обработка файла:"
 
 #: FbMainFrame.cpp:335
 msgid "Select folder to recursive import"
-msgstr "Выберите папку для рекурсивного импорта файлов в библиотеку…"
+msgstr "Выберите папку для рекурсивного импорта файлов в библиотеку"
+
+#: FbMainFrame.cpp:335
+msgid "Processing folder:"
+msgstr "Обработка папки:"
 
 #: FbMainFrame.cpp:468
-msgid "Input search string"
+msgid "Input search string:"
 msgstr "Введите строку для поиска:"
 
 #: FbMainFrame.cpp:468
@@ -1349,12 +1359,16 @@ msgid "Find title"
 msgstr "Поиск по заголовку"
 
 #: FbMainFrame.cpp:523
-msgid "This function is not available yet in this version"
+msgid "This function is not available yet in this version."
 msgstr "Функционал не реализован в данной версии."
 
 #: FbMainFrame.cpp:533
 msgid "Optimize database?"
 msgstr "Выполнить реструктуризацию базы данных?"
+
+#: FbMainFrame.cpp:592
+msgid "File not found"
+msgstr "Файл не найден"
 
 #: FbMainMenu.cpp:6
 msgid "Search"
@@ -1393,32 +1407,32 @@ msgid "Website"
 msgstr "Официальный сайт"
 
 #: FbMainMenu.cpp:53 FbMainMenu.cpp:69
-msgid "Add file\tCtrl+N"
-msgstr "Добавить файл\tCtrl+N"
+msgid "Add file"
+msgstr "Добавить файл"
 
 #: FbMainMenu.cpp:54 FbMainMenu.cpp:70
-msgid "Add folder\tCtrl+O"
-msgstr "Добавить директорию\tCtrl+O"
+msgid "Add folder"
+msgstr "Добавить директорию"
 
 #: FbMainMenu.cpp:56 FbMainMenu.cpp:73
-msgid "Exit\tAlt-F4"
-msgstr "Выход\tAlt-F4"
+msgid "Exit"
+msgstr "Выход"
 
 #: FbMainMenu.cpp:61 FbMainMenu.cpp:92
 msgid "Tabs"
 msgstr "Вкладки"
 
 #: FbMainMenu.cpp:63 FbMainMenu.cpp:95
-msgid "Fullscreen mode\tF11"
-msgstr "Полноэкранный режим\tF11"
+msgid "Fullscreen mode"
+msgstr "Полноэкранный режим"
 
 #: FbMainMenu.cpp:64 FbMainMenu.cpp:96
-msgid "Open log window\tF12"
-msgstr "Окно сообщений\tF12"
+msgid "Show log window"
+msgstr "Окно сообщений"
 
 #: FbMainMenu.cpp:72
-msgid "Export\tCtrl+S"
-msgstr "Экспорт книг\tCtrl+S"
+msgid "Export books"
+msgstr "Экспорт книг"
 
 #: FbMainMenu.cpp:90
 msgid "List of books"
@@ -1429,12 +1443,8 @@ msgid "Preview area"
 msgstr "Область просмотра"
 
 #: FbMainMenu.cpp:110
-msgid "&Hierarchical"
-msgstr "&Иерархический"
-
-#: FbMainMenu.cpp:111
-msgid "&Simple list"
-msgstr "&Простой список"
+msgid "Hierarchical"
+msgstr "Иерархический"
 
 #: FbMainMenu.cpp:116
 msgid "Standart"
@@ -1454,15 +1464,15 @@ msgstr "Кнопочные"
 
 #: FbMainMenu.cpp:124
 msgid "Right"
-msgstr "&Справа"
+msgstr "Справа"
 
 #: FbMainMenu.cpp:125
 msgid "Bottom"
-msgstr "&Внизу"
+msgstr "Внизу"
 
 #: FbMainMenu.cpp:126
 msgid "Not specified"
-msgstr "&Отсутствует"
+msgstr "Отсутствует"
 
 #: FbMainMenu.cpp:131
 msgid "Close window"
@@ -1479,11 +1489,6 @@ msgstr "Следующее"
 #: FbMainMenu.cpp:135
 msgid "Previous"
 msgstr "Предыдущее"
-
-#: FbMasterData.cpp:334
-#, c-format
-msgid "SUBGENRE called with wrong number of arguments: %d."
-msgstr ""
 
 #: FbMenu.cpp:11
 msgid "Size"

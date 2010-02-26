@@ -1280,15 +1280,15 @@ msgid "Program aborted."
 msgstr "Програма перервана. "
 
 #: FbMainFrame.cpp:190
-msgid "Информационные сообщения"
+msgid "Info messages"
 msgstr "Інформаційні повідомлення"
 
 #: FbMainFrame.cpp:262
-msgid "Импорт файла"
+msgid "Import file"
 msgstr "Імпорт файлу"
 
 #: FbMainFrame.cpp:262
-msgid "Добавить в библиотеку новые файлы"
+msgid "Import files to the library"
 msgstr "Додати в бібліотеку нові файли"
 
 #: FbMainFrame.cpp:263
@@ -1300,203 +1300,208 @@ msgid "Добавить в библиотеку директорию"
 msgstr "Додати в бібліотеку каталог"
 
 #: FbMainFrame.cpp:266
-msgid " Автор: "
+msgid " Author: "
 msgstr " Автор: "
 
 #: FbMainFrame.cpp:274
-msgid "Поиск автора"
+msgid "Find author"
 msgstr "Пошук автора"
 
 #: FbMainFrame.cpp:277
-msgid " Книга: "
+msgid " Book: "
 msgstr " Книга: "
 
 #: FbMainFrame.cpp:286
-msgid "Поиск книги по заголовку"
+msgid "Find book by title"
 msgstr "Пошук книги по заголовку"
 
 #: FbMainFrame.cpp:288
-msgid "Иерархия"
+msgid "Hierarchy"
 msgstr "Ієрархія"
 
 #: FbMainFrame.cpp:288
-msgid "Иерархия авторов и серий"
+msgid "Hierarchy of authors and series"
 msgstr "Ієрархія авторів і серій"
 
 #: FbMainFrame.cpp:289
-msgid "Список"
+msgid "List"
 msgstr "Список"
 
 #: FbMainFrame.cpp:289
-msgid "Простой список"
+msgid "Simple list"
 msgstr "Простий список"
 
 #: FbMainFrame.cpp:309
-msgid "Выберите zip-файл для добавления в библиотеку…"
+msgid "Select archive to add to the library"
 msgstr "Виберіть zіp-файл для додавання в бібліотеку…"
 
 #: FbMainFrame.cpp:312
-msgid ""
-"Электронные книги и архивы (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*."
-"FB2|Электронные книги FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|Архивы ZIP (*.zip)|*.zip;"
-"*.Zip;*.ZIP|Все файлы (*.*)|*.*"
-msgstr ""
-"Електронні книги та архіви (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*."
-"FB2|Електронні книги FB2 (*.fb2)|*.fb2;*.Fb2;*.FB2|Архіви ZIP (*.zip)|*.zip;"
-"*.Zip;*.ZIP|Всі файли (*.*)|*.*"
+msgid "Digital books and archives"
+msgstr "Електронні книги та архіви"
+
+#: FbMainFrame.cpp:312
+msgid "Digital books in FB2"
+msgstr "Електронні книги FB2"
+
+#: FbMainFrame.cpp:312
+msgid "ZIP archives"
+msgstr "Архіви ZIP"
+
+#: FbMainFrame.cpp:312
+msgid "All files"
+msgstr "Всі файли"
 
 #: FbMainFrame.cpp:322
-msgid "Обработка файла:"
+msgid "Processing file:"
 msgstr "Обробка файлу:"
 
 #: FbMainFrame.cpp:335
-msgid "Выберите папку для рекурсивного импорта файлов в библиотеку…"
-msgstr "Виберіть каталог для рекурсивного імпорту файлів у бібліотеку…"
+msgid "Select folder to recursive import"
+msgstr "Виберіть каталог для рекурсивного імпорту файлів у бібліотеку"
+
+#: FbMainFrame.cpp:335
+msgid "Processing folder:"
+msgstr "Обработка каталогу:"
 
 #: FbMainFrame.cpp:468
-msgid "Введите строку для поиска:"
+msgid "Input search string:"
 msgstr "Введіть рядок для пошуку:"
 
 #: FbMainFrame.cpp:468
-msgid "Поиск по заголовку"
+msgid "Find title"
 msgstr "Пошук по заголовку"
 
 #: FbMainFrame.cpp:523
-msgid "Функционал не реализован в данной версии."
+msgid "This function is not available yet in this version."
 msgstr "Функціонал не реалізований у даній версії."
 
 #: FbMainFrame.cpp:533
-msgid "Выполнить реструктуризацию базы данных?"
+msgid "Optimize database?"
 msgstr "Виконати реструктуризацію бази даних?"
 
+#: FbMainFrame.cpp:592
+msgid "File not found"
+msgstr "Файл не знайдено"
+
 #: FbMainMenu.cpp:6
-msgid "Поиск"
+msgid "Search"
 msgstr "Пошук"
 
 #: FbMainMenu.cpp:11
-msgid "Календарь"
+msgid "Calendar"
 msgstr "Календар"
 
 #: FbMainMenu.cpp:12
-msgid "Архив"
+msgid "Archive"
 msgstr "Архів"
 
 #: FbMainMenu.cpp:21
-msgid "Открыть повторно"
+msgid "Open recent"
 msgstr "Відкрити повторно"
 
 #: FbMainMenu.cpp:24
-msgid "Удалить пустые значения"
+msgid "Clear empty variables"
 msgstr "Видалити порожні значення"
 
 #: FbMainMenu.cpp:25
-msgid "Реструктуризация БД"
+msgid "Optimize DB"
 msgstr "Реструктуризація БД"
 
 #: FbMainMenu.cpp:27
-msgid "Параметры"
+msgid "Options"
 msgstr "Параметри"
 
 #: FbMainMenu.cpp:32
-msgid "Настройки"
+msgid "Settings"
 msgstr "Настройки"
 
 #: FbMainMenu.cpp:37
-msgid "Официальный сайт"
+msgid "Website"
 msgstr "Офіційний сайт"
 
 #: FbMainMenu.cpp:53 FbMainMenu.cpp:69
-msgid "Добавить файл\tCtrl+N"
-msgstr "Додати файл\tCtrl+N"
+msgid "Add file"
+msgstr "Додати файл"
 
 #: FbMainMenu.cpp:54 FbMainMenu.cpp:70
-msgid "Добавить директорию\tCtrl+O"
-msgstr "Додати каталог\tCtrl+O"
+msgid "Add folder"
+msgstr "Додати каталог"
 
 #: FbMainMenu.cpp:56 FbMainMenu.cpp:73
-msgid "Выход\tAlt-F4"
-msgstr "Вихід\tAlt-F4"
+msgid "Exit"
+msgstr "Вихід"
 
 #: FbMainMenu.cpp:61 FbMainMenu.cpp:92
-msgid "Вкладки"
+msgid "Tabs"
 msgstr "Вкладки"
 
 #: FbMainMenu.cpp:63 FbMainMenu.cpp:95
-msgid "Полноэкранный режим\tF11"
-msgstr "Повноекранний режим\tF11"
+msgid "Fullscreen mode"
+msgstr "Повноекранний режим"
 
 #: FbMainMenu.cpp:64 FbMainMenu.cpp:96
-msgid "Окно сообщений\tF12"
-msgstr "Вікно повідомлень\tF12"
+msgid "Show log window"
+msgstr "Вікно повідомлень"
 
 #: FbMainMenu.cpp:72
-msgid "Экспорт книг\tCtrl+S"
-msgstr "Експорт книг\tCtrl+S"
+msgid "Export books"
+msgstr "Експорт книг"
 
 #: FbMainMenu.cpp:90
-msgid "Список книг"
+msgid "List of books"
 msgstr "Список книг"
 
 #: FbMainMenu.cpp:91
-msgid "Область просмотра"
+msgid "Preview area"
 msgstr "Область перегляду"
 
 #: FbMainMenu.cpp:110
-msgid "&Иерархический"
-msgstr "&Ієрархічний"
-
-#: FbMainMenu.cpp:111
-msgid "&Простой список"
-msgstr "&Простий список"
+msgid "Hierarchical"
+msgstr "Ієрархічний"
 
 #: FbMainMenu.cpp:116
-msgid "Стандартные"
+msgid "Standart"
 msgstr "Стандартні"
 
 #: FbMainMenu.cpp:117
-msgid "Компактные"
+msgid "Compact"
 msgstr "Компактні"
 
 #: FbMainMenu.cpp:118
-msgid "Выпуклые"
+msgid "Convex"
 msgstr "Опуклі"
 
 #: FbMainMenu.cpp:119
-msgid "Кнопочные"
+msgid "Buttons"
 msgstr "Кнопкові"
 
 #: FbMainMenu.cpp:124
-msgid "&Справа"
-msgstr "&Праворуч"
+msgid "Right"
+msgstr "Праворуч"
 
 #: FbMainMenu.cpp:125
-msgid "&Внизу"
-msgstr "&Внизу"
+msgid "Bottom"
+msgstr "Внизу"
 
 #: FbMainMenu.cpp:126
-msgid "&Отсутствует"
-msgstr "&Відсутній"
+msgid "Not specified"
+msgstr "Відсутній"
 
 #: FbMainMenu.cpp:131
-msgid "Закрыть окно"
+msgid "Close window"
 msgstr "Закрити вікно"
 
 #: FbMainMenu.cpp:132
-msgid "Закрыть все"
+msgid "Close all"
 msgstr "Закрити всі"
 
 #: FbMainMenu.cpp:134
-msgid "Следующее"
+msgid "Next"
 msgstr "Наступне"
 
 #: FbMainMenu.cpp:135
-msgid "Предыдущее"
+msgid "Previous"
 msgstr "Попереднє"
-
-#: FbMasterData.cpp:334
-#, c-format
-msgid "SUBGENRE called with wrong number of arguments: %d."
-msgstr "SUBGENRE викликан з помилковой кількістю аргументів: %d."
 
 #: FbMenu.cpp:11
 msgid "Размер"
