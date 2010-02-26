@@ -1,5 +1,10 @@
 #include "FbWindow.h"
 #include "FbParams.h"
+#include "FbMainMenu.h"
+
+BEGIN_EVENT_TABLE(FbAuiMDIChildFrame, wxAuiMDIChildFrame)
+	EVT_ACTIVATE(FbAuiMDIChildFrame::OnActivated)
+END_EVENT_TABLE()
 
 FbDialog::FbDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
 	:wxDialog( parent, id, title, pos, size, style )
@@ -37,4 +42,19 @@ void FbAuiMDIChildFrame::UpdateFont(wxHtmlWindow * html, bool refresh)
 	html->SetFonts(font.GetFaceName(), font.GetFaceName(), fontsizes);
 }
 
+wxMenuBar * FbAuiMDIChildFrame::CreateMenuBar()
+{
+    return new FbMainMenu;
+}
+
+void FbAuiMDIChildFrame::Localize(bool bUpdateMenu)
+{
+    if (bUpdateMenu) SetMenuBar(CreateMenuBar());
+}
+
+void FbAuiMDIChildFrame::OnActivated(wxActivateEvent & event)
+{
+	SetMenuBar(CreateMenuBar());
+	event.Skip();
+}
 

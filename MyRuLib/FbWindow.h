@@ -27,7 +27,11 @@ class FbAuiMDIChildFrame : public wxAuiMDIChildFrame
 		virtual void UpdateFonts(bool refresh = true) {};
 		static void UpdateFont(wxHtmlWindow * html, bool refresh);
 		virtual void ShowFullScreen(bool show) {};
-		virtual void Localize(bool bUpdateMenu) {};
+		virtual wxMenuBar * CreateMenuBar();
+		virtual void Localize(bool bUpdateMenu);
+    private:
+        void OnActivated(wxActivateEvent & event);
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBWINDOW_H__

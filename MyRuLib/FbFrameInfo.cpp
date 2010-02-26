@@ -9,7 +9,7 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
-BEGIN_EVENT_TABLE(FbFrameInfo, wxAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameInfo, FbAuiMDIChildFrame)
 	EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
 END_EVENT_TABLE()
 
@@ -28,7 +28,7 @@ void FbFrameInfo::Load(const wxString & html)
 
 void FbFrameInfo::CreateControls()
 {
-	SetMenuBar(new FbMainMenu);
+	SetMenuBar(CreateMenuBar());
 
 	m_info.Create(this);
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);

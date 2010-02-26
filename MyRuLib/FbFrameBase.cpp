@@ -7,7 +7,7 @@
 #include "FbFilterDlg.h"
 #include "FbColumnDlg.h"
 
-BEGIN_EVENT_TABLE(FbFrameBase, wxAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
@@ -80,10 +80,8 @@ void FbFrameBase::CreateControls()
 
 void FbFrameBase::Localize(bool bUpdateMenu)
 {
-    if (bUpdateMenu) {
-        SetMenuBar(CreateMenuBar());
-        UpdateStatus();
-    }
+    FbAuiMDIChildFrame::Localize(bUpdateMenu);
+    if (bUpdateMenu) UpdateStatus();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
@@ -157,7 +155,6 @@ void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
 	SetMenuBar(CreateMenuBar());
 	UpdateStatus();
-	event.Skip();
 }
 
 void FbFrameBase::UpdateFonts(bool refresh)
