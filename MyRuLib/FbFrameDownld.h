@@ -18,6 +18,7 @@ class FbFrameDownld : public FbFrameBase
 {
 	public:
 		FbFrameDownld(wxAuiMDIParentFrame * parent);
+		wxString GetTitle() const { return _("Downloads"); };
 		void UpdateFolder(const int iFolder, const FbFolderType type);
 	protected:
 		virtual wxToolBar *CreateToolBar(long style, wxWindowID winid, const wxString& name);

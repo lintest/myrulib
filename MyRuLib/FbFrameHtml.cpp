@@ -25,10 +25,10 @@ BEGIN_EVENT_TABLE(FbFrameHtml, FbAuiMDIChildFrame)
 	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)
 END_EVENT_TABLE()
 
-FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id)
-	:m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id))
+FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id):
+	FbAuiMDIChildFrame(parent, ID_FRAME_HTML, GetTitle()),
+	m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id))
 {
-	FbAuiMDIChildFrame::Create(parent, ID_FRAME_HTML, _("Comments"));
 	static bool bNotLoaded = true;
 	if (bNotLoaded) {
 		wxMemoryFSHandler::AddFile(wxT("modify"), wxBitmap(modify_xpm), wxBITMAP_TYPE_PNG);

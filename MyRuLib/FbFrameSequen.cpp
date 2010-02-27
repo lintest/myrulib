@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_SEQUEN, _("Series")), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
+	:FbFrameBase(parent, ID_FRAME_SEQUEN, GetTitle()), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
 	CreateControls();
 }

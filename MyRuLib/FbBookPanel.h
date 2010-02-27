@@ -22,6 +22,7 @@ class FbBookPanel: public wxSplitterWindow
 		wxString GetOrderSQL();
 		void SetMasterData(FbMasterData const * master);
 		FbMasterData const * GetMasterData() const { return m_master; };
+		void Localize();
 	public:
 		FbBookList * m_BookList;
 		FbItemData * GetSelectedBook();

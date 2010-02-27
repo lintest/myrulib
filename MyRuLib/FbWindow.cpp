@@ -19,6 +19,11 @@ bool FbDialog::Create( wxWindow* parent, wxWindowID id, const wxString& title, c
 	return res;
 }
 
+FbAuiMDIChildFrame::FbAuiMDIChildFrame(wxAuiMDIParentFrame *parent, wxWindowID winid, const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+	: wxAuiMDIChildFrame(parent, winid, title, pos, size, style, name)
+{
+}
+
 bool FbAuiMDIChildFrame::Create(wxAuiMDIParentFrame *parent, wxWindowID winid, const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 {
 	return wxAuiMDIChildFrame::Create(parent, winid, title, pos, size, style, name);

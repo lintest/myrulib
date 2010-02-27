@@ -6,8 +6,8 @@ FbMenuBar::MenuFrame::MenuFrame()
 	AppendImg(ID_MENU_SEARCH, _("Search"), wxART_FIND);
 	AppendSeparator();
 	Append(ID_FRAME_AUTHOR, _("Authors"));
-	Append(ID_FRAME_GENRES, _("Жанры"));
-	Append(ID_FRAME_SEQUEN, _("Серии"));
+	Append(ID_FRAME_GENRES, _("Genres"));
+	Append(ID_FRAME_SEQUEN, _("Series"));
 	Append(ID_FRAME_DATE,   _("Calendar"));
 	Append(ID_FRAME_ARCH,   _("Archive"));
 	AppendSeparator();

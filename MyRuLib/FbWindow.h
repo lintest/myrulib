@@ -17,6 +17,13 @@ class FbDialog: public wxDialog
 class FbAuiMDIChildFrame : public wxAuiMDIChildFrame
 {
 	public:
+		FbAuiMDIChildFrame(wxAuiMDIParentFrame *parent,
+                       wxWindowID winid,
+                       const wxString& title,
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize,
+                       long style = wxDEFAULT_FRAME_STYLE,
+                       const wxString& name = wxFrameNameStr);
 		bool Create(wxAuiMDIParentFrame *parent,
 					wxWindowID winid,
 					const wxString& title,

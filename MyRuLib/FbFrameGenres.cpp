@@ -10,7 +10,7 @@ BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_GENRES, _("Genres"))
+	:FbFrameBase(parent, ID_FRAME_GENRES, GetTitle())
 {
 	CreateControls();
 }

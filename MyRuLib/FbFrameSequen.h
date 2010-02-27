@@ -13,6 +13,7 @@ class FbFrameSequen : public FbFrameBase
 {
 	public:
 		FbFrameSequen(wxAuiMDIParentFrame * parent);
+		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
 		void ActivateAuthors();

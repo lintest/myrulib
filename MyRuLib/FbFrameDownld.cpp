@@ -19,7 +19,7 @@ BEGIN_EVENT_TABLE(FbFrameDownld, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameDownld::FbFrameDownld(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_DOWNLD, _("Downloads"))
+	:FbFrameBase(parent, ID_FRAME_DOWNLD, GetTitle())
 {
 	CreateControls();
 }

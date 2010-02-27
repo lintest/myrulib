@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_AUTHOR, _("Authors"))
+	:FbFrameBase(parent, ID_FRAME_AUTHOR, GetTitle())
 {
 	CreateControls();
 }
@@ -70,6 +70,13 @@ void FbFrameAuthor::CreateControls()
 
 	m_RuAlphabar->Show( FbParams::GetValue(FB_ALPHABET_RU) );
 	m_EnAlphabar->Show( FbParams::GetValue(FB_ALPHABET_EN) );
+}
+
+void FbFrameAuthor::Localize(bool bUpdateMenu)
+{
+	FbFrameBase::Localize(bUpdateMenu);
+	m_MasterList->SetColumnText(0, _("Author"));
+	m_MasterList->SetColumnText(1, _("Num."));
 }
 
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style)

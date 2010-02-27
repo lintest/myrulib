@@ -14,8 +14,8 @@ BEGIN_EVENT_TABLE(FbFrameInfo, FbAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
+	: FbAuiMDIChildFrame(parent, ID_FRAME_INFO, GetTitle())
 {
-	FbAuiMDIChildFrame::Create(parent, ID_FRAME_INFO, _("Information"));
 	CreateControls();
 	UpdateFonts(false);
 }

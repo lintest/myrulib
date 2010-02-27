@@ -58,9 +58,9 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
+	FbAuiMDIChildFrame(parent, id, title),
 	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
 {
-	Create(parent, id, title);
 }
 
 bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
@@ -80,8 +80,10 @@ void FbFrameBase::CreateControls()
 
 void FbFrameBase::Localize(bool bUpdateMenu)
 {
+	SetTitle(GetTitle());
     FbAuiMDIChildFrame::Localize(bUpdateMenu);
     if (bUpdateMenu) UpdateStatus();
+    m_BooksPanel->Localize();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)

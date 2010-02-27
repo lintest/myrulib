@@ -9,10 +9,16 @@ BEGIN_EVENT_TABLE(FbFrameSearch, FbFrameBase)
 	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbFrameSearch::OnFoundNothing)
 END_EVENT_TABLE()
 
-FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString & title)
-	:FbFrameBase(parent, ID_FRAME_SEARCH, title)
+FbFrameSearch::FbFrameSearch(wxAuiMDIParentFrame * parent, const wxString &title, const wxString &author)
+	:FbFrameBase(parent, ID_FRAME_SEARCH, wxEmptyString), m_title(title), m_author(author)
 {
 	CreateControls();
+	SetTitle(GetTitle());
+}
+
+wxString FbFrameSearch::GetTitle() const
+{
+	return _("Search") + COLON + m_title;
 }
 
 void FbFrameSearch::CreateControls()
@@ -41,9 +47,7 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title,
 	if ( title.IsEmpty() ) return;
 
 	wxString msg = _("Searching") + COLON + title;
-	FbFrameSearch * frame = new FbFrameSearch(parent, msg);
-	frame->m_author = author;
-	frame->m_title = title;
+	FbFrameSearch * frame = new FbFrameSearch(parent, title, author);
 	frame->Update();
 
 	frame->UpdateBooklist();

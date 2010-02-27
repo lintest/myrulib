@@ -69,6 +69,18 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 	CreateColumns( (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST );
 }
 
+void FbBookPanel::Localize()
+{
+	m_BookList->SetColumnText(0, _("Title"));
+	m_BookList->SetColumnText(1, _("Author"));
+	m_BookList->SetColumnText(2, _("#"));
+	m_BookList->SetColumnText(3, _("Genre"));
+	m_BookList->SetColumnText(4, _("Rating"));
+	m_BookList->SetColumnText(5, _("Language"));
+	m_BookList->SetColumnText(6, _("Extension"));
+	m_BookList->SetColumnText(7, _("Size, Kb"));
+}
+
 int FbBookPanel::GetRatingColumn()
 {
 	return 4;

@@ -20,11 +20,13 @@ class FbFrameAuthor : public FbFrameBase
 {
 	public:
 		FbFrameAuthor(wxAuiMDIParentFrame * parent);
+		virtual wxString GetTitle() const { return _("Authors"); };
 		void FindAuthor(const wxString &text);
 		void OpenAuthor(const int author, const int book);
 		void SelectRandomLetter();
 		void ActivateAuthors();
 		virtual void ShowFullScreen(bool show);
+		virtual void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();

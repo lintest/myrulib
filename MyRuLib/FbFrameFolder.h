@@ -18,6 +18,7 @@ class FbFrameFolder : public FbFrameBase
 {
 	public:
 		FbFrameFolder(wxAuiMDIParentFrame * parent);
+		virtual wxString GetTitle() const { return _("My folders"); };
 		void UpdateFolder(const int iFolder, const FbFolderType type);
 		virtual void ShowFullScreen(bool show);
 	protected:

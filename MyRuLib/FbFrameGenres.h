@@ -18,6 +18,7 @@ class FbFrameGenres : public FbFrameBase
 {
 	public:
 		FbFrameGenres(wxAuiMDIParentFrame * parent);
+		virtual wxString GetTitle() const { return _("Genres"); };
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
