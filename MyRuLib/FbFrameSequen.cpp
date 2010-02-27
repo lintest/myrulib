@@ -36,22 +36,8 @@ void FbFrameSequen::CreateControls()
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 
-	wxBoxSizer* bSizerSeq;
-	bSizerSeq = new wxBoxSizer( wxHORIZONTAL );
-
-
-	m_FindInfo = new wxStaticText( this, wxID_ANY, (wxString)_("Ser.") + wxT(':'), wxDefaultPosition, wxDefaultSize, 0 );
-	m_FindInfo->Wrap( -1 );
-	bSizerSeq->Add( m_FindInfo, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_FindText = new wxTextCtrl( this, ID_SEQUENCE_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-	bSizerSeq->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2 );
-
-	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bSizerSeq->Add( m_ToolBar, 1, wxALIGN_CENTER_VERTICAL);
-
-	sizer->Add(bSizerSeq, 0, wxEXPAND, 5);
+	m_ToolBar = CreateToolBar();
+	sizer->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -73,10 +59,30 @@ void FbFrameSequen::CreateControls()
 	FindSequence(wxEmptyString);
 }
 
+void FbFrameSequen::Localize(bool bUpdateMenu)
+{
+	FbFrameBase::Localize(bUpdateMenu);
+	m_MasterList->SetColumnText(0, _("Ser."));
+	m_MasterList->SetColumnText(1, _("Num."));
+}
+
 wxToolBar * FbFrameSequen::CreateToolBar(long style, wxWindowID winid, const wxString& name)
 {
+	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
+
 	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	toolbar->SetFont(font);
+
+	m_FindInfo = new wxStaticText( toolbar, wxID_ANY, (wxString)_("Ser.") + wxT(':'), wxDefaultPosition, wxDefaultSize, 0 );
+	m_FindInfo->Wrap( -1 );
+	m_FindInfo->SetFont(font);
+	toolbar->AddControl( m_FindInfo );
+
+	m_FindText = new wxTextCtrl( toolbar, ID_SEQUENCE_TXT, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
+	m_FindText->SetMinSize( wxSize( 200,-1 ) );
+	m_FindText->SetFont(font);
+	toolbar->AddControl( m_FindText );
+
 	toolbar->AddTool(ID_SEQUENCE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find series by name"));
 	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 	toolbar->Realize();

@@ -33,7 +33,7 @@ void FbFrameDownld::CreateControls()
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, wxEmptyString);
+	m_ToolBar = CreateToolBar();
 	bSizer1->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
@@ -54,6 +54,12 @@ void FbFrameDownld::CreateControls()
 	SetSizer( bSizer1 );
 
 	FbFrameBase::CreateControls();
+}
+
+void FbFrameDownld::Localize(bool bUpdateMenu)
+{
+	FbFrameBase::Localize(bUpdateMenu);
+	m_MasterList->SetColumnText(0, _("Folders"));
 }
 
 wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxString& name)

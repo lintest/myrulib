@@ -21,15 +21,15 @@ class FbFrameFolder : public FbFrameBase
 		virtual wxString GetTitle() const { return _("My folders"); };
 		void UpdateFolder(const int iFolder, const FbFolderType type);
 		virtual void ShowFullScreen(bool show);
+		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
+		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 	private:
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-	private:
-		wxToolBar * m_FolderBar;
 	private:
 		void OnFavoritesDel(wxCommandEvent & event);
 		void OnFolderAppend(wxCommandEvent & event);

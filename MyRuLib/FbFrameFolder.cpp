@@ -15,7 +15,7 @@ BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_FOLDER, GetTitle()), m_FolderBar(NULL)
+	:FbFrameBase(parent, ID_FRAME_FOLDER, GetTitle())
 {
 	CreateControls();
 }
@@ -29,20 +29,8 @@ void FbFrameFolder::CreateControls()
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bToolSizer = new wxBoxSizer( wxHORIZONTAL );
-
-	m_FolderBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_FLAT );
-	m_FolderBar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_FolderBar->AddTool( ID_APPEND_FOLDER, _("Append"), wxNullBitmap);
-	m_FolderBar->AddTool( ID_MODIFY_FOLDER, _("Modify"), wxNullBitmap);
-	m_FolderBar->AddTool( ID_DELETE_FOLDER, _("Delete"), wxNullBitmap);
-	m_FolderBar->Realize();
-	bToolSizer->Add( m_FolderBar, 0, wxALIGN_CENTER_VERTICAL);
-
-	m_ToolBar  = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
-	bToolSizer->Add( m_ToolBar, 1, wxALIGN_CENTER_VERTICAL);
-
-	bSizer1->Add( bToolSizer, 0, wxEXPAND);
+	m_ToolBar  = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, wxEmptyString);
+	bSizer1->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -62,6 +50,26 @@ void FbFrameFolder::CreateControls()
 	SetSizer( bSizer1 );
 
 	FbFrameBase::CreateControls();
+}
+
+wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)
+{
+	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
+	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	toolbar->AddTool( ID_APPEND_FOLDER, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
+	toolbar->AddTool( ID_MODIFY_FOLDER, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
+	toolbar->AddTool( ID_DELETE_FOLDER, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
+	toolbar->AddSeparator();
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
+	toolbar->Realize();
+
+	return toolbar;
+}
+
+void FbFrameFolder::Localize(bool bUpdateMenu)
+{
+	FbFrameBase::Localize(bUpdateMenu);
+	m_MasterList->SetColumnText(0, _("Folders"));
 }
 
 void FbFrameFolder::FillFolders(const int iCurrent)
@@ -111,8 +119,8 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 		FbMasterData * data = m_MasterList->GetItemData(selected);
 		if (data) {
 			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
-			m_FolderBar->EnableTool(ID_MODIFY_FOLDER, enabled);
-			m_FolderBar->EnableTool(ID_DELETE_FOLDER, enabled);
+			m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
+			m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
 			data->Show(this);
 		}
 	}
@@ -237,7 +245,6 @@ void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
 
 void FbFrameFolder::ShowFullScreen(bool show)
 {
-	if (m_FolderBar) m_FolderBar->Show(!show);
 	if (m_ToolBar) m_ToolBar->Show(!show);
 	Layout();
 }

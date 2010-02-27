@@ -28,6 +28,7 @@ class FbFrameAuthor : public FbFrameBase
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
 	protected:
+		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; };
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
 		virtual wxMenuBar * CreateMenuBar();
