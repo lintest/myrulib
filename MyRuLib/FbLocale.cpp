@@ -20,11 +20,11 @@ bool FbLocale::Init(int language, int flags)
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 		case wxLANGUAGE_UKRAINIAN: {
-			#include "uk_UA.inc"
+			#include "uk.inc"
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 		case wxLANGUAGE_BELARUSIAN: {
-			#include "be_BY.inc"
+			#include "be.inc"
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
 	}
