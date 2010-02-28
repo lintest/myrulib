@@ -18,6 +18,7 @@ class FbFrameHtml: public FbAuiMDIChildFrame
 		void Load(const wxString & html);
 		static void Execute();
 		virtual void UpdateFonts(bool refresh = true);
+		virtual void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
 	private:

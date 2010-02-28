@@ -98,6 +98,12 @@ void FbFrameHtml::CreateControls()
 	Layout();
 }
 
+void FbFrameHtml::Localize(bool bUpdateMenu)
+{
+	SetTitle(GetTitle());
+    FbAuiMDIChildFrame::Localize(bUpdateMenu);
+}
+
 void FbFrameHtml::OnSave(wxCommandEvent& event)
 {
 	wxFileDialog dlg (

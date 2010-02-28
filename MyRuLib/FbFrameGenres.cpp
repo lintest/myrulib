@@ -50,6 +50,7 @@ void FbFrameGenres::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
 	m_MasterList->SetColumnText(0, _("Genres"));
+	FbGenres::FillControl(m_MasterList);
 }
 
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
