@@ -96,9 +96,9 @@
 	<exe id="myrulib" template="wxgui">
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<define cond="WX_SHARED_DEFAULT=='0'">FB_INCLUDE_LOCALE</define>
-		<depends>$(BUILDDIR)/ru.inc</depends>
-		<depends>$(BUILDDIR)/uk.inc</depends>
-		<depends>$(BUILDDIR)/be.inc</depends>
+		<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
+		<objects-depend>$(BUILDDIR)/uk.inc</objects-depend>
+		<objects-depend>$(BUILDDIR)/be.inc</objects-depend>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
