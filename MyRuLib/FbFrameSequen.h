@@ -36,7 +36,7 @@ class FbFrameSequen : public FbFrameBase
 		wxString m_SequenceText;
 		int m_SequenceCode;
 	private:
-		void OnAuthorSelected(wxTreeEvent & event);
+		void OnMasterSelected(wxTreeEvent & event);
 		void OnBooksCount(wxCommandEvent& event);
 		void OnColClick(wxListEvent& event);
 		void OnContextMenu(wxTreeEvent& event);

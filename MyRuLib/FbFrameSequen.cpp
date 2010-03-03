@@ -12,7 +12,7 @@
 #include "FbParams.h"
 
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnAuthorSelected)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnMasterSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
 	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
@@ -98,7 +98,7 @@ void FbFrameSequen::SelectFirstAuthor(const int book)
 	if (item.IsOk()) m_MasterList->SelectItem(item);
 }
 
-void FbFrameSequen::OnAuthorSelected(wxTreeEvent & event)
+void FbFrameSequen::OnMasterSelected(wxTreeEvent & event)
 {
 	wxTreeItemId selected = event.GetItem();
 	if (selected.IsOk()) {

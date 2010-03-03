@@ -17,6 +17,7 @@ enum FbFolderType {
 	FT_AUTHOR,
 	FT_GENRE,
 	FT_SEQNAME,
+	FT_DATE,
 	FT_NOTHING,
 };
 
@@ -236,6 +237,40 @@ class FbMasterSearch: public FbMasterData
 			private:
 				wxString m_title;
 				wxString m_author;
+		};
+};
+
+class FbMasterDate: public FbMasterData
+{
+	public:
+		FbMasterDate(const int id = 0)
+			: m_id(id) {};
+		FbMasterDate(const FbMasterDate & data)
+			: m_id(data.m_id) {};
+		virtual bool operator ==(const FbMasterData & data) const
+			{ return GetType() == data.GetType() && operator==((FbMasterDate&)data); };
+		bool operator ==(const FbMasterDate & data) const
+			{ return m_id == data.m_id; };
+		virtual FbMasterData * Clone() const
+			{ return new FbMasterDate(*this); };
+		wxDateTime GetDate() const;
+	public:
+		virtual const int GetId() const { return m_id; };
+		virtual const FbFolderType GetType() const { return FT_DATE; };
+		virtual void Show(FbFrameBase * frame) const;
+	private:
+		int m_id;
+	protected:
+		class DateThread: public BaseThread
+		{
+			public:
+				DateThread(FbFrameBase * frame, FbMasterDate const * data)
+					: BaseThread(frame, data), m_master(data->GetId()), m_number(sm_skiper.NewNumber()) {};
+				virtual void *Entry();
+			private:
+				static FbThreadSkiper sm_skiper;
+				int m_master;
+				int m_number;
 		};
 };
 

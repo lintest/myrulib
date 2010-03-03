@@ -14,7 +14,7 @@
 #include "FbMasterList.h"
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnAuthorSelected)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnMasterSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 	EVT_KEY_UP(FbFrameAuthor::OnCharEvent)
@@ -148,7 +148,7 @@ void FbFrameAuthor::SelectFirstAuthor(const int book)
 	if (item.IsOk()) m_MasterList->SelectItem(item);
 }
 
-void FbFrameAuthor::OnAuthorSelected(wxTreeEvent & event)
+void FbFrameAuthor::OnMasterSelected(wxTreeEvent & event)
 {
 	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (data) data->Show(this);
