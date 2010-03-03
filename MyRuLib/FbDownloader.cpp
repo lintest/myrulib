@@ -91,7 +91,7 @@ bool FbInternetBook::DoDownload()
 	}
 
 	bool ok = ReadFile(in);
-	if ( !ok ) wxLogError(_("Authentication failure: ") + m_url);
+	if ( !ok ) { wxLogError(_("Authentication failure: ") + m_url); }
 	return ok;
 }
 
