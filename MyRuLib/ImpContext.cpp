@@ -18,13 +18,21 @@ void AuthorItem::Convert(FbDatabase & database)
 	if (!Find(database)) Save(database);
 }
 
+void AuthorItem::Bind(wxSQLite3Statement &stmt, int param, const wxString &value)
+{
+	if (value.IsEmpty())
+		stmt.BindNull(param);
+	else
+		stmt.Bind(param, value);
+}
+
 int AuthorItem::Find(FbDatabase & database)
 {
 	wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? AND id<>? ORDER BY search_name");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, first);
-	stmt.Bind(2, middle);
-	stmt.Bind(3, last);
+	Bind(stmt, 1, first);
+	Bind(stmt, 2, middle);
+	Bind(stmt, 3, last);
 	stmt.Bind(4, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	return id = result.NextRow() ? result.GetInt(0) : 0;
@@ -69,12 +77,12 @@ int AuthorItem::Save(FbDatabase & database)
 
 	{
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_data);
-		stmt.Bind(1, letter);
-		stmt.Bind(2, search_name);
-		stmt.Bind(3, full_name);
-		stmt.Bind(4, first);
-		stmt.Bind(5, middle);
-		stmt.Bind(6, last);
+		Bind(stmt, 1, letter);
+		Bind(stmt, 2, search_name);
+		Bind(stmt, 3, full_name);
+		Bind(stmt, 4, first);
+		Bind(stmt, 5, middle);
+		Bind(stmt, 6, last);
 		stmt.Bind(7, id);
 		stmt.ExecuteUpdate();
 	}

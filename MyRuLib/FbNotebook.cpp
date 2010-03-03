@@ -25,9 +25,85 @@
 #endif
 */
 
-wxColor wxAuiStepColour(const wxColor& c, int percent);
+// wxAuiBlendColour is used by FbAuiStepColour
+unsigned char FbAuiBlendColour(unsigned char fg, unsigned char bg, double alpha)
+{
+    double result = bg + (alpha * (fg - bg));
+    if (result < 0.0)
+        result = 0.0;
+    if (result > 255)
+        result = 255;
+    return (unsigned char)result;
+}
 
-wxString wxAuiChopText(wxDC& dc, const wxString& text, int max_size);
+// FbAuiStepColour() it a utility function that simply darkens
+// or lightens a color, based on the specified percentage
+// ialpha of 0 would be completely black, 100 completely white
+// an ialpha of 100 returns the same colour
+wxColor FbAuiStepColour(const wxColor& c, int ialpha)
+{
+    if (ialpha == 100)
+        return c;
+
+    unsigned char r = c.Red(),
+                  g = c.Green(),
+                  b = c.Blue();
+    unsigned char bg;
+
+    // ialpha is 0..200 where 0 is completely black
+    // and 200 is completely white and 100 is the same
+    // convert that to normal alpha 0.0 - 1.0
+    ialpha = wxMin(ialpha, 200);
+    ialpha = wxMax(ialpha, 0);
+    double alpha = ((double)(ialpha - 100.0))/100.0;
+
+    if (ialpha > 100)
+    {
+        // blend with white
+        bg = 255;
+        alpha = 1.0 - alpha;  // 0 = transparent fg; 1 = opaque fg
+    }
+    else
+    {
+        // blend with black
+        bg = 0;
+        alpha = 1.0 + alpha;  // 0 = transparent fg; 1 = opaque fg
+    }
+
+    r = FbAuiBlendColour(r, bg, alpha);
+    g = FbAuiBlendColour(g, bg, alpha);
+    b = FbAuiBlendColour(b, bg, alpha);
+
+    return wxColour(r, g, b);
+}
+
+wxString FbAuiChopText(wxDC& dc, const wxString& text, int max_size)
+{
+    wxCoord x,y;
+
+    // first check if the text fits with no problems
+    dc.GetTextExtent(text, &x, &y);
+    if (x <= max_size)
+        return text;
+
+    size_t i, len = text.Length();
+    size_t last_good_length = 0;
+    for (i = 0; i < len; ++i)
+    {
+        wxString s = text.Left(i);
+        s += wxT("...");
+
+        dc.GetTextExtent(s, &x, &y);
+        if (x > max_size)
+            break;
+
+        last_good_length = i;
+    }
+
+    wxString ret = text.Left(last_good_length);
+    ret += wxT("...");
+    return ret;
+}
 
 static void DrawButtons(wxDC& dc,
                         const wxRect& _rect,
@@ -46,8 +122,8 @@ static void DrawButtons(wxDC& dc,
     if (button_state == wxAUI_BUTTON_STATE_HOVER ||
         button_state == wxAUI_BUTTON_STATE_PRESSED)
     {
-        dc.SetBrush(wxBrush(wxAuiStepColour(bkcolour, 120)));
-        dc.SetPen(wxPen(wxAuiStepColour(bkcolour, 75)));
+        dc.SetBrush(wxBrush(FbAuiStepColour(bkcolour, 120)));
+        dc.SetPen(wxPen(FbAuiStepColour(bkcolour, 75)));
 
         // draw the background behind the button
         dc.DrawRectangle(rect.x, rect.y, 15, 15);
@@ -261,7 +337,7 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     if (page.active)
     {
        if (m_flags &wxAUI_NB_BOTTOM)
-           dc.SetPen(wxPen(wxColour(wxAuiStepColour(m_base_colour, 170))));
+           dc.SetPen(wxPen(wxColour(FbAuiStepColour(m_base_colour, 170))));
        // TODO: else if (m_flags &wxAUI_NB_LEFT) {}
        // TODO: else if (m_flags &wxAUI_NB_RIGHT) {}
        else //for wxAUI_NB_TOP
@@ -301,7 +377,7 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     }
 
 
-    wxString draw_text = wxAuiChopText(dc,
+    wxString draw_text = FbAuiChopText(dc,
                           caption,
                           tab_width - (text_offset-tab_x) - close_button_width);
 
@@ -514,7 +590,7 @@ void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
         text_offset = tab_x + tab_height;
 
     // chop text if necessary
-    wxString draw_text = wxAuiChopText(dc,
+    wxString draw_text = FbAuiChopText(dc,
                           caption,
                           tab_width - (text_offset-tab_x) - close_button_width);
 

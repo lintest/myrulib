@@ -12,7 +12,12 @@ wxString FbStandardPaths::GetUserConfigDir() const
 
 	if (!wxFileName::DirExists(result)) wxFileName::Mkdir(result);
 
+#if wxCHECK_VERSION(2, 9, 0)
+	result = AppendPathComponent(result,wxT(""));
+#else
 	result = AppendAppName(result);
+#endif
+
 	if (!wxFileName::DirExists(result)) wxFileName::Mkdir(result);
 
 	return result;

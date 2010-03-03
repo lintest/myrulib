@@ -56,7 +56,7 @@ WX_UNICODE ?= 1
 WX_DEBUG ?= 0
 
 # Version of the wx library to build against. 
-WX_VERSION ?= 2.8
+WX_VERSION ?= 2.9
 
 
 

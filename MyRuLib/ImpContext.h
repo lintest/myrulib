@@ -18,6 +18,7 @@ public:
 	int Save(FbDatabase & database);
 private:
 	void SetNames();
+	void Bind(wxSQLite3Statement &stmt, int param, const wxString &value);
 public:
 	int id;
 	wxString first;

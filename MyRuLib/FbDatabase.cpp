@@ -421,10 +421,10 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	bool bExists = wxFileExists(filename);
 
 	if (bExists)
-		wxLogInfo(_("Open database") + COLON + filename.c_str());
+		wxLogInfo(_("Open database") + COLON + filename);
 	else {
 	    wxString info = _("Create new database");
-		wxLogInfo(info + (wxString)wxT(": ") + filename.c_str());
+		wxLogInfo(info + COLON + filename);
 		wxString msg = strProgramName + (wxString)wxT(" - ") + info + (wxString)wxT("\n") + filename;
 		wxMessageBox(msg);
 	}
