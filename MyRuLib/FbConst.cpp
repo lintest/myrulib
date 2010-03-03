@@ -6,7 +6,12 @@ const wxString strMailAddr = wxT("mail@lintest.ru");
 
 const wxString strVersionInfo = strHomePage +  wxT("\n") + strMailAddr;
 
+#if wxCHECK_VERSION(2, 9, 0)
+const wxString alphabetRu = _(L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
+#else
 const wxString alphabetRu = _("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
+#endif
+
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 const wxString strAlphabet = alphabetRu + alphabetEn;
 const wxString strNobody = _("(no Author)");
