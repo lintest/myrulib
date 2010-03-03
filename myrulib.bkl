@@ -125,6 +125,7 @@
 		<sources>MyRuLib/FbFilterObj.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
+		<sources>MyRuLib/FbFrameDate.cpp</sources>
 		<sources>MyRuLib/FbFrameDownld.cpp</sources>
 		<sources>MyRuLib/FbFrameFolder.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>

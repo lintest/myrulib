@@ -454,6 +454,34 @@ void * FbMasterSeqname::SequenThread::Entry()
 	return NULL;
 }
 
+FbThreadSkiper FbMasterDate::DateThread::sm_skiper;
+
+void * FbMasterDate::DateThread::Entry()
+{
+	wxCriticalSectionLocker locker(sm_queue);
+
+	if (sm_skiper.Skipped(m_number)) return NULL;
+	EmptyBooks();
+
+	wxString condition = wxT("created=?");
+	wxString sql = GetSQL(condition);
+
+	try {
+		FbCommonDatabase database;
+		InitDatabase(database);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_master);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (sm_skiper.Skipped(m_number)) return NULL;
+		FillBooks(result);
+	}
+	catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+
+	return NULL;
+}
+
 void FbMasterSeqname::SequenThread::CreateTree(wxSQLite3ResultSet &result)
 {
 	wxString thisSequence = wxT("@@@");
@@ -514,6 +542,23 @@ void FbMasterSearch::Show(FbFrameBase * frame) const
 void FbMasterSeqname::Show(FbFrameBase * frame) const
 {
 	(new SequenThread(frame, this))->Execute();
+}
+
+void FbMasterDate::Show(FbFrameBase * frame) const
+{
+	(new DateThread(frame, this))->Execute();
+}
+
+wxDateTime FbMasterDate::GetDate() const
+{
+    int m = (m_id / 100 % 100 - 1);
+    if (m >= 12) m = 0;
+    wxDateTime::Month month = wxDateTime::Month(m + wxDateTime::Jan);
+    wxDateTime date;
+    date.SetYear(m_id / 10000 + 2000);
+    date.SetMonth(month);
+    date.SetDay(m_id % 100);
+    return date;
 }
 
 
