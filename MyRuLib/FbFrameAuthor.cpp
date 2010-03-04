@@ -82,6 +82,7 @@ void FbFrameAuthor::Localize(bool bUpdateMenu)
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style)
 {
 	wxToolBar * toolbar = new wxToolBar(parent, id, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NOICONS|style);
+	toolbar->SetToolBitmapSize(wxSize(0,0));
 	if (toolid == ID_LETTER_EN) toolbar->AddTool(ID_LETTER_ALL, wxT("*"), wxNullBitmap, wxNullBitmap, wxITEM_CHECK, _("All collected authors"));
 	for (size_t i = 0; i<alphabet.Len(); i++) {
 		wxString letter = alphabet.Mid(i, 1);
@@ -90,7 +91,6 @@ wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, cons
 		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( FbFrameAuthor::OnLetterClicked ) );
 	}
 	toolbar->Realize();
-	toolbar->SetToolBitmapSize(wxSize(0,0));
 	return toolbar;
 }
 
