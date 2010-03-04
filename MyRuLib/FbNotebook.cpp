@@ -149,15 +149,9 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
 FbAuiDefaultTabArt::FbAuiDefaultTabArt()
 {
     m_normal_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
-    m_selected_font = wxFont(
-		m_normal_font.GetPointSize(),
-        m_normal_font.GetFamily(),
-        m_normal_font.GetStyle(),
-        wxBOLD,
-        m_normal_font.GetUnderlined(),
-        m_normal_font.GetFaceName(),
-        m_normal_font.GetEncoding()
-	);
+
+    m_selected_font = m_normal_font;
+    m_selected_font.SetWeight(wxBOLD);
 }
 
 wxAuiTabArt* FbAuiDefaultTabArt::Clone()

@@ -14,7 +14,6 @@ BookListUpdater::BookListUpdater(wxTreeListCtrl * list) :m_list(list)
 
 BookListUpdater::~BookListUpdater()
 {
-	m_list->ExpandAll( m_list->GetRootItem() );
 	m_list->Thaw();
 	m_list->Update();
 }

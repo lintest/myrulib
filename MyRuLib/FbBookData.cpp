@@ -27,11 +27,12 @@ BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	title( res.GetString(wxT("title"))),
 	file_type( res.GetString(wxT("file_type"))),
 	file_size( res.GetInt(wxT("file_size"))),
-	number( res.GetInt(wxT("number"))),
-	genres( res.GetString(wxT("genres"))),
+	number(0),
 	rating(0),
 	language( res.GetString(wxT("lang")))
 {
+	try { number = res.GetInt(wxT("number")); } catch (...) {};
+	try { genres = res.GetString(wxT("genres")); } catch (...) {};
 	int r = res.GetInt(wxT("rating"));
 	if ( r>=0 && r<=5 ) rating = r;
 }

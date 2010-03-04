@@ -115,6 +115,12 @@ FbMainFrame::~FbMainFrame()
 	params.SetValue(FB_FRAME_WIDTH, size.x);
 	params.SetValue(FB_FRAME_HEIGHT, size.y);
 
+	while (GetNotebook()->GetPageCount()) {
+		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(0), FbAuiMDIChildFrame);
+		if (frame) delete frame; else break;
+    }
+    InfoCash::Empty();
+
 	m_FrameManager.UnInit();
 }
 
