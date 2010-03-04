@@ -163,13 +163,13 @@ SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	wxBoxSizer * bSizer;
 	bSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * tools = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
-	tools->AddTool( ID_APPEND_TYPE, _("Добавить"), wxNullBitmap);
-	tools->AddTool( ID_MODIFY_TYPE, _("Изменить"), wxNullBitmap);
-	tools->AddTool( ID_DELETE_TYPE, _("Удалить"), wxNullBitmap);
-	tools->Realize();
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
+	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
+	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
+	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
+	toolbar->Realize();
 
-	bSizer->Add( tools, 0, wxALL|wxEXPAND, 5 );
+	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
 	TypeListCtrl * typelist = new TypeListCtrl( this, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
 	typelist->InsertColumn(0, _("Extension"), wxLIST_FORMAT_LEFT, 50);

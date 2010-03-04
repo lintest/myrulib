@@ -31,11 +31,13 @@
 	</lib>
 
 	<lib id="sqlite3_static" template="wx-lib">
+		<define>NDEBUG</define>
 		<define>SQLITE_ENABLE_FTS3</define>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
 	
 	<lib id="wxsqlite3_static" template="wx-lib">
+		<define>NDEBUG</define>
 		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
@@ -92,6 +94,7 @@
 	</action>
 
 	<exe id="myrulib" template="wxgui">
+		<define>NDEBUG</define>
 		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
 		<define cond="WX_SHARED_DEFAULT=='0'">FB_INCLUDE_LOCALE</define>
 		<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
