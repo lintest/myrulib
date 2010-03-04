@@ -90,6 +90,7 @@ wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, cons
 		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( FbFrameAuthor::OnLetterClicked ) );
 	}
 	toolBar->Realize();
+	toolBar->SetToolBitmapSize(wxSize(0,0));
 	return toolBar;
 }
 

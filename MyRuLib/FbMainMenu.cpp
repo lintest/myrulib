@@ -101,11 +101,6 @@ FbFrameMenu::MenuView::MenuView()
 
 FbMenuBar::MenuRecent::MenuRecent()
 {
-	Append(ID_RECENT_1);
-	Append(ID_RECENT_2);
-	Append(ID_RECENT_3);
-	Append(ID_RECENT_4);
-	Append(ID_RECENT_5);
 }
 
 FbMenuBar::MenuListMode::MenuListMode()
