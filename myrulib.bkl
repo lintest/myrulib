@@ -30,8 +30,7 @@
 		<include>Expat</include>
 	</lib>
 
-	<lib id="sqlite3_static" template="wx-lib">
-		<define>NDEBUG</define>
+	<lib id="sqlite3_static">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
