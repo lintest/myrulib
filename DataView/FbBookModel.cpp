@@ -1,10 +1,8 @@
 #include "FbBookModel.h"
 
 // -----------------------------------------------------------------------------
-// class FbBookModelArray
+// class FbBookModelData
 // -----------------------------------------------------------------------------
-
-WX_DEFINE_OBJARRAY(FbBookModelArray);
 
 FbBookModelData::FbBookModelData(const wxSQLite3ResultSet &res)
 {
@@ -15,48 +13,62 @@ FbBookModelData::FbBookModelData(const FbBookModelData &data)
 {
 }
 
+wxString FbBookModelData::GetValue(unsigned int col)
+{
+	return col > m_values.Count() ? (wxString)wxEmptyString : m_values[col+1] ;
+}
+
+// -----------------------------------------------------------------------------
+// class FbBookModelCashe
+// -----------------------------------------------------------------------------
+
+WX_DEFINE_OBJARRAY(FbBookModelArray);
+
+FbBookModelCashe::FbBookModelCashe(const wxString &filename)
+	: m_rowid(0)
+{
+    m_database.Open(filename);
+}
+
+unsigned int FbBookModelCashe::GetCount()
+{
+    wxSQLite3ResultSet res = m_database.ExecuteQuery(wxT("SELECT COUNT(id) FROM books"));
+    return res.NextRow() ? res.GetInt(0) : 0;
+}
+
+FbBookModelData FbBookModelCashe::FindRow(unsigned int row)
+{
+
+}
+
 // -----------------------------------------------------------------------------
 // class FbBookModel
 // -----------------------------------------------------------------------------
 
-FbBookModel::FbBookModel(const wxString &filename) :
-    wxDataViewVirtualListModel(InitDatabase(filename)),
-    m_datalist(new FbBookModelArray)
+FbBookModel::FbBookModel(const wxString &filename)
+	: wxDataViewVirtualListModel(Init(filename))
 {
 }
 
 FbBookModel::~FbBookModel()
 {
     wxDELETE(m_datalist);
-    wxDELETE(m_database);
 }
 
-long FbBookModel::InitDatabase(const wxString &filename)
+long FbBookModel::Init(const wxString &filename)
 {
-    m_database = new wxSQLite3Database;
-    m_database->Open(filename);
-    wxSQLite3ResultSet res = m_database->ExecuteQuery(wxT("SELECT COUNT(id) FROM books"));
-    return res.NextRow() ? res.GetInt(0) : 0;
+    m_datalist = new FbBookModelCashe(filename);
+    return m_datalist->GetCount();
 }
 
 void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
-    switch ( col )
-    {
-        case COL_ROWID: {
-            variant = wxString::Format( "virtual row %d", row + 1 );
-        } break;
-
-        case COL_TITLE: {
-            wxString sql = wxT("SELECT rowid, title FROM books WHERE rowid=?");
-            wxSQLite3Statement stmt = m_database->PrepareStatement(sql);
-            stmt.Bind(1, (wxLongLong)row + 1);
-            wxSQLite3ResultSet res = stmt.ExecuteQuery();
-            if (res.NextRow()) {
-                variant = res.GetString(1);
-           }
-        } break;
-    }
+	if ( col == COL_ROWID ) {
+		variant = wxString::Format( "virtual row %d", row + 1 );
+	} else {
+		FbBookModelData data = m_datalist->FindRow(row);
+		if ( data.IsOk() ) variant = data.GetValue(col);
+	}
 }
 
 bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const

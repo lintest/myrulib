@@ -34,10 +34,10 @@
 	<exe id="dataview" template="wxgui">
 		<define>NDEBUG</define>
 		<include>../WxSQLite3</include>
-		<sources>DataViewApp.cpp</sources> 
-		<sources>DataViewMain.cpp</sources> 
 		<sources>FbBookModel.cpp</sources> 
 		<sources>GUIFrame.cpp</sources>  
+		<sources>TestMain.cpp</sources> 
+		<sources>TestApp.cpp</sources> 
 		<library>wxsqlite3_static</library>
 		<library>sqlite3_static</library>
 		<wx-lib>adv</wx-lib>

@@ -7,8 +7,8 @@
  * License:
  **************************************************************/
 
-#include "DataViewMain.h"
-#include "DataViewApp.h"
+#include "TestMain.h"
+#include "TestApp.h"
 #include "FbBookModel.h"
 
 //helper functions

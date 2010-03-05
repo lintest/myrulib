@@ -10,8 +10,20 @@
 # These are configurable options:
 # -------------------------------------------------------------------------
 
+#  
+AR ?= ar
+
+#  
+RANLIB ?= ranlib
+
+# C compiler 
+CC = gcc
+
 # C++ compiler 
 CXX = `$(WX_CONFIG) --cxx`
+
+# Standard flags for CC 
+CFLAGS ?= 
 
 # Standard flags for C++ 
 CXXFLAGS ?= 
@@ -38,7 +50,7 @@ WX_UNICODE ?= 1
 WX_DEBUG ?= 0
 
 # Version of the wx library to build against. 
-WX_VERSION ?= 2.8
+WX_VERSION ?= $(shell $(WX_CONFIG) --query-version | sed -e 's/\([0-9]*\)\.\([0-9]*\)/\1\2/')
 
 
 
@@ -54,14 +66,20 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-DATAVIEW_CXXFLAGS = -DwxUSE_DATAVIEWCTRL -DwxUSE_HEADERCTRL -I./sources \
-	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+SQLITE3_STATIC_CFLAGS =  -DSQLITE_ENABLE_FTS3  $(CPPFLAGS) $(CFLAGS)
+SQLITE3_STATIC_OBJECTS =  \
+	../build/sqlite3_static_sqlite3.o
+WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I../WxSQLite3 `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+WXSQLITE3_STATIC_OBJECTS =  \
+	../build/wxsqlite3_static_wxsqlite3.o
+DATAVIEW_CXXFLAGS = -DNDEBUG -I../WxSQLite3 `$(WX_CONFIG) --cxxflags \
+	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 DATAVIEW_OBJECTS =  \
-	../build/dataview_mymodels.o \
-	../build/dataview_datasamp.o \
-	../build/dataview_datavcmn.o \
-	../build/dataview_datavgen.o \
-	../build/dataview_dataview.o
+	../build/dataview_FbBookModel.o \
+	../build/dataview_GUIFrame.o \
+	../build/dataview_TestMain.o \
+	../build/dataview_TestApp.o
 
 ### Conditionally set variables: ###
 
@@ -91,7 +109,7 @@ all: ../build
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild ../build/dataview
+all: test_for_selected_wxbuild ../build/libsqlite3_static.a ../build/libwxsqlite3_static.a ../build/dataview
 
 install: 
 
@@ -100,27 +118,42 @@ uninstall:
 clean: 
 	rm -f ../build/*.o
 	rm -f ../build/*.d
+	rm -f ../build/libsqlite3_static.a
+	rm -f ../build/libwxsqlite3_static.a
 	rm -f ../build/dataview
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
 
-../build/dataview: $(DATAVIEW_OBJECTS)
-	$(CXX) -o $@ $(DATAVIEW_OBJECTS)   $(LDFLAGS)
+../build/libsqlite3_static.a: $(SQLITE3_STATIC_OBJECTS)
+	rm -f $@
+	$(AR) rcu $@ $(SQLITE3_STATIC_OBJECTS)
+	$(RANLIB) $@
 
-../build/dataview_mymodels.o: ./sample/mymodels.cpp
+../build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
+	rm -f $@
+	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
+	$(RANLIB) $@
+
+../build/dataview: $(DATAVIEW_OBJECTS) ../build/libwxsqlite3_static.a ../build/libsqlite3_static.a
+	$(CXX) -o $@ $(DATAVIEW_OBJECTS)   $(LDFLAGS)  ../build/libwxsqlite3_static.a ../build/libsqlite3_static.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs adv,aui,html,core,net,base`
+
+../build/sqlite3_static_sqlite3.o: ./../SQLite3/sqlite3.c
+	$(CC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(CPPDEPS) $<
+
+../build/wxsqlite3_static_wxsqlite3.o: ./../WxSQLite3/wxsqlite3.cpp
+	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
+
+../build/dataview_FbBookModel.o: ./FbBookModel.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-../build/dataview_datasamp.o: ./sample/datasamp.cpp
+../build/dataview_GUIFrame.o: ./GUIFrame.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-../build/dataview_datavcmn.o: ./sources/datavcmn.cpp
+../build/dataview_TestMain.o: ./TestMain.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-../build/dataview_datavgen.o: ./sources/datavgen.cpp
-	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
-
-../build/dataview_dataview.o: ./sources/dataview.cpp
+../build/dataview_TestApp.o: ./TestApp.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean

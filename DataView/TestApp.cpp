@@ -7,15 +7,14 @@
  * License:
  **************************************************************/
 
-#include "DataViewApp.h"
-#include "DataViewMain.h"
+#include "TestApp.h"
+#include "TestMain.h"
 
 IMPLEMENT_APP(DataViewApp);
 
 bool DataViewApp::OnInit()
 {
     DataViewFrame* frame = new DataViewFrame(0L);
-    frame->SetIcon(wxICON(aaaa)); // To Set App Icon
     frame->Show();
 
     return true;

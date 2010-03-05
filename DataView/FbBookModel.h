@@ -6,22 +6,12 @@
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
 
-class FbBookModelData
-{
-    public:
-        FbBookModelData(const wxSQLite3ResultSet &res);
-        FbBookModelData(const FbBookModelData &data);
-    public:
-        unsigned int m_rowid;
-        wxArrayString m_values;
-};
-
-WX_DECLARE_OBJARRAY(FbBookModelData, FbBookModelArray);
+class FbBookModelCashe;
 
 class FbBookModel: public wxDataViewVirtualListModel
 {
     public:
-        enum
+        enum COL
         {
             COL_ROWID,
             COL_TITLE,
@@ -58,12 +48,36 @@ class FbBookModel: public wxDataViewVirtualListModel
     public:
 
     private:
-        long InitDatabase(const wxString &filename);
-        FbBookModelData FindRow(unsigned int row) const;
+        long Init(const wxString &filename);
 
     private:
-        wxSQLite3Database * m_database;
-        FbBookModelArray * m_datalist;
+        FbBookModelCashe * m_datalist;
+};
+
+class FbBookModelData
+{
+    public:
+        FbBookModelData(const wxSQLite3ResultSet &res);
+        FbBookModelData(const FbBookModelData &data);
+        wxString GetValue(unsigned int col);
+        bool IsOk() { return m_rowid; };
+    public:
+        unsigned int m_rowid;
+        wxArrayString m_values;
+};
+
+WX_DECLARE_OBJARRAY(FbBookModelData, FbBookModelArray);
+
+class FbBookModelCashe: private FbBookModelArray
+{
+	public:
+        FbBookModelCashe(const wxString &filename);
+        FbBookModelData FindRow(unsigned int row);
+        unsigned int GetCount();
+        wxString GetValue(unsigned int col);
+	private:
+        wxSQLite3Database m_database;
+        unsigned int m_rowid;
 };
 
 #endif // __FBBOOKMODEL_H__

@@ -69,10 +69,10 @@ DATAVIEW_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -DNDEBUG \
 	-I..\WxSQLite3 $(CPPFLAGS) $(CXXFLAGS)
 DATAVIEW_OBJECTS =  \
-	../build\dataview_DataViewApp.o \
-	../build\dataview_DataViewMain.o \
 	../build\dataview_FbBookModel.o \
-	../build\dataview_GUIFrame.o
+	../build\dataview_GUIFrame.o \
+	../build\dataview_TestMain.o \
+	../build\dataview_TestApp.o
 
 ### Conditionally set variables: ###
 
@@ -181,16 +181,16 @@ test_for_selected_wxbuild:
 ../build\wxsqlite3_static_wxsqlite3.o: ./../WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 
-../build\dataview_DataViewApp.o: ./DataViewApp.cpp
-	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
-
-../build\dataview_DataViewMain.o: ./DataViewMain.cpp
-	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
-
 ../build\dataview_FbBookModel.o: ./FbBookModel.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 ../build\dataview_GUIFrame.o: ./GUIFrame.cpp
+	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
+
+../build\dataview_TestMain.o: ./TestMain.cpp
+	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
+
+../build\dataview_TestApp.o: ./TestApp.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 .PHONY: all clean
