@@ -9,6 +9,7 @@
 
 #include "DataViewMain.h"
 #include "DataViewApp.h"
+#include "FbBookModel.h"
 
 //helper functions
 enum wxbuildinfoformat {
@@ -81,7 +82,8 @@ void DataViewFrame::OnOpen(wxCommandEvent &event)
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-	    dlg.GetFilename();
+	    FbBookModel * model = new FbBookModel(dlg.GetPath());
+	    m_dataview->AssociateModel(model);
 	};
 }
 
