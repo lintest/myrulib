@@ -9,7 +9,8 @@
 FbBookModelData::FbBookModelData(wxSQLite3ResultSet &result)
 	: m_rowid(result.GetInt(0))
 {
-	m_values.Add(result.GetString(0) + wxT(" ") + result.GetString(1));
+	m_values.Add(result.GetString(0));
+	m_values.Add(result.GetString(1));
 }
 
 FbBookModelData::FbBookModelData(const FbBookModelData &data)
@@ -100,7 +101,7 @@ long FbBookModel::Init(const wxString &filename)
 void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
 	if ( col == COL_ROWID ) {
-		variant = wxString::Format( "%d", row + 1 );
+		variant = wxString::Format("%d", row + 1);
 	} else {
 		variant = m_datalist->GetValue(row, col);
 	}

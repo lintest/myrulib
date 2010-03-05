@@ -55,8 +55,9 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
 	m_dataview = new wxDataViewCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_dataview->AppendTextColumn(_("title"), 0, wxDATAVIEW_CELL_INERT, 150);
-	m_dataview->AppendTextColumn(_("author"), 1, wxDATAVIEW_CELL_INERT, 100);
+	m_dataview->AppendTextColumn(_("rowid"),  0, wxDATAVIEW_CELL_INERT, 100);
+	m_dataview->AppendTextColumn(_("number"), 1, wxDATAVIEW_CELL_INERT, 100);
+	m_dataview->AppendTextColumn(_("title"),  2, wxDATAVIEW_CELL_INERT, 200);
 
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
 
