@@ -6,7 +6,34 @@
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
 
-class FbBookModelCashe;
+class FbBookModelData
+{
+    public:
+        FbBookModelData(unsigned int id = 0): m_rowid(id) {};
+        FbBookModelData(wxSQLite3ResultSet &result);
+        FbBookModelData(const FbBookModelData &data);
+        wxString GetValue(unsigned int col);
+        unsigned int Id() { return m_rowid; };
+    public:
+        unsigned int m_rowid;
+        wxArrayString m_values;
+};
+
+WX_DECLARE_OBJARRAY(FbBookModelData, FbBookModelArray);
+
+class FbBookModelCashe: private FbBookModelArray
+{
+	public:
+        FbBookModelCashe(const wxString &filename);
+        wxString GetValue(unsigned int row, unsigned int col);
+        unsigned int RowCount();
+	private:
+        FbBookModelData FindRow(unsigned int rowid);
+	private:
+        wxSQLite3Database m_database;
+        unsigned int m_rowid;
+};
+
 
 class FbBookModel: public wxDataViewVirtualListModel
 {
@@ -52,32 +79,6 @@ class FbBookModel: public wxDataViewVirtualListModel
 
     private:
         FbBookModelCashe * m_datalist;
-};
-
-class FbBookModelData
-{
-    public:
-        FbBookModelData(const wxSQLite3ResultSet &res);
-        FbBookModelData(const FbBookModelData &data);
-        wxString GetValue(unsigned int col);
-        bool IsOk() { return m_rowid; };
-    public:
-        unsigned int m_rowid;
-        wxArrayString m_values;
-};
-
-WX_DECLARE_OBJARRAY(FbBookModelData, FbBookModelArray);
-
-class FbBookModelCashe: private FbBookModelArray
-{
-	public:
-        FbBookModelCashe(const wxString &filename);
-        FbBookModelData FindRow(unsigned int row);
-        unsigned int GetCount();
-        wxString GetValue(unsigned int col);
-	private:
-        wxSQLite3Database m_database;
-        unsigned int m_rowid;
 };
 
 #endif // __FBBOOKMODEL_H__
