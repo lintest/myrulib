@@ -56,7 +56,7 @@ WX_UNICODE ?= 1
 WX_DEBUG ?= 0
 
 # Version of the wx library to build against. 
-WX_VERSION ?= $(shell $(WX_CONFIG) --query-version | sed -e 's/\([0-9]*\)\.\([0-9]*\)/\1\2/')
+WX_VERSION ?= 2.8
 
 
 
