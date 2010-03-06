@@ -11,6 +11,7 @@ FbBookModelData::FbBookModelData(wxSQLite3ResultSet &result)
 {
 	m_values.Add(result.GetString(0));
 	m_values.Add(result.GetString(1));
+	m_values.Add(result.GetString(2));
 }
 
 FbBookModelData::FbBookModelData(const FbBookModelData &data)
@@ -49,7 +50,7 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 	m_rowid = rowid <= BOOK_CASHE_SIZE ? 1 : rowid - BOOK_CASHE_SIZE;
 
 	Empty();
-	wxString sql = wxT("SELECT rowid, title FROM books WHERE rowid>=? ORDER BY 1 LIMIT ?");
+	wxString sql = wxT("SELECT rowid, title, file_size FROM books WHERE rowid>=? ORDER BY 1 LIMIT ?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, (wxLongLong)m_rowid);
 	stmt.Bind(2, BOOK_CASHE_SIZE * 2);
