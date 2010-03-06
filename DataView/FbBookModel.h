@@ -16,6 +16,7 @@ class FbBookModelData
         unsigned int Id() { return m_rowid; };
     public:
         unsigned int m_rowid;
+        wxString m_title;
         wxArrayString m_values;
 };
 
@@ -41,6 +42,7 @@ class FbBookModel: public wxDataViewVirtualListModel
         enum COL
         {
             COL_ROWID,
+            COL_NUM,
             COL_TITLE,
             COL_AUTHOR,
             COL_GENRE,
@@ -79,6 +81,53 @@ class FbBookModel: public wxDataViewVirtualListModel
 
     private:
         FbBookModelCashe * m_datalist;
+};
+
+class MyCustomRenderer: public wxDataViewCustomRenderer
+{
+public:
+    MyCustomRenderer()
+        : wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_ACTIVATABLE, wxALIGN_LEFT)
+	{
+		EnableEllipsize(wxELLIPSIZE_END);
+	}
+
+    virtual bool Render( wxRect rect, wxDC *dc, int state )
+    {
+        dc->SetBrush( *wxLIGHT_GREY_BRUSH );
+        dc->SetPen( *wxTRANSPARENT_PEN );
+
+        rect.Deflate(2);
+        dc->DrawRoundedRectangle( rect, 5 );
+
+        RenderText(m_value, 16, rect, dc, state);
+        return true;
+    }
+
+    virtual bool LeftClick( wxPoint cursor, wxRect WXUNUSED(cell),
+                           wxDataViewModel *WXUNUSED(model),
+                           const wxDataViewItem &WXUNUSED(item),
+                           unsigned int WXUNUSED(col) )
+    {
+        wxLogMessage( "MyCustomRenderer LeftClick( %d, %d )", cursor.x, cursor.y );
+        return false;
+    }
+
+    virtual wxSize GetSize() const
+    {
+        return wxSize(GetOwner()->GetWidth(),20);
+    }
+
+    virtual bool SetValue( const wxVariant &value )
+    {
+        m_value = value.GetString();
+        return true;
+    }
+
+    virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
+
+private:
+    wxString m_value;
 };
 
 #endif // __FBBOOKMODEL_H__

@@ -9,6 +9,7 @@
 FbBookModelData::FbBookModelData(wxSQLite3ResultSet &result)
 	: m_rowid(result.GetInt(0))
 {
+	m_title = result.GetString(1);
 	m_values.Add(result.GetString(0));
 	m_values.Add(result.GetString(1));
 	m_values.Add(result.GetString(2));
@@ -21,8 +22,7 @@ FbBookModelData::FbBookModelData(const FbBookModelData &data)
 
 wxString FbBookModelData::GetValue(unsigned int col)
 {
-	return wxT("test");
-	return col > m_values.Count() ? (wxString)wxT("test") : m_values[col+1] ;
+	return col && col <= m_values.GetCount() ? m_values[(int)col-1] : (wxString)wxEmptyString;
 }
 
 // -----------------------------------------------------------------------------
@@ -75,8 +75,7 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 
 wxString FbBookModelCashe::GetValue(unsigned int row, unsigned int col)
 {
-	FbBookModelData data = FindRow(row + 1);
-	return col && col <= data.m_values.GetCount() ? data.m_values[(int)col-1] : (wxString)wxEmptyString;
+	return FindRow(row + 1).GetValue(col);
 }
 
 // -----------------------------------------------------------------------------
@@ -101,10 +100,13 @@ long FbBookModel::Init(const wxString &filename)
 
 void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
-	if ( col == COL_ROWID ) {
-		variant = wxString::Format("%d", row + 1);
-	} else {
-		variant = m_datalist->GetValue(row, col);
+    switch ( col ) {
+		case COL_ROWID: {
+			variant = wxString::Format("%d", row + 1);
+		} break;
+		default: {
+			variant = m_datalist->GetValue(row, col);
+		}
 	}
 }
 
@@ -112,8 +114,7 @@ bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewIt
 {
 	return false;
 
-    switch ( col )
-    {
+    switch ( col ) {
         case COL_ROWID:
             return false;
 
