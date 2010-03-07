@@ -1,6 +1,26 @@
 #include "FbBookModel.h"
 
 // -----------------------------------------------------------------------------
+// class FbTitleRenderer
+// -----------------------------------------------------------------------------
+
+bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
+{
+	dc->SetBrush( *wxLIGHT_GREY_BRUSH );
+	dc->SetPen( *wxTRANSPARENT_PEN );
+
+	rect.Deflate(2);
+	dc->DrawRoundedRectangle( rect, 5 );
+
+	wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, rect, wxCONTROL_CHECKED);
+
+	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
+
+	RenderText(m_title, x + 4, rect, dc, state);
+	return true;
+}
+
+// -----------------------------------------------------------------------------
 // class FbBookModelData
 // -----------------------------------------------------------------------------
 
@@ -104,6 +124,9 @@ void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned 
 		case COL_ROWID: {
 			variant = wxString::Format("%d", row + 1);
 		} break;
+		case COL_TITLE: {
+			variant << FbTitleData( m_datalist->GetValue(row, col) );
+		} break;
 		default: {
 			variant = m_datalist->GetValue(row, col);
 		}
@@ -127,3 +150,6 @@ bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewIt
     return true;
 }
 
+IMPLEMENT_VARIANT_OBJECT(FbTitleData)
+
+IMPLEMENT_DYNAMIC_CLASS( FbTitleData, wxObject )

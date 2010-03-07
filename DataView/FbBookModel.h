@@ -5,6 +5,7 @@
 #include <wx/dataview.h>
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
+#include <wx/renderer.h>
 
 class FbBookModelData
 {
@@ -83,51 +84,89 @@ class FbBookModel: public wxDataViewVirtualListModel
         FbBookModelCashe * m_datalist;
 };
 
-class MyCustomRenderer: public wxDataViewCustomRenderer
+class FbTitleData : public wxObject
 {
-public:
-    MyCustomRenderer()
-        : wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_ACTIVATABLE, wxALIGN_LEFT)
-	{
-		EnableEllipsize(wxELLIPSIZE_END);
-	}
+	public:
+		FbTitleData( const wxString &text = wxEmptyString, bool checked = false, int level = 0 )
+			: m_title(text), m_checked(checked), m_level(level)
+		{ }
 
-    virtual bool Render( wxRect rect, wxDC *dc, int state )
-    {
-        dc->SetBrush( *wxLIGHT_GREY_BRUSH );
-        dc->SetPen( *wxTRANSPARENT_PEN );
+		FbTitleData( const FbTitleData &data )
+			: m_title(data.m_title), m_checked(data.m_checked), m_level(data.m_level)
+		{ }
 
-        rect.Deflate(2);
-        dc->DrawRoundedRectangle( rect, 5 );
+		inline bool operator==(const FbTitleData& data)
+		{
+			return m_title == data.m_title && m_checked == m_checked && m_level == data.m_level;
+		}
 
-        RenderText(m_value, 16, rect, dc, state);
-        return true;
-    }
+		inline bool operator!=(const FbTitleData& data)
+		{
+			return !(*this == data);
+		}
 
-    virtual bool LeftClick( wxPoint cursor, wxRect WXUNUSED(cell),
-                           wxDataViewModel *WXUNUSED(model),
-                           const wxDataViewItem &WXUNUSED(item),
-                           unsigned int WXUNUSED(col) )
-    {
-        wxLogMessage( "MyCustomRenderer LeftClick( %d, %d )", cursor.x, cursor.y );
-        return false;
-    }
+		friend class FbTitleRenderer;
 
-    virtual wxSize GetSize() const
-    {
-        return wxSize(GetOwner()->GetWidth(),20);
-    }
+	private:
+		wxString m_title;
+		bool m_checked;
+		int m_level;
 
-    virtual bool SetValue( const wxVariant &value )
-    {
-        m_value = value.GetString();
-        return true;
-    }
+		DECLARE_DYNAMIC_CLASS(wxDataViewIconText)
+};
 
-    virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
+DECLARE_VARIANT_OBJECT(FbTitleData)
 
-private:
-    wxString m_value;
+class FbTitleRenderer : public wxDataViewCustomRenderer
+{
+	public:
+		FbTitleRenderer()
+			: wxDataViewCustomRenderer("FbTitleData", wxDATAVIEW_CELL_ACTIVATABLE, wxALIGN_LEFT)
+		{
+			EnableEllipsize(wxELLIPSIZE_END);
+		}
+
+		virtual bool Render( wxRect rect, wxDC *dc, int state );
+
+		virtual bool LeftClick( wxPoint cursor, wxRect WXUNUSED(cell),
+							   wxDataViewModel *WXUNUSED(model),
+							   const wxDataViewItem &WXUNUSED(item),
+							   unsigned int WXUNUSED(col) )
+		{
+			wxLogMessage( "FbTitleRenderer LeftClick( %d, %d )", cursor.x, cursor.y );
+			return false;
+		}
+
+		bool Activate( wxRect WXUNUSED(cell),
+						wxDataViewModel *model,
+						const wxDataViewItem & item, unsigned int col)
+		{
+	//		model->ChangeValue(!m_toggle, item, col);
+			wxLogMessage( "FbTitleRenderer Activate" );
+			return false;
+		}
+
+		virtual wxSize GetSize() const
+		{
+			return wxSize(GetOwner()->GetWidth(),20);
+		}
+
+		virtual bool SetValue( const wxVariant &value )
+		{
+			FbTitleData data;
+			data << value;
+			m_title = data.m_title;
+			m_checked = data.m_checked;
+			m_level = data.m_level;
+			return true;
+		}
+
+		virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
+
+	private:
+		wxString m_title;
+		bool m_checked;
+		int m_level;
 };
 
 #endif // __FBBOOKMODEL_H__
