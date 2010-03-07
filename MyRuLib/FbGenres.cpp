@@ -51,7 +51,7 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0x2, 0x3, wxT("det_action"), _("Action")},
 		{ 0x2, 0x4, wxT("det_irony"), _("Ironic mystery")},
 		{ 0x2, 0x5, wxT("det_history"), _("Historical mystery")},
-		{ 0x2, 0x6, wxT("det_espionage"), _("Hobbies and Crafts")},
+		{ 0x2, 0x6, wxT("det_espionage"), _("Spy detective")},
 		{ 0x2, 0x7, wxT("det_crime"), _("Space Fiction")},
 		{ 0x2, 0x8, wxT("det_political"), _("Politology")},
 		{ 0x2, 0x9, wxT("det_maniac"), _("Maniacs")},
@@ -145,7 +145,7 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0xF, 0x0, wxT("home"), _("Household")},
 	};
 
-	const size_t folder_count = sizeof(folder_list) / sizeof(GenreStruct);
+	const size_t folder_count = sizeof(folder_list) / sizeof(FolderStruct);
 	const size_t genres_count = sizeof(genres_list) / sizeof(GenreStruct);
 
 	switch (id) {
