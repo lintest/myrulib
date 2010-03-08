@@ -28,6 +28,7 @@ class FbBookModelCashe: private FbBookModelArray
 	public:
         FbBookModelCashe(const wxString &filename);
         wxString GetValue(unsigned int row, unsigned int col);
+		bool GetValue(wxVariant &variant, unsigned int row, unsigned int col);
         unsigned int RowCount();
 	private:
         FbBookModelData FindRow(unsigned int rowid);

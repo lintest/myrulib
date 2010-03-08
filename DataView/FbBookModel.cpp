@@ -1,6 +1,14 @@
 #include "FbBookModel.h"
 
 // -----------------------------------------------------------------------------
+// class FbTitleData
+// -----------------------------------------------------------------------------
+
+IMPLEMENT_VARIANT_OBJECT(FbTitleData)
+
+IMPLEMENT_DYNAMIC_CLASS(FbTitleData, wxObject)
+
+// -----------------------------------------------------------------------------
 // class FbTitleRenderer
 // -----------------------------------------------------------------------------
 
@@ -16,7 +24,7 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 
 	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
 
-	RenderText(m_title, x + 4, rect, dc, state);
+	RenderText(m_title, x, rect, dc, state);
 	return true;
 }
 
@@ -98,6 +106,24 @@ wxString FbBookModelCashe::GetValue(unsigned int row, unsigned int col)
 	return FindRow(row + 1).GetValue(col);
 }
 
+bool FbBookModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned int col)
+{
+	FbBookModelData data = FindRow(row + 1);
+
+    switch ( col ) {
+		case FbBookModel::COL_ROWID: {
+			variant = wxString::Format("%d", row + 1);
+		} break;
+		case FbBookModel::COL_TITLE: {
+			variant << FbTitleData( data.GetValue(col) );
+		} break;
+		default: {
+			variant = data.GetValue(col);
+		}
+	}
+	return true;
+}
+
 // -----------------------------------------------------------------------------
 // class FbBookModel
 // -----------------------------------------------------------------------------
@@ -120,17 +146,7 @@ long FbBookModel::Init(const wxString &filename)
 
 void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
-    switch ( col ) {
-		case COL_ROWID: {
-			variant = wxString::Format("%d", row + 1);
-		} break;
-		case COL_TITLE: {
-			variant << FbTitleData( m_datalist->GetValue(row, col) );
-		} break;
-		default: {
-			variant = m_datalist->GetValue(row, col);
-		}
-	}
+   	m_datalist->GetValue(variant, row, col);
 }
 
 bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const
@@ -150,6 +166,3 @@ bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewIt
     return true;
 }
 
-IMPLEMENT_VARIANT_OBJECT(FbTitleData)
-
-IMPLEMENT_DYNAMIC_CLASS( FbTitleData, wxObject )
