@@ -17,8 +17,8 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 	dc->SetBrush( *wxLIGHT_GREY_BRUSH );
 	dc->SetPen( *wxTRANSPARENT_PEN );
 
-	rect.Deflate(2);
-	dc->DrawRoundedRectangle( rect, 5 );
+//	rect.Deflate(2);
+//	dc->DrawRoundedRectangle( rect, 5 );
 
 	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
 
@@ -49,6 +49,18 @@ bool FbTitleRenderer::Activate( wxRect WXUNUSED(cell), wxDataViewModel *model, c
     model->ChangeValue(variant, item, col);
     return false;
 }
+
+bool FbTitleRenderer::SetValue( const wxVariant &value )
+{
+	FbTitleData data;
+	data << value;
+	m_title = data.m_title;
+	m_checked = data.m_checked;
+	m_level = data.m_level;
+	return true;
+}
+
+
 
 // -----------------------------------------------------------------------------
 // class FbBookModelData

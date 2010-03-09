@@ -134,22 +134,11 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 		virtual bool LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col );
 
-		virtual bool Activate( wxRect WXUNUSED(cell), wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
+		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
 
-		virtual wxSize GetSize() const
-		{
-			return wxSize(GetOwner()->GetWidth(),20);
-		}
+		virtual wxSize GetSize() const { return wxSize(GetOwner()->GetWidth(), -1); }
 
-		virtual bool SetValue( const wxVariant &value )
-		{
-			FbTitleData data;
-			data << value;
-			m_title = data.m_title;
-			m_checked = data.m_checked;
-			m_level = data.m_level;
-			return true;
-		}
+		virtual bool SetValue( const wxVariant &value );
 
 		virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
 

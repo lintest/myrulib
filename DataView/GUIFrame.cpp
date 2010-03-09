@@ -54,14 +54,14 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_dataview = new wxDataViewCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE );
-	m_dataview->AppendTextColumn(_("rowid"),  FbBookModel::COL_ROWID, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
-	m_dataview->AppendTextColumn(_("number"), FbBookModel::COL_NUM, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
+	m_dataview = new wxDataViewCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE | wxDV_ROW_LINES);
 
 	FbTitleRenderer *cr = new FbTitleRenderer;
 	wxDataViewColumn *column = new wxDataViewColumn("title", cr, FbBookModel::COL_TITLE, 200, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE );
 	m_dataview->AppendColumn( column );
 
+	m_dataview->AppendTextColumn(_("rowid"),  FbBookModel::COL_ROWID, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
+	m_dataview->AppendTextColumn(_("number"), FbBookModel::COL_NUM, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
 	m_dataview->AppendTextColumn(_("size"),   3, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
 
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
