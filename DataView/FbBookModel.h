@@ -129,12 +129,12 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 		virtual bool Render( wxRect rect, wxDC *dc, int state );
 
-		virtual bool LeftClick( wxPoint cursor, wxRect WXUNUSED(cell),
+		virtual bool LeftClick( wxPoint cursor, wxRect cell,
 							   wxDataViewModel *WXUNUSED(model),
 							   const wxDataViewItem &WXUNUSED(item),
 							   unsigned int WXUNUSED(col) )
 		{
-			wxLogMessage( "FbTitleRenderer LeftClick( %d, %d )", cursor.x, cursor.y );
+			wxLogMessage( "FbTitleRenderer LeftClick( %d, %d )", cursor.x - cell.GetX(), cursor.y );
 			return false;
 		}
 

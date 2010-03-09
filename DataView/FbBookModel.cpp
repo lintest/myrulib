@@ -20,11 +20,14 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 	rect.Deflate(2);
 	dc->DrawRoundedRectangle( rect, 5 );
 
-	wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, rect, wxCONTROL_CHECKED);
-
 	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
 
-	RenderText(m_title, x, rect, dc, state);
+	wxRect checkbox = rect;
+	checkbox.SetWidth(x);
+
+	wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, wxCONTROL_CHECKED);
+
+	RenderText(m_title, x + 2, rect, dc, state);
 	return true;
 }
 
