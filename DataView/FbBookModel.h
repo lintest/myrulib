@@ -29,12 +29,14 @@ class FbBookModelCashe: private FbBookModelArray
         FbBookModelCashe(const wxString &filename);
         wxString GetValue(unsigned int row, unsigned int col);
 		bool GetValue(wxVariant &variant, unsigned int row, unsigned int col);
+        bool SetValue(const wxVariant &variant, unsigned int row, unsigned int col);
         unsigned int RowCount();
 	private:
         FbBookModelData FindRow(unsigned int rowid);
 	private:
         wxSQLite3Database m_database;
         unsigned int m_rowid;
+        wxArrayInt m_checked;
 };
 
 
@@ -74,7 +76,7 @@ class FbBookModel: public wxDataViewVirtualListModel
 
         virtual void GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const;
         virtual bool GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const;
-        virtual bool SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col ) { return false; };
+        virtual bool SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col );
 
     public:
 
@@ -107,6 +109,7 @@ class FbTitleData : public wxObject
 		}
 
 		friend class FbTitleRenderer;
+		friend class FbBookModelCashe;
 
 	private:
 		wxString m_title;
@@ -129,23 +132,9 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 		virtual bool Render( wxRect rect, wxDC *dc, int state );
 
-		virtual bool LeftClick( wxPoint cursor, wxRect cell,
-							   wxDataViewModel *WXUNUSED(model),
-							   const wxDataViewItem &WXUNUSED(item),
-							   unsigned int WXUNUSED(col) )
-		{
-			wxLogMessage( "FbTitleRenderer LeftClick( %d, %d )", cursor.x - cell.GetX(), cursor.y );
-			return false;
-		}
+		virtual bool LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col );
 
-		bool Activate( wxRect WXUNUSED(cell),
-						wxDataViewModel *model,
-						const wxDataViewItem & item, unsigned int col)
-		{
-	//		model->ChangeValue(!m_toggle, item, col);
-			wxLogMessage( "FbTitleRenderer Activate" );
-			return false;
-		}
+		virtual bool Activate( wxRect WXUNUSED(cell), wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
 
 		virtual wxSize GetSize() const
 		{

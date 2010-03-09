@@ -54,7 +54,7 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_dataview = new wxDataViewCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_dataview = new wxDataViewCtrl( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE );
 	m_dataview->AppendTextColumn(_("rowid"),  FbBookModel::COL_ROWID, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
 	m_dataview->AppendTextColumn(_("number"), FbBookModel::COL_NUM, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT);
 

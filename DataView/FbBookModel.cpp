@@ -25,10 +25,29 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 	wxRect checkbox = rect;
 	checkbox.SetWidth(x);
 
-	wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, wxCONTROL_CHECKED);
+	long flag = m_checked ? wxCONTROL_CHECKED : 0;
+    wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, flag);
 
 	RenderText(m_title, x + 2, rect, dc, state);
 	return true;
+}
+
+bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col )
+{
+	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
+	if (cursor.x - cell.GetX() > x + 4) return false;
+    wxVariant variant;
+    variant << FbTitleData( m_title, not m_checked);
+    model->ChangeValue(variant, item, col);
+    return true;
+}
+
+bool FbTitleRenderer::Activate( wxRect WXUNUSED(cell), wxDataViewModel *model, const wxDataViewItem & item, unsigned int col)
+{
+    wxVariant variant;
+    variant << FbTitleData( m_title, not m_checked);
+    model->ChangeValue(variant, item, col);
+    return false;
 }
 
 // -----------------------------------------------------------------------------
@@ -118,13 +137,24 @@ bool FbBookModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned i
 			variant = wxString::Format("%d", row + 1);
 		} break;
 		case FbBookModel::COL_TITLE: {
-			variant << FbTitleData( data.GetValue(col) );
+			variant << FbTitleData( data.GetValue(col), m_checked.Index(row) != wxNOT_FOUND );
 		} break;
 		default: {
 			variant = data.GetValue(col);
 		}
 	}
 	return true;
+}
+
+bool FbBookModelCashe::SetValue(const wxVariant &variant, unsigned int row, unsigned int col)
+{
+    if (col == FbBookModel::COL_TITLE) {
+        FbTitleData data;
+        data << variant;
+        if (data.m_checked) m_checked.Add(row);
+        else m_checked.Remove(row);
+    }
+    return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -150,6 +180,11 @@ long FbBookModel::Init(const wxString &filename)
 void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
    	m_datalist->GetValue(variant, row, col);
+}
+
+bool FbBookModel::SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col )
+{
+   	return m_datalist->SetValue(variant, row, col);
 }
 
 bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const
