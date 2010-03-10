@@ -14,21 +14,15 @@ IMPLEMENT_DYNAMIC_CLASS(FbTitleData, wxObject)
 
 bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 {
-	dc->SetBrush( *wxLIGHT_GREY_BRUSH );
-	dc->SetPen( *wxTRANSPARENT_PEN );
-
-//	rect.Deflate(2);
-//	dc->DrawRoundedRectangle( rect, 5 );
-
 	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
 
 	wxRect checkbox = rect;
 	checkbox.SetWidth(x);
 
-	long flag = m_checked ? wxCONTROL_CHECKED : 0;
+	long flag = m_data.m_checked ? wxCONTROL_CHECKED : 0;
     wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, flag);
 
-	RenderText(m_title, x + 2, rect, dc, state);
+	RenderText(m_data.m_title, x + 2, rect, dc, state);
 	return true;
 }
 
@@ -36,31 +30,19 @@ bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *m
 {
 	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
 	if (cursor.x - cell.GetX() > x + 4) return false;
+
+	m_data.m_checked = not m_data.m_checked;
     wxVariant variant;
-    variant << FbTitleData( m_title, not m_checked);
+    variant << m_data;
     model->ChangeValue(variant, item, col);
     return true;
 }
 
-bool FbTitleRenderer::Activate( wxRect WXUNUSED(cell), wxDataViewModel *model, const wxDataViewItem & item, unsigned int col)
-{
-    wxVariant variant;
-    variant << FbTitleData( m_title, not m_checked);
-    model->ChangeValue(variant, item, col);
-    return false;
-}
-
 bool FbTitleRenderer::SetValue( const wxVariant &value )
 {
-	FbTitleData data;
-	data << value;
-	m_title = data.m_title;
-	m_checked = data.m_checked;
-	m_level = data.m_level;
+	m_data << value;
 	return true;
 }
-
-
 
 // -----------------------------------------------------------------------------
 // class FbBookModelData
@@ -69,22 +51,61 @@ bool FbTitleRenderer::SetValue( const wxVariant &value )
 #define BOOK_CASHE_SIZE 64
 
 FbBookModelData::FbBookModelData(wxSQLite3ResultSet &result)
-	: m_rowid(result.GetInt(0))
 {
-	m_title = result.GetString(1);
-	m_values.Add(result.GetString(0));
-	m_values.Add(result.GetString(1));
-	m_values.Add(result.GetString(2));
+	m_rowid = result.GetInt(0);
+	m_bookid = result.GetInt(1);
+	m_title = result.GetAsString(2);
+	m_filesize = result.GetInt(3);
 }
 
-FbBookModelData::FbBookModelData(const FbBookModelData &data)
-    : m_rowid(data.m_rowid), m_values(data.m_values)
+FbBookModelData::FbBookModelData(const FbBookModelData &data) :
+	m_rowid(data.m_rowid),
+	m_bookid(data.m_bookid),
+	m_title(data.m_title),
+	m_authors(data.m_authors),
+	m_filesize(data.m_filesize)
 {
+}
+
+wxString FbBookModelData::GetAuthors(wxSQLite3Database &database)
+{
+	if (!m_authors.IsEmpty()) return m_authors;
+
+	wxString sql = wxT("SELECT full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, (int)m_bookid);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	while (result.NextRow()) {
+		if (!m_authors.IsEmpty()) m_authors += wxT(", ");
+		m_authors += result.GetString(0).Trim(true);
+	}
+	return m_authors;
+}
+
+wxString FbBookModelData::Format(const int number)
+{
+	int hi = number / 1000;
+	int lo = number % 1000;
+	if (hi)
+		return Format(hi) + wxT(" ") + wxString::Format(wxT("%03d"), lo);
+	else
+		return wxString::Format(wxT("%d"), lo);
 }
 
 wxString FbBookModelData::GetValue(unsigned int col)
 {
-	return col && col <= m_values.GetCount() ? m_values[(int)col-1] : (wxString)wxEmptyString;
+	switch (col) {
+		case FbBookModel::COL_ROWID:
+			return wxString::Format("%d", m_rowid);
+		case FbBookModel::COL_BOOKID:
+			return wxString::Format("%d", m_bookid);
+		case FbBookModel::COL_TITLE:
+			return m_title;
+		case FbBookModel::COL_SIZE:
+			return Format(m_filesize);
+		default:
+			return wxEmptyString;
+	}
 }
 
 // -----------------------------------------------------------------------------
@@ -112,7 +133,7 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 	m_rowid = rowid <= BOOK_CASHE_SIZE ? 1 : rowid - BOOK_CASHE_SIZE;
 
 	Empty();
-	wxString sql = wxT("SELECT rowid, title, file_size FROM books WHERE rowid>=? ORDER BY 1 LIMIT ?");
+	wxString sql = wxT("SELECT rowid, id, title, file_size FROM books WHERE rowid>=? ORDER BY 1 LIMIT ?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, (wxLongLong)m_rowid);
 	stmt.Bind(2, BOOK_CASHE_SIZE * 2);
@@ -150,6 +171,9 @@ bool FbBookModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned i
 		} break;
 		case FbBookModel::COL_TITLE: {
 			variant << FbTitleData( data.GetValue(col), m_checked.Index(row) != wxNOT_FOUND );
+		} break;
+		case FbBookModel::COL_AUTHOR: {
+			variant = data.GetAuthors(m_database);
 		} break;
 		default: {
 			variant = data.GetValue(col);

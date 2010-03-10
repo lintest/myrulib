@@ -10,15 +10,20 @@
 class FbBookModelData
 {
     public:
-        FbBookModelData(unsigned int id = 0): m_rowid(id) {};
+        FbBookModelData(unsigned int id = 0): m_rowid(id), m_bookid(0), m_filesize(0) {};
         FbBookModelData(wxSQLite3ResultSet &result);
         FbBookModelData(const FbBookModelData &data);
         wxString GetValue(unsigned int col);
+		wxString GetAuthors(wxSQLite3Database &database);
         unsigned int Id() { return m_rowid; };
-    public:
-        unsigned int m_rowid;
+    private:
+		wxString Format(const int number);
+    private:
+        int m_rowid;
+        int m_bookid;
         wxString m_title;
-        wxArrayString m_values;
+        wxString m_authors;
+        int m_filesize;
 };
 
 WX_DECLARE_OBJARRAY(FbBookModelData, FbBookModelArray);
@@ -46,15 +51,15 @@ class FbBookModel: public wxDataViewVirtualListModel
         enum COL
         {
             COL_ROWID,
-            COL_NUM,
+            COL_BOOKID,
             COL_TITLE,
+            COL_SIZE,
             COL_AUTHOR,
             COL_GENRE,
             COL_NUMBER,
             COL_RATING,
             COL_TYPE,
             COL_LANG,
-            COL_SIZE,
             COL_MAX,
         };
 
@@ -134,7 +139,7 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 		virtual bool LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col );
 
-		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
+//		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
 
 		virtual wxSize GetSize() const { return wxSize(GetOwner()->GetWidth(), -1); }
 
@@ -143,9 +148,7 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 		virtual bool GetValue( wxVariant &WXUNUSED(value) ) const { return true; }
 
 	private:
-		wxString m_title;
-		bool m_checked;
-		int m_level;
+        FbTitleData m_data;
 };
 
 #endif // __FBBOOKMODEL_H__

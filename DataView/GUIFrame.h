@@ -42,6 +42,7 @@ class GUIFrame : public wxFrame
 		void _wxFB_OnAbout( wxCommandEvent& event ){ OnAbout( event ); }
 		void _wxFB_OnOpen( wxCommandEvent& event ){ OnOpen( event ); }
 
+		void OnActivated(wxDataViewEvent& event);
 
 	protected:
 		enum
@@ -49,6 +50,7 @@ class GUIFrame : public wxFrame
 			idMenuQuit = 1000,
 			idMenuOpen,
 			idMenuAbout,
+			idDataView,
 		};
 
 		wxStatusBar* m_statusbar;
