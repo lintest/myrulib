@@ -835,16 +835,16 @@ msgid "Historical mystery"
 msgstr "Исторический детектив"
 
 #: FbGenres.cpp:53
-msgid "Шпионский детектив"
-msgstr "Spy mystery"
+msgid "Spy mystery"
+msgstr "Шпионский детектив"
 
 #: FbGenres.cpp:54
-msgid "Криминальный детектив"
-msgstr "Criminal mystery"
+msgid "Criminal mystery"
+msgstr "Криминальный детектив"
 
 #: FbGenres.cpp:55
-msgid "Политический детектив"
-msgstr "Political mystery"
+msgid "Political mystery"
+msgstr "Политический детектив"
 
 #: FbGenres.cpp:56
 msgid "Maniacs"
