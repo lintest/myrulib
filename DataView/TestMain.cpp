@@ -10,6 +10,7 @@
 #include "TestMain.h"
 #include "TestApp.h"
 #include "FbBookModel.h"
+#include "FbTreeModel.h"
 
 //helper functions
 enum wxbuildinfoformat {
@@ -69,7 +70,7 @@ void DataViewFrame::OnAbout(wxCommandEvent &event)
     wxMessageBox(msg, _("Welcome to..."));
 }
 
-void DataViewFrame::OnOpen(wxCommandEvent &event)
+void DataViewFrame::OnOpenList(wxCommandEvent &event)
 {
 	wxFileDialog dlg (
 		this,
@@ -85,5 +86,33 @@ void DataViewFrame::OnOpen(wxCommandEvent &event)
 	    FbBookModel * model = new FbBookModel(dlg.GetPath());
 	    m_dataview->AssociateModel(model);
 	};
+}
+
+void DataViewFrame::OnOpenTree(wxCommandEvent &event)
+{
+/*
+	wxDataViewTreeStore * model = new wxDataViewTreeStore;
+	wxDataViewItem parent = model->AppendItem( wxDataViewItem(NULL), "test" );
+	parent = model->AppendItem( parent, "test2" );
+	parent = model->AppendItem( parent, "test3" );
+    m_dataview->AssociateModel(model);
+	return;
+
+*/
+	wxFileDialog dlg (
+		this,
+		_("Select archive to add to the library"),
+		wxEmptyString,
+		wxEmptyString,
+		wxT("*.db"),
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
+		wxDefaultPosition
+	);
+
+	if (dlg.ShowModal() == wxID_OK) {
+	    FbTreeModel * model = new FbTreeModel(dlg.GetPath());
+	    m_dataview->AssociateModel(model);
+	};
+
 }
 

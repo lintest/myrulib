@@ -40,7 +40,8 @@ class GUIFrame : public wxFrame
 		void _wxFB_OnClose( wxCloseEvent& event ){ OnClose( event ); }
 		void _wxFB_OnQuit( wxCommandEvent& event ){ OnQuit( event ); }
 		void _wxFB_OnAbout( wxCommandEvent& event ){ OnAbout( event ); }
-		void _wxFB_OnOpen( wxCommandEvent& event ){ OnOpen( event ); }
+		void _wxFB_OnOpenList( wxCommandEvent& event ){ OnOpenList( event ); }
+		void _wxFB_OnOpenTree( wxCommandEvent& event ){ OnOpenTree( event ); }
 
 		void OnActivated(wxDataViewEvent& event);
 
@@ -48,7 +49,8 @@ class GUIFrame : public wxFrame
 		enum
 		{
 			idMenuQuit = 1000,
-			idMenuOpen,
+			idOpenList,
+			idOpenTree,
 			idMenuAbout,
 			idDataView,
 		};
@@ -60,7 +62,8 @@ class GUIFrame : public wxFrame
 		virtual void OnClose( wxCloseEvent& event ){ event.Skip(); }
 		virtual void OnQuit( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnAbout( wxCommandEvent& event ){ event.Skip(); }
-		virtual void OnOpen( wxCommandEvent& event ){ event.Skip(); }
+		virtual void OnOpenList( wxCommandEvent& event ){ event.Skip(); }
+		virtual void OnOpenTree( wxCommandEvent& event ){ event.Skip(); }
 
 	public:
 		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("wxWidgets Application Template"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 481,466 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );

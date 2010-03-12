@@ -22,7 +22,8 @@ class DataViewFrame: public GUIFrame
         virtual void OnClose(wxCloseEvent& event);
         virtual void OnQuit(wxCommandEvent& event);
         virtual void OnAbout(wxCommandEvent& event);
-        virtual void OnOpen(wxCommandEvent& event);
+        virtual void OnOpenList(wxCommandEvent& event);
+        virtual void OnOpenTree(wxCommandEvent& event);
 };
 
 #endif // DATAVIEWMAIN_H
