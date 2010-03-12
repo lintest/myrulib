@@ -155,6 +155,8 @@
 		</Linker>
 		<Unit filename="FbBookModel.cpp" />
 		<Unit filename="FbBookModel.h" />
+		<Unit filename="FbTreeModel.cpp" />
+		<Unit filename="FbTreeModel.h" />
 		<Unit filename="GUIFrame.cpp" />
 		<Unit filename="GUIFrame.h" />
 		<Unit filename="TestApp.cpp" />

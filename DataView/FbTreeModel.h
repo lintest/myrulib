@@ -83,9 +83,11 @@ class FbTreeModel: public wxDataViewModel
 
         virtual bool SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col);
 
-        virtual bool GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const;
+        virtual wxDataViewItem GetParent( const wxDataViewItem &item ) const;
 
-        virtual bool SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col );
+        virtual bool IsContainer( const wxDataViewItem &item ) const;
+
+        virtual unsigned int GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const;
 
     private:
         FbTreeModelCashe * m_datalist;

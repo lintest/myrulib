@@ -164,6 +164,10 @@ FbTreeModel::~FbTreeModel()
     wxDELETE(m_datalist);
 }
 
+unsigned int FbTreeModel::GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const
+{
+}
+
 void FbTreeModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
    	m_datalist->GetValue(variant, row, col);
