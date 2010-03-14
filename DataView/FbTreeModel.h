@@ -6,45 +6,53 @@
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
 #include <wx/renderer.h>
+#include "FbDataModel.h"
 
-class FbDataViewItem: public wxDataViewItem
+class FbTreeDataNode;
+
+WX_DECLARE_OBJARRAY(FbTreeDataNode*, FbTreeModelArray);
+
+class FbTreeDataNode
 {
 	public:
-		FbDataViewItem(): wxDataViewItem(this) {};
-        virtual wxString GetValue(unsigned int col) = 0;
-        virtual bool SetValue(const wxVariant &variant, unsigned int col) = 0;
-		virtual wxDataViewItem GetParent() = 0;
+		FbTreeDataNode() {};
 		virtual bool IsContainer() = 0;
+		virtual wxDataViewItem GetParent() = 0;
+        virtual void GetValue(wxVariant &variant, unsigned int col) = 0;
+        virtual bool SetValue(const wxVariant &variant, unsigned int col) = 0;
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) = 0;
 };
 
-class FbLetterItem: public FbDataViewItem
+class FbLetterDataNode: public FbTreeDataNode
 {
 	public:
-		FbLetterItem(wxChar letter): m_letter(letter) {};
-        virtual wxString GetValue(unsigned int col) { return m_letter; };
-		virtual wxDataViewItem GetParent() { return wxDataViewItem(NULL); };
+		FbLetterDataNode(wxChar letter, unsigned int count, bool checked = false): m_letter(letter), m_count(count), m_checked(checked) {};
 		virtual bool IsContainer() { return true; };
-        virtual bool SetValue(const wxVariant &variant, unsigned int col) { return false; };
+		virtual wxDataViewItem GetParent() { return wxDataViewItem(NULL); };
+        virtual void GetValue(wxVariant &variant, unsigned int col);
+        virtual bool SetValue(const wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
 	private:
 		wxChar m_letter;
+		unsigned int m_count;
+		FbTreeModelArray m_children;
+		bool m_checked;
 };
 
-class FbAuthorItem: public FbDataViewItem
+class FbAuthorDataNode: public FbTreeDataNode
 {
 	public:
-		FbAuthorItem(void * owner, int id, const wxString &name): m_owner(m_owner), m_id(id), m_name(name) {};
-        virtual wxString GetValue(unsigned int col) { return m_name; };
-		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
+		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
 		virtual bool IsContainer() { return false; };
-        virtual bool SetValue(const wxVariant &variant, unsigned int col) { return false; };
+		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
+        virtual void GetValue(wxVariant &variant, unsigned int col);
+        virtual bool SetValue(const wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) { return 0; };
 	private:
-		void * m_owner;
+		FbLetterDataNode * m_owner;
 		int m_id;
-		wxString m_name;
-
+		FbTreeModelArray m_children;
+		bool m_checked;
 };
 
 class FbTreeModelData
@@ -66,8 +74,6 @@ class FbTreeModelData
         int m_filesize;
 };
 
-WX_DECLARE_OBJARRAY(FbTreeModelData, FbTreeModelArray);
-
 class FbTreeModelCashe: private FbTreeModelArray
 {
 	public:
@@ -85,30 +91,27 @@ class FbTreeModelCashe: private FbTreeModelArray
         wxArrayInt m_checked;
 };
 
-
 class FbTreeModel: public wxDataViewModel
 {
-    public:
-        enum COL
-        {
-            COL_ROWID,
-            COL_BOOKID,
-            COL_TITLE,
-            COL_SIZE,
-            COL_AUTHOR,
-            COL_GENRE,
-            COL_NUMBER,
-            COL_RATING,
-            COL_TYPE,
-            COL_LANG,
-            COL_MAX,
-        };
+	public:
+		enum COL
+		{
+			COL_TITLE,
+			COL_ROWID,
+			COL_BOOKID,
+			COL_SIZE,
+			COL_GENRE,
+			COL_NUMBER,
+			COL_RATING,
+			COL_TYPE,
+			COL_LANG,
+			COL_MAX,
+		};
 
+    public:
         FbTreeModel(const wxString &filename);
 
         virtual ~FbTreeModel();
-
-        // implementation of base class virtuals to define model
 
         virtual unsigned int GetColumnCount() const
         {
@@ -135,6 +138,7 @@ class FbTreeModel: public wxDataViewModel
 
     private:
         wxSQLite3Database * m_database;
+		FbTreeModelArray m_children;
 };
 
 #endif // __FBTREEMODEL_H__

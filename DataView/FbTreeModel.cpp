@@ -1,11 +1,66 @@
 #include "FbTreeModel.h"
-#include "FbBookModel.h"
+
+// -----------------------------------------------------------------------------
+// class FbTreeModelArray
+// -----------------------------------------------------------------------------
+
+WX_DEFINE_OBJARRAY(FbTreeModelArray);
+
+// -----------------------------------------------------------------------------
+// class FbLetterDataNode
+// -----------------------------------------------------------------------------
+
+void FbLetterDataNode::GetValue(wxVariant &variant, unsigned int col)
+{
+    switch ( col ) {
+		case FbTreeModel::COL_TITLE: {
+			variant << FbTitleData( m_letter, m_checked );
+		} break;
+		default: {
+			variant = wxString(m_letter);
+		}
+	}
+}
+
+bool FbLetterDataNode::SetValue(const wxVariant &variant, unsigned int col)
+{
+    if (col == FbTreeModel::COL_TITLE) {
+        FbTitleData data;
+        data << variant;
+        m_checked = data.IsChecked();
+    }
+    return true;
+}
+
+// -----------------------------------------------------------------------------
+// class FbAuthorDataNode
+// -----------------------------------------------------------------------------
+
+void FbAuthorDataNode::GetValue(wxVariant &variant, unsigned int col)
+{
+    switch ( col ) {
+		case FbTreeModel::COL_TITLE: {
+			variant << FbTitleData( wxT("author"), m_checked );
+		} break;
+		default: {
+			variant = wxT("author");
+		}
+	}
+}
+
+bool FbAuthorDataNode::SetValue(const wxVariant &variant, unsigned int col)
+{
+    if (col == FbTreeModel::COL_TITLE) {
+        FbTitleData data;
+        data << variant;
+        m_checked = data.IsChecked();
+    }
+    return true;
+}
 
 // -----------------------------------------------------------------------------
 // class FbTreeModelData
 // -----------------------------------------------------------------------------
-
-#define BOOK_CASHE_SIZE 64
 
 FbTreeModelData::FbTreeModelData(wxSQLite3ResultSet &result)
 {
@@ -66,107 +121,6 @@ wxString FbTreeModelData::GetValue(unsigned int col)
 }
 
 // -----------------------------------------------------------------------------
-// class FbTreeModelCashe
-// -----------------------------------------------------------------------------
-
-WX_DEFINE_OBJARRAY(FbTreeModelArray);
-
-FbTreeModelCashe::FbTreeModelCashe(const wxString &filename)
-	: m_rowid(0)
-{
-    m_database.Open(filename);
-}
-
-unsigned int FbTreeModelCashe::RowCount()
-{
-    wxSQLite3ResultSet result = m_database.ExecuteQuery(wxT("SELECT COUNT(id) FROM books"));
-    return result.NextRow() ? result.GetInt(0) : 0;
-}
-
-FbTreeModelData FbTreeModelCashe::FindRow(unsigned int rowid)
-{
-	if ( m_rowid <= rowid && rowid < m_rowid + GetCount() ) return operator[]( rowid - m_rowid );
-
-	m_rowid = rowid <= BOOK_CASHE_SIZE ? 1 : rowid - BOOK_CASHE_SIZE;
-
-	Empty();
-	wxString sql = wxT("SELECT rowid, id, title, file_size FROM books WHERE rowid>=? ORDER BY 1 LIMIT ?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-	stmt.Bind(1, (wxLongLong)m_rowid);
-	stmt.Bind(2, BOOK_CASHE_SIZE * 2);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	FbTreeModelData * found = NULL;
-	unsigned int id = rowid;
-	while (result.NextRow()) {
-		FbTreeModelData * data = new FbTreeModelData(result);
-		while ( id < data->Id() ) {
-			Add(new FbTreeModelData(id++));
-		}
-		if (id == rowid) found = data;
-		Add(data);
-		id++;
-	}
-
-	if (found) return *found;
-
-	return rowid;
-}
-
-wxString FbTreeModelCashe::GetValue(unsigned int row, unsigned int col)
-{
-	return FindRow(row + 1).GetValue(col);
-}
-
-bool FbTreeModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned int col)
-{
-	FbTreeModelData data = FindRow(row + 1);
-
-    switch ( col ) {
-		case FbTreeModel::COL_ROWID: {
-			variant = wxString::Format("%d", row + 1);
-		} break;
-		case FbTreeModel::COL_TITLE: {
-//			variant << FbTitleData( data.GetValue(col), m_checked.Index(row) != wxNOT_FOUND );
-		} break;
-		case FbTreeModel::COL_AUTHOR: {
-			variant = data.GetAuthors(m_database);
-		} break;
-		default: {
-			variant = data.GetValue(col);
-		}
-	}
-	return true;
-}
-
-bool FbTreeModelCashe::SetValue(const wxVariant &variant, unsigned int row, unsigned int col)
-{
-    if (col == FbTreeModel::COL_TITLE) {
-        FbTitleData data;
-        data << variant;
-//        if (data.m_checked) m_checked.Add(row);
-//        else m_checked.Remove(row);
-    }
-    return true;
-}
-
-unsigned int FbTreeModelCashe::GetLetters( wxDataViewItemArray &children )
-{
-	wxString sql = wxT("SELECT DISTINCT letter FROM authors ORDER BY 1");
-	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-
-	unsigned int count = 0;
-	while (result.NextRow()) {
-		wxString text = result.GetAsString(0);
-		wxChar letter = text.IsEmpty() ? wxT(' ') : text[0];
-		FbLetterItem * item = new FbLetterItem(letter);
-		children.Add(item);
-		count++;
-	}
-	return count;
-}
-
-// -----------------------------------------------------------------------------
 // class FbTreeModel
 // -----------------------------------------------------------------------------
 
@@ -174,6 +128,16 @@ FbTreeModel::FbTreeModel(const wxString &filename)
 {
 	m_database = new wxSQLite3Database;
 	m_database->Open(filename);
+
+	wxString sql = wxT("SELECT letter, count(id) FROM authors GROUP BY letter ORDER BY 1");
+	wxSQLite3ResultSet result = m_database->ExecuteQuery(sql);
+	while (result.NextRow()) {
+		wxString text = result.GetString(0);
+		wxChar letter = text.IsEmpty() ? wxT(' ') : text[0];
+		unsigned int count = result.GetInt(1);
+		FbLetterDataNode * item = new FbLetterDataNode(letter, count);
+		m_children.Add(item);
+	}
 }
 
 FbTreeModel::~FbTreeModel()
@@ -183,57 +147,45 @@ FbTreeModel::~FbTreeModel()
 
 unsigned int FbTreeModel::GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const
 {
-	return item.IsOk() ? ((FbDataViewItem*)item.GetID())->GetChildren(m_database, children) : GetLetters(children);
+	if (item.IsOk()) {
+		return ((FbTreeDataNode*)item.GetID())->GetChildren(m_database, children);
+	} else {
+		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
+		return m_children.Count();
+	}
 }
 
 void FbTreeModel::GetValue( wxVariant &variant, const wxDataViewItem &item, unsigned int col ) const
 {
-	if (item.IsOk()) variant = ((FbDataViewItem*)item.GetID())->GetValue(col);
+	if (item.IsOk()) ((FbTreeDataNode*)item.GetID())->GetValue(variant, col);
 }
 
 bool FbTreeModel::SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col)
 {
-	return item.IsOk() ? ((FbDataViewItem*)item.GetID())->SetValue(variant, col) : false;
+	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(variant, col) : false;
 }
 
 wxDataViewItem FbTreeModel::GetParent( const wxDataViewItem &item ) const
 {
-	return item.IsOk() ? ((FbDataViewItem*)item.GetID())->GetParent() : wxDataViewItem(NULL);
+	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->GetParent() : wxDataViewItem(NULL);
 }
 
 bool FbTreeModel::IsContainer( const wxDataViewItem &item ) const
 {
-	return item.IsOk() ? ((FbDataViewItem*)item.GetID())->IsContainer() : true;
+	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->IsContainer() : true;
 }
 
-unsigned int FbTreeModel::GetLetters( wxDataViewItemArray &children ) const
+unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
-	wxString sql = wxT("SELECT DISTINCT letter FROM authors ORDER BY 1");
-	wxSQLite3ResultSet result = m_database->ExecuteQuery(sql);
-
-	unsigned int count = 0;
-	while (result.NextRow()) {
-		wxString text = result.GetAsString(0);
-		wxChar letter = text.IsEmpty() ? wxT(' ') : text[0];
-		FbLetterItem * item = new FbLetterItem(letter);
-		children.Add(item);
-		count++;
+	if (m_children.Count()) {
+		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
+		return m_children.Count();
+	} else {
+		for (size_t i=0; i<m_count; i++) {
+			FbAuthorDataNode * item = new FbAuthorDataNode(this);
+			m_children.Add( item );
+			children.Add( wxDataViewItem(item) );
+		}
+		return m_count;
 	}
-	return count;
-}
-
-unsigned int FbLetterItem::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
-{
-	wxString sql = wxT("SELECT DISTINCT id, full_name FROM authors WHERE letter=? ORDER BY search_name");
-	wxSQLite3Statement stmt = database->PrepareStatement(sql);
-	stmt.Bind(1, wxString(m_letter));
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	unsigned int count = 0;
-	while (result.NextRow()) {
-		FbAuthorItem * item = new FbAuthorItem(GetID(), result.GetInt(0), result.GetAsString(1));
-		children.Add(item);
-		count++;
-	}
-	return count;
 }

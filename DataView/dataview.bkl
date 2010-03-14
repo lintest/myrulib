@@ -35,6 +35,8 @@
 		<define>NDEBUG</define>
 		<include>../WxSQLite3</include>
 		<sources>FbBookModel.cpp</sources> 
+		<sources>FbDataModel.cpp</sources> 
+		<sources>FbTreeModel.cpp</sources> 
 		<sources>GUIFrame.cpp</sources>  
 		<sources>TestMain.cpp</sources> 
 		<sources>TestApp.cpp</sources> 

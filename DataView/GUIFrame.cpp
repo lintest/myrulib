@@ -61,18 +61,6 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_dataview = new wxDataViewCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE | wxDV_ROW_LINES);
 
-	int flags = wxDATAVIEW_COL_RESIZABLE | wxCOL_SORTABLE | wxCOL_REORDERABLE;
-/*
-	FbTitleRenderer *cr = new FbTitleRenderer;
-	wxDataViewColumn *column = new wxDataViewColumn("title", cr, FbBookModel::COL_TITLE, 200, wxALIGN_LEFT, flags );
-	m_dataview->AppendColumn( column );
-*/
-	m_dataview->AppendTextColumn(_("author"), FbBookModel::COL_AUTHOR, wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_LEFT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-	m_dataview->AppendTextColumn(_("rowid"),  FbBookModel::COL_ROWID,  wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-	m_dataview->AppendTextColumn(_("book"),   FbBookModel::COL_BOOKID, wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-	m_dataview->AppendTextColumn(_("size"),   FbBookModel::COL_SIZE,   wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-
-
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
 
 	this->SetSizer( bSizer1 );
