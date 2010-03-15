@@ -20,6 +20,7 @@ class FbTreeDataNode
 		virtual wxDataViewItem GetParent() = 0;
         virtual void GetValue(wxVariant &variant, unsigned int col) = 0;
         virtual bool SetValue(const wxVariant &variant, unsigned int col) = 0;
+        virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr) = 0;
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) = 0;
 };
 
@@ -31,6 +32,7 @@ class FbLetterDataNode: public FbTreeDataNode
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(NULL); };
         virtual void GetValue(wxVariant &variant, unsigned int col);
         virtual bool SetValue(const wxVariant &variant, unsigned int col);
+        virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
 	private:
 		wxChar m_letter;
@@ -47,6 +49,7 @@ class FbAuthorDataNode: public FbTreeDataNode
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
         virtual void GetValue(wxVariant &variant, unsigned int col);
         virtual bool SetValue(const wxVariant &variant, unsigned int col);
+        virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr) { return false; };
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) { return 0; };
 	private:
 		FbLetterDataNode * m_owner;
@@ -130,6 +133,8 @@ class FbTreeModel: public wxDataViewModel
         virtual void GetValue( wxVariant &variant, const wxDataViewItem &item, unsigned int col ) const;
 
         virtual bool SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col);
+
+        virtual bool GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const;
 
         virtual unsigned int GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const;
 

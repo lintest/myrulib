@@ -32,6 +32,27 @@ bool FbLetterDataNode::SetValue(const wxVariant &variant, unsigned int col)
     return true;
 }
 
+bool FbLetterDataNode::GetAttr(unsigned int col, wxDataViewItemAttr &attr)
+{
+    attr.SetBold(true);
+    return true;
+}
+
+unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
+{
+	if (m_children.Count()) {
+		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
+		return m_children.Count();
+	} else {
+		for (size_t i=0; i<m_count; i++) {
+			FbAuthorDataNode * item = new FbAuthorDataNode(this);
+			m_children.Add( item );
+			children.Add( wxDataViewItem(item) );
+		}
+		return m_count;
+	}
+}
+
 // -----------------------------------------------------------------------------
 // class FbAuthorDataNode
 // -----------------------------------------------------------------------------
@@ -165,6 +186,11 @@ bool FbTreeModel::SetValue(const wxVariant &variant, const wxDataViewItem &item,
 	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(variant, col) : false;
 }
 
+virtual bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const
+{
+    return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->GetAttr(col, attr) : false;
+}
+
 wxDataViewItem FbTreeModel::GetParent( const wxDataViewItem &item ) const
 {
 	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->GetParent() : wxDataViewItem(NULL);
@@ -175,17 +201,3 @@ bool FbTreeModel::IsContainer( const wxDataViewItem &item ) const
 	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->IsContainer() : true;
 }
 
-unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
-{
-	if (m_children.Count()) {
-		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
-		return m_children.Count();
-	} else {
-		for (size_t i=0; i<m_count; i++) {
-			FbAuthorDataNode * item = new FbAuthorDataNode(this);
-			m_children.Add( item );
-			children.Add( wxDataViewItem(item) );
-		}
-		return m_count;
-	}
-}
