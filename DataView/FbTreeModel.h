@@ -18,8 +18,8 @@ class FbTreeDataNode
 		FbTreeDataNode() {};
 		virtual bool IsContainer() = 0;
 		virtual wxDataViewItem GetParent() = 0;
-        virtual void GetValue(wxVariant &variant, unsigned int col) = 0;
-        virtual bool SetValue(const wxVariant &variant, unsigned int col) = 0;
+        virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col) = 0;
+        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col) = 0;
         virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr) = 0;
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) = 0;
 };
@@ -30,8 +30,8 @@ class FbLetterDataNode: public FbTreeDataNode
 		FbLetterDataNode(wxChar letter, unsigned int count, bool checked = false): m_letter(letter), m_count(count), m_checked(checked) {};
 		virtual bool IsContainer() { return true; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(NULL); };
-        virtual void GetValue(wxVariant &variant, unsigned int col);
-        virtual bool SetValue(const wxVariant &variant, unsigned int col);
+        virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
+        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
 	private:
@@ -47,8 +47,8 @@ class FbAuthorDataNode: public FbTreeDataNode
 		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
 		virtual bool IsContainer() { return false; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
-        virtual void GetValue(wxVariant &variant, unsigned int col);
-        virtual bool SetValue(const wxVariant &variant, unsigned int col);
+        virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
+        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr) { return false; };
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) { return 0; };
 	private:

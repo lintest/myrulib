@@ -10,7 +10,7 @@ WX_DEFINE_OBJARRAY(FbTreeModelArray);
 // class FbLetterDataNode
 // -----------------------------------------------------------------------------
 
-void FbLetterDataNode::GetValue(wxVariant &variant, unsigned int col)
+void FbLetterDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
@@ -22,7 +22,7 @@ void FbLetterDataNode::GetValue(wxVariant &variant, unsigned int col)
 	}
 }
 
-bool FbLetterDataNode::SetValue(const wxVariant &variant, unsigned int col)
+bool FbLetterDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
 {
     if (col == FbTreeModel::COL_TITLE) {
         FbTitleData data;
@@ -57,7 +57,7 @@ unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxData
 // class FbAuthorDataNode
 // -----------------------------------------------------------------------------
 
-void FbAuthorDataNode::GetValue(wxVariant &variant, unsigned int col)
+void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
@@ -69,7 +69,7 @@ void FbAuthorDataNode::GetValue(wxVariant &variant, unsigned int col)
 	}
 }
 
-bool FbAuthorDataNode::SetValue(const wxVariant &variant, unsigned int col)
+bool FbAuthorDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
 {
     if (col == FbTreeModel::COL_TITLE) {
         FbTitleData data;
@@ -178,15 +178,15 @@ unsigned int FbTreeModel::GetChildren( const wxDataViewItem &item, wxDataViewIte
 
 void FbTreeModel::GetValue( wxVariant &variant, const wxDataViewItem &item, unsigned int col ) const
 {
-	if (item.IsOk()) ((FbTreeDataNode*)item.GetID())->GetValue(variant, col);
+	if (item.IsOk()) ((FbTreeDataNode*)item.GetID())->GetValue(m_database, variant, col);
 }
 
 bool FbTreeModel::SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col)
 {
-	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(variant, col) : false;
+	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(m_database, variant, col) : false;
 }
 
-virtual bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const
+bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const
 {
     return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->GetAttr(col, attr) : false;
 }

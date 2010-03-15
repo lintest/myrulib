@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/dataview.h>
+#include <wx/renderer.h>
 
 class FbTitleData : public wxObject
 {

@@ -4,7 +4,6 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
-#include <wx/renderer.h>
 #include "FbDataModel.h"
 
 class FbBookModelData

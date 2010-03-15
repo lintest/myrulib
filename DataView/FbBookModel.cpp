@@ -9,42 +9,6 @@ IMPLEMENT_VARIANT_OBJECT(FbTitleData)
 IMPLEMENT_DYNAMIC_CLASS(FbTitleData, wxObject)
 
 // -----------------------------------------------------------------------------
-// class FbTitleRenderer
-// -----------------------------------------------------------------------------
-
-bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
-{
-	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
-
-	wxRect checkbox = rect;
-	checkbox.SetWidth(x);
-
-	long flag = m_data.m_checked ? wxCONTROL_CHECKED : 0;
-    wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, flag);
-
-	RenderText(m_data.m_title, x + 2, rect, dc, state);
-	return true;
-}
-
-bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col )
-{
-	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
-	if (cursor.x - cell.GetX() > x + 4) return false;
-
-	m_data.m_checked = not m_data.m_checked;
-    wxVariant variant;
-    variant << m_data;
-    model->ChangeValue(variant, item, col);
-    return true;
-}
-
-bool FbTitleRenderer::SetValue( const wxVariant &value )
-{
-	m_data << value;
-	return true;
-}
-
-// -----------------------------------------------------------------------------
 // class FbBookModelData
 // -----------------------------------------------------------------------------
 
