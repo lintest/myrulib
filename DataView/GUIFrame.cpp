@@ -65,6 +65,10 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	this->SetSizer( bSizer1 );
 	this->Layout();
+
+    wxLogWindow * log = new wxLogWindow(this, "Log Messages", false);
+    log->GetFrame()->Move(GetPosition().x + GetSize().x + 10, GetPosition().y);
+    log->Show();
 }
 
 GUIFrame::~GUIFrame()

@@ -1,10 +1,10 @@
 #include "FbTreeModel.h"
 
 // -----------------------------------------------------------------------------
-// class FbTreeModelArray
+// class FbTreeDataArray
 // -----------------------------------------------------------------------------
 
-WX_DEFINE_OBJARRAY(FbTreeModelArray);
+WX_DEFINE_OBJARRAY(FbTreeDataArray);
 
 // -----------------------------------------------------------------------------
 // class FbLetterDataNode
@@ -53,15 +53,39 @@ unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxData
 	}
 }
 
+void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
+{
+	if (m_count) {
+		wxString sql = wxT("SELECT id FROM authors WHERE letter=? ORDER BY search_name");
+		wxSQLite3Statement stmt = database->PrepareStatement(sql);
+		stmt.Bind(1, (wxString)m_letter);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		size_t i = 0;
+		while (result.NextRow()) {
+			if (i>=m_children.Count()) break;
+			FbAuthorDataNode * author = (FbAuthorDataNode*)(m_children[i]);
+			author->SetId(result.GetInt(0));
+			i++;
+		}
+		m_count = 0;
+	}
+}
+
 // -----------------------------------------------------------------------------
 // class FbAuthorDataNode
 // -----------------------------------------------------------------------------
 
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
+	m_owner->CheckChildren(database);
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
-			variant << FbTitleData( wxT("author"), m_checked );
+			wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
+			wxSQLite3Statement stmt = database->PrepareStatement(sql);
+			stmt.Bind(1, m_id);
+			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			wxString name = result.NextRow() ? result.GetString(0) : wxString();
+			variant << FbTitleData( name, m_checked );
 		} break;
 		default: {
 			variant = wxT("author");

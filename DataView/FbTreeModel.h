@@ -8,10 +8,6 @@
 #include <wx/renderer.h>
 #include "FbDataModel.h"
 
-class FbTreeDataNode;
-
-WX_DECLARE_OBJARRAY(FbTreeDataNode*, FbTreeModelArray);
-
 class FbTreeDataNode
 {
 	public:
@@ -24,6 +20,8 @@ class FbTreeDataNode
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) = 0;
 };
 
+WX_DECLARE_OBJARRAY(FbTreeDataNode*, FbTreeDataArray);
+
 class FbLetterDataNode: public FbTreeDataNode
 {
 	public:
@@ -34,10 +32,11 @@ class FbLetterDataNode: public FbTreeDataNode
         virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
+        void CheckChildren(wxSQLite3Database * database);
 	private:
 		wxChar m_letter;
 		unsigned int m_count;
-		FbTreeModelArray m_children;
+		FbTreeDataArray m_children;
 		bool m_checked;
 };
 
@@ -51,10 +50,11 @@ class FbAuthorDataNode: public FbTreeDataNode
         virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr) { return false; };
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) { return 0; };
+        void SetId(int id) { m_id = id; };
 	private:
 		FbLetterDataNode * m_owner;
 		int m_id;
-		FbTreeModelArray m_children;
+		FbTreeDataArray m_children;
 		bool m_checked;
 };
 
@@ -77,21 +77,15 @@ class FbTreeModelData
         int m_filesize;
 };
 
-class FbTreeModelCashe: private FbTreeModelArray
+class FbTreeModelCashe: private FbTreeDataArray
 {
 	public:
         FbTreeModelCashe(const wxString &filename);
-        wxString GetValue(unsigned int row, unsigned int col);
 		bool GetValue(wxVariant &variant, unsigned int row, unsigned int col);
         bool SetValue(const wxVariant &variant, unsigned int row, unsigned int col);
-        unsigned int RowCount();
-        unsigned int GetLetters( wxDataViewItemArray &children );
-	private:
-        FbTreeModelData FindRow(unsigned int rowid);
 	private:
         wxSQLite3Database m_database;
-        unsigned int m_rowid;
-        wxArrayInt m_checked;
+		FbTreeDataArray m_children;
 };
 
 class FbTreeModel: public wxDataViewModel
@@ -143,7 +137,7 @@ class FbTreeModel: public wxDataViewModel
 
     private:
         wxSQLite3Database * m_database;
-		FbTreeModelArray m_children;
+		FbTreeDataArray m_children;
 };
 
 #endif // __FBTREEMODEL_H__
