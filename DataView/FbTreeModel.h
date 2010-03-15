@@ -44,7 +44,7 @@ class FbAuthorDataNode: public FbTreeDataNode
 {
 	public:
 		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
-		virtual bool IsContainer() { return false; };
+		virtual bool IsContainer() { return true; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
         virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
         virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
@@ -54,6 +54,26 @@ class FbAuthorDataNode: public FbTreeDataNode
 	private:
 		FbLetterDataNode * m_owner;
 		int m_id;
+		unsigned int m_count;
+		FbTreeDataArray m_children;
+		bool m_checked;
+};
+
+class FbSeriesDataNode: public FbTreeDataNode
+{
+	public:
+		FbSeriesDataNode(FbAuthorDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
+		virtual bool IsContainer() { return false; };
+		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
+        virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
+        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
+        virtual bool GetAttr(unsigned int col, wxDataViewItemAttr &attr) { return false; };
+        virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) { return 0; };
+        void SetId(int id) { m_id = id; };
+	private:
+		FbAuthorDataNode * m_owner;
+		int m_id;
+		unsigned int m_count;
 		FbTreeDataArray m_children;
 		bool m_checked;
 };

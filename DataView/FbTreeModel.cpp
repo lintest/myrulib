@@ -75,6 +75,22 @@ void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
 // class FbAuthorDataNode
 // -----------------------------------------------------------------------------
 
+unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
+{
+	wxString sql = wxT("SELECT DISTINCT bookseq.id_seq FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=?");
+	wxSQLite3Statement stmt = database->PrepareStatement(sql);
+	stmt.Bind(1, (wxString)m_letter);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	size_t i = 0;
+	while (result.NextRow()) {
+		if (i>=m_children.Count()) break;
+		FbAuthorDataNode * author = (FbAuthorDataNode*)(m_children[i]);
+		author->SetId(result.GetInt(0));
+		i++;
+	}
+	m_count = 0;
+};
+
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
 	m_owner->CheckChildren(database);
@@ -102,6 +118,12 @@ bool FbAuthorDataNode::SetValue(wxSQLite3Database * database, const wxVariant &v
     }
     return true;
 }
+
+// -----------------------------------------------------------------------------
+// class FbSeriesDataNode
+// -----------------------------------------------------------------------------
+
+
 
 // -----------------------------------------------------------------------------
 // class FbTreeModelData
