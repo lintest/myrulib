@@ -50,7 +50,7 @@ class FbLetterDataNode: public FbTreeDataNode
 class FbAuthorDataNode: public FbTreeDataNode
 {
 	public:
-		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
+		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_count(0), m_checked(checked) {};
         virtual NodeType GetType() { return NT_AUTHOR; };
 		virtual bool IsContainer() { return true; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
@@ -74,7 +74,7 @@ class FbAuthorDataNode: public FbTreeDataNode
 class FbSequenceDataNode: public FbTreeDataNode
 {
 	public:
-		FbSequenceDataNode(FbAuthorDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
+		FbSequenceDataNode(FbAuthorDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_count(0), m_checked(checked) {};
         virtual NodeType GetType() { return NT_SEQUENCE; };
 		virtual bool IsContainer() { return true; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };

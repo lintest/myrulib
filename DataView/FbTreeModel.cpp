@@ -80,6 +80,8 @@ bool FbAuthorDataNode::SeqExists(wxSQLite3Database * database)
 
 unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
+	m_owner->CheckChildren(database);
+
 	if (m_children.Count()) {
 		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
 		return m_children.Count();
@@ -114,6 +116,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
 	m_owner->CheckChildren(database);
+
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
 			wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
@@ -141,6 +144,8 @@ bool FbAuthorDataNode::SetValue(wxSQLite3Database * database, const wxVariant &v
 
 void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
 {
+	m_owner->CheckChildren(database);
+
 	if (m_count) {
 		wxString sql = wxT("SELECT id_seq, COUNT(id_book) FROM bookseq LEFT JOIN sequences ON sequences.id=bookseq.id_seq WHERE id_author=? GROUP BY id_seq ORDER BY sequences.value");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
@@ -159,6 +164,8 @@ void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
 
 void FbAuthorDataNode::CheckBooks(wxSQLite3Database * database)
 {
+	m_owner->CheckChildren(database);
+
 	if (m_count) {
 		wxString sql = wxT("SELECT id FROM books WHERE id_author=? ORDER BY title");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
@@ -194,6 +201,7 @@ wxString FbSequenceDataNode::GetName(wxSQLite3Database * database)
 void FbSequenceDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
 	m_owner->CheckChildren(database);
+
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
 			variant << FbTitleData( GetName(database), m_checked );
@@ -216,6 +224,8 @@ bool FbSequenceDataNode::SetValue(wxSQLite3Database * database, const wxVariant 
 
 unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
+	m_owner->CheckChildren(database);
+
 	if (m_children.Count()) {
 		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
 		return m_children.Count();
@@ -274,6 +284,7 @@ void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, 
         case NT_SEQUENCE:
             ((FbSequenceDataNode*)m_owner)->CheckChildren(database);
             break;
+		default: ;
     }
 
     switch ( col ) {
