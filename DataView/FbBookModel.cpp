@@ -86,8 +86,8 @@ FbBookModelCashe::FbBookModelCashe(const wxString &filename)
 
 unsigned int FbBookModelCashe::RowCount()
 {
-    wxSQLite3ResultSet result = m_database.ExecuteQuery(wxT("SELECT COUNT(id) FROM books"));
-    return result.NextRow() ? result.GetInt(0) : 0;
+    m_database.ExecuteUpdate(wxT("CREATE TEMP TABLE tempbook(id integer)"));
+    return m_database.ExecuteUpdate(wxT("INSERT INTO tempbook(id) SELECT rowid FROM books ORDER BY title"));
 }
 
 FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
@@ -97,7 +97,7 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 	m_rowid = rowid <= BOOK_CASHE_SIZE ? 1 : rowid - BOOK_CASHE_SIZE;
 
 	Empty();
-	wxString sql = wxT("SELECT rowid, id, title, file_size FROM books WHERE rowid>=? ORDER BY 1 LIMIT ?");
+	wxString sql = wxT("SELECT tempbook.rowid, books.id, title, file_size FROM tempbook LEFT JOIN books ON books.rowid = tempbook.id WHERE tempbook.rowid>=? ORDER BY 1 LIMIT ?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, (wxLongLong)m_rowid);
 	stmt.Bind(2, BOOK_CASHE_SIZE * 2);
