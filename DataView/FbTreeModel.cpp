@@ -39,7 +39,7 @@ unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxData
 		return m_children.Count();
 	} else {
 		for (size_t i=0; i<m_count; i++) {
-			FbTreeDataNode * item = new FbAuthorDataNode(this);
+			FbTreeDataNode * item = new FbAuthorDataNode(this, m_checked);
 			m_children.Add( item );
 			children.Add( wxDataViewItem(item) );
 		}
@@ -81,7 +81,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         m_count = result.NextRow() ? result.GetInt(0) : 0;
 		for (size_t i=0; i<m_count; i++) {
-			FbTreeDataNode * item = new FbSequenceDataNode(this);
+			FbTreeDataNode * item = new FbSequenceDataNode(this, m_checked);
 			m_children.Add( item );
 		    children.Add( wxDataViewItem(item) );
 		}
@@ -181,7 +181,7 @@ unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDa
 		return m_children.Count();
 	} else {
 		for (size_t i=0; i<m_count; i++) {
-			FbTreeDataNode * item = new FbBookDataNode(this);
+			FbTreeDataNode * item = new FbBookDataNode(this, m_checked);
 			m_children.Add( item );
 			children.Add( wxDataViewItem(item) );
 		}
@@ -233,9 +233,9 @@ void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, 
 		case FbTreeModel::COL_TITLE: {
 			variant << FbTitleData( GetName(database), m_checked );
 		} break;
-		default: {
-			variant = wxT("sequence");
-		}
+		case FbTreeModel::COL_ROWID: {
+			variant = wxString::Format("%d", m_id);
+		} break;
 	}
 }
 
