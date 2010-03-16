@@ -32,12 +32,6 @@ bool FbLetterDataNode::SetValue(wxSQLite3Database * database, const wxVariant &v
     return true;
 }
 
-bool FbLetterDataNode::GetAttr(unsigned int col, wxDataViewItemAttr &attr)
-{
-    attr.SetBold(true);
-    return true;
-}
-
 unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
 	if (m_children.Count()) {
@@ -45,7 +39,7 @@ unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxData
 		return m_children.Count();
 	} else {
 		for (size_t i=0; i<m_count; i++) {
-			FbAuthorDataNode * item = new FbAuthorDataNode(this);
+			FbTreeDataNode * item = new FbAuthorDataNode(this);
 			m_children.Add( item );
 			children.Add( wxDataViewItem(item) );
 		}
@@ -77,19 +71,23 @@ void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
 
 unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
-	wxString sql = wxT("SELECT DISTINCT bookseq.id_seq FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=?");
-	wxSQLite3Statement stmt = database->PrepareStatement(sql);
-	stmt.Bind(1, (wxString)m_letter);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	size_t i = 0;
-	while (result.NextRow()) {
-		if (i>=m_children.Count()) break;
-		FbAuthorDataNode * author = (FbAuthorDataNode*)(m_children[i]);
-		author->SetId(result.GetInt(0));
-		i++;
-	}
-	m_count = 0;
-};
+	if (m_children.Count()) {
+		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
+		return m_children.Count();
+	} else {
+        wxString sql = wxT("SELECT COUNT(DISTINCT id_seq) FROM bookseq WHERE bookseq.id_author=?");
+        wxSQLite3Statement stmt = database->PrepareStatement(sql);
+        stmt.Bind(1, m_id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        m_count = result.NextRow() ? result.GetInt(0) : 0;
+		for (size_t i=0; i<m_count; i++) {
+			FbTreeDataNode * item = new FbSequenceDataNode(this);
+			m_children.Add( item );
+		    children.Add( wxDataViewItem(item) );
+		}
+		return m_count;
+    }
+}
 
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
@@ -119,11 +117,137 @@ bool FbAuthorDataNode::SetValue(wxSQLite3Database * database, const wxVariant &v
     return true;
 }
 
+void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
+{
+	if (m_count) {
+		wxString sql = wxT("SELECT id_seq, COUNT(id_book) FROM bookseq LEFT JOIN sequences ON sequences.id=bookseq.id_seq WHERE id_author=? GROUP BY id_seq ORDER BY sequences.value");
+		wxSQLite3Statement stmt = database->PrepareStatement(sql);
+		stmt.Bind(1, m_id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		size_t i = 0;
+		while (result.NextRow()) {
+			if (i>=m_children.Count()) break;
+			FbSequenceDataNode * item = (FbSequenceDataNode*)(m_children[i]);
+			item->SetId(result.GetInt(0), result.GetInt(1));
+			i++;
+		}
+		m_count = 0;
+	}
+}
+
 // -----------------------------------------------------------------------------
-// class FbSeriesDataNode
+// class FbSequenceDataNode
 // -----------------------------------------------------------------------------
 
+wxString FbSequenceDataNode::GetName(wxSQLite3Database * database)
+{
+    if (m_id) {
+        wxString sql = wxT("SELECT value FROM sequences WHERE id=?");
+        wxSQLite3Statement stmt = database->PrepareStatement(sql);
+        stmt.Bind(1, m_id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) return result.GetString(0);
+    }
+    return wxT("(Misc.)");
+}
 
+void FbSequenceDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
+{
+	m_owner->CheckChildren(database);
+    switch ( col ) {
+		case FbTreeModel::COL_TITLE: {
+			variant << FbTitleData( GetName(database), m_checked );
+		} break;
+		default: {
+			variant = wxT("sequence");
+		}
+	}
+}
+
+bool FbSequenceDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
+{
+    if (col == FbTreeModel::COL_TITLE) {
+        FbTitleData data;
+        data << variant;
+        m_checked = data.IsChecked();
+    }
+    return true;
+}
+
+unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
+{
+	if (m_children.Count()) {
+		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
+		return m_children.Count();
+	} else {
+		for (size_t i=0; i<m_count; i++) {
+			FbTreeDataNode * item = new FbBookDataNode(this);
+			m_children.Add( item );
+			children.Add( wxDataViewItem(item) );
+		}
+		return m_count;
+	}
+}
+
+void FbSequenceDataNode::CheckChildren(wxSQLite3Database * database)
+{
+	if (m_count) {
+//		wxString sql = wxT("SELECT id_book FROM bookseq INNER JOIN books ON books.id=bookseq.id_book AND books.id_author=? WHERE bookseq.id_author=? AND bookseq.id_seq=? ORDER BY books.title");
+		wxString sql = wxT("SELECT id FROM books WHERE id IN (SELECT id_book FROM bookseq INDEXED BY bookseq_author WHERE id_author=? AND id_seq=?) AND books.id_author=? ORDER BY books.title");
+		wxSQLite3Statement stmt = database->PrepareStatement(sql);
+		stmt.Bind(1, m_owner->GetId());
+		stmt.Bind(2, m_id);
+		stmt.Bind(3, m_owner->GetId());
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		size_t i = 0;
+		while (result.NextRow()) {
+			if (i>=m_children.Count()) break;
+			FbBookDataNode * item = (FbBookDataNode*)(m_children[i]);
+			item->SetId(result.GetInt(0));
+			i++;
+		}
+		m_count = 0;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// class FbBookDataNode
+// -----------------------------------------------------------------------------
+
+wxString FbBookDataNode::GetName(wxSQLite3Database * database)
+{
+    if (m_id) {
+        wxString sql = wxT("SELECT title FROM books WHERE id=? LIMIT 1");
+        wxSQLite3Statement stmt = database->PrepareStatement(sql);
+        stmt.Bind(1, m_id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) return result.GetString(0);
+    }
+    return wxT("(not found)");
+}
+
+void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
+{
+	m_owner->CheckChildren(database);
+    switch ( col ) {
+		case FbTreeModel::COL_TITLE: {
+			variant << FbTitleData( GetName(database), m_checked );
+		} break;
+		default: {
+			variant = wxT("sequence");
+		}
+	}
+}
+
+bool FbBookDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
+{
+    if (col == FbTreeModel::COL_TITLE) {
+        FbTitleData data;
+        data << variant;
+        m_checked = data.IsChecked();
+    }
+    return true;
+}
 
 // -----------------------------------------------------------------------------
 // class FbTreeModelData
@@ -234,7 +358,10 @@ bool FbTreeModel::SetValue(const wxVariant &variant, const wxDataViewItem &item,
 
 bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const
 {
-    return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->GetAttr(col, attr) : false;
+    if (item.IsOk() && IsContainer(item))  {
+        attr.SetBold(true);
+        return true;
+    } else return false;
 }
 
 wxDataViewItem FbTreeModel::GetParent( const wxDataViewItem &item ) const
