@@ -177,13 +177,13 @@ function utf8_substr($s, $offset, $len = 'all')
     return (isset($tmp[1])) ? $tmp[1] : false;
 }
 
-function convert_authors($mysql_db, $sqlite_db)
+function convert_Auth($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("DELETE FROM authors");
+  $sqlite_db->query("DELETE FROM Auth");
 
-  $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(без автора)')");
+  $sqlite_db->query("INSERT INTO Auth (AuthId, Letter, FullName) VALUES(0,'#','(без автора)')");
 
   $sqltest = "
 	SELECT libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.BookId) as Number
@@ -208,7 +208,7 @@ function convert_authors($mysql_db, $sqlite_db)
 
     echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
-    $sql = "INSERT INTO authors (id, number, letter, full_name, search_name, first_name, middle_name, last_name) VALUES(?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO Auth (AuthId, BookCount, Letter, FullName, SearchName, FirstName, MiddleName, LastName) VALUES(?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['AvtorId'], $row['Number'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
@@ -217,17 +217,15 @@ function convert_authors($mysql_db, $sqlite_db)
   }
 }  
 
-function author_info($mysql_db, $sqlite_db)
+function info_auth($mysql_db, $sqlite_db)
 {
-  
-
   $bb = new bbcode;
   $bb->autolinks = false;
   $sqltest = "SELECT * FROM libaannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['Title']."\n";
-    $sql = "UPDATE authors SET description=? where id=?";
+    $sql = "UPDATE Auth SET Descr=? where AuthId=?";
     $insert = $sqlite_db->prepare($sql);
     $bb -> parse($row['Body']);
     $body = $bb->get_html();
@@ -239,23 +237,20 @@ function author_info($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function convert_books($mysql_db, $sqlite_db)
+function convert_Book($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("DELETE FROM books");
-  $sqlite_db->query("DELETE FROM words");
+  $sqlite_db->query("DELETE FROM Book");
 
   $sqltest = "
     SELECT 
-      libbook.BookId, FileSize, Title, Deleted, FileType, md5, DATE_FORMAT(libbook.Time,'%y%m%d') as Time, Lang, Year,
-      CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId,
+      libbook.BookId, FileSize, Title, FileType, md5, DATE_FORMAT(libbook.Time,'%y%m%d') as Time, Lang, Year,
       CASE WHEN libfilename.FileName IS NULL THEN 
         CASE WHEN oldfilename.FileName IS NULL THEN CONCAT(libbook.BookId, '.', libbook.FileType) ELSE oldfilename.FileName END
         ELSE libfilename.FileName
       END AS FileName
     FROM libbook 
-      LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
       LEFT JOIN libfilename ON libbook.BookId = libfilename.BookId
       LEFT JOIN oldfilename ON libbook.BookId = oldfilename.BookId
     WHERE libbook.Deleted<>1
@@ -263,7 +258,7 @@ function convert_books($mysql_db, $sqlite_db)
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    echo $row['Time']." - ".$row['BookId']." - ".$row['FileType']." - ".$row['AvtorId']." - ".$row['Title']."\n";
+    echo $row['Time']." - ".$row['BookId']." - ".$row['FileType']." - ".$row['Title']."\n";
 
     $genres = "";
     $subsql = "SELECT GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId WHERE BookId=".$row['BookId'];
@@ -278,18 +273,18 @@ function convert_books($mysql_db, $sqlite_db)
     $lang = $row['Lang'];
     $lang = strtolower($lang);
     $lang = strtolowerEx($lang);
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO Book (BookId, Title, FileName, FileSize, FileType, Genres, FileDate, Lang, Year, Md5sum) VALUES(?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], trim($row['Title']), $row['Deleted'], $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
+    $err= $insert->execute(array($row['BookId'], trim($row['Title']), $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
 
-  $sqlite_db->query("CREATE INDEX book_id ON books(id);");
+  $sqlite_db->query("commit;");
 }  
 
-function book_info($mysql_db, $sqlite_db)
+function info_book($mysql_db, $sqlite_db)
 {
   $bb = new bbcode;
   $bb->autolinks = false;
@@ -297,7 +292,7 @@ function book_info($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['Title']."\n";
-    $sql = "UPDATE books SET description=? where id=?";
+    $sql = "UPDATE Book SET Descr=? where BookId=?";
     $insert = $sqlite_db->prepare($sql);
     $bb -> parse($row['Body']);
 	$body = $bb->get_html();
@@ -309,33 +304,11 @@ function book_info($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function convert_aliases($mysql_db, $sqlite_db)
+function convert_Seqn($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("DELETE FROM aliases");
-
-  $sqltest = "SELECT * FROM libavtoraliase ORDER BY AliaseId";
-
-  $query = $mysql_db->query($sqltest);
-  while ($row = $query->fetch_array()) {
-    echo "alias: ".$row['BadId']." - ".$row['GoodId']."\n";
-    $sql = "INSERT INTO aliases(id_author, id_alias) values(?,?)";
-    $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BadId'], $row['GoodId']));
-    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $insert->closeCursor();
-  }
-
-  $sqlite_db->query("commit;");
-}
-
-function convert_seqnames($mysql_db, $sqlite_db)
-{
-  $sqlite_db->query("begin transaction;");
-
-  $sqlite_db->query("DELETE FROM sequences");
+  $sqlite_db->query("DELETE FROM Seqn");
 
   $sqltest = "
 	SELECT libseqname.SeqId, libseqname.SeqName, COUNT(libseq.BookId) as Number
@@ -349,7 +322,7 @@ function convert_seqnames($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['SeqId']." - ".$row['SeqName']."\n";
-    $sql = "INSERT INTO sequences (id, number, value) VALUES(?,?,?)";
+    $sql = "INSERT INTO Seqn (SeqnId, BookCount, SeqnName) VALUES(?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['SeqId'], $row['Number'], trim($row['SeqName'])));
@@ -360,11 +333,11 @@ function convert_seqnames($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function convert_sequences($mysql_db, $sqlite_db)
+function convert_BkSeqn($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("DELETE FROM bookseq");
+  $sqlite_db->query("DELETE FROM BkSeqn");
 
   $sqltest = "
     SELECT DISTINCT
@@ -381,10 +354,39 @@ function convert_sequences($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['SeqId']." - ".$row['BookId']."\n";
-    $sql = "INSERT INTO bookseq(id_book, id_seq, id_author, number, level) VALUES(?,?,?,?,?)";
+    $sql = "INSERT INTO BkSeqn(BookId, SeqnId, AuthId, Number, Level) VALUES(?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['AvtorId'], $row['SeqNumb'], $row['Level']));
+    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $insert->closeCursor();
+  }
+
+  $sqlite_db->query("commit;");
+}
+
+function convert_BkAuth($mysql_db, $sqlite_db)
+{
+  $sqlite_db->query("begin transaction;");
+
+  $sqlite_db->query("DELETE FROM BkAuth");
+
+  $sqltest = "
+    SELECT DISTINCT
+      libbook.BookId, 
+	  CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId
+    FROM libbook 
+      LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
+	WHERE libbook.Deleted<>1
+  ";
+
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+    echo $row['AvtorId']." - ".$row['BookId']."\n";
+    $sql = "INSERT INTO BkAuth(BookId, AuthId) VALUES(?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -397,64 +399,82 @@ function create_tables($sqlite_db)
   $sqlite_db->query("begin transaction;");
 
   $sqlite_db->query("
-    CREATE TABLE authors(
-	id integer primary key,
-	letter char(1),
-	search_name varchar(255),
-	full_name varchar(255),
-	first_name varchar(128),
-	middle_name varchar(128),
-	last_name varchar(128),
-	number integer,
-	newid integer,
-	description text);
+	CREATE TABLE Auth(
+	  AuthId integer primary key,
+	  Letter char(1),
+	  SearchName varchar(255),
+	  FullName varchar(255),
+	  FirstName varchar(128),
+	  MiddleName varchar(128),
+	  LastName varchar(128),
+	  BookCount integer,
+	  Descr text);
   ");
 
   $sqlite_db->query("
-    CREATE TABLE books(
-      id integer not null,
-      id_author integer not null,
-      title varchar(255) not null,
-      annotation text,
-      genres text,
-      id_sequence integer,
-      deleted boolean,
-      id_archive integer,
-      file_name text,
-      file_size integer,
-      file_type varchar(20),
-      md5sum char(32),
-      created integer,
-      lang char(2),
-      year integer,
-      description text);
+	CREATE TABLE Book(
+	  BookId integer primary key,
+	  Title varchar(255) not null,
+	  Genres text,
+	  ArchId integer,
+	  FileName text,
+	  FilePath text,
+	  FileSize integer,
+	  FileType varchar(20),
+	  FileDate integer,
+	  Md5sum char(32),
+	  Lang char(2),
+	  Year integer,
+	  Descr text);
   ");
 
   $sqlite_db->query("
-    CREATE TABLE archives(
-      id integer primary key,
-      file_name varchar(255),
-      file_path varchar(255),
-      file_size integer,
-      file_count integer,
-      min_id_book integer,
-      max_id_book integer,
-      file_type varchar(20),
-      description text);
+	CREATE TABLE Arch(
+	  ArchId integer primary key,
+	  FileName text,
+	  FilePath text,
+	  FileSize integer,
+	  FileCount integer,
+	  FileType varchar(20),
+	  description text);
   ");
 
-  $sqlite_db->query("CREATE TABLE sequences(id integer primary key, number integer, value varchar(255) not null);");
+  $sqlite_db->query("
+	CREATE TABLE File(
+	  BookId integer not null,
+	  ArchId integer,
+	  FileName text,
+	  FilePath text);
+  ");
 
-  $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);");
+  $sqlite_db->query("
+	CREATE TABLE Seqn(
+	  SeqnId integer primary key,
+	  SeqnName text,
+	  BookCount integer);
+  ");
+
+  $sqlite_db->query("
+	CREATE TABLE BkAuth(
+	  BookId integer not null,
+	  AuthId integer);
+  ");
+
+  $sqlite_db->query("
+	CREATE TABLE BkSeqn(
+	  BookId integer not null,
+	  SeqnId integer,
+	  AuthId integer,
+	  Number integer, 
+	  Level integer);
+  ");
 
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
   $sqlite_db->query("DELETE FROM params;");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('Flibusta library');");
-  $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
+  $sqlite_db->query("INSERT INTO params(value) VALUES (10);");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('FLIBUSTA');");
   $sqlite_db->query("INSERT INTO params(id,text) VALUES (11,'flibusta.net');");
-
-  $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
 
   $sqlite_db->query("commit;");
 }
@@ -463,23 +483,23 @@ function create_indexes($sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
-  $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
+  $sqlite_db->query("CREATE INDEX Auth_Letter ON Auth(Letter);");
+  $sqlite_db->query("CREATE INDEX Auth_SearchName ON Auth(SearchName);");
 
-  $sqlite_db->query("CREATE INDEX book_id ON books(id);");
-  $sqlite_db->query("CREATE INDEX book_author ON books(id_author);");
-  $sqlite_db->query("CREATE INDEX book_archive ON books(id_archive);");
-  $sqlite_db->query("CREATE INDEX book_md5sum ON books(md5sum);");
-  $sqlite_db->query("CREATE INDEX book_title ON books(title);");
-  $sqlite_db->query("CREATE INDEX book_file ON archives(file_name);");
+  $sqlite_db->query("CREATE INDEX Book_ArchId ON Book(ArchId);");
+  $sqlite_db->query("CREATE INDEX Book_Title ON Book(Title);");
+  $sqlite_db->query("CREATE INDEX Book_Md5sum ON Book(Md5sum);");
 
-  $sqlite_db->query("CREATE INDEX sequences_name ON sequences(value);");
+  $sqlite_db->query("CREATE INDEX Seqn_SeqnName ON Seqn(SeqnName);");
 
-  $sqlite_db->query("CREATE INDEX bookseq_book ON bookseq(id_book);");
-  $sqlite_db->query("CREATE INDEX bookseq_author ON bookseq(id_author);");
+  $sqlite_db->query("CREATE INDEX File_BookId ON File(BookId);");
+  $sqlite_db->query("CREATE INDEX File_ArchId ON File(ArchId);");
 
-  $sqlite_db->query("CREATE INDEX aliases_author ON aliases(id_author);");
-  $sqlite_db->query("CREATE INDEX aliases_alias ON aliases(id_alias);");
+  $sqlite_db->query("CREATE INDEX BkAuth_BookId ON BkAuth(BookId);");
+  $sqlite_db->query("CREATE INDEX BkAuth_AuthId ON BkAuth(AuthId);");
+
+  $sqlite_db->query("CREATE INDEX BkSeqn_BookId ON BkSeqn(BookId);");
+  $sqlite_db->query("CREATE INDEX BkSeqn_AuthSeqn ON BkSeqn(AuthId,SeqnId);");
 
   $sqlite_db->query("commit;");
 
@@ -490,7 +510,7 @@ $mysql_srvr = 'localhost';
 $mysql_user = 'root';
 $mysql_pass = '';
 $mysql_base = 'flibusta';
-$sqlitefile = './myrulib.db';
+$sqlitefile = './dataview.db';
 
 include('settings.php');
 
@@ -499,10 +519,16 @@ $mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
 create_tables($sqlite_db);
-convert_authors($mysql_db, $sqlite_db);
-convert_books($mysql_db, $sqlite_db);
-convert_seqnames($mysql_db, $sqlite_db);
-convert_sequences($mysql_db, $sqlite_db);
+
+convert_Auth($mysql_db, $sqlite_db);
+convert_Book($mysql_db, $sqlite_db);
+convert_Seqn($mysql_db, $sqlite_db);
+convert_BkAuth($mysql_db, $sqlite_db);
+convert_BkSeqn($mysql_db, $sqlite_db);
+
+info_auth($mysql_db, $sqlite_db);
+info_book($mysql_db, $sqlite_db);
+
 create_indexes($sqlite_db);
 
 ?>
