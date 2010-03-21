@@ -342,13 +342,15 @@ function convert_BkSeqn($mysql_db, $sqlite_db)
   $sqltest = "
     SELECT DISTINCT
       libbook.BookId, 
-	  CASE WHEN SeqId IS NULL THEN 0 ELSE SeqId END AS SeqId,
-	  CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId,
+	  CASE WHEN libseq.SeqId IS NULL THEN 0 ELSE libseq.SeqId END AS SeqId,
+	  CASE WHEN libavtor.AvtorId IS NULL THEN 0 ELSE libavtor.AvtorId END AS AvtorId,
 	  libseq.SeqNumb, libseq.Level
     FROM libbook 
       LEFT JOIN libseq ON libbook.BookId = libseq.BookId
       LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
+	  LEFT JOIN libavtorname ON libavtorname.AvtorId=libavtor.AvtorId 
 	WHERE libbook.Deleted<>1
+	ORDER BY libavtorname.LastName, libavtorname.FirstName, libavtorname.MiddleName
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -356,7 +358,6 @@ function convert_BkSeqn($mysql_db, $sqlite_db)
     echo $row['SeqId']." - ".$row['BookId']."\n";
     $sql = "INSERT INTO BkSeqn(BookId, SeqnId, AuthId, Number, Level) VALUES(?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['AvtorId'], $row['SeqNumb'], $row['Level']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
@@ -415,7 +416,8 @@ function create_tables($sqlite_db)
 	CREATE TABLE Book(
 	  BookId integer primary key,
 	  Title varchar(255) not null,
-	  Genres text,
+	  AuthId integer,
+	  SeqnId integer,
 	  ArchId integer,
 	  FileName text,
 	  FilePath text,
@@ -423,6 +425,7 @@ function create_tables($sqlite_db)
 	  FileType varchar(20),
 	  FileDate integer,
 	  Md5sum char(32),
+	  Genres text,
 	  Lang char(2),
 	  Year integer,
 	  Descr text);
@@ -486,8 +489,10 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX Auth_Letter ON Auth(Letter);");
   $sqlite_db->query("CREATE INDEX Auth_SearchName ON Auth(SearchName);");
 
-  $sqlite_db->query("CREATE INDEX Book_ArchId ON Book(ArchId);");
   $sqlite_db->query("CREATE INDEX Book_Title ON Book(Title);");
+  $sqlite_db->query("CREATE INDEX Book_AuthId ON Book(AuthId);");
+  $sqlite_db->query("CREATE INDEX Book_SeqnId ON Book(SeqnId);");
+  $sqlite_db->query("CREATE INDEX Book_ArchId ON Book(ArchId);");
   $sqlite_db->query("CREATE INDEX Book_Md5sum ON Book(Md5sum);");
 
   $sqlite_db->query("CREATE INDEX Seqn_SeqnName ON Seqn(SeqnName);");
