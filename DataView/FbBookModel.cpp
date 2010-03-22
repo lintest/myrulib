@@ -38,10 +38,8 @@ wxString FbBookModelData::GetAuthors(wxSQLite3Database &database)
 	if (!m_authors.IsEmpty()) return m_authors;
 	if (m_AuthIds.IsEmpty()) return m_authors;
 
-	wxString sql = wxT("SELECT FullName FROM Auth WHERE AuthId IN (?) ORDER BY SearchName");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_AuthIds);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	wxString sql = wxString::Format(wxT("SELECT FullName FROM Auth WHERE AuthId IN (%s) ORDER BY SearchName"), m_AuthIds.c_str());
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		if (!m_authors.IsEmpty()) m_authors += wxT(", ");
 		m_authors += result.GetString(0).Trim(true);
