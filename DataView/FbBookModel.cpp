@@ -18,8 +18,9 @@ FbBookModelData::FbBookModelData(wxSQLite3ResultSet &result)
 {
 	m_rowid = result.GetInt(0);
 	m_bookid = result.GetInt(1);
-	m_title = result.GetAsString(2);
-	m_filesize = result.GetInt(3);
+	m_title = result.GetString(2);
+	m_AuthIds = result.GetString(3);
+	m_filesize = result.GetInt(4);
 }
 
 FbBookModelData::FbBookModelData(const FbBookModelData &data) :
@@ -27,6 +28,7 @@ FbBookModelData::FbBookModelData(const FbBookModelData &data) :
 	m_bookid(data.m_bookid),
 	m_title(data.m_title),
 	m_authors(data.m_authors),
+	m_AuthIds(data.m_AuthIds),
 	m_filesize(data.m_filesize)
 {
 }
@@ -34,10 +36,11 @@ FbBookModelData::FbBookModelData(const FbBookModelData &data) :
 wxString FbBookModelData::GetAuthors(wxSQLite3Database &database)
 {
 	if (!m_authors.IsEmpty()) return m_authors;
+	if (m_AuthIds.IsEmpty()) return m_authors;
 
-	wxString sql = wxT("SELECT full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
+	wxString sql = wxT("SELECT FullName FROM Auth WHERE AuthId IN (?) ORDER BY SearchName");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, (int)m_bookid);
+	stmt.Bind(1, m_AuthIds);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	while (result.NextRow()) {
 		if (!m_authors.IsEmpty()) m_authors += wxT(", ");
@@ -86,8 +89,8 @@ FbBookModelCashe::FbBookModelCashe(const wxString &filename)
 
 unsigned int FbBookModelCashe::RowCount()
 {
-    m_database.ExecuteUpdate(wxT("CREATE TEMP TABLE tempbook(id integer)"));
-    return m_database.ExecuteUpdate(wxT("INSERT INTO tempbook(id) SELECT rowid FROM books ORDER BY title"));
+    m_database.ExecuteUpdate(wxT("CREATE TEMP TABLE TmpBook(id integer)"));
+    return m_database.ExecuteUpdate(wxT("INSERT INTO TmpBook(id) SELECT RowId FROM Book ORDER BY Title"));
 }
 
 FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
@@ -97,7 +100,7 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 	m_rowid = rowid <= BOOK_CASHE_SIZE ? 1 : rowid - BOOK_CASHE_SIZE;
 
 	Empty();
-	wxString sql = wxT("SELECT tempbook.rowid, books.id, title, file_size FROM tempbook LEFT JOIN books ON books.rowid = tempbook.id WHERE tempbook.rowid>=? ORDER BY 1 LIMIT ?");
+	wxString sql = wxT("SELECT TmpBook.rowid, Book.BookId, Title, AuthIds, FileSize FROM TmpBook LEFT JOIN Book ON Book.RowId = TmpBook.Id WHERE TmpBook.RowId>=? ORDER BY 1 LIMIT ?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, (wxLongLong)m_rowid);
 	stmt.Bind(2, BOOK_CASHE_SIZE * 2);

@@ -50,7 +50,7 @@ unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxData
 void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
 {
 	if (m_count) {
-		wxString sql = wxT("SELECT id FROM authors WHERE letter=? ORDER BY search_name");
+		wxString sql = wxT("SELECT AuthId FROM Auth WHERE Letter=? ORDER BY SearchName");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, (wxString)m_letter);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -71,7 +71,7 @@ void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
 
 bool FbAuthorDataNode::SeqExists(wxSQLite3Database * database)
 {
-    wxString sql = wxT("SELECT id_seq FROM bookseq WHERE bookseq.id_author=? AND id_seq<>0 LIMIT 1");
+    wxString sql = wxT("SELECT SeqnId FROM BkSq WHERE AuthId=? AND SeqnId<>0 LIMIT 1");
     wxSQLite3Statement stmt = database->PrepareStatement(sql);
     stmt.Bind(1, m_id);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -88,7 +88,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 	};
 
 	if (SeqExists(database)) {
-        wxString sql = wxT("SELECT COUNT(DISTINCT id_seq) FROM bookseq WHERE bookseq.id_author=?");
+        wxString sql = wxT("SELECT COUNT(DISTINCT SeqnId) FROM BkSq WHERE AuthId=?");
         wxSQLite3Statement stmt = database->PrepareStatement(sql);
         stmt.Bind(1, m_id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -99,7 +99,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 		    children.Add( wxDataViewItem(item) );
 		}
 	} else {
-        wxString sql = wxT("SELECT COUNT(id_book) FROM bookseq WHERE bookseq.id_author=?");
+        wxString sql = wxT("SELECT COUNT(BookId) FROM BkSq WHERE AuthId=?");
         wxSQLite3Statement stmt = database->PrepareStatement(sql);
         stmt.Bind(1, m_id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -119,7 +119,7 @@ void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant
 
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
-			wxString sql = wxT("SELECT full_name FROM authors WHERE id=?");
+			wxString sql = wxT("SELECT FullName FROM Auth WHERE AuthId=?");
 			wxSQLite3Statement stmt = database->PrepareStatement(sql);
 			stmt.Bind(1, m_id);
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -147,7 +147,7 @@ void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
 	m_owner->CheckChildren(database);
 
 	if (m_count) {
-		wxString sql = wxT("SELECT id_seq, COUNT(id_book) FROM bookseq LEFT JOIN sequences ON sequences.id=bookseq.id_seq WHERE id_author=? GROUP BY id_seq ORDER BY sequences.value");
+		wxString sql = wxT("SELECT BkSq.SeqnId, COUNT(BookId) FROM BkSq LEFT JOIN Seqn ON Seqn.SeqnId=BkSq.SeqnId WHERE AuthId=? GROUP BY BkSq.SeqnId ORDER BY Seqn.SeqnName");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -167,7 +167,7 @@ void FbAuthorDataNode::CheckBooks(wxSQLite3Database * database)
 	m_owner->CheckChildren(database);
 
 	if (m_count) {
-		wxString sql = wxT("SELECT id FROM books WHERE id_author=? ORDER BY title");
+		wxString sql = wxT("SELECT BkSq.BookId FROM BkSq LEFT JOIN Book ON Book.BookId=BkSq.BookId WHERE AuthId=? ORDER BY Title");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -189,7 +189,7 @@ void FbAuthorDataNode::CheckBooks(wxSQLite3Database * database)
 wxString FbSequenceDataNode::GetName(wxSQLite3Database * database)
 {
     if (m_id) {
-        wxString sql = wxT("SELECT value FROM sequences WHERE id=?");
+        wxString sql = wxT("SELECT SeqnName FROM Seqn WHERE SeqnId=?");
         wxSQLite3Statement stmt = database->PrepareStatement(sql);
         stmt.Bind(1, m_id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -242,11 +242,10 @@ unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDa
 void FbSequenceDataNode::CheckChildren(wxSQLite3Database * database)
 {
 	if (m_count) {
-		wxString sql = wxT("SELECT id FROM books WHERE id IN (SELECT id_book FROM bookseq INDEXED BY bookseq_author WHERE id_author=? AND id_seq=?) AND books.id_author=? ORDER BY books.title");
+		wxString sql = wxT("SELECT BookId FROM Book WHERE BookId IN (SELECT BookId FROM BkSq INDEXED BY BkSq_AuthId WHERE AuthId=? AND SeqnId=?) ORDER BY Title");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, m_owner->GetId());
 		stmt.Bind(2, m_id);
-		stmt.Bind(3, m_owner->GetId());
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		size_t i = 0;
 		while (result.NextRow()) {
@@ -266,7 +265,7 @@ void FbSequenceDataNode::CheckChildren(wxSQLite3Database * database)
 wxString FbBookDataNode::GetName(wxSQLite3Database * database)
 {
     if (m_id) {
-        wxString sql = wxT("SELECT title FROM books WHERE id=? LIMIT 1");
+        wxString sql = wxT("SELECT Title FROM Book WHERE BookId=?");
         wxSQLite3Statement stmt = database->PrepareStatement(sql);
         stmt.Bind(1, m_id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -332,7 +331,7 @@ wxString FbTreeModelData::GetAuthors(wxSQLite3Database &database)
 {
 	if (!m_authors.IsEmpty()) return m_authors;
 
-	wxString sql = wxT("SELECT full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
+	wxString sql = wxT("SELECT FullName FROM Auth WHERE AuthId IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, (int)m_bookid);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -378,7 +377,7 @@ FbTreeModel::FbTreeModel(const wxString &filename)
 	m_database = new wxSQLite3Database;
 	m_database->Open(filename);
 
-	wxString sql = wxT("SELECT letter, count(id) FROM authors GROUP BY letter ORDER BY 1");
+	wxString sql = wxT("SELECT Letter, count(AuthId) FROM Auth GROUP BY Letter ORDER BY 1");
 	wxSQLite3ResultSet result = m_database->ExecuteQuery(sql);
 	while (result.NextRow()) {
 		wxString text = result.GetString(0);

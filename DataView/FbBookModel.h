@@ -22,6 +22,7 @@ class FbBookModelData
         int m_bookid;
         wxString m_title;
         wxString m_authors;
+        wxString m_AuthIds;
         int m_filesize;
 };
 
