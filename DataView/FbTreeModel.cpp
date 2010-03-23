@@ -71,7 +71,7 @@ void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
 
 bool FbAuthorDataNode::SeqExists(wxSQLite3Database * database)
 {
-    wxString sql = wxT("SELECT SeqnId FROM BkSq WHERE AuthId=? AND SeqnId<>0 LIMIT 1");
+    wxString sql = wxT("SELECT SeqnId FROM BkSeqn WHERE AuthId=? AND SeqnId<>0 LIMIT 1");
     wxSQLite3Statement stmt = database->PrepareStatement(sql);
     stmt.Bind(1, m_id);
     wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -88,7 +88,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 	};
 
 	if (SeqExists(database)) {
-        wxString sql = wxT("SELECT COUNT(DISTINCT SeqnId) FROM BkSq WHERE AuthId=?");
+        wxString sql = wxT("SELECT COUNT(DISTINCT SeqnId) FROM BkSeqn WHERE AuthId=?");
         wxSQLite3Statement stmt = database->PrepareStatement(sql);
         stmt.Bind(1, m_id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -99,7 +99,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 		    children.Add( wxDataViewItem(item) );
 		}
 	} else {
-        wxString sql = wxT("SELECT COUNT(BookId) FROM BkSq WHERE AuthId=?");
+        wxString sql = wxT("SELECT COUNT(BookId) FROM BkSeqn WHERE AuthId=?");
         wxSQLite3Statement stmt = database->PrepareStatement(sql);
         stmt.Bind(1, m_id);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -147,7 +147,7 @@ void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
 	m_owner->CheckChildren(database);
 
 	if (m_count) {
-		wxString sql = wxT("SELECT BkSq.SeqnId, COUNT(BookId) FROM BkSq LEFT JOIN Seqn ON Seqn.SeqnId=BkSq.SeqnId WHERE AuthId=? GROUP BY BkSq.SeqnId ORDER BY Seqn.SeqnName");
+		wxString sql = wxT("SELECT BkSeqn.SeqnId, COUNT(BookId) FROM BkSeqn LEFT JOIN Seqn ON Seqn.SeqnId=BkSeqn.SeqnId WHERE AuthId=? GROUP BY BkSeqn.SeqnId ORDER BY Seqn.SeqnName");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -167,7 +167,7 @@ void FbAuthorDataNode::CheckBooks(wxSQLite3Database * database)
 	m_owner->CheckChildren(database);
 
 	if (m_count) {
-		wxString sql = wxT("SELECT BkSq.BookId FROM BkSq LEFT JOIN Book ON Book.BookId=BkSq.BookId WHERE AuthId=? ORDER BY Title");
+		wxString sql = wxT("SELECT BkSeqn.BookId FROM BkSeqn LEFT JOIN Book ON Book.BookId=BkSeqn.BookId WHERE AuthId=? ORDER BY Title");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -242,7 +242,7 @@ unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDa
 void FbSequenceDataNode::CheckChildren(wxSQLite3Database * database)
 {
 	if (m_count) {
-		wxString sql = wxT("SELECT BookId FROM Book WHERE BookId IN (SELECT BookId FROM BkSq INDEXED BY BkSq_AuthId WHERE AuthId=? AND SeqnId=?) ORDER BY Title");
+		wxString sql = wxT("SELECT BkSeqn.BookId FROM BkSeqn INDEXED BY BkSeqn_AuthId LEFT JOIN Book ON Book.BookId=BkSeqn.BookId WHERE BkSeqn.AuthId=? AND SeqnId=? ORDER BY Number, Title");
 		wxSQLite3Statement stmt = database->PrepareStatement(sql);
 		stmt.Bind(1, m_owner->GetId());
 		stmt.Bind(2, m_id);
