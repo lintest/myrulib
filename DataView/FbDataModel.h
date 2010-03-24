@@ -54,7 +54,7 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 		virtual bool LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col );
 
-//		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
+		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
 
 		virtual wxSize GetSize() const;
 
@@ -64,6 +64,7 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 	private:
         FbTitleData m_data;
+        int m_offsets[4];
 };
 
 #endif // __FBDATAMODEL_H__

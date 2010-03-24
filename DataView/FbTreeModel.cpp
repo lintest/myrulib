@@ -14,7 +14,7 @@ void FbLetterDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant
 {
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
-			variant << FbTitleData( m_letter, m_checked );
+			variant << FbTitleData(m_letter, m_checked, 0);
 		} break;
 		default: {
 			variant = wxString(m_letter);
@@ -124,7 +124,7 @@ void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant
 			stmt.Bind(1, m_id);
 			wxSQLite3ResultSet result = stmt.ExecuteQuery();
 			wxString name = result.NextRow() ? result.GetString(0) : wxString();
-			variant << FbTitleData( name, m_checked );
+			variant << FbTitleData(name, m_checked, 1);
 		} break;
 		default: {
 			variant = wxT("author");
@@ -204,7 +204,7 @@ void FbSequenceDataNode::GetValue(wxSQLite3Database * database, wxVariant &varia
 
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
-			variant << FbTitleData( GetName(database), m_checked );
+			variant << FbTitleData(GetName(database), m_checked, 2);
 		} break;
 		default: {
 			variant = wxT("sequence");
@@ -288,7 +288,8 @@ void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, 
 
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
-			variant << FbTitleData( GetName(database), m_checked );
+		    int level = m_owner->GetType() == NT_AUTHOR ? 2 : 3;
+			variant << FbTitleData(GetName(database), m_checked, level);
 		} break;
 		case FbTreeModel::COL_ROWID: {
 			variant = wxString::Format("%d", m_id);

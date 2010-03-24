@@ -61,6 +61,8 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_dataview = new wxDataViewCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE | wxDV_ROW_LINES);
 
+	m_dataview->EnableScrolling(false, true);
+
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
 
 	this->SetSizer( bSizer1 );
