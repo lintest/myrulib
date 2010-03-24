@@ -33,9 +33,16 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 
 bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col )
 {
+	#ifdef __WXWIN__
     wxPoint point = GetOwner()->GetOwner()->CalcUnscrolledPosition(cursor);
     int left  = m_offsets[m_data.m_level] - 2;
     int right = left + wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth() + 2;
+    #endif
+	#ifdef __WXGTK__
+    wxPoint point = cursor;
+	int left  = 0;
+    int right = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth() + 2;
+    #endif
 
 	if ((left <= point.x) && (point.x <= right)) {
         m_data.m_checked = not m_data.m_checked;
