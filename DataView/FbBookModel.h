@@ -10,7 +10,7 @@ class FbBookModelData
 {
     public:
         FbBookModelData(unsigned int id = 0): m_rowid(id), m_bookid(0), m_filesize(0) {};
-        FbBookModelData(wxSQLite3ResultSet &result);
+        FbBookModelData(unsigned int id, wxSQLite3ResultSet &result);
         FbBookModelData(const FbBookModelData &data);
         wxString GetValue(unsigned int col);
 		wxString GetAuthors(wxSQLite3Database &database);

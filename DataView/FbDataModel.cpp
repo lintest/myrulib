@@ -17,8 +17,9 @@ wxSize FbTitleRenderer::GetSize() const
 
 bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 {
-	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth() + 2;
 	m_offsets[m_data.m_level] = rect.GetLeft();
+
+	int x = wxRendererNative::Get().GetCheckBoxSize(GetOwner()->GetOwner()).GetWidth();
 
 	wxRect checkbox = rect;
 	checkbox.SetWidth(x);
@@ -37,7 +38,7 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
     }
     wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, flag);
 
-	RenderText(m_data.m_title, x, rect, dc, state);
+	RenderText(m_data.m_title, x + 2, rect, dc, state);
 
 	return true;
 }

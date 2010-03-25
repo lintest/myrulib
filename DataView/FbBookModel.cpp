@@ -14,13 +14,13 @@ IMPLEMENT_DYNAMIC_CLASS(FbTitleData, wxObject)
 
 #define BOOK_CASHE_SIZE 64
 
-FbBookModelData::FbBookModelData(wxSQLite3ResultSet &result)
+FbBookModelData::FbBookModelData(unsigned int id, wxSQLite3ResultSet &result)
 {
-	m_rowid = result.GetInt(0);
-	m_bookid = result.GetInt(1);
-	m_title = result.GetString(2);
-	m_AuthIds = result.GetString(3);
-	m_filesize = result.GetInt(4);
+	m_rowid    = id;
+	m_bookid   = result.GetInt(0);
+	m_title    = result.GetString(1);
+	m_AuthIds  = result.GetString(2);
+	m_filesize = result.GetInt(3);
 }
 
 FbBookModelData::FbBookModelData(const FbBookModelData &data) :
@@ -87,37 +87,39 @@ FbBookModelCashe::FbBookModelCashe(const wxString &filename)
 
 unsigned int FbBookModelCashe::RowCount()
 {
-    m_database.ExecuteUpdate(wxT("CREATE TEMP TABLE TmpBook(id integer)"));
-    return m_database.ExecuteUpdate(wxT("INSERT INTO TmpBook(id) SELECT RowId FROM Book ORDER BY Title"));
+    m_database.ExecuteUpdate(wxT("CREATE TEMP TABLE TmpBook(BookId integer)"));
+    return m_database.ExecuteUpdate(wxT("INSERT INTO TmpBook(BookId) SELECT BookId FROM Book ORDER BY Title"));
 }
 
 FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 {
-	if ( m_rowid <= rowid && rowid < m_rowid + GetCount() ) return operator[]( rowid - m_rowid );
+    for (size_t i=0; i<Count(); i++) {
+        FbBookModelData data = Item(i);
+        if (data.Id()==rowid) return data;
+    }
 
-	m_rowid = rowid <= BOOK_CASHE_SIZE ? 1 : rowid - BOOK_CASHE_SIZE;
+    while (Count() > BOOK_CASHE_SIZE) RemoveAt(BOOK_CASHE_SIZE);
 
-	Empty();
-	wxString sql = wxT("SELECT TmpBook.rowid, Book.BookId, Title, AuthIds, FileSize FROM TmpBook LEFT JOIN Book ON Book.RowId = TmpBook.Id WHERE TmpBook.RowId>=? ORDER BY 1 LIMIT ?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-	stmt.Bind(1, (wxLongLong)m_rowid);
-	stmt.Bind(2, BOOK_CASHE_SIZE * 2);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+    int bookid = 0;
+    {
+        wxString sql = wxT("SELECT BookId FROM TmpBook WHERE RowId=?");
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, (wxLongLong)rowid);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) bookid = result.GetInt(0);
+    }
 
-	FbBookModelData * found = NULL;
-	unsigned int id = rowid;
-	while (result.NextRow()) {
-		FbBookModelData * data = new FbBookModelData(result);
-		while ( id < data->Id() ) {
-			Add(new FbBookModelData(id++));
-		}
-		if (id == rowid) found = data;
-		Add(data);
-		id++;
-	}
-
-	if (found) return *found;
-
+    if (bookid) {
+        wxString sql = wxT("SELECT BookId, Title, AuthIds, FileSize FROM Book WHERE BookId=?");
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, bookid);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) {
+            FbBookModelData data(rowid, result);
+            Insert(data, 0);
+            return data;
+        }
+    }
 	return rowid;
 }
 
