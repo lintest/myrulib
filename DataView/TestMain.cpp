@@ -118,7 +118,7 @@ void DataViewFrame::OnOpenTree(wxCommandEvent &event)
 	    m_dataview->ClearColumns();
 	    m_dataview->AssociateModel(model);
 
-		int flags = wxDATAVIEW_COL_RESIZABLE | wxCOL_SORTABLE | wxCOL_REORDERABLE;
+		int flags = wxDATAVIEW_COL_RESIZABLE;
 
 		FbTitleRenderer *cr = new FbTitleRenderer;
 		wxDataViewColumn *column = new wxDataViewColumn("title", cr, FbTreeModel::COL_TITLE, 200, wxALIGN_LEFT, flags );

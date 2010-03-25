@@ -23,7 +23,18 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 	wxRect checkbox = rect;
 	checkbox.SetWidth(x);
 
-	long flag = m_data.m_checked ? wxCONTROL_CHECKED : 0;
+	long flag;
+	switch (m_data.m_checked) {
+	    case FbTitleData::ST_EMPTY:
+            flag = 0;
+            break;
+	    case FbTitleData::ST_CHECK:
+            flag = wxCONTROL_CHECKED;
+            break;
+	    case FbTitleData::ST_GRAY:
+            flag = wxCONTROL_DISABLED;
+            break;
+    }
     wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, flag);
 
 	RenderText(m_data.m_title, x, rect, dc, state);
@@ -33,22 +44,22 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 
 bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col )
 {
-	#ifdef __WXWIN__
+	#ifdef __WXMSW__
     wxPoint point = GetOwner()->GetOwner()->CalcUnscrolledPosition(cursor);
     int left  = m_offsets[m_data.m_level] - 2;
     int right = left + wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth() + 2;
-    #endif
-	#ifdef __WXGTK__
+    #elif defined __WXGTK__
     wxPoint point = cursor;
 	int left  = 0;
     int right = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth() + 2;
     #endif
 
 	if ((left <= point.x) && (point.x <= right)) {
-        m_data.m_checked = not m_data.m_checked;
+        m_data.m_checked = m_data.m_checked == FbTitleData::ST_CHECK ? FbTitleData::ST_EMPTY : FbTitleData::ST_CHECK;
         wxVariant variant;
         variant << m_data;
         model->ChangeValue(variant, item, col);
+        GetOwner()->GetOwner()->Refresh();
         return true;
 	}
     return wxDataViewCustomRenderer::LeftClick(cursor, cell, model, item, col);
@@ -65,3 +76,4 @@ bool FbTitleRenderer::Activate( wxRect cell, wxDataViewModel *model, const wxDat
     wxLogMessage(wxT("Activate"));
 	return true;
 }
+

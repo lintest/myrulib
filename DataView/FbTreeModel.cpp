@@ -7,30 +7,50 @@
 WX_DEFINE_OBJARRAY(FbTreeDataArray);
 
 // -----------------------------------------------------------------------------
-// class FbLetterDataNode
+// class FbTreeDataNode
 // -----------------------------------------------------------------------------
 
-void FbLetterDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
-{
-    switch ( col ) {
-		case FbTreeModel::COL_TITLE: {
-			variant << FbTitleData(m_letter, m_checked, 0);
-		} break;
-		default: {
-			variant = wxString(m_letter);
-		}
-	}
-}
-
-bool FbLetterDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
+bool FbTreeDataNode::SetValue(FbTreeModel &model, const wxVariant &variant, unsigned int col)
 {
     if (col == FbTreeModel::COL_TITLE) {
         FbTitleData data;
         data << variant;
-        m_checked = data.IsChecked();
+        Check(model, data.IsChecked());
     }
     return true;
 }
+
+// -----------------------------------------------------------------------------
+// class FbParentDataNode
+// -----------------------------------------------------------------------------
+
+void FbParentDataNode::Check(FbTreeModel &model, bool checked)
+{
+    m_checked = FbTitleData::State(checked);
+    for (size_t i=0; i<m_children.Count(); i++) m_children[i]->Check(model, checked);
+
+    FbParentDataNode * owner = GetOwner();
+    if (owner) owner->CheckChildren(model);
+}
+
+void FbParentDataNode::CheckChildren(FbTreeModel &model)
+{
+    for (size_t i=0; i<m_children.Count(); i++) {
+        if (i == 0) {
+            m_checked = m_children[i]->m_checked;
+        } else if (m_checked != m_children[i]->m_checked) {
+            m_checked = FbTitleData::ST_GRAY;
+            break;
+        }
+    }
+    model.ValueChanged(wxDataViewItem(this), 0);
+    FbParentDataNode * owner = GetOwner();
+    if (owner) owner->CheckChildren(model);
+}
+
+// -----------------------------------------------------------------------------
+// class FbLetterDataNode
+// -----------------------------------------------------------------------------
 
 unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
@@ -47,7 +67,7 @@ unsigned int FbLetterDataNode::GetChildren( wxSQLite3Database * database, wxData
 	}
 }
 
-void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
+void FbLetterDataNode::TestChildren(wxSQLite3Database * database)
 {
 	if (m_count) {
 		wxString sql = wxT("SELECT AuthId FROM Auth WHERE Letter=? ORDER BY SearchName");
@@ -65,6 +85,11 @@ void FbLetterDataNode::CheckChildren(wxSQLite3Database * database)
 	}
 }
 
+void FbLetterDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
+{
+    if ( col == FbTreeModel::COL_TITLE) variant << FbTitleData(m_letter, m_checked, 0);
+}
+
 // -----------------------------------------------------------------------------
 // class FbAuthorDataNode
 // -----------------------------------------------------------------------------
@@ -80,7 +105,7 @@ bool FbAuthorDataNode::SeqExists(wxSQLite3Database * database)
 
 unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
-	m_owner->CheckChildren(database);
+	m_owner->TestChildren(database);
 
 	if (m_children.Count()) {
 		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
@@ -115,7 +140,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
-	m_owner->CheckChildren(database);
+	m_owner->TestChildren(database);
 
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
@@ -132,19 +157,9 @@ void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant
 	}
 }
 
-bool FbAuthorDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
+void FbAuthorDataNode::TestChildren(wxSQLite3Database * database)
 {
-    if (col == FbTreeModel::COL_TITLE) {
-        FbTitleData data;
-        data << variant;
-        m_checked = data.IsChecked();
-    }
-    return true;
-}
-
-void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
-{
-	m_owner->CheckChildren(database);
+	m_owner->TestChildren(database);
 
 	if (m_count) {
 		wxString sql = wxT("SELECT BkSeqn.SeqnId, COUNT(BookId) FROM BkSeqn LEFT JOIN Seqn ON Seqn.SeqnId=BkSeqn.SeqnId WHERE AuthId=? GROUP BY BkSeqn.SeqnId ORDER BY Seqn.SeqnName");
@@ -162,9 +177,9 @@ void FbAuthorDataNode::CheckChildren(wxSQLite3Database * database)
 	}
 }
 
-void FbAuthorDataNode::CheckBooks(wxSQLite3Database * database)
+void FbAuthorDataNode::TestBooks(wxSQLite3Database * database)
 {
-	m_owner->CheckChildren(database);
+	m_owner->TestChildren(database);
 
 	if (m_count) {
 		wxString sql = wxT("SELECT BkSeqn.BookId FROM BkSeqn LEFT JOIN Book ON Book.BookId=BkSeqn.BookId WHERE AuthId=? ORDER BY Title");
@@ -200,7 +215,7 @@ wxString FbSequenceDataNode::GetName(wxSQLite3Database * database)
 
 void FbSequenceDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
-	m_owner->CheckChildren(database);
+	m_owner->TestChildren(database);
 
     switch ( col ) {
 		case FbTreeModel::COL_TITLE: {
@@ -212,19 +227,9 @@ void FbSequenceDataNode::GetValue(wxSQLite3Database * database, wxVariant &varia
 	}
 }
 
-bool FbSequenceDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
-{
-    if (col == FbTreeModel::COL_TITLE) {
-        FbTitleData data;
-        data << variant;
-        m_checked = data.IsChecked();
-    }
-    return true;
-}
-
 unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
 {
-	m_owner->CheckChildren(database);
+	m_owner->TestChildren(database);
 
 	if (m_children.Count()) {
 		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
@@ -239,7 +244,7 @@ unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDa
 	}
 }
 
-void FbSequenceDataNode::CheckChildren(wxSQLite3Database * database)
+void FbSequenceDataNode::TestChildren(wxSQLite3Database * database)
 {
 	if (m_count) {
 		wxString sql = wxT("SELECT BkSeqn.BookId FROM BkSeqn INDEXED BY BkSeqn_AuthId LEFT JOIN Book ON Book.BookId=BkSeqn.BookId WHERE BkSeqn.AuthId=? AND SeqnId=? ORDER BY Number, Title");
@@ -278,10 +283,10 @@ void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, 
 {
     switch (m_owner->GetType()) {
         case NT_AUTHOR:
-            ((FbAuthorDataNode*)m_owner)->CheckBooks(database);
+            ((FbAuthorDataNode*)m_owner)->TestBooks(database);
             break;
         case NT_SEQUENCE:
-            ((FbSequenceDataNode*)m_owner)->CheckChildren(database);
+            ((FbSequenceDataNode*)m_owner)->TestChildren(database);
             break;
 		default: ;
     }
@@ -297,14 +302,10 @@ void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, 
 	}
 }
 
-bool FbBookDataNode::SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col)
+void FbBookDataNode::Check(FbTreeModel &model, bool checked)
 {
-    if (col == FbTreeModel::COL_TITLE) {
-        FbTitleData data;
-        data << variant;
-        m_checked = data.IsChecked();
-    }
-    return true;
+    m_checked = FbTitleData::State(checked);
+    m_owner->CheckChildren(model);
 }
 
 // -----------------------------------------------------------------------------
@@ -411,7 +412,7 @@ void FbTreeModel::GetValue( wxVariant &variant, const wxDataViewItem &item, unsi
 
 bool FbTreeModel::SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col)
 {
-	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(m_database, variant, col) : false;
+	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(*this, variant, col) : false;
 }
 
 bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const
