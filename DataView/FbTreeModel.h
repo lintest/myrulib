@@ -200,6 +200,8 @@ class FbTreeModel: public wxDataViewModel
 	private:
         unsigned int GetLetters( wxDataViewItemArray &children ) const;
 
+        static FbTreeDataNode * Node(const wxDataViewItem &item) { return (FbTreeDataNode*)(item.GetID());};
+
     private:
         wxSQLite3Database * m_database;
 		FbTreeDataArray m_children;

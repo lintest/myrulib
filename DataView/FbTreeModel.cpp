@@ -398,7 +398,7 @@ FbTreeModel::~FbTreeModel()
 unsigned int FbTreeModel::GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const
 {
 	if (item.IsOk()) {
-		return ((FbTreeDataNode*)item.GetID())->GetChildren(m_database, children);
+		return Node(item)->GetChildren(m_database, children);
 	} else {
 		for (size_t i=0; i<m_children.Count(); i++) children.Add( wxDataViewItem(m_children[i]) );
 		return m_children.Count();
@@ -407,12 +407,14 @@ unsigned int FbTreeModel::GetChildren( const wxDataViewItem &item, wxDataViewIte
 
 void FbTreeModel::GetValue( wxVariant &variant, const wxDataViewItem &item, unsigned int col ) const
 {
-	if (item.IsOk()) ((FbTreeDataNode*)item.GetID())->GetValue(m_database, variant, col);
+    FbTreeDataNode * node = Node(item);
+	if (node) node->GetValue(m_database, variant, col);
 }
 
 bool FbTreeModel::SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col)
 {
-	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->SetValue(*this, variant, col) : false;
+    FbTreeDataNode * node = Node(item);
+	return node ? node->SetValue(*this, variant, col) : true;
 }
 
 bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataViewItemAttr &attr) const
@@ -425,11 +427,13 @@ bool FbTreeModel::GetAttr(const wxDataViewItem &item, unsigned int col, wxDataVi
 
 wxDataViewItem FbTreeModel::GetParent( const wxDataViewItem &item ) const
 {
-	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->GetParent() : wxDataViewItem(NULL);
+    FbTreeDataNode * node = Node(item);
+	return node ? node->GetParent() : wxDataViewItem(NULL);
 }
 
 bool FbTreeModel::IsContainer( const wxDataViewItem &item ) const
 {
-	return item.IsOk() ? ((FbTreeDataNode*)item.GetID())->IsContainer() : true;
+    FbTreeDataNode * node = Node(item);
+	return node ? node->IsContainer() : true;
 }
 

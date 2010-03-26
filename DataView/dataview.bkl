@@ -38,6 +38,7 @@
 		<sources>FbBookModel.cpp</sources> 
 		<sources>FbDataModel.cpp</sources> 
 		<sources>FbTreeModel.cpp</sources> 
+		<sources>FbDataView.cpp</sources> 
 		<sources>GUIFrame.cpp</sources>  
 		<sources>TestMain.cpp</sources> 
 		<sources>TestApp.cpp</sources> 

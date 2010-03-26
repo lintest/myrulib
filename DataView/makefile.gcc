@@ -72,6 +72,7 @@ DATAVIEW_OBJECTS =  \
 	../build\dataview_FbBookModel.o \
 	../build\dataview_FbDataModel.o \
 	../build\dataview_FbTreeModel.o \
+	../build\dataview_FbDataView.o \
 	../build\dataview_GUIFrame.o \
 	../build\dataview_TestMain.o \
 	../build\dataview_TestApp.o
@@ -190,6 +191,9 @@ test_for_selected_wxbuild:
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 ../build\dataview_FbTreeModel.o: ./FbTreeModel.cpp
+	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
+
+../build\dataview_FbDataView.o: ./FbDataView.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 ../build\dataview_GUIFrame.o: ./GUIFrame.cpp

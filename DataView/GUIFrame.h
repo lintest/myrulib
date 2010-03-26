@@ -42,6 +42,7 @@ class GUIFrame : public wxFrame
 		void _wxFB_OnOpenTree( wxCommandEvent& event ){ OnOpenTree( event ); }
 
 		void OnActivated(wxDataViewEvent& event);
+        void OnSize(wxSizeEvent& event);
 
 	protected:
 		enum
