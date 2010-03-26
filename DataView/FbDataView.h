@@ -24,10 +24,10 @@ class FbDataViewCtrl  : public wxDataViewCtrl
 
         virtual ~FbDataViewCtrl () {};
 
-    protected:
+        void Resize();
 
     private:
-        void OnSize(wxSizeEvent& event);
+        void FbDataViewCtrl::OnSize(wxSizeEvent& event);
         DECLARE_EVENT_TABLE()
 };
 

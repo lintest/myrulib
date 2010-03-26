@@ -6,7 +6,7 @@
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
 #include <wx/renderer.h>
-#include "FbDataModel.h"
+#include "FbModelData.h"
 
 class FbTreeModel;
 

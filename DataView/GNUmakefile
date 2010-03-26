@@ -76,10 +76,10 @@ WXSQLITE3_STATIC_OBJECTS =  \
 DATAVIEW_CXXFLAGS = -DNDEBUG -I../WxSQLite3 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 DATAVIEW_OBJECTS =  \
-	../build/dataview_FbBookModel.o \
-	../build/dataview_FbDataModel.o \
-	../build/dataview_FbTreeModel.o \
 	../build/dataview_FbDataView.o \
+	../build/dataview_FbModelData.o \
+	../build/dataview_FbListModel.o \
+	../build/dataview_FbTreeModel.o \
 	../build/dataview_GUIFrame.o \
 	../build/dataview_TestMain.o \
 	../build/dataview_TestApp.o
@@ -147,16 +147,16 @@ test_for_selected_wxbuild:
 ../build/wxsqlite3_static_wxsqlite3.o: ./../WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 
-../build/dataview_FbBookModel.o: ./FbBookModel.cpp
+../build/dataview_FbDataView.o: ./FbDataView.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
-../build/dataview_FbDataModel.o: ./FbDataModel.cpp
+../build/dataview_FbModelData.o: ./FbModelData.cpp
+	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
+
+../build/dataview_FbListModel.o: ./FbListModel.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 ../build/dataview_FbTreeModel.o: ./FbTreeModel.cpp
-	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
-
-../build/dataview_FbDataView.o: ./FbDataView.cpp
 	$(CXX) -c -o $@ $(DATAVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 ../build/dataview_GUIFrame.o: ./GUIFrame.cpp

@@ -1,5 +1,5 @@
 #include "FbDataView.h"
-#include "FbDataModel.h"
+#include "FbModelData.h"
 
 BEGIN_EVENT_TABLE( FbDataViewCtrl, wxDataViewCtrl )
 	EVT_SIZE(FbDataViewCtrl::OnSize)
@@ -7,21 +7,21 @@ END_EVENT_TABLE()
 
 void FbDataViewCtrl::OnSize(wxSizeEvent& event)
 {
+    Resize();
     event.Skip();
-/*
-    ClearColumns();
+}
 
+void FbDataViewCtrl::Resize()
+{
     int width = GetClientSize().GetWidth();
+    size_t count = GetColumnCount();
+    for (int i = 1; i<count; i++) {
+        width -= this->GetColumn(i)->GetWidth();
+    }
+    if (width < 200) width = 200;
 
-	int flags = wxDATAVIEW_COL_RESIZABLE;
-
-    FbTitleRenderer *cr = new FbTitleRenderer;
-    wxDataViewColumn *column = new wxDataViewColumn("title", cr, 0, width-150, wxALIGN_LEFT, flags );
-    AppendColumn( column );
-
-    AppendTextColumn(_("rowid"), 1, wxDATAVIEW_CELL_ACTIVATABLE, 50, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-    AppendTextColumn(_("book"),  2, wxDATAVIEW_CELL_ACTIVATABLE, 50, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-    AppendTextColumn(_("size"),  3, wxDATAVIEW_CELL_ACTIVATABLE, 50, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-*/
-    Refresh();
+    if (count) {
+        GetColumn(0)->SetWidth(width);
+        OnColumnChange(0);
+    }
 }

@@ -16,7 +16,8 @@
 #endif //WX_PRECOMP
 
 #include "GUIFrame.h"
-#include "FbDataModel.h"
+#include "FbModelData.h"
+#include "FbDataView.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -60,18 +61,13 @@ GUIFrame::GUIFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_dataview = new wxDataViewCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE | wxDV_ROW_LINES | wxDV_VERT_RULES);
+	m_dataview = new FbDataViewCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE | wxDV_ROW_LINES | wxDV_VERT_RULES);
 
     int flags = wxDATAVIEW_COL_RESIZABLE;
 
     FbTitleRenderer *cr = new FbTitleRenderer;
     wxDataViewColumn *column = new wxDataViewColumn("title", cr, 0, 200, wxALIGN_LEFT, flags );
     m_dataview->AppendColumn( column );
-
-    m_dataview->AppendTextColumn(_("author"), 4, wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_LEFT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-    m_dataview->AppendTextColumn(_("rowid"),  1,  wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-    m_dataview->AppendTextColumn(_("book"),   2, wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
-    m_dataview->AppendTextColumn(_("size"),   3,   wxDATAVIEW_CELL_ACTIVATABLE, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
 
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
 
@@ -90,6 +86,6 @@ GUIFrame::~GUIFrame()
 void GUIFrame::OnActivated(wxDataViewEvent& event)
 {
 	m_dataview->Expand(event.GetItem());
-	wxMessageBox("Activated");
+    wxLogMessage(wxT("GUIFrame::Activate"));
 }
 

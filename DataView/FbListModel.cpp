@@ -1,4 +1,4 @@
-#include "FbBookModel.h"
+#include "FbListModel.h"
 
 // -----------------------------------------------------------------------------
 // class FbTitleData
@@ -9,12 +9,12 @@ IMPLEMENT_VARIANT_OBJECT(FbTitleData)
 IMPLEMENT_DYNAMIC_CLASS(FbTitleData, wxObject)
 
 // -----------------------------------------------------------------------------
-// class FbBookModelData
+// class FbListModelData
 // -----------------------------------------------------------------------------
 
 #define BOOK_CASHE_SIZE 64
 
-FbBookModelData::FbBookModelData(unsigned int id, wxSQLite3ResultSet &result)
+FbListModelData::FbListModelData(unsigned int id, wxSQLite3ResultSet &result)
 {
 	m_rowid    = id;
 	m_bookid   = result.GetInt(0);
@@ -23,7 +23,7 @@ FbBookModelData::FbBookModelData(unsigned int id, wxSQLite3ResultSet &result)
 	m_filesize = result.GetInt(3);
 }
 
-FbBookModelData::FbBookModelData(const FbBookModelData &data) :
+FbListModelData::FbListModelData(const FbListModelData &data) :
 	m_rowid(data.m_rowid),
 	m_bookid(data.m_bookid),
 	m_title(data.m_title),
@@ -33,7 +33,7 @@ FbBookModelData::FbBookModelData(const FbBookModelData &data) :
 {
 }
 
-wxString FbBookModelData::GetAuthors(wxSQLite3Database &database)
+wxString FbListModelData::GetAuthors(wxSQLite3Database &database)
 {
 	if (!m_authors.IsEmpty()) return m_authors;
 	if (m_AuthIds.IsEmpty()) return m_authors;
@@ -47,7 +47,7 @@ wxString FbBookModelData::GetAuthors(wxSQLite3Database &database)
 	return m_authors;
 }
 
-wxString FbBookModelData::Format(const int number)
+wxString FbListModelData::Format(const int number)
 {
 	int hi = number / 1000;
 	int lo = number % 1000;
@@ -57,16 +57,16 @@ wxString FbBookModelData::Format(const int number)
 		return wxString::Format(wxT("%d"), lo);
 }
 
-wxString FbBookModelData::GetValue(unsigned int col)
+wxString FbListModelData::GetValue(unsigned int col)
 {
 	switch (col) {
-		case FbBookModel::COL_ROWID:
+		case FbListModel::COL_ROWID:
 			return wxString::Format("%d", m_rowid);
-		case FbBookModel::COL_BOOKID:
+		case FbListModel::COL_BOOKID:
 			return wxString::Format("%d", m_bookid);
-		case FbBookModel::COL_TITLE:
+		case FbListModel::COL_TITLE:
 			return m_title;
-		case FbBookModel::COL_SIZE:
+		case FbListModel::COL_SIZE:
 			return Format(m_filesize);
 		default:
 			return wxEmptyString;
@@ -74,27 +74,27 @@ wxString FbBookModelData::GetValue(unsigned int col)
 }
 
 // -----------------------------------------------------------------------------
-// class FbBookModelCashe
+// class FbListModelCashe
 // -----------------------------------------------------------------------------
 
-WX_DEFINE_OBJARRAY(FbBookModelArray);
+WX_DEFINE_OBJARRAY(FbListModelArray);
 
-FbBookModelCashe::FbBookModelCashe(const wxString &filename)
+FbListModelCashe::FbListModelCashe(const wxString &filename)
 	: m_rowid(0)
 {
     m_database.Open(filename);
 }
 
-unsigned int FbBookModelCashe::RowCount()
+unsigned int FbListModelCashe::RowCount()
 {
     m_database.ExecuteUpdate(wxT("CREATE TEMP TABLE TmpBook(BookId integer)"));
     return m_database.ExecuteUpdate(wxT("INSERT INTO TmpBook(BookId) SELECT BookId FROM Book ORDER BY Title"));
 }
 
-FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
+FbListModelData FbListModelCashe::FindRow(unsigned int rowid)
 {
     for (size_t i=0; i<Count(); i++) {
-        FbBookModelData data = Item(i);
+        FbListModelData data = Item(i);
         if (data.Id()==rowid) return data;
     }
 
@@ -115,7 +115,7 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
         stmt.Bind(1, bookid);
         wxSQLite3ResultSet result = stmt.ExecuteQuery();
         if (result.NextRow()) {
-            FbBookModelData data(rowid, result);
+            FbListModelData data(rowid, result);
             Insert(data, 0);
             return data;
         }
@@ -123,23 +123,23 @@ FbBookModelData FbBookModelCashe::FindRow(unsigned int rowid)
 	return rowid;
 }
 
-wxString FbBookModelCashe::GetValue(unsigned int row, unsigned int col)
+wxString FbListModelCashe::GetValue(unsigned int row, unsigned int col)
 {
 	return FindRow(row + 1).GetValue(col);
 }
 
-bool FbBookModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned int col)
+bool FbListModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned int col)
 {
-	FbBookModelData data = FindRow(row + 1);
+	FbListModelData data = FindRow(row + 1);
 
     switch ( col ) {
-		case FbBookModel::COL_ROWID: {
+		case FbListModel::COL_ROWID: {
 			variant = wxString::Format("%d", row + 1);
 		} break;
-		case FbBookModel::COL_TITLE: {
+		case FbListModel::COL_TITLE: {
 			variant << FbTitleData( data.GetValue(col), m_checked.Index(row) != wxNOT_FOUND );
 		} break;
-		case FbBookModel::COL_AUTHOR: {
+		case FbListModel::COL_AUTHOR: {
 			variant = data.GetAuthors(m_database);
 		} break;
 		default: {
@@ -149,9 +149,9 @@ bool FbBookModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned i
 	return true;
 }
 
-bool FbBookModelCashe::SetValue(const wxVariant &variant, unsigned int row, unsigned int col)
+bool FbListModelCashe::SetValue(const wxVariant &variant, unsigned int row, unsigned int col)
 {
-    if (col == FbBookModel::COL_TITLE) {
+    if (col == FbListModel::COL_TITLE) {
         FbTitleData data;
         data << variant;
         if (data.m_checked) m_checked.Add(row);
@@ -161,36 +161,36 @@ bool FbBookModelCashe::SetValue(const wxVariant &variant, unsigned int row, unsi
 }
 
 // -----------------------------------------------------------------------------
-// class FbBookModel
+// class FbListModel
 // -----------------------------------------------------------------------------
 
-FbBookModel::FbBookModel(const wxString &filename)
+FbListModel::FbListModel(const wxString &filename)
 	: wxDataViewVirtualListModel(Init(filename))
 {
 }
 
-FbBookModel::~FbBookModel()
+FbListModel::~FbListModel()
 {
     wxDELETE(m_datalist);
 }
 
-long FbBookModel::Init(const wxString &filename)
+long FbListModel::Init(const wxString &filename)
 {
-    m_datalist = new FbBookModelCashe(filename);
+    m_datalist = new FbListModelCashe(filename);
     return m_datalist->RowCount();
 }
 
-void FbBookModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
+void FbListModel::GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const
 {
    	m_datalist->GetValue(variant, row, col);
 }
 
-bool FbBookModel::SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col )
+bool FbListModel::SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col )
 {
    	return m_datalist->SetValue(variant, row, col);
 }
 
-bool FbBookModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const
+bool FbListModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const
 {
 	return false;
 

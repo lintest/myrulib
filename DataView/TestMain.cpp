@@ -9,8 +9,9 @@
 
 #include "TestMain.h"
 #include "TestApp.h"
-#include "FbDataModel.h"
-#include "FbBookModel.h"
+#include "FbDataView.h"
+#include "FbModelData.h"
+#include "FbListModel.h"
 #include "FbTreeModel.h"
 
 //helper functions
@@ -84,9 +85,17 @@ void DataViewFrame::OnOpenList(wxCommandEvent &event)
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-	    FbBookModel * model = new FbBookModel(dlg.GetPath());
+	    FbListModel * model = new FbListModel(dlg.GetPath());
 	    m_dataview->AssociateModel(model);
-	    m_dataview->GetColumn(1)->SetHidden(false);
+
+	    while (m_dataview->GetColumnCount()>1) m_dataview->DeleteColumn(m_dataview->GetColumn(1));
+
+        int flags = wxDATAVIEW_COL_RESIZABLE;
+        m_dataview->AppendTextColumn(_("author"), 4, wxDATAVIEW_CELL_INERT, 100, wxALIGN_LEFT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        m_dataview->AppendTextColumn(_("rowid"),  1, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        m_dataview->AppendTextColumn(_("book"),   2, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        m_dataview->AppendTextColumn(_("size"),   3, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        wxDynamicCast(m_dataview, FbDataViewCtrl)->Resize();
 	};
 }
 
@@ -105,7 +114,14 @@ void DataViewFrame::OnOpenTree(wxCommandEvent &event)
 	if (dlg.ShowModal() == wxID_OK) {
         FbTreeModel * model = new FbTreeModel(dlg.GetPath());
 	    m_dataview->AssociateModel(model);
-	    m_dataview->GetColumn(1)->SetHidden(true);
+
+	    while (m_dataview->GetColumnCount()>1) m_dataview->DeleteColumn(m_dataview->GetColumn(1));
+
+        int flags = wxDATAVIEW_COL_RESIZABLE;
+        m_dataview->AppendTextColumn(_("rowid"),  1, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        m_dataview->AppendTextColumn(_("book"),   2, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        m_dataview->AppendTextColumn(_("size"),   3, wxDATAVIEW_CELL_INERT, 100, wxALIGN_RIGHT, flags)->GetRenderer()->EnableEllipsize(wxELLIPSIZE_NONE);
+        wxDynamicCast(m_dataview, FbDataViewCtrl)->Resize();
 	};
 
 }

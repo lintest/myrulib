@@ -1,5 +1,5 @@
-#ifndef __FBDATAMODEL_H__
-#define __FBDATAMODEL_H__
+#ifndef __FBMODELDATA_H__
+#define __FBMODELDATA_H__
 
 #include <wx/wx.h>
 #include <wx/dataview.h>
@@ -45,7 +45,7 @@ class FbTitleData : public wxObject
         }
 
 		friend class FbTitleRenderer;
-		friend class FbBookModelCashe;
+		friend class FbListModelCashe;
 
 	private:
 		wxString m_title;
@@ -83,4 +83,4 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
         int m_offsets[4];
 };
 
-#endif // __FBDATAMODEL_H__
+#endif // __FBMODELDATA_H__

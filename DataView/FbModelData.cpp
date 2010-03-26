@@ -1,4 +1,4 @@
-#include "FbDataModel.h"
+#include "FbModelData.h"
 
 // -----------------------------------------------------------------------------
 // class FbTitleData
@@ -63,7 +63,7 @@ bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *m
         GetOwner()->GetOwner()->Refresh();
         return true;
 	}
-    return wxDataViewCustomRenderer::LeftClick(cursor, cell, model, item, col);
+    return false;
 }
 
 bool FbTitleRenderer::SetValue( const wxVariant &value )
@@ -74,7 +74,7 @@ bool FbTitleRenderer::SetValue( const wxVariant &value )
 
 bool FbTitleRenderer::Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col)
 {
-    wxLogMessage(wxT("Activate"));
+    wxLogMessage(wxT("FbTitleRenderer::Activate"));
 	return true;
 }
 
