@@ -46,6 +46,8 @@ class FbParentDataNode: public FbTreeDataNode
         virtual void CheckChildren(FbTreeModel &model);
 		virtual bool IsContainer() { return true; };
 	protected:
+        virtual wxString GetName(wxSQLite3Database * database) = 0;
+	protected:
 		unsigned int m_count;
 		FbTreeDataArray m_children;
 };
@@ -60,6 +62,8 @@ class FbLetterDataNode: public FbParentDataNode
         virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
         void TestChildren(wxSQLite3Database * database);
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database) { return m_letter; };
 	private:
 		wxChar m_letter;
 };
@@ -77,7 +81,8 @@ class FbAuthorDataNode: public FbParentDataNode
         void TestBooks(wxSQLite3Database * database);
         void SetId(int id) { m_id = id; };
         int GetId() { return m_id; };
-	private:
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database);
         bool SeqExists(wxSQLite3Database * database);
 	private:
 		FbLetterDataNode * m_owner;
@@ -95,8 +100,8 @@ class FbSequenceDataNode: public FbParentDataNode
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
         void TestChildren(wxSQLite3Database * database);
         void SetId(int id, int count) { m_id = id; m_count = count; };
-	private:
-        wxString GetName(wxSQLite3Database * database);
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database);
 	private:
 		FbAuthorDataNode * m_owner;
 		int m_id;

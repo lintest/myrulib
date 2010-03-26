@@ -87,12 +87,24 @@ void FbLetterDataNode::TestChildren(wxSQLite3Database * database)
 
 void FbLetterDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
-    if ( col == FbTreeModel::COL_TITLE) variant << FbTitleData(m_letter, m_checked, 0);
+	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 2);
 }
 
 // -----------------------------------------------------------------------------
 // class FbAuthorDataNode
 // -----------------------------------------------------------------------------
+
+wxString FbAuthorDataNode::GetName(wxSQLite3Database * database)
+{
+    if (m_id) {
+        wxString sql = wxT("SELECT FullName FROM Auth WHERE AuthId=?");
+        wxSQLite3Statement stmt = database->PrepareStatement(sql);
+        stmt.Bind(1, m_id);
+        wxSQLite3ResultSet result = stmt.ExecuteQuery();
+        if (result.NextRow()) return result.GetString(0);
+    }
+    return wxT("(noname)");
+}
 
 bool FbAuthorDataNode::SeqExists(wxSQLite3Database * database)
 {
@@ -141,20 +153,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
 	m_owner->TestChildren(database);
-
-    switch ( col ) {
-		case FbTreeModel::COL_TITLE: {
-			wxString sql = wxT("SELECT FullName FROM Auth WHERE AuthId=?");
-			wxSQLite3Statement stmt = database->PrepareStatement(sql);
-			stmt.Bind(1, m_id);
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
-			wxString name = result.NextRow() ? result.GetString(0) : wxString();
-			variant << FbTitleData(name, m_checked, 1);
-		} break;
-		default: {
-			variant = wxT("author");
-		}
-	}
+	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 2);
 }
 
 void FbAuthorDataNode::TestChildren(wxSQLite3Database * database)
@@ -216,15 +215,7 @@ wxString FbSequenceDataNode::GetName(wxSQLite3Database * database)
 void FbSequenceDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
 	m_owner->TestChildren(database);
-
-    switch ( col ) {
-		case FbTreeModel::COL_TITLE: {
-			variant << FbTitleData(GetName(database), m_checked, 2);
-		} break;
-		default: {
-			variant = wxT("sequence");
-		}
-	}
+	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 2);
 }
 
 unsigned int FbSequenceDataNode::GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children )
