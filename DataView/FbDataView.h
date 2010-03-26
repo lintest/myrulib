@@ -27,7 +27,8 @@ class FbDataViewCtrl  : public wxDataViewCtrl
         void Resize();
 
     private:
-        void FbDataViewCtrl::OnSize(wxSizeEvent& event);
+        void OnKeyUp(wxKeyEvent& event);
+        void OnSize(wxSizeEvent& event);
         DECLARE_EVENT_TABLE()
 };
 

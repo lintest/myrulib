@@ -2,6 +2,9 @@
 #include "FbModelData.h"
 
 BEGIN_EVENT_TABLE( FbDataViewCtrl, wxDataViewCtrl )
+    EVT_KEY_DOWN(FbDataViewCtrl::OnKeyUp)
+    EVT_KEY_UP(FbDataViewCtrl::OnKeyUp)
+    EVT_CHAR(FbDataViewCtrl::OnKeyUp)
 	EVT_SIZE(FbDataViewCtrl::OnSize)
 END_EVENT_TABLE()
 
@@ -24,4 +27,10 @@ void FbDataViewCtrl::Resize()
         GetColumn(0)->SetWidth(width);
         OnColumnChange(0);
     }
+}
+
+void FbDataViewCtrl::OnKeyUp(wxKeyEvent& event)
+{
+    wxLogMessage(wxT("MyComboBox::OnKeyUp"));
+    event.Skip();
 }
