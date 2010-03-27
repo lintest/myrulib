@@ -17,15 +17,18 @@ void FbDataViewCtrl::OnSize(wxSizeEvent& event)
 void FbDataViewCtrl::Resize()
 {
     int width = GetClientSize().GetWidth();
+	width -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) + 8;
     size_t count = GetColumnCount();
-    for (int i = 1; i<count; i++) {
+    for (size_t i = 1; i<count; i++) {
         width -= this->GetColumn(i)->GetWidth();
     }
     if (width < 200) width = 200;
 
     if (count) {
         GetColumn(0)->SetWidth(width);
+        #ifdef __WXMSW_
         OnColumnChange(0);
+        #endif
     }
 }
 
