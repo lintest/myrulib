@@ -374,7 +374,7 @@ function convert_BkSeqn($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['SeqId']." - ".$row['BookId']."\n";
-    $sql = "INSERT INTO BkSq(BookId, SeqnId, AuthId, Number, Level) VALUES(?,?,?,?,?)";
+    $sql = "INSERT INTO BkSeqn(BookId, SeqnId, AuthId, Number, Level) VALUES(?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     $err= $insert->execute(array($row['BookId'], $row['SeqId'], $row['AvtorId'], $row['SeqNumb'], $row['Level']));
     if($err === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
@@ -447,7 +447,7 @@ function create_tables($sqlite_db)
   ");
 
   $sqlite_db->query("
-	CREATE TABLE BkSq(
+	CREATE TABLE BkSeqn(
 	  BookId integer not null,
 	  SeqnId integer,
 	  AuthId integer,
@@ -473,7 +473,6 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX Auth_SearchName ON Auth(SearchName);");
 
   $sqlite_db->query("CREATE INDEX Book_Title ON Book(Title);");
-  $sqlite_db->query("CREATE INDEX Book_ArchId ON Book(ArchId);");
   $sqlite_db->query("CREATE INDEX Book_Md5sum ON Book(Md5sum);");
 
   $sqlite_db->query("CREATE INDEX Seqn_SeqnName ON Seqn(SeqnName);");
@@ -481,8 +480,8 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX File_BookId ON File(BookId);");
   $sqlite_db->query("CREATE INDEX File_ArchId ON File(ArchId);");
 
-  $sqlite_db->query("CREATE INDEX BkSq_BookId ON BkSq(BookId);");
-  $sqlite_db->query("CREATE INDEX BkSq_AuthId ON BkSq(AuthId,SeqnId);");
+  $sqlite_db->query("CREATE INDEX BkSeqn_BookId ON BkSeqn(BookId);");
+  $sqlite_db->query("CREATE INDEX BkSeqn_AuthId ON BkSeqn(AuthId,SeqnId);");
 
   $sqlite_db->query("commit;");
 
@@ -508,8 +507,8 @@ convert_Book($mysql_db, $sqlite_db);
 convert_Seqn($mysql_db, $sqlite_db);
 convert_BkSeqn($mysql_db, $sqlite_db);
 
-info_auth($mysql_db, $sqlite_db);
-info_book($mysql_db, $sqlite_db);
+//info_auth($mysql_db, $sqlite_db);
+//info_book($mysql_db, $sqlite_db);
 
 create_indexes($sqlite_db);
 

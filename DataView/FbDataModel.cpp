@@ -22,6 +22,8 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 	wxRect checkbox = rect;
 	checkbox.SetWidth(x);
 
+    wxLogError(wxT("Rect(%d,%d) "), rect.GetLeft(), rect.GetX());
+
 	long flag = m_data.m_checked ? wxCONTROL_CHECKED : 0;
     wxRendererNative::Get().DrawCheckBox(GetOwner()->GetOwner(), *dc, checkbox, flag);
 
@@ -33,6 +35,8 @@ bool FbTitleRenderer::LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *m
 {
 	int x = wxRendererNative::Get().GetCheckBoxSize(NULL).GetWidth();
 //	if (cursor.x - cell.GetX() > x + 10) return false;
+
+    wxLogError(wxT("Point (%d) - Rect(%d,%d) "), cursor.x, cell.GetLeft(), cell.GetX());
 
 	m_data.m_checked = not m_data.m_checked;
     wxVariant variant;
