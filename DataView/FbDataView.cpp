@@ -26,7 +26,7 @@ void FbDataViewCtrl::Resize()
 
     if (count) {
         GetColumn(0)->SetWidth(width);
-        #ifdef __WXMSW_
+        #ifdef __WXMSW__
         OnColumnChange(0);
         #endif
     }
