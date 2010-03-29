@@ -25,10 +25,10 @@ void FbTempEraser::Add(const wxString &filename)
 BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	m_id( res.GetInt(wxT("id"))),
 	title( res.GetString(wxT("title"))),
-	number(0), rating(0)
+	file_size(0), number(0), rating(0)
 {
+	try { file_size = res.GetInt(wxT("file_size")); } catch (...) {};
 	try { file_type = res.GetString(wxT("file_type")); } catch (...) {};
-	try { file_size = res.GetString(wxT("file_size")); } catch (...) {};
 	try { language = res.GetString(wxT("lang")); } catch (...) {};
 	try { genres = res.GetString(wxT("genres")); } catch (...) {};
 	try { number = res.GetInt(wxT("number")); } catch (...) {};
