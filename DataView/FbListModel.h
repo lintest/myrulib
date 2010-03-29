@@ -1,17 +1,17 @@
-#ifndef __FBBOOKMODEL_H__
-#define __FBBOOKMODEL_H__
+#ifndef __FBLISTMODEL_H__
+#define __FBLISTMODEL_H__
 
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
-#include "FbDataModel.h"
+#include "FbModelData.h"
 
-class FbBookModelData
+class FbListModelData
 {
     public:
-        FbBookModelData(unsigned int id = 0): m_rowid(id), m_bookid(0), m_filesize(0) {};
-        FbBookModelData(wxSQLite3ResultSet &result);
-        FbBookModelData(const FbBookModelData &data);
+        FbListModelData(unsigned int id = 0): m_rowid(id), m_bookid(0), m_filesize(0) {};
+        FbListModelData(unsigned int id, wxSQLite3ResultSet &result);
+        FbListModelData(const FbListModelData &data);
         wxString GetValue(unsigned int col);
 		wxString GetAuthors(wxSQLite3Database &database);
         unsigned int Id() { return m_rowid; };
@@ -26,18 +26,18 @@ class FbBookModelData
         int m_filesize;
 };
 
-WX_DECLARE_OBJARRAY(FbBookModelData, FbBookModelArray);
+WX_DECLARE_OBJARRAY(FbListModelData, FbListModelArray);
 
-class FbBookModelCashe: private FbBookModelArray
+class FbListModelCashe: private FbListModelArray
 {
 	public:
-        FbBookModelCashe(const wxString &filename);
+        FbListModelCashe(const wxString &filename);
         wxString GetValue(unsigned int row, unsigned int col);
 		bool GetValue(wxVariant &variant, unsigned int row, unsigned int col);
         bool SetValue(const wxVariant &variant, unsigned int row, unsigned int col);
         unsigned int RowCount();
 	private:
-        FbBookModelData FindRow(unsigned int rowid);
+        FbListModelData FindRow(unsigned int rowid);
 	private:
         wxSQLite3Database m_database;
         unsigned int m_rowid;
@@ -45,7 +45,7 @@ class FbBookModelCashe: private FbBookModelArray
 };
 
 
-class FbBookModel: public wxDataViewVirtualListModel
+class FbListModel: public wxDataViewVirtualListModel
 {
 	public:
 		enum COL
@@ -65,9 +65,9 @@ class FbBookModel: public wxDataViewVirtualListModel
 
     public:
 
-        FbBookModel(const wxString &filename);
+        FbListModel(const wxString &filename);
 
-        virtual ~FbBookModel();
+        virtual ~FbListModel();
 
         // implementation of base class virtuals to define model
 
@@ -91,7 +91,7 @@ class FbBookModel: public wxDataViewVirtualListModel
         long Init(const wxString &filename);
 
     private:
-        FbBookModelCashe * m_datalist;
+        FbListModelCashe * m_datalist;
 };
 
-#endif // __FBBOOKMODEL_H__
+#endif // __FBLISTMODEL_H__

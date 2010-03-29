@@ -6,7 +6,11 @@
 #include <wx/wxsqlite3.h>
 #include <wx/arrimpl.cpp>
 #include <wx/renderer.h>
-#include "FbDataModel.h"
+#include "FbModelData.h"
+
+class FbTreeModel;
+
+class FbParentDataNode;
 
 class FbTreeDataNode
 {
@@ -18,98 +22,108 @@ class FbTreeDataNode
             NT_BOOK,
         };
 	public:
-		FbTreeDataNode() {};
+		FbTreeDataNode(bool checked = false): m_checked(FbTitleData::State(checked)) {};
         virtual NodeType GetType() = 0;
 		virtual bool IsContainer() = 0;
+		virtual FbParentDataNode * GetOwner() = 0;
 		virtual wxDataViewItem GetParent() = 0;
         virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col) = 0;
-        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col) = 0;
+        virtual bool SetValue(FbTreeModel &model, const wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) = 0;
+        virtual void Check(FbTreeModel &model, bool checked = true) = 0;
+    protected:
+		FbTitleData::STATE m_checked;
+		friend class FbParentDataNode;
 };
 
 WX_DECLARE_OBJARRAY(FbTreeDataNode*, FbTreeDataArray);
 
-class FbLetterDataNode: public FbTreeDataNode
+class FbParentDataNode: public FbTreeDataNode
 {
 	public:
-		FbLetterDataNode(wxChar letter, unsigned int count, bool checked = false): m_letter(letter), m_count(count), m_checked(checked) {};
-        virtual NodeType GetType() { return NT_LETTER; };
+		FbParentDataNode(unsigned int count, bool checked = false): FbTreeDataNode(checked), m_count(count) {};
+        virtual void Check(FbTreeModel &model, bool checked = true);
+        virtual void CheckChildren(FbTreeModel &model);
 		virtual bool IsContainer() { return true; };
-		virtual wxDataViewItem GetParent() { return wxDataViewItem(NULL); };
-        virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
-        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
-        virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
-        void CheckChildren(wxSQLite3Database * database);
-	private:
-		wxChar m_letter;
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database) = 0;
+	protected:
 		unsigned int m_count;
 		FbTreeDataArray m_children;
-		bool m_checked;
 };
 
-class FbAuthorDataNode: public FbTreeDataNode
+class FbLetterDataNode: public FbParentDataNode
 {
 	public:
-		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_count(0), m_checked(checked) {};
+		FbLetterDataNode(wxChar letter, unsigned int count, bool checked = false): FbParentDataNode(count, checked), m_letter(letter) {};
+        virtual NodeType GetType() { return NT_LETTER; };
+		virtual FbParentDataNode * GetOwner() { return NULL; };
+		virtual wxDataViewItem GetParent() { return wxDataViewItem(NULL); };
+        virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
+        virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
+        void TestChildren(wxSQLite3Database * database);
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database) { return m_letter; };
+	private:
+		wxChar m_letter;
+};
+
+class FbAuthorDataNode: public FbParentDataNode
+{
+	public:
+		FbAuthorDataNode(FbLetterDataNode * owner, bool checked = false): FbParentDataNode(0, checked), m_owner(owner), m_id(0) {};
         virtual NodeType GetType() { return NT_AUTHOR; };
-		virtual bool IsContainer() { return true; };
+		virtual FbParentDataNode * GetOwner() { return m_owner; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
         virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
-        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
-        void CheckChildren(wxSQLite3Database * database);
-        void CheckBooks(wxSQLite3Database * database);
+        void TestChildren(wxSQLite3Database * database);
+        void TestBooks(wxSQLite3Database * database);
         void SetId(int id) { m_id = id; };
         int GetId() { return m_id; };
-	private:
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database);
         bool SeqExists(wxSQLite3Database * database);
 	private:
 		FbLetterDataNode * m_owner;
 		int m_id;
-		unsigned int m_count;
-		FbTreeDataArray m_children;
-		bool m_checked;
 };
 
-class FbSequenceDataNode: public FbTreeDataNode
+class FbSequenceDataNode: public FbParentDataNode
 {
 	public:
-		FbSequenceDataNode(FbAuthorDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_count(0), m_checked(checked) {};
+		FbSequenceDataNode(FbAuthorDataNode * owner, bool checked = false): FbParentDataNode(0, checked), m_owner(owner), m_id(0) {};
         virtual NodeType GetType() { return NT_SEQUENCE; };
-		virtual bool IsContainer() { return true; };
+		virtual FbParentDataNode * GetOwner() { return m_owner; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
         virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
-        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children );
-        void CheckChildren(wxSQLite3Database * database);
+        void TestChildren(wxSQLite3Database * database);
         void SetId(int id, int count) { m_id = id; m_count = count; };
-	private:
-        wxString GetName(wxSQLite3Database * database);
+	protected:
+        virtual wxString GetName(wxSQLite3Database * database);
 	private:
 		FbAuthorDataNode * m_owner;
 		int m_id;
-		unsigned int m_count;
-		FbTreeDataArray m_children;
-		bool m_checked;
 };
 
 class FbBookDataNode: public FbTreeDataNode
 {
 	public:
-		FbBookDataNode(FbTreeDataNode * owner, bool checked = false): m_owner(owner), m_id(0), m_checked(checked) {};
+		FbBookDataNode(FbParentDataNode * owner, bool checked = false): FbTreeDataNode(checked), m_owner(owner), m_id(0) {};
         virtual NodeType GetType() { return NT_BOOK; };
 		virtual bool IsContainer() { return false; };
+		virtual FbParentDataNode * GetOwner() { return m_owner; };
 		virtual wxDataViewItem GetParent() { return wxDataViewItem(m_owner); };
         virtual void GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col);
-        virtual bool SetValue(wxSQLite3Database * database, const wxVariant &variant, unsigned int col);
         virtual unsigned int GetChildren( wxSQLite3Database * database, wxDataViewItemArray &children ) { return 0; };
+        virtual void Check(FbTreeModel &model, bool checked = true);
         void SetId(int id) { m_id = id; };
 	private:
         wxString GetName(wxSQLite3Database * database);
 	private:
-		FbTreeDataNode * m_owner;
+		FbParentDataNode * m_owner;
 		int m_id;
-		bool m_checked;
 };
 
 class FbTreeModelData
@@ -186,8 +200,12 @@ class FbTreeModel: public wxDataViewModel
 
         virtual unsigned int GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const;
 
+        virtual void Resort() {};
+
 	private:
         unsigned int GetLetters( wxDataViewItemArray &children ) const;
+
+        static FbTreeDataNode * Node(const wxDataViewItem &item) { return (FbTreeDataNode*)(item.GetID());};
 
     private:
         wxSQLite3Database * m_database;

@@ -35,8 +35,9 @@
 	<exe id="dataview" template="wxgui">
 		<define>NDEBUG</define>
 		<include>../WxSQLite3</include>
-		<sources>FbBookModel.cpp</sources> 
-		<sources>FbDataModel.cpp</sources> 
+		<sources>FbDataView.cpp</sources> 
+		<sources>FbModelData.cpp</sources> 
+		<sources>FbListModel.cpp</sources> 
 		<sources>FbTreeModel.cpp</sources> 
 		<sources>GUIFrame.cpp</sources>  
 		<sources>TestMain.cpp</sources> 

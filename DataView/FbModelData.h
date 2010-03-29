@@ -1,5 +1,5 @@
-#ifndef __FBDATAMODEL_H__
-#define __FBDATAMODEL_H__
+#ifndef __FBMODELDATA_H__
+#define __FBMODELDATA_H__
 
 #include <wx/wx.h>
 #include <wx/dataview.h>
@@ -7,9 +7,20 @@
 
 class FbTitleData : public wxObject
 {
+    public:
+        enum STATE {
+            ST_EMPTY = 0,
+            ST_CHECK = 1,
+            ST_GRAY = 2,
+        };
+
 	public:
-		FbTitleData( const wxString &text = wxEmptyString, bool checked = false, int level = 0 )
+		FbTitleData( const wxString &text = wxEmptyString, STATE checked = ST_EMPTY, int level = 0 )
 			: m_title(text), m_checked(checked), m_level(level)
+		{ }
+
+		FbTitleData( const wxString &text, bool checked, int level = 0 )
+			: m_title(text), m_checked(State(checked)), m_level(level)
 		{ }
 
 		FbTitleData( const FbTitleData &data )
@@ -26,14 +37,19 @@ class FbTitleData : public wxObject
 			return !(*this == data);
 		}
 
-		bool IsChecked() { return m_checked; };
+		STATE IsChecked() { return m_checked; };
+
+        static STATE State(bool checked)
+        {
+            return checked ? FbTitleData::ST_CHECK : FbTitleData::ST_EMPTY;
+        }
 
 		friend class FbTitleRenderer;
-		friend class FbBookModelCashe;
+		friend class FbListModelCashe;
 
 	private:
 		wxString m_title;
-		bool m_checked;
+		STATE m_checked;
 		int m_level;
 
 		DECLARE_DYNAMIC_CLASS(wxDataViewIconText)
@@ -54,7 +70,7 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 		virtual bool LeftClick( wxPoint cursor, wxRect cell, wxDataViewModel *model, const wxDataViewItem &item, unsigned int col );
 
-//		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
+		virtual bool Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col);
 
 		virtual wxSize GetSize() const;
 
@@ -64,6 +80,7 @@ class FbTitleRenderer : public wxDataViewCustomRenderer
 
 	private:
         FbTitleData m_data;
+        int m_offsets[4];
 };
 
-#endif // __FBDATAMODEL_H__
+#endif // __FBMODELDATA_H__

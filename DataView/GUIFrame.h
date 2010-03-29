@@ -42,6 +42,7 @@ class GUIFrame : public wxFrame
 		void _wxFB_OnOpenTree( wxCommandEvent& event ){ OnOpenTree( event ); }
 
 		void OnActivated(wxDataViewEvent& event);
+		void OnKeyUp(wxKeyEvent& event);
 
 	protected:
 		enum
@@ -62,6 +63,7 @@ class GUIFrame : public wxFrame
 		virtual void OnAbout( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnOpenList( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnOpenTree( wxCommandEvent& event ){ event.Skip(); }
+
 
 	public:
 		GUIFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("wxWidgets Application Template"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 481,466 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
