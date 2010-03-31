@@ -22,7 +22,7 @@ void FbMasterList::OnAppendMaster(FbMasterEvent& event)
 
 	wxTreeItemId item = AppendItem(root, event.GetString(), -1, -1, event.m_data);
 	if (event.m_number) {
-		wxString number = wxString::Format(wxT("%d"), event.m_number);
+		wxString number = wxString::Format(wxT("%d "), event.m_number);
 		SetItemText(item, 1, number);
 	}
 

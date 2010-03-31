@@ -1,3 +1,15 @@
+myrulib (0.21-ubuntu910) karmic; urgency=low
+
+  * Update release
+
+ -- Denis Kandrashin <mail@lintest.ru>  Wed, 31 Mar 2010 20:25:49 +0400
+
+myrulib (0.20-ubuntu910) karmic; urgency=low
+
+  * Update release
+
+ -- Denis Kandrashin <mail@lintest.ru>  Mon, 01 Mar 2010 13:12:12 +0300
+
 myrulib (0.19-ubuntu910) karmic; urgency=low
 
   * Update release
