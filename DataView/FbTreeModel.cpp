@@ -87,7 +87,7 @@ void FbLetterDataNode::TestChildren(wxSQLite3Database * database)
 
 void FbLetterDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
-	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 2);
+	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -153,7 +153,7 @@ unsigned int FbAuthorDataNode::GetChildren( wxSQLite3Database * database, wxData
 void FbAuthorDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, unsigned int col)
 {
 	m_owner->TestChildren(database);
-	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 2);
+	if ( col==0 ) variant << FbTitleData(GetName(database), m_checked, 1);
 }
 
 void FbAuthorDataNode::TestChildren(wxSQLite3Database * database)
@@ -286,6 +286,7 @@ void FbBookDataNode::GetValue(wxSQLite3Database * database, wxVariant &variant, 
 		case FbTreeModel::COL_TITLE: {
 		    int level = m_owner->GetType() == NT_AUTHOR ? 2 : 3;
 			variant << FbTitleData(GetName(database), m_checked, level);
+            wxLogMessage(wxT("FbTitleData::Level %d"), level);
 		} break;
 		case FbTreeModel::COL_ROWID: {
 			variant = wxString::Format("%d", m_id);

@@ -88,6 +88,7 @@ void GUIFrame::OnActivated(wxDataViewEvent& event)
 {
 	m_dataview->Expand(event.GetItem());
     wxLogMessage(wxT("GUIFrame::Activate"));
+    event.Skip();
 }
 
 //    m_inputWin->Connect(wxEVT_CHAR, wxKeyEventHandler(MyFrame::OnChar), NULL, this);

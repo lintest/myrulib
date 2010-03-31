@@ -200,6 +200,8 @@ class FbTreeModel: public wxDataViewModel
 
         virtual unsigned int GetChildren( const wxDataViewItem &item, wxDataViewItemArray &children ) const;
 
+        virtual bool HasContainerColumns(const wxDataViewItem& WXUNUSED(item)) const { return true; };
+
         virtual void Resort() {};
 
 	private:

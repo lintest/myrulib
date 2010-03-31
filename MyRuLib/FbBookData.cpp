@@ -45,47 +45,62 @@ void FbBookData::Open() const
 	}
 }
 
-void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
+void FbBookData::SaveFile(wxInputStream & in, const wxString &filepath) const
 {
-	wxFileName file_name = md5sum;
-	file_name.SetPath( FbParams::GetText(FB_TEMP_DIR) );
-	file_name.SetExt(m_filetype);
+    FbTempEraser::Add(filepath);
+    wxFileOutputStream out(filepath);
+    out.Write(in);
+    out.Close();
+}
 
-	if ( !file_name.DirExists()) file_name.Mkdir(0777, wxPATH_MKDIR_FULL);
-
-	wxString file_path = file_name.GetFullPath();
-	FbTempEraser::Add(file_path);
-	wxFileOutputStream out(file_path);
-	out.Write(in);
-
+bool FbBookData::GetUserCommand(wxString &command) const
+{
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
 	FbLocalDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_filetype);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if ( result.NextRow() ) {
-		wxString command = result.GetString(0);
-		#if defined(__WIN32__)
-		file_path = wxT('"') + file_path + wxT('"');
-		ShellExecute(NULL, NULL, command, file_path, NULL, SW_SHOW);
-		#else
-		wxExecute(command + wxT(" \"") + file_path + wxT("\""));
-		#endif
-		return;
-	}
+	if (result.NextRow()) {
+	    command = result.GetString(0);
+	    return true;
+    }
+    return false;
+}
 
-	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(m_filetype);
+bool FbBookData::GetSystemCommand(const wxString &filepath, wxString &command) const
+{
+	wxFileType * ft = wxTheMimeTypesManager->GetFileTypeFromExtension(m_filetype);
 	if ( ft ) {
-		wxString cmd;
-		if (ft->GetOpenCommand(&cmd, wxFileType::MessageParameters(file_path, wxEmptyString))) {
-			wxExecute(cmd);
-			return;
-		}
-		delete ft;
-	}
+	    bool res = ft->GetOpenCommand(&command, wxFileType::MessageParameters(filepath, wxEmptyString));
+        delete ft;
+        return res;
+    }
+	return false;
+}
 
-	wxString msg = _("Associated application not found") + COLON + m_filetype;
-	wxMessageBox(msg);
+void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
+{
+	wxFileName filename = md5sum;
+	filename.SetPath( FbParams::GetText(FB_TEMP_DIR) );
+	filename.SetExt(m_filetype);
+
+	if ( !filename.DirExists()) filename.Mkdir(0755, wxPATH_MKDIR_FULL);
+
+	wxString filepath = filename.GetFullPath();
+	if (!filename.FileExists()) SaveFile(in, filepath);
+
+	wxString command;
+    if (GetUserCommand(command)) {
+		#ifdef __WXSMW__
+		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
+		#else
+		wxExecute(command + wxT(" \"") + filepath + wxT("\""));
+		#endif
+    } else if (GetSystemCommand(filepath, command)) {
+		wxExecute(command);
+    } else {
+        wxMessageBox(_("Associated application not found") + COLON + m_filetype);
+    }
 }
 
 void FbBookData::DoDownload() const
