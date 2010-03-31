@@ -33,6 +33,8 @@ class BookTreeItemData: public wxTreeItemData
 		BookTreeItemData(wxSQLite3ResultSet & result);
 		int GetId() const { return m_id; };
 	private:
+        static void Assign(wxSQLite3ResultSet &res, const wxString& column, int &value);
+        static void Assign(wxSQLite3ResultSet &res, const wxString& column, wxString &value);
 		int m_id;
 	public:
 		wxString title;

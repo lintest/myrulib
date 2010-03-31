@@ -23,16 +23,38 @@ void FbTempEraser::Add(const wxString &filename)
 }
 
 BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
-	m_id( res.GetInt(wxT("id"))),
-	title( res.GetString(wxT("title"))),
-	file_size(0), number(0), rating(0)
+	m_id(0), file_size(0), number(0), rating(0)
 {
-	try { file_size = res.GetInt(wxT("file_size")); } catch (...) {};
-	try { file_type = res.GetString(wxT("file_type")); } catch (...) {};
-	try { language = res.GetString(wxT("lang")); } catch (...) {};
-	try { genres = res.GetString(wxT("genres")); } catch (...) {};
-	try { number = res.GetInt(wxT("number")); } catch (...) {};
-	try { int r = res.GetInt(wxT("rating")); if ( 0<=r && r<=5 ) rating = r; } catch (...) {};
+    Assign(res, wxT("id"), m_id);
+    Assign(res, wxT("title"), title);
+    Assign(res, wxT("file_size"), file_size);
+    Assign(res, wxT("file_type"), file_type);
+    Assign(res, wxT("lang"), language);
+    Assign(res, wxT("genres"), genres);
+    Assign(res, wxT("number"), number);
+
+    Assign(res, wxT("rating"), rating);
+	if ( rating<0 || 5<rating ) rating = 0;
+}
+
+void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, int &value)
+{
+    for (int i=0; i<res.GetColumnCount(); i++) {
+        if (res.GetColumnName(i).CmpNoCase(column)==0) {
+            value = res.GetInt(i);
+            return;
+        }
+    }
+}
+
+void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, wxString &value)
+{
+    for (int i=0; i<res.GetColumnCount(); i++) {
+        if (res.GetColumnName(i).CmpNoCase(column)==0) {
+            value = res.GetString(i);
+            return;
+        }
+    }
 }
 
 void FbBookData::Open() const
