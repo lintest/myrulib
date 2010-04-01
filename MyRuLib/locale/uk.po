@@ -776,7 +776,7 @@ msgid "Humour"
 msgstr "Гумор"
 
 #: FbGenres.cpp:31
-msgid "Home Economics (Home and Family)"
+msgid "Home and Family"
 msgstr "Домоведення (Будинок та родина)"
 
 #: FbGenres.cpp:36
