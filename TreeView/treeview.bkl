@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<makefile>
+
+	<set var="BUILDDIR">../build</set>
+
+	<set var="WX_UNICODE_DEFAULT">1</set>
+	<set var="WX_DEBUG_DEFAULT">0</set>
+	<set var="WX_SHARED_DEFAULT">0</set>
+	
+	<include file="../Presets/wx.bkl"/>
+
+	<if cond="FORMAT=='mingw'">
+		<set var="WX_SHARED_DEFAULT">0</set>
+		<set var="DEFAULT_LDFLAGS">-static</set>
+	</if>
+	
+	<if cond="FORMAT=='gnu'">
+		<set var="WX_PORT_DEFAULT">gtk2</set>
+		<set var="WX_SHARED_DEFAULT">1</set>
+	</if>
+	
+	<lib id="sqlite3_static">
+		<define>SQLITE_ENABLE_FTS3</define>
+		<sources>../SQLite3/sqlite3.c</sources>
+	</lib>
+	
+	<lib id="wxsqlite3_static" template="wx-lib">
+		<define>NDEBUG</define>
+		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
+		<include>../SQLite3</include>
+		<include>../WxSQLite3</include>
+		<sources>../WxSQLite3/wxsqlite3.cpp</sources>
+	</lib>
+
+	<exe id="treeview" template="wxgui">
+		<define>NDEBUG</define>
+		<include>../WxSQLite3</include>
+		<sources>FbTreeView.cpp</sources> 
+		<sources>TestMain.cpp</sources> 
+		<sources>TestApp.cpp</sources> 
+		<wx-lib>adv</wx-lib>
+		<wx-lib>aui</wx-lib>
+		<wx-lib>html</wx-lib>
+		<wx-lib>core</wx-lib>
+		<wx-lib>net</wx-lib>
+		<wx-lib>base</wx-lib>
+	</exe>
+	
+</makefile>
