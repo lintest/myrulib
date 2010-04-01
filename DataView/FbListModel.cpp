@@ -12,8 +12,6 @@ IMPLEMENT_DYNAMIC_CLASS(FbTitleData, wxObject)
 // class FbListModelData
 // -----------------------------------------------------------------------------
 
-#define BOOK_CASHE_SIZE 64
-
 FbListModelData::FbListModelData(unsigned int id, wxSQLite3ResultSet &result)
 {
 	m_rowid    = id;
@@ -60,13 +58,13 @@ wxString FbListModelData::Format(const int number)
 wxString FbListModelData::GetValue(unsigned int col)
 {
 	switch (col) {
-		case FbListModel::COL_ROWID:
+		case fbCOL_ROWID:
 			return wxString::Format("%d", m_rowid);
-		case FbListModel::COL_BOOKID:
+		case fbCOL_BOOKID:
 			return wxString::Format("%d", m_bookid);
-		case FbListModel::COL_TITLE:
+		case fbCOL_TITLE:
 			return m_title;
-		case FbListModel::COL_SIZE:
+		case fbCOL_SIZE:
 			return Format(m_filesize);
 		default:
 			return wxEmptyString;
@@ -95,7 +93,11 @@ FbListModelData FbListModelCashe::FindRow(unsigned int rowid)
 {
     for (size_t i=0; i<Count(); i++) {
         FbListModelData data = Item(i);
-        if (data.Id()==rowid) return data;
+        if (data.GetId()==rowid) {
+            RemoveAt(i);
+            Insert(data, 0);
+            return data;
+        }
     }
 
     while (Count() > BOOK_CASHE_SIZE) RemoveAt(BOOK_CASHE_SIZE);
@@ -133,13 +135,13 @@ bool FbListModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned i
 	FbListModelData data = FindRow(row + 1);
 
     switch ( col ) {
-		case FbListModel::COL_ROWID: {
+		case fbCOL_ROWID: {
 			variant = wxString::Format("%d", row + 1);
 		} break;
-		case FbListModel::COL_TITLE: {
+		case fbCOL_TITLE: {
 			variant << FbTitleData( data.GetValue(col), m_checked.Index(row) != wxNOT_FOUND );
 		} break;
-		case FbListModel::COL_AUTHOR: {
+		case fbCOL_AUTHOR: {
 			variant = data.GetAuthors(m_database);
 		} break;
 		default: {
@@ -151,7 +153,7 @@ bool FbListModelCashe::GetValue(wxVariant &variant, unsigned int row, unsigned i
 
 bool FbListModelCashe::SetValue(const wxVariant &variant, unsigned int row, unsigned int col)
 {
-    if (col == FbListModel::COL_TITLE) {
+    if (col == fbCOL_TITLE) {
         FbTitleData data;
         data << variant;
         if (data.m_checked) m_checked.Add(row);
@@ -195,10 +197,10 @@ bool FbListModel::GetAttrByRow( unsigned int row, unsigned int col, wxDataViewIt
 	return false;
 
     switch ( col ) {
-        case COL_ROWID:
+        case fbCOL_ROWID:
             return false;
 
-        case COL_TITLE:
+        case fbCOL_TITLE:
             if ( !(row % 2) ) return false;
             attr.SetColour(*wxLIGHT_GREY);
             break;

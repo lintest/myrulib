@@ -5,6 +5,22 @@
 #include <wx/dataview.h>
 #include <wx/renderer.h>
 
+#define BOOK_CASHE_SIZE 64
+
+enum COL {
+    fbCOL_TITLE,
+    fbCOL_ROWID,
+    fbCOL_BOOKID,
+    fbCOL_SIZE,
+    fbCOL_AUTHOR,
+    fbCOL_GENRE,
+    fbCOL_NUMBER,
+    fbCOL_RATING,
+    fbCOL_TYPE,
+    fbCOL_LANG,
+    fbCOL_MAX,
+};
+
 class FbTitleData : public wxObject
 {
     public:

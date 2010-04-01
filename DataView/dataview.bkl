@@ -39,7 +39,6 @@
 		<sources>FbModelData.cpp</sources> 
 		<sources>FbListModel.cpp</sources> 
 		<sources>FbTreeModel.cpp</sources> 
-		<sources>GUIFrame.cpp</sources>  
 		<sources>TestMain.cpp</sources> 
 		<sources>TestApp.cpp</sources> 
 		<library>wxsqlite3_static</library>

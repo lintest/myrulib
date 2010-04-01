@@ -14,46 +14,83 @@
 #include "FbListModel.h"
 #include "FbTreeModel.h"
 
-//helper functions
-enum wxbuildinfoformat {
-    short_f, long_f };
+BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
+	EVT_CLOSE( DataViewFrame::OnClose )
+	EVT_MENU( idOpenList, DataViewFrame::OnOpenList )
+	EVT_MENU( idOpenTree, DataViewFrame::OnOpenTree )
+	EVT_MENU( idMenuQuit, DataViewFrame::OnQuit )
+	EVT_MENU( idMenuAbout, DataViewFrame::OnAbout )
+	EVT_DATAVIEW_ITEM_ACTIVATED(idDataView, DataViewFrame::OnActivated)
+	EVT_CHAR(DataViewFrame::OnKeyUp)
+END_EVENT_TABLE()
 
-wxString wxbuildinfo(wxbuildinfoformat format)
+DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id )
+    : wxFrame( parent, id, wxT("Test wxDataViewCtrl"), wxDefaultPosition, wxSize(600,400) )
 {
-    wxString wxbuild(wxVERSION_STRING);
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
-    if (format == long_f )
-    {
-#if defined(__WXMSW__)
-        wxbuild << _T("-Windows");
-#elif defined(__WXMAC__)
-        wxbuild << _T("-Mac");
-#elif defined(__UNIX__)
-        wxbuild << _T("-Linux");
-#endif
+	wxMenuBar * mbar = new wxMenuBar( 0 );
+	wxMenu * fileMenu = new wxMenu();
 
-#if wxUSE_UNICODE
-        wxbuild << _T("-Unicode build");
-#else
-        wxbuild << _T("-ANSI build");
-#endif // wxUSE_UNICODE
-    }
+	wxMenuItem* menuFileOpen = new wxMenuItem( fileMenu, idOpenList, wxString( _("&Open list") ) + wxT('\t') + wxT("Ctrl+O"), _("Open file"), wxITEM_NORMAL );
+	fileMenu->Append( menuFileOpen );
 
-    return wxbuild;
-}
+	wxMenuItem* menuOpenTree = new wxMenuItem( fileMenu, idOpenTree, wxString( _("&Open tree") ) + wxT('\t') + wxT("Ctrl+O"), _("Open file"), wxITEM_NORMAL );
+	fileMenu->Append( menuOpenTree );
 
+	wxMenuItem* menuFileQuit = new wxMenuItem( fileMenu, idMenuQuit, wxString( _("&Quit") ) + wxT('\t') + wxT("Alt+F4"), _("Quit the application"), wxITEM_NORMAL );
+	fileMenu->Append( menuFileQuit );
 
-DataViewFrame::DataViewFrame(wxFrame *frame)
-    : GUIFrame(frame)
-{
-#if wxUSE_STATUSBAR
+	mbar->Append( fileMenu, _("&File") );
+
+	wxMenu * helpMenu = new wxMenu();
+	wxMenuItem* menuHelpAbout;
+	menuHelpAbout = new wxMenuItem( helpMenu, idMenuAbout, wxString( _("&About") ) + wxT('\t') + wxT("F1"), _("Show info about this application"), wxITEM_NORMAL );
+	helpMenu->Append( menuHelpAbout );
+
+	mbar->Append( helpMenu, _("&Help") );
+
+	this->SetMenuBar( mbar );
+
+	m_statusbar = this->CreateStatusBar( 2, wxST_SIZEGRIP, wxID_ANY );
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
+
+	m_dataview = new FbDataViewCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize, wxDV_MULTIPLE | wxDV_ROW_LINES | wxDV_VERT_RULES);
+
+    int flags = wxDATAVIEW_COL_RESIZABLE;
+
+    FbTitleRenderer *cr = new FbTitleRenderer;
+    wxDataViewColumn *column = new wxDataViewColumn(wxT("title"), cr, 0, 200, wxALIGN_LEFT, flags );
+    m_dataview->AppendColumn( column );
+
+	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
+
+	this->SetSizer( bSizer1 );
+	this->Layout();
+
+    wxLogWindow * log = new wxLogWindow(this, "Log Messages", false);
+    log->GetFrame()->Move(GetPosition().x + GetSize().x + 10, GetPosition().y);
+    log->Show();
+
     m_statusbar->SetStatusText(_("Hello Code::Blocks user!"), 0);
-    m_statusbar->SetStatusText(wxbuildinfo(short_f), 1);
-#endif
 }
 
 DataViewFrame::~DataViewFrame()
 {
+}
+
+void DataViewFrame::OnActivated(wxDataViewEvent& event)
+{
+	m_dataview->Expand(event.GetItem());
+    wxLogMessage(wxT("DataViewFrame::Activate"));
+    event.Skip();
+}
+
+void DataViewFrame::OnKeyUp(wxKeyEvent& event)
+{
+    wxLogMessage(wxT("DataViewFrame::OnChar"));
+    event.Skip();
 }
 
 void DataViewFrame::OnClose(wxCloseEvent &event)
@@ -68,8 +105,7 @@ void DataViewFrame::OnQuit(wxCommandEvent &event)
 
 void DataViewFrame::OnAbout(wxCommandEvent &event)
 {
-    wxString msg = wxbuildinfo(long_f);
-    wxMessageBox(msg, _("Welcome to..."));
+    wxMessageBox(_("About..."), _("Welcome to..."));
 }
 
 void DataViewFrame::OnOpenList(wxCommandEvent &event)
@@ -112,7 +148,7 @@ void DataViewFrame::OnOpenTree(wxCommandEvent &event)
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-        FbTreeModel * model = new FbTreeModel(dlg.GetPath());
+        FbTreeModel * model = new FbFullTreeModel(dlg.GetPath());
 	    m_dataview->AssociateModel(model);
 
 	    while (m_dataview->GetColumnCount()>1) m_dataview->DeleteColumn(m_dataview->GetColumn(1));

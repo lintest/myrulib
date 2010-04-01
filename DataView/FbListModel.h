@@ -14,7 +14,7 @@ class FbListModelData
         FbListModelData(const FbListModelData &data);
         wxString GetValue(unsigned int col);
 		wxString GetAuthors(wxSQLite3Database &database);
-        unsigned int Id() { return m_rowid; };
+        unsigned int GetId() { return m_rowid; };
     private:
 		wxString Format(const int number);
     private:
@@ -47,45 +47,14 @@ class FbListModelCashe: private FbListModelArray
 
 class FbListModel: public wxDataViewVirtualListModel
 {
-	public:
-		enum COL
-		{
-			COL_TITLE,
-			COL_ROWID,
-			COL_BOOKID,
-			COL_SIZE,
-			COL_AUTHOR,
-			COL_GENRE,
-			COL_NUMBER,
-			COL_RATING,
-			COL_TYPE,
-			COL_LANG,
-			COL_MAX,
-		};
-
     public:
-
         FbListModel(const wxString &filename);
-
         virtual ~FbListModel();
-
-        // implementation of base class virtuals to define model
-
-        virtual unsigned int GetColumnCount() const
-        {
-            return COL_MAX;
-        }
-
-        virtual wxString GetColumnType( unsigned int col ) const
-        {
-            return wxT("string");
-        }
-
+        virtual unsigned int GetColumnCount() const { return fbCOL_MAX; }
+        virtual wxString GetColumnType( unsigned int col ) const { return wxT("string"); }
         virtual void GetValueByRow( wxVariant &variant, unsigned int row, unsigned int col ) const;
         virtual bool GetAttrByRow( unsigned int row, unsigned int col, wxDataViewItemAttr &attr ) const;
         virtual bool SetValueByRow( const wxVariant &variant, unsigned int row, unsigned int col );
-
-    public:
 
     private:
         long Init(const wxString &filename);

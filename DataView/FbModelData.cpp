@@ -75,6 +75,14 @@ bool FbTitleRenderer::SetValue( const wxVariant &value )
 bool FbTitleRenderer::Activate( wxRect cell, wxDataViewModel *model, const wxDataViewItem & item, unsigned int col)
 {
     wxLogMessage(wxT("FbTitleRenderer::Activate"));
+
+    wxWindow * parent = GetOwner()->GetOwner();
+    wxDataViewEvent le(wxEVT_COMMAND_DATAVIEW_ITEM_ACTIVATED, parent->GetId());
+    le.SetEventObject(parent);
+    le.SetModel(model);
+    le.SetItem(item);
+    parent->GetEventHandler()->ProcessEvent(le);
+
 	return true;
 }
 

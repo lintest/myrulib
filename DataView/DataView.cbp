@@ -161,8 +161,6 @@
 		<Unit filename="FbModelData.h" />
 		<Unit filename="FbTreeModel.cpp" />
 		<Unit filename="FbTreeModel.h" />
-		<Unit filename="GUIFrame.cpp" />
-		<Unit filename="GUIFrame.h" />
 		<Unit filename="TestApp.cpp" />
 		<Unit filename="TestApp.h" />
 		<Unit filename="TestMain.cpp" />
