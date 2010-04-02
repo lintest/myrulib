@@ -11,6 +11,8 @@
 
 #include <wx/wx.h>
 
+#define FB_CHECKBOX_HEIGHT 14
+
 class FbLogoBitmap: public wxBitmap
 {
 	public:

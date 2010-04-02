@@ -5,6 +5,8 @@
 #include <wx/scrolwin.h>
 #include <wx/dcbuffer.h>
 #include <wx/log.h>
+#include "../MyRuLib/FbLogoBitmap.h"
+
 
 class WXDLLEXPORT wxControlRenderer;
 
@@ -13,11 +15,11 @@ const wxChar* wxTreeListCtrlNameStr = _T("treelistctrl");
 class wxTreeListColumnInfo
 {
     public:
-        wxTreeListColumnInfo() {};
+		wxTreeListColumnInfo() {}
 
         wxTreeListColumnInfo(
-            const wxString &text = wxEmptyString,
             unsigned int model_column,
+            const wxString &text = wxEmptyString,
             int width = DEFAULT_COL_WIDTH,
             int flag = wxALIGN_LEFT
         ) : m_text(text), m_model_column(model_column), m_width(width), m_flag(flag) {};
@@ -49,15 +51,13 @@ WX_DEFINE_OBJARRAY(wxArrayTreeListColumn);
 class  wxTreeListHeaderWindow : public wxWindow
 {
 	public:
-		wxTreeListHeaderWindow();
-
 		wxTreeListHeaderWindow( wxWindow *win,
 								wxWindowID id,
 								wxTreeListMainWindow *owner,
 								const wxPoint &pos = wxDefaultPosition,
 								const wxSize &size = wxDefaultSize,
 								long style = 0,
-								const wxString &name = _T("wxtreelistctrlcolumntitles") );
+								const wxString &name = wxT("wxtreelistctrlcolumntitles") );
 
 		virtual ~wxTreeListHeaderWindow();
 
@@ -94,25 +94,19 @@ class  wxTreeListHeaderWindow : public wxWindow
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void OnMouse( wxMouseEvent &event );
 		void OnSetFocus( wxFocusEvent &event );
-		DECLARE_DYNAMIC_CLASS(wxTreeListHeaderWindow)
 		DECLARE_EVENT_TABLE()
 };
 
 class  wxTreeListMainWindow: public wxScrolledWindow
 {
 	public:
-		// creation
-		// --------
-		wxTreeListMainWindow() { Init(); }
-
 		wxTreeListMainWindow (wxTreeListCtrl *parent, wxWindowID id = -1,
 				   const wxPoint& pos = wxDefaultPosition,
 				   const wxSize& size = wxDefaultSize,
 				   long style = wxTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
-				   const wxString& name = _T("wxtreelistmainwindow"))
+				   const wxString& name = wxT("wxtreelistmainwindow"))
 		{
-			Init();
 			Create (parent, id, pos, size, style, validator, name);
 		}
 
@@ -131,13 +125,18 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 
 		unsigned long GetRowCount() { return 500; };
 
-	protected:
+		void SetDirty() { m_dirty = true; }
+
+	private:
+		int GetRowHeight(wxDC &dc);
         void AdjustMyScrollbars();
+
+	private:
 		wxTreeListCtrl* m_owner;
         wxPen m_dottedPen;
-        bool m_dirty;
         wxFont m_font;
 		int m_current;
+        bool m_dirty;
 
 	private:
 		void OnPaint( wxPaintEvent &event );
@@ -152,7 +151,6 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 
 	private:
 		DECLARE_EVENT_TABLE()
-		DECLARE_DYNAMIC_CLASS(wxTreeListMainWindow)
 };
 
 //-----------------------------------------------------------------------------
@@ -171,18 +169,12 @@ void wxTreeListColumnInfo::Assign(wxTreeListHeaderWindow * header, wxHeaderButto
 //  wxTreeListHeaderWindow
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxTreeListHeaderWindow,wxWindow);
-
 BEGIN_EVENT_TABLE(wxTreeListHeaderWindow,wxWindow)
     EVT_PAINT         (wxTreeListHeaderWindow::OnPaint)
     EVT_ERASE_BACKGROUND(wxTreeListHeaderWindow::OnEraseBackground) // reduce flicker
     EVT_MOUSE_EVENTS  (wxTreeListHeaderWindow::OnMouse)
     EVT_SET_FOCUS     (wxTreeListHeaderWindow::OnSetFocus)
 END_EVENT_TABLE()
-
-wxTreeListHeaderWindow::wxTreeListHeaderWindow()
-{
-}
 
 wxTreeListHeaderWindow::wxTreeListHeaderWindow(wxWindow *win, wxWindowID id, wxTreeListMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
     : wxWindow(win, id, pos, size, style, name), m_owner(owner), m_sorted(0)
@@ -217,7 +209,7 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
     int x = 0;
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
-    for ( int i = 0; i < count && x < www; i++ ) {
+    for ( size_t i = 0; i < count && x < www; i++ ) {
         wxHeaderButtonParams params;
         GetColumn(i).Assign(this, params);
 
@@ -227,8 +219,7 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         x += wCol;
 
 		wxHeaderSortIconType sort = wxHDR_SORT_ICON_NONE;
-		if (i+1 == GetSortedColumn()) sort = wxHDR_SORT_ICON_DOWN;
-		if (i+1 == - GetSortedColumn()) sort = wxHDR_SORT_ICON_UP;
+		if (abs(m_sorted) == (int)i + 1) m_sorted = i>0 ? wxHDR_SORT_ICON_DOWN : wxHDR_SORT_ICON_UP;
 
         wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
     }
@@ -246,7 +237,7 @@ int wxTreeListHeaderWindow::XToCol(int x)
     w -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
-    for ( int col = 0; col < count; col++ ) {
+    for ( size_t col = 0; col < count; col++ ) {
         left += GetColumnWidth(col) * w / ww;
         if (x < left) return col;
     }
@@ -292,8 +283,6 @@ void wxTreeListHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int c
 // ---------------------------------------------------------------------------
 // wxTreeListMainWindow implementation
 // ---------------------------------------------------------------------------
-
-IMPLEMENT_DYNAMIC_CLASS(wxTreeListMainWindow, wxScrolledWindow)
 
 BEGIN_EVENT_TABLE(wxTreeListMainWindow, wxScrolledWindow)
     EVT_PAINT          (wxTreeListMainWindow::OnPaint)
@@ -369,12 +358,19 @@ wxTreeListMainWindow::~wxTreeListMainWindow()
 {
 }
 
+int wxTreeListMainWindow::GetRowHeight(wxDC &dc)
+{
+	dc.SetFont(GetFont());
+	int h = (int)(dc.GetCharHeight() + 2);
+	return h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
+}
+
 void wxTreeListMainWindow::AdjustMyScrollbars()
 {
     if (true) {
         wxClientDC dc (this);
         dc.SetFont(GetFont());
-        int y = (int)(dc.GetCharHeight() + 2);
+        int y = GetRowHeight(dc);
 
         int xUnit, yUnit;
         GetScrollPixelsPerUnit (&xUnit, &yUnit);
@@ -401,28 +397,26 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
     int ww, hh;
     GetClientSize(&ww, &hh);
 
-    int h = dc.GetCharHeight() + 2;
+    int h = GetRowHeight(dc);
     int yy = h * y_pos + hh;
+
+	static wxBitmap bitmaps[3] = {
+		wxBitmap(nocheck_xpm),
+		wxBitmap(checked_xpm),
+		wxBitmap(checkout_xpm),
+	};
 
     for (size_t i = y_pos; i<GetRowCount(); i++)
     {
-        int x = h;
         int y = i * h;
         if (y>yy) break;
 
-        long flag = 0;
-        switch (i % 3) {
-            case 1: flag = wxCONTROL_CHECKED; break;
-            case 2: flag = wxCONTROL_DISABLED; break;
-        }
-
-        wxRect checkbox(0, y, x, h);
-        checkbox.Deflate(2, 2);
-        wxRendererNative::Get().DrawCheckBox(this, dc, checkbox, flag);
-
         wxString text = wxString::Format(_("Paint %d"), i);
         for (size_t j=0; j<i%30; j++) text += _(" 0");
-        dc.DrawText(text, x + 2, y);
+
+		wxRect rect(0, y, ww, h);
+        rect.Deflate(2, 2);
+		dc.DrawLabel(text, bitmaps[i % 3], rect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
     }
 }
 
@@ -680,12 +674,13 @@ void wxTreeListMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
 
 void wxTreeListMainWindow::OnScroll (wxScrollWinEvent& event)
 {
-    // FIXME
-#if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
-    wxScrolledWindow::OnScroll(event);
-#else
-    HandleOnScroll( event );
-#endif
+//    // FIXME
+//    #if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
+//    wxScrolledWindow::OnScroll(event);
+//    #else
+//    HandleOnScroll( event );
+//    #endif
+	HandleOnScroll( event );
 }
 
 bool wxTreeListMainWindow::SetBackgroundColour (const wxColour& colour)
@@ -753,6 +748,7 @@ void wxTreeListCtrl::DoHeaderLayout()
         m_header_win->Refresh();
     }
     if (m_main_win) {
+		m_main_win->SetDirty();
         m_main_win->SetSize (0, h, x, y - h);
     }
 }
@@ -804,9 +800,9 @@ bool wxTreeListCtrl::SetFont(const wxFont& font)
     }
 }
 
-void wxTreeListCtrl::AddColumn(const wxString& text, unsigned int model_column, int width, int flag)
+void wxTreeListCtrl::AddColumn(unsigned int model_column, const wxString& text, int width, int flag)
 {
-    if (m_header_win) m_header_win->AddColumn(wxTreeListColumnInfo(text, model_column, width, flag));
+    if (m_header_win) m_header_win->AddColumn(wxTreeListColumnInfo(model_column, text, width, flag));
 }
 
 void wxTreeListCtrl::SetSortedColumn(int column)
@@ -818,4 +814,6 @@ int wxTreeListCtrl::GetSortedColumn()
 {
     return m_header_win ? m_header_win->GetSortedColumn() : 0;
 }
+
+
 

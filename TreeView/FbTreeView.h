@@ -77,8 +77,8 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 
         virtual bool SetFont(const wxFont& font);
 
-        void AddColumn (const wxString& text,
-                        unsigned int model_column,
+        void AddColumn (unsigned int model_column,
+                        const wxString& text = wxEmptyString,
                         int width = DEFAULT_COL_WIDTH,
                         int flag = wxALIGN_LEFT);
 
