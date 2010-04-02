@@ -137,7 +137,7 @@ class  wxTreeListMainWindow: public wxScrolledWindow
         wxPen m_dottedPen;
         bool m_dirty;
         wxFont m_font;
-		unsigned long m_current;
+		int m_current;
 
 	private:
 		void OnPaint( wxPaintEvent &event );
@@ -319,6 +319,8 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
                                    const wxValidator &validator,
                                    const wxString& name)
 {
+	m_current = -1;
+
     wxScrolledWindow::Create (parent, id, pos, size, style|wxVSCROLL, name);
 
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
@@ -390,10 +392,9 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
     wxAutoBufferedPaintDC dc (this);
     DoPrepareDC (dc);
     wxBrush brush(GetBackgroundColour(), wxSOLID);
+    dc.SetFont(GetFont());
     dc.SetBackground(brush);
     dc.Clear();
-
-    dc.SetFont(GetFont());
 
     int y_pos = GetScrollPos(wxVERTICAL);
 
@@ -403,10 +404,9 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
     int h = dc.GetCharHeight() + 2;
     int yy = h * y_pos + hh;
 
-    int last;
-
     for (size_t i = y_pos; i<GetRowCount(); i++)
     {
+        int x = h;
         int y = i * h;
         if (y>yy) break;
 
@@ -416,31 +416,29 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
             case 2: flag = wxCONTROL_DISABLED; break;
         }
 
-        wxRect checkbox(0, y, h, h);
+        wxRect checkbox(0, y, x, h);
         checkbox.Deflate(2, 2);
         wxRendererNative::Get().DrawCheckBox(this, dc, checkbox, flag);
 
         wxString text = wxString::Format(_("Paint %d"), i);
         for (size_t j=0; j<i%30; j++) text += _(" 0");
-        dc.DrawText(text, h + 2, y);
-
-        last = i;
+        dc.DrawText(text, x + 2, y);
     }
-    wxLogMessage(_("%d - %d"), y_pos, last);
 }
 
 void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
 {
 }
 
-void wxTreeListMainWindow::OnChar (wxKeyEvent &event)
+void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
 {
 /*
     // send event to user code
     wxTreeEvent nevent (wxEVT_COMMAND_TREE_KEY_DOWN, 0 );
-    nevent.SetInt(m_curColumn);
+    nevent.SetInt(m_current);
     nevent.SetKeyEvent (event);
     if (SendEvent(0, NULL, &nevent)) return; // char event handled in user code
+
 
     // if no item current, select root
     bool curItemSet = false;
