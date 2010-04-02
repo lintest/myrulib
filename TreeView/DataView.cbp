@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinDebug\dataview" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\LinDebug\" />
-				<Option object_output="..\build\LinDebug\" />
+				<Option output="../build/LinDebug/dataview" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinDebug/" />
+				<Option object_output="../build/LinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -20,14 +20,14 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
-					<Add directory="..\build\LinDebug" />
+					<Add directory="../build/LinDebug" />
 				</Linker>
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinRelease\dataview" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\build\LinRelease\" />
-				<Option object_output="..\build\LinRelease\" />
+				<Option output="../build/LinRelease/dataview" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinRelease/" />
+				<Option object_output="../build/LinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -38,12 +38,12 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="`wx-config --libs`" />
-					<Add directory="..\build\LinRelease" />
+					<Add directory="../build/LinRelease" />
 				</Linker>
 			</Target>
 			<Target title="WinDebug">
-				<Option output="..\build\WinDebug\dataview" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\build\WinDebug\Debug\" />
+				<Option output="../build/WinDebug/dataview" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/WinDebug/Debug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -52,13 +52,13 @@
 					<Add option="-D__WXMSW__" />
 					<Add option="-D__WXDEBUG__" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
-					<Add directory="$(WXWIN)\include" />
-					<Add directory="$(WXWIN)\contrib\include" />
-					<Add directory="..\WxSQLite3" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
+					<Add directory="../WxSQLite3" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28ud_aui.a" />
@@ -88,13 +88,13 @@
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
 					<Add library="libshlwapi.a" />
-					<Add directory="$(WXWIN)\lib\gcc_lib" />
-					<Add directory="..\build\WinDebug\" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinDebug/" />
 				</Linker>
 			</Target>
 			<Target title="WinRelease">
-				<Option output="..\build\WinRelease\dataview" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\build\WinRelease\" />
+				<Option output="../build/WinRelease/dataview" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/WinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -107,13 +107,13 @@
 					<Add option="-D__WXMSW__" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-DNDEBUG" />
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
-					<Add directory="$(WXWIN)\include" />
-					<Add directory="$(WXWIN)\contrib\include" />
-					<Add directory="..\WxSQLite3" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
+					<Add directory="../WxSQLite3" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28u_adv.a" />
@@ -143,19 +143,21 @@
 					<Add library="liboleaut32.a" />
 					<Add library="libuuid.a" />
 					<Add library="libshlwapi.a" />
-					<Add directory="$(WXWIN)\lib\gcc_lib" />
-					<Add directory="..\build\WinRelease\" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinRelease/" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add directory="..\WxSQLite3" />
+			<Add directory="../WxSQLite3" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 		</Linker>
+		<Unit filename="FbTreItemId.cpp" />
+		<Unit filename="FbTreItemId.h" />
 		<Unit filename="FbTreeView.cpp" />
 		<Unit filename="FbTreeView.h" />
 		<Unit filename="TestApp.cpp" />
