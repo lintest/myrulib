@@ -36,6 +36,8 @@
 	<exe id="treeview" template="wxgui">
 		<define>NDEBUG</define>
 		<include>../WxSQLite3</include>
+		<sources>FbTreeItem.cpp</sources> 
+		<sources>FbTreeModel.cpp</sources> 
 		<sources>FbTreeView.cpp</sources> 
 		<sources>TestMain.cpp</sources> 
 		<sources>TestApp.cpp</sources> 
