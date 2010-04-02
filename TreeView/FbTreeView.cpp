@@ -130,6 +130,7 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 	private:
 		int GetRowHeight(wxDC &dc);
         void AdjustMyScrollbars();
+		bool SendEvent(wxEventType type, wxTreeListItem *item = NULL, wxTreeEvent *event = NULL);  // returns true if processed
 
 	private:
 		wxTreeListCtrl* m_owner;
@@ -422,13 +423,13 @@ void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
 
 void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
 {
-/*
     // send event to user code
     wxTreeEvent nevent (wxEVT_COMMAND_TREE_KEY_DOWN, 0 );
     nevent.SetInt(m_current);
     nevent.SetKeyEvent (event);
     if (SendEvent(0, NULL, &nevent)) return; // char event handled in user code
 
+/*
 
     // if no item current, select root
     bool curItemSet = false;
@@ -663,9 +664,8 @@ void wxTreeListMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
     if (!m_dirty) return;
     m_dirty = false;
 
-//    CalculatePositions();
-    Refresh();
     AdjustMyScrollbars();
+    Refresh();
 }
 
 void wxTreeListMainWindow::OnScroll (wxScrollWinEvent& event)
@@ -693,6 +693,22 @@ bool wxTreeListMainWindow::SetForegroundColour (const wxColour& colour)
 
     Refresh();
     return true;
+}
+
+bool wxTreeListMainWindow::SendEvent(wxEventType type, wxTreeListItem *item, wxTreeEvent *event)
+{
+	wxTreeEvent nevent(type, 0);
+
+    if (event == NULL) {
+        event = &nevent;
+        event->SetInt(0);
+    }
+
+    event->SetEventObject(m_owner);
+    event->SetId(m_owner->GetId());
+    if (item) event->SetItem(item);
+
+    return m_owner->GetEventHandler()->ProcessEvent (*event);
 }
 
 //-----------------------------------------------------------------------------
