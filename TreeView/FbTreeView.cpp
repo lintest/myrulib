@@ -5,9 +5,6 @@
 #include <wx/scrolwin.h>
 #include <wx/dcbuffer.h>
 
-#define HEADER_OFFSET_X 0
-#define HEADER_OFFSET_Y 1
-
 class WXDLLEXPORT wxControlRenderer;
 
 const wxChar* wxTreeListCtrlNameStr = _T("treelistctrl");
@@ -15,6 +12,8 @@ const wxChar* wxTreeListCtrlNameStr = _T("treelistctrl");
 class wxTreeListColumnInfo
 {
     public:
+        wxTreeListColumnInfo() {};
+
         wxTreeListColumnInfo(
             const wxString &text = wxEmptyString,
             unsigned int model_column,
@@ -39,6 +38,8 @@ class wxTreeListColumnInfo
         friend class wxTreeListMainWindow;
 };
 
+static wxTreeListColumnInfo wxInvalidTreeListColumnInfo;
+
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(wxTreeListColumnInfo, wxArrayTreeListColumn);
 #include <wx/arrimpl.cpp>
@@ -59,35 +60,41 @@ class  wxTreeListHeaderWindow : public wxWindow
 
 		virtual ~wxTreeListHeaderWindow();
 
-        void AdjustDC(wxDC& dc);
-
         void AddColumn(const wxTreeListColumnInfo & info) { m_columns.Add(info); };
 
-        size_t GetColumnCount() { return m_columns.Count(); };
+        size_t GetColumnCount() const { return m_columns.Count(); };
 
-        int GetColumnWidth(size_t col) { return m_columns[col].GetWidth(); };
+        const wxTreeListColumnInfo & GetColumn (size_t column) const {
+            wxCHECK_MSG (column < GetColumnCount(), wxInvalidTreeListColumnInfo, _T("Invalid column"));
+            return m_columns[column];
+        }
+
+        int GetColumnWidth(size_t column) { return GetColumn(column).GetWidth(); };
 
         int GetFullWidth();
 
-	protected:
+        int XToCol(int x);
+
+        int GetSortedColumn() { return m_sorted; }
+
+        void SetSortedColumn(int column) { m_sorted = column; }
+
+	private:
 		wxTreeListMainWindow * m_owner;
 		const wxCursor * m_currentCursor;
 		const wxCursor * m_resizeCursor;
 		wxArrayTreeListColumn m_columns;
+		int m_sorted;
+
+	private:
+		void Init();
+        void SendListEvent(wxEventType type, wxPoint pos, int colunm);
 
 	private:
 		void OnPaint( wxPaintEvent &event );
-//        virtual void DoDraw(wxControlRenderer *renderer);
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void OnMouse( wxMouseEvent &event );
 		void OnSetFocus( wxFocusEvent &event );
-
-	private:
-		// common part of all ctors
-		void Init();
-
-		void SendListEvent(wxEventType type, wxPoint pos);
-
 		DECLARE_DYNAMIC_CLASS(wxTreeListHeaderWindow)
 		DECLARE_EVENT_TABLE()
 };
@@ -173,6 +180,7 @@ void wxTreeListHeaderWindow::Init()
 {
     m_currentCursor = (wxCursor *) NULL;
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+    m_sorted = 0;
 }
 
 wxTreeListHeaderWindow::wxTreeListHeaderWindow()
@@ -205,19 +213,6 @@ wxTreeListHeaderWindow::~wxTreeListHeaderWindow()
     wxDELETE(m_resizeCursor);
 }
 
-// shift the DC origin to match the position of the main window horz
-// scrollbar: this allows us to always use logical coords
-void wxTreeListHeaderWindow::AdjustDC(wxDC& dc)
-{
-    int xpix;
-    m_owner->GetScrollPixelsPerUnit( &xpix, NULL );
-    int x;
-    m_owner->GetViewStart( &x, NULL );
-
-    // account for the horz scrollbar offset
-    dc.SetDeviceOrigin( -x * xpix, 0 );
-}
-
 int wxTreeListHeaderWindow::GetFullWidth()
 {
     int ww = 0;
@@ -231,52 +226,84 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 //void wxTreeListHeaderWindow::DoDraw(wxControlRenderer *renderer)
 {
     wxAutoBufferedPaintDC dc( this );
-    AdjustDC( dc );
-
-    int x = HEADER_OFFSET_X;
-
-    // width and height of the entire header window
-    int w, h;
-    GetClientSize( &w, &h );
-    m_owner->CalcUnscrolledPosition(w, 0, &w, NULL);
     dc.SetBackgroundMode(wxTRANSPARENT);
 
+    int w, h;
+    GetClientSize( &w, &h );
+
+    int x = 0;
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
     for ( int i = 0; i < count && x < w; i++ )
     {
         wxHeaderButtonParams params;
-        m_columns[i].Assign(this, params);
+        GetColumn(i).Assign(this, params);
 
         int wCol = GetColumnWidth(i) * w / ww;
-        int flags = 0;
+        if (i == count-1) wCol = w - x;
         wxRect rect(x, 0, wCol, h);
         x += wCol;
 
-		// DENIS KANDRASHIN 2009-11-17 - BEGIN - Sort column
-		wxHeaderSortIconType sortArrow = wxHDR_SORT_ICON_NONE;
-		if (i == 1) sortArrow = wxHDR_SORT_ICON_DOWN;
-		if (i == 2) sortArrow = wxHDR_SORT_ICON_UP;
-		// END DENIS
+		wxHeaderSortIconType sort = wxHDR_SORT_ICON_NONE;
+		if (i+1 == GetSortedColumn()) sort = wxHDR_SORT_ICON_DOWN;
+		if (i+1 == - GetSortedColumn()) sort = wxHDR_SORT_ICON_UP;
 
-        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, flags, sortArrow, &params);
+        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
     }
 
     if (x < w) {
         wxRect rect(x, 0, w-x, h);
         wxRendererNative::Get().DrawHeaderButton(this, dc, rect);
     }
+}
 
+int wxTreeListHeaderWindow::XToCol(int x)
+{
+    int w, left = 0;
+    GetClientSize( &w, 0 );
+    int ww = GetFullWidth();
+    size_t count = GetColumnCount();
+    for ( int col = 0; col < count; col++ ) {
+        left += GetColumnWidth(col) * w / ww;
+        if (x < left) return col;
+    }
+    return count - 1;
 }
 
 void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event)
 {
+    if (event.LeftUp() && m_sorted) {
+        int col = XToCol(event.GetX());
+        if (abs(m_sorted) == col + 1) {
+            m_sorted = - m_sorted;
+        } else {
+            m_sorted = col + 1;
+        }
+        SendListEvent (wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
+        Refresh();
+    }
 	event.Skip();
 }
 
 void wxTreeListHeaderWindow::OnSetFocus (wxFocusEvent &WXUNUSED(event))
 {
     m_owner->SetFocus();
+}
+
+void wxTreeListHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int colunm)
+{
+    wxWindow *parent = GetParent();
+    wxListEvent le (type, parent->GetId());
+    le.SetEventObject (parent);
+    le.m_pointDrag = pos;
+
+    // the position should be relative to the parent window, not
+    // this one for compatibility with MSW and common sense: the
+    // user code doesn't know anything at all about this header
+    // window, so why should it get positions relative to it?
+    le.m_pointDrag.y -= GetSize().y;
+    le.m_col = colunm;
+    parent->GetEventHandler()->ProcessEvent (le);
 }
 
 // ---------------------------------------------------------------------------
@@ -364,7 +391,7 @@ void wxTreeListMainWindow::AdjustMyScrollbars()
         if (yUnit == 0) yUnit = y;
 
         int y_pos = GetScrollPos (wxVERTICAL);
-        SetScrollbars (0, yUnit, 0, 100, 0, y_pos);
+        SetScrollbars (0, yUnit, 0, 30, 0, y_pos);
     }else{
         SetScrollbars (0, 0, 0, 0);
     }
@@ -488,6 +515,9 @@ void wxTreeListCtrl::DoHeaderLayout()
     int h = 0;
     if (m_header_win) {
         h = wxRendererNative::Get().GetHeaderButtonHeight(m_header_win);
+        #ifdef __WXMSW__
+        h = h * 4 / 5 + 2;
+        #endif
         m_header_win->SetSize (0, 0, x, h);
         m_header_win->Refresh();
     }
@@ -546,5 +576,15 @@ bool wxTreeListCtrl::SetFont(const wxFont& font)
 void wxTreeListCtrl::AddColumn(const wxString& text, unsigned int model_column, int width, int flag)
 {
     if (m_header_win) m_header_win->AddColumn(wxTreeListColumnInfo(text, model_column, width, flag));
+}
+
+void wxTreeListCtrl::SetSortedColumn(int column)
+{
+    if (m_header_win) m_header_win->SetSortedColumn(column);
+}
+
+int wxTreeListCtrl::GetSortedColumn()
+{
+    return m_header_win ? m_header_win->GetSortedColumn() : 0;
 }
 

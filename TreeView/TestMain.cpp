@@ -55,6 +55,8 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	m_dataview->AddColumn(_("type"), 1, 50);
 	m_dataview->AddColumn(_("size"), 1, 50);
 
+	m_dataview->SetSortedColumn(2);
+
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
 
 	this->SetSizer( bSizer1 );
