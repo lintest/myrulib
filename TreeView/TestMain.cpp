@@ -50,8 +50,8 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
 	m_dataview = new wxTreeListCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize);
-	m_dataview->AddColumn(_("title"), 0, 100);
-	m_dataview->AddColumn(_("author"), 1, 200);
+	m_dataview->AddColumn(_("title"), 0, 200);
+	m_dataview->AddColumn(_("author"), 1, 150);
 	m_dataview->AddColumn(_("type"), 1, 50);
 	m_dataview->AddColumn(_("size"), 1, 50);
 

@@ -4,6 +4,7 @@
 #include <wx/renderer.h>
 #include <wx/scrolwin.h>
 #include <wx/dcbuffer.h>
+#include <wx/log.h>
 
 class WXDLLEXPORT wxControlRenderer;
 
@@ -81,8 +82,6 @@ class  wxTreeListHeaderWindow : public wxWindow
 
 	private:
 		wxTreeListMainWindow * m_owner;
-		const wxCursor * m_currentCursor;
-		const wxCursor * m_resizeCursor;
 		wxArrayTreeListColumn m_columns;
 		int m_sorted;
 
@@ -127,12 +126,18 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 					const wxString& name = _T("wxtreelistctrl"));
 
 		virtual bool SetBackgroundColour (const wxColour& colour);
+
 		virtual bool SetForegroundColour (const wxColour& colour);
+
+		unsigned long GetRowCount() { return 500; };
 
 	protected:
         void AdjustMyScrollbars();
 		wxTreeListCtrl* m_owner;
         wxPen m_dottedPen;
+        bool m_dirty;
+        wxFont m_font;
+		unsigned long m_current;
 
 	private:
 		void OnPaint( wxPaintEvent &event );
@@ -175,42 +180,19 @@ BEGIN_EVENT_TABLE(wxTreeListHeaderWindow,wxWindow)
     EVT_SET_FOCUS     (wxTreeListHeaderWindow::OnSetFocus)
 END_EVENT_TABLE()
 
-
-void wxTreeListHeaderWindow::Init()
-{
-    m_currentCursor = (wxCursor *) NULL;
-    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-    m_sorted = 0;
-}
-
 wxTreeListHeaderWindow::wxTreeListHeaderWindow()
 {
-    Init();
-
-    m_owner = (wxTreeListMainWindow *) NULL;
-    m_resizeCursor = (wxCursor *) NULL;
 }
 
-wxTreeListHeaderWindow::wxTreeListHeaderWindow( wxWindow *win,
-                                                wxWindowID id,
-                                                wxTreeListMainWindow *owner,
-                                                const wxPoint& pos,
-                                                const wxSize& size,
-                                                long style,
-                                                const wxString &name )
-    : wxWindow( win, id, pos, size, style, name )
+wxTreeListHeaderWindow::wxTreeListHeaderWindow(wxWindow *win, wxWindowID id, wxTreeListMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
+    : wxWindow(win, id, pos, size, style, name), m_owner(owner), m_sorted(0)
 {
-    Init();
-
-    m_owner = owner;
-    m_resizeCursor = new wxCursor(wxCURSOR_SIZEWE);
-
-    SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
+    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+    SetBackgroundColour(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
 }
 
 wxTreeListHeaderWindow::~wxTreeListHeaderWindow()
 {
-    wxDELETE(m_resizeCursor);
 }
 
 int wxTreeListHeaderWindow::GetFullWidth()
@@ -223,24 +205,24 @@ int wxTreeListHeaderWindow::GetFullWidth()
 }
 
 void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
-//void wxTreeListHeaderWindow::DoDraw(wxControlRenderer *renderer)
 {
     wxAutoBufferedPaintDC dc( this );
     dc.SetBackgroundMode(wxTRANSPARENT);
+    dc.SetFont(GetFont());
 
-    int w, h;
-    GetClientSize( &w, &h );
+    int www, h;
+    GetClientSize( &www, &h );
+    int w = www - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 
     int x = 0;
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
-    for ( int i = 0; i < count && x < w; i++ )
-    {
+    for ( int i = 0; i < count && x < www; i++ ) {
         wxHeaderButtonParams params;
         GetColumn(i).Assign(this, params);
 
         int wCol = GetColumnWidth(i) * w / ww;
-        if (i == count-1) wCol = w - x;
+        if (i == count - 1) wCol = w - x;
         wxRect rect(x, 0, wCol, h);
         x += wCol;
 
@@ -251,8 +233,8 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
     }
 
-    if (x < w) {
-        wxRect rect(x, 0, w-x, h);
+    if (x < www) {
+        wxRect rect(x, 0, www-x, h);
         wxRendererNative::Get().DrawHeaderButton(this, dc, rect);
     }
 }
@@ -261,6 +243,7 @@ int wxTreeListHeaderWindow::XToCol(int x)
 {
     int w, left = 0;
     GetClientSize( &w, 0 );
+    w -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
     for ( int col = 0; col < count; col++ ) {
@@ -346,6 +329,8 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
 
     SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_LISTBOX));
 
+    m_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
+
 #ifdef __WXMSW__
     {
         int i, j;
@@ -371,6 +356,8 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
 
     m_owner = parent;
 
+    m_dirty = true;
+
     AdjustMyScrollbars();
 
     return true;
@@ -384,6 +371,7 @@ void wxTreeListMainWindow::AdjustMyScrollbars()
 {
     if (true) {
         wxClientDC dc (this);
+        dc.SetFont(GetFont());
         int y = (int)(dc.GetCharHeight() + 2);
 
         int xUnit, yUnit;
@@ -391,7 +379,7 @@ void wxTreeListMainWindow::AdjustMyScrollbars()
         if (yUnit == 0) yUnit = y;
 
         int y_pos = GetScrollPos (wxVERTICAL);
-        SetScrollbars (0, yUnit, 0, 30, 0, y_pos);
+        SetScrollbars (0, yUnit, 0, GetRowCount(), 0, y_pos);
     }else{
         SetScrollbars (0, 0, 0, 0);
     }
@@ -400,10 +388,45 @@ void wxTreeListMainWindow::AdjustMyScrollbars()
 void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 {
     wxAutoBufferedPaintDC dc (this);
+    DoPrepareDC (dc);
     wxBrush brush(GetBackgroundColour(), wxSOLID);
     dc.SetBackground(brush);
     dc.Clear();
-    DoPrepareDC (dc);
+
+    dc.SetFont(GetFont());
+
+    int y_pos = GetScrollPos(wxVERTICAL);
+
+    int ww, hh;
+    GetClientSize(&ww, &hh);
+
+    int h = dc.GetCharHeight() + 2;
+    int yy = h * y_pos + hh;
+
+    int last;
+
+    for (size_t i = y_pos; i<GetRowCount(); i++)
+    {
+        int y = i * h;
+        if (y>yy) break;
+
+        long flag = 0;
+        switch (i % 3) {
+            case 1: flag = wxCONTROL_CHECKED; break;
+            case 2: flag = wxCONTROL_DISABLED; break;
+        }
+
+        wxRect checkbox(0, y, h, h);
+        checkbox.Deflate(2, 2);
+        wxRendererNative::Get().DrawCheckBox(this, dc, checkbox, flag);
+
+        wxString text = wxString::Format(_("Paint %d"), i);
+        for (size_t j=0; j<i%30; j++) text += _(" 0");
+        dc.DrawText(text, h + 2, y);
+
+        last = i;
+    }
+    wxLogMessage(_("%d - %d"), y_pos, last);
 }
 
 void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
@@ -412,6 +435,219 @@ void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
 
 void wxTreeListMainWindow::OnChar (wxKeyEvent &event)
 {
+/*
+    // send event to user code
+    wxTreeEvent nevent (wxEVT_COMMAND_TREE_KEY_DOWN, 0 );
+    nevent.SetInt(m_curColumn);
+    nevent.SetKeyEvent (event);
+    if (SendEvent(0, NULL, &nevent)) return; // char event handled in user code
+
+    // if no item current, select root
+    bool curItemSet = false;
+    if (!m_curItem) {
+        if (! GetRootItem().IsOk()) return;
+        m_curItem = (wxTreeListItem*)GetRootItem().m_pItem;
+        if (HasFlag(wxTR_HIDE_ROOT)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+            long cookie = 0;
+#else
+            wxTreeItemIdValue cookie = 0;
+#endif
+            m_curItem = (wxTreeListItem*)GetFirstChild (m_curItem, cookie).m_pItem;
+        }
+        SelectItem(m_curItem, 0L, true);  // unselect others
+        curItemSet = true;
+    }
+
+    // remember item at shift down
+    if (HasFlag(wxTR_MULTIPLE) && event.ShiftDown()) {
+        if (!m_shiftItem) m_shiftItem = m_curItem;
+    }else{
+        m_shiftItem = (wxTreeListItem*)NULL;
+    }
+
+    if (curItemSet) return;  // if no item was current until now, do nothing more
+
+    // process all cases
+    wxTreeItemId newItem = (wxTreeItemId*)NULL;
+    switch (event.GetKeyCode()) {
+
+        // '+': Expand subtree
+        case '+':
+        case WXK_ADD: {
+            if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) Expand (m_curItem);
+        }break;
+
+        // '-': collapse subtree
+        case '-':
+        case WXK_SUBTRACT: {
+            if (m_curItem->HasPlus() && IsExpanded (m_curItem)) Collapse (m_curItem);
+        }break;
+
+        // '*': expand/collapse all subtrees // TODO: Mak it more useful
+        case '*':
+        case WXK_MULTIPLY: {
+            if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
+                ExpandAll (m_curItem);
+            }else if (m_curItem->HasPlus()) {
+                Collapse (m_curItem); // TODO: CollapseAll
+            }
+        }break;
+
+        // ' ': toggle current item
+        case ' ': {
+            SelectItem (m_curItem, (wxTreeListItem*)NULL, false);
+        }break;
+
+        // <RETURN>: activate current item
+        case WXK_RETURN: {
+            if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, m_curItem)) {
+
+                // if the user code didn't process the activate event,
+                // handle it ourselves by toggling the item when it is
+                // double clicked
+                if (m_curItem && m_curItem->HasPlus()) Toggle(m_curItem);
+            }
+        }break;
+
+        // <BKSP>: go to the parent without collapsing
+        case WXK_BACK: {
+            newItem = GetItemParent (m_curItem);
+            if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
+                newItem = GetPrevSibling (m_curItem); // get sibling instead of root
+            }
+        }break;
+
+        // <UP>: go to the previous sibling or for the last of its children, to the parent
+        case WXK_UP: {
+            newItem = GetPrevSibling (m_curItem);
+            if (newItem) {
+#if !wxCHECK_VERSION(2, 5, 0)
+                long cookie = 0;
+#else
+                wxTreeItemIdValue cookie = 0;
+#endif
+                while (IsExpanded (newItem) && HasChildren (newItem)) {
+                    newItem = GetLastChild (newItem, cookie);
+                }
+            }else {
+                newItem = GetItemParent (m_curItem);
+                if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
+                    newItem = (wxTreeItemId*)NULL; // don't go to root if it is hidden
+                }
+            }
+        }break;
+
+        // <LEFT>: if expanded collapse subtree, else go to the parent
+        case WXK_LEFT: {
+            if (IsExpanded (m_curItem)) {
+                Collapse (m_curItem);
+            }else{
+                newItem = GetItemParent (m_curItem);
+                if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
+                    newItem = GetPrevSibling (m_curItem); // go to sibling if it is hidden
+                }
+            }
+        }break;
+
+        // <RIGHT>: if possible expand subtree, else go go to the first child
+        case WXK_RIGHT: {
+            if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
+                Expand (m_curItem);
+            }else{
+                if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+                    long cookie = 0;
+#else
+                    wxTreeItemIdValue cookie = 0;
+#endif
+                    newItem = GetFirstChild (m_curItem, cookie);
+                }
+            }
+        }break;
+
+        // <DOWN>: if expanded go to the first child, else to the next sibling, ect
+        case WXK_DOWN: {
+            if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+                long cookie = 0;
+#else
+                wxTreeItemIdValue cookie = 0;
+#endif
+                newItem = GetFirstChild( m_curItem, cookie );
+            }
+            if (!newItem) {
+                wxTreeItemId parent = m_curItem;
+                do {
+                    newItem = GetNextSibling (parent);
+                    parent = GetItemParent (parent);
+                } while (!newItem && parent);
+            }
+        }break;
+
+        // <END>: go to last item of the root
+        case WXK_END: {
+#if !wxCHECK_VERSION(2, 5, 0)
+            long cookie = 0;
+#else
+            wxTreeItemIdValue cookie = 0;
+#endif
+            newItem = GetLastChild (GetRootItem(), cookie);
+			//DENIS KANDRASHIN 2009-10-07 - BEGIN - Change keyboard press END key for last child
+            wxTreeItemId child = newItem;
+            while (child.IsOk()) {
+            	newItem = child;
+				wxTreeItemIdValue cookie = 0;
+            	child = GetLastChild(newItem, cookie);
+            }
+            // DENIS - END
+        }break;
+
+        // <HOME>: go to root
+        case WXK_HOME: {
+            newItem = GetRootItem();
+            if (HasFlag(wxTR_HIDE_ROOT)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+                long cookie = 0;
+#else
+                wxTreeItemIdValue cookie = 0;
+#endif
+                newItem = GetFirstChild (newItem, cookie);
+            }
+        }break;
+
+        // any char: go to the next matching string
+        default:
+            if (event.GetKeyCode() >= (int)' ') {
+                if (!m_findTimer->IsRunning()) m_findStr.Clear();
+                m_findStr.Append ((char)event.GetKeyCode());
+                m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
+                wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
+                while (true) {
+                    newItem = FindItem (prev, m_findStr, wxTL_MODE_NAV_EXPANDED |
+                                                         wxTL_MODE_FIND_PARTIAL |
+                                                         wxTL_MODE_FIND_NOCASE);
+                    if (newItem || (m_findStr.Length() <= 1)) break;
+                    m_findStr.RemoveLast();
+                };
+            }
+            event.Skip();
+
+    }
+
+    // select and show the new item
+    if (newItem) {
+        if (!event.ControlDown()) {
+            bool unselect_others = !((event.ShiftDown() || event.ControlDown()) &&
+                                      HasFlag(wxTR_MULTIPLE));
+            SelectItem (newItem, m_shiftItem, unselect_others);
+        }
+        EnsureVisible (newItem);
+        wxTreeListItem *oldItem = m_curItem;
+        m_curItem = (wxTreeListItem*)newItem.m_pItem; // make the new item the current item
+        RefreshLine (oldItem);
+    }
+*/
 }
 
 void wxTreeListMainWindow::OnSetFocus (wxFocusEvent &event)
@@ -436,13 +672,10 @@ void wxTreeListMainWindow::OnKillFocus( wxFocusEvent &event )
 
 void wxTreeListMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
 {
-/*
     if (!m_dirty) return;
-
     m_dirty = false;
 
-    CalculatePositions();
-*/
+//    CalculatePositions();
     Refresh();
     AdjustMyScrollbars();
 }

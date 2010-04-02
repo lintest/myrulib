@@ -19,7 +19,7 @@ bool FbTitleRenderer::Render( wxRect rect, wxDC *dc, int state )
 {
 	m_offsets[m_data.m_level] = rect.GetLeft();
 
-	int x = wxRendererNative::Get().GetCheckBoxSize(GetOwner()->GetOwner()).GetWidth();
+	int x = 20;
 
 	wxRect checkbox = rect;
 	checkbox.SetWidth(x);

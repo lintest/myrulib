@@ -8,6 +8,24 @@
 
 #define DEFAULT_COL_WIDTH 100
 
+class wxTreeListItem
+{
+
+};
+
+class wxTreeListModel
+{
+    public:
+        enum ModelType {
+            MT_LIST,
+            MT_TREE,
+        };
+    public:
+        wxTreeListModel() {};
+        virtual ModelType GetType() = 0;
+        virtual unsigned int GetCount() = 0;
+};
+
 extern WXDLLEXPORT const wxChar* wxTreeListCtrlNameStr;
 
 class wxTreeListHeaderWindow;
