@@ -219,7 +219,7 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         x += wCol;
 
 		wxHeaderSortIconType sort = wxHDR_SORT_ICON_NONE;
-		if (abs(m_sorted) == (int)i + 1) m_sorted = i>0 ? wxHDR_SORT_ICON_DOWN : wxHDR_SORT_ICON_UP;
+		if (abs(m_sorted) == (int)i + 1) sort = m_sorted > 0 ? wxHDR_SORT_ICON_DOWN : wxHDR_SORT_ICON_UP;
 
         wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
     }
@@ -248,12 +248,8 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event)
 {
     if (event.LeftUp() && m_sorted) {
         int col = XToCol(event.GetX());
-        if (abs(m_sorted) == col + 1) {
-            m_sorted = - m_sorted;
-        } else {
-            m_sorted = col + 1;
-        }
-        SendListEvent (wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
+        m_sorted = (abs(m_sorted) == col + 1) ? - m_sorted : col + 1;
+        SendListEvent(wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
         Refresh();
     }
 	event.Skip();
