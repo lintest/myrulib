@@ -6,6 +6,8 @@
 #include <wx/pen.h>
 #include <wx/listctrl.h>
 
+#include "FbTreeModel.h"
+
 #define DEFAULT_COL_WIDTH 100
 
 class wxTreeListItem
@@ -77,10 +79,12 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 
         virtual bool SetFont(const wxFont& font);
 
-        void AddColumn (unsigned int model_column,
+        void AddColumn (size_t model_column,
                         const wxString& text = wxEmptyString,
                         int width = DEFAULT_COL_WIDTH,
                         int flag = wxALIGN_LEFT);
+
+		void AssignModel(FbTreeModel * model);
 
 	protected:
 		// header window, responsible for column visualization and manipulation

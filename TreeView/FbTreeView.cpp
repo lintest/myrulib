@@ -5,8 +5,8 @@
 #include <wx/scrolwin.h>
 #include <wx/dcbuffer.h>
 #include <wx/log.h>
-#include "../MyRuLib/FbLogoBitmap.h"
 
+#include "../MyRuLib/FbLogoBitmap.h"
 
 class WXDLLEXPORT wxControlRenderer;
 
@@ -18,7 +18,7 @@ class wxTreeListColumnInfo
 		wxTreeListColumnInfo() {}
 
         wxTreeListColumnInfo(
-            unsigned int model_column,
+            size_t model_column,
             const wxString &text = wxEmptyString,
             int width = DEFAULT_COL_WIDTH,
             int flag = wxALIGN_LEFT
@@ -33,7 +33,7 @@ class wxTreeListColumnInfo
 
     private:
         wxString m_text;
-        unsigned int m_model_column;
+        size_t m_model_column;
         int m_width;
         int m_flag;
 
@@ -105,27 +105,19 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 				   const wxSize& size = wxDefaultSize,
 				   long style = wxTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
-				   const wxString& name = wxT("wxtreelistmainwindow"))
-		{
-			Create (parent, id, pos, size, style, validator, name);
-		}
+				   const wxString& name = wxT("wxtreelistmainwindow"));
 
 		virtual ~wxTreeListMainWindow();
-
-		bool Create(wxTreeListCtrl *parent, wxWindowID id = -1,
-					const wxPoint& pos = wxDefaultPosition,
-					const wxSize& size = wxDefaultSize,
-					long style = wxTR_DEFAULT_STYLE,
-					const wxValidator &validator = wxDefaultValidator,
-					const wxString& name = _T("wxtreelistctrl"));
 
 		virtual bool SetBackgroundColour (const wxColour& colour);
 
 		virtual bool SetForegroundColour (const wxColour& colour);
 
-		unsigned long GetRowCount() { return 500; };
+		unsigned long GetRowCount() { return m_model ? m_model->GetRowCount() : 0; };
 
 		void SetDirty() { m_dirty = true; }
+
+		void AssignModel(FbTreeModel * model);
 
 	private:
 		int GetRowHeight(wxDC &dc);
@@ -134,6 +126,7 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 
 	private:
 		wxTreeListCtrl* m_owner;
+        FbTreeModel * m_model;
         wxPen m_dottedPen;
         wxFont m_font;
 		int m_current;
@@ -297,17 +290,18 @@ END_EVENT_TABLE()
 // construction/destruction
 // ---------------------------------------------------------------------------
 
-bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
-                                   wxWindowID id,
-                                   const wxPoint& pos,
-                                   const wxSize& size,
-                                   long style,
-                                   const wxValidator &validator,
-                                   const wxString& name)
+wxTreeListMainWindow::wxTreeListMainWindow(
+		wxTreeListCtrl *parent,
+		wxWindowID id,
+		const wxPoint& pos,
+		const wxSize& size,
+		long style,
+		const wxValidator &validator,
+		const wxString& name) :
+	wxScrolledWindow(parent, id, pos, size, style|wxVSCROLL, name),
+	m_model(NULL)
 {
 	m_current = -1;
-
-    wxScrolledWindow::Create (parent, id, pos, size, style|wxVSCROLL, name);
 
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 
@@ -347,9 +341,8 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
     m_dirty = true;
 
     AdjustMyScrollbars();
-
-    return true;
 }
+
 
 wxTreeListMainWindow::~wxTreeListMainWindow()
 {
@@ -395,26 +388,12 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
     GetClientSize(&ww, &hh);
 
     int h = GetRowHeight(dc);
-    int yy = h * y_pos + hh;
 
-	static wxBitmap bitmaps[3] = {
-		wxBitmap(nocheck_xpm),
-		wxBitmap(checked_xpm),
-		wxBitmap(checkout_xpm),
-	};
+	wxRect rect(0, y_pos*h, ww, hh);
 
-    for (size_t i = y_pos; i<GetRowCount(); i++)
-    {
-        int y = i * h;
-        if (y>yy) break;
+	FbColumnArray columns;
 
-        wxString text = wxString::Format(_("Paint %d"), i);
-        for (size_t j=0; j<i%30; j++) text += _(" 0");
-
-		wxRect rect(0, y, ww, h);
-        rect.Deflate(2, 2);
-		dc.DrawLabel(text, bitmaps[i % 3], rect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-    }
+	if (m_model) m_model->Draw(dc, rect, columns, y_pos, h);
 }
 
 void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
@@ -711,6 +690,12 @@ bool wxTreeListMainWindow::SendEvent(wxEventType type, wxTreeListItem *item, wxT
     return m_owner->GetEventHandler()->ProcessEvent (*event);
 }
 
+void wxTreeListMainWindow::AssignModel(FbTreeModel * model)
+{
+	m_model = model;
+	SetDirty();
+}
+
 //-----------------------------------------------------------------------------
 //  wxTreeListCtrl
 //-----------------------------------------------------------------------------
@@ -812,7 +797,7 @@ bool wxTreeListCtrl::SetFont(const wxFont& font)
     }
 }
 
-void wxTreeListCtrl::AddColumn(unsigned int model_column, const wxString& text, int width, int flag)
+void wxTreeListCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag)
 {
     if (m_header_win) m_header_win->AddColumn(wxTreeListColumnInfo(model_column, text, width, flag));
 }
@@ -827,5 +812,9 @@ int wxTreeListCtrl::GetSortedColumn()
     return m_header_win ? m_header_win->GetSortedColumn() : 0;
 }
 
+void wxTreeListCtrl::AssignModel(FbTreeModel * model)
+{
+	m_main_win->AssignModel(model);
+}
 
 

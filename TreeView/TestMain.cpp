@@ -10,7 +10,7 @@
 #include "TestMain.h"
 #include "TestApp.h"
 #include "FbTreeView.h"
-//#include "treelistctrl.h"
+#include "FbTreeModel.h"
 
 BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_CLOSE( DataViewFrame::OnClose )
@@ -54,6 +54,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	m_dataview->AddColumn(1, _("author"), 150);
 	m_dataview->AddColumn(2, _("type"), 50);
 	m_dataview->AddColumn(3, _("size"), 50);
+	m_dataview->AssignModel(new FbTreeModelList(500));
 
 	m_dataview->SetSortedColumn(2);
 
