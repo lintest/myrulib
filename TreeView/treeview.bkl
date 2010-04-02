@@ -12,6 +12,7 @@
 	<if cond="FORMAT=='mingw'">
 		<set var="WX_SHARED_DEFAULT">0</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
+		<set var="WX_VERSION_DEFAULT">28</set>
 	</if>
 	
 	<if cond="FORMAT=='gnu'">

@@ -6,6 +6,8 @@
 #include <wx/pen.h>
 #include <wx/listctrl.h>
 
+#define DEFAULT_COL_WIDTH 100
+
 extern WXDLLEXPORT const wxChar* wxTreeListCtrlNameStr;
 
 class wxTreeListHeaderWindow;
@@ -16,7 +18,7 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 {
 	public:
 		wxTreeListCtrl()
-			: m_header_win(0), m_main_win(0), m_headerHeight(0)
+			: m_header_win(0), m_main_win(0)
 		{}
 
 		wxTreeListCtrl(wxWindow *parent, wxWindowID id = -1,
@@ -25,7 +27,7 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 				   long style = wxTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
 				   const wxString& name = wxTreeListCtrlNameStr )
-			: m_header_win(0), m_main_win(0), m_headerHeight(0)
+			: m_header_win(0), m_main_win(0)
 		{
 			Create(parent, id, pos, size, style);
 		}
@@ -55,6 +57,13 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 
 		virtual wxSize DoGetBestSize() const;
 
+        virtual bool SetFont(const wxFont& font);
+
+        void AddColumn (const wxString& text,
+                        unsigned int model_column,
+                        int width = DEFAULT_COL_WIDTH,
+                        int flag = wxALIGN_LEFT);
+
 	protected:
 		// header window, responsible for column visualization and manipulation
 		wxTreeListHeaderWindow* m_header_win;
@@ -62,19 +71,17 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 		// main window, the "true" tree ctrl
 		wxTreeListMainWindow* m_main_win;
 
-		void CalculateAndSetHeaderHeight();
 		void DoHeaderLayout();
 		void OnSize(wxSizeEvent& event);
-
-	private:
-		int m_headerHeight;
-
-		DECLARE_EVENT_TABLE()
-		DECLARE_DYNAMIC_CLASS(wxTreeListCtrl)
 
 	public:
 		void SetSortedColumn(int column);
 		int GetSortedColumn();
+
+	private:
+		DECLARE_EVENT_TABLE()
+		DECLARE_DYNAMIC_CLASS(wxTreeListCtrl)
+
 };
 
 #endif // __FBTREEVIEW_H__

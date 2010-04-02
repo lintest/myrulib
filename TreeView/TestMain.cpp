@@ -10,6 +10,7 @@
 #include "TestMain.h"
 #include "TestApp.h"
 #include "FbTreeView.h"
+//#include "treelistctrl.h"
 
 BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_CLOSE( DataViewFrame::OnClose )
@@ -48,9 +49,11 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	m_dataview = new wxTreeListCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize, 0);
-//	m_dataview->AddColumn(_("title"));
-//	m_dataview->AddColumn(_("author"));
+	m_dataview = new wxTreeListCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize);
+	m_dataview->AddColumn(_("title"), 0, 100);
+	m_dataview->AddColumn(_("author"), 1, 200);
+	m_dataview->AddColumn(_("type"), 1, 50);
+	m_dataview->AddColumn(_("size"), 1, 50);
 
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
 

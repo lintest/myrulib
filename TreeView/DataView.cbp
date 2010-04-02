@@ -48,7 +48,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
 					<Add option="-D__WXDEBUG__" />
+					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
 					<Add directory="$(WXWIN)\include" />
 					<Add directory="$(WXWIN)\contrib\include" />
