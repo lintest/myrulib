@@ -3,84 +3,86 @@
 
 #include <wx/defs.h>
 
-class FbTreeItemData
+class FbTreeItemKey
 {
 	public:
-		enum Type {
-			TY_NULL,
-			TY_ROW,
-			TY_BOOK,
+		enum KeyType {
+			KT_NULL,
+			KT_LIST,
+			KT_BOOK,
+			KT_SEQN,
+			KT_AUTH,
+			KT_ABCD,
 		};
 
 	public:
-		virtual bool operator ==(const FbTreeItemData &data) const = 0;
-		virtual FbTreeItemData * Clone() const = 0;
-		virtual Type GetType() const = 0;
+		virtual bool operator ==(const FbTreeItemKey &key) const = 0;
+		virtual FbTreeItemKey * Clone() const = 0;
+		virtual KeyType GetType() const = 0;
 };
 
 class FbTreeItemId
 {
 	public:
-		FbTreeItemId(const FbTreeItemData * data, const FbTreeItemData * parent = NULL)
-			: m_data(data->Clone()), m_parent(parent ? parent->Clone() : NULL) {}
+		FbTreeItemId(const FbTreeItemKey * key, const FbTreeItemKey * parent = NULL)
+			: m_key(key->Clone()), m_parent(parent ? parent->Clone() : NULL) {}
 
 		virtual ~FbTreeItemId()
-			{ wxDELETE(m_data); wxDELETE(m_parent); }
+			{ wxDELETE(m_key); wxDELETE(m_parent); }
 
-		bool operator ==(const FbTreeItemId &id) const
-			{ return (*m_data) == (*id.m_data) && ((!m_parent && !id.m_parent) || (*m_parent) == (*id.m_parent)); }
+		bool operator ==(const FbTreeItemId &id) const;
 
 	private:
-		FbTreeItemData * m_data;
-		FbTreeItemData * m_parent;
+		FbTreeItemKey * m_key;
+		FbTreeItemKey * m_parent;
 };
 
-class FbTreeItemDataNull: public FbTreeItemData
+class FbTreeItemKeyNull: public FbTreeItemKey
 {
 	public:
-		FbTreeItemDataNull() {}
+		FbTreeItemKeyNull() {}
 
-		virtual bool operator ==(const FbTreeItemData &data) const
-			{ return GetType() == data.GetType() && (*this) == (FbTreeItemDataNull&)data; }
+		virtual bool operator ==(const FbTreeItemKey &key) const
+			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyNull&)key; }
 
-		virtual bool operator ==(const FbTreeItemDataNull &data) const
+		virtual bool operator ==(const FbTreeItemKeyNull &key) const
 			{ return true; }
 
-		virtual Type GetType() const
-			{ return TY_NULL; }
+		virtual KeyType GetType() const
+			{ return KT_NULL; }
 };
 
-class FbTreeItemDataRow: public FbTreeItemData
+class FbTreeItemKeyList: public FbTreeItemKey
 {
 	public:
-		FbTreeItemDataRow(int id): m_id(id) {}
+		FbTreeItemKeyList(int id): m_id(id) {}
 
-		virtual bool operator ==(const FbTreeItemData &data) const
-			{ return GetType() == data.GetType() && (*this) == (FbTreeItemDataRow&)data; }
+		virtual bool operator ==(const FbTreeItemKey &key) const
+			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyList&)key; }
 
-		virtual bool operator ==(const FbTreeItemDataRow &data) const
-			{ return m_id == data.m_id; }
+		virtual bool operator ==(const FbTreeItemKeyList &key) const
+			{ return m_id == key.m_id; }
 
-		virtual Type GetType() const
-			{ return TY_ROW; }
+		virtual KeyType GetType() const
+			{ return KT_LIST; }
 
 	private:
 		int m_id;
 };
 
-class FbTreeItemDataBook: public FbTreeItemData
+class FbTreeItemKeyBook: public FbTreeItemKey
 {
 	public:
-		FbTreeItemDataBook(int id): m_id(id) {}
+		FbTreeItemKeyBook(int id): m_id(id) {}
 
-		virtual bool operator ==(const FbTreeItemData &data) const
-			{ return GetType() == data.GetType() && (*this) == (FbTreeItemDataBook&)data; }
+		virtual bool operator ==(const FbTreeItemKey &key) const
+			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyBook&)key; }
 
-		virtual bool operator ==(const FbTreeItemDataBook &data) const
-			{ return m_id == data.m_id; }
+		virtual bool operator ==(const FbTreeItemKeyBook &key) const
+			{ return m_id == key.m_id; }
 
-		virtual Type GetType() const
-			{ return TY_BOOK; }
+		virtual KeyType GetType() const
+			{ return KT_BOOK; }
 
 	private:
 		int m_id;
