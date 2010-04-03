@@ -26,8 +26,12 @@ class FbTreeItemId
 	public:
 		FbTreeItemId(const FbTreeItemKey * key = NULL, const FbTreeItemKey * parent = NULL);
 
+		FbTreeItemId(const FbTreeItemId &id);
+
 		virtual ~FbTreeItemId()
 			{ wxDELETE(m_key); wxDELETE(m_parent); }
+
+		FbTreeItemId & operator =(const FbTreeItemId &id);
 
 		bool operator ==(const FbTreeItemId &id) const;
 
@@ -44,6 +48,12 @@ class FbTreeItemId
 		FbTreeItemKey * m_parent;
 };
 
+#include <wx/dynarray.h>
+
+WX_DECLARE_OBJARRAY(FbTreeItemId*, FbTreeItemIdArray);
+
+WX_DECLARE_OBJARRAY(FbTreeItemKey*, FbTreeItemKeyArray);
+
 class FbTreeItemKeyList: public FbTreeItemKey
 {
 	public:
@@ -58,7 +68,7 @@ class FbTreeItemKeyList: public FbTreeItemKey
 		virtual KeyType GetType() const
 			{ return KT_LIST; }
 
-		virtual FbTreeItemKey * Clone() const { return new FbTreeItemKeyList(*this); };
+		virtual FbTreeItemKey * Clone() const { return new FbTreeItemKeyList(m_id); };
 
 		size_t GetId() { return m_id; }
 
@@ -80,9 +90,15 @@ class FbTreeItemKeyBook: public FbTreeItemKey
 		virtual KeyType GetType() const
 			{ return KT_BOOK; }
 
+		virtual FbTreeItemKey * Clone() const { return new FbTreeItemKeyBook(m_id); };
+
+		size_t GetId() { return m_id; }
+
 	private:
 		int m_id;
 };
 
 #endif // __FBTREEITEMID_H__
+
+
 

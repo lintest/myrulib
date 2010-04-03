@@ -17,12 +17,12 @@ class FbColumnInfo
 };
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
+WX_DECLARE_OBJARRAY(FbColumnInfo*, FbColumnArray);
 
 class FbTreeModel
 {
 	public:
-		FbTreeModel() {}
+		FbTreeModel();
 		virtual ~FbTreeModel() {}
 		virtual size_t GetRowCount() const = 0;
 		virtual void Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
@@ -36,12 +36,18 @@ class FbTreeModel
 		const wxBitmap & GetBitmap(int state) const;
 		FbTreeItemId m_current;
 
+		wxBrush m_normalBrush;
+		wxBrush m_hilightBrush;
+		wxBrush m_unfocusBrush;
+
+		wxColour m_normalColour;
+		wxColour m_hilightColour;
 };
 
 class FbTreeModelList: public FbTreeModel
 {
 	public:
-		FbTreeModelList(size_t count): m_count(count) {}
+		FbTreeModelList(size_t count);
 		virtual ~FbTreeModelList() {};
 		virtual size_t GetRowCount() const { return m_count; }
 		virtual void Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
