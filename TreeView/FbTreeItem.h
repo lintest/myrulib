@@ -24,38 +24,30 @@ class FbTreeItemKey
 class FbTreeItemId
 {
 	public:
-		FbTreeItemId(const FbTreeItemKey * key, const FbTreeItemKey * parent = NULL)
-			: m_key(key->Clone()), m_parent(parent ? parent->Clone() : NULL) {}
+		FbTreeItemId(const FbTreeItemKey * key = NULL, const FbTreeItemKey * parent = NULL);
 
 		virtual ~FbTreeItemId()
 			{ wxDELETE(m_key); wxDELETE(m_parent); }
 
 		bool operator ==(const FbTreeItemId &id) const;
 
+		FbTreeItemKey::KeyType GetKeyType() const { return m_key ? m_key->GetType() : FbTreeItemKey::KT_NULL; };
+
+		FbTreeItemKey * GetKey() const { return m_key; };
+
+		FbTreeItemKey * GetParent() const { return m_parent; };
+
+		bool IsOk() const { return m_key; }
+
 	private:
 		FbTreeItemKey * m_key;
 		FbTreeItemKey * m_parent;
 };
 
-class FbTreeItemKeyNull: public FbTreeItemKey
-{
-	public:
-		FbTreeItemKeyNull() {}
-
-		virtual bool operator ==(const FbTreeItemKey &key) const
-			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyNull&)key; }
-
-		virtual bool operator ==(const FbTreeItemKeyNull &key) const
-			{ return true; }
-
-		virtual KeyType GetType() const
-			{ return KT_NULL; }
-};
-
 class FbTreeItemKeyList: public FbTreeItemKey
 {
 	public:
-		FbTreeItemKeyList(int id): m_id(id) {}
+		FbTreeItemKeyList(size_t id): m_id(id) {}
 
 		virtual bool operator ==(const FbTreeItemKey &key) const
 			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyList&)key; }
@@ -66,8 +58,12 @@ class FbTreeItemKeyList: public FbTreeItemKey
 		virtual KeyType GetType() const
 			{ return KT_LIST; }
 
+		virtual FbTreeItemKey * Clone() const { return new FbTreeItemKeyList(*this); };
+
+		size_t GetId() { return m_id; }
+
 	private:
-		int m_id;
+		size_t m_id;
 };
 
 class FbTreeItemKeyBook: public FbTreeItemKey
@@ -89,3 +85,4 @@ class FbTreeItemKeyBook: public FbTreeItemKey
 };
 
 #endif // __FBTREEITEMID_H__
+

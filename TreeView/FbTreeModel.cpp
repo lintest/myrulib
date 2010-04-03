@@ -33,3 +33,40 @@ void FbTreeModelList::Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &co
 		dc.DrawLabel(text, GetBitmap(pos), rect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	}
 }
+
+FbTreeItemId FbTreeModelList::GetFirst()
+{
+	size_t count = GetRowCount();
+	FbTreeItemKey * key = NULL;
+	if (count) key = new FbTreeItemKeyList(0); ;
+	return FbTreeItemId(key);
+}
+
+FbTreeItemId FbTreeModelList::GetLast()
+{
+	size_t count = GetRowCount();
+	FbTreeItemKey * key = NULL;
+	if (count) key = new FbTreeItemKeyList(count - 1);
+	return FbTreeItemId(key);
+}
+
+FbTreeItemId FbTreeModelList::GetNext(const FbTreeItemId &id)
+{
+	if (id.GetKeyType() == FbTreeItemKey::KT_LIST) {
+		size_t rowid = ((FbTreeItemKeyList*)id.GetKey())->GetId();
+		size_t count = GetRowCount();
+		return rowid < count ? FbTreeItemId(&FbTreeItemKeyList(rowid + 1)) : id;
+	}
+	return GetFirst();
+}
+
+FbTreeItemId FbTreeModelList::GetPrior(const FbTreeItemId &id)
+{
+	if (id.GetKeyType() == FbTreeItemKey::KT_LIST) {
+		size_t rowid = ((FbTreeItemKeyList*)id.GetKey())->GetId();
+		size_t count = GetRowCount();
+		return rowid > 0 ? FbTreeItemId(&FbTreeItemKeyList(rowid - 1)) : id;
+	}
+	return GetFirst();
+}
+
