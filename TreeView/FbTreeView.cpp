@@ -8,6 +8,8 @@
 
 #include "../MyRuLib/FbLogoBitmap.h"
 
+class wxTreeListItem;
+
 class WXDLLEXPORT wxControlRenderer;
 
 const wxChar* wxTreeListCtrlNameStr = _T("treelistctrl");

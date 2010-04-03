@@ -21,13 +21,14 @@ WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
 class FbTreeModel
 {
 	public:
-		FbTreeModel() {}
+		FbTreeModel(): m_current(-1) {}
 		virtual ~FbTreeModel() {}
 		virtual size_t GetRowCount() const = 0;
 		virtual void Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 
 	protected:
 		const wxBitmap & GetBitmap(int state) const;
+		int m_current;
 
 };
 
