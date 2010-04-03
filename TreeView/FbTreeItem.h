@@ -21,17 +21,18 @@ class FbTreeItemData
 class FbTreeItemId
 {
 	public:
-		FbTreeItemId(const FbTreeItemData &data)
-			: m_data(data.Clone()) {}
+		FbTreeItemId(const FbTreeItemData * data, const FbTreeItemData * parent = NULL)
+			: m_data(data->Clone()), m_parent(parent ? parent->Clone() : NULL) {}
 
 		virtual ~FbTreeItemId()
-			{ wxDELETE(m_data); }
+			{ wxDELETE(m_data); wxDELETE(m_parent); }
 
 		bool operator ==(const FbTreeItemId &id) const
-			{ return (*m_data) == (*id.m_data); }
+			{ return (*m_data) == (*id.m_data) && ((!m_parent && !id.m_parent) || (*m_parent) == (*id.m_parent)); }
 
 	private:
 		FbTreeItemData * m_data;
+		FbTreeItemData * m_parent;
 };
 
 class FbTreeItemDataNull: public FbTreeItemData
