@@ -437,10 +437,13 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
         case WXK_END: {
         	new_id = m_model->GetLastRow();
         } break;
+        default: {
+            event.Skip();
+            return;
+        }
     }
 
 	if (new_id.IsOk()) m_model->SetCurrent(new_id);
-
     Refresh();
 
 
