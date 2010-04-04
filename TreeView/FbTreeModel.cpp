@@ -34,11 +34,11 @@ FbTreeModelList::FbTreeModelList(size_t count):
 	m_count(count)
 {
 	FbTreeItemKeyList key = 10;
-	m_current = &key;
+	m_current = key;
 }
 
 
-void FbTreeModelList::Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
+void FbTreeModelList::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
 	int ww = rect.GetWidth();
 	int y  = rect.GetTop();
@@ -51,7 +51,7 @@ void FbTreeModelList::Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &co
         for (size_t j=0; j<pos%30; j++) text += _(" 0");
 
         FbTreeItemKeyList key = pos;
-        FbTreeItemId id = &key;
+        FbTreeItemId id = key;
 
 		if (id == m_current) {
 			dc.SetBrush(m_hilightBrush);
@@ -71,44 +71,40 @@ void FbTreeModelList::Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &co
 	}
 }
 
-FbTreeItemId FbTreeModelList::GetFirst()
+FbTreeItemId FbTreeModelList::GetFirstRow()
 {
 	size_t count = GetRowCount();
-	FbTreeItemKey * key = NULL;
-	if (count) key = new FbTreeItemKeyList(0); ;
-	return FbTreeItemId(key);
+	return count ? FbTreeItemId(FbTreeItemKeyList(0)) : FbTreeItemId();
 }
 
-FbTreeItemId FbTreeModelList::GetLast()
+FbTreeItemId FbTreeModelList::GetLastRow()
 {
 	size_t count = GetRowCount();
-	FbTreeItemKey * key = NULL;
-	if (count) key = new FbTreeItemKeyList(count - 1);
-	return FbTreeItemId(key);
+	return count ? FbTreeItemId(FbTreeItemKeyList(count - 1)) : FbTreeItemId();
 }
 
-FbTreeItemId FbTreeModelList::GetNext(const FbTreeItemId &id)
+FbTreeItemId FbTreeModelList::GetNextRow(const FbTreeItemId &id)
 {
 	if (id.GetKeyType() == FbTreeItemKey::KT_LIST) {
 		size_t rowid = ((FbTreeItemKeyList*)id.GetKey())->GetId();
 		size_t count = GetRowCount();
 		if (rowid < count) {
 			FbTreeItemKeyList key(rowid + 1);
-			return FbTreeItemId(&key);
+			return FbTreeItemId(key);
 		} else return id;
 	}
-	return GetFirst();
+	return GetFirstRow();
 }
 
-FbTreeItemId FbTreeModelList::GetPrior(const FbTreeItemId &id)
+FbTreeItemId FbTreeModelList::GetPriorRow(const FbTreeItemId &id)
 {
 	if (id.GetKeyType() == FbTreeItemKey::KT_LIST) {
 		size_t rowid = ((FbTreeItemKeyList*)id.GetKey())->GetId();
 		if (rowid > 0) {
-			FbTreeItemKeyList key(rowid + 1);
-			return FbTreeItemId(&key);
+			FbTreeItemKeyList key(rowid - 1);
+			return FbTreeItemId(key);
 		} else return id;
 	}
-	return GetFirst();
+	return GetFirstRow();
 }
 

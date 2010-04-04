@@ -121,6 +121,8 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 
 		void AssignModel(FbTreeModel * model);
 
+		void SetFocus();
+
 	private:
 		int GetRowHeight(wxDC &dc);
         void AdjustMyScrollbars();
@@ -395,7 +397,7 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 
 	FbColumnArray columns;
 
-	if (m_model) m_model->Draw(dc, rect, columns, y_pos, h);
+	if (m_model) m_model->DrawTree(dc, rect, columns, y_pos, h);
 }
 
 void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
@@ -409,6 +411,38 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
     nevent.SetInt(m_current);
     nevent.SetKeyEvent (event);
     if (SendEvent(0, NULL, &nevent)) return; // char event handled in user code
+
+    if (!m_model) {
+		event.Skip();
+		return;
+    }
+
+   	FbTreeItemId current = m_model->GetCurrent();
+   	FbTreeItemId new_id;
+
+    switch (event.GetKeyCode()) {
+        // <UP>: go to the previous sibling or for the last of its children, to the parent
+        case WXK_UP: {
+        	new_id = m_model->GetPriorRow(current);
+        } break;
+        // <DOWN>: if expanded go to the first child, else to the next sibling, ect
+        case WXK_DOWN: {
+        	new_id = m_model->GetNextRow(current);
+        } break;
+        // <HOME>: go to first item
+        case WXK_HOME: {
+        	new_id = m_model->GetFirstRow();
+        } break;
+        // <END>: go to last item
+        case WXK_END: {
+        	new_id = m_model->GetLastRow();
+        } break;
+    }
+
+	if (new_id.IsOk()) m_model->SetCurrent(new_id);
+
+    Refresh();
+
 
 /*
 
@@ -690,6 +724,11 @@ bool wxTreeListMainWindow::SendEvent(wxEventType type, wxTreeListItem *item, wxT
     if (item) event->SetItem(item);
 
     return m_owner->GetEventHandler()->ProcessEvent (*event);
+}
+
+void wxTreeListMainWindow::SetFocus()
+{
+    wxWindow::SetFocus();
 }
 
 void wxTreeListMainWindow::AssignModel(FbTreeModel * model)

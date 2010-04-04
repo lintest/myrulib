@@ -6,11 +6,6 @@ WX_DEFINE_OBJARRAY(FbTreeItemIdArray);
 
 WX_DEFINE_OBJARRAY(FbTreeItemKeyArray);
 
-FbTreeItemId::FbTreeItemId(const FbTreeItemKey * key, const FbTreeItemKey * parent)
-	: m_key(key ? key->Clone() : NULL), m_parent(parent ? parent->Clone() : NULL)
-{
-}
-
 FbTreeItemId::FbTreeItemId(const FbTreeItemId &id)
 	: m_key(id.m_key ? id.m_key->Clone() : NULL), m_parent(id.m_parent ? id.m_parent->Clone() : NULL)
 {

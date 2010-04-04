@@ -24,7 +24,13 @@ class FbTreeItemKey
 class FbTreeItemId
 {
 	public:
-		FbTreeItemId(const FbTreeItemKey * key = NULL, const FbTreeItemKey * parent = NULL);
+		FbTreeItemId()
+			: m_key(NULL), m_parent(NULL) {}
+
+		FbTreeItemId(const FbTreeItemKey & key)
+			: m_key(key.Clone()), m_parent(NULL) {}
+
+		FbTreeItemId(const FbTreeItemKey & key, const FbTreeItemKey & parent);
 
 		FbTreeItemId(const FbTreeItemId &id);
 

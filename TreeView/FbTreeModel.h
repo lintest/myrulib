@@ -25,12 +25,15 @@ class FbTreeModel
 		FbTreeModel();
 		virtual ~FbTreeModel() {}
 		virtual size_t GetRowCount() const = 0;
-		virtual void Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
+		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 
-		virtual FbTreeItemId GetFirst() = 0;
-		virtual FbTreeItemId GetLast() = 0;
-		virtual FbTreeItemId GetNext(const FbTreeItemId &id) = 0;
-		virtual FbTreeItemId GetPrior(const FbTreeItemId &id) = 0;
+		virtual FbTreeItemId GetFirstRow() = 0;
+		virtual FbTreeItemId GetLastRow() = 0;
+		virtual FbTreeItemId GetNextRow(const FbTreeItemId &id) = 0;
+		virtual FbTreeItemId GetPriorRow(const FbTreeItemId &id) = 0;
+
+		FbTreeItemId GetCurrent() { return m_current; }
+		void SetCurrent(const FbTreeItemId &id) { m_current = id; }
 
 	protected:
 		const wxBitmap & GetBitmap(int state) const;
@@ -50,12 +53,12 @@ class FbTreeModelList: public FbTreeModel
 		FbTreeModelList(size_t count);
 		virtual ~FbTreeModelList() {};
 		virtual size_t GetRowCount() const { return m_count; }
-		virtual void Draw(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 
-		virtual FbTreeItemId GetFirst();
-		virtual FbTreeItemId GetLast();
-		virtual FbTreeItemId GetNext(const FbTreeItemId &id);
-		virtual FbTreeItemId GetPrior(const FbTreeItemId &id);
+		virtual FbTreeItemId GetFirstRow();
+		virtual FbTreeItemId GetLastRow();
+		virtual FbTreeItemId GetNextRow(const FbTreeItemId &id);
+		virtual FbTreeItemId GetPriorRow(const FbTreeItemId &id);
 
 	private:
 		size_t m_count;
