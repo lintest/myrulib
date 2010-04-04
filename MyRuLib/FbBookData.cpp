@@ -116,6 +116,10 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		#ifdef __WXSMW__
 		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 		#else
+		if (command.Left(5) == wxT("wine ")) {
+			filename.SetPath( FbParams::GetText(FB_WINE_DIR));
+			filepath = filename.GetFullPath();
+		}
 		wxExecute(command + wxT(" \"") + filepath + wxT("\""));
 		#endif
     } else if (GetSystemCommand(filepath, command)) {

@@ -31,6 +31,7 @@ class FbTreeModel
 		virtual FbTreeItemId GetLastRow() = 0;
 		virtual FbTreeItemId GetNextRow(const FbTreeItemId &id) = 0;
 		virtual FbTreeItemId GetPriorRow(const FbTreeItemId &id) = 0;
+//		virtual bool GetNextRow(const FbTreeItemId &id, size_t &rowid, int delta = 1) = 0;
 
 		FbTreeItemId GetCurrent() { return m_current; }
 		void SetCurrent(const FbTreeItemId &id) { m_current = id; }

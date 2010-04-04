@@ -28,6 +28,7 @@ class SettingsDlg : private FbDialog
 			ID_TEMP_DEL,
 			ID_TEMP_DIR_TXT,
 			ID_TEMP_DIR_BTN,
+			ID_WINE_DIR,
 			ID_DOWNLOAD_DIR_TXT,
 			ID_DOWNLOAD_DIR_BTN,
 			ID_USE_PROXY,

@@ -22,6 +22,7 @@ enum FbParamKey {
 	FB_RECENT_4 = 114,
 	FB_RECENT_5 = 115,
 
+	FB_WINE_DIR        = 117,
 	FB_TEMP_DIR        = 118,
 	FB_TEMP_DEL        = 119,
 	FB_REMOVE_FILES    = 120,

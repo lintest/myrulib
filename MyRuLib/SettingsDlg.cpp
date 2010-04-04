@@ -208,6 +208,22 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
 	}
 
+	#ifdef __WXGTK__
+	{
+		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
+
+		wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Wine temp folder:"), wxDefaultPosition, wxDefaultSize, 0 );
+		text->Wrap( -1 );
+		bSizerDir->Add( text, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+		wxTextCtrl * edit = new wxTextCtrl( this, ID_WINE_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+		edit->SetMinSize( wxSize( 200,-1 ) );
+		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
+	}
+	#endif
+
 	checkbox = new wxCheckBox( this, ID_TEMP_DEL, _("Delete temporary files when you exit the program"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
@@ -382,6 +398,7 @@ void SettingsDlg::Assign(bool write)
 		{FB_PROXY_ADDR, ID_PROXY_ADDR, tCombo},
 		{FB_TEMP_DEL, ID_TEMP_DEL, tCheck},
 		{FB_TEMP_DIR, ID_TEMP_DIR_TXT, tText},
+		{FB_WINE_DIR, ID_WINE_DIR, tText},
 		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR_TXT, tText},
 		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD, tCheck},
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
