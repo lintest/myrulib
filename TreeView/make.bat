@@ -1,3 +1,3 @@
-bakefile -f gnu myrulib.bkl
-bakefile -f mingw myrulib.bkl
+bakefile -f gnu treeview.bkl
+bakefile -f mingw treeview.bkl
 mingw32-make -f makefile.gcc

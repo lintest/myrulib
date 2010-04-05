@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
 #include <wx/toolbar.h>
-#include <wx/srchctrl.h>
+#include <wx/textctrl.h>
 #include "ProgressBar.h"
 #include "LimitedTextCtrl.h"
 #include "FbFrameAuthor.h"
@@ -34,8 +34,8 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OpenLastPage();
 		void SetTabArt(int id);
 	private:
-		wxSearchCtrl * m_FindAuthor;
-		wxSearchCtrl * m_FindTitle;
+		wxTextCtrl * m_FindAuthor;
+		wxTextCtrl * m_FindTitle;
 		ProgressBar m_ProgressBar;
 		wxAuiManager m_FrameManager;
 		LimitedTextCtrl m_LOGTextCtrl;
@@ -50,10 +50,8 @@ class FbMainFrame: public wxAuiMDIParentFrame
 		void OnInfoCommand(wxCommandEvent & event);
 		void OnFindAuthor(wxCommandEvent& event);
 		void OnFindAuthorEnter(wxCommandEvent& event);
-		void OnFindAuthorCancel(wxCommandEvent& event);
 		void OnFindTitle(wxCommandEvent & event);
 		void OnFindTitleEnter(wxCommandEvent& event);
-		void OnFindTitleCancel(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
 		void OnLocalize(wxCommandEvent& event);

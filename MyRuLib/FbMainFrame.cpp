@@ -9,7 +9,6 @@
 #include "SettingsDlg.h"
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
-#include "FbFrameDate.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
 #include "FbFrameFolder.h"
@@ -35,8 +34,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_DOWNLD, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_SEQUEN, FbMainFrame::OnMenuFrame)
-	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
+	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
@@ -47,12 +46,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 
 	EVT_MENU(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthor)
 	EVT_TEXT_ENTER(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthorEnter)
-    EVT_SEARCHCTRL_SEARCH_BTN(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthorEnter)
-    EVT_SEARCHCTRL_CANCEL_BTN(ID_FIND_AUTHOR, FbMainFrame::OnFindAuthorCancel)
 	EVT_MENU(ID_FIND_TITLE, FbMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_FIND_TITLE, FbMainFrame::OnFindTitleEnter)
-    EVT_SEARCHCTRL_SEARCH_BTN(ID_FIND_TITLE, FbMainFrame::OnFindTitleEnter)
-    EVT_SEARCHCTRL_CANCEL_BTN(ID_FIND_TITLE, FbMainFrame::OnFindTitleCancel)
 
 	EVT_MENU(ID_RECENT_1, FbMainFrame::OnMenuRecent)
 	EVT_MENU(ID_RECENT_2, FbMainFrame::OnMenuRecent)
@@ -118,12 +113,6 @@ FbMainFrame::~FbMainFrame()
 	params.SetValue(FB_FRAME_MAXIMIZE, IsMaximized());
 	params.SetValue(FB_FRAME_WIDTH, size.x);
 	params.SetValue(FB_FRAME_HEIGHT, size.y);
-
-	while (GetNotebook()->GetPageCount()) {
-		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(0), FbAuiMDIChildFrame);
-		if (frame) delete frame; else break;
-    }
-    InfoCash::Empty();
 
 	m_FrameManager.UnInit();
 }
@@ -269,42 +258,33 @@ wxToolBar * FbMainFrame::CreateToolBar()
 
 	m_toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
 	m_toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
-//	m_toolbar->AddSeparator();
-/*
+	m_toolbar->AddSeparator();
+
 	wxStaticText * text1 = new wxStaticText( m_toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
 	m_toolbar->AddControl( text1 );
-*/
-	m_FindAuthor = new wxSearchCtrl(m_toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER | wxBORDER_RAISED);
+
+	m_FindAuthor = new wxTextCtrl(m_toolbar, ID_FIND_AUTHOR, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor->SetFont(font);
-	m_FindAuthor->SetDescriptiveText(_("Author"));
-	m_FindAuthor->ShowCancelButton(true);
-	m_FindAuthor->SetSearchBitmap(wxArtProvider::GetBitmap(wxART_FIND));
-	m_FindAuthor->SetCancelBitmap(wxArtProvider::GetBitmap(wxART_DELETE));
 	m_toolbar->AddControl( m_FindAuthor );
-//	m_toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
-//	m_toolbar->AddSeparator();
+	m_toolbar->AddTool(ID_FIND_AUTHOR, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
+	m_toolbar->AddSeparator();
 
-	m_toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Hierarchy of authors and series"));
-	m_toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Simple list"));
-
-
-/*
 	wxStaticText * text2 = new wxStaticText( m_toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	text2->SetFont(font);
 	m_toolbar->AddControl( text2 );
-*/
-	m_FindTitle = new wxSearchCtrl(m_toolbar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER | wxBORDER_RAISED);
-	m_FindTitle->SetFont(font);
-	m_FindTitle->SetDescriptiveText(_("Title"));
-	m_FindTitle->ShowCancelButton(true);
-	m_toolbar->AddControl( m_FindTitle );
-//	m_toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
-//	m_toolbar->AddSeparator();
 
-//	m_toolbar->AddSeparator();
+	m_FindTitle = new wxTextCtrl(m_toolbar, ID_FIND_TITLE, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindTitle->SetFont(font);
+	m_toolbar->AddControl( m_FindTitle );
+
+	m_toolbar->AddTool(ID_FIND_TITLE, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
+	m_toolbar->AddSeparator();
+	m_toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Hierarchy of authors and series"));
+	m_toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Simple list"));
+	m_toolbar->AddSeparator();
 	m_toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 	m_toolbar->Realize();
 
@@ -499,9 +479,6 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 		} break;
 		case ID_FRAME_SEQUEN: {
 			frame = new FbFrameSequen(this);
-		} break;
-		case ID_FRAME_DATE: {
-			frame = new FbFrameDate(this);
 		} break;
 	}
 	if (frame) frame->Update();
@@ -731,14 +708,4 @@ void FbMainFrame::OnLocalize(wxCommandEvent& event)
 void FbMainFrame::OnLocalizeUpdate(wxUpdateUIEvent& event)
 {
     if ( FbLocale::MenuToLang(event.GetId()) == wxGetApp().GetLanguage() )  event.Check(true);
-}
-
-void FbMainFrame::OnFindAuthorCancel(wxCommandEvent& event)
-{
-    m_FindAuthor->SetValue(wxEmptyString);
-}
-
-void FbMainFrame::OnFindTitleCancel(wxCommandEvent& event)
-{
-    m_FindTitle->SetValue(wxEmptyString);
 }

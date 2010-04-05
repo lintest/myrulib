@@ -76,6 +76,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 		wxSearchCtrl * edit = new FbSearchCtrl( this, idSearchBtn, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 		edit->SetMinSize( wxSize( 200,-1 ) );
 		edit->SetDescriptiveText(_("Author search"));
+        edit->ShowCancelButton(true);
 		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 		wxTextCtrl * text = new wxTextCtrl( this, idSearchBtn, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
