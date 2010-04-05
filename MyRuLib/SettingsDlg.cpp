@@ -214,11 +214,11 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 
 		wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Wine temp folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 		text->Wrap( -1 );
-		bSizerDir->Add( text, 0, wxLEFT|wxTOP|wxBOTTOM, 5 );
+		bSizerDir->Add( text, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
 		wxTextCtrl * edit = new wxTextCtrl( this, ID_WINE_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 		edit->SetMinSize( wxSize( 200,-1 ) );
-		bSizerDir->Add( edit, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
 	}
