@@ -76,6 +76,7 @@ WXSQLITE3_STATIC_OBJECTS =  \
 TREEVIEW_CXXFLAGS = -DNDEBUG -I../WxSQLite3 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 TREEVIEW_OBJECTS =  \
+	../build/treeview_FbSearchCtrl.o \
 	../build/treeview_FbTreeItem.o \
 	../build/treeview_FbTreeModel.o \
 	../build/treeview_FbTreeView.o \
@@ -144,6 +145,9 @@ test_for_selected_wxbuild:
 
 ../build/wxsqlite3_static_wxsqlite3.o: ./../WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
+
+../build/treeview_FbSearchCtrl.o: ./FbSearchCtrl.cpp
+	$(CXX) -c -o $@ $(TREEVIEW_CXXFLAGS) $(CPPDEPS) $<
 
 ../build/treeview_FbTreeItem.o: ./FbTreeItem.cpp
 	$(CXX) -c -o $@ $(TREEVIEW_CXXFLAGS) $(CPPDEPS) $<

@@ -1,9 +1,7 @@
-///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Dec 29 2008)
-// http://www.wxformbuilder.org/
-//
-// PLEASE DO "NOT" EDIT THIS FILE!
-///////////////////////////////////////////////////////////////////////////
+/*
+static wxString wxFileName::GetForbiddenChars ( wxPathFormat format = wxPATH_NATIVE )
+Returns the characters that can't be used in filenames and directory names for the specified format. 
+*/
 
 #include <wx/filename.h>
 #include <wx/artprov.h>
@@ -512,3 +510,4 @@ void ExternalDlg::OnCheckAuthor( wxCommandEvent& event )
 {
 	FillBooks(m_selections);
 }
+

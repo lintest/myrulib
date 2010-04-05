@@ -6,17 +6,17 @@
 WX_DEFINE_OBJARRAY(FbColumnArray);
 
 FbTreeModel::FbTreeModel() :
-
+    m_owner(NULL),
+    // Set brush colour
     m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
     m_hilightBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID),
     m_unfocusBrush(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), wxSOLID),
-
-	m_normalColour(wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT)),
+    // Set font colour
+    m_normalColour(wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT)),
 	m_hilightColour(wxSystemSettings::GetColour (wxSYS_COLOUR_HIGHLIGHTTEXT))
 {
 
 }
-
 
 const wxBitmap & FbTreeModel::GetBitmap(int state) const
 {
@@ -54,8 +54,12 @@ void FbTreeModelList::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray
         FbTreeItemId id = key;
 
 		if (id == m_current) {
-			dc.SetBrush(m_hilightBrush);
-			dc.SetTextForeground(m_hilightColour);
+			if (wxWindow::FindFocus() == m_owner) {
+                dc.SetBrush(m_hilightBrush);
+            } else {
+                dc.SetBrush(m_unfocusBrush);
+            }
+            dc.SetTextForeground(m_hilightColour);
 		} else {
 			dc.SetBrush (m_normalBrush);
 			dc.SetTextForeground(m_normalColour);
@@ -71,40 +75,53 @@ void FbTreeModelList::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray
 	}
 }
 
-FbTreeItemId FbTreeModelList::GetFirstRow()
+int FbTreeModelList::GoFirstRow()
 {
 	size_t count = GetRowCount();
-	return count ? FbTreeItemId(FbTreeItemKeyList(0)) : FbTreeItemId();
+
+	if (count) {
+	    m_current = FbTreeItemId(FbTreeItemKeyList(0));
+	    return 0;
+    } else {
+        m_current = FbTreeItemId();
+        return wxNOT_FOUND;
+    }
 }
 
-FbTreeItemId FbTreeModelList::GetLastRow()
+int FbTreeModelList::GoLastRow()
 {
 	size_t count = GetRowCount();
-	return count ? FbTreeItemId(FbTreeItemKeyList(count - 1)) : FbTreeItemId();
+
+	if (count) {
+	    m_current = FbTreeItemId(FbTreeItemKeyList(count - 1));
+	    return count - 1;
+    } else {
+        m_current = FbTreeItemId();
+        return wxNOT_FOUND;
+    }
 }
 
-FbTreeItemId FbTreeModelList::GetNextRow(const FbTreeItemId &id)
+int FbTreeModelList::GoNextRow(size_t delta)
 {
-	if (id.GetKeyType() == FbTreeItemKey::KT_LIST) {
-		size_t rowid = ((FbTreeItemKeyList*)id.GetKey())->GetId();
-		size_t count = GetRowCount();
-		if (rowid < count) {
-			FbTreeItemKeyList key(rowid + 1);
-			return FbTreeItemId(key);
-		} else return id;
+	size_t count = GetRowCount();
+	if (count && m_current.GetKeyType() == FbTreeItemKey::KT_LIST) {
+		size_t rowid = ((FbTreeItemKeyList*)m_current.GetKey())->GetId();
+		rowid  = rowid + delta < count ? rowid + delta : count - 1;
+		m_current = FbTreeItemKeyList(rowid);
+		return rowid;
 	}
-	return GetFirstRow();
+	return GoFirstRow();
 }
 
-FbTreeItemId FbTreeModelList::GetPriorRow(const FbTreeItemId &id)
+int FbTreeModelList::GoPriorRow(size_t delta)
 {
-	if (id.GetKeyType() == FbTreeItemKey::KT_LIST) {
-		size_t rowid = ((FbTreeItemKeyList*)id.GetKey())->GetId();
-		if (rowid > 0) {
-			FbTreeItemKeyList key(rowid - 1);
-			return FbTreeItemId(key);
-		} else return id;
+	size_t count = GetRowCount();
+	if (count && m_current.GetKeyType() == FbTreeItemKey::KT_LIST) {
+		size_t rowid = ((FbTreeItemKeyList*)m_current.GetKey())->GetId();
+		rowid  = rowid < delta ? 0 : rowid - delta;
+		m_current = FbTreeItemKeyList(rowid);
+		return rowid;
 	}
-	return GetFirstRow();
+	return GoFirstRow();
 }
 

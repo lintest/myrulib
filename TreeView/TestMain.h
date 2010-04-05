@@ -12,7 +12,7 @@
 
 #include <wx/wx.h>
 
-class wxTreeListCtrl;
+class FbTreeViewCtrl;
 
 class DataViewFrame: public wxFrame
 {
@@ -28,17 +28,19 @@ class DataViewFrame: public wxFrame
 			idOpenTree,
 			idMenuAbout,
 			idDataView,
+			idSearchBtn,
 		};
 
 		wxStatusBar* m_statusbar;
-		wxTreeListCtrl* m_dataview;
+		FbTreeViewCtrl* m_dataview;
 
 	private:
         void OnClose(wxCloseEvent& event);
         void OnQuit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
-		void OnOpenList( wxCommandEvent& event ){ event.Skip(); }
-		void OnOpenTree( wxCommandEvent& event ){ event.Skip(); }
+		void OnOpenList(wxCommandEvent& event){ event.Skip(); }
+		void OnOpenTree(wxCommandEvent& event){ event.Skip(); }
+        void OnSearchBtn(wxCommandEvent& event);
         DECLARE_EVENT_TABLE()
 };
 

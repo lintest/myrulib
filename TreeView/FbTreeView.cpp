@@ -8,28 +8,28 @@
 
 #include "../MyRuLib/FbLogoBitmap.h"
 
-class wxTreeListItem;
+class FbTreeViewItem;
 
 class WXDLLEXPORT wxControlRenderer;
 
-const wxChar* wxTreeListCtrlNameStr = _T("treelistctrl");
+const wxChar* FbTreeViewCtrlNameStr = _T("treelistctrl");
 
-class wxTreeListColumnInfo
+class FbTreeViewColumnInfo
 {
     public:
-		wxTreeListColumnInfo() {}
+		FbTreeViewColumnInfo() {}
 
-        wxTreeListColumnInfo(
+        FbTreeViewColumnInfo(
             size_t model_column,
             const wxString &text = wxEmptyString,
             int width = DEFAULT_COL_WIDTH,
             int flag = wxALIGN_LEFT
         ) : m_text(text), m_model_column(model_column), m_width(width), m_flag(flag) {};
 
-        wxTreeListColumnInfo(const wxTreeListColumnInfo &info)
+        FbTreeViewColumnInfo(const FbTreeViewColumnInfo &info)
             : m_text(info.m_text), m_model_column(info.m_model_column), m_width(info.m_width), m_flag(info.m_flag) {};
 
-        void Assign(wxTreeListHeaderWindow * header, wxHeaderButtonParams &params) const;
+        void Assign(FbTreeViewHeaderWindow * header, wxHeaderButtonParams &params) const;
 
         int GetWidth() const { return m_width; };
 
@@ -40,34 +40,34 @@ class wxTreeListColumnInfo
         int m_flag;
 
     private:
-        friend class wxTreeListMainWindow;
+        friend class FbTreeViewMainWindow;
 };
 
-static wxTreeListColumnInfo wxInvalidTreeListColumnInfo;
+static FbTreeViewColumnInfo wxInvalidTreeListColumnInfo;
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(wxTreeListColumnInfo, wxArrayTreeListColumn);
+WX_DECLARE_OBJARRAY(FbTreeViewColumnInfo, wxArrayTreeListColumn);
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(wxArrayTreeListColumn);
 
-class  wxTreeListHeaderWindow : public wxWindow
+class  FbTreeViewHeaderWindow : public wxWindow
 {
 	public:
-		wxTreeListHeaderWindow( wxWindow *win,
+		FbTreeViewHeaderWindow( wxWindow *win,
 								wxWindowID id,
-								wxTreeListMainWindow *owner,
+								FbTreeViewMainWindow *owner,
 								const wxPoint &pos = wxDefaultPosition,
 								const wxSize &size = wxDefaultSize,
 								long style = 0,
-								const wxString &name = wxT("wxtreelistctrlcolumntitles") );
+								const wxString &name = wxT("FbTreeViewctrlcolumntitles") );
 
-		virtual ~wxTreeListHeaderWindow();
+		virtual ~FbTreeViewHeaderWindow();
 
-        void AddColumn(const wxTreeListColumnInfo & info) { m_columns.Add(info); };
+        void AddColumn(const FbTreeViewColumnInfo & info) { m_columns.Add(info); };
 
         size_t GetColumnCount() const { return m_columns.Count(); };
 
-        const wxTreeListColumnInfo & GetColumn (size_t column) const {
+        const FbTreeViewColumnInfo & GetColumn (size_t column) const {
             wxCHECK_MSG (column < GetColumnCount(), wxInvalidTreeListColumnInfo, _T("Invalid column"));
             return m_columns[column];
         }
@@ -83,7 +83,7 @@ class  wxTreeListHeaderWindow : public wxWindow
         void SetSortedColumn(int column) { m_sorted = column; }
 
 	private:
-		wxTreeListMainWindow * m_owner;
+		FbTreeViewMainWindow * m_owner;
 		wxArrayTreeListColumn m_columns;
 		int m_sorted;
 
@@ -99,46 +99,47 @@ class  wxTreeListHeaderWindow : public wxWindow
 		DECLARE_EVENT_TABLE()
 };
 
-class  wxTreeListMainWindow: public wxScrolledWindow
+class  FbTreeViewMainWindow: public wxScrolledWindow
 {
 	public:
-		wxTreeListMainWindow (wxTreeListCtrl *parent, wxWindowID id = -1,
+		FbTreeViewMainWindow (FbTreeViewCtrl *parent, wxWindowID id = -1,
 				   const wxPoint& pos = wxDefaultPosition,
 				   const wxSize& size = wxDefaultSize,
 				   long style = wxTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
-				   const wxString& name = wxT("wxtreelistmainwindow"));
+				   const wxString& name = wxT("FbTreeViewmainwindow"));
 
-		virtual ~wxTreeListMainWindow();
+		virtual ~FbTreeViewMainWindow();
 
 		virtual bool SetBackgroundColour (const wxColour& colour);
-
 		virtual bool SetForegroundColour (const wxColour& colour);
 
+		virtual void SetFocus();
+        virtual bool SetFont(const wxFont& font);
+
+	public:
 		unsigned long GetRowCount() { return m_model ? m_model->GetRowCount() : 0; };
-
 		void SetDirty() { m_dirty = true; }
-
 		void AssignModel(FbTreeModel * model);
 
-		void SetFocus();
-
 	private:
-		int GetRowHeight(wxDC &dc);
+		int GetRowHeight() { return m_rowHeight; };
+		int GetClientCount();
         void AdjustMyScrollbars();
-		bool SendEvent(wxEventType type, wxTreeListItem *item = NULL, wxTreeEvent *event = NULL);  // returns true if processed
+		bool SendEvent(wxEventType type, FbTreeViewItem *item = NULL, wxTreeEvent *event = NULL);  // returns true if processed
 
 	private:
-		wxTreeListCtrl* m_owner;
+		FbTreeViewCtrl* m_owner;
         FbTreeModel * m_model;
         wxPen m_dottedPen;
-        wxFont m_font;
 		int m_current;
         bool m_dirty;
+        int m_rowHeight;
 
 	private:
 		void OnPaint( wxPaintEvent &event );
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // to reduce flicker
+        void OnLeftDown( wxMouseEvent& event );
 		void OnSetFocus( wxFocusEvent &event );
 		void OnKillFocus( wxFocusEvent &event );
 		void OnChar( wxKeyEvent &event );
@@ -152,10 +153,10 @@ class  wxTreeListMainWindow: public wxScrolledWindow
 };
 
 //-----------------------------------------------------------------------------
-//  wxTreeListHeaderWindow
+//  FbTreeViewHeaderWindow
 //-----------------------------------------------------------------------------
 
-void wxTreeListColumnInfo::Assign(wxTreeListHeaderWindow * header, wxHeaderButtonParams &params) const
+void FbTreeViewColumnInfo::Assign(FbTreeViewHeaderWindow * header, wxHeaderButtonParams &params) const
 {
     params.m_labelFont = header->GetFont();
     params.m_labelText = m_text;
@@ -164,28 +165,28 @@ void wxTreeListColumnInfo::Assign(wxTreeListHeaderWindow * header, wxHeaderButto
 }
 
 //-----------------------------------------------------------------------------
-//  wxTreeListHeaderWindow
+//  FbTreeViewHeaderWindow
 //-----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(wxTreeListHeaderWindow,wxWindow)
-    EVT_PAINT         (wxTreeListHeaderWindow::OnPaint)
-    EVT_ERASE_BACKGROUND(wxTreeListHeaderWindow::OnEraseBackground) // reduce flicker
-    EVT_MOUSE_EVENTS  (wxTreeListHeaderWindow::OnMouse)
-    EVT_SET_FOCUS     (wxTreeListHeaderWindow::OnSetFocus)
+BEGIN_EVENT_TABLE(FbTreeViewHeaderWindow,wxWindow)
+    EVT_ERASE_BACKGROUND(FbTreeViewHeaderWindow::OnEraseBackground)
+    EVT_PAINT(FbTreeViewHeaderWindow::OnPaint)
+    EVT_MOUSE_EVENTS  (FbTreeViewHeaderWindow::OnMouse)
+    EVT_SET_FOCUS     (FbTreeViewHeaderWindow::OnSetFocus)
 END_EVENT_TABLE()
 
-wxTreeListHeaderWindow::wxTreeListHeaderWindow(wxWindow *win, wxWindowID id, wxTreeListMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
+FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbTreeViewMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
     : wxWindow(win, id, pos, size, style, name), m_owner(owner), m_sorted(0)
 {
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
     SetBackgroundColour(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
 }
 
-wxTreeListHeaderWindow::~wxTreeListHeaderWindow()
+FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 {
 }
 
-int wxTreeListHeaderWindow::GetFullWidth()
+int FbTreeViewHeaderWindow::GetFullWidth()
 {
     int ww = 0;
     size_t count = m_columns.Count();
@@ -194,7 +195,7 @@ int wxTreeListHeaderWindow::GetFullWidth()
     return ww;
 }
 
-void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
+void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 {
     wxAutoBufferedPaintDC dc( this );
     dc.SetBackgroundMode(wxTRANSPARENT);
@@ -228,7 +229,7 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
     }
 }
 
-int wxTreeListHeaderWindow::XToCol(int x)
+int FbTreeViewHeaderWindow::XToCol(int x)
 {
     int w, left = 0;
     GetClientSize( &w, 0 );
@@ -242,7 +243,7 @@ int wxTreeListHeaderWindow::XToCol(int x)
     return count - 1;
 }
 
-void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event)
+void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
 {
     if (event.LeftUp() && m_sorted) {
         int col = XToCol(event.GetX());
@@ -253,12 +254,12 @@ void wxTreeListHeaderWindow::OnMouse (wxMouseEvent &event)
 	event.Skip();
 }
 
-void wxTreeListHeaderWindow::OnSetFocus (wxFocusEvent &WXUNUSED(event))
+void FbTreeViewHeaderWindow::OnSetFocus (wxFocusEvent &WXUNUSED(event))
 {
     m_owner->SetFocus();
 }
 
-void wxTreeListHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int colunm)
+void FbTreeViewHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int colunm)
 {
     wxWindow *parent = GetParent();
     wxListEvent le (type, parent->GetId());
@@ -275,27 +276,28 @@ void wxTreeListHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int c
 }
 
 // ---------------------------------------------------------------------------
-// wxTreeListMainWindow implementation
+// FbTreeViewMainWindow implementation
 // ---------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(wxTreeListMainWindow, wxScrolledWindow)
-    EVT_PAINT          (wxTreeListMainWindow::OnPaint)
-    EVT_ERASE_BACKGROUND(wxTreeListMainWindow::OnEraseBackground) // to reduce flicker
-    EVT_MOUSE_EVENTS   (wxTreeListMainWindow::OnMouse)
-    EVT_CHAR           (wxTreeListMainWindow::OnChar)
-    EVT_SET_FOCUS      (wxTreeListMainWindow::OnSetFocus)
-    EVT_KILL_FOCUS     (wxTreeListMainWindow::OnKillFocus)
-    EVT_IDLE           (wxTreeListMainWindow::OnIdle)
-    EVT_SCROLLWIN      (wxTreeListMainWindow::OnScroll)
-    EVT_MOUSE_CAPTURE_LOST(wxTreeListMainWindow::OnCaptureLost)
+BEGIN_EVENT_TABLE(FbTreeViewMainWindow, wxScrolledWindow)
+    EVT_PAINT          (FbTreeViewMainWindow::OnPaint)
+    EVT_ERASE_BACKGROUND(FbTreeViewMainWindow::OnEraseBackground) // to reduce flicker
+    EVT_LEFT_DOWN(FbTreeViewMainWindow::OnLeftDown)
+    EVT_MOUSE_EVENTS   (FbTreeViewMainWindow::OnMouse)
+    EVT_CHAR           (FbTreeViewMainWindow::OnChar)
+    EVT_SET_FOCUS      (FbTreeViewMainWindow::OnSetFocus)
+    EVT_KILL_FOCUS     (FbTreeViewMainWindow::OnKillFocus)
+    EVT_IDLE           (FbTreeViewMainWindow::OnIdle)
+    EVT_SCROLLWIN      (FbTreeViewMainWindow::OnScroll)
+    EVT_MOUSE_CAPTURE_LOST(FbTreeViewMainWindow::OnCaptureLost)
 END_EVENT_TABLE()
 
 // ---------------------------------------------------------------------------
 // construction/destruction
 // ---------------------------------------------------------------------------
 
-wxTreeListMainWindow::wxTreeListMainWindow(
-		wxTreeListCtrl *parent,
+FbTreeViewMainWindow::FbTreeViewMainWindow(
+		FbTreeViewCtrl *parent,
 		wxWindowID id,
 		const wxPoint& pos,
 		const wxSize& size,
@@ -303,7 +305,8 @@ wxTreeListMainWindow::wxTreeListMainWindow(
 		const wxValidator &validator,
 		const wxString& name) :
 	wxScrolledWindow(parent, id, pos, size, style|wxVSCROLL, name),
-	m_model(NULL)
+	m_model(NULL),
+	m_rowHeight(0)
 {
 	m_current = -1;
 
@@ -315,7 +318,7 @@ wxTreeListMainWindow::wxTreeListMainWindow(
 
     SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_LISTBOX));
 
-    m_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
+    SetFont(wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT));
 
 #ifdef __WXMSW__
     {
@@ -348,36 +351,44 @@ wxTreeListMainWindow::wxTreeListMainWindow(
 }
 
 
-wxTreeListMainWindow::~wxTreeListMainWindow()
+FbTreeViewMainWindow::~FbTreeViewMainWindow()
 {
 }
 
-int wxTreeListMainWindow::GetRowHeight(wxDC &dc)
+bool FbTreeViewMainWindow::SetFont(const wxFont& font)
 {
-	dc.SetFont(GetFont());
-	int h = (int)(dc.GetCharHeight() + 2);
-	return h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
+    bool ok = wxScrolledWindow::SetFont(font);
+    if (ok) {
+        wxClientDC dc (this);
+        dc.SetFont(font);
+        int h = (int)(dc.GetCharHeight() + 2);
+        m_rowHeight = h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
+    }
+    return ok;
 }
 
-void wxTreeListMainWindow::AdjustMyScrollbars()
+void FbTreeViewMainWindow::AdjustMyScrollbars()
 {
     if (true) {
-        wxClientDC dc (this);
-        dc.SetFont(GetFont());
-        int y = GetRowHeight(dc);
-
         int xUnit, yUnit;
         GetScrollPixelsPerUnit (&xUnit, &yUnit);
-        if (yUnit == 0) yUnit = y;
+        if (yUnit == 0) yUnit = GetRowHeight();
 
         int y_pos = GetScrollPos (wxVERTICAL);
         SetScrollbars (0, yUnit, 0, GetRowCount(), 0, y_pos);
-    }else{
+    } else {
         SetScrollbars (0, 0, 0, 0);
     }
 }
 
-void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
+int FbTreeViewMainWindow::GetClientCount()
+{
+    int hh, h = GetRowHeight();
+    GetClientSize(NULL, &hh);
+    return hh / h;
+}
+
+void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 {
     wxAutoBufferedPaintDC dc (this);
     DoPrepareDC (dc);
@@ -391,7 +402,7 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
     int ww, hh;
     GetClientSize(&ww, &hh);
 
-    int h = GetRowHeight(dc);
+    int h = GetRowHeight();
 
 	wxRect rect(0, y_pos*h, ww, hh);
 
@@ -400,11 +411,11 @@ void wxTreeListMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 	if (m_model) m_model->DrawTree(dc, rect, columns, y_pos, h);
 }
 
-void wxTreeListMainWindow::OnMouse (wxMouseEvent &event)
+void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 {
 }
 
-void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
+void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 {
     // send event to user code
     wxTreeEvent nevent (wxEVT_COMMAND_TREE_KEY_DOWN, 0 );
@@ -417,25 +428,65 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
 		return;
     }
 
-   	FbTreeItemId current = m_model->GetCurrent();
-   	FbTreeItemId new_id;
+    int pos = GetScrollPos (wxVERTICAL);
+   	int hhh = GetClientCount();
+   	int row = wxNOT_FOUND;
+
+    if (event.m_controlDown) {
+        bool ok = true;
+        switch (event.GetKeyCode()) {
+            case WXK_UP: {
+                pos -= 1;
+            } break;
+            case WXK_DOWN: {
+                pos += 1;
+            } break;
+            case WXK_HOME: {
+                pos = 0;
+            } break;
+            case WXK_END: {
+                pos = GetRowCount();
+            } break;
+            case WXK_PAGEUP: {
+                pos -= hhh;
+            } break;
+            // <WXK_PAGEDOWN>: go to the next page
+            case WXK_PAGEDOWN: {
+                pos += hhh;
+            } break;
+            default: {
+                ok = false;
+            }
+        }
+        if (ok) {
+            SetScrollPos(wxVERTICAL, pos);
+            SetDirty();
+            return;
+        }
+    }
 
     switch (event.GetKeyCode()) {
-        // <UP>: go to the previous sibling or for the last of its children, to the parent
+        case WXK_TAB: {
+            Navigate( event.m_shiftDown ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward  );
+            return;
+        } break;
         case WXK_UP: {
-        	new_id = m_model->GetPriorRow(current);
+            row = m_model->GoPriorRow();
         } break;
-        // <DOWN>: if expanded go to the first child, else to the next sibling, ect
         case WXK_DOWN: {
-        	new_id = m_model->GetNextRow(current);
+            row = m_model->GoNextRow();
         } break;
-        // <HOME>: go to first item
         case WXK_HOME: {
-        	new_id = m_model->GetFirstRow();
+        	row = m_model->GoFirstRow();
         } break;
-        // <END>: go to last item
         case WXK_END: {
-        	new_id = m_model->GetLastRow();
+        	row = m_model->GoLastRow();
+        } break;
+        case WXK_PAGEUP: {
+        	row = m_model->GoPriorRow(hhh);
+        } break;
+        case WXK_PAGEDOWN: {
+        	row = m_model->GoNextRow(hhh);
         } break;
         default: {
             event.Skip();
@@ -443,8 +494,17 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
         }
     }
 
-	if (new_id.IsOk()) m_model->SetCurrent(new_id);
-    Refresh();
+	if (row != wxNOT_FOUND) {
+        if (pos > row) {
+            SetScrollPos(wxVERTICAL, row);
+        } else {
+            if (row >= pos + hhh) {
+                pos = (row - hhh) >= 0 ? (row - hhh + 1) : 0;
+                SetScrollPos(wxVERTICAL, pos);
+            }
+        }
+        SetDirty();
+    }
 
 
 /*
@@ -453,14 +513,14 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
     bool curItemSet = false;
     if (!m_curItem) {
         if (! GetRootItem().IsOk()) return;
-        m_curItem = (wxTreeListItem*)GetRootItem().m_pItem;
+        m_curItem = (FbTreeViewItem*)GetRootItem().m_pItem;
         if (HasFlag(wxTR_HIDE_ROOT)) {
 #if !wxCHECK_VERSION(2, 5, 0)
             long cookie = 0;
 #else
             wxTreeItemIdValue cookie = 0;
 #endif
-            m_curItem = (wxTreeListItem*)GetFirstChild (m_curItem, cookie).m_pItem;
+            m_curItem = (FbTreeViewItem*)GetFirstChild (m_curItem, cookie).m_pItem;
         }
         SelectItem(m_curItem, 0L, true);  // unselect others
         curItemSet = true;
@@ -470,7 +530,7 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
     if (HasFlag(wxTR_MULTIPLE) && event.ShiftDown()) {
         if (!m_shiftItem) m_shiftItem = m_curItem;
     }else{
-        m_shiftItem = (wxTreeListItem*)NULL;
+        m_shiftItem = (FbTreeViewItem*)NULL;
     }
 
     if (curItemSet) return;  // if no item was current until now, do nothing more
@@ -503,7 +563,7 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
 
         // ' ': toggle current item
         case ' ': {
-            SelectItem (m_curItem, (wxTreeListItem*)NULL, false);
+            SelectItem (m_curItem, (FbTreeViewItem*)NULL, false);
         }break;
 
         // <RETURN>: activate current item
@@ -650,14 +710,14 @@ void wxTreeListMainWindow::OnChar(wxKeyEvent &event)
             SelectItem (newItem, m_shiftItem, unselect_others);
         }
         EnsureVisible (newItem);
-        wxTreeListItem *oldItem = m_curItem;
-        m_curItem = (wxTreeListItem*)newItem.m_pItem; // make the new item the current item
+        FbTreeViewItem *oldItem = m_curItem;
+        m_curItem = (FbTreeViewItem*)newItem.m_pItem; // make the new item the current item
         RefreshLine (oldItem);
     }
 */
 }
 
-void wxTreeListMainWindow::OnSetFocus (wxFocusEvent &event)
+void FbTreeViewMainWindow::OnSetFocus (wxFocusEvent &event)
 {
 /*
     m_hasFocus = true;
@@ -665,9 +725,10 @@ void wxTreeListMainWindow::OnSetFocus (wxFocusEvent &event)
     if (m_curItem) RefreshLine (m_curItem);
 */
     event.Skip();
+    SetDirty();
 }
 
-void wxTreeListMainWindow::OnKillFocus( wxFocusEvent &event )
+void FbTreeViewMainWindow::OnKillFocus( wxFocusEvent &event )
 {
 /*
     m_hasFocus = false;
@@ -675,9 +736,10 @@ void wxTreeListMainWindow::OnKillFocus( wxFocusEvent &event )
     if (m_curItem) RefreshLine (m_curItem);
 */
     event.Skip();
+    SetDirty();
 }
 
-void wxTreeListMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
+void FbTreeViewMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
 {
     if (!m_dirty) return;
     m_dirty = false;
@@ -686,7 +748,7 @@ void wxTreeListMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
     Refresh();
 }
 
-void wxTreeListMainWindow::OnScroll (wxScrollWinEvent& event)
+void FbTreeViewMainWindow::OnScroll (wxScrollWinEvent& event)
 {
 //    // FIXME
 //    #if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
@@ -697,7 +759,7 @@ void wxTreeListMainWindow::OnScroll (wxScrollWinEvent& event)
 	HandleOnScroll( event );
 }
 
-bool wxTreeListMainWindow::SetBackgroundColour (const wxColour& colour)
+bool FbTreeViewMainWindow::SetBackgroundColour (const wxColour& colour)
 {
     if (!wxWindow::SetBackgroundColour(colour)) return false;
 
@@ -705,7 +767,7 @@ bool wxTreeListMainWindow::SetBackgroundColour (const wxColour& colour)
     return true;
 }
 
-bool wxTreeListMainWindow::SetForegroundColour (const wxColour& colour)
+bool FbTreeViewMainWindow::SetForegroundColour (const wxColour& colour)
 {
     if (!wxWindow::SetForegroundColour(colour)) return false;
 
@@ -713,7 +775,7 @@ bool wxTreeListMainWindow::SetForegroundColour (const wxColour& colour)
     return true;
 }
 
-bool wxTreeListMainWindow::SendEvent(wxEventType type, wxTreeListItem *item, wxTreeEvent *event)
+bool FbTreeViewMainWindow::SendEvent(wxEventType type, FbTreeViewItem *item, wxTreeEvent *event)
 {
 	wxTreeEvent nevent(type, 0);
 
@@ -729,28 +791,34 @@ bool wxTreeListMainWindow::SendEvent(wxEventType type, wxTreeListItem *item, wxT
     return m_owner->GetEventHandler()->ProcessEvent (*event);
 }
 
-void wxTreeListMainWindow::SetFocus()
+void FbTreeViewMainWindow::SetFocus()
 {
     wxWindow::SetFocus();
 }
 
-void wxTreeListMainWindow::AssignModel(FbTreeModel * model)
+void FbTreeViewMainWindow::AssignModel(FbTreeModel * model)
 {
 	m_model = model;
+	m_model->SetOwner(this);
 	SetDirty();
 }
 
+void FbTreeViewMainWindow::OnLeftDown( wxMouseEvent& event )
+{
+	SetFocus();
+}
+
 //-----------------------------------------------------------------------------
-//  wxTreeListCtrl
+//  FbTreeViewCtrl
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(wxTreeListCtrl, wxControl);
+IMPLEMENT_DYNAMIC_CLASS(FbTreeViewCtrl, wxControl);
 
-BEGIN_EVENT_TABLE(wxTreeListCtrl, wxControl)
-    EVT_SIZE(wxTreeListCtrl::OnSize)
+BEGIN_EVENT_TABLE(FbTreeViewCtrl, wxControl)
+    EVT_SIZE(FbTreeViewCtrl::OnSize)
 END_EVENT_TABLE();
 
-bool wxTreeListCtrl::Create(wxWindow *parent, wxWindowID id,
+bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
                             const wxPoint& pos,
                             const wxSize& size,
                             long style, const wxValidator &validator,
@@ -766,16 +834,16 @@ bool wxTreeListCtrl::Create(wxWindow *parent, wxWindowID id,
        return false;
     }
 
-    m_main_win = new wxTreeListMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
+    m_main_win = new FbTreeViewMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
 
-    m_header_win = new wxTreeListHeaderWindow (this, -1, m_main_win, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL);
+    m_header_win = new FbTreeViewHeaderWindow (this, -1, m_main_win, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL);
 
     DoHeaderLayout();
 
     return true;
 }
 
-void wxTreeListCtrl::DoHeaderLayout()
+void FbTreeViewCtrl::DoHeaderLayout()
 {
     int x, y;
     GetClientSize(&x, &y);
@@ -794,40 +862,40 @@ void wxTreeListCtrl::DoHeaderLayout()
     }
 }
 
-void wxTreeListCtrl::OnSize(wxSizeEvent& WXUNUSED(event))
+void FbTreeViewCtrl::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     DoHeaderLayout();
 }
 
-bool wxTreeListCtrl::SetBackgroundColour(const wxColour& colour)
+bool FbTreeViewCtrl::SetBackgroundColour(const wxColour& colour)
 {
     if (!m_main_win) return false;
     return m_main_win->SetBackgroundColour(colour);
 }
 
-bool wxTreeListCtrl::SetForegroundColour(const wxColour& colour)
+bool FbTreeViewCtrl::SetForegroundColour(const wxColour& colour)
 {
     if (!m_main_win) return false;
     return m_main_win->SetForegroundColour(colour);
 }
 
-wxSize wxTreeListCtrl::DoGetBestSize() const
+wxSize FbTreeViewCtrl::DoGetBestSize() const
 {
     return wxSize (200,200);
 }
 
-void wxTreeListCtrl::SetFocus()
+void FbTreeViewCtrl::SetFocus()
 {
 	m_main_win->SetFocus();
 }
 
-void wxTreeListCtrl::Refresh(bool erase, const wxRect* rect)
+void FbTreeViewCtrl::Refresh(bool erase, const wxRect* rect)
 {
     m_main_win->Refresh (erase, rect);
     m_header_win->Refresh (erase, rect);
 }
 
-bool wxTreeListCtrl::SetFont(const wxFont& font)
+bool FbTreeViewCtrl::SetFont(const wxFont& font)
 {
     if (m_header_win) {
         m_header_win->SetFont(font);
@@ -841,24 +909,23 @@ bool wxTreeListCtrl::SetFont(const wxFont& font)
     }
 }
 
-void wxTreeListCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag)
+void FbTreeViewCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag)
 {
-    if (m_header_win) m_header_win->AddColumn(wxTreeListColumnInfo(model_column, text, width, flag));
+    if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag));
 }
 
-void wxTreeListCtrl::SetSortedColumn(int column)
+void FbTreeViewCtrl::SetSortedColumn(int column)
 {
     if (m_header_win) m_header_win->SetSortedColumn(column);
 }
 
-int wxTreeListCtrl::GetSortedColumn()
+int FbTreeViewCtrl::GetSortedColumn()
 {
     return m_header_win ? m_header_win->GetSortedColumn() : 0;
 }
 
-void wxTreeListCtrl::AssignModel(FbTreeModel * model)
+void FbTreeViewCtrl::AssignModel(FbTreeModel * model)
 {
 	m_main_win->AssignModel(model);
 }
-
 

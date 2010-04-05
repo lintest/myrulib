@@ -10,38 +10,38 @@
 
 #define DEFAULT_COL_WIDTH 100
 
-extern WXDLLEXPORT const wxChar* wxTreeListCtrlNameStr;
+extern WXDLLEXPORT const wxChar* FbTreeViewCtrlNameStr;
 
-class wxTreeListHeaderWindow;
+class FbTreeViewHeaderWindow;
 
-class wxTreeListMainWindow;
+class FbTreeViewMainWindow;
 
-class WXDLLEXPORT wxTreeListCtrl : public wxControl
+class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 {
 	public:
-		wxTreeListCtrl()
+		FbTreeViewCtrl()
 			: m_header_win(0), m_main_win(0)
 		{}
 
-		wxTreeListCtrl(wxWindow *parent, wxWindowID id = -1,
+		FbTreeViewCtrl(wxWindow *parent, wxWindowID id = -1,
 				   const wxPoint& pos = wxDefaultPosition,
 				   const wxSize& size = wxDefaultSize,
 				   long style = wxTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
-				   const wxString& name = wxTreeListCtrlNameStr )
+				   const wxString& name = FbTreeViewCtrlNameStr )
 			: m_header_win(0), m_main_win(0)
 		{
 			Create(parent, id, pos, size, style);
 		}
 
-		virtual ~wxTreeListCtrl() {}
+		virtual ~FbTreeViewCtrl() {}
 
 		bool Create(wxWindow *parent, wxWindowID id = -1,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
 					long style = wxTR_DEFAULT_STYLE,
 					const wxValidator &validator = wxDefaultValidator,
-					const wxString& name = wxTreeListCtrlNameStr );
+					const wxString& name = FbTreeViewCtrlNameStr );
 
 		void Refresh(bool erase=TRUE, const wxRect* rect=NULL);
 
@@ -51,10 +51,10 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 		virtual bool SetBackgroundColour (const wxColour& colour);
 		virtual bool SetForegroundColour (const wxColour& colour);
 
-		wxTreeListHeaderWindow* GetHeaderWindow() const
+		FbTreeViewHeaderWindow* GetHeaderWindow() const
 			{ return m_header_win; }
 
-		wxTreeListMainWindow* GetMainWindow() const
+		FbTreeViewMainWindow* GetMainWindow() const
 			{ return m_main_win; }
 
 		virtual wxSize DoGetBestSize() const;
@@ -70,10 +70,10 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 
 	protected:
 		// header window, responsible for column visualization and manipulation
-		wxTreeListHeaderWindow* m_header_win;
+		FbTreeViewHeaderWindow* m_header_win;
 
 		// main window, the "true" tree ctrl
-		wxTreeListMainWindow* m_main_win;
+		FbTreeViewMainWindow* m_main_win;
 
 		void DoHeaderLayout();
 		void OnSize(wxSizeEvent& event);
@@ -84,7 +84,7 @@ class WXDLLEXPORT wxTreeListCtrl : public wxControl
 
 	private:
 		DECLARE_EVENT_TABLE()
-		DECLARE_DYNAMIC_CLASS(wxTreeListCtrl)
+		DECLARE_DYNAMIC_CLASS(FbTreeViewCtrl)
 
 };
 
