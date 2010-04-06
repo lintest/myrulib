@@ -46,17 +46,10 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
 		void Refresh(bool erase=TRUE, const wxRect* rect=NULL);
 
-//		void SetFocus();
-
 		// overridden base class virtuals
 		virtual bool SetBackgroundColour (const wxColour& colour);
+
 		virtual bool SetForegroundColour (const wxColour& colour);
-
-		FbTreeViewHeaderWindow* GetHeaderWindow() const
-			{ return m_header_win; }
-
-		FbTreeViewMainWindow* GetMainWindow() const
-			{ return m_main_win; }
 
 		virtual wxSize DoGetBestSize() const;
 
@@ -68,6 +61,12 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
                         int flag = wxALIGN_LEFT);
 
 		void AssignModel(FbTreeModel * model);
+
+		FbTreeViewHeaderWindow* GetHeaderWindow() const
+			{ return m_header_win; }
+
+		FbTreeViewMainWindow* GetMainWindow() const
+			{ return m_main_win; }
 
 	protected:
 		// header window, responsible for column visualization and manipulation
@@ -84,9 +83,9 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		int GetSortedColumn();
 
 	private:
+        WX_DECLARE_CONTROL_CONTAINER();
 		DECLARE_DYNAMIC_CLASS(FbTreeViewCtrl)
 		DECLARE_EVENT_TABLE()
-        WX_DECLARE_CONTROL_CONTAINER();
 };
 
 #endif // __FBTREEVIEW_H__

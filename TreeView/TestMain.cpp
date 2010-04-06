@@ -74,11 +74,11 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 		bSizerDir->Add( info, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
 		wxTextCtrl * edit = new wxTextCtrl( this, idSearchBtn, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-		edit->SetMinSize( wxSize( 200,-1 ) );
+		edit->SetMinSize( wxSize( 100,-1 ) );
 		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 		wxTextCtrl * text = new wxTextCtrl( this, idSearchBtn, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-		text->SetMinSize( wxSize( 200,-1 ) );
+		text->SetMinSize( wxSize( 100,-1 ) );
 		bSizerDir->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 		bSizer1->Add( bSizerDir, 0, wxEXPAND, 5 );

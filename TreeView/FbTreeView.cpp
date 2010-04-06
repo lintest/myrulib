@@ -466,10 +466,12 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
     }
 
     switch (event.GetKeyCode()) {
+/*
         case WXK_TAB: {
             Navigate( event.m_shiftDown ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward  );
             return;
         } break;
+*/
         case WXK_UP: {
             row = m_model->GoPriorRow();
         } break;
@@ -831,9 +833,11 @@ bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
 
     long ctrl_style = style & ~(wxVSCROLL|wxHSCROLL);
 
-    if (!wxControl::Create(parent, id, pos, size, ctrl_style | wxTAB_TRAVERSAL, validator, name)) {
+    if (!wxControl::Create(parent, id, pos, size, ctrl_style, validator, name)) {
        return false;
     }
+
+    WX_INIT_CONTROL_CONTAINER();
 
     m_main_win = new FbTreeViewMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
 
