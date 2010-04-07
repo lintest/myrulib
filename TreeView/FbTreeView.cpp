@@ -831,13 +831,15 @@ bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
 
 	main_style |= wxWANTS_CHARS ;
 
+    main_style |= wxTAB_TRAVERSAL;
+
     long ctrl_style = style & ~(wxVSCROLL|wxHSCROLL);
+
+	m_container.SetContainerWindow(this);
 
     if (!wxControl::Create(parent, id, pos, size, ctrl_style, validator, name)) {
        return false;
     }
-
-    WX_INIT_CONTROL_CONTAINER();
 
     m_main_win = new FbTreeViewMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
 

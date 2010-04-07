@@ -13,7 +13,6 @@
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
 #include <wx/srchctrl.h>
-#include "FbSearchCtrl.h"
 
 BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_CLOSE( DataViewFrame::OnClose )
@@ -73,7 +72,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 		info->Wrap( -1 );
 		bSizerDir->Add( info, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
-		wxTextCtrl * edit = new wxTextCtrl( this, idSearchBtn, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+		wxTextCtrl * edit = new wxTextCtrl( this, idSearchBtn, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 		edit->SetMinSize( wxSize( 100,-1 ) );
 		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 

@@ -60,49 +60,38 @@ WX_DECLARE_OBJARRAY(FbTreeItemId*, FbTreeItemIdArray);
 
 WX_DECLARE_OBJARRAY(FbTreeItemKey*, FbTreeItemKeyArray);
 
-class FbTreeItemKeyList: public FbTreeItemKey
-{
-	public:
-		FbTreeItemKeyList(size_t id): m_id(id) {}
+#define FB_DECLARE_ITEMKEY(ClassName, ClassId, SubClass)                       \
+class ClassName: public FbTreeItemKey                                          \
+{                                                                              \
+	public:                                                                    \
+		ClassName(SubClass id): m_id(id) {}                                    \
+                                                                               \
+		virtual bool operator ==(const FbTreeItemKey &key) const               \
+			{ return GetType() == ClassId && (*this) == (ClassName&)key; }     \
+                                                                               \
+		virtual bool operator ==(const ClassName &key) const                   \
+			{ return m_id == key.m_id; }                                       \
+                                                                               \
+		virtual KeyType GetType() const                                        \
+			{ return ClassId; }                                                \
+                                                                               \
+		virtual FbTreeItemKey * Clone() const { return new ClassName(m_id); }; \
+                                                                               \
+		SubClass GetId() { return m_id; }                                      \
+                                                                               \
+	private:                                                                   \
+		SubClass m_id;                                                         \
+};                                                                             \
 
-		virtual bool operator ==(const FbTreeItemKey &key) const
-			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyList&)key; }
+FB_DECLARE_ITEMKEY(FbTreeItemKeyList, KT_LIST, size_t)
 
-		virtual bool operator ==(const FbTreeItemKeyList &key) const
-			{ return m_id == key.m_id; }
+FB_DECLARE_ITEMKEY(FbTreeItemKeyAbcd, KT_ABCD, wxChar)
 
-		virtual KeyType GetType() const
-			{ return KT_LIST; }
+FB_DECLARE_ITEMKEY(FbTreeItemKeyAuth, KT_AUTH, int)
 
-		virtual FbTreeItemKey * Clone() const { return new FbTreeItemKeyList(m_id); };
+FB_DECLARE_ITEMKEY(FbTreeItemKeySeqn, KT_SEQN, int)
 
-		size_t GetId() { return m_id; }
-
-	private:
-		size_t m_id;
-};
-
-class FbTreeItemKeyBook: public FbTreeItemKey
-{
-	public:
-		FbTreeItemKeyBook(int id): m_id(id) {}
-
-		virtual bool operator ==(const FbTreeItemKey &key) const
-			{ return GetType() == key.GetType() && (*this) == (FbTreeItemKeyBook&)key; }
-
-		virtual bool operator ==(const FbTreeItemKeyBook &key) const
-			{ return m_id == key.m_id; }
-
-		virtual KeyType GetType() const
-			{ return KT_BOOK; }
-
-		virtual FbTreeItemKey * Clone() const { return new FbTreeItemKeyBook(m_id); };
-
-		size_t GetId() { return m_id; }
-
-	private:
-		int m_id;
-};
+FB_DECLARE_ITEMKEY(FbTreeItemKeyBook, KT_BOOK, int)
 
 #endif // __FBTREEITEMID_H__
 

@@ -156,8 +156,6 @@
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 		</Linker>
-		<Unit filename="FbSearchCtrl.cpp" />
-		<Unit filename="FbSearchCtrl.h" />
 		<Unit filename="FbTreeItem.cpp" />
 		<Unit filename="FbTreeItem.h" />
 		<Unit filename="FbTreeModel.cpp" />
