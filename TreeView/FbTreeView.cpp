@@ -818,7 +818,6 @@ IMPLEMENT_DYNAMIC_CLASS(FbTreeViewCtrl, wxControl);
 
 BEGIN_EVENT_TABLE(FbTreeViewCtrl, wxControl)
     EVT_SIZE(FbTreeViewCtrl::OnSize)
-    WX_EVENT_TABLE_CONTROL_CONTAINER(FbTreeViewCtrl)
 END_EVENT_TABLE();
 
 bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
@@ -830,12 +829,10 @@ bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
     long main_style = style & ~(wxSIMPLE_BORDER|wxSUNKEN_BORDER|wxDOUBLE_BORDER|wxRAISED_BORDER|wxSTATIC_BORDER);
 
 	main_style |= wxWANTS_CHARS ;
-
     main_style |= wxTAB_TRAVERSAL;
 
     long ctrl_style = style & ~(wxVSCROLL|wxHSCROLL);
-
-	m_container.SetContainerWindow(this);
+    ctrl_style |= wxTAB_TRAVERSAL;
 
     if (!wxControl::Create(parent, id, pos, size, ctrl_style, validator, name)) {
        return false;
@@ -890,12 +887,12 @@ wxSize FbTreeViewCtrl::DoGetBestSize() const
 {
     return wxSize (200,200);
 }
-/*
+
 void FbTreeViewCtrl::SetFocus()
 {
 	m_main_win->SetFocus();
 }
-*/
+
 void FbTreeViewCtrl::Refresh(bool erase, const wxRect* rect)
 {
     m_main_win->Refresh (erase, rect);
@@ -936,4 +933,3 @@ void FbTreeViewCtrl::AssignModel(FbTreeModel * model)
 	m_main_win->AssignModel(model);
 }
 
-WX_DELEGATE_TO_CONTROL_CONTAINER(FbTreeViewCtrl, wxControl)

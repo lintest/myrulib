@@ -53,6 +53,8 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
 		virtual wxSize DoGetBestSize() const;
 
+		virtual void SetFocus();
+
         virtual bool SetFont(const wxFont& font);
 
         void AddColumn (size_t model_column,
@@ -83,7 +85,6 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		int GetSortedColumn();
 
 	private:
-        WX_DECLARE_CONTROL_CONTAINER();
 		DECLARE_DYNAMIC_CLASS(FbTreeViewCtrl)
 		DECLARE_EVENT_TABLE()
 };
