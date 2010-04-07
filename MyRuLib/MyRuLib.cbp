@@ -59,6 +59,7 @@
 					<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-D__WXMSW__" />
+					<Add option="-D__WXDEBUG__" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
 					<Add directory="$(WXWIN)\include" />
@@ -69,12 +70,12 @@
 					<Add directory="$(WXWIN)\include" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="libwxmsw29ud_aui.a" />
-					<Add library="libwxmsw29ud_adv.a" />
-					<Add library="libwxmsw29ud_html.a" />
-					<Add library="libwxmsw29ud_core.a" />
-					<Add library="libwxbase29ud_net.a" />
-					<Add library="libwxbase29ud.a" />
+					<Add library="libwxmsw28ud_aui.a" />
+					<Add library="libwxmsw28ud_adv.a" />
+					<Add library="libwxmsw28ud_html.a" />
+					<Add library="libwxmsw28ud_core.a" />
+					<Add library="libwxbase28ud_net.a" />
+					<Add library="libwxbase28ud.a" />
 					<Add library="libwxtiff.a" />
 					<Add library="libwxjpeg.a" />
 					<Add library="libwxpng.a" />
@@ -125,12 +126,12 @@
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="libwxmsw29u_adv.a" />
-					<Add library="libwxmsw29u_aui.a" />
-					<Add library="libwxmsw29u_html.a" />
-					<Add library="libwxmsw29u_core.a" />
-					<Add library="libwxbase29u_net.a" />
-					<Add library="libwxbase29u.a" />
+					<Add library="libwxmsw28u_adv.a" />
+					<Add library="libwxmsw28u_aui.a" />
+					<Add library="libwxmsw28u_html.a" />
+					<Add library="libwxmsw28u_core.a" />
+					<Add library="libwxbase28u_net.a" />
+					<Add library="libwxbase28u.a" />
 					<Add library="libwxtiff.a" />
 					<Add library="libwxjpeg.a" />
 					<Add library="libwxpng.a" />
@@ -224,7 +225,6 @@
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
-		<Unit filename="FbFrameDate.cpp" />
 		<Unit filename="FbFrameDate.h" />
 		<Unit filename="FbFrameDownld.cpp" />
 		<Unit filename="FbFrameDownld.h" />

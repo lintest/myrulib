@@ -80,7 +80,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-DNDEBUG" />
 			<Add directory="." />
 			<Add directory="..\SQLite3" />
 		</Compiler>

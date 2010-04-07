@@ -43,9 +43,7 @@ typedef void *wxTreeItemIdValue;
 // wxTreeListColumnAttrs
 //-----------------------------------------------------------------------------
 
-enum {
-    DEFAULT_COL_WIDTH = 100
-};
+#define DEFAULT_COL_WIDTH 100
 
 class WXDLLEXPORT wxTreeListColumnInfo: public wxObject {
 

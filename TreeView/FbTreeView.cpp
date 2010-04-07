@@ -119,7 +119,7 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 
 	public:
 		unsigned long GetRowCount() { return m_model ? m_model->GetRowCount() : 0; };
-		void SetDirty() { m_dirty = true; }
+		void Repaint() { m_dirty = true; }
 		void AssignModel(FbTreeModel * model);
 
 	private:
@@ -282,7 +282,7 @@ void FbTreeViewHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int c
 BEGIN_EVENT_TABLE(FbTreeViewMainWindow, wxScrolledWindow)
     EVT_PAINT          (FbTreeViewMainWindow::OnPaint)
     EVT_ERASE_BACKGROUND(FbTreeViewMainWindow::OnEraseBackground) // to reduce flicker
-    EVT_LEFT_DOWN(FbTreeViewMainWindow::OnLeftDown)
+//    EVT_LEFT_DOWN(FbTreeViewMainWindow::OnLeftDown)
     EVT_MOUSE_EVENTS   (FbTreeViewMainWindow::OnMouse)
     EVT_CHAR           (FbTreeViewMainWindow::OnChar)
     EVT_SET_FOCUS      (FbTreeViewMainWindow::OnSetFocus)
@@ -353,6 +353,7 @@ FbTreeViewMainWindow::FbTreeViewMainWindow(
 
 FbTreeViewMainWindow::~FbTreeViewMainWindow()
 {
+	wxDELETE(m_model);
 }
 
 bool FbTreeViewMainWindow::SetFont(const wxFont& font)
@@ -397,23 +398,300 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
     dc.SetBackground(brush);
     dc.Clear();
 
-    int y_pos = GetScrollPos(wxVERTICAL);
+    int pos = GetScrollPos(wxVERTICAL);
 
-    int ww, hh;
-    GetClientSize(&ww, &hh);
-
+    int ww, hh, yy;
     int h = GetRowHeight();
-
-	wxRect rect(0, y_pos*h, ww, hh);
+    GetClientSize(&ww, &hh);
+	CalcUnscrolledPosition(0, 0, NULL, &yy);
+	wxRect rect(0, yy, ww, hh);
 
 	FbColumnArray columns;
-
-	if (m_model) m_model->DrawTree(dc, rect, columns, y_pos, h);
+	if (m_model) m_model->DrawTree(dc, rect, columns, pos, h);
 }
 
 void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 {
+    // send event to user code
+    if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
+
+    // set focus if window clicked
+    if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
+
+    if (event.Dragging()) {
+		event.Skip();
+		return;
+	}
+
+	int x = event.GetX();
+	int y = event.GetY();
+	int h = GetRowHeight();
+
+	if (x>=0 && y>=0) {
+		CalcUnscrolledPosition(x, y, &x, &y);
+		size_t row = (size_t)(y / h);
+		if (event.LeftDown() || event.MiddleDown() || event.RightDown()) {
+			FbTreeItemId id = m_model->FindItem(row, true);
+			if (id.IsOk()) {
+				SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+				Repaint();
+			} else {
+				event.Skip();
+			} 
+			return;
+		}
+	}
+
+    // generate click & menu events
+    if (event.MiddleDown()) {
+        SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK);
+    }
+    if (event.RightDown()) {
+        SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK);
+    }
+    if (event.RightUp()) {
+        wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
+        nevent.SetPoint(wxPoint(event.GetX(), event.GetY()));
+        SendEvent(0, NULL, &nevent);
+    }
+
+	event.Skip();
 }
+/*
+void wxTreeListMainWindow::OnMouse (wxMouseEvent &event) {
+bool mayDrag = true;
+bool maySelect = true;  // may change selection
+bool mayClick = true;  // may process DOWN clicks to expand, send click events
+bool mayDoubleClick = true;  // implies mayClick
+bool bSkip = true;
+
+    // send event to user code
+    if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
+    if (!m_rootItem) return;
+
+    // set focus if window clicked
+    if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
+
+
+// ---------- DETERMINE EVENT ----------
+
+	wxPoint p = wxPoint (event.GetX(), event.GetY());
+    int flags = 0;
+    wxTreeListItem *item = m_rootItem->HitTest (CalcUnscrolledPosition (p),
+                                                this, flags, m_curColumn, 0);
+    bool bCrosshair = (item && item->HasPlus() && (flags & wxTREE_HITTEST_ONITEMBUTTON));
+    // we were dragging
+    if (m_isDragging) {
+        maySelect = mayDoubleClick = false;
+    }
+    // we are starting or continuing to drag
+    if (event.Dragging()) {
+        maySelect = mayDoubleClick = mayClick = false;
+    }
+    // crosshair area is special
+    if (bCrosshair) {
+        // left click does not select
+        if (event.LeftDown()) maySelect = false;
+        // double click is ignored
+        mayDoubleClick = false;
+    }
+
+
+// HANDLE SIMPLE-CLICKS (selection change, contextual menu)
+    if (mayClick) {
+
+		//DENIS KANDRASHIN 2009-06-10 - BEGIN - Mouse click on image
+		int X = CalcUnscrolledPosition (p).x;
+		if (item && event.LeftDown() &&  X < item->GetX() + MARGIN + 8) {
+			SendEvent(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, item);
+			return;
+		}
+		//DENIS - END
+
+        // left-click on haircross is expand (and no select)
+        if (bCrosshair && event.LeftDown()) {
+
+            bSkip = false;
+
+            // note that we only toggle the item for a single click, double
+            // click on the button doesn't do anything
+            Toggle (item);
+        }
+
+        // is there a selection change ? normally left and right down-click
+        //  change selection, but there are special cases:
+        if (maySelect && (
+            // click on already selected item: to allow drag of multiple items,
+            //  change selection on button up
+            ((event.LeftUp() || event.RightUp()) && item != NULL && item->IsSelected() && item != m_curItem)
+            // normal clicks, act already on button down
+         || ((event.LeftDown() || event.RightDown()) && (item == NULL || ! item->IsSelected()))
+        )) {
+
+            bSkip = false;
+
+            // set / remember item at shift down before current item gets changed
+            if (event.LeftDown() && HasFlag(wxTR_MULTIPLE) && event.ShiftDown())  {
+                if (!m_shiftItem) m_shiftItem = m_curItem;
+            }else{
+                m_shiftItem = (wxTreeListItem*)NULL;
+            }
+
+            // how is selection altered
+            // keep or discard already selected ?
+            bool unselect_others = ! (HasFlag(wxTR_MULTIPLE) && (
+                event.ShiftDown()
+             || event.ControlDown()
+            ));
+
+            // check is selection change is not vetoed
+            if (SelectItem(item, m_shiftItem, unselect_others)) {
+
+                // make the new item the current item
+                EnsureVisible (item);
+                m_curItem = item;
+            }
+
+        // no selection change, then we might edit
+        } else {
+            if (event.LeftDown())
+                m_lastOnSame = (item == m_curItem);
+        }
+
+        // generate click & menu events
+        if (event.MiddleDown()) {
+            bSkip = false;
+            SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK, item);
+        }
+        if (event.RightDown()) {
+            bSkip = false;
+            SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, item);
+        }
+        if (event.RightUp()) {
+            wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
+            nevent.SetPoint(p);
+            nevent.SetInt(m_curColumn);
+            SendEvent(0, item, &nevent);
+        }
+
+        // if 2nd left click finishes on same item, will edit it
+        if (m_lastOnSame && event.LeftUp()) {
+            if ((item == m_curItem) && (m_curColumn != -1) &&
+                (m_owner->GetHeaderWindow()->IsColumnEditable (m_curColumn)) &&
+                (flags & (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMCOLUMN))
+            ){
+                m_editTimer->Start (RENAME_TIMER_TICKS, wxTIMER_ONE_SHOT);
+                bSkip = false;
+            }
+            m_lastOnSame = false;
+        }
+    }
+
+
+// ----------  HANDLE DOUBLE-CLICKS  ----------
+    if (mayClick && mayDoubleClick && event.LeftDClick()) {
+
+        bSkip = false;
+
+        // double clicking should not start editing the item label
+        m_editTimer->Stop();
+        m_lastOnSame = false;
+
+        // selection reset to that single item which was double-clicked
+        if (SelectItem(item, 0L, true)) {  // unselect others --return false if vetoed
+
+            // selection change not vetoed, send activate event
+            if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, item)) {
+
+                // if the user code didn't process the activate event,
+                // handle it ourselves by toggling the item when it is
+                // double clicked
+                if (item && item->HasPlus()) Toggle(item);
+            }
+        }
+    }
+
+
+// ----------  HANDLE DRAGGING  ----------
+// NOTE: drag itself makes no change to selection
+    if (mayDrag) {  // actually this is always true
+
+        // CASE 1: we were dragging => continue, end, abort
+        if (m_isDragging) {
+
+            // CASE 1.1: click aborts drag:
+            if (event.LeftDown() || event.MiddleDown() || event.RightDown()) {
+
+                bSkip = false;
+
+                // stop dragging
+                m_isDragStarted = m_isDragging = false;
+                if (HasCapture()) ReleaseMouse();
+                RefreshSelected();
+
+            // CASE 1.2: still dragging
+            } else if (event.Dragging()) {
+
+                ;; // nothing to do
+
+            // CASE 1.3: dragging now ends normally
+            } else {
+
+                bSkip = false;
+
+                // stop dragging
+                m_isDragStarted = m_isDragging = false;
+                if (HasCapture()) ReleaseMouse();
+                RefreshSelected();
+
+                // send drag end event
+                wxTreeEvent event(wxEVT_COMMAND_TREE_END_DRAG, 0);
+                event.SetPoint(p);
+                event.SetInt(m_curColumn);
+                SendEvent(0, item, &event);
+            }
+
+        // CASE 2: not were not dragging => continue, start
+        } else if (event.Dragging()) {
+
+            // We will really start dragging if we've moved beyond a few pixels
+            if (m_isDragStarted) {
+                const int tolerance = 3;
+                int dx = abs(p.x - m_dragStartPos.x);
+                int dy = abs(p.y - m_dragStartPos.y);
+                if (dx <= tolerance && dy <= tolerance)
+                    return;
+            // determine drag start
+            } else {
+                m_dragStartPos = p;
+                m_dragCol = m_curColumn;
+                m_dragItem = item;
+                m_isDragStarted = true;
+                return;
+            }
+
+            bSkip = false;
+
+            // we are now dragging
+            m_isDragging = true;
+            RefreshSelected();
+            CaptureMouse(); // TODO: usefulness unclear
+
+            wxTreeEvent nevent(event.LeftIsDown()
+                                  ? wxEVT_COMMAND_TREE_BEGIN_DRAG
+                                  : wxEVT_COMMAND_TREE_BEGIN_RDRAG, 0);
+            nevent.SetPoint(p);
+            nevent.SetInt(m_dragCol);
+            nevent.Veto();
+            SendEvent(0, m_dragItem, &nevent);
+        }
+    }
+
+
+    if (bSkip) event.Skip();
+}
+
+*/
 
 void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 {
@@ -460,7 +738,7 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
         }
         if (ok) {
             SetScrollPos(wxVERTICAL, pos);
-            SetDirty();
+            Repaint();
             return;
         }
     }
@@ -505,7 +783,8 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
                 SetScrollPos(wxVERTICAL, pos);
             }
         }
-        SetDirty();
+		SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+        Repaint();
     }
 
 
@@ -727,7 +1006,7 @@ void FbTreeViewMainWindow::OnSetFocus (wxFocusEvent &event)
     if (m_curItem) RefreshLine (m_curItem);
 */
     event.Skip();
-    SetDirty();
+    Repaint();
 }
 
 void FbTreeViewMainWindow::OnKillFocus( wxFocusEvent &event )
@@ -738,7 +1017,7 @@ void FbTreeViewMainWindow::OnKillFocus( wxFocusEvent &event )
     if (m_curItem) RefreshLine (m_curItem);
 */
     event.Skip();
-    SetDirty();
+    Repaint();
 }
 
 void FbTreeViewMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
@@ -752,13 +1031,11 @@ void FbTreeViewMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
 
 void FbTreeViewMainWindow::OnScroll (wxScrollWinEvent& event)
 {
-//    // FIXME
-//    #if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
-//    wxScrolledWindow::OnScroll(event);
-//    #else
-//    HandleOnScroll( event );
-//    #endif
-	HandleOnScroll( event );
+	#if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
+    wxScrolledWindow::OnScroll(event);
+	#else
+    HandleOnScroll( event );
+	#endif
 }
 
 bool FbTreeViewMainWindow::SetBackgroundColour (const wxColour& colour)
@@ -802,7 +1079,7 @@ void FbTreeViewMainWindow::AssignModel(FbTreeModel * model)
 {
 	m_model = model;
 	m_model->SetOwner(this);
-	SetDirty();
+	Repaint();
 }
 
 void FbTreeViewMainWindow::OnLeftDown( wxMouseEvent& event )
@@ -828,7 +1105,7 @@ bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
 {
     long main_style = style & ~(wxSIMPLE_BORDER|wxSUNKEN_BORDER|wxDOUBLE_BORDER|wxRAISED_BORDER|wxSTATIC_BORDER);
 
-	main_style |= wxWANTS_CHARS ;
+	main_style |= wxWANTS_CHARS;
     main_style |= wxTAB_TRAVERSAL;
 
     long ctrl_style = style & ~(wxVSCROLL|wxHSCROLL);
@@ -861,7 +1138,7 @@ void FbTreeViewCtrl::DoHeaderLayout()
         m_header_win->Refresh();
     }
     if (m_main_win) {
-		m_main_win->SetDirty();
+		m_main_win->Repaint();
         m_main_win->SetSize (0, h, x, y - h);
     }
 }
@@ -895,7 +1172,7 @@ void FbTreeViewCtrl::SetFocus()
 
 void FbTreeViewCtrl::Refresh(bool erase, const wxRect* rect)
 {
-    m_main_win->Refresh (erase, rect);
+	m_main_win->Repaint();
     m_header_win->Refresh (erase, rect);
 }
 

@@ -200,6 +200,10 @@
 				RelativePath=".\TestMain.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\MyRuLib\wx\treelistctrl.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Заголовочные файлы"

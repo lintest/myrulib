@@ -22,6 +22,13 @@ WX_DECLARE_OBJARRAY(FbColumnInfo*, FbColumnArray);
 class FbTreeModel
 {
 	public:
+		enum Position {
+			POS_CHECK,
+			POS_PLUS,
+			POS_ITEM,
+		};
+
+	public:
 		FbTreeModel();
 		virtual ~FbTreeModel() {}
 		virtual size_t GetRowCount() const = 0;
@@ -35,6 +42,8 @@ class FbTreeModel
 		FbTreeItemId GetCurrent() { return m_current; }
 		void SetCurrent(const FbTreeItemId &id) { m_current = id; }
 		void SetOwner(wxWindow * owner) { m_owner = owner; };
+
+		virtual FbTreeItemId FindItem(size_t row, bool select) = 0;
 
 	protected:
 		const wxBitmap & GetBitmap(int state) const;
@@ -57,12 +66,16 @@ class FbTreeModelList: public FbTreeModel
 		FbTreeModelList(size_t count);
 		virtual ~FbTreeModelList() {};
 		virtual size_t GetRowCount() const { return m_count; }
+		virtual void SetRowCount(size_t count) { m_count = count; }
+
 		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 
 		virtual int GoFirstRow();
 		virtual int GoLastRow();
 		virtual int GoNextRow(size_t delta = 1);
 		virtual int GoPriorRow(size_t delta = 1);
+
+		virtual FbTreeItemId FindItem(size_t row, bool select);
 
 	private:
 		size_t m_count;

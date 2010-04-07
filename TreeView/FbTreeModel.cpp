@@ -125,3 +125,12 @@ int FbTreeModelList::GoPriorRow(size_t delta)
 	return GoFirstRow();
 }
 
+FbTreeItemId FbTreeModelList::FindItem(size_t row, bool select)
+{
+	if (row<GetRowCount()) {
+		FbTreeItemId res = FbTreeItemKeyList(row);
+		if (select) m_current = res;
+		return res;
+	}
+	return FbTreeItemId();
+}

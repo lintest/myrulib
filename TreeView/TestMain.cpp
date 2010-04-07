@@ -12,13 +12,12 @@
 #include "TestApp.h"
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
-#include <wx/srchctrl.h>
+#include "../MyRuLib/wx/treelistctrl.h"
 
 BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_CLOSE( DataViewFrame::OnClose )
 	EVT_MENU( idMenuQuit, DataViewFrame::OnQuit )
 	EVT_MENU( idMenuAbout, DataViewFrame::OnAbout )
-    EVT_SEARCHCTRL_SEARCH_BTN(idSearchBtn, DataViewFrame::OnSearchBtn)
 	EVT_TEXT_ENTER(idSearchBtn, DataViewFrame::OnSearchBtn)
 END_EVENT_TABLE()
 
@@ -60,10 +59,19 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	m_dataview->AddColumn(3, _("size"), 50);
 	m_dataview->AssignModel(new FbTreeModelList(500));
 	m_dataview->SetFocus();
-
 	m_dataview->SetSortedColumn(2);
-
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
+
+/*
+	wxTreeListCtrl * treeview = new wxTreeListCtrl( this, idDataView, wxDefaultPosition, wxDefaultSize);
+	treeview->AddColumn(_("title"), 200);
+	treeview->AddColumn(_("author"), 150);
+	treeview->AddColumn(_("type"), 50);
+	treeview->AddColumn(_("size"), 50);
+	bSizer1->Add( treeview, 1, wxEXPAND, 5 );
+	wxTreeItemId root = treeview->AddRoot(_("Root item"));
+	for (int i = 0; i<50; i++) treeview->AppendItem(root, wxString::Format(wxT("%d"), i));
+*/
 
 	{
 		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
