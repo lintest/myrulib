@@ -1,6 +1,10 @@
 <?xml version="1.0" ?>
 <makefile>
 
+	<set var="EXPAT_STATIC">0</set>
+	<set var="LOCALE_STATIC">0</set>
+	<set var="SQLITE3_STATIC">1</set>
+
 	<set var="PREFIX">/usr</set>
 	<set var="BUILDDIR">build</set>
 	
@@ -8,6 +12,9 @@
 	<set var="WX_DEBUG_DEFAULT">0</set>
 	
 	<if cond="FORMAT=='mingw'">
+		<set var="EXPAT_STATIC">1</set>
+		<set var="LOCALE_STATIC">1</set>
+		<set var="SQLITE3_STATIC">1</set>
 		<set var="WX_SHARED_DEFAULT">0</set>
 		<set var="WX_VERSION_DEFAULT">28</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
@@ -22,7 +29,7 @@
 	<include file="./Presets/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
-	<lib id="expat_static" template="wx-lib" cond="WX_SHARED_DEFAULT=='0'">
+	<lib id="expat_static" template="wx-lib" cond="EXPAT_STATIC=='1'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<sources>Expat/xmlparse.c</sources>
 		<sources>Expat/xmlrole.c</sources>
@@ -32,14 +39,15 @@
 		<include>Expat</include>
 	</lib>
 
-	<lib id="sqlite3_static">
+	<lib id="sqlite3_static" cond="SQLITE3_STATIC=='1'">
 		<define>SQLITE_ENABLE_FTS3</define>
+		<include>SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
 	
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<include cond="WX_SHARED_DEFAULT=='0'">SQLite3</include>
+		<include cond="SQLITE3_STATIC=='1'">SQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
@@ -96,8 +104,8 @@
 
 	<exe id="myrulib" template="wxgui">
 		<define>NDEBUG</define>
-		<define cond="WX_SHARED_DEFAULT=='0'">XML_STATIC</define>
-		<define cond="WX_SHARED_DEFAULT=='0'">FB_INCLUDE_LOCALE</define>
+		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
+		<define cond="LOCALE_STATIC=='1'">FB_INCLUDE_LOCALE</define>
 		<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
 		<objects-depend>$(BUILDDIR)/uk.inc</objects-depend>
 		<objects-depend>$(BUILDDIR)/be.inc</objects-depend>
@@ -167,17 +175,15 @@
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>$(BUILDDIR)</include>
-		<include>SQLite3</include>
+		<include>MyRuLib</include>
 		<include>WxSQLite3</include>
 		<library>wxsqlite3_static</library>
-		<library>sqlite3_static</library>
-		<if cond="WX_SHARED_DEFAULT=='0'">
-			<include>Expat</include>
-			<library>expat_static</library>
-		</if>
-		<if cond="WX_SHARED_DEFAULT=='1'">
-			<sys-lib>expat</sys-lib>
-		</if>
+		<include cond="SQLITE3_STATIC=='1'">SQLite3</include>
+		<library cond="SQLITE3_STATIC=='1'">sqlite3_static</library>
+		<sys-lib cond="SQLITE3_STATIC!='1'">sqlite3</sys-lib>
+		<include cond="EXPAT_STATIC=='1'">Expat</include>
+		<library cond="EXPAT_STATIC=='1'">expat_static</library>
+		<sys-lib cond="EXPAT_STATIC!='1'">expat</sys-lib>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>

@@ -65,7 +65,7 @@ EXPAT_STATIC_OBJECTS =  \
 	build\expat_static_xmltok.o \
 	build\expat_static_xmltok_impl.o \
 	build\expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS =  -DSQLITE_ENABLE_FTS3  $(CPPFLAGS) $(CFLAGS)
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -ISQLite3 $(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	build\sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
@@ -80,13 +80,13 @@ BIN2C_OBJECTS =  \
 MYRULIB_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -DNDEBUG \
-	-DXML_STATIC -DFB_INCLUDE_LOCALE -Ibuild -ISQLite3 -IWxSQLite3 -IExpat -O2 \
-	$(CPPFLAGS) $(CFLAGS)
+	-DXML_STATIC -DFB_INCLUDE_LOCALE -Ibuild -IMyRuLib -IWxSQLite3 -ISQLite3 \
+	-IExpat -O2 $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -DNDEBUG \
-	-DXML_STATIC -DFB_INCLUDE_LOCALE -Ibuild -ISQLite3 -IWxSQLite3 -IExpat -O2 \
-	$(CPPFLAGS) $(CXXFLAGS)
+	-DXML_STATIC -DFB_INCLUDE_LOCALE -Ibuild -IMyRuLib -IWxSQLite3 -ISQLite3 \
+	-IExpat -O2 $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build\myrulib_BaseThread.o \
 	build\myrulib_ExpThread.o \
@@ -517,7 +517,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_2_p_1) $(__WXUNICODE_DEFINE_p_3) $(__WXDEBUG_DEFINE_p_3) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define NDEBUG --define XML_STATIC --define FB_INCLUDE_LOCALE --include-dir build --include-dir SQLite3 --include-dir WxSQLite3 --include-dir Expat
+	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_2_p_1) $(__WXUNICODE_DEFINE_p_3) $(__WXDEBUG_DEFINE_p_3) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define NDEBUG --define XML_STATIC --define FB_INCLUDE_LOCALE --include-dir build --include-dir MyRuLib --include-dir WxSQLite3 --include-dir SQLite3 --include-dir Expat
 
 .PHONY: all clean
 

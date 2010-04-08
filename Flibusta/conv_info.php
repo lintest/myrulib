@@ -8,17 +8,23 @@ function author_info($mysql_db, $sqlite_db)
 
   $bb = new bbcode;
   $bb->autolinks = false;
-  $sqltest = "SELECT * FROM libaannotations";
+  $sqltest = "SELECT AvtorId FROM libaannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    echo $row['Title']."\n";
+    echo "Auth: ".$row['AvtorId']."\n";
+
+    $sqltest1 = "SELECT Body FROM libaannotations WHERE AvtorId=".$row['AvtorId'];
+    $query1 = $mysql_db->query($sqltest1);
+    $row1 = $query1->fetch_array();
+        
     $sql = "UPDATE authors SET description=? where id=?";
     $insert = $sqlite_db->prepare($sql);
-    $bb -> parse($row['Body']);
+    $bb -> parse($row1['Body']);
     $body = $bb->get_html();
     $body = str_replace("&lt;", "<", $body);
     $body = str_replace("&gt;", ">", $body);
     $insert->execute(array($body, $row['AvtorId']));
+    $insert->closeCursor();
   }
 
   $sqlite_db->query("commit;");
@@ -28,17 +34,23 @@ function book_info($mysql_db, $sqlite_db)
 {
   $bb = new bbcode;
   $bb->autolinks = false;
-  $sqltest = "SELECT * FROM libbannotations";
+  $sqltest = "SELECT BookId FROM libbannotations";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    echo $row['Title']."\n";
+    echo "Book: ".$row['BookId']."\n";
+    
+    $sqltest1 = "SELECT Body FROM libbannotations WHERE BookId=".$row['BookId'];
+    $query1 = $mysql_db->query($sqltest1);
+    $row1 = $query1->fetch_array();
+        
     $sql = "UPDATE books SET description=? where id=?";
     $insert = $sqlite_db->prepare($sql);
-    $bb -> parse($row['Body']);
+    $bb -> parse($row1['Body']);
 	$body = $bb->get_html();
     $body = str_replace("&lt;", "<", $body);
     $body = str_replace("&gt;", ">", $body);
     $insert->execute(array($body, $row['BookId']));
+    $insert->closeCursor();
   }
 
   $sqlite_db->query("commit;");
@@ -56,7 +68,7 @@ $sqlite_db = new PDO('sqlite:'.$sqlitefile);
 $mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
-book_info($mysql_db, $sqlite_db);
 author_info($mysql_db, $sqlite_db);
+book_info($mysql_db, $sqlite_db);
 
 ?>
