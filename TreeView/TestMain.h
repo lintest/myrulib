@@ -38,7 +38,7 @@ class DataViewFrame: public wxFrame
         void OnClose(wxCloseEvent& event);
         void OnQuit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
-		void OnOpenList(wxCommandEvent& event){ event.Skip(); }
+		void OnOpenList(wxCommandEvent& event);
 		void OnOpenTree(wxCommandEvent& event){ event.Skip(); }
         void OnSearchBtn(wxCommandEvent& event);
         DECLARE_EVENT_TABLE()

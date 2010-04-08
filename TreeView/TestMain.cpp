@@ -12,11 +12,14 @@
 #include "TestApp.h"
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
+#include "FbAuthListModel.h"
 #include "../MyRuLib/wx/treelistctrl.h"
 
 BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_CLOSE( DataViewFrame::OnClose )
 	EVT_MENU( idMenuQuit, DataViewFrame::OnQuit )
+	EVT_MENU( idOpenList, DataViewFrame::OnOpenList )
+	EVT_MENU( idOpenTree, DataViewFrame::OnOpenTree )
 	EVT_MENU( idMenuAbout, DataViewFrame::OnAbout )
 	EVT_TEXT_ENTER(idSearchBtn, DataViewFrame::OnSearchBtn)
 END_EVENT_TABLE()
@@ -57,7 +60,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	m_dataview->AddColumn(1, _("author"), 150);
 	m_dataview->AddColumn(2, _("type"), 50);
 	m_dataview->AddColumn(3, _("size"), 50);
-	m_dataview->AssignModel(new FbTreeModelList(500));
+//	m_dataview->AssignModel(new FbTreeModelList(500));
 	m_dataview->SetFocus();
 	m_dataview->SetSortedColumn(2);
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
@@ -123,5 +126,23 @@ void DataViewFrame::OnAbout(wxCommandEvent &event)
 void DataViewFrame::OnSearchBtn(wxCommandEvent& event)
 {
     wxLogMessage(wxT("DataViewFrame::OnSearchBtn"));
+}
+
+void DataViewFrame::OnOpenList(wxCommandEvent &event)
+{
+	wxFileDialog dlg (
+		this,
+		_("Select archive to add to the library"),
+		wxEmptyString,
+		wxEmptyString,
+		wxT("*.db"),
+		wxFD_OPEN | wxFD_FILE_MUST_EXIST,
+		wxDefaultPosition
+	);
+
+	if (dlg.ShowModal() == wxID_OK) {
+	    FbTreeModel * model = new FbAuthListModel(dlg.GetPath(), wxT("SearchName"));
+		m_dataview->AssignModel(model);
+	};
 }
 

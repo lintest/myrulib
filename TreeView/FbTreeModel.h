@@ -4,6 +4,8 @@
 #include <wx/dc.h>
 #include "FbTreeItem.h"
 
+#define TREELIST_CASHE_SIZE 128
+
 class FbColumnInfo
 {
 	public:
@@ -39,14 +41,15 @@ class FbTreeModel
 		virtual int GoNextRow(size_t delta = 1) = 0;
 		virtual int GoPriorRow(size_t delta = 1) = 0;
 
-		FbTreeItemId GetCurrent() { return m_current; }
-		void SetCurrent(const FbTreeItemId &id) { m_current = id; }
+		virtual FbTreeItemId GetCurrent() { return m_current; }
 		void SetOwner(wxWindow * owner) { m_owner = owner; };
 
 		virtual FbTreeItemId FindItem(size_t row, bool select) = 0;
+		virtual int GetState(const FbTreeItemId &id) = 0;
+		virtual wxString GetValue(const FbTreeItemId &id, size_t col) = 0;
 
 	protected:
-		const wxBitmap & GetBitmap(int state) const;
+		const wxBitmap & GetBitmap(const FbTreeItemId &id);
 
 		wxWindow * m_owner;
 
@@ -63,10 +66,10 @@ class FbTreeModel
 class FbTreeModelList: public FbTreeModel
 {
 	public:
-		FbTreeModelList(size_t count);
+		FbTreeModelList(size_t count = 0);
 		virtual ~FbTreeModelList() {};
 		virtual size_t GetRowCount() const { return m_count; }
-		virtual void SetRowCount(size_t count) { m_count = count; }
+		virtual void SetRowCount(size_t count);
 
 		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 
@@ -76,6 +79,8 @@ class FbTreeModelList: public FbTreeModel
 		virtual int GoPriorRow(size_t delta = 1);
 
 		virtual FbTreeItemId FindItem(size_t row, bool select);
+		virtual int GetState(const FbTreeItemId &id) { return -1; }
+		virtual wxString GetValue(const FbTreeItemId &id, size_t col);
 
 	private:
 		size_t m_count;

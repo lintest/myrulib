@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\SQLite3&quot;;&quot;$(SolutionDir)\..\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -121,7 +121,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="$(WXWIN)\lib\vc_lib\mswu;$(WXWIN)\include"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\SQLite3&quot;;&quot;$(SolutionDir)\..\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -181,6 +181,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\FbAuthListModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbTreeItem.cpp"
 				>
 			</File>
@@ -200,16 +204,16 @@
 				RelativePath=".\TestMain.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\MyRuLib\wx\treelistctrl.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Заголовочные файлы"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\FbAuthListModel.h"
+				>
+			</File>
 			<File
 				RelativePath=".\FbTreeItem.h"
 				>
@@ -236,6 +240,22 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="SQLite"
+			>
+			<File
+				RelativePath="..\SQLite3\sqlite3.c"
+				>
+			</File>
+			<File
+				RelativePath="..\WxSQLite3\wxsqlite3.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\WxSQLite3\wx\wxsqlite3.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

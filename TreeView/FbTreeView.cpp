@@ -121,6 +121,7 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 		unsigned long GetRowCount() { return m_model ? m_model->GetRowCount() : 0; };
 		void Repaint() { m_dirty = true; }
 		void AssignModel(FbTreeModel * model);
+		FbTreeModel * GetModel() { return m_model; }
 
 	private:
 		int GetRowHeight() { return m_rowHeight; };
@@ -427,7 +428,7 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 	int y = event.GetY();
 	int h = GetRowHeight();
 
-	if (x>=0 && y>=0) {
+	if (m_model && x>=0 && y>=0) {
 		CalcUnscrolledPosition(x, y, &x, &y);
 		size_t row = (size_t)(y / h);
 		if (event.LeftDown() || event.MiddleDown() || event.RightDown()) {
@@ -743,13 +744,12 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
         }
     }
 
+	if (!m_model) {
+        event.Skip();
+        return;
+	}
+
     switch (event.GetKeyCode()) {
-/*
-        case WXK_TAB: {
-            Navigate( event.m_shiftDown ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward  );
-            return;
-        } break;
-*/
         case WXK_UP: {
             row = m_model->GoPriorRow();
         } break;
@@ -1210,3 +1210,9 @@ void FbTreeViewCtrl::AssignModel(FbTreeModel * model)
 	m_main_win->AssignModel(model);
 }
 
+FbTreeItemId FbTreeViewCtrl::GetCurrent() const
+{
+	FbTreeModel * model = m_main_win ? m_main_win->GetModel() : NULL;
+	if (model) return model->GetCurrent();
+	return FbTreeItemId();
+}

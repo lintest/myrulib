@@ -18,8 +18,11 @@ FbTreeModel::FbTreeModel() :
 
 }
 
-const wxBitmap & FbTreeModel::GetBitmap(int state) const
+const wxBitmap & FbTreeModel::GetBitmap(const FbTreeItemId &id) 
 {
+	int state = GetState(id);
+	if (state = wxNOT_FOUND) return wxNullBitmap;
+
 	static wxBitmap bitmaps[3] = {
 		wxBitmap(nocheck_xpm),
 		wxBitmap(checked_xpm),
@@ -33,8 +36,13 @@ const wxBitmap & FbTreeModel::GetBitmap(int state) const
 FbTreeModelList::FbTreeModelList(size_t count):
 	m_count(count)
 {
-	FbTreeItemKeyList key = 10;
-	m_current = key;
+	if (count) m_current = FbTreeItemKeyList(1);
+}
+
+void FbTreeModelList::SetRowCount(size_t count) 
+{ 
+	m_count = count; 
+	if (count && !m_current.IsOk()) m_current = FbTreeItemKeyList(1);
 }
 
 
@@ -47,11 +55,7 @@ void FbTreeModelList::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray
 
 	for ( ; pos < count && y < yy; pos++, y+=h )
 	{
-        wxString text = wxString::Format(_("Paint %d"), pos);
-        for (size_t j=0; j<pos%30; j++) text += _(" 0");
-
-        FbTreeItemKeyList key = pos;
-        FbTreeItemId id = key;
+        FbTreeItemId id = FbTreeItemKeyList(pos + 1);
 
 		if (id == m_current) {
 			if (wxWindow::FindFocus() == m_owner) {
@@ -70,8 +74,9 @@ void FbTreeModelList::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray
 
 		dc.DrawRectangle(rect);
 
-        rect.Deflate(2, 2);
-		dc.DrawLabel(text, GetBitmap(pos), rect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+        rect.Deflate(3, 1);
+		wxString text = GetValue(id, 0);
+		dc.DrawLabel(text, GetBitmap(id), rect, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	}
 }
 
@@ -80,7 +85,7 @@ int FbTreeModelList::GoFirstRow()
 	size_t count = GetRowCount();
 
 	if (count) {
-	    m_current = FbTreeItemId(FbTreeItemKeyList(0));
+	    m_current = FbTreeItemId(FbTreeItemKeyList(1));
 	    return 0;
     } else {
         m_current = FbTreeItemId();
@@ -93,7 +98,7 @@ int FbTreeModelList::GoLastRow()
 	size_t count = GetRowCount();
 
 	if (count) {
-	    m_current = FbTreeItemId(FbTreeItemKeyList(count - 1));
+	    m_current = FbTreeItemId(FbTreeItemKeyList(count));
 	    return count - 1;
     } else {
         m_current = FbTreeItemId();
@@ -104,11 +109,12 @@ int FbTreeModelList::GoLastRow()
 int FbTreeModelList::GoNextRow(size_t delta)
 {
 	size_t count = GetRowCount();
-	if (count && m_current.GetKeyType() == FbTreeItemKey::KT_LIST) {
-		size_t rowid = ((FbTreeItemKeyList*)m_current.GetKey())->GetId();
-		rowid  = rowid + delta < count ? rowid + delta : count - 1;
+	FbTreeItemKeyList * key = FbTreeItemKeyList::Key(m_current);
+	if (count && key) {
+		size_t rowid = key->GetId();
+		rowid  = rowid + delta <= count ? rowid + delta : count;
 		m_current = FbTreeItemKeyList(rowid);
-		return rowid;
+		return rowid - 1;
 	}
 	return GoFirstRow();
 }
@@ -116,11 +122,12 @@ int FbTreeModelList::GoNextRow(size_t delta)
 int FbTreeModelList::GoPriorRow(size_t delta)
 {
 	size_t count = GetRowCount();
-	if (count && m_current.GetKeyType() == FbTreeItemKey::KT_LIST) {
-		size_t rowid = ((FbTreeItemKeyList*)m_current.GetKey())->GetId();
-		rowid  = rowid < delta ? 0 : rowid - delta;
+	FbTreeItemKeyList * key = FbTreeItemKeyList::Key(m_current);
+	if (count && key) {
+		size_t rowid = key->GetId();
+		rowid  = rowid <= delta ? 1 : rowid - delta;
 		m_current = FbTreeItemKeyList(rowid);
-		return rowid;
+		return rowid - 1;
 	}
 	return GoFirstRow();
 }
@@ -128,9 +135,22 @@ int FbTreeModelList::GoPriorRow(size_t delta)
 FbTreeItemId FbTreeModelList::FindItem(size_t row, bool select)
 {
 	if (row<GetRowCount()) {
-		FbTreeItemId res = FbTreeItemKeyList(row);
+		FbTreeItemId res = FbTreeItemKeyList(row + 1);
 		if (select) m_current = res;
 		return res;
 	}
 	return FbTreeItemId();
 }
+
+wxString FbTreeModelList::GetValue(const FbTreeItemId &id, size_t col)
+{
+	FbTreeItemKeyList * key = FbTreeItemKeyList::Key(id);
+	if (key) {
+		size_t rowid = key->GetId();
+        wxString text = wxString::Format(_("Paint %d"), rowid);
+        for (size_t j=0; j < rowid % 30; j++) text += _(" 0");
+		return text;
+	}
+	return wxEmptyString;
+}
+

@@ -70,6 +70,8 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		FbTreeViewMainWindow* GetMainWindow() const
 			{ return m_main_win; }
 
+		FbTreeItemId GetCurrent() const;
+
 	protected:
 		// header window, responsible for column visualization and manipulation
 		FbTreeViewHeaderWindow* m_header_win;
