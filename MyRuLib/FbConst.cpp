@@ -7,9 +7,9 @@ const wxString strMailAddr = wxT("mail@lintest.ru");
 const wxString strVersionInfo = strHomePage +  wxT("\n") + strMailAddr;
 
 #if wxCHECK_VERSION(2, 9, 0)
-const wxString alphabetRu = _(L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
+const wxString alphabetRu = _(L"АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 #else
-const wxString alphabetRu = _("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
+const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
 #endif
 
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
