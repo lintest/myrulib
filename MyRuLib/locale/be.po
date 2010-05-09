@@ -1472,6 +1472,10 @@ msgstr "Выпуклы"
 msgid "Buttons"
 msgstr "Кнопачны"
 
+#: FbMainMenu.cpp:119
+msgid "Toolbar"
+msgstr "Лёгкія"
+
 #: FbMainMenu.cpp:124
 msgid "Right"
 msgstr "З&права"

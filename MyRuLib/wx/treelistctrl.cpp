@@ -3886,7 +3886,8 @@ wxLogMessage("OnMouse: LMR down=<%d, %d, %d> up=<%d, %d, %d> LDblClick=<%d> drag
 
 		//DENIS KANDRASHIN 2009-06-10 - BEGIN - Mouse click on image
 		int X = CalcUnscrolledPosition (p).x;
-		if (item && event.LeftDown() &&  X < item->GetX() + MARGIN + 8) {
+		if (item && event.LeftDown() &&  X < item->GetX() + MARGIN + 8 && GetItemImage(item) != wxNOT_FOUND) {
+
 			SendEvent(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, item);
 			return;
 		}

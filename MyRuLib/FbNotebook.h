@@ -27,26 +27,52 @@ public:
 
 };
 
-
 class FbAuiSimpleTabArt : public wxAuiSimpleTabArt
 {
+	public:
+		FbAuiSimpleTabArt();
 
-public:
-	FbAuiSimpleTabArt();
+		wxAuiTabArt* Clone();
 
-    wxAuiTabArt* Clone();
+		void DrawTab(wxDC& dc,
+					 wxWindow* wnd,
+					 const wxAuiNotebookPage& pane,
+					 const wxRect& in_rect,
+					 int close_button_state,
+					 wxRect* out_tab_rect,
+					 wxRect* out_button_rect,
+					 int* x_extent);
 
-    void DrawTab(wxDC& dc,
-                 wxWindow* wnd,
-                 const wxAuiNotebookPage& pane,
-                 const wxRect& in_rect,
-                 int close_button_state,
-                 wxRect* out_tab_rect,
-                 wxRect* out_button_rect,
-                 int* x_extent);
+	protected:
+		wxColour m_base_colour;
+};
 
-protected:
-    wxColour m_base_colour;
+class FbAuiToolbarTabArt : public wxAuiDefaultTabArt
+{
+	public:
+		FbAuiToolbarTabArt(bool flat = false);
+
+		wxAuiTabArt* Clone();
+
+		void DrawBackground(
+					 wxDC& dc,
+					 wxWindow* wnd,
+					 const wxRect& rect);
+
+		void DrawTab(wxDC& dc,
+					 wxWindow* wnd,
+					 const wxAuiNotebookPage& pane,
+					 const wxRect& in_rect,
+					 int close_button_state,
+					 wxRect* out_tab_rect,
+					 wxRect* out_button_rect,
+					 int* x_extent);
+
+	protected:
+		void DrawPushButton(wxWindow * win, wxDC& dc, const wxRect& rectOrig, int flags, bool flat);
+
+	private:
+		bool m_flat;
 };
 
 #endif  // __FBNOTEBOOK_H__

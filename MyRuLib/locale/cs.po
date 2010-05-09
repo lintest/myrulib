@@ -1470,6 +1470,10 @@ msgstr "Konvexní"
 msgid "Buttons"
 msgstr "Tlačítka"
 
+#: FbMainMenu.cpp:119
+msgid "Toolbar"
+msgstr "Plíce"
+
 #: FbMainMenu.cpp:124
 msgid "Right"
 msgstr "Vpravo"

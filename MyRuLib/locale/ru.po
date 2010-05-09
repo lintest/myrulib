@@ -1470,6 +1470,10 @@ msgstr "Выпуклые"
 msgid "Buttons"
 msgstr "Кнопочные"
 
+#: FbMainMenu.cpp:119
+msgid "Light"
+msgstr "Легкие"
+
 #: FbMainMenu.cpp:124
 msgid "Right"
 msgstr "Справа"
