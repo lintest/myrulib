@@ -6,7 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 FbColumnDlg::FbColumnDlg( wxWindow* parent, wxWindowID id)
-	: FbDialog( parent, id, _("Колонки"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+	: FbDialog( parent, id, _("Columns"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
