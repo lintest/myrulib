@@ -1473,7 +1473,7 @@ msgid "Buttons"
 msgstr "Кнопачны"
 
 #: FbMainMenu.cpp:119
-msgid "Toolbar"
+msgid "Light"
 msgstr "Лёгкія"
 
 #: FbMainMenu.cpp:124
