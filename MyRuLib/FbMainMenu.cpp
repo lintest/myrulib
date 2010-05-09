@@ -116,7 +116,7 @@ FbMenuBar::MenuTabArt::MenuTabArt()
 	AppendRadioItem(ID_ART_STANDART, _("Convex"));
 	AppendRadioItem(ID_ART_BUTTONS,  _("Buttons"));
 	#ifdef __WXMSW__
-	AppendRadioItem(ID_ART_TOOLBAR,  _("Toolbar"));
+	AppendRadioItem(ID_ART_TOOLBAR,  _("Light"));
 	#endif
 }
 
