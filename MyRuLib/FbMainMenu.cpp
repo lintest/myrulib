@@ -54,7 +54,7 @@ FbMainMenu::MenuFile::MenuFile()
 	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
 	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
 	AppendSeparator();
-	AppendImg(wxID_EXIT, _("Выход") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
+	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
 FbMainMenu::MenuView::MenuView()
