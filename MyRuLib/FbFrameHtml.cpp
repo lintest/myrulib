@@ -140,15 +140,20 @@ void FbFrameHtml::DoSubmit()
 
 	wxString sql = wxT("INSERT INTO comments(id, md5sum, posted, caption, comment) VALUES (?,?,?,?,?)");
 
-	FbLocalDatabase database;
-	int key = database.NewId(FB_NEW_COMMENT);
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, key);
-	stmt.Bind(2, m_md5sum);
-	stmt.Bind(3, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
-	stmt.Bind(4, caption);
-	stmt.Bind(5, comment);
-	stmt.ExecuteUpdate();
+	try {
+		FbLocalDatabase database;
+		int key = database.NewId(FB_NEW_COMMENT);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, key);
+		stmt.Bind(2, m_md5sum);
+		stmt.Bind(3, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
+		stmt.Bind(4, caption);
+		stmt.Bind(5, comment);
+		stmt.ExecuteUpdate();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
 
 	m_Caption.SetValue(wxEmptyString);
 	m_Comment.SetValue(wxEmptyString);
@@ -187,13 +192,18 @@ void FbFrameHtml::DoModify()
 
 	wxString sql = wxT("UPDATE comments SET posted=?, caption=?, comment=? WHERE id=?");
 
-	FbLocalDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
-	stmt.Bind(2, caption);
-	stmt.Bind(3, comment);
-	stmt.Bind(4, m_key);
-	stmt.ExecuteUpdate();
+	try {
+		FbLocalDatabase database;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
+		stmt.Bind(2, caption);
+		stmt.Bind(3, comment);
+		stmt.Bind(4, m_key);
+		stmt.ExecuteUpdate();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
 
 	m_Caption.SetValue(wxEmptyString);
 	m_Comment.SetValue(wxEmptyString);
@@ -206,25 +216,22 @@ void FbFrameHtml::DoModify()
 
 void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 {
-	FbLocalDatabase database;
 	wxString key = event.GetLinkInfo().GetHref();
-
 	if ( event.GetLinkInfo().GetTarget() == wxT("D") )
 	{
 		int res = wxMessageBox(_("Remove comment?"), _("Confirmation"), wxOK|wxCANCEL);
-		if (res != wxOK) return;
-
-		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
-		database.ExecuteUpdate(sql);
-
-		if (m_key == key) {
-			m_key.Empty();
-			m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
-		}
-		DoUpdate();
+		if (res == wxOK) DeleteLink(key);
 	}
 	else if ( event.GetLinkInfo().GetTarget() == wxT("M") )
 	{
+		ModifyLink(key);
+	}
+}
+
+void FbFrameHtml::ModifyLink(const wxString &key)
+{
+	try {
+		FbLocalDatabase database;
 		wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + key;
 		wxSQLite3ResultSet res = database.ExecuteQuery(sql);
 		if (res.NextRow()) {
@@ -233,6 +240,27 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 			m_Comment.SetValue( res.GetString(2) );
 			m_ToolBar.EnableTool(ID_HTML_MODIFY, true);
 		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
+}
+
+void FbFrameHtml::DeleteLink(const wxString &key)
+{
+	try {
+		FbLocalDatabase database;
+		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
+		database.ExecuteUpdate(sql);
+
+		if (m_key == key) {
+			m_key.Empty();
+			m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+		}
+		DoUpdate();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
 	}
 }
 

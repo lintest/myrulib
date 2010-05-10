@@ -62,11 +62,11 @@ msgstr "Export ve formátu:"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
 msgid "filename.fb2"
-msgstr "název_souboru.fb2"
+msgstr "název souboru.fb2"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
 msgid "filename.fb2.zip"
-msgstr "název_souboru.fb2.zip"
+msgstr "název souboru.fb2.zip"
 
 #: ExternalDlg.cpp:407
 msgid "Select a destination folder"
@@ -82,11 +82,11 @@ msgstr "Cílový adresář je nedostupný pro zápis"
 
 #: ExternalDlg.cpp:486
 msgid "Not selected any book"
-msgstr "Není vybrána žádná kniha"
+msgstr "Není vybraná žádná kniha"
 
 #: FbAboutDlg.cpp:8 FbMainMenu.cpp:38
 msgid "About"
-msgstr "O programu"
+msgstr "O programu..."
 
 #: FbAuthorDlg.cpp:18
 msgid "Surname"
@@ -132,7 +132,7 @@ msgstr "Potvrzení"
 
 #: FbBookData.cpp:87
 msgid "Associated application not found"
-msgstr "Nenalezena přiřazená aplikace pro otevření"
+msgstr "Přiřazená aplikace pro otevření nenalezena"
 
 #: FbBookMenu.cpp:15
 msgid "Open book"
@@ -156,7 +156,7 @@ msgstr "Stáhnout v prohlížeči"
 
 #: FbBookMenu.cpp:23
 msgid "Online books page"
-msgstr "Kniha online na webu"
+msgstr "Online knihy na webu"
 
 #: FbBookMenu.cpp:26 FbMainMenu.cpp:78
 msgid "Select all"
@@ -176,7 +176,7 @@ msgstr "Odstranit knihu"
 
 #: FbBookMenu.cpp:35 FbMainMenu.cpp:81
 msgid "Sort by"
-msgstr "Třídit podle"
+msgstr "Seřadit podle"
 
 #: FbBookMenu.cpp:36 FbMainMenu.cpp:82
 msgid "Use filter"
@@ -184,7 +184,7 @@ msgstr "Použít filtr"
 
 #: FbBookMenu.cpp:37 FbMainMenu.cpp:83
 msgid "Clear filter"
-msgstr "Vyčistit filtr"
+msgstr "Vypnout filtr"
 
 #: FbBookMenu.cpp:40
 msgid "Jump to author"
@@ -196,7 +196,7 @@ msgstr "Přidat k oblíbeným"
 
 #: FbBookMenu.cpp:45
 msgid "Add to folders"
-msgstr "Přidat do adresáře"
+msgstr "Přidat do záložky"
 
 #: FbBookMenu.cpp:46
 msgid "Rate this book"
@@ -204,11 +204,11 @@ msgstr "Ohodnotit knihu"
 
 #: FbBookMenu.cpp:47
 msgid "Delete bookmark"
-msgstr "Odstranit záložky"
+msgstr "Odstranit záložku"
 
 #: FbBookMenu.cpp:50 FbFrameFolder.cpp:95 FbFrameHtml.cpp:31 FbMainMenu.cpp:85
 msgid "Comments"
-msgstr "Komentáře"
+msgstr "Vložit komentář"
 
 #: FbBookPanel.cpp:60 FbMenu.cpp:6
 msgid "Title"
@@ -237,7 +237,7 @@ msgstr "Jazyk"
 
 #: FbBookPanel.cpp:66 FbMenu.cpp:10 SettingsDlg.cpp:175
 msgid "Extension"
-msgstr "Přípona"
+msgstr "Typ"
 
 #: FbBookPanel.cpp:517
 #, c-format
@@ -258,7 +258,7 @@ msgstr "Jméno databáze:"
 
 #: FbConfigDlg.cpp:51
 msgid "Library folder:"
-msgstr "Adresář s knihami:"
+msgstr "Výchozí adresář s knihami:"
 
 #: FbConfigDlg.cpp:68
 msgid "Short description:"
@@ -302,7 +302,7 @@ msgstr "(bez autora)"
 
 #: FbConst.cpp:15
 msgid "(Misc.)"
-msgstr "(Různé)"
+msgstr "(nezařazené)"
 
 #: FbConst.cpp:16
 #, c-format
@@ -311,7 +311,7 @@ msgstr "Nebyl nalezen archív (%s), obsahující soubor (%s)."
 
 #: FbConst.cpp:26
 msgid "Clear"
-msgstr "Vyčistit"
+msgstr "Nehodnotit"
 
 #: FbDatabase.cpp:285
 msgid "Search template"
@@ -382,7 +382,7 @@ msgstr "Lokální knihy"
 
 #: FbFilterDlg.cpp:122
 msgid "File extension"
-msgstr "Přípona souboru"
+msgstr "Typ souboru"
 
 #: FbFrameAuthor.cpp:37 FbFrameAuthor.cpp:348 FbMainMenu.cpp:8
 msgid "Authors"
@@ -417,7 +417,7 @@ msgstr "Přidat"
 #: FbFrameAuthor.cpp:334 FbFrameAuthor.cpp:359 FbFrameFolder.cpp:37
 #: FbFrameSequen.cpp:213 FbFrameSequen.cpp:432 SettingsDlg.cpp:168
 msgid "Modify"
-msgstr "Přejmenovat"
+msgstr "Změnit"
 
 #: FbFrameAuthor.cpp:335 FbFrameAuthor.cpp:360
 msgid "Replace"
@@ -499,7 +499,7 @@ msgstr "Export do adresáře"
 
 #: FbFrameDownld.cpp:22 FbMainMenu.cpp:15
 msgid "Downloads"
-msgstr "Stažené soubory"
+msgstr "Stahování knih"
 
 #: FbFrameDownld.cpp:45 FbFrameFolder.cpp:53
 msgid "Folders"
@@ -555,7 +555,7 @@ msgstr "Chyba"
 
 #: FbFrameFolder.cpp:18 FbMainMenu.cpp:14
 msgid "My folders"
-msgstr "Moje adresáře"
+msgstr "Moje záložky"
 
 #: FbFrameFolder.cpp:74
 msgid "Bookmarks"
@@ -571,28 +571,28 @@ msgstr "Poznámky"
 
 #: FbFrameFolder.cpp:149
 msgid "Input name of new folder:"
-msgstr "Zadejte jméno nového adresáře:"
+msgstr "Zadejte jméno nové záložky:"
 
 #: FbFrameFolder.cpp:149
 msgid "Add folder?"
-msgstr "Přidat adresář?"
+msgstr "Přidat záložku?"
 
 #: FbFrameFolder.cpp:175
 msgid "Input new folder name:"
-msgstr "Zadejte nové jméno adresáře:"
+msgstr "Zadejte nové jméno záložky:"
 
 #: FbFrameFolder.cpp:175
 msgid "Change folder?"
-msgstr "Změnit adresář?"
+msgstr "Změnit záložku?"
 
 #: FbFrameFolder.cpp:199
 #, c-format
 msgid "Delete folder \"%s\"?"
-msgstr "Odstranit adresář «%s»?"
+msgstr "Odstranit záložku «%s»?"
 
 #: FbFrameFolder.cpp:200
 msgid "Delete folder?"
-msgstr "Odstranit adresář?"
+msgstr "Odstranit záložku?"
 
 #: FbFrameGenres.cpp:13 FbMainMenu.cpp:9
 msgid "Genres"
@@ -616,7 +616,7 @@ msgstr "Soubory HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Všechny soubory 
 
 #: FbFrameHtml.cpp:209
 msgid "Remove comment?"
-msgstr "Odtranit komentář?"
+msgstr "Odstranit komentář?"
 
 #: FbFrameInfo.cpp:18
 msgid "Information"
@@ -633,7 +633,7 @@ msgstr "Celkový počet"
 #: FbFrameInfo.cpp:100
 #, c-format
 msgid "Total books count:"
-msgstr "Celkový počet knih:"
+msgstr "Počet knih:"
 
 #: FbFrameInfo.cpp:103
 msgid "Authors counting"
@@ -645,7 +645,7 @@ msgstr "Počet autorů:"
 
 #: FbFrameInfo.cpp:111
 msgid "Total files size, Mb:"
-msgstr "Celková velikost souborů, Mb:"
+msgstr "Velikost souborů, Mb:"
 
 #: FbFrameInfo.cpp:112
 msgid "First reciept:"
@@ -675,7 +675,7 @@ msgstr "Vyhledávání"
 #: FbFrameSearch.cpp:59
 #, c-format
 msgid "Nothing was found on pattern \"%s\""
-msgstr "Nic nenalezeno podle vzoru «%s»"
+msgstr "Výraz «%s» nebyl nalezen"
 
 #: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
 msgid "Find"
@@ -716,7 +716,7 @@ msgstr "Odstranit sérii «%s»?"
 
 #: FbGenres.cpp:17
 msgid "Fiction"
-msgstr "Sci-Fi, fantazie"
+msgstr "Sci-fi, fantasy"
 
 #: FbGenres.cpp:18
 msgid "Mysteries and Thrillers"
@@ -732,11 +732,11 @@ msgstr "Romance"
 
 #: FbGenres.cpp:21 FbGenres.cpp:77
 msgid "Adventures"
-msgstr "Dobrodružná literatura"
+msgstr "Dobrodružné"
 
 #: FbGenres.cpp:22 FbGenres.cpp:85
 msgid "Children literature"
-msgstr "Dětská literatura"
+msgstr "Pro děti"
 
 #: FbGenres.cpp:23
 msgid "Poetry, dramaturgy"
@@ -752,15 +752,15 @@ msgstr "Věda, vzdělání"
 
 #: FbGenres.cpp:26
 msgid "PC, Internet"
-msgstr "Počítače, Internet"
+msgstr "Počítače, internet"
 
 #: FbGenres.cpp:27 FbGenres.cpp:121
 msgid "References"
-msgstr "Informační literatura"
+msgstr "Lexikony"
 
 #: FbGenres.cpp:28 FbGenres.cpp:126
 msgid "Documentary literature"
-msgstr "Dokumentární literatura"
+msgstr "Dokumenty"
 
 #: FbGenres.cpp:29
 msgid "Religion and Spirituality"
@@ -788,7 +788,7 @@ msgstr "Epická fikce"
 
 #: FbGenres.cpp:39
 msgid "Heroic fantasy"
-msgstr "Hrdinská fikce"
+msgstr "Heroická fikce"
 
 #: FbGenres.cpp:40
 msgid "Detective Fiction"
@@ -804,7 +804,7 @@ msgstr "Vesmírná fikce"
 
 #: FbGenres.cpp:43
 msgid "Socio-psychological fiction"
-msgstr "Sociálně-psychologická fikce"
+msgstr "Psychologická fikce"
 
 #: FbGenres.cpp:44
 msgid "Horror and Mysticism"
@@ -816,11 +816,11 @@ msgstr "Humorná fikce"
 
 #: FbGenres.cpp:46
 msgid "Fantasy"
-msgstr "Fantazie"
+msgstr "Fantasy"
 
 #: FbGenres.cpp:47
 msgid "Science Fiction"
-msgstr "Vědecká fikce (Sci-Fi)"
+msgstr "Sci-fi"
 
 #: FbGenres.cpp:48
 msgid "Classic mystery"
@@ -836,23 +836,23 @@ msgstr "Akční příběhy"
 
 #: FbGenres.cpp:51
 msgid "Ironic mystery"
-msgstr "Ironické detektivky"
+msgstr "Humorné detektivky"
 
 #: FbGenres.cpp:52
 msgid "Historical mystery"
-msgstr "Historické detektivky"
+msgstr "Historické záhady"
 
 #: FbGenres.cpp:53
 msgid "Spy mystery"
-msgstr "Špionážní detektivky"
+msgstr "Špionážní romány"
 
 #: FbGenres.cpp:54
 msgid "Criminal mystery"
-msgstr "Kriminální detektivky"
+msgstr "Kriminální záhady"
 
 #: FbGenres.cpp:55
 msgid "Political mystery"
-msgstr "Politické detektivky"
+msgstr "Politické drama"
 
 #: FbGenres.cpp:56
 msgid "Maniacs"
@@ -860,7 +860,7 @@ msgstr "Maniaci"
 
 #: FbGenres.cpp:57
 msgid "Action mystery"
-msgstr "Akční detektivky"
+msgstr "Akční záhady"
 
 #: FbGenres.cpp:58
 msgid "Thriller"
@@ -888,31 +888,31 @@ msgstr "Kulturní opozice"
 
 #: FbGenres.cpp:64
 msgid "Russian Classical prose"
-msgstr "Ruská klasická próza"
+msgstr "Ruská próza"
 
 #: FbGenres.cpp:65
 msgid "Soviet Classical prose"
-msgstr "Sovětská klasická próza"
+msgstr "Sovětská próza"
 
 #: FbGenres.cpp:66
 msgid "Modern romance novels"
-msgstr "Moderní milostné romány"
+msgstr "Milostné romány"
 
 #: FbGenres.cpp:67
 msgid "Historical romance novels"
-msgstr "Historické milostné romány"
+msgstr "Historické romance"
 
 #: FbGenres.cpp:68
 msgid "Action romance novels"
-msgstr "Akční milostné romány"
+msgstr "Akční romance"
 
 #: FbGenres.cpp:69
 msgid "Short romance novels"
-msgstr "Krátké milostné romány"
+msgstr "Krátké romance"
 
 #: FbGenres.cpp:70
 msgid "Erotic novels"
-msgstr "Milostné romány"
+msgstr "Erotické romány"
 
 #: FbGenres.cpp:71
 msgid "Western"
@@ -920,19 +920,19 @@ msgstr "Western"
 
 #: FbGenres.cpp:72
 msgid "Historical adventures"
-msgstr "Historická dobrodružná"
+msgstr "Historické dobrodružné"
 
 #: FbGenres.cpp:73
 msgid "Adventures about Indians"
-msgstr "Dobrodružná o Indiánech"
+msgstr "Indiánky"
 
 #: FbGenres.cpp:74
 msgid "Sea adventures"
-msgstr "Námořnická dobrodružná"
+msgstr "Námořní dobrodružné"
 
 #: FbGenres.cpp:75
 msgid "Travel and Geography"
-msgstr "Cestování a zeměpis"
+msgstr "Cestopisy"
 
 #: FbGenres.cpp:76
 msgid "Nature and Animals"
@@ -952,19 +952,19 @@ msgstr "Dětská próza"
 
 #: FbGenres.cpp:81
 msgid "Children fiction"
-msgstr "Dětská fikce"
+msgstr "Dětská sci-fi"
 
 #: FbGenres.cpp:82
 msgid "Children action"
-msgstr "Dětská akční"
+msgstr "Dětské akční"
 
 #: FbGenres.cpp:83
 msgid "Children adventures"
-msgstr "Dětská dobrodružná"
+msgstr "Dětské dobrodružné"
 
 #: FbGenres.cpp:84
 msgid "Children education"
-msgstr "Dětská vzdělávací"
+msgstr "Dětské naučné"
 
 #: FbGenres.cpp:86
 msgid "Poetry"
@@ -980,19 +980,19 @@ msgstr "Antická literatura"
 
 #: FbGenres.cpp:89
 msgid "European ancient literature"
-msgstr "Evropská starověká literatura"
+msgstr "Starověké evropské"
 
 #: FbGenres.cpp:90
 msgid "Russian ancient literature"
-msgstr "Ruská starověká literatura"
+msgstr "Starověké ruské"
 
 #: FbGenres.cpp:91
 msgid "Oriental ancient literature"
-msgstr "Orientální starověká literatura"
+msgstr "Starověké orientální"
 
 #: FbGenres.cpp:92
 msgid "Myths. Legends. Epic."
-msgstr "Báje. Legendy. Eposy."
+msgstr "Báje, legendy, eposy."
 
 #: FbGenres.cpp:93
 msgid "Ancient literature"
@@ -1032,7 +1032,7 @@ msgstr "Právo"
 
 #: FbGenres.cpp:102
 msgid "Linguistics"
-msgstr "Jazykověda"
+msgstr "Lingvistika"
 
 #: FbGenres.cpp:103
 msgid "Medical"
@@ -1080,11 +1080,11 @@ msgstr "Databáze"
 
 #: FbGenres.cpp:115
 msgid "OS and Network"
-msgstr "OS a Sítě"
+msgstr "OS a sítě"
 
 #: FbGenres.cpp:116
 msgid "Computer literature"
-msgstr "Počítačová literatura"
+msgstr "Počítače"
 
 #: FbGenres.cpp:117
 msgid "Encyclopedias"
@@ -1104,7 +1104,7 @@ msgstr "Manuály"
 
 #: FbGenres.cpp:122
 msgid "Biographies and Memoirs"
-msgstr "Životopisy a memoáry"
+msgstr "Biografie a memoáry"
 
 #: FbGenres.cpp:123
 msgid "Publicism"
@@ -1140,11 +1140,11 @@ msgstr "Vtipy"
 
 #: FbGenres.cpp:132
 msgid "Humorous prose"
-msgstr "Humoristická próza"
+msgstr "Satira"
 
 #: FbGenres.cpp:133
 msgid "Humorous poetry"
-msgstr "Humoristická poezie"
+msgstr "Humorná poezie"
 
 #: FbGenres.cpp:135
 msgid "Cooking"
@@ -1368,7 +1368,7 @@ msgstr "Hledat titul"
 
 #: FbMainFrame.cpp:523
 msgid "This function is not available yet in this version."
-msgstr "Tato funkce zatím není v této verzi dostupná."
+msgstr "Tato funkce zatím není dostupná v této verzi."
 
 #: FbMainFrame.cpp:533
 msgid "Optimize database?"
@@ -1380,7 +1380,7 @@ msgstr "Soubor nebyl nalezen"
 
 #: FbMainMenu.cpp:6
 msgid "Search"
-msgstr "Hledat"
+msgstr "Hledat titul"
 
 #: FbMainMenu.cpp:11
 msgid "Calendar"
@@ -1392,7 +1392,7 @@ msgstr "Archív"
 
 #: FbMainMenu.cpp:21
 msgid "Open recent"
-msgstr "Otevřít minulé"
+msgstr "Otevřít předcházející"
 
 #: FbMainMenu.cpp:24
 msgid "Clear empty variables"
@@ -1400,7 +1400,7 @@ msgstr "Odstranit prázdné hodnoty"
 
 #: FbMainMenu.cpp:25
 msgid "Optimize DB"
-msgstr "Optimalizace DB"
+msgstr "Optimalizovat databázi"
 
 #: FbMainMenu.cpp:27
 msgid "Options"
@@ -1412,15 +1412,15 @@ msgstr "Nastavení"
 
 #: FbMainMenu.cpp:37
 msgid "Website"
-msgstr "Web programu"
+msgstr "MyRuLib na webu"
 
 #: FbMainMenu.cpp:53 FbMainMenu.cpp:69
 msgid "Add file"
-msgstr "Přidat soubor"
+msgstr "Import souborů"
 
 #: FbMainMenu.cpp:54 FbMainMenu.cpp:70
 msgid "Add folder"
-msgstr "Přidat adresář"
+msgstr "Import adresářů"
 
 #: FbMainMenu.cpp:56 FbMainMenu.cpp:73
 msgid "Exit"
@@ -1468,11 +1468,11 @@ msgstr "Konvexní"
 
 #: FbMainMenu.cpp:119
 msgid "Buttons"
-msgstr "Tlačítka"
+msgstr "Vystouplá tlačítka"
 
 #: FbMainMenu.cpp:119
 msgid "Light"
-msgstr "Plíce"
+msgstr "Plochá tlačítka"
 
 #: FbMainMenu.cpp:124
 msgid "Right"
@@ -1524,7 +1524,7 @@ msgstr "Přizpůsobení"
 
 #: FbViewerDlg.cpp:17
 msgid "Select the application to view files"
-msgstr "Zvolte aplikaci pro zobrazení souborů"
+msgstr "Zvolte aplikaci pro otevírání tohoto typu souboru"
 
 #: FbViewerDlg.cpp:49
 msgid "Executable files"
@@ -1625,11 +1625,11 @@ msgstr "Autor / Kniha"
 
 #: SettingsDlg.cpp:277
 msgid "Exported collection structure"
-msgstr "Struktura exportu databáze"
+msgstr "Struktura exportu z databáze"
 
 #: SettingsDlg.cpp:283
 msgid "Format of exporting collection"
-msgstr "Formát exportu databáze"
+msgstr "Formát exportu z databáze"
 
 #: SettingsDlg.cpp:327
 msgid "Fonts"

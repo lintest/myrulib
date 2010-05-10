@@ -21,7 +21,6 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
-					<Add library="libicuio.a" />
 					<Add directory="../build/LinDebug" />
 				</Linker>
 			</Target>
@@ -41,7 +40,6 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="`wx-config --libs`" />
-					<Add library="libicuio.a" />
 					<Add directory="../build/LinRelease" />
 				</Linker>
 			</Target>
