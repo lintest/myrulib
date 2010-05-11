@@ -23,8 +23,6 @@ wxString FbFrameSearch::GetTitle() const
 
 void FbFrameSearch::CreateControls()
 {
-	SetMenuBar(new FbFrameMenu);
-
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;

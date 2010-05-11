@@ -72,6 +72,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnChangeRating(wxCommandEvent& event);
 		void OnDeleteBooks(wxCommandEvent& event);
 		void OnModifyBooks(wxCommandEvent& event);
+		void OnLinkClicked(wxHtmlLinkEvent& event);
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 		DECLARE_EVENT_TABLE();

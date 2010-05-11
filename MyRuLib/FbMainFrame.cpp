@@ -24,7 +24,7 @@
 #include "FbNotebook.h"
 #include "FbLocale.h"
 
-BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
+BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
 	EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
 	EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
@@ -623,8 +623,12 @@ void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
 	wxMenu * submenu = menuitem->GetSubMenu();
 	if (!submenu) return;
 
+	wxMenuItemList items = submenu->GetMenuItems();
+	for (size_t i = 0; i < items.GetCount(); i++) {
+		submenu->Delete(items[i]);
+	}
+
 	for (size_t i = 1; i<=5; i++) {
-		submenu->Delete(ID_RECENT_0 + i);
 		wxString filename = FbParams::GetText(i + FB_RECENT_0);
 		if (filename.IsEmpty()) continue;
 		wxString fileinfo = FbParams::GetText(i + FB_TITLE_0);

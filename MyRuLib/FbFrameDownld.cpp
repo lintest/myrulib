@@ -26,8 +26,6 @@ FbFrameDownld::FbFrameDownld(wxAuiMDIParentFrame * parent)
 
 void FbFrameDownld::CreateControls()
 {
-	SetMenuBar(new FbFrameMenu);
-
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;

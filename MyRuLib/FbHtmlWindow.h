@@ -12,9 +12,6 @@ class FbHtmlWindow: public wxHtmlWindow
 		virtual bool SetPage(const wxString& source);
 	protected:
 		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
-	private:
-		void OnLinkClicked(wxHtmlLinkEvent& event);
-		DECLARE_EVENT_TABLE();
 };
 
 #endif // __FBHTMLWINDOW_H__

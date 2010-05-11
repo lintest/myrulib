@@ -7,6 +7,8 @@
 #include "FbFilterDlg.h"
 #include "FbColumnDlg.h"
 
+IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
+
 BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
@@ -72,7 +74,7 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateControls()
 {
-	SetMenuBar(CreateMenuBar());
+	this->UpdateMenu();
 	this->UpdateFonts(false);
 	this->ShowFullScreen(IsFullScreen());
 	this->Layout();
@@ -350,3 +352,4 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 {
 	FbColumnDlg::Execute(this);
 }
+

@@ -10,10 +10,6 @@ class FbURI: public wxURI
 		friend class FbHtmlWindow;
 };
 
-BEGIN_EVENT_TABLE(FbHtmlWindow, wxHtmlWindow)
-	EVT_HTML_LINK_CLICKED(wxID_ANY, FbHtmlWindow::OnLinkClicked)
-END_EVENT_TABLE()
-
 FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id)
 	: wxHtmlWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
 {
@@ -52,10 +48,5 @@ wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxStrin
 	}
 
 	return wxHTML_OPEN;
-}
-
-void FbHtmlWindow::OnLinkClicked(wxHtmlLinkEvent& event)
-{
-	wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
 }
 

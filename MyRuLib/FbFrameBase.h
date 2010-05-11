@@ -71,6 +71,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnEmptyBooks(wxCommandEvent& event);
 		void OnTreeCollapsing(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameBase)
 
 	private:
 		class MenuBar: public FbFrameMenu

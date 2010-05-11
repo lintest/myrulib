@@ -16,6 +16,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
 	EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, FbBookPanel::OnContextMenu)
+	EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, FbBookPanel::OnLinkClicked)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
@@ -576,4 +577,10 @@ void FbBookPanel::SetMasterData(FbMasterData const * master)
 			m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
 		}
 	}
-};
+}
+
+void FbBookPanel::OnLinkClicked(wxHtmlLinkEvent& event)
+{
+	wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
+}
+

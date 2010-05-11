@@ -17,8 +17,6 @@ FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
 
 void FbFrameGenres::CreateControls()
 {
-	SetMenuBar(new FbFrameMenu);
-
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;

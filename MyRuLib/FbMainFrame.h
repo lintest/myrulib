@@ -10,7 +10,7 @@
 #include "FbFrameAuthor.h"
 #include "FbLogoBitmap.h"
 
-class FbMainFrame: public wxAuiMDIParentFrame
+class FbMainFrame: public FbAuiMDIParentFrame
 {
 	public:
 		FbMainFrame();
