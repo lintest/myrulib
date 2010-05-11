@@ -122,12 +122,12 @@ void FrameInfoThread::WriteCount()
 
 	{
 		const wxChar * title = _("First reciept:");
-		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s г.</TD></TR>"), title, min.c_str());
+		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, min.c_str());
 	}
 
 	{
 		const wxChar * title = _("Last reciept:");
-		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s г.</TD></TR>"), title, max.c_str());
+		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, max.c_str());
 	}
 
 	m_html += wxT("</TABLE>");
