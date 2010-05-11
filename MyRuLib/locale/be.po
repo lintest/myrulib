@@ -269,6 +269,14 @@ msgstr "Краткае апісанне:"
 msgid "Host name:"
 msgstr "Вэб-сайт:"
 
+#: FbConfigDlg.cpp:99
+msgid "User name:"
+msgstr "Імя карыстальніка:"
+
+#: FbConfigDlg.cpp:106
+msgid "Password:"
+msgstr "Пароль:"
+
 #: FbConfigDlg.cpp:127 SettingsDlg.cpp:323
 msgid "General"
 msgstr "Асноўныя"
@@ -893,7 +901,7 @@ msgid "Modern romance novels"
 msgstr "Современные любовные романы"
 
 #: FbGenres.cpp:67
-msgid "historical romance novels"
+msgid "Historical romance novels"
 msgstr "Исторические любовные романы"
 
 #: FbGenres.cpp:68
@@ -1463,6 +1471,10 @@ msgstr "Выпуклы"
 #: FbMainMenu.cpp:119
 msgid "Buttons"
 msgstr "Кнопачны"
+
+#: FbMainMenu.cpp:119
+msgid "Light"
+msgstr "Лёгкія"
 
 #: FbMainMenu.cpp:124
 msgid "Right"

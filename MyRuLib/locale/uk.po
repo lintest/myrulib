@@ -269,6 +269,14 @@ msgstr "Короткий опис:"
 msgid "Host name:"
 msgstr "Веб-сайт:"
 
+#: FbConfigDlg.cpp:99
+msgid "User name:"
+msgstr "Ім'я користувача:"
+
+#: FbConfigDlg.cpp:106
+msgid "Password:"
+msgstr "Пароль:"
+
 #: FbConfigDlg.cpp:127 SettingsDlg.cpp:323
 msgid "General"
 msgstr "Основні"
@@ -904,7 +912,7 @@ msgid "Modern romance novels"
 msgstr "Сучасні любовні романи"
 
 #: FbGenres.cpp:67
-msgid "historical romance novels"
+msgid "Historical romance novels"
 msgstr "Історичні любовні романи"
 
 #: FbGenres.cpp:68
@@ -1474,6 +1482,10 @@ msgstr "Опуклі"
 #: FbMainMenu.cpp:119
 msgid "Buttons"
 msgstr "Кнопкові"
+
+#: FbMainMenu.cpp:119
+msgid "Light"
+msgstr "Легкі"
 
 #: FbMainMenu.cpp:124
 msgid "Right"

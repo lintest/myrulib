@@ -90,6 +90,10 @@
 		<locale>be</locale>
 	</action>
 
+	<action id="build/cs.mo"> 
+		<locale>cs</locale>
+	</action>
+
 	<action id="build/ru.inc"> 
 		<bin2c>ru</bin2c>
 	</action>
@@ -102,6 +106,10 @@
 		<bin2c>be</bin2c>
 	</action>
 
+	<action id="build/cs.inc"> 
+		<bin2c>cs</bin2c>
+	</action>
+
 	<exe id="myrulib" template="wxgui">
 		<define>NDEBUG</define>
 		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
@@ -109,6 +117,7 @@
 		<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
 		<objects-depend>$(BUILDDIR)/uk.inc</objects-depend>
 		<objects-depend>$(BUILDDIR)/be.inc</objects-depend>
+		<objects-depend>$(BUILDDIR)/cs.inc</objects-depend>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>

@@ -65,7 +65,7 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0x3, 0x5, wxT("prose_rus_classic"), _("Russian Classical prose")},
 		{ 0x3, 0x6, wxT("prose_su_classics"), _("Soviet Classical prose")},
 		{ 0x4, 0x1, wxT("love_contemporary"), _("Modern romance novels")},
-		{ 0x4, 0x2, wxT("love_history"), _("historical romance novels")},
+		{ 0x4, 0x2, wxT("love_history"), _("Historical romance novels")},
 		{ 0x4, 0x3, wxT("love_detective"), _("Action romance novels")},
 		{ 0x4, 0x4, wxT("love_short"), _("Short romance novels")},
 		{ 0x4, 0x5, wxT("love_erotica"), _("Erotic novels")},

@@ -54,7 +54,7 @@ FbMainMenu::MenuFile::MenuFile()
 	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
 	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
 	AppendSeparator();
-	AppendImg(wxID_EXIT, _("Выход") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
+	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
 FbMainMenu::MenuView::MenuView()
@@ -114,7 +114,10 @@ FbMenuBar::MenuTabArt::MenuTabArt()
 	AppendRadioItem(ID_ART_DEFAULT,  _("Standart"));
 	AppendRadioItem(ID_ART_COMPACT,  _("Compact"));
 	AppendRadioItem(ID_ART_STANDART, _("Convex"));
-	AppendRadioItem(ID_ART_TOOLBAR,  _("Buttons"));
+	AppendRadioItem(ID_ART_BUTTONS,  _("Buttons"));
+	#ifdef __WXMSW__
+	AppendRadioItem(ID_ART_TOOLBAR,  _("Light"));
+	#endif
 }
 
 FbMenuBar::MenuPreview::MenuPreview()
@@ -135,8 +138,9 @@ FbMenuBar::MenuWindow::MenuWindow()
 
 FbMenuBar::MenuLocalize::MenuLocalize()
 {
-    AppendRadioItem(ID_MENU_ENGLISH, _("English"));
-    AppendRadioItem(ID_MENU_RUSSIAN, _("Russian"));
-    AppendRadioItem(ID_MENU_UKRAINIAN, _("Ukrainian"));
-    AppendRadioItem(ID_MENU_BELARUSIAN, _("Belarusian"));
+    AppendRadioItem(ID_LANG_ENGLISH, _("English"));
+    AppendRadioItem(ID_LANG_RUSSIAN, _("Russian"));
+    AppendRadioItem(ID_LANG_UKRAINIAN, _("Ukrainian"));
+    AppendRadioItem(ID_LANG_BELARUSIAN, _("Belarusian"));
+    AppendRadioItem(ID_LANG_CZECH, _("Czech"));
 }

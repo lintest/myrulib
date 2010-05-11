@@ -66,22 +66,27 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxAuiMDIParentFrame)
 	EVT_MENU(ID_ART_COMPACT, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_STANDART, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_TOOLBAR, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_BUTTONS, FbMainFrame::OnTabArt)
 	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_COMPACT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_STANDART, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_TOOLBAR, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_BUTTONS, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 
-	EVT_MENU(ID_MENU_DEFAULT, FbMainFrame::OnLocalize)
-	EVT_MENU(ID_MENU_ENGLISH, FbMainFrame::OnLocalize)
-	EVT_MENU(ID_MENU_RUSSIAN, FbMainFrame::OnLocalize)
-    EVT_MENU(ID_MENU_UKRAINIAN, FbMainFrame::OnLocalize)
-    EVT_MENU(ID_MENU_BELARUSIAN, FbMainFrame::OnLocalize)
-	EVT_UPDATE_UI(ID_MENU_DEFAULT, FbMainFrame::OnLocalizeUpdate)
-	EVT_UPDATE_UI(ID_MENU_ENGLISH, FbMainFrame::OnLocalizeUpdate)
-	EVT_UPDATE_UI(ID_MENU_RUSSIAN, FbMainFrame::OnLocalizeUpdate)
-    EVT_UPDATE_UI(ID_MENU_UKRAINIAN, FbMainFrame::OnLocalizeUpdate)
-    EVT_UPDATE_UI(ID_MENU_BELARUSIAN, FbMainFrame::OnLocalizeUpdate)
+	EVT_MENU(ID_LANG_DEFAULT, FbMainFrame::OnLocalize)
+	EVT_MENU(ID_LANG_ENGLISH, FbMainFrame::OnLocalize)
+	EVT_MENU(ID_LANG_RUSSIAN, FbMainFrame::OnLocalize)
+    EVT_MENU(ID_LANG_UKRAINIAN, FbMainFrame::OnLocalize)
+    EVT_MENU(ID_LANG_BELARUSIAN, FbMainFrame::OnLocalize)
+    EVT_MENU(ID_LANG_CZECH, FbMainFrame::OnLocalize)
+
+	EVT_UPDATE_UI(ID_LANG_DEFAULT, FbMainFrame::OnLocalizeUpdate)
+	EVT_UPDATE_UI(ID_LANG_ENGLISH, FbMainFrame::OnLocalizeUpdate)
+	EVT_UPDATE_UI(ID_LANG_RUSSIAN, FbMainFrame::OnLocalizeUpdate)
+    EVT_UPDATE_UI(ID_LANG_UKRAINIAN, FbMainFrame::OnLocalizeUpdate)
+    EVT_UPDATE_UI(ID_LANG_BELARUSIAN, FbMainFrame::OnLocalizeUpdate)
+    EVT_UPDATE_UI(ID_LANG_CZECH, FbMainFrame::OnLocalizeUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
@@ -219,9 +224,10 @@ void FbMainFrame::SetTabArt(int id)
 {
 	wxAuiTabArt * art;
 	switch (id) {
-//		case ID_ART_TOOLBAR:   art = new wxAuiSimpleTabArt; break;
 		case ID_ART_COMPACT:  art = new FbAuiSimpleTabArt; break;
 		case ID_ART_STANDART: art = new wxAuiDefaultTabArt; break;
+		case ID_ART_BUTTONS:  art = new FbAuiToolbarTabArt; break;
+		case ID_ART_TOOLBAR:  art = new FbAuiToolbarTabArt(true); break;
 		default: art = new FbAuiDefaultTabArt;
 	}
 	GetNotebook()->SetTabCtrlHeight(0);

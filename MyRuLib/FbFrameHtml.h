@@ -26,6 +26,8 @@ class FbFrameHtml: public FbAuiMDIChildFrame
 		void DoModify();
 		void DoSubmit();
 		void DoUpdate();
+		void ModifyLink(const wxString &key);
+		void DeleteLink(const wxString &key);
 	private:
 		FbHtmlWindow m_info;
 		wxTextCtrl m_Caption;

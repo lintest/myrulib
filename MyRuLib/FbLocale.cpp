@@ -27,6 +27,10 @@ bool FbLocale::Init(int language, int flags)
 			#include "be.inc"
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
+		case wxLANGUAGE_CZECH: {
+			#include "cs.inc"
+			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
+		} break;
 	}
 
 	if (ok) AddCatalogLookupPathPrefix(filename.GetPath());
@@ -55,11 +59,12 @@ bool FbLocale::Save(const wxFileName &filename, const void *data, size_t size)
 int FbLocale::MenuToLang(wxWindowID id)
 {
     switch ( id ) {
-        case ID_MENU_DEFAULT:    return wxLANGUAGE_DEFAULT;
-        case ID_MENU_ENGLISH:    return wxLANGUAGE_ENGLISH;
-        case ID_MENU_RUSSIAN:    return wxLANGUAGE_RUSSIAN;
-        case ID_MENU_UKRAINIAN:  return wxLANGUAGE_UKRAINIAN;
-        case ID_MENU_BELARUSIAN: return wxLANGUAGE_BELARUSIAN;
+        case ID_LANG_DEFAULT:    return wxLANGUAGE_DEFAULT;
+        case ID_LANG_ENGLISH:    return wxLANGUAGE_ENGLISH;
+        case ID_LANG_RUSSIAN:    return wxLANGUAGE_RUSSIAN;
+        case ID_LANG_UKRAINIAN:  return wxLANGUAGE_UKRAINIAN;
+        case ID_LANG_BELARUSIAN: return wxLANGUAGE_BELARUSIAN;
+        case ID_LANG_CZECH:      return wxLANGUAGE_CZECH;
         default: return wxLANGUAGE_DEFAULT;
     }
 }
