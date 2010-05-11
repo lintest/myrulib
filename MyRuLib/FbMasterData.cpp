@@ -45,7 +45,7 @@ wxString FbMasterData::BaseThread::GetSQL(const wxString & condition)
 	switch (m_mode) {
 		case FB2_MODE_TREE:
 			sql = wxT("\
-				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
+				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 WHEN bookseq.id_seq=0 THEN 1 ELSE 0 END) AS key, \
 					books.id, books.id_author, books.title, books.file_size, books.file_type, books.lang, GENRE(books.genres) AS genres,\
 					states.rating, books.id_author, authors.full_name, sequences.value AS sequence, bookseq.number\
 				FROM books \
@@ -88,6 +88,7 @@ wxString FbMasterData::BaseThread::GetOrder()
 
 void FbMasterData::BaseThread::CreateTree(wxSQLite3ResultSet &result)
 {
+	bool seq_exists = false;
 	wxString thisAuthor = wxT("@@@");
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
@@ -98,11 +99,13 @@ void FbMasterData::BaseThread::CreateTree(wxSQLite3ResultSet &result)
 		if (thisAuthor != nextAuthor) {
 			thisAuthor = nextAuthor;
 			thisSequence = wxT("@@@");
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, nextAuthor).Post(m_frame);
+			seq_exists = false;
+			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, id_author, nextAuthor).Post(m_frame);
 		}
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, id_author, thisSequence).Post(m_frame);
+			seq_exists |= result.GetInt(wxT("key")) == 0;
+			if (seq_exists) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
 		}
 		BookTreeItemData data(result);
 		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
@@ -148,7 +151,7 @@ wxString FbMasterAuthor::AuthorThread::GetSQL(const wxString & condition)
 	switch (m_mode) {
 		case FB2_MODE_TREE:
 			sql = wxT("\
-				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 ELSE 0 END) AS key, \
+				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 WHEN bookseq.id_seq=0 THEN 1 ELSE 0 END) AS key, \
 					books.id, books.title, books.file_size, books.file_type, books.lang, GENRE(books.genres) AS genres, books.id_author, \
 					states.rating, sequences.value AS sequence, bookseq.number as number\
 				FROM books \
@@ -221,13 +224,14 @@ void * FbMasterAuthor::AuthorThread::Entry()
 
 void FbMasterAuthor::AuthorThread::CreateTree(wxSQLite3ResultSet &result)
 {
+	bool seq_exists = false;
 	wxString thisSequence = wxT("@@@");
 	while (result.NextRow()) {
 		wxString nextSequence = result.GetString(wxT("sequence"));
-
 		if (thisSequence != nextSequence) {
 			thisSequence = nextSequence;
-			FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
+			seq_exists |= result.GetInt(wxT("key")) == 0;
+			if (seq_exists) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
 		}
 
 		BookTreeItemData data(result);

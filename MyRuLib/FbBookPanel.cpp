@@ -391,6 +391,7 @@ void FbBookPanel::AppendAuthor(int id, const wxString title, wxTreeItemData * da
 	m_AuthorItem = m_BookList->AppendItem(parent, title, 0, -1, data);
 	m_BookList->SetItemBold(m_AuthorItem, true);
 	m_BookList->Expand(parent);
+	m_SequenceItem = 0L;
 }
 
 void FbBookPanel::AppendSequence(int id, const wxString title, wxTreeItemData * data)

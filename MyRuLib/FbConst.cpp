@@ -17,7 +17,7 @@ const wxString strAlphabet = alphabetRu + alphabetEn;
 const wxString strNobody = _("(no Author)");
 const wxString strRusJE = wxT("е");
 const wxString strRusJO = wxT("ё");
-const wxString strOtherSequence = _("(Misc.)");
+const wxString strOtherSequence = wxT("(Misc.)");
 const wxString strBookNotFound = _("Not found an archive (%s), containing file (%s).");
 
 const wxString strUpdateAuthorCount = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
@@ -28,7 +28,7 @@ const int ciNoAuthor = 0x7FFFFFFF;
 const int ciMaxImageWidth = 200;
 
 const wxString strRating [] = {
-	_("Clear"),
+	wxT("Clear"),
 	wxT("*"),
 	wxT("* *"),
 	wxT("* * *"),

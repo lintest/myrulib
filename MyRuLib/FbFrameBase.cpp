@@ -119,13 +119,15 @@ void FbFrameBase::OnAppendBook(FbBookEvent& event)
 
 void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
 {
-	m_BooksPanel->AppendAuthor( event.GetInt(), event.GetString(), new FbAuthorData(event.GetInt()) );
+	wxString title = event.GetString();
+	if (event.GetInt() == 0) title = wxGetTranslation(strNobody);
+	m_BooksPanel->AppendAuthor( event.GetInt(), title, new FbAuthorData(event.GetInt()) );
 }
 
 void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
 {
 	wxString title = event.GetString();
-	if (title.IsEmpty()) title = strOtherSequence;
+	if (title.IsEmpty()) title = wxGetTranslation(strOtherSequence);
 	m_BooksPanel->AppendSequence( event.GetInt(), title );
 }
 

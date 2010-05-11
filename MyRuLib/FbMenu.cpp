@@ -22,5 +22,5 @@ FbMenuRating::FbMenuRating()
 	Append(ID_RATING_2, strRating[2]);
 	Append(ID_RATING_1, strRating[1]);
 	AppendSeparator();
-	Append(ID_RATING_0, strRating[0]);
+	Append(ID_RATING_0, wxGetTranslation(strRating[0]));
 }

@@ -1,6 +1,6 @@
 /*
 static wxString wxFileName::GetForbiddenChars ( wxPathFormat format = wxPATH_NATIVE )
-Returns the characters that can't be used in filenames and directory names for the specified format. 
+Returns the characters that can't be used in filenames and directory names for the specified format.
 */
 
 #include <wx/filename.h>
@@ -285,7 +285,7 @@ void ExternalDlg::FillBooks(const wxString &selections)
 void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter)
 {
 	wxString sql = wxT("\
-		SELECT DISTINCT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, sequences.value AS sequence, bookseq.number\
+		SELECT DISTINCT books.id, books.title, books.file_size, books.file_type, books.file_name, books.id_author, authors.letter, authors.full_name, bookseq.id_seq, sequences.value AS sequence, bookseq.number\
 		FROM books \
 			LEFT JOIN authors ON authors.id=books.id_author \
 			LEFT JOIN bookseq ON bookseq.id_book=books.id \
@@ -300,7 +300,7 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 
 	wxArrayInt books;
 	wxString thisLeter, thisAuthor, thisSequence;
-	wxTreeItemId itemLetter, itemAuthor, itemSequence;
+	wxTreeItemId itemLetter, itemAuthor, itemSequence, itemParent;
 
 	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 	while (result.NextRow()) {
@@ -323,15 +323,17 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 		if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
 			thisAuthor = nextAuthor;
 			itemSequence = 0L;
-			itemAuthor = AppendFolder(itemLetter, thisAuthor);
+			itemParent = itemAuthor = AppendFolder(itemLetter, thisAuthor);
 			m_books->SetItemBold(itemAuthor, true);
 		}
 		if (thisSequence != nextSequence || !itemSequence.IsOk()) {
 			thisSequence = nextSequence;
-			itemSequence = AppendFolder(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
-			m_books->SetItemBold(itemSequence, true);
+			if (result.GetInt(wxT("id_seq"))) {
+				itemParent = itemSequence = AppendFolder(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
+				m_books->SetItemBold(itemSequence, true);
+			}
 		}
-		AppendBook(itemSequence, data);
+		AppendBook(itemParent, data);
 		books.Add(data.GetId());
 	}
 }
