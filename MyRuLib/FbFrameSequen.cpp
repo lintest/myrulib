@@ -458,6 +458,6 @@ void FbFrameSequen::OnAppendAuthor(wxCommandEvent& event)
 {
 	wxString title = event.GetString();
 	if (event.GetInt() == 0) title = wxGetTranslation(strNobody);
-	m_BooksPanel->AppendAuthor( event.GetInt(), title, new FbAuthorData(event.GetInt()) );
+	m_BooksPanel->AppendSequence( event.GetInt(), title, new FbAuthorData(event.GetInt()) );
 }
 
