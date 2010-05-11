@@ -90,7 +90,7 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0x8, 0x2, wxT("antique_european"), _("European ancient literature")},
 		{ 0x8, 0x3, wxT("antique_russian"), _("Russian ancient literature")},
 		{ 0x8, 0x4, wxT("antique_east"), _("Oriental ancient literature")},
-		{ 0x8, 0x5, wxT("antique_myths"), _("Medical")},
+		{ 0x8, 0x5, wxT("antique_myths"), _("Myths. Legends. Epic.")},
 		{ 0x8, 0x0, wxT("antique"), _("Ancient literature")},
 		{ 0x9, 0x1, wxT("sci_history"), _("History")},
 		{ 0x9, 0x2, wxT("sci_psychology"), _("Psychology")},
