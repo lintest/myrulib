@@ -94,8 +94,8 @@ FbFrameMenu::MenuView::MenuView()
 	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
-	Append(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	Append(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
+	AppendCheckItem(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
 	Append(wxID_ANY, _("Language"), new MenuLocalize());
 }
 
