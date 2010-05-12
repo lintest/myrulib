@@ -1888,7 +1888,9 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetEncoding());
 
     // prevent any background repaint in order to reducing flicker
+    #ifdef __WXWIN__
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+    #endif
 }
 
 bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
@@ -1911,6 +1913,7 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
 #endif
 
     wxScrolledWindow::Create (parent, id, pos, size, style|wxHSCROLL|wxVSCROLL, name);
+    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 
 #if wxUSE_VALIDATORS
     SetValidator(validator);

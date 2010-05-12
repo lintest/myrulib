@@ -57,6 +57,8 @@ class SettingsDlg : private FbDialog
 			ID_LIMIT_CHECK,
 			ID_LIMIT_COUNT,
 			ID_SAVE_FULLPATH,
+			ID_SHELL_EXECUTE,
+			ID_SHELL_COMMAND,
 		};
 		class FbPanelFont: public wxPanel
 		{

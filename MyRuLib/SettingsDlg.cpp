@@ -260,7 +260,6 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
 
-
 	wxTextCtrl * m_textCtrl6 = new wxTextCtrl( this, ID_EXTERNAL_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
 
@@ -305,6 +304,11 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	m_checkBox2 = new wxCheckBox( this, ID_USE_SYMLINKS, _("Создавть cимвольные ссылки для соавторов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_checkBox2, 0, wxALL, 5 );
 */
+	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell command for export"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer8->Add( checkExec, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 5 );
+	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer8->Add( textShell, 0, wxEXPAND | wxALL, 5 );
+
 	this->SetSizer( bSizer8 );
 	this->Layout();
 	bSizer8->Fit( this );
@@ -406,6 +410,8 @@ void SettingsDlg::Assign(bool write)
 		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE, tCheck},
 		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT, tRadio},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT, tRadio},
+		{FB_SHELL_EXECUTE, ID_SHELL_EXECUTE, tCheck},
+		{FB_SHELL_COMMAND, ID_SHELL_COMMAND, tText},
 		{FB_FONT_MAIN, ID_FONT_MAIN, tFont},
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
