@@ -1,4 +1,4 @@
-#include "../version.inc"
+#include "../../version.inc"
 
 aaaa ICON "home.ico"
 
@@ -8,8 +8,8 @@ aaaa ICON "home.ico"
 #define TXT(text) __TXT(text)
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION VERSION_1, VERSION_2, VERSION_3, VERSION_4
-PRODUCTVERSION VERSION_1, VERSION_2, 0, 0
+FILEVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, 0
+PRODUCTVERSION VERSION_MAJOR, VERSION_MINOR, 0, 0
 FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
 FILEFLAGS 0x1L
@@ -26,12 +26,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "\0"
       VALUE "FileDescription", "MyRuLib Application\0"
-      VALUE "FileVersion", TXT(VERSION_1) ", " TXT(VERSION_2) ", " TXT(VERSION_3) ", " TXT(VERSION_4)
+      VALUE "FileVersion", TXT(VERSION_MAJOR) ", " TXT(VERSION_MINOR) ", " TXT(VERSION_BUILD) ", " TXT(0)
       VALUE "InternalName", "myrulib\0"
       VALUE "LegalCopyright", "Copyright © Kandrashin Denis, 2010\0"
       VALUE "OriginalFilename", "myrulib.exe\0"
       VALUE "ProductName", "MyRuLib E-Book Library Manager\0"
-      VALUE "ProductVersion", TXT(VERSION_1) ", " TXT(VERSION_2) ", " TXT(0) ", " TXT(0)
+      VALUE "ProductVersion", TXT(VERSION_MAJOR) ", " TXT(VERSION_MINOR) ", " TXT(0) ", " TXT(0)
     END
   END
   BLOCK "VarFileInfo"

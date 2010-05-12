@@ -19,6 +19,13 @@
 		<set var="WX_VERSION_DEFAULT">28</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
 	</if>
+	
+	<if cond="FORMAT=='mingw'">
+		<action id="clear_resource"> 
+			<command>del build\myrulib_resource_rc.o</command>
+			<is-phony/>
+		</action>
+	</if>
 
 	<if cond="FORMAT=='gnu'">
 		<set var="WX_PORT_DEFAULT">gtk2</set>
@@ -50,6 +57,7 @@
 		<include cond="SQLITE3_STATIC=='1'">SQLite3</include>
 		<include>WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
+		<depends cond="FORMAT=='mingw'">clear_resource</depends>
 	</lib>
 
     <define-tag name="locale" rules="action">
