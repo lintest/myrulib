@@ -207,8 +207,11 @@ msgid "Delete bookmark"
 msgstr "Odstranit záložku"
 
 #: FbBookMenu.cpp:50 FbFrameFolder.cpp:95 FbFrameHtml.cpp:31 FbMainMenu.cpp:85
-msgid "Comments"
+msgid "Add comments"
 msgstr "Vložit komentář"
+
+msgid "Comments"
+msgstr "Komentář"
 
 #: FbBookPanel.cpp:60 FbMenu.cpp:6
 msgid "Title"

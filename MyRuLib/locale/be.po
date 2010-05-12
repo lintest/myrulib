@@ -208,6 +208,9 @@ msgid "Delete bookmark"
 msgstr "Знішчыць закладку"
 
 #: FbBookMenu.cpp:50 FbFrameFolder.cpp:95 FbFrameHtml.cpp:31 FbMainMenu.cpp:85
+msgid "Add comments"
+msgstr "Каментары"
+
 msgid "Comments"
 msgstr "Каментары"
 
@@ -1187,6 +1190,66 @@ msgstr "Эротика, Секс"
 #: FbGenres.cpp:144
 msgid "Household"
 msgstr "Домоводство"
+
+msgid "Prose military"
+msgstr "Военная проза"
+
+msgid "Love science fiction"
+msgstr "Любовная фантастика"
+
+msgid "Geo guides"
+msgstr "Путеводители"
+
+msgid "Economy, Business"
+msgstr "Экономика и бизнес"
+
+msgid "Job hunting"
+msgstr "Поиск работы, карьера"
+
+msgid "Management"
+msgstr "Управление, подбор персонала"
+
+msgid "Marketing"
+msgstr "Маркетинг, реклама"
+
+msgid "Banking"
+msgstr "Банковское дело"
+
+msgid "Stock"
+msgstr "Ценные бумаги, инвестиции"
+
+msgid "Accounting"
+msgstr "Бухучет, налогообложение, аудит"
+
+msgid "Global economy"
+msgstr "Внешнеэкономическая деятельность"
+
+msgid "Economics"
+msgstr "Экономика"
+
+msgid "Industries"
+msgstr "Отраслевые издания"
+
+msgid "Corporate culture"
+msgstr "Корпоративная культура"
+
+msgid "Personal finance"
+msgstr "Личные финансы"
+
+msgid "Real estate"
+msgstr "Недвижимость"
+
+msgid "Popular business"
+msgstr "О бизнесе популярно"
+
+msgid "Small business"
+msgstr "Малый бизнес"
+
+msgid "Paper work"
+msgstr "Делопроизводство"
+
+msgid "Economics reference book"
+msgstr "Справочники по экономике"
 
 #: FbImportThread.cpp:91 FbImportThread.cpp:469
 #, c-format

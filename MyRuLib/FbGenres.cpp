@@ -31,6 +31,7 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0xD, _("Religion and Spirituality")},
 		{ 0xE, _("Humour")},
 		{ 0xF, _("Home and Family")},
+		{ 0x0, _("Economy, Business")},
 	};
 
 	const GenreStruct genres_list[] = {
@@ -64,11 +65,13 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0x3, 0x4, wxT("prose_counter"), _("Counterculture")},
 		{ 0x3, 0x5, wxT("prose_rus_classic"), _("Russian Classical prose")},
 		{ 0x3, 0x6, wxT("prose_su_classics"), _("Soviet Classical prose")},
+		{ 0x3, 0x7, wxT("prose_military"), _("Prose military")},
 		{ 0x4, 0x1, wxT("love_contemporary"), _("Modern romance novels")},
 		{ 0x4, 0x2, wxT("love_history"), _("Historical romance novels")},
 		{ 0x4, 0x3, wxT("love_detective"), _("Action romance novels")},
 		{ 0x4, 0x4, wxT("love_short"), _("Short romance novels")},
 		{ 0x4, 0x5, wxT("love_erotica"), _("Erotic novels")},
+		{ 0x4, 0x6, wxT("love_sf"), _("Love science fiction")},
 		{ 0x5, 0x1, wxT("adv_western"), _("Western")},
 		{ 0x5, 0x2, wxT("adv_history"), _("Historical adventures")},
 		{ 0x5, 0x3, wxT("adv_indian"), _("Adventures about Indians")},
@@ -143,6 +146,23 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0xF, 0x8, wxT("home_sport"), _("Sport")},
 		{ 0xF, 0x9, wxT("home_sex"), _("Erotic, sex")},
 		{ 0xF, 0x0, wxT("home"), _("Household")},
+		{ 0xF, 0xA, wxT("geo_guides"), _("Geo guides")},
+		{ 0x0, 0x1, wxT("job_hunting"), _("Job hunting")},
+		{ 0x0, 0x2, wxT("management"), _("Management")},
+		{ 0x0, 0x3, wxT("marketing"), _("Marketing")},
+		{ 0x0, 0x4, wxT("banking"), _("Banking")},
+		{ 0x0, 0x5, wxT("stock"), _("Stock")},
+		{ 0x0, 0x6, wxT("accounting"), _("Accounting")},
+		{ 0x0, 0x7, wxT("global_economy"), _("Global economy")},
+		{ 0x0, 0x0, wxT("economics"), _("Economics")},
+		{ 0x0, 0x8, wxT("industries"), _("Industries")},
+		{ 0x0, 0x9, wxT("org_behavior"), _("Corporate culture")},
+		{ 0x0, 0xA, wxT("personal_finance"), _("Personal finance")},
+		{ 0x0, 0xB, wxT("real_estate"), _("Real estate")},
+		{ 0x0, 0xC, wxT("popular_business"), _("Popular business")},
+		{ 0x0, 0xD, wxT("small_business"), _("Small business")},
+		{ 0x0, 0xE, wxT("paper_work"), _("Paper work")},
+		{ 0x0, 0xF, wxT("economics_ref"), _("Economics reference book")},
 	};
 
 	const size_t folder_count = sizeof(folder_list) / sizeof(FolderStruct);
