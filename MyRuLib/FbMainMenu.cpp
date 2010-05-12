@@ -84,7 +84,7 @@ FbFrameMenu::MenuBook::MenuBook()
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
 	Append(ID_FILTER_NOT, _("Clear filter"));
 	AppendSeparator();
-	Append(ID_EDIT_COMMENTS, _("Comments"));
+	Append(ID_EDIT_COMMENTS, _("Add comments"));
 }
 
 FbFrameMenu::MenuView::MenuView()

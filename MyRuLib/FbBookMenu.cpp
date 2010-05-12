@@ -47,7 +47,7 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
 	AppendSeparator();
 
-	Append(ID_EDIT_COMMENTS, _("Comments"));
+	Append(ID_EDIT_COMMENTS, _("Add comments"));
 }
 
 FbMenuAuthorArray FbMenuAuthors::sm_authors;
