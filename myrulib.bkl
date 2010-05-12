@@ -22,7 +22,7 @@
 	
 	<if cond="FORMAT=='mingw'">
 		<action id="clear_resource"> 
-			<command>del build\myrulib_resource_rc.o</command>
+			<command>if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o</command>
 			<is-phony/>
 		</action>
 	</if>

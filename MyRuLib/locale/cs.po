@@ -1189,6 +1189,66 @@ msgstr "Erotika, sex"
 msgid "Household"
 msgstr "Domácnost"
 
+msgid "Prose military"
+msgstr "Vojenské"
+
+msgid "Love science fiction"
+msgstr "Milostná fikce"
+
+msgid "Geo guides"
+msgstr "Průvodce"
+
+msgid "Economy, Business"
+msgstr "Ekomomie, obchod"
+
+msgid "Job hunting"
+msgstr "Kariéra"
+
+msgid "Management"
+msgstr "Management"
+
+msgid "Marketing"
+msgstr "Marketing"
+
+msgid "Banking"
+msgstr "Bankovnictví"
+
+msgid "Stock"
+msgstr "Burza"
+
+msgid "Accounting"
+msgstr "Účetnictví"
+
+msgid "Global economy"
+msgstr "Globální ekonomie"
+
+msgid "Economics"
+msgstr "Ekonomika"
+
+msgid "Industries"
+msgstr "Průmysl"
+
+msgid "Corporate culture"
+msgstr "Podniková kultura"
+
+msgid "Personal finance"
+msgstr "Osobní finance"
+
+msgid "Real estate"
+msgstr "Reality"
+
+msgid "Popular business"
+msgstr "Obchod populárně"
+
+msgid "Small business"
+msgstr "Drobné podnikání"
+
+msgid "Paper work"
+msgstr "Administrativa"
+
+msgid "Economics reference book"
+msgstr "Ekonomické příručky"
+
 #: FbImportThread.cpp:91 FbImportThread.cpp:469
 #, c-format
 msgid "Import file %s"
