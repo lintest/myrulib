@@ -21,7 +21,7 @@ FbAboutDlg::FbAboutDlg( wxWindow* parent )
 	wxBoxSizer* bSizerCtrl;
 	bSizerCtrl = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticText * m_text1 = new wxStaticText( this, wxID_ANY, strProgramName + wxT(" (alpha)"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_text1 = new wxStaticText( this, wxID_ANY, strProgramInfo, wxDefaultPosition, wxDefaultSize, 0 );
 	m_text1->Wrap( -1 );
 	wxFont font;
 	font.SetWeight(wxFONTWEIGHT_BOLD);

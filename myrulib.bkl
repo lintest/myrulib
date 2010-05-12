@@ -109,7 +109,7 @@
 	<action id="build/cs.inc"> 
 		<bin2c>cs</bin2c>
 	</action>
-
+	
 	<exe id="myrulib" template="wxgui">
 		<define>NDEBUG</define>
 		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>

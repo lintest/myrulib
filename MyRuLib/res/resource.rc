@@ -1,3 +1,41 @@
+#include "../version.inc"
+
 aaaa ICON "home.ico"
 
 #include "wx/msw/wx.rc"
+
+#define __TXT(text) #text
+#define TXT(text) __TXT(text)
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VERSION_1, VERSION_2, VERSION_3, VERSION_4
+PRODUCTVERSION VERSION_1, VERSION_2, 0, 0
+FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+FILEFLAGS 0x1L
+#else
+FILEFLAGS 0x0L
+#endif
+FILEOS 0x4L
+FILETYPE 0x2L
+FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "\0"
+      VALUE "FileDescription", "MyRuLib Application\0"
+      VALUE "FileVersion", TXT(VERSION_1) ", " TXT(VERSION_2) ", " TXT(VERSION_3) ", " TXT(VERSION_4)
+      VALUE "InternalName", "myrulib\0"
+      VALUE "LegalCopyright", "Copyright © Kandrashin Denis, 2010\0"
+      VALUE "OriginalFilename", "myrulib.exe\0"
+      VALUE "ProductName", "MyRuLib E-Book Library Manager\0"
+      VALUE "ProductVersion", TXT(VERSION_1) ", " TXT(VERSION_2) ", " TXT(0) ", " TXT(0)
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 0x04B0
+  END
+END

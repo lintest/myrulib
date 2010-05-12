@@ -133,6 +133,7 @@ enum {
 };
 
 extern const wxString strProgramName;
+extern const wxString strProgramInfo;
 extern const wxString strVersionInfo;
 extern const wxString strHomePage;
 
