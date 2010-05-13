@@ -10,19 +10,20 @@ class FbURI: public wxURI
 		friend class FbHtmlWindow;
 };
 
-FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id)
-	: wxHtmlWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
+IMPLEMENT_CLASS(FbHtmlWindow, wxHtmlWindow)
+
+FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+	: wxHtmlWindow(parent, id, pos, size, style, name)
 {
 	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 }
 
-bool FbHtmlWindow::Create(wxWindow *parent, wxWindowID id)
+bool FbHtmlWindow::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 {
-	bool ok = wxHtmlWindow::Create(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
+	bool ok = wxHtmlWindow::Create(parent, id, pos, size, style, name);
 	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 	return ok;
 }
-
 
 bool FbHtmlWindow::SetPage(const wxString& source)
 {
@@ -37,9 +38,7 @@ wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxStrin
 {
 	if (type != wxHTML_URL_IMAGE) return wxHTML_OPEN;
 
-	wxString addr = url;
-	FbURI uri = addr;
-
+	FbURI uri = url;
 	if (uri.GetScheme() == wxT("http")) {
 		if ( !FbParams::GetValue(FB_HTTP_IMAGES) ) {
 			*redirect = wxT("memory:blank");
