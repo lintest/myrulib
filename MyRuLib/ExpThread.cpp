@@ -1,4 +1,5 @@
 #include "ExpThread.h"
+#include "FbParams.h"
 #include "ZipReader.h"
 
 WX_DEFINE_OBJARRAY(ExportFileArray);
@@ -11,8 +12,8 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 		return;
 	}
 
-	wxFileOutputStream out(item.filename.GetFullPath());
-
+	wxString filename = item.filename.GetFullPath();
+	wxFileOutputStream out(filename);
 	if (m_compress) {
 		wxCSConv conv(wxT("cp866"));
 		wxZipOutputStream zip(out, -1, conv);
@@ -23,11 +24,26 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 	} else {
 		out.Write(reader.GetZip());
 	}
+	out.Close();
+
+	if (!m_script.IsEmpty()) {
+		wxArrayString output;
+		wxArrayString errors;
+		wxString command = m_script + wxT(" \"") + filename + wxT("\"");
+		wxExecute(command, output, errors, wxEXEC_SYNC);
+		for (size_t i = 0; i < output.Count(); i++)
+			if (!output[i].IsEmpty()) wxLogWarning(output[i]);
+		for (size_t i = 0; i < errors.Count(); i++)
+			if (!errors[i].IsEmpty()) wxLogError(errors[i]);
+	}
 }
 
 void *ExportThread::Entry()
 {
 //	wxCriticalSectionLocker enter(sm_queue);
+
+	if (FbParams::GetValue(FB_SHELL_EXECUTE))
+		m_script = FbParams::GetText(FB_SHELL_COMMAND);
 
 	DoStart(m_filelist.Count(), wxEmptyString);
 

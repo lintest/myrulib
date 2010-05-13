@@ -489,10 +489,11 @@ bool ExternalDlg::ExportBooks()
 	}
 
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
-	ExportThread *thread = new ExportThread(m_choiceFormat->GetCurrentSelection());
-	FillFilelist(m_books->GetRootItem(), thread->m_filelist);
-	thread->m_info = _("Export") + COLON + root_dir;
-	return thread->Execute();
+	ExportThread thread(m_choiceFormat->GetCurrentSelection());
+	FillFilelist(m_books->GetRootItem(), thread.m_filelist);
+	thread.m_info = _("Export") + COLON + root_dir;
+	thread.Entry();
+	return true;
 }
 
 bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)

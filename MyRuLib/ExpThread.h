@@ -30,6 +30,7 @@ class ExportThread : public BaseThread
 		void WriteFileItem(ExportFileItem &item);
 	private:
 		bool m_compress;
+		wxString m_script;
 };
 
 #endif // __EXPTHREAD_H__
