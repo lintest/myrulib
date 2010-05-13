@@ -287,7 +287,7 @@ FbSearchFunction::FbSearchFunction(const wxString & input)
 	for (size_t i=0; i<count; i++) {
 		log += wxString::Format(wxT("<%s> "), m_masks[i].c_str());
 	}
-	wxLogInfo(log);
+	wxLogMessage(log);
 }
 
 void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
@@ -421,10 +421,10 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	bool bExists = wxFileExists(filename);
 
 	if (bExists)
-		wxLogInfo(_("Open database") + COLON + filename);
+		wxLogMessage(_("Open database") + COLON + filename);
 	else {
 	    wxString info = _("Create new database");
-		wxLogInfo(info + COLON + filename);
+		wxLogMessage(info + COLON + filename);
 		wxString msg = strProgramName + (wxString)wxT(" - ") + info + (wxString)wxT("\n") + filename;
 		wxMessageBox(msg);
 	}
@@ -519,7 +519,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 
 	while ( version < new_version ) {
 		version++;
-		wxLogInfo(_("Upgrade database to version %d"), version);
+		wxLogMessage(_("Upgrade database to version %d"), version);
 		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 		DoUpgrade(version);
 		SetVersion(version);

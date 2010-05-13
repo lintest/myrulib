@@ -259,7 +259,7 @@ void ZipCollection::SetDir(const wxString &dirname)
 
 	if (dirname.IsEmpty()) return;
 
-	wxLogInfo(_("Start scan directory %s"), m_dirname.c_str());
+	wxLogMessage(_("Start scan directory %s"), m_dirname.c_str());
 
 	wxDir dir(dirname);
 	if ( !dir.IsOpened() ) {
@@ -274,12 +274,12 @@ void ZipCollection::SetDir(const wxString &dirname)
 		wxLogError(e.GetMessage());
 	}
 
-	wxLogInfo(_("Finish scan directory %s"), m_dirname.c_str());
+	wxLogMessage(_("Finish scan directory %s"), m_dirname.c_str());
 }
 
 void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename)
 {
-	wxLogInfo(_("Scan zip %s"), filename.c_str());
+	wxLogMessage(_("Scan zip %s"), filename.c_str());
 
 	wxSQLite3Transaction trans(&database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 

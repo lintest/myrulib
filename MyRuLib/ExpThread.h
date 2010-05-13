@@ -28,9 +28,10 @@ class ExportThread : public BaseThread
 		bool Execute();
 	private:
 		void WriteFileItem(ExportFileItem &item);
+		wxString GetCommand(const wxString &script, const wxString &filename);
 	private:
 		bool m_compress;
-		wxString m_script;
+		wxArrayString m_scripts;
 };
 
 #endif // __EXPTHREAD_H__

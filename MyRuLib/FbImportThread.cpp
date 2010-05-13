@@ -88,7 +88,7 @@ FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxStr
 	m_archive(0),
 	m_ok(false)
 {
-	wxLogInfo(_("Import file %s"), m_filename.c_str());
+	wxLogMessage(_("Import file %s"), m_filename.c_str());
 	m_ok = Load(in);
 }
 
@@ -115,7 +115,7 @@ FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
 			return;
 		}
 	}
-	wxLogInfo(_("Import zip entry %s"), m_filename.c_str());
+	wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
 	m_ok = Load(owner->m_zip);
 }
 
@@ -342,7 +342,7 @@ FbImpotrZip::FbImpotrZip(FbImportThread *owner, wxInputStream &in, const wxStrin
 		wxLogError(_("Zip read error %s"), zipname.c_str());
 		return;
 	}
-	wxLogInfo(_("Import zip %s"), m_filename.c_str());
+	wxLogMessage(_("Import zip %s"), m_filename.c_str());
 
     while (wxZipEntry * entry = m_zip.GetNextEntry()) {
 		if (entry->GetSize()) {
@@ -466,17 +466,17 @@ void *FbZipImportThread::Entry()
 	wxCriticalSectionLocker enter(sm_queue);
 
 	size_t count = m_filelist.Count();
-	wxLogInfo(_("Start import %d file(s)"), count);
+	wxLogMessage(_("Start import %d file(s)"), count);
 	for (size_t i=0; i<count; i++) {
 		ImportFile(m_filelist[i]);
 	}
-	wxLogInfo(_("Finish import %d file(s)"), count);
+	wxLogMessage(_("Finish import %d file(s)"), count);
 	return NULL;
 }
 
 void FbZipImportThread::ImportFile(const wxString & zipname)
 {
-	wxLogInfo(_("Import file %s"), zipname.c_str());
+	wxLogMessage(_("Import file %s"), zipname.c_str());
 
 	wxFFileInputStream in(zipname);
 	if ( !in.IsOk() ) {
@@ -541,7 +541,7 @@ public:
 	}
 
 	virtual wxDirTraverseResult OnDir(const wxString& dirname)  {
-		wxLogInfo(_("Import subdirectory %s"), dirname.c_str());
+		wxLogMessage(_("Import subdirectory %s"), dirname.c_str());
 		return wxDIR_CONTINUE;
 	}
 private:
@@ -557,7 +557,7 @@ void *FbDirImportThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
-	wxLogInfo(_("Start import directory %s"), m_dirname.c_str());
+	wxLogMessage(_("Start import directory %s"), m_dirname.c_str());
 
 	wxDir dir(m_dirname);
 	if ( !dir.IsOpened() ) {
@@ -577,7 +577,7 @@ void *FbDirImportThread::Entry()
 
 	DoFinish();
 
-	wxLogInfo(_("Finish import directory %s"), m_dirname.c_str());
+	wxLogMessage(_("Finish import directory %s"), m_dirname.c_str());
 
 	return NULL;
 }

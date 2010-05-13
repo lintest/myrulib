@@ -64,7 +64,7 @@ bool FbInternetBook::DoDownload()
 	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
 	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
-	wxLogInfo(_("Download: ") + addr);
+	wxLogMessage(_("Download: ") + addr);
 
 	FbURL url(addr);
 	if (url.GetError() != wxURL_NOERR) {
@@ -86,7 +86,7 @@ bool FbInternetBook::DoDownload()
 	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
-		wxLogInfo(_("Redirect") + COLON + m_url);
+		wxLogMessage(_("Redirect") + COLON + m_url);
 		return DownloadUrl(cookie);
 	}
 
@@ -112,7 +112,7 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 	}
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
- 		wxLogInfo(_("Redirect") + COLON + m_url);
+ 		wxLogMessage(_("Redirect") + COLON + m_url);
 		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
@@ -216,7 +216,7 @@ void FbInternetBook::SaveFile(const bool success)
 		wxLogError(e.GetMessage());
 	}
 
-	wxLogInfo(_("Download finished: ")+ m_url);
+	wxLogMessage(_("Download finished: ")+ m_url);
 
 	InfoCash::EmptyInfo(m_id);
 

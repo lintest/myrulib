@@ -1,6 +1,7 @@
 #include "ExpThread.h"
 #include "FbParams.h"
 #include "ZipReader.h"
+#include <wx/tokenzr.h>
 
 WX_DEFINE_OBJARRAY(ExportFileArray);
 
@@ -26,10 +27,13 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 	}
 	out.Close();
 
-	if (!m_script.IsEmpty()) {
+	for (size_t i = 0; i < m_scripts.Count(); i++) {
+		wxString script = m_scripts[i];
+		if (script.IsEmpty()) continue;
+		wxString command = GetCommand(script, filename);
 		wxArrayString output;
 		wxArrayString errors;
-		wxString command = m_script + wxT(" \"") + filename + wxT("\"");
+		wxLogWarning(_("Exec: ") + command);
 		wxExecute(command, output, errors, wxEXEC_SYNC);
 		for (size_t i = 0; i < output.Count(); i++)
 			if (!output[i].IsEmpty()) wxLogWarning(output[i]);
@@ -38,12 +42,42 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 	}
 }
 
+wxString ExportThread::GetCommand(const wxString &script, const wxString &filename)
+{
+	wxString result;
+	bool param = false;
+	for (size_t i=0; i < script.Length(); i++) {
+		wxChar ch = script[i];
+		if (param) {
+			switch (ch) {
+				case wxT('f'): {
+					result += filename;
+				} break;
+				default: {
+					result += ch;
+				} break;
+			}
+			param = false;
+		} else {
+			switch (ch) {
+				case wxT('%'): {
+					param = true;
+				} break;
+				default: {
+					result += ch;
+				} break;
+			}
+		}
+	}
+	return result;
+}
+
 void *ExportThread::Entry()
 {
-//	wxCriticalSectionLocker enter(sm_queue);
-
-	if (FbParams::GetValue(FB_SHELL_EXECUTE))
-		m_script = FbParams::GetText(FB_SHELL_COMMAND);
+	if (FbParams::GetValue(FB_SHELL_EXECUTE)) {
+		wxStringTokenizer tkz(FbParams::GetText(FB_SHELL_COMMAND), wxT("\n"));
+		while (tkz.HasMoreTokens()) m_scripts.Add(tkz.GetNextToken());
+	}
 
 	DoStart(m_filelist.Count(), wxEmptyString);
 

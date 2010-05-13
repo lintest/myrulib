@@ -306,8 +306,8 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 */
 	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell command for export"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( checkExec, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 5 );
-	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer8->Add( textShell, 0, wxEXPAND | wxALL, 5 );
+	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE | wxTE_DONTWRAP );
+	bSizer8->Add( textShell, 1, wxEXPAND | wxALL, 5 );
 
 	this->SetSizer( bSizer8 );
 	this->Layout();

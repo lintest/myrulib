@@ -34,7 +34,7 @@ void FbLogStream::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
 			prefix = wxT("!> ");
 			break;
 		case wxLOG_Info:
-			prefix = wxT("i> ");
+			prefix = wxT("=> ");
 			break;
 		default:
 			prefix = wxEmptyString;
@@ -73,10 +73,15 @@ void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
 			break;
 
 		case wxLOG_Info:
-			DoLogString(wxString(wxT("> ")) + szString, t);
+			DoLogString(wxString(wxT("= ")) + szString, t);
+			PostMsg(level, szString, t);
 			break;
 
 		case wxLOG_Message:
+			DoLogString(wxString(wxT("> ")) + szString, t);
+			PostMsg(level, szString, t);
+			break;
+
 		case wxLOG_Status:
 		default:	// log unknown log levels too
 				DoLogString(szString, t);
