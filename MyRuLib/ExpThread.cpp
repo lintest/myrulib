@@ -33,10 +33,10 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 		wxString command = GetCommand(script, filename);
 		wxArrayString output;
 		wxArrayString errors;
-		wxLogWarning(_("Exec: ") + command);
+		wxLogInfo(_("Exec: ") + command);
 		wxExecute(command, output, errors, wxEXEC_SYNC);
 		for (size_t i = 0; i < output.Count(); i++)
-			if (!output[i].IsEmpty()) wxLogWarning(output[i]);
+			if (!output[i].IsEmpty()) wxLogInfo(output[i]);
 		for (size_t i = 0; i < errors.Count(); i++)
 			if (!errors[i].IsEmpty()) wxLogError(errors[i]);
 	}

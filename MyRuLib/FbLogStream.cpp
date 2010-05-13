@@ -25,6 +25,9 @@ void FbLogStream::DoLogString(const wxChar *szString, time_t t)
 
 void FbLogStream::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
 {
+	wxWindow * frame = wxGetApp().GetTopWindow();
+	if (!frame) return;
+
 	wxString prefix;
 	switch ( level ) {
 		case wxLOG_Error:
@@ -34,7 +37,7 @@ void FbLogStream::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
 			prefix = wxT("!> ");
 			break;
 		case wxLOG_Info:
-			prefix = wxT("=> ");
+			prefix = wxT("i> ");
 			break;
 		default:
 			prefix = wxEmptyString;
@@ -45,7 +48,7 @@ void FbLogStream::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
 	event.SetInt(level);
 	event.SetTimestamp(t);
 	event.SetString(prefix + szString);
-	wxPostEvent(wxGetApp().GetTopWindow(), event);
+	wxPostEvent(frame, event);
 }
 
 void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
@@ -73,13 +76,12 @@ void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
 			break;
 
 		case wxLOG_Info:
-			DoLogString(wxString(wxT("= ")) + szString, t);
+			DoLogString(wxString(wxT("i ")) + szString, t);
 			PostMsg(level, szString, t);
 			break;
 
 		case wxLOG_Message:
 			DoLogString(wxString(wxT("> ")) + szString, t);
-			PostMsg(level, szString, t);
 			break;
 
 		case wxLOG_Status:
