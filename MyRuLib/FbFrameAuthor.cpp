@@ -13,6 +13,8 @@
 #include "FbUpdateThread.h"
 #include "FbMasterList.h"
 
+IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
+
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnMasterSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)

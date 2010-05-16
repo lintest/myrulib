@@ -65,6 +65,7 @@ class FbFrameAuthor : public FbFrameBase
 		void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
 		void OnContextMenu(wxTreeEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameAuthor)
 	protected:
 		class MasterMenu: public wxMenu
 		{

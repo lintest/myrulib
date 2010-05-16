@@ -5,6 +5,8 @@
 #include "FbGenres.h"
 #include "FbMainMenu.h"
 
+IMPLEMENT_CLASS(FbFrameGenres, FbFrameBase)
+
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()

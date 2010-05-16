@@ -28,6 +28,7 @@ class FbFrameGenres : public FbFrameBase
 	private:
 		void OnGenreSelected(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameGenres)
 };
 
 #endif // __FBFRAMEGENRES_H__

@@ -22,6 +22,7 @@ class FbFrameInfo: public FbAuiMDIChildFrame
 	private:
 		void OnSave(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameInfo)
 };
 
 #endif // __FBFRAMEINFO_H__

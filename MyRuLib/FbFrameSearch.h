@@ -31,6 +31,7 @@ class FbFrameSearch : public FbFrameBase
 	private:
 		void OnFoundNothing(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameSearch)
 };
 
 #endif // __FBFRAMESEARCH_H__

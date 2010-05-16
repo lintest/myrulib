@@ -6,6 +6,8 @@
 #include "FbDatabase.h"
 #include "FbDownloader.h"
 
+IMPLEMENT_CLASS(FbFrameFolder, FbFrameBase)
+
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFolder::OnFavoritesDel)
 	EVT_MENU(ID_APPEND_FOLDER, FbFrameFolder::OnFolderAppend)

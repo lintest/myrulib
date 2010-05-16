@@ -16,6 +16,8 @@
 #include "res/modify.xpm"
 #include "res/delete.xpm"
 
+IMPLEMENT_CLASS(FbFrameHtml, FbAuiMDIChildFrame)
+
 BEGIN_EVENT_TABLE(FbFrameHtml, FbAuiMDIChildFrame)
 	EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
 	EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)

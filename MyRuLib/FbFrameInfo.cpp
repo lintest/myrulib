@@ -9,6 +9,8 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
+IMPLEMENT_CLASS(FbFrameInfo, FbAuiMDIChildFrame)
+
 BEGIN_EVENT_TABLE(FbFrameInfo, FbAuiMDIChildFrame)
 	EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
 END_EVENT_TABLE()

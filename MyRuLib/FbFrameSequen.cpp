@@ -11,6 +11,8 @@
 #include "FbWindow.h"
 #include "FbParams.h"
 
+IMPLEMENT_CLASS(FbFrameSequen, FbFrameBase)
+
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnMasterSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)

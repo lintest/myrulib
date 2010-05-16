@@ -44,6 +44,7 @@ class FbFrameHtml: public FbAuiMDIChildFrame
 		void OnSave(wxCommandEvent& event);
 		void OnLinkClicked(wxHtmlLinkEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameHtml)
 };
 
 #endif // __FBFRAMEHTML_H__

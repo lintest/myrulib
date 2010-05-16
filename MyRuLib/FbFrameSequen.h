@@ -49,6 +49,7 @@ class FbFrameSequen : public FbFrameBase
 		void OnAppendAuthor(wxCommandEvent& event);
 		void OnAppendSequence(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameSequen)
 	protected:
 		class MasterThread: public FbThread
 		{

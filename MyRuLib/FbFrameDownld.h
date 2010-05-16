@@ -40,6 +40,7 @@ class FbFrameDownld : public FbFrameBase
 		void OnMoveUp(wxCommandEvent& event);
 		void OnMoveDown(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbFrameDownld)
 };
 
 #endif // __FBFRAMEDOWNLD_H__

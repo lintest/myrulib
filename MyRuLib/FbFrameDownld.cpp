@@ -9,6 +9,8 @@
 #include "res/start.xpm"
 #include "res/pause.xpm"
 
+IMPLEMENT_CLASS(FbFrameDownld, FbFrameBase)
+
 BEGIN_EVENT_TABLE(FbFrameDownld, FbFrameBase)
 	EVT_MENU(ID_START, FbFrameDownld::OnStart)
 	EVT_MENU(ID_PAUSE, FbFrameDownld::OnPause)
