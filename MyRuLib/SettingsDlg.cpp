@@ -304,7 +304,7 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	m_checkBox2 = new wxCheckBox( this, ID_USE_SYMLINKS, _("Создавть cимвольные ссылки для соавторов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_checkBox2, 0, wxALL, 5 );
 */
-	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell command for export"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell scripts for the export"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( checkExec, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 5 );
 	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE | wxTE_DONTWRAP );
 	bSizer8->Add( textShell, 1, wxEXPAND | wxALL, 5 );

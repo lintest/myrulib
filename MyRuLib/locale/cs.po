@@ -1694,6 +1694,9 @@ msgstr "Struktura exportu z databáze"
 msgid "Format of exporting collection"
 msgstr "Formát exportu z databáze"
 
+msgid "Use shell scripts for the export"
+msgstr "Použijte shell skriptů pro export"
+
 #: SettingsDlg.cpp:327
 msgid "Fonts"
 msgstr "Fonty"

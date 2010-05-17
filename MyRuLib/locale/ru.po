@@ -1694,6 +1694,9 @@ msgstr "Организация папок и файлов"
 msgid "Format of exporting collection"
 msgstr "Формат выгрузки"
 
+msgid "Use shell scripts for the export"
+msgstr "Использовать скрипты для экспорта"
+
 #: SettingsDlg.cpp:327
 msgid "Fonts"
 msgstr "Шрифты"
