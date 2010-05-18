@@ -43,10 +43,14 @@ class SettingsDlg : private FbDialog
 			ID_FOLDER_FORMAT,
 			ID_FILE_FORMAT,
 			ID_USE_SYMLINKS,
-			ID_TYPELIST,
+			ID_TYPE_LIST,
 			ID_APPEND_TYPE,
 			ID_MODIFY_TYPE,
 			ID_DELETE_TYPE,
+			ID_APPEND_SCRIPT,
+			ID_MODIFY_SCRIPT,
+			ID_DELETE_SCRIPT,
+			ID_SCRIPT_LIST,
 			ID_FONT_CLEAR,
 			ID_FONT_MAIN,
 			ID_FONT_HTML,
@@ -87,6 +91,15 @@ class SettingsDlg : private FbDialog
 			public:
 				FbPanelInterface(wxWindow *parent);
 		};
+		class ScriptDlg : public FbDialog
+		{
+			protected:
+				wxTextCtrl m_name;
+				wxTextCtrl m_text;
+			public:
+				ScriptDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
+				static bool Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text);
+		};
 	public:
 		SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
 		virtual ~SettingsDlg();
@@ -102,11 +115,16 @@ class SettingsDlg : private FbDialog
 		void OnAppendType( wxCommandEvent& event );
 		void OnModifyType( wxCommandEvent& event );
 		void OnDeleteType( wxCommandEvent& event );
+		void OnAppendScript( wxCommandEvent& event );
+		void OnModifyScript( wxCommandEvent& event );
+		void OnDeleteScript( wxCommandEvent& event );
 		void OnTypelistActivated( wxListEvent & event );
+		void OnScriptlistActivated( wxListEvent & event );
 		void OnFontClear( wxCommandEvent& event );
 	private:
 		wxArrayString m_commands;
 		wxArrayString m_deleted;
+		wxArrayString m_scripts;
 		DECLARE_EVENT_TABLE()
 };
 

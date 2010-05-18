@@ -57,11 +57,16 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 {
 	event.Skip();
 
-	if (GetColumnCount() == 2){
-//		int w = GetClientSize().x - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X) - 6;
-		int w = GetClientSize().x;
-		SetColumnWidth(1, 50);
-		SetColumnWidth(1, w - 50);
+	switch (GetColumnCount()) {
+		case 1: {
+			int w = GetClientSize().x;
+			SetColumnWidth(0, w);
+		} break;
+		case 2: {
+			int w = GetClientSize().x;
+			SetColumnWidth(0, 50);
+			SetColumnWidth(1, w - 50);
+		} break;
 	}
 }
 
@@ -163,15 +168,16 @@ SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	wxBoxSizer * bSizer;
 	bSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
-	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
-	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
-	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	toolbar->SetToolBitmapSize(wxSize(0,0));
+	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxNullBitmap);
+	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap);
+	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap);
 	toolbar->Realize();
 
 	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
-	TypeListCtrl * typelist = new TypeListCtrl( this, ID_TYPELIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
+	TypeListCtrl * typelist = new TypeListCtrl( this, ID_TYPE_LIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
 	typelist->InsertColumn(0, _("Extension"), wxLIST_FORMAT_LEFT, 50);
 	typelist->InsertColumn(1, _("Program"), wxLIST_FORMAT_LEFT, 300);
 
@@ -250,37 +256,26 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	:wxPanel(parent)
 {
-	wxBoxSizer* bSizer8;
-	bSizer8 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Destination folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
-	bSizer8->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer9;
-	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizerFolder = new wxBoxSizer( wxHORIZONTAL );
 
 	wxTextCtrl * m_textCtrl6 = new wxTextCtrl( this, ID_EXTERNAL_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
-
-	bSizer9->Add( m_textCtrl6, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerFolder->Add( m_textCtrl6, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxBitmapButton * m_bpButton6 = new wxBitmapButton( this, ID_EXTERNAL_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizer9->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
+	bSizerFolder->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
-	bSizer8->Add( bSizer9, 0, wxEXPAND, 5 );
+	bSizerMain->Add( bSizerFolder, 0, wxEXPAND, 5 );
 
-	wxFlexGridSizer* fgSizer10;
-	fgSizer10 = new wxFlexGridSizer( 2, 2, 0, 0 );
-	fgSizer10->SetFlexibleDirection( wxBOTH );
-	fgSizer10->AddGrowableCol( 0 );
-	fgSizer10->AddGrowableCol( 1 );
+	wxBoxSizer* bSizerCenter = new wxBoxSizer( wxHORIZONTAL );
 
-	wxCheckBox * m_checkBox2 = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Transliterate folder name"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer10->Add( m_checkBox2, 0, wxALL|wxEXPAND, 5 );
-
-	wxCheckBox * m_checkBox3 = new wxCheckBox( this, ID_TRANSLIT_FILE, _("Transliterate filename"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer10->Add( m_checkBox3, 0, wxALL|wxEXPAND, 5 );
+	wxBoxSizer* bSizerLeft = new wxBoxSizer( wxVERTICAL );
 
 	wxString m_radioBox1Choices[] = {
 		_("A / Author / Series / #_book"),
@@ -291,8 +286,47 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
 	wxRadioBox * m_radioBox1 = new wxRadioBox( this, ID_FOLDER_FORMAT, _("Exported collection structure"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
 	m_radioBox1->SetSelection( 0 );
-	fgSizer10->Add( m_radioBox1, 0, wxALL|wxEXPAND, 5 );
+	bSizerLeft->Add( m_radioBox1, 0, wxALL|wxEXPAND, 5 );
 
+	wxCheckBox * m_checkBox2 = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Transliterate folder name"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerLeft->Add( m_checkBox2, 0, wxALL|wxEXPAND, 5 );
+
+	wxCheckBox * m_checkBox3 = new wxCheckBox( this, ID_TRANSLIT_FILE, _("Transliterate filename"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerLeft->Add( m_checkBox3, 0, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* bSizerRight = new wxBoxSizer( wxVERTICAL );
+
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	toolbar->SetToolBitmapSize(wxSize(0,0));
+	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxNullBitmap);
+	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxNullBitmap);
+	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxNullBitmap);
+	toolbar->Realize();
+	bSizerRight->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
+
+	TypeListCtrl * scriptlist = new TypeListCtrl( this, ID_SCRIPT_LIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
+	scriptlist->InsertColumn(0, _("Export script"), wxLIST_FORMAT_LEFT, 50);
+	bSizerRight->Add( scriptlist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	bSizerCenter->Add(bSizerLeft);
+	bSizerCenter->Add(bSizerRight, 1, wxEXPAND);
+	bSizerMain->Add(bSizerCenter, 1, wxEXPAND);
+
+	wxBoxSizer* bSizerFormat = new wxBoxSizer( wxHORIZONTAL );
+
+	wxStaticText * typeText = new wxStaticText( this, wxID_ANY, _("Format of exporting collection"), wxDefaultPosition, wxDefaultSize, 0 );
+	typeText->Wrap( -1 );
+	bSizerFormat->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxChoice * typeChoice = new wxChoice( this, ID_PROXY_ADDR);
+	typeChoice->Append(wxT("filename.fb2"));
+	typeChoice->Append(wxT("filename.fb2.zip"));
+	typeChoice->SetSelection( 0 );
+	bSizerFormat->Add( typeChoice, 1, wxALL, 5 );
+
+	bSizerMain->Add(bSizerFormat, 0, wxEXPAND);
+
+/*
 	wxString m_radioBox2Choices[] = { _("filename.fb2"), _("filename.fb2.zip") };
 	int m_radioBox2NChoices = sizeof( m_radioBox2Choices ) / sizeof( wxString );
 	wxRadioBox * m_radioBox2 = new wxRadioBox( this, ID_FILE_FORMAT, _("Format of exporting collection"), wxDefaultPosition, wxDefaultSize, m_radioBox2NChoices, m_radioBox2Choices, 1, wxRA_SPECIFY_COLS );
@@ -300,18 +334,20 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	fgSizer10->Add( m_radioBox2, 0, wxALL|wxEXPAND, 5 );
 
 	bSizer8->Add( fgSizer10, 0, wxEXPAND, 5 );
-/*
+
 	m_checkBox2 = new wxCheckBox( this, ID_USE_SYMLINKS, _("Создавть cимвольные ссылки для соавторов"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( m_checkBox2, 0, wxALL, 5 );
-*/
-	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell scripts for the export"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer8->Add( checkExec, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 5 );
-	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE | wxTE_DONTWRAP );
-	bSizer8->Add( textShell, 1, wxEXPAND | wxALL, 5 );
 
-	this->SetSizer( bSizer8 );
+	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell command for export"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkExec, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 5 );
+	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE | wxTE_DONTWRAP );
+	bSizerMain->Add( textShell, 1, wxEXPAND | wxALL, 5 );
+
+*/
+
+	this->SetSizer( bSizerMain );
 	this->Layout();
-	bSizer8->Fit( this );
+	bSizerMain->Fit( this );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -324,7 +360,11 @@ BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, SettingsDlg::OnDeleteType )
-	EVT_LIST_ITEM_ACTIVATED(ID_TYPELIST, SettingsDlg::OnTypelistActivated)
+	EVT_MENU( ID_APPEND_SCRIPT, SettingsDlg::OnAppendScript )
+	EVT_MENU( ID_MODIFY_SCRIPT, SettingsDlg::OnModifyScript )
+	EVT_MENU( ID_DELETE_SCRIPT, SettingsDlg::OnDeleteScript )
+	EVT_LIST_ITEM_ACTIVATED(ID_TYPE_LIST, SettingsDlg::OnTypelistActivated)
+	EVT_LIST_ITEM_ACTIVATED(ID_SCRIPT_LIST, SettingsDlg::OnScriptlistActivated)
 END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
@@ -349,7 +389,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
-	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
@@ -357,6 +397,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	SetAffirmativeId(wxID_OK);
 	SetEscapeId(wxID_CANCEL);
+	SetMinSize(GetBestSize());
 }
 
 SettingsDlg::~SettingsDlg()
@@ -511,7 +552,7 @@ void SettingsDlg::Execute(wxWindow* parent)
 
 void SettingsDlg::FillTypelist()
 {
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPELIST);
+	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
 
 	wxString sql = wxT("\
@@ -557,7 +598,7 @@ void SettingsDlg::OnTypelistActivated( wxListEvent & event )
 
 void SettingsDlg::SelectApplication()
 {
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPELIST);
+	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
 
 	wxArrayTreeItemIds selections;
@@ -585,7 +626,7 @@ void SettingsDlg::SelectApplication()
 
 void SettingsDlg::SaveTypelist()
 {
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPELIST);
+	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
 
 	FbLocalDatabase database;
@@ -621,7 +662,7 @@ void SettingsDlg::SaveTypelist()
 
 void SettingsDlg::OnAppendType( wxCommandEvent& event )
 {
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPELIST);
+	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
 
 	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
@@ -655,7 +696,7 @@ void SettingsDlg::OnModifyType( wxCommandEvent& event )
 
 void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 {
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPELIST);
+	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
 
 	typelist->Freeze();
@@ -669,6 +710,92 @@ void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 	}
 
 	typelist->Thaw();
+}
+
+SettingsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+	: FbDialog(parent, id, title, pos, size, style)
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizerName = new wxBoxSizer( wxHORIZONTAL );
+
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, wxT("Script name"), wxDefaultPosition, wxDefaultSize, 0 );
+	info->Wrap( -1 );
+	bSizerName->Add( info, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+
+	m_name.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerName->Add( &m_name, 1, wxALL, 5 );
+
+	bSizerMain->Add( bSizerName, 0, wxEXPAND, 5 );
+
+	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
+	bSizerMain->Add( &m_text, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5 );
+
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM, 5 );
+
+	this->SetSizer( bSizerMain );
+	this->Layout();
+}
+
+bool SettingsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
+{
+	ScriptDlg dlg(parent, wxID_ANY, title);
+	dlg.m_name.SetValue(name);
+	dlg.m_text.SetValue(text);
+	if (dlg.ShowModal() == wxID_OK) {
+		name = dlg.m_name.GetValue();
+		text = dlg.m_text.GetValue();
+		return true;
+	}
+	return false;
+}
+
+void SettingsDlg::OnAppendScript( wxCommandEvent& event )
+{
+	wxString name, text;
+	ScriptDlg::Execute(this, _("Append export script"), name, text);
+/*
+	wxListCtrl* scriptlist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
+	if (!scriptlist) return;
+
+	wxString filetype = wxGetTextFromUser(_("Input new script"), _("Settings"));
+	if (filetype.IsEmpty()) return;
+	filetype = filetype.Lower();
+
+	long item = -1;
+	bool bExists = false;
+	long stateMask = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
+	while (true) {
+		item = typelist->GetNextItem(item, wxLIST_NEXT_ALL);
+		if (item == wxNOT_FOUND) break;
+		long state = 0;
+		if (typelist->GetItemText(item) == filetype) {
+			state = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
+			bExists = true;
+		}
+		typelist->SetItemState(item, state, stateMask);
+	}
+
+	if (bExists) return;
+
+	item = typelist->InsertItem(0, filetype);
+	typelist->SetItemState(item, stateMask, stateMask);
+*/
+}
+
+void SettingsDlg::OnModifyScript( wxCommandEvent& event )
+{
+}
+
+void SettingsDlg::OnDeleteScript( wxCommandEvent& event )
+{
+}
+
+void SettingsDlg::OnScriptlistActivated( wxListEvent & event )
+{
 }
 
 void SettingsDlg::SetFont(wxWindowID id, wxFont font)
