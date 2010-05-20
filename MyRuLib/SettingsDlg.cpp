@@ -33,6 +33,35 @@
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
 #include "FbViewerDlg.h"
+#include "FbTreeView.h"
+
+//-----------------------------------------------------------------------------
+//  FbTreeViewHeaderWindow
+//-----------------------------------------------------------------------------
+
+class FbScriptListModelData: public FbModelData
+{
+	public:
+		FbScriptListModelData(const wxString &name, const wxString &text)
+			: m_name(name), m_text(text) {}
+	public:
+		virtual wxString GetValue(FbModel & model, size_t col) const;
+	protected:
+		wxString m_name;
+		wxString m_text;
+		DECLARE_CLASS(FbScriptListModelData);
+};
+
+IMPLEMENT_CLASS(FbScriptListModelData, FbModelData)
+
+wxString FbScriptListModelData::GetValue(FbModel & model, size_t col) const
+{
+	switch (col) {
+		case 0: return m_name;
+		case 1: return m_text;
+		default: return wxEmptyString;
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -304,9 +333,11 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	toolbar->Realize();
 	bSizerRight->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
-	TypeListCtrl * scriptlist = new TypeListCtrl( this, ID_SCRIPT_LIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
-	scriptlist->InsertColumn(0, _("Export script"), wxLIST_FORMAT_LEFT, 50);
-	bSizerRight->Add( scriptlist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	treeview->AddColumn(0, _("Name"), 100);
+	treeview->AddColumn(1, _("Export script"), 200);
+	treeview->AssignModel(new FbListStore);
+	bSizerRight->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	bSizerCenter->Add(bSizerLeft);
 	bSizerCenter->Add(bSizerRight, 1, wxEXPAND);
@@ -738,6 +769,8 @@ SettingsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
+
+	m_name.SetFocus();
 }
 
 bool SettingsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
@@ -756,34 +789,18 @@ bool SettingsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wx
 void SettingsDlg::OnAppendScript( wxCommandEvent& event )
 {
 	wxString name, text;
-	ScriptDlg::Execute(this, _("Append export script"), name, text);
-/*
-	wxListCtrl* scriptlist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
-	if (!scriptlist) return;
+	bool res = ScriptDlg::Execute(this, _("Append export script"), name, text);
+	if (!res) return;
 
-	wxString filetype = wxGetTextFromUser(_("Input new script"), _("Settings"));
-	if (filetype.IsEmpty()) return;
-	filetype = filetype.Lower();
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
 
-	long item = -1;
-	bool bExists = false;
-	long stateMask = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
-	while (true) {
-		item = typelist->GetNextItem(item, wxLIST_NEXT_ALL);
-		if (item == wxNOT_FOUND) break;
-		long state = 0;
-		if (typelist->GetItemText(item) == filetype) {
-			state = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
-			bExists = true;
-		}
-		typelist->SetItemState(item, state, stateMask);
-	}
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
 
-	if (bExists) return;
+	model->Append(new FbScriptListModelData(name, text));
 
-	item = typelist->InsertItem(0, filetype);
-	typelist->SetItemState(item, stateMask, stateMask);
-*/
+	treeview->SetFocus();
 }
 
 void SettingsDlg::OnModifyScript( wxCommandEvent& event )

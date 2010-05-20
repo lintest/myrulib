@@ -174,6 +174,8 @@
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbReplaceDlg.cpp</sources>
 		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
+		<sources>MyRuLib/FbTreeModel.cpp</sources>
+		<sources>MyRuLib/FbTreeView.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>MyRuLib/FbWindow.cpp</sources>
