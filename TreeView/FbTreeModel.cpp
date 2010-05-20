@@ -227,14 +227,18 @@ WX_DEFINE_OBJARRAY(FbModelDataArray)
 void FbListStore::Append(FbModelData * data)
 { 
 	m_list.Add(data); 
-	if (m_list.Count() == 1) m_position = 1;
-	if (m_owner) m_owner->Refresh();
+	size_t count = m_list.Count();
+	if (count == 1) m_position = 1;
+	if (m_owner) {
+		m_position = count;
+		m_owner->Refresh();
+	}
 }
 
 void FbListStore::Replace(FbModelData * data)
 {
 	size_t count = m_list.Count();
-	if (m_position && m_position<=count) {
+	if (m_position && m_position <= count) {
 		m_list.RemoveAt(m_position - 1); 
 		m_list.Insert(data, m_position - 1); 
 	}
