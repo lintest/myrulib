@@ -395,7 +395,7 @@ BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
 	EVT_MENU( ID_MODIFY_SCRIPT, SettingsDlg::OnModifyScript )
 	EVT_MENU( ID_DELETE_SCRIPT, SettingsDlg::OnDeleteScript )
 	EVT_LIST_ITEM_ACTIVATED(ID_TYPE_LIST, SettingsDlg::OnTypelistActivated)
-	EVT_LIST_ITEM_ACTIVATED(ID_SCRIPT_LIST, SettingsDlg::OnScriptlistActivated)
+	EVT_TREE_ITEM_ACTIVATED(ID_SCRIPT_LIST, SettingsDlg::OnScriptActivated)
 END_EVENT_TABLE()
 
 SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
@@ -789,8 +789,8 @@ bool SettingsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wx
 void SettingsDlg::OnAppendScript( wxCommandEvent& event )
 {
 	wxString name, text;
-	bool res = ScriptDlg::Execute(this, _("Append export script"), name, text);
-	if (!res) return;
+	bool ok = ScriptDlg::Execute(this, _("Append export script"), name, text);
+	if (!ok) return;
 
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
@@ -799,20 +799,51 @@ void SettingsDlg::OnAppendScript( wxCommandEvent& event )
 	if (!model) return;
 
 	model->Append(new FbScriptListModelData(name, text));
-
 	treeview->SetFocus();
 }
 
 void SettingsDlg::OnModifyScript( wxCommandEvent& event )
 {
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	FbScriptListModelData * data = wxDynamicCast(model->GetCurrent(), FbScriptListModelData);
+	if (!data) return;
+
+	wxString name = data->GetValue(*model, 0);
+	wxString text = data->GetValue(*model, 1);
+	bool ok = ScriptDlg::Execute(this, _("Modify export script"), name, text);
+	if (!ok) return;
+
+	model->Replace(new FbScriptListModelData(name, text));
+	treeview->SetFocus();
 }
 
 void SettingsDlg::OnDeleteScript( wxCommandEvent& event )
 {
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	FbScriptListModelData * data = wxDynamicCast(model->GetCurrent(), FbScriptListModelData);
+	if (!data) return;
+
+	wxString msg = _("Delete export script") + COLON + data->GetValue(*model, 0);
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (!ok) return;
+
+	model->Delete();
 }
 
-void SettingsDlg::OnScriptlistActivated( wxListEvent & event )
+void SettingsDlg::OnScriptActivated( wxTreeEvent & event )
 {
+	wxCommandEvent cmdEvent;
+	OnModifyScript(cmdEvent);
 }
 
 void SettingsDlg::SetFont(wxWindowID id, wxFont font)

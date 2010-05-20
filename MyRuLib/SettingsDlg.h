@@ -119,7 +119,7 @@ class SettingsDlg : private FbDialog
 		void OnModifyScript( wxCommandEvent& event );
 		void OnDeleteScript( wxCommandEvent& event );
 		void OnTypelistActivated( wxListEvent & event );
-		void OnScriptlistActivated( wxListEvent & event );
+		void OnScriptActivated( wxTreeEvent & event );
 		void OnFontClear( wxCommandEvent& event );
 	private:
 		wxArrayString m_commands;
