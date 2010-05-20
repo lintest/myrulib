@@ -420,7 +420,7 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
-	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM, 5 );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
@@ -765,7 +765,7 @@ SettingsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 	bSizerMain->Add( &m_text, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
-	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM, 5 );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
