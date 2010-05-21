@@ -244,11 +244,11 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	wxBoxSizer * bSizer;
 	bSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
 	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxNullBitmap);
-	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap);
-	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap);
+	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap)->Enable(false);
 	toolbar->Realize();
 	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
@@ -379,11 +379,11 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 
 	wxBoxSizer* bSizerRight = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	wxToolBar * toolbar = new wxToolBar( this, ID_SCRIPT_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
 	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxNullBitmap);
-	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxNullBitmap);
-	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxNullBitmap);
+	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxNullBitmap)->Enable(false);
 	toolbar->Realize();
 	bSizerRight->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
@@ -640,9 +640,7 @@ void FbParamsDlg::Execute(wxWindow* parent)
 
 void FbParamsDlg::SaveTypelist()
 {
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
-	if (!typelist) return;
-
+/*
 	FbLocalDatabase database;
 	FbAutoCommit transaction(database);
 
@@ -672,6 +670,7 @@ void FbParamsDlg::SaveTypelist()
 			stmt.ExecuteUpdate();
 		}
 	}
+*/
 }
 
 FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
@@ -835,7 +834,7 @@ void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
 	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (!ok) return;
 
-	m_deleted.Add(type);
+	m_del_type.Add(type);
 	model->Delete();
 	treeview->SetFocus();
 }
@@ -866,11 +865,24 @@ void FbParamsDlg::OnFontClear( wxCommandEvent& event )
 	SetFont(ID_FONT_DLG, font);
 }
 
+void FbParamsDlg::EnableTool(wxWindowID id, bool enable)
+{
+	wxToolBar * toolbar = wxDynamicCast(FindWindowById(++id), wxToolBar);
+	if (toolbar) {
+		toolbar->EnableTool(++id, true);
+		toolbar->EnableTool(++id, enable);
+		toolbar->EnableTool(++id, enable);
+	}
+}
+
 void FbParamsDlg::OnModel( FbModelEvent& event )
 {
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
 	if (treeview) {
-		treeview->AssignModel(event.GetModel());
+		FbModel * model = event.GetModel();
+		size_t count = model->GetRowCount();
+		EnableTool(event.GetId(), count);
+		treeview->AssignModel(model);
 	} else {
 		delete event.GetModel();
 	}

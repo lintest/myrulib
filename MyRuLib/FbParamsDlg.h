@@ -38,13 +38,15 @@ class FbParamsDlg : private FbDialog
 			ID_FILE_FORMAT,
 			ID_USE_SYMLINKS,
 			ID_TYPE_LIST,
+			ID_TYPE_TOOLBAR,
 			ID_APPEND_TYPE,
 			ID_MODIFY_TYPE,
 			ID_DELETE_TYPE,
+			ID_SCRIPT_LIST,
+			ID_SCRIPT_TOOLBAR,
 			ID_APPEND_SCRIPT,
 			ID_MODIFY_SCRIPT,
 			ID_DELETE_SCRIPT,
-			ID_SCRIPT_LIST,
 			ID_FONT_CLEAR,
 			ID_FONT_MAIN,
 			ID_FONT_HTML,
@@ -140,6 +142,7 @@ class FbParamsDlg : private FbDialog
 		void SetFont( wxWindowID id, wxFont font );
 		void SelectApplication();
 		void SaveTypelist();
+		void EnableTool(wxWindowID id, bool enable);
 	private:
         void OnClose( wxCloseEvent& event );
 		void OnSelectFolderClick( wxCommandEvent& event );
@@ -154,9 +157,7 @@ class FbParamsDlg : private FbDialog
 		void OnFontClear( wxCommandEvent& event );
 		void OnModel( FbModelEvent& event );
 	private:
-		wxArrayString m_commands;
-		wxArrayString m_deleted;
-		wxArrayString m_scripts;
+		wxArrayString m_del_type;
 		wxArrayInt m_del_scr;
 		LoadThread m_thread;
 		DECLARE_EVENT_TABLE()
