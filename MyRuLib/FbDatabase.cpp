@@ -5,7 +5,7 @@
 #include "FbGenres.h"
 
 #define DB_DATABASE_VERSION 10
-#define DB_CONFIG_VERSION 2
+#define DB_CONFIG_VERSION 3
 
 wxString Lower(const wxString & input)
 {
@@ -499,6 +499,10 @@ void FbConfigDatabase::DoUpgrade(int version)
 			/** TABLE states **/
 			ExecuteUpdate(wxT("CREATE TABLE states(md5sum CHAR(32) primary key, rating INTEGER, download INTEGER)"));
 			ExecuteUpdate(wxT("CREATE INDEX states_rating ON states(rating)"));
+		} break;
+		case 3: {
+			/** TABLE script **/
+			ExecuteUpdate(wxT("CREATE TABLE script(id INTEGER PRIMARY KEY, name TEXT, text TEXT)"));
 		} break;
 	}
 }

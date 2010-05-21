@@ -38,9 +38,14 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 	bSizerMain->Fit( this );
+	m_filename->SetFocus();
+
+	wxSize size = GetBestSize();
+	SetMaxSize(wxSize(-1, size.y));
+	SetMinSize(size);
 }
 
 void FbViewerDlg::OnBtnClick( wxCommandEvent& event )

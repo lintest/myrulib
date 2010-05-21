@@ -7,10 +7,13 @@
 #include "FbMasterData.h"
 
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION, 1 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_OPEN_ACTION, 2 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION, 3 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION, 4 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION, 5 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_MODEL_ACTION, 2 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_OPEN_ACTION, 3 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION, 4 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION, 5 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION, 6 )
+
+class FbModel;
 
 class FbCommandEvent: public wxCommandEvent
 {
@@ -39,6 +42,28 @@ class FbBookEvent: public FbCommandEvent
 
 	public:
 		BookTreeItemData m_data;
+};
+
+class FbModelEvent: public FbCommandEvent
+{
+	public:
+		FbModelEvent(wxWindowID id)
+			: FbCommandEvent(fbEVT_MODEL_ACTION, id), m_model(NULL) {}
+
+		FbModelEvent(const FbModelEvent & event)
+			: FbCommandEvent(event), m_model(event.m_model) {}
+
+		FbModelEvent(wxWindowID id, FbModel * model, const wxString &text = wxEmptyString)
+			: FbCommandEvent(fbEVT_MODEL_ACTION, id, text), m_model(model) {}
+
+		virtual wxEvent *Clone() const
+			{ return new FbModelEvent(*this); }
+
+		FbModel * GetModel() const
+			{ return m_model; }
+
+	public:
+		FbModel * m_model;
 };
 
 class FbMasterEvent: public FbCommandEvent
@@ -111,6 +136,8 @@ class FbProgressEvent: public FbCommandEvent
 
 typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
 
+typedef void (wxEvtHandler::*FbModelEventFunction)(FbModelEvent&);
+
 typedef void (wxEvtHandler::*FbOpenEventFunction)(FbOpenEvent&);
 
 typedef void (wxEvtHandler::*FbFolderEventFunction)(FbFolderEvent&);
@@ -123,6 +150,11 @@ typedef void (wxEvtHandler::*FbMasterEventFunction)(FbMasterEvent&);
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_BOOK_ACTION, id, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbBookEventFunction, & fn ), (wxObject *) NULL ),
+
+#define EVT_FB_MODEL(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_MODEL_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbModelEventFunction, & fn ), (wxObject *) NULL ),
 
 #define EVT_FB_OPEN(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_OPEN_ACTION, id, -1, \

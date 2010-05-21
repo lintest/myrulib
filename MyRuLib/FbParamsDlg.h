@@ -7,8 +7,9 @@
 #include <wx/arrimpl.cpp>
 #include <wx/fontpicker.h>
 #include <wx/spinctrl.h>
-#include "FbDatabase.h"
+#include <wx/wxsqlite3.h>
 #include "FbWindow.h"
+#include "FbTreeModel.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class FbParamsDlg
@@ -55,37 +56,76 @@ class FbParamsDlg : private FbDialog
 			ID_LIMIT_COUNT,
 			ID_SAVE_FULLPATH,
 		};
-		class FbPanelFont: public wxPanel
+		class LoadThread: public wxThread
 		{
 			public:
-				FbPanelFont(wxWindow *parent);
+				LoadThread(wxEvtHandler * frame)
+					:wxThread(wxTHREAD_JOINABLE), m_frame(frame) {}
+			protected:
+				virtual void * Entry();
+			private:
+				void LoadTypes(wxSQLite3Database &database);
+				void LoadScripts(wxSQLite3Database &database);
+				wxEvtHandler * m_frame;
+		};
+		class PanelFont: public wxPanel
+		{
+			public:
+				PanelFont(wxWindow *parent);
 			private:
 				void AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid = wxID_ANY);
 		};
-		class FbPanelInternet: public wxPanel
+		class PanelInternet: public wxPanel
 		{
 			public:
-				FbPanelInternet(wxWindow *parent);
+				PanelInternet(wxWindow *parent);
 		};
-		class FbPanelExport: public wxPanel
+		class PanelExport: public wxPanel
 		{
 			public:
-				FbPanelExport(wxWindow *parent);
+				PanelExport(wxWindow *parent);
 		};
-		class FbPanelTypes: public wxPanel
+		class PanelTypes: public wxPanel
 		{
 			public:
-				FbPanelTypes(wxWindow *parent);
+				PanelTypes(wxWindow *parent);
 		};
-		class FbPanelInterface: public wxPanel
+		class PanelInterface: public wxPanel
 		{
 			public:
-				FbPanelInterface(wxWindow *parent);
+				PanelInterface(wxWindow *parent);
 		};
-		class FbScriptDlg: public FbDialog
+		class TypeData: public FbModelData
 		{
 			public:
-				FbScriptDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
+				TypeData(const wxString &type, const wxString &command = wxEmptyString)
+					: m_type(type), m_command(command) {}
+			public:
+				virtual wxString GetValue(FbModel & model, size_t col) const;
+			protected:
+				wxString m_type;
+				wxString m_command;
+				DECLARE_CLASS(ScriptData);
+		};
+		class ScriptData: public FbModelData
+		{
+			public:
+				ScriptData(wxSQLite3ResultSet &result);
+				ScriptData(int code, const wxString &name, const wxString &text)
+					: m_code(code), m_name(name), m_text(text) {}
+			public:
+				virtual wxString GetValue(FbModel & model, size_t col) const;
+				int GetCode() { return m_code; }
+			protected:
+				int m_code;
+				wxString m_name;
+				wxString m_text;
+				DECLARE_CLASS(ScriptData);
+		};
+		class ScriptDlg: public FbDialog
+		{
+			public:
+				ScriptDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
 				static bool Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text);
 			protected:
 				wxTextCtrl m_name;
@@ -99,9 +139,9 @@ class FbParamsDlg : private FbDialog
 		void Assign(bool write);
 		void SetFont( wxWindowID id, wxFont font );
 		void SelectApplication();
-		void FillTypelist();
 		void SaveTypelist();
 	private:
+        void OnClose( wxCloseEvent& event );
 		void OnSelectFolderClick( wxCommandEvent& event );
 		void OnAppendType( wxCommandEvent& event );
 		void OnModifyType( wxCommandEvent& event );
@@ -112,11 +152,13 @@ class FbParamsDlg : private FbDialog
 		void OnTypeActivated( wxTreeEvent & event );
 		void OnScriptActivated( wxTreeEvent & event );
 		void OnFontClear( wxCommandEvent& event );
+		void OnModel( FbModelEvent& event );
 	private:
 		wxArrayString m_commands;
 		wxArrayString m_deleted;
 		wxArrayString m_scripts;
 		wxArrayInt m_del_scr;
+		LoadThread m_thread;
 		DECLARE_EVENT_TABLE()
 };
 

@@ -34,29 +34,102 @@
 #include "MyRuLibApp.h"
 #include "FbViewerDlg.h"
 #include "FbTreeView.h"
+#include "FbDatabase.h"
 
 //-----------------------------------------------------------------------------
-//  FbTreeViewHeaderWindow
+//  FbParamsDlg::LoadThread
 //-----------------------------------------------------------------------------
 
-class FbScriptListModelData: public FbModelData
+void * FbParamsDlg::LoadThread::Entry()
 {
-	public:
-		FbScriptListModelData(int code, const wxString &name, const wxString &text)
-			: m_code(code), m_name(name), m_text(text) {}
-	public:
-		virtual wxString GetValue(FbModel & model, size_t col) const;
-		int GetCode() { return m_code; }
-	protected:
-		int m_code;
-		wxString m_name;
-		wxString m_text;
-		DECLARE_CLASS(FbScriptListModelData);
-};
+	try {
+		FbCommonDatabase database;
+		database.AttachConfig();
+		LoadScripts(database);
+		LoadTypes(database);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 
-IMPLEMENT_CLASS(FbScriptListModelData, FbModelData)
+	return NULL;
+}
 
-wxString FbScriptListModelData::GetValue(FbModel & model, size_t col) const
+void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
+{
+	wxString sql = wxT("\
+		SELECT \
+			books.file_type, types.command,\
+			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
+		FROM ( \
+			 SELECT DISTINCT LOWER(file_type) AS file_type FROM BOOKS GROUP BY file_type \
+			 UNION SELECT DISTINCT file_type FROM types \
+			 UNION SELECT 'fb2' \
+			 UNION SELECT 'pdf' \
+			 UNION SELECT 'djvu' \
+			 UNION SELECT 'txt' \
+		) AS books \
+		  LEFT JOIN config.types as types ON books.file_type = types.file_type \
+		ORDER BY number, books.file_type \
+	 ");
+	try {
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		FbListStore * model = new FbListStore;
+		while ( result.NextRow() ) {
+			wxString type = result.GetString(0);
+			if (type.IsEmpty() || type == wxT("exe")) continue;
+			wxString command = result.GetString(1);
+			model->Append(new TypeData(type, command));
+		}
+		FbModelEvent event(ID_TYPE_LIST, model);
+		m_frame->AddPendingEvent(event);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+}
+
+void FbParamsDlg::LoadThread::LoadScripts(wxSQLite3Database &database)
+{
+	wxString sql = wxT("SELECT id, name, text FROM script ORDER BY id");
+	try {
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		FbListStore * model = new FbListStore;
+		while ( result.NextRow() ) {
+			model->Append(new ScriptData(result));
+		}
+		FbModelEvent event(ID_SCRIPT_LIST, model);
+		m_frame->AddPendingEvent(event);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::TypeData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbParamsDlg::TypeData, FbModelData)
+
+wxString FbParamsDlg::TypeData::GetValue(FbModel & model, size_t col) const
+{
+	switch (col) {
+		case 0: return m_type;
+		case 1: return m_command;
+		default: return wxEmptyString;
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::ScriptData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbParamsDlg::ScriptData, FbModelData)
+
+FbParamsDlg::ScriptData::ScriptData(wxSQLite3ResultSet &result)
+	: m_code(result.GetInt(0)), m_name(result.GetString(1)), m_text(result.GetString(2))
+{
+}
+
+wxString FbParamsDlg::ScriptData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case 0: return m_name;
@@ -65,47 +138,11 @@ wxString FbScriptListModelData::GetValue(FbModel & model, size_t col) const
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
-
-class TypeListCtrl: public wxListCtrl
-{
-	public:
-		TypeListCtrl( wxWindow *parent, wxWindowID winid = wxID_ANY, long style = wxLC_REPORT);
-		void OnSize(wxSizeEvent& event);
-		DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(TypeListCtrl, wxListCtrl)
-	EVT_SIZE(TypeListCtrl::OnSize)
-END_EVENT_TABLE()
-
-TypeListCtrl::TypeListCtrl( wxWindow *parent, wxWindowID winid, long style)
-	:wxListCtrl( parent, winid, wxDefaultPosition, wxDefaultSize, style)
-{
-}
-
-void TypeListCtrl::OnSize(wxSizeEvent& event)
-{
-	event.Skip();
-
-	switch (GetColumnCount()) {
-		case 1: {
-			int w = GetClientSize().x;
-			SetColumnWidth(0, w);
-		} break;
-		case 2: {
-			int w = GetClientSize().x;
-			SetColumnWidth(0, 50);
-			SetColumnWidth(1, w - 50);
-		} break;
-	}
-}
-
 //-----------------------------------------------------------------------------
-//  FbParamsDlg::FbPanelFont
+//  FbParamsDlg::PanelFont
 //-----------------------------------------------------------------------------
 
-FbParamsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
+FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizerMain;
@@ -131,7 +168,7 @@ FbParamsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	Layout();
 }
 
-void FbParamsDlg::FbPanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid)
+void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid)
 {
 	wxStaticText * stTitle;
 	stTitle = new wxStaticText( this, wxID_ANY, name, wxDefaultPosition, wxDefaultSize, 0 );
@@ -145,10 +182,10 @@ void FbParamsDlg::FbPanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxStri
 }
 
 //-----------------------------------------------------------------------------
-//  FbParamsDlg::FbPanelInternet
+//  FbParamsDlg::PanelInternet
 //-----------------------------------------------------------------------------
 
-FbParamsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
+FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizer2;
@@ -198,10 +235,10 @@ FbParamsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 }
 
 //-----------------------------------------------------------------------------
-//  FbParamsDlg::FbPanelTypes
+//  FbParamsDlg::PanelTypes
 //-----------------------------------------------------------------------------
 
-FbParamsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
+FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer * bSizer;
@@ -215,7 +252,7 @@ FbParamsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	toolbar->Realize();
 	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
-	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 	treeview->AddColumn(0, _("Extension"), 50);
 	treeview->AddColumn(1, _("Program"), 300);
 	treeview->AssignModel(new FbListStore);
@@ -227,10 +264,10 @@ FbParamsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 }
 
 //-----------------------------------------------------------------------------
-//  FbParamsDlg::FbPanelInterface
+//  FbParamsDlg::PanelInterface
 //-----------------------------------------------------------------------------
 
-FbParamsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
+FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxCheckBox * checkbox;
@@ -296,10 +333,10 @@ FbParamsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 }
 
 //-----------------------------------------------------------------------------
-//  FbParamsDlg::FbPanelExport
+//  FbParamsDlg::PanelExport
 //-----------------------------------------------------------------------------
 
-FbParamsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
+FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -415,10 +452,12 @@ BEGIN_EVENT_TABLE( FbParamsDlg, wxDialog )
 	EVT_MENU( ID_DELETE_SCRIPT, FbParamsDlg::OnDeleteScript )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbParamsDlg::OnTypeActivated)
 	EVT_TREE_ITEM_ACTIVATED(ID_SCRIPT_LIST, FbParamsDlg::OnScriptActivated)
+	EVT_FB_MODEL(ID_TYPE_LIST, FbParamsDlg::OnModel)
+	EVT_FB_MODEL(ID_SCRIPT_LIST, FbParamsDlg::OnModel)
 END_EVENT_TABLE()
 
 FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog( parent, id, title, pos, size, style )
+	: FbDialog( parent, id, title, pos, size, style ), m_thread(this)
 {
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -430,11 +469,11 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	#endif
 
 	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, nbStyle );
-	notebook->AddPage( new FbPanelInterface(notebook), _("General"), true );
-	notebook->AddPage( new FbPanelInternet(notebook), _("Network"), false );
-	notebook->AddPage( new FbPanelTypes(notebook), _("File types"), false );
-	notebook->AddPage( new FbPanelExport(notebook), _("Export"), false );
-	notebook->AddPage( new FbPanelFont(notebook), _("Fonts"), false );
+	notebook->AddPage( new PanelInterface(notebook), _("General"), true );
+	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
+	notebook->AddPage( new PanelTypes(notebook), _("File types"), false );
+	notebook->AddPage( new PanelExport(notebook), _("Export"), false );
+	notebook->AddPage( new PanelFont(notebook), _("Fonts"), false );
 
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 
@@ -448,10 +487,13 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	SetAffirmativeId(wxID_OK);
 	SetEscapeId(wxID_CANCEL);
 	SetMinSize(GetBestSize());
+
+	if (m_thread.Create() == wxTHREAD_NO_ERROR) m_thread.Run();
 }
 
 FbParamsDlg::~FbParamsDlg()
 {
+	m_thread.Wait();
 }
 
 void FbParamsDlg::OnSelectFolderClick( wxCommandEvent& event )
@@ -580,7 +622,6 @@ void FbParamsDlg::Execute(wxWindow* parent)
 
 	try {
 		dlg.Assign(false);
-		dlg.FillTypelist();
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 		return;
@@ -588,7 +629,6 @@ void FbParamsDlg::Execute(wxWindow* parent)
 
 	if (dlg.ShowModal() == wxID_OK) {
 		try {
-			dlg.SaveTypelist();
 			dlg.Assign(true);
 			ZipReader::Init();
 			FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
@@ -597,80 +637,6 @@ void FbParamsDlg::Execute(wxWindow* parent)
 		}
 	}
 };
-
-void FbParamsDlg::FillTypelist()
-{
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
-	if (!typelist) return;
-
-	wxString sql = wxT("\
-		SELECT \
-			books.file_type, types.command, \
-			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
-		FROM ( \
-			 SELECT DISTINCT LOWER(file_type) AS file_type FROM BOOKS GROUP BY file_type \
-			 UNION SELECT DISTINCT file_type FROM types \
-			 UNION SELECT 'fb2' \
-			 UNION SELECT 'pdf' \
-			 UNION SELECT 'djvu' \
-			 UNION SELECT 'txt' \
-		) AS books \
-		  LEFT JOIN config.types as types ON books.file_type = types.file_type \
-		ORDER BY number, books.file_type \
-	 ");
-
-	FbCommonDatabase database;
-	database.AttachConfig();
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-
-	typelist->Freeze();
-
-	long item = 0;
-	while ( result.NextRow() ) {
-		wxString file_type = result.GetString(wxT("file_type"));
-		wxString command = result.GetString(wxT("command"));
-		if (file_type.IsEmpty()) continue;
-		if (file_type == wxT("exe")) continue;
-		item = typelist->InsertItem(item + 1, file_type);
-		typelist->SetItem(item, 1, command);
-		typelist->SetItemData(item, m_commands.Add(command));
-	}
-	typelist->Thaw();
-}
-
-void FbParamsDlg::OnTypeActivated( wxTreeEvent & event )
-{
-	SelectApplication();
-	event.Skip();
-}
-
-void FbParamsDlg::SelectApplication()
-{
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
-	if (!typelist) return;
-
-	wxArrayTreeItemIds selections;
-	size_t count = typelist->GetSelectedItemCount();
-
-	if (!count) return;
-
-	wxString title = _("Select the application to view files");
-	wxString command;
-	long item = typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	if ( item >= 0) command = m_commands[typelist->GetItemData(item)];
-
-	if ( FbViewerDlg::Execute( this, wxEmptyString, command) )
-	{
-		size_t index = m_commands.Add(command);
-		long item = -1;
-		while (true) {
-			item = typelist->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-			if (item == -1) break;
-			typelist->SetItem(item, 1, command);
-			typelist->SetItemData(item, index);
-		}
-	}
-}
 
 void FbParamsDlg::SaveTypelist()
 {
@@ -708,59 +674,7 @@ void FbParamsDlg::SaveTypelist()
 	}
 }
 
-void FbParamsDlg::OnAppendType( wxCommandEvent& event )
-{
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
-	if (!typelist) return;
-
-	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
-	if (filetype.IsEmpty()) return;
-	filetype = filetype.Lower();
-
-	long item = -1;
-	bool bExists = false;
-	long stateMask = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
-	while (true) {
-		item = typelist->GetNextItem(item, wxLIST_NEXT_ALL);
-		if (item == wxNOT_FOUND) break;
-		long state = 0;
-		if (typelist->GetItemText(item) == filetype) {
-			state = wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED;
-			bExists = true;
-		}
-		typelist->SetItemState(item, state, stateMask);
-	}
-
-	if (bExists) return;
-
-	item = typelist->InsertItem(0, filetype);
-	typelist->SetItemState(item, stateMask, stateMask);
-}
-
-void FbParamsDlg::OnModifyType( wxCommandEvent& event )
-{
-	SelectApplication();
-}
-
-void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
-{
-	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
-	if (!typelist) return;
-
-	typelist->Freeze();
-
-	long item = -1;
-	while (true) {
-		item = typelist->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-		if (item == wxNOT_FOUND) break;
-		m_deleted.Add(typelist->GetItemText(item));
-		typelist->DeleteItem(item);
-	}
-
-	typelist->Thaw();
-}
-
-FbParamsDlg::FbScriptDlg::FbScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
 	: FbDialog(parent, id, title, pos, size, style)
 {
 	SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -790,9 +704,9 @@ FbParamsDlg::FbScriptDlg::FbScriptDlg( wxWindow* parent, wxWindowID id, const wx
 	m_name.SetFocus();
 }
 
-bool FbParamsDlg::FbScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
+bool FbParamsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
 {
-	FbScriptDlg dlg(parent, wxID_ANY, title);
+	ScriptDlg dlg(parent, wxID_ANY, title);
 	dlg.m_name.SetValue(name);
 	dlg.m_text.SetValue(text);
 	if (dlg.ShowModal() == wxID_OK) {
@@ -805,17 +719,17 @@ bool FbParamsDlg::FbScriptDlg::Execute(wxWindow* parent, const wxString& title, 
 
 void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 {
-	wxString name, text;
-	bool ok = FbScriptDlg::Execute(this, _("Append export script"), name, text);
-	if (!ok) return;
-
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	model->Append(new FbScriptListModelData(0, name, text));
+	wxString name, text;
+	bool ok = ScriptDlg::Execute(this, _("Append export script"), name, text);
+	if (!ok) return;
+
+	model->Append(new ScriptData(0, name, text));
 	treeview->SetFocus();
 }
 
@@ -827,16 +741,16 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	FbScriptListModelData * data = wxDynamicCast(model->GetCurrent(), FbScriptListModelData);
+	ScriptData * data = wxDynamicCast(model->GetCurrent(), ScriptData);
 	if (!data) return;
 
 	wxString name = data->GetValue(*model, 0);
 	wxString text = data->GetValue(*model, 1);
-	bool ok = FbScriptDlg::Execute(this, _("Modify export script"), name, text);
+	bool ok = ScriptDlg::Execute(this, _("Modify export script"), name, text);
 	if (!ok) return;
 
 	int code = data->GetCode();
-	model->Replace(new FbScriptListModelData(code, name, text));
+	model->Replace(new ScriptData(code, name, text));
 	treeview->SetFocus();
 }
 
@@ -848,7 +762,7 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	FbScriptListModelData * data = wxDynamicCast(model->GetCurrent(), FbScriptListModelData);
+	ScriptData * data = wxDynamicCast(model->GetCurrent(), ScriptData);
 	if (!data) return;
 
 	wxString msg = _("Delete export script") + COLON + data->GetValue(*model, 0);
@@ -857,6 +771,73 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 
 	if (data->GetCode()) m_del_scr.Add(data->GetCode());
 	model->Delete();
+	treeview->SetFocus();
+}
+
+void FbParamsDlg::OnAppendType( wxCommandEvent& event )
+{
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
+	filetype = filetype.Trim(false).Trim(true).Lower();
+	if (filetype.IsEmpty()) return;
+
+	size_t count = model->GetRowCount();
+	for (size_t i = 1; i <= count; i++) {
+		TypeData * data = wxDynamicCast(model->GetData(i), TypeData);
+		if (data && data->GetValue(*model, 0) == filetype) {
+			model->FindRow(i, true);
+			return;
+		}
+	}
+
+	model->Append(new TypeData(filetype));
+	treeview->SetFocus();
+}
+
+void FbParamsDlg::OnModifyType( wxCommandEvent& event )
+{
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	TypeData * data = wxDynamicCast(model->GetCurrent(), TypeData);
+	if (!data) return;
+
+	wxString title = _("Select the application to view files");
+	wxString type = data->GetValue(*model, 0);
+	wxString command = data->GetValue(*model, 1);
+
+	bool ok = FbViewerDlg::Execute( this, type, command);
+	if (ok) model->Replace(new TypeData(type, command));
+	treeview->SetFocus();
+}
+
+void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
+{
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	TypeData * data = wxDynamicCast(model->GetCurrent(), TypeData);
+	if (!data) return;
+
+	wxString type = data->GetValue(*model, 0);
+	wxString msg = _("Delete file type") + COLON + type;
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (!ok) return;
+
+	m_deleted.Add(type);
+	model->Delete();
+	treeview->SetFocus();
 }
 
 void FbParamsDlg::OnScriptActivated( wxTreeEvent & event )
@@ -865,6 +846,11 @@ void FbParamsDlg::OnScriptActivated( wxTreeEvent & event )
 	OnModifyScript(cmdEvent);
 }
 
+void FbParamsDlg::OnTypeActivated( wxTreeEvent & event )
+{
+	wxCommandEvent cmdEvent;
+	OnModifyType(cmdEvent);
+}
 void FbParamsDlg::SetFont(wxWindowID id, wxFont font)
 {
 	wxFontPickerCtrl * control = (wxFontPickerCtrl*) FindWindowById(id);
@@ -878,4 +864,14 @@ void FbParamsDlg::OnFontClear( wxCommandEvent& event )
 	SetFont(ID_FONT_TOOL, font);
 	SetFont(ID_FONT_HTML, font);
 	SetFont(ID_FONT_DLG, font);
+}
+
+void FbParamsDlg::OnModel( FbModelEvent& event )
+{
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
+	if (treeview) {
+		treeview->AssignModel(event.GetModel());
+	} else {
+		delete event.GetModel();
+	}
 }
