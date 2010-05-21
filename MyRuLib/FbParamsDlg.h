@@ -1,12 +1,5 @@
-///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Dec 29 2008)
-// http://www.wxformbuilder.org/
-//
-// PLEASE DO "NOT" EDIT THIS FILE!
-///////////////////////////////////////////////////////////////////////////
-
-#ifndef __SettingsDlg__
-#define __SettingsDlg__
+#ifndef __FBPARAMSDLG_H__
+#define __FBPARAMSDLG_H__
 
 #include <wx/wx.h>
 #include <wx/dialog.h>
@@ -18,9 +11,9 @@
 #include "FbWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class SettingsDlg
+/// Class FbParamsDlg
 ///////////////////////////////////////////////////////////////////////////////
-class SettingsDlg : private FbDialog
+class FbParamsDlg : private FbDialog
 {
 	private:
 		enum ID {
@@ -61,8 +54,6 @@ class SettingsDlg : private FbDialog
 			ID_LIMIT_CHECK,
 			ID_LIMIT_COUNT,
 			ID_SAVE_FULLPATH,
-			ID_SHELL_EXECUTE,
-			ID_SHELL_COMMAND,
 		};
 		class FbPanelFont: public wxPanel
 		{
@@ -91,18 +82,18 @@ class SettingsDlg : private FbDialog
 			public:
 				FbPanelInterface(wxWindow *parent);
 		};
-		class ScriptDlg : public FbDialog
+		class FbScriptDlg: public FbDialog
 		{
+			public:
+				FbScriptDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
+				static bool Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text);
 			protected:
 				wxTextCtrl m_name;
 				wxTextCtrl m_text;
-			public:
-				ScriptDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
-				static bool Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text);
 		};
 	public:
-		SettingsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
-		virtual ~SettingsDlg();
+		FbParamsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
+		virtual ~FbParamsDlg();
 		static void Execute(wxWindow* parent);
 	private:
 		void Assign(bool write);
@@ -118,14 +109,15 @@ class SettingsDlg : private FbDialog
 		void OnAppendScript( wxCommandEvent& event );
 		void OnModifyScript( wxCommandEvent& event );
 		void OnDeleteScript( wxCommandEvent& event );
-		void OnTypelistActivated( wxListEvent & event );
+		void OnTypeActivated( wxTreeEvent & event );
 		void OnScriptActivated( wxTreeEvent & event );
 		void OnFontClear( wxCommandEvent& event );
 	private:
 		wxArrayString m_commands;
 		wxArrayString m_deleted;
 		wxArrayString m_scripts;
+		wxArrayInt m_del_scr;
 		DECLARE_EVENT_TABLE()
 };
 
-#endif //__SettingsDlg__
+#endif // __FBPARAMSDLG_H__

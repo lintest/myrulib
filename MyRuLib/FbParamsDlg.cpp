@@ -29,7 +29,7 @@
 #include "FbParams.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
-#include "SettingsDlg.h"
+#include "FbParamsDlg.h"
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
 #include "FbViewerDlg.h"
@@ -42,11 +42,13 @@
 class FbScriptListModelData: public FbModelData
 {
 	public:
-		FbScriptListModelData(const wxString &name, const wxString &text)
-			: m_name(name), m_text(text) {}
+		FbScriptListModelData(int code, const wxString &name, const wxString &text)
+			: m_code(code), m_name(name), m_text(text) {}
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const;
+		int GetCode() { return m_code; }
 	protected:
+		int m_code;
 		wxString m_name;
 		wxString m_text;
 		DECLARE_CLASS(FbScriptListModelData);
@@ -99,9 +101,11 @@ void TypeListCtrl::OnSize(wxSizeEvent& event)
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::FbPanelFont
+//-----------------------------------------------------------------------------
 
-SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
+FbParamsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizerMain;
@@ -123,11 +127,11 @@ SettingsDlg::FbPanelFont::FbPanelFont(wxWindow *parent)
 	wxButton * btnClear = new wxButton( this, ID_FONT_CLEAR, _("Reset fonts settings"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( btnClear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 }
 
-void SettingsDlg::FbPanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid)
+void FbParamsDlg::FbPanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid)
 {
 	wxStaticText * stTitle;
 	stTitle = new wxStaticText( this, wxID_ANY, name, wxDefaultPosition, wxDefaultSize, 0 );
@@ -140,9 +144,11 @@ void SettingsDlg::FbPanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxStri
 	fgSizer->Add( fpValue, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
 }
 
-///////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::FbPanelInternet
+//-----------------------------------------------------------------------------
 
-SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
+FbParamsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizer2;
@@ -186,12 +192,16 @@ SettingsDlg::FbPanelInternet::FbPanelInternet(wxWindow *parent)
 	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( m_checkBox14, 0, wxALL, 5 );
 
-	this->SetSizer( bSizer2 );
-	this->Layout();
+	SetSizer( bSizer2 );
+	Layout();
 	bSizer2->Fit( this );
 }
 
-SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::FbPanelTypes
+//-----------------------------------------------------------------------------
+
+FbParamsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer * bSizer;
@@ -203,21 +213,24 @@ SettingsDlg::FbPanelTypes::FbPanelTypes(wxWindow *parent)
 	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap);
 	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap);
 	toolbar->Realize();
-
 	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
-	TypeListCtrl * typelist = new TypeListCtrl( this, ID_TYPE_LIST, wxLC_REPORT|wxLC_VRULES|wxSUNKEN_BORDER );
-	typelist->InsertColumn(0, _("Extension"), wxLIST_FORMAT_LEFT, 50);
-	typelist->InsertColumn(1, _("Program"), wxLIST_FORMAT_LEFT, 300);
+	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	treeview->AddColumn(0, _("Extension"), 50);
+	treeview->AddColumn(1, _("Program"), 300);
+	treeview->AssignModel(new FbListStore);
+	bSizer->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
-	bSizer->Add( typelist, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
-
-	this->SetSizer( bSizer );
-	this->Layout();
+	SetSizer( bSizer );
+	Layout();
 	bSizer->Fit( this );
 }
 
-SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::FbPanelInterface
+//-----------------------------------------------------------------------------
+
+FbParamsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxCheckBox * checkbox;
@@ -277,12 +290,16 @@ SettingsDlg::FbPanelInterface::FbPanelInterface(wxWindow *parent)
 	bSizerLimit->Add( maxedit, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	bSizer->Add( bSizerLimit, 0, 0, 5 );
 
-	this->SetSizer( bSizer );
-	this->Layout();
+	SetSizer( bSizer );
+	Layout();
 	bSizer->Fit( this );
 }
 
-SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::FbPanelExport
+//-----------------------------------------------------------------------------
+
+FbParamsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -376,29 +393,31 @@ SettingsDlg::FbPanelExport::FbPanelExport(wxWindow *parent)
 
 */
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 	bSizerMain->Fit( this );
 }
 
-///////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
+//  FbParamsDlg
+//-----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE( SettingsDlg, wxDialog )
-	EVT_BUTTON( ID_TEMP_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_EXTERNAL_BTN, SettingsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_FONT_CLEAR, SettingsDlg::OnFontClear )
-	EVT_MENU( ID_APPEND_TYPE, SettingsDlg::OnAppendType )
-	EVT_MENU( ID_MODIFY_TYPE, SettingsDlg::OnModifyType )
-	EVT_MENU( ID_DELETE_TYPE, SettingsDlg::OnDeleteType )
-	EVT_MENU( ID_APPEND_SCRIPT, SettingsDlg::OnAppendScript )
-	EVT_MENU( ID_MODIFY_SCRIPT, SettingsDlg::OnModifyScript )
-	EVT_MENU( ID_DELETE_SCRIPT, SettingsDlg::OnDeleteScript )
-	EVT_LIST_ITEM_ACTIVATED(ID_TYPE_LIST, SettingsDlg::OnTypelistActivated)
-	EVT_TREE_ITEM_ACTIVATED(ID_SCRIPT_LIST, SettingsDlg::OnScriptActivated)
+BEGIN_EVENT_TABLE( FbParamsDlg, wxDialog )
+	EVT_BUTTON( ID_TEMP_DIR_BTN, FbParamsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, FbParamsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_EXTERNAL_BTN, FbParamsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_FONT_CLEAR, FbParamsDlg::OnFontClear )
+	EVT_MENU( ID_APPEND_TYPE, FbParamsDlg::OnAppendType )
+	EVT_MENU( ID_MODIFY_TYPE, FbParamsDlg::OnModifyType )
+	EVT_MENU( ID_DELETE_TYPE, FbParamsDlg::OnDeleteType )
+	EVT_MENU( ID_APPEND_SCRIPT, FbParamsDlg::OnAppendScript )
+	EVT_MENU( ID_MODIFY_SCRIPT, FbParamsDlg::OnModifyScript )
+	EVT_MENU( ID_DELETE_SCRIPT, FbParamsDlg::OnDeleteScript )
+	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbParamsDlg::OnTypeActivated)
+	EVT_TREE_ITEM_ACTIVATED(ID_SCRIPT_LIST, FbParamsDlg::OnScriptActivated)
 END_EVENT_TABLE()
 
-SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
+FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
 	: FbDialog( parent, id, title, pos, size, style )
 {
 	wxBoxSizer* bSizerMain;
@@ -422,8 +441,8 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 	bSizerMain->Fit( this );
 
 	SetAffirmativeId(wxID_OK);
@@ -431,11 +450,11 @@ SettingsDlg::SettingsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	SetMinSize(GetBestSize());
 }
 
-SettingsDlg::~SettingsDlg()
+FbParamsDlg::~FbParamsDlg()
 {
 }
 
-void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
+void FbParamsDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
 	wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
 
@@ -451,7 +470,7 @@ void SettingsDlg::OnSelectFolderClick( wxCommandEvent& event )
 	if (dlg.ShowModal() == wxID_OK)  textCtrl->SetValue(dlg.GetPath());
 }
 
-void SettingsDlg::Assign(bool write)
+void FbParamsDlg::Assign(bool write)
 {
 	enum Type {
 		tText,
@@ -482,8 +501,6 @@ void SettingsDlg::Assign(bool write)
 		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE, tCheck},
 		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT, tRadio},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT, tRadio},
-		{FB_SHELL_EXECUTE, ID_SHELL_EXECUTE, tCheck},
-		{FB_SHELL_COMMAND, ID_SHELL_COMMAND, tText},
 		{FB_FONT_MAIN, ID_FONT_MAIN, tFont},
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
@@ -557,9 +574,9 @@ void SettingsDlg::Assign(bool write)
 	if (write) FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_UPDATE_FONTS).Post();
 };
 
-void SettingsDlg::Execute(wxWindow* parent)
+void FbParamsDlg::Execute(wxWindow* parent)
 {
-	SettingsDlg dlg(parent, wxID_ANY, _("Program settings"), wxDefaultPosition, wxDefaultSize);
+	FbParamsDlg dlg(parent, wxID_ANY, _("Program settings"), wxDefaultPosition, wxDefaultSize);
 
 	try {
 		dlg.Assign(false);
@@ -581,7 +598,7 @@ void SettingsDlg::Execute(wxWindow* parent)
 	}
 };
 
-void SettingsDlg::FillTypelist()
+void FbParamsDlg::FillTypelist()
 {
 	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
@@ -621,13 +638,13 @@ void SettingsDlg::FillTypelist()
 	typelist->Thaw();
 }
 
-void SettingsDlg::OnTypelistActivated( wxListEvent & event )
+void FbParamsDlg::OnTypeActivated( wxTreeEvent & event )
 {
 	SelectApplication();
 	event.Skip();
 }
 
-void SettingsDlg::SelectApplication()
+void FbParamsDlg::SelectApplication()
 {
 	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
@@ -655,7 +672,7 @@ void SettingsDlg::SelectApplication()
 	}
 }
 
-void SettingsDlg::SaveTypelist()
+void FbParamsDlg::SaveTypelist()
 {
 	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
@@ -691,7 +708,7 @@ void SettingsDlg::SaveTypelist()
 	}
 }
 
-void SettingsDlg::OnAppendType( wxCommandEvent& event )
+void FbParamsDlg::OnAppendType( wxCommandEvent& event )
 {
 	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
@@ -720,12 +737,12 @@ void SettingsDlg::OnAppendType( wxCommandEvent& event )
 	typelist->SetItemState(item, stateMask, stateMask);
 }
 
-void SettingsDlg::OnModifyType( wxCommandEvent& event )
+void FbParamsDlg::OnModifyType( wxCommandEvent& event )
 {
 	SelectApplication();
 }
 
-void SettingsDlg::OnDeleteType( wxCommandEvent& event )
+void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
 {
 	wxListCtrl* typelist = (wxListCtrl*) FindWindowById(ID_TYPE_LIST);
 	if (!typelist) return;
@@ -743,10 +760,10 @@ void SettingsDlg::OnDeleteType( wxCommandEvent& event )
 	typelist->Thaw();
 }
 
-SettingsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+FbParamsDlg::FbScriptDlg::FbScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
 	: FbDialog(parent, id, title, pos, size, style)
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
 
@@ -767,15 +784,15 @@ SettingsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 
 	m_name.SetFocus();
 }
 
-bool SettingsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
+bool FbParamsDlg::FbScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
 {
-	ScriptDlg dlg(parent, wxID_ANY, title);
+	FbScriptDlg dlg(parent, wxID_ANY, title);
 	dlg.m_name.SetValue(name);
 	dlg.m_text.SetValue(text);
 	if (dlg.ShowModal() == wxID_OK) {
@@ -786,10 +803,10 @@ bool SettingsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wx
 	return false;
 }
 
-void SettingsDlg::OnAppendScript( wxCommandEvent& event )
+void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 {
 	wxString name, text;
-	bool ok = ScriptDlg::Execute(this, _("Append export script"), name, text);
+	bool ok = FbScriptDlg::Execute(this, _("Append export script"), name, text);
 	if (!ok) return;
 
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
@@ -798,11 +815,11 @@ void SettingsDlg::OnAppendScript( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	model->Append(new FbScriptListModelData(name, text));
+	model->Append(new FbScriptListModelData(0, name, text));
 	treeview->SetFocus();
 }
 
-void SettingsDlg::OnModifyScript( wxCommandEvent& event )
+void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 {
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
@@ -815,14 +832,15 @@ void SettingsDlg::OnModifyScript( wxCommandEvent& event )
 
 	wxString name = data->GetValue(*model, 0);
 	wxString text = data->GetValue(*model, 1);
-	bool ok = ScriptDlg::Execute(this, _("Modify export script"), name, text);
+	bool ok = FbScriptDlg::Execute(this, _("Modify export script"), name, text);
 	if (!ok) return;
 
-	model->Replace(new FbScriptListModelData(name, text));
+	int code = data->GetCode();
+	model->Replace(new FbScriptListModelData(code, name, text));
 	treeview->SetFocus();
 }
 
-void SettingsDlg::OnDeleteScript( wxCommandEvent& event )
+void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 {
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
@@ -837,22 +855,23 @@ void SettingsDlg::OnDeleteScript( wxCommandEvent& event )
 	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (!ok) return;
 
+	if (data->GetCode()) m_del_scr.Add(data->GetCode());
 	model->Delete();
 }
 
-void SettingsDlg::OnScriptActivated( wxTreeEvent & event )
+void FbParamsDlg::OnScriptActivated( wxTreeEvent & event )
 {
 	wxCommandEvent cmdEvent;
 	OnModifyScript(cmdEvent);
 }
 
-void SettingsDlg::SetFont(wxWindowID id, wxFont font)
+void FbParamsDlg::SetFont(wxWindowID id, wxFont font)
 {
 	wxFontPickerCtrl * control = (wxFontPickerCtrl*) FindWindowById(id);
 	if (control) control->SetSelectedFont(font);
 }
 
-void SettingsDlg::OnFontClear( wxCommandEvent& event )
+void FbParamsDlg::OnFontClear( wxCommandEvent& event )
 {
 	wxFont font = wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	SetFont(ID_FONT_MAIN, font);

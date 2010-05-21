@@ -6,7 +6,7 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "MyRuLibApp.h"
-#include "SettingsDlg.h"
+#include "FbParamsDlg.h"
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
@@ -237,7 +237,7 @@ void FbMainFrame::SetTabArt(int id)
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)
 {
-	SettingsDlg::Execute(this);
+	FbParamsDlg::Execute(this);
 }
 
 void FbMainFrame::OnMenuConfig(wxCommandEvent& event)

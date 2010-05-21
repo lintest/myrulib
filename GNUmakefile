@@ -133,6 +133,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbMenu.o \
 	build/myrulib_FbNotebook.o \
 	build/myrulib_FbParams.o \
+	build/myrulib_FbParamsDlg.o \
 	build/myrulib_FbReplaceDlg.o \
 	build/myrulib_FbTreeListCtrl.o \
 	build/myrulib_FbTreeModel.o \
@@ -147,7 +148,6 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_MyRuLibApp.o \
 	build/myrulib_ParseCtx.o \
 	build/myrulib_ProgressBar.o \
-	build/myrulib_SettingsDlg.o \
 	build/myrulib_TitleThread.o \
 	build/myrulib_ZipReader.o \
 	build/myrulib_md5.o \
@@ -424,6 +424,9 @@ build/myrulib_FbNotebook.o: ./MyRuLib/FbNotebook.cpp $(MYRULIB_ODEP)
 build/myrulib_FbParams.o: ./MyRuLib/FbParams.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build/myrulib_FbParamsDlg.o: ./MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build/myrulib_FbReplaceDlg.o: ./MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -464,9 +467,6 @@ build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build/myrulib_SettingsDlg.o: ./MyRuLib/SettingsDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_TitleThread.o: ./MyRuLib/TitleThread.cpp $(MYRULIB_ODEP)

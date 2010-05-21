@@ -264,6 +264,8 @@
 		<Unit filename="FbNotebook.h" />
 		<Unit filename="FbParams.cpp" />
 		<Unit filename="FbParams.h" />
+		<Unit filename="FbParamsDlg.cpp" />
+		<Unit filename="FbParamsDlg.h" />
 		<Unit filename="FbReplaceDlg.cpp" />
 		<Unit filename="FbReplaceDlg.h" />
 		<Unit filename="FbThread.h" />
@@ -293,8 +295,6 @@
 		<Unit filename="ParseCtx.h" />
 		<Unit filename="ProgressBar.cpp" />
 		<Unit filename="ProgressBar.h" />
-		<Unit filename="SettingsDlg.cpp" />
-		<Unit filename="SettingsDlg.h" />
 		<Unit filename="TitleThread.cpp" />
 		<Unit filename="TitleThread.h" />
 		<Unit filename="ZipReader.cpp" />
