@@ -11,6 +11,8 @@
 #include "FbWindow.h"
 #include "FbTreeModel.h"
 
+class FbTreeViewCtrl;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class FbParamsDlg
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,13 +102,16 @@ class FbParamsDlg : private FbDialog
 		class TypeData: public FbModelData
 		{
 			public:
+				TypeData(wxSQLite3ResultSet &result);
 				TypeData(const wxString &type, const wxString &command = wxEmptyString)
-					: m_type(type), m_command(command) {}
+					: m_type(type), m_command(command), m_modified(true) {}
 			public:
-				virtual wxString GetValue(FbModel & model, size_t col) const;
+				virtual wxString GetValue(FbModel & model, size_t col = 0) const;
+				bool IsModified() { return m_modified; }
 			protected:
 				wxString m_type;
 				wxString m_command;
+				bool m_modified;
 				DECLARE_CLASS(ScriptData);
 		};
 		class ScriptData: public FbModelData
@@ -114,14 +119,16 @@ class FbParamsDlg : private FbDialog
 			public:
 				ScriptData(wxSQLite3ResultSet &result);
 				ScriptData(int code, const wxString &name, const wxString &text)
-					: m_code(code), m_name(name), m_text(text) {}
+					: m_code(code), m_name(name), m_text(text), m_modified(true) {}
 			public:
-				virtual wxString GetValue(FbModel & model, size_t col) const;
+				virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 				int GetCode() { return m_code; }
+				bool IsModified() { return m_modified; }
 			protected:
 				int m_code;
 				wxString m_name;
 				wxString m_text;
+				bool m_modified;
 				DECLARE_CLASS(ScriptData);
 		};
 		class ScriptDlg: public FbDialog
@@ -141,8 +148,14 @@ class FbParamsDlg : private FbDialog
 		void Assign(bool write);
 		void SetFont( wxWindowID id, wxFont font );
 		void SelectApplication();
-		void SaveTypelist();
+		void SaveData();
+		void DeleteTypes(wxSQLite3Database &database);
+		void DeleteScripts(wxSQLite3Database &database);
+		void SaveTypes(wxSQLite3Database &database);
+		void SaveScripts(wxSQLite3Database &database);
+		void SaveScripts();
 		void EnableTool(wxWindowID id, bool enable);
+		void FillFormats(FbTreeViewCtrl * treeview, FbModel * model);
 	private:
         void OnClose( wxCloseEvent& event );
 		void OnSelectFolderClick( wxCommandEvent& event );

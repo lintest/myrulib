@@ -12,9 +12,9 @@ class FbModelData: public wxObject
 			{}
 		virtual ~FbModelData()
 			{}
-		virtual wxString GetValue(FbModel & model, size_t col) const 
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return wxEmptyString; }
-		virtual void SetValue(FbModel & model, size_t col, const wxString &name)
+		virtual void SetValue(FbModel & model, const wxString &value, size_t col = 0)
 			{}
 		virtual bool FullRow(FbModel & model) const
 			{ return false; }
@@ -127,7 +127,7 @@ class FbListStore: public FbListModel
 		void Replace(FbModelData * data);
 		void Delete();
 	public:
-		virtual size_t GetRowCount() const 
+		virtual size_t GetRowCount() const
 			{ return m_list.Count(); }
 		virtual FbModelData * GetData(size_t row)
 			{ return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }

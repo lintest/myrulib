@@ -223,25 +223,15 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	m_staticTextFormat->Wrap( -1 );
 	bSizerFormat->Add( m_staticTextFormat, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxString m_choiceFormatChoices[] = { _("filename.fb2"), _("filename.fb2.zip") };
-	int m_choiceFormatNChoices = sizeof( m_choiceFormatChoices ) / sizeof( wxString );
-	m_choiceFormat = new wxChoice( this, ID_FORMAT, wxDefaultPosition, wxDefaultSize, m_choiceFormatNChoices, m_choiceFormatChoices, 0 );
-	m_choiceFormat->SetSelection( 0 );
+	m_choiceFormat = new wxChoice( this, ID_FORMAT, wxDefaultPosition, wxDefaultSize);
 	bSizerFormat->Add( m_choiceFormat, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
 	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
-	m_choiceFormat->SetSelection( FbParams::GetValue(FB_FILE_FORMAT) );
 
-	wxStdDialogButtonSizer * m_sdbSizerBtn = new wxStdDialogButtonSizer();
-	wxButton * m_sdbSizerBtnOK = new wxButton( this, wxID_OK );
-	m_sdbSizerBtn->AddButton( m_sdbSizerBtnOK );
-	m_sdbSizerBtnOK->SetDefault();
-	wxButton * m_sdbSizerBtnCancel = new wxButton( this, wxID_CANCEL );
-	m_sdbSizerBtn->AddButton( m_sdbSizerBtnCancel );
-	m_sdbSizerBtn->Realize();
-	bSizerMain->Add( m_sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
@@ -249,21 +239,45 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	SetAffirmativeId(wxID_OK);
 	SetEscapeId(wxID_CANCEL);
+
+	LoadFormats();
 }
 
 ExternalDlg::~ExternalDlg()
 {
 }
 
+void ExternalDlg::LoadFormats()
+{
+	int format = FbParams::GetValue(FB_FILE_FORMAT);
+	m_choiceFormat->Append(wxT("filename.fb2"), new IntData(0));
+	m_choiceFormat->Append(wxT("filename.fb2.zip"), new IntData(-1));
+	m_choiceFormat->SetSelection(format == -1 ? 1 : 0);
+
+	wxString sql = wxT("SELECT id, name FROM script ORDER BY id");
+	try {
+		FbLocalDatabase database;
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while ( result.NextRow() ) {
+			int code = result.GetInt(0);
+			wxString name = result.GetString(1);
+			int index = m_choiceFormat->Append(name, new IntData(code));
+			if (code == format) m_choiceFormat->SetSelection(index);
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+}
+
 void ExternalDlg::FillBooks(const wxString &selections)
 {
 	wxString ext;
-	if (m_choiceFormat->GetCurrentSelection() == 0) {
-		m_ext = wxEmptyString;
-		m_scale = 100;
-	} else {
+	if (m_choiceFormat->GetCurrentSelection() == 1) {
 		m_ext = wxT(".zip");
 		m_scale = 43;
+	} else {
+		m_ext = wxEmptyString;
+		m_scale = 100;
 	}
 	m_filenames.Empty();
 
@@ -436,12 +450,12 @@ void ExternalDlg::ChangeFilesExt(const wxTreeItemId &parent)
 void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
 {
 	wxString ext;
-	if (m_choiceFormat->GetCurrentSelection() == 0) {
-		m_ext = wxEmptyString;
-		m_scale = 100;
-	} else {
+	if (m_choiceFormat->GetCurrentSelection() == 1) {
 		m_ext = wxT(".zip");
 		m_scale = 43;
+	} else {
+		m_ext = wxEmptyString;
+		m_scale = 100;
 	}
 	m_filenames.Empty();
 
@@ -488,8 +502,9 @@ bool ExternalDlg::ExportBooks()
 		return false;
 	}
 
+	IntData * data = (IntData*) m_choiceFormat->GetClientObject(m_choiceFormat->GetCurrentSelection());
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
-	ExportThread thread(m_choiceFormat->GetCurrentSelection());
+	ExportThread thread(data->GetData());
 	FillFilelist(m_books->GetRootItem(), thread.m_filelist);
 	thread.m_info = _("Export") + COLON + root_dir;
 	thread.Entry();

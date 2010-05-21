@@ -52,6 +52,7 @@ class ExternalDlg : public FbDialog
 		void ChangeFilesExt(const wxTreeItemId &parent);
 		void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
+		void LoadFormats();
 	private:
 		wxString m_selections;
 		wxArrayString m_filenames;

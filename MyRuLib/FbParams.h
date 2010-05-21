@@ -14,6 +14,7 @@ enum FbParamKey {
 	FB_NEW_FOLDER	 = 101,
 	FB_NEW_COMMENT	 = 102,
 	FB_NEW_DOWNLOAD	 = 103,
+	FB_NEW_SCRIPT	 = 104,
 
 	FB_RECENT_0 = 110,
 	FB_RECENT_1 = 111,
@@ -82,8 +83,6 @@ enum FbParamKey {
 
 	FB_LIMIT_CHECK   = 210,
 	FB_LIMIT_COUNT   = 211,
-	FB_SHELL_EXECUTE = 212,
-	FB_SHELL_COMMAND = 213,
 
 	FB_TITLE_0 = 220,
 	FB_TITLE_1 = 221,
@@ -124,6 +123,17 @@ class FbParams {
 		static ParamArray sm_params;
 		FbCommonDatabase m_database;
 		static wxCriticalSection sm_queue;
+};
+
+class IntData: public wxClientData
+{
+	public:
+		IntData() : m_data(0) { }
+		IntData( int data ) : m_data(data) { }
+		void SetData( int data ) { m_data = data; }
+		int GetData() const { return m_data; }
+	private:
+		int  m_data;
 };
 
 #endif // __FBPARAMS_H__

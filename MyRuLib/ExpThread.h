@@ -21,16 +21,17 @@ WX_DECLARE_OBJARRAY(ExportFileItem, ExportFileArray);
 class ExportThread : public BaseThread
 {
 	public:
-		ExportThread(bool compress): BaseThread(), m_compress(compress) {};
+		ExportThread(int format): BaseThread(), m_format(format) {};
 		virtual void *Entry();
 	public:
 		ExportFileArray m_filelist;
 		bool Execute();
 	private:
+		wxString GetScript();
 		void WriteFileItem(ExportFileItem &item);
 		wxString GetCommand(const wxString &script, const wxString &filename);
 	private:
-		bool m_compress;
+		int m_format;
 		wxArrayString m_scripts;
 };
 

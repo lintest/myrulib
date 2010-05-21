@@ -15,7 +15,7 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 
 	wxString filename = item.filename.GetFullPath();
 	wxFileOutputStream out(filename);
-	if (m_compress) {
+	if (m_format == -1) {
 		wxCSConv conv(wxT("cp866"));
 		wxZipOutputStream zip(out, -1, conv);
 		wxString entryName = item.filename.GetFullName();
@@ -72,10 +72,25 @@ wxString ExportThread::GetCommand(const wxString &script, const wxString &filena
 	return result;
 }
 
-void *ExportThread::Entry()
+wxString ExportThread::GetScript()
 {
-	if (FbParams::GetValue(FB_SHELL_EXECUTE)) {
-		wxStringTokenizer tkz(FbParams::GetText(FB_SHELL_COMMAND), wxT("\n"));
+	wxString sql = wxT("SELECT text FROM script WHERE id=?");
+	try {
+		FbLocalDatabase database;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_format);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) return result.GetString(0);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return wxEmptyString;
+}
+
+void * ExportThread::Entry()
+{
+	if (m_format > 0) {
+		wxStringTokenizer tkz(GetScript(), wxT("\n"));
 		while (tkz.HasMoreTokens()) m_scripts.Add(tkz.GetNextToken());
 	}
 
