@@ -148,6 +148,29 @@ wxString FbParamsDlg::ScriptData::GetValue(FbModel & model, size_t col) const
 FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
 	: FbDialog(parent, id, title, pos, size, style)
 {
+	m_letters = wxT("fpnde");
+	const wxChar * helps[] = {
+		_("Full file path with name and extension"),
+		_("Full file path without extension"),
+		_("File name without path and extension"),
+		_("Target directory"),
+		_("File name extension"),
+	};
+
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	toolbar->SetToolBitmapSize(wxSize(0,0));
+	{
+		size_t length = m_letters.Length();
+		for (size_t i = 0; i < length; i++) {
+			int btnid = ID_LETTERS + i;
+			wxString title = wxT('%'); title += m_letters[i];
+			wxString help = helps[i];
+			toolbar->AddTool(btnid, title, wxNullBitmap, help);
+			this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(ScriptDlg::OnLetterClicked));
+		}
+	}
+	toolbar->Realize();
+
 	SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -168,14 +191,6 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 
 	wxBoxSizer* bSizerButtons = new wxBoxSizer( wxHORIZONTAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_LETTER_F, wxT("%f"), wxNullBitmap, _("Full file path with name and extension"));
-	toolbar->AddTool( ID_LETTER_P, wxT("%p"), wxNullBitmap, _("Full file path without extension"));
-	toolbar->AddTool( ID_LETTER_N, wxT("%n"), wxNullBitmap, _("File name without path and extension"));
-	toolbar->AddTool( ID_LETTER_D, wxT("%d"), wxNullBitmap, _("Target directory"));
-	toolbar->AddTool( ID_LETTER_E, wxT("%e"), wxNullBitmap, _("File name extension"));
-	toolbar->Realize();
 	bSizerButtons->Add( toolbar, 0, wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
@@ -189,6 +204,18 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 	m_name.SetFocus();
 
 	SetMinSize(GetBestSize());
+}
+
+void FbParamsDlg::ScriptDlg::OnLetterClicked(wxCommandEvent& event)
+{
+	int pos = event.GetId() - ID_LETTERS;
+	if (0 <= pos && pos < (int)m_letters.Length()) {
+		wxKeyEvent event(wxEVT_CHAR);
+		event.m_keyCode = wxT('%');
+		m_text.EmulateKeyPress(event);
+		event.m_keyCode = m_letters[pos];
+		m_text.EmulateKeyPress(event);
+	}
 }
 
 bool FbParamsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)

@@ -59,11 +59,7 @@ class FbParamsDlg : private FbDialog
 			ID_LIMIT_CHECK,
 			ID_LIMIT_COUNT,
 			ID_SAVE_FULLPATH,
-			ID_LETTER_F,
-			ID_LETTER_P,
-			ID_LETTER_N,
-			ID_LETTER_D,
-			ID_LETTER_E,
+			ID_LETTERS,
 		};
 		class LoadThread: public wxThread
 		{
@@ -142,8 +138,10 @@ class FbParamsDlg : private FbDialog
 				ScriptDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
 				static bool Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text);
 			protected:
+				void OnLetterClicked(wxCommandEvent& event);
 				wxTextCtrl m_name;
 				wxTextCtrl m_text;
+				wxString m_letters;
 		};
 	public:
 		FbParamsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);

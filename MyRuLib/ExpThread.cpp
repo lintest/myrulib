@@ -30,7 +30,7 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 	for (size_t i = 0; i < m_scripts.Count(); i++) {
 		wxString script = m_scripts[i];
 		if (script.IsEmpty()) continue;
-		wxString command = GetCommand(script, filename);
+		wxString command = GetCommand(script, item.filename);
 		wxArrayString output;
 		wxArrayString errors;
 		wxLogInfo(_("Exec: ") + command);
@@ -42,7 +42,7 @@ void ExportThread::WriteFileItem(ExportFileItem &item)
 	}
 }
 
-wxString ExportThread::GetCommand(const wxString &script, const wxString &filename)
+wxString ExportThread::GetCommand(const wxString &script, const wxFileName &filename)
 {
 	wxString result;
 	bool param = false;
@@ -51,7 +51,19 @@ wxString ExportThread::GetCommand(const wxString &script, const wxString &filena
 		if (param) {
 			switch (ch) {
 				case wxT('f'): {
-					result += filename;
+					result += filename.GetFullPath();
+				} break;
+				case wxT('n'): {
+					result += filename.GetName();
+				} break;
+				case wxT('p'): {
+					result += filename.GetPath() + filename.GetPathSeparator() + filename.GetName();
+				} break;
+				case wxT('e'): {
+					result += filename.GetExt();
+				} break;
+				case wxT('d'): {
+					result += filename.GetPath();
 				} break;
 				default: {
 					result += ch;

@@ -29,7 +29,7 @@ class ExportThread : public BaseThread
 	private:
 		wxString GetScript();
 		void WriteFileItem(ExportFileItem &item);
-		wxString GetCommand(const wxString &script, const wxString &filename);
+		wxString GetCommand(const wxString &script, const wxFileName &filename);
 	private:
 		int m_format;
 		wxArrayString m_scripts;
