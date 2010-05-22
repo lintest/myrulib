@@ -59,6 +59,11 @@ class FbParamsDlg : private FbDialog
 			ID_LIMIT_CHECK,
 			ID_LIMIT_COUNT,
 			ID_SAVE_FULLPATH,
+			ID_LETTER_F,
+			ID_LETTER_P,
+			ID_LETTER_N,
+			ID_LETTER_D,
+			ID_LETTER_E,
 		};
 		class LoadThread: public wxThread
 		{

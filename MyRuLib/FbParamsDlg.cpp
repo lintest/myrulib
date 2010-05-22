@@ -163,16 +163,32 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 
 	bSizerMain->Add( bSizerName, 0, wxEXPAND, 5 );
 
-	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
+	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_DONTWRAP );
 	bSizerMain->Add( &m_text, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5 );
 
+	wxBoxSizer* bSizerButtons = new wxBoxSizer( wxHORIZONTAL );
+
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	toolbar->SetToolBitmapSize(wxSize(0,0));
+	toolbar->AddTool( ID_LETTER_F, wxT("%f"), wxNullBitmap, _("Full file path with name and extension"));
+	toolbar->AddTool( ID_LETTER_P, wxT("%p"), wxNullBitmap, _("Full file path without extension"));
+	toolbar->AddTool( ID_LETTER_N, wxT("%n"), wxNullBitmap, _("File name without path and extension"));
+	toolbar->AddTool( ID_LETTER_D, wxT("%d"), wxNullBitmap, _("Target directory"));
+	toolbar->AddTool( ID_LETTER_E, wxT("%e"), wxNullBitmap, _("File name extension"));
+	toolbar->Realize();
+	bSizerButtons->Add( toolbar, 0, wxBOTTOM|wxLEFT|wxRIGHT, 5 );
+
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
-	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
+	bSizerButtons->Add( sdbSizerBtn, 1, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
+
+	bSizerMain->Add( bSizerButtons, 0, wxEXPAND, 5 );
 
 	SetSizer( bSizerMain );
 	Layout();
 
 	m_name.SetFocus();
+
+	SetMinSize(GetBestSize());
 }
 
 bool FbParamsDlg::ScriptDlg::Execute(wxWindow* parent, const wxString& title, wxString &name, wxString &text)
@@ -534,8 +550,6 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	Layout();
 	bSizerMain->Fit( this );
 
-	SetAffirmativeId(wxID_OK);
-	SetEscapeId(wxID_CANCEL);
 	SetMinSize(GetBestSize());
 
 	if (m_thread.Create() == wxTHREAD_NO_ERROR) m_thread.Run();
