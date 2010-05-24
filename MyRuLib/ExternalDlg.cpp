@@ -9,6 +9,7 @@ Returns the characters that can't be used in filenames and directory names for t
 #include "ExternalDlg.h"
 #include "FbParams.h"
 #include "FbConst.h"
+#include "MyRuLibApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -504,10 +505,17 @@ bool ExternalDlg::ExportBooks()
 
 	IntData * data = (IntData*) m_choiceFormat->GetClientObject(m_choiceFormat->GetCurrentSelection());
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
+
+	FbExportDlg * dlg = new FbExportDlg(wxGetApp().GetTopWindow(), wxID_ANY, wxT("Export files"));
+	FillFilelist(m_books->GetRootItem(), dlg->m_filelist);
+	dlg->m_format = data->GetData();
+	dlg->Execute();
+	/*
 	ExportThread thread(data->GetData());
 	FillFilelist(m_books->GetRootItem(), thread.m_filelist);
 	thread.m_info = _("Export") + COLON + root_dir;
 	thread.Entry();
+	*/
 	return true;
 }
 
