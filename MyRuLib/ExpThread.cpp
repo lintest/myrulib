@@ -53,29 +53,25 @@ bool FbExportDlg::ExportProcess::HasInput()
 	#endif // __WXMSW__
 	const wxString &sep=wxT(" \t");
 
+    wxString msg, info;
+
     if ( IsInputAvailable() )
     {
+        msg = _T("i> ");
         wxTextInputStream tis(*GetInputStream(), sep, conv);
-
-        // this assumes that the output is always line buffered
-        wxString msg;
-        msg << _T("i> ") << tis.ReadLine();
-
-        m_parent->LogMessage(msg);
-
-        hasInput = true;
+        info = tis.ReadLine();
     }
 
     if ( IsErrorAvailable() )
     {
+        msg = _T("E> ");
         wxTextInputStream tis(*GetErrorStream(), sep, conv);
+        info = tis.ReadLine();
+    }
 
-        // this assumes that the output is always line buffered
-        wxString msg;
-        msg << _T("E> ") << tis.ReadLine();
-
+    if (!info.IsEmpty()) {
+    	msg << info;
         m_parent->LogMessage(msg);
-
         hasInput = true;
     }
 
