@@ -8,6 +8,8 @@
 #include <wx/process.h>
 #include "BaseThread.h"
 #include "FbWindow.h"
+#include "FbConst.h"
+#include "FbBookEvent.h"
 
 class ExportFileItem
 {
@@ -26,10 +28,11 @@ class FbExportDlg : public FbDialog
 		class ExportThread: public wxThread
 		{
 			public:
-				ExportThread(int format, const ExportFileItem &item)
-					: wxThread(wxTHREAD_JOINABLE), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath()) {}
+				ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item)
+					: wxThread(wxTHREAD_JOINABLE), m_parent(parent), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath()) {}
 				virtual void * Entry();
 			private:
+				FbExportDlg * m_parent;
 				int m_format;
 				int m_id;
 				wxString m_filename;
@@ -60,6 +63,7 @@ class FbExportDlg : public FbDialog
 		void ExecScript(const wxString &script, const wxFileName &filename);
 		wxArrayString m_scripts;
 		size_t m_index;
+		size_t m_script;
 		ExportProcess m_process;
 	private:
 		wxStaticText m_info;
@@ -69,6 +73,8 @@ class FbExportDlg : public FbDialog
 		void OnIdle(wxIdleEvent& event);
 		void OnProcessTerm(wxProcessEvent& event);
 		void OnCancel(wxCommandEvent& event);
+		void OnScriptLog(wxCommandEvent& event);
+		void OnScriptRun(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbExportDlg);
 };

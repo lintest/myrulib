@@ -55,7 +55,7 @@ void *ZipThread::Entry()
 }
 
 ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
-	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
+	:conv(wxFONTENCODING_CP866), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	FbCommonDatabase database;
 
