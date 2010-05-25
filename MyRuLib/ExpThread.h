@@ -25,6 +25,19 @@ WX_DECLARE_OBJARRAY(ExportFileItem, ExportFileArray);
 class FbExportDlg : public FbDialog
 {
 	private:
+		class ExportLog: public wxLog
+		{
+			public:
+				ExportLog(FbExportDlg * parent);
+				virtual ~ExportLog();
+			protected:
+				void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
+				void ExportLog::DoLogString(const wxChar *szString, time_t t) {}
+			private:
+				FbExportDlg * m_parent;
+				wxLog * m_old;
+				DECLARE_NO_COPY_CLASS(ExportLog)
+		};
 		class ExportThread: public wxThread
 		{
 			public:
@@ -88,6 +101,7 @@ class FbExportDlg : public FbDialog
 		size_t m_index;
 		size_t m_script;
 		ExportProcess m_process;
+		ExportLog m_log;
 		bool m_closed;
 		int m_errors;
 	private:
