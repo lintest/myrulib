@@ -32,7 +32,7 @@ class FbExportDlg : public FbDialog
 				virtual ~ExportLog();
 			protected:
 				void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
-				void ExportLog::DoLogString(const wxChar *szString, time_t t) {}
+				void DoLogString(const wxChar *szString, time_t t) {}
 			private:
 				FbExportDlg * m_parent;
 				wxLog * m_old;

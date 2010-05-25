@@ -57,7 +57,7 @@ void * FbExportDlg::ExportThread::Entry()
 
 	wxFileOutputStream out(m_filename);
 	if (m_format == -1) {
-		wxCSConv conv(wxFONTENCODING_CP866);
+		wxCSConv conv(wxT("cp866"));
 		wxZipOutputStream zip(out, -1, conv);
 		wxString entryName = m_filename.Left(m_filename.Len()-4);
 		zip.PutNextEntry(entryName);
