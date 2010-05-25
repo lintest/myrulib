@@ -37,6 +37,25 @@ class FbExportDlg : public FbDialog
 				int m_id;
 				wxString m_filename;
 		};
+		class ZipThread: public wxThread
+		{
+			public:
+				ZipThread(FbExportDlg * parent, const wxArrayString &args);
+				virtual void * Entry();
+			private:
+				FbExportDlg * m_parent;
+				wxString m_filename;
+				wxArrayString m_filelist;
+		};
+		class DelThread: public wxThread
+		{
+			public:
+				DelThread(FbExportDlg * parent, const wxArrayString &args);
+				virtual void * Entry();
+			private:
+				FbExportDlg * m_parent;
+				wxArrayString m_filelist;
+		};
 		class ExportProcess: public wxProcess
 		{
 			public:
@@ -59,6 +78,8 @@ class FbExportDlg : public FbDialog
 	private:
 		void Start();
 		void Finish();
+		void ZipFiles(const wxArrayString &args);
+		void DelFiles(const wxArrayString &args);
 		wxString GetScript(int format);
 		wxString GetCommand(const wxString &script, const wxFileName &filename);
 		void ExportFile(const ExportFileItem &item);

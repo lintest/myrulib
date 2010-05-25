@@ -4,6 +4,7 @@
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h>
 #include <wx/dialog.h>
+#include <wx/cmdline.h>
 
 WX_DEFINE_OBJARRAY(ExportFileArray);
 
@@ -13,8 +14,6 @@ WX_DEFINE_OBJARRAY(ExportFileArray);
 
 void * FbExportDlg::ExportThread::Entry()
 {
-	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, m_filename).Post(m_parent);
-
 	ZipReader reader(m_id);
 	if (!reader.IsOK()) {
 		FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_ERROR, m_filename).Post(m_parent);
@@ -33,6 +32,54 @@ void * FbExportDlg::ExportThread::Entry()
 	}
 	out.Close();
 
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+//  FbExportDlg::ZipThread
+//-----------------------------------------------------------------------------
+
+FbExportDlg::ZipThread::ZipThread(FbExportDlg * parent, const wxArrayString &args)
+	: wxThread(wxTHREAD_JOINABLE)
+{
+	size_t count = args.Count();
+	if (count > 1) m_filename = args[1];
+	for (size_t i = 2; i < count; i++) m_filelist.Add(args[i]);
+}
+
+void * FbExportDlg::ZipThread::Entry()
+{
+	wxFileOutputStream out(m_filename);
+	wxCSConv conv(wxFONTENCODING_CP866);
+	wxZipOutputStream zip(out, -1, conv);
+
+	size_t count = m_filelist.Count();
+	for (size_t i = 0; i < count; i++) {
+		wxFileInputStream in(m_filelist[i]);
+		wxFileName filename = m_filelist[i];
+		zip.PutNextEntry(filename.GetFullName());
+		zip.Write(in);
+	}
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+//  FbExportDlg::ExportThread
+//-----------------------------------------------------------------------------
+
+FbExportDlg::DelThread::DelThread(FbExportDlg * parent, const wxArrayString &args)
+	: wxThread(wxTHREAD_JOINABLE)
+{
+	size_t count = args.Count();
+	for (size_t i = 1; i < count; i++) m_filelist.Add(args[i]);
+}
+
+void * FbExportDlg::DelThread::Entry()
+{
+	size_t count = m_filelist.Count();
+	for (size_t i = 0; i < count; i++) {
+		wxRemoveFile(m_filelist[i]);
+	}
 	return NULL;
 }
 
@@ -239,9 +286,30 @@ void FbExportDlg::Finish()
 
 void FbExportDlg::ExportFile(const ExportFileItem &item)
 {
+	LogMessage(item.filename.GetFullPath());
 	ExportThread thread(this, m_format, item);
 	if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
 	thread.Wait();
+}
+
+void FbExportDlg::ZipFiles(const wxArrayString &args)
+{
+    if (args.Count() >= 3) {
+		ZipThread thread(this, args);
+		if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+		thread.Wait();
+    }
+	Start();
+}
+
+void FbExportDlg::DelFiles(const wxArrayString &args)
+{
+    if (args.Count() >= 2) {
+		DelThread thread(this, args);
+		if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+		thread.Wait();
+    }
+	Start();
 }
 
 void FbExportDlg::ExecScript(const wxString &script, const wxFileName &filename)
@@ -249,9 +317,20 @@ void FbExportDlg::ExecScript(const wxString &script, const wxFileName &filename)
 	if (script.IsEmpty()) return ;
 	wxString command = GetCommand(script, filename);
 	LogMessage(command);
+
 	#ifdef __WXMSW__
-	m_process.m_dos = command.Left(4).Lower() == wxT("cmd ");
+	m_process.m_dos = false;
 	#endif // __WXMSW__
+
+	wxArrayString args = wxCmdLineParser::ConvertStringToArgs(command.c_str());
+	if (args.Count()) {
+		wxString cmd = args[0].Lower();
+		#ifdef __WXMSW__
+		if (cmd == wxT("cmd")) m_process.m_dos = true;
+		#endif // __WXMSW__
+		if (cmd == wxT("zip")) { ZipFiles(args); return; }
+		if (cmd == wxT("del")) { DelFiles(args); return; }
+	}
 	wxExecute(command, wxEXEC_ASYNC, &m_process);
 }
 
