@@ -9,15 +9,21 @@ const wxString strProgramName = wxT("MyRuLib " TXT(VERSION_MAJOR) "." TXT(VERSIO
 const wxString strProgramInfo = strProgramName + wxT('.') + wxT(TXT(VERSION_BUILD));
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 const wxString strMailAddr = wxT("mail@lintest.ru");
-
 const wxString strVersionInfo = strHomePage +  wxT("\n") + strMailAddr;
 
-#if wxCHECK_VERSION(2, 9, 0)
-const wxString alphabetRu = _(L"АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
-#else
-const wxString alphabetRu = _("АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
-#endif
+static wxString GetRussianAlphabet()
+{
+	wxString result;
+	for (wxChar ch = 0x0410; ch <= (wxChar)0x042F ; ch++) {
+		if (ch == (wxChar)0x0416) continue;
+		if (ch == (wxChar)0x042A) continue;
+		if (ch == (wxChar)0x042C) continue;
+		result += ch;
+	}
+	return result;
+}
 
+const wxString alphabetRu = GetRussianAlphabet();
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 const wxString strAlphabet = alphabetRu + alphabetEn;
 const wxString strNobody = _("(no Author)");

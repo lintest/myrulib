@@ -87,7 +87,7 @@ void * FbExportDlg::ZipThread::Entry()
 	wxFileOutputStream out(m_filename);
 	if (!out.IsOk()) return NULL;
 
-	wxCSConv conv(wxFONTENCODING_CP866);
+	wxCSConv conv(wxT("cp866"));
 	wxZipOutputStream zip(out, -1, conv);
 	if (!zip.IsOk()) return NULL;
 
@@ -139,7 +139,8 @@ bool FbExportDlg::ExportProcess::HasInput()
     bool hasInput = false;
 
 	#ifdef __WXMSW__
-	wxCSConv conv = wxCSConv(m_dos ? wxFONTENCODING_CP866 : wxFONTENCODING_CP1251);
+	wxChar * charset[] = {wxT("cp866"), wxT("cp1251")};
+	wxCSConv conv = wxCSConv(charset[m_dos ? 0 : 1]);
 	#else
 	wxConvAuto conv = wxConvAuto();
 	#endif // __WXMSW__
