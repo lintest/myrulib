@@ -719,3 +719,4 @@ void FbMainFrame::OnLocalizeUpdate(wxUpdateUIEvent& event)
 {
     if ( FbLocale::MenuToLang(event.GetId()) == wxGetApp().GetLanguage() )  event.Check(true);
 }
+

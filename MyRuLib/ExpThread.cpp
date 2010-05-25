@@ -13,12 +13,11 @@ WX_DEFINE_OBJARRAY(ExportFileArray);
 
 void * FbExportDlg::ExportThread::Entry()
 {
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_SCRIPT_LOG, m_filename).Post(m_parent);
+	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, m_filename).Post(m_parent);
 
 	ZipReader reader(m_id);
 	if (!reader.IsOK()) {
-		wxString msg = wxT("E> "); msg << COLON << m_filename;
-		FbCommandEvent(fbEVT_BOOK_ACTION, ID_SCRIPT_LOG, msg).Post(m_parent);
+		FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_ERROR, m_filename).Post(m_parent);
 		return NULL;
 	}
 
@@ -44,7 +43,7 @@ void * FbExportDlg::ExportThread::Entry()
 void FbExportDlg::ExportProcess::OnTerminate(int pid, int status)
 {
     { while (HasInput()) ; }
-    FbCommandEvent(fbEVT_BOOK_ACTION, ID_SCRIPT_RUN).Post(m_parent);
+    FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_RUN).Post(m_parent);
 }
 
 bool FbExportDlg::ExportProcess::HasInput()
@@ -52,31 +51,23 @@ bool FbExportDlg::ExportProcess::HasInput()
     bool hasInput = false;
 
 	#ifdef __WXMSW__
-	wxCSConv conv = wxCSConv(wxFONTENCODING_CP1251);
+	wxCSConv conv = wxCSConv(m_dos ? wxFONTENCODING_CP866 : wxFONTENCODING_CP1251);
 	#else
 	wxConvAuto conv = wxConvAuto();
 	#endif // __WXMSW__
 	const wxString &sep=wxT(" \t");
 
-    wxString msg, info;
-
-    if ( IsInputAvailable() )
-    {
-        msg = _T("i> ");
+    if (IsInputAvailable()) {
         wxTextInputStream tis(*GetInputStream(), sep, conv);
-        info = tis.ReadLine();
+        wxString info = tis.ReadLine();
+		if (!info.IsEmpty()) FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, info).Post(m_parent);
+        hasInput = true;
     }
 
-    if ( IsErrorAvailable() )
-    {
-        msg = _T("E> ");
+    if (IsErrorAvailable()) {
         wxTextInputStream tis(*GetErrorStream(), sep, conv);
-        info = tis.ReadLine();
-    }
-
-    if (!info.IsEmpty()) {
-    	msg << info;
-		FbCommandEvent(fbEVT_BOOK_ACTION, ID_SCRIPT_LOG, msg).Post(m_parent);
+        wxString info = tis.ReadLine();
+		if (!info.IsEmpty()) FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_ERROR, info).Post(m_parent);
         hasInput = true;
     }
 
@@ -90,14 +81,17 @@ bool FbExportDlg::ExportProcess::HasInput()
 IMPLEMENT_CLASS( FbExportDlg, FbDialog )
 
 BEGIN_EVENT_TABLE( FbExportDlg, FbDialog )
-	EVT_BUTTON( wxID_CANCEL, FbExportDlg::OnCancel )
-	EVT_COMMAND( ID_SCRIPT_LOG, fbEVT_BOOK_ACTION, FbExportDlg::OnScriptLog )
-	EVT_COMMAND( ID_SCRIPT_RUN, fbEVT_BOOK_ACTION, FbExportDlg::OnScriptRun )
+	EVT_BUTTON( wxID_CANCEL, FbExportDlg::OnCancelBtn )
+	EVT_BUTTON( wxID_CLOSE, FbExportDlg::OnCloseBtn )
+	EVT_COMMAND( ID_SCRIPT_RUN, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptRun )
+	EVT_COMMAND( ID_SCRIPT_LOG, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptLog )
+	EVT_COMMAND( ID_SCRIPT_ERROR, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptError )
+	EVT_CLOSE( FbExportDlg::OnCloseDlg )
     EVT_IDLE( FbExportDlg::OnIdle )
 END_EVENT_TABLE()
 
 FbExportDlg::FbExportDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog(parent, id, title, pos, size, style), m_format(0), m_index(0), m_script(0), m_process(this)
+	: FbDialog(parent, id, title, pos, size, style), m_format(0), m_index(0), m_script(0), m_process(this), m_closed(false), m_errors(0)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -117,8 +111,9 @@ FbExportDlg::FbExportDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	m_gauge.Create( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL );
 	bSizerBottom->Add( &m_gauge, 1, wxALL, 5 );
 
-	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxCANCEL );
-	bSizerBottom->Add( sdbSizerBtn, 0, wxALIGN_CENTER_VERTICAL, 5 );
+	m_button.Create( this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerBottom->Add( &m_button, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	SetEscapeId(wxID_CANCEL);
 
 	bSizerMain->Add( bSizerBottom, 0, wxEXPAND, 5 );
 
@@ -202,27 +197,51 @@ void FbExportDlg::Execute()
 
 void FbExportDlg::Start()
 {
-	if (m_script >= m_scripts.Count()) {
-		m_script = 0;
-		++m_index;
-	}
-	size_t count = m_filelist.Count();
-	if (m_index >= count) {
-		m_gauge.SetValue(count);
-		if (m_index == count) wxMessageBox(_("Export completed successfully"));
+	if (m_closed) {
 		Destroy();
+		return;
+	}
+
+	if (m_script >= m_scripts.Count()) {
+		m_text.SetFirstItem(m_text.Append(wxEmptyString));
+		m_script = 0;
+		m_index++;
+	}
+
+	if (m_index >= m_filelist.Count()) {
+		Finish();
 		return;
 	}
 
 	ExportFileItem & item = m_filelist[m_index];
 	m_info.SetLabel(item.filename.GetFullPath());
 	m_gauge.SetValue(m_index);
-	if (m_script == 0) {
-		ExportThread thread(this, m_format, item);
-		if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
-		thread.Wait();
-	}
+	if (m_script == 0) ExportFile(item);
 	ExecScript(m_scripts[m_script++], item.filename);
+}
+
+void FbExportDlg::Finish()
+{
+	size_t count = m_filelist.Count();
+	m_gauge.SetValue(count);
+	m_button.SetId(wxID_CLOSE);
+	m_button.SetLabel(_("Close"));
+	SetEscapeId(wxID_CLOSE);
+
+	wxString msg;
+	if (m_index == count) {
+		if (m_errors) msg.Printf(_("Export completed with %d errors"), m_errors);
+		else msg = _("Export completed successfully");
+	} else msg = _("Export aborted by user");
+	m_info.SetLabel(msg);
+	wxMessageBox(msg);
+}
+
+void FbExportDlg::ExportFile(const ExportFileItem &item)
+{
+	ExportThread thread(this, m_format, item);
+	if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+	thread.Wait();
 }
 
 void FbExportDlg::ExecScript(const wxString &script, const wxFileName &filename)
@@ -230,6 +249,9 @@ void FbExportDlg::ExecScript(const wxString &script, const wxFileName &filename)
 	if (script.IsEmpty()) return ;
 	wxString command = GetCommand(script, filename);
 	LogMessage(command);
+	#ifdef __WXMSW__
+	m_process.m_dos = command.Left(4).Lower() == wxT("cmd ");
+	#endif // __WXMSW__
 	wxExecute(command, wxEXEC_ASYNC, &m_process);
 }
 
@@ -238,7 +260,7 @@ void FbExportDlg::OnIdle(wxIdleEvent& event)
 	if (m_process.HasInput()) event.RequestMore();
 }
 
-void FbExportDlg::OnCancel(wxCommandEvent& event)
+void FbExportDlg::OnCancelBtn(wxCommandEvent& event)
 {
 	m_index = m_filelist.Count() + 1;
 	m_process.Kill(wxSIGTERM);
@@ -249,12 +271,38 @@ void FbExportDlg::LogMessage(const wxString &msg)
 	m_text.SetFirstItem(m_text.Append(msg));
 }
 
-void FbExportDlg::OnScriptLog(wxCommandEvent& event)
-{
-	LogMessage(event.GetString());
-}
-
 void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 {
 	Start();
+}
+
+void FbExportDlg::OnScriptLog(wxCommandEvent& event)
+{
+	wxString msg = wxT("i> ");
+	msg << event.GetString();
+	LogMessage(msg);
+}
+
+void FbExportDlg::OnScriptError(wxCommandEvent& event)
+{
+	wxString msg = wxT("E> ");
+	msg << event.GetString();
+	LogMessage(msg);
+	m_errors++;
+}
+
+void FbExportDlg::OnCloseBtn(wxCommandEvent& event)
+{
+	Destroy();
+}
+
+void FbExportDlg::OnCloseDlg( wxCloseEvent& event )
+{
+	if (m_index >= m_filelist.Count()) {
+		Destroy();
+	} else {
+		m_closed = true;
+		m_index = m_filelist.Count() + 1;
+		m_process.Kill(wxSIGTERM);
+	}
 }

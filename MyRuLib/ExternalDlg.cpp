@@ -508,6 +508,8 @@ bool ExternalDlg::ExportBooks()
 
 	FbExportDlg * dlg = new FbExportDlg(wxGetApp().GetTopWindow(), wxID_ANY, wxT("Export files"));
 	FillFilelist(m_books->GetRootItem(), dlg->m_filelist);
+	dlg->SetSize(GetSize());
+	dlg->SetPosition(GetPosition());
 	dlg->m_format = data->GetData();
 	dlg->Execute();
 	/*

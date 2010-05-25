@@ -13,6 +13,8 @@ DEFINE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION )
 
 DEFINE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION )
 
+DEFINE_LOCAL_EVENT_TYPE( fbEVT_EXPORT_ACTION )
+
 void FbCommandEvent::Post(wxEvtHandler *dest)
 {
 	wxPostEvent(dest, *this);

@@ -40,13 +40,14 @@ class FbExportDlg : public FbDialog
 		class ExportProcess: public wxProcess
 		{
 			public:
-				ExportProcess(FbExportDlg * parent, const wxString& cmd = wxEmptyString)
-					: m_parent(parent), m_cmd(cmd) { Redirect(); }
+				ExportProcess(FbExportDlg * parent): m_parent(parent) { Redirect(); }
 				virtual void OnTerminate(int pid, int status);
 				virtual bool HasInput();
+				#ifdef __WXMSW__
+				bool m_dos;
+				#endif // __WXMSW__
 			protected:
 				FbExportDlg * m_parent;
-				wxString m_cmd;
 		};
 	public:
 		FbExportDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER );
@@ -55,8 +56,9 @@ class FbExportDlg : public FbDialog
 		void LogMessage(const wxString &msg);
 		ExportFileArray m_filelist;
 		int m_format;
-		void Start();
 	private:
+		void Start();
+		void Finish();
 		wxString GetScript(int format);
 		wxString GetCommand(const wxString &script, const wxFileName &filename);
 		void ExportFile(const ExportFileItem &item);
@@ -65,16 +67,22 @@ class FbExportDlg : public FbDialog
 		size_t m_index;
 		size_t m_script;
 		ExportProcess m_process;
+		bool m_closed;
+		int m_errors;
 	private:
 		wxStaticText m_info;
 		wxListBox m_text;
 		wxGauge m_gauge;
+		wxButton m_button;
 	private:
 		void OnIdle(wxIdleEvent& event);
 		void OnProcessTerm(wxProcessEvent& event);
-		void OnCancel(wxCommandEvent& event);
-		void OnScriptLog(wxCommandEvent& event);
+		void OnCancelBtn(wxCommandEvent& event);
+		void OnCloseBtn(wxCommandEvent& event);
 		void OnScriptRun(wxCommandEvent& event);
+		void OnScriptLog(wxCommandEvent& event);
+		void OnScriptError(wxCommandEvent& event);
+		void OnCloseDlg(wxCloseEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbExportDlg);
 };
