@@ -346,7 +346,8 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 		if (thisSequence != nextSequence || !itemSequence.IsOk()) {
 			thisSequence = nextSequence;
 			if (result.GetInt(wxT("id_seq"))) {
-				itemParent = itemSequence = AppendFolder(itemAuthor, thisSequence.IsEmpty() ? strOtherSequence : thisSequence );
+				wxString seqname = thisSequence.IsEmpty() ? (wxString)_("(Misc.)") : thisSequence;
+				itemParent = itemSequence = AppendFolder(itemAuthor, seqname);
 				m_books->SetItemBold(itemSequence, true);
 			} else itemParent = itemAuthor;
 		}

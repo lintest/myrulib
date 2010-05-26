@@ -146,13 +146,9 @@ extern const wxString strAlphabet;
 extern const wxString strNobody;
 extern const wxString strRusJE;
 extern const wxString strRusJO;
-extern const wxString strOtherSequence;
-extern const wxString strBookNotFound;
 
 extern const int ciNoAuthor;
 extern const int ciMaxImageWidth;
-
-extern const wxString strRating [];
 
 extern const wxString strUpdateAuthorCount;
 extern const wxString strUpdateSequenCount;
@@ -166,5 +162,7 @@ void FbLogError(const wxString &info, const wxString &text);
 void FbLogWarning(const wxString &info, const wxString &text);
 
 void FbMessageBox(const wxString &info, const wxString &text);
+
+wxString GetRatingText(int index);
 
 #endif // __FBCONST_H__

@@ -16,11 +16,7 @@ FbMenuSort::FbMenuSort()
 
 FbMenuRating::FbMenuRating()
 {
-	Append(ID_RATING_5, strRating[5]);
-	Append(ID_RATING_4, strRating[4]);
-	Append(ID_RATING_3, strRating[3]);
-	Append(ID_RATING_2, strRating[2]);
-	Append(ID_RATING_1, strRating[1]);
+	for (int i=5; i>0; i--) Append(ID_RATING_0 + i, GetRatingText(i));
 	AppendSeparator();
-	Append(ID_RATING_0, wxGetTranslation(strRating[0]));
+	Append(ID_RATING_0, GetRatingText(0));
 }

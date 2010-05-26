@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyRuLib\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-26 17:56+0300\n"
-"PO-Revision-Date: 2010-05-26 17:57+0300\n"
+"POT-Creation-Date: 2010-05-27 00:07+0300\n"
+"PO-Revision-Date: 2010-05-27 00:07+0300\n"
 "Last-Translator: Kandrashin Denis <mail@lintest.ru>\n"
 "Language-Team: Lintest <mail@lintest.ru>\n"
 "MIME-Version: 1.0\n"
@@ -18,9 +18,9 @@ msgstr ""
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: d:\\!Data\\MyProjects\\myrulib\\MyRuLib\n"
+"X-Poedit-Basepath: h:\\projects\\MyRuLib\n"
 "X-Poedit-KeywordsList: _\n"
-"X-Poedit-SearchPath-0: d:\\!Data\\MyProjects\\myrulib\\MyRuLib\n"
+"X-Poedit-SearchPath-0: MyRuLib\n"
 
 #: FbFrameBase.cpp:210
 msgid "book"
@@ -29,1908 +29,1889 @@ msgstr[0] "книга"
 msgstr[1] "книги"
 msgstr[2] "книг"
 
-msgid "(Misc.)"
-msgstr "(разное)"
-
-msgid "Clear"
-msgstr "Очистить"
-
-msgid "filename"
-msgstr "имя_файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:122
-#, c-format
-msgid "can't delete file %s"
-msgstr "Не удалось удалить файл %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:203
-msgid "Cancel"
-msgstr "Отмена"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:317
-msgid "Close"
-msgstr "Закрыть"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:322
-#, c-format
-msgid "Export completed with %d errors"
-msgstr ""
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:323
-msgid "Export completed successfully"
-msgstr "Экспорт успешно завершен"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:324
-msgid "Export aborted by user"
-msgstr "Экспорт прерван пользователем"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:179
-msgid "Export to external storage"
-msgstr "Экспорт на внешнее устройство"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:192
-msgid "Destination folder:"
-msgstr "Папка внешнего устройства:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:207
-msgid "Use Author (without co-Authors)"
-msgstr "Использовать текущего автора (без соавторов)"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:215
-msgid "File name"
-msgstr "Имя файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:216
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:68
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:82
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbColumnDlg.cpp:30
-msgid "Size, Kb"
-msgstr "Размер, Кб"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:223
-msgid "Export As..."
-msgstr "Формат выгрузки файлов:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:423
-msgid "Select a destination folder"
-msgstr "Выберите папку внешнего устройства"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:498
-msgid "Destination folder not found"
-msgstr "Не найдена папка внешнего устройства"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:502
-msgid "Unable write files to destination folder"
-msgstr "Папка внешнего устройства не доступна для записи"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ExternalDlg.cpp:529
-msgid "Not selected any book"
-msgstr "Не выбрано ни одной книги"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAboutDlg.cpp:8
-msgid "About"
-msgstr "О программе…"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:18
-msgid "Surname"
-msgstr "Фамилия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:19
-msgid "Name"
-msgstr "Имя"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:20
-msgid "Middle-Name"
-msgstr "Отчество"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:47
-msgid "Add author"
-msgstr "Добавить автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:55
-msgid "Change author"
-msgstr "Изменить автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:163
-msgid "\"Surname\" field is empty"
-msgstr "Не заполнена фамилия автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:168
-msgid "Autor with same details aleready exists"
-msgstr "Автор с такими реквизитами уже существует"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbAuthorDlg.cpp:172
-msgid "Merge authors?"
-msgstr "Объединить двух авторов?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookData.cpp:66
-msgid "Download book file?"
-msgstr "Скачать книгу?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookData.cpp:66
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:524
-msgid "Confirmation"
-msgstr "Подтверждение"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookData.cpp:128
-msgid "Associated application not found"
-msgstr "Не найдено приложение для просмотра файлов типа"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:15
-msgid "Open book"
-msgstr "Открыть книгу"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:17
-msgid "Delete download query"
-msgstr "Удалить закачку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:18
-msgid "Retry rownload"
-msgstr "Скачать повторно"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:20
-msgid "Download a file"
-msgstr "Скачать файл"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:22
-msgid "Download via browser"
-msgstr "Скачать в браузере"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:23
-msgid "Online books page"
-msgstr "Книга на сайте библиотеки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:26
-msgid "Select all"
-msgstr "Выделить все"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:27
-msgid "Undo selection"
-msgstr "Отменить выделение"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:28
-msgid "Table columns"
-msgstr "Колонки таблицы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:32
-msgid "Delete book"
-msgstr "Удалить книгу"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:35
-msgid "Sort by"
-msgstr "Сортировка"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:36
-msgid "Use filter"
-msgstr "Использовать фильтр"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:37
-msgid "Clear filter"
-msgstr "Удалить фильтр"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:40
-msgid "Jump to author"
-msgstr "Перейти к автору"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:44
-msgid "Add to favourites"
-msgstr "Добавить в избранное"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:45
-msgid "Add to folders"
-msgstr "Добавить в папку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:46
-msgid "Rate this book"
-msgstr "Установить рейтинг"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:47
-msgid "Delete bookmark"
-msgstr "Удалить закладку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookMenu.cpp:50
-msgid "Add comments"
-msgstr "Комментарии"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:61
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:75
-msgid "Title"
-msgstr "Заголовок"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:62
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:76
-msgid "Author"
-msgstr "Автор"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:63
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:77
-msgid "#"
-msgstr "№"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:64
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:78
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbColumnDlg.cpp:18
-msgid "Genre"
-msgstr "Жанр"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:65
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:79
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbColumnDlg.cpp:21
-msgid "Rating"
-msgstr "Рейтинг"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:66
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:80
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbColumnDlg.cpp:24
-msgid "Language"
-msgstr "Язык"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:67
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:81
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbColumnDlg.cpp:27
-msgid "Extension"
-msgstr "Тип"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbBookPanel.cpp:523
-#, c-format
-msgid "Delete selected books (%d pcs)?"
-msgstr "Удалить выделенные книги (%d шт.)?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbCalendar.cpp:28
-msgid "Date"
-msgstr "Дата"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbColumnDlg.cpp:9
-msgid "Columns"
-msgstr "Колонки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:42
-msgid "Library name:"
-msgstr "Название библиотеки:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:51
-msgid "Library folder:"
-msgstr "Размещение файлов:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:68
-msgid "Short description:"
-msgstr "Краткое описание:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:89
-msgid "Host name:"
-msgstr "Интернет адрес:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:99
-msgid "User name:"
-msgstr "Имя пользователя:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:106
-msgid "Password:"
-msgstr "Пароль:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:127
-msgid "General"
-msgstr "Основные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:128
-msgid "Network"
-msgstr "Интернет"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:147
-msgid "Select folder"
-msgstr "Выберите директорию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConfigDlg.cpp:220
-msgid "Library options"
-msgstr "Параметры библиотеки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConst.cpp:29
-msgid "(no Author)"
-msgstr "(без автора)"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbConst.cpp:33
-#, c-format
-msgid "Not found an archive (%s), containing file (%s)."
-msgstr "Не найден архив (%s), содержащий файл (%s)."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:285
-msgid "Search template"
-msgstr "Шаблон для поиска"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:351
-#, c-format
-msgid "GENRE called with wrong number of arguments: %d."
-msgstr ""
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:424
-msgid "Open database"
-msgstr "Открыть базу данных"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:426
-msgid "Create new database"
-msgstr "Создать новую базу данных"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:526
-#, c-format
-msgid "Upgrade database to version %d"
-msgstr "Обновить базу данных до версии %d"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:535
-msgid "Database version mismatch"
-msgstr "Несоответствие верси базы данных."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDatabase.cpp:538
-#, c-format
-msgid "Need a new version %d, but used the old %d."
-msgstr "Требуется новая версия %d, обнаружена старая %d"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDataOpenDlg.cpp:30
-msgid "File name:"
-msgstr "Имя файла:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDataOpenDlg.cpp:63
-msgid "Open (or create) collection"
-msgstr "Открыть (создать) коллекцию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDataOpenDlg.cpp:70
-msgid "Enter collection filename"
-msgstr "Выберите имя файла коллекции"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDataOpenDlg.cpp:73
-msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
-msgstr "Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:67
-msgid "Download"
-msgstr "Загрузка"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:71
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:102
-msgid "URL error"
-msgstr "Ошибка URL"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:82
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:110
-msgid "Connect error"
-msgstr "Ошибка подключения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:89
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:115
-msgid "Redirect"
-msgstr "Переадресация"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:94
-msgid "Authentication failure"
-msgstr "Ошибка аутентификации"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:136
-msgid "File download"
-msgstr "Загрузка файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:146
-#, c-format
-msgid "HTTP read error, read %d of %d bytes: %s"
-msgstr ""
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:156
-msgid "Download error"
-msgstr "Ошибка загрузки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:173
-msgid "Can't open zip"
-msgstr "Не удалось открыть zip-файл %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:191
-msgid "Wrong MD5 sum"
-msgstr ""
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbDownloader.cpp:219
-msgid "Download finished"
-msgstr "Загрузка завершена"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbEditBook.cpp:37
-msgid "Series"
-msgstr "Серии"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbExtractInfo.cpp:87
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:346
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:371
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:78
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:61
-msgid "Delete"
-msgstr "Удалить"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFilterDlg.cpp:12
-msgid "All"
-msgstr "Все"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFilterDlg.cpp:96
-msgid "Filter settings"
-msgstr "Настройка фильтра"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFilterDlg.cpp:104
-msgid "Show books by allocation"
-msgstr "Отбор книг по принадлежности"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFilterDlg.cpp:106
-msgid "Library books (web)"
-msgstr "Библиотечные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFilterDlg.cpp:110
-msgid "Local books"
-msgstr "Собственные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFilterDlg.cpp:122
-msgid "File extension"
-msgstr "Тип файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:63
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:81
-msgid "Num."
-msgstr "Кол."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:88
-msgid "All collected authors"
-msgstr "Все авторы коллекции"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:319
-msgid "Delete author"
-msgstr "Удалить автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:320
-#, c-format
-msgid "and all of author's books (%d pcs.)?"
-msgstr "и все его книги в количестве %d шт.?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:321
-msgid "Removing"
-msgstr "Удаление"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:342
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:368
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:59
-msgid "Append"
-msgstr "Добавить"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:344
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:369
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:60
-msgid "Modify"
-msgstr "Изменить"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:345
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:370
-msgid "Replace"
-msgstr "Заменить"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:349
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:373
-msgid "Online authors page"
-msgstr "Страница автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:355
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:276
-msgid "&File"
-msgstr "Файл"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:356
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:277
-msgid "&Library"
-msgstr "Библиотека"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:357
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:278
-msgid "&Catalog"
-msgstr "Картотека"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:358
-msgid "&Authors"
-msgstr "Авторы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:359
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:279
-msgid "&Books"
-msgstr "Книги"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:360
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:280
-msgid "&View"
-msgstr "Вид"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:361
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:281
-msgid "&Tools"
-msgstr "Сервис"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:362
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:282
-msgid "&Window"
-msgstr "Окно"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:363
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:283
-msgid "&?"
-msgstr "?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:389
-msgid "Russian aplhabet"
-msgstr "Русский алфавит"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameAuthor.cpp:390
-msgid "Latin alphabet"
-msgstr "Латинский алфавит"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:205
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:70
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:63
-msgid "Export"
-msgstr "Экспорт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameBase.cpp:205
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:70
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:63
-msgid "Export to external device"
-msgstr "Запись на внешнее устройство"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:45
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:62
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:41
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:72
-msgid "Folders"
-msgstr "Папки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:72
-msgid "Start"
-msgstr "Старт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:72
-msgid "Start downloading"
-msgstr "Начать загрузку файлов через интернет"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:73
-msgid "Stop"
-msgstr "Стоп"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:73
-msgid "Stop downloading"
-msgstr "Остановить загрузку файлов через интернет"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:75
-msgid "Up"
-msgstr "Вверх"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:75
-msgid "Move up in queue"
-msgstr "Передвинуть в начало очереди"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:76
-msgid "Down"
-msgstr "Вниз"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:76
-msgid "Move down in queue"
-msgstr "Передвинуть в конец очереди"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:78
-msgid "Remove download"
-msgstr "Удалить загрузку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:90
-msgid "Queue"
-msgstr "Очередь"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:91
-msgid "Ready"
-msgstr "Готово"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameDownld.cpp:92
-msgid "Fault"
-msgstr "Ошибки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:82
-msgid "Bookmarks"
-msgstr "Закладки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:85
-msgid "Favorites"
-msgstr "Избранное"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:100
-msgid "Remarks"
-msgstr "Пометки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:103
-msgid "Comments"
-msgstr "Комментарии"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:157
-msgid "Input name of new folder:"
-msgstr "Введите имя новой папки:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:157
-msgid "Add folder?"
-msgstr "Добавить папку?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:183
-msgid "Input new folder name:"
-msgstr "Введите новое имя папки:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:183
-msgid "Change folder?"
-msgstr "Изменить папку?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:207
-#, c-format
-msgid "Delete folder \"%s\"?"
-msgstr "Удалить папку «%s»?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameFolder.cpp:208
-msgid "Delete folder?"
-msgstr "Удалить папку?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameGenres.cpp:36
-msgid "List of genres"
-msgstr "Список жанров"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameGenres.cpp:52
-msgid "Genres"
-msgstr "Жанры"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameHtml.cpp:69
-msgid "Comment:"
-msgstr "Комментарий:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameHtml.cpp:111
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:210
-msgid "Select a file to export report"
-msgstr "Выберите файл для экспорта отчета"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameHtml.cpp:114
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:213
-msgid "HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
-msgstr "Файлы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameHtml.cpp:222
-msgid "Remove comment?"
-msgstr "Удалить комментарий?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:61
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:23
-msgid "Information about collection"
-msgstr "Информация о коллекции"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:102
-msgid "Total quantity"
-msgstr "Общее количество"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:111
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:112
-msgid "Total books count:"
-msgstr "Общее количество книг:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:116
-msgid "Authors counting"
-msgstr "Подсчет авторов"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:122
-msgid "Authors count:"
-msgstr "Количество авторов:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:126
-msgid "Total files size, Mb:"
-msgstr "Суммарный размер файлов, Мб:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:128
-msgid "First reciept:"
-msgstr "Первое поступление:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:130
-msgid "Last reciept:"
-msgstr "Последнее поступление:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:142
-msgid "Count"
-msgstr "Количество"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:154
-msgid "File types"
-msgstr "Типы файлов"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.cpp:180
-msgid "Collection info"
-msgstr "Информация о коллекции"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSearch.cpp:23
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:6
-msgid "Search"
-msgstr "Поиск"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSearch.cpp:49
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSearch.cpp:64
-msgid "Searching"
-msgstr "Поиск"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSearch.cpp:63
-#, c-format
-msgid "Nothing was found on pattern \"%s\""
-msgstr "Ничего не найдено по шаблону «%s»"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:50
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:67
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:78
-msgid "Ser."
-msgstr "Серия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:88
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:277
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:289
-msgid "Find"
-msgstr "Найти"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:88
-msgid "Find series by name"
-msgstr "Найти серию по наименованию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:257
-msgid "Series name:"
-msgstr "Наименование серии:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:278
-msgid "Append series"
-msgstr "Добавить серию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:286
-msgid "Modify series"
-msgstr "Изменить серию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:352
-msgid "\"Series name\" field is empty"
-msgstr "Не заполнено наименование серии."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:357
-msgid "Series aleready exists"
-msgstr "Такая серия уже существует."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:360
-msgid "Merge series?"
-msgstr "Объединить две серии?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:416
-#, c-format
-msgid "Delete series «%s»?"
-msgstr "Удалить серию «%s»?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameSequen.cpp:431
-msgid "&Series"
-msgstr "Серии"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:19
-msgid "Fiction"
-msgstr "Фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:20
-msgid "Mysteries and Thrillers"
-msgstr "Детективы и Триллеры"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:21
-msgid "Prose"
-msgstr "Проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:22
-msgid "Romance"
-msgstr "Любовные романы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:23
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:81
-msgid "Adventures"
-msgstr "Приключения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:24
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:89
-msgid "Children literature"
-msgstr "Детская литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:25
-msgid "Poetry, dramaturgy"
-msgstr "Поэзия, Драматургия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:26
-msgid "Antique"
-msgstr "Старинное"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:27
-msgid "Science, Education"
-msgstr "Наука, Образование"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:28
-msgid "PC, Internet"
-msgstr "Компьютеры и Интернет"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:29
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:125
-msgid "References"
-msgstr "Справочная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:30
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:130
-msgid "Documentary literature"
-msgstr "Документальная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:31
-msgid "Religion and Spirituality"
-msgstr "Религия и духовность"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:32
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:138
-msgid "Humour"
-msgstr "Юмор"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:33
-msgid "Home and Family"
-msgstr "Домоводство (Дом и семья)"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:34
-msgid "Economy, Business"
-msgstr "Экономика и бизнес"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:38
-msgid "Alternative History"
-msgstr "Альтернативная история"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:39
-msgid "Fighting fantasy"
-msgstr "Боевая фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:40
-msgid "Epic fantasy"
-msgstr "Эпическая фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:41
-msgid "Heroic fantasy"
-msgstr "Героическая фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:42
-msgid "Detective Fiction"
-msgstr "Детективная фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:43
-msgid "Cyberpunk"
-msgstr "Киберпанк"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:44
-msgid "Space Fiction"
-msgstr "Космическая фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:45
-msgid "Socio-psychological fiction"
-msgstr "Социально-психологическая фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:46
-msgid "Horror and Mysticism"
-msgstr "Ужасы и Мистика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:47
-msgid "Humorous Fiction"
-msgstr "Юмористическая фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:48
-msgid "Fantasy"
-msgstr "Фэнтези"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:49
-msgid "Science Fiction"
-msgstr "Научная Фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:50
-msgid "Classic mystery"
-msgstr "Классический детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:51
-msgid "Police mystery"
-msgstr "Полицейский детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:52
-msgid "Action"
-msgstr "Боевик"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:53
-msgid "Ironic mystery"
-msgstr "Иронический детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:54
-msgid "Historical mystery"
-msgstr "Исторический детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:55
-msgid "Spy mystery"
-msgstr "Шпионский детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:56
-msgid "Criminal mystery"
-msgstr "Криминальный детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:57
-msgid "Political mystery"
-msgstr "Политический детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:58
-msgid "Maniacs"
-msgstr "Маньяки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:59
-msgid "Action mystery"
-msgstr "Крутой детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:60
-msgid "Thriller"
-msgstr "Триллер"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:61
-msgid "Mystery"
-msgstr "Детектив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:62
-msgid "Classical prose"
-msgstr "Классическая проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:63
-msgid "Historical prose"
-msgstr "Историческая проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:64
-msgid "Modern prose"
-msgstr "Современная проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:65
-msgid "Counterculture"
-msgstr "Контркультура"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:66
-msgid "Russian Classical prose"
-msgstr "Русская классическая проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:67
-msgid "Soviet Classical prose"
-msgstr "Советская классическая проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:68
-msgid "Prose military"
-msgstr "Военная проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:69
-msgid "Modern romance novels"
-msgstr "Современные любовные романы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:70
-msgid "Historical romance novels"
-msgstr "Исторические любовные романы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:71
-msgid "Action romance novels"
-msgstr "Остросюжетные любовные романы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:72
-msgid "Short romance novels"
-msgstr "Короткие любовные романы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:73
-msgid "Erotic novels"
-msgstr "Эротика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:74
-msgid "Love science fiction"
-msgstr "Любовная фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:75
-msgid "Western"
-msgstr "Вестерн"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:76
-msgid "Historical adventures"
-msgstr "Исторические приключения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:77
-msgid "Adventures about Indians"
-msgstr "Приключения про индейцев"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:78
-msgid "Sea adventures"
-msgstr "Морские приключения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:79
-msgid "Travel and Geography"
-msgstr "Путешествия и география"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:80
-msgid "Nature and Animals"
-msgstr "Природа и животные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:82
-msgid "Tales"
-msgstr "Сказка"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:83
-msgid "Children poetry"
-msgstr "Детские стихи"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:84
-msgid "Childern prose"
-msgstr "Детскиая проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:85
-msgid "Children fiction"
-msgstr "Детская фантастика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:86
-msgid "Children action"
-msgstr "Детские остросюжетные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:87
-msgid "Children adventures"
-msgstr "Детские приключения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:88
-msgid "Children education"
-msgstr "Детская образовательная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:90
-msgid "Poetry"
-msgstr "Поэзия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:91
-msgid "Dramaturgy"
-msgstr "Драматургия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:92
-msgid "Antique Literature"
-msgstr "Античная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:93
-msgid "European ancient literature"
-msgstr "Европейская старинная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:94
-msgid "Russian ancient literature"
-msgstr "Древнерусская литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:95
-msgid "Oriental ancient literature"
-msgstr "Древневосточная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:96
-msgid "Myths. Legends. Epic."
-msgstr "Мифы. Легенды. Эпос."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:97
-msgid "Ancient literature"
-msgstr "Старинная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:98
-msgid "History"
-msgstr "История"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:99
-msgid "Psychology"
-msgstr "Психология"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:100
-msgid "Cultural"
-msgstr "Культурология"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:101
-msgid "Religious"
-msgstr "Религиоведение"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:102
-msgid "Philosophy"
-msgstr "Философия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:103
-msgid "Politology"
-msgstr "Политика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:104
-msgid "Business literature"
-msgstr "Деловая литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:105
-msgid "Law"
-msgstr "Юриспруденция"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:106
-msgid "Linguistics"
-msgstr "Языкознание"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:107
-msgid "Medical"
-msgstr "Медицина"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:108
-msgid "Physics"
-msgstr "Физика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:109
-msgid "Mathematics"
-msgstr "Математика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:110
-msgid "Chemistry"
-msgstr "Химия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:111
-msgid "Biology"
-msgstr "Биология"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:112
-msgid "Engineering"
-msgstr "Технические науки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:113
-msgid "Scientific literature"
-msgstr "Научная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:114
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:143
-msgid "Health"
-msgstr "Здоровье"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:115
-msgid "Programming"
-msgstr "Программирование"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:116
-msgid "Computer hardware"
-msgstr "Компьютерное железо (аппаратное обеспечение)"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:117
-msgid "Software"
-msgstr "Программы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:118
-msgid "Databases"
-msgstr "Базы данных"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:119
-msgid "OS and Network"
-msgstr "ОС и Сети"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:120
-msgid "Computer literature"
-msgstr "Компьтерная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:121
-msgid "Encyclopedias"
-msgstr "Энциклопедии"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:122
-msgid "Dictionaries"
-msgstr "Словари"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:123
-msgid "Directories"
-msgstr "Справочники"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:124
-msgid "Manuals"
-msgstr "Руководства"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:126
-msgid "Biographies and Memoirs"
-msgstr "Биографии и Мемуары"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:127
-msgid "Publicism"
-msgstr "Публицистика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:128
-msgid "Criticism"
-msgstr "Критика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:129
-msgid "Art and Design"
-msgstr "Искусство и Дизайн"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:131
-msgid "Religion"
-msgstr "Религия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:132
-msgid "Esoterica"
-msgstr "Эзотерика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:133
-msgid "Self-improvement"
-msgstr "Самосовершенствование"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:134
-msgid "Religious Literature"
-msgstr "Религиозная литература"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:135
-msgid "Jokes"
-msgstr "Анекдоты"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:136
-msgid "Humorous prose"
-msgstr "Юмористическая проза"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:137
-msgid "Humorous poetry"
-msgstr "Юмористические стихи"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:139
-msgid "Cooking"
-msgstr "Кулинария"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:140
-msgid "Pets"
-msgstr "Домашние животные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:141
-msgid "Hobbies and Crafts"
-msgstr "Хобби и ремесла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:142
-msgid "Entertainment"
-msgstr "Развлечения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:144
-msgid "Gardening"
-msgstr "Сад и огород"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:145
-msgid "Handmade"
-msgstr "Сделай сам"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:146
-msgid "Sport"
-msgstr "Спорт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:147
-msgid "Erotic, sex"
-msgstr "Эротика, Секс"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:148
-msgid "Household"
-msgstr "Домоводство"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:149
-msgid "Geo guides"
-msgstr "Путеводители"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:150
-msgid "Job hunting"
-msgstr "Поиск работы, карьера"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:151
-msgid "Management"
-msgstr "Управление, подбор персонала"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:152
-msgid "Marketing"
-msgstr "Маркетинг, реклама"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:153
-msgid "Banking"
-msgstr "Банковское дело"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:154
-msgid "Stock"
-msgstr "Ценные бумаги, инвестиции"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:155
-msgid "Accounting"
-msgstr "Бухучет, налогообложение, аудит"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:156
-msgid "Global economy"
-msgstr "Внешнеэкономическая деятельность"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:157
-msgid "Economics"
-msgstr "Экономика"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:158
-msgid "Industries"
-msgstr "Отраслевые издания"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:159
-msgid "Corporate culture"
-msgstr "Корпоративная культура"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:160
-msgid "Personal finance"
-msgstr "Личные финансы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:161
-msgid "Real estate"
-msgstr "Недвижимость"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:162
-msgid "Popular business"
-msgstr "О бизнесе популярно"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:163
-msgid "Small business"
-msgstr "Малый бизнес"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:164
-msgid "Paper work"
-msgstr "Делопроизводство"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbGenres.cpp:165
-msgid "Economics reference book"
-msgstr "Справочники по экономике"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:91
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:479
-#, c-format
-msgid "Import file %s"
-msgstr "Импорт файла %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:113
-#, c-format
-msgid "Skip entry %s"
-msgstr "Пропущен элемент %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:118
-#, c-format
-msgid "Import zip entry %s"
-msgstr "Импорт элемента %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:151
-#, c-format
-msgid "XML parsing error: '%s' at line %d file %s"
-msgstr "Ошибка чтения XML: '%s' в строке %d файла %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:294
-#, c-format
-msgid "File already exists %s"
-msgstr "Файл уже импортирован %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:299
-#, c-format
-msgid "Add alternative %s"
-msgstr "Добавлено альтернативное размещение %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:342
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:425
-#, c-format
-msgid "Zip read error %s"
-msgstr "Ошибка чтения zip %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:345
-#, c-format
-msgid "Import zip %s"
-msgstr "Импорт файла zip %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:421
-#, c-format
-msgid "FB2 and FBD not found %s"
-msgstr "Не найдены файлы FB2 и FBD %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:469
-#, c-format
-msgid "Start import %d file(s)"
-msgstr "Начат импорт %d файл(ов)"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:473
-#, c-format
-msgid "Finish import %d file(s)"
-msgstr "Завершен импорт %d файл(ов)"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:483
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:593
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:608
-#, c-format
-msgid "File read error %s"
-msgstr "Ошибка чтения файла %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:538
-#, c-format
-msgid "Skip file %s"
-msgstr "Пропущен файл %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:544
-#, c-format
-msgid "Import subdirectory %s"
-msgstr "Импорт поддиректории %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:560
-#, c-format
-msgid "Start import directory %s"
-msgstr "Начат импорт директории %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:564
-#, c-format
-msgid "Can't open directory %s"
-msgstr "Не удалось открыть директорию %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbImportThread.cpp:580
-#, c-format
-msgid "Finish import directory %s"
-msgstr "Завершен импорт директории %s"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbLogStream.cpp:58
-msgid "Fatal error"
-msgstr "Фатальная ошибка"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbLogStream.cpp:59
-msgid "Program aborted."
-msgstr "Программа прервана."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:197
-msgid "Info messages"
-msgstr "Информационные сообщения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:265
-msgid "Import file"
-msgstr "Импорт файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:265
-msgid "Import files to the library"
-msgstr "Добавить в библиотеку новые файлы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:266
-msgid "Import folder"
-msgstr "Импорт папки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:266
-msgid "Import folder to the library"
-msgstr "Добавить в библиотеку директорию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:269
-msgid " Author: "
-msgstr " Автор: "
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:277
-msgid "Find author"
-msgstr "Поиск автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:280
-msgid " Book: "
-msgstr " Книга: "
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:289
-msgid "Find book by title"
-msgstr "Поиск книги по заголовку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:291
-msgid "Hierarchy"
-msgstr "Иерархия"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:291
-msgid "Hierarchy of authors and series"
-msgstr "Иерархия авторов и серий"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:292
-msgid "List"
-msgstr "Список"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:292
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:109
-msgid "Simple list"
-msgstr "Простой список"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:310
-msgid "Digital books and archives"
-msgstr "Электронные книги и архивы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:311
-msgid "Digital books in FB2"
-msgstr "Электронные книги FB2"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:312
-msgid "ZIP archives"
-msgstr "Архивы ZIP"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:313
-msgid "All files"
-msgstr "Все файлы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:317
-msgid "Select archive to add to the library"
-msgstr "Выберите zip-файл для добавления в библиотеку…"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:330
-msgid "Processing file:"
-msgstr "Обработка файла:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:332
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:354
-msgid "Can't create thread!"
-msgstr ""
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:343
-msgid "Select folder to recursive import"
-msgstr "Выберите папку для рекурсивного импорта файлов в библиотеку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:351
-msgid "Processing folder:"
-msgstr "Обработка папки:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:453
-msgid "Input search string:"
-msgstr "Введите строку для поиска:"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:453
-msgid "Find title"
-msgstr "Поиск по заголовку"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:508
-msgid "This function is not available yet in this version."
-msgstr "Функционал не реализован в данной версии."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:518
-msgid "Optimize database?"
-msgstr "Выполнить реструктуризацию базы данных?"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainFrame.cpp:610
-msgid "File not found: "
-msgstr "Файл не найден: "
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:8
-msgid "Authors"
-msgstr "Авторы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:11
-msgid "Calendar"
-msgstr "Календарь"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:12
-msgid "Archive"
-msgstr "Архив"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:14
-msgid "My folders"
-msgstr "Мои папки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:15
-msgid "Downloads"
-msgstr "Загрузки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:21
-msgid "Open recent"
-msgstr "Открыть повторно"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:24
-msgid "Clear empty variables"
-msgstr "Удалить пустые значения"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:25
-msgid "Optimize DB"
-msgstr "Реструктуризация БД"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:27
-msgid "Options"
-msgstr "Параметры"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:32
-msgid "Settings"
-msgstr "Настройки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:37
-msgid "Website"
-msgstr "Официальный сайт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:54
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:71
-msgid "Add file"
-msgstr "Добавить файл"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:55
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:72
-msgid "Add folder"
-msgstr "Добавить директорию"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:57
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:75
-msgid "Exit"
-msgstr "Выход"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:62
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:94
-msgid "Tabs"
-msgstr "Вкладки"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:64
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:97
-msgid "Fullscreen mode"
-msgstr "Полноэкранный режим"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:65
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:98
-msgid "Show log window"
-msgstr "Окно сообщений"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:74
-msgid "Export books"
-msgstr "Экспорт книг"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:92
-msgid "List of books"
-msgstr "Список книг"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:93
-msgid "Preview area"
-msgstr "Область просмотра"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:108
-msgid "Hierarchical"
-msgstr "Иерархический"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:114
-msgid "Standart"
-msgstr "Стандартные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:115
-msgid "Compact"
-msgstr "Компактные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:116
-msgid "Convex"
-msgstr "Выпуклые"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:117
-msgid "Buttons"
-msgstr "Кнопочные"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:119
-msgid "Light"
-msgstr "Легкие"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:125
-msgid "Right"
-msgstr "Справа"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:126
-msgid "Bottom"
-msgstr "Внизу"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:127
-msgid "Not specified"
-msgstr "Отсутствует"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:132
-msgid "Close window"
-msgstr "Закрыть окно"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:133
-msgid "Close all"
-msgstr "Закрыть все"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:135
-msgid "Next"
-msgstr "Следующее"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMainMenu.cpp:136
-msgid "Previous"
-msgstr "Предыдущее"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMenu.cpp:11
-msgid "Size"
-msgstr "Размер"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbMenu.cpp:14
-msgid "Reverse order"
-msgstr "Обратный порядок"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParams.cpp:83
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParams.cpp:118
+#: MyRuLib/MyRuLibApp.cpp:140
+#: MyRuLib/FbParams.cpp:83
+#: MyRuLib/FbParams.cpp:118
 msgid "Database error: "
 msgstr "Ошибка базы данных: "
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:153
-msgid "Full file path with name and extension"
-msgstr "Полное имя файла с указанием его директории и расширения."
+#: MyRuLib/FbMenu.cpp:6
+msgid "Title"
+msgstr "Заголовок"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:154
-msgid "Full file path without extension"
-msgstr "Полный путь файла без расширения"
+#: MyRuLib/FbMenu.cpp:7
+msgid "Author"
+msgstr "Автор"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:155
-msgid "File name without path and extension"
-msgstr "Полное имя файла без имени директории и расширения."
+#: MyRuLib/FbMenu.cpp:8
+msgid "Rating"
+msgstr "Рейтинг"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:156
-msgid "Target directory"
-msgstr "Директория"
+#: MyRuLib/FbMenu.cpp:9
+msgid "Language"
+msgstr "Язык"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:157
-msgid "File name extension"
-msgstr "Расширение файла"
+#: MyRuLib/FbMenu.cpp:10
+msgid "Extension"
+msgstr "Тип"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:250
-msgid "List of authors and books:"
-msgstr "Списки книг, авторов:"
+#: MyRuLib/FbMenu.cpp:11
+msgid "Size"
+msgstr "Размер"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:251
-msgid "Toolbar:"
-msgstr "Панель инструментов:"
+#: MyRuLib/FbMenu.cpp:12
+msgid "Date"
+msgstr "Дата"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:252
-msgid "Information:"
-msgstr "Информация:"
+#: MyRuLib/FbMenu.cpp:14
+msgid "Reverse order"
+msgstr "Обратный порядок"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:253
-msgid "Dialog windows:"
-msgstr "Окна диалогов:"
+#: MyRuLib/FbFrameHtml.cpp:69
+msgid "Comment:"
+msgstr "Комментарий:"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:257
-msgid "Reset fonts settings"
-msgstr "Сбросить все шрифты"
+#: MyRuLib/FbFrameHtml.cpp:78
+msgid "Append"
+msgstr "Добавить"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:287
-msgid "Automatically begin files downloading"
-msgstr "Автоматически стартовать загрузку файлов"
+#: MyRuLib/FbFrameHtml.cpp:79
+msgid "Modify"
+msgstr "Изменить"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:293
-msgid "Use proxy-server"
-msgstr "Использовать прокси-сервер"
+#: MyRuLib/FbFrameHtml.cpp:111
+#: MyRuLib/FbFrameInfo.cpp:210
+msgid "Select a file to export report"
+msgstr "Выберите файл для экспорта отчета"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:304
-msgid "Load images for author's description"
-msgstr "Загружать изображения для описаний авторов"
+#: MyRuLib/FbFrameHtml.cpp:114
+#: MyRuLib/FbFrameInfo.cpp:213
+msgid "HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
+msgstr "Файлы HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Все файлы (*.*)|*.*"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:307
-msgid "Folder to save downloads:"
-msgstr "Папка для хранения скачанных файлов:"
+#: MyRuLib/FbFrameHtml.cpp:222
+msgid "Remove comment?"
+msgstr "Удалить комментарий?"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:322
-msgid "Delete downloaded files when download query removed"
-msgstr "Удалять скачанные файлы при удалении загрузок из списка"
+#: MyRuLib/FbFrameHtml.cpp:222
+msgid "Confirmation"
+msgstr "Подтверждение"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:350
-msgid "Program"
-msgstr "Программа"
+#: MyRuLib/FbFrameDownld.cpp:45
+#: MyRuLib/FbFrameDownld.cpp:62
+msgid "Folders"
+msgstr "Папки"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:369
-msgid "Save full path of the file when importing"
-msgstr "Сохранять полный путь файла при импорте"
+#: MyRuLib/FbFrameDownld.cpp:70
+msgid "Export"
+msgstr "Экспорт"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:372
-msgid "Temporary folder:"
-msgstr "Папка для временных файлов:"
+#: MyRuLib/FbFrameDownld.cpp:70
+msgid "Export to external device"
+msgstr "Запись на внешнее устройство"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:393
-msgid "Wine temp folder:"
-msgstr "Папка для временных файлов Wine:"
+#: MyRuLib/FbFrameDownld.cpp:72
+msgid "Start"
+msgstr "Старт"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:405
-msgid "Delete temporary files when you exit the program"
-msgstr "Удалять временные файлы при выходе из программы"
+#: MyRuLib/FbFrameDownld.cpp:72
+msgid "Start downloading"
+msgstr "Начать загрузку файлов через интернет"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:408
-msgid "Delete files when you delete a book"
-msgstr "Удалять файлы при удалении книги"
+#: MyRuLib/FbFrameDownld.cpp:73
+msgid "Stop"
+msgstr "Стоп"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:416
-msgid "Limit the maximum size of lists:"
-msgstr "Органичить максимальный размер списков:"
+#: MyRuLib/FbFrameDownld.cpp:73
+msgid "Stop downloading"
+msgstr "Остановить загрузку файлов через интернет"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:457
-msgid "A / Author / Series / #_book"
-msgstr "А / Автор / Серия / №_Книга"
+#: MyRuLib/FbFrameDownld.cpp:75
+msgid "Up"
+msgstr "Вверх"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:458
-msgid "A / Author / Book"
-msgstr "А / Автор / Книга"
+#: MyRuLib/FbFrameDownld.cpp:75
+msgid "Move up in queue"
+msgstr "Передвинуть в начало очереди"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:459
-msgid "Author / Series / #_book"
-msgstr "Автор / Серия / №_Книга"
+#: MyRuLib/FbFrameDownld.cpp:76
+msgid "Down"
+msgstr "Вниз"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:460
-msgid "Author / Book"
-msgstr "Автор / Книга"
+#: MyRuLib/FbFrameDownld.cpp:76
+msgid "Move down in queue"
+msgstr "Передвинуть в конец очереди"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:463
-msgid "Exported collection structure"
-msgstr "Организация папок и файлов"
+#: MyRuLib/FbFrameDownld.cpp:78
+msgid "Delete"
+msgstr "Удалить"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:467
-msgid "Transliterate folder name"
-msgstr "Транслитерация имени папки"
+#: MyRuLib/FbFrameDownld.cpp:78
+msgid "Remove download"
+msgstr "Удалить загрузку"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:470
-msgid "Transliterate filename"
-msgstr "Транслитерация имен файлов"
+#: MyRuLib/FbFrameDownld.cpp:90
+msgid "Queue"
+msgstr "Очередь"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:485
-msgid "Export script"
-msgstr "Скрипт для экспорта"
+#: MyRuLib/FbFrameDownld.cpp:91
+msgid "Ready"
+msgstr "Готово"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:495
-msgid "Format of exporting collection"
-msgstr "Формат выгрузки"
+#: MyRuLib/FbFrameDownld.cpp:92
+msgid "Fault"
+msgstr "Ошибки"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:569
-msgid "Fonts"
-msgstr "Шрифты"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:722
-msgid "Program settings"
-msgstr "Настройка параметров программы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:738
-msgid "Database open error: "
-msgstr ""
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:752
-msgid "Append export script"
-msgstr "Добавить скрипт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:777
-msgid "Modify export script"
-msgstr "Изменить скрипт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:810
-msgid "Delete export script"
-msgstr "Удалить скрипт"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:844
-msgid "Input new filetype"
-msgstr "Введите новый тип файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:873
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbViewerDlg.cpp:18
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbViewerDlg.cpp:53
-msgid "Select the application to view files"
-msgstr "Выберите приложение для просмотра файлов"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbParamsDlg.cpp:894
-msgid "Delete file type"
-msgstr "Удалить тип файла"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbReplaceDlg.cpp:111
-msgid "Author not selected by replacement."
-msgstr "Не выбран автор для замены."
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbReplaceDlg.cpp:133
-msgid "Replace author"
-msgstr "Заменить автора"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbViewerDlg.cpp:12
-msgid "Customize"
-msgstr "Настройка"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbViewerDlg.cpp:55
-msgid "Executable files"
-msgstr "Исполняемые файлы"
-
-#: d:\!Data\MyProjects\myrulib\MyRuLib/InfoThread.cpp:191
+#: MyRuLib/InfoThread.cpp:191
 #, c-format
 msgid "XML parsing error: '%s' at line %d"
 msgstr "Ошибка чтения XML: '%s' в строке %d"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/VacuumThread.cpp:11
-msgid "Start SQLite VACUUM"
-msgstr ""
+#: MyRuLib/FbFrameInfo.cpp:61
+msgid "Information about collection"
+msgstr "Информация о коллекции"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ZipReader.cpp:93
+#: MyRuLib/FbFrameInfo.cpp:102
+msgid "Total quantity"
+msgstr "Общее количество"
+
+#: MyRuLib/FbFrameInfo.cpp:111
+msgid "Total books count:"
+msgstr "Общее количество книг:"
+
+#: MyRuLib/FbFrameInfo.cpp:115
+msgid "Authors counting"
+msgstr "Подсчет авторов"
+
+#: MyRuLib/FbFrameInfo.cpp:122
+msgid "Authors count:"
+msgstr "Количество авторов:"
+
+#: MyRuLib/FbFrameInfo.cpp:126
+msgid "Total files size, Mb:"
+msgstr "Суммарный размер файлов, Мб:"
+
+#: MyRuLib/FbFrameInfo.cpp:128
+msgid "First reciept:"
+msgstr "Первое поступление:"
+
+#: MyRuLib/FbFrameInfo.cpp:130
+msgid "Last reciept:"
+msgstr "Последнее поступление:"
+
+#: MyRuLib/FbFrameInfo.cpp:141
+msgid "File extension"
+msgstr "Тип файла"
+
+#: MyRuLib/FbFrameInfo.cpp:142
+msgid "Count"
+msgstr "Количество"
+
+#: MyRuLib/FbFrameInfo.cpp:143
+msgid "Size, Kb"
+msgstr "Размер, Кб"
+
+#: MyRuLib/FbFrameInfo.cpp:154
+msgid "File types"
+msgstr "Типы файлов"
+
+#: MyRuLib/FbFrameInfo.cpp:180
+msgid "Collection info"
+msgstr "Информация о коллекции"
+
+#: MyRuLib/FbEditBook.cpp:37
+#: MyRuLib/FbMainMenu.cpp:10
+msgid "Series"
+msgstr "Серии"
+
+#: MyRuLib/FbEditBook.cpp:38
+msgid "Genre"
+msgstr "Жанр"
+
+#: MyRuLib/FbMainMenu.cpp:6
+msgid "Search"
+msgstr "Поиск"
+
+#: MyRuLib/FbMainMenu.cpp:8
+msgid "Authors"
+msgstr "Авторы"
+
+#: MyRuLib/FbMainMenu.cpp:9
+msgid "Genres"
+msgstr "Жанры"
+
+#: MyRuLib/FbMainMenu.cpp:11
+msgid "Calendar"
+msgstr "Календарь"
+
+#: MyRuLib/FbMainMenu.cpp:12
+msgid "Archive"
+msgstr "Архив"
+
+#: MyRuLib/FbMainMenu.cpp:14
+msgid "My folders"
+msgstr "Мои папки"
+
+#: MyRuLib/FbMainMenu.cpp:15
+msgid "Downloads"
+msgstr "Загрузки"
+
+#: MyRuLib/FbMainMenu.cpp:20
+msgid "Open (or create) collection"
+msgstr "Открыть (создать) коллекцию"
+
+#: MyRuLib/FbMainMenu.cpp:21
+msgid "Open recent"
+msgstr "Открыть повторно"
+
+#: MyRuLib/FbMainMenu.cpp:24
+msgid "Clear empty variables"
+msgstr "Удалить пустые значения"
+
+#: MyRuLib/FbMainMenu.cpp:25
+msgid "Optimize DB"
+msgstr "Реструктуризация БД"
+
+#: MyRuLib/FbMainMenu.cpp:27
+msgid "Options"
+msgstr "Параметры"
+
+#: MyRuLib/FbMainMenu.cpp:32
+msgid "Settings"
+msgstr "Настройки"
+
+#: MyRuLib/FbMainMenu.cpp:37
+msgid "Website"
+msgstr "Официальный сайт"
+
+#: MyRuLib/FbMainMenu.cpp:38
+#: MyRuLib/FbAboutDlg.cpp:8
+msgid "About"
+msgstr "О программе…"
+
+#: MyRuLib/FbMainMenu.cpp:43
+#: MyRuLib/FbFrameAuthor.cpp:355
+msgid "&File"
+msgstr "Файл"
+
+#: MyRuLib/FbMainMenu.cpp:44
+#: MyRuLib/FbFrameAuthor.cpp:356
+msgid "&Library"
+msgstr "Библиотека"
+
+#: MyRuLib/FbMainMenu.cpp:45
+#: MyRuLib/FbFrameAuthor.cpp:357
+msgid "&Catalog"
+msgstr "Картотека"
+
+#: MyRuLib/FbMainMenu.cpp:46
+#: MyRuLib/FbFrameAuthor.cpp:360
+msgid "&View"
+msgstr "Вид"
+
+#: MyRuLib/FbMainMenu.cpp:47
+#: MyRuLib/FbFrameAuthor.cpp:361
+msgid "&Tools"
+msgstr "Сервис"
+
+#: MyRuLib/FbMainMenu.cpp:48
+#: MyRuLib/FbFrameAuthor.cpp:362
+msgid "&Window"
+msgstr "Окно"
+
+#: MyRuLib/FbMainMenu.cpp:49
+#: MyRuLib/FbFrameAuthor.cpp:363
+msgid "&?"
+msgstr "?"
+
+#: MyRuLib/FbMainMenu.cpp:54
+#: MyRuLib/FbMainMenu.cpp:71
+msgid "Add file"
+msgstr "Добавить файл"
+
+#: MyRuLib/FbMainMenu.cpp:55
+#: MyRuLib/FbMainMenu.cpp:72
+msgid "Add folder"
+msgstr "Добавить директорию"
+
+#: MyRuLib/FbMainMenu.cpp:57
+#: MyRuLib/FbMainMenu.cpp:75
+msgid "Exit"
+msgstr "Выход"
+
+#: MyRuLib/FbMainMenu.cpp:62
+#: MyRuLib/FbMainMenu.cpp:94
+msgid "Tabs"
+msgstr "Вкладки"
+
+#: MyRuLib/FbMainMenu.cpp:64
+#: MyRuLib/FbMainMenu.cpp:97
+msgid "Fullscreen mode"
+msgstr "Полноэкранный режим"
+
+#: MyRuLib/FbMainMenu.cpp:65
+#: MyRuLib/FbMainMenu.cpp:98
+msgid "Show log window"
+msgstr "Окно сообщений"
+
+#: MyRuLib/FbMainMenu.cpp:74
+msgid "Export books"
+msgstr "Экспорт книг"
+
+#: MyRuLib/FbMainMenu.cpp:80
+msgid "Select all"
+msgstr "Выделить все"
+
+#: MyRuLib/FbMainMenu.cpp:81
+msgid "Undo selection"
+msgstr "Отменить выделение"
+
+#: MyRuLib/FbMainMenu.cpp:83
+msgid "Sort by"
+msgstr "Сортировка"
+
+#: MyRuLib/FbMainMenu.cpp:84
+msgid "Use filter"
+msgstr "Использовать фильтр"
+
+#: MyRuLib/FbMainMenu.cpp:85
+msgid "Clear filter"
+msgstr "Удалить фильтр"
+
+#: MyRuLib/FbMainMenu.cpp:87
+msgid "Add comments"
+msgstr "Комментарии"
+
+#: MyRuLib/FbMainMenu.cpp:92
+msgid "List of books"
+msgstr "Список книг"
+
+#: MyRuLib/FbMainMenu.cpp:93
+msgid "Preview area"
+msgstr "Область просмотра"
+
+#: MyRuLib/FbMainMenu.cpp:95
+msgid "Table columns"
+msgstr "Колонки таблицы"
+
+#: MyRuLib/FbMainMenu.cpp:108
+msgid "Hierarchical"
+msgstr "Иерархический"
+
+#: MyRuLib/FbMainMenu.cpp:109
+msgid "Simple list"
+msgstr "Простой список"
+
+#: MyRuLib/FbMainMenu.cpp:114
+msgid "Standart"
+msgstr "Стандартные"
+
+#: MyRuLib/FbMainMenu.cpp:115
+msgid "Compact"
+msgstr "Компактные"
+
+#: MyRuLib/FbMainMenu.cpp:116
+msgid "Convex"
+msgstr "Выпуклые"
+
+#: MyRuLib/FbMainMenu.cpp:117
+msgid "Buttons"
+msgstr "Кнопочные"
+
+#: MyRuLib/FbMainMenu.cpp:119
+msgid "Light"
+msgstr "Легкие"
+
+#: MyRuLib/FbMainMenu.cpp:125
+msgid "Right"
+msgstr "Справа"
+
+#: MyRuLib/FbMainMenu.cpp:126
+msgid "Bottom"
+msgstr "Внизу"
+
+#: MyRuLib/FbMainMenu.cpp:127
+msgid "Not specified"
+msgstr "Отсутствует"
+
+#: MyRuLib/FbMainMenu.cpp:132
+msgid "Close window"
+msgstr "Закрыть окно"
+
+#: MyRuLib/FbMainMenu.cpp:133
+msgid "Close all"
+msgstr "Закрыть все"
+
+#: MyRuLib/FbMainMenu.cpp:135
+msgid "Next"
+msgstr "Следующее"
+
+#: MyRuLib/FbMainMenu.cpp:136
+msgid "Previous"
+msgstr "Предыдущее"
+
+#: MyRuLib/ExpThread.cpp:122
+#, c-format
+msgid "can't delete file %s"
+msgstr "Не удалось удалить файл %s"
+
+#: MyRuLib/ExpThread.cpp:203
+msgid "Cancel"
+msgstr "Отмена"
+
+#: MyRuLib/ExpThread.cpp:317
+msgid "Close"
+msgstr "Закрыть"
+
+#: MyRuLib/ExpThread.cpp:322
+#, c-format
+msgid "Export completed with %d errors"
+msgstr "Экспорт завершен с %d ошибками"
+
+#: MyRuLib/ExpThread.cpp:323
+msgid "Export completed successfully"
+msgstr "Экспорт успешно завершен"
+
+#: MyRuLib/ExpThread.cpp:324
+msgid "Export aborted by user"
+msgstr "Экспорт прерван пользователем"
+
+#: MyRuLib/FbReplaceDlg.cpp:27
+#: MyRuLib/FbFrameAuthor.cpp:345
+#: MyRuLib/FbFrameAuthor.cpp:370
+msgid "Replace"
+msgstr "Заменить"
+
+#: MyRuLib/FbReplaceDlg.cpp:37
+msgid "Find"
+msgstr "Найти"
+
+#: MyRuLib/FbReplaceDlg.cpp:60
+#: MyRuLib/FbFrameAuthor.cpp:63
+#: MyRuLib/FbFrameAuthor.cpp:81
+msgid "Num."
+msgstr "Кол."
+
+#: MyRuLib/FbReplaceDlg.cpp:106
+msgid "Merge authors?"
+msgstr "Объединить двух авторов?"
+
+#: MyRuLib/FbReplaceDlg.cpp:111
+msgid "Author not selected by replacement."
+msgstr "Не выбран автор для замены."
+
+#: MyRuLib/FbReplaceDlg.cpp:133
+msgid "Replace author"
+msgstr "Заменить автора"
+
+#: MyRuLib/ZipReader.cpp:93
 #, c-format
 msgid "Book not found %s"
 msgstr "Книга не найдена %s"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ZipReader.cpp:262
+#: MyRuLib/ZipReader.cpp:122
+msgid "Can't create thread!"
+msgstr ""
+
+#: MyRuLib/ZipReader.cpp:198
+#, c-format
+msgid "Not found an archive (%s), containing file (%s)."
+msgstr "Не найден архив (%s), содержащий файл (%s)."
+
+#: MyRuLib/ZipReader.cpp:212
+#, c-format
+msgid "Not found file %s"
+msgstr "Файл не найден %s"
+
+#: MyRuLib/ZipReader.cpp:262
 #, c-format
 msgid "Start scan directory %s"
 msgstr "Начата обработка директории %s"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ZipReader.cpp:277
+#: MyRuLib/ZipReader.cpp:266
+#, c-format
+msgid "Can't open directory %s"
+msgstr "Не удалось открыть директорию %s"
+
+#: MyRuLib/ZipReader.cpp:277
 #, c-format
 msgid "Finish scan directory %s"
 msgstr "Завершена обработка директории %s"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/ZipReader.cpp:282
+#: MyRuLib/ZipReader.cpp:282
 #, c-format
 msgid "Scan zip %s"
 msgstr "Обработка zip-файла %s"
 
-#: d:\!Data\MyProjects\myrulib\MyRuLib/FbFrameInfo.h:14
+#: MyRuLib/ZipReader.cpp:324
+#, c-format
+msgid "Zip read error %s"
+msgstr "Ошибка чтения zip %s"
+
+#: MyRuLib/FbFilterDlg.cpp:12
+msgid "All"
+msgstr "Все"
+
+#: MyRuLib/FbFilterDlg.cpp:96
+msgid "Filter settings"
+msgstr "Настройка фильтра"
+
+#: MyRuLib/FbFilterDlg.cpp:104
+msgid "Show books by allocation"
+msgstr "Отбор книг по принадлежности"
+
+#: MyRuLib/FbFilterDlg.cpp:106
+msgid "Library books (web)"
+msgstr "Библиотечные"
+
+#: MyRuLib/FbFilterDlg.cpp:110
+msgid "Local books"
+msgstr "Собственные"
+
+#: MyRuLib/FbBookData.cpp:66
+msgid "Download book file?"
+msgstr "Скачать книгу?"
+
+#: MyRuLib/FbBookData.cpp:128
+msgid "Associated application not found"
+msgstr "Не найдено приложение для просмотра файлов типа"
+
+#: MyRuLib/FbFrameAuthor.cpp:88
+msgid "All collected authors"
+msgstr "Все авторы коллекции"
+
+#: MyRuLib/FbFrameAuthor.cpp:319
+msgid "Delete author"
+msgstr "Удалить автора"
+
+#: MyRuLib/FbFrameAuthor.cpp:320
+#, c-format
+msgid "and all of author's books (%d pcs.)?"
+msgstr "и все его книги в количестве %d шт.?"
+
+#: MyRuLib/FbFrameAuthor.cpp:321
+msgid "Removing"
+msgstr "Удаление"
+
+#: MyRuLib/FbFrameAuthor.cpp:349
+#: MyRuLib/FbFrameAuthor.cpp:373
+msgid "Online authors page"
+msgstr "Страница автора"
+
+#: MyRuLib/FbFrameAuthor.cpp:358
+msgid "&Authors"
+msgstr "Авторы"
+
+#: MyRuLib/FbFrameAuthor.cpp:359
+msgid "&Books"
+msgstr "Книги"
+
+#: MyRuLib/FbFrameAuthor.cpp:389
+msgid "Russian aplhabet"
+msgstr "Русский алфавит"
+
+#: MyRuLib/FbFrameAuthor.cpp:390
+msgid "Latin alphabet"
+msgstr "Латинский алфавит"
+
+#: MyRuLib/FbFrameSearch.cpp:49
+#: MyRuLib/FbFrameSearch.cpp:64
+msgid "Searching"
+msgstr "Поиск"
+
+#: MyRuLib/FbFrameSearch.cpp:63
+#, c-format
+msgid "Nothing was found on pattern \"%s\""
+msgstr "Ничего не найдено по шаблону «%s»"
+
+#: MyRuLib/FbConfigDlg.cpp:42
+msgid "Library name:"
+msgstr "Название библиотеки:"
+
+#: MyRuLib/FbConfigDlg.cpp:51
+msgid "Library folder:"
+msgstr "Размещение файлов:"
+
+#: MyRuLib/FbConfigDlg.cpp:68
+msgid "Short description:"
+msgstr "Краткое описание:"
+
+#: MyRuLib/FbConfigDlg.cpp:89
+msgid "Host name:"
+msgstr "Интернет адрес:"
+
+#: MyRuLib/FbConfigDlg.cpp:99
+msgid "User name:"
+msgstr "Имя пользователя:"
+
+#: MyRuLib/FbConfigDlg.cpp:106
+msgid "Password:"
+msgstr "Пароль:"
+
+#: MyRuLib/FbConfigDlg.cpp:127
+#: MyRuLib/FbParamsDlg.cpp:547
+msgid "General"
+msgstr "Основные"
+
+#: MyRuLib/FbConfigDlg.cpp:128
+#: MyRuLib/FbParamsDlg.cpp:548
+msgid "Network"
+msgstr "Интернет"
+
+#: MyRuLib/FbConfigDlg.cpp:147
+#: MyRuLib/FbParamsDlg.cpp:580
+msgid "Select folder"
+msgstr "Выберите директорию"
+
+#: MyRuLib/FbConfigDlg.cpp:220
+msgid "Library options"
+msgstr "Параметры библиотеки"
+
+#: MyRuLib/FbFrameFolder.cpp:82
+msgid "Bookmarks"
+msgstr "Закладки"
+
+#: MyRuLib/FbFrameFolder.cpp:85
+msgid "Favorites"
+msgstr "Избранное"
+
+#: MyRuLib/FbFrameFolder.cpp:100
+msgid "Remarks"
+msgstr "Пометки"
+
+#: MyRuLib/FbFrameFolder.cpp:103
+msgid "Comments"
+msgstr "Комментарии"
+
+#: MyRuLib/FbFrameFolder.cpp:153
+msgid "Input name of new folder:"
+msgstr "Введите имя новой папки:"
+
+#: MyRuLib/FbFrameFolder.cpp:153
+msgid "Add folder?"
+msgstr "Добавить папку?"
+
+#: MyRuLib/FbFrameFolder.cpp:179
+msgid "Input new folder name:"
+msgstr "Введите новое имя папки:"
+
+#: MyRuLib/FbFrameFolder.cpp:179
+msgid "Change folder?"
+msgstr "Изменить папку?"
+
+#: MyRuLib/FbFrameFolder.cpp:203
+#, c-format
+msgid "Delete folder \"%s\"?"
+msgstr "Удалить папку «%s»?"
+
+#: MyRuLib/FbFrameFolder.cpp:204
+msgid "Delete folder?"
+msgstr "Удалить папку?"
+
+#: MyRuLib/FbFrameBase.cpp:130
+#: MyRuLib/FbFrameSequen.cpp:455
+msgid "(Misc.)"
+msgstr "(разное)"
+
+#: MyRuLib/FbConst.cpp:29
+msgid "(no Author)"
+msgstr "(без автора)"
+
+#: MyRuLib/FbConst.cpp:44
+msgid "Clear"
+msgstr "Очистить"
+
+#: MyRuLib/FbBookMenu.cpp:15
+msgid "Open book"
+msgstr "Открыть книгу"
+
+#: MyRuLib/FbBookMenu.cpp:17
+msgid "Delete download query"
+msgstr "Удалить закачку"
+
+#: MyRuLib/FbBookMenu.cpp:18
+msgid "Retry rownload"
+msgstr "Скачать повторно"
+
+#: MyRuLib/FbBookMenu.cpp:20
+msgid "Download a file"
+msgstr "Скачать файл"
+
+#: MyRuLib/FbBookMenu.cpp:22
+msgid "Download via browser"
+msgstr "Скачать в браузере"
+
+#: MyRuLib/FbBookMenu.cpp:23
+msgid "Online books page"
+msgstr "Книга на сайте библиотеки"
+
+#: MyRuLib/FbBookMenu.cpp:32
+msgid "Delete book"
+msgstr "Удалить книгу"
+
+#: MyRuLib/FbBookMenu.cpp:40
+msgid "Jump to author"
+msgstr "Перейти к автору"
+
+#: MyRuLib/FbBookMenu.cpp:44
+msgid "Add to favourites"
+msgstr "Добавить в избранное"
+
+#: MyRuLib/FbBookMenu.cpp:45
+msgid "Add to folders"
+msgstr "Добавить в папку"
+
+#: MyRuLib/FbBookMenu.cpp:46
+msgid "Rate this book"
+msgstr "Установить рейтинг"
+
+#: MyRuLib/FbBookMenu.cpp:47
+msgid "Delete bookmark"
+msgstr "Удалить закладку"
+
+#: MyRuLib/VacuumThread.cpp:11
+msgid "Start SQLite VACUUM"
+msgstr ""
+
+#: MyRuLib/FbDataOpenDlg.cpp:30
+msgid "File name:"
+msgstr "Имя файла:"
+
+#: MyRuLib/FbDataOpenDlg.cpp:70
+msgid "Enter collection filename"
+msgstr "Выберите имя файла коллекции"
+
+#: MyRuLib/FbDataOpenDlg.cpp:73
+msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
+msgstr "Файл базы данных (*.db)|*.db|Все файлы (*.*)|*.*"
+
+#: MyRuLib/FbDatabase.cpp:285
+msgid "Search template"
+msgstr "Шаблон для поиска"
+
+#: MyRuLib/FbDatabase.cpp:351
+#, c-format
+msgid "GENRE called with wrong number of arguments: %d."
+msgstr ""
+
+#: MyRuLib/FbDatabase.cpp:424
+msgid "Open database"
+msgstr "Открыть базу данных"
+
+#: MyRuLib/FbDatabase.cpp:426
+msgid "Create new database"
+msgstr "Создать новую базу данных"
+
+#: MyRuLib/FbDatabase.cpp:526
+#, c-format
+msgid "Upgrade database to version %d"
+msgstr "Обновить базу данных до версии %d"
+
+#: MyRuLib/FbDatabase.cpp:535
+msgid "Database version mismatch"
+msgstr "Несоответствие верси базы данных."
+
+#: MyRuLib/FbDatabase.cpp:538
+#, c-format
+msgid "Need a new version %d, but used the old %d."
+msgstr "Требуется новая версия %d, обнаружена старая %d"
+
+#: MyRuLib/FbFrameSequen.cpp:50
+#: MyRuLib/FbFrameSequen.cpp:67
+#: MyRuLib/FbFrameSequen.cpp:78
+msgid "Ser."
+msgstr "Серия"
+
+#: MyRuLib/FbFrameSequen.cpp:88
+msgid "Find series by name"
+msgstr "Найти серию по наименованию"
+
+#: MyRuLib/FbFrameSequen.cpp:257
+msgid "Series name:"
+msgstr "Наименование серии:"
+
+#: MyRuLib/FbFrameSequen.cpp:278
+msgid "Append series"
+msgstr "Добавить серию"
+
+#: MyRuLib/FbFrameSequen.cpp:286
+msgid "Modify series"
+msgstr "Изменить серию"
+
+#: MyRuLib/FbFrameSequen.cpp:352
+msgid "\"Series name\" field is empty"
+msgstr "Не заполнено наименование серии."
+
+#: MyRuLib/FbFrameSequen.cpp:357
+msgid "Series aleready exists"
+msgstr "Такая серия уже существует."
+
+#: MyRuLib/FbFrameSequen.cpp:360
+msgid "Merge series?"
+msgstr "Объединить две серии?"
+
+#: MyRuLib/FbFrameSequen.cpp:416
+#, c-format
+msgid "Delete series «%s»?"
+msgstr "Удалить серию «%s»?"
+
+#: MyRuLib/FbFrameSequen.cpp:431
+msgid "&Series"
+msgstr "Серии"
+
+#: MyRuLib/FbColumnDlg.cpp:9
+msgid "Columns"
+msgstr "Колонки"
+
+#: MyRuLib/FbParamsDlg.cpp:153
+msgid "Full file path with name and extension"
+msgstr "Полное имя файла с указанием его директории и расширения."
+
+#: MyRuLib/FbParamsDlg.cpp:154
+msgid "Full file path without extension"
+msgstr "Полный путь файла без расширения"
+
+#: MyRuLib/FbParamsDlg.cpp:155
+msgid "File name without path and extension"
+msgstr "Полное имя файла без имени директории и расширения."
+
+#: MyRuLib/FbParamsDlg.cpp:156
+msgid "Target directory"
+msgstr "Директория"
+
+#: MyRuLib/FbParamsDlg.cpp:157
+msgid "File name extension"
+msgstr "Расширение файла"
+
+#: MyRuLib/FbParamsDlg.cpp:250
+msgid "List of authors and books:"
+msgstr "Списки книг, авторов:"
+
+#: MyRuLib/FbParamsDlg.cpp:251
+msgid "Toolbar:"
+msgstr "Панель инструментов:"
+
+#: MyRuLib/FbParamsDlg.cpp:252
+msgid "Information:"
+msgstr "Информация:"
+
+#: MyRuLib/FbParamsDlg.cpp:253
+msgid "Dialog windows:"
+msgstr "Окна диалогов:"
+
+#: MyRuLib/FbParamsDlg.cpp:257
+msgid "Reset fonts settings"
+msgstr "Сбросить все шрифты"
+
+#: MyRuLib/FbParamsDlg.cpp:287
+msgid "Automatically begin files downloading"
+msgstr "Автоматически стартовать загрузку файлов"
+
+#: MyRuLib/FbParamsDlg.cpp:293
+msgid "Use proxy-server"
+msgstr "Использовать прокси-сервер"
+
+#: MyRuLib/FbParamsDlg.cpp:304
+msgid "Load images for author's description"
+msgstr "Загружать изображения для описаний авторов"
+
+#: MyRuLib/FbParamsDlg.cpp:307
+msgid "Folder to save downloads:"
+msgstr "Папка для хранения скачанных файлов:"
+
+#: MyRuLib/FbParamsDlg.cpp:322
+msgid "Delete downloaded files when download query removed"
+msgstr "Удалять скачанные файлы при удалении загрузок из списка"
+
+#: MyRuLib/FbParamsDlg.cpp:350
+msgid "Program"
+msgstr "Программа"
+
+#: MyRuLib/FbParamsDlg.cpp:369
+msgid "Save full path of the file when importing"
+msgstr "Сохранять полный путь файла при импорте"
+
+#: MyRuLib/FbParamsDlg.cpp:372
+msgid "Temporary folder:"
+msgstr "Папка для временных файлов:"
+
+#: MyRuLib/FbParamsDlg.cpp:393
+msgid "Wine temp folder:"
+msgstr "Папка для временных файлов Wine:"
+
+#: MyRuLib/FbParamsDlg.cpp:405
+msgid "Delete temporary files when you exit the program"
+msgstr "Удалять временные файлы при выходе из программы"
+
+#: MyRuLib/FbParamsDlg.cpp:408
+msgid "Delete files when you delete a book"
+msgstr "Удалять файлы при удалении книги"
+
+#: MyRuLib/FbParamsDlg.cpp:413
+msgid "Limit the maximum size of lists:"
+msgstr "Органичить максимальный размер списков:"
+
+#: MyRuLib/FbParamsDlg.cpp:420
+msgid "Clear the log window when it closes"
+msgstr "Очищать окно сообщений при его закрытии"
+
+#: MyRuLib/FbParamsDlg.cpp:437
+msgid "Destination folder:"
+msgstr "Папка внешнего устройства:"
+
+#: MyRuLib/FbParamsDlg.cpp:457
+msgid "A / Author / Series / #_book"
+msgstr "А / Автор / Серия / №_Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:458
+msgid "A / Author / Book"
+msgstr "А / Автор / Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:459
+msgid "Author / Series / #_book"
+msgstr "Автор / Серия / №_Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:460
+msgid "Author / Book"
+msgstr "Автор / Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:463
+msgid "Exported collection structure"
+msgstr "Организация папок и файлов"
+
+#: MyRuLib/FbParamsDlg.cpp:467
+msgid "Transliterate folder name"
+msgstr "Транслитерация имени папки"
+
+#: MyRuLib/FbParamsDlg.cpp:470
+msgid "Transliterate filename"
+msgstr "Транслитерация имен файлов"
+
+#: MyRuLib/FbParamsDlg.cpp:485
+msgid "Export script"
+msgstr "Скрипт для экспорта"
+
+#: MyRuLib/FbParamsDlg.cpp:495
+msgid "Format of exporting collection"
+msgstr "Формат выгрузки"
+
+#: MyRuLib/FbParamsDlg.cpp:499
+#: MyRuLib/FbParamsDlg.cpp:743
+#: MyRuLib/FbParamsDlg.cpp:775
+#: MyRuLib/FbParamsDlg.cpp:949
+msgid "filename"
+msgstr "имя_файла"
+
+#: MyRuLib/FbParamsDlg.cpp:551
+msgid "Fonts"
+msgstr "Шрифты"
+
+#: MyRuLib/FbParamsDlg.cpp:705
+msgid "Program settings"
+msgstr "Настройка параметров программы"
+
+#: MyRuLib/FbParamsDlg.cpp:721
+msgid "Error writing to database"
+msgstr "Ошибка записи в базу данных"
+
+#: MyRuLib/FbParamsDlg.cpp:735
+msgid "Append export script"
+msgstr "Добавить скрипт"
+
+#: MyRuLib/FbParamsDlg.cpp:761
+msgid "Modify export script"
+msgstr "Изменить скрипт"
+
+#: MyRuLib/FbParamsDlg.cpp:795
+msgid "Delete export script"
+msgstr "Удалить скрипт"
+
+#: MyRuLib/FbParamsDlg.cpp:829
+msgid "Input new filetype"
+msgstr "Введите новый тип файла"
+
+#: MyRuLib/FbParamsDlg.cpp:858
+msgid "Select the application to view files"
+msgstr "Выберите приложение для просмотра файлов"
+
+#: MyRuLib/FbParamsDlg.cpp:879
+msgid "Delete file type"
+msgstr "Удалить тип файла"
+
+#: MyRuLib/FbDownloader.cpp:67
+msgid "Download"
+msgstr "Загрузка"
+
+#: MyRuLib/FbDownloader.cpp:71
+#: MyRuLib/FbDownloader.cpp:102
+msgid "URL error"
+msgstr "Ошибка URL"
+
+#: MyRuLib/FbDownloader.cpp:82
+#: MyRuLib/FbDownloader.cpp:110
+msgid "Connect error"
+msgstr "Ошибка подключения"
+
+#: MyRuLib/FbDownloader.cpp:89
+#: MyRuLib/FbDownloader.cpp:115
+msgid "Redirect"
+msgstr "Переадресация"
+
+#: MyRuLib/FbDownloader.cpp:94
+msgid "Authentication failure"
+msgstr "Ошибка аутентификации"
+
+#: MyRuLib/FbDownloader.cpp:136
+msgid "File download"
+msgstr "Загрузка файла"
+
+#: MyRuLib/FbDownloader.cpp:146
+#, c-format
+msgid "HTTP read error, read %d of %d bytes: %s"
+msgstr "Ошибка HTTP: получено %d из %d байт: %s"
+
+#: MyRuLib/FbDownloader.cpp:156
+msgid "Download error"
+msgstr "Ошибка загрузки"
+
+#: MyRuLib/FbDownloader.cpp:173
+msgid "Can't open zip"
+msgstr "Не удалось открыть zip-файл %s"
+
+#: MyRuLib/FbDownloader.cpp:191
+msgid "Wrong MD5 sum"
+msgstr "Неверная контрольная сумма файла"
+
+#: MyRuLib/FbDownloader.cpp:219
+msgid "Download finished"
+msgstr "Загрузка завершена"
+
+#: MyRuLib/FbBookPanel.cpp:63
+#: MyRuLib/FbBookPanel.cpp:77
+msgid "#"
+msgstr "№"
+
+#: MyRuLib/FbBookPanel.cpp:523
+#, c-format
+msgid "Delete selected books (%d pcs)?"
+msgstr "Удалить выделенные книги (%d шт.)?"
+
+#: MyRuLib/FbAuthorDlg.cpp:18
+msgid "Surname"
+msgstr "Фамилия"
+
+#: MyRuLib/FbAuthorDlg.cpp:19
+msgid "Name"
+msgstr "Имя"
+
+#: MyRuLib/FbAuthorDlg.cpp:20
+msgid "Middle-Name"
+msgstr "Отчество"
+
+#: MyRuLib/FbAuthorDlg.cpp:47
+msgid "Add author"
+msgstr "Добавить автора"
+
+#: MyRuLib/FbAuthorDlg.cpp:55
+msgid "Change author"
+msgstr "Изменить автора"
+
+#: MyRuLib/FbAuthorDlg.cpp:163
+msgid "\"Surname\" field is empty"
+msgstr "Не заполнена фамилия автора"
+
+#: MyRuLib/FbAuthorDlg.cpp:168
+msgid "Autor with same details aleready exists"
+msgstr "Автор с такими реквизитами уже существует"
+
+#: MyRuLib/FbGenres.cpp:19
+msgid "Fiction"
+msgstr "Фантастика"
+
+#: MyRuLib/FbGenres.cpp:20
+msgid "Mysteries and Thrillers"
+msgstr "Детективы и Триллеры"
+
+#: MyRuLib/FbGenres.cpp:21
+msgid "Prose"
+msgstr "Проза"
+
+#: MyRuLib/FbGenres.cpp:22
+msgid "Romance"
+msgstr "Любовные романы"
+
+#: MyRuLib/FbGenres.cpp:23
+#: MyRuLib/FbGenres.cpp:81
+msgid "Adventures"
+msgstr "Приключения"
+
+#: MyRuLib/FbGenres.cpp:24
+#: MyRuLib/FbGenres.cpp:89
+msgid "Children literature"
+msgstr "Детская литература"
+
+#: MyRuLib/FbGenres.cpp:25
+msgid "Poetry, dramaturgy"
+msgstr "Поэзия, Драматургия"
+
+#: MyRuLib/FbGenres.cpp:26
+msgid "Antique"
+msgstr "Старинное"
+
+#: MyRuLib/FbGenres.cpp:27
+msgid "Science, Education"
+msgstr "Наука, Образование"
+
+#: MyRuLib/FbGenres.cpp:28
+msgid "PC, Internet"
+msgstr "Компьютеры и Интернет"
+
+#: MyRuLib/FbGenres.cpp:29
+#: MyRuLib/FbGenres.cpp:125
+msgid "References"
+msgstr "Справочная литература"
+
+#: MyRuLib/FbGenres.cpp:30
+#: MyRuLib/FbGenres.cpp:130
+msgid "Documentary literature"
+msgstr "Документальная литература"
+
+#: MyRuLib/FbGenres.cpp:31
+msgid "Religion and Spirituality"
+msgstr "Религия и духовность"
+
+#: MyRuLib/FbGenres.cpp:32
+#: MyRuLib/FbGenres.cpp:138
+msgid "Humour"
+msgstr "Юмор"
+
+#: MyRuLib/FbGenres.cpp:33
+msgid "Home and Family"
+msgstr "Домоводство (Дом и семья)"
+
+#: MyRuLib/FbGenres.cpp:34
+msgid "Economy, Business"
+msgstr "Экономика и бизнес"
+
+#: MyRuLib/FbGenres.cpp:38
+msgid "Alternative History"
+msgstr "Альтернативная история"
+
+#: MyRuLib/FbGenres.cpp:39
+msgid "Fighting fantasy"
+msgstr "Боевая фантастика"
+
+#: MyRuLib/FbGenres.cpp:40
+msgid "Epic fantasy"
+msgstr "Эпическая фантастика"
+
+#: MyRuLib/FbGenres.cpp:41
+msgid "Heroic fantasy"
+msgstr "Героическая фантастика"
+
+#: MyRuLib/FbGenres.cpp:42
+msgid "Detective Fiction"
+msgstr "Детективная фантастика"
+
+#: MyRuLib/FbGenres.cpp:43
+msgid "Cyberpunk"
+msgstr "Киберпанк"
+
+#: MyRuLib/FbGenres.cpp:44
+msgid "Space Fiction"
+msgstr "Космическая фантастика"
+
+#: MyRuLib/FbGenres.cpp:45
+msgid "Socio-psychological fiction"
+msgstr "Социально-психологическая фантастика"
+
+#: MyRuLib/FbGenres.cpp:46
+msgid "Horror and Mysticism"
+msgstr "Ужасы и Мистика"
+
+#: MyRuLib/FbGenres.cpp:47
+msgid "Humorous Fiction"
+msgstr "Юмористическая фантастика"
+
+#: MyRuLib/FbGenres.cpp:48
+msgid "Fantasy"
+msgstr "Фэнтези"
+
+#: MyRuLib/FbGenres.cpp:49
+msgid "Science Fiction"
+msgstr "Научная Фантастика"
+
+#: MyRuLib/FbGenres.cpp:50
+msgid "Classic mystery"
+msgstr "Классический детектив"
+
+#: MyRuLib/FbGenres.cpp:51
+msgid "Police mystery"
+msgstr "Полицейский детектив"
+
+#: MyRuLib/FbGenres.cpp:52
+msgid "Action"
+msgstr "Боевик"
+
+#: MyRuLib/FbGenres.cpp:53
+msgid "Ironic mystery"
+msgstr "Иронический детектив"
+
+#: MyRuLib/FbGenres.cpp:54
+msgid "Historical mystery"
+msgstr "Исторический детектив"
+
+#: MyRuLib/FbGenres.cpp:55
+msgid "Spy mystery"
+msgstr "Шпионский детектив"
+
+#: MyRuLib/FbGenres.cpp:56
+msgid "Criminal mystery"
+msgstr "Криминальный детектив"
+
+#: MyRuLib/FbGenres.cpp:57
+msgid "Political mystery"
+msgstr "Политический детектив"
+
+#: MyRuLib/FbGenres.cpp:58
+msgid "Maniacs"
+msgstr "Маньяки"
+
+#: MyRuLib/FbGenres.cpp:59
+msgid "Action mystery"
+msgstr "Крутой детектив"
+
+#: MyRuLib/FbGenres.cpp:60
+msgid "Thriller"
+msgstr "Триллер"
+
+#: MyRuLib/FbGenres.cpp:61
+msgid "Mystery"
+msgstr "Детектив"
+
+#: MyRuLib/FbGenres.cpp:62
+msgid "Classical prose"
+msgstr "Классическая проза"
+
+#: MyRuLib/FbGenres.cpp:63
+msgid "Historical prose"
+msgstr "Историческая проза"
+
+#: MyRuLib/FbGenres.cpp:64
+msgid "Modern prose"
+msgstr "Современная проза"
+
+#: MyRuLib/FbGenres.cpp:65
+msgid "Counterculture"
+msgstr "Контркультура"
+
+#: MyRuLib/FbGenres.cpp:66
+msgid "Russian Classical prose"
+msgstr "Русская классическая проза"
+
+#: MyRuLib/FbGenres.cpp:67
+msgid "Soviet Classical prose"
+msgstr "Советская классическая проза"
+
+#: MyRuLib/FbGenres.cpp:68
+msgid "Prose military"
+msgstr "Военная проза"
+
+#: MyRuLib/FbGenres.cpp:69
+msgid "Modern romance novels"
+msgstr "Современные любовные романы"
+
+#: MyRuLib/FbGenres.cpp:70
+msgid "Historical romance novels"
+msgstr "Исторические любовные романы"
+
+#: MyRuLib/FbGenres.cpp:71
+msgid "Action romance novels"
+msgstr "Остросюжетные любовные романы"
+
+#: MyRuLib/FbGenres.cpp:72
+msgid "Short romance novels"
+msgstr "Короткие любовные романы"
+
+#: MyRuLib/FbGenres.cpp:73
+msgid "Erotic novels"
+msgstr "Эротика"
+
+#: MyRuLib/FbGenres.cpp:74
+msgid "Love science fiction"
+msgstr "Любовная фантастика"
+
+#: MyRuLib/FbGenres.cpp:75
+msgid "Western"
+msgstr "Вестерн"
+
+#: MyRuLib/FbGenres.cpp:76
+msgid "Historical adventures"
+msgstr "Исторические приключения"
+
+#: MyRuLib/FbGenres.cpp:77
+msgid "Adventures about Indians"
+msgstr "Приключения про индейцев"
+
+#: MyRuLib/FbGenres.cpp:78
+msgid "Sea adventures"
+msgstr "Морские приключения"
+
+#: MyRuLib/FbGenres.cpp:79
+msgid "Travel and Geography"
+msgstr "Путешествия и география"
+
+#: MyRuLib/FbGenres.cpp:80
+msgid "Nature and Animals"
+msgstr "Природа и животные"
+
+#: MyRuLib/FbGenres.cpp:82
+msgid "Tales"
+msgstr "Сказка"
+
+#: MyRuLib/FbGenres.cpp:83
+msgid "Children poetry"
+msgstr "Детские стихи"
+
+#: MyRuLib/FbGenres.cpp:84
+msgid "Childern prose"
+msgstr "Детскиая проза"
+
+#: MyRuLib/FbGenres.cpp:85
+msgid "Children fiction"
+msgstr "Детская фантастика"
+
+#: MyRuLib/FbGenres.cpp:86
+msgid "Children action"
+msgstr "Детские остросюжетные"
+
+#: MyRuLib/FbGenres.cpp:87
+msgid "Children adventures"
+msgstr "Детские приключения"
+
+#: MyRuLib/FbGenres.cpp:88
+msgid "Children education"
+msgstr "Детская образовательная литература"
+
+#: MyRuLib/FbGenres.cpp:90
+msgid "Poetry"
+msgstr "Поэзия"
+
+#: MyRuLib/FbGenres.cpp:91
+msgid "Dramaturgy"
+msgstr "Драматургия"
+
+#: MyRuLib/FbGenres.cpp:92
+msgid "Antique Literature"
+msgstr "Античная литература"
+
+#: MyRuLib/FbGenres.cpp:93
+msgid "European ancient literature"
+msgstr "Европейская старинная литература"
+
+#: MyRuLib/FbGenres.cpp:94
+msgid "Russian ancient literature"
+msgstr "Древнерусская литература"
+
+#: MyRuLib/FbGenres.cpp:95
+msgid "Oriental ancient literature"
+msgstr "Древневосточная литература"
+
+#: MyRuLib/FbGenres.cpp:96
+msgid "Myths. Legends. Epic."
+msgstr "Мифы. Легенды. Эпос."
+
+#: MyRuLib/FbGenres.cpp:97
+msgid "Ancient literature"
+msgstr "Старинная литература"
+
+#: MyRuLib/FbGenres.cpp:98
+msgid "History"
+msgstr "История"
+
+#: MyRuLib/FbGenres.cpp:99
+msgid "Psychology"
+msgstr "Психология"
+
+#: MyRuLib/FbGenres.cpp:100
+msgid "Cultural"
+msgstr "Культурология"
+
+#: MyRuLib/FbGenres.cpp:101
+msgid "Religious"
+msgstr "Религиоведение"
+
+#: MyRuLib/FbGenres.cpp:102
+msgid "Philosophy"
+msgstr "Философия"
+
+#: MyRuLib/FbGenres.cpp:103
+msgid "Politology"
+msgstr "Политика"
+
+#: MyRuLib/FbGenres.cpp:104
+msgid "Business literature"
+msgstr "Деловая литература"
+
+#: MyRuLib/FbGenres.cpp:105
+msgid "Law"
+msgstr "Юриспруденция"
+
+#: MyRuLib/FbGenres.cpp:106
+msgid "Linguistics"
+msgstr "Языкознание"
+
+#: MyRuLib/FbGenres.cpp:107
+msgid "Medical"
+msgstr "Медицина"
+
+#: MyRuLib/FbGenres.cpp:108
+msgid "Physics"
+msgstr "Физика"
+
+#: MyRuLib/FbGenres.cpp:109
+msgid "Mathematics"
+msgstr "Математика"
+
+#: MyRuLib/FbGenres.cpp:110
+msgid "Chemistry"
+msgstr "Химия"
+
+#: MyRuLib/FbGenres.cpp:111
+msgid "Biology"
+msgstr "Биология"
+
+#: MyRuLib/FbGenres.cpp:112
+msgid "Engineering"
+msgstr "Технические науки"
+
+#: MyRuLib/FbGenres.cpp:113
+msgid "Scientific literature"
+msgstr "Научная литература"
+
+#: MyRuLib/FbGenres.cpp:114
+#: MyRuLib/FbGenres.cpp:143
+msgid "Health"
+msgstr "Здоровье"
+
+#: MyRuLib/FbGenres.cpp:115
+msgid "Programming"
+msgstr "Программирование"
+
+#: MyRuLib/FbGenres.cpp:116
+msgid "Computer hardware"
+msgstr "Компьютерное железо (аппаратное обеспечение)"
+
+#: MyRuLib/FbGenres.cpp:117
+msgid "Software"
+msgstr "Программы"
+
+#: MyRuLib/FbGenres.cpp:118
+msgid "Databases"
+msgstr "Базы данных"
+
+#: MyRuLib/FbGenres.cpp:119
+msgid "OS and Network"
+msgstr "ОС и Сети"
+
+#: MyRuLib/FbGenres.cpp:120
+msgid "Computer literature"
+msgstr "Компьтерная литература"
+
+#: MyRuLib/FbGenres.cpp:121
+msgid "Encyclopedias"
+msgstr "Энциклопедии"
+
+#: MyRuLib/FbGenres.cpp:122
+msgid "Dictionaries"
+msgstr "Словари"
+
+#: MyRuLib/FbGenres.cpp:123
+msgid "Directories"
+msgstr "Справочники"
+
+#: MyRuLib/FbGenres.cpp:124
+msgid "Manuals"
+msgstr "Руководства"
+
+#: MyRuLib/FbGenres.cpp:126
+msgid "Biographies and Memoirs"
+msgstr "Биографии и Мемуары"
+
+#: MyRuLib/FbGenres.cpp:127
+msgid "Publicism"
+msgstr "Публицистика"
+
+#: MyRuLib/FbGenres.cpp:128
+msgid "Criticism"
+msgstr "Критика"
+
+#: MyRuLib/FbGenres.cpp:129
+msgid "Art and Design"
+msgstr "Искусство и Дизайн"
+
+#: MyRuLib/FbGenres.cpp:131
+msgid "Religion"
+msgstr "Религия"
+
+#: MyRuLib/FbGenres.cpp:132
+msgid "Esoterica"
+msgstr "Эзотерика"
+
+#: MyRuLib/FbGenres.cpp:133
+msgid "Self-improvement"
+msgstr "Самосовершенствование"
+
+#: MyRuLib/FbGenres.cpp:134
+msgid "Religious Literature"
+msgstr "Религиозная литература"
+
+#: MyRuLib/FbGenres.cpp:135
+msgid "Jokes"
+msgstr "Анекдоты"
+
+#: MyRuLib/FbGenres.cpp:136
+msgid "Humorous prose"
+msgstr "Юмористическая проза"
+
+#: MyRuLib/FbGenres.cpp:137
+msgid "Humorous poetry"
+msgstr "Юмористические стихи"
+
+#: MyRuLib/FbGenres.cpp:139
+msgid "Cooking"
+msgstr "Кулинария"
+
+#: MyRuLib/FbGenres.cpp:140
+msgid "Pets"
+msgstr "Домашние животные"
+
+#: MyRuLib/FbGenres.cpp:141
+msgid "Hobbies and Crafts"
+msgstr "Хобби и ремесла"
+
+#: MyRuLib/FbGenres.cpp:142
+msgid "Entertainment"
+msgstr "Развлечения"
+
+#: MyRuLib/FbGenres.cpp:144
+msgid "Gardening"
+msgstr "Сад и огород"
+
+#: MyRuLib/FbGenres.cpp:145
+msgid "Handmade"
+msgstr "Сделай сам"
+
+#: MyRuLib/FbGenres.cpp:146
+msgid "Sport"
+msgstr "Спорт"
+
+#: MyRuLib/FbGenres.cpp:147
+msgid "Erotic, sex"
+msgstr "Эротика, Секс"
+
+#: MyRuLib/FbGenres.cpp:148
+msgid "Household"
+msgstr "Домоводство"
+
+#: MyRuLib/FbGenres.cpp:149
+msgid "Geo guides"
+msgstr "Путеводители"
+
+#: MyRuLib/FbGenres.cpp:150
+msgid "Job hunting"
+msgstr "Поиск работы, карьера"
+
+#: MyRuLib/FbGenres.cpp:151
+msgid "Management"
+msgstr "Управление, подбор персонала"
+
+#: MyRuLib/FbGenres.cpp:152
+msgid "Marketing"
+msgstr "Маркетинг, реклама"
+
+#: MyRuLib/FbGenres.cpp:153
+msgid "Banking"
+msgstr "Банковское дело"
+
+#: MyRuLib/FbGenres.cpp:154
+msgid "Stock"
+msgstr "Ценные бумаги, инвестиции"
+
+#: MyRuLib/FbGenres.cpp:155
+msgid "Accounting"
+msgstr "Бухучет, налогообложение, аудит"
+
+#: MyRuLib/FbGenres.cpp:156
+msgid "Global economy"
+msgstr "Внешнеэкономическая деятельность"
+
+#: MyRuLib/FbGenres.cpp:157
+msgid "Economics"
+msgstr "Экономика"
+
+#: MyRuLib/FbGenres.cpp:158
+msgid "Industries"
+msgstr "Отраслевые издания"
+
+#: MyRuLib/FbGenres.cpp:159
+msgid "Corporate culture"
+msgstr "Корпоративная культура"
+
+#: MyRuLib/FbGenres.cpp:160
+msgid "Personal finance"
+msgstr "Личные финансы"
+
+#: MyRuLib/FbGenres.cpp:161
+msgid "Real estate"
+msgstr "Недвижимость"
+
+#: MyRuLib/FbGenres.cpp:162
+msgid "Popular business"
+msgstr "О бизнесе популярно"
+
+#: MyRuLib/FbGenres.cpp:163
+msgid "Small business"
+msgstr "Малый бизнес"
+
+#: MyRuLib/FbGenres.cpp:164
+msgid "Paper work"
+msgstr "Делопроизводство"
+
+#: MyRuLib/FbGenres.cpp:165
+msgid "Economics reference book"
+msgstr "Справочники по экономике"
+
+#: MyRuLib/FbLogStream.cpp:58
+msgid "Fatal error"
+msgstr "Фатальная ошибка"
+
+#: MyRuLib/FbLogStream.cpp:59
+msgid "Program aborted."
+msgstr "Программа прервана."
+
+#: MyRuLib/FbViewerDlg.cpp:12
+msgid "Customize"
+msgstr "Настройка"
+
+#: MyRuLib/FbViewerDlg.cpp:55
+msgid "Executable files"
+msgstr "Исполняемые файлы"
+
+#: MyRuLib/FbImportThread.cpp:91
+#: MyRuLib/FbImportThread.cpp:479
+#, c-format
+msgid "Import file %s"
+msgstr "Импорт файла %s"
+
+#: MyRuLib/FbImportThread.cpp:113
+#, c-format
+msgid "Skip entry %s"
+msgstr "Пропущен элемент %s"
+
+#: MyRuLib/FbImportThread.cpp:118
+#, c-format
+msgid "Import zip entry %s"
+msgstr "Импорт элемента %s"
+
+#: MyRuLib/FbImportThread.cpp:151
+#, c-format
+msgid "XML parsing error: '%s' at line %d file %s"
+msgstr "Ошибка чтения XML: '%s' в строке %d файла %s"
+
+#: MyRuLib/FbImportThread.cpp:294
+#, c-format
+msgid "File already exists %s"
+msgstr "Файл уже импортирован %s"
+
+#: MyRuLib/FbImportThread.cpp:299
+#, c-format
+msgid "Add alternative %s"
+msgstr "Добавлено альтернативное размещение %s"
+
+#: MyRuLib/FbImportThread.cpp:345
+#, c-format
+msgid "Import zip %s"
+msgstr "Импорт файла zip %s"
+
+#: MyRuLib/FbImportThread.cpp:421
+#, c-format
+msgid "FB2 and FBD not found %s"
+msgstr "Не найдены файлы FB2 и FBD %s"
+
+#: MyRuLib/FbImportThread.cpp:469
+#, c-format
+msgid "Start import %d file(s)"
+msgstr "Начат импорт %d файл(ов)"
+
+#: MyRuLib/FbImportThread.cpp:473
+#, c-format
+msgid "Finish import %d file(s)"
+msgstr "Завершен импорт %d файл(ов)"
+
+#: MyRuLib/FbImportThread.cpp:483
+#: MyRuLib/FbImportThread.cpp:593
+#: MyRuLib/FbImportThread.cpp:608
+#, c-format
+msgid "File read error %s"
+msgstr "Ошибка чтения файла %s"
+
+#: MyRuLib/FbImportThread.cpp:538
+#, c-format
+msgid "Skip file %s"
+msgstr "Пропущен файл %s"
+
+#: MyRuLib/FbImportThread.cpp:544
+#, c-format
+msgid "Import subdirectory %s"
+msgstr "Импорт поддиректории %s"
+
+#: MyRuLib/FbImportThread.cpp:560
+#, c-format
+msgid "Start import directory %s"
+msgstr "Начат импорт директории %s"
+
+#: MyRuLib/FbImportThread.cpp:580
+#, c-format
+msgid "Finish import directory %s"
+msgstr "Завершен импорт директории %s"
+
+#: MyRuLib/FbFrameGenres.cpp:36
+msgid "List of genres"
+msgstr "Список жанров"
+
+#: MyRuLib/FbMainFrame.cpp:197
+msgid "Info messages"
+msgstr "Информационные сообщения"
+
+#: MyRuLib/FbMainFrame.cpp:265
+msgid "Import file"
+msgstr "Импорт файла"
+
+#: MyRuLib/FbMainFrame.cpp:265
+msgid "Import files to the library"
+msgstr "Добавить в библиотеку новые файлы"
+
+#: MyRuLib/FbMainFrame.cpp:266
+msgid "Import folder"
+msgstr "Импорт папки"
+
+#: MyRuLib/FbMainFrame.cpp:266
+msgid "Import folder to the library"
+msgstr "Добавить в библиотеку директорию"
+
+#: MyRuLib/FbMainFrame.cpp:269
+msgid " Author: "
+msgstr " Автор: "
+
+#: MyRuLib/FbMainFrame.cpp:277
+msgid "Find author"
+msgstr "Поиск автора"
+
+#: MyRuLib/FbMainFrame.cpp:280
+msgid " Book: "
+msgstr " Книга: "
+
+#: MyRuLib/FbMainFrame.cpp:289
+msgid "Find book by title"
+msgstr "Поиск книги по заголовку"
+
+#: MyRuLib/FbMainFrame.cpp:291
+msgid "Hierarchy"
+msgstr "Иерархия"
+
+#: MyRuLib/FbMainFrame.cpp:291
+msgid "Hierarchy of authors and series"
+msgstr "Иерархия авторов и серий"
+
+#: MyRuLib/FbMainFrame.cpp:292
+msgid "List"
+msgstr "Список"
+
+#: MyRuLib/FbMainFrame.cpp:310
+msgid "Digital books and archives"
+msgstr "Электронные книги и архивы"
+
+#: MyRuLib/FbMainFrame.cpp:311
+msgid "Digital books in FB2"
+msgstr "Электронные книги FB2"
+
+#: MyRuLib/FbMainFrame.cpp:312
+msgid "ZIP archives"
+msgstr "Архивы ZIP"
+
+#: MyRuLib/FbMainFrame.cpp:313
+msgid "All files"
+msgstr "Все файлы"
+
+#: MyRuLib/FbMainFrame.cpp:317
+msgid "Select archive to add to the library"
+msgstr "Выберите zip-файл для добавления в библиотеку…"
+
+#: MyRuLib/FbMainFrame.cpp:330
+msgid "Processing file:"
+msgstr "Обработка файла:"
+
+#: MyRuLib/FbMainFrame.cpp:343
+msgid "Select folder to recursive import"
+msgstr "Выберите папку для рекурсивного импорта файлов в библиотеку"
+
+#: MyRuLib/FbMainFrame.cpp:351
+msgid "Processing folder:"
+msgstr "Обработка папки:"
+
+#: MyRuLib/FbMainFrame.cpp:454
+msgid "Input search string:"
+msgstr "Введите строку для поиска:"
+
+#: MyRuLib/FbMainFrame.cpp:454
+msgid "Find title"
+msgstr "Поиск по заголовку"
+
+#: MyRuLib/FbMainFrame.cpp:509
+msgid "This function is not available yet in this version."
+msgstr "Функционал не реализован в данной версии."
+
+#: MyRuLib/FbMainFrame.cpp:519
+msgid "Optimize database?"
+msgstr "Выполнить реструктуризацию базы данных?"
+
+#: MyRuLib/FbMainFrame.cpp:611
+msgid "File not found: "
+msgstr "Файл не найден: "
+
+#: MyRuLib/ExternalDlg.cpp:179
+msgid "Export to external storage"
+msgstr "Экспорт на внешнее устройство"
+
+#: MyRuLib/ExternalDlg.cpp:207
+msgid "Use Author (without co-Authors)"
+msgstr "Использовать текущего автора (без соавторов)"
+
+#: MyRuLib/ExternalDlg.cpp:215
+msgid "File name"
+msgstr "Имя файла"
+
+#: MyRuLib/ExternalDlg.cpp:223
+msgid "Export As..."
+msgstr "Формат выгрузки файлов:"
+
+#: MyRuLib/ExternalDlg.cpp:425
+msgid "Select a destination folder"
+msgstr "Выберите папку внешнего устройства"
+
+#: MyRuLib/ExternalDlg.cpp:500
+msgid "Destination folder not found"
+msgstr "Не найдена папка внешнего устройства"
+
+#: MyRuLib/ExternalDlg.cpp:504
+msgid "Unable write files to destination folder"
+msgstr "Папка внешнего устройства не доступна для записи"
+
+#: MyRuLib/ExternalDlg.cpp:531
+msgid "Not selected any book"
+msgstr "Не выбрано ни одной книги"
+
+#: MyRuLib/FbFrameInfo.h:14
 msgid "Information"
 msgstr "Информация"
-
-#, fuzzy
-#~ msgid "Russian"
-#~ msgstr "Русский алфавит"

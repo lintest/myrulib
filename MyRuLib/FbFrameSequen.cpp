@@ -452,7 +452,7 @@ wxMenuBar * FbFrameSequen::CreateMenuBar()
 void FbFrameSequen::OnAppendSequence(wxCommandEvent& event)
 {
 	wxString title = event.GetString();
-	if (title.IsEmpty()) title = wxGetTranslation(strOtherSequence);
+	if (title.IsEmpty()) title = _("(Misc.)");
 	m_BooksPanel->AppendAuthor( event.GetInt(), title );
 }
 

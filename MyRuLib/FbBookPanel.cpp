@@ -285,7 +285,7 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 	int iRating = event.GetId() - ID_RATING_0;
 
 	wxString sRating;
-	if (iRating) sRating = wxT(" ") + strRating[iRating];
+	if (iRating) sRating = wxT(" ") + GetRatingText(iRating);
 	size_t count = m_BookList->UpdateRating(GetRatingColumn(), sRating);
 	if ( !count ) return;
 
@@ -424,7 +424,7 @@ void FbBookPanel::AppendBook(BookTreeItemData & data, const wxString & authors)
 	wxString file_size = F(data.file_size/1024) + wxT(" ");
 	wxTreeItemId parent;
 	wxString sRating;
-	if (data.rating) sRating = wxT(" ") + strRating[data.rating];
+	if (data.rating) sRating = wxT(" ") + GetRatingText(data.rating);
 
 	wxTreeItemId item;
 	switch (m_ListMode) {

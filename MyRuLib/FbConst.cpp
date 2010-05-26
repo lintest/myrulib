@@ -27,10 +27,9 @@ const wxString alphabetRu = GetRussianAlphabet();
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 const wxString strAlphabet = alphabetRu + alphabetEn;
 const wxString strNobody = _("(no Author)");
-const wxString strRusJE = wxT("е");
-const wxString strRusJO = wxT("ё");
+const wxString strRusJE = (wxChar)0x0415;
+const wxString strRusJO = (wxChar)0x0416;
 const wxString strOtherSequence = wxT("(Misc.)");
-const wxString strBookNotFound = _("Not found an archive (%s), containing file (%s).");
 
 const wxString strUpdateAuthorCount = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
 const wxString strUpdateSequenCount = wxT("UPDATE sequences SET number=(SELECT COUNT(id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id)");
@@ -39,13 +38,21 @@ const int ciNoAuthor = 0x7FFFFFFF;
 
 const int ciMaxImageWidth = 200;
 
-const wxString strRating [] = {
-	wxT("Clear"),
-	wxT("*"),
-	wxT("* *"),
-	wxT("* * *"),
-	wxT("* * * *"),
-	wxT("* * * * *"),
+wxString GetRatingText(int index)
+{
+	const wxChar * text[] = {
+		_("Clear"),
+		wxT("*"),
+		wxT("* *"),
+		wxT("* * *"),
+		wxT("* * * *"),
+		wxT("* * * * *"),
+	};
+
+	if (0 <= index && index <=5)
+		return text[index];
+	else
+		return wxEmptyString;
 };
 
 static wxString CreateMessage(const wxString &info, const wxString &text)

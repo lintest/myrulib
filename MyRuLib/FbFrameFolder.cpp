@@ -101,11 +101,7 @@ void FbFrameFolder::FillFolders(const int iCurrent)
 	m_MasterList->SetItemBold(parent, true);
 
 	m_MasterList->AppendItem(parent, _("Comments"), -1, -1, new FbMasterFolder(1, FT_COMMENT));
-	m_MasterList->AppendItem(parent, strRating[5], -1, -1, new FbMasterFolder(5, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[4], -1, -1, new FbMasterFolder(4, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[3], -1, -1, new FbMasterFolder(3, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[2], -1, -1, new FbMasterFolder(2, FT_RATING));
-	m_MasterList->AppendItem(parent, strRating[1], -1, -1, new FbMasterFolder(1, FT_RATING));
+	for (int i=5; i>0; i--) m_MasterList->AppendItem(parent, GetRatingText(i), -1, -1, new FbMasterFolder(i, FT_RATING));
 	m_MasterList->Expand(parent);
 
 	m_MasterList->Thaw();

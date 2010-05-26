@@ -718,7 +718,7 @@ void FbParamsDlg::Execute(wxWindow* parent)
 			ZipReader::Init();
 			FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
 		} catch (wxSQLite3Exception & e) {
-			wxLogError(_("Database open error: ") + e.GetMessage());
+			FbLogError(_("Error writing to database"), e.GetMessage());
 		}
 	}
 };

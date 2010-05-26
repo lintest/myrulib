@@ -191,11 +191,11 @@ void ZipReader::OpenZip(const wxString &zipname, const wxString &filename)
 	m_result = m_zip;
 
 	m_zipOk  = m_file->IsOk();
-	m_fileOk = FindEntry(filename);
+	m_fileOk = m_zipOk && FindEntry(filename);
 
 	wxString zipText = (zipname.IsNull() ? zipname : wxT(" ") + zipname );
 	wxString fileText = (filename.IsNull() ? filename : wxT(" ") + filename );
-	m_info = wxString::Format(strBookNotFound, zipText.c_str(), fileText.c_str());
+	m_info = wxString::Format(_("Not found an archive (%s), containing file (%s)."), zipText.c_str(), fileText.c_str());
 }
 
 void ZipReader::OpenFile(const wxString &filename)
@@ -209,7 +209,7 @@ void ZipReader::OpenFile(const wxString &filename)
 
 	wxString zipText = wxEmptyString;
 	wxString fileText = (filename.IsNull() ? filename : wxT(" ") + filename );
-	m_info = wxString::Format(strBookNotFound, zipText.c_str(), fileText.c_str());
+	m_info = wxString::Format(_("Not found file %s"), fileText.c_str());
 }
 
 bool ZipReader::FindEntry(const wxString &file_name)
