@@ -159,4 +159,12 @@ extern const wxString strUpdateSequenCount;
 
 #define COLON wxString(wxT(": "))
 
+void FbLogMessage(const wxString &info, const wxString &text);
+
+void FbLogError(const wxString &info, const wxString &text);
+
+void FbLogWarning(const wxString &info, const wxString &text);
+
+void FbMessageBox(const wxString &info, const wxString &text);
+
 #endif // __FBCONST_H__

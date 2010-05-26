@@ -43,6 +43,7 @@ class FrameInfoThread: public BaseThread
 	protected:
 		virtual void * Entry();
 	private:
+		wxString CreateRow(const wxString &info, const wxString &text);
 		void WriteTitle();
 		void WriteCount();
 		void WriteTypes();
@@ -55,16 +56,16 @@ class FrameInfoThread: public BaseThread
 
 void FrameInfoThread::WriteTitle()
 {
-	m_html += _("<CENTER>");
+	m_html += wxT("<CENTER>");
 
 	const wxChar * title = _("Information about collection");
 
 	m_html += wxT("<TABLE>");
 	m_html += wxString::Format(wxT("<TR><TD colspan=2 align=center>%s</TD></TR>"), title);
 	m_html += wxT("<TR><TD colspan=2 align=center>");
-	m_html += wxString::Format(_("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
+	m_html += wxString::Format(wxT("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
 	m_html += wxT("</TD></TR>");
-	m_html += wxString::Format(_("<TR><TD colspan=2>%s</TD></TR>"), wxGetApp().GetAppData().c_str());
+	m_html += wxString::Format(wxT("<TR><TD colspan=2>%s</TD></TR>"), wxGetApp().GetAppData().c_str());
 	m_html += wxT("</TABLE>");
 }
 
@@ -86,6 +87,12 @@ wxString FrameInfoThread::F(const int number)
 		return wxString::Format(wxT("%d"), lo);
 }
 
+wxString FrameInfoThread::CreateRow(const wxString &info, const wxString &text)
+{
+	const wxString row = wxT("<TR><TD>%s</TD><TD align=right>%s</TD></TR>");
+	return wxString::Format(row, info, text);
+}
+
 void FrameInfoThread::WriteCount()
 {
 	m_html += wxT("<TABLE>");
@@ -102,7 +109,7 @@ void FrameInfoThread::WriteCount()
 			max = GetDate(result.GetInt(2));
 			sum = F(result.GetInt(3));
 			const wxChar * title = _("Total books count:");
-			m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, F(result.GetInt(0)).c_str());
+			m_html << CreateRow(_("Total books count:"), F(result.GetInt(0)).c_str());
 		}
 	}
 
@@ -112,27 +119,17 @@ void FrameInfoThread::WriteCount()
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
-			const wxChar * title = _("Authors count:");
-			m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, F(result.GetInt(0)).c_str());
+			m_html << CreateRow(_("Authors count:"), F(result.GetInt(0)).c_str());
 		}
 	}
 
-	{
-		const wxChar * title = _("Total files size, Mb:");
-		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, sum.c_str());
-	}
+	m_html << CreateRow(_("Total files size, Mb:"), sum.c_str());
 
-	{
-		const wxChar * title = _("First reciept:");
-		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, min.c_str());
-	}
+	m_html << CreateRow(_("First reciept:"), min.c_str());
 
-	{
-		const wxChar * title = _("Last reciept:");
-		m_html += wxString::Format(_("<TR><TD>%s</TD><TD align=right>%s</TD></TR>"), title, max.c_str());
-	}
+	m_html << CreateRow(_("Last reciept:"), max.c_str());
 
-	m_html += wxT("</TABLE>");
+	m_html << wxT("</TABLE>");
 }
 
 void FrameInfoThread::WriteTypes()
@@ -140,7 +137,7 @@ void FrameInfoThread::WriteTypes()
 	wxString colourBack = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW).GetAsString(wxC2S_HTML_SYNTAX);
 	wxString colourGrid = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW).GetAsString(wxC2S_HTML_SYNTAX);
 
-	const wxChar * text = wxT("<TD bgcolor=%s><B>%s</B></TD>");
+	const wxChar * cell = wxT("<TD bgcolor=%s><B>%s</B></TD>");
 	const wxChar * msg1 = _("File extension");
 	const wxChar * msg2 = _("Count");
 	const wxChar * msg3 = _("Size, Kb");
@@ -149,9 +146,9 @@ void FrameInfoThread::WriteTypes()
 	m_html += wxString::Format(wxT("<TABLE border=0 cellspacing=0 cellpadding=0 bgcolor=%s><TR><TD>"), colourGrid.c_str());
 	m_html += wxT("<TABLE border=0 cellspacing=1 cellpadding=5 width=100%>");
 	m_html += wxT("<TR>");
-	m_html += wxString::Format(text, colourBack.c_str(), msg1);
-	m_html += wxString::Format(text, colourBack.c_str(), msg2);
-	m_html += wxString::Format(text, colourBack.c_str(), msg3);
+	m_html += wxString::Format(cell, colourBack.c_str(), msg1);
+	m_html += wxString::Format(cell, colourBack.c_str(), msg2);
+	m_html += wxString::Format(cell, colourBack.c_str(), msg3);
 	m_html += wxT("</TR>");
 
 	DoStep(_("File types"));
@@ -163,10 +160,11 @@ void FrameInfoThread::WriteTypes()
 		"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		while (result.NextRow()) {
+			const wxString cell = wxT("<TD align=right bgcolor=%s>%s</TD>");
 			m_html += wxT("<TR>");
 			m_html += wxString::Format(wxT("<TD bgcolor=%s>%s</TD>"), colourBack.c_str(), result.GetString(0).c_str());
-			m_html += wxString::Format(wxT("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(1)).c_str());
-			m_html += wxString::Format(wxT("<TD align=right bgcolor=%s>%s</TD>"), colourBack.c_str(), F(result.GetInt(2)).c_str());
+			m_html += wxString::Format(cell, colourBack.c_str(), F(result.GetInt(1)).c_str());
+			m_html += wxString::Format(cell, colourBack.c_str(), F(result.GetInt(2)).c_str());
 			m_html += wxT("</TR>");
 		}
 	}

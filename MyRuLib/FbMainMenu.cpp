@@ -138,9 +138,9 @@ FbMenuBar::MenuWindow::MenuWindow()
 
 FbMenuBar::MenuLocalize::MenuLocalize()
 {
-    AppendRadioItem(ID_LANG_ENGLISH, _("English"));
-    AppendRadioItem(ID_LANG_RUSSIAN, _("Russian"));
-    AppendRadioItem(ID_LANG_UKRAINIAN, _("Ukrainian"));
-    AppendRadioItem(ID_LANG_BELARUSIAN, _("Belarusian"));
-    AppendRadioItem(ID_LANG_CZECH, _("Czech"));
+    AppendRadioItem(ID_LANG_ENGLISH, wxT("English"));
+    AppendRadioItem(ID_LANG_RUSSIAN, wxT("Russian"));
+    AppendRadioItem(ID_LANG_UKRAINIAN, wxT("Ukrainian"));
+    AppendRadioItem(ID_LANG_BELARUSIAN, wxT("Belarusian"));
+    AppendRadioItem(ID_LANG_CZECH, wxT("Czech"));
 }

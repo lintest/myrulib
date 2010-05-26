@@ -1,5 +1,6 @@
 #include "FbExtractInfo.h"
 #include "FbParams.h"
+#include "FbConst.h"
 #include <wx/zipstrm.h>
 #include <wx/wfstream.h>
 
@@ -83,7 +84,7 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 		}
 	}
 
-	wxLogWarning(_("Delete: ") + NameInfo());
+	FbLogWarning(_("Delete"), NameInfo());
 	wxRemoveFile(filename.GetFullPath());
 }
 

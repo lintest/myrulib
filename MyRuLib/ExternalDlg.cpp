@@ -495,11 +495,11 @@ bool ExternalDlg::ExportBooks()
 {
 	wxString root_dir = m_textDir->GetValue();
 	if (!wxFileName::DirExists(root_dir)) {
-		wxMessageBox(_("Destination folder not found") + COLON + root_dir);
+		FbMessageBox(_("Destination folder not found"), root_dir);
 		return false;
 	}
 	if (!wxFileName::IsDirWritable(root_dir)) {
-		wxMessageBox(_("Unable write files to destination folder") + COLON + root_dir);
+		FbMessageBox(_("Unable write files to destination folder"), root_dir);
 		return false;
 	}
 

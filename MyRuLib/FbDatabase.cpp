@@ -282,10 +282,10 @@ void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
 FbSearchFunction::FbSearchFunction(const wxString & input)
 {
 	Decompose(input, m_masks);
-	wxString log = _("Search template") + COLON;
+	wxString log = _("Search template"); log << wxT(": ");
 	size_t count = m_masks.Count();
 	for (size_t i=0; i<count; i++) {
-		log += wxString::Format(wxT("<%s> "), m_masks[i].c_str());
+		log << wxString::Format(wxT("<%s> "), m_masks[i].c_str());
 	}
 	wxLogMessage(log);
 }
@@ -421,10 +421,10 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	bool bExists = wxFileExists(filename);
 
 	if (bExists)
-		wxLogMessage(_("Open database") + COLON + filename);
+		FbLogMessage(_("Open database"), filename);
 	else {
 	    wxString info = _("Create new database");
-		wxLogMessage(info + COLON + filename);
+		FbLogMessage(info, filename);
 		wxString msg = strProgramName + (wxString)wxT(" - ") + info + (wxString)wxT("\n") + filename;
 		wxMessageBox(msg);
 	}

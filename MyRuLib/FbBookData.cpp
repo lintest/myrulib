@@ -125,7 +125,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
     } else if (GetSystemCommand(filepath, command)) {
 		wxExecute(command);
     } else {
-        wxMessageBox(_("Associated application not found") + COLON + m_filetype);
+        FbMessageBox(_("Associated application not found"), m_filetype);
     }
 }
 

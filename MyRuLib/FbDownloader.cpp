@@ -64,11 +64,11 @@ bool FbInternetBook::DoDownload()
 	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
 	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
-	wxLogMessage(_("Download: ") + addr);
+	FbLogMessage(_("Download"), addr);
 
 	FbURL url(addr);
 	if (url.GetError() != wxURL_NOERR) {
-		wxLogError(_("URL error: ") + m_url);
+		FbLogError(_("URL error"), m_url);
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
@@ -79,19 +79,19 @@ bool FbInternetBook::DoDownload()
 
 	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
-		wxLogError(_("Connect error: ") + m_url);
+		FbLogError(_("Connect error"), m_url);
 		return false;
 	}
 
 	wxString cookie = http.GetHeader(wxT("Set-Cookie")).BeforeFirst(wxT(';'));
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
-		wxLogMessage(_("Redirect") + COLON + m_url);
+		FbLogMessage(_("Redirect"), m_url);
 		return DownloadUrl(cookie);
 	}
 
 	bool ok = ReadFile(in);
-	if ( !ok ) { wxLogError(_("Authentication failure: ") + m_url); }
+	if ( !ok ) { FbLogError(_("Authentication failure"), m_url); }
 	return ok;
 }
 
@@ -99,7 +99,7 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 {
 	FbURL url(m_url);
 	if (url.GetError() != wxURL_NOERR) {
-		wxLogError(_("URL error") + COLON + m_url);
+		FbLogError(_("URL error"), m_url);
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
@@ -107,12 +107,12 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 
 	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
-		wxLogError(_("Connect error") + COLON + m_url);
+		FbLogError(_("Connect error"), m_url);
 		return false;
 	}
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
- 		wxLogMessage(_("Redirect") + COLON + m_url);
+ 		FbLogMessage(_("Redirect"), m_url);
 		return DownloadUrl(cookie);
 	}
 	return ReadFile(in);
@@ -153,7 +153,7 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 	else if ( zipped )
 		return CheckZip();
 
-	wxLogError(_("Download error: %s"), m_url.c_str());
+	FbLogError(_("Download error"), m_url);
 	return false;
 }
 
@@ -170,7 +170,7 @@ bool FbInternetBook::CheckZip()
 		if (ok) break;
 	}
 	if (bNotFound) {
-		wxLogError(_("Zip read error: ") + m_url);
+		FbLogError(_("Can't open zip"), m_url);
 		return false;
 	}
 
@@ -188,7 +188,7 @@ bool FbInternetBook::CheckZip()
 	if ( md5sum == m_md5sum ) {
 		m_zipped = true;
 	} else {
-		wxLogError(_("Wrong MD5 sum: "), m_url.c_str());
+		FbLogError(_("Wrong MD5 sum"), m_url);
 		return false;
 	}
 	return true;
@@ -216,7 +216,7 @@ void FbInternetBook::SaveFile(const bool success)
 		wxLogError(e.GetMessage());
 	}
 
-	wxLogMessage(_("Download finished: ")+ m_url);
+	FbLogMessage(_("Download finished"), m_url);
 
 	InfoCash::EmptyInfo(m_id);
 

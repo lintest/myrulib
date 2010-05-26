@@ -47,3 +47,29 @@ const wxString strRating [] = {
 	wxT("* * * *"),
 	wxT("* * * * *"),
 };
+
+static wxString CreateMessage(const wxString &info, const wxString &text)
+{
+	return info + wxT(": ") + text;
+}
+
+void FbLogMessage(const wxString &info, const wxString &text)
+{
+	wxLogMessage(CreateMessage(info, text));
+}
+
+void FbLogError(const wxString &info, const wxString &text)
+{
+	wxLogError(CreateMessage(info, text));
+}
+
+void FbLogWarning(const wxString &info, const wxString &text)
+{
+	wxLogWarning(CreateMessage(info, text));
+}
+
+void FbMessageBox(const wxString &info, const wxString &text)
+{
+	wxMessageBox(CreateMessage(info, text));
+}
+

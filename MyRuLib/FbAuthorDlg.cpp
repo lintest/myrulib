@@ -166,7 +166,7 @@ void FbAuthorDlg::EndModal(int retCode)
 		m_exists = FindAuthor();
 		if (m_exists) {
 			wxString msg = _("Autor with same details aleready exists");
-			wxString title = GetTitle() + wxT('…');
+			wxString title = GetTitle() + wxT("...");
 			if (m_id) {
 				msg += wxT('\n');
 				msg += _("Merge authors?");
