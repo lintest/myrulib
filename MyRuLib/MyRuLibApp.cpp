@@ -53,6 +53,7 @@ bool MyRuLibApp::OnInit()
 	::wxInitAllImageHandlers();
 	wxFileSystem::AddHandler(new wxMemoryFSHandler);
 	wxFileSystem::AddHandler(new wxInternetFSHandler);
+
 	LoadBlankImage();
 
 	FbMainFrame * frame = new FbMainFrame;

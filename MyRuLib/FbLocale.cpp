@@ -3,6 +3,44 @@
 #include "FbDatabase.h"
 #include "FbConst.h"
 
+#ifdef __WXMSW__
+
+#include <wx/msw/private.h>
+
+bool FbLocale::LoadResource(int language, const wxString &filename)
+{
+	const wxLanguageInfo * info = FbLocale::GetLanguageInfo(language);
+    if ( !info ) return false;
+
+    HRSRC hResource = ::FindResource(wxGetInstance(), info->CanonicalName.c_str(), wxT("RC_DATA"));
+    if ( !hResource ) return false;
+
+    HGLOBAL hData = ::LoadResource(wxGetInstance(), hResource);
+    if ( !hData ) return false;
+
+    void * data = ::LockResource(hData);
+    if ( !data ) return false;
+
+    unsigned long size = ::SizeofResource(wxGetInstance(), hResource);
+
+	return Save(filename, data, size);
+}
+
+bool FbLocale::Init(int language, int flags)
+{
+	wxFileName filename = FbConfigDatabase::GetConfigName();
+	filename.SetExt(wxT("mo"));
+	if (language == wxLANGUAGE_DEFAULT) language = GetSystemLanguage();
+	bool ok = LoadResource(language, filename.GetFullPath());
+
+	if (ok) AddCatalogLookupPathPrefix(filename.GetPath());
+    bool res = wxLocale::Init(language, flags);
+    if (ok) AddCatalog(filename.GetName());
+    return res;
+}
+
+#else
+
 bool FbLocale::Init(int language, int flags)
 {
 	wxFileName filename = FbConfigDatabase::GetConfigName();
@@ -47,6 +85,8 @@ bool FbLocale::Init(int language, int flags)
 
     return res;
 }
+
+#endif // __WXMSW__
 
 bool FbLocale::Save(const wxFileName &filename, const void *data, size_t size)
 {

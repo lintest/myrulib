@@ -66,6 +66,7 @@
 				<ResourceCompiler>
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswud" />
 					<Add directory="$(WXWIN)\include" />
+					<Add directory="..\build" />
 				</ResourceCompiler>
 				<Linker>
 					<Add library="libwxmsw28ud_aui.a" />
@@ -121,6 +122,7 @@
 				<ResourceCompiler>
 					<Add directory="$(WXWIN)\lib\gcc_lib\mswu" />
 					<Add directory="$(WXWIN)\include" />
+					<Add directory="..\build" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-s" />

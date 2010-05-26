@@ -4,6 +4,11 @@ aaaa ICON "home.ico"
 
 #include "wx/msw/wx.rc"
 
+ru_RU RC_DATA "ru.mo"
+be_BY RC_DATA "be.mo"
+uk_UA RC_DATA "uk.mo"
+cs_CZ RC_DATA "cs.mo"
+
 #define __TXT(text) #text
 #define TXT(text) __TXT(text)
 
