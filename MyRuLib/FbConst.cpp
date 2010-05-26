@@ -5,7 +5,7 @@
 #define __TXT(text) #text
 #define TXT(text) __TXT(text)
 
-const wxString strProgramName = wxT("MyRuLib " TXT(VERSION_MAJOR) "." TXT(VERSION_MINOR));
+const wxString strProgramName = (wxString)wxT("MyRuLib ") + wxT(TXT(VERSION_MAJOR)) + wxT(".") + wxT(TXT(VERSION_MINOR));
 const wxString strProgramInfo = strProgramName + wxT('.') + wxT(TXT(VERSION_BUILD));
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 const wxString strMailAddr = wxT("mail@lintest.ru");
