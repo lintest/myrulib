@@ -177,7 +177,7 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 
 	wxBoxSizer* bSizerName = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * info = new wxStaticText( this, wxID_ANY, wxT("Script name"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Extension"), wxDefaultPosition, wxDefaultSize, 0 );
 	info->Wrap( -1 );
 	bSizerName->Add( info, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
@@ -407,10 +407,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 
 	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, _("Delete files when you delete a book"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
-/*
-	checkbox = new wxCheckBox( this, ID_AUTOHIDE_COLUMN, _("Прятать колонку соответствующую вкладке"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( checkbox, 0, wxALL, 5 );
-*/
+
 	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
 
 	checkbox = new wxCheckBox( this, ID_LIMIT_CHECK, _("Limit the maximum size of lists:"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -419,6 +416,9 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	wxTextCtrl * maxedit = new wxTextCtrl( this, ID_LIMIT_COUNT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLimit->Add( maxedit, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
 	bSizer->Add( bSizerLimit, 0, 0, 5 );
+
+	checkbox = new wxCheckBox( this, ID_CLEAR_LOG, _("Clear the log window when it closes"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer->Add( checkbox, 0, wxALL, 5 );
 
 	SetSizer( bSizer );
 	Layout();
@@ -481,7 +481,7 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 	bSizerRight->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
 	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
-	treeview->AddColumn(0, _("Name"), 100);
+	treeview->AddColumn(0, _("Extension"), 100);
 	treeview->AddColumn(1, _("Export script"), 200);
 	treeview->AssignModel(new FbListStore);
 	bSizerRight->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
@@ -496,32 +496,14 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 	typeText->Wrap( -1 );
 	bSizerFormat->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
+	wxString filename = _("filename");
 	wxChoice * typeChoice = new wxChoice( this, ID_FILE_FORMAT);
-	typeChoice->Append(wxT("filename.fb2"), new IntData(0));
-	typeChoice->Append(wxT("filename.fb2.zip"), new IntData(-1));
+	typeChoice->Append(filename << wxT(".fb2"), new IntData(0));
+	typeChoice->Append(filename << wxT(".zip"), new IntData(-1));
 	typeChoice->SetSelection(0);
 	bSizerFormat->Add( typeChoice, 1, wxALL, 5 );
 
 	bSizerMain->Add(bSizerFormat, 0, wxEXPAND);
-
-/*
-	wxString m_radioBox2Choices[] = { _("filename.fb2"), _("filename.fb2.zip") };
-	int m_radioBox2NChoices = sizeof( m_radioBox2Choices ) / sizeof( wxString );
-	wxRadioBox * m_radioBox2 = new wxRadioBox( this, ID_FILE_FORMAT, _("Format of exporting collection"), wxDefaultPosition, wxDefaultSize, m_radioBox2NChoices, m_radioBox2Choices, 1, wxRA_SPECIFY_COLS );
-	m_radioBox2->SetSelection( 0 );
-	fgSizer10->Add( m_radioBox2, 0, wxALL|wxEXPAND, 5 );
-
-	bSizer8->Add( fgSizer10, 0, wxEXPAND, 5 );
-
-	m_checkBox2 = new wxCheckBox( this, ID_USE_SYMLINKS, _("Создавть cимвольные ссылки для соавторов"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer8->Add( m_checkBox2, 0, wxALL, 5 );
-
-	wxCheckBox * checkExec = new wxCheckBox( this, ID_SHELL_EXECUTE, _("Use shell command for export"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerMain->Add( checkExec, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 5 );
-	wxTextCtrl * textShell = new wxTextCtrl( this, ID_SHELL_COMMAND, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE | wxTE_DONTWRAP );
-	bSizerMain->Add( textShell, 1, wxEXPAND | wxALL, 5 );
-
-*/
 
 	SetSizer( bSizerMain );
 	Layout();
@@ -643,6 +625,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH, tCheck},
 		{FB_LIMIT_CHECK, ID_LIMIT_CHECK, tCheck},
 		{FB_LIMIT_COUNT, ID_LIMIT_COUNT, tCount},
+		{FB_CLEAR_LOG, ID_CLEAR_LOG, tCheck},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT, tChoise},
 	};
 
@@ -757,8 +740,9 @@ void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 	EnableTool(ID_SCRIPT_LIST, true);
 	treeview->SetFocus();
 
+	wxString label = _("filename"); label << wxT('.') << name;
 	wxChoice * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), wxChoice);
-	if (typelist) typelist->Append(name, new IntData(code));
+	if (typelist) typelist->Append(label, new IntData(code));
 }
 
 void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
@@ -788,7 +772,8 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 		for (size_t i = 0; i < count; i++) {
 			IntData * data = (IntData*) typelist->GetClientObject(i);
 			if (data->GetData() == code) {
-				typelist->SetString(i, name);
+				wxString label = _("filename"); label << wxT('.') << name;
+				typelist->SetString(i, label);
 				break;
 			}
 		}
@@ -961,7 +946,7 @@ void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 	for (size_t i=1; i<=count; i++) {
 		ScriptData * data = wxDynamicCast(model->GetData(i), ScriptData);
 		if (!data) continue;
-		wxString name = data->GetValue(*model);
+		wxString name = _("filename"); name << wxT('.') << data->GetValue(*model);
 		int code = data->GetCode();
 		int index = typelist->Append(name, new IntData(code));
 		if (format == code) typelist->SetSelection(index);

@@ -61,12 +61,8 @@ msgid "Export As..."
 msgstr "Export ve formátu:"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
-msgid "filename.fb2"
-msgstr "název souboru.fb2"
-
-#: ExternalDlg.cpp:228 SettingsDlg.cpp:281
-msgid "filename.fb2.zip"
-msgstr "název souboru.fb2.zip"
+msgid "filename"
+msgstr "název_souboru"
 
 #: ExternalDlg.cpp:407
 msgid "Select a destination folder"

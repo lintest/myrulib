@@ -61,12 +61,8 @@ msgid "Export As..."
 msgstr "Формат експорту файлів:"
 
 #: ExternalDlg.cpp:228 SettingsDlg.cpp:281
-msgid "filename.fb2"
-msgstr "найменування_файлу.fb2"
-
-#: ExternalDlg.cpp:228 SettingsDlg.cpp:281
-msgid "filename.fb2.zip"
-msgstr "найменування_файлу.fb2.zip"
+msgid "filename"
+msgstr "найменування_файлу"
 
 #: ExternalDlg.cpp:407
 msgid "Select a destination folder"

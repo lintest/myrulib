@@ -402,6 +402,7 @@ void FbMainFrame::ShowPane(const wxString &pane_name)
 
 void FbMainFrame::OnHideLog(wxCommandEvent& event)
 {
+	if (FbParams::GetValue(FB_CLEAR_LOG)) m_LOGTextCtrl.Clear();
 	TogglePaneVisibility(wxT("Log"), false);
 }
 

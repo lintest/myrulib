@@ -35,11 +35,8 @@ msgstr "(разное)"
 msgid "Clear"
 msgstr "Очистить"
 
-msgid "filename.fb2"
-msgstr "имя_файла.fb2"
-
-msgid "filename.fb2.zip"
-msgstr "имя_файла.fb2.zip"
+msgid "filename"
+msgstr "имя_файла"
 
 #: d:\!Data\MyProjects\myrulib\MyRuLib/ExpThread.cpp:122
 #, c-format

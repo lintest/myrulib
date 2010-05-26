@@ -222,7 +222,7 @@ wxString FbFrameBase::GetStatus()
 {
 	size_t count = GetBookCount();
 	wxString msg = wxString::Format(wxT(" %d "), count);
-	msg += wxGetTranslation(wxT("book"), wxT("books"), count);
+	msg << wxPLURAL("book", "books", count);
 	return msg;
 }
 

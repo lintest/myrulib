@@ -250,9 +250,10 @@ ExternalDlg::~ExternalDlg()
 
 void ExternalDlg::LoadFormats()
 {
+	wxString filename = _("filename");
 	int format = FbParams::GetValue(FB_FILE_FORMAT);
-	m_choiceFormat->Append(wxT("filename.fb2"), new IntData(0));
-	m_choiceFormat->Append(wxT("filename.fb2.zip"), new IntData(-1));
+	m_choiceFormat->Append(filename << wxT(".fb2"), new IntData(0));
+	m_choiceFormat->Append(filename << wxT(".zip"), new IntData(-1));
 	m_choiceFormat->SetSelection(format == -1 ? 1 : 0);
 
 	wxString sql = wxT("SELECT id, name FROM script ORDER BY id");
@@ -261,7 +262,7 @@ void ExternalDlg::LoadFormats()
 		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 		while ( result.NextRow() ) {
 			int code = result.GetInt(0);
-			wxString name = result.GetString(1);
+			wxString name = _("filename"); name << wxT('.') << result.GetString(1);
 			int index = m_choiceFormat->Append(name, new IntData(code));
 			if (code == format) m_choiceFormat->SetSelection(index);
 		}

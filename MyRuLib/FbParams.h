@@ -83,6 +83,7 @@ enum FbParamKey {
 
 	FB_LIMIT_CHECK   = 210,
 	FB_LIMIT_COUNT   = 211,
+	FB_CLEAR_LOG     = 212,
 
 	FB_TITLE_0 = 220,
 	FB_TITLE_1 = 221,

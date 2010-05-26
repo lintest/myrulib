@@ -90,7 +90,7 @@ wxString FrameInfoThread::F(const int number)
 wxString FrameInfoThread::CreateRow(const wxString &info, const wxString &text)
 {
 	const wxString row = wxT("<TR><TD>%s</TD><TD align=right>%s</TD></TR>");
-	return wxString::Format(row, info, text);
+	return wxString::Format(row, info.c_str(), text.c_str());
 }
 
 void FrameInfoThread::WriteCount()
@@ -108,8 +108,7 @@ void FrameInfoThread::WriteCount()
 			min = GetDate(result.GetInt(1));
 			max = GetDate(result.GetInt(2));
 			sum = F(result.GetInt(3));
-			const wxChar * title = _("Total books count:");
-			m_html << CreateRow(_("Total books count:"), F(result.GetInt(0)).c_str());
+			m_html << CreateRow(_("Total books count:"), F(result.GetInt(0)));
 		}
 	}
 
@@ -119,15 +118,16 @@ void FrameInfoThread::WriteCount()
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
-			m_html << CreateRow(_("Authors count:"), F(result.GetInt(0)).c_str());
+			wxString count = F(result.GetInt(0));
+			m_html << CreateRow(_("Authors count:"), count);
 		}
 	}
 
-	m_html << CreateRow(_("Total files size, Mb:"), sum.c_str());
+	m_html << CreateRow(_("Total files size, Mb:"), sum);
 
-	m_html << CreateRow(_("First reciept:"), min.c_str());
+	m_html << CreateRow(_("First reciept:"), min);
 
-	m_html << CreateRow(_("Last reciept:"), max.c_str());
+	m_html << CreateRow(_("Last reciept:"), max);
 
 	m_html << wxT("</TABLE>");
 }
