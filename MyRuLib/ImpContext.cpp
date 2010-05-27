@@ -8,8 +8,8 @@ WX_DEFINE_OBJARRAY(AuthorArray);
 wxString AuthorItem::GetFullName()
 {
 	wxString result = last;
-	if (!first.IsEmpty()) result += (wxT(" ") + first);
-	if (!middle.IsEmpty()) result += (wxT(" ") + middle);
+	if (!first.IsEmpty()) result << wxT(' ') << first;
+	if (!middle.IsEmpty()) result << wxT(' ') << middle;
 	return result.Trim(false).Trim(true);
 }
 

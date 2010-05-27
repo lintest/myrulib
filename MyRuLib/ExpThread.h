@@ -43,12 +43,22 @@ class FbExportDlg : public FbDialog
 			public:
 				ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item)
 					: wxThread(wxTHREAD_JOINABLE), m_parent(parent), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath()) {}
+			protected:
 				virtual void * Entry();
 			private:
 				FbExportDlg * m_parent;
 				int m_format;
 				int m_id;
 				wxString m_filename;
+		};
+		class GzipThread: public wxThread
+		{
+			public:
+				GzipThread(FbExportDlg * parent, const wxArrayString &args);
+				virtual void * Entry();
+			private:
+				FbExportDlg * m_parent;
+				wxArrayString m_filelist;
 		};
 		class ZipThread: public wxThread
 		{
@@ -57,7 +67,6 @@ class FbExportDlg : public FbDialog
 				virtual void * Entry();
 			private:
 				FbExportDlg * m_parent;
-				wxString m_filename;
 				wxArrayString m_filelist;
 		};
 		class DelThread: public wxThread
@@ -91,12 +100,13 @@ class FbExportDlg : public FbDialog
 	private:
 		void Start();
 		void Finish();
+		void GzipFiles(const wxArrayString &args);
 		void ZipFiles(const wxArrayString &args);
 		void DelFiles(const wxArrayString &args);
 		wxString GetScript(int format);
 		wxString GetCommand(const wxString &script, const wxFileName &filename);
-		void ExportFile(const ExportFileItem &item);
-		void ExecScript(const wxString &script, const wxFileName &filename);
+		void ExportFile(size_t index, const ExportFileItem &item);
+		void ExecScript(size_t index, const wxFileName &filename);
 		wxArrayString m_scripts;
 		size_t m_index;
 		size_t m_script;

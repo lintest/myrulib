@@ -224,8 +224,8 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	m_staticTextFormat->Wrap( -1 );
 	bSizerFormat->Add( m_staticTextFormat, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_choiceFormat = new wxChoice( this, ID_FORMAT, wxDefaultPosition, wxDefaultSize);
-	bSizerFormat->Add( m_choiceFormat, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_format = new FbChoiceFormat( this, ID_FORMAT, wxDefaultPosition, wxDefaultSize);
+	bSizerFormat->Add( m_format, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
@@ -252,9 +252,10 @@ void ExternalDlg::LoadFormats()
 {
 	wxString filename = _("filename");
 	int format = FbParams::GetValue(FB_FILE_FORMAT);
-	m_choiceFormat->Append(filename << wxT(".fb2"), new IntData(0));
-	m_choiceFormat->Append(filename << wxT(".zip"), new IntData(-1));
-	m_choiceFormat->SetSelection(format == -1 ? 1 : 0);
+	m_format->Append(filename << wxT(".fb2"), 0);
+	m_format->Append(filename + wxT(".zip"), -1);
+	m_format->Append(filename + wxT(".gz"), -2);
+	m_format->SetSelection(format == -1 ? 1 : 0);
 
 	wxString sql = wxT("SELECT id, name FROM script ORDER BY id");
 	try {
@@ -263,8 +264,8 @@ void ExternalDlg::LoadFormats()
 		while ( result.NextRow() ) {
 			int code = result.GetInt(0);
 			wxString name = _("filename"); name << wxT('.') << result.GetString(1);
-			int index = m_choiceFormat->Append(name, new IntData(code));
-			if (code == format) m_choiceFormat->SetSelection(index);
+			int index = m_format->Append(name, code);
+			if (code == format) m_format->SetSelection(index);
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
@@ -273,14 +274,14 @@ void ExternalDlg::LoadFormats()
 
 void ExternalDlg::FillBooks(const wxString &selections)
 {
-	wxString ext;
-	if (m_choiceFormat->GetCurrentSelection() == 1) {
-		m_ext = wxT(".zip");
-		m_scale = 43;
-	} else {
-		m_ext = wxEmptyString;
-		m_scale = 100;
+	int format = m_format->GetCurrentData();
+	m_scale = format < 0 ? 43 : 100; // при сжатии средний коэффициент 0.43
+	switch (format) {
+		case -1: m_ext = wxT(".zip"); break;
+		case -2: m_ext = wxT(".gz"); break;
+		default: m_ext.Empty();
 	}
+
 	m_filenames.Empty();
 
 	FbTreeListUpdater updater(m_books);
@@ -452,17 +453,14 @@ void ExternalDlg::ChangeFilesExt(const wxTreeItemId &parent)
 
 void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
 {
-	wxString ext;
-	if (m_choiceFormat->GetCurrentSelection() == 1) {
-		m_ext = wxT(".zip");
-		m_scale = 43;
-	} else {
-		m_ext = wxEmptyString;
-		m_scale = 100;
+	int format = m_format->GetCurrentData();
+	m_scale = format < 0 ? 43 : 100; // при сжатии средний коэффициент 0.43
+	switch (format) {
+		case -1: m_ext = wxT(".zip"); break;
+		case -2: m_ext = wxT(".gz"); break;
+		default: m_ext.Empty();
 	}
 	m_filenames.Empty();
-
-	// при сжатии средний коэффициент 0.43
 	ChangeFilesExt(m_books->GetRootItem());
 }
 
@@ -505,21 +503,15 @@ bool ExternalDlg::ExportBooks()
 		return false;
 	}
 
-	IntData * data = (IntData*) m_choiceFormat->GetClientObject(m_choiceFormat->GetCurrentSelection());
 	m_books->SetItemText(m_books->GetRootItem(), root_dir);
 
 	FbExportDlg * dlg = new FbExportDlg(wxGetApp().GetTopWindow(), wxID_ANY, wxT("Export files"));
 	FillFilelist(m_books->GetRootItem(), dlg->m_filelist);
 	dlg->SetSize(GetSize());
 	dlg->SetPosition(GetPosition());
-	dlg->m_format = data->GetData();
+	dlg->m_format = m_format->GetCurrentData();
 	dlg->Execute();
-	/*
-	ExportThread thread(data->GetData());
-	FillFilelist(m_books->GetRootItem(), thread.m_filelist);
-	thread.m_info = _("Export") + COLON + root_dir;
-	thread.Entry();
-	*/
+
 	return true;
 }
 

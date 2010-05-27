@@ -139,6 +139,7 @@
 		<sources>MyRuLib/FbBookPanel.cpp</sources>
 		<sources>MyRuLib/FbBookThread.cpp</sources>
 		<sources>MyRuLib/FbCheckList.cpp</sources>
+		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>

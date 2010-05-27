@@ -199,6 +199,8 @@
 		<Unit filename="FbCalendar.h" />
 		<Unit filename="FbCheckList.cpp" />
 		<Unit filename="FbCheckList.h" />
+		<Unit filename="FbChoiceFormat.cpp" />
+		<Unit filename="FbChoiceFormat.h" />
 		<Unit filename="FbColumnDlg.cpp" />
 		<Unit filename="FbColumnDlg.h" />
 		<Unit filename="FbConfigDlg.cpp" />
@@ -327,3 +329,4 @@
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
+

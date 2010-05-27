@@ -240,6 +240,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbChoiceFormat.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbColumnDlg.cpp"
 				>
 			</File>
@@ -507,6 +511,10 @@
 			</File>
 			<File
 				RelativePath=".\FbCheckList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbChoiceFormat.h"
 				>
 			</File>
 			<File

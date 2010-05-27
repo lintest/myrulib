@@ -126,15 +126,4 @@ class FbParams {
 		static wxCriticalSection sm_queue;
 };
 
-class IntData: public wxClientData
-{
-	public:
-		IntData() : m_data(0) { }
-		IntData( int data ) : m_data(data) { }
-		void SetData( int data ) { m_data = data; }
-		int GetData() const { return m_data; }
-	private:
-		int  m_data;
-};
-
 #endif // __FBPARAMS_H__

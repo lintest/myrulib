@@ -30,6 +30,7 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbWindow.h"
+#include "FbChoiceFormat.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ExternalDlg
@@ -71,7 +72,7 @@ class ExternalDlg : public FbDialog
 		};
 		wxTextCtrl* m_textDir;
 		FbTreeListCtrl* m_books;
-		wxChoice* m_choiceFormat;
+		FbChoiceFormat * m_format;
 		wxCheckBox* m_checkAuthor;
 	private:
 		void OnSelectDir( wxCommandEvent& event );
