@@ -238,12 +238,13 @@ void FbImportBook::AppendBook()
 	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
 
 	for (size_t i = 0; i<authors.Count(); i++) {
+		int author = authors[i].GetId();
 		{
 			wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, m_archive);
-			stmt.Bind(3, authors[i].id);
+			stmt.Bind(3, author);
 			stmt.Bind(4, title);
 			stmt.Bind(5, genres);
 			stmt.Bind(6, m_filename);
@@ -255,16 +256,14 @@ void FbImportBook::AppendBook()
 			stmt.Bind(12, m_md5sum);
 			stmt.ExecuteUpdate();
 		}
-	}
-
-	for (size_t i = 0; i<authors.Count(); i++) {
         for (size_t j = 0; j<sequences.Count(); j++) {
+			SequenceItem &sequence = sequences[j];
             wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number,id_author) VALUES (?,?,?,?)");
             wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
             stmt.Bind(1, id_book);
-            stmt.Bind(2, sequences[j].id);
-            stmt.Bind(3, (int)sequences[j].number);
-            stmt.Bind(4, authors[i].id);
+            stmt.Bind(2, sequence.GetId());
+            stmt.Bind(3, sequence.GetNumber());
+            stmt.Bind(4, author);
             stmt.ExecuteUpdate();
         }
 	}

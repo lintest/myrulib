@@ -9,37 +9,40 @@
 
 class AuthorItem
 {
-public:
-	AuthorItem(int id = 0): id(id) {};
-	wxString GetFullName();
-	void Convert(FbDatabase & database);
-	int Find(FbDatabase & database);
-	int Load(FbDatabase & database);
-	int Save(FbDatabase & database);
-private:
-	void SetNames();
-	void Bind(wxSQLite3Statement &stmt, int param, const wxString &value);
-public:
-	int id;
-	wxString first;
-	wxString middle;
-	wxString last;
+	public:
+		AuthorItem(int id = 0): m_id(id) {};
+		wxString GetFullName();
+		void Convert(FbDatabase & database);
+		int GetId() { return m_id; }
+		int Find(FbDatabase & database);
+		int Load(FbDatabase & database);
+		int Save(FbDatabase & database);
+		wxString first;
+		wxString middle;
+		wxString last;
+	private:
+		void SetNames();
+		void Bind(wxSQLite3Statement &stmt, int param, const wxString &value);
+	private:
+		int m_id;
 };
 
 WX_DECLARE_OBJARRAY(AuthorItem, AuthorArray);
 
 class SequenceItem
 {
-public:
-	SequenceItem(): id(0), number(0) {};
-	SequenceItem(const XML_Char **atts);
-	int Convert(FbDatabase & database);
-public:
-	int id;
-	wxString seqname;
-	long number;
-private:
-	int FindSequence(FbDatabase & database);
+	public:
+		SequenceItem(): m_id(0), m_number(0) {};
+		SequenceItem(const XML_Char **atts);
+	public:
+		int Convert(FbDatabase & database);
+		int GetId() { return m_id; }
+		int GetNumber() { return m_number; }
+	private:
+		int FindSequence(FbDatabase & database);
+		int m_id;
+		wxString m_name;
+		long m_number;
 };
 
 WX_DECLARE_OBJARRAY(SequenceItem, SequenceArray);

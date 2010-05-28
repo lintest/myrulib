@@ -34,22 +34,22 @@ int AuthorItem::Find(FbDatabase & database)
 	Bind(stmt, 1, first);
 	Bind(stmt, 2, middle);
 	Bind(stmt, 3, last);
-	stmt.Bind(4, id);
+	stmt.Bind(4, m_id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return id = result.NextRow() ? result.GetInt(0) : 0;
+	return m_id = result.NextRow() ? result.GetInt(0) : 0;
 }
 
 int AuthorItem::Load(FbDatabase & database)
 {
 	wxString sql = wxT("SELECT first_name, middle_name, last_name FROM authors WHERE id=?");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, id);
+	stmt.Bind(1, m_id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if ( result.NextRow() ) {
 		first  = result.GetString(0);
 		middle = result.GetString(1);
 		last   = result.GetString(2);
-		return id;
+		return m_id;
 	}
 	return 0;
 }
@@ -57,7 +57,7 @@ int AuthorItem::Load(FbDatabase & database)
 int AuthorItem::Save(FbDatabase & database)
 {
 	wxString full_name = GetFullName();
-	if (full_name.IsEmpty()) { return id = 0; }
+	if (full_name.IsEmpty()) { return m_id = 0; }
 
 	wxString search_name = Lower(full_name);
 	search_name.Replace(strRusJO, strRusJE);
@@ -67,11 +67,11 @@ int AuthorItem::Save(FbDatabase & database)
 
 	wxString sql_data;
 	wxString sql_fts3;
-	if (id) {
+	if (m_id) {
 		sql_data = wxT("UPDATE authors SET letter=?, search_name=?, full_name=?, first_name=?, middle_name=?, last_name=? WHERE id=?");
 		sql_fts3 = wxT("UPDATE fts_auth SET content=? WHERE docid=?");
 	} else {
-		id = - database.NewId(DB_NEW_AUTHOR);
+		m_id = - database.NewId(DB_NEW_AUTHOR);
 		sql_data = wxT("INSERT INTO authors(letter, search_name, full_name, first_name, middle_name, last_name, id) VALUES(?,?,?,?,?,?,?)");
 		sql_fts3 = wxT("INSERT INTO fts_auth(content, docid) VALUES(?,?)");
 	}
@@ -84,7 +84,7 @@ int AuthorItem::Save(FbDatabase & database)
 		Bind(stmt, 4, first);
 		Bind(stmt, 5, middle);
 		Bind(stmt, 6, last);
-		stmt.Bind(7, id);
+		stmt.Bind(7, m_id);
 		stmt.ExecuteUpdate();
 	}
 
@@ -92,54 +92,53 @@ int AuthorItem::Save(FbDatabase & database)
 		wxString content = Lower(search_name);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_fts3);
 		stmt.Bind(1, content);
-		stmt.Bind(2, id);
+		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
 	}
 
-	return id;
+	return m_id;
 }
 
 int SequenceItem::Convert(FbDatabase & database)
 {
-	if (seqname.IsEmpty()) return 0;
+	if (m_name.IsEmpty()) return m_id = 0;
 
 	{
 		wxString sql = wxT("SELECT id FROM sequences WHERE value=?");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, seqname);
+		stmt.Bind(1, m_name);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return id = result.GetInt(0);
+		if (result.NextRow()) return m_id = result.GetInt(0);
 	}
 
-	int id = - database.NewId(DB_NEW_SEQUENCE);
+	m_id = - database.NewId(DB_NEW_SEQUENCE);
 	{
 		wxString sql = wxT("INSERT INTO sequences(value,id) VALUES (?,?)");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, seqname);
-		stmt.Bind(2, id);
+		stmt.Bind(1, m_name);
+		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
-		wxString content = Lower(seqname);
 		wxString sql = wxT("INSERT INTO fts_seqn(content, docid) VALUES(?,?)");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, content);
-		stmt.Bind(2, id);
+		stmt.Bind(1, Lower(m_name));
+		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
 	}
 
-	return id;
+	return m_id;
 }
 
 SequenceItem::SequenceItem(const XML_Char **atts)
-	: id(0), number(0)
+	: m_id(0), m_number(0)
 {
 	const XML_Char **a = atts;
 	while (*a) {
 		wxString attr = ParsingContext::CharToLower(a[0]).Trim(false).Trim(true); a++;
 		wxString text = ParsingContext::CharToString(a[0]).Trim(false).Trim(true); a++;
-		if (attr == wxT("name")) seqname = text;
-		else if (attr == wxT("number")) text.ToLong(&number);
+		if (attr == wxT("name")) m_name = text;
+		else if (attr == wxT("number")) text.ToLong(&m_number);
 	}
 }
