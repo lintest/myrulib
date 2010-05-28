@@ -105,9 +105,6 @@ class FbExportDlg : public FbDialog
 	private:
 		void Start();
 		void Finish();
-		void GzipFiles(const wxArrayString &args);
-		void ZipFiles(const wxArrayString &args);
-		void DelFiles(const wxArrayString &args);
 		wxString GetScript(int format);
 		wxString GetCommand(const wxString &script, const wxFileName &filename);
 		void ExportFile(size_t index, const ExportFileItem &item);
