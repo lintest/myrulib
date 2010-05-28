@@ -10,20 +10,6 @@
 WX_DEFINE_OBJARRAY(ExportFileArray);
 
 //-----------------------------------------------------------------------------
-//  FbExportDlg::JoinedThread
-//-----------------------------------------------------------------------------
-
-void FbExportDlg::JoinedThread::OnExit()
-{ 
-	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_EXIT).Post(m_parent); 
-}
-
-void FbExportDlg::JoinedThread::Execute()
-{
-	if (Create() == wxTHREAD_NO_ERROR) Run(); else OnExit();
-}
-
-//-----------------------------------------------------------------------------
 //  FbExportDlg::ExportLog
 //-----------------------------------------------------------------------------
 
@@ -62,11 +48,6 @@ void FbExportDlg::ExportLog::DoLog(wxLogLevel level, const wxChar *szString, tim
 //  FbExportDlg::ExportThread
 //-----------------------------------------------------------------------------
 
-FbExportDlg::ExportThread::ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item)
-	: JoinedThread(parent), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath()) 
-{
-}
-
 void * FbExportDlg::ExportThread::Entry()
 {
 	ZipReader reader(m_id);
@@ -100,7 +81,7 @@ void * FbExportDlg::ExportThread::Entry()
 //-----------------------------------------------------------------------------
 
 FbExportDlg::GzipThread::GzipThread(FbExportDlg * parent, const wxArrayString &args)
-	: JoinedThread(parent)
+	: wxThread(wxTHREAD_JOINABLE)
 {
 	size_t count = args.Count();
 	for (size_t i = 1; i < count; i++) m_filelist.Add(args[i]);
@@ -132,7 +113,7 @@ void * FbExportDlg::GzipThread::Entry()
 //-----------------------------------------------------------------------------
 
 FbExportDlg::ZipThread::ZipThread(FbExportDlg * parent, const wxArrayString &args)
-	: JoinedThread(parent)
+	: wxThread(wxTHREAD_JOINABLE)
 {
 	size_t count = args.Count();
 	for (size_t i = 1; i < count; i++) m_filelist.Add(args[i]);
@@ -168,7 +149,7 @@ void * FbExportDlg::ZipThread::Entry()
 //-----------------------------------------------------------------------------
 
 FbExportDlg::DelThread::DelThread(FbExportDlg * parent, const wxArrayString &args)
-	: JoinedThread(parent)
+	: wxThread(wxTHREAD_JOINABLE)
 {
 	size_t count = args.Count();
 	for (size_t i = 1; i < count; i++) m_filelist.Add(args[i]);
@@ -236,13 +217,12 @@ BEGIN_EVENT_TABLE( FbExportDlg, FbDialog )
 	EVT_COMMAND( ID_SCRIPT_RUN, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptRun )
 	EVT_COMMAND( ID_SCRIPT_LOG, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptLog )
 	EVT_COMMAND( ID_SCRIPT_ERROR, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptError )
-	EVT_COMMAND( ID_SCRIPT_EXIT, fbEVT_EXPORT_ACTION, FbExportDlg::OnScriptExit )
 	EVT_CLOSE( FbExportDlg::OnCloseDlg )
     EVT_IDLE( FbExportDlg::OnIdle )
 END_EVENT_TABLE()
 
 FbExportDlg::FbExportDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog(parent, id, title, pos, size, style), m_format(0), m_index(0), m_script(0), m_process(this), m_log(this), m_closed(false), m_errors(0), m_thread(NULL)
+	: FbDialog(parent, id, title, pos, size, style), m_format(0), m_index(0), m_script(0), m_process(this), m_log(this), m_closed(false), m_errors(0)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -274,7 +254,6 @@ FbExportDlg::FbExportDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 FbExportDlg::~FbExportDlg()
 {
-	while (m_thread) m_thread->Wait();
 }
 
 wxString FbExportDlg::GetCommand(const wxString &script, const wxFileName &filename)
@@ -395,8 +374,44 @@ void FbExportDlg::Finish()
 void FbExportDlg::ExportFile(size_t index, const ExportFileItem &item)
 {
 	wxLogInfo(item.filename.GetFullPath());
-	m_thread = new ExportThread(this, m_format, item);
-	m_thread->Execute();
+	ExportThread thread(this, m_format, item);
+	if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+	thread.Wait();
+	wxSafeYield(this);
+	Start();
+}
+
+void FbExportDlg::GzipFiles(const wxArrayString &args)
+{
+    if (args.Count() >= 2) {
+		GzipThread thread(this, args);
+		if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+		thread.Wait();
+		wxSafeYield(this);
+    }
+	Start();
+}
+
+void FbExportDlg::ZipFiles(const wxArrayString &args)
+{
+    if (args.Count() >= 2) {
+		ZipThread thread(this, args);
+		if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+		thread.Wait();
+		wxSafeYield(this);
+    }
+	Start();
+}
+
+void FbExportDlg::DelFiles(const wxArrayString &args)
+{
+    if (args.Count() >= 2) {
+		DelThread thread(this, args);
+		if (thread.Create() == wxTHREAD_NO_ERROR) thread.Run();
+		thread.Wait();
+		wxSafeYield(this);
+    }
+	Start();
 }
 
 void FbExportDlg::ExecScript(size_t index, const wxFileName &filename)
@@ -415,15 +430,14 @@ void FbExportDlg::ExecScript(size_t index, const wxFileName &filename)
 	wxArrayString args = wxCmdLineParser::ConvertStringToArgs(command.c_str());
 	if (args.Count() > 1) {
 		wxString cmd = args[0].Lower();
-		if (cmd == wxT("gzip")) { m_thread = new GzipThread(this, args); }
-		else if (cmd == wxT("zip")) { m_thread = new ZipThread(this, args); }
-		else if (cmd == wxT("del")) { m_thread = new DelThread(this, args); }
-		else if (cmd == wxT("rm"))  { m_thread = new DelThread(this, args); }
-		else if (cmd == wxT("gz")) { m_thread = new GzipThread(this, args); }
 		#ifdef __WXMSW__
-		else if (cmd == wxT("cmd")) m_process.m_dos = true; 
+		if (cmd == wxT("cmd")) m_process.m_dos = true;
 		#endif // __WXMSW__
-		if (m_thread) { m_thread->Execute(); return; }
+		if (cmd == wxT("gzip")) { GzipFiles(args); return; }
+		if (cmd == wxT("zip"))  { ZipFiles(args);  return; }
+		if (cmd == wxT("del"))  { DelFiles(args);  return; }
+		if (cmd == wxT("gz"))   { GzipFiles(args); return; }
+		if (cmd == wxT("rm"))   { DelFiles(args);  return; }
 	}
 	long pid = wxExecute(command, wxEXEC_ASYNC, &m_process);
 	if (!pid) { wxLogError(command); Start(); }
@@ -447,12 +461,6 @@ void FbExportDlg::LogMessage(const wxString &msg)
 
 void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 {
-	Start();
-}
-
-void FbExportDlg::OnScriptExit(wxCommandEvent& event)
-{
-	wxDELETE(m_thread);
 	Start();
 }
 

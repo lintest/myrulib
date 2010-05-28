@@ -38,49 +38,44 @@ class FbExportDlg : public FbDialog
 				wxLog * m_old;
 				DECLARE_NO_COPY_CLASS(ExportLog)
 		};
-		class JoinedThread: public wxThread
+		class ExportThread: public wxThread
 		{
 			public:
-				JoinedThread(FbExportDlg * parent)
-					: wxThread(wxTHREAD_JOINABLE), m_parent(parent) {}
-				void Execute();
-			protected:
-				virtual void OnExit();
-				FbExportDlg * m_parent;
-		};
-		class ExportThread: public JoinedThread
-		{
-			public:
-				ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item);
+				ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item)
+					: wxThread(wxTHREAD_JOINABLE), m_parent(parent), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath()) {}
 			protected:
 				virtual void * Entry();
 			private:
+				FbExportDlg * m_parent;
 				int m_format;
 				int m_id;
 				wxString m_filename;
 		};
-		class GzipThread: public JoinedThread
+		class GzipThread: public wxThread
 		{
 			public:
 				GzipThread(FbExportDlg * parent, const wxArrayString &args);
 				virtual void * Entry();
 			private:
+				FbExportDlg * m_parent;
 				wxArrayString m_filelist;
 		};
-		class ZipThread: public JoinedThread
+		class ZipThread: public wxThread
 		{
 			public:
 				ZipThread(FbExportDlg * parent, const wxArrayString &args);
 				virtual void * Entry();
 			private:
+				FbExportDlg * m_parent;
 				wxArrayString m_filelist;
 		};
-		class DelThread: public JoinedThread
+		class DelThread: public wxThread
 		{
 			public:
 				DelThread(FbExportDlg * parent, const wxArrayString &args);
 				virtual void * Entry();
 			private:
+				FbExportDlg * m_parent;
 				wxArrayString m_filelist;
 		};
 		class ExportProcess: public wxProcess
@@ -119,7 +114,6 @@ class FbExportDlg : public FbDialog
 		ExportLog m_log;
 		bool m_closed;
 		int m_errors;
-		JoinedThread * m_thread;
 	private:
 		wxStaticText m_info;
 		wxListBox m_text;
@@ -133,7 +127,6 @@ class FbExportDlg : public FbDialog
 		void OnScriptRun(wxCommandEvent& event);
 		void OnScriptLog(wxCommandEvent& event);
 		void OnScriptError(wxCommandEvent& event);
-		void OnScriptExit(wxCommandEvent& event);
 		void OnCloseDlg(wxCloseEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbExportDlg);

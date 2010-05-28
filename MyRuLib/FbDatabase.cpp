@@ -523,7 +523,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 
 	while ( version < new_version ) {
 		version++;
-		wxLogMessage(_("Upgrade database to version %d"), version);
+		wxLogVerbose(_("Upgrade database to version %d"), version);
 		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 		DoUpgrade(version);
 		SetVersion(version);
