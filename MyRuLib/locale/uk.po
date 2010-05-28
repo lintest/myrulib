@@ -3,19 +3,24 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: MyRuLib\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-11 21:59+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-05-27 00:07+0300\n"
+"PO-Revision-Date: 2010-05-28 16:50+0200\n"
+"Last-Translator: asdfgh\n"
+"Language-Team: Lintest <mail@lintest.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-Language: Ukrainian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: h:\\projects\\MyRuLib\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-SearchPath-0: MyRuLib\n"
 
 #: FbFrameBase.cpp:210
 msgid "book"
@@ -24,1715 +29,1890 @@ msgstr[0] "книга"
 msgstr[1] "книги"
 msgstr[2] "книг"
 
-#: FbEditBook.cpp:37 FbFrameSequen.cpp:61
-msgid "Ser."
-msgstr "Серія"
+#: MyRuLib/MyRuLibApp.cpp:140
+#: MyRuLib/FbParams.cpp:83
+#: MyRuLib/FbParams.cpp:118
+msgid "Database error: "
+msgstr "Помилка бази даних: "
 
-#: FbFrameSequen.cpp:29 FbFrameSequen.cpp:421 FbMainMenu.cpp:10
-msgid "Серии"
-msgstr "Серії"
-
-#: ExpThread.cpp:10
-msgid "Export error"
-msgstr "Помилка експорту"
-
-#: ExternalDlg.cpp:180
-msgid "Export to external storage"
-msgstr "Експорт на зовнішній пристрій"
-
-#: ExternalDlg.cpp:193 SettingsDlg.cpp:240
-msgid "Destination folder:"
-msgstr "Каталог зовнішнього пристрою:"
-
-#: ExternalDlg.cpp:208
-msgid "Use Author (without co-Authors)"
-msgstr "Використовувати поточного автора (без співавторів)"
-
-#: ExternalDlg.cpp:216
-msgid "File name"
-msgstr "Найменування файлу"
-
-#: ExternalDlg.cpp:217 FbBookPanel.cpp:67
-msgid "Size, Kb"
-msgstr "Розмір, Кб"
-
-#: ExternalDlg.cpp:224
-msgid "Export As..."
-msgstr "Формат експорту файлів:"
-
-#: ExternalDlg.cpp:228 SettingsDlg.cpp:281
-msgid "filename"
-msgstr "найменування_файлу"
-
-#: ExternalDlg.cpp:407
-msgid "Select a destination folder"
-msgstr "Виберіть папку зовнішнього пристрою"
-
-#: ExternalDlg.cpp:482
-msgid "Destination folder not found"
-msgstr "Не знайдена папка зовнішнього пристрою: "
-
-#: ExternalDlg.cpp:486
-msgid "Unable write files to destination folder"
-msgstr "Каталог зовнішнього пристрою не доступний для запису"
-
-#: ExternalDlg.cpp:486
-msgid "Not selected any book"
-msgstr "Не обрано жодної книги"
-
-#: FbAboutDlg.cpp:8 FbMainMenu.cpp:38
-msgid "About"
-msgstr "Про програму…"
-
-#: FbAuthorDlg.cpp:18
-msgid "Surname"
-msgstr "Прізвище"
-
-#: FbAuthorDlg.cpp:19
-msgid "Name"
-msgstr "Ім'я"
-
-#: FbAuthorDlg.cpp:20
-msgid "Middle-Name"
-msgstr "По батькові"
-
-#: FbAuthorDlg.cpp:47
-msgid "Add author"
-msgstr "Додати автора"
-
-#: FbAuthorDlg.cpp:55
-msgid "Change author"
-msgstr "Змінити автора"
-
-#: FbAuthorDlg.cpp:163
-#, c-format
-msgid "\"Surname\" field is empty"
-msgstr "Не заповнене прізвище автора"
-
-#: FbAuthorDlg.cpp:168
-msgid "Autor with same details aleready exists"
-msgstr "Автор з такими реквізитами вже існує"
-
-#: FbAuthorDlg.cpp:171
-msgid "Merge authors?"
-msgstr "Об'єднати двох авторів?"
-
-#: FbBookData.cpp:45
-msgid "Download book file?"
-msgstr "Завантажити книгу?"
-
-#: FbBookData.cpp:45 FbBookPanel.cpp:518 FbFrameHtml.cpp:209
-#: FbMainFrame.cpp:534
-msgid "Confirmation"
-msgstr "Підтвердження"
-
-#: FbBookData.cpp:87
-msgid "Associated application not found"
-msgstr "Не знайдена програма для перегляду файлів типу"
-
-#: FbBookMenu.cpp:15
-msgid "Open book"
-msgstr "Відкрити книгу"
-
-#: FbBookMenu.cpp:17
-msgid "Delete download query"
-msgstr "Видалити закачку"
-
-#: FbBookMenu.cpp:18
-msgid "Retry rownload"
-msgstr "Завантажити повторно"
-
-#: FbBookMenu.cpp:20
-msgid "Download a file"
-msgstr "Завантажити файл"
-
-#: FbBookMenu.cpp:22
-msgid "Download via browser"
-msgstr "Завантажити в браузері"
-
-#: FbBookMenu.cpp:23
-msgid "Online books page"
-msgstr "Сторінка книги"
-
-#: FbBookMenu.cpp:26 FbMainMenu.cpp:78
-msgid "Select all"
-msgstr "Виділити всі"
-
-#: FbBookMenu.cpp:27 FbMainMenu.cpp:79
-msgid "Undo selection"
-msgstr "Відмінити виділення"
-
-#: FbBookMenu.cpp:28 FbMainMenu.cpp:93
-msgid "Table columns"
-msgstr "Колонки таблиці"
-
-#: FbBookMenu.cpp:32
-msgid "Delete book"
-msgstr "Видалити книгу"
-
-#: FbBookMenu.cpp:35 FbMainMenu.cpp:81
-msgid "Sort by"
-msgstr "Сортування"
-
-#: FbBookMenu.cpp:36 FbMainMenu.cpp:82
-msgid "Use filter"
-msgstr "Використовувати фільтр"
-
-#: FbBookMenu.cpp:37 FbMainMenu.cpp:83
-msgid "Clear filter"
-msgstr "Видалити фільтр"
-
-#: FbBookMenu.cpp:40
-msgid "Jump to author"
-msgstr "Перейти до автора"
-
-#: FbBookMenu.cpp:44
-msgid "Add to favourites"
-msgstr "Додати у вибране"
-
-#: FbBookMenu.cpp:45
-msgid "Add to folders"
-msgstr "Додати у папку"
-
-#: FbBookMenu.cpp:46
-msgid "Rate this book"
-msgstr "Установити рейтинг"
-
-#: FbBookMenu.cpp:47
-msgid "Delete bookmark"
-msgstr "Видалити закладку"
-
-#: FbBookMenu.cpp:50 FbFrameFolder.cpp:95 FbFrameHtml.cpp:31 FbMainMenu.cpp:85
-msgid "Add comments"
-msgstr "Коментарі"
-
-msgid "Comments"
-msgstr "Коментарі"
-
-#: FbBookPanel.cpp:60 FbMenu.cpp:6
+#: MyRuLib/FbMenu.cpp:6
 msgid "Title"
 msgstr "Заголовок"
 
-#: FbBookPanel.cpp:61 FbEditBook.cpp:36 FbFrameAuthor.cpp:60 FbMenu.cpp:7
-#: FbReplaceDlg.cpp:59
+#: MyRuLib/FbMenu.cpp:7
 msgid "Author"
 msgstr "Автор"
 
-#: FbBookPanel.cpp:62
-msgid "#"
-msgstr "№"
-
-#: FbBookPanel.cpp:63 FbEditBook.cpp:38
-msgid "Genre"
-msgstr "Жанр"
-
-#: FbBookPanel.cpp:64 FbMenu.cpp:8
+#: MyRuLib/FbMenu.cpp:8
 msgid "Rating"
 msgstr "Рейтинг"
 
-#: FbBookPanel.cpp:65 FbFilterDlg.cpp:119 FbMenu.cpp:9
+#: MyRuLib/FbMenu.cpp:9
 msgid "Language"
 msgstr "Мова"
 
-#: FbBookPanel.cpp:66 FbMenu.cpp:10 SettingsDlg.cpp:175
+#: MyRuLib/FbMenu.cpp:10
 msgid "Extension"
 msgstr "Тип"
 
-#: FbBookPanel.cpp:517
-#, c-format
-msgid "Delete selected books (%d pcs)?"
-msgstr "Видалити виділені книги (%d шт.)?"
-
-#: FbCalendar.cpp:28 FbMenu.cpp:12
-msgid "Date"
-msgstr "Дата"
-
-#: FbColumnDlg.cpp:9
-msgid "Columns"
-msgstr "Колонки"
-
-#: FbConfigDlg.cpp:42
-msgid "Library name:"
-msgstr "Найменування бібліотеки:"
-
-#: FbConfigDlg.cpp:51
-msgid "Library folder:"
-msgstr "Розміщення файлів:"
-
-#: FbConfigDlg.cpp:68
-msgid "Short description:"
-msgstr "Короткий опис:"
-
-#: FbConfigDlg.cpp:68
-msgid "Host name:"
-msgstr "Веб-сайт:"
-
-#: FbConfigDlg.cpp:99
-msgid "User name:"
-msgstr "Ім'я користувача:"
-
-#: FbConfigDlg.cpp:106
-msgid "Password:"
-msgstr "Пароль:"
-
-#: FbConfigDlg.cpp:127 SettingsDlg.cpp:323
-msgid "General"
-msgstr "Основні"
-
-#: FbConfigDlg.cpp:128 FbGenres.cpp:110 SettingsDlg.cpp:324
-msgid "Network"
-msgstr "Інтернет"
-
-#: FbConfigDlg.cpp:147 SettingsDlg.cpp:354
-msgid "Select folder"
-msgstr "Виберіть каталог"
-
-#: FbConfigDlg.cpp:220
-msgid "Library options"
-msgstr "Параметри бібліотеки"
-
-#: FbConst.cpp:9
-msgid "АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЮЯ"
-msgstr ""
-
-#: FbConst.cpp:12
-msgid "(no Author)"
-msgstr "(без автора)"
-
-#: FbConst.cpp:15
-msgid "(Misc.)"
-msgstr "(різне)"
-
-#: FbConst.cpp:16
-#, c-format
-msgid "Not found an archive (%s), containing file (%s)."
-msgstr "Не знайдений архів (%s), що містить файл (%s)."
-
-#: FbConst.cpp:26
-msgid "Clear"
-msgstr "Очистити"
-
-#: FbDatabase.cpp:285
-msgid "Search template"
-msgstr "Шаблон пошуку"
-
-#: FbDatabase.cpp:424
-#, c-format
-msgid "Open database"
-msgstr "Відкрити базу даних"
-
-#: FbDatabase.cpp:427
-msgid "Create new database"
-msgstr "Створити нову базу даних"
-
-#: FbDatabase.cpp:521
-#, c-format
-msgid "Upgrade database to version %d"
-msgstr "Обновити базу даних до версії %d"
-
-#: FbDatabase.cpp:530
-msgid "Database version mismatch"
-msgstr "Невідповідність версії бази даних"
-
-#: FbDatabase.cpp:531
-#, c-format
-msgid "Need a new version %d, but used the old %d."
-msgstr "Потрібна нова версія %d, але використовується стара %d."
-
-#: FbDataOpenDlg.cpp:30
-msgid "File name:"
-msgstr "Найменування файлу:"
-
-#: FbDataOpenDlg.cpp:63 FbMainMenu.cpp:20
-msgid "Open (or create) collection"
-msgstr "Відкрити (створити) колекцію"
-
-#: FbDataOpenDlg.cpp:70
-msgid "Enter collection filename"
-msgstr "Выберите имя файла коллекции"
-
-#: FbDataOpenDlg.cpp:73
-msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
-msgstr "Файл бази даних (*.db)|*.db|Всі файли (*.*)|*.*"
-
-#: FbDownloader.cpp:76
-msgid "Content-type"
-msgstr ""
-
-#: FbDownloader.cpp:76
-msgid "application/x-www-form-urlencoded"
-msgstr ""
-
-#: FbDownloader.cpp:136
-msgid "File download"
-msgstr "Завантаження файлу"
-
-#: FbFilterDlg.cpp:12
-msgid "All"
-msgstr "Всі"
-
-#: FbFilterDlg.cpp:96
-msgid "Filter settings"
-msgstr "Настройка фільтра"
-
-#: FbFilterDlg.cpp:104
-msgid "Show books by allocation"
-msgstr "Відбір книг по приналежності"
-
-#: FbFilterDlg.cpp:106
-msgid "Library books (web)"
-msgstr "Бібліотечні"
-
-#: FbFilterDlg.cpp:110
-msgid "Local books"
-msgstr "Власні"
-
-#: FbFilterDlg.cpp:122
-msgid "File extension"
-msgstr "Тип файлу"
-
-#: FbFrameAuthor.cpp:37 FbFrameAuthor.cpp:348 FbMainMenu.cpp:8
-msgid "Authors"
-msgstr "Автори"
-
-#: FbFrameAuthor.cpp:61 FbFrameSequen.cpp:62 FbReplaceDlg.cpp:60
-msgid "Num."
-msgstr "Кілк."
-
-#: FbFrameAuthor.cpp:78
-msgid "All collected authors"
-msgstr "Всі автори колекції"
-
-#: FbFrameAuthor.cpp:309
-msgid "Delete author"
-msgstr "Видалити автора: "
-
-#: FbFrameAuthor.cpp:310
-#, c-format
-msgid "and all of author's books (%d pcs.)?"
-msgstr "і всі його книги в кількості %d шт.?"
-
-#: FbFrameAuthor.cpp:311 FbFrameSequen.cpp:407
-msgid "Removing"
-msgstr "Видалення"
-
-#: FbFrameAuthor.cpp:332 FbFrameAuthor.cpp:358 FbFrameFolder.cpp:36
-#: FbFrameSequen.cpp:211 FbFrameSequen.cpp:431 SettingsDlg.cpp:167
-msgid "Append"
-msgstr "Додати"
-
-#: FbFrameAuthor.cpp:334 FbFrameAuthor.cpp:359 FbFrameFolder.cpp:37
-#: FbFrameSequen.cpp:213 FbFrameSequen.cpp:432 SettingsDlg.cpp:168
-msgid "Modify"
-msgstr "Змінити"
-
-#: FbFrameAuthor.cpp:335 FbFrameAuthor.cpp:360
-msgid "Replace"
-msgstr "Замінити"
-
-#: FbFrameAuthor.cpp:336 FbFrameAuthor.cpp:361 FbFrameDownld.cpp:72
-#: FbFrameFolder.cpp:38 FbFrameSequen.cpp:214 FbFrameSequen.cpp:433
-#: SettingsDlg.cpp:169
-msgid "Delete"
-msgstr "Видалити"
-
-#: FbFrameAuthor.cpp:339 FbFrameAuthor.cpp:363
-msgid "Online authors page"
-msgstr "Сторінка автора"
-
-#: FbFrameAuthor.cpp:345 FbFrameBase.cpp:261 FbFrameSequen.cpp:418
-#: FbMainMenu.cpp:43
-msgid "&File"
-msgstr "Файл"
-
-#: FbFrameAuthor.cpp:345 FbFrameBase.cpp:261 FbFrameSequen.cpp:418
-msgid "&Authors"
-msgstr "Автори"
-
-#: FbFrameSequen.cpp:29 FbFrameSequen.cpp:421 FbMainMenu.cpp:10
-msgid "&Series"
-msgstr "Серії"
-
-#: FbFrameAuthor.cpp:346 FbFrameBase.cpp:262 FbFrameSequen.cpp:419
-#: FbMainMenu.cpp:44
-msgid "&Library"
-msgstr "Бібліотека"
-
-#: FbFrameAuthor.cpp:347 FbFrameBase.cpp:263 FbFrameSequen.cpp:420
-#: FbMainMenu.cpp:45
-msgid "&Catalog"
-msgstr "Картотека"
-
-#: FbFrameAuthor.cpp:349 FbFrameBase.cpp:264 FbFrameSequen.cpp:422
-msgid "&Books"
-msgstr "Книги"
-
-#: FbFrameAuthor.cpp:350 FbFrameBase.cpp:265 FbFrameSequen.cpp:423
-#: FbMainMenu.cpp:46
-msgid "&View"
-msgstr "Вид"
-
-#: FbFrameAuthor.cpp:351 FbFrameBase.cpp:266 FbFrameSequen.cpp:424
-#: FbMainMenu.cpp:47
-msgid "&Tools"
-msgstr "Сервіс"
-
-#: FbFrameAuthor.cpp:352 FbFrameBase.cpp:267 FbFrameSequen.cpp:425
-msgid "&Window"
-msgstr "Вікно"
-
-#: FbFrameAuthor.cpp:353 FbFrameBase.cpp:268 FbFrameSequen.cpp:426
-#: FbMainMenu.cpp:48
-msgid "&?"
-msgstr "?"
-
-#: FbFrameAuthor.cpp:379
-msgid "Russian aplhabet"
-msgstr "Російський алфавіт"
-
-#: FbFrameAuthor.cpp:380
-msgid "Latin alphabet"
-msgstr "Латинський алфавіт"
-
-#: FbFrameBase.cpp:190 FbFrameDownld.cpp:64 FbFrameSequen.cpp:80
-#: FbMainFrame.cpp:291 SettingsDlg.cpp:326
-msgid "Export"
-msgstr "Експорт"
-
-#: FbFrameBase.cpp:190 FbFrameDownld.cpp:64 FbFrameSequen.cpp:80
-#: FbMainFrame.cpp:291
-msgid "Export to external device"
-msgstr "Запис на зовнішній пристрій"
-
-#: FbFrameDownld.cpp:22 FbMainMenu.cpp:15
-msgid "Downloads"
-msgstr "Завантаження"
-
-#: FbFrameDownld.cpp:45 FbFrameFolder.cpp:53
-msgid "Folders"
-msgstr "Каталоги"
-
-#: FbFrameDownld.cpp:66
-msgid "Start"
-msgstr "Старт"
-
-#: FbFrameDownld.cpp:66
-msgid "Start downloading"
-msgstr "Почати завантаження файлів через Інтернет"
-
-#: FbFrameDownld.cpp:67
-msgid "Stop"
-msgstr "Стоп"
-
-#: FbFrameDownld.cpp:67
-msgid "Stop downloading"
-msgstr "Зупинити завантаження файлів через Інтернет"
-
-#: FbFrameDownld.cpp:69
-msgid "Up"
-msgstr "Вгору"
-
-#: FbFrameDownld.cpp:69
-msgid "Move up in queue"
-msgstr "Пересунути в початок черги"
-
-#: FbFrameDownld.cpp:70
-msgid "Down"
-msgstr "Вниз"
-
-#: FbFrameDownld.cpp:70
-msgid "Move down in queue"
-msgstr "Пересунути в кінець черги"
-
-#: FbFrameDownld.cpp:72
-msgid "Remove download"
-msgstr "Видалити завантаження"
-
-#: FbFrameDownld.cpp:84
-msgid "Queue"
-msgstr "Черга"
-
-#: FbFrameDownld.cpp:85
-msgid "Ready"
-msgstr "Готове"
-
-#: FbFrameDownld.cpp:86
-msgid "Fault"
-msgstr "Помилки"
-
-#: FbFrameFolder.cpp:18 FbMainMenu.cpp:14
-msgid "My folders"
-msgstr "Мої каталоги"
-
-#: FbFrameFolder.cpp:74
-msgid "Bookmarks"
-msgstr "Закладки"
-
-#: FbFrameFolder.cpp:77
-msgid "Favorites"
-msgstr "Вибране"
-
-#: FbFrameFolder.cpp:92
-msgid "Remarks"
-msgstr "Позначки"
-
-#: FbFrameFolder.cpp:149
-msgid "Input name of new folder:"
-msgstr "Введіть найменування нового каталогу:"
-
-#: FbFrameFolder.cpp:149
-msgid "Add folder?"
-msgstr "Додати каталог?"
-
-#: FbFrameFolder.cpp:175
-msgid "Input new folder name:"
-msgstr "Введіть нове найменування каталогу:"
-
-#: FbFrameFolder.cpp:175
-msgid "Change folder?"
-msgstr "Змінити каталог?"
-
-#: FbFrameFolder.cpp:199
-#, c-format
-msgid "Delete folder \"%s\"?"
-msgstr "Видалити каталог \"%s\"?"
-
-#: FbFrameFolder.cpp:200
-msgid "Delete folder?"
-msgstr "Видалити каталог?"
-
-#: FbFrameGenres.cpp:13 FbMainMenu.cpp:9
-msgid "Genres"
-msgstr "Жанри"
-
-#: FbFrameGenres.cpp:36
-msgid "List of genres"
-msgstr "Список жанрів"
-
-#: FbFrameHtml.cpp:69
-msgid "Comment:"
-msgstr "Каментар:"
-
-#: FbFrameHtml.cpp:105 FbFrameInfo.cpp:187
-msgid "Select a file to export report"
-msgstr "Виберіть файл для експорту звіту"
-
-#: FbFrameHtml.cpp:108 FbFrameInfo.cpp:190
-msgid "HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
-msgstr "Файли HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Всі файли (*.*)|*.*"
-
-#: FbFrameHtml.cpp:209
-msgid "Remove comment?"
-msgstr "Видалити коментар?"
-
-#: FbFrameInfo.cpp:18
-msgid "Информация"
-msgstr "Інформація"
-
-#: FbFrameInfo.cpp:60
-msgid "Information about collection"
-msgstr "Інформація про колекції"
-
-#: FbFrameInfo.cpp:92
-msgid "Total quantity"
-msgstr "Загальна кількість"
-
-#: FbFrameInfo.cpp:100
-#, c-format
-msgid "Total books count:"
-msgstr "Загальна кількість книг:"
-
-#: FbFrameInfo.cpp:103
-msgid "Authors counting"
-msgstr "Підрахунок авторів"
-
-#: FbFrameInfo.cpp:108
-#, c-format
-msgid "Количество авторов:"
-msgstr "Кількість авторів:"
-
-#: FbFrameInfo.cpp:111
-#, c-format
-msgid "Total files size, Mb:"
-msgstr "Сумарний розмір файлів, Мб:"
-
-#: FbFrameInfo.cpp:112
-#, c-format
-msgid "First reciept:"
-msgstr "Перше надходження:"
-
-#: FbFrameInfo.cpp:113
-#, c-format
-msgid "Last reciept:"
-msgstr "Останнє надходження:"
-
-#: FbFrameInfo.cpp:132 SettingsDlg.cpp:325
-msgid "File types"
-msgstr "Типи файлів"
-
-#: FbFrameInfo.cpp:157 FbMainMenu.cpp:23
-msgid "Collection info"
-msgstr "Інформація про колекцію"
-
-#: FbFrameInfo.cpp:132
-msgid "Count"
-msgstr "Кількість"
-
-#: FbFrameSearch.cpp:43
-#, c-format
-msgid "Searching"
-msgstr "Пошук"
-
-#: FbFrameSearch.cpp:59
-#, c-format
-msgid "Nothing was found on pattern \"%s\""
-msgstr "Нічого не знайдено по шаблону \"%s\""
-
-#: FbFrameSequen.cpp:79 FbMainFrame.cpp:274 FbMainFrame.cpp:286
-msgid "Find"
-msgstr "Знайти"
-
-#: FbFrameSequen.cpp:79
-msgid "Find series by name"
-msgstr "Знайти серію по найменуванню"
-
-#: FbFrameSequen.cpp:249
-msgid "Series name:"
-msgstr "Найменуванне серії:"
-
-#: FbFrameSequen.cpp:268
-msgid "Append series"
-msgstr "Додати серію"
-
-#: FbFrameSequen.cpp:276
-msgid "Modify series"
-msgstr "Змінити серію"
-
-#: FbFrameSequen.cpp:342
-msgid "\"Series name\" field is empty"
-msgstr "Не заповнено найменування серії."
-
-#: FbFrameSequen.cpp:347
-msgid "Series aleready exists"
-msgstr "Така серія вже існує."
-
-#: FbFrameSequen.cpp:350
-msgid "Merge series?"
-msgstr "Об'єднати дві серії?"
-
-#: FbFrameSequen.cpp:406
-#, c-format
-msgid "Delete series «%s»?"
-msgstr "Видалити серію \"%s\"?"
-
-#: FbGenres.cpp:17
-msgid "Fiction"
-msgstr "Фантастика"
-
-#: FbGenres.cpp:18
-msgid "Mysteries and Thrillers"
-msgstr "Детективи й Трилери"
-
-#: FbGenres.cpp:19
-msgid "Prose"
-msgstr "Проза"
-
-#: FbGenres.cpp:20
-msgid "Romance"
-msgstr "Любовні романи"
-
-#: FbGenres.cpp:21 FbGenres.cpp:77
-msgid "Adventures"
-msgstr "Пригоди"
-
-#: FbGenres.cpp:22 FbGenres.cpp:85
-msgid "Children literature"
-msgstr "Дитяча література"
-
-#: FbGenres.cpp:23
-msgid "Poetry, dramaturgy"
-msgstr "Поезія, Драматургія"
-
-#: FbGenres.cpp:24
-msgid "Antique"
-msgstr "Стародавнє"
-
-#: FbGenres.cpp:25
-msgid "Science, Education"
-msgstr "Наука, Освіта"
-
-#: FbGenres.cpp:26
-msgid "PC, Internet"
-msgstr "Комп'ютери та Інтернет"
-
-#: FbGenres.cpp:27 FbGenres.cpp:121
-msgid "References"
-msgstr "Довідкова література"
-
-#: FbGenres.cpp:28 FbGenres.cpp:126
-msgid "Documentary literature"
-msgstr "Документальна література"
-
-#: FbGenres.cpp:29
-msgid "Religion and Spirituality"
-msgstr "Релігія та духовність"
-
-#: FbGenres.cpp:30 FbGenres.cpp:134
-msgid "Humour"
-msgstr "Гумор"
-
-#: FbGenres.cpp:31
-msgid "Home and Family"
-msgstr "Домоведення (Будинок та родина)"
-
-#: FbGenres.cpp:36
-msgid "Alternative History"
-msgstr "Альтернативна історія"
-
-#: FbGenres.cpp:37
-msgid "Fighting fantasy"
-msgstr "Бойова фантастика"
-
-#: FbGenres.cpp:38
-msgid "Epic fantasy"
-msgstr "Епічна фантастика"
-
-#: FbGenres.cpp:39
-msgid "Heroic fantasy"
-msgstr "Героїчна фантастика"
-
-#: FbGenres.cpp:40
-msgid "Detective Fiction"
-msgstr "Детективна фантастика"
-
-#: FbGenres.cpp:41
-msgid "Cyberpunk"
-msgstr "Кіберпанк"
-
-#: FbGenres.cpp:42
-msgid "Space Fiction"
-msgstr "Космічна фантастика"
-
-#: FbGenres.cpp:43
-msgid "Socio-psychological fiction"
-msgstr "Соціально-психологічна фантастика"
-
-#: FbGenres.cpp:44
-msgid "Horror and Mysticism"
-msgstr "Жахи й Містика"
-
-#: FbGenres.cpp:45
-msgid "Humorous Fiction"
-msgstr "Гумористична фантастика"
-
-#: FbGenres.cpp:46
-msgid "Fantasy"
-msgstr "Фэнтези"
-
-#: FbGenres.cpp:47
-msgid "Science Fiction"
-msgstr "Наукова Фантастика"
-
-#: FbGenres.cpp:48
-msgid "Classic mystery"
-msgstr "Класичний детектив"
-
-#: FbGenres.cpp:49
-msgid "Police mystery"
-msgstr "Поліцейський детектив"
-
-#: FbGenres.cpp:50
-msgid "Action"
-msgstr "Бойовик"
-
-#: FbGenres.cpp:51
-msgid "Ironic mystery"
-msgstr "Іронічний детектив"
-
-#: FbGenres.cpp:52
-msgid "Historical mystery"
-msgstr "Історичний детектив"
-
-#: FbGenres.cpp:53
-msgid "Spy mystery"
-msgstr "Шпигунський детектив"
-
-#: FbGenres.cpp:54
-msgid "Criminal mystery"
-msgstr "Кримінальний детектив"
-
-#: FbGenres.cpp:55
-msgid "Political mystery"
-msgstr "Політичний детектив"
-
-#: FbGenres.cpp:56
-msgid "Maniacs"
-msgstr "Маніяки"
-
-#: FbGenres.cpp:57
-msgid "Action mystery"
-msgstr "Крутий детектив"
-
-#: FbGenres.cpp:58
-msgid "Thriller"
-msgstr "Трилер"
-
-#: FbGenres.cpp:59
-msgid "Mystery"
-msgstr "Детектив"
-
-#: FbGenres.cpp:60
-msgid "Classical prose"
-msgstr "Класична проза"
-
-#: FbGenres.cpp:61
-msgid "Historical prose"
-msgstr "Історична проза"
-
-#: FbGenres.cpp:62
-msgid "Modern prose"
-msgstr "Сучасна проза"
-
-#: FbGenres.cpp:63
-msgid "Counterculture"
-msgstr "Контркультура"
-
-#: FbGenres.cpp:64
-msgid "Russian Classical prose"
-msgstr "Російська класична проза"
-
-#: FbGenres.cpp:65
-msgid "Soviet Classical prose"
-msgstr "Радянська класична проза"
-
-#: FbGenres.cpp:66
-msgid "Modern romance novels"
-msgstr "Сучасні любовні романи"
-
-#: FbGenres.cpp:67
-msgid "Historical romance novels"
-msgstr "Історичні любовні романи"
-
-#: FbGenres.cpp:68
-msgid "Action romance novels"
-msgstr "Гостросюжетні любовні романи"
-
-#: FbGenres.cpp:69
-msgid "Short romance novels"
-msgstr "Короткі любовні романи"
-
-#: FbGenres.cpp:70
-msgid "Erotic novels"
-msgstr "Еротика"
-
-#: FbGenres.cpp:71
-msgid "Western"
-msgstr "Вестерн"
-
-#: FbGenres.cpp:72
-msgid "Historical adventures"
-msgstr "Історичні пригоди"
-
-#: FbGenres.cpp:73
-msgid "Adventures about Indians"
-msgstr "Пригоди про індіанців"
-
-#: FbGenres.cpp:74
-msgid "Sea adventures"
-msgstr "Морські пригоди"
-
-#: FbGenres.cpp:75
-msgid "Travel and Geography"
-msgstr "Подорожі та географія"
-
-#: FbGenres.cpp:76
-msgid "Nature and Animals"
-msgstr "Природа й тварини"
-
-#: FbGenres.cpp:78
-msgid "Tales"
-msgstr "Казка"
-
-#: FbGenres.cpp:79
-msgid "Children poetry"
-msgstr "Дитячі вірші"
-
-#: FbGenres.cpp:80
-msgid "Childern prose"
-msgstr "Дитяча проза"
-
-#: FbGenres.cpp:81
-msgid "Children fiction"
-msgstr "Дитяча фантастика"
-
-#: FbGenres.cpp:82
-msgid "Children action"
-msgstr "Дитячі гостросюжетні"
-
-#: FbGenres.cpp:83
-msgid "Children adventures"
-msgstr "Дитячі пригоди"
-
-#: FbGenres.cpp:84
-msgid "Children education"
-msgstr "Дитяча освітня література"
-
-#: FbGenres.cpp:86
-msgid "Poetry"
-msgstr "Поезія"
-
-#: FbGenres.cpp:87
-msgid "Dramaturgy"
-msgstr "Драматургія"
-
-#: FbGenres.cpp:88
-msgid "Antique Literature"
-msgstr "Антична література"
-
-#: FbGenres.cpp:89
-msgid "European ancient literature"
-msgstr "Європейська стародавня література"
-
-#: FbGenres.cpp:90
-msgid "Russian ancient literature"
-msgstr "Давньоруська література"
-
-#: FbGenres.cpp:91
-msgid "Oriental ancient literature"
-msgstr "Давньосхідна література"
-
-#: FbGenres.cpp:92
-msgid "Myths. Legends. Epic."
-msgstr "Міфи. Легенди. Епос"
-
-#: FbGenres.cpp:93
-msgid "Ancient literature"
-msgstr "Стародавня література"
-
-#: FbGenres.cpp:94
-msgid "History"
-msgstr "Історія"
-
-#: FbGenres.cpp:95
-msgid "Psychology"
-msgstr "Психологія"
-
-#: FbGenres.cpp:96
-msgid "Cultural"
-msgstr "Культурологія"
-
-#: FbGenres.cpp:97
-msgid "Religious"
-msgstr "Релігіознавство"
-
-#: FbGenres.cpp:98
-msgid "Philosophy"
-msgstr "Філософія"
-
-#: FbGenres.cpp:99
-msgid "Politology"
-msgstr "Політика"
-
-#: FbGenres.cpp:100
-msgid "Business literature"
-msgstr "Ділова література"
-
-#: FbGenres.cpp:101
-msgid "Law"
-msgstr "Юриспруденція"
-
-#: FbGenres.cpp:102
-msgid "Linguistics"
-msgstr "Мовознавство"
-
-#: FbGenres.cpp:103
-msgid "Medical"
-msgstr "Медицина"
-
-#: FbGenres.cpp:104
-msgid "Physics"
-msgstr "Фізика"
-
-#: FbGenres.cpp:105
-msgid "Mathematics"
-msgstr "Математика"
-
-#: FbGenres.cpp:106
-msgid "Chemistry"
-msgstr "Хімія"
-
-#: FbGenres.cpp:107
-msgid "Biology"
-msgstr "Біологія"
-
-#: FbGenres.cpp:108
-msgid "Engineering"
-msgstr "Технічні науки"
-
-#: FbGenres.cpp:109
-msgid "Scientific literature"
-msgstr "Наукова література"
-
-#: FbGenres.cpp:111
-msgid "Programming"
-msgstr "Програмування"
-
-#: FbGenres.cpp:112
-msgid "Computer hardware"
-msgstr "Комп'ютерне залізо (апаратне забезпечення)"
-
-#: FbGenres.cpp:113
-msgid "Software"
-msgstr "Програми"
-
-#: FbGenres.cpp:114
-msgid "Databases"
-msgstr "Бази даних"
-
-#: FbGenres.cpp:115
-msgid "OS and Network"
-msgstr "ОС і Мережі"
-
-#: FbGenres.cpp:116
-msgid "Computer literature"
-msgstr "Комп'ютерна література"
-
-#: FbGenres.cpp:117
-msgid "Encyclopedias"
-msgstr "Енциклопедії"
-
-#: FbGenres.cpp:118
-msgid "Dictionaries"
-msgstr "Словники"
-
-#: FbGenres.cpp:119
-msgid "Directories"
-msgstr "Довідники"
-
-#: FbGenres.cpp:120
-msgid "Manuals"
-msgstr "Керівництва"
-
-#: FbGenres.cpp:122
-msgid "Biographies and Memoirs"
-msgstr "Біографії та Мемуари"
-
-#: FbGenres.cpp:123
-msgid "Publicism"
-msgstr "Публіцистика"
-
-#: FbGenres.cpp:124
-msgid "Criticism"
-msgstr "Критика"
-
-#: FbGenres.cpp:125
-msgid "Art and Design"
-msgstr "Мистецтво та Дизайн"
-
-#: FbGenres.cpp:127
-msgid "Religion"
-msgstr "Релігія"
-
-#: FbGenres.cpp:128
-msgid "Esoterica"
-msgstr "Езотеріка"
-
-#: FbGenres.cpp:129
-msgid "Self-improvement"
-msgstr "Самовдосконалення"
-
-#: FbGenres.cpp:130
-msgid "Religious Literature"
-msgstr "Релігійна література"
-
-#: FbGenres.cpp:131
-msgid "Jokes"
-msgstr "Анекдоти"
-
-#: FbGenres.cpp:132
-msgid "Humorous prose"
-msgstr "Гумористична проза"
-
-#: FbGenres.cpp:133
-msgid "Humorous poetry"
-msgstr "Гумористичні вірші"
-
-#: FbGenres.cpp:135
-msgid "Cooking"
-msgstr "Кулінарія"
-
-#: FbGenres.cpp:136
-msgid "Pets"
-msgstr "Домашні тварини"
-
-#: FbGenres.cpp:137
-msgid "Hobbies and Crafts"
-msgstr "Хоббі та ремесла"
-
-#: FbGenres.cpp:138
-msgid "Entertainment"
-msgstr "Розваги"
-
-#: FbGenres.cpp:139
-msgid "Health"
-msgstr "Здоров'я"
-
-#: FbGenres.cpp:140
-msgid "Gardening"
-msgstr "Сад і город"
-
-#: FbGenres.cpp:141
-msgid "Handmade"
-msgstr "Зроби сам"
-
-#: FbGenres.cpp:142
-msgid "Sport"
-msgstr "Спорт"
-
-#: FbGenres.cpp:143
-msgid "Erotic, sex"
-msgstr "Еротика, Секс"
-
-#: FbGenres.cpp:144
-msgid "Household"
-msgstr "Домоведення"
-
-msgid "Prose military"
-msgstr "Військова проза"
-
-msgid "Love science fiction"
-msgstr "Любовна фантастика"
-
-msgid "Geo guides"
-msgstr "Путівники"
-
-msgid "Economy, Business"
-msgstr "Економіка і бізнес"
-
-msgid "Job hunting"
-msgstr "Пошук роботи, кар'єра"
-
-msgid "Management"
-msgstr "Управління, підбір персоналу"
-
-msgid "Marketing"
-msgstr "Маркетинг, реклама"
-
-msgid "Banking"
-msgstr "Банківська справа"
-
-msgid "Stock"
-msgstr "Цінні папери, інвестиції"
-
-msgid "Accounting"
-msgstr "Бухоблік, оподаткування, аудит"
-
-msgid "Global economy"
-msgstr "Зовнішньоекономічна діяльність"
-
-msgid "Economics"
-msgstr "Економіка"
-
-msgid "Industries"
-msgstr "Галузеві видання"
-
-msgid "Corporate culture"
-msgstr "Корпоративна культура"
-
-msgid "Personal finance"
-msgstr "Особисті фінанси"
-
-msgid "Real estate"
-msgstr "Нерухомість"
-
-msgid "Popular business"
-msgstr "Про бізнес популярно"
-
-msgid "Small business"
-msgstr "Малий бізнес"
-
-msgid "Paper work"
-msgstr "Діловодство"
-
-msgid "Economics reference book"
-msgstr "Довідники з економіки"
-
-#: FbImportThread.cpp:91 FbImportThread.cpp:469
-#, c-format
-msgid "Import file %s"
-msgstr "Імпорт файлу %s"
-
-#: FbImportThread.cpp:113
-#, c-format
-msgid "Skip entry %s"
-msgstr "Пропущено елемент %s"
-
-#: FbImportThread.cpp:118
-#, c-format
-msgid "Import zip entry %s"
-msgstr "Імпорт zip елементу %s"
-
-#: FbImportThread.cpp:151
-#, c-format
-msgid "XML parsing error: '%s' at line %d file %s"
-msgstr "Помилка розбіру XML: '%s' at line %d file %s"
-
-#: FbImportThread.cpp:289
-#, c-format
-msgid "File already exists %s"
-msgstr "Файл вже існує %s"
-
-#: FbImportThread.cpp:294
-#, c-format
-msgid "Add alternative %s"
-msgstr "Додано варіант %s"
-
-#: FbImportThread.cpp:340
-#, c-format
-msgid "Import zip %s"
-msgstr "Імпорт zip %s"
-
-#: FbImportThread.cpp:415
-#, c-format
-msgid "FB2 and FBD not found %s"
-msgstr "FB2 та FBD не знайдені %s"
-
-#: FbImportThread.cpp:416
-#, c-format
-msgid "Zip read error %s"
-msgstr "Помилка читання zip %s"
-
-#: FbImportThread.cpp:459
-#, c-format
-msgid "Start import %d file(s)"
-msgstr "Початок імпорту %d файл(ів)"
-
-#: FbImportThread.cpp:463
-#, c-format
-msgid "Finish import %d file(s)"
-msgstr "Кінець імпорту %d файл(ів)"
-
-#: FbImportThread.cpp:528
-#, c-format
-msgid "Skip file %s"
-msgstr "Пропущено файл %s"
-
-#: FbImportThread.cpp:534
-#, c-format
-msgid "Import subdirectory %s"
-msgstr "Імпорт підкаталогу %s"
-
-#: FbImportThread.cpp:550
-#, c-format
-msgid "Start import directory %s"
-msgstr "Початок імпорту каталогу %s"
-
-#: FbImportThread.cpp:554 ZipReader.cpp:248
-#, c-format
-msgid "Can't open directory %s"
-msgstr "Неможливо відкрити каталог %s"
-
-#: FbImportThread.cpp:570
-#, c-format
-msgid "Finish import directory %s"
-msgstr "Кінець імпорту каталогу %s"
-
-#: FbLogStream.cpp:55
-msgid "Fatal error"
-msgstr "Фатальна помилка"
-
-#: FbLogStream.cpp:56
-msgid "Program aborted."
-msgstr "Програма перервана. "
-
-#: FbMainFrame.cpp:190
-msgid "Info messages"
-msgstr "Інформаційні повідомлення"
-
-#: FbMainFrame.cpp:262
-msgid "Import file"
-msgstr "Імпорт файлу"
-
-#: FbMainFrame.cpp:262
-msgid "Import files to the library"
-msgstr "Додати в бібліотеку нові файли"
-
-#: FbMainFrame.cpp:263
-msgid "Импорт папки"
-msgstr "Імпорт каталогу"
-
-#: FbMainFrame.cpp:263
-msgid "Добавить в библиотеку директорию"
-msgstr "Додати в бібліотеку каталог"
-
-#: FbMainFrame.cpp:266
-msgid " Author: "
-msgstr " Автор: "
-
-#: FbMainFrame.cpp:274
-msgid "Find author"
-msgstr "Пошук автора"
-
-#: FbMainFrame.cpp:277
-msgid " Book: "
-msgstr " Книга: "
-
-#: FbMainFrame.cpp:286
-msgid "Find book by title"
-msgstr "Пошук книги по заголовку"
-
-#: FbMainFrame.cpp:288
-msgid "Hierarchy"
-msgstr "Ієрархія"
-
-#: FbMainFrame.cpp:288
-msgid "Hierarchy of authors and series"
-msgstr "Ієрархія авторів і серій"
-
-#: FbMainFrame.cpp:289
-msgid "List"
-msgstr "Список"
-
-#: FbMainFrame.cpp:289
-msgid "Simple list"
-msgstr "Простий список"
-
-#: FbMainFrame.cpp:309
-msgid "Select archive to add to the library"
-msgstr "Виберіть zіp-файл для додавання в бібліотеку…"
-
-#: FbMainFrame.cpp:312
-msgid "Digital books and archives"
-msgstr "Електронні книги та архіви"
-
-#: FbMainFrame.cpp:312
-msgid "Digital books in FB2"
-msgstr "Електронні книги FB2"
-
-#: FbMainFrame.cpp:312
-msgid "ZIP archives"
-msgstr "Архіви ZIP"
-
-#: FbMainFrame.cpp:312
-msgid "All files"
-msgstr "Всі файли"
-
-#: FbMainFrame.cpp:322
-msgid "Processing file:"
-msgstr "Обробка файлу:"
-
-#: FbMainFrame.cpp:335
-msgid "Select folder to recursive import"
-msgstr "Виберіть каталог для рекурсивного імпорту файлів у бібліотеку"
-
-#: FbMainFrame.cpp:335
-msgid "Processing folder:"
-msgstr "Обработка каталогу:"
-
-#: FbMainFrame.cpp:468
-msgid "Input search string:"
-msgstr "Введіть рядок для пошуку:"
-
-#: FbMainFrame.cpp:468
-msgid "Find title"
-msgstr "Пошук по заголовку"
-
-#: FbMainFrame.cpp:523
-msgid "This function is not available yet in this version."
-msgstr "Функціонал не реалізований у даній версії."
-
-#: FbMainFrame.cpp:533
-msgid "Optimize database?"
-msgstr "Виконати реструктуризацію бази даних?"
-
-#: FbMainFrame.cpp:592
-msgid "File not found"
-msgstr "Файл не знайдено"
-
-#: FbMainMenu.cpp:6
-msgid "Search"
-msgstr "Пошук"
-
-#: FbMainMenu.cpp:11
-msgid "Calendar"
-msgstr "Календар"
-
-#: FbMainMenu.cpp:12
-msgid "Archive"
-msgstr "Архів"
-
-#: FbMainMenu.cpp:21
-msgid "Open recent"
-msgstr "Відкрити повторно"
-
-#: FbMainMenu.cpp:24
-msgid "Clear empty variables"
-msgstr "Видалити порожні значення"
-
-#: FbMainMenu.cpp:25
-msgid "Optimize DB"
-msgstr "Реструктуризація БД"
-
-#: FbMainMenu.cpp:27
-msgid "Options"
-msgstr "Параметри"
-
-#: FbMainMenu.cpp:32
-msgid "Settings"
-msgstr "Настройки"
-
-#: FbMainMenu.cpp:37
-msgid "Website"
-msgstr "Офіційний сайт"
-
-#: FbMainMenu.cpp:53 FbMainMenu.cpp:69
-msgid "Add file"
-msgstr "Додати файл"
-
-#: FbMainMenu.cpp:54 FbMainMenu.cpp:70
-msgid "Add folder"
-msgstr "Додати каталог"
-
-#: FbMainMenu.cpp:56 FbMainMenu.cpp:73
-msgid "Exit"
-msgstr "Вихід"
-
-#: FbMainMenu.cpp:61 FbMainMenu.cpp:92
-msgid "Tabs"
-msgstr "Вкладки"
-
-#: FbMainMenu.cpp:63 FbMainMenu.cpp:95
-msgid "Fullscreen mode"
-msgstr "Повноекранний режим"
-
-#: FbMainMenu.cpp:64 FbMainMenu.cpp:96
-msgid "Show log window"
-msgstr "Вікно повідомлень"
-
-#: FbMainMenu.cpp:72
-msgid "Export books"
-msgstr "Експорт книг"
-
-#: FbMainMenu.cpp:90
-msgid "List of books"
-msgstr "Список книг"
-
-#: FbMainMenu.cpp:91
-msgid "Preview area"
-msgstr "Область перегляду"
-
-#: FbMainMenu.cpp:110
-msgid "Hierarchical"
-msgstr "Ієрархічний"
-
-#: FbMainMenu.cpp:116
-msgid "Standart"
-msgstr "Стандартні"
-
-#: FbMainMenu.cpp:117
-msgid "Compact"
-msgstr "Компактні"
-
-#: FbMainMenu.cpp:118
-msgid "Convex"
-msgstr "Опуклі"
-
-#: FbMainMenu.cpp:119
-msgid "Buttons"
-msgstr "Кнопкові"
-
-#: FbMainMenu.cpp:119
-msgid "Light"
-msgstr "Легкі"
-
-#: FbMainMenu.cpp:124
-msgid "Right"
-msgstr "Праворуч"
-
-#: FbMainMenu.cpp:125
-msgid "Bottom"
-msgstr "Внизу"
-
-#: FbMainMenu.cpp:126
-msgid "Not specified"
-msgstr "Відсутній"
-
-#: FbMainMenu.cpp:131
-msgid "Close window"
-msgstr "Закрити вікно"
-
-#: FbMainMenu.cpp:132
-msgid "Close all"
-msgstr "Закрити всі"
-
-#: FbMainMenu.cpp:134
-msgid "Next"
-msgstr "Наступне"
-
-#: FbMainMenu.cpp:135
-msgid "Previous"
-msgstr "Попереднє"
-
-#: FbMenu.cpp:11
+#: MyRuLib/FbMenu.cpp:11
 msgid "Size"
 msgstr "Розмір"
 
-#: FbMenu.cpp:14
+#: MyRuLib/FbMenu.cpp:12
+msgid "Date"
+msgstr "Дата"
+
+#: MyRuLib/FbMenu.cpp:14
 msgid "Reverse order"
 msgstr "Зворотний порядок"
 
-#: FbReplaceDlg.cpp:111
-msgid "Author not selected by replacement."
-msgstr "Не обраний автор для заміни."
+#: MyRuLib/FbFrameHtml.cpp:69
+msgid "Comment:"
+msgstr "Коментар:"
 
-#: FbReplaceDlg.cpp:133
-msgid "Replace author"
-msgstr "Замінити автора"
+#: MyRuLib/FbFrameHtml.cpp:78
+msgid "Append"
+msgstr "Додати"
 
-#: FbViewerDlg.cpp:11
-msgid "Customize"
-msgstr "Настройка"
+#: MyRuLib/FbFrameHtml.cpp:79
+msgid "Modify"
+msgstr "Змінити"
 
-#: FbViewerDlg.cpp:17
-msgid "Select the application to view files"
-msgstr "Виберіть програму для перегляду файлів"
+#: MyRuLib/FbFrameHtml.cpp:111
+#: MyRuLib/FbFrameInfo.cpp:210
+msgid "Select a file to export report"
+msgstr "Виберіть файл для експорту звіту"
 
-#: FbViewerDlg.cpp:49
-msgid "Executable files"
-msgstr "Файли програм"
+#: MyRuLib/FbFrameHtml.cpp:114
+#: MyRuLib/FbFrameInfo.cpp:213
+msgid "HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
+msgstr "Файли HTML (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Всі файли (*.*)|*.*"
 
-#: InfoThread.cpp:191
+#: MyRuLib/FbFrameHtml.cpp:222
+msgid "Remove comment?"
+msgstr "Видалити коментар?"
+
+#: MyRuLib/FbFrameHtml.cpp:222
+msgid "Confirmation"
+msgstr "Підтвердження"
+
+#: MyRuLib/FbFrameDownld.cpp:45
+#: MyRuLib/FbFrameDownld.cpp:62
+msgid "Folders"
+msgstr "Каталоги"
+
+#: MyRuLib/FbFrameDownld.cpp:70
+msgid "Export"
+msgstr "Експорт"
+
+#: MyRuLib/FbFrameDownld.cpp:70
+msgid "Export to external device"
+msgstr "Запис на зовнішній пристрій"
+
+#: MyRuLib/FbFrameDownld.cpp:72
+msgid "Start"
+msgstr "Старт"
+
+#: MyRuLib/FbFrameDownld.cpp:72
+msgid "Start downloading"
+msgstr "Почати завантаження файлів через Інтернет"
+
+#: MyRuLib/FbFrameDownld.cpp:73
+msgid "Stop"
+msgstr "Стоп"
+
+#: MyRuLib/FbFrameDownld.cpp:73
+msgid "Stop downloading"
+msgstr "Зупинити завантаження файлів через Інтернет"
+
+#: MyRuLib/FbFrameDownld.cpp:75
+msgid "Up"
+msgstr "Вгору"
+
+#: MyRuLib/FbFrameDownld.cpp:75
+msgid "Move up in queue"
+msgstr "Пересунути в початок черги"
+
+#: MyRuLib/FbFrameDownld.cpp:76
+msgid "Down"
+msgstr "Вниз"
+
+#: MyRuLib/FbFrameDownld.cpp:76
+msgid "Move down in queue"
+msgstr "Пересунути в кінець черги"
+
+#: MyRuLib/FbFrameDownld.cpp:78
+msgid "Delete"
+msgstr "Видалити"
+
+#: MyRuLib/FbFrameDownld.cpp:78
+msgid "Remove download"
+msgstr "Видалити завантаження"
+
+#: MyRuLib/FbFrameDownld.cpp:90
+msgid "Queue"
+msgstr "Черга"
+
+#: MyRuLib/FbFrameDownld.cpp:91
+msgid "Ready"
+msgstr "Готове"
+
+#: MyRuLib/FbFrameDownld.cpp:92
+msgid "Fault"
+msgstr "Помилки"
+
+#: MyRuLib/InfoThread.cpp:191
 #, c-format
 msgid "XML parsing error: '%s' at line %d"
 msgstr "Помилка розбіру XML: '%s' at line %d"
 
-#: SettingsDlg.cpp:82
-msgid "List of authors and books:"
-msgstr "Списки книг, авторів:"
+#: MyRuLib/FbFrameInfo.cpp:61
+msgid "Information about collection"
+msgstr "Інформація про колекцію"
 
-#: SettingsDlg.cpp:83
-msgid "Toolbar:"
-msgstr "Панель інструментів:"
+#: MyRuLib/FbFrameInfo.cpp:102
+msgid "Total quantity"
+msgstr "Загальна кількість"
 
-#: SettingsDlg.cpp:84
-msgid "Information:"
-msgstr "Інформація:"
+#: MyRuLib/FbFrameInfo.cpp:111
+msgid "Total books count:"
+msgstr "Загальна кількість книг:"
 
-#: SettingsDlg.cpp:85
-msgid "Dialog windows:"
-msgstr "Вікна діалогів:"
+#: MyRuLib/FbFrameInfo.cpp:115
+msgid "Authors counting"
+msgstr "Підрахунок авторів"
 
-#: SettingsDlg.cpp:89
-msgid "Reset fonts settings"
-msgstr "Скинути всі шрифти"
+#: MyRuLib/FbFrameInfo.cpp:122
+msgid "Authors count:"
+msgstr "Кількість авторів:"
 
-#: SettingsDlg.cpp:117
-msgid "Automatically begin files downloading"
-msgstr "Автоматично стартувати завантаження файлів"
+#: MyRuLib/FbFrameInfo.cpp:126
+msgid "Total files size, Mb:"
+msgstr "Сумарний розмір файлів, Мб:"
 
-#: SettingsDlg.cpp:123
-msgid "Use proxy-server"
-msgstr "Використовувати проксі-сервер"
+#: MyRuLib/FbFrameInfo.cpp:128
+msgid "First reciept:"
+msgstr "Перше надходження:"
 
-#: SettingsDlg.cpp:134
-msgid "Load images for author's description"
-msgstr "Завантажувати зображення для описів авторів"
+#: MyRuLib/FbFrameInfo.cpp:130
+msgid "Last reciept:"
+msgstr "Останнє надходження:"
 
-#: SettingsDlg.cpp:137
-msgid "Folder to save downloads:"
-msgstr "Каталог для зберігання завантажених файлів:"
+#: MyRuLib/FbFrameInfo.cpp:141
+msgid "File extension"
+msgstr "Тип файлу"
 
-#: SettingsDlg.cpp:152
-msgid "Delete downloaded files when download query removed"
-msgstr "Видаляти завантажені файли при видаленні завантажень зі списку"
+#: MyRuLib/FbFrameInfo.cpp:142
+msgid "Count"
+msgstr "Кількість"
 
-#: SettingsDlg.cpp:176
-msgid "Program"
-msgstr "Програма"
+#: MyRuLib/FbFrameInfo.cpp:143
+msgid "Size, Kb"
+msgstr "Розмір, Кб"
 
-#: SettingsDlg.cpp:194
-msgid "Save full path of the file when importing"
-msgstr "Зберігати повний шлях до файлу при імпорті"
+#: MyRuLib/FbFrameInfo.cpp:154
+msgid "File types"
+msgstr "Типи файлів"
 
-#: SettingsDlg.cpp:194
-msgid "Temporary folder:"
-msgstr "Каталог для тимчасових файлів:"
+#: MyRuLib/FbFrameInfo.cpp:180
+msgid "Collection info"
+msgstr "Інформація про колекцію"
 
-#: SettingsDlg.cpp:194
-msgid "Delete temporary files when you exit the program"
-msgstr "Видаляти тимчасові файли при виході з програми"
+#: MyRuLib/FbEditBook.cpp:37
+#: MyRuLib/FbMainMenu.cpp:10
+msgid "Series"
+msgstr "Серії"
 
-#: SettingsDlg.cpp:194
-msgid "Delete files when you delete a book"
-msgstr "Видаляти файли при видаленні книги"
+#: MyRuLib/FbEditBook.cpp:38
+msgid "Genre"
+msgstr "Жанр"
 
-#: SettingsDlg.cpp:222
-msgid "Limit the maximum size of lists:"
-msgstr "Обмежити максимальний розмір списків:"
+#: MyRuLib/FbMainMenu.cpp:6
+msgid "Search"
+msgstr "Пошук"
 
-#: SettingsDlg.cpp:264
-msgid "Transliterate folder name"
-msgstr "Транслітерація найменування каталогу"
+#: MyRuLib/FbMainMenu.cpp:8
+msgid "Authors"
+msgstr "Автори"
 
-#: SettingsDlg.cpp:267
-msgid "Transliterate filename"
-msgstr "Транслітерація найменування файлу"
+#: MyRuLib/FbMainMenu.cpp:9
+msgid "Genres"
+msgstr "Жанри"
 
-#: SettingsDlg.cpp:271
-msgid "A / Author / Series / #_book"
-msgstr "А / Автор / Серія / №_Книга"
+#: MyRuLib/FbMainMenu.cpp:11
+msgid "Calendar"
+msgstr "Календар"
 
-#: SettingsDlg.cpp:272
-msgid "A / Author / Book"
-msgstr "А / Автор / Книга"
+#: MyRuLib/FbMainMenu.cpp:12
+msgid "Archive"
+msgstr "Архів"
 
-#: SettingsDlg.cpp:273
-msgid "Author / Series / #_book"
-msgstr "Автор / Серія / №_Книга"
+#: MyRuLib/FbMainMenu.cpp:14
+msgid "My folders"
+msgstr "Мої каталоги"
 
-#: SettingsDlg.cpp:274
-msgid "Author / Book"
-msgstr "Автор / Книга"
+#: MyRuLib/FbMainMenu.cpp:15
+msgid "Downloads"
+msgstr "Завантаження"
 
-#: SettingsDlg.cpp:277
-msgid "Exported collection structure"
-msgstr "Організація каталогів і файлів"
+#: MyRuLib/FbMainMenu.cpp:20
+msgid "Open (or create) collection"
+msgstr "Відкрити (створити) колекцію"
 
-#: SettingsDlg.cpp:283
-msgid "Format of exporting collection"
-msgstr "Формат експорту"
+#: MyRuLib/FbMainMenu.cpp:21
+msgid "Open recent"
+msgstr "Відкрити повторно"
 
-msgid "Use shell scripts for the export"
-msgstr "Використання скриптів для експорту"
+#: MyRuLib/FbMainMenu.cpp:24
+msgid "Clear empty variables"
+msgstr "Видалити порожні значення"
 
-#: SettingsDlg.cpp:327
-msgid "Fonts"
-msgstr "Шрифти"
+#: MyRuLib/FbMainMenu.cpp:25
+msgid "Optimize DB"
+msgstr "Реструктуризація БД"
 
-#: SettingsDlg.cpp:467
-msgid "Program settings"
-msgstr "Настройка параметрів програми"
+#: MyRuLib/FbMainMenu.cpp:27
+msgid "Options"
+msgstr "Параметри"
 
-#: SettingsDlg.cpp:604
-msgid "Input new filetype"
-msgstr "Введіть новий тип файлу"
+#: MyRuLib/FbMainMenu.cpp:32
+msgid "Settings"
+msgstr "Настройки"
 
-#: ZipReader.cpp:93
+#: MyRuLib/FbMainMenu.cpp:37
+msgid "Website"
+msgstr "Офіційний сайт"
+
+#: MyRuLib/FbMainMenu.cpp:38
+#: MyRuLib/FbAboutDlg.cpp:8
+msgid "About"
+msgstr "Про програму…"
+
+#: MyRuLib/FbMainMenu.cpp:43
+#: MyRuLib/FbFrameAuthor.cpp:355
+msgid "&File"
+msgstr "Файл"
+
+#: MyRuLib/FbMainMenu.cpp:44
+#: MyRuLib/FbFrameAuthor.cpp:356
+msgid "&Library"
+msgstr "Бібліотека"
+
+#: MyRuLib/FbMainMenu.cpp:45
+#: MyRuLib/FbFrameAuthor.cpp:357
+msgid "&Catalog"
+msgstr "Картотека"
+
+#: MyRuLib/FbMainMenu.cpp:46
+#: MyRuLib/FbFrameAuthor.cpp:360
+msgid "&View"
+msgstr "Вид"
+
+#: MyRuLib/FbMainMenu.cpp:47
+#: MyRuLib/FbFrameAuthor.cpp:361
+msgid "&Tools"
+msgstr "Сервіс"
+
+#: MyRuLib/FbMainMenu.cpp:48
+#: MyRuLib/FbFrameAuthor.cpp:362
+msgid "&Window"
+msgstr "Вікно"
+
+#: MyRuLib/FbMainMenu.cpp:49
+#: MyRuLib/FbFrameAuthor.cpp:363
+msgid "&?"
+msgstr "?"
+
+#: MyRuLib/FbMainMenu.cpp:54
+#: MyRuLib/FbMainMenu.cpp:71
+msgid "Add file"
+msgstr "Додати файл"
+
+#: MyRuLib/FbMainMenu.cpp:55
+#: MyRuLib/FbMainMenu.cpp:72
+msgid "Add folder"
+msgstr "Додати каталог"
+
+#: MyRuLib/FbMainMenu.cpp:57
+#: MyRuLib/FbMainMenu.cpp:75
+msgid "Exit"
+msgstr "Вихід"
+
+#: MyRuLib/FbMainMenu.cpp:62
+#: MyRuLib/FbMainMenu.cpp:94
+msgid "Tabs"
+msgstr "Вкладки"
+
+#: MyRuLib/FbMainMenu.cpp:64
+#: MyRuLib/FbMainMenu.cpp:97
+msgid "Fullscreen mode"
+msgstr "Повноекранний режим"
+
+#: MyRuLib/FbMainMenu.cpp:65
+#: MyRuLib/FbMainMenu.cpp:98
+msgid "Show log window"
+msgstr "Вікно повідомлень"
+
+#: MyRuLib/FbMainMenu.cpp:74
+msgid "Export books"
+msgstr "Експорт книг"
+
+#: MyRuLib/FbMainMenu.cpp:80
+msgid "Select all"
+msgstr "Виділити всі"
+
+#: MyRuLib/FbMainMenu.cpp:81
+msgid "Undo selection"
+msgstr "Відмінити виділення"
+
+#: MyRuLib/FbMainMenu.cpp:83
+msgid "Sort by"
+msgstr "Сортування"
+
+#: MyRuLib/FbMainMenu.cpp:84
+msgid "Use filter"
+msgstr "Використовувати фільтр"
+
+#: MyRuLib/FbMainMenu.cpp:85
+msgid "Clear filter"
+msgstr "Видалити фільтр"
+
+#: MyRuLib/FbMainMenu.cpp:87
+msgid "Add comments"
+msgstr "Додати коментар"
+
+#: MyRuLib/FbMainMenu.cpp:92
+msgid "List of books"
+msgstr "Список книг"
+
+#: MyRuLib/FbMainMenu.cpp:93
+msgid "Preview area"
+msgstr "Область перегляду"
+
+#: MyRuLib/FbMainMenu.cpp:95
+msgid "Table columns"
+msgstr "Колонки таблиці"
+
+#: MyRuLib/FbMainMenu.cpp:108
+msgid "Hierarchical"
+msgstr "Ієрархічний"
+
+#: MyRuLib/FbMainMenu.cpp:109
+msgid "Simple list"
+msgstr "Простий список"
+
+#: MyRuLib/FbMainMenu.cpp:114
+msgid "Standart"
+msgstr "Стандартні"
+
+#: MyRuLib/FbMainMenu.cpp:115
+msgid "Compact"
+msgstr "Компактні"
+
+#: MyRuLib/FbMainMenu.cpp:116
+msgid "Convex"
+msgstr "Опуклі"
+
+#: MyRuLib/FbMainMenu.cpp:117
+msgid "Buttons"
+msgstr "Кнопкові"
+
+#: MyRuLib/FbMainMenu.cpp:119
+msgid "Light"
+msgstr "Легкі"
+
+#: MyRuLib/FbMainMenu.cpp:125
+msgid "Right"
+msgstr "Праворуч"
+
+#: MyRuLib/FbMainMenu.cpp:126
+msgid "Bottom"
+msgstr "Внизу"
+
+#: MyRuLib/FbMainMenu.cpp:127
+msgid "Not specified"
+msgstr "Відсутній"
+
+#: MyRuLib/FbMainMenu.cpp:132
+msgid "Close window"
+msgstr "Закрити вікно"
+
+#: MyRuLib/FbMainMenu.cpp:133
+msgid "Close all"
+msgstr "Закрити всі"
+
+#: MyRuLib/FbMainMenu.cpp:135
+msgid "Next"
+msgstr "Наступне"
+
+#: MyRuLib/FbMainMenu.cpp:136
+msgid "Previous"
+msgstr "Попереднє"
+
+#: MyRuLib/ExpThread.cpp:122
+#, c-format
+msgid "can't delete file %s"
+msgstr "Не вдалось видалити файл %s"
+
+#: MyRuLib/ExpThread.cpp:203
+msgid "Cancel"
+msgstr "Відміна"
+
+#: MyRuLib/ExpThread.cpp:317
+msgid "Close"
+msgstr "Закрити вікно"
+
+#: MyRuLib/ExpThread.cpp:322
+#, c-format
+msgid "Export completed with %d errors"
+msgstr "Експорт завершено с помилками: %d"
+
+#: MyRuLib/ExpThread.cpp:323
+msgid "Export completed successfully"
+msgstr "Експорт успішно завершено"
+
+#: MyRuLib/ExpThread.cpp:324
+msgid "Export aborted by user"
+msgstr "Експорт перервано користувачем"
+
+#: MyRuLib/FbReplaceDlg.cpp:27
+#: MyRuLib/FbFrameAuthor.cpp:345
+#: MyRuLib/FbFrameAuthor.cpp:370
+msgid "Replace"
+msgstr "Замінити"
+
+#: MyRuLib/FbReplaceDlg.cpp:37
+msgid "Find"
+msgstr "Знайти"
+
+#: MyRuLib/FbReplaceDlg.cpp:60
+#: MyRuLib/FbFrameAuthor.cpp:63
+#: MyRuLib/FbFrameAuthor.cpp:81
+msgid "Num."
+msgstr "Кілк."
+
+#: MyRuLib/FbReplaceDlg.cpp:106
+msgid "Merge authors?"
+msgstr "Об'єднати авторів?"
+
+#: MyRuLib/FbReplaceDlg.cpp:111
+msgid "Author not selected by replacement."
+msgstr "Не обраний автор для заміни."
+
+#: MyRuLib/FbReplaceDlg.cpp:133
+msgid "Replace author"
+msgstr "Замінити автора"
+
+#: MyRuLib/ZipReader.cpp:93
 #, c-format
 msgid "Book not found %s"
 msgstr "Книга не знайдена %s"
 
-#: ZipReader.cpp:244
+#: MyRuLib/ZipReader.cpp:122
+msgid "Can't create thread!"
+msgstr "Неможливо створити поток!"
+
+#: MyRuLib/ZipReader.cpp:198
+#, c-format
+msgid "Not found an archive (%s), containing file (%s)."
+msgstr "Не знайдений архів (%s), що містить файл (%s)."
+
+#: MyRuLib/ZipReader.cpp:212
+#, c-format
+msgid "Not found file %s"
+msgstr "Не знайдено файл %s"
+
+#: MyRuLib/ZipReader.cpp:262
 #, c-format
 msgid "Start scan directory %s"
 msgstr "Початок сканування каталогу %s"
 
-#: ZipReader.cpp:259
+#: MyRuLib/ZipReader.cpp:266
+#, c-format
+msgid "Can't open directory %s"
+msgstr "Неможливо відкрити каталог %s"
+
+#: MyRuLib/ZipReader.cpp:277
 #, c-format
 msgid "Finish scan directory %s"
 msgstr "Кінець сканування каталогу %s"
 
-#: ZipReader.cpp:264
+#: MyRuLib/ZipReader.cpp:282
 #, c-format
 msgid "Scan zip %s"
 msgstr "Сканування zip %s"
+
+#: MyRuLib/ZipReader.cpp:324
+#, c-format
+msgid "Zip read error %s"
+msgstr "Помилка читання zip %s"
+
+#: MyRuLib/FbFilterDlg.cpp:12
+msgid "All"
+msgstr "Всі"
+
+#: MyRuLib/FbFilterDlg.cpp:96
+msgid "Filter settings"
+msgstr "Настройка фільтра"
+
+#: MyRuLib/FbFilterDlg.cpp:104
+msgid "Show books by allocation"
+msgstr "Відбір книг по приналежності"
+
+#: MyRuLib/FbFilterDlg.cpp:106
+msgid "Library books (web)"
+msgstr "Бібліотечні"
+
+#: MyRuLib/FbFilterDlg.cpp:110
+msgid "Local books"
+msgstr "Власні"
+
+#: MyRuLib/FbBookData.cpp:66
+msgid "Download book file?"
+msgstr "Завантажити книгу?"
+
+#: MyRuLib/FbBookData.cpp:128
+msgid "Associated application not found"
+msgstr "Не знайдена програма для перегляду файлів типу"
+
+#: MyRuLib/FbFrameAuthor.cpp:88
+msgid "All collected authors"
+msgstr "Всі автори колекції"
+
+#: MyRuLib/FbFrameAuthor.cpp:319
+msgid "Delete author"
+msgstr "Видалити автора"
+
+#: MyRuLib/FbFrameAuthor.cpp:320
+#, c-format
+msgid "and all of author's books (%d pcs.)?"
+msgstr "і всі його книги в кількості %d шт.?"
+
+#: MyRuLib/FbFrameAuthor.cpp:321
+msgid "Removing"
+msgstr "Видалення"
+
+#: MyRuLib/FbFrameAuthor.cpp:349
+#: MyRuLib/FbFrameAuthor.cpp:373
+msgid "Online authors page"
+msgstr "Сторінка автора"
+
+#: MyRuLib/FbFrameAuthor.cpp:358
+msgid "&Authors"
+msgstr "Автори"
+
+#: MyRuLib/FbFrameAuthor.cpp:359
+msgid "&Books"
+msgstr "Книги"
+
+#: MyRuLib/FbFrameAuthor.cpp:389
+msgid "Russian aplhabet"
+msgstr "Російський алфавіт"
+
+#: MyRuLib/FbFrameAuthor.cpp:390
+msgid "Latin alphabet"
+msgstr "Латинський алфавіт"
+
+#: MyRuLib/FbFrameSearch.cpp:49
+#: MyRuLib/FbFrameSearch.cpp:64
+msgid "Searching"
+msgstr "Пошук"
+
+#: MyRuLib/FbFrameSearch.cpp:63
+#, c-format
+msgid "Nothing was found on pattern \"%s\""
+msgstr "Нічого не знайдено по шаблону \"%s\""
+
+#: MyRuLib/FbConfigDlg.cpp:42
+msgid "Library name:"
+msgstr "Найменування бібліотеки:"
+
+#: MyRuLib/FbConfigDlg.cpp:51
+msgid "Library folder:"
+msgstr "Розміщення файлів:"
+
+#: MyRuLib/FbConfigDlg.cpp:68
+msgid "Short description:"
+msgstr "Короткий опис:"
+
+#: MyRuLib/FbConfigDlg.cpp:89
+msgid "Host name:"
+msgstr "Веб-сайт:"
+
+#: MyRuLib/FbConfigDlg.cpp:99
+msgid "User name:"
+msgstr "Ім'я користувача:"
+
+#: MyRuLib/FbConfigDlg.cpp:106
+msgid "Password:"
+msgstr "Пароль:"
+
+#: MyRuLib/FbConfigDlg.cpp:127
+#: MyRuLib/FbParamsDlg.cpp:547
+msgid "General"
+msgstr "Основні"
+
+#: MyRuLib/FbConfigDlg.cpp:128
+#: MyRuLib/FbParamsDlg.cpp:548
+msgid "Network"
+msgstr "Інтернет"
+
+#: MyRuLib/FbConfigDlg.cpp:147
+#: MyRuLib/FbParamsDlg.cpp:580
+msgid "Select folder"
+msgstr "Виберіть каталог"
+
+#: MyRuLib/FbConfigDlg.cpp:220
+msgid "Library options"
+msgstr "Параметри бібліотеки"
+
+#: MyRuLib/FbFrameFolder.cpp:82
+msgid "Bookmarks"
+msgstr "Закладки"
+
+#: MyRuLib/FbFrameFolder.cpp:85
+msgid "Favorites"
+msgstr "Вибране"
+
+#: MyRuLib/FbFrameFolder.cpp:100
+msgid "Remarks"
+msgstr "Позначки"
+
+#: MyRuLib/FbFrameFolder.cpp:103
+msgid "Comments"
+msgstr "Коментарі"
+
+#: MyRuLib/FbFrameFolder.cpp:153
+msgid "Input name of new folder:"
+msgstr "Введіть найменування нового каталогу:"
+
+#: MyRuLib/FbFrameFolder.cpp:153
+msgid "Add folder?"
+msgstr "Додати каталог?"
+
+#: MyRuLib/FbFrameFolder.cpp:179
+msgid "Input new folder name:"
+msgstr "Введіть нове найменування каталогу:"
+
+#: MyRuLib/FbFrameFolder.cpp:179
+msgid "Change folder?"
+msgstr "Змінити каталог?"
+
+#: MyRuLib/FbFrameFolder.cpp:203
+#, c-format
+msgid "Delete folder \"%s\"?"
+msgstr "Видалити каталог \"%s\"?"
+
+#: MyRuLib/FbFrameFolder.cpp:204
+msgid "Delete folder?"
+msgstr "Видалити каталог?"
+
+#: MyRuLib/FbFrameBase.cpp:130
+#: MyRuLib/FbFrameSequen.cpp:455
+msgid "(Misc.)"
+msgstr "(різне)"
+
+#: MyRuLib/FbConst.cpp:29
+msgid "(no Author)"
+msgstr "(без автора)"
+
+#: MyRuLib/FbConst.cpp:44
+msgid "Clear"
+msgstr "Очистити"
+
+#: MyRuLib/FbBookMenu.cpp:15
+msgid "Open book"
+msgstr "Відкрити книгу"
+
+#: MyRuLib/FbBookMenu.cpp:17
+msgid "Delete download query"
+msgstr "Видалити закачку"
+
+#: MyRuLib/FbBookMenu.cpp:18
+msgid "Retry rownload"
+msgstr "Завантажити повторно"
+
+#: MyRuLib/FbBookMenu.cpp:20
+msgid "Download a file"
+msgstr "Завантажити файл"
+
+#: MyRuLib/FbBookMenu.cpp:22
+msgid "Download via browser"
+msgstr "Завантажити в браузері"
+
+#: MyRuLib/FbBookMenu.cpp:23
+msgid "Online books page"
+msgstr "Книга на сайті бібліотекі"
+
+#: MyRuLib/FbBookMenu.cpp:32
+msgid "Delete book"
+msgstr "Видалити книгу"
+
+#: MyRuLib/FbBookMenu.cpp:40
+msgid "Jump to author"
+msgstr "Перейти до автора"
+
+#: MyRuLib/FbBookMenu.cpp:44
+msgid "Add to favourites"
+msgstr "Додати у вибране"
+
+#: MyRuLib/FbBookMenu.cpp:45
+msgid "Add to folders"
+msgstr "Додати у папку"
+
+#: MyRuLib/FbBookMenu.cpp:46
+msgid "Rate this book"
+msgstr "Установити рейтинг"
+
+#: MyRuLib/FbBookMenu.cpp:47
+msgid "Delete bookmark"
+msgstr "Видалити закладку"
+
+#: MyRuLib/VacuumThread.cpp:11
+msgid "Start SQLite VACUUM"
+msgstr "Старт VACUUM інструкції SQLite"
+
+#: MyRuLib/FbDataOpenDlg.cpp:30
+msgid "File name:"
+msgstr "Найменування файлу:"
+
+#: MyRuLib/FbDataOpenDlg.cpp:70
+msgid "Enter collection filename"
+msgstr "Выберите имя файла коллекции"
+
+#: MyRuLib/FbDataOpenDlg.cpp:73
+msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
+msgstr "Файл бази даних (*.db)|*.db|Всі файли (*.*)|*.*"
+
+#: MyRuLib/FbDatabase.cpp:285
+msgid "Search template"
+msgstr "Шаблон пошуку"
+
+#: MyRuLib/FbDatabase.cpp:351
+#, c-format
+msgid "GENRE called with wrong number of arguments: %d."
+msgstr "GENRE викликан з помилковой кількістю аргументів: %d"
+
+#: MyRuLib/FbDatabase.cpp:424
+msgid "Open database"
+msgstr "Відкрити базу даних"
+
+#: MyRuLib/FbDatabase.cpp:426
+msgid "Create new database"
+msgstr "Створити нову базу даних"
+
+#: MyRuLib/FbDatabase.cpp:526
+#, c-format
+msgid "Upgrade database to version %d"
+msgstr "Обновити базу даних до версії %d"
+
+#: MyRuLib/FbDatabase.cpp:535
+msgid "Database version mismatch"
+msgstr "Невідповідність версії бази даних"
+
+#: MyRuLib/FbDatabase.cpp:538
+#, c-format
+msgid "Need a new version %d, but used the old %d."
+msgstr "Потрібна нова версія %d, але використовується стара %d."
+
+#: MyRuLib/FbFrameSequen.cpp:50
+#: MyRuLib/FbFrameSequen.cpp:67
+#: MyRuLib/FbFrameSequen.cpp:78
+msgid "Ser."
+msgstr "Серія"
+
+#: MyRuLib/FbFrameSequen.cpp:88
+msgid "Find series by name"
+msgstr "Знайти серію по найменуванню"
+
+#: MyRuLib/FbFrameSequen.cpp:257
+msgid "Series name:"
+msgstr "Найменуванне серії:"
+
+#: MyRuLib/FbFrameSequen.cpp:278
+msgid "Append series"
+msgstr "Додати серію"
+
+#: MyRuLib/FbFrameSequen.cpp:286
+msgid "Modify series"
+msgstr "Змінити серію"
+
+#: MyRuLib/FbFrameSequen.cpp:352
+msgid "\"Series name\" field is empty"
+msgstr "Не заповнено найменування серії"
+
+#: MyRuLib/FbFrameSequen.cpp:357
+msgid "Series aleready exists"
+msgstr "Така серія вже існує"
+
+#: MyRuLib/FbFrameSequen.cpp:360
+msgid "Merge series?"
+msgstr "Об'єднати дві серії?"
+
+#: MyRuLib/FbFrameSequen.cpp:416
+#, c-format
+msgid "Delete series «%s»?"
+msgstr "Видалити серію «%s»?"
+
+#: MyRuLib/FbFrameSequen.cpp:431
+msgid "&Series"
+msgstr "Серії"
+
+#: MyRuLib/FbColumnDlg.cpp:9
+msgid "Columns"
+msgstr "Колонки"
+
+#: MyRuLib/FbParamsDlg.cpp:153
+msgid "Full file path with name and extension"
+msgstr "Повне найменування файлу з указанням каталогу та розширення"
+
+#: MyRuLib/FbParamsDlg.cpp:154
+msgid "Full file path without extension"
+msgstr "Повний шлях до файлу без розширення"
+
+#: MyRuLib/FbParamsDlg.cpp:155
+msgid "File name without path and extension"
+msgstr "Найменування файлу без каталогу та розширення"
+
+#: MyRuLib/FbParamsDlg.cpp:156
+msgid "Target directory"
+msgstr "Каталог призначення"
+
+#: MyRuLib/FbParamsDlg.cpp:157
+msgid "File name extension"
+msgstr "Розширення файлу"
+
+#: MyRuLib/FbParamsDlg.cpp:250
+msgid "List of authors and books:"
+msgstr "Списки книг, авторів:"
+
+#: MyRuLib/FbParamsDlg.cpp:251
+msgid "Toolbar:"
+msgstr "Панель інструментів:"
+
+#: MyRuLib/FbParamsDlg.cpp:252
+msgid "Information:"
+msgstr "Інформація:"
+
+#: MyRuLib/FbParamsDlg.cpp:253
+msgid "Dialog windows:"
+msgstr "Вікна діалогів:"
+
+#: MyRuLib/FbParamsDlg.cpp:257
+msgid "Reset fonts settings"
+msgstr "Скинути настройки шрифтів"
+
+#: MyRuLib/FbParamsDlg.cpp:287
+msgid "Automatically begin files downloading"
+msgstr "Автоматично стартувати завантаження файлів"
+
+#: MyRuLib/FbParamsDlg.cpp:293
+msgid "Use proxy-server"
+msgstr "Використовувати проксі-сервер"
+
+#: MyRuLib/FbParamsDlg.cpp:304
+msgid "Load images for author's description"
+msgstr "Завантажувати зображення для описів авторів"
+
+#: MyRuLib/FbParamsDlg.cpp:307
+msgid "Folder to save downloads:"
+msgstr "Каталог для зберігання завантажених файлів:"
+
+#: MyRuLib/FbParamsDlg.cpp:322
+msgid "Delete downloaded files when download query removed"
+msgstr "Видаляти завантажені файли при видаленні завантажень зі списку"
+
+#: MyRuLib/FbParamsDlg.cpp:350
+msgid "Program"
+msgstr "Програма"
+
+#: MyRuLib/FbParamsDlg.cpp:369
+msgid "Save full path of the file when importing"
+msgstr "Зберігати повний шлях до файлу при імпорті"
+
+#: MyRuLib/FbParamsDlg.cpp:372
+msgid "Temporary folder:"
+msgstr "Каталог для тимчасових файлів:"
+
+#: MyRuLib/FbParamsDlg.cpp:393
+msgid "Wine temp folder:"
+msgstr "Каталог для тимчасових файлів Wine:"
+
+#: MyRuLib/FbParamsDlg.cpp:405
+msgid "Delete temporary files when you exit the program"
+msgstr "Видаляти тимчасові файли при виході з програми"
+
+#: MyRuLib/FbParamsDlg.cpp:408
+msgid "Delete files when you delete a book"
+msgstr "Видаляти файли при видаленні книги"
+
+#: MyRuLib/FbParamsDlg.cpp:413
+msgid "Limit the maximum size of lists:"
+msgstr "Обмежити максимальний розмір списків:"
+
+#: MyRuLib/FbParamsDlg.cpp:420
+msgid "Clear the log window when it closes"
+msgstr "Очищати вікно повідомлень при його закритті"
+
+#: MyRuLib/FbParamsDlg.cpp:437
+msgid "Destination folder:"
+msgstr "Каталог зовнішнього пристрою:"
+
+#: MyRuLib/FbParamsDlg.cpp:457
+msgid "A / Author / Series / #_book"
+msgstr "А / Автор / Серія / №_Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:458
+msgid "A / Author / Book"
+msgstr "А / Автор / Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:459
+msgid "Author / Series / #_book"
+msgstr "Автор / Серія / №_Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:460
+msgid "Author / Book"
+msgstr "Автор / Книга"
+
+#: MyRuLib/FbParamsDlg.cpp:463
+msgid "Exported collection structure"
+msgstr "Організація каталогів і файлів"
+
+#: MyRuLib/FbParamsDlg.cpp:467
+msgid "Transliterate folder name"
+msgstr "Транслітерація найменування каталогу"
+
+#: MyRuLib/FbParamsDlg.cpp:470
+msgid "Transliterate filename"
+msgstr "Транслітерація найменування файлу"
+
+#: MyRuLib/FbParamsDlg.cpp:485
+msgid "Export script"
+msgstr "Скрипт експорту"
+
+#: MyRuLib/FbParamsDlg.cpp:495
+msgid "Format of exporting collection"
+msgstr "Формат експорту"
+
+#: MyRuLib/FbParamsDlg.cpp:499
+#: MyRuLib/FbParamsDlg.cpp:743
+#: MyRuLib/FbParamsDlg.cpp:775
+#: MyRuLib/FbParamsDlg.cpp:949
+msgid "filename"
+msgstr "найменування_файлу"
+
+#: MyRuLib/FbParamsDlg.cpp:551
+msgid "Fonts"
+msgstr "Шрифти"
+
+#: MyRuLib/FbParamsDlg.cpp:705
+msgid "Program settings"
+msgstr "Настройка параметрів програми"
+
+#: MyRuLib/FbParamsDlg.cpp:721
+msgid "Error writing to database"
+msgstr "Помилка запису в базу даних"
+
+#: MyRuLib/FbParamsDlg.cpp:735
+msgid "Append export script"
+msgstr "Додати скрипт експорту"
+
+#: MyRuLib/FbParamsDlg.cpp:761
+msgid "Modify export script"
+msgstr "Редагувати скрипт експорту"
+
+#: MyRuLib/FbParamsDlg.cpp:795
+msgid "Delete export script"
+msgstr "Видалити скрипт експорту"
+
+#: MyRuLib/FbParamsDlg.cpp:829
+msgid "Input new filetype"
+msgstr "Введіть новий тип файлу"
+
+#: MyRuLib/FbParamsDlg.cpp:858
+msgid "Select the application to view files"
+msgstr "Виберіть програму для перегляду файлів"
+
+#: MyRuLib/FbParamsDlg.cpp:879
+msgid "Delete file type"
+msgstr "Видалити тип файлу"
+
+#: MyRuLib/FbDownloader.cpp:67
+msgid "Download"
+msgstr "Завантаження"
+
+#: MyRuLib/FbDownloader.cpp:71
+#: MyRuLib/FbDownloader.cpp:102
+msgid "URL error"
+msgstr "Помилка URL"
+
+#: MyRuLib/FbDownloader.cpp:82
+#: MyRuLib/FbDownloader.cpp:110
+msgid "Connect error"
+msgstr "Помилка підключення"
+
+#: MyRuLib/FbDownloader.cpp:89
+#: MyRuLib/FbDownloader.cpp:115
+msgid "Redirect"
+msgstr "Переадресація"
+
+#: MyRuLib/FbDownloader.cpp:94
+msgid "Authentication failure"
+msgstr "Помилка аутентифікації"
+
+#: MyRuLib/FbDownloader.cpp:136
+msgid "File download"
+msgstr "Завантаження файлу"
+
+#: MyRuLib/FbDownloader.cpp:146
+#, c-format
+msgid "HTTP read error, read %d of %d bytes: %s"
+msgstr "Помилка HTTP: отримано %d із %d байт: %s"
+
+#: MyRuLib/FbDownloader.cpp:156
+msgid "Download error"
+msgstr "Помилка загрузки"
+
+#: MyRuLib/FbDownloader.cpp:173
+msgid "Can't open zip"
+msgstr "Неможливо відкрити zip-файл %s"
+
+#: MyRuLib/FbDownloader.cpp:191
+msgid "Wrong MD5 sum"
+msgstr "Помилкова контрольна сума файлу"
+
+#: MyRuLib/FbDownloader.cpp:219
+msgid "Download finished"
+msgstr "Завантажити закінчено"
+
+#: MyRuLib/FbBookPanel.cpp:63
+#: MyRuLib/FbBookPanel.cpp:77
+msgid "#"
+msgstr "№"
+
+#: MyRuLib/FbBookPanel.cpp:523
+#, c-format
+msgid "Delete selected books (%d pcs)?"
+msgstr "Видалити виділені книги (%d шт.)?"
+
+#: MyRuLib/FbAuthorDlg.cpp:18
+msgid "Surname"
+msgstr "Прізвище"
+
+#: MyRuLib/FbAuthorDlg.cpp:19
+msgid "Name"
+msgstr "Ім'я"
+
+#: MyRuLib/FbAuthorDlg.cpp:20
+msgid "Middle-Name"
+msgstr "По батькові"
+
+#: MyRuLib/FbAuthorDlg.cpp:47
+msgid "Add author"
+msgstr "Додати автора"
+
+#: MyRuLib/FbAuthorDlg.cpp:55
+msgid "Change author"
+msgstr "Змінити автора"
+
+#: MyRuLib/FbAuthorDlg.cpp:163
+msgid "\"Surname\" field is empty"
+msgstr "Не заповнене прізвище автора"
+
+#: MyRuLib/FbAuthorDlg.cpp:168
+msgid "Autor with same details aleready exists"
+msgstr "Автор з такими реквізитами вже існує"
+
+#: MyRuLib/FbGenres.cpp:19
+msgid "Fiction"
+msgstr "Фантастика"
+
+#: MyRuLib/FbGenres.cpp:20
+msgid "Mysteries and Thrillers"
+msgstr "Детективи й Трилери"
+
+#: MyRuLib/FbGenres.cpp:21
+msgid "Prose"
+msgstr "Проза"
+
+#: MyRuLib/FbGenres.cpp:22
+msgid "Romance"
+msgstr "Любовні романи"
+
+#: MyRuLib/FbGenres.cpp:23
+#: MyRuLib/FbGenres.cpp:81
+msgid "Adventures"
+msgstr "Пригоди"
+
+#: MyRuLib/FbGenres.cpp:24
+#: MyRuLib/FbGenres.cpp:89
+msgid "Children literature"
+msgstr "Дитяча література"
+
+#: MyRuLib/FbGenres.cpp:25
+msgid "Poetry, dramaturgy"
+msgstr "Поезія, Драматургія"
+
+#: MyRuLib/FbGenres.cpp:26
+msgid "Antique"
+msgstr "Стародавнє"
+
+#: MyRuLib/FbGenres.cpp:27
+msgid "Science, Education"
+msgstr "Наука, Освіта"
+
+#: MyRuLib/FbGenres.cpp:28
+msgid "PC, Internet"
+msgstr "Комп'ютери та Інтернет"
+
+#: MyRuLib/FbGenres.cpp:29
+#: MyRuLib/FbGenres.cpp:125
+msgid "References"
+msgstr "Довідкова література"
+
+#: MyRuLib/FbGenres.cpp:30
+#: MyRuLib/FbGenres.cpp:130
+msgid "Documentary literature"
+msgstr "Документальна література"
+
+#: MyRuLib/FbGenres.cpp:31
+msgid "Religion and Spirituality"
+msgstr "Релігія та духовність"
+
+#: MyRuLib/FbGenres.cpp:32
+#: MyRuLib/FbGenres.cpp:138
+msgid "Humour"
+msgstr "Гумор"
+
+#: MyRuLib/FbGenres.cpp:33
+msgid "Home and Family"
+msgstr "Домоведення (Будинок та родина)"
+
+#: MyRuLib/FbGenres.cpp:34
+msgid "Economy, Business"
+msgstr "Економіка і бізнес"
+
+#: MyRuLib/FbGenres.cpp:38
+msgid "Alternative History"
+msgstr "Альтернативна історія"
+
+#: MyRuLib/FbGenres.cpp:39
+msgid "Fighting fantasy"
+msgstr "Бойова фантастика"
+
+#: MyRuLib/FbGenres.cpp:40
+msgid "Epic fantasy"
+msgstr "Епічна фантастика"
+
+#: MyRuLib/FbGenres.cpp:41
+msgid "Heroic fantasy"
+msgstr "Героїчна фантастика"
+
+#: MyRuLib/FbGenres.cpp:42
+msgid "Detective Fiction"
+msgstr "Детективна фантастика"
+
+#: MyRuLib/FbGenres.cpp:43
+msgid "Cyberpunk"
+msgstr "Кіберпанк"
+
+#: MyRuLib/FbGenres.cpp:44
+msgid "Space Fiction"
+msgstr "Космічна фантастика"
+
+#: MyRuLib/FbGenres.cpp:45
+msgid "Socio-psychological fiction"
+msgstr "Соціально-психологічна фантастика"
+
+#: MyRuLib/FbGenres.cpp:46
+msgid "Horror and Mysticism"
+msgstr "Жахи й Містика"
+
+#: MyRuLib/FbGenres.cpp:47
+msgid "Humorous Fiction"
+msgstr "Гумористична фантастика"
+
+#: MyRuLib/FbGenres.cpp:48
+msgid "Fantasy"
+msgstr "Фэнтези"
+
+#: MyRuLib/FbGenres.cpp:49
+msgid "Science Fiction"
+msgstr "Наукова Фантастика"
+
+#: MyRuLib/FbGenres.cpp:50
+msgid "Classic mystery"
+msgstr "Класичний детектив"
+
+#: MyRuLib/FbGenres.cpp:51
+msgid "Police mystery"
+msgstr "Поліцейський детектив"
+
+#: MyRuLib/FbGenres.cpp:52
+msgid "Action"
+msgstr "Бойовик"
+
+#: MyRuLib/FbGenres.cpp:53
+msgid "Ironic mystery"
+msgstr "Іронічний детектив"
+
+#: MyRuLib/FbGenres.cpp:54
+msgid "Historical mystery"
+msgstr "Історичний детектив"
+
+#: MyRuLib/FbGenres.cpp:55
+msgid "Spy mystery"
+msgstr "Шпигунський детектив"
+
+#: MyRuLib/FbGenres.cpp:56
+msgid "Criminal mystery"
+msgstr "Кримінальний детектив"
+
+#: MyRuLib/FbGenres.cpp:57
+msgid "Political mystery"
+msgstr "Політичний детектив"
+
+#: MyRuLib/FbGenres.cpp:58
+msgid "Maniacs"
+msgstr "Маніяки"
+
+#: MyRuLib/FbGenres.cpp:59
+msgid "Action mystery"
+msgstr "Крутий детектив"
+
+#: MyRuLib/FbGenres.cpp:60
+msgid "Thriller"
+msgstr "Трилер"
+
+#: MyRuLib/FbGenres.cpp:61
+msgid "Mystery"
+msgstr "Детектив"
+
+#: MyRuLib/FbGenres.cpp:62
+msgid "Classical prose"
+msgstr "Класична проза"
+
+#: MyRuLib/FbGenres.cpp:63
+msgid "Historical prose"
+msgstr "Історична проза"
+
+#: MyRuLib/FbGenres.cpp:64
+msgid "Modern prose"
+msgstr "Сучасна проза"
+
+#: MyRuLib/FbGenres.cpp:65
+msgid "Counterculture"
+msgstr "Контркультура"
+
+#: MyRuLib/FbGenres.cpp:66
+msgid "Russian Classical prose"
+msgstr "Російська класична проза"
+
+#: MyRuLib/FbGenres.cpp:67
+msgid "Soviet Classical prose"
+msgstr "Радянська класична проза"
+
+#: MyRuLib/FbGenres.cpp:68
+msgid "Prose military"
+msgstr "Військова проза"
+
+#: MyRuLib/FbGenres.cpp:69
+msgid "Modern romance novels"
+msgstr "Сучасні любовні романи"
+
+#: MyRuLib/FbGenres.cpp:70
+msgid "Historical romance novels"
+msgstr "Історичні любовні романи"
+
+#: MyRuLib/FbGenres.cpp:71
+msgid "Action romance novels"
+msgstr "Гостросюжетні любовні романи"
+
+#: MyRuLib/FbGenres.cpp:72
+msgid "Short romance novels"
+msgstr "Короткі любовні романи"
+
+#: MyRuLib/FbGenres.cpp:73
+msgid "Erotic novels"
+msgstr "Еротика"
+
+#: MyRuLib/FbGenres.cpp:74
+msgid "Love science fiction"
+msgstr "Любовна фантастика"
+
+#: MyRuLib/FbGenres.cpp:75
+msgid "Western"
+msgstr "Вестерн"
+
+#: MyRuLib/FbGenres.cpp:76
+msgid "Historical adventures"
+msgstr "Історичні пригоди"
+
+#: MyRuLib/FbGenres.cpp:77
+msgid "Adventures about Indians"
+msgstr "Пригоди про індіанців"
+
+#: MyRuLib/FbGenres.cpp:78
+msgid "Sea adventures"
+msgstr "Морські пригоди"
+
+#: MyRuLib/FbGenres.cpp:79
+msgid "Travel and Geography"
+msgstr "Подорожі та географія"
+
+#: MyRuLib/FbGenres.cpp:80
+msgid "Nature and Animals"
+msgstr "Природа й тварини"
+
+#: MyRuLib/FbGenres.cpp:82
+msgid "Tales"
+msgstr "Казка"
+
+#: MyRuLib/FbGenres.cpp:83
+msgid "Children poetry"
+msgstr "Дитячі вірші"
+
+#: MyRuLib/FbGenres.cpp:84
+msgid "Childern prose"
+msgstr "Дитяча проза"
+
+#: MyRuLib/FbGenres.cpp:85
+msgid "Children fiction"
+msgstr "Дитяча фантастика"
+
+#: MyRuLib/FbGenres.cpp:86
+msgid "Children action"
+msgstr "Дитячі гостросюжетні"
+
+#: MyRuLib/FbGenres.cpp:87
+msgid "Children adventures"
+msgstr "Дитячі пригоди"
+
+#: MyRuLib/FbGenres.cpp:88
+msgid "Children education"
+msgstr "Дитяча освітня література"
+
+#: MyRuLib/FbGenres.cpp:90
+msgid "Poetry"
+msgstr "Поезія"
+
+#: MyRuLib/FbGenres.cpp:91
+msgid "Dramaturgy"
+msgstr "Драматургія"
+
+#: MyRuLib/FbGenres.cpp:92
+msgid "Antique Literature"
+msgstr "Антична література"
+
+#: MyRuLib/FbGenres.cpp:93
+msgid "European ancient literature"
+msgstr "Європейська стародавня література"
+
+#: MyRuLib/FbGenres.cpp:94
+msgid "Russian ancient literature"
+msgstr "Давньоруська література"
+
+#: MyRuLib/FbGenres.cpp:95
+msgid "Oriental ancient literature"
+msgstr "Давньосхідна література"
+
+#: MyRuLib/FbGenres.cpp:96
+msgid "Myths. Legends. Epic."
+msgstr "Міфи. Легенди. Епос"
+
+#: MyRuLib/FbGenres.cpp:97
+msgid "Ancient literature"
+msgstr "Стародавня література"
+
+#: MyRuLib/FbGenres.cpp:98
+msgid "History"
+msgstr "Історія"
+
+#: MyRuLib/FbGenres.cpp:99
+msgid "Psychology"
+msgstr "Психологія"
+
+#: MyRuLib/FbGenres.cpp:100
+msgid "Cultural"
+msgstr "Культурологія"
+
+#: MyRuLib/FbGenres.cpp:101
+msgid "Religious"
+msgstr "Релігіознавство"
+
+#: MyRuLib/FbGenres.cpp:102
+msgid "Philosophy"
+msgstr "Філософія"
+
+#: MyRuLib/FbGenres.cpp:103
+msgid "Politology"
+msgstr "Політика"
+
+#: MyRuLib/FbGenres.cpp:104
+msgid "Business literature"
+msgstr "Ділова література"
+
+#: MyRuLib/FbGenres.cpp:105
+msgid "Law"
+msgstr "Юриспруденція"
+
+#: MyRuLib/FbGenres.cpp:106
+msgid "Linguistics"
+msgstr "Мовознавство"
+
+#: MyRuLib/FbGenres.cpp:107
+msgid "Medical"
+msgstr "Медицина"
+
+#: MyRuLib/FbGenres.cpp:108
+msgid "Physics"
+msgstr "Фізика"
+
+#: MyRuLib/FbGenres.cpp:109
+msgid "Mathematics"
+msgstr "Математика"
+
+#: MyRuLib/FbGenres.cpp:110
+msgid "Chemistry"
+msgstr "Хімія"
+
+#: MyRuLib/FbGenres.cpp:111
+msgid "Biology"
+msgstr "Біологія"
+
+#: MyRuLib/FbGenres.cpp:112
+msgid "Engineering"
+msgstr "Технічні науки"
+
+#: MyRuLib/FbGenres.cpp:113
+msgid "Scientific literature"
+msgstr "Наукова література"
+
+#: MyRuLib/FbGenres.cpp:114
+#: MyRuLib/FbGenres.cpp:143
+msgid "Health"
+msgstr "Здоров'я"
+
+#: MyRuLib/FbGenres.cpp:115
+msgid "Programming"
+msgstr "Програмування"
+
+#: MyRuLib/FbGenres.cpp:116
+msgid "Computer hardware"
+msgstr "Комп'ютерне залізо (апаратне забезпечення)"
+
+#: MyRuLib/FbGenres.cpp:117
+msgid "Software"
+msgstr "Програми"
+
+#: MyRuLib/FbGenres.cpp:118
+msgid "Databases"
+msgstr "Бази даних"
+
+#: MyRuLib/FbGenres.cpp:119
+msgid "OS and Network"
+msgstr "ОС і Мережі"
+
+#: MyRuLib/FbGenres.cpp:120
+msgid "Computer literature"
+msgstr "Комп'ютерна література"
+
+#: MyRuLib/FbGenres.cpp:121
+msgid "Encyclopedias"
+msgstr "Енциклопедії"
+
+#: MyRuLib/FbGenres.cpp:122
+msgid "Dictionaries"
+msgstr "Словники"
+
+#: MyRuLib/FbGenres.cpp:123
+msgid "Directories"
+msgstr "Довідники"
+
+#: MyRuLib/FbGenres.cpp:124
+msgid "Manuals"
+msgstr "Керівництва"
+
+#: MyRuLib/FbGenres.cpp:126
+msgid "Biographies and Memoirs"
+msgstr "Біографії та Мемуари"
+
+#: MyRuLib/FbGenres.cpp:127
+msgid "Publicism"
+msgstr "Публіцистика"
+
+#: MyRuLib/FbGenres.cpp:128
+msgid "Criticism"
+msgstr "Критика"
+
+#: MyRuLib/FbGenres.cpp:129
+msgid "Art and Design"
+msgstr "Мистецтво та Дизайн"
+
+#: MyRuLib/FbGenres.cpp:131
+msgid "Religion"
+msgstr "Релігія"
+
+#: MyRuLib/FbGenres.cpp:132
+msgid "Esoterica"
+msgstr "Езотеріка"
+
+#: MyRuLib/FbGenres.cpp:133
+msgid "Self-improvement"
+msgstr "Самовдосконалення"
+
+#: MyRuLib/FbGenres.cpp:134
+msgid "Religious Literature"
+msgstr "Релігійна література"
+
+#: MyRuLib/FbGenres.cpp:135
+msgid "Jokes"
+msgstr "Анекдоти"
+
+#: MyRuLib/FbGenres.cpp:136
+msgid "Humorous prose"
+msgstr "Гумористична проза"
+
+#: MyRuLib/FbGenres.cpp:137
+msgid "Humorous poetry"
+msgstr "Гумористичні вірші"
+
+#: MyRuLib/FbGenres.cpp:139
+msgid "Cooking"
+msgstr "Кулінарія"
+
+#: MyRuLib/FbGenres.cpp:140
+msgid "Pets"
+msgstr "Домашні тварини"
+
+#: MyRuLib/FbGenres.cpp:141
+msgid "Hobbies and Crafts"
+msgstr "Хоббі та ремесла"
+
+#: MyRuLib/FbGenres.cpp:142
+msgid "Entertainment"
+msgstr "Розваги"
+
+#: MyRuLib/FbGenres.cpp:144
+msgid "Gardening"
+msgstr "Сад і город"
+
+#: MyRuLib/FbGenres.cpp:145
+msgid "Handmade"
+msgstr "Зроби сам"
+
+#: MyRuLib/FbGenres.cpp:146
+msgid "Sport"
+msgstr "Спорт"
+
+#: MyRuLib/FbGenres.cpp:147
+msgid "Erotic, sex"
+msgstr "Еротика, Секс"
+
+#: MyRuLib/FbGenres.cpp:148
+msgid "Household"
+msgstr "Домоведення"
+
+#: MyRuLib/FbGenres.cpp:149
+msgid "Geo guides"
+msgstr "Путівники"
+
+#: MyRuLib/FbGenres.cpp:150
+msgid "Job hunting"
+msgstr "Пошук роботи, кар'єра"
+
+#: MyRuLib/FbGenres.cpp:151
+msgid "Management"
+msgstr "Управління, підбір персоналу"
+
+#: MyRuLib/FbGenres.cpp:152
+msgid "Marketing"
+msgstr "Маркетинг, реклама"
+
+#: MyRuLib/FbGenres.cpp:153
+msgid "Banking"
+msgstr "Банківська справа"
+
+#: MyRuLib/FbGenres.cpp:154
+msgid "Stock"
+msgstr "Цінні папери, інвестиції"
+
+#: MyRuLib/FbGenres.cpp:155
+msgid "Accounting"
+msgstr "Бухоблік, оподаткування, аудит"
+
+#: MyRuLib/FbGenres.cpp:156
+msgid "Global economy"
+msgstr "Зовнішньоекономічна діяльність"
+
+#: MyRuLib/FbGenres.cpp:157
+msgid "Economics"
+msgstr "Економіка"
+
+#: MyRuLib/FbGenres.cpp:158
+msgid "Industries"
+msgstr "Галузеві видання"
+
+#: MyRuLib/FbGenres.cpp:159
+msgid "Corporate culture"
+msgstr "Корпоративна культура"
+
+#: MyRuLib/FbGenres.cpp:160
+msgid "Personal finance"
+msgstr "Особисті фінанси"
+
+#: MyRuLib/FbGenres.cpp:161
+msgid "Real estate"
+msgstr "Нерухомість"
+
+#: MyRuLib/FbGenres.cpp:162
+msgid "Popular business"
+msgstr "Про бізнес популярно"
+
+#: MyRuLib/FbGenres.cpp:163
+msgid "Small business"
+msgstr "Малий бізнес"
+
+#: MyRuLib/FbGenres.cpp:164
+msgid "Paper work"
+msgstr "Діловодство"
+
+#: MyRuLib/FbGenres.cpp:165
+msgid "Economics reference book"
+msgstr "Довідники з економіки"
+
+#: MyRuLib/FbLogStream.cpp:58
+msgid "Fatal error"
+msgstr "Фатальна помилка"
+
+#: MyRuLib/FbLogStream.cpp:59
+msgid "Program aborted."
+msgstr "Програма перервана. "
+
+#: MyRuLib/FbViewerDlg.cpp:12
+msgid "Customize"
+msgstr "Настройка"
+
+#: MyRuLib/FbViewerDlg.cpp:55
+msgid "Executable files"
+msgstr "Файли програм"
+
+#: MyRuLib/FbImportThread.cpp:91
+#: MyRuLib/FbImportThread.cpp:479
+#, c-format
+msgid "Import file %s"
+msgstr "Імпорт файлу %s"
+
+#: MyRuLib/FbImportThread.cpp:113
+#, c-format
+msgid "Skip entry %s"
+msgstr "Пропущено елемент %s"
+
+#: MyRuLib/FbImportThread.cpp:118
+#, c-format
+msgid "Import zip entry %s"
+msgstr "Імпорт елементу zip %s"
+
+#: MyRuLib/FbImportThread.cpp:151
+#, c-format
+msgid "XML parsing error: '%s' at line %d file %s"
+msgstr "Помилка розбіру XML: '%s' at line %d file %s"
+
+#: MyRuLib/FbImportThread.cpp:294
+#, c-format
+msgid "File already exists %s"
+msgstr "Файл вже існує %s"
+
+#: MyRuLib/FbImportThread.cpp:299
+#, c-format
+msgid "Add alternative %s"
+msgstr "Додано варіант %s"
+
+#: MyRuLib/FbImportThread.cpp:345
+#, c-format
+msgid "Import zip %s"
+msgstr "Імпорт zip %s"
+
+#: MyRuLib/FbImportThread.cpp:421
+#, c-format
+msgid "FB2 and FBD not found %s"
+msgstr "FB2 та FBD не знайдені %s"
+
+#: MyRuLib/FbImportThread.cpp:469
+#, c-format
+msgid "Start import %d file(s)"
+msgstr "Початок імпорту %d файл(ів)"
+
+#: MyRuLib/FbImportThread.cpp:473
+#, c-format
+msgid "Finish import %d file(s)"
+msgstr "Кінець імпорту %d файл(ів)"
+
+#: MyRuLib/FbImportThread.cpp:483
+#: MyRuLib/FbImportThread.cpp:593
+#: MyRuLib/FbImportThread.cpp:608
+#, c-format
+msgid "File read error %s"
+msgstr "Помилка читання файлу %s"
+
+#: MyRuLib/FbImportThread.cpp:538
+#, c-format
+msgid "Skip file %s"
+msgstr "Пропущено файл %s"
+
+#: MyRuLib/FbImportThread.cpp:544
+#, c-format
+msgid "Import subdirectory %s"
+msgstr "Імпорт підкаталогу %s"
+
+#: MyRuLib/FbImportThread.cpp:560
+#, c-format
+msgid "Start import directory %s"
+msgstr "Початок імпорту каталогу %s"
+
+#: MyRuLib/FbImportThread.cpp:580
+#, c-format
+msgid "Finish import directory %s"
+msgstr "Кінець імпорту каталогу %s"
+
+#: MyRuLib/FbFrameGenres.cpp:36
+msgid "List of genres"
+msgstr "Список жанрів"
+
+#: MyRuLib/FbMainFrame.cpp:197
+msgid "Info messages"
+msgstr "Інформаційні повідомлення"
+
+#: MyRuLib/FbMainFrame.cpp:265
+msgid "Import file"
+msgstr "Імпорт файлу"
+
+#: MyRuLib/FbMainFrame.cpp:265
+msgid "Import files to the library"
+msgstr "Додати в бібліотеку нові файли"
+
+#: MyRuLib/FbMainFrame.cpp:266
+msgid "Import folder"
+msgstr "Імпорт каталога"
+
+#: MyRuLib/FbMainFrame.cpp:266
+msgid "Import folder to the library"
+msgstr "Додати в бібліотеку каталог"
+
+#: MyRuLib/FbMainFrame.cpp:269
+msgid " Author: "
+msgstr " Автор: "
+
+#: MyRuLib/FbMainFrame.cpp:277
+msgid "Find author"
+msgstr "Пошук автора"
+
+#: MyRuLib/FbMainFrame.cpp:280
+msgid " Book: "
+msgstr " Книга: "
+
+#: MyRuLib/FbMainFrame.cpp:289
+msgid "Find book by title"
+msgstr "Пошук книги по заголовку"
+
+#: MyRuLib/FbMainFrame.cpp:291
+msgid "Hierarchy"
+msgstr "Ієрархія"
+
+#: MyRuLib/FbMainFrame.cpp:291
+msgid "Hierarchy of authors and series"
+msgstr "Ієрархія авторів і серій"
+
+#: MyRuLib/FbMainFrame.cpp:292
+msgid "List"
+msgstr "Список"
+
+#: MyRuLib/FbMainFrame.cpp:310
+msgid "Digital books and archives"
+msgstr "Електронні книги та архіви"
+
+#: MyRuLib/FbMainFrame.cpp:311
+msgid "Digital books in FB2"
+msgstr "Електронні книги FB2"
+
+#: MyRuLib/FbMainFrame.cpp:312
+msgid "ZIP archives"
+msgstr "Архіви ZIP"
+
+#: MyRuLib/FbMainFrame.cpp:313
+msgid "All files"
+msgstr "Всі файли"
+
+#: MyRuLib/FbMainFrame.cpp:317
+msgid "Select archive to add to the library"
+msgstr "Виберіть архів для додавання в бібліотеку…"
+
+#: MyRuLib/FbMainFrame.cpp:330
+msgid "Processing file:"
+msgstr "Обробка файлу:"
+
+#: MyRuLib/FbMainFrame.cpp:343
+msgid "Select folder to recursive import"
+msgstr "Виберіть каталог для рекурсивного імпорту файлів"
+
+#: MyRuLib/FbMainFrame.cpp:351
+msgid "Processing folder:"
+msgstr "Обробка каталогу:"
+
+#: MyRuLib/FbMainFrame.cpp:454
+msgid "Input search string:"
+msgstr "Введіть рядок для пошуку:"
+
+#: MyRuLib/FbMainFrame.cpp:454
+msgid "Find title"
+msgstr "Пошук по заголовку"
+
+#: MyRuLib/FbMainFrame.cpp:509
+msgid "This function is not available yet in this version."
+msgstr "Функціонал не реалізований у даній версії."
+
+#: MyRuLib/FbMainFrame.cpp:519
+msgid "Optimize database?"
+msgstr "Виконати реструктуризацію бази даних?"
+
+#: MyRuLib/FbMainFrame.cpp:611
+msgid "File not found: "
+msgstr "Файл не знайдено:"
+
+#: MyRuLib/ExternalDlg.cpp:179
+msgid "Export to external storage"
+msgstr "Експорт на зовнішній пристрій"
+
+#: MyRuLib/ExternalDlg.cpp:207
+msgid "Use Author (without co-Authors)"
+msgstr "Використовувати поточного автора (без співавторів)"
+
+#: MyRuLib/ExternalDlg.cpp:215
+msgid "File name"
+msgstr "Найменування файлу"
+
+#: MyRuLib/ExternalDlg.cpp:223
+msgid "Export As..."
+msgstr "Формат експорту файлів:"
+
+#: MyRuLib/ExternalDlg.cpp:425
+msgid "Select a destination folder"
+msgstr "Виберіть папку зовнішнього пристрою"
+
+#: MyRuLib/ExternalDlg.cpp:500
+msgid "Destination folder not found"
+msgstr "Не знайдена папка зовнішнього пристрою"
+
+#: MyRuLib/ExternalDlg.cpp:504
+msgid "Unable write files to destination folder"
+msgstr "Каталог зовнішнього пристрою не доступний для запису"
+
+#: MyRuLib/ExternalDlg.cpp:531
+msgid "Not selected any book"
+msgstr "Не обрано жодної книги"
+
+#: MyRuLib/FbFrameInfo.h:14
+msgid "Information"
+msgstr "Інформація"
+
