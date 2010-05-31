@@ -14,8 +14,8 @@ WX_DEFINE_OBJARRAY(ExportFileArray);
 //-----------------------------------------------------------------------------
 
 void FbExportDlg::JoinedThread::OnExit()
-{ 
-	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_EXIT).Post(m_parent); 
+{
+	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_EXIT).Post(m_parent);
 }
 
 void FbExportDlg::JoinedThread::Execute()
@@ -63,7 +63,7 @@ void FbExportDlg::ExportLog::DoLog(wxLogLevel level, const wxChar *szString, tim
 //-----------------------------------------------------------------------------
 
 FbExportDlg::ExportThread::ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item)
-	: JoinedThread(parent), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath()) 
+	: JoinedThread(parent), m_format(format), m_id(item.id), m_filename(item.filename.GetFullPath())
 {
 }
 
@@ -112,7 +112,7 @@ void * FbExportDlg::GzipThread::Entry()
 	size_t count = m_filelist.Count();
 	if (count == 0) return NULL;
 	wxString filename = m_filelist[0];
-	if (count = 1) filename << wxT(".gz"); else first++;
+	if (count == 1) filename << wxT(".gz"); else first++;
 
 	wxFileOutputStream out(filename);
 	if (!out.IsOk()) return NULL;
@@ -144,7 +144,7 @@ void * FbExportDlg::ZipThread::Entry()
 	size_t count = m_filelist.Count();
 	if (count == 0) return NULL;
 	wxString filename = m_filelist[0];
-	if (count = 1) filename << wxT(".zip"); else first++;
+	if (count == 1) filename << wxT(".zip"); else first++;
 
 	wxFileOutputStream out(filename);
 	if (!out.IsOk()) return NULL;
@@ -421,7 +421,7 @@ void FbExportDlg::ExecScript(size_t index, const wxFileName &filename)
 		else if (cmd == wxT("rm"))  { m_thread = new DelThread(this, args); }
 		else if (cmd == wxT("gz")) { m_thread = new GzipThread(this, args); }
 		#ifdef __WXMSW__
-		else if (cmd == wxT("cmd")) m_process.m_dos = true; 
+		else if (cmd == wxT("cmd")) m_process.m_dos = true;
 		#endif // __WXMSW__
 		if (m_thread) { m_thread->Execute(); return; }
 	}
