@@ -43,7 +43,6 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	m_FindText = new wxTextCtrl( this, ID_FIND_TXT, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 250,-1 ) );
-	m_FindText->SetFocus();
 
 	bSizerFind->Add( m_FindText, 1, wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -64,6 +63,8 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
+
+	m_FindText->SetFocus();
 }
 
 bool FbReplaceDlg::Load()
