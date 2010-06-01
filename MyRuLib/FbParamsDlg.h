@@ -3,10 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
-#include <wx/arrimpl.cpp>
 #include <wx/fontpicker.h>
-#include <wx/spinctrl.h>
 #include <wx/wxsqlite3.h>
 #include "FbWindow.h"
 #include "FbTreeModel.h"

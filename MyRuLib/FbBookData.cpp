@@ -75,10 +75,9 @@ void FbBookData::SaveFile(wxInputStream & in, const wxString &filepath) const
     out.Close();
 }
 
-bool FbBookData::GetUserCommand(wxString &command) const
+bool FbBookData::GetUserCommand(wxSQLite3Database &database, wxString &command) const
 {
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-	FbLocalDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_filetype);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -112,8 +111,24 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 	if (!filename.FileExists()) SaveFile(in, filepath);
 
 	wxString command;
-    if (GetUserCommand(command)) {
-		#ifdef __WXSMW__
+	bool ok = false;
+
+	if (!ok) try {
+		FbLocalDatabase database;
+		ok = GetUserCommand(database, command);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
+	if (!ok) try {
+		FbCommonDatabase database;
+		ok = GetUserCommand(database, command);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
+    if (ok) {
+		#ifdef __WXMSW__
 		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 		#else
 		if (command.Left(5) == wxT("wine ")) {

@@ -1,10 +1,3 @@
-///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Dec 29 2008)
-// http://www.wxformbuilder.org/
-//
-// PLEASE DO "NOT" EDIT THIS FILE!
-///////////////////////////////////////////////////////////////////////////
-
 #include <wx/artprov.h>
 #include <wx/statline.h>
 #include <wx/string.h>
@@ -62,7 +55,7 @@ void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
 		FROM ( \
 			 SELECT DISTINCT LOWER(file_type) AS file_type FROM BOOKS GROUP BY file_type \
-			 UNION SELECT DISTINCT file_type FROM types \
+			 UNION SELECT DISTINCT file_type FROM config.types \
 			 UNION SELECT 'fb2' \
 			 UNION SELECT 'pdf' \
 			 UNION SELECT 'djvu' \
@@ -521,12 +514,12 @@ BEGIN_EVENT_TABLE( FbParamsDlg, wxDialog )
 	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, FbParamsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_EXTERNAL_BTN, FbParamsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_FONT_CLEAR, FbParamsDlg::OnFontClear )
-	EVT_MENU( ID_APPEND_TYPE, FbParamsDlg::OnAppendType )
-	EVT_MENU( ID_MODIFY_TYPE, FbParamsDlg::OnModifyType )
-	EVT_MENU( ID_DELETE_TYPE, FbParamsDlg::OnDeleteType )
-	EVT_MENU( ID_APPEND_SCRIPT, FbParamsDlg::OnAppendScript )
-	EVT_MENU( ID_MODIFY_SCRIPT, FbParamsDlg::OnModifyScript )
-	EVT_MENU( ID_DELETE_SCRIPT, FbParamsDlg::OnDeleteScript )
+	EVT_TOOL( ID_APPEND_TYPE, FbParamsDlg::OnAppendType )
+	EVT_TOOL( ID_MODIFY_TYPE, FbParamsDlg::OnModifyType )
+	EVT_TOOL( ID_DELETE_TYPE, FbParamsDlg::OnDeleteType )
+	EVT_TOOL( ID_APPEND_SCRIPT, FbParamsDlg::OnAppendScript )
+	EVT_TOOL( ID_MODIFY_SCRIPT, FbParamsDlg::OnModifyScript )
+	EVT_TOOL( ID_DELETE_SCRIPT, FbParamsDlg::OnDeleteScript )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbParamsDlg::OnTypeActivated)
 	EVT_TREE_ITEM_ACTIVATED(ID_SCRIPT_LIST, FbParamsDlg::OnScriptActivated)
 	EVT_FB_MODEL(ID_TYPE_LIST, FbParamsDlg::OnModel)
@@ -888,7 +881,7 @@ void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
 	m_del_type.Add(type);
 	model->Delete();
 
-	EnableTool(ID_SCRIPT_LIST, model->GetRowCount());
+	EnableTool(ID_TYPE_LIST, model->GetRowCount());
 	treeview->SetFocus();
 }
 

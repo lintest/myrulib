@@ -4,7 +4,7 @@
 #include "FbDataPath.h"
 #include "FbGenres.h"
 
-#define DB_DATABASE_VERSION 10
+#define DB_DATABASE_VERSION 11
 #define DB_CONFIG_VERSION 3
 
 wxString Lower(const wxString & input)
@@ -251,6 +251,10 @@ void FbMainDatabase::DoUpgrade(int version)
 			} catch (...) {};
 		} break;
 
+		case 11: {
+			/** TABLE script **/
+			ExecuteUpdate(wxT("CREATE TABLE types(file_type VARCHAR(99) PRIMARY KEY, command TEXT, convert TEXT)"));
+		} break;
 	}
 }
 
