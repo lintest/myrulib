@@ -310,6 +310,7 @@ void FbImportBook::AppendFile(int id_book)
 void FbImportBook::Save()
 {
 	try {
+		FbAutoCommit transaction(m_database);
 		int id_book = FindByMD5();
 		if (!id_book)
 			id_book = FindBySize();
@@ -375,6 +376,7 @@ wxZipEntry * FbImpotrZip::GetInfo(const wxString & filename)
 
 int FbImpotrZip::Save()
 {
+	FbAutoCommit transaction(m_database);
 	{
 		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -484,7 +486,6 @@ void FbZipImportThread::ImportFile(const wxString & zipname)
 	}
 
 	DoStart(0, zipname);
-	FbAutoCommit transaction(m_database);
 
 	if (zipname.Right(4).Lower() == wxT(".fb2")) {
 		FbImportBook book(this, in, zipname);
@@ -585,7 +586,6 @@ void FbDirImportThread::ParseXml(const wxString &filename)
 {
 	wxFFileInputStream in(filename);
 	if ( in.IsOk() ) {
-		FbAutoCommit transaction(m_database);
 		FbImportBook book(this, in, filename);
 		if (book.IsOk()) book.Save();
 	} else {
@@ -597,7 +597,6 @@ void FbDirImportThread::ParseZip(const wxString &zipname)
 {
 	wxFFileInputStream in(zipname);
 	if ( in.IsOk() ){
-		FbAutoCommit transaction(m_database);
 		FbImpotrZip zip(this, in, zipname);
 		if (zip.IsOk()) {
 			zip.Save();

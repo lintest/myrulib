@@ -322,7 +322,11 @@ void FbConfigDlg::Assign(bool write)
 
 	}
 
-	if (write) SaveTypes(m_database);
+	if (write) try {
+		SaveTypes(m_database);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
 }
 
 void FbConfigDlg::Execute(wxWindow* parent)

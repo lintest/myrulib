@@ -307,10 +307,11 @@ void FbMainFrame::OnExit(wxCommandEvent & event)
 
 void FbMainFrame::OnNewZip( wxCommandEvent& event )
 {
-	wxString mask = _("Digital books and archives") + (wxString)wxT(" (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*.FB2");
-	mask += wxT('|') + _("Digital books in FB2") + (wxString)wxT(" (*.fb2)|*.fb2;*.Fb2;*.FB2");
-	mask += wxT('|') + _("ZIP archives") + (wxString)wxT(" (*.zip)|*.zip;*.Zip;*.ZIP");
-	mask += wxT('|') + _("All files") + (wxString)wxT(" (*.*)|*.*");
+	wxString mask;
+	mask << _("Digital books and archives") << (wxString)wxT(" (*.fb2; *.zip)|*.zip;*.Zip;*.ZIP;*.fb2;*.Fb2;*.FB2");
+	mask << wxT('|') << _("Digital books in FB2") << (wxString)wxT(" (*.fb2)|*.fb2;*.Fb2;*.FB2");
+	mask << wxT('|') << _("ZIP archives") << (wxString)wxT(" (*.zip)|*.zip;*.Zip;*.ZIP");
+	mask << wxT('|') << _("All files") << (wxString)wxT(" (*.*)|*.*");
 
 	wxFileDialog dlg (
 		this,
