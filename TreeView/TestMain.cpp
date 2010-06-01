@@ -91,7 +91,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	toolbar->Realize();
 	SetToolBar(toolbar);
 
-	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES|wxLC_HRULES);
 	m_dataview->AddColumn(0, _("title"), 200);
 	m_dataview->AddColumn(1, _("author"), 150);
 	m_dataview->AddColumn(2, _("type"), 50);

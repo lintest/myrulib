@@ -1,5 +1,6 @@
 #include "FbTreeModel.h"
 #include <wx/wxsqlite3.h>
+#include <wx/listbase.h>
 
 #include "../MyRuLib/FbLogoBitmap.h"
 
@@ -99,6 +100,11 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const Fb
 
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
+	if (m_owner->HasFlag(wxLC_HRULES)) {
+		wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
+		dc.SetPen (pen);
+		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
+	}
 	dc.DestroyClippingRegion();
 
 	int h = rect.GetHeight();
@@ -121,11 +127,21 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const Fb
 			FbColumnInfo & col = cols[i];
 			int w = col.GetWidth();
 			if (i == 0) w -= x;
+
+			if (i > 0 && m_owner->HasFlag(wxLC_VRULES)) {
+				wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
+				dc.SetPen (pen);
+				dc.DrawLine (x, y, x, y + h);
+				x++;
+				w--;
+			}
+
 			wxRect rect(x, y, w, h);
 			rect.Deflate(3, 2);
 			wxString text = data.GetValue(*this, col.GetColumn());
 			dc.SetClippingRegion(rect);
 			const wxBitmap & bitmap = i ? wxNullBitmap : GetBitmap(state);
+			dc.SetPen (*wxTRANSPARENT_PEN);
 			dc.DrawLabel(text, bitmap, rect, col.GetAlignment());
 			dc.DestroyClippingRegion();
 			x += w;
