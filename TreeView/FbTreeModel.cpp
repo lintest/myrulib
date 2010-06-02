@@ -88,6 +88,7 @@ const wxBitmap & FbModel::GetBitmap(int state)
 
 void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols)
 {
+	wxPen pen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID);
 	if (GetCurrent() == &data) {
 		dc.SetBrush(m_focused ? m_hilightBrush : m_unfocusBrush);
         dc.SetTextForeground(m_hilightColour);
@@ -95,14 +96,12 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const Fb
 		dc.SetBrush (m_normalBrush);
 		dc.SetTextForeground(m_normalColour);
 	}
-	dc.SetPen (*wxTRANSPARENT_PEN);
+	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetFont(data.IsBold(*this) ? m_boldFont : m_normalFont);
-
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
+	dc.SetPen(pen);
 	if (m_owner->HasFlag(wxLC_HRULES)) {
-		wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
-		dc.SetPen (pen);
 		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
 	}
 	dc.DestroyClippingRegion();
@@ -126,22 +125,17 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const Fb
 		for (size_t i = 0; i < count; i++) {
 			FbColumnInfo & col = cols[i];
 			int w = col.GetWidth();
-			if (i == 0) w -= x;
-
-			if (i > 0 && m_owner->HasFlag(wxLC_VRULES)) {
-				wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
-				dc.SetPen (pen);
+			if (i == 0) {
+				w -= x;
+			} else if (m_owner->HasFlag(wxLC_VRULES)) {
 				dc.DrawLine (x, y, x, y + h);
-				x++;
-				w--;
+				x++; w--;
 			}
-
 			wxRect rect(x, y, w, h);
 			rect.Deflate(3, 2);
 			wxString text = data.GetValue(*this, col.GetColumn());
 			dc.SetClippingRegion(rect);
 			const wxBitmap & bitmap = i ? wxNullBitmap : GetBitmap(state);
-			dc.SetPen (*wxTRANSPARENT_PEN);
 			dc.DrawLabel(text, bitmap, rect, col.GetAlignment());
 			dc.DestroyClippingRegion();
 			x += w;
