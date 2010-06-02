@@ -264,7 +264,8 @@ int FbTreeViewHeaderWindow::XToCol(int x)
 {
     int w, left = 0;
     GetClientSize( &w, 0 );
-    w -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	if (m_owner && m_owner->ShowScrollbar())
+		w -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
     for ( size_t col = 0; col < count; col++ ) {

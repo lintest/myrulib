@@ -117,15 +117,19 @@ class FbListModel: public FbModel
 		virtual int GoNextRow(size_t delta = 1);
 		virtual int GoPriorRow(size_t delta = 1);
 		virtual size_t FindRow(size_t row, bool select);
+	public:
+		virtual void Append(FbModelData * data) = 0;
+		virtual void Replace(FbModelData * data) = 0;
+		virtual void Delete() = 0;
 		DECLARE_CLASS(FbListModel);
 };
 
 class FbListStore: public FbListModel
 {
 	public:
-		void Append(FbModelData * data);
-		void Replace(FbModelData * data);
-		void Delete();
+		virtual void Append(FbModelData * data);
+		virtual void Replace(FbModelData * data);
+		virtual void Delete();
 	public:
 		virtual size_t GetRowCount() const 
 			{ return m_list.Count(); }
