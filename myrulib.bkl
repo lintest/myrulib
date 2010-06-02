@@ -3,7 +3,7 @@
 
 	<set var="EXPAT_STATIC">0</set>
 	<set var="LOCALE_STATIC">0</set>
-	<set var="SQLITE3_STATIC">1</set>
+	<set var="SQLITE3_STATIC">0</set>
 
 	<set var="PREFIX">/usr</set>
 	<set var="BUILDDIR">build</set>
