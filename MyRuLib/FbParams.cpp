@@ -23,13 +23,14 @@ FbParams::FbParams()
 	m_database.AttachConfig();
 }
 
-void FbParams::LoadParams()
+void FbParams::LoadParams(bool all)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
 	sm_params.Empty();
 
-	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100 UNION ALL SELECT id, value, text FROM params WHERE id<100");
+	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100");
+	if (all) sql << wxT(' ') << wxT("UNION ALL SELECT id, value, text FROM params WHERE id<100");
 	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		ParamItem * param = new ParamItem(result);
@@ -146,6 +147,7 @@ int FbParams::DefaultValue(int param)
 		case FB_ALPHABET_EN: return 1;
 		case FB_LIMIT_CHECK: return 1;
 		case FB_LIMIT_COUNT: return 5000;
+		case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
 		default: return 0;
 	}
 };

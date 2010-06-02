@@ -8,6 +8,7 @@ ru_RU RC_DATA "ru.mo"
 be_BY RC_DATA "be.mo"
 uk_UA RC_DATA "uk.mo"
 cs_CZ RC_DATA "cs.mo"
+sv_SE RC_DATA "sv.mo"
 
 #define __TXT(text) #text
 #define TXT(text) __TXT(text)

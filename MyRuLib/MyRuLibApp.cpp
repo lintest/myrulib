@@ -24,25 +24,24 @@ MyRuLibApp::~MyRuLibApp()
     wxDELETE(m_locale);
 }
 
-void MyRuLibApp::Localize(int language)
+void MyRuLibApp::Localize()
 {
+	wxLanguage language = (wxLanguage) FbParams::GetValue(FB_LANG_LOCALE);
     wxDELETE(m_locale);
     FbLocale * locale = new FbLocale;
     locale->Init(language);
     m_locale = locale;
-}
 
-int MyRuLibApp::GetLanguage()
-{
-    return m_locale ? m_locale->GetLanguage() : wxLANGUAGE_DEFAULT;
+    FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
+    if (frame) frame->Localize(language);
 }
 
 bool MyRuLibApp::OnInit()
 {
-    Localize();
-
 	FbConfigDatabase config;
 	config.Open();
+	FbParams().LoadParams(false);
+    Localize();
 
 	OpenLog();
 

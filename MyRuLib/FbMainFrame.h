@@ -17,6 +17,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		virtual ~FbMainFrame();
 		virtual wxString GetTitle() const;
 		void SetStatus(const wxString &text);
+		void Localize(int language);
 	protected:
 		virtual void SetMenuBar(wxMenuBar *pMenuBar);
 	private:
@@ -54,8 +55,6 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnFindTitleEnter(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
-		void OnLocalize(wxCommandEvent& event);
-		void OnLocalizeUpdate(wxUpdateUIEvent& event);
 		void OnMenuFrame(wxCommandEvent& event);
 		void OnMenuNothing(wxCommandEvent& event);
 		void OnMenuAuthor(wxCommandEvent& event);

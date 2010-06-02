@@ -74,20 +74,6 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_UPDATE_UI(ID_ART_BUTTONS, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 
-	EVT_MENU(ID_LANG_DEFAULT, FbMainFrame::OnLocalize)
-	EVT_MENU(ID_LANG_ENGLISH, FbMainFrame::OnLocalize)
-	EVT_MENU(ID_LANG_RUSSIAN, FbMainFrame::OnLocalize)
-    EVT_MENU(ID_LANG_UKRAINIAN, FbMainFrame::OnLocalize)
-    EVT_MENU(ID_LANG_BELARUSIAN, FbMainFrame::OnLocalize)
-    EVT_MENU(ID_LANG_CZECH, FbMainFrame::OnLocalize)
-
-	EVT_UPDATE_UI(ID_LANG_DEFAULT, FbMainFrame::OnLocalizeUpdate)
-	EVT_UPDATE_UI(ID_LANG_ENGLISH, FbMainFrame::OnLocalizeUpdate)
-	EVT_UPDATE_UI(ID_LANG_RUSSIAN, FbMainFrame::OnLocalizeUpdate)
-    EVT_UPDATE_UI(ID_LANG_UKRAINIAN, FbMainFrame::OnLocalizeUpdate)
-    EVT_UPDATE_UI(ID_LANG_BELARUSIAN, FbMainFrame::OnLocalizeUpdate)
-    EVT_UPDATE_UI(ID_LANG_CZECH, FbMainFrame::OnLocalizeUpdate)
-
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
 	EVT_MENU(ID_WINDOW_NEXT, FbMainFrame::OnWindowNext)
@@ -699,11 +685,8 @@ void FbMainFrame::SetMenuBar(wxMenuBar *pMenuBar)
 	wxAuiMDIParentFrame::SetMenuBar(pMenuBar);
 }
 
-void FbMainFrame::OnLocalize(wxCommandEvent& event)
+void FbMainFrame::Localize(int language)
 {
-    int language = FbLocale::MenuToLang(event.GetId());
-    wxGetApp().Localize(language);
-
     wxToolBar * toolbar = m_toolbar;
 	SetToolBar(CreateToolBar());
     wxDELETE(toolbar);
@@ -716,9 +699,3 @@ void FbMainFrame::OnLocalize(wxCommandEvent& event)
 	}
 	if (count == 0) SetMenuBar(new FbMainMenu);
 }
-
-void FbMainFrame::OnLocalizeUpdate(wxUpdateUIEvent& event)
-{
-    if ( FbLocale::MenuToLang(event.GetId()) == wxGetApp().GetLanguage() )  event.Check(true);
-}
-

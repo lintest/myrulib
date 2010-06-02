@@ -16,8 +16,7 @@ public:
 	bool OpenDatabase(const wxString &filename);
 	const wxString GetAppData();
 	const wxString GetAppPath();
-	void Localize(int language = wxLANGUAGE_DEFAULT);
-	int GetLanguage();
+	void Localize();
 private:
 	void OpenLog();
 	wxFileName GetDatabaseFilename(FbDatabase &database);

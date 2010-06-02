@@ -2,6 +2,7 @@
 #include <wx/wfstream.h>
 #include "FbDatabase.h"
 #include "FbConst.h"
+#include "FbChoiceFormat.h"
 
 #ifdef __WXMSW__
 
@@ -69,6 +70,10 @@ bool FbLocale::Init(int language, int flags)
 			#include "cs.inc"
 			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
 		} break;
+		case wxLANGUAGE_SWEDISH: {
+			#include "sv.inc"
+			ok = Save(filename, locale_binary_file, sizeof(locale_binary_file));
+		} break;
 	}
 
 	if (ok) AddCatalogLookupPathPrefix(filename.GetPath());
@@ -96,15 +101,25 @@ bool FbLocale::Save(const wxFileName &filename, const void *data, size_t size)
     return true;
 }
 
-int FbLocale::MenuToLang(wxWindowID id)
+void FbLocale::Fill(FbChoiceFormat * choise, int value)
 {
-    switch ( id ) {
-        case ID_LANG_DEFAULT:    return wxLANGUAGE_DEFAULT;
-        case ID_LANG_ENGLISH:    return wxLANGUAGE_ENGLISH;
-        case ID_LANG_RUSSIAN:    return wxLANGUAGE_RUSSIAN;
-        case ID_LANG_UKRAINIAN:  return wxLANGUAGE_UKRAINIAN;
-        case ID_LANG_BELARUSIAN: return wxLANGUAGE_BELARUSIAN;
-        case ID_LANG_CZECH:      return wxLANGUAGE_CZECH;
-        default: return wxLANGUAGE_DEFAULT;
-    }
+	choise->Append(wxT("Default"), wxLANGUAGE_DEFAULT);
+	choise->SetSelection(0);
+
+	wxLanguage langs[] = {
+        wxLANGUAGE_ENGLISH,
+        wxLANGUAGE_RUSSIAN,
+        wxLANGUAGE_UKRAINIAN,
+        wxLANGUAGE_BELARUSIAN,
+        wxLANGUAGE_CZECH,
+        wxLANGUAGE_SWEDISH,
+	};
+	size_t count = sizeof(langs) / sizeof(wxLanguage);
+
+	for (size_t i = 0; i < count; i++) {
+		wxLanguage lang = langs[i];
+		const wxLanguageInfo * info = wxLocale::GetLanguageInfo(lang);
+		int index = choise->Append(info->Description, lang);
+		if (lang == value) choise->SetSelection(index);
+	}
 }

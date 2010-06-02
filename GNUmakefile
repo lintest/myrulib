@@ -154,7 +154,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_md5.o \
 	build/myrulib_base64.o \
 	build/myrulib_treelistctrl.o
-MYRULIB_ODEP =  build/ru.inc build/uk.inc build/be.inc build/cs.inc
+MYRULIB_ODEP = build/ru.inc build/uk.inc build/be.inc build/cs.inc build/sv.inc
 
 ### Conditionally set variables: ###
 
@@ -195,6 +195,8 @@ install: install_myrulib
 	(cd build ; $(INSTALL) -m 644 -T be.mo $(DESTDIR)/usr/share/locale/be/LC_MESSAGES/myrulib.mo)
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/cs/LC_MESSAGES
 	(cd build ; $(INSTALL) -m 644 -T cs.mo $(DESTDIR)/usr/share/locale/cs/LC_MESSAGES/myrulib.mo)
+	$(INSTALL) -d $(DESTDIR)/usr/share/locale/sv/LC_MESSAGES
+	(cd build ; $(INSTALL) -m 644 -T sv.mo $(DESTDIR)/usr/share/locale/sv/LC_MESSAGES/myrulib.mo)
 	$(INSTALL) -d $(DESTDIR)/usr/share/icons/hicolor/48x48/apps
 	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
@@ -207,6 +209,7 @@ uninstall: uninstall_myrulib
 	(cd $(DESTDIR)/usr/share/locale/uk/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)/usr/share/locale/be/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)/usr/share/locale/cs/LC_MESSAGES ; rm -f myrulib.mo)
+	(cd $(DESTDIR)/usr/share/locale/sv/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)/usr/share/icons/hicolor/48x48/apps ; rm -f myrulib.png)
 	(cd $(DESTDIR)/usr/share/applications ; rm -f myrulib.desktop)
 	(cd $(DESTDIR)/usr/share/pixmaps ; rm -f myrulib.png)
@@ -221,10 +224,12 @@ clean:
 	rm -f build/uk.mo
 	rm -f build/be.mo
 	rm -f build/cs.mo
+	rm -f build/sv.mo
 	rm -f build/ru.inc
 	rm -f build/uk.inc
 	rm -f build/be.inc
 	rm -f build/cs.inc
+	rm -f build/sv.inc
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
@@ -255,6 +260,9 @@ build/be.mo: build/bin2c MyRuLib/locale/be.po
 build/cs.mo: build/bin2c MyRuLib/locale/cs.po
 	msgfmt MyRuLib/locale/cs.po -o build/cs.mo
 
+build/sv.mo: build/bin2c MyRuLib/locale/sv.po
+	msgfmt MyRuLib/locale/sv.po -o build/sv.mo
+
 build/ru.inc: build/ru.mo
 	build/bin2c build/ru.mo build/ru.inc file
 
@@ -266,6 +274,9 @@ build/be.inc: build/be.mo
 
 build/cs.inc: build/cs.mo
 	build/bin2c build/cs.mo build/cs.inc file
+
+build/sv.inc: build/sv.mo
+	build/bin2c build/sv.mo build/sv.inc file
 
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a build/libsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a build/libsqlite3_static.a -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`

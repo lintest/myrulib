@@ -80,6 +80,7 @@ enum FbParamKey {
 	FB_NOTEBOOK_ART  = 191,
 	FB_ALPHABET_RU   = 192,
 	FB_ALPHABET_EN   = 193,
+	FB_LANG_LOCALE   = 194,
 
 	FB_LIMIT_CHECK   = 210,
 	FB_LIMIT_COUNT   = 211,
@@ -109,7 +110,7 @@ WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
 class FbParams {
 	public:
 		FbParams();
-		void LoadParams();
+		void LoadParams(bool all = true);
 		static int GetValue(const int param);
 		static wxString GetText(const int param);
 		static wxFont GetFont(const int param);

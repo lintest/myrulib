@@ -4,11 +4,14 @@
 #include <wx/intl.h>
 #include <wx/filename.h>
 
+class FbChoiceFormat;
+
 class FbLocale: public wxLocale
 {
 	public:
         virtual bool Init(int language = wxLANGUAGE_DEFAULT, int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
         static int MenuToLang(wxWindowID id);
+        static void Fill(FbChoiceFormat * choise, int value);
 	private:
 		bool LoadResource(int language, const wxString &filename);
 		bool Save(const wxFileName &filename, const void *data, size_t size);

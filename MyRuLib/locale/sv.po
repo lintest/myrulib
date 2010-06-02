@@ -1,0 +1,1936 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: MyRuLib\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-06-02 13:22+0100\n"
+"PO-Revision-Date: 2010-06-02 15:54+0100\n"
+"Last-Translator: Johan Segerstedt <johan.segerstedt@gmail.com>\n"
+"Language-Team: Lintest <mail@lintest.ru>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: /home/johan/building/myrulib-0.22.10/\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-SearchPath-0: MyRuLib\n"
+
+#: MyRuLib/FbFrameDownld.cpp:45
+#: MyRuLib/FbFrameDownld.cpp:62
+msgid "Folders"
+msgstr "Mappar"
+
+#: MyRuLib/FbFrameDownld.cpp:70
+#: MyRuLib/FbParamsDlg.cpp:552
+msgid "Export"
+msgstr "Exportera"
+
+#: MyRuLib/FbFrameDownld.cpp:70
+msgid "Export to external device"
+msgstr "Exportera till extern enhet"
+
+#: MyRuLib/FbFrameDownld.cpp:72
+msgid "Start"
+msgstr "Start"
+
+#: MyRuLib/FbFrameDownld.cpp:72
+msgid "Start downloading"
+msgstr "Påbörja hämtning"
+
+#: MyRuLib/FbFrameDownld.cpp:73
+msgid "Stop"
+msgstr "Stopp"
+
+#: MyRuLib/FbFrameDownld.cpp:73
+msgid "Stop downloading"
+msgstr "Avbryt hämtning"
+
+#: MyRuLib/FbFrameDownld.cpp:75
+msgid "Up"
+msgstr "Upp"
+
+#: MyRuLib/FbFrameDownld.cpp:75
+msgid "Move up in queue"
+msgstr "Flytta uppåt i kön"
+
+#: MyRuLib/FbFrameDownld.cpp:76
+msgid "Down"
+msgstr "Ner"
+
+#: MyRuLib/FbFrameDownld.cpp:76
+msgid "Move down in queue"
+msgstr "Flytta ner i kön"
+
+#: MyRuLib/FbFrameDownld.cpp:78
+#: MyRuLib/FbParamsDlg.cpp:345
+#: MyRuLib/FbParamsDlg.cpp:480
+msgid "Delete"
+msgstr "Ta bort"
+
+#: MyRuLib/FbFrameDownld.cpp:78
+msgid "Remove download"
+msgstr "Återuppta hämtning"
+
+#: MyRuLib/FbFrameDownld.cpp:90
+msgid "Queue"
+msgstr "Kö"
+
+#: MyRuLib/FbFrameDownld.cpp:91
+msgid "Ready"
+msgstr "Klart"
+
+#: MyRuLib/FbFrameDownld.cpp:92
+msgid "Fault"
+msgstr "Fel"
+
+#: MyRuLib/FbFrameDate.cpp:39
+#: MyRuLib/FbFrameDate.cpp:54
+#: MyRuLib/FbMenu.cpp:12
+msgid "Date"
+msgstr "Datum"
+
+#: MyRuLib/FbFrameInfo.cpp:61
+msgid "Information about collection"
+msgstr "Information om biblioteket"
+
+#: MyRuLib/FbFrameInfo.cpp:102
+msgid "Total quantity"
+msgstr "Antal skrifter:"
+
+#: MyRuLib/FbFrameInfo.cpp:111
+msgid "Total books count:"
+msgstr "Antal böcker:"
+
+#: MyRuLib/FbFrameInfo.cpp:115
+msgid "Authors counting"
+msgstr "Beräknat antal författare:"
+
+#: MyRuLib/FbFrameInfo.cpp:122
+msgid "Authors count:"
+msgstr "Antal författare:"
+
+#: MyRuLib/FbFrameInfo.cpp:126
+msgid "Total files size, Mb:"
+msgstr "Total filstorlek, MiB:"
+
+#: MyRuLib/FbFrameInfo.cpp:128
+msgid "First reciept:"
+msgstr "Första tillägget:"
+
+#: MyRuLib/FbFrameInfo.cpp:130
+msgid "Last reciept:"
+msgstr "Senaste tillägget:"
+
+#: MyRuLib/FbFrameInfo.cpp:141
+msgid "File extension"
+msgstr "Filytp"
+
+#: MyRuLib/FbFrameInfo.cpp:142
+msgid "Count"
+msgstr "Antal"
+
+#: MyRuLib/FbFrameInfo.cpp:143
+msgid "Size, Kb"
+msgstr "Storlek, KiB"
+
+#: MyRuLib/FbFrameInfo.cpp:154
+#: MyRuLib/FbParamsDlg.cpp:551
+msgid "File types"
+msgstr "Filtyper"
+
+#: MyRuLib/FbFrameInfo.cpp:180
+msgid "Collection info"
+msgstr "Biblioteksinformation"
+
+#: MyRuLib/FbFrameInfo.cpp:210
+msgid "Select a file to export report"
+msgstr "Välj fil att exportera rapporten till"
+
+#: MyRuLib/FbFrameInfo.cpp:213
+msgid "HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
+msgstr "HTML-filer (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|Alla filer (*.*)|*.*"
+
+#: MyRuLib/FbConfigDlg.cpp:42
+msgid "Library name:"
+msgstr "Biblioteksnamn"
+
+#: MyRuLib/FbConfigDlg.cpp:51
+msgid "Library folder:"
+msgstr "Biblioteksmapp"
+
+#: MyRuLib/FbConfigDlg.cpp:68
+msgid "Short description:"
+msgstr "Kort beskrivning"
+
+#: MyRuLib/FbConfigDlg.cpp:89
+msgid "Host name:"
+msgstr "Värd:"
+
+#: MyRuLib/FbConfigDlg.cpp:99
+msgid "User name:"
+msgstr "Användarnamn:"
+
+#: MyRuLib/FbConfigDlg.cpp:106
+msgid "Password:"
+msgstr "Lösenord:"
+
+#: MyRuLib/FbConfigDlg.cpp:127
+#: MyRuLib/FbParamsDlg.cpp:549
+msgid "General"
+msgstr "Allmänt"
+
+#: MyRuLib/FbConfigDlg.cpp:128
+#: MyRuLib/FbParamsDlg.cpp:550
+msgid "Network"
+msgstr "Nätverk"
+
+#: MyRuLib/FbConfigDlg.cpp:147
+#: MyRuLib/FbParamsDlg.cpp:582
+msgid "Select folder"
+msgstr "Välj mapp"
+
+#: MyRuLib/FbConfigDlg.cpp:220
+msgid "Library options"
+msgstr "Biblioteksinställningar"
+
+#: MyRuLib/MyRuLibApp.cpp:140
+msgid "Database error: "
+msgstr "Databasfel: "
+
+#: MyRuLib/FbParamsDlg.cpp:154
+msgid "Full file path with name and extension"
+msgstr "Hela sökvägen med filnamn och -ändelse."
+
+#: MyRuLib/FbParamsDlg.cpp:155
+msgid "Full file path without extension"
+msgstr "Hela sökvägen utan filändelse"
+
+#: MyRuLib/FbParamsDlg.cpp:156
+msgid "File name without path and extension"
+msgstr "Hela filnamnet utan sökväg och filändelse."
+
+#: MyRuLib/FbParamsDlg.cpp:157
+msgid "Target directory"
+msgstr "Målmapp"
+
+#: MyRuLib/FbParamsDlg.cpp:158
+msgid "File name extension"
+msgstr "Filändelse"
+
+#: MyRuLib/FbParamsDlg.cpp:181
+#: MyRuLib/FbParamsDlg.cpp:350
+#: MyRuLib/FbParamsDlg.cpp:485
+#: MyRuLib/FbMenu.cpp:10
+msgid "Extension"
+msgstr "Filtyp"
+
+#: MyRuLib/FbParamsDlg.cpp:251
+msgid "List of authors and books:"
+msgstr "Lista över böcker och författare:"
+
+#: MyRuLib/FbParamsDlg.cpp:252
+msgid "Toolbar:"
+msgstr "Verktygsfält:"
+
+#: MyRuLib/FbParamsDlg.cpp:253
+msgid "Information:"
+msgstr "Information:"
+
+#: MyRuLib/FbParamsDlg.cpp:254
+msgid "Dialog windows:"
+msgstr "Dialogfönster:"
+
+#: MyRuLib/FbParamsDlg.cpp:258
+msgid "Reset fonts settings"
+msgstr "Återställ inställningar för teckensnitt"
+
+#: MyRuLib/FbParamsDlg.cpp:288
+msgid "Automatically begin files downloading"
+msgstr "Påbörja hämtningar automatiskt"
+
+#: MyRuLib/FbParamsDlg.cpp:294
+msgid "Use proxy-server"
+msgstr "Använd proxy-server"
+
+#: MyRuLib/FbParamsDlg.cpp:305
+msgid "Load images for author's description"
+msgstr "Hämta bilder för att illustrera författaren"
+
+#: MyRuLib/FbParamsDlg.cpp:308
+msgid "Folder to save downloads:"
+msgstr "Spara hämtningar till"
+
+#: MyRuLib/FbParamsDlg.cpp:323
+msgid "Delete downloaded files when download query removed"
+msgstr "Ta bort hämtningar när en post tas bort ur listan"
+
+#: MyRuLib/FbParamsDlg.cpp:343
+#: MyRuLib/FbParamsDlg.cpp:478
+msgid "Append"
+msgstr "Lägg till"
+
+#: MyRuLib/FbParamsDlg.cpp:344
+#: MyRuLib/FbParamsDlg.cpp:479
+msgid "Modify"
+msgstr "Ändra"
+
+#: MyRuLib/FbParamsDlg.cpp:351
+msgid "Program"
+msgstr "Program"
+
+#: MyRuLib/FbParamsDlg.cpp:370
+msgid "Save full path of the file when importing"
+msgstr "Behåll hela sökvägen vid exportering"
+
+#: MyRuLib/FbParamsDlg.cpp:373
+msgid "Temporary folder:"
+msgstr "Mapp för temporära filer:"
+
+#: MyRuLib/FbParamsDlg.cpp:394
+msgid "Wine temp folder:"
+msgstr "Mapp för Wines temporära filer:"
+
+#: MyRuLib/FbParamsDlg.cpp:406
+msgid "Delete temporary files when you exit the program"
+msgstr "Töm mappen för temporära filer när programmet avslutas"
+
+#: MyRuLib/FbParamsDlg.cpp:409
+msgid "Delete files when you delete a book"
+msgstr "Ta bort filen när en bok tas bort"
+
+#: MyRuLib/FbParamsDlg.cpp:414
+msgid "Limit the maximum size of lists:"
+msgstr "Begränsa listornas maximala storlek:"
+
+#: MyRuLib/FbParamsDlg.cpp:421
+msgid "Clear the log window when it closes"
+msgstr "Rensa loggfönstret när det stängs"
+
+#: MyRuLib/FbParamsDlg.cpp:438
+msgid "Destination folder:"
+msgstr "Målmapp:"
+
+#: MyRuLib/FbParamsDlg.cpp:458
+msgid "A / Author / Series / #_book"
+msgstr "A / Författare / Serie / #_Bok"
+
+#: MyRuLib/FbParamsDlg.cpp:459
+msgid "A / Author / Book"
+msgstr "A / Författare / Bok"
+
+#: MyRuLib/FbParamsDlg.cpp:460
+msgid "Author / Series / #_book"
+msgstr "Författare / Serie / #_Bok"
+
+#: MyRuLib/FbParamsDlg.cpp:461
+msgid "Author / Book"
+msgstr "Författare / Bok"
+
+#: MyRuLib/FbParamsDlg.cpp:464
+msgid "Exported collection structure"
+msgstr "Exporterad biblioteksstruktur"
+
+#: MyRuLib/FbParamsDlg.cpp:468
+msgid "Transliterate folder name"
+msgstr "Transkribera mappnamn"
+
+#: MyRuLib/FbParamsDlg.cpp:471
+msgid "Transliterate filename"
+msgstr "Transkribera filnamn"
+
+#: MyRuLib/FbParamsDlg.cpp:486
+msgid "Export script"
+msgstr "Exporteringsskript"
+
+#: MyRuLib/FbParamsDlg.cpp:496
+msgid "Format of exporting collection"
+msgstr "Exporteringsformat"
+
+#: MyRuLib/FbParamsDlg.cpp:500
+#: MyRuLib/FbParamsDlg.cpp:748
+#: MyRuLib/FbParamsDlg.cpp:780
+#: MyRuLib/FbParamsDlg.cpp:954
+msgid "filename"
+msgstr "filnamn"
+
+#: MyRuLib/FbParamsDlg.cpp:553
+msgid "Fonts"
+msgstr "Teckensnitt"
+
+#: MyRuLib/FbParamsDlg.cpp:710
+msgid "Program settings"
+msgstr "Programinställningar"
+
+#: MyRuLib/FbParamsDlg.cpp:726
+msgid "Error writing to database"
+msgstr "Kunde inte skriva till databasen"
+
+#: MyRuLib/FbParamsDlg.cpp:740
+msgid "Append export script"
+msgstr "Lägg till exporteringsskript"
+
+#: MyRuLib/FbParamsDlg.cpp:766
+msgid "Modify export script"
+msgstr "Redigera exporteringsskript"
+
+#: MyRuLib/FbParamsDlg.cpp:800
+msgid "Delete export script"
+msgstr "Ta bort exporteringsskript"
+
+#: MyRuLib/FbParamsDlg.cpp:801
+#: MyRuLib/FbParamsDlg.cpp:885
+msgid "Removing"
+msgstr "Tar bort"
+
+#: MyRuLib/FbParamsDlg.cpp:834
+msgid "Input new filetype"
+msgstr "Lägg till ny filtyp"
+
+#: MyRuLib/FbParamsDlg.cpp:834
+msgid "Settings"
+msgstr "Inställningar"
+
+#: MyRuLib/FbParamsDlg.cpp:863
+msgid "Select the application to view files"
+msgstr "Välj program att öppna filerna med"
+
+#: MyRuLib/FbParamsDlg.cpp:884
+msgid "Delete file type"
+msgstr "Ta bort filtypen"
+
+#: MyRuLib/FbImportThread.cpp:91
+#: MyRuLib/FbImportThread.cpp:478
+#, c-format
+msgid "Import file %s"
+msgstr "Lägg till fil %s"
+
+#: MyRuLib/FbImportThread.cpp:113
+#, c-format
+msgid "Skip entry %s"
+msgstr "Hoppa över %s"
+
+#: MyRuLib/FbImportThread.cpp:118
+#, c-format
+msgid "Import zip entry %s"
+msgstr "Lägg till zip-fil %s"
+
+#: MyRuLib/FbImportThread.cpp:151
+#, c-format
+msgid "XML parsing error: '%s' at line %d file %s"
+msgstr "Kunde inte läsa XML: '%s' på rad %d i filen %s"
+
+#: MyRuLib/FbImportThread.cpp:293
+#, c-format
+msgid "File already exists %s"
+msgstr "Filen finns redan %s"
+
+#: MyRuLib/FbImportThread.cpp:298
+#, c-format
+msgid "Add alternative %s"
+msgstr "Lägg till som alternativ %s"
+
+#: MyRuLib/FbImportThread.cpp:341
+#: MyRuLib/FbImportThread.cpp:424
+#: MyRuLib/ZipReader.cpp:324
+#, c-format
+msgid "Zip read error %s"
+msgstr "Kunde inte läsa zip-fil %s"
+
+#: MyRuLib/FbImportThread.cpp:344
+#, c-format
+msgid "Import zip %s"
+msgstr "Lägg till zip-fil %s"
+
+#: MyRuLib/FbImportThread.cpp:420
+#, c-format
+msgid "FB2 and FBD not found %s"
+msgstr "FB2- och FBD-filerna %s kunde inte hittas"
+
+#: MyRuLib/FbImportThread.cpp:468
+#, c-format
+msgid "Start import %d file(s)"
+msgstr "Lägger till %d fil(er)"
+
+#: MyRuLib/FbImportThread.cpp:472
+#, c-format
+msgid "Finish import %d file(s)"
+msgstr "Завершен импорт %d файл(ов)"
+
+#: MyRuLib/FbImportThread.cpp:482
+#: MyRuLib/FbImportThread.cpp:592
+#: MyRuLib/FbImportThread.cpp:607
+#, c-format
+msgid "File read error %s"
+msgstr "Kunde inte läsa filen %s"
+
+#: MyRuLib/FbImportThread.cpp:537
+#, c-format
+msgid "Skip file %s"
+msgstr "Filen %s hoppades över"
+
+#: MyRuLib/FbImportThread.cpp:543
+#, c-format
+msgid "Import subdirectory %s"
+msgstr "Lägg till undermapp %s"
+
+#: MyRuLib/FbImportThread.cpp:559
+#, c-format
+msgid "Start import directory %s"
+msgstr "Lägg till mapp %s"
+
+#: MyRuLib/FbImportThread.cpp:563
+#: MyRuLib/ZipReader.cpp:266
+#, c-format
+msgid "Can't open directory %s"
+msgstr "Kan inte öppna katalogen %s"
+
+#: MyRuLib/FbImportThread.cpp:579
+#, c-format
+msgid "Finish import directory %s"
+msgstr "Katalogen %s har importerats"
+
+#: MyRuLib/FbAboutDlg.cpp:8
+msgid "About"
+msgstr "Om programmet"
+
+#: MyRuLib/FbBookData.cpp:66
+msgid "Download book file?"
+msgstr "Hämta bok från Internet?"
+
+#: MyRuLib/FbBookData.cpp:66
+msgid "Confirmation"
+msgstr "Bekräftar"
+
+#: MyRuLib/FbBookData.cpp:128
+msgid "Associated application not found"
+msgstr "Det associerade programmet kunde inte hittas"
+
+#: MyRuLib/ZipReader.cpp:93
+#, c-format
+msgid "Book not found %s"
+msgstr "Boken kunde inte hittas %s"
+
+#: MyRuLib/ZipReader.cpp:122
+msgid "Can't create thread!"
+msgstr "Kan ej skapa tråd!"
+
+#: MyRuLib/ZipReader.cpp:198
+#, c-format
+msgid "Not found an archive (%s), containing file (%s)."
+msgstr "Arkivet (%s), med filen (%s), kunde inte hittas."
+
+#: MyRuLib/ZipReader.cpp:212
+#, c-format
+msgid "Not found file %s"
+msgstr "Filen %s kunde inte hittas"
+
+#: MyRuLib/ZipReader.cpp:262
+#, c-format
+msgid "Start scan directory %s"
+msgstr "Genomsök mapp %s"
+
+#: MyRuLib/ZipReader.cpp:277
+#, c-format
+msgid "Finish scan directory %s"
+msgstr "Mappen har genomsökts %s"
+
+#: MyRuLib/ZipReader.cpp:282
+#, c-format
+msgid "Scan zip %s"
+msgstr "Genomsök zip-fil %s"
+
+#: MyRuLib/FbMenu.cpp:6
+msgid "Title"
+msgstr "Titel"
+
+#: MyRuLib/FbMenu.cpp:7
+msgid "Author"
+msgstr "Författare"
+
+#: MyRuLib/FbMenu.cpp:8
+msgid "Rating"
+msgstr "Betyg"
+
+#: MyRuLib/FbMenu.cpp:9
+msgid "Language"
+msgstr "Språk"
+
+#: MyRuLib/FbMenu.cpp:11
+msgid "Size"
+msgstr "Storlek"
+
+#: MyRuLib/FbMenu.cpp:14
+msgid "Reverse order"
+msgstr "Omvänd ordning"
+
+#: MyRuLib/VacuumThread.cpp:11
+msgid "Start SQLite VACUUM"
+msgstr "Starta SQLite VACUUM"
+
+#: MyRuLib/FbEditBook.cpp:37
+#: MyRuLib/FbMainMenu.cpp:10
+msgid "Series"
+msgstr "Serier"
+
+#: MyRuLib/FbEditBook.cpp:38
+msgid "Genre"
+msgstr "Genre"
+
+#: MyRuLib/InfoThread.cpp:191
+#, c-format
+msgid "XML parsing error: '%s' at line %d"
+msgstr "Kunde inte läsa XML: '%s' på rad %d"
+
+#: MyRuLib/FbBookMenu.cpp:15
+msgid "Open book"
+msgstr "Öppna bok"
+
+#: MyRuLib/FbBookMenu.cpp:17
+msgid "Delete download query"
+msgstr "Ta bort hämtningsuppdrag"
+
+#: MyRuLib/FbBookMenu.cpp:18
+msgid "Retry rownload"
+msgstr "Hämta igen"
+
+#: MyRuLib/FbBookMenu.cpp:20
+msgid "Download a file"
+msgstr "Hämta fil"
+
+#: MyRuLib/FbBookMenu.cpp:22
+msgid "Download via browser"
+msgstr "Hämta fil i webbläsaren"
+
+#: MyRuLib/FbBookMenu.cpp:23
+msgid "Online books page"
+msgstr "Böcker på bibliotekets hemsida"
+
+#: MyRuLib/FbBookMenu.cpp:26
+#: MyRuLib/FbMainMenu.cpp:80
+msgid "Select all"
+msgstr "Markera allt"
+
+#: MyRuLib/FbBookMenu.cpp:27
+#: MyRuLib/FbMainMenu.cpp:81
+msgid "Undo selection"
+msgstr "Ångra markering"
+
+#: MyRuLib/FbBookMenu.cpp:28
+#: MyRuLib/FbMainMenu.cpp:95
+msgid "Table columns"
+msgstr "Visa kolumner"
+
+#: MyRuLib/FbBookMenu.cpp:32
+msgid "Delete book"
+msgstr "Ta bort bok"
+
+#: MyRuLib/FbBookMenu.cpp:35
+#: MyRuLib/FbMainMenu.cpp:83
+msgid "Sort by"
+msgstr "Sortera efter"
+
+#: MyRuLib/FbBookMenu.cpp:36
+#: MyRuLib/FbMainMenu.cpp:84
+msgid "Use filter"
+msgstr "Använd filter"
+
+#: MyRuLib/FbBookMenu.cpp:37
+#: MyRuLib/FbMainMenu.cpp:85
+msgid "Clear filter"
+msgstr "Rensa filter"
+
+#: MyRuLib/FbBookMenu.cpp:40
+msgid "Jump to author"
+msgstr "Gå till författare"
+
+#: MyRuLib/FbBookMenu.cpp:44
+msgid "Add to favourites"
+msgstr "Lägg till i favoriter"
+
+#: MyRuLib/FbBookMenu.cpp:45
+msgid "Add to folders"
+msgstr "Lägg till i mapp"
+
+#: MyRuLib/FbBookMenu.cpp:46
+msgid "Rate this book"
+msgstr "Betygsätt boken"
+
+#: MyRuLib/FbBookMenu.cpp:47
+msgid "Delete bookmark"
+msgstr "Ta bort bokmärke"
+
+#: MyRuLib/FbBookMenu.cpp:50
+#: MyRuLib/FbMainMenu.cpp:87
+msgid "Add comments"
+msgstr "Lägg till kommentar"
+
+#: MyRuLib/FbFrameSearch.cpp:23
+#: MyRuLib/FbMainMenu.cpp:6
+msgid "Search"
+msgstr "Sök"
+
+#: MyRuLib/FbFrameSearch.cpp:49
+#: MyRuLib/FbFrameSearch.cpp:64
+msgid "Searching"
+msgstr "Söker"
+
+#: MyRuLib/FbFrameSearch.cpp:63
+#, c-format
+msgid "Nothing was found on pattern \"%s\""
+msgstr "\"%s\" kunde inte hittas."
+
+#: MyRuLib/FbMainMenu.cpp:8
+msgid "Authors"
+msgstr "Författare"
+
+#: MyRuLib/FbMainMenu.cpp:9
+msgid "Genres"
+msgstr "Genrer"
+
+#: MyRuLib/FbMainMenu.cpp:11
+msgid "Calendar"
+msgstr "Kalender"
+
+#: MyRuLib/FbMainMenu.cpp:12
+msgid "Archive"
+msgstr "Arkiv"
+
+#: MyRuLib/FbMainMenu.cpp:14
+msgid "My folders"
+msgstr "Mina mappar"
+
+#: MyRuLib/FbMainMenu.cpp:15
+msgid "Downloads"
+msgstr "Hämtningar"
+
+#: MyRuLib/FbMainMenu.cpp:20
+msgid "Open (or create) collection"
+msgstr "Öppna eller skapa bibliotek"
+
+#: MyRuLib/FbMainMenu.cpp:21
+msgid "Open recent"
+msgstr "Öppna senaste"
+
+#: MyRuLib/FbMainMenu.cpp:24
+msgid "Clear empty variables"
+msgstr "Rensa tomma variabler"
+
+#: MyRuLib/FbMainMenu.cpp:25
+msgid "Optimize DB"
+msgstr "Optimera databasen"
+
+#: MyRuLib/FbMainMenu.cpp:27
+msgid "Options"
+msgstr "Alternativ"
+
+#: MyRuLib/FbMainMenu.cpp:37
+msgid "Website"
+msgstr "Webbsida"
+
+#: MyRuLib/FbMainMenu.cpp:43
+msgid "&File"
+msgstr "&Arkiv"
+
+#: MyRuLib/FbMainMenu.cpp:44
+msgid "&Library"
+msgstr "&Bibliotek"
+
+#: MyRuLib/FbMainMenu.cpp:45
+msgid "&Catalog"
+msgstr "&Katalog"
+
+#: MyRuLib/FbMainMenu.cpp:46
+msgid "&View"
+msgstr "Vi&sa"
+
+#: MyRuLib/FbMainMenu.cpp:47
+msgid "&Tools"
+msgstr "&Verktyg"
+
+#: MyRuLib/FbMainMenu.cpp:48
+msgid "&Window"
+msgstr "Fö&nster"
+
+#: MyRuLib/FbMainMenu.cpp:49
+msgid "&?"
+msgstr "&?"
+
+#: MyRuLib/FbMainMenu.cpp:54
+#: MyRuLib/FbMainMenu.cpp:71
+msgid "Add file"
+msgstr "Lägg till fil"
+
+#: MyRuLib/FbMainMenu.cpp:55
+#: MyRuLib/FbMainMenu.cpp:72
+msgid "Add folder"
+msgstr "Lägg till mapp"
+
+#: MyRuLib/FbMainMenu.cpp:57
+#: MyRuLib/FbMainMenu.cpp:75
+msgid "Exit"
+msgstr "Avsluta"
+
+#: MyRuLib/FbMainMenu.cpp:62
+#: MyRuLib/FbMainMenu.cpp:94
+msgid "Tabs"
+msgstr "Flikar"
+
+#: MyRuLib/FbMainMenu.cpp:64
+#: MyRuLib/FbMainMenu.cpp:97
+msgid "Fullscreen mode"
+msgstr "Helskärm"
+
+#: MyRuLib/FbMainMenu.cpp:65
+#: MyRuLib/FbMainMenu.cpp:98
+msgid "Show log window"
+msgstr "Visa loggfönster"
+
+#: MyRuLib/FbMainMenu.cpp:74
+msgid "Export books"
+msgstr "Exportera böcker"
+
+#: MyRuLib/FbMainMenu.cpp:92
+msgid "List of books"
+msgstr "Boklista"
+
+#: MyRuLib/FbMainMenu.cpp:93
+msgid "Preview area"
+msgstr "Fönster för förhandsgranskning"
+
+#: MyRuLib/FbMainMenu.cpp:108
+msgid "Hierarchical"
+msgstr "Hierarkiskt"
+
+#: MyRuLib/FbMainMenu.cpp:109
+msgid "Simple list"
+msgstr "Enkel lista"
+
+#: MyRuLib/FbMainMenu.cpp:114
+msgid "Standart"
+msgstr "Standard"
+
+#: MyRuLib/FbMainMenu.cpp:115
+msgid "Compact"
+msgstr "Kompakta"
+
+#: MyRuLib/FbMainMenu.cpp:116
+msgid "Convex"
+msgstr "Konvexa"
+
+#: MyRuLib/FbMainMenu.cpp:117
+msgid "Buttons"
+msgstr "Som knappar"
+
+#: MyRuLib/FbMainMenu.cpp:119
+msgid "Light"
+msgstr "Lätta"
+
+#: MyRuLib/FbMainMenu.cpp:125
+msgid "Right"
+msgstr "Höger"
+
+#: MyRuLib/FbMainMenu.cpp:126
+msgid "Bottom"
+msgstr "Längst ner"
+
+#: MyRuLib/FbMainMenu.cpp:127
+msgid "Not specified"
+msgstr "Dölj"
+
+#: MyRuLib/FbMainMenu.cpp:132
+msgid "Close window"
+msgstr "Stäng fönster"
+
+#: MyRuLib/FbMainMenu.cpp:133
+msgid "Close all"
+msgstr "Stäng alla fönster"
+
+#: MyRuLib/FbMainMenu.cpp:135
+msgid "Next"
+msgstr "Nästa"
+
+#: MyRuLib/FbMainMenu.cpp:136
+msgid "Previous"
+msgstr "Föregående"
+
+#: MyRuLib/ExternalDlg.cpp:179
+msgid "Export to external storage"
+msgstr "Skicka till enhet"
+
+#: MyRuLib/ExternalDlg.cpp:207
+msgid "Use Author (without co-Authors)"
+msgstr "Använd författare (utan medförfattare)"
+
+#: MyRuLib/ExternalDlg.cpp:215
+msgid "File name"
+msgstr "Filnamn"
+
+#: MyRuLib/ExternalDlg.cpp:223
+msgid "Export As..."
+msgstr "Exportera som..."
+
+#: MyRuLib/ExternalDlg.cpp:350
+msgid "(Misc.)"
+msgstr "(övrigt)"
+
+#: MyRuLib/ExternalDlg.cpp:426
+msgid "Select a destination folder"
+msgstr "Välj målmapp"
+
+#: MyRuLib/ExternalDlg.cpp:498
+msgid "Destination folder not found"
+msgstr "Målmappen hittades inte."
+
+#: MyRuLib/ExternalDlg.cpp:502
+msgid "Unable write files to destination folder"
+msgstr "Kunde inte skriva till målmappen"
+
+#: MyRuLib/ExternalDlg.cpp:523
+msgid "Not selected any book"
+msgstr "Ingen bok har valts"
+
+#: MyRuLib/FbDownloader.cpp:67
+msgid "Download"
+msgstr "Hämta fil"
+
+#: MyRuLib/FbDownloader.cpp:71
+#: MyRuLib/FbDownloader.cpp:102
+msgid "URL error"
+msgstr "URL-fel"
+
+#: MyRuLib/FbDownloader.cpp:82
+#: MyRuLib/FbDownloader.cpp:110
+msgid "Connect error"
+msgstr "Anslutningsfel"
+
+#: MyRuLib/FbDownloader.cpp:89
+#: MyRuLib/FbDownloader.cpp:115
+msgid "Redirect"
+msgstr "Hänvisas till"
+
+#: MyRuLib/FbDownloader.cpp:94
+msgid "Authentication failure"
+msgstr "Autentiseringsfel"
+
+#: MyRuLib/FbDownloader.cpp:136
+msgid "File download"
+msgstr "Hämta fil"
+
+#: MyRuLib/FbDownloader.cpp:146
+#, c-format
+msgid "HTTP read error, read %d of %d bytes: %s"
+msgstr "HTTP-fel: Mottog %d av %d byte: %s"
+
+#: MyRuLib/FbDownloader.cpp:156
+msgid "Download error"
+msgstr "Hämtningsfel"
+
+#: MyRuLib/FbDownloader.cpp:173
+msgid "Can't open zip"
+msgstr "Kunde inte öppna zip-filen %s"
+
+#: MyRuLib/FbDownloader.cpp:191
+msgid "Wrong MD5 sum"
+msgstr "Fel kontrollsumma (MD5)"
+
+#: MyRuLib/FbDownloader.cpp:219
+msgid "Download finished"
+msgstr "Hämtning klar"
+
+#: MyRuLib/FbFrameGenres.cpp:36
+msgid "List of genres"
+msgstr "Genrelista"
+
+#: MyRuLib/FbConst.cpp:29
+msgid "(no Author)"
+msgstr "(ingen författare)"
+
+#: MyRuLib/FbConst.cpp:44
+msgid "Clear"
+msgstr "Rensa"
+
+#: MyRuLib/FbGenres.cpp:19
+msgid "Fiction"
+msgstr "Skönlitteratur"
+
+#: MyRuLib/FbGenres.cpp:20
+msgid "Mysteries and Thrillers"
+msgstr "Deckare och rysare"
+
+#: MyRuLib/FbGenres.cpp:21
+msgid "Prose"
+msgstr "Prosa"
+
+#: MyRuLib/FbGenres.cpp:22
+msgid "Romance"
+msgstr "Kärleksromaner"
+
+#: MyRuLib/FbGenres.cpp:23
+#: MyRuLib/FbGenres.cpp:81
+msgid "Adventures"
+msgstr "Äventyr"
+
+#: MyRuLib/FbGenres.cpp:24
+#: MyRuLib/FbGenres.cpp:89
+msgid "Children literature"
+msgstr "Barnlitteratur"
+
+#: MyRuLib/FbGenres.cpp:25
+msgid "Poetry, dramaturgy"
+msgstr "Poesi, dramaturgi"
+
+#: MyRuLib/FbGenres.cpp:26
+msgid "Antique"
+msgstr "Antikvitet"
+
+#: MyRuLib/FbGenres.cpp:27
+msgid "Science, Education"
+msgstr "Vetenskap och undervisning"
+
+#: MyRuLib/FbGenres.cpp:28
+msgid "PC, Internet"
+msgstr "Datorer och Internet"
+
+#: MyRuLib/FbGenres.cpp:29
+#: MyRuLib/FbGenres.cpp:125
+msgid "References"
+msgstr "Referenslitteratur"
+
+#: MyRuLib/FbGenres.cpp:30
+#: MyRuLib/FbGenres.cpp:130
+msgid "Documentary literature"
+msgstr "Dokumentär"
+
+#: MyRuLib/FbGenres.cpp:31
+msgid "Religion and Spirituality"
+msgstr "Religion och andlighet"
+
+#: MyRuLib/FbGenres.cpp:32
+#: MyRuLib/FbGenres.cpp:138
+msgid "Humour"
+msgstr "Humor"
+
+#: MyRuLib/FbGenres.cpp:33
+msgid "Home and Family"
+msgstr "Hem och familj"
+
+#: MyRuLib/FbGenres.cpp:34
+msgid "Economy, Business"
+msgstr "Företagsekonomi"
+
+#: MyRuLib/FbGenres.cpp:38
+msgid "Alternative History"
+msgstr "Alternativ historia"
+
+#: MyRuLib/FbGenres.cpp:39
+msgid "Fighting fantasy"
+msgstr "Krigsfantasy"
+
+#: MyRuLib/FbGenres.cpp:40
+msgid "Epic fantasy"
+msgstr "Episk fantasy"
+
+#: MyRuLib/FbGenres.cpp:41
+msgid "Heroic fantasy"
+msgstr "Hjältefantasy"
+
+#: MyRuLib/FbGenres.cpp:42
+msgid "Detective Fiction"
+msgstr "Deckare"
+
+#: MyRuLib/FbGenres.cpp:43
+msgid "Cyberpunk"
+msgstr "Cyberpunk"
+
+#: MyRuLib/FbGenres.cpp:44
+msgid "Space Fiction"
+msgstr "Rymdfantasy"
+
+#: MyRuLib/FbGenres.cpp:45
+msgid "Socio-psychological fiction"
+msgstr "Sociopsykologisk skönlitteratur"
+
+#: MyRuLib/FbGenres.cpp:46
+msgid "Horror and Mysticism"
+msgstr "Skräck och mystik"
+
+#: MyRuLib/FbGenres.cpp:47
+msgid "Humorous Fiction"
+msgstr "Komisk fantasy"
+
+#: MyRuLib/FbGenres.cpp:48
+msgid "Fantasy"
+msgstr "Fantasy"
+
+#: MyRuLib/FbGenres.cpp:49
+msgid "Science Fiction"
+msgstr "Science fiction"
+
+#: MyRuLib/FbGenres.cpp:50
+msgid "Classic mystery"
+msgstr "Klassisk deckare"
+
+#: MyRuLib/FbGenres.cpp:51
+msgid "Police mystery"
+msgstr "Kriminalroman"
+
+#: MyRuLib/FbGenres.cpp:52
+msgid "Action"
+msgstr "Action"
+
+#: MyRuLib/FbGenres.cpp:53
+msgid "Ironic mystery"
+msgstr "Ironisk deckare"
+
+#: MyRuLib/FbGenres.cpp:54
+msgid "Historical mystery"
+msgstr "Historisk deckare"
+
+#: MyRuLib/FbGenres.cpp:55
+msgid "Spy mystery"
+msgstr "Spiondeckare"
+
+#: MyRuLib/FbGenres.cpp:56
+msgid "Criminal mystery"
+msgstr "Kriminalmysterium"
+
+#: MyRuLib/FbGenres.cpp:57
+msgid "Political mystery"
+msgstr "Politiskt mysterium"
+
+#: MyRuLib/FbGenres.cpp:58
+msgid "Maniacs"
+msgstr "Galningar"
+
+#: MyRuLib/FbGenres.cpp:59
+msgid "Action mystery"
+msgstr "Actiondeckare"
+
+#: MyRuLib/FbGenres.cpp:60
+msgid "Thriller"
+msgstr "Rysare"
+
+#: MyRuLib/FbGenres.cpp:61
+msgid "Mystery"
+msgstr "Mystik"
+
+#: MyRuLib/FbGenres.cpp:62
+msgid "Classical prose"
+msgstr "Klassisk prosa"
+
+#: MyRuLib/FbGenres.cpp:63
+msgid "Historical prose"
+msgstr "Historisk prosa"
+
+#: MyRuLib/FbGenres.cpp:64
+msgid "Modern prose"
+msgstr "Modern prosa"
+
+#: MyRuLib/FbGenres.cpp:65
+msgid "Counterculture"
+msgstr "Antikultur"
+
+#: MyRuLib/FbGenres.cpp:66
+msgid "Russian Classical prose"
+msgstr "Klassisk rysk prosa"
+
+#: MyRuLib/FbGenres.cpp:67
+msgid "Soviet Classical prose"
+msgstr "Klassisk sovjetisk prosa"
+
+#: MyRuLib/FbGenres.cpp:68
+msgid "Prose military"
+msgstr "Militärprosa"
+
+#: MyRuLib/FbGenres.cpp:69
+msgid "Modern romance novels"
+msgstr "Modern kärleksroman"
+
+#: MyRuLib/FbGenres.cpp:70
+msgid "Historical romance novels"
+msgstr "Historisk kärleksroman"
+
+#: MyRuLib/FbGenres.cpp:71
+msgid "Action romance novels"
+msgstr "Action- och kärleksroman"
+
+#: MyRuLib/FbGenres.cpp:72
+msgid "Short romance novels"
+msgstr "Kärleksnovell"
+
+#: MyRuLib/FbGenres.cpp:73
+msgid "Erotic novels"
+msgstr "Erotisk roman"
+
+#: MyRuLib/FbGenres.cpp:74
+msgid "Love science fiction"
+msgstr "Sociopsykologisk skönlitteratur"
+
+#: MyRuLib/FbGenres.cpp:75
+msgid "Western"
+msgstr "Western"
+
+#: MyRuLib/FbGenres.cpp:76
+msgid "Historical adventures"
+msgstr "Historiskt äventyr"
+
+#: MyRuLib/FbGenres.cpp:77
+msgid "Adventures about Indians"
+msgstr "Indianäventyr"
+
+#: MyRuLib/FbGenres.cpp:78
+msgid "Sea adventures"
+msgstr "Havsäventyr"
+
+#: MyRuLib/FbGenres.cpp:79
+msgid "Travel and Geography"
+msgstr "Resor och geografi"
+
+#: MyRuLib/FbGenres.cpp:80
+msgid "Nature and Animals"
+msgstr "Djur och natur"
+
+#: MyRuLib/FbGenres.cpp:82
+msgid "Tales"
+msgstr "Sagor"
+
+#: MyRuLib/FbGenres.cpp:83
+msgid "Children poetry"
+msgstr "Dikter för barn"
+
+#: MyRuLib/FbGenres.cpp:84
+msgid "Childern prose"
+msgstr "Prosa för barn"
+
+#: MyRuLib/FbGenres.cpp:85
+msgid "Children fiction"
+msgstr "Fantasy för barn"
+
+#: MyRuLib/FbGenres.cpp:86
+msgid "Children action"
+msgstr "Action för barn"
+
+#: MyRuLib/FbGenres.cpp:87
+msgid "Children adventures"
+msgstr "Äventyr för barn"
+
+#: MyRuLib/FbGenres.cpp:88
+msgid "Children education"
+msgstr "Undervisningslitteratur för barn"
+
+#: MyRuLib/FbGenres.cpp:90
+msgid "Poetry"
+msgstr "Poesi"
+
+#: MyRuLib/FbGenres.cpp:91
+msgid "Dramaturgy"
+msgstr "Dramaturgi"
+
+#: MyRuLib/FbGenres.cpp:92
+msgid "Antique Literature"
+msgstr "Antik litteratur"
+
+#: MyRuLib/FbGenres.cpp:93
+msgid "European ancient literature"
+msgstr "Gammal europeisk litteratur"
+
+#: MyRuLib/FbGenres.cpp:94
+msgid "Russian ancient literature"
+msgstr "Gammal rysk litteratur"
+
+#: MyRuLib/FbGenres.cpp:95
+msgid "Oriental ancient literature"
+msgstr "Gammal österländsk litteratur"
+
+#: MyRuLib/FbGenres.cpp:96
+msgid "Myths. Legends. Epic."
+msgstr "Myter, legender och epos"
+
+#: MyRuLib/FbGenres.cpp:97
+msgid "Ancient literature"
+msgstr "Gammal litteratur"
+
+#: MyRuLib/FbGenres.cpp:98
+msgid "History"
+msgstr "Historia"
+
+#: MyRuLib/FbGenres.cpp:99
+msgid "Psychology"
+msgstr "Psykologi"
+
+#: MyRuLib/FbGenres.cpp:100
+msgid "Cultural"
+msgstr "Kulturvetenskap"
+
+#: MyRuLib/FbGenres.cpp:101
+msgid "Religious"
+msgstr "Religionsvetenskap"
+
+#: MyRuLib/FbGenres.cpp:102
+msgid "Philosophy"
+msgstr "Filosofi"
+
+#: MyRuLib/FbGenres.cpp:103
+msgid "Politology"
+msgstr "Statsvetenskap"
+
+#: MyRuLib/FbGenres.cpp:104
+msgid "Business literature"
+msgstr "Företagsekonomi"
+
+#: MyRuLib/FbGenres.cpp:105
+msgid "Law"
+msgstr "Juridik"
+
+#: MyRuLib/FbGenres.cpp:106
+msgid "Linguistics"
+msgstr "Lingvistik"
+
+#: MyRuLib/FbGenres.cpp:107
+msgid "Medical"
+msgstr "Medicin"
+
+#: MyRuLib/FbGenres.cpp:108
+msgid "Physics"
+msgstr "Fysik"
+
+#: MyRuLib/FbGenres.cpp:109
+msgid "Mathematics"
+msgstr "Matematik"
+
+#: MyRuLib/FbGenres.cpp:110
+msgid "Chemistry"
+msgstr "Kemi"
+
+#: MyRuLib/FbGenres.cpp:111
+msgid "Biology"
+msgstr "Biologi"
+
+#: MyRuLib/FbGenres.cpp:112
+msgid "Engineering"
+msgstr "Ingenjörsvetenskap"
+
+#: MyRuLib/FbGenres.cpp:113
+msgid "Scientific literature"
+msgstr "Vetenskaplig litteratur"
+
+#: MyRuLib/FbGenres.cpp:114
+#: MyRuLib/FbGenres.cpp:143
+msgid "Health"
+msgstr "Hälsa"
+
+#: MyRuLib/FbGenres.cpp:115
+msgid "Programming"
+msgstr "Programmering"
+
+#: MyRuLib/FbGenres.cpp:116
+msgid "Computer hardware"
+msgstr "Datorhårdvara"
+
+#: MyRuLib/FbGenres.cpp:117
+msgid "Software"
+msgstr "Datormjukvara"
+
+#: MyRuLib/FbGenres.cpp:118
+msgid "Databases"
+msgstr "Databaser"
+
+#: MyRuLib/FbGenres.cpp:119
+msgid "OS and Network"
+msgstr "Operativsystem och nätverk"
+
+#: MyRuLib/FbGenres.cpp:120
+msgid "Computer literature"
+msgstr "Datorlitteratur"
+
+#: MyRuLib/FbGenres.cpp:121
+msgid "Encyclopedias"
+msgstr "Uppslagsverk"
+
+#: MyRuLib/FbGenres.cpp:122
+msgid "Dictionaries"
+msgstr "Ordböcker"
+
+#: MyRuLib/FbGenres.cpp:123
+msgid "Directories"
+msgstr "Uppgiftskataloger"
+
+#: MyRuLib/FbGenres.cpp:124
+msgid "Manuals"
+msgstr "Manualer"
+
+#: MyRuLib/FbGenres.cpp:126
+msgid "Biographies and Memoirs"
+msgstr "Biografier och memoarer"
+
+#: MyRuLib/FbGenres.cpp:127
+msgid "Publicism"
+msgstr "Publicism"
+
+#: MyRuLib/FbGenres.cpp:128
+msgid "Criticism"
+msgstr "Kritik"
+
+#: MyRuLib/FbGenres.cpp:129
+msgid "Art and Design"
+msgstr "Konst och form"
+
+#: MyRuLib/FbGenres.cpp:131
+msgid "Religion"
+msgstr "Religion"
+
+#: MyRuLib/FbGenres.cpp:132
+msgid "Esoterica"
+msgstr "Esoterika"
+
+#: MyRuLib/FbGenres.cpp:133
+msgid "Self-improvement"
+msgstr "Självförbättring"
+
+#: MyRuLib/FbGenres.cpp:134
+msgid "Religious Literature"
+msgstr "Religiös litteratur"
+
+#: MyRuLib/FbGenres.cpp:135
+msgid "Jokes"
+msgstr "Skämt"
+
+#: MyRuLib/FbGenres.cpp:136
+msgid "Humorous prose"
+msgstr "Humoristisk prosa"
+
+#: MyRuLib/FbGenres.cpp:137
+msgid "Humorous poetry"
+msgstr "Humoristisk poesi"
+
+#: MyRuLib/FbGenres.cpp:139
+msgid "Cooking"
+msgstr "Matlagning"
+
+#: MyRuLib/FbGenres.cpp:140
+msgid "Pets"
+msgstr "Husdjur"
+
+#: MyRuLib/FbGenres.cpp:141
+msgid "Hobbies and Crafts"
+msgstr "Hobbier och hantverk"
+
+#: MyRuLib/FbGenres.cpp:142
+msgid "Entertainment"
+msgstr "Underhållning"
+
+#: MyRuLib/FbGenres.cpp:144
+msgid "Gardening"
+msgstr "Trädgård"
+
+#: MyRuLib/FbGenres.cpp:145
+msgid "Handmade"
+msgstr "Gör-det-själv"
+
+#: MyRuLib/FbGenres.cpp:146
+msgid "Sport"
+msgstr "Idrott"
+
+#: MyRuLib/FbGenres.cpp:147
+msgid "Erotic, sex"
+msgstr "Erotik och sex"
+
+#: MyRuLib/FbGenres.cpp:148
+msgid "Household"
+msgstr "Hushåll"
+
+#: MyRuLib/FbGenres.cpp:149
+msgid "Geo guides"
+msgstr "Reseguider"
+
+#: MyRuLib/FbGenres.cpp:150
+msgid "Job hunting"
+msgstr "Karriärguider"
+
+#: MyRuLib/FbGenres.cpp:151
+msgid "Management"
+msgstr "Management"
+
+#: MyRuLib/FbGenres.cpp:152
+msgid "Marketing"
+msgstr "Marknadsföring"
+
+#: MyRuLib/FbGenres.cpp:153
+msgid "Banking"
+msgstr "Banking"
+
+#: MyRuLib/FbGenres.cpp:154
+msgid "Stock"
+msgstr "Värdepapper och investeringar"
+
+#: MyRuLib/FbGenres.cpp:155
+msgid "Accounting"
+msgstr "Bokföring"
+
+#: MyRuLib/FbGenres.cpp:156
+msgid "Global economy"
+msgstr "Global ekonomi"
+
+#: MyRuLib/FbGenres.cpp:157
+msgid "Economics"
+msgstr "Ekonomi"
+
+#: MyRuLib/FbGenres.cpp:158
+msgid "Industries"
+msgstr "Industri"
+
+#: MyRuLib/FbGenres.cpp:159
+msgid "Corporate culture"
+msgstr "Företagskultur"
+
+#: MyRuLib/FbGenres.cpp:160
+msgid "Personal finance"
+msgstr "Personlig ekonomi"
+
+#: MyRuLib/FbGenres.cpp:161
+msgid "Real estate"
+msgstr "Fastigheter"
+
+#: MyRuLib/FbGenres.cpp:162
+msgid "Popular business"
+msgstr "Populär företagsamhet"
+
+#: MyRuLib/FbGenres.cpp:163
+msgid "Small business"
+msgstr "Småföretag"
+
+#: MyRuLib/FbGenres.cpp:164
+msgid "Paper work"
+msgstr "Pappersarbete"
+
+#: MyRuLib/FbGenres.cpp:165
+msgid "Economics reference book"
+msgstr "Referenslitteratur för ekonomi"
+
+#: MyRuLib/ExpThread.cpp:183
+#, c-format
+msgid "can't delete file %s"
+msgstr "Kan inte ta bort filen %s"
+
+#: MyRuLib/ExpThread.cpp:265
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: MyRuLib/ExpThread.cpp:383
+msgid "Close"
+msgstr "Stäng"
+
+#: MyRuLib/ExpThread.cpp:388
+#, c-format
+msgid "Export completed with %d errors"
+msgstr "Exporteringen genomfördes med %d fel"
+
+#: MyRuLib/ExpThread.cpp:389
+msgid "Export completed successfully"
+msgstr "Exporteringen lyckades"
+
+#: MyRuLib/ExpThread.cpp:390
+msgid "Export aborted by user"
+msgstr "Exporteringen avbröts av användaren"
+
+#: MyRuLib/FbFilterDlg.cpp:12
+msgid "All"
+msgstr "Allt"
+
+#: MyRuLib/FbFilterDlg.cpp:96
+msgid "Filter settings"
+msgstr "Filterinställningar"
+
+#: MyRuLib/FbFilterDlg.cpp:104
+msgid "Show books by allocation"
+msgstr "Visa böcker efter tillhörighet"
+
+#: MyRuLib/FbFilterDlg.cpp:106
+msgid "Library books (web)"
+msgstr "Biblioteksböcker (Internet)"
+
+#: MyRuLib/FbFilterDlg.cpp:110
+msgid "Local books"
+msgstr "Lokala böcker"
+
+#: MyRuLib/FbLogStream.cpp:58
+msgid "Fatal error"
+msgstr "Allvarligt fel"
+
+#: MyRuLib/FbLogStream.cpp:59
+msgid "Program aborted."
+msgstr "Programmet har avbrutits."
+
+#: MyRuLib/FbFrameFolder.cpp:82
+msgid "Bookmarks"
+msgstr "Bokmärken"
+
+#: MyRuLib/FbFrameFolder.cpp:85
+msgid "Favorites"
+msgstr "Favoriter"
+
+#: MyRuLib/FbFrameFolder.cpp:100
+msgid "Remarks"
+msgstr "Anteckningar"
+
+#: MyRuLib/FbFrameFolder.cpp:103
+msgid "Comments"
+msgstr "Kommentarer"
+
+#: MyRuLib/FbFrameFolder.cpp:153
+msgid "Input name of new folder:"
+msgstr "Ange namn på ny mapp"
+
+#: MyRuLib/FbFrameFolder.cpp:153
+msgid "Add folder?"
+msgstr "Lägg till mapp?"
+
+#: MyRuLib/FbFrameFolder.cpp:179
+msgid "Input new folder name:"
+msgstr "Ange mappens nya namn:"
+
+#: MyRuLib/FbFrameFolder.cpp:179
+msgid "Change folder?"
+msgstr "Byt mapp?"
+
+#: MyRuLib/FbFrameFolder.cpp:203
+#, c-format
+msgid "Delete folder \"%s\"?"
+msgstr "Ska mappen \"%s\" tas bort?"
+
+#: MyRuLib/FbFrameFolder.cpp:204
+msgid "Delete folder?"
+msgstr "Ta bort mappen?"
+
+#: MyRuLib/FbDataOpenDlg.cpp:30
+msgid "File name:"
+msgstr "Filnamn:"
+
+#: MyRuLib/FbDataOpenDlg.cpp:70
+msgid "Enter collection filename"
+msgstr "Namn på biblioteket"
+
+#: MyRuLib/FbDataOpenDlg.cpp:73
+msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
+msgstr "Databasfiler (*.db)|*.db|Alla filer (*.*)|*.*"
+
+#: MyRuLib/FbFrameHtml.cpp:69
+msgid "Comment:"
+msgstr "Kommentar:"
+
+#: MyRuLib/FbFrameHtml.cpp:222
+msgid "Remove comment?"
+msgstr "Ta bort kommentar?"
+
+#: MyRuLib/FbMainFrame.cpp:197
+msgid "Info messages"
+msgstr "Informationsmeddelanden"
+
+#: MyRuLib/FbMainFrame.cpp:265
+msgid "Import file"
+msgstr "Lägg till fil"
+
+#: MyRuLib/FbMainFrame.cpp:265
+msgid "Import files to the library"
+msgstr "Lägg till filer i biblioteket"
+
+#: MyRuLib/FbMainFrame.cpp:266
+msgid "Import folder"
+msgstr "Lägg till mapp"
+
+#: MyRuLib/FbMainFrame.cpp:266
+msgid "Import folder to the library"
+msgstr "Lägg till mapp i biblioteket"
+
+#: MyRuLib/FbMainFrame.cpp:269
+msgid " Author: "
+msgstr " Författare"
+
+#: MyRuLib/FbMainFrame.cpp:277
+#: MyRuLib/FbMainFrame.cpp:289
+#: MyRuLib/FbReplaceDlg.cpp:37
+#: MyRuLib/FbFrameSequen.cpp:88
+msgid "Find"
+msgstr "Sök"
+
+#: MyRuLib/FbMainFrame.cpp:277
+msgid "Find author"
+msgstr "Sök författare"
+
+#: MyRuLib/FbMainFrame.cpp:280
+msgid " Book: "
+msgstr " Bok: "
+
+#: MyRuLib/FbMainFrame.cpp:289
+msgid "Find book by title"
+msgstr "Sök efter titel"
+
+#: MyRuLib/FbMainFrame.cpp:291
+msgid "Hierarchy"
+msgstr "Hierarki"
+
+#: MyRuLib/FbMainFrame.cpp:291
+msgid "Hierarchy of authors and series"
+msgstr "Författar- och seriehierarki"
+
+#: MyRuLib/FbMainFrame.cpp:292
+msgid "List"
+msgstr "Lista"
+
+#: MyRuLib/FbMainFrame.cpp:310
+msgid "Digital books and archives"
+msgstr "E-böcker och arkiv"
+
+#: MyRuLib/FbMainFrame.cpp:311
+msgid "Digital books in FB2"
+msgstr "E-böcker i FB2-format"
+
+#: MyRuLib/FbMainFrame.cpp:312
+msgid "ZIP archives"
+msgstr "zip-filer"
+
+#: MyRuLib/FbMainFrame.cpp:313
+msgid "All files"
+msgstr "Alla filer"
+
+#: MyRuLib/FbMainFrame.cpp:317
+msgid "Select archive to add to the library"
+msgstr "Lägg till zip-fil i biblioteket…"
+
+#: MyRuLib/FbMainFrame.cpp:330
+msgid "Processing file:"
+msgstr "Behandlar fil:"
+
+#: MyRuLib/FbMainFrame.cpp:343
+msgid "Select folder to recursive import"
+msgstr "Lägg till mapp (inklusive undermappar)"
+
+#: MyRuLib/FbMainFrame.cpp:351
+msgid "Processing folder:"
+msgstr "Behandlar mappar:"
+
+#: MyRuLib/FbMainFrame.cpp:454
+msgid "Input search string:"
+msgstr "Söksträng:"
+
+#: MyRuLib/FbMainFrame.cpp:454
+msgid "Find title"
+msgstr "Sök efter titel"
+
+#: MyRuLib/FbMainFrame.cpp:509
+msgid "This function is not available yet in this version."
+msgstr "Funktionen saknas i denna version"
+
+#: MyRuLib/FbMainFrame.cpp:519
+msgid "Optimize database?"
+msgstr "Optimera databasen?"
+
+#: MyRuLib/FbMainFrame.cpp:611
+msgid "File not found: "
+msgstr "Filen kunde inte hittas"
+
+#: MyRuLib/FbReplaceDlg.cpp:27
+#: MyRuLib/FbFrameAuthor.cpp:345
+#: MyRuLib/FbFrameAuthor.cpp:370
+#: MyRuLib/FbFrameSequen.cpp:223
+#: MyRuLib/FbFrameSequen.cpp:443
+msgid "Replace"
+msgstr "Byt ut"
+
+#: MyRuLib/FbReplaceDlg.cpp:60
+#: MyRuLib/FbFrameAuthor.cpp:63
+#: MyRuLib/FbFrameAuthor.cpp:81
+#: MyRuLib/FbFrameSequen.cpp:51
+#: MyRuLib/FbFrameSequen.cpp:68
+msgid "Num."
+msgstr "Antal"
+
+#: MyRuLib/FbReplaceDlg.cpp:106
+#: MyRuLib/FbAuthorDlg.cpp:172
+msgid "Merge authors?"
+msgstr "Slå samman författarna?"
+
+#: MyRuLib/FbReplaceDlg.cpp:111
+msgid "Author not selected by replacement."
+msgstr "Författare att bytas ut har ej valts"
+
+#: MyRuLib/FbReplaceDlg.cpp:133
+msgid "Replace author"
+msgstr "Byt författare"
+
+#: MyRuLib/FbAuthorDlg.cpp:18
+msgid "Surname"
+msgstr "Efternamn"
+
+#: MyRuLib/FbAuthorDlg.cpp:19
+msgid "Name"
+msgstr "Förnamn"
+
+#: MyRuLib/FbAuthorDlg.cpp:20
+msgid "Middle-Name"
+msgstr "Mellannamn"
+
+#: MyRuLib/FbAuthorDlg.cpp:47
+msgid "Add author"
+msgstr "Lägg till författare"
+
+#: MyRuLib/FbAuthorDlg.cpp:55
+msgid "Change author"
+msgstr "Redigera författare"
+
+#: MyRuLib/FbAuthorDlg.cpp:163
+msgid "\"Surname\" field is empty"
+msgstr "Författarens efternamn är inte angett"
+
+#: MyRuLib/FbAuthorDlg.cpp:168
+msgid "Autor with same details aleready exists"
+msgstr "En sådan författare finns redan"
+
+#: MyRuLib/FbFrameAuthor.cpp:88
+msgid "All collected authors"
+msgstr "Alla författare i biblioteket"
+
+#: MyRuLib/FbFrameAuthor.cpp:319
+msgid "Delete author"
+msgstr "Ta bort författare"
+
+#: MyRuLib/FbFrameAuthor.cpp:320
+#, c-format
+msgid "and all of author's books (%d pcs.)?"
+msgstr "och alla hans eller hennes böcker (%d st.)?"
+
+#: MyRuLib/FbFrameAuthor.cpp:349
+#: MyRuLib/FbFrameAuthor.cpp:373
+msgid "Online authors page"
+msgstr "Författarens hemsida"
+
+#: MyRuLib/FbFrameAuthor.cpp:358
+msgid "&Authors"
+msgstr "&Författare"
+
+#: MyRuLib/FbFrameAuthor.cpp:359
+#: MyRuLib/FbFrameBase.cpp:279
+#: MyRuLib/FbFrameSequen.cpp:432
+msgid "&Books"
+msgstr "B&öcker"
+
+#: MyRuLib/FbFrameAuthor.cpp:389
+msgid "Russian aplhabet"
+msgstr "Kyrilliska alfabetet"
+
+#: MyRuLib/FbFrameAuthor.cpp:390
+msgid "Latin alphabet"
+msgstr "Latinska alfabetet"
+
+#: MyRuLib/FbColumnDlg.cpp:9
+msgid "Columns"
+msgstr "Kolumner"
+
+#: MyRuLib/FbBookPanel.cpp:63
+#: MyRuLib/FbBookPanel.cpp:77
+msgid "#"
+msgstr "#"
+
+#: MyRuLib/FbBookPanel.cpp:523
+#, c-format
+msgid "Delete selected books (%d pcs)?"
+msgstr "Ta bort markerade böcker (%d st.)?"
+
+#: MyRuLib/FbViewerDlg.cpp:12
+msgid "Customize"
+msgstr "Anpassa"
+
+#: MyRuLib/FbViewerDlg.cpp:55
+msgid "Executable files"
+msgstr "Körbara filer"
+
+#: MyRuLib/FbDatabase.cpp:285
+msgid "Search template"
+msgstr "Sökmall"
+
+#: MyRuLib/FbDatabase.cpp:351
+#, c-format
+msgid "GENRE called with wrong number of arguments: %d."
+msgstr "GENRE kallades med fel antal argument: %d."
+
+#: MyRuLib/FbDatabase.cpp:424
+msgid "Open database"
+msgstr "Öppna databas"
+
+#: MyRuLib/FbDatabase.cpp:426
+msgid "Create new database"
+msgstr "Skapa ny databas"
+
+#: MyRuLib/FbDatabase.cpp:526
+#, c-format
+msgid "Upgrade database to version %d"
+msgstr "Uppgrada databas till %d"
+
+#: MyRuLib/FbDatabase.cpp:535
+msgid "Database version mismatch"
+msgstr "Databasversionerna överensstämmer inte."
+
+#: MyRuLib/FbDatabase.cpp:538
+#, c-format
+msgid "Need a new version %d, but used the old %d."
+msgstr "Den nya versionen %d krävs, men den gamla %d hittades"
+
+#: MyRuLib/FbFrameSequen.cpp:50
+#: MyRuLib/FbFrameSequen.cpp:67
+#: MyRuLib/FbFrameSequen.cpp:78
+msgid "Ser."
+msgstr "Serie"
+
+#: MyRuLib/FbFrameSequen.cpp:88
+msgid "Find series by name"
+msgstr "Sök serie efter namn"
+
+#: MyRuLib/FbFrameSequen.cpp:257
+msgid "Series name:"
+msgstr "Namn på serien"
+
+#: MyRuLib/FbFrameSequen.cpp:278
+msgid "Append series"
+msgstr "Lägg till serie"
+
+#: MyRuLib/FbFrameSequen.cpp:286
+msgid "Modify series"
+msgstr "Redigera serie"
+
+#: MyRuLib/FbFrameSequen.cpp:352
+msgid "\"Series name\" field is empty"
+msgstr "Fältet \"Serienamn\" är tomt."
+
+#: MyRuLib/FbFrameSequen.cpp:357
+msgid "Series aleready exists"
+msgstr "En sådan serie finns redan."
+
+#: MyRuLib/FbFrameSequen.cpp:360
+msgid "Merge series?"
+msgstr "Slå samman serier?"
+
+#: MyRuLib/FbFrameSequen.cpp:416
+#, c-format
+msgid "Delete series «%s»?"
+msgstr "Ska serien \"%s\" tas bort?"
+
+#: MyRuLib/FbFrameSequen.cpp:431
+msgid "&Series"
+msgstr "&Serier"
+
+#: MyRuLib/FbFrameInfo.h:14
+msgid "Information"
+msgstr "Information"
+
+#~ msgid "book"
+#~ msgid_plural "books"
+#~ msgstr[0] "bok"
+#~ msgstr[1] "böcker"
+

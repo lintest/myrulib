@@ -28,6 +28,7 @@
 #include "FbTreeView.h"
 #include "FbDatabase.h"
 #include "FbChoiceFormat.h"
+#include "FbLocale.h"
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread
@@ -360,6 +361,19 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	wxCheckBox * checkbox;
 	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
 
+	wxBoxSizer* bSizerLocale = new wxBoxSizer( wxHORIZONTAL );
+
+	wxStaticText * typeText = new wxStaticText( this, wxID_ANY, _("Language"), wxDefaultPosition, wxDefaultSize, 0 );
+	typeText->Wrap( -1 );
+	bSizerLocale->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxString filename = _("filename");
+	FbChoiceFormat * localeChoice = new FbChoiceFormat( this, ID_LANG_LOCALE);
+	FbLocale::Fill(localeChoice, FbParams::GetValue(FB_LANG_LOCALE));
+	bSizerLocale->Add( localeChoice, 1, wxALL, 5 );
+
+	bSizer->Add(bSizerLocale, 0, wxEXPAND);
+
 	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, _("Save full path of the file when importing"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
@@ -622,6 +636,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_LIMIT_COUNT, ID_LIMIT_COUNT, tCount},
 		{FB_CLEAR_LOG, ID_CLEAR_LOG, tCheck},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT, tChoise},
+		{FB_LANG_LOCALE, ID_LANG_LOCALE, tChoise},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
@@ -715,6 +730,7 @@ void FbParamsDlg::Execute(wxWindow* parent)
 			dlg.SaveData();
 			ZipReader::Init();
 			FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
+			wxGetApp().Localize();
 		} catch (wxSQLite3Exception & e) {
 			FbLogError(_("Error writing to database"), e.GetMessage());
 		}
