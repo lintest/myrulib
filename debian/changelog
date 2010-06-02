@@ -1,3 +1,9 @@
+myrulib (0.22.12-ubuntu1004) lucid; urgency=low
+
+  * Update release
+
+ -- Denis Kandrashin <mail@lintest.ru>  Thu, 03 Jun 2010 00:05:29 +0400
+
 myrulib (0.22.10-ubuntu1004) lucid; urgency=low
 
   * Update release
