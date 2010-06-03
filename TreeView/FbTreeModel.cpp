@@ -60,16 +60,7 @@ WX_DEFINE_OBJARRAY(FbColumnArray);
 IMPLEMENT_CLASS(FbModel, wxObject)
 
 FbModel::FbModel() :
-    m_owner(NULL),
-	// Set zero position
-	m_position(0),
-    // Set brush colour
-    m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
-    m_hilightBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID),
-    m_unfocusBrush(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), wxSOLID),
-    // Set font colour
-    m_normalColour(wxSystemSettings::GetColour (wxSYS_COLOUR_WINDOWTEXT)),
-	m_hilightColour(wxSystemSettings::GetColour (wxSYS_COLOUR_HIGHLIGHTTEXT))
+    m_owner(NULL), m_position(0)
 {
 }
 
@@ -88,7 +79,6 @@ const wxBitmap & FbModel::GetBitmap(int state)
 
 void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols)
 {
-	wxPen pen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID);
 	if (GetCurrent() == &data) {
 		dc.SetBrush(m_focused ? m_hilightBrush : m_unfocusBrush);
         dc.SetTextForeground(m_hilightColour);
@@ -100,24 +90,23 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const Fb
 	dc.SetFont(data.IsBold(*this) ? m_boldFont : m_normalFont);
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
-	dc.SetPen(pen);
+	dc.SetPen(m_borderPen);
 	if (m_owner->HasFlag(wxLC_HRULES)) {
 		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
 	}
 	dc.DestroyClippingRegion();
 
-	int h = rect.GetHeight();
-	int w = rect.GetWidth();
 	int x = data.GetLevel(*this) * FB_CHECKBOX_WIDTH;
-	int y = rect.GetTop();
-	int state = data.GetState(*this);
+	const int y = rect.GetTop();
+	const int h = rect.GetHeight();
+	const wxBitmap & bitmap = GetBitmap(data.GetState(*this));
 
 	if (data.FullRow(*this)) {
+		int w = rect.GetWidth();
 		wxRect rect(x, y, w, h);
 		rect.Deflate(3, 2);
 		wxString text = data.GetValue(*this, 0);
 		dc.SetClippingRegion(rect);
-		const wxBitmap & bitmap = GetBitmap(state);
 		dc.DrawLabel(text, bitmap, rect);
 		dc.DestroyClippingRegion();
 	} else {
@@ -135,21 +124,14 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const Fb
 			rect.Deflate(3, 2);
 			wxString text = data.GetValue(*this, col.GetColumn());
 			dc.SetClippingRegion(rect);
-			const wxBitmap & bitmap = i ? wxNullBitmap : GetBitmap(state);
-			dc.DrawLabel(text, bitmap, rect, col.GetAlignment());
+			dc.DrawLabel(text, i ? wxNullBitmap : bitmap, rect, col.GetAlignment());
 			dc.DestroyClippingRegion();
 			x += w;
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-//  FbListModel
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbListModel, FbModel)
-
-void FbListModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
+void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
 	int ww = rect.GetWidth();
 	int y  = rect.GetTop();
@@ -160,6 +142,32 @@ void FbListModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &co
 	m_normalFont.SetWeight(wxFONTWEIGHT_NORMAL);
 	m_boldFont = m_normalFont;
 	m_boldFont.SetWeight(wxFONTWEIGHT_BOLD);
+
+    // Set brush colour
+    m_normalBrush  = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID);
+    m_hilightBrush = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID);
+    m_unfocusBrush = wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW), wxSOLID);
+    // Set font colour
+    m_normalColour  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+	m_hilightColour = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
+    // Set pen for borders
+	m_borderPen = wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID);
+
+	DoDrawTree(dc, rect, cols, pos, h);
+}
+
+//-----------------------------------------------------------------------------
+//  FbListModel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbListModel, FbModel)
+
+void FbListModel::DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
+{
+	int ww = rect.GetWidth();
+	int y  = rect.GetTop();
+	int yy = rect.GetBottom();
+	size_t count = GetRowCount();
 
 	for ( ; pos < count && y < yy; pos++, y+=h )
 	{

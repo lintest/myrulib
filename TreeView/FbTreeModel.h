@@ -65,9 +65,9 @@ class FbModel: public wxObject
 	public:
 		FbModel();
 		virtual ~FbModel() {}
-		virtual size_t GetRowCount() const = 0;
-		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
-		virtual void DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols);
+
+		void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		void SetFocused(bool focused) { m_focused = focused; }
 
 		virtual int GoFirstRow() = 0;
 		virtual int GoLastRow() = 0;
@@ -80,11 +80,12 @@ class FbModel: public wxObject
 		virtual size_t FindRow(size_t row, bool select) = 0;
 		virtual FbModelData * GetData(size_t row) = 0;
 		virtual FbModelData * GetCurrent() = 0;
-
-		void SetFocused(bool focused) { m_focused = focused; }
+		virtual size_t GetRowCount() const = 0;
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
+		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
+		virtual void DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols);
 
 		wxWindow * m_owner;
 
@@ -100,6 +101,8 @@ class FbModel: public wxObject
 		wxFont m_normalFont;
 		wxFont m_boldFont;
 
+		wxPen m_borderPen;
+
 		bool m_focused;
 
 		DECLARE_CLASS(FbModel);
@@ -111,7 +114,6 @@ WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
 class FbListModel: public FbModel
 {
 	public:
-		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		virtual int GoFirstRow();
 		virtual int GoLastRow();
 		virtual int GoNextRow(size_t delta = 1);
@@ -121,6 +123,8 @@ class FbListModel: public FbModel
 		virtual void Append(FbModelData * data) = 0;
 		virtual void Replace(FbModelData * data) = 0;
 		virtual void Delete() = 0;
+	protected:
+		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
 };
 

@@ -15,7 +15,6 @@
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
 
-
 class FbTestModelData: public FbModelData
 {
 	public:
@@ -24,6 +23,8 @@ class FbTestModelData: public FbModelData
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const
 			{ return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); }
+		virtual int GetState(FbModel & model) const 
+			{ return m_code % 3; }
 	protected:
 		int m_code;
 		DECLARE_CLASS(FbTestModelData);
