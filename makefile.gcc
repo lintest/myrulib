@@ -242,12 +242,12 @@ clean:
 	-if exist build\libexpat_static.a del build\libexpat_static.a
 	-if exist build\libsqlite3_static.a del build\libsqlite3_static.a
 	-if exist build\libwxsqlite3_static.a del build\libwxsqlite3_static.a
-	-if exist build\bin2c.exe del build\bin2c.exe
 	-if exist build/ru.mo del build/ru.mo
 	-if exist build/uk.mo del build/uk.mo
 	-if exist build/be.mo del build/be.mo
 	-if exist build/cs.mo del build/cs.mo
 	-if exist build/sv.mo del build/sv.mo
+	-if exist build\bin2c.exe del build\bin2c.exe
 	-if exist build/ru.inc del build/ru.inc
 	-if exist build/uk.inc del build/uk.inc
 	-if exist build/be.inc del build/be.inc
@@ -285,37 +285,37 @@ build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS) clear_resource
 	ar rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	ranlib $@
 
+build/ru.mo: MyRuLib\locale\ru.po
+	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
+
+build/uk.mo: MyRuLib\locale\uk.po
+	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
+
+build/be.mo: MyRuLib\locale\be.po
+	msgfmt MyRuLib/locale/be.po -o build/be.mo
+
+build/cs.mo: MyRuLib\locale\cs.po
+	msgfmt MyRuLib/locale/cs.po -o build/cs.mo
+
+build/sv.mo: MyRuLib\locale\sv.po
+	msgfmt MyRuLib/locale/sv.po -o build/sv.mo
+
 build\bin2c.exe: $(BIN2C_OBJECTS)
 	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)
 
-build/ru.mo: build\bin2c.exe MyRuLib\locale\ru.po
-	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
-
-build/uk.mo: build\bin2c.exe MyRuLib\locale\uk.po
-	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
-
-build/be.mo: build\bin2c.exe MyRuLib\locale\be.po
-	msgfmt MyRuLib/locale/be.po -o build/be.mo
-
-build/cs.mo: build\bin2c.exe MyRuLib\locale\cs.po
-	msgfmt MyRuLib/locale/cs.po -o build/cs.mo
-
-build/sv.mo: build\bin2c.exe MyRuLib\locale\sv.po
-	msgfmt MyRuLib/locale/sv.po -o build/sv.mo
-
-build/ru.inc: build/ru.mo
+build/ru.inc: build\bin2c.exe build/ru.mo
 	build/bin2c build/ru.mo build/ru.inc file
 
-build/uk.inc: build/uk.mo
+build/uk.inc: build\bin2c.exe build/uk.mo
 	build/bin2c build/uk.mo build/uk.inc file
 
-build/be.inc: build/be.mo
+build/be.inc: build\bin2c.exe build/be.mo
 	build/bin2c build/be.mo build/be.inc file
 
-build/cs.inc: build/cs.mo
+build/cs.inc: build\bin2c.exe build/cs.mo
 	build/bin2c build/cs.mo build/cs.inc file
 
-build/sv.inc: build/sv.mo
+build/sv.inc: build\bin2c.exe build/sv.mo
 	build/bin2c build/sv.mo build/sv.inc file
 
 build\myrulib.exe: $(MYRULIB_OBJECTS) build\libwxsqlite3_static.a build\libsqlite3_static.a build\myrulib_resource_rc.o build\libexpat_static.a

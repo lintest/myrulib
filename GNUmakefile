@@ -76,9 +76,6 @@ WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -IWxSQLite3 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	build/wxsqlite3_static_wxsqlite3.o
-BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
-BIN2C_OBJECTS =  \
-	build/bin2c_bin2c.o
 MYRULIB_CFLAGS = -DNDEBUG -Ibuild -IMyRuLib -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DNDEBUG -Ibuild -IMyRuLib -IWxSQLite3 -O2 `$(WX_CONFIG) \
@@ -151,7 +148,6 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_md5.o \
 	build/myrulib_base64.o \
 	build/myrulib_treelistctrl.o
-MYRULIB_ODEP = build/ru.inc build/uk.inc build/be.inc build/cs.inc build/sv.inc
 
 ### Conditionally set variables: ###
 
@@ -181,7 +177,7 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/bin2c build/myrulib
+all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES
@@ -215,17 +211,11 @@ clean:
 	rm -f build/*.o
 	rm -f build/*.d
 	rm -f build/libwxsqlite3_static.a
-	rm -f build/bin2c
 	rm -f build/ru.mo
 	rm -f build/uk.mo
 	rm -f build/be.mo
 	rm -f build/cs.mo
 	rm -f build/sv.mo
-	rm -f build/ru.inc
-	rm -f build/uk.inc
-	rm -f build/be.inc
-	rm -f build/cs.inc
-	rm -f build/sv.inc
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
@@ -236,38 +226,20 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/bin2c: $(BIN2C_OBJECTS)
-	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)
-
-build/ru.mo: build/bin2c MyRuLib/locale/ru.po
+build/ru.mo: MyRuLib/locale/ru.po
 	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
 
-build/uk.mo: build/bin2c MyRuLib/locale/uk.po
+build/uk.mo: MyRuLib/locale/uk.po
 	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
 
-build/be.mo: build/bin2c MyRuLib/locale/be.po
+build/be.mo: MyRuLib/locale/be.po
 	msgfmt MyRuLib/locale/be.po -o build/be.mo
 
-build/cs.mo: build/bin2c MyRuLib/locale/cs.po
+build/cs.mo: MyRuLib/locale/cs.po
 	msgfmt MyRuLib/locale/cs.po -o build/cs.mo
 
-build/sv.mo: build/bin2c MyRuLib/locale/sv.po
+build/sv.mo: MyRuLib/locale/sv.po
 	msgfmt MyRuLib/locale/sv.po -o build/sv.mo
-
-build/ru.inc: build/ru.mo
-	build/bin2c build/ru.mo build/ru.inc file
-
-build/uk.inc: build/uk.mo
-	build/bin2c build/uk.mo build/uk.inc file
-
-build/be.inc: build/be.mo
-	build/bin2c build/be.mo build/be.inc file
-
-build/cs.inc: build/cs.mo
-	build/bin2c build/cs.mo build/cs.inc file
-
-build/sv.inc: build/sv.mo
-	build/bin2c build/sv.mo build/sv.inc file
 
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lsqlite3 -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
@@ -283,208 +255,205 @@ uninstall_myrulib:
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 
-build/bin2c_bin2c.o: ./Bin2c/bin2c.c
-	$(CC) -c -o $@ $(BIN2C_CFLAGS) $(CPPDEPS) $<
-
-build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
+build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp $(MYRULIB_ODEP)
+build/myrulib_ExpThread.o: ./MyRuLib/ExpThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_ExternalDlg.o: ./MyRuLib/ExternalDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbAboutDlg.o: ./MyRuLib/FbAboutDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbAboutDlg.o: ./MyRuLib/FbAboutDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbAuthorDlg.o: ./MyRuLib/FbAuthorDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbAuthorDlg.o: ./MyRuLib/FbAuthorDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbAuthorThread.o: ./MyRuLib/FbAuthorThread.cpp $(MYRULIB_ODEP)
+build/myrulib_FbAuthorThread.o: ./MyRuLib/FbAuthorThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbBookData.o: ./MyRuLib/FbBookData.cpp $(MYRULIB_ODEP)
+build/myrulib_FbBookData.o: ./MyRuLib/FbBookData.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbBookEvent.o: ./MyRuLib/FbBookEvent.cpp $(MYRULIB_ODEP)
+build/myrulib_FbBookEvent.o: ./MyRuLib/FbBookEvent.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbBookList.o: ./MyRuLib/FbBookList.cpp $(MYRULIB_ODEP)
+build/myrulib_FbBookList.o: ./MyRuLib/FbBookList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbBookMenu.o: ./MyRuLib/FbBookMenu.cpp $(MYRULIB_ODEP)
+build/myrulib_FbBookMenu.o: ./MyRuLib/FbBookMenu.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbBookPanel.o: ./MyRuLib/FbBookPanel.cpp $(MYRULIB_ODEP)
+build/myrulib_FbBookPanel.o: ./MyRuLib/FbBookPanel.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp $(MYRULIB_ODEP)
+build/myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbCheckList.o: ./MyRuLib/FbCheckList.cpp $(MYRULIB_ODEP)
+build/myrulib_FbCheckList.o: ./MyRuLib/FbCheckList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbChoiceFormat.o: ./MyRuLib/FbChoiceFormat.cpp $(MYRULIB_ODEP)
+build/myrulib_FbChoiceFormat.o: ./MyRuLib/FbChoiceFormat.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbColumnDlg.o: ./MyRuLib/FbColumnDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbColumnDlg.o: ./MyRuLib/FbColumnDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbConfigDlg.o: ./MyRuLib/FbConfigDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbConfigDlg.o: ./MyRuLib/FbConfigDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbConst.o: ./MyRuLib/FbConst.cpp $(MYRULIB_ODEP)
+build/myrulib_FbConst.o: ./MyRuLib/FbConst.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbDatabase.o: ./MyRuLib/FbDatabase.cpp $(MYRULIB_ODEP)
+build/myrulib_FbDatabase.o: ./MyRuLib/FbDatabase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbDataOpenDlg.o: ./MyRuLib/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbDataOpenDlg.o: ./MyRuLib/FbDataOpenDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp $(MYRULIB_ODEP)
+build/myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
+build/myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbExtractInfo.o: ./MyRuLib/FbExtractInfo.cpp $(MYRULIB_ODEP)
+build/myrulib_FbExtractInfo.o: ./MyRuLib/FbExtractInfo.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp $(MYRULIB_ODEP)
+build/myrulib_FbDownloader.o: ./MyRuLib/FbDownloader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFilterDlg.o: ./MyRuLib/FbFilterDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFilterDlg.o: ./MyRuLib/FbFilterDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFilterObj.o: ./MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFilterObj.o: ./MyRuLib/FbFilterObj.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameDate.o: ./MyRuLib/FbFrameDate.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameDate.o: ./MyRuLib/FbFrameDate.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameDownld.o: ./MyRuLib/FbFrameDownld.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameDownld.o: ./MyRuLib/FbFrameDownld.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameFolder.o: ./MyRuLib/FbFrameFolder.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameFolder.o: ./MyRuLib/FbFrameFolder.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameInfo.o: ./MyRuLib/FbFrameInfo.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameHtml.o: ./MyRuLib/FbFrameHtml.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameHtml.o: ./MyRuLib/FbFrameHtml.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameGenres.o: ./MyRuLib/FbFrameGenres.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameGenres.o: ./MyRuLib/FbFrameGenres.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameSearch.o: ./MyRuLib/FbFrameSearch.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameSearch.o: ./MyRuLib/FbFrameSearch.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbFrameSequen.o: ./MyRuLib/FbFrameSequen.cpp $(MYRULIB_ODEP)
+build/myrulib_FbFrameSequen.o: ./MyRuLib/FbFrameSequen.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
+build/myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbHtmlWindow.o: ./MyRuLib/FbHtmlWindow.cpp $(MYRULIB_ODEP)
+build/myrulib_FbHtmlWindow.o: ./MyRuLib/FbHtmlWindow.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbImportThread.o: ./MyRuLib/FbImportThread.cpp $(MYRULIB_ODEP)
+build/myrulib_FbImportThread.o: ./MyRuLib/FbImportThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbLocale.o: ./MyRuLib/FbLocale.cpp $(MYRULIB_ODEP)
+build/myrulib_FbLocale.o: ./MyRuLib/FbLocale.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp $(MYRULIB_ODEP)
+build/myrulib_FbLogStream.o: ./MyRuLib/FbLogStream.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbMainFrame.o: ./MyRuLib/FbMainFrame.cpp $(MYRULIB_ODEP)
+build/myrulib_FbMainFrame.o: ./MyRuLib/FbMainFrame.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbMainMenu.o: ./MyRuLib/FbMainMenu.cpp $(MYRULIB_ODEP)
+build/myrulib_FbMainMenu.o: ./MyRuLib/FbMainMenu.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbMasterData.o: ./MyRuLib/FbMasterData.cpp $(MYRULIB_ODEP)
+build/myrulib_FbMasterData.o: ./MyRuLib/FbMasterData.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbMasterList.o: ./MyRuLib/FbMasterList.cpp $(MYRULIB_ODEP)
+build/myrulib_FbMasterList.o: ./MyRuLib/FbMasterList.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbMenu.o: ./MyRuLib/FbMenu.cpp $(MYRULIB_ODEP)
+build/myrulib_FbMenu.o: ./MyRuLib/FbMenu.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbNotebook.o: ./MyRuLib/FbNotebook.cpp $(MYRULIB_ODEP)
+build/myrulib_FbNotebook.o: ./MyRuLib/FbNotebook.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbParams.o: ./MyRuLib/FbParams.cpp $(MYRULIB_ODEP)
+build/myrulib_FbParams.o: ./MyRuLib/FbParams.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbParamsDlg.o: ./MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbParamsDlg.o: ./MyRuLib/FbParamsDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbReplaceDlg.o: ./MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbReplaceDlg.o: ./MyRuLib/FbReplaceDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbTreeListCtrl.o: ./MyRuLib/FbTreeListCtrl.cpp $(MYRULIB_ODEP)
+build/myrulib_FbTreeListCtrl.o: ./MyRuLib/FbTreeListCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbTreeModel.o: ./MyRuLib/FbTreeModel.cpp $(MYRULIB_ODEP)
+build/myrulib_FbTreeModel.o: ./MyRuLib/FbTreeModel.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbTreeView.o: ./MyRuLib/FbTreeView.cpp $(MYRULIB_ODEP)
+build/myrulib_FbTreeView.o: ./MyRuLib/FbTreeView.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbUpdateThread.o: ./MyRuLib/FbUpdateThread.cpp $(MYRULIB_ODEP)
+build/myrulib_FbUpdateThread.o: ./MyRuLib/FbUpdateThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbViewerDlg.o: ./MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
+build/myrulib_FbViewerDlg.o: ./MyRuLib/FbViewerDlg.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_FbWindow.o: ./MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
+build/myrulib_FbWindow.o: ./MyRuLib/FbWindow.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
+build/myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp $(MYRULIB_ODEP)
+build/myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_InfoThread.o: ./MyRuLib/InfoThread.cpp $(MYRULIB_ODEP)
+build/myrulib_InfoThread.o: ./MyRuLib/InfoThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_LimitedTextCtrl.o: ./MyRuLib/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
+build/myrulib_LimitedTextCtrl.o: ./MyRuLib/LimitedTextCtrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp $(MYRULIB_ODEP)
+build/myrulib_MyRuLibApp.o: ./MyRuLib/MyRuLibApp.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
+build/myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp $(MYRULIB_ODEP)
+build/myrulib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_TitleThread.o: ./MyRuLib/TitleThread.cpp $(MYRULIB_ODEP)
+build/myrulib_TitleThread.o: ./MyRuLib/TitleThread.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
+build/myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_md5.o: ./MyRuLib/md5.c $(MYRULIB_ODEP)
+build/myrulib_md5.o: ./MyRuLib/md5.c
 	$(CC) -c -o $@ $(MYRULIB_CFLAGS) $(CPPDEPS) $<
 
-build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
+build/myrulib_base64.o: ./MyRuLib/wx/base64.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
+build/myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean install_myrulib uninstall_myrulib

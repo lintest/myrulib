@@ -61,7 +61,6 @@
 	</lib>
 
     <define-tag name="locale" rules="action">
-		<depends>bin2c</depends>
 		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
 		<command>msgfmt MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
 		<depends-on-file>MyRuLib/locale/$(value).po</depends-on-file>
@@ -74,16 +73,6 @@
 				<command>(cd $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES ; rm -f myrulib.mo)</command>
 			</modify-target>
 		</if>
-    </define-tag>
-
-	<exe id="bin2c">
-		<sources>Bin2c/bin2c.c</sources>
-	</exe>
-
-    <define-tag name="bin2c" rules="action">
-		<depends>$(BUILDDIR)/$(value).mo</depends>
-		<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
-		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
     </define-tag>
 
 	<action id="build/ru.mo"> 
@@ -105,36 +94,51 @@
 	<action id="build/sv.mo"> 
 		<locale>sv</locale>
 	</action>
-
-	<action id="build/ru.inc"> 
-		<bin2c>ru</bin2c>
-	</action>
-
-	<action id="build/uk.inc"> 
-		<bin2c>uk</bin2c>
-	</action>
-
-	<action id="build/be.inc"> 
-		<bin2c>be</bin2c>
-	</action>
-
-	<action id="build/cs.inc"> 
-		<bin2c>cs</bin2c>
-	</action>
 	
-	<action id="build/sv.inc"> 
-		<bin2c>sv</bin2c>
-	</action>
+	<if cond="LOCALE_STATIC=='1'">
+		<exe id="bin2c">
+			<sources>Bin2c/bin2c.c</sources>
+		</exe>
+		
+		<define-tag name="bin2c" rules="action">
+			<depends>bin2c</depends>
+			<depends>$(BUILDDIR)/$(value).mo</depends>
+			<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
+			<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
+		</define-tag>
+		
+		<action id="build/ru.inc"> 
+			<bin2c>ru</bin2c>
+		</action>
+
+		<action id="build/uk.inc"> 
+			<bin2c>uk</bin2c>
+		</action>
+
+		<action id="build/be.inc"> 
+			<bin2c>be</bin2c>
+		</action>
+
+		<action id="build/cs.inc"> 
+			<bin2c>cs</bin2c>
+		</action>
+		
+		<action id="build/sv.inc"> 
+			<bin2c>sv</bin2c>
+		</action>
+	</if>
 	
 	<exe id="myrulib" template="wxgui">
 		<define>NDEBUG</define>
 		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
-		<define cond="LOCALE_STATIC=='1'">FB_INCLUDE_LOCALE</define>
-		<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
-		<objects-depend>$(BUILDDIR)/uk.inc</objects-depend>
-		<objects-depend>$(BUILDDIR)/be.inc</objects-depend>
-		<objects-depend>$(BUILDDIR)/cs.inc</objects-depend>
-		<objects-depend>$(BUILDDIR)/sv.inc</objects-depend>
+		<if cond="LOCALE_STATIC=='1'">
+			<define>FB_INCLUDE_LOCALE</define>
+			<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
+			<objects-depend>$(BUILDDIR)/uk.inc</objects-depend>
+			<objects-depend>$(BUILDDIR)/be.inc</objects-depend>
+			<objects-depend>$(BUILDDIR)/cs.inc</objects-depend>
+			<objects-depend>$(BUILDDIR)/sv.inc</objects-depend>
+		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
