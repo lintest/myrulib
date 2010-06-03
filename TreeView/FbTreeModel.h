@@ -39,26 +39,38 @@ WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
 class FbTreeModelData: public FbModelData
 {
 	public:
-		virtual size_t Count() const { return 0; }
-		virtual size_t CountAll() const { return 1; }
-		virtual FbTreeModelData& operator[](size_t index) const = 0;
+		virtual size_t Count() const 
+			{ return 0; }
+		virtual size_t CountAll() const 
+			{ return 1; }
+		virtual FbTreeModelData* operator[](size_t index) const 
+			{ return NULL; };
 	protected:
 		DECLARE_CLASS(FbTreeModelData);
 };
 
-class FbTreeStoreData;
-
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbTreeStoreData*, FbTreeStoreArray);
+WX_DECLARE_OBJARRAY(FbTreeModelData, FbTreeModelArray);
 
 class FbTreeStoreData: public FbModelData
 {
 	public:
+		FbTreeStoreData(): m_parent(NULL) {}
 		virtual size_t Count() const;
 		virtual size_t CountAll() const;
 		virtual FbTreeModelData* operator[](size_t index) const;
+		virtual int GetState(FbModel & model) const;
+		virtual void SetState(FbModel & model, bool state);
+		virtual size_t GetLevel(FbModel & model) const;
+	public:
+		void Add(FbTreeModelData* data);
+		void CheckState(FbModel & model);
 	protected:
-		FbTreeStoreArray m_items;
+		virtual void SetState(int state) = 0;
+		virtual int GetState() const = 0;
+	private:
+		FbTreeModelArray m_items;
+		FbTreeStoreData * m_parent;
 		DECLARE_CLASS(FbTreeStoreData);
 };
 

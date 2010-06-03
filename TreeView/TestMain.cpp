@@ -19,18 +19,31 @@ class FbTestModelData: public FbModelData
 {
 	public:
 		FbTestModelData(int i)
-			: m_code(i) {}
+			: m_code(i), m_state(false) {}
 	public:
-		virtual wxString GetValue(FbModel & model, size_t col) const
-			{ return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); }
-		virtual int GetState(FbModel & model) const 
-			{ return m_code % 3; }
+		virtual wxString GetValue(FbModel & model, size_t col) const;
+		virtual int GetState(FbModel & model) const
+			{ return m_state ? 1 : 0; }
+		virtual void SetState(FbModel & model, bool state)
+			{ m_state = state; }
 	protected:
 		int m_code;
+		bool m_state;
 		DECLARE_CLASS(FbTestModelData);
 };
 
 IMPLEMENT_CLASS(FbTestModelData, FbModelData)
+
+
+wxString FbTestModelData::GetValue(FbModel & model, size_t col) const
+{ 
+	switch (col) {
+		case 1: 
+			return Format(m_code * m_code * 100);
+		default: 
+			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); 
+	}
+}
 
 wxString DataViewFrame::sm_filename;
 

@@ -33,6 +33,47 @@ class FbModelData: public wxObject
 		DECLARE_CLASS(FbModelData);
 };
 
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
+
+class FbTreeModelData: public FbModelData
+{
+	public:
+		virtual size_t Count() const 
+			{ return 0; }
+		virtual size_t CountAll() const 
+			{ return 1; }
+		virtual FbTreeModelData* operator[](size_t index) const 
+			{ return NULL; };
+	protected:
+		DECLARE_CLASS(FbTreeModelData);
+};
+
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbTreeModelData, FbTreeModelArray);
+
+class FbTreeStoreData: public FbModelData
+{
+	public:
+		FbTreeStoreData(): m_parent(NULL) {}
+		virtual size_t Count() const;
+		virtual size_t CountAll() const;
+		virtual FbTreeModelData* operator[](size_t index) const;
+		virtual int GetState(FbModel & model) const;
+		virtual void SetState(FbModel & model, bool state);
+		virtual size_t GetLevel(FbModel & model) const;
+	public:
+		void Add(FbTreeModelData* data);
+		void CheckState(FbModel & model);
+	protected:
+		virtual void SetState(int state) = 0;
+		virtual int GetState() const = 0;
+	private:
+		FbTreeModelArray m_items;
+		FbTreeStoreData * m_parent;
+		DECLARE_CLASS(FbTreeStoreData);
+};
+
 class FbColumnInfo: public wxObject
 {
 	public:
@@ -56,18 +97,11 @@ WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
 class FbModel: public wxObject
 {
 	public:
-		enum Position {
-			POS_CHECK,
-			POS_PLUS,
-			POS_ITEM,
-		};
-
-	public:
 		FbModel();
 		virtual ~FbModel() {}
-		virtual size_t GetRowCount() const = 0;
-		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
-		virtual void DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols);
+
+		void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		void SetFocused(bool focused) { m_focused = focused; }
 
 		virtual int GoFirstRow() = 0;
 		virtual int GoLastRow() = 0;
@@ -80,11 +114,12 @@ class FbModel: public wxObject
 		virtual size_t FindRow(size_t row, bool select) = 0;
 		virtual FbModelData * GetData(size_t row) = 0;
 		virtual FbModelData * GetCurrent() = 0;
-
-		void SetFocused(bool focused) { m_focused = focused; }
+		virtual size_t GetRowCount() const = 0;
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
+		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
+		virtual void DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols);
 
 		wxWindow * m_owner;
 
@@ -100,18 +135,16 @@ class FbModel: public wxObject
 		wxFont m_normalFont;
 		wxFont m_boldFont;
 
+		wxPen m_borderPen;
+
 		bool m_focused;
 
 		DECLARE_CLASS(FbModel);
 };
 
-#include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
-
 class FbListModel: public FbModel
 {
 	public:
-		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		virtual int GoFirstRow();
 		virtual int GoLastRow();
 		virtual int GoNextRow(size_t delta = 1);
@@ -121,6 +154,8 @@ class FbListModel: public FbModel
 		virtual void Append(FbModelData * data) = 0;
 		virtual void Replace(FbModelData * data) = 0;
 		virtual void Delete() = 0;
+	protected:
+		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
 };
 
@@ -140,6 +175,23 @@ class FbListStore: public FbListModel
 	private:
 		FbModelDataArray m_list;
 		DECLARE_CLASS(FbListStore);
+};
+
+class FbTreeModel: public FbModel
+{
+	public:
+		virtual int GoFirstRow();
+		virtual int GoLastRow();
+		virtual int GoNextRow(size_t delta = 1);
+		virtual int GoPriorRow(size_t delta = 1);
+		virtual size_t FindRow(size_t row, bool select);
+	public:
+		virtual void Append(FbModelData * data) = 0;
+		virtual void Replace(FbModelData * data) = 0;
+		virtual void Delete() = 0;
+	protected:
+		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		DECLARE_CLASS(FbTreeModel);
 };
 
 /*

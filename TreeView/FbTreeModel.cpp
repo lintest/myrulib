@@ -41,7 +41,7 @@ wxString FbModelData::Format(int number)
 	int hi = number / 1000;
 	int lo = number % 1000;
 	if (hi)
-		return Format(hi) + wxChar(0xA0) + wxString::Format(wxT("%03d"), lo);
+		return Format(hi) << wxChar(0xA0) << wxString::Format(wxT("%03d"), lo);
 	else
 		return wxString::Format(wxT("%d"), lo);
 }
@@ -53,11 +53,15 @@ wxString FbModelData::Format(int number)
 IMPLEMENT_CLASS(FbTreeModelData, FbModelData)
 
 //-----------------------------------------------------------------------------
-//  FbTreeStoreData
+//  FbTreeModelArray
 //-----------------------------------------------------------------------------
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(FbTreeStoreArray);
+WX_DEFINE_OBJARRAY(FbTreeModelArray);
+
+//-----------------------------------------------------------------------------
+//  FbTreeStoreData
+//-----------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(FbTreeStoreData, FbTreeModelData)
 
@@ -71,13 +75,53 @@ size_t FbTreeStoreData::CountAll() const
 	size_t result = 1; 
 	size_t count = m_items.Count();
 	for (size_t i=0; i < count; i++) 
-		result += m_items.Item(i)->CountAll();
+		result += m_items.Item(i).CountAll();
 	return result;
 }
 
 FbTreeModelData* FbTreeStoreData::operator[](size_t index) const
 { 
-	return m_items.Item(index); 
+	return &m_items.Item(index); 
+}
+
+void FbTreeStoreData::Add(FbTreeModelData* data)
+{
+	m_items.Add(data);
+}
+
+int FbTreeStoreData::GetState(FbModel & model) const
+{
+	return GetState();
+}
+
+void FbTreeStoreData::SetState(FbModel & model, bool state) 
+{ 
+	SetState(state ? 1 : 0);
+	size_t count = Count();
+	for (size_t i = 0; i < count; i++) {
+		m_items[i].SetState(model, state);
+	}
+	if (m_parent) m_parent->CheckState(model);
+}
+
+void FbTreeStoreData::CheckState(FbModel & model)
+{
+	int state = GetState();
+	size_t count = Count();
+	for (size_t i = 0; i < count; i++) {
+		int substate = m_items[i].GetState(model);
+		if (i == 0) SetState(substate);
+		if (state != substate) {
+			SetState(2);
+			break;
+		}
+	}
+	if (m_parent) m_parent->CheckState(model);
+}
+
+size_t FbTreeStoreData::GetLevel(FbModel & model) const
+{ 
+	return m_parent ? m_parent->GetLevel(model) + 1 : 0;
 }
 
 //-----------------------------------------------------------------------------

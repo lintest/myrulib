@@ -27,10 +27,11 @@ MyRuLibApp::~MyRuLibApp()
 void MyRuLibApp::Localize()
 {
 	wxLanguage language = (wxLanguage) FbParams::GetValue(FB_LANG_LOCALE);
-    wxDELETE(m_locale);
-    FbLocale * locale = new FbLocale;
-    locale->Init(language);
-    m_locale = locale;
+	if (m_locale && m_locale->GetLanguage() == language) return;
+
+	wxDELETE(m_locale);
+    m_locale = new FbLocale;
+    m_locale->Init(language);
 
     FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
     if (frame) frame->Localize(language);
