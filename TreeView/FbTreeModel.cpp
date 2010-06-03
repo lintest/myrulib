@@ -47,6 +47,40 @@ wxString FbModelData::Format(int number)
 }
 
 //-----------------------------------------------------------------------------
+//  FbTreeModelData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbTreeModelData, FbModelData)
+
+//-----------------------------------------------------------------------------
+//  FbTreeStoreData
+//-----------------------------------------------------------------------------
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(FbTreeStoreArray);
+
+IMPLEMENT_CLASS(FbTreeStoreData, FbTreeModelData)
+
+size_t FbTreeStoreData::Count() const 
+{ 
+	return m_items.Count(); 
+}
+
+size_t FbTreeStoreData::CountAll() const 
+{ 
+	size_t result = 1; 
+	size_t count = m_items.Count();
+	for (size_t i=0; i < count; i++) 
+		result += m_items.Item(i)->CountAll();
+	return result;
+}
+
+FbTreeModelData* FbTreeStoreData::operator[](size_t index) const
+{ 
+	return m_items.Item(index); 
+}
+
+//-----------------------------------------------------------------------------
 //  FbColumnArray
 //-----------------------------------------------------------------------------
 

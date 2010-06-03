@@ -33,6 +33,35 @@ class FbModelData: public wxObject
 		DECLARE_CLASS(FbModelData);
 };
 
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
+
+class FbTreeModelData: public FbModelData
+{
+	public:
+		virtual size_t Count() const { return 0; }
+		virtual size_t CountAll() const { return 1; }
+		virtual FbTreeModelData& operator[](size_t index) const = 0;
+	protected:
+		DECLARE_CLASS(FbTreeModelData);
+};
+
+class FbTreeStoreData;
+
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbTreeStoreData*, FbTreeStoreArray);
+
+class FbTreeStoreData: public FbModelData
+{
+	public:
+		virtual size_t Count() const;
+		virtual size_t CountAll() const;
+		virtual FbTreeModelData* operator[](size_t index) const;
+	protected:
+		FbTreeStoreArray m_items;
+		DECLARE_CLASS(FbTreeStoreData);
+};
+
 class FbColumnInfo: public wxObject
 {
 	public:
@@ -55,13 +84,6 @@ WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
 
 class FbModel: public wxObject
 {
-	public:
-		enum Position {
-			POS_CHECK,
-			POS_PLUS,
-			POS_ITEM,
-		};
-
 	public:
 		FbModel();
 		virtual ~FbModel() {}
@@ -108,9 +130,6 @@ class FbModel: public wxObject
 		DECLARE_CLASS(FbModel);
 };
 
-#include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
-
 class FbListModel: public FbModel
 {
 	public:
@@ -144,6 +163,23 @@ class FbListStore: public FbListModel
 	private:
 		FbModelDataArray m_list;
 		DECLARE_CLASS(FbListStore);
+};
+
+class FbTreeModel: public FbModel
+{
+	public:
+		virtual int GoFirstRow();
+		virtual int GoLastRow();
+		virtual int GoNextRow(size_t delta = 1);
+		virtual int GoPriorRow(size_t delta = 1);
+		virtual size_t FindRow(size_t row, bool select);
+	public:
+		virtual void Append(FbModelData * data) = 0;
+		virtual void Replace(FbModelData * data) = 0;
+		virtual void Delete() = 0;
+	protected:
+		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		DECLARE_CLASS(FbTreeModel);
 };
 
 /*
