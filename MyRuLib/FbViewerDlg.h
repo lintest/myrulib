@@ -29,8 +29,8 @@
 class FbViewerDlg : public FbDialog
 {
 	public:
-		static bool Execute( wxWindow* parent, const wxString& type, wxString &value);
-		FbViewerDlg( wxWindow* parent, const wxString& type, const wxString& value );
+		static bool Execute( wxWindow* parent, const wxString& type, wxString &value, bool relative = false);
+		FbViewerDlg( wxWindow* parent, const wxString& type, const wxString& value, bool relative = false);
 		wxString GetValue();
 	protected:
 		enum
@@ -39,7 +39,7 @@ class FbViewerDlg : public FbDialog
 			ID_EDIT_BTN,
 		};
 		wxTextCtrl* m_filename;
-
+		bool m_relative;
 	private:
 		void OnTextEnter( wxCommandEvent& event );
 		void OnBtnClick( wxCommandEvent& event );

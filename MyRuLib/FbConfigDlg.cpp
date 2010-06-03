@@ -402,7 +402,7 @@ void FbConfigDlg::OnModifyType( wxCommandEvent& event )
 	wxString type = data->GetValue(*model, 0);
 	wxString command = data->GetValue(*model, 1);
 
-	bool ok = FbViewerDlg::Execute( this, type, command);
+	bool ok = FbViewerDlg::Execute( this, type, command, true);
 	if (ok) model->Replace(new TypeData(type, command));
 	treeview->SetFocus();
 }

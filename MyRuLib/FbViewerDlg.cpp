@@ -1,15 +1,15 @@
 #include "FbViewerDlg.h"
 #include <wx/artprov.h>
 #include "FbConst.h"
-
+#include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE( FbViewerDlg, FbDialog )
 	EVT_TEXT_ENTER( ID_EDIT_TXT, FbViewerDlg::OnTextEnter )
 	EVT_BUTTON( ID_EDIT_BTN, FbViewerDlg::OnBtnClick )
 END_EVENT_TABLE()
 
-FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString& value )
-	: FbDialog( parent, wxID_ANY, _("Customize"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString& value, bool relative)
+	: FbDialog( parent, wxID_ANY, _("Customize"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER), m_relative(relative)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -68,7 +68,16 @@ void FbViewerDlg::OnBtnClick( wxCommandEvent& event )
 		wxDefaultPosition
 	);
 
-	if (dlg.ShowModal() == wxID_OK)  m_filename->SetValue(dlg.GetPath());
+	if (dlg.ShowModal() == wxID_OK) {
+		wxString result = dlg.GetPath();
+		if (m_relative) {
+			wxFileName filename = result;
+			wxFileName database = wxGetApp().GetAppData();
+			filename.MakeRelativeTo(database.GetPath());
+			result = filename.GetFullPath();
+		}
+		m_filename->SetValue(result);
+	}
 }
 
 wxString FbViewerDlg::GetValue()
@@ -81,9 +90,9 @@ void FbViewerDlg::OnTextEnter( wxCommandEvent& event )
 	EndModal(wxID_OK);
 }
 
-bool FbViewerDlg::Execute( wxWindow* parent, const wxString& type, wxString &value)
+bool FbViewerDlg::Execute( wxWindow* parent, const wxString& type, wxString &value, bool relative)
 {
-	FbViewerDlg dlg(parent, type, value);
+	FbViewerDlg dlg(parent, type, value, relative);
 	bool res = dlg.ShowModal() == wxID_OK;
 	if (res) value = dlg.GetValue();
 	return res;
