@@ -15,6 +15,7 @@
 #include "TestApp.h"
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
+#include "FbAuthList.h"
 
 //-----------------------------------------------------------------------------
 //  FbTestModelData
@@ -234,8 +235,8 @@ void DataViewFrame::OnOpenList(wxCommandEvent &event)
 
 	if (dlg.ShowModal() == wxID_OK) {
 		sm_filename = dlg.GetPath();
-//	    FbModel * model = new FbAuthListModel(0);
-//		m_dataview->AssignModel(model);
+		FbModel * model = new FbAuthListModel(0);
+		m_dataview->AssignModel(model);
 	};
 }
 
