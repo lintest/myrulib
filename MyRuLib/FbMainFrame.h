@@ -25,8 +25,8 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void CreateControls();
 		void LoadIcon();
 		wxToolBar * CreateToolBar();
-		void TogglePaneVisibility(const wxString &pane_name, bool show);
-		void ShowPane(const wxString &pane_name);
+		wxAuiPaneInfo * FindLog();
+		void ShowLog(bool forced = false);
 		void FindAuthor(const wxString &text);
 		void FindTitle(const wxString &title, const wxString &author);
 		wxWindow * FindFrameById(const int id, bool bActivate = false);
@@ -76,6 +76,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnOpenSequence(FbOpenEvent & event);
 		void OnTabArt(wxCommandEvent & event);
 		void OnTabArtUpdate(wxUpdateUIEvent& event);
+		void OnHideLogUpdate(wxUpdateUIEvent& event);
 		void OnVacuum(wxCommandEvent & event);
 		void OnUpdateFonts(wxCommandEvent & event);
 		void OnProgress(FbProgressEvent & event);

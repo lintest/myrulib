@@ -73,6 +73,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_UPDATE_UI(ID_ART_TOOLBAR, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_BUTTONS, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
+	EVT_UPDATE_UI(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLogUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
@@ -354,43 +355,35 @@ void FbMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
 
 void FbMainFrame::OnError(wxCommandEvent& event)
 {
-	ShowPane(wxT("Log"));
+	ShowLog(true);
 	m_LOGTextCtrl.AppendText(event.GetString() + wxT("\n"));
 }
 
-void FbMainFrame::TogglePaneVisibility(const wxString &pane_name, bool show)
+wxAuiPaneInfo * FbMainFrame::FindLog()
 {
 	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
 	size_t count = all_panes.GetCount();
 	for (size_t i = 0; i < count; ++i) {
-		if(all_panes.Item(i).name == pane_name) {
-			bool show = ! all_panes.Item(i).IsShown();
-			all_panes.Item(i).Show(show);
-			m_FrameManager.Update();
-			break;
-		}
+		wxAuiPaneInfo & info = all_panes.Item(i);
+		if (info.name == wxT("Log")) return &info;
 	}
+	return NULL;
 }
 
-void FbMainFrame::ShowPane(const wxString &pane_name)
+void FbMainFrame::ShowLog(bool forced)
 {
-	wxAuiPaneInfoArray& all_panes = m_FrameManager.GetAllPanes();
-	size_t count = all_panes.GetCount();
-	for (size_t i = 0; i < count; ++i) {
-		if(all_panes.Item(i).name == pane_name) {
-			if (!all_panes.Item(i).IsShown()) {
-				all_panes.Item(i).Show(true);
-				m_FrameManager.Update();
-			}
-			break;
-		}
+	wxAuiPaneInfo * info = FindLog();
+	if (info) {
+		bool show = forced || !info->IsShown();
+		if (show != info->IsShown() && FbParams::GetValue(FB_CLEAR_LOG)) m_LOGTextCtrl.Clear();
+		info->Show(show);
+		m_FrameManager.Update();
 	}
 }
 
 void FbMainFrame::OnHideLog(wxCommandEvent& event)
 {
-	if (FbParams::GetValue(FB_CLEAR_LOG)) m_LOGTextCtrl.Clear();
-	TogglePaneVisibility(wxT("Log"), false);
+	ShowLog();
 }
 
 void FbMainFrame::OnFindTitle(wxCommandEvent & event)
@@ -654,6 +647,12 @@ void FbMainFrame::OnFullScreen(wxCommandEvent& event)
 void FbMainFrame::OnFullScreenUpdate(wxUpdateUIEvent& event)
 {
 	event.Check(IsFullScreen());
+}
+
+void FbMainFrame::OnHideLogUpdate(wxUpdateUIEvent& event)
+{
+	wxAuiPaneInfo * info = FindLog();
+	event.Check( info && info->IsShown() );
 }
 
 void FbMainFrame::OnWindowClose(wxCommandEvent & event)

@@ -22,12 +22,23 @@ class FbModelData: public wxObject
 			{ return false; }
 		virtual size_t GetLevel(FbModel & model) const
 			{ return 0; }
-		virtual int GetState(FbModel & model) const
-			{ return -1; }
-		virtual void SetState(FbModel & model, bool state)
-			{}
 		virtual int Compare(FbModel & model, const FbModelData &data) const
 			{ return GetValue(model, 0).CmpNoCase(data.GetValue(model, 0)); }
+		virtual size_t Count(FbModel & model) const 
+			{ return 0; }
+		virtual size_t CountAll(const FbModel & model) const 
+			{ return 1; }
+		virtual FbModelData* Items(FbModel & model, size_t index) const 
+			{ return NULL; };
+		virtual FbModelData* GetParent(FbModel & model) const 
+			{ return NULL; };
+	public:
+		int GetState(FbModel & model) const;
+		void SetState(FbModel & model, bool state);
+	protected:
+		virtual void DoSetState(FbModel & model, int state) {};
+		virtual int DoGetState(FbModel & model) const { return -1; };
+		void CheckState(FbModel & model);
 	protected:
 		static wxString Format(int number);
 		DECLARE_CLASS(FbModelData);
@@ -36,42 +47,34 @@ class FbModelData: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
 
-class FbTreeModelData: public FbModelData
+class FbParentData: public FbModelData
 {
 	public:
-		virtual size_t Count() const 
-			{ return 0; }
-		virtual size_t CountAll() const 
-			{ return 1; }
-		virtual FbTreeModelData* operator[](size_t index) const 
-			{ return NULL; };
-	protected:
-		DECLARE_CLASS(FbTreeModelData);
+		FbParentData(FbModel & model, FbParentData * parent = 0);
+		virtual size_t Count(FbModel & model) const
+			{ return m_items.Count(); }
+		virtual FbModelData* GetParent(FbModel & model) const
+			{ return m_parent; }
+		virtual size_t CountAll(const FbModel & model) const;
+		virtual size_t GetLevel(FbModel & model) const;
+		FbModelData* Items(FbModel & model, size_t index) const;
+	private:
+		void Add(FbModel & model, FbModelData* data);
+		FbModelDataArray m_items;
+		FbParentData * m_parent;
+		DECLARE_CLASS(FbChildData);
+		friend class FbChildData;
 };
 
-#include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbTreeModelData, FbTreeModelArray);
-
-class FbTreeStoreData: public FbModelData
+class FbChildData: public FbModelData
 {
 	public:
-		FbTreeStoreData(): m_parent(NULL) {}
-		virtual size_t Count() const;
-		virtual size_t CountAll() const;
-		virtual FbTreeModelData* operator[](size_t index) const;
-		virtual int GetState(FbModel & model) const;
-		virtual void SetState(FbModel & model, bool state);
-		virtual size_t GetLevel(FbModel & model) const;
-	public:
-		void Add(FbTreeModelData* data);
-		void CheckState(FbModel & model);
-	protected:
-		virtual void SetState(int state) = 0;
-		virtual int GetState() const = 0;
+		FbChildData(FbModel & model, FbParentData * parent = 0);
+		virtual FbModelData* GetParent(FbModel & model) const
+			{ return m_parent; }
 	private:
-		FbTreeModelArray m_items;
-		FbTreeStoreData * m_parent;
-		DECLARE_CLASS(FbTreeStoreData);
+		FbParentData * m_parent;
+		DECLARE_CLASS(FbChildData);
 };
 
 class FbColumnInfo: public wxObject
@@ -96,6 +99,19 @@ WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
 
 class FbModel: public wxObject
 {
+	protected:
+		class PaintContext{
+			public:
+				PaintContext(wxDC &dc);
+				wxBrush m_normalBrush;
+				wxBrush m_hilightBrush;
+				wxBrush m_unfocusBrush;
+				wxColour m_normalColour;
+				wxColour m_hilightColour;
+				wxFont m_normalFont;
+				wxFont m_boldFont;
+				wxPen m_borderPen;
+		};
 	public:
 		FbModel();
 		virtual ~FbModel() {}
@@ -118,24 +134,12 @@ class FbModel: public wxObject
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
-		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
-		virtual void DrawItem(FbModelData &data, wxDC &dc, const wxRect &rect, const FbColumnArray &cols);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
+		virtual void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
 
 		wxWindow * m_owner;
 
 		size_t m_position;
-
-		wxBrush m_normalBrush;
-		wxBrush m_hilightBrush;
-		wxBrush m_unfocusBrush;
-
-		wxColour m_normalColour;
-		wxColour m_hilightColour;
-
-		wxFont m_normalFont;
-		wxFont m_boldFont;
-
-		wxPen m_borderPen;
 
 		bool m_focused;
 
@@ -155,7 +159,7 @@ class FbListModel: public FbModel
 		virtual void Replace(FbModelData * data) = 0;
 		virtual void Delete() = 0;
 	protected:
-		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
 };
 
@@ -180,76 +184,38 @@ class FbListStore: public FbListModel
 class FbTreeModel: public FbModel
 {
 	public:
-		virtual int GoFirstRow();
-		virtual int GoLastRow();
-		virtual int GoNextRow(size_t delta = 1);
-		virtual int GoPriorRow(size_t delta = 1);
-		virtual size_t FindRow(size_t row, bool select);
-	public:
-		virtual void Append(FbModelData * data) = 0;
-		virtual void Replace(FbModelData * data) = 0;
-		virtual void Delete() = 0;
-	protected:
-		virtual void DoDrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		DECLARE_CLASS(FbTreeModel);
-};
-
-/*
-class FbListModel: public FbListModelBase
-{
-	public:
-		FbListModel(size_t count = 0);
-		virtual ~FbListModel();
-		virtual size_t GetRowCount() const { return m_count; }
-		virtual void SetRowCount(size_t count);
-
-		virtual int GoFirstRow();
-		virtual int GoLastRow();
-		virtual int GoNextRow(size_t delta = 1);
-		virtual int GoPriorRow(size_t delta = 1);
-
-		virtual FbItemId FindItem(size_t row, bool select);
-		FbListModelData * FindRow(size_t rowid, bool select);
-
-		virtual FbModelData * GetData(size_t row)
-			{ return FindRow(row, false); }
-
-	protected:
-		virtual FbListModelData * ReadData(size_t rowid) = 0;
-        FbListModelData * FindRow(const FbItemId &id);
-		FbListModelArray m_data;
-		wxArrayInt m_checked;
-
-	private:
-		size_t m_count;
-		DECLARE_CLASS(FbListModel);
-};
-
-class FbTreeModel: public FbModel
-{
-	public:
 		FbTreeModel()
 			: m_root(NULL) {}
-
 		virtual ~FbTreeModel()
 			{ wxDELETE(m_root); }
-
-		virtual size_t GetRowCount() const
-			{ return m_root ? m_root->RowCount() : 0; }
-
-		virtual void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		void SetRoot(FbModelData * root)
+			{ wxDELETE(m_root); m_root = root; }
+		FbModelData * GetRoot()
+			{ return m_root; }
 
 		virtual int GoFirstRow();
 		virtual int GoLastRow();
 		virtual int GoNextRow(size_t delta = 1);
 		virtual int GoPriorRow(size_t delta = 1);
 
-		virtual FbItemId FindItem(size_t row, bool select) = 0;
-		virtual FbModelData * GetData(size_t row) = 0;
+		virtual size_t FindRow(size_t row, bool select);
+		virtual FbModelData * GetData(size_t row);
+
+		virtual size_t GetRowCount() const
+			{ return m_root ? m_root->CountAll(*this) : 0; }
+		virtual FbModelData * GetCurrent()
+			{ return m_current; }
 
 	protected:
-		FbTreeModelData * m_root;
+		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		void DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, int &y);
+		FbModelData * FindData(FbModelData &parent, size_t &row);
+		FbModelData * GetLast(FbModelData &parent);
+
+	protected:
+		FbModelData * m_root;
+		FbModelData * m_current;
 		DECLARE_CLASS(FbTreeModel);
 };
-*/
+
 #endif // __FBTREEMODEL_H__
