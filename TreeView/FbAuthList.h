@@ -28,9 +28,9 @@ class FbAuthListModel: public FbListModel
 		virtual ~FbAuthListModel(void);
 		virtual void Append(FbModelData * data) {}
 		virtual void Replace(FbModelData * data) {}
-		virtual void Delete() {}
+		virtual void Delete();
 	protected:
-		virtual size_t GetRowCount() const 
+		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); };

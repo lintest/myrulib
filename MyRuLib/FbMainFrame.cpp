@@ -67,11 +67,15 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_MENU(ID_ART_STANDART, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_TOOLBAR, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_BUTTONS, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_VSTUDIO, FbMainFrame::OnTabArt)
+	EVT_MENU(ID_ART_MOZILLA, FbMainFrame::OnTabArt)
 	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_COMPACT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_STANDART, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_TOOLBAR, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_BUTTONS, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_VSTUDIO, FbMainFrame::OnTabArtUpdate)
+	EVT_UPDATE_UI(ID_ART_MOZILLA, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
 	EVT_UPDATE_UI(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLogUpdate)
 
@@ -215,6 +219,8 @@ void FbMainFrame::SetTabArt(int id)
 		case ID_ART_STANDART: art = new wxAuiDefaultTabArt; break;
 		case ID_ART_BUTTONS:  art = new FbAuiToolbarTabArt; break;
 		case ID_ART_TOOLBAR:  art = new FbAuiToolbarTabArt(true); break;
+		case ID_ART_VSTUDIO:  art = new NbStyleVC71; break;
+		case ID_ART_MOZILLA:  art = new NbStyleFF2; break;
 		default: art = new FbAuiDefaultTabArt;
 	}
 	GetNotebook()->SetTabCtrlHeight(0);

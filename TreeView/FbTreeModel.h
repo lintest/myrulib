@@ -8,11 +8,13 @@ class FbModel;
 class FbModelData: public wxObject
 {
 	public:
+		static wxString Format(int number);
+
 		FbModelData()
 			{}
 		virtual ~FbModelData()
 			{}
-		virtual wxString GetValue(FbModel & model, size_t col) const 
+		virtual wxString GetValue(FbModel & model, size_t col) const
 			{ return wxEmptyString; }
 		virtual void SetValue(FbModel & model, size_t col, const wxString &name)
 			{}
@@ -24,13 +26,13 @@ class FbModelData: public wxObject
 			{ return 0; }
 		virtual int Compare(FbModel & model, const FbModelData &data) const
 			{ return GetValue(model, 0).CmpNoCase(data.GetValue(model, 0)); }
-		virtual size_t Count(FbModel & model) const 
+		virtual size_t Count(FbModel & model) const
 			{ return 0; }
-		virtual size_t CountAll(const FbModel & model) const 
+		virtual size_t CountAll(const FbModel & model) const
 			{ return 1; }
-		virtual FbModelData* Items(FbModel & model, size_t index) const 
+		virtual FbModelData* Items(FbModel & model, size_t index) const
 			{ return NULL; };
-		virtual FbModelData* GetParent(FbModel & model) const 
+		virtual FbModelData* GetParent(FbModel & model) const
 			{ return NULL; };
 	public:
 		int GetState(FbModel & model) const;
@@ -39,8 +41,6 @@ class FbModelData: public wxObject
 		virtual void DoSetState(FbModel & model, int state) {};
 		virtual int DoGetState(FbModel & model) const { return -1; };
 		void CheckState(FbModel & model);
-	protected:
-		static wxString Format(int number);
 		DECLARE_CLASS(FbModelData);
 };
 
@@ -132,6 +132,10 @@ class FbModel: public wxObject
 		virtual FbModelData * GetCurrent() = 0;
 		virtual size_t GetRowCount() const = 0;
 
+		virtual void Append(FbModelData * data) = 0;
+		virtual void Replace(FbModelData * data) = 0;
+		virtual void Delete() = 0;
+
 	protected:
 		const wxBitmap & GetBitmap(int state);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
@@ -154,10 +158,6 @@ class FbListModel: public FbModel
 		virtual int GoNextRow(size_t delta = 1);
 		virtual int GoPriorRow(size_t delta = 1);
 		virtual size_t FindRow(size_t row, bool select);
-	public:
-		virtual void Append(FbModelData * data) = 0;
-		virtual void Replace(FbModelData * data) = 0;
-		virtual void Delete() = 0;
 	protected:
 		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
@@ -170,7 +170,7 @@ class FbListStore: public FbListModel
 		virtual void Replace(FbModelData * data);
 		virtual void Delete();
 	public:
-		virtual size_t GetRowCount() const 
+		virtual size_t GetRowCount() const
 			{ return m_list.Count(); }
 		virtual FbModelData * GetData(size_t row)
 			{ return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }
@@ -205,6 +205,10 @@ class FbTreeModel: public FbModel
 			{ return m_root ? m_root->CountAll(*this) : 0; }
 		virtual FbModelData * GetCurrent()
 			{ return m_current; }
+
+		virtual void Append(FbModelData * data) {}
+		virtual void Replace(FbModelData * data) {}
+		virtual void Delete() {}
 
 	protected:
 		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);

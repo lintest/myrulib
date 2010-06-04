@@ -30,14 +30,14 @@ FbAuthListData::FbAuthListData(int code, const wxString &name)
 }
 
 wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
-{ 
+{
 	switch (col) {
-		case 0: 
+		case 0:
 			return m_name;
-		case 1: 
+		case 1:
 			return Format(m_code);
-		default: 
-			return wxEmptyString; 
+		default:
+			return wxEmptyString;
 	}
 }
 
@@ -137,4 +137,16 @@ FbModelData * FbAuthListModel::GetData(size_t row)
 	m_cache.Insert(data, 0);
 	if (count > AUTH_CACHE_SIZE) m_cache.RemoveAt(AUTH_CACHE_SIZE, count - AUTH_CACHE_SIZE);
 	return data;
+}
+
+void FbAuthListModel::Delete()
+{
+	size_t count = m_items.Count();
+	if (m_position && m_position <= count) {
+		m_items.RemoveAt(m_position - 1);
+		if (m_position >= count) m_position = count - 1;
+		if (m_owner) m_owner->Refresh();
+	}
+
+
 }

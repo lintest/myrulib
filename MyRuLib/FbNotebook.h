@@ -75,4 +75,33 @@ class FbAuiToolbarTabArt : public wxAuiDefaultTabArt
 		bool m_flat;
 };
 
+class NbStyleVC71 : public wxAuiDefaultTabArt
+{
+public:
+    NbStyleVC71();
+    wxAuiTabArt* Clone();
+
+    void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
+                        const wxRect& in_rect, int close_button_state,
+                        wxRect* out_tab_rect, wxRect* out_button_rect,
+                        int* x_extent);
+
+    int GetBestTabCtrlSize(wxWindow* wnd, const wxAuiNotebookPageArray& pages,
+                            const wxSize& required_bmp_size);
+};
+
+class NbStyleFF2 : public wxAuiDefaultTabArt
+{
+public:
+    NbStyleFF2();
+    wxAuiTabArt* Clone();
+    void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
+                        const wxRect& in_rect, int close_button_state,
+                        wxRect* out_tab_rect, wxRect* out_button_rect,
+                        int* x_extent);
+
+    int GetBestTabCtrlSize(wxWindow* wnd, const wxAuiNotebookPageArray& pages,
+                            const wxSize& required_bmp_size);
+};
+
 #endif  // __FBNOTEBOOK_H__

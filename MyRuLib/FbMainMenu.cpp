@@ -116,6 +116,8 @@ FbMenuBar::MenuTabArt::MenuTabArt()
 	#ifdef __WXMSW__
 	AppendRadioItem(ID_ART_TOOLBAR,  _("Light"));
 	#endif
+	AppendRadioItem(ID_ART_VSTUDIO,  _("Studio"));
+	AppendRadioItem(ID_ART_MOZILLA,  _("Mozilla"));
 }
 
 FbMenuBar::MenuPreview::MenuPreview()

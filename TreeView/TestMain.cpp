@@ -42,12 +42,12 @@ IMPLEMENT_CLASS(FbTestModelData, FbModelData)
 
 
 wxString FbTestModelData::GetValue(FbModel & model, size_t col) const
-{ 
+{
 	switch (col) {
-		case 1: 
+		case 1:
 			return Format(m_code * m_code * 100);
-		default: 
-			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); 
+		default:
+			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col);
 	}
 }
 
@@ -75,12 +75,12 @@ class FbTreeModelData: public FbParentData
 IMPLEMENT_CLASS(FbTreeModelData, FbParentData)
 
 wxString FbTreeModelData::GetValue(FbModel & model, size_t col) const
-{ 
+{
 	switch (col) {
-		case 1: 
+		case 1:
 			return Format(m_code * m_code * 100);
-		default: 
-			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); 
+		default:
+			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col);
 	}
 }
 
@@ -288,11 +288,8 @@ void DataViewFrame::OnModifyType(wxCommandEvent& event)
 
 void DataViewFrame::OnDeleteType(wxCommandEvent& event)
 {
-	FbListStore * model = wxDynamicCast(m_dataview->GetModel(), FbListStore);
-	if (model) {
-		FbModelData * data = model->GetCurrent();
-		model->Delete();
-	}
+	FbModel * model = m_dataview->GetModel();
+	if (model) model->Delete();
 }
 
 void DataViewFrame::OnTypeActivated(wxTreeEvent & event)
@@ -307,7 +304,7 @@ void DataViewFrame::CreateTreeModel()
 	for (int i = 0; i < FB_TREE_COUNT; i++) {
 		FbTreeModelData * parent = new FbTreeModelData(*model, root, i);
 		for (int j = 0; j < FB_TREE_COUNT; j++) {
-			FbTreeModelData * child = new FbTreeModelData(*model, parent, j);
+			new FbTreeModelData(*model, parent, j);
 		}
 	}
 	model->SetRoot(root);
