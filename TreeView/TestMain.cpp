@@ -7,13 +7,18 @@
  * License:
  **************************************************************/
 
-#define FB_ITEM_COUNT 20
+#define FB_LIST_COUNT 20
+#define FB_TREE_COUNT 5
 
 #include "TestMain.h"
 #include "TestMain.h"
 #include "TestApp.h"
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
+
+//-----------------------------------------------------------------------------
+//  FbTestModelData
+//-----------------------------------------------------------------------------
 
 class FbTestModelData: public FbModelData
 {
@@ -23,7 +28,7 @@ class FbTestModelData: public FbModelData
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const;
 		virtual int GetState(FbModel & model) const
-			{ return m_state ? 1 : 0; }
+			{ return m_state; }
 		virtual void SetState(FbModel & model, bool state)
 			{ m_state = state; }
 	protected:
@@ -45,6 +50,43 @@ wxString FbTestModelData::GetValue(FbModel & model, size_t col) const
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  FbTreeModelData
+//-----------------------------------------------------------------------------
+
+class FbTreeModelData: public FbParentData
+{
+	public:
+		FbTreeModelData(FbModel & model, FbParentData * parent, int i)
+			: FbParentData(model, parent), m_code(i), m_state(0) {}
+	public:
+		virtual wxString GetValue(FbModel & model, size_t col) const;
+		virtual int DoGetState(FbModel & model) const
+			{ return m_state; }
+		virtual void DoSetState(FbModel & model, int state)
+			{ m_state = state; }
+	protected:
+		int m_code;
+		int m_state;
+		DECLARE_CLASS(FbTestModelData);
+};
+
+IMPLEMENT_CLASS(FbTreeModelData, FbParentData)
+
+wxString FbTreeModelData::GetValue(FbModel & model, size_t col) const
+{ 
+	switch (col) {
+		case 1: 
+			return Format(m_code * m_code * 100);
+		default: 
+			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); 
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  DataViewFrame
+//-----------------------------------------------------------------------------
+
 wxString DataViewFrame::sm_filename;
 
 BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
@@ -54,6 +96,8 @@ BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_MENU( idOpenBook, DataViewFrame::OnOpenBook )
 	EVT_MENU( idOpenTree, DataViewFrame::OnOpenTree )
 	EVT_MENU( idMenuAbout, DataViewFrame::OnAbout )
+	EVT_MENU( idCreateList, DataViewFrame::OnCreateList )
+	EVT_MENU( idCreateTree, DataViewFrame::OnCreateTree )
 	EVT_TEXT_ENTER(idSearchBtn, DataViewFrame::OnSearchBtn)
 	EVT_MENU( ID_APPEND_TYPE, DataViewFrame::OnAppendType )
 	EVT_MENU( ID_MODIFY_TYPE, DataViewFrame::OnModifyType )
@@ -67,6 +111,14 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 
 	wxMenuBar * mbar = new wxMenuBar( 0 );
 	wxMenu * fileMenu = new wxMenu();
+
+	wxMenuItem* menuCreateTree = new wxMenuItem( fileMenu, idCreateTree, _("Create test tree"));
+	fileMenu->Append( menuCreateTree );
+
+	wxMenuItem* menuCreateList = new wxMenuItem( fileMenu, idCreateList, _("Create test list"));
+	fileMenu->Append( menuCreateList );
+
+	fileMenu->AppendSeparator();
 
 	wxMenuItem* menuOpenTree = new wxMenuItem( fileMenu, idOpenTree, wxString( _("&Open book tree") ) + wxT('\t') + wxT("Ctrl+O"), _("Open file"), wxITEM_NORMAL );
 	fileMenu->Append( menuOpenTree );
@@ -114,12 +166,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	m_dataview->SetFocus();
 	m_dataview->SetSortedColumn(2);
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
-
-	FbListStore * model = new FbListStore;
-	for (int i=0; i<FB_ITEM_COUNT; i++)
-		model->Append(new FbTestModelData(i));
-	m_dataview->AssignModel(model);
-
+	CreateTreeModel();
 
 	{
 		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
@@ -250,4 +297,37 @@ void DataViewFrame::OnDeleteType(wxCommandEvent& event)
 void DataViewFrame::OnTypeActivated(wxTreeEvent & event)
 {
 	wxLogMessage(wxT("DataViewFrame::OnTypeActivated"));
+}
+
+void DataViewFrame::CreateTreeModel()
+{
+	FbTreeModel * model = new FbTreeModel();
+	FbTreeModelData * root = new FbTreeModelData(*model, NULL, 0);
+	for (int i = 0; i < FB_TREE_COUNT; i++) {
+		FbTreeModelData * parent = new FbTreeModelData(*model, root, i);
+		for (int j = 0; j < FB_TREE_COUNT; j++) {
+			FbTreeModelData * child = new FbTreeModelData(*model, parent, j);
+		}
+	}
+	model->SetRoot(root);
+	m_dataview->AssignModel(model);
+}
+
+void DataViewFrame::CreateListModel()
+{
+
+	FbListStore * model = new FbListStore;
+	for (int i=0; i<FB_LIST_COUNT; i++)
+		model->Append(new FbTestModelData(i));
+	m_dataview->AssignModel(model);
+}
+
+void DataViewFrame::OnCreateList(wxCommandEvent& event)
+{
+	CreateListModel();
+}
+
+void DataViewFrame::OnCreateTree(wxCommandEvent& event)
+{
+	CreateTreeModel();
 }

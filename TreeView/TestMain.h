@@ -22,6 +22,10 @@ class DataViewFrame: public wxFrame
 		~DataViewFrame();
 		static wxString sm_filename;
 	protected:
+		void CreateTreeModel();
+		void CreateListModel();
+
+	protected:
 		enum
 		{
 			idMenuQuit = 1000,
@@ -30,6 +34,8 @@ class DataViewFrame: public wxFrame
 			idOpenTree,
 			idMenuAbout,
 			idSearchBtn,
+			idCreateTree,
+			idCreateList,
 			ID_TYPE_LIST,
 			ID_APPEND_TYPE,
 			ID_MODIFY_TYPE,
@@ -47,6 +53,9 @@ class DataViewFrame: public wxFrame
 		void OnOpenList(wxCommandEvent& event);
 		void OnOpenTree(wxCommandEvent& event);
         void OnSearchBtn(wxCommandEvent& event);
+
+		void OnCreateList(wxCommandEvent& event);
+		void OnCreateTree(wxCommandEvent& event);
 
 		void OnAppendType(wxCommandEvent& event);
 		void OnModifyType(wxCommandEvent& event);
