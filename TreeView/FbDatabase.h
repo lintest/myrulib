@@ -17,7 +17,7 @@ class FbSearchFunction: public wxSQLite3ScalarFunction
 		wxArrayString m_masks;
 };
 
-class FbCommonDatabase: public wxSQLite3Database 
+class FbCommonDatabase: public wxSQLite3Database
 {
 	public:
 	   FbCommonDatabase()
