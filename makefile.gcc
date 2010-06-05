@@ -156,7 +156,8 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_base64.o \
 	build\myrulib_treelistctrl.o \
 	build\myrulib_resource_rc.o
-MYRULIB_ODEP = build/ru.inc build/uk.inc build/be.inc build/cs.inc build/sv.inc
+MYRULIB_ODEP = build/ru.mo build/uk.mo build/be.mo build/cs.mo build/sv.mo \
+	build/ru.inc build/uk.inc build/be.inc build/cs.inc build/sv.inc
 
 ### Conditionally set variables: ###
 

@@ -131,13 +131,18 @@
 	<exe id="myrulib" template="wxgui">
 		<define>NDEBUG</define>
 		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
+		<objects-depend>build/ru.mo</objects-depend>
+		<objects-depend>build/uk.mo</objects-depend>
+		<objects-depend>build/be.mo</objects-depend>
+		<objects-depend>build/cs.mo</objects-depend>
+		<objects-depend>build/sv.mo</objects-depend>
 		<if cond="LOCALE_STATIC=='1'">
 			<define>FB_INCLUDE_LOCALE</define>
-			<objects-depend>$(BUILDDIR)/ru.inc</objects-depend>
-			<objects-depend>$(BUILDDIR)/uk.inc</objects-depend>
-			<objects-depend>$(BUILDDIR)/be.inc</objects-depend>
-			<objects-depend>$(BUILDDIR)/cs.inc</objects-depend>
-			<objects-depend>$(BUILDDIR)/sv.inc</objects-depend>
+			<objects-depend>build/ru.inc</objects-depend>
+			<objects-depend>build/uk.inc</objects-depend>
+			<objects-depend>build/be.inc</objects-depend>
+			<objects-depend>build/cs.inc</objects-depend>
+			<objects-depend>build/sv.inc</objects-depend>
 		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
