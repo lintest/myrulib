@@ -6,33 +6,36 @@
 
 class FbModel;
 
-class FbCasheData: public wxObject
+class FbCacheData: public wxObject
 {
 	public:
-		FbCasheData(wxSQLite3ResultSet &result);
-		FbCasheData(int code, wxSQLite3ResultSet &result);
+		FbCacheData(wxSQLite3ResultSet &result);
+		FbCacheData(int code, wxSQLite3ResultSet &result);
 		int GetCode() const { return m_code; }
-		wxString GetValue(FbModel & model, size_t col) const;
+		wxString GetValue(size_t col) const;
 	private:
 		int m_code;
 		wxString m_name;
 		int m_count;
-		DECLARE_CLASS(FbCasheData)
+		DECLARE_CLASS(FbCacheData)
 };
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbCasheData, FbCasheArray);
+WX_DECLARE_OBJARRAY(FbCacheData, FbCasheArray);
 
 class FbCollection: public wxObject
 {
 	public:
+		static wxString Format(int number);
 		FbCollection();
 		virtual ~FbCollection();
-		FbCasheData * GetSeqn(int code);
-		FbCasheData * GetAuth(int code);
-		void AddSeqn(FbCasheData * data);
-		void AddAuth(FbCasheData * data);
+		FbCacheData * GetSeqn(int code);
+		FbCacheData * GetAuth(int code);
+		void AddSeqn(FbCacheData * data);
+		void AddAuth(FbCacheData * data);
 	protected:
+		FbCacheData * GetData(int code, FbCasheArray &items, const wxString &sql);
+		void AddData(FbCasheArray &items, FbCacheData * data);
 	private:
 		FbCommonDatabase m_database;
 		FbCasheArray m_auths;

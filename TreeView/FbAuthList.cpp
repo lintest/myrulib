@@ -1,6 +1,7 @@
 #include "FbAuthList.h"
+#include "FbCollection.h"
 
-#define AUTH_CACHE_SIZE 100
+#define AUTH_CACHE_SIZE 64
 
 //-----------------------------------------------------------------------------
 //  FbAuthListData
@@ -8,45 +9,16 @@
 
 IMPLEMENT_CLASS(FbAuthListData, FbModelData)
 
-FbAuthListData::FbAuthListData(int code, wxSQLite3Database &database)
-	: m_code(code)
-{
-	try {
-		wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_code);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) {
-			m_name = result.GetString(1);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-}
-
-FbAuthListData::FbAuthListData(int code, const wxString &name)
-	: m_code(code), m_name(name)
-{
-}
-
 wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 {
-	switch (col) {
-		case 0:
-			return m_name;
-		case 1:
-			return Format(m_code);
-		default:
-			return wxEmptyString;
-	}
+	FbAuthListModel * list = wxDynamicCast(&model, FbAuthListModel);
+	if (list == NULL) return wxEmptyString;
+
+	FbCacheData * data = list->GetCollection().GetAuth(m_code);
+	if (data == NULL) return wxEmptyString;
+
+	return data->GetValue(col);
 }
-
-//-----------------------------------------------------------------------------
-//  FbAuthListArray
-//-----------------------------------------------------------------------------
-
-#include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(FbAuthListArray);
 
 //-----------------------------------------------------------------------------
 //  FbAuthListModel
@@ -55,6 +27,7 @@ WX_DEFINE_OBJARRAY(FbAuthListArray);
 IMPLEMENT_CLASS(FbAuthListModel, FbListModel)
 
 FbAuthListModel::FbAuthListModel(int order, wxChar letter)
+	: m_data(NULL)
 {
 	try {
 		wxString condition;
@@ -69,9 +42,10 @@ FbAuthListModel::FbAuthListModel(int order, wxChar letter)
 		while (result.NextRow()) {
 			int code = result.GetInt(0);
 			m_items.Add(code);
+			if (count == 1) m_position = 1;
 			if (count >= AUTH_CACHE_SIZE) continue;
 			wxString name = result.GetString(1);
-			m_cache.Add(new FbAuthListData(code, name));
+			m_collection.AddAuth(new FbCacheData(code, result));
 			count++;
 		}
 	} catch (wxSQLite3Exception & e) {
@@ -80,6 +54,7 @@ FbAuthListModel::FbAuthListModel(int order, wxChar letter)
 }
 /*
 FbAuthListModel::FbAuthListModel(int order, const wxString &mask)
+	: m_data(NULL)
 {
 	try {
 		bool bFullText = FbSearchFunction::IsFullText(mask);
@@ -104,6 +79,7 @@ FbAuthListModel::FbAuthListModel(int order, const wxString &mask)
 */
 FbAuthListModel::~FbAuthListModel(void)
 {
+	wxDELETE(m_data);
 }
 
 wxString FbAuthListModel::GetOrder(int column)
@@ -128,15 +104,8 @@ FbModelData * FbAuthListModel::GetData(size_t row)
 {
 	if (row == 0 || row > m_items.Count()) return NULL;
 	int code = m_items[row - 1];
-	size_t count = m_cache.Count();
-	for (size_t i = 0; i < count; i++) {
-		FbAuthListData & data = m_cache[i];
-		if (data.GetCode() == code) return &data;
-	}
-	FbAuthListData * data = new FbAuthListData(code, m_database);
-	m_cache.Insert(data, 0);
-	if (count > AUTH_CACHE_SIZE) m_cache.RemoveAt(AUTH_CACHE_SIZE, count - AUTH_CACHE_SIZE);
-	return data;
+	wxDELETE(m_data);
+	return m_data = new FbAuthListData(code);
 }
 
 void FbAuthListModel::Delete()
@@ -147,6 +116,4 @@ void FbAuthListModel::Delete()
 		if (m_position >= count) m_position = count - 1;
 		if (m_owner) m_owner->Refresh();
 	}
-
-
 }

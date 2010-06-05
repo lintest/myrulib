@@ -151,7 +151,9 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
     m_normalColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)),
 	m_hilightColour(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT)),
     // Set pen for borders
-	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID)
+	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
+	// Current item flags
+	m_selected(false)
 {
 	m_normalFont = dc.GetFont();
 	m_normalFont.SetWeight(wxFONTWEIGHT_NORMAL);
@@ -185,7 +187,7 @@ const wxBitmap & FbModel::GetBitmap(int state)
 
 void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols)
 {
-	if (GetCurrent() == &data) {
+	if (ctx.m_selected) {
 		dc.SetBrush(m_focused ? ctx.m_hilightBrush : ctx.m_unfocusBrush);
         dc.SetTextForeground(ctx.m_hilightColour);
 	} else {
@@ -260,6 +262,7 @@ void FbListModel::DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, co
 	{
 		wxRect rect(0, y, ww, h);
         FbModelData * data = GetData(pos + 1);
+        cnt.m_selected = m_position == pos + 1;
 		if (data) DrawItem(*data, dc, cnt, rect, cols);
 	}
 }
@@ -441,26 +444,28 @@ IMPLEMENT_CLASS(FbTreeModel, FbModel)
 
 void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
-	int y = 0;
-	if (m_root) DoDrawItem(*m_root, dc, cnt, rect, cols, h, y);
+	size_t position = 0;
+	if (m_root) DoDrawItem(*m_root, dc, cnt, rect, cols, h, position);
 }
 
-void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, int &y)
+void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
 {
+	int y = position * h;
 	if (y > rect.GetBottom()) return;
 
 	int ww = rect.GetWidth();
 
 	if (y >= rect.GetTop()) {
+        cnt.m_selected = m_position == position + 1;
 		wxRect rect(0, y, ww, h);
 		DrawItem(data, dc, cnt, rect, cols);
 	}
-	y += h;
+	position++;
 
 	size_t count = data.Count(*this);
 	for (size_t i = 0; i < count; i++) {
 		FbModelData * child = data.Items(*this, i);
-		if (child) DoDrawItem(*child, dc, cnt, rect, cols, h, y);
+		if (child) DoDrawItem(*child, dc, cnt, rect, cols, h, position);
 	}
 }
 
@@ -565,3 +570,9 @@ FbModelData * FbTreeModel::GetData(size_t row)
 	return NULL;
 }
 
+void FbTreeModel::SetRoot(FbModelData * root)
+{
+	wxDELETE(m_root);
+	m_root = root;
+	m_position = 1;
+}

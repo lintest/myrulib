@@ -3,22 +3,18 @@
 
 #include "FbTreeModel.h"
 #include "FbDatabase.h"
+#include "FbCollection.h"
 
 class FbAuthListData: public FbModelData
 {
 	public:
-		FbAuthListData(int code, const wxString &name);
-		FbAuthListData(int code, wxSQLite3Database &database);
+		FbAuthListData(int code): m_code(code) {}
 		virtual wxString GetValue(FbModel & model, size_t col) const;
 		int GetCode() const { return m_code; }
 	private:
 		int m_code;
-		wxString m_name;
-		DECLARE_CLASS(FbModelData);
+		DECLARE_CLASS(FbAuthListData);
 };
-
-#include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbAuthListData, FbAuthListArray);
 
 class FbAuthListModel: public FbListModel
 {
@@ -29,6 +25,7 @@ class FbAuthListModel: public FbListModel
 		virtual void Append(FbModelData * data) {}
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete();
+		FbCollection & GetCollection() { return m_collection; }
 	protected:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
@@ -40,8 +37,9 @@ class FbAuthListModel: public FbListModel
         wxString GetSQL(const wxString & order, const wxString & condition);
 	private:
 		FbCommonDatabase m_database;
+		FbCollection m_collection;
 		wxArrayInt m_items;
-		FbAuthListArray m_cache;
+		FbAuthListData * m_data;
 		DECLARE_CLASS(FbAuthListModel);
 };
 

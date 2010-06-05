@@ -111,6 +111,7 @@ class FbModel: public wxObject
 				wxFont m_normalFont;
 				wxFont m_boldFont;
 				wxPen m_borderPen;
+				bool m_selected;
 		};
 	public:
 		FbModel();
@@ -188,10 +189,10 @@ class FbTreeModel: public FbModel
 			: m_root(NULL) {}
 		virtual ~FbTreeModel()
 			{ wxDELETE(m_root); }
-		void SetRoot(FbModelData * root)
-			{ wxDELETE(m_root); m_root = root; }
 		FbModelData * GetRoot()
 			{ return m_root; }
+
+		void SetRoot(FbModelData * root);
 
 		virtual int GoFirstRow();
 		virtual int GoLastRow();
@@ -212,7 +213,7 @@ class FbTreeModel: public FbModel
 
 	protected:
 		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, int &y);
+		void DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
 		FbModelData * FindData(FbModelData &parent, size_t &row);
 		FbModelData * GetLast(FbModelData &parent);
 
