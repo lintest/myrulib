@@ -473,11 +473,9 @@ int FbTreeModel::GoFirstRow()
 {
 	if (m_root) {
 		m_position = 1;
-		m_current = m_root;
 		return 1;
 	} else {
 		m_position = 0;
-		m_current = NULL;
 		return 0;
 	}
 }
@@ -486,11 +484,9 @@ int FbTreeModel::GoLastRow()
 {
 	if (m_root) {
 		m_position = m_root->CountAll(*this);
-		m_current = GetLast(*m_root);
 		return m_position;
 	} else {
 		m_position = 0;
-		m_current = NULL;
 		return 0;
 	}
 }
@@ -514,7 +510,6 @@ int FbTreeModel::GoPriorRow(size_t delta)
 		return m_position;
 	} else {
 		m_position = 0;
-		m_current = NULL;
 		return 0;
 	}
 }
@@ -528,7 +523,6 @@ int FbTreeModel::GoNextRow(size_t delta)
 		return m_position;
 	} else {
 		m_position = 0;
-		m_current = NULL;
 		return 0;
 	}
 }
@@ -539,10 +533,7 @@ size_t FbTreeModel::FindRow(size_t row, bool select)
 		size_t pos = row;
 		FbModelData * data = FindData(*m_root, pos);
 		if (data) {
-			if (select) {
-				m_current = data;
-				m_position = row;
-			}
+			if (select) m_position = row;
 			return row;
 		}
 	}

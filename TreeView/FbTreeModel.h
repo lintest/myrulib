@@ -130,12 +130,14 @@ class FbModel: public wxObject
 
 		virtual size_t FindRow(size_t row, bool select) = 0;
 		virtual FbModelData * GetData(size_t row) = 0;
-		virtual FbModelData * GetCurrent() = 0;
 		virtual size_t GetRowCount() const = 0;
 
 		virtual void Append(FbModelData * data) = 0;
 		virtual void Replace(FbModelData * data) = 0;
 		virtual void Delete() = 0;
+
+		virtual FbModelData * GetCurrent()
+			{ return GetData(m_position); }
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
@@ -175,8 +177,6 @@ class FbListStore: public FbListModel
 			{ return m_list.Count(); }
 		virtual FbModelData * GetData(size_t row)
 			{ return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }
-		virtual FbModelData * GetCurrent()
-			{ return GetData(m_position); };
 	private:
 		FbModelDataArray m_list;
 		DECLARE_CLASS(FbListStore);
@@ -204,8 +204,6 @@ class FbTreeModel: public FbModel
 
 		virtual size_t GetRowCount() const
 			{ return m_root ? m_root->CountAll(*this) : 0; }
-		virtual FbModelData * GetCurrent()
-			{ return m_current; }
 
 		virtual void Append(FbModelData * data) {}
 		virtual void Replace(FbModelData * data) {}
@@ -219,7 +217,6 @@ class FbTreeModel: public FbModel
 
 	protected:
 		FbModelData * m_root;
-		FbModelData * m_current;
 		DECLARE_CLASS(FbTreeModel);
 };
 
