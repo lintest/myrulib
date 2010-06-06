@@ -11,9 +11,11 @@
 #define DATAVIEWMAIN_H
 
 #include <wx/wx.h>
+#include "FbBookEvent.h"
+
+class wxTreeEvent;
 
 class FbTreeViewCtrl;
-class wxTreeEvent;
 
 class DataViewFrame: public wxFrame
 {
@@ -42,8 +44,10 @@ class DataViewFrame: public wxFrame
 			ID_DELETE_TYPE,
 		};
 
-		wxStatusBar* m_statusbar;
-		FbTreeViewCtrl* m_dataview;
+		wxStatusBar * m_statusbar;
+		FbTreeViewCtrl * m_dataview;
+
+		wxThread * m_thread;
 
 	private:
         void OnClose(wxCloseEvent& event);
@@ -61,6 +65,9 @@ class DataViewFrame: public wxFrame
 		void OnModifyType(wxCommandEvent& event);
 		void OnDeleteType(wxCommandEvent& event);
 		void OnTypeActivated(wxTreeEvent& event);
+
+		void OnModel( FbModelEvent& event );
+		void OnArray( FbArrayEvent& event );
 
         DECLARE_EVENT_TABLE()
 };

@@ -5,6 +5,24 @@
 #include "FbDatabase.h"
 #include "FbCollection.h"
 
+#define ID_MASTER_MODEL 2000
+
+class FbAuthListThread: public wxThread
+{
+	public:
+		FbAuthListThread(wxEvtHandler * frame, wxChar letter = 0, int order = 0)
+			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_letter(letter), m_order(order) {}
+	protected:
+		virtual void * Entry();
+	private:
+		static wxString GetOrder(int column);
+		void Load(wxSQLite3Database &database);
+		wxEvtHandler * m_frame;
+		wxChar m_letter;
+		int m_order;
+};
+
+
 class FbAuthListData: public FbModelData
 {
 	public:
@@ -19,6 +37,7 @@ class FbAuthListData: public FbModelData
 class FbAuthListModel: public FbListModel
 {
 	public:
+		FbAuthListModel(wxArrayInt &items);
 		FbAuthListModel(int order, wxChar letter = 0);
 		FbAuthListModel(int order, const wxString &mask);
 		virtual ~FbAuthListModel(void);
@@ -26,14 +45,15 @@ class FbAuthListModel: public FbListModel
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete();
 		FbCollection & GetCollection() { return m_collection; }
+		void Append(const wxArrayInt &items);
 	protected:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); };
 		virtual FbModelData * GetData(size_t row);
+		static wxString GetOrder(int column);
 	private:
-		wxString GetOrder(int column);
         wxString GetSQL(const wxString & order, const wxString & condition);
 	private:
 		FbCommonDatabase m_database;

@@ -19,4 +19,6 @@ class DataViewApp : public wxApp
         virtual bool OnInit();
 };
 
+DECLARE_APP(DataViewApp)
+
 #endif // DATAVIEWAPP_H

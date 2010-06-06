@@ -1,7 +1,70 @@
 #include "FbAuthList.h"
 #include "FbCollection.h"
+#include "FbBookEvent.h"
 
 #define AUTH_CACHE_SIZE 64
+
+//-----------------------------------------------------------------------------
+//  FbAuthListThread
+//-----------------------------------------------------------------------------
+
+void * FbAuthListThread::Entry()
+{
+	try {
+		FbCommonDatabase database;
+		Load(database);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return NULL;
+}
+
+void FbAuthListThread::Load(wxSQLite3Database &database)
+{
+	wxString sql = wxT("SELECT id, full_name, number FROM authors");
+	if (m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
+	sql << wxT(' ') << wxT("ORDER BY") << wxT(' ') << GetOrder(m_order);
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	if (m_letter) stmt.Bind(1, (wxString)m_letter);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	size_t count = 0;
+	wxArrayInt items;
+	FbAuthListModel * model = new FbAuthListModel(items);
+	while (result.NextRow()) {
+		int code = result.GetInt(0);
+		model->GetCollection().AddAuth(new FbCacheData(code, result));
+		items.Add(code);
+		count++;
+		if (count == AUTH_CACHE_SIZE) break;
+	}
+	model->Append(items);
+	FbModelEvent(ID_MASTER_MODEL, model).Post(m_frame);
+	items.Empty();
+	count = 0;
+
+	while (result.NextRow()) {
+		int code = result.GetInt(0);
+		items.Add(code);
+		count++;
+		if (count == AUTH_CACHE_SIZE) {
+			FbArrayEvent(ID_MASTER_MODEL, items).Post(m_frame);
+			items.Empty();
+			count = 0;
+		}
+	}
+	FbArrayEvent(ID_MASTER_MODEL, items).Post(m_frame);
+}
+
+wxString FbAuthListThread::GetOrder(int column)
+{
+	switch (column) {
+		case -2: return wxT("number desc, search_name desc");
+		case -1: return wxT("search_name desc");
+		case  2: return wxT("number, search_name");
+		default: return wxT("search_name ");
+	}
+}
 
 //-----------------------------------------------------------------------------
 //  FbAuthListData
@@ -26,12 +89,17 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 
 IMPLEMENT_CLASS(FbAuthListModel, FbListModel)
 
+FbAuthListModel::FbAuthListModel(wxArrayInt &items)
+	: m_data(NULL)
+{
+	m_position = items.Count();
+	Append(items);
+}
+
 FbAuthListModel::FbAuthListModel(int order, wxChar letter)
 	: m_data(NULL)
 {
 	try {
-		wxString condition;
-		if (letter) condition = wxT("Letter=?");
 		wxString sql = wxT("SELECT id, full_name, number FROM authors");
 		if (letter) sql << wxT(' ') << wxT("WHERE letter=?");
 		sql << wxT(' ') << wxT("ORDER BY") << wxT(' ') << GetOrder(order);
@@ -44,7 +112,6 @@ FbAuthListModel::FbAuthListModel(int order, wxChar letter)
 			m_items.Add(code);
 			if (count == 1) m_position = 1;
 			if (count >= AUTH_CACHE_SIZE) continue;
-			wxString name = result.GetString(1);
 			m_collection.AddAuth(new FbCacheData(code, result));
 			count++;
 		}
@@ -80,6 +147,11 @@ FbAuthListModel::FbAuthListModel(int order, const wxString &mask)
 FbAuthListModel::~FbAuthListModel(void)
 {
 	wxDELETE(m_data);
+}
+
+void FbAuthListModel::Append(const wxArrayInt &items)
+{
+	WX_APPEND_ARRAY(m_items, items);
 }
 
 wxString FbAuthListModel::GetOrder(int column)

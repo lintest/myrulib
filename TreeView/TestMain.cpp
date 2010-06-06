@@ -104,9 +104,12 @@ BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_MENU( ID_MODIFY_TYPE, DataViewFrame::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, DataViewFrame::OnDeleteType )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, DataViewFrame::OnTypeActivated)
+	EVT_FB_MODEL(ID_MASTER_MODEL, DataViewFrame::OnModel)
+	EVT_FB_ARRAY(ID_MASTER_MODEL, DataViewFrame::OnArray)
 END_EVENT_TABLE()
 
-DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
+	: wxFrame(parent, id, title, pos, size, style), m_thread(NULL)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -199,6 +202,8 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 
 DataViewFrame::~DataViewFrame()
 {
+	if (m_thread) m_thread->Wait();
+	wxDELETE(m_thread);
 }
 
 void DataViewFrame::OnClose(wxCloseEvent &event)
@@ -235,8 +240,12 @@ void DataViewFrame::OnOpenList(wxCommandEvent &event)
 
 	if (dlg.ShowModal() == wxID_OK) {
 		sm_filename = dlg.GetPath();
-		FbModel * model = new FbAuthListModel(0);
-		m_dataview->AssignModel(model);
+//		FbModel * model = new FbAuthListModel(0);
+//		m_dataview->AssignModel(model);
+	m_thread = new FbAuthListThread(this);
+    m_thread->Create();
+    m_thread->Run();
+
 	};
 }
 
@@ -329,3 +338,16 @@ void DataViewFrame::OnCreateTree(wxCommandEvent& event)
 {
 	CreateTreeModel();
 }
+
+void DataViewFrame::OnModel( FbModelEvent& event )
+{
+	m_dataview->AssignModel(event.GetModel());
+}
+
+void DataViewFrame::OnArray( FbArrayEvent& event )
+{
+	FbAuthListModel * model = wxDynamicCast(m_dataview->GetModel(), FbAuthListModel);
+	if (model) model->Append(event.GetArray());
+	m_dataview->Refresh();
+}
+
