@@ -15,10 +15,10 @@ static wxString GetRussianAlphabet()
 {
 	wxString result;
 	for (wxChar ch = 0x0410; ch <= (wxChar)0x042F ; ch++) {
-		if (ch == (wxChar)0x0416) continue;
 		if (ch == (wxChar)0x042A) continue;
 		if (ch == (wxChar)0x042C) continue;
 		result += ch;
+		if (ch == (wxChar)0x0415) result += (wxChar)0x0401;
 	}
 	return result;
 }
