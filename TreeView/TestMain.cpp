@@ -106,6 +106,7 @@ BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, DataViewFrame::OnTypeActivated)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, DataViewFrame::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, DataViewFrame::OnArray)
+	EVT_LIST_COL_CLICK(ID_TYPE_LIST, OnColumnClick)
 END_EVENT_TABLE()
 
 DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
@@ -241,7 +242,8 @@ void DataViewFrame::OnOpenList(wxCommandEvent &event)
 	if (dlg.ShowModal() == wxID_OK) {
 		sm_filename = dlg.GetPath();
 		wxGetApp().OpenCollection(dlg.GetPath());
-		m_thread = new FbAuthListThread(this);
+		FbAuthListInfo info;
+		m_thread = new FbAuthListThread(this, info, m_dataview->GetSortedColumn());
 		m_thread->Create();
 		m_thread->Run();
 	};
@@ -350,3 +352,12 @@ void DataViewFrame::OnArray( FbArrayEvent& event )
 	m_dataview->Refresh();
 }
 
+void DataViewFrame::OnColumnClick(wxListEvent& event)
+{
+	if (m_thread) m_thread->Wait();
+	wxDELETE(m_thread);
+	FbAuthListInfo info;
+	m_thread = new FbAuthListThread(this, info, m_dataview->GetSortedColumn());
+	m_thread->Create();
+	m_thread->Run();
+}

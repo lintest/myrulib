@@ -13,7 +13,7 @@ void * FbAuthListThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		if (m_string.IsEmpty()) 
+		if (m_info.m_string.IsEmpty()) 
 			DoLetter(database);
 		else 
 			DoString(database);
@@ -26,25 +26,25 @@ void * FbAuthListThread::Entry()
 void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name, number FROM authors");
-	if (m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
+	if (m_info.m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
 	sql << GetOrder(wxT("search_name,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	if (m_letter) stmt.Bind(1, (wxString)m_letter);
+	if (m_info.m_letter) stmt.Bind(1, (wxString)m_info.m_letter);
 	MakeModel(stmt.ExecuteQuery());
 }
 
 void FbAuthListThread::DoString(wxSQLite3Database &database)
 {
-	if ( FbSearchFunction::IsFullText(m_string) ) {
+	if ( FbSearchFunction::IsFullText(m_info.m_string) ) {
 		wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth LEFT JOIN authors ON id=docid WHERE fts_auth MATCH ?");
 		sql << GetOrder(wxT("search_name,number"), m_order);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, FbSearchFunction::AddAsterisk(m_string));
+		stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
 		MakeModel(stmt.ExecuteQuery());
 	} else {
 		wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE SEARCH(search_name)");
 		sql << GetOrder(wxT("search_name,number"), m_order);
-		FbSearchFunction search(m_string);
+		FbSearchFunction search(m_info.m_string);
 		database.CreateFunction(wxT("SEARCH"), 1, search);
 		MakeModel(database.ExecuteQuery(sql));
 	}
@@ -118,31 +118,6 @@ FbAuthListModel::FbAuthListModel(const wxArrayInt &items)
 	Append(items);
 }
 
-/*
-FbAuthListModel::FbAuthListModel(int order, const wxString &mask)
-	: m_data(NULL)
-{
-	try {
-		bool bFullText = FbSearchFunction::IsFullText(mask);
-
-		if ( bFullText ) {
-			wxString sql = wxT("SELECT docid FROM fts_auth WHERE fts_auth MATCH ? ORDER BY content");
-			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-			stmt.Bind(1, FbSearchFunction::AddAsterisk(mask));
-			count = stmt.ExecuteUpdate();
-		} else {
-			wxString sql = GetSQL(GetOrder(order), wxT("SEARCH(search_name)"));
-			FbSearchFunction search(mask);
-			m_database.CreateFunction(wxT("SEARCH"), 1, search);
-			count = m_database.ExecuteUpdate(sql);
-		}
-		if (count) SetRowCount((size_t)count);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		SetRowCount(0);
-	}
-}
-*/
 FbAuthListModel::~FbAuthListModel(void)
 {
 	wxDELETE(m_data);

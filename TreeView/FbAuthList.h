@@ -8,13 +8,24 @@
 #define ID_MODEL_CREATE 2000
 #define ID_MODEL_APPEND 2001
 
+class FbAuthListInfo: public wxObject
+{
+	public:
+		FbAuthListInfo(wxChar letter = 0, const wxString &string = wxEmptyString)
+			:m_letter(letter), m_string(string) {}
+		FbAuthListInfo(const FbAuthListInfo & info)
+			:m_letter(info.m_letter), m_string(info.m_string) {}
+	private:
+		wxChar m_letter;
+		wxString m_string;
+		friend class FbAuthListThread;
+};
+
 class FbAuthListThread: public wxThread
 {
 	public:
-		FbAuthListThread(wxEvtHandler * frame, wxChar letter = 0, int order = 0)
-			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_letter(letter), m_order(order) {}
-		FbAuthListThread(wxEvtHandler * frame, const wxString &string, int order = 0)
-			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_string(string), m_order(order) {}
+		FbAuthListThread(wxEvtHandler * frame, const FbAuthListInfo &info, int order = 0)
+			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_order(order) {}
 	protected:
 		virtual void * Entry();
 	private:
@@ -23,8 +34,7 @@ class FbAuthListThread: public wxThread
 		void DoString(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
 		wxEvtHandler * m_frame;
-		wxChar m_letter;
-		wxString m_string;
+		FbAuthListInfo m_info;
 		int m_order;
 };
 
