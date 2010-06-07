@@ -66,7 +66,7 @@ class DataViewFrame: public wxFrame
 		void OnDeleteType(wxCommandEvent& event);
 		void OnTypeActivated(wxTreeEvent& event);
 
-		void OnModel( FbModelEvent& event );
+		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );
 
         DECLARE_EVENT_TABLE()

@@ -185,6 +185,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbBookEvent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbCollection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbDatabase.cpp"
 				>
 			</File>
@@ -212,6 +220,14 @@
 			>
 			<File
 				RelativePath=".\FbAuthList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbBookEvent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbCollection.h"
 				>
 			</File>
 			<File

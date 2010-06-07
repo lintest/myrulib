@@ -27,16 +27,19 @@ class FbCollection: public wxObject
 {
 	public:
 		static wxString Format(int number);
-		FbCollection();
+		FbCollection(const wxString &filename);
 		virtual ~FbCollection();
-		FbCacheData * GetSeqn(int code);
-		FbCacheData * GetAuth(int code);
-		void AddSeqn(FbCacheData * data);
-		void AddAuth(FbCacheData * data);
+	public:
+		static FbCollection * GetCollection();
+		static FbCacheData * GetSeqn(int code);
+		static FbCacheData * GetAuth(int code);
+		static void AddSeqn(FbCacheData * data);
+		static void AddAuth(FbCacheData * data);
 	protected:
 		FbCacheData * GetData(int code, FbCasheArray &items, const wxString &sql);
 		void AddData(FbCasheArray &items, FbCacheData * data);
 	private:
+		static wxCriticalSection sm_section;
 		FbCommonDatabase m_database;
 		FbCasheArray m_auths;
 		FbCasheArray m_seqns;

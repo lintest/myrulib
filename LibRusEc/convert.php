@@ -264,7 +264,7 @@ function convert_books($mysql_db, $sqlite_db)
     $subsql = "SELECT code FROM libgenre LEFT JOIN libgenrelist ON libgenre.gid = libgenrelist.gid WHERE bid=".$row['bid'];
     $subquery = $mysql_db->query($subsql);
     while ($subrow = $subquery->fetch_array()) {
-      $genres = $genres.genreCode($subrow['GenreCode']);
+      $genres = $genres.genreCode($subrow['code']);
     }
     $file_type = trim($row['FileType']);
     $file_type = trim($file_type, ".");

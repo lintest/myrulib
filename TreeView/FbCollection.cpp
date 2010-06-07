@@ -1,4 +1,5 @@
 #include "FbCollection.h"
+#include "TestApp.h"
 
 //-----------------------------------------------------------------------------
 //  FbCacheData
@@ -43,7 +44,9 @@ WX_DEFINE_OBJARRAY(FbCasheArray);
 
 IMPLEMENT_CLASS(FbCollection, wxObject)
 
-FbCollection::FbCollection()
+wxCriticalSection FbCollection::sm_section;
+
+FbCollection::FbCollection(const wxString &filename)
 {
 	//ctor
 }
@@ -63,26 +66,41 @@ wxString FbCollection::Format(int number)
 		return wxString::Format(wxT("%d"), lo);
 }
 
+FbCollection * FbCollection::GetCollection()
+{
+	return wxGetApp().GetCollection();
+}
+
 FbCacheData * FbCollection::GetSeqn(int code)
 {
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return NULL;
 	wxString sql = wxT("SELECT id, value, number FROM sequences WHERE id=?");
-	return GetData(code, m_seqns, sql);
+	return collection->GetData(code, collection->m_seqns, sql);
 }
 
 FbCacheData * FbCollection::GetAuth(int code)
 {
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return NULL;
 	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");
-	return GetData(code, m_auths, sql);
+	return collection->GetData(code, collection->m_auths, sql);
 }
 
 void FbCollection::AddSeqn(FbCacheData * data)
 {
-	AddData(m_seqns, data);
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->AddData(collection->m_seqns, data);
 }
 
 void FbCollection::AddAuth(FbCacheData * data)
 {
-	AddData(m_auths, data);
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->AddData(collection->m_auths, data);
 }
 
 void FbCollection::AddData(FbCasheArray &items, FbCacheData * data)

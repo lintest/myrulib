@@ -1,6 +1,7 @@
 #include "FbAuthList.h"
 #include "FbCollection.h"
 #include "FbBookEvent.h"
+#include <wx/tokenzr.h>
 
 #define AUTH_CACHE_SIZE 64
 
@@ -23,47 +24,47 @@ void FbAuthListThread::Load(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name, number FROM authors");
 	if (m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
-	sql << wxT(' ') << wxT("ORDER BY") << wxT(' ') << GetOrder(m_order);
+	sql << wxT(' ') << wxT("ORDER BY") << wxT(' ') << GetOrder(wxT("search_name,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_letter) stmt.Bind(1, (wxString)m_letter);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	MakeModel(stmt.ExecuteQuery());
+}
 
+void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
+{
+	wxWindowID id = ID_MODEL_CREATE;
 	size_t count = 0;
 	wxArrayInt items;
-	FbAuthListModel * model = new FbAuthListModel(items);
 	while (result.NextRow()) {
 		int code = result.GetInt(0);
-		model->GetCollection().AddAuth(new FbCacheData(code, result));
-		items.Add(code);
-		count++;
-		if (count == AUTH_CACHE_SIZE) break;
-	}
-	model->Append(items);
-	FbModelEvent(ID_MASTER_MODEL, model).Post(m_frame);
-	items.Empty();
-	count = 0;
-
-	while (result.NextRow()) {
-		int code = result.GetInt(0);
+		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(new FbCacheData(code, result));
 		items.Add(code);
 		count++;
 		if (count == AUTH_CACHE_SIZE) {
-			FbArrayEvent(ID_MASTER_MODEL, items).Post(m_frame);
+			FbArrayEvent(id, items).Post(m_frame);
+			id = ID_MODEL_APPEND;
 			items.Empty();
 			count = 0;
 		}
 	}
-	FbArrayEvent(ID_MASTER_MODEL, items).Post(m_frame);
+	FbArrayEvent(id, items).Post(m_frame);
 }
 
-wxString FbAuthListThread::GetOrder(int column)
+wxString FbAuthListThread::GetOrder(const wxString &fields, int column)
 {
-	switch (column) {
-		case -2: return wxT("number desc, search_name desc");
-		case -1: return wxT("search_name desc");
-		case  2: return wxT("number, search_name");
-		default: return wxT("search_name ");
+	int i = 0;
+	int number = column == 0 ? 1 : abs(column);
+	wxString result, first;
+	wxStringTokenizer tkz(fields, wxT(","));
+	while (tkz.HasMoreTokens()) {
+		i++;
+		wxString token = tkz.GetNextToken();
+		if (column < 0) token << wxT(' ') << wxT("desc");
+		if (i == number) result = token;
+		if (i == 1) first = token;
 	}
+	if (number != 1) result << wxT(',') << first;
+	return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +78,7 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 	FbAuthListModel * list = wxDynamicCast(&model, FbAuthListModel);
 	if (list == NULL) return wxEmptyString;
 
-	FbCacheData * data = list->GetCollection().GetAuth(m_code);
+	FbCacheData * data = FbCollection::GetAuth(m_code);
 	if (data == NULL) return wxEmptyString;
 
 	return data->GetValue(col);
@@ -89,36 +90,13 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 
 IMPLEMENT_CLASS(FbAuthListModel, FbListModel)
 
-FbAuthListModel::FbAuthListModel(wxArrayInt &items)
+FbAuthListModel::FbAuthListModel(const wxArrayInt &items)
 	: m_data(NULL)
 {
-	m_position = items.Count();
+	m_position = items.Count() == 0 ? 0 : 1;
 	Append(items);
 }
 
-FbAuthListModel::FbAuthListModel(int order, wxChar letter)
-	: m_data(NULL)
-{
-	try {
-		wxString sql = wxT("SELECT id, full_name, number FROM authors");
-		if (letter) sql << wxT(' ') << wxT("WHERE letter=?");
-		sql << wxT(' ') << wxT("ORDER BY") << wxT(' ') << GetOrder(order);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		if (letter) stmt.Bind(1, (wxString)letter);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		size_t count = 0;
-		while (result.NextRow()) {
-			int code = result.GetInt(0);
-			m_items.Add(code);
-			if (count == 1) m_position = 1;
-			if (count >= AUTH_CACHE_SIZE) continue;
-			m_collection.AddAuth(new FbCacheData(code, result));
-			count++;
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-}
 /*
 FbAuthListModel::FbAuthListModel(int order, const wxString &mask)
 	: m_data(NULL)
@@ -154,24 +132,6 @@ void FbAuthListModel::Append(const wxArrayInt &items)
 	WX_APPEND_ARRAY(m_items, items);
 }
 
-wxString FbAuthListModel::GetOrder(int column)
-{
-	switch (column) {
-		case -2: return wxT("number desc, search_name desc");
-		case -1: return wxT("search_name desc");
-		case  2: return wxT("number, search_name");
-		default: return wxT("search_name ");
-	}
-}
-/*
-wxString FbAuthListModel::GetSQL(const wxString & order, const wxString & condition)
-{
-	wxString sql = wxT("SELECT id, full_name FROM authors");
-	if (!condition.IsEmpty()) sql += wxT(" WHERE ") + condition;
-	if (!order.IsEmpty()) sql += wxT(" ORDER BY ") + order;
-	return 	sql;
-}
-*/
 FbModelData * FbAuthListModel::GetData(size_t row)
 {
 	if (row == 0 || row > m_items.Count()) return NULL;

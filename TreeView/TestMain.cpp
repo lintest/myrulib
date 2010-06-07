@@ -104,8 +104,8 @@ BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_MENU( ID_MODIFY_TYPE, DataViewFrame::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, DataViewFrame::OnDeleteType )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, DataViewFrame::OnTypeActivated)
-	EVT_FB_MODEL(ID_MASTER_MODEL, DataViewFrame::OnModel)
-	EVT_FB_ARRAY(ID_MASTER_MODEL, DataViewFrame::OnArray)
+	EVT_FB_ARRAY(ID_MODEL_CREATE, DataViewFrame::OnModel)
+	EVT_FB_ARRAY(ID_MODEL_APPEND, DataViewFrame::OnArray)
 END_EVENT_TABLE()
 
 DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
@@ -240,12 +240,10 @@ void DataViewFrame::OnOpenList(wxCommandEvent &event)
 
 	if (dlg.ShowModal() == wxID_OK) {
 		sm_filename = dlg.GetPath();
-//		FbModel * model = new FbAuthListModel(0);
-//		m_dataview->AssignModel(model);
-	m_thread = new FbAuthListThread(this);
-    m_thread->Create();
-    m_thread->Run();
-
+		wxGetApp().OpenCollection(dlg.GetPath());
+		m_thread = new FbAuthListThread(this);
+		m_thread->Create();
+		m_thread->Run();
 	};
 }
 
@@ -339,9 +337,10 @@ void DataViewFrame::OnCreateTree(wxCommandEvent& event)
 	CreateTreeModel();
 }
 
-void DataViewFrame::OnModel( FbModelEvent& event )
+void DataViewFrame::OnModel( FbArrayEvent& event )
 {
-	m_dataview->AssignModel(event.GetModel());
+	FbAuthListModel * model = new FbAuthListModel(event.GetArray());
+	m_dataview->AssignModel(model);
 }
 
 void DataViewFrame::OnArray( FbArrayEvent& event )
