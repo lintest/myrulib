@@ -15,6 +15,8 @@ class FbAuthListInfo: public wxObject
 			:m_letter(letter), m_string(string) {}
 		FbAuthListInfo(const FbAuthListInfo & info)
 			:m_letter(info.m_letter), m_string(info.m_string) {}
+		bool IsFullText() const
+			{ return FbSearchFunction::IsFullText(m_string); }
 	private:
 		wxChar m_letter;
 		wxString m_string;
@@ -32,6 +34,7 @@ class FbAuthListThread: public wxThread
 		static wxString GetOrder(const wxString &fields, int column);
 		void DoLetter(wxSQLite3Database &database);
 		void DoString(wxSQLite3Database &database);
+		void DoFullText(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
 		wxEvtHandler * m_frame;
 		FbAuthListInfo m_info;

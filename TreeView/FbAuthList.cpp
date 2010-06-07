@@ -13,10 +13,13 @@ void * FbAuthListThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		if (m_info.m_string.IsEmpty()) 
+		if (m_info.m_string.IsEmpty()) {
 			DoLetter(database);
-		else 
+		} else if (m_info.IsFullText()) {
+			DoFullText(database);
+		} else {
 			DoString(database);
+		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
@@ -35,19 +38,20 @@ void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 
 void FbAuthListThread::DoString(wxSQLite3Database &database)
 {
-	if ( FbSearchFunction::IsFullText(m_info.m_string) ) {
-		wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth LEFT JOIN authors ON id=docid WHERE fts_auth MATCH ?");
-		sql << GetOrder(wxT("search_name,number"), m_order);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
-		MakeModel(stmt.ExecuteQuery());
-	} else {
-		wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE SEARCH(search_name)");
-		sql << GetOrder(wxT("search_name,number"), m_order);
-		FbSearchFunction search(m_info.m_string);
-		database.CreateFunction(wxT("SEARCH"), 1, search);
-		MakeModel(database.ExecuteQuery(sql));
-	}
+	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE SEARCH(search_name)");
+	sql << GetOrder(wxT("search_name,number"), m_order);
+	FbSearchFunction search(m_info.m_string);
+	database.CreateFunction(wxT("SEARCH"), 1, search);
+	MakeModel(database.ExecuteQuery(sql));
+}
+
+void FbAuthListThread::DoFullText(wxSQLite3Database &database)
+{
+	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth LEFT JOIN authors ON id=docid WHERE fts_auth MATCH ?");
+	sql << GetOrder(wxT("search_name,number"), m_order);
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
+	MakeModel(stmt.ExecuteQuery());
 }
 
 void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
