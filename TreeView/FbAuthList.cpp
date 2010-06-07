@@ -13,21 +13,41 @@ void * FbAuthListThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		Load(database);
+		if (m_string.IsEmpty()) 
+			DoLetter(database);
+		else 
+			DoString(database);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
 	return NULL;
 }
 
-void FbAuthListThread::Load(wxSQLite3Database &database)
+void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name, number FROM authors");
 	if (m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
-	sql << wxT(' ') << wxT("ORDER BY") << wxT(' ') << GetOrder(wxT("search_name,number"), m_order);
+	sql << GetOrder(wxT("search_name,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_letter) stmt.Bind(1, (wxString)m_letter);
 	MakeModel(stmt.ExecuteQuery());
+}
+
+void FbAuthListThread::DoString(wxSQLite3Database &database)
+{
+	if ( FbSearchFunction::IsFullText(m_string) ) {
+		wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth LEFT JOIN authors ON id=docid WHERE fts_auth MATCH ?");
+		sql << GetOrder(wxT("search_name,number"), m_order);
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, FbSearchFunction::AddAsterisk(m_string));
+		MakeModel(stmt.ExecuteQuery());
+	} else {
+		wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE SEARCH(search_name)");
+		sql << GetOrder(wxT("search_name,number"), m_order);
+		FbSearchFunction search(m_string);
+		database.CreateFunction(wxT("SEARCH"), 1, search);
+		MakeModel(database.ExecuteQuery(sql));
+	}
 }
 
 void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
@@ -54,13 +74,14 @@ wxString FbAuthListThread::GetOrder(const wxString &fields, int column)
 {
 	int i = 0;
 	int number = column == 0 ? 1 : abs(column);
-	wxString result, first;
+	wxString result = wxT(" ORDER BY ");
+	wxString first;
 	wxStringTokenizer tkz(fields, wxT(","));
 	while (tkz.HasMoreTokens()) {
 		i++;
 		wxString token = tkz.GetNextToken();
 		if (column < 0) token << wxT(' ') << wxT("desc");
-		if (i == number) result = token;
+		if (i == number) result << token;
 		if (i == 1) first = token;
 	}
 	if (number != 1) result << wxT(',') << first;

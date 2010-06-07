@@ -13,14 +13,18 @@ class FbAuthListThread: public wxThread
 	public:
 		FbAuthListThread(wxEvtHandler * frame, wxChar letter = 0, int order = 0)
 			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_letter(letter), m_order(order) {}
+		FbAuthListThread(wxEvtHandler * frame, const wxString &string, int order = 0)
+			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_string(string), m_order(order) {}
 	protected:
 		virtual void * Entry();
 	private:
 		static wxString GetOrder(const wxString &fields, int column);
-		void Load(wxSQLite3Database &database);
+		void DoLetter(wxSQLite3Database &database);
+		void DoString(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
 		wxEvtHandler * m_frame;
 		wxChar m_letter;
+		wxString m_string;
 		int m_order;
 };
 
