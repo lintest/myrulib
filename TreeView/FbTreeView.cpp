@@ -835,7 +835,6 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
         }
     }
 
-	size_t old_pos = m_model->GetPosition();
 	if (row) {
         if (row <= pos) {
             SetScrollPos(wxVERTICAL, row - 1);
@@ -845,8 +844,7 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
                 SetScrollPos(wxVERTICAL, pos);
             }
         }
-		size_t new_pos = m_model->GetPosition();
-		if (old_pos != new_pos) SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+		SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
         Repaint();
 		return ;
     }

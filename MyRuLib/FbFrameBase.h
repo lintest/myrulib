@@ -45,10 +45,10 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		int GetBookCount();
 		bool IsFullScreen();
 	protected:
-		wxThread * m_MasterThread;
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
+		wxThread * m_MasterThread;
 		FbFilterObj m_filter;
 	private:
 		void OnActivated(wxActivateEvent & event);

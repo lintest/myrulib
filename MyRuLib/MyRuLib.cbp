@@ -159,7 +159,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-DFB_INCLUDE_LOCALE" />
 			<Add directory="../SQLite3" />
 			<Add directory="../Expat" />
 			<Add directory="../WxSQLite3" />
@@ -179,6 +178,8 @@
 		<Unit filename="ExternalDlg.h" />
 		<Unit filename="FbAboutDlg.cpp" />
 		<Unit filename="FbAboutDlg.h" />
+		<Unit filename="FbAuthList.cpp" />
+		<Unit filename="FbAuthList.h" />
 		<Unit filename="FbAuthorDlg.cpp" />
 		<Unit filename="FbAuthorDlg.h" />
 		<Unit filename="FbAuthorThread.cpp" />
@@ -201,6 +202,8 @@
 		<Unit filename="FbCheckList.h" />
 		<Unit filename="FbChoiceFormat.cpp" />
 		<Unit filename="FbChoiceFormat.h" />
+		<Unit filename="FbCollection.cpp" />
+		<Unit filename="FbCollection.h" />
 		<Unit filename="FbColumnDlg.cpp" />
 		<Unit filename="FbColumnDlg.h" />
 		<Unit filename="FbConfigDlg.cpp" />
@@ -228,11 +231,8 @@
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
 		<Unit filename="FbFrameDate.h" />
-		<Unit filename="FbFrameDownld.cpp" />
 		<Unit filename="FbFrameDownld.h" />
-		<Unit filename="FbFrameFolder.cpp" />
 		<Unit filename="FbFrameFolder.h" />
-		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
 		<Unit filename="FbFrameHtml.cpp" />
 		<Unit filename="FbFrameHtml.h" />
@@ -240,7 +240,6 @@
 		<Unit filename="FbFrameInfo.h" />
 		<Unit filename="FbFrameSearch.cpp" />
 		<Unit filename="FbFrameSearch.h" />
-		<Unit filename="FbFrameSequen.cpp" />
 		<Unit filename="FbFrameSequen.h" />
 		<Unit filename="FbGenres.cpp" />
 		<Unit filename="FbGenres.h" />

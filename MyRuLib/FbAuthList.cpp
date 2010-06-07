@@ -34,7 +34,8 @@ void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 	sql << GetOrder(wxT("search_name,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_info.m_letter) stmt.Bind(1, (wxString)m_info.m_letter);
-	MakeModel(stmt.ExecuteQuery());
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	MakeModel(result);
 }
 
 void FbAuthListThread::DoString(wxSQLite3Database &database)
@@ -43,7 +44,8 @@ void FbAuthListThread::DoString(wxSQLite3Database &database)
 	sql << GetOrder(wxT("search_name,number"), m_order);
 	FbSearchFunction search(m_info.m_string);
 	database.CreateFunction(wxT("SEARCH"), 1, search);
-	MakeModel(database.ExecuteQuery(sql));
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	MakeModel(result);
 }
 
 void FbAuthListThread::DoFullText(wxSQLite3Database &database)
@@ -52,7 +54,8 @@ void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 	sql << GetOrder(wxT("search_name,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
-	MakeModel(stmt.ExecuteQuery());
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	MakeModel(result);
 }
 
 void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
