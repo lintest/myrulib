@@ -8,6 +8,8 @@
 
 class FbLocale;
 
+class FbCollection;
+
 class MyRuLibApp : public wxApp
 {
 	public:
@@ -19,6 +21,7 @@ class MyRuLibApp : public wxApp
 		const wxString GetAppData();
 		const wxString GetAppPath();
 		void Localize();
+		FbCollection * GetCollection() { return m_collection; }
 	private:
 		void OpenLog();
 		wxFileName GetDatabaseFilename(FbDatabase &database);
@@ -28,6 +31,7 @@ class MyRuLibApp : public wxApp
 		wxCriticalSection m_section;
 		wxString m_datafile;
 		FbLocale * m_locale;
+		FbCollection * m_collection;
 };
 
 DECLARE_APP(MyRuLibApp)

@@ -11,17 +11,19 @@
 #include "ZipReader.h"
 #include "FbDataOpenDlg.h"
 #include "FbUpdateThread.h"
+#include "FbCollection.h"
 
 IMPLEMENT_APP(MyRuLibApp)
 
 MyRuLibApp::MyRuLibApp()
-    :m_locale(NULL)
+    :m_locale(NULL), m_collection(NULL)
 {
 }
 
 MyRuLibApp::~MyRuLibApp()
 {
     wxDELETE(m_locale);
+	wxDELETE(m_collection);
 }
 
 void MyRuLibApp::Localize()
@@ -136,6 +138,8 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
 		(new FbTextThread)->Execute();
 		ZipReader::Init();
+		wxDELETE(m_collection);
+		m_collection = new FbCollection(filename);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(_("Database error: ") + e.GetMessage());
 		return false;

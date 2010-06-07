@@ -8,6 +8,7 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
+#include "FbAuthList.h"
 
 enum FbAuthorListMode
 {
@@ -31,6 +32,7 @@ class FbFrameAuthor : public FbFrameBase
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; };
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
+		virtual void CreateColumns();
 		virtual wxMenuBar * CreateMenuBar();
 	private:
 		wxToolBar * CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style);
@@ -39,6 +41,7 @@ class FbFrameAuthor : public FbFrameBase
 		BookTreeItemData * GetSelectedBook();
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
+		void CreateMasterThread();
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxToolBar * m_RuAlphabar;
@@ -47,6 +50,7 @@ class FbFrameAuthor : public FbFrameBase
 		FbAuthorListMode m_AuthorMode;
 		wxString m_AuthorText;
 		int m_AuthorCode;
+		FbAuthListInfo m_info;
 	private:
 		void OnMasterSelected(wxTreeEvent & event);
 		void OnBooksCount(wxCommandEvent& event);
@@ -64,6 +68,8 @@ class FbFrameAuthor : public FbFrameBase
 		void OnMasterPage(wxCommandEvent& event);
 		void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
 		void OnContextMenu(wxTreeEvent& event);
+		void OnModel( FbArrayEvent& event );
+		void OnArray( FbArrayEvent& event );
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameAuthor)
 	protected:

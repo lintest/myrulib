@@ -12,12 +12,13 @@
 #include "FbMainMenu.h"
 #include "FbFilterObj.h"
 #include "FbMasterData.h"
-#include "FbMasterList.h"
+#include "FbTreeView.h"
 
 class FbFrameBase : public FbAuiMDIChildFrame
 {
 	public:
 		FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
+		~FbFrameBase();
 		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 		void UpdateInfo(int id);
@@ -44,7 +45,8 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		int GetBookCount();
 		bool IsFullScreen();
 	protected:
-		FbMasterList * m_MasterList;
+		wxThread * m_MasterThread;
+		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
 		FbFilterObj m_filter;

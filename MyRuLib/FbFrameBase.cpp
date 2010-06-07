@@ -61,8 +61,14 @@ END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
 	FbAuiMDIChildFrame(parent, id, title),
-	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL), m_MasterThread(NULL)
 {
+}
+
+FbFrameBase::~FbFrameBase()
+{
+	if (m_MasterThread) m_MasterThread->Wait();
+	wxDELETE(m_MasterThread);
 }
 
 bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)

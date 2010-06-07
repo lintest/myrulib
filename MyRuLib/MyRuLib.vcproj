@@ -200,6 +200,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbAuthList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbAuthorDlg.cpp"
 				>
 			</File>
@@ -241,6 +245,10 @@
 			</File>
 			<File
 				RelativePath=".\FbChoiceFormat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbCollection.cpp"
 				>
 			</File>
 			<File
@@ -296,22 +304,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDate.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbFrameDownld.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbFrameFolder.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbFrameGenres.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbFrameHtml.cpp"
 				>
 			</File>
@@ -321,10 +313,6 @@
 			</File>
 			<File
 				RelativePath=".\FbFrameSearch.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbFrameSequen.cpp"
 				>
 			</File>
 			<File
@@ -474,6 +462,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbAuthList.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbAuthorDlg.h"
 				>
 			</File>
@@ -519,6 +511,10 @@
 			</File>
 			<File
 				RelativePath=".\FbClientData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbCollection.h"
 				>
 			</File>
 			<File

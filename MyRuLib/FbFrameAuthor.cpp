@@ -33,6 +33,8 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_UPDATE_UI(ID_ALPHABET_RU, FbFrameAuthor::OnViewAlphavetUpdateUI)
 	EVT_UPDATE_UI(ID_ALPHABET_EN, FbFrameAuthor::OnViewAlphavetUpdateUI)
 	EVT_UPDATE_UI(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPageUpdateUI)
+	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameAuthor::OnModel)
+	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameAuthor::OnArray)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
@@ -58,11 +60,10 @@ void FbFrameAuthor::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
-	m_MasterList->AddColumn(_("Author"), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(_("Num."), 10, wxALIGN_RIGHT);
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
 	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);
+	CreateColumns();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
@@ -77,8 +78,16 @@ void FbFrameAuthor::CreateControls()
 void FbFrameAuthor::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	m_MasterList->SetColumnText(0, _("Author"));
-	m_MasterList->SetColumnText(1, _("Num."));
+	if (m_MasterList) {
+		m_MasterList->EmptyColumns();
+		CreateColumns();
+	}
+}
+
+void FbFrameAuthor::CreateColumns()
+{
+	m_MasterList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 }
 
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style)
@@ -127,34 +136,39 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 	ToggleAlphabar(id);
 
-	(new FbAuthorThreadChar(m_MasterList, alphabet[position], m_MasterList->GetSortedColumn()))->Execute();
-	m_AuthorMode = FB_AUTHOR_MODE_CHAR;
-	m_AuthorText = alphabet[position];
+	m_info = (wxChar)alphabet[position];
+	CreateMasterThread();
+}
+
+void FbFrameAuthor::CreateMasterThread()
+{
+	if (m_MasterThread) m_MasterThread->Wait();
+	wxDELETE(m_MasterThread);
+	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn());
+	if (m_MasterThread->Create() == wxTHREAD_NO_ERROR) m_MasterThread->Run();
 }
 
 void FbFrameAuthor::OnAllClicked(wxCommandEvent& event)
 {
 	wxString text = wxT("*");
 	FbFrameAuthor::ToggleAlphabar(ID_LETTER_ALL);
-	(new FbAuthorThreadText(m_MasterList, text, m_MasterList->GetSortedColumn()))->Execute();
-	m_AuthorMode = FB_AUTHOR_MODE_TEXT;
-	m_AuthorText = text;
 	FbParams().SetValue(FB_LAST_LETTER, -1);
+	m_info = wxChar(0);
+	CreateMasterThread();
 }
 
 void FbFrameAuthor::SelectFirstAuthor(const int book)
 {
 	m_BooksPanel->EmptyBooks(book);
-
-	wxTreeItemIdValue cookie;
-	wxTreeItemId item = m_MasterList->GetFirstChild(m_MasterList->GetRootItem(), cookie);
-	if (item.IsOk()) m_MasterList->SelectItem(item);
+	FbModel * model = m_MasterList->GetModel();
+	if (model) model->GoFirstRow();
+	m_MasterList->Refresh();
 }
 
 void FbFrameAuthor::OnMasterSelected(wxTreeEvent & event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) data->Show(this);
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
 void FbFrameAuthor::ActivateAuthors()
@@ -188,15 +202,15 @@ void FbFrameAuthor::SelectRandomLetter()
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetId());
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetCode());
 }
 
 void FbFrameAuthor::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) data->Show(this);
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
 void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
@@ -205,21 +219,16 @@ void FbFrameAuthor::OnCharEvent(wxKeyEvent& event)
 
 void FbFrameAuthor::OnColClick(wxListEvent& event)
 {
-	int order = m_MasterList->GetSortedColumn();
-	FbThread * thread = NULL;
-	switch (m_AuthorMode) {
-		case FB_AUTHOR_MODE_CHAR: thread = new FbAuthorThreadChar(m_MasterList, m_AuthorText, order); break;
-		case FB_AUTHOR_MODE_TEXT: thread = new FbAuthorThreadText(m_MasterList, m_AuthorText, order); break;
-		case FB_AUTHOR_MODE_CODE: thread = new FbAuthorThreadCode(m_MasterList, m_AuthorCode, order); break;
-	}
-	if (thread) thread->Execute();
+	CreateMasterThread();
 }
 
 void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
 {
+/*
 	wxTreeItemId selected = m_MasterList->GetSelection();
 	if (selected.IsOk()) m_MasterList->SetItemText(selected, 1, wxString::Format(wxT("%d "), GetBookCount()));
 	event.Skip();
+*/
 }
 
 void FbFrameAuthor::ShowFullScreen(bool show)
@@ -243,17 +252,16 @@ void FbFrameAuthor::OnContextMenu(wxTreeEvent& event)
 
 void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
-	int id = 0;
-	if (item.IsOk()) {
-		FbMasterData * data = m_MasterList->GetItemData(item);
-		if (data) id = data->GetId();
-	}
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data) FbMasterAuthor(data->GetCode()).Show(this);
+	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
 	PopupMenu(&menu, pos.x, pos.y);
 }
 
 void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 {
+/*
 	wxString newname;
 	int id = FbAuthorDlg::Append(newname);
 
@@ -262,10 +270,12 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 		wxTreeItemId item = m_MasterList->InsertItem(m_MasterList->GetRootItem(), m_MasterList->GetSelection(), newname, -1, -1, data);
 		m_MasterList->SelectItem(item);
 	}
+*/
 }
 
 void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 {
+/*
     wxTreeItemId selected = m_MasterList->GetSelection();
 	FbMasterData * data = selected.IsOk() ? m_MasterList->GetItemData(selected) : NULL;
 	if (data && data->GetId()) {
@@ -274,10 +284,12 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 		int new_id = FbAuthorDlg::Modify(data->GetId(), newname);
 		if (new_id) ReplaceData(old_id, new_id, selected, newname);
 	}
+*/
 }
 
 void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 {
+/*
     wxTreeItemId selected = m_MasterList->GetSelection();
 	FbMasterData * data = selected.IsOk() ? m_MasterList->GetItemData(selected) : NULL;
 	if (data && data->GetId()) {
@@ -286,10 +298,12 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 		int new_id = FbReplaceDlg::Execute(old_id, newname);
 		if (new_id) ReplaceData(old_id, new_id, selected, newname);
 	}
+*/
 }
 
 void FbFrameAuthor::ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname)
 {
+/*
 	if (selected.IsOk()) m_MasterList->SetItemText(selected, newname);
 	if (old_id != new_id) {
 		FbMasterAuthor deleted(new_id);
@@ -299,10 +313,12 @@ void FbFrameAuthor::ReplaceData(int old_id, int new_id, wxTreeItemId selected, c
 		m_MasterList->SetItemData(selected, data);
 		m_MasterList->SelectItem(selected);
 	}
+*/
 }
 
 void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 {
+/*
 	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	int id = data->GetId();
@@ -325,14 +341,15 @@ void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 		(new FbUpdateThread(sql1, sql2))->Execute();
 		m_MasterList->Delete(selected);
 	}
+*/
 }
 
 void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data && data->GetId()>0) {
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data && data->GetCode() > 0) {
 		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
-		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetId());
+		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetCode());
 		wxLaunchDefaultBrowser(url);
 	}
 }
@@ -380,8 +397,8 @@ wxMenuBar * FbFrameAuthor::CreateMenuBar()
 
 void FbFrameAuthor::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	event.Enable( data && data->GetId()>0 );
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	event.Enable( data && data->GetCode()>0 );
 }
 
 FbFrameAuthor::MenuBar::MenuView::MenuView()
@@ -412,5 +429,18 @@ void FbFrameAuthor::OnViewAlphavetUpdateUI(wxUpdateUIEvent & event)
 {
 	wxToolBar * control = (wxToolBar*) FindWindowById(event.GetId());
 	event.Check(control->IsShown());
+}
+
+void FbFrameAuthor::OnModel( FbArrayEvent& event )
+{
+	FbAuthListModel * model = new FbAuthListModel(event.GetArray());
+	m_MasterList->AssignModel(model);
+}
+
+void FbFrameAuthor::OnArray( FbArrayEvent& event )
+{
+	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
+	if (model) model->Append(event.GetArray());
+	m_MasterList->Refresh();
 }
 

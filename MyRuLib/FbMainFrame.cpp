@@ -10,10 +10,10 @@
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
-#include "FbFrameGenres.h"
-#include "FbFrameFolder.h"
-#include "FbFrameDownld.h"
-#include "FbFrameSequen.h"
+//#include "FbFrameGenres.h"
+//#include "FbFrameFolder.h"
+//#include "FbFrameDownld.h"
+//#include "FbFrameSequen.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "FbConfigDlg.h"
@@ -462,16 +462,16 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 			frame = authors;
 		} break;
 		case ID_FRAME_GENRES: {
-			frame = new FbFrameGenres(this);
+//			frame = new FbFrameGenres(this);
 		} break;
 		case ID_FRAME_FOLDER: {
-			frame = new FbFrameFolder(this);
+//			frame = new FbFrameFolder(this);
 		} break;
 		case ID_FRAME_DOWNLD: {
-			frame = new FbFrameDownld(this);
+//			frame = new FbFrameDownld(this);
 		} break;
 		case ID_FRAME_SEQUEN: {
-			frame = new FbFrameSequen(this);
+//			frame = new FbFrameSequen(this);
 		} break;
 	}
 	if (frame) frame->Update();
@@ -509,6 +509,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
+/*
 	if (event.m_type == FT_DOWNLOAD) {
 		if (FbParams::GetValue(FB_AUTO_DOWNLD)) FbDownloader::Start();
 		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, false), FbFrameDownld);
@@ -517,6 +518,7 @@ void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 		FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 	}
+*/
 }
 
 void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
@@ -532,6 +534,7 @@ void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
 
 void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
 {
+/*
 	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_SEQUEN, true), FbFrameSequen);
 	if (!frame) {
 		frame = new FbFrameSequen(this);
@@ -539,6 +542,7 @@ void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
 		frame->Update();
 	}
 	frame->OpenSequence(event.m_author, event.m_book);
+*/
 }
 
 
