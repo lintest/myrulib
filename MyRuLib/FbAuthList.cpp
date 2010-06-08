@@ -4,7 +4,8 @@
 #include "FbConst.h"
 #include <wx/tokenzr.h>
 
-#define AUTH_CACHE_SIZE 64
+#define AUTH_CACHE_SIZE   64
+#define AUTH_ARRAY_SIZE 1024
 
 //-----------------------------------------------------------------------------
 //  FbAuthListThread
@@ -62,6 +63,7 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 {
 	wxWindowID id = ID_MODEL_CREATE;
 	size_t count = 0;
+	size_t length = AUTH_CACHE_SIZE;
 	wxArrayInt items;
 	while (result.NextRow()) {
 		if (m_tester.Closed()) return;
@@ -69,7 +71,8 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(new FbCacheData(code, result));
 		items.Add(code);
 		count++;
-		if (count == AUTH_CACHE_SIZE) {
+		if (count == length) {
+			length = AUTH_ARRAY_SIZE;
 			FbArrayEvent(id, items).Post(m_frame);
 			id = ID_MODEL_APPEND;
 			items.Empty();
