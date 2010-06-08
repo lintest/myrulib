@@ -121,11 +121,6 @@ void FbFrameSequen::ActivateAuthors()
 	m_MasterList->SetFocus();
 }
 
-FbSeqnListModel * FbFrameSequen::GetModel()
-{
-	return m_MasterList ? wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel) : NULL;
-}
-
 void FbFrameSequen::FindSequence(const wxString &text)
 {
 	m_info = text;
@@ -437,8 +432,7 @@ void FbFrameSequen::OnModel( FbArrayEvent& event )
 
 void FbFrameSequen::OnArray( FbArrayEvent& event )
 {
-	FbSeqnListModel * model = GetModel();
+	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
 	if (model) model->Append(event.GetArray());
 	m_MasterList->Refresh();
 }
-

@@ -247,11 +247,6 @@ void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 	PopupMenu(&menu, pos.x, pos.y);
 }
 
-FbAuthListModel * FbFrameAuthor::GetModel()
-{
-	return m_MasterList ? wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel) : NULL;
-}
-
 void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 {
 	wxString newname;
@@ -417,7 +412,7 @@ void FbFrameAuthor::OnModel( FbArrayEvent& event )
 
 void FbFrameAuthor::OnArray( FbArrayEvent& event )
 {
-	FbAuthListModel * model = GetModel();
+	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
 	if (model) model->Append(event.GetArray());
 	m_MasterList->Refresh();
 }

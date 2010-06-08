@@ -26,7 +26,6 @@ class FbFrameSequen : public FbFrameBase
 		virtual wxMenuBar * CreateMenuBar();
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 	private:
-		FbSeqnListModel * GetModel();
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		BookTreeItemData * GetSelectedBook();

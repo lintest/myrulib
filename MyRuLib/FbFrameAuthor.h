@@ -34,7 +34,6 @@ class FbFrameAuthor : public FbFrameBase
 		virtual void UpdateBooklist();
 		virtual wxMenuBar * CreateMenuBar();
 	private:
-		FbAuthListModel * GetModel();
 		wxToolBar * CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style);
 		void ToggleAlphabar(const int &idLetter);
 		BookTreeItemData * GetSelectedBook();

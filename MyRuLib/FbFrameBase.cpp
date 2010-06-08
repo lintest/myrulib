@@ -57,6 +57,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameBase::OnBooksCount)
 	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
+	EVT_COMMAND(ID_MASTER_THREAD, fbEVT_MASTER_ACTION, FbFrameBase::OnMasterExit)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
@@ -69,6 +70,11 @@ FbFrameBase::~FbFrameBase()
 {
 	wxDELETE(m_MasterLocker);
 	if (m_MasterThread) m_MasterThread->Wait();
+	wxDELETE(m_MasterThread);
+}
+
+void FbFrameBase::OnMasterExit(wxCommandEvent& event)
+{
 	wxDELETE(m_MasterThread);
 }
 
