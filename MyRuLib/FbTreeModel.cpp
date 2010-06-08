@@ -114,9 +114,13 @@ void FbParentData::Add(FbModel & model, FbModelData* data)
 	m_items.Add(data);
 }
 
-size_t FbParentData::GetLevel(FbModel & model) const
+int FbParentData::GetLevel(FbModel & model) const
 {
-	return m_parent ? m_parent->GetLevel(model) + 1 : 0;
+	if (m_parent) {
+		return m_parent->GetLevel(model) + 1;
+	} else {
+		return HiddenRoot() ? -1 : 0;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -129,6 +133,11 @@ FbChildData::FbChildData(FbModel & model, FbParentData * parent)
 	: m_parent(parent)
 {
 	if (m_parent) m_parent->Add(model, this);
+}
+
+int FbChildData::GetLevel(FbModel & model) const
+{
+	return m_parent ? m_parent->GetLevel(model) + 1 : 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -445,7 +454,10 @@ IMPLEMENT_CLASS(FbTreeModel, FbModel)
 void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
 	size_t position = 0;
-	if (m_root) DoDrawItem(*m_root, dc, cnt, rect, cols, h, position);
+	if (m_root) {
+		cnt.m_hidden = m_root->HiddenRoot();
+		DoDrawItem(*m_root, dc, cnt, rect, cols, h, position);
+	}
 }
 
 void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
@@ -455,12 +467,16 @@ void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, con
 
 	int ww = rect.GetWidth();
 
-	if (y >= rect.GetTop()) {
-        cnt.m_selected = m_position == position + 1;
-		wxRect rect(0, y, ww, h);
-		DrawItem(data, dc, cnt, rect, cols);
+	if (cnt.m_hidden) {
+		cnt.m_hidden = false;
+	} else {
+		if (y >= rect.GetTop()) {
+			cnt.m_selected = m_position == position + 1;
+			wxRect rect(0, y, ww, h);
+			DrawItem(data, dc, cnt, rect, cols);
+		}
+		position++;
 	}
-	position++;
 
 	size_t count = data.Count(*this);
 	for (size_t i = 0; i < count; i++) {
@@ -472,22 +488,18 @@ void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, con
 int FbTreeModel::GoFirstRow()
 {
 	if (m_root) {
-		m_position = 1;
-		return 1;
+		return m_position = 1;
 	} else {
-		m_position = 0;
-		return 0;
+		return m_position = 0;
 	}
 }
 
 int FbTreeModel::GoLastRow()
 {
 	if (m_root) {
-		m_position = m_root->CountAll(*this);
-		return m_position;
+		return m_position = GetRowCount();
 	} else {
-		m_position = 0;
-		return 0;
+		return m_position = 0;
 	}
 }
 
@@ -556,6 +568,7 @@ FbModelData * FbTreeModel::GetData(size_t row)
 {
 	if (m_root) {
 		size_t pos = row;
+		if (m_root->HiddenRoot()) pos++;
 		return FindData(*m_root, pos);
 	}
 	return NULL;
@@ -566,4 +579,14 @@ void FbTreeModel::SetRoot(FbModelData * root)
 	wxDELETE(m_root);
 	m_root = root;
 	m_position = 1;
+}
+
+size_t FbTreeModel::GetRowCount() const
+{
+	if (m_root) {
+		size_t count = m_root->CountAll(*this);
+		if (m_root->HiddenRoot()) count--;
+		return count;
+	}
+	return 0;
 }

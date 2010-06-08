@@ -1,5 +1,20 @@
 #include "FbGenres.h"
-#include "FbMasterData.h"
+
+//-----------------------------------------------------------------------------
+//  FbGenreParentData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbGenreParentData, FbParentData)
+
+//-----------------------------------------------------------------------------
+//  FbGenreChildData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbGenreChildData, FbChildData)
+
+//-----------------------------------------------------------------------------
+//  FbGenres
+//-----------------------------------------------------------------------------
 
 void FbGenres::Do(ID id, const void * value, void * result)
 {
@@ -201,25 +216,18 @@ void FbGenres::Do(ID id, const void * value, void * result)
 				}
 		} break;
 		case ID_FILL: {
-			wxTreeListCtrl * control = (wxTreeListCtrl*) result;
-
-			control->Freeze();
-			control->DeleteRoot();
-			wxTreeItemId root = control->AddRoot(wxEmptyString);
+			FbTreeModel * model = (FbTreeModel*) result;
+			FbParentData * root = new FbParentData(*model, NULL);
 			for (size_t i=0; i<folder_count; i++) {
-				wxTreeItemId parent = control->AppendItem(root, folder_list[i].name);
-				control->SetItemBold(parent, true);
+				FbGenreParentData * parent = new FbGenreParentData(*model, root, folder_list[i].name);
 				for (size_t j=0; j<genres_count; j++) {
 					if (genres_list[j].hi == folder_list[i].hi) {
 						int code = genres_list[j].hi * 0x10 + genres_list[j].lo;
-						control->AppendItem(parent, genres_list[j].name, -1, -1, new FbMasterGenre(code));
+						new FbGenreChildData(*model, parent, code, genres_list[j].name);
 					}
 				}
-				control->Expand(parent);
 			}
-			control->ExpandAll(root);
-			control->Thaw();
-			control->Update();
+			model->SetRoot(root);
 		} break;
 	}
 }
@@ -256,7 +264,9 @@ wxString FbGenres::DecodeList(const wxString &genres)
 	return result;
 }
 
-void FbGenres::FillControl(wxTreeListCtrl * control)
+FbModel * FbGenres::CreateModel()
 {
-	Do(ID_FILL, NULL, control);
+	FbTreeModel * model = new FbTreeModel;
+	Do(ID_FILL, NULL, model);
+	return model;
 }

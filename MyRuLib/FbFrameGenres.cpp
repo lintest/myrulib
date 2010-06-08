@@ -32,10 +32,8 @@ void FbFrameGenres::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
-	m_MasterList->AddColumn (_("List of genres"), 100, wxALIGN_LEFT);
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
 	m_MasterList->SetFocus();
-	FbGenres::FillControl(m_MasterList);
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
@@ -44,31 +42,35 @@ void FbFrameGenres::CreateControls()
 	SetSizer( bSizer1 );
 
 	FbFrameBase::CreateControls();
+	CreateColumns();
 }
 
 void FbFrameGenres::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	m_MasterList->SetColumnText(0, _("Genres"));
-	FbGenres::FillControl(m_MasterList);
+	if (m_MasterList) {
+		m_MasterList->EmptyColumns();
+		CreateColumns();
+	}
+}
+
+void FbFrameGenres::CreateColumns()
+{
+	m_MasterList->AddColumn (0, _("List of genres"), 100, wxALIGN_LEFT);
+	FbModel * model = FbGenres::CreateModel();
+	m_MasterList->AssignModel(model);
 }
 
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
-	wxTreeItemId selected = event.GetItem();
-	if (selected.IsOk()) {
-		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) data->Show(this);
-	}
+	m_BooksPanel->EmptyBooks();
+	FbGenreChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbGenreChildData);
+	if (data) FbMasterGenre(data->GetCode()).Show(this);
 }
 
 void FbFrameGenres::UpdateBooklist()
 {
-	wxTreeItemId selected = m_MasterList->GetSelection();
-	if (selected.IsOk()) {
-		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) data->Show(this);
-	}
+	FbGenreChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbGenreChildData);
+	if (data) FbMasterGenre(data->GetCode()).Show(this);
 }
 

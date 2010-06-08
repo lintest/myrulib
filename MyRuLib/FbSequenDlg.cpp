@@ -109,7 +109,7 @@ void FbSequenDlg::EndModal(int retCode)
 		m_exists = Find();
 		if (m_exists) {
 			wxString msg = _("Series aleready exists");
-			wxString title = GetTitle() + wxT("…");
+			wxString title = GetTitle() + wxT("...");
 			if (m_id) {
 				msg += _("Merge series?");
 				bool ok = wxMessageBox(msg, title, wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;

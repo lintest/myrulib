@@ -10,7 +10,7 @@
 #include "FbImportThread.h"
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
-//#include "FbFrameGenres.h"
+#include "FbFrameGenres.h"
 //#include "FbFrameFolder.h"
 //#include "FbFrameDownld.h"
 #include "FbFrameSequen.h"
@@ -462,7 +462,7 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 			frame = authors;
 		} break;
 		case ID_FRAME_GENRES: {
-//			frame = new FbFrameGenres(this);
+			frame = new FbFrameGenres(this);
 		} break;
 		case ID_FRAME_FOLDER: {
 //			frame = new FbFrameFolder(this);

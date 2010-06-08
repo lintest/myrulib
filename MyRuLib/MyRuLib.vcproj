@@ -304,6 +304,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbFrameGenres.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbFrameHtml.cpp"
 				>
 			</File>

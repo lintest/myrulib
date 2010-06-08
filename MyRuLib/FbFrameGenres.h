@@ -11,7 +11,6 @@
 #include <wx/wxsqlite3.h>
 #include "wx/treelistctrl.h"
 #include "FbFrameBase.h"
-#include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
 class FbFrameGenres : public FbFrameBase
@@ -25,6 +24,7 @@ class FbFrameGenres : public FbFrameBase
 		virtual void UpdateBooklist();
 	private:
 		void CreateBookInfo();
+		void CreateColumns();
 	private:
 		void OnGenreSelected(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()

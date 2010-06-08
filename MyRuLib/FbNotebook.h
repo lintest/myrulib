@@ -78,7 +78,7 @@ class FbAuiToolbarTabArt : public wxAuiDefaultTabArt
 		bool m_flat;
 };
 
-class NbStyleVC71 : public FbDefaultTabArt
+class NbStyleVC71 : public wxAuiDefaultTabArt
 {
 public:
 	NbStyleVC71() {}
@@ -93,7 +93,7 @@ public:
                             const wxSize& required_bmp_size);
 };
 
-class NbStyleFF2 : public FbDefaultTabArt
+class NbStyleFF2 : public wxAuiDefaultTabArt
 {
 public:
 	NbStyleFF2() {}
