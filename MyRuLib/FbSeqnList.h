@@ -31,7 +31,7 @@ class FbSeqnListData: public FbModelData
 {
 	public:
 		FbSeqnListData(int code): m_code(code) {}
-		virtual wxString GetValue(FbModel & model, size_t col) const;
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
 	private:
 		int m_code;
@@ -45,8 +45,8 @@ class FbSeqnListModel: public FbListModel
 		FbSeqnListModel(int order, wxChar letter = 0);
 		FbSeqnListModel(int order, const wxString &mask);
 		virtual ~FbSeqnListModel(void);
-		virtual void Append(FbModelData * data) {}
-		virtual void Replace(FbModelData * data) {}
+		virtual void Append(FbModelData * data); 
+		virtual void Replace(FbModelData * data);
 		virtual void Delete();
 		void Append(const wxArrayInt &items);
 	protected:

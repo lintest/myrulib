@@ -380,6 +380,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbSequenDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbThread.cpp"
 				>
 			</File>
@@ -675,6 +679,10 @@
 			</File>
 			<File
 				RelativePath=".\FbSeqnList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbSequenDlg.h"
 				>
 			</File>
 			<File

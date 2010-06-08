@@ -133,12 +133,25 @@ FbModelData * FbSeqnListModel::GetData(size_t row)
 	return m_data = new FbSeqnListData(code);
 }
 
+void FbSeqnListModel::Append(FbModelData * data)
+{
+	FbSeqnListData * item = wxDynamicCast(data, FbSeqnListData);
+	if (item && m_position > 0) m_items.Insert(item->GetCode(), m_position - 1);
+	wxDELETE(data);
+}
+
+void FbSeqnListModel::Replace(FbModelData * data)
+{
+	FbSeqnListData * item = wxDynamicCast(data, FbSeqnListData);
+	if (item && m_position > 0) m_items[m_position - 1] = item->GetCode();
+	wxDELETE(data);
+}
+
 void FbSeqnListModel::Delete()
 {
 	size_t count = m_items.Count();
 	if (m_position && m_position <= count) {
 		m_items.RemoveAt(m_position - 1);
 		if (m_position >= count) m_position = count - 1;
-		if (m_owner) m_owner->Refresh();
 	}
 }
