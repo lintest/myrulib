@@ -233,6 +233,7 @@
 		<Unit filename="FbFrameDate.h" />
 		<Unit filename="FbFrameDownld.h" />
 		<Unit filename="FbFrameFolder.h" />
+		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
 		<Unit filename="FbFrameHtml.cpp" />
 		<Unit filename="FbFrameHtml.h" />
@@ -240,6 +241,7 @@
 		<Unit filename="FbFrameInfo.h" />
 		<Unit filename="FbFrameSearch.cpp" />
 		<Unit filename="FbFrameSearch.h" />
+		<Unit filename="FbFrameSequen.cpp" />
 		<Unit filename="FbFrameSequen.h" />
 		<Unit filename="FbGenres.cpp" />
 		<Unit filename="FbGenres.h" />
