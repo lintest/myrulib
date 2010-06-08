@@ -61,8 +61,8 @@ FbMainMenu::MenuView::MenuView()
 {
 	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	AppendSeparator();
-	Append(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	Append(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
+	AppendCheckItem(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 
 FbFrameMenu::MenuFile::MenuFile()

@@ -4,14 +4,18 @@
 #include "FbTreeModel.h"
 #include "FbDatabase.h"
 #include "FbCollection.h"
+#include "FbThread.h"
+
 
 class FbAuthListInfo: public wxObject
 {
 	public:
-		FbAuthListInfo(wxChar letter = 0, const wxString &string = wxEmptyString)
-			:m_letter(letter), m_string(string) {}
+		FbAuthListInfo(wxChar letter = 0)
+			: m_letter(letter), m_string(wxEmptyString) {}
+		FbAuthListInfo(const wxString &string)
+			: m_letter(0), m_string(string) {}
 		FbAuthListInfo(const FbAuthListInfo & info)
-			:m_letter(info.m_letter), m_string(info.m_string) {}
+			: m_letter(info.m_letter), m_string(info.m_string) {}
 		bool IsFullText() const
 			{ return FbSearchFunction::IsFullText(m_string); }
 	private:
@@ -23,8 +27,8 @@ class FbAuthListInfo: public wxObject
 class FbAuthListThread: public wxThread
 {
 	public:
-		FbAuthListThread(wxEvtHandler * frame, const FbAuthListInfo &info, int order = 0)
-			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_order(order) {}
+		FbAuthListThread(wxEvtHandler * frame, const FbMutexLocker &locker, const FbAuthListInfo &info, int order = 0)
+			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_tester(locker), m_info(info), m_order(order) {}
 	protected:
 		virtual void * Entry();
 	private:
@@ -34,6 +38,7 @@ class FbAuthListThread: public wxThread
 		void DoFullText(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
 		wxEvtHandler * m_frame;
+		FbMutexTester m_tester;
 		FbAuthListInfo m_info;
 		int m_order;
 };

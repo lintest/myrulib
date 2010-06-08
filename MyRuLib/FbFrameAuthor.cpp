@@ -142,9 +142,11 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 
 void FbFrameAuthor::CreateMasterThread()
 {
+	wxDELETE(m_MasterLocker);
+	m_MasterLocker = new FbMutexLocker;
 	if (m_MasterThread) m_MasterThread->Wait();
 	wxDELETE(m_MasterThread);
-	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn());
+	m_MasterThread = new FbAuthListThread(this, *m_MasterLocker, m_info, m_MasterList->GetSortedColumn());
 	if (m_MasterThread->Create() == wxTHREAD_NO_ERROR) m_MasterThread->Run();
 }
 
@@ -179,10 +181,9 @@ void FbFrameAuthor::ActivateAuthors()
 void FbFrameAuthor::FindAuthor(const wxString &text)
 {
 	if (text.IsEmpty()) return;
+	m_info = text;
 	ToggleAlphabar(0);
-	(new FbAuthorThreadText(m_MasterList, text, m_MasterList->GetSortedColumn()))->Execute();
-	m_AuthorMode = FB_AUTHOR_MODE_TEXT;
-	m_AuthorText = text;
+	CreateMasterThread();
 }
 
 void FbFrameAuthor::OpenAuthor(const int author, const int book)

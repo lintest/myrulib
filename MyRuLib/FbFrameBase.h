@@ -49,6 +49,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
 		wxThread * m_MasterThread;
+		FbMutexLocker * m_MasterLocker;
 		FbFilterObj m_filter;
 	private:
 		void OnActivated(wxActivateEvent & event);

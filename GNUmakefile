@@ -130,6 +130,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_FbParams.o \
 	build/myrulib_FbParamsDlg.o \
 	build/myrulib_FbReplaceDlg.o \
+	build/myrulib_FbThread.o \
 	build/myrulib_FbTreeListCtrl.o \
 	build/myrulib_FbTreeModel.o \
 	build/myrulib_FbTreeView.o \
@@ -401,6 +402,9 @@ build/myrulib_FbParamsDlg.o: ./MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbReplaceDlg.o: ./MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build/myrulib_FbThread.o: ./MyRuLib/FbThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build/myrulib_FbTreeListCtrl.o: ./MyRuLib/FbTreeListCtrl.cpp $(MYRULIB_ODEP)
