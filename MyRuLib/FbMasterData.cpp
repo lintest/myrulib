@@ -435,6 +435,7 @@ void * FbMasterSeqname::SequenThread::Entry()
 	wxCriticalSectionLocker locker(sm_queue);
 
 	if (sm_skiper.Skipped(m_number)) return NULL;
+	EmptyBooks();
 
 	try {
 		FbCommonDatabase database;

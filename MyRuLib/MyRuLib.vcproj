@@ -316,6 +316,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbFrameSequen.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbGenres.cpp"
 				>
 			</File>
@@ -369,6 +373,10 @@
 			</File>
 			<File
 				RelativePath=".\FbReplaceDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbSeqnList.cpp"
 				>
 			</File>
 			<File
@@ -663,6 +671,10 @@
 			</File>
 			<File
 				RelativePath=".\FbReplaceDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbSeqnList.h"
 				>
 			</File>
 			<File

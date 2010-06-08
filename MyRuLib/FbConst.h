@@ -3,6 +3,9 @@
 
 #include <wx/wx.h>
 
+#define fbLIST_CACHE_SIZE   64
+#define fbLIST_ARRAY_SIZE 1024
+
 enum {
 	ID_MASTER_LIST = wxID_HIGHEST + 1,
 	ID_BOOKS_LISTCTRL,

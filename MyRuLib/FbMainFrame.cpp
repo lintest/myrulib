@@ -13,7 +13,7 @@
 //#include "FbFrameGenres.h"
 //#include "FbFrameFolder.h"
 //#include "FbFrameDownld.h"
-//#include "FbFrameSequen.h"
+#include "FbFrameSequen.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "FbConfigDlg.h"
@@ -471,7 +471,7 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 //			frame = new FbFrameDownld(this);
 		} break;
 		case ID_FRAME_SEQUEN: {
-//			frame = new FbFrameSequen(this);
+			frame = new FbFrameSequen(this);
 		} break;
 	}
 	if (frame) frame->Update();
@@ -534,7 +534,6 @@ void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
 
 void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
 {
-/*
 	FbFrameSequen * frame = wxDynamicCast(FindFrameById(ID_FRAME_SEQUEN, true), FbFrameSequen);
 	if (!frame) {
 		frame = new FbFrameSequen(this);
@@ -542,7 +541,6 @@ void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
 		frame->Update();
 	}
 	frame->OpenSequence(event.m_author, event.m_book);
-*/
 }
 
 

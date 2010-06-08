@@ -188,10 +188,12 @@ void FbFrameAuthor::FindAuthor(const wxString &text)
 
 void FbFrameAuthor::OpenAuthor(const int author, const int book)
 {
+/*
 	ToggleAlphabar(0);
 	(new FbAuthorThreadCode(m_MasterList, author, m_MasterList->GetSortedColumn()))->Execute();
 	m_AuthorMode = FB_AUTHOR_MODE_CODE;
 	m_AuthorCode = author;
+*/
 }
 
 void FbFrameAuthor::SelectRandomLetter()

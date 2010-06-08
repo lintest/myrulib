@@ -3,18 +3,21 @@
 
 #include "wx/aui/auibook.h"
 
-class FbAuiDefaultTabArt : public wxAuiDefaultTabArt
+class FbDefaultTabArt : public wxAuiDefaultTabArt
+{
+    void DrawBackground(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxRect& rect);
+};
+
+class FbAuiDefaultTabArt : public FbDefaultTabArt
 {
 
 public:
 	FbAuiDefaultTabArt();
 
     wxAuiTabArt* Clone();
-
-    void DrawBackground(
-                 wxDC& dc,
-                 wxWindow* wnd,
-                 const wxRect& rect);
 
     void DrawTab(wxDC& dc,
                  wxWindow* wnd,
@@ -75,10 +78,10 @@ class FbAuiToolbarTabArt : public wxAuiDefaultTabArt
 		bool m_flat;
 };
 
-class NbStyleVC71 : public wxAuiDefaultTabArt
+class NbStyleVC71 : public FbDefaultTabArt
 {
 public:
-    NbStyleVC71();
+	NbStyleVC71() {}
     wxAuiTabArt* Clone();
 
     void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
@@ -90,11 +93,12 @@ public:
                             const wxSize& required_bmp_size);
 };
 
-class NbStyleFF2 : public wxAuiDefaultTabArt
+class NbStyleFF2 : public FbDefaultTabArt
 {
 public:
-    NbStyleFF2();
+	NbStyleFF2() {}
     wxAuiTabArt* Clone();
+
     void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
                         const wxRect& in_rect, int close_button_state,
                         wxRect* out_tab_rect, wxRect* out_button_rect,

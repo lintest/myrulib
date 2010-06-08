@@ -29,11 +29,14 @@ class FbFrameSequen : public FbFrameBase
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
+		void CreateMasterThread();
+		void CreateColumns();
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxTextCtrl * m_FindText;
 		wxStaticText * m_FindInfo;
-		wxString m_SequenceText;
+	private:
+		wxString m_info;
 		int m_SequenceCode;
 	private:
 		void OnMasterSelected(wxTreeEvent & event);
@@ -48,24 +51,11 @@ class FbFrameSequen : public FbFrameBase
 		void OnMasterDelete(wxCommandEvent& event);
 		void OnAppendAuthor(wxCommandEvent& event);
 		void OnAppendSequence(wxCommandEvent& event);
+		void OnModel( FbArrayEvent& event );
+		void OnArray( FbArrayEvent& event );
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameSequen)
 	protected:
-		class MasterThread: public FbThread
-		{
-			public:
-				MasterThread(wxEvtHandler * frame, const wxString &text, int order): m_frame(frame), m_text(text), m_code(0), m_order(order) {};
-				MasterThread(wxEvtHandler * frame, const int code, int order): m_frame(frame), m_code(code), m_order(order) {};
-			protected:
-				virtual void * Entry();
-				wxString GetOrder();
-			private:
-				static wxCriticalSection sm_queue;
-				wxEvtHandler * m_frame;
-				wxString m_text;
-				int m_code;
-				int m_order;
-		};
 		class MasterMenu: public wxMenu
 		{
 			public:

@@ -165,7 +165,7 @@ wxAuiTabArt* FbAuiDefaultTabArt::Clone()
     return art;
 }
 
-void FbAuiDefaultTabArt::DrawBackground(wxDC& dc,
+void FbDefaultTabArt::DrawBackground(wxDC& dc,
                                         wxWindow* WXUNUSED(wnd),
                                         const wxRect& rect)
 {
@@ -931,10 +931,6 @@ namespace
 * Renderer for Microsoft (tm) Visual Studio 7.1 like tabs                     *
 ******************************************************************************/
 
-NbStyleVC71::NbStyleVC71() : wxAuiDefaultTabArt()
-{
-}
-
 wxAuiTabArt* NbStyleVC71::Clone()
 {
     NbStyleVC71* clone = new NbStyleVC71();
@@ -1107,10 +1103,6 @@ int NbStyleVC71::GetBestTabCtrlSize(wxWindow* wnd,
     wxSize s = GetTabSize(dc, wnd, wxT("ABCDEFGHIj"), wxNullBitmap, true,
                             wxAUI_BUTTON_STATE_HIDDEN, &x_ext);
     return s.y + 4;
-}
-
-NbStyleFF2::NbStyleFF2() : wxAuiDefaultTabArt()
-{
 }
 
 wxAuiTabArt* NbStyleFF2::Clone()

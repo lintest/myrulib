@@ -32,7 +32,6 @@ class FbFrameAuthor : public FbFrameBase
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; };
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
-		virtual void CreateColumns();
 		virtual wxMenuBar * CreateMenuBar();
 	private:
 		wxToolBar * CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style);
@@ -42,14 +41,12 @@ class FbFrameAuthor : public FbFrameBase
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void CreateMasterThread();
+		void CreateColumns();
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxToolBar * m_RuAlphabar;
 		wxToolBar * m_EnAlphabar;
 	private:
-		FbAuthorListMode m_AuthorMode;
-		wxString m_AuthorText;
-		int m_AuthorCode;
 		FbAuthListInfo m_info;
 	private:
 		void OnMasterSelected(wxTreeEvent & event);

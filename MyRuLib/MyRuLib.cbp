@@ -270,6 +270,8 @@
 		<Unit filename="FbParamsDlg.h" />
 		<Unit filename="FbReplaceDlg.cpp" />
 		<Unit filename="FbReplaceDlg.h" />
+		<Unit filename="FbSeqnList.cpp" />
+		<Unit filename="FbSeqnList.h" />
 		<Unit filename="FbThread.cpp" />
 		<Unit filename="FbThread.h" />
 		<Unit filename="FbTreeListCtrl.cpp" />
