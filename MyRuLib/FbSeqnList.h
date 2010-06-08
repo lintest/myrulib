@@ -6,11 +6,11 @@
 #include "FbCollection.h"
 #include "FbThread.h"
 
-class FbSeqnListThread: public wxThread
+class FbSeqnListThread: public FbThread
 {
 	public:
 		FbSeqnListThread(wxEvtHandler * frame, const FbMutexLocker &locker, const wxString &string, int order = 0)
-			:wxThread(wxTHREAD_JOINABLE), m_frame(frame), m_tester(locker), m_string(string), m_order(order) {}
+			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_tester(locker), m_string(string), m_order(order) {}
 	protected:
 		virtual void * Entry();
 	private:

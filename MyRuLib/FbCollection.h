@@ -11,6 +11,7 @@ class FbCacheData: public wxObject
 	public:
 		FbCacheData(wxSQLite3ResultSet &result);
 		FbCacheData(int code, wxSQLite3ResultSet &result);
+		FbCacheData(int code, const wxString &name, int count = 0);
 		int GetCode() const { return m_code; }
 		wxString GetValue(size_t col) const;
 	private:

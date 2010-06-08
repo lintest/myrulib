@@ -15,7 +15,7 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	bSizerGrid->SetFlexibleDirection( wxBOTH );
 	bSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppenName(bSizerGrid, ID_LAST_NAME,   _("Surname"))->SetFocus();
+	wxTextCtrl * lastname = AppenName(bSizerGrid, ID_LAST_NAME, _("Surname"));
 	AppenName(bSizerGrid, ID_FIRST_NAME,  _("Name"));
 	AppenName(bSizerGrid, ID_MIDDLE_NAME, _("Middle-Name"));
 
@@ -24,10 +24,10 @@ FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
-
-	this->SetSize(GetBestSize());
+	SetSizer( bSizerMain );
+	Layout();
+	SetSize(GetBestSize());
+	lastname->SetFocus();
 }
 
 wxTextCtrl * FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, const wxString &caption)

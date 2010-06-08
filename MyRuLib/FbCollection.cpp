@@ -9,6 +9,11 @@
 
 IMPLEMENT_CLASS(FbCacheData, wxObject)
 
+FbCacheData::FbCacheData(int code, const wxString &name, int count)
+	: m_code(code), m_name(name), m_count(count)
+{
+}
+
 FbCacheData::FbCacheData(wxSQLite3ResultSet &result)
 	: m_code(result.GetInt(0)), m_name(result.GetString(1)), m_count(result.GetInt(2))
 {

@@ -48,7 +48,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
-		wxThread * m_MasterThread;
+		FbThread * m_MasterThread;
 		FbMutexLocker * m_MasterLocker;
 		FbFilterObj m_filter;
 	private:

@@ -10,7 +10,6 @@
 #include "FbMasterList.h"
 #include "FbWindow.h"
 #include "FbParams.h"
-#include "FbSeqnList.h"
 
 IMPLEMENT_CLASS(FbFrameSequen, FbFrameBase)
 
@@ -108,15 +107,7 @@ void FbFrameSequen::CreateMasterThread()
 	if (m_MasterThread) m_MasterThread->Wait();
 	wxDELETE(m_MasterThread);
 	m_MasterThread = new FbSeqnListThread(this, *m_MasterLocker, m_info, m_MasterList->GetSortedColumn());
-	if (m_MasterThread->Create() == wxTHREAD_NO_ERROR) m_MasterThread->Run();
-}
-
-void FbFrameSequen::SelectFirstAuthor(const int book)
-{
-	m_BooksPanel->EmptyBooks(book);
-	FbModel * model = m_MasterList->GetModel();
-	if (model) model->GoFirstRow();
-	m_MasterList->Refresh();
+	m_MasterThread->Execute();
 }
 
 void FbFrameSequen::OnMasterSelected(wxTreeEvent & event)
@@ -128,6 +119,11 @@ void FbFrameSequen::OnMasterSelected(wxTreeEvent & event)
 void FbFrameSequen::ActivateAuthors()
 {
 	m_MasterList->SetFocus();
+}
+
+FbSeqnListModel * FbFrameSequen::GetModel()
+{
+	return m_MasterList ? wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel) : NULL;
 }
 
 void FbFrameSequen::FindSequence(const wxString &text)
@@ -441,7 +437,7 @@ void FbFrameSequen::OnModel( FbArrayEvent& event )
 
 void FbFrameSequen::OnArray( FbArrayEvent& event )
 {
-	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
+	FbSeqnListModel * model = GetModel();
 	if (model) model->Append(event.GetArray());
 	m_MasterList->Refresh();
 }

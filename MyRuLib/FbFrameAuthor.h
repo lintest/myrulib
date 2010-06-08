@@ -34,12 +34,11 @@ class FbFrameAuthor : public FbFrameBase
 		virtual void UpdateBooklist();
 		virtual wxMenuBar * CreateMenuBar();
 	private:
+		FbAuthListModel * GetModel();
 		wxToolBar * CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style);
 		void ToggleAlphabar(const int &idLetter);
-		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
-		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void CreateMasterThread();
 		void CreateColumns();
 	private:
@@ -55,7 +54,6 @@ class FbFrameAuthor : public FbFrameBase
 		void OnAllClicked(wxCommandEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
 		void OnExternal(wxCommandEvent& event);
-		void OnCharEvent(wxKeyEvent& event);
 		void OnViewAlphavet(wxCommandEvent& event);
 		void OnViewAlphavetUpdateUI(wxUpdateUIEvent & event);
 		void OnMasterAppend(wxCommandEvent& event);

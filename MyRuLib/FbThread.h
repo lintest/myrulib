@@ -76,7 +76,10 @@ class FbThreadSkiper
 class FbThread: public wxThread
 {
 	public:
-		void Execute() { if ( Create() == wxTHREAD_NO_ERROR ) Run(); };
+	    FbThread(wxThreadKind kind = wxTHREAD_DETACHED)
+			: wxThread(kind) {}
+		void Execute() 
+			{ if ( Create() == wxTHREAD_NO_ERROR ) Run(); }
 };
 
 #endif // __FBTHREAD_H__

@@ -12,7 +12,9 @@ void * FbAuthListThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		if (m_info.m_string.IsEmpty()) {
+		if (m_info.m_author) {
+			DoAuthor(database);
+		} else if (m_info.m_string.IsEmpty()) {
 			DoLetter(database);
 		} else if (m_info.IsFullText()) {
 			DoFullText(database);
@@ -23,6 +25,15 @@ void * FbAuthListThread::Entry()
 		wxLogError(e.GetMessage());
 	}
 	return NULL;
+}
+
+void FbAuthListThread::DoAuthor(wxSQLite3Database &database)
+{
+	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_info.m_author);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	MakeModel(result);
 }
 
 void FbAuthListThread::DoLetter(wxSQLite3Database &database)
@@ -137,12 +148,18 @@ void FbAuthListModel::Append(const wxArrayInt &items)
 	WX_APPEND_ARRAY(m_items, items);
 }
 
-FbModelData * FbAuthListModel::GetData(size_t row)
+void FbAuthListModel::Append(FbModelData * data)
 {
-	if (row == 0 || row > m_items.Count()) return NULL;
-	int code = m_items[row - 1];
-	wxDELETE(m_data);
-	return m_data = new FbAuthListData(code);
+	FbAuthListData * item = wxDynamicCast(data, FbAuthListData);
+	if (item && m_position > 0) m_items.Insert(item->GetCode(), m_position - 1);
+	wxDELETE(data);
+}
+
+void FbAuthListModel::Replace(FbModelData * data)
+{
+	FbAuthListData * item = wxDynamicCast(data, FbAuthListData);
+	if (item && m_position > 0) m_items[m_position - 1] = item->GetCode();
+	wxDELETE(data);
 }
 
 void FbAuthListModel::Delete()
@@ -151,6 +168,14 @@ void FbAuthListModel::Delete()
 	if (m_position && m_position <= count) {
 		m_items.RemoveAt(m_position - 1);
 		if (m_position >= count) m_position = count - 1;
-		if (m_owner) m_owner->Refresh();
 	}
 }
+
+FbModelData * FbAuthListModel::GetData(size_t row)
+{
+	if (row == 0 || row > m_items.Count()) return NULL;
+	int code = m_items[row - 1];
+	wxDELETE(m_data);
+	return m_data = new FbAuthListData(code);
+}
+

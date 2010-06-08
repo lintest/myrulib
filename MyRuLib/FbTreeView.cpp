@@ -1296,3 +1296,27 @@ void FbTreeViewCtrl::EmptyColumns()
 {
     if (m_header_win) m_header_win->EmptyColumns();
 }
+
+void FbTreeViewCtrl::Append(FbModelData * data)
+{
+	FbModel * model = GetModel(); 
+	if (model) model->Append(data); else delete data;
+	if (m_main_win) m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+	Refresh();
+}
+
+void FbTreeViewCtrl::Replace(FbModelData * data)
+{
+	FbModel * model = GetModel(); 
+	if (model) model->Replace(data); else delete data;
+	if (m_main_win) m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+	Refresh();
+}
+
+void FbTreeViewCtrl::Delete()
+{
+	FbModel * model = GetModel(); 
+	if (model) model->Delete();
+	if (m_main_win) m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+	Refresh();
+}

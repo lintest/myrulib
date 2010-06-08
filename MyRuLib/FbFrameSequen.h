@@ -8,6 +8,7 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
+#include "FbSeqnList.h"
 
 class FbFrameSequen : public FbFrameBase
 {
@@ -25,9 +26,9 @@ class FbFrameSequen : public FbFrameBase
 		virtual wxMenuBar * CreateMenuBar();
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 	private:
+		FbSeqnListModel * GetModel();
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
-		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
 		void CreateMasterThread();
 		void CreateColumns();
