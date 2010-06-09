@@ -358,17 +358,25 @@ void * FbMasterGenre::GenresThread::Entry()
 	if (sm_skiper.Skipped(m_number)) return NULL;
 	EmptyBooks();
 
-	wxString condition = wxT("SUBGENRE(books.genres)");
-	wxString sql = GetSQL(condition);
-
 	try {
 		FbCommonDatabase database;
 		InitDatabase(database);
-		database.CreateFunction(wxT("SUBGENRE"), 1, m_subgenre);
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FillBooks(result);
+		if (database.TableExists(wxT("genres"))) {
+			wxString condition = wxT("books.id IN (SELECT id_book FROM genres WHERE id_genre=?)");
+			wxString sql = GetSQL(condition);
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			stmt.Bind(1, m_subgenre.GetCode());
+			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			if (sm_skiper.Skipped(m_number)) return NULL;
+			FillBooks(result);
+		} else {
+			wxString condition = wxT("SUBGENRE(books.genres)");
+			wxString sql = GetSQL(condition);
+			database.CreateFunction(wxT("SUBGENRE"), 1, m_subgenre);
+			wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+			if (sm_skiper.Skipped(m_number)) return NULL;
+			FillBooks(result);
+		}
 	}
 	catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());

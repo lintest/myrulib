@@ -154,6 +154,7 @@ class FbMasterGenre: public FbMasterData
 		{
 			public:
 				SubgenreFunction(int code);
+				const wxString & GetCode() { return m_code; }
 			protected:
 				virtual void Execute(wxSQLite3FunctionContext& ctx);
 			private:
