@@ -145,7 +145,7 @@ class FbModel: public wxObject
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
-		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
+		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 		virtual void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
 
 		wxWindow * m_owner;
@@ -166,7 +166,7 @@ class FbListModel: public FbModel
 		virtual int GoPriorRow(size_t delta = 1);
 		virtual size_t FindRow(size_t row, bool select);
 	protected:
-		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
 };
 
@@ -212,8 +212,8 @@ class FbTreeModel: public FbModel
 		virtual void Delete() {}
 
 	protected:
-		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		void DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
 		FbModelData * FindData(FbModelData &parent, size_t &row);
 		FbModelData * GetLast(FbModelData &parent);
 

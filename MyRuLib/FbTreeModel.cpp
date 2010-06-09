@@ -250,8 +250,8 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 
 void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
-	PaintContext cnt(dc);
-	DoDrawTree(dc, cnt, rect, cols, pos, h);
+	PaintContext ctx(dc);
+	DoDrawTree(dc, ctx, rect, cols, pos, h);
 }
 
 //-----------------------------------------------------------------------------
@@ -260,7 +260,7 @@ void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, 
 
 IMPLEMENT_CLASS(FbListModel, FbModel)
 
-void FbListModel::DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
+void FbListModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
 	int ww = rect.GetWidth();
 	int y  = rect.GetTop();
@@ -271,8 +271,8 @@ void FbListModel::DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, co
 	{
 		wxRect rect(0, y, ww, h);
         FbModelData * data = GetData(pos + 1);
-        cnt.m_selected = m_position == pos + 1;
-		if (data) DrawItem(*data, dc, cnt, rect, cols);
+        ctx.m_selected = m_position == pos + 1;
+		if (data) DrawItem(*data, dc, ctx, rect, cols);
 	}
 }
 
@@ -451,29 +451,29 @@ FbItemId FbListModel::FindItem(size_t row, bool select)
 
 IMPLEMENT_CLASS(FbTreeModel, FbModel)
 
-void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
+void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
 	size_t position = 0;
 	if (m_root) {
-		cnt.m_hidden = m_root->HiddenRoot();
-		DoDrawItem(*m_root, dc, cnt, rect, cols, h, position);
+		ctx.m_hidden = m_root->HiddenRoot();
+		DoDrawItem(*m_root, dc, ctx, rect, cols, h, position);
 	}
 }
 
-void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
+void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
 {
 	int y = position * h;
 	if (y > rect.GetBottom()) return;
 
 	int ww = rect.GetWidth();
 
-	if (cnt.m_hidden) {
-		cnt.m_hidden = false;
+	if (ctx.m_hidden) {
+		ctx.m_hidden = false;
 	} else {
 		if (y >= rect.GetTop()) {
-			cnt.m_selected = m_position == position + 1;
+			ctx.m_selected = m_position == position + 1;
 			wxRect rect(0, y, ww, h);
-			DrawItem(data, dc, cnt, rect, cols);
+			DrawItem(data, dc, ctx, rect, cols);
 		}
 		position++;
 	}
@@ -481,7 +481,7 @@ void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, con
 	size_t count = data.Count(*this);
 	for (size_t i = 0; i < count; i++) {
 		FbModelData * child = data.Items(*this, i);
-		if (child) DoDrawItem(*child, dc, cnt, rect, cols, h, position);
+		if (child) DoDrawItem(*child, dc, ctx, rect, cols, h, position);
 	}
 }
 
