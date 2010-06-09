@@ -148,6 +148,7 @@
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
+		<sources>MyRuLib/FbAuthList.cpp</sources>
 		<sources>MyRuLib/FbAuthorDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthorThread.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
@@ -159,6 +160,7 @@
 		<sources>MyRuLib/FbCheckList.cpp</sources>
 		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
+		<sources>MyRuLib/FbCollection.cpp</sources>
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
@@ -171,7 +173,6 @@
 		<sources>MyRuLib/FbFilterObj.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
-		<sources>MyRuLib/FbFrameDate.cpp</sources>
 		<sources>MyRuLib/FbFrameDownld.cpp</sources>
 		<sources>MyRuLib/FbFrameFolder.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>
