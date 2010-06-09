@@ -231,7 +231,9 @@
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
 		<Unit filename="FbFrameDate.h" />
+		<Unit filename="FbFrameDownld.cpp" />
 		<Unit filename="FbFrameDownld.h" />
+		<Unit filename="FbFrameFolder.cpp" />
 		<Unit filename="FbFrameFolder.h" />
 		<Unit filename="FbFrameGenres.cpp" />
 		<Unit filename="FbFrameGenres.h" />
