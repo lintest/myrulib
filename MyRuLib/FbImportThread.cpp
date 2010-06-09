@@ -277,6 +277,17 @@ void FbImportBook::AppendBook()
 		stmt.Bind(2, id_book);
 		stmt.ExecuteUpdate();
 	}
+
+	if (m_database.TableExists(wxT("genres"))) {
+		size_t count = genres.Length() / 2;
+		for (size_t i = 0; i < count; i++) {
+			wxString sql = wxT("INSERT INTO genres(id_book, id_genre) VALUES(?,?)");
+			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			stmt.Bind(1, id_book);
+			stmt.Bind(2, genres.Mid(i*2, 2));
+			stmt.ExecuteUpdate();
+		}
+	}
 }
 void FbImportBook::AppendFile(int id_book)
 {

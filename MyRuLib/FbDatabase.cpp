@@ -167,6 +167,11 @@ void FbMainDatabase::CreateDatabase()
 	ExecuteUpdate(wxT("INSERT INTO params(id, text)  VALUES (1, 'My own Library')"));
 	ExecuteUpdate(wxT("INSERT INTO params(id, value) VALUES (2, 1)"));
 
+	/** TABLE genres **/
+	ExecuteUpdate(wxT("CREATE TABLE genres(id_book integer, id_genre CHAR(2));"));
+	ExecuteUpdate(wxT("CREATE INDEX genres_book ON genres(id_book);"));
+  	ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
+
 	trans.Commit();
 
 	CreateFullText();
