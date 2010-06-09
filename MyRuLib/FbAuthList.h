@@ -33,7 +33,6 @@ class FbAuthListThread: public FbThread
 			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_tester(locker), m_info(info), m_order(order) {}
 	protected:
 		virtual void * Entry();
-		virtual void OnExit();
 	private:
 		static wxString GetOrder(const wxString &fields, int column);
 		void DoAuthor(wxSQLite3Database &database);

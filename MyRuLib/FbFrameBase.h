@@ -73,7 +73,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnAppendSequence(wxCommandEvent& event);
 		void OnEmptyBooks(wxCommandEvent& event);
 		void OnTreeCollapsing(wxTreeEvent & event);
-		void OnMasterExit(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameBase)
 

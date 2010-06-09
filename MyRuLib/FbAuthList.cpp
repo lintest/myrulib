@@ -27,11 +27,6 @@ void * FbAuthListThread::Entry()
 	return NULL;
 }
 
-void FbAuthListThread::OnExit()
-{
-	FbCommandEvent(fbEVT_MASTER_ACTION, ID_MASTER_THREAD).Post(m_frame);
-}
-
 void FbAuthListThread::DoAuthor(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");

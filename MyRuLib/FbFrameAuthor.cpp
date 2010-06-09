@@ -7,7 +7,6 @@
 #include "ExternalDlg.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
-#include "FbAuthorThread.h"
 #include "FbAuthorDlg.h"
 #include "FbReplaceDlg.h"
 #include "FbUpdateThread.h"
