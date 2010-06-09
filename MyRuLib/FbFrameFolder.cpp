@@ -6,6 +6,10 @@
 #include "FbDatabase.h"
 #include "FbDownloader.h"
 
+IMPLEMENT_CLASS(FbFolderParentData, FbParentData)
+
+IMPLEMENT_CLASS(FbFolderChildData, FbChildData)
+
 IMPLEMENT_CLASS(FbFrameFolder, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
@@ -37,9 +41,8 @@ void FbFrameFolder::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
-	m_MasterList->AddColumn (_("Folders"), 100, wxALIGN_LEFT);
-	m_MasterList->SetFocus();
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
+	CreateColumns();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
@@ -69,73 +72,67 @@ wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxS
 void FbFrameFolder::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	m_MasterList->SetColumnText(0, _("Folders"));
+	m_MasterList->EmptyColumns();
+	CreateColumns();
 }
 
-void FbFrameFolder::FillFolders(const int iCurrent)
+void FbFrameFolder::CreateColumns()
 {
-	m_MasterList->Freeze();
-	m_MasterList->DeleteRoot();
+	m_MasterList->AddColumn (0, _("Folders"), 100, wxALIGN_LEFT);
+}
 
-	wxTreeItemId root = m_MasterList->AddRoot(wxEmptyString);
+void FbFrameFolder::FillFolders(const int current)
+{
+	FbTreeModel * model = new FbTreeModel;
 
-	wxTreeItemId parent = m_MasterList->AppendItem(root, _("Bookmarks"));
-	m_MasterList->SetItemBold(parent, true);
-
-	wxTreeItemId item = m_MasterList->AppendItem(parent, _("Favorites"), -1, -1, new FbMasterFolder(0, FT_FOLDER));
-	if (iCurrent == 0) m_MasterList->SelectItem(item);
+	FbParentData * root = new FbParentData(*model);
+	FbParentData * parent = new FbFolderParentData(*model, root, _("Bookmarks"));
+	new FbFolderChildData(*model, parent, 0, _("Favorites"), FT_FOLDER);
+	model->SetRoot(root);
 
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
 	FbLocalDatabase database;
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
-		int id = result.GetInt(0);
+		int code = result.GetInt(0);
 		wxString name = result.GetString(1);
-		wxTreeItemId item = m_MasterList->AppendItem(parent, name, -1, -1, new FbMasterFolder(id, FT_FOLDER));
-		if (iCurrent == id) m_MasterList->SelectItem(item);
+		new FbFolderChildData(*model, parent, code, name, FT_FOLDER);
+		if (code == current) model->FindRow(model->GetRowCount(), false);
 	}
-	m_MasterList->Expand(parent);
-	m_MasterList->Expand(root);
 
-	parent = m_MasterList->AppendItem(root, _("Remarks"));
-	m_MasterList->SetItemBold(parent, true);
-
-	m_MasterList->AppendItem(parent, _("Comments"), -1, -1, new FbMasterFolder(1, FT_COMMENT));
-	for (int i=5; i>0; i--) m_MasterList->AppendItem(parent, GetRatingText(i), -1, -1, new FbMasterFolder(i, FT_RATING));
-	m_MasterList->Expand(parent);
-
-	m_MasterList->Thaw();
+	parent = new FbFolderParentData(*model, root, _("Remarks"));
+	new FbFolderChildData(*model, parent, 1, _("Comments"), FT_COMMENT);
+	for (int i=5; i>0; i--) new FbFolderChildData(*model, parent, i, GetRatingText(i), FT_RATING);
+		
+	m_MasterList->AssignModel(model);
 }
 
 void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 {
-	wxTreeItemId selected = event.GetItem();
-	if (selected.IsOk()) {
-		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) {
-			bool enabled = data->GetType() == FT_FOLDER && data->GetId();
-			m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
-			m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
-			data->Show(this);
-		}
-	}
+	m_BooksPanel->EmptyBooks();
+	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	if (data == NULL) return;
+
+	bool enabled = data->GetType() == FT_FOLDER && data->GetCode();
+	m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
+	m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
+	FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
 }
 
 void FbFrameFolder::UpdateBooklist()
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) data->Show(this);
+	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	if (data) FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	int iFolder = data->GetId();
-
+	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	if (data == NULL) return;
+	
+	int folder = data->GetCode();
 	wxString selected = m_BooksPanel->m_BookList->GetSelected();
-	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), iFolder);
+	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
 
 	FbCommonDatabase database;
 	database.AttachConfig();
@@ -150,6 +147,7 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 
 void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 {
+/*
 	wxString name = wxGetTextFromUser(_("Input name of new folder:"), _("Add folder?"), wxEmptyString, this);
 	if (name.IsEmpty()) return;
 
@@ -164,10 +162,12 @@ void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 	FbMenuFolders::EmptyFolders();
 	m_BooksPanel->EmptyBooks();
 	FillFolders(id);
+*/
 }
 
 void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 {
+/*
 	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	if (data->GetType() != FT_FOLDER) return;
@@ -188,10 +188,12 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 
 	FbMenuFolders::EmptyFolders();
 	FillFolders(id);
+*/
 }
 
 void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 {
+/*
 	FbMasterData * data = m_MasterList->GetSelectedData();
 	if (!data) return;
 	if (data->GetType() != FT_FOLDER) return;
@@ -218,25 +220,24 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 	FbMenuFolders::EmptyFolders();
 	m_BooksPanel->EmptyBooks();
 	FillFolders(0);
+*/
 }
 
-void FbFrameFolder::UpdateFolder(const int iFolder, const FbFolderType type)
+void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	if (data->GetType()!= type) return;
+	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	if (data == NULL || data->GetType() != type) return;
 
-	bool bNeedUpdate = false;
+	bool update = false;
 	switch (type) {
 		case FT_FOLDER:
-			bNeedUpdate = data->GetId()==iFolder;
+			update = data->GetCode() == folder;
 			break;
 		default:
-			bNeedUpdate = true;
+			update = true;
 			break;
 	}
-
-	if (bNeedUpdate) data->Show(this);
+	if (update) FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
 }
 
 void FbFrameFolder::ShowFullScreen(bool show)

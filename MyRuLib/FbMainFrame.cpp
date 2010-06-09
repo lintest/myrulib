@@ -11,7 +11,7 @@
 #include "FbDataOpenDlg.h"
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
-//#include "FbFrameFolder.h"
+#include "FbFrameFolder.h"
 #include "FbFrameDownld.h"
 #include "FbFrameSequen.h"
 #include "FbFrameInfo.h"
@@ -465,7 +465,7 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 			frame = new FbFrameGenres(this);
 		} break;
 		case ID_FRAME_FOLDER: {
-//			frame = new FbFrameFolder(this);
+			frame = new FbFrameFolder(this);
 		} break;
 		case ID_FRAME_DOWNLD: {
 			frame = new FbFrameDownld(this);
@@ -514,10 +514,8 @@ void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, false), FbFrameDownld);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 	} else {
-/*
 		FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
-*/
 	}
 }
 
