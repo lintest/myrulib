@@ -60,11 +60,13 @@ function genreCode($s)
       "prose_rus_classic" => "35",
       "prose_su_classics" => "36",
       "prose_military" => "37",
+      "prose" => "30",
       "love_contemporary" => "41",
       "love_history" => "42",
       "love_detective" => "43",
       "love_short" => "44",
       "love_erotica" => "45",
+      "love" => "40",
       "adv_western" => "51",
       "adv_history" => "52",
       "adv_indian" => "53",
@@ -237,8 +239,6 @@ function convert_authors($mysql_db, $sqlite_db)
 
 function author_info($mysql_db, $sqlite_db)
 {
-  
-
   $bb = new bbcode;
   $bb->autolinks = false;
   $sqltest = "SELECT * FROM libaannotations";
@@ -254,6 +254,23 @@ function author_info($mysql_db, $sqlite_db)
     $insert->execute(array($body, $row['AvtorId']));
   }
 
+  $sqlite_db->query("commit;");
+}
+
+function convert_genres($mysql_db, $sqlite_db)
+{
+  $sqlite_db->query("begin transaction;");
+  $sqlite_db->query("DELETE FROM genres");
+
+  $sqltext = "SELECT DISTINCT libgenre.BookId, GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId";
+  $query = $mysql_db->query($sqltext);
+  while ($row = $query->fetch_array()) {
+    echo $row['BookId']." - ".$row['GenreCode']."\n";
+    $genre = genreCode($row['GenreCode']);
+    $sql = "INSERT INTO genres(id_book, id_genre) VALUES(?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    $err = $insert->execute(array($row['BookId'], $genre));
+  }
   $sqlite_db->query("commit;");
 }
 
@@ -465,8 +482,10 @@ function create_tables($sqlite_db)
   $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
   $sqlite_db->query("INSERT INTO params(text) VALUES ('FLIBUSTA');");
   $sqlite_db->query("INSERT INTO params(id,text) VALUES (11,'flibusta.net');");
-
+  
   $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
+  
+  $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2));");
 
   $sqlite_db->query("commit;");
 }
@@ -492,6 +511,9 @@ function create_indexes($sqlite_db)
 
   $sqlite_db->query("CREATE INDEX aliases_author ON aliases(id_author);");
   $sqlite_db->query("CREATE INDEX aliases_alias ON aliases(id_alias);");
+  
+  $sqlite_db->query("CREATE INDEX genres_book ON genres(id_book);");
+  $sqlite_db->query("CREATE INDEX genres_genre ON genres(id_genre);");
 
   $sqlite_db->query("commit;");
 
@@ -511,6 +533,7 @@ $mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
 create_tables($sqlite_db);
+convert_genres($mysql_db, $sqlite_db);
 convert_authors($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
 convert_seqnames($mysql_db, $sqlite_db);
