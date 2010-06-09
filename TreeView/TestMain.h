@@ -51,9 +51,6 @@ class DataViewFrame: public wxFrame
 		FbTreeViewCtrl * m_dataview;
 
 	private:
-		wxThread * m_thread;
-
-	private:
         void OnClose(wxCloseEvent& event);
         void OnQuit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
@@ -70,9 +67,6 @@ class DataViewFrame: public wxFrame
 		void OnDeleteType(wxCommandEvent& event);
 		void OnTypeActivated(wxTreeEvent& event);
 		void OnColumnClick(wxListEvent& event);
-
-		void OnModel( FbArrayEvent& event );
-		void OnArray( FbArrayEvent& event );
 
         DECLARE_EVENT_TABLE()
 };

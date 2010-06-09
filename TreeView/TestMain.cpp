@@ -103,13 +103,11 @@ BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_MENU( ID_MODIFY_TYPE, DataViewFrame::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, DataViewFrame::OnDeleteType )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, DataViewFrame::OnTypeActivated)
-	EVT_FB_ARRAY(ID_MODEL_CREATE, DataViewFrame::OnModel)
-	EVT_FB_ARRAY(ID_MODEL_APPEND, DataViewFrame::OnArray)
 	EVT_LIST_COL_CLICK(ID_TYPE_LIST, OnColumnClick)
 END_EVENT_TABLE()
 
 DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: wxFrame(parent, id, title, pos, size, style), m_thread(NULL)
+	: wxFrame(parent, id, title, pos, size, style)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -202,8 +200,6 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 
 DataViewFrame::~DataViewFrame()
 {
-	if (m_thread) m_thread->Wait();
-	wxDELETE(m_thread);
 }
 
 void DataViewFrame::OnClose(wxCloseEvent &event)
@@ -340,25 +336,6 @@ void DataViewFrame::OnCreateTree(wxCommandEvent& event)
 	CreateTreeModel();
 }
 
-void DataViewFrame::OnModel( FbArrayEvent& event )
-{
-	FbAuthListModel * model = new FbAuthListModel(event.GetArray());
-	m_dataview->AssignModel(model);
-}
-
-void DataViewFrame::OnArray( FbArrayEvent& event )
-{
-	FbAuthListModel * model = wxDynamicCast(m_dataview->GetModel(), FbAuthListModel);
-	if (model) model->Append(event.GetArray());
-	m_dataview->Refresh();
-}
-
 void DataViewFrame::OnColumnClick(wxListEvent& event)
 {
-	if (m_thread) m_thread->Wait();
-	wxDELETE(m_thread);
-	FbAuthListInfo info;
-	m_thread = new FbAuthListThread(this, info, m_dataview->GetSortedColumn());
-	m_thread->Create();
-	m_thread->Run();
 }

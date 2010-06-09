@@ -467,9 +467,9 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 		CalcUnscrolledPosition(x, y, &x, &y);
 		size_t row = (size_t)(y / h) + 1;
 		if (event.LeftDown() || event.LeftDClick() || event.MiddleDown() || event.RightDown()) {
-			FbModelData * data = m_model->GetData(row);
+			int level;
+			FbModelData * data = m_model->GetData(row, level);
 			if (data) {
-				int level = data->GetLevel(*m_model);
 				int state = data->GetState(*m_model);
 				int left = FB_CHECKBOX_WIDTH * level;
 				int right = left + FB_CHECKBOX_WIDTH + 2;

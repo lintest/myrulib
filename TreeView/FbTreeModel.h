@@ -22,8 +22,6 @@ class FbModelData: public wxObject
 			{ return false; }
 		virtual bool IsBold(FbModel & model) const
 			{ return false; }
-		virtual int GetLevel(FbModel & model) const
-			{ return 0; }
 		virtual int Compare(FbModel & model, const FbModelData &data) const
 			{ return GetValue(model, 0).CmpNoCase(data.GetValue(model, 0)); }
 		virtual size_t Count(FbModel & model) const
@@ -58,7 +56,6 @@ class FbParentData: public FbModelData
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
 		virtual size_t CountAll(const FbModel & model) const;
-		virtual int GetLevel(FbModel & model) const;
 		FbModelData* Items(FbModel & model, size_t index) const;
 	private:
 		void Add(FbModel & model, FbModelData* data);
@@ -72,7 +69,6 @@ class FbChildData: public FbModelData
 {
 	public:
 		FbChildData(FbModel & model, FbParentData * parent = 0);
-		virtual int GetLevel(FbModel & model) const;
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
 	private:

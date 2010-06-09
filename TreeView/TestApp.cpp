@@ -9,7 +9,6 @@
 
 #include "TestApp.h"
 #include "TestMain.h"
-#include "FbCollection.h"
 
 IMPLEMENT_APP(DataViewApp);
 
@@ -21,8 +20,3 @@ bool DataViewApp::OnInit()
     return true;
 }
 
-void DataViewApp::OpenCollection(const wxString & filename)
-{
-	wxDELETE(m_collection);
-	m_collection = new FbCollection(filename);
-}

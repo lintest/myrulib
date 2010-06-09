@@ -20,8 +20,6 @@ class DataViewApp : public wxApp
     public:
 		DataViewApp(): m_collection(NULL) {}
         virtual bool OnInit();
-		FbCollection * GetCollection() { return m_collection; }
-		void OpenCollection(const wxString & filename);
 	private:
 		FbCollection * m_collection;
 };

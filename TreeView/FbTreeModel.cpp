@@ -114,15 +114,6 @@ void FbParentData::Add(FbModel & model, FbModelData* data)
 	m_items.Add(data);
 }
 
-int FbParentData::GetLevel(FbModel & model) const
-{
-	if (m_parent) {
-		return m_parent->GetLevel(model) + 1;
-	} else {
-		return HiddenRoot() ? -1 : 0;
-	}
-}
-
 //-----------------------------------------------------------------------------
 //  FbChildData
 //-----------------------------------------------------------------------------
@@ -133,11 +124,6 @@ FbChildData::FbChildData(FbModel & model, FbParentData * parent)
 	: m_parent(parent)
 {
 	if (m_parent) m_parent->Add(model, this);
-}
-
-int FbChildData::GetLevel(FbModel & model) const
-{
-	return m_parent ? m_parent->GetLevel(model) + 1 : 0;
 }
 
 //-----------------------------------------------------------------------------
