@@ -50,7 +50,6 @@ void FbFrameSequen::CreateControls()
 	sizer->Add(splitter, 1, wxEXPAND);
 
 	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
-	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
@@ -115,11 +114,6 @@ void FbFrameSequen::OnMasterSelected(wxTreeEvent & event)
 {
 	FbSeqnListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbSeqnListData);
 	if (data) FbMasterSeqname(data->GetCode()).Show(this);
-}
-
-void FbFrameSequen::ActivateAuthors()
-{
-	m_MasterList->SetFocus();
 }
 
 void FbFrameSequen::FindSequence(const wxString &text)

@@ -87,10 +87,15 @@ bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 
 void FbFrameBase::CreateControls()
 {
-	this->UpdateMenu();
-	this->UpdateFonts(false);
-	this->ShowFullScreen(IsFullScreen());
-	this->Layout();
+	UpdateMenu();
+	UpdateFonts(false);
+	ShowFullScreen(IsFullScreen());
+	Layout();
+
+	if (m_MasterList) 
+		m_MasterList->SetFocus();
+	else 
+		m_BooksPanel->SetFocus();
 }
 
 void FbFrameBase::Localize(bool bUpdateMenu)

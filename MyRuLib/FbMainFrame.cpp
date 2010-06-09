@@ -12,7 +12,7 @@
 #include "FbFrameSearch.h"
 #include "FbFrameGenres.h"
 //#include "FbFrameFolder.h"
-//#include "FbFrameDownld.h"
+#include "FbFrameDownld.h"
 #include "FbFrameSequen.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
@@ -468,7 +468,7 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 //			frame = new FbFrameFolder(this);
 		} break;
 		case ID_FRAME_DOWNLD: {
-//			frame = new FbFrameDownld(this);
+			frame = new FbFrameDownld(this);
 		} break;
 		case ID_FRAME_SEQUEN: {
 			frame = new FbFrameSequen(this);
@@ -509,16 +509,16 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
-/*
 	if (event.m_type == FT_DOWNLOAD) {
 		if (FbParams::GetValue(FB_AUTO_DOWNLD)) FbDownloader::Start();
 		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, false), FbFrameDownld);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 	} else {
+/*
 		FbFrameFolder * frame = wxDynamicCast(FindFrameById(ID_FRAME_FOLDER, false), FbFrameFolder);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
-	}
 */
+	}
 }
 
 void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)

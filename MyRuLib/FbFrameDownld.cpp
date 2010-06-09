@@ -9,6 +9,8 @@
 #include "res/start.xpm"
 #include "res/pause.xpm"
 
+IMPLEMENT_CLASS(FbDownListData, FbModelData)
+
 IMPLEMENT_CLASS(FbFrameDownld, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameDownld, FbFrameBase)
@@ -41,9 +43,8 @@ void FbFrameDownld::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbMasterList(splitter, ID_MASTER_LIST);
-	m_MasterList->AddColumn (_("Folders"), 100, wxALIGN_LEFT);
-	m_MasterList->SetFocus();
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
+	CreateColumns();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
@@ -59,7 +60,13 @@ void FbFrameDownld::CreateControls()
 void FbFrameDownld::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	m_MasterList->SetColumnText(0, _("Folders"));
+	m_MasterList->EmptyColumns();
+	CreateColumns();
+}
+
+void FbFrameDownld::CreateColumns()
+{
+	m_MasterList->AddColumn (0, _("Folders"), 100, wxALIGN_LEFT);
 }
 
 wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxString& name)
@@ -83,56 +90,29 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 
 void FbFrameDownld::FillFolders(const int iCurrent)
 {
-	m_MasterList->Freeze();
-	m_MasterList->DeleteRoot();
-
-	wxTreeItemId root = m_MasterList->AddRoot(wxEmptyString);
-	m_MasterList->AppendItem(root, _("Queue"), -1, -1, new FbMasterFolder(1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, _("Ready"), -1, -1, new FbMasterFolder(-1, FT_DOWNLOAD));
-	m_MasterList->AppendItem(root, _("Fault"), -1, -1, new FbMasterFolder(-2, FT_DOWNLOAD));
-	m_MasterList->Expand(root);
-
-	m_MasterList->Thaw();
+	FbListStore * model = new FbListStore;
+	model->Append(new FbDownListData(+1, _("Queue")));
+	model->Append(new FbDownListData(-1, _("Ready")));
+	model->Append(new FbDownListData(-2, _("Fault")));
+	m_MasterList->AssignModel(model);
 }
 
 void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 {
-	wxTreeItemId selected = event.GetItem();
-	if (selected.IsOk()) {
-		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) {
-			bool enabled = data->GetId() > 0;
-			m_ToolBar->EnableTool(wxID_UP,   enabled);
-			m_ToolBar->EnableTool(wxID_DOWN, enabled);
-			data->Show(this);
-		}
-	}
+	FbDownListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDownListData);
+	if (data) FbMasterDownld(data->GetCode()).Show(this);
 }
 
 void FbFrameDownld::UpdateBooklist()
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) data->Show(this);
+	FbDownListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDownListData);
+	if (data) FbMasterDownld(data->GetCode()).Show(this);
 }
 
-void FbFrameDownld::UpdateFolder(const int iFolder, const FbFolderType type)
+void FbFrameDownld::UpdateFolder(const int folder, const FbFolderType type)
 {
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	if (data->GetType()!= type) return;
-
-	bool bNeedUpdate = false;
-	switch (type) {
-		case FT_FOLDER:
-			bNeedUpdate = data->GetId()==iFolder;
-			break;
-		default:
-			bNeedUpdate = true;
-			break;
-	}
-
-	if (bNeedUpdate) data->Show(this);
+	FbDownListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDownListData);
+	if (data && data->GetCode() == folder) FbMasterDownld(data->GetCode()).Show(this);
 }
 
 void FbFrameDownld::OnStart(wxCommandEvent & event)

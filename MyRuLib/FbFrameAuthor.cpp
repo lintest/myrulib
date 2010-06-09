@@ -60,7 +60,6 @@ void FbFrameAuthor::CreateControls()
 	sizer->Add(splitter, 1, wxEXPAND);
 
 	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
-	m_MasterList->SetFocus();
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 

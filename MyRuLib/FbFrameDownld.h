@@ -14,6 +14,21 @@
 #include "FbTreeListCtrl.h"
 #include "FbBookEvent.h"
 
+class FbDownListData: public FbModelData
+{
+	public:
+		FbDownListData(int code, const wxString &name)
+			: m_code(code), m_name(name) {}
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
+			{ return col == 0 ? m_name : (wxString)wxEmptyString; }
+		int GetCode() const 
+			{ return m_code; }
+	private:
+		int m_code;
+		wxString m_name;
+		DECLARE_CLASS(FbDownListData);
+};
+
 class FbFrameDownld : public FbFrameBase
 {
 	public:
@@ -26,6 +41,7 @@ class FbFrameDownld : public FbFrameBase
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
 	private:
+		void CreateColumns();
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);

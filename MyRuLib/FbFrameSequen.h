@@ -17,7 +17,6 @@ class FbFrameSequen : public FbFrameBase
 		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
-		void ActivateAuthors();
 		virtual void ShowFullScreen(bool show);
 		void Localize(bool bUpdateMenu);
 	protected:

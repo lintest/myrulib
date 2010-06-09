@@ -18,7 +18,7 @@ static wxString GetRussianAlphabet()
 		if (ch == (wxChar)0x042A) continue;
 		if (ch == (wxChar)0x042C) continue;
 		result += ch;
-		if (ch == (wxChar)0x0415) result += (wxChar)0x0401;
+//		if (ch == (wxChar)0x0415) result += (wxChar)0x0401;
 	}
 	return result;
 }
