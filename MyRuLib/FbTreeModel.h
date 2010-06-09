@@ -116,6 +116,7 @@ class FbModel: public wxObject
 				wxPen m_borderPen;
 				bool m_selected;
 				bool m_hidden;
+				int m_level;
 		};
 	public:
 		FbModel();

@@ -162,7 +162,8 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
     // Set pen for borders
 	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
 	// Current item flags
-	m_selected(false)
+	m_selected(false),
+	m_level(0)
 {
 	m_normalFont = dc.GetFont();
 	m_normalFont.SetWeight(wxFONTWEIGHT_NORMAL);
@@ -213,7 +214,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 	}
 	dc.DestroyClippingRegion();
 
-	int x = data.GetLevel(*this) * FB_CHECKBOX_WIDTH;
+	int x = ctx.m_level * FB_CHECKBOX_WIDTH;
 	const int y = rect.GetTop();
 	const int h = rect.GetHeight();
 	const wxBitmap & bitmap = GetBitmap(data.GetState(*this));
@@ -472,6 +473,7 @@ void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, con
 	} else {
 		if (y >= rect.GetTop()) {
 			ctx.m_selected = m_position == position + 1;
+			ctx.m_level = data.GetLevel(*this);
 			wxRect rect(0, y, ww, h);
 			DrawItem(data, dc, ctx, rect, cols);
 		}
