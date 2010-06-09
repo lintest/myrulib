@@ -74,7 +74,8 @@ class FbAuthListModel: public FbListModel
 			{ return m_items.Count(); }
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); };
-		virtual FbModelData * GetData(size_t row);
+	protected:
+		virtual FbModelData * DoGetData(size_t row, int &level);
 	private:
         wxString GetSQL(const wxString & order, const wxString & condition);
 	private:

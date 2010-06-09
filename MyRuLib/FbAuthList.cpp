@@ -176,8 +176,9 @@ void FbAuthListModel::Delete()
 	}
 }
 
-FbModelData * FbAuthListModel::GetData(size_t row)
+FbModelData * FbAuthListModel::DoGetData(size_t row, int &level)
 {
+	level = 0;
 	if (row == 0 || row > m_items.Count()) return NULL;
 	int code = m_items[row - 1];
 	wxDELETE(m_data);

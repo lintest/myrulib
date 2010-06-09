@@ -15,7 +15,6 @@
 #include "TestApp.h"
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
-#include "FbAuthList.h"
 
 //-----------------------------------------------------------------------------
 //  FbTestModelData
@@ -241,11 +240,13 @@ void DataViewFrame::OnOpenList(wxCommandEvent &event)
 
 	if (dlg.ShowModal() == wxID_OK) {
 		sm_filename = dlg.GetPath();
+/*
 		wxGetApp().OpenCollection(dlg.GetPath());
 		FbAuthListInfo info;
 		m_thread = new FbAuthListThread(this, info, m_dataview->GetSortedColumn());
 		m_thread->Create();
 		m_thread->Run();
+*/
 	};
 }
 

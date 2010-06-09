@@ -22,7 +22,7 @@ class FbModelData: public wxObject
 			{ return false; }
 		virtual bool IsBold(FbModel & model) const
 			{ return false; }
-		virtual size_t GetLevel(FbModel & model) const
+		virtual int GetLevel(FbModel & model) const
 			{ return 0; }
 		virtual int Compare(FbModel & model, const FbModelData &data) const
 			{ return GetValue(model, 0).CmpNoCase(data.GetValue(model, 0)); }
@@ -34,6 +34,8 @@ class FbModelData: public wxObject
 			{ return NULL; };
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return NULL; };
+		virtual bool HiddenRoot() const
+			{ return true; }
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -56,7 +58,7 @@ class FbParentData: public FbModelData
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
 		virtual size_t CountAll(const FbModel & model) const;
-		virtual size_t GetLevel(FbModel & model) const;
+		virtual int GetLevel(FbModel & model) const;
 		FbModelData* Items(FbModel & model, size_t index) const;
 	private:
 		void Add(FbModel & model, FbModelData* data);
@@ -70,6 +72,7 @@ class FbChildData: public FbModelData
 {
 	public:
 		FbChildData(FbModel & model, FbParentData * parent = 0);
+		virtual int GetLevel(FbModel & model) const;
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
 	private:
@@ -112,13 +115,20 @@ class FbModel: public wxObject
 				wxFont m_boldFont;
 				wxPen m_borderPen;
 				bool m_selected;
+				bool m_hidden;
+				int m_level;
 		};
 	public:
 		FbModel();
 		virtual ~FbModel() {}
 
 		void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void SetFocused(bool focused) { m_focused = focused; }
+		void SetFocused(bool focused) 
+			{ m_focused = focused; }
+		FbModelData * GetData(size_t row)
+			{ int level; return DoGetData(row, level); }
+		FbModelData * GetData(size_t row, int &level)
+			{ return DoGetData(row, level); }
 
 		virtual int GoFirstRow() = 0;
 		virtual int GoLastRow() = 0;
@@ -129,7 +139,6 @@ class FbModel: public wxObject
 		void SetOwner(wxWindow * owner) { m_owner = owner; };
 
 		virtual size_t FindRow(size_t row, bool select) = 0;
-		virtual FbModelData * GetData(size_t row) = 0;
 		virtual size_t GetRowCount() const = 0;
 
 		virtual void Append(FbModelData * data) = 0;
@@ -141,15 +150,14 @@ class FbModel: public wxObject
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
-		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
-		virtual void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
+		void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
+		virtual FbModelData * DoGetData(size_t row, int &level) = 0;
 
+	protected:
 		wxWindow * m_owner;
-
 		size_t m_position;
-
 		bool m_focused;
-
 		DECLARE_CLASS(FbModel);
 };
 
@@ -162,7 +170,7 @@ class FbListModel: public FbModel
 		virtual int GoPriorRow(size_t delta = 1);
 		virtual size_t FindRow(size_t row, bool select);
 	protected:
-		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
 };
 
@@ -175,8 +183,8 @@ class FbListStore: public FbListModel
 	public:
 		virtual size_t GetRowCount() const
 			{ return m_list.Count(); }
-		virtual FbModelData * GetData(size_t row)
-			{ return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }
+		virtual FbModelData * DoGetData(size_t row, int &level)
+			{ level = 0; return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }
 	private:
 		FbModelDataArray m_list;
 		DECLARE_CLASS(FbListStore);
@@ -200,19 +208,17 @@ class FbTreeModel: public FbModel
 		virtual int GoPriorRow(size_t delta = 1);
 
 		virtual size_t FindRow(size_t row, bool select);
-		virtual FbModelData * GetData(size_t row);
-
-		virtual size_t GetRowCount() const
-			{ return m_root ? m_root->CountAll(*this) : 0; }
+		virtual FbModelData * DoGetData(size_t row, int &level);
+		virtual size_t GetRowCount() const;
 
 		virtual void Append(FbModelData * data) {}
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete() {}
 
 	protected:
-		virtual void DoDrawTree(wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &cnt, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
-		FbModelData * FindData(FbModelData &parent, size_t &row);
+		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
+		FbModelData * FindData(FbModelData &parent, size_t &row, int &level);
 		FbModelData * GetLast(FbModelData &parent);
 
 	protected:

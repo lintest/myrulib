@@ -114,15 +114,6 @@ void FbParentData::Add(FbModel & model, FbModelData* data)
 	m_items.Add(data);
 }
 
-int FbParentData::GetLevel(FbModel & model) const
-{
-	if (m_parent) {
-		return m_parent->GetLevel(model) + 1;
-	} else {
-		return HiddenRoot() ? -1 : 0;
-	}
-}
-
 //-----------------------------------------------------------------------------
 //  FbChildData
 //-----------------------------------------------------------------------------
@@ -133,11 +124,6 @@ FbChildData::FbChildData(FbModel & model, FbParentData * parent)
 	: m_parent(parent)
 {
 	if (m_parent) m_parent->Add(model, this);
-}
-
-int FbChildData::GetLevel(FbModel & model) const
-{
-	return m_parent ? m_parent->GetLevel(model) + 1 : 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -373,79 +359,6 @@ void FbListStore::Delete()
 	}
 }
 
-/*
-//-----------------------------------------------------------------------------
-//  FbListModel
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbListModel, FbModel)
-
-FbListModel::FbListModel(size_t count):
-	m_count(count)
-{
-	if (count) {
-		m_current = FbItemKeyList(1);
-		m_position = 1;
-	}
-}
-
-FbListModel::~FbListModel()
-{
-}
-
-FbListModelData * FbListModel::FindRow(const FbItemId &id)
-{
-	size_t row = 0;
-	return FbItemKeyList::Key(id, row) ? FindRow(row, false) : NULL;
-}
-
-FbListModelData * FbListModel::FindRow(size_t rowid, bool select)
-{
-	FbListModelData * data = NULL;
-    for (size_t i=0; i < m_data.Count(); i++) {
-        if (m_data[i].GetRow() == rowid) {
-			data = m_data.Detach(i);
-			m_data.Insert(data, 0);
-            break;
-        }
-    }
-
-	if (data == NULL) {
-		data = ReadData(rowid);
-		if (data) m_data.Insert(data, 0);
-
-		if (m_data.Count() > TREELIST_CASHE_SIZE)
-			m_data.RemoveAt(TREELIST_CASHE_SIZE, m_data.Count() - TREELIST_CASHE_SIZE);
-	}
-
-	if (select) {
-		m_current = data->GetId();
-		m_position = rowid;
-	}
-
-	return data;
-}
-
-void FbListModel::SetRowCount(size_t count)
-{
-	m_count = count;
-	if (m_count && !m_current.IsOk()) m_current = FbItemKeyList(1);
-}
-
-FbItemId FbListModel::FindItem(size_t row, bool select)
-{
-	if (row && row<=GetRowCount()) {
-		FbItemId res = FbItemKeyList(row);
-		if (select) {
-			m_position = row;
-			m_current = res;
-		}
-		return res;
-	}
-	return FbItemId();
-}
-*/
-
 //-----------------------------------------------------------------------------
 //  FbTreeModel
 //-----------------------------------------------------------------------------
@@ -458,11 +371,11 @@ void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, co
 	if (m_root) {
 		ctx.m_hidden = m_root->HiddenRoot();
 		ctx.m_level = ctx.m_hidden ? -1 : 0;
-		DoDrawItem(*m_root, dc, ctx, rect, cols, h, position);
+		DrawTreeItem(*m_root, dc, ctx, rect, cols, h, position);
 	}
 }
 
-void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
+void FbTreeModel::DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
 {
 	int y = position * h;
 	if (y > rect.GetBottom()) return;
@@ -484,7 +397,7 @@ void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, con
 	size_t count = data.Count(*this);
 	for (size_t i = 0; i < count; i++) {
 		FbModelData * child = data.Items(*this, i);
-		if (child) DoDrawItem(*child, dc, ctx, rect, cols, h, position);
+		if (child) DrawTreeItem(*child, dc, ctx, rect, cols, h, position);
 	}
 	ctx.m_level--;
 }
@@ -546,8 +459,9 @@ int FbTreeModel::GoNextRow(size_t delta)
 size_t FbTreeModel::FindRow(size_t row, bool select)
 {
 	if (m_root) {
+		int level = 0;
 		size_t pos = row;
-		FbModelData * data = FindData(*m_root, pos);
+		FbModelData * data = FindData(*m_root, pos, level);
 		if (data) {
 			if (select) m_position = row;
 			return row;
@@ -556,24 +470,27 @@ size_t FbTreeModel::FindRow(size_t row, bool select)
 	return 0;
 }
 
-FbModelData * FbTreeModel::FindData(FbModelData &parent, size_t &row)
+FbModelData * FbTreeModel::FindData(FbModelData &parent, size_t &row, int &level)
 {
 	row--;
 	if (row == 0) { return &parent; }
+	level++;
 	size_t count = parent.Count(*this);
 	for (size_t i = 0; i < count; i++) {
-		FbModelData * child = FindData(*parent.Items(*this, i), row);
+		FbModelData * child = FindData(*parent.Items(*this, i), row, level);
 		if (child) return child;
 	}
+	level--;
 	return NULL;
 }
 
-FbModelData * FbTreeModel::GetData(size_t row)
+FbModelData * FbTreeModel::DoGetData(size_t row, int &level)
 {
 	if (m_root) {
 		size_t pos = row;
 		if (m_root->HiddenRoot()) pos++;
-		return FindData(*m_root, pos);
+		level = m_root->HiddenRoot() ? -1 : 0;
+		return FindData(*m_root, pos, level);
 	}
 	return NULL;
 }

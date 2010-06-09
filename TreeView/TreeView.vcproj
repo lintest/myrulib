@@ -181,15 +181,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\FbAuthList.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbBookEvent.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbCollection.cpp"
 				>
 			</File>
 			<File
@@ -219,15 +211,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\FbAuthList.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FbBookEvent.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbCollection.h"
 				>
 			</File>
 			<File

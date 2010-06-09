@@ -76,6 +76,10 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
 		wxString GetCurrentText() const;
 
+		void Append(FbModelData * data);
+		void Replace(FbModelData * data);
+		void Delete();
+
 	protected:
 		// header window, responsible for column visualization and manipulation
 		FbTreeViewHeaderWindow* m_header_win;
