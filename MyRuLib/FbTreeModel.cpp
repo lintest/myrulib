@@ -457,6 +457,7 @@ void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, co
 	size_t position = 0;
 	if (m_root) {
 		ctx.m_hidden = m_root->HiddenRoot();
+		ctx.m_level = ctx.m_hidden ? -1 : 0;
 		DoDrawItem(*m_root, dc, ctx, rect, cols, h, position);
 	}
 }
@@ -473,18 +474,19 @@ void FbTreeModel::DoDrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, con
 	} else {
 		if (y >= rect.GetTop()) {
 			ctx.m_selected = m_position == position + 1;
-			ctx.m_level = data.GetLevel(*this);
 			wxRect rect(0, y, ww, h);
 			DrawItem(data, dc, ctx, rect, cols);
 		}
 		position++;
 	}
 
+	ctx.m_level++;
 	size_t count = data.Count(*this);
 	for (size_t i = 0; i < count; i++) {
 		FbModelData * child = data.Items(*this, i);
 		if (child) DoDrawItem(*child, dc, ctx, rect, cols, h, position);
 	}
+	ctx.m_level--;
 }
 
 int FbTreeModel::GoFirstRow()
