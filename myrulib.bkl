@@ -6,7 +6,6 @@
 	<set var="SQLITE3_STATIC">0</set>
 
 	<set var="PREFIX">/usr</set>
-	<set var="BUILDDIR">build</set>
 	
 	<set var="WX_UNICODE_DEFAULT">1</set>
 	<set var="WX_DEBUG_DEFAULT">0</set>
@@ -75,23 +74,23 @@
 		</if>
     </define-tag>
 
-	<action id="build/ru.mo"> 
+	<action id="ru.mo"> 
 		<locale>ru</locale>
 	</action>
 
-	<action id="build/uk.mo"> 
+	<action id="uk.mo"> 
 		<locale>uk</locale>
 	</action>
 
-	<action id="build/be.mo"> 
+	<action id="be.mo"> 
 		<locale>be</locale>
 	</action>
 
-	<action id="build/cs.mo"> 
+	<action id="cs.mo"> 
 		<locale>cs</locale>
 	</action>
 
-	<action id="build/sv.mo"> 
+	<action id="sv.mo"> 
 		<locale>sv</locale>
 	</action>
 	
@@ -107,42 +106,43 @@
 			<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
 		</define-tag>
 		
-		<action id="build/ru.inc"> 
+		<action id="ru.inc"> 
 			<bin2c>ru</bin2c>
 		</action>
 
-		<action id="build/uk.inc"> 
+		<action id="uk.inc"> 
 			<bin2c>uk</bin2c>
 		</action>
 
-		<action id="build/be.inc"> 
+		<action id="be.inc"> 
 			<bin2c>be</bin2c>
 		</action>
 
-		<action id="build/cs.inc"> 
+		<action id="cs.inc"> 
 			<bin2c>cs</bin2c>
 		</action>
 		
-		<action id="build/sv.inc"> 
+		<action id="sv.inc"> 
 			<bin2c>sv</bin2c>
 		</action>
 	</if>
 	
 	<exe id="myrulib" template="wxgui">
+		<include>$(BUILDDIR)</include>
 		<define>NDEBUG</define>
 		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
-		<objects-depend>build/ru.mo</objects-depend>
-		<objects-depend>build/uk.mo</objects-depend>
-		<objects-depend>build/be.mo</objects-depend>
-		<objects-depend>build/cs.mo</objects-depend>
-		<objects-depend>build/sv.mo</objects-depend>
+		<objects-depend>ru.mo</objects-depend>
+		<objects-depend>uk.mo</objects-depend>
+		<objects-depend>be.mo</objects-depend>
+		<objects-depend>cs.mo</objects-depend>
+		<objects-depend>sv.mo</objects-depend>
 		<if cond="LOCALE_STATIC=='1'">
 			<define>FB_INCLUDE_LOCALE</define>
-			<objects-depend>build/ru.inc</objects-depend>
-			<objects-depend>build/uk.inc</objects-depend>
-			<objects-depend>build/be.inc</objects-depend>
-			<objects-depend>build/cs.inc</objects-depend>
-			<objects-depend>build/sv.inc</objects-depend>
+			<objects-depend>ru.inc</objects-depend>
+			<objects-depend>uk.inc</objects-depend>
+			<objects-depend>be.inc</objects-depend>
+			<objects-depend>cs.inc</objects-depend>
+			<objects-depend>sv.inc</objects-depend>
 		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
@@ -216,7 +216,6 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<include>$(BUILDDIR)</include>
 		<include>MyRuLib</include>
 		<include>WxSQLite3</include>
 		<library>wxsqlite3_static</library>
