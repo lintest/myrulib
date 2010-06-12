@@ -63,7 +63,12 @@
 	
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<include>$(SRCDIR)/$(SQLITE_INCLUDE)</include>
+		<if cond="FORMAT in ['mingw','gnu']">
+		  <include cond="SQLITE_STATIC=='1'">$(SRCDIR)/SQLite3</include>
+		</if>
+		<if cond="FORMAT=='autoconf'">
+		  <include>$(SRCDIR)/$(SQLITE_INCLUDE)</include>
+		</if>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 		<depends cond="FORMAT=='mingw'">clear_resource</depends>
