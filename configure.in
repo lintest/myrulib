@@ -23,6 +23,8 @@ AC_PROG_CXX
 AC_PROG_CXXCPP
 
 dnl AC_PROG_INTLTOOL
+dnl AM_GNU_GETTEXT
+
 
 AM_PATH_WXCONFIG(2.8.10, WXFOUND=1)
 
@@ -35,47 +37,51 @@ if test "$WXFOUND" != 1; then
     ])
 fi
 
-AC_ARG_ENABLE(expat,
-              [  --enable-expat          Use buildin Expat library?],
-              USE_EXPAT="$enableval", USE_EXPAT="no")
+AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use buildin Expat library])], USE_EXPAT="$withval", USE_EXPAT="no")
 
 if test $USE_EXPAT = no ; then 
-	AC_CHECK_HEADER(expat.h,AC_CHECK_LIB(expat,XML_ParserCreate,USE_EXPAT="no",USE_EXPAT="yes"),USE_EXPAT="yes")
+	AC_CHECK_HEADER(expat.h,AC_CHECK_LIB(expat,XML_StopParser,USE_EXPAT="no",USE_EXPAT="yes"),USE_EXPAT="yes")
 fi
 
 if test $USE_EXPAT = yes ; then 
+  AC_DEFINE(XML_STATIC)
   EXPAT_STATIC=1
-  AC_MSG_WARN([Expat: use buildin.])
+  EXPAT_LIBRARY="expat_static"
+  EXPAT_INCLUDE="Expat"
+  AC_MSG_RESULT([Expat: use buildin.])
 else
   EXPAT_STATIC=0
-  AC_MSG_WARN([Expat: use system.])
+  EXPAT_SYSLIB=expat
+  AC_MSG_RESULT([Expat: use system.])
 fi
 
-AC_ARG_ENABLE(sqlite,
-              [  --enable-sqlite         Use buildin SQLite3 library?],
-              USE_SQLITE="$enableval", USE_SQLITE="no")
+AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use buildin SQLite3 library])], USE_SQLITE="$withval", USE_SQLITE="no")
 
-if test $USE_EXPAT = no ; then 
+if test $USE_SQLITE = no ; then 
   AC_CHECK_HEADER(sqlite3.h, AC_CHECK_LIB(sqlite3, sqlite3_open,USE_SQLITE="no",USE_SQLITE="yes"),USE_SQLITE="yes")
 fi
 
 if test $USE_SQLITE = yes ; then 
   SQLITE_STATIC=1
+  EXPAT_LIBRARY="sqlite3_static"
   SQLITE_INCLUDE="SQLite3"
-  AC_MSG_WARN([SQLite3: use buildin.])
+  AC_MSG_RESULT([SQLite3: use buildin.])
 else
   SQLITE_STATIC=0
-  AC_MSG_WARN([SQLite3: use system.])
+  SQLITE_SYSLIB=sqlite3
+  AC_MSG_RESULT([SQLite3: use system.])
 fi
+AC_SUBST(SQLITE_INCLUDE)
 
-AC_ARG_ENABLE(locale,
-              [  --enable-locale         Include locale files into executable?],
-              USE_LOCALE="$enableval", USE_LOCALE="no")
+AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
 
 if test $USE_LOCALE = yes ; then 
+  AC_DEFINE(FB_INCLUDE_LOCALE)
   INCLUDE_LOCALE=1
+  AC_MSG_RESULT([Locale: include into executable file.])
 else
   INCLUDE_LOCALE=0
+  AC_MSG_RESULT([Locale: don't include into executable.])
 fi
 
 AC_BAKEFILE([m4_include(autoconf_inc.m4)])

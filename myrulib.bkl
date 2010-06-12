@@ -89,6 +89,17 @@
 		</if>
     </define-tag>
 
+	<exe id="bin2c">
+		<sources>Bin2c/bin2c.c</sources>
+	</exe>
+		
+	<define-tag name="bin2c" rules="action">
+		<depends>bin2c</depends>
+		<depends>$(value).mo</depends>
+		<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
+		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
+	</define-tag>
+	
 	<action id="ru.mo"> 
 		<locale>ru</locale>
 	</action>
@@ -109,34 +120,23 @@
 		<locale>sv</locale>
 	</action>
 	
-	<exe id="bin2c" cond="LOCALE_STATIC=='1'">
-		<sources>$(BUILDDIR)/Bin2c/bin2c.c</sources>
-	</exe>
-		
-	<define-tag name="bin2c" rules="action" cond="LOCALE_STATIC=='1'">
-		<depends>bin2c</depends>
-		<depends>$(value).mo</depends>
-		<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
-		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
-	</define-tag>
-	
-	<action id="ru.inc" cond="LOCALE_STATIC=='1'"> 
+	<action id="ru.inc"> 
 		<bin2c>ru</bin2c>
 	</action>
 
-	<action id="uk.inc" cond="LOCALE_STATIC=='1'"> 
+	<action id="uk.inc"> 
 		<bin2c>uk</bin2c>
 	</action>
 
-	<action id="be.inc" cond="LOCALE_STATIC=='1'"> 
+	<action id="be.inc"> 
 		<bin2c>be</bin2c>
 	</action>
 
-	<action id="cs.inc" cond="LOCALE_STATIC=='1'"> 
+	<action id="cs.inc"> 
 		<bin2c>cs</bin2c>
 	</action>
 	
-	<action id="sv.inc" cond="LOCALE_STATIC=='1'"> 
+	<action id="sv.inc"> 
 		<bin2c>sv</bin2c>
 	</action>
 	
@@ -145,19 +145,14 @@
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
-		<objects-depend>ru.mo</objects-depend>
-		<objects-depend>uk.mo</objects-depend>
-		<objects-depend>be.mo</objects-depend>
-		<objects-depend>cs.mo</objects-depend>
-		<objects-depend>sv.mo</objects-depend>
+		<objects-depend>ru.inc</objects-depend>
+		<objects-depend>uk.inc</objects-depend>
+		<objects-depend>be.inc</objects-depend>
+		<objects-depend>cs.inc</objects-depend>
+		<objects-depend>sv.inc</objects-depend>
 		<if cond="FORMAT in ['mingw','gnu']">
 			<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
 			<define cond="LOCALE_STATIC=='1'">FB_INCLUDE_LOCALE</define>
-			<objects-depend cond="LOCALE_STATIC=='1'">ru.inc</objects-depend>
-			<objects-depend cond="LOCALE_STATIC=='1'">uk.inc</objects-depend>
-			<objects-depend cond="LOCALE_STATIC=='1'">be.inc</objects-depend>
-			<objects-depend cond="LOCALE_STATIC=='1'">cs.inc</objects-depend>
-			<objects-depend cond="LOCALE_STATIC=='1'">sv.inc</objects-depend>
 			<include cond="SQLITE_STATIC=='1'">SQLite3</include>
 			<library cond="SQLITE_STATIC=='1'">sqlite3_static</library>
 			<sys-lib cond="SQLITE_STATIC!='1'">sqlite3</sys-lib>

@@ -24,12 +24,6 @@ dnl ### begin block 20_COND_EXPAT_STATIC_1[myrulib.bkl] ###
         COND_EXPAT_STATIC_1=""
     fi
     AC_SUBST(COND_EXPAT_STATIC_1)
-dnl ### begin block 20_COND_LOCALE_STATIC_1[myrulib.bkl] ###
-    COND_LOCALE_STATIC_1="#"
-    if test "x$LOCALE_STATIC" = "x1" ; then
-        COND_LOCALE_STATIC_1=""
-    fi
-    AC_SUBST(COND_LOCALE_STATIC_1)
 dnl ### begin block 20_COND_PLATFORM_MAC_0[myrulib.bkl] ###
     COND_PLATFORM_MAC_0="#"
     if test "x$PLATFORM_MAC" = "x0" ; then

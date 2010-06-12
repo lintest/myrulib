@@ -76,6 +76,9 @@ WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I./WxSQLite3 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	build/wxsqlite3_static_wxsqlite3.o
+BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
+BIN2C_OBJECTS =  \
+	build/bin2c_bin2c.o
 MYRULIB_CFLAGS = -Ibuild -DNDEBUG -I./MyRuLib -I./WxSQLite3 -O2 `$(WX_CONFIG) \
 	--cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -Ibuild -DNDEBUG -I./MyRuLib -I./WxSQLite3 -O2 `$(WX_CONFIG) \
@@ -152,7 +155,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_md5.o \
 	build/myrulib_base64.o \
 	build/myrulib_treelistctrl.o
-MYRULIB_ODEP =  ru.mo uk.mo be.mo cs.mo sv.mo
+MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 
 ### Conditionally set variables: ###
 
@@ -182,7 +185,7 @@ build:
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/myrulib
+all: test_for_selected_wxbuild build/libwxsqlite3_static.a build/bin2c build/myrulib
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/ru/LC_MESSAGES
@@ -216,11 +219,17 @@ clean:
 	rm -f build/*.o
 	rm -f build/*.d
 	rm -f build/libwxsqlite3_static.a
+	rm -f build/bin2c
 	rm -f build/ru.mo
 	rm -f build/uk.mo
 	rm -f build/be.mo
 	rm -f build/cs.mo
 	rm -f build/sv.mo
+	rm -f build/ru.inc
+	rm -f build/uk.inc
+	rm -f build/be.inc
+	rm -f build/cs.inc
+	rm -f build/sv.inc
 	rm -f build/myrulib
 
 test_for_selected_wxbuild: 
@@ -230,6 +239,9 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
+
+build/bin2c: $(BIN2C_OBJECTS)
+	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)
 
 ru.mo: ./MyRuLib/locale/ru.po
 	msgfmt ./MyRuLib/locale/ru.po -o build/ru.mo
@@ -246,6 +258,21 @@ cs.mo: ./MyRuLib/locale/cs.po
 sv.mo: ./MyRuLib/locale/sv.po
 	msgfmt ./MyRuLib/locale/sv.po -o build/sv.mo
 
+ru.inc: build/bin2c ru.mo
+	build/bin2c build/ru.mo build/ru.inc file
+
+uk.inc: build/bin2c uk.mo
+	build/bin2c build/uk.mo build/uk.inc file
+
+be.inc: build/bin2c be.mo
+	build/bin2c build/be.mo build/be.inc file
+
+cs.inc: build/bin2c cs.mo
+	build/bin2c build/cs.mo build/cs.inc file
+
+sv.inc: build/bin2c sv.mo
+	build/bin2c build/sv.mo build/sv.inc file
+
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lsqlite3 -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`
 	strip build/myrulib
@@ -259,6 +286,9 @@ uninstall_myrulib:
 
 build/wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
+
+build/bin2c_bin2c.o: ./Bin2c/bin2c.c
+	$(CC) -c -o $@ $(BIN2C_CFLAGS) $(CPPDEPS) $<
 
 build/myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<

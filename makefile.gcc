@@ -160,7 +160,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_base64.o \
 	build\myrulib_treelistctrl.o \
 	build\myrulib_resource_rc.o
-MYRULIB_ODEP = ru.mo uk.mo be.mo cs.mo sv.mo ru.inc uk.inc be.inc cs.inc sv.inc
+MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 
 ### Conditionally set variables: ###
 
@@ -246,12 +246,12 @@ clean:
 	-if exist build\libexpat_static.a del build\libexpat_static.a
 	-if exist build\libsqlite3_static.a del build\libsqlite3_static.a
 	-if exist build\libwxsqlite3_static.a del build\libwxsqlite3_static.a
+	-if exist build\bin2c.exe del build\bin2c.exe
 	-if exist build/ru.mo del build/ru.mo
 	-if exist build/uk.mo del build/uk.mo
 	-if exist build/be.mo del build/be.mo
 	-if exist build/cs.mo del build/cs.mo
 	-if exist build/sv.mo del build/sv.mo
-	-if exist build\bin2c.exe del build\bin2c.exe
 	-if exist build/ru.inc del build/ru.inc
 	-if exist build/uk.inc del build/uk.inc
 	-if exist build/be.inc del build/be.inc
@@ -289,6 +289,9 @@ build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS) clear_resource
 	ar rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	ranlib $@
 
+build\bin2c.exe: $(BIN2C_OBJECTS)
+	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)
+
 ru.mo: .\MyRuLib\locale\ru.po
 	msgfmt ./MyRuLib/locale/ru.po -o build/ru.mo
 
@@ -303,9 +306,6 @@ cs.mo: .\MyRuLib\locale\cs.po
 
 sv.mo: .\MyRuLib\locale\sv.po
 	msgfmt ./MyRuLib/locale/sv.po -o build/sv.mo
-
-build\bin2c.exe: $(BIN2C_OBJECTS)
-	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)
 
 ru.inc: build\bin2c.exe ru.mo
 	build/bin2c build/ru.mo build/ru.inc file
@@ -347,7 +347,7 @@ build\sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
 build\wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 
-build\bin2c_bin2c.o: ./build/Bin2c/bin2c.c
+build\bin2c_bin2c.o: ./Bin2c/bin2c.c
 	$(CC) -c -o $@ $(BIN2C_CFLAGS) $(CPPDEPS) $<
 
 build\myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)

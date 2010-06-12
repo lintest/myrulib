@@ -139,7 +139,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_base64.o \
 	myrulib_treelistctrl.o \
 	$(__myrulib___win32rc)
-MYRULIB_ODEP =  ru.mo uk.mo be.mo cs.mo sv.mo
+MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 
 ### Conditionally set variables: ###
 
@@ -151,7 +151,6 @@ MYRULIB_ODEP =  ru.mo uk.mo be.mo cs.mo sv.mo
 @COND_EXPAT_STATIC_1@	$(LIBPREFIX)expat_static$(LIBEXT)
 @COND_SQLITE_STATIC_1@__sqlite3_static___depname = \
 @COND_SQLITE_STATIC_1@	$(LIBPREFIX)sqlite3_static$(LIBEXT)
-@COND_LOCALE_STATIC_1@__bin2c___depname = bin2c$(EXEEXT)
 @COND_PLATFORM_MAC_0@__bin2c___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__bin2c___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL bin2c$(EXEEXT)
@@ -165,7 +164,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(__bin2c___depname) myrulib$(EXEEXT)
+all: $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -204,12 +203,12 @@ clean:
 	rm -f $(LIBPREFIX)expat_static$(LIBEXT)
 	rm -f $(LIBPREFIX)sqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
+	rm -f bin2c$(EXEEXT)
 	rm -f ./ru.mo
 	rm -f ./uk.mo
 	rm -f ./be.mo
 	rm -f ./cs.mo
 	rm -f ./sv.mo
-	rm -f bin2c$(EXEEXT)
 	rm -f ./ru.inc
 	rm -f ./uk.inc
 	rm -f ./be.inc
@@ -235,6 +234,11 @@ $(LIBPREFIX)wxsqlite3_static$(LIBEXT): $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) $(AROPTIONS) $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
+bin2c$(EXEEXT): $(BIN2C_OBJECTS)
+	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)  $(LIBS)
+	
+	$(__bin2c___mac_setfilecmd)
+
 ru.mo: $(srcdir)/MyRuLib/locale/ru.po
 	msgfmt $(srcdir)/MyRuLib/locale/ru.po -o ./ru.mo
 
@@ -250,25 +254,20 @@ cs.mo: $(srcdir)/MyRuLib/locale/cs.po
 sv.mo: $(srcdir)/MyRuLib/locale/sv.po
 	msgfmt $(srcdir)/MyRuLib/locale/sv.po -o ./sv.mo
 
-@COND_LOCALE_STATIC_1@bin2c$(EXEEXT): $(BIN2C_OBJECTS)
-@COND_LOCALE_STATIC_1@	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)  $(LIBS)
-@COND_LOCALE_STATIC_1@	
-@COND_LOCALE_STATIC_1@	$(__bin2c___mac_setfilecmd)
+ru.inc: bin2c$(EXEEXT) ru.mo
+	./bin2c ./ru.mo ./ru.inc file
 
-@COND_LOCALE_STATIC_1@ru.inc: $(__bin2c___depname) ru.mo
-@COND_LOCALE_STATIC_1@	./bin2c ./ru.mo ./ru.inc file
+uk.inc: bin2c$(EXEEXT) uk.mo
+	./bin2c ./uk.mo ./uk.inc file
 
-@COND_LOCALE_STATIC_1@uk.inc: $(__bin2c___depname) uk.mo
-@COND_LOCALE_STATIC_1@	./bin2c ./uk.mo ./uk.inc file
+be.inc: bin2c$(EXEEXT) be.mo
+	./bin2c ./be.mo ./be.inc file
 
-@COND_LOCALE_STATIC_1@be.inc: $(__bin2c___depname) be.mo
-@COND_LOCALE_STATIC_1@	./bin2c ./be.mo ./be.inc file
+cs.inc: bin2c$(EXEEXT) cs.mo
+	./bin2c ./cs.mo ./cs.inc file
 
-@COND_LOCALE_STATIC_1@cs.inc: $(__bin2c___depname) cs.mo
-@COND_LOCALE_STATIC_1@	./bin2c ./cs.mo ./cs.inc file
-
-@COND_LOCALE_STATIC_1@sv.inc: $(__bin2c___depname) sv.mo
-@COND_LOCALE_STATIC_1@	./bin2c ./sv.mo ./sv.inc file
+sv.inc: bin2c$(EXEEXT) sv.mo
+	./bin2c ./sv.mo ./sv.inc file
 
 myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(__myrulib___win32rc)
 	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static $(WX_LIBS) $(LIBS)
@@ -305,8 +304,8 @@ sqlite3_static_sqlite3.o: $(srcdir)/SQLite3/sqlite3.c
 wxsqlite3_static_wxsqlite3.o: $(srcdir)/WxSQLite3/wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(srcdir)/WxSQLite3/wxsqlite3.cpp
 
-bin2c_bin2c.o: $(srcdir)/./Bin2c/bin2c.c
-	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/./Bin2c/bin2c.c
+bin2c_bin2c.o: $(srcdir)/Bin2c/bin2c.c
+	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/Bin2c/bin2c.c
 
 myrulib_BaseThread.o: $(srcdir)/MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/BaseThread.cpp

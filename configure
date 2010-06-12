@@ -741,9 +741,9 @@ with_wxdir
 with_wx_config
 with_wx_prefix
 with_wx_exec_prefix
-enable_expat
-enable_sqlite
-enable_locale
+with_expat
+with_sqlite
+with_locale
 enable_omf
 enable_dependency_tracking
 '
@@ -1375,9 +1375,6 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-expat          Use buildin Expat library?
-  --enable-sqlite         Use buildin SQLite3 library?
-  --enable-locale         Include locale files into executable?
   --enable-omf            use OMF object format (OS/2)
   --disable-dependency-tracking
                           don't use dependency tracking even if the compiler
@@ -1391,6 +1388,9 @@ Optional Packages:
   --with-wx-prefix=PREFIX Prefix where wxWidgets is installed (optional)
   --with-wx-exec-prefix=PREFIX
                           Exec prefix where wxWidgets is installed (optional)
+  --with-expat            Use buildin Expat library
+  --with-sqlite           Use buildin SQLite3 library
+  --with-locale           Include locale files into executable
 
 Some influential environment variables:
   CC          C compiler command
@@ -3744,6 +3744,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
     if test x${WX_CONFIG_NAME+set} != xset ; then
      WX_CONFIG_NAME=wx-config
   fi
@@ -3985,9 +3986,10 @@ if test "$WXFOUND" != 1; then
     " "$LINENO" 5
 fi
 
-# Check whether --enable-expat was given.
-if test "${enable_expat+set}" = set; then :
-  enableval=$enable_expat; USE_EXPAT="$enableval"
+
+# Check whether --with-expat was given.
+if test "${with_expat+set}" = set; then :
+  withval=$with_expat; USE_EXPAT="$withval"
 else
   USE_EXPAT="no"
 fi
@@ -4394,9 +4396,9 @@ done
 
 ac_fn_c_check_header_mongrel "$LINENO" "expat.h" "ac_cv_header_expat_h" "$ac_includes_default"
 if test "x$ac_cv_header_expat_h" = x""yes; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XML_ParserCreate in -lexpat" >&5
-$as_echo_n "checking for XML_ParserCreate in -lexpat... " >&6; }
-if test "${ac_cv_lib_expat_XML_ParserCreate+set}" = set; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XML_StopParser in -lexpat" >&5
+$as_echo_n "checking for XML_StopParser in -lexpat... " >&6; }
+if test "${ac_cv_lib_expat_XML_StopParser+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -4457,27 +4459,27 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char XML_ParserCreate ();
+char XML_StopParser ();
 int
 main ()
 {
-return XML_ParserCreate ();
+return XML_StopParser ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_expat_XML_ParserCreate=yes
+  ac_cv_lib_expat_XML_StopParser=yes
 else
-  ac_cv_lib_expat_XML_ParserCreate=no
+  ac_cv_lib_expat_XML_StopParser=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_expat_XML_ParserCreate" >&5
-$as_echo "$ac_cv_lib_expat_XML_ParserCreate" >&6; }
-if test "x$ac_cv_lib_expat_XML_ParserCreate" = x""yes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_expat_XML_StopParser" >&5
+$as_echo "$ac_cv_lib_expat_XML_StopParser" >&6; }
+if test "x$ac_cv_lib_expat_XML_StopParser" = x""yes; then :
   USE_EXPAT="no"
 else
   USE_EXPAT="yes"
@@ -4492,17 +4494,18 @@ fi
 
 if test $USE_EXPAT = yes ; then
   EXPAT_STATIC=1
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Expat: use buildin." >&5
-$as_echo "$as_me: WARNING: Expat: use buildin." >&2;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Expat: use buildin." >&5
+$as_echo "Expat: use buildin." >&6; }
 else
   EXPAT_STATIC=0
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Expat: use system." >&5
-$as_echo "$as_me: WARNING: Expat: use system." >&2;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Expat: use system." >&5
+$as_echo "Expat: use system." >&6; }
 fi
 
-# Check whether --enable-sqlite was given.
-if test "${enable_sqlite+set}" = set; then :
-  enableval=$enable_sqlite; USE_SQLITE="$enableval"
+
+# Check whether --with-sqlite was given.
+if test "${with_sqlite+set}" = set; then :
+  withval=$with_sqlite; USE_SQLITE="$withval"
 else
   USE_SQLITE="no"
 fi
@@ -4563,17 +4566,18 @@ fi
 if test $USE_SQLITE = yes ; then
   SQLITE_STATIC=1
   SQLITE_INCLUDE="SQLite3"
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: SQLite3: use buildin." >&5
-$as_echo "$as_me: WARNING: SQLite3: use buildin." >&2;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: SQLite3: use buildin." >&5
+$as_echo "SQLite3: use buildin." >&6; }
 else
   SQLITE_STATIC=0
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: SQLite3: use system." >&5
-$as_echo "$as_me: WARNING: SQLite3: use system." >&2;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: SQLite3: use system." >&5
+$as_echo "SQLite3: use system." >&6; }
 fi
 
-# Check whether --enable-locale was given.
-if test "${enable_locale+set}" = set; then :
-  enableval=$enable_locale; USE_LOCALE="$enableval"
+
+# Check whether --with-locale was given.
+if test "${with_locale+set}" = set; then :
+  withval=$with_locale; USE_LOCALE="$withval"
 else
   USE_LOCALE="no"
 fi
@@ -4581,8 +4585,12 @@ fi
 
 if test $USE_LOCALE = yes ; then
   INCLUDE_LOCALE=1
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Locale: include into executable file." >&5
+$as_echo "Locale: include into executable file." >&6; }
 else
   INCLUDE_LOCALE=0
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: Locale: don't include into executable." >&5
+$as_echo "Locale: don't include into executable." >&6; }
 fi
 
 
