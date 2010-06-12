@@ -44,17 +44,17 @@
 
 	<lib id="expat_static" template="wx-lib" cond="USE_EXPAT=='yes'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
+		<include>$(SRCDIR)/Expat</include>
 		<sources>Expat/xmlparse.c</sources>
 		<sources>Expat/xmlrole.c</sources>
 		<sources>Expat/xmltok.c</sources>
 		<sources>Expat/xmltok_impl.c</sources>
 		<sources>Expat/xmltok_ns.c</sources>
-		<include>Expat</include>
 	</lib>
 
 	<lib id="sqlite3_static" cond="USE_SQLITE=='yes'">
 		<define>SQLITE_ENABLE_FTS3</define>
-		<include>SQLite3</include>
+		<include>$(SRCDIR)/SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
 	

@@ -18,12 +18,19 @@ IMPLEMENT_APP(MyRuLibApp)
 MyRuLibApp::MyRuLibApp()
     :m_locale(NULL), m_collection(NULL)
 {
+	#ifdef __WXDEBUG__
+	m_debig.SetCheckpoint();
+	#endif // __WXDEBUG__
 }
 
 MyRuLibApp::~MyRuLibApp()
 {
     wxDELETE(m_locale);
 	wxDELETE(m_collection);
+	#ifdef __WXDEBUG__
+	m_debig.PrintClasses();
+	m_debig.PrintStatistics();
+	#endif // __WXDEBUG__
 }
 
 void MyRuLibApp::Localize()

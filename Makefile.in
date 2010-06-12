@@ -43,15 +43,16 @@ WX_RESCOMP = @WX_RESCOMP@
 ### Variables: ###
 
 DESTDIR = 
-EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -IExpat $(WX_CFLAGS) $(CPPFLAGS) \
-	$(CFLAGS)
+EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -I$(srcdir)/Expat $(WX_CFLAGS) \
+	$(CPPFLAGS) $(CFLAGS)
 EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmlparse.o \
 	expat_static_xmlrole.o \
 	expat_static_xmltok.o \
 	expat_static_xmltok_impl.o \
 	expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -ISQLite3 $(CPPFLAGS) $(CFLAGS)
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/SQLite3 $(CPPFLAGS) \
+	$(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/WxSQLite3 $(WX_CXXFLAGS) \

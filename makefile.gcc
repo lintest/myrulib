@@ -58,14 +58,14 @@ CPPDEPS = -MT$@ -MF$@.d -MD -MP
 EXPAT_STATIC_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include \
-	-DHAVE_EXPAT_CONFIG_H -IExpat $(CPPFLAGS) $(CFLAGS)
+	-DHAVE_EXPAT_CONFIG_H -I.\Expat $(CPPFLAGS) $(CFLAGS)
 EXPAT_STATIC_OBJECTS =  \
 	build\expat_static_xmlparse.o \
 	build\expat_static_xmlrole.o \
 	build\expat_static_xmltok.o \
 	build\expat_static_xmltok_impl.o \
 	build\expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -ISQLite3 $(CPPFLAGS) $(CFLAGS)
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I.\SQLite3 $(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	build\sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
