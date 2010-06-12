@@ -24,7 +24,8 @@ dnl AC_PROG_INTLTOOL
 dnl AM_GNU_GETTEXT
 
 AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(2.8.10, WXFOUND=1)
+
+AM_PATH_WXCONFIG(2.8.10, WXFOUND=1, WXFOUND=0, [aui,html,core,net], [--unicode=yes])
 
 if test "$WXFOUND" != 1; then
     AC_MSG_ERROR([
@@ -35,24 +36,12 @@ if test "$WXFOUND" != 1; then
     ])
 fi
 
-AC_BAKEFILE([m4_include(autoconf_inc.m4)])
-
 AC_MSG_CHECKING([for --with-expat])
 AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use buildin Expat library])], USE_EXPAT="$withval", USE_EXPAT="no")
 AC_MSG_RESULT([$USE_EXPAT])
 
 if test $USE_EXPAT = no ; then 
 	AC_CHECK_HEADER(expat.h,AC_CHECK_LIB(expat,XML_StopParser,USE_EXPAT="no",USE_EXPAT="yes"),USE_EXPAT="yes")
-fi
-
-if test $USE_EXPAT = yes ; then 
-  AC_DEFINE(XML_STATIC)
-  EXPAT_STATIC=1
-  EXPAT_LIBRARY="expat_static"
-  EXPAT_INCLUDE="Expat"
-else
-  EXPAT_STATIC=0
-  EXPAT_SYSLIB=expat
 fi
 
 AC_MSG_CHECKING([for --with-sqlite])
@@ -63,25 +52,44 @@ if test $USE_SQLITE = no ; then
   AC_CHECK_HEADER(sqlite3.h, AC_CHECK_LIB(sqlite3, sqlite3_open,USE_SQLITE="no",USE_SQLITE="yes"),USE_SQLITE="yes")
 fi
 
-if test $USE_SQLITE = yes ; then 
-  SQLITE_STATIC=1
-  EXPAT_LIBRARY="sqlite3_static"
-  SQLITE_INCLUDE="SQLite3"
-else
-  SQLITE_STATIC=0
-  SQLITE_SYSLIB=sqlite3
-fi
-AC_SUBST(SQLITE_INCLUDE)
-
 AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
 AC_MSG_RESULT([$USE_LOCALE])
 
-if test $USE_LOCALE = yes ; then 
-  AC_DEFINE(FB_INCLUDE_LOCALE)
-  INCLUDE_LOCALE=1
+if test $USE_EXPAT = yes ; then 
+  EXPAT_STATIC="1"
+  EXPAT_INCLUDE="Expat"
 else
-  INCLUDE_LOCALE=0
+  SQLITE_STATIC="0"
+fi
+
+if test $USE_SQLITE = yes ; then 
+  SQLITE_STATIC="1"
+  SQLITE_INCLUDE="SQLite3"
+else
+  SQLITE_STATIC="0"
+fi
+
+AC_BAKEFILE([m4_include(autoconf_inc.m4)])
+
+DOLLAR="$"
+
+if test $USE_EXPAT = yes ; then 
+  CXXFLAGS="$CXXFLAGS -DXML_STATIC -I$DOLLAR(srcdir)/Expat"
+  WX_LIBS="-lexpat_static $WX_LIBS"
+else
+  LIBS="$LIBS -lexpat"
+fi
+
+if test $USE_SQLITE = yes ; then 
+  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/SQLite3"
+  WX_LIBS="-lsqlite3_static $WX_LIBS"
+else
+  LIBS="$LIBS -lsqlite3"
+fi
+
+if test $USE_LOCALE = yes ; then 
+  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
 fi
 
 AC_CONFIG_FILES([Makefile])

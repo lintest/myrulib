@@ -9,7 +9,6 @@
 		<option name="EXPAT_STATIC"/>
 		<option name="SQLITE_STATIC"/>
 		<option name="LOCALE_STATIC"/>
-		<option name="SQLITE_INCLUDE"/>
 	</if>
 
 	<if cond="FORMAT=='gnu'">
@@ -62,10 +61,7 @@
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
 		<if cond="FORMAT in ['mingw','gnu']">
-		  <include cond="SQLITE_STATIC=='1'">$(SRCDIR)/SQLite3</include>
-		</if>
-		<if cond="FORMAT=='autoconf'">
-		  <include>$(SRCDIR)/$(SQLITE_INCLUDE)</include>
+			<include cond="SQLITE_STATIC=='1'">$(SRCDIR)/SQLite3</include>
 		</if>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
@@ -158,8 +154,6 @@
 			<library cond="EXPAT_STATIC=='1'">expat_static</library>
 			<sys-lib cond="EXPAT_STATIC=='0'">expat</sys-lib>
 		</if>
-		<if cond="FORMAT=='autoconf'">
-		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
 		<sources>MyRuLib/ExternalDlg.cpp</sources>
@@ -246,7 +240,7 @@
 		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
 		<install-to cond="FORMAT_HAS_MAKE_INSTALL=='1'">$(BINDIR)</install-to>
 	</exe>
-	
+
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files> 
 			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
