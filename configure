@@ -555,7 +555,7 @@ PACKAGE_TARNAME='myrulib'
 PACKAGE_VERSION='0.23.1'
 PACKAGE_STRING='MyRuLib 0.23.1'
 PACKAGE_BUGREPORT='mail@lintest.ru'
-PACKAGE_URL=''
+PACKAGE_URL='http://lintest.ru/pub/'
 
 ac_unique_file="MyRuLib/MyRuLibApp.cpp"
 ac_unique_file="autoconf_inc.m4"
@@ -1409,6 +1409,7 @@ Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <mail@lintest.ru>.
+MyRuLib home page: <http://lintest.ru/pub/>.
 _ACEOF
 ac_status=$?
 fi
@@ -9465,7 +9466,8 @@ Usage: $0 [OPTION]... [TAG]...
 Configuration files:
 $config_files
 
-Report bugs to <mail@lintest.ru>."
+Report bugs to <mail@lintest.ru>.
+MyRuLib home page: <http://lintest.ru/pub/>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
