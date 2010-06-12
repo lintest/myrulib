@@ -80,13 +80,20 @@ fi
 
 AC_CONFIG_FILES([Makefile])
 
+if test "x$WX_LIBS_STATIC" = "x"; then
+  USE_WX_STATIC=no
+else
+  USE_WX_STATIC=yes
+fi
+
 dnl report how we have been configured
 echo
-echo "Configured MyRuLib AC_PACKAGE_VERSION for \`${host}'"
+echo "Configured MyRuLib AC_PACKAGE_VERSION for \`${host}' wxWidgets ${WX_VERSION}"
 echo ""
 echo "  Use buildin Expat library?                ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
 echo "  Include locale files into executable?     ${USE_LOCALE}"
+echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
 echo ""
 
 AC_OUTPUT

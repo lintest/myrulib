@@ -8880,12 +8880,19 @@ fi
 ac_config_files="$ac_config_files Makefile"
 
 
+if test "x$WX_LIBS_STATIC" = "x"; then
+  USE_WX_STATIC=no
+else
+  USE_WX_STATIC=yes
+fi
+
 echo
-echo "Configured MyRuLib 0.23.1 for \`${host}'"
+echo "Configured MyRuLib 0.23.1 for \`${host}' wxWidgets ${WX_VERSION}"
 echo ""
 echo "  Use buildin Expat library?                ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
 echo "  Include locale files into executable?     ${USE_LOCALE}"
+echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
 echo ""
 
 cat >confcache <<\_ACEOF
