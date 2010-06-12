@@ -17,7 +17,6 @@
 		<set var="EXPAT_STATIC">0</set>
 		<set var="LOCALE_STATIC">0</set>
 		<set var="SQLITE_STATIC">0</set>
-		<set var="SQLITE_INCLUDE"></set>
 	</if>
 
 	<if cond="FORMAT=='mingw'">
@@ -28,7 +27,6 @@
 		<set var="WX_SHARED_DEFAULT">0</set>
 		<set var="WX_VERSION_DEFAULT">28</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
-		<set var="SQLITE_INCLUDE">SQLite3</set>
 	</if>
 
 	<include file="./Presets/wx.bkl"/>
@@ -155,10 +153,10 @@
 			<define cond="LOCALE_STATIC=='1'">FB_INCLUDE_LOCALE</define>
 			<include cond="SQLITE_STATIC=='1'">SQLite3</include>
 			<library cond="SQLITE_STATIC=='1'">sqlite3_static</library>
-			<sys-lib cond="SQLITE_STATIC!='1'">sqlite3</sys-lib>
+			<sys-lib cond="SQLITE_STATIC=='0'">sqlite3</sys-lib>
 			<include cond="EXPAT_STATIC=='1'">Expat</include>
 			<library cond="EXPAT_STATIC=='1'">expat_static</library>
-			<sys-lib cond="EXPAT_STATIC!='1'">expat</sys-lib>
+			<sys-lib cond="EXPAT_STATIC=='0'">expat</sys-lib>
 		</if>
 		<if cond="FORMAT=='autoconf'">
 		</if>
