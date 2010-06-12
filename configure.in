@@ -37,7 +37,7 @@ if test "$WXFOUND" != 1; then
 fi
 
 AC_MSG_CHECKING([for --with-expat])
-AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use buildin Expat library])], USE_EXPAT="$withval", USE_EXPAT="no")
+AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use builtin Expat library])], USE_EXPAT="$withval", USE_EXPAT="no")
 AC_MSG_RESULT([$USE_EXPAT])
 
 if test $USE_EXPAT = no ; then 
@@ -45,7 +45,7 @@ if test $USE_EXPAT = no ; then
 fi
 
 AC_MSG_CHECKING([for --with-sqlite])
-AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use buildin SQLite3 library])], USE_SQLITE="$withval", USE_SQLITE="no")
+AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 library])], USE_SQLITE="$withval", USE_SQLITE="no")
 AC_MSG_RESULT([$USE_SQLITE])
 
 if test $USE_SQLITE = no ; then 

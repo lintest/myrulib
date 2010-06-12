@@ -1387,8 +1387,8 @@ Optional Packages:
   --with-wx-prefix=PREFIX Prefix where wxWidgets is installed (optional)
   --with-wx-exec-prefix=PREFIX
                           Exec prefix where wxWidgets is installed (optional)
-  --with-expat            Use buildin Expat library
-  --with-sqlite           Use buildin SQLite3 library
+  --with-expat            Use builtin Expat library
+  --with-sqlite           Use builtin SQLite3 library
   --with-locale           Include locale files into executable
 
 Some influential environment variables:
