@@ -3,6 +3,7 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbGenres.h"
+#include <wx/tokenzr.h>
 
 #define DB_DATABASE_VERSION 11
 #define DB_CONFIG_VERSION 3
@@ -275,17 +276,8 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 
 void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
 {
-	wxString str = Lower(text);
-	int i = wxNOT_FOUND;
-	do {
-		str.Trim(false);
-		i = str.find(wxT(' '));
-		if (i == wxNOT_FOUND) break;
-		list.Add( str.Left(i) );
-		str = str.Mid(i);
-	} while (true);
-	str.Trim(true);
-	if (!str.IsEmpty()) list.Add(str);
+	wxStringTokenizer tkz(text, wxT(" "), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) list.Add(tkz.GetNextToken());
 }
 
 FbSearchFunction::FbSearchFunction(const wxString & input)

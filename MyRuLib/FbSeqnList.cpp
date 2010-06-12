@@ -8,11 +8,16 @@
 //  FbSeqnListThread
 //-----------------------------------------------------------------------------
 
+bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
+{
+	return FbSearchFunction::IsFullText(m_string) && database.TableExists(wxT("fts_seqn"));
+}
+
 void * FbSeqnListThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		if (!m_string.IsEmpty() && IsFullText()) {
+		if (!m_string.IsEmpty() && IsFullText(database)) {
 			DoFullText(database);
 		} else {
 			DoString(database);

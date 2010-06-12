@@ -382,7 +382,7 @@ void FbConfigDlg::OnAppendType( wxCommandEvent& event )
 		}
 	}
 
-	model->Append(new TypeData(filetype));
+	treeview->Append(new TypeData(filetype));
 	EnableTool(ID_TYPE_LIST, true);
 	treeview->SetFocus();
 }
@@ -403,7 +403,7 @@ void FbConfigDlg::OnModifyType( wxCommandEvent& event )
 	wxString command = data->GetValue(*model, 1);
 
 	bool ok = FbViewerDlg::Execute( this, type, command, true);
-	if (ok) model->Replace(new TypeData(type, command));
+	if (ok) treeview->Replace(new TypeData(type, command));
 	treeview->SetFocus();
 }
 
@@ -424,7 +424,7 @@ void FbConfigDlg::OnDeleteType( wxCommandEvent& event )
 	if (!ok) return;
 
 	m_del_type.Add(type);
-	model->Delete();
+	treeview->Delete();
 
 	EnableTool(ID_TYPE_LIST, model->GetRowCount());
 	treeview->SetFocus();

@@ -750,7 +750,7 @@ void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 	if (!ok) return;
 
 	int code = FbLocalDatabase().NewId(FB_NEW_SCRIPT);
-	model->Append(new ScriptData(code, name, text));
+	treeview->Append(new ScriptData(code, name, text));
 	EnableTool(ID_SCRIPT_LIST, true);
 	treeview->SetFocus();
 
@@ -776,7 +776,7 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 	if (!ok) return;
 
 	int code = data->GetCode();
-	model->Replace(new ScriptData(code, name, text));
+	treeview->Replace(new ScriptData(code, name, text));
 	treeview->SetFocus();
 
 	FbChoiceFormat * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceFormat);
@@ -812,7 +812,7 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 
 	int code = data->GetCode();
 	if (code) m_del_scr.Add(data->GetCode());
-	model->Delete();
+	treeview->Delete();
 
 	EnableTool(ID_SCRIPT_LIST, model->GetRowCount());
 	treeview->SetFocus();
@@ -853,7 +853,7 @@ void FbParamsDlg::OnAppendType( wxCommandEvent& event )
 		}
 	}
 
-	model->Append(new TypeData(filetype));
+	treeview->Append(new TypeData(filetype));
 	EnableTool(ID_TYPE_LIST, true);
 	treeview->SetFocus();
 }
@@ -874,7 +874,7 @@ void FbParamsDlg::OnModifyType( wxCommandEvent& event )
 	wxString command = data->GetValue(*model, 1);
 
 	bool ok = FbViewerDlg::Execute( this, type, command);
-	if (ok) model->Replace(new TypeData(type, command));
+	if (ok) treeview->Replace(new TypeData(type, command));
 	treeview->SetFocus();
 }
 
@@ -895,7 +895,7 @@ void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
 	if (!ok) return;
 
 	m_del_type.Add(type);
-	model->Delete();
+	treeview->Delete();
 
 	EnableTool(ID_TYPE_LIST, model->GetRowCount());
 	treeview->SetFocus();

@@ -18,8 +18,7 @@ class FbSeqnListThread: public FbThread
 		void DoString(wxSQLite3Database &database);
 		void DoFullText(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
-		bool IsFullText() const
-			{ return FbSearchFunction::IsFullText(m_string); }
+		bool IsFullText(wxSQLite3Database &database) const;
 	private:
 		wxEvtHandler * m_frame;
 		FbMutexTester m_tester;
@@ -45,7 +44,7 @@ class FbSeqnListModel: public FbListModel
 		FbSeqnListModel(int order, wxChar letter = 0);
 		FbSeqnListModel(int order, const wxString &mask);
 		virtual ~FbSeqnListModel(void);
-		virtual void Append(FbModelData * data); 
+		virtual void Append(FbModelData * data);
 		virtual void Replace(FbModelData * data);
 		virtual void Delete();
 		void Append(const wxArrayInt &items);
