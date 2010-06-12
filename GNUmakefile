@@ -72,13 +72,13 @@ WX_VERSION_MINOR = $(shell echo $(WX_VERSION) | cut -c2,2)
 WX_CONFIG_FLAGS = $(WX_CONFIG_DEBUG_FLAG) $(WX_CONFIG_UNICODE_FLAG) \
 	$(WX_CONFIG_SHARED_FLAG) --toolkit=$(WX_PORT) \
 	--version=$(WX_VERSION_MAJOR).$(WX_VERSION_MINOR)
-WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -IWxSQLite3 `$(WX_CONFIG) --cxxflags \
+WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I./ -I./WxSQLite3 `$(WX_CONFIG) --cxxflags \
 	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	build/wxsqlite3_static_wxsqlite3.o
-MYRULIB_CFLAGS = -DNDEBUG -Ibuild -IMyRuLib -IWxSQLite3 -O2 `$(WX_CONFIG) --cflags \
-	$(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -DNDEBUG -Ibuild -IMyRuLib -IWxSQLite3 -O2 `$(WX_CONFIG) \
+MYRULIB_CFLAGS = -Ibuild -DNDEBUG -I./MyRuLib -I./WxSQLite3 -O2 `$(WX_CONFIG) \
+	--cflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -Ibuild -DNDEBUG -I./MyRuLib -I./WxSQLite3 -O2 `$(WX_CONFIG) \
 	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build/myrulib_BaseThread.o \
@@ -152,7 +152,7 @@ MYRULIB_OBJECTS =  \
 	build/myrulib_md5.o \
 	build/myrulib_base64.o \
 	build/myrulib_treelistctrl.o
-MYRULIB_ODEP =  build/ru.mo build/uk.mo build/be.mo build/cs.mo build/sv.mo
+MYRULIB_ODEP =  ru.mo uk.mo be.mo cs.mo sv.mo
 
 ### Conditionally set variables: ###
 
@@ -196,9 +196,9 @@ install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)/usr/share/locale/sv/LC_MESSAGES
 	(cd build ; $(INSTALL) -m 644 -T sv.mo $(DESTDIR)/usr/share/locale/sv/LC_MESSAGES/myrulib.mo)
 	$(INSTALL) -d $(DESTDIR)/usr/share/icons/hicolor/48x48/apps
-	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
+	(cd ./MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.png $(DESTDIR)/usr/share/icons/hicolor/48x48/apps)
 	$(INSTALL) -d $(DESTDIR)/usr/share/applications
-	(cd MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
+	(cd ./MyRuLib/desktop ; $(INSTALL) -m 644  myrulib.desktop $(DESTDIR)/usr/share/applications)
 	$(INSTALL) -d $(DESTDIR)/usr/share/pixmaps/
 	ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)/usr/share/pixmaps/myrulib.png
 
@@ -231,20 +231,20 @@ build/libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	$(AR) rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	$(RANLIB) $@
 
-build/ru.mo: MyRuLib/locale/ru.po
-	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
+ru.mo: ./MyRuLib/locale/ru.po
+	msgfmt ./MyRuLib/locale/ru.po -o build/ru.mo
 
-build/uk.mo: MyRuLib/locale/uk.po
-	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
+uk.mo: ./MyRuLib/locale/uk.po
+	msgfmt ./MyRuLib/locale/uk.po -o build/uk.mo
 
-build/be.mo: MyRuLib/locale/be.po
-	msgfmt MyRuLib/locale/be.po -o build/be.mo
+be.mo: ./MyRuLib/locale/be.po
+	msgfmt ./MyRuLib/locale/be.po -o build/be.mo
 
-build/cs.mo: MyRuLib/locale/cs.po
-	msgfmt MyRuLib/locale/cs.po -o build/cs.mo
+cs.mo: ./MyRuLib/locale/cs.po
+	msgfmt ./MyRuLib/locale/cs.po -o build/cs.mo
 
-build/sv.mo: MyRuLib/locale/sv.po
-	msgfmt MyRuLib/locale/sv.po -o build/sv.mo
+sv.mo: ./MyRuLib/locale/sv.po
+	msgfmt ./MyRuLib/locale/sv.po -o build/sv.mo
 
 build/myrulib: $(MYRULIB_OBJECTS) build/libwxsqlite3_static.a
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)     $(LDFLAGS)  build/libwxsqlite3_static.a -lsqlite3 -lexpat `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,html,core,net,base`

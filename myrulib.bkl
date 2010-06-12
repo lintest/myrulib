@@ -1,33 +1,43 @@
 <?xml version="1.0" ?>
 <makefile>
 
-	<include file="./Presets/wx.bkl"/>
-	<include file="datafiles.bkl"/>
-
-	<set var="EXPAT_STATIC">0</set>
-	<set var="LOCALE_STATIC">0</set>
-	<set var="SQLITE3_STATIC">0</set>
-
 	<set var="PREFIX">/usr</set>
-	
 	<set var="WX_UNICODE_DEFAULT">1</set>
 	<set var="WX_DEBUG_DEFAULT">0</set>
 
+	<if cond="FORMAT=='autoconf'">
+		<option name="EXPAT_STATIC"/>
+		<option name="SQLITE_STATIC"/>
+		<option name="LOCALE_STATIC"/>
+		<option name="SQLITE_INCLUDE"/>
+	</if>
+
+	<if cond="FORMAT=='gnu'">
+		<set var="BUILDDIR">build</set>
+		<set var="EXPAT_STATIC">0</set>
+		<set var="LOCALE_STATIC">0</set>
+		<set var="SQLITE_STATIC">0</set>
+		<set var="SQLITE_INCLUDE"></set>
+	</if>
+
 	<if cond="FORMAT=='mingw'">
+		<set var="BUILDDIR">build</set>
 		<set var="EXPAT_STATIC">1</set>
 		<set var="LOCALE_STATIC">1</set>
-		<set var="SQLITE3_STATIC">1</set>
+		<set var="SQLITE_STATIC">1</set>
 		<set var="WX_SHARED_DEFAULT">0</set>
 		<set var="WX_VERSION_DEFAULT">28</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
+		<set var="SQLITE_INCLUDE">SQLite3</set>
 	</if>
-	
-	<if cond="FORMAT=='mingw'">
-		<action id="clear_resource"> 
-			<command>if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o</command>
-			<is-phony/>
-		</action>
-	</if>
+
+	<include file="./Presets/wx.bkl"/>
+	<include file="datafiles.bkl"/>
+
+	<action id="clear_resource" cond="FORMAT=='mingw'"> 
+		<command>if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o</command>
+		<is-phony/>
+	</action>
 
 	<if cond="FORMAT=='gnu'">
 		<set var="WX_PORT_DEFAULT">gtk2</set>
@@ -45,7 +55,7 @@
 		<include>Expat</include>
 	</lib>
 
-	<lib id="sqlite3_static" cond="SQLITE3_STATIC=='1'">
+	<lib id="sqlite3_static" cond="SQLITE_STATIC=='1'">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
@@ -53,16 +63,16 @@
 	
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<include cond="SQLITE3_STATIC=='1'">SQLite3</include>
-		<include>WxSQLite3</include>
+		<include>$(SRCDIR)/$(SQLITE_INCLUDE)</include>
+		<include>$(SRCDIR)/WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 		<depends cond="FORMAT=='mingw'">clear_resource</depends>
 	</lib>
 
     <define-tag name="locale" rules="action">
 		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
-		<command>msgfmt MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
-		<depends-on-file>MyRuLib/locale/$(value).po</depends-on-file>
+		<command>msgfmt $(SRCDIR)/MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
+		<depends-on-file>$(SRCDIR)/MyRuLib/locale/$(value).po</depends-on-file>
 		<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 			<modify-target target="install">
 				<command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES</command>
@@ -94,55 +104,63 @@
 		<locale>sv</locale>
 	</action>
 	
-	<if cond="LOCALE_STATIC=='1'">
-		<exe id="bin2c">
-			<sources>Bin2c/bin2c.c</sources>
-		</exe>
+	<exe id="bin2c" cond="LOCALE_STATIC=='1'">
+		<sources>$(BUILDDIR)/Bin2c/bin2c.c</sources>
+	</exe>
 		
-		<define-tag name="bin2c" rules="action">
-			<depends>bin2c</depends>
-			<depends>$(BUILDDIR)/$(value).mo</depends>
-			<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
-			<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
-		</define-tag>
-		
-		<action id="ru.inc"> 
-			<bin2c>ru</bin2c>
-		</action>
+	<define-tag name="bin2c" rules="action" cond="LOCALE_STATIC=='1'">
+		<depends>bin2c</depends>
+		<depends>$(value).mo</depends>
+		<clean-files>$(BUILDDIR)/$(value).inc</clean-files>
+		<command>$(BUILDDIR)/bin2c $(BUILDDIR)/$(value).mo $(BUILDDIR)/$(value).inc file</command>
+	</define-tag>
+	
+	<action id="ru.inc" cond="LOCALE_STATIC=='1'"> 
+		<bin2c>ru</bin2c>
+	</action>
 
-		<action id="uk.inc"> 
-			<bin2c>uk</bin2c>
-		</action>
+	<action id="uk.inc" cond="LOCALE_STATIC=='1'"> 
+		<bin2c>uk</bin2c>
+	</action>
 
-		<action id="be.inc"> 
-			<bin2c>be</bin2c>
-		</action>
+	<action id="be.inc" cond="LOCALE_STATIC=='1'"> 
+		<bin2c>be</bin2c>
+	</action>
 
-		<action id="cs.inc"> 
-			<bin2c>cs</bin2c>
-		</action>
-		
-		<action id="sv.inc"> 
-			<bin2c>sv</bin2c>
-		</action>
-	</if>
+	<action id="cs.inc" cond="LOCALE_STATIC=='1'"> 
+		<bin2c>cs</bin2c>
+	</action>
+	
+	<action id="sv.inc" cond="LOCALE_STATIC=='1'"> 
+		<bin2c>sv</bin2c>
+	</action>
 	
 	<exe id="myrulib" template="wxgui">
+		<library>wxsqlite3_static</library>
 		<include>$(BUILDDIR)</include>
+		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
-		<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
 		<objects-depend>ru.mo</objects-depend>
 		<objects-depend>uk.mo</objects-depend>
 		<objects-depend>be.mo</objects-depend>
 		<objects-depend>cs.mo</objects-depend>
 		<objects-depend>sv.mo</objects-depend>
-		<if cond="LOCALE_STATIC=='1'">
-			<define>FB_INCLUDE_LOCALE</define>
-			<objects-depend>ru.inc</objects-depend>
-			<objects-depend>uk.inc</objects-depend>
-			<objects-depend>be.inc</objects-depend>
-			<objects-depend>cs.inc</objects-depend>
-			<objects-depend>sv.inc</objects-depend>
+		<if cond="FORMAT in ['mingw','gnu']">
+			<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
+			<define cond="LOCALE_STATIC=='1'">FB_INCLUDE_LOCALE</define>
+			<objects-depend cond="LOCALE_STATIC=='1'">ru.inc</objects-depend>
+			<objects-depend cond="LOCALE_STATIC=='1'">uk.inc</objects-depend>
+			<objects-depend cond="LOCALE_STATIC=='1'">be.inc</objects-depend>
+			<objects-depend cond="LOCALE_STATIC=='1'">cs.inc</objects-depend>
+			<objects-depend cond="LOCALE_STATIC=='1'">sv.inc</objects-depend>
+			<include cond="SQLITE_STATIC=='1'">SQLite3</include>
+			<library cond="SQLITE_STATIC=='1'">sqlite3_static</library>
+			<sys-lib cond="SQLITE_STATIC!='1'">sqlite3</sys-lib>
+			<include cond="EXPAT_STATIC=='1'">Expat</include>
+			<library cond="EXPAT_STATIC=='1'">expat_static</library>
+			<sys-lib cond="EXPAT_STATIC!='1'">expat</sys-lib>
+		</if>
+		<if cond="FORMAT=='autoconf'">
 		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
@@ -216,15 +234,8 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<include>MyRuLib</include>
-		<include>WxSQLite3</include>
-		<library>wxsqlite3_static</library>
-		<include cond="SQLITE3_STATIC=='1'">SQLite3</include>
-		<library cond="SQLITE3_STATIC=='1'">sqlite3_static</library>
-		<sys-lib cond="SQLITE3_STATIC!='1'">sqlite3</sys-lib>
-		<include cond="EXPAT_STATIC=='1'">Expat</include>
-		<library cond="EXPAT_STATIC=='1'">expat_static</library>
-		<sys-lib cond="EXPAT_STATIC!='1'">expat</sys-lib>
+		<include>$(SRCDIR)/MyRuLib</include>
+		<include>$(SRCDIR)/WxSQLite3</include>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
@@ -240,12 +251,12 @@
 	
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files> 
-			<srcdir>MyRuLib/desktop</srcdir>
+			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
 			<files>myrulib.png</files>
 			<install-to>$(DATADIR)/icons/hicolor/48x48/apps</install-to>
 		</data-files>
 		<data-files>
-			<srcdir>MyRuLib/desktop</srcdir>
+			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
 			<files>myrulib.desktop</files>
 			<install-to>$(DATADIR)/applications</install-to>
 		</data-files>

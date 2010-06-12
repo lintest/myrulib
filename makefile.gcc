@@ -71,7 +71,7 @@ SQLITE3_STATIC_OBJECTS =  \
 WXSQLITE3_STATIC_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) \
 	$(__WXUNICODE_DEFINE_p) $(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
 	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -DNDEBUG \
-	-ISQLite3 -IWxSQLite3 $(CPPFLAGS) $(CXXFLAGS)
+	-I.\SQLite3 -I.\WxSQLite3 $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	build\wxsqlite3_static_wxsqlite3.o
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
@@ -79,14 +79,14 @@ BIN2C_OBJECTS =  \
 	build\bin2c_bin2c.o
 MYRULIB_CFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -DNDEBUG \
-	-DXML_STATIC -DFB_INCLUDE_LOCALE -Ibuild -IMyRuLib -IWxSQLite3 -ISQLite3 \
-	-IExpat -O2 $(CPPFLAGS) $(CFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -Ibuild \
+	-DNDEBUG -DXML_STATIC -DFB_INCLUDE_LOCALE -ISQLite3 -IExpat -I.\MyRuLib \
+	-I.\WxSQLite3 -O2 $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -DHAVE_W32API_H $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	$(__WXDEBUG_DEFINE_p) -D__WXMSW__ \
-	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -DNDEBUG \
-	-DXML_STATIC -DFB_INCLUDE_LOCALE -Ibuild -IMyRuLib -IWxSQLite3 -ISQLite3 \
-	-IExpat -O2 $(CPPFLAGS) $(CXXFLAGS)
+	-I$(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) -I$(WX_DIR)\include -Ibuild \
+	-DNDEBUG -DXML_STATIC -DFB_INCLUDE_LOCALE -ISQLite3 -IExpat -I.\MyRuLib \
+	-I.\WxSQLite3 -O2 $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	build\myrulib_BaseThread.o \
 	build\myrulib_ExpThread.o \
@@ -160,8 +160,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_base64.o \
 	build\myrulib_treelistctrl.o \
 	build\myrulib_resource_rc.o
-MYRULIB_ODEP = build/ru.mo build/uk.mo build/be.mo build/cs.mo build/sv.mo \
-	build/ru.inc build/uk.inc build/be.inc build/cs.inc build/sv.inc
+MYRULIB_ODEP = ru.mo uk.mo be.mo cs.mo sv.mo ru.inc uk.inc be.inc cs.inc sv.inc
 
 ### Conditionally set variables: ###
 
@@ -260,9 +259,6 @@ clean:
 	-if exist build/sv.inc del build/sv.inc
 	-if exist build\myrulib.exe del build\myrulib.exe
 
-clear_resource: 
-	if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o
-
 test_for_selected_wxbuild: 
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
 	echo ----------------------------------------------------------------------------
@@ -274,6 +270,9 @@ test_for_selected_wxbuild:
 	echo ----------------------------------------------------------------------------
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
 	exit 1
+
+clear_resource: 
+	if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o
 
 build\libexpat_static.a: $(EXPAT_STATIC_OBJECTS)
 	if exist $@ del $@
@@ -290,40 +289,40 @@ build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS) clear_resource
 	ar rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	ranlib $@
 
-build/ru.mo: MyRuLib\locale\ru.po
-	msgfmt MyRuLib/locale/ru.po -o build/ru.mo
+ru.mo: .\MyRuLib\locale\ru.po
+	msgfmt ./MyRuLib/locale/ru.po -o build/ru.mo
 
-build/uk.mo: MyRuLib\locale\uk.po
-	msgfmt MyRuLib/locale/uk.po -o build/uk.mo
+uk.mo: .\MyRuLib\locale\uk.po
+	msgfmt ./MyRuLib/locale/uk.po -o build/uk.mo
 
-build/be.mo: MyRuLib\locale\be.po
-	msgfmt MyRuLib/locale/be.po -o build/be.mo
+be.mo: .\MyRuLib\locale\be.po
+	msgfmt ./MyRuLib/locale/be.po -o build/be.mo
 
-build/cs.mo: MyRuLib\locale\cs.po
-	msgfmt MyRuLib/locale/cs.po -o build/cs.mo
+cs.mo: .\MyRuLib\locale\cs.po
+	msgfmt ./MyRuLib/locale/cs.po -o build/cs.mo
 
-build/sv.mo: MyRuLib\locale\sv.po
-	msgfmt MyRuLib/locale/sv.po -o build/sv.mo
+sv.mo: .\MyRuLib\locale\sv.po
+	msgfmt ./MyRuLib/locale/sv.po -o build/sv.mo
 
 build\bin2c.exe: $(BIN2C_OBJECTS)
 	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)
 
-build/ru.inc: build\bin2c.exe build/ru.mo
+ru.inc: build\bin2c.exe ru.mo
 	build/bin2c build/ru.mo build/ru.inc file
 
-build/uk.inc: build\bin2c.exe build/uk.mo
+uk.inc: build\bin2c.exe uk.mo
 	build/bin2c build/uk.mo build/uk.inc file
 
-build/be.inc: build\bin2c.exe build/be.mo
+be.inc: build\bin2c.exe be.mo
 	build/bin2c build/be.mo build/be.inc file
 
-build/cs.inc: build\bin2c.exe build/cs.mo
+cs.inc: build\bin2c.exe cs.mo
 	build/bin2c build/cs.mo build/cs.inc file
 
-build/sv.inc: build\bin2c.exe build/sv.mo
+sv.inc: build\bin2c.exe sv.mo
 	build/bin2c build/sv.mo build/sv.inc file
 
-build\myrulib.exe: $(MYRULIB_OBJECTS) build\libwxsqlite3_static.a build\libsqlite3_static.a build\myrulib_resource_rc.o build\libexpat_static.a
+build\myrulib.exe: $(MYRULIB_OBJECTS) build\libwxsqlite3_static.a build\libsqlite3_static.a build\libexpat_static.a build\myrulib_resource_rc.o
 	$(CXX) -o $@ $(MYRULIB_OBJECTS)  -L$(WX_DIR)$(WXLIBPATH) -Wl,--subsystem,windows -mwindows   $(LDFLAGS)  build\libwxsqlite3_static.a build\libsqlite3_static.a build\libexpat_static.a $(__WXLIB_AUI_NAME_p) $(__WXLIB_HTML_NAME_p) $(__WXLIB_CORE_NAME_p) $(__WXLIB_NET_NAME_p) $(__WXLIB_BASE_NAME_p) -lwxtiff$(WX3RDPARTYLIBPOSTFIX) -lwxjpeg$(WX3RDPARTYLIBPOSTFIX) -lwxpng$(WX3RDPARTYLIBPOSTFIX) -lwxzlib$(WX3RDPARTYLIBPOSTFIX) -lwxregex$(WXLIBPOSTFIX) -lwxexpat$(WX3RDPARTYLIBPOSTFIX) -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
 	strip build/myrulib.exe
 
@@ -348,7 +347,7 @@ build\sqlite3_static_sqlite3.o: ./SQLite3/sqlite3.c
 build\wxsqlite3_static_wxsqlite3.o: ./WxSQLite3/wxsqlite3.cpp
 	$(CXX) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(CPPDEPS) $<
 
-build\bin2c_bin2c.o: ./Bin2c/bin2c.c
+build\bin2c_bin2c.o: ./build/Bin2c/bin2c.c
 	$(CC) -c -o $@ $(BIN2C_CFLAGS) $(CPPDEPS) $<
 
 build\myrulib_BaseThread.o: ./MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
@@ -565,7 +564,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_2_p_1) $(__WXUNICODE_DEFINE_p_3) $(__WXDEBUG_DEFINE_p_3) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --define NDEBUG --define XML_STATIC --define FB_INCLUDE_LOCALE --include-dir build --include-dir MyRuLib --include-dir WxSQLite3 --include-dir SQLite3 --include-dir Expat
+	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_2_p_1) $(__WXUNICODE_DEFINE_p_3) $(__WXDEBUG_DEFINE_p_3) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --include-dir build --include-dir build --define NDEBUG --define XML_STATIC --define FB_INCLUDE_LOCALE --include-dir SQLite3 --include-dir Expat --include-dir ./MyRuLib --include-dir ./WxSQLite3
 
 .PHONY: all clean clear_resource
 
