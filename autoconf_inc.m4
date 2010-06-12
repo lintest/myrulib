@@ -18,12 +18,6 @@ dnl ### begin block 20_COND_DEPS_TRACKING_1[myrulib.bkl] ###
         COND_DEPS_TRACKING_1=""
     fi
     AC_SUBST(COND_DEPS_TRACKING_1)
-dnl ### begin block 20_COND_EXPAT_STATIC_1[myrulib.bkl] ###
-    COND_EXPAT_STATIC_1="#"
-    if test "x$EXPAT_STATIC" = "x1" ; then
-        COND_EXPAT_STATIC_1=""
-    fi
-    AC_SUBST(COND_EXPAT_STATIC_1)
 dnl ### begin block 20_COND_PLATFORM_MAC_0[myrulib.bkl] ###
     COND_PLATFORM_MAC_0="#"
     if test "x$PLATFORM_MAC" = "x0" ; then
@@ -48,12 +42,18 @@ dnl ### begin block 20_COND_PLATFORM_WIN32_1[myrulib.bkl] ###
         COND_PLATFORM_WIN32_1=""
     fi
     AC_SUBST(COND_PLATFORM_WIN32_1)
-dnl ### begin block 20_COND_SQLITE_STATIC_1[myrulib.bkl] ###
-    COND_SQLITE_STATIC_1="#"
-    if test "x$SQLITE_STATIC" = "x1" ; then
-        COND_SQLITE_STATIC_1=""
+dnl ### begin block 20_COND_USE_EXPAT_yes[myrulib.bkl] ###
+    COND_USE_EXPAT_yes="#"
+    if test "x$USE_EXPAT" = "xyes" ; then
+        COND_USE_EXPAT_yes=""
     fi
-    AC_SUBST(COND_SQLITE_STATIC_1)
+    AC_SUBST(COND_USE_EXPAT_yes)
+dnl ### begin block 20_COND_USE_SQLITE_yes[myrulib.bkl] ###
+    COND_USE_SQLITE_yes="#"
+    if test "x$USE_SQLITE" = "xyes" ; then
+        COND_USE_SQLITE_yes=""
+    fi
+    AC_SUBST(COND_USE_SQLITE_yes)
 dnl ### begin block 20_COND_WX_DEBUG_0_WX_UNICODE_1[myrulib.bkl] ###
     COND_WX_DEBUG_0_WX_UNICODE_1="#"
     if test "x$WX_DEBUG" = "x0" -a "x$WX_UNICODE" = "x1" ; then

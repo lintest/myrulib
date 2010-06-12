@@ -600,12 +600,12 @@ LIBOBJS
 COND_WX_DEBUG_1_WX_UNICODE_1
 COND_WX_DEBUG_1_WX_UNICODE_0
 COND_WX_DEBUG_0_WX_UNICODE_1
-COND_SQLITE_STATIC_1
+COND_USE_SQLITE_yes
+COND_USE_EXPAT_yes
 COND_PLATFORM_WIN32_1
 COND_PLATFORM_OS2_1
 COND_PLATFORM_MAC_1
 COND_PLATFORM_MAC_0
-COND_EXPAT_STATIC_1
 COND_DEPS_TRACKING_1
 COND_DEPS_TRACKING_0
 OBJCXXFLAGS
@@ -4571,20 +4571,6 @@ fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_LOCALE" >&5
 $as_echo "$USE_LOCALE" >&6; }
-
-if test $USE_EXPAT = yes ; then
-  EXPAT_STATIC="1"
-  EXPAT_INCLUDE="Expat"
-else
-  SQLITE_STATIC="0"
-fi
-
-if test $USE_SQLITE = yes ; then
-  SQLITE_STATIC="1"
-  SQLITE_INCLUDE="SQLite3"
-else
-  SQLITE_STATIC="0"
-fi
 
 
 
@@ -8815,11 +8801,6 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.8"
         COND_DEPS_TRACKING_1=""
     fi
 
-    COND_EXPAT_STATIC_1="#"
-    if test "x$EXPAT_STATIC" = "x1" ; then
-        COND_EXPAT_STATIC_1=""
-    fi
-
     COND_PLATFORM_MAC_0="#"
     if test "x$PLATFORM_MAC" = "x0" ; then
         COND_PLATFORM_MAC_0=""
@@ -8840,9 +8821,14 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.8"
         COND_PLATFORM_WIN32_1=""
     fi
 
-    COND_SQLITE_STATIC_1="#"
-    if test "x$SQLITE_STATIC" = "x1" ; then
-        COND_SQLITE_STATIC_1=""
+    COND_USE_EXPAT_yes="#"
+    if test "x$USE_EXPAT" = "xyes" ; then
+        COND_USE_EXPAT_yes=""
+    fi
+
+    COND_USE_SQLITE_yes="#"
+    if test "x$USE_SQLITE" = "xyes" ; then
+        COND_USE_SQLITE_yes=""
     fi
 
     COND_WX_DEBUG_0_WX_UNICODE_1="#"

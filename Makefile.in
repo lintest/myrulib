@@ -146,10 +146,10 @@ MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 @COND_DEPS_TRACKING_1@CCC = $(BK_DEPS) $(CC)
 @COND_DEPS_TRACKING_0@CXXC = $(CXX)
 @COND_DEPS_TRACKING_1@CXXC = $(BK_DEPS) $(CXX)
-@COND_EXPAT_STATIC_1@__expat_static___depname = \
-@COND_EXPAT_STATIC_1@	$(LIBPREFIX)expat_static$(LIBEXT)
-@COND_SQLITE_STATIC_1@__sqlite3_static___depname = \
-@COND_SQLITE_STATIC_1@	$(LIBPREFIX)sqlite3_static$(LIBEXT)
+@COND_USE_EXPAT_yes@__expat_static___depname = \
+@COND_USE_EXPAT_yes@	$(LIBPREFIX)expat_static$(LIBEXT)
+@COND_USE_SQLITE_yes@__sqlite3_static___depname = \
+@COND_USE_SQLITE_yes@	$(LIBPREFIX)sqlite3_static$(LIBEXT)
 @COND_PLATFORM_MAC_0@__bin2c___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__bin2c___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL bin2c$(EXEEXT)
@@ -218,15 +218,15 @@ clean:
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
 
-@COND_EXPAT_STATIC_1@$(LIBPREFIX)expat_static$(LIBEXT): $(EXPAT_STATIC_OBJECTS)
-@COND_EXPAT_STATIC_1@	rm -f $@
-@COND_EXPAT_STATIC_1@	$(AR) $(AROPTIONS) $@ $(EXPAT_STATIC_OBJECTS)
-@COND_EXPAT_STATIC_1@	$(RANLIB) $@
+@COND_USE_EXPAT_yes@$(LIBPREFIX)expat_static$(LIBEXT): $(EXPAT_STATIC_OBJECTS)
+@COND_USE_EXPAT_yes@	rm -f $@
+@COND_USE_EXPAT_yes@	$(AR) $(AROPTIONS) $@ $(EXPAT_STATIC_OBJECTS)
+@COND_USE_EXPAT_yes@	$(RANLIB) $@
 
-@COND_SQLITE_STATIC_1@$(LIBPREFIX)sqlite3_static$(LIBEXT): $(SQLITE3_STATIC_OBJECTS)
-@COND_SQLITE_STATIC_1@	rm -f $@
-@COND_SQLITE_STATIC_1@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
-@COND_SQLITE_STATIC_1@	$(RANLIB) $@
+@COND_USE_SQLITE_yes@$(LIBPREFIX)sqlite3_static$(LIBEXT): $(SQLITE3_STATIC_OBJECTS)
+@COND_USE_SQLITE_yes@	rm -f $@
+@COND_USE_SQLITE_yes@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
+@COND_USE_SQLITE_yes@	$(RANLIB) $@
 
 $(LIBPREFIX)wxsqlite3_static$(LIBEXT): $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@

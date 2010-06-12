@@ -56,20 +56,6 @@ AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
 AC_MSG_RESULT([$USE_LOCALE])
 
-if test $USE_EXPAT = yes ; then 
-  EXPAT_STATIC="1"
-  EXPAT_INCLUDE="Expat"
-else
-  SQLITE_STATIC="0"
-fi
-
-if test $USE_SQLITE = yes ; then 
-  SQLITE_STATIC="1"
-  SQLITE_INCLUDE="SQLite3"
-else
-  SQLITE_STATIC="0"
-fi
-
 AC_BAKEFILE([m4_include(autoconf_inc.m4)])
 
 DOLLAR="$"

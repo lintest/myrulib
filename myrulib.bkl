@@ -6,28 +6,34 @@
 	<set var="WX_DEBUG_DEFAULT">0</set>
 
 	<if cond="FORMAT=='autoconf'">
-		<option name="EXPAT_STATIC"/>
-		<option name="SQLITE_STATIC"/>
-		<option name="LOCALE_STATIC"/>
+		<option name="USE_EXPAT"/>
+		<option name="USE_SQLITE"/>
+		<option name="USE_LOCALE"/>
 	</if>
 
 	<if cond="FORMAT=='gnu'">
 		<set var="BUILDDIR">build</set>
-		<set var="EXPAT_STATIC">0</set>
-		<set var="LOCALE_STATIC">0</set>
-		<set var="SQLITE_STATIC">0</set>
+		<set var="USE_EXPAT">no</set>
+		<set var="USE_SQLITE">no</set>
+		<set var="USE_LOCALE">no</set>
 	</if>
 
 	<if cond="FORMAT=='mingw'">
 		<set var="BUILDDIR">build</set>
-		<set var="EXPAT_STATIC">1</set>
-		<set var="LOCALE_STATIC">1</set>
-		<set var="SQLITE_STATIC">1</set>
+		<set var="USE_EXPAT">yes</set>
+		<set var="USE_SQLITE">yes</set>
+		<set var="USE_LOCALE">yes</set>
 		<set var="WX_SHARED_DEFAULT">0</set>
 		<set var="WX_VERSION_DEFAULT">28</set>
 		<set var="DEFAULT_LDFLAGS">-static</set>
 	</if>
 
+	<if cond="FORMAT=='gnu'">
+		<set var="WX_PORT_DEFAULT">gtk2</set>
+		<set var="WX_SHARED_DEFAULT">1</set>
+		<set var="WX_VERSION_DEFAULT">2.8</set>
+	</if>
+	
 	<include file="./Presets/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
@@ -36,13 +42,7 @@
 		<is-phony/>
 	</action>
 
-	<if cond="FORMAT=='gnu'">
-		<set var="WX_PORT_DEFAULT">gtk2</set>
-		<set var="WX_SHARED_DEFAULT">1</set>
-		<set var="WX_VERSION_DEFAULT">2.8</set>
-	</if>
-	
-	<lib id="expat_static" template="wx-lib" cond="EXPAT_STATIC=='1'">
+	<lib id="expat_static" template="wx-lib" cond="USE_EXPAT=='yes'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<sources>Expat/xmlparse.c</sources>
 		<sources>Expat/xmlrole.c</sources>
@@ -52,7 +52,7 @@
 		<include>Expat</include>
 	</lib>
 
-	<lib id="sqlite3_static" cond="SQLITE_STATIC=='1'">
+	<lib id="sqlite3_static" cond="USE_SQLITE=='yes'">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
@@ -61,7 +61,7 @@
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
 		<if cond="FORMAT in ['mingw','gnu']">
-			<include cond="SQLITE_STATIC=='1'">$(SRCDIR)/SQLite3</include>
+			<include cond="USE_SQLITE=='yes'">$(SRCDIR)/SQLite3</include>
 		</if>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
@@ -145,14 +145,14 @@
 		<objects-depend>cs.inc</objects-depend>
 		<objects-depend>sv.inc</objects-depend>
 		<if cond="FORMAT in ['mingw','gnu']">
-			<define cond="EXPAT_STATIC=='1'">XML_STATIC</define>
-			<define cond="LOCALE_STATIC=='1'">FB_INCLUDE_LOCALE</define>
-			<include cond="SQLITE_STATIC=='1'">SQLite3</include>
-			<library cond="SQLITE_STATIC=='1'">sqlite3_static</library>
-			<sys-lib cond="SQLITE_STATIC=='0'">sqlite3</sys-lib>
-			<include cond="EXPAT_STATIC=='1'">Expat</include>
-			<library cond="EXPAT_STATIC=='1'">expat_static</library>
-			<sys-lib cond="EXPAT_STATIC=='0'">expat</sys-lib>
+			<define cond="USE_EXPAT=='yes'">XML_STATIC</define>
+			<define cond="USE_LOCALE=='yes'">FB_INCLUDE_LOCALE</define>
+			<include cond="USE_SQLITE=='yes'">SQLite3</include>
+			<library cond="USE_SQLITE=='yes'">sqlite3_static</library>
+			<sys-lib cond="USE_SQLITE=='no'">sqlite3</sys-lib>
+			<include cond="USE_EXPAT=='yes'">Expat</include>
+			<library cond="USE_EXPAT=='yes'">expat_static</library>
+			<sys-lib cond="USE_EXPAT=='no'">expat</sys-lib>
 		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/ExpThread.cpp</sources>
