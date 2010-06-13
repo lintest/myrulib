@@ -8875,10 +8875,10 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.8"
 
 
 DOLLAR="$"
-WX_CFLAGS=`echo $WX_CFLAGS | sed -e "s|-mthreads||gp"`
-WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed -e "s|-mthreads||gp"`
-WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed -e "s|-mthreads||gp"`
-WX_LIBS=`echo $WX_LIBS | sed -e "s|-mthreads||gp"`
+WX_CFLAGS=`echo $WX_CFLAGS | sed "s|-mthreads||g"`
+WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed "s|-mthreads||g"`
+WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed "s|-mthreads||g"`
+WX_LIBS=`echo $WX_LIBS | sed "s|-mthreads||g"`
 
 if test $USE_EXPAT = yes ; then
   CXXFLAGS="$CXXFLAGS -DXML_STATIC -I$DOLLAR(srcdir)/Expat"
