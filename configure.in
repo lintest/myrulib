@@ -56,18 +56,20 @@ AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
 AC_MSG_RESULT([$USE_LOCALE])
 
-AC_BAKEFILE([m4_include(autoconf_inc.m4)])
+AC_MSG_CHECKING([for --with-strip])
+AC_ARG_WITH([locale], [AS_HELP_STRING([--with-strip], [Discard debug symbols from the executable file.])], USE_STRIP="$withval", USE_STRIP="yes")
+AC_MSG_RESULT([$USE_STRIP])
 
+AC_BAKEFILE([m4_include(autoconf_inc.m4)])
 
 dnl   NB: After the wxMSW configuration use the following command.
 dnl   $ sed -i 's/-mthreads//g' Makefile"
 
-WX_CFLAGS=`echo $WX_CFLAGS | sed -ne "s|-mthreads||gp"`
-WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed -ne "s|-mthreads||gp"`
-WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed -ne "s|-mthreads||gp"`
-WX_LIBS=`echo $WX_LIBS | sed -ne "s|-mthreads||gp"`
-
 DOLLAR="$"
+WX_CFLAGS=`echo $WX_CFLAGS | sed -e "s|-mthreads||gp"`
+WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed -e "s|-mthreads||gp"`
+WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed -e "s|-mthreads||gp"`
+WX_LIBS=`echo $WX_LIBS | sed -e "s|-mthreads||gp"`
 
 if test $USE_EXPAT = yes ; then 
   CXXFLAGS="$CXXFLAGS -DXML_STATIC -I$DOLLAR(srcdir)/Expat"
@@ -87,6 +89,13 @@ if test $USE_LOCALE = yes ; then
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
 fi
 
+if test $USE_STRIP = yes ; then 
+  STRIP_COMMAND="$DOLLAR(STRIP) ./myrulib$DOLLAR(EXEEXT)"
+else
+  STRIP_COMMAND=""
+fi
+AC_SUBST(STRIP_COMMAND)
+
 AC_CONFIG_FILES([Makefile])
 
 if test "x$WX_LIBS_STATIC" = "x"; then
@@ -102,7 +111,9 @@ echo
 echo "  Use buildin Expat library?                ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
 echo "  Include locale files into executable?     ${USE_LOCALE}"
+echo "  Strip the executable file?                ${USE_STRIP}"
 echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
+
 echo 
 
 AC_OUTPUT

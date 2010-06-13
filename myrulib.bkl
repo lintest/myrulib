@@ -9,6 +9,7 @@
 		<option name="USE_EXPAT"/>
 		<option name="USE_SQLITE"/>
 		<option name="USE_LOCALE"/>
+		<option name="STRIP_COMMAND"/>
 	</if>
 
 	<if cond="FORMAT=='gnu'">
@@ -16,6 +17,9 @@
 		<set var="USE_EXPAT">no</set>
 		<set var="USE_SQLITE">no</set>
 		<set var="USE_LOCALE">no</set>
+		<set var="WX_PORT_DEFAULT">gtk2</set>
+		<set var="WX_SHARED_DEFAULT">1</set>
+		<set var="WX_VERSION_DEFAULT">2.8</set>
 	</if>
 
 	<if cond="FORMAT=='mingw'">
@@ -28,12 +32,6 @@
 		<set var="DEFAULT_LDFLAGS">-static</set>
 	</if>
 
-	<if cond="FORMAT=='gnu'">
-		<set var="WX_PORT_DEFAULT">gtk2</set>
-		<set var="WX_SHARED_DEFAULT">1</set>
-		<set var="WX_VERSION_DEFAULT">2.8</set>
-	</if>
-	
 	<include file="./Presets/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
@@ -233,13 +231,20 @@
 		<wx-lib>core</wx-lib>
 		<wx-lib>net</wx-lib>
 		<wx-lib>base</wx-lib>
-		<postlink-command>strip $(BUILDDIR)/$(__targetname)</postlink-command>
 		<threading>single</threading>
 		<optimize>speed</optimize>
 		<debug-info>off</debug-info>
 		<runtime-libs>static</runtime-libs>
+		<postlink-command cond="FORMAT in ['mingw','gnu']">strip $(BUILDDIR)/$(__targetname)</postlink-command>
 		<install-to cond="FORMAT_HAS_MAKE_INSTALL=='1'">$(BINDIR)</install-to>
 	</exe>
+
+	<if cond="FORMAT=='autoconf'">
+		<modify-target target="myrulib">
+			<set var="__post_command" append="1">$(STRIP_COMMAND)$(LF)</set>
+		</modify-target>
+	</if>
+
 
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files> 

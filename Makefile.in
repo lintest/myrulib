@@ -35,6 +35,7 @@ CFLAGS = @CFLAGS@
 CXXFLAGS = @CXXFLAGS@
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
+STRIP_COMMAND = @STRIP_COMMAND@
 WX_CFLAGS = @WX_CFLAGS@
 WX_CXXFLAGS = @WX_CXXFLAGS@
 WX_LIBS = @WX_LIBS@
@@ -274,7 +275,7 @@ myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(__m
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
-	strip ./myrulib$(EXEEXT)
+	$(STRIP_COMMAND)
 
 install_myrulib: myrulib$(EXEEXT)
 	$(INSTALL_DIR) $(DESTDIR)$(bindir)
