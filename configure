@@ -744,6 +744,7 @@ with_wx_exec_prefix
 with_expat
 with_sqlite
 with_locale
+with_strip
 enable_omf
 enable_dependency_tracking
 '
@@ -4577,9 +4578,9 @@ $as_echo "$USE_LOCALE" >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-strip" >&5
 $as_echo_n "checking for --with-strip... " >&6; }
 
-# Check whether --with-locale was given.
-if test "${with_locale+set}" = set; then :
-  withval=$with_locale; USE_STRIP="$withval"
+# Check whether --with-strip was given.
+if test "${with_strip+set}" = set; then :
+  withval=$with_strip; USE_STRIP="$withval"
 else
   USE_STRIP="yes"
 fi
