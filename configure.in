@@ -95,5 +95,8 @@ echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
 echo "  Include locale files into executable?     ${USE_LOCALE}"
 echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
 echo ""
+echo "  NB: After the configuration wxMSW use the following command."
+echo "    $ sed -i 's/-mthreads//g' Makefile"
+echo ""
 
 AC_OUTPUT

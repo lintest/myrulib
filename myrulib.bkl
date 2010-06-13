@@ -237,7 +237,7 @@
 		<threading>single</threading>
 		<optimize>speed</optimize>
 		<debug-info>off</debug-info>
-		<runtime-libs cond="FORMAT=='mingw'">static</runtime-libs>
+		<runtime-libs>static</runtime-libs>
 		<install-to cond="FORMAT_HAS_MAKE_INSTALL=='1'">$(BINDIR)</install-to>
 	</exe>
 
