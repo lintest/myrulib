@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
   i = 0;
   while ((c = fgetc(fi)) != EOF) {
-    fprintf(fo, c<16 ? "  0x%x," : " 0x%x,", (unsigned char)c);
+    fprintf(fo, " 0x%02x,", (unsigned char)c);
     if (++i == 12) {
       fprintf(fo, "\n");
       i = 0;

@@ -8857,9 +8857,8 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.8"
     fi
 
 
-CFLAGS=`echo $CFLAGS | sed -ne "s|-mthreads||gp"`
-CXXFLAGS=`echo $CXXFLAGS | sed -ne "s|-mthreads||gp"`
-CPPFLAGS=`echo $CPPFLAGS | sed -ne "s|-mthreads||gp"`
+
+
 WX_CFLAGS=`echo $WX_CFLAGS | sed -ne "s|-mthreads||gp"`
 WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed -ne "s|-mthreads||gp"`
 WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed -ne "s|-mthreads||gp"`
@@ -8896,15 +8895,12 @@ fi
 
 echo
 echo "Configured MyRuLib 0.23.1 for \`${host}' wxWidgets ${WX_VERSION}"
-echo ""
+echo
 echo "  Use buildin Expat library?                ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
 echo "  Include locale files into executable?     ${USE_LOCALE}"
 echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
-echo ""
-echo "  NB: After the configuration wxMSW use the following command."
-echo "    $ sed -i 's/-mthreads//g' Makefile"
-echo ""
+echo
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure

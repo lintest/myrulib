@@ -58,9 +58,10 @@ AC_MSG_RESULT([$USE_LOCALE])
 
 AC_BAKEFILE([m4_include(autoconf_inc.m4)])
 
-CFLAGS=`echo $CFLAGS | sed -ne "s|-mthreads||gp"`
-CXXFLAGS=`echo $CXXFLAGS | sed -ne "s|-mthreads||gp"`
-CPPFLAGS=`echo $CPPFLAGS | sed -ne "s|-mthreads||gp"`
+
+dnl   NB: After the wxMSW configuration use the following command.
+dnl   $ sed -i 's/-mthreads//g' Makefile"
+
 WX_CFLAGS=`echo $WX_CFLAGS | sed -ne "s|-mthreads||gp"`
 WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed -ne "s|-mthreads||gp"`
 WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed -ne "s|-mthreads||gp"`
@@ -97,14 +98,11 @@ fi
 dnl report how we have been configured
 echo
 echo "Configured MyRuLib AC_PACKAGE_VERSION for \`${host}' wxWidgets ${WX_VERSION}"
-echo ""
+echo 
 echo "  Use buildin Expat library?                ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
 echo "  Include locale files into executable?     ${USE_LOCALE}"
 echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
-echo ""
-echo "  NB: After the configuration wxMSW use the following command."
-echo "    $ sed -i 's/-mthreads//g' Makefile"
-echo ""
+echo 
 
 AC_OUTPUT
