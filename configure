@@ -8857,6 +8857,14 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.8"
     fi
 
 
+CFLAGS=`echo $CFLAGS | sed -ne "s|-mthreads||gp"`
+CXXFLAGS=`echo $CXXFLAGS | sed -ne "s|-mthreads||gp"`
+CPPFLAGS=`echo $CPPFLAGS | sed -ne "s|-mthreads||gp"`
+WX_CFLAGS=`echo $WX_CFLAGS | sed -ne "s|-mthreads||gp"`
+WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed -ne "s|-mthreads||gp"`
+WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed -ne "s|-mthreads||gp"`
+WX_LIBS=`echo $WX_LIBS | sed -ne "s|-mthreads||gp"`
+
 DOLLAR="$"
 
 if test $USE_EXPAT = yes ; then
