@@ -198,6 +198,25 @@ bool FbExportDlg::ExportProcess::HasInput()
 {
     bool hasInput = false;
 
+    if (IsInputAvailable()) {
+    	wxString info = ReadLine(GetInputStream());
+		if (!info.IsEmpty()) wxLogMessage(info);
+		hasInput = true;
+    }
+
+    if (IsErrorAvailable()) {
+    	wxString info = ReadLine(GetErrorStream());
+		if (!info.IsEmpty()) wxLogError(info);
+		hasInput = true;
+    }
+
+    return hasInput;
+}
+
+wxString FbExportDlg::ExportProcess::ReadLine(wxInputStream * stream)
+{
+	if (stream == NULL) return wxEmptyString;
+
 	#ifdef __WXMSW__
 	wxChar * charset[] = {wxT("cp866"), wxT("cp1251")};
 	wxCSConv conv = wxCSConv(charset[m_dos ? 0 : 1]);
@@ -206,21 +225,8 @@ bool FbExportDlg::ExportProcess::HasInput()
 	#endif // __WXMSW__
 	const wxString &sep=wxT(" \t");
 
-    if (IsInputAvailable()) {
-        wxTextInputStream tis(*GetInputStream(), sep, conv);
-        wxString info = tis.ReadLine();
-		if (!info.IsEmpty()) wxLogMessage(info);
-        hasInput = true;
-    }
-
-    if (IsErrorAvailable()) {
-        wxTextInputStream tis(*GetErrorStream(), sep, conv);
-        wxString info = tis.ReadLine();
-		if (!info.IsEmpty()) wxLogError(info);
-        hasInput = true;
-    }
-
-    return hasInput;
+	wxTextInputStream tis(*stream, sep, conv);
+	return tis.ReadLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -453,6 +459,7 @@ void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 void FbExportDlg::OnScriptExit(wxCommandEvent& event)
 {
 	wxDELETE(m_thread);
+	wxSafeYield(this);
 	Start();
 }
 

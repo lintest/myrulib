@@ -93,6 +93,7 @@ class FbExportDlg : public FbDialog
 				bool m_dos;
 				#endif // __WXMSW__
 			protected:
+				wxString ReadLine(wxInputStream * stream);
 				FbExportDlg * m_parent;
 		};
 	public:
