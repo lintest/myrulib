@@ -6,6 +6,7 @@
 #include <wx/arrimpl.cpp>
 #include <wx/filename.h>
 #include <wx/process.h>
+#include <wx/timer.h>
 #include "BaseThread.h"
 #include "FbWindow.h"
 #include "FbConst.h"
@@ -123,7 +124,9 @@ class FbExportDlg : public FbDialog
 		wxListBox m_text;
 		wxGauge m_gauge;
 		wxButton m_button;
+		wxTimer m_timer;
 	private:
+		void OnTimer(wxTimerEvent& event);
 		void OnIdle(wxIdleEvent& event);
 		void OnProcessTerm(wxProcessEvent& event);
 		void OnCancelBtn(wxCommandEvent& event);

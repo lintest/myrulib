@@ -41,18 +41,19 @@ void FbExportDlg::ExportLog::DoLog(wxLogLevel level, const wxChar *szString, tim
 {
 	switch ( level ) {
 		case wxLOG_Error: {
-			wxString msg = wxT("E> "); msg << szString;
+			wxString msg = wxT("E> "); msg << (wxString)szString;
 			FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_ERROR, msg).Post(m_parent);
 		} break;
 		case wxLOG_Warning: {
-			wxString msg = wxT("!> "); msg << szString;
+			wxString msg = wxT("!> "); msg << (wxString)szString;
 			FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, msg).Post(m_parent);
 		} break;
 		case wxLOG_Info: {
-			FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, szString).Post(m_parent);
+			wxString msg = (wxString)szString;
+			FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, msg).Post(m_parent);
 		} break;
 		default: {
-			wxString msg = wxT("i> "); msg << szString;
+			wxString msg = wxT("i> "); msg << (wxString)szString;
 			FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_LOG, msg).Post(m_parent);
 		} break;
 	}
@@ -196,7 +197,7 @@ void FbExportDlg::ExportProcess::OnTerminate(int pid, int status)
 
 bool FbExportDlg::ExportProcess::HasInput()
 {
-    bool hasInput = false;
+	bool hasInput = false;
 
     if (IsInputAvailable()) {
     	wxString info = ReadLine(GetInputStream());
@@ -275,6 +276,8 @@ FbExportDlg::FbExportDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
+
+	m_timer.Start(100);
 }
 
 FbExportDlg::~FbExportDlg()
@@ -434,6 +437,11 @@ void FbExportDlg::ExecScript(size_t index, const wxFileName &filename)
 	if (!pid) { wxLogError(command); Start(); }
 }
 
+void FbExportDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
+{
+    wxWakeUpIdle();
+}
+
 void FbExportDlg::OnIdle(wxIdleEvent& event)
 {
 	if (m_process.HasInput()) event.RequestMore();
@@ -489,3 +497,4 @@ void FbExportDlg::OnCloseDlg( wxCloseEvent& event )
 		m_process.Kill(wxSIGTERM);
 	}
 }
+
