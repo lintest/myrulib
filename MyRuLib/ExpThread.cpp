@@ -77,6 +77,11 @@ void * FbExportDlg::ExportThread::Entry()
 	}
 
 	wxFileOutputStream out(m_filename);
+	if (!out.IsOk()) {
+		wxLogError(m_filename);
+		return NULL;
+	}
+
 	switch (m_format) {
 		case -1: {
 			wxCSConv conv(wxT("cp866"));
