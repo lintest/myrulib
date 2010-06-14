@@ -64,6 +64,7 @@ class FbExportDlg : public FbDialog
 		{
 			public:
 				GzipThread(FbExportDlg * parent, const wxArrayString &args);
+			protected:
 				virtual void * Entry();
 			private:
 				wxArrayString m_filelist;
@@ -72,6 +73,7 @@ class FbExportDlg : public FbDialog
 		{
 			public:
 				ZipThread(FbExportDlg * parent, const wxArrayString &args);
+			protected:
 				virtual void * Entry();
 			private:
 				wxArrayString m_filelist;
@@ -80,6 +82,7 @@ class FbExportDlg : public FbDialog
 		{
 			public:
 				DelThread(FbExportDlg * parent, const wxArrayString &args);
+			protected:
 				virtual void * Entry();
 			private:
 				wxArrayString m_filelist;
@@ -138,23 +141,6 @@ class FbExportDlg : public FbDialog
 		void OnCloseDlg(wxCloseEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbExportDlg);
-};
-
-class ExportThread : public BaseThread
-{
-	public:
-		ExportThread(int format): BaseThread(), m_format(format) {};
-		virtual void *Entry();
-	public:
-		ExportFileArray m_filelist;
-		bool Execute();
-	private:
-		void WriteFileItem(ExportFileItem &item);
-		wxString GetScript();
-		wxString GetCommand(const wxString &script, const wxFileName &filename);
-	private:
-		int m_format;
-		wxArrayString m_scripts;
 };
 
 #endif // __EXPTHREAD_H__

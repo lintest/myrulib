@@ -16,6 +16,7 @@ WX_DEFINE_OBJARRAY(ExportFileArray);
 void FbExportDlg::JoinedThread::OnExit()
 {
 	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_EXIT).Post(m_parent);
+	delete this;
 }
 
 void FbExportDlg::JoinedThread::Execute()
@@ -287,7 +288,9 @@ FbExportDlg::FbExportDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 FbExportDlg::~FbExportDlg()
 {
-	while (m_thread) m_thread->Wait();
+	wxSafeYield(this);
+	if (m_thread) m_thread->Wait();
+	wxSafeYield(this);
 }
 
 wxString FbExportDlg::GetCommand(const wxString &script, const wxFileName &filename)
@@ -350,7 +353,7 @@ wxString FbExportDlg::GetScript(int format)
 void FbExportDlg::Execute()
 {
 	if (m_format > 0) {
-		wxStringTokenizer tkz(GetScript(m_format), wxT("\n"));
+		wxStringTokenizer tkz(GetScript(m_format), wxT("\n"), wxTOKEN_STRTOK);
 		while (tkz.HasMoreTokens()) m_scripts.Add(tkz.GetNextToken());
 	}
 	m_gauge.SetRange(m_filelist.Count());
@@ -427,6 +430,7 @@ void FbExportDlg::ExecScript(size_t index, const wxFileName &filename)
 
 	wxArrayString args = wxCmdLineParser::ConvertStringToArgs(command.c_str());
 	if (args.Count() > 1) {
+		m_thread = NULL;
 		wxString cmd = args[0].Lower();
 		if (cmd == wxT("gzip")) { m_thread = new GzipThread(this, args); }
 		else if (cmd == wxT("zip")) { m_thread = new ZipThread(this, args); }
@@ -471,7 +475,7 @@ void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 
 void FbExportDlg::OnScriptExit(wxCommandEvent& event)
 {
-	wxDELETE(m_thread);
+	m_thread = NULL;
 	wxSafeYield(this);
 	Start();
 }
