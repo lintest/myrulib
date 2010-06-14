@@ -191,7 +191,6 @@ void * FbExportDlg::DelThread::Entry()
 
 void FbExportDlg::ExportProcess::OnTerminate(int pid, int status)
 {
-    { while (HasInput()) ; }
     FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_RUN).Post(m_parent);
 }
 
@@ -447,6 +446,7 @@ void FbExportDlg::LogMessage(const wxString &msg)
 
 void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 {
+	{ while (m_process.HasInput()) ; }
 	Start();
 }
 
