@@ -289,6 +289,7 @@ FbExportDlg::~FbExportDlg()
 {
 	wxSafeYield(this);
 	if (m_thread) m_thread->Wait();
+	wxDELETE(m_thread);
 	wxSafeYield(this);
 }
 
@@ -475,8 +476,8 @@ void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 
 void FbExportDlg::OnScriptExit(wxCommandEvent& event)
 {
-	if (m_thread) m_thread->Delete();
-	m_thread = NULL;
+	if (m_thread) m_thread->Wait();
+	wxDELETE(m_thread);
 	Start();
 }
 

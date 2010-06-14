@@ -86,9 +86,9 @@ void FbFrameBase::CreateControls()
 	ShowFullScreen(IsFullScreen());
 	Layout();
 
-	if (m_MasterList) 
+	if (m_MasterList)
 		m_MasterList->SetFocus();
-	else 
+	else
 		m_BooksPanel->SetFocus();
 }
 
