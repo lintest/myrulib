@@ -16,7 +16,6 @@ WX_DEFINE_OBJARRAY(ExportFileArray);
 void FbExportDlg::JoinedThread::OnExit()
 {
 	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_EXIT).Post(m_parent);
-	delete this;
 }
 
 void FbExportDlg::JoinedThread::Execute()
@@ -370,8 +369,9 @@ void FbExportDlg::Start()
 		return;
 	}
 
-	if (m_script > m_scripts.Count()) {
-		wxLogInfo(wxEmptyString);
+	size_t scriptCount = m_scripts.Count();
+	if (m_script > scriptCount) {
+		if (scriptCount) wxLogInfo(wxEmptyString);
 		m_script = 0;
 		m_index++;
 	}
@@ -475,8 +475,8 @@ void FbExportDlg::OnScriptRun(wxCommandEvent& event)
 
 void FbExportDlg::OnScriptExit(wxCommandEvent& event)
 {
+	if (m_thread) m_thread->Delete();
 	m_thread = NULL;
-	wxSafeYield(this);
 	Start();
 }
 
