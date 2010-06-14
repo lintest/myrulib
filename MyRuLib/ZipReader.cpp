@@ -57,40 +57,44 @@ void *ZipThread::Entry()
 ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
-	FbCommonDatabase database;
+	try {
+		FbCommonDatabase database;
 
-	OpenDownload(database, bInfoOnly);
-	if (IsOK()) return;
-
-	FbExtractArray items(database, id);
-
-	wxString name_info;
-	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
-
-	for (size_t i = 0; i<items.Count(); i++) {
-		FbExtractItem & item = items[i];
-		if (i==0) name_info = item.NameInfo();
-		if (item.id_archive) {
-			if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )
-				item.book_name = GetInfoName(item.book_name);
-			wxFileName zip_file;
-			m_zipOk = item.FindZip(sLibraryDir, zip_file);
-			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
-		} else if (item.librusec) {
-			wxString zip_name = zips.FindZip(item.book_name);
-			if (zip_name.IsEmpty()) continue;
-			wxFileName zip_file = zip_name;
-			zip_file.SetPath(sLibraryDir);
-			m_zipOk = zip_file.FileExists();
-			if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
-		} else {
-			wxFileName book_file;
-			m_zipOk = item.FindBook(sLibraryDir, book_file);
-			if (m_zipOk) OpenFile(book_file.GetFullPath());
-		}
+		OpenDownload(database, bInfoOnly);
 		if (IsOK()) return;
+
+		FbExtractArray items(database, id);
+
+		wxString name_info;
+		wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
+
+		for (size_t i = 0; i<items.Count(); i++) {
+			FbExtractItem & item = items[i];
+			if (i==0) name_info = item.NameInfo();
+			if (item.id_archive) {
+				if ( bInfoOnly && (item.book_name.Right(4).Lower()!=wxT(".fb2")) )
+					item.book_name = GetInfoName(item.book_name);
+				wxFileName zip_file;
+				m_zipOk = item.FindZip(sLibraryDir, zip_file);
+				if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
+			} else if (item.librusec) {
+				wxString zip_name = zips.FindZip(item.book_name);
+				if (zip_name.IsEmpty()) continue;
+				wxFileName zip_file = zip_name;
+				zip_file.SetPath(sLibraryDir);
+				m_zipOk = zip_file.FileExists();
+				if (m_zipOk) OpenZip(zip_file.GetFullPath(), item.book_name);
+			} else {
+				wxFileName book_file;
+				m_zipOk = item.FindBook(sLibraryDir, book_file);
+				if (m_zipOk) OpenFile(book_file.GetFullPath());
+			}
+			if (IsOK()) return;
+		}
+		if (bShowError) wxLogError(_("Book not found %s"), name_info.c_str());
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
 	}
-	if (bShowError) wxLogError(_("Book not found %s"), name_info.c_str());
 }
 
 ZipReader::~ZipReader()
