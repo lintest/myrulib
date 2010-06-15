@@ -109,7 +109,6 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 
 	wxString filepath = filename.GetFullPath();
 	if (!filename.FileExists()) SaveFile(in, filepath);
-
 	wxString command;
 	bool ok = false;
 
@@ -127,7 +126,8 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		wxLogError(e.GetMessage());
 		return;
 	}
-    if (ok) {
+	if (ok) {
+		filepath.Prepend(wxT('"')).Append(wxT('"'));
 		#ifdef __WXMSW__
 		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 		#else
@@ -135,13 +135,14 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 			filename.SetPath( FbParams::GetText(FB_WINE_DIR));
 			filepath = filename.GetFullPath();
 		}
-		wxExecute(command + wxT(" \"") + filepath + wxT("\""));
-		#endif
-    } else if (GetSystemCommand(filepath, command)) {
+		command << wxT(' ') << filepath;
 		wxExecute(command);
-    } else {
-        FbMessageBox(_("Associated application not found"), m_filetype);
-    }
+		#endif
+	} else if (GetSystemCommand(filepath, command)) {
+		wxExecute(command);
+	} else {
+		FbMessageBox(_("Associated application not found"), m_filetype);
+	}
 }
 
 void FbBookData::DoDownload() const
