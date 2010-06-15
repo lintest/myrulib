@@ -36,9 +36,6 @@ class MyRuLibApp : public wxApp
 		wxString m_datafile;
 		FbLocale * m_locale;
 		FbCollection * m_collection;
-		#ifdef __WXDEBUG__
-		wxDebugContext m_debug;
-		#endif // __WXDEBUG__
 };
 
 DECLARE_APP(MyRuLibApp)
