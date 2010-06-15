@@ -11,7 +11,8 @@ class FbCacheData: public wxObject
 	public:
 		FbCacheData(wxSQLite3ResultSet &result);
 		FbCacheData(int code, wxSQLite3ResultSet &result);
-		FbCacheData(int code, const wxString &name, int count = 0);
+		FbCacheData(int code, const wxString &name = wxEmptyString, int count = 0);
+		FbCacheData(const FbCacheData &data);
 		int GetCode() const { return m_code; }
 		wxString GetValue(size_t col) const;
 	private:
@@ -32,8 +33,8 @@ class FbCollection: public wxObject
 		virtual ~FbCollection();
 	public:
 		static FbCollection * GetCollection();
-		static FbCacheData * GetSeqn(int code);
-		static FbCacheData * GetAuth(int code);
+		static FbCacheData GetSeqn(int code);
+		static FbCacheData GetAuth(int code);
 		static void AddSeqn(FbCacheData * data);
 		static void AddAuth(FbCacheData * data);
 	protected:

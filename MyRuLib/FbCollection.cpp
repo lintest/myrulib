@@ -24,6 +24,11 @@ FbCacheData::FbCacheData(int code, wxSQLite3ResultSet &result)
 {
 }
 
+FbCacheData::FbCacheData(const FbCacheData &data)
+	: m_code(data.m_code), m_name(data.m_name), m_count(data.m_count)
+{
+}
+
 wxString FbCacheData::GetValue(size_t col) const
 {
 	switch (col) {
@@ -76,22 +81,24 @@ FbCollection * FbCollection::GetCollection()
 	return wxGetApp().GetCollection();
 }
 
-FbCacheData * FbCollection::GetSeqn(int code)
+FbCacheData FbCollection::GetSeqn(int code)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
 	if (collection == NULL) return NULL;
 	wxString sql = wxT("SELECT id, value, number FROM sequences WHERE id=?");
-	return collection->GetData(code, collection->m_seqns, sql);
+	FbCacheData * data = collection->GetData(code, collection->m_seqns, sql);
+	return data ? *data : FbCacheData(0);
 }
 
-FbCacheData * FbCollection::GetAuth(int code)
+FbCacheData FbCollection::GetAuth(int code)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
 	if (collection == NULL) return NULL;
 	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");
-	return collection->GetData(code, collection->m_auths, sql);
+	FbCacheData * data = collection->GetData(code, collection->m_auths, sql);
+	return data ? *data : FbCacheData(0);
 }
 
 void FbCollection::AddSeqn(FbCacheData * data)

@@ -100,11 +100,7 @@ wxString FbSeqnListData::GetValue(FbModel & model, size_t col) const
 {
 	FbSeqnListModel * list = wxDynamicCast(&model, FbSeqnListModel);
 	if (list == NULL) return wxEmptyString;
-
-	FbCacheData * data = FbCollection::GetSeqn(m_code);
-	if (data == NULL) return wxEmptyString;
-
-	return data->GetValue(col);
+	return FbCollection::GetSeqn(m_code).GetValue(col);
 }
 
 //-----------------------------------------------------------------------------

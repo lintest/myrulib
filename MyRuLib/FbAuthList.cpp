@@ -118,11 +118,7 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 {
 	FbAuthListModel * list = wxDynamicCast(&model, FbAuthListModel);
 	if (list == NULL) return wxEmptyString;
-
-	FbCacheData * data = FbCollection::GetAuth(m_code);
-	if (data == NULL) return wxEmptyString;
-
-	return data->GetValue(col);
+	return FbCollection::GetAuth(m_code).GetValue(col);
 }
 
 //-----------------------------------------------------------------------------
