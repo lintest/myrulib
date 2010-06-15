@@ -56,7 +56,9 @@ class FbParentData: public FbModelData
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
 		virtual size_t CountAll(const FbModel & model) const;
-		FbModelData* Items(FbModel & model, size_t index) const;
+		virtual FbModelData* Items(FbModel & model, size_t index) const;
+		void Delete(size_t index) 
+			{ m_items.RemoveAt(index); }
 	private:
 		void Add(FbModel & model, FbModelData* data);
 		FbModelDataArray m_items;
@@ -179,6 +181,7 @@ class FbListStore: public FbListModel
 	public:
 		virtual size_t GetRowCount() const
 			{ return m_list.Count(); }
+	protected:
 		virtual FbModelData * DoGetData(size_t row, int &level)
 			{ level = 0; return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }
 	private:
@@ -204,14 +207,15 @@ class FbTreeModel: public FbModel
 		virtual int GoPriorRow(size_t delta = 1);
 
 		virtual size_t FindRow(size_t row, bool select);
-		virtual FbModelData * DoGetData(size_t row, int &level);
 		virtual size_t GetRowCount() const;
 
 		virtual void Append(FbModelData * data) {}
 		virtual void Replace(FbModelData * data) {}
-		virtual void Delete() {}
+		virtual void Delete();
 
 	protected:
+		bool DoDelete(FbModelData &parent, size_t &row);
+		virtual FbModelData * DoGetData(size_t row, int &level);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
 		FbModelData * FindData(FbModelData &parent, size_t &row, int &level);

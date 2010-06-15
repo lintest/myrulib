@@ -86,21 +86,25 @@ void FbFrameFolder::FillFolders(const int current)
 	FbTreeModel * model = new FbTreeModel;
 
 	FbParentData * root = new FbParentData(*model);
-	FbParentData * parent = new FbFolderParentData(*model, root, _("Bookmarks"));
-	new FbFolderChildData(*model, parent, 0, _("Favorites"), FT_FOLDER);
+	m_folders = new FbFolderParentData(*model, root, _("Bookmarks"));
+	new FbFolderChildData(*model, m_folders, 0, _("Favorites"), FT_FOLDER);
 	model->SetRoot(root);
 
-	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
-	FbLocalDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-	while (result.NextRow()) {
-		int code = result.GetInt(0);
-		wxString name = result.GetString(1);
-		new FbFolderChildData(*model, parent, code, name, FT_FOLDER);
-		if (code == current) model->FindRow(model->GetRowCount(), false);
+	try { 
+		wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
+		FbLocalDatabase database;
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while (result.NextRow()) {
+			int code = result.GetInt(0);
+			wxString name = result.GetString(1);
+			new FbFolderChildData(*model, m_folders, code, name, FT_FOLDER);
+			if (code == current) model->FindRow(model->GetRowCount(), false);
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
 	}
 
-	parent = new FbFolderParentData(*model, root, _("Remarks"));
+	FbParentData * parent = new FbFolderParentData(*model, root, _("Remarks"));
 	new FbFolderChildData(*model, parent, 1, _("Comments"), FT_COMMENT);
 	for (int i=5; i>0; i--) new FbFolderChildData(*model, parent, i, GetRatingText(i), FT_RATING);
 		
@@ -147,80 +151,88 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 
 void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 {
-/*
+	FbModel * model = m_MasterList->GetModel();
+	if (model == NULL) return;
+
 	wxString name = wxGetTextFromUser(_("Input name of new folder:"), _("Add folder?"), wxEmptyString, this);
 	if (name.IsEmpty()) return;
+	int id = 0;
 
-	FbLocalDatabase database;
-	int id = database.NewId(FB_NEW_FOLDER);
-	wxString sql = wxT("INSERT INTO folders(value,id) VALUES(?,?)");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, name);
-	stmt.Bind(2, id);
-	stmt.ExecuteUpdate();
+	try {
+		FbLocalDatabase database;
+		id = database.NewId(FB_NEW_FOLDER);
+		wxString sql = wxT("INSERT INTO folders(value,id) VALUES(?,?)");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, name);
+		stmt.Bind(2, id);
+		stmt.ExecuteUpdate();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
 
-	FbMenuFolders::EmptyFolders();
-	m_BooksPanel->EmptyBooks();
-	FillFolders(id);
-*/
+	new FbFolderChildData(*model, m_folders, id, name, FT_FOLDER);
+	model->FindRow(m_folders->Count(*model) + 1, true);
+	OnFolderSelected(wxTreeEvent());
 }
 
 void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 {
-/*
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	if (data->GetType() != FT_FOLDER) return;
-	int id = data->GetId();
-	if (!id) return;
+	FbModel * model = m_MasterList->GetModel();
+	if (model == NULL) return;
 
-	wxTreeItemId item = m_MasterList->GetSelection();
-	wxString name = m_MasterList->GetItemText(item);;
+	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	if (data == NULL || data->GetType() != FT_FOLDER || data->GetCode()==0) return;
+
+	wxString name = data->GetValue(*model);
 	name = wxGetTextFromUser(_("Input new folder name:"), _("Change folder?"), name, this);
 	if (name.IsEmpty()) return;
 
-	FbLocalDatabase database;
-	wxString sql = wxT("UPDATE folders SET value=? WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, name);
-	stmt.Bind(2, id);
-	stmt.ExecuteUpdate();
+	try {
+		FbLocalDatabase database;
+		wxString sql = wxT("UPDATE folders SET value=? WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, name);
+		stmt.Bind(2, data->GetCode());
+		stmt.ExecuteUpdate();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
 
-	FbMenuFolders::EmptyFolders();
-	FillFolders(id);
-*/
+	data->SetName(name);
+	m_MasterList->Refresh();
 }
 
 void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 {
-/*
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (!data) return;
-	if (data->GetType() != FT_FOLDER) return;
-	int id = data->GetId();
-	if (!id) return;
+	FbModel * model = m_MasterList->GetModel();
+	if (model == NULL) return;
 
-	wxTreeItemId item = m_MasterList->GetSelection();
-	wxString name = m_MasterList->GetItemText(item);;
+	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	if (data == NULL || data->GetType() != FT_FOLDER || data->GetCode()==0) return;
+
+	wxString name = data->GetValue(*model);
 	wxString msg = wxString::Format(_("Delete folder \"%s\"?"), name.c_str());
 	int answer = wxMessageBox(msg, _("Delete folder?"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
-	FbLocalDatabase database;
-	wxString sql = wxT("DELETE FROM folders WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, id);
-	stmt.ExecuteUpdate();
+	try {
+		FbLocalDatabase database;
+		wxString sql = wxT("DELETE FROM folders WHERE id=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, data->GetCode());
+		stmt.ExecuteUpdate();
 
-	sql = wxT("DELETE FROM favorites WHERE id_folder=?");
-	stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, id);
-	stmt.ExecuteUpdate();
-
-	FbMenuFolders::EmptyFolders();
-	m_BooksPanel->EmptyBooks();
-	FillFolders(0);
-*/
+		sql = wxT("DELETE FROM favorites WHERE id_folder=?");
+		stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, data->GetCode());
+		stmt.ExecuteUpdate();
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return;
+	}
+	m_MasterList->Delete();
 }
 
 void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)

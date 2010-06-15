@@ -39,6 +39,8 @@ class FbFolderChildData: public FbChildData
 			{ return m_code; }
 		FbFolderType GetType() const 
 			{ return m_type; }
+		void SetName(const wxString &name) 
+			{ m_name = name; }
 	private:
 		int m_code;
 		wxString m_name;
@@ -63,6 +65,7 @@ class FbFrameFolder : public FbFrameBase
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
+		FbParentData * m_folders;
 	private:
 		void OnFavoritesDel(wxCommandEvent & event);
 		void OnFolderAppend(wxCommandEvent & event);
