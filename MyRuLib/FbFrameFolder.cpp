@@ -173,7 +173,8 @@ void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 
 	new FbFolderChildData(*model, m_folders, id, name, FT_FOLDER);
 	model->FindRow(m_folders->Count(*model) + 1, true);
-	OnFolderSelected(wxTreeEvent());
+	wxTreeEvent treeEvent;
+	OnFolderSelected(treeEvent);
 }
 
 void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
