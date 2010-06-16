@@ -34,6 +34,10 @@ class FbModelData: public wxObject
 			{ return NULL; };
 		virtual bool HiddenRoot() const
 			{ return true; }
+		virtual bool GetSelection(FbModel & model) const 
+			{ return false; }
+		virtual void SetSelection(FbModel & model, bool state)
+			{}
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
