@@ -9,17 +9,12 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-
-
-
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
 
 	touch configure-stamp
-
 
 build: build-stamp
 
