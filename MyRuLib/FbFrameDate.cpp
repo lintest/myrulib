@@ -53,6 +53,7 @@ void FbFrameDate::CreateControls()
 void FbFrameDate::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
+	m_MasterList->EmptyColumns();
 	CreateColumns();
 }
 

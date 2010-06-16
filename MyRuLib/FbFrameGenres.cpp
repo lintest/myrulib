@@ -47,10 +47,8 @@ void FbFrameGenres::CreateControls()
 void FbFrameGenres::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	if (m_MasterList) {
-		m_MasterList->EmptyColumns();
-		CreateColumns();
-	}
+	m_MasterList->EmptyColumns();
+	CreateColumns();
 }
 
 void FbFrameGenres::CreateColumns()
