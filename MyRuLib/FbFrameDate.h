@@ -19,11 +19,13 @@ class FbFrameDate : public FbFrameBase
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist();
+		void CreateColumns();
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void SelectFirstAuthor(const int book = 0);
 		BookTreeItemData * GetSelectedBook();
+		void AppendAttay(FbTreeModel &model, const wxArrayInt &items);
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		wxTextCtrl * m_FindText;
@@ -33,32 +35,9 @@ class FbFrameDate : public FbFrameBase
 	private:
 		void OnMasterSelected(wxTreeEvent & event);
 		void OnBooksCount(wxCommandEvent& event);
+		void OnModel( FbArrayEvent& event );
+		void OnArray( FbArrayEvent& event );
 		DECLARE_EVENT_TABLE()
-	protected:
-		class MasterThread: public FbThread
-		{
-			public:
-				MasterThread(wxEvtHandler * frame): m_frame(frame) {};
-			protected:
-				virtual void * Entry();
-			private:
-				static wxCriticalSection sm_queue;
-				wxEvtHandler * m_frame;
-		};
-        class MasterList: public FbMasterList
-        {
-            public:
-                MasterList(wxWindow *parent, wxWindowID id, long style = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER)
-                    : FbMasterList(parent, id, style) {};
-            private:
-                wxTreeItemId m_owner;
-                wxTreeItemId m_parent;
-                int m_year;
-                int m_month;
-            private:
-                void OnAppendMaster(FbMasterEvent& event);
-                DECLARE_EVENT_TABLE()
-        };
 };
 
 #endif // __FBFRAMEDATE_H__

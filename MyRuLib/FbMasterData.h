@@ -254,7 +254,7 @@ class FbMasterDate: public FbMasterData
 			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDate(*this); };
-		wxDateTime GetDate() const;
+		static wxDateTime GetDate(int code);
 	public:
 		virtual const int GetId() const { return m_id; };
 		virtual const FbFolderType GetType() const { return FT_DATE; };

@@ -14,6 +14,7 @@
 #include "FbFrameFolder.h"
 #include "FbFrameDownld.h"
 #include "FbFrameSequen.h"
+#include "FbFrameDate.h"
 #include "FbFrameInfo.h"
 #include "FbMainMenu.h"
 #include "FbConfigDlg.h"
@@ -34,8 +35,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_FOLDER, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_DOWNLD, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_SEQUEN, FbMainFrame::OnMenuFrame)
+	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
-	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
@@ -472,6 +473,9 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 		} break;
 		case ID_FRAME_SEQUEN: {
 			frame = new FbFrameSequen(this);
+		} break;
+		case ID_FRAME_DATE: {
+			frame = new FbFrameDate(this);
 		} break;
 	}
 	if (frame) frame->Update();

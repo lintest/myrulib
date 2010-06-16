@@ -55,6 +55,8 @@ class FbParentData: public FbModelData
 			{ return m_items.Count(); }
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
+		virtual bool IsBold(FbModel & model) const
+			{ return true; }
 		virtual size_t CountAll(const FbModel & model) const;
 		virtual FbModelData* Items(FbModel & model, size_t index) const;
 		void Delete(size_t index) 

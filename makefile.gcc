@@ -110,6 +110,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbDatabase.o \
 	build\myrulib_FbDataOpenDlg.o \
 	build\myrulib_FbDataPath.o \
+	build\myrulib_FbDateTree.o \
 	build\myrulib_FbEditBook.o \
 	build\myrulib_FbExtractInfo.o \
 	build\myrulib_FbDownloader.o \
@@ -117,6 +118,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbFilterObj.o \
 	build\myrulib_FbFrameAuthor.o \
 	build\myrulib_FbFrameBase.o \
+	build\myrulib_FbFrameDate.o \
 	build\myrulib_FbFrameDownld.o \
 	build\myrulib_FbFrameFolder.o \
 	build\myrulib_FbFrameInfo.o \
@@ -416,6 +418,9 @@ build\myrulib_FbDataOpenDlg.o: ./MyRuLib/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
 build\myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build\myrulib_FbDateTree.o: ./MyRuLib/FbDateTree.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build\myrulib_FbEditBook.o: ./MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -435,6 +440,9 @@ build\myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameBase.o: ./MyRuLib/FbFrameBase.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbFrameDate.o: ./MyRuLib/FbFrameDate.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameDownld.o: ./MyRuLib/FbFrameDownld.cpp $(MYRULIB_ODEP)
