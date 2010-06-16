@@ -511,3 +511,34 @@ size_t FbTreeModel::GetRowCount() const
 	}
 	return 0;
 }
+
+void FbTreeModel::Delete()
+{
+	if (m_root == NULL) return;
+	if (m_position == 0) return;
+
+	size_t pos = m_position - 1;
+	if (m_root->HiddenRoot()) pos++;
+	if (pos > 1) DoDelete(*m_root, pos);
+}
+
+bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)
+{
+	size_t count = parent.Count(*this);
+	for (size_t i = 0; i < count; i++) {
+		row--;
+		if (row == 0) {
+			FbParentData * data = wxDynamicCast(&parent, FbParentData);
+			if (data) {
+				data->Delete(i);
+				if (i == count-1) m_position--;
+				return true;
+			} else return false;
+		} else {
+			bool ok = DoDelete(*parent.Items(*this, i), row);
+			if (ok) return true;
+		}
+	}
+	return false;
+}
+

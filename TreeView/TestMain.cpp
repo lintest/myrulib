@@ -65,6 +65,8 @@ class FbTreeModelData: public FbParentData
 			{ return m_state; }
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
+		virtual bool IsBold(FbModel & model) const
+			{ return false; }
 	protected:
 		int m_code;
 		int m_state;
