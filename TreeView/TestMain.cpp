@@ -296,8 +296,7 @@ void DataViewFrame::OnModifyType(wxCommandEvent& event)
 
 void DataViewFrame::OnDeleteType(wxCommandEvent& event)
 {
-	FbModel * model = m_dataview->GetModel();
-	if (model) model->Delete();
+	m_dataview->Delete();
 }
 
 void DataViewFrame::OnTypeActivated(wxTreeEvent & event)

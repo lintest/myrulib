@@ -114,6 +114,7 @@ class FbModel: public wxObject
 				wxFont m_normalFont;
 				wxFont m_boldFont;
 				wxPen m_borderPen;
+				bool m_current;
 				bool m_selected;
 				bool m_hidden;
 				int m_level;

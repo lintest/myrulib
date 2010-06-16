@@ -519,7 +519,7 @@ void FbTreeModel::Delete()
 
 	size_t pos = m_position - 1;
 	if (m_root->HiddenRoot()) pos++;
-	if (pos > 1) DoDelete(*m_root, pos);
+	DoDelete(*m_root, pos);
 }
 
 bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)
