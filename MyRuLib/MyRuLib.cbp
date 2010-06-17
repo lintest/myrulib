@@ -216,6 +216,8 @@
 		<Unit filename="FbDataPath.h" />
 		<Unit filename="FbDatabase.cpp" />
 		<Unit filename="FbDatabase.h" />
+		<Unit filename="FbDateTree.cpp" />
+		<Unit filename="FbDateTree.h" />
 		<Unit filename="FbDownloader.cpp" />
 		<Unit filename="FbDownloader.h" />
 		<Unit filename="FbEditBook.cpp" />
@@ -230,6 +232,7 @@
 		<Unit filename="FbFrameAuthor.h" />
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
+		<Unit filename="FbFrameDate.cpp" />
 		<Unit filename="FbFrameDate.h" />
 		<Unit filename="FbFrameDownld.cpp" />
 		<Unit filename="FbFrameDownld.h" />

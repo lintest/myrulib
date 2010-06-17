@@ -2,6 +2,9 @@
 #define __FBTREEMODEL_H__
 
 #include <wx/dc.h>
+#include <wx/dynarray.h>
+
+WX_DEFINE_ARRAY_SIZE_T(size_t, FbArraySizeT);
 
 class FbModel;
 
@@ -34,7 +37,7 @@ class FbModelData: public wxObject
 			{ return NULL; };
 		virtual bool HiddenRoot() const
 			{ return true; }
-		virtual bool GetSelection(FbModel & model) const 
+		virtual bool GetSelection(FbModel & model) const
 			{ return false; }
 		virtual void SetSelection(FbModel & model, bool value)
 			{}
@@ -61,7 +64,7 @@ class FbParentData: public FbModelData
 			{ return m_parent; }
 		virtual bool IsBold(FbModel & model) const
 			{ return true; }
-		void Delete(size_t index) 
+		void Delete(size_t index)
 			{ m_items.RemoveAt(index); }
 		virtual size_t CountAll(const FbModel & model) const;
 		virtual FbModelData* Items(FbModel & model, size_t index) const;
@@ -129,7 +132,7 @@ class FbModel: public wxObject
 		virtual ~FbModel() {}
 
 		void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void SetFocused(bool focused) 
+		void SetFocused(bool focused)
 			{ m_focused = focused; }
 		FbModelData * GetData(size_t row)
 			{ int level; return DoGetData(row, level); }
@@ -164,6 +167,8 @@ class FbModel: public wxObject
 		wxWindow * m_owner;
 		size_t m_position;
 		bool m_focused;
+		size_t m_shift;
+		FbArraySizeT m_ctrls;
 		DECLARE_CLASS(FbModel);
 };
 

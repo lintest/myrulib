@@ -9,12 +9,17 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+
+
+
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-
+	./configure
 	touch configure-stamp
+
 
 build: build-stamp
 
@@ -24,7 +29,6 @@ build-stamp: configure-stamp
 	# Add here commands to compile the package.
 	$(MAKE)
 	#docbook-to-man debian/myrulib.sgml > myrulib.1
-
 	touch $@
 
 clean: 
@@ -33,7 +37,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	$(MAKE) clean
+	-$(MAKE) clean
 
 	dh_clean 
 

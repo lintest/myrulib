@@ -156,12 +156,6 @@
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 		</Linker>
-		<Unit filename="FbAuthList.cpp" />
-		<Unit filename="FbAuthList.h" />
-		<Unit filename="FbBookEvent.cpp" />
-		<Unit filename="FbBookEvent.h" />
-		<Unit filename="FbCollection.cpp" />
-		<Unit filename="FbCollection.h" />
 		<Unit filename="FbDatabase.cpp" />
 		<Unit filename="FbDatabase.h" />
 		<Unit filename="FbTreeModel.cpp" />

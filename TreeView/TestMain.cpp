@@ -15,6 +15,7 @@
 #include "TestApp.h"
 #include "FbTreeView.h"
 #include "FbTreeModel.h"
+#include <wx/listbase.h>
 
 //-----------------------------------------------------------------------------
 //  FbTestModelData
@@ -31,7 +32,7 @@ class FbTestModelData: public FbModelData
 			{ return m_state; }
 		virtual void SetState(FbModel & model, bool state)
 			{ m_state = state; }
-		virtual bool GetSelection(FbModel & model) const 
+		virtual bool GetSelection(FbModel & model) const
 			{ return m_selected; }
 		virtual void SetSelection(FbModel & model, bool value)
 			{ m_selected = value; }
@@ -72,7 +73,7 @@ class FbTreeModelData: public FbParentData
 			{ m_state = state; }
 		virtual bool IsBold(FbModel & model) const
 			{ return false; }
-		virtual bool GetSelection(FbModel & model) const 
+		virtual bool GetSelection(FbModel & model) const
 			{ return m_selected; }
 		virtual void SetSelection(FbModel & model, bool value)
 			{ m_selected = value; }
@@ -115,7 +116,7 @@ BEGIN_EVENT_TABLE( DataViewFrame, wxFrame )
 	EVT_MENU( ID_MODIFY_TYPE, DataViewFrame::OnModifyType )
 	EVT_MENU( ID_DELETE_TYPE, DataViewFrame::OnDeleteType )
 	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, DataViewFrame::OnTypeActivated)
-	EVT_LIST_COL_CLICK(ID_TYPE_LIST, OnColumnClick)
+	EVT_LIST_COL_CLICK(ID_TYPE_LIST, DataViewFrame::OnColumnClick)
 END_EVENT_TABLE()
 
 DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )

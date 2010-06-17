@@ -165,7 +165,7 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
 IMPLEMENT_CLASS(FbModel, wxObject)
 
 FbModel::FbModel() :
-    m_owner(NULL), m_position(0)
+    m_owner(NULL), m_position(0), m_shift(0)
 {
 }
 
