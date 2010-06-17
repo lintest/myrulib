@@ -1,4 +1,5 @@
 #include "FbTreeModel.h"
+#include "FbTreeView.h"
 #include <wx/wxsqlite3.h>
 #include <wx/listbase.h>
 
@@ -195,7 +196,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
 	dc.SetPen(ctx.m_borderPen);
-	if (m_owner->HasFlag(wxLC_HRULES)) {
+	if (m_owner->HasFlag(fbTR_HRULES)) {
 		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
 	}
 	dc.DestroyClippingRegion();
@@ -220,7 +221,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 			int w = col.GetWidth();
 			if (i == 0) {
 				w -= x;
-			} else if (m_owner->HasFlag(wxLC_VRULES)) {
+			} else if (m_owner->HasFlag(fbTR_VRULES)) {
 				dc.DrawLine (x, y, x, y + h);
 				x++; w--;
 			}
@@ -519,7 +520,7 @@ void FbTreeModel::Delete()
 
 	size_t pos = m_position - 1;
 	if (m_root->HiddenRoot()) pos++;
-	if (pos > 1) DoDelete(*m_root, pos);
+	DoDelete(*m_root, pos);
 }
 
 bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)

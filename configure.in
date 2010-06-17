@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([MyRuLib],[0.23.2],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
+AC_INIT([MyRuLib],[0.23.5],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
 
 AC_CONFIG_SRCDIR([MyRuLib/MyRuLibApp.cpp])
 AC_CONFIG_SRCDIR([autoconf_inc.m4])

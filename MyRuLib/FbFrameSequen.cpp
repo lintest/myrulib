@@ -49,7 +49,7 @@ void FbFrameSequen::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
@@ -65,10 +65,9 @@ void FbFrameSequen::CreateControls()
 void FbFrameSequen::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	if (m_MasterList) {
-		m_MasterList->EmptyColumns();
-		CreateColumns();
-	}
+	m_MasterList->EmptyColumns();
+	CreateColumns();
+	m_MasterList->Refresh();
 }
 
 void FbFrameSequen::CreateColumns()

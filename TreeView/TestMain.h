@@ -11,8 +11,6 @@
 #define DATAVIEWMAIN_H
 
 #include <wx/wx.h>
-#include <wx/listbase.h>
-#include "FbBookEvent.h"
 
 class wxTreeEvent;
 

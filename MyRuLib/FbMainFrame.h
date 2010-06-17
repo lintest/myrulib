@@ -34,6 +34,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void SetAccelerators();
 		void OpenLastPage();
 		void SetTabArt(int id);
+		void SaveFrameList(FbParams &params);
 	private:
 		wxTextCtrl * m_FindAuthor;
 		wxTextCtrl * m_FindTitle;

@@ -1,5 +1,5 @@
 #
-# spec file for package myrulib (Version 0.20)
+# spec file for package myrulib (Version 0.23)
 #
 # Copyright (c) 2009-2010 Denis Kandrashin, Kyrill Detinov
 # This file and all modifications and additions to the pristine
@@ -7,7 +7,7 @@
 #
 
 Name:		myrulib
-Version:	0.22.9
+Version:	0.23.5
 Release:	0
 License:	GPL
 Summary:	E-Book Library Manager
@@ -19,7 +19,6 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %if 0%{?suse_version}
 BuildRequires:	wxGTK-devel >= 2.8.10
-BuildRequires:	sqlite3-devel
 BuildRequires:	libexpat-devel
 BuildRequires:	update-desktop-files
 %endif
@@ -27,16 +26,10 @@ BuildRequires:	update-desktop-files
 %if 0%{?mandriva_version}
 BuildRequires:	libwxgtku2.8-devel >= 2.8.10
 BuildRequires:	libexpat-devel
-%if %{_arch} == x86_64
-BuildRequires:	lib64sqlite3-devel
-%else
-BuildRequires:	libsqlite3-devel
-%endif
 %endif
 
 %if 0%{?fedora_version}
 BuildRequires:	wxGTK-devel >= 2.8.10
-BuildRequires:	sqlite-devel
 BuildRequires:	expat-devel
 BuildRequires:	desktop-file-utils
 %endif
@@ -50,10 +43,14 @@ Authors:
 
 %prep
 %setup -q
+[ ! -x configure ] && %{__chmod} +x configure
 
 %build
 export CXXFLAGS="%{optflags}"
 export CFLAGS="%{optflags}"
+%{configure}\
+    --with-sqlite\
+    --without-strip
 make %{?_smp_mflags}
 
 %install

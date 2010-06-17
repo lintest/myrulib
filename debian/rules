@@ -30,7 +30,6 @@ build-stamp: configure-stamp
 	$(CONFIGURE)
 	$(MAKE)
 	#docbook-to-man debian/myrulib.sgml > myrulib.1
-
 	touch $@
 
 clean: 
@@ -39,7 +38,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	$(MAKE) clean
+	-$(MAKE) clean
 
 	dh_clean 
 

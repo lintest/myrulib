@@ -1,4 +1,5 @@
 #include "FbTreeModel.h"
+#include "FbTreeView.h"
 #include <wx/wxsqlite3.h>
 #include <wx/listbase.h>
 
@@ -164,7 +165,7 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
 IMPLEMENT_CLASS(FbModel, wxObject)
 
 FbModel::FbModel() :
-    m_owner(NULL), m_position(0)
+    m_owner(NULL), m_position(0), m_shift(0)
 {
 }
 
@@ -195,7 +196,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
 	dc.SetPen(ctx.m_borderPen);
-	if (m_owner->HasFlag(wxLC_HRULES)) {
+	if (m_owner->HasFlag(fbTR_HRULES)) {
 		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
 	}
 	dc.DestroyClippingRegion();
@@ -220,7 +221,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 			int w = col.GetWidth();
 			if (i == 0) {
 				w -= x;
-			} else if (m_owner->HasFlag(wxLC_VRULES)) {
+			} else if (m_owner->HasFlag(fbTR_VRULES)) {
 				dc.DrawLine (x, y, x, y + h);
 				x++; w--;
 			}
@@ -511,3 +512,34 @@ size_t FbTreeModel::GetRowCount() const
 	}
 	return 0;
 }
+
+void FbTreeModel::Delete()
+{
+	if (m_root == NULL) return;
+	if (m_position == 0) return;
+
+	size_t pos = m_position - 1;
+	if (m_root->HiddenRoot()) pos++;
+	DoDelete(*m_root, pos);
+}
+
+bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)
+{
+	size_t count = parent.Count(*this);
+	for (size_t i = 0; i < count; i++) {
+		row--;
+		if (row == 0) {
+			FbParentData * data = wxDynamicCast(&parent, FbParentData);
+			if (data) {
+				data->Delete(i);
+				if (i == count-1) m_position--;
+				return true;
+			} else return false;
+		} else {
+			bool ok = DoDelete(*parent.Items(*this, i), row);
+			if (ok) return true;
+		}
+	}
+	return false;
+}
+

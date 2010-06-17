@@ -562,15 +562,15 @@ void FbMasterDate::Show(FbFrameBase * frame) const
 	(new DateThread(frame, this))->Execute();
 }
 
-wxDateTime FbMasterDate::GetDate() const
+wxDateTime FbMasterDate::GetDate(int code)
 {
-    int m = (m_id / 100 % 100 - 1);
+    int m = (code / 100 % 100 - 1);
     if (m >= 12) m = 0;
     wxDateTime::Month month = wxDateTime::Month(m + wxDateTime::Jan);
-    wxDateTime date;
-    date.SetYear(m_id / 10000 + 2000);
+	wxDateTime date = wxDateTime::Today();
+    date.SetYear(code / 10000 + 2000);
     date.SetMonth(month);
-    date.SetDay(m_id % 100);
+    date.SetDay(code % 100);
     return date;
 }
 

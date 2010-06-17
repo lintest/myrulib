@@ -89,8 +89,7 @@ FbMenuFolderArray FbMenuFolders::sm_folders;
 
 FbMenuFolders::FbMenuFolders(const FbMasterData &data)
 {
-	if (sm_folders.IsEmpty()) LoadFolders();
-
+	LoadFolders();
 	for (size_t i=0; i<sm_folders.Count(); i++) {
 		int id = sm_folders[i].id;
 		if (data.GetType() == FT_FOLDER && sm_folders[i].folder == data.GetId()) continue;
@@ -123,7 +122,6 @@ int FbMenuFolders::GetFolder(const int id)
 
 void FbMenuFolders::Connect(wxWindow * frame, wxObjectEventFunction func)
 {
-	if (sm_folders.IsEmpty()) LoadFolders();
 	for (size_t i=0; i<sm_folders.Count(); i++)
 		frame->Connect(sm_folders[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
 }

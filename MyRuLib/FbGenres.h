@@ -11,8 +11,6 @@ class FbGenreParentData: public FbParentData
 			: FbParentData(model, parent), m_name(name) {}
 		virtual wxString GetValue(FbModel & model, size_t col) const
 			{ return col ? (wxString)wxEmptyString : m_name; }
-		virtual bool IsBold(FbModel & model) const
-			{ return true; }
 	private:
 		wxString m_name;
 		DECLARE_CLASS(FbGenreParentData);

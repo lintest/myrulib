@@ -7,13 +7,15 @@
 #include "ExternalDlg.h"
 #include "FbMainMenu.h"
 #include "FbUpdateThread.h"
-#include "FbMasterList.h"
+#include "FbDateTree.h"
 #include "FbWindow.h"
 #include "FbParams.h"
 
 BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameDate::OnMasterSelected)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameDate::OnBooksCount)
+	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameDate::OnModel)
+	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameDate::OnArray)
 END_EVENT_TABLE()
 
 FbFrameDate::FbFrameDate(wxAuiMDIParentFrame * parent)
@@ -35,9 +37,8 @@ void FbFrameDate::CreateControls()
 	splitter->SetSashGravity(0.33);
 	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new MasterList(splitter, ID_MASTER_LIST, wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
-	m_MasterList->AddColumn(_("Date"), 40, wxALIGN_LEFT);
-	m_MasterList->SetFocus();
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	CreateColumns();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
 	CreateBooksPanel(splitter, substyle);
@@ -45,107 +46,79 @@ void FbFrameDate::CreateControls()
 
 	FbFrameBase::CreateControls();
 
-	(new MasterThread(m_MasterList))->Execute();
+	m_MasterThread = new FbDateTreeThread(this);
+	m_MasterThread->Execute();
 }
 
 void FbFrameDate::Localize(bool bUpdateMenu)
 {
 	FbFrameBase::Localize(bUpdateMenu);
-	m_MasterList->SetColumnText(0, _("Date"));
+	m_MasterList->EmptyColumns();
+	CreateColumns();
+	m_MasterList->Refresh();
 }
 
-void FbFrameDate::SelectFirstAuthor(const int book)
+void FbFrameDate::CreateColumns()
 {
-	m_BooksPanel->EmptyBooks(book);
-
-	wxTreeItemIdValue cookie;
-	wxTreeItemId item = m_MasterList->GetFirstChild(m_MasterList->GetRootItem(), cookie);
-	if (item.IsOk()) m_MasterList->SelectItem(item);
+	m_MasterList->AddColumn(0, _("Date"), 40, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 }
 
 void FbFrameDate::OnMasterSelected(wxTreeEvent & event)
 {
-	wxTreeItemId selected = event.GetItem();
-	if (selected.IsOk()) {
-		m_BooksPanel->EmptyBooks();
-		FbMasterData * data = m_MasterList->GetItemData(selected);
-		if (data) data->Show(this);
-	}
-}
-
-void FbFrameDate::ActivateAuthors()
-{
-	m_MasterList->SetFocus();
+	UpdateBooklist();
 }
 
 void FbFrameDate::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbMasterData * data = m_MasterList->GetSelectedData();
-	if (data) data->Show(this);
+	FbDateDayData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDateDayData);
+	if (data) FbMasterDate(data->GetCode()).Show(this);
 }
 
 void FbFrameDate::OnBooksCount(wxCommandEvent& event)
 {
+/*
 	wxTreeItemId item = m_MasterList->GetSelection();
 	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d"), GetBookCount()));
 	event.Skip();
+*/
 }
 
-wxCriticalSection FbFrameDate::MasterThread::sm_queue;
-
-void * FbFrameDate::MasterThread::Entry()
+void FbFrameDate::OnModel( FbArrayEvent& event )
 {
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_EMPTY_BOOKS).Post(m_frame);
+	FbTreeModel * model = new FbTreeModel();
+	model->SetRoot(new FbParentData(*model));
+	AppendAttay(*model, event.GetArray());
+	m_MasterList->AssignModel(model);
+}
 
-	wxCriticalSectionLocker locker(sm_queue);
+void FbFrameDate::OnArray( FbArrayEvent& event )
+{
+	FbTreeModel * model = wxDynamicCast(m_MasterList->GetModel(), FbTreeModel);
+	if (model) AppendAttay(*model, event.GetArray());
+	m_MasterList->Refresh();
+}
 
-	try {
-		FbCommonDatabase database;
-		wxString sql = wxT("SELECT DISTINCT created FROM books ORDER BY created DESC");
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		FbMasterEvent(ID_EMPTY_MASTERS).Post(m_frame);
-		while (result.NextRow()) {
-		    int id = result.GetInt(0);
-			FbMasterDate * data = new FbMasterDate(id);
-			FbMasterEvent(ID_APPEND_MASTER, data->GetDate().FormatDate(), data, id).Post(m_frame);
+void FbFrameDate::AppendAttay(FbTreeModel &model, const wxArrayInt &items)
+{
+	FbParentData * root = wxDynamicCast(model.GetRoot(), FbParentData);
+	if (root == NULL) return;
+
+	size_t count = items.Count();
+	if (count == 0) return;
+
+	int month = 0;
+	FbParentData * parent_year = new FbDateYearData(model, root, items[0] / 10000);
+	FbParentData * parent_month = NULL;
+	for (size_t i = 0; i < count; ) {
+		int day = items[i++];
+		int count = items[i++];
+		int new_month = day / 100;
+		if (month != new_month) {
+			parent_month = new FbDateMonthData(model, parent_year, new_month);
+			month = new_month;
 		}
+		new FbDateDayData(model, parent_month, day, count);
 	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
-	return NULL;
 }
-
-BEGIN_EVENT_TABLE(FbFrameDate::MasterList, FbMasterList)
-	EVT_FB_MASTER(ID_APPEND_MASTER, FbFrameDate::MasterList::OnAppendMaster)
-END_EVENT_TABLE()
-
-void FbFrameDate::MasterList::OnAppendMaster(FbMasterEvent& event)
-{
-	FbTreeListUpdater updater(this);
-
-    int id = event.m_number;
-    wxDateTime date = ((FbMasterDate*)event.m_data)->GetDate();
-
-	if (m_parent.IsOk() && m_month == id / 100) {
-	    //nothing to do
-	} else if (m_owner.IsOk() && m_year == id / 10000) {
-        m_month = id / 100;
-        m_parent = AppendItem(m_owner, date.Format(wxT("%B %Y")));
-        SetItemBold(m_parent, true);
-	} else {
-        m_year = id / 10000;
-        m_month = id / 100;
-        m_owner = AppendItem(GetRootItem(), date.Format(wxT("%Y")));
-        m_parent = AppendItem(m_owner, date.Format(wxT("%B %Y")));
-        SetItemBold(m_owner, true);
-        SetItemBold(m_parent, true);
-        Expand(m_owner);
-    }
-
-	wxTreeItemId item = AppendItem(m_parent, event.GetString(), -1, -1, event.m_data);
-    Expand(m_parent);
-}
-

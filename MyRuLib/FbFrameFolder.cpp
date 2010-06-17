@@ -41,7 +41,7 @@ void FbFrameFolder::CreateControls()
 	splitter->SetSashGravity(0.33);
 	bSizer1->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES);
+	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
 
 	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
@@ -74,6 +74,7 @@ void FbFrameFolder::Localize(bool bUpdateMenu)
 	FbFrameBase::Localize(bUpdateMenu);
 	m_MasterList->EmptyColumns();
 	CreateColumns();
+	m_MasterList->Refresh();
 }
 
 void FbFrameFolder::CreateColumns()

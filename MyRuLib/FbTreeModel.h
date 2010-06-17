@@ -34,6 +34,10 @@ class FbModelData: public wxObject
 			{ return NULL; };
 		virtual bool HiddenRoot() const
 			{ return true; }
+		virtual bool GetSelection(FbModel & model) const 
+			{ return false; }
+		virtual void SetSelection(FbModel & model, bool value)
+			{}
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -55,10 +59,12 @@ class FbParentData: public FbModelData
 			{ return m_items.Count(); }
 		virtual FbModelData* GetParent(FbModel & model) const
 			{ return m_parent; }
-		virtual size_t CountAll(const FbModel & model) const;
-		virtual FbModelData* Items(FbModel & model, size_t index) const;
+		virtual bool IsBold(FbModel & model) const
+			{ return true; }
 		void Delete(size_t index) 
 			{ m_items.RemoveAt(index); }
+		virtual size_t CountAll(const FbModel & model) const;
+		virtual FbModelData* Items(FbModel & model, size_t index) const;
 	private:
 		void Add(FbModel & model, FbModelData* data);
 		FbModelDataArray m_items;
@@ -75,6 +81,7 @@ class FbChildData: public FbModelData
 			{ return m_parent; }
 	private:
 		FbParentData * m_parent;
+		bool m_selected;
 		DECLARE_CLASS(FbChildData);
 };
 
@@ -112,6 +119,7 @@ class FbModel: public wxObject
 				wxFont m_normalFont;
 				wxFont m_boldFont;
 				wxPen m_borderPen;
+				bool m_current;
 				bool m_selected;
 				bool m_hidden;
 				int m_level;
