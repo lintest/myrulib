@@ -31,9 +31,14 @@ class FbTestModelData: public FbModelData
 			{ return m_state; }
 		virtual void SetState(FbModel & model, bool state)
 			{ m_state = state; }
+		virtual bool GetSelection(FbModel & model) const 
+			{ return m_selected; }
+		virtual void SetSelection(FbModel & model, bool value)
+			{ m_selected = value; }
 	protected:
 		int m_code;
 		bool m_state;
+		bool m_selected;
 		DECLARE_CLASS(FbTestModelData);
 };
 
@@ -67,9 +72,14 @@ class FbTreeModelData: public FbParentData
 			{ m_state = state; }
 		virtual bool IsBold(FbModel & model) const
 			{ return false; }
+		virtual bool GetSelection(FbModel & model) const 
+			{ return m_selected; }
+		virtual void SetSelection(FbModel & model, bool value)
+			{ m_selected = value; }
 	protected:
 		int m_code;
 		int m_state;
+		bool m_selected;
 		DECLARE_CLASS(FbTestModelData);
 };
 
@@ -161,7 +171,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	toolbar->Realize();
 	SetToolBar(toolbar);
 
-	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|wxLC_VRULES|wxLC_HRULES);
+	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES|fbTR_HRULES);
 	m_dataview->AddColumn(0, _("title"), 200);
 	m_dataview->AddColumn(1, _("author"), 150);
 	m_dataview->AddColumn(2, _("type"), 50);

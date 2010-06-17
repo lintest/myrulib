@@ -9,6 +9,10 @@
 
 #include "FbTreeModel.h"
 
+#define fbTR_HRULES   0x0001
+#define fbTR_VRULES   0x0002
+#define fbTR_MULTIPLE 0x0004
+
 #define DEFAULT_COL_WIDTH 100
 
 extern WXDLLEXPORT const wxChar* FbTreeViewCtrlNameStr;
