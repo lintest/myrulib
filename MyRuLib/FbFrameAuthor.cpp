@@ -185,8 +185,7 @@ void FbFrameAuthor::OpenAuthor(const int author, const int book)
 void FbFrameAuthor::SelectRandomLetter()
 {
 	int position = FbParams().GetValue(FB_LAST_LETTER);
-	wxCommandEvent event( wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + position );
-	wxPostEvent(this, event);
+	FbCommandEvent(wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + position).Post(this);
 }
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)

@@ -170,6 +170,8 @@ wxString FbParams::DefaultText(int param)
 		case FB_FONT_TOOL:
 		case FB_FONT_DLG:
 			return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT).GetNativeFontInfoDesc();
+		case FB_FRAME_LIST:
+			return wxT('0');
 		default:
 			return wxEmptyString;
 	}

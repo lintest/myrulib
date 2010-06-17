@@ -4,6 +4,7 @@
 #include <wx/stattext.h>
 #include <wx/dcclient.h>
 #include <wx/artprov.h>
+#include <wx/tokenzr.h>
 #include "FbConst.h"
 #include "MyRuLibApp.h"
 #include "FbParamsDlg.h"
@@ -110,8 +111,26 @@ FbMainFrame::~FbMainFrame()
 	params.SetValue(FB_FRAME_MAXIMIZE, IsMaximized());
 	params.SetValue(FB_FRAME_WIDTH, size.x);
 	params.SetValue(FB_FRAME_HEIGHT, size.y);
-
+	SaveFrameList(params);
 	m_FrameManager.UnInit();
+}
+
+void FbMainFrame::SaveFrameList(FbParams &params)
+{
+	wxString frames;
+	wxWindowID selected = 0;
+	size_t index = GetNotebook()->GetSelection();
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		wxWindowID id = GetNotebook()->GetPage(i)->GetId();
+		if (ID_FRAME_AUTHOR <= id && id < ID_FRAME_SEARCH) {
+			if (!frames.IsEmpty()) frames << wxT(",");
+			frames << (id - ID_FRAME_AUTHOR);
+			if (i == 0 || i == index) selected = id;
+		}
+	}
+	if (selected) frames << wxT(",") << (selected - ID_FRAME_AUTHOR);
+	params.SetText(FB_FRAME_LIST, frames);
 }
 
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
@@ -194,9 +213,20 @@ void FbMainFrame::CreateControls()
 	Layout();
 	Centre();
 
+	wxString frames = FbParams::GetText(FB_FRAME_LIST);
+	wxStringTokenizer tkz(frames, wxT(','), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) {
+		long id = 0;
+		wxString text = tkz.GetNextToken();
+		if (text.ToLong(&id) && 0 <= id && id < ID_FRAME_SEARCH - ID_FRAME_AUTHOR)
+			FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTHOR + id).Post(this);
+	}
+
+/*
 	FbFrameAuthor * authors = new FbFrameAuthor(this);
 	authors->SelectRandomLetter();
 	authors->ActivateAuthors();
+*/
 }
 
 void FbMainFrame::OnTabArt(wxCommandEvent & event)
