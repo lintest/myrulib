@@ -7,7 +7,7 @@
 #
 
 Name:		myrulib
-Version:	0.23.5
+Version:	0.23.6
 Release:	0
 License:	GPL
 Summary:	E-Book Library Manager
@@ -46,12 +46,15 @@ Authors:
 [ ! -x configure ] && %{__chmod} +x configure
 
 %build
-export CXXFLAGS="%{optflags}"
-export CFLAGS="%{optflags}"
 %{configure}\
     --with-sqlite\
     --without-strip
+
+%if 0%{?fedora_version} >= 13
+make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
+%else
 make %{?_smp_mflags}
+%endif
 
 %install
 %if 0%{?fedora_version} || 0%{?mandriva_version}
@@ -80,11 +83,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %clean
 rm -rf %{buildroot}
 
-%files -f %{name}.lang  
-%defattr(-,root,root)  
-%{_bindir}/%{name}  
-%{_datadir}/applications/%{name}.desktop  
-%{_datadir}/icons/hicolor/48x48/apps/%{name}.png  
-%{_datadir}/pixmaps/%{name}.png  
+%files -f %{name}.lang
+%defattr(-,root,root)
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
+%{_datadir}/pixmaps/%{name}.png
 
 %changelog
