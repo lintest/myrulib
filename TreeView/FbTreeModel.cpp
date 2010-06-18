@@ -145,7 +145,7 @@ WX_DEFINE_OBJARRAY(FbColumnArray);
 //  FbModel::PaintContext
 //-----------------------------------------------------------------------------
 
-FbModel::PaintContext::PaintContext(wxDC &dc):
+FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
     // Set brush colour
     m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
     m_hilightBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID),
@@ -156,7 +156,11 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
     // Set pen for borders
 	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
 	// Current item flags
+	m_current(false),
 	m_selected(false),
+	m_multuply(model.GetOwner()->HasFlag(fbTR_MULTIPLE)),
+	m_vrules(model.GetOwner()->HasFlag(fbTR_VRULES)),
+	m_hrules(model.GetOwner()->HasFlag(fbTR_HRULES)),
 	m_level(0)
 {
 	m_normalFont = dc.GetFont();
@@ -208,9 +212,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
 	dc.SetPen(ctx.m_borderPen);
-	if (m_owner->HasFlag(fbTR_HRULES)) {
-		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
-	}
+	if (ctx.m_hrules) dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
 	dc.DestroyClippingRegion();
 
 	int x = ctx.m_level * FB_CHECKBOX_WIDTH;
@@ -233,7 +235,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 			int w = col.GetWidth();
 			if (i == 0) {
 				w -= x;
-			} else if (m_owner->HasFlag(fbTR_VRULES)) {
+			} else if (ctx.m_vrules) {
 				dc.DrawLine (x, y, x, y + h);
 				x++; w--;
 			}
@@ -250,7 +252,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 
 void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
-	PaintContext ctx(dc);
+	PaintContext ctx(*this, dc);
 	DoDrawTree(dc, ctx, rect, cols, pos, h);
 }
 
@@ -312,7 +314,7 @@ void FbListModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, co
 		row++;
 		wxRect rect(0, y, ww, h);
         FbModelData * data = GetData(row);
-		if (m_owner->HasFlag(fbTR_MULTIPLE)) {
+		if (ctx.m_multuply) {
 			ctx.m_current = m_position == row;
 			ctx.m_selected = IsSelected(row);
 		} else {
@@ -446,7 +448,7 @@ void FbTreeModel::DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, c
 	} else {
 		row++;
 		if (y >= rect.GetTop()) {
-			if (m_owner->HasFlag(fbTR_MULTIPLE)) {
+			if (ctx.m_multuply) {
 				ctx.m_current = m_position == row;
 				ctx.m_selected = IsSelected(row);
 			} else {
@@ -581,9 +583,9 @@ void FbTreeModel::Delete()
 	if (m_root == NULL) return;
 	if (m_position == 0) return;
 
-	size_t pos = m_position - 1;
-	if (m_root->HiddenRoot()) pos++;
-	DoDelete(*m_root, pos);
+	size_t row = m_position - 1;
+	if (m_root->HiddenRoot()) row++;
+	DoDelete(*m_root, row);
 }
 
 bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)

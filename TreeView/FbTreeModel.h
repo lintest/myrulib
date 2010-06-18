@@ -109,7 +109,7 @@ class FbModel: public wxObject
 	protected:
 		class PaintContext{
 			public:
-				PaintContext(wxDC &dc);
+				PaintContext(FbModel &mode, wxDC &dc);
 				wxBrush m_normalBrush;
 				wxBrush m_hilightBrush;
 				wxBrush m_unfocusBrush;
@@ -120,6 +120,9 @@ class FbModel: public wxObject
 				wxPen m_borderPen;
 				bool m_current;
 				bool m_selected;
+				bool m_multuply;
+				bool m_vrules;
+				bool m_hrules;
 				bool m_hidden;
 				int m_level;
 		};
@@ -142,6 +145,7 @@ class FbModel: public wxObject
 
 		virtual size_t GetPosition() { return m_position; }
 		void SetOwner(wxWindow * owner) { m_owner = owner; };
+		wxWindow * GetOwner() { return m_owner; };
 
 		virtual size_t FindRow(size_t row, bool select) = 0;
 		virtual size_t GetRowCount() const = 0;
