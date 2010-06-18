@@ -459,6 +459,15 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 		return;
 	}
 
+    // remember item at shift down
+	if (HasFlag(fbTR_MULTIPLE)) {
+		if (event.ShiftDown()) {
+			if (m_model->m_shift == 0) m_model->m_shift = m_model->m_position;
+		} else {
+	        m_model->m_shift = 0;
+		}
+    }
+
 	int x = event.GetX();
 	int y = event.GetY();
 	int h = GetRowHeight();
@@ -753,6 +762,13 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
     if (!m_model) {
 		event.Skip();
 		return;
+    }
+
+    // remember item at shift down
+    if (HasFlag(fbTR_MULTIPLE) && event.ShiftDown()) {
+		if (m_model->m_shift == 0) m_model->m_shift = m_model->m_position;
+    } else {
+        m_model->m_shift = 0;
     }
 
     int pos = GetScrollPos (wxVERTICAL);

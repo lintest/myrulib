@@ -176,3 +176,10 @@ FbModelData * FbAuthListModel::DoGetData(size_t row, int &level)
 	return m_data = new FbAuthListData(code);
 }
 
+void FbAuthListModel::Delete(int code)
+{
+	int index = m_items.Index(code);
+	if (index == wxNOT_FOUND) return;
+	if (index < (int)m_position) m_position--;
+	m_items.RemoveAt(index);
+}

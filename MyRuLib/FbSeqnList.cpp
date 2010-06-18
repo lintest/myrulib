@@ -157,3 +157,11 @@ void FbSeqnListModel::Delete()
 		if (m_position >= count) m_position = count - 1;
 	}
 }
+
+void FbSeqnListModel::Delete(int code)
+{
+	int index = m_items.Index(code);
+	if (index == wxNOT_FOUND) return;
+	if (index < (int)m_position) m_position--;
+	m_items.RemoveAt(index);
+}

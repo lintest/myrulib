@@ -86,11 +86,27 @@ int FbSequenDlg::DoModify()
 
 int FbSequenDlg::DoReplace()
 {
-	wxString sql = wxT("UPDATE bookseq SET id_seq=? WHERE id_seq=?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-	stmt.Bind(1, m_exists);
-	stmt.Bind(2, m_id);
-	stmt.ExecuteUpdate();
+	FbAutoCommit commit(m_database);
+	{
+		wxString sql = wxT("UPDATE bookseq SET id_seq=? WHERE id_seq=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_exists);
+		stmt.Bind(2, m_id);
+		stmt.ExecuteUpdate();
+	}
+	{
+		wxString sql = wxT("DELETE FROM sequences WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_id);
+		stmt.ExecuteUpdate();
+	}
+	{
+		wxString sql = wxT("UPDATE sequences SET number = (SELECT COUNT(DISTINCT id_book) FROM bookseq WHERE id_seq=?) WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_exists);
+		stmt.Bind(2, m_exists);
+		stmt.ExecuteUpdate();
+	}
 	return m_exists;
 }
 

@@ -72,7 +72,7 @@ class FbTreeModelData: public FbParentData
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
 		virtual bool IsBold(FbModel & model) const
-			{ return false; }
+			{ return Count(model); }
 		virtual bool GetSelection(FbModel & model) const
 			{ return m_selected; }
 		virtual void SetSelection(FbModel & model, bool value)
@@ -172,7 +172,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	toolbar->Realize();
 	SetToolBar(toolbar);
 
-	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES|fbTR_HRULES);
+	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES|fbTR_HRULES|fbTR_MULTIPLE);
 	m_dataview->AddColumn(0, _("title"), 200);
 	m_dataview->AddColumn(1, _("author"), 150);
 	m_dataview->AddColumn(2, _("type"), 50);

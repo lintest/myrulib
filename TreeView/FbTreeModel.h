@@ -37,10 +37,6 @@ class FbModelData: public wxObject
 			{ return NULL; };
 		virtual bool HiddenRoot() const
 			{ return true; }
-		virtual bool GetSelection(FbModel & model) const
-			{ return false; }
-		virtual void SetSelection(FbModel & model, bool value)
-			{}
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -162,6 +158,7 @@ class FbModel: public wxObject
 		void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 		virtual FbModelData * DoGetData(size_t row, int &level) = 0;
+		bool IsSelected(size_t row);
 
 	protected:
 		wxWindow * m_owner;
@@ -170,6 +167,7 @@ class FbModel: public wxObject
 		size_t m_shift;
 		FbArraySizeT m_ctrls;
 		DECLARE_CLASS(FbModel);
+		friend class FbTreeViewMainWindow;
 };
 
 class FbListModel: public FbModel
@@ -230,7 +228,7 @@ class FbTreeModel: public FbModel
 		bool DoDelete(FbModelData &parent, size_t &row);
 		virtual FbModelData * DoGetData(size_t row, int &level);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
+		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &row);
 		FbModelData * FindData(FbModelData &parent, size_t &row, int &level);
 		FbModelData * GetLast(FbModelData &parent);
 

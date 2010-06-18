@@ -206,17 +206,22 @@ void FbFrameSequen::OnMasterAppend(wxCommandEvent& event)
 
 void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 {
+	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
+	if (model == NULL) return;
+
 	FbSeqnListData * current = wxDynamicCast(m_MasterList->GetCurrent(), FbSeqnListData);
 	if (current == NULL) return;
 
 	wxString newname;
-	int id = FbSequenDlg::Modify(current->GetCode(), newname);
-	if (id == 0) return;
+	int old_id = current->GetCode();
+	int new_id = FbSequenDlg::Modify(old_id, newname);
+	if (new_id == 0) return;
 
-	FbCacheData * cache = new FbCacheData(id, newname);
+	FbCacheData * cache = new FbCacheData(new_id, newname);
 	FbCollection::AddSeqn(cache);
 
-	m_MasterList->Replace(new FbSeqnListData(id));
+	if (new_id != old_id) model->Delete(new_id);
+	m_MasterList->Replace(new FbSeqnListData(new_id));
 }
 
 void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
