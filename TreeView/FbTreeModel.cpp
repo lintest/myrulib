@@ -162,10 +162,15 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
 //  FbModel
 //-----------------------------------------------------------------------------
 
+int CompareSizeT(size_t x, size_t y)
+{
+	return x - y;
+}
+
 IMPLEMENT_CLASS(FbModel, wxObject)
 
 FbModel::FbModel() :
-    m_owner(NULL), m_position(0), m_shift(0)
+    m_owner(NULL), m_position(0), m_shift(0), m_ctrls(CompareSizeT)
 {
 }
 
@@ -262,15 +267,10 @@ void FbModel::SetShift(bool select)
 
 void FbModel::InitCtrls()
 {
-	if (m_position == 0 || m_shift == 0 || m_shift == m_position) return;
-
-	m_ctrls.Empty();
-	bool down = m_shift < m_position;
-	for (size_t i = m_position; ; ) {
-		m_ctrls.Add(i);
-		if (i == m_shift) break;
-		if (down) i--; else i++;
-	}
+	if (m_position == 0 || m_ctrls.Count() > 0) return;
+	size_t min  = m_shift < m_position ? (m_shift ? m_shift : m_position) : m_position;
+	size_t max = m_shift > m_position ? m_shift : m_position;
+	for (size_t i = min; i <= max; i++) m_ctrls.Add(i);
 	m_shift = 0;
 }
 

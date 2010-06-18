@@ -4,8 +4,6 @@
 #include <wx/dc.h>
 #include <wx/dynarray.h>
 
-WX_DEFINE_ARRAY_SIZE_T(size_t, FbArraySizeT);
-
 class FbModel;
 
 class FbModelData: public wxObject
@@ -104,6 +102,8 @@ class FbColumnInfo: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
 
+WX_DEFINE_SORTED_ARRAY_SIZE_T(size_t, FbSortedArraySizeT);
+
 class FbModel: public wxObject
 {
 	protected:
@@ -169,7 +169,7 @@ class FbModel: public wxObject
 		size_t m_position;
 		bool m_focused;
 		size_t m_shift;
-		FbArraySizeT m_ctrls;
+		FbSortedArraySizeT m_ctrls;
 		DECLARE_CLASS(FbModel);
 		friend class FbTreeViewMainWindow;
 };
