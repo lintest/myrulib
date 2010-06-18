@@ -72,7 +72,7 @@ class FbTreeModelData: public FbParentData
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
 		virtual bool IsBold(FbModel & model) const
-			{ return false; }
+			{ return Count(model); }
 		virtual bool GetSelection(FbModel & model) const
 			{ return m_selected; }
 		virtual void SetSelection(FbModel & model, bool value)
