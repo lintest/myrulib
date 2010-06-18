@@ -54,6 +54,13 @@ int FbModelData::GetState(FbModel & model) const
 
 void FbModelData::SetState(FbModel & model, bool state)
 {
+	int old_state = DoGetState(model);
+	if (state) {
+		if (old_state == 1) return;
+	} else {
+		if (old_state == 0) return;
+	}
+
 	size_t count = Count(model);
 	for (size_t i = 0; i < count; i++) {
 		Items(model, i)->SetState(model, state);
