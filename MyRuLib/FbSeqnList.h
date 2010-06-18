@@ -48,6 +48,7 @@ class FbSeqnListModel: public FbListModel
 		virtual void Replace(FbModelData * data);
 		virtual void Delete();
 		void Append(const wxArrayInt &items);
+		void Delete(int code);
 	protected:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
