@@ -59,10 +59,9 @@ void FbFrameDownld::CreateControls()
 
 void FbFrameDownld::Localize(bool bUpdateMenu)
 {
-	FbFrameBase::Localize(bUpdateMenu);
 	m_MasterList->EmptyColumns();
 	CreateColumns();
-	m_MasterList->Refresh();
+	FbFrameBase::Localize(bUpdateMenu);
 }
 
 void FbFrameDownld::CreateColumns()

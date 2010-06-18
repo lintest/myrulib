@@ -97,11 +97,13 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 	SetTitle(GetTitle());
     FbAuiMDIChildFrame::Localize(bUpdateMenu);
     if (bUpdateMenu) UpdateStatus();
-    m_BooksPanel->Localize();
 
 	wxDELETE(m_ToolBar);
 	m_ToolBar = CreateToolBar();
 	if (m_ToolBar) GetSizer()->Insert(0, m_ToolBar, 0, wxGROW);
+
+	if (m_MasterList) m_MasterList->Refresh();
+    m_BooksPanel->Localize();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)

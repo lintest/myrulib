@@ -71,10 +71,9 @@ wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxS
 
 void FbFrameFolder::Localize(bool bUpdateMenu)
 {
-	FbFrameBase::Localize(bUpdateMenu);
 	m_MasterList->EmptyColumns();
 	CreateColumns();
-	m_MasterList->Refresh();
+	FbFrameBase::Localize(bUpdateMenu);
 }
 
 void FbFrameFolder::CreateColumns()
@@ -91,7 +90,7 @@ void FbFrameFolder::FillFolders(const int current)
 	new FbFolderChildData(*model, m_folders, 0, _("Favorites"), FT_FOLDER);
 	model->SetRoot(root);
 
-	try { 
+	try {
 		wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
 		FbLocalDatabase database;
 		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -108,7 +107,7 @@ void FbFrameFolder::FillFolders(const int current)
 	FbParentData * parent = new FbFolderParentData(*model, root, _("Remarks"));
 	new FbFolderChildData(*model, parent, 1, _("Comments"), FT_COMMENT);
 	for (int i=5; i>0; i--) new FbFolderChildData(*model, parent, i, GetRatingText(i), FT_RATING);
-		
+
 	m_MasterList->AssignModel(model);
 }
 
@@ -134,7 +133,7 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 {
 	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
 	if (data == NULL) return;
-	
+
 	int folder = data->GetCode();
 	wxString selected = m_BooksPanel->m_BookList->GetSelected();
 	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
