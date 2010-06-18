@@ -247,10 +247,42 @@ bool FbModel::IsSelected(size_t row)
 	if (m_shift) {
 		return (m_shift <= row && row <= m_position) || (m_position <= row && row <= m_shift);
 	} else {
-		if (m_ctrls.Count() == 0) 
+		if (m_ctrls.Count() == 0)
 			return m_position == row;
-		else 
+		else
 			return m_ctrls.Index(row) != wxNOT_FOUND;
+	}
+}
+
+void FbModel::SetShift(bool select)
+{
+	m_shift  = select ? ( m_shift ? m_shift : m_position ) : 0;
+	m_ctrls.Empty();
+}
+
+void FbModel::InitCtrls()
+{
+	if (m_position == 0 || m_shift == 0 || m_shift == m_position) return;
+
+	m_ctrls.Empty();
+	bool down = m_shift < m_position;
+	for (size_t i = m_position; ; ) {
+		m_ctrls.Add(i);
+		if (i == m_shift) break;
+		if (down) i--; else i++;
+	}
+	m_shift = 0;
+}
+
+void FbModel::InvertCtrl()
+{
+	if (m_position == 0) return;
+
+	int index = m_ctrls.Index(m_position);
+	if (index == wxNOT_FOUND) {
+		m_ctrls.Add(m_position);
+	} else {
+		m_ctrls.RemoveAt(index);
 	}
 }
 

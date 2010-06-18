@@ -153,6 +153,10 @@ class FbModel: public wxObject
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); }
 
+		void SetShift(bool select);
+		void InitCtrls();
+		void InvertCtrl();
+
 	protected:
 		const wxBitmap & GetBitmap(int state);
 		void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);

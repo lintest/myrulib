@@ -14,6 +14,7 @@ IMPLEMENT_APP(DataViewApp);
 
 bool DataViewApp::OnInit()
 {
+	wxLog::SetVerbose(true);
     DataViewFrame* frame = new DataViewFrame(0L);
     frame->Show();
 
