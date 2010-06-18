@@ -27,7 +27,6 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(CONFIGURE)
 	$(MAKE)
 	#docbook-to-man debian/myrulib.sgml > myrulib.1
 	touch $@
