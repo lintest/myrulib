@@ -197,9 +197,6 @@ void FbFrameSequen::OnMasterAppend(wxCommandEvent& event)
 	int id = FbSequenDlg::Append(newname);
 	if (id == 0) return;
 
-	FbCacheData * cache = new FbCacheData(id, newname);
-	FbCollection::AddSeqn(cache);
-
 	m_MasterList->Append(new FbSeqnListData(id));
 }
 
@@ -215,9 +212,6 @@ void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 	int old_id = current->GetCode();
 	int new_id = FbSequenDlg::Modify(old_id, newname);
 	if (new_id == 0) return;
-
-	FbCacheData * cache = new FbCacheData(new_id, newname);
-	FbCollection::AddSeqn(cache);
 
 	if (new_id != old_id) model->Delete(new_id);
 	m_MasterList->Replace(new FbSeqnListData(new_id));

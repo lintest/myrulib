@@ -247,10 +247,6 @@ void FbFrameAuthor::OnMasterAppend(wxCommandEvent& event)
 	wxString newname;
 	int id = FbAuthorDlg::Append(newname);
 	if (id == 0) return;
-
-	FbCacheData * cache = new FbCacheData(id, newname);
-	FbCollection::AddAuth(cache);
-
 	m_MasterList->Append(new FbAuthListData(id));
 }
 
@@ -266,9 +262,6 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 	int old_id = current->GetCode();
 	int new_id = FbAuthorDlg::Modify(old_id, newname);
 	if (new_id == 0) return;
-
-	FbCacheData * cache = new FbCacheData(new_id, newname);
-	FbCollection::AddAuth(cache);
 
 	if (new_id != old_id) model->Delete(new_id);
 	m_MasterList->Replace(new FbAuthListData(new_id));
@@ -286,9 +279,6 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 	int old_id = current->GetCode();
 	int new_id = FbReplaceDlg::Execute(old_id, newname);
 	if (new_id == 0) return;
-
-	FbCacheData * cache = new FbCacheData(new_id, newname);
-	FbCollection::AddAuth(cache);
 
 	if (new_id != old_id) model->Delete(new_id);
 	m_MasterList->Replace(new FbAuthListData(new_id));

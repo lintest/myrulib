@@ -1,4 +1,5 @@
 #include "FbAuthorDlg.h"
+#include "FbCollection.h"
 #include "FbConst.h"
 
 FbAuthorDlg::FbAuthorDlg( const wxString& title, int id )
@@ -134,6 +135,7 @@ void FbAuthorDlg::DoModify()
 	AuthorItem author(m_id);
 	GetValues(author);
 	author.Save(m_database);
+	FbCollection::ResetAuth(m_id);
 }
 
 void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
@@ -164,6 +166,9 @@ void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	trans.Commit();
+
+	FbCollection::ResetAuth(old_id);
+	FbCollection::ResetAuth(new_id);
 }
 
 void FbAuthorDlg::EndModal(int retCode)

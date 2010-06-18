@@ -1,4 +1,5 @@
 #include "FbSequenDlg.h"
+#include "FbCollection.h"
 #include "FbConst.h"
 
 FbSequenDlg::FbSequenDlg( const wxString& title, int id )
@@ -92,6 +93,8 @@ int FbSequenDlg::DoModify()
 	stmt.Bind(1, GetValue());
 	stmt.Bind(2, m_id);
 	stmt.ExecuteUpdate();
+
+	FbCollection::ResetSeqn(m_id);
 	return m_id;
 }
 
@@ -114,10 +117,13 @@ int FbSequenDlg::DoReplace()
 	{
 		wxString sql = strUpdateSequenCount + wxT("WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(2, m_exists);
+		stmt.Bind(1, m_exists);
 		stmt.ExecuteUpdate();
 	}
 	trans.Commit();
+
+	FbCollection::ResetSeqn(m_exists);
+	FbCollection::ResetSeqn(m_id);
 	return m_exists;
 }
 

@@ -37,9 +37,12 @@ class FbCollection: public wxObject
 		static FbCacheData GetAuth(int code);
 		static void AddSeqn(FbCacheData * data);
 		static void AddAuth(FbCacheData * data);
+		static void ResetSeqn(int code);
+		static void ResetAuth(int code);
 	protected:
 		FbCacheData * GetData(int code, FbCasheArray &items, const wxString &sql);
 		void AddData(FbCasheArray &items, FbCacheData * data);
+		void ResetData(FbCasheArray &items, int code);
 	private:
 		static wxCriticalSection sm_section;
 		FbCommonDatabase m_database;

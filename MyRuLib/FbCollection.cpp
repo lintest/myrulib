@@ -122,6 +122,20 @@ void FbCollection::AddData(FbCasheArray &items, FbCacheData * data)
 	if (count > DATA_CACHE_SIZE) items.RemoveAt(DATA_CACHE_SIZE, count - DATA_CACHE_SIZE);
 }
 
+void FbCollection::ResetSeqn(int code)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->ResetData(collection->m_seqns, code);
+}
+
+void FbCollection::ResetAuth(int code)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->ResetData(collection->m_auths, code);
+}
+
 FbCacheData * FbCollection::GetData(int code, FbCasheArray &items, const wxString &sql)
 {
 	size_t count = items.Count();
@@ -144,3 +158,13 @@ FbCacheData * FbCollection::GetData(int code, FbCasheArray &items, const wxStrin
 	return NULL;
 }
 
+void FbCollection::ResetData(FbCasheArray &items, int code)
+{
+	size_t count = items.Count();
+	for (size_t i = 0; i < count; i++) {
+		if (items[i].GetCode() == code) {
+			items.RemoveAt(i);
+			break;
+		}
+	}
+}
