@@ -1,4 +1,5 @@
 #include "FbSequenDlg.h"
+#include "FbConst.h"
 
 FbSequenDlg::FbSequenDlg( const wxString& title, int id )
 	: FbDialog ( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
@@ -29,18 +30,28 @@ FbSequenDlg::FbSequenDlg( const wxString& title, int id )
 
 int FbSequenDlg::Append(wxString &newname)
 {
-	FbSequenDlg dlg(_("Append series"));
-	bool ok = dlg.ShowModal() == wxID_OK;
-	if (ok) newname = dlg.GetValue();
-	return ok ? dlg.DoAppend() : 0;
+	try {
+		FbSequenDlg dlg(_("Append series"));
+		bool ok = dlg.ShowModal() == wxID_OK;
+		if (ok) newname = dlg.GetValue();
+		return ok ? dlg.DoAppend() : 0;
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return 0;
+	}
 }
 
 int FbSequenDlg::Modify(int id, wxString &newname)
 {
-	FbSequenDlg dlg(_("Modify series"), id);
-	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
-	if (ok) newname = dlg.GetValue();
-	return ok ? dlg.DoUpdate() : 0;
+	try {
+		FbSequenDlg dlg(_("Modify series"), id);
+		bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
+		if (ok) newname = dlg.GetValue();
+		return ok ? dlg.DoUpdate() : 0;
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+		return 0;
+	}
 }
 
 bool FbSequenDlg::Load(int id)
@@ -86,7 +97,7 @@ int FbSequenDlg::DoModify()
 
 int FbSequenDlg::DoReplace()
 {
-	FbAutoCommit commit(m_database);
+	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_DEFERRED);
 	{
 		wxString sql = wxT("UPDATE bookseq SET id_seq=? WHERE id_seq=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -101,12 +112,12 @@ int FbSequenDlg::DoReplace()
 		stmt.ExecuteUpdate();
 	}
 	{
-		wxString sql = wxT("UPDATE sequences SET number = (SELECT COUNT(DISTINCT id_book) FROM bookseq WHERE id_seq=?) WHERE id=?");
+		wxString sql = strUpdateSequenCount + wxT("WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, m_exists);
 		stmt.Bind(2, m_exists);
 		stmt.ExecuteUpdate();
 	}
+	trans.Commit();
 	return m_exists;
 }
 

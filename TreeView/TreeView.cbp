@@ -156,12 +156,12 @@
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 		</Linker>
-		<Unit filename="FbDatabase.cpp" />
 		<Unit filename="FbDatabase.h" />
 		<Unit filename="FbTreeModel.cpp" />
 		<Unit filename="FbTreeModel.h" />
 		<Unit filename="FbTreeView.cpp" />
 		<Unit filename="FbTreeView.h" />
+		<Unit filename="MiniDatabase.cpp" />
 		<Unit filename="TestApp.cpp" />
 		<Unit filename="TestApp.h" />
 		<Unit filename="TestMain.cpp" />

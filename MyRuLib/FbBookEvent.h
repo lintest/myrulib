@@ -142,20 +142,19 @@ WX_DEFINE_SORTED_ARRAY_INT(int, FbSortedArrayInt);
 class FbArrayEvent: public FbCommandEvent
 {
 	public:
-		static int CompareInt(int x, int y)
-			{ return x - y; }
+		static int CompareInt(int x, int y) { return x - y; }
 
 		FbArrayEvent(wxWindowID id)
-			: FbCommandEvent(fbEVT_ARRAY_ACTION, id), m_checklist(CompareInt) {}
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, id), m_check(CompareInt) {}
 
 		FbArrayEvent(const FbArrayEvent & event)
-			: FbCommandEvent(event), m_array(event.m_array), m_checklist(event.m_checklist) {}
+			: FbCommandEvent(event), m_array(event.m_array), m_check(event.m_check) {}
 
 		FbArrayEvent(wxWindowID id, const wxArrayInt & array, const wxString &text = wxEmptyString)
-			: FbCommandEvent(fbEVT_ARRAY_ACTION, id, text), m_array(array), m_checklist(CompareInt) {}
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, id, text), m_array(array), m_check(CompareInt) {}
 
-		FbArrayEvent(wxWindowID id, const wxArrayInt & array, const FbSortedArrayInt & checklist)
-			: FbCommandEvent(fbEVT_ARRAY_ACTION, id), m_array(array), m_checklist(checklist) {}
+		FbArrayEvent(wxWindowID id, const wxArrayInt & array, const FbSortedArrayInt &check)
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, id), m_array(array), m_check(check) {}
 
 		virtual wxEvent *Clone() const
 			{ return new FbArrayEvent(*this); }
@@ -165,7 +164,7 @@ class FbArrayEvent: public FbCommandEvent
 
 	public:
 		wxArrayInt m_array;
-		FbSortedArrayInt m_checklist;
+		FbSortedArrayInt m_check;
 };
 
 typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);

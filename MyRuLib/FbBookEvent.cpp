@@ -26,4 +26,3 @@ void FbCommandEvent::Post()
 {
 	wxPostEvent(wxGetApp().GetTopWindow(), *this);
 }
-
