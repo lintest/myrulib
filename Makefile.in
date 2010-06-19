@@ -81,6 +81,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbBookMenu.o \
 	myrulib_FbBookPanel.o \
 	myrulib_FbBookThread.o \
+	myrulib_FbBookTree.o \
 	myrulib_FbCheckList.o \
 	myrulib_FbChoiceFormat.o \
 	myrulib_FbColumnDlg.o \
@@ -348,6 +349,9 @@ myrulib_FbBookPanel.o: $(srcdir)/MyRuLib/FbBookPanel.cpp $(MYRULIB_ODEP)
 
 myrulib_FbBookThread.o: $(srcdir)/MyRuLib/FbBookThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookThread.cpp
+
+myrulib_FbBookTree.o: $(srcdir)/MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookTree.cpp
 
 myrulib_FbCheckList.o: $(srcdir)/MyRuLib/FbCheckList.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCheckList.cpp

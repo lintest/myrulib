@@ -165,6 +165,7 @@
 		<sources>MyRuLib/FbBookMenu.cpp</sources>
 		<sources>MyRuLib/FbBookPanel.cpp</sources>
 		<sources>MyRuLib/FbBookThread.cpp</sources>
+		<sources>MyRuLib/FbBookTree.cpp</sources>
 		<sources>MyRuLib/FbCheckList.cpp</sources>
 		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
