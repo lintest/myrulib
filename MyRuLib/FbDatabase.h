@@ -43,6 +43,13 @@ class FbGenreFunction : public wxSQLite3ScalarFunction
 	virtual void Execute(wxSQLite3FunctionContext& ctx);
 };
 
+class FbAggregateFunction: public wxSQLite3AggregateFunction
+{
+	public:
+		virtual void Aggregate(wxSQLite3FunctionContext& ctx);
+		virtual void Finalize(wxSQLite3FunctionContext& ctx);
+};
+
 class FbSearchFunction: public wxSQLite3ScalarFunction
 {
 	public:

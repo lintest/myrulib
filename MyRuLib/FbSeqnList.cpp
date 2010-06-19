@@ -58,7 +58,7 @@ void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
 	while (result.NextRow()) {
 		if (m_tester.Closed()) return;
 		int code = result.GetInt(0);
-		if (id == ID_MODEL_CREATE) FbCollection::AddSeqn(new FbCacheData(code, result));
+		if (id == ID_MODEL_CREATE) FbCollection::AddSeqn(new FbCacheData(result));
 		items.Add(code);
 		count++;
 		if (count == length) {
@@ -98,9 +98,7 @@ IMPLEMENT_CLASS(FbSeqnListData, FbModelData)
 
 wxString FbSeqnListData::GetValue(FbModel & model, size_t col) const
 {
-	FbSeqnListModel * list = wxDynamicCast(&model, FbSeqnListModel);
-	if (list == NULL) return wxEmptyString;
-	return FbCollection::GetSeqn(m_code).GetValue(col);
+	return FbCollection::GetSeqn(m_code, col);
 }
 
 //-----------------------------------------------------------------------------

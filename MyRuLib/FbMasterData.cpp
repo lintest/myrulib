@@ -12,31 +12,6 @@ FbMasterData::BaseThread::BaseThread(FbFrameBase * frame, FbMasterData const * d
 	frame->SetMasterData(data);
 }
 
-void FbMasterData::AggregateFunction::Aggregate(wxSQLite3FunctionContext& ctx)
-{
-	wxArrayString** acc = (wxArrayString**) ctx.GetAggregateStruct(sizeof (wxArrayString**));
-	if (*acc == NULL) *acc = new wxArrayString;
-	for (int i = 0; i < ctx.GetArgCount(); i++) (*acc)->Add(ctx.GetString(i));
-}
-
-void FbMasterData::AggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
-{
-	wxArrayString** acc = (wxArrayString**) ctx.GetAggregateStruct(sizeof (wxArrayString**));
-
-	(*acc)->Sort();
-
-	wxString result;
-	size_t iCount = (*acc)->Count();
-	for (size_t i=0; i<iCount; i++) {
-		if (!result.IsEmpty()) result += wxT(", ");
-		result += (*acc)->Item(i).Trim(true).Trim(false);
-	}
-	ctx.SetResult(result);
-
-	delete *acc;
-	*acc = 0;
-}
-
 wxCriticalSection FbMasterData::BaseThread::sm_queue;
 
 wxString FbMasterData::BaseThread::GetSQL(const wxString & condition)

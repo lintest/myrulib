@@ -1,11 +1,94 @@
 #include "FbCollection.h"
 #include "MyRuLibApp.h"
+#include "FbConst.h"
+#include "FbGenres.h"
+#include "FbMasterData.h"
+
+//-----------------------------------------------------------------------------
+//  FbCacheBook
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbCacheBook, wxObject)
+
+FbCacheBook::FbCacheBook(int code):
+	m_code(code),
+	m_numb(0),
+	m_rate(0),
+	m_date(0),
+	m_size(0),
+	m_fields(BF_CODE)
+{
+}
+
+/*
+	SELECT DISTINCT
+		books.title, books.file_size, books.file_type, books.lang, books.genres, \
+		books.md5sum, states.rating, books.created, AGGREGATE(authors.full_name) as full_name \
+*/
+
+FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result):
+	m_code(code),
+	m_name(result.GetString(0)),
+	m_auth(result.GetString(8)),
+	m_genr(result.GetString(4)),
+	m_lang(result.GetString(3)),
+	m_type(result.GetString(2)),
+	m_md5s(result.GetString(5)),
+	m_seqn(wxEmptyString),
+	m_numb(0),
+	m_rate(result.GetInt(6)),
+	m_date(result.GetInt(7)),
+	m_size(result.GetInt(1)),
+	m_fields(BF_CODE)
+{
+}
+
+FbCacheBook::FbCacheBook(const FbCacheBook &book):
+	m_code(book.m_code),
+	m_name(book.m_name),
+	m_auth(book.m_auth),
+	m_genr(book.m_genr),
+	m_lang(book.m_lang),
+	m_type(book.m_type),
+	m_md5s(book.m_md5s),
+	m_seqn(book.m_seqn),
+	m_numb(book.m_numb),
+	m_rate(book.m_rate),
+	m_date(book.m_date),
+	m_size(book.m_size),
+	m_fields(book.m_fields)
+{
+}
+
+bool FbCacheBook::HasField(size_t col) const
+{
+	return m_fields & col;
+}
+
+wxString FbCacheBook::GetValue(FbBookFields field)
+{
+	switch (field) {
+		case BF_CODE: return wxString::Format(wxT("%d"), m_code);
+		case BF_NUMB: return wxString::Format(wxT("%d"), m_numb);
+		case BF_AUTH: return m_auth;
+		case BF_GENR: return FbGenres::DecodeList(m_genr);
+		case BF_RATE: return m_rate ? GetRatingText(m_rate) : wxString();
+		case BF_LANG: return m_lang;
+		case BF_TYPE: return m_type;
+		case BF_DATE: return FbMasterDate::GetDate(m_date).FormatDate();
+		case BF_SIZE: return FbCollection::Format(m_date);
+		case BF_SEQN: return m_seqn;
+		case BF_MD5S: return m_md5s;
+		default: return wxEmptyString;
+	}
+}
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(FbCasheBookArray);
 
 //-----------------------------------------------------------------------------
 //  FbCacheData
 //-----------------------------------------------------------------------------
-
-#define DATA_CACHE_SIZE 128
 
 IMPLEMENT_CLASS(FbCacheData, wxObject)
 
@@ -20,33 +103,21 @@ FbCacheData::FbCacheData(wxSQLite3ResultSet &result)
 }
 
 FbCacheData::FbCacheData(int code, wxSQLite3ResultSet &result)
-	: m_code(code), m_name(result.GetString(1)), m_count(result.GetInt(2))
-{
-}
-
-FbCacheData::FbCacheData(const FbCacheData &data)
-	: m_code(data.m_code), m_name(data.m_name), m_count(data.m_count)
+	: m_code(code), m_name(result.GetString(0)), m_count(result.GetInt(1))
 {
 }
 
 wxString FbCacheData::GetValue(size_t col) const
 {
 	switch (col) {
-		case 0:
-			return m_name;
-		case 1:
-			return FbCollection::Format(m_count);
-		default:
-			return wxEmptyString;
+		case  0: return m_name;
+		case  1: return FbCollection::Format(m_count);
+		default: return wxEmptyString;
 	}
 }
 
-//-----------------------------------------------------------------------------
-//  FbColumnArray
-//-----------------------------------------------------------------------------
-
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(FbCasheArray);
+WX_DEFINE_OBJARRAY(FbCasheDataArray);
 
 //-----------------------------------------------------------------------------
 //  FbModelData
@@ -58,7 +129,8 @@ wxCriticalSection FbCollection::sm_section;
 
 FbCollection::FbCollection(const wxString &filename)
 {
-	//ctor
+	m_database.AttachConfig();
+	m_database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
 }
 
 FbCollection::~FbCollection()
@@ -81,24 +153,28 @@ FbCollection * FbCollection::GetCollection()
 	return wxGetApp().GetCollection();
 }
 
-FbCacheData FbCollection::GetSeqn(int code)
+wxString FbCollection::GetSeqn(int code, size_t col)
 {
+	if (code == 0 && col == 0) return _("(Misc.)");
+
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
-	if (collection == NULL) return NULL;
-	wxString sql = wxT("SELECT id, value, number FROM sequences WHERE id=?");
+	if (collection == NULL) return wxEmptyString;
+	wxString sql = wxT("SELECT value, number FROM sequences WHERE id=?");
 	FbCacheData * data = collection->GetData(code, collection->m_seqns, sql);
-	return data ? *data : FbCacheData(0);
+	return data ? data->GetValue(col) : wxString();
 }
 
-FbCacheData FbCollection::GetAuth(int code)
+wxString FbCollection::GetAuth(int code, size_t col)
 {
+	if (code == 0 && col == 0) return _("(no Author)");
+
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
-	if (collection == NULL) return NULL;
-	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");
+	if (collection == NULL) return wxEmptyString;
+	wxString sql = wxT("SELECT full_name, number FROM authors WHERE id=?");
 	FbCacheData * data = collection->GetData(code, collection->m_auths, sql);
-	return data ? *data : FbCacheData(0);
+	return data ? data->GetValue(col) : wxString();
 }
 
 void FbCollection::AddSeqn(FbCacheData * data)
@@ -115,11 +191,20 @@ void FbCollection::AddAuth(FbCacheData * data)
 	if (collection) collection->AddData(collection->m_auths, data);
 }
 
-void FbCollection::AddData(FbCasheArray &items, FbCacheData * data)
+FbCacheData * FbCollection::AddData(FbCasheDataArray &items, FbCacheData * data)
 {
 	size_t count = items.Count();
 	items.Insert(data, 0);
 	if (count > DATA_CACHE_SIZE) items.RemoveAt(DATA_CACHE_SIZE, count - DATA_CACHE_SIZE);
+	return data;
+}
+
+FbCacheBook * FbCollection::AddBook(FbCacheBook * book)
+{
+	size_t count = m_books.Count();
+	m_books.Insert(book, 0);
+	if (count > DATA_CACHE_SIZE) m_books.RemoveAt(DATA_CACHE_SIZE, count - DATA_CACHE_SIZE);
+	return book;
 }
 
 void FbCollection::ResetSeqn(int code)
@@ -136,7 +221,7 @@ void FbCollection::ResetAuth(int code)
 	if (collection) collection->ResetData(collection->m_auths, code);
 }
 
-FbCacheData * FbCollection::GetData(int code, FbCasheArray &items, const wxString &sql)
+FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxString &sql)
 {
 	size_t count = items.Count();
 	for (size_t i = 0; i < count; i++) {
@@ -147,18 +232,14 @@ FbCacheData * FbCollection::GetData(int code, FbCasheArray &items, const wxStrin
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, code);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) {
-			FbCacheData * data = new FbCacheData(code, result);
-			AddData(items, data);
-			return data;
-		}
+		if (result.NextRow()) return AddData(items, new FbCacheData(code, result));
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
 	return NULL;
 }
 
-void FbCollection::ResetData(FbCasheArray &items, int code)
+void FbCollection::ResetData(FbCasheDataArray &items, int code)
 {
 	size_t count = items.Count();
 	for (size_t i = 0; i < count; i++) {
@@ -167,4 +248,43 @@ void FbCollection::ResetData(FbCasheArray &items, int code)
 			break;
 		}
 	}
+}
+
+FbCacheBook FbCollection::GetBook(int code)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return code;
+	FbCacheBook * book = collection->GetCacheBook(code);
+	return book ? *book : FbCacheBook(code);
+}
+
+FbCacheBook * FbCollection::GetCacheBook(int code)
+{
+	size_t count = m_books.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbCacheBook & book = m_books[i];
+		if (book.GetCode() == code) return &book;
+	}
+
+	wxString sql = wxT("\
+		SELECT DISTINCT \
+			books.title, books.file_size, books.file_type, books.lang, books.genres, \
+			books.md5sum, states.rating, books.created, AGGREGATE(authors.full_name) as full_name \
+		FROM books \
+			LEFT JOIN authors ON books.id_author = authors.id \
+			LEFT JOIN states ON books.md5sum=states.md5sum \
+		WHERE books.id=? \
+		GROUP BY books.title, books.file_size, books.file_type, books.lang, states.rating, books.created \
+	");
+
+	try {
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, code);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) return AddBook(new FbCacheBook(code, result));
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return NULL;
 }

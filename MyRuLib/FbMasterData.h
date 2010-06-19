@@ -30,12 +30,6 @@ class FbMasterData: public wxTreeItemData
 		virtual const FbFolderType GetType() const = 0;
 		virtual void Show(FbFrameBase * frame) const = 0;
 	protected:
-		class AggregateFunction : public wxSQLite3AggregateFunction
-		{
-			public:
-				virtual void Aggregate(wxSQLite3FunctionContext& ctx);
-				virtual void Finalize(wxSQLite3FunctionContext& ctx);
-		};
 		class BaseThread: public FbThread
 		{
 			public:
@@ -50,7 +44,7 @@ class FbMasterData: public wxTreeItemData
 				void FillBooks(wxSQLite3ResultSet &result);
 			protected:
 				static wxCriticalSection sm_queue;
-				AggregateFunction m_aggregate;
+				FbAggregateFunction m_aggregate;
 				FbGenreFunction m_genre;
 				FbFrameBase * m_frame;
 				FbListMode m_mode;
