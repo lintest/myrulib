@@ -3,23 +3,11 @@
 
 #include <wx/wx.h>
 #include <wx/treebase.h>
-#include "FbBookList.h"
+#include "FbBookType.h"
 #include "FbDatabase.h"
 #include "FbThread.h"
 
 class FbFrameBase;
-
-enum FbFolderType {
-	FT_FOLDER = 1,
-	FT_RATING,
-	FT_COMMENT,
-	FT_DOWNLOAD,
-	FT_AUTHOR,
-	FT_GENRE,
-	FT_SEQNAME,
-	FT_DATE,
-	FT_NOTHING,
-};
 
 class FbMasterData: public wxTreeItemData
 {

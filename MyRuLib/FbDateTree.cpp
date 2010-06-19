@@ -2,6 +2,7 @@
 #include "FbCollection.h"
 #include "FbBookEvent.h"
 #include "FbConst.h"
+#include "FbMasterData.h"
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
@@ -20,7 +21,7 @@ void * FbDateTreeThread::Entry()
 		while (result.NextRow()) {
 			int day = result.GetInt(0);
 			int new_year = day / 10000;
-			if (year == 0) year = new_year; 
+			if (year == 0) year = new_year;
 			if (year != new_year) {
 				FbArrayEvent(id, items).Post(m_frame);
 				id = ID_MODEL_APPEND;
@@ -46,7 +47,7 @@ IMPLEMENT_CLASS(FbDateYearData, FbParentData)
 wxString FbDateYearData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
-		case 0: 
+		case 0:
 			return FbMasterDate::GetDate(m_code * 10000 + 101).Format(wxT("%Y"));
 		default:
 			return wxEmptyString;
@@ -62,7 +63,7 @@ IMPLEMENT_CLASS(FbDateMonthData, FbParentData)
 wxString FbDateMonthData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
-		case 0: 
+		case 0:
 			return FbMasterDate::GetDate(m_code * 100 + 1).Format(wxT("%B %Y"));
 		default:
 			return wxEmptyString;
@@ -78,7 +79,7 @@ IMPLEMENT_CLASS(FbDateDayData, FbChildData)
 wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
-		case 0: 
+		case 0:
 			return FbMasterDate::GetDate(m_code).FormatDate();
 		case 1:
 			return Format(m_count);

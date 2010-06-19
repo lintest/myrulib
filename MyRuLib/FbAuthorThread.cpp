@@ -2,6 +2,7 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbParams.h"
+#include "FbMasterData.h"
 
 wxCriticalSection FbAuthorThread::sm_queue;
 

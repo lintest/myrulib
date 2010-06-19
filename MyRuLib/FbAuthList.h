@@ -2,7 +2,6 @@
 #define __FBAUTHLIST_H__
 
 #include "FbTreeModel.h"
-#include "FbDatabase.h"
 #include "FbCollection.h"
 #include "FbThread.h"
 
@@ -61,8 +60,6 @@ class FbAuthListModel: public FbListModel
 {
 	public:
 		FbAuthListModel(const wxArrayInt &items);
-		FbAuthListModel(int order, wxChar letter = 0);
-		FbAuthListModel(int order, const wxString &mask);
 		virtual ~FbAuthListModel(void);
 		virtual void Append(FbModelData * data);
 		virtual void Replace(FbModelData * data);
@@ -77,9 +74,6 @@ class FbAuthListModel: public FbListModel
 	protected:
 		virtual FbModelData * DoGetData(size_t row, int &level);
 	private:
-        wxString GetSQL(const wxString & order, const wxString & condition);
-	private:
-		FbCommonDatabase m_database;
 		wxArrayInt m_items;
 		FbAuthListData * m_data;
 		DECLARE_CLASS(FbAuthListModel);

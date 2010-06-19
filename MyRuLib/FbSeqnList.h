@@ -2,7 +2,6 @@
 #define __SEQNLIST_H__
 
 #include "FbTreeModel.h"
-#include "FbDatabase.h"
 #include "FbCollection.h"
 #include "FbThread.h"
 
@@ -41,8 +40,6 @@ class FbSeqnListModel: public FbListModel
 {
 	public:
 		FbSeqnListModel(const wxArrayInt &items);
-		FbSeqnListModel(int order, wxChar letter = 0);
-		FbSeqnListModel(int order, const wxString &mask);
 		virtual ~FbSeqnListModel(void);
 		virtual void Append(FbModelData * data);
 		virtual void Replace(FbModelData * data);
@@ -57,9 +54,6 @@ class FbSeqnListModel: public FbListModel
 	protected:
 		virtual FbModelData * DoGetData(size_t row, int &level);
 	private:
-        wxString GetSQL(const wxString & order, const wxString & condition);
-	private:
-		FbCommonDatabase m_database;
 		wxArrayInt m_items;
 		FbSeqnListData * m_data;
 		DECLARE_CLASS(FbSeqnListModel);

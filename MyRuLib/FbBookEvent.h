@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "FbBookData.h"
-#include "FbMasterData.h"
+#include "FbBookType.h"
 
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION, 1 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_MODEL_ACTION, 2 )
@@ -16,6 +16,8 @@ DECLARE_LOCAL_EVENT_TYPE( fbEVT_EXPORT_ACTION, 7 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_ARRAY_ACTION,  8 )
 
 class FbModel;
+
+class FbMasterData;
 
 class FbCommandEvent: public wxCommandEvent
 {
@@ -135,9 +137,6 @@ class FbProgressEvent: public FbCommandEvent
 		int m_pos;
 		wxString m_text;
 };
-
-#include <wx/dynarray.h>
-WX_DEFINE_SORTED_ARRAY_INT(int, FbSortedArrayInt);
 
 class FbArrayEvent: public FbCommandEvent
 {

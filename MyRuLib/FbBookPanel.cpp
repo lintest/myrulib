@@ -9,6 +9,7 @@
 #include "FbEditBook.h"
 #include "ZipReader.h"
 #include "FbHtmlWindow.h"
+#include "FbMasterData.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
