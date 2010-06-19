@@ -146,6 +146,7 @@ void FbFrameAuthor::OnAllClicked(wxCommandEvent& event)
 
 void FbFrameAuthor::CreateMasterThread()
 {
+	m_MasterList->AssignModel(NULL);
 	wxDELETE(m_MasterLocker);
 	m_MasterLocker = new FbMutexLocker;
 	if (m_MasterThread) m_MasterThread->Wait();

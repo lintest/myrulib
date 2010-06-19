@@ -100,6 +100,7 @@ wxToolBar * FbFrameSequen::CreateToolBar(long style, wxWindowID winid, const wxS
 
 void FbFrameSequen::CreateMasterThread()
 {
+	m_MasterList->AssignModel(NULL);
 	wxDELETE(m_MasterLocker);
 	m_MasterLocker = new FbMutexLocker;
 	if (m_MasterThread) m_MasterThread->Wait();

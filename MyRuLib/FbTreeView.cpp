@@ -132,7 +132,7 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 
 	public:
 		bool SendEvent(wxEventType type, FbTreeViewItem *item = NULL, wxTreeEvent *event = NULL);  // returns true if processed
-		size_t GetRowCount() { return m_model ? m_model->GetRowCount() : 0; };
+		size_t GetRowCount() { return m_model ? m_count = m_model->GetRowCount() : m_count; }
 		void Repaint() { m_dirty = true; }
 		void AssignModel(FbModel * model);
 		FbModel * GetModel() { return m_model; }
@@ -151,6 +151,7 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
         bool m_dirty;
         int m_rowHeight;
         bool m_focused;
+        size_t m_count;
 
 	private:
 		void OnPaint( wxPaintEvent &event );
@@ -338,7 +339,8 @@ FbTreeViewMainWindow::FbTreeViewMainWindow(
 	wxScrolledWindow(parent, id, pos, size, style|wxVSCROLL, name),
 	m_model(NULL),
 	m_rowHeight(0),
-	m_focused(false)
+	m_focused(false),
+	m_count(0)
 {
 	m_current = -1;
 
@@ -1284,7 +1286,7 @@ void FbTreeViewCtrl::AssignModel(FbModel * model)
         m_main_win->AssignModel(model);
         m_main_win->SetScrollPos(wxVERTICAL, 0);
 		m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
-		model->SetOwner(this);
+		if (model) model->SetOwner(this);
     }
 	Refresh();
 }
