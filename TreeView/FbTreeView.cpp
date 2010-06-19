@@ -527,7 +527,11 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
         } break;
         case ' ': {
         	if (HasFlag(fbTR_CHECKBOX)) {
-        		m_model->SingleCheck();
+        		if (HasFlag(fbTR_MULTIPLE)) {
+					m_model->MultiplyCheck();
+        		} else {
+					m_model->SingleCheck();
+        		}
 				Repaint();
         	} else {
         		event.Skip();

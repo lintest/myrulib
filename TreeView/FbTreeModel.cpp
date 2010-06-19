@@ -299,8 +299,8 @@ void FbModel::SingleCheck(size_t row)
 	if (row == 0) row = GetPosition();
 	FbModelData * data = GetData(row);
 	if (data) {
-		int state = data->GetState(*this);
-		if (state != wxNOT_FOUND) data->SetState(*this, state == 1 ? 0 : 1);
+		int state = data->GetState(*this) == 1 ? 0 : 1;
+		data->SetState(*this, state);
 	}
 }
 
@@ -387,6 +387,36 @@ size_t FbListModel::FindRow(size_t row, bool select)
 		return row;
 	} else
 		return m_position;
+}
+
+void FbListModel::MultiplyCheck()
+{
+	if (m_position == 0) return;
+
+	if (m_shift > 0)  {
+		size_t min = m_shift < m_position ? m_shift : m_position;
+		size_t max = m_shift > m_position ? m_shift : m_position;
+		FbModelData * data = GetData(min);
+		if (data == NULL) return;
+		int state = data->GetState(*this) == 1 ? 0 : 1;
+		for (size_t i = min; i <= max; i++ ) {
+			FbModelData * data = GetData(i);
+			if (data) data->SetState(*this, state);
+		}
+	} else {
+		size_t count = m_ctrls.Count();
+		if (count) {
+			FbModelData * data = GetData(m_ctrls[0]);
+			if (data == NULL) return;
+			int state = data->GetState(*this) == 1 ? 0 : 1;
+			for (size_t i = 0; i < count; i++ ) {
+				FbModelData * data = GetData(m_ctrls[i]);
+				if (data) data->SetState(*this, state);
+			}
+		} else {
+			SingleCheck(m_position);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -617,3 +647,32 @@ bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)
 	return false;
 }
 
+void FbTreeModel::MultiplyCheck()
+{
+	if (m_root == NULL) return;
+	if (m_position == 0) return;
+
+	size_t max;
+	if (m_shift) {
+		max = m_shift > m_position ? m_shift : m_position;
+	} else {
+		size_t count = m_ctrls.Count();
+		max = count ? m_ctrls[count - 1] : m_position;
+	}
+
+	int state = wxNOT_FOUND;
+	size_t row = m_root->HiddenRoot() ? 0 : 1;
+	DoCheck(*m_root, max, row, state);
+}
+
+void FbTreeModel::DoCheck(FbModelData &parent, size_t max, size_t &row, int &state)
+{
+	if (IsSelected(row++)) {
+		if (state == wxNOT_FOUND) state = parent.GetState(*this) == 1 ? 0 : 1;
+		parent.SetState(*this, state);
+	}
+	size_t count = parent.Count(*this);
+	for (size_t i = 0; i < count && row <= max; i++) {
+		DoCheck(*parent.Items(*this, i), max, row, state);
+	}
+}

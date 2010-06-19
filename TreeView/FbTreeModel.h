@@ -179,7 +179,6 @@ class FbModel: public wxObject
 		size_t m_shift;
 		FbSortedArraySizeT m_ctrls;
 		DECLARE_CLASS(FbModel);
-		friend class FbTreeViewMainWindow;
 };
 
 class FbListModel: public FbModel
@@ -190,6 +189,7 @@ class FbListModel: public FbModel
 		virtual int GoNextRow(size_t delta = 1);
 		virtual int GoPriorRow(size_t delta = 1);
 		virtual size_t FindRow(size_t row, bool select);
+		virtual void MultiplyCheck();
 	protected:
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
@@ -219,9 +219,8 @@ class FbTreeModel: public FbModel
 			: m_root(NULL) {}
 		virtual ~FbTreeModel()
 			{ wxDELETE(m_root); }
-		FbModelData * GetRoot()
-			{ return m_root; }
 
+		FbModelData * GetRoot() { return m_root; }
 		void SetRoot(FbModelData * root);
 
 		virtual int GoFirstRow();
@@ -236,6 +235,8 @@ class FbTreeModel: public FbModel
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete();
 
+		virtual void MultiplyCheck();
+
 	protected:
 		bool DoDelete(FbModelData &parent, size_t &row);
 		virtual FbModelData * DoGetData(size_t row, int &level);
@@ -243,6 +244,7 @@ class FbTreeModel: public FbModel
 		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &row);
 		FbModelData * FindData(FbModelData &parent, size_t &row, int &level);
 		FbModelData * GetLast(FbModelData &parent);
+		void DoCheck(FbModelData &parent, size_t max, size_t &row, int &state);
 
 	protected:
 		FbModelData * m_root;
