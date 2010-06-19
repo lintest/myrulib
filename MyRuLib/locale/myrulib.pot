@@ -8,16 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-19 18:50+0400\n"
+"POT-Creation-Date: 2010-06-19 20:48+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: FbFrameBase.cpp:210
 msgid "book"
 msgid_plural "books"
 msgstr[0] ""
@@ -137,13 +135,13 @@ msgstr ""
 msgid "Merge authors?"
 msgstr ""
 
-#: FbBookData.cpp:66
-msgid "Download book file?"
-msgstr ""
-
 #: FbBookData.cpp:66 FbBookPanel.cpp:524 FbFrameHtml.cpp:222
 #: FbMainFrame.cpp:540
 msgid "Confirmation"
+msgstr ""
+
+#: FbBookData.cpp:66
+msgid "Download book file?"
 msgstr ""
 
 #: FbBookData.cpp:144
@@ -371,6 +369,22 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+#: FbDataOpenDlg.cpp:30
+msgid "File name:"
+msgstr ""
+
+#: FbDataOpenDlg.cpp:63 FbMainMenu.cpp:20
+msgid "Open (or create) collection"
+msgstr ""
+
+#: FbDataOpenDlg.cpp:70
+msgid "Enter collection filename"
+msgstr ""
+
+#: FbDataOpenDlg.cpp:73
+msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
+msgstr ""
+
 #: FbDatabase.cpp:286
 msgid "Search template"
 msgstr ""
@@ -400,22 +414,6 @@ msgstr ""
 #: FbDatabase.cpp:539
 #, c-format
 msgid "Need a new version %d, but used the old %d."
-msgstr ""
-
-#: FbDataOpenDlg.cpp:30
-msgid "File name:"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:63 FbMainMenu.cpp:20
-msgid "Open (or create) collection"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:70
-msgid "Enter collection filename"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:73
-msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
 msgstr ""
 
 #: FbDownloader.cpp:67
@@ -463,7 +461,7 @@ msgstr ""
 msgid "Download finished"
 msgstr ""
 
-#: FbEditBook.cpp:37 FbMainMenu.cpp:10 FbFrameSequen.h:17
+#: FbEditBook.cpp:37 FbFrameSequen.h:17 FbMainMenu.cpp:10
 msgid "Series"
 msgstr ""
 
@@ -568,6 +566,10 @@ msgstr ""
 msgid "Latin alphabet"
 msgstr ""
 
+#: FbFrameAuthor.h:24 FbMainMenu.cpp:8
+msgid "Authors"
+msgstr ""
+
 #: FbFrameBase.cpp:219 FbFrameDownld.cpp:77 FbFrameFolder.cpp:66
 #: FbFrameSequen.cpp:96 FbMainFrame.cpp:318 FbParamsDlg.cpp:559
 msgid "Export"
@@ -576,6 +578,10 @@ msgstr ""
 #: FbFrameBase.cpp:219 FbFrameDownld.cpp:77 FbFrameFolder.cpp:66
 #: FbFrameSequen.cpp:96 FbMainFrame.cpp:318
 msgid "Export to external device"
+msgstr ""
+
+#: FbFrameDate.h:16 FbMainMenu.cpp:11
+msgid "Calendar"
 msgstr ""
 
 #: FbFrameDownld.cpp:69 FbFrameFolder.cpp:81
@@ -599,11 +605,11 @@ msgid "Stop downloading"
 msgstr ""
 
 #: FbFrameDownld.cpp:82
-msgid "Up"
+msgid "Move up in queue"
 msgstr ""
 
 #: FbFrameDownld.cpp:82
-msgid "Move up in queue"
+msgid "Up"
 msgstr ""
 
 #: FbFrameDownld.cpp:83
@@ -630,6 +636,10 @@ msgstr ""
 msgid "Fault"
 msgstr ""
 
+#: FbFrameDownld.h:36 FbMainMenu.cpp:15
+msgid "Downloads"
+msgstr ""
+
 #: FbFrameFolder.cpp:89
 msgid "Bookmarks"
 msgstr ""
@@ -647,19 +657,19 @@ msgid "Comments"
 msgstr ""
 
 #: FbFrameFolder.cpp:157
-msgid "Input name of new folder:"
-msgstr ""
-
-#: FbFrameFolder.cpp:157
 msgid "Add folder?"
 msgstr ""
 
-#: FbFrameFolder.cpp:189
-msgid "Input new folder name:"
+#: FbFrameFolder.cpp:157
+msgid "Input name of new folder:"
 msgstr ""
 
 #: FbFrameFolder.cpp:189
 msgid "Change folder?"
+msgstr ""
+
+#: FbFrameFolder.cpp:189
+msgid "Input new folder name:"
 msgstr ""
 
 #: FbFrameFolder.cpp:217
@@ -671,8 +681,16 @@ msgstr ""
 msgid "Delete folder?"
 msgstr ""
 
+#: FbFrameFolder.h:55 FbMainMenu.cpp:14
+msgid "My folders"
+msgstr ""
+
 #: FbFrameGenres.cpp:56
 msgid "List of genres"
+msgstr ""
+
+#: FbFrameGenres.h:20 FbMainMenu.cpp:9
+msgid "Genres"
 msgstr ""
 
 #: FbFrameHtml.cpp:69
@@ -730,6 +748,10 @@ msgstr ""
 
 #: FbFrameInfo.cpp:180
 msgid "Collection info"
+msgstr ""
+
+#: FbFrameInfo.h:14
+msgid "Information"
 msgstr ""
 
 #: FbFrameSearch.cpp:23 FbMainMenu.cpp:6
@@ -980,7 +1002,7 @@ msgid "Love science fiction"
 msgstr ""
 
 #: FbGenres.cpp:91
-msgid "Love"
+msgid "Love novels"
 msgstr ""
 
 #: FbGenres.cpp:92
@@ -1505,11 +1527,11 @@ msgid "Processing folder:"
 msgstr ""
 
 #: FbMainFrame.cpp:471
-msgid "Input search string:"
+msgid "Find title"
 msgstr ""
 
 #: FbMainFrame.cpp:471
-msgid "Find title"
+msgid "Input search string:"
 msgstr ""
 
 #: FbMainFrame.cpp:529
@@ -1524,28 +1546,8 @@ msgstr ""
 msgid "File not found: "
 msgstr ""
 
-#: FbMainMenu.cpp:8 FbFrameAuthor.h:24
-msgid "Authors"
-msgstr ""
-
-#: FbMainMenu.cpp:9 FbFrameGenres.h:20
-msgid "Genres"
-msgstr ""
-
-#: FbMainMenu.cpp:11 FbFrameDate.h:16
-msgid "Calendar"
-msgstr ""
-
 #: FbMainMenu.cpp:12
 msgid "Archive"
-msgstr ""
-
-#: FbMainMenu.cpp:14 FbFrameFolder.h:55
-msgid "My folders"
-msgstr ""
-
-#: FbMainMenu.cpp:15 FbFrameDownld.h:36
-msgid "Downloads"
 msgstr ""
 
 #: FbMainMenu.cpp:21
@@ -1901,8 +1903,4 @@ msgstr ""
 #: ZipReader.cpp:286
 #, c-format
 msgid "Scan zip %s"
-msgstr ""
-
-#: FbFrameInfo.h:14
-msgid "Information"
 msgstr ""
