@@ -28,14 +28,11 @@ class FbTestModelData: public FbModelData
 			: m_code(i), m_state(false) {}
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const;
-		virtual int GetState(FbModel & model) const
+	protected:
+		virtual int DoGetState(FbModel & model) const
 			{ return m_state; }
-		virtual void SetState(FbModel & model, bool state)
+		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
-		virtual bool GetSelection(FbModel & model) const
-			{ return m_selected; }
-		virtual void SetSelection(FbModel & model, bool value)
-			{ m_selected = value; }
 	protected:
 		int m_code;
 		bool m_state;
@@ -44,7 +41,6 @@ class FbTestModelData: public FbModelData
 };
 
 IMPLEMENT_CLASS(FbTestModelData, FbModelData)
-
 
 wxString FbTestModelData::GetValue(FbModel & model, size_t col) const
 {
@@ -73,10 +69,6 @@ class FbTreeModelData: public FbParentData
 			{ m_state = state; }
 		virtual bool IsBold(FbModel & model) const
 			{ return Count(model); }
-		virtual bool GetSelection(FbModel & model) const
-			{ return m_selected; }
-		virtual void SetSelection(FbModel & model, bool value)
-			{ m_selected = value; }
 	protected:
 		int m_code;
 		int m_state;
@@ -172,7 +164,8 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	toolbar->Realize();
 	SetToolBar(toolbar);
 
-	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES|fbTR_HRULES|fbTR_MULTIPLE);
+	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_HRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
+	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, substyle);
 	m_dataview->AddColumn(0, _("title"), 200);
 	m_dataview->AddColumn(1, _("author"), 150);
 	m_dataview->AddColumn(2, _("type"), 50);

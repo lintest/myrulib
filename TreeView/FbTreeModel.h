@@ -121,6 +121,7 @@ class FbModel: public wxObject
 				bool m_current;
 				bool m_selected;
 				bool m_multuply;
+				bool m_checkbox;
 				bool m_vrules;
 				bool m_hrules;
 				bool m_hidden;
@@ -153,6 +154,9 @@ class FbModel: public wxObject
 		virtual void Append(FbModelData * data) = 0;
 		virtual void Replace(FbModelData * data) = 0;
 		virtual void Delete() = 0;
+
+		virtual void SingleCheck(size_t row = 0);
+		virtual void MultiplyCheck() {}
 
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); }

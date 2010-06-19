@@ -118,7 +118,7 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 		FbTreeViewMainWindow (FbTreeViewCtrl *parent, wxWindowID id = -1,
 				   const wxPoint& pos = wxDefaultPosition,
 				   const wxSize& size = wxDefaultSize,
-				   long style = wxTR_DEFAULT_STYLE,
+				   long style = fbTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
 				   const wxString& name = wxT("FbTreeViewmainwindow"));
 
@@ -526,13 +526,12 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
             SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
         } break;
         case ' ': {
-			size_t position = m_model->GetPosition();
-			FbModelData * data = m_model->GetData(position);
-			if (data) {
-				int state = data->GetState(*m_model);
-				if (state != wxNOT_FOUND) data->SetState(*m_model, state == 1 ? 0 : 1);
+        	if (HasFlag(fbTR_CHECKBOX)) {
+        		m_model->SingleCheck();
+				Repaint();
+        	} else {
+        		event.Skip();
 			}
-            Repaint();
             return;
         }break;
         default: {
@@ -802,23 +801,22 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 		if (event.LeftDown() || event.LeftDClick() || event.MiddleDown() || event.RightDown()) {
 			int level;
 			FbModelData * data = m_model->GetData(row, level);
-			if (data) {
-				int state = data->GetState(*m_model);
-				int left = FB_CHECKBOX_WIDTH * level;
-				int right = left + FB_CHECKBOX_WIDTH + 2;
-				if (state != wxNOT_FOUND && left <= x && x <= right ) {
-					data->SetState(*m_model, state == 1 ? 0 : 1);
-				} else {
-					size_t old_pos = m_model->GetPosition();
-					size_t new_pos = m_model->FindRow(row, true);
-					if ( old_pos != new_pos ) SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
-					if (event.LeftDClick()) SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
-					if (event.ControlDown()) m_model->InvertCtrl();
-				}
-				Repaint();
+			if (data == 0) { event.Skip(); return; }
+
+			int left = FB_CHECKBOX_WIDTH * level;
+			int right = left + FB_CHECKBOX_WIDTH + 2;
+
+			if (HasFlag(fbTR_CHECKBOX) && left <= x && x <= right) {
+				size_t pos = m_model->FindRow(row, false);
+				m_model->SingleCheck(pos);
 			} else {
-				event.Skip();
+				size_t old_pos = m_model->GetPosition();
+				size_t new_pos = m_model->FindRow(row, true);
+				if (old_pos != new_pos) SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+				if (event.LeftDClick()) SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
+				if (event.ControlDown()) m_model->InvertCtrl();
 			}
+			Repaint();
 			return;
 		}
 	}

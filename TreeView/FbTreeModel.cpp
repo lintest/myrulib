@@ -159,6 +159,7 @@ FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
 	m_current(false),
 	m_selected(false),
 	m_multuply(model.GetOwner()->HasFlag(fbTR_MULTIPLE)),
+	m_checkbox(model.GetOwner()->HasFlag(fbTR_CHECKBOX)),
 	m_vrules(model.GetOwner()->HasFlag(fbTR_VRULES)),
 	m_hrules(model.GetOwner()->HasFlag(fbTR_HRULES)),
 	m_level(0)
@@ -187,8 +188,6 @@ FbModel::FbModel() :
 
 const wxBitmap & FbModel::GetBitmap(int state)
 {
-	if (state == wxNOT_FOUND) return wxNullBitmap;
-
 	static wxBitmap bitmaps[3] = {
 		wxBitmap(nocheck_xpm),
 		wxBitmap(checked_xpm),
@@ -218,7 +217,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 	int x = ctx.m_level * FB_CHECKBOX_WIDTH;
 	const int y = rect.GetTop();
 	const int h = rect.GetHeight();
-	const wxBitmap & bitmap = GetBitmap(data.GetState(*this));
+	const wxBitmap & bitmap = ctx.m_checkbox ? GetBitmap(data.GetState(*this)) : wxNullBitmap;
 
 	if (data.FullRow(*this)) {
 		int w = rect.GetWidth();
@@ -292,6 +291,16 @@ void FbModel::InvertCtrl()
 		m_ctrls.Add(m_position);
 	} else {
 		m_ctrls.RemoveAt(index);
+	}
+}
+
+void FbModel::SingleCheck(size_t row)
+{
+	if (row == 0) row = GetPosition();
+	FbModelData * data = GetData(row);
+	if (data) {
+		int state = data->GetState(*this);
+		if (state != wxNOT_FOUND) data->SetState(*this, state == 1 ? 0 : 1);
 	}
 }
 
