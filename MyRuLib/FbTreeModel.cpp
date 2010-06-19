@@ -54,6 +54,13 @@ int FbModelData::GetState(FbModel & model) const
 
 void FbModelData::SetState(FbModel & model, bool state)
 {
+	int old_state = DoGetState(model);
+	if (state) {
+		if (old_state == 1) return;
+	} else {
+		if (old_state == 0) return;
+	}
+
 	size_t count = Count(model);
 	for (size_t i = 0; i < count; i++) {
 		Items(model, i)->SetState(model, state);
@@ -138,7 +145,7 @@ WX_DEFINE_OBJARRAY(FbColumnArray);
 //  FbModel::PaintContext
 //-----------------------------------------------------------------------------
 
-FbModel::PaintContext::PaintContext(wxDC &dc):
+FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
     // Set brush colour
     m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
     m_hilightBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID),
@@ -149,7 +156,12 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
     // Set pen for borders
 	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
 	// Current item flags
+	m_current(false),
 	m_selected(false),
+	m_multuply(model.GetOwner()->HasFlag(fbTR_MULTIPLE)),
+	m_checkbox(model.GetOwner()->HasFlag(fbTR_CHECKBOX)),
+	m_vrules(model.GetOwner()->HasFlag(fbTR_VRULES)),
+	m_hrules(model.GetOwner()->HasFlag(fbTR_HRULES)),
 	m_level(0)
 {
 	m_normalFont = dc.GetFont();
@@ -162,17 +174,20 @@ FbModel::PaintContext::PaintContext(wxDC &dc):
 //  FbModel
 //-----------------------------------------------------------------------------
 
+int CompareSizeT(size_t x, size_t y)
+{
+	return x - y;
+}
+
 IMPLEMENT_CLASS(FbModel, wxObject)
 
 FbModel::FbModel() :
-    m_owner(NULL), m_position(0), m_shift(0)
+    m_owner(NULL), m_position(0), m_shift(0), m_ctrls(CompareSizeT)
 {
 }
 
 const wxBitmap & FbModel::GetBitmap(int state)
 {
-	if (state == wxNOT_FOUND) return wxNullBitmap;
-
 	static wxBitmap bitmaps[3] = {
 		wxBitmap(nocheck_xpm),
 		wxBitmap(checked_xpm),
@@ -196,15 +211,13 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 	dc.SetClippingRegion(rect);
 	dc.DrawRectangle(rect);
 	dc.SetPen(ctx.m_borderPen);
-	if (m_owner->HasFlag(fbTR_HRULES)) {
-		dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
-	}
+	if (ctx.m_hrules) dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
 	dc.DestroyClippingRegion();
 
 	int x = ctx.m_level * FB_CHECKBOX_WIDTH;
 	const int y = rect.GetTop();
 	const int h = rect.GetHeight();
-	const wxBitmap & bitmap = GetBitmap(data.GetState(*this));
+	const wxBitmap & bitmap = ctx.m_checkbox ? GetBitmap(data.GetState(*this)) : wxNullBitmap;
 
 	if (data.FullRow(*this)) {
 		int w = rect.GetWidth();
@@ -221,7 +234,7 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 			int w = col.GetWidth();
 			if (i == 0) {
 				w -= x;
-			} else if (m_owner->HasFlag(fbTR_VRULES)) {
+			} else if (ctx.m_vrules) {
 				dc.DrawLine (x, y, x, y + h);
 				x++; w--;
 			}
@@ -238,8 +251,57 @@ void FbModel::DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxR
 
 void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
-	PaintContext ctx(dc);
+	PaintContext ctx(*this, dc);
 	DoDrawTree(dc, ctx, rect, cols, pos, h);
+}
+
+bool FbModel::IsSelected(size_t row)
+{
+	if (m_shift) {
+		return (m_shift <= row && row <= m_position) || (m_position <= row && row <= m_shift);
+	} else {
+		if (m_ctrls.Count() == 0)
+			return m_position == row;
+		else
+			return m_ctrls.Index(row) != wxNOT_FOUND;
+	}
+}
+
+void FbModel::SetShift(bool select)
+{
+	m_shift  = select ? ( m_shift ? m_shift : m_position ) : 0;
+	m_ctrls.Empty();
+}
+
+void FbModel::InitCtrls()
+{
+	if (m_position == 0 || m_ctrls.Count() > 0) return;
+	size_t min  = m_shift < m_position ? (m_shift ? m_shift : m_position) : m_position;
+	size_t max = m_shift > m_position ? m_shift : m_position;
+	for (size_t i = min; i <= max; i++) m_ctrls.Add(i);
+	m_shift = 0;
+}
+
+void FbModel::InvertCtrl()
+{
+	if (m_position == 0) return;
+
+	int index = m_ctrls.Index(m_position);
+	if (index == wxNOT_FOUND) {
+		m_ctrls.Add(m_position);
+	} else {
+		m_ctrls.RemoveAt(index);
+	}
+}
+
+void FbModel::SingleCheck(size_t row)
+{
+	if (row == 0) row = GetPosition();
+	FbModelData * data = GetData(row);
+	if (data) {
+		int state = data->GetState(*this) == 1 ? 0 : 1;
+		data->SetState(*this, state);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -255,11 +317,18 @@ void FbListModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, co
 	int yy = rect.GetBottom();
 	size_t count = GetRowCount();
 
-	for ( ; pos < count && y < yy; pos++, y+=h )
+	size_t row = pos;
+	for ( ; row < count && y < yy; y+=h )
 	{
+		row++;
 		wxRect rect(0, y, ww, h);
-        FbModelData * data = GetData(pos + 1);
-        ctx.m_selected = m_position == pos + 1;
+        FbModelData * data = GetData(row);
+		if (ctx.m_multuply) {
+			ctx.m_current = m_position == row;
+			ctx.m_selected = IsSelected(row);
+		} else {
+	        ctx.m_selected = m_position == row;
+		}
 		if (data) DrawItem(*data, dc, ctx, rect, cols);
 	}
 }
@@ -320,6 +389,36 @@ size_t FbListModel::FindRow(size_t row, bool select)
 		return m_position;
 }
 
+void FbListModel::MultiplyCheck()
+{
+	if (m_position == 0) return;
+
+	if (m_shift > 0)  {
+		size_t min = m_shift < m_position ? m_shift : m_position;
+		size_t max = m_shift > m_position ? m_shift : m_position;
+		FbModelData * data = GetData(min);
+		if (data == NULL) return;
+		int state = data->GetState(*this) == 1 ? 0 : 1;
+		for (size_t i = min; i <= max; i++ ) {
+			FbModelData * data = GetData(i);
+			if (data) data->SetState(*this, state);
+		}
+	} else {
+		size_t count = m_ctrls.Count();
+		if (count) {
+			FbModelData * data = GetData(m_ctrls[0]);
+			if (data == NULL) return;
+			int state = data->GetState(*this) == 1 ? 0 : 1;
+			for (size_t i = 0; i < count; i++ ) {
+				FbModelData * data = GetData(m_ctrls[i]);
+				if (data) data->SetState(*this, state);
+			}
+		} else {
+			SingleCheck(m_position);
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 //  FbListStore
 //-----------------------------------------------------------------------------
@@ -368,17 +467,17 @@ IMPLEMENT_CLASS(FbTreeModel, FbModel)
 
 void FbTreeModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)
 {
-	size_t position = 0;
+	size_t row = 0;
 	if (m_root) {
 		ctx.m_hidden = m_root->HiddenRoot();
 		ctx.m_level = ctx.m_hidden ? -1 : 0;
-		DrawTreeItem(*m_root, dc, ctx, rect, cols, h, position);
+		DrawTreeItem(*m_root, dc, ctx, rect, cols, h, row);
 	}
 }
 
-void FbTreeModel::DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position)
+void FbTreeModel::DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &row)
 {
-	int y = position * h;
+	int y = row * h;
 	if (y > rect.GetBottom()) return;
 
 	int ww = rect.GetWidth();
@@ -386,19 +485,24 @@ void FbTreeModel::DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, c
 	if (ctx.m_hidden) {
 		ctx.m_hidden = false;
 	} else {
+		row++;
 		if (y >= rect.GetTop()) {
-			ctx.m_selected = m_position == position + 1;
+			if (ctx.m_multuply) {
+				ctx.m_current = m_position == row;
+				ctx.m_selected = IsSelected(row);
+			} else {
+				ctx.m_selected = m_position == row;
+			}
 			wxRect rect(0, y, ww, h);
 			DrawItem(data, dc, ctx, rect, cols);
 		}
-		position++;
 	}
 
 	ctx.m_level++;
 	size_t count = data.Count(*this);
 	for (size_t i = 0; i < count; i++) {
 		FbModelData * child = data.Items(*this, i);
-		if (child) DrawTreeItem(*child, dc, ctx, rect, cols, h, position);
+		if (child) DrawTreeItem(*child, dc, ctx, rect, cols, h, row);
 	}
 	ctx.m_level--;
 }
@@ -518,9 +622,9 @@ void FbTreeModel::Delete()
 	if (m_root == NULL) return;
 	if (m_position == 0) return;
 
-	size_t pos = m_position - 1;
-	if (m_root->HiddenRoot()) pos++;
-	DoDelete(*m_root, pos);
+	size_t row = m_position - 1;
+	if (m_root->HiddenRoot()) row++;
+	DoDelete(*m_root, row);
 }
 
 bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)
@@ -543,3 +647,32 @@ bool FbTreeModel::DoDelete(FbModelData &parent, size_t &row)
 	return false;
 }
 
+void FbTreeModel::MultiplyCheck()
+{
+	if (m_root == NULL) return;
+	if (m_position == 0) return;
+
+	size_t max;
+	if (m_shift) {
+		max = m_shift > m_position ? m_shift : m_position;
+	} else {
+		size_t count = m_ctrls.Count();
+		max = count ? m_ctrls[count - 1] : m_position;
+	}
+
+	int state = wxNOT_FOUND;
+	size_t row = m_root->HiddenRoot() ? 0 : 1;
+	DoCheck(*m_root, max, row, state);
+}
+
+void FbTreeModel::DoCheck(FbModelData &parent, size_t max, size_t &row, int &state)
+{
+	if (IsSelected(row++)) {
+		if (state == wxNOT_FOUND) state = parent.GetState(*this) == 1 ? 0 : 1;
+		parent.SetState(*this, state);
+	}
+	size_t count = parent.Count(*this);
+	for (size_t i = 0; i < count && row <= max; i++) {
+		DoCheck(*parent.Items(*this, i), max, row, state);
+	}
+}

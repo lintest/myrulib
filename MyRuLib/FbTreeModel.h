@@ -4,8 +4,6 @@
 #include <wx/dc.h>
 #include <wx/dynarray.h>
 
-WX_DEFINE_ARRAY_SIZE_T(size_t, FbArraySizeT);
-
 class FbModel;
 
 class FbModelData: public wxObject
@@ -104,12 +102,14 @@ class FbColumnInfo: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbColumnInfo, FbColumnArray);
 
+WX_DEFINE_SORTED_ARRAY_SIZE_T(size_t, FbSortedArraySizeT);
+
 class FbModel: public wxObject
 {
 	protected:
 		class PaintContext{
 			public:
-				PaintContext(wxDC &dc);
+				PaintContext(FbModel &mode, wxDC &dc);
 				wxBrush m_normalBrush;
 				wxBrush m_hilightBrush;
 				wxBrush m_unfocusBrush;
@@ -120,6 +120,10 @@ class FbModel: public wxObject
 				wxPen m_borderPen;
 				bool m_current;
 				bool m_selected;
+				bool m_multuply;
+				bool m_checkbox;
+				bool m_vrules;
+				bool m_hrules;
 				bool m_hidden;
 				int m_level;
 		};
@@ -142,6 +146,7 @@ class FbModel: public wxObject
 
 		virtual size_t GetPosition() { return m_position; }
 		void SetOwner(wxWindow * owner) { m_owner = owner; };
+		wxWindow * GetOwner() { return m_owner; };
 
 		virtual size_t FindRow(size_t row, bool select) = 0;
 		virtual size_t GetRowCount() const = 0;
@@ -150,21 +155,29 @@ class FbModel: public wxObject
 		virtual void Replace(FbModelData * data) = 0;
 		virtual void Delete() = 0;
 
+		virtual void SingleCheck(size_t row = 0);
+		virtual void MultiplyCheck() {}
+
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); }
+
+		void SetShift(bool select);
+		void InitCtrls();
+		void InvertCtrl();
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
 		void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 		virtual FbModelData * DoGetData(size_t row, int &level) = 0;
+		bool IsSelected(size_t row);
 
 	protected:
 		wxWindow * m_owner;
 		size_t m_position;
 		bool m_focused;
 		size_t m_shift;
-		FbArraySizeT m_ctrls;
+		FbSortedArraySizeT m_ctrls;
 		DECLARE_CLASS(FbModel);
 };
 
@@ -176,6 +189,7 @@ class FbListModel: public FbModel
 		virtual int GoNextRow(size_t delta = 1);
 		virtual int GoPriorRow(size_t delta = 1);
 		virtual size_t FindRow(size_t row, bool select);
+		virtual void MultiplyCheck();
 	protected:
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		DECLARE_CLASS(FbListModel);
@@ -205,9 +219,8 @@ class FbTreeModel: public FbModel
 			: m_root(NULL) {}
 		virtual ~FbTreeModel()
 			{ wxDELETE(m_root); }
-		FbModelData * GetRoot()
-			{ return m_root; }
 
+		FbModelData * GetRoot() { return m_root; }
 		void SetRoot(FbModelData * root);
 
 		virtual int GoFirstRow();
@@ -222,13 +235,16 @@ class FbTreeModel: public FbModel
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete();
 
+		virtual void MultiplyCheck();
+
 	protected:
 		bool DoDelete(FbModelData &parent, size_t &row);
 		virtual FbModelData * DoGetData(size_t row, int &level);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &position);
+		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &row);
 		FbModelData * FindData(FbModelData &parent, size_t &row, int &level);
 		FbModelData * GetLast(FbModelData &parent);
+		void DoCheck(FbModelData &parent, size_t max, size_t &row, int &state);
 
 	protected:
 		FbModelData * m_root;

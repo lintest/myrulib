@@ -1,17 +1,19 @@
 #ifndef __FBTREEVIEW_H__
 #define __FBTREEVIEW_H__
 
-#include <wx/treectrl.h>
 #include <wx/control.h>
 #include <wx/pen.h>
-#include <wx/listctrl.h>
-#include <wx/containr.h>
+#include <wx/listbase.h>
+#include <wx/treebase.h>
 
 #include "FbTreeModel.h"
 
-#define fbTR_HRULES   0x0001
-#define fbTR_VRULES   0x0002
-#define fbTR_MULTIPLE 0x0004
+#define fbTR_HRULES     0x0001
+#define fbTR_VRULES     0x0002
+#define fbTR_MULTIPLE   0x0004
+#define fbTR_CHECKBOX   0x0008
+
+#define fbTR_DEFAULT_STYLE (fbTR_VRULES)
 
 #define DEFAULT_COL_WIDTH 100
 
@@ -31,7 +33,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		FbTreeViewCtrl(wxWindow *parent, wxWindowID id = -1,
 				   const wxPoint& pos = wxDefaultPosition,
 				   const wxSize& size = wxDefaultSize,
-				   long style = wxTR_DEFAULT_STYLE,
+				   long style = fbTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
 				   const wxString& name = FbTreeViewCtrlNameStr )
 			: m_header_win(0), m_main_win(0)
@@ -44,7 +46,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		bool Create(wxWindow *parent, wxWindowID id = -1,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					long style = wxTR_DEFAULT_STYLE,
+					long style = fbTR_DEFAULT_STYLE,
 					const wxValidator &validator = wxDefaultValidator,
 					const wxString& name = FbTreeViewCtrlNameStr );
 

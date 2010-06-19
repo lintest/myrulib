@@ -352,6 +352,8 @@ FbTreeViewMainWindow::FbTreeViewMainWindow(
 
     SetFont(wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT));
 
+    SetCursor(*wxHOURGLASS_CURSOR);
+
 #ifdef __WXMSW__
     {
         int i, j;
@@ -1157,6 +1159,7 @@ void FbTreeViewMainWindow::SetFocus()
 
 void FbTreeViewMainWindow::AssignModel(FbModel * model)
 {
+    SetCursor(model ? *wxSTANDARD_CURSOR : *wxHOURGLASS_CURSOR);
 	wxDELETE(m_model);
 	m_model = model;
 	Repaint();
