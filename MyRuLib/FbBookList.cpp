@@ -1,5 +1,125 @@
 #include "FbBookList.h"
 #include "FbBookData.h"
+#include "FbBookEvent.h"
+#include "FbConst.h"
+
+//-----------------------------------------------------------------------------
+//  FbBookListThread
+//-----------------------------------------------------------------------------
+
+void * FbBookListThread::Entry()
+{
+	try {
+		FbCommonDatabase database;
+		DoAuthor(database);
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return NULL;
+}
+
+void FbBookListThread::DoAuthor(wxSQLite3Database &database)
+{
+	wxString sql = wxT("SELECT id FROM books WHERE id_author=? ORDER BY title");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_author);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	MakeModel(result);
+}
+
+void FbBookListThread::MakeModel(wxSQLite3ResultSet &result)
+{
+	wxWindowID id = ID_MODEL_CREATE;
+	size_t length = fbLIST_CACHE_SIZE;
+	size_t count = 0;
+	wxArrayInt items;
+	while (result.NextRow()) {
+		items.Add(result.GetInt(0));
+		count++;
+		if (count == length) {
+			length = fbLIST_ARRAY_SIZE;
+			FbArrayEvent(id, items).Post(m_frame);
+			id = ID_MODEL_APPEND;
+			items.Empty();
+			count = 0;
+		}
+	}
+	FbArrayEvent(id, items).Post(m_frame);
+}
+
+//-----------------------------------------------------------------------------
+//  FbBookListData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbBookListData, FbModelData)
+
+void FbBookListData::DoSetState(FbModel & model, int state)
+{
+	FbBookListModel * booklist = wxDynamicCast(&model, FbBookListModel);
+	if (booklist) booklist->SetState(m_code, state);
+}
+
+int FbBookListData::DoGetState(FbModel & model) const
+{
+	FbBookListModel * booklist = wxDynamicCast(&model, FbBookListModel);
+	return booklist ? booklist->GetState(m_code) : 0;
+}
+
+wxString FbBookListData::GetValue(FbModel & model, size_t col) const
+{
+	return FbCollection::GetBook(m_code, col);
+}
+
+//-----------------------------------------------------------------------------
+//  FbBookListModel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbBookListModel, FbListModel)
+
+FbBookListModel::FbBookListModel(const wxArrayInt &items)
+	: m_check(CompareInt), m_data(NULL)
+{
+	m_position = items.Count() == 0 ? 0 : 1;
+	Append(items);
+}
+
+FbBookListModel::~FbBookListModel(void)
+{
+	wxDELETE(m_data);
+}
+
+void FbBookListModel::Append(const wxArrayInt &items)
+{
+	WX_APPEND_ARRAY(m_items, items);
+}
+
+void FbBookListModel::SetState(int code, int state)
+{
+	int index = m_check.Index(code);
+	if (index == wxNOT_FOUND) {
+		if (state) m_ctrls.Add(m_position);
+	} else {
+		if (!state) m_ctrls.RemoveAt(index);
+	}
+}
+
+int FbBookListModel::GetState(int code) const
+{
+	return m_check.Index(code) != wxNOT_FOUND;
+}
+
+FbModelData * FbBookListModel::DoGetData(size_t row, int &level)
+{
+	level = 0;
+	if (row == 0 || row > m_items.Count()) return NULL;
+	int code = m_items[row - 1];
+	wxDELETE(m_data);
+	return m_data = new FbBookListData(code);
+}
+
+//-----------------------------------------------------------------------------
+//  FbBookList
+//-----------------------------------------------------------------------------
 
 FbBookList::FbBookList(wxWindow *parent, wxWindowID id, long style)
 	:FbCheckList(parent, id, style)

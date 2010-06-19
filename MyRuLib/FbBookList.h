@@ -2,9 +2,23 @@
 #define __FBBOOKLIST_H__
 
 #include "FbTreeModel.h"
+#include "FbBookTypes.h"
 #include "FbCollection.h"
 #include "FbThread.h"
-#include "FbBookEvent.h"
+
+class FbBookListThread: public FbThread
+{
+	public:
+		FbBookListThread(wxEvtHandler * frame, int author)
+			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_author(author) {}
+	protected:
+		virtual void * Entry();
+		void MakeModel(wxSQLite3ResultSet &result);
+		void DoAuthor(wxSQLite3Database &database);
+	private:
+		wxEvtHandler * m_frame;
+		int m_author;
+};
 
 class FbBookListData: public FbModelData
 {
@@ -13,8 +27,8 @@ class FbBookListData: public FbModelData
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
 	protected:
-		virtual void DoSetState(FbModel & model, int state) {};
-		virtual int DoGetState(FbModel & model) const { return -1; };
+		virtual void DoSetState(FbModel & model, int state);
+		virtual int DoGetState(FbModel & model) const;
 	private:
 		int m_code;
 		DECLARE_CLASS(FbBookListData);
@@ -23,15 +37,12 @@ class FbBookListData: public FbModelData
 class FbBookListModel: public FbListModel
 {
 	public:
+		static int CompareInt(int x, int y) { return x - y; }
 		FbBookListModel(const wxArrayInt &items);
-		FbBookListModel(int order, wxChar letter = 0);
-		FbBookListModel(int order, const wxString &mask);
 		virtual ~FbBookListModel(void);
-		virtual void Append(FbModelData * data);
-		virtual void Replace(FbModelData * data);
-		virtual void Delete();
 		void Append(const wxArrayInt &items);
-		void Delete(int code);
+		void SetState(int code, int state);
+		int GetState(int code) const;
 	public:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }

@@ -6,9 +6,6 @@
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
 
-#include <wx/dynarray.h>
-WX_DEFINE_SORTED_ARRAY_INT(int, FbSortedArrayInt);
-
 class FbTempEraser {
 	public:
 		static void Add(const wxString &filename);

@@ -43,23 +43,6 @@ FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result):
 {
 }
 
-FbCacheBook::FbCacheBook(const FbCacheBook &book):
-	m_code(book.m_code),
-	m_name(book.m_name),
-	m_auth(book.m_auth),
-	m_genr(book.m_genr),
-	m_lang(book.m_lang),
-	m_type(book.m_type),
-	m_md5s(book.m_md5s),
-	m_seqn(book.m_seqn),
-	m_numb(book.m_numb),
-	m_rate(book.m_rate),
-	m_date(book.m_date),
-	m_size(book.m_size),
-	m_fields(book.m_fields)
-{
-}
-
 bool FbCacheBook::HasField(size_t col) const
 {
 	return m_fields & col;
@@ -250,13 +233,13 @@ void FbCollection::ResetData(FbCasheDataArray &items, int code)
 	}
 }
 
-FbCacheBook FbCollection::GetBook(int code)
+wxString FbCollection::GetBook(int code, size_t col)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
-	if (collection == NULL) return code;
+	if (collection == NULL) return wxEmptyString;
 	FbCacheBook * book = collection->GetCacheBook(code);
-	return book ? *book : FbCacheBook(code);
+	return book ? book->GetValue(col) : wxString();
 }
 
 FbCacheBook * FbCollection::GetCacheBook(int code)

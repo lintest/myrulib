@@ -43,7 +43,6 @@ class FbCacheBook: public wxObject
 	public:
 		FbCacheBook(int code = 0);
 		FbCacheBook(int code, wxSQLite3ResultSet &result);
-		FbCacheBook(const FbCacheBook &book);
 		int GetCode() const { return m_code; }
 		int GetFields() const { return m_fields; }
 		wxString GetValue(FbBookFields field);
@@ -96,7 +95,7 @@ class FbCollection: public wxObject
 		static FbCollection * GetCollection();
 		static wxString GetSeqn(int code, size_t col);
 		static wxString GetAuth(int code, size_t col);
-		static FbCacheBook GetBook(int code);
+		static wxString GetBook(int code, size_t col);
 		static void AddSeqn(FbCacheData * data);
 		static void AddAuth(FbCacheData * data);
 		static void ResetSeqn(int code);

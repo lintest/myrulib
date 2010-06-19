@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/treebase.h>
-#include "FbBookType.h"
+#include "FbBookTypes.h"
 #include "FbDatabase.h"
 #include "FbThread.h"
 

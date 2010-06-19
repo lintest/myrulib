@@ -1,5 +1,5 @@
-#ifndef __FBBOOKTYPE_H__
-#define __FBBOOKTYPE_H__
+#ifndef __FBBOOKTYPES_H__
+#define __FBBOOKTYPES_H__
 
 enum FbFolderType {
 	FT_FOLDER = 1,
@@ -23,5 +23,8 @@ enum FbViewMode {
 	FB2_VIEW_VERTICAL = 1,
 	FB2_VIEW_NOTHING = 2,
 };
+
+#include <wx/dynarray.h>
+WX_DEFINE_SORTED_ARRAY_INT(int, FbSortedArrayInt);
 
 #endif // __FBBOOKTYPE_H__

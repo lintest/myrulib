@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "FbBookData.h"
-#include "FbBookType.h"
+#include "FbBookTypes.h"
 
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION, 1 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_MODEL_ACTION, 2 )

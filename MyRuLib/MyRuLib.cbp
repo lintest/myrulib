@@ -196,7 +196,7 @@
 		<Unit filename="FbBookPanel.h" />
 		<Unit filename="FbBookThread.cpp" />
 		<Unit filename="FbBookThread.h" />
-		<Unit filename="FbBookType.h" />
+		<Unit filename="FbBookTypes.h" />
 		<Unit filename="FbCalendar.cpp" />
 		<Unit filename="FbCalendar.h" />
 		<Unit filename="FbCheckList.cpp" />
