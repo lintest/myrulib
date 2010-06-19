@@ -711,7 +711,7 @@ msgstr "Аб'яднаць дзве серыі?"
 
 #: FbFrameSequen.cpp:406
 #, c-format
-msgid "Delete series «%s»?"
+msgid "Delete series \"%s\"?"
 msgstr "Знішчыць серыю «%s»?"
 
 #: FbGenres.cpp:17

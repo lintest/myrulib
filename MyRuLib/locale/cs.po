@@ -797,7 +797,7 @@ msgstr "Sloučit série?"
 
 #: FbFrameSequen.cpp:406
 #, c-format
-msgid "Delete series «%s»?"
+msgid "Delete series \"%s\"?"
 msgstr "Odstranit sérii «%s»?"
 
 #: FbGenres.cpp:17

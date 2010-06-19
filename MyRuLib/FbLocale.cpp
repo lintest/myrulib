@@ -1,3 +1,11 @@
+////////////////////////////////////////////////////////////////
+//                                                            //
+//  Use this command to create or update locale catalog:      //
+//                                                            //
+//  $ xgettext -C -n -k_ -j -o locale/myrulib.pot *.cpp *.h   //
+//                                                            //
+////////////////////////////////////////////////////////////////
+
 #include "FbLocale.h"
 #include <wx/wfstream.h>
 #include "FbDatabase.h"

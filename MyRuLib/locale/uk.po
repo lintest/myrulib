@@ -852,7 +852,7 @@ msgstr "Об'єднати дві серії?"
 
 #: MyRuLib/FbFrameSequen.cpp:416
 #, c-format
-msgid "Delete series «%s»?"
+msgid "Delete series \"%s\"?"
 msgstr "Видалити серію «%s»?"
 
 #: MyRuLib/FbFrameSequen.cpp:431

@@ -21,7 +21,7 @@ void AuthorItem::Convert(FbDatabase & database)
 void AuthorItem::Bind(wxSQLite3Statement &stmt, int param, const wxString &value)
 {
 	if (value.IsEmpty()) {
-		const char * null = "";
+		const char * null = 0;
 		stmt.Bind(param, null);
 	} else
 		stmt.Bind(param, value);

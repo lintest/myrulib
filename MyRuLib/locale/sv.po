@@ -1918,7 +1918,7 @@ msgstr "Slå samman serier?"
 
 #: MyRuLib/FbFrameSequen.cpp:416
 #, c-format
-msgid "Delete series «%s»?"
+msgid "Delete series \"%s\"?"
 msgstr "Ska serien \"%s\" tas bort?"
 
 #: MyRuLib/FbFrameSequen.cpp:431

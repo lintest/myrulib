@@ -228,7 +228,7 @@ void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 
 	int id = current->GetCode();
 
-	wxString msg = wxString::Format(_("Delete series «%s»?"), current->GetValue(*model).c_str());
+	wxString msg = wxString::Format(_("Delete series \"%s\"?"), current->GetValue(*model).c_str());
 	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (ok) {
 		wxString sql1 = wxString::Format(wxT("DELETE FROM sequences WHERE id=%d"), id);

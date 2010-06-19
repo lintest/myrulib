@@ -98,7 +98,7 @@ void InfoThread::WriteText(const XML_Char *s, int len)
 void InfoThread::CheckLength()
 {
 	if (annotation.Length()>1024) {
-		InfoCash::SetAnnotation(GetId(), annotation + wxT("…"));
+		InfoCash::SetAnnotation(GetId(), annotation + wxT("..."));
 		if (!images.Count()) Stop();
 		parsebody = false;
 		UpdateInfo();

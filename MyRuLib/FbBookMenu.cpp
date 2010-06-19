@@ -28,7 +28,6 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
 
-//	Append(wxID_EDIT, _("Редактировать"));
 	Append(wxID_DELETE, _("Delete book"));
 	AppendSeparator();
 
@@ -38,7 +37,7 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	AppendSeparator();
 
 	Append(wxID_ANY, _("Jump to author"), new FbMenuAuthors(m_id));
-//	Append(wxID_ANY, _("Открыть серию"), NULL);
+	Append(wxID_ANY, _("Jump to series"), NULL);
 	AppendSeparator();
 
 	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Add to favourites"));
