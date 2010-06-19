@@ -88,7 +88,7 @@ void FbGenres::Do(ID id, const void * value, void * result)
 		{ 0x4, 0x4, wxT("love_short"), _("Short romance novels")},
 		{ 0x4, 0x5, wxT("love_erotica"), _("Erotic novels")},
 		{ 0x4, 0x6, wxT("love_sf"), _("Love science fiction")},
-		{ 0x4, 0x0, wxT("love"), _("Love")},
+		{ 0x4, 0x0, wxT("love"), _("Love novels")},
 		{ 0x5, 0x1, wxT("adv_western"), _("Western")},
 		{ 0x5, 0x2, wxT("adv_history"), _("Historical adventures")},
 		{ 0x5, 0x3, wxT("adv_indian"), _("Adventures about Indians")},
