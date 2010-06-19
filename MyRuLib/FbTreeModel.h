@@ -51,10 +51,12 @@ WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
 class FbParentData: public FbModelData
 {
 	public:
-		FbParentData(FbModel & model, FbParentData * parent = 0);
+		FbParentData(FbModel & model, FbParentData * parent = NULL);
 		virtual size_t Count(FbModel & model) const
 			{ return m_items.Count(); }
-		virtual FbModelData* GetParent(FbModel & model) const
+		virtual FbModelData * GetParent(FbModel & model) const
+			{ return m_parent; }
+		FbParentData * GetParent() const
 			{ return m_parent; }
 		virtual bool IsBold(FbModel & model) const
 			{ return true; }
@@ -62,9 +64,10 @@ class FbParentData: public FbModelData
 			{ m_items.RemoveAt(index); }
 		virtual size_t CountAll(const FbModel & model) const;
 		virtual FbModelData* Items(FbModel & model, size_t index) const;
+	protected:
+		FbModelDataArray m_items;
 	private:
 		void Add(FbModel & model, FbModelData* data);
-		FbModelDataArray m_items;
 		FbParentData * m_parent;
 		DECLARE_CLASS(FbChildData);
 		friend class FbChildData;
@@ -73,8 +76,10 @@ class FbParentData: public FbModelData
 class FbChildData: public FbModelData
 {
 	public:
-		FbChildData(FbModel & model, FbParentData * parent = 0);
+		FbChildData(FbModel & model, FbParentData * parent = NULL);
 		virtual FbModelData* GetParent(FbModel & model) const
+			{ return m_parent; }
+		FbParentData * GetParent() const
 			{ return m_parent; }
 	private:
 		FbParentData * m_parent;

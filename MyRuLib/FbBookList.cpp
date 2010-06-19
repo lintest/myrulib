@@ -65,11 +65,6 @@ int FbBookListData::DoGetState(FbModel & model) const
 	return booklist ? booklist->GetState(m_code) : 0;
 }
 
-wxString FbBookListData::GetValue(FbModel & model, size_t col) const
-{
-	return FbCollection::GetBook(m_code, col);
-}
-
 //-----------------------------------------------------------------------------
 //  FbBookListModel
 //-----------------------------------------------------------------------------

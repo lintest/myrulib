@@ -23,9 +23,12 @@ class FbBookListThread: public FbThread
 class FbBookListData: public FbModelData
 {
 	public:
-		FbBookListData(int code): m_code(code) {}
-		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
-		int GetCode() const { return m_code; }
+		FbBookListData(int code)
+			: m_code(code) {}
+		int GetCode() const
+			{ return m_code; }
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
+			{ return FbCollection::GetBook(m_code, col); }
 	protected:
 		virtual void DoSetState(FbModel & model, int state);
 		virtual int DoGetState(FbModel & model) const;
