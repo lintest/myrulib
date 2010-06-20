@@ -1,6 +1,7 @@
 #include "FbMasterThread.h"
 #include "FbMasterInfo.h"
 #include "FbBookPanel.h"
+#include "InfoCash.h"
 
 //-----------------------------------------------------------------------------
 //  FbJoinedThread
@@ -26,7 +27,7 @@ class FbJoinedThread: public FbThread
 wxCriticalSection FbMasterThread::sm_section;
 
 FbMasterThread::FbMasterThread(FbBookPanel * owner)
-	: m_owner(owner), m_info(NULL), m_thread(NULL)
+	: m_owner(owner), m_info(NULL), m_thread(NULL), m_book(0)
 {
 }
 
@@ -41,6 +42,13 @@ void FbMasterThread::Reset(FbMasterInfo * info)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	m_info = info;
+	m_book = 0;
+}
+
+void FbMasterThread::Open(int book)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	m_book = book;
 }
 
 FbMasterInfo * FbMasterThread::GetInfo()
@@ -51,9 +59,20 @@ FbMasterInfo * FbMasterThread::GetInfo()
 	return result;
 }
 
+int FbMasterThread::GetBook()
+{
+	wxCriticalSectionLocker locker(sm_section);
+	int book = m_book;
+	m_book = 0;
+	return book;
+}
+
 void * FbMasterThread::Entry()
 {
 	while (!TestDestroy()) {
+		int book = GetBook();
+		if (book) (new ShowThread(m_owner, book, false, false))->Execute();
+
 		FbMasterInfo * info = GetInfo();
 		if (info == NULL) continue;
 
