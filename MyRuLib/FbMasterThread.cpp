@@ -16,10 +16,10 @@ FbMasterThread::~FbMasterThread()
 	wxDELETE(m_info);
 }
 
-void FbMasterThread::Reset(const FbMasterInfo & info)
+void FbMasterThread::Reset(FbMasterInfo * info)
 {
 	wxCriticalSectionLocker locker(sm_section);
-	m_info = info.Clone();
+	m_info = info;
 	m_modified = true;
 }
 

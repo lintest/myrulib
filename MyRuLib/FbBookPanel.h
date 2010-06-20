@@ -12,10 +12,14 @@
 
 class FbMasterData;
 
+class FbMasterThread;
+
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
 		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
+		virtual ~FbBookPanel();
+		void Reset(const FbMasterData &master);
 		void UpdateInfo(int id);
 		void SetOrderID(int id);
 		int GetOrderID();
@@ -52,6 +56,7 @@ class FbBookPanel: public wxSplitterWindow
 		int m_selected;
 		int m_KeyView;
 		FbMasterData * m_master;
+		FbMasterThread * m_thread;
 	private:
 		void OnAuthorInfo(wxCommandEvent& event);
 		void OnBooksListViewSelected(wxTreeEvent & event);

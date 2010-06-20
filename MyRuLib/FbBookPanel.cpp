@@ -10,6 +10,7 @@
 #include "ZipReader.h"
 #include "FbHtmlWindow.h"
 #include "FbMasterData.h"
+#include "FbMasterThread.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"
 
@@ -47,7 +48,7 @@ END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_master(NULL)
+		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_master(NULL), m_thread(new FbMasterThread(this))
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
@@ -66,6 +67,12 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 
 	FbListMode listmode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
 	CreateColumns(listmode);
+	m_thread->Execute();
+}
+
+FbBookPanel::~FbBookPanel()
+{
+	m_thread->Delete();
 }
 
 void FbBookPanel::Localize()
@@ -528,3 +535,15 @@ void FbBookPanel::OnTreeModel( FbModelEvent& event )
 {
 	m_BookList->AssignModel(event.GetModel());
 }
+
+void FbBookPanel::Reset(const FbMasterData &master)
+{
+	wxDELETE(m_master);
+	m_master = master.Clone();
+
+	FbMasterInfo * info = master.CreateInfo();
+	info->SetOrder(m_BookList->GetSortedColumn());
+	info->SetMode(GetListMode());
+	m_thread->Reset(info);
+}
+

@@ -1,4 +1,5 @@
 #include "FbMasterData.h"
+#include "FbMasterInfo.h"
 #include "FbFrameBase.h"
 #include "FbBookEvent.h"
 #include "FbBookList.h"
@@ -409,11 +410,14 @@ wxString FbMasterSeqname::SequenThread::GetOrder()
 
 void FbMasterAuthor::Show(FbFrameBase * frame) const
 {
+	frame->GetBooks()->Reset(*this);
+/*
 	if (frame->GetListMode() == FB2_MODE_TREE) {
 		(new FbBookTreeThread(frame->GetBooks(), m_id))->Execute();
 	} else {
 		(new FbBookListThread(frame->GetBooks(), m_id))->Execute();
 	}
+*/
 }
 
 void FbMasterDownld::Show(FbFrameBase * frame) const

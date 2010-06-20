@@ -12,7 +12,7 @@ class FbMasterThread : public FbThread
 	public:
 		FbMasterThread(FbBookPanel * owner);
 		virtual ~FbMasterThread();
-		void Reset(const FbMasterInfo & info);
+		void Reset(FbMasterInfo * info);
 	protected:
 		virtual void * Entry();
 	private:

@@ -6,6 +6,7 @@
 #include "FbBookTypes.h"
 #include "FbDatabase.h"
 #include "FbThread.h"
+#include "FbMasterInfo.h"
 
 class FbFrameBase;
 
@@ -17,6 +18,8 @@ class FbMasterData: public wxTreeItemData
 		virtual const int GetId() const = 0;
 		virtual const FbFolderType GetType() const = 0;
 		virtual void Show(FbFrameBase * frame) const = 0;
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterAuthorInfo(0); }
 	protected:
 		class BaseThread: public FbThread
 		{
@@ -52,6 +55,8 @@ class FbMasterAuthor: public FbMasterData
 			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterAuthor(*this); };
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterAuthorInfo(m_id); }
 	public:
 		virtual const int GetId() const { return m_id; };
 		virtual const FbFolderType GetType() const { return FT_AUTHOR; };
