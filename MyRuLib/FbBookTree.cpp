@@ -4,30 +4,6 @@
 #include "FbConst.h"
 
 //-----------------------------------------------------------------------------
-//  FbBookTreeThread
-//-----------------------------------------------------------------------------
-
-void * FbBookTreeThread::Entry()
-{
-	try {
-		FbCommonDatabase database;
-		ExecSQL(database);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	return NULL;
-}
-
-void FbBookTreeThread::ExecSQL(wxSQLite3Database &database)
-{
-	wxString sql = m_info->GetSQL();
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	m_info->Bind(stmt);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	m_info->MakeTree(m_frame, result);
-}
-
-//-----------------------------------------------------------------------------
 //  FbAuthParentData
 //-----------------------------------------------------------------------------
 

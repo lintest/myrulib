@@ -5,23 +5,27 @@
 #include "FbConst.h"
 
 //-----------------------------------------------------------------------------
-//  FbModelData
+//  FbMasterInfo
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
-void FbMasterInfo::Execute(FbBookPanel * owner) const
+void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread) const
 {
-	FbThread * thread = NULL;
-	switch (GetMode()) {
-		case FB2_MODE_LIST: {
-			thread = new FbBookListThread(owner, this);
-		} break;
-		case FB2_MODE_TREE: {
-			thread = new FbBookTreeThread(owner, this);
-		} break;
+	try {
+		FbCommonDatabase database;
+		wxString sql = GetSQL();
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		Bind(stmt);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		switch (GetMode()) {
+			case FB2_MODE_LIST: MakeList(owner, result); break;
+			case FB2_MODE_TREE: MakeTree(owner, result); break;
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
 	}
-	if (thread) thread->Execute();
+	return NULL;
 }
 
 void FbMasterInfo::MakeList(wxEvtHandler *owner, wxSQLite3ResultSet &result) const
@@ -112,9 +116,9 @@ wxString FbMasterSeqnInfo::GetSQL() const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id FROM books WHERE id_author=? ORDER BY title");
+			return wxT("SELECT DISTINCT id_book FROM bookseq LEFT JOIN books on books.id = bookseq.id_book WHERE bookseq.id_seq=? ORDER BY title");
 		case FB2_MODE_TREE:
-			return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
+			return wxT("SELECT DISTINCT id_author, books.id, number FROM bookseq LEFT JOIN books ON bookseq.id_book=books.id WHERE bookseq.id_seq=? ORDER BY id_author, number, title");
 	}
 }
 
@@ -133,7 +137,7 @@ wxString FbMasterGenrInfo::GetSQL() const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id FROM books WHERE id_author=? ORDER BY title");
+			return wxT("SELECT DISTINCT id_book FROM genres INNER JOIN books on books.id = genres.id_book WHERE genres.id_genre=? ORDER BY title");
 		case FB2_MODE_TREE:
 			return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
 	}

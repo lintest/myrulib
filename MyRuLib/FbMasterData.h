@@ -52,7 +52,7 @@ class FbMasterSeqname: public FbMasterData
 class FbMasterGenre: public FbMasterData
 {
 	public:
-		FbMasterGenre(const int id = 0)
+		FbMasterGenre(const wxString & id)
 			: m_id(id) {}
 		FbMasterGenre(const FbMasterGenre & data)
 			: m_id(data.m_id) {}
@@ -61,7 +61,7 @@ class FbMasterGenre: public FbMasterData
 		virtual FbMasterInfo * CreateInfo() const
 			{ return new FbMasterGenrInfo(m_id); }
 	private:
-		int m_id;
+		const wxString m_id;
 };
 
 class FbMasterDownld: public FbMasterData

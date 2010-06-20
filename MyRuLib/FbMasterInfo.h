@@ -6,8 +6,6 @@
 #include "FbBookTypes.h"
 #include "FbCollection.h"
 
-class FbBookPanel;
-
 class FbMasterInfo : public wxObject
 {
 	public:
@@ -25,7 +23,7 @@ class FbMasterInfo : public wxObject
 			{ return m_mode; }
 		FbMasterInfo & SetMode(FbListMode mode)
 			{ m_mode = mode; return *this; }
-		void Execute(FbBookPanel * owner) const;
+		void * Execute(wxEvtHandler * owner, FbThread * thread) const;
 	public:
 		virtual FbMasterInfo * Clone() const = 0;
 		virtual wxString GetSQL() const = 0;
@@ -75,7 +73,7 @@ class FbMasterSeqnInfo: public FbMasterInfo
 class FbMasterGenrInfo: public FbMasterInfo
 {
 	public:
-		FbMasterGenrInfo(int id)
+		FbMasterGenrInfo(const wxString &id)
 			: m_id(id) {}
 		FbMasterGenrInfo(const FbMasterGenrInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id) {}
@@ -84,7 +82,7 @@ class FbMasterGenrInfo: public FbMasterInfo
 		virtual wxString GetSQL() const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
-		int m_id;
+		const wxString m_id;
 		DECLARE_CLASS(FbMasterGenrInfo);
 };
 

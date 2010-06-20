@@ -7,22 +7,6 @@
 #include "FbThread.h"
 #include "FbMasterInfo.h"
 
-class FbBookTreeThread: public FbThread
-{
-	public:
-		FbBookTreeThread(wxEvtHandler * frame, const FbMasterInfo * info)
-			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info->Clone()) {}
-		virtual ~FbBookTreeThread()
-			{ wxDELETE(m_info); }
-	protected:
-		virtual void * Entry();
-		void ExecSQL(wxSQLite3Database &database);
-		void MakeModel(wxSQLite3ResultSet &result);
-	private:
-		wxEvtHandler * m_frame;
-		FbMasterInfo * m_info;
-};
-
 class FbAuthParentData: public FbParentData
 {
 	public:

@@ -17,13 +17,11 @@ class FbMasterThread : public FbThread
 		virtual void * Entry();
 	private:
 		FbMasterInfo * GetInfo();
-		bool IsModified();
 	private:
 		static wxCriticalSection sm_section;
 		FbBookPanel * m_owner;
 		FbMasterInfo * m_info;
 		FbThread * m_thread;
-		bool m_modified;
 };
 
 #endif // __FBMASTERTHREAD_H__
