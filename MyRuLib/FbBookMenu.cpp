@@ -13,12 +13,14 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	: m_id(id)
 {
 	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
+/*
 	if (data.GetType() == FT_DOWNLOAD) {
 		Append(ID_DELETE_DOWNLOAD, _("Delete download query"));
 		if ( data.GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
 	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Download a file"));
 	}
+*/
 	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
 	if ( id>0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
@@ -40,10 +42,11 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	Append(wxID_ANY, _("Jump to series"), NULL);
 	AppendSeparator();
 
-	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Add to favourites"));
+
+//	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Add to favourites"));
 	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(data));
 	Append(wxID_ANY, _("Rate this book"), new FbMenuRating);
-	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
+//	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
 	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
@@ -91,7 +94,7 @@ FbMenuFolders::FbMenuFolders(const FbMasterData &data)
 	LoadFolders();
 	for (size_t i=0; i<sm_folders.Count(); i++) {
 		int id = sm_folders[i].id;
-		if (data.GetType() == FT_FOLDER && sm_folders[i].folder == data.GetId()) continue;
+//		if (data.GetType() == FT_FOLDER && sm_folders[i].folder == data.GetId()) continue;
 		Append(id, sm_folders[i].name);
 	}
 }

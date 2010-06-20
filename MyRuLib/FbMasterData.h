@@ -13,10 +13,7 @@ class FbFrameBase;
 class FbMasterData: public wxTreeItemData
 {
 	public:
-		virtual bool operator ==(const FbMasterData & data) const = 0;
 		virtual FbMasterData * Clone() const = 0;
-		virtual const int GetId() const = 0;
-		virtual const FbFolderType GetType() const = 0;
 		virtual void Show(FbFrameBase * frame) const = 0;
 		virtual FbMasterInfo * CreateInfo() const
 			{ return new FbMasterAuthorInfo(0); }
@@ -49,17 +46,11 @@ class FbMasterAuthor: public FbMasterData
 	public:
 		FbMasterAuthor(const int id = 0): m_id(id) {};
 		FbMasterAuthor(const FbMasterAuthor & data): m_id(data.m_id) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && operator==((FbMasterAuthor&)data); };
-		bool operator ==(const FbMasterAuthor & data) const
-			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterAuthor(*this); };
 		virtual FbMasterInfo * CreateInfo() const
 			{ return new FbMasterAuthorInfo(m_id); }
 	public:
-		virtual const int GetId() const { return m_id; };
-		virtual const FbFolderType GetType() const { return FT_AUTHOR; };
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
@@ -72,15 +63,9 @@ class FbMasterSeqname: public FbMasterData
 			: m_id(id) {};
 		FbMasterSeqname(const FbMasterSeqname & data)
 			: m_id(data.m_id) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && operator==((FbMasterSeqname&)data); };
-		bool operator ==(const FbMasterSeqname & data) const
-			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSeqname(*this); };
 	public:
-		virtual const int GetId() const { return m_id; };
-		virtual const FbFolderType GetType() const { return FT_SEQNAME; };
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
@@ -109,15 +94,9 @@ class FbMasterGenre: public FbMasterData
 			: m_id(id) {};
 		FbMasterGenre(const FbMasterGenre & data)
 			: m_id(data.m_id) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && operator==((FbMasterGenre&)data); };
-		bool operator ==(const FbMasterGenre & data) const
-			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterGenre(*this); };
 	public:
-		virtual const int GetId() const { return m_id; };
-		virtual const FbFolderType GetType() const { return FT_GENRE; };
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
@@ -152,15 +131,9 @@ class FbMasterDownld: public FbMasterData
 			: m_id(id) {};
 		FbMasterDownld(const FbMasterDownld & data)
 			: m_id(data.m_id) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && operator==((FbMasterDownld&)data); };
-		bool operator ==(const FbMasterDownld & data) const
-			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDownld(*this); };
 	public:
-		virtual const int GetId() const { return m_id; };
-		virtual const FbFolderType GetType() const { return FT_DOWNLOAD; };
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
@@ -187,10 +160,6 @@ class FbMasterSearch: public FbMasterData
 			: m_title(title), m_author(author) {};
 		FbMasterSearch(const FbMasterSearch & data)
 			: m_title(data.m_title), m_author(data.m_author) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && operator==((FbMasterSearch&)data); };
-		bool operator ==(const FbMasterSearch & data) const
-			{ return m_title == data.m_title && m_author == data.m_author; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSearch(*this); };
 	public:
@@ -220,16 +189,10 @@ class FbMasterDate: public FbMasterData
 			: m_id(id) {};
 		FbMasterDate(const FbMasterDate & data)
 			: m_id(data.m_id) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && operator==((FbMasterDate&)data); };
-		bool operator ==(const FbMasterDate & data) const
-			{ return m_id == data.m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDate(*this); };
 		static wxDateTime GetDate(int code);
 	public:
-		virtual const int GetId() const { return m_id; };
-		virtual const FbFolderType GetType() const { return FT_DATE; };
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
@@ -254,13 +217,9 @@ class FbMasterFolder: public FbMasterData
 			: m_id(id), m_type(type) {};
 		FbMasterFolder(const FbMasterFolder & data)
 			: m_id(data.m_id), m_type(data.m_type) {};
-		virtual bool operator ==(const FbMasterData & data) const
-			{ return GetType() == data.GetType() && m_id == ((FbMasterFolder&)data).m_id; };
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterFolder(*this); };
 	public:
-		virtual const int GetId() const { return m_id; };
-		virtual const FbFolderType GetType() const { return m_type; };
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;

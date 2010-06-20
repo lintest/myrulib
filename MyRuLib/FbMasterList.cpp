@@ -49,6 +49,7 @@ FbMasterData * FbMasterList::GetItemData(const wxTreeItemId& item) const
 
 void FbMasterList::DeleteItem(FbMasterData &data, wxTreeItemId parent)
 {
+/*
 	if (!parent.IsOk()) parent = GetRootItem();
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);
@@ -60,5 +61,6 @@ void FbMasterList::DeleteItem(FbMasterData &data, wxTreeItemId parent)
 		}
 		child = GetNextChild(parent, cookie);
 	}
+*/
 }
 
