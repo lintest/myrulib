@@ -92,9 +92,9 @@ void FbBookListModel::SetState(int code, int state)
 {
 	int index = m_check.Index(code);
 	if (index == wxNOT_FOUND) {
-		if (state) m_ctrls.Add(m_position);
+		if (state) m_check.Add(code);
 	} else {
-		if (!state) m_ctrls.RemoveAt(index);
+		if (!state) m_check.RemoveAt(index);
 	}
 }
 
@@ -216,6 +216,7 @@ wxString FbBookList::GetSelected()
 
 bool FbBookList::DeleteItems(const wxTreeItemId &parent, wxArrayInt &items)
 {
+/*
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);
 	while (child.IsOk()) {
@@ -233,6 +234,7 @@ bool FbBookList::DeleteItems(const wxTreeItemId &parent, wxArrayInt &items)
 		child = GetNextChild(parent, cookie);
 	}
 	return false;
+*/
 }
 
 void FbBookList::DeleteItems(wxArrayInt &items)

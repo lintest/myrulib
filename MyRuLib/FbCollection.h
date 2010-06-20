@@ -19,8 +19,9 @@ typedef size_t FbBookFields;
 #define	BF_TYPE  0x0080
 #define	BF_DATE  0x0100
 #define	BF_SIZE  0x0200
-#define	BF_SEQN  0x0400
-#define	BF_MD5S  0x0800
+#define	BF_LENG  0x0400
+#define	BF_SEQN  0x0800
+#define	BF_MD5S  0x1000
 
 /*
 enum FbBookFields {

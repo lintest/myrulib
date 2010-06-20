@@ -51,6 +51,11 @@ class FbBookListModel: public FbListModel
 			{ return m_items.Count(); }
 		virtual FbModelData * GetCurrent()
 			{ return GetData(m_position); };
+
+		virtual void Append(FbModelData * data) {}
+		virtual void Replace(FbModelData * data) {}
+		virtual void Delete() {}
+
 	protected:
 		virtual FbModelData * DoGetData(size_t row, int &level);
 	private:

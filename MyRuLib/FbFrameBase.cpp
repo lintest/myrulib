@@ -53,10 +53,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_ORDER_TYPE, FbFrameBase::OnChangeOrderUpdateUI)
     EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
 	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
-	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendAuthor)
-	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameBase::OnAppendSequence)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameBase::OnBooksCount)
-	EVT_FB_BOOK(ID_APPEND_BOOK, FbFrameBase::OnAppendBook)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
@@ -118,31 +115,12 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 
 void FbFrameBase::OnExternal(wxCommandEvent& event)
 {
-	ExternalDlg::Execute(this, m_BooksPanel->m_BookList);
+//	ExternalDlg::Execute(this, m_BooksPanel->m_BookList);
 }
 
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 {
 	m_BooksPanel->EmptyBooks();
-}
-
-void FbFrameBase::OnAppendBook(FbBookEvent& event)
-{
-	m_BooksPanel->AppendBook( event.m_data, event.GetString() );
-}
-
-void FbFrameBase::OnAppendAuthor(wxCommandEvent& event)
-{
-	wxString title = event.GetString();
-	if (event.GetInt() == 0) title = wxGetTranslation(strNobody);
-	m_BooksPanel->AppendAuthor( event.GetInt(), title, new FbAuthorData(event.GetInt()) );
-}
-
-void FbFrameBase::OnAppendSequence(wxCommandEvent& event)
-{
-	wxString title = event.GetString();
-	if (title.IsEmpty()) title = _("(Misc.)");
-	m_BooksPanel->AppendSequence( event.GetInt(), title );
 }
 
 void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
@@ -270,7 +248,8 @@ wxString FbFrameBase::Naming(int count, const wxString &single, const wxString &
 
 int FbFrameBase::GetBookCount()
 {
-	return (m_BooksPanel) ? m_BooksPanel->m_BookList->GetCount() : 0;
+	return 0;
+//	return (m_BooksPanel) ? m_BooksPanel->m_BookList->GetCount() : 0;
 }
 
 void FbFrameBase::ShowFullScreen(bool show)

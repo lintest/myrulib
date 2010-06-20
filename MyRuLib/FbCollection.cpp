@@ -52,14 +52,16 @@ wxString FbCacheBook::GetValue(FbBookFields field)
 {
 	switch (field) {
 		case BF_CODE: return wxString::Format(wxT("%d"), m_code);
-		case BF_NUMB: return wxString::Format(wxT("%d"), m_numb);
+		case BF_NAME: return m_name;
+		case BF_NUMB: return m_numb ? wxString::Format(wxT("%d"), m_numb) : wxString();
 		case BF_AUTH: return m_auth;
 		case BF_GENR: return FbGenres::DecodeList(m_genr);
 		case BF_RATE: return m_rate ? GetRatingText(m_rate) : wxString();
 		case BF_LANG: return m_lang;
 		case BF_TYPE: return m_type;
 		case BF_DATE: return FbMasterDate::GetDate(m_date).FormatDate();
-		case BF_SIZE: return FbCollection::Format(m_date);
+		case BF_SIZE: return FbCollection::Format(m_size / 1024);
+		case BF_LENG: return FbCollection::Format(m_size);
 		case BF_SEQN: return m_seqn;
 		case BF_MD5S: return m_md5s;
 		default: return wxEmptyString;

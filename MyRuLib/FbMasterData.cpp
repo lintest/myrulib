@@ -1,6 +1,8 @@
 #include "FbMasterData.h"
 #include "FbFrameBase.h"
 #include "FbBookEvent.h"
+#include "FbBookList.h"
+#include "FbBookTree.h"
 #include "FbConst.h"
 
 FbMasterData::BaseThread::BaseThread(FbFrameBase * frame, FbMasterData const * data) :
@@ -116,103 +118,6 @@ void FbMasterData::BaseThread::InitDatabase(FbCommonDatabase &database)
 	database.AttachConfig();
 	database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
 	database.CreateFunction(wxT("GENRE"), 1, m_genre);
-}
-
-FbThreadSkiper FbMasterAuthor::AuthorThread::sm_skiper;
-
-wxString FbMasterAuthor::AuthorThread::GetSQL(const wxString & condition)
-{
-	wxString sql;
-	switch (m_mode) {
-		case FB2_MODE_TREE:
-			sql = wxT("\
-				SELECT DISTINCT (CASE WHEN bookseq.id_seq IS NULL THEN 1 WHEN bookseq.id_seq=0 THEN 1 ELSE 0 END) AS key, \
-					books.id, books.title, books.file_size, books.file_type, books.lang, GENRE(books.genres) AS genres, books.id_author, \
-					states.rating, sequences.value AS sequence, bookseq.number as number\
-				FROM books \
-					LEFT JOIN bookseq ON bookseq.id_book=books.id \
-					LEFT JOIN sequences ON bookseq.id_seq=sequences.id \
-					LEFT JOIN states ON books.md5sum=states.md5sum \
-				WHERE (%s) \
-				ORDER BY key, sequences.value, bookseq.number, books.title \
-			");
-			break;
-		case FB2_MODE_LIST:
-			sql = wxT("\
-				SELECT DISTINCT\
-					books.id as id, books.title as title, books.file_size as file_size, books.file_type as file_type, books.lang as lang, GENRE(books.genres) AS genres, \
-					states.rating as rating, books.created as created, AGGREGATE(authors.full_name) as full_name \
-				FROM books \
-					LEFT JOIN books as sub ON sub.id=books.id \
-					LEFT JOIN authors ON sub.id_author = authors.id \
-					LEFT JOIN states ON books.md5sum=states.md5sum \
-				WHERE (%s) \
-				GROUP BY books.id, books.title, books.file_size, books.file_type, states.rating, books.created \
-				ORDER BY \
-			") + GetOrder();
-			break;
-	}
-
-	sql += FbParams::GetLimit();
-
-	wxString str = wxString::Format(wxT("(%s)%s"), condition.c_str(), m_filter.c_str());
-	return wxString::Format(sql, str.c_str());
-}
-
-void * FbMasterAuthor::AuthorThread::Entry()
-{
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_EMPTY_BOOKS).Post(m_frame);
-
-	wxCriticalSectionLocker locker(sm_queue);
-
-	if (sm_skiper.Skipped(m_number)) return NULL;
-
-	try {
-		FbCommonDatabase database;
-		InitDatabase(database);
-
-		{
-			wxString sql = wxT("SELECT full_name, description FROM authors WHERE id=?");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, m_author);
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
-			if (result.NextRow()) {
-				if (m_mode == FB2_MODE_TREE) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_AUTHOR, m_author, result.GetString(0)).Post(m_frame);
-				FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(1)).Post(m_frame);
-			}
-		}
-
-		wxString sql = GetSQL(wxT("books.id_author=?"));
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_author);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-		if (sm_skiper.Skipped(m_number)) return NULL;
-		FillBooks(result);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
-	return NULL;
-}
-
-void FbMasterAuthor::AuthorThread::CreateTree(wxSQLite3ResultSet &result)
-{
-	bool seq_exists = false;
-	wxString thisSequence = wxT("@@@");
-	while (result.NextRow()) {
-		wxString nextSequence = result.GetString(wxT("sequence"));
-		if (thisSequence != nextSequence) {
-			thisSequence = nextSequence;
-			seq_exists |= result.GetInt(wxT("key")) == 0;
-			if (seq_exists) FbCommandEvent(fbEVT_BOOK_ACTION, ID_APPEND_SEQUENCE, thisSequence).Post(m_frame);
-		}
-
-		BookTreeItemData data(result);
-		FbBookEvent(ID_APPEND_BOOK, &data).Post(m_frame);
-	}
-	FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT).Post(m_frame);
 }
 
 FbThreadSkiper FbMasterDownld::DownldThread::sm_skiper;
@@ -504,7 +409,11 @@ wxString FbMasterSeqname::SequenThread::GetOrder()
 
 void FbMasterAuthor::Show(FbFrameBase * frame) const
 {
-	(new AuthorThread(frame, this))->Execute();
+	if (frame->GetListMode() == FB2_MODE_TREE) {
+		(new FbBookTreeThread(frame->GetBooks(), m_id))->Execute();
+	} else {
+		(new FbBookListThread(frame->GetBooks(), m_id))->Execute();
+	}
 }
 
 void FbMasterDownld::Show(FbFrameBase * frame) const

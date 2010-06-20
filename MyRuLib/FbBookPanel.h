@@ -4,8 +4,10 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
-#include "FbBookList.h"
+#include "FbTreeView.h"
 #include "FbBookData.h"
+#include "FbBookTypes.h"
+#include "FbBookEvent.h"
 #include "FbParams.h"
 
 class FbMasterData;
@@ -24,14 +26,14 @@ class FbBookPanel: public wxSplitterWindow
 		FbMasterData const * GetMasterData() const { return m_master; };
 		void Localize();
 	public:
-		FbBookList * m_BookList;
-		FbItemData * GetSelectedBook();
+		FbTreeViewCtrl * m_BookList;
+		int GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
 		void AppendSequence(int id, const wxString title, wxTreeItemData * data = NULL);
 		void CreateColumns(FbListMode mode);
-		FbListMode GetListMode() { return m_ListMode;};
+		FbListMode GetListMode() { return m_ListMode; }
 		FbViewMode GetViewMode();
 		void UpdateFonts(bool refresh = true);
 	private:
@@ -75,6 +77,9 @@ class FbBookPanel: public wxSplitterWindow
 		void OnLinkClicked(wxHtmlLinkEvent& event);
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
+		void OnListModel( FbArrayEvent& event );
+		void OnListArray( FbArrayEvent& event );
+		void OnTreeModel( FbModelEvent& event );
 		DECLARE_EVENT_TABLE();
 	private:
 };

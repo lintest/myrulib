@@ -58,21 +58,6 @@ class FbMasterAuthor: public FbMasterData
 		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
-	protected:
-		class AuthorThread: public BaseThread
-		{
-			public:
-				AuthorThread(FbFrameBase * frame, FbMasterAuthor const * data)
-					: BaseThread(frame, data), m_author(data->m_id), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			protected:
-				virtual void CreateTree(wxSQLite3ResultSet &result);
-				virtual wxString GetSQL(const wxString & condition);
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_author;
-				int m_number;
-		};
 };
 
 class FbMasterSeqname: public FbMasterData

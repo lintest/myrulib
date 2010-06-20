@@ -20,10 +20,9 @@ void * FbBookTreeThread::Entry()
 
 void FbBookTreeThread::DoAuthor(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id_seq, id_book, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id AND bookseq.id_author=? WHERE books.id_author=? ORDER BY id_seq, number, title");
+	wxString sql = wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_author);
-	stmt.Bind(2, m_author);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(database, result);
 }
@@ -54,7 +53,7 @@ void FbBookTreeThread::MakeModel(wxSQLite3Database &database, wxSQLite3ResultSet
 	}
 	model->SetRoot(root);
 
-	FbModelEvent(ID_MODEL_CREATE, model).Post(m_frame);
+	FbModelEvent(ID_BOOKS_LISTCTRL, model).Post(m_frame);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +97,7 @@ IMPLEMENT_CLASS(FbBookChildData, FbChildData)
 wxString FbBookChildData::GetValue(FbModel & model, size_t col) const
 {
 	if (col == BF_NUMB)
-		return wxString::Format(wxT("%d"), m_numb);
+		return m_numb ? wxString::Format(wxT("%d"), m_numb) : wxString();
 	else
 		return FbCollection::GetBook(m_code, col);
 }

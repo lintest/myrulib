@@ -24,7 +24,7 @@ class FbAuthParentData: public FbParentData
 {
 	public:
 		FbAuthParentData(FbModel & model, FbParentData * parent, int code)
-			: FbParentData(model, parent), m_code(code) {}
+			: FbParentData(model, parent), m_code(code), m_state(0) {}
 		int GetCode() const
 			{ return m_code; }
 		virtual bool FullRow(FbModel & model) const
@@ -49,7 +49,7 @@ class FbSeqnParentData: public FbParentData
 {
 	public:
 		FbSeqnParentData(FbModel & model, FbParentData * parent, int code)
-			: FbParentData(model, parent), m_code(code) {}
+			: FbParentData(model, parent), m_code(code), m_state(0) {}
 		int GetCode() const
 			{ return m_code; }
 		virtual bool FullRow(FbModel & model) const
@@ -76,7 +76,7 @@ class FbBookChildData: public FbChildData
 {
 	public:
 		FbBookChildData(FbModel & model, FbParentData * parent, int code, int numb)
-			: FbChildData(model, parent), m_code(code), m_numb(numb) {}
+			: FbChildData(model, parent), m_code(code), m_numb(numb), m_state(0) {}
 		int GetCode() const
 			{ return m_code; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;

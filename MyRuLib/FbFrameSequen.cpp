@@ -24,8 +24,6 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameSequen::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameSequen::OnMasterModify)
 	EVT_MENU(ID_MASTER_DELETE, FbFrameSequen::OnMasterDelete)
-	EVT_COMMAND(ID_APPEND_AUTHOR, fbEVT_BOOK_ACTION, FbFrameSequen::OnAppendAuthor)
-	EVT_COMMAND(ID_APPEND_SEQUENCE, fbEVT_BOOK_ACTION, FbFrameSequen::OnAppendSequence)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameSequen::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameSequen::OnArray)
 END_EVENT_TABLE()
@@ -261,20 +259,6 @@ FbFrameSequen::MenuMaster::MenuMaster()
 wxMenuBar * FbFrameSequen::CreateMenuBar()
 {
 	return new MenuBar;
-}
-
-void FbFrameSequen::OnAppendSequence(wxCommandEvent& event)
-{
-	wxString title = event.GetString();
-	if (title.IsEmpty()) title = _("(Misc.)");
-	m_BooksPanel->AppendAuthor( event.GetInt(), title );
-}
-
-void FbFrameSequen::OnAppendAuthor(wxCommandEvent& event)
-{
-	wxString title = event.GetString();
-	if (event.GetInt() == 0) title = wxGetTranslation(strNobody);
-	m_BooksPanel->AppendSequence( event.GetInt(), title, new FbAuthorData(event.GetInt()) );
 }
 
 void FbFrameSequen::OnModel( FbArrayEvent& event )

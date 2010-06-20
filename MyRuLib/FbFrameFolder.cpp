@@ -131,6 +131,7 @@ void FbFrameFolder::UpdateBooklist()
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 {
+/*
 	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
 	if (data == NULL) return;
 
@@ -147,6 +148,7 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 	wxArrayInt items;
 	m_BooksPanel->m_BookList->GetSelected(items);
 	m_BooksPanel->m_BookList->DeleteItems(items);
+*/
 }
 
 void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)

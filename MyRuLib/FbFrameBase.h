@@ -31,6 +31,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void UpdateStatus();
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
+		FbBookPanel * GetBooks() { return m_BooksPanel; }
 	protected:
 		virtual void CreateControls();
 		virtual void UpdateBooklist() = 0;

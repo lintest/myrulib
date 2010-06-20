@@ -127,6 +127,7 @@ void FbFrameDownld::OnPause(wxCommandEvent & event)
 
 void FbFrameDownld::OnMoveUp(wxCommandEvent& event)
 {
+/*
 	wxString sel = m_BooksPanel->m_BookList->GetSelected();
 	if (sel.IsEmpty()) return;
 
@@ -136,10 +137,12 @@ void FbFrameDownld::OnMoveUp(wxCommandEvent& event)
 	"), sel.c_str());
 
 	( new FbFolderUpdateThread(sql, 1, FT_DOWNLOAD) )->Execute();
+*/
 }
 
 void FbFrameDownld::OnMoveDown(wxCommandEvent& event)
 {
+/*
 	wxString sel = m_BooksPanel->m_BookList->GetSelected();
 	if (sel.IsEmpty()) return;
 
@@ -149,5 +152,6 @@ void FbFrameDownld::OnMoveDown(wxCommandEvent& event)
 	"), sel.c_str());
 
 	( new FbFolderUpdateThread(sql, 1, FT_DOWNLOAD))->Execute();
+*/
 }
 
