@@ -416,15 +416,6 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, _("Delete files when you delete a book"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
-	wxBoxSizer * bSizerLimit = new wxBoxSizer( wxHORIZONTAL );
-
-	checkbox = new wxCheckBox( this, ID_LIMIT_CHECK, _("Limit the maximum size of lists:"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerLimit->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
-
-	wxTextCtrl * maxedit = new wxTextCtrl( this, ID_LIMIT_COUNT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerLimit->Add( maxedit, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
-	bSizer->Add( bSizerLimit, 0, 0, 5 );
-
 	checkbox = new wxCheckBox( this, ID_CLEAR_LOG, _("Clear the log window when it closes"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( checkbox, 0, wxALL, 5 );
 
@@ -632,8 +623,6 @@ void FbParamsDlg::Assign(bool write)
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
 		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH, tCheck},
-		{FB_LIMIT_CHECK, ID_LIMIT_CHECK, tCheck},
-		{FB_LIMIT_COUNT, ID_LIMIT_COUNT, tCount},
 		{FB_CLEAR_LOG, ID_CLEAR_LOG, tCheck},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT, tChoise},
 		{FB_LANG_LOCALE, ID_LANG_LOCALE, tChoise},

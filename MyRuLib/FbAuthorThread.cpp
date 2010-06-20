@@ -52,7 +52,6 @@ wxString FbAuthorThread::GetSQL(const wxString & condition)
 
 	sql += wxT(" WHERE ") + condition;
 	sql += wxT(" ORDER BY ") + GetOrder();
-	sql += FbParams::GetLimit();
 
 	return 	sql;
 }

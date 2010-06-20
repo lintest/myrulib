@@ -83,8 +83,6 @@ enum FbParamKey {
 	FB_ALPHABET_EN   = 193,
 	FB_LANG_LOCALE   = 194,
 
-	FB_LIMIT_CHECK   = 210,
-	FB_LIMIT_COUNT   = 211,
 	FB_CLEAR_LOG     = 212,
 
 	FB_TITLE_0 = 220,
@@ -120,7 +118,6 @@ class FbParams {
 		void ResetValue(const int param);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
-		static wxString GetLimit();
 		void AddRecent(const wxString &text, const wxString &title);
 	private:
 		static ParamArray sm_params;
