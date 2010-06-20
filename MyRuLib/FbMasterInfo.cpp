@@ -14,7 +14,7 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread) const
 {
 	try {
 		FbCommonDatabase database;
-		wxString sql = GetSQL();
+		wxString sql = GetSQL(database);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		Bind(stmt);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -58,7 +58,7 @@ void FbMasterInfo::MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &result) con
 
 IMPLEMENT_CLASS(FbMasterAuthorInfo, FbMasterInfo)
 
-wxString FbMasterAuthorInfo::GetSQL() const
+wxString FbMasterAuthorInfo::GetSQL(wxSQLite3Database &database) const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
@@ -112,7 +112,7 @@ void FbMasterSeqnInfo::MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &result)
 {
 }
 
-wxString FbMasterSeqnInfo::GetSQL() const
+wxString FbMasterSeqnInfo::GetSQL(wxSQLite3Database &database) const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
@@ -133,7 +133,7 @@ void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfo)
 
-wxString FbMasterGenrInfo::GetSQL() const
+wxString FbMasterGenrInfo::GetSQL(wxSQLite3Database &database) const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
@@ -154,7 +154,7 @@ void FbMasterGenrInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfo)
 
-wxString FbMasterDateInfo::GetSQL() const
+wxString FbMasterDateInfo::GetSQL(wxSQLite3Database &database) const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
@@ -175,7 +175,7 @@ void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterDownInfo, FbMasterInfo)
 
-wxString FbMasterDownInfo::GetSQL() const
+wxString FbMasterDownInfo::GetSQL(wxSQLite3Database &database) const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
@@ -196,7 +196,7 @@ void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterFldrInfo, FbMasterInfo)
 
-wxString FbMasterFldrInfo::GetSQL() const
+wxString FbMasterFldrInfo::GetSQL(wxSQLite3Database &database) const
 {
 	switch (GetMode()) {
 		case FB2_MODE_LIST:
@@ -217,18 +217,52 @@ void FbMasterFldrInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterSearchInfo, FbMasterInfo)
 
-wxString FbMasterSearchInfo::GetSQL() const
+wxString FbMasterSearchInfo::GetSQL(wxSQLite3Database &database) const
 {
-	switch (GetMode()) {
-		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id FROM books WHERE id_author=? ORDER BY title");
-		case FB2_MODE_TREE:
-			return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
+	bool auth = !m_author.IsEmpty();
+	wxString sql = wxT("SELECT DISTINCT books.id FROM books WHERE ");
+	sql << wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
+	if (auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
+	return sql << wxT("ORDER BY title");
+/*
+	bool full = FbSearchFunction::IsFullText(m_title) && FbSearchFunction::IsFullText(m_author);
+	bool auth = !m_author.IsEmpty();
+
+	if ( full && database.TableExists(wxT("fts_book")) ) {
+		switch (GetMode()) {
+			case FB2_MODE_LIST: {
+				wxString sql = wxT("SELECT DISTINCT books.id FROM books WHERE ");
+				sql << wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
+				if (auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
+				return sql << wxT("ORDER BY title");
+			} break;
+			case FB2_MODE_TREE: {
+				return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
+			} break;
+		}
+	} else {
+		case FB2_MODE_LIST: {
+			wxString sql = wxT("SELECT DISTINCT books.id FROM books WHERE ");
+			sql << wxT("SEARCH_T(books.title)");
+			if (auth) sql << wxT("AND SEARCH_A(authors.search_name)");
+			return sql << wxT("ORDER BY title");
+			FbSearchFunction sfTitle(m_title);
+			FbSearchFunction sfAuthor(m_author);
+			database.CreateFunction(wxT("SEARCH_T"), 1, sfTitle);
+			if (bUseAuthor) database.CreateFunction(wxT("SEARCH_A"), 1, sfAuthor);
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		} break;
+			case FB2_MODE_TREE: {
+				return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
+			} break;
+		}
 	}
+*/
 }
 
 void FbMasterSearchInfo::Bind(wxSQLite3Statement &stmt) const
 {
-//	stmt.Bind(1, m_id);
+	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_title));
+	if (!m_author.IsEmpty()) stmt.Bind(2, FbSearchFunction::AddAsterisk(m_author));
 }
 

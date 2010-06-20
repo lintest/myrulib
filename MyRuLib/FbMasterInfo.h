@@ -23,10 +23,10 @@ class FbMasterInfo : public wxObject
 			{ return m_mode; }
 		FbMasterInfo & SetMode(FbListMode mode)
 			{ m_mode = mode; return *this; }
-		void * Execute(wxEvtHandler * owner, FbThread * thread) const;
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread) const;
 	public:
 		virtual FbMasterInfo * Clone() const = 0;
-		virtual wxString GetSQL() const = 0;
+		virtual wxString GetSQL(wxSQLite3Database &database) const = 0;
 		virtual void Bind(wxSQLite3Statement &stmt) const {}
 		virtual void MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &result) const;
 		virtual void MakeList(wxEvtHandler *owner, wxSQLite3ResultSet &result) const;
@@ -45,7 +45,7 @@ class FbMasterAuthorInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterAuthorInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 		virtual void MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &result) const;
 	private:
@@ -62,7 +62,7 @@ class FbMasterSeqnInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterSeqnInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 		virtual void MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &result) const;
 	private:
@@ -79,7 +79,7 @@ class FbMasterGenrInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterGenrInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		const wxString m_id;
@@ -95,7 +95,7 @@ class FbMasterDownInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterDownInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
@@ -111,7 +111,7 @@ class FbMasterSearchInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_title(info.m_title), m_author(info.m_author) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterSearchInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		wxString m_title;
@@ -128,7 +128,7 @@ class FbMasterDateInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterDateInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
@@ -144,7 +144,7 @@ class FbMasterFldrInfo: public FbMasterInfo
 			: FbMasterInfo(info), m_id(info.m_id), m_type(info.m_type) {}
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterFldrInfo(*this); }
-		virtual wxString GetSQL() const;
+		virtual wxString GetSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;

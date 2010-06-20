@@ -58,6 +58,8 @@ class FbParentData: public FbModelData
 			{ return m_parent; }
 		FbParentData * GetParent() const
 			{ return m_parent; }
+		void SetParent(FbParentData * parent)
+			{ if ((m_parent = parent) != NULL) parent->m_items.Add(this); }
 		virtual bool IsBold(FbModel & model) const
 			{ return true; }
 		void Delete(size_t index)
