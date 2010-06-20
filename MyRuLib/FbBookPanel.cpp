@@ -210,7 +210,7 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 	if (!IsSplit()) return;
 	m_BookInfo->SetPage(wxEmptyString);
 	int id = GetSelectedBook();
-	if (id) FbBookData(id).Show(this, GetSplitMode() == FB2_VIEW_VERTICAL);
+	if (id) FbBookData(id).Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
 }
 
 void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
@@ -546,4 +546,6 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	info->SetMode(GetListMode());
 	m_thread->Reset(info);
 }
+
+
 
