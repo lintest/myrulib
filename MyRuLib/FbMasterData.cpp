@@ -6,6 +6,44 @@
 #include "FbBookTree.h"
 #include "FbConst.h"
 
+
+//-----------------------------------------------------------------------------
+//  FbMasterData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbMasterData, wxObject)
+
+void FbMasterData::Show(FbFrameBase * frame) const
+{
+	frame->GetBooks()->Reset(*this);
+}
+
+//-----------------------------------------------------------------------------
+//  FbMasterDate
+//-----------------------------------------------------------------------------
+
+wxDateTime FbMasterDate::GetDate(int code)
+{
+    int m = (code / 100 % 100 - 1);
+    if (m >= 12) m = 0;
+    wxDateTime::Month month = wxDateTime::Month(m + wxDateTime::Jan);
+	wxDateTime date = wxDateTime::Today();
+    date.SetYear(code / 10000 + 2000);
+    date.SetMonth(month);
+    date.SetDay(code % 100);
+    return date;
+}
+
+/*
+
+
+
+
+
+//-----------------------------------------------------------------------------
+//  FbBookListThread
+//-----------------------------------------------------------------------------
+
 FbMasterData::BaseThread::BaseThread(FbFrameBase * frame, FbMasterData const * data) :
 	m_frame(frame),
 	m_mode(frame->GetListMode()),
@@ -119,14 +157,6 @@ void FbMasterData::BaseThread::InitDatabase(FbCommonDatabase &database)
 	database.AttachConfig();
 	database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
 	database.CreateFunction(wxT("GENRE"), 1, m_genre);
-}
-
-FbThreadSkiper FbMasterDownld::DownldThread::sm_skiper;
-
-wxString FbMasterDownld::DownldThread::GetOrder()
-{
-	if (m_folder==1) return wxT("download");
-	return BaseThread::GetOrder();
 }
 
 void * FbMasterDownld::DownldThread::Entry()
@@ -408,18 +438,6 @@ wxString FbMasterSeqname::SequenThread::GetOrder()
 		return m_order;
 }
 
-void FbMasterAuthor::Show(FbFrameBase * frame) const
-{
-	frame->GetBooks()->Reset(*this);
-/*
-	if (frame->GetListMode() == FB2_MODE_TREE) {
-		(new FbBookTreeThread(frame->GetBooks(), m_id))->Execute();
-	} else {
-		(new FbBookListThread(frame->GetBooks(), m_id))->Execute();
-	}
-*/
-}
-
 void FbMasterDownld::Show(FbFrameBase * frame) const
 {
 	(new DownldThread(frame, this))->Execute();
@@ -450,16 +468,6 @@ void FbMasterDate::Show(FbFrameBase * frame) const
 	(new DateThread(frame, this))->Execute();
 }
 
-wxDateTime FbMasterDate::GetDate(int code)
-{
-    int m = (code / 100 % 100 - 1);
-    if (m >= 12) m = 0;
-    wxDateTime::Month month = wxDateTime::Month(m + wxDateTime::Jan);
-	wxDateTime date = wxDateTime::Today();
-    date.SetYear(code / 10000 + 2000);
-    date.SetMonth(month);
-    date.SetDay(code % 100);
-    return date;
-}
 
 
+*/

@@ -5,19 +5,22 @@
 #include "FbBookTypes.h"
 #include "FbCollection.h"
 #include "FbThread.h"
+#include "FbMasterInfo.h"
 
 class FbBookTreeThread: public FbThread
 {
 	public:
-		FbBookTreeThread(wxEvtHandler * frame, int author)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_author(author) {}
+		FbBookTreeThread(wxEvtHandler * frame, const FbMasterInfo * info)
+			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info->Clone()) {}
+		virtual ~FbBookTreeThread()
+			{ wxDELETE(m_info); }
 	protected:
 		virtual void * Entry();
-		void MakeModel(wxSQLite3Database &database, wxSQLite3ResultSet &result);
-		void DoAuthor(wxSQLite3Database &database);
+		void ExecSQL(wxSQLite3Database &database);
+		void MakeModel(wxSQLite3ResultSet &result);
 	private:
 		wxEvtHandler * m_frame;
-		int m_author;
+		FbMasterInfo * m_info;
 };
 
 class FbAuthParentData: public FbParentData
@@ -33,12 +36,16 @@ class FbAuthParentData: public FbParentData
 			{ return false; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetAuth(m_code, 0); }
-		void SortItems(wxSQLite3Database &database);
+	public:
+		int Compare(const FbAuthParentData &data);
+		void SortItems();
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
 		virtual int DoGetState(FbModel & model) const
 			{ return m_state; }
+		wxString GetTitle() const
+			{ return FbCollection::GetSeqn(m_code, 0); }
 	private:
 		int m_code;
 		int m_state;
@@ -58,6 +65,7 @@ class FbSeqnParentData: public FbParentData
 			{ return false; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetSeqn(m_code, 0); }
+	public:
 		int Compare(const FbSeqnParentData &data);
 	protected:
 		virtual void DoSetState(FbModel & model, int state)

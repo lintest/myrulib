@@ -11,49 +11,20 @@ void * FbBookTreeThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		DoAuthor(database);
+		ExecSQL(database);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
 	return NULL;
 }
 
-void FbBookTreeThread::DoAuthor(wxSQLite3Database &database)
+void FbBookTreeThread::ExecSQL(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
+	wxString sql = m_info->GetSQL();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_author);
+	m_info->Bind(stmt);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	MakeModel(database, result);
-}
-
-void FbBookTreeThread::MakeModel(wxSQLite3Database &database, wxSQLite3ResultSet &result)
-{
-	FbTreeModel * model = new FbTreeModel;
-	FbAuthParentData * root = new FbAuthParentData(*model, NULL, m_author);
-	FbAuthParentData * author = new FbAuthParentData(*model, NULL, m_author);
-	FbSeqnParentData * parent = NULL;
-
-	while (result.NextRow()) {
-		int seqn = result.GetInt(0);
-		if (parent == NULL || parent->GetCode() != seqn) {
-			parent = new FbSeqnParentData(*model, root, seqn);
-		}
-		new FbBookChildData(*model, parent, result.GetInt(1), result.GetInt(2));
-		new FbBookChildData(*model, author, result.GetInt(1), result.GetInt(2));
-	}
-
-	if (root->Count(*model) == 1 && parent && parent->GetCode() == 0) {
-		wxDELETE(root);
-		root = author;
-	} else {
-		wxDELETE(author);
-		author = root;
-		root->SortItems(database);
-	}
-	model->SetRoot(root);
-
-	FbModelEvent(ID_BOOKS_LISTCTRL, model).Post(m_frame);
+	m_info->MakeTree(m_frame, result);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,17 +33,30 @@ void FbBookTreeThread::MakeModel(wxSQLite3Database &database, wxSQLite3ResultSet
 
 static int ComareBooks(FbModelData ** x, FbModelData ** y)
 {
-	FbSeqnParentData * xx = wxDynamicCast(*x, FbSeqnParentData);
-	FbSeqnParentData * yy = wxDynamicCast(*y, FbSeqnParentData);
-	if (xx && yy) return xx->Compare(*yy);
+	{
+		FbSeqnParentData * xx = wxDynamicCast(*x, FbSeqnParentData);
+		FbSeqnParentData * yy = wxDynamicCast(*y, FbSeqnParentData);
+		if (xx && yy) return xx->Compare(*yy);
+	}
+	{
+		FbAuthParentData * xx = wxDynamicCast(*x, FbAuthParentData);
+		FbAuthParentData * yy = wxDynamicCast(*y, FbAuthParentData);
+		if (xx && yy) return xx->Compare(*yy);
+	}
+
 	return 0;
 }
 
 IMPLEMENT_CLASS(FbAuthParentData, FbParentData)
 
-void FbAuthParentData::SortItems(wxSQLite3Database &database)
+void FbAuthParentData::SortItems()
 {
 	m_items.Sort(ComareBooks);
+}
+
+int FbAuthParentData::Compare(const FbAuthParentData &data)
+{
+	return GetTitle().CmpNoCase(data.GetTitle());
 }
 
 //-----------------------------------------------------------------------------

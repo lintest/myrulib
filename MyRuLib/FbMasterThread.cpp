@@ -45,8 +45,7 @@ void * FbMasterThread::Entry()
 		wxDELETE(m_thread);
 
 		FbMasterInfo * info = GetInfo();
-		if (info) m_thread = info->GetThread(m_owner);
-		if (m_thread) m_thread->Execute();
+		if (info) info->Execute(m_owner);
 		wxDELETE(info);
 	}
 	return NULL;

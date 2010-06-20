@@ -5,19 +5,20 @@
 #include "FbBookTypes.h"
 #include "FbCollection.h"
 #include "FbThread.h"
+#include "FbMasterInfo.h"
 
 class FbBookListThread: public FbThread
 {
 	public:
-		FbBookListThread(wxEvtHandler * frame, int author)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_author(author) {}
+		FbBookListThread(wxEvtHandler * frame, const FbMasterInfo * info)
+			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info->Clone()) {}
 	protected:
 		virtual void * Entry();
+		void ExecSQL(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
-		void DoAuthor(wxSQLite3Database &database);
 	private:
 		wxEvtHandler * m_frame;
-		int m_author;
+		FbMasterInfo * m_info;
 };
 
 class FbBookListData: public FbModelData

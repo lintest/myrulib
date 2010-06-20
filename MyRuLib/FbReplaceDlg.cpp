@@ -91,11 +91,6 @@ void FbReplaceDlg::OnFindEnter( wxCommandEvent& event )
 
 int FbReplaceDlg::GetSelected()
 {
-	wxTreeItemId selected = m_FindList->GetSelection();
-	if (selected.IsOk()) {
-		FbMasterData * data = m_FindList->GetItemData(selected);
-		if (data) return data->GetId();
-	};
 	return 0;
 }
 

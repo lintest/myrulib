@@ -10,48 +10,26 @@
 
 class FbFrameBase;
 
-class FbMasterData: public wxTreeItemData
+class FbMasterData: public wxObject
 {
 	public:
+		void Show(FbFrameBase * frame) const;
 		virtual FbMasterData * Clone() const = 0;
-		virtual void Show(FbFrameBase * frame) const = 0;
-		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterAuthorInfo(0); }
-	protected:
-		class BaseThread: public FbThread
-		{
-			public:
-				BaseThread(FbFrameBase * frame, FbMasterData const * data);
-			protected:
-				virtual wxString GetSQL(const wxString & condition);
-				virtual wxString GetOrder();
-				virtual void CreateList(wxSQLite3ResultSet &result);
-				virtual void CreateTree(wxSQLite3ResultSet &result);
-				virtual void InitDatabase(FbCommonDatabase &database);
-				void EmptyBooks();
-				void FillBooks(wxSQLite3ResultSet &result);
-			protected:
-				static wxCriticalSection sm_queue;
-				FbAggregateFunction m_aggregate;
-				FbGenreFunction m_genre;
-				FbFrameBase * m_frame;
-				FbListMode m_mode;
-				wxString m_filter;
-				wxString m_order;
-		};
+		virtual FbMasterInfo * CreateInfo() const = 0;
+		DECLARE_CLASS(FbMasterData);
 };
 
 class FbMasterAuthor: public FbMasterData
 {
 	public:
-		FbMasterAuthor(const int id = 0): m_id(id) {};
-		FbMasterAuthor(const FbMasterAuthor & data): m_id(data.m_id) {};
+		FbMasterAuthor(const int id = 0)
+			: m_id(id) {}
+		FbMasterAuthor(const FbMasterAuthor & data)
+			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterAuthor(*this); };
 		virtual FbMasterInfo * CreateInfo() const
 			{ return new FbMasterAuthorInfo(m_id); }
-	public:
-		virtual void Show(FbFrameBase * frame) const;
 	private:
 		int m_id;
 };
@@ -60,183 +38,94 @@ class FbMasterSeqname: public FbMasterData
 {
 	public:
 		FbMasterSeqname(const int id = 0)
-			: m_id(id) {};
+			: m_id(id) {}
 		FbMasterSeqname(const FbMasterSeqname & data)
-			: m_id(data.m_id) {};
+			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSeqname(*this); };
-	public:
-		virtual void Show(FbFrameBase * frame) const;
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterSeqnInfo(m_id); }
 	private:
 		int m_id;
-	protected:
-		class SequenThread: public BaseThread
-		{
-			public:
-				SequenThread(FbFrameBase * frame, FbMasterSeqname const * data)
-					: BaseThread(frame, data), m_master(data->m_id), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			protected:
-				virtual void CreateTree(wxSQLite3ResultSet &result);
-				virtual wxString GetOrder();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_master;
-				int m_number;
-		};
-
 };
 
 class FbMasterGenre: public FbMasterData
 {
 	public:
 		FbMasterGenre(const int id = 0)
-			: m_id(id) {};
+			: m_id(id) {}
 		FbMasterGenre(const FbMasterGenre & data)
-			: m_id(data.m_id) {};
+			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterGenre(*this); };
-	public:
-		virtual void Show(FbFrameBase * frame) const;
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterGenrInfo(m_id); }
 	private:
 		int m_id;
-	protected:
-		class SubgenreFunction : public wxSQLite3ScalarFunction
-		{
-			public:
-				SubgenreFunction(int code);
-				const wxString & GetCode() { return m_code; }
-			protected:
-				virtual void Execute(wxSQLite3FunctionContext& ctx);
-			private:
-				wxString m_code;
-		};
-		class GenresThread: public BaseThread
-		{
-			public:
-				GenresThread(FbFrameBase * frame, FbMasterGenre const * data)
-					: BaseThread(frame, data), m_subgenre(data->m_id), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			private:
-				static FbThreadSkiper sm_skiper;
-				SubgenreFunction m_subgenre;
-				int m_number;
-		};
 };
 
 class FbMasterDownld: public FbMasterData
 {
 	public:
 		FbMasterDownld(const int id = 0)
-			: m_id(id) {};
+			: m_id(id) {}
 		FbMasterDownld(const FbMasterDownld & data)
-			: m_id(data.m_id) {};
+			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDownld(*this); };
-	public:
-		virtual void Show(FbFrameBase * frame) const;
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterDownInfo(m_id); }
 	private:
 		int m_id;
-	protected:
-		class DownldThread: public BaseThread
-		{
-			public:
-				DownldThread(FbFrameBase * frame, FbMasterDownld const * data)
-					: BaseThread(frame, data), m_folder(data->m_id), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			protected:
-				virtual wxString GetOrder();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_folder;
-				int m_number;
-		};
 };
 
 class FbMasterSearch: public FbMasterData
 {
 	public:
 		FbMasterSearch(const wxString &title, const wxString &author = wxEmptyString)
-			: m_title(title), m_author(author) {};
+			: m_title(title), m_author(author) {}
 		FbMasterSearch(const FbMasterSearch & data)
-			: m_title(data.m_title), m_author(data.m_author) {};
+			: m_title(data.m_title), m_author(data.m_author) {}
 		virtual FbMasterData * Clone() const
-			{ return new FbMasterSearch(*this); };
-	public:
-		virtual const int GetId() const { return 0; };
-		virtual const FbFolderType GetType() const { return FT_DOWNLOAD; };
-		virtual void Show(FbFrameBase * frame) const;
+			{ return new FbMasterSearch(*this); }
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterSearchInfo(m_title, m_author); }
 	private:
 		wxString m_title;
 		wxString m_author;
-	protected:
-		class SearchThread: public BaseThread
-		{
-			public:
-				SearchThread(FbFrameBase * frame, FbMasterSearch const * data)
-					: BaseThread(frame, data), m_title(data->m_title), m_author(data->m_author) {};
-				virtual void *Entry();
-			private:
-				wxString m_title;
-				wxString m_author;
-		};
 };
 
 class FbMasterDate: public FbMasterData
 {
 	public:
+		static wxDateTime GetDate(int code);
+
 		FbMasterDate(const int id = 0)
-			: m_id(id) {};
+			: m_id(id) {}
 		FbMasterDate(const FbMasterDate & data)
-			: m_id(data.m_id) {};
+			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDate(*this); };
-		static wxDateTime GetDate(int code);
-	public:
-		virtual void Show(FbFrameBase * frame) const;
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterDateInfo(m_id); }
 	private:
 		int m_id;
-	protected:
-		class DateThread: public BaseThread
-		{
-			public:
-				DateThread(FbFrameBase * frame, FbMasterDate const * data)
-					: BaseThread(frame, data), m_master(data->GetId()), m_number(sm_skiper.NewNumber()) {};
-				virtual void *Entry();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_master;
-				int m_number;
-		};
 };
 
 class FbMasterFolder: public FbMasterData
 {
 	public:
 		FbMasterFolder(const int id, const FbFolderType type)
-			: m_id(id), m_type(type) {};
+			: m_id(id), m_type(type) {}
 		FbMasterFolder(const FbMasterFolder & data)
-			: m_id(data.m_id), m_type(data.m_type) {};
+			: m_id(data.m_id), m_type(data.m_type) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterFolder(*this); };
-	public:
-		virtual void Show(FbFrameBase * frame) const;
+		virtual FbMasterInfo * CreateInfo() const
+			{ return new FbMasterFldrInfo(m_id, m_type); }
 	private:
 		int m_id;
 		FbFolderType m_type;
-	protected:
-		class FolderThread: public BaseThread
-		{
-			public:
-				FolderThread(FbFrameBase * frame, FbMasterFolder const * data)
-					: BaseThread(frame, data), m_folder(data->m_id), m_number(sm_skiper.NewNumber()), m_type(data->m_type) {};
-				virtual void *Entry();
-			private:
-				static FbThreadSkiper sm_skiper;
-				int m_folder;
-				int m_number;
-				FbFolderType m_type;
-		};
 };
 
 #endif // __FBMASTERDATA_H__

@@ -14,19 +14,6 @@ FbMasterList::FbMasterList(wxWindow *parent, wxWindowID id, long style)
 
 void FbMasterList::OnAppendMaster(FbMasterEvent& event)
 {
-	FbTreeListUpdater updater(this);
-	wxTreeItemId root = GetRootItem();
-
-	wxTreeItemIdValue cookie;
-	wxTreeItemId child = GetFirstChild(root, cookie);
-
-	wxTreeItemId item = AppendItem(root, event.GetString(), -1, -1, event.m_data);
-	if (event.m_number) {
-		wxString number = wxString::Format(wxT("%d "), event.m_number);
-		SetItemText(item, 1, number);
-	}
-
-	if (!child.IsOk()) SelectItem(item);
 }
 
 void FbMasterList::OnEmptyMasters(FbMasterEvent& event)

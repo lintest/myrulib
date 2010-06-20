@@ -11,40 +11,20 @@ void * FbBookListThread::Entry()
 {
 	try {
 		FbCommonDatabase database;
-		DoAuthor(database);
+		ExecSQL(database);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
 	return NULL;
 }
 
-void FbBookListThread::DoAuthor(wxSQLite3Database &database)
+void FbBookListThread::ExecSQL(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id FROM books WHERE id_author=? ORDER BY title");
+	wxString sql = m_info->GetSQL();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_author);
+	m_info->Bind(stmt);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	MakeModel(result);
-}
-
-void FbBookListThread::MakeModel(wxSQLite3ResultSet &result)
-{
-	wxWindowID id = ID_MODEL_CREATE;
-	size_t length = fbLIST_CACHE_SIZE;
-	size_t count = 0;
-	wxArrayInt items;
-	while (result.NextRow()) {
-		items.Add(result.GetInt(0));
-		count++;
-		if (count == length) {
-			length = fbLIST_ARRAY_SIZE;
-			FbArrayEvent(id, items).Post(m_frame);
-			id = ID_MODEL_APPEND;
-			items.Empty();
-			count = 0;
-		}
-	}
-	FbArrayEvent(id, items).Post(m_frame);
+	m_info->MakeList(m_frame, result);
 }
 
 //-----------------------------------------------------------------------------

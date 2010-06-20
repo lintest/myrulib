@@ -47,6 +47,9 @@ bool MyRuLibApp::OnInit()
     Localize();
 
 	OpenLog();
+	#ifdef __WXDEBUG__
+	wxLog::SetVerbose(true);
+	#endif // __WXDEBUG__
 
 	wxFileName filename = GetDatabaseFilename(config);
 	filename.Normalize();
