@@ -31,7 +31,7 @@ void * FbSeqnListThread::Entry()
 void FbSeqnListThread::DoString(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, value, number FROM sequences");
-	if (!m_string.IsEmpty()) sql << wxT(" WHERE SEARCH(search_name)");
+	if (!m_string.IsEmpty()) sql << wxT(" WHERE SEARCH(value)");
 	sql << GetOrder(wxT("value,number"), m_order);
 	FbSearchFunction search(m_string);
 	if (!m_string.IsEmpty()) database.CreateFunction(wxT("SEARCH"), 1, search);
