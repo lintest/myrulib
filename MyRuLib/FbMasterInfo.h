@@ -9,12 +9,14 @@
 class FbMasterInfo : public wxObject
 {
 	public:
-		FbMasterInfo()
-			: m_order(0), m_mode(FB2_MODE_LIST) {}
+		FbMasterInfo(int index)
+			: m_order(0), m_mode(FB2_MODE_LIST), m_index(index) {}
 		FbMasterInfo(const FbMasterInfo & info)
-			: m_order(info.m_order), m_mode(info.m_mode) {}
+			: m_order(info.m_order), m_mode(info.m_mode), m_index(info.m_index) {}
 		virtual ~FbMasterInfo()
 			{}
+		int GetIndex() const
+			{ return m_index; }
 		FbBookFields GetOrder() const
 			{ return m_order; }
 		FbMasterInfo & SetOrder(FbBookFields order)
@@ -33,14 +35,15 @@ class FbMasterInfo : public wxObject
 	private:
 		FbBookFields m_order;
 		FbListMode m_mode;
+		int m_index;
 		DECLARE_CLASS(FbMasterInfo);
 };
 
 class FbMasterAuthorInfo: public FbMasterInfo
 {
 	public:
-		FbMasterAuthorInfo(int id)
-			: m_id(id) {}
+		FbMasterAuthorInfo(int index, int id)
+			: FbMasterInfo(index), m_id(id) {}
 		FbMasterAuthorInfo(const FbMasterAuthorInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
@@ -56,8 +59,8 @@ class FbMasterAuthorInfo: public FbMasterInfo
 class FbMasterSeqnInfo: public FbMasterInfo
 {
 	public:
-		FbMasterSeqnInfo(int id)
-			: m_id(id) {}
+		FbMasterSeqnInfo(int index, int id)
+			: FbMasterInfo(index), m_id(id) {}
 		FbMasterSeqnInfo(const FbMasterSeqnInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
@@ -73,8 +76,8 @@ class FbMasterSeqnInfo: public FbMasterInfo
 class FbMasterGenrInfo: public FbMasterInfo
 {
 	public:
-		FbMasterGenrInfo(const wxString &id)
-			: m_id(id) {}
+		FbMasterGenrInfo(int index, const wxString &id)
+			: FbMasterInfo(index), m_id(id) {}
 		FbMasterGenrInfo(const FbMasterGenrInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
@@ -89,8 +92,8 @@ class FbMasterGenrInfo: public FbMasterInfo
 class FbMasterDownInfo: public FbMasterInfo
 {
 	public:
-		FbMasterDownInfo(int id)
-			: m_id(id) {}
+		FbMasterDownInfo(int index, int id)
+			: FbMasterInfo(index), m_id(id) {}
 		FbMasterDownInfo(const FbMasterDownInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
@@ -105,8 +108,8 @@ class FbMasterDownInfo: public FbMasterInfo
 class FbMasterSearchInfo: public FbMasterInfo
 {
 	public:
-		FbMasterSearchInfo(const wxString &title, const wxString &author = wxEmptyString)
-			: m_title(title), m_author(author) {}
+		FbMasterSearchInfo(int index, const wxString &title, const wxString &author = wxEmptyString)
+			: FbMasterInfo(index), m_title(title), m_author(author) {}
 		FbMasterSearchInfo(const FbMasterSearchInfo &info)
 			: FbMasterInfo(info), m_title(info.m_title), m_author(info.m_author) {}
 		virtual FbMasterInfo * Clone() const
@@ -122,8 +125,8 @@ class FbMasterSearchInfo: public FbMasterInfo
 class FbMasterDateInfo: public FbMasterInfo
 {
 	public:
-		FbMasterDateInfo(int id)
-			: m_id(id) {}
+		FbMasterDateInfo(int index, int id)
+			: FbMasterInfo(index), m_id(id) {}
 		FbMasterDateInfo(const FbMasterDateInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id) {}
 		virtual FbMasterInfo * Clone() const
@@ -138,8 +141,8 @@ class FbMasterDateInfo: public FbMasterInfo
 class FbMasterFldrInfo: public FbMasterInfo
 {
 	public:
-		FbMasterFldrInfo(int id, FbFolderType type)
-			: m_id(id), m_type(type) {}
+		FbMasterFldrInfo(int index, int id, FbFolderType type)
+			: FbMasterInfo(index), m_id(id), m_type(type) {}
 		FbMasterFldrInfo(const FbMasterFldrInfo &info)
 			: FbMasterInfo(info), m_id(info.m_id), m_type(info.m_type) {}
 		virtual FbMasterInfo * Clone() const

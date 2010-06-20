@@ -39,13 +39,13 @@ void FbMasterInfo::MakeList(wxEvtHandler *owner, wxSQLite3ResultSet &result) con
 		count++;
 		if (count == length) {
 			length = fbLIST_ARRAY_SIZE;
-			FbArrayEvent(id, items).Post(owner);
+			FbArrayEvent(id, items, GetIndex()).Post(owner);
 			id = ID_MODEL_APPEND;
 			items.Empty();
 			count = 0;
 		}
 	}
-	FbArrayEvent(id, items).Post(owner);
+	FbArrayEvent(id, items, GetIndex()).Post(owner);
 }
 
 void FbMasterInfo::MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &result) const
@@ -99,7 +99,7 @@ void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, wxSQLite3ResultSet &resul
 	}
 	model->SetRoot(root);
 
-	FbModelEvent(ID_BOOKS_LISTCTRL, model).Post(owner);
+	FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
 }
 
 //-----------------------------------------------------------------------------

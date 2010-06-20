@@ -43,7 +43,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(wxID_DELETE, FbBookPanel::OnDeleteBooks)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbBookPanel::OnListModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbBookPanel::OnListArray)
-	EVT_FB_MODEL(ID_BOOKS_LISTCTRL, FbBookPanel::OnTreeModel)
+	EVT_FB_MODEL(ID_MODEL_CREATE, FbBookPanel::OnTreeModel)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
@@ -507,20 +507,28 @@ void FbBookPanel::OnLinkClicked(wxHtmlLinkEvent& event)
 
 void FbBookPanel::OnListModel( FbArrayEvent& event )
 {
-	FbBookListModel * model = new FbBookListModel(event.GetArray());
-	m_BookList->AssignModel(model);
+	if (m_master && m_master->GetIndex() == event.GetInt()) {
+		FbBookListModel * model = new FbBookListModel(event.GetArray());
+		m_BookList->AssignModel(model);
+	}
 }
 
 void FbBookPanel::OnListArray( FbArrayEvent& event )
 {
-	FbBookListModel * model = wxDynamicCast(m_BookList->GetModel(), FbBookListModel);
-	if (model) model->Append(event.GetArray());
-	m_BookList->Refresh();
+	if (m_master && m_master->GetIndex() == event.GetInt()) {
+		FbBookListModel * model = wxDynamicCast(m_BookList->GetModel(), FbBookListModel);
+		if (model) model->Append(event.GetArray());
+		m_BookList->Refresh();
+	}
 }
 
 void FbBookPanel::OnTreeModel( FbModelEvent& event )
 {
-	m_BookList->AssignModel(event.GetModel());
+	if (m_master && m_master->GetIndex() == event.GetInt()) {
+		m_BookList->AssignModel(event.GetModel());
+	} else {
+		delete event.GetModel();
+	}
 }
 
 void FbBookPanel::Reset(const FbMasterData &master)
@@ -528,7 +536,7 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	wxDELETE(m_master);
 	m_master = master.Clone();
 
-	FbMasterInfo * info = master.CreateInfo();
+	FbMasterInfo * info = m_master->CreateInfo();
 	info->SetOrder(m_BookList->GetSortedColumn());
 	info->SetMode(GetListMode());
 	m_thread->Reset(info);

@@ -51,14 +51,14 @@ class FbBookEvent: public FbCommandEvent
 class FbModelEvent: public FbCommandEvent
 {
 	public:
-		FbModelEvent(wxWindowID id)
-			: FbCommandEvent(fbEVT_MODEL_ACTION, id), m_model(NULL) {}
+		FbModelEvent(wxWindowID winid)
+			: FbCommandEvent(fbEVT_MODEL_ACTION, winid), m_model(NULL) {}
 
 		FbModelEvent(const FbModelEvent & event)
 			: FbCommandEvent(event), m_model(event.m_model) {}
 
-		FbModelEvent(wxWindowID id, FbModel * model, const wxString &text = wxEmptyString)
-			: FbCommandEvent(fbEVT_MODEL_ACTION, id, text), m_model(model) {}
+		FbModelEvent(wxWindowID winid, FbModel * model, int index = 0)
+			: FbCommandEvent(fbEVT_MODEL_ACTION, winid, index), m_model(model) {}
 
 		virtual wxEvent *Clone() const
 			{ return new FbModelEvent(*this); }
@@ -143,17 +143,17 @@ class FbArrayEvent: public FbCommandEvent
 	public:
 		static int CompareInt(int x, int y) { return x - y; }
 
-		FbArrayEvent(wxWindowID id)
-			: FbCommandEvent(fbEVT_ARRAY_ACTION, id), m_check(CompareInt) {}
+		FbArrayEvent(wxWindowID winid)
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, winid), m_check(CompareInt) {}
 
 		FbArrayEvent(const FbArrayEvent & event)
 			: FbCommandEvent(event), m_array(event.m_array), m_check(event.m_check) {}
 
-		FbArrayEvent(wxWindowID id, const wxArrayInt & array, const wxString &text = wxEmptyString)
-			: FbCommandEvent(fbEVT_ARRAY_ACTION, id, text), m_array(array), m_check(CompareInt) {}
+		FbArrayEvent(wxWindowID winid, const wxArrayInt & array, int index = 0)
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, winid, index), m_array(array), m_check(CompareInt) {}
 
-		FbArrayEvent(wxWindowID id, const wxArrayInt & array, const FbSortedArrayInt &check)
-			: FbCommandEvent(fbEVT_ARRAY_ACTION, id), m_array(array), m_check(check) {}
+		FbArrayEvent(wxWindowID winid, const wxArrayInt & array, const FbSortedArrayInt &check, int index = 0)
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, winid, index), m_array(array), m_check(check) {}
 
 		virtual wxEvent *Clone() const
 			{ return new FbArrayEvent(*this); }

@@ -13,9 +13,14 @@ class FbFrameBase;
 class FbMasterData: public wxObject
 {
 	public:
+		FbMasterData(): m_index(sm_counter++) {}
+		int GetIndex() const { return m_index; }
 		void Show(FbFrameBase * frame) const;
 		virtual FbMasterData * Clone() const = 0;
 		virtual FbMasterInfo * CreateInfo() const = 0;
+	private:
+		static int sm_counter;
+		int m_index;
 		DECLARE_CLASS(FbMasterData);
 };
 
@@ -29,7 +34,7 @@ class FbMasterAuthor: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterAuthor(*this); };
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterAuthorInfo(m_id); }
+			{ return new FbMasterAuthorInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
 };
@@ -44,7 +49,7 @@ class FbMasterSeqname: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSeqname(*this); };
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterSeqnInfo(m_id); }
+			{ return new FbMasterSeqnInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
 };
@@ -59,7 +64,7 @@ class FbMasterGenre: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterGenre(*this); };
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterGenrInfo(m_id); }
+			{ return new FbMasterGenrInfo(GetIndex(), m_id); }
 	private:
 		const wxString m_id;
 };
@@ -74,7 +79,7 @@ class FbMasterDownld: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDownld(*this); };
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterDownInfo(m_id); }
+			{ return new FbMasterDownInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
 };
@@ -89,7 +94,7 @@ class FbMasterSearch: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSearch(*this); }
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterSearchInfo(m_title, m_author); }
+			{ return new FbMasterSearchInfo(GetIndex(), m_title, m_author); }
 	private:
 		wxString m_title;
 		wxString m_author;
@@ -107,7 +112,7 @@ class FbMasterDate: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDate(*this); };
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterDateInfo(m_id); }
+			{ return new FbMasterDateInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
 };
@@ -122,7 +127,7 @@ class FbMasterFolder: public FbMasterData
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterFolder(*this); };
 		virtual FbMasterInfo * CreateInfo() const
-			{ return new FbMasterFldrInfo(m_id, m_type); }
+			{ return new FbMasterFldrInfo(GetIndex(), m_id, m_type); }
 	private:
 		int m_id;
 		FbFolderType m_type;

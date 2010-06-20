@@ -261,6 +261,7 @@ FbCacheBook * FbCollection::GetCacheBook(int code)
 			LEFT JOIN states ON books.md5sum=states.md5sum \
 		WHERE books.id=? \
 		GROUP BY books.title, books.file_size, books.file_type, books.lang, states.rating, books.created \
+		LIMIT 1 \
 	");
 
 	try {

@@ -11,6 +11,8 @@
 //  FbMasterData
 //-----------------------------------------------------------------------------
 
+int FbMasterData::sm_counter = 0;
+
 IMPLEMENT_CLASS(FbMasterData, wxObject)
 
 void FbMasterData::Show(FbFrameBase * frame) const

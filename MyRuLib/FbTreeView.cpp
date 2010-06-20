@@ -506,6 +506,7 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
     	m_model->SetShift(event.ShiftDown());
     }
 
+   	int old = m_model->GetPosition();
    	int row = 0;
     switch (event.GetKeyCode()) {
         case WXK_UP: {
@@ -557,7 +558,7 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
                 SetScrollPos(wxVERTICAL, pos);
             }
         }
-		SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+        if (row != old) SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
         Repaint();
 		return ;
     }
