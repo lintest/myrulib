@@ -114,8 +114,10 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbLogStream.o \
 	myrulib_FbMainFrame.o \
 	myrulib_FbMainMenu.o \
+	myrulib_FbMasterInfo.o \
 	myrulib_FbMasterData.o \
 	myrulib_FbMasterList.o \
+	myrulib_FbMasterThread.o \
 	myrulib_FbMenu.o \
 	myrulib_FbNotebook.o \
 	myrulib_FbParams.o \
@@ -449,11 +451,17 @@ myrulib_FbMainFrame.o: $(srcdir)/MyRuLib/FbMainFrame.cpp $(MYRULIB_ODEP)
 myrulib_FbMainMenu.o: $(srcdir)/MyRuLib/FbMainMenu.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMainMenu.cpp
 
+myrulib_FbMasterInfo.o: $(srcdir)/MyRuLib/FbMasterInfo.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterInfo.cpp
+
 myrulib_FbMasterData.o: $(srcdir)/MyRuLib/FbMasterData.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterData.cpp
 
 myrulib_FbMasterList.o: $(srcdir)/MyRuLib/FbMasterList.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterList.cpp
+
+myrulib_FbMasterThread.o: $(srcdir)/MyRuLib/FbMasterThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterThread.cpp
 
 myrulib_FbMenu.o: $(srcdir)/MyRuLib/FbMenu.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMenu.cpp
