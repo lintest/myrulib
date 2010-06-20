@@ -33,8 +33,6 @@ class FbAuthParentData: public FbParentData
 			{ return false; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetAuth(m_code, 0); }
-		int GetBookOrder(int book)
-			{ return m_books.Index(book); }
 		void SortItems(wxSQLite3Database &database);
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
@@ -44,7 +42,6 @@ class FbAuthParentData: public FbParentData
 	private:
 		int m_code;
 		int m_state;
-		wxArrayInt m_books;
 		DECLARE_CLASS(FbAuthParentData);
 };
 
@@ -61,14 +58,14 @@ class FbSeqnParentData: public FbParentData
 			{ return false; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetSeqn(m_code, 0); }
-		wxString GetTitle() const
-			{ return FbCollection::GetSeqn(m_code, 0); }
-		void SortItems();
+		int Compare(const FbSeqnParentData &data);
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
 		virtual int DoGetState(FbModel & model) const
 			{ return m_state; }
+		wxString GetTitle() const
+			{ return FbCollection::GetSeqn(m_code, 0); }
 	private:
 		int m_code;
 		int m_state;
@@ -83,7 +80,6 @@ class FbBookChildData: public FbChildData
 		int GetCode() const
 			{ return m_code; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
-		int GetOrder() const;
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
