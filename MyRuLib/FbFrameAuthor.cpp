@@ -157,7 +157,8 @@ void FbFrameAuthor::CreateMasterThread()
 
 void FbFrameAuthor::OnMasterSelected(wxTreeEvent & event)
 {
-	UpdateBooklist();
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
 void FbFrameAuthor::UpdateBooklist()

@@ -12,8 +12,6 @@ IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
 void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 {
-	if (thread->TestDestroy()) return NULL;
-
 	try {
 		FbCommonDatabase database;
 		FbGenreFunction func_genre;
@@ -21,7 +19,6 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
 		database.CreateFunction(wxT("GENRE"), 1, func_genre);
 		database.AttachConfig();
-		if (thread->TestDestroy()) return NULL;
 
 		wxString sql;
 		switch (GetMode()) {
@@ -31,11 +28,7 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		Bind(stmt);
-		if (thread->TestDestroy()) return NULL;
-
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (thread->TestDestroy()) return NULL;
-
 		switch (GetMode()) {
 			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
 			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
@@ -53,7 +46,6 @@ void FbMasterInfo::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 	size_t count = 0;
 	wxArrayInt items;
 	while (result.NextRow()) {
-		if (thread->TestDestroy()) return;
 		items.Add(result.GetInt(0));
 		count++;
 		if (count == length) {
@@ -76,7 +68,6 @@ void FbMasterInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 	FbSeqnParentData * seqn = NULL;
 
 	while (result.NextRow()) {
-		if (thread->TestDestroy()) return;
 		int auth_id = result.GetInt(0);
 		int seqn_id = result.GetInt(1);
 		if (auth == NULL) {
@@ -203,9 +194,9 @@ IMPLEMENT_CLASS(FbMasterAuthorInfo, FbMasterInfo)
 
 wxString FbMasterAuthorInfo::GetOrderTable() const
 {
-	if (GetOrderIndex() == BF_AUTH) 
+	if (GetOrderIndex() == BF_AUTH)
 		return wxT("LEFT JOIN books AS b ON b.id=books.id LEFT JOIN authors ON b.id_author = authors.id");
-	else 
+	else
 		return FbMasterInfo::GetOrderTable();
 }
 
@@ -378,7 +369,7 @@ wxString FbMasterSearchInfo::GetListSQL(wxSQLite3Database &database) const
 	sql << wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
 	if (auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
 	return sql << wxT("ORDER BY title");
-/*
+
 	bool full = FbSearchFunction::IsFullText(m_title) && FbSearchFunction::IsFullText(m_author);
 	bool auth = !m_author.IsEmpty();
 
@@ -422,8 +413,6 @@ void FbMasterSearchInfo::Bind(wxSQLite3Statement &stmt) const
 
 void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 {
-	if (thread->TestDestroy()) return NULL;
-
 	try {
 		FbCommonDatabase database;
 		FbGenreFunction func_genre;
@@ -433,7 +422,6 @@ void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
 		database.CreateFunction(wxT("GENRE"), 1, func_genre);
 		database.AttachConfig();
-		if (thread->TestDestroy()) return NULL;
 
 		m_auth = !m_author.IsEmpty();
 		m_full = database.TableExists(wxT("fts_book"));
@@ -453,11 +441,7 @@ void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		if (m_full) Bind(stmt);
-		if (thread->TestDestroy()) return NULL;
-
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (thread->TestDestroy()) return NULL;
-
 		switch (GetMode()) {
 			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
 			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;

@@ -6,6 +6,14 @@
 
 class FbMasterInfo;
 
+class FbCondition: public wxCondition
+{
+	public:
+		FbCondition(): wxCondition(m_mutex) {}
+	private:
+		wxMutex m_mutex;
+};
+
 class FbMasterThread : public FbThread
 {
 	public:
@@ -13,6 +21,7 @@ class FbMasterThread : public FbThread
 		virtual ~FbMasterThread();
 		void Reset(FbMasterInfo * info);
 		void Open(int book);
+		void Exit();
 	protected:
 		virtual void * Entry();
 	private:
@@ -20,10 +29,11 @@ class FbMasterThread : public FbThread
 		int GetBook();
 	private:
 		static wxCriticalSection sm_section;
+		FbCondition m_condition;
 		wxEvtHandler * m_owner;
 		FbMasterInfo * m_info;
 		FbThread * m_thread;
-		int m_book;
+		bool m_exit;
 };
 
 #endif // __FBMASTERTHREAD_H__

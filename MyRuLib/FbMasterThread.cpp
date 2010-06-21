@@ -26,7 +26,7 @@ class FbJoinedThread: public FbThread
 wxCriticalSection FbMasterThread::sm_section;
 
 FbMasterThread::FbMasterThread(wxEvtHandler * owner)
-	: m_owner(owner), m_info(NULL), m_thread(NULL), m_book(0)
+	: m_owner(owner), m_info(NULL), m_thread(NULL), m_exit(false)
 {
 }
 
@@ -37,17 +37,18 @@ FbMasterThread::~FbMasterThread()
 	wxDELETE(m_info);
 }
 
+void FbMasterThread::Exit()
+{
+	wxCriticalSectionLocker locker(sm_section);
+	m_exit = true;
+	m_condition.Signal();
+}
+
 void FbMasterThread::Reset(FbMasterInfo * info)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	m_info = info;
-	m_book = 0;
-}
-
-void FbMasterThread::Open(int book)
-{
-	wxCriticalSectionLocker locker(sm_section);
-	m_book = book;
+	m_condition.Signal();
 }
 
 FbMasterInfo * FbMasterThread::GetInfo()
@@ -58,23 +59,17 @@ FbMasterInfo * FbMasterThread::GetInfo()
 	return result;
 }
 
-int FbMasterThread::GetBook()
-{
-	wxCriticalSectionLocker locker(sm_section);
-	int book = m_book;
-	m_book = 0;
-	return book;
-}
-
 void * FbMasterThread::Entry()
 {
-	while (!TestDestroy()) {
-		int book = GetBook();
-		if (book) (new ShowThread(m_owner, book, false, false))->Execute();
+	while (true) {
+		FbMasterInfo * info = NULL;
+		while (info == NULL) {
+			m_condition.Wait();
+			if (m_exit) return NULL;
+			info = GetInfo();
+		}
 
-		FbMasterInfo * info = GetInfo();
-		if (info == NULL) continue;
-
+		if (TestDestroy()) return NULL;
 		if (m_thread) m_thread->Wait();
 		wxDELETE(m_thread);
 
@@ -84,3 +79,4 @@ void * FbMasterThread::Entry()
 	}
 	return NULL;
 }
+
