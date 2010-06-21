@@ -27,9 +27,10 @@ class FbMasterInfo : public wxObject
 			{ return m_mode; }
 		void SetMode(FbListMode mode)
 			{ m_mode = mode; }
-		virtual void * Execute(wxEvtHandler * owner, FbThread * thread) const;
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
 		virtual FbMasterInfo * Clone() const = 0;
 	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const = 0;
 		virtual void Bind(wxSQLite3Statement &stmt) const {}
 		virtual wxString GetSelectColumn() const;
 		virtual wxString GetOrderTable() const;
@@ -39,6 +40,8 @@ class FbMasterInfo : public wxObject
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+		wxString FormatListSQL(const wxString &sql, const wxString &cond) const;
+		wxString FormatTreeSQL(const wxString &sql, const wxString &cond) const;
 	private:
 		int m_order;
 		FbListMode m_mode;
@@ -56,8 +59,8 @@ class FbMasterAuthorInfo: public FbMasterInfo
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterAuthorInfo(*this); }
 	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
 		virtual wxString GetOrderTable() const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
@@ -76,7 +79,7 @@ class FbMasterSeqnInfo: public FbMasterInfo
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterSeqnInfo(*this); }
 	protected:
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
@@ -95,8 +98,7 @@ class FbMasterGenrInfo: public FbMasterInfo
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterGenrInfo(*this); }
 	protected:
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		const wxString m_id;
@@ -113,31 +115,11 @@ class FbMasterDownInfo: public FbMasterInfo
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterDownInfo(*this); }
 	protected:
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
 		DECLARE_CLASS(FbMasterDownInfo);
-};
-
-class FbMasterSearchInfo: public FbMasterInfo
-{
-	public:
-		FbMasterSearchInfo(int index, const wxString &title, const wxString &author = wxEmptyString)
-			: FbMasterInfo(index), m_title(title), m_author(author) {}
-		FbMasterSearchInfo(const FbMasterSearchInfo &info)
-			: FbMasterInfo(info), m_title(info.m_title), m_author(info.m_author) {}
-		virtual FbMasterInfo * Clone() const
-			{ return new FbMasterSearchInfo(*this); }
-	protected:
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
-	private:
-		wxString m_title;
-		wxString m_author;
-		DECLARE_CLASS(FbMasterSearchInfo);
 };
 
 class FbMasterDateInfo: public FbMasterInfo
@@ -150,8 +132,7 @@ class FbMasterDateInfo: public FbMasterInfo
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterDateInfo(*this); }
 	protected:
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
@@ -168,13 +149,34 @@ class FbMasterFldrInfo: public FbMasterInfo
 		virtual FbMasterInfo * Clone() const
 			{ return new FbMasterFldrInfo(*this); }
 	protected:
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
 		FbFolderType m_type;
 		DECLARE_CLASS(FbMasterFldrInfo);
+};
+
+class FbMasterSearchInfo: public FbMasterInfo
+{
+	public:
+		FbMasterSearchInfo(int index, const wxString &title, const wxString &author = wxEmptyString)
+			: FbMasterInfo(index), m_title(title), m_author(author) {}
+		FbMasterSearchInfo(const FbMasterSearchInfo &info)
+			: FbMasterInfo(info), m_title(info.m_title), m_author(info.m_author) {}
+		virtual FbMasterInfo * Clone() const
+			{ return new FbMasterSearchInfo(*this); }
+	protected:
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
+		virtual wxString GetOrderTable() const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		wxString m_title;
+		wxString m_author;
+		bool m_full;
+		bool m_auth;
+		DECLARE_CLASS(FbMasterSearchInfo);
 };
 
 #endif // __FBMASTERINFO_H__

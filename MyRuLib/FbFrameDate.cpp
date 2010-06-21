@@ -73,6 +73,7 @@ void FbFrameDate::UpdateBooklist()
 	m_BooksPanel->EmptyBooks();
 	FbDateDayData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDateDayData);
 	if (data) FbMasterDate(data->GetCode()).Show(this);
+	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
 }
 
 void FbFrameDate::OnBooksCount(wxCommandEvent& event)

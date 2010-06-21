@@ -10,7 +10,7 @@
 
 IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
-void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread) const
+void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 {
 	if (thread->TestDestroy()) return NULL;
 
@@ -20,7 +20,7 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread) const
 		FbAggregateFunction func_aggregate;
 		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
 		database.CreateFunction(wxT("GENRE"), 1, func_genre);
-		if (GetOrderIndex() == BF_RATE) database.AttachConfig();
+		database.AttachConfig();
 		if (thread->TestDestroy()) return NULL;
 
 		wxString sql;
@@ -173,12 +173,24 @@ wxString FbMasterInfo::GetOrderFields() const
 
 wxString FbMasterInfo::GetListSQL(wxSQLite3Database &database) const
 {
-	return wxT("SELECT DISTINCT books.id %s FROM books %s WHERE %s GROUP BY books.id %s");
+	wxString sql = wxT("SELECT DISTINCT books.id %s FROM books %s WHERE %s GROUP BY books.id %s");
+	return FormatListSQL(sql, GetWhere(database));
 }
 
 wxString FbMasterInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	return wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, bookseq.number, books.title");
+	wxString sql = wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, bookseq.number, books.title");
+	return FormatTreeSQL(sql, GetWhere(database));
+}
+
+wxString FbMasterInfo::FormatListSQL(const wxString &sql, const wxString &cond) const
+{
+	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), cond.c_str(), GetOrderFields().c_str());
+}
+
+wxString FbMasterInfo::FormatTreeSQL(const wxString &sql, const wxString &cond) const
+{
+	return wxString::Format(sql, cond.c_str());
 }
 
 //-----------------------------------------------------------------------------
@@ -195,10 +207,9 @@ wxString FbMasterAuthorInfo::GetOrderTable() const
 		return FbMasterInfo::GetOrderTable();
 }
 
-wxString FbMasterAuthorInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterAuthorInfo::GetWhere(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id %s FROM books %s WHERE books.id_author=? GROUP BY books.id %s");
-	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), GetOrderFields().c_str());
+	return wxT("books.id_author=?");
 }
 
 wxString FbMasterAuthorInfo::GetTreeSQL(wxSQLite3Database &database) const
@@ -246,16 +257,9 @@ void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLi
 
 IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfo)
 
-wxString FbMasterDateInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterDateInfo::GetWhere(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id %s FROM books %s WHERE books.created=? GROUP BY books.id %s");
-	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), GetOrderFields().c_str());
-}
-
-wxString FbMasterDateInfo::GetTreeSQL(wxSQLite3Database &database) const
-{
-	wxString sql = FbMasterInfo::GetTreeSQL(database);
-	return wxString::Format(sql, wxT("books.created=?"));
+	return wxT("books.created=?");
 }
 
 void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
@@ -273,24 +277,15 @@ void FbMasterSeqnInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 {
 }
 
-wxString FbMasterSeqnInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterSeqnInfo::GetWhere(wxSQLite3Database &database) const
 {
-	switch (GetMode()) {
-		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id_book FROM bookseq LEFT JOIN books on books.id = bookseq.id_book WHERE bookseq.id_seq=? ORDER BY title");
-		case FB2_MODE_TREE:
-			return wxT("SELECT DISTINCT id_author, books.id, number FROM bookseq LEFT JOIN books ON bookseq.id_book=books.id WHERE bookseq.id_seq=? ORDER BY id_author, number, title");
-	}
+	return wxT("books.id IN (SELECT id_book FROM bookseq WHERE bookseq.id_seq=?)");
 }
 
 wxString FbMasterSeqnInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	switch (GetMode()) {
-		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id_book FROM bookseq LEFT JOIN books on books.id = bookseq.id_book WHERE bookseq.id_seq=? ORDER BY title");
-		case FB2_MODE_TREE:
-			return wxT("SELECT DISTINCT id_author, books.id, number FROM bookseq LEFT JOIN books ON bookseq.id_book=books.id WHERE bookseq.id_seq=? ORDER BY id_author, number, title");
-	}
+	wxString sql = wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.number, books.title");
+	return FormatTreeSQL(sql, GetWhere(database));
 }
 
 void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
@@ -304,16 +299,9 @@ void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfo)
 
-wxString FbMasterGenrInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterGenrInfo::GetWhere(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT id_book %s FROM genres INNER JOIN books on books.id = genres.id_book %s WHERE genres.id_genre=? %s");
-	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), GetOrderFields().c_str());
-}
-
-wxString FbMasterGenrInfo::GetTreeSQL(wxSQLite3Database &database) const
-{
-	wxString sql = FbMasterInfo::GetTreeSQL(database);
-	return wxString::Format(sql, wxT("books.id IN (SELECT id_book FROM genres WHERE genres.id_genre=?)"));
+	return wxT("books.id IN (SELECT id_book FROM genres WHERE genres.id_genre=?)");
 }
 
 void FbMasterGenrInfo::Bind(wxSQLite3Statement &stmt) const
@@ -327,16 +315,9 @@ void FbMasterGenrInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterDownInfo, FbMasterInfo)
 
-wxString FbMasterDownInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterDownInfo::GetWhere(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT id_book %s FROM genres INNER JOIN books on books.id = genres.id_book %s WHERE genres.id_genre=? %s");
-	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), GetOrderFields().c_str());
-}
-
-wxString FbMasterDownInfo::GetTreeSQL(wxSQLite3Database &database) const
-{
-	wxString sql = FbMasterInfo::GetTreeSQL(database);
-	return wxString::Format(sql, wxT("books.id IN (SELECT id_book FROM genres WHERE genres.id_genre=?)"));
+	return wxT("books.md5sum IN (SELECT md5sum FROM favorites WHERE id_folder=?)");
 }
 
 void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
@@ -350,24 +331,9 @@ void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterFldrInfo, FbMasterInfo)
 
-wxString FbMasterFldrInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterFldrInfo::GetWhere(wxSQLite3Database &database) const
 {
-	switch (GetMode()) {
-		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id FROM books WHERE id_author=? ORDER BY title");
-		case FB2_MODE_TREE:
-			return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
-	}
-}
-
-wxString FbMasterFldrInfo::GetTreeSQL(wxSQLite3Database &database) const
-{
-	switch (GetMode()) {
-		case FB2_MODE_LIST:
-			return wxT("SELECT DISTINCT id FROM books WHERE id_author=? ORDER BY title");
-		case FB2_MODE_TREE:
-			return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
-	}
+	return wxT("books.md5sum IN (SELECT md5sum FROM favorites WHERE id_folder=?)");
 }
 
 void FbMasterFldrInfo::Bind(wxSQLite3Statement &stmt) const
@@ -381,6 +347,28 @@ void FbMasterFldrInfo::Bind(wxSQLite3Statement &stmt) const
 
 IMPLEMENT_CLASS(FbMasterSearchInfo, FbMasterInfo)
 
+wxString FbMasterSearchInfo::GetOrderTable() const
+{
+	wxString result;
+	if (!m_author.IsEmpty()) result << wxT("INNER JOIN authors ON books.id_author = authors.id");
+	if (GetOrderIndex() == BF_RATE) result << wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
+	return result;
+}
+
+wxString FbMasterSearchInfo::GetWhere(wxSQLite3Database &database) const
+{
+	if (m_full) {
+		wxString sql = wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
+		if (m_auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
+		return sql;
+	} else {
+		wxString sql = wxT("SEARCH_T(books.title)");
+		if (m_auth) sql << wxT("AND SEARCH_A(authors.search_name)");
+		return sql;
+	}
+}
+
+/*
 wxString FbMasterSearchInfo::GetListSQL(wxSQLite3Database &database) const
 {
 	bool auth = !m_author.IsEmpty();
@@ -421,20 +409,61 @@ wxString FbMasterSearchInfo::GetListSQL(wxSQLite3Database &database) const
 			} break;
 		}
 	}
+}
 */
-}
-
-wxString FbMasterSearchInfo::GetTreeSQL(wxSQLite3Database &database) const
-{
-	wxString condition;
-	wxString sql = FbMasterInfo::GetTreeSQL(database);
-	return wxString::Format(sql, condition.c_str());
-}
 
 void FbMasterSearchInfo::Bind(wxSQLite3Statement &stmt) const
 {
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_title));
 	if (!m_author.IsEmpty()) stmt.Bind(2, FbSearchFunction::AddAsterisk(m_author));
+}
+
+void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
+{
+	if (thread->TestDestroy()) return NULL;
+
+	try {
+		FbCommonDatabase database;
+		FbGenreFunction func_genre;
+		FbAggregateFunction func_aggregate;
+		FbSearchFunction func_title(m_title);
+		FbSearchFunction func_author(m_author);
+		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
+		database.CreateFunction(wxT("GENRE"), 1, func_genre);
+		database.AttachConfig();
+		if (thread->TestDestroy()) return NULL;
+
+		m_auth = !m_author.IsEmpty();
+		m_full = database.TableExists(wxT("fts_book"));
+		m_full &= FbSearchFunction::IsFullText(m_title);
+		m_full &= FbSearchFunction::IsFullText(m_author);
+
+		wxString sql;
+		switch (GetMode()) {
+			case FB2_MODE_LIST: sql = GetListSQL(database); break;
+			case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
+		}
+
+		if (!m_full) {
+			database.CreateFunction(wxT("SEARCH_T"), 1, func_title);
+			if (m_auth) database.CreateFunction(wxT("SEARCH_A"), 1, func_author);
+		}
+
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		if (m_full) Bind(stmt);
+		if (thread->TestDestroy()) return NULL;
+
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (thread->TestDestroy()) return NULL;
+
+		switch (GetMode()) {
+			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
+			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return NULL;
 }
 
 
