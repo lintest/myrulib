@@ -463,8 +463,6 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 		return;
     }
 
-	wxLogVerbose(wxString(wxT("Char:")) << event.GetEventType());
-
     int pos = GetScrollPos (wxVERTICAL);
    	int hhh = GetClientCount();
 

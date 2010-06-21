@@ -177,15 +177,15 @@ void InfoCash::AddIcon(wxString extension, wxBitmap bitmap)
 
 void InfoCash::LoadIcon(const wxString &extension)
 {
- 	if (extension == wxT("fb2")) return;
-	wxString filename = wxT("icon.") + extension;
-
 	wxCriticalSectionLocker enter(sm_locker);
 
 	if (!sm_icons.Count()) {
 		AddIcon((wxString)wxT("djvu"), wxBitmap(ico_djvu_xpm));
 		AddIcon((wxString)wxT("pdf"), wxBitmap(ico_pdf_xpm));
 	}
+
+	if (extension.IsEmpty() || extension == wxT("fb2")) return;
+	wxString filename = wxT("icon.") + extension;
 
 	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
 	if (sm_noico.Index(extension) != wxNOT_FOUND) return;

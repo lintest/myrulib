@@ -236,6 +236,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbBookTree.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbCalendar.cpp"
 				>
 			</File>
@@ -372,7 +376,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbMasterInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbMasterList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbMasterThread.cpp"
 				>
 			</File>
 			<File
@@ -534,6 +546,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbBookTree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbBookTypes.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbCalendar.h"
 				>
 			</File>
@@ -678,7 +698,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbMasterInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbMasterList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbMasterThread.h"
 				>
 			</File>
 			<File

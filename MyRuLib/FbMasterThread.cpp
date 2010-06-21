@@ -1,6 +1,5 @@
 #include "FbMasterThread.h"
 #include "FbMasterInfo.h"
-#include "FbBookPanel.h"
 #include "InfoCash.h"
 
 //-----------------------------------------------------------------------------
@@ -26,7 +25,7 @@ class FbJoinedThread: public FbThread
 
 wxCriticalSection FbMasterThread::sm_section;
 
-FbMasterThread::FbMasterThread(FbBookPanel * owner)
+FbMasterThread::FbMasterThread(wxEvtHandler * owner)
 	: m_owner(owner), m_info(NULL), m_thread(NULL), m_book(0)
 {
 }

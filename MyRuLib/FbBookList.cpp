@@ -172,6 +172,7 @@ wxString FbBookList::GetSelected()
 
 bool FbBookList::DeleteItems(const wxTreeItemId &parent, wxArrayInt &items)
 {
+	return false;
 /*
 	wxTreeItemIdValue cookie;
 	wxTreeItemId child = GetFirstChild(parent, cookie);

@@ -161,6 +161,13 @@ void FbFrameAuthor::OnMasterSelected(wxTreeEvent & event)
 	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
+void FbFrameAuthor::UpdateBooklist()
+{
+	m_BooksPanel->EmptyBooks();
+	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	if (data) FbMasterAuthor(data->GetCode()).Show(this);
+}
+
 void FbFrameAuthor::ActivateAuthors()
 {
 	m_MasterList->SetFocus();
@@ -194,13 +201,6 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
 	if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetCode());
 */
-}
-
-void FbFrameAuthor::UpdateBooklist()
-{
-	m_BooksPanel->EmptyBooks();
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
-	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
 void FbFrameAuthor::OnColClick(wxListEvent& event)
