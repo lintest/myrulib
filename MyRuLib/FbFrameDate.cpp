@@ -71,7 +71,8 @@ void FbFrameDate::OnMasterSelected(wxTreeEvent & event)
 void FbFrameDate::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbDateDayData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDateDayData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbDateDayData * data = wxDynamicCast(&item, FbDateDayData);
 	if (data) FbMasterDate(data->GetCode()).Show(this);
 	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
 }

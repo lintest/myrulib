@@ -78,7 +78,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		FbTreeViewMainWindow* GetMainWindow() const
 			{ return m_main_win; }
 
-		FbModelData * GetCurrent() const;
+		FbModelItem GetCurrent() const;
 
 		wxString GetCurrentText() const;
 

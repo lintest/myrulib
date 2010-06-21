@@ -157,14 +157,16 @@ void FbFrameAuthor::CreateMasterThread()
 
 void FbFrameAuthor::OnMasterSelected(wxTreeEvent & event)
 {
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
 void FbFrameAuthor::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
@@ -236,9 +238,10 @@ void FbFrameAuthor::OnContextMenu(wxTreeEvent& event)
 	ShowContextMenu(point, event.GetItem());
 }
 
-void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
+void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 {
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
@@ -258,7 +261,8 @@ void FbFrameAuthor::OnMasterModify(wxCommandEvent& event)
 	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
 	if (model == NULL) return;
 
-	FbAuthListData * current = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
 	if (current == NULL) return;
 
 	wxString newname;
@@ -275,7 +279,8 @@ void FbFrameAuthor::OnMasterReplace(wxCommandEvent& event)
 	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
 	if (model == NULL) return;
 
-	FbAuthListData * current = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
 	if (current == NULL) return;
 
 	wxString newname;
@@ -292,7 +297,8 @@ void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
 
-	FbAuthListData * current = wxDynamicCast(model->GetCurrent(), FbAuthListData);
+	FbModelItem item = model->GetCurrent();
+	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
 	if (current == NULL) return;
 
 	int id = current->GetCode();
@@ -317,7 +323,8 @@ void FbFrameAuthor::OnMasterDelete(wxCommandEvent& event)
 
 void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)
 {
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	if (data && data->GetCode() > 0) {
 		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetCode());
@@ -368,7 +375,8 @@ wxMenuBar * FbFrameAuthor::CreateMenuBar()
 
 void FbFrameAuthor::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 {
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	event.Enable( data && data->GetCode()>0 );
 }
 

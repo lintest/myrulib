@@ -16,6 +16,8 @@ class FbBookListData: public FbModelData
 			{ return m_code; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetBook(m_code, col); }
+		virtual FbModelData * Clone() const
+			 { return new FbBookListData(m_code); }
 	protected:
 		virtual void DoSetState(FbModel & model, int state);
 		virtual int DoGetState(FbModel & model) const;
@@ -36,7 +38,7 @@ class FbBookListModel: public FbListModel
 	public:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
-		virtual FbModelData * GetCurrent()
+		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); };
 
 		virtual void Append(FbModelData * data) {}
@@ -44,13 +46,12 @@ class FbBookListModel: public FbListModel
 		virtual void Delete() {}
 
 	protected:
-		virtual FbModelData * DoGetData(size_t row, int &level);
+		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:
         wxString GetSQL(const wxString & order, const wxString & condition);
 	private:
 		wxArrayInt m_items;
 		FbSortedArrayInt m_check;
-		FbBookListData * m_data;
 		DECLARE_CLASS(FbBookListModel);
 };
 

@@ -351,7 +351,8 @@ void FbConfigDlg::SaveTypes(wxSQLite3Database &database)
 
 	size_t count = model->GetRowCount();
 	for (size_t i = 1; i <= count; i++) {
-		TypeData * data = wxDynamicCast(model->GetData(i), TypeData);
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
 		if (data && data->IsModified()) {
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, data->GetValue(*model, 0));
@@ -375,7 +376,8 @@ void FbConfigDlg::OnAppendType( wxCommandEvent& event )
 
 	size_t count = model->GetRowCount();
 	for (size_t i = 1; i <= count; i++) {
-		TypeData * data = wxDynamicCast(model->GetData(i), TypeData);
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
 		if (data && data->GetValue(*model, 0) == filetype) {
 			model->FindRow(i, true);
 			return;
@@ -395,7 +397,8 @@ void FbConfigDlg::OnModifyType( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	TypeData * data = wxDynamicCast(model->GetCurrent(), TypeData);
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
 	if (!data) return;
 
 	wxString title = _("Select the application to view files");
@@ -415,7 +418,8 @@ void FbConfigDlg::OnDeleteType( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	TypeData * data = wxDynamicCast(model->GetCurrent(), TypeData);
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
 	if (!data) return;
 
 	wxString type = data->GetValue(*model, 0);

@@ -193,15 +193,13 @@ void FbBookPanel::SetViewMode(int mode)
 
 int FbBookPanel::GetSelectedBook()
 {
-	FbModelData * data = m_BookList->GetCurrent();
-	if (data) {
-		FbBookChildData * book = wxDynamicCast(data, FbBookChildData);
-		if (book) {
-			return book->GetCode();
-		} else {
-			FbBookListData * book = wxDynamicCast(data, FbBookListData);
-			if (book) return book->GetCode();
-		}
+	FbModelItem item = m_BookList->GetCurrent();
+	FbBookChildData * book = wxDynamicCast(&item, FbBookChildData);
+	if (book) {
+		return book->GetCode();
+	} else {
+		FbBookListData * book = wxDynamicCast(&item, FbBookListData);
+		if (book) return book->GetCode();
 	}
 	return 0;
 }

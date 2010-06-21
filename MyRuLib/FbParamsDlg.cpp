@@ -756,7 +756,8 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	ScriptData * data = wxDynamicCast(model->GetCurrent(), ScriptData);
+	FbModelItem item = model->GetCurrent();
+	ScriptData * data = wxDynamicCast(&item, ScriptData);
 	if (!data) return;
 
 	wxString name = data->GetValue(*model, 0);
@@ -792,7 +793,8 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	ScriptData * data = wxDynamicCast(model->GetCurrent(), ScriptData);
+	FbModelItem item = model->GetCurrent();
+	ScriptData * data = wxDynamicCast(&item, ScriptData);
 	if (!data) return;
 
 	wxString msg = _("Delete export script") + COLON + data->GetValue(*model, 0);
@@ -835,7 +837,8 @@ void FbParamsDlg::OnAppendType( wxCommandEvent& event )
 
 	size_t count = model->GetRowCount();
 	for (size_t i = 1; i <= count; i++) {
-		TypeData * data = wxDynamicCast(model->GetData(i), TypeData);
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
 		if (data && data->GetValue(*model, 0) == filetype) {
 			model->FindRow(i, true);
 			return;
@@ -855,7 +858,8 @@ void FbParamsDlg::OnModifyType( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	TypeData * data = wxDynamicCast(model->GetCurrent(), TypeData);
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
 	if (!data) return;
 
 	wxString title = _("Select the application to view files");
@@ -875,7 +879,8 @@ void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
 	if (!model) return;
 
-	TypeData * data = wxDynamicCast(model->GetCurrent(), TypeData);
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
 	if (!data) return;
 
 	wxString type = data->GetValue(*model, 0);
@@ -947,7 +952,8 @@ void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 	int format = FbParams::GetValue(FB_FILE_FORMAT);
 	size_t count = model->GetRowCount();
 	for (size_t i=1; i<=count; i++) {
-		ScriptData * data = wxDynamicCast(model->GetData(i), ScriptData);
+		FbModelItem item = model->GetData(i);
+		ScriptData * data = wxDynamicCast(&item, ScriptData);
 		if (!data) continue;
 		wxString name = _("filename"); name << wxT('.') << data->GetValue(*model);
 		int code = data->GetCode();
@@ -1003,7 +1009,8 @@ void FbParamsDlg::SaveScripts(wxSQLite3Database &database)
 
 	size_t count = model->GetRowCount();
 	for (size_t i = 1; i <= count; i++) {
-		ScriptData * data = wxDynamicCast(model->GetData(i), ScriptData);
+		FbModelItem item = model->GetData(i);
+		ScriptData * data = wxDynamicCast(&item, ScriptData);
 		if (data && data->IsModified()) {
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, data->GetCode());
@@ -1026,7 +1033,8 @@ void FbParamsDlg::SaveTypes(wxSQLite3Database &database)
 
 	size_t count = model->GetRowCount();
 	for (size_t i = 1; i <= count; i++) {
-		TypeData * data = wxDynamicCast(model->GetData(i), TypeData);
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
 		if (data && data->IsModified()) {
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, data->GetValue(*model, 0));

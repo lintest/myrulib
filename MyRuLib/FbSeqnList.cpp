@@ -108,7 +108,6 @@ wxString FbSeqnListData::GetValue(FbModel & model, size_t col) const
 IMPLEMENT_CLASS(FbSeqnListModel, FbListModel)
 
 FbSeqnListModel::FbSeqnListModel(const wxArrayInt &items)
-	: m_data(NULL)
 {
 	m_position = items.Count() == 0 ? 0 : 1;
 	Append(items);
@@ -116,7 +115,6 @@ FbSeqnListModel::FbSeqnListModel(const wxArrayInt &items)
 
 FbSeqnListModel::~FbSeqnListModel(void)
 {
-	wxDELETE(m_data);
 }
 
 void FbSeqnListModel::Append(const wxArrayInt &items)
@@ -124,13 +122,13 @@ void FbSeqnListModel::Append(const wxArrayInt &items)
 	WX_APPEND_ARRAY(m_items, items);
 }
 
-FbModelData * FbSeqnListModel::DoGetData(size_t row, int &level)
+FbModelItem FbSeqnListModel::DoGetData(size_t row, int &level)
 {
 	level = 0;
-	if (row == 0 || row > m_items.Count()) return NULL;
+	if (row == 0 || row > m_items.Count()) return *this;
 	int code = m_items[row - 1];
-	wxDELETE(m_data);
-	return m_data = new FbSeqnListData(code);
+	FbSeqnListData data(code);
+	return FbModelItem(*this, &data);
 }
 
 void FbSeqnListModel::Append(FbModelData * data)

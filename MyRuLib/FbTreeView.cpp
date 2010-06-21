@@ -802,8 +802,8 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 		size_t row = (size_t)(y / h) + 1;
 		if (event.LeftDown() || event.LeftDClick() || event.MiddleDown() || event.RightDown()) {
 			int level;
-			FbModelData * data = m_model->GetData(row, level);
-			if (data == 0) { event.Skip(); return; }
+			FbModelItem item = m_model->GetData(row, level);
+			if (!item) { event.Skip(); return; }
 
 			int left = FB_CHECKBOX_WIDTH * level;
 			int right = left + FB_CHECKBOX_WIDTH + 2;
@@ -1290,10 +1290,10 @@ FbModel * FbTreeViewCtrl::GetModel() const
 	return m_main_win ? m_main_win->GetModel() : NULL;
 }
 
-FbModelData * FbTreeViewCtrl::GetCurrent() const
+FbModelItem FbTreeViewCtrl::GetCurrent() const
 {
 	FbModel * model = GetModel();
-	return model ? model->GetCurrent() : NULL;
+	return model ? model->GetCurrent() : FbModelItem();
 }
 
 wxString FbTreeViewCtrl::GetCurrentText() const
@@ -1301,8 +1301,8 @@ wxString FbTreeViewCtrl::GetCurrentText() const
 	FbModel * model = GetModel();
 	if (model) {
 		size_t position = model->GetPosition();
-	    FbModelData * data = model->GetData(position);
-	    if (data) return data->GetValue(*model, 0);
+	    FbModelItem item = model->GetData(position);
+	    if (item) return item.GetValue(0);
 	}
 	return wxEmptyString;
 }

@@ -61,14 +61,16 @@ void FbFrameGenres::CreateColumns()
 void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
 {
 	m_BooksPanel->EmptyBooks();
-	FbGenreChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbGenreChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbGenreChildData * data = wxDynamicCast(&item, FbGenreChildData);
 	if (data) FbMasterGenre(data->GetCode()).Show(this);
 	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
 }
 
 void FbFrameGenres::UpdateBooklist()
 {
-	FbGenreChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbGenreChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbGenreChildData * data = wxDynamicCast(&item, FbGenreChildData);
 	if (data) FbMasterGenre(data->GetCode()).Show(this);
 	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
 }

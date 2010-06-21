@@ -109,7 +109,8 @@ void FbFrameSequen::CreateMasterThread()
 
 void FbFrameSequen::OnMasterSelected(wxTreeEvent & event)
 {
-	FbSeqnListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbSeqnListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
 	if (data) FbMasterSeqname(data->GetCode()).Show(this);
 }
 
@@ -131,7 +132,8 @@ void FbFrameSequen::OpenSequence(const int sequence, const int book)
 void FbFrameSequen::UpdateBooklist()
 {
 	m_BooksPanel->EmptyBooks();
-	FbSeqnListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbSeqnListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
 	if (data) FbMasterSeqname(data->GetCode()).Show(this);
 }
 
@@ -181,9 +183,10 @@ void FbFrameSequen::OnContextMenu(wxTreeEvent& event)
 	ShowContextMenu(point, event.GetItem());
 }
 
-void FbFrameSequen::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
+void FbFrameSequen::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 {
-	FbSeqnListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbSeqnListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
 	if (data) FbMasterSeqname(data->GetCode()).Show(this);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
@@ -204,7 +207,8 @@ void FbFrameSequen::OnMasterModify(wxCommandEvent& event)
 	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
 	if (model == NULL) return;
 
-	FbSeqnListData * current = wxDynamicCast(m_MasterList->GetCurrent(), FbSeqnListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbSeqnListData * current = wxDynamicCast(&item, FbSeqnListData);
 	if (current == NULL) return;
 
 	wxString newname;
@@ -221,7 +225,8 @@ void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
 
-	FbSeqnListData * current = wxDynamicCast(model->GetCurrent(), FbSeqnListData);
+	FbModelItem item = model->GetCurrent();
+	FbSeqnListData * current = wxDynamicCast(&item, FbSeqnListData);
 	if (current == NULL) return;
 
 	int id = current->GetCode();

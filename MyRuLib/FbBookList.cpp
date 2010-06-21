@@ -28,7 +28,7 @@ int FbBookListData::DoGetState(FbModel & model) const
 IMPLEMENT_CLASS(FbBookListModel, FbListModel)
 
 FbBookListModel::FbBookListModel(const wxArrayInt &items)
-	: m_check(CompareInt), m_data(NULL)
+	: m_check(CompareInt)
 {
 	m_position = items.Count() == 0 ? 0 : 1;
 	Append(items);
@@ -36,7 +36,6 @@ FbBookListModel::FbBookListModel(const wxArrayInt &items)
 
 FbBookListModel::~FbBookListModel(void)
 {
-	wxDELETE(m_data);
 }
 
 void FbBookListModel::Append(const wxArrayInt &items)
@@ -59,13 +58,13 @@ int FbBookListModel::GetState(int code) const
 	return m_check.Index(code) != wxNOT_FOUND;
 }
 
-FbModelData * FbBookListModel::DoGetData(size_t row, int &level)
+FbModelItem FbBookListModel::DoGetData(size_t row, int &level)
 {
 	level = 0;
-	if (row == 0 || row > m_items.Count()) return NULL;
+	if (row == 0 || row > m_items.Count()) return *this;
 	int code = m_items[row - 1];
-	wxDELETE(m_data);
-	return m_data = new FbBookListData(code);
+	FbBookListData data(code);
+	return FbModelItem(*this, &data);
 }
 
 //-----------------------------------------------------------------------------

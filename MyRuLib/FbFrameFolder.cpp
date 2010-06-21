@@ -114,7 +114,8 @@ void FbFrameFolder::FillFolders(const int current)
 void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 {
 	m_BooksPanel->EmptyBooks();
-	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data == NULL) return;
 
 	bool enabled = data->GetType() == FT_FOLDER && data->GetCode();
@@ -125,7 +126,8 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 
 void FbFrameFolder::UpdateBooklist()
 {
-	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data) FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
 }
 
@@ -184,7 +186,8 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
 
-	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data == NULL || data->GetType() != FT_FOLDER || data->GetCode()==0) return;
 
 	wxString name = data->GetValue(*model);
@@ -212,7 +215,8 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
 
-	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data == NULL || data->GetType() != FT_FOLDER || data->GetCode()==0) return;
 
 	wxString name = data->GetValue(*model);
@@ -240,7 +244,8 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 
 void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)
 {
-	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data == NULL || data->GetType() != type) return;
 
 	bool update = false;

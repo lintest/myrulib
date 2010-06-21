@@ -99,19 +99,22 @@ void FbFrameDownld::FillFolders(const int iCurrent)
 
 void FbFrameDownld::OnFolderSelected(wxTreeEvent & event)
 {
-	FbDownListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDownListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbDownListData * data = wxDynamicCast(&item, FbDownListData);
 	if (data) FbMasterDownld(data->GetCode()).Show(this);
 }
 
 void FbFrameDownld::UpdateBooklist()
 {
-	FbDownListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDownListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbDownListData * data = wxDynamicCast(&item, FbDownListData);
 	if (data) FbMasterDownld(data->GetCode()).Show(this);
 }
 
 void FbFrameDownld::UpdateFolder(const int folder, const FbFolderType type)
 {
-	FbDownListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbDownListData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbDownListData * data = wxDynamicCast(&item, FbDownListData);
 	if (data && data->GetCode() == folder) FbMasterDownld(data->GetCode()).Show(this);
 }
 

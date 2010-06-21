@@ -31,6 +31,8 @@ class FbSeqnListData: public FbModelData
 		FbSeqnListData(int code): m_code(code) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
+		virtual FbModelData * Clone() const
+			 { return new FbSeqnListData(m_code); }
 	private:
 		int m_code;
 		DECLARE_CLASS(FbSeqnListData);
@@ -49,13 +51,12 @@ class FbSeqnListModel: public FbListModel
 	protected:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
-		virtual FbModelData * GetCurrent()
+		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); };
 	protected:
-		virtual FbModelData * DoGetData(size_t row, int &level);
+		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:
 		wxArrayInt m_items;
-		FbSeqnListData * m_data;
 		DECLARE_CLASS(FbSeqnListModel);
 };
 

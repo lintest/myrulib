@@ -51,6 +51,8 @@ class FbAuthListData: public FbModelData
 		FbAuthListData(int code): m_code(code) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
+		virtual FbModelData * Clone() const
+			 { return new FbAuthListData(m_code); }
 	private:
 		int m_code;
 		DECLARE_CLASS(FbAuthListData);
@@ -69,13 +71,12 @@ class FbAuthListModel: public FbListModel
 	public:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
-		virtual FbModelData * GetCurrent()
+		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); };
 	protected:
-		virtual FbModelData * DoGetData(size_t row, int &level);
+		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:
 		wxArrayInt m_items;
-		FbAuthListData * m_data;
 		DECLARE_CLASS(FbAuthListModel);
 };
 

@@ -6,6 +6,8 @@
 
 class FbModel;
 
+class FbModelData;
+
 class FbModelData: public wxObject
 {
 	public:
@@ -35,6 +37,8 @@ class FbModelData: public wxObject
 			{ return NULL; };
 		virtual bool HiddenRoot() const
 			{ return true; }
+		virtual FbModelData * Clone() const
+			{ return NULL; }
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -47,6 +51,51 @@ class FbModelData: public wxObject
 
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbModelData, FbModelDataArray);
+
+class FbModelItem: public wxObject
+{
+	public:
+		FbModelItem()
+			: m_model(NULL), m_data(NULL), m_virual(false) {}
+		FbModelItem(FbModel & model, FbModelData * data = NULL)
+			: m_model(&model), m_data(data ? data->Clone() : data), m_virual(false)
+				{ if (m_data == NULL) m_data = data; else m_virual = true; }
+		FbModelItem(const FbModelItem &item)
+			: m_model(item.m_model), m_data(item.m_data ? item.m_data->Clone() : item.m_data), m_virual(false)
+				{ if (m_data == NULL) m_data = item.m_data; else m_virual = true; }
+		~FbModelItem()
+			{ if (m_virual) wxDELETE(m_data); }
+		operator bool() const
+			{ return m_data != NULL; }
+		FbModelData * operator&()
+			{ return m_data; }
+	public:
+		size_t Count()
+			{ return m_data ? m_data->Count(*m_model) : 0; }
+		size_t CountAll()
+			{ return m_data ? m_data->CountAll(*m_model) : 0; }
+		bool FullRow()
+			{ return m_data ? m_data->FullRow(*m_model) : false; }
+		bool IsBold()
+			{ return m_data ? m_data->IsBold(*m_model) : false; }
+		FbModelItem Items(size_t index)
+			{ return m_data ? FbModelItem(*m_model, m_data->Items(*m_model, index)) : FbModelItem(); }
+		FbModelItem GetParent()
+			{ return m_data ? FbModelItem(*m_model, m_data->GetParent(*m_model)) : FbModelItem(); }
+		wxString GetValue(size_t col)
+			{ return m_data ? m_data->GetValue(*m_model, col) : wxString(); }
+		void SetValue(size_t col, const wxString &name)
+			{ if (m_data) m_data->SetValue(*m_model, col, name); }
+		int GetState() const
+			{ return m_data ? m_data->GetState(*m_model) : 0; }
+		void SetState(bool state)
+			{ if (m_data) m_data->SetState(*m_model, state); }
+	private:
+		FbModel * m_model;
+		FbModelData * m_data;
+		bool m_virual;
+		DECLARE_CLASS(FbModelItem);
+};
 
 class FbParentData: public FbModelData
 {
@@ -141,9 +190,9 @@ class FbModel: public wxObject
 		void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
 		void SetFocused(bool focused)
 			{ m_focused = focused; }
-		FbModelData * GetData(size_t row)
+		FbModelItem GetData(size_t row)
 			{ int level; return DoGetData(row, level); }
-		FbModelData * GetData(size_t row, int &level)
+		FbModelItem GetData(size_t row, int &level)
 			{ return DoGetData(row, level); }
 
 		virtual int GoFirstRow() = 0;
@@ -165,7 +214,7 @@ class FbModel: public wxObject
 		virtual void SingleCheck(size_t row = 0);
 		virtual void MultiplyCheck() {}
 
-		virtual FbModelData * GetCurrent()
+		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); }
 
 		void SetShift(bool select);
@@ -174,9 +223,9 @@ class FbModel: public wxObject
 
 	protected:
 		const wxBitmap & GetBitmap(int state);
-		void DrawItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
+		void DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
-		virtual FbModelData * DoGetData(size_t row, int &level) = 0;
+		virtual FbModelItem DoGetData(size_t row, int &level) = 0;
 		bool IsSelected(size_t row);
 
 	protected:
@@ -212,8 +261,8 @@ class FbListStore: public FbListModel
 		virtual size_t GetRowCount() const
 			{ return m_list.Count(); }
 	protected:
-		virtual FbModelData * DoGetData(size_t row, int &level)
-			{ level = 0; return row && row <= m_list.Count() ? &m_list[row - 1] : NULL; }
+		virtual FbModelItem DoGetData(size_t row, int &level)
+			{ level = 0; return row && row <= m_list.Count() ? FbModelItem(*this, &m_list[row - 1]) : *this; }
 	private:
 		FbModelDataArray m_list;
 		DECLARE_CLASS(FbListStore);
@@ -246,12 +295,12 @@ class FbTreeModel: public FbModel
 
 	protected:
 		bool DoDelete(FbModelData &parent, size_t &row);
-		virtual FbModelData * DoGetData(size_t row, int &level);
+		virtual FbModelItem DoGetData(size_t row, int &level);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
-		void DrawTreeItem(FbModelData &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &row);
-		FbModelData * FindData(FbModelData &parent, size_t &row, int &level);
-		FbModelData * GetLast(FbModelData &parent);
-		void DoCheck(FbModelData &parent, size_t max, size_t &row, int &state);
+		void DrawTreeItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, int h, size_t &row);
+		FbModelItem FindData(FbModelItem &parent, size_t &row, int &level);
+		FbModelItem GetLast(FbModelItem &parent);
+		void DoCheck(FbModelItem &parent, size_t max, size_t &row, int &state);
 
 	protected:
 		FbModelData * m_root;
