@@ -454,16 +454,7 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 
 void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 {
-    // send event to user code
-    wxTreeEvent nevent (wxEVT_COMMAND_TREE_KEY_DOWN, 0 );
-    nevent.SetInt(m_current);
-    nevent.SetKeyEvent (event);
-    if (SendEvent(0, NULL, &nevent)) return; // char event handled in user code
-
-    if (!m_model) {
-		event.Skip();
-		return;
-    }
+    if (!m_model) { event.Skip(); return; }
 
     int pos = GetScrollPos (wxVERTICAL);
    	int hhh = GetClientCount();
@@ -503,7 +494,7 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 
     // remember item at shift down
     if (HasFlag(fbTR_MULTIPLE) && event.GetKeyCode() != ' ') {
-    	m_model->SetShift(event.ShiftDown());
+		m_model->SetShift(event.ShiftDown());
     }
 
    	int old = m_model->GetPosition();
@@ -775,6 +766,8 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 
 void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 {
+    if (!m_model) { event.Skip(); return; }
+
     // send event to user code
     if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
 

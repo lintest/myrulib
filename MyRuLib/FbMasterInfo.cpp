@@ -106,13 +106,15 @@ void FbMasterInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 		new FbBookChildData(*model, list, result.GetInt(2), result.GetInt(3));
 	}
 
-	if (auth->Count(*model) == 1 && seqn->GetCode() == 0) {
-		delete auth;
-		list->SetParent(root);
-	} else {
-		auth->SetParent(root);
-		auth->SortItems();
-		delete list;
+	if (auth && list) {
+		if (auth->Count(*model) == 1 && seqn->GetCode() == 0) {
+			delete auth;
+			list->SetParent(root);
+		} else {
+			auth->SetParent(root);
+			auth->SortItems();
+			delete list;
+		}
 	}
 
 	model->SetRoot(root);
