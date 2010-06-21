@@ -173,25 +173,6 @@ wxString FbBookList::GetSelected()
 bool FbBookList::DeleteItems(const wxTreeItemId &parent, wxArrayInt &items)
 {
 	return false;
-/*
-	wxTreeItemIdValue cookie;
-	wxTreeItemId child = GetFirstChild(parent, cookie);
-	while (child.IsOk()) {
-		int id = GetItemBook(child);
-		if ( id ) {
-			if (items.Index(id) != wxNOT_FOUND) {
-				Delete(child);
-				return true;
-			}
-		} else if (!HasChildren(child)) {
-			Delete(child);
-			return true;
-		}
-		if (DeleteItems(child, items)) return true;
-		child = GetNextChild(parent, cookie);
-	}
-	return false;
-*/
 }
 
 void FbBookList::DeleteItems(wxArrayInt &items)

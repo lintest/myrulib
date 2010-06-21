@@ -15,8 +15,7 @@ FbCacheBook::FbCacheBook(int code):
 	m_numb(0),
 	m_rate(0),
 	m_date(0),
-	m_size(0),
-	m_fields(BF_CODE)
+	m_size(0)
 {
 }
 
@@ -38,17 +37,11 @@ FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result):
 	m_numb(0),
 	m_rate(result.GetInt(6)),
 	m_date(result.GetInt(7)),
-	m_size(result.GetInt(1)),
-	m_fields(BF_CODE)
+	m_size(result.GetInt(1))
 {
 }
 
-bool FbCacheBook::HasField(size_t col) const
-{
-	return m_fields & col;
-}
-
-wxString FbCacheBook::GetValue(FbBookFields field)
+wxString FbCacheBook::GetValue(size_t field)
 {
 	switch (field) {
 		case BF_CODE: return wxString::Format(wxT("%d"), m_code);
@@ -61,7 +54,7 @@ wxString FbCacheBook::GetValue(FbBookFields field)
 		case BF_TYPE: return m_type;
 		case BF_DATE: return FbMasterDate::GetDate(m_date).FormatDate();
 		case BF_SIZE: return FbCollection::Format(m_size / 1024);
-		case BF_LENG: return FbCollection::Format(m_size);
+		case BF_BITE: return FbCollection::Format(m_size);
 		case BF_SEQN: return m_seqn;
 		case BF_MD5S: return m_md5s;
 		default: return wxEmptyString;

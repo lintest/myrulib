@@ -75,6 +75,7 @@ void * FbMasterThread::Entry()
 		FbMasterInfo * info = GetInfo();
 		if (info == NULL) continue;
 
+		if (m_thread && m_thread->IsAlive()) m_thread->Pause();
 		if (m_thread) m_thread->Wait();
 		wxDELETE(m_thread);
 

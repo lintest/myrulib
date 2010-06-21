@@ -229,6 +229,7 @@ void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
     for ( size_t i = 0; i < count && x < www; i++ ) {
         wxHeaderButtonParams params;
         GetColumn(i).Assign(this, params);
+		int index = GetColumn(i).GetIndex();
 
         int wCol = GetColumnWidth(i) * w / ww;
         if (i == count - 1) wCol = w - x;
@@ -236,7 +237,7 @@ void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         x += wCol;
 
 		wxHeaderSortIconType sort = wxHDR_SORT_ICON_NONE;
-		if (abs(m_sorted) == (int)i + 1) sort = m_sorted > 0 ? wxHDR_SORT_ICON_DOWN : wxHDR_SORT_ICON_UP;
+		if (abs(m_sorted) == index + 1) sort = m_sorted > 0 ? wxHDR_SORT_ICON_DOWN : wxHDR_SORT_ICON_UP;
 
         wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
     }
@@ -280,7 +281,8 @@ void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
 {
     if (event.LeftUp() && m_sorted) {
         int col = XToCol(event.GetX());
-        m_sorted = (abs(m_sorted) == col + 1) ? - m_sorted : col + 1;
+		int index = GetColumn(col).GetIndex();
+        m_sorted = (abs(m_sorted) == index + 1) ? - m_sorted : index + 1;
         SendListEvent(wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
         Refresh();
     }

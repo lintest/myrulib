@@ -177,22 +177,20 @@ void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
 
 void FbAggregateFunction::Aggregate(wxSQLite3FunctionContext& ctx)
 {
-	wxArrayString** acc = (wxArrayString**) ctx.GetAggregateStruct(sizeof (wxArrayString**));
-	if (*acc == NULL) *acc = new wxArrayString;
-	for (int i = 0; i < ctx.GetArgCount(); i++) (**acc).Add(ctx.GetString(i));
+	wxSortedArrayString** acc = (wxSortedArrayString **) ctx.GetAggregateStruct(sizeof (wxSortedArrayString **));
+	if (*acc == NULL) *acc = new wxSortedArrayString ;
+	for (int i = 0; i < ctx.GetArgCount(); i++) (**acc).Add(ctx.GetString(i).Trim(true).Trim(false));
 }
 
 void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 {
-	wxArrayString** acc = (wxArrayString**) ctx.GetAggregateStruct(sizeof (wxArrayString**));
-
-	(*acc)->Sort();
+	wxSortedArrayString ** acc = (wxSortedArrayString **) ctx.GetAggregateStruct(sizeof (wxSortedArrayString **));
 
 	wxString result;
 	size_t iCount = (*acc)->Count();
 	for (size_t i=0; i<iCount; i++) {
 		if (!result.IsEmpty()) result << wxT(", ");
-		result << (**acc).Item(i).Trim(true).Trim(false);
+		result << (**acc).Item(i);
 	}
 	ctx.SetResult(result);
 

@@ -7,7 +7,7 @@
 class FbModel;
 
 #define DATA_CACHE_SIZE 128
-
+/*
 typedef size_t FbBookFields;
 #define	BF_CODE  0x0001
 #define	BF_NAME  0x0002
@@ -22,32 +22,32 @@ typedef size_t FbBookFields;
 #define	BF_LENG  0x0400
 #define	BF_SEQN  0x0800
 #define	BF_MD5S  0x1000
-
-/*
-enum FbBookFields {
-	BF_CODE = 0x0001,
-	BF_NAME = 0x0002,
-	BF_NUMB = 0x0004,
-	BF_AUTH = 0x0008,
-	BF_GENR = 0x0010,
-	BF_RATE = 0x0020,
-	BF_LANG = 0x0040,
-	BF_TYPE = 0x0080,
-	BF_DATE = 0x0100,
-	BF_SIZE = 0x0200,
-	BF_SEQN = 0x0400,
-	BF_MD5S = 0x0800,
-};
 */
+
+enum FbBookFields {
+	BF_NAME = 0,
+	BF_NUMB,
+	BF_AUTH,
+	BF_CODE,
+	BF_GENR,
+	BF_RATE,
+	BF_LANG,
+	BF_TYPE,
+	BF_DATE,
+	BF_SIZE,
+	BF_BITE,
+	BF_SEQN,
+	BF_MD5S,
+	BF_LAST,
+};
+
 class FbCacheBook: public wxObject
 {
 	public:
 		FbCacheBook(int code = 0);
 		FbCacheBook(int code, wxSQLite3ResultSet &result);
 		int GetCode() const { return m_code; }
-		int GetFields() const { return m_fields; }
-		wxString GetValue(FbBookFields field);
-		bool HasField(size_t col) const;
+		wxString GetValue(size_t field);
 	private:
 		int m_code;
 		wxString m_name;
@@ -61,7 +61,6 @@ class FbCacheBook: public wxObject
 		int m_rate;
 		int m_date;
 		int m_size;
-		long m_fields;
 		DECLARE_CLASS(FbCacheBook)
 };
 

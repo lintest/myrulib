@@ -93,6 +93,7 @@ void FbBookPanel::CreateColumns(FbListMode mode)
 	m_BookList->AddColumn(BF_LANG, _("Language"), 2, wxALIGN_LEFT);
 	m_BookList->AddColumn(BF_TYPE, _("Extension"), 2, wxALIGN_LEFT);
 	m_BookList->AddColumn(BF_SIZE, _("Size, Kb"), 3, wxALIGN_RIGHT);
+	m_BookList->SetSortedColumn( mode == FB2_MODE_TREE ? 0 : 1);
 }
 
 int FbBookPanel::GetRatingColumn()
@@ -542,6 +543,7 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	info->SetMode(GetListMode());
 	m_thread->Reset(info);
 }
+
 
 
 
