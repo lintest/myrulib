@@ -1277,10 +1277,10 @@ int FbTreeViewCtrl::GetSortedColumn()
 void FbTreeViewCtrl::AssignModel(FbModel * model)
 {
     if (m_main_win) {
+		if (model) model->SetOwner(this);
         m_main_win->AssignModel(model);
         m_main_win->SetScrollPos(wxVERTICAL, 0);
 		m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
-		if (model) model->SetOwner(this);
     }
 	Refresh();
 }

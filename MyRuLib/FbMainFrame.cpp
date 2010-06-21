@@ -129,7 +129,7 @@ void FbMainFrame::SaveFrameList(FbParams &params)
 			if (i == 0 || i == index) selected = id;
 		}
 	}
-	if (selected) frames << wxT(",") << (selected - ID_FRAME_AUTHOR);
+	if (selected && selected + 1 < count) frames << wxT(",") << (selected - ID_FRAME_AUTHOR);
 	params.SetText(FB_FRAME_LIST, frames);
 }
 
