@@ -3,6 +3,7 @@
 #include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbDownloader.h"
+#include "FbCollection.h"
 #include "InfoCash.h"
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
@@ -57,6 +58,11 @@ void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, w
     }
 }
 
+wxString FbBookData::GetExt() const
+{
+	return FbCollection::GetBook(m_id, BF_TYPE);
+}
+
 void FbBookData::Open() const
 {
 	ZipReader reader(m_id, m_id<0);
@@ -75,11 +81,11 @@ void FbBookData::SaveFile(wxInputStream & in, const wxString &filepath) const
     out.Close();
 }
 
-bool FbBookData::GetUserCommand(wxSQLite3Database &database, wxString &command) const
+bool FbBookData::GetUserCommand(wxSQLite3Database &database, const wxString &filetype, wxString &command) const
 {
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_filetype);
+	stmt.Bind(1, filetype);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (result.NextRow()) {
 	    command = result.GetString(0);
@@ -88,9 +94,9 @@ bool FbBookData::GetUserCommand(wxSQLite3Database &database, wxString &command) 
     return false;
 }
 
-bool FbBookData::GetSystemCommand(const wxString &filepath, wxString &command) const
+bool FbBookData::GetSystemCommand(const wxString &filepath, const wxString &filetype, wxString &command) const
 {
-	wxFileType * ft = wxTheMimeTypesManager->GetFileTypeFromExtension(m_filetype);
+	wxFileType * ft = wxTheMimeTypesManager->GetFileTypeFromExtension(filetype);
 	if ( ft ) {
 	    bool res = ft->GetOpenCommand(&command, wxFileType::MessageParameters(filepath, wxEmptyString));
         delete ft;
@@ -101,9 +107,10 @@ bool FbBookData::GetSystemCommand(const wxString &filepath, wxString &command) c
 
 void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 {
+	wxString filetype = GetExt();
 	wxFileName filename = md5sum;
 	filename.SetPath( FbParams::GetText(FB_TEMP_DIR) );
-	filename.SetExt(m_filetype);
+	filename.SetExt(filetype);
 
 	if ( !filename.DirExists()) filename.Mkdir(0755, wxPATH_MKDIR_FULL);
 
@@ -114,14 +121,14 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 
 	if (!ok) try {
 		FbLocalDatabase database;
-		ok = GetUserCommand(database, command);
+		ok = GetUserCommand(database, filetype, command);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 		return;
 	}
 	if (!ok) try {
 		FbCommonDatabase database;
-		ok = GetUserCommand(database, command);
+		ok = GetUserCommand(database, filetype, command);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 		return;
@@ -138,10 +145,10 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		command << wxT(' ') << filepath;
 		wxExecute(command);
 		#endif
-	} else if (GetSystemCommand(filepath, command)) {
+	} else if (GetSystemCommand(filepath, filetype, command)) {
 		wxExecute(command);
 	} else {
-		FbMessageBox(_("Associated application not found"), m_filetype);
+		FbMessageBox(_("Associated application not found"), filetype);
 	}
 }
 
@@ -181,7 +188,7 @@ void FbBookData::DoDownload() const
 void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
 {
 	if (frame) {
-		InfoCash::LoadIcon(m_filetype);
+		InfoCash::LoadIcon(GetExt());
 		InfoCash::UpdateInfo(frame, m_id, bVertical);
 	}
 }

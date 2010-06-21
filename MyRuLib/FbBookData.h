@@ -59,22 +59,21 @@ class FbItemData: public wxTreeItemData
 class FbBookData: public FbItemData
 {
 	public:
-		FbBookData(int id): m_id(id) {};
-		FbBookData(const FbBookData & data): m_id(data.m_id), m_filetype(data.m_filetype) {};
-		FbBookData(const BookTreeItemData & data): m_id(data.GetId()), m_filetype(data.file_type) {};
-		virtual int GetId() const { return m_id; };
+		FbBookData(int id): m_id(id) {}
+		FbBookData(const FbBookData & data): m_id(data.m_id) {}
+		FbBookData(const BookTreeItemData & data): m_id(data.GetId()) {}
+		virtual int GetId() const { return m_id; }
 		virtual void Show(wxEvtHandler * frame, bool bVertical, bool bEditable = false) const;
 		virtual void Open() const;
 	private:
 		void DoDownload() const;
 		void DoOpen(wxInputStream & in, const wxString &md5sum) const;
 		void SaveFile(wxInputStream & in, const wxString &filepath) const;
-		bool GetUserCommand(wxSQLite3Database &database, wxString &command) const;
-        bool GetSystemCommand(const wxString &filepath, wxString &command) const;
+		bool GetUserCommand(wxSQLite3Database &database, const wxString &filetype, wxString &command) const;
+        bool GetSystemCommand(const wxString &filepath, const wxString &filetype, wxString &command) const;
+		wxString GetExt() const;
 	private:
 		int m_id;
-	public:
-		wxString m_filetype;
 };
 
 class FbAuthorData: public FbItemData
