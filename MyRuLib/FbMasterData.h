@@ -10,8 +10,12 @@
 
 class FbFrameBase;
 
+class FbModelItem;
+
 class FbMasterData: public wxObject
 {
+	public:
+		static FbMasterData * Create(const FbModelItem &item);
 	public:
 		FbMasterData()
 			: m_index(sm_counter++) {}

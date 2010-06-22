@@ -15,7 +15,6 @@
 IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameAuthor::OnMasterSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
@@ -153,21 +152,6 @@ void FbFrameAuthor::CreateMasterThread()
 	wxDELETE(m_MasterThread);
 	m_MasterThread = new FbAuthListThread(this, *m_MasterLocker, m_info, m_MasterList->GetSortedColumn());
 	m_MasterThread->Execute();
-}
-
-void FbFrameAuthor::OnMasterSelected(wxTreeEvent & event)
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data) FbMasterAuthor(data->GetCode()).Show(this);
-}
-
-void FbFrameAuthor::UpdateBooklist()
-{
-	m_BooksPanel->EmptyBooks();
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 }
 
 void FbFrameAuthor::ActivateAuthors()

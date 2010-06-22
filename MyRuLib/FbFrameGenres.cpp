@@ -8,7 +8,6 @@
 IMPLEMENT_CLASS(FbFrameGenres, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameGenres::OnGenreSelected)
 END_EVENT_TABLE()
 
 FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
@@ -56,22 +55,5 @@ void FbFrameGenres::CreateColumns()
 	m_MasterList->AddColumn (0, _("List of genres"), 100, wxALIGN_LEFT);
 	FbModel * model = FbGenres::CreateModel();
 	m_MasterList->AssignModel(model);
-}
-
-void FbFrameGenres::OnGenreSelected(wxTreeEvent & event)
-{
-	m_BooksPanel->EmptyBooks();
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbGenreChildData * data = wxDynamicCast(&item, FbGenreChildData);
-	if (data) FbMasterGenre(data->GetCode()).Show(this);
-	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
-}
-
-void FbFrameGenres::UpdateBooklist()
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbGenreChildData * data = wxDynamicCast(&item, FbGenreChildData);
-	if (data) FbMasterGenre(data->GetCode()).Show(this);
-	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
 }
 

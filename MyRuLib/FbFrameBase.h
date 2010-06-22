@@ -34,7 +34,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
 	protected:
 		virtual void CreateControls();
-		virtual void UpdateBooklist() = 0;
 		virtual wxMenuBar * CreateMenuBar();
 		virtual wxString GetStatus();
 		int GetModeKey();
@@ -45,6 +44,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		wxString Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural);
 		int GetBookCount();
 		bool IsFullScreen();
+		virtual void UpdateBooklist();
 	protected:
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
@@ -68,6 +68,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
+		void OnMasterSelected(wxTreeEvent & event);
 		void OnExternal(wxCommandEvent& event);
 		void OnAppendBook(FbBookEvent& event);
 		void OnAppendAuthor(wxCommandEvent& event);

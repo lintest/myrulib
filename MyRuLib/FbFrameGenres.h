@@ -21,7 +21,6 @@ class FbFrameGenres : public FbFrameBase
 		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 	private:
 		void CreateBookInfo();
 		void CreateColumns();

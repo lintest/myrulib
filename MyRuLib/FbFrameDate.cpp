@@ -12,7 +12,6 @@
 #include "FbParams.h"
 
 BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameDate::OnMasterSelected)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameDate::OnBooksCount)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameDate::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameDate::OnArray)
@@ -61,20 +60,6 @@ void FbFrameDate::CreateColumns()
 {
 	m_MasterList->AddColumn(0, _("Date"), 40, wxALIGN_LEFT);
 	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
-}
-
-void FbFrameDate::OnMasterSelected(wxTreeEvent & event)
-{
-	UpdateBooklist();
-}
-
-void FbFrameDate::UpdateBooklist()
-{
-	m_BooksPanel->EmptyBooks();
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbDateDayData * data = wxDynamicCast(&item, FbDateDayData);
-	if (data) FbMasterDate(data->GetCode()).Show(this);
-	else if (m_BooksPanel) m_BooksPanel->AssignEmpty();
 }
 
 void FbFrameDate::OnBooksCount(wxCommandEvent& event)

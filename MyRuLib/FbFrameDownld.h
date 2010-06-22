@@ -39,7 +39,6 @@ class FbFrameDownld : public FbFrameBase
 	protected:
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 	private:
 		void CreateColumns();
 		void CreateBookInfo();

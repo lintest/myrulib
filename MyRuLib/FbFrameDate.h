@@ -18,7 +18,6 @@ class FbFrameDate : public FbFrameBase
 		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 		void CreateColumns();
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
@@ -33,7 +32,6 @@ class FbFrameDate : public FbFrameBase
 		wxString m_SequenceText;
 		int m_SequenceCode;
 	private:
-		void OnMasterSelected(wxTreeEvent & event);
 		void OnBooksCount(wxCommandEvent& event);
 		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );

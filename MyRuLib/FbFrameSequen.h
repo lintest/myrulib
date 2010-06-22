@@ -21,7 +21,6 @@ class FbFrameSequen : public FbFrameBase
 		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 		virtual wxMenuBar * CreateMenuBar();
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 	private:
@@ -38,7 +37,6 @@ class FbFrameSequen : public FbFrameBase
 		wxString m_info;
 		int m_SequenceCode;
 	private:
-		void OnMasterSelected(wxTreeEvent & event);
 		void OnBooksCount(wxCommandEvent& event);
 		void OnColClick(wxListEvent& event);
 		void OnContextMenu(wxTreeEvent& event);

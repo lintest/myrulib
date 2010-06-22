@@ -15,7 +15,6 @@
 IMPLEMENT_CLASS(FbFrameSequen, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameSequen::OnMasterSelected)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
 	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
@@ -107,13 +106,6 @@ void FbFrameSequen::CreateMasterThread()
 	m_MasterThread->Execute();
 }
 
-void FbFrameSequen::OnMasterSelected(wxTreeEvent & event)
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
-	if (data) FbMasterSeqname(data->GetCode()).Show(this);
-}
-
 void FbFrameSequen::FindSequence(const wxString &text)
 {
 	m_info = text;
@@ -127,14 +119,6 @@ void FbFrameSequen::OpenSequence(const int sequence, const int book)
 	m_SequenceCode = sequence;
 	(new MasterThread(m_MasterList, m_SequenceCode, m_MasterList->GetSortedColumn()))->Execute();
 */
-}
-
-void FbFrameSequen::UpdateBooklist()
-{
-	m_BooksPanel->EmptyBooks();
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
-	if (data) FbMasterSeqname(data->GetCode()).Show(this);
 }
 
 void FbFrameSequen::OnColClick(wxListEvent& event)

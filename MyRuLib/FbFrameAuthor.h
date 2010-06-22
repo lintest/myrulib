@@ -31,7 +31,6 @@ class FbFrameAuthor : public FbFrameBase
 	protected:
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; };
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 		virtual wxMenuBar * CreateMenuBar();
 	private:
 		wxToolBar * CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style);
@@ -47,7 +46,6 @@ class FbFrameAuthor : public FbFrameBase
 	private:
 		FbAuthListInfo m_info;
 	private:
-		void OnMasterSelected(wxTreeEvent & event);
 		void OnBooksCount(wxCommandEvent& event);
 		void OnColClick(wxListEvent& event);
 		void OnAllClicked(wxCommandEvent& event);

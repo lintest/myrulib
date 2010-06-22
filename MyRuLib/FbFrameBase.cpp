@@ -10,6 +10,7 @@
 IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
 
 BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
@@ -121,6 +122,11 @@ void FbFrameBase::OnExternal(wxCommandEvent& event)
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 {
 	m_BooksPanel->EmptyBooks();
+}
+
+void FbFrameBase::OnMasterSelected(wxTreeEvent & event)
+{
+	UpdateBooklist();
 }
 
 void FbFrameBase::OnChangeOrder(wxCommandEvent& event)
@@ -348,3 +354,7 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 	FbColumnDlg::Execute(this);
 }
 
+void FbFrameBase::UpdateBooklist()
+{
+	if (m_MasterList) m_BooksPanel->Reset(m_MasterList->GetCurrent());
+}

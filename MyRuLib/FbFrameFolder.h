@@ -58,7 +58,6 @@ class FbFrameFolder : public FbFrameBase
 		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 	private:
 		void CreateColumns();

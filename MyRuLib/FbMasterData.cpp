@@ -4,8 +4,13 @@
 #include "FbBookEvent.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"
+#include "FbAuthList.h"
+#include "FbSeqnList.h"
+#include "FbDateTree.h"
 #include "FbConst.h"
-
+#include "FbGenres.h"
+#include "FbFrameFolder.h"
+#include "FbFrameDownld.h"
 
 //-----------------------------------------------------------------------------
 //  FbMasterData
@@ -18,6 +23,30 @@ IMPLEMENT_CLASS(FbMasterData, wxObject)
 void FbMasterData::Show(FbFrameBase * frame) const
 {
 	frame->GetBooks()->Reset(*this);
+}
+
+FbMasterData * FbMasterData::Create(const FbModelItem &item)
+{
+	{
+		FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
+		if (data) return new FbMasterAuthor(data->GetCode());
+	} {
+		FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
+		if (data) return new FbMasterSeqname(data->GetCode());
+	} {
+		FbDateDayData * data = wxDynamicCast(&item, FbDateDayData);
+		if (data) return new FbMasterDate(data->GetCode());
+	} {
+		FbGenreChildData * data = wxDynamicCast(&item, FbGenreChildData);
+		if (data) return new FbMasterGenre(data->GetCode());
+	} {
+		FbDownListData * data = wxDynamicCast(&item, FbDownListData);
+		if (data) return new FbMasterDownld(data->GetCode());
+	} {
+		FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
+		if (data) return new FbMasterFolder(data->GetCode(), data->GetType());
+	}
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------

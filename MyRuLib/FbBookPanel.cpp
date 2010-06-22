@@ -544,6 +544,21 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	m_thread->Reset(info);
 }
 
+void FbBookPanel::Reset(FbModelItem item)
+{
+	wxDELETE(m_master);
+	m_master = FbMasterData::Create(item);
+
+	m_BookList->AssignModel(NULL);
+	m_BookInfo->SetPage(wxEmptyString);
+	if (m_master == NULL) return;
+
+	FbMasterInfo info = m_master->GetInfo();
+	info.SetOrder(m_BookList->GetSortedColumn());
+	info.SetMode(GetListMode());
+	m_thread->Reset(info);
+}
+
 wxString FbBookPanel::GetSelected()
 {
 	wxString sel;

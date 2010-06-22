@@ -67,7 +67,7 @@ class FbModelItem: public wxObject
 			{ if (m_virual) wxDELETE(m_data); }
 		operator bool() const
 			{ return m_data != NULL; }
-		FbModelData * operator&()
+		FbModelData * operator&() const
 			{ return m_data; }
 		FbModelItem & operator =(const FbModelItem &item);
 	public:

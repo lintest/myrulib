@@ -17,7 +17,6 @@ BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
 	EVT_MENU(ID_APPEND_FOLDER, FbFrameFolder::OnFolderAppend)
 	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFolder::OnFolderModify)
 	EVT_MENU(ID_DELETE_FOLDER, FbFrameFolder::OnFolderDelete)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFolder::OnFolderSelected)
 END_EVENT_TABLE()
 
 FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
@@ -113,7 +112,8 @@ void FbFrameFolder::FillFolders(const int current)
 
 void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 {
-	m_BooksPanel->EmptyBooks();
+	UpdateBooklist();
+
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data == NULL) return;
@@ -122,13 +122,6 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 	m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
 	m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
 	FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
-}
-
-void FbFrameFolder::UpdateBooklist()
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
-	if (data) FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
