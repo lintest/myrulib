@@ -543,9 +543,9 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	wxDELETE(m_master);
 	m_master = master.Clone();
 
-	FbMasterInfo * info = m_master->CreateInfo();
-	info->SetOrder(m_BookList->GetSortedColumn());
-	info->SetMode(GetListMode());
+	FbMasterInfo info = m_master->GetInfo();
+	info.SetOrder(m_BookList->GetSortedColumn());
+	info.SetMode(GetListMode());
 	m_thread->Reset(info);
 }
 

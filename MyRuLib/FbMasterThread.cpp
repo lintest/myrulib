@@ -1,5 +1,4 @@
 #include "FbMasterThread.h"
-#include "FbMasterInfo.h"
 #include "InfoCash.h"
 
 //-----------------------------------------------------------------------------
@@ -9,14 +8,14 @@
 class FbJoinedThread: public FbThread
 {
 	public:
-		FbJoinedThread(wxEvtHandler * frame, const FbMasterInfo * info)
-			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info->Clone()) {}
+		FbJoinedThread(wxEvtHandler * frame, const FbMasterInfo info)
+			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info) {}
 	protected:
 		virtual void * Entry()
-			{ return m_info->Execute(m_frame, this); }
+			{ return m_info.Execute(m_frame, this); }
 	private:
 		wxEvtHandler * m_frame;
-		FbMasterInfo * m_info;
+		FbMasterInfo m_info;
 };
 
 //-----------------------------------------------------------------------------
@@ -37,7 +36,6 @@ FbMasterThread::~FbMasterThread()
 		m_thread->Wait();
 	}
 	wxDELETE(m_thread);
-	wxDELETE(m_info);
 }
 
 void FbMasterThread::Close()
@@ -46,17 +44,17 @@ void FbMasterThread::Close()
 	m_condition.Signal();
 }
 
-void FbMasterThread::Reset(FbMasterInfo * info)
+void FbMasterThread::Reset(const FbMasterInfo &info)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	m_info = info;
 	m_condition.Signal();
 }
 
-FbMasterInfo * FbMasterThread::GetInfo()
+FbMasterInfo FbMasterThread::GetInfo()
 {
 	wxCriticalSectionLocker locker(sm_section);
-	FbMasterInfo * result = m_info;
+	FbMasterInfo result = m_info;
 	m_info = NULL;
 	return result;
 }
@@ -64,19 +62,21 @@ FbMasterInfo * FbMasterThread::GetInfo()
 void * FbMasterThread::Entry()
 {
 	while (true) {
-		FbMasterInfo * info = GetInfo();
-		while (info == NULL) {
+		FbMasterInfo info = GetInfo();
+		while (!info) {
 			if (IsClosed()) return NULL;
 			m_condition.Wait();
 			info = GetInfo();
 		}
 		if (IsClosed()) return NULL;
-		if (m_thread) m_thread->Wait();
-		wxDELETE(m_thread);
 
+		if (m_thread) {
+			m_thread->Close();
+			m_thread->Wait();
+			wxDELETE(m_thread);
+		}
 		m_thread = new FbJoinedThread(m_owner, info);
 		if (m_thread) m_thread->Execute();
-		wxDELETE(info);
 	}
 	return NULL;
 }

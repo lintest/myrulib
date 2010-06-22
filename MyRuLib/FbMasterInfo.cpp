@@ -10,7 +10,13 @@
 
 IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
-void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
+//-----------------------------------------------------------------------------
+//  FbMasterInfoPtr
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbMasterInfoPtr, wxObject)
+
+void * FbMasterInfoPtr::Execute(wxEvtHandler * owner, FbThread * thread)
 {
 	if (thread->IsClosed()) return NULL;
 	try {
@@ -42,7 +48,7 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 	return NULL;
 }
 
-void FbMasterInfo::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
+void FbMasterInfoPtr::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
 	wxWindowID id = ID_MODEL_CREATE;
 	size_t length = fbLIST_CACHE_SIZE;
@@ -63,7 +69,7 @@ void FbMasterInfo::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 	FbArrayEvent(id, items, GetIndex()).Post(owner);
 }
 
-void FbMasterInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
+void FbMasterInfoPtr::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
 	FbTreeModel * model = new FbTreeModel;
 	FbParentData * root = new FbParentData(*model, NULL);
@@ -119,7 +125,7 @@ void FbMasterInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
 }
 
-wxString FbMasterInfo::GetOrderTable() const
+wxString FbMasterInfoPtr::GetOrderTable() const
 {
 	switch (GetOrderIndex()) {
 		case BF_AUTH: return wxT("LEFT JOIN authors ON books.id_author = authors.id");
@@ -128,7 +134,7 @@ wxString FbMasterInfo::GetOrderTable() const
 	}
 }
 
-wxString FbMasterInfo::GetOrderColumn() const
+wxString FbMasterInfoPtr::GetOrderColumn() const
 {
 	switch (GetOrderIndex()) {
 		case BF_NAME: return wxT("books.title");
@@ -148,7 +154,7 @@ wxString FbMasterInfo::GetOrderColumn() const
 	}
 }
 
-wxString FbMasterInfo::GetSelectColumn() const
+wxString FbMasterInfoPtr::GetSelectColumn() const
 {
 	switch (GetOrderIndex()) {
 		case BF_AUTH: return wxT(",AGGREGATE(authors.full_name) AS full_name");
@@ -157,7 +163,7 @@ wxString FbMasterInfo::GetSelectColumn() const
 	}
 }
 
-wxString FbMasterInfo::GetOrderFields() const
+wxString FbMasterInfoPtr::GetOrderFields() const
 {
 	wxString column = GetOrderColumn();
 	wxString result = wxT(" ORDER BY ");
@@ -170,24 +176,24 @@ wxString FbMasterInfo::GetOrderFields() const
 	return result;
 }
 
-wxString FbMasterInfo::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterInfoPtr::GetListSQL(wxSQLite3Database &database) const
 {
 	wxString sql = wxT("SELECT DISTINCT books.id %s FROM books %s WHERE %s GROUP BY books.id %s");
 	return FormatListSQL(sql, GetWhere(database));
 }
 
-wxString FbMasterInfo::GetTreeSQL(wxSQLite3Database &database) const
+wxString FbMasterInfoPtr::GetTreeSQL(wxSQLite3Database &database) const
 {
 	wxString sql = wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, bookseq.number, books.title");
 	return FormatTreeSQL(sql, GetWhere(database));
 }
 
-wxString FbMasterInfo::FormatListSQL(const wxString &sql, const wxString &cond) const
+wxString FbMasterInfoPtr::FormatListSQL(const wxString &sql, const wxString &cond) const
 {
 	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), cond.c_str(), GetOrderFields().c_str());
 }
 
-wxString FbMasterInfo::FormatTreeSQL(const wxString &sql, const wxString &cond) const
+wxString FbMasterInfoPtr::FormatTreeSQL(const wxString &sql, const wxString &cond) const
 {
 	return wxString::Format(sql, cond.c_str());
 }
@@ -196,14 +202,14 @@ wxString FbMasterInfo::FormatTreeSQL(const wxString &sql, const wxString &cond) 
 //  FbMasterAuthorInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterAuthorInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterAuthorInfo, FbMasterInfoPtr)
 
 wxString FbMasterAuthorInfo::GetOrderTable() const
 {
 	if (GetOrderIndex() == BF_AUTH)
 		return wxT("LEFT JOIN books AS b ON b.id=books.id LEFT JOIN authors ON b.id_author = authors.id");
 	else
-		return FbMasterInfo::GetOrderTable();
+		return FbMasterInfoPtr::GetOrderTable();
 }
 
 wxString FbMasterAuthorInfo::GetWhere(wxSQLite3Database &database) const
@@ -256,7 +262,7 @@ void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLi
 //  FbMasterDateInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfoPtr)
 
 wxString FbMasterDateInfo::GetWhere(wxSQLite3Database &database) const
 {
@@ -272,7 +278,7 @@ void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterSeqnInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterSeqnInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterSeqnInfo, FbMasterInfoPtr)
 
 void FbMasterSeqnInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
@@ -298,7 +304,7 @@ void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterGenrInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfoPtr)
 
 wxString FbMasterGenrInfo::GetWhere(wxSQLite3Database &database) const
 {
@@ -314,7 +320,7 @@ void FbMasterGenrInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterDownInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterDownInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterDownInfo, FbMasterInfoPtr)
 
 wxString FbMasterDownInfo::GetWhere(wxSQLite3Database &database) const
 {
@@ -330,7 +336,7 @@ void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterFldrInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterFldrInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterFldrInfo, FbMasterInfoPtr)
 
 wxString FbMasterFldrInfo::GetWhere(wxSQLite3Database &database) const
 {
@@ -346,7 +352,7 @@ void FbMasterFldrInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterSearchInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterSearchInfo, FbMasterInfo)
+IMPLEMENT_CLASS(FbMasterSearchInfo, FbMasterInfoPtr)
 
 wxString FbMasterSearchInfo::GetOrderTable() const
 {

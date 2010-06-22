@@ -13,11 +13,16 @@ class FbFrameBase;
 class FbMasterData: public wxObject
 {
 	public:
-		FbMasterData(): m_index(sm_counter++) {}
-		int GetIndex() const { return m_index; }
+		FbMasterData()
+			: m_index(sm_counter++) {}
+		int GetIndex() const 
+			{ return m_index; }
+		FbMasterInfo GetInfo() const
+			{ return FbMasterInfo(CreateInfo()); }
 		void Show(FbFrameBase * frame) const;
 		virtual FbMasterData * Clone() const = 0;
-		virtual FbMasterInfo * CreateInfo() const = 0;
+	protected:
+		virtual FbMasterInfoPtr * CreateInfo() const = 0;
 	private:
 		static int sm_counter;
 		int m_index;
@@ -33,7 +38,7 @@ class FbMasterAuthor: public FbMasterData
 			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterAuthor(*this); };
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterAuthorInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
@@ -48,7 +53,7 @@ class FbMasterSeqname: public FbMasterData
 			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSeqname(*this); };
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterSeqnInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
@@ -63,7 +68,7 @@ class FbMasterGenre: public FbMasterData
 			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterGenre(*this); };
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterGenrInfo(GetIndex(), m_id); }
 	private:
 		const wxString m_id;
@@ -78,7 +83,7 @@ class FbMasterDownld: public FbMasterData
 			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDownld(*this); };
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterDownInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
@@ -93,7 +98,7 @@ class FbMasterSearch: public FbMasterData
 			: m_title(data.m_title), m_author(data.m_author) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterSearch(*this); }
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterSearchInfo(GetIndex(), m_title, m_author); }
 	private:
 		wxString m_title;
@@ -111,7 +116,7 @@ class FbMasterDate: public FbMasterData
 			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterDate(*this); };
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterDateInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
@@ -126,7 +131,7 @@ class FbMasterFolder: public FbMasterData
 			: m_id(data.m_id), m_type(data.m_type) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterFolder(*this); };
-		virtual FbMasterInfo * CreateInfo() const
+		virtual FbMasterInfoPtr * CreateInfo() const
 			{ return new FbMasterFldrInfo(GetIndex(), m_id, m_type); }
 	private:
 		int m_id;

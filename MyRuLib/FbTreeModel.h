@@ -69,6 +69,7 @@ class FbModelItem: public wxObject
 			{ return m_data != NULL; }
 		FbModelData * operator&()
 			{ return m_data; }
+		FbModelItem & operator =(const FbModelItem &item);
 	public:
 		size_t Count()
 			{ return m_data ? m_data->Count(*m_model) : 0; }

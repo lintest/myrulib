@@ -17,6 +17,19 @@ IMPLEMENT_CLASS(FbColumnInfo, wxObject)
 
 IMPLEMENT_CLASS(FbModelItem, wxObject)
 
+FbModelItem & FbModelItem::operator =(const FbModelItem &item)
+{ 
+	if (m_virual) wxDELETE(m_data); 
+	m_model = item.m_model;
+	if (item && item.m_virual) {
+		m_data = item.m_data->Clone();
+	} else {
+		m_data = item.m_data;
+	}
+	m_virual = item.m_virual; 
+	return *this;
+}
+
 //-----------------------------------------------------------------------------
 //  FbModelData
 //-----------------------------------------------------------------------------

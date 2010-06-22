@@ -3,8 +3,7 @@
 
 #include <wx/event.h>
 #include "FbThread.h"
-
-class FbMasterInfo;
+#include "FbMasterInfo.h"
 
 class FbCondition: public wxCondition
 {
@@ -19,16 +18,16 @@ class FbMasterThread : public FbThread
 	public:
 		FbMasterThread(wxEvtHandler * owner);
 		virtual ~FbMasterThread();
-		void Reset(FbMasterInfo * info);
+		void Reset(const FbMasterInfo &info);
 	    virtual void Close();
 	protected:
 		virtual void * Entry();
 	private:
-		FbMasterInfo * GetInfo();
+		FbMasterInfo GetInfo();
 		static wxCriticalSection sm_section;
 		FbCondition m_condition;
 		wxEvtHandler * m_owner;
-		FbMasterInfo * m_info;
+		FbMasterInfo m_info;
 		FbThread * m_thread;
 		bool m_exit;
 };
