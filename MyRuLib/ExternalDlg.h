@@ -25,6 +25,7 @@
 #include <wx/sizer.h>
 #include <wx/dialog.h>
 #include "FbBookList.h"
+#include "FbTreeListCtrl.h"
 #include "FbBookData.h"
 #include "ExpThread.h"
 #include "FbConst.h"
