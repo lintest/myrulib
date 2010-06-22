@@ -59,13 +59,6 @@ void FbFrameSequen::CreateControls()
 	FindSequence(wxEmptyString);
 }
 
-void FbFrameSequen::Localize(bool bUpdateMenu)
-{
-	m_MasterList->EmptyColumns();
-	CreateColumns();
-	FbFrameBase::Localize(bUpdateMenu);
-}
-
 void FbFrameSequen::CreateColumns()
 {
 	m_MasterList->AddColumn(0, _("Ser."), 40, wxALIGN_LEFT);

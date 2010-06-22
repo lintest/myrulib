@@ -18,7 +18,6 @@ class FbFrameSequen : public FbFrameBase
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
 		virtual void ShowFullScreen(bool show);
-		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
 		virtual wxMenuBar * CreateMenuBar();

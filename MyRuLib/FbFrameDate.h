@@ -15,7 +15,6 @@ class FbFrameDate : public FbFrameBase
 		FbFrameDate(wxAuiMDIParentFrame * parent);
 		virtual wxString GetTitle() const { return _("Calendar"); };
 		void ActivateAuthors();
-		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
 		void CreateColumns();

@@ -100,7 +100,11 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 	m_ToolBar = CreateToolBar();
 	if (m_ToolBar) GetSizer()->Insert(0, m_ToolBar, 0, wxGROW);
 
-	if (m_MasterList) m_MasterList->Refresh();
+	if (m_MasterList) {
+		m_MasterList->EmptyColumns();
+		CreateColumns();
+		m_MasterList->Refresh();
+	}
     m_BooksPanel->Localize();
 }
 

@@ -43,13 +43,6 @@ void FbFrameGenres::CreateControls()
 	CreateColumns();
 }
 
-void FbFrameGenres::Localize(bool bUpdateMenu)
-{
-	m_MasterList->EmptyColumns();
-	CreateColumns();
-	FbFrameBase::Localize(bUpdateMenu);
-}
-
 void FbFrameGenres::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("List of genres"), 100, wxALIGN_LEFT);

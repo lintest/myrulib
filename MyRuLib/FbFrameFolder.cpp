@@ -68,13 +68,6 @@ wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxS
 	return toolbar;
 }
 
-void FbFrameFolder::Localize(bool bUpdateMenu)
-{
-	m_MasterList->EmptyColumns();
-	CreateColumns();
-	FbFrameBase::Localize(bUpdateMenu);
-}
-
 void FbFrameFolder::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("Folders"), 100, wxALIGN_LEFT);

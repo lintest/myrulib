@@ -34,6 +34,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
 	protected:
 		virtual void CreateControls();
+		virtual void CreateColumns() = 0;
 		virtual wxMenuBar * CreateMenuBar();
 		virtual wxString GetStatus();
 		int GetModeKey();

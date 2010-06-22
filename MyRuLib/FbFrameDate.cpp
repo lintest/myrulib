@@ -49,13 +49,6 @@ void FbFrameDate::CreateControls()
 	m_MasterThread->Execute();
 }
 
-void FbFrameDate::Localize(bool bUpdateMenu)
-{
-	m_MasterList->EmptyColumns();
-	CreateColumns();
-	FbFrameBase::Localize(bUpdateMenu);
-}
-
 void FbFrameDate::CreateColumns()
 {
 	m_MasterList->AddColumn(0, _("Date"), 40, wxALIGN_LEFT);

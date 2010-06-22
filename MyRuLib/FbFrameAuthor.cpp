@@ -71,13 +71,6 @@ void FbFrameAuthor::CreateControls()
 	m_EnAlphabar->Show( FbParams::GetValue(FB_ALPHABET_EN) );
 }
 
-void FbFrameAuthor::Localize(bool bUpdateMenu)
-{
-	m_MasterList->EmptyColumns();
-	CreateColumns();
-	FbFrameBase::Localize(bUpdateMenu);
-}
-
 void FbFrameAuthor::CreateColumns()
 {
 	m_MasterList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);

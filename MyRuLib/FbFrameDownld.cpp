@@ -56,13 +56,6 @@ void FbFrameDownld::CreateControls()
 	FbFrameBase::CreateControls();
 }
 
-void FbFrameDownld::Localize(bool bUpdateMenu)
-{
-	m_MasterList->EmptyColumns();
-	CreateColumns();
-	FbFrameBase::Localize(bUpdateMenu);
-}
-
 void FbFrameDownld::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("Folders"), 100, wxALIGN_LEFT);

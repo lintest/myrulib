@@ -18,7 +18,6 @@ class FbFrameGenres : public FbFrameBase
 	public:
 		FbFrameGenres(wxAuiMDIParentFrame * parent);
 		virtual wxString GetTitle() const { return _("Genres"); };
-		void Localize(bool bUpdateMenu);
 	protected:
 		virtual void CreateControls();
 	private:
