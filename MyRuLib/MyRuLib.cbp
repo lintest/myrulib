@@ -182,8 +182,6 @@
 		<Unit filename="FbAuthList.h" />
 		<Unit filename="FbAuthorDlg.cpp" />
 		<Unit filename="FbAuthorDlg.h" />
-		<Unit filename="FbAuthorThread.cpp" />
-		<Unit filename="FbAuthorThread.h" />
 		<Unit filename="FbBookData.cpp" />
 		<Unit filename="FbBookData.h" />
 		<Unit filename="FbBookEvent.cpp" />
