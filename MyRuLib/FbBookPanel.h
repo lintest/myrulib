@@ -34,7 +34,6 @@ class FbBookPanel: public wxSplitterWindow
 		FbTreeViewCtrl * m_BookList;
 		int GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
-		void AssignEmpty();
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
 		void AppendSequence(int id, const wxString title, wxTreeItemData * data = NULL);

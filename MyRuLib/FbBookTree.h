@@ -88,7 +88,7 @@ class FbBookTreeModel: public FbTreeModel
 {
 	public:
 		FbBookTreeModel() {}
-		size_t GetSelected(wxArrayInt &items);
+		virtual size_t GetSelected(wxArrayInt &items);
 	private:
 		void GetChecked(FbModelItem &parent, wxArrayInt &items);
 		void GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items);

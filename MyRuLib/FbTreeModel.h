@@ -215,6 +215,7 @@ class FbModel: public wxObject
 		virtual void SingleCheck(size_t row = 0);
 		virtual void MultiplyCheck() {}
 
+		virtual size_t GetSelected(wxArrayInt &items) { return 0; }
 		virtual void SelectAll(bool value) {}
 
 		virtual FbModelItem GetCurrent()

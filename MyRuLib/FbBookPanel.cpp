@@ -564,16 +564,5 @@ size_t FbBookPanel::GetSelected(wxString &selections)
 size_t FbBookPanel::GetSelected(wxArrayInt &items)
 {
 	FbModel * model = m_BookList->GetModel();
-
-	{
-		FbBookListModel * list = wxDynamicCast(model, FbBookListModel);
-		if (list) return list->GetSelected(items);
-	}
-
-	{
-		FbBookTreeModel * tree = wxDynamicCast(model, FbBookTreeModel);
-		if (tree) return tree->GetSelected(items);
-	}
-
-	return 0;
+	return model ? model->GetSelected(items) : 0;
 }
