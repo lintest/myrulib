@@ -20,14 +20,11 @@ class FbMasterThread : public FbThread
 		FbMasterThread(wxEvtHandler * owner);
 		virtual ~FbMasterThread();
 		void Reset(FbMasterInfo * info);
-		void Open(int book);
-		void Exit();
+	    virtual void Close();
 	protected:
 		virtual void * Entry();
 	private:
 		FbMasterInfo * GetInfo();
-		bool IsExit();
-	private:
 		static wxCriticalSection sm_section;
 		FbCondition m_condition;
 		wxEvtHandler * m_owner;

@@ -119,6 +119,7 @@ void FbMainFrame::SaveFrameList(FbParams &params)
 {
 	wxString frames;
 	wxWindowID selected = 0;
+	wxWindowID last_id = 0;
 	size_t index = GetNotebook()->GetSelection();
 	size_t count = GetNotebook()->GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
@@ -127,9 +128,10 @@ void FbMainFrame::SaveFrameList(FbParams &params)
 			if (!frames.IsEmpty()) frames << wxT(",");
 			frames << (id - ID_FRAME_AUTHOR);
 			if (i == 0 || i == index) selected = id;
+			last_id = id;
 		}
 	}
-	if (selected && selected + 1 < count) frames << wxT(",") << (selected - ID_FRAME_AUTHOR);
+	if (selected && selected != last_id) frames << wxT(",") << (selected - ID_FRAME_AUTHOR);
 	params.SetText(FB_FRAME_LIST, frames);
 }
 

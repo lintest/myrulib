@@ -32,22 +32,18 @@ FbMasterThread::FbMasterThread(wxEvtHandler * owner)
 
 FbMasterThread::~FbMasterThread()
 {
-	if (m_thread) m_thread->Wait();
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+	}
 	wxDELETE(m_thread);
 	wxDELETE(m_info);
 }
 
-void FbMasterThread::Exit()
+void FbMasterThread::Close()
 {
-	wxCriticalSectionLocker locker(sm_section);
-	m_exit = true;
+	FbThread::Close();
 	m_condition.Signal();
-}
-
-bool FbMasterThread::IsExit()
-{
-	wxCriticalSectionLocker locker(sm_section);
-	return m_exit;
 }
 
 void FbMasterThread::Reset(FbMasterInfo * info)
@@ -70,12 +66,11 @@ void * FbMasterThread::Entry()
 	while (true) {
 		FbMasterInfo * info = GetInfo();
 		while (info == NULL) {
-			if (TestDestroy() || IsExit()) break;
+			if (IsClosed()) return NULL;
 			m_condition.Wait();
 			info = GetInfo();
 		}
-		if (TestDestroy() || IsExit()) break;
-
+		if (IsClosed()) return NULL;
 		if (m_thread) m_thread->Wait();
 		wxDELETE(m_thread);
 

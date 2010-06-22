@@ -72,6 +72,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 
 FbBookPanel::~FbBookPanel()
 {
+	m_thread->Close();
 	m_thread->Delete();
 }
 

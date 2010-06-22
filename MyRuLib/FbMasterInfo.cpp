@@ -12,6 +12,7 @@ IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
 void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 {
+	if (thread->IsClosed()) return NULL;
 	try {
 		FbCommonDatabase database;
 		FbGenreFunction func_genre;
@@ -19,6 +20,7 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
 		database.CreateFunction(wxT("GENRE"), 1, func_genre);
 		database.AttachConfig();
+		if (thread->IsClosed()) return NULL;
 
 		wxString sql;
 		switch (GetMode()) {
@@ -29,6 +31,7 @@ void * FbMasterInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		Bind(stmt);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (thread->IsClosed()) return NULL;
 		switch (GetMode()) {
 			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
 			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
@@ -46,6 +49,7 @@ void FbMasterInfo::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 	size_t count = 0;
 	wxArrayInt items;
 	while (result.NextRow()) {
+		if (thread->IsClosed()) return;
 		items.Add(result.GetInt(0));
 		count++;
 		if (count == length) {
@@ -68,6 +72,7 @@ void FbMasterInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 	FbSeqnParentData * seqn = NULL;
 
 	while (result.NextRow()) {
+		if (thread->IsClosed()) break;
 		int auth_id = result.GetInt(0);
 		int seqn_id = result.GetInt(1);
 		if (auth == NULL) {
@@ -110,7 +115,8 @@ void FbMasterInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3Res
 
 	model->SetRoot(root);
 
-	FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
+	if (thread->IsClosed()) delete model;
+	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
 }
 
 wxString FbMasterInfo::GetOrderTable() const
@@ -223,6 +229,7 @@ void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLi
 	FbSeqnParentData * parent = NULL;
 
 	while (result.NextRow()) {
+		if (thread->IsClosed()) break;
 		int seqn = result.GetInt(0);
 		if (parent == NULL || parent->GetCode() != seqn) {
 			parent = new FbSeqnParentData(*model, root, seqn);
@@ -241,7 +248,8 @@ void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLi
 	}
 	model->SetRoot(root);
 
-	FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
+	if (thread->IsClosed()) delete model;
+	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
 }
 
 //-----------------------------------------------------------------------------
@@ -413,6 +421,7 @@ void FbMasterSearchInfo::Bind(wxSQLite3Statement &stmt) const
 
 void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 {
+	if (thread->IsClosed()) return NULL;
 	try {
 		FbCommonDatabase database;
 		FbGenreFunction func_genre;
@@ -422,6 +431,7 @@ void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
 		database.CreateFunction(wxT("GENRE"), 1, func_genre);
 		database.AttachConfig();
+		if (thread->IsClosed()) return NULL;
 
 		m_auth = !m_author.IsEmpty();
 		m_full = database.TableExists(wxT("fts_book"));
@@ -442,6 +452,7 @@ void * FbMasterSearchInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		if (m_full) Bind(stmt);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (thread->IsClosed()) return NULL;
 		switch (GetMode()) {
 			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
 			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
