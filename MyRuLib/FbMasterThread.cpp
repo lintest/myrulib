@@ -44,6 +44,12 @@ void FbMasterThread::Exit()
 	m_condition.Signal();
 }
 
+bool FbMasterThread::IsExit()
+{
+	wxCriticalSectionLocker locker(sm_section);
+	return m_exit;
+}
+
 void FbMasterThread::Reset(FbMasterInfo * info)
 {
 	wxCriticalSectionLocker locker(sm_section);
@@ -62,14 +68,14 @@ FbMasterInfo * FbMasterThread::GetInfo()
 void * FbMasterThread::Entry()
 {
 	while (true) {
-		FbMasterInfo * info = NULL;
+		FbMasterInfo * info = GetInfo();
 		while (info == NULL) {
+			if (TestDestroy() || IsExit()) break;
 			m_condition.Wait();
-			if (m_exit) return NULL;
 			info = GetInfo();
 		}
+		if (TestDestroy() || IsExit()) break;
 
-		if (TestDestroy()) return NULL;
 		if (m_thread) m_thread->Wait();
 		wxDELETE(m_thread);
 

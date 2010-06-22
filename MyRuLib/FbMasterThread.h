@@ -26,7 +26,7 @@ class FbMasterThread : public FbThread
 		virtual void * Entry();
 	private:
 		FbMasterInfo * GetInfo();
-		int GetBook();
+		bool IsExit();
 	private:
 		static wxCriticalSection sm_section;
 		FbCondition m_condition;
