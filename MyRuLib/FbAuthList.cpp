@@ -74,7 +74,6 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 	size_t count = 0;
 	wxArrayInt items;
 	while (result.NextRow()) {
-		if (m_tester.Closed()) return;
 		int code = result.GetInt(0);
 		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(new FbCacheData(result));
 		items.Add(code);

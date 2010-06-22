@@ -74,7 +74,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbAboutDlg.o \
 	myrulib_FbAuthList.o \
 	myrulib_FbAuthorDlg.o \
-	myrulib_FbAuthorThread.o \
 	myrulib_FbBookData.o \
 	myrulib_FbBookEvent.o \
 	myrulib_FbBookList.o \
@@ -330,9 +329,6 @@ myrulib_FbAuthList.o: $(srcdir)/MyRuLib/FbAuthList.cpp $(MYRULIB_ODEP)
 
 myrulib_FbAuthorDlg.o: $(srcdir)/MyRuLib/FbAuthorDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbAuthorDlg.cpp
-
-myrulib_FbAuthorThread.o: $(srcdir)/MyRuLib/FbAuthorThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbAuthorThread.cpp
 
 myrulib_FbBookData.o: $(srcdir)/MyRuLib/FbBookData.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookData.cpp

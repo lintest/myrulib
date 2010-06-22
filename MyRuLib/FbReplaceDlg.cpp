@@ -1,6 +1,5 @@
 #include "FbReplaceDlg.h"
 #include <wx/artprov.h>
-#include "FbAuthorThread.h"
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
 #include "FbMasterData.h"
@@ -77,7 +76,7 @@ bool FbReplaceDlg::Load()
 	if (result.NextRow()) {
 		m_Text->SetValue(result.GetAsString(0));
 		wxString last_name = result.GetAsString(1);
-		if (!last_name.IsEmpty()) (new FbAuthorThreadLast(this, last_name))->Execute();
+//		if (!last_name.IsEmpty()) (new FbAuthorThreadLast(this, last_name))->Execute();
 		return true;
 	}
 	return false;
@@ -86,7 +85,7 @@ bool FbReplaceDlg::Load()
 void FbReplaceDlg::OnFindEnter( wxCommandEvent& event )
 {
 	wxString text = m_FindText->GetValue();
-	if (!text.IsEmpty()) (new FbAuthorThreadRepl(m_FindList, text, m_id))->Execute();
+//	if (!text.IsEmpty()) (new FbAuthorThreadRepl(m_FindList, text, m_id))->Execute();
 }
 
 int FbReplaceDlg::GetSelected()

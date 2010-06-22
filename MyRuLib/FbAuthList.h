@@ -28,8 +28,8 @@ class FbAuthListInfo: public wxObject
 class FbAuthListThread: public FbThread
 {
 	public:
-		FbAuthListThread(wxEvtHandler * frame, const FbMutexLocker &locker, const FbAuthListInfo &info, int order = 0)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_tester(locker), m_info(info), m_order(order) {}
+		FbAuthListThread(wxEvtHandler * frame, const FbAuthListInfo &info, int order = 0)
+			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_order(order) {}
 	protected:
 		virtual void * Entry();
 	private:
@@ -40,7 +40,6 @@ class FbAuthListThread: public FbThread
 		void DoFullText(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
 		wxEvtHandler * m_frame;
-		FbMutexTester m_tester;
 		FbAuthListInfo m_info;
 		int m_order;
 };
