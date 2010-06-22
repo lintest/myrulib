@@ -19,7 +19,7 @@ class FbMasterData: public wxObject
 	public:
 		FbMasterData()
 			: m_index(sm_counter++) {}
-		int GetIndex() const 
+		int GetIndex() const
 			{ return m_index; }
 		FbMasterInfo GetInfo() const
 			{ return FbMasterInfo(CreateInfo()); }
@@ -128,17 +128,16 @@ class FbMasterDate: public FbMasterData
 class FbMasterFolder: public FbMasterData
 {
 	public:
-		FbMasterFolder(const int id, const FbFolderType type)
-			: m_id(id), m_type(type) {}
+		FbMasterFolder(const int id)
+			: m_id(id) {}
 		FbMasterFolder(const FbMasterFolder & data)
-			: m_id(data.m_id), m_type(data.m_type) {}
+			: m_id(data.m_id) {}
 		virtual FbMasterData * Clone() const
 			{ return new FbMasterFolder(*this); };
 		virtual FbMasterInfoPtr * CreateInfo() const
-			{ return new FbMasterFldrInfo(GetIndex(), m_id, m_type); }
+			{ return new FbMasterFldrInfo(GetIndex(), m_id); }
 	private:
 		int m_id;
-		FbFolderType m_type;
 };
 
 #endif // __FBMASTERDATA_H__

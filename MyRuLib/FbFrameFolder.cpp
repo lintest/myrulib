@@ -10,6 +10,28 @@ IMPLEMENT_CLASS(FbFolderParentData, FbParentData)
 
 IMPLEMENT_CLASS(FbFolderChildData, FbChildData)
 
+//-----------------------------------------------------------------------------
+//  FbCommChildData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbCommChildData, FbChildData)
+
+FbCommChildData::FbCommChildData(FbModel & model, FbParentData * parent)
+	: FbChildData(model, parent), m_name(_("Comments")) {}
+
+//-----------------------------------------------------------------------------
+//  FbRateChildData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbRateChildData, FbChildData)
+
+FbRateChildData::FbRateChildData(FbModel & model, FbParentData * parent, int code)
+	: FbChildData(model, parent), m_code(code), m_name(GetRatingText(code)) {}
+
+//-----------------------------------------------------------------------------
+//  FbFrameFolder
+//-----------------------------------------------------------------------------
+
 IMPLEMENT_CLASS(FbFrameFolder, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
@@ -97,8 +119,8 @@ void FbFrameFolder::FillFolders(const int current)
 	}
 
 	FbParentData * parent = new FbFolderParentData(*model, root, _("Remarks"));
-	new FbFolderChildData(*model, parent, 1, _("Comments"), FT_COMMENT);
-	for (int i=5; i>0; i--) new FbFolderChildData(*model, parent, i, GetRatingText(i), FT_RATING);
+	new FbCommChildData(*model, parent);
+	for (int i=5; i>0; i--) new FbRateChildData(*model, parent, i);
 
 	m_MasterList->AssignModel(model);
 }

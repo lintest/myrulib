@@ -25,27 +25,47 @@ class FbFolderParentData: public FbParentData
 			{ return true; }
 	private:
 		wxString m_name;
-		DECLARE_CLASS(FbGenreParentData);
+		DECLARE_CLASS(FbFolderParentData);
 };
 
 class FbFolderChildData: public FbChildData
 {
 	public:
 		FbFolderChildData(FbModel & model, FbParentData * parent, int code, const wxString &name, FbFolderType type)
-			: FbChildData(model, parent), m_code(code), m_name(name), m_type(type) {}
+			: FbChildData(model, parent), m_code(code), m_name(name) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return col == 0 ? m_name : (wxString)wxEmptyString; }
-		int GetCode() const 
+		int GetCode() const
 			{ return m_code; }
-		FbFolderType GetType() const 
-			{ return m_type; }
-		void SetName(const wxString &name) 
+		void SetName(const wxString &name)
 			{ m_name = name; }
 	private:
 		int m_code;
 		wxString m_name;
-		FbFolderType m_type;
-		DECLARE_CLASS(FbDownListData);
+		DECLARE_CLASS(FbFolderChildData);
+};
+
+class FbCommChildData: public FbChildData
+{
+	public:
+		FbCommChildData(FbModel & model, FbParentData * parent);
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
+			{ return col == 0 ? m_name : wxString(); }
+	private:
+		wxString m_name;
+		DECLARE_CLASS(FbCommChildData);
+};
+
+class FbRateChildData: public FbChildData
+{
+	public:
+		FbRateChildData(FbModel & model, FbParentData * parent, int code);
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
+			{ return col == 0 ? m_name : wxString(); }
+	private:
+		int m_code;
+		wxString m_name;
+		DECLARE_CLASS(FbCommChildData);
 };
 
 class FbFrameFolder : public FbFrameBase

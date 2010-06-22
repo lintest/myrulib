@@ -39,6 +39,8 @@ class FbModelData: public wxObject
 			{ return true; }
 		virtual FbModelData * Clone() const
 			{ return NULL; }
+		virtual int GetType() const
+			{ return 0; }
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -279,7 +281,7 @@ class FbTreeModel: public FbModel
 			: m_root(NULL) {}
 		virtual ~FbTreeModel()
 			{ wxDELETE(m_root); }
-		FbModelItem GetRoot() 
+		FbModelItem GetRoot()
 			{ return FbModelItem(*this, m_root); }
 
 		void SetRoot(FbModelData * root);

@@ -40,7 +40,7 @@ FbMasterData * FbMasterData::Create(const FbModelItem &item)
 		if (data) return new FbMasterDownld(data->GetCode());
 	} {
 		FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
-		if (data) return new FbMasterFolder(data->GetCode(), data->GetType());
+		if (data) return new FbMasterFolder(data->GetCode());
 	} {
 		FbBookFindData * data = wxDynamicCast(&item, FbBookFindData);
 		if (data) return new FbMasterSearch(data->GetText(), data->GetAuth());

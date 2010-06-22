@@ -171,10 +171,10 @@ class FbMasterDateInfo: public FbMasterInfoPtr
 class FbMasterFldrInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterFldrInfo(int index, int id, FbFolderType type)
-			: FbMasterInfoPtr(index), m_id(id), m_type(type) {}
+		FbMasterFldrInfo(int index, int id)
+			: FbMasterInfoPtr(index), m_id(id) {}
 		FbMasterFldrInfo(const FbMasterFldrInfo &info)
-			: FbMasterInfoPtr(info), m_id(info.m_id), m_type(info.m_type) {}
+			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
 			{ return new FbMasterFldrInfo(*this); }
 	protected:
@@ -182,7 +182,6 @@ class FbMasterFldrInfo: public FbMasterInfoPtr
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
-		FbFolderType m_type;
 		DECLARE_CLASS(FbMasterFldrInfo);
 };
 

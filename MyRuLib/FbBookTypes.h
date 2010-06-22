@@ -24,6 +24,23 @@ enum FbViewMode {
 	FB2_VIEW_NOTHING = 2,
 };
 
+enum FbMasterTypes {
+	fbMT_NULL = 0,
+	fbMT_BOOK,
+	fbMT_AUTH,
+	fbMT_SEQN,
+	fbMT_GENR,
+	fbMT_FLDR,
+	fbMT_DOWN,
+	fbMT_COMM,
+	fbMT_RATE,
+	fbMT_FIND,
+	fbMT_DATE,
+	fbMT_ARCH,
+	fbMT_FILE,
+	fbMT_LAST,
+};
+
 #include <wx/dynarray.h>
 WX_DEFINE_SORTED_ARRAY_INT(int, FbSortedArrayInt);
 
