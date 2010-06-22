@@ -23,7 +23,6 @@ class FbMasterData: public wxObject
 			{ return m_index; }
 		FbMasterInfo GetInfo() const
 			{ return FbMasterInfo(CreateInfo()); }
-		void Show(FbFrameBase * frame) const;
 		virtual FbMasterData * Clone() const = 0;
 	protected:
 		virtual FbMasterInfoPtr * CreateInfo() const = 0;

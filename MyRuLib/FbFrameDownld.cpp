@@ -93,7 +93,7 @@ void FbFrameDownld::UpdateFolder(const int folder, const FbFolderType type)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbDownListData * data = wxDynamicCast(&item, FbDownListData);
-	if (data && data->GetCode() == folder) FbMasterDownld(data->GetCode()).Show(this);
+	if (data && data->GetCode() == folder) UpdateBooklist();
 }
 
 void FbFrameDownld::OnStart(wxCommandEvent & event)

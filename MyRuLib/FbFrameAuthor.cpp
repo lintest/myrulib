@@ -218,7 +218,6 @@ void FbFrameAuthor::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data) FbMasterAuthor(data->GetCode()).Show(this);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
 	PopupMenu(&menu, pos.x, pos.y);

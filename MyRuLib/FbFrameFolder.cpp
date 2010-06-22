@@ -114,7 +114,6 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 	bool enabled = data->GetType() == FT_FOLDER && data->GetCode();
 	m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
 	m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
-	FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
 }
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
@@ -243,7 +242,7 @@ void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)
 			update = true;
 			break;
 	}
-	if (update) FbMasterFolder(data->GetCode(), data->GetType()).Show(this);
+	if (update) UpdateBooklist();
 }
 
 void FbFrameFolder::ShowFullScreen(bool show)

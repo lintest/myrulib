@@ -11,6 +11,25 @@
 #include <wx/wxsqlite3.h>
 #include "FbFrameBase.h"
 
+class FbBookFindData: public FbModelData
+{
+	public:
+		FbBookFindData(const wxString &text, const wxString &auth)
+			: m_text(text), m_auth(auth) {}
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
+			{ return col == 1 ? m_auth : m_text; }
+		wxString GetText() const 
+			{ return m_text; }
+		wxString GetAuth() const 
+			{ return m_auth; }
+		virtual FbModelData * Clone() const
+			{ return new FbBookFindData(m_text, m_auth); }
+	private:
+		wxString m_text;
+		wxString m_auth;
+		DECLARE_CLASS(FbAuthListData);
+};
+
 class FbFrameSearch : public FbFrameBase
 {
 	public:

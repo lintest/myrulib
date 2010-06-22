@@ -532,18 +532,6 @@ void FbBookPanel::OnTreeModel( FbModelEvent& event )
 	}
 }
 
-void FbBookPanel::Reset(const FbMasterData &master)
-{
-	wxDELETE(m_master);
-	m_master = master.Clone();
-
-	m_BookList->AssignModel(NULL);
-	FbMasterInfo info = m_master->GetInfo();
-	info.SetOrder(m_BookList->GetSortedColumn());
-	info.SetMode(GetListMode());
-	m_thread->Reset(info);
-}
-
 void FbBookPanel::Reset(FbModelItem item)
 {
 	wxDELETE(m_master);
