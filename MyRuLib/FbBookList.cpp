@@ -21,6 +21,18 @@ int FbBookListData::DoGetState(FbModel & model) const
 	return booklist ? booklist->GetState(m_code) : 0;
 }
 
+void FbBookListModel::SelectAll(bool value)
+{
+	m_check.Empty();
+	if (value) {
+		size_t count = m_items.Count();
+		m_check.Alloc(count);
+		for (size_t i = 0; i < count; i++) {
+			m_check.Add(m_items[i]);
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 //  FbBookListModel
 //-----------------------------------------------------------------------------

@@ -701,3 +701,21 @@ void FbTreeModel::DoCheck(FbModelItem &parent, size_t max, size_t &row, int &sta
 		DoCheck(child, max, row, state);
 	}
 }
+
+void FbTreeModel::SelectAll(bool value)
+{
+	if (m_root) {
+		FbModelItem item(*this, m_root);
+		DoSelect(item, value);
+	}
+}
+
+void FbTreeModel::DoSelect(FbModelItem &parent, bool value)
+{
+	size_t count = parent.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbModelItem child = parent.Items(i);
+		child.SetState(value);
+		DoSelect(child, value);
+	}
+}

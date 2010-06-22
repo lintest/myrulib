@@ -258,12 +258,12 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 
 void FbBookPanel::OnSelectAll(wxCommandEvent& event)
 {
-//	m_BookList->SelectAll(1);
+	m_BookList->SelectAll(true);
 }
 
 void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 {
-//	m_BookList->SelectAll(0);
+	m_BookList->SelectAll(false);
 }
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
@@ -543,6 +543,7 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	wxDELETE(m_master);
 	m_master = master.Clone();
 
+	m_BookList->AssignModel(NULL);
 	FbMasterInfo info = m_master->GetInfo();
 	info.SetOrder(m_BookList->GetSortedColumn());
 	info.SetMode(GetListMode());

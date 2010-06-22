@@ -44,6 +44,7 @@ class FbBookListModel: public FbListModel
 		virtual void Append(FbModelData * data) {}
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete() {}
+		virtual void SelectAll(bool value);
 
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level);

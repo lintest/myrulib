@@ -215,6 +215,8 @@ class FbModel: public wxObject
 		virtual void SingleCheck(size_t row = 0);
 		virtual void MultiplyCheck() {}
 
+		virtual void SelectAll(bool value) {}
+
 		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); }
 
@@ -293,6 +295,7 @@ class FbTreeModel: public FbModel
 		virtual void Delete();
 
 		virtual void MultiplyCheck();
+		virtual void SelectAll(bool value);
 
 	protected:
 		bool DoDelete(FbModelData &parent, size_t &row);
@@ -302,6 +305,7 @@ class FbTreeModel: public FbModel
 		FbModelItem FindData(FbModelItem &parent, size_t &row, int &level);
 		FbModelItem GetLast(FbModelItem &parent);
 		void DoCheck(FbModelItem &parent, size_t max, size_t &row, int &state);
+		void DoSelect(FbModelItem &parent, bool value);
 
 	protected:
 		FbModelData * m_root;

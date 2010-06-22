@@ -1312,6 +1312,13 @@ void FbTreeViewCtrl::EmptyColumns()
     if (m_header_win) m_header_win->EmptyColumns();
 }
 
+void FbTreeViewCtrl::SelectAll(bool value) 
+{
+	FbModel * model = GetModel();
+	if (model) model->SelectAll(value);
+	Refresh();
+}
+
 void FbTreeViewCtrl::Append(FbModelData * data)
 {
 	FbModel * model = GetModel();

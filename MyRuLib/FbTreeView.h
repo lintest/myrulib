@@ -79,9 +79,9 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 			{ return m_main_win; }
 
 		FbModelItem GetCurrent() const;
-
 		wxString GetCurrentText() const;
 
+		void SelectAll(bool value);
 		void Append(FbModelData * data);
 		void Replace(FbModelData * data);
 		void Delete();
