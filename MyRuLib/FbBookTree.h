@@ -90,7 +90,8 @@ class FbBookTreeModel: public FbTreeModel
 		FbBookTreeModel() {}
 		size_t GetSelected(wxArrayInt &items);
 	private:
-		void GetSelected(FbModelItem &parent, wxArrayInt &items);
+		void GetChecked(FbModelItem &parent, wxArrayInt &items);
+		void GetSelected(FbModelItem &parent, int max, size_t &row, wxArrayInt &items);
 		DECLARE_CLASS(FbBookTreeModel);
 };
 

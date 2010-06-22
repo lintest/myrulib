@@ -39,10 +39,24 @@ size_t FbBookListModel::GetSelected(wxArrayInt &items)
 	size_t count = m_items.Count();
 	if (count == 0) return 0;
 
-	items.Alloc(count);
-	for (size_t i = 0; i < count; i++) {
+	size_t check_count = m_check.Count();
+	for (size_t i = 0; i < check_count; i++) {
 		items.Add(m_check[i]);
 	}
+	if (check_count) return check_count;
+
+	if (m_shift) {
+		size_t min = m_shift < m_position ? m_shift : m_position;
+		size_t max = m_shift > m_position ? m_shift : m_position;
+		for (size_t i = min; i <= max; i++) items.Add(m_items[i]);
+	} else {
+		size_t ctrls_count = m_ctrls.Count();
+		for (size_t i = 0; i < ctrls_count; i++) {
+			size_t index = m_ctrls[i];
+			if (0 <= index && index < count) items.Add(m_items[index]);
+		}
+	}
+	return items.Count();
 }
 
 //-----------------------------------------------------------------------------
