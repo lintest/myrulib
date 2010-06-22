@@ -284,8 +284,7 @@ void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
 
 void FbBookPanel::DoFolderAdd(const int folder)
 {
-/*
-	wxString sel = m_BookList->GetSelected();
+	wxString sel = GetSelected();
 	wxString sql = wxString::Format(wxT("\
 		INSERT INTO favorites(id_folder,md5sum) \
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
@@ -293,7 +292,6 @@ void FbBookPanel::DoFolderAdd(const int folder)
 
 	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-*/
 }
 
 void FbBookPanel::OnChangeRating(wxCommandEvent& event)
@@ -308,7 +306,7 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 
 	m_BookList->Update();
 
-	wxString sel = m_BookList->GetSelected();
+	wxString sel = GetSelected();
 
 	wxString sql1 = wxString::Format(wxT("\
 		UPDATE states SET rating=%d WHERE md5sum IN \
@@ -362,19 +360,15 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 {
-/*
 	wxString sel;
-	size_t count = m_BookList->GetSelected(sel);
+	size_t count = GetSelected(sel);
 	if (count) DoCreateDownload(sel, count);
-*/
 }
 
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 {
-/*
-	wxString sel = m_BookList->GetSelected();
+	wxString sel = GetSelected();
 	DoDeleteDownload(sel, 0);
-*/
 }
 
 void FbBookPanel::OnEditComments(wxCommandEvent & event)
@@ -452,8 +446,8 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 /*
 	wxString sel;
 	wxArrayInt items;
-	m_BookList->GetSelected(items);
-	size_t count = m_BookList->GetSelected(sel);
+	GetSelected(items);
+	size_t count = GetSelected(sel);
 	if (!count) return;
 
 	wxString msg = wxString::Format(_("Delete selected books (%d pcs)?"), count);
@@ -550,6 +544,39 @@ void FbBookPanel::Reset(const FbMasterData &master)
 	m_thread->Reset(info);
 }
 
+wxString FbBookPanel::GetSelected()
+{
+	wxString sel;
+	GetSelected(sel);
+	return sel;
+}
 
+size_t FbBookPanel::GetSelected(wxString &selections)
+{
+	selections.Empty();
+	wxArrayInt items;
+	GetSelected(items);
+	size_t count = items.Count();
+	for (size_t i = 0; i < count; i++) {
+		if (i > 0) selections << wxT(',');
+		selections << items[i];
+	}
+	return count;
+}
 
+size_t FbBookPanel::GetSelected(wxArrayInt &items)
+{
+	FbModel * model = m_BookList->GetModel();
 
+	{
+		FbBookListModel * list = wxDynamicCast(model, FbBookListModel);
+		if (list) return list->GetSelected(items);
+	}
+
+	{
+		FbBookTreeModel * tree = wxDynamicCast(model, FbBookTreeModel);
+		if (tree) return tree->GetSelected(items);
+	}
+
+	return 0;
+}

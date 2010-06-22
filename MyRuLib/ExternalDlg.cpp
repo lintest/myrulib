@@ -10,6 +10,7 @@ Returns the characters that can't be used in filenames and directory names for t
 #include "FbParams.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
+#include "FbBookPanel.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -320,40 +321,44 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 	wxString thisLeter, thisAuthor, thisSequence;
 	wxTreeItemId itemLetter, itemAuthor, itemSequence, itemParent;
 
-	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-	while (result.NextRow()) {
-		BookTreeItemData data(result);
-		if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
-		wxString nextAuthor = result.GetString(wxT("full_name"));
-		wxString nextSequence = result.GetString(wxT("sequence"));
-		if (bUseLetter) {
-			wxString nextLetter = result.GetString(wxT("letter"));
-			if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
-				thisLeter = nextLetter;
-				itemAuthor = 0L;
-				itemSequence = 0L;
-				itemLetter = AppendFolder(root, thisLeter);
-				m_books->SetItemBold(itemLetter, true);
+	try {
+		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+		while (result.NextRow()) {
+			BookTreeItemData data(result);
+			if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
+			wxString nextAuthor = result.GetString(wxT("full_name"));
+			wxString nextSequence = result.GetString(wxT("sequence"));
+			if (bUseLetter) {
+				wxString nextLetter = result.GetString(wxT("letter"));
+				if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
+					thisLeter = nextLetter;
+					itemAuthor = 0L;
+					itemSequence = 0L;
+					itemLetter = AppendFolder(root, thisLeter);
+					m_books->SetItemBold(itemLetter, true);
+				}
+			} else {
+				itemLetter = root;
 			}
-		} else {
-			itemLetter = root;
+			if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
+				thisAuthor = nextAuthor;
+				itemSequence = 0L;
+				itemParent = itemAuthor = AppendFolder(itemLetter, thisAuthor);
+				m_books->SetItemBold(itemAuthor, true);
+			}
+			if (thisSequence != nextSequence || !itemSequence.IsOk()) {
+				thisSequence = nextSequence;
+				if (result.GetInt(wxT("id_seq"))) {
+					wxString seqname = thisSequence.IsEmpty() ? (wxString)_("(Misc.)") : thisSequence;
+					itemParent = itemSequence = AppendFolder(itemAuthor, seqname);
+					m_books->SetItemBold(itemSequence, true);
+				} else itemParent = itemAuthor;
+			}
+			AppendBook(itemParent, data);
+			books.Add(data.GetId());
 		}
-		if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
-			thisAuthor = nextAuthor;
-			itemSequence = 0L;
-			itemParent = itemAuthor = AppendFolder(itemLetter, thisAuthor);
-			m_books->SetItemBold(itemAuthor, true);
-		}
-		if (thisSequence != nextSequence || !itemSequence.IsOk()) {
-			thisSequence = nextSequence;
-			if (result.GetInt(wxT("id_seq"))) {
-				wxString seqname = thisSequence.IsEmpty() ? (wxString)_("(Misc.)") : thisSequence;
-				itemParent = itemSequence = AppendFolder(itemAuthor, seqname);
-				m_books->SetItemBold(itemSequence, true);
-			} else itemParent = itemAuthor;
-		}
-		AppendBook(itemParent, data);
-		books.Add(data.GetId());
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
 	}
 }
 
@@ -515,9 +520,9 @@ bool ExternalDlg::ExportBooks()
 	return true;
 }
 
-bool ExternalDlg::Execute(wxWindow* parent, FbBookList* bookList, int iAuthor)
+bool ExternalDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
 {
-	wxString selections = bookList->GetSelected();
+	wxString selections = books->GetSelected();
 
 	if ( selections.IsEmpty() ) {
 		wxMessageBox(_("Not selected any book"));

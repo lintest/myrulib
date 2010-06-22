@@ -115,7 +115,7 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 
 void FbFrameBase::OnExternal(wxCommandEvent& event)
 {
-//	ExternalDlg::Execute(this, m_BooksPanel->m_BookList);
+	ExternalDlg::Execute(this, m_BooksPanel);
 }
 
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)

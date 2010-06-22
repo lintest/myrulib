@@ -61,3 +61,30 @@ wxString FbBookChildData::GetValue(FbModel & model, size_t col) const
 	else
 		return FbCollection::GetBook(m_code, col);
 }
+
+//-----------------------------------------------------------------------------
+//  FbBookTreeModel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbBookTreeModel, FbTreeModel)
+
+size_t FbBookTreeModel::GetSelected(wxArrayInt &items)
+{
+	items.Empty();
+	FbModelItem root = GetRoot(); 
+	if (root) GetSelected(root, items);
+	return items.Count();
+}
+
+void FbBookTreeModel::GetSelected(FbModelItem &parent, wxArrayInt &items)
+{
+	if (parent.GetState() == 1) {
+		FbBookChildData * book = wxDynamicCast(&parent, FbBookChildData);
+		if (book) items.Add(book->GetCode());
+	}
+
+	size_t count = parent.Count();
+	for (size_t i = 0; i < count; i++) {
+		GetSelected(parent.Items(i), items);
+	}
+}

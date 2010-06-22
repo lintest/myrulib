@@ -32,6 +32,8 @@
 #include "FbWindow.h"
 #include "FbChoiceFormat.h"
 
+class FbBookPanel;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ExternalDlg
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,7 +42,7 @@ class ExternalDlg : public FbDialog
 	public:
 		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);
 		~ExternalDlg();
-		static bool Execute(wxWindow* parent, FbBookList* books, int iAuthor = ciNoAuthor);
+		static bool Execute(wxWindow* parent, FbBookPanel * books, int iAuthor = ciNoAuthor);
 	private:
 		void FillBooks(const wxString &selections);
 		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);

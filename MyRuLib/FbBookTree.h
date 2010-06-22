@@ -84,4 +84,14 @@ class FbBookChildData: public FbChildData
 		DECLARE_CLASS(FbBookChildData);
 };
 
+class FbBookTreeModel: public FbTreeModel
+{
+	public:
+		FbBookTreeModel() {}
+		size_t GetSelected(wxArrayInt &items);
+	private:
+		void GetSelected(FbModelItem &parent, wxArrayInt &items);
+		DECLARE_CLASS(FbBookTreeModel);
+};
+
 #endif // __FBBOOKTREE_H__

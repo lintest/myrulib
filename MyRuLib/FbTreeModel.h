@@ -278,8 +278,9 @@ class FbTreeModel: public FbModel
 			: m_root(NULL) {}
 		virtual ~FbTreeModel()
 			{ wxDELETE(m_root); }
+		FbModelItem GetRoot() 
+			{ return FbModelItem(*this, m_root); }
 
-		FbModelData * GetRoot() { return m_root; }
 		void SetRoot(FbModelData * root);
 
 		virtual int GoFirstRow();

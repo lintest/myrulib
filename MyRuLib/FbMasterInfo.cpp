@@ -71,7 +71,7 @@ void FbMasterInfoPtr::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3
 
 void FbMasterInfoPtr::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
-	FbTreeModel * model = new FbTreeModel;
+	FbBookTreeModel * model = new FbBookTreeModel;
 	FbParentData * root = new FbParentData(*model, NULL);
 	FbAuthParentData * auth = NULL;
 	FbAuthParentData * list = NULL;
@@ -229,7 +229,7 @@ void FbMasterAuthorInfo::Bind(wxSQLite3Statement &stmt) const
 
 void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
-	FbTreeModel * model = new FbTreeModel;
+	FbBookTreeModel * model = new FbBookTreeModel;
 	FbAuthParentData * root = new FbAuthParentData(*model, NULL, m_id);
 	FbAuthParentData * author = new FbAuthParentData(*model, NULL, m_id);
 	FbSeqnParentData * parent = NULL;

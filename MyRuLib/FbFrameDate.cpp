@@ -103,7 +103,8 @@ void FbFrameDate::OnArray( FbArrayEvent& event )
 
 void FbFrameDate::AppendAttay(FbTreeModel &model, const wxArrayInt &items)
 {
-	FbParentData * root = wxDynamicCast(model.GetRoot(), FbParentData);
+	FbModelItem item = model.GetRoot();
+	FbParentData * root = wxDynamicCast(&item, FbParentData);
 	if (root == NULL) return;
 
 	size_t count = items.Count();

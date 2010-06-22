@@ -33,6 +33,18 @@ void FbBookListModel::SelectAll(bool value)
 	}
 }
 
+size_t FbBookListModel::GetSelected(wxArrayInt &items)
+{
+	items.Empty();
+	size_t count = m_items.Count();
+	if (count == 0) return 0;
+
+	items.Alloc(count);
+	for (size_t i = 0; i < count; i++) {
+		items.Add(m_check[i]);
+	}
+}
+
 //-----------------------------------------------------------------------------
 //  FbBookListModel
 //-----------------------------------------------------------------------------

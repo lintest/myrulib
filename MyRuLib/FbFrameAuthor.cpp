@@ -199,10 +199,9 @@ void FbFrameAuthor::SelectRandomLetter()
 
 void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
-/*
-	FbAuthListData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbAuthListData);
-	if (data) ExternalDlg::Execute(this, m_BooksPanel->m_BookList, data->GetCode());
-*/
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
+	if (data) ExternalDlg::Execute(this, m_BooksPanel, data->GetCode());
 }
 
 void FbFrameAuthor::OnColClick(wxListEvent& event)

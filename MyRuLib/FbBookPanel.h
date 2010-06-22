@@ -29,6 +29,7 @@ class FbBookPanel: public wxSplitterWindow
 		void SetMasterData(FbMasterData const * master);
 		FbMasterData const * GetMasterData() const { return m_master; };
 		void Localize();
+		wxString GetSelected();
 	public:
 		FbTreeViewCtrl * m_BookList;
 		int GetSelectedBook();
@@ -41,6 +42,9 @@ class FbBookPanel: public wxSplitterWindow
 		FbListMode GetListMode() { return m_ListMode; }
 		FbViewMode GetViewMode();
 		void UpdateFonts(bool refresh = true);
+	private:
+		size_t GetSelected(wxString &selections);
+		size_t GetSelected(wxArrayInt &items);
 	private:
 		wxHtmlWindow * m_BookInfo;
 		void SetViewMode(int mode);
