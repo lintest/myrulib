@@ -390,12 +390,6 @@ void FbBookPanel::EmptyBooks(const int selected)
 	m_BookInfo->SetPage(wxEmptyString);
 }
 
-void FbBookPanel::AssignEmpty()
-{
-	wxDELETE(m_master);
-	m_BookList->AssignModel(new FbListStore);
-}
-
 void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 {
 	int id = GetSelectedBook();

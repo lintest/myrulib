@@ -234,28 +234,6 @@ void FbFrameBase::UpdateStatus()
 	if (frame) frame->SetStatus(GetStatus());
 }
 
-wxString FbFrameBase::Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural)
-{
-	switch (count % 100) {
-		case 11:
-		case 12:
-		case 13:
-		case 14:
-			return plural;
-	}
-
-	switch (count % 10) {
-		case 1:
-			return single;
-		case 2:
-		case 3:
-		case 4:
-			return genitive;
-		default:
-			return plural;
-	}
-}
-
 int FbFrameBase::GetBookCount()
 {
 	return 0;

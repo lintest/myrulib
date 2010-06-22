@@ -42,7 +42,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnSubmenu(wxCommandEvent& event);
 		void CreateBooksPanel(wxWindow * parent, long substyle);
 		int GetColOrder(int col);
-		wxString Naming(int count, const wxString &single, const wxString &genitive, const wxString &plural);
 		int GetBookCount();
 		bool IsFullScreen();
 		virtual void UpdateBooklist();
