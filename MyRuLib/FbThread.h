@@ -65,6 +65,7 @@ class FbThreadSkiper
 {
 	public:
 		FbThreadSkiper(): m_number(0) {};
+		virtual ~FbThreadSkiper() {}
 		bool Skipped(const int number) { return number != m_number; };
 		int NewNumber() { return ++m_number; };
 	private:
@@ -78,7 +79,7 @@ class FbThread: public wxThread
 	public:
 	    FbThread(wxThreadKind kind = wxTHREAD_DETACHED)
 			: wxThread(kind), m_closed(false) {}
-		void Execute() 
+		void Execute()
 			{ if ( Create() == wxTHREAD_NO_ERROR ) Run(); }
 	    bool IsClosed();
 	    virtual void Close();

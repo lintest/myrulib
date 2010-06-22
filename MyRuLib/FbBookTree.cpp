@@ -71,7 +71,7 @@ IMPLEMENT_CLASS(FbBookTreeModel, FbTreeModel)
 size_t FbBookTreeModel::GetSelected(wxArrayInt &items)
 {
 	items.Empty();
-	FbModelItem root = GetRoot(); 
+	FbModelItem root = GetRoot();
 	if (!root) return 0;
 
 	GetChecked(root, items);
@@ -103,11 +103,12 @@ void FbBookTreeModel::GetChecked(FbModelItem &parent, wxArrayInt &items)
 
 	size_t count = parent.Count();
 	for (size_t i = 0; i < count; i++) {
-		GetChecked(parent.Items(i), items);
+		FbModelItem child = parent.Items(i);
+		GetChecked(child, items);
 	}
 }
 
-void FbBookTreeModel::GetSelected(FbModelItem &parent, int max, size_t &row, wxArrayInt &items)
+void FbBookTreeModel::GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items)
 {
 	if (IsSelected(row++)) {
 		FbBookChildData * book = wxDynamicCast(&parent, FbBookChildData);
@@ -115,7 +116,8 @@ void FbBookTreeModel::GetSelected(FbModelItem &parent, int max, size_t &row, wxA
 	}
 	size_t count = parent.Count();
 	for (size_t i = 0; i < count && row <= max; i++) {
-		GetSelected(parent.Items(i), max, row, items);
+		FbModelItem child = parent.Items(i);
+		GetSelected(child, max, row, items);
 	}
 }
 
