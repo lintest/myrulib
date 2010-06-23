@@ -14,6 +14,7 @@
 IMPLEMENT_CLASS(FbFrameFolder, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFolder::OnFolderSelected)
 	EVT_MENU(ID_FAVORITES_DEL, FbFrameFolder::OnFavoritesDel)
 	EVT_MENU(ID_APPEND_FOLDER, FbFrameFolder::OnFolderAppend)
 	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFolder::OnFolderModify)
@@ -100,6 +101,7 @@ void FbFrameFolder::FillFolders(const int current)
 	new FbCommChildData(*model, parent);
 	for (int i=5; i>0; i--) new FbRateChildData(*model, parent, i);
 
+	model->GoNextRow();
 	m_MasterList->AssignModel(model);
 }
 
@@ -109,9 +111,7 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
-	if (data == NULL) return;
-
-	bool enabled = data->GetType() == FT_FOLDER && data->GetCode();
+	bool enabled = data && data->GetCode();
 	m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
 	m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
 }
@@ -173,7 +173,7 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
-	if (data == NULL || data->GetType() != FT_FOLDER || data->GetCode()==0) return;
+	if (data == NULL || data->GetCode() == 0) return;
 
 	wxString name = data->GetValue(*model);
 	name = wxGetTextFromUser(_("Input new folder name:"), _("Change folder?"), name, this);
@@ -202,7 +202,7 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
-	if (data == NULL || data->GetType() != FT_FOLDER || data->GetCode()==0) return;
+	if (data == NULL || data->GetCode() == 0) return;
 
 	wxString name = data->GetValue(*model);
 	wxString msg = wxString::Format(_("Delete folder \"%s\"?"), name.c_str());
