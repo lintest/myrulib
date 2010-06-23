@@ -357,6 +357,7 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX book_author ON books(id_author);");
   $sqlite_db->query("CREATE INDEX book_archive ON books(id_archive);");
   $sqlite_db->query("CREATE INDEX book_md5sum ON books(md5sum);");
+  $sqlite_db->query("CREATE INDEX book_created ON books(created);");
 
   $sqlite_db->query("CREATE INDEX book_file ON archives(file_name);");
 
