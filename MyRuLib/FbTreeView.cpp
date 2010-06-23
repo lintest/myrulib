@@ -1347,16 +1347,20 @@ void FbTreeViewCtrl::Delete()
 FbMasterInfo FbTreeViewCtrl::GetInfo() const
 {
 	FbModel * model = GetModel();
-	if (model == NULL) return NULL;
-	FbModelItem item = model->GetCurrent();
-	return item ? (&item)->GetInfo() : NULL;
+	if (model) {
+		FbModelItem item = model->GetCurrent();
+		if (item) return (&item)->GetInfo();
+	}
+	return NULL;
 }
 
 int FbTreeViewCtrl::GetBook() const
 {
 	FbModel * model = GetModel();
-	if (model == NULL) return 0;
-	FbModelItem item = model->GetCurrent();
-	return item ? (&item)->GetBook() : 0;
+	if (model) {
+		FbModelItem item = model->GetCurrent();
+		if (item) return (&item)->GetBook();
+	}
+	return 0;
 }
 

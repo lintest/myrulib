@@ -47,6 +47,7 @@ class FbDateDayData: public FbChildData
 			: FbChildData(model, parent), m_code(code), m_count(count) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
+		FbMasterInfo GetInfo() const;
 	private:
 		int m_code;
 		int m_count;

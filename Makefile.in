@@ -92,6 +92,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbDataPath.o \
 	myrulib_FbDateTime.o \
 	myrulib_FbDateTree.o \
+	myrulib_FbDownList.o \
 	myrulib_FbEditBook.o \
 	myrulib_FbExtractInfo.o \
 	myrulib_FbDownloader.o \
@@ -117,8 +118,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbMainFrame.o \
 	myrulib_FbMainMenu.o \
 	myrulib_FbMasterInfo.o \
-	myrulib_FbMasterData.o \
-	myrulib_FbMasterList.o \
 	myrulib_FbMasterThread.o \
 	myrulib_FbMenu.o \
 	myrulib_FbNotebook.o \
@@ -387,6 +386,9 @@ myrulib_FbDateTime.o: $(srcdir)/MyRuLib/FbDateTime.cpp $(MYRULIB_ODEP)
 myrulib_FbDateTree.o: $(srcdir)/MyRuLib/FbDateTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDateTree.cpp
 
+myrulib_FbDownList.o: $(srcdir)/MyRuLib/FbDownList.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDownList.cpp
+
 myrulib_FbEditBook.o: $(srcdir)/MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbEditBook.cpp
 
@@ -461,12 +463,6 @@ myrulib_FbMainMenu.o: $(srcdir)/MyRuLib/FbMainMenu.cpp $(MYRULIB_ODEP)
 
 myrulib_FbMasterInfo.o: $(srcdir)/MyRuLib/FbMasterInfo.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterInfo.cpp
-
-myrulib_FbMasterData.o: $(srcdir)/MyRuLib/FbMasterData.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterData.cpp
-
-myrulib_FbMasterList.o: $(srcdir)/MyRuLib/FbMasterList.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterList.cpp
 
 myrulib_FbMasterThread.o: $(srcdir)/MyRuLib/FbMasterThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterThread.cpp

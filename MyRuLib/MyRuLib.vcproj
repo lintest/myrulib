@@ -280,6 +280,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbDownList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbDownloader.cpp"
 				>
 			</File>
@@ -591,6 +595,10 @@
 			</File>
 			<File
 				RelativePath=".\FbDateTree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbDownList.h"
 				>
 			</File>
 			<File

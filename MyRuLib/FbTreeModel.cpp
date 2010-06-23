@@ -3,7 +3,7 @@
 #include <wx/wxsqlite3.h>
 #include <wx/listbase.h>
 
-#include "../MyRuLib/FbLogoBitmap.h"
+#include "FbLogoBitmap.h"
 
 //-----------------------------------------------------------------------------
 //  FbModelData

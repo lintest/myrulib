@@ -6,9 +6,9 @@
 
 class FbModel;
 
-class FbModelData;
-
 class FbMasterInfo;
+
+class FbModelData;
 
 class FbModelData: public wxObject
 {

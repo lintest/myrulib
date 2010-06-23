@@ -7,39 +7,6 @@
 class FbModel;
 
 #define DATA_CACHE_SIZE 128
-/*
-typedef size_t FbBookFields;
-#define	BF_CODE  0x0001
-#define	BF_NAME  0x0002
-#define	BF_NUMB  0x0004
-#define	BF_AUTH  0x0008
-#define	BF_GENR  0x0010
-#define	BF_RATE  0x0020
-#define	BF_LANG  0x0040
-#define	BF_TYPE  0x0080
-#define	BF_DATE  0x0100
-#define	BF_SIZE  0x0200
-#define	BF_LENG  0x0400
-#define	BF_SEQN  0x0800
-#define	BF_MD5S  0x1000
-*/
-
-enum FbBookFields {
-	BF_NAME = 0,
-	BF_NUMB,
-	BF_AUTH,
-	BF_CODE,
-	BF_GENR,
-	BF_RATE,
-	BF_LANG,
-	BF_TYPE,
-	BF_DATE,
-	BF_SIZE,
-	BF_BITE,
-	BF_SEQN,
-	BF_MD5S,
-	BF_LAST,
-};
 
 class FbCacheBook: public wxObject
 {

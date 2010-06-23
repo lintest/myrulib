@@ -176,6 +176,7 @@
 		<sources>MyRuLib/FbDataPath.cpp</sources>
 		<sources>MyRuLib/FbDateTime.cpp</sources>
 		<sources>MyRuLib/FbDateTree.cpp</sources>
+		<sources>MyRuLib/FbDownList.cpp</sources>
 		<sources>MyRuLib/FbEditBook.cpp</sources>
 		<sources>MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
@@ -201,8 +202,6 @@
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
 		<sources>MyRuLib/FbMasterInfo.cpp</sources>
-		<sources>MyRuLib/FbMasterData.cpp</sources>
-		<sources>MyRuLib/FbMasterList.cpp</sources>
 		<sources>MyRuLib/FbMasterThread.cpp</sources>
 		<sources>MyRuLib/FbMenu.cpp</sources>
 		<sources>MyRuLib/FbNotebook.cpp</sources>

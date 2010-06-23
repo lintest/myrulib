@@ -5,11 +5,10 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbDownloader.h"
+#include "FbDownList.h"
 #include "FbUpdateThread.h"
 #include "res/start.xpm"
 #include "res/pause.xpm"
-
-IMPLEMENT_CLASS(FbDownListData, FbModelData)
 
 IMPLEMENT_CLASS(FbFrameDownld, FbFrameBase)
 
@@ -45,8 +44,7 @@ void FbFrameDownld::CreateControls()
 	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
 
-	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	CreateBooksPanel(splitter, substyle);
+	CreateBooksPanel(splitter, 0);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	FillFolders();

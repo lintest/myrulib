@@ -3,6 +3,7 @@
 #include "FbConst.h"
 #include "FbGenres.h"
 #include "FbDateTime.h"
+#include "FbBookTypes.h"
 
 //-----------------------------------------------------------------------------
 //  FbCacheBook

@@ -1,6 +1,23 @@
 #ifndef __FBBOOKTYPES_H__
 #define __FBBOOKTYPES_H__
 
+enum FbBookFields {
+	BF_NAME = 0,
+	BF_NUMB,
+	BF_AUTH,
+	BF_CODE,
+	BF_GENR,
+	BF_RATE,
+	BF_LANG,
+	BF_TYPE,
+	BF_DATE,
+	BF_SIZE,
+	BF_BITE,
+	BF_SEQN,
+	BF_MD5S,
+	BF_LAST,
+};
+
 enum FbFolderType {
 	FT_FOLDER = 1,
 	FT_RATING,
