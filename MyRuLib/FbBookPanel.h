@@ -9,6 +9,7 @@
 #include "FbBookTypes.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
+#include "FbMasterInfo.h"
 
 class FbMasterData;
 
@@ -26,10 +27,10 @@ class FbBookPanel: public wxSplitterWindow
 		bool IsOrderDesc();
 		void RevertOrder();
 		wxString GetOrderSQL();
-		void SetMasterData(FbMasterData const * master);
-		FbMasterData const * GetMasterData() const { return m_master; };
 		void Localize();
 		wxString GetSelected();
+		const FbMasterInfo & GetInfo() const 
+			{ return m_master; };
 	public:
 		FbTreeViewCtrl * m_BookList;
 		int GetSelectedBook();
@@ -59,7 +60,7 @@ class FbBookPanel: public wxSplitterWindow
 		wxTreeItemId m_SequenceItem;
 		int m_selected;
 		int m_KeyView;
-		FbMasterData * m_master;
+		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
 	private:
 		void OnAuthorInfo(wxCommandEvent& event);

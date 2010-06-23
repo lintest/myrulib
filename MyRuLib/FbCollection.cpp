@@ -2,7 +2,7 @@
 #include "MyRuLibApp.h"
 #include "FbConst.h"
 #include "FbGenres.h"
-#include "FbMasterData.h"
+#include "FbDateTime.h"
 
 //-----------------------------------------------------------------------------
 //  FbCacheBook
@@ -52,7 +52,7 @@ wxString FbCacheBook::GetValue(size_t field)
 		case BF_RATE: return m_rate ? GetRatingText(m_rate) : wxString();
 		case BF_LANG: return m_lang;
 		case BF_TYPE: return m_type;
-		case BF_DATE: return FbMasterDate::GetDate(m_date).FormatDate();
+		case BF_DATE: return FbDateTime(m_date).FormatDate();
 		case BF_SIZE: return FbCollection::Format(m_size / 1024);
 		case BF_BITE: return FbCollection::Format(m_size);
 		case BF_SEQN: return m_seqn;

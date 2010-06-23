@@ -7,7 +7,6 @@
 #include "ExternalDlg.h"
 #include "FbMainMenu.h"
 #include "FbUpdateThread.h"
-#include "FbMasterList.h"
 #include "FbWindow.h"
 #include "FbParams.h"
 #include "FbSequenDlg.h"

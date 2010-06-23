@@ -1,16 +1,5 @@
 #include "FbGenres.h"
-
-//-----------------------------------------------------------------------------
-//  FbGenreParentData
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbGenreParentData, FbParentData)
-
-//-----------------------------------------------------------------------------
-//  FbGenreChildData
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbGenreChildData, FbChildData)
+#include "FbGenrTree.h"
 
 //-----------------------------------------------------------------------------
 //  FbGenres
@@ -211,11 +200,11 @@ void FbGenres::Do(ID id, const void * value, void * result)
 			FbTreeModel * model = (FbTreeModel*) result;
 			FbParentData * root = new FbParentData(*model, NULL);
 			for (size_t i=0; i<folder_count; i++) {
-				FbGenreParentData * parent = new FbGenreParentData(*model, root, folder_list[i].name);
+				FbGenrParentData * parent = new FbGenrParentData(*model, root, folder_list[i].name);
 				for (size_t j=0; j<genres_count; j++) {
 					if (genres_list[j].hi == folder_list[i].hi) {
 						wxString code = genres_list[j].hi; code << genres_list[j].lo;
-						new FbGenreChildData(*model, parent, code, genres_list[j].name);
+						new FbGenrChildData(*model, parent, code, genres_list[j].name);
 					}
 				}
 			}

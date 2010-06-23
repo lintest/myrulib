@@ -3,14 +3,14 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
-#include "FbMasterData.h"
+#include "FbMasterInfo.h"
 
 WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
 WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
 
-FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
-	: m_id(id)
+FbBookMenu::FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder)
+	: m_id(book)
 {
 	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
 /*
@@ -21,8 +21,8 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 		Append(ID_DOWNLOAD_BOOK, _("Download a file"));
 	}
 */
-	if ( id>0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
-	if ( id>0 ) Append(ID_BOOK_PAGE, _("Online books page"));
+	if ( book > 0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
+	if ( book > 0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
@@ -38,13 +38,13 @@ FbBookMenu::FbBookMenu(int id, const FbMasterData &data, bool bShowOrder)
 	Append(ID_FILTER_NOT, _("Clear filter"));
 	AppendSeparator();
 
-	Append(wxID_ANY, _("Jump to author"), new FbMenuAuthors(m_id));
+	Append(wxID_ANY, _("Jump to author"), new FbMenuAuthors(book));
 	Append(wxID_ANY, _("Jump to series"), NULL);
 	AppendSeparator();
 
 
 //	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Add to favourites"));
-	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(data));
+	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(master));
 	Append(wxID_ANY, _("Rate this book"), new FbMenuRating);
 //	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
 	AppendSeparator();
@@ -89,7 +89,7 @@ void FbMenuAuthors::Connect(wxWindow * frame, wxObjectEventFunction func)
 
 FbMenuFolderArray FbMenuFolders::sm_folders;
 
-FbMenuFolders::FbMenuFolders(const FbMasterData &data)
+FbMenuFolders::FbMenuFolders(const FbMasterInfo &master)
 {
 	LoadFolders();
 	for (size_t i=0; i<sm_folders.Count(); i++) {

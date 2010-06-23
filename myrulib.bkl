@@ -174,12 +174,14 @@
 		<sources>MyRuLib/FbDatabase.cpp</sources>
 		<sources>MyRuLib/FbDataOpenDlg.cpp</sources>
 		<sources>MyRuLib/FbDataPath.cpp</sources>
+		<sources>MyRuLib/FbDateTime.cpp</sources>
 		<sources>MyRuLib/FbDateTree.cpp</sources>
 		<sources>MyRuLib/FbEditBook.cpp</sources>
 		<sources>MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFilterDlg.cpp</sources>
 		<sources>MyRuLib/FbFilterObj.cpp</sources>
+		<sources>MyRuLib/FbFldrTree.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameDate.cpp</sources>
@@ -191,6 +193,7 @@
 		<sources>MyRuLib/FbFrameSearch.cpp</sources>
 		<sources>MyRuLib/FbFrameSequen.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
+		<sources>MyRuLib/FbGenrTree.cpp</sources>
 		<sources>MyRuLib/FbHtmlWindow.cpp</sources>
 		<sources>MyRuLib/FbImportThread.cpp</sources>
 		<sources>MyRuLib/FbLocale.cpp</sources>

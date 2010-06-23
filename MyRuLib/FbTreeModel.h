@@ -227,7 +227,6 @@ class FbModel: public wxObject
 		virtual void SingleCheck(size_t row = 0);
 		virtual void MultiplyCheck() {}
 
-		virtual size_t GetSelected(wxArrayInt &items) { return 0; }
 		virtual void SelectAll(bool value) {}
 
 		virtual FbModelItem GetCurrent()
@@ -236,6 +235,11 @@ class FbModel: public wxObject
 		void SetShift(bool select);
 		void InitCtrls();
 		void InvertCtrl();
+
+	public:
+		// Use this functions only for MyRuLib application
+		virtual size_t GetSelected(wxArrayInt &items) { return 0; }
+		virtual int GetBook() { return 0; }
 
 	protected:
 		const wxBitmap & GetBitmap(int state);

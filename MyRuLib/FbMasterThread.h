@@ -10,7 +10,7 @@ class FbCondition: public wxCondition
 	public:
 		FbCondition(): wxCondition(m_mutex) {}
 	private:
-		FbLockedMutex m_mutex;
+		wxMutex m_mutex;
 };
 
 class FbMasterThread : public FbThread

@@ -9,7 +9,6 @@
 #include "FbEditBook.h"
 #include "ZipReader.h"
 #include "FbHtmlWindow.h"
-#include "FbMasterData.h"
 #include "FbMasterThread.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"
@@ -48,7 +47,7 @@ END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_master(NULL), m_thread(new FbMasterThread(this))
+		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_thread(new FbMasterThread(this))
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
@@ -249,8 +248,7 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	if (!m_master) return;
-	int id = GetSelectedBook();
-	FbBookMenu menu(id, *m_master, GetListMode()==FB2_MODE_LIST);
+	FbBookMenu menu(m_master, GetSelectedBook(), GetListMode()==FB2_MODE_LIST);
 	FbMenuFolders::Connect(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
 	FbMenuAuthors::Connect(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
 	PopupMenu(&menu, pos.x, pos.y);
@@ -489,12 +487,6 @@ FbViewMode FbBookPanel::GetViewMode()
 	return FB2_VIEW_NOTHING;
 }
 
-void FbBookPanel::SetMasterData(FbMasterData const * master)
-{
-	wxDELETE(m_master);
-	if (master) m_master = master->Clone(); else return;
-}
-
 void FbBookPanel::OnLinkClicked(wxHtmlLinkEvent& event)
 {
 	wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
@@ -502,7 +494,7 @@ void FbBookPanel::OnLinkClicked(wxHtmlLinkEvent& event)
 
 void FbBookPanel::OnListModel( FbArrayEvent& event )
 {
-	if (m_master && m_master->GetIndex() == event.GetInt()) {
+	if (m_master.GetIndex() == event.GetInt()) {
 		FbBookListModel * model = new FbBookListModel(event.GetArray());
 		m_BookList->AssignModel(model);
 	}
@@ -510,7 +502,7 @@ void FbBookPanel::OnListModel( FbArrayEvent& event )
 
 void FbBookPanel::OnListArray( FbArrayEvent& event )
 {
-	if (m_master && m_master->GetIndex() == event.GetInt()) {
+	if (m_master.GetIndex() == event.GetInt()) {
 		FbBookListModel * model = wxDynamicCast(m_BookList->GetModel(), FbBookListModel);
 		if (model) model->Append(event.GetArray());
 		m_BookList->Refresh();
@@ -519,7 +511,7 @@ void FbBookPanel::OnListArray( FbArrayEvent& event )
 
 void FbBookPanel::OnTreeModel( FbModelEvent& event )
 {
-	if (m_master && m_master->GetIndex() == event.GetInt()) {
+	if (m_master.GetIndex() == event.GetInt()) {
 		m_BookList->AssignModel(event.GetModel());
 	} else {
 		delete event.GetModel();
@@ -528,16 +520,14 @@ void FbBookPanel::OnTreeModel( FbModelEvent& event )
 
 void FbBookPanel::Reset(FbModelItem item)
 {
-	wxDELETE(m_master);
-	m_master = FbMasterData::Create(item);
+	m_master = item.GetInfo();
 
 	m_BookInfo->SetPage(wxEmptyString);
 	if (m_master) {
 		m_BookList->AssignModel(NULL);
-		FbMasterInfo info = m_master->GetInfo();
-		info.SetOrder(m_BookList->GetSortedColumn());
-		info.SetMode(GetListMode());
-		m_thread->Reset(info);
+		m_master.SetOrder(m_BookList->GetSortedColumn());
+		m_master.SetMode(GetListMode());
+		m_thread->Reset(m_master);
 	} else {
 		m_BookList->AssignModel(new FbListStore);
 	}

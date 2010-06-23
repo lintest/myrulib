@@ -2,27 +2,16 @@
 #include "FbBookList.h"
 #include "FbBookTree.h"
 #include "FbBookPanel.h"
+#include "FbAuthList.h"
+#include "FbSeqnList.h"
+#include "FbGenrTree.h"
 #include "FbConst.h"
-
-//-----------------------------------------------------------------------------
-//  FbMasterInfo
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbMasterInfo, wxObject)
-
-FbMasterInfo FbModelData::GetInfo() const
-{
-	return NULL;
-}
-
-FbMasterInfo FbModelItem::GetInfo() const
-{
-	return m_data ? m_data->GetInfo() : FbMasterInfo();
-}
 
 //-----------------------------------------------------------------------------
 //  FbMasterInfoPtr
 //-----------------------------------------------------------------------------
+
+int FbMasterInfoPtr::sm_counter = 0;
 
 IMPLEMENT_CLASS(FbMasterInfoPtr, wxObject)
 
@@ -209,12 +198,56 @@ wxString FbMasterInfoPtr::FormatTreeSQL(const wxString &sql, const wxString &con
 }
 
 //-----------------------------------------------------------------------------
-//  FbMasterAuthorInfo
+//  FbMasterInfo
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbMasterAuthorInfo, FbMasterInfoPtr)
+IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
-wxString FbMasterAuthorInfo::GetOrderTable() const
+FbMasterInfo & FbMasterInfo::operator =(const FbMasterInfo &info)
+{ 
+	wxDELETE(m_data); 
+	if (info.m_data) m_data = info.m_data->Clone(); 
+	return *this; 
+}
+
+FbMasterInfo FbModelData::GetInfo() const
+{
+	return NULL;
+}
+
+FbMasterInfo FbModelItem::GetInfo() const
+{
+	return m_data ? m_data->GetInfo() : FbMasterInfo();
+}
+
+//-----------------------------------------------------------------------------
+//  FbMasterDateInfo
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfoPtr)
+
+wxString FbMasterDateInfo::GetWhere(wxSQLite3Database &database) const
+{
+	return wxT("books.created=?");
+}
+
+void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
+{
+	stmt.Bind(1, m_id);
+}
+
+//-----------------------------------------------------------------------------
+//  FbMasterAuthInfo
+//-----------------------------------------------------------------------------
+
+FbMasterInfo FbAuthListData::GetInfo() const
+{
+	return new FbMasterAuthInfo(this->GetCode());
+}
+
+IMPLEMENT_CLASS(FbMasterAuthInfo, FbMasterInfoPtr)
+
+wxString FbMasterAuthInfo::GetOrderTable() const
 {
 	if (GetOrderIndex() == BF_AUTH)
 		return wxT("LEFT JOIN books AS b ON b.id=books.id LEFT JOIN authors ON b.id_author = authors.id");
@@ -222,22 +255,22 @@ wxString FbMasterAuthorInfo::GetOrderTable() const
 		return FbMasterInfoPtr::GetOrderTable();
 }
 
-wxString FbMasterAuthorInfo::GetWhere(wxSQLite3Database &database) const
+wxString FbMasterAuthInfo::GetWhere(wxSQLite3Database &database) const
 {
 	return wxT("books.id_author=?");
 }
 
-wxString FbMasterAuthorInfo::GetTreeSQL(wxSQLite3Database &database) const
+wxString FbMasterAuthInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
 	return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
 }
 
-void FbMasterAuthorInfo::Bind(wxSQLite3Statement &stmt) const
+void FbMasterAuthInfo::Bind(wxSQLite3Statement &stmt) const
 {
 	stmt.Bind(1, m_id);
 }
 
-void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
+void FbMasterAuthInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
 	FbBookTreeModel * model = new FbBookTreeModel;
 	FbAuthParentData * root = new FbAuthParentData(*model, NULL, m_id);
@@ -269,24 +302,13 @@ void FbMasterAuthorInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLi
 }
 
 //-----------------------------------------------------------------------------
-//  FbMasterDateInfo
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfoPtr)
-
-wxString FbMasterDateInfo::GetWhere(wxSQLite3Database &database) const
-{
-	return wxT("books.created=?");
-}
-
-void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
-{
-	stmt.Bind(1, m_id);
-}
-
-//-----------------------------------------------------------------------------
 //  FbMasterSeqnInfo
 //-----------------------------------------------------------------------------
+
+FbMasterInfo FbSeqnListData::GetInfo() const
+{
+	return new FbMasterSeqnInfo(this->GetCode());
+}
 
 IMPLEMENT_CLASS(FbMasterSeqnInfo, FbMasterInfoPtr)
 
@@ -313,6 +335,11 @@ void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
 //-----------------------------------------------------------------------------
 //  FbMasterGenrInfo
 //-----------------------------------------------------------------------------
+
+FbMasterInfo FbGenrChildData::GetInfo() const
+{
+	return new FbMasterGenrInfo(this->GetCode());
+}
 
 IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfoPtr)
 

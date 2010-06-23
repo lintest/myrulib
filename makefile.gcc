@@ -110,12 +110,14 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbDatabase.o \
 	build\myrulib_FbDataOpenDlg.o \
 	build\myrulib_FbDataPath.o \
+	build\myrulib_FbDateTime.o \
 	build\myrulib_FbDateTree.o \
 	build\myrulib_FbEditBook.o \
 	build\myrulib_FbExtractInfo.o \
 	build\myrulib_FbDownloader.o \
 	build\myrulib_FbFilterDlg.o \
 	build\myrulib_FbFilterObj.o \
+	build\myrulib_FbFldrTree.o \
 	build\myrulib_FbFrameAuthor.o \
 	build\myrulib_FbFrameBase.o \
 	build\myrulib_FbFrameDate.o \
@@ -127,6 +129,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbFrameSearch.o \
 	build\myrulib_FbFrameSequen.o \
 	build\myrulib_FbGenres.o \
+	build\myrulib_FbGenrTree.o \
 	build\myrulib_FbHtmlWindow.o \
 	build\myrulib_FbImportThread.o \
 	build\myrulib_FbLocale.o \
@@ -420,6 +423,9 @@ build\myrulib_FbDataOpenDlg.o: ./MyRuLib/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
 build\myrulib_FbDataPath.o: ./MyRuLib/FbDataPath.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build\myrulib_FbDateTime.o: ./MyRuLib/FbDateTime.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build\myrulib_FbDateTree.o: ./MyRuLib/FbDateTree.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -436,6 +442,9 @@ build\myrulib_FbFilterDlg.o: ./MyRuLib/FbFilterDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFilterObj.o: ./MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbFldrTree.o: ./MyRuLib/FbFldrTree.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFrameAuthor.o: ./MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
@@ -469,6 +478,9 @@ build\myrulib_FbFrameSequen.o: ./MyRuLib/FbFrameSequen.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbGenres.o: ./MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbGenrTree.o: ./MyRuLib/FbGenrTree.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbHtmlWindow.o: ./MyRuLib/FbHtmlWindow.cpp $(MYRULIB_ODEP)

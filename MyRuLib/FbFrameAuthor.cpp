@@ -10,7 +10,6 @@
 #include "FbAuthorDlg.h"
 #include "FbReplaceDlg.h"
 #include "FbUpdateThread.h"
-#include "FbMasterList.h"
 
 IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
 

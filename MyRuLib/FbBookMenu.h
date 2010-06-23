@@ -6,7 +6,7 @@
 #include <wx/arrimpl.cpp>
 #include "FbTreeModel.h"
 
-class FbMasterData;
+class FbMasterInfo;
 
 class FbMenuFolderItem
 {
@@ -30,8 +30,7 @@ WX_DECLARE_OBJARRAY(FbMenuAuthorItem, FbMenuAuthorArray);
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(int id, const FbMasterData &data, bool bShowOrder);
-		FbBookMenu(const FbModelItem &master, const FbModelItem &book, bool bShowOrder);
+		FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder);
 	private:
 		int m_id;
 };
@@ -57,7 +56,7 @@ class FbMenuFolders: public wxMenu
 		static int GetFolder(const int id);
 		static void Connect(wxWindow * frame, wxObjectEventFunction func);
 	public:
-		FbMenuFolders(const FbMasterData &data);
+		FbMenuFolders(const FbMasterInfo &master);
 	private:
 		static FbMenuFolderArray sm_folders;
 };

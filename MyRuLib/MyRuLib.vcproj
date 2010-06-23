@@ -179,7 +179,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Файлы исходного кода"
+			Name="Sources"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
@@ -208,10 +208,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbAuthorThread.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbBookData.cpp"
 				>
 			</File>
@@ -237,10 +233,6 @@
 			</File>
 			<File
 				RelativePath=".\FbBookTree.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbCalendar.cpp"
 				>
 			</File>
 			<File
@@ -280,6 +272,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbDateTime.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbDateTree.cpp"
 				>
 			</File>
@@ -301,6 +297,10 @@
 			</File>
 			<File
 				RelativePath=".\FbFilterObj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbFldrTree.cpp"
 				>
 			</File>
 			<File
@@ -348,6 +348,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbGenrTree.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbHtmlWindow.cpp"
 				>
 			</File>
@@ -372,15 +376,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterData.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbMasterInfo.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbMasterList.cpp"
 				>
 			</File>
 			<File
@@ -489,7 +485,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Заголовочные файлы"
+			Name="Headers"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
@@ -515,10 +511,6 @@
 			</File>
 			<File
 				RelativePath=".\FbAuthorDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbAuthorThread.h"
 				>
 			</File>
 			<File
@@ -551,10 +543,6 @@
 			</File>
 			<File
 				RelativePath=".\FbBookTypes.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbCalendar.h"
 				>
 			</File>
 			<File
@@ -598,6 +586,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbDateTime.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbDateTree.h"
 				>
 			</File>
@@ -619,6 +611,10 @@
 			</File>
 			<File
 				RelativePath=".\FbFilterObj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbFldrTree.h"
 				>
 			</File>
 			<File
@@ -666,6 +662,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbGenrTree.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbHtmlWindow.h"
 				>
 			</File>
@@ -694,15 +694,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterData.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FbMasterInfo.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbMasterList.h"
 				>
 			</File>
 			<File
@@ -811,7 +803,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Файлы ресурсов"
+			Name="WinRes"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>

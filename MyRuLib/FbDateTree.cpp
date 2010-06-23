@@ -2,7 +2,7 @@
 #include "FbCollection.h"
 #include "FbBookEvent.h"
 #include "FbConst.h"
-#include "FbMasterData.h"
+#include "FbDateTime.h"
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ wxString FbDateYearData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case 0:
-			return FbMasterDate::GetDate(m_code * 10000 + 101).Format(wxT("%Y"));
+			return FbDateTime(m_code, 1, 1).Format(wxT("%Y"));
 		default:
 			return wxEmptyString;
 	}
@@ -64,7 +64,7 @@ wxString FbDateMonthData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case 0:
-			return FbMasterDate::GetDate(m_code * 100 + 1).Format(wxT("%B %Y"));
+			return FbDateTime(m_code / 100, m_code % 100, 1).Format(wxT("%B %Y"));
 		default:
 			return wxEmptyString;
 	}
@@ -80,7 +80,7 @@ wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case 0:
-			return FbMasterDate::GetDate(m_code).FormatDate();
+			return FbDateTime(m_code).FormatDate();
 		case 1:
 			return Format(m_count);
 		default:

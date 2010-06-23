@@ -2,7 +2,6 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
-#include "FbMasterData.h"
 
 BEGIN_EVENT_TABLE( FbReplaceDlg, wxDialog )
 	EVT_TEXT_ENTER( ID_FIND_TXT, FbReplaceDlg::OnFindEnter )
@@ -52,10 +51,10 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 
 	bSizerMain->Add( fgSizerGrid, 0, wxEXPAND, 5 );
 
-	m_FindList = new FbMasterList(this, ID_FIND_LIST, wxTR_HIDE_ROOT | wxTR_NO_LINES | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxSUNKEN_BORDER);
+	m_FindList = new FbTreeViewCtrl(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	bSizerMain->Add( m_FindList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
-	m_FindList->AddColumn(_("Author"), 40, wxALIGN_LEFT);
-	m_FindList->AddColumn(_("Num."), 10, wxALIGN_RIGHT);
+	m_FindList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);
+	m_FindList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -119,8 +118,11 @@ int FbReplaceDlg::DoUpdate()
 
 wxString FbReplaceDlg::GetFullName()
 {
+/*
 	wxTreeItemId selected = m_FindList->GetSelection();
 	return selected.IsOk() ? m_FindList->GetItemText(selected) : (wxString)wxEmptyString;
+*/
+	return wxEmptyString;
 }
 
 int FbReplaceDlg::Execute(int author, wxString& newname)

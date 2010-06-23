@@ -3,30 +3,9 @@
 #include "FbBookMenu.h"
 #include "FbMainMenu.h"
 #include "FbConst.h"
+#include "FbFldrTree.h"
 #include "FbDatabase.h"
 #include "FbDownloader.h"
-
-IMPLEMENT_CLASS(FbFolderParentData, FbParentData)
-
-IMPLEMENT_CLASS(FbFolderChildData, FbChildData)
-
-//-----------------------------------------------------------------------------
-//  FbCommChildData
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbCommChildData, FbChildData)
-
-FbCommChildData::FbCommChildData(FbModel & model, FbParentData * parent)
-	: FbChildData(model, parent), m_name(_("Comments")) {}
-
-//-----------------------------------------------------------------------------
-//  FbRateChildData
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbRateChildData, FbChildData)
-
-FbRateChildData::FbRateChildData(FbModel & model, FbParentData * parent, int code)
-	: FbChildData(model, parent), m_code(code), m_name(GetRatingText(code)) {}
 
 //-----------------------------------------------------------------------------
 //  FbFrameFolder
@@ -65,8 +44,7 @@ void FbFrameFolder::CreateControls()
 	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
 
-	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	CreateBooksPanel(splitter, substyle);
+	CreateBooksPanel(splitter, 0);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	FillFolders();
@@ -101,7 +79,7 @@ void FbFrameFolder::FillFolders(const int current)
 
 	FbParentData * root = new FbParentData(*model);
 	m_folders = new FbFolderParentData(*model, root, _("Bookmarks"));
-	new FbFolderChildData(*model, m_folders, 0, _("Favorites"), FT_FOLDER);
+	new FbFolderChildData(*model, m_folders, 0, _("Favorites"));
 	model->SetRoot(root);
 
 	try {
@@ -111,7 +89,7 @@ void FbFrameFolder::FillFolders(const int current)
 		while (result.NextRow()) {
 			int code = result.GetInt(0);
 			wxString name = result.GetString(1);
-			new FbFolderChildData(*model, m_folders, code, name, FT_FOLDER);
+			new FbFolderChildData(*model, m_folders, code, name);
 			if (code == current) model->FindRow(model->GetRowCount(), false);
 		}
 	} catch (wxSQLite3Exception & e) {
@@ -182,7 +160,7 @@ void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 		return;
 	}
 
-	new FbFolderChildData(*model, m_folders, id, name, FT_FOLDER);
+	new FbFolderChildData(*model, m_folders, id, name);
 	model->FindRow(m_folders->Count(*model) + 1, true);
 	wxTreeEvent treeEvent;
 	OnFolderSelected(treeEvent);

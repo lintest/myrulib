@@ -2,10 +2,9 @@
 #define __FBREPLACEDLG_H__
 
 #include "FbWindow.h"
-#include "FbTreeListCtrl.h"
+#include "FbTreeView.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
-#include "FbMasterList.h"
 
 class FbReplaceDlg : public FbDialog
 {
@@ -25,7 +24,7 @@ class FbReplaceDlg : public FbDialog
 		wxTextCtrl* m_Text;
 		wxTextCtrl* m_FindText;
 		wxBitmapButton* m_FindBtn;
-		FbMasterList* m_FindList;
+		FbTreeViewCtrl * m_FindList;
 	private:
 		void Init();
 		int GetSelected();

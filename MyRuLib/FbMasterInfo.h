@@ -9,8 +9,8 @@
 class FbMasterInfoPtr: public wxObject
 {
 	public:
-		FbMasterInfoPtr(int index)
-			: m_order(BF_NAME), m_mode(FB2_MODE_LIST), m_index(index) {}
+		FbMasterInfoPtr()
+			: m_order(BF_NAME), m_mode(FB2_MODE_LIST), m_index(++sm_counter) {}
 		FbMasterInfoPtr(const FbMasterInfoPtr & info)
 			: m_order(info.m_order), m_mode(info.m_mode), m_index(info.m_index) {}
 		virtual ~FbMasterInfoPtr()
@@ -44,6 +44,7 @@ class FbMasterInfoPtr: public wxObject
 		FbListMode GetMode() const
 			{ return m_mode; }
 	private:
+		static int sm_counter;
 		int m_order;
 		FbListMode m_mode;
 		int m_index;
@@ -59,8 +60,6 @@ class FbMasterInfo: public wxObject
 			: m_data(data) {}
 		FbMasterInfo(const FbMasterInfo &info)
 			: m_data(info ? info.m_data->Clone() : NULL) {}
-		FbMasterInfo & operator =(const FbMasterInfo &info)
-			{ wxDELETE(m_data); m_data = info ? info.m_data->Clone() : NULL; return *this; }
 		virtual ~FbMasterInfo()
 			{ wxDELETE(m_data); }
 		operator bool() const
@@ -73,20 +72,21 @@ class FbMasterInfo: public wxObject
 			{ if (m_data) m_data->SetOrder(order); }
 		void SetMode(FbListMode mode)
 			{ if (m_data) m_data->SetMode(mode); }
+		FbMasterInfo & operator =(const FbMasterInfo &info);
 	private:
 		FbMasterInfoPtr * m_data;
 		DECLARE_CLASS(FbMasterInfoPtr);
 };
 
-class FbMasterAuthorInfo: public FbMasterInfoPtr
+class FbMasterAuthInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterAuthorInfo(int index, int id)
-			: FbMasterInfoPtr(index), m_id(id) {}
-		FbMasterAuthorInfo(const FbMasterAuthorInfo &info)
+		FbMasterAuthInfo(int id)
+			: m_id(id) {}
+		FbMasterAuthInfo(const FbMasterAuthInfo &info)
 			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
-			{ return new FbMasterAuthorInfo(*this); }
+			{ return new FbMasterAuthInfo(*this); }
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
@@ -95,14 +95,14 @@ class FbMasterAuthorInfo: public FbMasterInfoPtr
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 	private:
 		int m_id;
-		DECLARE_CLASS(FbMasterAuthorInfo);
+		DECLARE_CLASS(FbMasterAuthInfo);
 };
 
 class FbMasterSeqnInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterSeqnInfo(int index, int id)
-			: FbMasterInfoPtr(index), m_id(id) {}
+		FbMasterSeqnInfo(int id)
+			: m_id(id) {}
 		FbMasterSeqnInfo(const FbMasterSeqnInfo &info)
 			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
@@ -120,8 +120,8 @@ class FbMasterSeqnInfo: public FbMasterInfoPtr
 class FbMasterGenrInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterGenrInfo(int index, const wxString &id)
-			: FbMasterInfoPtr(index), m_id(id) {}
+		FbMasterGenrInfo(const wxString &id)
+			: m_id(id) {}
 		FbMasterGenrInfo(const FbMasterGenrInfo &info)
 			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
@@ -137,8 +137,8 @@ class FbMasterGenrInfo: public FbMasterInfoPtr
 class FbMasterDownInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterDownInfo(int index, int id)
-			: FbMasterInfoPtr(index), m_id(id) {}
+		FbMasterDownInfo(int id)
+			: m_id(id) {}
 		FbMasterDownInfo(const FbMasterDownInfo &info)
 			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
@@ -154,8 +154,8 @@ class FbMasterDownInfo: public FbMasterInfoPtr
 class FbMasterDateInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterDateInfo(int index, int id)
-			: FbMasterInfoPtr(index), m_id(id) {}
+		FbMasterDateInfo(int id)
+			: m_id(id) {}
 		FbMasterDateInfo(const FbMasterDateInfo &info)
 			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
@@ -171,8 +171,8 @@ class FbMasterDateInfo: public FbMasterInfoPtr
 class FbMasterFldrInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterFldrInfo(int index, int id)
-			: FbMasterInfoPtr(index), m_id(id) {}
+		FbMasterFldrInfo(int id)
+			: m_id(id) {}
 		FbMasterFldrInfo(const FbMasterFldrInfo &info)
 			: FbMasterInfoPtr(info), m_id(info.m_id) {}
 		virtual FbMasterInfoPtr * Clone() const
@@ -188,8 +188,8 @@ class FbMasterFldrInfo: public FbMasterInfoPtr
 class FbMasterSearchInfo: public FbMasterInfoPtr
 {
 	public:
-		FbMasterSearchInfo(int index, const wxString &title, const wxString &author = wxEmptyString)
-			: FbMasterInfoPtr(index), m_title(title), m_author(author) {}
+		FbMasterSearchInfo(const wxString &title, const wxString &author = wxEmptyString)
+			: m_title(title), m_author(author) {}
 		FbMasterSearchInfo(const FbMasterSearchInfo &info)
 			: FbMasterInfoPtr(info), m_title(info.m_title), m_author(info.m_author) {}
 		virtual FbMasterInfoPtr * Clone() const

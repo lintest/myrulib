@@ -90,12 +90,14 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbDatabase.o \
 	myrulib_FbDataOpenDlg.o \
 	myrulib_FbDataPath.o \
+	myrulib_FbDateTime.o \
 	myrulib_FbDateTree.o \
 	myrulib_FbEditBook.o \
 	myrulib_FbExtractInfo.o \
 	myrulib_FbDownloader.o \
 	myrulib_FbFilterDlg.o \
 	myrulib_FbFilterObj.o \
+	myrulib_FbFldrTree.o \
 	myrulib_FbFrameAuthor.o \
 	myrulib_FbFrameBase.o \
 	myrulib_FbFrameDate.o \
@@ -107,6 +109,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbFrameSearch.o \
 	myrulib_FbFrameSequen.o \
 	myrulib_FbGenres.o \
+	myrulib_FbGenrTree.o \
 	myrulib_FbHtmlWindow.o \
 	myrulib_FbImportThread.o \
 	myrulib_FbLocale.o \
@@ -378,6 +381,9 @@ myrulib_FbDataOpenDlg.o: $(srcdir)/MyRuLib/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
 myrulib_FbDataPath.o: $(srcdir)/MyRuLib/FbDataPath.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDataPath.cpp
 
+myrulib_FbDateTime.o: $(srcdir)/MyRuLib/FbDateTime.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDateTime.cpp
+
 myrulib_FbDateTree.o: $(srcdir)/MyRuLib/FbDateTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDateTree.cpp
 
@@ -395,6 +401,9 @@ myrulib_FbFilterDlg.o: $(srcdir)/MyRuLib/FbFilterDlg.cpp $(MYRULIB_ODEP)
 
 myrulib_FbFilterObj.o: $(srcdir)/MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFilterObj.cpp
+
+myrulib_FbFldrTree.o: $(srcdir)/MyRuLib/FbFldrTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFldrTree.cpp
 
 myrulib_FbFrameAuthor.o: $(srcdir)/MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameAuthor.cpp
@@ -428,6 +437,9 @@ myrulib_FbFrameSequen.o: $(srcdir)/MyRuLib/FbFrameSequen.cpp $(MYRULIB_ODEP)
 
 myrulib_FbGenres.o: $(srcdir)/MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbGenres.cpp
+
+myrulib_FbGenrTree.o: $(srcdir)/MyRuLib/FbGenrTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbGenrTree.cpp
 
 myrulib_FbHtmlWindow.o: $(srcdir)/MyRuLib/FbHtmlWindow.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbHtmlWindow.cpp

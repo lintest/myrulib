@@ -4,12 +4,6 @@
 #include <wx/thread.h>
 #include <wx/object.h>
 
-class FbLockedMutex: public wxMutex
-{
-	public:
-		FbLockedMutex() { Lock(); }
-};
-
 class FbThread: public wxThread
 {
 	public:
