@@ -462,6 +462,22 @@ IMPLEMENT_CLASS(FbMasterSeqnInfo, FbMasterInfoBase)
 
 void FbMasterSeqnInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
 {
+	FbBookTreeModel * model = new FbBookTreeModel;
+	FbSeqnParentData * root = new FbSeqnParentData(*model, NULL, m_id);
+	FbAuthParentData * parent = NULL;
+
+	while (result.NextRow()) {
+		if (thread->IsClosed()) break;
+		int auth = result.GetInt(0);
+		if (parent == NULL || parent->GetCode() != auth) {
+			parent = new FbAuthParentData(*model, root, auth);
+		}
+		new FbBookChildData(*model, parent, result.GetInt(1), result.GetInt(2));
+	}
+	model->SetRoot(root);
+
+	if (thread->IsClosed()) delete model;
+	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
 }
 
 wxString FbMasterSeqnInfo::GetWhere(wxSQLite3Database &database) const
@@ -610,50 +626,6 @@ wxString FbMasterFindInfo::GetWhere(wxSQLite3Database &database) const
 		return sql;
 	}
 }
-
-/*
-wxString FbMasterFindInfo::GetListSQL(wxSQLite3Database &database) const
-{
-	bool auth = !m_author.IsEmpty();
-	wxString sql = wxT("SELECT DISTINCT books.id FROM books WHERE ");
-	sql << wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
-	if (auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
-	return sql << wxT("ORDER BY title");
-
-	bool full = FbSearchFunction::IsFullText(m_title) && FbSearchFunction::IsFullText(m_author);
-	bool auth = !m_author.IsEmpty();
-
-	if ( full && database.TableExists(wxT("fts_book")) ) {
-		switch (GetMode()) {
-			case FB2_MODE_LIST: {
-				wxString sql = wxT("SELECT DISTINCT books.id FROM books WHERE ");
-				sql << wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
-				if (auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
-				return sql << wxT("ORDER BY title");
-			} break;
-			case FB2_MODE_TREE: {
-				return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
-			} break;
-		}
-	} else {
-		case FB2_MODE_LIST: {
-			wxString sql = wxT("SELECT DISTINCT books.id FROM books WHERE ");
-			sql << wxT("SEARCH_T(books.title)");
-			if (auth) sql << wxT("AND SEARCH_A(authors.search_name)");
-			return sql << wxT("ORDER BY title");
-			FbSearchFunction sfTitle(m_title);
-			FbSearchFunction sfAuthor(m_author);
-			database.CreateFunction(wxT("SEARCH_T"), 1, sfTitle);
-			if (bUseAuthor) database.CreateFunction(wxT("SEARCH_A"), 1, sfAuthor);
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		} break;
-			case FB2_MODE_TREE: {
-				return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
-			} break;
-		}
-	}
-}
-*/
 
 void FbMasterFindInfo::Bind(wxSQLite3Statement &stmt) const
 {
