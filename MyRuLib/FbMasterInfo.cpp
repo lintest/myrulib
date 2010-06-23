@@ -4,6 +4,7 @@
 #include "FbBookEvent.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"
+#include "FbTreeView.h"
 
 //-----------------------------------------------------------------------------
 //  FbMasterInfoBase
@@ -216,5 +217,15 @@ FbMasterInfo FbModelData::GetInfo() const
 FbMasterInfo FbModelItem::GetInfo() const
 {
 	return m_data ? m_data->GetInfo() : FbMasterInfo();
+}
+
+FbMasterInfo FbTreeViewCtrl::GetInfo() const
+{
+	FbModel * model = GetModel();
+	if (model) {
+		FbModelItem item = model->GetCurrent();
+		if (item) return (&item)->GetInfo();
+	}
+	return NULL;
 }
 

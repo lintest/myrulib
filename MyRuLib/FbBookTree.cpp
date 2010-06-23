@@ -127,3 +127,9 @@ int FbBookTreeModel::GetBook()
 	FbBookChildData * book = wxDynamicCast(&item, FbBookChildData);
 	return book ? book->GetCode() : 0;
 }
+
+FbViewItem FbBookTreeModel::GetView()
+{
+	FbModelItem item = GetCurrent();
+	return item ? (&item)->GetView() : FbViewItem::None;
+}

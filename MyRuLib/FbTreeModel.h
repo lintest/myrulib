@@ -10,6 +10,28 @@ class FbMasterInfo;
 
 class FbModelData;
 
+class FbViewItem: public wxObject
+{
+	public:
+		enum Types {
+			None,
+			Auth,
+			Book,
+		};
+		FbViewItem(Types type = None, int code = 0)
+			: m_type(type), m_code(code) {}
+		FbViewItem(const FbViewItem & item)
+			: m_type(item.m_type), m_code(item.m_code) {}
+		Types GetType()
+			{ return m_type; }
+		int GetCode()
+			{ return m_code; }
+	private:
+		Types m_type;
+		int m_code;
+		DECLARE_CLASS(FbViewItem);
+};
+
 class FbModelData: public wxObject
 {
 	public:
@@ -47,6 +69,7 @@ class FbModelData: public wxObject
 		// Use this functions only for MyRuLib application
 		virtual FbMasterInfo GetInfo() const;
 		virtual int GetBook() const { return 0; }
+		virtual FbViewItem GetView() const { return FbViewItem::None; }
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -80,8 +103,7 @@ class FbModelItem: public wxObject
 		FbModelItem & operator =(const FbModelItem &item);
 	public:
 		// Use this functions only for MyRuLib application
-		virtual FbMasterInfo GetInfo() const;
-		virtual int GetBook() const { return 0; }
+		FbMasterInfo GetInfo() const;
 	public:
 		size_t Count()
 			{ return m_data ? m_data->Count(*m_model) : 0; }
@@ -240,6 +262,7 @@ class FbModel: public wxObject
 		// Use this functions only for MyRuLib application
 		virtual size_t GetSelected(wxArrayInt &items) { return 0; }
 		virtual int GetBook() { return 0; }
+		virtual FbViewItem GetView() { return FbViewItem::None; }
 
 	protected:
 		const wxBitmap & GetBitmap(int state);

@@ -23,7 +23,7 @@ class FbPreviewWindow: public FbHtmlWindow
 			const wxSize& size = wxDefaultSize,
 			long style = wxSUNKEN_BORDER
 		);
-		void Reset(const FbModelItem &item);
+		void Reset(const FbViewItem &item);
 	private:
 		FbThread * m_thread;
 		DECLARE_CLASS(FbPreviewWindow)

@@ -7,7 +7,6 @@
 #include <wx/log.h>
 
 #include "FbLogoBitmap.h"
-#include "FbMasterInfo.h"
 
 class FbTreeViewItem;
 
@@ -1313,7 +1312,7 @@ void FbTreeViewCtrl::EmptyColumns()
     if (m_header_win) m_header_win->EmptyColumns();
 }
 
-void FbTreeViewCtrl::SelectAll(bool value) 
+void FbTreeViewCtrl::SelectAll(bool value)
 {
 	FbModel * model = GetModel();
 	if (model) model->SelectAll(value);
@@ -1342,16 +1341,6 @@ void FbTreeViewCtrl::Delete()
 	if (model) model->Delete();
 	if (m_main_win) m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
 	Refresh();
-}
-
-FbMasterInfo FbTreeViewCtrl::GetInfo() const
-{
-	FbModel * model = GetModel();
-	if (model) {
-		FbModelItem item = model->GetCurrent();
-		if (item) return (&item)->GetInfo();
-	}
-	return NULL;
 }
 
 int FbTreeViewCtrl::GetBook() const

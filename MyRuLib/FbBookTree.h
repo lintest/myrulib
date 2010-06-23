@@ -18,6 +18,8 @@ class FbAuthParentData: public FbParentData
 			{ return true; }
 		virtual bool HiddenRoot() const
 			{ return false; }
+		virtual FbViewItem GetView() const
+			{ return FbViewItem(FbViewItem::Auth, m_code); }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetAuth(m_code, 0); }
 	public:
@@ -73,6 +75,8 @@ class FbBookChildData: public FbChildData
 			{ return m_code; }
 		virtual int GetBook() const
 			{ return m_code; }
+		virtual FbViewItem GetView() const
+			{ return FbViewItem(FbViewItem::Book, m_code); }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
@@ -92,6 +96,7 @@ class FbBookTreeModel: public FbTreeModel
 		FbBookTreeModel() {}
 		virtual size_t GetSelected(wxArrayInt &items);
 		virtual int GetBook();
+		virtual FbViewItem GetView();
 	private:
 		void GetChecked(FbModelItem &parent, wxArrayInt &items);
 		void GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items);
