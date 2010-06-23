@@ -10,6 +10,16 @@
 
 IMPLEMENT_CLASS(FbMasterInfo, wxObject)
 
+FbMasterInfo FbModelData::GetInfo() const
+{
+	return NULL;
+}
+
+FbMasterInfo FbModelItem::GetInfo() const
+{
+	return m_data ? m_data->GetInfo() : FbMasterInfo();
+}
+
 //-----------------------------------------------------------------------------
 //  FbMasterInfoPtr
 //-----------------------------------------------------------------------------

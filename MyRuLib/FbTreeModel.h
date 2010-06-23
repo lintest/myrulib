@@ -8,6 +8,8 @@ class FbModel;
 
 class FbModelData;
 
+class FbMasterInfo;
+
 class FbModelData: public wxObject
 {
 	public:
@@ -41,6 +43,7 @@ class FbModelData: public wxObject
 			{ return NULL; }
 		virtual int GetType() const
 			{ return 0; }
+		virtual FbMasterInfo GetInfo() const;
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -72,6 +75,7 @@ class FbModelItem: public wxObject
 		FbModelData * operator&() const
 			{ return m_data; }
 		FbModelItem & operator =(const FbModelItem &item);
+		FbMasterInfo GetInfo() const;
 	public:
 		size_t Count()
 			{ return m_data ? m_data->Count(*m_model) : 0; }

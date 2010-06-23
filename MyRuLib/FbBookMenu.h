@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/menu.h>
 #include <wx/arrimpl.cpp>
+#include "FbTreeModel.h"
 
 class FbMasterData;
 
@@ -30,6 +31,7 @@ class FbBookMenu: public wxMenu
 {
 	public:
 		FbBookMenu(int id, const FbMasterData &data, bool bShowOrder);
+		FbBookMenu(const FbModelItem &master, const FbModelItem &book, bool bShowOrder);
 	private:
 		int m_id;
 };
