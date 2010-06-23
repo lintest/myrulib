@@ -43,7 +43,10 @@ class FbModelData: public wxObject
 			{ return NULL; }
 		virtual int GetType() const
 			{ return 0; }
+	public:
+		// Use this functions only for MyRuLib application
 		virtual FbMasterInfo GetInfo() const;
+		virtual int GetBook() const { return 0; }
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
@@ -75,7 +78,10 @@ class FbModelItem: public wxObject
 		FbModelData * operator&() const
 			{ return m_data; }
 		FbModelItem & operator =(const FbModelItem &item);
-		FbMasterInfo GetInfo() const;
+	public:
+		// Use this functions only for MyRuLib application
+		virtual FbMasterInfo GetInfo() const;
+		virtual int GetBook() const { return 0; }
 	public:
 		size_t Count()
 			{ return m_data ? m_data->Count(*m_model) : 0; }
