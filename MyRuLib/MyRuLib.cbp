@@ -206,6 +206,8 @@
 		<Unit filename="FbCollection.h" />
 		<Unit filename="FbColumnDlg.cpp" />
 		<Unit filename="FbColumnDlg.h" />
+		<Unit filename="FbColumns.cpp" />
+		<Unit filename="FbColumns.h" />
 		<Unit filename="FbConfigDlg.cpp" />
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
