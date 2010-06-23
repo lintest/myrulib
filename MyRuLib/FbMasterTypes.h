@@ -1,0 +1,186 @@
+#ifndef __FBMASTERTYPES_H__
+#define __FBMASTERTYPES_H__
+
+#include "FbMasterInfo.h"
+
+class FbMasterAuthInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterAuthInfo(int id)
+			: m_id(id) {}
+		FbMasterAuthInfo(const FbMasterAuthInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterAuthInfo(*this); }
+		int GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetOrderTable() const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+	private:
+		int m_id;
+		DECLARE_CLASS(FbMasterAuthInfo);
+};
+
+class FbMasterSeqnInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterSeqnInfo(int id)
+			: m_id(id) {}
+		FbMasterSeqnInfo(const FbMasterSeqnInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterSeqnInfo(*this); }
+		int GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+	private:
+		int m_id;
+		DECLARE_CLASS(FbMasterSeqnInfo);
+};
+
+class FbMasterGenrInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterGenrInfo(const wxString &id)
+			: m_id(id) {}
+		FbMasterGenrInfo(const FbMasterGenrInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterGenrInfo(*this); }
+		wxString GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		const wxString m_id;
+		DECLARE_CLASS(FbMasterGenrInfo);
+};
+
+class FbMasterDownInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterDownInfo(int id)
+			: m_id(id) {}
+		FbMasterDownInfo(const FbMasterDownInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterDownInfo(*this); }
+		int GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		int m_id;
+		DECLARE_CLASS(FbMasterDownInfo);
+};
+
+class FbMasterDateInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterDateInfo(int id, int lib_min, int lib_max, int usr_min, int usr_max)
+			: m_id(id), m_lib_min(lib_min), m_lib_max(lib_max), m_usr_min(usr_min), m_usr_max(usr_max) {}
+		FbMasterDateInfo(const FbMasterDateInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id), m_lib_min(info.m_lib_min), m_lib_max(info.m_lib_max), m_usr_min(info.m_usr_min), m_usr_max(info.m_usr_max) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterDateInfo(*this); }
+		int GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		int m_id;
+		int m_lib_min;
+		int m_lib_max;
+		int m_usr_min;
+		int m_usr_max;
+		DECLARE_CLASS(FbMasterDateInfo);
+};
+
+class FbMasterFldrInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterFldrInfo(int id)
+			: m_id(id) {}
+		FbMasterFldrInfo(const FbMasterFldrInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterFldrInfo(*this); }
+		int GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		int m_id;
+		DECLARE_CLASS(FbMasterFldrInfo);
+};
+
+class FbMasterCommInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterCommInfo()
+			{}
+		FbMasterCommInfo(const FbMasterCommInfo &info)
+			: FbMasterInfoBase(info) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterCommInfo(*this); }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		DECLARE_CLASS(FbMasterCommInfo);
+};
+
+class FbMasterRateInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterRateInfo(int id)
+			: m_id(id) {}
+		FbMasterRateInfo(const FbMasterRateInfo &info)
+			: FbMasterInfoBase(info), m_id(info.m_id) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterRateInfo(*this); }
+		int GetId() const
+			{ return m_id; }
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		int m_id;
+		DECLARE_CLASS(FbMasterRateInfo);
+};
+
+class FbMasterFindInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterFindInfo(const wxString &title, const wxString &author = wxEmptyString)
+			: m_title(title), m_author(author) {}
+		FbMasterFindInfo(const FbMasterFindInfo &info)
+			: FbMasterInfoBase(info), m_title(info.m_title), m_author(info.m_author) {}
+		virtual FbMasterInfoBase * Clone() const
+			{ return new FbMasterFindInfo(*this); }
+	protected:
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
+		virtual wxString GetOrderTable() const;
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		wxString m_title;
+		wxString m_author;
+		bool m_full;
+		bool m_auth;
+		DECLARE_CLASS(FbMasterFindInfo);
+};
+
+#endif // __FBMASTERTYPES_H__

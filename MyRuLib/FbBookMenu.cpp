@@ -4,6 +4,7 @@
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
 #include "FbMasterInfo.h"
+#include "FbMasterTypes.h"
 
 WX_DEFINE_OBJARRAY(FbMenuFolderArray);
 
@@ -13,14 +14,15 @@ FbBookMenu::FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder)
 	: m_id(book)
 {
 	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
-/*
-	if (data.GetType() == FT_DOWNLOAD) {
+
+	FbMasterDownInfo * down = wxDynamicCast(&master, FbMasterDownInfo);
+	if (down) {
 		Append(ID_DELETE_DOWNLOAD, _("Delete download query"));
-		if ( data.GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
+		if ( down->GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
 	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Download a file"));
 	}
-*/
+
 	if ( book > 0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
 	if ( book > 0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
@@ -42,11 +44,12 @@ FbBookMenu::FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder)
 	Append(wxID_ANY, _("Jump to series"), NULL);
 	AppendSeparator();
 
-
-//	if (data.GetType() != FT_FOLDER || data.GetId()) Append(ID_FAVORITES_ADD, _("Add to favourites"));
-	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(master));
+	FbMasterFldrInfo * fldr = wxDynamicCast(&master, FbMasterFldrInfo);
+	int folder = fldr ? fldr->GetId() : 0;
+	if (!fldr || folder) Append(ID_FAVORITES_ADD, _("Add to favourites"));
+	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(folder));
 	Append(wxID_ANY, _("Rate this book"), new FbMenuRating);
-//	if (data.GetType() == FT_FOLDER) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
+	if (fldr) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
 	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
@@ -89,13 +92,12 @@ void FbMenuAuthors::Connect(wxWindow * frame, wxObjectEventFunction func)
 
 FbMenuFolderArray FbMenuFolders::sm_folders;
 
-FbMenuFolders::FbMenuFolders(const FbMasterInfo &master)
+FbMenuFolders::FbMenuFolders(int folder)
 {
 	LoadFolders();
 	for (size_t i=0; i<sm_folders.Count(); i++) {
-		int id = sm_folders[i].id;
-//		if (data.GetType() == FT_FOLDER && sm_folders[i].folder == data.GetId()) continue;
-		Append(id, sm_folders[i].name);
+		if (folder == sm_folders[i].folder) continue;
+		Append(sm_folders[i].id, sm_folders[i].name);
 	}
 }
 

@@ -56,7 +56,7 @@ class FbMenuFolders: public wxMenu
 		static int GetFolder(const int id);
 		static void Connect(wxWindow * frame, wxObjectEventFunction func);
 	public:
-		FbMenuFolders(const FbMasterInfo &master);
+		FbMenuFolders(int folder);
 	private:
 		static FbMenuFolderArray sm_folders;
 };

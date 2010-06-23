@@ -4,6 +4,7 @@
 #include "FbConst.h"
 #include "FbMainMenu.h"
 #include "FbDatabase.h"
+#include "FbMasterTypes.h"
 
 //-----------------------------------------------------------------------------
 //  FbFrameSearch

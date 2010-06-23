@@ -119,6 +119,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbMainMenu.o \
 	myrulib_FbMasterInfo.o \
 	myrulib_FbMasterThread.o \
+	myrulib_FbMasterTypes.o \
 	myrulib_FbMenu.o \
 	myrulib_FbNotebook.o \
 	myrulib_FbParams.o \
@@ -468,6 +469,9 @@ myrulib_FbMasterInfo.o: $(srcdir)/MyRuLib/FbMasterInfo.cpp $(MYRULIB_ODEP)
 
 myrulib_FbMasterThread.o: $(srcdir)/MyRuLib/FbMasterThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterThread.cpp
+
+myrulib_FbMasterTypes.o: $(srcdir)/MyRuLib/FbMasterTypes.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterTypes.cpp
 
 myrulib_FbMenu.o: $(srcdir)/MyRuLib/FbMenu.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMenu.cpp

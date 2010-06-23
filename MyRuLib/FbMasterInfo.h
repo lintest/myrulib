@@ -64,6 +64,8 @@ class FbMasterInfo: public wxObject
 			{ wxDELETE(m_data); }
 		operator bool() const
 			{ return m_data != NULL; }
+		FbMasterInfoBase * operator &() const
+			{ return m_data; }
 		int GetIndex() const
 			{ return m_data ? m_data->GetIndex() : 0; }
 		void * Execute(wxEvtHandler * owner, FbThread * thread)
@@ -76,28 +78,6 @@ class FbMasterInfo: public wxObject
 	private:
 		FbMasterInfoBase * m_data;
 		DECLARE_CLASS(FbMasterInfo);
-};
-
-class FbMasterFindInfo: public FbMasterInfoBase
-{
-	public:
-		FbMasterFindInfo(const wxString &title, const wxString &author = wxEmptyString)
-			: m_title(title), m_author(author) {}
-		FbMasterFindInfo(const FbMasterFindInfo &info)
-			: FbMasterInfoBase(info), m_title(info.m_title), m_author(info.m_author) {}
-		virtual FbMasterInfoBase * Clone() const
-			{ return new FbMasterFindInfo(*this); }
-	protected:
-		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
-		virtual wxString GetOrderTable() const;
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
-	private:
-		wxString m_title;
-		wxString m_author;
-		bool m_full;
-		bool m_auth;
-		DECLARE_CLASS(FbMasterFindInfo);
 };
 
 #endif // __FBMASTERINFO_H__
