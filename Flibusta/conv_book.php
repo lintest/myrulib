@@ -103,14 +103,16 @@ function convert_genres($mysql_db, $sqlite_db)
   $sqlite_db->query("begin transaction;");
   $sqlite_db->query("DELETE FROM genres");
 
-  $sqltext = "SELECT DISTINCT libgenre.BookId, GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId";
+  $sqltext = "SELECT DISTINCT libgenre.BookId, GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId ORDER BY GenreCode";
   $query = $mysql_db->query($sqltext);
   while ($row = $query->fetch_array()) {
-    echo $row['BookId']." - ".$row['GenreCode']."\n";
     $genre = GenreCode($row['GenreCode']);
-    $sql = "INSERT INTO genres(id_book, id_genre) VALUES(?,?)";
-    $insert = $sqlite_db->prepare($sql);
-    $err = $insert->execute(array($row['BookId'], $genre));
+    echo $row['GenreCode']." - ".$row['BookId']." - ".$genre."\n";
+	if (!empty($genre)) {
+		$sql = "INSERT INTO genres(id_book, id_genre) VALUES(?,?)";
+		$insert = $sqlite_db->prepare($sql);
+		$err = $insert->execute(array($row['BookId'], $genre));
+	}
   }
   $sqlite_db->query("commit;");
 }
@@ -161,8 +163,32 @@ function convert_books($mysql_db, $sqlite_db)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  $sqlite_db->query("commit;");
+}  
 
-  $sqlite_db->query("CREATE INDEX book_id ON books(id);");
+function convert_dates($mysql_db, $sqlite_db)
+{
+  $sqlite_db->query("begin transaction;");
+
+  $sqlite_db->query("DELETE FROM dates");
+
+  $sqltest = "
+    SELECT DATE_FORMAT(libbook.Time,'%y%m%d') as Time, MAX(libbook.BookId) as Max, MIN(libbook.BookId) as Min
+    FROM libbook 
+	GROUP BY DATE_FORMAT(libbook.Time,'%y%m%d')
+  ";
+
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+	echo $row['Time']." - ".$row['Max']." - ".$row['Min']."\n";
+    $sql = "INSERT INTO dates (id, lib_max, lib_min) VALUES(?,?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $err= $insert->execute(array($row['Time'], $row['Max'], $row['Min']));
+    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    $insert->closeCursor();
+  }
+  $sqlite_db->query("commit;");
 }  
 
 function convert_aliases($mysql_db, $sqlite_db)
@@ -307,7 +333,9 @@ function create_tables($sqlite_db)
   $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
   
   $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2));");
-
+  
+  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_max integer, lib_min integer, usr_max integer, usr_min integer);");
+  
   $sqlite_db->query("commit;");
 }
 
@@ -358,6 +386,7 @@ create_tables($sqlite_db);
 convert_genres($mysql_db, $sqlite_db);
 convert_authors($mysql_db, $sqlite_db);
 convert_books($mysql_db, $sqlite_db);
+convert_dates($mysql_db, $sqlite_db);
 convert_seqnames($mysql_db, $sqlite_db);
 convert_sequences($mysql_db, $sqlite_db);
 create_indexes($sqlite_db);
