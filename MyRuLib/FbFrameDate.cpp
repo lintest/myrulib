@@ -13,8 +13,7 @@
 
 BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameDate::OnBooksCount)
-	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameDate::OnModel)
-	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameDate::OnArray)
+	EVT_FB_MODEL(ID_MODEL_CREATE, FbFrameDate::OnModel)
 END_EVENT_TABLE()
 
 FbFrameDate::FbFrameDate(wxAuiMDIParentFrame * parent)
@@ -64,41 +63,7 @@ void FbFrameDate::OnBooksCount(wxCommandEvent& event)
 */
 }
 
-void FbFrameDate::OnModel( FbArrayEvent& event )
+void FbFrameDate::OnModel( FbModelEvent& event )
 {
-	FbTreeModel * model = new FbTreeModel();
-	model->SetRoot(new FbParentData(*model));
-	AppendAttay(*model, event.GetArray());
-	m_MasterList->AssignModel(model);
-}
-
-void FbFrameDate::OnArray( FbArrayEvent& event )
-{
-	FbTreeModel * model = wxDynamicCast(m_MasterList->GetModel(), FbTreeModel);
-	if (model) AppendAttay(*model, event.GetArray());
-	m_MasterList->Refresh();
-}
-
-void FbFrameDate::AppendAttay(FbTreeModel &model, const wxArrayInt &items)
-{
-	FbModelItem item = model.GetRoot();
-	FbParentData * root = wxDynamicCast(&item, FbParentData);
-	if (root == NULL) return;
-
-	size_t count = items.Count();
-	if (count == 0) return;
-
-	int month = 0;
-	FbParentData * parent_year = new FbDateYearData(model, root, items[0] / 10000);
-	FbParentData * parent_month = NULL;
-	for (size_t i = 0; i < count; ) {
-		int day = items[i++];
-		int count = items[i++];
-		int new_month = day / 100;
-		if (month != new_month) {
-			parent_month = new FbDateMonthData(model, parent_year, new_month);
-			month = new_month;
-		}
-		new FbDateDayData(model, parent_month, day, count);
-	}
+	m_MasterList->AssignModel(event.GetModel());
 }

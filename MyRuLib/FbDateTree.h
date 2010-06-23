@@ -1,6 +1,7 @@
 #ifndef __FBDATETREE_H__
 #define __FBDATETREE_H__
 
+#include <wx/wxsqlite3.h>
 #include "FbTreeModel.h"
 #include "FbDatabase.h"
 #include "FbCollection.h"
@@ -24,6 +25,7 @@ class FbDateYearData: public FbParentData
 		FbDateYearData(FbModel & model, FbParentData * parent, int code)
 			: FbParentData(model, parent), m_code(code) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
+		int GetCode() const { return m_code; }
 	private:
 		int m_code;
 		DECLARE_CLASS(FbDateMonthData);
@@ -35,6 +37,7 @@ class FbDateMonthData: public FbParentData
 		FbDateMonthData(FbModel & model, FbParentData * parent, int code)
 			: FbParentData(model, parent), m_code(code) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
+		int GetCode() const { return m_code; }
 	private:
 		int m_code;
 		DECLARE_CLASS(FbDateMonthData);
@@ -43,14 +46,18 @@ class FbDateMonthData: public FbParentData
 class FbDateDayData: public FbChildData
 {
 	public:
-		FbDateDayData(FbModel & model, FbParentData * parent, int code, int count)
-			: FbChildData(model, parent), m_code(code), m_count(count) {}
+		FbDateDayData(FbModel & model, FbParentData * parent, int code, wxSQLite3ResultSet &result);
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
 		FbMasterInfo GetInfo() const;
 	private:
 		int m_code;
-		int m_count;
+		int m_lib_min;
+		int m_lib_max;
+		int m_lib_num;
+		int m_usr_min;
+		int m_usr_max;
+		int m_usr_num;
 		DECLARE_CLASS(FbDateDayData);
 };
 

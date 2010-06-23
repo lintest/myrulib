@@ -86,10 +86,10 @@ class FbMasterDownInfo: public FbMasterInfoBase
 class FbMasterDateInfo: public FbMasterInfoBase
 {
 	public:
-		FbMasterDateInfo(int id)
-			: m_id(id) {}
+		FbMasterDateInfo(int id, int lib_min, int lib_max, int usr_min, int usr_max)
+			: m_id(id), m_lib_min(lib_min), m_lib_max(lib_max), m_usr_min(usr_min), m_usr_max(usr_max) {}
 		FbMasterDateInfo(const FbMasterDateInfo &info)
-			: FbMasterInfoBase(info), m_id(info.m_id) {}
+			: FbMasterInfoBase(info), m_id(info.m_id), m_lib_min(info.m_lib_min), m_lib_max(info.m_lib_max), m_usr_min(info.m_usr_min), m_usr_max(info.m_usr_max) {}
 		virtual FbMasterInfoBase * Clone() const
 			{ return new FbMasterDateInfo(*this); }
 	protected:
@@ -97,6 +97,10 @@ class FbMasterDateInfo: public FbMasterInfoBase
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
 		int m_id;
+		int m_lib_min;
+		int m_lib_max;
+		int m_usr_min;
+		int m_usr_max;
 		DECLARE_CLASS(FbMasterDateInfo);
 };
 
@@ -369,19 +373,23 @@ FbMasterInfo FbModelItem::GetInfo() const
 
 FbMasterInfo FbDateDayData::GetInfo() const
 {
-	return new FbMasterDateInfo(this->GetCode());
+	return new FbMasterDateInfo(this->GetCode(), m_lib_min, m_lib_max, m_usr_min, m_usr_max);
 }
 
 IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfoBase)
 
 wxString FbMasterDateInfo::GetWhere(wxSQLite3Database &database) const
 {
-	return wxT("books.created=?");
+	return wxT("((books.id BETWEEN ? AND ?)OR(books.id BETWEEN ? AND ?))AND(books.created=?)");
 }
 
 void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
 {
-	stmt.Bind(1, m_id);
+	stmt.Bind(1, m_lib_min);
+	stmt.Bind(2, m_lib_max);
+	stmt.Bind(3, m_usr_min);
+	stmt.Bind(4, m_usr_max);
+	stmt.Bind(5, m_id);
 }
 
 //-----------------------------------------------------------------------------

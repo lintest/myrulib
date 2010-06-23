@@ -103,7 +103,13 @@ function convert_genres($mysql_db, $sqlite_db)
   $sqlite_db->query("begin transaction;");
   $sqlite_db->query("DELETE FROM genres");
 
-  $sqltext = "SELECT DISTINCT libgenre.BookId, GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId ORDER BY GenreCode";
+  $sqltext = "
+	SELECT DISTINCT libgenre.BookId, GenreCode 
+	FROM libgenre 
+		LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId 
+		INNER JOIN libbook ON libbook.BookId=libgenre.BookId AND libbook.Deleted<>1 
+	ORDER BY GenreCode
+  ";
   $query = $mysql_db->query($sqltext);
   while ($row = $query->fetch_array()) {
     $genre = GenreCode($row['GenreCode']);
@@ -173,18 +179,19 @@ function convert_dates($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM dates");
 
   $sqltest = "
-    SELECT DATE_FORMAT(libbook.Time,'%y%m%d') as Time, MAX(libbook.BookId) as Max, MIN(libbook.BookId) as Min
+    SELECT DATE_FORMAT(Time,'%y%m%d') as Time, MAX(BookId) as Max, MIN(BookId) as Min, COUNT(BookId) AS Num
     FROM libbook 
+	WHERE Deleted<>1
 	GROUP BY DATE_FORMAT(libbook.Time,'%y%m%d')
   ";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
 	echo $row['Time']." - ".$row['Max']." - ".$row['Min']."\n";
-    $sql = "INSERT INTO dates (id, lib_max, lib_min) VALUES(?,?,?)";
+    $sql = "INSERT INTO dates (id, lib_max, lib_min, lib_num) VALUES(?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['Time'], $row['Max'], $row['Min']));
+    $err= $insert->execute(array($row['Time'], $row['Max'], $row['Min'], $row['Num']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -334,7 +341,7 @@ function create_tables($sqlite_db)
   
   $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2));");
   
-  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_max integer, lib_min integer, usr_max integer, usr_min integer);");
+  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
   
   $sqlite_db->query("commit;");
 }
@@ -350,7 +357,6 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX book_author ON books(id_author);");
   $sqlite_db->query("CREATE INDEX book_archive ON books(id_archive);");
   $sqlite_db->query("CREATE INDEX book_md5sum ON books(md5sum);");
-  $sqlite_db->query("CREATE INDEX book_created ON books(created);");
 
   $sqlite_db->query("CREATE INDEX book_file ON archives(file_name);");
 

@@ -10,29 +10,34 @@
 
 void * FbDateTreeThread::Entry()
 {
-	wxWindowID id = ID_MODEL_CREATE;
+	FbTreeModel * model = new FbTreeModel();
+	FbParentData * root = new FbParentData(*model);
+	model->SetRoot(root);
+
 	try {
 		FbCommonDatabase database;
-		wxString sql = wxT("SELECT DISTINCT created, COUNT(DISTINCT id) FROM books GROUP BY created ORDER BY created DESC");
+		wxString sql = wxT("SELECT id, lib_min, lib_max, lib_num, usr_min, usr_max, usr_num FROM dates ORDER BY id DESC");
 		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		int year = 0;
-		wxArrayInt items;
+
+		FbDateYearData * year = NULL;
+		FbDateMonthData * mnth = NULL;
 		while (result.NextRow()) {
 			int day = result.GetInt(0);
 			int new_year = day / 10000;
-			if (year == 0) year = new_year;
-			if (year != new_year) {
-				FbArrayEvent(id, items).Post(m_frame);
-				id = ID_MODEL_APPEND;
-				items.Empty();
-				year = new_year;
+			int new_mnth = day / 100 % 100;
+			if (year == NULL || year->GetCode() != new_year) {
+				year = new FbDateYearData(*model, root, new_year);
+				mnth = NULL;
 			}
-			items.Add(day);
-			items.Add(result.GetInt(1));
+			if (mnth == NULL || mnth->GetCode() != new_mnth) {
+				mnth = new FbDateMonthData(*model, year, new_mnth);
+			}
+			new FbDateDayData(*model, mnth, day, result);
 		}
-		FbArrayEvent(id, items).Post(m_frame);
+		FbModelEvent(ID_MODEL_CREATE, model).Post(m_frame);
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
+		delete model;
 	}
 	return NULL;
 }
@@ -81,9 +86,20 @@ wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 		case 0:
 			return FbDateTime(m_code).FormatDate();
 		case 1:
-			return Format(m_count);
+			return Format(m_lib_num + m_usr_num);
 		default:
 			return wxEmptyString;
 	}
 }
 
+FbDateDayData::FbDateDayData(FbModel & model, FbParentData * parent, int code, wxSQLite3ResultSet &result)
+	: FbChildData(model, parent), 
+		m_code(code),
+		m_lib_min(result.GetInt(1)),
+		m_lib_max(result.GetInt(2)),
+		m_lib_num(result.GetInt(3)),
+		m_usr_min(result.GetInt(4)),
+		m_usr_max(result.GetInt(5)),
+		m_usr_num(result.GetInt(6))
+{
+}
