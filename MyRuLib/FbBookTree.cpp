@@ -121,3 +121,9 @@ void FbBookTreeModel::GetSelected(FbModelItem &parent, size_t max, size_t &row, 
 	}
 }
 
+int FbBookTreeModel::GetBook()
+{
+	FbModelItem item = GetCurrent();
+	FbBookChildData * book = wxDynamicCast(&item, FbBookChildData);
+	return book ? book->GetCode() : 0;
+}

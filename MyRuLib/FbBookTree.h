@@ -71,6 +71,8 @@ class FbBookChildData: public FbChildData
 			: FbChildData(model, parent), m_code(code), m_numb(numb), m_state(0) {}
 		int GetCode() const
 			{ return m_code; }
+		virtual int GetBook() const
+			{ return m_code; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
@@ -89,6 +91,7 @@ class FbBookTreeModel: public FbTreeModel
 	public:
 		FbBookTreeModel() {}
 		virtual size_t GetSelected(wxArrayInt &items);
+		virtual int GetBook();
 	private:
 		void GetChecked(FbModelItem &parent, wxArrayInt &items);
 		void GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items);

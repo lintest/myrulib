@@ -6,12 +6,6 @@
 #include "FbDatabase.h"
 
 //-----------------------------------------------------------------------------
-//  FbBookFindData
-//-----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(FbBookFindData, FbModelData)
-
-//-----------------------------------------------------------------------------
 //  FbFrameSearch
 //-----------------------------------------------------------------------------
 
@@ -64,10 +58,9 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title,
 
 void FbFrameSearch::UpdateBooklist()
 {
-	FbBookFindData data(m_title, m_author);
-	FbListStore model;
-	FbModelItem item(model, &data);
-	m_BooksPanel->Reset(item);
+	FbMasterSearchInfo data(m_title, m_author);
+	FbMasterInfo info(&data);
+	m_BooksPanel->Reset(info);
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)

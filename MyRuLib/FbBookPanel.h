@@ -20,7 +20,7 @@ class FbBookPanel: public wxSplitterWindow
 	public:
 		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
 		virtual ~FbBookPanel();
-		void Reset(FbModelItem item);
+		void Reset(const FbMasterInfo &master);
 		void UpdateInfo(int id);
 		void SetOrderID(int id);
 		int GetOrderID();
@@ -33,7 +33,6 @@ class FbBookPanel: public wxSplitterWindow
 			{ return m_master; };
 	public:
 		FbTreeViewCtrl * m_BookList;
-		int GetSelectedBook();
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);

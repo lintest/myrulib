@@ -86,6 +86,11 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		void Replace(FbModelData * data);
 		void Delete();
 
+	public:
+		// Use this functions only for MyRuLib application
+		virtual FbMasterInfo GetInfo() const;
+		virtual int GetBook() const;
+
 	protected:
 		// header window, responsible for column visualization and manipulation
 		FbTreeViewHeaderWindow* m_header_win;

@@ -337,5 +337,5 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 
 void FbFrameBase::UpdateBooklist()
 {
-	if (m_MasterList) m_BooksPanel->Reset(m_MasterList->GetCurrent());
+	if (m_MasterList) m_BooksPanel->Reset(m_MasterList->GetInfo());
 }

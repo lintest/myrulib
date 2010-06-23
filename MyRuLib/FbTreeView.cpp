@@ -6,7 +6,8 @@
 #include <wx/dcbuffer.h>
 #include <wx/log.h>
 
-#include "../MyRuLib/FbLogoBitmap.h"
+#include "FbLogoBitmap.h"
+#include "FbMasterInfo.h"
 
 class FbTreeViewItem;
 
@@ -1342,3 +1343,20 @@ void FbTreeViewCtrl::Delete()
 	if (m_main_win) m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
 	Refresh();
 }
+
+FbMasterInfo FbTreeViewCtrl::GetInfo() const
+{
+	FbModel * model = GetModel();
+	if (model == NULL) return NULL;
+	FbModelItem item = model->GetCurrent();
+	return item ? (&item)->GetInfo() : NULL;
+}
+
+int FbTreeViewCtrl::GetBook() const
+{
+	FbModel * model = GetModel();
+	if (model == NULL) return 0;
+	FbModelItem item = model->GetCurrent();
+	return item ? (&item)->GetBook() : 0;
+}
+

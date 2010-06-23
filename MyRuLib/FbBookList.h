@@ -18,6 +18,8 @@ class FbBookListData: public FbModelData
 			{ return FbCollection::GetBook(m_code, col); }
 		virtual FbModelData * Clone() const
 			 { return new FbBookListData(m_code); }
+		virtual int GetBook() const
+			{ return m_code; }
 	protected:
 		virtual void DoSetState(FbModel & model, int state);
 		virtual int DoGetState(FbModel & model) const;
@@ -46,6 +48,7 @@ class FbBookListModel: public FbListModel
 		virtual void Replace(FbModelData * data) {}
 		virtual void Delete() {}
 		virtual void SelectAll(bool value);
+		virtual int GetBook();
 
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level);

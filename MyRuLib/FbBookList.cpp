@@ -110,3 +110,9 @@ size_t FbBookListModel::GetSelected(wxArrayInt &items)
 	return items.Count();
 }
 
+int FbBookListModel::GetBook()
+{
+	FbModelItem item = GetCurrent();
+	FbBookListData * book = wxDynamicCast(&item, FbBookListData);
+	return book ? book->GetCode() : 0;
+}

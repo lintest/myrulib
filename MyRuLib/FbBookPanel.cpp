@@ -187,42 +187,29 @@ void FbBookPanel::SetViewMode(int mode)
 
 	}
 
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id) FbBookData(id).Show(this, mode == FB2_VIEW_VERTICAL);
-}
-
-int FbBookPanel::GetSelectedBook()
-{
-	FbModelItem item = m_BookList->GetCurrent();
-	FbBookChildData * book = wxDynamicCast(&item, FbBookChildData);
-	if (book) {
-		return book->GetCode();
-	} else {
-		FbBookListData * book = wxDynamicCast(&item, FbBookListData);
-		if (book) return book->GetCode();
-	}
-	return 0;
 }
 
 void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 {
 	if (!IsSplit()) return;
 	m_BookInfo->SetPage(wxEmptyString);
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id) FbBookData(id).Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
 //	m_thread->Open(id);
 }
 
 void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 {
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id) FbBookData(id).Open();
 }
 
 void FbBookPanel::OnInfoUpdate(wxCommandEvent& event)
 {
 	if (!IsSplit()) return;
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id == event.GetInt()) {
 		m_BookInfo->SetPage(event.GetString());
 	}
@@ -248,7 +235,7 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	if (!m_master) return;
-	FbBookMenu menu(m_master, GetSelectedBook(), GetListMode()==FB2_MODE_LIST);
+	FbBookMenu menu(m_master, m_BookList->GetBook(), GetListMode()==FB2_MODE_LIST);
 	FbMenuFolders::Connect(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
 	FbMenuAuthors::Connect(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
 	PopupMenu(&menu, pos.x, pos.y);
@@ -266,7 +253,7 @@ void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 {
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id) FbBookData(id).Open();
 }
 
@@ -371,14 +358,14 @@ void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 
 void FbBookPanel::OnEditComments(wxCommandEvent & event)
 {
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id) new FbFrameHtml((wxAuiMDIParentFrame*)wxGetApp().GetTopWindow(), id);
 }
 
 void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 {
 	int author = FbMenuAuthors::GetAuthor(event.GetId());
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id) FbOpenEvent(ID_BOOK_AUTHOR, author, id).Post();
 }
 
@@ -390,7 +377,7 @@ void FbBookPanel::EmptyBooks(const int selected)
 
 void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 {
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id > 0) {
 		wxString url = FbInternetBook::GetURL(id);
 		wxLaunchDefaultBrowser(url);
@@ -399,7 +386,7 @@ void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
 
 void FbBookPanel::OnBookPage(wxCommandEvent & event)
 {
-	int id = GetSelectedBook();
+	int id = m_BookList->GetBook();
 	if (id > 0) {
 		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
 		wxString url = wxString::Format(wxT("http://%s/b/%d"), host.c_str(), id);
@@ -421,14 +408,14 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	if (refresh) m_BookInfo->SetPage(wxEmptyString);
 	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
 	if (refresh && IsSplit()) {
-		int id = GetSelectedBook();
+		int id = m_BookList->GetBook();
 		if (id) FbBookData(id).Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
 
 void FbBookPanel::UpdateInfo(int id)
 {
-	if (GetSelectedBook() == id) {
+	if (m_BookList->GetBook() == id) {
 		InfoCash::UpdateInfo(this, id, GetSplitMode() == wxSPLIT_VERTICAL);
 	}
 }
@@ -518,9 +505,9 @@ void FbBookPanel::OnTreeModel( FbModelEvent& event )
 	}
 }
 
-void FbBookPanel::Reset(FbModelItem item)
+void FbBookPanel::Reset(const FbMasterInfo &master)
 {
-	m_master = item.GetInfo();
+	m_master = master;
 
 	m_BookInfo->SetPage(wxEmptyString);
 	if (m_master) {
