@@ -230,17 +230,22 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
-	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
-	if (data == NULL || data->GetType() != type) return;
 
 	bool update = false;
 	switch (type) {
-		case FT_FOLDER:
-			update = data->GetCode() == folder;
-			break;
-		default:
-			update = true;
-			break;
+		case FT_FOLDER: {
+			FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
+			update = data && data->GetCode() == folder;
+		} break;
+		case FT_COMMENT: {
+			update = wxDynamicCast(&item, FbCommChildData);
+		} break;
+		case FT_RATING: {
+			update = wxDynamicCast(&item, FbRateChildData);
+		} break;
+		default: {
+			update = false;
+		} break;
 	}
 	if (update) UpdateBooklist();
 }
