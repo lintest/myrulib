@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
+#include "FbColumns.h"
 #include "FbBookTypes.h"
 
 class FbMasterInfoBase: public wxObject

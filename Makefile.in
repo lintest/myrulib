@@ -84,6 +84,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbCheckList.o \
 	myrulib_FbChoiceFormat.o \
 	myrulib_FbColumnDlg.o \
+	myrulib_FbColumns.o \
 	myrulib_FbCollection.o \
 	myrulib_FbConfigDlg.o \
 	myrulib_FbConst.o \
@@ -364,6 +365,9 @@ myrulib_FbChoiceFormat.o: $(srcdir)/MyRuLib/FbChoiceFormat.cpp $(MYRULIB_ODEP)
 
 myrulib_FbColumnDlg.o: $(srcdir)/MyRuLib/FbColumnDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbColumnDlg.cpp
+
+myrulib_FbColumns.o: $(srcdir)/MyRuLib/FbColumns.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbColumns.cpp
 
 myrulib_FbCollection.o: $(srcdir)/MyRuLib/FbCollection.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCollection.cpp

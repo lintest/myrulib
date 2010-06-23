@@ -168,6 +168,7 @@
 		<sources>MyRuLib/FbCheckList.cpp</sources>
 		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
+		<sources>MyRuLib/FbColumns.cpp</sources>
 		<sources>MyRuLib/FbCollection.cpp</sources>
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>

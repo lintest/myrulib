@@ -1,9 +1,9 @@
 #include "FbCollection.h"
+#include "FbColumns.h"
 #include "MyRuLibApp.h"
 #include "FbConst.h"
 #include "FbGenres.h"
 #include "FbDateTime.h"
-#include "FbBookTypes.h"
 
 //-----------------------------------------------------------------------------
 //  FbCacheBook
