@@ -12,15 +12,15 @@ class FbURI: public wxURI
 
 IMPLEMENT_CLASS(FbHtmlWindow, wxHtmlWindow)
 
-FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-	: wxHtmlWindow(parent, id, pos, size, style, name)
+FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
+	: wxHtmlWindow(parent, id, pos, size, style)
 {
 	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 }
 
-bool FbHtmlWindow::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+bool FbHtmlWindow::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
 {
-	bool ok = wxHtmlWindow::Create(parent, id, pos, size, style, name);
+	bool ok = wxHtmlWindow::Create(parent, id, pos, size, style);
 	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 	return ok;
 }

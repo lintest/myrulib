@@ -4,6 +4,14 @@
 #include <wx/thread.h>
 #include <wx/object.h>
 
+class FbCondition: public wxCondition
+{
+	public:
+		FbCondition(): wxCondition(m_mutex) {}
+	private:
+		wxMutex m_mutex;
+};
+
 class FbThread: public wxThread
 {
 	public:

@@ -123,6 +123,8 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbNotebook.o \
 	myrulib_FbParams.o \
 	myrulib_FbParamsDlg.o \
+	myrulib_FbPreviewThread.o \
+	myrulib_FbPreviewWindow.o \
 	myrulib_FbReplaceDlg.o \
 	myrulib_FbSeqnList.o \
 	myrulib_FbSequenDlg.o \
@@ -478,6 +480,12 @@ myrulib_FbParams.o: $(srcdir)/MyRuLib/FbParams.cpp $(MYRULIB_ODEP)
 
 myrulib_FbParamsDlg.o: $(srcdir)/MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbParamsDlg.cpp
+
+myrulib_FbPreviewThread.o: $(srcdir)/MyRuLib/FbPreviewThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbPreviewThread.cpp
+
+myrulib_FbPreviewWindow.o: $(srcdir)/MyRuLib/FbPreviewWindow.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbPreviewWindow.cpp
 
 myrulib_FbReplaceDlg.o: $(srcdir)/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbReplaceDlg.cpp

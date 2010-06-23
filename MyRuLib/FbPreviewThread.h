@@ -1,15 +1,15 @@
-#ifndef __FBMASTERTHREAD_H__
-#define __FBMASTERTHREAD_H__
+#ifndef __FBPREVIEWTHREAD_H__
+#define __FBPREVIEWTHREAD_H__
 
 #include <wx/event.h>
 #include "FbThread.h"
 #include "FbMasterInfo.h"
 
-class FbMasterThread : public FbThread
+class FbPreviewThread : public FbThread
 {
 	public:
-		FbMasterThread(wxEvtHandler * owner);
-		virtual ~FbMasterThread();
+		FbPreviewThread(wxEvtHandler * owner);
+		virtual ~FbPreviewThread();
 		void Reset(const FbMasterInfo &info);
 	    virtual void Close();
 	protected:
@@ -24,4 +24,4 @@ class FbMasterThread : public FbThread
 		bool m_exit;
 };
 
-#endif // __FBMASTERTHREAD_H__
+#endif // __FBPREVIEWTHREAD_H__

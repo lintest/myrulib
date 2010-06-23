@@ -207,6 +207,8 @@
 		<sources>MyRuLib/FbNotebook.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbParamsDlg.cpp</sources>
+		<sources>MyRuLib/FbPreviewThread.cpp</sources>
+		<sources>MyRuLib/FbPreviewWindow.cpp</sources>
 		<sources>MyRuLib/FbReplaceDlg.cpp</sources>
 		<sources>MyRuLib/FbSeqnList.cpp</sources>
 		<sources>MyRuLib/FbSequenDlg.cpp</sources>

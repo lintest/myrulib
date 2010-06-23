@@ -12,20 +12,19 @@ class FbHtmlWindow: public wxHtmlWindow
 			wxWindowID id = wxID_ANY,
 			const wxPoint& pos = wxDefaultPosition,
 			const wxSize& size = wxDefaultSize,
-			long style = wxSUNKEN_BORDER,
-			const wxString& name = wxT("fbhtmlvindow")
+			long style = wxSUNKEN_BORDER
 		);
 		bool Create(
 			wxWindow *parent,
 			wxWindowID id = wxID_ANY,
 			const wxPoint& pos = wxDefaultPosition,
 			const wxSize& size = wxDefaultSize,
-			long style = wxSUNKEN_BORDER,
-			const wxString& name = wxT("fbhtmlvindow")
+			long style = wxSUNKEN_BORDER
 		);
 		virtual bool SetPage(const wxString& source);
 	protected:
 		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
+	private:
 		DECLARE_CLASS(FbHtmlWindow)
 };
 
