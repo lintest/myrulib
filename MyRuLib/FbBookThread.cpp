@@ -1,7 +1,14 @@
 #include "FbBookThread.h"
+#include "FbBookEvent.h"
+#include "FbCollection.h"
+#include "FbDatabase.h"
 #include "InfoCash.h"
 
-void FbBookThread::UpdateInfo()
+//-----------------------------------------------------------------------------
+//  FbBookThreadBase
+//-----------------------------------------------------------------------------
+
+void FbBookThreadBase::UpdateInfo()
 {
 	if (!m_id) return;
 	wxThread *thread = new ShowThread(this);
@@ -10,7 +17,7 @@ void FbBookThread::UpdateInfo()
 
 //! Return specified string with the html special characters encoded.
 //! Similar to PHP's htmlspecialchars() function.
-wxString FbBookThread::HTMLSpecialChars( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
+wxString FbBookThreadBase::HTMLSpecialChars( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
 {
   wxString szToReturn = value;
   szToReturn.Replace(wxT("&"),wxT("&amp;"));
@@ -23,3 +30,48 @@ wxString FbBookThread::HTMLSpecialChars( const wxString &value, const bool bSing
   return szToReturn;
 }
 
+//-----------------------------------------------------------------------------
+//  FbBookThread
+//-----------------------------------------------------------------------------
+
+void * FbBookThread::Entry()
+{
+	try {
+		switch (m_view.GetType()) {
+			case FbViewItem::Book: OpenBook(); break;
+			case FbViewItem::Auth: OpenAuth(); break;
+			default: OpenNone(); 
+		}
+	} catch (wxSQLite3Exception & e) {
+		wxLogError(e.GetMessage());
+	}
+	return NULL;
+}
+
+void FbBookThread::OpenAuth()
+{
+	wxString sql = wxT("SELECT description FROM authors WHERE id=? AND description IS NOT NULL");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_view.GetCode());
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow()) {
+		FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_AUTH_PREVIEW, m_view.GetCode(), result.GetString(0)).Post(m_frame);
+	}
+}
+
+void FbBookThread::OpenBook()
+{
+	wxString sql = wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_view.GetCode());
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow()) {
+		FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_BOOK_PREVIEW, m_view.GetCode(), result.GetString(0)).Post(m_frame);
+	}
+}
+
+void FbBookThread::OpenNone()
+{
+}

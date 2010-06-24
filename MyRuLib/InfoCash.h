@@ -72,13 +72,13 @@ private:
 	static wxArrayString sm_noico;
 };
 
-class ShowThread: public FbBookThread
+class ShowThread: public FbBookThreadBase
 {
 	public:
 		ShowThread(wxEvtHandler *frame, int id, const bool bVertical, const bool bEditable)
-			: FbBookThread(frame, id, bVertical, bEditable) {};
-		ShowThread(FbBookThread * thread)
-			: FbBookThread(thread) {};
+			: FbBookThreadBase(frame, id, bVertical, bEditable) {};
+		ShowThread(FbBookThreadBase * thread)
+			: FbBookThreadBase(thread) {};
 	protected:
 		virtual void * Entry();
 	private:

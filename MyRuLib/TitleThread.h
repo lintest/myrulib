@@ -6,10 +6,10 @@
 #include "FbBookThread.h"
 #include "FbDatabase.h"
 
-class TitleThread : public FbBookThread
+class TitleThread : public FbBookThreadBase
 {
 public:
-	TitleThread (FbBookThread * thread): FbBookThread(thread) {};
+	TitleThread (FbBookThreadBase * thread): FbBookThreadBase(thread) {};
 	virtual void *Entry();
 private:
 	wxString GetBookInfo(FbDatabase &database);

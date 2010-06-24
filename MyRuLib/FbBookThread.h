@@ -3,13 +3,31 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
+#include "FbViewItem.h"
+#include "FbThread.h"
 
-class FbBookThread: public wxThread
+class FbBookThread: public FbThread
 {
 	public:
-		FbBookThread(wxEvtHandler *frame, int id, const bool bVertical, const bool bEditable)
+		FbBookThread(wxEvtHandler * frame, const FbViewItem &view)
+			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_view(view) {}
+	protected:
+		virtual void * Entry();
+	private:
+		void OpenAuth();
+		void OpenBook();
+		void OpenNone();
+	private:
+		wxEvtHandler * m_frame;
+		FbViewItem m_view;
+};
+
+class FbBookThreadBase: public wxThread
+{
+	public:
+		FbBookThreadBase(wxEvtHandler *frame, int id, const bool bVertical, const bool bEditable)
 			: m_frame(frame), m_id(id), m_vertical(bVertical), m_editable(bEditable) {};
-		FbBookThread(FbBookThread * thread)
+		FbBookThreadBase(FbBookThreadBase * thread)
 			: m_frame(thread->m_frame), m_id(thread->m_id), m_vertical(thread->m_vertical), m_editable(thread->m_editable) {};
 		void UpdateInfo();
 		static wxString HTMLSpecialChars(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);

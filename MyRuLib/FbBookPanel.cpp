@@ -14,7 +14,8 @@
 #include "FbBookTree.h"
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
-	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
+	EVT_MENU(ID_BOOK_PREVIEW, FbBookPanel::OnInfoUpdate)
+	EVT_MENU(ID_AUTH_PREVIEW, FbBookPanel::OnInfoUpdate)
 	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbBookPanel::OnAuthorInfo)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)

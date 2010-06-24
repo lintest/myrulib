@@ -8,10 +8,10 @@
 
 class InfoThread:
 	public ParsingContext,
-	public FbBookThread
+	public FbBookThreadBase
 {
 	public:
-		InfoThread(FbBookThread * thread): FbBookThread(thread), parsebody(false) {};
+		InfoThread(FbBookThreadBase * thread): FbBookThreadBase(thread), parsebody(false) {};
 		virtual void *Entry();
 		int GetId() { return m_id; };
 		void StartTag(wxString &name, const XML_Char **atts);
