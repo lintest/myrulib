@@ -6,7 +6,7 @@
 #include <wx/mimetype.h>
 #include "wx/base64.h"
 
-#include "InfoThread.h"
+#include "FbViewReader.h"
 #include "TitleThread.h"
 
 #include "res/ico_pdf.xpm"
@@ -76,7 +76,7 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 		wxMemoryDC memDC;
 		memDC.SetUserScale(scale, scale);
 		memDC.SelectObject(result);
-		memDC.Blit(0, 0, image.GetWidth(), image.GetHeight(), &srcDC, 0, 0, wxCOPY, true); 
+		memDC.Blit(0, 0, image.GetWidth(), image.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
 
 		wxMemoryFSHandler::AddFile(imagename, result, wxBITMAP_TYPE_PNG);
 	} else {
@@ -360,7 +360,7 @@ void * ShowThread::Entry()
 
 	if (html.IsEmpty()) {
 		(new TitleThread(this))->Execute();
-		(new InfoThread(this))->Execute();
+		(new FbViewReader(this))->Execute();
 	} else {
 		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOK_PREVIEW );
 		event.SetInt(m_id);

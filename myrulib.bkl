@@ -222,12 +222,12 @@
 		<sources>MyRuLib/FbViewContext.cpp</sources>
 		<sources>MyRuLib/FbViewData.cpp</sources>
 		<sources>MyRuLib/FbViewItem.cpp</sources>
+		<sources>MyRuLib/FbViewReader.cpp</sources>
 		<sources>MyRuLib/FbViewThread.cpp</sources>
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
 		<sources>MyRuLib/InfoCash.cpp</sources>
-		<sources>MyRuLib/InfoThread.cpp</sources>
 		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>

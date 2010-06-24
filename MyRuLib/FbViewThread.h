@@ -1,5 +1,5 @@
-#ifndef __FBBOOKTHREAD_H__
-#define __FBBOOKTHREAD_H__
+#ifndef __FBVIEWTHREAD_H__
+#define __FBVIEWTHREAD_H__
 
 #include <wx/wx.h>
 #include <wx/thread.h>
@@ -43,4 +43,4 @@ class FbBookThreadBase: public wxThread
 		bool m_editable;
 };
 
-#endif // __FBBOOKTHREAD_H__
+#endif // __FBVIEWTHREAD_H__

@@ -158,12 +158,12 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbViewContext.o \
 	build\myrulib_FbViewData.o \
 	build\myrulib_FbViewItem.o \
+	build\myrulib_FbViewReader.o \
 	build\myrulib_FbViewThread.o \
 	build\myrulib_FbViewerDlg.o \
 	build\myrulib_FbWindow.o \
 	build\myrulib_ImpContext.o \
 	build\myrulib_InfoCash.o \
-	build\myrulib_InfoThread.o \
 	build\myrulib_LimitedTextCtrl.o \
 	build\myrulib_MyRuLibApp.o \
 	build\myrulib_ParseCtx.o \
@@ -574,6 +574,9 @@ build\myrulib_FbViewData.o: ./MyRuLib/FbViewData.cpp $(MYRULIB_ODEP)
 build\myrulib_FbViewItem.o: ./MyRuLib/FbViewItem.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build\myrulib_FbViewReader.o: ./MyRuLib/FbViewReader.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build\myrulib_FbViewThread.o: ./MyRuLib/FbViewThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -587,9 +590,6 @@ build\myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build\myrulib_InfoThread.o: ./MyRuLib/InfoThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_LimitedTextCtrl.o: ./MyRuLib/LimitedTextCtrl.cpp $(MYRULIB_ODEP)

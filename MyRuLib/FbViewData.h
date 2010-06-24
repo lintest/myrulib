@@ -1,5 +1,5 @@
-#ifndef __FBBOOKINFO_H__
-#define __FBBOOKINFO_H__
+#ifndef __FBVIEWDATA_H__
+#define __FBVIEWDATA_H__
 
 #include <wx/wx.h>
 #include "FbViewContext.h"
@@ -36,4 +36,4 @@ class FbViewData: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbViewData, FbViewDataArray);
 
-#endif // __FBBOOKINFO_H__
+#endif // __FBVIEWDATA_H__
