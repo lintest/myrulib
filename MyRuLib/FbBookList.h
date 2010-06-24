@@ -18,6 +18,8 @@ class FbBookListData: public FbModelData
 			{ return FbCollection::GetBook(m_code, col); }
 		virtual FbModelData * Clone() const
 			 { return new FbBookListData(m_code); }
+		virtual FbViewItem GetView() const
+			{ return FbViewItem(FbViewItem::Book, m_code); }
 		virtual int GetBook() const
 			{ return m_code; }
 	protected:

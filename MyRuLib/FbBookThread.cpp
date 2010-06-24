@@ -75,9 +75,10 @@ void FbBookThread::OpenBook()
 	if (!descr.IsEmpty()) {
 		info.SetText(FbBookInfo::DSCR, descr);
 		FbCollection::AddInfo(new FbBookInfo(info));
-		wxString html = info.GetHTML(m_ctx, book);
-		SendHTML(ID_BOOK_PREVIEW, html);
 	}
+
+	html = info.GetHTML(m_ctx, book);
+	SendHTML(ID_BOOK_PREVIEW, html);
 }
 
 void FbBookThread::OpenNone()

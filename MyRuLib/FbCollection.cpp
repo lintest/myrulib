@@ -188,8 +188,7 @@ wxString FbCollection::GetBook(int code, size_t col)
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
 	if (collection == NULL) return wxEmptyString;
-	FbCacheBook * book = collection->GetCacheBook(code);
-	return book ? book->GetValue(col) : wxString();
+	return collection->GetCacheBook(code).GetValue(col);
 }
 
 FbCacheBook FbCollection::GetBookData(int code)
@@ -197,10 +196,7 @@ FbCacheBook FbCollection::GetBookData(int code)
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
 	if (collection == NULL) return 0;
-	FbCacheBook * book = collection->GetCacheBook(code);
-	if (book) 
-		return *book;
-	else return 0;
+	return collection->GetCacheBook(code);
 }
 
 wxString FbCollection::GetBookHTML(const FbViewContext &ctx, const FbCacheBook &book, int code)
@@ -212,12 +208,12 @@ wxString FbCollection::GetBookHTML(const FbViewContext &ctx, const FbCacheBook &
 	return info ? info->GetHTML(ctx, book) : wxString();
 }
 
-FbCacheBook * FbCollection::GetCacheBook(int code)
+FbCacheBook FbCollection::GetCacheBook(int code)
 {
 	size_t count = m_books.Count();
 	for (size_t i = 0; i < count; i++) {
 		FbCacheBook & book = m_books[i];
-		if (book.GetCode() == code) return &book;
+		if (book.GetCode() == code) return book;
 	}
 
 	wxString sql = wxT("\
@@ -236,11 +232,11 @@ FbCacheBook * FbCollection::GetCacheBook(int code)
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, code);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return AddBook(new FbCacheBook(code, result));
+		if (result.NextRow()) return *AddBook(new FbCacheBook(code, result));
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
-	return NULL;
+	return 0;
 }
 
 FbBookInfo * FbCollection::GetCacheInfo(int code)

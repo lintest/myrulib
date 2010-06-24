@@ -53,7 +53,7 @@ class FbCollection: public wxObject
 		FbCacheBook * AddBook(FbCacheBook * book);
 		void AddBook(FbBookInfo * info);
 		void ResetData(FbCasheDataArray &items, int code);
-		FbCacheBook * GetCacheBook(int code);
+		FbCacheBook GetCacheBook(int code);
 		FbBookInfo * GetCacheInfo(int code);
 	private:
 		static wxCriticalSection sm_section;

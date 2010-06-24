@@ -20,16 +20,16 @@ FbCacheBook::FbCacheBook(int code):
 }
 
 FbCacheBook::FbCacheBook(const FbCacheBook &book):
-	m_code(m_code),
-	m_name(m_name),
-	m_auth(m_auth),
-	m_genr(m_genr),
-	m_lang(m_lang),
-	m_type(m_type),
-	m_md5s(m_md5s),
-	m_rate(m_rate),
-	m_date(m_date),
-	m_size(m_size)
+	m_code(book.m_code),
+	m_name(book.m_name),
+	m_auth(book.m_auth),
+	m_genr(book.m_genr),
+	m_lang(book.m_lang),
+	m_type(book.m_type),
+	m_md5s(book.m_md5s),
+	m_rate(book.m_rate),
+	m_date(book.m_date),
+	m_size(book.m_size)
 {
 }
 

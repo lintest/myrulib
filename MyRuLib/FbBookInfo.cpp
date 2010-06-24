@@ -68,5 +68,5 @@ void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 
 wxString FbBookInfo::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const
 {
-	return wxEmptyString;
+	return wxT("book info");
 }

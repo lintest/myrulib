@@ -1,5 +1,5 @@
 #include "FbPreviewThread.h"
-#include "InfoCash.h"
+#include "FbBookThread.h"
 
 //-----------------------------------------------------------------------------
 //  FbPreviewThread
@@ -17,8 +17,8 @@ FbPreviewThread::~FbPreviewThread()
 	if (m_thread) {
 		m_thread->Close();
 		m_thread->Wait();
+		wxDELETE(m_thread);
 	}
-	wxDELETE(m_thread);
 }
 
 void FbPreviewThread::Close()
@@ -27,29 +27,32 @@ void FbPreviewThread::Close()
 	m_condition.Signal();
 }
 
-void FbPreviewThread::Reset(const FbViewItem &view)
+void FbPreviewThread::Reset(const FbViewContext &ctx, const FbViewItem &view)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	m_view = view;
+	m_ctx = ctx;
 	m_condition.Signal();
 }
 
-FbViewItem FbPreviewThread::GetView()
+FbViewItem FbPreviewThread::GetView(FbViewContext &ctx)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbViewItem result = m_view;
 	m_view = FbViewItem::None;
+	ctx = m_ctx;
 	return result;
 }
 
 void * FbPreviewThread::Entry()
 {
 	while (true) {
+		FbViewContext ctx;
 		FbViewItem view;
 		while (!view) {
 			if (IsClosed()) return NULL;
 			m_condition.Wait();
-			view = GetView();
+			view = GetView(ctx);
 		}
 		if (IsClosed()) return NULL;
 
@@ -58,8 +61,8 @@ void * FbPreviewThread::Entry()
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
-//		m_thread = new FbJoinedThread(m_owner, view);
-//		if (m_thread) m_thread->Execute();
+		m_thread = new FbBookThread(m_owner, ctx, view);
+		if (m_thread) m_thread->Execute();
 	}
 	return NULL;
 }
