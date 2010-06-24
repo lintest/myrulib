@@ -57,9 +57,11 @@ void FbViewThread::OpenBook()
 
 	FbViewData * info = new FbViewData(id);
 	{
+		wxString filetype = m_book.GetValue(BF_TYPE);
 		FbCommonDatabase database;
 		info->SetText(FbViewData::DSCR, GetDescr(database));
 		info->SetText(FbViewData::FILE, GetFiles(database));
+		info->SetText(FbViewData::ICON, FbCollection::GetIcon(filetype));
 		SendHTML(*info);
 	}
 

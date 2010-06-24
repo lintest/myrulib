@@ -141,7 +141,7 @@ wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) 
 {
 
 	wxString html = wxT("<table width=100%><tr>");
-	wxString icon = FbCollection::GetIcon(ctx.filetype);
+	wxString icon = GetText(ICON);
 	if (icon.IsEmpty()) {
 		html << wxString::Format(wxT("<td>%s</td>"), GetTitle(book).c_str());
 	} else {

@@ -9,13 +9,12 @@ class FbViewContext: public wxObject
 		FbViewContext()
 			: vertical(false), editable(false) {}
 		FbViewContext(const FbViewContext &ctx)
-			: vertical(ctx.vertical), editable(ctx.editable), filetype(ctx.filetype) {}
+			: vertical(ctx.vertical), editable(ctx.editable) {}
 		FbViewContext & operator =(const FbViewContext &ctx)
-			{ vertical = ctx.vertical; editable = ctx.editable; filetype = ctx.filetype; return *this; }
+			{ vertical = ctx.vertical; editable = ctx.editable; return *this; }
 	public:
 		bool vertical;
 		bool editable;
-		wxString filetype;
 	private:
 		DECLARE_CLASS(FbViewContext)
 };

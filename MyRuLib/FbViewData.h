@@ -14,6 +14,7 @@ class FbViewData: public wxObject
 			ANNT = 0,
 			DSCR,
 			ISBN,
+			ICON,
 			FILE,
 		};
 	public:
@@ -32,7 +33,7 @@ class FbViewData: public wxObject
 		static wxString HTML(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	public:
 		int m_id;
-		wxString m_text[4];
+		wxString m_text[FILE + 1];
 		wxArrayString m_images;
 };
 
