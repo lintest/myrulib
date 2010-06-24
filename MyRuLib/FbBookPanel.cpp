@@ -13,8 +13,9 @@
 #include "FbBookList.h"
 #include "FbBookTree.h"
 
+IMPLEMENT_CLASS(FbBookPanel, wxSplitterWindow)
+
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
-	EVT_MENU(ID_BOOKINFO_UPDATE, FbBookPanel::OnInfoUpdate)
 	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbBookPanel::OnAuthorInfo)
 	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
 	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
@@ -54,7 +55,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 
 	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
 	m_BookList = new FbTreeViewCtrl(this, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, substyle);
-	m_BookInfo = new FbHtmlWindow(this, ID_BOOKS_INFO_PANEL);
+	m_BookInfo = new FbPreviewWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 
 	int mode = FbParams::GetValue(keyType);
 	if (mode == FB2_VIEW_NOTHING) {
@@ -184,35 +185,31 @@ void FbBookPanel::SetViewMode(int mode)
 		case FB2_VIEW_NOTHING: return;
 		case FB2_VIEW_VERTICAL: SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2); break;
 		default: SplitHorizontally(m_BookList, m_BookInfo, GetSize().GetHeight()/2);
-
 	}
+	ResetPreview();
+}
 
-	int id = m_BookList->GetBook();
-	if (id) FbBookData(id).Show(this, mode == FB2_VIEW_VERTICAL);
+void FbBookPanel::ResetPreview()
+{
+	m_BookInfo->SetPage(wxEmptyString);
+	if (!IsSplit()) return;
+
+	FbViewContext ctx;
+	FbModelItem item = m_BookList->GetCurrent();
+	if (item) 
+		m_BookInfo->Reset(ctx, (&item)->GetView());
+	else m_BookInfo->Reset(ctx, FbViewItem());
 }
 
 void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 {
-	if (!IsSplit()) return;
-	m_BookInfo->SetPage(wxEmptyString);
-	int id = m_BookList->GetBook();
-	if (id) FbBookData(id).Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
-//	m_thread->Open(id);
+	ResetPreview();
 }
 
 void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 {
 	int id = m_BookList->GetBook();
 	if (id) FbBookData(id).Open();
-}
-
-void FbBookPanel::OnInfoUpdate(wxCommandEvent& event)
-{
-	if (!IsSplit()) return;
-	int id = m_BookList->GetBook();
-	if (id == event.GetInt()) {
-		m_BookInfo->SetPage(event.GetString());
-	}
 }
 
 void FbBookPanel::OnSubmenu(wxCommandEvent& event)
@@ -407,10 +404,7 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	if (refresh) m_BookList->Update();
 	if (refresh) m_BookInfo->SetPage(wxEmptyString);
 	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
-	if (refresh && IsSplit()) {
-		int id = m_BookList->GetBook();
-		if (id) FbBookData(id).Show(this, GetSplitMode() == wxSPLIT_VERTICAL);
-	}
+	if (refresh) ResetPreview();
 }
 
 void FbBookPanel::UpdateInfo(int id)

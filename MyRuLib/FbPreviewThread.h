@@ -3,24 +3,27 @@
 
 #include <wx/event.h>
 #include "FbThread.h"
-#include "FbMasterInfo.h"
+#include "FbViewItem.h"
+#include "FbViewContext.h"
 
 class FbPreviewThread : public FbThread
 {
 	public:
 		FbPreviewThread(wxEvtHandler * owner);
 		virtual ~FbPreviewThread();
-		void Reset(const FbMasterInfo &info);
+		void Reset(const FbViewContext &ctx, const FbViewItem &view);
 	    virtual void Close();
 	protected:
 		virtual void * Entry();
 	private:
-		FbMasterInfo GetInfo();
+		FbViewItem GetView(FbViewContext &ctx);
+	private:
 		static wxCriticalSection sm_section;
 		FbCondition m_condition;
 		wxEvtHandler * m_owner;
-		FbMasterInfo m_info;
+		FbViewItem m_view;
 		FbThread * m_thread;
+		FbViewContext m_ctx;
 		bool m_exit;
 };
 

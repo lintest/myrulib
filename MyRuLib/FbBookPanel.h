@@ -10,6 +10,7 @@
 #include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbMasterInfo.h"
+#include "FbPreviewWindow.h"
 
 class FbMasterData;
 
@@ -44,8 +45,9 @@ class FbBookPanel: public wxSplitterWindow
 	private:
 		size_t GetSelected(wxString &selections);
 		size_t GetSelected(wxArrayInt &items);
+		void ResetPreview();
 	private:
-		wxHtmlWindow * m_BookInfo;
+		FbPreviewWindow * m_BookInfo;
 		void SetViewMode(int mode);
 		void DoFolderAdd(const int folder);
 		static void DoDeleteDownload(const wxString &sel, const int folder);
@@ -75,7 +77,6 @@ class FbBookPanel: public wxSplitterWindow
 		void OnChangeView(wxCommandEvent & event);
 		void OnBookPage(wxCommandEvent & event);
 		void OnSystemDownload(wxCommandEvent & event);
-		void OnInfoUpdate(wxCommandEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
 		void OnContextMenu(wxTreeEvent& event);
 		void OnSelectAll(wxCommandEvent& event);
@@ -89,8 +90,8 @@ class FbBookPanel: public wxSplitterWindow
 		void OnListModel( FbArrayEvent& event );
 		void OnListArray( FbArrayEvent& event );
 		void OnTreeModel( FbModelEvent& event );
-		DECLARE_EVENT_TABLE();
-	private:
+		DECLARE_CLASS(FbBookPanel)
+		DECLARE_EVENT_TABLE()
 };
 
 

@@ -51,6 +51,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4800"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -130,6 +131,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="C4800"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -216,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbBookInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbBookList.cpp"
 				>
 			</File>
@@ -236,6 +242,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbCacheBook.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbCheckList.cpp"
 				>
 			</File>
@@ -249,6 +259,10 @@
 			</File>
 			<File
 				RelativePath=".\FbColumnDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbColumns.cpp"
 				>
 			</File>
 			<File
@@ -388,6 +402,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbMasterTypes.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbMenu.cpp"
 				>
 			</File>
@@ -444,7 +462,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbViewContext.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbViewerDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbViewItem.cpp"
 				>
 			</File>
 			<File
@@ -534,6 +560,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbBookInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbBookList.h"
 				>
 			</File>
@@ -558,6 +588,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbCacheBook.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbCheckList.h"
 				>
 			</File>
@@ -575,6 +609,10 @@
 			</File>
 			<File
 				RelativePath=".\FbColumnDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbColumns.h"
 				>
 			</File>
 			<File
@@ -718,6 +756,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbMasterTypes.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbMenu.h"
 				>
 			</File>
@@ -774,7 +816,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbViewContext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbViewerDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbViewItem.h"
 				>
 			</File>
 			<File

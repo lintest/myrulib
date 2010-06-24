@@ -45,6 +45,7 @@ InfoNode::~InfoNode()
 
 void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype)
 {
+/*
 	wxString imagename = wxString::Format(wxT("%d/%s"), id, filename.c_str());
 	for (size_t i=0; i<m_images.GetCount(); i++) {
 		if (m_images[i].GetName() == imagename) return;
@@ -53,6 +54,34 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 	wxMemoryFSHandler::AddFileWithMimeType(imagename, buffer.GetData(), buffer.GetDataLen(), imagetype);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
 	wxImage image(stream);
+	m_images.Add(new InfoImage(imagename, image));
+*/
+
+	wxString imagename = wxString::Format(wxT("%d/%s"), id, filename.c_str());
+	for (size_t i=0; i<m_images.GetCount(); i++) {
+		if (m_images[i].GetName() == imagename) return;
+	}
+	wxMemoryBuffer buffer = wxBase64Decode(imagedata);
+	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
+	wxImage image(stream);
+	wxBitmap bitmap(image);
+	if (image.GetWidth() > ciMaxImageWidth) {
+		int w = ciMaxImageWidth;
+		int h = image.GetHeight() * ciMaxImageWidth / image.GetWidth();
+		double scale = double(ciMaxImageWidth) / image.GetWidth();
+		wxMemoryDC srcDC;
+		srcDC.SelectObject(bitmap);
+
+		wxBitmap result(w, h);
+		wxMemoryDC memDC;
+		memDC.SetUserScale(scale, scale);
+		memDC.SelectObject(result);
+		memDC.Blit(0, 0, image.GetWidth(), image.GetHeight(), &srcDC, 0, 0, wxCOPY, true); 
+
+		wxMemoryFSHandler::AddFile(imagename, result, wxBITMAP_TYPE_PNG);
+	} else {
+		wxMemoryFSHandler::AddFile(imagename, bitmap, wxBITMAP_TYPE_PNG);
+	}
 	m_images.Add(new InfoImage(imagename, image));
 }
 
@@ -229,8 +258,8 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 
 	while (res.NextRow()) {
 		int id = res.GetInt(0);
-		wxString caption = FbBookThread::HTMLSpecialChars(res.GetString(2));
-		wxString comment = FbBookThread::HTMLSpecialChars(res.GetString(3));
+		wxString caption = FbBookThreadBase::HTMLSpecialChars(res.GetString(2));
+		wxString comment = FbBookThreadBase::HTMLSpecialChars(res.GetString(3));
 		int pos;
 		while ( (pos = comment.Find(wxT('\n'))) != wxNOT_FOUND) {
 			comment = comment.Left(pos) + wxT("<br>") + comment.Mid(pos + 1);
@@ -274,7 +303,7 @@ wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditabl
 			html += wxT("<tr><td align=center>");
 			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
-			html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+			html += wxString::Format(wxT("<img src=\"memory:%s\">"), info.GetName().c_str());
 			html += wxT("</td></tr></table>");
 			html += wxT("</td></tr></table>");
 			html += wxT("</td></tr>");
@@ -295,7 +324,7 @@ wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditabl
 			InfoImage & info = m_images[i];
 			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
-			html += wxString::Format(wxT("<img src=\"memory:%s\" width=%d height=%d>"), info.GetName().c_str(), info.GetWidth(), info.GetHeight());
+			html += wxString::Format(wxT("<img src=\"memory:%s\">"), info.GetName().c_str());
 			html += wxT("</td></tr></table>");
 			html += wxT("</td></tr></table>");
 		}
@@ -333,7 +362,7 @@ void * ShowThread::Entry()
 		(new TitleThread(this))->Execute();
 		(new InfoThread(this))->Execute();
 	} else {
-		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOKINFO_UPDATE );
+		wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_BOOK_PREVIEW );
 		event.SetInt(m_id);
 		event.SetString(html);
 		wxPostEvent(m_frame, event);

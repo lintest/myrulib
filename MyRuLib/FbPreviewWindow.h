@@ -2,13 +2,15 @@
 #define __FBPREVIEWWINDOW_H__
 
 #include "FbHtmlWindow.h"
+#include "FbViewContext.h"
+#include "FbPreviewThread.h"
 #include "FbTreeModel.h"
 #include "FbThread.h"
 
 class FbPreviewWindow: public FbHtmlWindow
 {
 	public:
-		FbPreviewWindow() {};
+		FbPreviewWindow();
 		FbPreviewWindow(
 			wxWindow *parent,
 			wxWindowID id = wxID_ANY,
@@ -23,10 +25,15 @@ class FbPreviewWindow: public FbHtmlWindow
 			const wxSize& size = wxDefaultSize,
 			long style = wxSUNKEN_BORDER
 		);
-		void Reset(const FbViewItem &item);
+		~FbPreviewWindow();
+		void Reset(const FbViewContext &ctx, const FbViewItem &item);
 	private:
-		FbThread * m_thread;
+		FbPreviewThread * m_thread;
+		FbViewItem m_view;
+	private:
+		void OnInfoUpdate(wxCommandEvent& event);
 		DECLARE_CLASS(FbPreviewWindow)
+		DECLARE_EVENT_TABLE();
 };
 
 #endif // __FBPREVIEWWINDOW_H__

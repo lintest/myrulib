@@ -34,8 +34,8 @@ FbMasterThread::~FbMasterThread()
 	if (m_thread) {
 		m_thread->Close();
 		m_thread->Wait();
+		wxDELETE(m_thread);
 	}
-	wxDELETE(m_thread);
 }
 
 void FbMasterThread::Close()
