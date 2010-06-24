@@ -1,5 +1,5 @@
-#ifndef __FBBOOKEVENT_H__
-#define __FBBOOKEVENT_H__
+#ifndef __FBBOOKINFO_H__
+#define __FBBOOKINFO_H__
 
 #include <wx/wx.h>
 
@@ -15,10 +15,14 @@ class FbBookInfo: public wxObject
 			FILE,
 		};
 	public:
-		FbBookInfo(int id): m_id(id) {};
+		FbBookInfo(int id): m_id(id) {}
+		FbBookInfo(const FbBookInfo &info);
 		virtual ~FbBookInfo();
+		int GetCode() const { return m_id; }
+		void SetText(size_t index, const wxString &text);
+		wxString GetText(size_t index) const;
 		void AddImage(wxString &filename, wxString &imagedata, wxString &imagetype);
-		wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype);
+		wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype) const;
 	private:
 		wxString GetComments(const wxString md5sum, bool bEditable);
 	public:
@@ -27,6 +31,7 @@ class FbBookInfo: public wxObject
 		wxArrayString m_images;
 };
 
-WX_DECLARE_OBJARRAY(FbBookInfo, InfoNodeArray);
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbBookInfo, FbBookInfoArray);
 
-#endif __FBBOOKEVENT_H__
+#endif __FBBOOKINFO_H__

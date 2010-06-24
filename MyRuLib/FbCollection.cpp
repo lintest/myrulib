@@ -13,11 +13,39 @@ IMPLEMENT_CLASS(FbCacheBook, wxObject)
 
 FbCacheBook::FbCacheBook(int code):
 	m_code(code),
-	m_numb(0),
 	m_rate(0),
 	m_date(0),
 	m_size(0)
 {
+}
+
+FbCacheBook::FbCacheBook(const FbCacheBook &book):
+	m_code(m_code),
+	m_name(m_name),
+	m_auth(m_auth),
+	m_genr(m_genr),
+	m_lang(m_lang),
+	m_type(m_type),
+	m_md5s(m_md5s),
+	m_rate(m_rate),
+	m_date(m_date),
+	m_size(m_size)
+{
+}
+
+FbCacheBook & FbCacheBook::operator =(const FbCacheBook &book)
+{
+	m_code = book.m_code;
+	m_name = book.m_name;
+	m_auth = book.m_auth;
+	m_genr = book.m_genr;
+	m_lang = book.m_lang;
+	m_type = book.m_type;
+	m_md5s = book.m_md5s;
+	m_rate = book.m_rate;
+	m_date = book.m_date;
+	m_size = book.m_size;
+	return *this;
 }
 
 /*
@@ -34,8 +62,6 @@ FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result):
 	m_lang(result.GetString(3)),
 	m_type(result.GetString(2)),
 	m_md5s(result.GetString(5)),
-	m_seqn(wxEmptyString),
-	m_numb(0),
 	m_rate(result.GetInt(6)),
 	m_date(result.GetInt(7)),
 	m_size(result.GetInt(1))
@@ -47,7 +73,7 @@ wxString FbCacheBook::GetValue(size_t field)
 	switch (field) {
 		case BF_CODE: return wxString::Format(wxT("%d"), m_code);
 		case BF_NAME: return m_name;
-		case BF_NUMB: return m_numb ? wxString::Format(wxT("%d"), m_numb) : wxString();
+		case BF_NUMB: return wxEmptyString;
 		case BF_AUTH: return m_auth;
 		case BF_GENR: return FbGenres::DecodeList(m_genr);
 		case BF_RATE: return m_rate ? GetRatingText(m_rate) : wxString();
@@ -56,7 +82,7 @@ wxString FbCacheBook::GetValue(size_t field)
 		case BF_DATE: return FbDateTime(m_date).FormatDate();
 		case BF_SIZE: return FbCollection::Format(m_size / 1024);
 		case BF_BITE: return FbCollection::Format(m_size);
-		case BF_SEQN: return m_seqn;
+		case BF_SEQN: return wxEmptyString;
 		case BF_MD5S: return m_md5s;
 		default: return wxEmptyString;
 	}
@@ -170,6 +196,13 @@ void FbCollection::AddAuth(FbCacheData * data)
 	if (collection) collection->AddData(collection->m_auths, data);
 }
 
+void FbCollection::AddInfo(FbBookInfo * info)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->AddBook(info);
+}
+
 FbCacheData * FbCollection::AddData(FbCasheDataArray &items, FbCacheData * data)
 {
 	size_t count = items.Count();
@@ -184,6 +217,13 @@ FbCacheBook * FbCollection::AddBook(FbCacheBook * book)
 	m_books.Insert(book, 0);
 	if (count > DATA_CACHE_SIZE) m_books.RemoveAt(DATA_CACHE_SIZE, count - DATA_CACHE_SIZE);
 	return book;
+}
+
+void FbCollection::AddBook(FbBookInfo * info)
+{
+	size_t count = m_infos.Count();
+	m_infos.Insert(info, 0);
+	if (count > HTML_CACHE_SIZE) m_infos.RemoveAt(HTML_CACHE_SIZE, count - HTML_CACHE_SIZE);
 }
 
 void FbCollection::ResetSeqn(int code)
@@ -238,6 +278,24 @@ wxString FbCollection::GetBook(int code, size_t col)
 	return book ? book->GetValue(col) : wxString();
 }
 
+FbCacheBook FbCollection::GetBookData(int code)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return 0;
+	FbCacheBook * book = collection->GetCacheBook(code);
+	return book ? *book : 0;
+}
+
+wxString FbCollection::GetBookHTML(int code, const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return wxEmptyString;
+	FbBookInfo * info = collection->GetCacheInfo(code);
+	return info ? info->GetHTML(md5sum, bVertical, bEditable, filetype) : wxString();
+}
+
 FbCacheBook * FbCollection::GetCacheBook(int code)
 {
 	size_t count = m_books.Count();
@@ -265,6 +323,16 @@ FbCacheBook * FbCollection::GetCacheBook(int code)
 		if (result.NextRow()) return AddBook(new FbCacheBook(code, result));
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
+	}
+	return NULL;
+}
+
+FbBookInfo * FbCollection::GetCacheInfo(int code)
+{
+	size_t count = m_infos.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbBookInfo & info = m_infos[i];
+		if (info.GetCode() == code) return &info;
 	}
 	return NULL;
 }

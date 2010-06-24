@@ -9,6 +9,33 @@
 //  FbBookInfo
 //-----------------------------------------------------------------------------
 
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(FbBookInfoArray);
+
+FbBookInfo::FbBookInfo(const FbBookInfo &info)
+	: m_id(info.m_id)
+{
+	for (size_t i = 0; i < FILE; i++) m_text[i] = info.m_text[i];
+}
+
+FbBookInfo::~FbBookInfo()
+{
+	size_t count = m_images.Count();
+	for (size_t i = 0; i < count; i++) {
+		wxMemoryFSHandler::RemoveFile(m_images[i]);
+	}
+}
+
+void FbBookInfo::SetText(size_t index, const wxString &text)
+{
+	if (index < FILE) m_text[index] = text;
+}
+
+wxString FbBookInfo::GetText(size_t index) const
+{
+	return index < FILE ? m_text[index] : wxString();
+}
+
 void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &imagetype)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
@@ -39,3 +66,7 @@ void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	m_images.Add(filename);
 }
 
+wxString FbBookInfo::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype) const
+{
+	return wxEmptyString;
+}
