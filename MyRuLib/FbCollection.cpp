@@ -352,7 +352,6 @@ wxString FbCollection::GetIcon(const wxString &extension)
 
 void FbCollection::AddIcon(wxString extension, wxBitmap bitmap)
 {
-	wxCriticalSectionLocker locker(sm_section);
 	wxString filename = wxT("icon.") + extension;
 	wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
 	sm_icons.Add(extension);

@@ -69,16 +69,16 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	} else {
 		wxBitmap bitmap(image);
 		int w = MAX_IMAGE_WIDTH;
-		int h = image.GetHeight() * MAX_IMAGE_WIDTH / image.GetWidth();
-		double scale = double(MAX_IMAGE_WIDTH) / image.GetWidth();
+		int h = bitmap.GetHeight() * MAX_IMAGE_WIDTH / bitmap.GetWidth();
+		double scale = double(MAX_IMAGE_WIDTH) / bitmap.GetWidth();
 		wxMemoryDC srcDC;
 		srcDC.SelectObject(bitmap);
 
 		wxBitmap result(w, h);
 		wxMemoryDC memDC;
-		memDC.SetUserScale(scale, scale);
 		memDC.SelectObject(result);
-		memDC.Blit(0, 0, image.GetWidth(), image.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
+		memDC.SetUserScale(scale, scale);
+		memDC.DrawBitmap(bitmap, 0, 0, false);
 		memDC.SelectObject(wxNullBitmap);
 		srcDC.SelectObject(wxNullBitmap);
 

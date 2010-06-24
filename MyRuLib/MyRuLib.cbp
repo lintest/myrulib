@@ -331,8 +331,6 @@
 		<Unit filename="ParseCtx.h" />
 		<Unit filename="ProgressBar.cpp" />
 		<Unit filename="ProgressBar.h" />
-		<Unit filename="TitleThread.cpp" />
-		<Unit filename="TitleThread.h" />
 		<Unit filename="VacuumThread.cpp" />
 		<Unit filename="VacuumThread.h" />
 		<Unit filename="ZipReader.cpp" />
