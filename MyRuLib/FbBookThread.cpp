@@ -55,23 +55,48 @@ void FbBookThread::OpenAuth()
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_view.GetCode());
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) {
-		FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_AUTH_PREVIEW, m_view.GetCode(), result.GetString(0)).Post(m_frame);
-	}
+	if (result.NextRow()) SendHTML(ID_AUTH_PREVIEW, result.GetString(0));
 }
 
 void FbBookThread::OpenBook()
+{
+	int id = m_view.GetCode();
+	FbCacheBook book = FbCollection::GetBookData(id);
+	if (!book) return;
+
+	wxString html = FbCollection::GetBookHTML(m_ctx, book, id);
+	if (!html.IsEmpty()) {
+		SendHTML(ID_BOOK_PREVIEW, html);
+		return;
+	}
+
+	FbBookInfo info(id);
+	wxString descr = GetDescr();
+	if (!descr.IsEmpty()) {
+		info.SetText(FbBookInfo::DSCR, descr);
+		FbCollection::AddInfo(new FbBookInfo(info));
+		wxString html = info.GetHTML(m_ctx, book);
+		SendHTML(ID_BOOK_PREVIEW, html);
+	}
+}
+
+void FbBookThread::OpenNone()
+{
+}
+
+void FbBookThread::SendHTML(wxWindowID winid, const wxString &html)
+{
+	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, winid, m_view.GetCode(), html).Post(m_frame);
+}
+
+wxString FbBookThread::GetDescr()
 {
 	wxString sql = wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL");
 	FbCommonDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_view.GetCode());
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) {
-		FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_BOOK_PREVIEW, m_view.GetCode(), result.GetString(0)).Post(m_frame);
-	}
-}
-
-void FbBookThread::OpenNone()
-{
+	if (result.NextRow()) 
+		return result.GetString(0);
+	else return wxEmptyString;
 }

@@ -2,6 +2,8 @@
 #define __FBBOOKINFO_H__
 
 #include <wx/wx.h>
+#include "FbViewContext.h"
+#include "FbCacheBook.h"
 
 #define MAX_IMAGE_WIDTH 200
 
@@ -20,10 +22,10 @@ class FbBookInfo: public wxObject
 		virtual ~FbBookInfo();
 		int GetCode() const { return m_id; }
 		void SetText(size_t index, const wxString &text);
-		wxString GetText(size_t index) const;
+		wxString GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const;
 		void AddImage(wxString &filename, wxString &imagedata, wxString &imagetype);
-		wxString GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype) const;
 	private:
+		wxString GetText(size_t index) const;
 		wxString GetComments(const wxString md5sum, bool bEditable);
 	public:
 		int m_id;

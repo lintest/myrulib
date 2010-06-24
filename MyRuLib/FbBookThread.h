@@ -5,20 +5,24 @@
 #include <wx/thread.h>
 #include "FbViewItem.h"
 #include "FbThread.h"
+#include "FbViewContext.h"
 
 class FbBookThread: public FbThread
 {
 	public:
-		FbBookThread(wxEvtHandler * frame, const FbViewItem &view)
-			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_view(view) {}
+		FbBookThread(wxEvtHandler * frame, class FbViewContext &ctx, const FbViewItem &view)
+			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_ctx(ctx), m_view(view) {}
 	protected:
 		virtual void * Entry();
 	private:
 		void OpenAuth();
 		void OpenBook();
 		void OpenNone();
+		void SendHTML(wxWindowID winid, const wxString &html);
+		wxString GetDescr();
 	private:
 		wxEvtHandler * m_frame;
+		FbViewContext m_ctx;
 		FbViewItem m_view;
 };
 

@@ -66,7 +66,7 @@ void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	m_images.Add(filename);
 }
 
-wxString FbBookInfo::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype) const
+wxString FbBookInfo::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const
 {
 	return wxEmptyString;
 }

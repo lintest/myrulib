@@ -51,6 +51,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4800"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -130,6 +131,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="C4800"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -237,6 +239,10 @@
 			</File>
 			<File
 				RelativePath=".\FbBookTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbCacheBook.cpp"
 				>
 			</File>
 			<File
@@ -575,6 +581,10 @@
 			</File>
 			<File
 				RelativePath=".\FbBookTypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbCacheBook.h"
 				>
 			</File>
 			<File

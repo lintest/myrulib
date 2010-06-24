@@ -4,38 +4,12 @@
 #include <wx/wx.h>
 #include "FbDatabase.h"
 #include "FbBookInfo.h"
+#include "FbCacheBook.h"
 
 class FbModel;
 
 #define DATA_CACHE_SIZE 128
 #define HTML_CACHE_SIZE  16
-
-class FbCacheBook: public wxObject
-{
-	public:
-		FbCacheBook(int code = 0);
-		FbCacheBook(int code, wxSQLite3ResultSet &result);
-		FbCacheBook(const FbCacheBook &book);
-		FbCacheBook & operator =(const FbCacheBook &book);
-		operator bool() const { return m_code; }
-		int GetCode() const { return m_code; }
-		wxString GetValue(size_t field);
-	private:
-		int m_code;
-		wxString m_name;
-		wxString m_auth;
-		wxString m_genr;
-		wxString m_lang;
-		wxString m_type;
-		wxString m_md5s;
-		int m_rate;
-		int m_date;
-		int m_size;
-		DECLARE_CLASS(FbCacheBook)
-};
-
-#include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbCacheBook, FbCasheBookArray);
 
 class FbCacheData: public wxObject
 {
@@ -66,8 +40,8 @@ class FbCollection: public wxObject
 		static wxString GetSeqn(int code, size_t col);
 		static wxString GetAuth(int code, size_t col);
 		static wxString GetBook(int code, size_t col);
-		static wxString GetBookHTML(int code, const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype);
-		FbCacheBook GetBookData(int code);
+		static wxString GetBookHTML(const FbViewContext &ctx, const FbCacheBook &book, int code);
+		static FbCacheBook GetBookData(int code);
 		static void AddSeqn(FbCacheData * data);
 		static void AddAuth(FbCacheData * data);
 		static void AddInfo(FbBookInfo * info);
