@@ -313,6 +313,8 @@
 		<Unit filename="FbViewData.h" />
 		<Unit filename="FbViewItem.cpp" />
 		<Unit filename="FbViewItem.h" />
+		<Unit filename="FbViewReader.cpp" />
+		<Unit filename="FbViewReader.h" />
 		<Unit filename="FbViewThread.cpp" />
 		<Unit filename="FbViewThread.h" />
 		<Unit filename="FbViewerDlg.cpp" />
@@ -323,8 +325,6 @@
 		<Unit filename="ImpContext.h" />
 		<Unit filename="InfoCash.cpp" />
 		<Unit filename="InfoCash.h" />
-		<Unit filename="InfoThread.cpp" />
-		<Unit filename="InfoThread.h" />
 		<Unit filename="LimitedTextCtrl.cpp" />
 		<Unit filename="LimitedTextCtrl.h" />
 		<Unit filename="MyRuLibApp.cpp" />

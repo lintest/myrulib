@@ -29,7 +29,7 @@ bool FbHtmlWindow::SetPage(const wxString& source)
 {
 	wxString colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT).GetAsString(wxC2S_HTML_SYNTAX);
 	wxString html = wxString::Format(wxT("<html><body text=%s>%s</html>"), colour.c_str(), source.c_str());
-	bool ok = wxHtmlWindow::SetPage(html);
+	bool ok = false; try { ok = wxHtmlWindow::SetPage(html); } catch (...) {}
 	SetHTMLBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 	return ok;
 }

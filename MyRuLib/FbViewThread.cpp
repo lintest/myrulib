@@ -1,8 +1,11 @@
 #include "FbViewThread.h"
+#include "FbViewReader.h"
 #include "FbBookEvent.h"
 #include "FbCollection.h"
+#include "FbColumns.h"
 #include "FbDatabase.h"
 #include "InfoCash.h"
+#include "ZipReader.h"
 
 //-----------------------------------------------------------------------------
 //  FbBookThreadBase
@@ -61,28 +64,36 @@ void FbViewThread::OpenAuth()
 void FbViewThread::OpenBook()
 {
 	int id = m_view.GetCode();
-	FbCacheBook book = FbCollection::GetBookData(id);
-	if (!book) return;
+	m_book = FbCollection::GetBookData(id);
+	if (!m_book) {
+		SendHTML(ID_BOOK_PREVIEW);
+		return;
+	}
 
-	wxString html = FbCollection::GetBookHTML(m_ctx, book, id);
+	wxString html = FbCollection::GetBookHTML(m_ctx, m_book, id);
 	if (!html.IsEmpty()) {
 		SendHTML(ID_BOOK_PREVIEW, html);
 		return;
 	}
 
 	FbViewData info(id);
-	wxString descr = GetDescr();
-	if (!descr.IsEmpty()) {
-		info.SetText(FbViewData::DSCR, descr);
-		FbCollection::AddInfo(new FbViewData(info));
-	}
+	info.SetText(FbViewData::DSCR, GetDescr());
+	SendHTML(info);
 
-	html = info.GetHTML(m_ctx, book);
-	SendHTML(ID_BOOK_PREVIEW, html);
+	ZipReader zip(id, false, true);
+	if (zip.IsOK()) FbViewReader(*this, info).Load(zip.GetZip());
+	FbCollection::AddInfo(new FbViewData(info));
 }
 
 void FbViewThread::OpenNone()
 {
+	SendHTML(ID_BOOK_PREVIEW);
+}
+
+void FbViewThread::SendHTML(const FbViewData &info)
+{
+	wxString html = info.GetHTML(m_ctx, m_book);
+	SendHTML(ID_BOOK_PREVIEW, html);
 }
 
 void FbViewThread::SendHTML(wxWindowID winid, const wxString &html)
@@ -101,3 +112,4 @@ wxString FbViewThread::GetDescr()
 		return result.GetString(0);
 	else return wxEmptyString;
 }
+

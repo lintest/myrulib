@@ -68,7 +68,7 @@ FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result):
 {
 }
 
-wxString FbCacheBook::GetValue(size_t field)
+wxString FbCacheBook::GetValue(size_t field) const
 {
 	switch (field) {
 		case BF_CODE: return wxString::Format(wxT("%d"), m_code);

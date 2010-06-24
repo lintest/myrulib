@@ -344,6 +344,7 @@ wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditabl
 
 void * ShowThread::Entry()
 {
+/*
 	if (!m_id) return NULL;
 
 	wxString sql = wxT("SELECT file_type, md5sum FROM books WHERE id=?");
@@ -367,5 +368,6 @@ void * ShowThread::Entry()
 		event.SetString(html);
 		wxPostEvent(m_frame, event);
 	}
+*/
 	return NULL;
 }

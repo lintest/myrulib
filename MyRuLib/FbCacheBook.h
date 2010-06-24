@@ -13,7 +13,7 @@ class FbCacheBook: public wxObject
 		FbCacheBook & operator =(const FbCacheBook &book);
 		operator bool() const { return m_code; }
 		int GetCode() const { return m_code; }
-		wxString GetValue(size_t field);
+		wxString GetValue(size_t field) const;
 	private:
 		int m_code;
 		wxString m_name;

@@ -26,10 +26,11 @@ class FbViewData: public wxObject
 		void AddImage(wxString &filename, wxString &imagedata, wxString &imagetype);
 	private:
 		wxString GetText(size_t index) const;
-		wxString GetComments(const wxString md5sum, bool bEditable);
+		wxString GetComments(const FbViewContext &ctx, const FbCacheBook &book) const;
+		static wxString HTMLSpecialChars(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	public:
 		int m_id;
-		wxString m_text[FILE - 1];
+		wxString m_text[4];
 		wxArrayString m_images;
 };
 
