@@ -1,6 +1,8 @@
 #ifndef __FBVIEWCONTEXT_H__
 #define __FBVIEWCONTEXT_H__
 
+#include <wx/wx.h>
+
 class FbViewContext: public wxObject
 {
 	public:

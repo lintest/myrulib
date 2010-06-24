@@ -462,6 +462,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbViewContext.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbViewerDlg.cpp"
 				>
 			</File>
@@ -809,6 +813,10 @@
 			</File>
 			<File
 				RelativePath=".\FbUpdateThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbViewContext.h"
 				>
 			</File>
 			<File

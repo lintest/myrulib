@@ -36,4 +36,4 @@ class FbBookInfo: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbBookInfo, FbBookInfoArray);
 
-#endif __FBBOOKINFO_H__
+#endif // __FBBOOKINFO_H__

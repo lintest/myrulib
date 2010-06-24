@@ -198,7 +198,9 @@ FbCacheBook FbCollection::GetBookData(int code)
 	FbCollection * collection = GetCollection();
 	if (collection == NULL) return 0;
 	FbCacheBook * book = collection->GetCacheBook(code);
-	return book ? *book : 0;
+	if (book) 
+		return *book;
+	else return 0;
 }
 
 wxString FbCollection::GetBookHTML(const FbViewContext &ctx, const FbCacheBook &book, int code)

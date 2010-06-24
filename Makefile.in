@@ -76,11 +76,13 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbAuthorDlg.o \
 	myrulib_FbBookData.o \
 	myrulib_FbBookEvent.o \
+	myrulib_FbBookInfo.o \
 	myrulib_FbBookList.o \
 	myrulib_FbBookMenu.o \
 	myrulib_FbBookPanel.o \
 	myrulib_FbBookThread.o \
 	myrulib_FbBookTree.o \
+	myrulib_FbCacheBook.o \
 	myrulib_FbCheckList.o \
 	myrulib_FbChoiceFormat.o \
 	myrulib_FbColumnDlg.o \
@@ -135,6 +137,8 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbTreeModel.o \
 	myrulib_FbTreeView.o \
 	myrulib_FbUpdateThread.o \
+	myrulib_FbViewContext.o \
+	myrulib_FbViewItem.o \
 	myrulib_FbViewerDlg.o \
 	myrulib_FbWindow.o \
 	myrulib_ImpContext.o \
@@ -342,6 +346,9 @@ myrulib_FbBookData.o: $(srcdir)/MyRuLib/FbBookData.cpp $(MYRULIB_ODEP)
 myrulib_FbBookEvent.o: $(srcdir)/MyRuLib/FbBookEvent.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookEvent.cpp
 
+myrulib_FbBookInfo.o: $(srcdir)/MyRuLib/FbBookInfo.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookInfo.cpp
+
 myrulib_FbBookList.o: $(srcdir)/MyRuLib/FbBookList.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookList.cpp
 
@@ -356,6 +363,9 @@ myrulib_FbBookThread.o: $(srcdir)/MyRuLib/FbBookThread.cpp $(MYRULIB_ODEP)
 
 myrulib_FbBookTree.o: $(srcdir)/MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookTree.cpp
+
+myrulib_FbCacheBook.o: $(srcdir)/MyRuLib/FbCacheBook.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCacheBook.cpp
 
 myrulib_FbCheckList.o: $(srcdir)/MyRuLib/FbCheckList.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCheckList.cpp
@@ -518,6 +528,12 @@ myrulib_FbTreeView.o: $(srcdir)/MyRuLib/FbTreeView.cpp $(MYRULIB_ODEP)
 
 myrulib_FbUpdateThread.o: $(srcdir)/MyRuLib/FbUpdateThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbUpdateThread.cpp
+
+myrulib_FbViewContext.o: $(srcdir)/MyRuLib/FbViewContext.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewContext.cpp
+
+myrulib_FbViewItem.o: $(srcdir)/MyRuLib/FbViewItem.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewItem.cpp
 
 myrulib_FbViewerDlg.o: $(srcdir)/MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewerDlg.cpp
