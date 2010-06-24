@@ -70,19 +70,25 @@ void FbViewThread::OpenBook()
 		return;
 	}
 
+	if (IsClosed()) return; 
+
 	wxString html = FbCollection::GetBookHTML(m_ctx, m_book, id);
 	if (!html.IsEmpty()) {
 		SendHTML(ID_BOOK_PREVIEW, html);
 		return;
 	}
 
-	FbViewData info(id);
-	info.SetText(FbViewData::DSCR, GetDescr());
-	SendHTML(info);
+	if (IsClosed()) return; 
+
+	FbViewData * info = new FbViewData(id);
+	info->SetText(FbViewData::DSCR, GetDescr());
+	SendHTML(*info);
+
+	if (IsClosed()) { delete info; return; }
 
 	ZipReader zip(id, false, true);
-	if (zip.IsOK()) FbViewReader(*this, info).Load(zip.GetZip());
-	FbCollection::AddInfo(new FbViewData(info));
+	if (zip.IsOK()) FbViewReader(*this, *info).Load(zip.GetZip());
+	FbCollection::AddInfo(info);
 }
 
 void FbViewThread::OpenNone()

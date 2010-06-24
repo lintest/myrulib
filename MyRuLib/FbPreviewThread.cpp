@@ -50,11 +50,13 @@ void * FbPreviewThread::Entry()
 		FbViewContext ctx;
 		FbViewItem view;
 		while (!view) {
-			if (IsClosed()) return NULL;
+			if (IsClosed()) 
+				return NULL;
 			m_condition.Wait();
 			view = GetView(ctx);
 		}
-		if (IsClosed()) return NULL;
+		if (IsClosed()) 
+			return NULL;
 
 		if (m_thread) {
 			m_thread->Close();

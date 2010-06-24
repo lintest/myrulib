@@ -5,6 +5,13 @@
 #include "FbGenres.h"
 #include "FbDateTime.h"
 
+#include <wx/filename.h>
+#include <wx/mimetype.h>
+#include <wx/fs_mem.h>
+
+#include "res/ico_pdf.xpm"
+#include "res/ico_djvu.xpm"
+
 //-----------------------------------------------------------------------------
 //  FbCacheData
 //-----------------------------------------------------------------------------
@@ -154,6 +161,20 @@ void FbCollection::ResetAuth(int code)
 	if (collection) collection->ResetData(collection->m_auths, code);
 }
 
+void FbCollection::ResetInfo(int code)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->DoResetInfo(code);
+}
+
+void FbCollection::ResetBook(int code)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->DoResetBook(code);
+}
+
 FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxString &sql)
 {
 	size_t count = items.Count();
@@ -178,6 +199,28 @@ void FbCollection::ResetData(FbCasheDataArray &items, int code)
 	for (size_t i = 0; i < count; i++) {
 		if (items[i].GetCode() == code) {
 			items.RemoveAt(i);
+			break;
+		}
+	}
+}
+
+void FbCollection::DoResetInfo(int code)
+{
+	size_t count = m_infos.Count();
+	for (size_t i = 0; i < count; i++) {
+		if (m_infos[i].GetCode() == code) {
+			m_infos.RemoveAt(i);
+			break;
+		}
+	}
+}
+
+void FbCollection::DoResetBook(int code)
+{
+	size_t count = m_books.Count();
+	for (size_t i = 0; i < count; i++) {
+		if (m_books[i].GetCode() == code) {
+			m_books.RemoveAt(i);
 			break;
 		}
 	}
@@ -248,3 +291,57 @@ FbViewData * FbCollection::GetCacheInfo(int code)
 	}
 	return NULL;
 }
+
+wxArrayString FbCollection::sm_icons;
+
+wxArrayString FbCollection::sm_noico;
+
+void FbCollection::LoadIcon(const wxString &extension)
+{
+	wxCriticalSectionLocker locker(sm_section);
+
+	if (!sm_icons.Count()) {
+		AddIcon((wxString)wxT("djvu"), wxBitmap(ico_djvu_xpm));
+		AddIcon((wxString)wxT("pdf"), wxBitmap(ico_pdf_xpm));
+	}
+
+	if (extension.IsEmpty() || extension == wxT("fb2")) return;
+	wxString filename = wxT("icon.") + extension;
+
+	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
+	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
+
+	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
+	if ( ft ) {
+		wxIconLocation location;
+		if ( ft->GetIcon(&location) ) {
+			wxLogNull log;
+			wxIcon icon(location);
+			wxBitmap bitmap;
+			bitmap.CopyFromIcon(icon);
+			wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+			sm_icons.Add(extension);
+			return;
+		}
+	}
+	sm_noico.Add(extension);
+}
+
+wxString FbCollection::GetIcon(const wxString &extension)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	wxString filename = wxT("icon.") + extension;
+	if (sm_icons.Index(extension) != wxNOT_FOUND)
+		return filename;
+	else
+		return wxEmptyString;
+}
+
+void FbCollection::AddIcon(wxString extension, wxBitmap bitmap)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	wxString filename = wxT("icon.") + extension;
+	wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+	sm_icons.Add(extension);
+}
+

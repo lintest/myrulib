@@ -9,9 +9,6 @@
 #include "FbViewReader.h"
 #include "TitleThread.h"
 
-#include "res/ico_pdf.xpm"
-#include "res/ico_djvu.xpm"
-
 WX_DEFINE_OBJARRAY(InfoImageArray);
 
 WX_DEFINE_OBJARRAY(InfoNodeArray);
@@ -90,9 +87,6 @@ void InfoNode::AddImage(int id, wxString &filename, wxString &imagedata, wxStrin
 //-----------------------------------------------------------------------------
 
 InfoNodeArray InfoCash::sm_cash;
-
-wxArrayString InfoCash::sm_icons;
-wxArrayString InfoCash::sm_noico;
 
 InfoNode * InfoCash::GetNode(int id)
 {
@@ -197,53 +191,6 @@ wxString InfoCash::GetInfo(int id, const wxString &md5sum, bool bVertical, bool 
 		return wxEmptyString;
 }
 
-void InfoCash::AddIcon(wxString extension, wxBitmap bitmap)
-{
-	wxString filename = wxT("icon.") + extension;
-	wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
-	sm_icons.Add(extension);
-}
-
-void InfoCash::LoadIcon(const wxString &extension)
-{
-	wxCriticalSectionLocker enter(sm_locker);
-
-	if (!sm_icons.Count()) {
-		AddIcon((wxString)wxT("djvu"), wxBitmap(ico_djvu_xpm));
-		AddIcon((wxString)wxT("pdf"), wxBitmap(ico_pdf_xpm));
-	}
-
-	if (extension.IsEmpty() || extension == wxT("fb2")) return;
-	wxString filename = wxT("icon.") + extension;
-
-	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
-	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
-
-	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
-	if ( ft ) {
-		wxIconLocation location;
-		if ( ft->GetIcon(&location) ) {
-			wxLogNull log;
-			wxIcon icon(location);
-			wxBitmap bitmap;
-			bitmap.CopyFromIcon(icon);
-			wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
-			sm_icons.Add(extension);
-			return;
-		}
-	}
-	sm_noico.Add(extension);
-}
-
-wxString InfoCash::GetIcon(const wxString &extension)
-{
-	wxString filename = wxT("icon.") + extension;
-	if (sm_icons.Index(extension) != wxNOT_FOUND)
-		return filename;
-	else
-		return wxEmptyString;
-}
-
 wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 {
 	wxString sql = wxT("SELECT id, posted, caption, comment FROM comments WHERE md5sum=? ORDER BY id");
@@ -281,65 +228,7 @@ wxString InfoNode::GetComments(const wxString md5sum, bool bEditable)
 
 wxString InfoNode::GetHTML(const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype)
 {
-	wxString html = wxT("<table width=100%><tr>");
-	wxString icon = InfoCash::GetIcon(filetype);
-	if (icon.IsEmpty()) {
-		html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
-	} else {
-		icon = wxString::Format(wxT("<img src=\"memory:%s\">"), icon.c_str());
-		html += wxT("<td><table cellspacing=0 cellpadding=0><tr>");
-		html += wxString::Format(wxT("<td valign=top>%s&nbsp;&nbsp;&nbsp;</td>"), icon.c_str());
-		html += wxString::Format(wxT("<td>%s</td>"), m_title.c_str());
-		html += wxT("</tr></table></td>");
-	}
-
-	wxString annotation = m_annotation.IsEmpty() ? m_description : m_annotation;
-
-	if (bVertical) {
-		html += wxT("</tr>");
-		html += wxString::Format(wxT("<tr><td>%s</td></tr>"), annotation.c_str());
-		for (size_t i=0; i<m_images.GetCount(); i++) {
-			InfoImage & info = m_images[i];
-			html += wxT("<tr><td align=center>");
-			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
-			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
-			html += wxString::Format(wxT("<img src=\"memory:%s\">"), info.GetName().c_str());
-			html += wxT("</td></tr></table>");
-			html += wxT("</td></tr></table>");
-			html += wxT("</td></tr>");
-		}
-		if (!m_isbn.IsEmpty()) {
-			html += wxT("<tr><td align=center>");
-			html += wxT("ISBN:&nbsp;") + m_isbn;
-			html += wxT("</td></tr>");
-		}
-		html += wxString::Format(wxT("<tr><td>%s</td></tr>"), m_filelist.c_str());
-		html += wxT("<tr><td valign=top>");
-		html += GetComments(md5sum, bEditable);
-		html += wxT("</td></tr>");
-	} else {
-		html += wxT("<td rowspan=4 align=right valign=top width=1>");
-		html += wxT("<table width=100%><tr><td align=center>");
-		for (size_t i=0; i<m_images.GetCount(); i++) {
-			InfoImage & info = m_images[i];
-			html += wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
-			html += wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
-			html += wxString::Format(wxT("<img src=\"memory:%s\">"), info.GetName().c_str());
-			html += wxT("</td></tr></table>");
-			html += wxT("</td></tr></table>");
-		}
-		html += wxT("</td></tr>");
-		if (!m_isbn.IsEmpty()) html += wxString::Format(wxT("<tr><td align=center>ISBN:&nbsp;%s</td></tr>"), m_isbn.c_str());
-		html += wxT("</table></td></tr>");
-		html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), annotation.c_str());
-		html += wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), m_filelist.c_str());
-		html += wxT("<tr><td valign=top>");
-		html += GetComments(md5sum, bEditable);
-		html += wxT("</td></tr>");
-	}
-	html += wxT("</table></body>");
-
-	return html;
+	return wxEmptyString;
 }
 
 void * ShowThread::Entry()

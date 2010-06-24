@@ -74,6 +74,11 @@ void FbBookData::Open() const
 	}
 }
 
+void FbBookData::LoadIcon() const
+{
+	FbCollection::LoadIcon(GetExt());
+}
+
 void FbBookData::SaveFile(wxInputStream & in, const wxString &filepath) const
 {
     FbTempEraser::Add(filepath);
@@ -188,10 +193,6 @@ void FbBookData::DoDownload() const
 
 void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
 {
-	if (frame) {
-		InfoCash::LoadIcon(GetExt());
-		InfoCash::UpdateInfo(frame, m_id, bVertical);
-	}
 }
 
 void FbAuthorData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const

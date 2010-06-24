@@ -19,9 +19,9 @@ class FbViewItem: public wxObject
 			{ m_type = item.m_type; m_code = item.m_code; return *this; }
 		operator bool() const
 			{ return m_type != None && m_code; }
-		Types GetType()
+		Types GetType() const
 			{ return m_type; }
-		int GetCode()
+		int GetCode() const
 			{ return m_code; }
 	private:
 		Types m_type;

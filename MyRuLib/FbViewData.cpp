@@ -1,12 +1,12 @@
 #include "FbViewData.h"
 #include "FbColumns.h"
 #include "FbDatabase.h"
-#include "InfoCash.h"
+#include "FbGenres.h"
+#include "FbCollection.h"
 
 #include <wx/buffer.h>
 #include <wx/fs_mem.h>
 #include <wx/mstream.h>
-#include <wx/mimetype.h>
 #include "wx/base64.h"
 
 //-----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ WX_DEFINE_OBJARRAY(FbViewDataArray);
 
 //! Return specified string with the html special characters encoded.
 //! Similar to PHP's htmlspecialchars() function.
-wxString FbViewData::HTMLSpecialChars( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
+wxString FbViewData::HTML( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
 {
   wxString szToReturn = value;
   szToReturn.Replace(wxT("&"),wxT("&amp;"));
@@ -31,17 +31,11 @@ wxString FbViewData::HTMLSpecialChars( const wxString &value, const bool bSingle
   return szToReturn;
 }
 
-FbViewData::FbViewData(const FbViewData &info)
-	: m_id(info.m_id)
-{
-	for (size_t i = 0; i < FILE; i++) m_text[i] = info.m_text[i];
-}
-
 FbViewData::~FbViewData()
 {
 	size_t count = m_images.Count();
 	for (size_t i = 0; i < count; i++) {
-		wxMemoryFSHandler::RemoveFile(m_images[i]);
+		wxMemoryFSHandler::RemoveFile(GetImage(m_images[i]));
 	}
 }
 
@@ -58,10 +52,15 @@ wxString FbViewData::GetText(size_t index) const
 		return wxEmptyString;
 }
 
+wxString FbViewData::GetImage(const wxString &filename) const
+{
+	return wxString::Format(wxT("%d/%s"), m_id, filename.c_str());
+}
+
 void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &imagetype)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
-	wxString imagename = wxString::Format(wxT("%d/%s"), m_id, filename.c_str());
+	wxString imagename = GetImage(filename);
 	wxMemoryBuffer buffer = wxBase64Decode(imagedata);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
 	wxImage image(stream);
@@ -105,8 +104,8 @@ wxString FbViewData::GetComments(const FbViewContext &ctx, const FbCacheBook &bo
 
 	while (res.NextRow()) {
 		int id = res.GetInt(0);
-		wxString caption = HTMLSpecialChars(res.GetString(2));
-		wxString comment = HTMLSpecialChars(res.GetString(3));
+		wxString caption = HTML(res.GetString(2));
+		wxString comment = HTML(res.GetString(3));
 		int pos;
 		while ( (pos = comment.Find(wxT('\n'))) != wxNOT_FOUND) {
 			comment = comment.Left(pos) + wxT("<br>") + comment.Mid(pos + 1);
@@ -126,17 +125,30 @@ wxString FbViewData::GetComments(const FbViewContext &ctx, const FbCacheBook &bo
 	return html;
 }
 
+wxString FbViewData::GetTitle(const FbCacheBook &book) const
+{
+	wxString html = wxString::Format(wxT("<font size=4><b>%s</b></font>"), HTML(book.GetValue(BF_AUTH)).c_str());
+
+	wxString genres = book.GetValue(BF_GENR);
+	if (!genres.IsEmpty()) html << wxString::Format(wxT("<br><font size=3>%s</font>"), HTML(genres).c_str());
+
+	html << wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTML(book.GetValue(BF_NAME)).c_str());
+
+	return html;
+}
+
 wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const
 {
+
 	wxString html = wxT("<table width=100%><tr>");
-	wxString icon = InfoCash::GetIcon(ctx.filetype);
+	wxString icon = FbCollection::GetIcon(ctx.filetype);
 	if (icon.IsEmpty()) {
-		html << wxString::Format(wxT("<td>%s</td>"), book.GetValue(BF_NAME).c_str());
+		html << wxString::Format(wxT("<td>%s</td>"), GetTitle(book).c_str());
 	} else {
 		icon = wxString::Format(wxT("<img src=\"memory:%s\">"), icon.c_str());
 		html << wxT("<td><table cellspacing=0 cellpadding=0><tr>");
 		html << wxString::Format(wxT("<td valign=top>%s&nbsp;&nbsp;&nbsp;</td>"), icon.c_str());
-		html << wxString::Format(wxT("<td>%s</td>"), book.GetValue(BF_NAME).c_str());
+		html << wxString::Format(wxT("<td>%s</td>"), GetTitle(book).c_str());
 		html << wxT("</tr></table></td>");
 	}
 
@@ -149,7 +161,7 @@ wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) 
 		html << wxT("</tr>");
 		html << wxString::Format(wxT("<tr><td>%s</td></tr>"), annt.c_str());
 		for (size_t i=0; i<m_images.GetCount(); i++) {
-			wxString image = m_images[i];
+			wxString image = GetImage(m_images[i]);
 			html << wxT("<tr><td align=center>");
 			html << wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html << wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
@@ -171,7 +183,7 @@ wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) 
 		html << wxT("<td rowspan=4 align=right valign=top width=1>");
 		html << wxT("<table width=100%><tr><td align=center>");
 		for (size_t i=0; i<m_images.GetCount(); i++) {
-			wxString image = m_images[i];
+			wxString image = GetImage(m_images[i]);
 			html << wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
 			html << wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
 			html << wxString::Format(wxT("<img src=\"memory:%s\">"), image.c_str());

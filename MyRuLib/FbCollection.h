@@ -47,15 +47,24 @@ class FbCollection: public wxObject
 		static void AddInfo(FbViewData * info);
 		static void ResetSeqn(int code);
 		static void ResetAuth(int code);
+		static void ResetInfo(int code);
+		static void ResetBook(int code);
+		static void LoadIcon(const wxString &extension);
+		static void AddIcon(wxString extension, wxBitmap bitmap);
+		static wxString GetIcon(const wxString &extension);
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
 		FbCacheBook * AddBook(FbCacheBook * book);
 		void AddBook(FbViewData * info);
 		void ResetData(FbCasheDataArray &items, int code);
+		void DoResetBook(int code);
+		void DoResetInfo(int code);
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
 	private:
+		static wxArrayString sm_icons;
+		static wxArrayString sm_noico;
 		static wxCriticalSection sm_section;
 		FbCommonDatabase m_database;
 		FbAggregateFunction m_aggregate;

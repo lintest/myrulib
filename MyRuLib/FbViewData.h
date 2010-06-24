@@ -18,16 +18,18 @@ class FbViewData: public wxObject
 		};
 	public:
 		FbViewData(int id): m_id(id) {}
-		FbViewData(const FbViewData &info);
 		virtual ~FbViewData();
 		int GetCode() const { return m_id; }
 		void SetText(size_t index, const wxString &text);
 		wxString GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const;
 		void AddImage(wxString &filename, wxString &imagedata, wxString &imagetype);
+		void Reset();
 	private:
+		wxString GetTitle(const FbCacheBook &book) const;
+		wxString GetImage(const wxString &filename) const;
 		wxString GetText(size_t index) const;
 		wxString GetComments(const FbViewContext &ctx, const FbCacheBook &book) const;
-		static wxString HTMLSpecialChars(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
+		static wxString HTML(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	public:
 		int m_id;
 		wxString m_text[4];

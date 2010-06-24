@@ -65,6 +65,7 @@ class FbBookData: public FbItemData
 		virtual int GetId() const { return m_id; }
 		virtual void Show(wxEvtHandler * frame, bool bVertical, bool bEditable = false) const;
 		virtual void Open() const;
+		void LoadIcon() const;
 	private:
 		void DoDownload() const;
 		void DoOpen(wxInputStream & in, const wxString &md5sum) const;

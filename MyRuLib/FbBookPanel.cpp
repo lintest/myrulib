@@ -196,9 +196,11 @@ void FbBookPanel::ResetPreview()
 
 	FbViewContext ctx;
 	FbModelItem item = m_BookList->GetCurrent();
-	if (item) 
+	if (item) {
 		m_BookInfo->Reset(ctx, (&item)->GetView());
-	else m_BookInfo->Reset(ctx, FbViewItem());
+	} else {
+		m_BookInfo->Reset(ctx, FbViewItem());
+	}
 }
 
 void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
@@ -409,9 +411,7 @@ void FbBookPanel::UpdateFonts(bool refresh)
 
 void FbBookPanel::UpdateInfo(int id)
 {
-	if (m_BookList->GetBook() == id) {
-		InfoCash::UpdateInfo(this, id, GetSplitMode() == wxSPLIT_VERTICAL);
-	}
+	if (m_BookList->GetBook() == id) ResetPreview();
 }
 
 void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)

@@ -1,5 +1,6 @@
 #include "FbPreviewWindow.h"
 #include "FbConst.h"
+#include "FbBookData.h"
 
 IMPLEMENT_CLASS(FbPreviewWindow, FbHtmlWindow)
 
@@ -34,6 +35,10 @@ FbPreviewWindow::~FbPreviewWindow()
 
 void FbPreviewWindow::Reset(const FbViewContext &ctx, const FbViewItem &item)
 {
+	if (item.GetType() == FbViewItem::Book) {
+		int id = item.GetCode();
+		if (id) FbBookData(id).LoadIcon();
+	}
 	m_thread->Reset(ctx, item);
 }
 

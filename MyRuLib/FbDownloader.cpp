@@ -1,7 +1,7 @@
 #include "FbDownloader.h"
 #include "MyRuLibApp.h"
 #include "FbBookEvent.h"
-#include "InfoCash.h"
+#include "FbCollection.h"
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbDatabase.h"
@@ -218,7 +218,7 @@ void FbInternetBook::SaveFile(const bool success)
 
 	FbLogMessage(_("Download finished"), m_url);
 
-	InfoCash::EmptyInfo(m_id);
+	FbCollection::ResetInfo(m_id);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, 0, FT_DOWNLOAD).Post();
 	FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, m_id).Post();

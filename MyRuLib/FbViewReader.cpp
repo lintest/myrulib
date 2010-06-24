@@ -79,7 +79,7 @@ static void TextHnd(void *userData, const XML_Char *s, int len)
 //-----------------------------------------------------------------------------
 
 FbViewReader::FbViewReader(FbViewThread & thread, FbViewData & data)
-	: m_thread(thread), m_data(m_data), parsebody(false)
+	: m_thread(thread), m_data(data), parsebody(false)
 {
 }
 

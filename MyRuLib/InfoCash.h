@@ -53,8 +53,6 @@ public:
 	static void UpdateInfo(wxEvtHandler *frame, int id, bool bVertical, bool bEditable = false);
 	static wxString GetInfo(int id, const wxString &md5sum, bool bVertical, bool bEditable, const wxString &filetype);
 	static void Empty();
-	static wxString GetIcon(const wxString &extension);
-	static void LoadIcon(const wxString &extension);
 public:
 	static void EmptyInfo(int id);
 	static void SetISBN(int id, wxString html);
@@ -62,14 +60,11 @@ public:
 	static void SetFilelist(int id, wxString html);
 	static void SetAnnotation(int id, wxString html);
 	static void AddImage(int id, wxString &filename, wxString &imagedata, wxString &imagetype);
-	static void AddIcon(wxString extension, wxBitmap bitmap);
 private:
 	static InfoNodeArray sm_cash;
 	static InfoNode * GetNode(int id);
 	static InfoNode * FindNode(int id);
 	static wxCriticalSection sm_locker;
-	static wxArrayString sm_icons;
-	static wxArrayString sm_noico;
 };
 
 class ShowThread: public FbBookThreadBase
