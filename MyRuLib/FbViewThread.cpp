@@ -1,37 +1,12 @@
 #include "FbViewThread.h"
 #include "FbViewReader.h"
+#include "FbExtractInfo.h"
 #include "FbBookEvent.h"
 #include "FbCollection.h"
 #include "FbColumns.h"
 #include "FbDatabase.h"
-#include "InfoCash.h"
 #include "ZipReader.h"
-
-//-----------------------------------------------------------------------------
-//  FbBookThreadBase
-//-----------------------------------------------------------------------------
-
-void FbBookThreadBase::UpdateInfo()
-{
-	if (!m_id) return;
-	wxThread *thread = new ShowThread(this);
-	if ( thread->Create() == wxTHREAD_NO_ERROR )  thread->Run();
-}
-
-//! Return specified string with the html special characters encoded.
-//! Similar to PHP's htmlspecialchars() function.
-wxString FbBookThreadBase::HTMLSpecialChars( const wxString &value, const bool bSingleQuotes, const bool bDoubleQuotes )
-{
-  wxString szToReturn = value;
-  szToReturn.Replace(wxT("&"),wxT("&amp;"));
-  if( bSingleQuotes )
-	szToReturn.Replace(wxT("'"),wxT("&#039;"));
-  if( bDoubleQuotes )
-	szToReturn.Replace(wxT("\""), wxT("&quot;"));
-  szToReturn.Replace(wxT("<"),wxT("&lt;"));
-  szToReturn.Replace(wxT(">"),wxT("&gt;"));
-  return szToReturn;
-}
+#include "FbConst.h"
 
 //-----------------------------------------------------------------------------
 //  FbViewThread
@@ -70,7 +45,7 @@ void FbViewThread::OpenBook()
 		return;
 	}
 
-	if (IsClosed()) return; 
+	if (IsClosed()) return;
 
 	wxString html = FbCollection::GetBookHTML(m_ctx, m_book, id);
 	if (!html.IsEmpty()) {
@@ -78,11 +53,15 @@ void FbViewThread::OpenBook()
 		return;
 	}
 
-	if (IsClosed()) return; 
+	if (IsClosed()) return;
 
 	FbViewData * info = new FbViewData(id);
-	info->SetText(FbViewData::DSCR, GetDescr());
-	SendHTML(*info);
+	{
+		FbCommonDatabase database;
+		info->SetText(FbViewData::DSCR, GetDescr(database));
+		info->SetText(FbViewData::FILE, GetFiles(database));
+		SendHTML(*info);
+	}
 
 	if (IsClosed()) { delete info; return; }
 
@@ -107,10 +86,9 @@ void FbViewThread::SendHTML(wxWindowID winid, const wxString &html)
 	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, winid, m_view.GetCode(), html).Post(m_frame);
 }
 
-wxString FbViewThread::GetDescr()
+wxString FbViewThread::GetDescr(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL");
-	FbCommonDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_view.GetCode());
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -118,4 +96,18 @@ wxString FbViewThread::GetDescr()
 		return result.GetString(0);
 	else return wxEmptyString;
 }
+
+wxString FbViewThread::GetFiles(wxSQLite3Database &database)
+{
+	FbExtractArray items(database, m_view.GetCode());
+
+	wxString html;
+
+	for (size_t i = 0; i<items.Count(); i++) {
+		html << wxString::Format(wxT("<p>%s</p>"), items[i].NameInfo().c_str());
+	}
+
+	return html;
+}
+
 

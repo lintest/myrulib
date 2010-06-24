@@ -143,12 +143,10 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbViewerDlg.o \
 	myrulib_FbWindow.o \
 	myrulib_ImpContext.o \
-	myrulib_InfoCash.o \
 	myrulib_LimitedTextCtrl.o \
 	myrulib_MyRuLibApp.o \
 	myrulib_ParseCtx.o \
 	myrulib_ProgressBar.o \
-	myrulib_TitleThread.o \
 	myrulib_ZipReader.o \
 	myrulib_md5.o \
 	myrulib_base64.o \
@@ -547,9 +545,6 @@ myrulib_FbWindow.o: $(srcdir)/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
 myrulib_ImpContext.o: $(srcdir)/MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ImpContext.cpp
 
-myrulib_InfoCash.o: $(srcdir)/MyRuLib/InfoCash.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/InfoCash.cpp
-
 myrulib_LimitedTextCtrl.o: $(srcdir)/MyRuLib/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/LimitedTextCtrl.cpp
 
@@ -561,9 +556,6 @@ myrulib_ParseCtx.o: $(srcdir)/MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
 
 myrulib_ProgressBar.o: $(srcdir)/MyRuLib/ProgressBar.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ProgressBar.cpp
-
-myrulib_TitleThread.o: $(srcdir)/MyRuLib/TitleThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/TitleThread.cpp
 
 myrulib_ZipReader.o: $(srcdir)/MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ZipReader.cpp

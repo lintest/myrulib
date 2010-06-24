@@ -1,5 +1,4 @@
 #include "FbMasterThread.h"
-#include "InfoCash.h"
 
 //-----------------------------------------------------------------------------
 //  FbJoinedThread

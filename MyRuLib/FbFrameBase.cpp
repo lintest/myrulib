@@ -3,7 +3,6 @@
 #include "ExternalDlg.h"
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
-#include "InfoCash.h"
 #include "FbFilterDlg.h"
 #include "FbColumnDlg.h"
 

@@ -6,8 +6,8 @@
 #include "FbMainMenu.h"
 #include "BaseThread.h"
 #include "MyRuLibApp.h"
-#include "InfoCash.h"
 #include "FbBookEvent.h"
+#include "FbViewThread.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/panel.h>
@@ -29,7 +29,7 @@ END_EVENT_TABLE()
 
 FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id):
 	FbAuiMDIChildFrame(parent, ID_FRAME_HTML, GetTitle()),
-	m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id))
+	m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id)), m_thread(NULL)
 {
 	static bool bNotLoaded = true;
 	if (bNotLoaded) {
@@ -39,7 +39,25 @@ FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id):
 	}
 	CreateControls();
 	UpdateFonts(false);
-	InfoCash::UpdateInfo(this, m_id, false, true);
+	Reset();
+}
+
+FbFrameHtml::~FbFrameHtml()
+{
+	if (m_thread) {
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+}
+
+void FbFrameHtml::Reset()
+{
+	FbViewContext ctx;
+	ctx.editable = true;
+	ctx.vertical = false;
+	FbViewItem view(FbViewItem::Book, m_id);
+	m_thread = new FbViewThread(this, ctx, view);
+	m_thread->Execute();
 }
 
 void FbFrameHtml::Load(const wxString & html)
@@ -266,7 +284,7 @@ void FbFrameHtml::DeleteLink(const wxString &key)
 
 void FbFrameHtml::DoUpdate()
 {
-	InfoCash::UpdateInfo(this, m_id, false, true);
+	Reset();
 	FbFolderEvent(ID_UPDATE_FOLDER, 1, FT_COMMENT).Post();
 	FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, m_id).Post();
 }
@@ -275,5 +293,5 @@ void FbFrameHtml::UpdateFonts(bool refresh)
 {
 	if (refresh) m_info.SetPage(wxEmptyString);
 	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
-	if (refresh) InfoCash::UpdateInfo(this, m_id, false, true);
+	Reset();
 }

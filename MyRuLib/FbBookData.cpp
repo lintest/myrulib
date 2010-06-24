@@ -5,7 +5,7 @@
 #include "FbDownloader.h"
 #include "FbCollection.h"
 #include "FbColumns.h"
-#include "InfoCash.h"
+#include "FbConst.h"
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
 

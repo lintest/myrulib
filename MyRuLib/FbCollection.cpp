@@ -234,6 +234,19 @@ wxString FbCollection::GetBook(int code, size_t col)
 	return collection->GetCacheBook(code).GetValue(col);
 }
 
+void FbCollection::EmptyInfo()
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->DoEmptyInfo();
+}
+
+void FbCollection::DoEmptyInfo()
+{
+	m_infos.Empty();
+}
+
+
 FbCacheBook FbCollection::GetBookData(int code)
 {
 	wxCriticalSectionLocker locker(sm_section);

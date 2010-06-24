@@ -323,8 +323,6 @@
 		<Unit filename="FbWindow.h" />
 		<Unit filename="ImpContext.cpp" />
 		<Unit filename="ImpContext.h" />
-		<Unit filename="InfoCash.cpp" />
-		<Unit filename="InfoCash.h" />
 		<Unit filename="LimitedTextCtrl.cpp" />
 		<Unit filename="LimitedTextCtrl.h" />
 		<Unit filename="MyRuLibApp.cpp" />

@@ -5,7 +5,6 @@
 #include <wx/filename.h>
 #include <wx/arrimpl.cpp>
 #include <wx/wxsqlite3.h>
-#include "FbDatabase.h"
 
 class FbExtractItem
 {
@@ -35,7 +34,7 @@ class FbExtractArray
 	: public FbExtractArrayBase
 {
 	public:
-		FbExtractArray(FbDatabase & database, const int id);
+		FbExtractArray(wxSQLite3Database & database, const int id);
 		int GetId() const {return m_id; };
 		void DeleteFiles(const wxString &basepath) const;
 	private:

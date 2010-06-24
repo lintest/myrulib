@@ -88,7 +88,7 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 	wxRemoveFile(filename.GetFullPath());
 }
 
-FbExtractArray::FbExtractArray(FbDatabase & database, const int id)
+FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 	:FbExtractArrayBase(), m_id(id)
 {
 	{

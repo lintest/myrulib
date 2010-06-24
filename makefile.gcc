@@ -163,12 +163,10 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbViewerDlg.o \
 	build\myrulib_FbWindow.o \
 	build\myrulib_ImpContext.o \
-	build\myrulib_InfoCash.o \
 	build\myrulib_LimitedTextCtrl.o \
 	build\myrulib_MyRuLibApp.o \
 	build\myrulib_ParseCtx.o \
 	build\myrulib_ProgressBar.o \
-	build\myrulib_TitleThread.o \
 	build\myrulib_ZipReader.o \
 	build\myrulib_md5.o \
 	build\myrulib_base64.o \
@@ -589,9 +587,6 @@ build\myrulib_FbWindow.o: ./MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
 build\myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_InfoCash.o: ./MyRuLib/InfoCash.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build\myrulib_LimitedTextCtrl.o: ./MyRuLib/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -602,9 +597,6 @@ build\myrulib_ParseCtx.o: ./MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_ProgressBar.o: ./MyRuLib/ProgressBar.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build\myrulib_TitleThread.o: ./MyRuLib/TitleThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_ZipReader.o: ./MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)

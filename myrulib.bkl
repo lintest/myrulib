@@ -227,12 +227,10 @@
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
-		<sources>MyRuLib/InfoCash.cpp</sources>
 		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>
 		<sources>MyRuLib/ProgressBar.cpp</sources>
-		<sources>MyRuLib/TitleThread.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
 		<sources>MyRuLib/md5.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>

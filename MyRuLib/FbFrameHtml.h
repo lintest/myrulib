@@ -14,6 +14,7 @@ class FbFrameHtml: public FbAuiMDIChildFrame
 {
 	public:
 		FbFrameHtml(wxAuiMDIParentFrame * parent, int id);
+		virtual ~FbFrameHtml();
 		virtual wxString GetTitle() const { return _("Comments"); };
 		void Load(const wxString & html);
 		static void Execute();
@@ -28,6 +29,7 @@ class FbFrameHtml: public FbAuiMDIChildFrame
 		void DoUpdate();
 		void ModifyLink(const wxString &key);
 		void DeleteLink(const wxString &key);
+		void Reset();
 	private:
 		FbHtmlWindow m_info;
 		wxTextCtrl m_Caption;
@@ -36,6 +38,7 @@ class FbFrameHtml: public FbAuiMDIChildFrame
 		int m_id;
 		wxString m_key;
 		wxString m_md5sum;
+		FbThread * m_thread;
 	private:
 		void OnEnter(wxCommandEvent& event);
 		void OnSubmit(wxCommandEvent& event);

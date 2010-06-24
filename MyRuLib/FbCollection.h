@@ -52,6 +52,7 @@ class FbCollection: public wxObject
 		static void LoadIcon(const wxString &extension);
 		static void AddIcon(wxString extension, wxBitmap bitmap);
 		static wxString GetIcon(const wxString &extension);
+		static void EmptyInfo();
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
@@ -60,6 +61,7 @@ class FbCollection: public wxObject
 		void ResetData(FbCasheDataArray &items, int code);
 		void DoResetBook(int code);
 		void DoResetInfo(int code);
+		void DoEmptyInfo();
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
 	private:

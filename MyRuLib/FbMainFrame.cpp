@@ -21,7 +21,6 @@
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
 #include "FbUpdateThread.h"
-#include "InfoCash.h"
 #include "FbAboutDlg.h"
 #include "FbNotebook.h"
 #include "FbLocale.h"
@@ -663,7 +662,6 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 {
 	if (wxGetApp().OpenDatabase(filename)) {
 		SetTitle(GetTitle());
-		InfoCash::Empty();
 		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
 		FindAuthor(wxEmptyString);
 	}

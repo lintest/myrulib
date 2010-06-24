@@ -3,13 +3,13 @@
 #include "BaseThread.h"
 #include "ZipReader.h"
 #include "FbParams.h"
-#include "InfoCash.h"
 #include "FbConst.h"
 #include "FbExtractInfo.h"
 #include "FbDatabase.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbDownloader.h"
+#include "FbCollection.h"
 #include <wx/wxsqlite3.h>
 
 class ZipThread : public BaseThread
@@ -48,7 +48,7 @@ void *ZipThread::Entry()
 	zips.m_thread = this;
 	zips.SetDir(m_dirname);
 
-	InfoCash::Empty();
+	FbCollection::EmptyInfo();
 	DoFinish();
 
 	return NULL;
@@ -328,7 +328,7 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		wxLogError(_("Zip read error %s"), filename.c_str());
 	}
 
-	InfoCash::Empty();
+	FbCollection::EmptyInfo();
 
 	trans.Commit();
 }
