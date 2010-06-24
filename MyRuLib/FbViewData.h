@@ -7,7 +7,7 @@
 
 #define MAX_IMAGE_WIDTH 200
 
-class FbBookInfo: public wxObject
+class FbViewData: public wxObject
 {
 	public:
 		enum Fields {
@@ -17,9 +17,9 @@ class FbBookInfo: public wxObject
 			FILE,
 		};
 	public:
-		FbBookInfo(int id): m_id(id) {}
-		FbBookInfo(const FbBookInfo &info);
-		virtual ~FbBookInfo();
+		FbViewData(int id): m_id(id) {}
+		FbViewData(const FbViewData &info);
+		virtual ~FbViewData();
 		int GetCode() const { return m_id; }
 		void SetText(size_t index, const wxString &text);
 		wxString GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const;
@@ -34,6 +34,6 @@ class FbBookInfo: public wxObject
 };
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbBookInfo, FbBookInfoArray);
+WX_DECLARE_OBJARRAY(FbViewData, FbViewDataArray);
 
 #endif // __FBBOOKINFO_H__

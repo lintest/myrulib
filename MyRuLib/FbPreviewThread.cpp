@@ -1,5 +1,5 @@
 #include "FbPreviewThread.h"
-#include "FbBookThread.h"
+#include "FbViewThread.h"
 
 //-----------------------------------------------------------------------------
 //  FbPreviewThread
@@ -61,7 +61,7 @@ void * FbPreviewThread::Entry()
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
-		m_thread = new FbBookThread(m_owner, ctx, view);
+		m_thread = new FbViewThread(m_owner, ctx, view);
 		if (m_thread) m_thread->Execute();
 	}
 	return NULL;

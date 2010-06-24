@@ -7,10 +7,10 @@
 #include "FbThread.h"
 #include "FbViewContext.h"
 
-class FbBookThread: public FbThread
+class FbViewThread: public FbThread
 {
 	public:
-		FbBookThread(wxEvtHandler * frame, class FbViewContext &ctx, const FbViewItem &view)
+		FbViewThread(wxEvtHandler * frame, class FbViewContext &ctx, const FbViewItem &view)
 			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_ctx(ctx), m_view(view) {}
 	protected:
 		virtual void * Entry();

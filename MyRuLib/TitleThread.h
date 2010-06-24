@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/thread.h>
-#include "FbBookThread.h"
+#include "FbViewThread.h"
 #include "FbDatabase.h"
 
 class TitleThread : public FbBookThreadBase

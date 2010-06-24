@@ -1,4 +1,4 @@
-#include "FbBookInfo.h"
+#include "FbViewData.h"
 #include <wx/buffer.h>
 #include <wx/fs_mem.h>
 #include <wx/mstream.h>
@@ -6,19 +6,19 @@
 #include "wx/base64.h"
 
 //-----------------------------------------------------------------------------
-//  FbBookInfo
+//  FbViewData
 //-----------------------------------------------------------------------------
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(FbBookInfoArray);
+WX_DEFINE_OBJARRAY(FbViewDataArray);
 
-FbBookInfo::FbBookInfo(const FbBookInfo &info)
+FbViewData::FbViewData(const FbViewData &info)
 	: m_id(info.m_id)
 {
 	for (size_t i = 0; i < FILE; i++) m_text[i] = info.m_text[i];
 }
 
-FbBookInfo::~FbBookInfo()
+FbViewData::~FbViewData()
 {
 	size_t count = m_images.Count();
 	for (size_t i = 0; i < count; i++) {
@@ -26,17 +26,17 @@ FbBookInfo::~FbBookInfo()
 	}
 }
 
-void FbBookInfo::SetText(size_t index, const wxString &text)
+void FbViewData::SetText(size_t index, const wxString &text)
 {
 	if (index < FILE) m_text[index] = text;
 }
 
-wxString FbBookInfo::GetText(size_t index) const
+wxString FbViewData::GetText(size_t index) const
 {
 	return index < FILE ? m_text[index] : wxString();
 }
 
-void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &imagetype)
+void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &imagetype)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
 	wxString imagename = wxString::Format(wxT("%d/%s"), m_id, filename.c_str());
@@ -57,7 +57,7 @@ void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 		wxMemoryDC memDC;
 		memDC.SetUserScale(scale, scale);
 		memDC.SelectObject(result);
-		memDC.Blit(0, 0, image.GetWidth(), image.GetHeight(), &srcDC, 0, 0, wxCOPY, true); 
+		memDC.Blit(0, 0, image.GetWidth(), image.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
 		memDC.SelectObject(wxNullBitmap);
 		srcDC.SelectObject(wxNullBitmap);
 
@@ -66,7 +66,7 @@ void FbBookInfo::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	m_images.Add(filename);
 }
 
-wxString FbBookInfo::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const
+wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const
 {
 	return wxT("book info");
 }

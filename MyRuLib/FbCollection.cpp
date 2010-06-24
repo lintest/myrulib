@@ -110,7 +110,7 @@ void FbCollection::AddAuth(FbCacheData * data)
 	if (collection) collection->AddData(collection->m_auths, data);
 }
 
-void FbCollection::AddInfo(FbBookInfo * info)
+void FbCollection::AddInfo(FbViewData * info)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
@@ -133,7 +133,7 @@ FbCacheBook * FbCollection::AddBook(FbCacheBook * book)
 	return book;
 }
 
-void FbCollection::AddBook(FbBookInfo * info)
+void FbCollection::AddBook(FbViewData * info)
 {
 	size_t count = m_infos.Count();
 	m_infos.Insert(info, 0);
@@ -204,7 +204,7 @@ wxString FbCollection::GetBookHTML(const FbViewContext &ctx, const FbCacheBook &
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
 	if (collection == NULL) return wxEmptyString;
-	FbBookInfo * info = collection->GetCacheInfo(code);
+	FbViewData * info = collection->GetCacheInfo(code);
 	return info ? info->GetHTML(ctx, book) : wxString();
 }
 
@@ -239,11 +239,11 @@ FbCacheBook FbCollection::GetCacheBook(int code)
 	return 0;
 }
 
-FbBookInfo * FbCollection::GetCacheInfo(int code)
+FbViewData * FbCollection::GetCacheInfo(int code)
 {
 	size_t count = m_infos.Count();
 	for (size_t i = 0; i < count; i++) {
-		FbBookInfo & info = m_infos[i];
+		FbViewData & info = m_infos[i];
 		if (info.GetCode() == code) return &info;
 	}
 	return NULL;

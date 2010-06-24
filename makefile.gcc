@@ -96,11 +96,9 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbAuthorDlg.o \
 	build\myrulib_FbBookData.o \
 	build\myrulib_FbBookEvent.o \
-	build\myrulib_FbBookInfo.o \
 	build\myrulib_FbBookList.o \
 	build\myrulib_FbBookMenu.o \
 	build\myrulib_FbBookPanel.o \
-	build\myrulib_FbBookThread.o \
 	build\myrulib_FbBookTree.o \
 	build\myrulib_FbCacheBook.o \
 	build\myrulib_FbCheckList.o \
@@ -158,7 +156,9 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbTreeView.o \
 	build\myrulib_FbUpdateThread.o \
 	build\myrulib_FbViewContext.o \
+	build\myrulib_FbViewData.o \
 	build\myrulib_FbViewItem.o \
+	build\myrulib_FbViewThread.o \
 	build\myrulib_FbViewerDlg.o \
 	build\myrulib_FbWindow.o \
 	build\myrulib_ImpContext.o \
@@ -388,9 +388,6 @@ build\myrulib_FbBookData.o: ./MyRuLib/FbBookData.cpp $(MYRULIB_ODEP)
 build\myrulib_FbBookEvent.o: ./MyRuLib/FbBookEvent.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_FbBookInfo.o: ./MyRuLib/FbBookInfo.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build\myrulib_FbBookList.o: ./MyRuLib/FbBookList.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -398,9 +395,6 @@ build\myrulib_FbBookMenu.o: ./MyRuLib/FbBookMenu.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbBookPanel.o: ./MyRuLib/FbBookPanel.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build\myrulib_FbBookThread.o: ./MyRuLib/FbBookThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbBookTree.o: ./MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
@@ -574,7 +568,13 @@ build\myrulib_FbUpdateThread.o: ./MyRuLib/FbUpdateThread.cpp $(MYRULIB_ODEP)
 build\myrulib_FbViewContext.o: ./MyRuLib/FbViewContext.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build\myrulib_FbViewData.o: ./MyRuLib/FbViewData.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build\myrulib_FbViewItem.o: ./MyRuLib/FbViewItem.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbViewThread.o: ./MyRuLib/FbViewThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbViewerDlg.o: ./MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)

@@ -160,11 +160,9 @@
 		<sources>MyRuLib/FbAuthorDlg.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
 		<sources>MyRuLib/FbBookEvent.cpp</sources>
-		<sources>MyRuLib/FbBookInfo.cpp</sources>
 		<sources>MyRuLib/FbBookList.cpp</sources>
 		<sources>MyRuLib/FbBookMenu.cpp</sources>
 		<sources>MyRuLib/FbBookPanel.cpp</sources>
-		<sources>MyRuLib/FbBookThread.cpp</sources>
 		<sources>MyRuLib/FbBookTree.cpp</sources>
 		<sources>MyRuLib/FbCacheBook.cpp</sources>
 		<sources>MyRuLib/FbCheckList.cpp</sources>
@@ -222,7 +220,9 @@
 		<sources>MyRuLib/FbTreeView.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
 		<sources>MyRuLib/FbViewContext.cpp</sources>
+		<sources>MyRuLib/FbViewData.cpp</sources>
 		<sources>MyRuLib/FbViewItem.cpp</sources>
+		<sources>MyRuLib/FbViewThread.cpp</sources>
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>

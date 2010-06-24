@@ -6,7 +6,7 @@
 #include <wx/thread.h>
 #include <wx/html/htmlwin.h>
 #include "FbConst.h"
-#include "FbBookThread.h"
+#include "FbViewThread.h"
 
 #define INFO_CASH_SIZE 20
 

@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include "FbDatabase.h"
-#include "FbBookInfo.h"
+#include "FbViewData.h"
 #include "FbCacheBook.h"
 
 class FbModel;
@@ -44,17 +44,17 @@ class FbCollection: public wxObject
 		static FbCacheBook GetBookData(int code);
 		static void AddSeqn(FbCacheData * data);
 		static void AddAuth(FbCacheData * data);
-		static void AddInfo(FbBookInfo * info);
+		static void AddInfo(FbViewData * info);
 		static void ResetSeqn(int code);
 		static void ResetAuth(int code);
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
 		FbCacheBook * AddBook(FbCacheBook * book);
-		void AddBook(FbBookInfo * info);
+		void AddBook(FbViewData * info);
 		void ResetData(FbCasheDataArray &items, int code);
 		FbCacheBook GetCacheBook(int code);
-		FbBookInfo * GetCacheInfo(int code);
+		FbViewData * GetCacheInfo(int code);
 	private:
 		static wxCriticalSection sm_section;
 		FbCommonDatabase m_database;
@@ -62,7 +62,7 @@ class FbCollection: public wxObject
 		FbCasheDataArray m_auths;
 		FbCasheDataArray m_seqns;
 		FbCasheBookArray m_books;
-		FbBookInfoArray m_infos;
+		FbViewDataArray m_infos;
 		DECLARE_CLASS(FbCollection)
 };
 
