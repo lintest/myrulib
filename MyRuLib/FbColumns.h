@@ -26,6 +26,8 @@ class FbColumns
 	public:
 		static wxString GetName(size_t field);
 		static wxString GetSize(size_t field);
+		static wxChar GetCode(size_t field);
+		static size_t GetCode(wxChar letter);
 };
 
 #endif // __FBCOLUMNS_H__

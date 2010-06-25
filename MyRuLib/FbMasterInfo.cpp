@@ -126,9 +126,13 @@ void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 wxString FbMasterInfoBase::GetOrderTable() const
 {
 	switch (GetOrderIndex()) {
-		case BF_AUTH: return wxT("LEFT JOIN authors ON books.id_author = authors.id");
-		case BF_RATE: return wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
-		default: return wxEmptyString;
+		case BF_AUTH:
+			return wxT("LEFT JOIN authors ON books.id_author = authors.id");
+		case BF_RATE:
+		case BF_DOWN:
+			return wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
+		default:
+			return wxEmptyString;
 	}
 }
 
@@ -147,6 +151,7 @@ wxString FbMasterInfoBase::GetOrderColumn() const
 		case BF_SIZE: return wxT("books.file_size");
 		case BF_BITE: return wxT("books.file_size");
 		case BF_SEQN: return wxT("books.title");
+		case BF_DOWN: return wxT("states.download");
 		case BF_MD5S: return wxT("books.md5sum");
 		default: return wxT("books.title");
 	}

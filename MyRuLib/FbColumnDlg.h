@@ -3,28 +3,33 @@
 
 #include <wx/wx.h>
 #include "FbWindow.h"
+#include "FbTreeView.h"
 
-///////////////////////////////////////////////////////////////////////////////
-/// Class FbColumnDlg
-///////////////////////////////////////////////////////////////////////////////
+class FbColumnModel: public FbListStore
+{
+	public:
+		void MoveUp();
+		void MoveDown();
+};
+
 class FbColumnDlg : public FbDialog
 {
 	public:
-		FbColumnDlg( wxWindow* parent, wxWindowID id = wxID_ANY );
-		static void Execute(wxWindow* parent);
-
+		static bool Execute(wxWindow * parent, wxArrayInt & columns);
+		FbColumnDlg(wxWindow * parent, const wxArrayInt & columns);
 	private:
-		void Assign(bool write);
-
+		FbModel * CreateModel(const wxArrayInt & columns);
+		void GetColumns(wxArrayInt & columns);
+		void DoSelected();
 	private:
-		enum ID {
-			ID_COLUMN_LANG,
-			ID_COLUMN_TYPE,
-			ID_COLUMN_SYZE,
-			ID_COLUMN_GENRE,
-			ID_COLUMN_RATING,
-			ID_REMOVE_FILES,
-		};
+		FbTreeViewCtrl m_fields;
+		wxToolBar m_toolbar;
+		FbColumnModel * m_model;
+	private:
+		void OnItemSelected(wxTreeEvent & event);
+		void OnMoveUp(wxCommandEvent& event);
+		void OnMoveDown(wxCommandEvent& event);
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBCOLUMNDLG_H__

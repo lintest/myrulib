@@ -1353,3 +1353,14 @@ int FbTreeViewCtrl::GetBook() const
 	return 0;
 }
 
+void FbTreeViewCtrl::GetColumns(wxArrayInt &columns) const
+{
+	columns.Empty();
+    if (m_header_win) {
+    	size_t count = m_header_win->GetColumnCount();
+    	for (size_t i = 0; i < count; i++) {
+    		size_t index = m_header_win->GetColumnIndex(i);
+    		columns.Add(index);
+		}
+    }
+}

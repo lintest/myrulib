@@ -331,7 +331,10 @@ void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 
 void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 {
-	FbColumnDlg::Execute(this);
+	wxArrayInt columns;
+	m_BooksPanel->m_BookList->GetColumns(columns);
+	bool ok = FbColumnDlg::Execute(this, columns);
+	if (ok) m_BooksPanel->CreateColumns(columns);
 }
 
 void FbFrameBase::UpdateBooklist()

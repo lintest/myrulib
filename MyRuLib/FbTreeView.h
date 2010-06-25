@@ -68,6 +68,8 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
         void EmptyColumns();
 
+        void GetColumns(wxArrayInt &columns) const;
+
 		void AssignModel(FbModel * model);
 
 		FbModel * GetModel() const;

@@ -21,3 +21,19 @@ wxString FbColumns::GetName(size_t field)
 		default: return wxEmptyString;
 	}
 }
+
+wxChar FbColumns::GetCode(size_t field)
+{
+	if (BF_AUTH <= field && field < BF_LAST)
+		return wxT('A') + (field - BF_AUTH);
+	else return 0;
+}
+
+size_t FbColumns::GetCode(wxChar letter)
+{
+	int delta = letter - wxT('A');
+	if (0 <= delta && delta < (BF_LAST - BF_AUTH))
+		return BF_AUTH + delta;
+	else return 0;
+}
+

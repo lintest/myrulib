@@ -285,7 +285,7 @@ class FbListStore: public FbListModel
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level)
 			{ level = 0; return row && row <= m_list.Count() ? FbModelItem(*this, &m_list[row - 1]) : *this; }
-	private:
+	protected:
 		FbModelDataArray m_list;
 		DECLARE_CLASS(FbListStore);
 };

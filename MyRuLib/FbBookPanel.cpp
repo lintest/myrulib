@@ -186,7 +186,6 @@ void FbBookPanel::SetViewMode(int mode)
 		case FB2_VIEW_VERTICAL: SplitVertically(m_BookList, m_BookInfo, GetSize().GetWidth()/2); break;
 		default: SplitHorizontally(m_BookList, m_BookInfo, GetSize().GetHeight()/2);
 	}
-	ResetPreview();
 }
 
 void FbBookPanel::ResetPreview()
@@ -454,6 +453,7 @@ void FbBookPanel::OnChangeView(wxCommandEvent & event)
 	}
 	SetViewMode(mode);
 	if (m_KeyView) FbParams().SetValue(m_KeyView, mode);
+	ResetPreview();
 }
 
 FbViewMode FbBookPanel::GetViewMode()
@@ -536,4 +536,21 @@ size_t FbBookPanel::GetSelected(wxArrayInt &items)
 {
 	FbModel * model = m_BookList->GetModel();
 	return model ? model->GetSelected(items) : 0;
+}
+
+void FbBookPanel::CreateColumns(const wxArrayInt &columns)
+{
+	m_BookList->EmptyColumns();
+	m_BookList->AddColumn(BF_NAME, _("Title"), 10, wxALIGN_LEFT);
+	if (m_ListMode ==  FB2_MODE_TREE) m_BookList->AddColumn(BF_NUMB, _("#"), 2, wxALIGN_RIGHT);
+
+	size_t count = columns.Count();
+	for (size_t i = 0; i < count; i++) {
+		int index = columns[i];
+		if (BF_AUTH <= index && index < BF_LAST) {
+			wxString name = FbColumns::GetName(index);
+			m_BookList->AddColumn(index, name, 10, wxALIGN_LEFT);
+		}
+	}
+	m_BookList->Refresh();
 }

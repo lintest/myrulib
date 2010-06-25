@@ -30,7 +30,8 @@ class FbBookPanel: public wxSplitterWindow
 		wxString GetOrderSQL();
 		void Localize();
 		wxString GetSelected();
-		const FbMasterInfo & GetInfo() const 
+		void CreateColumns(const wxArrayInt &columns);
+		const FbMasterInfo & GetInfo() const
 			{ return m_master; };
 	public:
 		FbTreeViewCtrl * m_BookList;

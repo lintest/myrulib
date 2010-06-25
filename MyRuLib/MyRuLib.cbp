@@ -264,6 +264,8 @@
 		<Unit filename="FbHtmlWindow.h" />
 		<Unit filename="FbImportThread.cpp" />
 		<Unit filename="FbImportThread.h" />
+		<Unit filename="FbInternetBook.cpp" />
+		<Unit filename="FbInternetBook.h" />
 		<Unit filename="FbLocale.cpp" />
 		<Unit filename="FbLocale.h" />
 		<Unit filename="FbLogStream.cpp" />
