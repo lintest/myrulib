@@ -74,15 +74,18 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 		wxMemoryDC srcDC;
 		srcDC.SelectObject(bitmap);
 
-		wxBitmap result(w, h);
-		wxMemoryDC memDC;
-		memDC.SelectObject(result);
-		memDC.SetUserScale(scale, scale);
-		memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
-		memDC.SelectObject(wxNullBitmap);
-		srcDC.SelectObject(wxNullBitmap);
-
-		wxMemoryFSHandler::AddFile(imagename, result, wxBITMAP_TYPE_PNG);
+		wxMutexGuiEnter();
+		try {
+			wxBitmap result(w, h);
+			wxMemoryDC memDC;
+			memDC.SelectObject(result);
+			memDC.SetUserScale(scale, scale);
+			memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
+			memDC.SelectObject(wxNullBitmap);
+			wxMemoryFSHandler::AddFile(imagename, result, wxBITMAP_TYPE_PNG);
+		} catch (...) {
+		}
+		wxMutexGuiLeave();
 	}
 	m_images.Add(filename);
 }
