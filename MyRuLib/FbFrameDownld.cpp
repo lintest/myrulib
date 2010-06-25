@@ -81,9 +81,9 @@ wxToolBar * FbFrameDownld::CreateToolBar(long style, wxWindowID winid, const wxS
 void FbFrameDownld::FillFolders(const int iCurrent)
 {
 	FbListStore * model = new FbListStore;
-	model->Append(new FbDownListData(+1, _("Queue")));
-	model->Append(new FbDownListData(-1, _("Ready")));
-	model->Append(new FbDownListData(-2, _("Fault")));
+	model->Append(new FbDownListData(0, _("Queue")));
+	model->Append(new FbDownListData(1, _("Ready")));
+	model->Append(new FbDownListData(2, _("Fault")));
 	m_MasterList->AssignModel(model);
 }
 
@@ -111,7 +111,7 @@ void FbFrameDownld::OnMoveUp(wxCommandEvent& event)
 	if (sel.IsEmpty()) return;
 
 	wxString sql = wxString::Format(wxT("\
-		UPDATE states SET download=download+1 WHERE download>0 AND md5sum NOT IN \
+		UPDATE states SET download=download-1 WHERE download<0 AND md5sum NOT IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
 	"), sel.c_str());
 
@@ -126,7 +126,7 @@ void FbFrameDownld::OnMoveDown(wxCommandEvent& event)
 	if (sel.IsEmpty()) return;
 
 	wxString sql = wxString::Format(wxT("\
-		UPDATE states SET download=download+1 WHERE download>0 AND md5sum IN \
+		UPDATE states SET download=download-1 WHERE download<0 AND md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id IN (%s)) \
 	"), sel.c_str());
 

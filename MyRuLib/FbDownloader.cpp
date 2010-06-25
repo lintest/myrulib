@@ -26,7 +26,7 @@ void * FbDownloader::Entry()
 
 wxString FbDownloader::GetBook()
 {
-	wxString sql = wxT("SELECT md5sum FROM states WHERE download>0 ORDER BY download");
+	wxString sql = wxT("SELECT md5sum FROM states WHERE download<0 ORDER BY download DESC");
 	FbLocalDatabase database;
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (result.NextRow()) return result.GetString(0);

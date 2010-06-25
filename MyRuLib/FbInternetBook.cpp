@@ -11,6 +11,7 @@
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include "FbDataPath.h"
+#include "FbDateTime.h"
 
 class FbURL: public wxURL
 {
@@ -217,10 +218,11 @@ void FbInternetBook::SaveFile(const bool success)
 
 	wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
 
+	int code = success ? FbDateTime::Today().Code() : 1;
 	try {
 		FbLocalDatabase database;
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, success ? -1 : -2);
+		stmt.Bind(1, code);
 		stmt.Bind(2, m_md5sum);
 		stmt.ExecuteUpdate();
 	} catch (wxSQLite3Exception & e) {

@@ -272,23 +272,12 @@ FbCacheBook FbCollection::GetCacheBook(int code)
 		if (book.GetCode() == code) return book;
 	}
 
-	wxString sql = wxT("\
-		SELECT DISTINCT \
-			books.title, books.file_size, books.file_type, books.lang, books.genres, \
-			books.md5sum, states.rating, books.created, AGGREGATE(authors.full_name) as full_name \
-		FROM books \
-			LEFT JOIN authors ON books.id_author = authors.id \
-			LEFT JOIN states ON books.md5sum=states.md5sum \
-		WHERE books.id=? \
-		GROUP BY books.title, books.file_size, books.file_type, books.lang, states.rating, books.created \
-		LIMIT 1 \
-	");
-
 	try {
+		wxString sql = FbCacheBook::GetSQL();
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, code);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return *AddBook(new FbCacheBook(code, result));
+		if (result.NextRow()) return * AddBook(new FbCacheBook(code, result));
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}

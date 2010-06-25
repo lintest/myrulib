@@ -7,6 +7,7 @@
 class FbCacheBook: public wxObject
 {
 	public:
+		static wxString GetSQL();
 		FbCacheBook(int code = 0);
 		FbCacheBook(int code, wxSQLite3ResultSet &result);
 		FbCacheBook(const FbCacheBook &book);
@@ -25,6 +26,7 @@ class FbCacheBook: public wxObject
 		int m_rate;
 		int m_date;
 		int m_size;
+		int m_down;
 		DECLARE_CLASS(FbCacheBook)
 };
 

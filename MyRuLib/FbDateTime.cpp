@@ -14,3 +14,15 @@ wxDateTime::Month FbDateTime::GetMonth(int month)
 {
     return wxDateTime::Month((month - 1) % 12 + wxDateTime::Jan);
 }
+
+FbDateTime FbDateTime::Today()
+{
+	return wxDateTime::Today(); 
+}
+
+int FbDateTime::Code() const
+{
+	long code;
+	Format(wxT("%y%m%d")).ToLong(&code);
+	return code;
+}

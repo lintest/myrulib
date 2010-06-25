@@ -6,7 +6,7 @@
 #include <wx/tokenzr.h>
 
 #define DB_DATABASE_VERSION 11
-#define DB_CONFIG_VERSION 3
+#define DB_CONFIG_VERSION 4
 
 wxString Lower(const wxString & input)
 {
@@ -585,6 +585,12 @@ void FbConfigDatabase::DoUpgrade(int version)
 		case 3: {
 			/** TABLE script **/
 			ExecuteUpdate(wxT("CREATE TABLE script(id INTEGER PRIMARY KEY, name TEXT, text TEXT)"));
+		} break;
+		case 4: {
+			/** TABLE script **/
+			ExecuteUpdate(wxT("UPDATE states SET download = - 2 - download WHERE download>0"));
+			ExecuteUpdate(wxT("UPDATE states SET download = 1 WHERE download=-2"));
+			ExecuteUpdate(wxT("UPDATE states SET download = 101 WHERE download=-1"));
 		} break;
 	}
 }

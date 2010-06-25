@@ -182,13 +182,16 @@ IMPLEMENT_CLASS(FbMasterDownInfo, FbMasterInfoBase)
 wxString FbMasterDownInfo::GetWhere(wxSQLite3Database &database) const
 {
 	wxString sql = wxT("books.md5sum IN (SELECT md5sum FROM states WHERE download");
-	if (m_id > 0) sql << wxT(">0)"); else sql << wxT("=?)"); 
+	switch (m_id) {
+		case 1: sql << wxT(">1)"); break;
+		case 2: sql << wxT("=1)"); break;
+		default: sql << wxT("<0)"); 
+	}
 	return sql;
 }
 
 void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
 {
-	if (m_id < 0) stmt.Bind(1, m_id);
 }
 
 //-----------------------------------------------------------------------------

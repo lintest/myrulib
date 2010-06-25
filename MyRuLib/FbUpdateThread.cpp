@@ -41,7 +41,7 @@ void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
 	int id = ctx.GetArgCount()>0 ? ctx.GetInt(0) : 0;
 	m_increment++;
 	id += m_increment;
-	ctx.SetResult(id);
+	ctx.SetResult(-id);
 }
 
 void * FbFolderUpdateThread::Entry()

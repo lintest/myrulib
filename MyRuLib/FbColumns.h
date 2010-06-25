@@ -17,6 +17,7 @@ enum FbBookFields {
 	BF_BITE,
 	BF_SEQN,
 	BF_MD5S,
+	BF_DOWN,
 	BF_LAST,
 };
 

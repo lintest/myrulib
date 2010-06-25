@@ -2,6 +2,7 @@
 #include <wx/dir.h>
 #include <wx/list.h>
 #include "FbConst.h"
+#include "FbDateTime.h"
 #include "FbGenres.h"
 #include "FbParams.h"
 #include "ZipReader.h"
@@ -234,8 +235,7 @@ void FbImportBook::AppendBook()
 	Convert();
 
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
-	long today = 0;
-	wxDateTime::Now().Format(wxT("%y%m%d")).ToLong(&today);
+	int today = FbDateTime::Today().Code();
 
 	for (size_t i = 0; i<authors.Count(); i++) {
 		int author = authors[i].GetId();
@@ -252,7 +252,7 @@ void FbImportBook::AppendBook()
 			stmt.Bind(8, (wxLongLong)m_filesize);
 			stmt.Bind(9, wxFileName(m_filename).GetExt().Lower());
 			stmt.Bind(10, lang);
-			stmt.Bind(11, (int) today);
+			stmt.Bind(11, today);
 			stmt.Bind(12, m_md5sum);
 			stmt.ExecuteUpdate();
 		}
