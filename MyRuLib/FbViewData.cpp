@@ -3,6 +3,8 @@
 #include "FbDatabase.h"
 #include "FbGenres.h"
 #include "FbCollection.h"
+#include "FbBookEvent.h"
+#include "MyRuLibApp.h"
 
 #include <wx/buffer.h>
 #include <wx/fs_mem.h>
@@ -67,25 +69,7 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	if (image.GetWidth() <= MAX_IMAGE_WIDTH) {
 		wxMemoryFSHandler::AddFile(imagename, buffer.GetData(), buffer.GetDataLen());
 	} else {
-		wxBitmap bitmap(image);
-		int w = MAX_IMAGE_WIDTH;
-		int h = bitmap.GetHeight() * MAX_IMAGE_WIDTH / bitmap.GetWidth();
-		double scale = double(MAX_IMAGE_WIDTH) / bitmap.GetWidth();
-		wxMemoryDC srcDC;
-		srcDC.SelectObject(bitmap);
-
-		wxMutexGuiEnter();
-		try {
-			wxBitmap result(w, h);
-			wxMemoryDC memDC;
-			memDC.SelectObject(result);
-			memDC.SetUserScale(scale, scale);
-			memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
-			memDC.SelectObject(wxNullBitmap);
-			wxMemoryFSHandler::AddFile(imagename, result, wxBITMAP_TYPE_PNG);
-		} catch (...) {
-		}
-		wxMutexGuiLeave();
+		FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
 	}
 	m_images.Add(filename);
 }

@@ -14,6 +14,7 @@ DECLARE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION, 5 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION, 6 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_EXPORT_ACTION, 7 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_ARRAY_ACTION,  8 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_IMAGE_ACTION,  10 )
 
 class FbModel;
 
@@ -166,6 +167,28 @@ class FbArrayEvent: public FbCommandEvent
 		FbSortedArrayInt m_check;
 };
 
+class FbImageEvent: public FbCommandEvent
+{
+	public:
+		FbImageEvent(wxWindowID winid)
+			: FbCommandEvent(fbEVT_ARRAY_ACTION, winid) {}
+
+		FbImageEvent(const FbImageEvent & event)
+			: FbCommandEvent(event), m_image(event.m_image) {}
+
+		FbImageEvent(wxWindowID winid, const wxImage & image, const wxString &str = wxEmptyString)
+			: FbCommandEvent(fbEVT_IMAGE_ACTION, winid, str), m_image(image) {}
+
+		virtual wxEvent *Clone() const
+			{ return new FbImageEvent(*this); }
+
+		const wxImage & GetImage() const
+			{ return m_image; }
+
+	public:
+		wxImage m_image;
+};
+
 typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
 
 typedef void (wxEvtHandler::*FbModelEventFunction)(FbModelEvent&);
@@ -179,6 +202,8 @@ typedef void (wxEvtHandler::*FbProgressEventFunction)(FbProgressEvent&);
 typedef void (wxEvtHandler::*FbMasterEventFunction)(FbMasterEvent&);
 
 typedef void (wxEvtHandler::*FbArrayEventFunction)(FbArrayEvent&);
+
+typedef void (wxEvtHandler::*FbImageEventFunction)(FbImageEvent&);
 
 #define EVT_FB_BOOK(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_BOOK_ACTION, id, -1, \
@@ -214,5 +239,10 @@ typedef void (wxEvtHandler::*FbArrayEventFunction)(FbArrayEvent&);
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_ARRAY_ACTION, id, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbArrayEventFunction, & fn ), (wxObject *) NULL ),
+
+#define EVT_FB_IMAGE(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_IMAGE_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbImageEventFunction, & fn ), (wxObject *) NULL ),
 
 #endif // __FBBOOKEVENT_H__

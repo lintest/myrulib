@@ -15,6 +15,10 @@
 
 IMPLEMENT_APP(MyRuLibApp)
 
+BEGIN_EVENT_TABLE(MyRuLibApp, wxApp)
+	EVT_FB_IMAGE(wxID_ANY, MyRuLibApp::OnImageEvent)
+END_EVENT_TABLE()
+
 MyRuLibApp::MyRuLibApp()
     :m_locale(NULL), m_collection(NULL), m_downloader(NULL)
 {
@@ -188,4 +192,24 @@ void MyRuLibApp::SetAppData(const wxString &filename)
 {
 	wxCriticalSectionLocker locker(m_section);
 	m_datafile = filename;
+}
+
+void MyRuLibApp::OnImageEvent(FbImageEvent & event)
+{
+	wxBitmap bitmap(event.GetImage());
+	int w = MAX_IMAGE_WIDTH;
+	int h = bitmap.GetHeight() * MAX_IMAGE_WIDTH / bitmap.GetWidth();
+	double scale = double(MAX_IMAGE_WIDTH) / bitmap.GetWidth();
+	wxMemoryDC srcDC;
+	srcDC.SelectObject(bitmap);
+
+	wxBitmap result(w, h);
+	wxMemoryDC memDC;
+	memDC.SelectObject(result);
+	memDC.SetUserScale(scale, scale);
+	memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
+	memDC.SelectObject(wxNullBitmap);
+	srcDC.SelectObject(wxNullBitmap);
+
+	wxMemoryFSHandler::AddFile(event.GetString(), result, wxBITMAP_TYPE_PNG);
 }

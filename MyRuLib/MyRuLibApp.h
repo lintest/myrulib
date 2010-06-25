@@ -6,10 +6,9 @@
 #include <wx/filename.h>
 #include "FbDatabase.h"
 #include "FbDownloader.h"
+#include "FbBookEvent.h"
 
-#ifdef __WXDEBUG__
-#include <wx/memory.h>
-#endif // __WXDEBUG__
+#define MAX_IMAGE_WIDTH 200
 
 class FbLocale;
 
@@ -43,6 +42,9 @@ class MyRuLibApp : public wxApp
 		FbLocale * m_locale;
 		FbCollection * m_collection;
 		FbDownloader * m_downloader;
+	private:
+		void OnImageEvent(FbImageEvent & event);
+		DECLARE_EVENT_TABLE()
 };
 
 DECLARE_APP(MyRuLibApp)

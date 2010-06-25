@@ -5,8 +5,6 @@
 #include "FbViewContext.h"
 #include "FbCacheBook.h"
 
-#define MAX_IMAGE_WIDTH 200
-
 class FbViewData: public wxObject
 {
 	public:

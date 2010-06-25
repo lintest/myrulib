@@ -167,7 +167,7 @@ void FbBookData::DoDownload() const
 	try {
 		bool ok = false;
 		FbLocalDatabase database;
-		int folder = database.NewId(FB_NEW_DOWNLOAD);
+		int folder = - database.NewId(FB_NEW_DOWNLOAD);
 		{
 			wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
