@@ -4,8 +4,8 @@
 #include "FbMainMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "FbDownloader.h"
 #include "FbDownList.h"
+#include "MyRuLibApp.h"
 #include "FbUpdateThread.h"
 #include "res/start.xpm"
 #include "res/pause.xpm"
@@ -96,12 +96,12 @@ void FbFrameDownld::UpdateFolder(const int folder, const FbFolderType type)
 
 void FbFrameDownld::OnStart(wxCommandEvent & event)
 {
-	FbDownloader::Start();
+	wxGetApp().StartDownload();
 }
 
 void FbFrameDownld::OnPause(wxCommandEvent & event)
 {
-	FbDownloader::Pause();
+	wxGetApp().StopDownload();
 }
 
 void FbFrameDownld::OnMoveUp(wxCommandEvent& event)

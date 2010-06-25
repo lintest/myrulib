@@ -16,14 +16,36 @@
 IMPLEMENT_APP(MyRuLibApp)
 
 MyRuLibApp::MyRuLibApp()
-    :m_locale(NULL), m_collection(NULL)
+    :m_locale(NULL), m_collection(NULL), m_downloader(NULL)
 {
 }
 
 MyRuLibApp::~MyRuLibApp()
 {
+	StopDownload();
     wxDELETE(m_locale);
 	wxDELETE(m_collection);
+}
+
+void MyRuLibApp::StartDownload()
+{
+	if (m_downloader) {
+		m_downloader->Signal();
+	} else {
+		m_downloader = new FbDownloader;
+		m_downloader->Execute();
+		m_downloader->Signal();
+	}
+}
+
+void MyRuLibApp::StopDownload()
+{
+	if (m_downloader) {
+		m_downloader->Close();
+		m_downloader->Signal();
+		m_downloader->Delete();
+		m_downloader = NULL;
+	}
 }
 
 void MyRuLibApp::Localize()
@@ -154,17 +176,16 @@ const wxString MyRuLibApp::GetAppData()
 {
 	wxCriticalSectionLocker locker(m_section);
 	return m_datafile;
-};
+}
 
 const wxString MyRuLibApp::GetAppPath()
 {
 	wxCriticalSectionLocker locker(m_section);
 	return wxFileName(m_datafile).GetPath();
-};
+}
 
 void MyRuLibApp::SetAppData(const wxString &filename)
 {
 	wxCriticalSectionLocker locker(m_section);
 	m_datafile = filename;
-};
-
+}

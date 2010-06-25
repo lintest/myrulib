@@ -2,10 +2,10 @@
 #include "ZipReader.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
-#include "FbDownloader.h"
 #include "FbCollection.h"
 #include "FbColumns.h"
 #include "FbConst.h"
+#include "MyRuLibApp.h"
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
 
@@ -186,9 +186,7 @@ void FbBookData::DoDownload() const
 		wxLogError(e.GetMessage());
 		return;
 	}
-
-	FbDownloader::Push(md5sum);
-	FbDownloader::Start();
+	wxGetApp().StartDownload();
 }
 
 void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const

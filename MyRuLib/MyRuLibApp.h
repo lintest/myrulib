@@ -5,6 +5,7 @@
 #include <wx/thread.h>
 #include <wx/filename.h>
 #include "FbDatabase.h"
+#include "FbDownloader.h"
 
 #ifdef __WXDEBUG__
 #include <wx/memory.h>
@@ -26,9 +27,11 @@ class MyRuLibApp : public wxApp
 		const wxString GetAppPath();
 		void Localize();
 		FbCollection * GetCollection() { return m_collection; }
+		void StartDownload();
+		void StopDownload();
 	protected:
 		virtual void OnUnhandledException() {}
-		virtual bool OnExceptionInMainLoop() { return true; }
+		virtual bool OnExceptionInMainLoop() { return false; }
 	private:
 		void OpenLog();
 		wxFileName GetDatabaseFilename(FbDatabase &database);
@@ -39,6 +42,7 @@ class MyRuLibApp : public wxApp
 		wxString m_datafile;
 		FbLocale * m_locale;
 		FbCollection * m_collection;
+		FbDownloader * m_downloader;
 };
 
 DECLARE_APP(MyRuLibApp)

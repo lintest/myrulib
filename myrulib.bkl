@@ -192,6 +192,7 @@
 		<sources>MyRuLib/FbGenrTree.cpp</sources>
 		<sources>MyRuLib/FbHtmlWindow.cpp</sources>
 		<sources>MyRuLib/FbImportThread.cpp</sources>
+		<sources>MyRuLib/FbInternetBook.cpp</sources>
 		<sources>MyRuLib/FbLocale.cpp</sources>
 		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>

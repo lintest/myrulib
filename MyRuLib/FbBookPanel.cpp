@@ -11,6 +11,7 @@
 #include "FbMasterThread.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"
+#include "FbInternetBook.h"
 
 IMPLEMENT_CLASS(FbBookPanel, wxSplitterWindow)
 
@@ -322,7 +323,6 @@ void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
 
 void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 {
-/*
 	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
 
 	wxString sql1 = wxString::Format(wxT("\
@@ -338,7 +338,6 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 
 	wxThread * thread = new FbCreateDownloadThread( sql1, folder, FT_DOWNLOAD, sql2 );
 	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-*/
 }
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)

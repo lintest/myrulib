@@ -370,6 +370,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbInternetBook.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbLocale.cpp"
 				>
 			</File>
@@ -709,6 +713,10 @@
 			</File>
 			<File
 				RelativePath=".\FbImportThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbInternetBook.h"
 				>
 			</File>
 			<File

@@ -545,7 +545,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
 	if (event.m_type == FT_DOWNLOAD) {
-		if (FbParams::GetValue(FB_AUTO_DOWNLD)) FbDownloader::Start();
+		if (FbParams::GetValue(FB_AUTO_DOWNLD)) wxGetApp().StartDownload();
 		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, false), FbFrameDownld);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 	} else {

@@ -114,6 +114,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbGenrTree.o \
 	myrulib_FbHtmlWindow.o \
 	myrulib_FbImportThread.o \
+	myrulib_FbInternetBook.o \
 	myrulib_FbLocale.o \
 	myrulib_FbLogStream.o \
 	myrulib_FbMainFrame.o \
@@ -457,6 +458,9 @@ myrulib_FbHtmlWindow.o: $(srcdir)/MyRuLib/FbHtmlWindow.cpp $(MYRULIB_ODEP)
 
 myrulib_FbImportThread.o: $(srcdir)/MyRuLib/FbImportThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbImportThread.cpp
+
+myrulib_FbInternetBook.o: $(srcdir)/MyRuLib/FbInternetBook.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbInternetBook.cpp
 
 myrulib_FbLocale.o: $(srcdir)/MyRuLib/FbLocale.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbLocale.cpp
