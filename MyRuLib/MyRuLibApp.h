@@ -26,6 +26,9 @@ class MyRuLibApp : public wxApp
 		const wxString GetAppPath();
 		void Localize();
 		FbCollection * GetCollection() { return m_collection; }
+	protected:
+		virtual void OnUnhandledException() {}
+		virtual bool OnExceptionInMainLoop() { return true; }
 	private:
 		void OpenLog();
 		wxFileName GetDatabaseFilename(FbDatabase &database);

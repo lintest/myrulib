@@ -283,9 +283,6 @@ test_for_selected_wxbuild:
 	@if not exist $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX)\wx\setup.h \
 	exit 1
 
-clear_resource: 
-	if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o
-
 build\libexpat_static.a: $(EXPAT_STATIC_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(EXPAT_STATIC_OBJECTS)
@@ -296,7 +293,7 @@ build\libsqlite3_static.a: $(SQLITE3_STATIC_OBJECTS)
 	ar rcu $@ $(SQLITE3_STATIC_OBJECTS)
 	ranlib $@
 
-build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS) clear_resource
+build\libwxsqlite3_static.a: $(WXSQLITE3_STATIC_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(WXSQLITE3_STATIC_OBJECTS)
 	ranlib $@
@@ -614,7 +611,7 @@ build\myrulib_treelistctrl.o: ./MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
 build\myrulib_resource_rc.o: ./MyRuLib/res/resource.rc $(MYRULIB_ODEP)
 	windres --use-temp-file -i$< -o$@  --define HAVE_W32API_H $(____WX_SHARED_2_p_1) $(__WXUNICODE_DEFINE_p_3) $(__WXDEBUG_DEFINE_p_3) --define __WXMSW__ --include-dir $(WX_DIR)$(WXLIBPATH)\msw$(WXLIBPOSTFIX) --include-dir $(WX_DIR)/include --include-dir build --include-dir build --define NDEBUG --define XML_STATIC --define FB_INCLUDE_LOCALE --include-dir SQLite3 --include-dir Expat --include-dir ./MyRuLib --include-dir ./WxSQLite3
 
-.PHONY: all clean clear_resource
+.PHONY: all clean
 
 
 SHELL := $(COMSPEC)

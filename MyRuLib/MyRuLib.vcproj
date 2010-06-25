@@ -218,10 +218,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookInfo.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbBookList.cpp"
 				>
 			</File>
@@ -231,10 +227,6 @@
 			</File>
 			<File
 				RelativePath=".\FbBookPanel.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbBookThread.cpp"
 				>
 			</File>
 			<File
@@ -466,6 +458,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbViewData.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbViewerDlg.cpp"
 				>
 			</File>
@@ -474,19 +470,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbViewReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbViewThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbWindow.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ImpContext.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\InfoCash.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\InfoThread.cpp"
 				>
 			</File>
 			<File
@@ -503,10 +499,6 @@
 			</File>
 			<File
 				RelativePath=".\ProgressBar.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TitleThread.cpp"
 				>
 			</File>
 			<File
@@ -560,10 +552,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookInfo.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FbBookList.h"
 				>
 			</File>
@@ -573,10 +561,6 @@
 			</File>
 			<File
 				RelativePath=".\FbBookPanel.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbBookThread.h"
 				>
 			</File>
 			<File
@@ -820,11 +804,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbViewData.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbViewerDlg.h"
 				>
 			</File>
 			<File
 				RelativePath=".\FbViewItem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbViewReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbViewThread.h"
 				>
 			</File>
 			<File

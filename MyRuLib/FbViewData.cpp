@@ -41,12 +41,12 @@ FbViewData::~FbViewData()
 
 void FbViewData::SetText(size_t index, const wxString &text)
 {
-	if (index < FILE) m_text[index] = text;
+	if (index < LAST_FIELD) m_text[index] = text;
 }
 
 wxString FbViewData::GetText(size_t index) const
 {
-	if (index < FILE)
+	if (index < LAST_FIELD)
 		return m_text[index];
 	else
 		return wxEmptyString;
@@ -78,7 +78,7 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 		wxMemoryDC memDC;
 		memDC.SelectObject(result);
 		memDC.SetUserScale(scale, scale);
-		memDC.DrawBitmap(bitmap, 0, 0, false);
+		memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
 		memDC.SelectObject(wxNullBitmap);
 		srcDC.SelectObject(wxNullBitmap);
 

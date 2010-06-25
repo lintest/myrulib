@@ -35,11 +35,6 @@
 	<include file="./Presets/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
-	<action id="clear_resource" cond="FORMAT=='mingw'"> 
-		<command>if exist build\myrulib_resource_rc.o del build\myrulib_resource_rc.o</command>
-		<is-phony/>
-	</action>
-
 	<lib id="expat_static" template="wx-lib" cond="USE_EXPAT=='yes'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
 		<include>$(SRCDIR)/Expat</include>
@@ -63,7 +58,6 @@
 		</if>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
-		<depends cond="FORMAT=='mingw'">clear_resource</depends>
 	</lib>
 
     <define-tag name="locale" rules="action">
