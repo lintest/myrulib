@@ -32,8 +32,8 @@ wxString FbInternetBook::GetURL(const int id)
 	return wxString::Format(addr, host.c_str(), id);
 }
 
-FbInternetBook::FbInternetBook(const wxString& md5sum)
-	: m_id(0), m_md5sum(md5sum), m_zipped(false)
+FbInternetBook::FbInternetBook(FbThread * owner, const wxString& md5sum)
+	: m_id(0), m_owner(owner), m_md5sum(md5sum), m_zipped(false)
 {
 	wxString sql = wxT("SELECT id, file_type FROM books WHERE md5sum=? AND id>0");
 	try {
@@ -79,6 +79,8 @@ bool FbInternetBook::DoDownload()
     wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
     http.SetPostBuffer(buffer);
 
+	if (m_owner->IsClosed()) return false;
+
 	wxInputStream * in = url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
 		FbLogError(_("Connect error"), m_url);
@@ -99,6 +101,8 @@ bool FbInternetBook::DoDownload()
 
 bool FbInternetBook::DownloadUrl(const wxString &cookie)
 {
+	if (m_owner->IsClosed()) return false;
+
 	FbURL url(m_url);
 	if (url.GetError() != wxURL_NOERR) {
 		FbLogError(_("URL error"), m_url);
@@ -135,6 +139,7 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 	md5_context md5;
 	md5_starts( &md5 );
 	do {
+		if (m_owner->IsClosed()) return false;
 		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos/(size/1000), _("File download")).Post();
 		count = in->Read(buf, BUFSIZE).LastRead();
 		if ( count ) md5_update( &md5, buf, (int) count );
@@ -142,6 +147,8 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 		out.Write(buf, count);
 		pos += count;
 	} while (count);
+
+	if (m_owner->IsClosed()) return false;
 	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
 
 	if (size != (size_t)-1 && out.GetSize() !=size) {
@@ -206,6 +213,8 @@ void FbInternetBook::SaveFile(const bool success)
 		wxRemoveFile(m_filename);
 	}
 
+	if (m_owner->IsClosed()) return;
+
 	wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
 
 	try {
@@ -217,6 +226,8 @@ void FbInternetBook::SaveFile(const bool success)
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
 	}
+
+	if (m_owner->IsClosed()) return;
 
 	if (success) {
 		FbCollection::ResetInfo(m_id);

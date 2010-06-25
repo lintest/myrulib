@@ -4,11 +4,12 @@
 #include <wx/wx.h>
 #include <wx/url.h>
 #include <wx/sstream.h>
+#include "FbThread.h"
 
 class FbInternetBook
 {
 	public:
-		FbInternetBook(const wxString& md5sum);
+		FbInternetBook(FbThread * owner, const wxString& md5sum);
 		static wxString GetURL(const int id);
 		bool Execute();
 	private:
@@ -19,6 +20,7 @@ class FbInternetBook
 		void SaveFile(const bool success);
 	private:
 		int m_id;
+		FbThread * m_owner;
 		wxString m_url;
 		wxString m_md5sum;
 		wxString m_filetype;

@@ -18,7 +18,7 @@ void * FbDownloader::Entry()
 		if (IsClosed()) break;
 		md5sum = GetBook();
 		if (md5sum.IsEmpty()) continue;
-		try { FbInternetBook(md5sum).Execute(); } catch (...) {}
+		try { FbInternetBook(this, md5sum).Execute(); } catch (...) {}
 		wxSleep(3);
 	}
 	return NULL;
