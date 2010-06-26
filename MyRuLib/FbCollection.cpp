@@ -241,8 +241,9 @@ void FbCollection::DoResetBook(const wxArrayInt &books)
 {
 	size_t count = m_books.Count();
 	for (size_t i = 0; i < count; i++) {
-		int code = m_books[i].GetCode();
-		if (books.Index(code) != wxNOT_FOUND) m_books.RemoveAt(i);
+		size_t index = count - i - 1;
+		int code = m_books[index].GetCode();
+		if (books.Index(code) != wxNOT_FOUND) m_books.RemoveAt(index);
 	}
 }
 
