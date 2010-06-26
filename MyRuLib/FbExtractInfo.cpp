@@ -16,6 +16,32 @@ FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result):
 	librusec = (id_book>0 && result.GetInt(wxT("file")) == 0);
 }
 
+bool FbExtractItem::NotFb2() const
+{
+	return book_name.Right(4).Lower() != wxT(".fb2");
+}
+
+wxString FbExtractItem::InfoName() const
+{
+	wxString result = book_name;
+	size_t pos = result.Length();
+	while (pos) {
+		if ( result[pos] == wxT('.') ) {
+			result = result.Left(pos);
+			break;
+		}
+		pos--;
+	}
+	return result << wxT(".fbd");
+}
+
+wxString FbExtractItem::FileName(bool bInfoOnly) const
+{
+	if (bInfoOnly && NotFb2())
+		return InfoName();
+	else return book_name;
+}
+
 wxFileName FbExtractItem::GetBook(const wxString &path) const
 {
 	wxFileName result = book_name;
@@ -48,7 +74,7 @@ bool FbExtractItem::FindBook(const wxString &basepath, wxFileName &filename) con
 	return filename.FileExists();
 }
 
-wxString FbExtractItem::NameInfo() const
+wxString FbExtractItem::ErrorName() const
 {
 	if (librusec) {
 		return wxString::Format(wxT("$(%s)/%s"), FbParams::GetText(FB_CONFIG_TYPE).c_str(), book_name.c_str());
@@ -84,7 +110,7 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 		}
 	}
 
-	FbLogWarning(_("Delete"), NameInfo());
+	FbLogWarning(_("Delete"), ErrorName());
 	wxRemoveFile(filename.GetFullPath());
 }
 

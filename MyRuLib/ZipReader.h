@@ -19,7 +19,6 @@ public:
 	wxInputStream & GetZip() {return *m_result;};
 	wxString GetMd5() {return m_md5sum;};
 private:
-	wxString GetInfoName(const wxString &filename);
 	bool FindEntry(const wxString &file_name);
 	void OpenZip(const wxString &zipname, const wxString &filename);
 	void OpenFile(const wxString &filename);

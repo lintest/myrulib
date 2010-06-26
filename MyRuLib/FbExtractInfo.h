@@ -11,7 +11,8 @@ class FbExtractItem
 	public:
 		FbExtractItem(wxSQLite3ResultSet & result);
 	public:
-		wxString NameInfo() const;
+		wxString FileName(bool bInfoOnly) const;
+		wxString ErrorName() const;
 		void DeleteFile(const wxString &basepath) const;
 		bool FindZip(const wxString &basepath, wxFileName &filename) const;
 		bool FindBook(const wxString &basepath, wxFileName &filename) const;
@@ -26,6 +27,8 @@ class FbExtractItem
 	private:
 		wxFileName GetBook(const wxString &path = wxEmptyString) const;
 		wxFileName GetZip(const wxString &path = wxEmptyString) const;
+		wxString InfoName() const;
+		bool NotFb2() const;
 };
 
 WX_DECLARE_OBJARRAY(FbExtractItem, FbExtractArrayBase);

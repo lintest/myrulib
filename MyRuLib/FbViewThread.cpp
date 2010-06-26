@@ -68,8 +68,7 @@ void FbViewThread::OpenBook()
 	if (IsClosed()) { delete info; return; }
 
 	ZipReader zip(id, false, true);
-	if (zip.IsOK())
-		FbViewReader(*this, *info).Load(zip.GetZip());
+	if (zip.IsOK()) FbViewReader(*this, *info).Load(zip.GetZip());
 	FbCollection::AddInfo(info);
 }
 
@@ -107,7 +106,7 @@ wxString FbViewThread::GetFiles(wxSQLite3Database &database)
 	wxString html;
 
 	for (size_t i = 0; i<items.Count(); i++) {
-		html << wxString::Format(wxT("<p>%s</p>"), items[i].NameInfo().c_str());
+		html << wxString::Format(wxT("<p>%s</p>"), items[i].ErrorName().c_str());
 	}
 
 	return html;
