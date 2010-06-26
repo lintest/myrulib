@@ -38,13 +38,15 @@ void * FbDownloader::Entry()
 		{
 			wxMutexLocker locker(m_mutex);
 			m_condition.Wait();
+			if (m_closed) return NULL;
 		}
-		if (m_closed) break;
-		wxString md5sum = GetBook();
-		if (md5sum.IsEmpty()) continue;
-		if (m_closed) break;
-		try { FbInternetBook(this, md5sum).Execute(); } catch (...) {}
-		wxSleep(3);
+		while (true) {
+			wxString md5sum = GetBook();
+			if (md5sum.IsEmpty()) break;
+			if (m_closed) return NULL;
+			try { FbInternetBook(this, md5sum).Execute(); } catch (...) {}
+			wxSleep(3);
+		}
 	}
 	return NULL;
 }

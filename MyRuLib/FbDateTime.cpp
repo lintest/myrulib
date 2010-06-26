@@ -17,7 +17,7 @@ wxDateTime::Month FbDateTime::GetMonth(int month)
 
 FbDateTime FbDateTime::Today()
 {
-	return wxDateTime::Today(); 
+	return wxDateTime::Today();
 }
 
 int FbDateTime::Code() const

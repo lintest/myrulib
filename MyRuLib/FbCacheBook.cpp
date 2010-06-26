@@ -97,7 +97,7 @@ wxString FbCacheBook::GetValue(size_t field) const
 		case BF_BITE: return FbCollection::Format(m_size);
 		case BF_SEQN: return wxEmptyString;
 		case BF_MD5S: return m_md5s;
-		case BF_DOWN: return m_date > 100 ? FbDateTime(m_date).FormatDate() : wxString();
+		case BF_DOWN: return m_down > 100 ? FbDateTime(m_down).FormatDate() : wxString();
 		default: return wxEmptyString;
 	}
 }
