@@ -6,10 +6,13 @@
 #include <wx/wxsqlite3.h>
 #include "FbDatabase.h"
 
+
+#define FB_FRAME_OFFSET 1000
+
 /// WARNING !!!
 ///
-/// FbParamKey < 1000
-/// FbFrameKey < 1000
+/// FbParamKey < FB_FRAME_OFFSET
+/// FbFrameKey < FB_FRAME_OFFSET
 
 enum FbParamKey {
 	FB_CONFIG_TITLE   = 1,
@@ -99,7 +102,7 @@ enum FbParamKey {
 };
 
 enum FbFrameKey {
-	FB_VIEW_MODE,
+	FB_VIEW_MODE = 0,
 	FB_LIST_MODE,
 	FB_BOOK_COLUMNS,
 };

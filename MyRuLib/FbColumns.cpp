@@ -1,6 +1,6 @@
 #include "FbColumns.h"
 
-wxString FbColumns::GetName(size_t field)
+wxString FbColumns::GetName(int field)
 {
 	switch (field) {
 		case BF_NAME: return _("Title");
@@ -22,7 +22,7 @@ wxString FbColumns::GetName(size_t field)
 	}
 }
 
-wxChar FbColumns::GetCode(size_t field)
+wxChar FbColumns::GetCode(int field)
 {
 	if (BF_AUTH <= field && field < BF_LAST)
 		return wxT('A') + (field - BF_AUTH);
@@ -37,3 +37,20 @@ size_t FbColumns::GetCode(wxChar letter)
 	else return 0;
 }
 
+wxString FbColumns::Get(const wxArrayInt columns)
+{
+	wxString result;
+	size_t count = columns.Count();
+	for (size_t i = 0; i < count; i++) {
+		result << GetCode(columns[i]);
+	}
+	return result;
+}
+
+void FbColumns::Set(const wxString &text, wxArrayInt columns)
+{
+	size_t length = text.Length();
+	for (size_t i = 0; i < length; i++) {
+		columns.Add(GetCode(text[i]));
+	}
+}

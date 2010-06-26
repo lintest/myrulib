@@ -46,9 +46,9 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_FB_MODEL(ID_MODEL_CREATE, FbBookPanel::OnTreeModel)
 END_EVENT_TABLE()
 
-FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode)
+FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode, wxWindowID id)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_thread(new FbMasterThread(this))
+		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_thread(new FbMasterThread(this)), m_owner(id)
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
@@ -65,8 +65,13 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 		SetViewMode(mode);
 	}
 
-	FbListMode listmode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
-	CreateColumns(listmode);
+	m_ListMode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
+
+	wxString codes = FbParams::GetText(m_owner, FB_BOOK_COLUMNS);
+	wxArrayInt columns;
+	FbColumns::Set(codes, columns);
+	CreateColumns(columns);
+
 	m_thread->Execute();
 }
 
@@ -78,23 +83,18 @@ FbBookPanel::~FbBookPanel()
 
 void FbBookPanel::Localize()
 {
-	m_BookList->EmptyColumns();
-	CreateColumns(GetListMode());
+	wxArrayInt columns;
+	m_BookList->GetColumns(columns);
+	CreateColumns(columns);
 }
 
-void FbBookPanel::CreateColumns(FbListMode mode)
+void FbBookPanel::SetListMode(FbListMode mode)
 {
 	m_ListMode = mode;
-	m_BookList->EmptyColumns();
-	m_BookList->AddColumn(BF_NAME, _("Title"), 10, wxALIGN_LEFT);
-	m_BookList->AddColumn(BF_AUTH, _("Author"), 6, wxALIGN_LEFT);
-	m_BookList->AddColumn(BF_NUMB, _("#"), 2, wxALIGN_RIGHT);
-	m_BookList->AddColumn(BF_GENR, _("Genre"), 4, wxALIGN_LEFT);
-	m_BookList->AddColumn(BF_RATE, _("Rating"), 3, wxALIGN_LEFT);
-	m_BookList->AddColumn(BF_LANG, _("Language"), 2, wxALIGN_LEFT);
-	m_BookList->AddColumn(BF_TYPE, _("Extension"), 2, wxALIGN_LEFT);
-	m_BookList->AddColumn(BF_SIZE, _("Size, Kb"), 3, wxALIGN_RIGHT);
-	m_BookList->SetSortedColumn( mode == FB2_MODE_TREE ? 0 : 1);
+
+	wxArrayInt columns;
+	m_BookList->GetColumns(columns);
+	CreateColumns(columns);
 }
 
 int FbBookPanel::GetRatingColumn()
@@ -192,7 +192,6 @@ void FbBookPanel::ResetPreview()
 {
 	m_BookInfo->SetPage(wxEmptyString);
 	if (!IsSplit()) return;
-//	return;
 
 	FbViewContext ctx;
 	FbModelItem item = m_BookList->GetCurrent();

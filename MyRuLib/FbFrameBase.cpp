@@ -108,7 +108,7 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
 {
-	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey());
+	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey(), GetId());
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
@@ -152,7 +152,7 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 
 	if (mode == FB2_MODE_TREE) m_BooksPanel->m_BookList->SetSortedColumn(0);
 
-	m_BooksPanel->CreateColumns(mode);
+	m_BooksPanel->SetListMode(mode);
 	UpdateBooklist();
 }
 
@@ -334,7 +334,11 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 	wxArrayInt columns;
 	m_BooksPanel->m_BookList->GetColumns(columns);
 	bool ok = FbColumnDlg::Execute(this, columns);
-	if (ok) m_BooksPanel->CreateColumns(columns);
+	if (ok) {
+		m_BooksPanel->CreateColumns(columns);
+		wxString text = FbColumns::Get(columns);
+		FbParams().SetText(GetId(), FB_BOOK_COLUMNS, text);
+	}
 }
 
 void FbFrameBase::UpdateBooklist()

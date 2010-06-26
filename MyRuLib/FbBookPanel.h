@@ -19,7 +19,7 @@ class FbMasterThread;
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
-		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode);
+		FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode, wxWindowID id);
 		virtual ~FbBookPanel();
 		void Reset(const FbMasterInfo &master);
 		void UpdateInfo(int id);
@@ -30,19 +30,18 @@ class FbBookPanel: public wxSplitterWindow
 		wxString GetOrderSQL();
 		void Localize();
 		wxString GetSelected();
-		void CreateColumns(const wxArrayInt &columns);
-		const FbMasterInfo & GetInfo() const
-			{ return m_master; };
+		const FbMasterInfo & GetInfo() const { return m_master; };
 	public:
 		FbTreeViewCtrl * m_BookList;
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
 		void AppendSequence(int id, const wxString title, wxTreeItemData * data = NULL);
-		void CreateColumns(FbListMode mode);
+		void SetListMode(FbListMode mode);
 		FbListMode GetListMode() { return m_ListMode; }
 		FbViewMode GetViewMode();
 		void UpdateFonts(bool refresh = true);
+		void CreateColumns(const wxArrayInt &columns);
 	private:
 		size_t GetSelected(wxString &selections);
 		size_t GetSelected(wxArrayInt &items);
@@ -64,6 +63,7 @@ class FbBookPanel: public wxSplitterWindow
 		int m_KeyView;
 		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
+		wxWindowID m_owner;
 	private:
 		void OnAuthorInfo(wxCommandEvent& event);
 		void OnBooksListViewSelected(wxTreeEvent & event);

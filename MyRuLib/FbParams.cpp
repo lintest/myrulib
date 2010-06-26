@@ -134,45 +134,70 @@ void FbParams::SetText(int param, const wxString &text)
 
 int FbParams::DefaultValue(int param)
 {
-	switch (param) {
-		case FB_TEMP_DEL: return 1;
-		case FB_MODE_AUTHOR: return 1;
-		case FB_TRANSLIT_FOLDER: return 0;
-		case FB_TRANSLIT_FILE: return 1;
-		case FB_USE_PROXY: return 0;
-		case FB_HTTP_IMAGES: return 0;
-		case FB_AUTO_DOWNLD: return 1;
-		case FB_FRAME_WIDTH: return 640;
-		case FB_FRAME_HEIGHT: return 480;
-		case FB_ALPHABET_RU: return 1;
-		case FB_ALPHABET_EN: return 1;
-		case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
-		default: return 0;
+	if (param < FB_FRAME_OFFSET)
+		switch (param) {
+			case FB_TEMP_DEL: return 1;
+			case FB_MODE_AUTHOR: return 1;
+			case FB_TRANSLIT_FOLDER: return 0;
+			case FB_TRANSLIT_FILE: return 1;
+			case FB_USE_PROXY: return 0;
+			case FB_HTTP_IMAGES: return 0;
+			case FB_AUTO_DOWNLD: return 1;
+			case FB_FRAME_WIDTH: return 640;
+			case FB_FRAME_HEIGHT: return 480;
+			case FB_ALPHABET_RU: return 1;
+			case FB_ALPHABET_EN: return 1;
+			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
+			default: return 0;
+		}
+	else {
+		switch (param) {
+			case (FB_FRAME_OFFSET + FB_LIST_MODE): return 1;
+			default: return 0;
+		}
+		switch (param % FB_FRAME_OFFSET) {
+			default: return 0;
+		}
 	}
 };
 
 wxString FbParams::DefaultText(int param)
 {
-	switch (param) {
-		case DB_LIBRARY_DIR:
-			return wxGetApp().GetAppPath();
-		case DB_WANRAIK_DIR:
-			return wxGetApp().GetAppPath();
-		case DB_DOWNLOAD_HOST:
-			return wxT("flibusta.net");
-		case FB_DOWNLOAD_DIR:
-			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
-		case FB_TEMP_DIR:
-			return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("local");
-		case FB_FONT_MAIN:
-		case FB_FONT_HTML:
-		case FB_FONT_TOOL:
-		case FB_FONT_DLG:
-			return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT).GetNativeFontInfoDesc();
-		case FB_FRAME_LIST:
-			return wxT('0');
-		default:
-			return wxEmptyString;
+	if (param < FB_FRAME_OFFSET)
+		switch (param) {
+			case DB_LIBRARY_DIR:
+				return wxGetApp().GetAppPath();
+			case DB_WANRAIK_DIR:
+				return wxGetApp().GetAppPath();
+			case DB_DOWNLOAD_HOST:
+				return wxT("flibusta.net");
+			case FB_DOWNLOAD_DIR:
+				return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
+			case FB_TEMP_DIR:
+				return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("local");
+			case FB_FONT_MAIN:
+			case FB_FONT_HTML:
+			case FB_FONT_TOOL:
+			case FB_FONT_DLG:
+				return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT).GetNativeFontInfoDesc();
+			case FB_FRAME_LIST:
+				return wxT('0');
+			default:
+				return wxEmptyString;
+		}
+	else {
+		switch (param) {
+			case (FB_FRAME_OFFSET + FB_BOOK_COLUMNS):
+				return wxT("ABCDEF");
+			default:
+				return wxEmptyString;
+		}
+		switch (param % FB_FRAME_OFFSET) {
+			case FB_BOOK_COLUMNS:
+				return wxT("ABCDEF");
+			default:
+				return wxEmptyString;
+		}
 	}
 };
 
@@ -214,8 +239,9 @@ void FbParams::ResetValue(int param)
 
 int FbParams::Param(wxWindowID winid, int param)
 {
-	bool ok = (ID_FRAME_AUTHOR <= winid && winid <= ID_FRAME_SEARCH && 0 <= param && param < 1000);
-	return ok ? (param + winid * 1000) : 0;
+	bool ok = (ID_FRAME_AUTHOR <= winid && winid <= ID_FRAME_SEARCH && 0 <= param && param < FB_FRAME_OFFSET);
+	int delta = winid - ID_FRAME_AUTHOR + 1;
+	return ok ? (param + FB_FRAME_OFFSET * delta) : 0;
 }
 
 int FbParams::GetValue(wxWindowID winid, int param)

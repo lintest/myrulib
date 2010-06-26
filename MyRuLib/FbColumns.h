@@ -24,10 +24,12 @@ enum FbBookFields {
 class FbColumns
 {
 	public:
-		static wxString GetName(size_t field);
-		static wxString GetSize(size_t field);
-		static wxChar GetCode(size_t field);
+		static wxString GetName(int field);
+		static wxString GetSize(int field);
+		static wxChar GetCode(int field);
 		static size_t GetCode(wxChar letter);
+		static wxString Get(const wxArrayInt columns);
+		static void Set(const wxString &text, wxArrayInt columns);
 };
 
 #endif // __FBCOLUMNS_H__
