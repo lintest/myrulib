@@ -343,7 +343,6 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	treeview->AddColumn(0, _("Extension"), 50);
 	treeview->AddColumn(1, _("Program"), 300);
-	treeview->AssignModel(new FbListStore);
 	bSizer->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	SetSizer( bSizer );
@@ -482,7 +481,6 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	treeview->AddColumn(0, _("Extension"), 100);
 	treeview->AddColumn(1, _("Export script"), 200);
-	treeview->AssignModel(new FbListStore);
 	bSizerRight->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	bSizerCenter->Add(bSizerLeft);

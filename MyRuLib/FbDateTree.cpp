@@ -68,7 +68,7 @@ wxString FbDateMonthData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case 0:
-			return FbDateTime(m_code / 100, m_code % 100, 1).Format(wxT("%B %Y"));
+			return FbDateTime(m_code / 100 + 2000, m_code % 100, 1).Format(wxT("%B %Y"));
 		default:
 			return wxEmptyString;
 	}
@@ -93,7 +93,7 @@ wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 }
 
 FbDateDayData::FbDateDayData(FbModel & model, FbParentData * parent, int code, wxSQLite3ResultSet &result)
-	: FbChildData(model, parent), 
+	: FbChildData(model, parent),
 		m_code(code),
 		m_lib_min(result.GetInt(1)),
 		m_lib_max(result.GetInt(2)),

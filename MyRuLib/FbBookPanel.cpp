@@ -66,6 +66,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 	}
 
 	m_ListMode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
+	m_BookList->SetSortedColumn(mode ==  FB2_MODE_TREE ? 0 : 1);
 
 	wxString codes = FbParams::GetText(m_owner, FB_BOOK_COLUMNS);
 	wxArrayInt columns;
@@ -94,6 +95,7 @@ void FbBookPanel::SetListMode(FbListMode mode)
 
 	wxArrayInt columns;
 	m_BookList->GetColumns(columns);
+	m_BookList->SetSortedColumn(mode ==  FB2_MODE_TREE ? 0 : 1);
 	CreateColumns(columns);
 }
 
@@ -536,17 +538,5 @@ size_t FbBookPanel::GetSelected(wxArrayInt &items)
 
 void FbBookPanel::CreateColumns(const wxArrayInt &columns)
 {
-	m_BookList->EmptyColumns();
-	m_BookList->AddColumn(BF_NAME, _("Title"), 10, wxALIGN_LEFT);
-	if (m_ListMode ==  FB2_MODE_TREE) m_BookList->AddColumn(BF_NUMB, _("#"), 2, wxALIGN_RIGHT);
-
-	size_t count = columns.Count();
-	for (size_t i = 0; i < count; i++) {
-		int index = columns[i];
-		if (BF_AUTH <= index && index < BF_LAST) {
-			wxString name = FbColumns::GetName(index);
-			m_BookList->AddColumn(index, name, 10, wxALIGN_LEFT);
-		}
-	}
-	m_BookList->Refresh();
+	FbColumns::Create(columns, m_ListMode, *m_BookList);
 }

@@ -153,7 +153,6 @@ int FbParams::DefaultValue(int param)
 	else {
 		switch (param) {
 			case (FB_FRAME_OFFSET + FB_LIST_MODE): return 1;
-			default: return 0;
 		}
 		switch (param % FB_FRAME_OFFSET) {
 			default: return 0;
@@ -188,13 +187,15 @@ wxString FbParams::DefaultText(int param)
 	else {
 		switch (param) {
 			case (FB_FRAME_OFFSET + FB_BOOK_COLUMNS):
-				return wxT("ABCDEF");
-			default:
-				return wxEmptyString;
+				return wxT("CEFH");
+			case (FB_FRAME_OFFSET * 3 + FB_BOOK_COLUMNS):
+				return wxT("AEFH");
+			case (FB_FRAME_OFFSET * 5 + FB_BOOK_COLUMNS):
+				return wxT("ALEFH");
 		}
 		switch (param % FB_FRAME_OFFSET) {
 			case FB_BOOK_COLUMNS:
-				return wxT("ABCDEF");
+				return wxT("ACEFH");
 			default:
 				return wxEmptyString;
 		}
