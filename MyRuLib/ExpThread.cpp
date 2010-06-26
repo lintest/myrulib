@@ -406,7 +406,6 @@ void FbExportDlg::Finish()
 		else msg = _("Export completed successfully");
 	} else msg = _("Export aborted by user");
 	m_info.SetLabel(msg);
-	wxMessageBox(msg);
 }
 
 void FbExportDlg::ExportFile(size_t index, const ExportFileItem &item)
