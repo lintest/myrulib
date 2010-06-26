@@ -16,15 +16,14 @@ class FbPreviewThread : public FbThread
 	protected:
 		virtual void * Entry();
 	private:
-		FbViewItem GetView(FbViewContext &ctx);
-	private:
-		static wxCriticalSection sm_section;
-		FbCondition m_condition;
+		wxMutex m_mutex;
+		wxCriticalSection m_section;
+		wxCondition m_condition;
 		wxEvtHandler * m_owner;
-		FbViewItem m_view;
 		FbThread * m_thread;
+		FbViewItem m_view;
 		FbViewContext m_ctx;
-		bool m_exit;
+		bool m_closed;
 };
 
 #endif // __FBPREVIEWTHREAD_H__

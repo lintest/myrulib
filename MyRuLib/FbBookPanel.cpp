@@ -195,11 +195,7 @@ void FbBookPanel::ResetPreview()
 
 	FbViewContext ctx;
 	FbModelItem item = m_BookList->GetCurrent();
-	if (item) {
-		m_BookInfo->Reset(ctx, (&item)->GetView());
-	} else {
-		m_BookInfo->Reset(ctx, FbViewItem());
-	}
+	if (item) m_BookInfo->Reset(ctx, (&item)->GetView());
 }
 
 void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)

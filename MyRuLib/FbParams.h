@@ -6,6 +6,11 @@
 #include <wx/wxsqlite3.h>
 #include "FbDatabase.h"
 
+/// WARNING !!!
+///
+/// FbParamKey < 1000
+/// FbFrameKey < 1000
+
 enum FbParamKey {
 	FB_CONFIG_TITLE   = 1,
 	FB_CONFIG_VERSION = 2,
@@ -93,10 +98,16 @@ enum FbParamKey {
 	FB_TITLE_5 = 225,
 };
 
+enum FbFrameKey {
+	FB_VIEW_MODE,
+	FB_LIST_MODE,
+	FB_BOOK_COLUMNS,
+};
+
 class ParamItem
 {
 	public:
-		ParamItem(const int param): id(param), value(0) {};
+		ParamItem(int param): id(param), value(0) {};
 		ParamItem(wxSQLite3ResultSet & result);
 	public:
 		int id;
@@ -110,15 +121,21 @@ class FbParams {
 	public:
 		FbParams();
 		void LoadParams(bool all = true);
-		static int GetValue(const int param);
-		static wxString GetText(const int param);
-		static wxFont GetFont(const int param);
-		void SetValue(const int param, int value);
-		void SetText(const int param, const wxString &text);
-		void ResetValue(const int param);
+		static int GetValue(int param);
+		static int GetValue(wxWindowID winid, int param);
+		static wxString GetText(int param);
+		static wxString GetText(wxWindowID winid, int param);
+		static wxFont GetFont(int param);
+		void SetValue(int param, int value);
+		void SetValue(wxWindowID winid, int param, int value);
+		void SetText(int param, const wxString &text);
+		void SetText(wxWindowID winid, int param, const wxString &text);
+		void ResetValue(int param);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
 		void AddRecent(const wxString &text, const wxString &title);
+	private:
+		static int Param(wxWindowID winid, int param);
 	private:
 		static ParamArray sm_params;
 		FbCommonDatabase m_database;

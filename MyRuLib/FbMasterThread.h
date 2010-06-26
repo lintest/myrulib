@@ -2,6 +2,7 @@
 #define __FBMASTERTHREAD_H__
 
 #include <wx/event.h>
+#include <wx/thread.h>
 #include "FbThread.h"
 #include "FbMasterInfo.h"
 
@@ -15,13 +16,13 @@ class FbMasterThread : public FbThread
 	protected:
 		virtual void * Entry();
 	private:
-		FbMasterInfo GetInfo();
-		static wxCriticalSection sm_section;
-		FbCondition m_condition;
+		wxMutex m_mutex;
+		wxCriticalSection m_section;
+		wxCondition m_condition;
 		wxEvtHandler * m_owner;
 		FbMasterInfo m_info;
 		FbThread * m_thread;
-		bool m_exit;
+		bool m_closed;
 };
 
 #endif // __FBMASTERTHREAD_H__

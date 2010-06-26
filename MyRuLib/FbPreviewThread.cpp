@@ -5,10 +5,8 @@
 //  FbPreviewThread
 //-----------------------------------------------------------------------------
 
-wxCriticalSection FbPreviewThread::sm_section;
-
 FbPreviewThread::FbPreviewThread(wxEvtHandler * owner)
-	: m_owner(owner), m_thread(NULL), m_exit(false)
+	: m_condition(m_mutex), m_owner(owner), m_thread(NULL), m_closed(false)
 {
 }
 
@@ -23,47 +21,36 @@ FbPreviewThread::~FbPreviewThread()
 
 void FbPreviewThread::Close()
 {
-	FbThread::Close();
-	m_condition.Signal();
+	{
+		wxCriticalSectionLocker lock(m_section);
+		m_closed = true;
+	}
+	m_condition.Broadcast();
 }
 
 void FbPreviewThread::Reset(const FbViewContext &ctx, const FbViewItem &view)
 {
-	wxCriticalSectionLocker locker(sm_section);
+	wxCriticalSectionLocker lock(m_section);
 	m_view = view;
 	m_ctx = ctx;
-	m_condition.Signal();
-}
-
-FbViewItem FbPreviewThread::GetView(FbViewContext &ctx)
-{
-	wxCriticalSectionLocker locker(sm_section);
-	FbViewItem result = m_view;
-	m_view = FbViewItem::None;
-	ctx = m_ctx;
-	return result;
+	m_condition.Broadcast();
 }
 
 void * FbPreviewThread::Entry()
 {
 	while (true) {
-		FbViewContext ctx;
-		FbViewItem view;
-		while (!view) {
-			if (IsClosed()) 
-				return NULL;
-			m_condition.Wait();
-			view = GetView(ctx);
-		}
-		if (IsClosed()) 
-			return NULL;
+		m_condition.Wait();
+		wxCriticalSectionLocker lock(m_section);
+
+		if (m_closed) return NULL;
+		if (!m_view) continue;
 
 		if (m_thread) {
 			m_thread->Close();
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
-		m_thread = new FbViewThread(m_owner, ctx, view);
+		m_thread = new FbViewThread(m_owner, m_ctx, m_view);
 		if (m_thread) m_thread->Execute();
 	}
 	return NULL;

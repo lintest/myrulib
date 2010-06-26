@@ -4,6 +4,7 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbBookData.h"
+#include "FbConst.h"
 
 WX_DEFINE_OBJARRAY(ParamArray);
 
@@ -39,7 +40,7 @@ void FbParams::LoadParams(bool all)
 	}
 }
 
-int FbParams::GetValue(const int param)
+int FbParams::GetValue(int param)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 	for (size_t i=0; i<sm_params.Count(); i++) {
@@ -50,7 +51,7 @@ int FbParams::GetValue(const int param)
 	return DefaultValue(param);
 };
 
-wxString FbParams::GetText(const int param)
+wxString FbParams::GetText(int param)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 	for (size_t i=0; i<sm_params.Count(); i++) {
@@ -61,7 +62,7 @@ wxString FbParams::GetText(const int param)
 	return DefaultText(param);
 };
 
-void FbParams::SetValue(const int param, int value)
+void FbParams::SetValue(int param, int value)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -96,7 +97,7 @@ void FbParams::SetValue(const int param, int value)
 	sm_params.Add(item);
 }
 
-void FbParams::SetText(const int param, const wxString &text)
+void FbParams::SetText(int param, const wxString &text)
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -175,7 +176,7 @@ wxString FbParams::DefaultText(int param)
 	}
 };
 
-wxFont FbParams::GetFont(const int param)
+wxFont FbParams::GetFont(int param)
 {
 	wxString info = GetText(param);
 	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
@@ -206,7 +207,38 @@ void FbParams::AddRecent(const wxString &text, const wxString &title)
 	SetText(FB_TITLE_0 + i, title);
 }
 
-void FbParams::ResetValue(const int param)
+void FbParams::ResetValue(int param)
 {
 	SetValue(param, DefaultValue(param));
 }
+
+int FbParams::Param(wxWindowID winid, int param)
+{
+	bool ok = (ID_FRAME_AUTHOR <= winid && winid <= ID_FRAME_SEARCH && 0 <= param && param < 1000);
+	return ok ? (param + winid * 1000) : 0;
+}
+
+int FbParams::GetValue(wxWindowID winid, int param)
+{
+	int id = Param(winid, param);
+	return id ? GetValue(id) : 0;
+}
+
+wxString FbParams::GetText(wxWindowID winid, int param)
+{
+	int id = Param(winid, param);
+	return id ? GetText(id) : wxString();
+}
+
+void FbParams::SetValue(wxWindowID winid, int param, int value)
+{
+	int id = Param(winid, param);
+	if (id) SetValue(id, value);
+}
+
+void FbParams::SetText(wxWindowID winid, int param, const wxString &text)
+{
+	int id = Param(winid, param);
+	if (id) SetText(id, text);
+}
+
