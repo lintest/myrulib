@@ -1,13 +1,13 @@
 #include "FbMasterThread.h"
 
 //-----------------------------------------------------------------------------
-//  FbJoinedThread
+//  FbBooksThread
 //-----------------------------------------------------------------------------
 
-class FbJoinedThread: public FbThread
+class FbBooksThread: public FbThread
 {
 	public:
-		FbJoinedThread(wxEvtHandler * frame, const FbMasterInfo info)
+		FbBooksThread(wxEvtHandler * frame, const FbMasterInfo info)
 			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info) {}
 	protected:
 		virtual void * Entry()
@@ -24,7 +24,7 @@ class FbJoinedThread: public FbThread
 FbMasterThread::FbMasterThread(wxEvtHandler * owner)
 	: m_condition(m_mutex), m_owner(owner), m_info(NULL), m_thread(NULL), m_closed(false)
 {
-	m_mutex.Lock();
+//	m_mutex.Lock();
 }
 
 FbMasterThread::~FbMasterThread()
@@ -38,16 +38,14 @@ FbMasterThread::~FbMasterThread()
 
 void FbMasterThread::Close()
 {
-	{
-		wxCriticalSectionLocker lock(m_section);
-		m_closed = true;
-	}
+	wxMutexLocker locker(m_mutex);
+	m_closed = true;
 	m_condition.Broadcast();
 }
 
 void FbMasterThread::Reset(const FbMasterInfo &info)
 {
-	wxCriticalSectionLocker lock(m_section);
+	wxMutexLocker locker(m_mutex);
 	m_info = info;
 	m_condition.Broadcast();
 }
@@ -56,18 +54,18 @@ void * FbMasterThread::Entry()
 {
 	while (true) {
 		m_condition.Wait();
-		wxCriticalSectionLocker lock(m_section);
+		wxMutexLocker locker(m_mutex);
 
 		if (m_closed) return NULL;
 		if (!m_info) continue;
 
 		if (m_thread) {
-			m_thread->Close();
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
-		m_thread = new FbJoinedThread(m_owner, m_info);
+		m_thread = new FbBooksThread(m_owner, m_info);
 		if (m_thread) m_thread->Execute();
+		m_info = NULL;
 	}
 	return NULL;
 }

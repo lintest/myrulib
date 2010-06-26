@@ -33,7 +33,7 @@ wxString FbInternetBook::GetURL(const int id)
 	return wxString::Format(addr, host.c_str(), id);
 }
 
-FbInternetBook::FbInternetBook(FbThread * owner, const wxString& md5sum)
+FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
 	: m_id(0), m_owner(owner), m_md5sum(md5sum), m_zipped(false)
 {
 	wxString sql = wxT("SELECT id, file_type FROM books WHERE md5sum=? AND id>0");

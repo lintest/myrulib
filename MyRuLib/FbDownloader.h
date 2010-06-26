@@ -3,18 +3,22 @@
 
 #include "FbThread.h"
 
-class FbDownloader: public FbThread
+class FbDownloader: public wxThread
 {
 	public:
 		FbDownloader();
 		static wxString GetFilename(const wxString &md5sum, bool bCreateFolder = false);
-		void Signal() { m_condition.Signal(); }
+		void Signal();
+		void Close();
+		bool IsClosed();	
+		void Execute();
 	protected:
 		virtual void *Entry();
 		wxString GetBook();
 	private:
-		static wxCriticalSection sm_section;
-		FbCondition m_condition;
+		wxMutex m_mutex;
+		wxCondition m_condition;
+		bool m_closed;
 };
 
 #endif // __FBDOWNLOADER_H__
