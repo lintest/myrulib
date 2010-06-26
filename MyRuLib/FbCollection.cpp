@@ -179,6 +179,13 @@ void FbCollection::ResetBook(int code)
 	if (collection) collection->DoResetBook(code);
 }
 
+void FbCollection::ResetBook(const wxArrayInt &books)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->DoResetBook(books);
+}
+
 FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxString &sql)
 {
 	size_t count = items.Count();
@@ -227,6 +234,15 @@ void FbCollection::DoResetBook(int code)
 			m_books.RemoveAt(i);
 			break;
 		}
+	}
+}
+
+void FbCollection::DoResetBook(const wxArrayInt &books)
+{
+	size_t count = m_books.Count();
+	for (size_t i = 0; i < count; i++) {
+		int code = m_books[i].GetCode();
+		if (books.Index(code) != wxNOT_FOUND) m_books.RemoveAt(i);
 	}
 }
 
