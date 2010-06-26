@@ -18,6 +18,7 @@ class FbMasterThread : public FbThread
 	private:
 		wxMutex m_mutex;
 		wxCondition m_condition;
+		wxCriticalSection m_section;
 		wxEvtHandler * m_owner;
 		FbMasterInfo m_info;
 		FbThread * m_thread;

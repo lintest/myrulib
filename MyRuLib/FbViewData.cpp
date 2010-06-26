@@ -59,6 +59,26 @@ wxString FbViewData::GetImage(const wxString &filename) const
 	return wxString::Format(wxT("%d/%s"), m_id, filename.c_str());
 }
 
+void FbViewData::Push(const wxString &filename, const wxImage &image)
+{
+	wxBitmap bitmap(image);
+	int w = MAX_IMAGE_WIDTH;
+	int h = bitmap.GetHeight() * MAX_IMAGE_WIDTH / bitmap.GetWidth();
+	double scale = double(MAX_IMAGE_WIDTH) / bitmap.GetWidth();
+	wxMemoryDC srcDC;
+	srcDC.SelectObject(bitmap);
+
+	wxBitmap result(w, h);
+	wxMemoryDC memDC;
+	memDC.SelectObject(result);
+	memDC.SetUserScale(scale, scale);
+	memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
+	memDC.SelectObject(wxNullBitmap);
+	srcDC.SelectObject(wxNullBitmap);
+
+	wxMemoryFSHandler::AddFile(filename, result, wxBITMAP_TYPE_PNG);
+}
+
 void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &imagetype)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
@@ -69,7 +89,11 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	if (image.GetWidth() <= MAX_IMAGE_WIDTH) {
 		wxMemoryFSHandler::AddFile(imagename, buffer.GetData(), buffer.GetDataLen());
 	} else {
+		#ifdef __WXWIN__
+		Push(imagename, image);
+		#else
 		FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
+		#endif // __WXWIN__
 	}
 	m_images.Add(filename);
 }

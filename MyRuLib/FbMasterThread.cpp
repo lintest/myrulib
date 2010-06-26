@@ -24,7 +24,6 @@ class FbBooksThread: public FbThread
 FbMasterThread::FbMasterThread(wxEvtHandler * owner)
 	: m_condition(m_mutex), m_owner(owner), m_info(NULL), m_thread(NULL), m_closed(false)
 {
-//	m_mutex.Lock();
 }
 
 FbMasterThread::~FbMasterThread()
@@ -38,14 +37,14 @@ FbMasterThread::~FbMasterThread()
 
 void FbMasterThread::Close()
 {
-	wxMutexLocker locker(m_mutex);
+	wxCriticalSectionLocker locker(m_section);
 	m_closed = true;
 	m_condition.Broadcast();
 }
 
 void FbMasterThread::Reset(const FbMasterInfo &info)
 {
-	wxMutexLocker locker(m_mutex);
+	wxCriticalSectionLocker locker(m_section);
 	m_info = info;
 	m_condition.Broadcast();
 }
@@ -53,8 +52,11 @@ void FbMasterThread::Reset(const FbMasterInfo &info)
 void * FbMasterThread::Entry()
 {
 	while (true) {
-		m_condition.Wait();
-		wxMutexLocker locker(m_mutex);
+		{
+			wxMutexLocker locker(m_mutex);
+			m_condition.Wait();
+		}
+		wxCriticalSectionLocker lock(m_section);
 
 		if (m_closed) return NULL;
 		if (!m_info) continue;

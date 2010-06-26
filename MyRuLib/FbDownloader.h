@@ -10,7 +10,7 @@ class FbDownloader: public wxThread
 		static wxString GetFilename(const wxString &md5sum, bool bCreateFolder = false);
 		void Signal();
 		void Close();
-		bool IsClosed();	
+		bool IsClosed();
 		void Execute();
 	protected:
 		virtual void *Entry();
@@ -18,6 +18,7 @@ class FbDownloader: public wxThread
 	private:
 		wxMutex m_mutex;
 		wxCondition m_condition;
+		wxCriticalSection m_section;
 		bool m_closed;
 };
 

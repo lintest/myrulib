@@ -17,6 +17,7 @@ class FbViewData: public wxObject
 			LAST_FIELD,
 		};
 	public:
+		static void Push(const wxString &filename, const wxImage &image);
 		FbViewData(int id): m_id(id) {}
 		virtual ~FbViewData();
 		int GetCode() const { return m_id; }

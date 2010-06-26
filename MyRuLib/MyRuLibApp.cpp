@@ -1,8 +1,7 @@
 #include "MyRuLibApp.h"
 #include <wx/app.h>
-#include <wx/image.h>
-#include <wx/fs_mem.h>
 #include <wx/fs_inet.h>
+#include <wx/fs_mem.h>
 #include "FbDataPath.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"
@@ -196,20 +195,5 @@ void MyRuLibApp::SetAppData(const wxString &filename)
 
 void MyRuLibApp::OnImageEvent(FbImageEvent & event)
 {
-	wxBitmap bitmap(event.GetImage());
-	int w = MAX_IMAGE_WIDTH;
-	int h = bitmap.GetHeight() * MAX_IMAGE_WIDTH / bitmap.GetWidth();
-	double scale = double(MAX_IMAGE_WIDTH) / bitmap.GetWidth();
-	wxMemoryDC srcDC;
-	srcDC.SelectObject(bitmap);
-
-	wxBitmap result(w, h);
-	wxMemoryDC memDC;
-	memDC.SelectObject(result);
-	memDC.SetUserScale(scale, scale);
-	memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
-	memDC.SelectObject(wxNullBitmap);
-	srcDC.SelectObject(wxNullBitmap);
-
-	wxMemoryFSHandler::AddFile(event.GetString(), result, wxBITMAP_TYPE_PNG);
+	FbViewData::Push(event.GetString(), event.GetImage());
 }

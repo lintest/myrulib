@@ -18,6 +18,7 @@ class FbPreviewThread : public FbThread
 	private:
 		wxMutex m_mutex;
 		wxCondition m_condition;
+		wxCriticalSection m_section;
 		wxEvtHandler * m_owner;
 		FbThread * m_thread;
 		FbViewItem m_view;

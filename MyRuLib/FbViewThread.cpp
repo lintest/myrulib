@@ -22,7 +22,7 @@ void * FbViewThread::Entry()
 		}
 	} catch (wxSQLite3Exception & e) {
 		wxLogError(e.GetMessage());
-	}
+	} catch (...) {}
 	return NULL;
 }
 
@@ -68,7 +68,8 @@ void FbViewThread::OpenBook()
 	if (IsClosed()) { delete info; return; }
 
 	ZipReader zip(id, false, true);
-	if (zip.IsOK()) FbViewReader(*this, *info).Load(zip.GetZip());
+	if (zip.IsOK())
+		FbViewReader(*this, *info).Load(zip.GetZip());
 	FbCollection::AddInfo(info);
 }
 

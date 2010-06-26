@@ -21,14 +21,14 @@ FbPreviewThread::~FbPreviewThread()
 
 void FbPreviewThread::Close()
 {
-	wxMutexLocker locker(m_mutex);
+	wxCriticalSectionLocker locker(m_section);
 	m_closed = true;
 	m_condition.Broadcast();
 }
 
 void FbPreviewThread::Reset(const FbViewContext &ctx, const FbViewItem &view)
 {
-	wxMutexLocker locker(m_mutex);
+	wxCriticalSectionLocker locker(m_section);
 	m_view = view;
 	m_ctx = ctx;
 	m_condition.Broadcast();
@@ -37,8 +37,12 @@ void FbPreviewThread::Reset(const FbViewContext &ctx, const FbViewItem &view)
 void * FbPreviewThread::Entry()
 {
 	while (true) {
-		m_condition.Wait();
-		wxMutexLocker locker(m_mutex);
+		{
+			wxMutexLocker locker(m_mutex);
+			m_condition.Wait();
+		}
+
+		wxCriticalSectionLocker lock(m_section);
 
 		if (m_closed) return NULL;
 		if (!m_view) continue;

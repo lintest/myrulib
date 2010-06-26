@@ -192,6 +192,7 @@ void FbBookPanel::ResetPreview()
 {
 	m_BookInfo->SetPage(wxEmptyString);
 	if (!IsSplit()) return;
+//	return;
 
 	FbViewContext ctx;
 	FbModelItem item = m_BookList->GetCurrent();

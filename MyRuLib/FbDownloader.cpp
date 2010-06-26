@@ -9,22 +9,22 @@ FbDownloader::FbDownloader(): m_condition(m_mutex), m_closed(false)
 	wxURL(strHomePage).GetProtocol().SetTimeout(10);
 }
 
-void FbDownloader::Signal() 
-{ 
-	wxMutexLocker locker(m_mutex);
+void FbDownloader::Signal()
+{
+	wxCriticalSectionLocker locker(m_section);
 	m_condition.Broadcast();
 }
 
-void FbDownloader::Close() 
-{ 
-	wxMutexLocker locker(m_mutex);
+void FbDownloader::Close()
+{
+	wxCriticalSectionLocker locker(m_section);
 	m_closed = true;
 	m_condition.Broadcast();
 }
 
 void FbDownloader::Execute()
-{ 
-	if ( Create() == wxTHREAD_NO_ERROR ) Run(); 
+{
+	if ( Create() == wxTHREAD_NO_ERROR ) Run();
 }
 
 bool FbDownloader::IsClosed()
@@ -35,8 +35,10 @@ bool FbDownloader::IsClosed()
 void * FbDownloader::Entry()
 {
 	while (true) {
-		m_condition.Wait();
-		wxMutexLocker locker(m_mutex);
+		{
+			wxMutexLocker locker(m_mutex);
+			m_condition.Wait();
+		}
 		if (m_closed) break;
 		wxString md5sum = GetBook();
 		if (md5sum.IsEmpty()) continue;

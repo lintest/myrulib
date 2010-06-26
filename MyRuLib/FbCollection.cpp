@@ -6,11 +6,15 @@
 #include "FbDateTime.h"
 
 #include <wx/filename.h>
-#include <wx/mimetype.h>
 #include <wx/fs_mem.h>
 
 #include "res/ico_pdf.xpm"
 #include "res/ico_djvu.xpm"
+
+#ifdef __WXWIN__
+#include <wx/mimetype.h>
+#endif // __WXWIN__
+
 
 //-----------------------------------------------------------------------------
 //  FbCacheData
@@ -313,6 +317,7 @@ void FbCollection::LoadIcon(const wxString &extension)
 	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
 	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
 
+	#ifdef __WXWIN__
 	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 	if ( ft ) {
 		wxIconLocation location;
@@ -326,6 +331,7 @@ void FbCollection::LoadIcon(const wxString &extension)
 			return;
 		}
 	}
+	#endif // __WXWIN__
 	sm_noico.Add(extension);
 }
 
