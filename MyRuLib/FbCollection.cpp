@@ -11,9 +11,9 @@
 #include "res/ico_pdf.xpm"
 #include "res/ico_djvu.xpm"
 
-#ifdef __WXWIN__
+#ifdef __WXMSW__
 #include <wx/mimetype.h>
-#endif // __WXWIN__
+#endif // __WXMSW__
 
 
 //-----------------------------------------------------------------------------
@@ -317,7 +317,7 @@ void FbCollection::LoadIcon(const wxString &extension)
 	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
 	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
 
-	#ifdef __WXWIN__
+	#ifdef __WXMSW__
 	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 	if ( ft ) {
 		wxIconLocation location;
@@ -331,7 +331,7 @@ void FbCollection::LoadIcon(const wxString &extension)
 			return;
 		}
 	}
-	#endif // __WXWIN__
+	#endif // __WXMSW__
 	sm_noico.Add(extension);
 }
 

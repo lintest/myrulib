@@ -1888,7 +1888,7 @@ void wxTreeListMainWindow::Init() {
                          m_normalFont.GetEncoding());
 
     // prevent any background repaint in order to reducing flicker
-    #ifdef __WXWIN__
+    #ifdef __WXMSW__
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
     #endif
 }

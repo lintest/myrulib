@@ -89,11 +89,11 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &ima
 	if (image.GetWidth() <= MAX_IMAGE_WIDTH) {
 		wxMemoryFSHandler::AddFile(imagename, buffer.GetData(), buffer.GetDataLen());
 	} else {
-		#ifdef __WXWIN__
+		#ifdef __WXMSW__
 		Push(imagename, image);
 		#else
 		FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
-		#endif // __WXWIN__
+		#endif // __WXMSW__
 	}
 	m_images.Add(filename);
 }
