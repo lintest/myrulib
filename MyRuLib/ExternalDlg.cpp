@@ -137,21 +137,18 @@ wxString ExternalDlg::Normalize(const wxString &filename)
 	wxString oldname = filename;
 	oldname = oldname.Trim(false).Trim(true).Left(fbMAX_FILENAME_LENGTH);
 
-	wxString forbidden;
-	forbidden << wxFileName::GetForbiddenChars(wxPATH_UNIX);
-	forbidden << wxFileName::GetForbiddenChars(wxPATH_MAC);
-	forbidden << wxFileName::GetForbiddenChars(wxPATH_DOS);
-	forbidden << wxFileName::GetForbiddenChars(wxPATH_VMS);
+	wxString forbidden = wxT("?*\\/:\"<>|");
 
 	bool space = false;
 	wxString newname;
 	size_t len = oldname.Len();
 	for (size_t i = 0; i < len; i++) {
 		wxChar ch = oldname[i];
-		if (space && ch == 0x20) continue;
+		if (ch == 0x20) ch = 0x5F;
+		if (space && ch == 0x5F) continue;
 		if (forbidden.Find(ch) == wxNOT_FOUND) {
 			newname << ch;
-			space = ch == 0x20;
+			space = ch == 0x5F;
 		}
 	}
 
