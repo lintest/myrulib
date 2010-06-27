@@ -145,7 +145,7 @@ wxString FbMasterInfoBase::GetOrderColumn() const
 		case BF_NAME: return wxT("books.title");
 		case BF_NUMB: return wxT("bookseq.number");
 		case BF_AUTH: return wxT("AGGREGATE(authors.full_name)");
-		case BF_CODE: return wxT("books.code");
+		case BF_CODE: return wxT("books.id");
 		case BF_GENR: return wxT("GENRE(books.genres)");
 		case BF_RATE: return wxT("states.rating");
 		case BF_LANG: return wxT("books.lang");
