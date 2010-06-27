@@ -47,11 +47,10 @@ void FbFrameDownld::CreateControls()
 	CreateBooksPanel(splitter, 0);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
-	FillFolders();
-
 	SetSizer( bSizer1 );
 
 	FbFrameBase::CreateControls();
+	FillFolders();
 }
 
 void FbFrameDownld::CreateColumns()

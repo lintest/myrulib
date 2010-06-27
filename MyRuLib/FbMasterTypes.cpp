@@ -61,7 +61,8 @@ wxString FbMasterAuthInfo::GetWhere(wxSQLite3Database &database) const
 
 wxString FbMasterAuthInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	return wxT("SELECT DISTINCT id_seq, books.id, number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE books.id_author=? ORDER BY id_seq, number, title");
+	wxString sql = wxT("SELECT DISTINCT id_seq, books.id, bookseq.number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id %s WHERE %s ORDER BY id_seq, %s");
+	return FormatSQL(sql, GetWhere(database));
 }
 
 void FbMasterAuthInfo::Bind(wxSQLite3Statement &stmt) const
@@ -138,8 +139,8 @@ wxString FbMasterSeqnInfo::GetWhere(wxSQLite3Database &database) const
 
 wxString FbMasterSeqnInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.number, books.title");
-	return FormatTreeSQL(sql, GetWhere(database));
+	wxString sql = wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, %s");
+	return FormatSQL(sql, GetWhere(database));
 }
 
 void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
@@ -185,7 +186,7 @@ wxString FbMasterDownInfo::GetWhere(wxSQLite3Database &database) const
 	switch (m_id) {
 		case 1: sql << wxT(">1)"); break;
 		case 2: sql << wxT("=1)"); break;
-		default: sql << wxT("<0)"); 
+		default: sql << wxT("<0)");
 	}
 	return sql;
 }
@@ -261,14 +262,6 @@ void FbMasterFldrInfo::Bind(wxSQLite3Statement &stmt) const
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(FbMasterFindInfo, FbMasterInfoBase)
-
-wxString FbMasterFindInfo::GetOrderTable() const
-{
-	wxString result;
-	if (!m_author.IsEmpty()) result << wxT("INNER JOIN authors ON books.id_author = authors.id");
-	if (GetOrderIndex() == BF_RATE) result << wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
-	return result;
-}
 
 wxString FbMasterFindInfo::GetWhere(wxSQLite3Database &database) const
 {

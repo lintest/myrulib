@@ -27,7 +27,6 @@ class FbMasterInfoBase: public wxObject
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const = 0;
 		virtual void Bind(wxSQLite3Statement &stmt) const {}
-		virtual wxString GetSelectColumn() const;
 		virtual wxString GetOrderTable() const;
 		virtual wxString GetOrderColumn() const;
 		virtual wxString GetOrderFields() const;
@@ -35,8 +34,7 @@ class FbMasterInfoBase: public wxObject
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
-		wxString FormatListSQL(const wxString &sql, const wxString &cond) const;
-		wxString FormatTreeSQL(const wxString &sql, const wxString &cond) const;
+		wxString FormatSQL(const wxString &sql, const wxString &cond) const;
 	protected:
 		int GetOrder() const
 			{ return m_order; }

@@ -22,7 +22,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
-		wxString GetOrderSQL() { return m_BooksPanel->GetOrderSQL(); };
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
 		void UpdateStatus();

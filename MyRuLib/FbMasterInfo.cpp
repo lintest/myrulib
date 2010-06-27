@@ -126,8 +126,11 @@ void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 wxString FbMasterInfoBase::GetOrderTable() const
 {
 	switch (GetOrderIndex()) {
-		case BF_AUTH:
-			return wxT("LEFT JOIN authors ON books.id_author = authors.id");
+		case BF_AUTH: {
+			if (GetMode ()== FB2_MODE_LIST)
+				return wxT("LEFT JOIN authors ON books.id_author = authors.id");
+			else return wxEmptyString;
+		} break;
 		case BF_RATE:
 		case BF_DOWN:
 			return wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
@@ -140,10 +143,10 @@ wxString FbMasterInfoBase::GetOrderColumn() const
 {
 	switch (GetOrderIndex()) {
 		case BF_NAME: return wxT("books.title");
-		case BF_NUMB: return wxT("books.title");
-		case BF_AUTH: return wxT("full_name");
+		case BF_NUMB: return wxT("bookseq.number");
+		case BF_AUTH: return wxT("AGGREGATE(authors.full_name)");
 		case BF_CODE: return wxT("books.code");
-		case BF_GENR: return wxT("genre_list");
+		case BF_GENR: return wxT("GENRE(books.genres)");
 		case BF_RATE: return wxT("states.rating");
 		case BF_LANG: return wxT("books.lang");
 		case BF_TYPE: return wxT("books.file_type");
@@ -157,20 +160,10 @@ wxString FbMasterInfoBase::GetOrderColumn() const
 	}
 }
 
-wxString FbMasterInfoBase::GetSelectColumn() const
-{
-	switch (GetOrderIndex()) {
-		case BF_AUTH: return wxT(",AGGREGATE(authors.full_name) AS full_name");
-		case BF_GENR: return wxT(",GENRE(books.genres) AS genre_list");
-		default: return wxEmptyString;
-	}
-}
-
 wxString FbMasterInfoBase::GetOrderFields() const
 {
 	wxString column = GetOrderColumn();
-	wxString result = wxT(" ORDER BY ");
-	result << column;
+	wxString result = column;
 	if (m_order < 0) result << wxT(" DESC");
 	if (column != wxT("books.title")) {
 		result << wxT(',') << wxT("books.title");
@@ -181,24 +174,21 @@ wxString FbMasterInfoBase::GetOrderFields() const
 
 wxString FbMasterInfoBase::GetListSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id %s FROM books %s WHERE %s GROUP BY books.id %s");
-	return FormatListSQL(sql, GetWhere(database));
+	wxString sql = wxT("SELECT DISTINCT books.id FROM books %s WHERE %s GROUP BY books.id ORDER BY %s");
+	return FormatSQL(sql, GetWhere(database));
 }
 
 wxString FbMasterInfoBase::GetTreeSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, bookseq.number, books.title");
-	return FormatTreeSQL(sql, GetWhere(database));
+	wxString sql = wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id  %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, %s");
+	return FormatSQL(sql, GetWhere(database));
 }
 
-wxString FbMasterInfoBase::FormatListSQL(const wxString &sql, const wxString &cond) const
+wxString FbMasterInfoBase::FormatSQL(const wxString &sql, const wxString &cond) const
 {
-	return wxString::Format(sql, GetSelectColumn().c_str(), GetOrderTable().c_str(), cond.c_str(), GetOrderFields().c_str());
-}
-
-wxString FbMasterInfoBase::FormatTreeSQL(const wxString &sql, const wxString &cond) const
-{
-	return wxString::Format(sql, cond.c_str());
+	wxString table = GetOrderTable();
+	wxString fields = GetOrderFields();
+	return wxString::Format(sql, table.c_str(), cond.c_str(), fields.c_str());
 }
 
 //-----------------------------------------------------------------------------

@@ -65,8 +65,9 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int k
 		SetViewMode(mode);
 	}
 
-	m_ListMode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
-	m_BookList->SetSortedColumn(mode ==  FB2_MODE_TREE ? 0 : 1);
+	m_listmode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
+	int order = (m_listmode == FB2_MODE_TREE ? BF_NUMB : BF_NAME) + 1;
+	m_BookList->SetSortedColumn(order);
 
 	wxString codes = FbParams::GetText(m_owner, FB_BOOK_COLUMNS);
 	wxArrayInt columns;
@@ -91,11 +92,13 @@ void FbBookPanel::Localize()
 
 void FbBookPanel::SetListMode(FbListMode mode)
 {
-	m_ListMode = mode;
+	if (m_listmode == mode) return;
+	m_listmode = mode;
 
+	int order = (m_listmode == FB2_MODE_TREE ? BF_NUMB : BF_NAME) + 1;
 	wxArrayInt columns;
 	m_BookList->GetColumns(columns);
-	m_BookList->SetSortedColumn(mode ==  FB2_MODE_TREE ? 0 : 1);
+	m_BookList->SetSortedColumn(order);
 	CreateColumns(columns);
 }
 
@@ -106,16 +109,16 @@ int FbBookPanel::GetRatingColumn()
 
 int FbBookPanel::GetOrderID()
 {
-	int col = abs( m_BookList->GetSortedColumn() );
+	int col = abs(m_BookList->GetSortedColumn()) - 1;
 	switch (col) {
-		case 1: return ID_ORDER_TITLE;
-		case 2: return ID_ORDER_AUTHOR;
-		case 4: return ID_ORDER_GENRE;
-		case 5: return ID_ORDER_RATING;
-		case 6: return ID_ORDER_LANG;
-		case 7: return ID_ORDER_TYPE;
-		case 8: return ID_ORDER_SIZE;
-		default: return ID_ORDER_AUTHOR;
+		case BF_NAME: return ID_ORDER_TITLE;
+		case BF_AUTH: return ID_ORDER_AUTHOR;
+		case BF_GENR: return ID_ORDER_GENRE;
+		case BF_RATE: return ID_ORDER_RATING;
+		case BF_LANG: return ID_ORDER_LANG;
+		case BF_TYPE: return ID_ORDER_TYPE;
+		case BF_SIZE: return ID_ORDER_SIZE;
+		default: return ID_ORDER_TITLE;
 	}
 }
 
@@ -123,53 +126,18 @@ void FbBookPanel::SetOrderID(int id)
 {
 	int col = 0;
 	switch (id) {
-		case ID_ORDER_TITLE:  col = 1; break;
-		case ID_ORDER_AUTHOR: col = 2; break;
-		case ID_ORDER_GENRE:  col = 4; break;
-		case ID_ORDER_RATING: col = 5; break;
-		case ID_ORDER_LANG:   col = 6; break;
-		case ID_ORDER_TYPE:   col = 7; break;
-		case ID_ORDER_SIZE:   col = 8; break;
-		default: col = 0;
+		case ID_ORDER_TITLE:  col = BF_NAME; break;
+		case ID_ORDER_AUTHOR: col = BF_AUTH; break;
+		case ID_ORDER_GENRE:  col = BF_GENR; break;
+		case ID_ORDER_RATING: col = BF_RATE; break;
+		case ID_ORDER_LANG:   col = BF_LANG; break;
+		case ID_ORDER_TYPE:   col = BF_TYPE; break;
+		case ID_ORDER_SIZE:   col = BF_SIZE; break;
+		default: col = 1;
 	}
-	if (IsOrderDesc()) col *= -1;
+	col++;
+	if (m_BookList->GetSortedColumn() < 0) col *= -1;
 	m_BookList->SetSortedColumn(col);
-	m_BookList->Update();
-}
-
-wxString FbBookPanel::GetOrderSQL()
-{
-	wxString order;
-	int col = m_BookList->GetSortedColumn();
-	switch ( abs(col) ) {
-		case  1: order = wxT("title,full_name"); break;
-		case  2: order = wxT("full_name,title"); break;
-		case  3: order = wxT("full_name,title"); break;
-		case  4: order = wxT("genres,full_name,title"); break;
-		case  5: order = wxT("rating,full_name,title"); break;
-		case  6: order = wxT("lang,full_name,title"); break;
-		case  7: order = wxT("file_type,full_name,title"); break;
-		case  8: order = wxT("file_size,full_name,title"); break;
-		case  9: order = wxT("created,full_name,title"); break;
-		default: order = wxT("title,full_name");
-	}
-	if ( col >= 0 ) return order;
-
-	int pos;
-	wxString result;
-	do {
-		pos = order.Find(wxT(","));
-		if ( !result.IsEmpty() ) result += wxT(",");
-		result += pos == wxNOT_FOUND ? order : order.Left(pos);
-		result += wxT(" desc");
-		order = order.Mid(pos + 1);
-	} while (pos != wxNOT_FOUND);
-	return result;
-}
-
-bool FbBookPanel::IsOrderDesc()
-{
-	return m_BookList->GetSortedColumn() < 0;
 }
 
 void FbBookPanel::RevertOrder()
@@ -546,5 +514,5 @@ size_t FbBookPanel::GetSelected(wxArrayInt &items)
 
 void FbBookPanel::CreateColumns(const wxArrayInt &columns)
 {
-	FbColumns::Create(columns, m_ListMode, *m_BookList);
+	FbColumns::Create(columns, m_listmode, *m_BookList);
 }

@@ -48,11 +48,10 @@ void FbFrameFolder::CreateControls()
 	CreateBooksPanel(splitter, 0);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
-	FillFolders();
-
 	SetSizer( bSizer1 );
 
 	FbFrameBase::CreateControls();
+	FillFolders();
 }
 
 wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)

@@ -185,7 +185,7 @@ void FbFrameBase::UpdateInfo(int id)
 
 void FbFrameBase::OnDirectionUpdateUI(wxUpdateUIEvent & event)
 {
-	event.Check( m_BooksPanel->IsOrderDesc() );
+	event.Check( m_BooksPanel->m_BookList->GetSortedColumn() < 0 );
 }
 
 void FbFrameBase::OnMenuOrderUpdateUI(wxUpdateUIEvent & event)
@@ -209,7 +209,6 @@ wxToolBar * FbFrameBase::CreateToolBar(long style, wxWindowID winid, const wxStr
 
 void FbFrameBase::OnColClick(wxListEvent& event)
 {
-	if (m_BooksPanel->GetListMode() == FB2_MODE_TREE) return;
 	UpdateBooklist();
 }
 

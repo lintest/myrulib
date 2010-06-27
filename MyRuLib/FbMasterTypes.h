@@ -172,7 +172,6 @@ class FbMasterFindInfo: public FbMasterInfoBase
 			{ return new FbMasterFindInfo(*this); }
 	protected:
 		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
-		virtual wxString GetOrderTable() const;
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
