@@ -1,5 +1,7 @@
+#define fbMAX_FILENAME_LENGTH 80
+
 /*
-static wxString wxFileName::GetForbiddenChars ( wxPathFormat format = wxPATH_NATIVE )
+static wxString wxFileName::GetForbiddenChars( wxPathFormat format = wxPATH_NATIVE )
 Returns the characters that can't be used in filenames and directory names for the specified format.
 */
 
@@ -133,25 +135,35 @@ wxString ExternalDlg::Translit(const wxString &filename)
 wxString ExternalDlg::Normalize(const wxString &filename)
 {
 	wxString oldname = filename;
-	oldname = oldname.Trim(false).Trim(true);
+	oldname = oldname.Trim(false).Trim(true).Left(fbMAX_FILENAME_LENGTH);
 
-	while (oldname.Left(1) == wxT(".")) oldname = oldname.Mid(1);
-	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
+	wxString forbidden;
+	forbidden << wxFileName::GetForbiddenChars(wxPATH_UNIX);
+	forbidden << wxFileName::GetForbiddenChars(wxPATH_MAC);
+	forbidden << wxFileName::GetForbiddenChars(wxPATH_DOS);
+	forbidden << wxFileName::GetForbiddenChars(wxPATH_VMS);
 
-/*
+	bool space = false;
 	wxString newname;
-	for (size_t i=0; i<oldname.Len(); i++) {
-		wxChar letter = oldname[i];
-		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
+	size_t len = oldname.Len();
+	for (size_t i = 0; i < len; i++) {
+		wxChar ch = oldname[i];
+		if (space && ch == 0x20) continue;
+		if (forbidden.Find(ch) == wxNOT_FOUND) {
+			newname << ch;
+			space = ch == 0x20;
+		}
 	}
-	return newname;
-*/
+
+	while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
+	while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
 
 	wxEncodingConverter ec;
 	ec.Init(wxFONTENCODING_UNICODE, wxFONTENCODING_CP1251, wxCONVERT_SUBSTITUTE);
-	wxString newname = ec.Convert(oldname);
+	newname = ec.Convert(newname);
 	ec.Init(wxFONTENCODING_CP1251, wxFONTENCODING_UNICODE, wxCONVERT_SUBSTITUTE);
 	newname = ec.Convert(newname);
+
 	return newname;
 }
 
