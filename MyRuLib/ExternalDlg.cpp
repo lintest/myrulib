@@ -138,11 +138,20 @@ wxString ExternalDlg::Normalize(const wxString &filename)
 	while (oldname.Left(1) == wxT(".")) oldname = oldname.Mid(1);
 	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
 
+/*
 	wxString newname;
 	for (size_t i=0; i<oldname.Len(); i++) {
 		wxChar letter = oldname[i];
 		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) newname += letter;
 	}
+	return newname;
+*/
+
+	wxEncodingConverter ec;
+	ec.Init(wxFONTENCODING_UNICODE, wxFONTENCODING_CP1251, wxCONVERT_SUBSTITUTE);
+	wxString newname = ec.Convert(oldname);
+	ec.Init(wxFONTENCODING_CP1251, wxFONTENCODING_UNICODE, wxCONVERT_SUBSTITUTE);
+	newname = ec.Convert(newname);
 	return newname;
 }
 
