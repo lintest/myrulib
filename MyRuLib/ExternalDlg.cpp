@@ -296,17 +296,14 @@ void ExternalDlg::LoadFormats()
 	m_format->SetSelection(format == -1 ? 1 : 0);
 
 	wxString sql = wxT("SELECT id, name FROM script ORDER BY id");
-	try {
-		FbLocalDatabase database;
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		while ( result.NextRow() ) {
-			int code = result.GetInt(0);
-			wxString name = _("filename"); name << wxT('.') << result.GetString(1);
-			int index = m_format->Append(name, code);
-			if (code == format) m_format->SetSelection(index);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+
+	FbLocalDatabase database;
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	while ( result.NextRow() ) {
+		int code = result.GetInt(0);
+		wxString name = _("filename"); name << wxT('.') << result.GetString(1);
+		int index = m_format->Append(name, code);
+		if (code == format) m_format->SetSelection(index);
 	}
 }
 
@@ -358,44 +355,40 @@ void ExternalDlg::FullBySequences(wxTreeItemId root, const wxString &selections,
 	wxString thisLeter, thisAuthor, thisSequence;
 	wxTreeItemId itemLetter, itemAuthor, itemSequence, itemParent;
 
-	try {
-		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-		while (result.NextRow()) {
-			BookTreeItemData data(result);
-			if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
-			wxString nextAuthor = result.GetString(wxT("full_name"));
-			wxString nextSequence = result.GetString(wxT("sequence"));
-			if (bUseLetter) {
-				wxString nextLetter = result.GetString(wxT("letter"));
-				if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
-					thisLeter = nextLetter;
-					itemAuthor = 0L;
-					itemSequence = 0L;
-					itemLetter = AppendFolder(root, thisLeter);
-					m_books->SetItemBold(itemLetter, true);
-				}
-			} else {
-				itemLetter = root;
-			}
-			if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
-				thisAuthor = nextAuthor;
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	while (result.NextRow()) {
+		BookTreeItemData data(result);
+		if ( books.Index(data.GetId()) != wxNOT_FOUND ) continue;
+		wxString nextAuthor = result.GetString(wxT("full_name"));
+		wxString nextSequence = result.GetString(wxT("sequence"));
+		if (bUseLetter) {
+			wxString nextLetter = result.GetString(wxT("letter"));
+			if (thisLeter!= nextLetter || !itemLetter.IsOk()) {
+				thisLeter = nextLetter;
+				itemAuthor = 0L;
 				itemSequence = 0L;
-				itemParent = itemAuthor = AppendFolder(itemLetter, thisAuthor);
-				m_books->SetItemBold(itemAuthor, true);
+				itemLetter = AppendFolder(root, thisLeter);
+				m_books->SetItemBold(itemLetter, true);
 			}
-			if (thisSequence != nextSequence || !itemSequence.IsOk()) {
-				thisSequence = nextSequence;
-				if (result.GetInt(wxT("id_seq"))) {
-					wxString seqname = thisSequence.IsEmpty() ? (wxString)_("(Misc.)") : thisSequence;
-					itemParent = itemSequence = AppendFolder(itemAuthor, seqname);
-					m_books->SetItemBold(itemSequence, true);
-				} else itemParent = itemAuthor;
-			}
-			AppendBook(itemParent, data);
-			books.Add(data.GetId());
+		} else {
+			itemLetter = root;
 		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+		if (thisAuthor != nextAuthor || !itemAuthor.IsOk()) {
+			thisAuthor = nextAuthor;
+			itemSequence = 0L;
+			itemParent = itemAuthor = AppendFolder(itemLetter, thisAuthor);
+			m_books->SetItemBold(itemAuthor, true);
+		}
+		if (thisSequence != nextSequence || !itemSequence.IsOk()) {
+			thisSequence = nextSequence;
+			if (result.GetInt(wxT("id_seq"))) {
+				wxString seqname = thisSequence.IsEmpty() ? (wxString)_("(Misc.)") : thisSequence;
+				itemParent = itemSequence = AppendFolder(itemAuthor, seqname);
+				m_books->SetItemBold(itemSequence, true);
+			} else itemParent = itemAuthor;
+		}
+		AppendBook(itemParent, data);
+		books.Add(data.GetId());
 	}
 }
 

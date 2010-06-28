@@ -338,16 +338,13 @@ wxString FbExportDlg::GetCommand(const wxString &script, const wxFileName &filen
 wxString FbExportDlg::GetScript(int format)
 {
 	wxString sql = wxT("SELECT text FROM script WHERE id=?");
-	try {
-		FbLocalDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, format);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return result.GetString(0);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	return wxEmptyString;
+	FbLocalDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, format);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow())
+		return result.GetString(0);
+	else return wxEmptyString;
 }
 
 void FbExportDlg::Execute()

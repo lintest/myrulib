@@ -20,8 +20,6 @@ void * FbViewThread::Entry()
 			case FbViewItem::Auth: OpenAuth(); break;
 			default: OpenNone();
 		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
 	} catch (...) {}
 	return NULL;
 }

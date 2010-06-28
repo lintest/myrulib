@@ -14,31 +14,27 @@ void * FbDateTreeThread::Entry()
 	FbParentData * root = new FbParentData(*model);
 	model->SetRoot(root);
 
-	try {
-		FbCommonDatabase database;
-		wxString sql = wxT("SELECT id, lib_min, lib_max, lib_num, usr_min, usr_max, usr_num FROM dates ORDER BY id DESC");
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbCommonDatabase database;
+	wxString sql = wxT("SELECT id, lib_min, lib_max, lib_num, usr_min, usr_max, usr_num FROM dates ORDER BY id DESC");
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 
-		FbDateYearData * year = NULL;
-		FbDateMonthData * mnth = NULL;
-		while (result.NextRow()) {
-			int day = result.GetInt(0);
-			int new_year = day / 10000;
-			int new_mnth = day / 100 % 100;
-			if (year == NULL || year->GetCode() != new_year) {
-				year = new FbDateYearData(*model, root, new_year);
-				mnth = NULL;
-			}
-			if (mnth == NULL || mnth->GetCode() != new_mnth) {
-				mnth = new FbDateMonthData(*model, year, new_mnth);
-			}
-			new FbDateDayData(*model, mnth, day, result);
+	FbDateYearData * year = NULL;
+	FbDateMonthData * mnth = NULL;
+	while (result.NextRow()) {
+		int day = result.GetInt(0);
+		int new_year = day / 10000;
+		int new_mnth = day / 100 % 100;
+		if (year == NULL || year->GetCode() != new_year) {
+			year = new FbDateYearData(*model, root, new_year);
+			mnth = NULL;
 		}
-		FbModelEvent(ID_MODEL_CREATE, model).Post(m_frame);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		delete model;
+		if (mnth == NULL || mnth->GetCode() != new_mnth) {
+			mnth = new FbDateMonthData(*model, year, new_mnth);
+		}
+		new FbDateDayData(*model, mnth, day, result);
 	}
+	FbModelEvent(ID_MODEL_CREATE, model).Post(m_frame);
+
 	return NULL;
 }
 

@@ -28,12 +28,8 @@
 
 void * FbConfigDlg::LoadThread::Entry()
 {
-	try {
-		FbCommonDatabase database;
-		LoadTypes(database);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbCommonDatabase database;
+	LoadTypes(database);
 	return NULL;
 }
 
@@ -54,19 +50,15 @@ void FbConfigDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 		  LEFT JOIN types as types ON books.file_type = types.file_type \
 		ORDER BY number, books.file_type \
 	 ");
-	try {
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		FbListStore * model = new FbListStore;
-		while ( result.NextRow() ) {
-			wxString type = result.GetString(0);
-			if (type.IsEmpty() || type == wxT("exe")) continue;
-			model->Append(new TypeData(result));
-		}
-		FbModelEvent event(ID_TYPE_LIST, model);
-		m_frame->AddPendingEvent(event);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbListStore * model = new FbListStore;
+	while ( result.NextRow() ) {
+		wxString type = result.GetString(0);
+		if (type.IsEmpty() || type == wxT("exe")) continue;
+		model->Append(new TypeData(result));
 	}
+	FbModelEvent(ID_TYPE_LIST, model).Post(m_frame);
 }
 
 //-----------------------------------------------------------------------------
@@ -321,11 +313,7 @@ void FbConfigDlg::Assign(bool write)
 
 	}
 
-	if (write) try {
-		SaveTypes(m_database);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	if (write) SaveTypes(m_database);
 }
 
 void FbConfigDlg::Execute(wxWindow* parent)

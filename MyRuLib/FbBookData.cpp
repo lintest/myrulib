@@ -125,19 +125,13 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 	wxString command;
 	bool ok = false;
 
-	if (!ok) try {
+	if (!ok) {
 		FbLocalDatabase database;
 		ok = GetUserCommand(database, filetype, command);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
 	}
-	if (!ok) try {
+	if (!ok) {
 		FbCommonDatabase database;
 		ok = GetUserCommand(database, filetype, command);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
 	}
 	if (ok) {
 		filepath.Prepend(wxT('"')).Append(wxT('"'));
@@ -164,27 +158,22 @@ void FbBookData::DoDownload() const
 	wxString md5sum = FbCommonDatabase().GetMd5(m_id);
 	if (md5sum.IsEmpty()) return;
 
-	try {
-		bool ok = false;
-		FbLocalDatabase database;
-		int folder = - database.NewId(FB_NEW_DOWNLOAD);
-		{
-			wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, folder);
-			stmt.Bind(2, md5sum);
-			ok = stmt.ExecuteUpdate();
-		}
-		if (!ok) {
-			wxString sql = wxT("INSERT INTO states(download, md5sum) VALUES (?,?)");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, folder);
-			stmt.Bind(2, md5sum);
-			stmt.ExecuteUpdate();
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
+	bool ok = false;
+	FbLocalDatabase database;
+	int folder = - database.NewId(FB_NEW_DOWNLOAD);
+	{
+		wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, folder);
+		stmt.Bind(2, md5sum);
+		ok = stmt.ExecuteUpdate();
+	}
+	if (!ok) {
+		wxString sql = wxT("INSERT INTO states(download, md5sum) VALUES (?,?)");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, folder);
+		stmt.Bind(2, md5sum);
+		stmt.ExecuteUpdate();
 	}
 	wxGetApp().StartDownload();
 }
@@ -200,16 +189,12 @@ void FbAuthorData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) co
 
 void * FbAuthorData::ShowThread::Entry()
 {
-	try {
-		FbCommonDatabase database;
-		wxString sql = wxT("SELECT description FROM authors WHERE id=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_author);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbCommonDatabase database;
+	wxString sql = wxT("SELECT description FROM authors WHERE id=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_author);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
 	return NULL;
 }
 

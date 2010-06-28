@@ -10,19 +10,15 @@
 
 void * FbAuthListThread::Entry()
 {
-	try {
-		FbCommonDatabase database;
-		if (m_info.m_author) {
-			DoAuthor(database);
-		} else if (m_info.m_string.IsEmpty()) {
-			DoLetter(database);
-		} else if (m_info.IsFullText()) {
-			DoFullText(database);
-		} else {
-			DoString(database);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+	FbCommonDatabase database;
+	if (m_info.m_author) {
+		DoAuthor(database);
+	} else if (m_info.m_string.IsEmpty()) {
+		DoLetter(database);
+	} else if (m_info.IsFullText()) {
+		DoFullText(database);
+	} else {
+		DoString(database);
 	}
 	return NULL;
 }

@@ -268,14 +268,10 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 		AND NOT EXISTS (SELECT rating FROM states WHERE states.md5sum = books.md5sum) \
 	"), rating, sel.c_str());
 
-	try {
-		FbCommonDatabase database;
-		database.AttachConfig();
-		database.ExecuteUpdate(sql1);
-		database.ExecuteUpdate(sql2);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbCommonDatabase database;
+	database.AttachConfig();
+	database.ExecuteUpdate(sql1);
+	database.ExecuteUpdate(sql2);
 
 	FbCollection::ResetBook(books);
 	m_BookList->Refresh();

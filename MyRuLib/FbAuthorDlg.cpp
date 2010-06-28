@@ -45,28 +45,18 @@ wxTextCtrl * FbAuthorDlg::AppenName(wxFlexGridSizer * parent, wxWindowID id, con
 
 int FbAuthorDlg::Append(wxString &newname)
 {
-	try {
-		FbAuthorDlg dlg(_("Add author"));
-		bool ok = dlg.ShowModal() == wxID_OK;
-		if (ok) newname = dlg.GetFullName();
-		return ok ? dlg.DoAppend() : 0;
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return 0;
-	}
+	FbAuthorDlg dlg(_("Add author"));
+	bool ok = dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetFullName();
+	return ok ? dlg.DoAppend() : 0;
 }
 
 int FbAuthorDlg::Modify(int id, wxString &newname)
 {
-	try {
-		FbAuthorDlg dlg(_("Change author"), id);
-		bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
-		if (ok) newname = dlg.GetFullName();
-		return ok ? dlg.DoUpdate() : 0;
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return 0;
-	}
+	FbAuthorDlg dlg(_("Change author"), id);
+	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetFullName();
+	return ok ? dlg.DoUpdate() : 0;
 }
 
 wxString FbAuthorDlg::GetFullName()

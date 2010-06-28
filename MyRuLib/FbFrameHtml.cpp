@@ -158,28 +158,23 @@ void FbFrameHtml::DoSubmit()
 
 	wxString sql = wxT("INSERT INTO comments(id, md5sum, posted, caption, comment) VALUES (?,?,?,?,?)");
 
-	try {
-		FbLocalDatabase database;
-		int key = database.NewId(FB_NEW_COMMENT);
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, key);
-		stmt.Bind(2, m_md5sum);
-		stmt.Bind(3, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
-		stmt.Bind(4, caption);
-		stmt.Bind(5, comment);
-		stmt.ExecuteUpdate();
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
+	FbLocalDatabase database;
+	int key = database.NewId(FB_NEW_COMMENT);
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, key);
+	stmt.Bind(2, m_md5sum);
+	stmt.Bind(3, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
+	stmt.Bind(4, caption);
+	stmt.Bind(5, comment);
+	bool ok = stmt.ExecuteUpdate();
+
+	if (ok) {
+		m_Caption.SetValue(wxEmptyString);
+		m_Comment.SetValue(wxEmptyString);
+		m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+		m_key.Empty();
+		DoUpdate();
 	}
-
-	m_Caption.SetValue(wxEmptyString);
-	m_Comment.SetValue(wxEmptyString);
-	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
-
-	m_key.Empty();
-
-	DoUpdate();
 }
 
 void FbFrameHtml::OnSubmit(wxCommandEvent& event)
@@ -210,26 +205,21 @@ void FbFrameHtml::DoModify()
 
 	wxString sql = wxT("UPDATE comments SET posted=?, caption=?, comment=? WHERE id=?");
 
-	try {
-		FbLocalDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
-		stmt.Bind(2, caption);
-		stmt.Bind(3, comment);
-		stmt.Bind(4, m_key);
-		stmt.ExecuteUpdate();
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
+	FbLocalDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
+	stmt.Bind(2, caption);
+	stmt.Bind(3, comment);
+	stmt.Bind(4, m_key);
+	bool ok = stmt.ExecuteUpdate();
+
+	if (ok) {
+		m_Caption.SetValue(wxEmptyString);
+		m_Comment.SetValue(wxEmptyString);
+		m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
+		m_key.Empty();
+		DoUpdate();
 	}
-
-	m_Caption.SetValue(wxEmptyString);
-	m_Comment.SetValue(wxEmptyString);
-	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
-
-	m_key.Empty();
-
-	DoUpdate();
 }
 
 void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
@@ -266,20 +256,15 @@ void FbFrameHtml::ModifyLink(const wxString &key)
 
 void FbFrameHtml::DeleteLink(const wxString &key)
 {
-	try {
-		FbLocalDatabase database;
-		wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
-		database.ExecuteUpdate(sql);
+	FbLocalDatabase database;
+	wxString sql = wxT("DELETE FROM comments WHERE id=") + key;
+	bool ok = database.ExecuteUpdate(sql);
 
-		if (m_key == key) {
-			m_key.Empty();
-			m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
-		}
-		DoUpdate();
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
+	if (ok && m_key == key) {
+		m_key.Empty();
+		m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 	}
+	DoUpdate();
 }
 
 void FbFrameHtml::DoUpdate()

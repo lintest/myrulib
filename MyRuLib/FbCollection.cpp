@@ -193,15 +193,13 @@ FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxS
 		FbCacheData & data = items[i];
 		if (data.GetCode() == code) return &data;
 	}
-	try {
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, code);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return AddData(items, new FbCacheData(code, result));
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	return NULL;
+
+	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+	stmt.Bind(1, code);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow())
+		return AddData(items, new FbCacheData(code, result));
+	else return NULL;
 }
 
 void FbCollection::ResetData(FbCasheDataArray &items, int code)
@@ -293,16 +291,13 @@ FbCacheBook FbCollection::GetCacheBook(int code)
 		if (book.GetCode() == code) return book;
 	}
 
-	try {
-		wxString sql = FbCacheBook::GetSQL();
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, code);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return * AddBook(new FbCacheBook(code, result));
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	return 0;
+	wxString sql = FbCacheBook::GetSQL();
+	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+	stmt.Bind(1, code);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow())
+		return * AddBook(new FbCacheBook(code, result));
+	else return 0;
 }
 
 FbViewData * FbCollection::GetCacheInfo(int code)
