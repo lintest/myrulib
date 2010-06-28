@@ -17,6 +17,8 @@
     #pragma interface "wxsqlite3.h"
 #endif
 
+#define WXSQLITE_USE_EXCEPTIONS 0
+
 #include <wx/arrstr.h>
 #include <wx/datetime.h>
 #include <wx/buffer.h>
@@ -75,6 +77,7 @@ inline void operator++(wxSQLite3LimitType& value)
   value = wxSQLite3LimitType(value+1);
 }
 
+#if WXSQLITE_USE_EXCEPTIONS
 /// SQL exception
 class WXDLLIMPEXP_SQLITE3 wxSQLite3Exception
 {
@@ -104,6 +107,7 @@ private:
   int      m_errorCode;     ///< SQLite3 error code associated with this exception
   wxString m_errorMessage;  ///< SQLite3 error message associated with this exception
 };
+#endif  // WXSQLITE_USE_EXCEPTIONS
 
 /// SQL statment buffer for use with SQLite3's printf method
 class WXDLLIMPEXP_SQLITE3 wxSQLite3StatementBuffer
