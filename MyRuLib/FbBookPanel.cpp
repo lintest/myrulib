@@ -383,7 +383,6 @@ void FbBookPanel::UpdateInfo(int id)
 
 void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 {
-/*
 	wxString sel;
 	wxArrayInt items;
 	GetSelected(items);
@@ -394,9 +393,8 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 	int answer = wxMessageBox(msg, _("Confirmation"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
-	(new FbDeleteThread(sel))->Execute();
-	m_BookList->DeleteItems(items);
-*/
+//	(new FbDeleteThread(sel))->Execute();
+	m_BookList->Delete();
 }
 
 void FbBookPanel::OnModifyBooks(wxCommandEvent& event)

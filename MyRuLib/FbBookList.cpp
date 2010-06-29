@@ -116,3 +116,48 @@ int FbBookListModel::GetBook()
 	FbBookListData * book = wxDynamicCast(&item, FbBookListData);
 	return book ? book->GetCode() : 0;
 }
+
+void FbBookListModel::Delete()
+{
+	size_t count = m_items.Count();
+	if (count == 0) return ;
+
+	if (m_check.Count() > 0) {
+		for (size_t i = 0; i < count; i++) {
+			size_t index = count - i - 1;
+			int book = m_items[index];
+			if (m_check.Index(book) != wxNOT_FOUND) {
+				if (0 <= index && index < count) m_items.RemoveAt(index);
+				if (m_position > index) m_position--;
+			}
+		}
+		m_check.Empty();
+		return;
+	}
+
+	if (m_position == 0) return ;
+
+	if (m_shift) {
+		size_t min = m_shift < m_position ? m_shift : m_position;
+		size_t max = m_shift > m_position ? m_shift : m_position;
+		for (size_t i = 0; i <= max - min; i++) {
+			size_t index = max - i - 1;
+			if (0 <= index && index < count) m_items.RemoveAt(index);
+			if (m_position > index) m_position--;
+		};
+		m_shift = 0;
+	} else {
+		size_t ctrls_count = m_ctrls.Count();
+		if (ctrls_count) {
+			for (size_t i = 0; i < ctrls_count; i++) {
+				size_t index = m_ctrls[ctrls_count - i - 1] - 1;
+				if (0 <= index && index < count) m_items.RemoveAt(index);
+				if (m_position > index) m_position--;
+			}
+			m_ctrls.Empty();
+		} else {
+			m_items.RemoveAt(m_position - 1);
+			if (m_position == count) m_position--;
+		}
+	}
+}
