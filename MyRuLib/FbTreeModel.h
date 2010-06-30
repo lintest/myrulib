@@ -52,10 +52,10 @@ class FbModelData: public wxObject
 	public:
 		int GetState(FbModel & model) const;
 		void SetState(FbModel & model, bool state);
+		void CheckState(FbModel & model);
 	protected:
 		virtual void DoSetState(FbModel & model, int state) {}
 		virtual int DoGetState(FbModel & model) const { return 0; }
-		void CheckState(FbModel & model);
 		DECLARE_CLASS(FbModelData);
 };
 

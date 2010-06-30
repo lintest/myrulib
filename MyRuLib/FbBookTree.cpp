@@ -133,3 +133,37 @@ FbViewItem FbBookTreeModel::GetView()
 	FbModelItem item = GetCurrent();
 	return item ? (&item)->GetView() : FbViewItem::None;
 }
+
+void FbBookTreeModel::Delete()
+{
+	if (m_root == NULL) return;
+	FbModelItem item(*this, m_root);
+	wxArrayInt items;
+	GetChecked(item, items);
+	if (items.Count() == 0) MultiplyCheck();
+	size_t row = GetRowCount();
+	DoDelete(item, row);
+	m_ctrls.Empty();
+	m_shift = 0;
+}
+
+bool FbBookTreeModel::DoDelete(FbModelItem &parent, size_t &row)
+{
+	FbParentData * data = wxDynamicCast(&parent, FbParentData);
+	if (data == NULL) return false;
+
+	bool remove = false;
+	size_t count = parent.Count();
+	for (size_t i = 0; i < count; i++) {
+		size_t index = count - i - 1;
+		FbModelItem child = parent.Items(index);
+		remove = DoDelete(child, row) || remove;
+		if (child.GetState() != 0 && child.Count() == 0) {
+			data->Delete(index);
+			if (m_position >= row) m_position--;
+			remove = true;
+		} else (&child)->CheckState(*this);
+		row--;
+	}
+	return remove;
+}
