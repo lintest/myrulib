@@ -277,19 +277,6 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 	m_BookList->Refresh();
 }
 
-void FbBookPanel::DoDeleteDownload(const wxString &sel, const int folder)
-{
-/*
-	wxString sql1 = wxString::Format(wxT("\
-		UPDATE states SET download=%d WHERE md5sum IN \
-		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
-	"), folder, sel.c_str());
-
-	wxThread * thread = new FbFolderUpdateThread( sql1, folder, FT_DOWNLOAD );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
-*/
-}
-
 void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 {
 	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
@@ -319,7 +306,13 @@ void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 {
 	wxString sel = GetSelected();
-	DoDeleteDownload(sel, 0);
+	wxString sql1 = wxString::Format(wxT("\
+		UPDATE states SET download=0 WHERE md5sum IN \
+		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
+	"), sel.c_str());
+
+	(new FbUpdateThread( sql1 ))->Execute();
+	m_BookList->Delete();
 }
 
 void FbBookPanel::OnEditComments(wxCommandEvent & event)
@@ -363,13 +356,6 @@ void FbBookPanel::OnBookPage(wxCommandEvent & event)
 void FbBookPanel::UpdateFonts(bool refresh)
 {
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
-/*
-	m_BookList->SetColumnShown(3, FbParams::GetValue(FB_COLUMN_GENRE));
-	m_BookList->SetColumnShown(4, FbParams::GetValue(FB_COLUMN_RATING));
-	m_BookList->SetColumnShown(5, FbParams::GetValue(FB_COLUMN_LANG));
-	m_BookList->SetColumnShown(6, FbParams::GetValue(FB_COLUMN_TYPE));
-	m_BookList->SetColumnShown(7, FbParams::GetValue(FB_COLUMN_SYZE));
-*/
 	if (refresh) m_BookList->Update();
 	if (refresh) m_BookInfo->SetPage(wxEmptyString);
 	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);

@@ -113,24 +113,19 @@ void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
 
 void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 {
-/*
-	FbFolderChildData * data = wxDynamicCast(m_MasterList->GetCurrent(), FbFolderChildData);
+	FbModelItem item = m_MasterList->GetCurrent();
+	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	if (data == NULL) return;
 
 	int folder = data->GetCode();
-	wxString selected = m_BooksPanel->m_BookList->GetSelected();
+	wxString selected = m_BooksPanel->GetSelected();
 	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
 
 	FbCommonDatabase database;
 	database.AttachConfig();
 	database.ExecuteUpdate(sql);
 
-	FbTreeListUpdater updater(m_BooksPanel->m_BookList);
-
-	wxArrayInt items;
-	m_BooksPanel->m_BookList->GetSelected(items);
-	m_BooksPanel->m_BookList->DeleteItems(items);
-*/
+	m_BooksPanel->m_BookList->Delete();
 }
 
 void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
