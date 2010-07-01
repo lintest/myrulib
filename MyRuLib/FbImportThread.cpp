@@ -230,8 +230,10 @@ int FbImportBook::FindBySize()
 	return 0;
 }
 
-void FbImportBook::AppendBook()
+bool FbImportBook::AppendBook()
 {
+	bool ok = true;
+
 	Convert();
 
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
@@ -254,7 +256,7 @@ void FbImportBook::AppendBook()
 			stmt.Bind(10, lang);
 			stmt.Bind(11, today);
 			stmt.Bind(12, m_md5sum);
-			stmt.ExecuteUpdate();
+			ok = stmt.ExecuteUpdate() && ok;
 		}
         for (size_t j = 0; j<sequences.Count(); j++) {
 			SequenceItem &sequence = sequences[j];
@@ -264,7 +266,7 @@ void FbImportBook::AppendBook()
             stmt.Bind(2, sequence.GetId());
             stmt.Bind(3, sequence.GetNumber());
             stmt.Bind(4, author);
-            stmt.ExecuteUpdate();
+			ok = stmt.ExecuteUpdate() && ok;
         }
 	}
 
@@ -275,7 +277,7 @@ void FbImportBook::AppendBook()
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, content);
 		stmt.Bind(2, id_book);
-		stmt.ExecuteUpdate();
+		ok = stmt.ExecuteUpdate() && ok;
 	}
 
 	if (m_database.TableExists(wxT("genres"))) {
@@ -285,11 +287,12 @@ void FbImportBook::AppendBook()
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, genres.Mid(i*2, 2));
-			stmt.ExecuteUpdate();
+			ok = stmt.ExecuteUpdate() && ok;
 		}
 	}
+	return ok;
 }
-void FbImportBook::AppendFile(int id_book)
+bool FbImportBook::AppendFile(int id_book)
 {
 	wxString sql = wxT("SELECT file_name FROM books WHERE id=? AND id_archive=? UNION SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -298,40 +301,29 @@ void FbImportBook::AppendFile(int id_book)
 	stmt.Bind(3, id_book);
 	stmt.Bind(4, m_archive);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
 	while (result.NextRow()) {
 		if (result.GetString(0) == m_filename) {
 			wxLogWarning(_("File already exists %s"), m_message.c_str());
-			return;
+			return true;
 		}
 	}
 
 	wxLogWarning(_("Add alternative %s"), m_filename.c_str());
-	{
-		wxString sql = wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, id_book);
-		stmt.Bind(2, m_archive);
-		stmt.Bind(3, m_filename);
-		stmt.Bind(4, m_filepath);
-		stmt.ExecuteUpdate();
-	}
+	sql = wxT("INSERT INTO files(id_book, id_archive, file_name, file_path) VALUES (?,?,?,?)");
+	stmt = m_database.PrepareStatement(sql);
+	stmt.Bind(1, id_book);
+	stmt.Bind(2, m_archive);
+	stmt.Bind(3, m_filename);
+	stmt.Bind(4, m_filepath);
+	return stmt.ExecuteUpdate();
 }
 
-void FbImportBook::Save()
+bool FbImportBook::Save()
 {
-	try {
-		FbAutoCommit transaction(m_database);
-		int id_book = FindByMD5();
-		if (!id_book)
-			id_book = FindBySize();
-		if (id_book)
-			AppendFile(id_book);
-		else
-			AppendBook();
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbAutoCommit transaction(m_database);
+	int id_book = FindByMD5();
+	if (!id_book) id_book = FindBySize();
+	return id_book ? AppendFile(id_book) : AppendBook();
 }
 
 //-----------------------------------------------------------------------------

@@ -15,15 +15,11 @@ bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
 
 void * FbSeqnListThread::Entry()
 {
-	try {
-		FbCommonDatabase database;
-		if (!m_string.IsEmpty() && IsFullText(database)) {
-			DoFullText(database);
-		} else {
-			DoString(database);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+	FbCommonDatabase database;
+	if (!m_string.IsEmpty() && IsFullText(database)) {
+		DoFullText(database);
+	} else {
+		DoString(database);
 	}
 	return NULL;
 }

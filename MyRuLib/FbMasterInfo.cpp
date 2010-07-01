@@ -17,31 +17,29 @@ IMPLEMENT_CLASS(FbMasterInfoBase, wxObject)
 void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread)
 {
 	if (thread->IsClosed()) return NULL;
-	try {
-		FbCommonDatabase database;
-		FbGenreFunction func_genre;
-		FbAggregateFunction func_aggregate;
-		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
-		database.CreateFunction(wxT("GENRE"), 1, func_genre);
-		database.AttachConfig();
-		if (thread->IsClosed()) return NULL;
 
-		wxString sql;
-		switch (GetMode()) {
-			case FB2_MODE_LIST: sql = GetListSQL(database); break;
-			case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
-		}
+	FbCommonDatabase database;
+	FbGenreFunction func_genre;
+	FbAggregateFunction func_aggregate;
+	database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
+	database.CreateFunction(wxT("GENRE"), 1, func_genre);
+	database.AttachConfig();
+	if (thread->IsClosed()) return NULL;
 
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		Bind(stmt);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (thread->IsClosed()) return NULL;
-		switch (GetMode()) {
-			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
-			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+	wxString sql;
+	switch (GetMode()) {
+		case FB2_MODE_LIST: sql = GetListSQL(database); break;
+		case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
+	}
+
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	Bind(stmt);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (thread->IsClosed()) return NULL;
+
+	switch (GetMode()) {
+		case FB2_MODE_LIST: MakeList(owner, thread, result); break;
+		case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
 	}
 	return NULL;
 }

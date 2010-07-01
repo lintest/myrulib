@@ -179,16 +179,11 @@ void * FrameInfoThread::Entry()
 
 	DoStart(3, _("Collection info"));
 
-	try {
-		WriteTitle();
-		WriteCount();
-		WriteTypes();
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	WriteTitle();
+	WriteCount();
+	WriteTypes();
 
-	m_html += wxT("</CENTER>");
+	m_html << wxT("</CENTER>");
 
 	DoFinish();
 

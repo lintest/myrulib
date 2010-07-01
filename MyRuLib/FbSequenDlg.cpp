@@ -31,28 +31,18 @@ FbSequenDlg::FbSequenDlg( const wxString& title, int id )
 
 int FbSequenDlg::Append(wxString &newname)
 {
-	try {
-		FbSequenDlg dlg(_("Append series"));
-		bool ok = dlg.ShowModal() == wxID_OK;
-		if (ok) newname = dlg.GetValue();
-		return ok ? dlg.DoAppend() : 0;
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return 0;
-	}
+	FbSequenDlg dlg(_("Append series"));
+	bool ok = dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetValue();
+	return ok ? dlg.DoAppend() : 0;
 }
 
 int FbSequenDlg::Modify(int id, wxString &newname)
 {
-	try {
-		FbSequenDlg dlg(_("Modify series"), id);
-		bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
-		if (ok) newname = dlg.GetValue();
-		return ok ? dlg.DoUpdate() : 0;
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return 0;
-	}
+	FbSequenDlg dlg(_("Modify series"), id);
+	bool ok = dlg.Load(id) && dlg.ShowModal() == wxID_OK;
+	if (ok) newname = dlg.GetValue();
+	return ok ? dlg.DoUpdate() : 0;
 }
 
 bool FbSequenDlg::Load(int id)

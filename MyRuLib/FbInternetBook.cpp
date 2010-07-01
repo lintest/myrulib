@@ -37,18 +37,15 @@ FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
 	: m_id(0), m_owner(owner), m_md5sum(md5sum), m_zipped(false)
 {
 	wxString sql = wxT("SELECT id, file_type FROM books WHERE md5sum=? AND id>0");
-	try {
-		FbCommonDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, md5sum);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if ( result.NextRow() ) {
-			m_id = result.GetInt(0);
-			m_filetype = result.GetString(1);
-			m_url = GetURL(m_id);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, md5sum);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if ( result.NextRow() ) {
+		m_id = result.GetInt(0);
+		m_filetype = result.GetString(1);
+		m_url = GetURL(m_id);
 	}
 }
 
@@ -219,15 +216,11 @@ void FbInternetBook::SaveFile(const bool success)
 	wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
 
 	int code = success ? FbDateTime::Today().Code() : 1;
-	try {
-		FbLocalDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, code);
-		stmt.Bind(2, m_md5sum);
-		stmt.ExecuteUpdate();
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbLocalDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, code);
+	stmt.Bind(2, m_md5sum);
+	stmt.ExecuteUpdate();
 
 	if (m_owner->IsClosed()) return;
 

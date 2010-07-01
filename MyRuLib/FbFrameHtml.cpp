@@ -238,19 +238,14 @@ void FbFrameHtml::OnLinkClicked(wxHtmlLinkEvent& event)
 
 void FbFrameHtml::ModifyLink(const wxString &key)
 {
-	try {
-		FbLocalDatabase database;
-		wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + key;
-		wxSQLite3ResultSet res = database.ExecuteQuery(sql);
-		if (res.NextRow()) {
-			m_key = res.GetString(0);
-			m_Caption.SetValue( res.GetString(1) );
-			m_Comment.SetValue( res.GetString(2) );
-			m_ToolBar.EnableTool(ID_HTML_MODIFY, true);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
+	FbLocalDatabase database;
+	wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + key;
+	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+	if (res.NextRow()) {
+		m_key = res.GetString(0);
+		m_Caption.SetValue( res.GetString(1) );
+		m_Comment.SetValue( res.GetString(2) );
+		m_ToolBar.EnableTool(ID_HTML_MODIFY, true);
 	}
 }
 

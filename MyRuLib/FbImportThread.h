@@ -61,7 +61,7 @@ class FbImportBook: public ParsingContext
 		FbImportBook(FbImportThread *owner, wxInputStream &in, const wxString &filename);
 		FbImportBook(FbImpotrZip *owner, wxZipEntry *entry);
 		bool Load(wxInputStream& stream);
-		void Save();
+		bool Save();
 		bool IsOk() { return m_ok; };
 	public:
 		wxString title;
@@ -76,8 +76,8 @@ class FbImportBook: public ParsingContext
 		static wxString CalcMd5(wxInputStream& stream);
 		int FindByMD5();
 		int FindBySize();
-		void AppendBook();
-		void AppendFile(int id_book);
+		bool AppendBook();
+		bool AppendFile(int id_book);
 		void Convert();
 	private:
 		FbDatabase &m_database;

@@ -28,21 +28,19 @@ wxString FbFilterList::Load(FbDatabase & database, const wxString & sql, const w
 	wxString list;
 	wxTreeItemId root = GetRootItem();
 	Freeze();
-	try {
-		int all = -1;
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		while ( result.NextRow() ) {
-			wxString text = result.GetString(0);
-			int image = Append(root, text, filter);
-			if (image<0) continue;
-			if (!list.IsEmpty()) list += wxT(",");
-			list += text;
-			if (all < 0) all = image; else if (all != image) all = 2;
-		}
-		if (all > 0) SetItemImage(root, all);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+
+	int all = -1;
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	while ( result.NextRow() ) {
+		wxString text = result.GetString(0);
+		int image = Append(root, text, filter);
+		if (image<0) continue;
+		if (!list.IsEmpty()) list += wxT(",");
+		list += text;
+		if (all < 0) all = image; else if (all != image) all = 2;
 	}
+	if (all > 0) SetItemImage(root, all);
+
 	Expand(root);
 	Thaw();
 	return list;

@@ -36,15 +36,10 @@
 
 void * FbParamsDlg::LoadThread::Entry()
 {
-	try {
-		FbCommonDatabase database;
-		database.AttachConfig();
-		LoadScripts(database);
-		LoadTypes(database);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-
+	FbCommonDatabase database;
+	database.AttachConfig();
+	LoadScripts(database);
+	LoadTypes(database);
 	return NULL;
 }
 
@@ -65,35 +60,26 @@ void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 		  LEFT JOIN config.types as types ON books.file_type = types.file_type \
 		ORDER BY number, books.file_type \
 	 ");
-	try {
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		FbListStore * model = new FbListStore;
-		while ( result.NextRow() ) {
-			wxString type = result.GetString(0);
-			if (type.IsEmpty() || type == wxT("exe")) continue;
-			model->Append(new TypeData(result));
-		}
-		FbModelEvent event(ID_TYPE_LIST, model);
-		m_frame->AddPendingEvent(event);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbListStore * model = new FbListStore;
+	while ( result.NextRow() ) {
+		wxString type = result.GetString(0);
+		if (type.IsEmpty() || type == wxT("exe")) continue;
+		model->Append(new TypeData(result));
 	}
+	FbModelEvent event(ID_TYPE_LIST, model);
+	m_frame->AddPendingEvent(event);
 }
 
 void FbParamsDlg::LoadThread::LoadScripts(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, name, text FROM script ORDER BY id");
-	try {
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		FbListStore * model = new FbListStore;
-		while ( result.NextRow() ) {
-			model->Append(new ScriptData(result));
-		}
-		FbModelEvent event(ID_SCRIPT_LIST, model);
-		m_frame->AddPendingEvent(event);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbListStore * model = new FbListStore;
+	while ( result.NextRow() ) {
+		model->Append(new ScriptData(result));
 	}
+	FbModelEvent(ID_SCRIPT_LIST, model).Post(m_frame);
 }
 
 //-----------------------------------------------------------------------------
@@ -703,24 +689,14 @@ void FbParamsDlg::Assign(bool write)
 void FbParamsDlg::Execute(wxWindow* parent)
 {
 	FbParamsDlg dlg(parent, wxID_ANY, _("Program settings"), wxDefaultPosition, wxDefaultSize);
-
-	try {
-		dlg.Assign(false);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		return;
-	}
-
-	if (dlg.ShowModal() == wxID_OK) {
-		try {
-			dlg.Assign(true);
-			dlg.SaveData();
-			ZipReader::Init();
-			FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
-			wxGetApp().Localize();
-		} catch (wxSQLite3Exception & e) {
-			FbLogError(_("Error writing to database"), e.GetMessage());
-		}
+	dlg.Assign(false);
+	bool ok = dlg.ShowModal() == wxID_OK;
+	if (ok) {
+		dlg.Assign(true);
+		dlg.SaveData();
+		ZipReader::Init();
+		FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
+		wxGetApp().Localize();
 	}
 };
 
@@ -962,15 +938,11 @@ void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 
 void FbParamsDlg::SaveData()
 {
-	try {
-		FbLocalDatabase database;
-		DeleteTypes(database);
-		DeleteScripts(database);
-		SaveScripts(database);
-		SaveTypes(database);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbLocalDatabase database;
+	DeleteTypes(database);
+	DeleteScripts(database);
+	SaveScripts(database);
+	SaveTypes(database);
 }
 
 void FbParamsDlg::DeleteTypes(wxSQLite3Database &database)

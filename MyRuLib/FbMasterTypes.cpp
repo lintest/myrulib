@@ -285,43 +285,42 @@ void FbMasterFindInfo::Bind(wxSQLite3Statement &stmt) const
 void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 {
 	if (thread->IsClosed()) return NULL;
-	try {
-		FbCommonDatabase database;
-		FbGenreFunction func_genre;
-		FbAggregateFunction func_aggregate;
-		FbSearchFunction func_title(m_title);
-		FbSearchFunction func_author(m_author);
-		database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
-		database.CreateFunction(wxT("GENRE"), 1, func_genre);
-		database.AttachConfig();
-		if (thread->IsClosed()) return NULL;
 
-		m_auth = !m_author.IsEmpty();
-		m_full = database.TableExists(wxT("fts_book"));
-		m_full &= FbSearchFunction::IsFullText(m_title);
-		m_full &= FbSearchFunction::IsFullText(m_author);
+	FbCommonDatabase database;
+	FbGenreFunction func_genre;
+	FbAggregateFunction func_aggregate;
+	FbSearchFunction func_title(m_title);
+	FbSearchFunction func_author(m_author);
+	database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
+	database.CreateFunction(wxT("GENRE"), 1, func_genre);
+	database.AttachConfig();
+	if (thread->IsClosed()) return NULL;
 
-		wxString sql;
-		switch (GetMode()) {
-			case FB2_MODE_LIST: sql = GetListSQL(database); break;
-			case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
-		}
+	m_auth = !m_author.IsEmpty();
+	m_full = database.TableExists(wxT("fts_book"));
+	m_full &= FbSearchFunction::IsFullText(m_title);
+	m_full &= FbSearchFunction::IsFullText(m_author);
 
-		if (!m_full) {
-			database.CreateFunction(wxT("SEARCH_T"), 1, func_title);
-			if (m_auth) database.CreateFunction(wxT("SEARCH_A"), 1, func_author);
-		}
-
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		if (m_full) Bind(stmt);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (thread->IsClosed()) return NULL;
-		switch (GetMode()) {
-			case FB2_MODE_LIST: MakeList(owner, thread, result); break;
-			case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+	wxString sql;
+	switch (GetMode()) {
+		case FB2_MODE_LIST: sql = GetListSQL(database); break;
+		case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
 	}
+
+	if (!m_full) {
+		database.CreateFunction(wxT("SEARCH_T"), 1, func_title);
+		if (m_auth) database.CreateFunction(wxT("SEARCH_A"), 1, func_author);
+	}
+
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	if (m_full) Bind(stmt);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (thread->IsClosed()) return NULL;
+
+	switch (GetMode()) {
+		case FB2_MODE_LIST: MakeList(owner, thread, result); break;
+		case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
+	}
+
 	return NULL;
 }

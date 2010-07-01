@@ -20,11 +20,7 @@ void * FbUpdateThread::Entry()
 
 void FbUpdateThread::ExecSQL(FbDatabase &database, const wxString &sql)
 {
-	try {
-		database.ExecuteUpdate(sql);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	database.ExecuteUpdate(sql);
 }
 
 class FbIncrementFunction : public wxSQLite3ScalarFunction
@@ -106,13 +102,10 @@ void FbDeleteThread::DoDelete(FbDatabase &database, const wxString &where)
 	bool remove = FbParams::GetValue(FB_REMOVE_FILES);
 	wxString basepath = FbParams::GetText(DB_LIBRARY_DIR);
 	wxString sql = wxT("SELECT id FROM books WHERE ") + where;
-	try {
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-		while (result.NextRow()) {
-			if (remove) FbExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
-		}
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
+
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	while (result.NextRow()) {
+		if (remove) FbExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
 	}
 }
 
@@ -122,11 +115,7 @@ void * FbTextThread::Entry()
 
 	Sleep(2000);
 
-	try {
-		FbCommonDatabase().CreateFullText();
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	FbCommonDatabase().CreateFullText();
 
 	return NULL;
 }
