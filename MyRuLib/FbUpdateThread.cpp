@@ -82,24 +82,24 @@ void * FbDeleteThread::Entry()
 	database.ExecuteUpdate(wxT("CREATE TEMP TABLE tmp_a(id INTEGER PRIMARY KEY)"));
 	database.ExecuteUpdate(wxT("CREATE TEMP TABLE tmp_s(id INTEGER PRIMARY KEY)"));
 
-	sql = wxString::Format(wxT("INSERT INTO tmp_a (SELECT id_author FROM books WHERE id IN (%s))"), m_sel);
+	sql = wxString::Format(wxT("INSERT INTO tmp_a SELECT DISTINCT id_author FROM books WHERE id IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
-	sql = wxString::Format(wxT("INSERT INTO tmp_s (SELECT id_seq FROM bookseq WHERE id_book IN (%s))"), m_sel);
+	sql = wxString::Format(wxT("INSERT INTO tmp_s SELECT DISTINCT id_seq FROM bookseq WHERE id_book IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
 	if (FbParams::GetValue(FB_REMOVE_FILES)) DoDelete(database, sql);
 
-	sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel);
+	sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
-	sql = wxString::Format(wxT("DELETE FROM bookseq WHERE id_book IN (%s)"), m_sel);
+	sql = wxString::Format(wxT("DELETE FROM bookseq WHERE id_book IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
-	sql = wxString::Format(wxT("DELETE FROM files WHERE id_book IN (%s)"), m_sel);
+	sql = wxString::Format(wxT("DELETE FROM files WHERE id_book IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
-	sql = wxString::Format(wxT("DELETE FROM genres WHERE id_book IN (%s)"), m_sel);
+	sql = wxString::Format(wxT("DELETE FROM genres WHERE id_book IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
 	database.ExecuteUpdate(wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id) WHERE id IN (SELECT id FROM tmp_a)"));
@@ -111,7 +111,7 @@ void * FbDeleteThread::Entry()
 void FbDeleteThread::DoDelete(FbDatabase &database, const wxString &where)
 {
 	wxString basepath = FbParams::GetText(DB_LIBRARY_DIR);
-	wxString sql = wxString::Format(wxT("SELECT id FROM books WHERE books.id IN (%s)"), m_sel);
+	wxString sql = wxString::Format(wxT("SELECT id FROM books WHERE books.id IN (%s)"), m_sel.c_str());
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		FbExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
@@ -128,4 +128,3 @@ void * FbTextThread::Entry()
 
 	return NULL;
 }
-

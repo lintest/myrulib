@@ -27,7 +27,7 @@ class ZipCollection {
 		void Init(const wxString &dirname);
 		wxString FindZip(const wxString &filename);
 		void SetDir(const wxString &dirname);
-		void AddZip(FbCommonDatabase & database, const wxString &filename);
+		void AddZip(FbCommonDatabase & database, wxFileName filename);
 	public:
 		ZipThread * m_thread;
 		static wxCriticalSection sm_queue;
@@ -225,8 +225,7 @@ public:
 
 	virtual wxDirTraverseResult OnFile(const wxString& filename)
 	{
-		wxString ext = filename.Right(4).Lower();
-		if (ext == wxT(".zip")) m_collection->AddZip(m_database, filename);
+		m_collection->AddZip(m_database, filename);
 		return wxDIR_CONTINUE;
 	}
 
@@ -254,32 +253,32 @@ void ZipCollection::SetDir(const wxString &dirname)
 	}
 
 	ZipTraverser traverser(this);
-	dir.Traverse(traverser);
+	dir.Traverse(traverser, wxT("*.zip"));
+	FbCollection::EmptyInfo();
 
 	wxLogMessage(_("Finish scan directory %s"), m_dirname.c_str());
 }
 
-void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename)
+void ZipCollection::AddZip(FbCommonDatabase & database, wxFileName filename)
 {
-	wxLogMessage(_("Scan zip %s"), filename.c_str());
-
-	wxSQLite3Transaction trans(&database, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-	wxFileName zip_file = filename;
-	m_thread->DoStep(zip_file.GetFullName());
-
-	wxFFileInputStream in(filename);
-	wxZipInputStream zip(in);
-
-	int id = 0;
+	wxString fullname = filename.GetFullName();
 	{
 		wxString sql = wxT("SELECT file FROM zip_files WHERE path=?");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, filename);
+		stmt.Bind(1, fullname);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.NextRow()) return ;
-		id = database.NewId(DB_NEW_ZIPFILE);
 	}
+
+	wxLogMessage(_("Scan zip %s"), fullname.c_str());
+	int id = database.NewId(DB_NEW_ZIPFILE);
+
+	wxSQLite3Transaction trans(&database);
+
+	m_thread->DoStep(fullname);
+
+	wxFFileInputStream in(filename.GetFullPath());
+	wxZipInputStream zip(in);
 
 	int count = 0;
 	{
@@ -300,15 +299,12 @@ void ZipCollection::AddZip(FbCommonDatabase & database, const wxString &filename
 		wxString sql = wxT("INSERT INTO zip_files(file,path) values(?,?)");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, id);
-		stmt.Bind(2, filename);
+		stmt.Bind(2, fullname);
 		stmt.ExecuteUpdate();
+		trans.Commit();
 	} else {
-		wxLogError(_("Zip read error %s"), filename.c_str());
+		wxLogError(_("Zip read error %s"), fullname.c_str());
 	}
-
-	FbCollection::EmptyInfo();
-
-	trans.Commit();
 }
 
 wxString ZipCollection::FindZip(const wxString &filename)

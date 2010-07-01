@@ -42,13 +42,12 @@ class FbCreateDownloadThread: public FbFolderUpdateThread
 class FbDeleteThread: public FbUpdateThread
 {
 	public:
-		FbDeleteThread(const wxString &books): m_books(books), m_sel(m_books) {};
+		FbDeleteThread(const wxString &sel): m_sel(sel) {};
 	protected:
 		virtual void * Entry();
 	private:
 		void DoDelete(FbDatabase &database, const wxString &where);
-		const wxString m_books;
-		const wxChar * m_sel;
+		const wxString m_sel;
 };
 
 class FbTextThread: public FbUpdateThread
