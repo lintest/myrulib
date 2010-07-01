@@ -84,10 +84,10 @@ void * FbExportDlg::ExportThread::Entry()
 
 	switch (m_format) {
 		case -1: {
+			wxFileName entry = m_filename;
 			wxCSConv conv(wxT("cp866"));
 			wxZipOutputStream zip(out, 9, conv);
-			wxString entryName = m_filename.Left(m_filename.Len()-4);
-			zip.PutNextEntry(entryName);
+			zip.PutNextEntry(entry.GetName());
 			zip.Write(reader.GetZip());
 		} break;
 		case -2: {
