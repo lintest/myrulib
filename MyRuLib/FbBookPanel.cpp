@@ -379,7 +379,7 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 	int answer = wxMessageBox(msg, _("Confirmation"), wxOK | wxCANCEL, this);
 	if (answer != wxOK) return;
 
-//	(new FbDeleteThread(sel))->Execute();
+	(new FbDeleteThread(sel))->Execute();
 	m_BookList->Delete();
 }
 
