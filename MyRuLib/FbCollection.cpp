@@ -401,6 +401,5 @@ wxFileName FbCollection::FindZip(const wxString &dirname, const wxString &filena
 			if (zip_file.FileExists()) return zip_file.GetFullPath();
 		}
 	}
-
-	return wxEmptyString;
+	return wxFileName();
 }

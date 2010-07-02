@@ -212,6 +212,8 @@
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
+		<Unit filename="FbCounter.cpp" />
+		<Unit filename="FbCounter.h" />
 		<Unit filename="FbDataOpenDlg.cpp" />
 		<Unit filename="FbDataOpenDlg.h" />
 		<Unit filename="FbDataPath.cpp" />
@@ -323,6 +325,8 @@
 		<Unit filename="FbViewerDlg.h" />
 		<Unit filename="FbWindow.cpp" />
 		<Unit filename="FbWindow.h" />
+		<Unit filename="FbZipCatalogue.cpp" />
+		<Unit filename="FbZipCatalogue.h" />
 		<Unit filename="ImpContext.cpp" />
 		<Unit filename="ImpContext.h" />
 		<Unit filename="LimitedTextCtrl.cpp" />

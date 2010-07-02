@@ -10,13 +10,14 @@
 class FbCounter: public wxObject
 {
 	public:
+		static void AddBook(wxSQLite3Database & database, int book);
 		FbCounter(wxSQLite3Database & database, long style = fbCF_ALL);
 		virtual ~FbCounter(void);
 		void Add(const wxString & books);
 		void Add(int book);
 		void Execute();
 	private:
-	    bool HasFlag(int flag) const 
+	    bool HasFlag(int flag) const
 			{ return (m_style & flag) != 0; }
 		void CreateTable(const wxString & name);
 	private:

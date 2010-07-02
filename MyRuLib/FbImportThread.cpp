@@ -290,6 +290,9 @@ bool FbImportBook::AppendBook()
 			ok = stmt.ExecuteUpdate() && ok;
 		}
 	}
+
+	FbCounter::AddBook(m_database, id_book);
+
 	return ok;
 }
 bool FbImportBook::AppendFile(int id_book)
@@ -437,6 +440,7 @@ void FbImpotrZip::Make(FbImportThread *owner)
 //-----------------------------------------------------------------------------
 
 FbImportThread::FbImportThread():
+	m_counter(m_database),
 	m_basepath(FbParams::GetText(DB_LIBRARY_DIR)),
 	m_fullpath(FbParams::GetValue(FB_SAVE_FULLPATH))
 {
@@ -444,8 +448,7 @@ FbImportThread::FbImportThread():
 
 void FbImportThread::OnExit()
 {
-	m_database.ExecuteUpdate(strUpdateAuthorCount);
-	m_database.ExecuteUpdate(strUpdateSequenCount);
+	m_counter.Execute();
 }
 
 wxString FbImportThread::GetRelative(const wxString &filename)

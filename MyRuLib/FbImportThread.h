@@ -7,6 +7,7 @@
 #include "BaseThread.h"
 #include "ImpContext.h"
 #include "FbDatabase.h"
+#include "FbCounter.h"
 
 class FbImportThread : public BaseThread
 {
@@ -20,6 +21,7 @@ protected:
 	wxString GetAbsolute(const wxString &filename);
 protected:
 	FbCommonDatabase m_database;
+	FbCounter m_counter;
 	wxString m_basepath;
 	bool m_fullpath;
 	friend class FbImpotrZip;

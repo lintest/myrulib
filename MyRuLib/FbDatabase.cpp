@@ -5,7 +5,7 @@
 #include "FbGenres.h"
 #include <wx/tokenzr.h>
 
-#define DB_DATABASE_VERSION 11
+#define DB_DATABASE_VERSION 12
 #define DB_CONFIG_VERSION 4
 
 wxString Lower(const wxString & input)

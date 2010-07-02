@@ -18,29 +18,41 @@ void FbCounter::CreateTable(const wxString & name)
 	m_database.ExecuteUpdate(sql);
 }
 
+void FbCounter::AddBook(wxSQLite3Database & database, int book)
+{
+	{
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO tmp_a SELECT DISTINCT id_author FROM books WHERE id=%d"), book);
+		database.ExecuteUpdate(sql);
+	}{
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO tmp_s SELECT DISTINCT id_seq FROM bookseq WHERE id_book=%d"), book);
+		database.ExecuteUpdate(sql);
+	}{
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO tmp_d SELECT DISTINCT created FROM books WHERE id=%d"), book);
+		database.ExecuteUpdate(sql);
+	}
+}
+
 void FbCounter::Add(const wxString & books)
 {
 	if (HasFlag(fbCF_AUTH)) {
-		wxString sql = wxString::Format(wxT("INSERT INTO tmp_a SELECT DISTINCT id_author FROM books WHERE id IN (%s)"), books.c_str());
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO tmp_a SELECT DISTINCT id_author FROM books WHERE id IN (%s)"), books.c_str());
 		m_database.ExecuteUpdate(sql);
 	}
 
 	if (HasFlag(fbCF_SEQN)) {
-		wxString sql = wxString::Format(wxT("INSERT INTO tmp_s SELECT DISTINCT id_seq FROM bookseq WHERE id_book IN (%s)"), books.c_str());
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO tmp_s SELECT DISTINCT id_seq FROM bookseq WHERE id_book IN (%s)"), books.c_str());
 		m_database.ExecuteUpdate(sql);
 	}
 
 	if (HasFlag(fbCF_DATE)) {
-		wxString sql = wxString::Format(wxT("INSERT INTO tmp_d SELECT DISTINCT created FROM books WHERE id IN (%s)"), books.c_str());
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO tmp_d SELECT DISTINCT created FROM books WHERE id IN (%s)"), books.c_str());
 		m_database.ExecuteUpdate(sql);
 	}
 }
 
 void FbCounter::Add(int book)
 {
-	wxString books;  
-	books << book;
-	Add(books);
+	AddBook(m_database, book);
 }
 
 void FbCounter::Execute()
@@ -75,4 +87,5 @@ void FbCounter::Execute()
 			) group by created)");
 		m_database.ExecuteUpdate(sql);
 	}
+
 }
