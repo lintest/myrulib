@@ -48,7 +48,7 @@ wxString FbDateYearData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case 0:
-			return FbDateTime(m_code, 1, 1).Format(wxT("%Y"));
+			return FbDateTime(m_code + 2000, 1, 1).Format(wxT("%Y"));
 		default:
 			return wxEmptyString;
 	}
