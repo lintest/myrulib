@@ -56,18 +56,23 @@ void * FbMasterThread::Entry()
 			wxMutexLocker locker(m_mutex);
 			m_condition.Wait();
 		}
-		wxCriticalSectionLocker lock(m_section);
 
-		if (m_closed) return NULL;
-		if (!m_info) continue;
+		FbMasterInfo info;
+		{
+			wxCriticalSectionLocker lock(m_section);
+			if (m_closed) return NULL;
+			if (!m_info) continue;
+			info = m_info;
+			m_info = NULL;
+		}
 
 		if (m_thread) {
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
-		m_thread = new FbBooksThread(m_owner, m_info);
+
+		m_thread = new FbBooksThread(m_owner, info);
 		if (m_thread) m_thread->Execute();
-		m_info = NULL;
 	}
 	return NULL;
 }

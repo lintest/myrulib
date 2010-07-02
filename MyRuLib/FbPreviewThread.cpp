@@ -41,18 +41,26 @@ void * FbPreviewThread::Entry()
 			wxMutexLocker locker(m_mutex);
 			m_condition.Wait();
 		}
+		
+		FbViewContext ctx;
+		FbViewItem view;
+		{
+			wxCriticalSectionLocker lock(m_section);
+			if (m_closed) return NULL;
+			if (!m_view) continue;
+			view = m_view;
+			ctx = m_ctx;
+			m_view = FbViewItem::None;
+		}
 
-		wxCriticalSectionLocker lock(m_section);
-
-		if (m_closed) return NULL;
-		if (!m_view) continue;
 
 		if (m_thread) {
 			m_thread->Close();
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
-		m_thread = new FbViewThread(m_owner, m_ctx, m_view);
+
+		m_thread = new FbViewThread(m_owner, ctx, view);
 		if (m_thread) m_thread->Execute();
 	}
 	return NULL;
