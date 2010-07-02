@@ -67,7 +67,7 @@ wxString FbBookData::GetExt() const
 void FbBookData::Open() const
 {
 	ZipReader reader(m_id, m_id<0);
-	if ( reader.IsOK() ) {
+	if ( reader.IsOk() ) {
 		DoOpen( reader.GetZip(), reader.GetMd5() );
 	} else if ( m_id>0 ) {
 		if ( wxMessageBox(_("Download book file?"), _("Confirmation"), wxOK | wxCANCEL) == wxOK) DoDownload();

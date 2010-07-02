@@ -163,6 +163,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbViewThread.o \
 	build\myrulib_FbViewerDlg.o \
 	build\myrulib_FbWindow.o \
+	build\myrulib_FbZipCatalogue.o \
 	build\myrulib_ImpContext.o \
 	build\myrulib_LimitedTextCtrl.o \
 	build\myrulib_MyRuLibApp.o \
@@ -583,6 +584,9 @@ build\myrulib_FbViewerDlg.o: ./MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbWindow.o: ./MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbZipCatalogue.o: ./MyRuLib/FbZipCatalogue.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_ImpContext.o: ./MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)

@@ -165,7 +165,6 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 		params.LoadParams();
 		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
 		(new FbTextThread)->Execute();
-		ZipReader::Init();
 		wxDELETE(m_collection);
 		m_collection = new FbCollection(filename);
 	} catch (wxSQLite3Exception & e) {

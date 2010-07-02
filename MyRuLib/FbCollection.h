@@ -2,9 +2,11 @@
 #define __FBCOLLECTION_H__
 
 #include <wx/wx.h>
+#include <wx/filename.h>
 #include "FbDatabase.h"
 #include "FbViewData.h"
 #include "FbCacheBook.h"
+#include "FbThread.h"
 
 class FbModel;
 
@@ -50,8 +52,10 @@ class FbCollection: public wxObject
 		static void ResetInfo(int code);
 		static void ResetBook(int code);
 		static void ResetBook(const wxArrayInt &books);
+		static void ResetDir();
 		static void LoadIcon(const wxString &extension);
 		static void AddIcon(wxString extension, wxBitmap bitmap);
+		static wxFileName FindZip(const wxString &dirname, const wxString &filename);
 		static wxString GetIcon(const wxString &extension);
 		static void EmptyInfo();
 	protected:
@@ -64,6 +68,7 @@ class FbCollection: public wxObject
 		void DoResetBook(int code);
 		void DoResetInfo(int code);
 		void DoEmptyInfo();
+		void DoResetDir();
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
 	private:
@@ -76,6 +81,7 @@ class FbCollection: public wxObject
 		FbCasheDataArray m_seqns;
 		FbCasheBookArray m_books;
 		FbViewDataArray m_infos;
+		FbThread * m_thread;
 		DECLARE_CLASS(FbCollection)
 };
 

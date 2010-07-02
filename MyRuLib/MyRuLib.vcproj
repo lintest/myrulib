@@ -486,6 +486,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbZipCatalogue.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ImpContext.cpp"
 				>
 			</File>
@@ -833,6 +837,10 @@
 			</File>
 			<File
 				RelativePath=".\FbWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbZipCatalogue.h"
 				>
 			</File>
 			<File

@@ -694,7 +694,6 @@ void FbParamsDlg::Execute(wxWindow* parent)
 	if (ok) {
 		dlg.Assign(true);
 		dlg.SaveData();
-		ZipReader::Init();
 		FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
 		wxGetApp().Localize();
 	}

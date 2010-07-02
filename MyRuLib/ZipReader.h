@@ -12,8 +12,7 @@ class ZipReader
 public:
 	ZipReader(int id, bool bShowError = true, bool bInfoOnly = false);
 	virtual ~ZipReader();
-	static void Init();
-	bool IsOK() {return m_zipOk && m_fileOk;};
+	bool IsOk() { return m_zipOk && m_fileOk; }
 	void ShowError();
 	wxString GetErrorText() {return m_info;};
 	wxInputStream & GetZip() {return *m_result;};

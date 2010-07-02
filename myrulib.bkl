@@ -221,6 +221,7 @@
 		<sources>MyRuLib/FbViewThread.cpp</sources>
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>MyRuLib/FbWindow.cpp</sources>
+		<sources>MyRuLib/FbZipCatalogue.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
 		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>

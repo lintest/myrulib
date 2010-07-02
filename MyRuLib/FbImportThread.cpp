@@ -218,7 +218,7 @@ int FbImportBook::FindBySize()
 	for (size_t i=0; i<books.Count(); i++) {
 		int id = books[i];
 		ZipReader book(id);
-		if (!book.IsOK()) continue;
+		if (!book.IsOk()) continue;
 		wxString md5sum = FbImportBook::CalcMd5(book.GetZip());
 		wxString sql = wxT("UPDATE books SET md5sum=? WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);

@@ -1,6 +1,3 @@
-#include <wx/dir.h>
-#include <wx/thread.h>
-#include "BaseThread.h"
 #include "ZipReader.h"
 #include "FbParams.h"
 #include "FbConst.h"
@@ -12,55 +9,13 @@
 #include "FbCollection.h"
 #include <wx/wxsqlite3.h>
 
-class ZipThread : public BaseThread
-{
-	public:
-		ZipThread(const wxString &dirname): BaseThread(), m_dirname(dirname) {};
-		virtual void *Entry();
-		void DoStep(const wxString &msg) { BaseThread::DoStep(msg); };
-	private:
-		wxString m_dirname;
-};
-
-class ZipCollection {
-	public:
-		void Init(const wxString &dirname);
-		wxString FindZip(const wxString &filename);
-		void SetDir(const wxString &dirname);
-		void AddZip(FbCommonDatabase & database, wxFileName filename);
-	public:
-		ZipThread * m_thread;
-		static wxCriticalSection sm_queue;
-	private:
-		wxString m_dirname;
-};
-
-static ZipCollection zips;
-
-void *ZipThread::Entry()
-{
-	wxCriticalSectionLocker enter(zips.sm_queue);
-
-	Sleep(3000);
-
-	DoStart(0, m_dirname);
-
-	zips.m_thread = this;
-	zips.SetDir(m_dirname);
-
-	FbCollection::EmptyInfo();
-	DoFinish();
-
-	return NULL;
-}
-
 ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 	:conv(wxT("cp866")), m_file(NULL), m_zip(NULL), m_zipOk(false), m_fileOk(false), m_id(id)
 {
 	FbCommonDatabase database;
 
 	OpenDownload(database, bInfoOnly);
-	if (IsOK()) return;
+	if (IsOk()) return;
 
 	FbExtractArray items(database, id);
 
@@ -76,11 +31,8 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 			m_zipOk = item.FindZip(sLibraryDir, zip_file);
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), file_name);
 		} else if (item.librusec) {
-			wxString zip_name = zips.FindZip(file_name);
-			if (zip_name.IsEmpty()) continue;
-			wxFileName zip_file = zip_name;
-			zip_file.SetPath(sLibraryDir);
-			m_zipOk = zip_file.FileExists();
+			wxFileName zip_file = FbCollection::FindZip(sLibraryDir, file_name);
+			m_zipOk = zip_file.IsOk();
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), file_name);
 		} else {
 			if (bInfoOnly) return;
@@ -88,7 +40,7 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 			m_zipOk = item.FindBook(sLibraryDir, book_file);
 			if (m_zipOk) OpenFile(book_file.GetFullPath());
 		}
-		if (IsOK()) return;
+		if (IsOk()) return;
 	}
 	if (bShowError) wxLogError(_("Book not found %s"), error_name.c_str());
 }
@@ -97,21 +49,6 @@ ZipReader::~ZipReader()
 {
 	wxDELETE(m_zip);
 	wxDELETE(m_file);
-}
-
-void ZipReader::Init()
-{
-	wxString dirname = FbParams::GetText(DB_LIBRARY_DIR);
-	wxThread *thread = new ZipThread(dirname);
-
-	if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-		wxLogError(_("Can't create thread!"));
-		return;
-	}
-
-	thread->Run();
-
-	return;
 }
 
 void ZipReader::OpenDownload(FbDatabase &database, bool bInfoOnly)
@@ -138,7 +75,7 @@ void ZipReader::OpenDownload(FbDatabase &database, bool bInfoOnly)
 			size_t count = m_file->Read(buf, 2).LastRead();
 			if ( count>1 && buf[0]=='P' && buf[1]=='K') {
 				OpenEntry(bInfoOnly);
-				if ( IsOK() ) return;
+				if ( IsOk() ) return;
 			}
 			m_file->SeekI(0);
 		}
@@ -216,117 +153,3 @@ void ZipReader::ShowError()
 	wxMessageBox(GetErrorText());
 }
 
-wxCriticalSection ZipCollection::sm_queue;
-
-class ZipTraverser : public wxDirTraverser
-{
-public:
-	ZipTraverser(ZipCollection* collection) : m_collection(collection) {};
-
-	virtual wxDirTraverseResult OnFile(const wxString& filename)
-	{
-		m_collection->AddZip(m_database, filename);
-		return wxDIR_CONTINUE;
-	}
-
-	virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
-	{
-		return wxDIR_IGNORE;
-	}
-private:
-	ZipCollection* m_collection;
-	FbCommonDatabase m_database;
-};
-
-void ZipCollection::SetDir(const wxString &dirname)
-{
-	m_dirname = dirname;
-
-	if (dirname.IsEmpty()) return;
-
-	wxLogMessage(_("Start scan directory %s"), m_dirname.c_str());
-
-	wxDir dir(dirname);
-	if ( !dir.IsOpened() ) {
-		wxLogError(_("Can't open directory %s"), m_dirname.c_str());
-		return;
-	}
-
-	ZipTraverser traverser(this);
-	dir.Traverse(traverser, wxT("*.zip"));
-	FbCollection::EmptyInfo();
-
-	wxLogMessage(_("Finish scan directory %s"), m_dirname.c_str());
-}
-
-void ZipCollection::AddZip(FbCommonDatabase & database, wxFileName filename)
-{
-	wxString fullname = filename.GetFullName();
-	{
-		wxString sql = wxT("SELECT file FROM zip_files WHERE path=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, fullname);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return ;
-	}
-
-	wxLogMessage(_("Scan zip %s"), fullname.c_str());
-	int id = database.NewId(DB_NEW_ZIPFILE);
-
-	wxSQLite3Transaction trans(&database);
-
-	m_thread->DoStep(fullname);
-
-	wxFFileInputStream in(filename.GetFullPath());
-	wxZipInputStream zip(in);
-
-	int count = 0;
-	{
-		wxString sql = wxT("INSERT INTO zip_books(file,book) values(?,?)");
-		while (wxZipEntry * entry = zip.GetNextEntry()) {
-			if (entry->GetSize()) {
-				wxSQLite3Statement stmt = database.PrepareStatement(sql);
-				stmt.Bind(1, id);
-				stmt.Bind(2, entry->GetName(wxPATH_UNIX));
-				stmt.ExecuteUpdate();
-				count++;
-			}
-			delete entry;
-		}
-	}
-
-	if (count) {
-		wxString sql = wxT("INSERT INTO zip_files(file,path) values(?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, id);
-		stmt.Bind(2, fullname);
-		stmt.ExecuteUpdate();
-		trans.Commit();
-	} else {
-		wxLogError(_("Zip read error %s"), fullname.c_str());
-	}
-}
-
-wxString ZipCollection::FindZip(const wxString &filename)
-{
-	FbCommonDatabase database;
-
-	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, filename);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	while (result.NextRow())  {
-		wxString sql = wxT("SELECT path FROM zip_files WHERE file=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, result.GetInt(0));
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) {
-			wxFileName zip_file = result.GetString(0);
-			zip_file.SetPath(m_dirname);
-			if (zip_file.FileExists()) return zip_file.GetFullPath();
-		}
-	}
-
-	return wxEmptyString;
-}

@@ -20,7 +20,7 @@
 #include "FbParams.h"
 #include "FbTreeView.h"
 #include "FbViewerDlg.h"
-#include "ZipReader.h"
+#include "FbCollection.h"
 
 //-----------------------------------------------------------------------------
 //  FbConfigDlg::LoadThread
@@ -322,7 +322,7 @@ void FbConfigDlg::Execute(wxWindow* parent)
 	dlg.Assign(false);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
-		ZipReader::Init();
+		FbCollection::ResetDir();
 	}
 }
 

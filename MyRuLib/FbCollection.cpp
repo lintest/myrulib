@@ -2,8 +2,10 @@
 #include "FbColumns.h"
 #include "MyRuLibApp.h"
 #include "FbConst.h"
+#include "FbParams.h"
 #include "FbGenres.h"
 #include "FbDateTime.h"
+#include "FbZipCatalogue.h"
 
 #include <wx/filename.h>
 #include <wx/fs_mem.h>
@@ -14,7 +16,6 @@
 #ifdef __WXMSW__
 #include <wx/mimetype.h>
 #endif // __WXMSW__
-
 
 //-----------------------------------------------------------------------------
 //  FbCacheData
@@ -50,7 +51,7 @@ wxString FbCacheData::GetValue(size_t col) const
 WX_DEFINE_OBJARRAY(FbCasheDataArray);
 
 //-----------------------------------------------------------------------------
-//  FbModelData
+//  FbCollection
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(FbCollection, wxObject)
@@ -58,14 +59,17 @@ IMPLEMENT_CLASS(FbCollection, wxObject)
 wxCriticalSection FbCollection::sm_section;
 
 FbCollection::FbCollection(const wxString &filename)
+	: m_thread(NULL)
 {
 	m_database.AttachConfig();
 	m_database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
+
+	DoResetDir();
 }
 
 FbCollection::~FbCollection()
 {
-	//dtor
+	if (m_thread) m_thread->Delete();
 }
 
 wxString FbCollection::Format(int number)
@@ -184,6 +188,25 @@ void FbCollection::ResetBook(const wxArrayInt &books)
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
 	if (collection) collection->DoResetBook(books);
+}
+
+void FbCollection::ResetDir()
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection) collection->DoResetDir();
+}
+
+void FbCollection::DoResetDir()
+{
+	if (m_thread) m_thread->Delete();
+	m_thread = NULL;
+
+	wxString dirname = FbParams::GetText(DB_LIBRARY_DIR);
+	if (wxFileName::DirExists(dirname)) {
+		m_thread = new FbZipCatalogueThread(dirname);
+		m_thread->Execute();
+	}
 }
 
 FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxString &sql)
@@ -364,3 +387,26 @@ void FbCollection::AddIcon(wxString extension, wxBitmap bitmap)
 	sm_icons.Add(extension);
 }
 
+wxFileName FbCollection::FindZip(const wxString &dirname, const wxString &filename)
+{
+	FbCommonDatabase database;
+
+	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, filename);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	while (result.NextRow())  {
+		wxString sql = wxT("SELECT path FROM zip_files WHERE file=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, result.GetInt(0));
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) {
+			wxFileName zip_file = result.GetString(0);
+			zip_file.SetPath(dirname);
+			if (zip_file.FileExists()) return zip_file.GetFullPath();
+		}
+	}
+
+	return wxEmptyString;
+}

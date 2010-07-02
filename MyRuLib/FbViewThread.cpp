@@ -66,7 +66,7 @@ void FbViewThread::OpenBook()
 	if (IsClosed()) { delete info; return; }
 
 	ZipReader zip(id, false, true);
-	if (zip.IsOK()) FbViewReader(*this, *info).Load(zip.GetZip());
+	if (zip.IsOk()) FbViewReader(*this, *info).Load(zip.GetZip());
 	FbCollection::AddInfo(info);
 }
 

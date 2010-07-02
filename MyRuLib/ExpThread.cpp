@@ -71,7 +71,7 @@ FbExportDlg::ExportThread::ExportThread(FbExportDlg * parent, int format, const 
 void * FbExportDlg::ExportThread::Entry()
 {
 	ZipReader reader(m_id);
-	if (!reader.IsOK()) {
+	if (!reader.IsOk()) {
 		wxLogError(m_filename);
 		return NULL;
 	}
