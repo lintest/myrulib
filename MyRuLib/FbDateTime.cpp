@@ -1,7 +1,7 @@
 #include "FbDateTime.h"
 
 FbDateTime::FbDateTime(int year, int month = 1, int day = 1)
-	: wxDateTime(day, GetMonth(month), year + 2000)
+	: wxDateTime(day, GetMonth(month), year)
 {
 }
 
