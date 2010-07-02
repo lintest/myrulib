@@ -2,6 +2,7 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbExtractInfo.h"
+#include "FbCounter.h"
 
 wxCriticalSection FbUpdateThread::sm_queue;
 
@@ -77,18 +78,12 @@ void * FbDeleteThread::Entry()
 	wxCriticalSectionLocker locker(sm_queue);
 
 	FbCommonDatabase database;
+	FbCounter counter(database);
+	counter.Add(m_sel);
+
+	if (FbParams::GetValue(FB_REMOVE_FILES)) DoDelete(database);
+
 	wxString sql;
-
-	database.ExecuteUpdate(wxT("CREATE TEMP TABLE tmp_a(id INTEGER PRIMARY KEY)"));
-	database.ExecuteUpdate(wxT("CREATE TEMP TABLE tmp_s(id INTEGER PRIMARY KEY)"));
-
-	sql = wxString::Format(wxT("INSERT INTO tmp_a SELECT DISTINCT id_author FROM books WHERE id IN (%s)"), m_sel.c_str());
-	database.ExecuteUpdate(sql);
-
-	sql = wxString::Format(wxT("INSERT INTO tmp_s SELECT DISTINCT id_seq FROM bookseq WHERE id_book IN (%s)"), m_sel.c_str());
-	database.ExecuteUpdate(sql);
-
-	if (FbParams::GetValue(FB_REMOVE_FILES)) DoDelete(database, sql);
 
 	sql = wxString::Format(wxT("DELETE FROM books WHERE id IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
@@ -102,13 +97,12 @@ void * FbDeleteThread::Entry()
 	sql = wxString::Format(wxT("DELETE FROM genres WHERE id_book IN (%s)"), m_sel.c_str());
 	database.ExecuteUpdate(sql);
 
-	database.ExecuteUpdate(wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id) WHERE id IN (SELECT id FROM tmp_a)"));
-	database.ExecuteUpdate(wxT("UPDATE sequences SET number=(SELECT COUNT(id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id) WHERE id IN (SELECT id FROM tmp_s)"));
+	counter.Execute();
 
 	return NULL;
 }
 
-void FbDeleteThread::DoDelete(FbDatabase &database, const wxString &where)
+void FbDeleteThread::DoDelete(FbDatabase &database)
 {
 	wxString basepath = FbParams::GetText(DB_LIBRARY_DIR);
 	wxString sql = wxString::Format(wxT("SELECT id FROM books WHERE books.id IN (%s)"), m_sel.c_str());

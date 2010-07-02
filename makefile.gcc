@@ -106,6 +106,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbColumnDlg.o \
 	build\myrulib_FbColumns.o \
 	build\myrulib_FbCollection.o \
+	build\myrulib_FbCounter.o \
 	build\myrulib_FbConfigDlg.o \
 	build\myrulib_FbConst.o \
 	build\myrulib_FbDatabase.o \
@@ -413,6 +414,9 @@ build\myrulib_FbColumns.o: ./MyRuLib/FbColumns.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbCollection.o: ./MyRuLib/FbCollection.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbCounter.o: ./MyRuLib/FbCounter.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbConfigDlg.o: ./MyRuLib/FbConfigDlg.cpp $(MYRULIB_ODEP)

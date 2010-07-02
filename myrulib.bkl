@@ -164,6 +164,7 @@
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
 		<sources>MyRuLib/FbColumns.cpp</sources>
 		<sources>MyRuLib/FbCollection.cpp</sources>
+		<sources>MyRuLib/FbCounter.cpp</sources>
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
 		<sources>MyRuLib/FbDatabase.cpp</sources>
