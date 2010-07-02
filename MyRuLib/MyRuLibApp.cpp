@@ -25,9 +25,6 @@ MyRuLibApp::MyRuLibApp()
 
 MyRuLibApp::~MyRuLibApp()
 {
-	StopDownload();
-    wxDELETE(m_locale);
-	wxDELETE(m_collection);
 }
 
 void MyRuLibApp::StartDownload()
@@ -142,6 +139,9 @@ wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)
 
 int MyRuLibApp::OnExit()
 {
+	StopDownload();
+    wxDELETE(m_locale);
+	wxDELETE(m_collection);
 	return wxApp::OnExit();
 }
 

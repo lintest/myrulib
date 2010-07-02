@@ -10,20 +10,25 @@
 class FbZipTraverser : public wxDirTraverser
 {
 	public:
-		virtual wxDirTraverseResult OnFile(const wxString& filename)
-		{
-			AddZip(filename);
-			return wxDIR_CONTINUE;
-		}
-
-		virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
-		{
-			return wxDIR_IGNORE;
-		}
+		FbZipTraverser(FbThread & owner): m_owner(owner) {}
+		virtual wxDirTraverseResult OnFile(const wxString& filename);
+		virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname));
 	private:
 		void AddZip(wxFileName filename);
 		FbCommonDatabase m_database;
+		FbThread & m_owner;
 };
+
+wxDirTraverseResult FbZipTraverser::OnFile(const wxString& filename)
+{ 
+	AddZip(filename); 
+	return m_owner.IsClosed() ? wxDIR_STOP : wxDIR_CONTINUE;
+}
+
+wxDirTraverseResult FbZipTraverser::OnDir(const wxString& WXUNUSED(dirname))
+{ 
+	return m_owner.IsClosed() ? wxDIR_STOP : wxDIR_IGNORE;
+}
 
 void FbZipTraverser::AddZip(wxFileName filename)
 {
@@ -83,6 +88,8 @@ void * FbZipCatalogueThread::Entry()
 {
 	Sleep(3000);
 
+	if (IsClosed()) return NULL;
+
 	wxLogMessage(_("Start scan directory %s"), m_dirname.c_str());
 
 	wxDir dir(m_dirname);
@@ -91,9 +98,10 @@ void * FbZipCatalogueThread::Entry()
 		return NULL; 
 	}
 
-	FbZipTraverser traverser;
+	FbZipTraverser traverser(*this);
 	dir.Traverse(traverser, wxT("*.zip"));
-	FbCollection::EmptyInfo();
+
+	if (!IsClosed()) m_owner.EmptyInfo();
 
 	wxLogMessage(_("Finish scan directory %s"), m_dirname.c_str());
 

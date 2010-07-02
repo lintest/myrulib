@@ -69,7 +69,7 @@ FbCollection::FbCollection(const wxString &filename)
 
 FbCollection::~FbCollection()
 {
-	if (m_thread) m_thread->Delete();
+	if (m_thread) m_thread->Close();
 }
 
 wxString FbCollection::Format(int number)
@@ -204,7 +204,7 @@ void FbCollection::DoResetDir()
 
 	wxString dirname = FbParams::GetText(DB_LIBRARY_DIR);
 	if (wxFileName::DirExists(dirname)) {
-		m_thread = new FbZipCatalogueThread(dirname);
+		m_thread = new FbZipCatalogueThread(*this, dirname);
 		m_thread->Execute();
 	}
 }
@@ -279,15 +279,9 @@ wxString FbCollection::GetBook(int code, size_t col)
 void FbCollection::EmptyInfo()
 {
 	wxCriticalSectionLocker locker(sm_section);
-	FbCollection * collection = GetCollection();
-	if (collection) collection->DoEmptyInfo();
-}
-
-void FbCollection::DoEmptyInfo()
-{
 	m_infos.Empty();
+	m_thread = NULL;
 }
-
 
 FbCacheBook FbCollection::GetBookData(int code)
 {

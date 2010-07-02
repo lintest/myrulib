@@ -57,7 +57,8 @@ class FbCollection: public wxObject
 		static void AddIcon(wxString extension, wxBitmap bitmap);
 		static wxFileName FindZip(const wxString &dirname, const wxString &filename);
 		static wxString GetIcon(const wxString &extension);
-		static void EmptyInfo();
+	public:
+		void EmptyInfo();
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
@@ -67,7 +68,6 @@ class FbCollection: public wxObject
 		void DoResetBook(const wxArrayInt &books);
 		void DoResetBook(int code);
 		void DoResetInfo(int code);
-		void DoEmptyInfo();
 		void DoResetDir();
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
