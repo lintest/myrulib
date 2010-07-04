@@ -44,29 +44,29 @@ WX_RESCOMP = @WX_RESCOMP@
 ### Variables: ###
 
 DESTDIR = 
-EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -I$(srcdir)/Expat $(WX_CFLAGS) \
-	$(CPPFLAGS) $(CFLAGS)
+EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -I$(srcdir)/sources/Expat \
+	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmlparse.o \
 	expat_static_xmlrole.o \
 	expat_static_xmltok.o \
 	expat_static_xmltok_impl.o \
 	expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/SQLite3 $(CPPFLAGS) \
-	$(CFLAGS)
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/sources/SQLite3 \
+	$(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
-WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/WxSQLite3 $(WX_CXXFLAGS) \
-	$(CPPFLAGS) $(CXXFLAGS)
+WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/WxSQLite3 \
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	wxsqlite3_static_wxsqlite3.o
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
-MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/MyRuLib -I$(srcdir)/WxSQLite3 \
-	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/MyRuLib -I$(srcdir)/WxSQLite3 \
-	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+	-I$(srcdir)/sources/WxSQLite3 $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+	-I$(srcdir)/sources/WxSQLite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_BaseThread.o \
 	myrulib_ExpThread.o \
@@ -194,9 +194,9 @@ install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/sv/LC_MESSAGES
 	(cd . ; $(INSTALL) -m 644 -T sv.mo $(DESTDIR)$(datadir)/locale/sv/LC_MESSAGES/myrulib.mo)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
-	(cd $(srcdir)/MyRuLib/desktop ; $(INSTALL_DATA)  myrulib.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps)
+	(cd $(srcdir)/sourcesMyRuLib/desktop ; $(INSTALL_DATA)  myrulib.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/applications
-	(cd $(srcdir)/MyRuLib/desktop ; $(INSTALL_DATA)  myrulib.desktop $(DESTDIR)$(datadir)/applications)
+	(cd $(srcdir)/sourcesMyRuLib/desktop ; $(INSTALL_DATA)  myrulib.desktop $(DESTDIR)$(datadir)/applications)
 	$(INSTALL) -d $(DESTDIR)$(datadir)/pixmaps/
 	ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)$(datadir)/pixmaps/myrulib.png
 
@@ -255,20 +255,20 @@ bin2c$(EXEEXT): $(BIN2C_OBJECTS)
 	
 	$(__bin2c___mac_setfilecmd)
 
-ru.mo: $(srcdir)/MyRuLib/locale/ru.po
-	msgfmt $(srcdir)/MyRuLib/locale/ru.po -o ./ru.mo
+ru.mo: $(srcdir)/sources/MyRuLib/locale/ru.po
+	msgfmt $(srcdir)/sources/MyRuLib/locale/ru.po -o ./ru.mo
 
-uk.mo: $(srcdir)/MyRuLib/locale/uk.po
-	msgfmt $(srcdir)/MyRuLib/locale/uk.po -o ./uk.mo
+uk.mo: $(srcdir)/sources/MyRuLib/locale/uk.po
+	msgfmt $(srcdir)/sources/MyRuLib/locale/uk.po -o ./uk.mo
 
-be.mo: $(srcdir)/MyRuLib/locale/be.po
-	msgfmt $(srcdir)/MyRuLib/locale/be.po -o ./be.mo
+be.mo: $(srcdir)/sources/MyRuLib/locale/be.po
+	msgfmt $(srcdir)/sources/MyRuLib/locale/be.po -o ./be.mo
 
-cs.mo: $(srcdir)/MyRuLib/locale/cs.po
-	msgfmt $(srcdir)/MyRuLib/locale/cs.po -o ./cs.mo
+cs.mo: $(srcdir)/sources/MyRuLib/locale/cs.po
+	msgfmt $(srcdir)/sources/MyRuLib/locale/cs.po -o ./cs.mo
 
-sv.mo: $(srcdir)/MyRuLib/locale/sv.po
-	msgfmt $(srcdir)/MyRuLib/locale/sv.po -o ./sv.mo
+sv.mo: $(srcdir)/sources/MyRuLib/locale/sv.po
+	msgfmt $(srcdir)/sources/MyRuLib/locale/sv.po -o ./sv.mo
 
 ru.inc: bin2c$(EXEEXT) ru.mo
 	./bin2c ./ru.mo ./ru.inc file
@@ -299,290 +299,290 @@ install_myrulib: myrulib$(EXEEXT)
 uninstall_myrulib: 
 	rm -f $(DESTDIR)$(bindir)/myrulib$(EXEEXT)
 
-expat_static_xmlparse.o: $(srcdir)/Expat/xmlparse.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/Expat/xmlparse.c
+expat_static_xmlparse.o: $(srcdir)/sources/Expat/xmlparse.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmlparse.c
 
-expat_static_xmlrole.o: $(srcdir)/Expat/xmlrole.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/Expat/xmlrole.c
+expat_static_xmlrole.o: $(srcdir)/sources/Expat/xmlrole.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmlrole.c
 
-expat_static_xmltok.o: $(srcdir)/Expat/xmltok.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/Expat/xmltok.c
+expat_static_xmltok.o: $(srcdir)/sources/Expat/xmltok.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok.c
 
-expat_static_xmltok_impl.o: $(srcdir)/Expat/xmltok_impl.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/Expat/xmltok_impl.c
+expat_static_xmltok_impl.o: $(srcdir)/sources/Expat/xmltok_impl.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok_impl.c
 
-expat_static_xmltok_ns.o: $(srcdir)/Expat/xmltok_ns.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/Expat/xmltok_ns.c
+expat_static_xmltok_ns.o: $(srcdir)/sources/Expat/xmltok_ns.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok_ns.c
 
-sqlite3_static_sqlite3.o: $(srcdir)/SQLite3/sqlite3.c
-	$(CCC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(srcdir)/SQLite3/sqlite3.c
+sqlite3_static_sqlite3.o: $(srcdir)/sources/SQLite3/sqlite3.c
+	$(CCC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(srcdir)/sources/SQLite3/sqlite3.c
 
-wxsqlite3_static_wxsqlite3.o: $(srcdir)/WxSQLite3/wxsqlite3.cpp
-	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(srcdir)/WxSQLite3/wxsqlite3.cpp
+wxsqlite3_static_wxsqlite3.o: $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
+	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
 
-bin2c_bin2c.o: $(srcdir)/Bin2c/bin2c.c
-	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/Bin2c/bin2c.c
+bin2c_bin2c.o: $(srcdir)/sources/Bin2c/bin2c.c
+	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/sources/Bin2c/bin2c.c
 
-myrulib_BaseThread.o: $(srcdir)/MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/BaseThread.cpp
+myrulib_BaseThread.o: $(srcdir)/sources/MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/BaseThread.cpp
 
-myrulib_ExpThread.o: $(srcdir)/MyRuLib/ExpThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ExpThread.cpp
+myrulib_ExpThread.o: $(srcdir)/sources/MyRuLib/ExpThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ExpThread.cpp
 
-myrulib_ExternalDlg.o: $(srcdir)/MyRuLib/ExternalDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ExternalDlg.cpp
+myrulib_ExternalDlg.o: $(srcdir)/sources/MyRuLib/ExternalDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ExternalDlg.cpp
 
-myrulib_FbAboutDlg.o: $(srcdir)/MyRuLib/FbAboutDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbAboutDlg.cpp
+myrulib_FbAboutDlg.o: $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp
 
-myrulib_FbAuthList.o: $(srcdir)/MyRuLib/FbAuthList.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbAuthList.cpp
+myrulib_FbAuthList.o: $(srcdir)/sources/MyRuLib/FbAuthList.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAuthList.cpp
 
-myrulib_FbAuthorDlg.o: $(srcdir)/MyRuLib/FbAuthorDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbAuthorDlg.cpp
+myrulib_FbAuthorDlg.o: $(srcdir)/sources/MyRuLib/FbAuthorDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAuthorDlg.cpp
 
-myrulib_FbBookData.o: $(srcdir)/MyRuLib/FbBookData.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookData.cpp
+myrulib_FbBookData.o: $(srcdir)/sources/MyRuLib/FbBookData.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookData.cpp
 
-myrulib_FbBookEvent.o: $(srcdir)/MyRuLib/FbBookEvent.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookEvent.cpp
+myrulib_FbBookEvent.o: $(srcdir)/sources/MyRuLib/FbBookEvent.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookEvent.cpp
 
-myrulib_FbBookList.o: $(srcdir)/MyRuLib/FbBookList.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookList.cpp
+myrulib_FbBookList.o: $(srcdir)/sources/MyRuLib/FbBookList.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookList.cpp
 
-myrulib_FbBookMenu.o: $(srcdir)/MyRuLib/FbBookMenu.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookMenu.cpp
+myrulib_FbBookMenu.o: $(srcdir)/sources/MyRuLib/FbBookMenu.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookMenu.cpp
 
-myrulib_FbBookPanel.o: $(srcdir)/MyRuLib/FbBookPanel.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookPanel.cpp
+myrulib_FbBookPanel.o: $(srcdir)/sources/MyRuLib/FbBookPanel.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookPanel.cpp
 
-myrulib_FbBookTree.o: $(srcdir)/MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbBookTree.cpp
+myrulib_FbBookTree.o: $(srcdir)/sources/MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookTree.cpp
 
-myrulib_FbCacheBook.o: $(srcdir)/MyRuLib/FbCacheBook.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCacheBook.cpp
+myrulib_FbCacheBook.o: $(srcdir)/sources/MyRuLib/FbCacheBook.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCacheBook.cpp
 
-myrulib_FbCheckList.o: $(srcdir)/MyRuLib/FbCheckList.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCheckList.cpp
+myrulib_FbCheckList.o: $(srcdir)/sources/MyRuLib/FbCheckList.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCheckList.cpp
 
-myrulib_FbChoiceFormat.o: $(srcdir)/MyRuLib/FbChoiceFormat.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbChoiceFormat.cpp
+myrulib_FbChoiceFormat.o: $(srcdir)/sources/MyRuLib/FbChoiceFormat.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbChoiceFormat.cpp
 
-myrulib_FbColumnDlg.o: $(srcdir)/MyRuLib/FbColumnDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbColumnDlg.cpp
+myrulib_FbColumnDlg.o: $(srcdir)/sources/MyRuLib/FbColumnDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbColumnDlg.cpp
 
-myrulib_FbColumns.o: $(srcdir)/MyRuLib/FbColumns.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbColumns.cpp
+myrulib_FbColumns.o: $(srcdir)/sources/MyRuLib/FbColumns.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbColumns.cpp
 
-myrulib_FbCollection.o: $(srcdir)/MyRuLib/FbCollection.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCollection.cpp
+myrulib_FbCollection.o: $(srcdir)/sources/MyRuLib/FbCollection.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCollection.cpp
 
-myrulib_FbCounter.o: $(srcdir)/MyRuLib/FbCounter.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbCounter.cpp
+myrulib_FbCounter.o: $(srcdir)/sources/MyRuLib/FbCounter.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCounter.cpp
 
-myrulib_FbConfigDlg.o: $(srcdir)/MyRuLib/FbConfigDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbConfigDlg.cpp
+myrulib_FbConfigDlg.o: $(srcdir)/sources/MyRuLib/FbConfigDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbConfigDlg.cpp
 
-myrulib_FbConst.o: $(srcdir)/MyRuLib/FbConst.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbConst.cpp
+myrulib_FbConst.o: $(srcdir)/sources/MyRuLib/FbConst.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbConst.cpp
 
-myrulib_FbDatabase.o: $(srcdir)/MyRuLib/FbDatabase.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDatabase.cpp
+myrulib_FbDatabase.o: $(srcdir)/sources/MyRuLib/FbDatabase.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDatabase.cpp
 
-myrulib_FbDataOpenDlg.o: $(srcdir)/MyRuLib/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDataOpenDlg.cpp
+myrulib_FbDataOpenDlg.o: $(srcdir)/sources/MyRuLib/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDataOpenDlg.cpp
 
-myrulib_FbDataPath.o: $(srcdir)/MyRuLib/FbDataPath.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDataPath.cpp
+myrulib_FbDataPath.o: $(srcdir)/sources/MyRuLib/FbDataPath.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDataPath.cpp
 
-myrulib_FbDateTime.o: $(srcdir)/MyRuLib/FbDateTime.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDateTime.cpp
+myrulib_FbDateTime.o: $(srcdir)/sources/MyRuLib/FbDateTime.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDateTime.cpp
 
-myrulib_FbDateTree.o: $(srcdir)/MyRuLib/FbDateTree.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDateTree.cpp
+myrulib_FbDateTree.o: $(srcdir)/sources/MyRuLib/FbDateTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDateTree.cpp
 
-myrulib_FbDownList.o: $(srcdir)/MyRuLib/FbDownList.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDownList.cpp
+myrulib_FbDownList.o: $(srcdir)/sources/MyRuLib/FbDownList.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDownList.cpp
 
-myrulib_FbEditBook.o: $(srcdir)/MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbEditBook.cpp
+myrulib_FbEditBook.o: $(srcdir)/sources/MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbEditBook.cpp
 
-myrulib_FbExtractInfo.o: $(srcdir)/MyRuLib/FbExtractInfo.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbExtractInfo.cpp
+myrulib_FbExtractInfo.o: $(srcdir)/sources/MyRuLib/FbExtractInfo.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbExtractInfo.cpp
 
-myrulib_FbDownloader.o: $(srcdir)/MyRuLib/FbDownloader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbDownloader.cpp
+myrulib_FbDownloader.o: $(srcdir)/sources/MyRuLib/FbDownloader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDownloader.cpp
 
-myrulib_FbFilterDlg.o: $(srcdir)/MyRuLib/FbFilterDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFilterDlg.cpp
+myrulib_FbFilterDlg.o: $(srcdir)/sources/MyRuLib/FbFilterDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFilterDlg.cpp
 
-myrulib_FbFilterObj.o: $(srcdir)/MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFilterObj.cpp
+myrulib_FbFilterObj.o: $(srcdir)/sources/MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFilterObj.cpp
 
-myrulib_FbFldrTree.o: $(srcdir)/MyRuLib/FbFldrTree.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFldrTree.cpp
+myrulib_FbFldrTree.o: $(srcdir)/sources/MyRuLib/FbFldrTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFldrTree.cpp
 
-myrulib_FbFrameAuthor.o: $(srcdir)/MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameAuthor.cpp
+myrulib_FbFrameAuthor.o: $(srcdir)/sources/MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameAuthor.cpp
 
-myrulib_FbFrameBase.o: $(srcdir)/MyRuLib/FbFrameBase.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameBase.cpp
+myrulib_FbFrameBase.o: $(srcdir)/sources/MyRuLib/FbFrameBase.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameBase.cpp
 
-myrulib_FbFrameDate.o: $(srcdir)/MyRuLib/FbFrameDate.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameDate.cpp
+myrulib_FbFrameDate.o: $(srcdir)/sources/MyRuLib/FbFrameDate.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameDate.cpp
 
-myrulib_FbFrameDownld.o: $(srcdir)/MyRuLib/FbFrameDownld.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameDownld.cpp
+myrulib_FbFrameDownld.o: $(srcdir)/sources/MyRuLib/FbFrameDownld.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameDownld.cpp
 
-myrulib_FbFrameFolder.o: $(srcdir)/MyRuLib/FbFrameFolder.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameFolder.cpp
+myrulib_FbFrameFolder.o: $(srcdir)/sources/MyRuLib/FbFrameFolder.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameFolder.cpp
 
-myrulib_FbFrameInfo.o: $(srcdir)/MyRuLib/FbFrameInfo.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameInfo.cpp
+myrulib_FbFrameInfo.o: $(srcdir)/sources/MyRuLib/FbFrameInfo.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameInfo.cpp
 
-myrulib_FbFrameHtml.o: $(srcdir)/MyRuLib/FbFrameHtml.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameHtml.cpp
+myrulib_FbFrameHtml.o: $(srcdir)/sources/MyRuLib/FbFrameHtml.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameHtml.cpp
 
-myrulib_FbFrameGenres.o: $(srcdir)/MyRuLib/FbFrameGenres.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameGenres.cpp
+myrulib_FbFrameGenres.o: $(srcdir)/sources/MyRuLib/FbFrameGenres.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameGenres.cpp
 
-myrulib_FbFrameSearch.o: $(srcdir)/MyRuLib/FbFrameSearch.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameSearch.cpp
+myrulib_FbFrameSearch.o: $(srcdir)/sources/MyRuLib/FbFrameSearch.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameSearch.cpp
 
-myrulib_FbFrameSequen.o: $(srcdir)/MyRuLib/FbFrameSequen.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbFrameSequen.cpp
+myrulib_FbFrameSequen.o: $(srcdir)/sources/MyRuLib/FbFrameSequen.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameSequen.cpp
 
-myrulib_FbGenres.o: $(srcdir)/MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbGenres.cpp
+myrulib_FbGenres.o: $(srcdir)/sources/MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbGenres.cpp
 
-myrulib_FbGenrTree.o: $(srcdir)/MyRuLib/FbGenrTree.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbGenrTree.cpp
+myrulib_FbGenrTree.o: $(srcdir)/sources/MyRuLib/FbGenrTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbGenrTree.cpp
 
-myrulib_FbHtmlWindow.o: $(srcdir)/MyRuLib/FbHtmlWindow.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbHtmlWindow.cpp
+myrulib_FbHtmlWindow.o: $(srcdir)/sources/MyRuLib/FbHtmlWindow.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbHtmlWindow.cpp
 
-myrulib_FbImportThread.o: $(srcdir)/MyRuLib/FbImportThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbImportThread.cpp
+myrulib_FbImportThread.o: $(srcdir)/sources/MyRuLib/FbImportThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbImportThread.cpp
 
-myrulib_FbInternetBook.o: $(srcdir)/MyRuLib/FbInternetBook.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbInternetBook.cpp
+myrulib_FbInternetBook.o: $(srcdir)/sources/MyRuLib/FbInternetBook.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbInternetBook.cpp
 
-myrulib_FbLocale.o: $(srcdir)/MyRuLib/FbLocale.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbLocale.cpp
+myrulib_FbLocale.o: $(srcdir)/sources/MyRuLib/FbLocale.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbLocale.cpp
 
-myrulib_FbLogStream.o: $(srcdir)/MyRuLib/FbLogStream.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbLogStream.cpp
+myrulib_FbLogStream.o: $(srcdir)/sources/MyRuLib/FbLogStream.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbLogStream.cpp
 
-myrulib_FbMainFrame.o: $(srcdir)/MyRuLib/FbMainFrame.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMainFrame.cpp
+myrulib_FbMainFrame.o: $(srcdir)/sources/MyRuLib/FbMainFrame.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMainFrame.cpp
 
-myrulib_FbMainMenu.o: $(srcdir)/MyRuLib/FbMainMenu.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMainMenu.cpp
+myrulib_FbMainMenu.o: $(srcdir)/sources/MyRuLib/FbMainMenu.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMainMenu.cpp
 
-myrulib_FbMasterInfo.o: $(srcdir)/MyRuLib/FbMasterInfo.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterInfo.cpp
+myrulib_FbMasterInfo.o: $(srcdir)/sources/MyRuLib/FbMasterInfo.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMasterInfo.cpp
 
-myrulib_FbMasterThread.o: $(srcdir)/MyRuLib/FbMasterThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterThread.cpp
+myrulib_FbMasterThread.o: $(srcdir)/sources/MyRuLib/FbMasterThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMasterThread.cpp
 
-myrulib_FbMasterTypes.o: $(srcdir)/MyRuLib/FbMasterTypes.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMasterTypes.cpp
+myrulib_FbMasterTypes.o: $(srcdir)/sources/MyRuLib/FbMasterTypes.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMasterTypes.cpp
 
-myrulib_FbMenu.o: $(srcdir)/MyRuLib/FbMenu.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbMenu.cpp
+myrulib_FbMenu.o: $(srcdir)/sources/MyRuLib/FbMenu.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMenu.cpp
 
-myrulib_FbNotebook.o: $(srcdir)/MyRuLib/FbNotebook.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbNotebook.cpp
+myrulib_FbNotebook.o: $(srcdir)/sources/MyRuLib/FbNotebook.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbNotebook.cpp
 
-myrulib_FbParams.o: $(srcdir)/MyRuLib/FbParams.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbParams.cpp
+myrulib_FbParams.o: $(srcdir)/sources/MyRuLib/FbParams.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbParams.cpp
 
-myrulib_FbParamsDlg.o: $(srcdir)/MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbParamsDlg.cpp
+myrulib_FbParamsDlg.o: $(srcdir)/sources/MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbParamsDlg.cpp
 
-myrulib_FbPreviewThread.o: $(srcdir)/MyRuLib/FbPreviewThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbPreviewThread.cpp
+myrulib_FbPreviewThread.o: $(srcdir)/sources/MyRuLib/FbPreviewThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbPreviewThread.cpp
 
-myrulib_FbPreviewWindow.o: $(srcdir)/MyRuLib/FbPreviewWindow.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbPreviewWindow.cpp
+myrulib_FbPreviewWindow.o: $(srcdir)/sources/MyRuLib/FbPreviewWindow.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbPreviewWindow.cpp
 
-myrulib_FbReplaceDlg.o: $(srcdir)/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbReplaceDlg.cpp
+myrulib_FbReplaceDlg.o: $(srcdir)/sources/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbReplaceDlg.cpp
 
-myrulib_FbSeqnList.o: $(srcdir)/MyRuLib/FbSeqnList.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbSeqnList.cpp
+myrulib_FbSeqnList.o: $(srcdir)/sources/MyRuLib/FbSeqnList.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbSeqnList.cpp
 
-myrulib_FbSequenDlg.o: $(srcdir)/MyRuLib/FbSequenDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbSequenDlg.cpp
+myrulib_FbSequenDlg.o: $(srcdir)/sources/MyRuLib/FbSequenDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbSequenDlg.cpp
 
-myrulib_FbThread.o: $(srcdir)/MyRuLib/FbThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbThread.cpp
+myrulib_FbThread.o: $(srcdir)/sources/MyRuLib/FbThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbThread.cpp
 
-myrulib_FbTreeListCtrl.o: $(srcdir)/MyRuLib/FbTreeListCtrl.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbTreeListCtrl.cpp
+myrulib_FbTreeListCtrl.o: $(srcdir)/sources/MyRuLib/FbTreeListCtrl.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbTreeListCtrl.cpp
 
-myrulib_FbTreeModel.o: $(srcdir)/MyRuLib/FbTreeModel.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbTreeModel.cpp
+myrulib_FbTreeModel.o: $(srcdir)/sources/MyRuLib/FbTreeModel.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbTreeModel.cpp
 
-myrulib_FbTreeView.o: $(srcdir)/MyRuLib/FbTreeView.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbTreeView.cpp
+myrulib_FbTreeView.o: $(srcdir)/sources/MyRuLib/FbTreeView.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbTreeView.cpp
 
-myrulib_FbUpdateThread.o: $(srcdir)/MyRuLib/FbUpdateThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbUpdateThread.cpp
+myrulib_FbUpdateThread.o: $(srcdir)/sources/MyRuLib/FbUpdateThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbUpdateThread.cpp
 
-myrulib_FbViewContext.o: $(srcdir)/MyRuLib/FbViewContext.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewContext.cpp
+myrulib_FbViewContext.o: $(srcdir)/sources/MyRuLib/FbViewContext.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewContext.cpp
 
-myrulib_FbViewData.o: $(srcdir)/MyRuLib/FbViewData.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewData.cpp
+myrulib_FbViewData.o: $(srcdir)/sources/MyRuLib/FbViewData.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewData.cpp
 
-myrulib_FbViewItem.o: $(srcdir)/MyRuLib/FbViewItem.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewItem.cpp
+myrulib_FbViewItem.o: $(srcdir)/sources/MyRuLib/FbViewItem.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewItem.cpp
 
-myrulib_FbViewReader.o: $(srcdir)/MyRuLib/FbViewReader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewReader.cpp
+myrulib_FbViewReader.o: $(srcdir)/sources/MyRuLib/FbViewReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewReader.cpp
 
-myrulib_FbViewThread.o: $(srcdir)/MyRuLib/FbViewThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewThread.cpp
+myrulib_FbViewThread.o: $(srcdir)/sources/MyRuLib/FbViewThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewThread.cpp
 
-myrulib_FbViewerDlg.o: $(srcdir)/MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbViewerDlg.cpp
+myrulib_FbViewerDlg.o: $(srcdir)/sources/MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewerDlg.cpp
 
-myrulib_FbWindow.o: $(srcdir)/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbWindow.cpp
+myrulib_FbWindow.o: $(srcdir)/sources/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbWindow.cpp
 
-myrulib_FbZipCatalogue.o: $(srcdir)/MyRuLib/FbZipCatalogue.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/FbZipCatalogue.cpp
+myrulib_FbZipCatalogue.o: $(srcdir)/sources/MyRuLib/FbZipCatalogue.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbZipCatalogue.cpp
 
-myrulib_ImpContext.o: $(srcdir)/MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ImpContext.cpp
+myrulib_ImpContext.o: $(srcdir)/sources/MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ImpContext.cpp
 
-myrulib_LimitedTextCtrl.o: $(srcdir)/MyRuLib/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/LimitedTextCtrl.cpp
+myrulib_LimitedTextCtrl.o: $(srcdir)/sources/MyRuLib/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/LimitedTextCtrl.cpp
 
-myrulib_MyRuLibApp.o: $(srcdir)/MyRuLib/MyRuLibApp.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/MyRuLibApp.cpp
+myrulib_MyRuLibApp.o: $(srcdir)/sources/MyRuLib/MyRuLibApp.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/MyRuLibApp.cpp
 
-myrulib_ParseCtx.o: $(srcdir)/MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ParseCtx.cpp
+myrulib_ParseCtx.o: $(srcdir)/sources/MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ParseCtx.cpp
 
-myrulib_ProgressBar.o: $(srcdir)/MyRuLib/ProgressBar.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ProgressBar.cpp
+myrulib_ProgressBar.o: $(srcdir)/sources/MyRuLib/ProgressBar.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ProgressBar.cpp
 
-myrulib_ZipReader.o: $(srcdir)/MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/ZipReader.cpp
+myrulib_ZipReader.o: $(srcdir)/sources/MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ZipReader.cpp
 
-myrulib_md5.o: $(srcdir)/MyRuLib/md5.c $(MYRULIB_ODEP)
-	$(CCC) -c -o $@ $(MYRULIB_CFLAGS) $(srcdir)/MyRuLib/md5.c
+myrulib_md5.o: $(srcdir)/sources/MyRuLib/md5.c $(MYRULIB_ODEP)
+	$(CCC) -c -o $@ $(MYRULIB_CFLAGS) $(srcdir)/sources/MyRuLib/md5.c
 
-myrulib_base64.o: $(srcdir)/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/wx/base64.cpp
+myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
-myrulib_treelistctrl.o: $(srcdir)/MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/MyRuLib/wx/treelistctrl.cpp
+myrulib_treelistctrl.o: $(srcdir)/sources/MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/treelistctrl.cpp
 
-myrulib_resource_rc.o: $(srcdir)/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/MyRuLib --include-dir $(srcdir)/WxSQLite3
+myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/sources/WxSQLite3
 
 
 # Include dependency info, if present:

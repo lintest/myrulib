@@ -72,14 +72,14 @@ WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed "s|-mthreads||g"`
 WX_LIBS=`echo $WX_LIBS | sed "s|-mthreads||g"`
 
 if test $USE_EXPAT = yes ; then 
-  CXXFLAGS="$CXXFLAGS -DXML_STATIC -I$DOLLAR(srcdir)/Expat"
+  CXXFLAGS="$CXXFLAGS -DXML_STATIC -I$DOLLAR(srcdir)/sources/Expat"
   WX_LIBS="-lexpat_static $WX_LIBS"
 else
   LIBS="$LIBS -lexpat"
 fi
 
 if test $USE_SQLITE = yes ; then 
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/SQLite3"
+  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/sources/SQLite3"
   WX_LIBS="-lsqlite3_static $WX_LIBS"
 else
   LIBS="$LIBS -lsqlite3"
