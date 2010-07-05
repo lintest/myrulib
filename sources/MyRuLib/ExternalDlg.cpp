@@ -23,164 +23,59 @@ BEGIN_EVENT_TABLE( ExternalDlg, wxDialog )
 	EVT_CHECKBOX( ID_AUTHOR, ExternalDlg::OnCheckAuthor )
 END_EVENT_TABLE()
 
-const wxString strNormalSymbols = wxT("\
-.()-_0123456789 \
-ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-abcdefghijklmnopqrstuvwxyz\
-АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\
-абвгдеёжзийклмнопрстуфхцчшщъыьэюя\
-");
-
-struct LetterReplace {
-	wxChar ru;
-	wxString en;
-};
-
-const LetterReplace strTranslitArray[] = {
-	{wxT(' '), wxT("_")},
-	{wxT('А'), wxT("A")},
-	{wxT('Б'), wxT("B")},
-	{wxT('В'), wxT("W")},
-	{wxT('Г'), wxT("G")},
-	{wxT('Д'), wxT("D")},
-	{wxT('Е'), wxT("E")},
-	{wxT('Ё'), wxT("E")},
-	{wxT('Ж'), wxT("V")},
-	{wxT('З'), wxT("Z")},
-	{wxT('И'), wxT("I")},
-	{wxT('Й'), wxT("J")},
-	{wxT('К'), wxT("K")},
-	{wxT('Л'), wxT("L")},
-	{wxT('М'), wxT("M")},
-	{wxT('Н'), wxT("N")},
-	{wxT('О'), wxT("O")},
-	{wxT('П'), wxT("P")},
-	{wxT('Р'), wxT("R")},
-	{wxT('С'), wxT("S")},
-	{wxT('Т'), wxT("T")},
-	{wxT('У'), wxT("U")},
-	{wxT('Ф'), wxT("F")},
-	{wxT('Х'), wxT("X")},
-	{wxT('Ц'), wxT("C")},
-	{wxT('Ч'), wxT("CH")},
-	{wxT('Ш'), wxT("SH")},
-	{wxT('Щ'), wxT("SCH")},
-	{wxT('Ъ'), wxT("")},
-	{wxT('Ы'), wxT("Y")},
-	{wxT('Ь'), wxT("")},
-	{wxT('Э'), wxT("E")},
-	{wxT('Ю'), wxT("JU")},
-	{wxT('Я'), wxT("JA")},
-	{wxT('а'), wxT("a")},
-	{wxT('б'), wxT("b")},
-	{wxT('в'), wxT("w")},
-	{wxT('г'), wxT("g")},
-	{wxT('д'), wxT("d")},
-	{wxT('е'), wxT("e")},
-	{wxT('ё'), wxT("e")},
-	{wxT('ж'), wxT("v")},
-	{wxT('з'), wxT("z")},
-	{wxT('и'), wxT("i")},
-	{wxT('й'), wxT("j")},
-	{wxT('к'), wxT("k")},
-	{wxT('л'), wxT("l")},
-	{wxT('м'), wxT("m")},
-	{wxT('н'), wxT("n")},
-	{wxT('о'), wxT("o")},
-	{wxT('п'), wxT("p")},
-	{wxT('р'), wxT("r")},
-	{wxT('с'), wxT("s")},
-	{wxT('т'), wxT("t")},
-	{wxT('у'), wxT("u")},
-	{wxT('ф'), wxT("f")},
-	{wxT('х'), wxT("x")},
-	{wxT('ц'), wxT("c")},
-	{wxT('ч'), wxT("ch")},
-	{wxT('ш'), wxT("sh")},
-	{wxT('щ'), wxT("sch")},
-	{wxT('ъ'), wxT("")},
-	{wxT('ы'), wxT("y")},
-	{wxT('ь'), wxT("")},
-	{wxT('э'), wxT("e")},
-	{wxT('ю'), wxT("ju")},
-	{wxT('я'), wxT("ja")}
-};
-
-
-wxString ExternalDlg::Translit(const wxString &filename)
+wxString ExternalDlg::Normalize(const wxString &filename, bool translit)
 {
+    const wxString forbidden = wxT("*?\\/:\"<>|");
+
 	wxString oldname = filename;
-	oldname = oldname.Trim(false).Trim(true);
 
-	while (oldname.Left(1) == wxT(".")) oldname = oldname.Mid(1);
-	while (oldname.Right(1) == wxT(".")) oldname = oldname.Mid(0, oldname.Len()-1);
-
+	bool space = false;
 	wxString newname;
-	size_t size = sizeof(strTranslitArray) / sizeof(LetterReplace);
-	for (size_t i=0; i<oldname.Len(); i++) {
-		wxChar letter = oldname[i];
-		if (strNormalSymbols.Find(letter) != wxNOT_FOUND) {
-			wxString substr = letter;
-			for (size_t j=0; j<size; j++)
-				if (strTranslitArray[j].ru == letter) {
-					substr = strTranslitArray[j].en;
-					break;
-				}
-			newname += substr;
-		}
+	size_t length = oldname.Length();
+	for (size_t i = 0; i < length; i++) {
+		wxChar ch = oldname[i];
+		if (0 <= ch && ch < 0x20) continue;
+		if (0 <= ch && ch < 0x20) continue;
+		if (space && ch == 0x20) continue;
+		if (forbidden.Find(ch) != wxNOT_FOUND) continue;
+		if (ch == (wxChar)0x0401) ch = (wxChar)0x0415;
+		if (ch == (wxChar)0x0451) ch = (wxChar)0x0435;
+		space = ch == 0x20;
+		newname << ch;
 	}
-	return newname;
-}
-
-wxString ExternalDlg::Normalize(const wxString &filename)
-{
-	wxString newname = filename;
 	newname = newname.Trim(false).Trim(true).Left(fbMAX_FILENAME_LENGTH);
-
-	const wxChar cp1251 [256] =
-	{
-		0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-		0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-		0x005F, 0x0021, 0x0027, 0x0000, 0x0000, 0x0000, 0x0000, 0x0027, 0x0028, 0x0029, 0x002D, 0x002D, 0x0000, 0x002D, 0x002E, 0x0000,
-		0x0030, 0x0031, 0x0032, 0x0033, 0x0034, 0x0035, 0x0036, 0x0037, 0x0038, 0x0039, 0x0000, 0x0000, 0x0000, 0x002D, 0x0000, 0x0000,
-		0x0040, 0x0041, 0x0042, 0x0043, 0x0044, 0x0045, 0x0046, 0x0047, 0x0048, 0x0049, 0x004A, 0x004B, 0x004C, 0x004D, 0x004E, 0x004F,
-		0x0050, 0x0051, 0x0052, 0x0053, 0x0054, 0x0055, 0x0056, 0x0057, 0x0058, 0x0059, 0x005A, 0x0028, 0x0000, 0x0029, 0x005E, 0x005F,
-		0x0060, 0x0061, 0x0062, 0x0063, 0x0064, 0x0065, 0x0066, 0x0067, 0x0068, 0x0069, 0x006A, 0x006B, 0x006C, 0x006D, 0x006E, 0x006F,
-		0x0070, 0x0071, 0x0072, 0x0073, 0x0074, 0x0075, 0x0076, 0x0077, 0x0078, 0x0079, 0x007A, 0x0028, 0x0000, 0x0029, 0x007E, 0x0000,
-
-		0x0044, 0x0413, 0x0027, 0x0453, 0x0027, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x041B, 0x0027, 0x041D, 0x041A, 0x0048, 0x0426,
-		0x0064, 0x0027, 0x0027, 0x0027, 0x0027, 0x002D, 0x002D, 0x0000, 0x0000, 0x0000, 0x043B, 0x0027, 0x043D, 0x043A, 0x0068, 0x0446,
-		0x005F, 0x0423, 0x0443, 0x004A, 0x0000, 0x0000, 0x0000, 0x0000, 0x0415, 0x0000, 0x0415, 0x0027, 0x0000, 0x0000, 0x0000, 0x0049,
-		0x0000, 0x0000, 0x0049, 0x0069, 0x0433, 0x0000, 0x0000, 0x0000, 0x0435, 0x004E, 0x0435, 0x0027, 0x006A, 0x0053, 0x0073, 0x0069,
-		0x0410, 0x0411, 0x0412, 0x0413, 0x0414, 0x0415, 0x0416, 0x0417, 0x0418, 0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E, 0x041F,
-		0x0420, 0x0421, 0x0422, 0x0423, 0x0424, 0x0425, 0x0426, 0x0427, 0x0428, 0x0429, 0x042A, 0x042B, 0x042C, 0x042D, 0x042E, 0x042F,
-		0x0430, 0x0431, 0x0432, 0x0433, 0x0434, 0x0435, 0x0436, 0x0437, 0x0438, 0x0439, 0x043A, 0x043B, 0x043C, 0x043D, 0x043E, 0x043F,
-		0x0440, 0x0441, 0x0442, 0x0443, 0x0444, 0x0445, 0x0446, 0x0447, 0x0448, 0x0449, 0x044A, 0x044B, 0x044C, 0x044D, 0x044E, 0x044F
-	}; // cp1251
-
-	char * buffer[fbMAX_FILENAME_LENGTH];
-	memset(buffer, 0, (fbMAX_FILENAME_LENGTH));
 
 	wxEncodingConverter ec;
 	ec.Init(wxFONTENCODING_UNICODE, wxFONTENCODING_CP1251, wxCONVERT_SUBSTITUTE);
 	newname = ec.Convert(newname);
 
-	wxString result;
-	bool space = false;
-	size_t count = newname.Len();
-	for (size_t i = 0; i < count; i++) {
-		unsigned char ch = (unsigned char) newname[i];
-		wxChar wch = cp1251[ch];
-		if (wch == 0) continue;
-		if (space && wch == 0x005F) continue;
-		result << wch;
-		space = wch == 0x005F;
+	if (translit) {
+		wxChar * transchar[32] = {
+			wxT("a"), wxT("b"), wxT("v"), wxT("g"), wxT("d"), wxT("e"), wxT("zh"), wxT("z"), 
+			wxT("i"), wxT("j"), wxT("k"), wxT("l"), wxT("m"), wxT("n"), wxT("o"), wxT("p"), 
+			wxT("r"), wxT("s"), wxT("t"), wxT("u"), wxT("f"), wxT("h"), wxT("c"), wxT("ch"), 
+			wxT("sh"), wxT("shh"), wxT("'"), wxT("y"), wxT("'"), wxT("e"), wxT("yu"), wxT("ya"),
+		};
+		oldname = newname;
+		newname.Empty();
+		size_t length = oldname.Length();
+		for (size_t i = 0; i < length; i++) {
+			unsigned char ch = oldname[i] % 0x100;
+			if (0xC0 <= ch && ch <= 0xDF) {
+				newname << wxString(transchar[ch - 0xC0]).Upper();
+			} else if (0xE0 <= ch && ch <= 0xFF) {
+				newname << wxString(transchar[ch - 0xE0]);
+			} else newname << wxChar(ch);
+		}
 	}
 
-	while (result.Left(1) == wxT(".")) result = result.Mid(1);
-	while (result.Right(1) == wxT(".")) result = result.Mid(0, result.Len()-1);
+	ec.Init(wxFONTENCODING_CP1251, wxFONTENCODING_UNICODE, wxCONVERT_SUBSTITUTE);
+	newname = ec.Convert(newname);
 
-	return result;
+	while (newname.Left(1) == wxT(".")) newname = newname.Mid(1);
+	while (newname.Right(1) == wxT(".")) newname = newname.Mid(0, newname.Len()-1);
+
+	return newname;
 }
 
 wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &data)
@@ -193,7 +88,7 @@ wxString ExternalDlg::GetFilename(const wxTreeItemId &parent, BookTreeItemData &
 		node = m_books->GetItemParent(node);
 	}
 
-	newname = FbParams::GetValue(FB_TRANSLIT_FILE) ? Translit(newname) : Normalize(newname);
+	newname = Normalize(newname, FbParams::GetValue(FB_TRANSLIT_FILE));
 
 	if (data.number) newname = wxString::Format(wxT("%d_%s"), data.number, newname.c_str());
 
@@ -396,7 +291,7 @@ wxTreeItemId ExternalDlg::AppendFolder(const wxTreeItemId &parent, const wxStrin
 {
 	wxString newname = name;
 	newname = newname.Trim(false).Trim(true);
-	newname = FbParams::GetValue(FB_TRANSLIT_FOLDER) ? Translit(newname) : Normalize(newname);
+	newname = Normalize(newname, FbParams::GetValue(FB_TRANSLIT_FOLDER));
 	wxTreeItemId item = m_books->AppendItem(parent, newname );
 	m_books->SetItemBold(item, true);
 	m_books->Expand(parent);
