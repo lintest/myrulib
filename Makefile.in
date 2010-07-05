@@ -194,9 +194,9 @@ install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/sv/LC_MESSAGES
 	(cd . ; $(INSTALL) -m 644 -T sv.mo $(DESTDIR)$(datadir)/locale/sv/LC_MESSAGES/myrulib.mo)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
-	(cd $(srcdir)/sourcesMyRuLib/desktop ; $(INSTALL_DATA)  myrulib.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps)
+	(cd $(srcdir)/sources/MyRuLib/desktop ; $(INSTALL_DATA)  myrulib.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/applications
-	(cd $(srcdir)/sourcesMyRuLib/desktop ; $(INSTALL_DATA)  myrulib.desktop $(DESTDIR)$(datadir)/applications)
+	(cd $(srcdir)/sources/MyRuLib/desktop ; $(INSTALL_DATA)  myrulib.desktop $(DESTDIR)$(datadir)/applications)
 	$(INSTALL) -d $(DESTDIR)$(datadir)/pixmaps/
 	ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)$(datadir)/pixmaps/myrulib.png
 

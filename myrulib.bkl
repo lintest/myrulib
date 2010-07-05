@@ -258,12 +258,12 @@
 
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files> 
-			<srcdir>$(SRCDIR)MyRuLib/desktop</srcdir>
+			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
 			<files>myrulib.png</files>
 			<install-to>$(DATADIR)/icons/hicolor/48x48/apps</install-to>
 		</data-files>
 		<data-files>
-			<srcdir>$(SRCDIR)MyRuLib/desktop</srcdir>
+			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
 			<files>myrulib.desktop</files>
 			<install-to>$(DATADIR)/applications</install-to>
 		</data-files>
