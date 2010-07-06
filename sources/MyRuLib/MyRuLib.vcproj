@@ -302,6 +302,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbExportTree.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbExtractInfo.cpp"
 				>
 			</File>
@@ -653,6 +657,10 @@
 			</File>
 			<File
 				RelativePath=".\FbEditBook.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbExportTree.h"
 				>
 			</File>
 			<File

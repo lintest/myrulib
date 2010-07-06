@@ -175,6 +175,7 @@
 		<sources>MyRuLib/FbDateTree.cpp</sources>
 		<sources>MyRuLib/FbDownList.cpp</sources>
 		<sources>MyRuLib/FbEditBook.cpp</sources>
+		<sources>MyRuLib/FbExportTree.cpp</sources>
 		<sources>MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFilterDlg.cpp</sources>

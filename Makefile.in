@@ -96,6 +96,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbDateTree.o \
 	myrulib_FbDownList.o \
 	myrulib_FbEditBook.o \
+	myrulib_FbExportTree.o \
 	myrulib_FbExtractInfo.o \
 	myrulib_FbDownloader.o \
 	myrulib_FbFilterDlg.o \
@@ -406,6 +407,9 @@ myrulib_FbDownList.o: $(srcdir)/sources/MyRuLib/FbDownList.cpp $(MYRULIB_ODEP)
 
 myrulib_FbEditBook.o: $(srcdir)/sources/MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbEditBook.cpp
+
+myrulib_FbExportTree.o: $(srcdir)/sources/MyRuLib/FbExportTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbExportTree.cpp
 
 myrulib_FbExtractInfo.o: $(srcdir)/sources/MyRuLib/FbExtractInfo.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbExtractInfo.cpp
