@@ -31,6 +31,8 @@ class FbParamsDlg : private FbDialog
 			ID_EXTERNAL_TXT,
 			ID_EXTERNAL_BTN,
 			ID_DEL_DOWNLOAD,
+			ID_FILENAME,
+			ID_EXAMPLE,
 			ID_TRANSLIT_FOLDER,
 			ID_TRANSLIT_FILE,
 			ID_FOLDER_FORMAT,
@@ -84,7 +86,12 @@ class FbParamsDlg : private FbDialog
 		class PanelExport: public wxPanel
 		{
 			public:
-				PanelExport(wxWindow *parent);
+				PanelExport(wxWindow *parent, wxString &letters);
+		};
+		class PanelScripts: public wxPanel
+		{
+			public:
+				PanelScripts(wxWindow *parent);
 		};
 		class PanelTypes: public wxPanel
 		{
@@ -168,7 +175,9 @@ class FbParamsDlg : private FbDialog
 		void OnScriptActivated( wxTreeEvent & event );
 		void OnFontClear( wxCommandEvent& event );
 		void OnModel( FbModelEvent& event );
+		void OnLetterClicked(wxCommandEvent& event);
 	private:
+		wxString m_letters;
 		wxArrayString m_del_type;
 		wxArrayInt m_del_scr;
 		LoadThread m_thread;

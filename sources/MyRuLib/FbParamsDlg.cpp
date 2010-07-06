@@ -413,7 +413,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 //  FbParamsDlg::PanelExport
 //-----------------------------------------------------------------------------
 
-FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
+FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	:wxPanel(parent)
 {
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -433,20 +433,53 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 
 	bSizerMain->Add( bSizerFolder, 0, wxEXPAND, 5 );
 
+	wxStaticText * format_info = new wxStaticText( this, wxID_ANY, _("Exported collection structure"), wxDefaultPosition, wxDefaultSize, 0 );
+	format_info->Wrap( -1 );
+	bSizerMain->Add( format_info, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+
+	wxComboBox * format = new wxComboBox( this, ID_FILENAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	format->Append( wxT("%a/%f/%s/%n-%t") );
+	format->Append( wxT("%a/%f/%t") );
+	format->Append( wxT("%f/%s/%n-%t") );
+	format->Append( wxT("%f/%s/%t") );
+	bSizerMain->Add( format, 0, wxALL|wxEXPAND, 5 );
+
+	letters = wxT("afcsnitlme");
+	const wxChar * helps[] = {
+		_("First letter of author surname"),
+		_("Full author name"),
+		_("Short-сut author name"),
+		_("Sequence name"),
+		_("Number in sequence"),
+		_("Internal book code"),
+		_("Book title"),
+		_("Book language"),
+		_("Book file MD5 sum"),
+		_("File name extension"),
+	};
+
+	wxStaticText * example = new wxStaticText( this, ID_EXAMPLE, _("G/Gogol/Mertvye dushi.fb2"), wxDefaultPosition, wxDefaultSize, 0 );
+	example->Wrap( -1 );
+	bSizerMain->Add( example, 0, wxALL|wxEXPAND, 5 );
+
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	toolbar->SetToolBitmapSize(wxSize(0,0));
+	{
+		size_t length = letters.Length();
+		for (size_t i = 0; i < length; i++) {
+			int btnid = ID_LETTERS + i;
+			wxString title = wxT('%'); title += letters[i];
+			wxString help = helps[i];
+			toolbar->AddTool(btnid, title, wxNullBitmap, help);
+			parent->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(FbParamsDlg::OnLetterClicked));
+		}
+	}
+	toolbar->Realize();
+	bSizerMain->Add(toolbar, 0, wxEXPAND);
+
 	wxBoxSizer* bSizerCenter = new wxBoxSizer( wxHORIZONTAL );
 
 	wxBoxSizer* bSizerLeft = new wxBoxSizer( wxVERTICAL );
-
-	wxString m_radioBox1Choices[] = {
-		_("A / Author / Series / #_book"),
-		_("A / Author / Book"),
-		_("Author / Series / #_book"),
-		_("Author / Book"),
-	};
-	int m_radioBox1NChoices = sizeof( m_radioBox1Choices ) / sizeof( wxString );
-	wxRadioBox * m_radioBox1 = new wxRadioBox( this, ID_FOLDER_FORMAT, _("Exported collection structure"), wxDefaultPosition, wxDefaultSize, m_radioBox1NChoices, m_radioBox1Choices, 1, wxRA_SPECIFY_COLS );
-	m_radioBox1->SetSelection(0);
-	bSizerLeft->Add( m_radioBox1, 0, wxALL|wxEXPAND, 5 );
 
 	wxCheckBox * m_checkBox2 = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Transliterate folder name"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerLeft->Add( m_checkBox2, 0, wxALL|wxEXPAND, 5 );
@@ -455,19 +488,6 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 	bSizerLeft->Add( m_checkBox3, 0, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerRight = new wxBoxSizer( wxVERTICAL );
-
-	wxToolBar * toolbar = new wxToolBar( this, ID_SCRIPT_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxNullBitmap)->Enable(false);
-	toolbar->Realize();
-	bSizerRight->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
-
-	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
-	treeview->AddColumn(0, _("Extension"), 100);
-	treeview->AddColumn(1, _("Export script"), 200);
-	bSizerRight->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	bSizerCenter->Add(bSizerLeft);
 	bSizerCenter->Add(bSizerRight, 1, wxEXPAND);
@@ -488,6 +508,33 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent)
 	bSizerFormat->Add( typeChoice, 1, wxALL, 5 );
 
 	bSizerMain->Add(bSizerFormat, 0, wxEXPAND);
+
+	SetSizer( bSizerMain );
+	Layout();
+	bSizerMain->Fit( this );
+}
+
+//-----------------------------------------------------------------------------
+//  FbParamsDlg::PanelScripts
+//-----------------------------------------------------------------------------
+
+FbParamsDlg::PanelScripts::PanelScripts(wxWindow *parent)
+	:wxPanel(parent)
+{
+	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
+
+	wxToolBar * toolbar = new wxToolBar( this, ID_SCRIPT_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	toolbar->SetToolBitmapSize(wxSize(0,0));
+	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxNullBitmap)->Enable(false);
+	toolbar->Realize();
+	bSizerMain->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
+
+	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_SCRIPT_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	treeview->AddColumn(0, _("Extension"), 10);
+	treeview->AddColumn(1, _("Export script"), 40);
+	bSizerMain->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	SetSizer( bSizerMain );
 	Layout();
@@ -531,7 +578,8 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	notebook->AddPage( new PanelInterface(notebook), _("General"), true );
 	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
 	notebook->AddPage( new PanelTypes(notebook), _("File types"), false );
-	notebook->AddPage( new PanelExport(notebook), _("Export"), false );
+	notebook->AddPage( new PanelExport(notebook, m_letters), _("Export"), false );
+	notebook->AddPage( new PanelScripts(notebook), _("Scripts"), false );
 	notebook->AddPage( new PanelFont(notebook), _("Fonts"), false );
 
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
@@ -892,6 +940,18 @@ void FbParamsDlg::OnFontClear( wxCommandEvent& event )
 	SetFont(ID_FONT_TOOL, font);
 	SetFont(ID_FONT_HTML, font);
 	SetFont(ID_FONT_DLG, font);
+}
+
+void FbParamsDlg::OnLetterClicked(wxCommandEvent& event)
+{
+	int pos = event.GetId() - ID_LETTERS;
+	if (0 <= pos && pos < (int)m_letters.Length()) {
+		wxKeyEvent event(wxEVT_CHAR);
+		event.m_keyCode = wxT('%');
+//		m_text.EmulateKeyPress(event);
+		event.m_keyCode = m_letters[pos];
+//		m_text.EmulateKeyPress(event);
+	}
 }
 
 void FbParamsDlg::EnableTool(wxWindowID id, bool enable)

@@ -20,13 +20,13 @@ class FbZipTraverser : public wxDirTraverser
 };
 
 wxDirTraverseResult FbZipTraverser::OnFile(const wxString& filename)
-{ 
-	AddZip(filename); 
+{
+	AddZip(filename);
 	return m_owner.IsClosed() ? wxDIR_STOP : wxDIR_CONTINUE;
 }
 
 wxDirTraverseResult FbZipTraverser::OnDir(const wxString& WXUNUSED(dirname))
-{ 
+{
 	return m_owner.IsClosed() ? wxDIR_STOP : wxDIR_IGNORE;
 }
 
@@ -41,16 +41,16 @@ void FbZipTraverser::AddZip(wxFileName filename)
 		if (result.NextRow()) return ;
 	}
 
-	wxFFileInputStream in(filename.GetFullPath());
-	wxFileOffset length = in.GetLength();
-	if (length == wxInvalidOffset || length > 0xFFFFFFFF) {
+	wxULongLong size = filename.GetSize();
+	if (size == wxInvalidOffset || size > 0xFFFFFFFF) {
 		wxLogMessage(_("Invalid zip offset %s"), fullname.c_str());
-		return; 
+		return;
 	}
 
 	wxLogMessage(_("Scan zip %s"), fullname.c_str());
 	wxSQLite3Transaction trans(&m_database);
 	int id = m_database.NewId(DB_NEW_ZIPFILE);
+	wxFFileInputStream in(filename.GetFullPath());
 	wxZipInputStream zip(in);
 
 	int count = 0;
@@ -95,7 +95,7 @@ void * FbZipCatalogueThread::Entry()
 	wxDir dir(m_dirname);
 	if ( !dir.IsOpened() ) {
 		wxLogError(_("Can't open directory %s"), m_dirname.c_str());
-		return NULL; 
+		return NULL;
 	}
 
 	FbZipTraverser traverser(*this);

@@ -230,6 +230,8 @@
 		<Unit filename="FbDownloader.h" />
 		<Unit filename="FbEditBook.cpp" />
 		<Unit filename="FbEditBook.h" />
+		<Unit filename="FbExportTree.cpp" />
+		<Unit filename="FbExportTree.h" />
 		<Unit filename="FbExtractInfo.cpp" />
 		<Unit filename="FbExtractInfo.h" />
 		<Unit filename="FbFilterDlg.cpp" />
