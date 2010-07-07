@@ -10,10 +10,8 @@ class FbExportParentData: public FbParentData
 	public:
 		FbExportParentData(FbModel & model, FbParentData * parent = NULL, const wxString &name = wxEmptyString)
 			: FbParentData(model, parent), m_name(name) {}
-		virtual bool FullRow(FbModel & model) const
-			{ return true; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
-			{ return m_name; }
+			{ return col == 0 ? m_name : wxString(); }
 		void Sort(FbModel & model);
 		FbExportParentData * GetDir(FbModel & model, wxArrayString &dirs);
 		void Append(FbModel & model, int book, wxFileName &filename, int size);

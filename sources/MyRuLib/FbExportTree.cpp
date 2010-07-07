@@ -217,11 +217,13 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 					text = Get(result, wxT("sequence"));
 				} break;
 				case wxT('n'): {
-					text = Get(result, wxT("number"));
-					if (text == wxT('0')) text.Empty();
+					int number = result.GetInt(wxT("number"));
+					if (number) text << number;
 				} break;
 				case wxT('i'): {
-					text = Get(result, wxT("id"));
+					int id = result.GetInt(wxT("id"));
+					if (id < 0) { text << wxT('0'); id *= -1; }
+					text << id;
 				} break;
 				case wxT('t'): {
 					text = Get(result, wxT("title"));
@@ -302,6 +304,9 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, int author)
 	while (result.NextRow()) {
 		int book = result.GetInt(0);
 		int size = result.GetInt(1);
+		if (items.Index(book) != wxNOT_FOUND) continue;
+		items.Add(book);
+
 		wxFileName filename = context.GetFilename(result);
 		wxArrayString dirs = filename.GetDirs();
 		FbExportParentData * parent = root->GetDir(*this, dirs);

@@ -58,7 +58,7 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	m_books = new FbTreeViewCtrl( this, ID_BOOKS, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | fbTR_VRULES);
 	m_books->SetMinSize( wxSize( -1,250 ) );
-	m_books->AddColumn (0, _("File name"), 4, wxALIGN_LEFT);
+	m_books->AddColumn (0, _("File name"), 5, wxALIGN_LEFT);
 	m_books->AddColumn (1, _("Size, Kb"), 1, wxALIGN_RIGHT);
 
 	FbModel * model = new FbExportTreeModel(selections, iAuthor);
