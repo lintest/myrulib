@@ -20,7 +20,7 @@ class FbModelData: public wxObject
 			{}
 		virtual ~FbModelData()
 			{}
-		virtual wxString GetValue(FbModel & model, size_t col) const
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return wxEmptyString; }
 		virtual void SetValue(FbModel & model, size_t col, const wxString &name)
 			{}

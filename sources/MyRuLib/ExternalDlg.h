@@ -18,7 +18,7 @@
 #include <wx/sizer.h>
 #include <wx/dialog.h>
 #include "FbBookList.h"
-#include "FbTreeListCtrl.h"
+#include "FbTreeView.h"
 #include "FbBookData.h"
 #include "ExpThread.h"
 #include "FbConst.h"
@@ -43,8 +43,6 @@ class ExternalDlg : public FbDialog
 		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
 		void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
-		wxString GetFilename(const wxTreeItemId &parent, BookTreeItemData &data);
-		wxString Normalize(const wxString &filename, bool translit = false);
 		void ChangeFilesExt(const wxTreeItemId &parent);
 		void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
@@ -65,10 +63,10 @@ class ExternalDlg : public FbDialog
 			ID_FORMAT,
 			ID_AUTHOR,
 		};
-		wxTextCtrl* m_textDir;
-		FbTreeListCtrl* m_books;
+		wxTextCtrl * m_textDir;
+		FbTreeViewCtrl * m_books;
 		FbChoiceFormat * m_format;
-		wxCheckBox* m_checkAuthor;
+		wxCheckBox * m_checkAuthor;
 	private:
 		void OnSelectDir( wxCommandEvent& event );
 		void OnBookCollapsing( wxTreeEvent & event );

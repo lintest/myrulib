@@ -14,7 +14,10 @@ class FbExportParentData: public FbParentData
 			{ return true; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return m_name; }
-		void Sort();
+		void Sort(FbModel & model);
+		FbExportParentData * GetDir(FbModel & model, wxArrayString &dirs);
+		void Append(FbModel & model, int book, wxFileName &filename, int size);
+		int Compare(const FbExportParentData &data);
 	private:
 		wxString m_name;
 		DECLARE_CLASS(FbExportParentData)
@@ -23,8 +26,10 @@ class FbExportParentData: public FbParentData
 class FbExportChildData: public FbChildData
 {
 	public:
-		FbExportChildData(FbModel & model, FbParentData * parent, int book);
+		FbExportChildData(FbModel & model, FbParentData * parent, int book, const wxFileName &filename, int size)
+			: FbChildData(model, parent), m_book(book), m_name(filename.GetName()), m_type(filename.GetExt()), m_size(size) {}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
+		int Compare(const FbExportChildData &data);
 	private:
 		int m_book;
 		wxString m_name;
@@ -40,6 +45,7 @@ class FbExportTreeContext
 		wxFileName GetFilename(wxSQLite3ResultSet &result);
 	private:
 		wxString Get(wxSQLite3ResultSet &result, const wxString &field);
+		wxString Normalize(const wxString &filename, bool translit = false);
 	private:
 		bool m_translit_folder;
 		bool m_translit_file;
@@ -52,8 +58,6 @@ class FbExportTreeModel: public FbTreeModel
 		FbExportTreeModel(const wxString &books, int author = 0);
 		wxString GetFormat() const { return m_format; }
 		int GetScale() const { return m_scale; }
-		void Append(int book, const wxFileName &filename);
-		void Sort();
 	private:
 		wxString m_format;
 		int m_scale;

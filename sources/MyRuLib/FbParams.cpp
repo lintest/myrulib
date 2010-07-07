@@ -173,6 +173,8 @@ wxString FbParams::DefaultText(int param)
 				return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT).GetNativeFontInfoDesc();
 			case FB_FRAME_LIST:
 				return wxT('0');
+			case FB_FOLDER_FORMAT:
+				return wxT("%a/%f/%s/%n-%t");
 			default:
 				return wxEmptyString;
 		}
