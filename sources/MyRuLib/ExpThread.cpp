@@ -297,7 +297,8 @@ wxString FbExportDlg::GetCommand(const wxString &script, const wxFileName &filen
 {
 	wxString result;
 	bool param = false;
-	for (size_t i=0; i < script.Length(); i++) {
+	size_t length = script.Length();
+	for (size_t i=0; i < length; i++) {
 		wxChar ch = script[i];
 		if (param) {
 			switch (ch) {

@@ -2,6 +2,8 @@
 #define __FBEXPORTTREE_H__
 
 #include "FbTreeModel.h"
+#include <wx/filename.h>
+#include <wx/wxsqlite3.h>
 
 class FbExportParentData: public FbParentData
 {
@@ -31,13 +33,26 @@ class FbExportChildData: public FbChildData
 		DECLARE_CLASS(FbExportChildData)
 };
 
+class FbExportTreeContext
+{
+	public:
+		FbExportTreeContext();
+		wxFileName GetFilename(wxSQLite3ResultSet &result);
+	private:
+		wxString Get(wxSQLite3ResultSet &result, const wxString &field);
+	private:
+		bool m_translit_folder;
+		bool m_translit_file;
+		wxString m_template;
+};
+
 class FbExportTreeModel: public FbTreeModel
 {
 	public:
 		FbExportTreeModel(const wxString &books, int author = 0);
 		wxString GetFormat() const { return m_format; }
 		int GetScale() const { return m_scale; }
-		void Append(int book, const wxString &filename);
+		void Append(int book, const wxFileName &filename);
 		void Sort();
 	private:
 		wxString m_format;

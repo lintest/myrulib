@@ -437,12 +437,16 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	format_info->Wrap( -1 );
 	bSizerMain->Add( format_info, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	wxComboBox * format = new wxComboBox( this, ID_FILENAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	format->Append( wxT("%a/%f/%s/%n-%t") );
-	format->Append( wxT("%a/%f/%t") );
-	format->Append( wxT("%f/%s/%n-%t") );
-	format->Append( wxT("%f/%s/%t") );
-	bSizerMain->Add( format, 0, wxALL|wxEXPAND, 5 );
+	wxComboBox * combobox = new wxComboBox( this, ID_FOLDER_FORMAT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	combobox->Append( wxT("%a/%f/%s/%n-%t") );
+	combobox->Append( wxT("%a/%f/%t") );
+	combobox->Append( wxT("%f/%s/%n-%t") );
+	combobox->Append( wxT("%f/%s/%t") );
+	bSizerMain->Add( combobox, 0, wxALL|wxEXPAND, 5 );
+
+	wxStaticText * example = new wxStaticText( this, ID_EXAMPLE, _("G/Gogol/Mertvye dushi.fb2"), wxDefaultPosition, wxDefaultSize, 0 );
+	example->Wrap( -1 );
+	bSizerMain->Add( example, 0, wxALL|wxEXPAND, 5 );
 
 	letters = wxT("afcsnitlme");
 	const wxChar * helps[] = {
@@ -457,10 +461,6 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 		_("Book file MD5 sum"),
 		_("File name extension"),
 	};
-
-	wxStaticText * example = new wxStaticText( this, ID_EXAMPLE, _("G/Gogol/Mertvye dushi.fb2"), wxDefaultPosition, wxDefaultSize, 0 );
-	example->Wrap( -1 );
-	bSizerMain->Add( example, 0, wxALL|wxEXPAND, 5 );
 
 	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
 	toolbar->SetToolBitmapSize(wxSize(0,0));
@@ -647,7 +647,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
 		{FB_TRANSLIT_FOLDER, ID_TRANSLIT_FOLDER, tCheck},
 		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE, tCheck},
-		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT, tRadio},
+		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT, tCombo},
 		{FB_FONT_MAIN, ID_FONT_MAIN, tFont},
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},
 		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
