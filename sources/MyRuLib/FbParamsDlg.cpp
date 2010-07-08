@@ -29,6 +29,7 @@
 #include "FbDatabase.h"
 #include "FbChoiceFormat.h"
 #include "FbLocale.h"
+#include "FbToolBar.h"
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread
@@ -138,15 +139,15 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 		_("File name extension"),
 	};
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER );
+	FbToolBarImages images(*toolbar, wxT("%m"));
 	{
 		size_t length = m_letters.Length();
 		for (size_t i = 0; i < length; i++) {
 			int btnid = ID_LETTERS + i;
 			wxString title = wxT('%'); title += m_letters[i];
 			wxString help = helps[i];
-			toolbar->AddTool(btnid, title, wxNullBitmap, help);
+			toolbar->AddTool(btnid, title, images[title], help);
 			this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(ScriptDlg::OnLetterClicked));
 		}
 	}
@@ -463,15 +464,15 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 		_("File name extension"),
 	};
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
+	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER );
+	FbToolBarImages images(*toolbar, wxT("%m"));
 	{
 		size_t length = letters.Length();
 		for (size_t i = 0; i < length; i++) {
 			int btnid = ID_LETTERS + i;
 			wxString title = wxT('%'); title += letters[i];
 			wxString help = helps[i];
-			toolbar->AddTool(btnid, title, wxNullBitmap, help);
+			toolbar->AddTool(btnid, title, images[title], help);
 			parent->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(FbParamsDlg::OnLetterClicked));
 		}
 	}
@@ -942,14 +943,16 @@ void FbParamsDlg::OnFontClear( wxCommandEvent& event )
 
 void FbParamsDlg::OnLetterClicked(wxCommandEvent& event)
 {
+/*
 	int pos = event.GetId() - ID_LETTERS;
 	if (0 <= pos && pos < (int)m_letters.Length()) {
 		wxKeyEvent event(wxEVT_CHAR);
 		event.m_keyCode = wxT('%');
-//		m_text.EmulateKeyPress(event);
+		m_text.EmulateKeyPress(event);
 		event.m_keyCode = m_letters[pos];
-//		m_text.EmulateKeyPress(event);
+		m_text.EmulateKeyPress(event);
 	}
+*/
 }
 
 void FbParamsDlg::EnableTool(wxWindowID id, bool enable)

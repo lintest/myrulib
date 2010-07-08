@@ -9,6 +9,7 @@
 #include "FbAuthorDlg.h"
 #include "FbReplaceDlg.h"
 #include "FbUpdateThread.h"
+#include "FbToolBar.h"
 
 IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
 
@@ -76,43 +77,15 @@ void FbFrameAuthor::CreateColumns()
 
 wxToolBar * FbFrameAuthor::CreateAlphaBar(wxWindow * parent, wxWindowID id, const wxString & alphabet, const int &toolid, long style)
 {
-    wxColour fontColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-    wxColour toolColour = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
-    wxBrush brush(toolColour, wxSOLID);
-	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
-
-	wxSize size;
-	{
-		wxBitmap bitmap(20, 20);
-		wxMemoryDC dc;
-		dc.SelectObject(bitmap);
-		dc.SetFont(font);
-		size = dc.GetTextExtent(wxT("W"));
-		size.IncBy(2, 0);
-	}
-
 	wxToolBar * toolbar = new wxToolBar(parent, id, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|style);
-	wxRect rect(size);
+	FbToolBarImages images(*toolbar, wxT('W'));
 
-	if (toolid == ID_LETTER_EN) toolbar->AddTool(ID_LETTER_ALL, wxT("*"), wxNullBitmap, wxNullBitmap, wxITEM_CHECK, _("All collected authors"));
+	wxString letter = wxT("*");
+	if (toolid == ID_LETTER_EN) toolbar->AddTool(ID_LETTER_ALL, letter, images[letter], wxNullBitmap, wxITEM_CHECK, _("All collected authors"));
 	for (size_t i = 0; i<alphabet.Len(); i++) {
-		wxString letter = alphabet.Mid(i, 1);
-
-		wxBitmap * bitmap = new wxBitmap(size.GetX(), size.GetY());
-		wxMemoryDC dc;
-		dc.SelectObject(*bitmap);
-        dc.SetTextForeground(fontColour);
-		dc.SetBrush(brush);
-		dc.SetPen(*wxTRANSPARENT_PEN);
-		dc.DrawRectangle(rect);
-		dc.SetFont(font);
-		dc.DrawLabel(letter, wxNullBitmap, rect, wxALIGN_CENTER);
-		dc.SelectObject(wxNullBitmap);
-		wxMask mask(*bitmap, toolColour);
-		bitmap->SetMask(&mask);
-
 		int btnid = toolid + i;
-		toolbar->AddTool(btnid, letter, *bitmap, wxNullBitmap, wxITEM_CHECK);
+		letter = alphabet.Mid(i, 1);
+		toolbar->AddTool(btnid, letter, images[letter], wxNullBitmap, wxITEM_CHECK);
 		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( FbFrameAuthor::OnLetterClicked ) );
 	}
 	toolbar->Realize();

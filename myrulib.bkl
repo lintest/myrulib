@@ -213,6 +213,7 @@
 		<sources>MyRuLib/FbSeqnList.cpp</sources>
 		<sources>MyRuLib/FbSequenDlg.cpp</sources>
 		<sources>MyRuLib/FbThread.cpp</sources>
+		<sources>MyRuLib/FbToolBar.cpp</sources>
 		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
 		<sources>MyRuLib/FbTreeModel.cpp</sources>
 		<sources>MyRuLib/FbTreeView.cpp</sources>

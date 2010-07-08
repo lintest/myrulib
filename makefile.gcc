@@ -155,6 +155,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbSeqnList.o \
 	build\myrulib_FbSequenDlg.o \
 	build\myrulib_FbThread.o \
+	build\myrulib_FbToolBar.o \
 	build\myrulib_FbTreeListCtrl.o \
 	build\myrulib_FbTreeModel.o \
 	build\myrulib_FbTreeView.o \
@@ -560,6 +561,9 @@ build\myrulib_FbSequenDlg.o: ./sources/MyRuLib/FbSequenDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbThread.o: ./sources/MyRuLib/FbThread.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbToolBar.o: ./sources/MyRuLib/FbToolBar.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbTreeListCtrl.o: ./sources/MyRuLib/FbTreeListCtrl.cpp $(MYRULIB_ODEP)
