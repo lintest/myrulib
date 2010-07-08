@@ -1913,3 +1913,30 @@ msgstr "Заменять пробелы символами подчеркива�
 msgid "Scripts"
 msgstr "Скрипты"
 
+msgid "First letter of author name"
+msgstr "Первая буква фамилии автора"
+
+msgid "Full author name"
+msgstr "Полные фамилия, имя, отчество автора"
+
+msgid "Short-сut author name"
+msgstr "Фамилия автора и инициалы"
+
+msgid "Sequence name"
+msgstr "Наименование серии"
+
+msgid "Number in sequence"
+msgstr "номер книги в серии"
+
+msgid "Internal book code"
+msgstr "Внутренний код книги"
+
+msgid "Book title"
+msgstr "Заголовок"
+
+msgid "Book language"
+msgstr "Язык книги"
+
+msgid "Book file MD5 sum"
+msgstr "Контрольная сумма файла MD5"
+

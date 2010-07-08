@@ -265,7 +265,11 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 					text = Get(result, wxT("full_name"));
 				} break;
 				case wxT('c'): {
-					text = Get(result, wxT("full_name"));
+					text = Get(result, wxT("last_name"));
+					wxString f = Get(result, wxT("first_name")).Left(1);
+					wxString m = Get(result, wxT("middle_name")).Left(1);
+					text << wxT(' ') << Upper(f + m).Trim(false);
+					text.Trim(true);
 				} break;
 				case wxT('s'): {
 					text = Get(result, wxT("sequence"));
@@ -346,7 +350,8 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, int author): m_scale
 
 	wxString sql = wxT("\
 		SELECT DISTINCT \
-			books.id, file_size, title, file_type, file_name, lang, md5sum, letter, full_name, sequences.value AS sequence, bookseq.number\
+			books.id, file_size, title, file_type, file_name, lang, md5sum, letter, \
+			full_name, first_name, middle_name, last_name, sequences.value AS sequence, bookseq.number\
 		FROM books \
 			LEFT JOIN authors ON authors.id=books.id_author \
 			LEFT JOIN bookseq ON bookseq.id_book=books.id \

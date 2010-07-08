@@ -451,7 +451,7 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 
 	letters = wxT("afcsnitlme");
 	const wxChar * helps[] = {
-		_("First letter of author surname"),
+		_("First letter of author name"),
 		_("Full author name"),
 		_("Short-сut author name"),
 		_("Sequence name"),
