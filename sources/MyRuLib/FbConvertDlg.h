@@ -15,10 +15,13 @@
 class FbConvertItem
 {
 	public:
-		FbConvertItem(const wxFileName &n, const int i): filename(n), id(i) {};
-	public:
-		wxFileName filename;
-		int id;
+		FbConvertItem(int id, const wxFileName &name): m_id(id), m_filename(name) {};
+		wxFileName GetAbsolute(const wxString & root) const;
+		wxString GetRelative() const { return m_filename.GetFullPath(); }
+		int GetBook() const { return m_id; }
+	private:
+		int m_id;
+		wxFileName m_filename;
 };
 
 WX_DECLARE_OBJARRAY(FbConvertItem, FbConvertArray);

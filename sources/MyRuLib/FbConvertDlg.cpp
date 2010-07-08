@@ -7,7 +7,18 @@
 #include <wx/cmdline.h>
 #include <wx/zstream.h>
 
+//-----------------------------------------------------------------------------
+//  FbConvertDlg::FbConvertItem
+//-----------------------------------------------------------------------------
+
 WX_DEFINE_OBJARRAY(FbConvertArray);
+
+wxFileName FbConvertItem::GetAbsolute(const wxString & root) const
+{
+	wxFileName filename = m_filename;
+	filename.MakeAbsolute(root);
+	return filename;
+}
 
 //-----------------------------------------------------------------------------
 //  FbConvertDlg::JoinedThread
@@ -387,7 +398,7 @@ void FbConvertDlg::Start()
 	}
 
 	FbConvertItem & item = m_filelist[m_index];
-	m_info.SetLabel(item.filename.GetFullPath());
+	m_info.SetLabel(item.GetRelative());
 	m_gauge.SetValue(m_index);
 
 	if (m_script == 0)
@@ -414,17 +425,15 @@ void FbConvertDlg::Finish()
 
 void FbConvertDlg::ExportFile(size_t index, const FbConvertItem &item)
 {
-	wxFileName filename = item.filename;
-	filename.MakeAbsolute(m_root);
-	wxLogInfo(item.filename.GetFullPath());
-	m_thread = new ExportThread(this, m_format, item.id, filename);
+	wxLogInfo(item.GetRelative());
+	wxFileName filename = item.GetAbsolute(m_root);
+	m_thread = new ExportThread(this, m_format, item.GetBook(), filename);
 	m_thread->Execute();
 }
 
 void FbConvertDlg::ExecScript(size_t index, const FbConvertItem &item)
 {
-	wxFileName filename = item.filename;
-	filename.MakeAbsolute(m_root);
+	wxFileName filename = item.GetAbsolute(m_root);
 
 	if (index == 0 || index > m_scripts.Count()) { Start(); return; }
 	wxString script = m_scripts[index - 1];

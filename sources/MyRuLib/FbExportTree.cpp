@@ -95,7 +95,7 @@ void FbExportParentData::GetFiles(FbModel & model, FbConvertArray & files) const
 		FbModelData * data = Items(model, i);
 		FbExportChildData * child = wxDynamicCast(data, FbExportChildData);
 		if (child) {
-			files.Add(new FbConvertItem(child->GetPath(model), child->GetBook())); 
+			files.Add(new FbConvertItem(child->GetBook(), child->GetPath(model)));
 		} else {
 			FbExportParentData * folder = wxDynamicCast(data, FbExportParentData);
 			if (folder) folder->GetFiles(model, files);
@@ -383,7 +383,7 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, int author): m_scale
 	root->Sort(*this);
 }
 
-void FbExportTreeModel::GetFiles(FbConvertArray & files) 
+void FbExportTreeModel::GetFiles(FbConvertArray & files)
 {
 	FbExportParentData * root = wxDynamicCast(m_root, FbExportParentData);
 	if (root) root->GetFiles(*this, files);
