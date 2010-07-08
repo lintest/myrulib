@@ -114,7 +114,7 @@ class FbConvertDlg : public FbDialog
 		wxString GetScript(int format);
 		wxString GetCommand(const wxString &script, const wxFileName &filename);
 		void ExportFile(size_t index, const FbConvertItem &item);
-		void ExecScript(size_t index, const wxFileName &filename);
+		void ExecScript(size_t index, const FbConvertItem &item);
 		wxArrayString m_scripts;
 		size_t m_index;
 		size_t m_script;

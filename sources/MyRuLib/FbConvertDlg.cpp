@@ -393,7 +393,7 @@ void FbConvertDlg::Start()
 	if (m_script == 0)
 		ExportFile(m_script++, item);
 	else
-		ExecScript(m_script++, item.filename);
+		ExecScript(m_script++, item);
 }
 
 void FbConvertDlg::Finish()
@@ -421,8 +421,11 @@ void FbConvertDlg::ExportFile(size_t index, const FbConvertItem &item)
 	m_thread->Execute();
 }
 
-void FbConvertDlg::ExecScript(size_t index, const wxFileName &filename)
+void FbConvertDlg::ExecScript(size_t index, const FbConvertItem &item)
 {
+	wxFileName filename = item.filename;
+	filename.MakeAbsolute(m_root);
+
 	if (index == 0 || index > m_scripts.Count()) { Start(); return; }
 	wxString script = m_scripts[index - 1];
 

@@ -394,7 +394,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 		edit->SetMinSize( wxSize( 200,-1 ) );
 		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
+		bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 	}
 	#endif
 
