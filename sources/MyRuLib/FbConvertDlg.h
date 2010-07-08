@@ -1,5 +1,5 @@
-#ifndef __EXPTHREAD_H__
-#define __EXPTHREAD_H__
+#ifndef __FBCONVERTDLG_H__
+#define __FBCONVERTDLG_H__
 
 #include <wx/wx.h>
 #include <wx/thread.h>
@@ -12,58 +12,58 @@
 #include "FbConst.h"
 #include "FbBookEvent.h"
 
-class ExportFileItem
+class FbConvertItem
 {
 	public:
-		ExportFileItem(const wxFileName &n, const int i): filename(n), id(i) {};
+		FbConvertItem(const wxFileName &n, const int i): filename(n), id(i) {};
 	public:
 		wxFileName filename;
 		int id;
 };
 
-WX_DECLARE_OBJARRAY(ExportFileItem, ExportFileArray);
+WX_DECLARE_OBJARRAY(FbConvertItem, FbConvertArray);
 
-class FbExportDlg : public FbDialog
+class FbConvertDlg : public FbDialog
 {
 	private:
 		class ExportLog: public wxLog
 		{
 			public:
-				ExportLog(FbExportDlg * parent);
+				ExportLog(FbConvertDlg * parent);
 				virtual ~ExportLog();
 			protected:
 				void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
 				void DoLogString(const wxChar *szString, time_t t) {}
 			private:
-				FbExportDlg * m_parent;
+				FbConvertDlg * m_parent;
 				wxLog * m_old;
 				DECLARE_NO_COPY_CLASS(ExportLog)
 		};
 		class JoinedThread: public wxThread
 		{
 			public:
-				JoinedThread(FbExportDlg * parent)
+				JoinedThread(FbConvertDlg * parent)
 					: wxThread(wxTHREAD_JOINABLE), m_parent(parent) {}
 				void Execute();
 			protected:
 				virtual void OnExit();
-				FbExportDlg * m_parent;
+				FbConvertDlg * m_parent;
 		};
 		class ExportThread: public JoinedThread
 		{
 			public:
-				ExportThread(FbExportDlg * parent, int format, const ExportFileItem &item);
+				ExportThread(FbConvertDlg * parent, int format, int book, const wxFileName &filename);
 			protected:
 				virtual void * Entry();
 			private:
 				int m_format;
 				int m_id;
-				wxString m_filename;
+				wxFileName m_filename;
 		};
 		class GzipThread: public JoinedThread
 		{
 			public:
-				GzipThread(FbExportDlg * parent, const wxArrayString &args);
+				GzipThread(FbConvertDlg * parent, const wxArrayString &args);
 			protected:
 				virtual void * Entry();
 			private:
@@ -72,7 +72,7 @@ class FbExportDlg : public FbDialog
 		class ZipThread: public JoinedThread
 		{
 			public:
-				ZipThread(FbExportDlg * parent, const wxArrayString &args);
+				ZipThread(FbConvertDlg * parent, const wxArrayString &args);
 			protected:
 				virtual void * Entry();
 			private:
@@ -81,7 +81,7 @@ class FbExportDlg : public FbDialog
 		class DelThread: public JoinedThread
 		{
 			public:
-				DelThread(FbExportDlg * parent, const wxArrayString &args);
+				DelThread(FbConvertDlg * parent, const wxArrayString &args);
 			protected:
 				virtual void * Entry();
 			private:
@@ -90,7 +90,7 @@ class FbExportDlg : public FbDialog
 		class ExportProcess: public wxProcess
 		{
 			public:
-				ExportProcess(FbExportDlg * parent): m_parent(parent) { Redirect(); }
+				ExportProcess(FbConvertDlg * parent): m_parent(parent) { Redirect(); }
 				virtual void OnTerminate(int pid, int status);
 				virtual bool HasInput();
 				#ifdef __WXMSW__
@@ -98,21 +98,22 @@ class FbExportDlg : public FbDialog
 				#endif // __WXMSW__
 			protected:
 				wxString ReadLine(wxInputStream * stream);
-				FbExportDlg * m_parent;
+				FbConvertDlg * m_parent;
 		};
 	public:
-		FbExportDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER );
-		~FbExportDlg();
+		FbConvertDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER );
+		~FbConvertDlg();
 		void Execute();
 		void LogMessage(const wxString &msg);
-		ExportFileArray m_filelist;
+		FbConvertArray m_filelist;
 		int m_format;
+		wxString m_root;
 	private:
 		void Start();
 		void Finish();
 		wxString GetScript(int format);
 		wxString GetCommand(const wxString &script, const wxFileName &filename);
-		void ExportFile(size_t index, const ExportFileItem &item);
+		void ExportFile(size_t index, const FbConvertItem &item);
 		void ExecScript(size_t index, const wxFileName &filename);
 		wxArrayString m_scripts;
 		size_t m_index;
@@ -140,7 +141,7 @@ class FbExportDlg : public FbDialog
 		void OnScriptExit(wxCommandEvent& event);
 		void OnCloseDlg(wxCloseEvent& event);
 		DECLARE_EVENT_TABLE()
-		DECLARE_CLASS(FbExportDlg);
+		DECLARE_CLASS(FbConvertDlg);
 };
 
-#endif // __EXPTHREAD_H__
+#endif // __FBCONVERTDLG_H__

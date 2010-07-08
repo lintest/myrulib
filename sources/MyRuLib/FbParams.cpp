@@ -174,7 +174,7 @@ wxString FbParams::DefaultText(int param)
 			case FB_FRAME_LIST:
 				return wxT('0');
 			case FB_FOLDER_FORMAT:
-				return wxT("%a/%f/%s/%n-%t");
+				return wxT("%a/%f/%s/%n %t");
 			default:
 				return wxEmptyString;
 		}

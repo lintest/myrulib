@@ -1906,3 +1906,10 @@ msgstr "Завершена обработка директории %s"
 #, c-format
 msgid "Scan zip %s"
 msgstr "Обработка zip-файла %s"
+
+msgid "Replace spaces by underscores"
+msgstr "Заменять пробелы символами подчеркивания"
+
+msgid "Scripts"
+msgstr "Скрипты"
+

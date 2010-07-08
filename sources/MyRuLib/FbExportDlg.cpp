@@ -1,28 +1,23 @@
-#define fbMAX_FILENAME_LENGTH 100
-/*
-static wxString wxFileName::GetForbiddenChars( wxPathFormat format = wxPATH_NATIVE )
-Returns the characters that can't be used in filenames and directory names for the specified format.
-*/
-
 #include <wx/filename.h>
 #include <wx/artprov.h>
 #include <wx/arrimpl.cpp>
-#include "ExternalDlg.h"
+#include "FbExportDlg.h"
 #include "FbParams.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
 #include "FbExportTree.h"
 #include "FbBookPanel.h"
+#include "FbConvertDlg.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
-BEGIN_EVENT_TABLE( ExternalDlg, wxDialog )
-	EVT_BUTTON( ID_DIR_BTN, ExternalDlg::OnSelectDir )
-	EVT_CHOICE( wxID_ANY, ExternalDlg::OnChangeFormat )
-	EVT_CHECKBOX( ID_AUTHOR, ExternalDlg::OnCheckAuthor )
+BEGIN_EVENT_TABLE( FbExportDlg, wxDialog )
+	EVT_BUTTON( ID_DIR_BTN, FbExportDlg::OnSelectDir )
+	EVT_CHOICE( wxID_ANY, FbExportDlg::OnChangeFormat )
+	EVT_CHECKBOX( ID_AUTHOR, FbExportDlg::OnCheckAuthor )
 END_EVENT_TABLE()
 
-ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
+FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
 	FbDialog( parent, wxID_ANY, _("Export to external storage"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
 	m_selections(selections),
 	m_author(iAuthor),
@@ -60,9 +55,7 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	m_books->SetMinSize( wxSize( -1,250 ) );
 	m_books->AddColumn (0, _("File name"), 5, wxALIGN_LEFT);
 	m_books->AddColumn (1, _("Size, Kb"), 1, wxALIGN_RIGHT);
-
-	FbModel * model = new FbExportTreeModel(selections, iAuthor);
-	m_books->AssignModel(model);
+	m_books->AssignModel(new FbExportTreeModel(m_selections, m_author));
 
 	bSizerMain->Add( m_books, 1, wxALL|wxEXPAND, 5 );
 
@@ -93,21 +86,27 @@ ExternalDlg::ExternalDlg( wxWindow* parent, const wxString & selections, int iAu
 	LoadFormats();
 }
 
-ExternalDlg::~ExternalDlg()
+FbExportDlg::~FbExportDlg()
 {
 }
 
-void ExternalDlg::LoadFormats()
+void FbExportDlg::LoadFormats()
 {
 	wxString filename = _("filename");
 	int format = FbParams::GetValue(FB_FILE_FORMAT);
 	m_format->Append(filename << wxT(".fb2"), 0);
 	m_format->Append(filename + wxT(".zip"), -1);
 	m_format->Append(filename + wxT(".gz"), -2);
-	m_format->SetSelection(format == -1 ? 1 : 0);
+
+	int index;
+	switch (format) {
+		case -1: index = 1; break;
+		case -2: index = 2; break;
+		default: index = 0; break;
+	}
+	m_format->SetSelection(index);
 
 	wxString sql = wxT("SELECT id, name FROM script ORDER BY id");
-
 	FbLocalDatabase database;
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while ( result.NextRow() ) {
@@ -116,20 +115,24 @@ void ExternalDlg::LoadFormats()
 		int index = m_format->Append(name, code);
 		if (code == format) m_format->SetSelection(index);
 	}
+	ChangeFormat();
 }
 
-void ExternalDlg::FillBooks(const wxString &selections)
+wxString FbExportDlg::GetExt(int format)
 {
-	int format = m_format->GetCurrentData();
-	m_scale = format < 0 ? 43 : 100; // при сжатии средний коэффициент 0.43
-	switch (format) {
-		case -1: m_ext = wxT(".zip"); break;
-		case -2: m_ext = wxT(".gz"); break;
-		default: m_ext.Empty();
-	}
+	if (format > 0) {
+		wxString sql = wxT("SELECT name FROM script WHERE id=?");
+		FbLocalDatabase database;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, format);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) return result.GetString(0);
+	} 
+
+	return wxEmptyString;
 }
 
-void ExternalDlg::OnSelectDir( wxCommandEvent& event )
+void FbExportDlg::OnSelectDir( wxCommandEvent& event )
 {
 	wxDirDialog dlg(
 		this,
@@ -141,19 +144,29 @@ void ExternalDlg::OnSelectDir( wxCommandEvent& event )
 	if (dlg.ShowModal() == wxID_OK) m_textDir->SetValue(dlg.GetPath());
 }
 
-void ExternalDlg::OnChangeFormat( wxCommandEvent& event )
+void FbExportDlg::OnChangeFormat( wxCommandEvent& event )
 {
-	int format = m_format->GetCurrentData();
-	m_scale = format < 0 ? 43 : 100; // при сжатии средний коэффициент 0.43
-	switch (format) {
-		case -1: m_ext = wxT(".zip"); break;
-		case -2: m_ext = wxT(".gz"); break;
-		default: m_ext.Empty();
-	}
-	m_filenames.Empty();
+	ChangeFormat();
 }
 
-bool ExternalDlg::ExportBooks()
+void FbExportDlg::ChangeFormat()
+{
+	FbExportTreeModel * model = wxDynamicCast(m_books->GetModel(), FbExportTreeModel);
+	if (!model) return;
+
+	int format = m_format->GetCurrentData();
+	int scale = format < 0 ? 43 : 100; 
+	wxString arc, ext;
+	switch (format) {
+		case -1: arc = wxT("zip"); break;
+		case -2: arc = wxT("gz"); break;
+	}
+
+	model->SetFormat(GetExt(format), arc, scale); 
+	m_books->Refresh();
+}
+
+bool FbExportDlg::ExportBooks()
 {
 	wxString root_dir = m_textDir->GetValue();
 	if (!wxFileName::DirExists(root_dir)) {
@@ -164,19 +177,22 @@ bool ExternalDlg::ExportBooks()
 		FbMessageBox(_("Unable write files to destination folder"), root_dir);
 		return false;
 	}
-/*
-	FbExportDlg * dlg = new FbExportDlg(wxGetApp().GetTopWindow(), wxID_ANY, wxT("Export files"));
-	FillFilelist(m_books->GetRootItem(), dlg->m_filelist);
+
+	FbExportTreeModel * model = wxDynamicCast(m_books->GetModel(), FbExportTreeModel);
+	if (!model) return false;
+
+	FbConvertDlg * dlg = new FbConvertDlg(wxGetApp().GetTopWindow(), wxID_ANY, wxT("Export files"));
+	model->GetFiles(dlg->m_filelist);
+	dlg->m_root = m_textDir->GetValue();
 	dlg->SetSize(GetSize());
 	dlg->SetPosition(GetPosition());
 	dlg->m_format = m_format->GetCurrentData();
 	dlg->Execute();
-*/
 
 	return true;
 }
 
-bool ExternalDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
+bool FbExportDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
 {
 	wxString selections = books->GetSelected();
 
@@ -185,14 +201,14 @@ bool ExternalDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
 		return false;
 	}
 
-	ExternalDlg dlg(parent, selections, iAuthor);
-	dlg.FillBooks(selections);
+	FbExportDlg dlg(parent, selections, iAuthor);
 	return (dlg.ShowModal() == wxID_OK) && dlg.ExportBooks();
 }
 
-void ExternalDlg::OnCheckAuthor( wxCommandEvent& event )
+void FbExportDlg::OnCheckAuthor( wxCommandEvent& event )
 {
-	FillBooks(m_selections);
+	int author = ciNoAuthor;
+	if ( m_checkAuthor && m_checkAuthor->GetValue() ) author = m_author;
+	m_books->AssignModel(new FbExportTreeModel(m_selections, author));
+	ChangeFormat();
 }
-
-

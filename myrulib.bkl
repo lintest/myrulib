@@ -148,8 +148,6 @@
 			<sys-lib cond="USE_EXPAT=='no'">expat</sys-lib>
 		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
-		<sources>MyRuLib/ExpThread.cpp</sources>
-		<sources>MyRuLib/ExternalDlg.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
 		<sources>MyRuLib/FbAuthList.cpp</sources>
 		<sources>MyRuLib/FbAuthorDlg.cpp</sources>
@@ -165,6 +163,7 @@
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
 		<sources>MyRuLib/FbColumns.cpp</sources>
 		<sources>MyRuLib/FbCollection.cpp</sources>
+		<sources>MyRuLib/FbConvertDlg.cpp</sources>
 		<sources>MyRuLib/FbCounter.cpp</sources>
 		<sources>MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>MyRuLib/FbConst.cpp</sources>
@@ -175,6 +174,7 @@
 		<sources>MyRuLib/FbDateTree.cpp</sources>
 		<sources>MyRuLib/FbDownList.cpp</sources>
 		<sources>MyRuLib/FbEditBook.cpp</sources>
+		<sources>MyRuLib/FbExportDlg.cpp</sources>
 		<sources>MyRuLib/FbExportTree.cpp</sources>
 		<sources>MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>MyRuLib/FbDownloader.cpp</sources>

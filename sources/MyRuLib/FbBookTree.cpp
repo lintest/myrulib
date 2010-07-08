@@ -30,7 +30,7 @@ void FbAuthParentData::SortItems()
 	m_items.Sort(ComareBooks);
 }
 
-int FbAuthParentData::Compare(const FbAuthParentData &data)
+int FbAuthParentData::Compare(const FbAuthParentData &data) const
 {
 	return GetTitle().CmpNoCase(data.GetTitle());
 }
@@ -41,7 +41,7 @@ int FbAuthParentData::Compare(const FbAuthParentData &data)
 
 IMPLEMENT_CLASS(FbSeqnParentData, FbParentData)
 
-int FbSeqnParentData::Compare(const FbSeqnParentData &data)
+int FbSeqnParentData::Compare(const FbSeqnParentData &data) const
 {
 	if (GetCode() == 0) return +1;
 	if (data.GetCode() == 0) return -1;

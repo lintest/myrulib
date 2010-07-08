@@ -190,14 +190,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ExpThread.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ExternalDlg.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbAboutDlg.cpp"
 				>
 			</File>
@@ -266,6 +258,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbConvertDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbCounter.cpp"
 				>
 			</File>
@@ -299,6 +295,10 @@
 			</File>
 			<File
 				RelativePath=".\FbEditBook.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbExportDlg.cpp"
 				>
 			</File>
 			<File
@@ -540,14 +540,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ExpThread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ExternalDlg.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FbAboutDlg.h"
 				>
 			</File>
@@ -624,6 +616,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbConvertDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbCounter.h"
 				>
 			</File>
@@ -657,6 +653,10 @@
 			</File>
 			<File
 				RelativePath=".\FbEditBook.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbExportDlg.h"
 				>
 			</File>
 			<File

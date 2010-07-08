@@ -3,7 +3,7 @@
 #include <wx/splitter.h>
 #include "FbConst.h"
 #include "FbClientData.h"
-#include "ExternalDlg.h"
+#include "FbExportDlg.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
 #include "FbAuthorDlg.h"
@@ -173,7 +173,7 @@ void FbFrameAuthor::OnExternal(wxCommandEvent& event)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data) ExternalDlg::Execute(this, m_BooksPanel, data->GetCode());
+	if (data) FbExportDlg::Execute(this, m_BooksPanel, data->GetCode());
 }
 
 void FbFrameAuthor::OnColClick(wxListEvent& event)

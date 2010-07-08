@@ -69,8 +69,6 @@ MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/sources/WxSQLite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_BaseThread.o \
-	myrulib_ExpThread.o \
-	myrulib_ExternalDlg.o \
 	myrulib_FbAboutDlg.o \
 	myrulib_FbAuthList.o \
 	myrulib_FbAuthorDlg.o \
@@ -86,6 +84,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbColumnDlg.o \
 	myrulib_FbColumns.o \
 	myrulib_FbCollection.o \
+	myrulib_FbConvertDlg.o \
 	myrulib_FbCounter.o \
 	myrulib_FbConfigDlg.o \
 	myrulib_FbConst.o \
@@ -96,6 +95,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbDateTree.o \
 	myrulib_FbDownList.o \
 	myrulib_FbEditBook.o \
+	myrulib_FbExportDlg.o \
 	myrulib_FbExportTree.o \
 	myrulib_FbExtractInfo.o \
 	myrulib_FbDownloader.o \
@@ -327,12 +327,6 @@ bin2c_bin2c.o: $(srcdir)/sources/Bin2c/bin2c.c
 myrulib_BaseThread.o: $(srcdir)/sources/MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/BaseThread.cpp
 
-myrulib_ExpThread.o: $(srcdir)/sources/MyRuLib/ExpThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ExpThread.cpp
-
-myrulib_ExternalDlg.o: $(srcdir)/sources/MyRuLib/ExternalDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ExternalDlg.cpp
-
 myrulib_FbAboutDlg.o: $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp
 
@@ -378,6 +372,9 @@ myrulib_FbColumns.o: $(srcdir)/sources/MyRuLib/FbColumns.cpp $(MYRULIB_ODEP)
 myrulib_FbCollection.o: $(srcdir)/sources/MyRuLib/FbCollection.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCollection.cpp
 
+myrulib_FbConvertDlg.o: $(srcdir)/sources/MyRuLib/FbConvertDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbConvertDlg.cpp
+
 myrulib_FbCounter.o: $(srcdir)/sources/MyRuLib/FbCounter.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCounter.cpp
 
@@ -407,6 +404,9 @@ myrulib_FbDownList.o: $(srcdir)/sources/MyRuLib/FbDownList.cpp $(MYRULIB_ODEP)
 
 myrulib_FbEditBook.o: $(srcdir)/sources/MyRuLib/FbEditBook.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbEditBook.cpp
+
+myrulib_FbExportDlg.o: $(srcdir)/sources/MyRuLib/FbExportDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbExportDlg.cpp
 
 myrulib_FbExportTree.o: $(srcdir)/sources/MyRuLib/FbExportTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbExportTree.cpp

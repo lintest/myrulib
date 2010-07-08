@@ -1,5 +1,5 @@
-#ifndef __ExternalDlg__
-#define __ExternalDlg__
+#ifndef __FBEXPORTDLG_H__
+#define __FBEXPORTDLG_H__
 
 #include <wx/wx.h>
 #include <wx/intl.h>
@@ -20,7 +20,6 @@
 #include "FbBookList.h"
 #include "FbTreeView.h"
 #include "FbBookData.h"
-#include "ExpThread.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbWindow.h"
@@ -28,30 +27,31 @@
 
 class FbBookPanel;
 
+class FbConvertArray;
+
 ///////////////////////////////////////////////////////////////////////////////
-/// Class ExternalDlg
+/// Class FbExportDlg
 ///////////////////////////////////////////////////////////////////////////////
-class ExternalDlg : public FbDialog
+class FbExportDlg : public FbDialog
 {
 	public:
-		ExternalDlg(wxWindow* parent, const wxString & selections, int iAuthor);
-		~ExternalDlg();
+		FbExportDlg(wxWindow* parent, const wxString & selections, int iAuthor);
+		~FbExportDlg();
 		static bool Execute(wxWindow* parent, FbBookPanel * books, int iAuthor = ciNoAuthor);
 	private:
-		void FillBooks(const wxString &selections);
 		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
 		void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
 		void ChangeFilesExt(const wxTreeItemId &parent);
-		void FillFilelist(const wxTreeItemId &parent, ExportFileArray &filelist, const wxString &dir = wxEmptyString);
+		void FillFilelist(const wxTreeItemId &parent, FbConvertArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
 		void LoadFormats();
+		void ChangeFormat();
+		wxString GetExt(int format);
 	private:
 		wxString m_selections;
 		wxArrayString m_filenames;
-		int m_scale;
-		wxString m_ext;
 		int m_author;
 		FbCommonDatabase m_database;
 	private:
@@ -75,4 +75,4 @@ class ExternalDlg : public FbDialog
 		DECLARE_EVENT_TABLE()
 };
 
-#endif //__ExternalDlg__
+#endif // __FBEXPORTDLG_H__

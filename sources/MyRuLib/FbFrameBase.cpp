@@ -1,6 +1,6 @@
 #include "FbFrameBase.h"
 #include "FbConst.h"
-#include "ExternalDlg.h"
+#include "FbExportDlg.h"
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
 #include "FbFilterDlg.h"
@@ -118,7 +118,7 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 
 void FbFrameBase::OnExternal(wxCommandEvent& event)
 {
-	ExternalDlg::Execute(this, m_BooksPanel);
+	FbExportDlg::Execute(this, m_BooksPanel);
 }
 
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)

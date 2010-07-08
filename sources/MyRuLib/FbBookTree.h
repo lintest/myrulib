@@ -23,7 +23,7 @@ class FbAuthParentData: public FbParentData
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetAuth(m_code, 0); }
 	public:
-		int Compare(const FbAuthParentData &data);
+		int Compare(const FbAuthParentData &data) const;
 		void SortItems();
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
@@ -52,7 +52,7 @@ class FbSeqnParentData: public FbParentData
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return FbCollection::GetSeqn(m_code, 0); }
 	public:
-		int Compare(const FbSeqnParentData &data);
+		int Compare(const FbSeqnParentData &data) const;
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }

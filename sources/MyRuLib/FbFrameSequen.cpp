@@ -3,7 +3,7 @@
 #include <wx/splitter.h>
 #include "FbConst.h"
 #include "FbClientData.h"
-#include "ExternalDlg.h"
+#include "FbExportDlg.h"
 #include "FbMainMenu.h"
 #include "FbUpdateThread.h"
 #include "FbWindow.h"

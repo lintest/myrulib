@@ -169,6 +169,7 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 
 	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_DONTWRAP );
 	bSizerMain->Add( &m_text, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5 );
+	bSizerMain->SetMinSize(-1, 200);
 
 	wxBoxSizer* bSizerButtons = new wxBoxSizer( wxHORIZONTAL );
 
@@ -180,11 +181,11 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 	bSizerMain->Add( bSizerButtons, 0, wxEXPAND, 5 );
 
 	SetSizer( bSizerMain );
+	bSizerMain->Fit( this );
 	Layout();
+	SetMinSize(GetBestSize());
 
 	m_name.SetFocus();
-
-	SetMinSize(GetBestSize());
 }
 
 void FbParamsDlg::ScriptDlg::OnLetterClicked(wxCommandEvent& event)
@@ -239,7 +240,9 @@ FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	bSizerMain->Add( btnClear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	SetSizer( bSizerMain );
+	bSizerMain->Fit( this );
 	Layout();
+	SetMinSize(GetBestSize());
 }
 
 void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid)
@@ -262,11 +265,10 @@ void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString
 FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	:wxPanel(parent)
 {
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxCheckBox * m_checkBox13 = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Automatically begin files downloading"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
+	bSizerMain->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
 
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
@@ -280,14 +282,14 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	m_comboBox2->Append( wxT("10.0.0.1:3128") );
 	bSizer13->Add( m_comboBox2, 1, wxALL, 5 );
 
-	bSizer2->Add( bSizer13, 0, wxEXPAND, 5 );
+	bSizerMain->Add( bSizer13, 0, wxEXPAND, 5 );
 
 	wxCheckBox * checkBox3 = new wxCheckBox( this, ID_HTTP_IMAGES, _("Load images for author's description"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( checkBox3, 0, wxALL, 5 );
+	bSizerMain->Add( checkBox3, 0, wxALL, 5 );
 
 	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Folder to save downloads:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText6->Wrap( -1 );
-	bSizer2->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
+	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer14 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -298,14 +300,15 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	wxBitmapButton * m_bpButton6 = new wxBitmapButton( this, ID_DOWNLOAD_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 	bSizer14->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
-	bSizer2->Add( bSizer14, 0, wxEXPAND, 5 );
+	bSizerMain->Add( bSizer14, 0, wxEXPAND, 5 );
 
 	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( m_checkBox14, 0, wxALL, 5 );
+	bSizerMain->Add( m_checkBox14, 0, wxALL, 5 );
 
-	SetSizer( bSizer2 );
+	SetSizer( bSizerMain );
+	bSizerMain->Fit( this );
 	Layout();
-	bSizer2->Fit( this );
+	SetMinSize(GetBestSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -315,8 +318,7 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	:wxPanel(parent)
 {
-	wxBoxSizer * bSizer;
-	bSizer = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
 	toolbar->SetToolBitmapSize(wxSize(0,0));
@@ -324,16 +326,17 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap)->Enable(false);
 	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap)->Enable(false);
 	toolbar->Realize();
-	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
+	bSizerMain->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
 	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	treeview->AddColumn(0, _("Extension"), 50);
 	treeview->AddColumn(1, _("Program"), 300);
-	bSizer->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+	bSizerMain->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
-	SetSizer( bSizer );
+	SetSizer( bSizerMain );
+	bSizerMain->Fit( this );
 	Layout();
-	bSizer->Fit( this );
+	SetMinSize(GetBestSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -344,7 +347,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxCheckBox * checkbox;
-	wxBoxSizer * bSizer = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizerLocale = new wxBoxSizer( wxHORIZONTAL );
 
@@ -357,14 +360,14 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	FbLocale::Fill(localeChoice, FbParams::GetValue(FB_LANG_LOCALE));
 	bSizerLocale->Add( localeChoice, 1, wxALL, 5 );
 
-	bSizer->Add(bSizerLocale, 0, wxEXPAND);
+	bSizerMain->Add(bSizerLocale, 0, wxEXPAND);
 
 	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, _("Save full path of the file when importing"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Temporary folder:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text->Wrap( -1 );
-	bSizer->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
+	bSizerMain->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
 	{
 		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
@@ -376,7 +379,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 		wxBitmapButton * button = new wxBitmapButton( this, ID_TEMP_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
 		bSizerDir->Add( button, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
-		bSizer->Add( bSizerDir, 0, wxEXPAND, 5 );
+		bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 	}
 
 	#ifdef __WXGTK__
@@ -396,17 +399,18 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	#endif
 
 	checkbox = new wxCheckBox( this, ID_TEMP_DEL, _("Delete temporary files when you exit the program"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_REMOVE_FILES, _("Delete files when you delete a book"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
 	checkbox = new wxCheckBox( this, ID_CLEAR_LOG, _("Clear the log window when it closes"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( checkbox, 0, wxALL, 5 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	SetSizer( bSizer );
+	SetSizer( bSizerMain );
+	bSizerMain->Fit( this );
 	Layout();
-	bSizer->Fit( this );
+	SetMinSize(GetBestSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -438,15 +442,12 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	bSizerMain->Add( format_info, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
 	wxComboBox * combobox = new wxComboBox( this, ID_FOLDER_FORMAT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	combobox->Append( wxT("%a/%f/%s/%n-%t") );
+	combobox->Append( wxT("%a/%f/%s/%n %t") );
 	combobox->Append( wxT("%a/%f/%t") );
-	combobox->Append( wxT("%f/%s/%n-%t") );
+	combobox->Append( wxT("%f/%s/%n %t") );
 	combobox->Append( wxT("%f/%s/%t") );
+	combobox->Append( wxT("%f/%m") );
 	bSizerMain->Add( combobox, 0, wxALL|wxEXPAND, 5 );
-
-	wxStaticText * example = new wxStaticText( this, ID_EXAMPLE, _("G/Gogol/Mertvye dushi.fb2"), wxDefaultPosition, wxDefaultSize, 0 );
-	example->Wrap( -1 );
-	bSizerMain->Add( example, 0, wxALL|wxEXPAND, 5 );
 
 	letters = wxT("afcsnitlme");
 	const wxChar * helps[] = {
@@ -475,23 +476,18 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 		}
 	}
 	toolbar->Realize();
-	bSizerMain->Add(toolbar, 0, wxEXPAND);
+	bSizerMain->Add(toolbar, 0, wxEXPAND|wxALL, 5);
 
-	wxBoxSizer* bSizerCenter = new wxBoxSizer( wxHORIZONTAL );
+	wxCheckBox * checkbox;
 
-	wxBoxSizer* bSizerLeft = new wxBoxSizer( wxVERTICAL );
+	checkbox = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Transliterate folder name"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxALL|wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox2 = new wxCheckBox( this, ID_TRANSLIT_FOLDER, _("Transliterate folder name"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerLeft->Add( m_checkBox2, 0, wxALL|wxEXPAND, 5 );
+	checkbox = new wxCheckBox( this, ID_TRANSLIT_FILE, _("Transliterate filename"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxALL|wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox3 = new wxCheckBox( this, ID_TRANSLIT_FILE, _("Transliterate filename"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerLeft->Add( m_checkBox3, 0, wxALL|wxEXPAND, 5 );
-
-	wxBoxSizer* bSizerRight = new wxBoxSizer( wxVERTICAL );
-
-	bSizerCenter->Add(bSizerLeft);
-	bSizerCenter->Add(bSizerRight, 1, wxEXPAND);
-	bSizerMain->Add(bSizerCenter, 1, wxEXPAND);
+	checkbox = new wxCheckBox( this, ID_USE_UNDERSCORE, _("Replace spaces by underscores"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerFormat = new wxBoxSizer( wxHORIZONTAL );
 
@@ -510,8 +506,9 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	bSizerMain->Add(bSizerFormat, 0, wxEXPAND);
 
 	SetSizer( bSizerMain );
-	Layout();
 	bSizerMain->Fit( this );
+	Layout();
+	SetMinSize(GetBestSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -537,8 +534,9 @@ FbParamsDlg::PanelScripts::PanelScripts(wxWindow *parent)
 	bSizerMain->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	SetSizer( bSizerMain );
-	Layout();
 	bSizerMain->Fit( this );
+	Layout();
+	SetMinSize(GetBestSize());
 }
 
 //-----------------------------------------------------------------------------
@@ -588,9 +586,8 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
 	SetSizer( bSizerMain );
-	Layout();
 	bSizerMain->Fit( this );
-
+	Layout();
 	SetMinSize(GetBestSize());
 
 	if (m_thread.Create() == wxTHREAD_NO_ERROR) m_thread.Run();
@@ -647,6 +644,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
 		{FB_TRANSLIT_FOLDER, ID_TRANSLIT_FOLDER, tCheck},
 		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE, tCheck},
+		{FB_USE_UNDERSCORE, ID_USE_UNDERSCORE, tCheck},
 		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT, tCombo},
 		{FB_FONT_MAIN, ID_FONT_MAIN, tFont},
 		{FB_FONT_HTML, ID_FONT_HTML, tFont},

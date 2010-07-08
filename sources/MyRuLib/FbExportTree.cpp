@@ -3,6 +3,7 @@
 #include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbConst.h"
+#include "FbConvertDlg.h"
 #include <wx/encconv.h>
 
 #define fbMAX_FILENAME_LENGTH 100
@@ -71,7 +72,7 @@ void FbExportParentData::Append(FbModel & model, int book, wxFileName &filename,
 	new FbExportChildData(model, this, book, filename, size);
 }
 
-int FbExportParentData::Compare(const FbExportParentData &data)
+int FbExportParentData::Compare(const FbExportParentData &data) const
 {
 	return m_name.CmpNoCase(data.m_name);
 }
@@ -87,6 +88,21 @@ void FbExportParentData::Sort(FbModel & model)
 	}
 }
 
+void FbExportParentData::GetFiles(FbModel & model, FbConvertArray & files) const
+{
+	size_t count = Count(model);
+	for (size_t i = 0; i < count; i++) {
+		FbModelData * data = Items(model, i);
+		FbExportChildData * child = wxDynamicCast(data, FbExportChildData);
+		if (child) {
+			files.Add(new FbConvertItem(child->GetPath(model), child->GetBook())); 
+		} else {
+			FbExportParentData * folder = wxDynamicCast(data, FbExportParentData);
+			if (folder) folder->GetFiles(model, files);
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 //  FbExportChildData
 //-----------------------------------------------------------------------------
@@ -96,15 +112,52 @@ IMPLEMENT_CLASS(FbExportChildData, FbChildData)
 wxString FbExportChildData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
-		case 0: return m_name + wxT('.') + m_type;
-		case 1: return Format(m_size / 1024);
+		case 0: {
+			wxString ext;
+			wxString arc;
+			FbExportTreeModel * owner = wxDynamicCast(&model, FbExportTreeModel);
+			if (owner) {
+				ext = owner->GetExt();
+				arc = owner->GetArc();
+			}
+			if (ext.IsEmpty()) ext = m_type;
+			wxString filename = m_name;
+			filename << wxT('.') << ext;
+			if (!arc.IsEmpty()) filename << wxT('.') <<arc;
+			return filename;
+		} break;
+		case 1: {
+			int scale = 0;
+			FbExportTreeModel * owner = wxDynamicCast(&model, FbExportTreeModel);
+			if (owner) scale = owner->GetScale();
+			if (scale == 0) scale = 100;
+			return Format(m_size * scale / 100 / 1024);
+		} break;
 		default: return wxEmptyString;
 	}
 }
 
-int FbExportChildData::Compare(const FbExportChildData &data)
+int FbExportChildData::Compare(const FbExportChildData &data) const
 {
 	return m_name.CmpNoCase(data.m_name);
+}
+
+wxFileName FbExportChildData::GetPath(FbModel &model) const
+{
+	wxString path;
+
+	FbModelData * parent = GetParent();
+	while (parent) {
+		path.Prepend(wxT('/'));
+		path.Prepend(parent->GetValue(model));
+		parent = parent->GetParent(model);
+	}
+
+	wxFileName filename;
+	filename.SetExt(m_type);
+	filename.SetPath(path);
+	filename.SetName(m_name);
+	return filename;
 }
 
 //-----------------------------------------------------------------------------
@@ -116,6 +169,7 @@ FbExportTreeContext::FbExportTreeContext()
 	m_translit_folder = FbParams::GetValue(FB_TRANSLIT_FOLDER);
 	m_translit_file = FbParams::GetValue(FB_TRANSLIT_FILE);
 	m_template = FbParams::GetText(FB_FOLDER_FORMAT);
+	m_underscores = FbParams::GetValue(FB_USE_UNDERSCORE);
 
 	if (m_template.IsEmpty()) m_template = FbParams::DefaultText(FB_FOLDER_FORMAT);
 }
@@ -125,6 +179,7 @@ wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
     const wxString forbidden = wxT("*?\\/:\"<>|");
 
 	wxString oldname = filename;
+	oldname.Trim(false).Trim(true);
 
 	bool space = false;
 	wxString newname;
@@ -132,12 +187,11 @@ wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 	for (size_t i = 0; i < length; i++) {
 		wxChar ch = oldname[i];
 		if (0 <= ch && ch < 0x20) continue;
-		if (0 <= ch && ch < 0x20) continue;
-		if (space && ch == 0x20) continue;
 		if (forbidden.Find(ch) != wxNOT_FOUND) continue;
 		if (ch == (wxChar)0x0401) ch = (wxChar)0x0415;
 		if (ch == (wxChar)0x0451) ch = (wxChar)0x0435;
 		space = ch == 0x20;
+		if (m_underscores && space) ch = (wxChar)0x5F;
 		newname << ch;
 	}
 	newname = newname.Trim(false).Trim(true).Left(fbMAX_FILENAME_LENGTH);
@@ -251,6 +305,15 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 		}
 	}
 
+	wxString name = res; res.Empty();
+	length = name.Length();
+	for (size_t i=0; i < length; i++) {
+		wxChar ch = name[i];
+		if (0 <= ch && ch < 0x20) continue;
+		if (ch == wxT(':')) continue;
+		res << ch;
+	}
+
 	wxString filetype = Normalize(Get(result, wxT("file_type")));
 	if (filetype.IsEmpty()) filetype = wxT("fb2");
 	res << wxT('.') << filetype;
@@ -276,9 +339,9 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 
 IMPLEMENT_CLASS(FbExportTreeModel, FbTreeModel)
 
-FbExportTreeModel::FbExportTreeModel(const wxString &books, int author)
+FbExportTreeModel::FbExportTreeModel(const wxString &books, int author): m_scale(0)
 {
-	FbExportParentData * root = new FbExportParentData(*this);
+	FbExportParentData * root = new FbExportParentData(*this, NULL, wxT('.'));
 	SetRoot(root);
 
 	wxString sql = wxT("\
@@ -315,3 +378,8 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, int author)
 	root->Sort(*this);
 }
 
+void FbExportTreeModel::GetFiles(FbConvertArray & files) 
+{
+	FbExportParentData * root = wxDynamicCast(m_root, FbExportParentData);
+	if (root) root->GetFiles(*this, files);
+}
