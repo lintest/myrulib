@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="../build/LinDebug/myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/LinDebug/" />
-				<Option object_output="../build/LinDebug/" />
+				<Option output="../../build/LinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/LinDebug/" />
+				<Option object_output="../../build/LinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -26,9 +26,9 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="../build/LinRelease/myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/LinRelease/" />
-				<Option object_output="../build/LinRelease/" />
+				<Option output="../../build/LinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/LinRelease/" />
+				<Option object_output="../../build/LinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -45,9 +45,9 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="../build/WinDebug/myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/WinDebug/" />
-				<Option object_output="../build/WinDebug/" />
+				<Option output="../../build/WinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/WinDebug/" />
+				<Option object_output="../../build/WinDebug/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -102,9 +102,9 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="../build/WinRelease/myrulib" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../build/WinRelease/" />
-				<Option object_output="../build/WinRelease/" />
+				<Option output="../../build/WinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/WinRelease/" />
+				<Option object_output="../../build/WinRelease/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -172,10 +172,6 @@
 		</Linker>
 		<Unit filename="BaseThread.cpp" />
 		<Unit filename="BaseThread.h" />
-		<Unit filename="ExpThread.cpp" />
-		<Unit filename="ExpThread.h" />
-		<Unit filename="ExternalDlg.cpp" />
-		<Unit filename="ExternalDlg.h" />
 		<Unit filename="FbAboutDlg.cpp" />
 		<Unit filename="FbAboutDlg.h" />
 		<Unit filename="FbAuthList.cpp" />
@@ -212,6 +208,8 @@
 		<Unit filename="FbConfigDlg.h" />
 		<Unit filename="FbConst.cpp" />
 		<Unit filename="FbConst.h" />
+		<Unit filename="FbConvertDlg.cpp" />
+		<Unit filename="FbConvertDlg.h" />
 		<Unit filename="FbCounter.cpp" />
 		<Unit filename="FbCounter.h" />
 		<Unit filename="FbDataOpenDlg.cpp" />
@@ -230,6 +228,8 @@
 		<Unit filename="FbDownloader.h" />
 		<Unit filename="FbEditBook.cpp" />
 		<Unit filename="FbEditBook.h" />
+		<Unit filename="FbExportDlg.cpp" />
+		<Unit filename="FbExportDlg.h" />
 		<Unit filename="FbExportTree.cpp" />
 		<Unit filename="FbExportTree.h" />
 		<Unit filename="FbExtractInfo.cpp" />

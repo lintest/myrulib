@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinDebug\libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\build\LinDebug\libWxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\build\LinDebug\" />
+				<Option object_output="..\..\build\LinDebug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -25,9 +25,9 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="..\build\LinRelease\libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\build\LinRelease\libWxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\build\LinRelease\" />
+				<Option object_output="..\..\build\LinRelease\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -43,9 +43,9 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinDebug\libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\build\WinDebug\libWxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\build\WinDebug\" />
+				<Option object_output="..\..\build\WinDebug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -61,9 +61,9 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="..\build\WinRelease\libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\build\WinRelease\libWxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\build\WinRelease\" />
+				<Option object_output="..\..\build\WinRelease\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
