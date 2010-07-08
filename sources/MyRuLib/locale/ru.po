@@ -1809,7 +1809,7 @@ msgstr "Наименование серии"
 
 #: FbParamsDlg.cpp:458
 msgid "Number in sequence"
-msgstr "номер книги в серии"
+msgstr "Номер книги в серии"
 
 #: FbParamsDlg.cpp:459
 msgid "Internal book code"

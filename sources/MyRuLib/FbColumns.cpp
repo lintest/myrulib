@@ -15,7 +15,7 @@ wxString FbColumns::GetName(int field)
 		case BF_DATE: return _("Date");
 		case BF_SIZE: return _("Size, Kb");
 		case BF_BITE: return _("Size, byte");
-		case BF_SEQN: return _("Sequences");
+		case BF_SEQN: return _("Ser.");
 		case BF_MD5S: return _("MD5 Sum");
 		case BF_DOWN: return _("Downloaded");
 		case BF_LAST: return wxEmptyString;
