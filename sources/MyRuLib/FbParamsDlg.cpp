@@ -453,7 +453,7 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	const wxChar * helps[] = {
 		_("First letter of author name"),
 		_("Full author name"),
-		_("Short-сut author name"),
+		_("Short-cut author name"),
 		_("Sequence name"),
 		_("Number in sequence"),
 		_("Internal book code"),
