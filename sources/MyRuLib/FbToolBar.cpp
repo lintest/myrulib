@@ -34,8 +34,7 @@ wxBitmap FbToolBarImages::operator[](const wxString &text)
 	dc.SelectObject(wxNullBitmap);
 
 	#ifdef __WXGTK__
-	wxMask * mask = new wxMask(bitmap, m_tool_colour);
-	bitmap.SetMask(mask);
+	bitmap.SetMask(new wxMask(bitmap, m_tool_colour));
 	#endif // __WXGTK__
 
 	return bitmap;
