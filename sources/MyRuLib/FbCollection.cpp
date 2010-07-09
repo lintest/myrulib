@@ -5,7 +5,6 @@
 #include "FbParams.h"
 #include "FbGenres.h"
 #include "FbDateTime.h"
-#include "FbZipCatalogue.h"
 
 #include <wx/filename.h>
 #include <wx/fs_mem.h>
@@ -199,14 +198,16 @@ void FbCollection::ResetDir()
 
 void FbCollection::DoResetDir()
 {
+/*
 	if (m_thread) m_thread->Delete();
 	m_thread = NULL;
 
 	wxString dirname = FbParams::GetText(DB_LIBRARY_DIR);
 	if (wxFileName::DirExists(dirname)) {
-		m_thread = new FbZipCatalogueThread(*this, dirname);
+		m_thread = new FbScanerThread(*this, dirname);
 		m_thread->Execute();
 	}
+*/
 }
 
 FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxString &sql)

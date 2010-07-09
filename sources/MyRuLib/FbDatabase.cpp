@@ -210,17 +210,6 @@ const wxString & FbDatabase::GetConfigName()
 	return filename;
 }
 
-void FbDatabase::Open(const wxString& fileName, const wxString& key, int flags)
-{
-	try {
-		wxSQLite3Database::Open(fileName, key, flags);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-		throw e;
-	}
-}
-
 void FbDatabase::CreateFullText()
 {
 	if ( TableExists(wxT("fts_book")) ) return;
@@ -272,18 +261,25 @@ int FbDatabase::NewId(const int iParam, int iIncrement)
 	return iValue;
 }
 
-wxString FbDatabase::GetText(const int param)
+wxString FbDatabase::GetText(int param)
 {
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
-
 	wxString sql = wxString::Format( wxT("SELECT text FROM %s WHERE id=?"), table);
 	wxSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, param);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow())
-		return result.GetString(0);
-	else
-		return wxEmptyString;
+	if (result.NextRow()) return result.GetString(0);
+	return wxEmptyString;
+}
+
+void FbDatabase::SetText(int param, const wxString & text)
+{
+	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
+	wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(id,text) VALUES(?,?)"), table);
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, param);
+	stmt.Bind(2, text);
+	stmt.ExecuteUpdate();
 }
 
 //-----------------------------------------------------------------------------

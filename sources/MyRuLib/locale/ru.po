@@ -273,7 +273,7 @@ msgstr "Название библиотеки:"
 
 #: FbConfigDlg.cpp:139
 msgid "Library folder:"
-msgstr "Размещение файлов:"
+msgstr "Размещение файлов коллекции:"
 
 #: FbConfigDlg.cpp:156
 msgid "Short description:"
@@ -1958,3 +1958,9 @@ msgstr "Не найден архив (%s), содержащий файл (%s)."
 #, c-format
 msgid "Not found file %s"
 msgstr "Файл не найден %s"
+
+msgid "Update zip files catalog"
+msgstr "Обновить каталог zip файлов"
+
+msgid "Run a full scan for library files"
+msgstr "Выполнить полное сканирование"
