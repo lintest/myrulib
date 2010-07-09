@@ -134,6 +134,18 @@ void FbMainFrame::SaveFrameList(FbParams &params)
 	params.SetText(FB_FRAME_LIST, frames);
 }
 
+void FbMainFrame::RestoreFrameList()
+{
+	wxString frames = FbParams::GetText(FB_FRAME_LIST);
+	wxStringTokenizer tkz(frames, wxT(','), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) {
+		long id = 0;
+		wxString text = tkz.GetNextToken();
+		if (text.ToLong(&id) && 0 <= id && id < ID_FRAME_SEARCH - ID_FRAME_AUTHOR)
+			FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTHOR + id).Post(this);
+	}
+}
+
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
 	wxSize size;
@@ -214,20 +226,7 @@ void FbMainFrame::CreateControls()
 	Layout();
 	Centre();
 
-	wxString frames = FbParams::GetText(FB_FRAME_LIST);
-	wxStringTokenizer tkz(frames, wxT(','), wxTOKEN_STRTOK);
-	while (tkz.HasMoreTokens()) {
-		long id = 0;
-		wxString text = tkz.GetNextToken();
-		if (text.ToLong(&id) && 0 <= id && id < ID_FRAME_SEARCH - ID_FRAME_AUTHOR)
-			FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTHOR + id).Post(this);
-	}
-
-/*
-	FbFrameAuthor * authors = new FbFrameAuthor(this);
-	authors->SelectRandomLetter();
-	authors->ActivateAuthors();
-*/
+	RestoreFrameList();
 }
 
 void FbMainFrame::OnTabArt(wxCommandEvent & event)
@@ -662,8 +661,10 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 {
 	if (wxGetApp().OpenDatabase(filename)) {
 		SetTitle(GetTitle());
+		FbParams params;
+		SaveFrameList(params);
 		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
-		FindAuthor(wxEmptyString);
+		RestoreFrameList();
 	}
 }
 

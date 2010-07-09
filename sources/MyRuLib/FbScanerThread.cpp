@@ -179,13 +179,14 @@ void * FbScanerThread::Entry()
 		return NULL;
 	}
 
+	wxString mask = wxT("*.zip");
+
 	FbCountTraverser counter;
-	dir.Traverse(counter);
-	m_max = counter.GetCount();
+	m_max = dir.Traverse(counter, mask, wxDIR_FILES);
 	m_pos = 0;
 
 	FbZipTraverser traverser(*this, m_only_new);
-	dir.Traverse(traverser, wxT("*.zip"));
+	dir.Traverse(traverser, mask, wxDIR_FILES);
 
 	wxLogMessage(_("Finish scan directory %s"), dirname.c_str());
 
