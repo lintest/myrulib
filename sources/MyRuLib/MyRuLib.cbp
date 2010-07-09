@@ -299,6 +299,10 @@
 		<Unit filename="FbPreviewWindow.h" />
 		<Unit filename="FbReplaceDlg.cpp" />
 		<Unit filename="FbReplaceDlg.h" />
+		<Unit filename="FbScanerDlg.cpp" />
+		<Unit filename="FbScanerDlg.h" />
+		<Unit filename="FbScanerThread.cpp" />
+		<Unit filename="FbScanerThread.h" />
 		<Unit filename="FbSeqnList.cpp" />
 		<Unit filename="FbSeqnList.h" />
 		<Unit filename="FbSequenDlg.cpp" />
@@ -329,8 +333,6 @@
 		<Unit filename="FbViewerDlg.h" />
 		<Unit filename="FbWindow.cpp" />
 		<Unit filename="FbWindow.h" />
-		<Unit filename="FbZipCatalogue.cpp" />
-		<Unit filename="FbZipCatalogue.h" />
 		<Unit filename="ImpContext.cpp" />
 		<Unit filename="ImpContext.h" />
 		<Unit filename="LimitedTextCtrl.cpp" />
