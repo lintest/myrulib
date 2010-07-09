@@ -72,10 +72,9 @@ class FbSearchFunction: public wxSQLite3ScalarFunction
 class FbDatabase: public wxSQLite3Database
 {
 	public:
-		virtual void Open(const wxString& fileName, const wxString& key = wxEmptyString,
-						int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
 		int NewId(const int iParam, int iIncrement = 1);
-		wxString GetText(const int param);
+		wxString GetText(int param);
+		void SetText(int param, const wxString & text);
 		static const wxString & GetConfigName();
 		void CreateFullText();
 	private:

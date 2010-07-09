@@ -1,5 +1,7 @@
-#include "FbZipCatalogue.h"
+#include "FbScanerThread.h"
 #include "FbCollection.h"
+#include "FbBookEvent.h"
+#include "FbConst.h"
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 
@@ -10,13 +12,14 @@
 class FbZipTraverser : public wxDirTraverser
 {
 	public:
-		FbZipTraverser(FbThread & owner): m_owner(owner) {}
+		FbZipTraverser(FbScanerThread & owner): m_owner(owner), m_database(owner.GetDatabase()) {}
 		virtual wxDirTraverseResult OnFile(const wxString& filename);
 		virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname));
 	private:
 		void AddZip(wxFileName filename);
-		FbCommonDatabase m_database;
-		FbThread & m_owner;
+	private:
+		FbScanerThread & m_owner;
+		FbDatabase & m_database;
 };
 
 wxDirTraverseResult FbZipTraverser::OnFile(const wxString& filename)
@@ -33,12 +36,15 @@ wxDirTraverseResult FbZipTraverser::OnDir(const wxString& WXUNUSED(dirname))
 void FbZipTraverser::AddZip(wxFileName filename)
 {
 	wxString fullname = filename.GetFullName();
+	m_owner.Progress(fullname);
+
+	int id = 0;
 	{
 		wxString sql = wxT("SELECT file FROM zip_files WHERE path=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, fullname);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return ;
+		if (result.NextRow()) id = result.GetInt(0);
 	}
 
 	wxULongLong size = filename.GetSize();
@@ -49,7 +55,7 @@ void FbZipTraverser::AddZip(wxFileName filename)
 
 	wxLogMessage(_("Scan zip %s"), fullname.c_str());
 	wxSQLite3Transaction trans(&m_database);
-	int id = m_database.NewId(DB_NEW_ZIPFILE);
+	if (!id) int id = m_database.NewId(DB_NEW_ZIPFILE);
 	wxFFileInputStream in(filename.GetFullPath());
 	wxZipInputStream zip(in);
 
@@ -81,30 +87,46 @@ void FbZipTraverser::AddZip(wxFileName filename)
 }
 
 //-----------------------------------------------------------------------------
-//  FbZipCatalogueThread
+//  FbScanerThread
 //-----------------------------------------------------------------------------
 
-void * FbZipCatalogueThread::Entry()
+void FbScanerThread::SavePath()
 {
-	Sleep(3000);
+	wxFileName relative = m_dirname;
+	relative.MakeRelativeTo(m_filename.GetPath());
+	wxString path = relative.GetFullPath();
+	relative.MakeAbsolute(m_filename.GetPath());
+	if (relative != m_dirname) path = m_dirname.GetFullPath();
+	m_database.SetText(DB_LIBRARY_DIR, path);
+}
+
+void * FbScanerThread::Entry()
+{
+	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
+	m_database.Open(m_filename.GetFullPath(), wxEmptyString, flags);
 
 	if (IsClosed()) return NULL;
+	SavePath();
 
-	wxLogMessage(_("Start scan directory %s"), m_dirname.c_str());
+	wxString dirname = m_dirname.GetFullPath();
 
-	wxDir dir(m_dirname);
+	wxLogMessage(_("Start scan directory %s"), dirname.c_str());
+
+	wxDir dir(dirname);
 	if ( !dir.IsOpened() ) {
-		wxLogError(_("Can't open directory %s"), m_dirname.c_str());
+		wxLogError(_("Can't open directory %s"), dirname.c_str());
 		return NULL;
 	}
 
 	FbZipTraverser traverser(*this);
 	dir.Traverse(traverser, wxT("*.zip"));
 
-	if (!IsClosed()) m_owner.EmptyInfo();
-
-	wxLogMessage(_("Finish scan directory %s"), m_dirname.c_str());
+	wxLogMessage(_("Finish scan directory %s"), dirname.c_str());
 
 	return NULL;
 }
 
+void FbScanerThread::Progress(const wxString & text)
+{
+	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_UPDATE, text).Post(m_owner);
+}

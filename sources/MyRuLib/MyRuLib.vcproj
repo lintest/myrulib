@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -59,7 +59,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_UNICODE;UNICODE;wxUSE_NO_MANIFEST"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(SolutionDir)\build&quot;"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(SolutionDir)\..\build&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -68,7 +68,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="wxmsw28ud_adv.lib wxmsw28ud_aui.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud_net.lib wxbase28ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -124,7 +124,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -138,7 +138,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(SolutionDir)\build&quot;"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(SolutionDir)\..\build&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -147,7 +147,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="wxmsw28u_adv.lib wxmsw28u_aui.lib wxmsw28u_html.lib wxmsw28u_core.lib wxbase28u_net.lib wxbase28u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -438,6 +438,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbScanerDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbScanerThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbSeqnList.cpp"
 				>
 			</File>
@@ -447,6 +455,10 @@
 			</File>
 			<File
 				RelativePath=".\FbThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbToolBar.cpp"
 				>
 			</File>
 			<File
@@ -491,10 +503,6 @@
 			</File>
 			<File
 				RelativePath=".\FbWindow.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbZipCatalogue.cpp"
 				>
 			</File>
 			<File
@@ -800,6 +808,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbScanerDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbScanerThread.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbSeqnList.h"
 				>
 			</File>
@@ -809,6 +825,10 @@
 			</File>
 			<File
 				RelativePath=".\FbThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbToolBar.h"
 				>
 			</File>
 			<File
@@ -853,10 +873,6 @@
 			</File>
 			<File
 				RelativePath=".\FbWindow.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbZipCatalogue.h"
 				>
 			</File>
 			<File
