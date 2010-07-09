@@ -5,6 +5,7 @@
 #include "FbDatabase.h"
 #include "FbParams.h"
 #include "FbConst.h"
+#include "FbScanerDlg.h"
 
 BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_COMBOBOX( ID_FILE_TXT, FbDataOpenDlg::OnFileCombo )
@@ -37,7 +38,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 
 	m_file.Create( this, ID_FILE_TXT, wxEmptyString, wxDefaultPosition, wxSize( 300,-1 ), 0, NULL, 0 );
 	bSizerFile->Add( &m_file, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
-	for (size_t i = 1; i<=5; i++) {
+	for (size_t i = 0; i<=5; i++) {
 		wxString filename = FbParams::GetText(i + FB_RECENT_0);
 		if (!filename.IsEmpty()) m_file.Append(filename);
 	}
@@ -64,13 +65,17 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	bSizerTop->Add( bSizerCtrl, 1, wxEXPAND, 5 );
 	bSizerMain->Add( bSizerTop, 0, wxEXPAND, 5 );
 
-	m_zips.Create( this, wxID_ANY, _("Update zip files catalog"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_zips.Create( this, wxID_ANY, _("Update zip files catalog") );
 	m_zips.SetValue(true);
 	bSizerCtrl->Add( &m_zips, 0, wxALL|wxEXPAND, 5 );
 
-	m_scan.Create( this, wxID_ANY, _("Run a full scan for library files"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_scan.Create( this, wxID_ANY, _("Run a full scan for library files") );
 	m_scan.SetValue(false);
 	bSizerCtrl->Add( &m_scan, 0, wxALL|wxEXPAND, 5 );
+
+	m_only.Create( this, wxID_ANY, _("Process only new files") );
+	m_only.SetValue(true);
+	bSizerCtrl->Add( &m_only, 0, wxALL|wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -156,6 +161,11 @@ wxString FbDataOpenDlg::GetFilename()
 	return CheckExt(m_file.GetValue());
 }
 
+wxString FbDataOpenDlg::GetDirname()
+{
+	return m_folder.GetValue();
+}
+
 wxString FbDataOpenDlg::CheckExt(const wxString &filename)
 {
 	wxString result = filename;
@@ -166,4 +176,15 @@ wxString FbDataOpenDlg::CheckExt(const wxString &filename)
 	if (filename.Right(3) != ext) result += ext;
 	#endif
 	return result;
+}
+
+bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
+{
+	FbDataOpenDlg dlg(parent);
+	if (dlg.ShowModal() != wxID_OK) return false;
+
+	filename = dlg.GetFilename();
+
+	FbScanerDlg scaner( dlg.GetParent(), filename, dlg.GetDirname(), dlg.m_only.GetValue());
+	return scaner.ShowModal() == wxID_OK;
 }

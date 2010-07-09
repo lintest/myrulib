@@ -7,14 +7,16 @@
 class FbScanerDlg: public FbDialog
 {
 	public:
-		FbScanerDlg(const wxFileName &filename, const wxFileName &dirname);
+		FbScanerDlg( wxWindow* parent, const wxFileName &filename, const wxFileName &dirname, bool only_new);
 		virtual ~FbScanerDlg(void);
 	private:
 		FbScanerThread m_thread;
 		wxStaticText m_text;
-		wxGauge m_gauge;
+		wxGauge m_gauge1;
+		wxGauge m_gauge2;
 	private:
-		void OnProgress(wxCommandEvent & event);
+		void OnProgress1(wxCommandEvent & event);
+		void OnProgress2(wxCommandEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 

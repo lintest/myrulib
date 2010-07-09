@@ -606,9 +606,9 @@ void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
 
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 {
-	FbDataOpenDlg dlg(this);
-	if (dlg.ShowModal() != wxID_OK) return;
-	OpenDatabase(dlg.GetFilename());
+	wxString filename;
+	bool ok = FbDataOpenDlg::Execute(this, filename);
+	if (ok) OpenDatabase(filename);
 }
 
 void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)

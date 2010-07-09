@@ -11,18 +11,23 @@
 class FbScanerThread: public FbThread
 {
 	public:
-		FbScanerThread(wxEvtHandler * owner, const wxFileName &filename, const wxFileName &dirname)
-			: FbThread(wxTHREAD_JOINABLE), m_owner(owner), m_filename(dirname), m_dirname(dirname) {}
+		FbScanerThread(wxEvtHandler * owner, const wxFileName &filename, const wxFileName &dirname, bool only_new)
+			: FbThread(wxTHREAD_JOINABLE), m_owner(owner), m_filename(filename), m_dirname(dirname), m_only_new(only_new) {}
 		FbDatabase & GetDatabase() { return m_database; }
-		void Progress(const wxString & text);
+		void Progress1(const wxString & text);
+		void Progress2(int position);
 	protected:
 		virtual void * Entry();
+		virtual void OnExit();
 		void SavePath();
 	private:
 		FbDatabase m_database;
 		wxEvtHandler * m_owner;
 		const wxFileName m_filename;
 		const wxFileName m_dirname;
+		unsigned int m_max;
+		unsigned int m_pos;
+		bool m_only_new;
 };
 
 #endif // __FBSCANERTHREAD_H__

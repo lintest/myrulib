@@ -7,8 +7,10 @@
 class FbDataOpenDlg : public FbDialog
 {
 	public:
-		FbDataOpenDlg( wxWindow* parent);
+		static bool Execute(wxWindow * parent, wxString & filename);
+		FbDataOpenDlg( wxWindow * parent);
 		wxString GetFilename();
+		wxString GetDirname();
 	private:
 		enum
 		{
@@ -26,6 +28,7 @@ class FbDataOpenDlg : public FbDialog
 		wxTextCtrl m_folder;
 		wxCheckBox m_zips;
 		wxCheckBox m_scan;
+		wxCheckBox m_only;
 	private:
 		void OnSelectFileClick( wxCommandEvent& event );
 		void OnSelectFolderClick( wxCommandEvent& event );

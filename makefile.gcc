@@ -152,6 +152,8 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbPreviewThread.o \
 	build\myrulib_FbPreviewWindow.o \
 	build\myrulib_FbReplaceDlg.o \
+	build\myrulib_FbScanerDlg.o \
+	build\myrulib_FbScanerThread.o \
 	build\myrulib_FbSeqnList.o \
 	build\myrulib_FbSequenDlg.o \
 	build\myrulib_FbThread.o \
@@ -167,7 +169,6 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbViewThread.o \
 	build\myrulib_FbViewerDlg.o \
 	build\myrulib_FbWindow.o \
-	build\myrulib_FbZipCatalogue.o \
 	build\myrulib_ImpContext.o \
 	build\myrulib_LimitedTextCtrl.o \
 	build\myrulib_MyRuLibApp.o \
@@ -554,6 +555,12 @@ build\myrulib_FbPreviewWindow.o: ./sources/MyRuLib/FbPreviewWindow.cpp $(MYRULIB
 build\myrulib_FbReplaceDlg.o: ./sources/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
+build\myrulib_FbScanerDlg.o: ./sources/MyRuLib/FbScanerDlg.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbScanerThread.o: ./sources/MyRuLib/FbScanerThread.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
 build\myrulib_FbSeqnList.o: ./sources/MyRuLib/FbSeqnList.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -597,9 +604,6 @@ build\myrulib_FbViewerDlg.o: ./sources/MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbWindow.o: ./sources/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build\myrulib_FbZipCatalogue.o: ./sources/MyRuLib/FbZipCatalogue.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_ImpContext.o: ./sources/MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
