@@ -37,7 +37,7 @@ void FbSeqnListThread::DoString(wxSQLite3Database &database)
 
 void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT docid, value, number FROM fts_seqn LEFT JOIN sequences ON id=docid WHERE fts_seqn MATCH ?");
+	wxString sql = wxT("SELECT docid, value, number FROM fts_seqn INNER JOIN sequences ON id=docid WHERE fts_seqn MATCH ?");
 	sql << GetOrder(wxT("value,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_string));

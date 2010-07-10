@@ -55,7 +55,7 @@ void FbAuthListThread::DoString(wxSQLite3Database &database)
 
 void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth LEFT JOIN authors ON id=docid WHERE fts_auth MATCH ?");
+	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ?");
 	sql << GetOrder(wxT("search_name,number"), m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
