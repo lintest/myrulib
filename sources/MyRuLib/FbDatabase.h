@@ -77,6 +77,7 @@ class FbDatabase: public wxSQLite3Database
 		void SetText(int param, const wxString & text);
 		static const wxString & GetConfigName();
 		void CreateFullText();
+		void AttachConfig();
 	private:
 		static wxCriticalSection sm_queue;
 };
@@ -84,12 +85,10 @@ class FbDatabase: public wxSQLite3Database
 class FbAutoCommit
 {
 	public:
-		FbAutoCommit(wxSQLite3Database & database): m_database(database) {
-			try {m_database.Begin(WXSQLITE_TRANSACTION_DEFERRED);} catch (...) {};
-		};
-		virtual ~FbAutoCommit() {
-			try {m_database.Commit();} catch (...) {};
-		};
+		FbAutoCommit(wxSQLite3Database & database): m_database(database)
+			{ m_database.Begin(WXSQLITE_TRANSACTION_DEFERRED); }
+		virtual ~FbAutoCommit()
+			{ m_database.Commit(); }
 	private:
 		wxSQLite3Database & m_database;
 };
@@ -98,7 +97,6 @@ class FbCommonDatabase: public FbDatabase
 {
 	public:
 		FbCommonDatabase();
-		void AttachConfig();
 		wxString GetMd5(int id);
 };
 

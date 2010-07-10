@@ -151,12 +151,14 @@ void FbZipTraverser::AddZip(wxFileName filename)
 
 void FbScanerThread::SavePath()
 {
+	wxString oldpath = m_database.GetText(DB_LIBRARY_DIR);
+	wxString datapath = m_filename.GetPath();
 	wxFileName relative = m_dirname;
-	relative.MakeRelativeTo(m_filename.GetPath());
-	wxString path = relative.GetFullPath();
-	relative.MakeAbsolute(m_filename.GetPath());
-	if (relative != m_dirname) path = m_dirname.GetFullPath();
-	m_database.SetText(DB_LIBRARY_DIR, path);
+	relative.MakeRelativeTo(datapath);
+	wxString newpath = relative.GetFullPath();
+	relative.MakeAbsolute(datapath);
+	if (relative != m_dirname) newpath = m_dirname.GetFullPath();
+	if (newpath != oldpath) m_database.SetText(DB_LIBRARY_DIR, newpath);
 }
 
 void * FbScanerThread::Entry()

@@ -34,7 +34,7 @@ class MyRuLibApp : public wxApp
 		virtual bool OnExceptionInMainLoop() { return false; }
 	private:
 		void OpenLog();
-		wxFileName GetDatabaseFilename(FbDatabase &database);
+		wxFileName GetDatabaseFile(FbDatabase &config);
 		void SetAppData(const wxString &filename);
 		void LoadBlankImage();
 	private:

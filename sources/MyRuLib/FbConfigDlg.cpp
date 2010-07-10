@@ -331,7 +331,7 @@ void FbConfigDlg::Execute(wxWindow* parent)
 	dlg.Assign(false);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
-		FbCollection::ResetDir();
+		FbCollection::EmptyInfo();
 	}
 }
 

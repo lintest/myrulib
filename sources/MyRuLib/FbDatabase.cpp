@@ -282,6 +282,14 @@ void FbDatabase::SetText(int param, const wxString & text)
 	stmt.ExecuteUpdate();
 }
 
+void FbDatabase::AttachConfig()
+{
+	wxString sql = wxT("ATTACH ? AS config");
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, GetConfigName());
+	stmt.ExecuteUpdate();
+}
+
 //-----------------------------------------------------------------------------
 //  FbMainDatabase
 //-----------------------------------------------------------------------------
@@ -294,10 +302,7 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	if (bExists)
 		FbLogMessage(_("Open database"), filename);
 	else {
-	    wxString info = _("Create new database");
-		FbLogMessage(info, filename);
-		wxString msg = strProgramName + (wxString)wxT(" - ") + info + (wxString)wxT("\n") + filename;
-		wxMessageBox(msg);
+		FbLogMessage(_("Create new database"), filename);
 	}
 
 	if (!bExists) CreateDatabase();
@@ -424,9 +429,9 @@ void FbMainDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
 			ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
 			ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)"));
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 		} break;
 
 		case 5: {
@@ -489,14 +494,6 @@ void FbMainDatabase::DoUpgrade(int version)
 FbCommonDatabase::FbCommonDatabase() :FbDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetAppData());
-}
-
-void FbCommonDatabase::AttachConfig()
-{
-	wxString sql = wxT("ATTACH ? AS config");
-	wxSQLite3Statement stmt = PrepareStatement(sql);
-	stmt.Bind(1, GetConfigName());
-	stmt.ExecuteUpdate();
 }
 
 wxString FbCommonDatabase::GetMd5(int id)

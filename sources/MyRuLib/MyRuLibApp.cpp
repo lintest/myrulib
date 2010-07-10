@@ -73,7 +73,14 @@ bool MyRuLibApp::OnInit()
 	wxLog::SetVerbose(true);
 	#endif // __WXDEBUG__
 
-	wxFileName filename = GetDatabaseFilename(config);
+	wxFileName filename = GetDatabaseFile(config);
+	if (!filename.IsOk()) {
+		wxString datafile;
+		bool ok = FbDataOpenDlg::Execute(NULL, datafile);
+		if (!ok) return false;
+		filename = datafile;
+	}
+
 	filename.Normalize();
 	OpenDatabase(filename.GetFullPath());
 
@@ -105,10 +112,9 @@ void MyRuLibApp::LoadBlankImage()
 	wxMemoryFSHandler::AddFile(wxT("blank"), bitmap, wxBITMAP_TYPE_PNG);
 }
 
-wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)
+wxFileName MyRuLibApp::GetDatabaseFile(FbDatabase &config)
 {
-	FbStandardPaths paths;
-	wxFileName filename = paths.GetExecutablePath();
+	wxFileName filename = FbStandardPaths().GetExecutablePath();
 	filename.SetExt(wxT("db"));
 
 	if (wxGetApp().argc > 1) {
@@ -122,18 +128,13 @@ wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)
 
 	if (filename.FileExists()) return filename;
 
-	wxString recent = database.GetText(FB_RECENT_0);
+	wxString recent = config.GetText(FB_RECENT_0);
 	if (!recent.IsEmpty()) {
 		wxFileName filename = recent;
 		if (filename.FileExists()) return filename;
 	}
 
-	wxString datafile;
-	bool ok = FbDataOpenDlg::Execute(NULL, datafile);
-	if (ok) return datafile;
-
-	filename.SetPath(paths.GetUserConfigDir());
-	return filename;
+	return wxFileName();
 }
 
 int MyRuLibApp::OnExit()
@@ -154,22 +155,19 @@ void MyRuLibApp::OpenLog()
 
 bool MyRuLibApp::OpenDatabase(const wxString &filename)
 {
-	int flags = WXSQLITE_OPEN_FULLMUTEX | WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE;
-
-	try {
-		FbMainDatabase dbMain;
-		dbMain.Open(filename, wxEmptyString, flags);
+	FbCollection * collection = new FbCollection(filename);
+	if (collection->IsOk()) {
 		SetAppData(filename);
 		FbParams params;
 		params.LoadParams();
 		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
 		wxDELETE(m_collection);
-		m_collection = new FbCollection(filename);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(_("Database error: ") + e.GetMessage());
+		m_collection = collection;
+		return true;
+	} else {
+		delete collection;
 		return false;
 	}
-	return true;
 }
 
 const wxString MyRuLibApp::GetAppData()

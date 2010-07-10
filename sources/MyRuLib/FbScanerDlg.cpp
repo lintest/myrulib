@@ -8,16 +8,17 @@
 BEGIN_EVENT_TABLE(FbScanerDlg, FbDialog)
 	EVT_MENU(ID_PROGRESS_1, FbScanerDlg::OnProgress1)
 	EVT_MENU(ID_PROGRESS_2, FbScanerDlg::OnProgress2)
+	EVT_TIMER(wxID_ANY, FbScanerDlg::OnTimer)
 END_EVENT_TABLE()
 
 
 FbScanerDlg::FbScanerDlg(wxWindow* parent, const wxFileName &filename, const wxFileName &dirname, bool only_new)
 	: FbDialog( parent, wxID_ANY, _("Processing collection"), wxDefaultPosition, wxDefaultSize),
-		m_thread(this, filename, dirname, only_new)
+		m_thread(this, filename, dirname, only_new), m_timer(this)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	m_text.Create( this, wxID_ANY, wxEmptyString );
+	m_text.Create( this, wxID_ANY, _("Processing database") );
 	m_text.Wrap( -1 );
 	bSizerMain->Add( &m_text, 0, wxALL|wxEXPAND, 5 );
 
@@ -37,6 +38,8 @@ FbScanerDlg::FbScanerDlg(wxWindow* parent, const wxFileName &filename, const wxF
 	SetSize(GetBestSize());
 
 	m_thread.Execute();
+
+	m_timer.Start(100);
 }
 
 FbScanerDlg::~FbScanerDlg(void)
@@ -45,8 +48,14 @@ FbScanerDlg::~FbScanerDlg(void)
 	if (m_thread.IsAlive()) m_thread.Wait();
 }
 
+void FbScanerDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
+{
+	m_gauge2.Pulse();
+}
+
 void FbScanerDlg::OnProgress1(wxCommandEvent & event)
 {
+	m_timer.Stop();
 	m_text.SetLabel(event.GetString());
 	m_gauge1.SetValue(event.GetInt());
 }

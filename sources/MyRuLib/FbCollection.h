@@ -37,6 +37,7 @@ class FbCollection: public wxObject
 		static wxString Format(int number);
 		FbCollection(const wxString &filename);
 		virtual ~FbCollection();
+		bool IsOk() const;
 	public:
 		static FbCollection * GetCollection();
 		static wxString GetSeqn(int code, size_t col);
@@ -52,13 +53,11 @@ class FbCollection: public wxObject
 		static void ResetInfo(int code);
 		static void ResetBook(int code);
 		static void ResetBook(const wxArrayInt &books);
-		static void ResetDir();
 		static void LoadIcon(const wxString &extension);
 		static void AddIcon(wxString extension, wxBitmap bitmap);
 		static wxFileName FindZip(const wxString &dirname, const wxString &filename);
 		static wxString GetIcon(const wxString &extension);
-	public:
-		void EmptyInfo();
+		static void EmptyInfo();
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
@@ -68,14 +67,13 @@ class FbCollection: public wxObject
 		void DoResetBook(const wxArrayInt &books);
 		void DoResetBook(int code);
 		void DoResetInfo(int code);
-		void DoResetDir();
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
 	private:
 		static wxArrayString sm_icons;
 		static wxArrayString sm_noico;
 		static wxCriticalSection sm_section;
-		FbCommonDatabase m_database;
+		FbMainDatabase m_database;
 		FbAggregateFunction m_aggregate;
 		FbCasheDataArray m_auths;
 		FbCasheDataArray m_seqns;

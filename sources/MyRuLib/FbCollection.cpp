@@ -60,15 +60,19 @@ wxCriticalSection FbCollection::sm_section;
 FbCollection::FbCollection(const wxString &filename)
 	: m_thread(NULL)
 {
+	m_database.Open(filename);
 	m_database.AttachConfig();
 	m_database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
-
-	DoResetDir();
 }
 
 FbCollection::~FbCollection()
 {
 	if (m_thread) m_thread->Close();
+}
+
+bool FbCollection::IsOk() const
+{
+	return m_database.IsOpen();
 }
 
 wxString FbCollection::Format(int number)
@@ -189,27 +193,6 @@ void FbCollection::ResetBook(const wxArrayInt &books)
 	if (collection) collection->DoResetBook(books);
 }
 
-void FbCollection::ResetDir()
-{
-	wxCriticalSectionLocker locker(sm_section);
-	FbCollection * collection = GetCollection();
-	if (collection) collection->DoResetDir();
-}
-
-void FbCollection::DoResetDir()
-{
-/*
-	if (m_thread) m_thread->Delete();
-	m_thread = NULL;
-
-	wxString dirname = FbParams::GetText(DB_LIBRARY_DIR);
-	if (wxFileName::DirExists(dirname)) {
-		m_thread = new FbScanerThread(*this, dirname);
-		m_thread->Execute();
-	}
-*/
-}
-
 FbCacheData * FbCollection::GetData(int code, FbCasheDataArray &items, const wxString &sql)
 {
 	size_t count = items.Count();
@@ -280,8 +263,8 @@ wxString FbCollection::GetBook(int code, size_t col)
 void FbCollection::EmptyInfo()
 {
 	wxCriticalSectionLocker locker(sm_section);
-	m_infos.Empty();
-	m_thread = NULL;
+	FbCollection * collection = GetCollection();
+	if (collection) collection->m_infos.Empty();
 }
 
 FbCacheBook FbCollection::GetBookData(int code)

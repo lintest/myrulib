@@ -163,7 +163,9 @@ wxString FbDataOpenDlg::GetFilename()
 
 wxString FbDataOpenDlg::GetDirname()
 {
-	return m_folder.GetValue();
+	wxString dirname = m_folder.GetValue();
+	if (dirname.IsEmpty()) dirname = wxFileName(m_file.GetValue()).GetPath();
+	return dirname;
 }
 
 wxString FbDataOpenDlg::CheckExt(const wxString &filename)
