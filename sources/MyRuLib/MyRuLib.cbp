@@ -193,8 +193,6 @@
 		<Unit filename="FbBookTypes.h" />
 		<Unit filename="FbCacheBook.cpp" />
 		<Unit filename="FbCacheBook.h" />
-		<Unit filename="FbCheckList.cpp" />
-		<Unit filename="FbCheckList.h" />
 		<Unit filename="FbChoiceFormat.cpp" />
 		<Unit filename="FbChoiceFormat.h" />
 		<Unit filename="FbClientData.h" />
@@ -311,8 +309,6 @@
 		<Unit filename="FbThread.h" />
 		<Unit filename="FbToolBar.cpp" />
 		<Unit filename="FbToolBar.h" />
-		<Unit filename="FbTreeListCtrl.cpp" />
-		<Unit filename="FbTreeListCtrl.h" />
 		<Unit filename="FbTreeModel.cpp" />
 		<Unit filename="FbTreeModel.h" />
 		<Unit filename="FbTreeView.cpp" />
