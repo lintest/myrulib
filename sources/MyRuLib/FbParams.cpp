@@ -158,10 +158,10 @@ wxString FbParams::DefaultText(int param)
 		switch (param) {
 			case DB_LIBRARY_DIR:
 				return wxGetApp().GetAppPath();
-			case DB_WANRAIK_DIR:
-				return wxGetApp().GetAppPath();
 			case DB_DOWNLOAD_HOST:
 				return wxT("flibusta.net");
+			case DB_DOWNLOAD_ADDR:
+				return wxT("http://%h/b/%i/download");
 			case FB_DOWNLOAD_DIR:
 				return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
 			case FB_TEMP_DIR:

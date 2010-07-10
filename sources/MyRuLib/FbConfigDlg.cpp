@@ -114,7 +114,6 @@ wxString FbConfigDlg::TypeData::GetValue(FbModel & model, size_t col) const
 
 BEGIN_EVENT_TABLE( FbConfigDlg, wxDialog )
 	EVT_BUTTON( ID_LIBRARY_DIR_BTN, FbConfigDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_WANRAIK_DIR_BTN, FbConfigDlg::OnSelectFolderClick )
 	EVT_TOOL( ID_APPEND_TYPE, FbConfigDlg::OnAppendType )
 	EVT_TOOL( ID_MODIFY_TYPE, FbConfigDlg::OnModifyType )
 	EVT_TOOL( ID_DELETE_TYPE, FbConfigDlg::OnDeleteType )
@@ -184,6 +183,15 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	comboHost->Append( wxT("lib.rus.ec") );
 	comboHost->Append( wxT("lib.ololo.cc") );
 	fgSizerMain->Add( comboHost, 0, wxALL|wxEXPAND, 5 );
+
+	wxStaticText * text4 = new wxStaticText( this, wxID_ANY, _("Address:"), wxDefaultPosition, wxDefaultSize, 0 );
+	text4->Wrap( -1 );
+	fgSizerMain->Add( text4, 0, wxALL, 5 );
+
+	wxComboBox * comboAddr = new wxComboBox( this, ID_DOWNLOAD_HOST, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	comboAddr->Append( wxT("http://%h/b/%i/download") );
+	comboAddr->Append( wxT("http://%h/get?nametype=orig&md5=&m") );
+	fgSizerMain->Add( comboAddr, 0, wxALL|wxEXPAND, 5 );
 
 	wxStaticText * text2 = new wxStaticText( this, wxID_ANY, _("User name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
@@ -277,9 +285,9 @@ void FbConfigDlg::Assign(bool write)
 	const Struct ids[] = {
 		{DB_LIBRARY_TITLE, FbConfigDlg::ID_LIBRARY_TITLE, tText},
 		{DB_LIBRARY_DIR,   FbConfigDlg::ID_LIBRARY_DIR_TXT, tText},
-		{DB_WANRAIK_DIR,   FbConfigDlg::ID_WANRAIK_DIR_TXT, tText},
 		{DB_LIBRARY_DESCR, FbConfigDlg::ID_LIBRARY_DESCR, tText},
 		{DB_DOWNLOAD_HOST, FbConfigDlg::ID_DOWNLOAD_HOST, tCombo},
+		{DB_DOWNLOAD_ADDR, FbConfigDlg::ID_DOWNLOAD_ADDR, tCombo},
 		{DB_DOWNLOAD_USER, FbConfigDlg::ID_DOWNLOAD_USER, tText},
 		{DB_DOWNLOAD_PASS, FbConfigDlg::ID_DOWNLOAD_PASS, tText},
 	};

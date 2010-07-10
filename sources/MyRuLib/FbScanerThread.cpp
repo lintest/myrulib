@@ -128,7 +128,7 @@ void FbZipTraverser::AddZip(wxFileName filename)
 		wxString sql = wxT("INSERT INTO zip_books(file,book) values(?,?)");
 		while (wxZipEntry * entry = zip.GetNextEntry()) {
 			int new_pos = (++num) * 100 / max;
-			if (new_pos != pos) m_owner.Progress2(pos = new_pos);
+			if (pos != new_pos) m_owner.Progress2(pos = new_pos);
 
 			if (entry->GetSize()) {
 				wxString name = entry->GetName(wxPATH_UNIX);
@@ -163,7 +163,7 @@ void FbScanerThread::SavePath()
 
 void * FbScanerThread::Entry()
 {
-	PulseGauge(_("Processing database"));
+	PulseGauge(_("Create full text search index"));
 
 	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
 	m_database.Open(m_filename.GetFullPath(), wxEmptyString, flags);

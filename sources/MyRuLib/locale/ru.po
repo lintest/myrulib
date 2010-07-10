@@ -1910,8 +1910,8 @@ msgid "Replace author"
 msgstr "Заменить автора"
 
 #: FbProgressDlg.cpp:14
-msgid "Processing collection"
-msgstr "Обработка коллекции"
+msgid "Create full text search index"
+msgstr "Создание индекса полнотекстового поиска"
 
 #: FbScanerThread.cpp:108 FbZipCatalogue.cpp:46
 #, c-format
@@ -1992,3 +1992,6 @@ msgstr "Не найден архив (%s), содержащий файл (%s)."
 #, c-format
 msgid "Not found file %s"
 msgstr "Файл не найден %s"
+
+msgid "Processing collection"
+msgstr "Обработка коллекции"
