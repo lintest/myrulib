@@ -163,6 +163,8 @@ void FbScanerThread::SavePath()
 
 void * FbScanerThread::Entry()
 {
+	PulseGauge(_("Processing database"));
+
 	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
 	m_database.Open(m_filename.GetFullPath(), wxEmptyString, flags);
 
@@ -207,7 +209,13 @@ void FbScanerThread::Progress2(int position)
 	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_2, position).Post(m_owner);
 }
 
+void FbScanerThread::PulseGauge(const wxString & text)
+{
+	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_PULSE_GAUGE, text).Post(m_owner);
+}
+
 void FbScanerThread::OnExit()
 {
 	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK).Post(m_owner);
 }
+

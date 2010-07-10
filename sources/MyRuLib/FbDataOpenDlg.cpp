@@ -5,7 +5,8 @@
 #include "FbDatabase.h"
 #include "FbParams.h"
 #include "FbConst.h"
-#include "FbScanerDlg.h"
+#include "FbProgressDlg.h"
+#include "FbScanerThread.h"
 
 BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_COMBOBOX( ID_FILE_TXT, FbDataOpenDlg::OnFileCombo )
@@ -188,7 +189,9 @@ bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
 	filename = dlg.GetFilename();
 
 	if (dlg.m_scaner.GetValue()) {
-		FbScanerDlg scaner( dlg.GetParent(), filename, dlg.GetDirname(), dlg.m_only.GetValue());
+		FbProgressDlg scaner(dlg.GetParent());
+		FbThread * thread = new FbScanerThread(&scaner, filename, dlg.GetDirname(), dlg.m_only.GetValue());
+		scaner.RunThread(thread);
 		return scaner.ShowModal() == wxID_OK;
 	}
 	return true;

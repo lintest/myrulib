@@ -1909,7 +1909,7 @@ msgstr "Не выбран автор для замены."
 msgid "Replace author"
 msgstr "Заменить автора"
 
-#: FbScanerDlg.cpp:14
+#: FbProgressDlg.cpp:14
 msgid "Processing collection"
 msgstr "Обработка коллекции"
 

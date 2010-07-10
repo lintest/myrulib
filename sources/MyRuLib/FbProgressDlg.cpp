@@ -1,24 +1,25 @@
-#include "FbScanerDlg.h"
+#include "FbProgressDlg.h"
 #include "FbConst.h"
 
 //-----------------------------------------------------------------------------
 //  FbDialog
 //-----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(FbScanerDlg, FbDialog)
-	EVT_MENU(ID_PROGRESS_1, FbScanerDlg::OnProgress1)
-	EVT_MENU(ID_PROGRESS_2, FbScanerDlg::OnProgress2)
-	EVT_TIMER(wxID_ANY, FbScanerDlg::OnTimer)
+BEGIN_EVENT_TABLE(FbProgressDlg, FbDialog)
+	EVT_MENU(ID_PROGRESS_1, FbProgressDlg::OnProgress1)
+	EVT_MENU(ID_PROGRESS_2, FbProgressDlg::OnProgress2)
+	EVT_MENU(ID_PULSE_GAUGE, FbProgressDlg::OnPulseGauge)
+	EVT_TIMER(wxID_ANY, FbProgressDlg::OnTimer)
 END_EVENT_TABLE()
 
 
-FbScanerDlg::FbScanerDlg(wxWindow* parent, const wxFileName &filename, const wxFileName &dirname, bool only_new)
+FbProgressDlg::FbProgressDlg(wxWindow* parent)
 	: FbDialog( parent, wxID_ANY, _("Processing collection"), wxDefaultPosition, wxDefaultSize),
-		m_thread(this, filename, dirname, only_new), m_timer(this)
+		m_thread(NULL), m_timer(this)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	m_text.Create( this, wxID_ANY, _("Processing database") );
+	m_text.Create( this, wxID_ANY, wxEmptyString );
 	m_text.Wrap( -1 );
 	bSizerMain->Add( &m_text, 0, wxALL|wxEXPAND, 5 );
 
@@ -37,30 +38,43 @@ FbScanerDlg::FbScanerDlg(wxWindow* parent, const wxFileName &filename, const wxF
 	Layout();
 	SetSize(GetBestSize());
 
-	m_thread.Execute();
-
 	m_timer.Start(100);
 }
 
-FbScanerDlg::~FbScanerDlg(void)
+FbProgressDlg::~FbProgressDlg(void)
 {
-	m_thread.Close();
-	if (m_thread.IsAlive()) m_thread.Wait();
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
 }
 
-void FbScanerDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
+void FbProgressDlg::RunThread(FbThread * thread)
+{
+	m_thread = thread;
+	m_thread->Execute();
+}
+
+void FbProgressDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
 {
 	m_gauge2.Pulse();
 }
 
-void FbScanerDlg::OnProgress1(wxCommandEvent & event)
+void FbProgressDlg::OnProgress1(wxCommandEvent & event)
 {
 	m_timer.Stop();
 	m_text.SetLabel(event.GetString());
 	m_gauge1.SetValue(event.GetInt());
 }
 
-void FbScanerDlg::OnProgress2(wxCommandEvent & event)
+void FbProgressDlg::OnProgress2(wxCommandEvent & event)
 {
 	m_gauge2.SetValue(event.GetInt());
+}
+
+void FbProgressDlg::OnPulseGauge(wxCommandEvent & event)
+{
+	m_text.SetLabel(event.GetString());
+	m_timer.Start(100);
 }

@@ -3,15 +3,16 @@
 
 #include <wx/timer.h>
 #include "FbWindow.h"
-#include "FbScanerThread.h"
+#include "FbThread.h"
 
-class FbScanerDlg: public FbDialog
+class FbProgressDlg: public FbDialog
 {
 	public:
-		FbScanerDlg( wxWindow* parent, const wxFileName &filename, const wxFileName &dirname, bool only_new);
-		virtual ~FbScanerDlg(void);
+		FbProgressDlg(wxWindow* parent);
+		virtual ~FbProgressDlg(void);
+		void RunThread(FbThread * thread);
 	private:
-		FbScanerThread m_thread;
+		FbThread * m_thread;
 		wxStaticText m_text;
 		wxGauge m_gauge1;
 		wxGauge m_gauge2;
@@ -19,6 +20,7 @@ class FbScanerDlg: public FbDialog
 	private:
 		void OnProgress1(wxCommandEvent & event);
 		void OnProgress2(wxCommandEvent & event);
+		void OnPulseGauge(wxCommandEvent & event);
 		void OnTimer(wxTimerEvent& event);
 		DECLARE_EVENT_TABLE()
 };

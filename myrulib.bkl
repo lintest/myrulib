@@ -208,8 +208,8 @@
 		<sources>MyRuLib/FbParamsDlg.cpp</sources>
 		<sources>MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>MyRuLib/FbPreviewWindow.cpp</sources>
+		<sources>MyRuLib/FbProgressDlg.cpp</sources>
 		<sources>MyRuLib/FbReplaceDlg.cpp</sources>
-		<sources>MyRuLib/FbScanerDlg.cpp</sources>
 		<sources>MyRuLib/FbScanerThread.cpp</sources>
 		<sources>MyRuLib/FbSeqnList.cpp</sources>
 		<sources>MyRuLib/FbSequenDlg.cpp</sources>

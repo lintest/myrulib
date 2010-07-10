@@ -295,10 +295,10 @@
 		<Unit filename="FbPreviewThread.h" />
 		<Unit filename="FbPreviewWindow.cpp" />
 		<Unit filename="FbPreviewWindow.h" />
+		<Unit filename="FbProgressDlg.cpp" />
+		<Unit filename="FbProgressDlg.h" />
 		<Unit filename="FbReplaceDlg.cpp" />
 		<Unit filename="FbReplaceDlg.h" />
-		<Unit filename="FbScanerDlg.cpp" />
-		<Unit filename="FbScanerDlg.h" />
 		<Unit filename="FbScanerThread.cpp" />
 		<Unit filename="FbScanerThread.h" />
 		<Unit filename="FbSeqnList.cpp" />

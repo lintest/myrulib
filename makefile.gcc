@@ -150,8 +150,8 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbParamsDlg.o \
 	build\myrulib_FbPreviewThread.o \
 	build\myrulib_FbPreviewWindow.o \
+	build\myrulib_FbProgressDlg.o \
 	build\myrulib_FbReplaceDlg.o \
-	build\myrulib_FbScanerDlg.o \
 	build\myrulib_FbScanerThread.o \
 	build\myrulib_FbSeqnList.o \
 	build\myrulib_FbSequenDlg.o \
@@ -546,10 +546,10 @@ build\myrulib_FbPreviewThread.o: ./sources/MyRuLib/FbPreviewThread.cpp $(MYRULIB
 build\myrulib_FbPreviewWindow.o: ./sources/MyRuLib/FbPreviewWindow.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_FbReplaceDlg.o: ./sources/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
+build\myrulib_FbProgressDlg.o: ./sources/MyRuLib/FbProgressDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_FbScanerDlg.o: ./sources/MyRuLib/FbScanerDlg.cpp $(MYRULIB_ODEP)
+build\myrulib_FbReplaceDlg.o: ./sources/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbScanerThread.o: ./sources/MyRuLib/FbScanerThread.cpp $(MYRULIB_ODEP)

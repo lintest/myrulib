@@ -16,6 +16,7 @@ class FbScanerThread: public FbThread
 		FbDatabase & GetDatabase() { return m_database; }
 		void Progress1(const wxString & text);
 		void Progress2(int position);
+		void PulseGauge(const wxString & text);
 	protected:
 		virtual void * Entry();
 		virtual void OnExit();
