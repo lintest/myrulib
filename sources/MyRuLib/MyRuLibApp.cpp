@@ -164,7 +164,6 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 		FbParams params;
 		params.LoadParams();
 		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
-		(new FbTextThread)->Execute();
 		wxDELETE(m_collection);
 		m_collection = new FbCollection(filename);
 	} catch (wxSQLite3Exception & e) {
@@ -184,6 +183,16 @@ const wxString MyRuLibApp::GetAppPath()
 {
 	wxCriticalSectionLocker locker(m_section);
 	return wxFileName(m_datafile).GetPath();
+}
+
+const wxString MyRuLibApp::GetLibPath()
+{
+	wxFileName dirname = FbParams::GetText(DB_LIBRARY_DIR);
+	if (dirname.IsRelative()) {
+		wxFileName datafile = GetAppData();
+		dirname.MakeAbsolute(datafile.GetPath());
+	}
+	return dirname.GetFullPath();
 }
 
 void MyRuLibApp::SetAppData(const wxString &filename)

@@ -65,13 +65,13 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	bSizerTop->Add( bSizerCtrl, 1, wxEXPAND, 5 );
 	bSizerMain->Add( bSizerTop, 0, wxEXPAND, 5 );
 
-	m_zips.Create( this, wxID_ANY, _("Update zip files catalog") );
-	m_zips.SetValue(true);
-	bSizerCtrl->Add( &m_zips, 0, wxALL|wxEXPAND, 5 );
+	m_scaner.Create( this, wxID_ANY, _("Update zip files catalog") );
+	m_scaner.SetValue(true);
+	bSizerCtrl->Add( &m_scaner, 0, wxALL|wxEXPAND, 5 );
 
-	m_scan.Create( this, wxID_ANY, _("Run a full scan for library files") );
-	m_scan.SetValue(false);
-	bSizerCtrl->Add( &m_scan, 0, wxALL|wxEXPAND, 5 );
+	m_import.Create( this, wxID_ANY, _("Run a full scan for library files") );
+	m_import.SetValue(false);
+	bSizerCtrl->Add( &m_import, 0, wxALL|wxEXPAND, 5 );
 
 	m_only.Create( this, wxID_ANY, _("Process only new files") );
 	m_only.SetValue(true);
@@ -185,6 +185,9 @@ bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
 
 	filename = dlg.GetFilename();
 
-	FbScanerDlg scaner( dlg.GetParent(), filename, dlg.GetDirname(), dlg.m_only.GetValue());
-	return scaner.ShowModal() == wxID_OK;
+	if (dlg.m_scaner.GetValue()) {
+		FbScanerDlg scaner( dlg.GetParent(), filename, dlg.GetDirname(), dlg.m_only.GetValue());
+		return scaner.ShowModal() == wxID_OK;
+	}
+	return true;
 }

@@ -20,7 +20,7 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 	FbExtractArray items(database, id);
 
 	wxString error_name;
-	wxString sLibraryDir = FbParams::GetText(DB_LIBRARY_DIR);
+	wxString sLibraryDir = wxGetApp().GetLibPath();
 
 	for (size_t i = 0; i<items.Count(); i++) {
 		FbExtractItem & item = items[i];

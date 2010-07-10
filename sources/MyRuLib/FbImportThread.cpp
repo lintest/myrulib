@@ -6,6 +6,7 @@
 #include "FbGenres.h"
 #include "FbParams.h"
 #include "ZipReader.h"
+#include "MyRuLibApp.h"
 #include "polarssl/md5.h"
 #include "wx/base64.h"
 
@@ -441,7 +442,7 @@ void FbImpotrZip::Make(FbImportThread *owner)
 
 FbImportThread::FbImportThread():
 	m_counter(m_database),
-	m_basepath(FbParams::GetText(DB_LIBRARY_DIR)),
+	m_basepath(wxGetApp().GetLibPath()),
 	m_fullpath(FbParams::GetValue(FB_SAVE_FULLPATH))
 {
 }

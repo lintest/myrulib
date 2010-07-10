@@ -24,6 +24,7 @@ class MyRuLibApp : public wxApp
 		bool OpenDatabase(const wxString &filename);
 		const wxString GetAppData();
 		const wxString GetAppPath();
+		const wxString GetLibPath();
 		void Localize();
 		FbCollection * GetCollection() { return m_collection; }
 		void StartDownload();

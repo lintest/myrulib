@@ -212,7 +212,7 @@ const wxString & FbDatabase::GetConfigName()
 
 void FbDatabase::CreateFullText()
 {
-	if ( TableExists(wxT("fts_book")) ) return;
+	if ( TableExists(wxT("fts_book_content")) ) return;
 
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
@@ -288,7 +288,8 @@ void FbDatabase::SetText(int param, const wxString & text)
 
 void FbMainDatabase::Open(const wxString& filename, const wxString& key, int flags)
 {
-	bool bExists = wxFileExists(filename);
+	FbDatabase::Open(filename, key, flags);
+	bool bExists = TableExists(GetMaster());
 
 	if (bExists)
 		FbLogMessage(_("Open database"), filename);
@@ -299,14 +300,9 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 		wxMessageBox(msg);
 	}
 
-	try {
-		FbDatabase::Open(filename, key, flags);
-		if (!bExists) CreateDatabase();
-		UpgradeDatabase(DB_DATABASE_VERSION);
-	}
-	catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
+	if (!bExists) CreateDatabase();
+	UpgradeDatabase(DB_DATABASE_VERSION);
+	CreateFullText();
 }
 
 void FbMainDatabase::CreateDatabase()

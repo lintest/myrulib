@@ -26,8 +26,8 @@ class FbDataOpenDlg : public FbDialog
 	private:
 		wxComboBox m_file;
 		wxTextCtrl m_folder;
-		wxCheckBox m_zips;
-		wxCheckBox m_scan;
+		wxCheckBox m_scaner;
+		wxCheckBox m_import;
 		wxCheckBox m_only;
 	private:
 		void OnSelectFileClick( wxCommandEvent& event );

@@ -21,7 +21,7 @@ class FbScanerThread: public FbThread
 		virtual void OnExit();
 		void SavePath();
 	private:
-		FbDatabase m_database;
+		FbMainDatabase m_database;
 		wxEvtHandler * m_owner;
 		const wxFileName m_filename;
 		const wxFileName m_dirname;

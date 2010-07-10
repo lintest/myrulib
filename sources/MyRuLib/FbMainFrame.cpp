@@ -137,6 +137,7 @@ void FbMainFrame::SaveFrameList(FbParams &params)
 void FbMainFrame::RestoreFrameList()
 {
 	wxString frames = FbParams::GetText(FB_FRAME_LIST);
+	if (frames.IsEmpty()) frames = wxT('0');
 	wxStringTokenizer tkz(frames, wxT(','), wxTOKEN_STRTOK);
 	while (tkz.HasMoreTokens()) {
 		long id = 0;

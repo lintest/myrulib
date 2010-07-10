@@ -50,12 +50,4 @@ class FbDeleteThread: public FbUpdateThread
 		const wxString m_sel;
 };
 
-class FbTextThread: public FbUpdateThread
-{
-	public:
-		FbTextThread() {};
-	protected:
-		virtual void * Entry();
-};
-
 #endif // __FBUPDATETHREAD_H__

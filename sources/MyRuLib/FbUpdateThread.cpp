@@ -3,6 +3,7 @@
 #include "FbParams.h"
 #include "FbExtractInfo.h"
 #include "FbCounter.h"
+#include "MyRuLibApp.h"
 
 wxCriticalSection FbUpdateThread::sm_queue;
 
@@ -104,7 +105,7 @@ void * FbDeleteThread::Entry()
 
 void FbDeleteThread::DoDelete(FbDatabase &database)
 {
-	wxString basepath = FbParams::GetText(DB_LIBRARY_DIR);
+	wxString basepath = wxGetApp().GetLibPath();
 	wxString sql = wxString::Format(wxT("SELECT id FROM books WHERE books.id IN (%s)"), m_sel.c_str());
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
@@ -112,13 +113,3 @@ void FbDeleteThread::DoDelete(FbDatabase &database)
 	}
 }
 
-void * FbTextThread::Entry()
-{
-	wxCriticalSectionLocker locker(sm_queue);
-
-	Sleep(2000);
-
-	FbCommonDatabase().CreateFullText();
-
-	return NULL;
-}
