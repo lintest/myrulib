@@ -415,17 +415,18 @@ void FbMainDatabase::DoUpgrade(int version)
 		} break;
 
 		case 4: {
-			/** TABLE books **/
-			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
-			ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
-			ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
-			try { ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)")); } catch (...) {};
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 			/** TABLE files **/
 			ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT"));
 			/** TABLE comments **/
 			ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
 			ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
+			/** TABLE books **/
+			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
+			ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
+			ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
+			wxLogNull log;
+			ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)"));
 		} break;
 
 		case 5: {
@@ -436,7 +437,8 @@ void FbMainDatabase::DoUpgrade(int version)
 
 		case 6: {
 			/** TABLE books **/
-			try { ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER")); } catch (...) {};
+			wxLogNull log;
+			ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER"));
 		} break;
 
 		case 7: {
@@ -444,28 +446,25 @@ void FbMainDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS aliases(id_author integer not null, id_alias integer not null);"));
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_author ON aliases(id_author);"));
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
-			try {
-				ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
-				ExecuteUpdate(strUpdateAuthorCount);
-			} catch (...) {};
+			wxLogNull log;
+			ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
+			ExecuteUpdate(strUpdateAuthorCount);
 		} break;
 
 		case 8: {
 			/** TABLE aliases **/
 			ExecuteUpdate(wxT("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
-			try {
-				ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
-				ExecuteUpdate(wxT("DELETE FROM sequences WHERE NOT EXISTS (SELECT id_seq FROM bookseq WHERE sequences.id=id_seq) OR id=0"));
-				ExecuteUpdate(strUpdateSequenCount);
-			} catch (...) {};
+			wxLogNull log;
+			ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
+			ExecuteUpdate(wxT("DELETE FROM sequences WHERE NOT EXISTS (SELECT id_seq FROM bookseq WHERE sequences.id=id_seq) OR id=0"));
+			ExecuteUpdate(strUpdateSequenCount);
 		} break;
 
 		case 9: {
 			/** TABLE books **/
-			try {
-				ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
-				ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
-			} catch (...) {};
+			wxLogNull log;
+			ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
+			ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
 		} break;
 
 		case 11: {

@@ -128,10 +128,9 @@ wxFileName MyRuLibApp::GetDatabaseFilename(FbDatabase &database)
 		if (filename.FileExists()) return filename;
 	}
 
-	FbDataOpenDlg dlg(NULL);
-	if (dlg.ShowModal() == wxID_OK) {
-		return dlg.GetFilename();
-	}
+	wxString datafile;
+	bool ok = FbDataOpenDlg::Execute(NULL, datafile);
+	if (ok) return datafile;
 
 	filename.SetPath(paths.GetUserConfigDir());
 	return filename;
