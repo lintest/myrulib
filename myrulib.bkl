@@ -158,7 +158,6 @@
 		<sources>MyRuLib/FbBookPanel.cpp</sources>
 		<sources>MyRuLib/FbBookTree.cpp</sources>
 		<sources>MyRuLib/FbCacheBook.cpp</sources>
-		<sources>MyRuLib/FbCheckList.cpp</sources>
 		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
 		<sources>MyRuLib/FbColumns.cpp</sources>
@@ -216,7 +215,6 @@
 		<sources>MyRuLib/FbSequenDlg.cpp</sources>
 		<sources>MyRuLib/FbThread.cpp</sources>
 		<sources>MyRuLib/FbToolBar.cpp</sources>
-		<sources>MyRuLib/FbTreeListCtrl.cpp</sources>
 		<sources>MyRuLib/FbTreeModel.cpp</sources>
 		<sources>MyRuLib/FbTreeView.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
@@ -235,7 +233,6 @@
 		<sources>MyRuLib/ZipReader.cpp</sources>
 		<sources>MyRuLib/md5.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
-		<sources>MyRuLib/wx/treelistctrl.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/MyRuLib</include>
 		<include>$(SRCDIR)/WxSQLite3</include>

@@ -100,7 +100,6 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbBookPanel.o \
 	build\myrulib_FbBookTree.o \
 	build\myrulib_FbCacheBook.o \
-	build\myrulib_FbCheckList.o \
 	build\myrulib_FbChoiceFormat.o \
 	build\myrulib_FbColumnDlg.o \
 	build\myrulib_FbColumns.o \
@@ -158,7 +157,6 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbSequenDlg.o \
 	build\myrulib_FbThread.o \
 	build\myrulib_FbToolBar.o \
-	build\myrulib_FbTreeListCtrl.o \
 	build\myrulib_FbTreeModel.o \
 	build\myrulib_FbTreeView.o \
 	build\myrulib_FbUpdateThread.o \
@@ -177,7 +175,6 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_ZipReader.o \
 	build\myrulib_md5.o \
 	build\myrulib_base64.o \
-	build\myrulib_treelistctrl.o \
 	build\myrulib_resource_rc.o
 MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 
@@ -399,9 +396,6 @@ build\myrulib_FbBookTree.o: ./sources/MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
 build\myrulib_FbCacheBook.o: ./sources/MyRuLib/FbCacheBook.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_FbCheckList.o: ./sources/MyRuLib/FbCheckList.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build\myrulib_FbChoiceFormat.o: ./sources/MyRuLib/FbChoiceFormat.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -573,9 +567,6 @@ build\myrulib_FbThread.o: ./sources/MyRuLib/FbThread.cpp $(MYRULIB_ODEP)
 build\myrulib_FbToolBar.o: ./sources/MyRuLib/FbToolBar.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_FbTreeListCtrl.o: ./sources/MyRuLib/FbTreeListCtrl.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
 build\myrulib_FbTreeModel.o: ./sources/MyRuLib/FbTreeModel.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
@@ -628,9 +619,6 @@ build\myrulib_md5.o: ./sources/MyRuLib/md5.c $(MYRULIB_ODEP)
 	$(CC) -c -o $@ $(MYRULIB_CFLAGS) $(CPPDEPS) $<
 
 build\myrulib_base64.o: ./sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
-	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
-
-build\myrulib_treelistctrl.o: ./sources/MyRuLib/wx/treelistctrl.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_resource_rc.o: ./sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
