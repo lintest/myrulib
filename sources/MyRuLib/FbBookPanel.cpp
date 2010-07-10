@@ -46,7 +46,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_FB_MODEL(ID_MODEL_CREATE, FbBookPanel::OnTreeModel)
 END_EVENT_TABLE()
 
-FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, long style, int keyType, int keyMode, wxWindowID id)
+FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, int keyType, int keyMode, wxWindowID id)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
 		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_thread(new FbMasterThread(this)), m_owner(id)
 {

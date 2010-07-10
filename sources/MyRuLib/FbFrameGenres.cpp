@@ -34,8 +34,7 @@ void FbFrameGenres::CreateControls()
 
 	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 
-	long substyle = wxTR_HIDE_ROOT | wxTR_FULL_ROW_HIGHLIGHT | wxTR_COLUMN_LINES | wxTR_MULTIPLE | wxSUNKEN_BORDER;
-	CreateBooksPanel(splitter, substyle);
+	CreateBooksPanel(splitter);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	SetSizer( bSizer1 );

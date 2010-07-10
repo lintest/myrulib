@@ -9,14 +9,15 @@
 class FbUpdateThread: public FbThread
 {
 	public:
-		FbUpdateThread(const wxString &sql = wxEmptyString, const wxString &sql2 = wxEmptyString)
-			:m_sql(sql), m_sql2(sql2) {};
+		FbUpdateThread(const wxString &sql1 = wxEmptyString, const wxString &sql2 = wxEmptyString, const wxString &sql3 = wxEmptyString)
+			:m_sql1(sql1), m_sql2(sql2), m_sql3(sql3) {};
 	protected:
 		static wxCriticalSection sm_queue;
 		void ExecSQL(FbDatabase &database, const wxString &sql);
 		virtual void * Entry();
-		wxString m_sql;
+		wxString m_sql1;
 		wxString m_sql2;
+		wxString m_sql3;
 };
 
 class FbFolderUpdateThread: public FbUpdateThread

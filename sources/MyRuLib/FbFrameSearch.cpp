@@ -38,7 +38,7 @@ void FbFrameSearch::CreateControls()
 	m_ToolBar = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, GetTitle());
 	bSizer1->Add( m_ToolBar, 0, wxGROW);
 
-	CreateBooksPanel(this, 0);
+	CreateBooksPanel(this);
 	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
 
 	SetSizer( bSizer1 );

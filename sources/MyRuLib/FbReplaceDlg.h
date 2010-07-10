@@ -10,6 +10,7 @@ class FbReplaceDlg : public FbDialog
 {
 	public:
 		FbReplaceDlg(const wxString& title, int id);
+		virtual ~FbReplaceDlg();
 		static int Execute(int author, wxString& newname);
 	protected:
 		virtual void EndModal(int retCode);
@@ -33,8 +34,11 @@ class FbReplaceDlg : public FbDialog
 		wxString GetFullName();
 		FbCommonDatabase m_database;
 		int m_id;
+		FbThread * m_thread;
 	private:
 		void OnFindEnter( wxCommandEvent& event );
+		void OnModel( FbArrayEvent& event );
+		void OnArray( FbArrayEvent& event );
 		DECLARE_EVENT_TABLE()
 };
 

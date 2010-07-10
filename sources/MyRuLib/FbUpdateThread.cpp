@@ -14,8 +14,9 @@ void * FbUpdateThread::Entry()
 	FbCommonDatabase database;
 	database.AttachConfig();
 
-	ExecSQL(database, m_sql);
+	if (!m_sql1.IsEmpty()) ExecSQL(database, m_sql1);
 	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
+	if (!m_sql3.IsEmpty()) ExecSQL(database, m_sql3);
 
 	return NULL;
 }
@@ -49,7 +50,7 @@ void * FbFolderUpdateThread::Entry()
 	FbCommonDatabase database;
 	database.AttachConfig();
 
-	ExecSQL(database, m_sql);
+	ExecSQL(database, m_sql1);
 	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();
@@ -66,7 +67,7 @@ void * FbCreateDownloadThread::Entry()
 	database.CreateFunction(wxT("INCREMENT"), 1, function);
 	database.AttachConfig();
 
-	ExecSQL(database, m_sql);
+	ExecSQL(database, m_sql1);
 	if (!m_sql2.IsEmpty()) ExecSQL(database, m_sql2);
 
 	FbFolderEvent(ID_UPDATE_FOLDER, m_folder, m_type).Post();

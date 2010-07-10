@@ -36,7 +36,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		int GetModeKey();
 		int GetViewKey();
 		void OnSubmenu(wxCommandEvent& event);
-		void CreateBooksPanel(wxWindow * parent, long substyle);
+		void CreateBooksPanel(wxWindow * parent);
 		int GetColOrder(int col);
 		int GetBookCount();
 		bool IsFullScreen();

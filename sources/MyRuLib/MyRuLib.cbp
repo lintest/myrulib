@@ -365,8 +365,6 @@
 		<Unit filename="sha1/sha1.h" />
 		<Unit filename="wx/base64.cpp" />
 		<Unit filename="wx/base64.h" />
-		<Unit filename="wx/treelistctrl.cpp" />
-		<Unit filename="wx/treelistctrl.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

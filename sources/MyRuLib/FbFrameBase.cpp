@@ -106,9 +106,9 @@ void FbFrameBase::Localize(bool bUpdateMenu)
     m_BooksPanel->Localize();
 }
 
-void FbFrameBase::CreateBooksPanel(wxWindow * parent, long substyle)
+void FbFrameBase::CreateBooksPanel(wxWindow * parent)
 {
-	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), substyle, GetViewKey(), GetModeKey(), GetId());
+	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), GetViewKey(), GetModeKey(), GetId());
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)

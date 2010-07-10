@@ -105,6 +105,12 @@ int FbSequenDlg::DoReplace()
 		stmt.ExecuteUpdate();
 	}
 	{
+		wxString sql = wxT("DELETE FROM fts_seqn WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_id);
+		stmt.ExecuteUpdate();
+	}
+	{
 		wxString sql = strUpdateSequenCount + wxT("WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_exists);

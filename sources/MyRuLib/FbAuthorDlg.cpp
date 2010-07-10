@@ -131,7 +131,7 @@ void FbAuthorDlg::DoModify()
 void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
 {
 	FbCommonDatabase m_database;
-	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_DEFERRED);
+	wxSQLite3Transaction trans(&m_database);
 
 	{
 		wxString sql = wxT("UPDATE books SET id_author=? WHERE id_author=?");
@@ -142,14 +142,22 @@ void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	{
-		wxString sql = strUpdateAuthorCount + wxT("WHERE id=?");
+		wxString sql = wxT("UPDATE authors SET number=(SELECT COUNT(DISTINCT id) FROM books WHERE id_author=?) WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, new_id);
 		stmt.Bind(1, new_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
 		wxString sql = wxT("DELETE FROM authors WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, old_id);
+		stmt.ExecuteUpdate();
+	}
+
+	{
+		wxString sql = wxT("DELETE FROM fts_auth WHERE docid=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();

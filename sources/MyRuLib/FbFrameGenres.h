@@ -9,7 +9,6 @@
 #include <wx/sizer.h>
 #include <wx/splitter.h>
 #include <wx/wxsqlite3.h>
-#include "wx/treelistctrl.h"
 #include "FbFrameBase.h"
 #include "FbBookEvent.h"
 

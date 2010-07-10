@@ -2,14 +2,18 @@
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "FbAuthorDlg.h"
+#include "FbAuthList.h"
 
 BEGIN_EVENT_TABLE( FbReplaceDlg, wxDialog )
 	EVT_TEXT_ENTER( ID_FIND_TXT, FbReplaceDlg::OnFindEnter )
 	EVT_BUTTON( ID_FIND_BTN, FbReplaceDlg::OnFindEnter )
+	EVT_FB_ARRAY(ID_MODEL_CREATE, FbReplaceDlg::OnModel)
+	EVT_FB_ARRAY(ID_MODEL_APPEND, FbReplaceDlg::OnArray)
 END_EVENT_TABLE()
 
 FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
-	: FbDialog ( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
+	: FbDialog ( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
+		m_id(id), m_thread(NULL)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -65,6 +69,14 @@ FbReplaceDlg::FbReplaceDlg( const wxString& title, int id )
 	m_FindText->SetFocus();
 }
 
+FbReplaceDlg::~FbReplaceDlg()
+{
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Delete();
+	}
+}
+
 bool FbReplaceDlg::Load()
 {
 	wxString sql = wxT("SELECT full_name, last_name FROM authors WHERE id=?");
@@ -75,7 +87,7 @@ bool FbReplaceDlg::Load()
 	if (result.NextRow()) {
 		m_Text->SetValue(result.GetAsString(0));
 		wxString last_name = result.GetAsString(1);
-//		if (!last_name.IsEmpty()) (new FbAuthorThreadLast(this, last_name))->Execute();
+		if (!last_name.IsEmpty()) (m_thread = new FbAuthListThread(this, last_name))->Execute();
 		return true;
 	}
 	return false;
@@ -84,12 +96,19 @@ bool FbReplaceDlg::Load()
 void FbReplaceDlg::OnFindEnter( wxCommandEvent& event )
 {
 	wxString text = m_FindText->GetValue();
-//	if (!text.IsEmpty()) (new FbAuthorThreadRepl(m_FindList, text, m_id))->Execute();
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Delete();
+		m_thread = NULL;
+	}
+	if (!text.IsEmpty()) (m_thread = new FbAuthListThread(this, text))->Execute();
 }
 
 int FbReplaceDlg::GetSelected()
 {
-	return 0;
+	FbModelItem item = m_FindList->GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
+	return data ? data->GetCode() : 0;
 }
 
 void FbReplaceDlg::EndModal(int retCode)
@@ -118,11 +137,8 @@ int FbReplaceDlg::DoUpdate()
 
 wxString FbReplaceDlg::GetFullName()
 {
-/*
-	wxTreeItemId selected = m_FindList->GetSelection();
-	return selected.IsOk() ? m_FindList->GetItemText(selected) : (wxString)wxEmptyString;
-*/
-	return wxEmptyString;
+	FbModelItem item = m_FindList->GetCurrent();
+	return item.GetValue(0);
 }
 
 int FbReplaceDlg::Execute(int author, wxString& newname)
@@ -132,3 +148,25 @@ int FbReplaceDlg::Execute(int author, wxString& newname)
 	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoUpdate() : 0;
 }
+
+void FbReplaceDlg::OnModel( FbArrayEvent& event )
+{
+	wxArrayInt array = event.GetArray();
+	int index = array.Index(m_id);
+	if (index != wxNOT_FOUND) array.RemoveAt(index);
+
+	FbAuthListModel * model = new FbAuthListModel(array);
+	m_FindList->AssignModel(model);
+}
+
+void FbReplaceDlg::OnArray( FbArrayEvent& event )
+{
+	wxArrayInt array = event.GetArray();
+	int index = array.Index(m_id);
+	if (index != wxNOT_FOUND) array.RemoveAt(index);
+
+	FbAuthListModel * model = wxDynamicCast(m_FindList->GetModel(), FbAuthListModel);
+	if (model) model->Append(array);
+	m_FindList->Refresh();
+}
+

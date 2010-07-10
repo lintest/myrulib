@@ -1,8 +1,7 @@
 #include "FbFilterDlg.h"
 #include <wx/imaglist.h>
 
-///////////////////////////////////////////////////////////////////////////
-
+/*
 FbFilterList::FbFilterList(wxWindow *parent, wxWindowID id, const wxString &title)
 	:FbCheckList(parent, id, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER)
 {
@@ -86,6 +85,8 @@ wxString FbFilterList::GetValue()
 
 ///////////////////////////////////////////////////////////////////////////
 
+*/
+
 BEGIN_EVENT_TABLE( FbFilterDlg, wxDialog )
 	EVT_BUTTON( wxID_NO, FbFilterDlg::OnNoButton )
 END_EVENT_TABLE()
@@ -114,10 +115,12 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxBoxSizer* bSizerList;
 	bSizerList = new wxBoxSizer( wxHORIZONTAL );
 
-	m_treeLang = new FbFilterList(this, ID_TREE_LANG, _("Language"));
+	m_treeLang = new FbTreeViewCtrl(this, ID_TREE_LANG);
+	m_treeLang->AddColumn(0, _("Language"), 1);
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	m_treeType = new FbFilterList(this, ID_TREE_TYPE, _("File extension"));
+	m_treeType = new FbTreeViewCtrl(this, ID_TREE_TYPE);
+	m_treeType->AddColumn(0, _("File extension"), 1);
 	bSizerList->Add( m_treeType, 1, wxEXPAND|wxALL, 5 );
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );
@@ -131,12 +134,12 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 		wxString sql_lang = wxT("SELECT DISTINCT lang, CASE WHEN lang='ru' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, lang");
 		wxString sql_type = wxT("SELECT distinct file_type, CASE WHEN file_type='fb2' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, file_type");
 		FbParams params;
-		params.SetText(DB_LANG_LIST, m_treeLang->Load(database, sql_lang, filter.m_lang));
-		params.SetText(DB_TYPE_LIST, m_treeType->Load(database, sql_type, filter.m_type));
+//		params.SetText(DB_LANG_LIST, m_treeLang->Load(database, sql_lang, filter.m_lang));
+//		params.SetText(DB_TYPE_LIST, m_treeType->Load(database, sql_type, filter.m_type));
 		params.SetValue(DB_LAST_BOOK, last);
 	} else {
-		m_treeLang->Read(filter.m_lang, DB_LANG_LIST);
-		m_treeType->Read(filter.m_type, DB_TYPE_LIST);
+//		m_treeLang->Read(filter.m_lang, DB_LANG_LIST);
+//		m_treeType->Read(filter.m_type, DB_TYPE_LIST);
 	}
 
 	this->SetSizer( bSizerMain );
@@ -152,8 +155,8 @@ void FbFilterDlg::Assign(FbFilterObj & filter)
 {
 	filter.m_lib = m_checkLib->GetValue();
 	filter.m_usr = m_checkUsr->GetValue();
-	filter.m_lang = m_treeLang->GetValue();
-	filter.m_type = m_treeType->GetValue();
+//	filter.m_lang = m_treeLang->GetValue();
+//	filter.m_type = m_treeType->GetValue();
 }
 
 bool FbFilterDlg::Execute(FbFilterObj & filter)

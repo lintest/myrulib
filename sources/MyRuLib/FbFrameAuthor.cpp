@@ -60,7 +60,7 @@ void FbFrameAuthor::CreateControls()
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
-	CreateBooksPanel(splitter, 0);
+	CreateBooksPanel(splitter);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	FbFrameBase::CreateControls();

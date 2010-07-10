@@ -48,7 +48,7 @@ void FbFrameSequen::CreateControls()
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
-	CreateBooksPanel(splitter, 0);
+	CreateBooksPanel(splitter);
 	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
 
 	FbFrameBase::CreateControls();
@@ -205,9 +205,11 @@ void FbFrameSequen::OnMasterDelete(wxCommandEvent& event)
 	wxString msg = wxString::Format(_("Delete series \"%s\"?"), current->GetValue(*model).c_str());
 	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (ok) {
-		wxString sql1 = wxString::Format(wxT("DELETE FROM sequences WHERE id=%d"), id);
-		wxString sql2 = wxString::Format(wxT("DELETE FROM bookseq WHERE id_seq=%d"), id);
-		(new FbUpdateThread(sql1, sql2))->Execute();
+		FbCommonDatabase database;
+		FbAutoCommit commit(database);
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM sequences WHERE id=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM bookseq WHERE id_seq=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM fts_seqn WHERE id=%d"), id));
 		m_MasterList->Delete();
 	}
 }
