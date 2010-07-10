@@ -21,6 +21,7 @@
 #include "FbTreeView.h"
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
+#include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
 //  FbConfigDlg::LoadThread
@@ -248,7 +249,15 @@ void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
 	);
 
-	if (dlg.ShowModal() == wxID_OK)  textCtrl->SetValue(dlg.GetPath());
+	if (dlg.ShowModal() == wxID_OK) {
+		wxString fullpath = dlg.GetPath();
+		wxString datapath = wxFileName(wxGetApp().GetAppData()).GetPath();
+		wxFileName filename = fullpath;
+		filename.MakeRelativeTo(datapath);
+		wxString relative = filename.GetFullPath();
+		filename.MakeAbsolute(datapath);
+		textCtrl->SetValue( filename.GetFullPath() == fullpath ? relative : fullpath );
+	}
 }
 
 void FbConfigDlg::Assign(bool write)
