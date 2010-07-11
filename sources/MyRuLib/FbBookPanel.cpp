@@ -80,7 +80,8 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, int keyType, int 
 FbBookPanel::~FbBookPanel()
 {
 	m_thread->Close();
-	m_thread->Delete();
+	m_thread->Wait();
+	delete m_thread;
 }
 
 void FbBookPanel::Localize()

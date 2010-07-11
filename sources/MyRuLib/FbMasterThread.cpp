@@ -23,7 +23,7 @@ class FbBooksThread: public FbThread
 //-----------------------------------------------------------------------------
 
 FbMasterThread::FbMasterThread(wxEvtHandler * owner)
-	: m_condition(m_mutex), m_owner(owner), m_info(NULL), m_thread(NULL), m_closed(false)
+	: FbThread(wxTHREAD_JOINABLE), m_condition(m_mutex), m_owner(owner), m_thread(NULL), m_closed(false)
 {
 }
 
@@ -67,7 +67,7 @@ void * FbMasterThread::Entry()
 			if (!m_info) continue;
 			info = m_info;
 			filter = m_filter;
-			m_info = NULL;
+			m_info = FbMasterInfo();
 		}
 
 		if (m_thread) {

@@ -16,7 +16,7 @@
 
 FbMasterInfo FbDateDayData::GetInfo() const
 {
-	return new FbMasterDateInfo(this->GetCode(), m_lib_min, m_lib_max, m_usr_min, m_usr_max);
+	return FbMasterDateInfo(this->GetCode(), m_lib_min, m_lib_max, m_usr_min, m_usr_max);
 }
 
 IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfoBase)
@@ -41,7 +41,7 @@ void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
 
 FbMasterInfo FbAuthListData::GetInfo() const
 {
-	return new FbMasterAuthInfo(this->GetCode());
+	return FbMasterAuthInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterAuthInfo, FbMasterInfoBase)
@@ -95,9 +95,7 @@ void FbMasterAuthInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 		root->SortItems();
 	}
 	model->SetRoot(root);
-
-	if (thread->IsClosed()) delete model;
-	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
+	SendTree(owner, thread, model);
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +104,7 @@ void FbMasterAuthInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 
 FbMasterInfo FbSeqnListData::GetInfo() const
 {
-	return new FbMasterSeqnInfo(this->GetCode());
+	return FbMasterSeqnInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterSeqnInfo, FbMasterInfoBase)
@@ -126,9 +124,7 @@ void FbMasterSeqnInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 		new FbBookChildData(*model, parent, result.GetInt(1), result.GetInt(2));
 	}
 	model->SetRoot(root);
-
-	if (thread->IsClosed()) delete model;
-	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
+	SendTree(owner, thread, model);
 }
 
 wxString FbMasterSeqnInfo::GetWhere(wxSQLite3Database &database) const
@@ -152,7 +148,7 @@ void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
 
 FbMasterInfo FbGenrChildData::GetInfo() const
 {
-	return new FbMasterGenrInfo(this->GetCode());
+	return FbMasterGenrInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfoBase)
@@ -173,7 +169,7 @@ void FbMasterGenrInfo::Bind(wxSQLite3Statement &stmt) const
 
 FbMasterInfo FbDownListData::GetInfo() const
 {
-	return new FbMasterDownInfo(this->GetCode());
+	return FbMasterDownInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterDownInfo, FbMasterInfoBase)
@@ -199,7 +195,7 @@ void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
 
 FbMasterInfo FbCommChildData::GetInfo() const
 {
-	return new FbMasterCommInfo();
+	return FbMasterCommInfo();
 }
 
 IMPLEMENT_CLASS(FbMasterCommInfo, FbMasterInfoBase)
@@ -219,7 +215,7 @@ void FbMasterCommInfo::Bind(wxSQLite3Statement &stmt) const
 
 FbMasterInfo FbRateChildData::GetInfo() const
 {
-	return new FbMasterRateInfo(this->GetCode());
+	return FbMasterRateInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterRateInfo, FbMasterInfoBase)
@@ -240,7 +236,7 @@ void FbMasterRateInfo::Bind(wxSQLite3Statement &stmt) const
 
 FbMasterInfo FbFolderChildData::GetInfo() const
 {
-	return new FbMasterFldrInfo(this->GetCode());
+	return FbMasterFldrInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterFldrInfo, FbMasterInfoBase)

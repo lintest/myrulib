@@ -14,6 +14,10 @@ class FbMasterAuthInfo: public FbMasterInfoBase
 			{ return new FbMasterAuthInfo(*this); }
 		int GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterAuthInfo * data = wxDynamicCast(&info, FbMasterAuthInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
@@ -36,6 +40,10 @@ class FbMasterSeqnInfo: public FbMasterInfoBase
 			{ return new FbMasterSeqnInfo(*this); }
 		int GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterSeqnInfo * data = wxDynamicCast(&info, FbMasterSeqnInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
@@ -57,6 +65,10 @@ class FbMasterGenrInfo: public FbMasterInfoBase
 			{ return new FbMasterGenrInfo(*this); }
 		wxString GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterGenrInfo * data = wxDynamicCast(&info, FbMasterGenrInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
@@ -76,6 +88,10 @@ class FbMasterDownInfo: public FbMasterInfoBase
 			{ return new FbMasterDownInfo(*this); }
 		int GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterDownInfo * data = wxDynamicCast(&info, FbMasterDownInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
@@ -95,6 +111,10 @@ class FbMasterDateInfo: public FbMasterInfoBase
 			{ return new FbMasterDateInfo(*this); }
 		int GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterDateInfo * data = wxDynamicCast(&info, FbMasterDateInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
@@ -118,6 +138,10 @@ class FbMasterFldrInfo: public FbMasterInfoBase
 			{ return new FbMasterFldrInfo(*this); }
 		int GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterFldrInfo * data = wxDynamicCast(&info, FbMasterFldrInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
@@ -135,6 +159,9 @@ class FbMasterCommInfo: public FbMasterInfoBase
 			: FbMasterInfoBase(info) {}
 		virtual FbMasterInfoBase * Clone() const
 			{ return new FbMasterCommInfo(*this); }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			return IsSameAs(info);
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
@@ -153,6 +180,10 @@ class FbMasterRateInfo: public FbMasterInfoBase
 			{ return new FbMasterRateInfo(*this); }
 		int GetId() const
 			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterRateInfo * data = wxDynamicCast(&info, FbMasterRateInfo);
+			return data && data->m_id == m_id;
+		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
@@ -170,6 +201,10 @@ class FbMasterFindInfo: public FbMasterInfoBase
 			: FbMasterInfoBase(info), m_title(info.m_title), m_author(info.m_author) {}
 		virtual FbMasterInfoBase * Clone() const
 			{ return new FbMasterFindInfo(*this); }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterFindInfo * data = wxDynamicCast(&info, FbMasterFindInfo);
+			return data && data->m_title == m_title && data->m_author == m_author;
+		}
 	protected:
 		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 		virtual wxString GetWhere(wxSQLite3Database &database) const;

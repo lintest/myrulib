@@ -8,6 +8,8 @@
 #include "FbBookTypes.h"
 #include "FbFilterObj.h"
 
+class FbBookTreeModel;
+
 class FbMasterInfoBase: public wxObject
 {
 	public:
@@ -25,6 +27,7 @@ class FbMasterInfoBase: public wxObject
 			{ m_mode = mode; }
 		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 		virtual FbMasterInfoBase * Clone() const = 0;
+		virtual bool operator==(const FbMasterInfoBase & info) = 0;
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const = 0;
 		virtual void Bind(wxSQLite3Statement &stmt) const {}
@@ -35,6 +38,8 @@ class FbMasterInfoBase: public wxObject
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+		void SendTree(wxEvtHandler *owner, FbThread * thread, FbBookTreeModel * model) const;
+		void SendList(wxEvtHandler *owner, FbThread * thread, int count) const;
 		wxString FormatSQL(const wxString &sql, const wxString &cond, const FbFilterObj &filter) const;
 	protected:
 		int GetOrder() const
@@ -56,9 +61,9 @@ class FbMasterInfo: public wxObject
 	public:
 		FbMasterInfo()
 			: m_data(NULL) {}
-		FbMasterInfo(FbMasterInfoBase * data)
-			: m_data(data) {}
-		FbMasterInfo(const FbMasterInfo &info)
+		FbMasterInfo(const FbMasterInfoBase & data)
+			: m_data(data.Clone()) {}
+		FbMasterInfo(const FbMasterInfo & info)
 			: m_data(info ? info.m_data->Clone() : NULL) {}
 		virtual ~FbMasterInfo()
 			{ wxDELETE(m_data); }
@@ -75,6 +80,7 @@ class FbMasterInfo: public wxObject
 		void SetMode(FbListMode mode)
 			{ if (m_data) m_data->SetMode(mode); }
 		FbMasterInfo & operator =(const FbMasterInfo &info);
+		bool operator ==(const FbMasterInfo &info) const;
 	private:
 		FbMasterInfoBase * m_data;
 		DECLARE_CLASS(FbMasterInfo);

@@ -5,16 +5,18 @@
 #include <wx/wxsqlite3.h>
 #include "FbBookData.h"
 #include "FbBookTypes.h"
+#include "FbMasterInfo.h"
 
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION, 1 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_MODEL_ACTION, 2 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_OPEN_ACTION, 3 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION, 4 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION,     1 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_MODEL_ACTION,    2 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_OPEN_ACTION,     3 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_FOLDER_ACTION,   4 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_PROGRESS_ACTION, 5 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION, 6 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_EXPORT_ACTION, 7 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_ARRAY_ACTION,  8 )
-DECLARE_LOCAL_EVENT_TYPE( fbEVT_IMAGE_ACTION,  10 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_MASTER_ACTION,   6 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_EXPORT_ACTION,   7 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_ARRAY_ACTION,    8 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_COUNT_ACTION,    9 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_IMAGE_ACTION,   10 )
 
 class FbModel;
 
@@ -162,9 +164,35 @@ class FbArrayEvent: public FbCommandEvent
 		const wxArrayInt & GetArray() const
 			{ return m_array; }
 
-	public:
+	private:
 		wxArrayInt m_array;
 		FbSortedArrayInt m_check;
+};
+
+class FbCountEvent: public FbCommandEvent
+{
+	public:
+		FbCountEvent(wxWindowID winid)
+			: FbCommandEvent(fbEVT_COUNT_ACTION, winid), m_count(0) {}
+
+		FbCountEvent(const FbCountEvent & event)
+			: FbCommandEvent(event), m_info(event.m_info), m_count(0) {}
+
+		FbCountEvent(wxWindowID winid, const FbMasterInfo &info, int count)
+			: FbCommandEvent(fbEVT_COUNT_ACTION, winid), m_info(info), m_count(count) {}
+
+		virtual wxEvent *Clone() const
+			{ return new FbCountEvent(*this); }
+
+		const FbMasterInfo & GetInfo() const
+			{ return m_info; }
+
+		int GetCount() const
+			{ return m_count; }
+
+	private:
+		FbMasterInfo m_info;
+		int m_count;
 };
 
 class FbImageEvent: public FbCommandEvent
@@ -185,7 +213,7 @@ class FbImageEvent: public FbCommandEvent
 		const wxImage & GetImage() const
 			{ return m_image; }
 
-	public:
+	private:
 		wxImage m_image;
 };
 
@@ -202,6 +230,8 @@ typedef void (wxEvtHandler::*FbProgressEventFunction)(FbProgressEvent&);
 typedef void (wxEvtHandler::*FbMasterEventFunction)(FbMasterEvent&);
 
 typedef void (wxEvtHandler::*FbArrayEventFunction)(FbArrayEvent&);
+
+typedef void (wxEvtHandler::*FbCountEventFunction)(FbCountEvent&);
 
 typedef void (wxEvtHandler::*FbImageEventFunction)(FbImageEvent&);
 
@@ -239,6 +269,11 @@ typedef void (wxEvtHandler::*FbImageEventFunction)(FbImageEvent&);
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_ARRAY_ACTION, id, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbArrayEventFunction, & fn ), (wxObject *) NULL ),
+
+#define EVT_FB_COUNT(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_COUNT_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbCountEventFunction, & fn ), (wxObject *) NULL ),
 
 #define EVT_FB_IMAGE(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_IMAGE_ACTION, id, -1, \

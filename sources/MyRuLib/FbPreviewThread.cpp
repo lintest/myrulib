@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 
 FbPreviewThread::FbPreviewThread(wxEvtHandler * owner)
-	: m_condition(m_mutex), m_owner(owner), m_thread(NULL), m_closed(false)
+	: FbThread(wxTHREAD_JOINABLE), m_condition(m_mutex), m_owner(owner), m_thread(NULL), m_closed(false)
 {
 }
 
@@ -41,7 +41,7 @@ void * FbPreviewThread::Entry()
 			wxMutexLocker locker(m_mutex);
 			m_condition.Wait();
 		}
-		
+
 		FbViewContext ctx;
 		FbViewItem view;
 		{

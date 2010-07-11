@@ -49,21 +49,24 @@ void FbMasterInfoBase::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite
 {
 	wxWindowID id = ID_MODEL_CREATE;
 	size_t length = fbLIST_CACHE_SIZE;
+	size_t index = 0;
 	size_t count = 0;
 	wxArrayInt items;
 	while (result.NextRow()) {
 		if (thread->IsClosed()) return;
 		items.Add(result.GetInt(0));
 		count++;
-		if (count == length) {
+		index++;
+		if (index == length) {
 			length = fbLIST_ARRAY_SIZE;
 			FbArrayEvent(id, items, GetIndex()).Post(owner);
 			id = ID_MODEL_APPEND;
 			items.Empty();
-			count = 0;
+			index = 0;
 		}
 	}
 	FbArrayEvent(id, items, GetIndex()).Post(owner);
+	FbCountEvent(ID_MODEL_CREATE, *this, count).Post(owner);
 }
 
 void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
@@ -115,11 +118,19 @@ void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 			delete list;
 		}
 	}
-
 	model->SetRoot(root);
+	SendTree(owner, thread, model);
+}
 
-	if (thread->IsClosed()) delete model;
-	else FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
+void FbMasterInfoBase::SendTree(wxEvtHandler *owner, FbThread * thread, FbBookTreeModel * model) const
+{
+	if (thread->IsClosed()) {
+		delete model;
+	} else {
+		int count = model->GetBookCount();
+		FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
+		FbCountEvent(ID_MODEL_CREATE, *this, count).Post(owner);
+	}
 }
 
 wxString FbMasterInfoBase::GetOrderTable() const
@@ -204,9 +215,16 @@ FbMasterInfo & FbMasterInfo::operator =(const FbMasterInfo &info)
 	return *this;
 }
 
+bool FbMasterInfo::operator ==(const FbMasterInfo &info) const
+{
+	if (this->m_data == NULL) {
+		return m_data == NULL;
+	} else return (*this->m_data) == (*info.m_data);
+}
+
 FbMasterInfo FbModelData::GetInfo() const
 {
-	return NULL;
+	return FbMasterInfo();
 }
 
 FbMasterInfo FbModelItem::GetInfo() const
@@ -221,6 +239,7 @@ FbMasterInfo FbTreeViewCtrl::GetInfo() const
 		FbModelItem item = model->GetCurrent();
 		if (item) return (&item)->GetInfo();
 	}
-	return NULL;
+	return FbMasterInfo();
 }
+
 

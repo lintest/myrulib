@@ -30,7 +30,8 @@ bool FbPreviewWindow::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos
 FbPreviewWindow::~FbPreviewWindow()
 {
 	m_thread->Close();
-	m_thread->Delete();
+	m_thread->Wait();
+	delete m_thread;
 }
 
 void FbPreviewWindow::Reset(const FbViewContext &ctx, const FbViewItem &item)
