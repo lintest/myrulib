@@ -98,7 +98,9 @@ class FbBookTreeModel: public FbTreeModel
 		virtual int GetBook();
 		virtual FbViewItem GetView();
 		virtual void Delete();
+		int GetBookCount();
 	private:
+		void GetBooks(FbModelItem &parent, FbSortedArrayInt &items);
 		void GetChecked(FbModelItem &parent, wxArrayInt &items);
 		void GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items);
 		bool DoDelete(FbModelItem &parent, size_t &row);

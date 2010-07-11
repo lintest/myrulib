@@ -24,7 +24,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
-		void UpdateStatus();
+		void UpdateStatus(int count);
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
@@ -32,7 +32,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual void CreateControls();
 		virtual void CreateColumns() = 0;
 		virtual wxMenuBar * CreateMenuBar();
-		virtual wxString GetStatus();
+//		virtual wxString GetStatus();
 		int GetModeKey();
 		int GetViewKey();
 		void OnSubmenu(wxCommandEvent& event);

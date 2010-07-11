@@ -93,7 +93,7 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 {
 	SetTitle(GetTitle());
     FbAuiMDIChildFrame::Localize(bUpdateMenu);
-    if (bUpdateMenu) UpdateStatus();
+//    if (bUpdateMenu) UpdateStatus();
 
 	wxDELETE(m_ToolBar);
 	m_ToolBar = CreateToolBar();
@@ -164,7 +164,7 @@ void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
-	UpdateStatus();
+//	UpdateStatus();
 	event.Skip();
 }
 
@@ -215,21 +215,17 @@ void FbFrameBase::OnColClick(wxListEvent& event)
 
 void FbFrameBase::OnBooksCount(wxCommandEvent& event)
 {
-	UpdateStatus();
+	UpdateStatus(event.GetInt());
 }
 
-wxString FbFrameBase::GetStatus()
-{
-	size_t count = GetBookCount();
-	wxString msg = wxString::Format(wxT(" %d "), count);
-	msg << wxPLURAL("book", "books", count);
-	return msg;
-}
-
-void FbFrameBase::UpdateStatus()
+void FbFrameBase::UpdateStatus(int count)
 {
 	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
-	if (frame) frame->SetStatus(GetStatus());
+	if (frame) {
+		wxString msg = wxString::Format(wxT(" %d "), count);
+		msg << wxPLURAL("book", "books", count);
+		frame->SetStatus(msg);
+	}
 }
 
 int FbFrameBase::GetBookCount()

@@ -444,8 +444,11 @@ void FbBookPanel::OnListArray( FbArrayEvent& event )
 
 void FbBookPanel::OnTreeModel( FbModelEvent& event )
 {
-	if (m_master.GetIndex() == event.GetInt()) {
-		m_BookList->AssignModel(event.GetModel());
+	FbBookTreeModel * model = wxDynamicCast(event.GetModel(), FbBookTreeModel);
+	if (model && m_master.GetIndex() == event.GetInt()) {
+		m_BookList->AssignModel(model);
+		int count = model->GetBookCount();
+		FbCommandEvent(fbEVT_BOOK_ACTION, ID_BOOKS_COUNT, count).Post(GetParent());
 	} else {
 		delete event.GetModel();
 	}

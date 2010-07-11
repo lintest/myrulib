@@ -167,3 +167,25 @@ bool FbBookTreeModel::DoDelete(FbModelItem &parent, size_t &row)
 	}
 	return remove;
 }
+
+int FbBookTreeModel::GetBookCount()
+{
+	FbModelItem root = GetRoot();
+	if (!root) return 0;
+
+	FbSortedArrayInt books(FbArrayEvent::CompareInt);
+	GetBooks(root, books);
+	return books.Count();
+}
+
+void FbBookTreeModel::GetBooks(FbModelItem &parent, FbSortedArrayInt &items)
+{
+	FbBookChildData * book = wxDynamicCast(&parent, FbBookChildData);
+	if (book && items.Index(book->GetCode()) == wxNOT_FOUND) items.Add(book->GetCode());
+
+	size_t count = parent.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbModelItem child = parent.Items(i);
+		GetBooks(child, items);
+	}
+}

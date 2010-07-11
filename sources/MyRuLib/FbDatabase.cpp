@@ -267,6 +267,70 @@ void FbDatabase::AttachConfig()
 }
 
 //-----------------------------------------------------------------------------
+//  FbCommonDatabase
+//-----------------------------------------------------------------------------
+
+FbCommonDatabase::FbCommonDatabase()
+{
+	FbDatabase::Open(wxGetApp().GetAppData());
+}
+
+wxString FbCommonDatabase::GetMd5(int id)
+{
+	wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow()) return result.GetAsString(0);
+	return wxEmptyString;
+}
+
+//-----------------------------------------------------------------------------
+//  FbLocalDatabase
+//-----------------------------------------------------------------------------
+
+FbLocalDatabase::FbLocalDatabase()
+{
+	FbDatabase::Open(GetConfigName());
+}
+
+//-----------------------------------------------------------------------------
+//  FbMasterDatabase
+//-----------------------------------------------------------------------------
+
+int FbMasterDatabase::GetVersion()
+{
+	return ExecuteScalar(wxString::Format(wxT("SELECT value FROM %s WHERE id=2"), GetMaster().c_str()));
+}
+
+void FbMasterDatabase::SetVersion(int iValue)
+{
+	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO %s(id, value) VALUES (2,%d)"), GetMaster().c_str(), iValue));
+}
+
+void FbMasterDatabase::UpgradeDatabase(int new_version)
+{
+	int version = GetVersion();
+
+	while ( version < new_version ) {
+		version++;
+		wxLogVerbose(_("Upgrade database to version %d"), version);
+		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+		DoUpgrade(version);
+		SetVersion(version);
+		trans.Commit();
+	}
+
+	int old_version = GetVersion();
+	if (old_version != new_version) {
+	    wxString msg = _("Database version mismatch");
+		wxMessageBox(msg, strProgramName, wxOK | wxICON_ERROR);
+		wxLogError(msg);
+		wxLogFatalError(_("Need a new version %d, but used the old %d."), new_version, old_version);
+	}
+}
+
+//-----------------------------------------------------------------------------
 //  FbMainDatabase
 //-----------------------------------------------------------------------------
 
@@ -275,11 +339,8 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	FbDatabase::Open(filename, key, flags);
 	bool bExists = TableExists(GetMaster());
 
-	if (bExists)
-		FbLogMessage(_("Open database"), filename);
-	else {
-		FbLogMessage(_("Create new database"), filename);
-	}
+	wxString message = bExists ? _("Open database") : _("Create database");
+	FbLogMessage(message, filename);
 
 	if (!bExists) CreateDatabase();
 	UpgradeDatabase(DB_DATABASE_VERSION);
@@ -488,38 +549,6 @@ void FbMainDatabase::CreateFullText(bool force)
 }
 
 //-----------------------------------------------------------------------------
-//  FbCommonDatabase
-//-----------------------------------------------------------------------------
-
-FbCommonDatabase::FbCommonDatabase() :FbDatabase()
-{
-	FbDatabase::Open(wxGetApp().GetAppData());
-}
-
-wxString FbCommonDatabase::GetMd5(int id)
-{
-	try {
-		wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
-		wxSQLite3Statement stmt = PrepareStatement(sql);
-		stmt.Bind(1, id);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return result.GetAsString(0);
-	} catch (wxSQLite3Exception & e) {
-		wxLogError(e.GetMessage());
-	}
-	return wxEmptyString;
-}
-
-//-----------------------------------------------------------------------------
-//  FbLocalDatabase
-//-----------------------------------------------------------------------------
-
-FbLocalDatabase::FbLocalDatabase() :FbDatabase()
-{
-	FbDatabase::Open(GetConfigName());
-}
-
-//-----------------------------------------------------------------------------
 //  FbConfigDatabase
 //-----------------------------------------------------------------------------
 
@@ -580,42 +609,6 @@ void FbConfigDatabase::DoUpgrade(int version)
 			ExecuteUpdate(wxT("UPDATE states SET download = 1 WHERE download=-2"));
 			ExecuteUpdate(wxT("UPDATE states SET download = 101 WHERE download=-1"));
 		} break;
-	}
-}
-
-//-----------------------------------------------------------------------------
-//  FbMasterDatabase
-//-----------------------------------------------------------------------------
-
-int FbMasterDatabase::GetVersion()
-{
-	return ExecuteScalar(wxString::Format(wxT("SELECT value FROM %s WHERE id=2"), GetMaster().c_str()));
-}
-
-void FbMasterDatabase::SetVersion(int iValue)
-{
-	ExecuteUpdate(wxString::Format(wxT("INSERT OR REPLACE INTO %s(id, value) VALUES (2,%d)"), GetMaster().c_str(), iValue));
-}
-
-void FbMasterDatabase::UpgradeDatabase(int new_version)
-{
-	int version = GetVersion();
-
-	while ( version < new_version ) {
-		version++;
-		wxLogVerbose(_("Upgrade database to version %d"), version);
-		wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-		DoUpgrade(version);
-		SetVersion(version);
-		trans.Commit();
-	}
-
-	int old_version = GetVersion();
-	if (old_version != new_version) {
-	    wxString msg = _("Database version mismatch");
-		wxMessageBox(msg, strProgramName, wxOK | wxICON_ERROR);
-		wxLogError(msg);
-		wxLogFatalError(_("Need a new version %d, but used the old %d."), new_version, old_version);
 	}
 }
 

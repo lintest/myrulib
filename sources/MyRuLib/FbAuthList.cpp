@@ -70,6 +70,7 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 	size_t count = 0;
 	wxArrayInt items;
 	while (result.NextRow()) {
+		if (IsClosed()) return;
 		int code = result.GetInt(0);
 		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(new FbCacheData(result));
 		items.Add(code);
@@ -111,6 +112,13 @@ IMPLEMENT_CLASS(FbAuthListData, FbModelData)
 
 wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 {
+	if (col == 1) {
+		FbAuthListModel * master = wxDynamicCast(&model, FbAuthListModel);
+		if (master) {
+			int count = master->GetCount(m_code);
+			if (count != wxNOT_FOUND) return wxString::Format(wxT("%d"), count);
+		}
+	}
 	return FbCollection::GetAuth(m_code, col);
 }
 
@@ -174,3 +182,14 @@ void FbAuthListModel::Delete(int code)
 	if (index < (int)m_position) m_position--;
 	m_items.RemoveAt(index);
 }
+
+void FbAuthListModel::SetCount(int code, int count)
+{
+	m_counter[code] = count;
+}
+
+int FbAuthListModel::GetCount(int code)
+{
+	return m_counter.count(code) ? m_counter[code] : wxNOT_FOUND;
+}
+
