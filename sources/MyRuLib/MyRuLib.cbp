@@ -236,6 +236,8 @@
 		<Unit filename="FbFilterDlg.h" />
 		<Unit filename="FbFilterObj.cpp" />
 		<Unit filename="FbFilterObj.h" />
+		<Unit filename="FbFilterTree.cpp" />
+		<Unit filename="FbFilterTree.h" />
 		<Unit filename="FbFldrTree.cpp" />
 		<Unit filename="FbFldrTree.h" />
 		<Unit filename="FbFrameAuthor.cpp" />

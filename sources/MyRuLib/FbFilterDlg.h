@@ -4,49 +4,43 @@
 #include <wx/wx.h>
 #include <wx/intl.h>
 
-#include <wx/string.h>
-#include <wx/checkbox.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/statbox.h>
-#include <wx/treectrl.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
+#include <wx/wx.h>
 #include "FbWindow.h"
 #include "FbTreeView.h"
 #include "FbFilterObj.h"
 #include "FbDatabase.h"
+#include "FbThread.h"
 #include "FbParams.h"
+#include "FbBookEvent.h"
 
-///////////////////////////////////////////////////////////////////////////////
-/// Class FbFilterDlg
-///////////////////////////////////////////////////////////////////////////////
 class FbFilterDlg : public FbDialog
 {
 	public:
-		FbFilterDlg(FbFilterObj & filter);
-		static bool Execute(FbFilterObj & filter);
-	private:
-		void Assign(FbFilterObj & filter);
-
-	private:
-		enum
-		{
+		enum {
 			ID_CHECK_LIB = 1000,
 			ID_CHECK_USR,
 			ID_TREE_LANG,
 			ID_TREE_TYPE,
 		};
+		static bool Execute(FbFilterObj & filter);
+		FbFilterDlg(FbFilterObj & filter);
+		virtual ~FbFilterDlg();
+
+	private:
 		wxCheckBox* m_checkLib;
 		wxCheckBox* m_checkUsr;
 		FbTreeViewCtrl * m_treeLang;
 		FbTreeViewCtrl * m_treeType;
 
 	private:
+		void Assign(FbFilterObj & filter);
+
+	private:
+		FbThread * m_thread;
+
+	private:
 		void OnNoButton( wxCommandEvent& event );
+		void OnTreeModel( FbModelEvent& event );
 		DECLARE_EVENT_TABLE()
 };
 

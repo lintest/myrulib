@@ -179,6 +179,7 @@
 		<sources>MyRuLib/FbDownloader.cpp</sources>
 		<sources>MyRuLib/FbFilterDlg.cpp</sources>
 		<sources>MyRuLib/FbFilterObj.cpp</sources>
+		<sources>MyRuLib/FbFilterTree.cpp</sources>
 		<sources>MyRuLib/FbFldrTree.cpp</sources>
 		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>

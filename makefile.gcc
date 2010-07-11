@@ -121,6 +121,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbDownloader.o \
 	build\myrulib_FbFilterDlg.o \
 	build\myrulib_FbFilterObj.o \
+	build\myrulib_FbFilterTree.o \
 	build\myrulib_FbFldrTree.o \
 	build\myrulib_FbFrameAuthor.o \
 	build\myrulib_FbFrameBase.o \
@@ -457,6 +458,9 @@ build\myrulib_FbFilterDlg.o: ./sources/MyRuLib/FbFilterDlg.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFilterObj.o: ./sources/MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
+	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
+
+build\myrulib_FbFilterTree.o: ./sources/MyRuLib/FbFilterTree.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbFldrTree.o: ./sources/MyRuLib/FbFldrTree.cpp $(MYRULIB_ODEP)

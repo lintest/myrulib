@@ -1,4 +1,5 @@
 #include "FbFilterDlg.h"
+#include "FbFilterTree.h"
 #include <wx/imaglist.h>
 
 /*
@@ -89,10 +90,13 @@ wxString FbFilterList::GetValue()
 
 BEGIN_EVENT_TABLE( FbFilterDlg, wxDialog )
 	EVT_BUTTON( wxID_NO, FbFilterDlg::OnNoButton )
+	EVT_FB_MODEL(ID_TREE_LANG, FbFilterDlg::OnTreeModel)
+	EVT_FB_MODEL(ID_TREE_TYPE, FbFilterDlg::OnTreeModel)
 END_EVENT_TABLE()
 
 FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
-	: FbDialog( NULL, wxID_ANY, _("Filter settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
+	: FbDialog( NULL, wxID_ANY, _("Filter settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
+		m_thread(NULL)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -115,11 +119,11 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxBoxSizer* bSizerList;
 	bSizerList = new wxBoxSizer( wxHORIZONTAL );
 
-	m_treeLang = new FbTreeViewCtrl(this, ID_TREE_LANG);
+	m_treeLang = new FbTreeViewCtrl(this, ID_TREE_LANG, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | fbTR_CHECKBOX);
 	m_treeLang->AddColumn(0, _("Language"), 1);
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	m_treeType = new FbTreeViewCtrl(this, ID_TREE_TYPE);
+	m_treeType = new FbTreeViewCtrl(this, ID_TREE_TYPE, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | fbTR_CHECKBOX);
 	m_treeType->AddColumn(0, _("File extension"), 1);
 	bSizerList->Add( m_treeType, 1, wxEXPAND|wxALL, 5 );
 
@@ -128,22 +132,27 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxStdDialogButtonSizer * sdbSizer = CreateStdDialogButtonSizer( wxYES | wxNO | wxCANCEL );
 	bSizerMain->Add( sdbSizer, 0, wxEXPAND|wxALL, 5 );
 
-	int last = FbParams::GetValue(DB_NEW_BOOK) + 1;
-	if ( FbParams::GetValue(DB_LAST_BOOK) != last ) {
-		FbCommonDatabase database;
-		wxString sql_lang = wxT("SELECT DISTINCT lang, CASE WHEN lang='ru' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, lang");
-		wxString sql_type = wxT("SELECT distinct file_type, CASE WHEN file_type='fb2' THEN 1 ELSE 2 END AS number FROM books ORDER BY number, file_type");
-		FbParams params;
-//		params.SetText(DB_LANG_LIST, m_treeLang->Load(database, sql_lang, filter.m_lang));
-//		params.SetText(DB_TYPE_LIST, m_treeType->Load(database, sql_type, filter.m_type));
-		params.SetValue(DB_LAST_BOOK, last);
+	int last = FbParams::GetValue(DB_LAST_BOOK);
+	int next = FbParams::GetValue(DB_NEW_BOOK) + 1;
+	if ( last != next ) {
+		m_thread = new FbFilterTreeThread(this, last);
+		m_thread->Execute();
 	} else {
-//		m_treeLang->Read(filter.m_lang, DB_LANG_LIST);
-//		m_treeType->Read(filter.m_type, DB_TYPE_LIST);
+		m_treeLang->AssignModel(new FbFilterTreeModel(FbParams::GetText(DB_LANG_LIST)));
+		m_treeType->AssignModel(new FbFilterTreeModel(FbParams::GetText(DB_TYPE_LIST)));
 	}
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
+}
+
+FbFilterDlg::~FbFilterDlg()
+{
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
 }
 
 void FbFilterDlg::OnNoButton( wxCommandEvent& event )
@@ -157,6 +166,16 @@ void FbFilterDlg::Assign(FbFilterObj & filter)
 	filter.m_usr = m_checkUsr->GetValue();
 //	filter.m_lang = m_treeLang->GetValue();
 //	filter.m_type = m_treeType->GetValue();
+}
+
+void FbFilterDlg::OnTreeModel( FbModelEvent& event )
+{
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
+	if (treeview) {
+		treeview->AssignModel(event.GetModel());
+	} else {
+		delete event.GetModel();
+	}
 }
 
 bool FbFilterDlg::Execute(FbFilterObj & filter)
