@@ -15,7 +15,7 @@ IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)
-	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExternal)
+	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExportBooks)
 	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuthor::OnContextMenu)
 	EVT_MENU(ID_LETTER_ALL, FbFrameAuthor::OnAllClicked)
@@ -172,7 +172,7 @@ void FbFrameAuthor::SelectRandomLetter()
 	FbCommandEvent(wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + position).Post(this);
 }
 
-void FbFrameAuthor::OnExternal(wxCommandEvent& event)
+void FbFrameAuthor::OnExportBooks(wxCommandEvent& event)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);

@@ -16,7 +16,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		FbMainFrame();
 		virtual ~FbMainFrame();
 		virtual wxString GetTitle() const;
-		void SetStatus(const wxString &text);
+		void SetStatus(const wxString &text = wxEmptyString);
 		void Localize(int language);
 	protected:
 		virtual void SetMenuBar(wxMenuBar *pMenuBar);

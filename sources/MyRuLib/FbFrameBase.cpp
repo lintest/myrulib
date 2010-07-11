@@ -11,8 +11,7 @@ IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
 BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
-	EVT_TREE_ITEM_COLLAPSING(ID_MASTER_LIST, FbFrameBase::OnTreeCollapsing)
-	EVT_MENU(wxID_SAVE, FbFrameBase::OnExternal)
+	EVT_MENU(wxID_SAVE, FbFrameBase::OnExportBooks)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
@@ -53,12 +52,12 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_ORDER_TYPE, FbFrameBase::OnChangeOrderUpdateUI)
     EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
 	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
-	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameBase::OnBooksCount)
+	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameBase::OnBooksCount)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
 	FbAuiMDIChildFrame(parent, id, title),
-	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL), m_MasterThread(NULL)
+	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL), m_MasterThread(NULL), m_BookCount(0)
 {
 	m_filter.Load();
 }
@@ -93,7 +92,7 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 {
 	SetTitle(GetTitle());
     FbAuiMDIChildFrame::Localize(bUpdateMenu);
-//    if (bUpdateMenu) UpdateStatus();
+    if (bUpdateMenu) UpdateStatus();
 
 	wxDELETE(m_ToolBar);
 	m_ToolBar = CreateToolBar();
@@ -109,7 +108,7 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent)
 {
-	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), GetViewKey(), GetModeKey(), GetId());
+	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), GetId());
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
@@ -117,7 +116,7 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 	wxPostEvent(m_BooksPanel, event);
 }
 
-void FbFrameBase::OnExternal(wxCommandEvent& event)
+void FbFrameBase::OnExportBooks(wxCommandEvent& event)
 {
 	FbExportDlg::Execute(this, m_BooksPanel);
 }
@@ -125,6 +124,8 @@ void FbFrameBase::OnExternal(wxCommandEvent& event)
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
 {
 	m_BooksPanel->EmptyBooks();
+	m_BookCount = 0;
+	UpdateStatus();
 }
 
 void FbFrameBase::OnMasterSelected(wxTreeEvent & event)
@@ -146,25 +147,15 @@ void FbFrameBase::OnDirection(wxCommandEvent& event)
 
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 {
-	FbListMode mode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-
-	int param = GetModeKey();
-	if (param) FbParams().SetValue(param, mode);
-
-	if (mode == FB2_MODE_TREE) m_BooksPanel->m_BookList->SetSortedColumn(0);
-
-	m_BooksPanel->SetListMode(mode);
+	FbListMode listmode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
+	FbParams().SetValue(GetId(), FB_LIST_MODE, listmode);
+	m_BooksPanel->SetListMode(listmode);
 	UpdateBooklist();
-}
-
-void FbFrameBase::OnTreeCollapsing(wxTreeEvent & event)
-{
-	event.Veto();
 }
 
 void FbFrameBase::OnActivated(wxActivateEvent & event)
 {
-//	UpdateStatus();
+	UpdateStatus();
 	event.Skip();
 }
 
@@ -213,25 +204,23 @@ void FbFrameBase::OnColClick(wxListEvent& event)
 	UpdateBooklist();
 }
 
-void FbFrameBase::OnBooksCount(wxCommandEvent& event)
+void FbFrameBase::OnBooksCount(FbCountEvent& event)
 {
-	UpdateStatus(event.GetInt());
+	if (event.GetInfo() == GetInfo()) {
+		m_BookCount = event.GetCount();
+	}
+	UpdateStatus();
 }
 
-void FbFrameBase::UpdateStatus(int count)
+void FbFrameBase::UpdateStatus()
 {
 	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
-	if (frame) {
-		wxString msg = wxString::Format(wxT(" %d "), count);
-		msg << wxPLURAL("book", "books", count);
+	if (frame == NULL) return;
+	if (m_BookCount) {
+		wxString msg = wxString::Format(wxT(" %d "), m_BookCount);
+		msg << wxPLURAL("book", "books", m_BookCount);
 		frame->SetStatus(msg);
-	}
-}
-
-int FbFrameBase::GetBookCount()
-{
-	return 0;
-//	return (m_BooksPanel) ? m_BooksPanel->m_BookList->GetCount() : 0;
+	} else frame->SetStatus();
 }
 
 void FbFrameBase::ShowFullScreen(bool show)
@@ -281,32 +270,6 @@ void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 	UpdateBooklist();
 }
 
-int FbFrameBase::GetModeKey()
-{
-	switch (GetId()) {
-		case ID_FRAME_AUTHOR: return FB_MODE_AUTHOR;
-		case ID_FRAME_GENRES: return FB_MODE_GENRES;
-		case ID_FRAME_FOLDER: return FB_MODE_FOLDER;
-		case ID_FRAME_SEARCH: return FB_MODE_SEARCH;
-		case ID_FRAME_DOWNLD: return FB_MODE_DOWNLD;
-		case ID_FRAME_SEQUEN: return FB_MODE_SEQUEN;
-		default: return 0;
-	}
-}
-
-int FbFrameBase::GetViewKey()
-{
-	switch (GetId()) {
-		case ID_FRAME_AUTHOR: return FB_VIEW_AUTHOR;
-		case ID_FRAME_GENRES: return FB_VIEW_GENRES;
-		case ID_FRAME_FOLDER: return FB_VIEW_FOLDER;
-		case ID_FRAME_SEARCH: return FB_VIEW_SEARCH;
-		case ID_FRAME_DOWNLD: return FB_VIEW_DOWNLD;
-		case ID_FRAME_SEQUEN: return FB_VIEW_SEQUEN;
-		default: return 0;
-	}
-}
-
 void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
 {
 	FbListMode mode = m_BooksPanel->GetListMode();
@@ -340,5 +303,10 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 
 void FbFrameBase::UpdateBooklist()
 {
-	if (m_MasterList) m_BooksPanel->Reset(m_MasterList->GetInfo(), m_filter);
+	m_BooksPanel->Reset(GetInfo(), m_filter);
+}
+
+FbMasterInfo FbFrameBase::GetInfo()
+{
+	return m_MasterList ? m_MasterList->GetInfo() : FbMasterInfo();
 }

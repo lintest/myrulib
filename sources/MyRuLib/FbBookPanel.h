@@ -20,7 +20,7 @@ class FbMasterThread;
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
-		FbBookPanel(wxWindow *parent, const wxSize& size, int keyType, int keyMode, wxWindowID id);
+		FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id);
 		virtual ~FbBookPanel();
 		void Reset(const FbMasterInfo &master, const FbFilterObj &filter);
 		void UpdateInfo(int id);
@@ -60,7 +60,6 @@ class FbBookPanel: public wxSplitterWindow
 		wxTreeItemId m_AuthorItem;
 		wxTreeItemId m_SequenceItem;
 		int m_selected;
-		int m_KeyView;
 		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
 		wxWindowID m_owner;

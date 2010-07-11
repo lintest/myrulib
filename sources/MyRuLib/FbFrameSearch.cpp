@@ -56,10 +56,9 @@ void FbFrameSearch::Execute(wxAuiMDIParentFrame * parent, const wxString &title,
 	frame->UpdateBooklist();
 }
 
-void FbFrameSearch::UpdateBooklist()
+FbMasterInfo FbFrameSearch::GetInfo()
 {
-	FbMasterInfo info = FbMasterFindInfo(m_title, m_author);
-	m_BooksPanel->Reset(info, m_filter);
+	return FbMasterFindInfo(m_title, m_author);;
 }
 
 void FbFrameSearch::OnFoundNothing(wxCommandEvent& event)

@@ -66,7 +66,7 @@ void FbMasterInfoBase::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite
 		}
 	}
 	FbArrayEvent(id, items, GetIndex()).Post(owner);
-	FbCountEvent(ID_MODEL_CREATE, *this, count).Post(owner);
+	FbCountEvent(ID_BOOKS_COUNT, *this, count).Post(owner);
 }
 
 void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
@@ -129,7 +129,7 @@ void FbMasterInfoBase::SendTree(wxEvtHandler *owner, FbThread * thread, FbBookTr
 	} else {
 		int count = model->GetBookCount();
 		FbModelEvent(ID_MODEL_CREATE, model, GetIndex()).Post(owner);
-		FbCountEvent(ID_MODEL_CREATE, *this, count).Post(owner);
+		FbCountEvent(ID_BOOKS_COUNT, *this, count).Post(owner);
 	}
 }
 

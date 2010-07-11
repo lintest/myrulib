@@ -46,9 +46,9 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_FB_MODEL(ID_MODEL_CREATE, FbBookPanel::OnTreeModel)
 END_EVENT_TABLE()
 
-FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, int keyType, int keyMode, wxWindowID id)
+FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_BookInfo(NULL), m_selected(0), m_KeyView(keyType), m_thread(new FbMasterThread(this)), m_owner(id)
+		m_BookInfo(NULL), m_selected(0), m_thread(new FbMasterThread(this)), m_owner(id)
 {
 	SetMinimumPaneSize(50);
 	SetSashGravity(0.5);
@@ -57,15 +57,15 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, int keyType, int 
 	m_BookList = new FbTreeViewCtrl(this, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, substyle);
 	m_BookInfo = new FbPreviewWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 
-	int mode = FbParams::GetValue(keyType);
-	if (mode == FB2_VIEW_NOTHING) {
+	int viewmode = FbParams::GetValue(m_owner, FB_VIEW_MODE);
+	if (viewmode == FB2_VIEW_NOTHING) {
 		Initialize(m_BookList);
 		m_BookInfo->Show(false);
 	} else {
-		SetViewMode(mode);
+		SetViewMode(viewmode);
 	}
 
-	m_listmode = (bool) FbParams::GetValue(keyMode) ? FB2_MODE_TREE : FB2_MODE_LIST;
+	m_listmode = (bool) FbParams::GetValue(m_owner, FB_LIST_MODE) ? FB2_MODE_TREE : FB2_MODE_LIST;
 	int order = (m_listmode == FB2_MODE_TREE ? BF_NUMB : BF_NAME) + 1;
 	m_BookList->SetSortedColumn(order);
 
@@ -386,9 +386,7 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 
 void FbBookPanel::OnModifyBooks(wxCommandEvent& event)
 {
-/*
-	FbEditBookDlg::Execute();
-*/
+//	FbEditBookDlg::Execute();
 }
 
 void FbBookPanel::OnAuthorInfo(wxCommandEvent& event)
@@ -401,13 +399,13 @@ void FbBookPanel::OnAuthorInfo(wxCommandEvent& event)
 
 void FbBookPanel::OnChangeView(wxCommandEvent & event)
 {
-	int mode = FB2_VIEW_HORISONTAL;
+	int viewmode = FB2_VIEW_HORISONTAL;
 	switch (event.GetId()) {
-		case ID_SPLIT_VERTICAL: mode = FB2_VIEW_VERTICAL; break;
-		case ID_SPLIT_NOTHING: mode = FB2_VIEW_NOTHING; break;
+		case ID_SPLIT_VERTICAL: viewmode = FB2_VIEW_VERTICAL; break;
+		case ID_SPLIT_NOTHING: viewmode = FB2_VIEW_NOTHING; break;
 	}
-	SetViewMode(mode);
-	if (m_KeyView) FbParams().SetValue(m_KeyView, mode);
+	SetViewMode(viewmode);
+	FbParams().SetValue(m_owner, FB_VIEW_MODE, viewmode);
 	ResetPreview();
 }
 

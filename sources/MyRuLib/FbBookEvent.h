@@ -176,7 +176,7 @@ class FbCountEvent: public FbCommandEvent
 			: FbCommandEvent(fbEVT_COUNT_ACTION, winid), m_count(0) {}
 
 		FbCountEvent(const FbCountEvent & event)
-			: FbCommandEvent(event), m_info(event.m_info), m_count(0) {}
+			: FbCommandEvent(event), m_info(event.m_info), m_count(event.m_count) {}
 
 		FbCountEvent(wxWindowID winid, const FbMasterInfo &info, int count)
 			: FbCommandEvent(fbEVT_COUNT_ACTION, winid), m_info(info), m_count(count) {}

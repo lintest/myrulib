@@ -49,7 +49,7 @@ class FbFrameAuthor : public FbFrameBase
 		void OnColClick(wxListEvent& event);
 		void OnAllClicked(wxCommandEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
-		void OnExternal(wxCommandEvent& event);
+		void OnExportBooks(wxCommandEvent& event);
 		void OnViewAlphavet(wxCommandEvent& event);
 		void OnViewAlphavetUpdateUI(wxUpdateUIEvent & event);
 		void OnMasterAppend(wxCommandEvent& event);

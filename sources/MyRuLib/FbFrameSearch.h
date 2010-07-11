@@ -11,8 +11,8 @@ class FbFrameSearch : public FbFrameBase
 		virtual wxString GetTitle() const;
 	protected:
 		virtual void CreateControls();
-		virtual void UpdateBooklist();
 		virtual void CreateColumns() {}
+		virtual FbMasterInfo GetInfo();
 	private:
 		void CreateBookInfo();
 		void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);

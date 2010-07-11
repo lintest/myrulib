@@ -24,7 +24,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
-		void UpdateStatus(int count);
+		void UpdateStatus();
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
@@ -32,24 +32,22 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual void CreateControls();
 		virtual void CreateColumns() = 0;
 		virtual wxMenuBar * CreateMenuBar();
-//		virtual wxString GetStatus();
-		int GetModeKey();
-		int GetViewKey();
 		void OnSubmenu(wxCommandEvent& event);
 		void CreateBooksPanel(wxWindow * parent);
 		int GetColOrder(int col);
-		int GetBookCount();
 		bool IsFullScreen();
 		virtual void UpdateBooklist();
+		virtual FbMasterInfo GetInfo();
 	protected:
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		wxToolBar * m_ToolBar;
 		FbThread * m_MasterThread;
 		FbFilterObj m_filter;
+		int m_BookCount;
 	private:
 		void OnActivated(wxActivateEvent & event);
-		void OnBooksCount(wxCommandEvent& event);
+		void OnBooksCount(FbCountEvent& event);
 		void OnDirection(wxCommandEvent& event);
 		void OnChangeOrder(wxCommandEvent& event);
 		void OnChangeMode(wxCommandEvent& event);
@@ -64,12 +62,11 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnMasterSelected(wxTreeEvent & event);
-		void OnExternal(wxCommandEvent& event);
+		void OnExportBooks(wxCommandEvent& event);
 		void OnAppendBook(FbBookEvent& event);
 		void OnAppendAuthor(wxCommandEvent& event);
 		void OnAppendSequence(wxCommandEvent& event);
 		void OnEmptyBooks(wxCommandEvent& event);
-		void OnTreeCollapsing(wxTreeEvent & event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameBase)
 
