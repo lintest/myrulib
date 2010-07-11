@@ -1,3 +1,9 @@
+myrulib (0.24.10) lucid; urgency=low
+
+  * Update release
+
+ -- Denis Kandrashin <mail@lintest.ru>  Sun, 11 Jul 2010 22:36:03 +0400
+
 myrulib (0.23.6) lucid; urgency=low
 
   * Update release
