@@ -6,6 +6,7 @@
 #include "FbThread.h"
 #include "FbColumns.h"
 #include "FbBookTypes.h"
+#include "FbFilterObj.h"
 
 class FbMasterInfoBase: public wxObject
 {
@@ -22,7 +23,7 @@ class FbMasterInfoBase: public wxObject
 			{ m_order = order; }
 		void SetMode(FbListMode mode)
 			{ m_mode = mode; }
-		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 		virtual FbMasterInfoBase * Clone() const = 0;
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const = 0;
@@ -34,7 +35,7 @@ class FbMasterInfoBase: public wxObject
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
-		wxString FormatSQL(const wxString &sql, const wxString &cond) const;
+		wxString FormatSQL(const wxString &sql, const wxString &cond, const FbFilterObj &filter) const;
 	protected:
 		int GetOrder() const
 			{ return m_order; }
@@ -67,8 +68,8 @@ class FbMasterInfo: public wxObject
 			{ return m_data; }
 		int GetIndex() const
 			{ return m_data ? m_data->GetIndex() : 0; }
-		void * Execute(wxEvtHandler * owner, FbThread * thread)
-			{ return m_data ? m_data->Execute(owner, thread) : NULL; }
+		void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)
+			{ return m_data ? m_data->Execute(owner, thread, filter) : NULL; }
 		void SetOrder(int order)
 			{ if (m_data) m_data->SetOrder(order); }
 		void SetMode(FbListMode mode)

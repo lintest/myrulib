@@ -7,14 +7,15 @@
 class FbBooksThread: public FbThread
 {
 	public:
-		FbBooksThread(wxEvtHandler * frame, const FbMasterInfo info)
-			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info) {}
+		FbBooksThread(wxEvtHandler * frame, const FbMasterInfo info, const FbFilterObj &filter)
+			: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_filter(filter) {}
 	protected:
 		virtual void * Entry()
-			{ return m_info.Execute(m_frame, this); }
+			{ return m_info.Execute(m_frame, this, m_filter); }
 	private:
 		wxEvtHandler * m_frame;
 		FbMasterInfo m_info;
+		FbFilterObj m_filter;
 };
 
 //-----------------------------------------------------------------------------
@@ -42,10 +43,11 @@ void FbMasterThread::Close()
 	m_condition.Broadcast();
 }
 
-void FbMasterThread::Reset(const FbMasterInfo &info)
+void FbMasterThread::Reset(const FbMasterInfo &info, const FbFilterObj &filter)
 {
 	wxCriticalSectionLocker locker(m_section);
 	m_info = info;
+	m_filter = filter;
 	m_condition.Broadcast();
 }
 
@@ -58,11 +60,13 @@ void * FbMasterThread::Entry()
 		}
 
 		FbMasterInfo info;
+		FbFilterObj filter;
 		{
 			wxCriticalSectionLocker lock(m_section);
 			if (m_closed) return NULL;
 			if (!m_info) continue;
 			info = m_info;
+			filter = m_filter;
 			m_info = NULL;
 		}
 
@@ -71,7 +75,7 @@ void * FbMasterThread::Entry()
 			wxDELETE(m_thread);
 		}
 
-		m_thread = new FbBooksThread(m_owner, info);
+		m_thread = new FbBooksThread(m_owner, info, filter);
 		if (m_thread) m_thread->Execute();
 	}
 	return NULL;

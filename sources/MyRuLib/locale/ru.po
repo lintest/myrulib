@@ -121,8 +121,8 @@ msgid "Use filter"
 msgstr "Использовать фильтр"
 
 #: FbBookMenu.cpp:40 FbMainMenu.cpp:84
-msgid "Clear filter"
-msgstr "Удалить фильтр"
+msgid "Filter setup"
+msgstr "Настройка фильтра"
 
 #: FbBookMenu.cpp:43
 msgid "Jump to author"

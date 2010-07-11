@@ -36,8 +36,8 @@ FbBookMenu::FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder)
 	AppendSeparator();
 
 	if (bShowOrder) Append(wxID_ANY, _("Sort by"), new FbMenuSort);
+	Append(ID_FILTER_SET, _("Filter setup"));
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
-	Append(ID_FILTER_NOT, _("Clear filter"));
 	AppendSeparator();
 
 	Append(wxID_ANY, _("Jump to author"), new FbMenuAuthors(book));

@@ -21,7 +21,7 @@ class FbFilterParentData: public FbParentData
 	private:
 		wxString m_name;
 		int m_state;
-		DECLARE_CLASS(FbFilterParentData);
+		DECLARE_CLASS(FbFilterParentData)
 };
 
 class FbFilterChildData: public FbChildData
@@ -41,18 +41,19 @@ class FbFilterChildData: public FbChildData
 	private:
 		wxString m_code;
 		int m_state;
-		DECLARE_CLASS(FbFilterChildData);
+		DECLARE_CLASS(FbFilterChildData)
 };
 
 class FbFilterTreeModel: public FbTreeModel
 {
 	public:
 		FbFilterTreeModel(const wxSortedArrayString &array, const wxString & first);
-		FbFilterTreeModel(const wxString & list);
-//		virtual size_t GetSelected(wxArrayInt &items);
+		FbFilterTreeModel(const wxString & list, const wxString &sel);
+		void SetSel(const wxString &sel);
 		wxString GetAll();
+		wxString GetSel();
 	private:
-		DECLARE_CLASS(FbFilterTreeModel);
+		DECLARE_CLASS(FbFilterTreeModel)
 };
 
 class FbFilterTreeThread: public FbThread

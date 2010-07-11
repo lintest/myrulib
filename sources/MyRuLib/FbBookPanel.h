@@ -11,6 +11,7 @@
 #include "FbParams.h"
 #include "FbMasterInfo.h"
 #include "FbPreviewWindow.h"
+#include "FbFilterObj.h"
 
 class FbMasterData;
 
@@ -21,7 +22,7 @@ class FbBookPanel: public wxSplitterWindow
 	public:
 		FbBookPanel(wxWindow *parent, const wxSize& size, int keyType, int keyMode, wxWindowID id);
 		virtual ~FbBookPanel();
-		void Reset(const FbMasterInfo &master);
+		void Reset(const FbMasterInfo &master, const FbFilterObj &filter);
 		void UpdateInfo(int id);
 		void SetOrderID(int id);
 		int GetOrderID();

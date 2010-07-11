@@ -22,8 +22,8 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_MENU(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
+	EVT_MENU(ID_FILTER_SET, FbFrameBase::OnFilterSet)
 	EVT_MENU(ID_FILTER_USE, FbFrameBase::OnFilterUse)
-	EVT_MENU(ID_FILTER_NOT, FbFrameBase::OnFilterNot)
 	EVT_MENU(ID_DIRECTION, FbFrameBase::OnDirection)
 	EVT_MENU(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrder)
 	EVT_MENU(ID_ORDER_TITLE, FbFrameBase::OnChangeOrder)
@@ -60,6 +60,7 @@ FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxSt
 	FbAuiMDIChildFrame(parent, id, title),
 	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL), m_MasterThread(NULL)
 {
+	m_filter.Load();
 }
 
 FbFrameBase::~FbFrameBase()
@@ -271,15 +272,16 @@ void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
 	event.Check(m_filter.IsEnabled());
 }
 
-void FbFrameBase::OnFilterUse(wxCommandEvent& event)
+void FbFrameBase::OnFilterSet(wxCommandEvent& event)
 {
-	if (FbFilterDlg::Execute(m_filter)) UpdateBooklist();
+	bool ok = FbFilterDlg::Execute(m_filter);
+	if (ok) UpdateBooklist();
 }
 
-void FbFrameBase::OnFilterNot(wxCommandEvent& event)
+void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 {
 	FbParams().SetValue(FB_USE_FILTER, 0);
-	m_filter.Disable();
+	m_filter.Enable(not m_filter.IsEnabled());
 	UpdateBooklist();
 }
 
@@ -342,5 +344,5 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 
 void FbFrameBase::UpdateBooklist()
 {
-	if (m_MasterList) m_BooksPanel->Reset(m_MasterList->GetInfo());
+	if (m_MasterList) m_BooksPanel->Reset(m_MasterList->GetInfo(), m_filter);
 }

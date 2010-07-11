@@ -451,7 +451,7 @@ void FbBookPanel::OnTreeModel( FbModelEvent& event )
 	}
 }
 
-void FbBookPanel::Reset(const FbMasterInfo &master)
+void FbBookPanel::Reset(const FbMasterInfo &master, const FbFilterObj &filter)
 {
 	m_master = master;
 
@@ -460,7 +460,7 @@ void FbBookPanel::Reset(const FbMasterInfo &master)
 		m_BookList->AssignModel(NULL);
 		m_master.SetOrder(m_BookList->GetSortedColumn());
 		m_master.SetMode(GetListMode());
-		m_thread->Reset(m_master);
+		m_thread->Reset(m_master, filter);
 	} else {
 		m_BookList->AssignModel(new FbListStore);
 	}

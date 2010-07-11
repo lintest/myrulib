@@ -61,8 +61,7 @@ wxString FbMasterAuthInfo::GetWhere(wxSQLite3Database &database) const
 
 wxString FbMasterAuthInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT id_seq, books.id, bookseq.number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id %s WHERE %s ORDER BY id_seq, %s");
-	return FormatSQL(sql, GetWhere(database));
+	return wxT("SELECT DISTINCT id_seq, books.id, bookseq.number FROM books LEFT JOIN bookseq ON bookseq.id_book=books.id %s WHERE %s ORDER BY id_seq, %s");
 }
 
 void FbMasterAuthInfo::Bind(wxSQLite3Statement &stmt) const
@@ -139,8 +138,7 @@ wxString FbMasterSeqnInfo::GetWhere(wxSQLite3Database &database) const
 
 wxString FbMasterSeqnInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, %s");
-	return FormatSQL(sql, GetWhere(database));
+	return wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, %s");
 }
 
 void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
@@ -282,7 +280,7 @@ void FbMasterFindInfo::Bind(wxSQLite3Statement &stmt) const
 	if (!m_author.IsEmpty()) stmt.Bind(2, FbSearchFunction::AddAsterisk(m_author));
 }
 
-void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread)
+void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)
 {
 	if (thread->IsClosed()) return NULL;
 
@@ -306,6 +304,7 @@ void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread)
 		case FB2_MODE_LIST: sql = GetListSQL(database); break;
 		case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
 	}
+	sql = FormatSQL(sql, GetWhere(database), filter);
 
 	if (!m_full) {
 		database.CreateFunction(wxT("SEARCH_T"), 1, func_title);

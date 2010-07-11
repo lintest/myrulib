@@ -14,7 +14,7 @@ int FbMasterInfoBase::sm_counter = 0;
 
 IMPLEMENT_CLASS(FbMasterInfoBase, wxObject)
 
-void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread)
+void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)
 {
 	if (thread->IsClosed()) return NULL;
 
@@ -31,6 +31,7 @@ void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread)
 		case FB2_MODE_LIST: sql = GetListSQL(database); break;
 		case FB2_MODE_TREE: sql = GetTreeSQL(database); break;
 	}
+	sql = FormatSQL(sql, GetWhere(database), filter);
 
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	Bind(stmt);
@@ -172,21 +173,22 @@ wxString FbMasterInfoBase::GetOrderFields() const
 
 wxString FbMasterInfoBase::GetListSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id FROM books %s WHERE %s GROUP BY books.id ORDER BY %s");
-	return FormatSQL(sql, GetWhere(database));
+	return wxT("SELECT DISTINCT books.id FROM books %s WHERE %s GROUP BY books.id ORDER BY %s");
 }
 
 wxString FbMasterInfoBase::GetTreeSQL(wxSQLite3Database &database) const
 {
-	wxString sql = wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id  %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, %s");
-	return FormatSQL(sql, GetWhere(database));
+	return wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id  %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, bookseq.id_seq, %s");
 }
 
-wxString FbMasterInfoBase::FormatSQL(const wxString &sql, const wxString &cond) const
+wxString FbMasterInfoBase::FormatSQL(const wxString &sql, const wxString &cond, const FbFilterObj &filter) const
 {
 	wxString table = GetOrderTable();
 	wxString fields = GetOrderFields();
-	return wxString::Format(sql, table.c_str(), cond.c_str(), fields.c_str());
+	wxString where = cond;
+	where << filter.GetSQL();
+	wxString result = wxString::Format(sql, table.c_str(), where.c_str(), fields.c_str());
+	return result;
 }
 
 //-----------------------------------------------------------------------------

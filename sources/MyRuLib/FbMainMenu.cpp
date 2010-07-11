@@ -80,8 +80,8 @@ FbFrameMenu::MenuBook::MenuBook()
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	AppendSeparator();
 	Append(ID_ORDER_MENU, _("Sort by"), new FbMenuSort());
+	Append(ID_FILTER_SET, _("Filter setup"));
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
-	Append(ID_FILTER_NOT, _("Clear filter"));
 	AppendSeparator();
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
 }

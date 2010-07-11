@@ -5,13 +5,14 @@
 #include <wx/thread.h>
 #include "FbThread.h"
 #include "FbMasterInfo.h"
+#include "FbFilterObj.h"
 
 class FbMasterThread : public FbThread
 {
 	public:
 		FbMasterThread(wxEvtHandler * owner);
 		virtual ~FbMasterThread();
-		void Reset(const FbMasterInfo &info);
+		void Reset(const FbMasterInfo &info, const FbFilterObj &filter);
 	    virtual void Close();
 	protected:
 		virtual void * Entry();
@@ -21,6 +22,7 @@ class FbMasterThread : public FbThread
 		wxCriticalSection m_section;
 		wxEvtHandler * m_owner;
 		FbMasterInfo m_info;
+		FbFilterObj m_filter;
 		FbThread * m_thread;
 		bool m_closed;
 };

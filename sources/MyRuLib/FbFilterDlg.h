@@ -36,6 +36,7 @@ class FbFilterDlg : public FbDialog
 		void Assign(FbFilterObj & filter);
 
 	private:
+		FbFilterObj m_filter;
 		FbThread * m_thread;
 
 	private:

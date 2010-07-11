@@ -55,8 +55,8 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnChangeMode(wxCommandEvent& event);
 		void OnShowColumns(wxCommandEvent& event);
 		void OnColClick(wxListEvent& event);
+		void OnFilterSet(wxCommandEvent& event);
 		void OnFilterUse(wxCommandEvent& event);
-		void OnFilterNot(wxCommandEvent& event);
 		void OnFilterUseUpdateUI(wxUpdateUIEvent & event);
 		void OnMenuOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnDirectionUpdateUI(wxUpdateUIEvent & event);

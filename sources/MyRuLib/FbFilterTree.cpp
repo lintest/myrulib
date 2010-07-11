@@ -38,7 +38,7 @@ FbFilterTreeModel::FbFilterTreeModel(const wxSortedArrayString &array, const wxS
 	SetRoot(root);
 }
 
-FbFilterTreeModel::FbFilterTreeModel(const wxString & list)
+FbFilterTreeModel::FbFilterTreeModel(const wxString & list, const wxString &sel)
 {
 	FbFilterParentData * root = new FbFilterParentData(*this);
 
@@ -49,8 +49,27 @@ FbFilterTreeModel::FbFilterTreeModel(const wxString & list)
     }
 
 	SetRoot(root);
+	SetSel(sel);
 }
 
+void FbFilterTreeModel::SetSel(const wxString &sel)
+{
+	wxSortedArrayString strings;
+    wxStringTokenizer tokenizer(sel, wxT(','));
+    while ( tokenizer.HasMoreTokens() ) {
+        wxString token = tokenizer.GetNextToken();
+        token.Replace(wxT("'"), wxEmptyString);
+        strings.Add(token);
+    }
+
+	FbModelItem root = GetRoot();
+	size_t count = root.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbModelItem child = root.Items(i);
+		int state = strings.Index(child.GetValue(0)) != wxNOT_FOUND ? 1 : 0;
+		child.SetState(state);
+	}
+}
 
 wxString FbFilterTreeModel::GetAll()
 {
@@ -61,6 +80,22 @@ wxString FbFilterTreeModel::GetAll()
 		FbModelItem child = root.Items(i);
 		if (i) result << wxT(',');
 		result << child.GetValue(0);
+	}
+	return result;
+}
+
+wxString FbFilterTreeModel::GetSel()
+{
+	wxString result;
+	FbModelItem root = GetRoot();
+	if (root.GetState() != 2) return wxEmptyString;
+	size_t count = root.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbModelItem child = root.Items(i);
+		if (child.GetState()) {
+			if (!result.IsEmpty()) result << wxT(',');
+			result << wxT('\'') << child.GetValue(0) << wxT('\'');
+		}
 	}
 	return result;
 }

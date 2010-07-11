@@ -2,92 +2,6 @@
 #include "FbFilterTree.h"
 #include <wx/imaglist.h>
 
-/*
-FbFilterList::FbFilterList(wxWindow *parent, wxWindowID id, const wxString &title)
-	:FbCheckList(parent, id, wxTR_FULL_ROW_HIGHLIGHT | wxTR_MULTIPLE | wxSUNKEN_BORDER)
-{
-	SetFont( FbParams::GetFont(FB_FONT_DLG) );
-	AddColumn (title, 10, wxALIGN_LEFT);
-	SetMinSize( wxSize(100, 100) );
-	SetItemBold( AddRoot(_("All"), 0), true );
-}
-
-int FbFilterList::Append(wxTreeItemId parent, wxString &text, const wxString & filter)
-{
-	text.Replace(wxT(","), wxEmptyString, true);
-	text.Replace(wxT("'"), wxEmptyString, true);
-	text.Replace(wxT("\""), wxEmptyString, true);
-	if (text.IsEmpty()) return -1;
-	int image = filter.IsEmpty() ? 1 : filter.Find(wxT("'") + text + wxT("'")) == wxNOT_FOUND ? 0 : 1;
-	AppendItem(parent, text, image);
-	return image;
-}
-
-wxString FbFilterList::Load(FbDatabase & database, const wxString & sql, const wxString & filter)
-{
-	wxString list;
-	wxTreeItemId root = GetRootItem();
-	Freeze();
-
-	int all = -1;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-	while ( result.NextRow() ) {
-		wxString text = result.GetString(0);
-		int image = Append(root, text, filter);
-		if (image<0) continue;
-		if (!list.IsEmpty()) list += wxT(",");
-		list += text;
-		if (all < 0) all = image; else if (all != image) all = 2;
-	}
-	if (all > 0) SetItemImage(root, all);
-
-	Expand(root);
-	Thaw();
-	return list;
-}
-
-void FbFilterList::Read(const wxString & filter, int key)
-{
-	wxTreeItemId root = GetRootItem();
-	Freeze();
-	wxString list = FbParams::GetText(key);
-	int all = -1;
-
-	int pos;
-	do {
-		pos = list.Find(wxT(','));
-		wxString text = pos == wxNOT_FOUND ? list : list.Left(pos);
-		list = list.Mid(pos + 1);
-		int image = Append(root, text, filter);
-		if (all < 0) all = image; else if (all != image && image>=0) all = 2;
-	} while (pos != wxNOT_FOUND);
-
-	if (all > 0) SetItemImage(root, all);
-	Expand(root);
-	Thaw();
-}
-
-wxString FbFilterList::GetValue()
-{
-	wxString result;
-	bool all = true;
-	wxTreeItemIdValue cookie;
-	wxTreeItemId parent = GetRootItem();
-	wxTreeItemId child = GetFirstChild(parent, cookie);
-	while (child.IsOk()) {
-		if (GetItemImage(child) == 1) {
-			if (!result.IsEmpty()) result += wxT(",");
-			result += wxT("'") + GetItemText(child) + wxT("'");
-		} else all = false;
-		child = GetNextChild(parent, cookie);
-	}
-	return all ? wxString(wxEmptyString) : result;
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-*/
-
 BEGIN_EVENT_TABLE( FbFilterDlg, wxDialog )
 	EVT_BUTTON( wxID_NO, FbFilterDlg::OnNoButton )
 	EVT_FB_MODEL(ID_TREE_LANG, FbFilterDlg::OnTreeModel)
@@ -96,7 +10,7 @@ END_EVENT_TABLE()
 
 FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	: FbDialog( NULL, wxID_ANY, _("Filter settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
-		m_thread(NULL)
+		m_filter(filter), m_thread(NULL)
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -129,17 +43,20 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );
 
-	wxStdDialogButtonSizer * sdbSizer = CreateStdDialogButtonSizer( wxYES | wxNO | wxCANCEL );
+	wxStdDialogButtonSizer * sdbSizer = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizer, 0, wxEXPAND|wxALL, 5 );
 
 	int last = FbParams::GetValue(DB_LAST_BOOK);
 	int next = FbParams::GetValue(DB_NEW_BOOK) + 1;
 	if ( last != next ) {
-		m_thread = new FbFilterTreeThread(this, last);
+		m_thread = new FbFilterTreeThread(this, next);
 		m_thread->Execute();
 	} else {
-		m_treeLang->AssignModel(new FbFilterTreeModel(FbParams::GetText(DB_LANG_LIST)));
-		m_treeType->AssignModel(new FbFilterTreeModel(FbParams::GetText(DB_TYPE_LIST)));
+		FbFilterTreeModel * model;
+		model = new FbFilterTreeModel(FbParams::GetText(DB_LANG_LIST), filter.m_lang);
+		m_treeLang->AssignModel(model);
+		model = new FbFilterTreeModel(FbParams::GetText(DB_TYPE_LIST), filter.m_type);
+		m_treeType->AssignModel(model);
 	}
 
 	this->SetSizer( bSizerMain );
@@ -164,14 +81,25 @@ void FbFilterDlg::Assign(FbFilterObj & filter)
 {
 	filter.m_lib = m_checkLib->GetValue();
 	filter.m_usr = m_checkUsr->GetValue();
-//	filter.m_lang = m_treeLang->GetValue();
-//	filter.m_type = m_treeType->GetValue();
+
+	FbFilterTreeModel * model;
+
+	model = wxDynamicCast(m_treeLang->GetModel(), FbFilterTreeModel);
+	if (model) filter.m_lang = model->GetSel();
+
+	model = wxDynamicCast(m_treeType->GetModel(), FbFilterTreeModel);
+	if (model) filter.m_type = model->GetSel();
 }
 
 void FbFilterDlg::OnTreeModel( FbModelEvent& event )
 {
+	FbFilterTreeModel * model = wxDynamicCast(event.GetModel(), FbFilterTreeModel);
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
-	if (treeview) {
+	if (model && treeview) {
+		switch (event.GetId()) {
+			case ID_TREE_LANG: model->SetSel(m_filter.m_lang); break;
+			case ID_TREE_TYPE: model->SetSel(m_filter.m_type); break;
+		}
 		treeview->AssignModel(event.GetModel());
 	} else {
 		delete event.GetModel();
@@ -181,20 +109,12 @@ void FbFilterDlg::OnTreeModel( FbModelEvent& event )
 bool FbFilterDlg::Execute(FbFilterObj & filter)
 {
 	FbFilterDlg dlg(filter);
-	int res = dlg.ShowModal();
-
-	switch ( res ) {
-		case wxID_YES: {
-			dlg.Assign(filter);
-			filter.m_enabled = true;
-			filter.Save();
-		} break;
-		case wxID_NO: {
-			filter.m_enabled = false;
-			FbParams().SetValue(FB_USE_FILTER, 0);
-		} break;
+	int res = dlg.ShowModal() == wxID_OK;
+	if (res) {
+		dlg.Assign(filter);
+		filter.m_enabled = true;
+		filter.Save();
 	}
-
-	return  res != wxID_CANCEL;
+	return res;
 }
 

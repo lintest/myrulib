@@ -171,7 +171,7 @@ class FbMasterFindInfo: public FbMasterInfoBase
 		virtual FbMasterInfoBase * Clone() const
 			{ return new FbMasterFindInfo(*this); }
 	protected:
-		virtual void * Execute(wxEvtHandler * owner, FbThread * thread);
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:

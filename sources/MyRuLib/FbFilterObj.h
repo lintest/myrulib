@@ -3,23 +3,26 @@
 
 #include <wx/wx.h>
 
-class FbFilterObj
+class FbFilterObj: public wxObject
 {
 	public:
 		friend class FbFilterDlg;
 	public:
 		FbFilterObj();
-		wxString GetSQL();
-		bool IsEnabled() { return m_enabled; };
-		void Disable() { m_enabled = false; };
-	private:
-		void Save();
+		FbFilterObj(const FbFilterObj & object);
+		FbFilterObj & operator=(const FbFilterObj & object);
+		wxString GetSQL() const;
+		bool IsEnabled() const { return m_enabled; };
+		void Enable(bool value) { m_enabled = value; };
+		void Load();
+		void Save() const;
 	private:
 		bool m_enabled;
 		bool m_lib;
 		bool m_usr;
 		wxString m_lang;
 		wxString m_type;
+		DECLARE_CLASS(FbFilterTreeModel)
 };
 
 #endif // __FBFILTEROBJ_H__
