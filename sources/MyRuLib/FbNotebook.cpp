@@ -418,9 +418,9 @@ void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
     dc.DestroyClippingRegion();
 }
 
-// -- FbAuiSimpleTabArt class implementation --
+// -- FbCompactTabArt class implementation --
 
-FbAuiSimpleTabArt::FbAuiSimpleTabArt()
+FbCompactTabArt::FbCompactTabArt()
 {
     wxColour base_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 	wxColour normaltab_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT);
@@ -446,9 +446,9 @@ FbAuiSimpleTabArt::FbAuiSimpleTabArt()
 	);
 }
 
-wxAuiTabArt* FbAuiSimpleTabArt::Clone()
+wxAuiTabArt* FbCompactTabArt::Clone()
 {
-    return wx_static_cast(wxAuiTabArt*, new FbAuiSimpleTabArt);
+    return wx_static_cast(wxAuiTabArt*, new FbCompactTabArt);
 }
 
 // DrawTab() draws an individual tab.
@@ -460,7 +460,7 @@ wxAuiTabArt* FbAuiSimpleTabArt::Clone()
 // out_rect - actual output rectangle
 // x_extent - the advance x; where the next tab should start
 
-void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
+void FbCompactTabArt::DrawTab(wxDC& dc,
                                 wxWindow* wnd,
                                 const wxAuiNotebookPage& page,
                                 const wxRect& in_rect,
@@ -621,7 +621,7 @@ void FbAuiSimpleTabArt::DrawTab(wxDC& dc,
 // FbAuiDefaultTabArt
 ////////////////////////////////////////////////////////////////////////
 
-FbAuiToolbarTabArt::FbAuiToolbarTabArt(bool flat)
+FbToolbarTabArt::FbToolbarTabArt(bool flat)
 	: m_flat(flat)
 {
     m_normal_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
@@ -629,9 +629,9 @@ FbAuiToolbarTabArt::FbAuiToolbarTabArt(bool flat)
     m_selected_font.SetWeight(wxBOLD);
 }
 
-wxAuiTabArt* FbAuiToolbarTabArt::Clone()
+wxAuiTabArt* FbToolbarTabArt::Clone()
 {
-    FbAuiToolbarTabArt* art = new FbAuiToolbarTabArt;
+    FbToolbarTabArt* art = new FbToolbarTabArt;
     art->SetNormalFont(m_normal_font);
     art->SetSelectedFont(m_selected_font);
     art->SetMeasuringFont(m_measuring_font);
@@ -640,7 +640,7 @@ wxAuiTabArt* FbAuiToolbarTabArt::Clone()
     return art;
 }
 
-void FbAuiToolbarTabArt::DrawBackground(wxDC& dc,
+void FbToolbarTabArt::DrawBackground(wxDC& dc,
                                         wxWindow* WXUNUSED(wnd),
                                         const wxRect& rect)
 {
@@ -659,7 +659,7 @@ void FbAuiToolbarTabArt::DrawBackground(wxDC& dc,
 #include "wx/msw/private.h"
 #endif
 
-void FbAuiToolbarTabArt::DrawPushButton(wxWindow * wnd, wxDC& dc, const wxRect& rectOrig, int flags, bool flat)
+void FbToolbarTabArt::DrawPushButton(wxWindow * wnd, wxDC& dc, const wxRect& rectOrig, int flags, bool flat)
 {
 #ifdef __WXMSW__
     wxRect rect(rectOrig);
@@ -690,7 +690,7 @@ void FbAuiToolbarTabArt::DrawPushButton(wxWindow * wnd, wxDC& dc, const wxRect& 
 // out_rect - actual output rectangle
 // x_extent - the advance x; where the next tab should start
 
-void FbAuiToolbarTabArt::DrawTab(wxDC& dc,
+void FbToolbarTabArt::DrawTab(wxDC& dc,
                                  wxWindow* wnd,
                                  const wxAuiNotebookPage& page,
                                  const wxRect& in_rect,
@@ -931,9 +931,9 @@ namespace
 * Renderer for Microsoft (tm) Visual Studio 7.1 like tabs                     *
 ******************************************************************************/
 
-wxAuiTabArt* NbStyleVC71::Clone()
+wxAuiTabArt* FbVstudioTabArt::Clone()
 {
-    NbStyleVC71* clone = new NbStyleVC71();
+    FbVstudioTabArt* clone = new FbVstudioTabArt();
 
     clone->SetNormalFont(m_normal_font);
     clone->SetSelectedFont(m_selected_font);
@@ -942,7 +942,7 @@ wxAuiTabArt* NbStyleVC71::Clone()
     return clone;
 }
 
-void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
+void FbVstudioTabArt::DrawTab(wxDC& dc, wxWindow* wnd,
                             const wxAuiNotebookPage& page,
                             const wxRect& in_rect, int close_button_state,
                             wxRect* out_tab_rect, wxRect* out_button_rect,
@@ -1091,7 +1091,7 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     dc.DestroyClippingRegion();
 }
 
-int NbStyleVC71::GetBestTabCtrlSize(wxWindow* wnd,
+int FbVstudioTabArt::GetBestTabCtrlSize(wxWindow* wnd,
                                     const wxAuiNotebookPageArray& WXUNUSED(pages),
                                     const wxSize& WXUNUSED(required_bmp_size))
 {
@@ -1105,9 +1105,9 @@ int NbStyleVC71::GetBestTabCtrlSize(wxWindow* wnd,
     return s.y + 4;
 }
 
-wxAuiTabArt* NbStyleFF2::Clone()
+wxAuiTabArt* FbMozillaTabArt::Clone()
 {
-    NbStyleFF2* clone = new NbStyleFF2();
+    FbMozillaTabArt* clone = new FbMozillaTabArt();
 
     clone->SetNormalFont(m_normal_font);
     clone->SetSelectedFont(m_selected_font);
@@ -1116,7 +1116,7 @@ wxAuiTabArt* NbStyleFF2::Clone()
     return clone;
 }
 
-void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
+void FbMozillaTabArt::DrawTab(wxDC& dc, wxWindow* wnd,
                             const wxAuiNotebookPage& page,
                             const wxRect& in_rect, int close_button_state,
                             wxRect* out_tab_rect, wxRect* out_button_rect,
@@ -1255,7 +1255,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     dc.DestroyClippingRegion();
 }
 
-int NbStyleFF2::GetBestTabCtrlSize(wxWindow* wnd,
+int FbMozillaTabArt::GetBestTabCtrlSize(wxWindow* wnd,
                                     const wxAuiNotebookPageArray& WXUNUSED(pages),
                                     const wxSize& WXUNUSED(required_bmp_size))
 {

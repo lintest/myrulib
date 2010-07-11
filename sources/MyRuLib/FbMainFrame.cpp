@@ -247,12 +247,12 @@ void FbMainFrame::SetTabArt(int id)
 {
 	wxAuiTabArt * art;
 	switch (id) {
-		case ID_ART_COMPACT:  art = new FbAuiSimpleTabArt; break;
 		case ID_ART_STANDART: art = new wxAuiDefaultTabArt; break;
-		case ID_ART_BUTTONS:  art = new FbAuiToolbarTabArt; break;
-		case ID_ART_TOOLBAR:  art = new FbAuiToolbarTabArt(true); break;
-		case ID_ART_VSTUDIO:  art = new NbStyleVC71; break;
-		case ID_ART_MOZILLA:  art = new NbStyleFF2; break;
+		case ID_ART_COMPACT:  art = new FbCompactTabArt; break;
+		case ID_ART_BUTTONS:  art = new FbToolbarTabArt; break;
+		case ID_ART_TOOLBAR:  art = new FbToolbarTabArt(true); break;
+		case ID_ART_VSTUDIO:  art = new FbVstudioTabArt; break;
+		case ID_ART_MOZILLA:  art = new FbMozillaTabArt; break;
 		default: art = new FbAuiDefaultTabArt;
 	}
 	GetNotebook()->SetTabCtrlHeight(0);

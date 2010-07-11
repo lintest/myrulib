@@ -30,10 +30,10 @@ public:
 
 };
 
-class FbAuiSimpleTabArt : public wxAuiSimpleTabArt
+class FbCompactTabArt : public wxAuiSimpleTabArt
 {
 	public:
-		FbAuiSimpleTabArt();
+		FbCompactTabArt();
 
 		wxAuiTabArt* Clone();
 
@@ -50,26 +50,26 @@ class FbAuiSimpleTabArt : public wxAuiSimpleTabArt
 		wxColour m_base_colour;
 };
 
-class FbAuiToolbarTabArt : public wxAuiDefaultTabArt
+class FbToolbarTabArt : public wxAuiDefaultTabArt
 {
 	public:
-		FbAuiToolbarTabArt(bool flat = false);
+		FbToolbarTabArt(bool flat = false);
 
 		wxAuiTabArt* Clone();
 
 		void DrawBackground(
-					 wxDC& dc,
-					 wxWindow* wnd,
-					 const wxRect& rect);
+					wxDC& dc,
+					wxWindow* wnd,
+					const wxRect& rect);
 
 		void DrawTab(wxDC& dc,
-					 wxWindow* wnd,
-					 const wxAuiNotebookPage& pane,
-					 const wxRect& in_rect,
-					 int close_button_state,
-					 wxRect* out_tab_rect,
-					 wxRect* out_button_rect,
-					 int* x_extent);
+					wxWindow* wnd,
+					const wxAuiNotebookPage& pane,
+					const wxRect& in_rect,
+					int close_button_state,
+					wxRect* out_tab_rect,
+					wxRect* out_button_rect,
+					int* x_extent);
 
 	protected:
 		void DrawPushButton(wxWindow * win, wxDC& dc, const wxRect& rectOrig, int flags, bool flat);
@@ -78,10 +78,10 @@ class FbAuiToolbarTabArt : public wxAuiDefaultTabArt
 		bool m_flat;
 };
 
-class NbStyleVC71 : public wxAuiDefaultTabArt
+class FbVstudioTabArt : public wxAuiDefaultTabArt
 {
 public:
-	NbStyleVC71() {}
+	FbVstudioTabArt() {}
     wxAuiTabArt* Clone();
 
     void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
@@ -93,10 +93,10 @@ public:
                             const wxSize& required_bmp_size);
 };
 
-class NbStyleFF2 : public wxAuiDefaultTabArt
+class FbMozillaTabArt : public wxAuiDefaultTabArt
 {
 public:
-	NbStyleFF2() {}
+	FbMozillaTabArt() {}
     wxAuiTabArt* Clone();
 
     void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
