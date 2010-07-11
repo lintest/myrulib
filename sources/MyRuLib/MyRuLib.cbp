@@ -307,6 +307,10 @@
 		<Unit filename="FbSeqnList.h" />
 		<Unit filename="FbSequenDlg.cpp" />
 		<Unit filename="FbSequenDlg.h" />
+		<Unit filename="FbServiceDlg.cpp" />
+		<Unit filename="FbServiceDlg.h" />
+		<Unit filename="FbServiceThread.cpp" />
+		<Unit filename="FbServiceThread.h" />
 		<Unit filename="FbThread.cpp" />
 		<Unit filename="FbThread.h" />
 		<Unit filename="FbToolBar.cpp" />

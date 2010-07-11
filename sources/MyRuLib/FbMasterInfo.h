@@ -39,7 +39,6 @@ class FbMasterInfoBase: public wxObject
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 		void SendTree(wxEvtHandler *owner, FbThread * thread, FbBookTreeModel * model) const;
-		void SendList(wxEvtHandler *owner, FbThread * thread, int count) const;
 		wxString FormatSQL(const wxString &sql, const wxString &cond, const FbFilterObj &filter) const;
 	protected:
 		int GetOrder() const

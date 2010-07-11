@@ -48,6 +48,9 @@ class FbSeqnListModel: public FbListModel
 		virtual void Delete();
 		void Append(const wxArrayInt &items);
 		void Delete(int code);
+		void SetCount(int code, int count);
+		void SetCount(int count);
+		int GetCount(int code);
 	protected:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }
@@ -57,6 +60,7 @@ class FbSeqnListModel: public FbListModel
 		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:
 		wxArrayInt m_items;
+		FbIntegerHash m_counter;
 		DECLARE_CLASS(FbSeqnListModel);
 };
 

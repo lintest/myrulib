@@ -14,7 +14,6 @@ IMPLEMENT_CLASS(FbFrameSequen, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSequen::OnColClick)
-	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameSequen::OnBooksCount)
 	EVT_TEXT_ENTER(ID_SEQUENCE_TXT, FbFrameSequen::OnFindEnter )
 	EVT_MENU(ID_SEQUENCE_BTN, FbFrameSequen::OnFindEnter )
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameSequen::OnContextMenu)
@@ -23,6 +22,7 @@ BEGIN_EVENT_TABLE(FbFrameSequen, FbFrameBase)
 	EVT_MENU(ID_MASTER_DELETE, FbFrameSequen::OnMasterDelete)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameSequen::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameSequen::OnArray)
+	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameSequen::OnBooksCount)
 END_EVENT_TABLE()
 
 FbFrameSequen::FbFrameSequen(wxAuiMDIParentFrame * parent)
@@ -114,13 +114,17 @@ void FbFrameSequen::OnColClick(wxListEvent& event)
 	CreateMasterThread();
 }
 
-void FbFrameSequen::OnBooksCount(wxCommandEvent& event)
+void FbFrameSequen::OnBooksCount(FbCountEvent& event)
 {
-/*
-	wxTreeItemId item = m_MasterList->GetSelection();
-	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d "), GetBookCount()));
+	if (GetInfo() != event.GetInfo()) return;
+
+	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
+	if (model) {
+		model->SetCount(event.GetCount());
+		m_MasterList->Refresh();
+	}
+
 	event.Skip();
-*/
 }
 
 void FbFrameSequen::OnFindEnter(wxCommandEvent& event)

@@ -135,6 +135,8 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbScanerThread.o \
 	myrulib_FbSeqnList.o \
 	myrulib_FbSequenDlg.o \
+	myrulib_FbServiceDlg.o \
+	myrulib_FbServiceThread.o \
 	myrulib_FbThread.o \
 	myrulib_FbToolBar.o \
 	myrulib_FbTreeModel.o \
@@ -524,6 +526,12 @@ myrulib_FbSeqnList.o: $(srcdir)/sources/MyRuLib/FbSeqnList.cpp $(MYRULIB_ODEP)
 
 myrulib_FbSequenDlg.o: $(srcdir)/sources/MyRuLib/FbSequenDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbSequenDlg.cpp
+
+myrulib_FbServiceDlg.o: $(srcdir)/sources/MyRuLib/FbServiceDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbServiceDlg.cpp
+
+myrulib_FbServiceThread.o: $(srcdir)/sources/MyRuLib/FbServiceThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbServiceThread.cpp
 
 myrulib_FbThread.o: $(srcdir)/sources/MyRuLib/FbThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbThread.cpp

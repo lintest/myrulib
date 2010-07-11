@@ -116,7 +116,8 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 		FbAuthListModel * master = wxDynamicCast(&model, FbAuthListModel);
 		if (master) {
 			int count = master->GetCount(m_code);
-			if (count != wxNOT_FOUND) return wxString::Format(wxT("%d"), count);
+			if (count != wxNOT_FOUND)
+				return wxString::Format(wxT("%d"), count);
 		}
 	}
 	return FbCollection::GetAuth(m_code, col);
@@ -181,6 +182,13 @@ void FbAuthListModel::Delete(int code)
 	if (index == wxNOT_FOUND) return;
 	if (index < (int)m_position) m_position--;
 	m_items.RemoveAt(index);
+}
+
+void FbAuthListModel::SetCount(int count)
+{
+	FbModelItem item = GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
+	if (data) SetCount(data->GetCode(), count);
 }
 
 void FbAuthListModel::SetCount(int code, int count)

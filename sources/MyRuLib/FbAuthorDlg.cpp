@@ -142,9 +142,8 @@ void FbAuthorDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	{
-		wxString sql = wxT("UPDATE authors SET number=(SELECT COUNT(DISTINCT books.id) FROM books WHERE id_author=?) WHERE id=?");
+		wxString sql = wxT("UPDATE authors SET number=(SELECT COUNT(DISTINCT books.id) FROM books WHERE id_author=authors.id) WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, new_id);
 		stmt.Bind(1, new_id);
 		stmt.ExecuteUpdate();
 	}

@@ -69,11 +69,11 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_scaner.Create( this, wxID_ANY, _("Update zip files catalog") );
 	m_scaner.SetValue(true);
 	bSizerCtrl->Add( &m_scaner, 0, wxALL|wxEXPAND, 5 );
-
+/*
 	m_import.Create( this, wxID_ANY, _("Run a full scan for library files") );
 	m_import.SetValue(false);
 	bSizerCtrl->Add( &m_import, 0, wxALL|wxEXPAND, 5 );
-
+*/
 	m_only.Create( this, wxID_ANY, _("Process only new files") );
 	m_only.SetValue(true);
 	bSizerCtrl->Add( &m_only, 0, wxALL|wxEXPAND, 5 );

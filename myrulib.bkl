@@ -214,6 +214,8 @@
 		<sources>MyRuLib/FbScanerThread.cpp</sources>
 		<sources>MyRuLib/FbSeqnList.cpp</sources>
 		<sources>MyRuLib/FbSequenDlg.cpp</sources>
+		<sources>MyRuLib/FbServiceDlg.cpp</sources>
+		<sources>MyRuLib/FbServiceThread.cpp</sources>
 		<sources>MyRuLib/FbThread.cpp</sources>
 		<sources>MyRuLib/FbToolBar.cpp</sources>
 		<sources>MyRuLib/FbTreeModel.cpp</sources>

@@ -9,6 +9,7 @@
 #include "FbAuthorDlg.h"
 #include "FbReplaceDlg.h"
 #include "FbUpdateThread.h"
+#include "FbMasterTypes.h"
 #include "FbToolBar.h"
 
 IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
@@ -16,7 +17,6 @@ IMPLEMENT_CLASS(FbFrameAuthor, FbFrameBase)
 BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuthor::OnColClick)
 	EVT_MENU(wxID_SAVE, FbFrameAuthor::OnExportBooks)
-	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameAuthor::OnBooksCount)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuthor::OnContextMenu)
 	EVT_MENU(ID_LETTER_ALL, FbFrameAuthor::OnAllClicked)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameAuthor::OnMasterAppend)
@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(FbFrameAuthor, FbFrameBase)
 	EVT_UPDATE_UI(ID_MASTER_PAGE, FbFrameAuthor::OnMasterPageUpdateUI)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameAuthor::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameAuthor::OnArray)
+	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameAuthor::OnBooksCount)
 END_EVENT_TABLE()
 
 FbFrameAuthor::FbFrameAuthor(wxAuiMDIParentFrame * parent)
@@ -184,12 +185,16 @@ void FbFrameAuthor::OnColClick(wxListEvent& event)
 	CreateMasterThread();
 }
 
-void FbFrameAuthor::OnBooksCount(wxCommandEvent& event)
+void FbFrameAuthor::OnBooksCount(FbCountEvent& event)
 {
-/*
-	wxTreeItemId selected = m_MasterList->GetSelection();
-	if (selected.IsOk()) m_MasterList->SetItemText(selected, 1, wxString::Format(wxT("%d "), GetBookCount()));
-*/
+	if (GetInfo() != event.GetInfo()) return;
+
+	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
+	if (model) {
+		model->SetCount(event.GetCount());
+		m_MasterList->Refresh();
+	}
+
 	event.Skip();
 }
 

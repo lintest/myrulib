@@ -45,7 +45,7 @@ class FbFrameAuthor : public FbFrameBase
 	private:
 		FbAuthListInfo m_info;
 	private:
-		void OnBooksCount(wxCommandEvent& event);
+		void OnBooksCount(FbCountEvent& event);
 		void OnColClick(wxListEvent& event);
 		void OnAllClicked(wxCommandEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
