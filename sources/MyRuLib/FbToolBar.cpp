@@ -25,11 +25,10 @@ wxBitmap FbToolBarImages::operator[](const wxString &text)
 	wxBitmap bitmap(m_size.GetX(), m_size.GetY());
 	wxMemoryDC dc;
 	dc.SelectObject(bitmap);
-	dc.SetTextForeground(m_font_colour);
-	dc.SetBrush(m_brush);
-	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.DrawRectangle(m_rect);
+	dc.SetBackground(m_brush);
+	dc.Clear();
 	dc.SetFont(m_font);
+	dc.SetTextForeground(m_font_colour);
 	dc.DrawLabel(text, wxNullBitmap, m_rect, wxALIGN_CENTER);
 	dc.SelectObject(wxNullBitmap);
 
