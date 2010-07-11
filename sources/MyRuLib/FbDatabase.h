@@ -76,7 +76,6 @@ class FbDatabase: public wxSQLite3Database
 		wxString GetText(int param);
 		void SetText(int param, const wxString & text);
 		static const wxString & GetConfigName();
-		void CreateFullText();
 		void AttachConfig();
 	private:
 		static wxCriticalSection sm_queue;
@@ -134,6 +133,7 @@ class FbMainDatabase: public FbMasterDatabase
 	public:
 		virtual void Open(const wxString& fileName, const wxString& key = wxEmptyString,
 						int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
+		void CreateFullText(bool force = false);
 	protected:
 		virtual void DoUpgrade(int version);
 		virtual wxString GetMaster() { return wxT("params"); };

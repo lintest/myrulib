@@ -210,30 +210,6 @@ const wxString & FbDatabase::GetConfigName()
 	return filename;
 }
 
-void FbDatabase::CreateFullText()
-{
-	if ( TableExists(wxT("fts_book_content")) ) return;
-
-	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
-
-	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_auth"));
-	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
-
-	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_book"));
-	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_book USING fts3"));
-
-	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_seqn"));
-	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
-
-	FbLowerFunction	lower;
-	CreateFunction(wxT("LOW"), 1, lower);
-	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(search_name) FROM authors"));
-	ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
-	ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
-
-	trans.Commit();
-}
-
 int FbDatabase::NewId(const int iParam, int iIncrement)
 {
 	wxCriticalSectionLocker enter(sm_queue);
@@ -485,6 +461,30 @@ void FbMainDatabase::DoUpgrade(int version)
 			}
 		} break;
 	}
+}
+
+void FbMainDatabase::CreateFullText(bool force)
+{
+	if ( !force && TableExists(wxT("fts_book_content")) ) return;
+
+	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
+
+	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_auth"));
+	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
+
+	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_book"));
+	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_book USING fts3"));
+
+	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_seqn"));
+	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
+
+	FbLowerFunction	lower;
+	CreateFunction(wxT("LOW"), 1, lower);
+	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(search_name) FROM authors"));
+	ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
+	ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
+
+	trans.Commit();
 }
 
 //-----------------------------------------------------------------------------

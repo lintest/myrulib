@@ -174,10 +174,3 @@ void FbAuthListModel::Delete(int code)
 	if (index < (int)m_position) m_position--;
 	m_items.RemoveAt(index);
 }
-
-FbViewItem FbAuthListModel::GetView()
-{
-	if (m_position && m_position <= m_items.Count()) {
-		return FbViewItem(FbViewItem::Book, m_items[m_position - 1]);
-	} else return FbViewItem::None;
-};

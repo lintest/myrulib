@@ -73,7 +73,6 @@ class FbAuthListModel: public FbListModel
 			{ return m_items.Count(); }
 		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); };
-		virtual FbViewItem GetView();
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:
