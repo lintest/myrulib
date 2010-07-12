@@ -110,7 +110,6 @@ enum FbFrameKey {
 
 class FbParams {
 	public:
-		FbParams(int test) {}
 		static int GetInt(int param);
 		static int GetInt(wxWindowID winid, int param);
 		static wxString GetStr(int param);
