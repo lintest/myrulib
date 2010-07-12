@@ -11,6 +11,12 @@
 #include <wx/menu.h>
 #include <wx/renderer.h>
 
+#ifdef __WXMSW__
+#define fbSYS_COLOUR_TABCOLOUR wxSYS_COLOUR_3DFACE
+#else
+#define fbSYS_COLOUR_TABCOLOUR wxSYS_COLOUR_WINDOWFRAME
+#endif
+
 /*
 #ifdef __WXMSW__
 #include  "wx/msw/private.h"
@@ -160,7 +166,7 @@ void FbBaseTabArt::DrawBackground(wxDC& dc,
     toolbarbrush.MacSetTheme( kThemeBrushToolbarBackground );
     wxColor base_colour = toolbarbrush.GetColour();
 #else
-    wxColor base_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
+    wxColor base_colour = wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR);
 #endif
     m_base_colour = base_colour;
 
@@ -993,7 +999,7 @@ void FbVstudioTabArt::DrawTab(wxDC& dc, wxWindow* wnd,
         tab_y--;
 
     dc.SetPen((page.active) ? wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT)) : wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW)));
-    dc.SetBrush((page.active) ? wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)) : wxBrush(*wxTRANSPARENT_BRUSH));
+    dc.SetBrush((page.active) ? wxBrush(wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR)) : wxBrush(*wxTRANSPARENT_BRUSH));
 
     if (page.active)
     {
@@ -1186,14 +1192,14 @@ void FbMozillaTabArt::DrawTab(wxDC& dc, wxWindow* wnd,
     tabPoints[6].x = tabPoints[0].x;
     tabPoints[6].y = tabPoints[0].y;
 
-//    dc.SetBrush((page.active) ? wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)) : wxBrush(wxAuiStepColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE),85)));
-    dc.SetBrush((page.active) ? wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)) : wxBrush(*wxTRANSPARENT_BRUSH));
+//    dc.SetBrush((page.active) ? wxBrush(wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR)) : wxBrush(wxAuiStepColour(wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR),85)));
+    dc.SetBrush((page.active) ? wxBrush(wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR)) : wxBrush(*wxTRANSPARENT_BRUSH));
 
 	dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW)));
 
 	dc.DrawPolygon(7, tabPoints);
 
-    dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)));
+    dc.SetPen(wxPen(wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR)));
     if (page.active)
     {
         dc.DrawLine(tabPoints[0].x + 1, tabPoints[0].y, tabPoints[5].x , tabPoints[0].y);
