@@ -31,8 +31,8 @@ class FbFrameDate : public FbFrameBase
 		wxString m_SequenceText;
 		int m_SequenceCode;
 	private:
-		void OnBooksCount(wxCommandEvent& event);
-		void OnModel(FbModelEvent& event);
+		void OnBooksCount(FbCountEvent & event);
+		void OnModel(FbModelEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 
