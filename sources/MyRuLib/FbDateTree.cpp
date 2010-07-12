@@ -2,6 +2,7 @@
 #include "FbBookEvent.h"
 #include "FbConst.h"
 #include "FbDateTime.h"
+#include "FbMasterTypes.h"
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
@@ -82,7 +83,7 @@ wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 		case 0:
 			return FbDateTime(m_code).FormatDate();
 		case 1:
-			return Format(m_lib_num + m_usr_num);
+			return Format(m_count);
 		default:
 			return wxEmptyString;
 	}
@@ -91,11 +92,17 @@ wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 FbDateDayData::FbDateDayData(FbModel & model, FbParentData * parent, int code, wxSQLite3ResultSet &result)
 	: FbChildData(model, parent),
 		m_code(code),
+		m_count(result.GetInt(3) + result.GetInt(6)),
 		m_lib_min(result.GetInt(1)),
 		m_lib_max(result.GetInt(2)),
-		m_lib_num(result.GetInt(3)),
 		m_usr_min(result.GetInt(4)),
-		m_usr_max(result.GetInt(5)),
-		m_usr_num(result.GetInt(6))
+		m_usr_max(result.GetInt(5))
 {
 }
+
+bool FbDateDayData::operator==(const FbMasterInfo & info) const
+{
+	FbMasterDateInfo * data = wxDynamicCast(&info, FbMasterDateInfo);
+	return data && data->GetId() == m_code;
+}
+

@@ -4,127 +4,30 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbBookData.h"
+#include "FbCollection.h"
 #include "FbConst.h"
 
-WX_DEFINE_OBJARRAY(ParamArray);
-
-ParamItem::ParamItem(wxSQLite3ResultSet & result):
-	id(result.GetInt(0)),
-	value(result.GetInt(1)),
-	text(result.GetString(2))
+int FbParams::GetInt(int param)
 {
-}
-
-ParamArray FbParams::sm_params;
-
-wxCriticalSection FbParams::sm_queue;
-
-FbParams::FbParams()
-{
-	m_database.AttachConfig();
-}
-
-void FbParams::LoadParams(bool all)
-{
-	wxCriticalSectionLocker enter(sm_queue);
-
-	sm_params.Empty();
-
-	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100");
-	if (all) sql << wxT(' ') << wxT("UNION ALL SELECT id, value, text FROM params WHERE id<100");
-	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-	while (result.NextRow()) {
-		ParamItem * param = new ParamItem(result);
-		if (param->id == FB_TEMP_DEL) FbTempEraser::sm_erase = param->value;
-		sm_params.Add(param);
-	}
-}
-
-int FbParams::GetValue(int param)
-{
-	wxCriticalSectionLocker enter(sm_queue);
-	for (size_t i=0; i<sm_params.Count(); i++) {
-		if (sm_params[i].id == param) {
-			return sm_params[i].value;
-		}
-	}
-	return DefaultValue(param);
+	return FbCollection::GetParamInt(param);
 };
 
-wxString FbParams::GetText(int param)
+wxString FbParams::GetStr(int param)
 {
-	wxCriticalSectionLocker enter(sm_queue);
-	for (size_t i=0; i<sm_params.Count(); i++) {
-		if (sm_params[i].id == param) {
-			return sm_params[i].text;
-		}
-	}
-	return DefaultText(param);
+	return FbCollection::GetParamStr(param);
 };
 
-void FbParams::SetValue(int param, int value)
+void FbParams::Set(int param, int value)
 {
-	wxCriticalSectionLocker enter(sm_queue);
-
-	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
-
-	if (value == DefaultValue(param)) {
-		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, param);
-		stmt.ExecuteUpdate();
-	} else {
-		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (value, id) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, value);
-		stmt.Bind(2, param);
-		stmt.ExecuteUpdate();
-	}
-
-	for (size_t i=0; i<sm_params.Count(); i++) {
-		if (sm_params[i].id == param) {
-			sm_params[i].value = value;
-			return;
-		}
-	}
-
-	ParamItem * item = new ParamItem(param);
-	item->value = value;
-	sm_params.Add(item);
+	return FbCollection::SetParamInt(param, value);
 }
 
-void FbParams::SetText(int param, const wxString &text)
+void FbParams::Set(int param, const wxString &text)
 {
-	wxCriticalSectionLocker enter(sm_queue);
-
-	const wchar_t * table = param < 100 ? wxT("params") : wxT("config");
-
-	if (text == DefaultText(param)) {
-		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, param);
-		stmt.ExecuteUpdate();
-	} else {
-		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (text, id) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, text);
-		stmt.Bind(2, param);
-		stmt.ExecuteUpdate();
-	}
-
-	for (size_t i=0; i<sm_params.Count(); i++) {
-		if (sm_params[i].id == param) {
-			sm_params[i].text = text;
-			return;
-		}
-	}
-
-	ParamItem * item = new ParamItem(param);
-	item->text = text;
-	sm_params.Add(item);
+	return FbCollection::SetParamStr(param, text);
 }
 
-int FbParams::DefaultValue(int param)
+int FbParams::DefaultInt(int param)
 {
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
@@ -152,12 +55,12 @@ int FbParams::DefaultValue(int param)
 	}
 };
 
-wxString FbParams::DefaultText(int param)
+wxString FbParams::DefaultStr(int param)
 {
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
 			case DB_LIBRARY_DIR:
-				return wxGetApp().GetAppPath();
+				return wxT('.');
 			case DB_DOWNLOAD_HOST:
 				return wxT("flibusta.net");
 			case DB_DOWNLOAD_ADDR:
@@ -198,7 +101,7 @@ wxString FbParams::DefaultText(int param)
 
 wxFont FbParams::GetFont(int param)
 {
-	wxString info = GetText(param);
+	wxString info = GetStr(param);
 	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	wxFont font;
 	font.SetNativeFontInfo(info);
@@ -210,26 +113,26 @@ void FbParams::AddRecent(const wxString &text, const wxString &title)
 	int i = 0;
 
 	while (i<5) {
-		wxString file = GetText(FB_RECENT_0 + i);
+		wxString file = GetStr(FB_RECENT_0 + i);
 		if (file == text) break;
 		i++;
 	}
 
 	while (i>0){
-		wxString file = GetText(FB_RECENT_0 + i - 1);
-		SetText(FB_RECENT_0 + i, file);
-		wxString info = GetText(FB_TITLE_0 + i - 1);
-		SetText(FB_TITLE_0 + i, info);
+		wxString file = GetStr(FB_RECENT_0 + i - 1);
+		Set(FB_RECENT_0 + i, file);
+		wxString info = GetStr(FB_TITLE_0 + i - 1);
+		Set(FB_TITLE_0 + i, info);
 		i--;
 	}
 
-	SetText(FB_RECENT_0 + i, text);
-	SetText(FB_TITLE_0 + i, title);
+	Set(FB_RECENT_0 + i, text);
+	Set(FB_TITLE_0 + i, title);
 }
 
-void FbParams::ResetValue(int param)
+void FbParams::Reset(int param)
 {
-	SetValue(param, DefaultValue(param));
+	FbCollection::ResetParam(param);
 }
 
 int FbParams::Param(wxWindowID winid, int param)
@@ -239,27 +142,27 @@ int FbParams::Param(wxWindowID winid, int param)
 	return ok ? (param + FB_FRAME_OFFSET * delta) : 0;
 }
 
-int FbParams::GetValue(wxWindowID winid, int param)
+int FbParams::GetInt(wxWindowID winid, int param)
 {
 	int id = Param(winid, param);
-	return id ? GetValue(id) : 0;
+	return id ? GetInt(id) : 0;
 }
 
-wxString FbParams::GetText(wxWindowID winid, int param)
+wxString FbParams::GetStr(wxWindowID winid, int param)
 {
 	int id = Param(winid, param);
-	return id ? GetText(id) : wxString();
+	return id ? GetStr(id) : wxString();
 }
 
-void FbParams::SetValue(wxWindowID winid, int param, int value)
+void FbParams::Set(wxWindowID winid, int param, int value)
 {
 	int id = Param(winid, param);
-	if (id) SetValue(id, value);
+	if (id) Set(id, value);
 }
 
-void FbParams::SetText(wxWindowID winid, int param, const wxString &text)
+void FbParams::Set(wxWindowID winid, int param, const wxString &text)
 {
 	int id = Param(winid, param);
-	if (id) SetText(id, text);
+	if (id) Set(id, text);
 }
 

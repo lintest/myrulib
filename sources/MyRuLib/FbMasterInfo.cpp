@@ -5,6 +5,7 @@
 #include "FbBookList.h"
 #include "FbBookTree.h"
 #include "FbTreeView.h"
+#include "FbGenres.h"
 
 //-----------------------------------------------------------------------------
 //  FbMasterInfoBase

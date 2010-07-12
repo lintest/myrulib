@@ -21,14 +21,14 @@ class FbURL: public wxURL
 
 FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 {
-	if (FbParams::GetValue(FB_USE_PROXY))
-		SetProxy(FbParams::GetText(FB_PROXY_ADDR));
+	if (FbParams::GetInt(FB_USE_PROXY))
+		SetProxy(FbParams::GetStr(FB_PROXY_ADDR));
 	GetProtocol().SetTimeout(10);
 }
 
 wxString FbInternetBook::GetURL(const int id)
 {
-	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
+	wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
 	wxString addr = wxT("http://%s/b/%d/download");
 	return wxString::Format(addr, host.c_str(), id);
 }
@@ -58,11 +58,11 @@ bool FbInternetBook::Execute()
 
 bool FbInternetBook::DoDownload()
 {
-	wxString user = FbParams::GetText(DB_DOWNLOAD_USER);
+	wxString user = FbParams::GetStr(DB_DOWNLOAD_USER);
 	if ( user.IsEmpty() ) return DownloadUrl();
 
-	wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
-	wxString pass = FbParams::GetText(DB_DOWNLOAD_PASS);
+	wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
+	wxString pass = FbParams::GetStr(DB_DOWNLOAD_PASS);
 	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
 	FbLogMessage(_("Download"), addr);
 

@@ -31,9 +31,26 @@ class FbCacheData: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbCacheData, FbCasheDataArray);
 
+class FbParamData: public wxObject
+{
+	public:
+		FbParamData(int val = 0, const wxString &str = wxEmptyString)
+			: m_int(val), m_str(str) {}
+		FbParamData & operator=(wxSQLite3ResultSet & result);
+	private:
+		int m_int;
+		wxString m_str;
+		friend class FbCollection;
+		DECLARE_CLASS(FbParamData)
+};
+
+#include <wx/hashmap.h>
+WX_DECLARE_HASH_MAP( int, FbParamData, wxIntegerHash, wxIntegerEqual, FbParamHash);
+
 class FbCollection: public wxObject
 {
 	public:
+		static void LoadConfig();
 		static wxString Format(int number);
 		FbCollection(const wxString &filename);
 		virtual ~FbCollection();
@@ -58,6 +75,11 @@ class FbCollection: public wxObject
 		static wxFileName FindZip(const wxString &dirname, const wxString &filename);
 		static wxString GetIcon(const wxString &extension);
 		static void EmptyInfo();
+		static int GetParamInt(int param);
+		static wxString GetParamStr(int param);
+		static void SetParamInt(int param, int value);
+		static void SetParamStr(int param, const wxString &value);
+		static void ResetParam(int param);
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
@@ -69,16 +91,19 @@ class FbCollection: public wxObject
 		void DoResetInfo(int code);
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
+		void LoadParams();
 	private:
+		static wxCriticalSection sm_section;
 		static wxArrayString sm_icons;
 		static wxArrayString sm_noico;
-		static wxCriticalSection sm_section;
+		static FbParamHash sm_params;
 		FbMainDatabase m_database;
 		FbAggregateFunction m_aggregate;
 		FbCasheDataArray m_auths;
 		FbCasheDataArray m_seqns;
 		FbCasheBookArray m_books;
 		FbViewDataArray m_infos;
+		FbParamHash m_params;
 		FbThread * m_thread;
 		DECLARE_CLASS(FbCollection)
 };

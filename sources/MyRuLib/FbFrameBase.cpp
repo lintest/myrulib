@@ -148,7 +148,7 @@ void FbFrameBase::OnDirection(wxCommandEvent& event)
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 {
 	FbListMode listmode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	FbParams().SetValue(GetId(), FB_LIST_MODE, listmode);
+	FbParams::Set(GetId(), FB_LIST_MODE, listmode);
 	m_BooksPanel->SetListMode(listmode);
 	UpdateBooklist();
 }
@@ -265,8 +265,8 @@ void FbFrameBase::OnFilterSet(wxCommandEvent& event)
 
 void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 {
-	FbParams().SetValue(FB_USE_FILTER, 0);
-	m_filter.Enable(not m_filter.IsEnabled());
+	FbParams::Set(FB_USE_FILTER, 0);
+	m_filter.Enable(!m_filter.IsEnabled());
 	UpdateBooklist();
 }
 
@@ -297,7 +297,7 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 	if (ok) {
 		m_BooksPanel->CreateColumns(columns);
 		wxString text = FbColumns::Get(columns);
-		FbParams().SetText(GetId(), FB_BOOK_COLUMNS, text);
+		FbParams::Set(GetId(), FB_BOOK_COLUMNS, text);
 	}
 }
 

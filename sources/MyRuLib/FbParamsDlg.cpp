@@ -358,7 +358,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 
 	wxString filename = _("filename");
 	FbChoiceFormat * localeChoice = new FbChoiceFormat( this, ID_LANG_LOCALE);
-	FbLocale::Fill(localeChoice, FbParams::GetValue(FB_LANG_LOCALE));
+	FbLocale::Fill(localeChoice, FbParams::GetInt(FB_LANG_LOCALE));
 	bSizerLocale->Add( localeChoice, 1, wxALL, 5 );
 
 	bSizerMain->Add(bSizerLocale, 0, wxEXPAND);
@@ -661,42 +661,40 @@ void FbParamsDlg::Assign(bool write)
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-	FbParams params;
-
 	for (size_t i=0; i<idsCount; i++) {
 		switch (ids[i].type) {
 			case tText:
 				if (wxTextCtrl * control = wxDynamicCast(FindWindowById(ids[i].control), wxTextCtrl)) {
 					if (write)
-						params.SetText(ids[i].param, control->GetValue());
+						FbParams::Set(ids[i].param, control->GetValue());
 					else
-						control->SetValue(params.GetText(ids[i].param));
+						control->SetValue(FbParams::GetStr(ids[i].param));
 				} break;
 			case tCheck:
 				if (wxCheckBox * control = wxDynamicCast(FindWindowById(ids[i].control), wxCheckBox)) {
 					if (write)
-						params.SetValue(ids[i].param, control->GetValue());
+						FbParams::Set(ids[i].param, control->GetValue());
 					else
-						control->SetValue(params.GetValue(ids[i].param) != 0);
+						control->SetValue(FbParams::GetInt(ids[i].param) != 0);
 				} break;
 			case tRadio:
 				if (wxRadioBox * control = wxDynamicCast(FindWindowById(ids[i].control), wxRadioBox)) {
 					if (write)
-						params.SetValue(ids[i].param, control->GetSelection());
+						FbParams::Set(ids[i].param, control->GetSelection());
 					else
-						control->SetSelection(params.GetValue(ids[i].param));
+						control->SetSelection(FbParams::GetInt(ids[i].param));
 				} break;
 			case tCombo:
 				if (wxComboBox * control = wxDynamicCast(FindWindowById(ids[i].control), wxComboBox)) {
 					if (write)
-						params.SetText(ids[i].param, control->GetValue());
+						FbParams::Set(ids[i].param, control->GetValue());
 					else
-						control->SetValue(params.GetText(ids[i].param));
+						control->SetValue(FbParams::GetStr(ids[i].param));
 				} break;
 			case tFont:
 				if (wxFontPickerCtrl * control = wxDynamicCast(FindWindowById(ids[i].control), wxFontPickerCtrl)) {
 					if (write)
-						params.SetText(ids[i].param, control->GetSelectedFont().GetNativeFontInfoDesc());
+						FbParams::Set(ids[i].param, control->GetSelectedFont().GetNativeFontInfoDesc());
 					else
 						control->SetSelectedFont(FbParams::GetFont(ids[i].param) );
 				} break;
@@ -706,11 +704,11 @@ void FbParamsDlg::Assign(bool write)
 						wxString text = control->GetValue();
 						long value = 0;
 						if (text.ToLong(&value) && value>0)
-							params.SetValue(ids[i].param, value);
+							FbParams::Set(ids[i].param, value);
 						else
-							params.ResetValue(ids[i].param);
+							FbParams::Reset(ids[i].param);
 					} else {
-						int count = params.GetValue(ids[i].param);
+						int count = FbParams::GetInt(ids[i].param);
 						wxString text = wxString::Format(wxT("%d"), count);
 						control->SetValue(text);
 					}
@@ -719,9 +717,9 @@ void FbParamsDlg::Assign(bool write)
 				if (FbChoiceFormat * control = wxDynamicCast(FindWindowById(ids[i].control), FbChoiceFormat)) {
 					if (write) {
 						int format = control->GetCurrentData();
-						params.SetValue(ids[i].param, format);
+						FbParams::Set(ids[i].param, format);
 					} else {
-						int format = FbParams::GetValue(ids[i].param);
+						int format = FbParams::GetInt(ids[i].param);
 						size_t count = control->GetCount();
 						for (size_t i = 0; i <= count; i++)
 							if (control->GetClientData(i) == format) control->SetSelection(i);
@@ -741,7 +739,7 @@ void FbParamsDlg::Execute(wxWindow* parent)
 	if (ok) {
 		dlg.Assign(true);
 		dlg.SaveData();
-		FbTempEraser::sm_erase = FbParams::GetValue(FB_TEMP_DEL);
+		FbTempEraser::sm_erase = FbParams::GetInt(FB_TEMP_DEL);
 		wxGetApp().Localize();
 	}
 };
@@ -983,7 +981,7 @@ void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 	FbChoiceFormat * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceFormat);
 	if (!typelist) return;
 
-	int format = FbParams::GetValue(FB_FILE_FORMAT);
+	int format = FbParams::GetInt(FB_FILE_FORMAT);
 	size_t count = model->GetRowCount();
 	for (size_t i=1; i<=count; i++) {
 		FbModelItem item = model->GetData(i);

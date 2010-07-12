@@ -6,13 +6,14 @@
 #include "FbExportDlg.h"
 #include "FbMainMenu.h"
 #include "FbUpdateThread.h"
+#include "FbMasterTypes.h"
 #include "FbDateTree.h"
 #include "FbWindow.h"
 #include "FbParams.h"
 
 BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
-	EVT_COMMAND(ID_BOOKS_COUNT, fbEVT_BOOK_ACTION, FbFrameDate::OnBooksCount)
 	EVT_FB_MODEL(ID_MODEL_CREATE, FbFrameDate::OnModel)
+	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameDate::OnBooksCount)
 END_EVENT_TABLE()
 
 FbFrameDate::FbFrameDate(wxAuiMDIParentFrame * parent)
@@ -52,13 +53,15 @@ void FbFrameDate::CreateColumns()
 	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 }
 
-void FbFrameDate::OnBooksCount(wxCommandEvent& event)
+void FbFrameDate::OnBooksCount(FbCountEvent& event)
 {
-/*
-	wxTreeItemId item = m_MasterList->GetSelection();
-	if (item.IsOk()) m_MasterList->SetItemText(item, 1, wxString::Format(wxT("%d"), GetBookCount()));
+	FbDateDayData * child = wxDynamicCast(&m_MasterList->GetCurrent(), FbDateDayData);
+	if (child && *child == event.GetInfo()) {
+		child->SetCount(event.GetCount());
+		m_MasterList->Refresh();
+	}
+
 	event.Skip();
-*/
 }
 
 void FbFrameDate::OnModel( FbModelEvent& event )

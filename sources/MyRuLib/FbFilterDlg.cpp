@@ -46,16 +46,16 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	wxStdDialogButtonSizer * sdbSizer = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizer, 0, wxEXPAND|wxALL, 5 );
 
-	int last = FbParams::GetValue(DB_LAST_BOOK);
-	int next = FbParams::GetValue(DB_NEW_BOOK) + 1;
+	int last = FbParams::GetInt(DB_LAST_BOOK);
+	int next = FbParams::GetInt(DB_NEW_BOOK) + 1;
 	if ( last != next ) {
 		m_thread = new FbFilterTreeThread(this, next);
 		m_thread->Execute();
 	} else {
 		FbFilterTreeModel * model;
-		model = new FbFilterTreeModel(FbParams::GetText(DB_LANG_LIST), filter.m_lang);
+		model = new FbFilterTreeModel(FbParams::GetStr(DB_LANG_LIST), filter.m_lang);
 		m_treeLang->AssignModel(model);
-		model = new FbFilterTreeModel(FbParams::GetText(DB_TYPE_LIST), filter.m_type);
+		model = new FbFilterTreeModel(FbParams::GetStr(DB_TYPE_LIST), filter.m_type);
 		m_treeType->AssignModel(model);
 	}
 

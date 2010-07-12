@@ -115,7 +115,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 {
 	wxString filetype = GetExt();
 	wxFileName filename = md5sum;
-	filename.SetPath( FbParams::GetText(FB_TEMP_DIR) );
+	filename.SetPath( FbParams::GetStr(FB_TEMP_DIR) );
 	filename.SetExt(filetype);
 
 	if ( !filename.DirExists()) filename.Mkdir(0755, wxPATH_MKDIR_FULL);
@@ -139,7 +139,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 		#else
 		if (command.Left(5) == wxT("wine ")) {
-			filename.SetPath( FbParams::GetText(FB_WINE_DIR));
+			filename.SetPath( FbParams::GetStr(FB_WINE_DIR));
 			filepath = filename.GetFullPath();
 		}
 		command << wxT(' ') << filepath;

@@ -177,8 +177,6 @@ WX_DEFINE_SORTED_ARRAY_SIZE_T(size_t, FbSortedArraySizeT);
 #include <wx/hashmap.h>
 WX_DECLARE_HASH_MAP( int, int, wxIntegerHash, wxIntegerEqual, FbIntegerHash);
 
-WX_DECLARE_STRING_HASH_MAP( int, FbStringHash );
-
 class FbModel: public wxObject
 {
 	protected:

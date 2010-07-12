@@ -166,12 +166,12 @@ wxFileName FbExportChildData::GetPath(FbModel &model) const
 
 FbExportTreeContext::FbExportTreeContext()
 {
-	m_translit_folder = FbParams::GetValue(FB_TRANSLIT_FOLDER);
-	m_translit_file = FbParams::GetValue(FB_TRANSLIT_FILE);
-	m_template = FbParams::GetText(FB_FOLDER_FORMAT);
-	m_underscores = FbParams::GetValue(FB_USE_UNDERSCORE);
+	m_translit_folder = FbParams::GetInt(FB_TRANSLIT_FOLDER);
+	m_translit_file = FbParams::GetInt(FB_TRANSLIT_FILE);
+	m_template = FbParams::GetStr(FB_FOLDER_FORMAT);
+	m_underscores = FbParams::GetInt(FB_USE_UNDERSCORE);
 
-	if (m_template.IsEmpty()) m_template = FbParams::DefaultText(FB_FOLDER_FORMAT);
+	if (m_template.IsEmpty()) m_template = FbParams::DefaultStr(FB_FOLDER_FORMAT);
 }
 
 wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)

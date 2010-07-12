@@ -50,14 +50,15 @@ class FbDateDayData: public FbChildData
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
 		FbMasterInfo GetInfo() const;
+		bool operator==(const FbMasterInfo & info) const;
+		void SetCount(int count) { m_count = count; }
 	private:
 		int m_code;
+		int m_count;
 		int m_lib_min;
 		int m_lib_max;
-		int m_lib_num;
 		int m_usr_min;
 		int m_usr_max;
-		int m_usr_num;
 		DECLARE_CLASS(FbDateDayData);
 };
 

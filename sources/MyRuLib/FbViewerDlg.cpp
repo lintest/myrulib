@@ -72,7 +72,7 @@ void FbViewerDlg::OnBtnClick( wxCommandEvent& event )
 		wxString result = dlg.GetPath();
 		if (m_relative) {
 			wxFileName filename = result;
-			wxFileName database = wxGetApp().GetAppData();
+			wxFileName database = wxGetApp().GetLibFile();
 			filename.MakeRelativeTo(database.GetPath());
 			result = filename.GetFullPath();
 		}

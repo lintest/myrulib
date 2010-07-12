@@ -71,7 +71,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
-	m_textDir->SetValue( FbParams::GetText(FB_EXTERNAL_DIR) );
+	m_textDir->SetValue( FbParams::GetStr(FB_EXTERNAL_DIR) );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
@@ -93,7 +93,7 @@ FbExportDlg::~FbExportDlg()
 void FbExportDlg::LoadFormats()
 {
 	wxString filename = _("filename");
-	int format = FbParams::GetValue(FB_FILE_FORMAT);
+	int format = FbParams::GetInt(FB_FILE_FORMAT);
 	m_format->Append(filename << wxT(".fb2"), 0);
 	m_format->Append(filename + wxT(".zip"), -1);
 	m_format->Append(filename + wxT(".gz"), -2);

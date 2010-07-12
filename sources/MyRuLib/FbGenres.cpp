@@ -2,11 +2,36 @@
 #include "FbGenrTree.h"
 
 //-----------------------------------------------------------------------------
+//  FbGenreGroup
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbGenreGroup, wxObject)
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(FbGenreArray);
+
+//-----------------------------------------------------------------------------
 //  FbGenres
 //-----------------------------------------------------------------------------
 
-void FbGenres::Do(ID id, const void * value, void * result)
+IMPLEMENT_CLASS(FbGenres, wxObject)
+
+wxCriticalSection FbGenres::sm_section;
+
+FbGenreArray FbGenres::sm_groups;
+
+FbStringHash FbGenres::sm_chars;
+
+FbStringHash FbGenres::sm_names;
+
+void FbGenres::Init()
 {
+	wxCriticalSectionLocker locker(sm_section);
+
+	sm_groups.Empty();
+	sm_chars.empty();
+	sm_names.empty();
+
 	struct FolderStruct {
 		wxChar hi;
 		wxString name;
@@ -174,66 +199,46 @@ void FbGenres::Do(ID id, const void * value, void * result)
 	const size_t folder_count = sizeof(folder_list) / sizeof(FolderStruct);
 	const size_t genres_count = sizeof(genres_list) / sizeof(GenreStruct);
 
-	switch (id) {
-		case ID_CHAR: {
-			const wxString * code = (wxString*) value;
-			wxString * res = (wxString*) result;
-			for (size_t i=0; i<genres_count; i++) {
-				if (genres_list[i].code == *code) {
-					*res << genres_list[i].hi << genres_list[i].lo;
-					return;
-				}
+	for (size_t i=0; i<genres_count; i++) {
+		const GenreStruct & item = genres_list[i];
+		wxString ch; ch << item.hi << item.lo;
+		sm_chars[item.code] = ch;
+		sm_names[ch] = item.name;
+	}
+
+	for (size_t i=0; i<folder_count; i++) {
+		const FolderStruct & folder = folder_list[i];
+		FbGenreGroup * group = new FbGenreGroup(folder.name);
+		for (size_t j=0; j<genres_count; j++) {
+			if (genres_list[j].hi == folder.hi) {
+				wxString ch; ch << genres_list[j].hi << genres_list[j].lo;
+				group->Add(ch);
 			}
-		} break;
-		case ID_NAME: {
-			const wxString * letter = (wxString*) value;
-			wxString * res = (wxString*) result;
-			for (size_t i=0; i<genres_count; i++) {
-				wxString code = genres_list[i].hi; code << genres_list[i].lo;
-				if (*letter == code) {
-					*res = genres_list[i].name;
-					return;
-				}
-			}
-		} break;
-		case ID_FILL: {
-			FbTreeModel * model = (FbTreeModel*) result;
-			FbParentData * root = new FbParentData(*model, NULL);
-			for (size_t i=0; i<folder_count; i++) {
-				FbGenrParentData * parent = new FbGenrParentData(*model, root, folder_list[i].name);
-				for (size_t j=0; j<genres_count; j++) {
-					if (genres_list[j].hi == folder_list[i].hi) {
-						wxString code = genres_list[j].hi; code << genres_list[j].lo;
-						new FbGenrChildData(*model, parent, code, genres_list[j].name);
-					}
-				}
-			}
-			model->SetRoot(root);
-		} break;
+		}
+		sm_groups.Add(group);
 	}
 }
 
 wxString FbGenres::Char(const wxString &code)
 {
-	wxString result;
-	Do(ID_CHAR, &code, &result);
-	return result;
+	wxCriticalSectionLocker locker(sm_section);
+	return sm_chars[code];
 }
 
 wxString FbGenres::Name(const wxString &letter)
 {
-	wxString result;
-	Do(ID_NAME, &letter, &result);
-	return result;
+	wxCriticalSectionLocker locker(sm_section);
+	return sm_names[letter];
 }
 
 wxString FbGenres::DecodeList(const wxString &genres)
 {
+	wxCriticalSectionLocker locker(sm_section);
 	wxString result;
-	for (size_t i = 0; i<genres.Len()/2; i++) {
-		if (!result.IsEmpty()) result += wxT(", ");
-		wxString code = genres.SubString(i*2, i*2+1);
-		result +=  FbGenres::Name( code );
+	for (size_t i = 0; i<genres.Len(); i += 2) {
+		if (i) result << wxT(',') << wxT(' ');
+		wxString code = genres.SubString(i, i + 1);
+		result << sm_names[code];
 	}
 	return result;
 }
@@ -241,6 +246,47 @@ wxString FbGenres::DecodeList(const wxString &genres)
 FbModel * FbGenres::CreateModel()
 {
 	FbTreeModel * model = new FbTreeModel;
-	Do(ID_FILL, NULL, model);
+	FbParentData * root = new FbParentData(*model, NULL);
+	model->SetRoot(root);
+
+	size_t count = sm_groups.Count();
+	for (size_t i = 0; i < count; i++) {
+		FbGenreGroup & group = sm_groups[i];
+		FbParentData * parent = new FbGenrParentData(*model, root, group.m_name);
+		size_t count = group.m_items.Count();
+		for (size_t j = 0; j < count; j++) {
+			wxString ch = group.m_items[j];
+			new FbGenrChildData(*model, parent, ch, sm_names[ch]);
+		}
+	}
+
 	return model;
+}
+
+void FbGenres::GetNames(FbStringHash & names)
+{
+	wxCriticalSectionLocker locker(sm_section);
+    for (FbStringHash::iterator it = sm_names.begin(); it != sm_names.end(); it++ ) {
+		names[it->first] = it->second;
+    }
+}
+
+//-----------------------------------------------------------------------------
+//  FbGenreFunction
+//-----------------------------------------------------------------------------
+
+void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	if (ctx.GetArgCount() == 1) ctx.SetResult( DecodeList(ctx.GetString(0)) );
+}
+
+wxString FbGenreFunction::DecodeList(const wxString &genres)
+{
+	wxString result;
+	for (size_t i = 0; i<genres.Len(); i += 2) {
+		if (i) result << wxT(',') << wxT(' ');
+		wxString code = genres.SubString(i, i + 1);
+		result << m_names[code];
+	}
+	return result;
 }

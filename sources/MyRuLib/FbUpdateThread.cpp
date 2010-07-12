@@ -83,7 +83,7 @@ void * FbDeleteThread::Entry()
 	FbCounter counter(database);
 	counter.Add(m_sel);
 
-	if (FbParams::GetValue(FB_REMOVE_FILES)) DoDelete(database);
+	if (FbParams::GetInt(FB_REMOVE_FILES)) DoDelete(database);
 
 	wxString sql;
 

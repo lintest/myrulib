@@ -29,21 +29,20 @@ FbFilterObj & FbFilterObj::operator=(const FbFilterObj & object)
 
 void FbFilterObj::Load()
 {
-	m_enabled = FbParams::GetValue(FB_USE_FILTER);
-	m_lib = FbParams::GetValue(FB_FILTER_LIB);
-	m_usr = FbParams::GetValue(FB_FILTER_USR);
-	m_lang = FbParams::GetText(FB_FILTER_LANG);
-	m_type = FbParams::GetText(FB_FILTER_TYPE);
+	m_enabled = FbParams::GetInt(FB_USE_FILTER);
+	m_lib = FbParams::GetInt(FB_FILTER_LIB);
+	m_usr = FbParams::GetInt(FB_FILTER_USR);
+	m_lang = FbParams::GetStr(FB_FILTER_LANG);
+	m_type = FbParams::GetStr(FB_FILTER_TYPE);
 }
 
 void FbFilterObj::Save() const
 {
-	FbParams params;
-	params.SetValue(FB_USE_FILTER, m_enabled);
-	params.SetValue(FB_FILTER_LIB, m_lib);
-	params.SetValue(FB_FILTER_USR, m_usr);
-	params.SetText(FB_FILTER_LANG, m_lang);
-	params.SetText(FB_FILTER_TYPE, m_type);
+	FbParams::Set(FB_USE_FILTER, m_enabled);
+	FbParams::Set(FB_FILTER_LIB, m_lib);
+	FbParams::Set(FB_FILTER_USR, m_usr);
+	FbParams::Set(FB_FILTER_LANG, m_lang);
+	FbParams::Set(FB_FILTER_TYPE, m_type);
 }
 
 wxString FbFilterObj::GetSQL() const

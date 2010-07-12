@@ -23,7 +23,8 @@ class FbFrameGenres : public FbFrameBase
 		void CreateBookInfo();
 		void CreateColumns();
 	private:
-		void OnGenreSelected(wxTreeEvent & event);
+		void OnBooksCount(FbCountEvent& event);
+		void OnModel( FbModelEvent & event );
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameGenres)
 };

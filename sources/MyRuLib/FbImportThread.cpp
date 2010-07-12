@@ -443,7 +443,7 @@ void FbImpotrZip::Make(FbImportThread *owner)
 FbImportThread::FbImportThread():
 	m_counter(m_database),
 	m_basepath(wxGetApp().GetLibPath()),
-	m_fullpath(FbParams::GetValue(FB_SAVE_FULLPATH))
+	m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH))
 {
 }
 

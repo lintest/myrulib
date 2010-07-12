@@ -34,8 +34,18 @@ wxString FbStandardPaths::GetConfigFile() const
 
 wxString FbStandardPaths::GetDownloadDir(bool bMustExist) const
 {
-	wxString path = FbParams::GetText(FB_DOWNLOAD_DIR);
+	wxString path = FbParams::GetStr(FB_DOWNLOAD_DIR);
 	if ( bMustExist && !wxFileName::DirExists(path))
 		wxFileName::Mkdir(path, 0777, wxPATH_MKDIR_FULL);
 	return path;
+}
+
+wxString FbStandardPaths::MakeRelative(const wxString &fullpath, const wxString &basefile)
+{
+	wxString basepath = wxFileName(basefile).GetPath();
+	wxFileName filename = fullpath;
+	filename.MakeRelativeTo(basepath);
+	wxString relative = filename.GetFullPath();
+	filename.MakeAbsolute(basepath);
+	return filename.GetFullPath() == fullpath ? relative : fullpath;
 }
