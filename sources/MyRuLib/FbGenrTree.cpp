@@ -2,6 +2,7 @@
 #include "FbBookEvent.h"
 #include "FbDatabase.h"
 #include "FbConst.h"
+#include "FbMasterTypes.h"
 
 //-----------------------------------------------------------------------------
 //  FbGenrParentData
@@ -25,6 +26,12 @@ wxString FbGenrChildData::GetValue(FbModel & model, size_t col) const
 		default:
 			return wxEmptyString ;
 	}
+}
+
+bool FbGenrChildData::operator==(const FbMasterInfo & info) const
+{
+	FbMasterGenrInfo * data = wxDynamicCast(&info, FbMasterGenrInfo);
+	return data && data->GetId() == m_code;
 }
 
 //-----------------------------------------------------------------------------

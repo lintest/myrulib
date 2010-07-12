@@ -187,11 +187,10 @@ void FbFrameAuthor::OnColClick(wxListEvent& event)
 
 void FbFrameAuthor::OnBooksCount(FbCountEvent& event)
 {
-	if (GetInfo() != event.GetInfo()) return;
-
 	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
-	if (model) {
-		model->SetCount(event.GetCount());
+	FbMasterAuthInfo * info = wxDynamicCast(&event.GetInfo(), FbMasterAuthInfo);
+	if (model && info) {
+		model->SetCount(info->GetId(), event.GetCount());
 		m_MasterList->Refresh();
 	}
 

@@ -9,6 +9,7 @@
 #include "FbWindow.h"
 #include "FbParams.h"
 #include "FbSequenDlg.h"
+#include "FbMasterTypes.h"
 
 IMPLEMENT_CLASS(FbFrameSequen, FbFrameBase)
 
@@ -116,11 +117,10 @@ void FbFrameSequen::OnColClick(wxListEvent& event)
 
 void FbFrameSequen::OnBooksCount(FbCountEvent& event)
 {
-	if (GetInfo() != event.GetInfo()) return;
-
 	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
-	if (model) {
-		model->SetCount(event.GetCount());
+	FbMasterSeqnInfo * info = wxDynamicCast(&event.GetInfo(), FbMasterSeqnInfo);
+	if (model && info) {
+		model->SetCount(info->GetId(), event.GetCount());
 		m_MasterList->Refresh();
 	}
 

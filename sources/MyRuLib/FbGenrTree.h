@@ -42,6 +42,7 @@ class FbGenrChildData: public FbChildData
 			{ return m_code == data.m_code; }
 		FbGenrChildData & operator=(const FbGenrListData & data)
 			{ if (!m_count) m_count = data.m_count; return *this; }
+		bool operator==(const FbMasterInfo & info) const;
 		virtual wxString GetValue(FbModel & model, size_t col) const;
 		FbMasterInfo GetInfo() const;
 	private:

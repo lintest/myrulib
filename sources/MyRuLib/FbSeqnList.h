@@ -49,7 +49,6 @@ class FbSeqnListModel: public FbListModel
 		void Append(const wxArrayInt &items);
 		void Delete(int code);
 		void SetCount(int code, int count);
-		void SetCount(int count);
 		int GetCount(int code);
 	protected:
 		virtual size_t GetRowCount() const

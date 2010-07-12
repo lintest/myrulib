@@ -85,10 +85,8 @@ void FbFrameGenres::OnModel( FbModelEvent & event )
 
 void FbFrameGenres::OnBooksCount(FbCountEvent& event)
 {
-	if (GetInfo() != event.GetInfo()) return;
-
 	FbGenrChildData * child = wxDynamicCast(&m_MasterList->GetCurrent(), FbGenrChildData);
-	if (child) {
+	if (child && *child == event.GetInfo()) {
 		child->SetCount(event.GetCount());
 		m_MasterList->Refresh();
 	}

@@ -184,13 +184,6 @@ void FbAuthListModel::Delete(int code)
 	m_items.RemoveAt(index);
 }
 
-void FbAuthListModel::SetCount(int count)
-{
-	FbModelItem item = GetCurrent();
-	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data) SetCount(data->GetCode(), count);
-}
-
 void FbAuthListModel::SetCount(int code, int count)
 {
 	m_counter[code] = count;

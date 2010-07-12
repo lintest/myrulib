@@ -158,13 +158,6 @@ void FbSeqnListModel::Delete(int code)
 	m_items.RemoveAt(index);
 }
 
-void FbSeqnListModel::SetCount(int count)
-{
-	FbModelItem item = GetCurrent();
-	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
-	if (data) SetCount(data->GetCode(), count);
-}
-
 void FbSeqnListModel::SetCount(int code, int count)
 {
 	m_counter[code] = count;
