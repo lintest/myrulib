@@ -147,33 +147,30 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
 {
 }
 
-FbAuiDefaultTabArt::FbAuiDefaultTabArt()
-{
-    m_normal_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
+//-----------------------------------------------------------------------------
+//  FbBaseTabArt
+//-----------------------------------------------------------------------------
 
-    m_selected_font = m_normal_font;
-    m_selected_font.SetWeight(wxBOLD);
-}
-
-wxAuiTabArt* FbAuiDefaultTabArt::Clone()
-{
-    FbAuiDefaultTabArt* art = new FbAuiDefaultTabArt;
-    art->SetNormalFont(m_normal_font);
-    art->SetSelectedFont(m_selected_font);
-    art->SetMeasuringFont(m_measuring_font);
-
-    return art;
-}
-
-void FbDefaultTabArt::DrawBackground(wxDC& dc,
+void FbBaseTabArt::DrawBackground(wxDC& dc,
                                         wxWindow* WXUNUSED(wnd),
                                         const wxRect& rect)
 {
+#ifdef __WXMAC__
+    wxBrush toolbarbrush;
+    toolbarbrush.MacSetTheme( kThemeBrushToolbarBackground );
+    wxColor base_colour = toolbarbrush.GetColour();
+#else
+    wxColor base_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
+#endif
+    m_base_colour = base_colour;
+
+	wxBrush brush = wxBrush(m_base_colour, wxSOLID);
+
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.SetBrush(m_base_colour_brush);
+	dc.SetBrush(brush);
 	dc.DrawRectangle(rect);
 
-	wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), 0, wxSOLID);
+	wxPen pen_shadow (wxSystemSettings::GetColour (wxSYS_COLOUR_3DSHADOW), 0, wxSOLID);
 	dc.SetPen(pen_shadow);
 
 	int y = m_flags &wxAUI_NB_BOTTOM ? rect.GetTop() : rect.GetBottom();
@@ -181,6 +178,28 @@ void FbDefaultTabArt::DrawBackground(wxDC& dc,
 
 	y = m_flags &wxAUI_NB_BOTTOM ? rect.GetTop() + 3 : rect.GetBottom() - 3;
 	dc.DrawLine(rect.GetLeft() - 1, y, rect.GetRight() + 1, y);
+}
+
+//-----------------------------------------------------------------------------
+//  FbDefaultTabArt
+//-----------------------------------------------------------------------------
+
+FbDefaultTabArt::FbDefaultTabArt()
+{
+    m_normal_font = wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT);
+
+    m_selected_font = m_normal_font;
+    m_selected_font.SetWeight(wxBOLD);
+}
+
+wxAuiTabArt* FbDefaultTabArt::Clone()
+{
+    FbDefaultTabArt* art = new FbDefaultTabArt;
+    art->SetNormalFont(m_normal_font);
+    art->SetSelectedFont(m_selected_font);
+    art->SetMeasuringFont(m_measuring_font);
+
+    return art;
 }
 
 // DrawTab() draws an individual tab.
@@ -192,7 +211,7 @@ void FbDefaultTabArt::DrawBackground(wxDC& dc,
 // out_rect - actual output rectangle
 // x_extent - the advance x; where the next tab should start
 
-void FbAuiDefaultTabArt::DrawTab(wxDC& dc,
+void FbDefaultTabArt::DrawTab(wxDC& dc,
                                  wxWindow* wnd,
                                  const wxAuiNotebookPage& page,
                                  const wxRect& in_rect,
@@ -618,7 +637,7 @@ void FbCompactTabArt::DrawTab(wxDC& dc,
 }
 
 ////////////////////////////////////////////////////////////////////////
-// FbAuiDefaultTabArt
+// FbDefaultTabArt
 ////////////////////////////////////////////////////////////////////////
 
 FbToolbarTabArt::FbToolbarTabArt(bool flat)

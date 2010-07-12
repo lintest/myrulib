@@ -33,7 +33,7 @@ FbAboutDlg::FbAboutDlg( wxWindow* parent )
 	m_text2->Wrap( -1 );
 	bSizerCtrl->Add( m_text2, 0, wxALL|wxEXPAND, 10 );
 
-	wxStaticText * m_text3 = new wxStaticText( this, wxID_ANY, wxGetApp().GetAppData(), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_text3 = new wxStaticText( this, wxID_ANY, wxGetApp().GetLibFile(), wxDefaultPosition, wxDefaultSize, 0 );
 	m_text3->Wrap( -1 );
 	bSizerCtrl->Add( m_text3, 0, wxALL|wxEXPAND, 10 );
 

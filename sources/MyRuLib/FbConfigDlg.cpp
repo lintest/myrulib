@@ -21,6 +21,7 @@
 #include "FbTreeView.h"
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
+#include "FbDataPath.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
@@ -258,13 +259,8 @@ void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		wxString fullpath = dlg.GetPath();
-		wxString datapath = wxFileName(wxGetApp().GetAppData()).GetPath();
-		wxFileName filename = fullpath;
-		filename.MakeRelativeTo(datapath);
-		wxString relative = filename.GetFullPath();
-		filename.MakeAbsolute(datapath);
-		textCtrl->SetValue( filename.GetFullPath() == fullpath ? relative : fullpath );
+		wxString filepath = FbStandardPaths::MakeRelative(dlg.GetPath(), wxGetApp().GetLibFile());
+		textCtrl->SetValue( filepath );
 	}
 }
 
@@ -339,6 +335,7 @@ void FbConfigDlg::Execute(wxWindow* parent)
 	dlg.Assign(false);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Assign(true);
+		wxGetApp().UpdateLibPath();
 		FbCollection::EmptyInfo();
 	}
 }

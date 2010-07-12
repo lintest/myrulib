@@ -3,7 +3,7 @@
 
 #include "wx/aui/auibook.h"
 
-class FbDefaultTabArt : public wxAuiDefaultTabArt
+class FbBaseTabArt : public wxAuiDefaultTabArt
 {
     void DrawBackground(
                  wxDC& dc,
@@ -11,11 +11,11 @@ class FbDefaultTabArt : public wxAuiDefaultTabArt
                  const wxRect& rect);
 };
 
-class FbAuiDefaultTabArt : public FbDefaultTabArt
+class FbDefaultTabArt : public FbBaseTabArt
 {
 
 public:
-	FbAuiDefaultTabArt();
+	FbDefaultTabArt();
 
     wxAuiTabArt* Clone();
 
@@ -78,7 +78,7 @@ class FbToolbarTabArt : public wxAuiDefaultTabArt
 		bool m_flat;
 };
 
-class FbVstudioTabArt : public wxAuiDefaultTabArt
+class FbVstudioTabArt : public FbBaseTabArt
 {
 public:
 	FbVstudioTabArt() {}
@@ -93,7 +93,7 @@ public:
                             const wxSize& required_bmp_size);
 };
 
-class FbMozillaTabArt : public wxAuiDefaultTabArt
+class FbMozillaTabArt : public FbBaseTabArt
 {
 public:
 	FbMozillaTabArt() {}

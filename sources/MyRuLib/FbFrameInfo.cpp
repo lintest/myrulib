@@ -65,7 +65,8 @@ void FrameInfoThread::WriteTitle()
 	m_html += wxT("<TR><TD colspan=2 align=center>");
 	m_html += wxString::Format(wxT("<B>%s</B>"), FbParams::GetText(DB_LIBRARY_TITLE).c_str());
 	m_html += wxT("</TD></TR>");
-	m_html += wxString::Format(wxT("<TR><TD colspan=2>%s</TD></TR>"), wxGetApp().GetAppData().c_str());
+	m_html += wxString::Format(wxT("<TR><TD colspan=2>%s</TD></TR>"), wxGetApp().GetLibFile().c_str());
+	m_html += wxString::Format(wxT("<TR><TD colspan=2>%s</TD></TR>"), wxGetApp().GetLibPath().c_str());
 	m_html += wxT("</TABLE>");
 }
 

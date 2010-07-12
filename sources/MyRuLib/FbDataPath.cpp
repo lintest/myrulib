@@ -39,3 +39,13 @@ wxString FbStandardPaths::GetDownloadDir(bool bMustExist) const
 		wxFileName::Mkdir(path, 0777, wxPATH_MKDIR_FULL);
 	return path;
 }
+
+wxString FbStandardPaths::MakeRelative(const wxString &fullpath, const wxString &basefile)
+{
+	wxString basepath = wxFileName(basefile).GetPath();
+	wxFileName filename = fullpath;
+	filename.MakeRelativeTo(basepath);
+	wxString relative = filename.GetFullPath();
+	filename.MakeAbsolute(basepath);
+	return filename.GetFullPath() == fullpath ? relative : fullpath;
+}

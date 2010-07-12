@@ -18,12 +18,10 @@ BEGIN_EVENT_TABLE(MyRuLibApp, wxApp)
 	EVT_FB_IMAGE(wxID_ANY, MyRuLibApp::OnImageEvent)
 END_EVENT_TABLE()
 
+wxCriticalSection MyRuLibApp::sm_section;
+
 MyRuLibApp::MyRuLibApp()
     :m_locale(NULL), m_collection(NULL), m_downloader(NULL)
-{
-}
-
-MyRuLibApp::~MyRuLibApp()
 {
 }
 
@@ -63,9 +61,7 @@ void MyRuLibApp::Localize()
 
 bool MyRuLibApp::OnInit()
 {
-	FbConfigDatabase config;
-	config.Open();
-	FbParams().LoadParams(false);
+	FbCollection::LoadConfig();
     Localize();
 
 	OpenLog();
@@ -73,7 +69,7 @@ bool MyRuLibApp::OnInit()
 	wxLog::SetVerbose(true);
 	#endif // __WXDEBUG__
 
-	wxFileName filename = GetDatabaseFile(config);
+	wxFileName filename = GetDatabaseFile();
 	if (!filename.IsOk()) {
 		wxString datafile;
 		bool ok = FbDataOpenDlg::Execute(NULL, datafile);
@@ -112,7 +108,7 @@ void MyRuLibApp::LoadBlankImage()
 	wxMemoryFSHandler::AddFile(wxT("blank"), bitmap, wxBITMAP_TYPE_PNG);
 }
 
-wxFileName MyRuLibApp::GetDatabaseFile(FbDatabase &config)
+wxFileName MyRuLibApp::GetDatabaseFile()
 {
 	wxFileName filename = FbStandardPaths().GetExecutablePath();
 	filename.SetExt(wxT("db"));
@@ -128,7 +124,7 @@ wxFileName MyRuLibApp::GetDatabaseFile(FbDatabase &config)
 
 	if (filename.FileExists()) return filename;
 
-	wxString recent = config.GetText(FB_RECENT_0);
+	wxString recent = FbCollection::GetParamStr(FB_RECENT_0);
 	if (!recent.IsEmpty()) {
 		wxFileName filename = recent;
 		if (filename.FileExists()) return filename;
@@ -156,46 +152,55 @@ void MyRuLibApp::OpenLog()
 bool MyRuLibApp::OpenDatabase(const wxString &filename)
 {
 	FbCollection * collection = new FbCollection(filename);
-	if (collection->IsOk()) {
-		SetAppData(filename);
-		FbParams params;
-		params.LoadParams();
-		params.AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
+	bool ok = collection->IsOk();
+	if (ok) {
+		SetLibFile(filename);
+		wxCriticalSectionLocker locker(sm_section);
 		wxDELETE(m_collection);
 		m_collection = collection;
-		return true;
 	} else {
 		delete collection;
-		return false;
 	}
+	if (ok) FbParams::AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
+	return ok;
 }
 
-const wxString MyRuLibApp::GetAppData()
+FbCollection * MyRuLibApp::GetCollection() 
+{ 
+	wxCriticalSectionLocker locker(sm_section);
+	return m_collection; 
+}
+
+const wxString MyRuLibApp::GetLibFile() const
 {
-	wxCriticalSectionLocker locker(m_section);
-	return m_datafile;
+	wxCriticalSectionLocker locker(sm_section);
+	return m_LibFile;
 }
 
-const wxString MyRuLibApp::GetAppPath()
+const wxString MyRuLibApp::GetLibPath() const
 {
-	wxCriticalSectionLocker locker(m_section);
-	return wxFileName(m_datafile).GetPath();
+	wxCriticalSectionLocker locker(sm_section);
+	return m_LibPath;
 }
 
-const wxString MyRuLibApp::GetLibPath()
+void MyRuLibApp::SetLibFile(const wxString & filename)
+{
+	{
+		wxCriticalSectionLocker locker(sm_section);
+		m_LibFile = filename;
+	}
+	UpdateLibPath();
+}
+
+void MyRuLibApp::UpdateLibPath()
 {
 	wxFileName dirname = FbParams::GetText(DB_LIBRARY_DIR);
 	if (dirname.IsRelative()) {
-		wxFileName datafile = GetAppData();
-		dirname.MakeAbsolute(datafile.GetPath());
+		wxFileName filename = GetLibFile();
+		dirname.MakeAbsolute(filename.GetPath());
 	}
-	return dirname.GetFullPath();
-}
-
-void MyRuLibApp::SetAppData(const wxString &filename)
-{
-	wxCriticalSectionLocker locker(m_section);
-	m_datafile = filename;
+	wxCriticalSectionLocker locker(sm_section);
+	m_LibPath = dirname.GetFullPath();
 }
 
 void MyRuLibApp::OnImageEvent(FbImageEvent & event)

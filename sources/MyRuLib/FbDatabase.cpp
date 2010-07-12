@@ -272,7 +272,7 @@ void FbDatabase::AttachConfig()
 
 FbCommonDatabase::FbCommonDatabase()
 {
-	FbDatabase::Open(wxGetApp().GetAppData());
+	FbDatabase::Open(wxGetApp().GetLibFile());
 }
 
 wxString FbCommonDatabase::GetMd5(int id)

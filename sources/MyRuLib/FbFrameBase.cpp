@@ -266,7 +266,7 @@ void FbFrameBase::OnFilterSet(wxCommandEvent& event)
 void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 {
 	FbParams().SetValue(FB_USE_FILTER, 0);
-	m_filter.Enable(not m_filter.IsEnabled());
+	m_filter.Enable(!m_filter.IsEnabled());
 	UpdateBooklist();
 }
 

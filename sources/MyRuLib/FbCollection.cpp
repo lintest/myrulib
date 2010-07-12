@@ -50,6 +50,19 @@ wxString FbCacheData::GetValue(size_t col) const
 WX_DEFINE_OBJARRAY(FbCasheDataArray);
 
 //-----------------------------------------------------------------------------
+//  FbParamData
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbParamData, wxObject)
+
+FbParamData & FbParamData::operator=(wxSQLite3ResultSet & result)
+{
+	m_int = result.GetInt(1);
+	m_str = result.GetString(2);
+	return *this;
+}
+
+//-----------------------------------------------------------------------------
 //  FbCollection
 //-----------------------------------------------------------------------------
 
@@ -57,12 +70,15 @@ IMPLEMENT_CLASS(FbCollection, wxObject)
 
 wxCriticalSection FbCollection::sm_section;
 
+FbParamHash FbCollection::sm_params;
+
 FbCollection::FbCollection(const wxString &filename)
 	: m_thread(NULL)
 {
 	m_database.Open(filename);
 	m_database.AttachConfig();
 	m_database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
+	LoadParams();
 }
 
 FbCollection::~FbCollection()
@@ -387,3 +403,110 @@ wxFileName FbCollection::FindZip(const wxString &dirname, const wxString &filena
 	}
 	return wxFileName();
 }
+
+void FbCollection::LoadConfig()
+{
+	FbConfigDatabase database;
+	database.Open();
+	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100");
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	while (result.NextRow()) {
+		int id = result.GetInt(0);
+		sm_params[id] = result;
+		if (id == FB_TEMP_DEL) FbTempEraser::sm_erase = result.GetInt(1);
+	}
+}
+
+void FbCollection::LoadParams()
+{
+	wxString sql = wxT("SELECT id, value, text FROM params WHERE id<100");
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	while (result.NextRow()) {
+		int id = result.GetInt(0);
+		m_params[id] = result;
+		if (id == FB_TEMP_DEL) FbTempEraser::sm_erase = result.GetInt(1);
+	}
+}
+
+int FbCollection::GetParamInt(int param)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	if (param >= 100) {
+		if (sm_params.count(param)) return sm_params[param].m_int;
+	} else {
+		FbCollection * collection = GetCollection();
+		if (collection && collection->m_params.count(param)) 
+			return collection->m_params[param].m_int;
+	}
+	return FbParams::DefaultValue(param);
+}
+
+wxString FbCollection::GetParamStr(int param)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	if (param >= 100) {
+		if (sm_params.count(param)) return sm_params[param].m_str;
+	} else {
+		FbCollection * collection = GetCollection();
+		if (collection && collection->m_params.count(param)) 
+			return collection->m_params[param].m_str;
+	}
+	return FbParams::DefaultText(param);
+}
+
+void FbCollection::SetParamInt(int param, int value)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return;
+
+	if (param == FB_TEMP_DEL) FbTempEraser::sm_erase = value;
+
+	if (param >= 100) {
+		sm_params[param].m_int = value;
+	} else {
+		collection->m_params[param].m_int = value;
+	}
+
+	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
+	if (value == FbParams::DefaultValue(param)) {
+		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		stmt.Bind(1, param);
+		stmt.ExecuteUpdate();
+	} else {
+		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (id, value) VALUES (?,?)"), table);
+		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		stmt.Bind(1, param);
+		stmt.Bind(2, value);
+		stmt.ExecuteUpdate();
+	}
+}
+
+void FbCollection::SetParamStr(int param, const wxString &value)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return;
+
+	if (param >= 100) {
+		sm_params[param].m_str = value;
+	} else {
+		collection->m_params[param].m_str = value;
+	}
+
+	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
+	if (value == FbParams::DefaultText(param)) {
+		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		stmt.Bind(1, param);
+		stmt.ExecuteUpdate();
+	} else {
+		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (id, text) VALUES (?,?)"), table);
+		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		stmt.Bind(1, param);
+		stmt.Bind(2, value);
+		stmt.ExecuteUpdate();
+	}
+}
+

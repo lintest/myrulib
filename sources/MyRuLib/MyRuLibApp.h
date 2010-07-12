@@ -18,28 +18,31 @@ class MyRuLibApp : public wxApp
 {
 	public:
 		MyRuLibApp();
-		virtual ~MyRuLibApp();
 		virtual bool OnInit();
 		virtual int OnExit();
 		bool OpenDatabase(const wxString &filename);
-		const wxString GetAppData();
-		const wxString GetAppPath();
-		const wxString GetLibPath();
+		const wxString GetLibFile() const;
+		const wxString GetLibPath() const;
+		const wxString GetAppFile() const;
+		const wxString GetAppPath() const;
 		void Localize();
-		FbCollection * GetCollection() { return m_collection; }
 		void StartDownload();
 		void StopDownload();
+		void UpdateLibPath();
+		FbCollection * GetCollection();
 	protected:
 		virtual void OnUnhandledException() {}
 		virtual bool OnExceptionInMainLoop() { return false; }
 	private:
+		void SetLibFile(const wxString & filename);
 		void OpenLog();
-		wxFileName GetDatabaseFile(FbDatabase &config);
+		wxFileName GetDatabaseFile();
 		void SetAppData(const wxString &filename);
 		void LoadBlankImage();
 	private:
-		wxCriticalSection m_section;
-		wxString m_datafile;
+		static wxCriticalSection sm_section;
+		wxString m_LibFile;
+		wxString m_LibPath;
 		FbLocale * m_locale;
 		FbCollection * m_collection;
 		FbDownloader * m_downloader;

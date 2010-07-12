@@ -108,42 +108,24 @@ enum FbFrameKey {
 	FB_BOOK_COLUMNS,
 };
 
-class ParamItem
-{
-	public:
-		ParamItem(int param): id(param), value(0) {};
-		ParamItem(wxSQLite3ResultSet & result);
-	public:
-		int id;
-		int value;
-		wxString text;
-};
-
-WX_DECLARE_OBJARRAY(ParamItem, ParamArray);
-
 class FbParams {
 	public:
-		FbParams();
-		void LoadParams(bool all = true);
+		FbParams() {}
 		static int GetValue(int param);
 		static int GetValue(wxWindowID winid, int param);
 		static wxString GetText(int param);
 		static wxString GetText(wxWindowID winid, int param);
 		static wxFont GetFont(int param);
-		void SetValue(int param, int value);
-		void SetValue(wxWindowID winid, int param, int value);
-		void SetText(int param, const wxString &text);
-		void SetText(wxWindowID winid, int param, const wxString &text);
-		void ResetValue(int param);
+		static void SetValue(int param, int value);
+		static void SetValue(wxWindowID winid, int param, int value);
+		static void SetText(int param, const wxString &text);
+		static void SetText(wxWindowID winid, int param, const wxString &text);
+		static void ResetValue(int param);
 		static int DefaultValue(int param);
 		static wxString DefaultText(int param);
-		void AddRecent(const wxString &text, const wxString &title);
+		static void AddRecent(const wxString &text, const wxString &title);
 	private:
 		static int Param(wxWindowID winid, int param);
-	private:
-		static ParamArray sm_params;
-		FbCommonDatabase m_database;
-		static wxCriticalSection sm_queue;
 };
 
 #endif // __FBPARAMS_H__

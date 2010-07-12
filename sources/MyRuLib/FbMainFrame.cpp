@@ -253,7 +253,7 @@ void FbMainFrame::SetTabArt(int id)
 		case ID_ART_TOOLBAR:  art = new FbToolbarTabArt(true); break;
 		case ID_ART_VSTUDIO:  art = new FbVstudioTabArt; break;
 		case ID_ART_MOZILLA:  art = new FbMozillaTabArt; break;
-		default: art = new FbAuiDefaultTabArt;
+		default: art = new FbDefaultTabArt;
 	}
 	GetNotebook()->SetTabCtrlHeight(0);
 	GetNotebook()->SetArtProvider(art);
