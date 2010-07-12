@@ -35,17 +35,17 @@ bool FbDownloader::IsClosed()
 void * FbDownloader::Entry()
 {
 	while (true) {
-		{
-			wxMutexLocker locker(m_mutex);
-			m_condition.Wait();
-			if (m_closed) return NULL;
-		}
 		while (true) {
 			wxString md5sum = GetBook();
 			if (md5sum.IsEmpty()) break;
 			if (m_closed) return NULL;
 			try { FbInternetBook(this, md5sum).Execute(); } catch (...) {}
 			wxSleep(3);
+		}
+		{
+			wxMutexLocker locker(m_mutex);
+			m_condition.Wait();
+			if (m_closed) return NULL;
 		}
 	}
 	return NULL;
