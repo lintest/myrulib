@@ -438,7 +438,7 @@ int FbCollection::GetParamInt(int param)
 		if (collection && collection->m_params.count(param)) 
 			return collection->m_params[param].m_int;
 	}
-	return FbParams::DefaultValue(param);
+	return FbParams::DefaultInt(param);
 }
 
 wxString FbCollection::GetParamStr(int param)
@@ -451,25 +451,26 @@ wxString FbCollection::GetParamStr(int param)
 		if (collection && collection->m_params.count(param)) 
 			return collection->m_params[param].m_str;
 	}
-	return FbParams::DefaultText(param);
+	return FbParams::DefaultStr(param);
 }
 
 void FbCollection::SetParamInt(int param, int value)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
-	if (collection == NULL) return;
 
 	if (param == FB_TEMP_DEL) FbTempEraser::sm_erase = value;
 
 	if (param >= 100) {
 		sm_params[param].m_int = value;
 	} else {
-		collection->m_params[param].m_int = value;
+		if (collection) collection->m_params[param].m_int = value;
 	}
 
+	if (collection == NULL) return;
+
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
-	if (value == FbParams::DefaultValue(param)) {
+	if (value == FbParams::DefaultInt(param)) {
 		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
 		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
@@ -487,16 +488,17 @@ void FbCollection::SetParamStr(int param, const wxString &value)
 {
 	wxCriticalSectionLocker locker(sm_section);
 	FbCollection * collection = GetCollection();
-	if (collection == NULL) return;
 
 	if (param >= 100) {
 		sm_params[param].m_str = value;
 	} else {
-		collection->m_params[param].m_str = value;
+		if (collection) collection->m_params[param].m_str = value;
 	}
 
+	if (collection == NULL) return;
+
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
-	if (value == FbParams::DefaultText(param)) {
+	if (value == FbParams::DefaultStr(param)) {
 		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
 		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
@@ -510,3 +512,22 @@ void FbCollection::SetParamStr(int param, const wxString &value)
 	}
 }
 
+void FbCollection::ResetParam(int param)
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+
+	if (param >= 100) {
+		sm_params.erase(param);
+	} else {
+		if (collection) collection->m_params.erase(param);
+	}
+
+	if (collection == NULL) return;
+
+	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
+	wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
+	wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+	stmt.Bind(1, param);
+	stmt.ExecuteUpdate();
+}

@@ -95,7 +95,7 @@ END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
 {
-	return FbParams::GetText(DB_LIBRARY_TITLE) + wxT(" - ") + strProgramName;
+	return FbParams::GetStr(DB_LIBRARY_TITLE) + wxT(" - ") + strProgramName;
 }
 
 FbMainFrame::FbMainFrame()
@@ -105,16 +105,15 @@ FbMainFrame::FbMainFrame()
 
 FbMainFrame::~FbMainFrame()
 {
-	FbParams params;
 	wxSize size = GetSize();
-	params.SetValue(FB_FRAME_MAXIMIZE, IsMaximized());
-	params.SetValue(FB_FRAME_WIDTH, size.x);
-	params.SetValue(FB_FRAME_HEIGHT, size.y);
-	SaveFrameList(params);
+	FbParams::Set(FB_FRAME_MAXIMIZE, IsMaximized());
+	FbParams::Set(FB_FRAME_WIDTH, size.x);
+	FbParams::Set(FB_FRAME_HEIGHT, size.y);
+	SaveFrameList();
 	m_FrameManager.UnInit();
 }
 
-void FbMainFrame::SaveFrameList(FbParams &params)
+void FbMainFrame::SaveFrameList()
 {
 	wxString frames;
 	wxWindowID selected = 0;
@@ -131,12 +130,12 @@ void FbMainFrame::SaveFrameList(FbParams &params)
 		}
 	}
 	if (selected && selected != last_id) frames << wxT(",") << (selected - ID_FRAME_AUTHOR);
-	params.SetText(FB_FRAME_LIST, frames);
+	FbParams::Set(FB_FRAME_LIST, frames);
 }
 
 void FbMainFrame::RestoreFrameList()
 {
-	wxString frames = FbParams::GetText(FB_FRAME_LIST);
+	wxString frames = FbParams::GetStr(FB_FRAME_LIST);
 	if (frames.IsEmpty()) frames = wxT('0');
 	wxStringTokenizer tkz(frames, wxT(','), wxTOKEN_STRTOK);
 	while (tkz.HasMoreTokens()) {
@@ -150,11 +149,11 @@ void FbMainFrame::RestoreFrameList()
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
 	wxSize size;
-	bool maximized = FbParams::GetValue(FB_FRAME_MAXIMIZE);
+	bool maximized = FbParams::GetInt(FB_FRAME_MAXIMIZE);
 	if (maximized) {
-		size = wxSize( FbParams::DefaultValue(FB_FRAME_WIDTH), FbParams::DefaultValue(FB_FRAME_HEIGHT) );
+		size = wxSize( FbParams::DefaultInt(FB_FRAME_WIDTH), FbParams::DefaultInt(FB_FRAME_HEIGHT) );
 	} else {
-		size = wxSize( FbParams::GetValue(FB_FRAME_WIDTH), FbParams::GetValue(FB_FRAME_HEIGHT) );
+		size = wxSize( FbParams::GetInt(FB_FRAME_WIDTH), FbParams::GetInt(FB_FRAME_HEIGHT) );
 	}
 
 	bool res = wxAuiMDIParentFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
@@ -214,7 +213,7 @@ void FbMainFrame::CreateControls()
 //	GetNotebook()->SetSelection(0);
 
 	m_FrameManager.SetManagedWindow(this);
-	SetTabArt(FbParams::GetValue(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
+	SetTabArt(FbParams::GetInt(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
 
 	SetToolBar(CreateToolBar());
 
@@ -234,12 +233,12 @@ void FbMainFrame::OnTabArt(wxCommandEvent & event)
 {
 	int id = event.GetId();
 	SetTabArt(event.GetId());
-	FbParams().SetValue(FB_NOTEBOOK_ART, id - ID_ART_DEFAULT);
+	FbParams::Set(FB_NOTEBOOK_ART, id - ID_ART_DEFAULT);
 }
 
 void FbMainFrame::OnTabArtUpdate(wxUpdateUIEvent& event)
 {
-	int id = FbParams::GetValue(FB_NOTEBOOK_ART) + ID_ART_DEFAULT;
+	int id = FbParams::GetInt(FB_NOTEBOOK_ART) + ID_ART_DEFAULT;
 	if ( event.GetId() == id ) event.Check(true);
 }
 
@@ -413,7 +412,7 @@ void FbMainFrame::ShowLog(bool forced)
 	wxAuiPaneInfo * info = FindLog();
 	if (info) {
 		bool show = forced || !info->IsShown();
-		if (show != info->IsShown() && FbParams::GetValue(FB_CLEAR_LOG)) m_LOGTextCtrl.Clear();
+		if (show != info->IsShown() && FbParams::GetInt(FB_CLEAR_LOG)) m_LOGTextCtrl.Clear();
 		info->Show(show);
 		m_FrameManager.Update();
 	}
@@ -545,7 +544,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
 	if (event.m_type == FT_DOWNLOAD) {
-		if (FbParams::GetValue(FB_AUTO_DOWNLD)) wxGetApp().StartDownload();
+		if (FbParams::GetInt(FB_AUTO_DOWNLD)) wxGetApp().StartDownload();
 		FbFrameDownld * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWNLD, false), FbFrameDownld);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 	} else {
@@ -623,14 +622,14 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
 {
 	int param = event.GetId() - ID_RECENT_0 + FB_RECENT_0;
-	wxString filename = FbParams::GetText(param);
+	wxString filename = FbParams::GetStr(param);
 	if (filename.IsEmpty()) return;
 
 	if (wxFileName::FileExists(filename)) {
 		OpenDatabase(filename);
 	} else {
 		wxLogWarning(_("File not found: ") + filename);
-		FbParams().SetText(param, wxEmptyString);
+		FbParams::Set(param, wxEmptyString);
 	}
 }
 
@@ -651,9 +650,9 @@ void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
 	}
 
 	for (size_t i = 1; i<=5; i++) {
-		wxString filename = FbParams::GetText(i + FB_RECENT_0);
+		wxString filename = FbParams::GetStr(i + FB_RECENT_0);
 		if (filename.IsEmpty()) continue;
-		wxString fileinfo = FbParams::GetText(i + FB_TITLE_0);
+		wxString fileinfo = FbParams::GetStr(i + FB_TITLE_0);
 		submenu->Append(ID_RECENT_0 + i, filename, fileinfo);
 	}
 }
@@ -662,8 +661,7 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 {
 	if (wxGetApp().OpenDatabase(filename)) {
 		SetTitle(GetTitle());
-		FbParams params;
-		SaveFrameList(params);
+		SaveFrameList();
 		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
 		RestoreFrameList();
 	}

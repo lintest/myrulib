@@ -40,7 +40,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_file.Create( this, ID_FILE_TXT, wxEmptyString, wxDefaultPosition, wxSize( 300,-1 ), 0, NULL, 0 );
 	bSizerFile->Add( &m_file, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
 	for (size_t i = 0; i<=5; i++) {
-		wxString filename = FbParams::GetText(i + FB_RECENT_0);
+		wxString filename = FbParams::GetStr(i + FB_RECENT_0);
 		if (!filename.IsEmpty()) m_file.Append(filename);
 	}
 

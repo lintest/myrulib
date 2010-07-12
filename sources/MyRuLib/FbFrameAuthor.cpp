@@ -66,8 +66,8 @@ void FbFrameAuthor::CreateControls()
 
 	FbFrameBase::CreateControls();
 
-	m_RuAlphabar->Show( FbParams::GetValue(FB_ALPHABET_RU) );
-	m_EnAlphabar->Show( FbParams::GetValue(FB_ALPHABET_EN) );
+	m_RuAlphabar->Show( FbParams::GetInt(FB_ALPHABET_RU) );
+	m_EnAlphabar->Show( FbParams::GetInt(FB_ALPHABET_EN) );
 }
 
 void FbFrameAuthor::CreateColumns()
@@ -116,7 +116,7 @@ void FbFrameAuthor::OnLetterClicked( wxCommandEvent& event )
 	if (id < ID_LETTER_EN) {
 		alphabet = alphabetRu;
 		position = id - ID_LETTER_RU;
-		FbParams().SetValue(FB_LAST_LETTER, position);
+		FbParams::Set(FB_LAST_LETTER, position);
 	} else {
 		alphabet = alphabetEn;
 		position = id - ID_LETTER_EN;
@@ -132,7 +132,7 @@ void FbFrameAuthor::OnAllClicked(wxCommandEvent& event)
 {
 	wxString text = wxT("*");
 	FbFrameAuthor::ToggleAlphabar(ID_LETTER_ALL);
-	FbParams().SetValue(FB_LAST_LETTER, -1);
+	FbParams::Set(FB_LAST_LETTER, -1);
 	m_info = wxChar(0);
 	CreateMasterThread();
 }
@@ -169,7 +169,7 @@ void FbFrameAuthor::OpenAuthor(const int author, const int book)
 
 void FbFrameAuthor::SelectRandomLetter()
 {
-	int position = FbParams().GetValue(FB_LAST_LETTER);
+	int position = FbParams::GetInt(FB_LAST_LETTER);
 	FbCommandEvent(wxEVT_COMMAND_TOOL_CLICKED, ID_LETTER_RU + position).Post(this);
 }
 
@@ -200,8 +200,8 @@ void FbFrameAuthor::OnBooksCount(FbCountEvent& event)
 
 void FbFrameAuthor::ShowFullScreen(bool show)
 {
-	if (m_RuAlphabar) m_RuAlphabar->Show(!show && FbParams::GetValue(FB_ALPHABET_RU));
-	if (m_EnAlphabar) m_EnAlphabar->Show(!show && FbParams::GetValue(FB_ALPHABET_EN));
+	if (m_RuAlphabar) m_RuAlphabar->Show(!show && FbParams::GetInt(FB_ALPHABET_RU));
+	if (m_EnAlphabar) m_EnAlphabar->Show(!show && FbParams::GetInt(FB_ALPHABET_EN));
 	Layout();
 }
 
@@ -304,7 +304,7 @@ void FbFrameAuthor::OnMasterPage(wxCommandEvent& event)
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	if (data && data->GetCode() > 0) {
-		wxString host = FbParams::GetText(DB_DOWNLOAD_HOST);
+		wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
 		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetCode());
 		wxLaunchDefaultBrowser(url);
 	}
@@ -379,7 +379,7 @@ void FbFrameAuthor::OnViewAlphavet(wxCommandEvent& event)
 		case ID_ALPHABET_RU: key = FB_ALPHABET_RU; break;
 		case ID_ALPHABET_EN: key = FB_ALPHABET_EN; break;
 	}
-	if (key) FbParams().SetValue(key, show);
+	if (key) FbParams::Set(key, show);
 }
 
 void FbFrameAuthor::OnViewAlphavetUpdateUI(wxUpdateUIEvent & event)

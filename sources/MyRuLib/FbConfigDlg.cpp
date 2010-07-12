@@ -290,37 +290,35 @@ void FbConfigDlg::Assign(bool write)
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-	FbParams params;
-
 	for (size_t i=0; i<idsCount; i++) {
 		switch (ids[i].type) {
 			case tText:
 				if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
 					if (write)
-						params.SetText(ids[i].param, control->GetValue());
+						FbParams::Set(ids[i].param, control->GetValue());
 					else
-						control->SetValue(params.GetText(ids[i].param));
+						control->SetValue(FbParams::GetStr(ids[i].param));
 				} break;
 			case tCheck:
 				if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
 					if (write)
-						params.SetValue(ids[i].param, control->GetValue());
+						FbParams::Set(ids[i].param, control->GetValue());
 					else
-						control->SetValue(params.GetValue(ids[i].param) != 0);
+						control->SetValue(FbParams::GetInt(ids[i].param) != 0);
 				} break;
 			case tRadio:
 				if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
 					if (write)
-						params.SetValue(ids[i].param, control->GetSelection());
+						FbParams::Set(ids[i].param, control->GetSelection());
 					else
-						control->SetSelection(params.GetValue(ids[i].param));
+						control->SetSelection(FbParams::GetInt(ids[i].param));
 				} break;
 			case tCombo:
 				if (wxComboBox * control = (wxComboBox*)FindWindowById(ids[i].control)) {
 					if (write)
-						params.SetText(ids[i].param, control->GetValue());
+						FbParams::Set(ids[i].param, control->GetValue());
 					else
-						control->SetValue(params.GetText(ids[i].param));
+						control->SetValue(FbParams::GetStr(ids[i].param));
 				} break;
 		}
 

@@ -34,7 +34,7 @@ wxString FbStandardPaths::GetConfigFile() const
 
 wxString FbStandardPaths::GetDownloadDir(bool bMustExist) const
 {
-	wxString path = FbParams::GetText(FB_DOWNLOAD_DIR);
+	wxString path = FbParams::GetStr(FB_DOWNLOAD_DIR);
 	if ( bMustExist && !wxFileName::DirExists(path))
 		wxFileName::Mkdir(path, 0777, wxPATH_MKDIR_FULL);
 	return path;

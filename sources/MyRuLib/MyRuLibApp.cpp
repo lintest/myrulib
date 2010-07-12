@@ -48,7 +48,7 @@ void MyRuLibApp::StopDownload()
 
 void MyRuLibApp::Localize()
 {
-	wxLanguage language = (wxLanguage) FbParams::GetValue(FB_LANG_LOCALE);
+	wxLanguage language = (wxLanguage) FbParams::GetInt(FB_LANG_LOCALE);
 	if (m_locale && m_locale->GetLanguage() == language) return;
 
 	wxDELETE(m_locale);
@@ -161,7 +161,7 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 	} else {
 		delete collection;
 	}
-	if (ok) FbParams::AddRecent(filename, FbParams::GetText(DB_LIBRARY_TITLE));
+	if (ok) FbParams::AddRecent(filename, FbParams::GetStr(DB_LIBRARY_TITLE));
 	return ok;
 }
 
@@ -194,7 +194,7 @@ void MyRuLibApp::SetLibFile(const wxString & filename)
 
 void MyRuLibApp::UpdateLibPath()
 {
-	wxFileName dirname = FbParams::GetText(DB_LIBRARY_DIR);
+	wxFileName dirname = FbParams::GetStr(DB_LIBRARY_DIR);
 	if (dirname.IsRelative()) {
 		wxFileName filename = GetLibFile();
 		dirname.MakeAbsolute(filename.GetPath());

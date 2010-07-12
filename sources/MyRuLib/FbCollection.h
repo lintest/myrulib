@@ -79,6 +79,7 @@ class FbCollection: public wxObject
 		static wxString GetParamStr(int param);
 		static void SetParamInt(int param, int value);
 		static void SetParamStr(int param, const wxString &value);
+		static void ResetParam(int param);
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);

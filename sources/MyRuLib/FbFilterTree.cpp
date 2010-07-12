@@ -130,10 +130,9 @@ void * FbFilterTreeThread::Entry()
 	FbFilterTreeModel * type_tree = new FbFilterTreeModel(types, wxT("fb2"));
 	FbFilterTreeModel * lang_tree = new FbFilterTreeModel(langs, wxT("ru"));
 
-	FbParams params;
-	params.SetText(DB_TYPE_LIST, type_tree->GetAll());
-	params.SetText(DB_LANG_LIST, lang_tree->GetAll());
-	params.SetValue(DB_LAST_BOOK, m_last_book);
+	FbParams::Set(DB_TYPE_LIST, type_tree->GetAll());
+	FbParams::Set(DB_LANG_LIST, lang_tree->GetAll());
+	FbParams::Set(DB_LAST_BOOK, m_last_book);
 
 	FbModelEvent(FbFilterDlg::ID_TREE_TYPE, type_tree).Post(m_frame);
 	FbModelEvent(FbFilterDlg::ID_TREE_LANG, lang_tree).Post(m_frame);

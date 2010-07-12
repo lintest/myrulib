@@ -110,19 +110,19 @@ enum FbFrameKey {
 
 class FbParams {
 	public:
-		FbParams() {}
-		static int GetValue(int param);
-		static int GetValue(wxWindowID winid, int param);
-		static wxString GetText(int param);
-		static wxString GetText(wxWindowID winid, int param);
+		FbParams(int test) {}
+		static int GetInt(int param);
+		static int GetInt(wxWindowID winid, int param);
+		static wxString GetStr(int param);
+		static wxString GetStr(wxWindowID winid, int param);
 		static wxFont GetFont(int param);
-		static void SetValue(int param, int value);
-		static void SetValue(wxWindowID winid, int param, int value);
-		static void SetText(int param, const wxString &text);
-		static void SetText(wxWindowID winid, int param, const wxString &text);
-		static void ResetValue(int param);
-		static int DefaultValue(int param);
-		static wxString DefaultText(int param);
+		static void Set(int param, int value);
+		static void Set(wxWindowID winid, int param, int value);
+		static void Set(int param, const wxString &text);
+		static void Set(wxWindowID winid, int param, const wxString &text);
+		static void Reset(int param);
+		static int DefaultInt(int param);
+		static wxString DefaultStr(int param);
 		static void AddRecent(const wxString &text, const wxString &title);
 	private:
 		static int Param(wxWindowID winid, int param);

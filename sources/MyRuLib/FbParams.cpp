@@ -7,27 +7,27 @@
 #include "FbCollection.h"
 #include "FbConst.h"
 
-int FbParams::GetValue(int param)
+int FbParams::GetInt(int param)
 {
 	return FbCollection::GetParamInt(param);
 };
 
-wxString FbParams::GetText(int param)
+wxString FbParams::GetStr(int param)
 {
 	return FbCollection::GetParamStr(param);
 };
 
-void FbParams::SetValue(int param, int value)
+void FbParams::Set(int param, int value)
 {
 	return FbCollection::SetParamInt(param, value);
 }
 
-void FbParams::SetText(int param, const wxString &text)
+void FbParams::Set(int param, const wxString &text)
 {
 	return FbCollection::SetParamStr(param, text);
 }
 
-int FbParams::DefaultValue(int param)
+int FbParams::DefaultInt(int param)
 {
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
@@ -55,7 +55,7 @@ int FbParams::DefaultValue(int param)
 	}
 };
 
-wxString FbParams::DefaultText(int param)
+wxString FbParams::DefaultStr(int param)
 {
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
@@ -101,7 +101,7 @@ wxString FbParams::DefaultText(int param)
 
 wxFont FbParams::GetFont(int param)
 {
-	wxString info = GetText(param);
+	wxString info = GetStr(param);
 	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	wxFont font;
 	font.SetNativeFontInfo(info);
@@ -113,26 +113,26 @@ void FbParams::AddRecent(const wxString &text, const wxString &title)
 	int i = 0;
 
 	while (i<5) {
-		wxString file = GetText(FB_RECENT_0 + i);
+		wxString file = GetStr(FB_RECENT_0 + i);
 		if (file == text) break;
 		i++;
 	}
 
 	while (i>0){
-		wxString file = GetText(FB_RECENT_0 + i - 1);
-		SetText(FB_RECENT_0 + i, file);
-		wxString info = GetText(FB_TITLE_0 + i - 1);
-		SetText(FB_TITLE_0 + i, info);
+		wxString file = GetStr(FB_RECENT_0 + i - 1);
+		Set(FB_RECENT_0 + i, file);
+		wxString info = GetStr(FB_TITLE_0 + i - 1);
+		Set(FB_TITLE_0 + i, info);
 		i--;
 	}
 
-	SetText(FB_RECENT_0 + i, text);
-	SetText(FB_TITLE_0 + i, title);
+	Set(FB_RECENT_0 + i, text);
+	Set(FB_TITLE_0 + i, title);
 }
 
-void FbParams::ResetValue(int param)
+void FbParams::Reset(int param)
 {
-	SetValue(param, DefaultValue(param));
+	FbCollection::ResetParam(param);
 }
 
 int FbParams::Param(wxWindowID winid, int param)
@@ -142,27 +142,27 @@ int FbParams::Param(wxWindowID winid, int param)
 	return ok ? (param + FB_FRAME_OFFSET * delta) : 0;
 }
 
-int FbParams::GetValue(wxWindowID winid, int param)
+int FbParams::GetInt(wxWindowID winid, int param)
 {
 	int id = Param(winid, param);
-	return id ? GetValue(id) : 0;
+	return id ? GetInt(id) : 0;
 }
 
-wxString FbParams::GetText(wxWindowID winid, int param)
+wxString FbParams::GetStr(wxWindowID winid, int param)
 {
 	int id = Param(winid, param);
-	return id ? GetText(id) : wxString();
+	return id ? GetStr(id) : wxString();
 }
 
-void FbParams::SetValue(wxWindowID winid, int param, int value)
+void FbParams::Set(wxWindowID winid, int param, int value)
 {
 	int id = Param(winid, param);
-	if (id) SetValue(id, value);
+	if (id) Set(id, value);
 }
 
-void FbParams::SetText(wxWindowID winid, int param, const wxString &text)
+void FbParams::Set(wxWindowID winid, int param, const wxString &text)
 {
 	int id = Param(winid, param);
-	if (id) SetText(id, text);
+	if (id) Set(id, text);
 }
 
