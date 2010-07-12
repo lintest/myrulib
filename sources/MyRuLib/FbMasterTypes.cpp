@@ -8,6 +8,7 @@
 #include "FbGenrTree.h"
 #include "FbFldrTree.h"
 #include "FbSeqnList.h"
+#include "FbGenres.h"
 #include "FbConst.h"
 
 //-----------------------------------------------------------------------------

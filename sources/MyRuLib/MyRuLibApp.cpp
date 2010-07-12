@@ -7,6 +7,7 @@
 #include "FbLogStream.h"
 #include "FbLocale.h"
 #include "FbParams.h"
+#include "FbGenres.h"
 #include "ZipReader.h"
 #include "FbDataOpenDlg.h"
 #include "FbUpdateThread.h"
@@ -57,6 +58,8 @@ void MyRuLibApp::Localize()
 
     FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
     if (frame) frame->Localize(language);
+
+	FbGenres::Init();
 }
 
 bool MyRuLibApp::OnInit()

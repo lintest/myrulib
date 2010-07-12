@@ -158,20 +158,6 @@ wxString FbSearchFunction::AddAsterisk(const wxString &text)
 }
 
 //-----------------------------------------------------------------------------
-//  FbGenreFunction
-//-----------------------------------------------------------------------------
-
-void FbGenreFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-	int argCount = ctx.GetArgCount();
-	if (argCount != 1) {
-		ctx.SetResultError(wxString::Format(_("GENRE called with wrong number of arguments: %d."), argCount));
-		return;
-	}
-	ctx.SetResult( FbGenres::DecodeList( ctx.GetString(0) ) );
-}
-
-//-----------------------------------------------------------------------------
 //  FbAggregateFunction
 //-----------------------------------------------------------------------------
 
