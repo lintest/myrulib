@@ -67,9 +67,11 @@ function convert_Auth($mysql_db, $sqlite_db)
   $sqlite_db->query("INSERT INTO A(aid, Char) VALUES(0,'#')");
 
   $sqltest = "
-	SELECT AvtorId, FirstName, LastName, MiddleName
+	SELECT libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(DISTINCT libavtor.BookId) as Number
 	FROM libavtorname 
-	WHERE AvtorId IN (SELECT libavtor.AvtorId FROM libavtor INNER JOIN libbook ON libbook.BookId=libavtor.BookId AND libbook.Deleted<>1 )
+      INNER JOIN libavtor ON libavtorname.AvtorId=libavtor.AvtorId 
+      INNER JOIN libbook ON libbook.BookId=libavtor.BookId AND libbook.Deleted<>1 
+	GROUP BY libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
   ";
 
   $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
@@ -86,11 +88,9 @@ function convert_Auth($mysql_db, $sqlite_db)
 
     echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
-    $sql = "INSERT INTO a(aid, Char, Full, Find, First, Middle, Last) VALUES(?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO a(aid, Numb, Char, Full, Find, First, Middle, Last) VALUES(?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['AvtorId'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
-    if($err === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
+    $insert->execute(array($row['AvtorId'], $row['Number'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
     $insert->closeCursor();
   }
   $query->close(); 
@@ -392,9 +392,6 @@ convert_Book($mysql_db, $sqlite_db);
 convert_Seqn($mysql_db, $sqlite_db);
 convert_BkAuth($mysql_db, $sqlite_db);
 convert_BkSeqn($mysql_db, $sqlite_db);
-
-convert_count($mysql_db);
-
 
 //info_auth($mysql_db, $sqlite_db);
 //info_book($mysql_db, $sqlite_db);
