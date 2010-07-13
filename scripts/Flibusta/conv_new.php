@@ -272,6 +272,12 @@ function create_tables($sqlite_db)
   ");
   
   $sqlite_db->query("
+	CREATE TABLE d(
+	  Date integer primary key,
+	  Numb integer);
+  ");
+
+  $sqlite_db->query("
 	CREATE TABLE s(
 	  Sid integer primary key,
 	  Seqn text,
@@ -285,6 +291,18 @@ function create_tables($sqlite_db)
 	  Path text,
 	  Size integer,
 	  Numb integer);
+  ");
+  
+  $sqlite_db->query("
+	CREATE TABLE vz(
+	  vid integer primary key,
+	  File text);
+  ");
+  
+  $sqlite_db->query("
+	CREATE TABLE ve(
+	  vid integer,
+	  Entry text);
   ");
   
   $sqlite_db->query("
@@ -367,6 +385,8 @@ function create_indexes($sqlite_db)
 
   $sqlite_db->query("CREATE INDEX BS_Bid ON bs(Bid);");
   $sqlite_db->query("CREATE INDEX BS_Sid ON bs(Sid);");
+  
+  $sqlite_db->query("CREATE INDEX VE_Vid ON ve(Vid);");
 
   $sqlite_db->query("commit;");
 
