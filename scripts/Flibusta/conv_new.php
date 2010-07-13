@@ -64,7 +64,7 @@ function convert_Auth($mysql_db, $sqlite_db)
 
   $sqlite_db->query("DELETE FROM Auth");
 
-  $sqlite_db->query("INSERT INTO A(aid, Char) VALUES(0,'#')");
+  $sqlite_db->query("INSERT INTO A(aid, Letter) VALUES(0,'#')");
 
   $sqltest = "
 	SELECT libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(DISTINCT libavtor.BookId) as Number
@@ -88,7 +88,7 @@ function convert_Auth($mysql_db, $sqlite_db)
 
     echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
 
-    $sql = "INSERT INTO a(aid, Numb, Char, Full, Find, First, Middle, Last) VALUES(?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO a(aid, Numb, Letter, Full, Find, First, Middle, Last) VALUES(?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     $insert->execute(array($row['AvtorId'], $row['Number'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
     $insert->closeCursor();
@@ -244,7 +244,7 @@ function create_tables($sqlite_db)
   $sqlite_db->query("
 	CREATE TABLE a(
 	  Aid integer primary key,
-	  Char char(1),
+	  Letter char(1),
 	  First varchar(128),
 	  Middle varchar(128),
 	  Last varchar(128),
@@ -344,7 +344,7 @@ function create_indexes($sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("CREATE INDEX A_Char ON a(Char);");
+  $sqlite_db->query("CREATE INDEX A_Letter ON a(Letter);");
   $sqlite_db->query("CREATE INDEX A_Find ON a(Find);");
 
   $sqlite_db->query("CREATE INDEX B_Title ON b(Title);");
