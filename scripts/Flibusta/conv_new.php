@@ -330,6 +330,16 @@ function create_tables($sqlite_db)
   $sqlite_db->query("commit;");
 }
 
+function convert_count($sqlite_db)
+{
+  $sqlite_db->query("begin transaction;");
+  
+  $sqlite_db->query("UPDATE a SET Numb=(SELECT COUNT(bid) FROM ba WHERE ba.aid=a.aid)");
+  $sqlite_db->query("UPDATE s SET Numb=(SELECT COUNT(bid) FROM bs WHERE bs.sid=s.sid)");
+  
+  $sqlite_db->query("commit;");
+}
+
 function create_indexes($sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
@@ -382,6 +392,9 @@ convert_Book($mysql_db, $sqlite_db);
 convert_Seqn($mysql_db, $sqlite_db);
 convert_BkAuth($mysql_db, $sqlite_db);
 convert_BkSeqn($mysql_db, $sqlite_db);
+
+convert_count($mysql_db);
+
 
 //info_auth($mysql_db, $sqlite_db);
 //info_book($mysql_db, $sqlite_db);
