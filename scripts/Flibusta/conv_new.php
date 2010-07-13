@@ -2,62 +2,6 @@
 
 require_once 'genres.php';
 
-function strtolowerEx($str){
- $result = $str;
- global $strtolowerEx_pairs;
- if(!isset($strtolowerEx_pairs)){
-  $from = 'А Б В Г Д Е Ё Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
-  $to =   'а б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я a b c d e f g h i j k l m n o p q r s t u v w x y z';
-  $from = explode(' ', trim($from));
-  $to = explode(' ', trim($to));
-  $cfrom = count($from);
-  $cto = count($to);
-  $count = $cfrom > $cto ? $cto : $cfrom;
-  for($i = 0; $i < $count; $i++){$strtolowerEx_pairs[$from[$i]] = $to[$i];}
- }
- $result = strtr($str, $strtolowerEx_pairs);
- return $result;
-}
-
-function utf8_strlen($s)
-{
-    return preg_match_all('/./u', $s, $tmp);
-}
-
-function strtoupperEx($str){
- $result = $str;
- global $strtoupperEx_pairs;
- if(!isset($strtoupperEx_pairs)){
-  $from = 'а б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я a b c d e f g h i j k l m n o p q r s t u v w x y z Ё';
-  $to =   'А Б В Г Д Е Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Е';
-  $from = explode(' ', trim($from));
-  $to = explode(' ', trim($to));
-  $cfrom = count($from);
-  $cto = count($to);
-  $count = $cfrom > $cto ? $cto : $cfrom;
-  for($i = 0; $i < $count; $i++){$strtoupperEx_pairs[$from[$i]] = $to[$i];}
- }
- $result = strtr($str, $strtoupperEx_pairs);
- return $result;
-}
-
-function utf8_substr($s, $offset, $len = 'all')
-{
-    if ($offset<0) $offset = utf8_strlen($s) + $offset;
-    if ($len!='all')
-    {
-        if ($len<0) $len = utf8_strlen($s) - $offset + $len;
-        $xlen = utf8_strlen($s) - $offset;
-        $len = ($len>$xlen) ? $xlen : $len;
-        preg_match('/^.{' . $offset . '}(.{0,'.$len.'})/us', $s, $tmp);
-    }
-    else
-    {
-        preg_match('/^.{' . $offset . '}(.*)/us', $s, $tmp);
-    }
-    return (isset($tmp[1])) ? $tmp[1] : false;
-}
-
 function convert_Auth($mysql_db, $sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
@@ -74,23 +18,12 @@ function convert_Auth($mysql_db, $sqlite_db)
 	GROUP BY libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
   ";
 
-  $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
-
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    $full_name = trim($row['LastName'])." ".trim($row['FirstName'])." ".trim($row['MiddleName']);
-    $full_name = str_replace("  ", " ", $full_name);
-    $search_name = strtolowerEx($full_name);
-    $letter = utf8_substr($full_name,0,1);
-    $letter = strtoupperEx($letter,0,1);
-
-    if (strpos($char_list, $letter) === false) { $letter = "#"; };
-
-    echo $row['AvtorId']." - ".$letter." - ".$full_name." - ".$search_name."\n";
-
-    $sql = "INSERT INTO a(aid, Numb, Letter, Full, Find, First, Middle, Last) VALUES(?,?,?,?,?,?,?,?)";
+    echo $row['AvtorId']." - ".$row['FirstName']." ".$row['MiddleName']." ".$row['LastName']."\n";
+    $sql = "INSERT INTO a(aid, Numb, First, Middle, Last) VALUES(?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    $insert->execute(array($row['AvtorId'], $row['Number'], $letter, $full_name, $search_name, trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
+    $insert->execute(array($row['AvtorId'], $row['Number'], trim($row['FirstName']), trim($row['MiddleName']), trim($row['LastName'])));
     $insert->closeCursor();
   }
   $query->close(); 
@@ -332,6 +265,12 @@ function create_tables($sqlite_db)
   ");
 
   $sqlite_db->query("
+	CREATE TABLE bp(
+	  Bid integer not null,
+	  Pict text);
+  ");
+
+  $sqlite_db->query("
 	CREATE TABLE bs(
 	  Bid integer not null,
 	  Sid integer,
@@ -397,7 +336,7 @@ $mysql_srvr = 'localhost';
 $mysql_user = 'root';
 $mysql_pass = '';
 $mysql_base = 'flibusta';
-$sqlitefile = './dataview.db';
+$sqlitefile = './flibusta.db';
 
 include('settings.php');
 
@@ -412,10 +351,5 @@ convert_Book($mysql_db, $sqlite_db);
 convert_Seqn($mysql_db, $sqlite_db);
 convert_BkAuth($mysql_db, $sqlite_db);
 convert_BkSeqn($mysql_db, $sqlite_db);
-
-//info_auth($mysql_db, $sqlite_db);
-//info_book($mysql_db, $sqlite_db);
-
-//create_indexes($sqlite_db);
 
 ?>
