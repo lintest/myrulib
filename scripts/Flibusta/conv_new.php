@@ -64,7 +64,7 @@ function convert_Auth($mysql_db, $sqlite_db)
 
   $sqlite_db->query("DELETE FROM Auth");
 
-  $sqlite_db->query("INSERT INTO Auth (aid, Letter, Full) VALUES(0,'#','(без автора)')");
+  $sqlite_db->query("INSERT INTO A(aid, Char) VALUES(0,'#')");
 
   $sqltest = "
 	SELECT AvtorId, FirstName, LastName, MiddleName
