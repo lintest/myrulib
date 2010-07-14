@@ -164,14 +164,17 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 	} else {
 		delete collection;
 	}
-	if (ok) FbParams::AddRecent(filename, FbParams::GetStr(DB_LIBRARY_TITLE));
+	if (ok) {
+		FbParams::AddRecent(filename, FbParams::GetStr(DB_LIBRARY_TITLE));
+		UpdateLibPath();
+	}
 	return ok;
 }
 
-FbCollection * MyRuLibApp::GetCollection() 
-{ 
+FbCollection * MyRuLibApp::GetCollection()
+{
 	wxCriticalSectionLocker locker(sm_section);
-	return m_collection; 
+	return m_collection;
 }
 
 const wxString MyRuLibApp::GetLibFile() const
@@ -192,7 +195,6 @@ void MyRuLibApp::SetLibFile(const wxString & filename)
 		wxCriticalSectionLocker locker(sm_section);
 		m_LibFile = filename;
 	}
-	UpdateLibPath();
 }
 
 void MyRuLibApp::UpdateLibPath()
