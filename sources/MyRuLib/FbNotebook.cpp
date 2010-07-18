@@ -157,18 +157,9 @@ static void DrawFocusRect(wxWindow* win, wxDC& dc, const wxRect& rect, int flags
 //  FbBaseTabArt
 //-----------------------------------------------------------------------------
 
-void FbBaseTabArt::DrawBackground(wxDC& dc,
-                                        wxWindow* WXUNUSED(wnd),
-                                        const wxRect& rect)
+void FbBaseTabArt::DrawBackground(wxDC& dc, wxWindow* WXUNUSED(wnd), const wxRect& rect)
 {
-#ifdef __WXMAC__
-    wxBrush toolbarbrush;
-    toolbarbrush.MacSetTheme( kThemeBrushToolbarBackground );
-    wxColor base_colour = toolbarbrush.GetColour();
-#else
-    wxColor base_colour = wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR);
-#endif
-    m_base_colour = base_colour;
+    m_base_colour = wxSystemSettings::GetColour(fbSYS_COLOUR_TABCOLOUR);
 
 	wxBrush brush = wxBrush(m_base_colour, wxSOLID);
 
