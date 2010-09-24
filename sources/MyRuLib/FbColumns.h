@@ -6,19 +6,19 @@
 
 enum FbBookFields {
 	BF_NAME = 0,
-	BF_NUMB,
 	BF_AUTH,
-	BF_CODE,
+	BF_NUMB,
 	BF_GENR,
-	BF_RATE,
 	BF_LANG,
 	BF_TYPE,
-	BF_DATE,
 	BF_SIZE,
+	BF_DOWN,
+	BF_RATE,
+	BF_CODE,
+	BF_DATE,
 	BF_BITE,
 	BF_SEQN,
 	BF_MD5S,
-	BF_DOWN,
 	BF_LAST,
 };
 
@@ -30,11 +30,12 @@ class FbColumns
 		static wxString GetName(int field);
 		static int GetSize(int field);
 		static wxAlignment GetAlign(int field);
-		static wxChar GetCode(int field);
-		static size_t GetCode(wxChar letter);
 		static wxString Get(const wxArrayInt & columns);
 		static void Set(const wxString &text, wxArrayInt & columns);
 		static void Create(const wxArrayInt & columns, FbListMode mode, FbTreeViewCtrl & ctrl);
+	private:
+		static wxChar GetChar(int field);
+		static size_t GetCode(wxChar letter);
 };
 
 #endif // __FBCOLUMNS_H__

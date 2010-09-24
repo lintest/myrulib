@@ -35,7 +35,6 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 			m_zipOk = zip_file.IsOk();
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), file_name);
 		} else {
-			if (bInfoOnly) return;
 			wxFileName book_file;
 			m_zipOk = item.FindBook(sLibraryDir, book_file);
 			if (m_zipOk) OpenFile(book_file.GetFullPath());

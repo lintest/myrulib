@@ -211,7 +211,7 @@ wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 		newname.Empty();
 		size_t length = oldname.Length();
 		for (size_t i = 0; i < length; i++) {
-			unsigned char ch = oldname[i] % 0x100;
+			unsigned char ch = (wxChar)oldname[i] % 0x100;
 			if (0xC0 <= ch && ch <= 0xDF) {
 				newname << wxString(transchar[ch - 0xC0]).Upper();
 			} else if (0xE0 <= ch && ch <= 0xFF) {

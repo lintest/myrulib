@@ -25,7 +25,7 @@ dnl AM_GNU_GETTEXT
 
 AM_OPTIONS_WXCONFIG
 
-AM_PATH_WXCONFIG(2.8.10, WXFOUND=1, WXFOUND=0, [aui,html,core,net], [--unicode=yes])
+AM_PATH_WXCONFIG(2.8.10, WXFOUND=1, WXFOUND=0, [aui,adv,html,core,net], [--unicode=yes])
 
 if test "$WXFOUND" != 1; then
     AC_MSG_ERROR([

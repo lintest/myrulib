@@ -5,15 +5,15 @@ wxString FbColumns::GetName(int field)
 {
 	switch (field) {
 		case BF_NAME: return _("Title");
-		case BF_NUMB: return _("#");
 		case BF_AUTH: return _("Author");
-		case BF_CODE: return _("Code");
+		case BF_NUMB: return _("#");
 		case BF_GENR: return _("Genre");
-		case BF_RATE: return _("Rating");
 		case BF_LANG: return _("Language");
 		case BF_TYPE: return _("Extension");
-		case BF_DATE: return _("Date");
 		case BF_SIZE: return _("Size, Kb");
+		case BF_CODE: return _("Code");
+		case BF_RATE: return _("Rating");
+		case BF_DATE: return _("Date");
 		case BF_BITE: return _("Size, byte");
 		case BF_SEQN: return _("Ser.");
 		case BF_MD5S: return _("MD5 Sum");
@@ -27,8 +27,8 @@ int FbColumns::GetSize(int field)
 {
 	switch (field) {
 		case BF_NAME: return 15;
-		case BF_NUMB: return  3;
 		case BF_AUTH: return 10;
+		case BF_NUMB: return  3;
 		case BF_CODE: return  4;
 		case BF_GENR: return  6;
 		case BF_RATE: return  4;
@@ -67,7 +67,7 @@ wxAlignment FbColumns::GetAlign(int field)
 	}
 }
 
-wxChar FbColumns::GetCode(int field)
+wxChar FbColumns::GetChar(int field)
 {
 	if (BF_AUTH <= field && field < BF_LAST)
 		return wxT('A') + (field - BF_AUTH);
@@ -87,7 +87,7 @@ wxString FbColumns::Get(const wxArrayInt & columns)
 	wxString result;
 	size_t count = columns.Count();
 	for (size_t i = 0; i < count; i++) {
-		result << GetCode(columns[i]);
+		result << GetChar(columns[i]);
 	}
 	return result;
 }
@@ -103,13 +103,7 @@ void FbColumns::Set(const wxString &text, wxArrayInt & columns)
 void FbColumns::Create(const wxArrayInt & columns, FbListMode mode, FbTreeViewCtrl & ctrl)
 {
 	ctrl.EmptyColumns();
-	if (mode ==  FB2_MODE_TREE) {
-		ctrl.AddColumn(BF_NAME, _("Title"), 15, wxALIGN_LEFT);
-		ctrl.AddColumn(BF_NUMB, _("#"), 2, wxALIGN_RIGHT);
-	} else {
-		ctrl.AddColumn(BF_NAME, _("Title"), 17, wxALIGN_LEFT);
-	}
-
+	ctrl.AddColumn(BF_NAME, _("Title"), 15, wxALIGN_LEFT);
 	size_t count = columns.Count();
 	for (size_t i = 0; i < count; i++) {
 		int index = columns[i];
