@@ -1,3 +1,9 @@
+myrulib (0.24.14-maverick1) maverick; urgency=low
+
+  * Update release
+
+ -- Denis Kandrashin <mail@lintest.ru>  Fri, 01 Oct 2010 21:02:29 +0400
+
 myrulib (0.24.12-lucid1) lucid; urgency=low
 
   * Update release
