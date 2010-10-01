@@ -5,7 +5,6 @@
 #include "FbClientData.h"
 #include "FbExportDlg.h"
 #include "FbMainMenu.h"
-#include "FbUpdateThread.h"
 #include "FbMasterTypes.h"
 #include "FbDateTree.h"
 #include "FbWindow.h"
@@ -26,9 +25,6 @@ void FbFrameDate::CreateControls()
 {
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
-
-	m_ToolBar = CreateToolBar();
-	sizer->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);

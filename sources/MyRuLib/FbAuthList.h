@@ -18,6 +18,8 @@ class FbAuthListInfo: public wxObject
 			: m_author(info.m_author), m_letter(info.m_letter), m_string(info.m_string) {}
 		bool IsFullText() const
 			{ return FbSearchFunction::IsFullText(m_string); }
+		operator bool() const
+			{ return m_letter || !m_string.IsEmpty(); }
 	private:
 		int m_author;
 		wxChar m_letter;

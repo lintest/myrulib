@@ -19,7 +19,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		~FbFrameBase();
 		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
+		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; }
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };
@@ -28,6 +28,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
+		void RefreshBooks() { if (m_BooksPanel && m_BooksPanel->m_BookList) m_BooksPanel->m_BookList->Refresh(); }
 	protected:
 		virtual void CreateControls();
 		virtual void CreateColumns() = 0;
@@ -41,7 +42,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 	protected:
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
-		wxToolBar * m_ToolBar;
 		FbThread * m_MasterThread;
 		FbFilterObj m_filter;
 		int m_BookCount;
@@ -63,9 +63,6 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnMasterSelected(wxTreeEvent & event);
 		void OnExportBooks(wxCommandEvent& event);
-		void OnAppendBook(FbBookEvent& event);
-		void OnAppendAuthor(wxCommandEvent& event);
-		void OnAppendSequence(wxCommandEvent& event);
 		void OnEmptyBooks(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameBase)

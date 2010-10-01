@@ -1,14 +1,53 @@
-#ifndef __FBAUTHORDLG_H__
-#define __FBAUTHORDLG_H__
+#ifndef __FbAuthorModifyDlg_H__
+#define __FbAuthorModifyDlg_H__
 
 #include "FbWindow.h"
 #include "ImpContext.h"
 #include "FbDatabase.h"
+#include "FbBookEvent.h"
+#include "FbTreeView.h"
+#include "FbThread.h"
 
-class FbAuthorDlg : public FbDialog
+class FbAuthorReplaceDlg : public FbDialog
 {
 	public:
-		FbAuthorDlg( const wxString& title = wxEmptyString, int id = 0 );
+		FbAuthorReplaceDlg(const wxString& title, int id);
+		virtual ~FbAuthorReplaceDlg();
+		static int Execute(int author, wxString& newname);
+	protected:
+		virtual void EndModal(int retCode);
+	protected:
+		enum
+		{
+			ID_TEXT = 1000,
+			ID_FIND_TXT,
+			ID_FIND_BTN,
+			ID_FIND_LIST,
+		};
+		wxTextCtrl* m_Text;
+		wxTextCtrl* m_FindText;
+		wxBitmapButton* m_FindBtn;
+		FbTreeViewCtrl * m_FindList;
+	private:
+		void Init();
+		int GetSelected();
+		bool Load();
+		int DoUpdate();
+		wxString GetFullName();
+		FbCommonDatabase m_database;
+		int m_id;
+		FbThread * m_thread;
+	private:
+		void OnFindEnter( wxCommandEvent& event );
+		void OnModel( FbArrayEvent& event );
+		void OnArray( FbArrayEvent& event );
+		DECLARE_EVENT_TABLE()
+};
+
+class FbAuthorModifyDlg : public FbDialog
+{
+	public:
+		FbAuthorModifyDlg( const wxString& title = wxEmptyString, int id = 0 );
 		static int Append(wxString &newname);
 		static int Modify(int id, wxString &newname);
 		static void ReplaceAuthor(int old_id, int new_id);
@@ -37,4 +76,4 @@ class FbAuthorDlg : public FbDialog
 		int m_exists;
 };
 
-#endif //__FBAUTHORDLG_H__
+#endif //__FbAuthorModifyDlg_H__

@@ -1,5 +1,5 @@
-#ifndef __FBFRAMESEQUEN_H__
-#define __FBFRAMESEQUEN_H__
+#ifndef __FBFRAMESEQN_H__
+#define __FBFRAMESEQN_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -9,15 +9,15 @@
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
 #include "FbSeqnList.h"
+#include "FbComboBox.h"
 
-class FbFrameSequen : public FbFrameBase
+class FbFrameSeqn : public FbFrameBase
 {
 	public:
-		FbFrameSequen(wxAuiMDIParentFrame * parent);
+		FbFrameSeqn(wxAuiMDIParentFrame * parent);
 		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
-		virtual void ShowFullScreen(bool show);
 	protected:
 		virtual void CreateControls();
 		virtual wxMenuBar * CreateMenuBar();
@@ -25,12 +25,11 @@ class FbFrameSequen : public FbFrameBase
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
-		BookTreeItemData * GetSelectedBook();
 		void CreateMasterThread();
 		void CreateColumns();
 	private:
 		wxSplitterWindow * m_BooksSplitter;
-		wxTextCtrl * m_FindText;
+		FbSearchCombo * m_FindText;
 		wxStaticText * m_FindInfo;
 	private:
 		wxString m_info;
@@ -50,7 +49,7 @@ class FbFrameSequen : public FbFrameBase
 		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );
 		DECLARE_EVENT_TABLE()
-		DECLARE_CLASS(FbFrameSequen)
+		DECLARE_CLASS(FbFrameSeqn)
 	protected:
 		class MasterMenu: public wxMenu
 		{
@@ -69,4 +68,4 @@ class FbFrameSequen : public FbFrameBase
 
 };
 
-#endif // __FBFRAMESEQUEN_H__
+#endif // __FBFRAMESEQN_H__

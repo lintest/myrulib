@@ -1,4 +1,4 @@
-#include "FbFrameFolder.h"
+#include "FbFrameFldr.h"
 #include <wx/artprov.h>
 #include "FbBookMenu.h"
 #include "FbMainMenu.h"
@@ -8,72 +8,69 @@
 #include "FbDownloader.h"
 
 //-----------------------------------------------------------------------------
-//  FbFrameFolder
+//  FbFrameFldr
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(FbFrameFolder, FbFrameBase)
+IMPLEMENT_CLASS(FbFrameFldr, FbFrameBase)
 
-BEGIN_EVENT_TABLE(FbFrameFolder, FbFrameBase)
-	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFolder::OnFolderSelected)
-	EVT_MENU(ID_FAVORITES_DEL, FbFrameFolder::OnFavoritesDel)
-	EVT_MENU(ID_APPEND_FOLDER, FbFrameFolder::OnFolderAppend)
-	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFolder::OnFolderModify)
-	EVT_MENU(ID_DELETE_FOLDER, FbFrameFolder::OnFolderDelete)
+BEGIN_EVENT_TABLE(FbFrameFldr, FbFrameBase)
+	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameFldr::OnFolderSelected)
+	EVT_MENU(ID_FAVORITES_DEL, FbFrameFldr::OnFavoritesDel)
+	EVT_MENU(ID_APPEND_FOLDER, FbFrameFldr::OnFolderAppend)
+	EVT_MENU(ID_MODIFY_FOLDER, FbFrameFldr::OnFolderModify)
+	EVT_MENU(ID_DELETE_FOLDER, FbFrameFldr::OnFolderDelete)
 END_EVENT_TABLE()
 
-FbFrameFolder::FbFrameFolder(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_FOLDER, GetTitle())
+FbFrameFldr::FbFrameFldr(wxAuiMDIParentFrame * parent)
+	:FbFrameBase(parent, ID_FRAME_FLDR, GetTitle())
 {
 	CreateControls();
 }
 
-void FbFrameFolder::CreateControls()
+void FbFrameFldr::CreateControls()
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	m_ToolBar  = CreateToolBar(wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxID_ANY, wxEmptyString);
-	bSizer1->Add( m_ToolBar, 0, wxGROW);
+	wxBoxSizer* sizer;
+	sizer = new wxBoxSizer( wxVERTICAL );
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
 	splitter->SetSashGravity(0.33);
-	bSizer1->Add(splitter, 1, wxEXPAND);
+	sizer->Add(splitter, 1, wxEXPAND);
 
-	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
+
+	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
+	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	m_ToolBar.AddTool( ID_APPEND_FOLDER, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
+	m_ToolBar.AddTool( ID_MODIFY_FOLDER, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
+	m_ToolBar.AddTool( ID_DELETE_FOLDER, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
+	m_ToolBar.Realize();
+	bsMasterList->Add( &m_ToolBar, 0, wxEXPAND, 0 );
+
+	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
+	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+
+	panel->SetSizer( bsMasterList );
+	panel->Layout();
+	bsMasterList->Fit( panel );
 
 	CreateBooksPanel(splitter);
-	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
+	splitter->SplitVertically(panel, m_BooksPanel, 160);
 
-	SetSizer( bSizer1 );
+	SetSizer( sizer );
 
 	FbFrameBase::CreateControls();
 	FillFolders();
 }
 
-wxToolBar * FbFrameFolder::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	toolbar->AddTool( ID_APPEND_FOLDER, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
-	toolbar->AddTool( ID_MODIFY_FOLDER, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
-	toolbar->AddTool( ID_DELETE_FOLDER, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
-	toolbar->AddSeparator();
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
-	toolbar->Realize();
-
-	return toolbar;
-}
-
-void FbFrameFolder::CreateColumns()
+void FbFrameFldr::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("Folders"), 100, wxALIGN_LEFT);
 }
 
-void FbFrameFolder::FillFolders(const int current)
+void FbFrameFldr::FillFolders(const int current)
 {
 	FbTreeModel * model = new FbTreeModel;
 
@@ -100,18 +97,18 @@ void FbFrameFolder::FillFolders(const int current)
 	m_MasterList->AssignModel(model);
 }
 
-void FbFrameFolder::OnFolderSelected(wxTreeEvent & event)
+void FbFrameFldr::OnFolderSelected(wxTreeEvent & event)
 {
 	UpdateBooklist();
 
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
 	bool enabled = data && data->GetCode();
-	m_ToolBar->EnableTool(ID_MODIFY_FOLDER, enabled);
-	m_ToolBar->EnableTool(ID_DELETE_FOLDER, enabled);
+	m_ToolBar.EnableTool(ID_MODIFY_FOLDER, enabled);
+	m_ToolBar.EnableTool(ID_DELETE_FOLDER, enabled);
 }
 
-void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
+void FbFrameFldr::OnFavoritesDel(wxCommandEvent & event)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
 	FbFolderChildData * data = wxDynamicCast(&item, FbFolderChildData);
@@ -119,7 +116,7 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 
 	int folder = data->GetCode();
 	wxString selected = m_BooksPanel->GetSelected();
-	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT books.md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
+	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT md5s FROM b WHERE bid IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
 
 	FbCommonDatabase database;
 	database.AttachConfig();
@@ -128,7 +125,7 @@ void FbFrameFolder::OnFavoritesDel(wxCommandEvent & event)
 	m_BooksPanel->m_BookList->Delete();
 }
 
-void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
+void FbFrameFldr::OnFolderAppend(wxCommandEvent & event)
 {
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
@@ -153,7 +150,7 @@ void FbFrameFolder::OnFolderAppend(wxCommandEvent & event)
 	}
 }
 
-void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
+void FbFrameFldr::OnFolderModify(wxCommandEvent & event)
 {
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
@@ -179,7 +176,7 @@ void FbFrameFolder::OnFolderModify(wxCommandEvent & event)
 	}
 }
 
-void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
+void FbFrameFldr::OnFolderDelete(wxCommandEvent & event)
 {
 	FbModel * model = m_MasterList->GetModel();
 	if (model == NULL) return;
@@ -207,7 +204,7 @@ void FbFrameFolder::OnFolderDelete(wxCommandEvent & event)
 	if (ok) m_MasterList->Delete();
 }
 
-void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)
+void FbFrameFldr::UpdateFolder(const int folder, const FbFolderType type)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
 
@@ -230,8 +227,3 @@ void FbFrameFolder::UpdateFolder(const int folder, const FbFolderType type)
 	if (update) UpdateBooklist();
 }
 
-void FbFrameFolder::ShowFullScreen(bool show)
-{
-	if (m_ToolBar) m_ToolBar->Show(!show);
-	Layout();
-}

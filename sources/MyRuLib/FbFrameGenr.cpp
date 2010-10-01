@@ -1,4 +1,4 @@
-#include "FbFrameGenres.h"
+#include "FbFrameGenr.h"
 #include <wx/artprov.h>
 #include "FbConst.h"
 #include "FbDatabase.h"
@@ -6,28 +6,25 @@
 #include "FbGenrTree.h"
 #include "FbMainMenu.h"
 
-IMPLEMENT_CLASS(FbFrameGenres, FbFrameBase)
+IMPLEMENT_CLASS(FbFrameGenr, FbFrameBase)
 
-BEGIN_EVENT_TABLE(FbFrameGenres, FbFrameBase)
-	EVT_FB_MODEL(ID_MODEL_CREATE, FbFrameGenres::OnModel)
-	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameGenres::OnBooksCount)
+BEGIN_EVENT_TABLE(FbFrameGenr, FbFrameBase)
+	EVT_FB_MODEL(ID_MODEL_CREATE, FbFrameGenr::OnModel)
+	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameGenr::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameGenres::FbFrameGenres(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_GENRES, GetTitle())
+FbFrameGenr::FbFrameGenr(wxAuiMDIParentFrame * parent)
+	:FbFrameBase(parent, ID_FRAME_GENR, GetTitle())
 {
 	CreateControls();
 }
 
-void FbFrameGenres::CreateControls()
+void FbFrameGenr::CreateControls()
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	m_ToolBar = CreateToolBar();
-	bSizer1->Add( m_ToolBar, 0, wxGROW);
 
 	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
 	splitter->SetMinimumPaneSize(50);
@@ -48,7 +45,7 @@ void FbFrameGenres::CreateControls()
 	m_MasterThread->Execute();
 }
 
-void FbFrameGenres::CreateColumns()
+void FbFrameGenr::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("List of genres"), 40, wxALIGN_LEFT);
 	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
@@ -56,7 +53,7 @@ void FbFrameGenres::CreateColumns()
 	m_MasterList->AssignModel(model);
 }
 
-void FbFrameGenres::OnModel( FbModelEvent & event )
+void FbFrameGenr::OnModel( FbModelEvent & event )
 {
 	FbTreeModel * tree = wxDynamicCast(m_MasterList->GetModel(), FbTreeModel);
 	FbListStore * list = wxDynamicCast(event.GetModel(), FbListStore);
@@ -83,7 +80,7 @@ void FbFrameGenres::OnModel( FbModelEvent & event )
 	m_MasterList->Refresh();
 }
 
-void FbFrameGenres::OnBooksCount(FbCountEvent& event)
+void FbFrameGenr::OnBooksCount(FbCountEvent& event)
 {
 	FbGenrChildData * child = wxDynamicCast(&m_MasterList->GetCurrent(), FbGenrChildData);
 	if (child && *child == event.GetInfo()) {

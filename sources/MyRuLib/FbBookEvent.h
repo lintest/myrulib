@@ -17,6 +17,8 @@ DECLARE_LOCAL_EVENT_TYPE( fbEVT_EXPORT_ACTION,   7 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_ARRAY_ACTION,    8 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_COUNT_ACTION,    9 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_IMAGE_ACTION,   10 )
+DECLARE_LOCAL_EVENT_TYPE( fbEVT_LETTERS_ACTION, 11 )
+
 
 class FbModel;
 
@@ -217,6 +219,29 @@ class FbImageEvent: public FbCommandEvent
 		wxImage m_image;
 };
 
+class FbLettersEvent: public FbCommandEvent
+{
+	public:
+		FbLettersEvent(const FbLettersEvent & event)
+			: FbCommandEvent(event), m_letters(event.m_letters), m_position(event.m_position) {}
+
+		FbLettersEvent(wxWindowID winid, const wxArrayString & letters, int position)
+			: FbCommandEvent(fbEVT_LETTERS_ACTION, winid), m_letters(letters), m_position(position) {}
+
+		virtual wxEvent *Clone() const
+			{ return new FbLettersEvent(*this); }
+
+		const wxArrayString & GetLetters() const
+			{ return m_letters; }
+
+		int GetPosition() const
+			{ return m_position; }
+
+	private:
+		wxArrayString m_letters;
+		int m_position;
+};
+
 typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
 
 typedef void (wxEvtHandler::*FbModelEventFunction)(FbModelEvent&);
@@ -234,6 +259,8 @@ typedef void (wxEvtHandler::*FbArrayEventFunction)(FbArrayEvent&);
 typedef void (wxEvtHandler::*FbCountEventFunction)(FbCountEvent&);
 
 typedef void (wxEvtHandler::*FbImageEventFunction)(FbImageEvent&);
+
+typedef void (wxEvtHandler::*FbLettersEventFunction)(FbLettersEvent&);
 
 #define EVT_FB_BOOK(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_BOOK_ACTION, id, -1, \
@@ -279,5 +306,10 @@ typedef void (wxEvtHandler::*FbImageEventFunction)(FbImageEvent&);
 	DECLARE_EVENT_TABLE_ENTRY( fbEVT_IMAGE_ACTION, id, -1, \
 	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
 	wxStaticCastEvent( FbImageEventFunction, & fn ), (wxObject *) NULL ),
+
+#define EVT_FB_LETTERS(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY( fbEVT_LETTERS_ACTION, id, -1, \
+	(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+	wxStaticCastEvent( FbLettersEventFunction, & fn ), (wxObject *) NULL ),
 
 #endif // __FBBOOKEVENT_H__

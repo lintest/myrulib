@@ -7,7 +7,7 @@
 #include <wx/textctrl.h>
 #include "ProgressBar.h"
 #include "LimitedTextCtrl.h"
-#include "FbFrameAuthor.h"
+#include "FbFrameAuth.h"
 #include "FbLogoBitmap.h"
 
 class FbMainFrame: public FbAuiMDIParentFrame
@@ -32,10 +32,10 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		wxWindow * FindFrameById(const int id, bool bActivate = false);
 		void OpenDatabase(const wxString &filename);
 		void SetAccelerators();
-		void OpenLastPage();
 		void SetTabArt(int id);
 		void SaveFrameList();
 		void RestoreFrameList();
+		void OpenInfo(const FbMasterInfo & info, const wxString & text);
 	private:
 		wxTextCtrl * m_FindAuthor;
 		wxTextCtrl * m_FindTitle;
@@ -50,7 +50,6 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnAbout(wxCommandEvent & event);
 		void OnDatabaseInfo(wxCommandEvent & event);
 		void OnDatabaseOpen(wxCommandEvent & event);
-		void OnDatabaseGenres(wxCommandEvent & event);
 		void OnInfoCommand(wxCommandEvent & event);
 		void OnFindAuthor(wxCommandEvent& event);
 		void OnFindAuthorEnter(wxCommandEvent& event);
@@ -81,6 +80,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnTabArtUpdate(wxUpdateUIEvent& event);
 		void OnHideLogUpdate(wxUpdateUIEvent& event);
 		void OnVacuum(wxCommandEvent & event);
+		void OnUpdate(wxCommandEvent & event);
 		void OnUpdateFonts(wxCommandEvent & event);
 		void OnProgress(FbProgressEvent & event);
 		void OnUpdateBook(wxCommandEvent & event);

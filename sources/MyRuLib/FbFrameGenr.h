@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEGENRES_H__
-#define __FBFRAMEGENRES_H__
+#ifndef __FBFRAMEGENR_H__
+#define __FBFRAMEGENR_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -12,10 +12,10 @@
 #include "FbFrameBase.h"
 #include "FbBookEvent.h"
 
-class FbFrameGenres : public FbFrameBase
+class FbFrameGenr : public FbFrameBase
 {
 	public:
-		FbFrameGenres(wxAuiMDIParentFrame * parent);
+		FbFrameGenr(wxAuiMDIParentFrame * parent);
 		virtual wxString GetTitle() const { return _("Genres"); };
 	protected:
 		virtual void CreateControls();
@@ -26,7 +26,7 @@ class FbFrameGenres : public FbFrameBase
 		void OnBooksCount(FbCountEvent& event);
 		void OnModel( FbModelEvent & event );
 		DECLARE_EVENT_TABLE()
-		DECLARE_CLASS(FbFrameGenres)
+		DECLARE_CLASS(FbFrameGenr)
 };
 
-#endif // __FBFRAMEGENRES_H__
+#endif // __FBFRAMEGENR_H__

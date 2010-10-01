@@ -149,6 +149,7 @@
 		</if>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
+		<sources>MyRuLib/FbAlphabet.cpp</sources>
 		<sources>MyRuLib/FbAuthList.cpp</sources>
 		<sources>MyRuLib/FbAuthorDlg.cpp</sources>
 		<sources>MyRuLib/FbBookData.cpp</sources>
@@ -161,6 +162,7 @@
 		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
 		<sources>MyRuLib/FbColumns.cpp</sources>
+		<sources>MyRuLib/FbComboBox.cpp</sources>
 		<sources>MyRuLib/FbCollection.cpp</sources>
 		<sources>MyRuLib/FbConvertDlg.cpp</sources>
 		<sources>MyRuLib/FbCounter.cpp</sources>
@@ -181,16 +183,16 @@
 		<sources>MyRuLib/FbFilterObj.cpp</sources>
 		<sources>MyRuLib/FbFilterTree.cpp</sources>
 		<sources>MyRuLib/FbFldrTree.cpp</sources>
-		<sources>MyRuLib/FbFrameAuthor.cpp</sources>
+		<sources>MyRuLib/FbFrameAuth.cpp</sources>
 		<sources>MyRuLib/FbFrameBase.cpp</sources>
 		<sources>MyRuLib/FbFrameDate.cpp</sources>
-		<sources>MyRuLib/FbFrameDownld.cpp</sources>
-		<sources>MyRuLib/FbFrameFolder.cpp</sources>
+		<sources>MyRuLib/FbFrameDown.cpp</sources>
+		<sources>MyRuLib/FbFrameFind.cpp</sources>
+		<sources>MyRuLib/FbFrameFldr.cpp</sources>
 		<sources>MyRuLib/FbFrameInfo.cpp</sources>
 		<sources>MyRuLib/FbFrameHtml.cpp</sources>
-		<sources>MyRuLib/FbFrameGenres.cpp</sources>
-		<sources>MyRuLib/FbFrameSearch.cpp</sources>
-		<sources>MyRuLib/FbFrameSequen.cpp</sources>
+		<sources>MyRuLib/FbFrameGenr.cpp</sources>
+		<sources>MyRuLib/FbFrameSeqn.cpp</sources>
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbGenrTree.cpp</sources>
 		<sources>MyRuLib/FbHtmlWindow.cpp</sources>
@@ -210,7 +212,6 @@
 		<sources>MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>MyRuLib/FbPreviewWindow.cpp</sources>
 		<sources>MyRuLib/FbProgressDlg.cpp</sources>
-		<sources>MyRuLib/FbReplaceDlg.cpp</sources>
 		<sources>MyRuLib/FbScanerThread.cpp</sources>
 		<sources>MyRuLib/FbSeqnList.cpp</sources>
 		<sources>MyRuLib/FbSequenDlg.cpp</sources>

@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbAlphabet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbAuthList.cpp"
 				>
 			</File>
@@ -243,6 +247,10 @@
 			</File>
 			<File
 				RelativePath=".\FbColumns.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbComboBox.cpp"
 				>
 			</File>
 			<File
@@ -322,7 +330,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameAuthor.cpp"
+				RelativePath=".\FbFrameAuth.cpp"
 				>
 			</File>
 			<File
@@ -334,15 +342,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDownld.cpp"
+				RelativePath=".\FbFrameDown.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameFolder.cpp"
+				RelativePath=".\FbFrameFind.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameGenres.cpp"
+				RelativePath=".\FbFrameFldr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbFrameGenr.cpp"
 				>
 			</File>
 			<File
@@ -354,11 +366,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameSearch.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbFrameSequen.cpp"
+				RelativePath=".\FbFrameSeqn.cpp"
 				>
 			</File>
 			<File
@@ -435,10 +443,6 @@
 			</File>
 			<File
 				RelativePath=".\FbProgressDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbReplaceDlg.cpp"
 				>
 			</File>
 			<File
@@ -552,6 +556,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbAlphabet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbAuthList.h"
 				>
 			</File>
@@ -609,6 +617,10 @@
 			</File>
 			<File
 				RelativePath=".\FbColumns.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbComboBox.h"
 				>
 			</File>
 			<File
@@ -688,7 +700,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameAuthor.h"
+				RelativePath=".\FbFrameAuth.h"
 				>
 			</File>
 			<File
@@ -700,15 +712,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDownld.h"
+				RelativePath=".\FbFrameDown.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameFolder.h"
+				RelativePath=".\FbFrameFind.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameGenres.h"
+				RelativePath=".\FbFrameFldr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbFrameGenr.h"
 				>
 			</File>
 			<File
@@ -720,11 +736,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameSearch.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbFrameSequen.h"
+				RelativePath=".\FbFrameSeqn.h"
 				>
 			</File>
 			<File
@@ -805,10 +817,6 @@
 			</File>
 			<File
 				RelativePath=".\FbProgressDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbReplaceDlg.h"
 				>
 			</File>
 			<File

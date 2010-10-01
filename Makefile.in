@@ -70,6 +70,7 @@ MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 MYRULIB_OBJECTS =  \
 	myrulib_BaseThread.o \
 	myrulib_FbAboutDlg.o \
+	myrulib_FbAlphabet.o \
 	myrulib_FbAuthList.o \
 	myrulib_FbAuthorDlg.o \
 	myrulib_FbBookData.o \
@@ -82,6 +83,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceFormat.o \
 	myrulib_FbColumnDlg.o \
 	myrulib_FbColumns.o \
+	myrulib_FbComboBox.o \
 	myrulib_FbCollection.o \
 	myrulib_FbConvertDlg.o \
 	myrulib_FbCounter.o \
@@ -102,16 +104,16 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbFilterObj.o \
 	myrulib_FbFilterTree.o \
 	myrulib_FbFldrTree.o \
-	myrulib_FbFrameAuthor.o \
+	myrulib_FbFrameAuth.o \
 	myrulib_FbFrameBase.o \
 	myrulib_FbFrameDate.o \
-	myrulib_FbFrameDownld.o \
-	myrulib_FbFrameFolder.o \
+	myrulib_FbFrameDown.o \
+	myrulib_FbFrameFind.o \
+	myrulib_FbFrameFldr.o \
 	myrulib_FbFrameInfo.o \
 	myrulib_FbFrameHtml.o \
-	myrulib_FbFrameGenres.o \
-	myrulib_FbFrameSearch.o \
-	myrulib_FbFrameSequen.o \
+	myrulib_FbFrameGenr.o \
+	myrulib_FbFrameSeqn.o \
 	myrulib_FbGenres.o \
 	myrulib_FbGenrTree.o \
 	myrulib_FbHtmlWindow.o \
@@ -131,7 +133,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbPreviewThread.o \
 	myrulib_FbPreviewWindow.o \
 	myrulib_FbProgressDlg.o \
-	myrulib_FbReplaceDlg.o \
 	myrulib_FbScanerThread.o \
 	myrulib_FbSeqnList.o \
 	myrulib_FbSequenDlg.o \
@@ -332,6 +333,9 @@ myrulib_BaseThread.o: $(srcdir)/sources/MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
 myrulib_FbAboutDlg.o: $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp
 
+myrulib_FbAlphabet.o: $(srcdir)/sources/MyRuLib/FbAlphabet.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAlphabet.cpp
+
 myrulib_FbAuthList.o: $(srcdir)/sources/MyRuLib/FbAuthList.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAuthList.cpp
 
@@ -367,6 +371,9 @@ myrulib_FbColumnDlg.o: $(srcdir)/sources/MyRuLib/FbColumnDlg.cpp $(MYRULIB_ODEP)
 
 myrulib_FbColumns.o: $(srcdir)/sources/MyRuLib/FbColumns.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbColumns.cpp
+
+myrulib_FbComboBox.o: $(srcdir)/sources/MyRuLib/FbComboBox.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbComboBox.cpp
 
 myrulib_FbCollection.o: $(srcdir)/sources/MyRuLib/FbCollection.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbCollection.cpp
@@ -428,8 +435,8 @@ myrulib_FbFilterTree.o: $(srcdir)/sources/MyRuLib/FbFilterTree.cpp $(MYRULIB_ODE
 myrulib_FbFldrTree.o: $(srcdir)/sources/MyRuLib/FbFldrTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFldrTree.cpp
 
-myrulib_FbFrameAuthor.o: $(srcdir)/sources/MyRuLib/FbFrameAuthor.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameAuthor.cpp
+myrulib_FbFrameAuth.o: $(srcdir)/sources/MyRuLib/FbFrameAuth.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameAuth.cpp
 
 myrulib_FbFrameBase.o: $(srcdir)/sources/MyRuLib/FbFrameBase.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameBase.cpp
@@ -437,11 +444,14 @@ myrulib_FbFrameBase.o: $(srcdir)/sources/MyRuLib/FbFrameBase.cpp $(MYRULIB_ODEP)
 myrulib_FbFrameDate.o: $(srcdir)/sources/MyRuLib/FbFrameDate.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameDate.cpp
 
-myrulib_FbFrameDownld.o: $(srcdir)/sources/MyRuLib/FbFrameDownld.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameDownld.cpp
+myrulib_FbFrameDown.o: $(srcdir)/sources/MyRuLib/FbFrameDown.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameDown.cpp
 
-myrulib_FbFrameFolder.o: $(srcdir)/sources/MyRuLib/FbFrameFolder.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameFolder.cpp
+myrulib_FbFrameFind.o: $(srcdir)/sources/MyRuLib/FbFrameFind.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameFind.cpp
+
+myrulib_FbFrameFldr.o: $(srcdir)/sources/MyRuLib/FbFrameFldr.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameFldr.cpp
 
 myrulib_FbFrameInfo.o: $(srcdir)/sources/MyRuLib/FbFrameInfo.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameInfo.cpp
@@ -449,14 +459,11 @@ myrulib_FbFrameInfo.o: $(srcdir)/sources/MyRuLib/FbFrameInfo.cpp $(MYRULIB_ODEP)
 myrulib_FbFrameHtml.o: $(srcdir)/sources/MyRuLib/FbFrameHtml.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameHtml.cpp
 
-myrulib_FbFrameGenres.o: $(srcdir)/sources/MyRuLib/FbFrameGenres.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameGenres.cpp
+myrulib_FbFrameGenr.o: $(srcdir)/sources/MyRuLib/FbFrameGenr.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameGenr.cpp
 
-myrulib_FbFrameSearch.o: $(srcdir)/sources/MyRuLib/FbFrameSearch.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameSearch.cpp
-
-myrulib_FbFrameSequen.o: $(srcdir)/sources/MyRuLib/FbFrameSequen.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameSequen.cpp
+myrulib_FbFrameSeqn.o: $(srcdir)/sources/MyRuLib/FbFrameSeqn.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameSeqn.cpp
 
 myrulib_FbGenres.o: $(srcdir)/sources/MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbGenres.cpp
@@ -514,9 +521,6 @@ myrulib_FbPreviewWindow.o: $(srcdir)/sources/MyRuLib/FbPreviewWindow.cpp $(MYRUL
 
 myrulib_FbProgressDlg.o: $(srcdir)/sources/MyRuLib/FbProgressDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbProgressDlg.cpp
-
-myrulib_FbReplaceDlg.o: $(srcdir)/sources/MyRuLib/FbReplaceDlg.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbReplaceDlg.cpp
 
 myrulib_FbScanerThread.o: $(srcdir)/sources/MyRuLib/FbScanerThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbScanerThread.cpp

@@ -57,7 +57,7 @@ END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
 	FbAuiMDIChildFrame(parent, id, title),
-	m_MasterList(NULL), m_BooksPanel(NULL), m_ToolBar(NULL), m_MasterThread(NULL), m_BookCount(0)
+	m_MasterList(NULL), m_BooksPanel(NULL), m_MasterThread(NULL), m_BookCount(0)
 {
 	m_filter.Load();
 }
@@ -93,10 +93,6 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 	SetTitle(GetTitle());
     FbAuiMDIChildFrame::Localize(bUpdateMenu);
     if (bUpdateMenu) UpdateStatus();
-
-	wxDELETE(m_ToolBar);
-	m_ToolBar = CreateToolBar();
-	if (m_ToolBar) GetSizer()->Insert(0, m_ToolBar, 0, wxGROW);
 
 	if (m_MasterList) {
 		m_MasterList->EmptyColumns();
@@ -190,15 +186,6 @@ void FbFrameBase::OnChangeOrderUpdateUI(wxUpdateUIEvent & event)
 	if (event.GetId() == m_BooksPanel->GetOrderID()) event.Check(true);
 }
 
-wxToolBar * FbFrameBase::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
-	toolbar->Realize();
-	return toolbar;
-}
-
 void FbFrameBase::OnColClick(wxListEvent& event)
 {
 	UpdateBooklist();
@@ -225,7 +212,6 @@ void FbFrameBase::UpdateStatus()
 
 void FbFrameBase::ShowFullScreen(bool show)
 {
-	if (m_ToolBar) m_ToolBar->Show(!show);
 	Layout();
 }
 

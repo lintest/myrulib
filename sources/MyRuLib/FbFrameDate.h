@@ -22,7 +22,6 @@ class FbFrameDate : public FbFrameBase
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void SelectFirstAuthor(const int book = 0);
-		BookTreeItemData * GetSelectedBook();
 		void AppendAttay(FbTreeModel &model, const wxArrayInt &items);
 	private:
 		wxSplitterWindow * m_BooksSplitter;

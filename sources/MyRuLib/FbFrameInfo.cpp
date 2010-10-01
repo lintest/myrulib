@@ -103,7 +103,7 @@ void FrameInfoThread::WriteCount()
 	DoStep(_("Total quantity"));
 
 	{
-		wxString sql = (wxT("SELECT COUNT(id), MIN(created), MAX(created), SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, created, file_size FROM books) AS books"));
+		wxString sql = (wxT("SELECT COUNT(bid), MIN(date), MAX(date), SUM(size)/1024/1024 FROM b"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			min = GetDate(result.GetInt(1));
@@ -116,7 +116,7 @@ void FrameInfoThread::WriteCount()
 	DoStep(_("Authors counting"));
 
 	{
-		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
+		wxString sql = (wxT("SELECT COUNT(aid) FROM a WHERE aid<>0"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			wxString count = F(result.GetInt(0));
@@ -154,11 +154,7 @@ void FrameInfoThread::WriteTypes()
 
 	DoStep(_("File types"));
 	{
-		wxString sql = (wxT("\
-			SELECT file_type, COUNT(DISTINCT id) AS id, SUM(file_size)/1024 \
-			FROM (SELECT DISTINCT id, file_type, file_size FROM books) AS books \
-			GROUP BY file_type ORDER BY id DESC \
-		"));
+		wxString sql = (wxT("SELECT type, COUNT(bid) AS numb, SUM(size)/1024 FROM b GROUP BY type ORDER BY numb DESC"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		while (result.NextRow()) {
 			const wxString cell = wxT("<TD align=right bgcolor=%s>%s</TD>");

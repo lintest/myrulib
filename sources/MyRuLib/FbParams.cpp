@@ -137,8 +137,8 @@ void FbParams::Reset(int param)
 
 int FbParams::Param(wxWindowID winid, int param)
 {
-	bool ok = (ID_FRAME_AUTHOR <= winid && winid <= ID_FRAME_SEARCH && 0 <= param && param < FB_FRAME_OFFSET);
-	int delta = winid - ID_FRAME_AUTHOR + 1;
+	bool ok = (ID_FRAME_AUTH <= winid && winid <= ID_FRAME_FIND && 0 <= param && param < FB_FRAME_OFFSET);
+	int delta = winid - ID_FRAME_AUTH + 1;
 	return ok ? (param + FB_FRAME_OFFSET * delta) : 0;
 }
 
