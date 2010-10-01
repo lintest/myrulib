@@ -51,4 +51,12 @@ class FbDeleteThread: public FbUpdateThread
 		const wxString m_sel;
 };
 
+class FbGenreThread: public FbThread
+{
+	public:
+		FbGenreThread() {}
+	protected:
+		virtual void * Entry();
+};
+
 #endif // __FBUPDATETHREAD_H__

@@ -50,6 +50,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnAbout(wxCommandEvent & event);
 		void OnDatabaseInfo(wxCommandEvent & event);
 		void OnDatabaseOpen(wxCommandEvent & event);
+		void OnDatabaseGenres(wxCommandEvent & event);
 		void OnInfoCommand(wxCommandEvent & event);
 		void OnFindAuthor(wxCommandEvent& event);
 		void OnFindAuthorEnter(wxCommandEvent& event);

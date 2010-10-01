@@ -21,6 +21,7 @@ FbMenuBar::MenuLib::MenuLib()
 	Append(ID_RECENT_ALL, _("Open recent"), new MenuRecent());
 	AppendSeparator();
 	Append(ID_MENU_DB_INFO,  _("Information about collection"));
+	Append(ID_MENU_GENLIST,  _("Rebuild the list of genres"));
 	Append(ID_MENU_OPTIMIZE, _("Clear empty variables"));
 	Append(ID_MENU_VACUUM,   _("Optimize DB"));
 	AppendSeparator();

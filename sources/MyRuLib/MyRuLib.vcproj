@@ -230,10 +230,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbCheckList.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbChoiceFormat.cpp"
 				>
 			</File>
@@ -474,10 +470,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbTreeListCtrl.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FbTreeModel.cpp"
 				>
 			</File>
@@ -535,10 +527,6 @@
 			</File>
 			<File
 				RelativePath=".\ProgressBar.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\wx\treelistctrl.cpp"
 				>
 			</File>
 			<File
@@ -601,10 +589,6 @@
 			</File>
 			<File
 				RelativePath=".\FbCacheBook.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FbCheckList.h"
 				>
 			</File>
 			<File
@@ -856,10 +840,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbTreeListCtrl.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FbTreeModel.h"
 				>
 			</File>
@@ -929,10 +909,6 @@
 			</File>
 			<File
 				RelativePath=".\TitleThread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\wx\treelistctrl.h"
 				>
 			</File>
 			<File
