@@ -22,8 +22,7 @@ class FbConfigDlg : private FbDialog
 	private:
 		enum ID {
 			ID_LIBRARY_TITLE = 1000,
-			ID_LIBRARY_DIR_TXT,
-			ID_LIBRARY_DIR_BTN,
+			ID_LIBRARY_DIR,
 			ID_LIBRARY_DESCR,
 			ID_DOWNLOAD_HOST,
 			ID_DOWNLOAD_ADDR,

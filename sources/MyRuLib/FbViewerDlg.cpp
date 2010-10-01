@@ -1,11 +1,12 @@
 #include "FbViewerDlg.h"
 #include <wx/artprov.h>
 #include "FbConst.h"
+#include "FbComboBox.h"
 #include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE( FbViewerDlg, FbDialog )
-	EVT_TEXT_ENTER( ID_EDIT_TXT, FbViewerDlg::OnTextEnter )
-	EVT_BUTTON( ID_EDIT_BTN, FbViewerDlg::OnBtnClick )
+	EVT_TEXT_ENTER( ID_FILENAME, FbViewerDlg::OnTextEnter )
+	EVT_BUTTON( ID_FILENAME, FbViewerDlg::OnBtnClick )
 END_EVENT_TABLE()
 
 FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString& value, bool relative)
@@ -20,21 +21,11 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 	stTitle->Wrap( -1 );
 	bSizerMain->Add( stTitle, 0, wxALL, 5 );
 
-	wxBoxSizer* bSizerEdit = new wxBoxSizer( wxHORIZONTAL );
-
-	m_filename = new wxTextCtrl( this, ID_EDIT_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	m_filename = new wxFileSelectorCombo( this, ID_FILENAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	m_filename->SetValue(value);
 	m_filename->SetMinSize( wxSize( 300,-1 ) );
-	bSizerEdit->Add( m_filename, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizerMain->Add( m_filename, 0, wxALL|wxEXPAND, 5 );
 
-	wxBitmapButton* bpButton = new wxBitmapButton( this, ID_EDIT_BTN, wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizerEdit->Add( bpButton, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	bSizerMain->Add( bSizerEdit, 1, wxEXPAND, 5 );
-/*
-	wxCheckBox* cbRelative = new wxCheckBox( this, wxID_ANY, _("Сохранить только относительный путь"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerMain->Add( cbRelative, 0, wxALL, 5 );
-*/
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 

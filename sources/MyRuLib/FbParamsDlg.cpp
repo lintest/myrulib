@@ -1,4 +1,3 @@
-#include <wx/artprov.h>
 #include <wx/statline.h>
 #include <wx/string.h>
 #include <wx/stattext.h>
@@ -30,6 +29,7 @@
 #include "FbChoiceFormat.h"
 #include "FbLocale.h"
 #include "FbToolBar.h"
+#include "FbComboBox.h"
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread
@@ -48,18 +48,16 @@ void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 {
 	wxString sql = wxT("\
 		SELECT \
-			books.file_type, types.command,\
-			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
+			b.file_type, t.command, CASE WHEN b.file_type='fb2' THEN 1 ELSE 2 END AS key\
 		FROM ( \
-			 SELECT DISTINCT LOWER(file_type) AS file_type FROM BOOKS GROUP BY file_type \
+			 SELECT DISTINCT LOWER(file_type) AS file_type FROM books GROUP BY file_type \
 			 UNION SELECT DISTINCT file_type FROM config.types \
 			 UNION SELECT 'fb2' \
 			 UNION SELECT 'pdf' \
 			 UNION SELECT 'djvu' \
 			 UNION SELECT 'txt' \
-		) AS books \
-		  LEFT JOIN config.types as types ON books.file_type = types.file_type \
-		ORDER BY number, books.file_type \
+		) AS b LEFT JOIN config.types as t ON b.file_type = t.file_type \
+		ORDER BY key, b.file_type \
 	 ");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	FbListStore * model = new FbListStore;
@@ -292,16 +290,9 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	m_staticText6->Wrap( -1 );
 	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer14 = new wxBoxSizer( wxHORIZONTAL );
-
-	wxTextCtrl * m_textCtrl6 = new wxTextCtrl( this, ID_DOWNLOAD_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
-	bSizer14->Add( m_textCtrl6, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxBitmapButton * m_bpButton6 = new wxBitmapButton( this, ID_DOWNLOAD_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizer14->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-	bSizerMain->Add( bSizer14, 0, wxEXPAND, 5 );
+	wxFileSelectorCombo * combo = new wxFileSelectorCombo( this, ID_DOWNLOAD_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	combo->SetMinSize( wxSize( 300,-1 ) );
+	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
 	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( m_checkBox14, 0, wxALL, 5 );
@@ -370,18 +361,9 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	text->Wrap( -1 );
 	bSizerMain->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
-	{
-		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
-
-		wxTextCtrl * edit = new wxTextCtrl( this, ID_TEMP_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-		edit->SetMinSize( wxSize( 300,-1 ) );
-		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-		wxBitmapButton * button = new wxBitmapButton( this, ID_TEMP_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-		bSizerDir->Add( button, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-		bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
-	}
+	wxFileSelectorCombo * combo = new wxFileSelectorCombo( this, ID_TEMP_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	combo->SetMinSize( wxSize( 300,-1 ) );
+	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
 	#ifdef __WXGTK__
 	{
@@ -427,16 +409,9 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	m_staticText6->Wrap( -1 );
 	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	wxBoxSizer* bSizerFolder = new wxBoxSizer( wxHORIZONTAL );
-
-	wxTextCtrl * m_textCtrl6 = new wxTextCtrl( this, ID_EXTERNAL_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl6->SetMinSize( wxSize( 300,-1 ) );
-	bSizerFolder->Add( m_textCtrl6, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxBitmapButton * m_bpButton6 = new wxBitmapButton( this, ID_EXTERNAL_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizerFolder->Add( m_bpButton6, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-	bSizerMain->Add( bSizerFolder, 0, wxEXPAND, 5 );
+	wxFileSelectorCombo * combo = new wxFileSelectorCombo( this, ID_EXTERNAL_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	combo->SetMinSize( wxSize( 300,-1 ) );
+	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
 	wxStaticText * format_info = new wxStaticText( this, wxID_ANY, _("Exported collection structure"), wxDefaultPosition, wxDefaultSize, 0 );
 	format_info->Wrap( -1 );
@@ -545,9 +520,9 @@ FbParamsDlg::PanelScripts::PanelScripts(wxWindow *parent)
 //-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE( FbParamsDlg, wxDialog )
-	EVT_BUTTON( ID_TEMP_DIR_BTN, FbParamsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_DOWNLOAD_DIR_BTN, FbParamsDlg::OnSelectFolderClick )
-	EVT_BUTTON( ID_EXTERNAL_BTN, FbParamsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_TEMP_DIR, FbParamsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_DOWNLOAD_DIR, FbParamsDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_EXTERNAL_DIR, FbParamsDlg::OnSelectFolderClick )
 	EVT_BUTTON( ID_FONT_CLEAR, FbParamsDlg::OnFontClear )
 	EVT_TOOL( ID_APPEND_TYPE, FbParamsDlg::OnAppendType )
 	EVT_TOOL( ID_MODIFY_TYPE, FbParamsDlg::OnModifyType )
@@ -601,131 +576,56 @@ FbParamsDlg::~FbParamsDlg()
 
 void FbParamsDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
-	wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
-
-	if (!textCtrl) return;
+	wxComboCtrl * control = wxDynamicCast(FindWindowById(event.GetId()), wxComboCtrl);
+	if (!control) return;
 
 	wxDirDialog dlg(
 		this,
 		_("Select folder"),
-		textCtrl->GetValue(),
+		control->GetValue(),
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
 	);
 
-	if (dlg.ShowModal() == wxID_OK)  textCtrl->SetValue(dlg.GetPath());
+	if (dlg.ShowModal() == wxID_OK)  control->SetValue(dlg.GetPath());
 }
 
 void FbParamsDlg::Assign(bool write)
 {
-	enum Type {
-		tText,
-		tCheck,
-		tRadio,
-		tCombo,
-		tFont,
-		tCount,
-		tChoise,
-	};
-
 	struct Struct{
 		int param;
 		ID control;
-		Type type;
 	};
 
 	const Struct ids[] = {
-		{FB_AUTO_DOWNLD, ID_AUTO_DOWNLD, tCheck},
-		{FB_USE_PROXY, ID_USE_PROXY, tCheck},
-		{FB_PROXY_ADDR, ID_PROXY_ADDR, tCombo},
-		{FB_TEMP_DEL, ID_TEMP_DEL, tCheck},
-		{FB_TEMP_DIR, ID_TEMP_DIR_TXT, tText},
-		{FB_WINE_DIR, ID_WINE_DIR, tText},
-		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR_TXT, tText},
-		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD, tCheck},
-		{FB_EXTERNAL_DIR, ID_EXTERNAL_TXT, tText},
-		{FB_TRANSLIT_FOLDER, ID_TRANSLIT_FOLDER, tCheck},
-		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE, tCheck},
-		{FB_USE_UNDERSCORE, ID_USE_UNDERSCORE, tCheck},
-		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT, tCombo},
-		{FB_FONT_MAIN, ID_FONT_MAIN, tFont},
-		{FB_FONT_HTML, ID_FONT_HTML, tFont},
-		{FB_FONT_TOOL, ID_FONT_TOOL, tFont},
-		{FB_FONT_DLG, ID_FONT_DLG, tFont},
-		{FB_HTTP_IMAGES, ID_HTTP_IMAGES, tCheck},
-		{FB_REMOVE_FILES, ID_REMOVE_FILES, tCheck},
-		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH, tCheck},
-		{FB_CLEAR_LOG, ID_CLEAR_LOG, tCheck},
-		{FB_FILE_FORMAT, ID_FILE_FORMAT, tChoise},
-		{FB_LANG_LOCALE, ID_LANG_LOCALE, tChoise},
+		{FB_AUTO_DOWNLD, ID_AUTO_DOWNLD},
+		{FB_USE_PROXY, ID_USE_PROXY},
+		{FB_PROXY_ADDR, ID_PROXY_ADDR},
+		{FB_TEMP_DEL, ID_TEMP_DEL},
+		{FB_TEMP_DIR, ID_TEMP_DIR},
+		{FB_WINE_DIR, ID_WINE_DIR},
+		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR},
+		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD},
+		{FB_EXTERNAL_DIR, ID_EXTERNAL_DIR},
+		{FB_TRANSLIT_FOLDER, ID_TRANSLIT_FOLDER},
+		{FB_TRANSLIT_FILE, ID_TRANSLIT_FILE},
+		{FB_USE_UNDERSCORE, ID_USE_UNDERSCORE},
+		{FB_FOLDER_FORMAT, ID_FOLDER_FORMAT},
+		{FB_FONT_MAIN, ID_FONT_MAIN},
+		{FB_FONT_HTML, ID_FONT_HTML},
+		{FB_FONT_TOOL, ID_FONT_TOOL},
+		{FB_FONT_DLG, ID_FONT_DLG},
+		{FB_HTTP_IMAGES, ID_HTTP_IMAGES},
+		{FB_REMOVE_FILES, ID_REMOVE_FILES},
+		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH},
+		{FB_CLEAR_LOG, ID_CLEAR_LOG},
+		{FB_FILE_FORMAT, ID_FILE_FORMAT},
+		{FB_LANG_LOCALE, ID_LANG_LOCALE},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
 	for (size_t i=0; i<idsCount; i++) {
-		switch (ids[i].type) {
-			case tText:
-				if (wxTextCtrl * control = wxDynamicCast(FindWindowById(ids[i].control), wxTextCtrl)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetValue());
-					else
-						control->SetValue(FbParams::GetStr(ids[i].param));
-				} break;
-			case tCheck:
-				if (wxCheckBox * control = wxDynamicCast(FindWindowById(ids[i].control), wxCheckBox)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetValue());
-					else
-						control->SetValue(FbParams::GetInt(ids[i].param) != 0);
-				} break;
-			case tRadio:
-				if (wxRadioBox * control = wxDynamicCast(FindWindowById(ids[i].control), wxRadioBox)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetSelection());
-					else
-						control->SetSelection(FbParams::GetInt(ids[i].param));
-				} break;
-			case tCombo:
-				if (wxComboBox * control = wxDynamicCast(FindWindowById(ids[i].control), wxComboBox)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetValue());
-					else
-						control->SetValue(FbParams::GetStr(ids[i].param));
-				} break;
-			case tFont:
-				if (wxFontPickerCtrl * control = wxDynamicCast(FindWindowById(ids[i].control), wxFontPickerCtrl)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetSelectedFont().GetNativeFontInfoDesc());
-					else
-						control->SetSelectedFont(FbParams::GetFont(ids[i].param) );
-				} break;
-			case tCount:
-				if (wxTextCtrl * control = wxDynamicCast(FindWindowById(ids[i].control), wxTextCtrl)) {
-					if (write) {
-						wxString text = control->GetValue();
-						long value = 0;
-						if (text.ToLong(&value) && value>0)
-							FbParams::Set(ids[i].param, value);
-						else
-							FbParams::Reset(ids[i].param);
-					} else {
-						int count = FbParams::GetInt(ids[i].param);
-						wxString text = wxString::Format(wxT("%d"), count);
-						control->SetValue(text);
-					}
-				} break;
-			case tChoise:
-				if (FbChoiceFormat * control = wxDynamicCast(FindWindowById(ids[i].control), FbChoiceFormat)) {
-					if (write) {
-						int format = control->GetCurrentData();
-						FbParams::Set(ids[i].param, format);
-					} else {
-						int format = FbParams::GetInt(ids[i].param);
-						size_t count = control->GetCount();
-						for (size_t i = 0; i <= count; i++)
-							if (control->GetClientData(i) == format) control->SetSelection(i);
-					}
-				} break;
-		}
+		FbDialog::Assign(ids[i].control, ids[i].param, write);
 	}
 
 	if (write) FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_UPDATE_FONTS).Post();

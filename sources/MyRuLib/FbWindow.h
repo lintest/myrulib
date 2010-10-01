@@ -10,28 +10,30 @@ class FbDialog
 	: public wxDialog
 {
 	public:
-		FbDialog() 
+		FbDialog()
 			{}
 
-		FbDialog( 
-			wxWindow* parent, 
-			wxWindowID id = wxID_ANY, 
-			const wxString& title = wxEmptyString, 
-			const wxPoint& pos = wxDefaultPosition, 
-			const wxSize& size = wxDefaultSize, 
+		FbDialog(
+			wxWindow* parent,
+			wxWindowID id = wxID_ANY,
+			const wxString& title = wxEmptyString,
+			const wxPoint& pos = wxDefaultPosition,
+			const wxSize& size = wxDefaultSize,
 			long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER,
 			const wxString& name = wxFrameNameStr
 		);
 
-		bool Create( 
-			wxWindow* parent, 
-			wxWindowID id = wxID_ANY, 
-			const wxString& title = wxEmptyString, 
-			const wxPoint& pos = wxDefaultPosition, 
-			const wxSize& size = wxDefaultSize, 
+		bool Create(
+			wxWindow* parent,
+			wxWindowID id = wxID_ANY,
+			const wxString& title = wxEmptyString,
+			const wxPoint& pos = wxDefaultPosition,
+			const wxSize& size = wxDefaultSize,
 			long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER,
 			const wxString& name = wxFrameNameStr
 		);
+	protected:
+		void Assign(long winid, int param, bool write);
 };
 
 class FbAuiMDIParentFrame
@@ -43,17 +45,17 @@ class FbAuiMDIParentFrame
 
 		~FbAuiMDIParentFrame();
 
-		virtual void SetMenuBar(wxMenuBar *pMenuBar) 
+		virtual void SetMenuBar(wxMenuBar *pMenuBar)
 			{}
 
-	    virtual wxMenuBar * GetMenuBar() const 
+	    virtual wxMenuBar * GetMenuBar() const
 			{ return m_menubar; }
 
 		void SetMainMenu(wxMenuBar * menubar);
 
 	private:
 		wxMenuBar * m_menubar;
-		
+
 };
 
 class FbAuiMDIChildFrame

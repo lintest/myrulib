@@ -18,6 +18,7 @@
 #include <wx/sizer.h>
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
+#include <wx/combo.h>
 
 #include "FbWindow.h"
 
@@ -35,10 +36,9 @@ class FbViewerDlg : public FbDialog
 	protected:
 		enum
 		{
-			ID_EDIT_TXT = 1000,
-			ID_EDIT_BTN,
+			ID_FILENAME = 1000,
 		};
-		wxTextCtrl* m_filename;
+		wxComboCtrl * m_filename;
 		bool m_relative;
 	private:
 		void OnTextEnter( wxCommandEvent& event );

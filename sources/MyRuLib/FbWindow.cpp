@@ -1,6 +1,9 @@
 #include "FbWindow.h"
 #include "FbParams.h"
 #include "FbMainMenu.h"
+#include "FbChoiceFormat.h"
+#include <wx/combo.h>
+#include <wx/fontpicker.h>
 
 //-----------------------------------------------------------------------------
 //  FbDialog
@@ -19,14 +22,62 @@ bool FbDialog::Create( wxWindow* parent, wxWindowID id, const wxString& title, c
 	return res;
 }
 
+void FbDialog::Assign(long winid, int param, bool write)
+{
+	wxWindow * window = FindWindowById(winid);
+	if (window == NULL) {
+		return;
+	} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
+		if (write)
+			FbParams::Set(param, control->GetValue());
+		else
+			control->SetValue(FbParams::GetStr(param));
+	} else if (wxCheckBox * control = wxDynamicCast(window, wxCheckBox)) {
+		if (write)
+			FbParams::Set(param, control->GetValue());
+		else
+			control->SetValue(FbParams::GetInt(param) != 0);
+	} else if (wxRadioBox * control = wxDynamicCast(window, wxRadioBox)) {
+		if (write)
+			FbParams::Set(param, control->GetSelection());
+		else
+			control->SetSelection(FbParams::GetInt(param));
+	} else if (wxComboBox * control = wxDynamicCast(window, wxComboBox)) {
+		if (write)
+			FbParams::Set(param, control->GetValue());
+		else
+			control->SetValue(FbParams::GetStr(param));
+	} else if (wxComboCtrl * control = wxDynamicCast(window, wxComboCtrl)) {
+		if (write)
+			FbParams::Set(param, control->GetValue());
+		else
+			control->SetValue(FbParams::GetStr(param));
+	} else if (wxFontPickerCtrl * control = wxDynamicCast(window, wxFontPickerCtrl)) {
+		if (write)
+			FbParams::Set(param, control->GetSelectedFont().GetNativeFontInfoDesc());
+		else
+			control->SetSelectedFont(FbParams::GetFont(param) );
+	} else if (FbChoiceFormat * control = wxDynamicCast(window, FbChoiceFormat)) {
+		if (write) {
+			int format = control->GetCurrentData();
+			FbParams::Set(param, format);
+		} else {
+			int format = FbParams::GetInt(param);
+			size_t count = control->GetCount();
+			for (size_t i = 0; i <= count; i++)
+				if (control->GetClientData(i) == format) control->SetSelection(i);
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 //  FbAuiMDIParentFrame
 //-----------------------------------------------------------------------------
 
 FbAuiMDIParentFrame::~FbAuiMDIParentFrame()
-{ 
+{
 	if (m_menubar) DetachMenuBar();
-	wxDELETE(m_menubar); 
+	wxDELETE(m_menubar);
 }
 
 void FbAuiMDIParentFrame::SetMainMenu(wxMenuBar * menubar)

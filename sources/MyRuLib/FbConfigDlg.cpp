@@ -1,4 +1,3 @@
-#include <wx/artprov.h>
 #include <wx/statline.h>
 #include <wx/string.h>
 #include <wx/stattext.h>
@@ -22,6 +21,7 @@
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
+#include "FbComboBox.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
@@ -39,18 +39,16 @@ void FbConfigDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 {
 	wxString sql = wxT("\
 		SELECT \
-			books.file_type, types.command,\
-			CASE WHEN books.file_type='fb2' THEN 1 ELSE 2 END AS number\
+			b.file_type, t.command, CASE WHEN b.file_type='fb2' THEN 1 ELSE 2 END AS key\
 		FROM ( \
-			 SELECT DISTINCT LOWER(file_type) AS file_type FROM BOOKS GROUP BY file_type \
+			 SELECT DISTINCT LOWER(file_type) AS file_type FROM books GROUP BY file_type \
 			 UNION SELECT DISTINCT file_type FROM types \
 			 UNION SELECT 'fb2' \
 			 UNION SELECT 'pdf' \
 			 UNION SELECT 'djvu' \
 			 UNION SELECT 'txt' \
-		) AS books \
-		  LEFT JOIN types as types ON books.file_type = types.file_type \
-		ORDER BY number, books.file_type \
+		) AS b LEFT JOIN types as t ON b.file_type = t.file_type \
+		ORDER BY key, b.file_type \
 	 ");
 
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -114,7 +112,7 @@ wxString FbConfigDlg::TypeData::GetValue(FbModel & model, size_t col) const
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( FbConfigDlg, wxDialog )
-	EVT_BUTTON( ID_LIBRARY_DIR_BTN, FbConfigDlg::OnSelectFolderClick )
+	EVT_BUTTON( ID_LIBRARY_DIR, FbConfigDlg::OnSelectFolderClick )
 	EVT_TOOL( ID_APPEND_TYPE, FbConfigDlg::OnAppendType )
 	EVT_TOOL( ID_MODIFY_TYPE, FbConfigDlg::OnModifyType )
 	EVT_TOOL( ID_DELETE_TYPE, FbConfigDlg::OnDeleteType )
@@ -141,18 +139,10 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 	m_staticText2->Wrap( -1 );
 	bSizerMain->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
+	wxFileSelectorCombo * m_comboDir = new wxFileSelectorCombo( this, ID_LIBRARY_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_comboDir->SetMinSize( wxSize( 300,-1 ) );
 
-	wxTextCtrl * m_textCtrl2 = new wxTextCtrl( this, ID_LIBRARY_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_textCtrl2->SetMinSize( wxSize( 300,-1 ) );
-
-	bSizer2->Add( m_textCtrl2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	wxBitmapButton * m_bpButton2 = new wxBitmapButton( this, ID_LIBRARY_DIR_BTN, wxArtProvider::GetBitmap(wxART_FOLDER_OPEN), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizer2->Add( m_bpButton2, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
-
-	bSizerMain->Add( bSizer2, 0, wxEXPAND, 5 );
+	bSizerMain->Add( m_comboDir, 0, wxEXPAND|wxALL, 5 );
 
 	wxStaticText * m_staticText4 = new wxStaticText( this, wxID_ANY, _("Short description:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText4->Wrap( -1 );
@@ -247,81 +237,43 @@ FbConfigDlg::~FbConfigDlg()
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
-	wxTextCtrl * textCtrl = (wxTextCtrl*)FindWindowById( event.GetId() - 1);
-
-	if (!textCtrl) return;
+	wxComboCtrl * control = wxDynamicCast(FindWindowById(event.GetId()), wxComboCtrl);
+	if (!control) return;
 
 	wxDirDialog dlg(
 		this,
 		_("Select folder"),
-		textCtrl->GetValue(),
+		control->GetValue(),
 		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST | wxDD_NEW_DIR_BUTTON
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
 		wxString filepath = FbStandardPaths::MakeRelative(dlg.GetPath(), wxGetApp().GetLibFile());
-		textCtrl->SetValue( filepath );
+		control->SetValue( filepath );
 	}
 }
 
 void FbConfigDlg::Assign(bool write)
 {
-	enum Type {
-		tText,
-		tCheck,
-		tRadio,
-		tCombo,
-	};
-	struct Struct{
+	struct Struct {
 		int param;
 		ID control;
-		Type type;
 	};
 
 	const Struct ids[] = {
-		{DB_LIBRARY_TITLE, FbConfigDlg::ID_LIBRARY_TITLE, tText},
-		{DB_LIBRARY_DIR,   FbConfigDlg::ID_LIBRARY_DIR_TXT, tText},
-		{DB_LIBRARY_DESCR, FbConfigDlg::ID_LIBRARY_DESCR, tText},
-		{DB_DOWNLOAD_HOST, FbConfigDlg::ID_DOWNLOAD_HOST, tCombo},
-		{DB_DOWNLOAD_ADDR, FbConfigDlg::ID_DOWNLOAD_ADDR, tCombo},
-		{DB_DOWNLOAD_USER, FbConfigDlg::ID_DOWNLOAD_USER, tText},
-		{DB_DOWNLOAD_PASS, FbConfigDlg::ID_DOWNLOAD_PASS, tText},
+		{DB_LIBRARY_TITLE, FbConfigDlg::ID_LIBRARY_TITLE},
+		{DB_LIBRARY_DIR,   FbConfigDlg::ID_LIBRARY_DIR},
+		{DB_LIBRARY_DESCR, FbConfigDlg::ID_LIBRARY_DESCR},
+		{DB_DOWNLOAD_HOST, FbConfigDlg::ID_DOWNLOAD_HOST},
+		{DB_DOWNLOAD_ADDR, FbConfigDlg::ID_DOWNLOAD_ADDR},
+		{DB_DOWNLOAD_USER, FbConfigDlg::ID_DOWNLOAD_USER},
+		{DB_DOWNLOAD_PASS, FbConfigDlg::ID_DOWNLOAD_PASS},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
 	for (size_t i=0; i<idsCount; i++) {
-		switch (ids[i].type) {
-			case tText:
-				if (wxTextCtrl * control = (wxTextCtrl*)FindWindowById(ids[i].control)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetValue());
-					else
-						control->SetValue(FbParams::GetStr(ids[i].param));
-				} break;
-			case tCheck:
-				if (wxCheckBox * control = (wxCheckBox*)FindWindowById(ids[i].control)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetValue());
-					else
-						control->SetValue(FbParams::GetInt(ids[i].param) != 0);
-				} break;
-			case tRadio:
-				if (wxRadioBox * control = (wxRadioBox*)FindWindowById(ids[i].control)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetSelection());
-					else
-						control->SetSelection(FbParams::GetInt(ids[i].param));
-				} break;
-			case tCombo:
-				if (wxComboBox * control = (wxComboBox*)FindWindowById(ids[i].control)) {
-					if (write)
-						FbParams::Set(ids[i].param, control->GetValue());
-					else
-						control->SetValue(FbParams::GetStr(ids[i].param));
-				} break;
-		}
-
+		FbDialog::Assign(ids[i].control, ids[i].param, write);
 	}
 
 	if (write) SaveTypes(m_database);
