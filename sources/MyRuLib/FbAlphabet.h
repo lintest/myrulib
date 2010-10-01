@@ -24,7 +24,7 @@ class FbAlphabetCombo : public wxOwnerDrawnComboBox
 {
 	public:
 		FbAlphabetCombo()
-			: m_rowHeight(0), m_thread(this) { m_thread.Execute(); }
+			: m_rowHeight(0), m_thread(this), m_divider(-1) { m_thread.Execute(); }
 
 		virtual ~FbAlphabetCombo()
 			{ m_thread.Wait(); }
@@ -45,6 +45,7 @@ class FbAlphabetCombo : public wxOwnerDrawnComboBox
 		int m_rowHeight;
 		FbAlphabetThread m_thread;
 		wxString m_text;
+		int m_divider;
 
 	private:
 		void OnLetters(FbLettersEvent &event);

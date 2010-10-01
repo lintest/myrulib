@@ -10,6 +10,8 @@
 
 void * FbAlphabetThread::Entry()
 {
+	int divider = wxNOT_FOUND;
+
 	int position = 0;
 	wxString engA = (wxChar) 0x0041;
 	wxString rusA = (wxChar) 0x0410;
@@ -42,6 +44,7 @@ void * FbAlphabetThread::Entry()
 				position = pos; level++;
 			} // contine;
 		}
+		if (divider == wxNOT_FOUND && text.Cmp(rusA)>=0) divider = pos;
 		int num = set.GetInt(1);
 		text << FbCollection::Format(num);
 		items.Add(text);
@@ -50,7 +53,7 @@ void * FbAlphabetThread::Entry()
 	text << FbCollection::Format(count);
 	items.Insert(text, 0);
 
-	FbLettersEvent(wxID_ANY, items, position).Post(m_owner);
+	FbLettersEvent(wxID_ANY, items, position, divider).Post(m_owner);
 /*
 	m_LetterList->Append(items);
 	m_LetterList->SetSelection(position);
@@ -88,7 +91,7 @@ void FbAlphabetCombo::OnDrawItem( wxDC& dc, const wxRect& rect, int item, int fl
 	r.Deflate(2);
 	r.width -= r.height;
 
-	wxPen pen( dc.GetTextForeground(), 1, wxSOLID );
+	wxPen pen( dc.GetTextForeground(), 1, wxDOT );
 	dc.SetPen( pen );
 
 	wxString text = GetString(item);
@@ -107,22 +110,9 @@ void FbAlphabetCombo::OnDrawItem( wxDC& dc, const wxRect& rect, int item, int fl
 
 	dc.DrawLabel(ch, r, wxALIGN_CENTER);
 
-/*
-
-	if ( !(flags & wxODCB_PAINTING_CONTROL) )
-	{
-		dc.DrawText(GetString( item ),
-					r.x + 3,
-					(r.y + 0) + ( (r.height/2) - dc.GetCharHeight() )/2
-				   );
-
-		dc.DrawLine( r.x+5, r.y+((r.height/4)*3), r.x+r.width - 5, r.y+((r.height/4)*3) );
+	if (item == m_divider && !(flags & wxODCB_PAINTING_CONTROL)) {
+		dc.DrawLine( rect.GetTopLeft(), rect.GetTopRight() );
 	}
-	else
-	{
-		dc.DrawLine( r.x+5, r.y+r.height/2, r.x+r.width - 5, r.y+r.height/2 );
-	}
-*/
 }
 
 wxCoord FbAlphabetCombo::OnMeasureItem( size_t item ) const
@@ -136,7 +126,7 @@ bool FbAlphabetCombo::SetFont(const wxFont& font)
     if (ok) {
 		wxClientDC dc(this);
 		dc.SetFont(font);
-		m_rowHeight = dc.GetCharHeight() + 2;
+		m_rowHeight = dc.GetCharHeight() + 4;
     }
     return ok;
 }
@@ -145,5 +135,6 @@ void FbAlphabetCombo::OnLetters(FbLettersEvent &event)
 {
 	Append(event.GetLetters());
 	SetSelection(event.GetPosition());
+	m_divider = event.GetDivider();
 	FbCommandEvent(wxEVT_COMMAND_COMBOBOX_SELECTED, ID_INIT_LETTER).Post(this);
 }

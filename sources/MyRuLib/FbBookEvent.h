@@ -223,10 +223,10 @@ class FbLettersEvent: public FbCommandEvent
 {
 	public:
 		FbLettersEvent(const FbLettersEvent & event)
-			: FbCommandEvent(event), m_letters(event.m_letters), m_position(event.m_position) {}
+			: FbCommandEvent(event), m_letters(event.m_letters), m_position(event.m_position), m_divider(event.m_divider) {}
 
-		FbLettersEvent(wxWindowID winid, const wxArrayString & letters, int position)
-			: FbCommandEvent(fbEVT_LETTERS_ACTION, winid), m_letters(letters), m_position(position) {}
+		FbLettersEvent(wxWindowID winid, const wxArrayString & letters, int position, int divider)
+			: FbCommandEvent(fbEVT_LETTERS_ACTION, winid), m_letters(letters), m_position(position), m_divider(divider) {}
 
 		virtual wxEvent *Clone() const
 			{ return new FbLettersEvent(*this); }
@@ -237,9 +237,13 @@ class FbLettersEvent: public FbCommandEvent
 		int GetPosition() const
 			{ return m_position; }
 
+		int GetDivider() const
+			{ return m_divider; }
+
 	private:
 		wxArrayString m_letters;
 		int m_position;
+		int m_divider;
 };
 
 typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
