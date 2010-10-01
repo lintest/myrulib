@@ -156,6 +156,7 @@ IMPLEMENT_CLASS(FbMasterGenrInfo, FbMasterInfoBase)
 
 wxString FbMasterGenrInfo::GetWhere(wxSQLite3Database &database) const
 {
+	if (m_id.IsEmpty()) return wxT("books.genres=?");
 	return wxT("books.id IN (SELECT id_book FROM genres WHERE genres.id_genre=?)");
 }
 

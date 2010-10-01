@@ -408,16 +408,7 @@ bool FbTreeViewMainWindow::SetFont(const wxFont& font)
 
 void FbTreeViewMainWindow::AdjustMyScrollbars()
 {
-    if (true) {
-        int xUnit, yUnit;
-        GetScrollPixelsPerUnit (&xUnit, &yUnit);
-        if (yUnit == 0) yUnit = GetRowHeight();
-
-        int y_pos = GetScrollPos (wxVERTICAL);
-        SetScrollbars (0, yUnit, 0, GetRowCount(), 0, y_pos);
-    } else {
-        SetScrollbars (0, 0, 0, 0);
-    }
+	SetScrollbars(0, GetRowHeight(), 0, GetRowCount(), 0, GetScrollPos(wxVERTICAL));
 }
 
 size_t FbTreeViewMainWindow::GetClientCount()

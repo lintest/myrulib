@@ -260,6 +260,9 @@ FbModel * FbGenres::CreateModel()
 		}
 	}
 
+	FbParentData * parent = new FbGenrParentData(*model, root, _("Other"));
+	new FbGenrChildData(*model, parent, wxEmptyString, _("No genre"));
+
 	return model;
 }
 

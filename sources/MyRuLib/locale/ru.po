@@ -1972,3 +1972,19 @@ msgstr "Файл не найден %s"
 
 msgid "Rebuild the list of genres"
 msgstr "Пересчитать список жанров"
+
+msgid "Select action:"
+msgstr "Выберите действие:"
+
+msgid "Open (or create) local collection"
+msgstr "Открыть (или создать) локальную коллекцию"
+
+msgid "Other"
+msgstr "Прочие"
+
+msgid "No genre"
+msgstr "Без жанра"
+
+msgid "Online update database"
+msgstr "Обновить через интернет"
+
