@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
+	EVT_MENU(ID_MENU_GENLIST, FbMainFrame::OnDatabaseGenres)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_MENU(ID_MENU_UPDATE, FbMainFrame::OnUpdate)
 	EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
@@ -749,4 +750,9 @@ void FbMainFrame::Localize(int language)
 		if (frame) frame->Localize(i == index);
 	}
 	if (count == 0) SetMenuBar(new FbMainMenu);
+}
+
+void FbMainFrame::OnDatabaseGenres(wxCommandEvent & event)
+{
+	(new FbGenreThread)->Execute();
 }
