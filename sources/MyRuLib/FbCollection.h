@@ -31,6 +31,37 @@ class FbCacheData: public wxObject
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(FbCacheData, FbCasheDataArray);
 
+class FbBookAuths: public wxObject
+{
+	public:
+		FbBookAuths(int code, wxSQLite3Database &database);
+		int GetCode() const { return m_code; }
+		wxString GetValue(size_t col) const { return m_name; }
+	private:
+		int m_code;
+		wxString m_name;
+		DECLARE_CLASS(FbBookAuths)
+};
+
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbBookAuths, FbBookAuthsArray);
+
+class FbBookSeqns: public wxObject
+{
+	public:
+		FbBookSeqns(int code, wxSQLite3Database &database);
+		int GetCode() const { return m_code; }
+		wxString GetValue(size_t col) const;
+	private:
+		int m_code;
+		wxString m_name;
+		int m_numb;
+		DECLARE_CLASS(FbBookSeqns)
+};
+
+#include <wx/dynarray.h>
+WX_DECLARE_OBJARRAY(FbBookSeqns, FbBookSeqnsArray);
+
 class FbParamData: public wxObject
 {
 	public:
@@ -91,6 +122,8 @@ class FbCollection: public wxObject
 		void DoResetInfo(int code);
 		FbCacheBook GetCacheBook(int code);
 		FbViewData * GetCacheInfo(int code);
+		wxString GetBookAuths(int code, size_t col);
+		wxString GetBookSeqns(int code, size_t col);
 		void LoadParams();
 	private:
 		static wxCriticalSection sm_section;
@@ -102,6 +135,8 @@ class FbCollection: public wxObject
 		FbCasheDataArray m_auths;
 		FbCasheDataArray m_seqns;
 		FbCasheBookArray m_books;
+		FbBookAuthsArray m_book_auth;
+		FbBookSeqnsArray m_book_seqn;
 		FbViewDataArray m_infos;
 		FbParamHash m_params;
 		FbThread * m_thread;

@@ -147,6 +147,12 @@ wxString FbMasterInfoBase::GetOrderTable() const
 				return wxT("LEFT JOIN bookseq ON bookseq.id_book = books.id");
 			else return wxEmptyString;
 		} break;
+		case BF_SEQN: {
+			if (GetMode ()== FB2_MODE_LIST)
+				return wxT("LEFT JOIN bookseq ON bookseq.id_book = books.id LEFT JOIN sequences ON sequences.id=bookseq.id_seq");
+			else
+				return wxT("LEFT JOIN sequences ON sequences.id=bookseq.id_seq");
+		} break;
 		case BF_RATE:
 		case BF_DOWN:
 			return wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
@@ -169,7 +175,7 @@ wxString FbMasterInfoBase::GetOrderColumn() const
 		case BF_DATE: return wxT("books.created");
 		case BF_SIZE: return wxT("books.file_size");
 		case BF_BITE: return wxT("books.file_size");
-		case BF_SEQN: return wxT("books.title");
+		case BF_SEQN: return wxT("AGGREGATE(value)");
 		case BF_DOWN: return wxT("states.download");
 		case BF_MD5S: return wxT("books.md5sum");
 		default: return wxT("books.title");

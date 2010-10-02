@@ -161,22 +161,33 @@ wxString FbSearchFunction::AddAsterisk(const wxString &text)
 //  FbAggregateFunction
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+//  FbAggregateFunction
+//-----------------------------------------------------------------------------
+
 void FbAggregateFunction::Aggregate(wxSQLite3FunctionContext& ctx)
 {
 	wxSortedArrayString** acc = (wxSortedArrayString **) ctx.GetAggregateStruct(sizeof (wxSortedArrayString **));
 	if (*acc == NULL) *acc = new wxSortedArrayString ;
-	for (int i = 0; i < ctx.GetArgCount(); i++) (**acc).Add(ctx.GetString(i).Trim(true).Trim(false));
+	for (int i = 0; i < ctx.GetArgCount(); i++) {
+		wxString text = ctx.GetString(i);
+		text.Trim(true).Trim(false);
+		if (!text.IsEmpty()) (**acc).Add(text);
+	}
 }
 
 void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 {
 	wxSortedArrayString ** acc = (wxSortedArrayString **) ctx.GetAggregateStruct(sizeof (wxSortedArrayString **));
 
+	if ((*acc) == NULL) return;
+
 	wxString result;
 	size_t iCount = (*acc)->Count();
 	for (size_t i=0; i<iCount; i++) {
+		wxString text = (**acc).Item(i);
 		if (!result.IsEmpty()) result << wxT(", ");
-		result << (**acc).Item(i);
+		if (!text.IsEmpty()) result << text;
 	}
 	ctx.SetResult(result);
 
