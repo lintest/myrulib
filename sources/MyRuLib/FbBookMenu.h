@@ -8,57 +8,47 @@
 
 class FbMasterInfo;
 
-class FbMenuFolderItem
-{
-	public:
-		int id;
-		int folder;
-		wxString name;
-};
-
-class FbMenuAuthorItem
-{
-	public:
-		int id;
-		int author;
-};
-
-WX_DECLARE_OBJARRAY(FbMenuFolderItem, FbMenuFolderArray);
-
-WX_DECLARE_OBJARRAY(FbMenuAuthorItem, FbMenuAuthorArray);
+#include <wx/hashmap.h>
+WX_DECLARE_HASH_MAP(int, int, wxIntegerHash, wxIntegerEqual, FbMenuMap);
 
 class FbBookMenu: public wxMenu
 {
 	public:
-		FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder);
+		static int GetKey(int id);
+		static int SetKey(int key);
+		FbBookMenu(wxWindow * frame, int book): m_frame(frame), m_book(book) {}
+		void Init(const FbMasterInfo &master, bool bShowOrder);
+	public:
+		wxObjectEventFunction m_fldr_func;
+		wxObjectEventFunction m_auth_func;
+		wxObjectEventFunction m_seqn_func;
 	private:
-		int m_id;
+		void AppendAuthorsMenu();
+		void AppendSeriesMenu();
+		void AppendFoldersMenu(int folder);
+	private:
+		static FbMenuMap sm_map;
+		static int sm_next;
+		wxWindow * m_frame;
+		int m_book;
 };
 
 class FbMenuAuthors: public wxMenu
 {
 	public:
-		static int GetAuthor(const int id);
-		static void Connect(wxWindow * frame, wxObjectEventFunction func);
+		FbMenuAuthors(int book, wxWindow * frame, wxObjectEventFunction func);
+};
+
+class FbMenuSeries: public wxMenu
+{
 	public:
-		FbMenuAuthors(int book);
-	private:
-		static FbMenuAuthorArray sm_authors;
+		FbMenuSeries(int book, wxWindow * frame, wxObjectEventFunction func);
 };
 
 class FbMenuFolders: public wxMenu
 {
 	public:
-		static void Init();
-		static void EmptyFolders() { sm_folders.Empty(); };
-		static size_t GetCount();
-		static void LoadFolders();
-		static int GetFolder(const int id);
-		static void Connect(wxWindow * frame, wxObjectEventFunction func);
-	public:
-		FbMenuFolders(int folder);
-	private:
-		static FbMenuFolderArray sm_folders;
+		FbMenuFolders(int folder, wxWindow * frame, wxObjectEventFunction func);
 };
 
 #endif // __FBBOOKMENU_H__

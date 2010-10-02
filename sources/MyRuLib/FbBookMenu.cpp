@@ -6,25 +6,38 @@
 #include "FbMasterInfo.h"
 #include "FbMasterTypes.h"
 
-WX_DEFINE_OBJARRAY(FbMenuFolderArray);
+FbMenuMap FbBookMenu::sm_map;
 
-WX_DEFINE_OBJARRAY(FbMenuAuthorArray);
+int FbBookMenu::sm_next;
 
-FbBookMenu::FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder)
-	: m_id(book)
+int FbBookMenu::GetKey(int id)
 {
+	return sm_map[id];
+}
+
+int FbBookMenu::SetKey(int key)
+{
+	sm_map[++sm_next] = key;
+	return sm_next;
+}
+
+void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
+{
+	sm_map.empty();
+	sm_next = ID_FAVORITES_ADD;
+
 	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
 
 	FbMasterDownInfo * down = wxDynamicCast(&master, FbMasterDownInfo);
 	if (down) {
 		Append(ID_DELETE_DOWNLOAD, _("Delete download query"));
-		if ( down->GetId() < 0) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
+		if (down->GetId()) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
 	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Download a file"));
 	}
 
-	if ( book > 0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
-	if ( book > 0 ) Append(ID_BOOK_PAGE, _("Online books page"));
+	if ( m_book > 0 ) Append(ID_SYSTEM_DOWNLOAD, _("Download via browser"));
+	if ( m_book > 0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
 
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
@@ -40,98 +53,81 @@ FbBookMenu::FbBookMenu(const FbMasterInfo &master, int book, bool bShowOrder)
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
 	AppendSeparator();
 
-	Append(wxID_ANY, _("Jump to author"), new FbMenuAuthors(book));
-	Append(wxID_ANY, _("Jump to series"), NULL);
+	AppendAuthorsMenu();
+	AppendSeriesMenu();
 	AppendSeparator();
 
-	FbMasterFldrInfo * fldr = wxDynamicCast(&master, FbMasterFldrInfo);
-	int folder = fldr ? fldr->GetId() : 0;
-	if (!fldr || folder) Append(ID_FAVORITES_ADD, _("Add to favourites"));
-	Append(wxID_ANY, _("Add to folders"), new FbMenuFolders(folder));
+	FbMasterFldrInfo * info = wxDynamicCast(&master, FbMasterFldrInfo);
+	int folder = info ? info->GetId() : 0;
+	if (!info || folder) Append(ID_FAVORITES_ADD, _("Add to favourites"));
+	AppendFoldersMenu(folder);
 	Append(wxID_ANY, _("Rate this book"), new FbMenuRating);
-	if (fldr) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
+	if (info) Append(ID_FAVORITES_DEL, _("Delete bookmark"));
 	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
 }
 
-FbMenuAuthorArray FbMenuAuthors::sm_authors;
-
-FbMenuAuthors::FbMenuAuthors(int book)
+void FbBookMenu::AppendAuthorsMenu()
 {
-	sm_authors.Empty();
+	wxString text = _("Jump to author");
+	wxMenu * submenu = NULL;
 
 	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
 	FbCommonDatabase database;
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, book);
+	stmt.Bind(1, m_book);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-	int id = ID_FAVORITES_ADD + FbMenuFolders::GetCount();
 	while (result.NextRow()) {
-		FbMenuAuthorItem * item = new FbMenuAuthorItem;
-		item->id = ++id;
-		item->author = result.GetInt(0);
-		Append(item->id, result.GetString(1));
-		sm_authors.Add(item);
+		wxString text = result.GetString(1);
+		if (text.IsEmpty()) continue;
+		if (submenu == NULL) submenu = new wxMenu;
+		int id = SetKey(result.GetInt(0));
+		submenu->Append(id, text);
+		m_frame->Connect(id, wxEVT_COMMAND_MENU_SELECTED, m_auth_func);
 	}
+	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
 
-int FbMenuAuthors::GetAuthor(const int id)
+void FbBookMenu::AppendSeriesMenu()
 {
-	for (size_t i=0; i<sm_authors.Count(); i++)
-		if ( sm_authors[i].id == id ) return sm_authors[i].author;
-	return 0;
-}
+	wxString text = _("Jump to series");
+	wxMenu * submenu = NULL;
 
-void FbMenuAuthors::Connect(wxWindow * frame, wxObjectEventFunction func)
-{
-	for (size_t i=0; i<sm_authors.Count(); i++)
-		frame->Connect(sm_authors[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
-}
+	wxString sql = wxT("SELECT id, value FROM sequences WHERE id IN (SELECT id_seq FROM bookseq WHERE id_book=?) ORDER BY value");
+	FbCommonDatabase database;
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, m_book);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
-FbMenuFolderArray FbMenuFolders::sm_folders;
-
-FbMenuFolders::FbMenuFolders(int folder)
-{
-	LoadFolders();
-	for (size_t i=0; i<sm_folders.Count(); i++) {
-		if (folder == sm_folders[i].folder) continue;
-		Append(sm_folders[i].id, sm_folders[i].name);
+	while (result.NextRow()) {
+		wxString text = result.GetString(1);
+		if (text.IsEmpty()) continue;
+		if (submenu == NULL) submenu = new wxMenu;
+		int id = SetKey(result.GetInt(0));
+		submenu->Append(id, text);
+		m_frame->Connect(id, wxEVT_COMMAND_MENU_SELECTED, m_seqn_func);
 	}
+	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
 
-void FbMenuFolders::LoadFolders()
+void FbBookMenu::AppendFoldersMenu(int folder)
 {
-	sm_folders.Empty();
+	wxString text = _("Add to folders");
+	wxMenu * submenu = NULL;
+
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
 	FbLocalDatabase database;
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-	int id = ID_FAVORITES_ADD;
+
 	while (result.NextRow()) {
-		FbMenuFolderItem * item = new FbMenuFolderItem;
-		item->id = ++id;
-		item->folder = result.GetInt(0);
-		item->name = result.GetString(1);
-		sm_folders.Add(item);
+		int key = result.GetInt(0);
+		if (folder == key) continue;
+		if (submenu == NULL) submenu = new wxMenu;
+		int id = SetKey(result.GetInt(0));
+		submenu->Append(id, result.GetString(1));
+		m_frame->Connect(id, wxEVT_COMMAND_MENU_SELECTED, m_fldr_func);
 	}
+	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
-
-int FbMenuFolders::GetFolder(const int id)
-{
-	for (size_t i=0; i<sm_folders.Count(); i++)
-		if ( sm_folders[i].id == id ) return sm_folders[i].folder;
-	return 0;
-}
-
-void FbMenuFolders::Connect(wxWindow * frame, wxObjectEventFunction func)
-{
-	for (size_t i=0; i<sm_folders.Count(); i++)
-		frame->Connect(sm_folders[i].id, wxEVT_COMMAND_MENU_SELECTED, func);
-}
-
-size_t FbMenuFolders::GetCount()
-{
-	if (sm_folders.IsEmpty()) LoadFolders();
-	return sm_folders.Count();
-};

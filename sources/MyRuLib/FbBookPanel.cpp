@@ -200,9 +200,11 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
 {
 	if (!m_master) return;
-	FbBookMenu menu(m_master, m_BookList->GetBook(), GetListMode()==FB2_MODE_LIST);
-	FbMenuFolders::Connect(this, wxCommandEventHandler(FbBookPanel::OnFolderAdd));
-	FbMenuAuthors::Connect(this, wxCommandEventHandler(FbBookPanel::OnOpenAuthor));
+	FbBookMenu menu(this, m_BookList->GetBook());
+	menu.m_auth_func = wxCommandEventHandler(FbBookPanel::OnOpenAuthor);
+	menu.m_seqn_func = wxCommandEventHandler(FbBookPanel::OnOpenSeries);
+	menu.m_fldr_func = wxCommandEventHandler(FbBookPanel::OnFolderAdd);
+	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
 	PopupMenu(&menu, pos.x, pos.y);
 }
 
@@ -229,7 +231,8 @@ void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
 
 void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
 {
-	DoFolderAdd( FbMenuFolders::GetFolder(event.GetId()) );
+	int key = FbBookMenu::GetKey(event.GetId());
+	DoFolderAdd( key );
 }
 
 void FbBookPanel::DoFolderAdd(const int folder)
@@ -324,9 +327,16 @@ void FbBookPanel::OnEditComments(wxCommandEvent & event)
 
 void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
 {
-	int author = FbMenuAuthors::GetAuthor(event.GetId());
+	int key = FbBookMenu::GetKey(event.GetId());
 	int id = m_BookList->GetBook();
-	if (id) FbOpenEvent(ID_BOOK_AUTHOR, author, id).Post();
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, key, id).Post();
+}
+
+void FbBookPanel::OnOpenSeries(wxCommandEvent& event)
+{
+	int key = FbBookMenu::GetKey(event.GetId());
+	int id = m_BookList->GetBook();
+	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, key, id).Post();
 }
 
 void FbBookPanel::EmptyBooks(const int selected)
