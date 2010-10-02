@@ -142,6 +142,11 @@ wxString FbMasterInfoBase::GetOrderTable() const
 				return wxT("LEFT JOIN authors ON books.id_author = authors.id");
 			else return wxEmptyString;
 		} break;
+		case BF_NUMB: {
+			if (GetMode ()== FB2_MODE_LIST)
+				return wxT("LEFT JOIN bookseq ON bookseq.id_book = books.id");
+			else return wxEmptyString;
+		} break;
 		case BF_RATE:
 		case BF_DOWN:
 			return wxT("LEFT JOIN states ON books.md5sum=states.md5sum");
@@ -154,7 +159,7 @@ wxString FbMasterInfoBase::GetOrderColumn() const
 {
 	switch (GetOrderIndex()) {
 		case BF_NAME: return wxT("books.title");
-		case BF_NUMB: return wxT("bookseq.number");
+		case BF_NUMB: return wxT("AGGREGATE(bookseq.number)");
 		case BF_AUTH: return wxT("AGGREGATE(authors.full_name)");
 		case BF_CODE: return wxT("books.id");
 		case BF_GENR: return wxT("GENRE(books.genres)");
