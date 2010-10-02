@@ -246,14 +246,12 @@
 		<Unit filename="FbFldrTree.h" />
 		<Unit filename="FbFrameAuth.cpp" />
 		<Unit filename="FbFrameAuth.h" />
-		<Unit filename="FbFrameAuthor.cpp" />
 		<Unit filename="FbFrameBase.cpp" />
 		<Unit filename="FbFrameBase.h" />
 		<Unit filename="FbFrameDate.cpp" />
 		<Unit filename="FbFrameDate.h" />
 		<Unit filename="FbFrameDown.cpp" />
 		<Unit filename="FbFrameDown.h" />
-		<Unit filename="FbFrameDownld.h" />
 		<Unit filename="FbFrameFind.cpp" />
 		<Unit filename="FbFrameFind.h" />
 		<Unit filename="FbFrameFldr.cpp" />
