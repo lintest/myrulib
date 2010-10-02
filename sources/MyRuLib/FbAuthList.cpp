@@ -11,9 +11,7 @@
 void * FbAuthListThread::Entry()
 {
 	FbCommonDatabase database;
-	if (m_info.m_author) {
-		DoAuthor(database);
-	} else if (m_info.m_string.IsEmpty()) {
+	if (m_info.m_string.IsEmpty()) {
 		DoLetter(database);
 	} else if (m_info.IsFullText()) {
 		DoFullText(database);
@@ -21,15 +19,6 @@ void * FbAuthListThread::Entry()
 		DoString(database);
 	}
 	return NULL;
-}
-
-void FbAuthListThread::DoAuthor(wxSQLite3Database &database)
-{
-	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_info.m_author);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	MakeModel(result);
 }
 
 void FbAuthListThread::DoLetter(wxSQLite3Database &database)
@@ -116,8 +105,7 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 		FbAuthListModel * master = wxDynamicCast(&model, FbAuthListModel);
 		if (master) {
 			int count = master->GetCount(m_code);
-			if (count != wxNOT_FOUND)
-				return wxString::Format(wxT("%d"), count);
+			if (count != wxNOT_FOUND) return FbCollection::Format(count);
 		}
 	}
 	return FbCollection::GetAuth(m_code, col);

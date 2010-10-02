@@ -8,20 +8,19 @@
 class FbAuthListInfo: public wxObject
 {
 	public:
-		FbAuthListInfo(int author = 0)
-			: m_author(author), m_letter(0), m_string(wxEmptyString) {}
-		FbAuthListInfo(wxChar letter)
-			: m_author(0), m_letter(letter), m_string(wxEmptyString) {}
+		FbAuthListInfo(wxChar letter = 0)
+			: m_letter(letter), m_string(wxEmptyString)
+				{ if (letter == wxT('*')) m_letter = 0; }
 		FbAuthListInfo(const wxString &string)
-			: m_author(0), m_letter(0), m_string(string) {}
+			: m_letter(0), m_string(string)
+				{ if (string.Len() == 1) { m_letter = string[0]; m_string.Empty(); } }
 		FbAuthListInfo(const FbAuthListInfo & info)
-			: m_author(info.m_author), m_letter(info.m_letter), m_string(info.m_string) {}
+			: m_letter(info.m_letter), m_string(info.m_string) {}
 		bool IsFullText() const
 			{ return FbSearchFunction::IsFullText(m_string); }
 		operator bool() const
 			{ return m_letter || !m_string.IsEmpty(); }
 	private:
-		int m_author;
 		wxChar m_letter;
 		wxString m_string;
 		friend class FbAuthListThread;
