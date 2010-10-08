@@ -207,35 +207,9 @@ void FbFrameAuth::OnMasterReplace(wxCommandEvent& event)
 void FbFrameAuth::OnMasterDelete(wxCommandEvent& event)
 {
 	FbModel * model = m_MasterList->GetModel();
-	if (model == NULL) return;
-
-	FbModelItem item = model->GetCurrent();
-	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
-	if (current == NULL) return;
-
-	int id = current->GetCode();
-	int count = 0;
-	{
-		wxString sql = wxT("SELECT COUNT(DISTINCT bid) FROM ba WHERE aid=?");
-		FbCommonDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, id);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		count = result.NextRow() ? result.GetInt(0) : 0;
-	}
-
-	wxString msg = _("Delete author") + COLON + current->GetValue(*model);
-	if (count) msg << (wxString)wxT("\n") <<  wxString::Format(_("and all of author's books (%d pcs.)?"), count);
-	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
-	if (ok) {
-		wxString sql1 = wxString::Format(wxT("DELETE FROM b WHERE bid IN (SELECT bid FROM ba t1 WHERE aid=%d AND NOT EXISTS (SELECT bid FROM ba as t2 WHERE t1.bid=t2.bid AND t2.aid<>%d))"), id, id);
-		wxString sql2 = wxString::Format(wxT("DELETE FROM ba WHERE aid=%d"), id);
-		wxString sql3 = wxString::Format(wxT("DELETE FROM a WHERE aid=%d"), id);
-		FbCommonDatabase database;
-		database.ExecuteUpdate(sql1);
-		database.ExecuteUpdate(sql2);
-		database.ExecuteUpdate(sql3);
-		m_MasterList->Delete();
+	if (model) {
+		bool ok = FbAuthorReplaceDlg::Delete(*model);
+		if (ok) m_MasterList->Delete();
 	}
 }
 
