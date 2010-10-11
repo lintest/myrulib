@@ -136,7 +136,7 @@ void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 	wxSQLite3Transaction trans(&m_database);
 
 	{
-		wxString sql = wxT("UPDATE ba SET aid=? WHERE aid=?");
+		wxString sql = wxT("UPDATE books SET id_author=? WHERE id_author=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, new_id);
 		stmt.Bind(2, old_id);
@@ -144,21 +144,21 @@ void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	{
-		wxString sql = wxT("UPDATE a SET numb=(SELECT COUNT(DISTINCT bid) FROM ba WHERE ba.aid=a.aid) WHERE aid=?");
+		wxString sql = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id) WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, new_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
-		wxString sql = wxT("DELETE FROM a WHERE aid=?");
+		wxString sql = wxT("DELETE FROM authors WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
-		wxString sql = wxT("DELETE FROM fts_a WHERE docid=?");
+		wxString sql = wxT("DELETE FROM fts_auth WHERE docid=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
@@ -270,7 +270,7 @@ FbAuthorReplaceDlg::~FbAuthorReplaceDlg()
 
 bool FbAuthorReplaceDlg::Load()
 {
-	wxString sql = wxT("SELECT full, last FROM a WHERE aid=?");
+	wxString sql = wxT("SELECT full_name, last_name FROM authors WHERE id=?");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, m_id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -361,3 +361,32 @@ void FbAuthorReplaceDlg::OnArray( FbArrayEvent& event )
 	m_FindList->Refresh();
 }
 
+bool FbAuthorReplaceDlg::Delete(FbModel &model)
+{
+	FbModelItem item = model.GetCurrent();
+	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+	if (current == NULL) return false;
+
+	int id = current->GetCode();
+	int count = 0;
+	{
+		wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM books WHERE id_author=?");
+		FbCommonDatabase database;
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, id);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		count = result.NextRow() ? result.GetInt(0) : 0;
+	}
+
+	wxString msg = _("Delete author") + COLON + current->GetValue(model);
+	if (count) msg << (wxString)wxT("\n") <<  wxString::Format(_("and all of author's books (%d pcs.)?"), count);
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (ok) {
+		wxString sql1 = wxString::Format(wxT("DELETE FROM books WHERE id_author=?"), id);
+		wxString sql2 = wxString::Format(wxT("DELETE FROM authors WHERE id=%d"), id);
+		FbCommonDatabase database;
+		database.ExecuteUpdate(sql1);
+		database.ExecuteUpdate(sql2);
+	}
+	return ok;
+}

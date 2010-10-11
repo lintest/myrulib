@@ -14,6 +14,7 @@ class FbAuthorReplaceDlg : public FbDialog
 		FbAuthorReplaceDlg(const wxString& title, int id);
 		virtual ~FbAuthorReplaceDlg();
 		static int Execute(int author, wxString& newname);
+		static bool Delete(FbModel &model);
 	protected:
 		virtual void EndModal(int retCode);
 	protected:
