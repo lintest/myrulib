@@ -63,7 +63,7 @@ void FbCounter::Execute()
 	}
 
 	if (HasFlag(fbCF_SEQN)) {
-		wxString sql = wxT("UPDATE sequences SET number=(SELECT COUNT(id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id) WHERE id IN (SELECT id FROM tmp_s)");
+		wxString sql = wxT("UPDATE sequences SET number=(SELECT COUNT(DISTINCT id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id) WHERE id IN (SELECT id FROM tmp_s)");
 		m_database.ExecuteUpdate(sql);
 	}
 
