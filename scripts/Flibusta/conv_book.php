@@ -58,7 +58,7 @@ function utf8_substr($s, $offset, $len = 'all')
     return (isset($tmp[1])) ? $tmp[1] : false;
 }
 
-function convert_authors($mysql_db, $sqlite_db)
+function convert_authors($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
 
@@ -72,6 +72,7 @@ function convert_authors($mysql_db, $sqlite_db)
 	  SELECT DISTINCT libavtor.AvtorId, libavtor.BookId 
 	  FROM libavtor INNER JOIN libbook ON libbook.BookId=libavtor.BookId AND libbook.Deleted<>1 
 	) AS libavtor ON libavtorname.AvtorId=libavtor.AvtorId 
+    WHERE libavtorname.AvtorId>$min
 	GROUP BY libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
   ";
 
@@ -98,7 +99,7 @@ function convert_authors($mysql_db, $sqlite_db)
   }
 }  
 
-function convert_genres($mysql_db, $sqlite_db)
+function convert_genres($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
   $sqlite_db->query("DELETE FROM genres");
@@ -108,6 +109,7 @@ function convert_genres($mysql_db, $sqlite_db)
 	FROM libgenre 
 		LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId 
 		INNER JOIN libbook ON libbook.BookId=libgenre.BookId AND libbook.Deleted<>1 
+	WHERE libgenre.BookId>$min
 	ORDER BY GenreCode
   ";
   $query = $mysql_db->query($sqltext);
@@ -123,7 +125,7 @@ function convert_genres($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function convert_books($mysql_db, $sqlite_db)
+function convert_books($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
 
@@ -142,7 +144,7 @@ function convert_books($mysql_db, $sqlite_db)
       LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
       LEFT JOIN libfilename ON libbook.BookId = libfilename.BookId
       LEFT JOIN oldfilename ON libbook.BookId = oldfilename.BookId
-    WHERE libbook.Deleted<>1
+    WHERE libbook.Deleted<>1 AND libbook.BookId>$min
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -172,10 +174,12 @@ function convert_books($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }  
 
-function convert_dates($mysql_db, $sqlite_db)
+function convert_dates($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
 
+  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
+  
   $sqlite_db->query("DELETE FROM dates");
 
   $sqltest = "
@@ -198,29 +202,7 @@ function convert_dates($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }  
 
-function convert_aliases($mysql_db, $sqlite_db)
-{
-  $sqlite_db->query("begin transaction;");
-
-  $sqlite_db->query("DELETE FROM aliases");
-
-  $sqltest = "SELECT * FROM libavtoraliase ORDER BY AliaseId";
-
-  $query = $mysql_db->query($sqltest);
-  while ($row = $query->fetch_array()) {
-    echo "alias: ".$row['BadId']." - ".$row['GoodId']."\n";
-    $sql = "INSERT INTO aliases(id_author, id_alias) values(?,?)";
-    $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BadId'], $row['GoodId']));
-    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $insert->closeCursor();
-  }
-
-  $sqlite_db->query("commit;");
-}
-
-function convert_seqnames($mysql_db, $sqlite_db)
+function convert_seqnames($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
 
@@ -232,6 +214,7 @@ function convert_seqnames($mysql_db, $sqlite_db)
 	  SELECT DISTINCT libseq.SeqId, libseq.BookId 
 	  FROM libseq INNER JOIN libbook ON libbook.BookId=libseq.BookId AND libbook.Deleted<>1 
 	) AS libseq ON libseqname.SeqId=libseq.SeqId AND libseq.SeqId<>0
+	WHERE libseq.SeqId>$min
 	GROUP BY libseqname.SeqId, libseqname.SeqName
   ";
 
@@ -249,7 +232,7 @@ function convert_seqnames($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function convert_sequences($mysql_db, $sqlite_db)
+function convert_sequences($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
 
@@ -258,7 +241,8 @@ function convert_sequences($mysql_db, $sqlite_db)
   $sqltest = "
     SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level
     FROM libseq 
-	INNER JOIN libbook ON libseq.BookId = libbook.BookId AND libbook.Deleted<>1
+	  INNER JOIN libbook ON libseq.BookId = libbook.BookId AND libbook.Deleted<>1
+	WHERE libseq.BookId>$min
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -275,7 +259,7 @@ function convert_sequences($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function create_tables($sqlite_db)
+function create_tables($sqlite_db, $date)
 {
   $sqlite_db->query("begin transaction;");
 
@@ -313,6 +297,27 @@ function create_tables($sqlite_db)
       description text);
   ");
 
+  $sqlite_db->query("CREATE TABLE sequences(id integer primary key, number integer, value varchar(255) not null);");
+
+  $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);");
+
+  $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2));");
+  
+  $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
+  $sqlite_db->query("DELETE FROM params;");
+  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (1, 'Flibusta library');");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (2, 1);");
+  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (3, 'FLIBUSTA');");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (4, ".$date.");");
+  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (11,'flibusta.net');");
+  
+  $sqlite_db->query("commit;");
+}
+
+function create_indexes($sqlite_db)
+{
+  $sqlite_db->query("begin transaction;");
+
   $sqlite_db->query("
     CREATE TABLE archives(
       id integer primary key,
@@ -326,30 +331,8 @@ function create_tables($sqlite_db)
       description text);
   ");
 
-  $sqlite_db->query("CREATE TABLE sequences(id integer primary key, number integer, value varchar(255) not null);");
-
-  $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer);");
-
-  $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text);");
-  $sqlite_db->query("DELETE FROM params;");
-  $sqlite_db->query("INSERT INTO params(text) VALUES ('Flibusta library');");
-  $sqlite_db->query("INSERT INTO params(value) VALUES (1);");
-  $sqlite_db->query("INSERT INTO params(text) VALUES ('FLIBUSTA');");
-  $sqlite_db->query("INSERT INTO params(id,text) VALUES (11,'flibusta.net');");
-  
   $sqlite_db->query("CREATE TABLE aliases(id_author integer not null, id_alias integer not null);");
   
-  $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2));");
-  
-  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
-  
-  $sqlite_db->query("commit;");
-}
-
-function create_indexes($sqlite_db)
-{
-  $sqlite_db->query("begin transaction;");
-
   $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
   $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
 
@@ -377,9 +360,58 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("vacuum;");
 }
 
+function FullImport($mysql_db, $sqlitefile, $date)
+{
+  $sqlite_db = new PDO('sqlite:'.$sqlitefile);
+  
+  create_tables($sqlite_db, $date);
+
+  create_tables($sqlite_db, 0);
+  convert_genres($mysql_db, $sqlite_db, 0);
+  convert_authors($mysql_db, $sqlite_db, 0);
+  convert_books($mysql_db, $sqlite_db, 0);
+  convert_dates($mysql_db, $sqlite_db, 0);
+  convert_seqnames($mysql_db, $sqlite_db, 0);
+  convert_sequences($mysql_db, $sqlite_db, 0);
+  create_indexes($sqlite_db);
+
+  $sqlite_db->query("INSERT INTO params(id,text) VALUES (5, 'FULL');");
+}
+
+function DeltaImport($mysql_db, $date)
+{
+  $sqlitefile = "./".$date.".upd";
+
+  $mysql_db->query("CREATE TABLE myrulib_update(date integer primary key, aid integer, bid integer, sid integer)");
+
+  $sqltest = "SELECT aid, bid, sid FROM myrulib_update WHERE date=(SELECT MAX(date) FROM myrulib_update WHERE date<$date)";
+
+  $query = $mysql_db->query($sqltest);
+  if ($row = $query->fetch_array()) {
+	$sqlite_db = new PDO('sqlite:'.$sqlitefile);
+	create_tables($sqlite_db, $date);
+	convert_authors($mysql_db, $sqlite_db, $row['aid']);
+	convert_books($mysql_db, $sqlite_db, $row['bid']);
+	convert_genres($mysql_db, $sqlite_db, $row['bid']);
+	convert_sequences($mysql_db, $sqlite_db, $row['bid']);
+	convert_seqnames($mysql_db, $sqlite_db, $row['sid']);
+  }
+
+  $mysql_db->query("INSERT INTO myrulib_update(date) VALUES(".$date.")");
+
+  $mysql_db->query("
+	UPDATE myrulib_update SET 
+	  aid=(SELECT MAX(AvtorId) FROM libavtorname),
+	  bid=(SELECT MAX(BookId) FROM libbook),
+	  sid=(SELECT MAX(SeqId) FROM libseq)
+	WHERE date=$date");
+
+  $sqlite_db->query("INSERT INTO params(id,text) VALUES (5, 'DELTA');");
+}
+
 $mysql_srvr = 'localhost';
 $mysql_user = 'root';
-$mysql_pass = '';
+$mysql_pass = '11111111';
 $mysql_base = 'flibusta';
 $sqlitefile = './myrulib.db';
 
@@ -389,13 +421,10 @@ $sqlite_db = new PDO('sqlite:'.$sqlitefile);
 $mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
-create_tables($sqlite_db);
-convert_genres($mysql_db, $sqlite_db);
-convert_authors($mysql_db, $sqlite_db);
-convert_books($mysql_db, $sqlite_db);
-convert_dates($mysql_db, $sqlite_db);
-convert_seqnames($mysql_db, $sqlite_db);
-convert_sequences($mysql_db, $sqlite_db);
-create_indexes($sqlite_db);
+$date = date('Ymd');
+echo "Today: ".$date."\n";
+
+FullImport($mysql_db, $sqlitefile, $date);
+DeltaImport($mysql_db, $date);
 
 ?>
