@@ -1,0 +1,39 @@
+1. Introduction
+2. Build Instructions
+3. Credits/License
+4. Versions
+
+////////////////////////////////////////////////////////////////
+1. Introduction
+////////////////////////////////////////////////////////////////
+wxBZipInputStream & wxBZipOutputStream function just
+like normal wx streams, only they work on BZip compressed
+data.
+
+////////////////////////////////////////////////////////////////
+2. Build Instructions
+////////////////////////////////////////////////////////////////
+Build all files in the bzip folder, along
+with bzipstream.cpp and bzip.h.
+
+////////////////////////////////////////////////////////////////
+3. Credits/License
+////////////////////////////////////////////////////////////////
+Author: Ryan Norton (wxprojects@comcast.net)
+License: wxWindows (wxwindows.org for more info)
+         [this is a requirement of wxCode]
+
+////////////////////////////////////////////////////////////////
+4. Versions
+////////////////////////////////////////////////////////////////
+1.2
+- Patch from David Hart for version fix and GCC compilation fix
+- Unicode fixes
+- Some cleanup with nCompressionFactor documented
+
+1.1
+- Patch from David Hart with fixes for large archives
+- wxArchive integration
+
+1.0
+Initial Release
