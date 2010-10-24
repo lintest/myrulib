@@ -40,22 +40,8 @@ class FbAuiMDIParentFrame
 	: public wxAuiMDIParentFrame
 {
 	public:
-		FbAuiMDIParentFrame()
-			: m_menubar(NULL) {}
-
-		~FbAuiMDIParentFrame();
-
-		virtual void SetMenuBar(wxMenuBar *pMenuBar)
-			{}
-
-	    virtual wxMenuBar * GetMenuBar() const
-			{ return m_menubar; }
-
-		void SetMainMenu(wxMenuBar * menubar);
-
-	private:
-		wxMenuBar * m_menubar;
-
+		FbAuiMDIParentFrame() {}
+		~FbAuiMDIParentFrame() {}
 };
 
 class FbAuiMDIChildFrame
@@ -92,16 +78,11 @@ class FbAuiMDIChildFrame
 
 		virtual void Localize(bool bUpdateMenu);
 
-		virtual void SetMenuBar(wxMenuBar *menu_bar) {}
-
-	    virtual wxMenuBar *GetMenuBar() const { return NULL; }
-
 	protected:
 		void UpdateMenu();
 
 	private:
         void OnActivated(wxActivateEvent & event);
-		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBWINDOW_H__

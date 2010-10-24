@@ -728,17 +728,10 @@ void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
 	ActivatePrevious();
 }
 
-void FbMainFrame::SetMenuBar(wxMenuBar *pMenuBar)
-{
-	if (pMenuBar && (m_pMyMenuBar == pMenuBar)) {
-		wxDELETE(m_pMyMenuBar);
-		pMenuBar = new FbMainMenu;
-	}
-	wxAuiMDIParentFrame::SetMenuBar(pMenuBar);
-}
-
 void FbMainFrame::Localize(int language)
 {
+	SetMenuBar(new FbMainMenu);
+
     wxToolBar * toolbar = m_toolbar;
 	SetToolBar(CreateToolBar());
     wxDELETE(toolbar);
@@ -749,7 +742,6 @@ void FbMainFrame::Localize(int language)
 		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
 		if (frame) frame->Localize(i == index);
 	}
-	if (count == 0) SetMenuBar(new FbMainMenu);
 }
 
 void FbMainFrame::OnDatabaseGenres(wxCommandEvent & event)

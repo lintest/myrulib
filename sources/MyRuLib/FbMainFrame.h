@@ -18,8 +18,6 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		virtual wxString GetTitle() const;
 		void SetStatus(const wxString &text = wxEmptyString);
 		void Localize(int language);
-	protected:
-		virtual void SetMenuBar(wxMenuBar *pMenuBar);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		void CreateControls();
