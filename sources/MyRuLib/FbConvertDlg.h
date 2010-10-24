@@ -72,6 +72,15 @@ class FbConvertDlg : public FbDialog
 			private:
 				wxArrayString m_filelist;
 		};
+		class BzipThread: public JoinedThread
+		{
+			public:
+				BzipThread(FbConvertDlg * parent, const wxArrayString &args);
+			protected:
+				virtual void * Entry();
+			private:
+				wxArrayString m_filelist;
+		};
 		class ZipThread: public JoinedThread
 		{
 			public:

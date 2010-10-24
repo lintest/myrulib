@@ -475,7 +475,8 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	FbChoiceFormat * typeChoice = new FbChoiceFormat( this, ID_FILE_FORMAT);
 	typeChoice->Append(filename << wxT(".fb2"), 0);
 	typeChoice->Append(filename + wxT(".zip"), -1);
-	typeChoice->Append(filename + wxT(".gz"), -2);
+	typeChoice->Append(filename + wxT(".gz"),  -2);
+	typeChoice->Append(filename + wxT(".bz2"), -3);
 	typeChoice->SetSelection(0);
 	bSizerFormat->Add( typeChoice, 1, wxALL, 5 );
 

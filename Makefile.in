@@ -60,13 +60,26 @@ WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/WxSQLite3 \
 	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	wxsqlite3_static_wxsqlite3.o
+WXBZIP2_STATIC_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+WXBZIP2_STATIC_CXXFLAGS =  -DNDEBUG  $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+WXBZIP2_STATIC_OBJECTS =  \
+	wxbzip2_static_blocksort.o \
+	wxbzip2_static_bzlib.o \
+	wxbzip2_static_compress.o \
+	wxbzip2_static_crctable.o \
+	wxbzip2_static_decompress.o \
+	wxbzip2_static_huffman.o \
+	wxbzip2_static_randtable.o \
+	wxbzip2_static_bzipstream.o
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
 MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/sources/WxSQLite3 $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+	-I$(srcdir)/sources/WxSQLite3 -I$(srcdir)/sources/WxBZipStream \
+	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/sources/WxSQLite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/sources/WxSQLite3 -I$(srcdir)/sources/WxBZipStream \
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_BaseThread.o \
 	myrulib_FbAboutDlg.o \
@@ -184,7 +197,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -223,6 +236,7 @@ clean:
 	rm -f $(LIBPREFIX)expat_static$(LIBEXT)
 	rm -f $(LIBPREFIX)sqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
+	rm -f $(LIBPREFIX)wxbzip2_static$(LIBEXT)
 	rm -f bin2c$(EXEEXT)
 	rm -f ./ru.mo
 	rm -f ./uk.mo
@@ -252,6 +266,11 @@ distclean: clean
 $(LIBPREFIX)wxsqlite3_static$(LIBEXT): $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
 	$(AR) $(AROPTIONS) $@ $(WXSQLITE3_STATIC_OBJECTS)
+	$(RANLIB) $@
+
+$(LIBPREFIX)wxbzip2_static$(LIBEXT): $(WXBZIP2_STATIC_OBJECTS)
+	rm -f $@
+	$(AR) $(AROPTIONS) $@ $(WXBZIP2_STATIC_OBJECTS)
 	$(RANLIB) $@
 
 bin2c$(EXEEXT): $(BIN2C_OBJECTS)
@@ -289,8 +308,8 @@ cs.inc: bin2c$(EXEEXT) cs.mo
 sv.inc: bin2c$(EXEEXT) sv.mo
 	./bin2c ./sv.mo ./sv.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(__myrulib___win32rc)
-	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static $(WX_LIBS) $(LIBS)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__myrulib___win32rc)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
@@ -323,6 +342,30 @@ sqlite3_static_sqlite3.o: $(srcdir)/sources/SQLite3/sqlite3.c
 
 wxsqlite3_static_wxsqlite3.o: $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
+
+wxbzip2_static_blocksort.o: $(srcdir)/sources/WxBZipStream/bzip/blocksort.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/blocksort.c
+
+wxbzip2_static_bzlib.o: $(srcdir)/sources/WxBZipStream/bzip/bzlib.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/bzlib.c
+
+wxbzip2_static_compress.o: $(srcdir)/sources/WxBZipStream/bzip/compress.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/compress.c
+
+wxbzip2_static_crctable.o: $(srcdir)/sources/WxBZipStream/bzip/crctable.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/crctable.c
+
+wxbzip2_static_decompress.o: $(srcdir)/sources/WxBZipStream/bzip/decompress.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/decompress.c
+
+wxbzip2_static_huffman.o: $(srcdir)/sources/WxBZipStream/bzip/huffman.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/huffman.c
+
+wxbzip2_static_randtable.o: $(srcdir)/sources/WxBZipStream/bzip/randtable.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/randtable.c
+
+wxbzip2_static_bzipstream.o: $(srcdir)/sources/WxBZipStream/bzipstream.cpp
+	$(CXXC) -c -o $@ $(WXBZIP2_STATIC_CXXFLAGS) $(srcdir)/sources/WxBZipStream/bzipstream.cpp
 
 bin2c_bin2c.o: $(srcdir)/sources/Bin2c/bin2c.c
 	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/sources/Bin2c/bin2c.c
@@ -598,7 +641,7 @@ myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
 myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/sources/WxSQLite3
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/sources/WxSQLite3 --include-dir $(srcdir)/sources/WxBZipStream
 
 
 # Include dependency info, if present:

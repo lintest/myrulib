@@ -96,7 +96,8 @@ void FbExportDlg::LoadFormats()
 	int format = FbParams::GetInt(FB_FILE_FORMAT);
 	m_format->Append(filename << wxT(".fb2"), 0);
 	m_format->Append(filename + wxT(".zip"), -1);
-	m_format->Append(filename + wxT(".gz"), -2);
+	m_format->Append(filename + wxT(".gz"),  -2);
+	m_format->Append(filename + wxT(".bz2"), -3);
 
 	int index;
 	switch (format) {
@@ -127,7 +128,7 @@ wxString FbExportDlg::GetExt(int format)
 		stmt.Bind(1, format);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.NextRow()) return result.GetString(0);
-	} 
+	}
 
 	return wxEmptyString;
 }
@@ -155,14 +156,15 @@ void FbExportDlg::ChangeFormat()
 	if (!model) return;
 
 	int format = m_format->GetCurrentData();
-	int scale = format < 0 ? 43 : 100; 
+	int scale = format < 0 ? 43 : 100;
 	wxString arc, ext;
 	switch (format) {
 		case -1: arc = wxT("zip"); break;
 		case -2: arc = wxT("gz"); break;
+		case -3: arc = wxT("bz2"); break;
 	}
 
-	model->SetFormat(GetExt(format), arc, scale); 
+	model->SetFormat(GetExt(format), arc, scale);
 	m_books->Refresh();
 }
 

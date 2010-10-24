@@ -61,6 +61,18 @@
 		<sources>WxSQLite3/wxsqlite3.cpp</sources>
 	</lib>
 
+	<lib id="wxbzip2_static" template="wx-lib">
+		<define>NDEBUG</define>
+		<sources>WxBZipStream/bzip/blocksort.c</sources>
+		<sources>WxBZipStream/bzip/bzlib.c</sources>
+		<sources>WxBZipStream/bzip/compress.c</sources>
+		<sources>WxBZipStream/bzip/crctable.c</sources>
+		<sources>WxBZipStream/bzip/decompress.c</sources>
+		<sources>WxBZipStream/bzip/huffman.c</sources>
+		<sources>WxBZipStream/bzip/randtable.c</sources>
+		<sources>WxBZipStream/bzipstream.cpp</sources>
+	</lib>
+
     <define-tag name="locale" rules="action">
 		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
 		<command>msgfmt $(SRCDIR)/MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
@@ -129,6 +141,7 @@
 	
 	<exe id="myrulib" template="wxgui">
 		<library>wxsqlite3_static</library>
+		<library>wxbzip2_static</library>
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
@@ -240,6 +253,7 @@
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/MyRuLib</include>
 		<include>$(SRCDIR)/WxSQLite3</include>
+		<include>$(SRCDIR)/WxBZipStream</include>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>

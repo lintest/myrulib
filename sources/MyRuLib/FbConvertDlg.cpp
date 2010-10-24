@@ -6,6 +6,7 @@
 #include <wx/dialog.h>
 #include <wx/cmdline.h>
 #include <wx/zstream.h>
+#include "bzipstream.h"
 
 //-----------------------------------------------------------------------------
 //  FbConvertDlg::FbConvertItem
@@ -91,6 +92,7 @@ void * FbConvertDlg::ExportThread::Entry()
 	switch (m_format) {
 		case -1: fullpath << wxT(".zip"); break;
 		case -2: fullpath << wxT(".gz"); break;
+		case -3: fullpath << wxT(".bz2"); break;
 	}
 
 	m_filename.Mkdir(0777, wxPATH_MKDIR_FULL);
@@ -109,6 +111,10 @@ void * FbConvertDlg::ExportThread::Entry()
 		} break;
 		case -2: {
 			wxZlibOutputStream zip(out, 9, wxZLIB_GZIP);
+			zip.Write(reader.GetZip());
+		} break;
+		case -3: {
+			wxBZipOutputStream zip(out, 9);
 			zip.Write(reader.GetZip());
 		} break;
 		default: {
@@ -141,6 +147,38 @@ void * FbConvertDlg::GzipThread::Entry()
 	if (!out.IsOk()) return NULL;
 
 	wxZlibOutputStream zip(out, 9, wxZLIB_GZIP);
+	if (!zip.IsOk()) return NULL;
+
+	if (first < count) {
+		wxFileInputStream in(m_filelist[first]);
+		if (in.IsOk()) zip.Write(in);
+	}
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+//  FbConvertDlg::GzipThread
+//-----------------------------------------------------------------------------
+
+FbConvertDlg::BzipThread::BzipThread(FbConvertDlg * parent, const wxArrayString &args)
+	: JoinedThread(parent)
+{
+	size_t count = args.Count();
+	for (size_t i = 1; i < count; i++) m_filelist.Add(args[i]);
+}
+
+void * FbConvertDlg::BzipThread::Entry()
+{
+	size_t first = 0;
+	size_t count = m_filelist.Count();
+	if (count == 0) return NULL;
+	wxString filename = m_filelist[0];
+	if (count == 1) filename << wxT(".bz2"); else first++;
+
+	wxFileOutputStream out(filename);
+	if (!out.IsOk()) return NULL;
+
+	wxBZipOutputStream zip(out, 9);
 	if (!zip.IsOk()) return NULL;
 
 	if (first < count) {
@@ -454,7 +492,8 @@ void FbConvertDlg::ExecScript(size_t index, const FbConvertItem &item)
 		else if (cmd == wxT("zip")) { m_thread = new ZipThread(this, args); }
 		else if (cmd == wxT("del")) { m_thread = new DelThread(this, args); }
 		else if (cmd == wxT("rm"))  { m_thread = new DelThread(this, args); }
-		else if (cmd == wxT("gz")) { m_thread = new GzipThread(this, args); }
+		else if (cmd == wxT("gz"))  { m_thread = new GzipThread(this, args); }
+		else if (cmd == wxT("bz2")) { m_thread = new BzipThread(this, args); }
 		#ifdef __WXMSW__
 		else if (cmd == wxT("cmd")) m_process.m_dos = true;
 		#endif // __WXMSW__
