@@ -185,7 +185,7 @@ MYRULIB_OBJECTS =  \
 	build\myrulib_FbTreeModel.o \
 	build\myrulib_FbTreeView.o \
 	build\myrulib_FbUpdateThread.o \
-	build\myrulib_FbUrl.o \
+	build\myrulib_FbURL.o \
 	build\myrulib_FbViewContext.o \
 	build\myrulib_FbViewData.o \
 	build\myrulib_FbViewItem.o \
@@ -650,7 +650,7 @@ build\myrulib_FbTreeView.o: ./sources/MyRuLib/FbTreeView.cpp $(MYRULIB_ODEP)
 build\myrulib_FbUpdateThread.o: ./sources/MyRuLib/FbUpdateThread.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
-build\myrulib_FbUrl.o: ./sources/MyRuLib/FbUrl.cpp $(MYRULIB_ODEP)
+build\myrulib_FbURL.o: ./sources/MyRuLib/FbURL.cpp $(MYRULIB_ODEP)
 	$(CXX) -c -o $@ $(MYRULIB_CXXFLAGS) $(CPPDEPS) $<
 
 build\myrulib_FbViewContext.o: ./sources/MyRuLib/FbViewContext.cpp $(MYRULIB_ODEP)

@@ -237,7 +237,7 @@
 		<sources>MyRuLib/FbTreeModel.cpp</sources>
 		<sources>MyRuLib/FbTreeView.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
-		<sources>MyRuLib/FbUrl.cpp</sources>
+		<sources>MyRuLib/FbURL.cpp</sources>
 		<sources>MyRuLib/FbViewContext.cpp</sources>
 		<sources>MyRuLib/FbViewData.cpp</sources>
 		<sources>MyRuLib/FbViewItem.cpp</sources>
