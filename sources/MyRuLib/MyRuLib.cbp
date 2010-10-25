@@ -161,11 +161,13 @@
 		<Compiler>
 			<Add directory="../SQLite3" />
 			<Add directory="../Expat" />
+			<Add directory="../WxBZipStream" />
 			<Add directory="../WxSQLite3" />
 			<Add directory="../build" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
+			<Add library="libWxBZipStream.a" />
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 			<Add library="libExpat.a" />
@@ -224,6 +226,8 @@
 		<Unit filename="FbDateTime.h" />
 		<Unit filename="FbDateTree.cpp" />
 		<Unit filename="FbDateTree.h" />
+		<Unit filename="FbDeleteThread.cpp" />
+		<Unit filename="FbDeleteThread.h" />
 		<Unit filename="FbDownList.cpp" />
 		<Unit filename="FbDownList.h" />
 		<Unit filename="FbDownloader.cpp" />
@@ -266,6 +270,8 @@
 		<Unit filename="FbFrameSeqn.h" />
 		<Unit filename="FbGenrTree.cpp" />
 		<Unit filename="FbGenrTree.h" />
+		<Unit filename="FbGenreThread.cpp" />
+		<Unit filename="FbGenreThread.h" />
 		<Unit filename="FbGenres.cpp" />
 		<Unit filename="FbGenres.h" />
 		<Unit filename="FbHtmlWindow.cpp" />
@@ -321,6 +327,8 @@
 		<Unit filename="FbTreeModel.h" />
 		<Unit filename="FbTreeView.cpp" />
 		<Unit filename="FbTreeView.h" />
+		<Unit filename="FbURL.cpp" />
+		<Unit filename="FbURL.h" />
 		<Unit filename="FbUpdateThread.cpp" />
 		<Unit filename="FbUpdateThread.h" />
 		<Unit filename="FbViewContext.cpp" />
