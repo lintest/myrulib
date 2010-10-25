@@ -55,7 +55,7 @@ IMPLEMENT_CLASS(FbUpdateItem, wxObject)
 wxString FbUpdateItem::GetAddr(int code, const wxString &type)
 {
 	wxString addr = wxT("http://lintest.ru/myrulib/update/");
-	addr << type << code << wxT(".upd.zip");
+	addr << type << wxT('/') << code << wxT(".upd.zip");
 	return addr;
 }
 
