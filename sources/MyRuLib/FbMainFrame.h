@@ -80,6 +80,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnHideLogUpdate(wxUpdateUIEvent& event);
 		void OnVacuum(wxCommandEvent & event);
 		void OnUpdate(wxCommandEvent & event);
+		void OnUpdateUpdate(wxUpdateUIEvent& event);
 		void OnUpdateFonts(wxCommandEvent & event);
 		void OnProgress(FbProgressEvent & event);
 		void OnUpdateBook(wxCommandEvent & event);

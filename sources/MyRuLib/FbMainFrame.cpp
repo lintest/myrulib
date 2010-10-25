@@ -20,6 +20,7 @@
 #include "FbMainMenu.h"
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
+#include "FbGenreThread.h"
 #include "FbUpdateThread.h"
 #include "FbMasterTypes.h"
 #include "FbAboutDlg.h"
@@ -73,6 +74,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_MENU(ID_ART_BUTTONS, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_VSTUDIO, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_MOZILLA, FbMainFrame::OnTabArt)
+	EVT_UPDATE_UI(ID_MENU_UPDATE, FbMainFrame::OnUpdateUpdate)
 	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_COMPACT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_STANDART, FbMainFrame::OnTabArtUpdate)
@@ -80,7 +82,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_UPDATE_UI(ID_ART_BUTTONS, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_VSTUDIO, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_MOZILLA, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_FULLSCREEN, FbMainFrame::OnFullScreenUpdate)
+	EVT_UPDATE_UI(ID_FULLSCREEN,  FbMainFrame::OnFullScreenUpdate)
 	EVT_UPDATE_UI(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLogUpdate)
 
 	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
@@ -542,6 +544,11 @@ void FbMainFrame::OnUpdate(wxCommandEvent & event)
 {
 	FbUpdateThread * thread = new FbUpdateThread;
 	thread->Execute();
+}
+
+void FbMainFrame::OnUpdateUpdate(wxUpdateUIEvent& event)
+{
+	event.Enable(FbParams::GetInt(DB_DATAFILE_DATE));
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)

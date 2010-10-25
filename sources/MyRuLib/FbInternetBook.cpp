@@ -12,19 +12,7 @@
 #include <wx/zipstrm.h>
 #include "FbDataPath.h"
 #include "FbDateTime.h"
-
-class FbURL: public wxURL
-{
-	public:
-		FbURL(const wxString& sUrl = wxEmptyString);
-};
-
-FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
-{
-	if (FbParams::GetInt(FB_USE_PROXY))
-		SetProxy(FbParams::GetStr(FB_PROXY_ADDR));
-	GetProtocol().SetTimeout(10);
-}
+#include "FbURL.h"
 
 wxString FbInternetBook::GetURL(const int id)
 {

@@ -83,6 +83,34 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 }
 
 //-----------------------------------------------------------------------------
+//  FbAuthorFunction
+//-----------------------------------------------------------------------------
+
+void FbAuthorFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	if (ctx.GetArgCount() == 3) {
+		wxString res = ctx.GetString(0).Trim(true);
+		(res << wxT(' ') << ctx.GetString(1).Trim(false)).Trim(true);
+		(res << wxT(' ') << ctx.GetString(2).Trim(false)).Trim(true);
+		ctx.SetResult(res.Trim(false));
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbLetterFunction
+//-----------------------------------------------------------------------------
+
+void FbLetterFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	if (ctx.GetArgCount() == 1) {
+		wxString res = Upper(ctx.GetString(0).Left(1));
+		if (res == wxChar(0x401)) res = wxChar(0x415);
+		if (res.IsEmpty() || strAlphabet.Find(res) == wxNOT_FOUND) res = wxT('#');
+		ctx.SetResult(res);
+	}
+}
+
+//-----------------------------------------------------------------------------
 //  FbSearchFunction
 //-----------------------------------------------------------------------------
 

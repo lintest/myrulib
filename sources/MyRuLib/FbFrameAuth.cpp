@@ -7,7 +7,6 @@
 #include "FbMainMenu.h"
 #include "FbWindow.h"
 #include "FbAuthorDlg.h"
-#include "FbUpdateThread.h"
 #include "FbMasterTypes.h"
 #include "FbToolBar.h"
 

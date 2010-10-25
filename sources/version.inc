@@ -1,3 +1,3 @@
 #define VERSION_MAJOR      0
-#define VERSION_MINOR     24
-#define VERSION_BUILD     18
+#define VERSION_MINOR     26
+#define VERSION_BUILD      1

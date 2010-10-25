@@ -290,6 +290,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbDeleteThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbDownList.cpp"
 				>
 			</File>
@@ -371,6 +375,10 @@
 			</File>
 			<File
 				RelativePath=".\FbGenres.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbGenreThread.cpp"
 				>
 			</File>
 			<File
@@ -483,6 +491,10 @@
 			</File>
 			<File
 				RelativePath=".\FbUpdateThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbURL.cpp"
 				>
 			</File>
 			<File
@@ -698,6 +710,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbDeleteThread.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbDownList.h"
 				>
 			</File>
@@ -779,6 +795,10 @@
 			</File>
 			<File
 				RelativePath=".\FbGenres.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbGenreThread.h"
 				>
 			</File>
 			<File
@@ -895,6 +915,10 @@
 			</File>
 			<File
 				RelativePath=".\FbUpdateThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbURL.h"
 				>
 			</File>
 			<File

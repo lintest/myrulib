@@ -4,7 +4,6 @@
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
 #include "FbDownloader.h"
-#include "FbUpdateThread.h"
 #include "FbEditBook.h"
 #include "ZipReader.h"
 #include "FbHtmlWindow.h"
@@ -12,6 +11,7 @@
 #include "FbBookList.h"
 #include "FbBookTree.h"
 #include "FbInternetBook.h"
+#include "FbDeleteThread.h"
 
 IMPLEMENT_CLASS(FbBookPanel, wxSplitterWindow)
 
@@ -243,8 +243,9 @@ void FbBookPanel::DoFolderAdd(const int folder)
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbFolderUpdateThread( sql, folder, FT_FOLDER );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	FbCommonDatabase database;
+	database.AttachConfig();
+	database.ExecuteUpdate(sql);
 }
 
 void FbBookPanel::OnChangeRating(wxCommandEvent& event)
@@ -283,6 +284,10 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 
 void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 {
+
+	FbCommonDatabase database;
+	database.AttachConfig();
+
 	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
 
 	wxString sql1 = wxString::Format(wxT("\
@@ -296,8 +301,8 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), folder, sel.c_str());
 
-	wxThread * thread = new FbCreateDownloadThread( sql1, folder, FT_DOWNLOAD, sql2 );
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	database.ExecuteUpdate(sql1);
+	database.ExecuteUpdate(sql2);
 }
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
@@ -310,12 +315,15 @@ void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
 void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 {
 	wxString sel = GetSelected();
-	wxString sql1 = wxString::Format(wxT("\
+	wxString sql = wxString::Format(wxT("\
 		UPDATE states SET download=0 WHERE md5sum IN \
 		(SELECT DISTINCT md5sum FROM books WHERE id>0 AND id IN (%s)) \
 	"), sel.c_str());
 
-	(new FbUpdateThread( sql1 ))->Execute();
+	FbCommonDatabase database;
+	database.AttachConfig();
+	database.ExecuteUpdate(sql);
+
 	m_BookList->Delete();
 }
 

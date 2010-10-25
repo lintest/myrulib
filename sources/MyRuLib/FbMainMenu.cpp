@@ -24,6 +24,7 @@ FbMenuBar::MenuLib::MenuLib()
 	Append(ID_MENU_GENLIST,  _("Rebuild the list of genres"));
 	Append(ID_MENU_OPTIMIZE, _("Clear empty variables"));
 	Append(ID_MENU_VACUUM,   _("Optimize DB"));
+	Append(ID_MENU_UPDATE,   _("Online update database"));
 	AppendSeparator();
 	Append(ID_MENU_CONFIG, _("Options"));
 }

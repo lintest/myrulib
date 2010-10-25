@@ -32,6 +32,8 @@ enum FbDatabaseKey {
 	DB_DOWNLOAD_USER = 12,
 	DB_DOWNLOAD_PASS = 13,
 	DB_DOWNLOAD_ADDR = 14,
+	DB_DATAFILE_TYPE = 15,
+	DB_DATAFILE_DATE = 16,
 	DB_NEW_ZIPFILE = 25,
 	DB_BOOKS_COUNT = 27,
 	DB_LAST_BOOK = 30,
@@ -40,6 +42,16 @@ enum FbDatabaseKey {
 };
 
 class FbLowerFunction : public wxSQLite3ScalarFunction
+{
+	virtual void Execute(wxSQLite3FunctionContext& ctx);
+};
+
+class FbAuthorFunction : public wxSQLite3ScalarFunction
+{
+	virtual void Execute(wxSQLite3FunctionContext& ctx);
+};
+
+class FbLetterFunction : public wxSQLite3ScalarFunction
 {
 	virtual void Execute(wxSQLite3FunctionContext& ctx);
 };

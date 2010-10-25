@@ -10,7 +10,6 @@
 #include "FbGenres.h"
 #include "ZipReader.h"
 #include "FbDataOpenDlg.h"
-#include "FbUpdateThread.h"
 #include "FbCollection.h"
 
 IMPLEMENT_APP(MyRuLibApp)
