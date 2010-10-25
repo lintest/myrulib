@@ -308,8 +308,8 @@ function create_tables($sqlite_db, $date)
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (1, 'Flibusta library');");
   $sqlite_db->query("INSERT INTO params(id,value) VALUES (2, 1);");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (3, 'FLIBUSTA');");
-  $sqlite_db->query("INSERT INTO params(id,value) VALUES (4, ".$date.");");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (11,'flibusta.net');");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (16, ".$date.");");
   
   $sqlite_db->query("commit;");
 }
@@ -375,7 +375,7 @@ function FullImport($mysql_db, $sqlitefile, $date)
   convert_sequences($mysql_db, $sqlite_db, 0);
   create_indexes($sqlite_db);
 
-  $sqlite_db->query("INSERT INTO params(id,text) VALUES (5, 'FULL');");
+  $sqlite_db->query("INSERT INTO params(id,text) VALUES (15, 'FULL');");
 }
 
 function DeltaImport($mysql_db, $date)
@@ -406,7 +406,7 @@ function DeltaImport($mysql_db, $date)
 	  sid=(SELECT MAX(SeqId) FROM libseq)
 	WHERE date=$date");
 
-  $sqlite_db->query("INSERT INTO params(id,text) VALUES (5, 'DELTA');");
+  $sqlite_db->query("INSERT INTO params(id,text) VALUES (15, 'DELTA');");
 }
 
 $mysql_srvr = 'localhost';
