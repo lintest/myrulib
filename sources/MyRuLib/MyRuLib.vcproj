@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -124,7 +124,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -543,6 +543,44 @@
 			</File>
 		</Filter>
 		<Filter
+			Name="WinRes"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+			<File
+				RelativePath=".\res\resource.rc"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="SQLite"
+			>
+			<File
+				RelativePath=".\wx\base64.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\wx\base64.h"
+				>
+			</File>
+			<File
+				RelativePath=".\md5.c"
+				>
+			</File>
+			<File
+				RelativePath="..\SQLite3\sqlite3.c"
+				>
+			</File>
+			<File
+				RelativePath="..\WxSQLite3\wxsqlite3.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\WxSQLite3\wx\wxsqlite3.h"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="Headers"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
@@ -929,40 +967,50 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="WinRes"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="WxBZip2"
 			>
 			<File
-				RelativePath=".\res\resource.rc"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="SQLite"
-			>
-			<File
-				RelativePath=".\wx\base64.cpp"
+				RelativePath="..\WxBZipStream\bzip\blocksort.c"
 				>
 			</File>
 			<File
-				RelativePath=".\wx\base64.h"
+				RelativePath="..\WxBZipStream\bzipstream.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\md5.c"
+				RelativePath="..\WxBZipStream\bzipstream.h"
 				>
 			</File>
 			<File
-				RelativePath="..\SQLite3\sqlite3.c"
+				RelativePath="..\WxBZipStream\bzip\bzlib.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxSQLite3\wxsqlite3.cpp"
+				RelativePath="..\WxBZipStream\bzip\bzlib.h"
 				>
 			</File>
 			<File
-				RelativePath="..\WxSQLite3\wx\wxsqlite3.h"
+				RelativePath="..\WxBZipStream\bzip\bzlib_private.h"
+				>
+			</File>
+			<File
+				RelativePath="..\WxBZipStream\bzip\compress.c"
+				>
+			</File>
+			<File
+				RelativePath="..\WxBZipStream\bzip\crctable.c"
+				>
+			</File>
+			<File
+				RelativePath="..\WxBZipStream\bzip\decompress.c"
+				>
+			</File>
+			<File
+				RelativePath="..\WxBZipStream\bzip\huffman.c"
+				>
+			</File>
+			<File
+				RelativePath="..\WxBZipStream\bzip\randtable.c"
 				>
 			</File>
 		</Filter>
