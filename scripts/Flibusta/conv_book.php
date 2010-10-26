@@ -280,7 +280,7 @@ function create_tables($sqlite_db, $date)
   $sqlite_db->query("
     CREATE TABLE books(
       id integer not null,
-      id_author integer not null,
+      id_author integer,
       title varchar(255) not null,
       annotation text,
       genres text,

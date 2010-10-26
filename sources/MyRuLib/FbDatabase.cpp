@@ -399,7 +399,7 @@ void FbMainDatabase::CreateDatabase()
 	ExecuteUpdate(wxT("\
 			CREATE TABLE books(\
 				id integer not null,\
-				id_author integer not null,\
+				id_author integer,\
 				title text not null,\
 				annotation text,\
 				genres text,\

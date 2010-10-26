@@ -173,11 +173,11 @@ bool FbUpdateItem::DoUpdate()
 
 	const wxChar * list[][4] = {
 		{ 
-			wxT("books"), wxT("id,id_archive,title,file_name,file_path,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
-			wxT("books"), wxT("id,id_archive,title,file_name,file_path,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
+			wxT("books"), wxT("id,id_archive,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
+			wxT("books"), wxT("id,id_archive,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
 		},
 		{
-			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,find_name,letter"), 
+			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,search_name,letter"), 
 			wxT("authors"), wxT("id,last_name,first_name,middle_name,AUTH(last_name,first_name,middle_name),LOW(AUTH(last_name,first_name,middle_name)),LTTR(AUTH(last_name,first_name,middle_name))"),
 		},
 		{
@@ -198,7 +198,7 @@ bool FbUpdateItem::DoUpdate()
 		},
 		{
 			wxT("fts_book"), wxT("docid,content"), 
-			wxT("book"),     wxT("id,LOW(title)"),
+			wxT("books"),     wxT("id,LOW(title)"),
 		},
 		{
 			wxT("fts_seqn"),  wxT("docid,content"), 
