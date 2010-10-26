@@ -242,8 +242,8 @@ function FullImport($mysql_db, $file, $date)
 
   system("zip flibusta.zip $file");
 
-  author_info($mysql_db, $sqlite_db, 0);
-  book_info($mysql_db, $sqlite_db, 0);
+//  author_info($mysql_db, $sqlite_db, 0);
+//  book_info($mysql_db, $sqlite_db, 0);
 
   system("zip flibusta.full.zip $file");
 }
@@ -258,7 +258,6 @@ function DeltaImport($mysql_db, $date)
   if ($row = $query->fetch_array()) {
 	
 	$code = $row["date"];
-	$file = "$code.upd";
 	$sqlite_db = new PDO("sqlite:./$code.upd");
 	
 	create_tables($sqlite_db, $date);
@@ -274,7 +273,7 @@ function DeltaImport($mysql_db, $date)
 	author_info($mysql_db, $sqlite_db, $row['aid']);
 	book_info($mysql_db, $sqlite_db, $row['bid']);
 
-	system("zip $file.zip $file");
+	system("zip $code.zip $code.upd");
   }
   
   $mysql_db->query("INSERT INTO myrulib_update(date) VALUES(".$date.")");

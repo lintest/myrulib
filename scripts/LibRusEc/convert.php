@@ -238,7 +238,7 @@ function FullImport($mysql_db, $file, $date)
   
   create_indexes($sqlite_db);
 
-  system("zip $file.zip $file");
+  system("zip myrulib.zip $file");
 }
 
 function DeltaImport($mysql_db, $date)
@@ -251,7 +251,6 @@ function DeltaImport($mysql_db, $date)
   if ($row = $query->fetch_array()) {
 	
 	$code = $row["date"];
-	$file = "$code.upd";
 	$sqlite_db = new PDO("sqlite:./$code.upd");
 	
 	create_tables($sqlite_db, $date);
@@ -264,7 +263,7 @@ function DeltaImport($mysql_db, $date)
 	convert_genres($mysql_db, $sqlite_db, $row['bid']);
 	convert_dates($mysql_db, $sqlite_db, $row['bid']);
 
-	system("zip $file.zip $file");
+	system("zip $code.zip $code.upd");
   }
   
   $mysql_db->query("INSERT INTO myrulib_update(date) VALUES(".$date.")");
