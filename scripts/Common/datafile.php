@@ -39,7 +39,9 @@ function create_tables($sqlite_db)
       year integer,
       description text);
   ");
-
+  
+  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
+  
   $sqlite_db->query("DROP TABLE IF EXISTS sequences");
   $sqlite_db->query("CREATE TABLE sequences(id integer primary key, number integer, value varchar(255) not null)");
 

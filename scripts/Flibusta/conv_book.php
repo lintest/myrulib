@@ -43,6 +43,8 @@ function convert_authors($mysql_db, $sqlite_db, $min)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+
+  $sqlite_db->query("commit;");
 }  
 
 function convert_genres($mysql_db, $sqlite_db, $min)
@@ -58,6 +60,7 @@ function convert_genres($mysql_db, $sqlite_db, $min)
 	WHERE libgenre.BookId>$min
 	ORDER BY GenreCode
   ";
+  
   $query = $mysql_db->query($sqltext);
   while ($row = $query->fetch_array()) {
     $genre = GenreCode($row['GenreCode']);
@@ -117,6 +120,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  
   $sqlite_db->query("commit;");
 }  
 
@@ -124,8 +128,6 @@ function convert_dates($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
 
-  $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
-  
   $sqlite_db->query("DELETE FROM dates");
 
   $sqltest = "
@@ -274,7 +276,7 @@ function DeltaImport($mysql_db, $date)
 
 $mysql_srvr = 'localhost';
 $mysql_user = 'root';
-$mysql_pass = '11111111';
+$mysql_pass = '';
 $mysql_base = 'flibusta';
 $sqlitefile = './myrulib.db';
 
