@@ -211,22 +211,20 @@ function setup_params($sqlite_db, $date, $type)
 {
   $sqlite_db->query("begin transaction;");
 
-  $code = $date - 20000000;
-  
   $sqlite_db->query("DELETE FROM params;");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (1,  'Flibusta library');");
   $sqlite_db->query("INSERT INTO params(id,value) VALUES (2,  1);");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (3,  'FLIBUSTA');");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (11, 'flibusta.net');");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (15, '$type');");
-  $sqlite_db->query("INSERT INTO params(id,value) VALUES (16, $code);");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (16, $date);");
   
   $sqlite_db->query("commit;");
 }
 
-function FullImport($mysql_db, $sqlitefile, $date)
+function FullImport($mysql_db, $file, $date)
 {
-  $sqlite_db = new PDO('sqlite:'.$sqlitefile);
+  $sqlite_db = new PDO('sqlite:./'.$file);
   
   create_tables($sqlite_db);
   setup_params($sqlite_db, $date, "FULL");
@@ -239,19 +237,22 @@ function FullImport($mysql_db, $sqlitefile, $date)
   convert_dates($mysql_db, $sqlite_db, 0);
   
   create_indexes($sqlite_db);
+
+  system("zip $file.zip $file");
 }
 
 function DeltaImport($mysql_db, $date)
 {
-  $sqlitefile = "./".$date.".upd";
-
   $mysql_db->query("CREATE TABLE myrulib_update(date integer primary key, aid integer, bid integer, sid integer)");
 
-  $sqltest = "SELECT aid, bid, sid FROM myrulib_update WHERE date=(SELECT MAX(date) FROM myrulib_update WHERE date<$date)";
+  $sqltest = "SELECT date, aid, bid, sid FROM myrulib_update WHERE date=(SELECT MAX(date) FROM myrulib_update WHERE date<$date)";
 
   $query = $mysql_db->query($sqltest);
   if ($row = $query->fetch_array()) {
-	$sqlite_db = new PDO('sqlite:'.$sqlitefile);
+	
+	$code = $row["date"];
+	$file = "$code.upd";
+	$sqlite_db = new PDO("sqlite:./$code.upd");
 	
 	create_tables($sqlite_db, $date);
 	setup_params($sqlite_db, $date, "DELTA");
@@ -262,6 +263,8 @@ function DeltaImport($mysql_db, $date)
 	convert_sequences($mysql_db, $sqlite_db, $row['bid']);
 	convert_genres($mysql_db, $sqlite_db, $row['bid']);
 	convert_dates($mysql_db, $sqlite_db, $row['bid']);
+
+	system("zip $file.zip $file");
   }
   
   $mysql_db->query("INSERT INTO myrulib_update(date) VALUES(".$date.")");
@@ -278,7 +281,7 @@ $mysql_srvr = 'localhost';
 $mysql_user = 'root';
 $mysql_pass = '';
 $mysql_base = 'flibusta';
-$sqlitefile = './myrulib.db';
+$sqlitefile = 'myrulib.db';
 
 include('settings.php');
 
