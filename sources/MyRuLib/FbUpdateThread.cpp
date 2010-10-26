@@ -27,11 +27,11 @@ void * FbUpdateThread::Entry()
 	FbCounter counter(database);
 
 	bool ok = false;
-	FbDateTime next = date - 20000000;
+	FbDateTime next = date;
 	FbDateTime last = FbDateTime::Today();
 	while (next < last) {
 		next += wxDateSpan(0, 0, 0, 1);
-		int code = next.Code() + 20000000;
+		int code = next.Code();
 		FbUpdateItem item(database, code, type);
 		if (item.Execute()) {
 			FbParams::Set(DB_DATAFILE_DATE, code);
@@ -54,8 +54,9 @@ IMPLEMENT_CLASS(FbUpdateItem, wxObject)
 
 wxString FbUpdateItem::GetAddr(int code, const wxString &type)
 {
+	int date = 20000000 + code;
 	wxString addr = wxT("http://lintest.ru/myrulib/update/");
-	addr << type << wxT('/') << code << wxT(".upd.zip");
+	addr << type << wxT('/') << date << wxT(".upd.zip");
 	return addr;
 }
 

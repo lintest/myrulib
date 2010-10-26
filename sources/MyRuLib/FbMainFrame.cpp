@@ -25,6 +25,7 @@
 #include "FbMasterTypes.h"
 #include "FbAboutDlg.h"
 #include "FbNotebook.h"
+#include "FbDateTime.h"
 #include "FbLocale.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
@@ -548,7 +549,8 @@ void FbMainFrame::OnUpdate(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateUpdate(wxUpdateUIEvent& event)
 {
-	event.Enable(FbParams::GetInt(DB_DATAFILE_DATE));
+	int code = FbParams::GetInt(DB_DATAFILE_DATE);
+	event.Enable(code && code < FbDateTime::Today().Code());
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
