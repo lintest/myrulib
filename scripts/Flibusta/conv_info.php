@@ -6,7 +6,7 @@ function author_info($mysql_db, $sqlite_db, $min)
 {
   $bb = new bbcode;
   $bb->autolinks = false;
-  $sqltest = "SELECT AvtorId FROM libaannotations WHERE AvtorId<$min";
+  $sqltest = "SELECT AvtorId FROM libaannotations WHERE AvtorId>$min";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo "Auth: ".$row['AvtorId']."\n";
@@ -32,7 +32,7 @@ function book_info($mysql_db, $sqlite_db, $min)
 {
   $bb = new bbcode;
   $bb->autolinks = false;
-  $sqltest = "SELECT BookId FROM libbannotations WHERE BookId<$min";
+  $sqltest = "SELECT BookId FROM libbannotations WHERE BookId>$min";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo "Book: ".$row['BookId']."\n";
