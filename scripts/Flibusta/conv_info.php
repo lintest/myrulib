@@ -2,13 +2,11 @@
 
 require_once 'bbcode/bbcode.lib.php';
 
-function author_info($mysql_db, $sqlite_db)
+function author_info($mysql_db, $sqlite_db, $min)
 {
-  
-
   $bb = new bbcode;
   $bb->autolinks = false;
-  $sqltest = "SELECT AvtorId FROM libaannotations";
+  $sqltest = "SELECT AvtorId FROM libaannotations WHERE AvtorId<$min";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo "Auth: ".$row['AvtorId']."\n";
@@ -30,11 +28,11 @@ function author_info($mysql_db, $sqlite_db)
   $sqlite_db->query("commit;");
 }
 
-function book_info($mysql_db, $sqlite_db)
+function book_info($mysql_db, $sqlite_db, $min)
 {
   $bb = new bbcode;
   $bb->autolinks = false;
-  $sqltest = "SELECT BookId FROM libbannotations";
+  $sqltest = "SELECT BookId FROM libbannotations WHERE BookId<$min";
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo "Book: ".$row['BookId']."\n";
@@ -55,20 +53,5 @@ function book_info($mysql_db, $sqlite_db)
 
   $sqlite_db->query("commit;");
 }
-
-$mysql_srvr = 'localhost';
-$mysql_user = 'root';
-$mysql_pass = '';
-$mysql_base = 'flibusta';
-$sqlitefile = './myrulib.db';
-
-include('settings.php');
-
-$sqlite_db = new PDO('sqlite:'.$sqlitefile);
-$mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
-$mysql_db->query("SET NAMES utf8");
-
-author_info($mysql_db, $sqlite_db);
-book_info($mysql_db, $sqlite_db);
 
 ?>

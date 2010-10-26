@@ -222,6 +222,8 @@ function setup_params($sqlite_db, $date, $type)
   $sqlite_db->query("commit;");
 }
 
+require_once 'conv_info.php';
+
 function FullImport($mysql_db, $file, $date)
 {
   $sqlite_db = new PDO('sqlite:./'.$file);
@@ -238,7 +240,12 @@ function FullImport($mysql_db, $file, $date)
   
   create_indexes($sqlite_db);
 
-  system("zip $file.zip $file");
+  system("zip flibusta.zip $file");
+
+  author_info($mysql_db, $sqlite_db, 0);
+  book_info($mysql_db, $sqlite_db, 0);
+
+  system("zip flibusta.full.zip $file");
 }
 
 function DeltaImport($mysql_db, $date)
@@ -263,6 +270,9 @@ function DeltaImport($mysql_db, $date)
 	convert_sequences($mysql_db, $sqlite_db, $row['bid']);
 	convert_genres($mysql_db, $sqlite_db, $row['bid']);
 	convert_dates($mysql_db, $sqlite_db, $row['bid']);
+
+	author_info($mysql_db, $sqlite_db, $row['aid']);
+	book_info($mysql_db, $sqlite_db, $row['bid']);
 
 	system("zip $file.zip $file");
   }
