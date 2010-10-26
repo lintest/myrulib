@@ -27,7 +27,7 @@ void * FbUpdateThread::Entry()
 	FbCounter counter(database);
 
 	bool ok = false;
-	FbDateTime next = date;
+	FbDateTime next = date - 20000000;
 	FbDateTime last = FbDateTime::Today();
 	while (next < last) {
 		next += wxDateSpan(0, 0, 0, 1);
