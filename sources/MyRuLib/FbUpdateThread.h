@@ -17,15 +17,15 @@ class FbUpdateThread: public FbThread
 class FbUpdateItem: public wxObject
 {
 	public:
-		static wxString GetAddr(int code, const wxString &type);
+		static wxString GetAddr(int date, const wxString &type);
 		FbUpdateItem(wxSQLite3Database & database, int code, const wxString &type);
 		virtual ~FbUpdateItem();
-		bool Execute();
+		int Execute();
 	private:
 		bool OpenURL();
 		bool ReadURL();
 		bool OpenZip();
-		bool DoUpdate();
+		int DoUpdate();
 	private:
 		wxSQLite3Database & m_database;
 		int m_code;

@@ -27,17 +27,13 @@ void * FbUpdateThread::Entry()
 	FbCounter counter(database);
 
 	bool ok = false;
-	FbDateTime next = date;
-	FbDateTime last = FbDateTime::Today();
-	while (next < last) {
-		next += wxDateSpan(0, 0, 0, 1);
-		int code = next.Code();
-		FbUpdateItem item(database, code, type);
-		if (item.Execute()) {
-			FbParams::Set(DB_DATAFILE_DATE, code);
-			ok = true;
-		} else break;
-	}
+	do {
+		FbUpdateItem item(database, date, type);
+		date = item.Execute();
+		if (date) FbParams::Set(DB_DATAFILE_DATE, date);
+		if (date) ok = true;
+	} while (date);
+
 	if (ok) {
 		counter.Execute();
 		wxLogWarning(wxT("Database successfully updated"));
@@ -52,11 +48,10 @@ void * FbUpdateThread::Entry()
 
 IMPLEMENT_CLASS(FbUpdateItem, wxObject)
 
-wxString FbUpdateItem::GetAddr(int code, const wxString &type)
+wxString FbUpdateItem::GetAddr(int date, const wxString &type)
 {
-	int date = 20000000 + code;
-	wxString addr = wxT("http://lintest.ru/myrulib/update/");
-	addr << type << wxT('/') << date << wxT(".upd.zip");
+	wxString addr = strHomePage;
+	addr << wxT('/') << type << wxT('/') << date << wxT(".zip");
 	return addr;
 }
 
@@ -72,13 +67,13 @@ FbUpdateItem::~FbUpdateItem()
 	if (!m_dataname.IsEmpty()) wxRemoveFile(m_dataname);
 }
 
-bool FbUpdateItem::Execute()
+int FbUpdateItem::Execute()
 {
 	bool ok = OpenURL();
 	if (ok) ok = ReadURL();
 	if (ok) ok = OpenZip();
-	if (ok) ok = DoUpdate();
-	return ok;
+	if (ok) return DoUpdate();
+	return 0;
 }
 
 bool FbUpdateItem::OpenURL()
@@ -145,7 +140,7 @@ bool FbUpdateItem::OpenZip()
 	return out.IsOk();
 }
 
-bool FbUpdateItem::DoUpdate()
+int FbUpdateItem::DoUpdate()
 {
 	{
 		wxString sql = wxT("ATTACH ? AS upd");
@@ -154,14 +149,15 @@ bool FbUpdateItem::DoUpdate()
 		stmt.ExecuteUpdate();
 	}
 
+	int date = 0;
 	{
 		wxString sql = wxT("SELECT value FROM upd.params WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, DB_DATAFILE_DATE);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		bool ok = result.NextRow() && result.GetInt(0) == m_code;
-		if (!ok) return false;
+		if (result.NextRow()) date = result.GetInt(0); 
 	}
+	if (date <= m_code) return 0;
 
 	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
@@ -228,7 +224,5 @@ bool FbUpdateItem::DoUpdate()
 
 	trans.Commit();
 
-	m_database.ExecuteUpdate(wxT("DETACH upd"));
-
-	return true;
+	return date;
 }

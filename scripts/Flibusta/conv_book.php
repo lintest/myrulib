@@ -4,6 +4,8 @@ require_once '../Common/datafile.php';
 require_once '../Common/genres.php';
 require_once '../Common/strutils.php';
 
+require_once 'conv_info.php';
+
 function convert_authors($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
@@ -222,8 +224,6 @@ function setup_params($sqlite_db, $date, $type)
   $sqlite_db->query("commit;");
 }
 
-require_once 'conv_info.php';
-
 function FullImport($mysql_db, $file, $date)
 {
   $sqlite_db = new PDO('sqlite:./'.$file);
@@ -239,13 +239,6 @@ function FullImport($mysql_db, $file, $date)
   convert_dates($mysql_db, $sqlite_db, 0);
   
   create_indexes($sqlite_db);
-
-  system("zip flibusta.zip $file");
-
-//  author_info($mysql_db, $sqlite_db, 0);
-//  book_info($mysql_db, $sqlite_db, 0);
-
-  system("zip flibusta.full.zip $file");
 }
 
 function DeltaImport($mysql_db, $date)
@@ -302,6 +295,12 @@ $date = date('Ymd');
 echo "Today: ".$date."\n";
 
 FullImport($mysql_db, $sqlitefile, $date);
+system("zip flibusta.db.zip $file");
+
+author_info($mysql_db, $sqlite_db, 0);
+book_info($mysql_db, $sqlite_db, 0);
+system("zip flibusta.full.zip $sqlitefile");
+
 DeltaImport($mysql_db, $date);
 
 ?>

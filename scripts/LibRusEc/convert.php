@@ -237,8 +237,6 @@ function FullImport($mysql_db, $file, $date)
   convert_dates($mysql_db, $sqlite_db, 0);
   
   create_indexes($sqlite_db);
-
-  system("zip myrulib.zip $file");
 }
 
 function DeltaImport($mysql_db, $date)
@@ -292,6 +290,8 @@ $date = date('Ymd');
 echo "Today: ".$date."\n";
 
 FullImport($mysql_db, $sqlitefile, $date);
+system("zip myrulib.db.zip $sqlitefile");
+
 DeltaImport($mysql_db, $date);
 
 ?>

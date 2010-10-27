@@ -4,6 +4,8 @@ require_once 'bbcode/bbcode.lib.php';
 
 function author_info($mysql_db, $sqlite_db, $min)
 {
+  $sqlite_db->query("begin transaction;");
+
   $bb = new bbcode;
   $bb->autolinks = false;
   $sqltest = "SELECT AvtorId FROM libaannotations WHERE AvtorId>$min";
@@ -30,6 +32,8 @@ function author_info($mysql_db, $sqlite_db, $min)
 
 function book_info($mysql_db, $sqlite_db, $min)
 {
+  $sqlite_db->query("begin transaction;");
+
   $bb = new bbcode;
   $bb->autolinks = false;
   $sqltest = "SELECT BookId FROM libbannotations WHERE BookId>$min";
