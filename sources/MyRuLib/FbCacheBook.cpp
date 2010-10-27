@@ -11,6 +11,16 @@
 
 IMPLEMENT_CLASS(FbCacheBook, wxObject)
 
+FbCacheBook FbCacheBook::Get(int code, wxSQLite3Database & database)
+{
+	wxSQLite3Statement stmt = database.PrepareStatement(GetSQL());
+	stmt.Bind(1, code);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	if (result.NextRow())
+		return FbCacheBook(code, result);
+	else return 0;
+}
+
 FbCacheBook::FbCacheBook(int code):
 	m_code(code),
 	m_rate(0),

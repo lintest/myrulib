@@ -7,7 +7,7 @@
 class FbCacheBook: public wxObject
 {
 	public:
-		static wxString GetSQL();
+		static FbCacheBook Get(int code, wxSQLite3Database & database);
 		FbCacheBook(int code = 0);
 		FbCacheBook(int code, wxSQLite3ResultSet &result);
 		FbCacheBook(const FbCacheBook &book);
@@ -17,6 +17,7 @@ class FbCacheBook: public wxObject
 		wxString GetValue(size_t field) const;
 		bool IsGray() const { return m_gray; }
 	private:
+		static wxString GetSQL();
 		int m_code;
 		wxString m_name;
 		wxString m_auth;

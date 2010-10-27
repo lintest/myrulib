@@ -114,8 +114,8 @@ class FbCollection: public wxObject
 	protected:
 		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
-		FbCacheBook * AddBook(FbCacheBook * book);
-		void AddBook(FbViewData * info);
+		FbCacheBook AddBook(const FbCacheBook &book);
+		void AddBookInfo(FbViewData * info);
 		void ResetData(FbCasheDataArray &items, int code);
 		void DoResetBook(const wxArrayInt &books);
 		void DoResetBook(int code);
