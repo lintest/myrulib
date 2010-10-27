@@ -73,6 +73,21 @@
 		<sources>WxBZipStream/bzipstream.cpp</sources>
 	</lib>
 
+	<exe id="zipscan" template="wxconsole">
+		<define>NDEBUG</define>
+		<sources>ZipScaner/ZipScan.cpp</sources>
+		<sources>MyRuLib/md5.c</sources>
+		<include>$(SRCDIR)/MyRuLib</include>
+		<include>$(SRCDIR)/WxSQLite3</include>
+		<library>wxsqlite3_static</library>
+		<wx-lib>core</wx-lib>
+		<wx-lib>base</wx-lib>
+		<threading>single</threading>
+		<optimize>speed</optimize>
+		<debug-info>off</debug-info>
+		<runtime-libs>static</runtime-libs>
+	</exe>
+
     <define-tag name="locale" rules="action">
 		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
 		<command>msgfmt $(SRCDIR)/MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>

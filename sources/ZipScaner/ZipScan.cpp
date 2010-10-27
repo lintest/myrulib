@@ -116,6 +116,8 @@ void FbZipTraverser::AddZip(wxFileName filename)
 	int count = 0;
 	{
 		wxString sql = wxT("INSERT INTO entry(zip, name, md5) values(?,?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		
 		while (wxZipEntry * entry = zip.GetNextEntry()) {
 			if (entry->GetSize()) {
 				wxString msg = wxT("\t"); msg << entry->GetName();
@@ -123,7 +125,6 @@ void FbZipTraverser::AddZip(wxFileName filename)
 				zip.OpenEntry(*entry);
 				wxString md5 = CalcMd5(zip);
 
-				wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 				stmt.Bind(1, id);
 				stmt.Bind(2, entry->GetName());
 				stmt.Bind(3, md5);

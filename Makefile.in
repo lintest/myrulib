@@ -71,6 +71,13 @@ WXBZIP2_STATIC_OBJECTS =  \
 	wxbzip2_static_huffman.o \
 	wxbzip2_static_randtable.o \
 	wxbzip2_static_bzipstream.o
+ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+	-I$(srcdir)/sources/WxSQLite3 $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+	-I$(srcdir)/sources/WxSQLite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+ZIPSCAN_OBJECTS =  \
+	zipscan_ZipScan.o \
+	zipscan_md5.o
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
@@ -187,6 +194,9 @@ MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 @COND_USE_EXPAT_yes@	$(LIBPREFIX)expat_static$(LIBEXT)
 @COND_USE_SQLITE_yes@__sqlite3_static___depname = \
 @COND_USE_SQLITE_yes@	$(LIBPREFIX)sqlite3_static$(LIBEXT)
+@COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
+@COND_PLATFORM_MAC_1@__zipscan___mac_setfilecmd = \
+@COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL zipscan$(EXEEXT)
 @COND_PLATFORM_MAC_0@__bin2c___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__bin2c___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL bin2c$(EXEEXT)
@@ -200,7 +210,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -240,6 +250,7 @@ clean:
 	rm -f $(LIBPREFIX)sqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxbzip2_static$(LIBEXT)
+	rm -f zipscan$(EXEEXT)
 	rm -f bin2c$(EXEEXT)
 	rm -f ./ru.mo
 	rm -f ./uk.mo
@@ -275,6 +286,11 @@ $(LIBPREFIX)wxbzip2_static$(LIBEXT): $(WXBZIP2_STATIC_OBJECTS)
 	rm -f $@
 	$(AR) $(AROPTIONS) $@ $(WXBZIP2_STATIC_OBJECTS)
 	$(RANLIB) $@
+
+zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
+	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lwxsqlite3_static $(WX_LIBS) $(LIBS)
+	
+	$(__zipscan___mac_setfilecmd)
 
 bin2c$(EXEEXT): $(BIN2C_OBJECTS)
 	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)  $(LIBS)
@@ -369,6 +385,12 @@ wxbzip2_static_randtable.o: $(srcdir)/sources/WxBZipStream/bzip/randtable.c
 
 wxbzip2_static_bzipstream.o: $(srcdir)/sources/WxBZipStream/bzipstream.cpp
 	$(CXXC) -c -o $@ $(WXBZIP2_STATIC_CXXFLAGS) $(srcdir)/sources/WxBZipStream/bzipstream.cpp
+
+zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
+	$(CXXC) -c -o $@ $(ZIPSCAN_CXXFLAGS) $(srcdir)/sources/ZipScaner/ZipScan.cpp
+
+zipscan_md5.o: $(srcdir)/sources/MyRuLib/md5.c
+	$(CCC) -c -o $@ $(ZIPSCAN_CFLAGS) $(srcdir)/sources/MyRuLib/md5.c
 
 bin2c_bin2c.o: $(srcdir)/sources/Bin2c/bin2c.c
 	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/sources/Bin2c/bin2c.c
