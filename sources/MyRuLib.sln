@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myrulib", "MyRuLib\MyRuLib.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat_static", "Expat\expat_static.vcproj", "{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zipscan", "ZipScaner\ZipScan.vcproj", "{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +24,10 @@ Global
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug|Win32.Build.0 = Debug|Win32
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Release|Win32.ActiveCfg = Release|Win32
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Release|Win32.Build.0 = Release|Win32
+		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Debug|Win32.Build.0 = Debug|Win32
+		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Release|Win32.ActiveCfg = Release|Win32
+		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

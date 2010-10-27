@@ -136,7 +136,8 @@ function GenreCode($s)
       "economics_ref" => "0F",
     );
   }
-  return $genreArray[$s];
+  if (array_key_exists($s, $genreArray)) return $genreArray[$s];
+  return "";
 }
 
 ?>
