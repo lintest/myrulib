@@ -28,6 +28,8 @@ class FbModelData: public wxObject
 			{ return false; }
 		virtual bool IsBold(FbModel & model) const
 			{ return false; }
+		virtual bool IsGray(FbModel & model) const
+			{ return false; }
 		virtual int Compare(FbModel & model, const FbModelData &data) const
 			{ return GetValue(model, 0).CmpNoCase(data.GetValue(model, 0)); }
 		virtual size_t Count(FbModel & model) const
@@ -92,6 +94,8 @@ class FbModelItem: public wxObject
 			{ return m_data ? m_data->FullRow(*m_model) : false; }
 		bool IsBold()
 			{ return m_data ? m_data->IsBold(*m_model) : false; }
+		bool IsGray()
+			{ return m_data ? m_data->IsGray(*m_model) : false; }
 		FbModelItem Items(size_t index)
 			{ return m_data ? FbModelItem(*m_model, m_data->Items(*m_model, index)) : FbModelItem(); }
 		FbModelItem GetParent()
@@ -188,6 +192,7 @@ class FbModel: public wxObject
 				wxBrush m_unfocusBrush;
 				wxColour m_normalColour;
 				wxColour m_hilightColour;
+				wxColour m_graytextColour;
 				wxFont m_normalFont;
 				wxFont m_boldFont;
 				wxPen m_borderPen;

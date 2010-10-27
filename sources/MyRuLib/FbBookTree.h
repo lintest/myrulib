@@ -77,6 +77,8 @@ class FbBookChildData: public FbChildData
 			{ return m_code; }
 		virtual FbViewItem GetView() const
 			{ return FbViewItem(FbViewItem::Book, m_code); }
+		virtual bool IsGray(FbModel & model) const
+			{ return FbCollection::GetBookData(m_code).IsGray(); }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 	protected:
 		virtual void DoSetState(FbModel & model, int state)

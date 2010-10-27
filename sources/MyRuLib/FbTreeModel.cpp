@@ -172,6 +172,7 @@ FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
     // Set font colour
     m_normalColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)),
 	m_hilightColour(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT)),
+    m_graytextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT)),
     // Set pen for borders
 	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
 	// Current item flags
@@ -223,7 +224,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
         dc.SetTextForeground(ctx.m_hilightColour);
 	} else {
 		dc.SetBrush (ctx.m_normalBrush);
-		dc.SetTextForeground(ctx.m_normalColour);
+		dc.SetTextForeground(data.IsGray() ? ctx.m_graytextColour : ctx.m_normalColour);
 	}
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetFont(data.IsBold() ? ctx.m_boldFont : ctx.m_normalFont);

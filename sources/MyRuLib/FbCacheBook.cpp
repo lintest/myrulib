@@ -16,7 +16,8 @@ FbCacheBook::FbCacheBook(int code):
 	m_rate(0),
 	m_date(0),
 	m_size(0),
-	m_down(0)
+	m_down(0),
+	m_gray(false)
 {
 }
 
@@ -31,7 +32,8 @@ FbCacheBook::FbCacheBook(const FbCacheBook &book):
 	m_rate(book.m_rate),
 	m_date(book.m_date),
 	m_size(book.m_size),
-	m_down(book.m_down)
+	m_down(book.m_down),
+	m_gray(book.m_gray)
 {
 }
 
@@ -48,6 +50,7 @@ FbCacheBook & FbCacheBook::operator =(const FbCacheBook &book)
 	m_date = book.m_date;
 	m_size = book.m_size;
 	m_down = book.m_down;
+	m_gray = book.m_gray;
 	return *this;
 }
 
@@ -56,7 +59,8 @@ wxString FbCacheBook::GetSQL()
 	return wxT("\
 		SELECT DISTINCT \
 			books.title, books.file_size, books.file_type, books.lang, books.genres, \
-			books.md5sum, states.rating, states.download, books.created, AGGREGATE(authors.full_name) as full_name \
+			books.md5sum, states.rating, states.download, books.created, AGGREGATE(authors.full_name) as full_name, \
+			CASE WHEN books.id>0 AND (download IS NULL OR download<100) THEN 1 ELSE 0 END AS gray \
 		FROM books \
 			LEFT JOIN authors ON books.id_author = authors.id \
 			LEFT JOIN states ON books.md5sum=states.md5sum \
@@ -77,7 +81,8 @@ FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result):
 	m_rate(result.GetInt(6)),
 	m_date(result.GetInt(8)),
 	m_size(result.GetInt(1)),
-	m_down(result.GetInt(7))
+	m_down(result.GetInt(7)),
+	m_gray(result.GetInt(10))
 {
 }
 
