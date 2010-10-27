@@ -176,7 +176,7 @@ FbExportTreeContext::FbExportTreeContext()
 
 wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 {
-    const wxString forbidden = wxT("*?\\/:\"<>|«»");
+    const wxString forbidden = wxT("*?\\/:\"<>|");
 
 	wxString oldname = filename;
 	oldname.Trim(false).Trim(true);
