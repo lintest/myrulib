@@ -58,13 +58,13 @@ void FbExportParentData::Append(FbModel & model, int book, wxFileName &filename,
 	int number = 0;
 	wxString name = filename.GetName();
 	while (true) {
-		wxString fullname = filename.GetFullName();
+		wxString fullname = Lower(filename.GetFullName());
 		size_t count = Count(model);
 		bool ok = true;
 		for (size_t i = 0; i < count; i++) {
 			FbModelData * data = Items(model, i);
 			if (!data) continue;
-			if (data->GetValue(model) == fullname) { ok = false; break; }
+			if (Lower(data->GetValue(model)) == fullname) { ok = false; break; }
 		}
 		if (ok) break;
 		filename.SetName(name + wxString::Format(wxT("(%d)"), ++number));
@@ -176,7 +176,7 @@ FbExportTreeContext::FbExportTreeContext()
 
 wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 {
-    const wxString forbidden = wxT("*?\\/:\"<>|");
+    const wxString forbidden = wxT("*?\\/:\"<>|«»");
 
 	wxString oldname = filename;
 	oldname.Trim(false).Trim(true);
