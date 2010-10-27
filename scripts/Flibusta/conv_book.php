@@ -295,7 +295,7 @@ $date = date('Ymd');
 echo "Today: ".$date."\n";
 
 FullImport($mysql_db, $sqlitefile, $date);
-system("zip flibusta.db.zip $file");
+system("zip flibusta.db.zip $sqlitefile");
 
 author_info($mysql_db, $sqlite_db, 0);
 book_info($mysql_db, $sqlite_db, 0);
