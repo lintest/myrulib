@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <wx/wx.h>
 #include <wx/dir.h>
+#include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
 #include <wx/filename.h>
@@ -11,25 +12,23 @@
 class FbZipTraverser : public wxDirTraverser
 {
 	public:
-		FbZipTraverser(const wxString &filename);
+		FbZipTraverser(wxSQLite3Database & database);
 		virtual wxDirTraverseResult OnFile(const wxString& filename);
 		virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname));
 	private:
 		void AddZip(wxFileName filename);
 		wxString CalcMd5(wxInputStream& stream);
 	private:
-		wxSQLite3Database m_database;
+		wxSQLite3Database & m_database;
 };
 
-FbZipTraverser::FbZipTraverser(const wxString &filename)
+FbZipTraverser::FbZipTraverser(wxSQLite3Database & database)
+	: m_database(database)
 {
-	m_database.Open(filename);
-
 	wxString sql[] = {
 		wxT("CREATE TABLE IF NOT EXISTS zip(zip INTEGER PRIMARY KEY, file VARCHAR(255))"),
-		wxT("CREATE TABLE IF NOT EXISTS entry(zip INTEGER, name VARCHAR(255), md5 CHAR(32))"),
+		wxT("CREATE TABLE IF NOT EXISTS entry(zip INTEGER, name VARCHAR(255), md5 CHAR(32), PRIMARY KEY(zip, name))"),
 		wxT("CREATE INDEX IF NOT EXISTS zip_file ON zip(file)"),
-		wxT("CREATE INDEX IF NOT EXISTS entry_zip ON entry(zip)"),
 	};
 	size_t count = sizeof(sql) / sizeof(wxString);
 
@@ -139,6 +138,58 @@ void FbZipTraverser::AddZip(wxFileName filename)
 	if (count) trans.Commit();
 }
 
+void GenerateScript(wxSQLite3Database & database, const wxString & filename)
+{
+	wxFileOutputStream stream(filename);
+	wxTextOutputStream out(stream);
+
+	out << (wxT("\
+DROP TABLE IF EXISTS myrulib_zip; \n\
+CREATE TABLE myrulib_zip ( \n\
+  zid int(10) PRIMARY KEY, \n\
+  file varchar(255) COLLATE utf8_unicode_ci NOT NULL \n\
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; \n\
+"));
+
+	out << (wxT("\
+DROP TABLE IF EXISTS myrulib_entry; \n\
+CREATE TABLE myrulib_entry ( \n\
+  zid int(10), \n\
+  name varchar(255) COLLATE utf8_unicode_ci NOT NULL, \n\
+  md5 char(32) COLLATE utf8_unicode_ci NOT NULL, \n\
+  PRIMARY KEY (zid, name), \n\
+  KEY md5 (md5) \n\
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; \n\
+"));
+
+	{
+		out << wxT("\nLOCK TABLES myrulib_zip WRITE;\n");
+		wxString sql = wxT("SELECT zip, file FROM zip");
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while (result.NextRow()) {
+			out << wxString::Format( wxT("INSERT INTO myrulib_zip VALUES (%d,\"%s\");"), result.GetInt(0), result.GetString(1).c_str() );
+			out << wxT('\n');
+		}
+		out << wxT("UNLOCK TABLES;\n");
+	}
+
+	{
+		out << wxT("\nLOCK TABLES myrulib_entry WRITE;\n");
+		wxString sql = wxT("SELECT zip, name, md5 FROM entry");
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while (result.NextRow()) {
+			wxString name = result.GetString(1);
+			if (name.IsEmpty()) continue;
+			name.Replace(wxT("'"), wxT("\\'"));
+			name.Replace(wxT("\""), wxT("\\\""));
+			wxString md5s = result.GetString(2);
+			out << wxString::Format( wxT("INSERT INTO myrulib_entry VALUES (%d,\"%s\",\"%s\");\n"), result.GetInt(0), name.c_str(), md5s.c_str() );
+		}
+		out << wxT("UNLOCK TABLES;\n");
+	}
+
+}
+
 int main(int argc, char **argv)
 {
 	wxFileName filename = argc ? wxString(argv[0], wxConvUTF8) :wxT("zipscan");
@@ -151,8 +202,14 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	FbZipTraverser traverser(filename.GetFullPath());
+	wxSQLite3Database database;
+	database.Open(filename.GetFullPath());
+
+	FbZipTraverser traverser(database);
 	dir.Traverse(traverser, wxT("*.zip"), wxDIR_FILES);
+
+	filename.SetExt(wxT("sql"));
+	GenerateScript(database, filename.GetFullPath());
 
 	return 0;
 }
