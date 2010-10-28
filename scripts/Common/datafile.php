@@ -60,6 +60,8 @@ function create_tables($sqlite_db)
 function create_indexes($sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
+  
+  $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(empty)')");
 
   $sqlite_db->query("
     CREATE TABLE archives(

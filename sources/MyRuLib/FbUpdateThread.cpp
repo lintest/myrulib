@@ -20,6 +20,7 @@ FbUpdateThread::FbUpdateThread()
 void * FbUpdateThread::Entry()
 {
 	int date = FbParams::GetInt(DB_DATAFILE_DATE);
+	int today = FbDateTime::Today().Code() + 20000000;
 	wxString type = Lower(FbParams::GetStr(DB_LIBRARY_TYPE));
 	if (date == 0) return NULL;
 
@@ -27,12 +28,12 @@ void * FbUpdateThread::Entry()
 	FbCounter counter(database);
 
 	bool ok = false;
-	do {
+	while (date < today) {
 		FbUpdateItem item(database, date, type);
 		date = item.Execute();
 		if (date) FbParams::Set(DB_DATAFILE_DATE, date);
 		if (date) ok = true;
-	} while (date);
+	}
 
 	if (ok) {
 		counter.Execute();
@@ -58,7 +59,6 @@ wxString FbUpdateItem::GetAddr(int date, const wxString &type)
 FbUpdateItem::FbUpdateItem(wxSQLite3Database & database, int code, const wxString &type)
 	: m_database(database), m_code(code), m_url(GetAddr(code, type))
 {
-	FbLogWarning(wxT("Update collection"), m_url.GetURL());
 }
 
 FbUpdateItem::~FbUpdateItem()
@@ -79,14 +79,17 @@ int FbUpdateItem::Execute()
 bool FbUpdateItem::OpenURL()
 {
 	m_input = m_url.GetInputStream();
-	if (m_url.GetError() != wxURL_NOERR) {
-		FbLogError(_("Download error"), m_url.GetURL());
-		return false;
-	}
 
 	wxHTTP & http = (wxHTTP&)m_url.GetProtocol();
 	if (http.GetResponse() == 404) {
-		FbLogError(_("File not found"), m_url.GetURL());
+		FbLogError(_("The update file is missing"), m_url.GetURL());
+		return false;
+	}
+
+	FbLogWarning(wxT("Update collection"), m_url.GetURL());
+
+	if (m_url.GetError() != wxURL_NOERR) {
+		FbLogError(_("Download error"), m_url.GetURL());
 		return false;
 	}
 
@@ -203,21 +206,21 @@ int FbUpdateItem::DoUpdate()
 			},
 		{
 			wxT("tmp_a"), wxT("id"), 
-			wxT("books"), wxT("DISTINCT id"),
+			wxT("books"), wxT("id"),
 		},
 		{
 			wxT("tmp_s"), wxT("id"), 
-			wxT("sequences"), wxT("DISTINCT id"),
+			wxT("sequences"), wxT("id"),
 		},
 		{	
 			wxT("tmp_d"), wxT("id"), 
-			wxT("books"), wxT("DISTINCT created"),
+			wxT("books"), wxT("created"),
 		},
 	};
 
 	size_t size = sizeof( list ) / sizeof( wxChar * ) / 4;
 	for (size_t i = 0; i < size; i++) {
-		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(%s)SELECT %s FROM upd.%s"), list[i][0], list[i][1], list[i][3], list[i][2]);
+		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(%s)SELECT DISTINCT %s FROM upd.%s"), list[i][0], list[i][1], list[i][3], list[i][2]);
 		int count = m_database.ExecuteUpdate(sql);
 		if (i == 0) wxLogWarning(wxT("Loaded new %d books"), count);
 	}

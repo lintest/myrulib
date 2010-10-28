@@ -10,8 +10,6 @@ function convert_authors($mysql_db, $sqlite_db, $min)
 
   $sqlite_db->query("DELETE FROM authors");
 
-  $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(без автора)')");
-
   $sqltest = "
 	SELECT libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.bid) as Number
 	FROM libavtorname INNER JOIN (

@@ -550,7 +550,7 @@ void FbMainFrame::OnUpdate(wxCommandEvent & event)
 void FbMainFrame::OnUpdateUpdate(wxUpdateUIEvent& event)
 {
 	int code = FbParams::GetInt(DB_DATAFILE_DATE);
-	event.Enable(code);
+	event.Enable(code && code < FbDateTime::Today().Code() + 20000000);
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
