@@ -178,6 +178,50 @@ function convert_seqnames($mysql_db, $sqlite_db, $min)
   $sqlite_db->query("commit;");
 }
 
+function convert_zips($mysql_db, $sqlite_db, $min)
+{
+  $sqlite_db->query("begin transaction;");
+
+  $sqlite_db->query("DELETE FROM archives");
+
+  $sqlmain = "SELECT zid, file FROM myrulib_zip";
+
+  $query = $mysql_db->query($sqlmain);
+  while ($row = $query->fetch_array()) {
+    echo "Zips: ".$row['zid']." - ".$row['file']."\n";
+    $sql = "INSERT INTO archives(id, file_name) VALUES(?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    $insert->execute(array($row['zid'], $row['file']));
+    $insert->closeCursor();
+  }
+
+  $sqlite_db->query("commit;");
+}
+
+function convert_files($mysql_db, $sqlite_db, $zid, $bid)
+{
+  $sqlite_db->query("begin transaction;");
+
+  $sqlite_db->query("DELETE FROM files");
+
+  $sqlmain = "
+    SELECT myrulib_entry.zid, myrulib_entry.name, libbook.bid AS bid
+    FROM libbook INNER JOIN myrulib_entry ON myrulib_entry.md5 = libbook.md5 AND libbook.Deleted<>1
+	WHERE libbook.bid>$bid OR myrulib_entry.zid>$zid 
+  ";
+
+  $query = $mysql_db->query($sqlmain);
+  while ($row = $query->fetch_array()) {
+    echo "File: ".$row['zid']." - ".$row['bid']." - ".$row['name']."\n";
+    $sql = "INSERT INTO files(id_book, id_archive, file_name) VALUES(?,?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    $insert->execute(array($row['bid'], $row['zid'], $row['name']));
+    $insert->closeCursor();
+  }
+
+  $sqlite_db->query("commit;");
+}
+
 function convert_sequences($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
@@ -213,6 +257,7 @@ function setup_params($sqlite_db, $date, $type)
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (1,  'LibRusEc Library');");
   $sqlite_db->query("INSERT INTO params(id,value) VALUES (2,  1);");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (3,  'LIBRUSEC');");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (4,  1000);");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (11, 'lib.rus.ec');");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (15, '$type');");
   $sqlite_db->query("INSERT INTO params(id,value) VALUES (16, $date);");
@@ -234,14 +279,17 @@ function FullImport($mysql_db, $file, $date)
   convert_genres($mysql_db, $sqlite_db, 0);
   convert_dates($mysql_db, $sqlite_db, 0);
   
+  convert_zips($mysql_db, $sqlite_db, 0);
+  convert_files($mysql_db, $sqlite_db, 0, 0);
+  
   create_indexes($sqlite_db);
 }
 
 function DeltaImport($mysql_db, $date)
 {
-  $mysql_db->query("CREATE TABLE myrulib_update(date integer primary key, aid integer, bid integer, sid integer)");
+  $mysql_db->query("CREATE TABLE myrulib_update(date integer primary key, aid integer, bid integer, sid integer, zid integer)");
 
-  $sqltest = "SELECT date, aid, bid, sid FROM myrulib_update WHERE date=(SELECT MAX(date) FROM myrulib_update WHERE date<$date)";
+  $sqltest = "SELECT * FROM myrulib_update WHERE date=(SELECT MAX(date) FROM myrulib_update WHERE date<$date)";
 
   $query = $mysql_db->query($sqltest);
   if ($row = $query->fetch_array()) {
@@ -259,6 +307,9 @@ function DeltaImport($mysql_db, $date)
 	convert_genres($mysql_db, $sqlite_db, $row['bid']);
 	convert_dates($mysql_db, $sqlite_db, $row['bid']);
 
+	convert_zips($mysql_db, $sqlite_db, $row['zid']);
+	convert_files($mysql_db, $sqlite_db, $row['zid'], $row['bid']);
+
 	system("zip $code.zip $code.upd");
   }
   
@@ -268,7 +319,8 @@ function DeltaImport($mysql_db, $date)
 	UPDATE myrulib_update SET 
 	  aid=(SELECT MAX(aid) FROM libavtorname),
 	  bid=(SELECT MAX(bid) FROM libbook),
-	  sid=(SELECT MAX(sid) FROM libseq)
+	  sid=(SELECT MAX(sid) FROM libseq),
+	  zid=(SELECT MAX(zid) FROM myrulib_zip)
 	WHERE date=$date");
 }
 

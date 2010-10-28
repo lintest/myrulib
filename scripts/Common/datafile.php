@@ -42,6 +42,17 @@ function create_tables($sqlite_db)
       );
   ");
   
+  $sqlite_db->query("DROP TABLE IF EXISTS archives");
+  $sqlite_db->query("
+    CREATE TABLE archives(
+      id integer primary key,
+      file_name varchar(255),
+      file_path varchar(255),
+      file_size integer,
+      file_count integer);
+  ");
+
+  $sqlite_db->query("DROP TABLE IF EXISTS dates");
   $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
   
   $sqlite_db->query("DROP TABLE IF EXISTS sequences");
@@ -53,6 +64,9 @@ function create_tables($sqlite_db)
   $sqlite_db->query("DROP TABLE IF EXISTS genres");
   $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2), PRIMARY KEY(id_book, id_genre))");
   
+  $sqlite_db->query("DROP TABLE IF EXISTS files");
+  $sqlite_db->query("CREATE TABLE files(id_book integer, id_archive integer, file_name TEXT, file_path TEXT)");
+  
   $sqlite_db->query("DROP TABLE IF EXISTS params");
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text)");
   
@@ -63,20 +77,7 @@ function create_indexes($sqlite_db)
 {
   $sqlite_db->query("begin transaction;");
   
-  $sqlite_db->query("INSERT INTO authors (id, letter, full_name) VALUES(0,'#','(empty)')");
-
-  $sqlite_db->query("
-    CREATE TABLE archives(
-      id integer primary key,
-      file_name varchar(255),
-      file_path varchar(255),
-      file_size integer,
-      file_count integer,
-      min_id_book integer,
-      max_id_book integer,
-      file_type varchar(20),
-      description text);
-  ");
+  $sqlite_db->query("INSERT INTO authors(id, letter, full_name) VALUES(0,'#','(empty)')");
 
   $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
   $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
@@ -86,7 +87,7 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX book_md5sum ON books(md5sum);");
   $sqlite_db->query("CREATE INDEX book_created ON books(created);");
 
-  $sqlite_db->query("CREATE INDEX book_file ON archives(file_name);");
+  $sqlite_db->query("CREATE INDEX files_book ON files(id_book)");
 
   $sqlite_db->query("CREATE INDEX sequences_name ON sequences(value);");
 

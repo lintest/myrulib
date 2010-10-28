@@ -419,11 +419,7 @@ void FbMainDatabase::CreateDatabase()
 			file_name text,\
 			file_path text,\
 			file_size integer,\
-			file_count integer,\
-			min_id_book integer,\
-			max_id_book integer,\
-			file_type varchar(20),\
-			description text);\
+			file_count integer);\
 	"));
 
 	/** TABLE sequences **/
@@ -459,8 +455,10 @@ void FbMainDatabase::DoUpgrade(int version)
 		} break;
 
 		case 3: {
+			wxLogNull log;
 			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99) PRIMARY KEY, command text, convert text)"));
-			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name TEXT, file_path TEXT, PRIMARY KEY(id_book, id_archive))"));
+			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text, file_path text)"));
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS files_book ON files(id_book)"));
 		} break;
 
 		case 4: {
