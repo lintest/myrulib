@@ -31,12 +31,15 @@ void * FbUpdateThread::Entry()
 	while (date && date < today) {
 		FbUpdateItem item(database, date, type);
 		date = item.Execute();
-		if (date) FbParams::Set(DB_DATAFILE_DATE, date);
+		if (date) {
+			FbParams::Set(DB_DATAFILE_DATE, date);
+			ok = true;
+		}
 	}
 
 	if (ok) {
 		counter.Execute();
-		wxLogWarning(wxT("Database successfully updated"));
+		wxLogWarning(_("Database successfully updated"));
 	}
 
 	return NULL;
@@ -85,7 +88,7 @@ bool FbUpdateItem::OpenURL()
 		return false;
 	}
 
-	FbLogWarning(wxT("Update collection"), m_url.GetURL());
+	FbLogWarning(_("Update collection"), m_url.GetURL());
 
 	if (m_url.GetError() != wxURL_NOERR) {
 		FbLogError(_("Download error"), m_url.GetURL());
@@ -221,7 +224,7 @@ int FbUpdateItem::DoUpdate()
 	for (size_t i = 0; i < size; i++) {
 		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(%s)SELECT DISTINCT %s FROM upd.%s"), list[i][0], list[i][1], list[i][3], list[i][2]);
 		int count = m_database.ExecuteUpdate(sql);
-		if (i == 0) wxLogWarning(wxT("Loaded new %d books"), count);
+		if (i == 0) wxLogWarning(_("Loaded new %d books"), count);
 	}
 
 	trans.Commit();

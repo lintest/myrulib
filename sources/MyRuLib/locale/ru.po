@@ -1988,3 +1988,14 @@ msgstr "Без жанра"
 msgid "Online update database"
 msgstr "Обновить через интернет"
 
+msgid "The update file is missing"
+msgstr "Файл обновления отсутствует"
+
+msgid "Update collection"
+msgstr "Обновление коллекции"
+
+msgid "Database successfully updated"
+msgstr "Обновление успешно завершено"
+
+msgid "Loaded new %d books"
+msgstr "Добавлено книг: %d"
