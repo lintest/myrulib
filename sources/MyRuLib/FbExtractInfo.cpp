@@ -6,14 +6,27 @@
 
 WX_DEFINE_OBJARRAY(FbExtractArrayBase);
 
-FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result):
-	id_book(result.GetInt(wxT("id"))),
+FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext):
+	id_book(id),
 	id_archive(result.GetInt(wxT("id_archive"))),
 	book_name(result.GetString(wxT("file_name"))),
 	book_path(result.GetString(wxT("file_path"))),
+	file_type(ext),
 	librusec(false)
 {
-	librusec = (id_book>0 && result.GetInt(wxT("file")) == 0);
+	librusec = id_book>0 && (result.GetInt(wxT("file")) == 0);
+	if (id_book>0 && book_name.IsEmpty()) {
+		book_name << id << wxT('.') << ext;
+	}
+}
+
+FbExtractItem::FbExtractItem(const FbExtractItem & item):
+	id_book(item.id_book),
+	id_archive(item.id_archive),
+	book_name(item.book_name),
+	book_path(item.book_path),
+	librusec(item.librusec)
+{
 }
 
 bool FbExtractItem::NotFb2() const
@@ -23,15 +36,8 @@ bool FbExtractItem::NotFb2() const
 
 wxString FbExtractItem::InfoName() const
 {
-	wxString result = book_name;
-	size_t pos = result.Length();
-	while (pos) {
-		if ( result[pos] == wxT('.') ) {
-			result = result.Left(pos);
-			break;
-		}
-		pos--;
-	}
+	size_t pos = book_name.rfind(wxT('.'));
+	wxString result = book_name.substr(0, pos); 
 	return result << wxT(".fbd");
 }
 
@@ -119,15 +125,19 @@ FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 {
 	{
 		wxString sql = wxT("\
-			SELECT DISTINCT 0 AS file, id, id_archive, file_name, file_path FROM books WHERE id=? UNION ALL \
-			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path FROM files WHERE id_book=? \
+			SELECT DISTINCT 0 AS file, id, id_archive, file_name, file_path, file_type FROM books WHERE id=? UNION ALL \
+			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path, NULL FROM files WHERE id_book=? \
 			ORDER BY file \
 		");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, id);
 		stmt.Bind(2, id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		while ( result.NextRow() ) Add(result);
+		wxString filetype;
+		while ( result.NextRow() ) {
+			if (filetype.IsEmpty()) filetype = result.GetString(wxT("file_type"));
+			Add(FbExtractItem(result, id, filetype));
+		}
 	}
 
 	{

@@ -9,7 +9,8 @@
 class FbExtractItem
 {
 	public:
-		FbExtractItem(wxSQLite3ResultSet & result);
+		FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext);
+		FbExtractItem(const FbExtractItem & item);
 	public:
 		wxString FileName(bool bInfoOnly) const;
 		wxString ErrorName() const;
@@ -21,6 +22,7 @@ class FbExtractItem
 		int id_archive;
 		wxString book_name;
 		wxString book_path;
+		wxString file_type;
 		wxString zip_name;
 		wxString zip_path;
 		bool librusec;
