@@ -75,22 +75,15 @@ function convert_genres($mysql_db, $sqlite_db, $min)
 function convert_books($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
-
   $sqlite_db->query("DELETE FROM books");
-  $sqlite_db->query("DELETE FROM words");
 
   $sqltest = "
     SELECT 
       libbook.bid, FileSize, Title, Deleted, FileType, md5, DATE_FORMAT(libbook.Time,'%y%m%d') as Time, Lang, Year,
       CASE WHEN aid IS NULL THEN 0 ELSE aid END AS aid,
-      CASE WHEN libfilename.FileName IS NULL THEN 
-        CASE WHEN oldfilename.FileName IS NULL THEN CONCAT(libbook.bid, '.', libbook.FileType) ELSE oldfilename.FileName END
-        ELSE libfilename.FileName
-      END AS FileName
+      CONCAT(libbook.bid, '.', libbook.FileType) AS FileName
     FROM libbook 
       LEFT JOIN libavtor ON libbook.bid = libavtor.bid
-      LEFT JOIN libfilename ON libbook.bid = libfilename.bid
-      LEFT JOIN oldfilename ON libbook.bid = oldfilename.BookId
     WHERE libbook.Deleted<>1 AND libbook.bid>$min
   ";
 
