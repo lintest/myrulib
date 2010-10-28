@@ -37,7 +37,9 @@ function create_tables($sqlite_db)
       created integer,
       lang char(2),
       year integer,
-      description text);
+      description text,
+      PRIMARY KEY(id,id_author)
+      );
   ");
   
   $sqlite_db->query("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer);");
@@ -46,10 +48,10 @@ function create_tables($sqlite_db)
   $sqlite_db->query("CREATE TABLE sequences(id integer primary key, number integer, value varchar(255) not null)");
 
   $sqlite_db->query("DROP TABLE IF EXISTS bookseq");
-  $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer)");
+  $sqlite_db->query("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer, PRIMARY KEY(id_book,id_seq))");
 
   $sqlite_db->query("DROP TABLE IF EXISTS genres");
-  $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2))");
+  $sqlite_db->query("CREATE TABLE genres(id_book integer, id_genre CHAR(2), PRIMARY KEY(id_book, id_genre))");
   
   $sqlite_db->query("DROP TABLE IF EXISTS params");
   $sqlite_db->query("CREATE TABLE params(id integer primary key, value integer, text text)");
@@ -79,7 +81,6 @@ function create_indexes($sqlite_db)
   $sqlite_db->query("CREATE INDEX author_letter ON authors(letter);");
   $sqlite_db->query("CREATE INDEX author_name ON authors(search_name);");
 
-  $sqlite_db->query("CREATE INDEX book_id ON books(id);");
   $sqlite_db->query("CREATE INDEX book_author ON books(id_author);");
   $sqlite_db->query("CREATE INDEX book_archive ON books(id_archive);");
   $sqlite_db->query("CREATE INDEX book_md5sum ON books(md5sum);");
@@ -89,13 +90,7 @@ function create_indexes($sqlite_db)
 
   $sqlite_db->query("CREATE INDEX sequences_name ON sequences(value);");
 
-  $sqlite_db->query("CREATE INDEX bookseq_book ON bookseq(id_book);");
-  $sqlite_db->query("CREATE INDEX bookseq_author ON bookseq(id_author);");
-
-  $sqlite_db->query("CREATE INDEX aliases_author ON aliases(id_author);");
-  $sqlite_db->query("CREATE INDEX aliases_alias ON aliases(id_alias);");
-  
-  $sqlite_db->query("CREATE INDEX genres_book ON genres(id_book);");
+  $sqlite_db->query("CREATE INDEX bookseq_seq ON bookseq(id_seq);");
   $sqlite_db->query("CREATE INDEX genres_genre ON genres(id_genre);");
 
   $sqlite_db->query("commit;");

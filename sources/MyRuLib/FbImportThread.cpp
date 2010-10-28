@@ -259,17 +259,17 @@ bool FbImportBook::AppendBook()
 			stmt.Bind(12, m_md5sum);
 			ok = stmt.ExecuteUpdate() && ok;
 		}
-        for (size_t j = 0; j<sequences.Count(); j++) {
-			SequenceItem &sequence = sequences[j];
-            wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number,id_author) VALUES (?,?,?,?)");
-            wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-            stmt.Bind(1, id_book);
-            stmt.Bind(2, sequence.GetId());
-            stmt.Bind(3, sequence.GetNumber());
-            stmt.Bind(4, author);
-			ok = stmt.ExecuteUpdate() && ok;
-        }
 	}
+
+    for (size_t j = 0; j<sequences.Count(); j++) {
+		SequenceItem &sequence = sequences[j];
+        wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
+        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+        stmt.Bind(1, id_book);
+        stmt.Bind(2, sequence.GetId());
+        stmt.Bind(3, sequence.GetNumber());
+		ok = stmt.ExecuteUpdate() && ok;
+    }
 
 	{
 		wxString content = title;
@@ -418,18 +418,22 @@ void FbImpotrZip::Make(FbImportThread *owner)
 	size_t existed = m_list.Count();
 	if (owner) owner->DoStart(existed, m_filename);
 
+	size_t processed = 0;
 	for (size_t i=0; i<existed; i++) {
 		wxZipEntry * entry = m_list[i];
 		if (owner) owner->DoStep(entry->GetInternalName());
 		FbImportBook book(this, entry);
-		if (book.IsOk()) book.Save(); else skipped++;
+		if (book.IsOk()) {
+			book.Save(); 
+			processed++;
+		} else skipped++;
 	}
 
-	if ( existed && skipped ) {
+	if ( existed && processed == 0 ) {
 		wxLogWarning(_("FB2 and FBD not found %s"), m_filename.c_str());
 	}
 
-	if ( !existed ) {
+	if ( existed == 0 ) {
 		wxLogError(_("Zip read error %s"), m_filename.c_str());
 	}
 

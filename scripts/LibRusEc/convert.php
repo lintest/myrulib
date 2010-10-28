@@ -19,7 +19,7 @@ function convert_authors($mysql_db, $sqlite_db, $min)
     WHERE libavtorname.aid>$min
 	GROUP BY libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
   ";
-
+  
   $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
 
   $query = $mysql_db->query($sqltest);
@@ -266,9 +266,9 @@ function DeltaImport($mysql_db, $date)
 
   $mysql_db->query("
 	UPDATE myrulib_update SET 
-	  aid=(SELECT MAX(AvtorId) FROM libavtorname),
-	  bid=(SELECT MAX(BookId) FROM libbook),
-	  sid=(SELECT MAX(SeqId) FROM libseq)
+	  aid=(SELECT MAX(aid) FROM libavtorname),
+	  bid=(SELECT MAX(bid) FROM libbook),
+	  sid=(SELECT MAX(sid) FROM libseq)
 	WHERE date=$date");
 }
 

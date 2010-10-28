@@ -378,68 +378,61 @@ void FbMainDatabase::CreateDatabase()
 
 	/** TABLE authors **/
 	ExecuteUpdate(wxT("\
-			CREATE TABLE authors(\
-				id integer primary key,\
-				letter char(1),\
-				search_name varchar(255),\
-				full_name varchar(255),\
-				first_name varchar(128),\
-				middle_name varchar(128),\
-				last_name varchar(128),\
-				newid integer,\
-				description text);\
-		"));
-	wxString sql = wxString::Format(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '%s')"), strNobody.c_str());
-	ExecuteUpdate(sql);
-	ExecuteUpdate(wxT("CREATE INDEX author_id ON authors(id)"));
+		CREATE TABLE authors(\
+			id integer primary key,\
+			letter char(1),\
+			search_name varchar(255),\
+			full_name varchar(255),\
+			first_name varchar(128),\
+			middle_name varchar(128),\
+			last_name varchar(128),\
+			newid integer,\
+			description text);\
+	"));
+	ExecuteUpdate(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '(empty)')"));
 	ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter)"));
 	ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name)"));
 
 	/** TABLE books **/
 	ExecuteUpdate(wxT("\
-			CREATE TABLE books(\
-				id integer not null,\
-				id_author integer,\
-				title text not null,\
-				annotation text,\
-				genres text,\
-				deleted boolean,\
-				id_archive integer,\
-				file_name text,\
-				file_size integer,\
-				file_type varchar(20),\
-				description text);\
-		"));
-	ExecuteUpdate(wxT("CREATE INDEX book_id ON books(id)"));
+		CREATE TABLE books(\
+			id integer not null,\
+			id_author integer,\
+			title text not null,\
+			annotation text,\
+			genres text,\
+			deleted boolean,\
+			id_archive integer,\
+			file_name text,\
+			file_size integer,\
+			file_type varchar(20),\
+			description text, \
+			PRIMARY KEY(id, id_author));\
+	"));
 	ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author)"));
 	ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive)"));
 
 	/** TABLE archives **/
 	ExecuteUpdate(wxT("\
-			CREATE TABLE archives(\
-				id integer primary key,\
-				file_name text,\
-				file_path text,\
-				file_size integer,\
-				file_count integer,\
-				min_id_book integer,\
-				max_id_book integer,\
-				file_type varchar(20),\
-				description text);\
-		"));
+		CREATE TABLE archives(\
+			id integer primary key,\
+			file_name text,\
+			file_path text,\
+			file_size integer,\
+			file_count integer,\
+			min_id_book integer,\
+			max_id_book integer,\
+			file_type varchar(20),\
+			description text);\
+	"));
 
 	/** TABLE sequences **/
 	ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null)"));
 	ExecuteUpdate(wxT("CREATE INDEX sequences_name ON sequences(value)"));
 
 	/** TABLE bookseq **/
-	ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer)"));
-	ExecuteUpdate(wxT("CREATE INDEX bookseq_book ON bookseq(id_book)"));
-	ExecuteUpdate(wxT("CREATE INDEX bookseq_author ON bookseq(id_author)"));
-
-	/** TABLE words **/
-	ExecuteUpdate(wxT("CREATE TABLE words(word varchar(99), id_book integer not null, number integer)"));
-	ExecuteUpdate(wxT("CREATE INDEX words_word ON words(word)"));
+	ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer, PRIMARY KEY(id_book, id_seq))"));
+	ExecuteUpdate(wxT("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
 
 	/** TABLE params **/
 	ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text)"));
@@ -447,8 +440,7 @@ void FbMainDatabase::CreateDatabase()
 	ExecuteUpdate(wxT("INSERT INTO params(id, value) VALUES (2, 1)"));
 
 	/** TABLE genres **/
-	ExecuteUpdate(wxT("CREATE TABLE genres(id_book integer, id_genre CHAR(2));"));
-	ExecuteUpdate(wxT("CREATE INDEX genres_book ON genres(id_book);"));
+	ExecuteUpdate(wxT("CREATE TABLE genres(id_book integer, id_genre CHAR(2), PRIMARY KEY(id_book, id_genre));"));
   	ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
 
 	trans.Commit();
@@ -461,70 +453,42 @@ void FbMainDatabase::DoUpgrade(int version)
 	switch (version) {
 
 		case 2: {
-			/** TABLE books **/
-			ExecuteUpdate(wxT("ALTER TABLE books ADD sha1sum VARCHAR(27)"));
-			ExecuteUpdate(wxT("CREATE INDEX books_sha1sum ON books(sha1sum)"));
-			ExecuteUpdate(wxT("CREATE INDEX book_filesize ON books(file_size)"));
-			/** TABLE zip_books, zip_files **/
 			ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer)"));
 			ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
 			ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
 		} break;
 
 		case 3: {
-			/** TABLE types **/
-			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
-			ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type)"));
-			ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file"));
-			/** TABLE files **/
-			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text)"));
-			ExecuteUpdate(wxT("CREATE INDEX files_book ON files(id_book)"));
+			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99) PRIMARY KEY, command text, convert text)"));
+			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name TEXT, file_path TEXT, PRIMARY KEY(id_book, id_archive))"));
 		} break;
 
 		case 4: {
-			/** TABLE files **/
-			ExecuteUpdate(wxT("ALTER TABLE files ADD file_path TEXT"));
-			/** TABLE comments **/
-			ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, id_book integer, rating integer, posted datetime, caption text, comment text)"));
-			ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(id_book)"));
 			/** TABLE books **/
+			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
-			ExecuteUpdate(wxT("ALTER TABLE books ADD rating INTEGER"));
-			ExecuteUpdate(wxT("DROP INDEX IF EXISTS books_sha1sum"));
+		} break;
+
+		case 5: {
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)"));
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 		} break;
 
-		case 5: {
-			ExecuteUpdate(wxT("DROP TABLE IF EXISTS types"));
-			ExecuteUpdate(wxT("DROP TABLE IF EXISTS comments"));
-			ExecuteUpdate(wxT("DROP TABLE IF EXISTS words"));
-		} break;
-
 		case 6: {
-			/** TABLE books **/
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER"));
+			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_created ON books(created)"));
 		} break;
 
 		case 7: {
-			/** TABLE aliases **/
-			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS aliases(id_author integer not null, id_alias integer not null);"));
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_author ON aliases(id_author);"));
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS aliases_alias ON aliases(id_alias);"));
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
-			ExecuteUpdate(strUpdateAuthorCount);
 		} break;
 
 		case 8: {
-			/** TABLE aliases **/
-			ExecuteUpdate(wxT("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
-			ExecuteUpdate(wxT("DELETE FROM sequences WHERE NOT EXISTS (SELECT id_seq FROM bookseq WHERE sequences.id=id_seq) OR id=0"));
-			ExecuteUpdate(strUpdateSequenCount);
 		} break;
 
 		case 9: {
