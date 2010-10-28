@@ -170,8 +170,8 @@ int FbUpdateItem::DoUpdate()
 
 	const wxChar * list[][4] = {
 		{ 
-			wxT("books"), wxT("id,id_archive,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
-			wxT("books"), wxT("id,id_archive,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
+			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
+			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
 		},
 		{
 			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,search_name,letter"), 
