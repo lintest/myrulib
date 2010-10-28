@@ -195,6 +195,14 @@ int FbUpdateItem::DoUpdate()
 			wxT("genres"), wxT("id_book,id_genre"), 
 		},
 		{
+			wxT("archives"), wxT("id,file_name"), 
+			wxT("archives"), wxT("id,file_name"), 
+		},
+		{
+			wxT("files"), wxT("id_archive,id_book,file_name"), 
+			wxT("files"), wxT("id_archive,id_book,file_name"), 
+		},
+		{
 			wxT("fts_auth"), wxT("docid,content"), 
 			wxT("authors"), wxT("id,LOW(AUTH(last_name,first_name,middle_name))"),
 		},
