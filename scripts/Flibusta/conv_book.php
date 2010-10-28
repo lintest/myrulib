@@ -260,8 +260,8 @@ function setup_params($sqlite_db, $date, $type)
   $sqlite_db->query("INSERT INTO params(id,value) VALUES (2,  1);");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (3,  'FLIBUSTA');");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (11, 'flibusta.net');");
-  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (15, '$type');");
-  $sqlite_db->query("INSERT INTO params(id,value) VALUES (16, $date);");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (20, $date);");
+  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (21, '$type');");
   
   $sqlite_db->query("commit;");
 }

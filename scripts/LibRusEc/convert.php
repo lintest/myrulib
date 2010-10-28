@@ -259,8 +259,8 @@ function setup_params($sqlite_db, $date, $type)
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (3,  'LIBRUSEC');");
   $sqlite_db->query("INSERT INTO params(id,value) VALUES (4,  1000);");
   $sqlite_db->query("INSERT INTO params(id,text)  VALUES (11, 'lib.rus.ec');");
-  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (15, '$type');");
-  $sqlite_db->query("INSERT INTO params(id,value) VALUES (16, $date);");
+  $sqlite_db->query("INSERT INTO params(id,value) VALUES (20, $date);");
+  $sqlite_db->query("INSERT INTO params(id,text)  VALUES (21, '$type');");
   
   $sqlite_db->query("commit;");
 }
