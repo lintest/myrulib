@@ -28,11 +28,10 @@ void * FbUpdateThread::Entry()
 	FbCounter counter(database);
 
 	bool ok = false;
-	while (date < today) {
+	while (date && date < today) {
 		FbUpdateItem item(database, date, type);
 		date = item.Execute();
 		if (date) FbParams::Set(DB_DATAFILE_DATE, date);
-		if (date) ok = true;
 	}
 
 	if (ok) {
