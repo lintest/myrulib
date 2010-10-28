@@ -341,7 +341,7 @@ system("zip flibusta.db.zip $sqlitefile");
 
 author_info($mysql_db, $sqlite_db, 0);
 book_info($mysql_db, $sqlite_db, 0);
-system("zip flibusta.full.zip $sqlitefile");
+system("zip flibusta.db.full.zip $sqlitefile");
 
 DeltaImport($mysql_db, $date);
 
