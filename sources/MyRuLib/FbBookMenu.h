@@ -13,15 +13,18 @@ WX_DECLARE_HASH_MAP(int, int, wxIntegerHash, wxIntegerEqual, FbMenuMap);
 
 class FbBookMenu: public wxMenu
 {
+	private:
+		enum FbMenuType {
+			fbMENU_AUTH = 0,
+			fbMENU_SEQN,
+			fbMENU_FLDR,
+			fbMENU_COUNT,
+		};
 	public:
 		static int GetKey(int id);
-		static int SetKey(int key);
-		FbBookMenu(wxWindow * frame, int book): m_frame(frame), m_book(book) {}
+		static int SetKey(int key, FbMenuType type);
+		FbBookMenu(wxWindow * frame, FbModelItem item, int book);
 		void Init(const FbMasterInfo &master, bool bShowOrder);
-	public:
-		wxObjectEventFunction m_fldr_func;
-		wxObjectEventFunction m_auth_func;
-		wxObjectEventFunction m_seqn_func;
 	private:
 		void AppendAuthorsMenu();
 		void AppendSeriesMenu();
@@ -30,6 +33,8 @@ class FbBookMenu: public wxMenu
 		static FbMenuMap sm_map;
 		static int sm_next;
 		wxWindow * m_frame;
+		int m_auth;
+		int m_seqn;
 		int m_book;
 };
 

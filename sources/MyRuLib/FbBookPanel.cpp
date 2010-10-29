@@ -194,16 +194,13 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 		point.x = size.x / 3;
 		point.y = size.y / 3;
 	}
-	ShowContextMenu(point, event.GetItem());
+	ShowContextMenu(point);
 }
 
-void FbBookPanel::ShowContextMenu(const wxPoint& pos, wxTreeItemId item)
+void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 {
 	if (!m_master) return;
-	FbBookMenu menu(this, m_BookList->GetBook());
-	menu.m_auth_func = wxCommandEventHandler(FbBookPanel::OnOpenAuthor);
-	menu.m_seqn_func = wxCommandEventHandler(FbBookPanel::OnOpenSeries);
-	menu.m_fldr_func = wxCommandEventHandler(FbBookPanel::OnFolderAdd);
+	FbBookMenu menu(this, m_BookList->GetCurrent(), m_BookList->GetBook());
 	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
 	PopupMenu(&menu, pos.x, pos.y);
 }

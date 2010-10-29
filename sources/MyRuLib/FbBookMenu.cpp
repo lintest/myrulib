@@ -5,19 +5,43 @@
 #include "FbBookEvent.h"
 #include "FbMasterInfo.h"
 #include "FbMasterTypes.h"
+#include "FbBookList.h"
+#include "FbBookTree.h"
 
 FbMenuMap FbBookMenu::sm_map;
 
 int FbBookMenu::sm_next;
+
+FbBookMenu::FbBookMenu(wxWindow * frame, FbModelItem item, int book)
+	: m_frame(frame), m_auth(0), m_seqn(0), m_book(book)
+{
+	if (book) return;
+
+	FbAuthParentData * auth = wxDynamicCast(&item, FbAuthParentData);
+	if (auth) {
+		m_auth = auth->GetCode();
+		FbSeqnParentData * seqn = wxDynamicCast(&item.GetParent(), FbSeqnParentData);
+		if (seqn) m_seqn = seqn->GetCode();
+		return;
+	}
+
+	FbSeqnParentData * seqn = wxDynamicCast(&item, FbSeqnParentData);
+	if (seqn) {
+		m_seqn = seqn->GetCode();
+		FbAuthParentData * auth = wxDynamicCast(&item.GetParent(), FbAuthParentData);
+		if (auth) m_auth = auth->GetCode();
+		return;
+	}
+}
 
 int FbBookMenu::GetKey(int id)
 {
 	return sm_map[id];
 }
 
-int FbBookMenu::SetKey(int key)
+int FbBookMenu::SetKey(int key, FbMenuType type)
 {
-	sm_map[++sm_next] = key;
+	sm_map[++sm_next] = key * fbMENU_COUNT + type;
 	return sm_next;
 }
 
@@ -73,17 +97,25 @@ void FbBookMenu::AppendAuthorsMenu()
 	wxString text = _("Jump to author");
 	wxMenu * submenu = NULL;
 
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN (SELECT id_author FROM books WHERE id=?) ORDER BY search_name");
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_book);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	wxString sql = wxT("SELECT id, full_name FROM authors WHERE %s ORDER BY search_name");
+	if (m_book) {
+		sql = wxString::Format(sql, wxT("id IN (SELECT id_author FROM books WHERE id=%d)"));
+		sql = wxString::Format(sql, m_book);
+	} else if (m_auth) {
+		sql = wxString::Format(sql, wxT("id=%d"));
+		sql = wxString::Format(sql, m_auth);
+	} else {
+		Append(wxID_ANY, text)->Enable(false);
+		return;
+	}
 
+	FbCommonDatabase database;
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		wxString text = result.GetString(1);
 		if (text.IsEmpty()) continue;
 		if (submenu == NULL) submenu = new wxMenu;
-		int id = SetKey(result.GetInt(0));
+		int id = SetKey(result.GetInt(0), fbMENU_AUTH);
 		submenu->Append(id, text);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
@@ -94,17 +126,25 @@ void FbBookMenu::AppendSeriesMenu()
 	wxString text = _("Jump to series");
 	wxMenu * submenu = NULL;
 
-	wxString sql = wxT("SELECT id, value FROM sequences WHERE id IN (SELECT id_seq FROM bookseq WHERE id_book=?) ORDER BY value");
-	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_book);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	wxString sql = wxT("SELECT id, value FROM sequences WHERE %s ORDER BY value");
+	if (m_book) {
+		sql = wxString::Format(sql, wxT("id IN (SELECT id_seq FROM bookseq WHERE id_book=%d)"));
+		sql = wxString::Format(sql, m_book);
+	} else if (m_seqn) {
+		sql = wxString::Format(sql, wxT("id=%d"));
+		sql = wxString::Format(sql, m_seqn);
+	} else {
+		Append(wxID_ANY, text)->Enable(false);
+		return;
+	}
 
+	FbCommonDatabase database;
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		wxString text = result.GetString(1);
 		if (text.IsEmpty()) continue;
 		if (submenu == NULL) submenu = new wxMenu;
-		int id = SetKey(result.GetInt(0));
+		int id = SetKey(result.GetInt(0), fbMENU_SEQN);
 		submenu->Append(id, text);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
@@ -123,8 +163,10 @@ void FbBookMenu::AppendFoldersMenu(int folder)
 		int key = result.GetInt(0);
 		if (folder == key) continue;
 		if (submenu == NULL) submenu = new wxMenu;
-		int id = SetKey(result.GetInt(0));
+		int id = SetKey(result.GetInt(0), fbMENU_FLDR);
 		submenu->Append(id, result.GetString(1));
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
+
+

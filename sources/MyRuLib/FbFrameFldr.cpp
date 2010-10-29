@@ -116,7 +116,7 @@ void FbFrameFldr::OnFavoritesDel(wxCommandEvent & event)
 
 	int folder = data->GetCode();
 	wxString selected = m_BooksPanel->GetSelected();
-	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT md5s FROM b WHERE bid IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
+	wxString sql = wxString::Format(wxT("DELETE FROM favorites WHERE md5sum IN (SELECT md5sum FROM books WHERE id IN (%s)) AND id_folder=%d"), selected.c_str(), folder);
 
 	FbCommonDatabase database;
 	database.AttachConfig();
