@@ -31,6 +31,7 @@ class FbBookPanel: public wxSplitterWindow
 		void Localize();
 		wxString GetSelected();
 		const FbMasterInfo & GetInfo() const { return m_master; };
+		void DoPopupMenu(wxWindowID id);
 	public:
 		FbTreeViewCtrl * m_BookList;
 		void EmptyBooks(const int selected  = 0);
@@ -71,9 +72,6 @@ class FbBookPanel: public wxSplitterWindow
 		void OnDownloadBook(wxCommandEvent & event);
 		void OnEditComments(wxCommandEvent & event);
 		void OnFavoritesAdd(wxCommandEvent & event);
-		void OnFolderAdd(wxCommandEvent& event);
-		void OnOpenAuthor(wxCommandEvent& event);
-		void OnOpenSeries(wxCommandEvent& event);
 		void OnOpenBook(wxCommandEvent & event);
 		void OnChangeView(wxCommandEvent & event);
 		void OnBookPage(wxCommandEvent & event);

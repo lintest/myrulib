@@ -301,6 +301,6 @@ FbMasterInfo FbFrameBase::GetInfo()
 void FbFrameBase::OnHandleMenu(wxCommandEvent& event)
 {
 	if (event.GetId() > ID_FAVORITES_ADD) {
-		wxMessageBox(wxT("Go to the author, series, folder"));
+		m_BooksPanel->DoPopupMenu(event.GetId());
 	} else event.Skip();
 }

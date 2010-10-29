@@ -226,25 +226,6 @@ void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)
 	DoFolderAdd( 0 );
 }
 
-void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
-{
-	int key = FbBookMenu::GetKey(event.GetId());
-	DoFolderAdd( key );
-}
-
-void FbBookPanel::DoFolderAdd(const int folder)
-{
-	wxString sel = GetSelected();
-	wxString sql = wxString::Format(wxT("\
-		INSERT INTO favorites(id_folder,md5sum) \
-		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
-	"), folder, sel.c_str());
-
-	FbCommonDatabase database;
-	database.AttachConfig();
-	database.ExecuteUpdate(sql);
-}
-
 void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 {
 	int rating = event.GetId() - ID_RATING_0;
@@ -331,20 +312,6 @@ void FbBookPanel::OnEditComments(wxCommandEvent & event)
 {
 	int id = m_BookList->GetBook();
 	if (id) new FbFrameHtml((wxAuiMDIParentFrame*)wxGetApp().GetTopWindow(), id);
-}
-
-void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
-{
-	int key = FbBookMenu::GetKey(event.GetId());
-	int id = m_BookList->GetBook();
-	if (id) FbOpenEvent(ID_BOOK_AUTHOR, key, id).Post();
-}
-
-void FbBookPanel::OnOpenSeries(wxCommandEvent& event)
-{
-	int key = FbBookMenu::GetKey(event.GetId());
-	int id = m_BookList->GetBook();
-	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, key, id).Post();
 }
 
 void FbBookPanel::EmptyBooks(const int selected)
@@ -517,3 +484,42 @@ void FbBookPanel::CreateColumns(const wxArrayInt &columns)
 {
 	FbColumns::Create(columns, m_listmode, *m_BookList);
 }
+
+void FbBookPanel::DoFolderAdd(const int folder)
+{
+	wxString sel = GetSelected();
+	wxString sql = wxString::Format(wxT("\
+		INSERT INTO favorites(id_folder,md5sum) \
+		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
+	"), folder, sel.c_str());
+
+	FbCommonDatabase database;
+	database.AttachConfig();
+	database.ExecuteUpdate(sql);
+}
+/*
+void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
+{
+	int key = FbBookMenu::GetKey(event.GetId());
+	int id = m_BookList->GetBook();
+	if (id) FbOpenEvent(ID_BOOK_AUTHOR, key, id).Post();
+}
+
+void FbBookPanel::OnOpenSeries(wxCommandEvent& event)
+{
+	int key = FbBookMenu::GetKey(event.GetId());
+	int id = m_BookList->GetBook();
+	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, key, id).Post();
+}
+
+void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
+{
+	int key = FbBookMenu::GetKey(event.GetId());
+	DoFolderAdd( key );
+}
+*/
+void FbBookPanel::DoPopupMenu(wxWindowID id)
+{
+	wxMessageBox(wxT("Go to the author, series, folder"));
+}
+
