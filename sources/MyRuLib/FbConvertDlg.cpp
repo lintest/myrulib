@@ -291,8 +291,8 @@ wxString FbConvertDlg::ExportProcess::ReadLine(wxInputStream * stream)
 	if (stream == NULL) return wxEmptyString;
 
 	#ifdef __WXMSW__
-	wxChar * charset[] = {wxT("cp866"), wxT("cp1251")};
-	wxCSConv conv = wxCSConv(charset[m_dos ? 0 : 1]);
+	wxString charset = m_dos ? (wxString) wxT("cp866") : (wxString) wxT("cp1251");
+	wxCSConv conv = wxCSConv(charset);
 	#else
 	wxConvAuto conv = wxConvAuto();
 	#endif // __WXMSW__
