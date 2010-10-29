@@ -286,6 +286,8 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 {
 
 	FbCommonDatabase database;
+	FbIncrementFunction function;
+	database.CreateFunction(wxT("INCREMENT"), 1, function);
 	database.AttachConfig();
 
 	int folder = FbLocalDatabase().NewId(FB_NEW_DOWNLOAD, count) - count + 1;
@@ -303,6 +305,7 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 
 	database.ExecuteUpdate(sql1);
 	database.ExecuteUpdate(sql2);
+	wxGetApp().StartDownload();
 }
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
@@ -383,6 +386,7 @@ void FbBookPanel::UpdateFonts(bool refresh)
 
 void FbBookPanel::UpdateInfo(int id)
 {
+	m_BookList->Update();
 	if (m_BookList->GetBook() == id) ResetPreview();
 }
 

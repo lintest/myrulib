@@ -56,6 +56,15 @@ class FbLetterFunction : public wxSQLite3ScalarFunction
 	virtual void Execute(wxSQLite3FunctionContext& ctx);
 };
 
+class FbIncrementFunction : public wxSQLite3ScalarFunction
+{
+	public:
+		FbIncrementFunction(): m_increment(0) {};
+		virtual void Execute(wxSQLite3FunctionContext& ctx);
+	private:
+		int m_increment;
+};
+
 class FbAggregateFunction: public wxSQLite3AggregateFunction
 {
 	public:

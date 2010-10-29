@@ -111,6 +111,18 @@ void FbLetterFunction::Execute(wxSQLite3FunctionContext& ctx)
 }
 
 //-----------------------------------------------------------------------------
+//  FbIncrementFunction
+//-----------------------------------------------------------------------------
+
+void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	int id = ctx.GetArgCount()>0 ? ctx.GetInt(0) : 0;
+	m_increment++;
+	id += m_increment;
+	ctx.SetResult(-id);
+}
+
+//-----------------------------------------------------------------------------
 //  FbSearchFunction
 //-----------------------------------------------------------------------------
 
