@@ -455,14 +455,11 @@ void FbMainDatabase::DoUpgrade(int version)
 		} break;
 
 		case 3: {
-			wxLogNull log;
-			ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99) PRIMARY KEY, command text, convert text)"));
-			ExecuteUpdate(wxT("CREATE TABLE files(id_book integer, id_archive integer, file_name text, file_path text)"));
+			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS files(id_book integer, id_archive integer, file_name text, file_path text)"));
 			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS files_book ON files(id_book)"));
 		} break;
 
 		case 4: {
-			/** TABLE books **/
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
 		} break;
@@ -490,19 +487,16 @@ void FbMainDatabase::DoUpgrade(int version)
 		} break;
 
 		case 9: {
-			/** TABLE books **/
 			wxLogNull log;
 			ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
 			ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
 		} break;
 
 		case 11: {
-			/** TABLE script **/
-			ExecuteUpdate(wxT("CREATE TABLE types(file_type VARCHAR(99) PRIMARY KEY, command TEXT, convert TEXT)"));
+			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS types(file_type varchar(99) PRIMARY KEY, command text, convert text)"));
 		} break;
 
 		case 12: {
-			/** TABLE script **/
 			if (!TableExists(wxT("dates"))) {
 				ExecuteUpdate(wxT("CREATE TABLE dates(id integer primary key, lib_min integer, lib_max integer, lib_num, usr_min integer, usr_max, usr_num integer)"));
 				ExecuteUpdate(wxT("INSERT INTO dates SELECT created, SUM(min_lib), SUM(max_lib), SUM(num_lib), SUM(min_usr), SUM(max_usr), SUM(num_usr) FROM (SELECT created, min(id) AS min_lib, max(id) AS max_lib, COUNT(DISTINCT id) AS num_lib, 0 AS min_usr, 0 AS max_usr, 0 AS num_usr FROM books WHERE id>0 GROUP BY created UNION ALL SELECT created, 0, 0, 0, min(id), max(id), COUNT(DISTINCT id) FROM books WHERE id<0 GROUP BY created)GROUP BY created"));
