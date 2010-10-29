@@ -24,7 +24,7 @@ void * FbDateTreeThread::Entry()
 	while (result.NextRow()) {
 		int day = result.GetInt(0);
 		int new_year = day / 10000;
-		int new_mnth = day / 100 % 100;
+		int new_mnth = day / 100;
 		if (year == NULL || year->GetCode() != new_year) {
 			year = new FbDateYearData(*model, root, new_year);
 			mnth = NULL;
