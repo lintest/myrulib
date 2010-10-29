@@ -108,17 +108,21 @@ void * FbConvertDlg::ExportThread::Entry()
 			wxZipOutputStream zip(out, 9, conv);
 			zip.PutNextEntry(m_filename.GetFullName());
 			zip.Write(reader.GetZip());
+			zip.Close();
 		} break;
 		case -2: {
 			wxZlibOutputStream zip(out, 9, wxZLIB_GZIP);
 			zip.Write(reader.GetZip());
+			zip.Close();
 		} break;
 		case -3: {
 			wxBZipOutputStream zip(out, 9);
 			zip.Write(reader.GetZip());
+			zip.Close();
 		} break;
 		default: {
 			out.Write(reader.GetZip());
+			out.Close();
 		} break;
 	}
 	return NULL;
@@ -140,8 +144,12 @@ void * FbConvertDlg::GzipThread::Entry()
 	size_t first = 0;
 	size_t count = m_filelist.Count();
 	if (count == 0) return NULL;
+
 	wxString filename = m_filelist[0];
-	if (count == 1) filename << wxT(".gz"); else first++;
+	if (count == 1) filename << wxT(".bz2"); else first++;
+
+	wxFileInputStream in(m_filelist[first]);
+	if (!in.IsOk()) return NULL;
 
 	wxFileOutputStream out(filename);
 	if (!out.IsOk()) return NULL;
@@ -149,15 +157,14 @@ void * FbConvertDlg::GzipThread::Entry()
 	wxZlibOutputStream zip(out, 9, wxZLIB_GZIP);
 	if (!zip.IsOk()) return NULL;
 
-	if (first < count) {
-		wxFileInputStream in(m_filelist[first]);
-		if (in.IsOk()) zip.Write(in);
-	}
+	zip.Write(in);
+	zip.Close();
+
 	return NULL;
 }
 
 //-----------------------------------------------------------------------------
-//  FbConvertDlg::GzipThread
+//  FbConvertDlg::BzipThread
 //-----------------------------------------------------------------------------
 
 FbConvertDlg::BzipThread::BzipThread(FbConvertDlg * parent, const wxArrayString &args)
@@ -172,8 +179,12 @@ void * FbConvertDlg::BzipThread::Entry()
 	size_t first = 0;
 	size_t count = m_filelist.Count();
 	if (count == 0) return NULL;
+
 	wxString filename = m_filelist[0];
 	if (count == 1) filename << wxT(".bz2"); else first++;
+
+	wxFileInputStream in(m_filelist[first]);
+	if (!in.IsOk()) return NULL;
 
 	wxFileOutputStream out(filename);
 	if (!out.IsOk()) return NULL;
@@ -181,10 +192,9 @@ void * FbConvertDlg::BzipThread::Entry()
 	wxBZipOutputStream zip(out, 9);
 	if (!zip.IsOk()) return NULL;
 
-	if (first < count) {
-		wxFileInputStream in(m_filelist[first]);
-		if (in.IsOk()) zip.Write(in);
-	}
+	zip.Write(in);
+	zip.Close();
+
 	return NULL;
 }
 
@@ -221,6 +231,8 @@ void * FbConvertDlg::ZipThread::Entry()
 		zip.PutNextEntry(filename.GetFullName());
 		zip.Write(in);
 	}
+	zip.Close();
+
 	return NULL;
 }
 
@@ -563,5 +575,4 @@ void FbConvertDlg::OnCloseDlg( wxCloseEvent& event )
 		m_process.Kill(wxSIGTERM);
 	}
 }
-
 

@@ -103,6 +103,7 @@ void FbExportDlg::LoadFormats()
 	switch (format) {
 		case -1: index = 1; break;
 		case -2: index = 2; break;
+		case -3: index = 3; break;
 		default: index = 0; break;
 	}
 	m_format->SetSelection(index);
