@@ -8,7 +8,9 @@
 #include "FbBookList.h"
 #include "FbBookTree.h"
 
-FbMenuMap FbBookMenu::sm_map;
+FbMenuMap FbBookMenu::sm_key;
+
+FbMenuMap FbBookMenu::sm_type;
 
 int FbBookMenu::sm_next;
 
@@ -34,20 +36,28 @@ FbBookMenu::FbBookMenu(wxWindow * frame, FbModelItem item, int book)
 	}
 }
 
-int FbBookMenu::GetKey(int id)
-{
-	return sm_map[id];
-}
-
 int FbBookMenu::SetKey(int key, FbMenuType type)
 {
-	sm_map[++sm_next] = key * fbMENU_COUNT + type;
+	sm_next++;
+	sm_key[sm_next] = key;
+	sm_type[sm_next] = type;
 	return sm_next;
+}
+
+bool FbBookMenu::GetKey(int id, int &key, FbMenuType &type)
+{
+	bool ok = sm_key.count(id) && sm_type.count(id);
+	if (ok) {
+		key = sm_key[id];
+		type = (FbMenuType) sm_type[id];
+	}
+	return ok;
 }
 
 void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 {
-	sm_map.empty();
+	sm_key.empty();
+	sm_type.empty();
 	sm_next = ID_FAVORITES_ADD;
 
 	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
@@ -115,7 +125,7 @@ void FbBookMenu::AppendAuthorsMenu()
 		wxString text = result.GetString(1);
 		if (text.IsEmpty()) continue;
 		if (submenu == NULL) submenu = new wxMenu;
-		int id = SetKey(result.GetInt(0), fbMENU_AUTH);
+		int id = SetKey(result.GetInt(0), MenuAuth);
 		submenu->Append(id, text);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
@@ -144,7 +154,7 @@ void FbBookMenu::AppendSeriesMenu()
 		wxString text = result.GetString(1);
 		if (text.IsEmpty()) continue;
 		if (submenu == NULL) submenu = new wxMenu;
-		int id = SetKey(result.GetInt(0), fbMENU_SEQN);
+		int id = SetKey(result.GetInt(0), MenuSeqn);
 		submenu->Append(id, text);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
@@ -163,7 +173,7 @@ void FbBookMenu::AppendFoldersMenu(int folder)
 		int key = result.GetInt(0);
 		if (folder == key) continue;
 		if (submenu == NULL) submenu = new wxMenu;
-		int id = SetKey(result.GetInt(0), fbMENU_FLDR);
+		int id = SetKey(result.GetInt(0), MenuFldr);
 		submenu->Append(id, result.GetString(1));
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);

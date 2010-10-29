@@ -262,7 +262,6 @@ void FbBookPanel::OnChangeRating(wxCommandEvent& event)
 
 void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 {
-
 	FbCommonDatabase database;
 	FbIncrementFunction function;
 	database.CreateFunction(wxT("INCREMENT"), 1, function);
@@ -284,6 +283,8 @@ void FbBookPanel::DoCreateDownload(const wxString &sel, int count)
 	database.ExecuteUpdate(sql1);
 	database.ExecuteUpdate(sql2);
 	wxGetApp().StartDownload();
+
+	FbFolderEvent(ID_UPDATE_FOLDER, folder, FT_DOWNLOAD).Post();
 }
 
 void FbBookPanel::OnDownloadBook(wxCommandEvent & event)
@@ -496,6 +497,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 	FbCommonDatabase database;
 	database.AttachConfig();
 	database.ExecuteUpdate(sql);
+	FbFolderEvent(ID_UPDATE_FOLDER, folder, FT_FOLDER).Post();
 }
 /*
 void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
@@ -520,6 +522,24 @@ void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
 */
 void FbBookPanel::DoPopupMenu(wxWindowID id)
 {
-	wxMessageBox(wxT("Go to the author, series, folder"));
+	int book = m_BookList->GetBook();
+
+	int key; FbBookMenu::FbMenuType type;
+	FbBookMenu::GetKey(id, key, type);
+
+	switch (type) {
+		case FbBookMenu::MenuAuth: {
+			FbOpenEvent(ID_BOOK_AUTHOR, key, book).Post();
+		} break;
+		case FbBookMenu::MenuSeqn: {
+			FbOpenEvent(ID_BOOK_SEQUENCE, key, book).Post();
+		} break;
+		case FbBookMenu::MenuFldr: {
+			DoFolderAdd( key );
+		} break;
+		default: break;
+	}
 }
+
+
 
