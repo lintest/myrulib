@@ -9,6 +9,7 @@
 IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
 
 BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
+    EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExportBooks)
@@ -295,4 +296,11 @@ void FbFrameBase::UpdateBooklist()
 FbMasterInfo FbFrameBase::GetInfo()
 {
 	return m_MasterList ? m_MasterList->GetInfo() : FbMasterInfo();
+}
+
+void FbFrameBase::OnHandleMenu(wxCommandEvent& event)
+{
+	if (event.GetId() > ID_FAVORITES_ADD) {
+		wxMessageBox(wxT("Go to the author, series, folder"));
+	} else event.Skip();
 }

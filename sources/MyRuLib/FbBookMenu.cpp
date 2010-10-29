@@ -85,7 +85,6 @@ void FbBookMenu::AppendAuthorsMenu()
 		if (submenu == NULL) submenu = new wxMenu;
 		int id = SetKey(result.GetInt(0));
 		submenu->Append(id, text);
-		m_frame->Connect(id, wxEVT_COMMAND_MENU_SELECTED, m_auth_func);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
@@ -107,7 +106,6 @@ void FbBookMenu::AppendSeriesMenu()
 		if (submenu == NULL) submenu = new wxMenu;
 		int id = SetKey(result.GetInt(0));
 		submenu->Append(id, text);
-		m_frame->Connect(id, wxEVT_COMMAND_MENU_SELECTED, m_seqn_func);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
@@ -127,7 +125,6 @@ void FbBookMenu::AppendFoldersMenu(int folder)
 		if (submenu == NULL) submenu = new wxMenu;
 		int id = SetKey(result.GetInt(0));
 		submenu->Append(id, result.GetString(1));
-		m_frame->Connect(id, wxEVT_COMMAND_MENU_SELECTED, m_fldr_func);
 	}
 	Append(wxID_ANY, text, submenu)->Enable(submenu);
 }
