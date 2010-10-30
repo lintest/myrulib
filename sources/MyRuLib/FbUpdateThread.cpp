@@ -236,6 +236,8 @@ int FbUpdateItem::DoUpdate()
 	}
 
 	trans.Commit();
+	
+	m_database.ExecuteUpdate(wxT("DETACH upd"));
 
 	return date;
 }
