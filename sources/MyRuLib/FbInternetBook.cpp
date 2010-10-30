@@ -126,7 +126,7 @@ bool FbInternetBook::ReadFile(wxInputStream * in)
 	md5_starts( &md5 );
 	do {
 		if (m_owner->IsClosed()) return false;
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos/(size/1000), _("File download")).Post();
+		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos * 1000 / size, _("File download")).Post();
 		count = in->Read(buf, BUFSIZE).LastRead();
 		if ( count ) md5_update( &md5, buf, (int) count );
 		if ( pos==0 && count>1 && buf[0]=='P' && buf[1]=='K') zipped = true;

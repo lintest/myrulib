@@ -112,7 +112,7 @@ bool FbUpdateItem::ReadURL()
 
 	int step = 1;
 	do {
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url.GetURL(), pos/(size/1000), _("File download")).Post();
+		FbProgressEvent(ID_PROGRESS_UPDATE, m_url.GetURL(), pos * 1000 / size, _("File download")).Post();
 		count = m_input->Read(buf, BUFSIZE).LastRead();
 		if ( count ) {
 			out.Write(buf, count);
@@ -160,7 +160,7 @@ int FbUpdateItem::DoUpdate()
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, DB_DATAFILE_DATE);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) date = result.GetInt(0); 
+		if (result.NextRow()) date = result.GetInt(0);
 	}
 	if (date <= m_code) return 0;
 
@@ -174,56 +174,56 @@ int FbUpdateItem::DoUpdate()
 	m_database.CreateFunction(wxT("LTTR"), 1, letter);
 
 	const wxChar * list[][4] = {
-		{ 
-			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
-			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"), 
+		{
+			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"),
+			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"),
 		},
 		{
-			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,search_name,letter"), 
+			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,search_name,letter"),
 			wxT("authors"), wxT("id,last_name,first_name,middle_name,AUTH(last_name,first_name,middle_name),LOW(AUTH(last_name,first_name,middle_name)),LTTR(AUTH(last_name,first_name,middle_name))"),
 		},
 		{
-			wxT("sequences"), wxT("id,value"), 
+			wxT("sequences"), wxT("id,value"),
 			wxT("sequences"), wxT("id,value"),
 		},
 		{
-			wxT("bookseq"), wxT("id_book,id_seq,number"), 
-			wxT("bookseq"), wxT("id_book,id_seq,number"), 
+			wxT("bookseq"), wxT("id_book,id_seq,number"),
+			wxT("bookseq"), wxT("id_book,id_seq,number"),
 		},
 		{
-			wxT("genres"), wxT("id_book,id_genre"), 
-			wxT("genres"), wxT("id_book,id_genre"), 
+			wxT("genres"), wxT("id_book,id_genre"),
+			wxT("genres"), wxT("id_book,id_genre"),
 		},
 		{
-			wxT("archives"), wxT("id,file_name"), 
-			wxT("archives"), wxT("id,file_name"), 
+			wxT("archives"), wxT("id,file_name"),
+			wxT("archives"), wxT("id,file_name"),
 		},
 		{
-			wxT("files"), wxT("id_archive,id_book,file_name"), 
-			wxT("files"), wxT("id_archive,id_book,file_name"), 
+			wxT("files"), wxT("id_archive,id_book,file_name"),
+			wxT("files"), wxT("id_archive,id_book,file_name"),
 		},
 		{
-			wxT("fts_auth"), wxT("docid,content"), 
+			wxT("fts_auth"), wxT("docid,content"),
 			wxT("authors"), wxT("id,LOW(AUTH(last_name,first_name,middle_name))"),
 		},
 		{
-			wxT("fts_book"), wxT("docid,content"), 
+			wxT("fts_book"), wxT("docid,content"),
 			wxT("books"),     wxT("id,LOW(title)"),
 		},
 		{
-			wxT("fts_seqn"),  wxT("docid,content"), 
+			wxT("fts_seqn"),  wxT("docid,content"),
 			wxT("sequences"), wxT("id,LOW(value)"),
 			},
 		{
-			wxT("tmp_a"), wxT("id"), 
+			wxT("tmp_a"), wxT("id"),
 			wxT("books"), wxT("id"),
 		},
 		{
-			wxT("tmp_s"), wxT("id"), 
+			wxT("tmp_s"), wxT("id"),
 			wxT("sequences"), wxT("id"),
 		},
-		{	
-			wxT("tmp_d"), wxT("id"), 
+		{
+			wxT("tmp_d"), wxT("id"),
 			wxT("books"), wxT("created"),
 		},
 	};
@@ -236,7 +236,7 @@ int FbUpdateItem::DoUpdate()
 	}
 
 	trans.Commit();
-	
+
 	m_database.ExecuteUpdate(wxT("DETACH upd"));
 
 	return date;
