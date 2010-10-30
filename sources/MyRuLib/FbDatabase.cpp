@@ -574,8 +574,8 @@ void FbConfigDatabase::CreateDatabase()
 
 	/** TABLE folders **/
 	ExecuteUpdate(wxT("CREATE TABLE folders(id integer primary key, value text not null)"));
-	ExecuteUpdate(wxT("INSERT INTO folders(id,value) VALUES (-1, 'The best')"));
-	ExecuteUpdate(wxT("INSERT INTO folders(id,value) VALUES (-2, 'Other')"));
+	ExecuteUpdate(wxString::Format(wxT("INSERT INTO folders(id,value) VALUES (-1, '%s')"), _("The best")));
+	ExecuteUpdate(wxString::Format(wxT("INSERT INTO folders(id,value) VALUES (-2, '%s')"), _("Other")));
 
 	/** TABLE favorites **/
 	ExecuteUpdate(wxT("CREATE TABLE favorites(id_folder integer, md5sum CHAR(32))"));

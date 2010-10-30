@@ -164,6 +164,15 @@ WX_DEFINE_OBJARRAY(FbColumnArray);
 //  FbModel::PaintContext
 //-----------------------------------------------------------------------------
 
+static wxColour MiddleColour(wxColour text, wxColour back)
+{
+	unsigned char r = text.Red() / 2 + text.Red() / 2;
+	unsigned char g = text.Green() / 2 + text.Green() / 2;
+	unsigned char b = text.Blue() / 2 + text.Blue() / 2;
+	return wxColour(r, g, b);
+
+}
+
 FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
     // Set brush colour
     m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
@@ -184,6 +193,9 @@ FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
 	m_hrules(model.GetOwner()->HasFlag(fbTR_HRULES)),
 	m_level(0)
 {
+	if (m_graytextColour == m_normalColour)
+		MiddleColour(m_normalColour, wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
+
 	m_normalFont = dc.GetFont();
 	m_normalFont.SetWeight(wxFONTWEIGHT_NORMAL);
 	m_boldFont = m_normalFont;
