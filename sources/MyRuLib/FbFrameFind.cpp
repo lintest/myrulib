@@ -14,6 +14,7 @@ IMPLEMENT_CLASS(FbFrameFind, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameFind, FbFrameBase)
 	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbFrameFind::OnFoundNothing)
+	EVT_COMMAND(ID_INIT_SEARCH, fbEVT_BOOK_ACTION, FbFrameFind::OnInitSearch)
 END_EVENT_TABLE()
 
 FbFrameFind::FbFrameFind(wxAuiMDIParentFrame * parent, const FbMasterInfo &info, const wxString &title)
@@ -27,7 +28,8 @@ FbFrameFind::FbFrameFind(wxAuiMDIParentFrame * parent, const FbMasterInfo &info,
 	}
 
 	Update();
-	UpdateBooklist();
+
+	FbCommandEvent(fbEVT_BOOK_ACTION, ID_INIT_SEARCH).Post(this);
 }
 /*
 wxString FbFrameFind::GetTitle() const
@@ -56,3 +58,9 @@ void FbFrameFind::OnFoundNothing(wxCommandEvent& event)
 	wxMessageBox(msg, _("Searching"));
 	Close();
 }
+
+void FbFrameFind::OnInitSearch(wxCommandEvent& event)
+{
+	UpdateBooklist();
+}
+

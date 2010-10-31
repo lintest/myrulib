@@ -196,6 +196,7 @@ void FbFrameBase::OnBooksCount(FbCountEvent& event)
 {
 	if (event.GetInfo() == GetInfo()) {
 		m_BookCount = event.GetCount();
+		if (m_BookCount == 0) FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(this);
 	}
 	UpdateStatus();
 }

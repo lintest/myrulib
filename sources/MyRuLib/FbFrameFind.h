@@ -18,6 +18,7 @@ class FbFrameFind : public FbFrameBase
 		FbMasterInfo m_info;
 	private:
 		void OnFoundNothing(wxCommandEvent& event);
+		void OnInitSearch(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameFind)
 };
