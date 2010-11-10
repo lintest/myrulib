@@ -29,6 +29,7 @@ class FbUpdateItem: public wxObject
 	private:
 		wxSQLite3Database & m_database;
 		int m_code;
+		wxString m_type;
 		FbURL m_url;
 		wxString m_filename;
 		wxString m_dataname;

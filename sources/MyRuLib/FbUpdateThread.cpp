@@ -53,13 +53,11 @@ IMPLEMENT_CLASS(FbUpdateItem, wxObject)
 
 wxString FbUpdateItem::GetAddr(int date, const wxString &type)
 {
-	wxString addr = strHomePage;
-	addr << wxT('/') << type << wxT('/') << date << wxT(".zip");
-	return addr;
+	return wxString::Format(wxT("%s/%s/%d/%d.zip"), strHomePage.c_str(), type.c_str(), date / 10000, date);
 }
 
 FbUpdateItem::FbUpdateItem(wxSQLite3Database & database, int code, const wxString &type)
-	: m_database(database), m_code(code), m_url(GetAddr(code, type))
+	: m_database(database), m_code(code), m_type(type), m_url(GetAddr(code, type))
 {
 }
 
@@ -163,6 +161,17 @@ int FbUpdateItem::DoUpdate()
 		if (result.NextRow()) date = result.GetInt(0);
 	}
 	if (date <= m_code) return 0;
+
+	{
+		wxString sql = wxT("SELECT text FROM upd.params WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, DB_LIBRARY_TYPE);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (!(result.NextRow() && result.GetString(0).Lower() == m_type)) {
+			FbLogError(_("Wrong update library type"), result.GetString(0));
+			return 0;
+		}
+	}
 
 	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
