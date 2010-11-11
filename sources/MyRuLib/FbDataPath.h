@@ -10,7 +10,6 @@ class FbStandardPaths: public wxStandardPaths
 	public:
 		virtual wxString GetConfigFile() const;
 		virtual wxString GetUserConfigDir() const;
-		virtual wxString GetDownloadDir(bool bMustExist = false) const;
 		static wxString MakeRelative(const wxString &fullname, const wxString &basefile);
 };
 

@@ -154,6 +154,16 @@ wxString FbParams::GetStr(wxWindowID winid, int param)
 	return id ? GetStr(id) : wxString();
 }
 
+wxString FbParams::GetPath(int param)
+{
+	wxFileName path = GetStr(param);
+	if (path.IsRelative()) {
+		wxFileName app = FbDatabase::GetConfigName();
+		path.MakeAbsolute(app.GetPath());
+	}
+	return path.GetFullPath();
+}
+
 void FbParams::Set(wxWindowID winid, int param, int value)
 {
 	int id = Param(winid, param);

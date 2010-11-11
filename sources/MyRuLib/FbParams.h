@@ -113,6 +113,7 @@ class FbParams {
 		static int GetInt(int param);
 		static int GetInt(wxWindowID winid, int param);
 		static wxString GetStr(int param);
+		static wxString GetPath(int param);
 		static wxString GetStr(wxWindowID winid, int param);
 		static wxFont GetFont(int param);
 		static void Set(int param, int value);

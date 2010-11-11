@@ -2,6 +2,7 @@
 #include "FbInternetBook.h"
 #include "FbDatabase.h"
 #include "FbDataPath.h"
+#include "FbParams.h"
 #include "FbConst.h"
 
 FbDownloader::FbDownloader(): m_condition(m_mutex), m_closed(false)
@@ -62,7 +63,7 @@ wxString FbDownloader::GetBook()
 
 wxString FbDownloader::GetFilename(const wxString &md5sum, bool bCreateFolder)
 {
-	wxString path = FbStandardPaths().GetDownloadDir(false);
+	wxString path = FbParams::GetPath(FB_DOWNLOAD_DIR);
 
 	wxString name = md5sum;
 	for (int i=1; i<=3; i++) {

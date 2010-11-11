@@ -115,7 +115,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 {
 	wxString filetype = GetExt();
 	wxFileName filename = md5sum;
-	filename.SetPath( FbParams::GetStr(FB_TEMP_DIR) );
+	filename.SetPath( FbParams::GetPath(FB_TEMP_DIR) );
 	filename.SetExt(filetype);
 
 	if ( !filename.DirExists()) filename.Mkdir(0755, wxPATH_MKDIR_FULL);
