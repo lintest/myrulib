@@ -396,7 +396,7 @@ int FbImpotrZip::Save()
 		wxT("UPDATE archives SET file_name=?,file_path=?,file_size=?,file_count=? WHERE id=?") :
 		wxT("INSERT INTO archives(file_name,file_path,file_size,file_count,id) VALUES (?,?,?,?,?)") ;
 
-	if (!m_id) m_id = m_database.NewId(DB_NEW_ARCHIVE);
+	if (!m_id) m_id = - m_database.NewId(DB_NEW_ARCHIVE);
 
 	{
 		wxLongLong count = m_zip.GetTotalEntries();
@@ -424,7 +424,7 @@ void FbImpotrZip::Make(FbImportThread *owner)
 		if (owner) owner->DoStep(entry->GetInternalName());
 		FbImportBook book(this, entry);
 		if (book.IsOk()) {
-			book.Save(); 
+			book.Save();
 			processed++;
 		} else skipped++;
 	}
