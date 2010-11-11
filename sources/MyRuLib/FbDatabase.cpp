@@ -247,6 +247,11 @@ const wxString & FbDatabase::GetConfigName()
 	return filename;
 }
 
+wxString FbDatabase::GetConfigPath()
+{
+	return wxFileName(FbDatabase::GetConfigName()).GetPath();
+}
+
 int FbDatabase::NewId(const int iParam, int iIncrement)
 {
 	wxCriticalSectionLocker enter(sm_queue);

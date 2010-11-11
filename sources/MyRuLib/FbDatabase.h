@@ -92,6 +92,7 @@ class FbDatabase: public wxSQLite3Database
 		wxString GetText(int param);
 		void SetText(int param, const wxString & text);
 		static const wxString & GetConfigName();
+		static wxString GetConfigPath();
 		void AttachConfig();
 	private:
 		static wxCriticalSection sm_queue;

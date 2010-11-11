@@ -66,9 +66,11 @@ wxString FbParams::DefaultStr(int param)
 			case DB_DOWNLOAD_ADDR:
 				return wxT("http://%h/b/%i/download");
 			case FB_DOWNLOAD_DIR:
-				return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("download");
+				return FbDatabase::GetConfigPath() + wxFileName::GetPathSeparator() + wxT("download");
 			case FB_TEMP_DIR:
-				return FbStandardPaths().GetUserConfigDir() + wxFileName::GetPathSeparator() + wxT("local");
+				return FbDatabase::GetConfigPath() + wxFileName::GetPathSeparator() + wxT("local");
+			case FB_EXTERNAL_DIR:
+				return FbDatabase::GetConfigPath() + wxFileName::GetPathSeparator() + wxT("export");
 			case FB_FONT_MAIN:
 			case FB_FONT_HTML:
 			case FB_FONT_TOOL:
@@ -157,10 +159,7 @@ wxString FbParams::GetStr(wxWindowID winid, int param)
 wxString FbParams::GetPath(int param)
 {
 	wxFileName path = GetStr(param);
-	if (path.IsRelative()) {
-		wxFileName app = FbDatabase::GetConfigName();
-		path.MakeAbsolute(app.GetPath());
-	}
+	if (path.IsRelative()) path.MakeAbsolute(FbDatabase::GetConfigPath());
 	return path.GetFullPath();
 }
 
