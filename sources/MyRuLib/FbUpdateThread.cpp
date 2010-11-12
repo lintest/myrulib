@@ -246,8 +246,7 @@ int FbUpdateItem::DoUpdate()
 	{
 		wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM upd.books");
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-		int count = result.NextRow() ? result.GetInt(0) : 0;
-		wxLogWarning(_("Loaded new %d books"), count);
+		if (result.NextRow()) wxLogWarning(_("Loaded new %d books"), result.GetInt(0));
 	}
 
 	trans.Commit();
