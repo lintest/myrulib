@@ -28,7 +28,7 @@ void FbSeqnListThread::DoString(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, value, number FROM sequences");
 	if (!m_string.IsEmpty()) sql << wxT(" WHERE SEARCH(value)");
-	sql << GetOrder(wxT("value,number"), m_order);
+	sql << GetOrder(m_order);
 	FbSearchFunction search(m_string);
 	if (!m_string.IsEmpty()) database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -38,7 +38,7 @@ void FbSeqnListThread::DoString(wxSQLite3Database &database)
 void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT docid, value, number FROM fts_seqn INNER JOIN sequences ON id=docid WHERE fts_seqn MATCH ?");
-	sql << GetOrder(wxT("value,number"), m_order);
+	sql << GetOrder(m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_string));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -68,13 +68,14 @@ void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
 	FbArrayEvent(id, items).Post(m_frame);
 }
 
-wxString FbSeqnListThread::GetOrder(const wxString &fields, int column)
+wxString FbSeqnListThread::GetOrder(int column)
 {
-	int i = 0;
+	wxString fields = wxT("value COLLATE CYR,number");
 	int number = column == 0 ? 1 : abs(column);
 	wxString result = wxT(" ORDER BY ");
 	wxString first;
 	wxStringTokenizer tkz(fields, wxT(','));
+	int i = 0;
 	while (tkz.HasMoreTokens()) {
 		i++;
 		wxString token = tkz.GetNextToken();

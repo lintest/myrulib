@@ -13,7 +13,7 @@ class FbSeqnListThread: public FbThread
 	protected:
 		virtual void * Entry();
 	private:
-		static wxString GetOrder(const wxString &fields, int column);
+		static wxString GetOrder(int column);
 		void DoString(wxSQLite3Database &database);
 		void DoFullText(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);

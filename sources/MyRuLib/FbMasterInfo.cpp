@@ -164,21 +164,20 @@ wxString FbMasterInfoBase::GetOrderTable() const
 wxString FbMasterInfoBase::GetOrderColumn() const
 {
 	switch (GetOrderIndex()) {
-		case BF_NAME: return wxT("books.title");
 		case BF_NUMB: return wxT("MAX(bookseq.number)");
-		case BF_AUTH: return wxT("AGGREGATE(authors.full_name)");
+		case BF_AUTH: return wxT("AGGREGATE(authors.full_name)COLLATE CYR");
 		case BF_CODE: return wxT("books.id");
-		case BF_GENR: return wxT("GENRE(books.genres)");
+		case BF_GENR: return wxT("GENRE(books.genres)COLLATE CYR");
 		case BF_RATE: return wxT("states.rating");
 		case BF_LANG: return wxT("books.lang");
 		case BF_TYPE: return wxT("books.file_type");
 		case BF_DATE: return wxT("books.created");
 		case BF_SIZE: return wxT("books.file_size");
 		case BF_BITE: return wxT("books.file_size");
-		case BF_SEQN: return wxT("AGGREGATE(value)");
+		case BF_SEQN: return wxT("AGGREGATE(value)COLLATE CYR");
 		case BF_DOWN: return wxT("states.download");
 		case BF_MD5S: return wxT("books.md5sum");
-		default: return wxT("books.title");
+		default: return wxT("books.title COLLATE CYR");
 	}
 }
 
@@ -187,8 +186,8 @@ wxString FbMasterInfoBase::GetOrderFields() const
 	wxString column = GetOrderColumn();
 	wxString result = column;
 	if (m_order < 0) result << wxT(" DESC");
-	if (column != wxT("books.title")) {
-		result << wxT(',') << wxT("books.title");
+	if (column != wxT("books.title COLLATE CYR")) {
+		result << wxT(',') << wxT("books.title COLLATE CYR");
 		if (m_order < 0) result << wxT(" DESC");
 	}
 	return result;

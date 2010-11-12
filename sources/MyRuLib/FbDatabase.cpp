@@ -201,10 +201,6 @@ wxString FbSearchFunction::AddAsterisk(const wxString &text)
 //  FbAggregateFunction
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-//  FbAggregateFunction
-//-----------------------------------------------------------------------------
-
 void FbAggregateFunction::Aggregate(wxSQLite3FunctionContext& ctx)
 {
 	wxSortedArrayString** acc = (wxSortedArrayString **) ctx.GetAggregateStruct(sizeof (wxSortedArrayString **));
@@ -236,10 +232,25 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 }
 
 //-----------------------------------------------------------------------------
+//  wxSQLite3Collation
+//-----------------------------------------------------------------------------
+
+int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
+{
+#if defined(__WIN32__)
+	return lstrcmpi(text1.c_str(), text2.c_str());
+#else
+	return text1.CmpNoCase(text2);
+#endif
+}
+
+//-----------------------------------------------------------------------------
 //  FbDatabase
 //-----------------------------------------------------------------------------
 
 wxCriticalSection FbDatabase::sm_queue;
+
+FbCyrillicCollation FbDatabase::sm_collation;
 
 const wxString & FbDatabase::GetConfigName()
 {
@@ -315,6 +326,7 @@ void FbDatabase::AttachConfig()
 FbCommonDatabase::FbCommonDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetLibFile());
+	SetCollation(wxT("CYR"), &sm_collation);
 }
 
 wxString FbCommonDatabase::GetMd5(int id)
@@ -334,6 +346,7 @@ wxString FbCommonDatabase::GetMd5(int id)
 FbLocalDatabase::FbLocalDatabase()
 {
 	FbDatabase::Open(GetConfigName());
+	SetCollation(wxT("CYR"), &sm_collation);
 }
 
 //-----------------------------------------------------------------------------

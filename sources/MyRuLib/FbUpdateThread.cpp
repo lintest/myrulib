@@ -240,8 +240,14 @@ int FbUpdateItem::DoUpdate()
 	size_t size = sizeof( list ) / sizeof( wxChar * ) / 4;
 	for (size_t i = 0; i < size; i++) {
 		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(%s)SELECT DISTINCT %s FROM upd.%s"), list[i][0], list[i][1], list[i][3], list[i][2]);
-		int count = m_database.ExecuteUpdate(sql);
-		if (i == 0) wxLogWarning(_("Loaded new %d books"), count);
+		m_database.ExecuteUpdate(sql);
+	}
+
+	{
+		wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM upd.books");
+		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+		int count = result.NextRow() ? result.GetInt(0) : 0;
+		wxLogWarning(_("Loaded new %d books"), count);
 	}
 
 	trans.Commit();

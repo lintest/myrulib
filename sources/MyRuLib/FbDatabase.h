@@ -85,6 +85,12 @@ class FbSearchFunction: public wxSQLite3ScalarFunction
 		wxArrayString m_masks;
 };
 
+class FbCyrillicCollation: public wxSQLite3Collation
+{
+	public:
+		virtual int Compare(const wxString& text1, const wxString& text2);
+};
+
 class FbDatabase: public wxSQLite3Database
 {
 	public:
@@ -94,6 +100,8 @@ class FbDatabase: public wxSQLite3Database
 		static const wxString & GetConfigName();
 		static wxString GetConfigPath();
 		void AttachConfig();
+	protected:
+		static FbCyrillicCollation sm_collation;
 	private:
 		static wxCriticalSection sm_queue;
 };

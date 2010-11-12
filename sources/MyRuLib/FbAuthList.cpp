@@ -25,7 +25,7 @@ void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name, number FROM authors");
 	if (m_info.m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
-	sql << GetOrder(wxT("search_name,number"), m_order);
+	sql << GetOrder(m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_info.m_letter) stmt.Bind(1, (wxString)m_info.m_letter);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -35,7 +35,7 @@ void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 void FbAuthListThread::DoString(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE SEARCH(search_name)");
-	sql << GetOrder(wxT("search_name,number"), m_order);
+	sql << GetOrder(m_order);
 	FbSearchFunction search(m_info.m_string);
 	database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -45,7 +45,7 @@ void FbAuthListThread::DoString(wxSQLite3Database &database)
 void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ?");
-	sql << GetOrder(wxT("search_name,number"), m_order);
+	sql << GetOrder(m_order);
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -75,13 +75,14 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 	FbArrayEvent(id, items).Post(m_frame);
 }
 
-wxString FbAuthListThread::GetOrder(const wxString &fields, int column)
+wxString FbAuthListThread::GetOrder(int column)
 {
-	int i = 0;
+	wxString fields = wxT("full_name COLLATE CYR,number");
 	int number = column == 0 ? 1 : abs(column);
 	wxString result = wxT(" ORDER BY ");
 	wxString first;
 	wxStringTokenizer tkz(fields, wxT(','));
+	int i = 0;
 	while (tkz.HasMoreTokens()) {
 		i++;
 		wxString token = tkz.GetNextToken();
