@@ -13,7 +13,7 @@ class FbLocale: public wxLocale
         static int MenuToLang(wxWindowID id);
         static void Fill(FbChoiceFormat * choise, int value);
 	private:
-		bool LoadResource(int language, const wxString &filename);
+		bool LoadResource(const wxLanguageInfo * info, const wxString & filename);
 		bool Save(const wxFileName &filename, const void *data, size_t size);
         wxFileName GetLocaleFilename();
         int m_language;

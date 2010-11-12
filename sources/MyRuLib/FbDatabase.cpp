@@ -237,11 +237,7 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 
 int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
 {
-#if defined(__WIN32__)
-	return lstrcmpi(text1.c_str(), text2.c_str());
-#else
-	return text1.CmpNoCase(text2);
-#endif
+	return wxStrcoll(text1, text2);
 }
 
 //-----------------------------------------------------------------------------
