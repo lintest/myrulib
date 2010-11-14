@@ -361,7 +361,7 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, int author): m_scale
 	");
 
 	wxString filter;
-	if ( author != ciNoAuthor) filter = wxString::Format(wxT("AND (books.id_author=%d)"), author);
+	if ( author) filter = wxString::Format(wxT("AND (books.id_author=%d)"), author);
 	sql = wxString::Format(sql, books.c_str(), filter.c_str());
 
 	FbExportTreeContext context;

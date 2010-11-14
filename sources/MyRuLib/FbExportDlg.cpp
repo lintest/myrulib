@@ -45,7 +45,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 
-	if (iAuthor != ciNoAuthor) {
+	if (iAuthor) {
 		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Use Author (without co-Authors)"), wxDefaultPosition, wxDefaultSize, 0 );
 		bSizerMain->Add( m_checkAuthor, 0, wxALL, 5 );
 		m_checkAuthor->SetValue(1);
@@ -210,7 +210,7 @@ bool FbExportDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
 
 void FbExportDlg::OnCheckAuthor( wxCommandEvent& event )
 {
-	int author = ciNoAuthor;
+	int author = 0;
 	if ( m_checkAuthor && m_checkAuthor->GetValue() ) author = m_author;
 	m_books->AssignModel(new FbExportTreeModel(m_selections, author));
 	ChangeFormat();

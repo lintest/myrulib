@@ -37,7 +37,7 @@ class FbExportDlg : public FbDialog
 	public:
 		FbExportDlg(wxWindow* parent, const wxString & selections, int iAuthor);
 		~FbExportDlg();
-		static bool Execute(wxWindow* parent, FbBookPanel * books, int iAuthor = ciNoAuthor);
+		static bool Execute(wxWindow* parent, FbBookPanel * books, int iAuthor = 0);
 	private:
 		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);

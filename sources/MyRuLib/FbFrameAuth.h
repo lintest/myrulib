@@ -44,7 +44,6 @@ class FbFrameAuth : public FbFrameBase
 		void OnAllClicked(wxCommandEvent& event);
 		void OnLetterClicked(wxCommandEvent& event);
 		void OnChoiceLetter(wxCommandEvent& event);
-		void OnExportBooks(wxCommandEvent& event);
 		void OnViewAlphavet(wxCommandEvent& event);
 		void OnViewAlphavetUpdateUI(wxUpdateUIEvent & event);
 		void OnMasterAppend(wxCommandEvent& event);

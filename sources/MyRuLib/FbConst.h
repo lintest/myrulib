@@ -155,7 +155,6 @@ extern const wxString strNobody;
 extern const wxString strRusJE;
 extern const wxString strRusJO;
 
-extern const int ciNoAuthor;
 extern const int ciMaxImageWidth;
 
 extern const wxString strUpdateAuthorCount;

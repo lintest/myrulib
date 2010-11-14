@@ -5,6 +5,7 @@
 #include "MyRuLibApp.h"
 #include "FbFilterDlg.h"
 #include "FbColumnDlg.h"
+#include "FbMasterTypes.h"
 
 IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
 
@@ -115,7 +116,9 @@ void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 
 void FbFrameBase::OnExportBooks(wxCommandEvent& event)
 {
-	FbExportDlg::Execute(this, m_BooksPanel);
+	FbMasterInfo info = GetInfo();
+	FbMasterAuthInfo * auth = wxDynamicCast(&info, FbMasterAuthInfo);
+	FbExportDlg::Execute(this, m_BooksPanel, auth ? auth->GetId() : 0);
 }
 
 void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)

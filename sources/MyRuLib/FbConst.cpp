@@ -34,8 +34,6 @@ const wxString strOtherSequence = wxT("(Misc.)");
 const wxString strUpdateAuthorCount = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
 const wxString strUpdateSequenCount = wxT("UPDATE sequences SET number=(SELECT COUNT(DISTINCT id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id)");
 
-const int ciNoAuthor = 0x7FFFFFFF;
-
 const int ciMaxImageWidth = 200;
 
 wxString GetRatingText(int index)

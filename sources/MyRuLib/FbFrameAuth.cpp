@@ -16,7 +16,6 @@ BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_COMBOBOX( ID_INIT_LETTER, FbFrameAuth::OnChoiceLetter )
 	EVT_COMBOBOX( ID_CHOICE_LETTER, FbFrameAuth::OnChoiceLetter )
     EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuth::OnColClick)
-	EVT_MENU(wxID_SAVE, FbFrameAuth::OnExportBooks)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuth::OnContextMenu)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameAuth::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameAuth::OnMasterModify)
@@ -112,13 +111,6 @@ void FbFrameAuth::FindAuthor(const wxString &text)
 	m_info = text;
 	CreateMasterThread();
 	m_LetterList->SetText(text);
-}
-
-void FbFrameAuth::OnExportBooks(wxCommandEvent& event)
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data) FbExportDlg::Execute(this, m_BooksPanel, data->GetCode());
 }
 
 void FbFrameAuth::OnColClick(wxListEvent& event)
