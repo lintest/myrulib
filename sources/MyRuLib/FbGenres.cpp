@@ -142,7 +142,7 @@ void FbGenres::Init()
 		{ wxT('9'), wxT('E'), wxT("sci_biology"), _("Biology")},
 		{ wxT('9'), wxT('F'), wxT("sci_tech"), _("Engineering")},
 		{ wxT('9'), wxT('0'), wxT("science"), _("Scientific literature")},
-		{ wxT('A'), wxT('1'), wxT("comp_www"), _("Health")},
+		{ wxT('A'), wxT('1'), wxT("comp_www"), _("Internet")},
 		{ wxT('A'), wxT('2'), wxT("comp_programming"), _("Programming")},
 		{ wxT('A'), wxT('3'), wxT("comp_hard"), _("Computer hardware")},
 		{ wxT('A'), wxT('4'), wxT("comp_soft"), _("Software")},

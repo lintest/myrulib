@@ -1999,3 +1999,6 @@ msgstr "Обновление успешно завершено"
 
 msgid "Loaded new %d books"
 msgstr "Добавлено книг: %d"
+
+msgid "Internet"
+msgstr "Интернет"
