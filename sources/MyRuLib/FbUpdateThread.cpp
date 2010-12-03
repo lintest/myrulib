@@ -175,9 +175,70 @@ int FbUpdateItem::DoUpdate()
 
 	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
+	ExecDelete();
+	ExecInsert();
+	CalcCount();
+
+	trans.Commit();
+
+	m_database.ExecuteUpdate(wxT("DETACH upd"));
+
+	return date;
+}
+
+void FbUpdateItem::CalcCount()
+{
+	wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM upd.books");
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	if (result.NextRow()) wxLogWarning(_("Loaded new %d books"), result.GetInt(0));
+}
+
+void FbUpdateItem::ExecDelete()
+{
+	const wxChar * list[][4] = {
+		{
+			wxT("books"), wxT("id"),
+			wxT("books"), wxT("id"),
+		},
+		{
+			wxT("bookseq"), wxT("id_book"),
+			wxT("books"), wxT("id"),
+		},
+		{
+			wxT("genres"), wxT("id_book"),
+			wxT("books"), wxT("id"),
+		},
+		{
+			wxT("files"), wxT("id_archive"),
+			wxT("archives"), wxT("id"),
+		},
+		{
+			wxT("fts_auth"), wxT("docid"),
+			wxT("authors"), wxT("id"),
+		},
+		{
+			wxT("fts_book"), wxT("docid"),
+			wxT("books"),     wxT("id"),
+		},
+		{
+			wxT("fts_seqn"),  wxT("docid"),
+			wxT("sequences"), wxT("id"),
+		},
+	};
+
+	size_t size = sizeof( list ) / sizeof( wxChar * ) / 4;
+	for (size_t i = 0; i < size; i++) {
+		wxString sql = wxString::Format(wxT("DELETE FROM %s WHERE %s IN (SELECT %s FROM upd.%s)"), list[i][0], list[i][1], list[i][3], list[i][2]);
+		m_database.ExecuteUpdate(sql);
+	}
+}
+
+void FbUpdateItem::ExecInsert()
+{
 	FbLowerFunction	lower;
 	FbAuthorFunction author;
 	FbLetterFunction letter;
+
 	m_database.CreateFunction(wxT("LOW"), 1, lower);
 	m_database.CreateFunction(wxT("AUTH"), 3, author);
 	m_database.CreateFunction(wxT("LTTR"), 1, letter);
@@ -242,16 +303,5 @@ int FbUpdateItem::DoUpdate()
 		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(%s)SELECT DISTINCT %s FROM upd.%s"), list[i][0], list[i][1], list[i][3], list[i][2]);
 		m_database.ExecuteUpdate(sql);
 	}
-
-	{
-		wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM upd.books");
-		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
-		if (result.NextRow()) wxLogWarning(_("Loaded new %d books"), result.GetInt(0));
-	}
-
-	trans.Commit();
-
-	m_database.ExecuteUpdate(wxT("DETACH upd"));
-
-	return date;
 }
+

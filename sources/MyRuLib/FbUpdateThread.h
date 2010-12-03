@@ -26,6 +26,9 @@ class FbUpdateItem: public wxObject
 		bool ReadURL();
 		bool OpenZip();
 		int DoUpdate();
+		void ExecInsert();
+		void ExecDelete();
+		void CalcCount();
 	private:
 		wxSQLite3Database & m_database;
 		int m_code;
