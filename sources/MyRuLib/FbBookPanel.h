@@ -23,6 +23,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id);
 		virtual ~FbBookPanel();
 		void Reset(const FbMasterInfo &master, const FbFilterObj &filter);
+		void UpdateMaster(FbMasterEvent & event);
 		void UpdateInfo(int id);
 		void SetOrderID(int id);
 		int GetOrderID();

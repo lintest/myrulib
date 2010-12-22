@@ -161,3 +161,31 @@ void FbBookListModel::Delete()
 		}
 	}
 }
+
+void FbBookListModel::Modify(int book, bool add)
+{
+	wxWindow * owner = GetOwner();
+	int index = m_items.Index(book);
+	if (add) {
+		if (index == wxNOT_FOUND) {
+			m_items.Add(book);
+			if (m_items.Count() == 1) {
+				m_position = 1;
+				wxTreeEvent event(wxEVT_COMMAND_TREE_SEL_CHANGED, 0);
+				event.SetEventObject(m_owner);
+				m_owner->GetEventHandler()->ProcessEvent(event);
+			}
+		}
+	} else {
+		if (index != wxNOT_FOUND) {
+			int pos = m_position;
+			m_items.RemoveAt(index);
+			if (m_items.Count() < m_position) m_position--;
+			if (owner && pos <= index) {
+				wxTreeEvent event(wxEVT_COMMAND_TREE_SEL_CHANGED, 0);
+				event.SetEventObject(m_owner);
+				m_owner->GetEventHandler()->ProcessEvent(event);
+			}
+		}
+	}
+}

@@ -175,6 +175,17 @@ void FbBookData::DoDownload() const
 		stmt.Bind(2, md5sum);
 		stmt.ExecuteUpdate();
 	}
+
+	{
+		FbMasterDownInfo info = FbMasterDownInfo::DT_WAIT;
+		FbMasterEvent(ID_UPDATE_MASTER, info, m_id, true).Post();
+	}
+
+	{
+		FbMasterDownInfo info = FbMasterDownInfo::DT_ERROR;
+		FbMasterEvent(ID_UPDATE_MASTER, info, m_id, false).Post();
+	}
+
 	wxGetApp().StartDownload();
 }
 

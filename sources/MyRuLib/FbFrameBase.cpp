@@ -311,6 +311,6 @@ void FbFrameBase::OnHandleMenu(wxCommandEvent& event)
 
 void FbFrameBase::UpdateMaster(FbMasterEvent & event)
 {
-	if (GetInfo() == event.m_info) ;
+	if (m_BooksPanel && GetInfo() == event.m_info) m_BooksPanel->UpdateMaster(event);
 }
 

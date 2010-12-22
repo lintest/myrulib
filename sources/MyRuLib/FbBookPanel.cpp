@@ -541,5 +541,13 @@ void FbBookPanel::DoPopupMenu(wxWindowID id)
 	}
 }
 
+void FbBookPanel::UpdateMaster(FbMasterEvent & event)
+{
+	if (m_BookList) {
+		FbBookListModel * model = wxDynamicCast(m_BookList->GetModel(), FbBookListModel);
+		if (model) model->Modify(event.m_book, event.m_add);
+		m_BookList->Refresh();
+	}
+}
 
 

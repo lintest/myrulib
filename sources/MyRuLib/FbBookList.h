@@ -42,6 +42,8 @@ class FbBookListModel: public FbListModel
 		void SetState(int code, int state);
 		int GetState(int code) const;
 		virtual size_t GetSelected(wxArrayInt &items);
+		void Modify(int book, bool add);
+
 	public:
 		virtual size_t GetRowCount() const
 			{ return m_items.Count(); }

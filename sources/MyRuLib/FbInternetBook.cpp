@@ -215,7 +215,7 @@ void FbInternetBook::SaveFile(const bool success)
 	if (success) {
 		FbCollection::ResetBook(m_id);
 		FbCollection::ResetInfo(m_id);
-		FbFolderEvent(ID_UPDATE_FOLDER, 0, FT_DOWNLOAD).Post();
+//		FbFolderEvent(ID_UPDATE_FOLDER, 0, FT_DOWNLOAD).Post();
 		FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, m_id).Post();
 		FbLogMessage(_("Download finished"), m_url);
 	}
