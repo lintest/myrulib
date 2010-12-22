@@ -80,13 +80,18 @@ class FbMasterGenrInfo: public FbMasterInfoBase
 class FbMasterDownInfo: public FbMasterInfoBase
 {
 	public:
-		FbMasterDownInfo(int id)
+		enum DownType {
+			DT_WAIT,
+			DT_READY,
+			DT_ERROR,
+		};
+		FbMasterDownInfo(DownType id)
 			: m_id(id) {}
 		FbMasterDownInfo(const FbMasterDownInfo &info)
 			: FbMasterInfoBase(info), m_id(info.m_id) {}
 		virtual FbMasterInfoBase * Clone() const
 			{ return new FbMasterDownInfo(*this); }
-		int GetId() const
+		DownType GetId() const
 			{ return m_id; }
 		virtual bool operator==(const FbMasterInfoBase & info) {
 			const FbMasterDownInfo * data = wxDynamicCast(&info, FbMasterDownInfo);
@@ -96,7 +101,7 @@ class FbMasterDownInfo: public FbMasterInfoBase
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(wxSQLite3Statement &stmt) const;
 	private:
-		int m_id;
+		DownType m_id;
 		DECLARE_CLASS(FbMasterDownInfo);
 };
 

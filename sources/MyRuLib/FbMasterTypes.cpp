@@ -180,9 +180,9 @@ wxString FbMasterDownInfo::GetWhere(wxSQLite3Database &database) const
 {
 	wxString sql = wxT("books.md5sum IN (SELECT md5sum FROM states WHERE download");
 	switch (m_id) {
-		case 1: sql << wxT(">1)"); break;
-		case 2: sql << wxT("=1)"); break;
-		default: sql << wxT("<0)");
+		case DT_WAIT:  sql << wxT("<0)"); break;
+		case DT_ERROR: sql << wxT("=1)"); break;
+		case DT_READY: sql << wxT(">1)"); break;
 	}
 	return sql;
 }

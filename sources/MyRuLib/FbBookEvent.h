@@ -6,6 +6,7 @@
 #include "FbBookData.h"
 #include "FbBookTypes.h"
 #include "FbMasterInfo.h"
+#include "FbMasterTypes.h"
 
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_BOOK_ACTION,     1 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_MODEL_ACTION,    2 )
@@ -18,7 +19,6 @@ DECLARE_LOCAL_EVENT_TYPE( fbEVT_ARRAY_ACTION,    8 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_COUNT_ACTION,    9 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_IMAGE_ACTION,   10 )
 DECLARE_LOCAL_EVENT_TYPE( fbEVT_LETTERS_ACTION, 11 )
-
 
 class FbModel;
 
@@ -79,19 +79,20 @@ class FbMasterEvent: public FbCommandEvent
 {
 	public:
 		FbMasterEvent(wxWindowID id)
-			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_data(NULL), m_number(0) {};
+			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_book(0), m_add(true) {};
 
 		FbMasterEvent(const FbMasterEvent & event)
-			: FbCommandEvent(event), m_data(event.m_data), m_number(event.m_number) {};
+			: FbCommandEvent(event), m_info(event.m_info), m_book(event.m_book), m_add(event.m_add) {};
 
-		FbMasterEvent(wxWindowID id, const wxString &text, FbMasterData * data, int number = 0)
-			: FbCommandEvent(fbEVT_MASTER_ACTION, id, text), m_data(data), m_number(number) {};
+		FbMasterEvent(wxWindowID id, const FbMasterInfo &info, int book, bool add)
+			: FbCommandEvent(fbEVT_MASTER_ACTION, id), m_info(info), m_book(book), m_add(add) {};
 
 		virtual wxEvent *Clone() const { return new FbMasterEvent(*this); }
 
 	public:
-		FbMasterData * m_data;
-		int m_number;
+		FbMasterInfo m_info;
+		int m_book;
+		bool m_add;
 };
 
 class FbOpenEvent: public FbCommandEvent

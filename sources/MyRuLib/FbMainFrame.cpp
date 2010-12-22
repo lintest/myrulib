@@ -94,6 +94,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
 	EVT_FB_OPEN(ID_BOOK_SEQUENCE, FbMainFrame::OnOpenSequence)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
+	EVT_FB_MASTER(ID_UPDATE_MASTER, FbMainFrame::OnUpdateMaster)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
 	EVT_COMMAND(ID_UPDATE_BOOK, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateBook)
@@ -568,6 +569,15 @@ void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 	} else {
 		FbFrameFldr * frame = wxDynamicCast(FindFrameById(ID_FRAME_FLDR, false), FbFrameFldr);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
+	}
+}
+
+void FbMainFrame::OnUpdateMaster(FbMasterEvent & event)
+{
+	size_t count = GetNotebook()->GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		if (frame) frame->UpdateMaster(event);
 	}
 }
 

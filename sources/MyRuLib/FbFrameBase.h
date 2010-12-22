@@ -20,6 +20,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		~FbFrameBase();
 		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
 		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; }
+		void UpdateMaster(FbMasterEvent & event);
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };

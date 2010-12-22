@@ -73,6 +73,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnError(wxCommandEvent& event);
 		void OnHideLog(wxCommandEvent& event);
 		void OnUpdateFolder(FbFolderEvent & event);
+		void OnUpdateMaster(FbMasterEvent & event);
 		void OnOpenAuthor(FbOpenEvent & event);
 		void OnOpenSequence(FbOpenEvent & event);
 		void OnTabArt(wxCommandEvent & event);

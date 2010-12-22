@@ -308,3 +308,9 @@ void FbFrameBase::OnHandleMenu(wxCommandEvent& event)
 		m_BooksPanel->DoPopupMenu(event.GetId());
 	} else event.Skip();
 }
+
+void FbFrameBase::UpdateMaster(FbMasterEvent & event)
+{
+	if (GetInfo() == event.m_info) ;
+}
+

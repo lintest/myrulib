@@ -75,9 +75,9 @@ void FbFrameDown::CreateColumns()
 void FbFrameDown::FillFolders(const int iCurrent)
 {
 	FbListStore * model = new FbListStore;
-	model->Append(new FbDownListData(0, _("Queue")));
-	model->Append(new FbDownListData(1, _("Ready")));
-	model->Append(new FbDownListData(2, _("Fault")));
+	model->Append(new FbDownListData(FbMasterDownInfo::DT_WAIT,  _("Queue")));
+	model->Append(new FbDownListData(FbMasterDownInfo::DT_READY, _("Ready")));
+	model->Append(new FbDownListData(FbMasterDownInfo::DT_ERROR, _("Fault")));
 	m_MasterList->AssignModel(model);
 }
 
