@@ -5,6 +5,7 @@ require_once '../Common/strutils.php';
 
 function InitDatabase($mysql)
 {
+	$mysql->query("DROP TABLE auth");
 	$mysql->query("CREATE TABLE auth(aid integer primary key AUTO_INCREMENT, name VARCHAR(300)) DEFAULT CHARACTER SET utf8");
 	$mysql->query("CREATE INDEX auth_name ON auth(name)");
 }
@@ -45,7 +46,7 @@ function convert_books($mysql_db, $sqlite_db)
   $mysql_db->real_query("DELETE FROM authors");
 
   $sqltest = "
-	SELECT Id, Title, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeAdded,'%y%m%d') As Time, identifier, md5, coverurl
+	SELECT Id, Title, Series, Periodical, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeAdded,'%y%m%d') As Time, identifier, md5, coverurl
 	FROM updated
 	ORDER BY Id 
   ";
@@ -55,7 +56,12 @@ function convert_books($mysql_db, $sqlite_db)
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
-    echo $row['Time']." - ".$row['Id']." - ".$row['Extension']." - ".$row['Author']." - ".$row['Title']."\n";
+
+	$title = trim($row['Title']);
+	if (strlen($title) == 0) $title = trim($row['Periodical']);
+	if (strlen($title) == 0) $title = trim($row['Series']);
+
+    echo $row['Time']." - ".$row['Id']." - ".$row['Extension']." - ".$row['Author']." - ".$title."\n";
 	$next = trim($row['Author']);
 	if ($name != $next) {
 	  $auth = GetAuthId($mysql_db, $next);
@@ -68,25 +74,35 @@ function convert_books($mysql_db, $sqlite_db)
 	if ($time < 20) $time = 0;
 
 	$descr = NULL;
-	$md5 = $row['md5'];
-    $sqltest1 = "SELECT descr FROM description WHERE id='$md5'";
-    $query1 = $mysql_db->query($sqltest1);
-    $row1 = $query1->fetch_array();
-	if ($row = $query->fetch_array()) {
-	  $descr = $row1['descr'];	
+	$stmt = $mysql_db->stmt_init();
+	$stmt->prepare("SELECT descr FROM description WHERE md5=?");
+	$stmt->bind_param("s", $param_md5);
+	$param_md5 = $row['md5'];
+	$stmt->execute();
+	$stmt->bind_result($res_descr);
+	if ($stmt->fetch()) {
+		$descr = $res_descr;
 	}
+	$stmt->close();
         
 	$sql = "INSERT INTO books (id, id_author, title, file_size, file_type, created, lang, md5sum, description) VALUES(?,?,?,?,?,?,?,?,?)";
 	$insert = $sqlite_db->prepare($sql);
-	$err= $insert->execute(array($row['Id'], $auth, trim($row['Title']), $row['Filesize'], $row['Extension'], $time, $row['Language'], $row['md5'], $descr));
+	$err= $insert->execute(array($row['Id'], $auth, $title, $row['Filesize'], $row['Extension'], $time, $row['Language'], $row['md5'], $descr));
 	$insert->closeCursor();
   }
+
+  $sqlite_db->query("INSERT OR REPLACE INTO dates(id, lib_num) (select created, count(id) from books group by created)");
 
   $sqlite_db->query("commit;");
 }
 
 function convert_auth($mysql_db, $sqlite_db)
 {
+
+  $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
+
+  if (strpos($char_list, $letter) === false) { $letter = "#"; };
+
   $sqlite_db->query("begin transaction");
 
   $sqltest = "SELECT aid, name FROM auth";
@@ -94,12 +110,19 @@ function convert_auth($mysql_db, $sqlite_db)
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
     echo $row['aid']." - ".$row['name']."\n";
-    $sql = "INSERT INTO authors(id, full_name, last_name) VALUES(?,?,?)";
+    $full_name = trim($row['name']);
+    $search_name = strtolowerEx($full_name);
+    $letter = utf8_substr($full_name,0,1);
+    $letter = strtoupperEx($letter,0,1);
+    $sql = "INSERT INTO authors (id, number, letter, full_name, last_name, search_name) VALUES(?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    $insert->execute(array($row['aid'], $row['name'], $row['name']));
+    $insert->execute(array($row['aid'], 0, $letter, $full_name, $full_name, $search_name));
     $insert->closeCursor();
   }
   $query->close(); 
+
+  $sqlite_db->query("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
+
   $sqlite_db->query("commit");
 }  
 
