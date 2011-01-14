@@ -14,11 +14,18 @@
 #include "FbDateTime.h"
 #include "FbURL.h"
 
-wxString FbInternetBook::GetURL(const int id)
+wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 {
+	wxString type = FbParams::GetStr(DB_LIBRARY_TYPE);
 	wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
-	wxString addr = wxT("http://%s/b/%d/download");
-	return wxString::Format(addr, host.c_str(), id);
+	if (type == wxT("GENESIS")) {
+		wxString key = md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum;
+		wxString addr = wxT("http://%s/get?nametype=orig&md5=%s");
+		return wxString::Format(addr, host.c_str(), key.c_str());
+	} else {
+		wxString addr = wxT("http://%s/b/%d/download");
+		return wxString::Format(addr, host.c_str(), id);
+	}
 }
 
 FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
@@ -33,7 +40,7 @@ FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
 	if ( result.NextRow() ) {
 		m_id = result.GetInt(0);
 		m_filetype = result.GetString(1);
-		m_url = GetURL(m_id);
+		m_url = GetURL(m_id, m_md5sum);
 	}
 }
 

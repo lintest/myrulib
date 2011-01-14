@@ -10,7 +10,7 @@ class FbInternetBook
 {
 	public:
 		FbInternetBook(FbDownloader * owner, const wxString& md5sum);
-		static wxString GetURL(const int id);
+		static wxString GetURL(const int id, const wxString& md5sum = wxEmptyString);
 		bool Execute();
 	private:
 		bool DoDownload();
