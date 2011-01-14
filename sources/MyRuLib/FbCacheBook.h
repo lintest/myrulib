@@ -15,7 +15,7 @@ class FbCacheBook: public wxObject
 		operator bool() const { return m_code; }
 		int GetCode() const { return m_code; }
 		wxString GetValue(size_t field) const;
-		bool IsGray() const { return m_gray; }
+		bool IsGray() const;
 	private:
 		static wxString GetSQL();
 		int m_code;

@@ -2002,3 +2002,6 @@ msgstr "Добавлено книг: %d"
 
 msgid "Internet"
 msgstr "Интернет"
+
+msgid "Use a gray font for missing books"
+msgstr "Выделять серым цветом отсутствующие книги"

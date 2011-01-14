@@ -548,7 +548,7 @@ void FbMainDatabase::CreateFullText(bool force)
 
 	FbLowerFunction	lower;
 	CreateFunction(wxT("LOW"), 1, lower);
-	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(search_name) FROM authors"));
+	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(full_name) FROM authors"));
 	ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
 	ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
 

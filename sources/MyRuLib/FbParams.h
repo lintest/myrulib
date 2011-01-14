@@ -92,6 +92,7 @@ enum FbParamKey {
 	FB_ALPHABET_EN   = 193,
 	FB_LANG_LOCALE   = 194,
 
+	FB_GRAY_FONT     = 211,
 	FB_CLEAR_LOG     = 212,
 
 	FB_TITLE_0 = 220,

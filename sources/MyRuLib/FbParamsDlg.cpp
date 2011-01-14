@@ -390,6 +390,9 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_CLEAR_LOG, _("Clear the log window when it closes"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
+	checkbox = new wxCheckBox( this, ID_GRAY_FONT, _("Use a gray font for missing books"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
+
 	SetSizer( bSizerMain );
 	bSizerMain->Fit( this );
 	Layout();
@@ -619,6 +622,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_REMOVE_FILES, ID_REMOVE_FILES},
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH},
 		{FB_CLEAR_LOG, ID_CLEAR_LOG},
+		{FB_GRAY_FONT, ID_GRAY_FONT},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT},
 		{FB_LANG_LOCALE, ID_LANG_LOCALE},
 	};

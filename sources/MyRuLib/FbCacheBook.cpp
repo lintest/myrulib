@@ -2,6 +2,7 @@
 #include "FbColumns.h"
 #include "FbGenres.h"
 #include "FbConst.h"
+#include "FbParams.h"
 #include "FbDateTime.h"
 #include "FbCollection.h"
 
@@ -117,6 +118,11 @@ wxString FbCacheBook::GetValue(size_t field) const
 	}
 }
 
+bool FbCacheBook::IsGray() const 
+{ 
+	return m_gray && FbParams::GetInt(FB_GRAY_FONT);
+}
+			
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(FbCasheBookArray);
 

@@ -52,6 +52,7 @@ class FbParamsDlg : private FbDialog
 			ID_FONT_DLG,
 			ID_REMOVE_FILES,
 			ID_CLEAR_LOG,
+			ID_GRAY_FONT,
 			ID_SAVE_FULLPATH,
 			ID_LANG_LOCALE,
 			ID_LETTERS,

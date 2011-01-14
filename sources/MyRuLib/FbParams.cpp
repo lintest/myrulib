@@ -32,6 +32,7 @@ int FbParams::DefaultInt(int param)
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
 			case FB_TEMP_DEL: return 1;
+			case FB_GRAY_FONT: return 1;
 			case FB_MODE_AUTHOR: return 1;
 			case FB_TRANSLIT_FOLDER: return 0;
 			case FB_TRANSLIT_FILE: return 1;
