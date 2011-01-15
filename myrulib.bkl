@@ -74,6 +74,7 @@
 	</lib>
 
 	<exe id="zipscan" template="wxconsole">
+		<depends>sqlite3_static</depends>
 		<define>NDEBUG</define>
 		<sources>ZipScaner/ZipScan.cpp</sources>
 		<sources>MyRuLib/md5.c</sources>
@@ -155,6 +156,8 @@
 	</action>
 	
 	<exe id="myrulib" template="wxgui">
+		<depends>expat_static</depends>
+		<depends>sqlite3_static</depends>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
 		<include>$(BUILDDIR)</include>
