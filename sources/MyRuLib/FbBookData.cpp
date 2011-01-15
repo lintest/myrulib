@@ -95,7 +95,7 @@ bool FbBookData::GetUserCommand(wxSQLite3Database &database, const wxString &fil
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (result.NextRow()) {
 	    command = result.GetString(0);
-	    return true;
+	    return !command.IsEmpty();
     }
     return false;
 }
@@ -145,10 +145,18 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		command << wxT(' ') << filepath;
 		wxExecute(command);
 		#endif
-	} else if (GetSystemCommand(filepath, filetype, command)) {
-		wxExecute(command);
 	} else {
-		FbMessageBox(_("Associated application not found"), filetype);
+		#ifdef __WXGTK__
+		filepath.Prepend(wxT('"')).Append(wxT('"'));
+		command << wxT("xdg-open") << wxT(' ') << filepath;
+		wxExecute(command);
+		#else
+		if (GetSystemCommand(filepath, filetype, command)) {
+			wxExecute(command);
+		} else {
+			FbMessageBox(_("Associated application not found"), filetype);
+		}
+		#endif
 	}
 }
 
