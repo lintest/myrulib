@@ -1,3 +1,4 @@
+#include <wx/cpp.h>
 #include "../../version.inc"
 
 aaaa ICON "home.ico"
