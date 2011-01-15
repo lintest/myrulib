@@ -2,6 +2,12 @@ myrulib (0.26.6-maverick1) maverick; urgency=low
 
   * Update release
 
+ -- Denis Kandrashin <mail@lintest.ru>  Sat, 15 Jan 2011 16:49:39 +0300
+
+myrulib (0.26.5-maverick1) maverick; urgency=low
+
+  * Update release
+
  -- Denis Kandrashin <mail@lintest.ru>  Tue, 21 Dec 2010 23:54:44 +0300
 
 myrulib (0.24.18-maverick1) maverick; urgency=low
