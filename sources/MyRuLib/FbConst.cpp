@@ -2,11 +2,10 @@
 
 #include "../version.inc"
 
-#define __TXT(text) #text
-#define TXT(text) __TXT(text)
+#define TXT(text) wxT(wxSTRINGIZE(text))
 
-const wxString strProgramName = (wxString)wxT("MyRuLib ") + wxT(TXT(VERSION_MAJOR)) + wxT(".") + wxT(TXT(VERSION_MINOR));
-const wxString strProgramInfo = strProgramName + wxT('.') + wxT(TXT(VERSION_BUILD));
+const wxString strProgramName = (wxString) TXT(PROGRAM_NAME) + wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR);
+const wxString strProgramInfo = strProgramName + wxT('.') + TXT(VERSION_BUILD);
 const wxString strHomePage = wxT("http://myrulib.lintest.ru");
 const wxString strMailAddr = wxT("mail@lintest.ru");
 const wxString strVersionInfo = strHomePage +  wxT("\n") + strMailAddr;
@@ -18,7 +17,6 @@ static wxString GetRussianAlphabet()
 		if (ch == (wxChar)0x042A) continue;
 		if (ch == (wxChar)0x042C) continue;
 		result += ch;
-//		if (ch == (wxChar)0x0415) result += (wxChar)0x0401;
 	}
 	return result;
 }

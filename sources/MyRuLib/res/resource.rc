@@ -10,9 +10,6 @@ uk_UA RC_DATA "uk.mo"
 cs_CZ RC_DATA "cs.mo"
 sv_SE RC_DATA "sv.mo"
 
-#define __TXT(text) #text
-#define TXT(text) __TXT(text)
-
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, 0
 PRODUCTVERSION VERSION_MAJOR, VERSION_MINOR, 0, 0
@@ -32,12 +29,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "\0"
       VALUE "FileDescription", "MyRuLib Application\0"
-      VALUE "FileVersion", TXT(VERSION_MAJOR) ", " TXT(VERSION_MINOR) ", " TXT(VERSION_BUILD) ", " TXT(0)
+      VALUE "FileVersion", wxSTRINGIZE(VERSION_MAJOR) ", " wxSTRINGIZE(VERSION_MINOR) ", " wxSTRINGIZE(VERSION_BUILD) ", " wxSTRINGIZE(0)
       VALUE "InternalName", "myrulib\0"
       VALUE "LegalCopyright", "Copyright © Kandrashin Denis, 2010\0"
       VALUE "OriginalFilename", "myrulib.exe\0"
       VALUE "ProductName", "MyRuLib E-Book Library Manager\0"
-      VALUE "ProductVersion", TXT(VERSION_MAJOR) ", " TXT(VERSION_MINOR) ", " TXT(0) ", " TXT(0)
+      VALUE "ProductVersion", wxSTRINGIZE(VERSION_MAJOR) ", " wxSTRINGIZE(VERSION_MINOR) ", " wxSTRINGIZE(0) ", " wxSTRINGIZE(0)
     END
   END
   BLOCK "VarFileInfo"
