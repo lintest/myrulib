@@ -35,7 +35,10 @@ bool FbLocale::LoadResource(const wxLanguageInfo * info, const wxString & filena
 bool FbLocale::Init(int language, int flags)
 {
 	const wxLanguageInfo * info = FbLocale::GetLanguageInfo(language);
+
+	#ifdef wxHAVE_TCHAR_SUPPORT
 	if (info) wxSetlocale(LC_COLLATE, info->CanonicalName);
+	#endif
 
 	wxFileName filename = FbConfigDatabase::GetConfigName();
 	filename.SetExt(wxT("mo"));
