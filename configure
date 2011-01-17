@@ -8919,7 +8919,6 @@ WX_CFLAGS=`echo $WX_CFLAGS | sed "s|-mthreads||g"`
 WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed "s|-mthreads||g"`
 WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed "s|-mthreads||g"`
 WX_LIBS=`echo $WX_LIBS | sed "s|-mthreads||g"`
-LDFLAGS="$LDFLAGS -Wl,--add-needed"
 
 if test $USE_EXPAT = yes ; then
   CXXFLAGS="$CXXFLAGS -DXML_STATIC -I$DOLLAR(srcdir)/sources/Expat"
