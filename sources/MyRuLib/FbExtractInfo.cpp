@@ -6,7 +6,7 @@
 
 WX_DEFINE_OBJARRAY(FbExtractArrayBase);
 
-FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext):
+FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext, const wxString & md5):
 	id_book(id),
 	id_archive(result.GetInt(wxT("id_archive"))),
 	book_name(result.GetString(wxT("file_name"))),
@@ -16,7 +16,11 @@ FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString
 {
 	librusec = id_book>0 && (result.GetInt(wxT("file")) == 0);
 	if (id_book>0 && book_name.IsEmpty()) {
-		book_name << id << wxT('.') << ext;
+		if (FbParams::GetStr(DB_LIBRARY_TYPE) == wxT("GENESIS")) {
+			book_name << (id / 1000 * 1000) << wxT('/') << md5;
+		} else {
+			book_name << id << wxT('.') << ext;
+		}
 	}
 }
 
@@ -37,7 +41,7 @@ bool FbExtractItem::NotFb2() const
 wxString FbExtractItem::InfoName() const
 {
 	size_t pos = book_name.rfind(wxT('.'));
-	wxString result = book_name.substr(0, pos); 
+	wxString result = book_name.substr(0, pos);
 	return result << wxT(".fbd");
 }
 
@@ -125,8 +129,8 @@ FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 {
 	{
 		wxString sql = wxT("\
-			SELECT DISTINCT 0 AS file, id, id_archive, file_name, file_path, file_type FROM books WHERE id=? UNION ALL \
-			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path, NULL FROM files WHERE id_book=? \
+			SELECT DISTINCT 0 AS file, id, id_archive, file_name, file_path, file_type, md5sum FROM books WHERE id=? UNION ALL \
+			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path, NULL, NULL FROM files WHERE id_book=? \
 			ORDER BY file \
 		");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
@@ -134,9 +138,11 @@ FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 		stmt.Bind(2, id);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		wxString filetype;
+		wxString md5sum;
 		while ( result.NextRow() ) {
 			if (filetype.IsEmpty()) filetype = result.GetString(wxT("file_type"));
-			Add(FbExtractItem(result, id, filetype));
+			if (md5sum.IsEmpty()) md5sum = result.GetString(wxT("md5sum"));
+			Add(FbExtractItem(result, id, filetype, md5sum));
 		}
 	}
 
