@@ -15,9 +15,9 @@ FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString
 	librusec(false)
 {
 	librusec = id_book>0 && (result.GetInt(wxT("file")) == 0);
-	if (id_book>0 && book_name.IsEmpty()) {
-		if (FbParams::GetStr(DB_LIBRARY_TYPE) == wxT("GENESIS")) {
-			book_name << (id / 1000 * 1000) << wxT('/') << md5;
+	if (librusec) {
+		if (FbParams::IsGenesis()) {
+			book_name << id / 1000 * 1000 << wxT('/') << Lower(md5);
 		} else {
 			book_name << id << wxT('.') << ext;
 		}
@@ -40,8 +40,13 @@ bool FbExtractItem::NotFb2() const
 
 wxString FbExtractItem::InfoName() const
 {
-	size_t pos = book_name.rfind(wxT('.'));
-	wxString result = book_name.substr(0, pos);
+	int pos = book_name.rfind(wxT('.'));
+	wxString result;
+	if (pos == wxNOT_FOUND) {
+		result = book_name;
+	} else {
+		result = book_name.substr(0, pos);
+	}
 	return result << wxT(".fbd");
 }
 

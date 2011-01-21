@@ -198,13 +198,14 @@ void MyRuLibApp::SetLibFile(const wxString & filename)
 
 void MyRuLibApp::UpdateLibPath()
 {
-	wxFileName dirname = FbParams::GetStr(DB_LIBRARY_DIR);
+	wxFileName dirname = GetLibFile();
+	dirname.SetPath(FbParams::GetStr(DB_LIBRARY_DIR));
 	if (dirname.IsRelative()) {
 		wxFileName filename = GetLibFile();
 		dirname.MakeAbsolute(filename.GetPath());
 	}
 	wxCriticalSectionLocker locker(sm_section);
-	m_LibPath = dirname.GetFullPath();
+	m_LibPath = dirname.GetPath();
 }
 
 void MyRuLibApp::OnImageEvent(FbImageEvent & event)

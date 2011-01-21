@@ -176,3 +176,8 @@ void FbParams::Set(wxWindowID winid, int param, const wxString &text)
 	if (id) Set(id, text);
 }
 
+bool FbParams::IsGenesis()
+{
+	return FbParams::GetStr(DB_LIBRARY_TYPE) == wxT("GENESIS");
+}
+

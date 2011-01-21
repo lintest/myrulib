@@ -112,10 +112,11 @@ function convert_books($mysql_db, $sqlite_db)
 	if ($time < 20) $time = 0;
 
 	$descr = GetDescr($mysql_db, $row['md5']);
+	$md5sum = strtolower($row['md5']);
         
 	$sql = "INSERT INTO books (id, id_author, title, file_size, file_type, created, lang, md5sum, description) VALUES(?,?,?,?,?,?,?,?,?)";
 	$insert = $sqlite_db->prepare($sql);
-	$err= $insert->execute(array($book, $auth, $title, $row['Filesize'], $row['Extension'], $time, $row['Language'], $row['md5'], $descr));
+	$err= $insert->execute(array($book, $auth, $title, $row['Filesize'], $row['Extension'], $time, $row['Language'], $md5sum, $descr));
 	$insert->closeCursor();
 
 	$param_aid = $auth;
@@ -176,9 +177,7 @@ function convert_dates($mysql_db, $sqlite_db)
 	echo $row['Time']." - ".$row['Max']." - ".$row['Min']."\n";
     $sql = "INSERT INTO dates (id, lib_max, lib_min, lib_num) VALUES(?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['Time'], $row['Max'], $row['Min'], $row['Num']));
-    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
   $sqlite_db->query("commit");
@@ -208,7 +207,7 @@ function FullImport($mysql_db, $file, $date)
   
   convert_books($mysql_db, $sqlite_db);
   convert_auth($mysql_db, $sqlite_db);
-#  convert_dates($mysql_db, $sqlite_db);
+  convert_dates($mysql_db, $sqlite_db);
   
   create_indexes($sqlite_db);
 }

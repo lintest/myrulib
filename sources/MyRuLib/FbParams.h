@@ -125,6 +125,7 @@ class FbParams {
 		static int DefaultInt(int param);
 		static wxString DefaultStr(int param);
 		static void AddRecent(const wxString &text, const wxString &title);
+		static bool IsGenesis();
 	private:
 		static int Param(wxWindowID winid, int param);
 };
