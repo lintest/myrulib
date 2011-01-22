@@ -136,12 +136,59 @@ function GenreCode($code)
       "economics_ref" => "0F",
     );
   }
-  if (array_key_exists($code, $genres)) return $genres[$s];
+  if (array_key_exists($code, $genres)) return $genres[$code];
   return "";
+}
+
+function GetGenre($mysql, $code, $name)
+{
+	$stmt1 = $mysql->stmt_init();
+	$stmt1->prepare("SELECT gid FROM myrulib_genres WHERE code=?");
+	$stmt1->bind_param("s", $param1);
+	$param1 = $code;
+	$stmt1->execute();
+	$stmt1->bind_result($code1);
+	if ($stmt1->fetch()) {
+		$gid = $code1;
+		$stmt1->close();
+		return $gid;
+	}
+	$stmt1->close();
+
+	$stmt2 = $mysql->stmt_init();
+	$stmt2->prepare("INSERT INTO myrulib_genres(code, name) VALUES(?,?)");
+	$stmt2->bind_param("ss", $param21, $param22);
+	$param21 = $code;
+	$param22 = $name;
+	$stmt2->execute();
+
+	$stmt3 = $mysql->stmt_init();
+	$stmt3->prepare("SELECT gid FROM myrulib_genres WHERE code=?");
+	$stmt3->bind_param("s", $param3);
+	$param3 = $code;
+	$stmt3->execute();
+	$stmt3->bind_result($code3);
+	if ($stmt1->fetch()) {
+		$gid = $code3;
+		$stmt3->close();
+		return $gid;
+	}
+	$stmt3->close();
+
+	return 0;
+}
+
+function KeyToChar($key)
+{
+
 }
 
 function ConvertGenre($mysql_db, $code, $name)
 {
+ $code = trim($code);
+ if (strlen($code) == 0) return ""; 
+ $code = strtolower($code);
+
  global $genres;
   if(!isset($genres)){
     $genres = array(
@@ -277,12 +324,19 @@ function ConvertGenre($mysql_db, $code, $name)
     );
   }
   if (array_key_exists($code, $genres)) return $genres[$s];
+
+  $gid = GetGenre($mysql_db, $code, $name);
+
+  if ($gid == 0) return "";
+
+  $genres[$code] = $key;
+
   return "";
 }
 
 function InitGenres($mysql_db)
 {
-  $mysql_db->query("CREATE TABLE IF NOT EXISTS myrulib_genres(id INTEGER NOT NULL AUTO_INCREMENT, code VARCHAR(50), name VARCHAR(200))");
+  $mysql_db->query("CREATE TABLE IF NOT EXISTS myrulib_genres(gid INTEGER NOT NULL AUTO_INCREMENT, code VARCHAR(50), name VARCHAR(200))");
 }
 
 ?>
