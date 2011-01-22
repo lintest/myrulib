@@ -77,7 +77,7 @@ function convert_books($mysql_db, $sqlite_db)
   $mysql_db->real_query("DELETE FROM authors");
 
   $sqltest = "
-	SELECT Id, Title, Series, Periodical, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeAdded,'%y%m%d') As Time, identifier, md5, coverurl
+	SELECT Id, Title, VolumeInfo, Series, Periodical, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeLastModified,'%y%m%d') As Time, identifier, md5, coverurl
 	FROM updated
 	ORDER BY Id 
   ";
@@ -94,7 +94,8 @@ function convert_books($mysql_db, $sqlite_db)
 
 	$book = $row['Id'];
 
-	$title = trim($row['Title']);
+	$title = trim($row['Title'])." ".trim($row['VolumeInfo']);
+	$title = trim($title);
 	if (strlen($title) == 0) $title = trim($row['Periodical']);
 	if (strlen($title) == 0) $title = trim($row['Series']);
 
@@ -167,7 +168,7 @@ function convert_dates($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM dates");
 
   $sqltest = "
-    SELECT DATE_FORMAT(TimeAdded,'%y%m%d') as Time, MAX(id) as Max, MIN(id) as Min, COUNT(id) AS Num
+    SELECT DATE_FORMAT(TimeLastModified,'%y%m%d') as Time, MAX(id) as Max, MIN(id) as Min, COUNT(id) AS Num
 	FROM updated
 	GROUP BY DATE_FORMAT(TimeLastModified,'%y%m%d') 
   ";
