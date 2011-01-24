@@ -77,7 +77,7 @@ function convert_books($mysql_db, $sqlite_db)
   $mysql_db->real_query("DELETE FROM authors");
 
   $sqltest = "
-	SELECT Id, Title, Series, Periodical, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeAdded,'%y%m%d') As Time, identifier, md5, coverurl
+	SELECT Id, Title, VolumeInfo, Series, Periodical, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeLastModified,'%y%m%d') As Time, identifier, md5, coverurl
 	FROM updated
 	ORDER BY Id 
   ";
@@ -94,7 +94,8 @@ function convert_books($mysql_db, $sqlite_db)
 
 	$book = $row['Id'];
 
-	$title = trim($row['Title']);
+	$title = trim($row['Title'])." ".trim($row['VolumeInfo']);
+	$title = trim($title);
 	if (strlen($title) == 0) $title = trim($row['Periodical']);
 	if (strlen($title) == 0) $title = trim($row['Series']);
 
@@ -112,10 +113,11 @@ function convert_books($mysql_db, $sqlite_db)
 	if ($time < 20) $time = 0;
 
 	$descr = GetDescr($mysql_db, $row['md5']);
+	$md5sum = strtolower($row['md5']);
         
 	$sql = "INSERT INTO books (id, id_author, title, file_size, file_type, created, lang, md5sum, description) VALUES(?,?,?,?,?,?,?,?,?)";
 	$insert = $sqlite_db->prepare($sql);
-	$err= $insert->execute(array($book, $auth, $title, $row['Filesize'], $row['Extension'], $time, $row['Language'], $row['md5'], $descr));
+	$err= $insert->execute(array($book, $auth, $title, $row['Filesize'], $row['Extension'], $time, $row['Language'], $md5sum, $descr));
 	$insert->closeCursor();
 
 	$param_aid = $auth;
@@ -166,7 +168,7 @@ function convert_dates($mysql_db, $sqlite_db)
   $sqlite_db->query("DELETE FROM dates");
 
   $sqltest = "
-    SELECT DATE_FORMAT(TimeAdded,'%y%m%d') as Time, MAX(id) as Max, MIN(id) as Min, COUNT(id) AS Num
+    SELECT DATE_FORMAT(TimeLastModified,'%y%m%d') as Time, MAX(id) as Max, MIN(id) as Min, COUNT(id) AS Num
 	FROM updated
 	GROUP BY DATE_FORMAT(TimeLastModified,'%y%m%d') 
   ";
@@ -176,9 +178,7 @@ function convert_dates($mysql_db, $sqlite_db)
 	echo $row['Time']." - ".$row['Max']." - ".$row['Min']."\n";
     $sql = "INSERT INTO dates (id, lib_max, lib_min, lib_num) VALUES(?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($row['Time'], $row['Max'], $row['Min'], $row['Num']));
-    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
   $sqlite_db->query("commit");
@@ -208,7 +208,7 @@ function FullImport($mysql_db, $file, $date)
   
   convert_books($mysql_db, $sqlite_db);
   convert_auth($mysql_db, $sqlite_db);
-#  convert_dates($mysql_db, $sqlite_db);
+  convert_dates($mysql_db, $sqlite_db);
   
   create_indexes($sqlite_db);
 }

@@ -9,7 +9,7 @@
 class FbExtractItem
 {
 	public:
-		FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext);
+		FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext, const wxString & md5);
 		FbExtractItem(const FbExtractItem & item);
 	public:
 		wxString FileName(bool bInfoOnly) const;
