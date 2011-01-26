@@ -7,6 +7,9 @@
 class FbMenuBar: public wxMenuBar
 {
 	protected:
+		class MenuFile: public FbMenu {
+			public: MenuFile();
+		};
 
 		class MenuFrame: public FbMenu {
 			public: MenuFrame();
@@ -45,23 +48,16 @@ class FbMenuBar: public wxMenuBar
 		class MenuPreview: public FbMenu {
 			public: MenuPreview();
 		};
+
+		class MenuView: public FbMenu {
+			public: MenuView();
+		};
 };
 
 class FbMainMenu: public FbMenuBar
 {
 	public:
 		FbMainMenu();
-
-	protected:
-
-		class MenuFile: public FbMenu {
-			public: MenuFile();
-		};
-
-		class MenuView: public FbMenu {
-			public: MenuView();
-		};
-
 };
 
 class FbFrameMenu: public FbMenuBar

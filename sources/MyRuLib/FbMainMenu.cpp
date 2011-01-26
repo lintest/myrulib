@@ -15,6 +15,14 @@ FbMenuBar::MenuFrame::MenuFrame()
 	Append(ID_FRAME_DOWN, _("Downloads"));
 }
 
+FbMenuBar::MenuFile::MenuFile()
+{
+	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
+	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
+	AppendSeparator();
+	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
+}
+
 FbMenuBar::MenuLib::MenuLib()
 {
 	Append(ID_MENU_DB_OPEN, _("Open (or create) collection"));
@@ -34,6 +42,13 @@ FbMenuBar::MenuSetup::MenuSetup()
 	Append(wxID_PREFERENCES, _("Settings"));
 }
 
+FbMenuBar::MenuView::MenuView()
+{
+	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
+	AppendSeparator();
+	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
+	AppendCheckItem(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+}
 FbMenuBar::MenuHelp::MenuHelp()
 {
 	Append(ID_OPEN_WEB, _("Website"));
@@ -49,22 +64,6 @@ FbMainMenu::FbMainMenu(): FbMenuBar()
 	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
-}
-
-FbMainMenu::MenuFile::MenuFile()
-{
-	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
-	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
-	AppendSeparator();
-	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
-}
-
-FbMainMenu::MenuView::MenuView()
-{
-	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
-	AppendSeparator();
-	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	AppendCheckItem(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 
 FbFrameMenu::MenuFile::MenuFile()

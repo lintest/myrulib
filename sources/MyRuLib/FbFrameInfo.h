@@ -6,6 +6,7 @@
 #include <wx/aui/tabmdi.h>
 #include "FbWindow.h"
 #include "FbFrameHtml.h"
+#include "FbMainMenu.h"
 
 class FbFrameInfo: public FbAuiMDIChildFrame
 {
@@ -15,6 +16,7 @@ class FbFrameInfo: public FbAuiMDIChildFrame
 		void Load(const wxString & html);
 		static void Execute();
 		virtual void UpdateFonts(bool refresh = true);
+		virtual wxMenuBar * CreateMenuBar();
 	protected:
 		virtual void CreateControls();
 	private:
@@ -23,6 +25,16 @@ class FbFrameInfo: public FbAuiMDIChildFrame
 		void OnSave(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameInfo)
+	private:
+		class MainMenu: public FbMenuBar
+		{
+			public:
+				MainMenu();
+			protected:
+				class MenuFile: public FbMenu {
+					public: MenuFile();
+				};
+		};
 };
 
 #endif // __FBFRAMEINFO_H__
