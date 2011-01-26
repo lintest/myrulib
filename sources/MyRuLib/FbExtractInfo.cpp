@@ -18,7 +18,7 @@ FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString
 	if (librusec) {
 		if (FbParams::IsGenesis()) {
 			book_name << id / 1000 * 1000 << wxT('/') << Lower(md5);
-		} else {
+		} else if (book_name.IsEmpty()) {
 			book_name << id << wxT('.') << ext;
 		}
 	}
