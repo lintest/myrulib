@@ -48,7 +48,7 @@ class FrameInfoThread: public BaseThread
 		void WriteCount();
 		void WriteTypes();
 		wxString GetDate(const int number);
-		wxString F(const int number);
+		wxString F(const wxLongLong &number);
 	private:
 		FbCommonDatabase m_database;
 		wxString m_html;
@@ -78,11 +78,11 @@ wxString FrameInfoThread::GetDate(const int number)
 	return wxString::Format(wxT("%02d.%02d.%04d"), dd, mm, yyyy);
 }
 
-wxString FrameInfoThread::F(const int number)
+wxString FrameInfoThread::F(const wxLongLong &number)
 {
-	int hi = number / 1000;
-	int lo = number % 1000;
-	if (hi)
+	wxLongLong hi = number / 1000;
+	long lo = (number % 1000).ToLong();
+	if (hi != 0)
 		return F(hi) + wxT("&nbsp;") + wxString::Format(wxT("%03d"), lo);
 	else
 		return wxString::Format(wxT("%d"), lo);
@@ -108,8 +108,8 @@ void FrameInfoThread::WriteCount()
 		if (result.NextRow()) {
 			min = GetDate(result.GetInt(1));
 			max = GetDate(result.GetInt(2));
-			sum = F(result.GetInt(3));
-			m_html << CreateRow(_("Total books count:"), F(result.GetInt(0)));
+			sum = F(result.GetInt64(3));
+			m_html << CreateRow(_("Total books count:"), F(result.GetInt64(0)));
 		}
 	}
 
@@ -119,7 +119,7 @@ void FrameInfoThread::WriteCount()
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
-			wxString count = F(result.GetInt(0));
+			wxString count = F(result.GetInt64(0));
 			m_html << CreateRow(_("Authors count:"), count);
 		}
 	}
@@ -164,8 +164,8 @@ void FrameInfoThread::WriteTypes()
 			const wxString cell = wxT("<TD align=right bgcolor=%s>%s</TD>");
 			m_html += wxT("<TR>");
 			m_html += wxString::Format(wxT("<TD bgcolor=%s>%s</TD>"), colourBack.c_str(), result.GetString(0).c_str());
-			m_html += wxString::Format(cell, colourBack.c_str(), F(result.GetInt(1)).c_str());
-			m_html += wxString::Format(cell, colourBack.c_str(), F(result.GetInt(2)).c_str());
+			m_html += wxString::Format(cell, colourBack.c_str(), F(result.GetInt64(1)).c_str());
+			m_html += wxString::Format(cell, colourBack.c_str(), F(result.GetInt64(2)).c_str());
 			m_html += wxT("</TR>");
 		}
 	}

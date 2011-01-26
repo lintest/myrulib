@@ -56,7 +56,6 @@ class FbBookPanel: public wxSplitterWindow
 		static void DoCreateDownload(const wxString &sel, int count = 1);
 		int GetRatingColumn();
 		void ShowContextMenu(const wxPoint& pos);
-		wxString F(const int number);
 		wxString m_AuthorName;
 		FbListMode m_listmode;
 		wxTreeItemId m_AuthorItem;

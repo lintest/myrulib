@@ -117,7 +117,7 @@ function convert_books($mysql_db, $sqlite_db)
         
 	$sql = "INSERT INTO books (id, id_author, title, file_size, file_type, created, lang, md5sum, description) VALUES(?,?,?,?,?,?,?,?,?)";
 	$insert = $sqlite_db->prepare($sql);
-	$err= $insert->execute(array($book, $auth, $title, $row['Filesize'], $row['Extension'], $time, $row['Language'], $md5sum, $descr));
+	$err= $insert->execute(array($book, $auth, $title, $row['Filesize'], $file_type, $time, $row['Language'], $md5sum, $descr));
 	$insert->closeCursor();
 
 	$param_aid = $auth;
