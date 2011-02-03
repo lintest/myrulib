@@ -143,15 +143,17 @@ void GenerateScript(wxSQLite3Database & database, const wxString & filename)
 	wxFileOutputStream stream(filename);
 	wxTextOutputStream out(stream);
 
-	out << (wxT("\
+	out << wxT("START TRANSACTION;\n");
+
+	out << wxT("\
 DROP TABLE IF EXISTS myrulib_zip; \n\
 CREATE TABLE myrulib_zip ( \n\
   zid int(10) PRIMARY KEY, \n\
   file varchar(255) COLLATE utf8_unicode_ci NOT NULL \n\
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; \n\
-"));
+");
 
-	out << (wxT("\
+	out << wxT("\
 DROP TABLE IF EXISTS myrulib_entry; \n\
 CREATE TABLE myrulib_entry ( \n\
   zid int(10), \n\
@@ -160,7 +162,7 @@ CREATE TABLE myrulib_entry ( \n\
   PRIMARY KEY (zid, name), \n\
   KEY md5 (md5) \n\
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; \n\
-"));
+");
 
 	{
 		out << wxT("\nLOCK TABLES myrulib_zip WRITE;\n");
@@ -187,6 +189,8 @@ CREATE TABLE myrulib_entry ( \n\
 		}
 		out << wxT("UNLOCK TABLES;\n");
 	}
+
+	out << wxT("COMMIT;\n");
 
 }
 
