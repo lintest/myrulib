@@ -428,8 +428,6 @@ void FbCollection::LoadIcon(const wxString &extension)
 	}
 
 	if (extension.IsEmpty() || extension == wxT("fb2")) return;
-	wxString filename = wxT("icon.") + extension;
-
 	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
 	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
 
@@ -437,14 +435,17 @@ void FbCollection::LoadIcon(const wxString &extension)
 	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 	if ( ft ) {
 		wxIconLocation location;
-		if ( ft->GetIcon(&location) ) {
+		if ( ft->GetIcon(&location) && location.IsOk() ) {
 			wxLogNull log;
 			wxIcon icon(location);
-			wxBitmap bitmap;
-			bitmap.CopyFromIcon(icon);
-			wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
-			sm_icons.Add(extension);
-			return;
+			if (icon.IsOk()) {
+				wxBitmap bitmap;
+				bitmap.CopyFromIcon(icon);
+				wxString filename = wxT("icon.") + extension;
+				wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+				sm_icons.Add(extension);
+				return;
+			}
 		}
 	}
 	#endif // __WXMSW__
