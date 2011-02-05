@@ -205,8 +205,6 @@ void FbMainFrame::LoadIcon()
 
 void FbMainFrame::CreateControls()
 {
-	SetMenuBar(new FbMainMenu);
-
 	const int widths[] = {-90, -50, -50, -10};
 	m_ProgressBar.Create(this, ID_PROGRESSBAR);
 	m_ProgressBar.SetFieldsCount(4);
@@ -749,8 +747,6 @@ void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
 
 void FbMainFrame::Localize(int language)
 {
-	SetMenuBar(new FbMainMenu);
-
     wxToolBar * toolbar = m_toolbar;
 	SetToolBar(CreateToolBar());
     wxDELETE(toolbar);

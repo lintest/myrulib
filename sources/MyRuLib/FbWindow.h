@@ -40,8 +40,22 @@ class FbAuiMDIParentFrame
 	: public wxAuiMDIParentFrame
 {
 	public:
-		FbAuiMDIParentFrame() {}
-		~FbAuiMDIParentFrame() {}
+		FbAuiMDIParentFrame()
+			: m_menubar(NULL) {}
+
+		~FbAuiMDIParentFrame();
+
+		virtual void SetMenuBar(wxMenuBar *pMenuBar)
+			{}
+
+	    virtual wxMenuBar * GetMenuBar() const
+			{ return m_menubar; }
+
+		void SetMainMenu(wxMenuBar * menubar);
+
+	private:
+		wxMenuBar * m_menubar;
+
 };
 
 class FbAuiMDIChildFrame
@@ -83,6 +97,7 @@ class FbAuiMDIChildFrame
 
 	private:
         void OnActivated(wxActivateEvent & event);
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBWINDOW_H__

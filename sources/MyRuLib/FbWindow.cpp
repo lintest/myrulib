@@ -71,8 +71,33 @@ void FbDialog::Assign(long winid, int param, bool write)
 }
 
 //-----------------------------------------------------------------------------
+//  FbAuiMDIParentFrame
+//-----------------------------------------------------------------------------
+
+FbAuiMDIParentFrame::~FbAuiMDIParentFrame()
+{
+	if (m_menubar) DetachMenuBar();
+	wxDELETE(m_menubar);
+}
+
+void FbAuiMDIParentFrame::SetMainMenu(wxMenuBar * menubar)
+{
+	if (m_menubar) {
+	    DetachMenuBar();
+		delete m_menubar;
+	}
+
+    if (menubar) this->AttachMenuBar(menubar);
+	m_menubar = menubar;
+}
+
+//-----------------------------------------------------------------------------
 //  FbAuiMDIChildFrame
 //-----------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(FbAuiMDIChildFrame, wxAuiMDIChildFrame)
+	EVT_ACTIVATE(FbAuiMDIChildFrame::OnActivated)
+END_EVENT_TABLE()
 
 FbAuiMDIChildFrame::FbAuiMDIChildFrame(wxAuiMDIParentFrame *parent, wxWindowID winid, const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 	: wxAuiMDIChildFrame(parent, winid, title, pos, size, style, name)
@@ -109,6 +134,22 @@ wxMenuBar * FbAuiMDIChildFrame::CreateMenuBar()
 
 void FbAuiMDIChildFrame::Localize(bool bUpdateMenu)
 {
-	if (bUpdateMenu) SetMenuBar(CreateMenuBar());
+	if (bUpdateMenu) UpdateMenu();
 }
 
+void FbAuiMDIChildFrame::OnActivated(wxActivateEvent & event)
+{
+	if (event.GetActive()) {
+		UpdateMenu();
+	} else {
+		FbAuiMDIParentFrame * parent = wxDynamicCast(GetParent()->GetParent(), FbAuiMDIParentFrame);
+		if (parent) parent->SetMainMenu(new FbMainMenu);
+	}
+	event.Skip();
+}
+
+void FbAuiMDIChildFrame::UpdateMenu()
+{
+	FbAuiMDIParentFrame * parent = (FbAuiMDIParentFrame*) GetParent()->GetParent();
+	parent->SetMainMenu(this->CreateMenuBar());
+}
