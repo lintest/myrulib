@@ -68,6 +68,8 @@ void FbFrameHtml::Load(const wxString & html)
 
 void FbFrameHtml::CreateControls()
 {
+	UpdateMenu();
+
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 

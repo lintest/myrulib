@@ -30,6 +30,7 @@ void FbFrameInfo::Load(const wxString & html)
 
 void FbFrameInfo::CreateControls()
 {
+	UpdateMenu();
 	m_info.Create(this);
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add( &m_info, 1, wxEXPAND, 5 );
