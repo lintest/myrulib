@@ -71,6 +71,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnDeleteDownload(wxCommandEvent & event);
 		void OnDownloadBook(wxCommandEvent & event);
 		void OnEditComments(wxCommandEvent & event);
+		void OnEditBook(wxCommandEvent & event);
 		void OnFavoritesAdd(wxCommandEvent & event);
 		void OnOpenBook(wxCommandEvent & event);
 		void OnChangeView(wxCommandEvent & event);

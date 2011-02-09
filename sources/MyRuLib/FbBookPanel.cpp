@@ -12,6 +12,7 @@
 #include "FbBookTree.h"
 #include "FbInternetBook.h"
 #include "FbDeleteThread.h"
+#include "FbTitleDlg.h"
 
 IMPLEMENT_CLASS(FbBookPanel, wxSplitterWindow)
 
@@ -33,6 +34,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbBookPanel::OnDeleteDownload)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
+	EVT_MENU(ID_EDIT_BOOK, FbBookPanel::OnEditBook)
 	EVT_MENU(ID_RATING_5, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_4, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_3, FbBookPanel::OnChangeRating)
@@ -550,4 +552,8 @@ void FbBookPanel::UpdateMaster(FbMasterEvent & event)
 	}
 }
 
-
+void FbBookPanel::OnEditBook(wxCommandEvent & event)
+{
+	int book = m_BookList->GetBook();
+	if (book) FbTitleDlg::Execute(book);
+}

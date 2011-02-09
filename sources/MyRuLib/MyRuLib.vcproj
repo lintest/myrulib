@@ -478,6 +478,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbTitleDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbToolBar.cpp"
 				>
 			</File>
@@ -899,6 +903,10 @@
 			</File>
 			<File
 				RelativePath=".\FbThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbTitleDlg.h"
 				>
 			</File>
 			<File

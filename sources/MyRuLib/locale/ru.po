@@ -1997,3 +1997,7 @@ msgstr "Не найден архив (%s), содержащий файл (%s)."
 #, c-format
 msgid "Not found file %s"
 msgstr "Файл не найден %s"
+
+msgid "Properties"
+msgstr "Свойства"
+

@@ -100,6 +100,7 @@ void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 	AppendSeparator();
 
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
+	Append(ID_EDIT_BOOK, _("Properties"));
 }
 
 void FbBookMenu::AppendAuthorsMenu()
