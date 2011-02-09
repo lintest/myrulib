@@ -252,6 +252,7 @@
 		<sources>MyRuLib/FbServiceThread.cpp</sources>
 		<sources>MyRuLib/FbThread.cpp</sources>
 		<sources>MyRuLib/FbToolBar.cpp</sources>
+		<sources>MyRuLib/FbTitleDlg.cpp</sources>
 		<sources>MyRuLib/FbTreeModel.cpp</sources>
 		<sources>MyRuLib/FbTreeView.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
