@@ -1,0 +1,20 @@
+/* XPM */
+static char * del_xpm[] = {
+"15 15 2 1",
+" 	c None",
+"X	c #000000",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+" XXXXXXXXXXXXX ",
+" X           X ",
+" X           X ",
+" X           X ",
+" XXXXXXXXXXXXX ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               "};

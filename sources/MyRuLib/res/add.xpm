@@ -1,0 +1,20 @@
+/* XPM */
+static char * add_xpm[] = {
+"15 15 2 1",
+" 	c None",
+"X	c #000000",
+"               ",
+"     XXXXX     ",
+"     X   X     ",
+"     X   X     ",
+"     X   X     ",
+" XXXXX   XXXXX ",
+" X           X ",
+" X           X ",
+" X           X ",
+" XXXXX   XXXXX ",
+"     X   X     ",
+"     X   X     ",
+"     X   X     ",
+"     XXXXX     ",
+"               "};
