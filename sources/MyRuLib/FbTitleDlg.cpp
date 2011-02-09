@@ -119,6 +119,6 @@ void FbTitleDlg::Init()
 	size_t count = m_notebook->GetPageCount();
 	for (size_t i = 0; i < count; i++) {
 		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
-		if (window) window->SetScrollbars(0, 20, 0, 50);
+		if (window) window->SetScrollbars(20, 20, 50, 50);
 	}
 }
