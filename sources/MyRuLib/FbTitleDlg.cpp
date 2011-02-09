@@ -3,12 +3,16 @@
 #include "res/add.xpm"
 #include "res/del.xpm"
 
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::AuthSubPanel
+//-----------------------------------------------------------------------------
+
 FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
 	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxVSCROLL )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
@@ -22,6 +26,41 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
 	this->Layout();
 	bSizerMain->Fit( this );
 }
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::SeqnSubPanel
+//-----------------------------------------------------------------------------
+
+FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent)
+	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxVSCROLL )
+{
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
+
+	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+	m_text.SetMinSize( wxSize( 200, -1 ) );
+
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("#"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_numb.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( &m_numb, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+
+	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
+	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_toolbar.AddTool( wxID_DELETE, _("Delete"), wxBitmap(del_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_toolbar.Realize();
+
+	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
+
+	this->SetSizer( bSizerMain );
+	this->Layout();
+	bSizerMain->Fit( this );
+}
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::TitlePanel
+//-----------------------------------------------------------------------------
 
 FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	: wxScrolledWindow( parent )
@@ -57,8 +96,8 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_series = new wxBoxSizer(wxVERTICAL);
-	m_series->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
-	m_series->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
+	m_series->Add( new SeqnSubPanel(this), 1, wxEXPAND, 5 );
+	m_series->Add( new SeqnSubPanel(this), 1, wxEXPAND, 5 );
 	fgSizerMain->Add( m_series, 1, wxEXPAND | wxRIGHT, 5 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Genres"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -76,6 +115,10 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 
 //	SetScrollbars(0, 20, 0, 50);
 }
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg
+//-----------------------------------------------------------------------------
 
 bool FbTitleDlg::Execute(int book)
 {

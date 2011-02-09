@@ -2,6 +2,7 @@
 #define __FBTITLEDLG_H__
 
 #include <wx/wx.h>
+#include <wx/combo.h>
 #include "FbWindow.h"
 
 class FbTitleDlg : public FbDialog
@@ -24,7 +25,17 @@ class FbTitleDlg : public FbDialog
 				AuthSubPanel( wxWindow* parent );
 			private:
 				wxToolBar m_toolbar;
-				wxTextCtrl m_text;
+				wxComboCtrl m_text;
+		};
+
+		class SeqnSubPanel: public wxPanel
+		{
+			public:
+				SeqnSubPanel( wxWindow* parent );
+			private:
+				wxToolBar m_toolbar;
+				wxComboCtrl m_text;
+				wxTextCtrl m_numb;
 		};
 
 	protected:
