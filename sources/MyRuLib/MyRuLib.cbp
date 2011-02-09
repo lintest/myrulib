@@ -321,6 +321,8 @@
 		<Unit filename="FbServiceThread.h" />
 		<Unit filename="FbThread.cpp" />
 		<Unit filename="FbThread.h" />
+		<Unit filename="FbTitleDlg.cpp" />
+		<Unit filename="FbTitleDlg.h" />
 		<Unit filename="FbToolBar.cpp" />
 		<Unit filename="FbToolBar.h" />
 		<Unit filename="FbTreeModel.cpp" />
