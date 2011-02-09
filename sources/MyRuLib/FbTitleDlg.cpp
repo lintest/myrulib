@@ -24,7 +24,7 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
 }
 
 FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
-	: wxPanel( parent )
+	: wxScrolledWindow( parent )
 {
 	wxFlexGridSizer* fgSizerMain;
 	fgSizerMain = new wxFlexGridSizer( 2, 2, 0, 0 );
@@ -73,12 +73,14 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	this->SetSizer( fgSizerMain );
 	this->Layout();
 	fgSizerMain->Fit( this );
+
+//	SetScrollbars(0, 20, 0, 50);
 }
 
 bool FbTitleDlg::Execute(int book)
 {
 	FbTitleDlg dlg(NULL, wxID_ANY, _("Properties"));
-	dlg.SetSize(dlg.GetBestSize());
+	dlg.Init();
 	return dlg.ShowModal() == wxID_OK;
 }
 
@@ -108,3 +110,15 @@ FbTitleDlg::~FbTitleDlg()
 {
 }
 
+void FbTitleDlg::Init()
+{
+	wxSize size = GetBestSize();
+	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	SetSize(size);
+
+	size_t count = m_notebook->GetPageCount();
+	for (size_t i = 0; i < count; i++) {
+		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
+		if (window) window->SetScrollbars(0, 20, 0, 50);
+	}
+}

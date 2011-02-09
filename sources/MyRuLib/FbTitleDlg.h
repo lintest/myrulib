@@ -7,7 +7,7 @@
 class FbTitleDlg : public FbDialog
 {
 	private:
-		class TitlePanel: public wxPanel
+		class TitlePanel: public wxScrolledWindow
 		{
 			public:
 				TitlePanel( wxWindow* parent );
@@ -29,6 +29,7 @@ class FbTitleDlg : public FbDialog
 
 	protected:
 		wxNotebook * m_notebook;
+		void Init();
 
 	public:
 		static bool Execute(int book);
