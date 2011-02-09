@@ -436,7 +436,13 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 	wxRect rect(0, yy, ww, hh);
 
 	FbColumnArray columns;
-	m_owner->GetHeaderWindow()->GetColumnInfo(ww, columns);
+	FbTreeViewHeaderWindow * header = m_owner->GetHeaderWindow();
+	if (header) {
+		header->GetColumnInfo(ww, columns);
+	} else {
+		columns.Add(FbColumnInfo(0, ww, wxALIGN_LEFT));
+	}
+
 	if (m_model) {
 		m_model->SetFocused(m_focused);
 		m_model->DrawTree(dc, rect, columns, pos, h);
@@ -1180,7 +1186,11 @@ bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
 
     m_main_win = new FbTreeViewMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
 
-    m_header_win = new FbTreeViewHeaderWindow (this, -1, m_main_win, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL);
+   	if (HasFlag(fbTR_NO_HEADER )) {
+   		m_header_win = NULL;
+   	} else {
+   		m_header_win = new FbTreeViewHeaderWindow (this, -1, m_main_win, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL);
+   	}
 
     DoHeaderLayout();
 
@@ -1233,7 +1243,7 @@ void FbTreeViewCtrl::SetFocus()
 void FbTreeViewCtrl::Refresh(bool erase, const wxRect* rect)
 {
 	m_main_win->Repaint();
-    m_header_win->Refresh (erase, rect);
+	if (m_header_win) m_header_win->Refresh (erase, rect);
 }
 
 bool FbTreeViewCtrl::SetFont(const wxFont& font)

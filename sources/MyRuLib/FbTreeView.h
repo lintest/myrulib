@@ -12,6 +12,7 @@
 #define fbTR_VRULES     0x0002
 #define fbTR_MULTIPLE   0x0004
 #define fbTR_CHECKBOX   0x0008
+#define fbTR_NO_HEADER  0x0010
 
 #define fbTR_DEFAULT_STYLE (fbTR_VRULES)
 
