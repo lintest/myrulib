@@ -99,7 +99,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
-	m_title.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_title.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
 	m_title.SetMinSize( wxSize( 300, -1 ) );
 
@@ -160,8 +160,10 @@ void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
 	wxBoxSizer * owner = panel->GetOwner();
 	if (owner == NULL) return;
 
-	wxSizerItem * item = owner->GetItem(panel);
-	if (item) owner->Add( panel->New(this, owner), 1, wxEXPAND, 5 );
+	wxWindow * prior = owner->GetChildren().GetLast()->GetData()->GetWindow();
+	panel = panel->New(this, owner);
+	panel->MoveAfterInTabOrder(prior);
+	owner->Add( panel, 1, wxEXPAND, 5 );
 
 	ArrangeControls();
 }
