@@ -44,15 +44,19 @@ class FbTitleDlg : public FbDialog
 		{
 			public:
 				AuthSubPanel( wxWindow* parent, wxBoxSizer * owner );
+				virtual ~AuthSubPanel();
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new AuthSubPanel(parent, owner); }
-				virtual void Empty() 
+				virtual void Empty()
 					{}
 			private:
 				FbModel * CreateModel();
 			private:
 				wxToolBar m_toolbar;
 				wxComboCtrl m_text;
+			private:
+				void OnChar( wxKeyEvent& event );
+				void OnText( wxCommandEvent& event );
 				DECLARE_CLASS(AuthSubPanel);
 		};
 
@@ -62,7 +66,7 @@ class FbTitleDlg : public FbDialog
 				SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner );
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new SeqnSubPanel(parent, owner); }
-				virtual void Empty() 
+				virtual void Empty()
 					{}
 			private:
 				wxToolBar m_toolbar;

@@ -18,7 +18,7 @@ class FbTreeComboPopup : public FbTreeViewCtrl, public wxComboPopup
 		virtual bool Create( wxWindow* parent )
 			{ return FbTreeViewCtrl::Create(parent, wxID_ANY, wxPoint(0, 0), wxDefaultSize, fbTR_NO_HEADER); }
 
-		virtual wxWindow * GetControl() 
+		virtual wxWindow * GetControl()
 			{ return this; }
 
 		virtual void SetStringValue( const wxString& s )
@@ -74,14 +74,17 @@ class FbTreeComboPopup : public FbTreeViewCtrl, public wxComboPopup
 
 	private:
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbTreeComboPopup);
 };
 
-BEGIN_EVENT_TABLE(FbTreeComboPopup, FbTreeViewCtrl)
+IMPLEMENT_CLASS( FbTreeComboPopup, FbTreeViewCtrl )
+
+BEGIN_EVENT_TABLE( FbTreeComboPopup, FbTreeViewCtrl )
     EVT_MOTION(FbTreeComboPopup::OnMouseMove)
     // NOTE: Left down event is used instead of left up right now
     //       since MSW wxListCtrl doesn't seem to emit left ups
     //       consistently.
-    EVT_LEFT_DOWN(FbTreeComboPopup::OnMouseClick)
+    EVT_LEFT_UP(FbTreeComboPopup::OnMouseClick)
 END_EVENT_TABLE()
 
 //-----------------------------------------------------------------------------
@@ -120,15 +123,24 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner)
     m_text.SetPopupControl(popup);
 	popup->AssignModel(CreateModel());
 
+	m_text.Connect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
+	m_text.Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
+
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
 }
 
+FbTitleDlg::AuthSubPanel::~AuthSubPanel()
+{
+	m_text.Disconnect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
+	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
+}
+
 FbModel * FbTitleDlg::AuthSubPanel::CreateModel()
 {
 	FbCommonDatabase database;
-	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ?");
+	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ? ORDER BY full_name");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, wxT("ab*"));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -140,6 +152,34 @@ FbModel * FbTitleDlg::AuthSubPanel::CreateModel()
 		items.Add(code);
 	}
 	return new FbAuthListModel(items);
+}
+
+void FbTitleDlg::AuthSubPanel::OnChar( wxKeyEvent& event )
+{
+	event.Skip();
+	if (m_text.IsPopupShown()) {
+		FbTreeComboPopup * popup = wxDynamicCast(m_text.GetPopupControl(), FbTreeComboPopup);
+		if (popup == NULL) return;
+		FbModel * model = popup->GetModel();
+		if (model == NULL) return;
+		switch (event.GetKeyCode()) {
+			case WXK_UP:
+				model->GoPriorRow(); break;
+			case WXK_DOWN:
+				model->GoNextRow(); break;
+		}
+	} else {
+		switch (event.GetKeyCode()) {
+			case WXK_DOWN:
+				m_text.ShowPopup(); break;
+		}
+	}
+}
+
+void FbTitleDlg::AuthSubPanel::OnText( wxCommandEvent& event )
+{
+	wxLogWarning(m_text.GetValue());
+	event.Skip();
 }
 
 //-----------------------------------------------------------------------------
