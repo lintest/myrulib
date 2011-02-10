@@ -5,6 +5,8 @@
 #include <wx/combo.h>
 #include "FbWindow.h"
 
+class FbModel;
+
 class FbTitleDlg : public FbDialog
 {
 	private:
@@ -46,6 +48,8 @@ class FbTitleDlg : public FbDialog
 					{ return new AuthSubPanel(parent, owner); }
 				virtual void Empty() 
 					{}
+			private:
+				FbModel * CreateModel();
 			private:
 				wxToolBar m_toolbar;
 				wxComboCtrl m_text;

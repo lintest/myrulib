@@ -81,8 +81,12 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		FbTreeViewMainWindow* GetMainWindow() const
 			{ return m_main_win; }
 
+		int GetRowHeight();
+
 		FbModelItem GetCurrent() const;
 		wxString GetCurrentText() const;
+
+		bool FindAt(const wxPoint &point, bool select = false);
 
 		void SelectAll(bool value);
 		void Append(FbModelData * data);

@@ -137,9 +137,10 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 		void AssignModel(FbModel * model);
 		FbModel * GetModel() { return m_model; }
 		bool ShowScrollbar() { return GetRowCount() > GetClientCount(); }
+		bool FindAt(const wxPoint &point, bool select = false);
+		int GetRowHeight() { return m_rowHeight; };
 
 	private:
-		int GetRowHeight() { return m_rowHeight; };
 		size_t GetClientCount();
         void AdjustMyScrollbars();
 
@@ -761,6 +762,26 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 */
 }
 
+bool FbTreeViewMainWindow::FindAt(const wxPoint &point, bool select)
+{
+	int x = point.x;
+	int y = point.y;
+	int h = GetRowHeight();
+
+	if (m_model && x>=0 && y>=0) {
+		CalcUnscrolledPosition(x, y, &x, &y);
+		size_t row = (size_t)(y / h) + 1;
+		size_t old_pos = m_model->GetPosition();
+		size_t new_pos = m_model->FindRow(row, select);
+		if (select && (old_pos != new_pos)) {
+			SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+			Refresh();
+		}
+		return new_pos;
+	}
+	return false;
+}
+
 void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 {
     if (!m_model) { event.Skip(); return; }
@@ -1364,4 +1385,14 @@ void FbTreeViewCtrl::GetColumns(wxArrayInt &columns) const
     		columns.Add(index);
 		}
     }
+}
+
+bool FbTreeViewCtrl::FindAt(const wxPoint &point, bool select)
+{
+	return m_main_win->FindAt(point, select);
+}
+
+int FbTreeViewCtrl::GetRowHeight()
+{ 
+	return m_main_win->GetRowHeight();
 }
