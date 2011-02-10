@@ -7,8 +7,10 @@
 //  FbTitleDlg::AuthSubPanel
 //-----------------------------------------------------------------------------
 
+IMPLEMENT_CLASS( FbTitleDlg::AuthSubPanel, wxPanel )
+
 FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
-	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxVSCROLL )
+	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
@@ -31,8 +33,10 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
 //  FbTitleDlg::SeqnSubPanel
 //-----------------------------------------------------------------------------
 
+IMPLEMENT_CLASS( FbTitleDlg::SeqnSubPanel, wxPanel )
+
 FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent)
-	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxVSCROLL )
+	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
@@ -61,6 +65,13 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent)
 //-----------------------------------------------------------------------------
 //  FbTitleDlg::TitlePanel
 //-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS( FbTitleDlg::TitlePanel, wxScrolledWindow )
+
+BEGIN_EVENT_TABLE( FbTitleDlg::TitlePanel, wxPanel )
+	EVT_TOOL( wxID_ADD, FbTitleDlg::TitlePanel::OnToolAdd )
+	EVT_TOOL( wxID_DELETE, FbTitleDlg::TitlePanel::OnToolDel )
+END_EVENT_TABLE()
 
 FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	: wxScrolledWindow( parent )
@@ -112,8 +123,52 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	this->SetSizer( fgSizerMain );
 	this->Layout();
 	fgSizerMain->Fit( this );
+}
 
-//	SetScrollbars(0, 20, 0, 50);
+void FbTitleDlg::TitlePanel::ArrangeControls()
+{
+	wxSize size = GetBestSize();
+	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	SetSize(size);
+
+	wxWindow * notebook = GetParent();
+	if (notebook) {
+		FbTitleDlg * dialog = wxDynamicCast(notebook->GetParent(), FbTitleDlg);
+		if (dialog) dialog->ArrangeControls();
+	}
+}
+
+void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
+{
+	wxToolBar * toolbar = wxDynamicCast(event.GetEventObject(), wxToolBar);
+	if (toolbar == NULL) return;
+
+	wxWindow * panel= toolbar->GetParent();
+	if (panel == NULL) return;
+
+	wxSizerItem * item = m_authors->GetItem(panel);
+	if (item) m_authors->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
+
+	ArrangeControls();
+}
+
+void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
+{
+	wxToolBar * toolbar = wxDynamicCast(event.GetEventObject(), wxToolBar);
+	if (toolbar == NULL) return;
+
+	wxWindow * panel = toolbar->GetParent();
+	if (panel == NULL) return;
+
+	wxSizerItem * item = m_authors->GetItem(panel);
+	if (item) {
+		if (m_authors->GetChildren().GetCount() == 1) return;
+		m_authors->Detach(panel);
+		panel->Destroy();
+	}
+
+	ArrangeControls();
+	GetSizer()->Fit(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -145,7 +200,6 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 
 	this->SetSizer( sizer );
 	this->Layout();
-
 	this->Centre( wxBOTH );
 }
 
@@ -155,11 +209,26 @@ FbTitleDlg::~FbTitleDlg()
 
 void FbTitleDlg::Init()
 {
+	ArrangeControls();
+	size_t count = m_notebook->GetPageCount();
+	for (size_t i = 0; i < count; i++) {
+		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
+		if (window) window->SetScrollbars(20, 20, 50, 50);
+	}
+}
+
+void FbTitleDlg::ArrangeControls()
+{
+	size_t count = m_notebook->GetPageCount();
+	for (size_t i = 0; i < count; i++) {
+		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
+		if (window) window->SetScrollbars(0, 0, 0, 0);
+	}
+
 	wxSize size = GetBestSize();
 	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 	SetSize(size);
 
-	size_t count = m_notebook->GetPageCount();
 	for (size_t i = 0; i < count; i++) {
 		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
 		if (window) window->SetScrollbars(20, 20, 50, 50);
