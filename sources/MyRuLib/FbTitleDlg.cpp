@@ -4,13 +4,24 @@
 #include "res/del.xpm"
 
 //-----------------------------------------------------------------------------
+//  FbTitleDlg::SubPanel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS( FbTitleDlg::SubPanel, wxPanel )
+
+FbTitleDlg::SubPanel::SubPanel( wxWindow* parent, wxBoxSizer * owner )
+	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL ), m_owner(owner)
+{
+}
+
+//-----------------------------------------------------------------------------
 //  FbTitleDlg::AuthSubPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::AuthSubPanel, wxPanel )
+IMPLEMENT_CLASS( FbTitleDlg::AuthSubPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
-	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL )
+FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner)
+	: SubPanel( parent, owner )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
@@ -33,10 +44,10 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent)
 //  FbTitleDlg::SeqnSubPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::SeqnSubPanel, wxPanel )
+IMPLEMENT_CLASS( FbTitleDlg::SeqnSubPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent)
-	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL )
+FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner)
+	: SubPanel( parent, owner )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
@@ -97,9 +108,9 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_authors = new wxBoxSizer(wxVERTICAL);
-	m_authors->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
-	m_authors->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
-	m_authors->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
+	m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
+	m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
+	m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
 	fgSizerMain->Add( m_authors, 1, wxEXPAND | wxRIGHT, 5 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Series"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -107,8 +118,8 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_series = new wxBoxSizer(wxVERTICAL);
-	m_series->Add( new SeqnSubPanel(this), 1, wxEXPAND, 5 );
-	m_series->Add( new SeqnSubPanel(this), 1, wxEXPAND, 5 );
+	m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
+	m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
 	fgSizerMain->Add( m_series, 1, wxEXPAND | wxRIGHT, 5 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Genres"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -116,8 +127,8 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_genres = new wxBoxSizer(wxVERTICAL);
-	m_genres->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
-	m_genres->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
+	m_genres->Add( new AuthSubPanel(this, m_genres), 1, wxEXPAND, 5 );
+	m_genres->Add( new AuthSubPanel(this, m_genres), 1, wxEXPAND, 5 );
 	fgSizerMain->Add( m_genres, 1, wxEXPAND | wxRIGHT, 5 );
 
 	this->SetSizer( fgSizerMain );
@@ -143,11 +154,14 @@ void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
 	wxToolBar * toolbar = wxDynamicCast(event.GetEventObject(), wxToolBar);
 	if (toolbar == NULL) return;
 
-	wxWindow * panel= toolbar->GetParent();
+	SubPanel * panel = wxDynamicCast(toolbar->GetParent(), SubPanel);
 	if (panel == NULL) return;
 
-	wxSizerItem * item = m_authors->GetItem(panel);
-	if (item) m_authors->Add( new AuthSubPanel(this), 1, wxEXPAND, 5 );
+	wxBoxSizer * owner = panel->GetOwner();
+	if (owner == NULL) return;
+
+	wxSizerItem * item = owner->GetItem(panel);
+	if (item) owner->Add( panel->New(this, owner), 1, wxEXPAND, 5 );
 
 	ArrangeControls();
 }
@@ -157,14 +171,20 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 	wxToolBar * toolbar = wxDynamicCast(event.GetEventObject(), wxToolBar);
 	if (toolbar == NULL) return;
 
-	wxWindow * panel = toolbar->GetParent();
+	SubPanel * panel = wxDynamicCast(toolbar->GetParent(), SubPanel);
 	if (panel == NULL) return;
 
-	wxSizerItem * item = m_authors->GetItem(panel);
+	wxBoxSizer * owner = panel->GetOwner();
+	if (owner == NULL) return;
+
+	wxSizerItem * item = owner->GetItem(panel);
 	if (item) {
-		if (m_authors->GetChildren().GetCount() == 1) return;
-		m_authors->Detach(panel);
-		panel->Destroy();
+		if (owner->GetChildren().GetCount() == 1) {
+			panel->Empty();
+		} else {
+			owner->Detach(panel);
+			panel->Destroy();
+		}
 	}
 
 	ArrangeControls();

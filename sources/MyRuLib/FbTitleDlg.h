@@ -26,20 +26,40 @@ class FbTitleDlg : public FbDialog
 				DECLARE_CLASS(TitlePanel);
 		};
 
-		class AuthSubPanel: public wxPanel
+		class SubPanel: public wxPanel
 		{
 			public:
-				AuthSubPanel( wxWindow* parent );
+				SubPanel( wxWindow* parent, wxBoxSizer * owner );
+				wxBoxSizer * GetOwner()  { return m_owner; }
+				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner ) = 0;
+				virtual void Empty() = 0;
+			private:
+				wxBoxSizer * m_owner;
+				DECLARE_CLASS(SubPanel);
+		};
+
+		class AuthSubPanel: public SubPanel
+		{
+			public:
+				AuthSubPanel( wxWindow* parent, wxBoxSizer * owner );
+				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
+					{ return new AuthSubPanel(parent, owner); }
+				virtual void Empty() 
+					{}
 			private:
 				wxToolBar m_toolbar;
 				wxComboCtrl m_text;
 				DECLARE_CLASS(AuthSubPanel);
 		};
 
-		class SeqnSubPanel: public wxPanel
+		class SeqnSubPanel: public SubPanel
 		{
 			public:
-				SeqnSubPanel( wxWindow* parent );
+				SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner );
+				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
+					{ return new SeqnSubPanel(parent, owner); }
+				virtual void Empty() 
+					{}
 			private:
 				wxToolBar m_toolbar;
 				wxComboCtrl m_text;
