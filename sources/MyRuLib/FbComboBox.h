@@ -150,7 +150,6 @@ public:
     virtual void Init();
     virtual bool Create(wxWindow* parent);
     virtual wxWindow *GetControl() { return this; }
-    virtual void SetStringValue( const wxString& value );
     virtual wxString GetStringValue() const;
 
     // more customization
@@ -163,10 +162,8 @@ public:
 
     // Item management
     void SetSelection( int item );
-    void SetString( int item, const wxString& str );
     wxString GetString( int item ) const;
     unsigned int GetCount() const;
-    int FindString(const wxString& s, bool bCase = false) const;
     int GetSelection() const;
 
     // helpers
@@ -197,10 +194,16 @@ protected:
     virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const;
 
     // This is same as in wxVListBox
-    virtual wxCoord OnMeasureItem( size_t item ) const;
+    virtual wxCoord OnMeasureItem( size_t item ) const
+	{
+		return m_itemHeight;
+	}
 
     // Return item width, or -1 for calculating from text extent (default)
-    virtual wxCoord OnMeasureItemWidth( size_t item ) const;
+    virtual wxCoord OnMeasureItemWidth( size_t item ) const
+	{
+		return -1;
+	}
 
     // Draw item and combo control background. Flags are same as with OnDrawItem.
     // NB: Can't use name OnDrawBackground because of virtual function hiding warnings.
@@ -220,13 +223,11 @@ protected:
     // Stop partial completion (when some other event occurs)
     void StopPartialCompletion();
 
-    wxFont                  m_useFont;
+    wxFont m_useFont;
 
-    //wxString                m_stringValue; // displayed text (may be different than m_strings[m_value])
-    int                     m_value; // selection
-    int                     m_itemHover; // on which item the cursor is
-    int                     m_itemHeight; // default item height (calculate from font size
-                                          // and used in the absence of callback)
+    int m_value; // selection
+    int m_itemHover; // on which item the cursor is
+    int m_itemHeight; // default item height (calculate from font size and used in the absence of callback)
     wxClientDataType        m_clientDataItemsType;
 
 private:
@@ -256,15 +257,16 @@ protected:
 // the wxComboCtrl.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_ADV FbComboBox : public wxComboCtrl,
-                                             public wxItemContainer
+class WXDLLIMPEXP_ADV FbComboBox : public wxComboCtrl
 {
-    //friend class wxComboPopupWindow;
-    friend class FbComboPopup;
+	friend class FbComboPopup;
 public:
 
     // ctors and such
-    FbComboBox() : wxComboCtrl() { Init(); }
+    FbComboBox() : wxComboCtrl() 
+	{ 
+		Init(); 
+	}
 
     FbComboBox(wxWindow *parent,
                          wxWindowID id,
@@ -288,7 +290,10 @@ public:
                 const wxSize& size = wxDefaultSize,
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
-                const wxString& name = wxComboBoxNameStr);
+                const wxString& name = wxComboBoxNameStr)
+	{
+	    return wxComboCtrl::Create(parent, id, value, pos, size, style, validator, name);
+	}
 
     virtual ~FbComboBox();
 
@@ -298,22 +303,10 @@ public:
         DoSetPopupControl(popup);
     }
 
-    // wxControlWithItems methods
-	virtual void Clear() {}
-	virtual void Delete(unsigned int n) {}
-    virtual unsigned int GetCount() const;
-    virtual wxString GetString(unsigned int n) const;
-    virtual void SetString(unsigned int n, const wxString& s);
-    virtual int FindString(const wxString& s, bool bCase = false) const;
-    virtual void Select(int n);
-    virtual int GetSelection() const;
-    virtual void SetSelection(int n) { Select(n); }
-
-
     // Prevent a method from being hidden
     virtual void SetSelection(long from, long to)
     {
-        wxComboCtrl::SetSelection(from,to);
+        wxComboCtrl::SetSelection(from, to);
     }
 
 protected:
@@ -324,12 +317,6 @@ protected:
     //       and there is no valid selection
     // flags: wxODCB_PAINTING_CONTROL is set if painting to combo control instead of list
     virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const;
-
-    // Callback for item height, or -1 for default
-    virtual wxCoord OnMeasureItem( size_t item ) const;
-
-    // Callback for item width, or -1 for default/undetermined
-    virtual wxCoord OnMeasureItemWidth( size_t item ) const;
 
     // Callback for background drawing. Flags are same as with
     // OnDrawItem.
@@ -342,13 +329,6 @@ protected:
     {
         return (FbComboPopup*) m_popupInterface;
     }
-
-	virtual int DoAppend(const wxString& item) { return wxNOT_FOUND; }
-    virtual int DoInsert(const wxString& item, unsigned int pos) { return wxNOT_FOUND; }
-	virtual void DoSetItemClientData(unsigned int n, void* clientData) {}
-	virtual void * DoGetItemClientData(unsigned int n) const { return NULL; }
-	virtual void DoSetItemClientObject(unsigned int n, wxClientData* clientData) {}
-	virtual wxClientData * DoGetItemClientObject(unsigned int n) const { return NULL; }
 
 private:
     void Init();
