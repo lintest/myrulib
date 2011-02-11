@@ -81,6 +81,8 @@ class FbModelItem: public wxObject
 			{ return m_data != NULL; }
 		inline FbModelData * operator&() const
 			{ return m_data; }
+		wxString operator[](size_t col)
+			{ return GetValue(col); }
 		FbModelItem & operator =(const FbModelItem &item);
 	public:
 		// Use this functions only for MyRuLib application

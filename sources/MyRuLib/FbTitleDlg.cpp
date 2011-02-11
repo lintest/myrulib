@@ -6,88 +6,6 @@
 #include "res/del.xpm"
 
 //-----------------------------------------------------------------------------
-//  FbTreeComboPopup
-//-----------------------------------------------------------------------------
-
-class FbTreeComboPopup : public FbTreeViewCtrl, public wxComboPopup
-{
-	public:
-		virtual void Init()
-			{ m_value = 0; }
-
-		virtual bool Create( wxWindow* parent )
-			{ return FbTreeViewCtrl::Create(parent, wxID_ANY, wxPoint(0, 0), wxDefaultSize, fbTR_NO_HEADER); }
-
-		virtual wxWindow * GetControl()
-			{ return this; }
-
-		virtual void SetStringValue( const wxString& s )
-		{
-			/*
-			int n = wxListView::FindItem(-1,s);
-			if ( n >= 0 && n < GetItemCount() )
-				wxListView::Select(n);
-			*/
-		}
-
-		virtual wxString GetStringValue() const
-		{
-			return GetCurrentText();
-		}
-
-		void OnMouseMove(wxMouseEvent& event)
-		{
-			const wxPoint position = event.GetPosition();
-			bool ok = FindAt(event.GetPosition(), true);
-//			if (ok) m_value = GetCurrent();
-			event.Skip();
-		}
-
-		// On mouse left, set the value and close the popup
-		void OnMouseClick(wxMouseEvent& WXUNUSED(event))
-		{
-			m_value = m_itemHere;
-			// TODO: Send event
-			Dismiss();
-		}
-
-	    virtual wxSize GetAdjustedSize( int minWidth, int prefHeight, int maxHeight )
-		{
-			FbModel * model = GetModel();
-			if (model == NULL) return wxSize(minWidth, 0);
-			size_t count = model->GetRowCount();
-			if (count == 0) return wxSize(minWidth, 0);
-
-			int border = wxSystemSettings::GetMetric(wxSYS_BORDER_Y) * 2 + 2;
-
-			int h = GetRowHeight() * count + border;
-			if (h > maxHeight) {
-				count = (prefHeight - border) / GetRowHeight();
-				h = GetRowHeight() * count + border;
-			}
-			return wxSize(minWidth, h);
-		}
-
-	protected:
-		int m_value; // current item index
-		int m_itemHere; // hot item in popup
-
-	private:
-		DECLARE_EVENT_TABLE()
-		DECLARE_CLASS(FbTreeComboPopup);
-};
-
-IMPLEMENT_CLASS( FbTreeComboPopup, FbTreeViewCtrl )
-
-BEGIN_EVENT_TABLE( FbTreeComboPopup, FbTreeViewCtrl )
-    EVT_MOTION(FbTreeComboPopup::OnMouseMove)
-    // NOTE: Left down event is used instead of left up right now
-    //       since MSW wxListCtrl doesn't seem to emit left ups
-    //       consistently.
-    EVT_LEFT_UP(FbTreeComboPopup::OnMouseClick)
-END_EVENT_TABLE()
-
-//-----------------------------------------------------------------------------
 //  FbTitleDlg::SubPanel
 //-----------------------------------------------------------------------------
 
@@ -119,7 +37,7 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner)
 	m_toolbar.Realize();
 	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
 
-	m_text.Connect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
+//	m_text.Connect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
 	m_text.Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
 
 	this->SetSizer( bSizerMain );
@@ -129,7 +47,7 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner)
 
 FbTitleDlg::AuthSubPanel::~AuthSubPanel()
 {
-	m_text.Disconnect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
+//	m_text.Disconnect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
 	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
 }
 
@@ -154,16 +72,7 @@ void FbTitleDlg::AuthSubPanel::OnChar( wxKeyEvent& event )
 {
 	event.Skip();
 	if (m_text.IsPopupShown()) {
-		FbTreeComboPopup * popup = wxDynamicCast(m_text.GetPopupControl(), FbTreeComboPopup);
-		if (popup == NULL) return;
-		FbModel * model = popup->GetModel();
-		if (model == NULL) return;
-		switch (event.GetKeyCode()) {
-			case WXK_UP:
-				model->GoPriorRow(); break;
-			case WXK_DOWN:
-				model->GoNextRow(); break;
-		}
+		wxLogWarning(wxT("key"));
 	} else {
 		switch (event.GetKeyCode()) {
 			case WXK_DOWN:
@@ -205,9 +114,6 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner)
 	m_toolbar.Realize();
 
 	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
-
-    FbTreeComboPopup * popup = new FbTreeComboPopup();
-    m_text.SetPopupControl(popup);
 
 	this->SetSizer( bSizerMain );
 	this->Layout();

@@ -71,7 +71,7 @@ class FbTitleDlg : public FbDialog
 					{}
 			private:
 				wxToolBar m_toolbar;
-				wxComboCtrl m_text;
+				FbComboBox m_text;
 				wxTextCtrl m_numb;
 				DECLARE_CLASS(SeqnSubPanel);
 		};

@@ -174,7 +174,7 @@ bool FbComboPopup::Create(wxWindow* parent)
 
     m_useFont = m_combo->GetFont();
 
-    wxVListBox::SetItemCount(m_model->GetRowCount());
+    wxVListBox::SetItemCount(GetCount());
 
     // TODO: Move this to SetFont
     m_itemHeight = GetCharHeight() + 0;
@@ -414,7 +414,7 @@ bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar unicode )
 
     m_value = value;
 
-    if ( value >= 0 ) 
+    if ( value >= 0 )
 		m_combo->SetValue(GetString(value));
 
     SendComboBoxEvent(m_value);
@@ -530,7 +530,7 @@ void FbComboPopup::OnKey(wxKeyEvent& event)
 
 wxString FbComboPopup::GetString( int item ) const
 {
-	return m_model ? m_model->GetData(item + 1).GetValue(0) : wxString();
+	return m_model ? m_model->GetData(item + 1)[0] : wxString();
 }
 
 wxString FbComboPopup::GetStringValue() const
