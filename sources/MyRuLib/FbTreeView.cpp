@@ -1324,7 +1324,7 @@ wxString FbTreeViewCtrl::GetCurrentText() const
 	if (model) {
 		size_t position = model->GetPosition();
 	    FbModelItem item = model->GetData(position);
-	    if (item) return item.GetValue(0);
+	    if (item) return item;
 	}
 	return wxEmptyString;
 }
@@ -1393,6 +1393,6 @@ bool FbTreeViewCtrl::FindAt(const wxPoint &point, bool select)
 }
 
 int FbTreeViewCtrl::GetRowHeight()
-{ 
+{
 	return m_main_win->GetRowHeight();
 }

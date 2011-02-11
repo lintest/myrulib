@@ -530,7 +530,7 @@ void FbComboPopup::OnKey(wxKeyEvent& event)
 
 wxString FbComboPopup::GetString( int item ) const
 {
-	return m_model ? m_model->GetData(item + 1)[0] : wxString();
+	return m_model ? m_model->GetData(item + 1) : wxString();
 }
 
 wxString FbComboPopup::GetStringValue() const

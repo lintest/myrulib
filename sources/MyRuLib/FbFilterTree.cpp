@@ -66,7 +66,7 @@ void FbFilterTreeModel::SetSel(const wxString &sel)
 	size_t count = root.Count();
 	for (size_t i = 0; i < count; i++) {
 		FbModelItem child = root.Items(i);
-		int state = strings.Index(child.GetValue(0)) != wxNOT_FOUND ? 1 : 0;
+		int state = strings.Index(child[0]) != wxNOT_FOUND ? 1 : 0;
 		child.SetState(state);
 	}
 }
@@ -79,7 +79,7 @@ wxString FbFilterTreeModel::GetAll()
 	for (size_t i = 0; i < count; i++) {
 		FbModelItem child = root.Items(i);
 		if (i) result << wxT(',');
-		result << child.GetValue(0);
+		result << child[0];
 	}
 	return result;
 }
@@ -94,7 +94,7 @@ wxString FbFilterTreeModel::GetSel()
 		FbModelItem child = root.Items(i);
 		if (child.GetState()) {
 			if (!result.IsEmpty()) result << wxT(',');
-			result << wxT('\'') << child.GetValue(0) << wxT('\'');
+			result << wxT('\'') << child[0] << wxT('\'');
 		}
 	}
 	return result;

@@ -255,7 +255,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 		int w = rect.GetWidth();
 		wxRect rect(x, y, w, h);
 		rect.Deflate(3, 2);
-		wxString text = data.GetValue(0);
+		wxString text = data[0];
 		dc.SetClippingRegion(rect);
 		dc.DrawLabel(text, bitmap, rect, wxALIGN_CENTRE_VERTICAL);
 		dc.DestroyClippingRegion();
@@ -272,7 +272,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 			}
 			wxRect rect(x, y, w, h);
 			rect.Deflate(3, 2);
-			wxString text = data.GetValue(col.GetColumn());
+			wxString text = data[col.GetColumn()];
 			dc.SetClippingRegion(rect);
 			dc.DrawLabel(text, i ? wxNullBitmap : bitmap, rect, col.GetAlignment() | wxALIGN_CENTRE_VERTICAL);
 			dc.DestroyClippingRegion();

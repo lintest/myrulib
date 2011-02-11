@@ -77,12 +77,14 @@ class FbModelItem: public wxObject
 				{ if (m_data == NULL) m_data = item.m_data; else m_virual = true; }
 		~FbModelItem()
 			{ if (m_virual) wxDELETE(m_data); }
+		wxString operator[](size_t col) const
+			{ return m_data ? m_data->GetValue(*m_model, col) : wxString(); }
 		inline operator bool() const
 			{ return m_data != NULL; }
 		inline FbModelData * operator&() const
 			{ return m_data; }
-		wxString operator[](size_t col)
-			{ return GetValue(col); }
+		inline operator wxString() const
+			{ return operator[](0); }
 		FbModelItem & operator =(const FbModelItem &item);
 	public:
 		// Use this functions only for MyRuLib application
@@ -102,8 +104,6 @@ class FbModelItem: public wxObject
 			{ return m_data ? FbModelItem(*m_model, m_data->Items(*m_model, index)) : FbModelItem(); }
 		FbModelItem GetParent()
 			{ return m_data ? FbModelItem(*m_model, m_data->GetParent(*m_model)) : FbModelItem(); }
-		wxString GetValue(size_t col)
-			{ return m_data ? m_data->GetValue(*m_model, col) : wxString(); }
 		void SetValue(size_t col, const wxString &name)
 			{ if (m_data) m_data->SetValue(*m_model, col, name); }
 		int GetState() const

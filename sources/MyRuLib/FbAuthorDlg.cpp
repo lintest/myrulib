@@ -328,8 +328,7 @@ int FbAuthorReplaceDlg::DoUpdate()
 
 wxString FbAuthorReplaceDlg::GetFullName()
 {
-	FbModelItem item = m_FindList->GetCurrent();
-	return item.GetValue(0);
+	return m_FindList->GetCurrent();
 }
 
 int FbAuthorReplaceDlg::Execute(int author, wxString& newname)
