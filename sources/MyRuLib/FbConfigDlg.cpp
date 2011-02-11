@@ -139,7 +139,7 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 	m_staticText2->Wrap( -1 );
 	bSizerMain->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	wxFileSelectorCombo * m_comboDir = new wxFileSelectorCombo( this, ID_LIBRARY_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbFileSelectorCombo * m_comboDir = new FbFileSelectorCombo( this, ID_LIBRARY_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_comboDir->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizerMain->Add( m_comboDir, 0, wxEXPAND|wxALL, 5 );

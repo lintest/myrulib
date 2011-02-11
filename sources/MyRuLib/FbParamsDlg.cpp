@@ -290,7 +290,7 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	m_staticText6->Wrap( -1 );
 	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
-	wxFileSelectorCombo * combo = new wxFileSelectorCombo( this, ID_DOWNLOAD_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbFileSelectorCombo * combo = new FbFileSelectorCombo( this, ID_DOWNLOAD_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
@@ -361,7 +361,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	text->Wrap( -1 );
 	bSizerMain->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
-	wxFileSelectorCombo * combo = new wxFileSelectorCombo( this, ID_TEMP_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbFileSelectorCombo * combo = new FbFileSelectorCombo( this, ID_TEMP_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
@@ -412,7 +412,7 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	m_staticText6->Wrap( -1 );
 	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	wxFileSelectorCombo * combo = new wxFileSelectorCombo( this, ID_EXTERNAL_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbFileSelectorCombo * combo = new FbFileSelectorCombo( this, ID_EXTERNAL_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
