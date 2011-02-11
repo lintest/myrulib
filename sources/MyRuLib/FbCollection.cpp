@@ -67,6 +67,14 @@ FbBookAuths::FbBookAuths(int code, wxSQLite3Database &database)
 	if (result.NextRow()) m_name = result.GetString(0);
 }
 
+wxString FbBookAuths::operator[](size_t col) const
+{
+	switch (col) {
+		case BF_AUTH: return m_name;
+		default: return wxEmptyString;
+	}
+}
+
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(FbBookAuthsArray);
 
@@ -91,7 +99,7 @@ FbBookSeqns::FbBookSeqns(int code, wxSQLite3Database &database)
 	}
 }
 
-wxString FbBookSeqns::GetValue(size_t col) const
+wxString FbBookSeqns::operator[](size_t col) const
 {
 	switch (col) {
 		case BF_SEQN: return m_name;
@@ -379,29 +387,29 @@ wxString FbCollection::GetBookAuths(int code, size_t col)
 	size_t count = m_book_auth.Count();
 	for (size_t i = 0; i < count; i++) {
 		FbBookAuths & auth = m_book_auth[i];
-		if (auth.GetCode() == code) return auth.GetValue(col);
+		if (auth.GetCode() == code) return auth[col];
 	}
 
 	FbBookAuths * auth = new FbBookAuths(code, m_database);
 
 	m_book_auth.Insert(auth, 0);
 	if (count > DATA_CACHE_SIZE) m_book_auth.RemoveAt(DATA_CACHE_SIZE, count - DATA_CACHE_SIZE);
-	return auth->GetValue(col);
+	return (*auth)[col];
 }
 
 wxString FbCollection::GetBookSeqns(int code, size_t col)
 {
 	size_t count = m_book_seqn.Count();
 	for (size_t i = 0; i < count; i++) {
-		FbBookSeqns & auth = m_book_seqn[i];
-		if (auth.GetCode() == code) return auth.GetValue(col);
+		FbBookSeqns & seqn = m_book_seqn[i];
+		if (seqn.GetCode() == code) return seqn[col];
 	}
 
-	FbBookSeqns * auth = new FbBookSeqns(code, m_database);
+	FbBookSeqns * seqn = new FbBookSeqns(code, m_database);
 
-	m_book_seqn.Insert(auth, 0);
+	m_book_seqn.Insert(seqn, 0);
 	if (count > DATA_CACHE_SIZE) m_book_seqn.RemoveAt(DATA_CACHE_SIZE, count - DATA_CACHE_SIZE);
-	return auth->GetValue(col);
+	return (*seqn)[col];
 }
 
 FbViewData * FbCollection::GetCacheInfo(int code)

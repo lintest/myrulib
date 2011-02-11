@@ -36,7 +36,7 @@ class FbBookAuths: public wxObject
 	public:
 		FbBookAuths(int code, wxSQLite3Database &database);
 		int GetCode() const { return m_code; }
-		wxString GetValue(size_t col) const { return m_name; }
+		wxString operator[](size_t col) const;
 	private:
 		int m_code;
 		wxString m_name;
@@ -51,7 +51,7 @@ class FbBookSeqns: public wxObject
 	public:
 		FbBookSeqns(int code, wxSQLite3Database &database);
 		int GetCode() const { return m_code; }
-		wxString GetValue(size_t col) const;
+		wxString operator[](size_t col) const;
 	private:
 		int m_code;
 		wxString m_name;
