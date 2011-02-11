@@ -12,6 +12,8 @@
 #include <wx/timer.h>
 #include <wx/odcombo.h>
 
+class FbListModel;
+
 class FbFileSelectorCombo : public wxComboCtrl
 {
 public:
@@ -161,21 +163,11 @@ public:
 
     // Item management
     void SetSelection( int item );
-    void Insert( const wxString& item, int pos );
-    int Append(const wxString& item);
-    void Clear();
-    void Delete( unsigned int item );
-    void SetItemClientData(unsigned int n, void* clientData, wxClientDataType clientDataItemsType);
-    void *GetItemClientData(unsigned int n) const;
     void SetString( int item, const wxString& str );
     wxString GetString( int item ) const;
     unsigned int GetCount() const;
     int FindString(const wxString& s, bool bCase = false) const;
     int GetSelection() const;
-
-    //void Populate( int n, const wxString choices[] );
-    void Populate( const wxArrayString& choices );
-    void ClearClientDatas();
 
     // helpers
     int GetItemAtPosition( const wxPoint& pos ) { return HitTest(pos); }
@@ -192,13 +184,6 @@ protected:
 
     // gets value, sends event and dismisses
     void DismissWithEvent();
-
-    // OnMeasureItemWidth will be called on next GetAdjustedSize.
-    void ItemWidthChanged(unsigned int item)
-    {
-        m_widths[item] = -1;
-        m_widthsDirty = true;
-    }
 
     // Callbacks for drawing and measuring items. Override in a derived class for
     // owner-drawnness. Font, background and text colour have been prepared according
@@ -232,17 +217,8 @@ protected:
     void OnKey(wxKeyEvent& event);
     void OnLeftClick(wxMouseEvent& event);
 
-    // Return the widest item width (recalculating it if necessary)
-    int GetWidestItemWidth() { CalcWidths(); return m_widestWidth; }
-
-    // Return the index of the widest item (recalculating it if necessary)
-    int GetWidestItem() { CalcWidths(); return m_widestItem; }
-
     // Stop partial completion (when some other event occurs)
     void StopPartialCompletion();
-
-    wxArrayString           m_strings;
-    wxArrayPtrVoid          m_clientDatas;
 
     wxFont                  m_useFont;
 
@@ -255,26 +231,8 @@ protected:
 
 private:
 
-    // Cached item widths (in pixels).
-    wxArrayInt              m_widths;
-
-    // Width of currently widest item.
-    int                     m_widestWidth;
-
-    // Index of currently widest item.
-    int                     m_widestItem;
-
-    // Measure some items in next GetAdjustedSize?
-    bool                    m_widthsDirty;
-
-    // Find widest item in next GetAdjustedSize?
-    bool                    m_findWidest;
-
-    // has the mouse been released on this control?
+	// has the mouse been released on this control?
     bool                    m_clicked;
-
-    // Recalculate widths if they are dirty
-    void CalcWidths();
 
     // Partial completion string
     wxString                m_partialCompletionString;
@@ -285,6 +243,10 @@ private:
 #endif // wxUSE_TIMER
 
     DECLARE_EVENT_TABLE()
+
+protected:
+	void AssignModel(FbListModel * model);
+    FbListModel * m_model;
 };
 
 
@@ -309,8 +271,6 @@ public:
                          const wxString& value,
                          const wxPoint& pos,
                          const wxSize& size,
-                         int n,
-                         const wxString choices[],
                          long style = 0,
                          const wxValidator& validator = wxDefaultValidator,
                          const wxString& name = wxComboBoxNameStr)
@@ -318,8 +278,7 @@ public:
     {
         Init();
 
-        (void)Create(parent, id, value, pos, size, n,
-                     choices, style, validator, name);
+        Create(parent, id, value, pos, size, style, validator, name);
     }
 
     bool Create(wxWindow *parent,
@@ -327,37 +286,6 @@ public:
                 const wxString& value = wxEmptyString,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
-                long style = 0,
-                const wxValidator& validator = wxDefaultValidator,
-                const wxString& name = wxComboBoxNameStr);
-
-    FbComboBox(wxWindow *parent,
-                         wxWindowID id,
-                         const wxString& value,
-                         const wxPoint& pos,
-                         const wxSize& size,
-                         const wxArrayString& choices,
-                         long style,
-                         const wxValidator& validator = wxDefaultValidator,
-                         const wxString& name = wxComboBoxNameStr);
-
-    bool Create(wxWindow *parent,
-                wxWindowID id,
-                const wxString& value,
-                const wxPoint& pos,
-                const wxSize& size,
-                int n,
-                const wxString choices[],
-                long style = 0,
-                const wxValidator& validator = wxDefaultValidator,
-                const wxString& name = wxComboBoxNameStr);
-
-    bool Create(wxWindow *parent,
-                wxWindowID id,
-                const wxString& value,
-                const wxPoint& pos,
-                const wxSize& size,
-                const wxArrayString& choices,
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxComboBoxNameStr);
@@ -371,8 +299,8 @@ public:
     }
 
     // wxControlWithItems methods
-    virtual void Clear();
-    virtual void Delete(unsigned int n);
+	virtual void Clear() {}
+	virtual void Delete(unsigned int n) {}
     virtual unsigned int GetCount() const;
     virtual wxString GetString(unsigned int n) const;
     virtual void SetString(unsigned int n, const wxString& s);
@@ -387,14 +315,6 @@ public:
     {
         wxComboCtrl::SetSelection(from,to);
     }
-
-    // Return the widest item width (recalculating it if necessary)
-    virtual int GetWidestItemWidth() { EnsurePopupControl(); return GetVListBoxComboPopup()->GetWidestItemWidth(); }
-
-    // Return the index of the widest item (recalculating it if necessary)
-    virtual int GetWidestItem() { EnsurePopupControl(); return GetVListBoxComboPopup()->GetWidestItem(); }
-
-    wxCONTROL_ITEMCONTAINER_CLIENTDATAOBJECT_RECAST
 
 protected:
 
@@ -418,25 +338,17 @@ protected:
     // NULL popup can be used to indicate default interface
     virtual void DoSetPopupControl(wxComboPopup* popup);
 
-    // clears all allocated client datas
-    void ClearClientDatas();
-
     FbComboPopup* GetVListBoxComboPopup() const
     {
         return (FbComboPopup*) m_popupInterface;
     }
 
-    virtual int DoAppend(const wxString& item);
-    virtual int DoInsert(const wxString& item, unsigned int pos);
-    virtual void DoSetItemClientData(unsigned int n, void* clientData);
-    virtual void* DoGetItemClientData(unsigned int n) const;
-    virtual void DoSetItemClientObject(unsigned int n, wxClientData* clientData);
-    virtual wxClientData* DoGetItemClientObject(unsigned int n) const;
-
-    // temporary storage for the initial choices
-    //const wxString*         m_baseChoices;
-    //int                     m_baseChoicesCount;
-    wxArrayString           m_initChs;
+	virtual int DoAppend(const wxString& item) { return wxNOT_FOUND; }
+    virtual int DoInsert(const wxString& item, unsigned int pos) { return wxNOT_FOUND; }
+	virtual void DoSetItemClientData(unsigned int n, void* clientData) {}
+	virtual void * DoGetItemClientData(unsigned int n) const { return NULL; }
+	virtual void DoSetItemClientObject(unsigned int n, wxClientData* clientData) {}
+	virtual wxClientData * DoGetItemClientObject(unsigned int n) const { return NULL; }
 
 private:
     void Init();
@@ -444,6 +356,13 @@ private:
     DECLARE_EVENT_TABLE()
 
     DECLARE_DYNAMIC_CLASS(FbComboBox)
+
+public:
+	void AssignModel(FbListModel * m_model);
+
+private:
+    // temporary storage for the initial model
+    FbListModel * m_initModel;
 };
 
 #endif // __FBCOMBOBOX_H__

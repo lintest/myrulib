@@ -13,13 +13,14 @@
 #include <wx/wx.h>
 #include <wx/combo.h>
 #include "FbComboBox.h"
+#include "FbTreeModel.h"
 
 // ============================================================================
 // implementation
 // ============================================================================
 
 //-----------------------------------------------------------------------------
-//  FbTreeViewHeaderWindow
+//  FbSearchCombo
 //-----------------------------------------------------------------------------
 
 static int GetMultiplier()
@@ -154,15 +155,12 @@ END_EVENT_TABLE()
 
 void FbComboPopup::Init()
 {
-    m_widestWidth = 0;
-    m_widestItem = -1;
-    m_widthsDirty = false;
-    m_findWidest = false;
     m_itemHeight = 0;
     m_value = -1;
     m_itemHover = -1;
     m_clientDataItemsType = wxClientData_None;
     m_partialCompletionString = wxEmptyString;
+	m_model = NULL;
 }
 
 bool FbComboPopup::Create(wxWindow* parent)
@@ -176,7 +174,7 @@ bool FbComboPopup::Create(wxWindow* parent)
 
     m_useFont = m_combo->GetFont();
 
-    wxVListBox::SetItemCount(m_strings.GetCount());
+    wxVListBox::SetItemCount(m_model->GetRowCount());
 
     // TODO: Move this to SetFont
     m_itemHeight = GetCharHeight() + 0;
@@ -186,7 +184,7 @@ bool FbComboPopup::Create(wxWindow* parent)
 
 FbComboPopup::~FbComboPopup()
 {
-    Clear();
+	wxDELETE(m_model);
 }
 
 bool FbComboPopup::LazyCreate()
@@ -303,11 +301,7 @@ void FbComboPopup::DismissWithEvent()
 
     Dismiss();
 
-    wxString valStr;
-    if ( selection != wxNOT_FOUND )
-        valStr = m_strings[selection];
-    else
-        valStr = wxEmptyString;
+	wxString valStr = GetString(selection);
 
     m_value = selection;
 
@@ -319,21 +313,11 @@ void FbComboPopup::DismissWithEvent()
 
 void FbComboPopup::SendComboBoxEvent( int selection )
 {
-    wxCommandEvent evt(wxEVT_COMMAND_COMBOBOX_SELECTED,m_combo->GetId());
+    wxCommandEvent evt(wxEVT_COMMAND_COMBOBOX_SELECTED, m_combo->GetId());
 
     evt.SetEventObject(m_combo);
 
     evt.SetInt(selection);
-
-    // Set client data, if any
-    if ( selection >= 0 && (int)m_clientDatas.GetCount() > selection )
-    {
-        void* clientData = m_clientDatas[selection];
-        if ( m_clientDataItemsType == wxClientData_Object )
-            evt.SetClientObject((wxClientData*)clientData);
-        else
-            evt.SetClientData(clientData);
-    }
 
     m_combo->GetEventHandler()->AddPendingEvent(evt);
 }
@@ -456,8 +440,8 @@ bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar unicode )
 
     m_value = value;
 
-    if ( value >= 0 )
-        m_combo->SetValue(m_strings[value]);
+    if ( value >= 0 ) 
+		m_combo->SetValue(GetString(value));
 
     SendComboBoxEvent(m_value);
 
@@ -570,155 +554,31 @@ void FbComboPopup::OnKey(wxKeyEvent& event)
     }
 }
 
-void FbComboPopup::Insert( const wxString& item, int pos )
-{
-    // Need to change selection?
-    wxString strValue;
-    if ( !(m_combo->GetWindowStyle() & wxCB_READONLY) &&
-         m_combo->GetValue() == item )
-    {
-        m_value = pos;
-    }
-
-    m_strings.Insert(item,pos);
-    m_widths.Insert(-1,pos);
-    m_widthsDirty = true;
-
-    if ( IsCreated() )
-        wxVListBox::SetItemCount( wxVListBox::GetItemCount()+1 );
-}
-
-int FbComboPopup::Append(const wxString& item)
-{
-    int pos = (int)m_strings.GetCount();
-
-    if ( m_combo->GetWindowStyle() & wxCB_SORT )
-    {
-        // Find position
-        // TODO: Could be optimized with binary search
-        wxArrayString strings = m_strings;
-        unsigned int i;
-
-        for ( i=0; i<strings.GetCount(); i++ )
-        {
-            if ( item.CmpNoCase(strings.Item(i)) < 0 )
-            {
-                pos = (int)i;
-                break;
-            }
-        }
-    }
-
-    Insert(item,pos);
-
-    return pos;
-}
-
-void FbComboPopup::Clear()
-{
-    wxASSERT(m_combo);
-
-    m_strings.Empty();
-    m_widths.Empty();
-
-    m_widestWidth = 0;
-    m_widestItem = -1;
-
-    ClearClientDatas();
-
-    m_value = wxNOT_FOUND;
-
-    if ( IsCreated() )
-        wxVListBox::SetItemCount(0);
-}
-
-void FbComboPopup::ClearClientDatas()
-{
-    if ( m_clientDataItemsType == wxClientData_Object )
-    {
-        size_t i;
-        for ( i=0; i<m_clientDatas.GetCount(); i++ )
-            delete (wxClientData*) m_clientDatas[i];
-    }
-
-    m_clientDatas.Empty();
-}
-
-void FbComboPopup::SetItemClientData( unsigned int n,
-                                              void* clientData,
-                                              wxClientDataType clientDataItemsType )
-{
-    // It should be sufficient to update this variable only here
-    m_clientDataItemsType = clientDataItemsType;
-
-    m_clientDatas.SetCount(n+1,NULL);
-    m_clientDatas[n] = clientData;
-
-    ItemWidthChanged(n);
-}
-
-void* FbComboPopup::GetItemClientData(unsigned int n) const
-{
-    if ( m_clientDatas.GetCount() > n )
-        return m_clientDatas[n];
-
-    return NULL;
-}
-
-void FbComboPopup::Delete( unsigned int item )
-{
-    // Remove client data, if set
-    if ( m_clientDatas.GetCount() )
-    {
-        if ( m_clientDataItemsType == wxClientData_Object )
-            delete (wxClientData*) m_clientDatas[item];
-
-        m_clientDatas.RemoveAt(item);
-    }
-
-    m_strings.RemoveAt(item);
-    m_widths.RemoveAt(item);
-
-    if ( (int)item == m_widestItem )
-        m_findWidest = true;
-
-    int sel = GetSelection();
-
-    if ( IsCreated() )
-        wxVListBox::SetItemCount( wxVListBox::GetItemCount()-1 );
-
-    // Fix selection
-    if ( (int)item < sel )
-        SetSelection(sel-1);
-    else if ( (int)item == sel )
-        SetSelection(wxNOT_FOUND);
-}
-
 int FbComboPopup::FindString(const wxString& s, bool bCase) const
 {
-    return m_strings.Index(s, bCase);
-}
-
-unsigned int FbComboPopup::GetCount() const
-{
-    return m_strings.GetCount();
+	return wxNOT_FOUND;
+//    return m_strings.Index(s, bCase);
 }
 
 wxString FbComboPopup::GetString( int item ) const
 {
-    return m_strings[item];
+	return m_model ? m_model->GetData(item + 1).GetValue(0) : wxString();
 }
 
 void FbComboPopup::SetString( int item, const wxString& str )
 {
+/*
     m_strings[item] = str;
     ItemWidthChanged(item);
+*/
 }
 
 wxString FbComboPopup::GetStringValue() const
 {
+/*
     if ( m_value >= 0 )
         return m_strings[m_value];
+*/
     return wxEmptyString;
 }
 
@@ -740,6 +600,7 @@ int FbComboPopup::GetSelection() const
 
 void FbComboPopup::SetStringValue( const wxString& value )
 {
+/*
     int index = m_strings.Index(value);
 
     if ( index >= 0 && index < (int)wxVListBox::GetItemCount() )
@@ -747,95 +608,7 @@ void FbComboPopup::SetStringValue( const wxString& value )
         m_value = index;
         wxVListBox::SetSelection(index);
     }
-}
-
-void FbComboPopup::CalcWidths()
-{
-    bool doFindWidest = m_findWidest;
-
-    // Measure items with dirty width.
-    if ( m_widthsDirty )
-    {
-        unsigned int i;
-        unsigned int n = m_widths.GetCount();
-        int dirtyHandled = 0;
-        wxArrayInt& widths = m_widths;
-
-        // I think using wxDC::GetTextExtent is faster than
-        // wxWindow::GetTextExtent (assuming same dc is used
-        // for all calls, as we do here).
-        wxClientDC dc(m_combo);
-        dc.SetFont(m_useFont);
-
-        for ( i=0; i<n; i++ )
-        {
-            if ( widths[i] < 0 )
-            {
-                wxCoord x = OnMeasureItemWidth(i);
-
-                if ( x < 0 )
-                {
-                    const wxString& text = m_strings[i];
-
-                    // To make sure performance won't suck in extreme scenarios,
-                    // we'll estimate length after some arbitrary number of items
-                    // have been checked precily.
-                    if ( dirtyHandled < 1024 )
-                    {
-                        wxCoord y;
-                        dc.GetTextExtent(text, &x, &y, 0, 0);
-                        x += 4;
-                    }
-                    else
-                    {
-                        x = text.length() * (dc.GetCharWidth()+1);
-                    }
-                }
-
-                widths[i] = x;
-
-                if ( x >= m_widestWidth )
-                {
-                    m_widestWidth = x;
-                    m_widestItem = (int)i;
-                }
-                else if ( (int)i == m_widestItem )
-                {
-                    // Width of previously widest item has been decreased, so
-                    // we'll have to check all to find current widest item.
-                    doFindWidest = true;
-                }
-
-                dirtyHandled++;
-            }
-        }
-
-        m_widthsDirty = false;
-    }
-
-    if ( doFindWidest )
-    {
-        unsigned int i;
-        unsigned int n = m_widths.GetCount();
-
-        int bestWidth = -1;
-        int bestIndex = -1;
-
-        for ( i=0; i<n; i++ )
-        {
-            int w = m_widths[i];
-            if ( w > bestWidth )
-            {
-                bestIndex = (int)i;
-                bestWidth = w;
-            }
-        }
-
-        m_widestWidth = bestWidth;
-        m_widestItem = bestIndex;
-
-        m_findWidest = false;
-    }
+*/
 }
 
 wxSize FbComboPopup::GetAdjustedSize( int minWidth, int prefHeight, int maxHeight )
@@ -844,7 +617,7 @@ wxSize FbComboPopup::GetAdjustedSize( int minWidth, int prefHeight, int maxHeigh
 
     maxHeight -= 2;  // Must take borders into account
 
-    if ( m_strings.GetCount() )
+    if ( GetCount() )
     {
         if ( prefHeight > 0 )
             height = prefHeight;
@@ -874,41 +647,20 @@ wxSize FbComboPopup::GetAdjustedSize( int minWidth, int prefHeight, int maxHeigh
     else
         height = 50;
 
-    CalcWidths();
-
     // Take scrollbar into account in width calculations
-    int widestWidth = m_widestWidth + wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
-    return wxSize(minWidth > widestWidth ? minWidth : widestWidth,
-                  height+2);
+    return wxSize(minWidth, height + 2);
 }
 
-//void FbComboPopup::Populate( int n, const wxString choices[] )
-void FbComboPopup::Populate( const wxArrayString& choices )
+void FbComboPopup::AssignModel(FbListModel * model)
 {
-    int i;
+	wxDELETE(m_model);
+	m_model = model;
+	wxVListBox::SetItemCount(GetCount());
+}
 
-    int n = choices.GetCount();
-
-    for ( i=0; i<n; i++ )
-    {
-        const wxString& item = choices.Item(i);
-        m_strings.Add(item);
-    }
-
-    m_widths.SetCount(n,-1);
-    m_widthsDirty = true;
-
-    if ( IsCreated() )
-        wxVListBox::SetItemCount(n);
-
-    // Sort the initial choices
-    if ( m_combo->GetWindowStyle() & wxCB_SORT )
-        m_strings.Sort();
-
-    // Find initial selection
-    wxString strValue = m_combo->GetValue();
-    if ( strValue.length() )
-        m_value = m_strings.Index(strValue);
+unsigned int FbComboPopup::GetCount() const
+{
+	return m_model ? m_model->GetRowCount() : 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -919,11 +671,11 @@ void FbComboPopup::Populate( const wxArrayString& choices )
 BEGIN_EVENT_TABLE(FbComboBox, wxComboCtrl)
 END_EVENT_TABLE()
 
-
 IMPLEMENT_DYNAMIC_CLASS2(FbComboBox, wxComboCtrl, wxControlWithItems)
 
 void FbComboBox::Init()
 {
+	m_initModel = NULL;
 }
 
 bool FbComboBox::Create(wxWindow *parent,
@@ -938,70 +690,9 @@ bool FbComboBox::Create(wxWindow *parent,
     return wxComboCtrl::Create(parent,id,value,pos,size,style,validator,name);
 }
 
-FbComboBox::FbComboBox(wxWindow *parent,
-                                           wxWindowID id,
-                                           const wxString& value,
-                                           const wxPoint& pos,
-                                           const wxSize& size,
-                                           const wxArrayString& choices,
-                                           long style,
-                                           const wxValidator& validator,
-                                           const wxString& name)
-    : wxComboCtrl()
-{
-    Init();
-
-    Create(parent,id,value,pos,size,choices,style, validator, name);
-}
-
-bool FbComboBox::Create(wxWindow *parent,
-                                  wxWindowID id,
-                                  const wxString& value,
-                                  const wxPoint& pos,
-                                  const wxSize& size,
-                                  const wxArrayString& choices,
-                                  long style,
-                                  const wxValidator& validator,
-                                  const wxString& name)
-{
-    m_initChs = choices;
-    //wxCArrayString chs(choices);
-
-    //return Create(parent, id, value, pos, size, chs.GetCount(),
-    //              chs.GetStrings(), style, validator, name);
-    return Create(parent, id, value, pos, size, 0,
-                  NULL, style, validator, name);
-}
-
-bool FbComboBox::Create(wxWindow *parent,
-                                  wxWindowID id,
-                                  const wxString& value,
-                                  const wxPoint& pos,
-                                  const wxSize& size,
-                                  int n,
-                                  const wxString choices[],
-                                  long style,
-                                  const wxValidator& validator,
-                                  const wxString& name)
-{
-
-    if ( !Create(parent, id, value, pos, size, style,
-                 validator, name) )
-    {
-        return false;
-    }
-
-    int i;
-    for ( i=0; i<n; i++ )
-        m_initChs.Add(choices[i]);
-
-    return true;
-}
-
 FbComboBox::~FbComboBox()
 {
-    if ( m_popupInterface )
-        GetVListBoxComboPopup()->ClearClientDatas();
+	wxDELETE(m_initModel);
 }
 
 void FbComboBox::DoSetPopupControl(wxComboPopup* popup)
@@ -1016,10 +707,10 @@ void FbComboBox::DoSetPopupControl(wxComboPopup* popup)
     wxASSERT(popup);
 
     // Add initial choices to the wxVListBox
-    if ( !GetVListBoxComboPopup()->GetCount() )
+    if ( m_initModel )
     {
-        GetVListBoxComboPopup()->Populate(m_initChs);
-        m_initChs.Clear();
+        GetVListBoxComboPopup()->AssignModel(m_initModel);
+        m_initModel = NULL;
     }
 }
 
@@ -1027,30 +718,9 @@ void FbComboBox::DoSetPopupControl(wxComboPopup* popup)
 // FbComboBox item manipulation methods
 // ----------------------------------------------------------------------------
 
-void FbComboBox::Clear()
-{
-    EnsurePopupControl();
-
-    GetVListBoxComboPopup()->Clear();
-
-    SetValue(wxEmptyString);
-}
-
-void FbComboBox::Delete(unsigned int n)
-{
-    wxCHECK_RET( IsValid(n), _T("invalid index in FbComboBox::Delete") );
-
-    if ( GetSelection() == (int) n )
-        SetValue(wxEmptyString);
-
-    GetVListBoxComboPopup()->Delete(n);
-}
-
 unsigned int FbComboBox::GetCount() const
 {
-    if ( !m_popupInterface )
-        return m_initChs.GetCount();
-
+    if ( m_initModel ) return m_initModel->GetRowCount();
     return GetVListBoxComboPopup()->GetCount();
 }
 
@@ -1058,31 +728,35 @@ wxString FbComboBox::GetString(unsigned int n) const
 {
     wxCHECK_MSG( IsValid(n), wxEmptyString, _T("invalid index in FbComboBox::GetString") );
 
-    if ( !m_popupInterface )
-        return m_initChs.Item(n);
-
+	if ( m_initModel ) return m_initModel->GetData(n + 1).GetValue(0);
     return GetVListBoxComboPopup()->GetString(n);
 }
 
 void FbComboBox::SetString(unsigned int n, const wxString& s)
 {
+/*
     EnsurePopupControl();
 
     wxCHECK_RET( IsValid(n), _T("invalid index in FbComboBox::SetString") );
 
     GetVListBoxComboPopup()->SetString(n,s);
+*/
 }
 
 int FbComboBox::FindString(const wxString& s, bool bCase) const
 {
+	return wxNOT_FOUND;
+/*
     if ( !m_popupInterface )
         return m_initChs.Index(s, bCase);
 
     return GetVListBoxComboPopup()->FindString(s, bCase);
+*/
 }
 
 void FbComboBox::Select(int n)
 {
+/*
     EnsurePopupControl();
 
     wxCHECK_RET( (n == wxNOT_FOUND) || IsValid(n), _T("invalid index in FbComboBox::Select") );
@@ -1100,59 +774,17 @@ void FbComboBox::Select(int n)
         m_valueString = str;
 
     Refresh();
+*/
 }
 
 int FbComboBox::GetSelection() const
 {
-    if ( !m_popupInterface )
-        return m_initChs.Index(m_valueString);
+/*
+    if ( m_initModel ) return m_initChs.Index(m_valueString);
 
     return GetVListBoxComboPopup()->GetSelection();
-}
-
-int FbComboBox::DoAppend(const wxString& item)
-{
-    EnsurePopupControl();
-    wxASSERT(m_popupInterface);
-
-    return GetVListBoxComboPopup()->Append(item);
-}
-
-int FbComboBox::DoInsert(const wxString& item, unsigned int pos)
-{
-    EnsurePopupControl();
-
-    wxCHECK_MSG(!(GetWindowStyle() & wxCB_SORT), -1, wxT("can't insert into sorted list"));
-    wxCHECK_MSG(IsValidInsert(pos), -1, wxT("invalid index"));
-
-    GetVListBoxComboPopup()->Insert(item,pos);
-
-    return pos;
-}
-
-void FbComboBox::DoSetItemClientData(unsigned int n, void* clientData)
-{
-    EnsurePopupControl();
-
-    GetVListBoxComboPopup()->SetItemClientData(n,clientData,m_clientDataItemsType);
-}
-
-void* FbComboBox::DoGetItemClientData(unsigned int n) const
-{
-    if ( !m_popupInterface )
-        return NULL;
-
-    return GetVListBoxComboPopup()->GetItemClientData(n);
-}
-
-void FbComboBox::DoSetItemClientObject(unsigned int n, wxClientData* clientData)
-{
-    DoSetItemClientData(n, (void*) clientData);
-}
-
-wxClientData* FbComboBox::DoGetItemClientObject(unsigned int n) const
-{
-    return (wxClientData*) DoGetItemClientData(n);
+*/
+	return wxNOT_FOUND;
 }
 
 // ----------------------------------------------------------------------------
@@ -1205,5 +837,16 @@ void FbComboBox::OnDrawBackground(wxDC& dc,
 
         PrepareBackground(dc, rect, bgFlags);
     }
+}
+
+void FbComboBox::AssignModel(FbListModel * model)
+{
+	FbComboPopup * popup = GetVListBoxComboPopup();
+	if (popup) {
+		popup->AssignModel(model);
+	} else {
+		wxDELETE(m_initModel);
+		m_initModel = model;
+	}
 }
 

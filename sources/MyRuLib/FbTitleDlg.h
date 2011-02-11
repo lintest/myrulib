@@ -4,8 +4,9 @@
 #include <wx/wx.h>
 #include <wx/combo.h>
 #include "FbWindow.h"
+#include "FbComboBox.h"
 
-class FbModel;
+class FbListModel;
 
 class FbTitleDlg : public FbDialog
 {
@@ -50,10 +51,10 @@ class FbTitleDlg : public FbDialog
 				virtual void Empty()
 					{}
 			private:
-				FbModel * CreateModel();
+				FbListModel * CreateModel();
 			private:
 				wxToolBar m_toolbar;
-				wxComboCtrl m_text;
+				FbComboBox m_text;
 			private:
 				void OnChar( wxKeyEvent& event );
 				void OnText( wxCommandEvent& event );

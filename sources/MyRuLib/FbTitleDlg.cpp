@@ -111,17 +111,13 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner)
 
 	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+	m_text.AssignModel(CreateModel());
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
 	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 	m_toolbar.AddTool( wxID_DELETE, _("Delete"), wxBitmap(del_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 	m_toolbar.Realize();
-
 	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
-
-    FbTreeComboPopup * popup = new FbTreeComboPopup();
-    m_text.SetPopupControl(popup);
-	popup->AssignModel(CreateModel());
 
 	m_text.Connect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
 	m_text.Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
@@ -137,12 +133,12 @@ FbTitleDlg::AuthSubPanel::~AuthSubPanel()
 	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
 }
 
-FbModel * FbTitleDlg::AuthSubPanel::CreateModel()
+FbListModel * FbTitleDlg::AuthSubPanel::CreateModel()
 {
 	FbCommonDatabase database;
 	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ? ORDER BY full_name");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, wxT("ab*"));
+	stmt.Bind(1, wxT("a*"));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
 	wxArrayInt items;
