@@ -13,7 +13,7 @@ FbAuthorModifyDlg::FbAuthorModifyDlg( const wxString& title, int id )
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* bSizerGrid;
-	bSizerGrid = new wxFlexGridSizer( 2, 2, 0, 0 );
+	bSizerGrid = new wxFlexGridSizer( 2, 0, 0 );
 	bSizerGrid->AddGrowableCol( 1 );
 	bSizerGrid->SetFlexibleDirection( wxBOTH );
 	bSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -212,7 +212,7 @@ FbAuthorReplaceDlg::FbAuthorReplaceDlg( const wxString& title, int id )
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* fgSizerGrid;
-	fgSizerGrid = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizerGrid = new wxFlexGridSizer( 2, 0, 0 );
 	fgSizerGrid->AddGrowableCol( 1 );
 	fgSizerGrid->SetFlexibleDirection( wxBOTH );
 	fgSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );

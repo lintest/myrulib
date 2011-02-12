@@ -16,7 +16,7 @@ class FbTempEraser {
 		virtual ~FbTempEraser();
 };
 
-class BookTreeItemData: public wxTreeItemData
+class BookTreeItemData
 {
 	public:
 		BookTreeItemData(BookTreeItemData * data):
@@ -47,7 +47,7 @@ class BookTreeItemData: public wxTreeItemData
 		wxString language;
 };
 
-class FbItemData: public wxTreeItemData
+class FbItemData
 {
 	public:
 		virtual void Show(wxEvtHandler * frame, bool bVertical, bool bEditable = false) const = 0;

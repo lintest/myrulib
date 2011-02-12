@@ -20,7 +20,7 @@
 					<Add option="`wx-config --cflags`" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --libs aui,adv,html,core,net`" />
 					<Add directory="../../build/LinDebug" />
 				</Linker>
 			</Target>

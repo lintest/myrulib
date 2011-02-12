@@ -149,6 +149,7 @@ wxBitmap FbSearchCombo::RenderButtonBitmap()
 BEGIN_EVENT_TABLE(FbComboPopup, wxVListBox)
     EVT_MOTION(FbComboPopup::OnMouseMove)
     EVT_KEY_DOWN(FbComboPopup::OnKey)
+    EVT_CHAR(FbComboPopup::OnChar)
     EVT_LEFT_UP(FbComboPopup::OnLeftClick)
 END_EVENT_TABLE()
 
@@ -185,6 +186,18 @@ bool FbComboPopup::Create(wxWindow* parent)
 FbComboPopup::~FbComboPopup()
 {
 	wxDELETE(m_model);
+}
+
+void FbComboPopup::SetFocus()
+{
+    // Suppress SetFocus() warning by simply not calling it. This combo popup
+    // has already been designed with the assumption that SetFocus() may not
+    // do anything useful, so it really doesn't need to be called.
+#ifdef __WXMSW__
+    //
+#else
+    wxVListBox::SetFocus();
+#endif
 }
 
 bool FbComboPopup::LazyCreate()
@@ -297,7 +310,7 @@ void FbComboPopup::SendComboBoxEvent( int selection )
 }
 
 // returns true if key was consumed
-bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar unicode )
+bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar keychar )
 {
     const int itemCount = GetCount();
 
@@ -309,44 +322,42 @@ bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar unicode )
     int value = m_value;
     int comboStyle = m_combo->GetWindowStyle();
 
-    // this is the character equivalent of the code
-    wxChar keychar = 0;
-    if ( keycode < WXK_START )
+    if ( keychar > 0 )
     {
-#if wxUSE_UNICODE
-        if ( unicode > 0 )
-        {
-            if ( wxIsprint(unicode) )
-                keychar = unicode;
-        }
-        else
-#else
-        wxUnusedVar(unicode);
-#endif
-        if ( wxIsprint(keycode) )
-        {
-            keychar = (wxChar) keycode;
-        }
+        // we have character equivalent of the keycode; filter out these that
+        // are not printable characters
+        if ( !wxIsprint(keychar) )
+            keychar = 0;
     }
 
-    if ( keycode == WXK_DOWN || keycode == WXK_RIGHT )
+    if ( keycode == WXK_DOWN || keycode == WXK_NUMPAD_DOWN || keycode == WXK_RIGHT )
     {
         value++;
         StopPartialCompletion();
     }
-    else if ( keycode == WXK_UP || keycode == WXK_LEFT )
+    else if ( keycode == WXK_UP || keycode == WXK_NUMPAD_UP || keycode == WXK_LEFT )
     {
         value--;
         StopPartialCompletion();
     }
-    else if ( keycode == WXK_PAGEDOWN )
+    else if ( keycode == WXK_PAGEDOWN || keycode == WXK_NUMPAD_PAGEDOWN )
     {
         value+=10;
         StopPartialCompletion();
     }
-    else if ( keycode == WXK_PAGEUP )
+    else if ( keycode == WXK_PAGEUP || keycode == WXK_NUMPAD_PAGEUP )
     {
         value-=10;
+        StopPartialCompletion();
+    }
+    else if ( keycode == WXK_HOME || keycode == WXK_NUMPAD_HOME )
+    {
+        value=0;
+        StopPartialCompletion();
+    }
+    else if ( keycode == WXK_END || keycode == WXK_NUMPAD_END )
+    {
+        value=itemCount-1;
         StopPartialCompletion();
     }
     else if ( keychar && (comboStyle & wxCB_READONLY) )
@@ -415,7 +426,7 @@ bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar unicode )
     m_value = value;
 
     if ( value >= 0 )
-		m_combo->SetValue(GetString(value));
+        m_combo->SetValue(GetString(value));
 
     SendComboBoxEvent(m_value);
 
@@ -443,13 +454,21 @@ void FbComboPopup::OnComboDoubleClick()
 void FbComboPopup::OnComboKeyEvent( wxKeyEvent& event )
 {
     // Saturated key movement on
-    if ( !HandleKey(event.GetKeyCode(),true,
+    if ( !HandleKey(event.GetKeyCode(), true) )
+        event.Skip();
+}
+
+void FbComboPopup::OnComboCharEvent( wxKeyEvent& event )
+{
+    // unlike in OnComboKeyEvent, wxEVT_CHAR contains meaningful
+    // printable character information, so pass it
 #if wxUSE_UNICODE
-        event.GetUnicodeKey()
+    const wxChar charcode = event.GetUnicodeKey();
 #else
-        0
+    const wxChar charcode = (wxChar)event.GetKeyCode();
 #endif
-        ) )
+
+    if ( !HandleKey(event.GetKeyCode(), true, charcode) )
         event.Skip();
 }
 
@@ -514,18 +533,31 @@ void FbComboPopup::OnKey(wxKeyEvent& event)
     }
     else
     {
-        int comboStyle = m_combo->GetWindowStyle();
-        int keycode = event.GetKeyCode();
-        // Process partial completion key codes here, but not the arrow keys as the base class will do that for us
-        if ((comboStyle & wxCB_READONLY) &&
-            (keycode >= WXK_SPACE) && (keycode <=255) && (keycode != WXK_DELETE) && wxIsprint(keycode))
-        {
-            OnComboKeyEvent(event);
-            SetSelection(m_value); // ensure the highlight bar moves
-        }
-        else
-            event.Skip();
+        // completion is handled in OnChar() below
+        event.Skip();
     }
+}
+
+void FbComboPopup::OnChar(wxKeyEvent& event)
+{
+    if ( m_combo->GetWindowStyle() & wxCB_READONLY )
+    {
+        // Process partial completion key codes here, but not the arrow keys as
+        // the base class will do that for us
+#if wxUSE_UNICODE
+        const wxChar charcode = event.GetUnicodeKey();
+#else
+        const wxChar charcode = (wxChar)event.GetKeyCode();
+#endif
+        if ( wxIsprint(charcode) )
+        {
+            OnComboCharEvent(event);
+            SetSelection(m_value); // ensure the highlight bar moves
+            return; // don't skip the event
+        }
+    }
+
+    event.Skip();
 }
 
 wxString FbComboPopup::GetString( int item ) const

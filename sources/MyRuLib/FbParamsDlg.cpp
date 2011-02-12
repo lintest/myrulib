@@ -223,7 +223,7 @@ FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* fgSizerList;
-	fgSizerList = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizerList = new wxFlexGridSizer(2, 0, 0 );
 	fgSizerList->AddGrowableCol( 1 );
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );

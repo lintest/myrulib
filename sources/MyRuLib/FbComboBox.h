@@ -149,6 +149,7 @@ public:
     // required virtuals
     virtual void Init();
     virtual bool Create(wxWindow* parent);
+	virtual void SetFocus();
     virtual wxWindow *GetControl() { return this; }
     virtual wxString GetStringValue() const;
 
@@ -218,7 +219,9 @@ protected:
     void OnMouseMove(wxMouseEvent& event);
     void OnMouseWheel(wxMouseEvent& event);
     void OnKey(wxKeyEvent& event);
+	void OnChar(wxKeyEvent& event);
     void OnLeftClick(wxMouseEvent& event);
+	void OnComboCharEvent(wxKeyEvent& event);
 
     // Stop partial completion (when some other event occurs)
     void StopPartialCompletion();
@@ -263,9 +266,9 @@ class WXDLLIMPEXP_ADV FbComboBox : public wxComboCtrl
 public:
 
     // ctors and such
-    FbComboBox() : wxComboCtrl() 
-	{ 
-		Init(); 
+    FbComboBox() : wxComboCtrl()
+	{
+		Init();
 	}
 
     FbComboBox(wxWindow *parent,

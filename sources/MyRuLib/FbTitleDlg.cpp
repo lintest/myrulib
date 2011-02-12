@@ -135,7 +135,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	: wxScrolledWindow( parent )
 {
 	wxFlexGridSizer* fgSizerMain;
-	fgSizerMain = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizerMain = new wxFlexGridSizer( 2, 0, 0 );
 	fgSizerMain->AddGrowableCol( 1 );
 	fgSizerMain->SetFlexibleDirection( wxBOTH );
 	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );

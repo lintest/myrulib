@@ -9,7 +9,7 @@ class FbChoiceFormat;
 class FbLocale: public wxLocale
 {
 	public:
-        virtual bool Init(int language = wxLANGUAGE_DEFAULT, int flags = wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
+        virtual bool Init(int language = wxLANGUAGE_DEFAULT, int flags = wxLOCALE_LOAD_DEFAULT);
         static int MenuToLang(wxWindowID id);
         static void Fill(FbChoiceFormat * choise, int value);
 	private:

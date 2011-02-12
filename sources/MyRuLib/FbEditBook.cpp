@@ -26,7 +26,7 @@ FbEditBookDlg::FbEditBookDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* fgSizerGrid;
-	fgSizerGrid = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizerGrid = new wxFlexGridSizer( 2, 0, 0 );
 	fgSizerGrid->AddGrowableCol( 1 );
 	fgSizerGrid->SetFlexibleDirection( wxBOTH );
 	fgSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
