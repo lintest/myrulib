@@ -171,6 +171,7 @@ public:
     int GetItemAtPosition( const wxPoint& pos ) { return HitTest(pos); }
     wxCoord GetTotalHeight() const { return EstimateTotalHeight(); }
     wxCoord GetLineHeight(int line) const { return OnGetLineHeight(line); }
+    virtual wxCoord OnGetLineHeight(int line) const { return -1; }
 
 protected:
 

@@ -175,10 +175,10 @@ bool FbComboPopup::Create(wxWindow* parent)
 
     m_useFont = m_combo->GetFont();
 
-    wxVListBox::SetItemCount(GetCount());
-
     // TODO: Move this to SetFont
     m_itemHeight = GetCharHeight() + 0;
+
+    wxVListBox::SetItemCount(GetCount());
 
     return true;
 }
@@ -630,7 +630,9 @@ void FbComboPopup::AssignModel(FbListModel * model)
 {
 	wxDELETE(m_model);
 	m_model = model;
-	wxVListBox::SetItemCount(GetCount());
+
+	if (m_itemHeight)
+		wxVListBox::SetItemCount(GetCount());
 }
 
 unsigned int FbComboPopup::GetCount() const
