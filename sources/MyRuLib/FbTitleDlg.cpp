@@ -22,12 +22,12 @@ FbTitleDlg::SubPanel::SubPanel( wxWindow* parent, wxBoxSizer * owner )
 
 IMPLEMENT_CLASS( FbTitleDlg::AuthSubPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner)
+FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, int book, const wxString & text )
 	: SubPanel( parent, owner )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
+	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.AssignModel(CreateModel());
 
@@ -93,19 +93,21 @@ void FbTitleDlg::AuthSubPanel::OnText( wxCommandEvent& event )
 
 IMPLEMENT_CLASS( FbTitleDlg::SeqnSubPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner)
+FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, int code, const wxString & text, int numb )
 	: SubPanel( parent, owner )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
+	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.SetMinSize( wxSize( 200, -1 ) );
 
 	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("#"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_numb.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxString number;
+	if (numb) number = wxString::Format(wxT("%d"), numb);
+	m_numb.Create( this, wxID_ANY, number, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxTE_RIGHT );
 	bSizerMain->Add( &m_numb, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
@@ -131,9 +133,11 @@ BEGIN_EVENT_TABLE( FbTitleDlg::TitlePanel, wxPanel )
 	EVT_TOOL( wxID_DELETE, FbTitleDlg::TitlePanel::OnToolDel )
 END_EVENT_TABLE()
 
-FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
+FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	: wxScrolledWindow( parent )
 {
+	FbCommonDatabase database;
+
 	wxFlexGridSizer* fgSizerMain;
 	fgSizerMain = new wxFlexGridSizer( 2, 0, 0 );
 	fgSizerMain->AddGrowableCol( 1 );
@@ -146,7 +150,15 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
-	m_title.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxString title;
+	{
+		wxSQLite3Statement stmt = database.PrepareStatement(wxT("SELECT title FROM books WHERE id=?"));
+		stmt.Bind(1, book);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.NextRow()) title = result.GetString(0);
+	}
+
+	m_title.Create( this, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
 	m_title.SetMinSize( wxSize( 300, -1 ) );
 
@@ -155,9 +167,20 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_authors = new wxBoxSizer(wxVERTICAL);
-	m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
-	m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
-	m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
+	{
+		wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=? AND id_author<>0) ORDER BY search_name");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, book);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.Eof()) {
+			m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
+		} else {
+			while (result.NextRow()) {
+				SubPanel * panel = new AuthSubPanel(this, m_authors, result.GetInt(0), result.GetString(1));
+				m_authors->Add( panel, 1, wxEXPAND, 5 );
+			}
+		}
+	}
 	fgSizerMain->Add( m_authors, 1, wxEXPAND | wxRIGHT, 5 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Series"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -165,8 +188,20 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_series = new wxBoxSizer(wxVERTICAL);
-	m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
-	m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
+	{
+		wxString sql = wxT("SELECT b.id_seq, s.value, b.number FROM bookseq AS b INNER JOIN sequences AS s ON b.id_seq=s.id WHERE id_book=? ORDER BY value");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, book);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.Eof()) {
+			m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
+		} else {
+			while (result.NextRow()) {
+				SubPanel * panel = new SeqnSubPanel(this, m_authors, result.GetInt(0), result.GetString(1), result.GetInt(2));
+				m_series->Add( panel, 1, wxEXPAND, 5 );
+			}
+		}
+	}
 	fgSizerMain->Add( m_series, 1, wxEXPAND | wxRIGHT, 5 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Genres"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -246,13 +281,13 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 
 bool FbTitleDlg::Execute(int book)
 {
-	FbTitleDlg dlg(NULL, wxID_ANY, _("Properties"));
+	FbTitleDlg dlg(NULL, book);
 	dlg.Init();
 	return dlg.ShowModal() == wxID_OK;
 }
 
-FbTitleDlg::FbTitleDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog( parent, id, title, pos, size, style )
+FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
+	: FbDialog( parent, wxID_ANY, _("Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER | wxTAB_TRAVERSAL )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -261,7 +296,7 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	sizer->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
-	wxPanel * panel = new TitlePanel( m_notebook );
+	wxPanel * panel = new TitlePanel( m_notebook, book );
 	m_notebook->AddPage( panel, _("Title"), false );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );

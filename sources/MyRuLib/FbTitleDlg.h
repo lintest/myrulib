@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/combo.h>
+#include <wx/wxsqlite3.h>
 #include "FbWindow.h"
 #include "controls/FbComboBox.h"
 
@@ -14,7 +15,7 @@ class FbTitleDlg : public FbDialog
 		class TitlePanel: public wxScrolledWindow
 		{
 			public:
-				TitlePanel( wxWindow* parent );
+				TitlePanel( wxWindow* parent, int book );
 			protected:
 				void ArrangeControls();
 			private:
@@ -44,7 +45,7 @@ class FbTitleDlg : public FbDialog
 		class AuthSubPanel: public SubPanel
 		{
 			public:
-				AuthSubPanel( wxWindow* parent, wxBoxSizer * owner );
+				AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString );
 				virtual ~AuthSubPanel();
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new AuthSubPanel(parent, owner); }
@@ -64,7 +65,7 @@ class FbTitleDlg : public FbDialog
 		class SeqnSubPanel: public SubPanel
 		{
 			public:
-				SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner );
+				SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString, int numb = 0);
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new SeqnSubPanel(parent, owner); }
 				virtual void Empty()
@@ -78,7 +79,7 @@ class FbTitleDlg : public FbDialog
 
 	public:
 		static bool Execute(int book);
-		FbTitleDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER | wxTAB_TRAVERSAL );
+		FbTitleDlg( wxWindow* parent, int book );
 		~FbTitleDlg();
 		void ArrangeControls();
 
