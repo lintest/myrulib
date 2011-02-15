@@ -1,6 +1,6 @@
 #include "FbWindow.h"
-#include "FbParams.h"
-#include "FbMainMenu.h"
+#include "../FbParams.h"
+#include "../FbMainMenu.h"
 #include "FbChoiceFormat.h"
 #include <wx/combo.h>
 #include <wx/fontpicker.h>

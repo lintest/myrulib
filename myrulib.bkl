@@ -178,6 +178,20 @@
 			<library cond="USE_EXPAT=='yes'">expat_static</library>
 			<sys-lib cond="USE_EXPAT=='no'">expat</sys-lib>
 		</if>
+		<sources>MyRuLib/controls/FbChoiceFormat.cpp</sources>
+		<sources>MyRuLib/controls/FbComboBox.cpp</sources>
+		<sources>MyRuLib/controls/FbHtmlWindow.cpp</sources>
+		<sources>MyRuLib/controls/FbLogStream.cpp</sources>
+		<sources>MyRuLib/controls/FbNotebook.cpp</sources>
+		<sources>MyRuLib/controls/FbSearchCombo.cpp</sources>
+		<sources>MyRuLib/controls/FbToolBar.cpp</sources>
+		<sources>MyRuLib/controls/FbTreeModel.cpp</sources>
+		<sources>MyRuLib/controls/FbTreeView.cpp</sources>
+		<sources>MyRuLib/controls/FbURL.cpp</sources>
+		<sources>MyRuLib/controls/FbViewItem.cpp</sources>
+		<sources>MyRuLib/controls/FbWindow.cpp</sources>
+		<sources>MyRuLib/controls/LimitedTextCtrl.cpp</sources>
+		<sources>MyRuLib/controls/ProgressBar.cpp</sources>
 		<sources>MyRuLib/BaseThread.cpp</sources>
 		<sources>MyRuLib/FbAboutDlg.cpp</sources>
 		<sources>MyRuLib/FbAlphabet.cpp</sources>
@@ -190,10 +204,8 @@
 		<sources>MyRuLib/FbBookPanel.cpp</sources>
 		<sources>MyRuLib/FbBookTree.cpp</sources>
 		<sources>MyRuLib/FbCacheBook.cpp</sources>
-		<sources>MyRuLib/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/FbColumnDlg.cpp</sources>
 		<sources>MyRuLib/FbColumns.cpp</sources>
-		<sources>MyRuLib/FbComboBox.cpp</sources>
 		<sources>MyRuLib/FbCollection.cpp</sources>
 		<sources>MyRuLib/FbConvertDlg.cpp</sources>
 		<sources>MyRuLib/FbCounter.cpp</sources>
@@ -228,18 +240,15 @@
 		<sources>MyRuLib/FbGenres.cpp</sources>
 		<sources>MyRuLib/FbGenreThread.cpp</sources>
 		<sources>MyRuLib/FbGenrTree.cpp</sources>
-		<sources>MyRuLib/FbHtmlWindow.cpp</sources>
 		<sources>MyRuLib/FbImportThread.cpp</sources>
 		<sources>MyRuLib/FbInternetBook.cpp</sources>
 		<sources>MyRuLib/FbLocale.cpp</sources>
-		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
 		<sources>MyRuLib/FbMasterInfo.cpp</sources>
 		<sources>MyRuLib/FbMasterThread.cpp</sources>
 		<sources>MyRuLib/FbMasterTypes.cpp</sources>
 		<sources>MyRuLib/FbMenu.cpp</sources>
-		<sources>MyRuLib/FbNotebook.cpp</sources>
 		<sources>MyRuLib/FbParams.cpp</sources>
 		<sources>MyRuLib/FbParamsDlg.cpp</sources>
 		<sources>MyRuLib/FbPreviewThread.cpp</sources>
@@ -251,28 +260,21 @@
 		<sources>MyRuLib/FbServiceDlg.cpp</sources>
 		<sources>MyRuLib/FbServiceThread.cpp</sources>
 		<sources>MyRuLib/FbThread.cpp</sources>
-		<sources>MyRuLib/FbToolBar.cpp</sources>
 		<sources>MyRuLib/FbTitleDlg.cpp</sources>
-		<sources>MyRuLib/FbTreeModel.cpp</sources>
-		<sources>MyRuLib/FbTreeView.cpp</sources>
 		<sources>MyRuLib/FbUpdateThread.cpp</sources>
-		<sources>MyRuLib/FbURL.cpp</sources>
 		<sources>MyRuLib/FbViewContext.cpp</sources>
 		<sources>MyRuLib/FbViewData.cpp</sources>
-		<sources>MyRuLib/FbViewItem.cpp</sources>
 		<sources>MyRuLib/FbViewReader.cpp</sources>
 		<sources>MyRuLib/FbViewThread.cpp</sources>
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
-		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
-		<sources>MyRuLib/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>
-		<sources>MyRuLib/ProgressBar.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
 		<sources>MyRuLib/md5.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<include>$(SRCDIR)/MyRuLib/controls</include>
 		<include>$(SRCDIR)/MyRuLib</include>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<include>$(SRCDIR)/WxBZipStream</include>

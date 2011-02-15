@@ -1,6 +1,6 @@
 #include "FbLogStream.h"
-#include "MyRuLibApp.h"
-#include "FbConst.h"
+#include "../MyRuLibApp.h"
+#include "../FbConst.h"
 
 wxCriticalSection FbLogStream::sm_queue;
 

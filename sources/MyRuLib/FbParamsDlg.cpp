@@ -1,21 +1,4 @@
-#include <wx/statline.h>
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/textctrl.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/sizer.h>
-#include <wx/checkbox.h>
-#include <wx/panel.h>
-#include <wx/radiobox.h>
-#include <wx/notebook.h>
-#include <wx/textdlg.h>
+#include <wx/wx.h>
 #include <wx/settings.h>
 #include "FbParams.h"
 #include "FbConst.h"
@@ -29,7 +12,7 @@
 #include "FbChoiceFormat.h"
 #include "FbLocale.h"
 #include "FbToolBar.h"
-#include "FbComboBox.h"
+#include "FbCustomCombo.h"
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread
@@ -290,7 +273,7 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	m_staticText6->Wrap( -1 );
 	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
-	FbFileSelectorCombo * combo = new FbFileSelectorCombo( this, ID_DOWNLOAD_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbCustomCombo * combo = new FbCustomCombo( this, ID_DOWNLOAD_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
@@ -361,7 +344,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	text->Wrap( -1 );
 	bSizerMain->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
-	FbFileSelectorCombo * combo = new FbFileSelectorCombo( this, ID_TEMP_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbCustomCombo * combo = new FbCustomCombo( this, ID_TEMP_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
@@ -412,7 +395,7 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	m_staticText6->Wrap( -1 );
 	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 
-	FbFileSelectorCombo * combo = new FbFileSelectorCombo( this, ID_EXTERNAL_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbCustomCombo * combo = new FbCustomCombo( this, ID_EXTERNAL_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 

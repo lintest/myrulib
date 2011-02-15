@@ -1,5 +1,5 @@
 #include "FbURL.h"
-#include "FbParams.h"
+#include "../FbParams.h"
 
 FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 {

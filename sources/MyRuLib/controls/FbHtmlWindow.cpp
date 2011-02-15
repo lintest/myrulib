@@ -1,6 +1,6 @@
 #include "FbHtmlWindow.h"
-#include "FbConst.h"
-#include "FbParams.h"
+#include "../FbConst.h"
+#include "../FbParams.h"
 #include <wx/uri.h>
 
 class FbURI: public wxURI

@@ -3,7 +3,6 @@
 
 #include <wx/wx.h>
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
 #include <wx/arrimpl.cpp>
 #include "FbBookEvent.h"
 #include "FbTreeModel.h"

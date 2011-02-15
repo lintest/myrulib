@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(SolutionDir)\MyRuLib\controls&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -124,7 +124,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(SolutionDir)\MyRuLib\controls&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -234,7 +234,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbChoiceFormat.cpp"
+				RelativePath=".\controls\FbChoiceFormat.cpp"
 				>
 			</File>
 			<File
@@ -250,7 +250,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbComboBox.cpp"
+				RelativePath=".\controls\FbComboBox.cpp"
 				>
 			</File>
 			<File
@@ -386,7 +386,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbHtmlWindow.cpp"
+				RelativePath=".\controls\FbHtmlWindow.cpp"
 				>
 			</File>
 			<File
@@ -402,7 +402,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbLogStream.cpp"
+				RelativePath=".\controls\FbLogStream.cpp"
 				>
 			</File>
 			<File
@@ -430,7 +430,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbNotebook.cpp"
+				RelativePath=".\controls\FbNotebook.cpp"
 				>
 			</File>
 			<File
@@ -458,6 +458,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\controls\FbSearchCombo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbSeqnList.cpp"
 				>
 			</File>
@@ -482,15 +486,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbToolBar.cpp"
+				RelativePath=".\controls\FbToolBar.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbTreeModel.cpp"
+				RelativePath=".\controls\FbTreeModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbTreeView.cpp"
+				RelativePath=".\controls\FbTreeView.cpp"
 				>
 			</File>
 			<File
@@ -498,7 +502,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbURL.cpp"
+				RelativePath=".\controls\FbURL.cpp"
 				>
 			</File>
 			<File
@@ -514,7 +518,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewItem.cpp"
+				RelativePath=".\controls\FbViewItem.cpp"
 				>
 			</File>
 			<File
@@ -526,7 +530,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbWindow.cpp"
+				RelativePath=".\controls\FbWindow.cpp"
 				>
 			</File>
 			<File
@@ -534,7 +538,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LimitedTextCtrl.cpp"
+				RelativePath=".\controls\LimitedTextCtrl.cpp"
 				>
 			</File>
 			<File
@@ -546,7 +550,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ProgressBar.cpp"
+				RelativePath=".\controls\ProgressBar.cpp"
 				>
 			</File>
 			<File
@@ -654,7 +658,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbChoiceFormat.h"
+				RelativePath=".\controls\FbChoiceFormat.h"
 				>
 			</File>
 			<File
@@ -674,7 +678,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbComboBox.h"
+				RelativePath=".\controls\FbComboBox.h"
 				>
 			</File>
 			<File
@@ -691,6 +695,10 @@
 			</File>
 			<File
 				RelativePath=".\FbCounter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\controls\FbCustomCombo.h"
 				>
 			</File>
 			<File
@@ -810,7 +818,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbHtmlWindow.h"
+				RelativePath=".\controls\FbHtmlWindow.h"
 				>
 			</File>
 			<File
@@ -830,7 +838,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbLogStream.h"
+				RelativePath=".\controls\FbLogStream.h"
 				>
 			</File>
 			<File
@@ -858,7 +866,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbNotebook.h"
+				RelativePath=".\controls\FbNotebook.h"
 				>
 			</File>
 			<File
@@ -883,6 +891,10 @@
 			</File>
 			<File
 				RelativePath=".\FbScanerThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\controls\FbSearchCombo.h"
 				>
 			</File>
 			<File
@@ -914,11 +926,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbTreeModel.h"
+				RelativePath=".\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbTreeView.h"
+				RelativePath=".\controls\FbTreeModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\controls\FbTreeView.h"
 				>
 			</File>
 			<File
@@ -926,7 +942,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbURL.h"
+				RelativePath=".\controls\FbURL.h"
 				>
 			</File>
 			<File
@@ -942,7 +958,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewItem.h"
+				RelativePath=".\controls\FbViewItem.h"
 				>
 			</File>
 			<File
@@ -954,7 +970,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbWindow.h"
+				RelativePath=".\controls\FbWindow.h"
 				>
 			</File>
 			<File
@@ -970,7 +986,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LimitedTextCtrl.h"
+				RelativePath=".\controls\LimitedTextCtrl.h"
 				>
 			</File>
 			<File
@@ -982,7 +998,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ProgressBar.h"
+				RelativePath=".\controls\ProgressBar.h"
 				>
 			</File>
 			<File

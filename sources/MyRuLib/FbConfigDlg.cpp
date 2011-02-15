@@ -1,19 +1,4 @@
-#include <wx/statline.h>
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/textctrl.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/sizer.h>
-#include <wx/checkbox.h>
-#include <wx/textdlg.h>
+#include <wx/wx.h>
 #include "FbConfigDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
@@ -21,7 +6,7 @@
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
-#include "FbComboBox.h"
+#include "FbCustomCombo.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
@@ -139,7 +124,7 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 	m_staticText2->Wrap( -1 );
 	bSizerMain->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	FbFileSelectorCombo * m_comboDir = new FbFileSelectorCombo( this, ID_LIBRARY_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbCustomCombo * m_comboDir = new FbCustomCombo( this, ID_LIBRARY_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_comboDir->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizerMain->Add( m_comboDir, 0, wxEXPAND|wxALL, 5 );

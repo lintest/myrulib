@@ -17,11 +17,10 @@ void * FbAlphabetThread::Entry()
 	wxString rusA = (wxChar) 0x0410;
 	wxChar last = FbParams::GetStr(FB_LAST_LETTER)[0];
 
+	int pos = 0;
 	int level = 0;
 	int count = 0;
-	wxString text = wxT('*');
-
-	int pos = 0;
+	
 	wxArrayString items;
 	wxString sql = wxT("SELECT distinct letter, count(id) FROM authors GROUP BY letter ORDER BY letter");
 	FbCommonDatabase database;
@@ -50,16 +49,13 @@ void * FbAlphabetThread::Entry()
 		items.Add(text);
 		count += num;
 	}
+
+	wxString text = wxT('*');
 	text << FbCollection::Format(count);
 	items.Insert(text, 0);
 
 	FbLettersEvent(wxID_ANY, items, position, divider).Post(m_owner);
-/*
-	m_LetterList->Append(items);
-	m_LetterList->SetSelection(position);
 
-	FbCommandEvent(wxEVT_COMMAND_COMBOBOX_SELECTED, ID_CHOICE_LETTER).Post(this);
-*/
 	return NULL;
 }
 
