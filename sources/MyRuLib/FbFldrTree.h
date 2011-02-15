@@ -1,7 +1,7 @@
 #ifndef __FBFLDRTREE_H__
 #define __FBFLDRTREE_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 
 class FbFolderParentData: public FbParentData
 {

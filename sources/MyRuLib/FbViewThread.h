@@ -5,7 +5,7 @@
 #include <wx/thread.h>
 #include <wx/wxsqlite3.h>
 #include "FbCacheBook.h"
-#include "FbViewItem.h"
+#include "controls/FbViewItem.h"
 #include "FbThread.h"
 #include "FbViewContext.h"
 

@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 #include "FbBookData.h"
 #include "FbBookTypes.h"
 #include "FbBookEvent.h"

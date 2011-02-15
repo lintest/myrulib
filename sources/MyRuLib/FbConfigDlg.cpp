@@ -2,11 +2,11 @@
 #include "FbConfigDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
-#include "FbCustomCombo.h"
+#include "controls/FbCustomCombo.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------

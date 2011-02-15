@@ -1,7 +1,7 @@
 #include "FbViewerDlg.h"
 #include <wx/artprov.h>
 #include "FbConst.h"
-#include "FbCustomCombo.h"
+#include "controls/FbCustomCombo.h"
 #include "MyRuLibApp.h"
 
 BEGIN_EVENT_TABLE( FbViewerDlg, FbDialog )

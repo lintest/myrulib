@@ -12,7 +12,7 @@
 #include <wx/zipstrm.h>
 #include "FbDataPath.h"
 #include "FbDateTime.h"
-#include "FbURL.h"
+#include "controls/FbURL.h"
 
 wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 {

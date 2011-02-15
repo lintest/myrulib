@@ -10,7 +10,7 @@
 #include <wx/wfstream.h>
 #include "FbDatabase.h"
 #include "FbConst.h"
-#include "FbChoiceFormat.h"
+#include "controls/FbChoiceFormat.h"
 
 #ifdef __WXMSW__
 

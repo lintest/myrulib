@@ -1,10 +1,10 @@
 #ifndef __FBPREVIEWWINDOW_H__
 #define __FBPREVIEWWINDOW_H__
 
-#include "FbHtmlWindow.h"
+#include "controls/FbHtmlWindow.h"
+#include "controls/FbTreeModel.h"
 #include "FbViewContext.h"
 #include "FbPreviewThread.h"
-#include "FbTreeModel.h"
 #include "FbThread.h"
 
 class FbPreviewWindow: public FbHtmlWindow

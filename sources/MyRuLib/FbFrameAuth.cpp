@@ -8,7 +8,7 @@
 #include "FbWindow.h"
 #include "FbAuthorDlg.h"
 #include "FbMasterTypes.h"
-#include "FbToolBar.h"
+#include "controls/FbToolBar.h"
 
 IMPLEMENT_CLASS(FbFrameAuth, FbFrameBase)
 

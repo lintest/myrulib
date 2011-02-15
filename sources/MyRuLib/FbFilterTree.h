@@ -1,7 +1,7 @@
 #ifndef __FBFILTERTREE_H__
 #define __FBFILTERTREE_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbThread.h"
 
 class FbFilterParentData: public FbParentData

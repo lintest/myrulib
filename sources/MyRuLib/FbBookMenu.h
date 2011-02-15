@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/menu.h>
 #include <wx/arrimpl.cpp>
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 
 class FbMasterInfo;
 

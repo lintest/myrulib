@@ -18,12 +18,12 @@
 #include <wx/sizer.h>
 #include <wx/dialog.h>
 #include "FbBookList.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 #include "FbBookData.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbWindow.h"
-#include "FbChoiceFormat.h"
+#include "controls/FbChoiceFormat.h"
 
 class FbBookPanel;
 

@@ -1,6 +1,6 @@
 #include <wx/artprov.h>
 #include "FbTitleDlg.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 #include "FbAuthList.h"
 #include "res/add.xpm"
 #include "res/del.xpm"

@@ -1,7 +1,7 @@
 #ifndef __FBBOOKLIST_H__
 #define __FBBOOKLIST_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbBookTypes.h"
 #include "FbCollection.h"
 #include "FbThread.h"

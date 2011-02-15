@@ -6,7 +6,7 @@
 
 #include <wx/wx.h>
 #include "FbWindow.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 #include "FbFilterObj.h"
 #include "FbDatabase.h"
 #include "FbThread.h"

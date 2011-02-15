@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
-#include "FbURL.h"
+#include "controls/FbURL.h"
 
 class FbUpdateThread: public FbThread
 {

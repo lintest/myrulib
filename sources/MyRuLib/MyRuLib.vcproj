@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(SolutionDir)\MyRuLib\controls&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -124,7 +124,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(SolutionDir)\MyRuLib\controls&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -402,7 +402,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbLogStream.cpp"
+				RelativePath=".\FbLogStream.cpp"
 				>
 			</File>
 			<File
@@ -530,7 +530,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbWindow.cpp"
+				RelativePath=".\FbWindow.cpp"
 				>
 			</File>
 			<File
@@ -838,7 +838,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbLogStream.h"
+				RelativePath=".\FbLogStream.h"
 				>
 			</File>
 			<File
@@ -922,11 +922,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbToolBar.h"
+				RelativePath=".\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbToolBar.h"
+				RelativePath=".\FbToolBar.h"
 				>
 			</File>
 			<File
@@ -970,7 +970,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbWindow.h"
+				RelativePath=".\FbWindow.h"
 				>
 			</File>
 			<File

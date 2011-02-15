@@ -6,7 +6,7 @@
 #include <wx/fontpicker.h>
 #include <wx/wxsqlite3.h>
 #include "FbWindow.h"
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 
 class FbTreeViewCtrl;
 

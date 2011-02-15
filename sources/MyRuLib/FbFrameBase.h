@@ -11,7 +11,7 @@
 #include "FbThread.h"
 #include "FbMainMenu.h"
 #include "FbFilterObj.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 
 class FbFrameBase : public FbAuiMDIChildFrame
 {

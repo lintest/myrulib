@@ -1,7 +1,7 @@
 #ifndef __SEQNLIST_H__
 #define __SEQNLIST_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbCollection.h"
 #include "FbThread.h"
 

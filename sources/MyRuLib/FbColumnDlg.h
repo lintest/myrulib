@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include "FbWindow.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 
 class FbColumnModel: public FbListStore
 {

@@ -1,7 +1,7 @@
 #ifndef __FBAUTHLIST_H__
 #define __FBAUTHLIST_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbCollection.h"
 #include "FbThread.h"
 

@@ -6,7 +6,7 @@
 #include "FbDownloader.h"
 #include "FbEditBook.h"
 #include "ZipReader.h"
-#include "FbHtmlWindow.h"
+#include "controls/FbHtmlWindow.h"
 #include "FbMasterThread.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"

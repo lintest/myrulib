@@ -4,7 +4,7 @@
 #include "FbBookEvent.h"
 #include "FbBookList.h"
 #include "FbBookTree.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 #include "FbGenres.h"
 
 //-----------------------------------------------------------------------------

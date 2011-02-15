@@ -1,5 +1,5 @@
 #include "FbColumns.h"
-#include "FbTreeView.h"
+#include "controls/FbTreeView.h"
 
 wxString FbColumns::GetName(int field)
 {

@@ -3,7 +3,7 @@
 
 #include <wx/event.h>
 #include "FbThread.h"
-#include "FbViewItem.h"
+#include "controls/FbViewItem.h"
 #include "FbViewContext.h"
 
 class FbPreviewThread : public FbThread

@@ -1,7 +1,7 @@
 #ifndef __FBGENRTREE_H__
 #define __FBGENRTREE_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbThread.h"
 
 class wxSQLite3ResultSet;

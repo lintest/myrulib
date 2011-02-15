@@ -2,10 +2,10 @@
 #define __FbAuthorModifyDlg_H__
 
 #include "FbWindow.h"
+#include "controls/FbTreeView.h"
 #include "ImpContext.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
-#include "FbTreeView.h"
 #include "FbThread.h"
 
 class FbAuthorReplaceDlg : public FbDialog

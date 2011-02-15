@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include <wx/combo.h>
 #include "FbWindow.h"
-#include "FbComboBox.h"
+#include "controls/FbComboBox.h"
 
 class FbListModel;
 

@@ -1,7 +1,7 @@
 #ifndef __FBDOWNLIST_H__
 #define __FBDOWNLIST_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbMasterTypes.h"
 
 class FbDownListData: public FbModelData

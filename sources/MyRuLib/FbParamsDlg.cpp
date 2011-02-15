@@ -7,12 +7,12 @@
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
 #include "FbViewerDlg.h"
-#include "FbTreeView.h"
-#include "FbDatabase.h"
-#include "FbChoiceFormat.h"
 #include "FbLocale.h"
-#include "FbToolBar.h"
-#include "FbCustomCombo.h"
+#include "FbDatabase.h"
+#include "controls/FbChoiceFormat.h"
+#include "controls/FbCustomCombo.h"
+#include "controls/FbToolBar.h"
+#include "controls/FbTreeView.h"
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread

@@ -9,7 +9,7 @@
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
 #include "FbSeqnList.h"
-#include "FbSearchCombo.h"
+#include "controls/FbSearchCombo.h"
 
 class FbFrameSeqn : public FbFrameBase
 {

@@ -2,7 +2,7 @@
 #define __FBDATETREE_H__
 
 #include <wx/wxsqlite3.h>
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include "FbDatabase.h"
 #include "FbCollection.h"
 #include "FbThread.h"

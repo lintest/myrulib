@@ -1,7 +1,7 @@
 #ifndef __FBEXPORTTREE_H__
 #define __FBEXPORTTREE_H__
 
-#include "FbTreeModel.h"
+#include "controls/FbTreeModel.h"
 #include <wx/filename.h>
 #include <wx/wxsqlite3.h>
 

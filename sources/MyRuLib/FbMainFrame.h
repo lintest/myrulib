@@ -5,8 +5,8 @@
 #include <wx/aui/aui.h>
 #include <wx/toolbar.h>
 #include <wx/textctrl.h>
-#include "ProgressBar.h"
-#include "LimitedTextCtrl.h"
+#include "controls/ProgressBar.h"
+#include "controls/LimitedTextCtrl.h"
 #include "FbFrameAuth.h"
 #include "FbLogoBitmap.h"
 

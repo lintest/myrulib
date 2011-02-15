@@ -181,7 +181,6 @@
 		<sources>MyRuLib/controls/FbChoiceFormat.cpp</sources>
 		<sources>MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>MyRuLib/controls/FbHtmlWindow.cpp</sources>
-		<sources>MyRuLib/controls/FbLogStream.cpp</sources>
 		<sources>MyRuLib/controls/FbNotebook.cpp</sources>
 		<sources>MyRuLib/controls/FbSearchCombo.cpp</sources>
 		<sources>MyRuLib/controls/FbToolBar.cpp</sources>
@@ -189,7 +188,6 @@
 		<sources>MyRuLib/controls/FbTreeView.cpp</sources>
 		<sources>MyRuLib/controls/FbURL.cpp</sources>
 		<sources>MyRuLib/controls/FbViewItem.cpp</sources>
-		<sources>MyRuLib/controls/FbWindow.cpp</sources>
 		<sources>MyRuLib/controls/LimitedTextCtrl.cpp</sources>
 		<sources>MyRuLib/controls/ProgressBar.cpp</sources>
 		<sources>MyRuLib/BaseThread.cpp</sources>
@@ -243,6 +241,7 @@
 		<sources>MyRuLib/FbImportThread.cpp</sources>
 		<sources>MyRuLib/FbInternetBook.cpp</sources>
 		<sources>MyRuLib/FbLocale.cpp</sources>
+		<sources>MyRuLib/FbLogStream.cpp</sources>
 		<sources>MyRuLib/FbMainFrame.cpp</sources>
 		<sources>MyRuLib/FbMainMenu.cpp</sources>
 		<sources>MyRuLib/FbMasterInfo.cpp</sources>
@@ -267,6 +266,7 @@
 		<sources>MyRuLib/FbViewReader.cpp</sources>
 		<sources>MyRuLib/FbViewThread.cpp</sources>
 		<sources>MyRuLib/FbViewerDlg.cpp</sources>
+		<sources>MyRuLib/FbWindow.cpp</sources>
 		<sources>MyRuLib/ImpContext.cpp</sources>
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>
@@ -274,7 +274,6 @@
 		<sources>MyRuLib/md5.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<include>$(SRCDIR)/MyRuLib/controls</include>
 		<include>$(SRCDIR)/MyRuLib</include>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<include>$(SRCDIR)/WxBZipStream</include>

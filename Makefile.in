@@ -81,17 +81,16 @@ ZIPSCAN_OBJECTS =  \
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
-MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib/controls \
-	-I$(srcdir)/sources/MyRuLib -I$(srcdir)/sources/WxSQLite3 \
-	-I$(srcdir)/sources/WxBZipStream $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib/controls \
-	-I$(srcdir)/sources/MyRuLib -I$(srcdir)/sources/WxSQLite3 \
-	-I$(srcdir)/sources/WxBZipStream $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+	-I$(srcdir)/sources/WxSQLite3 -I$(srcdir)/sources/WxBZipStream \
+	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+	-I$(srcdir)/sources/WxSQLite3 -I$(srcdir)/sources/WxBZipStream \
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceFormat.o \
 	myrulib_FbComboBox.o \
 	myrulib_FbHtmlWindow.o \
-	myrulib_FbLogStream.o \
 	myrulib_FbNotebook.o \
 	myrulib_FbSearchCombo.o \
 	myrulib_FbToolBar.o \
@@ -99,7 +98,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbTreeView.o \
 	myrulib_FbURL.o \
 	myrulib_FbViewItem.o \
-	myrulib_FbWindow.o \
 	myrulib_LimitedTextCtrl.o \
 	myrulib_ProgressBar.o \
 	myrulib_BaseThread.o \
@@ -153,6 +151,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbImportThread.o \
 	myrulib_FbInternetBook.o \
 	myrulib_FbLocale.o \
+	myrulib_FbLogStream.o \
 	myrulib_FbMainFrame.o \
 	myrulib_FbMainMenu.o \
 	myrulib_FbMasterInfo.o \
@@ -177,6 +176,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbViewReader.o \
 	myrulib_FbViewThread.o \
 	myrulib_FbViewerDlg.o \
+	myrulib_FbWindow.o \
 	myrulib_ImpContext.o \
 	myrulib_MyRuLibApp.o \
 	myrulib_ParseCtx.o \
@@ -406,9 +406,6 @@ myrulib_FbComboBox.o: $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp $(MYRULI
 myrulib_FbHtmlWindow.o: $(srcdir)/sources/MyRuLib/controls/FbHtmlWindow.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbHtmlWindow.cpp
 
-myrulib_FbLogStream.o: $(srcdir)/sources/MyRuLib/controls/FbLogStream.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbLogStream.cpp
-
 myrulib_FbNotebook.o: $(srcdir)/sources/MyRuLib/controls/FbNotebook.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbNotebook.cpp
 
@@ -429,9 +426,6 @@ myrulib_FbURL.o: $(srcdir)/sources/MyRuLib/controls/FbURL.cpp $(MYRULIB_ODEP)
 
 myrulib_FbViewItem.o: $(srcdir)/sources/MyRuLib/controls/FbViewItem.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbViewItem.cpp
-
-myrulib_FbWindow.o: $(srcdir)/sources/MyRuLib/controls/FbWindow.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbWindow.cpp
 
 myrulib_LimitedTextCtrl.o: $(srcdir)/sources/MyRuLib/controls/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/LimitedTextCtrl.cpp
@@ -592,6 +586,9 @@ myrulib_FbInternetBook.o: $(srcdir)/sources/MyRuLib/FbInternetBook.cpp $(MYRULIB
 myrulib_FbLocale.o: $(srcdir)/sources/MyRuLib/FbLocale.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbLocale.cpp
 
+myrulib_FbLogStream.o: $(srcdir)/sources/MyRuLib/FbLogStream.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbLogStream.cpp
+
 myrulib_FbMainFrame.o: $(srcdir)/sources/MyRuLib/FbMainFrame.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbMainFrame.cpp
 
@@ -664,6 +661,9 @@ myrulib_FbViewThread.o: $(srcdir)/sources/MyRuLib/FbViewThread.cpp $(MYRULIB_ODE
 myrulib_FbViewerDlg.o: $(srcdir)/sources/MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewerDlg.cpp
 
+myrulib_FbWindow.o: $(srcdir)/sources/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbWindow.cpp
+
 myrulib_ImpContext.o: $(srcdir)/sources/MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ImpContext.cpp
 
@@ -683,7 +683,7 @@ myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
 myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib/controls --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/sources/WxSQLite3 --include-dir $(srcdir)/sources/WxBZipStream
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/sources/WxSQLite3 --include-dir $(srcdir)/sources/WxBZipStream
 
 
 # Include dependency info, if present:

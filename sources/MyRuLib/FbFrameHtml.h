@@ -8,7 +8,7 @@
 #include <wx/html/htmlwin.h>
 #include "FbBookData.h"
 #include "FbWindow.h"
-#include "FbHtmlWindow.h"
+#include "controls/FbHtmlWindow.h"
 
 class FbFrameHtml: public FbAuiMDIChildFrame
 {

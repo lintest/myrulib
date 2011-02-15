@@ -24,7 +24,7 @@
 #include "FbUpdateThread.h"
 #include "FbMasterTypes.h"
 #include "FbAboutDlg.h"
-#include "FbNotebook.h"
+#include "controls/FbNotebook.h"
 #include "FbDateTime.h"
 #include "FbLocale.h"
 
