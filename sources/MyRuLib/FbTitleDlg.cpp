@@ -297,7 +297,7 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
 	sizer->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxPanel * panel = new TitlePanel( m_notebook, book );
-	m_notebook->AddPage( panel, _("Title"), false );
+	m_notebook->AddPage( panel, _("General"), false );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizer->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
