@@ -272,7 +272,6 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 	}
 
 	ArrangeControls();
-	GetSizer()->Fit(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -326,7 +325,14 @@ void FbTitleDlg::ArrangeControls()
 	size_t count = m_notebook->GetPageCount();
 	for (size_t i = 0; i < count; i++) {
 		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
-		if (window) window->SetScrollbars(0, 0, 0, 0);
+		if (window) {
+			window->Layout();
+			wxSize size = window->GetSizer()->ComputeFittingClientSize(window);
+			size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+			window->SetScrollbars(0, 0, 0, 0);
+			window->SetMinSize(size);
+			window->SetSize(size);
+		}
 	}
 
 	wxSize size = GetBestSize();
@@ -335,6 +341,12 @@ void FbTitleDlg::ArrangeControls()
 
 	for (size_t i = 0; i < count; i++) {
 		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
-		if (window) window->SetScrollbars(20, 20, 50, 50);
+		if (window) {
+			window->SetScrollbars(20, 20, 50, 50);
+			window->SetMinSize(wxSize(-1, -1));
+			window->Layout();
+		}
 	}
+
+	Layout();
 }
