@@ -197,7 +197,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 			m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
 		} else {
 			while (result.NextRow()) {
-				SubPanel * panel = new SeqnSubPanel(this, m_authors, result.GetInt(0), result.GetString(1), result.GetInt(2));
+				SubPanel * panel = new SeqnSubPanel(this, m_series, result.GetInt(0), result.GetString(1), result.GetInt(2));
 				m_series->Add( panel, 1, wxEXPAND, 5 );
 			}
 		}
