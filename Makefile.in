@@ -391,8 +391,8 @@ wxbzip2_static_bzipstream.o: $(srcdir)/sources/WxBZipStream/bzipstream.cpp
 zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
 	$(CXXC) -c -o $@ $(ZIPSCAN_CXXFLAGS) $(srcdir)/sources/ZipScaner/ZipScan.cpp
 
-zipscan_md5.o: $(srcdir)/sources/MyRuLib/md5.c
-	$(CCC) -c -o $@ $(ZIPSCAN_CFLAGS) $(srcdir)/sources/MyRuLib/md5.c
+zipscan_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c
+	$(CCC) -c -o $@ $(ZIPSCAN_CFLAGS) $(srcdir)/sources/MyRuLib/polarssl/md5.c
 
 bin2c_bin2c.o: $(srcdir)/sources/Bin2c/bin2c.c
 	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/sources/Bin2c/bin2c.c
@@ -676,8 +676,8 @@ myrulib_ParseCtx.o: $(srcdir)/sources/MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
 myrulib_ZipReader.o: $(srcdir)/sources/MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ZipReader.cpp
 
-myrulib_md5.o: $(srcdir)/sources/MyRuLib/md5.c $(MYRULIB_ODEP)
-	$(CCC) -c -o $@ $(MYRULIB_CFLAGS) $(srcdir)/sources/MyRuLib/md5.c
+myrulib_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c $(MYRULIB_ODEP)
+	$(CCC) -c -o $@ $(MYRULIB_CFLAGS) $(srcdir)/sources/MyRuLib/polarssl/md5.c
 
 myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp

@@ -77,7 +77,7 @@
 		<depends>sqlite3_static</depends>
 		<define>NDEBUG</define>
 		<sources>ZipScaner/ZipScan.cpp</sources>
-		<sources>MyRuLib/md5.c</sources>
+		<sources>MyRuLib/polarssl/md5.c</sources>
 		<include>$(SRCDIR)/MyRuLib</include>
 		<include>$(SRCDIR)/WxSQLite3</include>
 		<library>wxsqlite3_static</library>
@@ -271,7 +271,7 @@
 		<sources>MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>MyRuLib/ParseCtx.cpp</sources>
 		<sources>MyRuLib/ZipReader.cpp</sources>
-		<sources>MyRuLib/md5.c</sources>
+		<sources>MyRuLib/polarssl/md5.c</sources>
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/MyRuLib</include>

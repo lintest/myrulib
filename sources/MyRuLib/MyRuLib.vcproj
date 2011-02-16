@@ -584,7 +584,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\md5.c"
+				RelativePath=".\polarssl\md5.c"
 				>
 			</File>
 			<File
