@@ -220,15 +220,13 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 
 void FbTitleDlg::TitlePanel::ArrangeControls()
 {
-	wxSize size = GetBestSize();
-	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
-	SetSize(size);
-
 	wxWindow * notebook = GetParent();
-	if (notebook) {
-		FbTitleDlg * dialog = wxDynamicCast(notebook->GetParent(), FbTitleDlg);
-		if (dialog) dialog->ArrangeControls();
-	}
+	if (notebook == NULL) return;
+
+	FbTitleDlg * dialog = wxDynamicCast(notebook->GetParent(), FbTitleDlg);
+	if (dialog == NULL) return;
+
+	dialog->ArrangeControls();
 }
 
 void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
@@ -268,10 +266,9 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 		} else {
 			owner->Detach(panel);
 			panel->Destroy();
+			ArrangeControls();
 		}
 	}
-
-	ArrangeControls();
 }
 
 //-----------------------------------------------------------------------------
