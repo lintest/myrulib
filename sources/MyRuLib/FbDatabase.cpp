@@ -578,9 +578,7 @@ void FbConfigDatabase::CreateDatabase()
 	ExecuteUpdate(wxT("INSERT INTO config(id, value) VALUES (2, 1)"));
 
 	/** TABLE types **/
-	ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99), command text, convert text)"));
-	ExecuteUpdate(wxT("CREATE UNIQUE INDEX types_file_type ON types(file_type)"));
-	ExecuteUpdate(wxT("DROP INDEX IF EXISTS book_file"));
+	ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99) primary key, command text, convert text)"));
 
 	/** TABLE comments **/
 	ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, md5sum CHAR(32), rating integer, posted datetime, caption text, comment text)"));
@@ -592,7 +590,7 @@ void FbConfigDatabase::CreateDatabase()
 	ExecuteUpdate(wxString::Format(wxT("INSERT INTO folders(id,value) VALUES (-2, '%s')"), _("Other")));
 
 	/** TABLE favorites **/
-	ExecuteUpdate(wxT("CREATE TABLE favorites(id_folder integer, md5sum CHAR(32))"));
+	ExecuteUpdate(wxT("CREATE TABLE favorites(md5sum CHAR(32), id_folder integer, PRIMARY KEY(md5sum, id_folder))"));
 	ExecuteUpdate(wxT("CREATE INDEX favorites_folder ON favorites(id_folder)"));
 
 	trans.Commit();
