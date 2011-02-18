@@ -492,7 +492,7 @@ void FbBookPanel::DoFolderAdd(const int folder)
 {
 	wxString sel = GetSelected();
 	wxString sql = wxString::Format(wxT("\
-		INSERT INTO favorites(id_folder,md5sum) \
+		INSERT OR REPLACE INTO favorites(id_folder,md5sum) \
 		SELECT DISTINCT %d, md5sum FROM books WHERE id IN (%s) \
 	"), folder, sel.c_str());
 
