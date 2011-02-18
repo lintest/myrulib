@@ -15,7 +15,7 @@ void * FbAlphabetThread::Entry()
 	int position = 0;
 	wxString engA = (wxChar) 0x0041;
 	wxString rusA = (wxChar) 0x0410;
-	wxChar last = FbParams::GetStr(FB_LAST_LETTER)[0];
+	wxString last = FbParams::GetStr(FB_LAST_LETTER).Left(1);
 
 	int pos = 0;
 	int level = 0;
