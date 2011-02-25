@@ -4,6 +4,7 @@
 #include "controls/FbChoiceFormat.h"
 #include <wx/combo.h>
 #include <wx/fontpicker.h>
+#include <wx/spinctrl.h>
 
 //-----------------------------------------------------------------------------
 //  FbDialog
@@ -52,6 +53,11 @@ void FbDialog::Assign(long winid, int param, bool write)
 			FbParams::Set(param, control->GetValue());
 		else
 			control->SetValue(FbParams::GetStr(param));
+	} else if (wxSpinCtrl * control = wxDynamicCast(window, wxSpinCtrl)) {
+		if (write)
+			FbParams::Set(param, control->GetValue());
+		else
+			control->SetValue(FbParams::GetInt(param));
 	} else if (wxFontPickerCtrl * control = wxDynamicCast(window, wxFontPickerCtrl)) {
 		if (write)
 			FbParams::Set(param, control->GetSelectedFont().GetNativeFontInfoDesc());

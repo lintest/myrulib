@@ -1,5 +1,6 @@
 #include <wx/wx.h>
 #include <wx/settings.h>
+#include <wx/spinctrl.h>
 #include "FbParams.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
@@ -249,36 +250,56 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxCheckBox * m_checkBox13 = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Automatically begin files downloading"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerMain->Add( m_checkBox13, 0, wxEXPAND|wxALL, 5 );
+	wxCheckBox * checkbox = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Automatically begin files downloading"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxEXPAND|wxALL, 5 );
 
-	wxBoxSizer* bSizer13;
-	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
 
-	wxCheckBox * m_checkBox12 = new wxCheckBox( this, ID_USE_PROXY, _("Use proxy-server"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer13->Add( m_checkBox12, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+	checkbox = new wxCheckBox( this, ID_USE_PROXY, _("Use proxy-server"), wxDefaultPosition, wxDefaultSize, 0 );
+	sizer->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	wxComboBox * m_comboBox2 = new wxComboBox( this, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	m_comboBox2->Append( wxT("192.168.0.1:3128") );
-	m_comboBox2->Append( wxT("172.16.0.1:3128") );
-	m_comboBox2->Append( wxT("10.0.0.1:3128") );
-	bSizer13->Add( m_comboBox2, 1, wxALL, 5 );
+	wxComboBox * combobox = new wxComboBox( this, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	combobox->Append( wxT("192.168.0.1:3128") );
+	combobox->Append( wxT("172.16.0.1:3128") );
+	combobox->Append( wxT("10.0.0.1:3128") );
+	sizer->Add( combobox, 1, wxALL, 5 );
 
-	bSizerMain->Add( bSizer13, 0, wxEXPAND, 5 );
+	bSizerMain->Add( sizer, 0, wxEXPAND, 5 );
 
-	wxCheckBox * checkBox3 = new wxCheckBox( this, ID_HTTP_IMAGES, _("Load images for author's description"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerMain->Add( checkBox3, 0, wxALL, 5 );
+	checkbox = new wxCheckBox( this, ID_HTTP_IMAGES, _("Load images for author's description"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	wxStaticText * m_staticText6 = new wxStaticText( this, wxID_ANY, _("Folder to save downloads:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText6->Wrap( -1 );
-	bSizerMain->Add( m_staticText6, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
+	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Folder to save downloads:"), wxDefaultPosition, wxDefaultSize, 0 );
+	text->Wrap( -1 );
+	bSizerMain->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
 	FbCustomCombo * combo = new FbCustomCombo( this, ID_DOWNLOAD_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	combo->SetMinSize( wxSize( 300,-1 ) );
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
-	wxCheckBox * m_checkBox14 = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizerMain->Add( m_checkBox14, 0, wxALL, 5 );
+	checkbox = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
+
+	wxFlexGridSizer* fgSizer;
+	fgSizer = new wxFlexGridSizer(2, 0, 0 );
+	fgSizer->SetFlexibleDirection( wxBOTH );
+	fgSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	text = new wxStaticText( this, wxID_ANY, _("Download timout (seconds):"), wxDefaultPosition, wxDefaultSize, 0 );
+	text->Wrap( -1 );
+	fgSizer->Add( text, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+
+	wxSpinCtrl * number = new wxSpinCtrl( this, ID_WEB_TIMEOUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 999, 0 );
+	fgSizer->Add( number, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	text = new wxStaticText( this, wxID_ANY, _("Number of attempts:"), wxDefaultPosition, wxDefaultSize, 0 );
+	text->Wrap( -1 );
+	fgSizer->Add( text, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+
+	number = new wxSpinCtrl( this, ID_WEB_ATTEMPT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 9, 0 );
+	fgSizer->Add( number, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	bSizerMain->Add( fgSizer, 0, wxEXPAND, 5 );
 
 	SetSizer( bSizerMain );
 	bSizerMain->Fit( this );
@@ -608,6 +629,9 @@ void FbParamsDlg::Assign(bool write)
 		{FB_GRAY_FONT, ID_GRAY_FONT},
 		{FB_FILE_FORMAT, ID_FILE_FORMAT},
 		{FB_LANG_LOCALE, ID_LANG_LOCALE},
+		{FB_WEB_TIMEOUT, ID_WEB_TIMEOUT},
+		{FB_WEB_ATTEMPT, ID_WEB_ATTEMPT},
+
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

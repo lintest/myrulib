@@ -56,6 +56,8 @@ class FbParamsDlg : private FbDialog
 			ID_SAVE_FULLPATH,
 			ID_LANG_LOCALE,
 			ID_LETTERS,
+			ID_WEB_TIMEOUT,
+			ID_WEB_ATTEMPT,
 		};
 		class LoadThread: public wxThread
 		{
