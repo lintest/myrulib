@@ -14,7 +14,7 @@
 
 FbUpdateThread::FbUpdateThread()
 {
-	wxURL(strHomePage).GetProtocol().SetTimeout(10);
+	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
 }
 
 void * FbUpdateThread::Entry()

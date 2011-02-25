@@ -7,7 +7,7 @@
 
 FbDownloader::FbDownloader(): m_condition(m_mutex), m_closed(false)
 {
-	wxURL(strHomePage).GetProtocol().SetTimeout(10);
+	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
 }
 
 void FbDownloader::Signal()
