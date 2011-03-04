@@ -59,6 +59,26 @@ WX_DEFINE_OBJARRAY(wxArrayTreeListColumn);
 
 class  FbTreeViewHeaderWindow : public wxWindow
 {
+	protected:
+		const wxCursor *m_currentCursor;
+		const wxCursor *m_resizeCursor;
+		bool m_isDragging;
+
+		// column being resized
+		int m_column;
+
+		// divider line position in logical (unscrolled) coords
+		int m_currentX;
+
+		// minimal position beyond which the divider line can't be dragged in
+		// logical coords
+		int m_minX;
+
+		// needs refresh
+		bool m_dirty;
+
+		void RefreshColLabel(int col);
+
 	public:
 		FbTreeViewHeaderWindow( wxWindow *win,
 								wxWindowID id,
@@ -69,6 +89,10 @@ class  FbTreeViewHeaderWindow : public wxWindow
 								const wxString &name = wxT("FbTreeViewctrlcolumntitles") );
 
 		virtual ~FbTreeViewHeaderWindow();
+
+		void DoDrawRect( wxDC *dc, int x, int y, int w, int h );
+
+		void DrawCurrent();
 
         void AddColumn(const FbTreeViewColumnInfo & info) { m_columns.Add(info); };
 
@@ -93,7 +117,7 @@ class  FbTreeViewHeaderWindow : public wxWindow
 
         void SetSortedColumn(int column) { m_sorted = column; }
 
-		void GetColumnInfo(int width, FbColumnArray &columns);
+		void GetColumnInfo(FbColumnArray &columns, int width = 0);
 
 	private:
 		FbTreeViewMainWindow * m_owner;
@@ -197,6 +221,11 @@ FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbT
 {
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
     SetBackgroundColour(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
+
+    m_resizeCursor = new wxCursor(wxCURSOR_SIZEWE);
+    m_currentCursor = (wxCursor *) NULL;
+    m_isDragging = false;
+    m_dirty = false;
 }
 
 FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
@@ -249,8 +278,10 @@ void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
     }
 }
 
-void FbTreeViewHeaderWindow::GetColumnInfo(int ww, FbColumnArray &columns)
+void FbTreeViewHeaderWindow::GetColumnInfo(FbColumnArray &columns, int ww)
 {
+	if (ww == 0) m_owner->GetClientSize(&ww, NULL);
+
     int x = 0;
     int www = GetFullWidth();
     size_t count = GetColumnCount();
@@ -266,9 +297,7 @@ void FbTreeViewHeaderWindow::GetColumnInfo(int ww, FbColumnArray &columns)
 int FbTreeViewHeaderWindow::XToCol(int x)
 {
     int w, left = 0;
-    GetClientSize( &w, 0 );
-	if (m_owner && m_owner->ShowScrollbar())
-		w -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+    m_owner->GetClientSize( &w, NULL );
     int ww = GetFullWidth();
     size_t count = GetColumnCount();
     for ( size_t col = 0; col < count; col++ ) {
@@ -278,16 +307,133 @@ int FbTreeViewHeaderWindow::XToCol(int x)
     return count - 1;
 }
 
+void FbTreeViewHeaderWindow::RefreshColLabel(int col)
+{
+	FbColumnArray columns;
+	GetColumnInfo(columns);
+
+	if (col < 0) return;
+	if (col >= columns.Count()) return;
+
+    int x = 0;
+    int width = 0;
+    int idx = 0;
+    do {
+    	FbColumnInfo & column = columns[idx];
+        x += width;
+        width = column.GetWidth();
+    } while (++idx <= col);
+
+    RefreshRect(wxRect(x, 0, width, GetSize().GetHeight()));
+}
+
+void FbTreeViewHeaderWindow::DrawCurrent()
+{
+    int x1 = m_currentX;
+    int y1 = 0;
+    ClientToScreen (&x1, &y1);
+
+    int x2 = m_currentX-1;
+#ifdef __WXMSW__
+    ++x2; // but why ????
+#endif
+    int y2 = 0;
+    m_owner->GetClientSize( NULL, &y2 );
+    m_owner->ClientToScreen( &x2, &y2 );
+
+    wxScreenDC dc;
+    dc.SetLogicalFunction (wxINVERT);
+    dc.SetPen (wxPen (*wxBLACK, 2, wxSOLID));
+    dc.SetBrush (*wxTRANSPARENT_BRUSH);
+
+    dc.DrawLine (x1, y1, x2, y2);
+    dc.SetLogicalFunction (wxCOPY);
+    dc.SetPen (wxNullPen);
+    dc.SetBrush (wxNullBrush);
+}
+
 void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
 {
-    if (event.LeftUp() && m_sorted) {
-        int col = XToCol(event.GetX());
-		int index = GetColumn(col).GetIndex();
-        m_sorted = (abs(m_sorted) == index + 1) ? - m_sorted : index + 1;
-        SendListEvent(wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
-        Refresh();
+    int x = event.GetX();
+
+    if (m_isDragging) {
+
+        // we don't draw the line beyond our window, but we allow dragging it there
+        int w = 0;
+        m_owner->GetClientSize( &w, NULL );
+        w -= 6;
+
+        // erase the line if it was drawn
+        if (m_currentX < w) DrawCurrent();
+
+        if (event.ButtonUp()) {
+            m_isDragging = false;
+            if (HasCapture()) ReleaseMouse();
+            m_dirty = true;
+//            SetColumnWidth (m_column, m_currentX - m_minX);
+            Refresh();
+        } else {
+            m_currentX = wxMax (m_minX + 7, x);
+
+            // draw in the new location
+            if (m_currentX < w) DrawCurrent();
+        }
+
+    } else { // not dragging
+
+        m_minX = 0;
+        bool hit_border = false;
+
+        // end of the current column
+        int xpos = 0;
+
+		FbColumnArray columns;
+		GetColumnInfo(columns);
+
+        // find the column where this event occured
+        size_t count = columns.Count() - 1;
+		for (size_t i = 0; i < count; i++){
+			FbColumnInfo & column = columns[i];
+            xpos += column.GetWidth();
+            m_column = i;
+
+            if (abs (x-xpos) < 3) {
+                // near the column border
+                hit_border = true;
+                break;
+            }
+
+            if (x < xpos) {
+                // inside the column
+                break;
+            }
+
+            m_minX = xpos;
+		}
+
+		if (hit_border && event.LeftDown()) {
+			m_isDragging = true;
+			CaptureMouse();
+			m_currentX = x;
+			DrawCurrent();
+		} else if (event.LeftUp() && m_sorted) {
+			int col = XToCol(event.GetX());
+			int index = GetColumn(col).GetIndex();
+			m_sorted = (abs(m_sorted) == index + 1) ? - m_sorted : index + 1;
+			SendListEvent(wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
+			Refresh();
+        } else if (event.Moving()) {
+            bool setCursor;
+            if (hit_border) {
+                setCursor = m_currentCursor == wxSTANDARD_CURSOR;
+                m_currentCursor = m_resizeCursor;
+            } else {
+                setCursor = m_currentCursor != wxSTANDARD_CURSOR;
+                m_currentCursor = wxSTANDARD_CURSOR;
+            }
+            if (setCursor) SetCursor (*m_currentCursor);
+        }
     }
-	event.Skip();
 }
 
 void FbTreeViewHeaderWindow::OnSetFocus (wxFocusEvent &WXUNUSED(event))
@@ -439,7 +585,7 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 	FbColumnArray columns;
 	FbTreeViewHeaderWindow * header = m_owner->GetHeaderWindow();
 	if (header) {
-		header->GetColumnInfo(ww, columns);
+		header->GetColumnInfo(columns, ww);
 	} else {
 		columns.Add(FbColumnInfo(0, ww, wxALIGN_LEFT));
 	}
