@@ -37,6 +37,8 @@ class FbTreeViewColumnInfo: public wxObject
 
         int GetFlag() const { return m_flag; };
 
+        void SetWidth(int value) { m_width = value; };
+
     private:
         wxString m_text;
         size_t m_index;
@@ -53,9 +55,9 @@ IMPLEMENT_CLASS(FbTreeViewColumnInfo, wxObject)
 static FbTreeViewColumnInfo wxInvalidTreeListColumnInfo;
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbTreeViewColumnInfo, wxArrayTreeListColumn);
+WX_DECLARE_OBJARRAY(FbTreeViewColumnInfo, FbArrayTreeViewColumn);
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(wxArrayTreeListColumn);
+WX_DEFINE_OBJARRAY(FbArrayTreeViewColumn);
 
 class  FbTreeViewHeaderWindow : public wxWindow
 {
@@ -70,14 +72,15 @@ class  FbTreeViewHeaderWindow : public wxWindow
 		// divider line position in logical (unscrolled) coords
 		int m_currentX;
 
-		// minimal position beyond which the divider line can't be dragged in
-		// logical coords
+		// minimal position beyond which the divider line can't be dragged in logical coords
 		int m_minX;
+		int m_maxX;
 
 		// needs refresh
 		bool m_dirty;
 
 		void RefreshColLabel(int col);
+		void SetColumnWidth (int column, int width);
 
 	public:
 		FbTreeViewHeaderWindow( wxWindow *win,
@@ -121,7 +124,7 @@ class  FbTreeViewHeaderWindow : public wxWindow
 
 	private:
 		FbTreeViewMainWindow * m_owner;
-		wxArrayTreeListColumn m_columns;
+		FbArrayTreeViewColumn m_columns;
 		int m_sorted;
 
 	private:
@@ -280,7 +283,11 @@ void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 
 void FbTreeViewHeaderWindow::GetColumnInfo(FbColumnArray &columns, int ww)
 {
-	if (ww == 0) m_owner->GetClientSize(&ww, NULL);
+	if (ww == 0) {
+		GetClientSize( &ww, NULL );
+		if (m_owner && m_owner->ShowScrollbar())
+			ww -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	}
 
     int x = 0;
     int www = GetFullWidth();
@@ -370,7 +377,7 @@ void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
             m_isDragging = false;
             if (HasCapture()) ReleaseMouse();
             m_dirty = true;
-//            SetColumnWidth (m_column, m_currentX - m_minX);
+            SetColumnWidth (m_column, m_currentX - m_minX);
             Refresh();
         } else {
             m_currentX = wxMax (m_minX + 7, x);
@@ -410,6 +417,8 @@ void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
 
             m_minX = xpos;
 		}
+
+		m_maxX = 0;
 
 		if (hit_border && event.LeftDown()) {
 			m_isDragging = true;
@@ -455,6 +464,40 @@ void FbTreeViewHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int c
     le.m_pointDrag.y -= GetSize().y;
     le.m_col = colunm;
     parent->GetEventHandler()->ProcessEvent (le);
+}
+
+void FbTreeViewHeaderWindow::SetColumnWidth (int column, int width)
+{
+    wxCHECK_RET ((column >= 0) && (column < GetColumnCount()), _T("Invalid column"));
+
+	int ww = 0;
+	int www = 0;
+
+	FbColumnArray columns;
+	GetColumnInfo(columns);
+	size_t count = columns.Count();
+	for (size_t i = 0; i < count; i++){
+		int w = columns[i].GetWidth();
+		if (i < column) {
+			m_columns[i].SetWidth(w);
+		} else if (i == column) {
+			m_columns[i].SetWidth(width);
+			www = w - width;
+		} else if (i > column) {
+			www += w;
+			ww += w;
+		}
+	}
+
+	if (ww == 0) ww = 1;
+
+	for (size_t i = column + 1; i < count; i++){
+		int w = columns[i].GetWidth() * www / ww;
+		if (w < 7) w = 7;
+		m_columns[i].SetWidth(w);
+	}
+
+    m_owner->Refresh();
 }
 
 // ---------------------------------------------------------------------------
