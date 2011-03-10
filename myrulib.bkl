@@ -57,20 +57,34 @@
 		<if cond="FORMAT in ['mingw','gnu']">
 			<include cond="USE_SQLITE=='yes'">$(SRCDIR)/SQLite3</include>
 		</if>
-		<include>$(SRCDIR)/WxSQLite3</include>
-		<sources>WxSQLite3/wxsqlite3.cpp</sources>
+		<include>$(SRCDIR)/wxSQLite3</include>
+		<sources>wxSQLite3/wxsqlite3.cpp</sources>
+	</lib>
+
+	<lib id="wxcurl_static" template="wx-lib">
+		<define>NDEBUG</define>
+		<include>$(SRCDIR)/wxCURL</include>
+		<sources>wxCURL/base.cpp</sources>
+		<sources>wxCURL/http.cpp</sources>
+	</lib>
+
+	<lib id="wxxml2_static" template="wx-lib">
+		<define>NDEBUG</define>
+		<include>$(SRCDIR)/wxXML2</include>
+		<sources>wxXML2/dtd.cpp</sources>
+		<sources>wxXML2/xml2.cpp</sources>
 	</lib>
 
 	<lib id="wxbzip2_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<sources>WxBZipStream/bzip/blocksort.c</sources>
-		<sources>WxBZipStream/bzip/bzlib.c</sources>
-		<sources>WxBZipStream/bzip/compress.c</sources>
-		<sources>WxBZipStream/bzip/crctable.c</sources>
-		<sources>WxBZipStream/bzip/decompress.c</sources>
-		<sources>WxBZipStream/bzip/huffman.c</sources>
-		<sources>WxBZipStream/bzip/randtable.c</sources>
-		<sources>WxBZipStream/bzipstream.cpp</sources>
+		<sources>wxBZipStream/bzip/blocksort.c</sources>
+		<sources>wxBZipStream/bzip/bzlib.c</sources>
+		<sources>wxBZipStream/bzip/compress.c</sources>
+		<sources>wxBZipStream/bzip/crctable.c</sources>
+		<sources>wxBZipStream/bzip/decompress.c</sources>
+		<sources>wxBZipStream/bzip/huffman.c</sources>
+		<sources>wxBZipStream/bzip/randtable.c</sources>
+		<sources>wxBZipStream/bzipstream.cpp</sources>
 	</lib>
 
 	<exe id="zipscan" template="wxconsole">
@@ -79,7 +93,7 @@
 		<sources>ZipScaner/ZipScan.cpp</sources>
 		<sources>MyRuLib/polarssl/md5.c</sources>
 		<include>$(SRCDIR)/MyRuLib</include>
-		<include>$(SRCDIR)/WxSQLite3</include>
+		<include>$(SRCDIR)/wxSQLite3</include>
 		<library>wxsqlite3_static</library>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
@@ -158,8 +172,12 @@
 	<exe id="myrulib" template="wxgui">
 		<depends>expat_static</depends>
 		<depends>sqlite3_static</depends>
+		<depends>wxcurl_static</depends>
+		<depends>wxxml2_static</depends>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
+		<library>wxcurl_static</library>
+		<library>wxxml2_static</library>
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
@@ -275,8 +293,10 @@
 		<sources>MyRuLib/wx/base64.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/MyRuLib</include>
-		<include>$(SRCDIR)/WxSQLite3</include>
-		<include>$(SRCDIR)/WxBZipStream</include>
+		<include>$(SRCDIR)/wxSQLite3</include>
+		<include>$(SRCDIR)/wxBZipStream</include>
+		<include>$(SRCDIR)/wxCURL</include>
+		<include>$(SRCDIR)/wxXML2</include>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>

@@ -85,9 +85,6 @@ AC_MSG_RESULT([$USE_STRIP])
 
 AC_BAKEFILE([m4_include(autoconf_inc.m4)])
 
-dnl   NB: After the wxMSW configuration use the following command.
-dnl   $ sed -i 's/-mthreads//g' Makefile"
-
 # add all XML stuff that we've found...
 CXXFLAGS="$CXXFLAGS $XML_CPPFLAGS"
 CFLAGS="$CFLAGS $XML_CPPFLAGS"
@@ -97,6 +94,9 @@ LDFLAGS="$LDFLAGS $WX_LIBS $XML_LIBS"
 CXXFLAGS="$CXXFLAGS $LIBCURL_CPPFLAGS"
 CFLAGS="$CFLAGS $LIBCURL_CPPFLAGS"
 LDFLAGS="$LDFLAGS $LIBCURL"
+
+dnl   NB: After the wxMSW configuration use the following command.
+dnl   $ sed -i 's/-mthreads//g' Makefile"
 
 DOLLAR="$"
 WX_CFLAGS=`echo $WX_CFLAGS | sed "s|-mthreads||g"`
