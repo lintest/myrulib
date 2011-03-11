@@ -21,6 +21,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs aui,adv,html,core,net`" />
+					<Add option="`curl-config --libs`" />
+					<Add option="`xml2-config --libs`" />
 					<Add directory="../../build/LinDebug" />
 				</Linker>
 			</Target>
@@ -39,7 +41,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --libs aui,adv,html,core,net`" />
+					<Add option="`curl-config --libs`" />
+					<Add option="`xml2-config --libs`" />
 					<Add directory="../../build/LinRelease" />
 				</Linker>
 			</Target>
@@ -161,8 +165,8 @@
 		<Compiler>
 			<Add directory="../SQLite3" />
 			<Add directory="../Expat" />
-			<Add directory="../WxBZipStream" />
-			<Add directory="../WxSQLite3" />
+			<Add directory="../wxBZipStream" />
+			<Add directory="../wxSQLite3" />
 			<Add directory="../build" />
 		</Compiler>
 		<Linker>
@@ -171,6 +175,10 @@
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 			<Add library="libExpat.a" />
+			<Add library="libWxCURL.a" />
+			<Add library="libWxXML2.a" />
+			<Add library="libcurl.a" />
+			<Add library="libxml2.a" />
 		</Linker>
 		<Unit filename="BaseThread.cpp" />
 		<Unit filename="BaseThread.h" />
@@ -368,7 +376,7 @@
 		<Unit filename="locale/cs.po" />
 		<Unit filename="locale/ru.po" />
 		<Unit filename="locale/uk.po" />
-		<Unit filename="md5.c">
+		<Unit filename="polarssl/md5.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="res/checked.xpm" />

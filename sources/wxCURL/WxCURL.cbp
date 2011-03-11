@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="WxCURL" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="LinDebug">
+				<Option platforms="Unix;" />
+				<Option output="../../build/LinDebug/libWxCURL" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/LinDebug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+				</Linker>
+			</Target>
+			<Target title="LinRelease">
+				<Option platforms="Unix;" />
+				<Option output="../../build/LinRelease/libWxCURL" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/LinRelease/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="`wx-config --libs`" />
+				</Linker>
+			</Target>
+			<Target title="WinDebug">
+				<Option platforms="Windows;" />
+				<Option output="../../build/WinDebug/libWxCURL" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/WinDebug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="WinRelease">
+				<Option platforms="Windows;" />
+				<Option output="../../build/WinRelease/libWxCURL" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/WinRelease/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="." />
+		</Compiler>
+		<Unit filename="base.cpp" />
+		<Unit filename="http.cpp" />
+		<Unit filename="wx/curl/base.h" />
+		<Unit filename="wx/curl/http.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

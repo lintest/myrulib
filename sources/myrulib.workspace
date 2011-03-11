@@ -3,8 +3,10 @@
 	<Workspace title="Workspace">
 		<Project filename="Expat/Expat.cbp" />
 		<Project filename="SQLite3/SQLite3.cbp" />
-		<Project filename="WxBZipStream/WxBZipStream.cbp" />
-		<Project filename="WxSQLite3/WxSQLite3.cbp" />
+		<Project filename="wxBZipStream/WxBZipStream.cbp" />
+		<Project filename="wxCURL/WxCURL.cbp" />
+		<Project filename="wxXML2/WxXML2.cbp" />
+		<Project filename="wxSQLite3/WxSQLite3.cbp" />
 		<Project filename="MyRuLib/MyRuLib.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
