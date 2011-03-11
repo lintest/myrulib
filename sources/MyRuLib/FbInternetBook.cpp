@@ -10,6 +10,7 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+#include <wx/curl/http.h>
 #include "FbDataPath.h"
 #include "FbDateTime.h"
 #include "controls/FbURL.h"
@@ -95,25 +96,19 @@ bool FbInternetBook::DownloadUrl(const wxString &cookie)
 {
 	if (m_owner->IsClosed()) return false;
 
-	FbURL url(m_url);
-	if (url.GetError() != wxURL_NOERR) {
-		FbLogError(_("URL error"), m_url);
-		return false;
-	}
-	wxHTTP & http = (wxHTTP&)url.GetProtocol();
-	if ( !cookie.IsEmpty() ) http.SetHeader(wxT("Cookie"), cookie);
+	m_filename = wxFileName::CreateTempFileName(wxT("~"));
 
-	wxInputStream * in = url.GetInputStream();
-	if (url.GetError() != wxURL_NOERR) {
+	wxCurlHTTP url(m_url);
+	url.SetOpt(CURLOPT_TIMEOUT, FbParams::GetInt(FB_WEB_TIMEOUT));
+	url.SetOpt(CURLOPT_CONNECTTIMEOUT, FbParams::GetInt(FB_WEB_TIMEOUT));
+	bool ok = url.Get(m_filename);
+
+	if (!ok) {
 		FbLogError(_("Connect error"), m_url);
 		return false;
 	}
-	if (http.GetResponse() == 302) {
-		m_url = http.GetHeader(wxT("Location"));
- 		FbLogMessage(_("Redirect"), m_url);
-		return DownloadUrl(cookie);
-	}
-	return ReadFile(in);
+
+	return ok;
 }
 
 bool FbInternetBook::ReadFile(wxInputStream * in)
@@ -236,4 +231,3 @@ void FbInternetBook::SaveFile(const bool success)
 		FbMasterEvent(ID_UPDATE_MASTER, info, m_id, true).Post();
 	}
 }
-

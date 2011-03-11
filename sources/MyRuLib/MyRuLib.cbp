@@ -166,7 +166,9 @@
 			<Add directory="../SQLite3" />
 			<Add directory="../Expat" />
 			<Add directory="../wxBZipStream" />
+			<Add directory="../wxCURL" />
 			<Add directory="../wxSQLite3" />
+			<Add directory="../wxXML2" />
 			<Add directory="../build" />
 		</Compiler>
 		<Linker>

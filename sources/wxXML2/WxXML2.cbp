@@ -17,6 +17,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="`xml2-config --cflags`" />
 					<Add option="`wx-config --cflags`" />
 				</Compiler>
 				<Linker>
@@ -32,8 +33,9 @@
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="`xml2-config --cflags`" />
 					<Add option="`wx-config --cflags`" />
 				</Compiler>
 				<Linker>

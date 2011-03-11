@@ -7,6 +7,7 @@
 #include "MyRuLibApp.h"
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+#include <wx/curl/http.h>
 
 //-----------------------------------------------------------------------------
 //  FbUpdateItem
@@ -70,7 +71,6 @@ FbUpdateItem::~FbUpdateItem()
 int FbUpdateItem::Execute()
 {
 	bool ok = OpenURL();
-	if (ok) ok = ReadURL();
 	if (ok) ok = OpenZip();
 	if (ok) return DoUpdate();
 	return 0;
@@ -78,49 +78,13 @@ int FbUpdateItem::Execute()
 
 bool FbUpdateItem::OpenURL()
 {
-	m_input = m_url.GetInputStream();
-
-	wxHTTP & http = (wxHTTP&)m_url.GetProtocol();
-	if (http.GetResponse() == 404) {
-		FbLogError(_("The update file is missing"), m_url.GetURL());
-		return false;
-	}
-
-	FbLogWarning(_("Update collection"), m_url.GetURL());
-
-	if (m_url.GetError() != wxURL_NOERR) {
-		FbLogError(_("Download error"), m_url.GetURL());
-		return false;
-	}
-
-	return true;
-}
-
-bool FbUpdateItem::ReadURL()
-{
 	m_filename = wxFileName::CreateTempFileName(wxT("~"));
-	wxFileOutputStream out(m_filename);
+	wxCurlHTTP url(m_url);
+	bool ok = url.Get(m_filename);
 
-	const size_t BUFSIZE = 1024;
-	unsigned char buf[BUFSIZE];
-	size_t size = m_input->GetSize();
-	if (!size) size = 0xFFFFFFFF;
-	size_t count = 0;
-	size_t pos = 0;
+	if (!ok) FbLogError(_("Download error"), m_url);
 
-	int step = 1;
-	do {
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url.GetURL(), pos * 1000 / size, _("File download")).Post();
-		count = m_input->Read(buf, BUFSIZE).LastRead();
-		if ( count ) {
-			out.Write(buf, count);
-			pos += count;
-		} else step++;
-	} while (pos < size && step < 5);
-
-	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
-
-	return true;
+	return ok;
 }
 
 bool FbUpdateItem::OpenZip()

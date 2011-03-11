@@ -2,6 +2,7 @@
 #include <wx/app.h>
 #include <wx/fs_inet.h>
 #include <wx/fs_mem.h>
+#include <wx/curl/http.h>
 #include "FbDataPath.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"
@@ -85,6 +86,7 @@ bool MyRuLibApp::OnInit()
 	::wxInitAllImageHandlers();
 	wxFileSystem::AddHandler(new wxMemoryFSHandler);
 	wxFileSystem::AddHandler(new wxInternetFSHandler);
+	wxCurlHTTP::Init();
 
 	LoadBlankImage();
 
