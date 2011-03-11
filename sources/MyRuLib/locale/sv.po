@@ -597,7 +597,7 @@ msgid "Delete download query"
 msgstr "Ta bort hämtningsuppdrag"
 
 #: MyRuLib/FbBookMenu.cpp:18
-msgid "Retry rownload"
+msgid "Retry download"
 msgstr "Hämta igen"
 
 #: MyRuLib/FbBookMenu.cpp:20

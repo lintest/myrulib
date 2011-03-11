@@ -120,7 +120,7 @@ msgid "Delete download query"
 msgstr "Удалить закачку"
 
 #: FbBookMenu.cpp:68
-msgid "Retry rownload"
+msgid "Retry download"
 msgstr "Скачать повторно"
 
 #: FbBookMenu.cpp:70

@@ -139,7 +139,7 @@ msgid "Delete download query"
 msgstr "Знішчыць запампоўку"
 
 #: FbBookMenu.cpp:18
-msgid "Retry rownload"
+msgid "Retry download"
 msgstr "Зліць паўторна"
 
 #: FbBookMenu.cpp:20

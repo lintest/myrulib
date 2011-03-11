@@ -65,7 +65,7 @@ void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 	FbMasterDownInfo * down = wxDynamicCast(&master, FbMasterDownInfo);
 	if (down) {
 		Append(ID_DELETE_DOWNLOAD, _("Delete download query"));
-		if (down->GetId()) Append(ID_DOWNLOAD_BOOK, _("Retry rownload"));
+		if (down->GetId()) Append(ID_DOWNLOAD_BOOK, _("Retry download"));
 	} else {
 		Append(ID_DOWNLOAD_BOOK, _("Download a file"));
 	}
