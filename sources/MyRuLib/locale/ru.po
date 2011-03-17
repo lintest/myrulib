@@ -1950,8 +1950,8 @@ msgid "Database successfully updated"
 msgstr "Обновление успешно завершено"
 
 #: FbUpdateThread.cpp:85
-msgid "The update file is missing"
-msgstr "Файл обновления отсутствует"
+msgid "File is missing"
+msgstr "Файл отсутствует"
 
 #: FbUpdateThread.cpp:89
 msgid "Update collection"

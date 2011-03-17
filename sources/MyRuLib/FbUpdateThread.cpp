@@ -1,4 +1,5 @@
 #include "FbUpdateThread.h"
+#include "FbInternetBook.h"
 #include "FbDatabase.h"
 #include "FbDateTime.h"
 #include "FbConst.h"
@@ -63,64 +64,17 @@ FbUpdateItem::FbUpdateItem(wxSQLite3Database & database, int code, const wxStrin
 
 FbUpdateItem::~FbUpdateItem()
 {
-	if (!m_filename.IsEmpty()) wxRemoveFile(m_filename);
-	if (!m_dataname.IsEmpty()) wxRemoveFile(m_dataname);
+	if (!m_filename) wxRemoveFile(m_filename);
+	if (!m_dataname) wxRemoveFile(m_dataname);
 }
 
 int FbUpdateItem::Execute()
 {
-	bool ok = OpenURL();
-	if (ok) ok = ReadURL();
+	FbLogWarning(_("Update collection"), m_url);
+	bool ok = FbInternetBook::Download(m_url, m_filename);
 	if (ok) ok = OpenZip();
 	if (ok) return DoUpdate();
 	return 0;
-}
-
-bool FbUpdateItem::OpenURL()
-{
-	m_input = m_url.GetInputStream();
-
-	wxHTTP & http = (wxHTTP&)m_url.GetProtocol();
-	if (http.GetResponse() == 404) {
-		FbLogError(_("The update file is missing"), m_url.GetURL());
-		return false;
-	}
-
-	FbLogWarning(_("Update collection"), m_url.GetURL());
-
-	if (m_url.GetError() != wxURL_NOERR) {
-		FbLogError(_("Download error"), m_url.GetURL());
-		return false;
-	}
-
-	return true;
-}
-
-bool FbUpdateItem::ReadURL()
-{
-	m_filename = wxFileName::CreateTempFileName(wxT("~"));
-	wxFileOutputStream out(m_filename);
-
-	const size_t BUFSIZE = 1024;
-	unsigned char buf[BUFSIZE];
-	size_t size = m_input->GetSize();
-	if (!size) size = 0xFFFFFFFF;
-	size_t count = 0;
-	size_t pos = 0;
-
-	int step = 1;
-	do {
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url.GetURL(), pos * 1000 / size, _("File download")).Post();
-		count = m_input->Read(buf, BUFSIZE).LastRead();
-		if ( count ) {
-			out.Write(buf, count);
-			pos += count;
-		} else step++;
-	} while (pos < size && step < 5);
-
-	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
-
-	return true;
 }
 
 bool FbUpdateItem::OpenZip()
@@ -134,7 +88,8 @@ bool FbUpdateItem::OpenZip()
 	if (wxZipEntry * entry = zip.GetNextEntry()) {
 		ok = zip.OpenEntry(*entry);
 		delete entry;
-	}
+	} else ok = false;
+
 	if (!ok) return false;
 
 	m_dataname = wxFileName::CreateTempFileName(wxT("~"));

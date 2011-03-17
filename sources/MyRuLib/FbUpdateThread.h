@@ -22,7 +22,6 @@ class FbUpdateItem: public wxObject
 		virtual ~FbUpdateItem();
 		int Execute();
 	private:
-		bool OpenURL();
 		bool ReadURL();
 		bool OpenZip();
 		int DoUpdate();
@@ -33,10 +32,9 @@ class FbUpdateItem: public wxObject
 		wxSQLite3Database & m_database;
 		int m_code;
 		wxString m_type;
-		FbURL m_url;
+		wxString m_url;
 		wxString m_filename;
 		wxString m_dataname;
-		wxInputStream * m_input;
 		DECLARE_CLASS(FbUpdateItem);
 };
 

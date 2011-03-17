@@ -9,14 +9,15 @@
 class FbInternetBook
 {
 	public:
-		FbInternetBook(FbDownloader * owner, const wxString& md5sum);
 		static wxString GetURL(const int id, const wxString& md5sum = wxEmptyString);
+		static bool Download(const wxString & addr, wxString & file, const wxString &cookie = wxEmptyString);
+		FbInternetBook(FbDownloader * owner, const wxString& md5sum);
 		bool Execute();
 	private:
 		bool DoDownload();
 		bool DownloadUrl(const wxString &cookie = wxEmptyString);
+		bool CheckFile();
 		bool CheckZip();
-		bool ReadFile(wxInputStream * in);
 		void SaveFile(const bool success);
 	private:
 		int m_id;

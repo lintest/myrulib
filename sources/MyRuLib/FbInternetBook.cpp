@@ -27,6 +27,66 @@ wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 	}
 }
 
+bool FbInternetBook::Download(const wxString & addr, wxString & file, const wxString &cookie)
+{
+	const size_t BUFSIZE = 1024;
+	unsigned char buf[BUFSIZE];
+
+	file = wxFileName::CreateTempFileName(wxT("fb"));
+	wxFileOutputStream out(file);
+
+	bool ok = false;
+
+	int step = FbParams::GetInt(FB_WEB_ATTEMPT);
+	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
+	wxFileOffset pos = 0;
+	while (step--) {
+
+		FbURL url(addr);
+
+		wxHTTP & http = (wxHTTP&)url.GetProtocol();
+		if ( !cookie.IsEmpty() ) http.SetHeader(wxT("Cookie"), cookie);
+		http.SetTimeout(timeout);
+		http.SetFlags(wxSOCKET_WAITALL);
+
+		wxInputStream * in = url.GetInputStream();
+
+		if (http.GetResponse() == 404) {
+			FbLogError(_("File is missing"), addr);
+			break;
+		}
+
+		if (url.GetError() != wxURL_NOERR) {
+			FbLogError(_("Download error"), addr);
+			continue;
+		}
+
+		if (!in) continue;
+
+		if (pos) {
+			wxFileOffset start = 0;
+			if (in->IsSeekable()) start = in->SeekI(pos);
+			if (start != pos) pos = out.SeekO(start);
+		}
+
+		size_t size = in->GetSize();
+
+		while (true) {
+			FbProgressEvent(ID_PROGRESS_UPDATE, addr, pos * 1000 / size, _("File download")).Post();
+			size_t count = in->Read(buf, BUFSIZE).LastRead();
+			if ( count ) {
+				out.Write(buf, count);
+				pos += count;
+			} else break;
+		} 
+		if (ok = pos == size) break;
+	} 
+
+	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
+
+	return ok;
+}
+
 FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
 	: m_id(0), m_owner(owner), m_md5sum(md5sum), m_zipped(false)
 {
@@ -45,15 +105,16 @@ FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
 
 bool FbInternetBook::Execute()
 {
-	bool result = m_id && DoDownload();
-	SaveFile(result);
-	return result;
+	bool ok = m_id && DoDownload();
+	if (ok) ok = CheckFile();
+	SaveFile(ok);
+	return ok;
 }
 
 bool FbInternetBook::DoDownload()
 {
 	wxString user = FbParams::GetStr(DB_DOWNLOAD_USER);
-	if ( user.IsEmpty() ) return DownloadUrl();
+	if ( user.IsEmpty() ) return Download(m_url, m_filename);
 
 	wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
 	wxString pass = FbParams::GetStr(DB_DOWNLOAD_PASS);
@@ -83,70 +144,31 @@ bool FbInternetBook::DoDownload()
 	if (http.GetResponse() == 302) {
 		m_url = http.GetHeader(wxT("Location"));
 		FbLogMessage(_("Redirect"), m_url);
-		return DownloadUrl(cookie);
 	}
-
-	bool ok = ReadFile(in);
-	if ( !ok ) { FbLogError(_("Authentication failure"), m_url); }
-	return ok;
+	return Download(m_url, m_filename, cookie);
 }
 
-bool FbInternetBook::DownloadUrl(const wxString &cookie)
+bool FbInternetBook::CheckFile()
 {
-	if (m_owner->IsClosed()) return false;
-
-	FbURL url(m_url);
-	if (url.GetError() != wxURL_NOERR) {
-		FbLogError(_("URL error"), m_url);
-		return false;
-	}
-	wxHTTP & http = (wxHTTP&)url.GetProtocol();
-	if ( !cookie.IsEmpty() ) http.SetHeader(wxT("Cookie"), cookie);
-
-	wxInputStream * in = url.GetInputStream();
-	if (url.GetError() != wxURL_NOERR) {
-		FbLogError(_("Connect error"), m_url);
-		return false;
-	}
-	if (http.GetResponse() == 302) {
-		m_url = http.GetHeader(wxT("Location"));
- 		FbLogMessage(_("Redirect"), m_url);
-		return DownloadUrl(cookie);
-	}
-	return ReadFile(in);
-}
-
-bool FbInternetBook::ReadFile(wxInputStream * in)
-{
-	m_filename = wxFileName::CreateTempFileName(wxT("~"));
-	wxFileOutputStream out(m_filename);
+	wxFileInputStream in(m_filename);
 
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
-	size_t size = in->GetSize() ? in->GetSize() : 0xFFFFFF;
-	size_t count = 0;
-	size_t pos = 0;
 
+	size_t pos = 0;
+	size_t count = 0;
 	bool zipped = false;
+
 	md5_context md5;
 	md5_starts( &md5 );
 	do {
-		if (m_owner->IsClosed()) return false;
-		FbProgressEvent(ID_PROGRESS_UPDATE, m_url, pos * 1000 / size, _("File download")).Post();
-		count = in->Read(buf, BUFSIZE).LastRead();
-		if ( count ) md5_update( &md5, buf, (int) count );
-		if ( pos==0 && count>1 && buf[0]=='P' && buf[1]=='K') zipped = true;
-		out.Write(buf, count);
-		pos += count;
+		size_t count = in.Read(buf, BUFSIZE).LastRead();
+		if ( count ) {
+			md5_update( &md5, buf, (int) count );
+			if ( pos==0 && count>1 && buf[0]=='P' && buf[1]=='K') zipped = true;
+			pos += count;
+		}
 	} while (count);
-
-	if (m_owner->IsClosed()) return false;
-	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
-
-	if (size != (size_t)-1 && out.GetSize() !=size) {
-		wxLogError(_("HTTP read error, read %d of %d bytes: %s"), out.GetSize(), size, m_url.c_str());
-		return false;
-	}
 
 	wxString md5sum = BaseThread::CalcMd5(md5);
 	if ( md5sum == m_md5sum )
