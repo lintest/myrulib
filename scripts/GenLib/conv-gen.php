@@ -36,7 +36,7 @@ function GetAuthId($mysql, $name)
 	$param2 = $name;
 	$stmt2->execute();
 	
-	return GetAuthId($mysql, $name);
+	return $mysql->insert_id;
 }
 
 function AppendBook($mysql, $aid, $bid)
