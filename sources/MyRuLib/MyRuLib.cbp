@@ -295,6 +295,10 @@
 		<Unit filename="FbParams.h" />
 		<Unit filename="FbParamsDlg.cpp" />
 		<Unit filename="FbParamsDlg.h" />
+		<Unit filename="FbParsingCtx.cpp" />
+		<Unit filename="FbParsingCtx.h" />
+		<Unit filename="FbPreviewReader.cpp" />
+		<Unit filename="FbPreviewReader.h" />
 		<Unit filename="FbPreviewThread.cpp" />
 		<Unit filename="FbPreviewThread.h" />
 		<Unit filename="FbPreviewWindow.cpp" />
