@@ -20,6 +20,7 @@ class FbPreviewReader: public wxObject
 	private:
 		static wxString CharToString(const FAXPP_Text * text);
 		static wxString CharToLower(const FAXPP_Text * text);
+		static bool IsWhiteOnly(const FAXPP_Text *text);
 		bool ProcessEvent(const FAXPP_Event * event);
 		void NewNode(const wxString &name, int level);
 		void EndNode(const wxString &name, int level);

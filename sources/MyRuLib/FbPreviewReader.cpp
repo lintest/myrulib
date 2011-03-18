@@ -39,6 +39,17 @@ wxString FbPreviewReader::CharToLower(const FAXPP_Text *text)
 	return data;
 }
 
+// returns true if the given string contains only whitespaces
+bool FbPreviewReader::IsWhiteOnly(const FAXPP_Text *text)
+{
+	char * buffer = (char*) text->ptr;
+	char * buffer_end = buffer + text->len;
+	for (const char * c = buffer; c < buffer_end; c++) {
+		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r')) return false;
+	}
+	return true;
+}
+
 FbPreviewReader::FbPreviewReader(wxInputStream & stream, FbViewThread & thread, FbViewData & data)
 	: m_stream(stream), m_parser(NULL), m_thread(thread), m_data(data)
 {
