@@ -79,7 +79,7 @@ void FbViewData::Push(const wxString &filename, const wxImage &image)
 	wxMemoryFSHandler::AddFile(filename, result, wxBITMAP_TYPE_PNG);
 }
 
-void FbViewData::AddImage(wxString &filename, wxString &imagedata, wxString &imagetype)
+void FbViewData::AddImage(wxString &filename, wxString &imagedata)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
 	wxString imagename = GetImage(filename);

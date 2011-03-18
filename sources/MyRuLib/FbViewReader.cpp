@@ -46,7 +46,7 @@ static void EndElementHnd(void *userData, const XML_Char* name)
 		ctx->m_thread.SendHTML(ctx->m_data);
 	} else if (path == wxT("/fictionbook/binary")) {
 		if (!ctx->skipimage) {
-			ctx->m_data.AddImage(ctx->imagename, ctx->imagedata, ctx->imagetype);
+			ctx->m_data.AddImage(ctx->imagename, ctx->imagedata);
 			ctx->m_thread.SendHTML(ctx->m_data);
 		}
 	}

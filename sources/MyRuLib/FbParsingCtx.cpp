@@ -7,6 +7,7 @@
 
 void FbParsingContext::Inc(const wxString &tag)
 {
+/*
 	if (level == 1) {
 		if (tag == wxT("body")) {
 			m_section = fbsBody;
@@ -24,10 +25,12 @@ void FbParsingContext::Inc(const wxString &tag)
 	m_tags.SetCount(level);
 	m_tags.Add(tag);
 	m_name = tag;
+*/
 }
 
 void FbParsingContext::Dec(const wxString &tag)
 {
+/*
 	if (level == 1) {
 		m_section = fbsNone;
 	}
@@ -36,6 +39,7 @@ void FbParsingContext::Dec(const wxString &tag)
 		m_tags.RemoveAt(count - 1);
 		count = m_tags.Count();
 	}
+*/
 }
 
 bool FbParsingContext::operator == (const wxString & tags)

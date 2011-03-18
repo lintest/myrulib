@@ -23,7 +23,7 @@ class FbViewData: public wxObject
 		int GetCode() const { return m_id; }
 		void SetText(size_t index, const wxString &text);
 		wxString GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const;
-		void AddImage(wxString &filename, wxString &imagedata, wxString &imagetype);
+		void AddImage(wxString &filename, wxString &imagedata);
 		void Reset();
 	private:
 		wxString GetTitle(const FbCacheBook &book) const;

@@ -18,9 +18,9 @@ class FbPreviewReader: public wxObject
 		bool Parse();
 		int Read(char * buffer, int len);
 	private:
-		static wxString CharToString(const xmlChar * text);
-		static wxString CharToLower(const xmlChar * text);
-		void ProcessNode();
+		static wxString CharToString(const FAXPP_Text * text);
+		static wxString CharToLower(const FAXPP_Text * text);
+		bool ProcessEvent(const FAXPP_Event * event);
 		void NewNode(const wxString &name, int level);
 		void EndNode(const wxString &name, int level);
 		void TxtNode(const wxString &name, const wxString &text);

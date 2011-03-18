@@ -7,19 +7,33 @@
 //  FbPreviewReader
 //-----------------------------------------------------------------------------
 
+extern const wxUint16 encoding_table__CP1251[128];
+
+unsigned int FAXPP_cp1251_decode(const void *buffer, const void *buffer_end, Char32 *ch)
+{
+	uint8_t *buf = (uint8_t*)buffer;
+	if (*buf < 0x80) {
+		*ch = *buf;
+	} else {
+		unsigned char i = (unsigned char)(*buf) - 0x80;
+		*ch = encoding_table__CP1251[i];
+	}
+	return 1;
+}
+
 static unsigned int ReadPreviewCallback(void * context, void * buffer, unsigned int length)
 {
-	return ((FbPreviewReader*) context)->Read(buffer, len);
+	return ((FbPreviewReader*) context)->Read((char*)buffer, length);
 }
 
-wxString FbPreviewReader::CharToString(const xmlChar * text)
+wxString FbPreviewReader::CharToString(const FAXPP_Text *text)
 {
-	return wxString((const char *)text, wxConvUTF8);
+	return wxString((char*)text->ptr, wxConvUTF8, text->len);
 }
 
-wxString FbPreviewReader::CharToLower(const xmlChar * text)
+wxString FbPreviewReader::CharToLower(const FAXPP_Text *text)
 {
-	wxString data = wxString((const char *)text, wxConvUTF8);
+	wxString data = wxString((char*)text->ptr, wxConvUTF8, text->len);
 	data.MakeLower();
 	data.Trim(false).Trim(true);
 	return data;
@@ -29,12 +43,12 @@ FbPreviewReader::FbPreviewReader(wxInputStream & stream, FbViewThread & thread, 
 	: m_stream(stream), m_parser(NULL), m_thread(thread), m_data(data)
 {
 	m_parser = FAXPP_create_parser(NO_CHECKS_PARSE_MODE, FAXPP_utf8_transcoder);
-	if (m_parser) FAXPP_set_normalize_attrs(parser, 1);
+	if (m_parser) FAXPP_set_normalize_attrs(m_parser, 1);
 }
 
 FbPreviewReader::~FbPreviewReader()
 {
-	if (m_parser) = FAXPP_free_parser(m_parser);
+	if (m_parser) FAXPP_free_parser(m_parser);
 }
 
 int FbPreviewReader::Read(char * buffer, int len)
@@ -45,7 +59,7 @@ int FbPreviewReader::Read(char * buffer, int len)
 bool FbPreviewReader::Parse()
 {
     FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadPreviewCallback, this);
-    if (err != NO_ERROR) err = FAXPP_next_event(parser);
+    if (err != NO_ERROR) err = FAXPP_next_event(m_parser);
     while (err != NO_ERROR) {
     	const FAXPP_Event * event = FAXPP_get_current_event(m_parser);
     	if (ProcessEvent(event)) break;
@@ -55,29 +69,14 @@ bool FbPreviewReader::Parse()
 	return err == NO_ERROR;
 }
 
-FAXPP_EventType FbPreviewReader::DoEvent(const FAXPP_Event * event)
+bool FbPreviewReader::ProcessEvent(const FAXPP_Event * event)
 {
-	int type = xmlTextReaderNodeType(m_reader);
-	int level = xmlTextReaderDepth(m_reader);
-    const wxString name = CharToLower(xmlTextReaderConstName(m_reader));
-    const wxString value = CharToString(xmlTextReaderConstValue(m_reader));
-
-	switch (type) {
-		case  1:
-			NewNode(name, level);
-			break;
-		case  3:
-			TxtNode(name, value);
-			break;
-		case 15:
-			EndNode(name, level);
-			break;
-	}
+	FAXPP_set_decode(m_parser, FAXPP_cp1251_decode);
 }
 
 void FbPreviewReader::NewNode(const wxString &name, int level)
 {
-	m_context.Inc(name, level);
+	m_context.Inc(name);
 	switch (m_context.Section()) {
 		case fbsDescr: {
 			if (m_context > wxT("fictionbook/description/title-info/annotation")) {
@@ -148,11 +147,12 @@ void FbPreviewReader::EndNode(const wxString &name, int level)
 			}
 		} break;
 	}
-	m_context.Dec(name, level);
+	m_context.Dec(name);
 }
 
 void FbPreviewReader::AppendImg()
 {
+/*
 	wxASSERT(xmlTextReaderMoveToFirstAttribute(m_reader) == 1);
 	while (xmlTextReaderMoveToNextAttribute(m_reader) == 1) {
 		wxString name = CharToLower(xmlTextReaderConstName(m_reader));
@@ -163,10 +163,12 @@ void FbPreviewReader::AppendImg()
 			break;
 		}
 	}
+*/
 }
 
 void FbPreviewReader::StartImg()
 {
+/*
 	m_saveimage = false;
 	wxASSERT(xmlTextReaderMoveToFirstAttribute(m_reader) == 1);
 	while (xmlTextReaderMoveToNextAttribute(m_reader) == 1) {
@@ -179,5 +181,6 @@ void FbPreviewReader::StartImg()
 			break;
 		}
 	}
+*/
 }
 
