@@ -2,8 +2,6 @@
 #define __FBPREVIEWREADER_H__
 
 #include <wx/wx.h>
-#include <faxpp/parser.h>
-#include <faxpp/error.h>
 #include "FbParsingCtx.h"
 
 class FbViewThread;
@@ -18,9 +16,6 @@ class FbPreviewReader: public wxObject
 		bool Parse();
 		int Read(char * buffer, int len);
 	private:
-		static wxString CharToString(const FAXPP_Text * text);
-		static wxString CharToLower(const FAXPP_Text * text);
-		static bool IsWhiteOnly(const FAXPP_Text *text);
 		bool ProcessEvent(const FAXPP_Event * event);
 		void NewNode(const wxString &name, int level);
 		void EndNode(const wxString &name, int level);

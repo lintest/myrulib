@@ -2,6 +2,8 @@
 #define __FBPARSINGCTX_H__
 
 #include <wx/wx.h>
+#include <faxpp/parser.h>
+#include <faxpp/error.h>
 
 enum FbSectionEnum {
 	fbsNone,
@@ -13,6 +15,9 @@ enum FbSectionEnum {
 class FbParsingContext: public wxObject
 {
 	public:
+		static wxString CharToString(const FAXPP_Text * text);
+		static wxString CharToLower(const FAXPP_Text * text);
+		static bool IsWhiteOnly(const FAXPP_Text *text);
 		FbParsingContext(): m_section(fbsNone) {}
 		void Inc(const wxString &tag);
 		void Dec(const wxString &tag);
