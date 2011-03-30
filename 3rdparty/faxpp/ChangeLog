@@ -1,0 +1,56 @@
+Faxpp: A small, fast XML pull parser written in C with an API that can
+return UTF-8 or UTF-16 strings.
+
+version 0.4 (2008.12.04):
+	* Added the examples to the documentation.
+	* Fixed a bug where parsing would not resume properly after
+	  certain error cases.
+	* Fixed a freed memory read bug in attribute normalization.
+	* Fixed a bug in entity replacement when the output encoding is
+	  not UTF-8.
+	* Fixed Windows build.
+	
+version 0.3 (2008.03.20):
+	* Implemented the parsing of doctype declarations and internal
+	  subsets.
+	* Implemented the parsing of external subsets (DTDs) and
+	  external parsed entities, and a mechanism for resolving them.
+	* Implemented entity resolution and replacement.
+	* Implemented a base URI for the parser, which is used to
+	  resolve external entities.
+	* Changed FAXPP_set_decode() so that if the user sets a decode
+	  function, all other indications of encoding are ignored.
+	* Added methods to return a decode or encode function, given a
+	  string defining the encoding.
+	* Added line and column numbers to attribute values.
+	* Fixed a bug that was causing all strings to be copied.
+	* Fixed column counting, and line counting for "\r\n" at a
+	  buffer boundary.
+	* Fixed the handling of namespace URIs for "xml" and "xmlns",
+	  added raised the correct errors for redefining them.
+	* Fixed the parser to always return a START_DOCUMENT_EVENT.
+	* Fixed various conformance and memory related bugs.
+	
+version 0.2 (2007.08.20):
+	* Implemented a test harness for the XML Conformance Test Suite
+	* Added support for streaming input to the tokenizer and parser,
+	  without the need for a callback function.
+	* Implemented an encoding framework to allow the user to specify
+	  implementation defined encodings based on a document's
+	  declared encoding.
+	* Added built-in decoding support for ISO-8859-1 (Latin1).
+	* Implemented attribute value normalization, adding a parser
+	  option to enable/disable it.
+	* Recognize built in entity references - raise an error
+	  for any unknown entity.
+	* Implemented the XML 1.0 char classes as well as the XML 1.1
+	  ones, and switched between them depending on the XML version
+	  declaration.
+	* Added tokens for the end of the XML declaration, and the built
+	  in entity references.
+	* Check for restricted characters anywhere in the document.
+	* Check for illegal "]]>" in element content.
+	* Require whitespace between attributes.
+	* Fix handling of namespace 1.1 prefix undefines.
+	* Fixed a bug in entity output in the examples.
+	* Added a todo list.
