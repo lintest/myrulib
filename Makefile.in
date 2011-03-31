@@ -52,12 +52,12 @@ EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmltok.o \
 	expat_static_xmltok_impl.o \
 	expat_static_xmltok_ns.o
-SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/sources/SQLite3 \
+SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 \
 	$(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
 WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
-	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/3rdparty/sqlite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	wxsqlite3_static_wxsqlite3.o
 WXBZIP2_STATIC_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
@@ -363,8 +363,8 @@ expat_static_xmltok_impl.o: $(srcdir)/sources/Expat/xmltok_impl.c
 expat_static_xmltok_ns.o: $(srcdir)/sources/Expat/xmltok_ns.c
 	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok_ns.c
 
-sqlite3_static_sqlite3.o: $(srcdir)/sources/SQLite3/sqlite3.c
-	$(CCC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(srcdir)/sources/SQLite3/sqlite3.c
+sqlite3_static_sqlite3.o: $(srcdir)/3rdparty/sqlite3/sqlite3.c
+	$(CCC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(srcdir)/3rdparty/sqlite3/sqlite3.c
 
 wxsqlite3_static_wxsqlite3.o: wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) wxsqlite3.cpp

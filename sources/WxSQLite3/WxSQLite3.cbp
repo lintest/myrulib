@@ -81,7 +81,7 @@
 		</Build>
 		<Compiler>
 			<Add directory="../../3rdparty/wxsqlite3/include" />
-			<Add directory="../SQLite3" />
+			<Add directory="../../3rdparty/sqlite3/" />
 		</Compiler>
 		<Unit filename="../../3rdparty/wxsqlite3/include/wx/wxsqlite3.h" />
 		<Unit filename="../../3rdparty/wxsqlite3/include/wx/wxsqlite3def.h" />

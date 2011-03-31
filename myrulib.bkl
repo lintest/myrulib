@@ -7,7 +7,7 @@
 	<option name="USE_LOCALE"/>
 	<option name="STRIP_COMMAND"/>
 
-	<include file="./scripts/Bakefile/wx.bkl"/>
+	<include file="./3rdparty/bakefile/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
 	<lib id="expat_static" template="wx-lib" cond="USE_EXPAT=='yes'">
@@ -22,8 +22,8 @@
 
 	<lib id="sqlite3_static" cond="USE_SQLITE=='yes'">
 		<define>SQLITE_ENABLE_FTS3</define>
-		<include>$(SRCDIR)/sources/SQLite3</include>
-		<sources>sources/SQLite3/sqlite3.c</sources>
+		<include>$(SRCDIR)/3rdparty/sqlite3</include>
+		<sources>3rdparty/sqlite3/sqlite3.c</sources>
 	</lib>
 
 	<action id="wxsqlite3.cpp">
@@ -35,8 +35,9 @@
 
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
 		<sources>sources/wxsqlite3.cpp</sources>
+		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
+		<include>$(SRCDIR)/3rdparty/sqlite3</include>
 	</lib>
 
 	<lib id="wxbzip2_static" template="wx-lib">

@@ -159,10 +159,10 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add directory="../SQLite3" />
+			<Add directory="../../3rdparty/wxbzstream/" />
+			<Add directory="../../3rdparty/wxsqlite3/" />
+			<Add directory="../../3rdparty/sqlite3/" />
 			<Add directory="../Expat" />
-			<Add directory="../WxBZipStream" />
-			<Add directory="../WxSQLite3" />
 			<Add directory="../build" />
 		</Compiler>
 		<Linker>

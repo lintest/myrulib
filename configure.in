@@ -79,7 +79,7 @@ else
 fi
 
 if test $USE_SQLITE = yes ; then 
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/sources/SQLite3"
+  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
   WX_LIBS="-lsqlite3_static $WX_LIBS"
 else
   LIBS="$LIBS -lsqlite3"
@@ -97,9 +97,7 @@ fi
 AC_SUBST(STRIP_COMMAND)
 
 AC_CONFIG_SUBDIRS([3rdparty/faxpp])
-AC_CONFIG_SUBDIRS([3rdparty/sqlite])
 AC_OUTPUT_COMMANDS([3rdparty/faxpp/$MAKE], MAKE=$MAKE)
-AC_OUTPUT_COMMANDS([3rdparty/sqlite/$MAKE], MAKE=$MAKE)
 
 AC_CONFIG_FILES([Makefile])
 
@@ -108,6 +106,8 @@ if test "x$WX_LIBS_STATIC" = "x"; then
 else
   USE_WX_STATIC=yes
 fi
+
+AC_OUTPUT
 
 dnl report how we have been configured
 echo
@@ -121,4 +121,3 @@ echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
 
 echo 
 
-AC_OUTPUT

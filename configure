@@ -766,8 +766,7 @@ CXXFLAGS
 CCC
 CXXCPP
 CPP'
-ac_subdirs_all='3rdparty/faxpp
-3rdparty/sqlite'
+ac_subdirs_all='3rdparty/faxpp'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -8136,7 +8135,7 @@ else
 fi
 
 if test $USE_SQLITE = yes ; then
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/sources/SQLite3"
+  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
   WX_LIBS="-lsqlite3_static $WX_LIBS"
 else
   LIBS="$LIBS -lsqlite3"
@@ -8157,11 +8156,7 @@ fi
 
 subdirs="$subdirs 3rdparty/faxpp"
 
-subdirs="$subdirs 3rdparty/sqlite"
-
 ac_config_commands="$ac_config_commands default-1"
-
-ac_config_commands="$ac_config_commands default-2"
 
 
 ac_config_files="$ac_config_files Makefile"
@@ -8172,17 +8167,6 @@ if test "x$WX_LIBS_STATIC" = "x"; then
 else
   USE_WX_STATIC=yes
 fi
-
-echo
-echo "Configured MyRuLib 0.27.1 for \`${host}' wxWidgets ${WX_VERSION}"
-echo
-echo "  Use buildin Expat library?                ${USE_EXPAT}"
-echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
-echo "  Include locale files into executable?     ${USE_LOCALE}"
-echo "  Strip the executable file?                ${USE_STRIP}"
-echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
-
-echo
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -8892,7 +8876,6 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 # INIT-COMMANDS
 #
 MAKE=$MAKE
-MAKE=$MAKE
 
 _ACEOF
 
@@ -8903,7 +8886,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "default-1") CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
-    "default-2") CONFIG_COMMANDS="$CONFIG_COMMANDS default-2" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;
@@ -9326,7 +9308,6 @@ $as_echo "$as_me: executing $ac_file commands" >&6;}
 
   case $ac_file$ac_mode in
     "default-1":C) 3rdparty/faxpp/$MAKE ;;
-    "default-2":C) 3rdparty/sqlite/$MAKE ;;
 
   esac
 done # for ac_tag
@@ -9509,4 +9490,16 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
+
+
+echo
+echo "Configured MyRuLib 0.27.1 for \`${host}' wxWidgets ${WX_VERSION}"
+echo
+echo "  Use buildin Expat library?                ${USE_EXPAT}"
+echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
+echo "  Include locale files into executable?     ${USE_LOCALE}"
+echo "  Strip the executable file?                ${USE_STRIP}"
+echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
+
+echo
 
