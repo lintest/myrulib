@@ -1,89 +1,63 @@
 <?xml version="1.0" ?>
 <makefile>
 
-	<set var="SRCDIR">$(SRCDIR)/sources</set>
 	<set var="PREFIX">/usr</set>
-	<set var="WX_UNICODE_DEFAULT">1</set>
-	<set var="WX_DEBUG_DEFAULT">0</set>
-
-	<if cond="FORMAT=='autoconf'">
-		<option name="USE_EXPAT"/>
-		<option name="USE_SQLITE"/>
-		<option name="USE_LOCALE"/>
-		<option name="STRIP_COMMAND"/>
-	</if>
-
-	<if cond="FORMAT=='gnu'">
-		<set var="BUILDDIR">build</set>
-		<set var="USE_EXPAT">no</set>
-		<set var="USE_SQLITE">no</set>
-		<set var="USE_LOCALE">no</set>
-		<set var="WX_PORT_DEFAULT">gtk2</set>
-		<set var="WX_SHARED_DEFAULT">1</set>
-		<set var="WX_VERSION_DEFAULT">2.8</set>
-	</if>
-
-	<if cond="FORMAT=='mingw'">
-		<set var="BUILDDIR">build</set>
-		<set var="USE_EXPAT">yes</set>
-		<set var="USE_SQLITE">yes</set>
-		<set var="USE_LOCALE">yes</set>
-		<set var="WX_SHARED_DEFAULT">0</set>
-		<set var="WX_VERSION_DEFAULT">28</set>
-		<set var="DEFAULT_LDFLAGS">-static</set>
-	</if>
+	<option name="USE_EXPAT"/>
+	<option name="USE_SQLITE"/>
+	<option name="USE_LOCALE"/>
+	<option name="STRIP_COMMAND"/>
 
 	<include file="./scripts/Bakefile/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
 	<lib id="expat_static" template="wx-lib" cond="USE_EXPAT=='yes'">
 		<define>HAVE_EXPAT_CONFIG_H</define>
-		<include>$(SRCDIR)/Expat</include>
-		<sources>Expat/xmlparse.c</sources>
-		<sources>Expat/xmlrole.c</sources>
-		<sources>Expat/xmltok.c</sources>
-		<sources>Expat/xmltok_impl.c</sources>
-		<sources>Expat/xmltok_ns.c</sources>
+		<include>$(SRCDIR)/sources/Expat</include>
+		<sources>sources/Expat/xmlparse.c</sources>
+		<sources>sources/Expat/xmlrole.c</sources>
+		<sources>sources/Expat/xmltok.c</sources>
+		<sources>sources/Expat/xmltok_impl.c</sources>
+		<sources>sources/Expat/xmltok_ns.c</sources>
 	</lib>
 
 	<lib id="sqlite3_static" cond="USE_SQLITE=='yes'">
 		<define>SQLITE_ENABLE_FTS3</define>
-		<include>$(SRCDIR)/SQLite3</include>
-		<sources>SQLite3/sqlite3.c</sources>
+		<include>$(SRCDIR)/sources/SQLite3</include>
+		<sources>sources/SQLite3/sqlite3.c</sources>
 	</lib>
 
 	<action id="wxsqlite3.cpp">
-		<depends-on-file>$(SRCDIR)/../3rdparty/wxsqlite3/src/wxsqlite3.cpp</depends-on-file>
-		<depends-on-file>$(SRCDIR)/WxSQLite3/wxsqlite3.patch</depends-on-file>
-		<command>patch $(SRCDIR)/../3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(SRCDIR)/WxSQLite3/wxsqlite3.patch -o $(BUILDDIR)/wxsqlite3.cpp</command>
+		<depends-on-file>$(SRCDIR)/3rdparty/wxsqlite3/src/wxsqlite3.cpp</depends-on-file>
+		<depends-on-file>$(SRCDIR)/sources/WxSQLite3/wxsqlite3.patch</depends-on-file>
+		<command>patch $(SRCDIR)/3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(SRCDIR)/sources/WxSQLite3/wxsqlite3.patch -o $(BUILDDIR)/wxsqlite3.cpp</command>
 		<clean-files>$(BUILDDIR)/wxsqlite3.cpp</clean-files>
 	</action>
 
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<include>$(SRCDIR)/../3rdparty/wxsqlite3/include</include>
-		<sources>wxsqlite3.cpp</sources>
+		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
+		<sources>sources/wxsqlite3.cpp</sources>
 	</lib>
 
 	<lib id="wxbzip2_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<sources>WxBZipStream/bzip/blocksort.c</sources>
-		<sources>WxBZipStream/bzip/bzlib.c</sources>
-		<sources>WxBZipStream/bzip/compress.c</sources>
-		<sources>WxBZipStream/bzip/crctable.c</sources>
-		<sources>WxBZipStream/bzip/decompress.c</sources>
-		<sources>WxBZipStream/bzip/huffman.c</sources>
-		<sources>WxBZipStream/bzip/randtable.c</sources>
-		<sources>WxBZipStream/bzipstream.cpp</sources>
+		<sources>3rdparty/wxbzipstream/bzip/blocksort.c</sources>
+		<sources>3rdparty/wxbzipstream/bzip/bzlib.c</sources>
+		<sources>3rdparty/wxbzipstream/bzip/compress.c</sources>
+		<sources>3rdparty/wxbzipstream/bzip/crctable.c</sources>
+		<sources>3rdparty/wxbzipstream/bzip/decompress.c</sources>
+		<sources>3rdparty/wxbzipstream/bzip/huffman.c</sources>
+		<sources>3rdparty/wxbzipstream/bzip/randtable.c</sources>
+		<sources>3rdparty/wxbzipstream/bzipstream.cpp</sources>
 	</lib>
 
 	<exe id="zipscan" template="wxconsole">
 		<depends>sqlite3_static</depends>
 		<define>NDEBUG</define>
-		<sources>ZipScaner/ZipScan.cpp</sources>
-		<sources>MyRuLib/polarssl/md5.c</sources>
-		<include>$(SRCDIR)/MyRuLib</include>
-		<include>$(SRCDIR)/WxSQLite3</include>
+		<sources>sources/ZipScaner/ZipScan.cpp</sources>
+		<sources>sources/MyRuLib/polarssl/md5.c</sources>
+		<include>$(SRCDIR)/sources/MyRuLib</include>
+		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
 		<library>wxsqlite3_static</library>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
@@ -95,8 +69,8 @@
 
 	<define-tag name="locale" rules="action">
 		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
-		<command>msgfmt $(SRCDIR)/MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
-		<depends-on-file>$(SRCDIR)/MyRuLib/locale/$(value).po</depends-on-file>
+		<command>msgfmt $(SRCDIR)/sources/MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
+		<depends-on-file>$(SRCDIR)/sources/MyRuLib/locale/$(value).po</depends-on-file>
 		<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 			<modify-target target="install">
 				<command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES</command>
@@ -109,7 +83,7 @@
 	</define-tag>
 
 	<exe id="bin2c">
-		<sources>Bin2c/bin2c.c</sources>
+		<sources>sources/Bin2c/bin2c.c</sources>
 	</exe>
 		
 	<define-tag name="bin2c" rules="action">
@@ -182,105 +156,105 @@
 			<library cond="USE_EXPAT=='yes'">expat_static</library>
 			<sys-lib cond="USE_EXPAT=='no'">expat</sys-lib>
 		</if>
-		<sources>MyRuLib/controls/FbChoiceFormat.cpp</sources>
-		<sources>MyRuLib/controls/FbComboBox.cpp</sources>
-		<sources>MyRuLib/controls/FbHtmlWindow.cpp</sources>
-		<sources>MyRuLib/controls/FbNotebook.cpp</sources>
-		<sources>MyRuLib/controls/FbSearchCombo.cpp</sources>
-		<sources>MyRuLib/controls/FbToolBar.cpp</sources>
-		<sources>MyRuLib/controls/FbTreeModel.cpp</sources>
-		<sources>MyRuLib/controls/FbTreeView.cpp</sources>
-		<sources>MyRuLib/controls/FbURL.cpp</sources>
-		<sources>MyRuLib/controls/FbViewItem.cpp</sources>
-		<sources>MyRuLib/controls/LimitedTextCtrl.cpp</sources>
-		<sources>MyRuLib/controls/ProgressBar.cpp</sources>
-		<sources>MyRuLib/BaseThread.cpp</sources>
-		<sources>MyRuLib/FbAboutDlg.cpp</sources>
-		<sources>MyRuLib/FbAlphabet.cpp</sources>
-		<sources>MyRuLib/FbAuthList.cpp</sources>
-		<sources>MyRuLib/FbAuthorDlg.cpp</sources>
-		<sources>MyRuLib/FbBookData.cpp</sources>
-		<sources>MyRuLib/FbBookEvent.cpp</sources>
-		<sources>MyRuLib/FbBookList.cpp</sources>
-		<sources>MyRuLib/FbBookMenu.cpp</sources>
-		<sources>MyRuLib/FbBookPanel.cpp</sources>
-		<sources>MyRuLib/FbBookTree.cpp</sources>
-		<sources>MyRuLib/FbCacheBook.cpp</sources>
-		<sources>MyRuLib/FbColumnDlg.cpp</sources>
-		<sources>MyRuLib/FbColumns.cpp</sources>
-		<sources>MyRuLib/FbCollection.cpp</sources>
-		<sources>MyRuLib/FbConvertDlg.cpp</sources>
-		<sources>MyRuLib/FbCounter.cpp</sources>
-		<sources>MyRuLib/FbConfigDlg.cpp</sources>
-		<sources>MyRuLib/FbConst.cpp</sources>
-		<sources>MyRuLib/FbDatabase.cpp</sources>
-		<sources>MyRuLib/FbDataOpenDlg.cpp</sources>
-		<sources>MyRuLib/FbDataPath.cpp</sources>
-		<sources>MyRuLib/FbDateTime.cpp</sources>
-		<sources>MyRuLib/FbDateTree.cpp</sources>
-		<sources>MyRuLib/FbDeleteThread.cpp</sources>
-		<sources>MyRuLib/FbDownList.cpp</sources>
-		<sources>MyRuLib/FbEditBook.cpp</sources>
-		<sources>MyRuLib/FbExportDlg.cpp</sources>
-		<sources>MyRuLib/FbExportTree.cpp</sources>
-		<sources>MyRuLib/FbExtractInfo.cpp</sources>
-		<sources>MyRuLib/FbDownloader.cpp</sources>
-		<sources>MyRuLib/FbFilterDlg.cpp</sources>
-		<sources>MyRuLib/FbFilterObj.cpp</sources>
-		<sources>MyRuLib/FbFilterTree.cpp</sources>
-		<sources>MyRuLib/FbFldrTree.cpp</sources>
-		<sources>MyRuLib/FbFrameAuth.cpp</sources>
-		<sources>MyRuLib/FbFrameBase.cpp</sources>
-		<sources>MyRuLib/FbFrameDate.cpp</sources>
-		<sources>MyRuLib/FbFrameDown.cpp</sources>
-		<sources>MyRuLib/FbFrameFind.cpp</sources>
-		<sources>MyRuLib/FbFrameFldr.cpp</sources>
-		<sources>MyRuLib/FbFrameInfo.cpp</sources>
-		<sources>MyRuLib/FbFrameHtml.cpp</sources>
-		<sources>MyRuLib/FbFrameGenr.cpp</sources>
-		<sources>MyRuLib/FbFrameSeqn.cpp</sources>
-		<sources>MyRuLib/FbGenres.cpp</sources>
-		<sources>MyRuLib/FbGenreThread.cpp</sources>
-		<sources>MyRuLib/FbGenrTree.cpp</sources>
-		<sources>MyRuLib/FbImportThread.cpp</sources>
-		<sources>MyRuLib/FbInternetBook.cpp</sources>
-		<sources>MyRuLib/FbLocale.cpp</sources>
-		<sources>MyRuLib/FbLogStream.cpp</sources>
-		<sources>MyRuLib/FbMainFrame.cpp</sources>
-		<sources>MyRuLib/FbMainMenu.cpp</sources>
-		<sources>MyRuLib/FbMasterInfo.cpp</sources>
-		<sources>MyRuLib/FbMasterThread.cpp</sources>
-		<sources>MyRuLib/FbMasterTypes.cpp</sources>
-		<sources>MyRuLib/FbMenu.cpp</sources>
-		<sources>MyRuLib/FbParams.cpp</sources>
-		<sources>MyRuLib/FbParamsDlg.cpp</sources>
-		<sources>MyRuLib/FbPreviewThread.cpp</sources>
-		<sources>MyRuLib/FbPreviewWindow.cpp</sources>
-		<sources>MyRuLib/FbProgressDlg.cpp</sources>
-		<sources>MyRuLib/FbScanerThread.cpp</sources>
-		<sources>MyRuLib/FbSeqnList.cpp</sources>
-		<sources>MyRuLib/FbSequenDlg.cpp</sources>
-		<sources>MyRuLib/FbServiceDlg.cpp</sources>
-		<sources>MyRuLib/FbServiceThread.cpp</sources>
-		<sources>MyRuLib/FbThread.cpp</sources>
-		<sources>MyRuLib/FbTitleDlg.cpp</sources>
-		<sources>MyRuLib/FbUpdateThread.cpp</sources>
-		<sources>MyRuLib/FbViewContext.cpp</sources>
-		<sources>MyRuLib/FbViewData.cpp</sources>
-		<sources>MyRuLib/FbViewReader.cpp</sources>
-		<sources>MyRuLib/FbViewThread.cpp</sources>
-		<sources>MyRuLib/FbViewerDlg.cpp</sources>
-		<sources>MyRuLib/FbWindow.cpp</sources>
-		<sources>MyRuLib/ImpContext.cpp</sources>
-		<sources>MyRuLib/MyRuLibApp.cpp</sources>
-		<sources>MyRuLib/ParseCtx.cpp</sources>
-		<sources>MyRuLib/ZipReader.cpp</sources>
-		<sources>MyRuLib/polarssl/md5.c</sources>
-		<sources>MyRuLib/wx/base64.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbChoiceFormat.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbNotebook.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbSearchCombo.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbToolBar.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbTreeModel.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbTreeView.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbURL.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbViewItem.cpp</sources>
+		<sources>sources/MyRuLib/controls/LimitedTextCtrl.cpp</sources>
+		<sources>sources/MyRuLib/controls/ProgressBar.cpp</sources>
+		<sources>sources/MyRuLib/BaseThread.cpp</sources>
+		<sources>sources/MyRuLib/FbAboutDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbAlphabet.cpp</sources>
+		<sources>sources/MyRuLib/FbAuthList.cpp</sources>
+		<sources>sources/MyRuLib/FbAuthorDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbBookData.cpp</sources>
+		<sources>sources/MyRuLib/FbBookEvent.cpp</sources>
+		<sources>sources/MyRuLib/FbBookList.cpp</sources>
+		<sources>sources/MyRuLib/FbBookMenu.cpp</sources>
+		<sources>sources/MyRuLib/FbBookPanel.cpp</sources>
+		<sources>sources/MyRuLib/FbBookTree.cpp</sources>
+		<sources>sources/MyRuLib/FbCacheBook.cpp</sources>
+		<sources>sources/MyRuLib/FbColumnDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbColumns.cpp</sources>
+		<sources>sources/MyRuLib/FbCollection.cpp</sources>
+		<sources>sources/MyRuLib/FbConvertDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbCounter.cpp</sources>
+		<sources>sources/MyRuLib/FbConfigDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbConst.cpp</sources>
+		<sources>sources/MyRuLib/FbDatabase.cpp</sources>
+		<sources>sources/MyRuLib/FbDataOpenDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbDataPath.cpp</sources>
+		<sources>sources/MyRuLib/FbDateTime.cpp</sources>
+		<sources>sources/MyRuLib/FbDateTree.cpp</sources>
+		<sources>sources/MyRuLib/FbDeleteThread.cpp</sources>
+		<sources>sources/MyRuLib/FbDownList.cpp</sources>
+		<sources>sources/MyRuLib/FbEditBook.cpp</sources>
+		<sources>sources/MyRuLib/FbExportDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbExportTree.cpp</sources>
+		<sources>sources/MyRuLib/FbExtractInfo.cpp</sources>
+		<sources>sources/MyRuLib/FbDownloader.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
+		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameAuth.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameBase.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameDate.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameDown.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameFind.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameFldr.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameInfo.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameHtml.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameGenr.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameSeqn.cpp</sources>
+		<sources>sources/MyRuLib/FbGenres.cpp</sources>
+		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
+		<sources>sources/MyRuLib/FbGenrTree.cpp</sources>
+		<sources>sources/MyRuLib/FbImportThread.cpp</sources>
+		<sources>sources/MyRuLib/FbInternetBook.cpp</sources>
+		<sources>sources/MyRuLib/FbLocale.cpp</sources>
+		<sources>sources/MyRuLib/FbLogStream.cpp</sources>
+		<sources>sources/MyRuLib/FbMainFrame.cpp</sources>
+		<sources>sources/MyRuLib/FbMainMenu.cpp</sources>
+		<sources>sources/MyRuLib/FbMasterInfo.cpp</sources>
+		<sources>sources/MyRuLib/FbMasterThread.cpp</sources>
+		<sources>sources/MyRuLib/FbMasterTypes.cpp</sources>
+		<sources>sources/MyRuLib/FbMenu.cpp</sources>
+		<sources>sources/MyRuLib/FbParams.cpp</sources>
+		<sources>sources/MyRuLib/FbParamsDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbPreviewThread.cpp</sources>
+		<sources>sources/MyRuLib/FbPreviewWindow.cpp</sources>
+		<sources>sources/MyRuLib/FbProgressDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbScanerThread.cpp</sources>
+		<sources>sources/MyRuLib/FbSeqnList.cpp</sources>
+		<sources>sources/MyRuLib/FbSequenDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbServiceDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbServiceThread.cpp</sources>
+		<sources>sources/MyRuLib/FbThread.cpp</sources>
+		<sources>sources/MyRuLib/FbTitleDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbUpdateThread.cpp</sources>
+		<sources>sources/MyRuLib/FbViewContext.cpp</sources>
+		<sources>sources/MyRuLib/FbViewData.cpp</sources>
+		<sources>sources/MyRuLib/FbViewReader.cpp</sources>
+		<sources>sources/MyRuLib/FbViewThread.cpp</sources>
+		<sources>sources/MyRuLib/FbViewerDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbWindow.cpp</sources>
+		<sources>sources/MyRuLib/ImpContext.cpp</sources>
+		<sources>sources/MyRuLib/MyRuLibApp.cpp</sources>
+		<sources>sources/MyRuLib/ParseCtx.cpp</sources>
+		<sources>sources/MyRuLib/ZipReader.cpp</sources>
+		<sources>sources/MyRuLib/polarssl/md5.c</sources>
+		<sources>sources/MyRuLib/wx/base64.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
-		<include>$(SRCDIR)/MyRuLib</include>
-		<include>$(SRCDIR)/WxSQLite3</include>
-		<include>$(SRCDIR)/WxBZipStream</include>
+		<include>$(SRCDIR)/sources/MyRuLib</include>
+		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
+		<include>$(SRCDIR)/3rdparty/wxbzipstream</include>
 		<wx-lib>aui</wx-lib>
 		<wx-lib>html</wx-lib>
 		<wx-lib>core</wx-lib>
@@ -303,12 +277,12 @@
 
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files> 
-			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
+			<srcdir>$(SRCDIR)/sources/MyRuLib/desktop</srcdir>
 			<files>myrulib.png</files>
 			<install-to>$(DATADIR)/icons/hicolor/48x48/apps</install-to>
 		</data-files>
 		<data-files>
-			<srcdir>$(SRCDIR)/MyRuLib/desktop</srcdir>
+			<srcdir>$(SRCDIR)/sources/MyRuLib/desktop</srcdir>
 			<files>myrulib.desktop</files>
 			<install-to>$(DATADIR)/applications</install-to>
 		</data-files>

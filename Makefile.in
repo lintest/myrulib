@@ -56,9 +56,8 @@ SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/sources/SQLite3 \
 	$(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
-WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG \
-	-I$(srcdir)/sources/../3rdparty/wxsqlite3/include $(WX_CXXFLAGS) \
-	$(CPPFLAGS) $(CXXFLAGS)
+WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	wxsqlite3_static_wxsqlite3.o
 WXBZIP2_STATIC_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
@@ -73,9 +72,10 @@ WXBZIP2_STATIC_OBJECTS =  \
 	wxbzip2_static_randtable.o \
 	wxbzip2_static_bzipstream.o
 ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/sources/WxSQLite3 $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/sources/WxSQLite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CXXFLAGS) $(CPPFLAGS) \
+	$(CXXFLAGS)
 ZIPSCAN_OBJECTS =  \
 	zipscan_ZipScan.o \
 	zipscan_md5.o
@@ -83,10 +83,10 @@ BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
 MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/sources/WxSQLite3 -I$(srcdir)/sources/WxBZipStream \
+	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
 	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/sources/WxSQLite3 -I$(srcdir)/sources/WxBZipStream \
+	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
 	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceFormat.o \
@@ -281,8 +281,8 @@ distclean: clean
 @COND_USE_SQLITE_yes@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
 @COND_USE_SQLITE_yes@	$(RANLIB) $@
 
-wxsqlite3.cpp: $(srcdir)/sources/../3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
-	patch $(srcdir)/sources/../3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(srcdir)/sources/WxSQLite3/wxsqlite3.patch -o ./wxsqlite3.cpp
+wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
+	patch $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(srcdir)/sources/WxSQLite3/wxsqlite3.patch -o ./wxsqlite3.cpp
 
 $(LIBPREFIX)wxsqlite3_static$(LIBEXT): $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
@@ -369,29 +369,29 @@ sqlite3_static_sqlite3.o: $(srcdir)/sources/SQLite3/sqlite3.c
 wxsqlite3_static_wxsqlite3.o: wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) wxsqlite3.cpp
 
-wxbzip2_static_blocksort.o: $(srcdir)/sources/WxBZipStream/bzip/blocksort.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/blocksort.c
+wxbzip2_static_blocksort.o: $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
 
-wxbzip2_static_bzlib.o: $(srcdir)/sources/WxBZipStream/bzip/bzlib.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/bzlib.c
+wxbzip2_static_bzlib.o: $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
 
-wxbzip2_static_compress.o: $(srcdir)/sources/WxBZipStream/bzip/compress.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/compress.c
+wxbzip2_static_compress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
 
-wxbzip2_static_crctable.o: $(srcdir)/sources/WxBZipStream/bzip/crctable.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/crctable.c
+wxbzip2_static_crctable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
 
-wxbzip2_static_decompress.o: $(srcdir)/sources/WxBZipStream/bzip/decompress.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/decompress.c
+wxbzip2_static_decompress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
 
-wxbzip2_static_huffman.o: $(srcdir)/sources/WxBZipStream/bzip/huffman.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/huffman.c
+wxbzip2_static_huffman.o: $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
 
-wxbzip2_static_randtable.o: $(srcdir)/sources/WxBZipStream/bzip/randtable.c
-	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/randtable.c
+wxbzip2_static_randtable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
+	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
 
-wxbzip2_static_bzipstream.o: $(srcdir)/sources/WxBZipStream/bzipstream.cpp
-	$(CXXC) -c -o $@ $(WXBZIP2_STATIC_CXXFLAGS) $(srcdir)/sources/WxBZipStream/bzipstream.cpp
+wxbzip2_static_bzipstream.o: $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
+	$(CXXC) -c -o $@ $(WXBZIP2_STATIC_CXXFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
 
 zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
 	$(CXXC) -c -o $@ $(ZIPSCAN_CXXFLAGS) $(srcdir)/sources/ZipScaner/ZipScan.cpp
@@ -687,8 +687,8 @@ myrulib_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c $(MYRULIB_ODEP)
 myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
-myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/sources/WxSQLite3 --include-dir $(srcdir)/sources/WxBZipStream
+myrulib_resource_rc.o: $(srcdir)/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
 
 
 # Include dependency info, if present:

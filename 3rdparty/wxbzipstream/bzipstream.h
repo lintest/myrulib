@@ -86,5 +86,34 @@ public:
 	virtual ~wxBZipStream();
 };
 
+//---------------------------------------------------------------------------
+//      wxBZipClassFactory - wxArchive integration
+//---------------------------------------------------------------------------
+
+#if wxVERSION_NUMBER > 2701
+
+class WXEXPORT wxBZipClassFactory: public wxFilterClassFactory
+{
+public:
+    wxBZipClassFactory();
+
+    wxFilterInputStream *NewStream(wxInputStream& stream) const
+        { return new wxBZipInputStream(stream); }
+    wxFilterOutputStream *NewStream(wxOutputStream& stream) const
+        { return new wxBZipOutputStream(stream); }
+    wxFilterInputStream *NewStream(wxInputStream *stream) const
+        { return new wxBZipInputStream(*stream); }
+    wxFilterOutputStream *NewStream(wxOutputStream *stream) const
+        { return new wxBZipOutputStream(*stream); }
+
+    const wxChar * const *GetProtocols(wxStreamProtocolType type
+                                       = wxSTREAM_PROTOCOL) const;
+
+private:
+    DECLARE_DYNAMIC_CLASS(wxBZipClassFactory)
+};
+
+#endif // wxVERSION_NUMBER > 2701
+
 #endif // wxUSE_STREAMS
 #endif // _WX_WXBZSTREAM_H__

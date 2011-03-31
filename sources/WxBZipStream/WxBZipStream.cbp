@@ -83,31 +83,31 @@
 			<Add directory="." />
 			<Add directory="../SQLite3" />
 		</Compiler>
-		<Unit filename="bzip/blocksort.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/blocksort.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzip/bzlib.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/bzlib.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzip/bzlib.h" />
-		<Unit filename="bzip/bzlib_private.h" />
-		<Unit filename="bzip/compress.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/bzlib.h" />
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/bzlib_private.h" />
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/compress.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzip/crctable.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/crctable.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzip/decompress.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/decompress.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzip/huffman.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/huffman.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzip/randtable.c">
+		<Unit filename="../../3rdparty/wxbzipstream/bzip/randtable.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="bzipstream.cpp" />
-		<Unit filename="bzipstream.h" />
+		<Unit filename="../../3rdparty/wxbzipstream/bzipstream.cpp" />
+		<Unit filename="../../3rdparty/wxbzipstream/bzipstream.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

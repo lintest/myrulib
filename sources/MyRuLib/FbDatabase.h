@@ -4,12 +4,6 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 
-class wxSQLite3Exception
-{
-	public:
-		const wxString GetMessage() const { return wxEmptyString; }
-};
-
 wxString Lower(const wxString & input);
 
 wxString Upper(const wxString & input);

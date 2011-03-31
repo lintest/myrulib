@@ -294,4 +294,49 @@ wxBZipStream::wxBZipStream(wxInputStream& i, wxOutputStream& o) :
 
 wxBZipStream::~wxBZipStream(){}
 
+//---------------------------------------------------------------------------
+//
+// wxBZipClassFactory
+//
+//---------------------------------------------------------------------------
+
+#if wxVERSION_NUMBER > 2701
+
+IMPLEMENT_DYNAMIC_CLASS(wxBZipClassFactory, wxFilterClassFactory)
+
+static wxBZipClassFactory g_wxBZipClassFactory;
+
+wxBZipClassFactory::wxBZipClassFactory()
+{
+    if (this == &g_wxBZipClassFactory)
+        PushFront();
+}
+
+const wxChar * const *
+wxBZipClassFactory::GetProtocols(wxStreamProtocolType type) const
+{
+    static const wxChar *protos[] =     
+        { _T("bzip"), _T("bzip2"), NULL };
+    static const wxChar *mimes[] = 
+        { _T("a\application/x-bzip"), 
+          _T("application/x-bzip-compressed-tar"), 
+          NULL };
+    static const wxChar *encs[] = 
+        { _T("bzip"), _T("bzip2"), NULL };
+    static const wxChar *exts[] =    
+        { _T(".bz"), _T(".bz2"), NULL };
+    static const wxChar *empty[] =
+        { NULL };
+
+    switch (type) {
+        case wxSTREAM_PROTOCOL: return protos;
+        case wxSTREAM_MIMETYPE: return mimes;
+        case wxSTREAM_ENCODING: return encs;
+        case wxSTREAM_FILEEXT:  return exts;
+        default:                return empty;
+    }
+}
+
+#endif // wxVERSION_NUMBER > 2701
+
 #endif  //wxUSE_ZLIB && wxUSE_STREAMS
