@@ -96,9 +96,6 @@ else
 fi
 AC_SUBST(STRIP_COMMAND)
 
-AC_CONFIG_SUBDIRS([3rdparty/faxpp])
-AC_OUTPUT_COMMANDS([3rdparty/faxpp/$MAKE], MAKE=$MAKE)
-
 AC_CONFIG_FILES([Makefile])
 
 if test "x$WX_LIBS_STATIC" = "x"; then
