@@ -51,14 +51,18 @@
 		<include>$(SRCDIR)/SQLite3</include>
 		<sources>SQLite3/sqlite3.c</sources>
 	</lib>
-	
+
+	<action id="wxsqlite3.cpp">
+		<depends-on-file>$(SRCDIR)/../3rdparty/wxsqlite3/src/wxsqlite3.cpp</depends-on-file>
+		<depends-on-file>$(SRCDIR)/WxSQLite3/wxsqlite3.patch</depends-on-file>
+		<command>patch $(SRCDIR)/../3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(SRCDIR)/WxSQLite3/wxsqlite3.patch -o $(BUILDDIR)/wxsqlite3.cpp</command>
+		<clean-files>$(BUILDDIR)/wxsqlite3.cpp</clean-files>
+	</action>
+
 	<lib id="wxsqlite3_static" template="wx-lib">
 		<define>NDEBUG</define>
-		<if cond="FORMAT in ['mingw','gnu']">
-			<include cond="USE_SQLITE=='yes'">$(SRCDIR)/SQLite3</include>
-		</if>
-		<include>$(SRCDIR)/WxSQLite3</include>
-		<sources>WxSQLite3/wxsqlite3.cpp</sources>
+		<include>$(SRCDIR)/../3rdparty/wxsqlite3/include</include>
+		<sources>wxsqlite3.cpp</sources>
 	</lib>
 
 	<lib id="wxbzip2_static" template="wx-lib">
@@ -89,7 +93,7 @@
 		<runtime-libs>static</runtime-libs>
 	</exe>
 
-    <define-tag name="locale" rules="action">
+	<define-tag name="locale" rules="action">
 		<clean-files>$(BUILDDIR)/$(value).mo</clean-files>
 		<command>msgfmt $(SRCDIR)/MyRuLib/locale/$(value).po -o $(BUILDDIR)/$(value).mo</command>
 		<depends-on-file>$(SRCDIR)/MyRuLib/locale/$(value).po</depends-on-file>
@@ -102,7 +106,7 @@
 				<command>(cd $(DESTDIR)$(DATADIR)/locale/$(value)/LC_MESSAGES ; rm -f myrulib.mo)</command>
 			</modify-target>
 		</if>
-    </define-tag>
+	</define-tag>
 
 	<exe id="bin2c">
 		<sources>Bin2c/bin2c.c</sources>

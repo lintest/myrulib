@@ -56,8 +56,9 @@ SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/sources/SQLite3 \
 	$(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
-WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/WxSQLite3 \
-	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG \
+	-I$(srcdir)/sources/../3rdparty/wxsqlite3/include $(WX_CXXFLAGS) \
+	$(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	wxsqlite3_static_wxsqlite3.o
 WXBZIP2_STATIC_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
@@ -250,6 +251,7 @@ clean:
 	rm -f ./*.o
 	rm -f $(LIBPREFIX)expat_static$(LIBEXT)
 	rm -f $(LIBPREFIX)sqlite3_static$(LIBEXT)
+	rm -f ./wxsqlite3.cpp
 	rm -f $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxbzip2_static$(LIBEXT)
 	rm -f zipscan$(EXEEXT)
@@ -278,6 +280,9 @@ distclean: clean
 @COND_USE_SQLITE_yes@	rm -f $@
 @COND_USE_SQLITE_yes@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
 @COND_USE_SQLITE_yes@	$(RANLIB) $@
+
+wxsqlite3.cpp: $(srcdir)/sources/../3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
+	patch $(srcdir)/sources/../3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(srcdir)/sources/WxSQLite3/wxsqlite3.patch -o ./wxsqlite3.cpp
 
 $(LIBPREFIX)wxsqlite3_static$(LIBEXT): $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
@@ -361,8 +366,8 @@ expat_static_xmltok_ns.o: $(srcdir)/sources/Expat/xmltok_ns.c
 sqlite3_static_sqlite3.o: $(srcdir)/sources/SQLite3/sqlite3.c
 	$(CCC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(srcdir)/sources/SQLite3/sqlite3.c
 
-wxsqlite3_static_wxsqlite3.o: $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
-	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
+wxsqlite3_static_wxsqlite3.o: wxsqlite3.cpp
+	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) wxsqlite3.cpp
 
 wxbzip2_static_blocksort.o: $(srcdir)/sources/WxBZipStream/bzip/blocksort.c
 	$(CCC) -c -o $@ $(WXBZIP2_STATIC_CFLAGS) $(srcdir)/sources/WxBZipStream/bzip/blocksort.c
