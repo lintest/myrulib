@@ -314,7 +314,7 @@ $(LIBPREFIX)faxpp_static$(LIBEXT): $(FAXPP_STATIC_OBJECTS)
 @COND_USE_SQLITE_yes@	$(RANLIB) $@
 
 wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
-	patch $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp -i $(srcdir)/sources/WxSQLite3/wxsqlite3.patch -o ./wxsqlite3.cpp
+	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp < $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 
 $(LIBPREFIX)wxsqlite3_static$(LIBEXT): $(WXSQLITE3_STATIC_OBJECTS)
 	rm -f $@
