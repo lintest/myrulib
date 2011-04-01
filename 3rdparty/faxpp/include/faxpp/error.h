@@ -17,9 +17,13 @@
 #ifndef __FAXPP__ERROR_H
 #define __FAXPP__ERROR_H
 
+#ifndef NO_ERROR
+	#define NO_ERROR 0
+#endif // NO_ERROR
+
 /// An enumeration of the error conditions returned by faxpp
 typedef enum {
-  NO_ERROR  = 0,
+  faxppNO_ERROR  = 0,
   DOUBLE_DASH_IN_COMMENT,
   PREMATURE_END_OF_BUFFER,
   INVALID_START_OF_COMMENT,

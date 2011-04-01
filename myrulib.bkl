@@ -273,7 +273,7 @@
 		<sources>sources/MyRuLib/ZipReader.cpp</sources>
 		<sources>sources/MyRuLib/polarssl/md5.c</sources>
 		<sources>sources/MyRuLib/wx/base64.cpp</sources>
-		<win32-res>MyRuLib/res/resource.rc</win32-res>
+		<win32-res>sources/MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/sources/MyRuLib</include>
 		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
