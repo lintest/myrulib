@@ -147,16 +147,6 @@
 		<objects-depend>be.inc</objects-depend>
 		<objects-depend>cs.inc</objects-depend>
 		<objects-depend>sv.inc</objects-depend>
-		<if cond="FORMAT in ['mingw','gnu']">
-			<define cond="USE_EXPAT=='yes'">XML_STATIC</define>
-			<define cond="USE_LOCALE=='yes'">FB_INCLUDE_LOCALE</define>
-			<include cond="USE_SQLITE=='yes'">SQLite3</include>
-			<library cond="USE_SQLITE=='yes'">sqlite3_static</library>
-			<sys-lib cond="USE_SQLITE=='no'">sqlite3</sys-lib>
-			<include cond="USE_EXPAT=='yes'">Expat</include>
-			<library cond="USE_EXPAT=='yes'">expat_static</library>
-			<sys-lib cond="USE_EXPAT=='no'">expat</sys-lib>
-		</if>
 		<sources>sources/MyRuLib/controls/FbChoiceFormat.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>
@@ -265,16 +255,12 @@
 		<optimize>speed</optimize>
 		<debug-info>off</debug-info>
 		<runtime-libs>static</runtime-libs>
-		<postlink-command cond="FORMAT in ['mingw','gnu']">strip $(BUILDDIR)/$(__targetname)</postlink-command>
 		<install-to cond="FORMAT_HAS_MAKE_INSTALL=='1'">$(BINDIR)</install-to>
 	</exe>
 
-	<if cond="FORMAT=='autoconf'">
-		<modify-target target="myrulib">
-			<set var="__post_command" append="1">$(STRIP_COMMAND)$(LF)</set>
-		</modify-target>
-	</if>
-
+	<modify-target target="myrulib">
+		<set var="__post_command" append="1">$(STRIP_COMMAND)$(LF)</set>
+	</modify-target>
 
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files> 
@@ -288,11 +274,11 @@
 			<install-to>$(DATADIR)/applications</install-to>
 		</data-files>
 		<modify-target target="install">
-		  <command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/pixmaps/</command>
-		  <command>ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)$(DATADIR)/pixmaps/myrulib.png</command>
+			<command>$(INSTALL) -d $(DESTDIR)$(DATADIR)/pixmaps/</command>
+			<command>ln -s ../icons/hicolor/48x48/apps/myrulib.png $(DESTDIR)$(DATADIR)/pixmaps/myrulib.png</command>
 		</modify-target>
 		<modify-target target="uninstall">
-		  <command>(cd $(DESTDIR)$(DATADIR)/pixmaps ; rm -f myrulib.png)</command>
+			<command>(cd $(DESTDIR)$(DATADIR)/pixmaps ; rm -f myrulib.png)</command>
 		</modify-target>
 	</if>
 	

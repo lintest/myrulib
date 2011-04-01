@@ -654,6 +654,11 @@ AROPTIONS
 AR
 MAKE_SET
 SET_MAKE
+SQLITE_LIBS
+SQLITE_CFLAGS
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
+PKG_CONFIG
 EGREP
 GREP
 CPP
@@ -763,7 +768,12 @@ CXX
 CXXFLAGS
 CCC
 CXXCPP
-CPP'
+CPP
+PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
+SQLITE_CFLAGS
+SQLITE_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1410,6 +1420,14 @@ Some influential environment variables:
   CXXFLAGS    C++ compiler flags
   CXXCPP      C++ preprocessor
   CPP         C preprocessor
+  PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's built-in search path
+  SQLITE_CFLAGS
+              C compiler flags for SQLITE, overriding pkg-config
+  SQLITE_LIBS linker flags for SQLITE, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2157,6 +2175,9 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+
+SQLITE_VERSION=3.6.0
+WXWIDGETS_VERSION=2.8.10
 
 
 
@@ -3829,7 +3850,7 @@ fi
   if test "$WX_CONFIG_PATH" != "no" ; then
     WX_VERSION=""
 
-    min_wx_version=2.8.10
+    min_wx_version=$WXWIDGETS_VERSION
     if test -z "--unicode=yes" ; then
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version" >&5
 $as_echo_n "checking for wxWidgets version >= $min_wx_version... " >&6; }
@@ -3982,7 +4003,7 @@ $as_echo "no (version $WX_VERSION is not new enough)" >&6; }
     If you still get this error, then check that 'wx-config' is
     in path, the directory where wxWidgets libraries are installed
     (returned by 'wx-config --libs' command) is in LD_LIBRARY_PATH
-    or equivalent variable and wxWidgets version is 2.8.10 or above."
+    or equivalent variable and wxWidgets version is $WXWIDGETS_VERSION or above."
 
        WXFOUND=0
 
@@ -4550,56 +4571,240 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SQLITE" >&5
 $as_echo "$USE_SQLITE" >&6; }
 
-if test $USE_SQLITE = no ; then
-  ac_fn_c_check_header_mongrel "$LINENO" "sqlite3.h" "ac_cv_header_sqlite3_h" "$ac_includes_default"
-if test "x$ac_cv_header_sqlite3_h" = x""yes; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sqlite3_open in -lsqlite3" >&5
-$as_echo_n "checking for sqlite3_open in -lsqlite3... " >&6; }
-if test "${ac_cv_lib_sqlite3_sqlite3_open+set}" = set; then :
+if test "x$USE_SQLITE" = "xno" ; then
+
+
+
+
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsqlite3  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_ac_pt_PKG_CONFIG+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SQLITE" >&5
+$as_echo_n "checking for SQLITE... " >&6; }
+
+if test -n "$SQLITE_CFLAGS"; then
+    pkg_cv_SQLITE_CFLAGS="$SQLITE_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"sqlite3 >= \$SQLITE_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "sqlite3 >= $SQLITE_VERSION") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SQLITE_CFLAGS=`$PKG_CONFIG --cflags "sqlite3 >= $SQLITE_VERSION" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$SQLITE_LIBS"; then
+    pkg_cv_SQLITE_LIBS="$SQLITE_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"sqlite3 >= \$SQLITE_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "sqlite3 >= $SQLITE_VERSION") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SQLITE_LIBS=`$PKG_CONFIG --libs "sqlite3 >= $SQLITE_VERSION" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        SQLITE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "sqlite3 >= $SQLITE_VERSION" 2>&1`
+        else
+	        SQLITE_PKG_ERRORS=`$PKG_CONFIG --print-errors "sqlite3 >= $SQLITE_VERSION" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$SQLITE_PKG_ERRORS" >&5
+
+	USE_SQLITE="yes"
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	USE_SQLITE="yes"
+else
+	SQLITE_CFLAGS=$pkg_cv_SQLITE_CFLAGS
+	SQLITE_LIBS=$pkg_cv_SQLITE_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+fi
+fi
+
+if test "x$USE_SQLITE" = "xno" ; then
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SQLITE_ENABLE_FTS3 support in system SQLite" >&5
+$as_echo_n "checking for SQLITE_ENABLE_FTS3 support in system SQLite... " >&6; }
+    _SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $SQLITE_CFLAGS"
+    _SAVE_LIBS="$LIBS"
+    LIBS="$LIBS $SQLITE_LIBS"
+    if test "${ac_cv_sqlite_enable_fts3+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        if test "$cross_compiling" = yes; then :
+  ac_cv_sqlite_enable_fts3=no
+
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char sqlite3_open ();
-int
-main ()
-{
-return sqlite3_open ();
-  ;
-  return 0;
-}
+            #include "sqlite3.h"
+
+            int main(int argc, char **argv){
+              return !sqlite3_compileoption_used("SQLITE_ENABLE_FTS3");
+            }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_sqlite3_sqlite3_open=yes
+if ac_fn_c_try_run "$LINENO"; then :
+  ac_cv_sqlite_enable_fts3=yes
 else
-  ac_cv_lib_sqlite3_sqlite3_open=no
+  ac_cv_sqlite_enable_fts3=no
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sqlite3_sqlite3_open" >&5
-$as_echo "$ac_cv_lib_sqlite3_sqlite3_open" >&6; }
-if test "x$ac_cv_lib_sqlite3_sqlite3_open" = x""yes; then :
-  USE_SQLITE="no"
-else
-  USE_SQLITE="yes"
-fi
-
-else
-  USE_SQLITE="yes"
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
 
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sqlite_enable_fts3" >&5
+$as_echo "$ac_cv_sqlite_enable_fts3" >&6; }
+    CFLAGS="$_SAVE_CFLAGS"
+    LIBS="$_SAVE_LIBS"
+    if test "x$ac_cv_sqlite_enable_fts3" = "xno"; then
+        USE_SQLITE="yes"
+    fi
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-locale" >&5
@@ -8132,18 +8337,18 @@ else
   LIBS="$LIBS -lexpat"
 fi
 
-if test $USE_SQLITE = yes ; then
+if test "x$USE_SQLITE" = "xno" ; then
+  LIBS="$LIBS -lsqlite3"
+else
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
   WX_LIBS="-lsqlite3_static $WX_LIBS"
-else
-  LIBS="$LIBS -lsqlite3"
 fi
 
-if test $USE_LOCALE = yes ; then
+if test "x$USE_LOCALE" = "xyes" ; then
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
 fi
 
-if test $USE_STRIP = yes ; then
+if test "x$USE_STRIP" = "xyes" ; then
   STRIP_COMMAND="$DOLLAR(STRIP) ./myrulib$DOLLAR(EXEEXT)"
 else
   STRIP_COMMAND=""

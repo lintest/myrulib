@@ -1,13 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
 
-dnl Set the minimum version of toolkit libs used by mozilla
-dnl ========================================================
-SQLITE_VERSION=3.7.4
-WXWIDGETS_VERSION=2.8.10
-
 AC_PREREQ(2.59)
 
 AC_INIT([MyRuLib],[0.27.1],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
+
+dnl Set the minimum version of toolkit libs
+dnl ========================================================
+SQLITE_VERSION=3.6.0
+WXWIDGETS_VERSION=2.8.10
 
 AC_CONFIG_SRCDIR([MyRuLib/MyRuLibApp.cpp])
 AC_CONFIG_SRCDIR([autoconf_inc.m4])
@@ -30,7 +30,7 @@ dnl AM_GNU_GETTEXT
 
 AM_OPTIONS_WXCONFIG
 
-AM_PATH_WXCONFIG(WXWIDGETS_VERSION, WXFOUND=1, WXFOUND=0, [aui,adv,html,core,net], [--unicode=yes])
+AM_PATH_WXCONFIG($WXWIDGETS_VERSION, WXFOUND=1, WXFOUND=0, [aui,adv,html,core,net], [--unicode=yes])
 
 if test "$WXFOUND" != 1; then
     AC_MSG_ERROR([
@@ -53,14 +53,15 @@ AC_MSG_CHECKING([for --with-sqlite])
 AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 library])], USE_SQLITE="$withval", USE_SQLITE="no")
 AC_MSG_RESULT([$USE_SQLITE])
 
-if test $USE_SQLITE = no ; then 
-
+if test "x$USE_SQLITE" = "xno" ; then 
     dnl ============================
     dnl === SQLite Version check ===
     dnl ============================
     dnl Check to see if the system SQLite package is new enough.
-    PKG_CHECK_MODULES(SQLITE, sqlite3 >= $SQLITE_VERSION)
+    PKG_CHECK_MODULES(SQLITE, sqlite3 >= $SQLITE_VERSION, , USE_SQLITE="yes")
+fi
 
+if test "x$USE_SQLITE" = "xno" ; then 
     dnl ================================
     dnl === SQLITE_ENABLE_FTS3 check ===
     dnl ================================
@@ -87,9 +88,9 @@ if test $USE_SQLITE = no ; then
     CFLAGS="$_SAVE_CFLAGS"
     LIBS="$_SAVE_LIBS"
     if test "x$ac_cv_sqlite_enable_fts3" = "xno"; then
-        AC_MSG_ERROR([System SQLite library is not compiled with SQLITE_ENABLE_FTS3.])
+        USE_SQLITE="yes"
     fi
-    fi
+fi
 
 AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
@@ -117,18 +118,18 @@ else
   LIBS="$LIBS -lexpat"
 fi
 
-if test $USE_SQLITE = yes ; then 
+if test "x$USE_SQLITE" = "xno" ; then 
+  LIBS="$LIBS -lsqlite3"
+else
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
   WX_LIBS="-lsqlite3_static $WX_LIBS"
-else
-  LIBS="$LIBS -lsqlite3"
 fi
 
-if test $USE_LOCALE = yes ; then 
+if test "x$USE_LOCALE" = "xyes" ; then 
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
 fi
 
-if test $USE_STRIP = yes ; then 
+if test "x$USE_STRIP" = "xyes" ; then 
   STRIP_COMMAND="$DOLLAR(STRIP) ./myrulib$DOLLAR(EXEEXT)"
 else
   STRIP_COMMAND=""
