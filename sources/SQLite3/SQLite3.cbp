@@ -74,10 +74,10 @@
 			<Add option="-DU_DISABLE_RENAMING" />
 			<Add directory="..\ICU" />
 		</Compiler>
-		<Unit filename="sqlite3.c">
+		<Unit filename="../../3rdparty/sqlite3/sqlite3.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="sqlite3.h" />
+		<Unit filename="../../3rdparty/sqlite3/sqlite3.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

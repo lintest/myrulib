@@ -159,10 +159,10 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add directory="../SQLite3" />
+			<Add directory="../../3rdparty/wxbzipstream" />
+			<Add directory="../../3rdparty/wxsqlite3/include" />
+			<Add directory="../../3rdparty/sqlite3" />
 			<Add directory="../Expat" />
-			<Add directory="../WxBZipStream" />
-			<Add directory="../WxSQLite3" />
 			<Add directory="../build" />
 		</Compiler>
 		<Linker>
@@ -372,7 +372,7 @@
 		<Unit filename="locale/cs.po" />
 		<Unit filename="locale/ru.po" />
 		<Unit filename="locale/uk.po" />
-		<Unit filename="md5.c">
+		<Unit filename="polarssl/md5.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="res/checked.xpm" />
