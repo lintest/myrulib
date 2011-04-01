@@ -1,5 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
+dnl Set the minimum version of toolkit libs used by mozilla
+dnl ========================================================
+SQLITE_VERSION=3.7.4
+WXWIDGETS_VERSION=2.8.10
+
 AC_PREREQ(2.59)
 
 AC_INIT([MyRuLib],[0.27.1],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
@@ -25,7 +30,7 @@ dnl AM_GNU_GETTEXT
 
 AM_OPTIONS_WXCONFIG
 
-AM_PATH_WXCONFIG(2.8.10, WXFOUND=1, WXFOUND=0, [aui,adv,html,core,net], [--unicode=yes])
+AM_PATH_WXCONFIG(WXWIDGETS_VERSION, WXFOUND=1, WXFOUND=0, [aui,adv,html,core,net], [--unicode=yes])
 
 if test "$WXFOUND" != 1; then
     AC_MSG_ERROR([
@@ -49,8 +54,42 @@ AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 libr
 AC_MSG_RESULT([$USE_SQLITE])
 
 if test $USE_SQLITE = no ; then 
-  AC_CHECK_HEADER(sqlite3.h, AC_CHECK_LIB(sqlite3, sqlite3_open,USE_SQLITE="no",USE_SQLITE="yes"),USE_SQLITE="yes")
-fi
+
+    dnl ============================
+    dnl === SQLite Version check ===
+    dnl ============================
+    dnl Check to see if the system SQLite package is new enough.
+    PKG_CHECK_MODULES(SQLITE, sqlite3 >= $SQLITE_VERSION)
+
+    dnl ================================
+    dnl === SQLITE_ENABLE_FTS3 check ===
+    dnl ================================
+    dnl check to see if the system SQLite package is compiled with
+    dnl SQLITE_ENABLE_FTS3 enabled.
+    AC_MSG_CHECKING(for SQLITE_ENABLE_FTS3 support in system SQLite)
+    _SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $SQLITE_CFLAGS"
+    _SAVE_LIBS="$LIBS"
+    LIBS="$LIBS $SQLITE_LIBS"
+    AC_CACHE_VAL(ac_cv_sqlite_enable_fts3,[
+        AC_TRY_RUN([
+            #include "sqlite3.h"
+
+            int main(int argc, char **argv){
+              return !sqlite3_compileoption_used("SQLITE_ENABLE_FTS3");
+            }],
+            ac_cv_sqlite_enable_fts3=yes,
+            ac_cv_sqlite_enable_fts3=no,
+            ac_cv_sqlite_enable_fts3=no
+        )
+    ])
+    AC_MSG_RESULT($ac_cv_sqlite_enable_fts3)
+    CFLAGS="$_SAVE_CFLAGS"
+    LIBS="$_SAVE_LIBS"
+    if test "x$ac_cv_sqlite_enable_fts3" = "xno"; then
+        AC_MSG_ERROR([System SQLite library is not compiled with SQLITE_ENABLE_FTS3.])
+    fi
+    fi
 
 AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
