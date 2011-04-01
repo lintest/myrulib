@@ -20,6 +20,33 @@
 		<sources>sources/Expat/xmltok_ns.c</sources>
 	</lib>
 
+	<lib id="faxpp_static">
+		<define>HAVE_CONFIG</define>
+		<include>$(BUILDDIR)/faxpp</include>
+		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
+		<sources>3rdparty/faxpp/src/attlistdecl.c</sources>
+		<sources>3rdparty/faxpp/src/buffer.c</sources>
+		<sources>3rdparty/faxpp/src/cdata.c</sources>
+		<sources>3rdparty/faxpp/src/char_classes.c</sources>
+		<sources>3rdparty/faxpp/src/comment.c</sources>
+		<sources>3rdparty/faxpp/src/conditional.c</sources>
+		<sources>3rdparty/faxpp/src/doctype.c</sources>
+		<sources>3rdparty/faxpp/src/element.c</sources>
+		<sources>3rdparty/faxpp/src/elementdecl.c</sources>
+		<sources>3rdparty/faxpp/src/entitydecl.c</sources>
+		<sources>3rdparty/faxpp/src/error.c</sources>
+		<sources>3rdparty/faxpp/src/event.c</sources>
+		<sources>3rdparty/faxpp/src/notationdecl.c</sources>
+		<sources>3rdparty/faxpp/src/pi.c</sources>
+		<sources>3rdparty/faxpp/src/reference.c</sources>
+		<sources>3rdparty/faxpp/src/token.c</sources>
+		<sources>3rdparty/faxpp/src/tokenizer_states.c</sources>
+		<sources>3rdparty/faxpp/src/transcode.c</sources>
+		<sources>3rdparty/faxpp/src/xmldecl.c</sources>
+		<sources>3rdparty/faxpp/src/xml_parser.c</sources>
+		<sources>3rdparty/faxpp/src/xml_tokenizer.c</sources>
+	</lib>
+
 	<lib id="sqlite3_static" cond="USE_SQLITE=='yes'">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>$(SRCDIR)/3rdparty/sqlite3</include>
@@ -137,6 +164,8 @@
 	<exe id="myrulib" template="wxgui">
 		<depends>expat_static</depends>
 		<depends>sqlite3_static</depends>
+		<depends>faxpp_static</depends>
+		<library>faxpp_static</library>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
 		<include>$(BUILDDIR)</include>
@@ -219,6 +248,8 @@
 		<sources>sources/MyRuLib/FbMenu.cpp</sources>
 		<sources>sources/MyRuLib/FbParams.cpp</sources>
 		<sources>sources/MyRuLib/FbParamsDlg.cpp</sources>
+		<sources>sources/MyRuLib/FbPreviewReader.cpp</sources> 
+		<sources>sources/MyRuLib/FbParsingCtx.cpp</sources>  
 		<sources>sources/MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbPreviewWindow.cpp</sources>
 		<sources>sources/MyRuLib/FbProgressDlg.cpp</sources>
@@ -244,6 +275,7 @@
 		<sources>sources/MyRuLib/wx/base64.cpp</sources>
 		<win32-res>MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/sources/MyRuLib</include>
+		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
 		<include>$(SRCDIR)/3rdparty/wxbzipstream</include>
 		<wx-lib>aui</wx-lib>

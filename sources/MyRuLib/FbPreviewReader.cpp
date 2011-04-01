@@ -69,7 +69,7 @@ bool FbPreviewReader::Parse()
     	if (ProcessEvent(event)) break;
     	err = FAXPP_next_event(m_parser);
     }
-    if (err != NO_ERROR) wxLogError(FAXPP_err_to_string(err));
+    if (err != NO_ERROR) wxLogError(wxString(FAXPP_err_to_string(err), wxConvUTF8));
 	return err == NO_ERROR;
 }
 

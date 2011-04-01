@@ -161,6 +161,7 @@
 		<Compiler>
 			<Add directory="../../3rdparty/wxbzipstream" />
 			<Add directory="../../3rdparty/wxsqlite3/include" />
+			<Add directory="../../3rdparty/faxpp/include" />
 			<Add directory="../../3rdparty/sqlite3" />
 			<Add directory="../Expat" />
 			<Add directory="../build" />
@@ -171,6 +172,7 @@
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
 			<Add library="libExpat.a" />
+			<Add library="libFaxpp.a" />
 		</Linker>
 		<Unit filename="BaseThread.cpp" />
 		<Unit filename="BaseThread.h" />
