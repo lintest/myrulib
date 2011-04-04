@@ -2,8 +2,11 @@
 #define __FBPARSINGCTX_H__
 
 #include <wx/wx.h>
+
+extern "C" {
 #include <faxpp/parser.h>
 #include <faxpp/error.h>
+}
 
 enum FbSectionEnum {
 	fbsNone,
