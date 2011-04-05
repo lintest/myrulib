@@ -4,8 +4,10 @@
 #include <wx/wx.h>
 
 extern "C" {
-#include <faxpp/parser.h>
-#include <faxpp/error.h>
+	#undef NO_ERROR
+	#include <faxpp/parser.h>
+	#include <faxpp/error.h>
+	#define NO_ERROR 0
 }
 
 enum FbSectionEnum {
