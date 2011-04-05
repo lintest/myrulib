@@ -10,20 +10,23 @@ extern "C" {
 	#define NO_ERROR 0
 }
 
-enum FbSectionEnum {
-	fbsNone,
-	fbsBody,
-	fbsDescr,
-	fbsBinary,
-};
-
 class FbParsingContext: public wxObject
 {
 	public:
+		FbParsingContext();
+		virtual ~FbParsingContext();
+		bool Parse(wxInputStream & stream);
+	protected:
 		static wxString CharToString(const FAXPP_Text * text);
 		static wxString CharToLower(const FAXPP_Text * text);
 		static bool IsWhiteOnly(const FAXPP_Text *text);
-		FbParsingContext(): m_section(fbsNone) {}
+	protected:
+		enum FbSectionEnum {
+			fbsNone,
+			fbsBody,
+			fbsDescr,
+			fbsBinary,
+		};
 		void Inc(const wxString &tag);
 		void Dec(const wxString &tag);
 		bool operator == (const wxString & tags);
@@ -31,7 +34,10 @@ class FbParsingContext: public wxObject
 		bool operator > (const wxString & tags);
 		FbSectionEnum Section() { return m_section; }
 		wxString Path() const;
+	protected:
+		virtual bool OnProcessEvent(const FAXPP_Event * event) = 0;
 	private:
+		FAXPP_Parser * m_parser;
 		FbSectionEnum m_section;
 		wxArrayString m_tags;
 		wxString m_name;

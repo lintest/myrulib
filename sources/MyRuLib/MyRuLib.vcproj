@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\faxpp&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -124,7 +124,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(SolutionDir)\SQLite3&quot;;&quot;$(SolutionDir)\WxBZipStream&quot;;&quot;$(SolutionDir)\WxSQLite3&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\faxpp&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -442,6 +442,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbParsingCtx.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbParsingCtx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbPreviewReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FbPreviewReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbPreviewThread.cpp"
 				>
 			</File>
@@ -588,15 +604,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\SQLite3\sqlite3.c"
+				RelativePath="..\..\3rdparty\sqlite3\sqlite3.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxSQLite3\wxsqlite3.cpp"
+				RelativePath="..\..\3rdparty\sqlite3\sqlite3.h"
 				>
 			</File>
 			<File
-				RelativePath="..\WxSQLite3\wx\wxsqlite3.h"
+				RelativePath="..\..\build\wxsqlite3.cpp"
 				>
 			</File>
 		</Filter>
@@ -922,11 +938,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbToolBar.h"
+				RelativePath=".\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbToolBar.h"
+				RelativePath=".\controls\FbToolBar.h"
 				>
 			</File>
 			<File
@@ -1018,47 +1034,47 @@
 			Name="WxBZip2"
 			>
 			<File
-				RelativePath="..\WxBZipStream\bzip\blocksort.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\blocksort.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzipstream.cpp"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzipstream.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzipstream.h"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzipstream.h"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\bzlib.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\bzlib.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\bzlib.h"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\bzlib.h"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\bzlib_private.h"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\bzlib_private.h"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\compress.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\compress.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\crctable.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\crctable.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\decompress.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\decompress.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\huffman.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\huffman.c"
 				>
 			</File>
 			<File
-				RelativePath="..\WxBZipStream\bzip\randtable.c"
+				RelativePath="..\..\3rdparty\wxbzipstream\bzip\randtable.c"
 				>
 			</File>
 		</Filter>

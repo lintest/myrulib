@@ -8,15 +8,14 @@ class FbViewThread;
 
 class FbViewData;
 
-class FbPreviewReader: public wxObject
+class FbPreviewReader: public FbParsingContext
 {
 	public:
-		FbPreviewReader(wxInputStream & stream, FbViewThread & thread, FbViewData & data);
+		FbPreviewReader(FbViewThread & thread, FbViewData & data);
 		virtual ~FbPreviewReader();
-		bool Parse();
-		int Read(char * buffer, int len);
+	protected:
+		virtual bool OnProcessEvent(const FAXPP_Event * event);
 	private:
-		bool ProcessEvent(const FAXPP_Event * event);
 		void NewNode(const wxString &name, int level);
 		void EndNode(const wxString &name, int level);
 		void TxtNode(const wxString &name, const wxString &text);
@@ -24,9 +23,6 @@ class FbPreviewReader: public wxObject
 		void StartImg();
 		void Stop() { m_stop = true; }
 	private:
-		wxInputStream & m_stream;
-		FAXPP_Parser * m_parser;
-		FbParsingContext m_context;
 		FbViewThread & m_thread;
 		FbViewData & m_data;
 		bool m_stop;
