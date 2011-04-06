@@ -2,13 +2,20 @@
 #define __FBPARSINGCTX_H__
 
 #include <wx/wx.h>
+#include "FbStringHash.h"
 
 class FbParsingContextBase: public wxObject
 {
 	public:
 		FbParsingContextBase() : m_section(fbsNone) {}
 		virtual ~FbParsingContextBase() {}
-		virtual bool Parse(wxInputStream & stream) = 0;
+		bool Parse(wxInputStream & stream) { return DoParse(stream); }
+	protected:
+		virtual bool DoParse(wxInputStream & stream) = 0;
+		virtual void NewNode(const wxString &name, const FbStringHash &atts) = 0;
+		virtual void TxtNode(const wxString &text) = 0;
+		virtual void EndNode(const wxString &name) = 0;
+		virtual void Stop() = 0;
 	protected:
 		enum FbSectionEnum {
 			fbsNone,
@@ -23,7 +30,6 @@ class FbParsingContextBase: public wxObject
 		bool operator > (const wxString & tags);
 		FbSectionEnum Section() { return m_section; }
 		wxString Path() const;
-		virtual void Stop() = 0;
 	private:
 		FbSectionEnum m_section;
 		wxArrayString m_tags;
@@ -43,22 +49,22 @@ extern "C" {
 class FbParsingContextFaxpp: public FbParsingContextBase
 {
 	public:
-		static wxString Str(const FAXPP_Text & text);
-		static wxString Low(const FAXPP_Text & text);
-	public:
 		FbParsingContextFaxpp();
 		virtual ~FbParsingContextFaxpp();
-		bool Parse(wxInputStream & stream);
 	protected:
-		virtual void OnProcessEvent(const FAXPP_Event & event);
-		virtual void NewNode(const FAXPP_Event & event, bool closed) = 0;
-		virtual void EndNode(const FAXPP_Event & event) = 0;
-		virtual void TxtNode(const FAXPP_Event & event) = 0;
+		virtual bool DoParse(wxInputStream & stream);
 		virtual void Stop() { m_stop = true; }
+	private:
+		static wxString Str(const FAXPP_Text & text);
+		static wxString Low(const FAXPP_Text & text);
+		static void GetAtts(const FAXPP_Event & event, FbStringHash &hash);
+		void OnProcessEvent(const FAXPP_Event & event);
 	private:
 		FAXPP_Parser * m_parser;
 		bool m_stop;
 };
+
+typedef FbParsingContextFaxpp FbParsingContext;
 
 #else 
 	#ifndef FB_PARSE_EXPAT
@@ -73,24 +79,22 @@ class FbParsingContextFaxpp: public FbParsingContextBase
 class FbParsingContextExpat: public FbParsingContextBase
 {
 	public:
-		static wxString Str(const XML_Char *s, size_t len = wxString::npos);
-		static wxString Low(const XML_Char *s, size_t len = wxString::npos);
-		static bool IsWhiteOnly(const wxChar *buf);
+		static void GetAtts(const XML_Char **atts, FbStringHash &hash);
 	public:
 		FbParsingContextExpat();
 		virtual ~FbParsingContextExpat();
-		virtual bool Parse(wxInputStream & stream);
 	public:
-		virtual void NewNode(const XML_Char *name, const XML_Char **atts) = 0;
-		virtual void TxtNode(const XML_Char *text, int len) = 0;
-		virtual void EndNode(const XML_Char* name) = 0;
 		wxString encoding;
 		wxString version;
 	protected:
+		virtual bool DoParse(wxInputStream & stream);
 		virtual void Stop();
 	private:
 		XML_Parser m_parser;
+		friend class FbExpatEventMaker;
 };
+
+typedef FbParsingContextExpat FbParsingContext;
 
 #endif // FB_PARSE_EXPAT
 

@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "controls/FbTreeModel.h"
+#include "FbStringHash.h"
 
 class FbGenreGroup: public wxObject
 {
@@ -21,9 +22,6 @@ class FbGenreGroup: public wxObject
 
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY( FbGenreGroup, FbGenreArray );
-
-#include <wx/hashmap.h>
-WX_DECLARE_STRING_HASH_MAP( wxString, FbStringHash );
 
 class FbGenres: public wxObject
 {

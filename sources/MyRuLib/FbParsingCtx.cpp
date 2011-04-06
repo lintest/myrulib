@@ -157,7 +157,7 @@ FbParsingContextFaxpp::~FbParsingContextFaxpp()
 	if (m_parser) FAXPP_free_parser(m_parser);
 }
 
-bool FbParsingContextFaxpp::Parse(wxInputStream & stream)
+bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 {
     FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadCallback, &stream);
     if (err != NO_ERROR) err = FAXPP_next_event(m_parser);
@@ -191,10 +191,15 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 {
 	switch (event.type) {
 		case SELF_CLOSING_ELEMENT_EVENT: {
-			NewNode(event, true);
+			FbStringHash hash;
+			GetAttr(event, hash);
+			NewNode(Low(event.name), hash);
+			EndNode(Low(event.name));
 		} break;
 		case START_ELEMENT_EVENT: {
-			NewNode(event, false);
+			FbStringHash hash;
+			GetAttr(event, hash);
+			NewNode(Low(event.name), hash);
 		} break;
 		case END_ELEMENT_EVENT: {
 			EndNode(event);
@@ -202,6 +207,14 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 		case CHARACTERS_EVENT: {
 			TxtNode(event);
 		} break;
+	}
+}
+
+void FbParsingContextFaxpp::GetAtts(const FAXPP_Event & event, FbStringHash &hash)
+{
+	for (unsigned int i = 0; i < event.attr_count; ++i) {
+		wxString name = Low(event.attrs[i].name);
+		hash[name] = Str(event.attrs[i].value.value);
 	}
 }
 
@@ -213,6 +226,41 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 //  FbParsingContextExpat
 //-----------------------------------------------------------------------------
 
+class FbExpatEventMaker {
+	public:
+		FbExpatEventMaker(void * data)
+			: m_context((FbParsingContextExpat*)data) {}
+		void NewNode(const wxString &name, const FbStringHash &atts)
+			{ m_context->NewNode(name, atts); }
+		void TxtNode(const wxString &text)
+			{ m_context->TxtNode(text); }
+		void EndNode(const wxString &name)
+			{ m_context->EndNode(name); }
+	private:
+		FbParsingContextExpat * m_context;
+};
+
+static wxString Str(const XML_Char *s, size_t len = wxString::npos)
+{
+	return wxString(s, wxConvUTF8, len);
+}
+
+static wxString Low(const XML_Char *s, size_t len = wxString::npos)
+{
+	wxString data = wxString(s, wxConvUTF8, len);
+	data.MakeLower();
+	data.Trim(false).Trim(true);
+	return data;
+}
+
+static bool IsWhiteOnly(const wxChar *buf)
+{
+	for (const wxChar *c = buf; *c != wxT('\0'); c++)
+		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r'))
+			return false;
+	return true;
+}
+
 extern "C" {
 static void DefaultHnd(void *userData, const XML_Char *s, int len)
 {
@@ -220,7 +268,7 @@ static void DefaultHnd(void *userData, const XML_Char *s, int len)
 	if (len > 6 && memcmp(s, "<?xml ", 6) == 0)
 	{
 		FbParsingContextExpat *ctx = (FbParsingContextExpat*)userData;
-		wxString buf = ctx->Str(s, (size_t)len);
+		wxString buf = Str(s, (size_t)len);
 		int pos;
 		pos = buf.Find(wxT("encoding="));
 		if (pos != wxNOT_FOUND)
@@ -261,23 +309,24 @@ static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData), const XML_Ch
 
 	return 1;
 }
+} // extern "C"
 
 static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
 {
-	((FbParsingContextExpat*)userData)->NewNode(name, atts);
+	FbStringHash hash;
+	FbParsingContextExpat::GetAtts(atts, hash);
+	FbExpatEventMaker(userData).NewNode(Low(name), hash);
 }
 
 static void TextHnd(void *userData, const XML_Char *text, int len)
 {
-	((FbParsingContextExpat*)userData)->TxtNode(text, len);
+	FbExpatEventMaker(userData).TxtNode(Str(text, len));
 }
 
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
-	((FbParsingContextExpat*)userData)->EndNode(name);
+	FbExpatEventMaker(userData).EndNode(Low(name));
 }
-
-} // extern "C"
 
 FbParsingContextExpat::FbParsingContextExpat()
 {
@@ -296,33 +345,12 @@ FbParsingContextExpat::~FbParsingContextExpat()
 	XML_ParserFree(m_parser);
 }
 
-wxString FbParsingContextExpat::Str(const XML_Char *s, size_t len)
-{
-	return wxString(s, wxConvUTF8, len);
-}
-
-wxString FbParsingContextExpat::Low(const XML_Char *s, size_t len)
-{
-	wxString data = wxString(s, wxConvUTF8, len);
-	data.MakeLower();
-	data.Trim(false).Trim(true);
-	return data;
-}
-
-bool FbParsingContextExpat::IsWhiteOnly(const wxChar *buf)
-{
-	for (const wxChar *c = buf; *c != wxT('\0'); c++)
-		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r'))
-			return false;
-	return true;
-}
-
 void FbParsingContextExpat::Stop()
 {
 	XML_StopParser(m_parser, XML_FALSE);
 }
 
-bool FbParsingContextExpat::Parse(wxInputStream& stream)
+bool FbParsingContextExpat::DoParse(wxInputStream& stream)
 {
 	const size_t BUFSIZE = 1024;
 	char buf[BUFSIZE];
@@ -348,6 +376,16 @@ bool FbParsingContextExpat::Parse(wxInputStream& stream)
 	} while (!done);
 
 	return ok;
+}
+
+void FbParsingContextExpat::GetAtts(const XML_Char **atts, FbStringHash &hash)
+{
+	const XML_Char **a = atts;
+	while (*a) {
+		wxString name = Low(a[0]);
+		hash[name] = Str(a[1]);
+		a += 2;
+	}
 }
 
 #endif // FB_PARSE_EXPAT

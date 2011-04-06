@@ -42,12 +42,16 @@ if test "$WXFOUND" != 1; then
     ])
 fi
 
+AC_MSG_CHECKING([for --with-faxpp])
+AC_ARG_WITH([expat], [AS_HELP_STRING([--with-faxpp], [Use FAXPP (Fast XML Pull Parser) library])], USE_FAXPP="$withval", USE_FAXPP="no")
+AC_MSG_RESULT([$USE_FAXPP])
+
 AC_MSG_CHECKING([for --with-expat])
-AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use builtin Expat library])], USE_EXPAT="$withval", USE_EXPAT="no")
+AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use Expat XML parser library])], USE_EXPAT="$withval", USE_EXPAT="no")
 AC_MSG_RESULT([$USE_EXPAT])
 
 if test $USE_EXPAT = no ; then 
-	AC_CHECK_HEADER(expat.h,AC_CHECK_LIB(expat,XML_StopParser,USE_EXPAT="no",USE_EXPAT="yes"),USE_EXPAT="yes")
+	AC_CHECK_HEADER(expat.h, AC_CHECK_LIB(expat, XML_StopParser, USE_EXPAT="no", USE_EXPAT="yes"), USE_EXPAT="yes")
 fi
 
 AC_MSG_CHECKING([for --with-sqlite])
