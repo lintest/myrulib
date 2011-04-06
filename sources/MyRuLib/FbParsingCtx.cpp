@@ -2,7 +2,98 @@
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
-//  FbParsingContext
+//  FbParsingContextBase
+//-----------------------------------------------------------------------------
+
+void FbParsingContextBase::Inc(const wxString &tag)
+{
+	if (m_tags.Count() == 1) {
+		if (tag == wxT("body")) {
+			m_section = fbsBody;
+		} else if (tag == wxT("description")) {
+			m_section = fbsDescr;
+		} else if (tag == wxT("binary")) {
+			m_section = fbsBinary;
+		} else {
+			m_section = fbsNone;
+		}
+	}
+	m_tags.Add(tag);
+	m_name = tag;
+}
+
+void FbParsingContextBase::Dec(const wxString &tag)
+{
+	size_t count = m_tags.Count();
+	size_t index = count;
+	while (index > 0) {
+		index--;
+		if (m_tags[index] == tag) {
+			m_tags.RemoveAt(index, count - index);
+			break;
+		}
+	}
+	if (m_tags.Count() == 1) m_section = fbsNone;
+}
+
+bool FbParsingContextBase::operator == (const wxString & tags)
+{
+	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
+	size_t index = 0;
+	size_t count = m_tags.Count();
+	while (tkz.HasMoreTokens()) {
+		if (index >= count) return false;
+		wxString token = tkz.GetNextToken();
+		if (m_tags[index] != token) return false;
+		index++;
+	}
+
+	return (count == index);
+}
+
+bool FbParsingContextBase::operator >= (const wxString & tags)
+{
+	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
+	size_t index = 0;
+	size_t count = m_tags.Count();
+	while (tkz.HasMoreTokens()) {
+		if (index >= count) return false;
+		wxString token = tkz.GetNextToken();
+		if (m_tags[index] != token) return false;
+		index++;
+	}
+	return (count >= index);
+}
+
+bool FbParsingContextBase::operator > (const wxString & tags)
+{
+	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
+	size_t index = 0;
+	size_t count = m_tags.Count();
+	while (tkz.HasMoreTokens()) {
+		if (index >= count) return false;
+		wxString token = tkz.GetNextToken();
+		if (m_tags[index] != token) return false;
+		index++;
+	}
+
+	return (count > index);
+}
+
+wxString FbParsingContextBase::Path() const
+{
+	wxString result;
+	size_t count = m_tags.Count();
+	for (size_t i = 0; i < count; i++) {
+		result << wxT("/") << m_tags[i];
+	}
+	return result;
+}
+
+#ifdef FB_PARSE_FAXPP
+
+//-----------------------------------------------------------------------------
+//  FbParsingContextFaxpp
 //-----------------------------------------------------------------------------
 
 static const wxUint16 encoding_table__CP1251[128] = {
@@ -41,12 +132,12 @@ static unsigned int ReadCallback(void * context, void * buffer, unsigned int len
 	return ((wxInputStream*)context)->Read((char*)buffer, length).LastRead();
 }
 
-wxString FbParsingContext::Str(const FAXPP_Text & text)
+wxString FbParsingContextFaxpp::Str(const FAXPP_Text & text)
 {
 	return wxString((char*)text.ptr, wxConvUTF8, text.len);
 }
 
-wxString FbParsingContext::Low(const FAXPP_Text & text)
+wxString FbParsingContextFaxpp::Low(const FAXPP_Text & text)
 {
 	wxString data = Str(text);
 	data.MakeLower();
@@ -54,44 +145,38 @@ wxString FbParsingContext::Low(const FAXPP_Text & text)
 	return data;
 }
 
-// returns true if the given string contains only whitespaces
-bool FbParsingContext::IsWhite(const FAXPP_Text & text)
-{
-	char * buffer = (char*) text.ptr;
-	char * buffer_end = buffer + text.len;
-	for (const char * c = buffer; c < buffer_end; c++) {
-		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r')) return false;
-	}
-	return true;
-}
-
-FbParsingContext::FbParsingContext()
-	: m_section(fbsNone)
+FbParsingContextFaxpp::FbParsingContextFaxpp()
+	: m_stop(false)
 {
 	m_parser = FAXPP_create_parser(NO_CHECKS_PARSE_MODE, FAXPP_utf8_transcoder);
 	if (m_parser) FAXPP_set_normalize_attrs(m_parser, 1);
 }
 
-FbParsingContext::~FbParsingContext()
+FbParsingContextFaxpp::~FbParsingContextFaxpp()
 {
 	if (m_parser) FAXPP_free_parser(m_parser);
 }
 
-bool FbParsingContext::Parse(wxInputStream & stream)
+bool FbParsingContextFaxpp::Parse(wxInputStream & stream)
 {
     FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadCallback, &stream);
     if (err != NO_ERROR) err = FAXPP_next_event(m_parser);
     while (err == NO_ERROR) {
 		const FAXPP_Event * event = FAXPP_get_current_event(m_parser);
-		if (event->type == START_DOCUMENT_EVENT) {
-			if (Low(event->encoding) == wxT("windows-1251")) {
-				FAXPP_set_decode(m_parser, FAXPP_cp1251_decode);
+		switch (event->type) {
+			case START_DOCUMENT_EVENT: {
+				if (Low(event->encoding) == wxT("windows-1251")) {
+					FAXPP_set_decode(m_parser, FAXPP_cp1251_decode);
+				}
+			} break;
+			case END_DOCUMENT_EVENT: {
+				Stop();
+			} break;
+			default: {
+				OnProcessEvent(*event);
 			}
-		} else if (event->type == END_DOCUMENT_EVENT) {
-			break;
-		} else if (!OnProcessEvent(*event)) {
-			break;
 		}
+		if (m_stop) break;
     	err = FAXPP_next_event(m_parser);
     }
 	if (err != NO_ERROR) {
@@ -102,87 +187,167 @@ bool FbParsingContext::Parse(wxInputStream & stream)
 	return err == NO_ERROR;
 }
 
-void FbParsingContext::Inc(const wxString &tag)
+void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 {
-	if (m_tags.Count() == 1) {
-		if (tag == wxT("body")) {
-			m_section = fbsBody;
-		} else if (tag == wxT("description")) {
-			m_section = fbsDescr;
-		} else if (tag == wxT("binary")) {
-			m_section = fbsBinary;
-		} else {
-			m_section = fbsNone;
+	switch (event.type) {
+		case SELF_CLOSING_ELEMENT_EVENT: {
+			NewNode(event, true);
+		} break;
+		case START_ELEMENT_EVENT: {
+			NewNode(event, false);
+		} break;
+		case END_ELEMENT_EVENT: {
+			EndNode(event);
+		} break;
+		case CHARACTERS_EVENT: {
+			TxtNode(event);
+		} break;
+	}
+}
+
+#endif // FB_PARSE_FAXPP
+
+#ifdef FB_PARSE_EXPAT
+
+//-----------------------------------------------------------------------------
+//  FbParsingContextExpat
+//-----------------------------------------------------------------------------
+
+extern "C" {
+static void DefaultHnd(void *userData, const XML_Char *s, int len)
+{
+	// XML header:
+	if (len > 6 && memcmp(s, "<?xml ", 6) == 0)
+	{
+		FbParsingContextExpat *ctx = (FbParsingContextExpat*)userData;
+		wxString buf = ctx->Str(s, (size_t)len);
+		int pos;
+		pos = buf.Find(wxT("encoding="));
+		if (pos != wxNOT_FOUND)
+			ctx->encoding = buf.Mid(pos + 10).BeforeFirst(buf[(size_t)pos+9]);
+		pos = buf.Find(wxT("version="));
+		if (pos != wxNOT_FOUND)
+			ctx->version = buf.Mid(pos + 9).BeforeFirst(buf[(size_t)pos+8]);
+	}
+}
+
+static int UnknownEncodingHnd(void * WXUNUSED(encodingHandlerData), const XML_Char *name, XML_Encoding *info)
+{
+	// We must build conversion table for expat. The easiest way to do so
+	// is to let wxCSConv convert as string containing all characters to
+	// wide character representation:
+	wxString str(name, wxConvLibc);
+	wxCSConv conv(str);
+	char mbBuf[2];
+	wchar_t wcBuf[10];
+	size_t i;
+
+	mbBuf[1] = 0;
+	info->map[0] = 0;
+	for (i = 0; i < 255; i++)
+	{
+		mbBuf[0] = (char)(i+1);
+		if (conv.MB2WC(wcBuf, mbBuf, 2) == (size_t)-1)
+		{
+			// invalid/undefined byte in the encoding:
+			info->map[i+1] = -1;
 		}
+		info->map[i+1] = (int)wcBuf[0];
 	}
-	m_tags.Add(tag);
-	m_name = tag;
+
+	info->data = NULL;
+	info->convert = NULL;
+	info->release = NULL;
+
+	return 1;
 }
 
-void FbParsingContext::Dec(const wxString &tag)
+static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
 {
-	size_t count = m_tags.Count();
-	size_t index = count;
-	while (index > 0) {
-		index--;
-		if (m_tags[index] == tag) {
-			m_tags.RemoveAt(index, count - index);
-			break;
+	((FbParsingContextExpat*)userData)->NewNode(name, atts);
+}
+
+static void TextHnd(void *userData, const XML_Char *text, int len)
+{
+	((FbParsingContextExpat*)userData)->TxtNode(text, len);
+}
+
+static void EndElementHnd(void *userData, const XML_Char* name)
+{
+	((FbParsingContextExpat*)userData)->EndNode(name);
+}
+
+} // extern "C"
+
+FbParsingContextExpat::FbParsingContextExpat()
+{
+	m_parser = XML_ParserCreate(NULL);
+	if (m_parser) {
+		XML_SetUserData(m_parser, (void*)this);
+		XML_SetDefaultHandler(m_parser, DefaultHnd);
+		XML_SetUnknownEncodingHandler(m_parser, UnknownEncodingHnd, NULL);
+		XML_SetElementHandler(m_parser, StartElementHnd, EndElementHnd);
+		XML_SetCharacterDataHandler(m_parser, TextHnd);
+	}
+}
+
+FbParsingContextExpat::~FbParsingContextExpat()
+{
+	XML_ParserFree(m_parser);
+}
+
+wxString FbParsingContextExpat::Str(const XML_Char *s, size_t len)
+{
+	return wxString(s, wxConvUTF8, len);
+}
+
+wxString FbParsingContextExpat::Low(const XML_Char *s, size_t len)
+{
+	wxString data = wxString(s, wxConvUTF8, len);
+	data.MakeLower();
+	data.Trim(false).Trim(true);
+	return data;
+}
+
+bool FbParsingContextExpat::IsWhiteOnly(const wxChar *buf)
+{
+	for (const wxChar *c = buf; *c != wxT('\0'); c++)
+		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r'))
+			return false;
+	return true;
+}
+
+void FbParsingContextExpat::Stop()
+{
+	XML_StopParser(m_parser, XML_FALSE);
+}
+
+bool FbParsingContextExpat::Parse(wxInputStream& stream)
+{
+	const size_t BUFSIZE = 1024;
+	char buf[BUFSIZE];
+	bool done;
+
+	bool ok = true;
+	do {
+		size_t len = stream.Read(buf, BUFSIZE).LastRead();
+		done = (len < BUFSIZE);
+
+		if ( !XML_Parse(m_parser, buf, len, done) ) {
+			XML_Error error_code = XML_GetErrorCode(m_parser);
+			if ( error_code == XML_ERROR_ABORTED ) {
+				done = true;
+			} else {
+				wxString error(XML_ErrorString(error_code), *wxConvCurrent);
+				XML_Size line = XML_GetCurrentLineNumber(m_parser);
+				wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), line);
+				ok = false;
+				break;
+			}
 		}
-	}
-	if (m_tags.Count() == 1) m_section = fbsNone;
+	} while (!done);
+
+	return ok;
 }
 
-bool FbParsingContext::operator == (const wxString & tags)
-{
-	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
-	size_t index = 0;
-	size_t count = m_tags.Count();
-	while (tkz.HasMoreTokens()) {
-		if (index >= count) return false;
-		wxString token = tkz.GetNextToken();
-		if (m_tags[index] != token) return false;
-		index++;
-	}
-
-	return (count == index);
-}
-
-bool FbParsingContext::operator >= (const wxString & tags)
-{
-	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
-	size_t index = 0;
-	size_t count = m_tags.Count();
-	while (tkz.HasMoreTokens()) {
-		if (index >= count) return false;
-		wxString token = tkz.GetNextToken();
-		if (m_tags[index] != token) return false;
-		index++;
-	}
-	return (count >= index);
-}
-
-bool FbParsingContext::operator > (const wxString & tags)
-{
-	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
-	size_t index = 0;
-	size_t count = m_tags.Count();
-	while (tkz.HasMoreTokens()) {
-		if (index >= count) return false;
-		wxString token = tkz.GetNextToken();
-		if (m_tags[index] != token) return false;
-		index++;
-	}
-
-	return (count > index);
-}
-
-wxString FbParsingContext::Path() const
-{
-	wxString result;
-	size_t count = m_tags.Count();
-	for (size_t i = 0; i < count; i++) {
-		result << wxT("/") << m_tags[i];
-	}
-	return result;
-}
+#endif // FB_PARSE_EXPAT

@@ -162,6 +162,7 @@
 	</action>
 	
 	<exe id="myrulib" template="wxgui">
+		<define>FB_PARSE_FAXPP</define>
 		<depends>expat_static</depends>
 		<depends>sqlite3_static</depends>
 		<depends>faxpp_static</depends>
@@ -248,8 +249,8 @@
 		<sources>sources/MyRuLib/FbMenu.cpp</sources>
 		<sources>sources/MyRuLib/FbParams.cpp</sources>
 		<sources>sources/MyRuLib/FbParamsDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbPreviewReader.cpp</sources> 
 		<sources>sources/MyRuLib/FbParsingCtx.cpp</sources>  
+		<sources>sources/MyRuLib/FbPreviewReader.cpp</sources> 
 		<sources>sources/MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbPreviewWindow.cpp</sources>
 		<sources>sources/MyRuLib/FbProgressDlg.cpp</sources>
