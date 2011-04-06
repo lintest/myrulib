@@ -56,6 +56,7 @@ void FbPreviewReader::NewNode(const FAXPP_Event & event)
 		case fbsNone: {
 		} break;
 	}
+	if (event.type == SELF_CLOSING_ELEMENT_EVENT) Dec(name);
 }
 
 void FbPreviewReader::TxtNode(const FAXPP_Event & event)
@@ -109,8 +110,8 @@ void FbPreviewReader::EndNode(const FAXPP_Event & event)
 		} break;
 		case fbsBinary: {
 			if (m_saveimage) {
-//			    wxLogError(m_imagename);
-//			    wxLogError(m_imagedata);
+			    wxLogError(m_imagename);
+			    wxLogError(m_imagedata);
 				m_data.AddImage(m_imagename, m_imagedata);
 				m_thread.SendHTML(m_data);
 			}
