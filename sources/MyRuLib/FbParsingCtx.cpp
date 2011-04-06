@@ -181,7 +181,7 @@ bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
     }
 	if (err != NO_ERROR) {
 		wxString text(FAXPP_err_to_string(err), wxConvUTF8);
-		unsigned int line = FAXPP_get_error_line (m_parser);		
+		unsigned int line = FAXPP_get_error_line (m_parser);
 		wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
 	}
 	return err == NO_ERROR;
@@ -192,20 +192,20 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 	switch (event.type) {
 		case SELF_CLOSING_ELEMENT_EVENT: {
 			FbStringHash hash;
-			GetAttr(event, hash);
+			GetAtts(event, hash);
 			NewNode(Low(event.name), hash);
 			EndNode(Low(event.name));
 		} break;
 		case START_ELEMENT_EVENT: {
 			FbStringHash hash;
-			GetAttr(event, hash);
+			GetAtts(event, hash);
 			NewNode(Low(event.name), hash);
 		} break;
 		case END_ELEMENT_EVENT: {
-			EndNode(event);
+			EndNode(Low(event.name));
 		} break;
 		case CHARACTERS_EVENT: {
-			TxtNode(event);
+			TxtNode(Str(event.value));
 		} break;
 	}
 }

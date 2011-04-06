@@ -2126,7 +2126,7 @@ $$1_PKG_ERRORS
 Consider adjusting the PKG_CONFIG_PATH environment variable if you
 installed software in a non-standard prefix.
 
-_PKG_TEXT])[]dnl
+_PKG_TEXT])dnl
         ])
 elif test $pkg_failed = untried; then
      	AC_MSG_RESULT([no])
@@ -2137,7 +2137,7 @@ path to pkg-config.
 
 _PKG_TEXT
 
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.])[]dnl
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.])dnl
         ])
 else
 	$1[]_CFLAGS=$pkg_cv_[]$1[]_CFLAGS
@@ -2152,7 +2152,7 @@ dnl Author:          wxWidgets development team,
 dnl                  Francesco Montorsi,
 dnl                  Bob McCown (Mac-testing)
 dnl Creation date:   24/11/2001
-dnl RCS-ID:          $Id: wxwin.m4 64334 2010-05-18 10:29:58Z VZ $
+dnl RCS-ID:          $Id$
 dnl ---------------------------------------------------------------------------
 
 dnl ===========================================================================

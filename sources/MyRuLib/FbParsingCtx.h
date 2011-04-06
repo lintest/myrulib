@@ -66,7 +66,7 @@ class FbParsingContextFaxpp: public FbParsingContextBase
 
 typedef FbParsingContextFaxpp FbParsingContext;
 
-#else 
+#else
 	#ifndef FB_PARSE_EXPAT
 		#define FB_PARSE_EXPAT
 	#endif // FB_PARSE_EXPAT

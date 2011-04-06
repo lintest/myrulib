@@ -1403,7 +1403,8 @@ Optional Packages:
   --with-wx-prefix=PREFIX Prefix where wxWidgets is installed (optional)
   --with-wx-exec-prefix=PREFIX
                           Exec prefix where wxWidgets is installed (optional)
-  --with-expat            Use builtin Expat library
+  --with-faxpp            Use FAXPP (Fast XML Pull Parser) library
+  --with-expat            Use Expat XML parser library
   --with-sqlite           Use builtin SQLite3 library
   --with-locale           Include locale files into executable
   --with-strip            Discard debug symbols from the executable file.
@@ -4050,6 +4051,19 @@ if test "$WXFOUND" != 1; then
         equivalent variable and wxWindows is version 2.8.10 or above.
     " "$LINENO" 5
 fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-faxpp" >&5
+$as_echo_n "checking for --with-faxpp... " >&6; }
+
+# Check whether --with-expat was given.
+if test "${with_expat+set}" = set; then :
+  withval=$with_expat; USE_FAXPP="$withval"
+else
+  USE_FAXPP="no"
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_FAXPP" >&5
+$as_echo "$USE_FAXPP" >&6; }
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-expat" >&5
 $as_echo_n "checking for --with-expat... " >&6; }
