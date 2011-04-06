@@ -43,7 +43,7 @@ if test "$WXFOUND" != 1; then
 fi
 
 AC_MSG_CHECKING([for --with-faxpp])
-AC_ARG_WITH([expat], [AS_HELP_STRING([--with-faxpp], [Use FAXPP (Fast XML Pull Parser) library])], USE_FAXPP="$withval", USE_FAXPP="no")
+AC_ARG_WITH([faxpp], [AS_HELP_STRING([--with-faxpp], [Use FAXPP (Fast XML Pull Parser) library])], USE_FAXPP="$withval", USE_FAXPP="no")
 AC_MSG_RESULT([$USE_FAXPP])
 
 AC_MSG_CHECKING([for --with-expat])
@@ -155,11 +155,12 @@ dnl report how we have been configured
 echo
 echo "Configured MyRuLib AC_PACKAGE_VERSION for \`${host}' wxWidgets ${WX_VERSION}"
 echo 
-echo "  Use buildin Expat library?                ${USE_EXPAT}"
-echo "  Use buildin SQLite3 library?              ${USE_SQLITE}"
-echo "  Include locale files into executable?     ${USE_LOCALE}"
-echo "  Strip the executable file?                ${USE_STRIP}"
-echo "  Link wxWidgets as a static library?       ${USE_WX_STATIC}"
+echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
+echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
+echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Include locale files into executable?         ${USE_LOCALE}"
+echo "  Strip the executable file?                    ${USE_STRIP}"
+echo "  Link wxWidgets as a static library?           ${USE_WX_STATIC}"
 
 echo 
 
