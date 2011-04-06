@@ -13,13 +13,13 @@ extern "C" {
 class FbParsingContext: public wxObject
 {
 	public:
+		static wxString Str(const FAXPP_Text & text);
+		static wxString Low(const FAXPP_Text & text);
+		static bool IsWhite(const FAXPP_Text & text);
+	public:
 		FbParsingContext();
 		virtual ~FbParsingContext();
 		bool Parse(wxInputStream & stream);
-	protected:
-		static wxString CharToString(const FAXPP_Text * text);
-		static wxString CharToLower(const FAXPP_Text * text);
-		static bool IsWhiteOnly(const FAXPP_Text *text);
 	protected:
 		enum FbSectionEnum {
 			fbsNone,
@@ -35,7 +35,7 @@ class FbParsingContext: public wxObject
 		FbSectionEnum Section() { return m_section; }
 		wxString Path() const;
 	protected:
-		virtual bool OnProcessEvent(const FAXPP_Event * event) = 0;
+		virtual bool OnProcessEvent(const FAXPP_Event & event) = 0;
 	private:
 		FAXPP_Parser * m_parser;
 		FbSectionEnum m_section;

@@ -14,13 +14,13 @@ class FbPreviewReader: public FbParsingContext
 		FbPreviewReader(FbViewThread & thread, FbViewData & data);
 		virtual ~FbPreviewReader();
 	protected:
-		virtual bool OnProcessEvent(const FAXPP_Event * event);
+		virtual bool OnProcessEvent(const FAXPP_Event & event);
 	private:
-		void NewNode(const wxString &name, int level);
-		void EndNode(const wxString &name, int level);
-		void TxtNode(const wxString &name, const wxString &text);
-		void AppendImg();
-		void StartImg();
+		void NewNode(const FAXPP_Event & event);
+		void EndNode(const FAXPP_Event & event);
+		void TxtNode(const FAXPP_Event & event);
+		void AppendImg(const FAXPP_Event & event);
+		void StartImg(const FAXPP_Event & event);
 		void Stop() { m_stop = true; }
 	private:
 		FbViewThread & m_thread;

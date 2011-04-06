@@ -16,59 +16,77 @@ FbPreviewReader::~FbPreviewReader()
 {
 }
 
-bool FbPreviewReader::OnProcessEvent(const FAXPP_Event * event)
+bool FbPreviewReader::OnProcessEvent(const FAXPP_Event & event)
 {
+	switch (event.type) {
+		case SELF_CLOSING_ELEMENT_EVENT: 
+		case START_ELEMENT_EVENT: {
+			NewNode(event);
+		} break;
+		case END_ELEMENT_EVENT: {
+			EndNode(event);
+		} break;
+		case CHARACTERS_EVENT: {
+			TxtNode(event);
+		} break;
+	}
 	return true;
 }
 
-void FbPreviewReader::NewNode(const wxString &name, int level)
+void FbPreviewReader::NewNode(const FAXPP_Event & event)
 {
+	wxString name = Low(event.name);
 	Inc(name);
 	switch (Section()) {
 		case fbsDescr: {
 			if (*this > wxT("fictionbook/description/title-info/annotation")) {
 				m_annt << wxString::Format(wxT("<%s>"), name.c_str());
 			} else if (*this == wxT("fictionbook/description/title-info/coverpage/image")) {
-				AppendImg();
+				AppendImg(event);
+			} else if (*this == wxT("fictionbook/description/publish-info/isbn")) {
+				m_isbn.Empty();
 			}
 		} break;
 		case fbsBody: {
 			if (m_parsebody) m_annt << wxString::Format(wxT("<%s>"), name.c_str());
 		} break;
 		case fbsBinary: {
-			StartImg();
+			StartImg(event);
 		} break;
 		case fbsNone: {
 		} break;
 	}
 }
 
-void FbPreviewReader::TxtNode(const wxString &name, const wxString &text)
+void FbPreviewReader::TxtNode(const FAXPP_Event & event)
 {
 	switch (Section()) {
 		case fbsDescr: {
 			if (*this >= wxT("fictionbook/description/title-info/annotation")) {
-				m_annt << text;
+				m_annt << Str(event.value);
 			} else if (*this == wxT("fictionbook/description/publish-info/isbn")) {
-				m_isbn << text;
+				m_isbn << Str(event.value);
 			}
 		} break;
 		case fbsBody: {
-			if (m_parsebody) m_annt << text;
+			if (m_parsebody) m_annt << Str(event.value);
 		} break;
 		case fbsBinary: {
-			if (m_saveimage) m_imagedata << text;
+			if (m_saveimage) m_imagedata << Str(event.value);
 		} break;
 		case fbsNone: {
 		} break;
 	}
 }
 
-void FbPreviewReader::EndNode(const wxString &name, int level)
+void FbPreviewReader::EndNode(const FAXPP_Event & event)
 {
+	wxString name = Low(event.name);
 	switch (Section()) {
 		case fbsDescr: {
-			if (*this == wxT("fictionbook/description")) {
+			if (*this > wxT("fictionbook/description/title-info/annotation")) {
+				m_annt << wxString::Format(wxT("</%s>"), name.c_str());
+			} else if (*this == wxT("fictionbook/description")) {
 				m_parsebody = m_annt.IsEmpty();
 				if (!m_parsebody) {
 					m_data.SetText(FbViewData::ANNT, m_annt);
@@ -76,8 +94,6 @@ void FbPreviewReader::EndNode(const wxString &name, int level)
 				}
 				m_data.SetText(FbViewData::ISBN, m_isbn);
 				m_thread.SendHTML(m_data);
-			} else if (*this > wxT("fictionbook/description/title-info/annotation")) {
-				m_annt << wxString::Format(wxT("</%s>"), name.c_str());
 			}
 		} break;
 		case fbsBody: {
@@ -103,37 +119,30 @@ void FbPreviewReader::EndNode(const wxString &name, int level)
 	Dec(name);
 }
 
-void FbPreviewReader::AppendImg()
+void FbPreviewReader::AppendImg(const FAXPP_Event & event)
 {
-/*
-	wxASSERT(xmlTextReaderMoveToFirstAttribute(m_reader) == 1);
-	while (xmlTextReaderMoveToNextAttribute(m_reader) == 1) {
-		wxString name = CharToLower(xmlTextReaderConstName(m_reader));
+	for (unsigned int i = 0; i < event.attr_count; ++i) {
+		wxString name = Low(event.attrs[i].name);
 		if (name.Right(5) == wxT(":href")) {
-			wxString value = CharToLower(xmlTextReaderConstValue(m_reader));
+			wxString value = Low(event.attrs[i].value.value);
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			m_images.Add(value);
 			break;
 		}
 	}
-*/
 }
 
-void FbPreviewReader::StartImg()
+void FbPreviewReader::StartImg(const FAXPP_Event & event)
 {
-/*
-	m_saveimage = false;
-	wxASSERT(xmlTextReaderMoveToFirstAttribute(m_reader) == 1);
-	while (xmlTextReaderMoveToNextAttribute(m_reader) == 1) {
-		wxString name = CharToLower(xmlTextReaderConstName(m_reader));
+	for (unsigned int i = 0; i < event.attr_count; ++i) {
+		wxString name = Low(event.attrs[i].name);
 		if (name == wxT("id")) {
-			wxString value = CharToLower(xmlTextReaderConstValue(m_reader));
+			wxString value = Low(event.attrs[i].value.value);
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			m_saveimage = (m_images.Index(value) != wxNOT_FOUND);
 			if (m_saveimage) m_imagename = value;
 			break;
 		}
 	}
-*/
 }
 

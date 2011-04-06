@@ -41,6 +41,30 @@ static unsigned int ReadCallback(void * context, void * buffer, unsigned int len
 	return ((wxInputStream*)context)->Read((char*)buffer, length).LastRead();
 }
 
+wxString FbParsingContext::Str(const FAXPP_Text & text)
+{
+	return wxString((char*)text.ptr, wxConvUTF8, text.len);
+}
+
+wxString FbParsingContext::Low(const FAXPP_Text & text)
+{
+	wxString data = Str(text);
+	data.MakeLower();
+	data.Trim(false).Trim(true);
+	return data;
+}
+
+// returns true if the given string contains only whitespaces
+bool FbParsingContext::IsWhite(const FAXPP_Text & text)
+{
+	char * buffer = (char*) text.ptr;
+	char * buffer_end = buffer + text.len;
+	for (const char * c = buffer; c < buffer_end; c++) {
+		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r')) return false;
+	}
+	return true;
+}
+
 FbParsingContext::FbParsingContext()
 	: m_section(fbsNone)
 {
@@ -53,41 +77,25 @@ FbParsingContext::~FbParsingContext()
 	if (m_parser) FAXPP_free_parser(m_parser);
 }
 
-wxString FbParsingContext::CharToString(const FAXPP_Text *text)
-{
-	return wxString((char*)text->ptr, wxConvUTF8, text->len);
-}
-
-wxString FbParsingContext::CharToLower(const FAXPP_Text *text)
-{
-	wxString data = wxString((char*)text->ptr, wxConvUTF8, text->len);
-	data.MakeLower();
-	data.Trim(false).Trim(true);
-	return data;
-}
-
-// returns true if the given string contains only whitespaces
-bool FbParsingContext::IsWhiteOnly(const FAXPP_Text *text)
-{
-	char * buffer = (char*) text->ptr;
-	char * buffer_end = buffer + text->len;
-	for (const char * c = buffer; c < buffer_end; c++) {
-		if (*c != wxT(' ') && *c != wxT('\t') && *c != wxT('\n') && *c != wxT('\r')) return false;
-	}
-	return true;
-}
-
 bool FbParsingContext::Parse(wxInputStream & stream)
 {
     FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadCallback, &stream);
     if (err != NO_ERROR) err = FAXPP_next_event(m_parser);
     while (err != NO_ERROR) {
+		wxLogError(wxT("Parse"));
 		const FAXPP_Event * event = FAXPP_get_current_event(m_parser);
+		if (event == NULL) break;
 		if (event->type == START_DOCUMENT_EVENT) {
-			if (CharToLower(&event->encoding) == wxT("windows-1251")) {
+			wxLogError(wxT("Encoding"));
+			wxLogError(Str(event->encoding));
+			if (Low(event->encoding) == wxT("windows-1251")) {
 				FAXPP_set_decode(m_parser, FAXPP_cp1251_decode);
 			}
-		} else if (!OnProcessEvent(event)) break;
+		} else if (event->type == END_DOCUMENT_EVENT) {
+			break;
+		} else if (!OnProcessEvent(*event)) {
+			break;
+		}
     	err = FAXPP_next_event(m_parser);
     }
     if (err != NO_ERROR) wxLogError(wxString(FAXPP_err_to_string(err), wxConvUTF8));

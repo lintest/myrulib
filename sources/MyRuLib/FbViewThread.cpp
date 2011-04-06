@@ -1,5 +1,6 @@
 #include "FbViewThread.h"
 #include "FbViewReader.h"
+#include "FbPreviewReader.h"
 #include "FbExtractInfo.h"
 #include "FbBookEvent.h"
 #include "FbCollection.h"
@@ -66,7 +67,7 @@ void FbViewThread::OpenBook()
 	if (IsClosed()) { delete info; return; }
 
 	ZipReader zip(id, false, true);
-	if (zip.IsOk()) FbViewReader(*this, *info).Load(zip.GetZip());
+	if (zip.IsOk()) FbPreviewReader(*this, *info).Parse(zip.GetZip());
 	FbCollection::AddInfo(info);
 }
 
