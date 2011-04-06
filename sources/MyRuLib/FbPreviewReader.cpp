@@ -19,9 +19,11 @@ FbPreviewReader::~FbPreviewReader()
 bool FbPreviewReader::OnProcessEvent(const FAXPP_Event & event)
 {
 	switch (event.type) {
-		case SELF_CLOSING_ELEMENT_EVENT:
+		case SELF_CLOSING_ELEMENT_EVENT: {
+			NewNode(event, true);
+		} break;
 		case START_ELEMENT_EVENT: {
-			NewNode(event);
+			NewNode(event, false);
 		} break;
 		case END_ELEMENT_EVENT: {
 			EndNode(event);
@@ -33,7 +35,7 @@ bool FbPreviewReader::OnProcessEvent(const FAXPP_Event & event)
 	return true;
 }
 
-void FbPreviewReader::NewNode(const FAXPP_Event & event)
+void FbPreviewReader::NewNode(const FAXPP_Event & event, bool closed)
 {
 	wxString name = Low(event.name);
 	Inc(name);
@@ -56,7 +58,7 @@ void FbPreviewReader::NewNode(const FAXPP_Event & event)
 		case fbsNone: {
 		} break;
 	}
-	if (event.type == SELF_CLOSING_ELEMENT_EVENT) Dec(name);
+	if (closed) Dec(name);
 }
 
 void FbPreviewReader::TxtNode(const FAXPP_Event & event)

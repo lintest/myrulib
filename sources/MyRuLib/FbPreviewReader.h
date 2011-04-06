@@ -16,7 +16,7 @@ class FbPreviewReader: public FbParsingContext
 	protected:
 		virtual bool OnProcessEvent(const FAXPP_Event & event);
 	private:
-		void NewNode(const FAXPP_Event & event);
+		void NewNode(const FAXPP_Event & event, bool closed);
 		void EndNode(const FAXPP_Event & event);
 		void TxtNode(const FAXPP_Event & event);
 		void AppendImg(const FAXPP_Event & event);
