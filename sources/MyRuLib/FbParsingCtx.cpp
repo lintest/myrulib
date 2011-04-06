@@ -81,13 +81,9 @@ bool FbParsingContext::Parse(wxInputStream & stream)
 {
     FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadCallback, &stream);
     if (err != NO_ERROR) err = FAXPP_next_event(m_parser);
-    while (err != NO_ERROR) {
-		wxLogError(wxT("Parse"));
+    while (err == NO_ERROR) {
 		const FAXPP_Event * event = FAXPP_get_current_event(m_parser);
-		if (event == NULL) break;
 		if (event->type == START_DOCUMENT_EVENT) {
-			wxLogError(wxT("Encoding"));
-			wxLogError(Str(event->encoding));
 			if (Low(event->encoding) == wxT("windows-1251")) {
 				FAXPP_set_decode(m_parser, FAXPP_cp1251_decode);
 			}

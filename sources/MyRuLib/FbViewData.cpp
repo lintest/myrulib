@@ -83,7 +83,7 @@ void FbViewData::AddImage(wxString &filename, wxString &imagedata)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
 	wxString imagename = GetImage(filename);
-	wxMemoryBuffer buffer = wxBase64Decode(imagedata);
+	wxMemoryBuffer buffer = wxBase64Decode(imagedata, wxBase64DecodeMode_SkipWS);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
 	wxImage image(stream);
 	if (image.GetWidth() <= MAX_IMAGE_WIDTH) {

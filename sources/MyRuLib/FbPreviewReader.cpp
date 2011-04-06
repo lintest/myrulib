@@ -19,7 +19,7 @@ FbPreviewReader::~FbPreviewReader()
 bool FbPreviewReader::OnProcessEvent(const FAXPP_Event & event)
 {
 	switch (event.type) {
-		case SELF_CLOSING_ELEMENT_EVENT: 
+		case SELF_CLOSING_ELEMENT_EVENT:
 		case START_ELEMENT_EVENT: {
 			NewNode(event);
 		} break;
@@ -109,6 +109,8 @@ void FbPreviewReader::EndNode(const FAXPP_Event & event)
 		} break;
 		case fbsBinary: {
 			if (m_saveimage) {
+//			    wxLogError(m_imagename);
+//			    wxLogError(m_imagedata);
 				m_data.AddImage(m_imagename, m_imagedata);
 				m_thread.SendHTML(m_data);
 			}
@@ -123,7 +125,7 @@ void FbPreviewReader::AppendImg(const FAXPP_Event & event)
 {
 	for (unsigned int i = 0; i < event.attr_count; ++i) {
 		wxString name = Low(event.attrs[i].name);
-		if (name.Right(5) == wxT(":href")) {
+		if (name == wxT("href")) {
 			wxString value = Low(event.attrs[i].value.value);
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			m_images.Add(value);
@@ -140,7 +142,10 @@ void FbPreviewReader::StartImg(const FAXPP_Event & event)
 			wxString value = Low(event.attrs[i].value.value);
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			m_saveimage = (m_images.Index(value) != wxNOT_FOUND);
-			if (m_saveimage) m_imagename = value;
+			if (m_saveimage) {
+			    m_imagename = value;
+			    m_imagedata.Empty();
+			}
 			break;
 		}
 	}

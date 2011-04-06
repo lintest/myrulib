@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Faxpp" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="LinDebug">
+				<Option output="../../build/LinDebug/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/LinDebug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="LinRelease">
+				<Option output="../../build/LinRelease/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/LinRelease/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="WinDebug">
+				<Option output="../../build/WinDebug/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/WinDebug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DCOMPILED_FROM_DSP" />
+				</Compiler>
+			</Target>
+			<Target title="WinRelease">
+				<Option output="../../build/WinRelease/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="../../build/WinRelease/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-DCOMPILED_FROM_DSP" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DH_CONFIG_H" />
+			<Add directory="../../3rdparty/faxpp/include" />
+			<Add directory="../../build/faxpp" />
+		</Compiler>
+		<Unit filename="../../3rdparty/faxpp/src/attlistdecl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/attr_states.h" />
+		<Unit filename="../../3rdparty/faxpp/src/buffer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/buffer.h" />
+		<Unit filename="../../3rdparty/faxpp/src/cdata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/char_classes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/char_classes.h" />
+		<Unit filename="../../3rdparty/faxpp/src/comment.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/conditional.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/config.h.in" />
+		<Unit filename="../../3rdparty/faxpp/src/doctype.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/element.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/element_states.h" />
+		<Unit filename="../../3rdparty/faxpp/src/elementdecl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/entitydecl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/error.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/event.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/notationdecl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/pi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/reference.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/system_public_states.h" />
+		<Unit filename="../../3rdparty/faxpp/src/token.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/tokenizer_states.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/tokenizer_states.h" />
+		<Unit filename="../../3rdparty/faxpp/src/transcode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/xml_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/xml_parser.h" />
+		<Unit filename="../../3rdparty/faxpp/src/xml_tokenizer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../3rdparty/faxpp/src/xml_tokenizer.h" />
+		<Unit filename="../../3rdparty/faxpp/src/xmldecl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
