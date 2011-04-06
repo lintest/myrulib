@@ -94,7 +94,11 @@ bool FbParsingContext::Parse(wxInputStream & stream)
 		}
     	err = FAXPP_next_event(m_parser);
     }
-    if (err != NO_ERROR) wxLogError(wxString(FAXPP_err_to_string(err), wxConvUTF8));
+	if (err != NO_ERROR) {
+		wxString text(FAXPP_err_to_string(err), wxConvUTF8);
+		unsigned int line = FAXPP_get_error_line (m_parser);		
+		wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
+	}
 	return err == NO_ERROR;
 }
 
