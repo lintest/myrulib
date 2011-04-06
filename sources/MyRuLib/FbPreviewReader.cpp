@@ -110,8 +110,6 @@ void FbPreviewReader::EndNode(const FAXPP_Event & event)
 		} break;
 		case fbsBinary: {
 			if (m_saveimage) {
-			    wxLogError(m_imagename);
-			    wxLogError(m_imagedata);
 				m_data.AddImage(m_imagename, m_imagedata);
 				m_thread.SendHTML(m_data);
 			}
