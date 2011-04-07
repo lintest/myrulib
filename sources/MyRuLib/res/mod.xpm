@@ -1,0 +1,20 @@
+/* XPM */
+static const char * mod_xpm[] = {
+"15 15 2 1",
+" 	c None",
+"X	c #000000",
+"               ",
+"               ",
+"               ",
+"   XXXXXXXXX   ",
+"   X       X   ",
+"   X       X   ",
+"   X       X   ",
+"   X       X   ",
+"   X       X   ",
+"   X       X   ",
+"   X       X   ",
+"   XXXXXXXXX   ",
+"               ",
+"               ",
+"               "};

@@ -4,6 +4,9 @@
 #include "res/nocheck.xpm"
 #include "res/checked.xpm"
 #include "res/checkout.xpm"
+#include "res/add.xpm"
+#include "res/mod.xpm"
+#include "res/del.xpm"
 
 #ifndef __WIN32__
 #include "res/home.xpm"

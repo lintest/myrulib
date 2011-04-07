@@ -14,6 +14,7 @@
 #include "controls/FbCustomCombo.h"
 #include "controls/FbToolBar.h"
 #include "controls/FbTreeView.h"
+#include "FbLogoBitmap.h"
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread
@@ -316,11 +317,11 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
 	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxBitmap(add_xpm))->Enable(false);
+	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
+	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
 	toolbar->Realize();
 	bSizerMain->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
@@ -504,11 +505,11 @@ FbParamsDlg::PanelScripts::PanelScripts(wxWindow *parent)
 {
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, ID_SCRIPT_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
+	wxToolBar * toolbar = new wxToolBar( this, ID_SCRIPT_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
 	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxNullBitmap)->Enable(false);
+	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxBitmap(add_xpm))->Enable(false);
+	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
+	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxBitmap(del_xpm))->Enable(false);
 	toolbar->Realize();
 	bSizerMain->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
