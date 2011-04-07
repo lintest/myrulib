@@ -289,7 +289,7 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
 
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
-	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
 	sizer->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxPanel * panel = new TitlePanel( m_notebook, book );
