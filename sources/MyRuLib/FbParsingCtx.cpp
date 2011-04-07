@@ -320,8 +320,8 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 
 static void TextHnd(void *userData, const XML_Char *text, int len)
 {
-	wxString text = Str(text, len);
-	if (!IsWhiteOnly(text)) FbExpatEventMaker(userData).TxtNode(text);
+	wxString str = Str(text, len);
+	if (!IsWhiteOnly(str)) FbExpatEventMaker(userData).TxtNode(str);
 }
 
 static void EndElementHnd(void *userData, const XML_Char* name)

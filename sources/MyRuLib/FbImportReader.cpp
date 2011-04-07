@@ -11,165 +11,48 @@
 #include "polarssl/md5.h"
 #include "wx/base64.h"
 
-extern "C" {
-static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char **atts)
-{
-	FbImportBook *ctx = (FbImportBook*)userData;
-	wxString node_name = ctx->CharToLower(name);
-	wxString path = ctx->Path();
-
-	if (path == wxT("/fictionbook/description/title-info")) {
-		if (node_name == wxT("author")) {
-			ctx->author = new AuthorItem;
-			ctx->authors.Add(ctx->author);
-		} else if (node_name == wxT("sequence")) {
-			SequenceItem * seqitem = new SequenceItem(atts);
-			ctx->sequences.Add(seqitem);
-		}
-	}
-
-	ctx->AppendTag(node_name);
-	ctx->text.Empty();
-}
-}
-
-extern "C" {
-static void EndElementHnd(void *userData, const XML_Char* name)
-{
-	FbImportBook *ctx = (FbImportBook*)userData;
-	wxString node_name = ctx->CharToLower(name);
-	ctx->RemoveTag(node_name);
-	wxString path = ctx->Path();
-
-	if (path == wxT("/fictionbook/description/title-info")) {
-		ctx->text.Trim(false).Trim(true);
-		if (node_name == wxT("book-title")) {
-			ctx->title = ctx->text;
-		} else if (node_name == wxT("genre")) {
-			ctx->genres += FbGenres::Char(ctx->text);
-		} else if (node_name == wxT("lang")) {
-			ctx->lang = ctx->text.Lower();
-		}
-	} else if (path == wxT("/fictionbook/description/title-info/author")) {
-		ctx->text.Trim(false).Trim(true);
-		if (node_name == wxT("first-name"))
-			ctx->author->first = ctx->text;
-		if (node_name == wxT("middle-name"))
-			ctx->author->middle = ctx->text;
-		if (node_name == wxT("last-name"))
-			ctx->author->last = ctx->text;
-	} else if (path == wxT("/fictionbook/description/publish-info/")) {
-		if (node_name == wxT("isbn"))
-			ctx->isbn = ctx->text.Trim(true).Trim(false);
-	} else if (path == wxT("/fictionbook/description")) {
-		if (node_name == wxT("title-info")) {
-			ctx->Stop();
-		}
-	}
-}
-}
-
-extern "C" {
-static void TextHnd(void *userData, const XML_Char *s, int len)
-{
-	FbImportBook *ctx = (FbImportBook*)userData;
-	wxString str = ctx->CharToString(s, len);
-	if (!ctx->IsWhiteOnly(str)) ctx->text += str;
-}
-}
-
 //-----------------------------------------------------------------------------
 //  FbImportBook
 //-----------------------------------------------------------------------------
 
 void FbImportBook::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	/*
-	Inc(name);
-	switch (Section()) {
-		case fbsDescr: {
-			if (*this > wxT("fictionbook/description/title-info/annotation")) {
-				m_annt << wxString::Format(wxT("<%s>"), name.c_str());
-			} else if (*this == wxT("fictionbook/description/title-info/coverpage/image")) {
-				AppendImg(atts);
-			} else if (*this == wxT("fictionbook/description/publish-info/isbn")) {
-				m_isbn.Empty();
-			}
-		} break;
-		case fbsBody: {
-			if (m_parsebody) m_annt << wxString::Format(wxT("<%s>"), name.c_str());
-		} break;
-		case fbsBinary: {
-			StartImg(atts);
-		} break;
-		case fbsNone: {
-		} break;
+	if (*this == wxT("/fictionbook/description/title-info")) {
+		if (name == wxT("author")) {
+			m_author = new AuthorItem;
+			m_authors.Add(m_author);
+		} else if (name == wxT("sequence")) {
+			SequenceItem * seqitem = new SequenceItem(atts);
+			m_sequences.Add(seqitem);
+		}
 	}
-	*/
+	m_text.Empty();
+	Inc(name);
 }
 
 void FbImportBook::TxtNode(const wxString &text)
 {
-	/*
-	switch (Section()) {
-		case fbsDescr: {
-			if (*this >= wxT("fictionbook/description/title-info/annotation")) {
-				m_annt << text;
-			} else if (*this == wxT("fictionbook/description/publish-info/isbn")) {
-				m_isbn << text;
-			}
-		} break;
-		case fbsBody: {
-			if (m_parsebody) m_annt << text;
-		} break;
-		case fbsBinary: {
-			if (m_saveimage) m_imagedata << text;
-		} break;
-		case fbsNone: {
-		} break;
-	}
-	*/
+	if (Section() == fbsDescr) m_text << text;
 }
 
 void FbImportBook::EndNode(const wxString &name)
 {
-	/*
-	switch (Section()) {
-		case fbsDescr: {
-			if (*this > wxT("fictionbook/description/title-info/annotation")) {
-				m_annt << wxString::Format(wxT("</%s>"), name.c_str());
-			} else if (*this == wxT("fictionbook/description")) {
-				m_parsebody = m_annt.IsEmpty();
-				if (!m_parsebody) {
-					m_data.SetText(FbViewData::ANNT, m_annt);
-					if (m_images.Count() == 0) Stop();
-				}
-				m_data.SetText(FbViewData::ISBN, m_isbn);
-				m_thread.SendHTML(m_data);
-			}
-		} break;
-		case fbsBody: {
-			if (m_parsebody) {
-				m_annt << wxString::Format(wxT("<%s>"), name.c_str());
-				if (m_annt.Length() > 1000) {
-					m_data.SetText(FbViewData::ANNT, m_annt);
-					if (m_images.Count()==0) Stop();
-					m_thread.SendHTML(m_data);
-					m_parsebody = false;
-				}
-			}
-		} break;
-		case fbsBinary: {
-			if (m_saveimage) {
-				m_data.AddImage(m_imagename, m_imagedata);
-				m_thread.SendHTML(m_data);
-			}
-		} break;
-		case fbsNone: {
-		} break;
-	}
 	Dec(name);
-	*/
+	if (*this == wxT("/fictionbook/description/title-info")) {
+		m_text.Trim(false).Trim(true);
+		if (name == wxT("book-title")) m_title = m_text; else
+		if (name == wxT("genre")) m_genres += FbGenres::Char(m_text); else
+		if (name == wxT("lang")) m_lang = m_text.Lower();
+	} else if (*this == wxT("/fictionbook/description/title-info/author")) {
+		m_text.Trim(false).Trim(true);
+		if (name == wxT("last-name"))   m_author->last   = m_text; else
+		if (name == wxT("first-name"))  m_author->first  = m_text; else 
+		if (name == wxT("middle-name")) m_author->middle = m_text; 
+	} else if (*this == wxT("/fictionbook/description/publish-info/")) {
+		if (name == wxT("isbn")) m_isbn = m_text.Trim(true).Trim(false);
+	} else if (*this == wxT("/fictionbook/description")) {
+		if (name == wxT("title-info")) Stop();
+	}
 }
 
 FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxString &filename):
@@ -182,7 +65,7 @@ FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxStr
 	m_ok(false)
 {
 	wxLogMessage(_("Import file %s"), m_filename.c_str());
-	m_ok = Load(in);
+	m_ok = Parse(in);
 }
 
 FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
@@ -209,50 +92,7 @@ FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
 		}
 	}
 	wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
-	m_ok = Load(owner->m_zip);
-}
-
-bool FbImportBook::Load(wxInputStream& stream)
-{
-	const size_t BUFSIZE = 1024;
-	unsigned char buf[BUFSIZE];
-
-	md5_context md5cont;
-	bool dm5empty = m_md5sum.IsEmpty();
-	if (dm5empty) md5_starts( &md5cont );
-
-	XML_SetElementHandler(GetParser(), StartElementHnd, EndElementHnd);
-	XML_SetCharacterDataHandler(GetParser(), TextHnd);
-
-	bool ok = true;
-	bool parse = true;
-	bool eof;
-
-	do {
-		size_t len = stream.Read(buf, BUFSIZE).LastRead();
-		eof = (len < BUFSIZE);
-
-		if (dm5empty) md5_update( &md5cont, buf, (int) len );
-
-		if (parse) {
-			if ( !XML_Parse(GetParser(), (char *)buf, len, eof) ) {
-				XML_Error error_code = XML_GetErrorCode(GetParser());
-				if ( error_code == XML_ERROR_ABORTED ) {
-					parse = false;
-				} else {
-					wxString error(XML_ErrorString(error_code), *wxConvCurrent);
-					wxLogError(_("XML parsing error: '%s' at line %d file %s"), error.c_str(), XML_GetCurrentLineNumber(GetParser()), m_message.c_str());
-					parse = false;
-					ok = false;
-					break;
-				}
-			}
-		}
-	} while (!eof);
-
-	if (dm5empty) m_md5sum = BaseThread::CalcMd5(md5cont);
-
-	return ok;
+	m_ok = Parse(owner->m_zip);
 }
 
 wxString FbImportBook::CalcMd5(wxInputStream& stream)
@@ -275,17 +115,17 @@ wxString FbImportBook::CalcMd5(wxInputStream& stream)
 
 void FbImportBook::Convert()
 {
-	for (size_t i=0; i<authors.Count(); i++)
-		authors[i].Convert(m_database);
+	for (size_t i = 0; i < m_authors.Count(); i++)
+		m_authors[i].Convert(m_database);
 
-	if (authors.Count() == 0)
-		authors.Add(new AuthorItem);
+	if (m_authors.Count() == 0)
+		m_authors.Add(new AuthorItem);
 
-	for (size_t i=0; i<sequences.Count(); i++)
-		sequences[i].Convert(m_database);
+	for (size_t i = 0; i < m_sequences.Count(); i++)
+		m_sequences[i].Convert(m_database);
 
-	if (sequences.Count() == 0)
-		sequences.Add(new SequenceItem);
+	if (m_sequences.Count() == 0)
+		m_sequences.Add(new SequenceItem);
 }
 
 int FbImportBook::FindByMD5()
@@ -331,29 +171,29 @@ bool FbImportBook::AppendBook()
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	int today = FbDateTime::Today().Code();
 
-	for (size_t i = 0; i<authors.Count(); i++) {
-		int author = authors[i].GetId();
+	for (size_t i = 0; i < m_authors.Count(); i++) {
+		int author = m_authors[i].GetId();
 		{
 			wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, m_archive);
 			stmt.Bind(3, author);
-			stmt.Bind(4, title);
-			stmt.Bind(5, genres);
+			stmt.Bind(4, m_title);
+			stmt.Bind(5, m_genres);
 			stmt.Bind(6, m_filename);
 			stmt.Bind(7, m_filepath);
 			stmt.Bind(8, (wxLongLong)m_filesize);
 			stmt.Bind(9, wxFileName(m_filename).GetExt().Lower());
-			stmt.Bind(10, lang);
+			stmt.Bind(10, m_lang);
 			stmt.Bind(11, today);
 			stmt.Bind(12, m_md5sum);
 			ok = stmt.ExecuteUpdate() && ok;
 		}
 	}
 
-    for (size_t j = 0; j<sequences.Count(); j++) {
-		SequenceItem &sequence = sequences[j];
+    for (size_t i = 0; i < m_sequences.Count(); i++) {
+		SequenceItem &sequence = m_sequences[i];
         wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
         wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
         stmt.Bind(1, id_book);
@@ -363,7 +203,7 @@ bool FbImportBook::AppendBook()
     }
 
 	{
-		wxString content = title;
+		wxString content = m_title;
 		MakeLower(content);
 		wxString sql = wxT("INSERT INTO fts_book(content,docid) VALUES(?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -373,12 +213,12 @@ bool FbImportBook::AppendBook()
 	}
 
 	if (m_database.TableExists(wxT("genres"))) {
-		size_t count = genres.Length() / 2;
+		size_t count = m_genres.Length() / 2;
 		for (size_t i = 0; i < count; i++) {
 			wxString sql = wxT("INSERT INTO genres(id_book, id_genre) VALUES(?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
-			stmt.Bind(2, genres.Mid(i*2, 2));
+			stmt.Bind(2, m_genres.Mid(i*2, 2));
 			ok = stmt.ExecuteUpdate() && ok;
 		}
 	}

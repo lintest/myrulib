@@ -10,27 +10,17 @@ class FbImportThread;
 
 class FbImpotrZip;
 
-class FbImportBook: public ParsingContext
+class FbImportBook: public FbParsingContext
 {
 	public:
 		FbImportBook(FbImportThread * owner, wxInputStream &in, const wxString &filename);
 		FbImportBook(FbImpotrZip * owner, wxZipEntry *entry);
-		bool Load(wxInputStream& stream);
 		bool Save();
 		bool IsOk() { return m_ok; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
 		virtual void TxtNode(const wxString &text);
 		virtual void EndNode(const wxString &name);
-	public:
-		wxString title;
-		wxString isbn;
-		wxString lang;
-		AuthorArray authors;
-		SequenceArray sequences;
-		wxString genres;
-		AuthorItem * author;
-		wxString text;
 	private:
 		static wxString CalcMd5(wxInputStream& stream);
 		int FindByMD5();
@@ -38,6 +28,15 @@ class FbImportBook: public ParsingContext
 		bool AppendBook();
 		bool AppendFile(int id_book);
 		void Convert();
+	private:
+		wxString m_title;
+		wxString m_isbn;
+		wxString m_lang;
+		AuthorArray m_authors;
+		SequenceArray m_sequences;
+		wxString m_genres;
+		AuthorItem * m_author;
+		wxString m_text;
 	private:
 		FbDatabase &m_database;
 		wxString m_md5sum;
