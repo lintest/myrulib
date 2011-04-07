@@ -392,6 +392,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbImportReader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbImportThread.cpp"
 				>
 			</File>
@@ -832,6 +836,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbImportReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbImportThread.h"
 				>
 			</File>
@@ -940,11 +948,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbToolBar.h"
+				RelativePath=".\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbToolBar.h"
+				RelativePath=".\controls\FbToolBar.h"
 				>
 			</File>
 			<File

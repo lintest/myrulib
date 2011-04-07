@@ -237,6 +237,7 @@
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenrTree.cpp</sources>
+		<sources>sources/MyRuLib/FbImportReader.cpp</sources>
 		<sources>sources/MyRuLib/FbImportThread.cpp</sources>
 		<sources>sources/MyRuLib/FbInternetBook.cpp</sources>
 		<sources>sources/MyRuLib/FbLocale.cpp</sources>
