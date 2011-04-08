@@ -319,7 +319,6 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
 	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxBitmap(add_xpm))->Enable(false);
 	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
 	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
@@ -507,7 +506,6 @@ FbParamsDlg::PanelScripts::PanelScripts(wxWindow *parent)
 	wxBoxSizer* bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxToolBar * toolbar = new wxToolBar( this, ID_SCRIPT_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
 	toolbar->AddTool( ID_APPEND_SCRIPT, _("Append"), wxBitmap(add_xpm))->Enable(false);
 	toolbar->AddTool( ID_MODIFY_SCRIPT, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
 	toolbar->AddTool( ID_DELETE_SCRIPT, _("Delete"), wxBitmap(del_xpm))->Enable(false);
