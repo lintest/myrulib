@@ -1,6 +1,7 @@
 #include <wx/wx.h>
 #include <wx/settings.h>
 #include <wx/spinctrl.h>
+#include <wx/listbook.h>
 #include "FbParams.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
@@ -551,7 +552,7 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
+	wxListbook * notebook = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_DEFAULT );
 	notebook->AddPage( new PanelInterface(notebook), _("General"), true );
 	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
 	notebook->AddPage( new PanelTypes(notebook), _("File types"), false );
