@@ -57,9 +57,11 @@ function convert_genr($sqlite_db, $min)
 	if(empty($buffer{0})) continue;
 	$fields = explode(chr(9), $buffer);
 	$book = $fields[0];
-	$genre = GenreCode($fields[1]);
+	$code = Trim($fields[1]);
+	$code = Trim($code,"\n\r");
+	$genre = GenreCode($code);
 	if (!empty($genre{0})) {
-		echo "Genr: ".$book." - ".$fields[1]."\n";
+		echo "Genr: ".$book." - ".$genre." - ".$code."\n";
 		$sql = "INSERT INTO genres(id_book, id_genre) VALUES(?,?)";
 		$insert = $sqlite_db->prepare($sql);
 		$err = $insert->execute(array($book, $genre));
@@ -139,6 +141,7 @@ function convert_info($sqlite_db, $min)
 	$fields = explode(chr(9), $buffer);
 	$code = $fields[0];
 	$text = utf(trim($fields[1]));
+	echo "Info: ".$code." - ".substr($text, 0, 50)."\n";
 	$sql = "UPDATE books SET description=? where id=?";
 	$insert = $sqlite_db->prepare($sql);
 	$insert->execute(array($text, $code));
@@ -215,7 +218,6 @@ $sqlitefile = 'myrulib.db';
 
 $date = date('Ymd');
 echo "Today: ".$date."\n";
-include('settings.php');
 system("rm $sqlitefile");
 $sqlite_db = new PDO('sqlite:'.$sqlitefile);
 FullImport($sqlitefile, $date);
