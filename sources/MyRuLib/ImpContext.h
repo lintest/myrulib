@@ -6,6 +6,7 @@
 #include <wx/thread.h>
 #include "ParseCtx.h"
 #include "FbDatabase.h"
+#include "FbStringHash.h"
 
 class AuthorItem
 {
@@ -33,7 +34,7 @@ class SequenceItem
 {
 	public:
 		SequenceItem(): m_id(0), m_number(0) {};
-		SequenceItem(const XML_Char **atts);
+		SequenceItem(const FbStringHash &atts);
 	public:
 		int Convert(FbDatabase & database);
 		int GetId() { return m_id; }

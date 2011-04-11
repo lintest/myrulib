@@ -131,14 +131,14 @@ int SequenceItem::Convert(FbDatabase & database)
 	return m_id;
 }
 
-SequenceItem::SequenceItem(const XML_Char **atts)
+SequenceItem::SequenceItem(const FbStringHash &atts)
 	: m_id(0), m_number(0)
 {
-	const XML_Char **a = atts;
-	while (*a) {
-		wxString attr = ParsingContext::CharToLower(a[0]).Trim(false).Trim(true); a++;
-		wxString text = ParsingContext::CharToString(a[0]).Trim(false).Trim(true); a++;
-		if (attr == wxT("name")) m_name = text;
-		else if (attr == wxT("number")) text.ToLong(&m_number);
+    FbStringHash::const_iterator it;
+    for( it = atts.begin(); it != atts.end(); ++it ) {
+		wxString attr = it->first;
+		wxString text = it->second;
+		if (attr == wxT("name")) m_name = text; else 
+		if (attr == wxT("number")) text.ToLong(&m_number);
 	}
 }

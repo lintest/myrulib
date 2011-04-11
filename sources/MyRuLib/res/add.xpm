@@ -1,8 +1,9 @@
 /* XPM */
 static const char * add_xpm[] = {
-"15 15 2 1",
-" 	c None",
-"X	c #000000",
+"15 15 3 1",
+"X c Black",
+"0 c White",
+"  c None",
 "               ",
 "     XXXXX     ",
 "     X   X     ",

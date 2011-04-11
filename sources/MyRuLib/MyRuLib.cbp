@@ -159,6 +159,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-DFB_PARSE_FAXPP" />
 			<Add directory="../../3rdparty/wxbzipstream" />
 			<Add directory="../../3rdparty/wxsqlite3/include" />
 			<Add directory="../../3rdparty/faxpp/include" />
@@ -317,6 +318,7 @@
 		<Unit filename="FbServiceDlg.h" />
 		<Unit filename="FbServiceThread.cpp" />
 		<Unit filename="FbServiceThread.h" />
+		<Unit filename="FbStringHash.h" />
 		<Unit filename="FbThread.cpp" />
 		<Unit filename="FbThread.h" />
 		<Unit filename="FbTitleDlg.cpp" />

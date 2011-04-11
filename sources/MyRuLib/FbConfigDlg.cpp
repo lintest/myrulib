@@ -7,6 +7,7 @@
 #include "FbCollection.h"
 #include "FbDataPath.h"
 #include "controls/FbCustomCombo.h"
+#include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
@@ -56,11 +57,10 @@ FbConfigDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	wxBoxSizer * bSizer;
 	bSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_NOICONS );
-	toolbar->SetToolBitmapSize(wxSize(0,0));
-	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxNullBitmap)->Enable(false);
-	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxNullBitmap)->Enable(false);
+	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
+	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxBitmap(add_xpm))->Enable(false);
+	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
+	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
 	toolbar->Realize();
 	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
 
@@ -199,7 +199,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
 	notebook->AddPage( new PanelMain(notebook), _("General"), true );
 	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
 	notebook->AddPage( new PanelTypes(notebook), _("File types"), false );

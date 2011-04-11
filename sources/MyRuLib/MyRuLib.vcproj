@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\faxpp&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -66,9 +66,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw29ud_adv.lib wxmsw29ud_aui.lib wxmsw29ud_html.lib wxmsw29ud_core.lib wxbase29ud_net.lib wxbase29ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
+				AdditionalDependencies="wxmsw28ud_adv.lib wxmsw28ud_aui.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud_net.lib wxbase28ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
+				IgnoreDefaultLibraryNames="libcmt"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -145,9 +146,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw29u_adv.lib wxmsw29u_aui.lib wxmsw29u_html.lib wxmsw29u_core.lib wxbase29u_net.lib wxbase29u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
+				AdditionalDependencies="wxmsw28u_adv.lib wxmsw28u_aui.lib wxmsw28u_html.lib wxmsw28u_core.lib wxbase28u_net.lib wxbase28u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
+				IgnoreDefaultLibraryNames="libcmt"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -390,6 +392,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbImportReader.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FbImportThread.cpp"
 				>
 			</File>
@@ -446,15 +452,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbParsingCtx.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FbPreviewReader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FbPreviewReader.h"
 				>
 			</File>
 			<File
@@ -838,6 +836,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FbImportReader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FbImportThread.h"
 				>
 			</File>
@@ -891,6 +893,14 @@
 			</File>
 			<File
 				RelativePath=".\FbParamsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbParsingCtx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FbPreviewReader.h"
 				>
 			</File>
 			<File

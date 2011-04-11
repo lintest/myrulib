@@ -11,21 +11,18 @@ class FbViewData;
 class FbPreviewReader: public FbParsingContext
 {
 	public:
-		FbPreviewReader(FbViewThread & thread, FbViewData & data);
-		virtual ~FbPreviewReader();
+		FbPreviewReader(FbViewThread & thread, FbViewData & data)
+			: m_thread(thread), m_data(data) {}
 	protected:
-		virtual bool OnProcessEvent(const FAXPP_Event & event);
+		virtual void NewNode(const wxString &name, const FbStringHash &atts);
+		virtual void TxtNode(const wxString &text);
+		virtual void EndNode(const wxString &name);
 	private:
-		void NewNode(const FAXPP_Event & event);
-		void EndNode(const FAXPP_Event & event);
-		void TxtNode(const FAXPP_Event & event);
-		void AppendImg(const FAXPP_Event & event);
-		void StartImg(const FAXPP_Event & event);
-		void Stop() { m_stop = true; }
+		void AppendImg(const FbStringHash &atts);
+		void StartImg(const FbStringHash &atts);
 	private:
 		FbViewThread & m_thread;
 		FbViewData & m_data;
-		bool m_stop;
 	private:
 		wxString m_isbn;
 		wxString m_annt;

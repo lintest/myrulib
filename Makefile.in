@@ -106,10 +106,10 @@ ZIPSCAN_OBJECTS =  \
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
-MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+MYRULIB_CFLAGS = -DFB_PARSE_FAXPP -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+MYRULIB_CXXFLAGS = -DFB_PARSE_FAXPP -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
@@ -173,6 +173,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbGenres.o \
 	myrulib_FbGenreThread.o \
 	myrulib_FbGenrTree.o \
+	myrulib_FbImportReader.o \
 	myrulib_FbImportThread.o \
 	myrulib_FbInternetBook.o \
 	myrulib_FbLocale.o \
@@ -185,8 +186,8 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbMenu.o \
 	myrulib_FbParams.o \
 	myrulib_FbParamsDlg.o \
-	myrulib_FbPreviewReader.o \
 	myrulib_FbParsingCtx.o \
+	myrulib_FbPreviewReader.o \
 	myrulib_FbPreviewThread.o \
 	myrulib_FbPreviewWindow.o \
 	myrulib_FbProgressDlg.o \
@@ -677,6 +678,9 @@ myrulib_FbGenreThread.o: $(srcdir)/sources/MyRuLib/FbGenreThread.cpp $(MYRULIB_O
 myrulib_FbGenrTree.o: $(srcdir)/sources/MyRuLib/FbGenrTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbGenrTree.cpp
 
+myrulib_FbImportReader.o: $(srcdir)/sources/MyRuLib/FbImportReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbImportReader.cpp
+
 myrulib_FbImportThread.o: $(srcdir)/sources/MyRuLib/FbImportThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbImportThread.cpp
 
@@ -713,11 +717,11 @@ myrulib_FbParams.o: $(srcdir)/sources/MyRuLib/FbParams.cpp $(MYRULIB_ODEP)
 myrulib_FbParamsDlg.o: $(srcdir)/sources/MyRuLib/FbParamsDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbParamsDlg.cpp
 
-myrulib_FbPreviewReader.o: $(srcdir)/sources/MyRuLib/FbPreviewReader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbPreviewReader.cpp
-
 myrulib_FbParsingCtx.o: $(srcdir)/sources/MyRuLib/FbParsingCtx.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbParsingCtx.cpp
+
+myrulib_FbPreviewReader.o: $(srcdir)/sources/MyRuLib/FbPreviewReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbPreviewReader.cpp
 
 myrulib_FbPreviewThread.o: $(srcdir)/sources/MyRuLib/FbPreviewThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbPreviewThread.cpp
@@ -789,7 +793,7 @@ myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
 myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/faxpp/include --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
+	$(WX_RESCOMP) -i$< -o$@  --define FB_PARSE_FAXPP --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/faxpp/include --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
 
 
 # Include dependency info, if present:

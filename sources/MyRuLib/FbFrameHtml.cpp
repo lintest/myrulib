@@ -13,6 +13,7 @@
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include "FbLogoBitmap.h"
 #include "res/modify.xpm"
 #include "res/delete.xpm"
 
@@ -93,10 +94,10 @@ void FbFrameHtml::CreateControls()
 	m_Caption.Create( panel, ID_HTML_CAPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerSubject->Add( &m_Caption, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxTB_NOICONS|wxTB_TEXT );
+	m_ToolBar.Create( panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORZ_TEXT|wxTB_NODIVIDER );
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar.AddTool( ID_HTML_SUBMIT, _("Append"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
-	m_ToolBar.AddTool( ID_HTML_MODIFY, _("Modify"), wxNullBitmap, wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString );
+	m_ToolBar.AddTool( ID_HTML_SUBMIT, _("Append"), wxBitmap(add_xpm) );
+	m_ToolBar.AddTool( ID_HTML_MODIFY, _("Modify"), wxBitmap(mod_xpm) );
 	m_ToolBar.EnableTool(ID_HTML_MODIFY, false);
 	m_ToolBar.Realize();
 

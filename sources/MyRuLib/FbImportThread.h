@@ -5,7 +5,6 @@
 #include <wx/wxsqlite3.h>
 #include <wx/zipstrm.h>
 #include "BaseThread.h"
-#include "ImpContext.h"
 #include "FbDatabase.h"
 #include "FbCounter.h"
 
@@ -55,41 +54,6 @@ class FbImpotrZip
 		friend class FbImportBook;
 		bool m_ok;
 		int m_id;
-};
-
-class FbImportBook: public ParsingContext
-{
-	public:
-		FbImportBook(FbImportThread *owner, wxInputStream &in, const wxString &filename);
-		FbImportBook(FbImpotrZip *owner, wxZipEntry *entry);
-		bool Load(wxInputStream& stream);
-		bool Save();
-		bool IsOk() { return m_ok; };
-	public:
-		wxString title;
-		wxString isbn;
-		wxString lang;
-		AuthorArray authors;
-		SequenceArray sequences;
-		wxString genres;
-		AuthorItem * author;
-		wxString text;
-	private:
-		static wxString CalcMd5(wxInputStream& stream);
-		int FindByMD5();
-		int FindBySize();
-		bool AppendBook();
-		bool AppendFile(int id_book);
-		void Convert();
-	private:
-		FbDatabase &m_database;
-		wxString m_md5sum;
-		wxString m_filename;
-		wxString m_filepath;
-		wxString m_message;
-		wxFileOffset m_filesize;
-		int m_archive;
-		bool m_ok;
 };
 
 class FbZipImportThread : public FbImportThread

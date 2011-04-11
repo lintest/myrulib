@@ -2,7 +2,6 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
 		<Project filename="Expat/Expat.cbp" />
-		<Project filename="Faxpp/Faxpp.cbp" />
 		<Project filename="SQLite3/SQLite3.cbp" />
 		<Project filename="WxBZipStream/WxBZipStream.cbp" />
 		<Project filename="WxSQLite3/WxSQLite3.cbp" />
