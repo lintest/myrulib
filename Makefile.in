@@ -495,8 +495,8 @@ zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
 zipscan_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c
 	$(CCC) -c -o $@ $(ZIPSCAN_CFLAGS) $(srcdir)/sources/MyRuLib/polarssl/md5.c
 
-bin2c_bin2c.o: $(srcdir)/sources/Bin2c/bin2c.c
-	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/sources/Bin2c/bin2c.c
+bin2c_bin2c.o: $(srcdir)/3rdparty/bin2c/bin2c.c
+	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/3rdparty/bin2c/bin2c.c
 
 myrulib_FbChoiceFormat.o: $(srcdir)/sources/MyRuLib/controls/FbChoiceFormat.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbChoiceFormat.cpp

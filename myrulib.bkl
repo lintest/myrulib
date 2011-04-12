@@ -111,7 +111,7 @@
 	</define-tag>
 
 	<exe id="bin2c">
-		<sources>sources/Bin2c/bin2c.c</sources>
+		<sources>3rdparty/bin2c/bin2c.c</sources>
 	</exe>
 		
 	<define-tag name="bin2c" rules="action">
