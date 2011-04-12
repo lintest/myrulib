@@ -84,7 +84,7 @@ function convert_book($sqlite_db, $min)
 	$seqn  = $fields[4];
 	$numb  = $fields[5];
 	$year  = $fields[6];
-	$arch  = utf(trim(str_replace("\\","/",$fields[8]))).utf(trim($fields[9]))."zip";
+	$arch  = utf(trim(str_replace("\\","/",$fields[8]))).utf(trim($fields[9])).".zip";
 	$file  = utf(trim($fields[9]));
 	$type  = substr(strrchr($file, '.'), 1);
 	$size  = $fields[10];
