@@ -26,7 +26,7 @@ function convert_auth($sqlite_db, $min)
 
   $handle = fopen("db/author", "r");
   while (!feof($handle)) {
-	$buffer = fgets($handle, 4096);
+	$buffer = Trim(fgets($handle, 4096),"\n\r");
 	if(empty($buffer{0})) continue;
 	$fields = explode(chr(9), $buffer);
 	$id = $fields[0];
@@ -53,7 +53,7 @@ function convert_seqn($sqlite_db, $min)
 
   $handle = fopen("db/series", "r");
   while (!feof($handle)) {
-	$buffer = fgets($handle, 4096);
+	$buffer = Trim(fgets($handle, 4096),"\n\r");
 	if(empty($buffer{0})) continue;
 	$fields = explode(chr(9), $buffer);
 	$code = $fields[0];
@@ -74,7 +74,7 @@ function convert_book($sqlite_db, $min)
 
   $handle = fopen("db/book", "r");
   while (!feof($handle)) {
-	$buffer = fgets($handle, 4096);
+	$buffer = Trim(fgets($handle, 4096),"\n\r");
 	if(empty($buffer{0})) continue;
 	$fields = explode(chr(9), $buffer);
 	$book  = $fields[0];
@@ -90,7 +90,8 @@ function convert_book($sqlite_db, $min)
 	$size  = $fields[10];
 	$arsz  = $fields[11];
 	$date  = $fields[12];
-	$crc32 = $fields[13];
+	$crc32 = $fields[13]; 
+	if ($date > 2000000) $date = $date - 20000000; 
 	
 	echo "Book: ".$book." - ".$type." - ".$title."\n";
 
@@ -124,7 +125,7 @@ function convert_genr($sqlite_db, $min)
 	if (feof($handle)) {
 		$book = 0;
 	} else {
-		$buffer = fgets($handle, 4096);
+		$buffer = Trim(fgets($handle, 4096),"\n\r");
 		if(empty($buffer{0})) continue;
 		$fields = explode(chr(9), $buffer);
 		$book = $fields[0];
@@ -164,7 +165,7 @@ function convert_info($sqlite_db, $min)
 	if (feof($handle)) {
 		$book = 0;
 	} else {
-		$buffer = fgets($handle, 4096);
+		$buffer = Trim(fgets($handle, 4096),"\n\r");
 		if(empty($buffer{0})) continue;
 		$fields = explode(chr(9), $buffer);
 		$book = $fields[0];
@@ -189,29 +190,12 @@ function convert_info($sqlite_db, $min)
   $sqlite_db->query("commit;");
 }
 
-function convert_dates($mysql_db, $sqlite_db, $min)
+function convert_date($sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
-
   $sqlite_db->query("DELETE FROM dates");
-
-  $sqltest = "
-    SELECT DATE_FORMAT(Time,'%y%m%d') as Time, MAX(BookId) as Max, MIN(BookId) as Min, COUNT(BookId) AS Num
-    FROM libbook 
-	WHERE Deleted<>1 AND libbook.BookId>$min
-	GROUP BY DATE_FORMAT(libbook.Time,'%y%m%d')
-  ";
-
-  $query = $mysql_db->query($sqltest);
-  while ($row = $query->fetch_array()) {
-	echo "Date: ".$row['Time']." - ".$row['Max']." - ".$row['Min']."\n";
-    $sql = "INSERT INTO dates (id, lib_max, lib_min, lib_num) VALUES(?,?,?,?)";
-    $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['Time'], $row['Max'], $row['Min'], $row['Num']));
-    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $insert->closeCursor();
-  }
+  $sql = "INSERT INTO dates (id, lib_min, lib_max, lib_num) SELECT created, MIN(id), MAX(id), COUNT(DISTINCT id) FROM books GROUP BY created";
+  $insert = $sqlite_db->query($sql);
   $sqlite_db->query("commit;");
 }  
 
@@ -239,6 +223,7 @@ function FullImport($file, $date)
   convert_auth($sqlite_db, 0);
   convert_seqn($sqlite_db, 0);
   convert_book($sqlite_db, 0);
+  convert_date($sqlite_db, 0);
   convert_genr($sqlite_db, 0);
   convert_info($sqlite_db, 0);
   create_indexes($sqlite_db);
