@@ -7,8 +7,10 @@
 #include <wx/textctrl.h>
 #include "controls/ProgressBar.h"
 #include "controls/LimitedTextCtrl.h"
-#include "FbFrameAuth.h"
 #include "FbLogoBitmap.h"
+#include "FbBookEvent.h"
+#include "FbMasterInfo.h"
+#include "FbWindow.h"
 
 class FbMainFrame: public FbAuiMDIParentFrame
 {

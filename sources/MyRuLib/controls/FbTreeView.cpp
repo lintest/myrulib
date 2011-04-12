@@ -6,7 +6,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/log.h>
 
-#include "../FbLogoBitmap.h"
+#include "FbLogoBitmap.h"
 
 class FbTreeViewItem;
 

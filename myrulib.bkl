@@ -224,16 +224,16 @@
 		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
 		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameAuth.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameBase.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameDate.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameDown.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameFind.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameFldr.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameInfo.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameHtml.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameGenr.cpp</sources>
-		<sources>sources/MyRuLib/FbFrameSeqn.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameAuth.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameBase.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameDate.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameDown.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameFind.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameFldr.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameInfo.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameHtml.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameGenr.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameSeqn.cpp</sources>
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenrTree.cpp</sources>

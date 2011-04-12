@@ -1,5 +1,5 @@
 #include "FbToolBar.h"
-#include "../FbParams.h"
+#include "FbParams.h"
 
 FbToolBarImages::FbToolBarImages(wxToolBar & toolbar, const wxString &sample)
 	: m_toolbar(toolbar)

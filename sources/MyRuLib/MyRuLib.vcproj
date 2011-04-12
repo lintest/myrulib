@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -125,7 +125,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\faxpp&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\faxpp&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -336,43 +336,43 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameAuth.cpp"
+				RelativePath=".\frames\FbFrameAuth.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameBase.cpp"
+				RelativePath=".\frames\FbFrameBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDate.cpp"
+				RelativePath=".\frames\FbFrameDate.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDown.cpp"
+				RelativePath=".\frames\FbFrameDown.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameFind.cpp"
+				RelativePath=".\frames\FbFrameFind.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameFldr.cpp"
+				RelativePath=".\frames\FbFrameFldr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameGenr.cpp"
+				RelativePath=".\frames\FbFrameGenr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameHtml.cpp"
+				RelativePath=".\frames\FbFrameHtml.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameInfo.cpp"
+				RelativePath=".\frames\FbFrameInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameSeqn.cpp"
+				RelativePath=".\frames\FbFrameSeqn.cpp"
 				>
 			</File>
 			<File
@@ -780,43 +780,43 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameAuth.h"
+				RelativePath=".\frames\FbFrameAuth.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameBase.h"
+				RelativePath=".\frames\FbFrameBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDate.h"
+				RelativePath=".\frames\FbFrameDate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameDown.h"
+				RelativePath=".\frames\FbFrameDown.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameFind.h"
+				RelativePath=".\frames\FbFrameFind.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameFldr.h"
+				RelativePath=".\frames\FbFrameFldr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameGenr.h"
+				RelativePath=".\frames\FbFrameGenr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameHtml.h"
+				RelativePath=".\frames\FbFrameHtml.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameInfo.h"
+				RelativePath=".\frames\FbFrameInfo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFrameSeqn.h"
+				RelativePath=".\frames\FbFrameSeqn.h"
 				>
 			</File>
 			<File
@@ -948,11 +948,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FbToolBar.h"
+				RelativePath=".\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbToolBar.h"
+				RelativePath=".\FbToolBar.h"
 				>
 			</File>
 			<File

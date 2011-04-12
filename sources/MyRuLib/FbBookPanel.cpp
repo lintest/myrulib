@@ -1,6 +1,6 @@
 #include "FbBookPanel.h"
 #include "FbConst.h"
-#include "FbFrameHtml.h"
+#include "frames/FbFrameHtml.h"
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
 #include "FbDownloader.h"
