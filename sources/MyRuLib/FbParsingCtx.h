@@ -2,14 +2,16 @@
 #define __FBPARSINGCTX_H__
 
 #include <wx/wx.h>
+#include "polarssl/md5.h"
 #include "FbStringHash.h"
 
 class FbParsingContextBase: public wxObject
 {
 	public:
-		FbParsingContextBase() : m_section(fbsNone) {}
+		FbParsingContextBase() : m_section(fbsNone), m_md5calc(false) {}
 		virtual ~FbParsingContextBase() {}
-		bool Parse(wxInputStream & stream) { return DoParse(stream); }
+		bool Parse(wxInputStream & stream, bool md5 = false);
+		wxString GetMd5() const { return m_md5sum; };
 	protected:
 		virtual bool DoParse(wxInputStream & stream) = 0;
 		virtual void NewNode(const wxString &name, const FbStringHash &atts) = 0;
@@ -30,6 +32,10 @@ class FbParsingContextBase: public wxObject
 		bool operator > (const wxString & tags);
 		FbSectionEnum Section() { return m_section; }
 		wxString Path() const;
+	protected:
+		md5_context m_md5cont;
+		wxString m_md5sum;
+		bool m_md5calc;
 	private:
 		FbSectionEnum m_section;
 		wxArrayString m_tags;

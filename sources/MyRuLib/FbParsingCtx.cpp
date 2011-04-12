@@ -5,6 +5,25 @@
 //  FbParsingContextBase
 //-----------------------------------------------------------------------------
 
+bool FbParsingContextBase::Parse(wxInputStream & stream, bool md5calc)
+{ 
+	m_md5calc = md5calc;
+	if (m_md5calc) md5_starts( &m_md5cont );
+
+	bool ok = DoParse(stream); 
+
+	if (ok && m_md5calc) {
+		m_md5sum.Empty();
+		unsigned char output[16];
+		md5_finish( &m_md5cont, output );
+		for (size_t i = 0; i < 16; i++) {
+			m_md5sum << wxString::Format(wxT("%02x"), output[i]);
+		}
+	}
+
+	return ok;
+}
+
 void FbParsingContextBase::Inc(const wxString &tag)
 {
 	if (m_tags.Count() == 1) {
@@ -354,27 +373,28 @@ void FbParsingContextExpat::Stop()
 bool FbParsingContextExpat::DoParse(wxInputStream& stream)
 {
 	const size_t BUFSIZE = 1024;
-	char buf[BUFSIZE];
-	bool done;
+	unsigned char buf[BUFSIZE];
 
 	bool ok = true;
+	bool parse = true;
+	bool eof;
+
 	do {
 		size_t len = stream.Read(buf, BUFSIZE).LastRead();
-		done = (len < BUFSIZE);
+		if (m_md5calc) md5_update( &m_md5cont, buf, (int) len );
+		eof = (len < BUFSIZE);
 
-		if ( !XML_Parse(m_parser, buf, len, done) ) {
+		if ( parse && !XML_Parse(m_parser, (char*)buf, len, eof) ) {
 			XML_Error error_code = XML_GetErrorCode(m_parser);
-			if ( error_code == XML_ERROR_ABORTED ) {
-				done = true;
-			} else {
+			if ( error_code != XML_ERROR_ABORTED ) {
 				wxString error(XML_ErrorString(error_code), *wxConvCurrent);
 				XML_Size line = XML_GetCurrentLineNumber(m_parser);
 				wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), line);
 				ok = false;
-				break;
 			}
+			parse = false;
 		}
-	} while (!done);
+	} while (!eof && (parse || m_md5calc));
 
 	return ok;
 }

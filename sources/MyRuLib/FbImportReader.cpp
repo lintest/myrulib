@@ -65,7 +65,7 @@ FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxStr
 	m_ok(false)
 {
 	wxLogMessage(_("Import file %s"), m_filename.c_str());
-	m_ok = Parse(in);
+	m_ok = Parse(in, true);
 }
 
 FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
@@ -92,7 +92,7 @@ FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
 		}
 	}
 	wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
-	m_ok = Parse(owner->m_zip);
+	m_ok = Parse(owner->m_zip, true);
 }
 
 wxString FbImportBook::CalcMd5(wxInputStream& stream)
