@@ -44,8 +44,8 @@ WX_RESCOMP = @WX_RESCOMP@
 ### Variables: ###
 
 DESTDIR = 
-EXPAT_STATIC_CFLAGS = -DHAVE_EXPAT_CONFIG_H -I$(srcdir)/sources/Expat \
-	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+EXPAT_STATIC_CFLAGS = -DXML_STATIC -DHAVE_EXPAT_CONFIG_H -I./expat \
+	-I$(srcdir)/3rdparty/expat $(CPPFLAGS) $(CFLAGS)
 EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmlparse.o \
 	expat_static_xmlrole.o \
@@ -381,20 +381,20 @@ install_myrulib: myrulib$(EXEEXT)
 uninstall_myrulib: 
 	rm -f $(DESTDIR)$(bindir)/myrulib$(EXEEXT)
 
-expat_static_xmlparse.o: $(srcdir)/sources/Expat/xmlparse.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmlparse.c
+expat_static_xmlparse.o: $(srcdir)/3rdparty/expat/xmlparse.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/3rdparty/expat/xmlparse.c
 
-expat_static_xmlrole.o: $(srcdir)/sources/Expat/xmlrole.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmlrole.c
+expat_static_xmlrole.o: $(srcdir)/3rdparty/expat/xmlrole.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/3rdparty/expat/xmlrole.c
 
-expat_static_xmltok.o: $(srcdir)/sources/Expat/xmltok.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok.c
+expat_static_xmltok.o: $(srcdir)/3rdparty/expat/xmltok.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/3rdparty/expat/xmltok.c
 
-expat_static_xmltok_impl.o: $(srcdir)/sources/Expat/xmltok_impl.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok_impl.c
+expat_static_xmltok_impl.o: $(srcdir)/3rdparty/expat/xmltok_impl.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/3rdparty/expat/xmltok_impl.c
 
-expat_static_xmltok_ns.o: $(srcdir)/sources/Expat/xmltok_ns.c
-	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/sources/Expat/xmltok_ns.c
+expat_static_xmltok_ns.o: $(srcdir)/3rdparty/expat/xmltok_ns.c
+	$(CCC) -c -o $@ $(EXPAT_STATIC_CFLAGS) $(srcdir)/3rdparty/expat/xmltok_ns.c
 
 faxpp_static_attlistdecl.o: $(srcdir)/3rdparty/faxpp/src/attlistdecl.c
 	$(CCC) -c -o $@ $(FAXPP_STATIC_CFLAGS) $(srcdir)/3rdparty/faxpp/src/attlistdecl.c

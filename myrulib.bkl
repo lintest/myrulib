@@ -10,14 +10,16 @@
 	<include file="./3rdparty/bakefile/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
-	<lib id="expat_static" template="wx-lib" cond="USE_EXPAT=='yes'">
+	<lib id="expat_static" cond="USE_EXPAT=='yes'">
+		<define>XML_STATIC</define>
 		<define>HAVE_EXPAT_CONFIG_H</define>
-		<include>$(SRCDIR)/sources/Expat</include>
-		<sources>sources/Expat/xmlparse.c</sources>
-		<sources>sources/Expat/xmlrole.c</sources>
-		<sources>sources/Expat/xmltok.c</sources>
-		<sources>sources/Expat/xmltok_impl.c</sources>
-		<sources>sources/Expat/xmltok_ns.c</sources>
+		<include>$(BUILDDIR)/expat</include>
+		<include>$(SRCDIR)/3rdparty/expat</include>
+		<sources>3rdparty/expat/xmlparse.c</sources>
+		<sources>3rdparty/expat/xmlrole.c</sources>
+		<sources>3rdparty/expat/xmltok.c</sources>
+		<sources>3rdparty/expat/xmltok_impl.c</sources>
+		<sources>3rdparty/expat/xmltok_ns.c</sources>
 	</lib>
 
 	<lib id="faxpp_static">
