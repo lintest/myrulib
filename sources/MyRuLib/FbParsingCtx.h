@@ -68,6 +68,7 @@ class FbParsingContextFaxpp: public FbParsingContextBase
 	private:
 		FAXPP_Parser * m_parser;
 		bool m_stop;
+		friend class FbFaxppStreamReader;
 };
 
 typedef FbParsingContextFaxpp FbParsingContext;

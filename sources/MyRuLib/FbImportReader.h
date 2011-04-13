@@ -39,7 +39,6 @@ class FbImportBook: public FbParsingContext
 		wxString m_text;
 	private:
 		FbDatabase &m_database;
-		wxString m_md5sum;
 		wxString m_filename;
 		wxString m_filepath;
 		wxString m_message;

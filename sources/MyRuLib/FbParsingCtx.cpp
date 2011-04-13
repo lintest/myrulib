@@ -146,9 +146,27 @@ unsigned int FAXPP_cp1251_decode(const void *buffer, const void *buffer_end, Cha
 	return 1;
 }
 
+class FbFaxppStreamReader {
+	public:
+		FbFaxppStreamReader(wxInputStream & stream, FbParsingContextFaxpp & context)
+			: m_stream(stream), m_md5cont(context.m_md5cont), m_md5calc(context.m_md5calc) {}
+		unsigned int Read(void * buffer, unsigned int length);
+	private:
+		wxInputStream & m_stream;
+		md5_context & m_md5cont;
+		bool m_md5calc;
+};
+
+unsigned int FbFaxppStreamReader::Read(void * buffer, unsigned int length)
+{ 
+	size_t count = m_stream.Read((char*)buffer, length).LastRead();
+	if (m_md5calc) md5_update(&m_md5cont, (unsigned char*)buffer, (int)count);
+	return count;
+}
+
 static unsigned int ReadCallback(void * context, void * buffer, unsigned int length)
 {
-	return ((wxInputStream*)context)->Read((char*)buffer, length).LastRead();
+	return ((FbFaxppStreamReader*)context)->Read(buffer, length);
 }
 
 wxString FbParsingContextFaxpp::Str(const FAXPP_Text & text)
@@ -178,7 +196,8 @@ FbParsingContextFaxpp::~FbParsingContextFaxpp()
 
 bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 {
-    FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadCallback, &stream);
+	FbFaxppStreamReader reader(stream, *this);
+    FAXPP_Error err = FAXPP_init_parse_callback(m_parser, ReadCallback, &reader);
     if (err != NO_ERROR) err = FAXPP_next_event(m_parser);
     while (err == NO_ERROR) {
 		const FAXPP_Event * event = FAXPP_get_current_event(m_parser);
@@ -198,6 +217,16 @@ bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 		if (m_stop) break;
     	err = FAXPP_next_event(m_parser);
     }
+	if (m_md5calc) {
+		const size_t BUFSIZE = 1024;
+		unsigned char buf[BUFSIZE];
+		bool eof = false;
+		do {
+			size_t len = stream.Read(buf, BUFSIZE).LastRead();
+			md5_update( &m_md5cont, buf, (int) len );
+			eof = (len < BUFSIZE);
+		} while (!eof);
+	}
 	if (err != NO_ERROR) {
 		wxString text(FAXPP_err_to_string(err), wxConvUTF8);
 		unsigned int line = FAXPP_get_error_line (m_parser);
