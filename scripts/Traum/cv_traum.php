@@ -50,6 +50,7 @@ function convert_seqn($sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
   $sqlite_db->query("DELETE FROM sequences");
+  $sqlite_db->query("CREATE TEMP TABLE temp_seqn(id integer primary key, value text)");
 
   $handle = fopen("db/series", "r");
   while (!feof($handle)) {
@@ -59,11 +60,14 @@ function convert_seqn($sqlite_db, $min)
 	$code = $fields[0];
 	$name = utf(trim($fields[1]));
 	echo "Seqn: ".$code." - ".$name."\n";
-	$sql = "INSERT INTO sequences (id, value) VALUES(?,?)";
+	$sql = "INSERT INTO temp_seqn(id, value) VALUES(?,?)";
 	$insert = $sqlite_db->prepare($sql);
 	$insert->execute(array($code, $name));
   }
   fclose($handle);
+
+  $sql = "INSERT INTO sequences(id, value, number) SELECT id, value, COUNT(DISTINCT id_book) FROM temp_seqn LEFT JOIN bookseq ON id_seq=id GROUP BY id, value";
+  $sqlite_db->query($sql);
   $sqlite_db->query("commit;");
 }
 
@@ -221,8 +225,8 @@ function FullImport($file, $date)
   create_tables($sqlite_db);
   setup_params($sqlite_db, $date, "FULL");
   convert_auth($sqlite_db, 0);
-  convert_seqn($sqlite_db, 0);
   convert_book($sqlite_db, 0);
+  convert_seqn($sqlite_db, 0);
   convert_date($sqlite_db, 0);
   convert_genr($sqlite_db, 0);
   convert_info($sqlite_db, 0);
