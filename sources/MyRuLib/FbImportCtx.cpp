@@ -1,4 +1,4 @@
-#include "ImpContext.h"
+#include "FbImportCtx.h"
 #include "FbConst.h"
 
 WX_DEFINE_OBJARRAY(SequenceArray);

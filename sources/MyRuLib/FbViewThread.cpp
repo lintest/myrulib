@@ -1,5 +1,4 @@
 #include "FbViewThread.h"
-#include "FbViewReader.h"
 #include "FbPreviewReader.h"
 #include "FbExtractInfo.h"
 #include "FbBookEvent.h"

@@ -3,10 +3,10 @@
 
 #include "FbWindow.h"
 #include "controls/FbTreeView.h"
-#include "ImpContext.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
 #include "FbThread.h"
+#include "FbImportCtx.h"
 
 class FbAuthorReplaceDlg : public FbDialog
 {

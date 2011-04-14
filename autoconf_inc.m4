@@ -42,18 +42,24 @@ dnl ### begin block 20_COND_PLATFORM_WIN32_1[myrulib.bkl] ###
         COND_PLATFORM_WIN32_1=""
     fi
     AC_SUBST(COND_PLATFORM_WIN32_1)
-dnl ### begin block 20_COND_USE_EXPAT_yes[myrulib.bkl] ###
-    COND_USE_EXPAT_yes="#"
-    if test "x$USE_EXPAT" = "xyes" ; then
-        COND_USE_EXPAT_yes=""
+dnl ### begin block 20_COND_USE_EXPAT_builtin[myrulib.bkl] ###
+    COND_USE_EXPAT_builtin="#"
+    if test "x$USE_EXPAT" = "xbuiltin" ; then
+        COND_USE_EXPAT_builtin=""
     fi
-    AC_SUBST(COND_USE_EXPAT_yes)
-dnl ### begin block 20_COND_USE_SQLITE_yes[myrulib.bkl] ###
-    COND_USE_SQLITE_yes="#"
-    if test "x$USE_SQLITE" = "xyes" ; then
-        COND_USE_SQLITE_yes=""
+    AC_SUBST(COND_USE_EXPAT_builtin)
+dnl ### begin block 20_COND_USE_FAXPP_builtin[myrulib.bkl] ###
+    COND_USE_FAXPP_builtin="#"
+    if test "x$USE_FAXPP" = "xbuiltin" ; then
+        COND_USE_FAXPP_builtin=""
     fi
-    AC_SUBST(COND_USE_SQLITE_yes)
+    AC_SUBST(COND_USE_FAXPP_builtin)
+dnl ### begin block 20_COND_USE_SQLITE_builtin[myrulib.bkl] ###
+    COND_USE_SQLITE_builtin="#"
+    if test "x$USE_SQLITE" = "xbuiltin" ; then
+        COND_USE_SQLITE_builtin=""
+    fi
+    AC_SUBST(COND_USE_SQLITE_builtin)
 dnl ### begin block 20_COND_WX_DEBUG_0_WX_UNICODE_1[myrulib.bkl] ###
     COND_WX_DEBUG_0_WX_UNICODE_1="#"
     if test "x$WX_DEBUG" = "x0" -a "x$WX_UNICODE" = "x1" ; then

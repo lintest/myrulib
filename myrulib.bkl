@@ -2,6 +2,7 @@
 <makefile>
 
 	<set var="PREFIX">/usr</set>
+	<option name="USE_FAXPP"/>
 	<option name="USE_EXPAT"/>
 	<option name="USE_SQLITE"/>
 	<option name="USE_LOCALE"/>
@@ -10,10 +11,9 @@
 	<include file="./3rdparty/bakefile/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
-	<lib id="expat_static" cond="USE_EXPAT=='yes'">
+	<lib id="expat_static" cond="USE_EXPAT=='builtin'">
 		<define>XML_STATIC</define>
-		<define>HAVE_EXPAT_CONFIG_H</define>
-		<include>$(BUILDDIR)/expat</include>
+		<define>HAVE_MEMMOVE</define> 
 		<include>$(SRCDIR)/3rdparty/expat</include>
 		<sources>3rdparty/expat/xmlparse.c</sources>
 		<sources>3rdparty/expat/xmlrole.c</sources>
@@ -22,8 +22,7 @@
 		<sources>3rdparty/expat/xmltok_ns.c</sources>
 	</lib>
 
-	<lib id="faxpp_static">
-		<define>HAVE_CONFIG</define>
+	<lib id="faxpp_static" cond="USE_FAXPP=='builtin'">
 		<include>$(BUILDDIR)/faxpp</include>
 		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<sources>3rdparty/faxpp/src/attlistdecl.c</sources>
@@ -49,7 +48,7 @@
 		<sources>3rdparty/faxpp/src/xml_tokenizer.c</sources>
 	</lib>
 
-	<lib id="sqlite3_static" cond="USE_SQLITE=='yes'">
+	<lib id="sqlite3_static" cond="USE_SQLITE=='builtin'">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>$(SRCDIR)/3rdparty/sqlite3</include>
 		<sources>3rdparty/sqlite3/sqlite3.c</sources>
@@ -164,11 +163,9 @@
 	</action>
 	
 	<exe id="myrulib" template="wxgui">
-		<define>FB_PARSE_FAXPP</define>
 		<depends>expat_static</depends>
 		<depends>sqlite3_static</depends>
 		<depends>faxpp_static</depends>
-		<library>faxpp_static</library>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
 		<include>$(BUILDDIR)</include>
@@ -239,6 +236,7 @@
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenrTree.cpp</sources>
+		<sources>sources/MyRuLib/FbImportCtx.cpp</sources>
 		<sources>sources/MyRuLib/FbImportReader.cpp</sources>
 		<sources>sources/MyRuLib/FbImportThread.cpp</sources>
 		<sources>sources/MyRuLib/FbInternetBook.cpp</sources>
@@ -267,13 +265,10 @@
 		<sources>sources/MyRuLib/FbUpdateThread.cpp</sources>
 		<sources>sources/MyRuLib/FbViewContext.cpp</sources>
 		<sources>sources/MyRuLib/FbViewData.cpp</sources>
-		<sources>sources/MyRuLib/FbViewReader.cpp</sources>
 		<sources>sources/MyRuLib/FbViewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbWindow.cpp</sources>
-		<sources>sources/MyRuLib/ImpContext.cpp</sources>
 		<sources>sources/MyRuLib/MyRuLibApp.cpp</sources>
-		<sources>sources/MyRuLib/ParseCtx.cpp</sources>
 		<sources>sources/MyRuLib/ZipReader.cpp</sources>
 		<sources>sources/MyRuLib/polarssl/md5.c</sources>
 		<sources>sources/MyRuLib/wx/base64.cpp</sources>

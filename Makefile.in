@@ -44,16 +44,16 @@ WX_RESCOMP = @WX_RESCOMP@
 ### Variables: ###
 
 DESTDIR = 
-EXPAT_STATIC_CFLAGS = -DXML_STATIC -DHAVE_EXPAT_CONFIG_H -I./expat \
-	-I$(srcdir)/3rdparty/expat $(CPPFLAGS) $(CFLAGS)
+EXPAT_STATIC_CFLAGS = -DXML_STATIC -DHAVE_MEMMOVE -I$(srcdir)/3rdparty/expat \
+	$(CPPFLAGS) $(CFLAGS)
 EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmlparse.o \
 	expat_static_xmlrole.o \
 	expat_static_xmltok.o \
 	expat_static_xmltok_impl.o \
 	expat_static_xmltok_ns.o
-FAXPP_STATIC_CFLAGS = -DHAVE_CONFIG -I./faxpp \
-	-I$(srcdir)/3rdparty/faxpp/include $(CPPFLAGS) $(CFLAGS)
+FAXPP_STATIC_CFLAGS = -I./faxpp -I$(srcdir)/3rdparty/faxpp/include $(CPPFLAGS) \
+	$(CFLAGS)
 FAXPP_STATIC_OBJECTS =  \
 	faxpp_static_attlistdecl.o \
 	faxpp_static_buffer.o \
@@ -106,10 +106,10 @@ ZIPSCAN_OBJECTS =  \
 BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
-MYRULIB_CFLAGS = -DFB_PARSE_FAXPP -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
-MYRULIB_CXXFLAGS = -DFB_PARSE_FAXPP -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
+MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
@@ -173,6 +173,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbGenres.o \
 	myrulib_FbGenreThread.o \
 	myrulib_FbGenrTree.o \
+	myrulib_FbImportCtx.o \
 	myrulib_FbImportReader.o \
 	myrulib_FbImportThread.o \
 	myrulib_FbInternetBook.o \
@@ -201,13 +202,10 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbUpdateThread.o \
 	myrulib_FbViewContext.o \
 	myrulib_FbViewData.o \
-	myrulib_FbViewReader.o \
 	myrulib_FbViewThread.o \
 	myrulib_FbViewerDlg.o \
 	myrulib_FbWindow.o \
-	myrulib_ImpContext.o \
 	myrulib_MyRuLibApp.o \
-	myrulib_ParseCtx.o \
 	myrulib_ZipReader.o \
 	myrulib_md5.o \
 	myrulib_base64.o \
@@ -220,10 +218,12 @@ MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 @COND_DEPS_TRACKING_1@CCC = $(BK_DEPS) $(CC)
 @COND_DEPS_TRACKING_0@CXXC = $(CXX)
 @COND_DEPS_TRACKING_1@CXXC = $(BK_DEPS) $(CXX)
-@COND_USE_EXPAT_yes@__expat_static___depname = \
-@COND_USE_EXPAT_yes@	$(LIBPREFIX)expat_static$(LIBEXT)
-@COND_USE_SQLITE_yes@__sqlite3_static___depname = \
-@COND_USE_SQLITE_yes@	$(LIBPREFIX)sqlite3_static$(LIBEXT)
+@COND_USE_EXPAT_builtin@__expat_static___depname = \
+@COND_USE_EXPAT_builtin@	$(LIBPREFIX)expat_static$(LIBEXT)
+@COND_USE_FAXPP_builtin@__faxpp_static___depname = \
+@COND_USE_FAXPP_builtin@	$(LIBPREFIX)faxpp_static$(LIBEXT)
+@COND_USE_SQLITE_builtin@__sqlite3_static___depname \
+@COND_USE_SQLITE_builtin@	= $(LIBPREFIX)sqlite3_static$(LIBEXT)
 @COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__zipscan___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL zipscan$(EXEEXT)
@@ -240,7 +240,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat_static___depname) $(LIBPREFIX)faxpp_static$(LIBEXT) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__expat_static___depname) $(__faxpp_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -299,20 +299,20 @@ clean:
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
 
-@COND_USE_EXPAT_yes@$(LIBPREFIX)expat_static$(LIBEXT): $(EXPAT_STATIC_OBJECTS)
-@COND_USE_EXPAT_yes@	rm -f $@
-@COND_USE_EXPAT_yes@	$(AR) $(AROPTIONS) $@ $(EXPAT_STATIC_OBJECTS)
-@COND_USE_EXPAT_yes@	$(RANLIB) $@
+@COND_USE_EXPAT_builtin@$(LIBPREFIX)expat_static$(LIBEXT): $(EXPAT_STATIC_OBJECTS)
+@COND_USE_EXPAT_builtin@	rm -f $@
+@COND_USE_EXPAT_builtin@	$(AR) $(AROPTIONS) $@ $(EXPAT_STATIC_OBJECTS)
+@COND_USE_EXPAT_builtin@	$(RANLIB) $@
 
-$(LIBPREFIX)faxpp_static$(LIBEXT): $(FAXPP_STATIC_OBJECTS)
-	rm -f $@
-	$(AR) $(AROPTIONS) $@ $(FAXPP_STATIC_OBJECTS)
-	$(RANLIB) $@
+@COND_USE_FAXPP_builtin@$(LIBPREFIX)faxpp_static$(LIBEXT): $(FAXPP_STATIC_OBJECTS)
+@COND_USE_FAXPP_builtin@	rm -f $@
+@COND_USE_FAXPP_builtin@	$(AR) $(AROPTIONS) $@ $(FAXPP_STATIC_OBJECTS)
+@COND_USE_FAXPP_builtin@	$(RANLIB) $@
 
-@COND_USE_SQLITE_yes@$(LIBPREFIX)sqlite3_static$(LIBEXT): $(SQLITE3_STATIC_OBJECTS)
-@COND_USE_SQLITE_yes@	rm -f $@
-@COND_USE_SQLITE_yes@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
-@COND_USE_SQLITE_yes@	$(RANLIB) $@
+@COND_USE_SQLITE_builtin@$(LIBPREFIX)sqlite3_static$(LIBEXT): $(SQLITE3_STATIC_OBJECTS)
+@COND_USE_SQLITE_builtin@	rm -f $@
+@COND_USE_SQLITE_builtin@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
+@COND_USE_SQLITE_builtin@	$(RANLIB) $@
 
 wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp < $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
@@ -367,8 +367,8 @@ cs.inc: bin2c$(EXEEXT) cs.mo
 sv.inc: bin2c$(EXEEXT) sv.mo
 	./bin2c ./sv.mo ./sv.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)faxpp_static$(LIBEXT) $(LIBPREFIX)faxpp_static$(LIBEXT) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__myrulib___win32rc)
-	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lfaxpp_static -lwxsqlite3_static -lwxbzip2_static $(WX_LIBS) $(LIBS)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__myrulib___win32rc)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
@@ -678,6 +678,9 @@ myrulib_FbGenreThread.o: $(srcdir)/sources/MyRuLib/FbGenreThread.cpp $(MYRULIB_O
 myrulib_FbGenrTree.o: $(srcdir)/sources/MyRuLib/FbGenrTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbGenrTree.cpp
 
+myrulib_FbImportCtx.o: $(srcdir)/sources/MyRuLib/FbImportCtx.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbImportCtx.cpp
+
 myrulib_FbImportReader.o: $(srcdir)/sources/MyRuLib/FbImportReader.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbImportReader.cpp
 
@@ -762,9 +765,6 @@ myrulib_FbViewContext.o: $(srcdir)/sources/MyRuLib/FbViewContext.cpp $(MYRULIB_O
 myrulib_FbViewData.o: $(srcdir)/sources/MyRuLib/FbViewData.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewData.cpp
 
-myrulib_FbViewReader.o: $(srcdir)/sources/MyRuLib/FbViewReader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewReader.cpp
-
 myrulib_FbViewThread.o: $(srcdir)/sources/MyRuLib/FbViewThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbViewThread.cpp
 
@@ -774,14 +774,8 @@ myrulib_FbViewerDlg.o: $(srcdir)/sources/MyRuLib/FbViewerDlg.cpp $(MYRULIB_ODEP)
 myrulib_FbWindow.o: $(srcdir)/sources/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbWindow.cpp
 
-myrulib_ImpContext.o: $(srcdir)/sources/MyRuLib/ImpContext.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ImpContext.cpp
-
 myrulib_MyRuLibApp.o: $(srcdir)/sources/MyRuLib/MyRuLibApp.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/MyRuLibApp.cpp
-
-myrulib_ParseCtx.o: $(srcdir)/sources/MyRuLib/ParseCtx.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ParseCtx.cpp
 
 myrulib_ZipReader.o: $(srcdir)/sources/MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ZipReader.cpp
@@ -793,7 +787,7 @@ myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
 myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --define FB_PARSE_FAXPP --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/faxpp/include --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/faxpp/include --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
 
 
 # Include dependency info, if present:

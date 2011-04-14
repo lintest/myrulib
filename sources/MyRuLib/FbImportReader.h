@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/zipstrm.h>
-#include "ImpContext.h"
+#include "FbImportCtx.h"
 #include "FbParsingCtx.h"
 
 class FbImportThread;

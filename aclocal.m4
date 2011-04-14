@@ -2152,7 +2152,7 @@ dnl Author:          wxWidgets development team,
 dnl                  Francesco Montorsi,
 dnl                  Bob McCown (Mac-testing)
 dnl Creation date:   24/11/2001
-dnl RCS-ID:          $Id$
+dnl RCS-ID:          $Id: wxwin.m4 64334 2010-05-18 10:29:58Z VZ $
 dnl ---------------------------------------------------------------------------
 
 dnl ===========================================================================
@@ -3209,16 +3209,4 @@ AC_DEFUN([AM_PATH_WXCONFIG], [
     WX_CONFIG_CHECK([$1],[$2],[$3],[$4],[$5])
 ])
 AC_DEFUN([AM_PATH_WXRC], [WXRC_CHECK([$1],[$2])])
-
-# Copyright (C) 1996, 1997, 2000, 2001, 2003, 2005
-# Free Software Foundation, Inc.
-#
-# This file is free software; the Free Software Foundation
-# gives unlimited permission to copy and/or distribute it,
-# with or without modifications, as long as this notice is preserved.
-
-# serial 8
-
-# AM_CONFIG_HEADER is obsolete.  It has been replaced by AC_CONFIG_HEADERS.
-AU_DEFUN([AM_CONFIG_HEADER], [AC_CONFIG_HEADERS($@)])
 

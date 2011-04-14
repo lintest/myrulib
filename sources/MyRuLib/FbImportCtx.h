@@ -1,10 +1,9 @@
-#ifndef __IMPCONTEXT_H__
-#define __IMPCONTEXT_H__
+#ifndef __FBIMPORTCTX_H__
+#define __FBIMPORTCTX_H__
 
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
 #include <wx/thread.h>
-#include "ParseCtx.h"
 #include "FbDatabase.h"
 #include "FbStringHash.h"
 
@@ -48,4 +47,4 @@ class SequenceItem
 
 WX_DECLARE_OBJARRAY(SequenceItem, SequenceArray);
 
-#endif // __IMPCONTEXT_H__
+#endif // FBIMPORTCTX_H__
