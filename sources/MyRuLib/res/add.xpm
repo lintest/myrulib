@@ -2,7 +2,7 @@
 static const char * add_xpm[] = {
 "15 15 3 1",
 "X c Black",
-"0 c White",
+"# c Red",
 "  c None",
 "               ",
 "     XXXXX     ",

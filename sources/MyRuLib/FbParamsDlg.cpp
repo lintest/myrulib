@@ -550,7 +550,7 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxListbook * notebook = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_DEFAULT );
+	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
 	notebook->AddPage( new PanelInterface(notebook), _("General"), true );
 	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
 	notebook->AddPage( new PanelTypes(notebook), _("File types"), false );
