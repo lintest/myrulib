@@ -23,6 +23,7 @@
 	</lib>
 
 	<lib id="faxpp_static" cond="USE_FAXPP=='builtin'">
+		<define>HAVE_CONFIG</define>
 		<include>$(BUILDDIR)/faxpp</include>
 		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<sources>3rdparty/faxpp/src/attlistdecl.c</sources>

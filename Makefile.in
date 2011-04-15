@@ -52,8 +52,8 @@ EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmltok.o \
 	expat_static_xmltok_impl.o \
 	expat_static_xmltok_ns.o
-FAXPP_STATIC_CFLAGS = -I./faxpp -I$(srcdir)/3rdparty/faxpp/include $(CPPFLAGS) \
-	$(CFLAGS)
+FAXPP_STATIC_CFLAGS = -DHAVE_CONFIG -I./faxpp \
+	-I$(srcdir)/3rdparty/faxpp/include $(CPPFLAGS) $(CFLAGS)
 FAXPP_STATIC_OBJECTS =  \
 	faxpp_static_attlistdecl.o \
 	faxpp_static_buffer.o \
