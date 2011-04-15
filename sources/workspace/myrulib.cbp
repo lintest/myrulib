@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="myrulib" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="LinDebug">
+				<Option platforms="Unix;" />
+				<Option output="../../build/LinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/LinDebug/" />
+				<Option object_output="../../build/LinDebug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs aui,adv,html,core,net`" />
+					<Add directory="../../build/LinDebug" />
+				</Linker>
+			</Target>
+			<Target title="LinRelease">
+				<Option platforms="Unix;" />
+				<Option output="../../build/LinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/LinRelease/" />
+				<Option object_output="../../build/LinRelease/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="`wx-config --libs`" />
+					<Add directory="../../build/LinRelease" />
+				</Linker>
+			</Target>
+			<Target title="WinDebug">
+				<Option platforms="Windows;" />
+				<Option output="../../build/WinDebug/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/WinDebug/" />
+				<Option object_output="../../build/WinDebug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-pipe" />
+					<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__WXDEBUG__" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="../build" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libwxmsw28ud_aui.a" />
+					<Add library="libwxmsw28ud_adv.a" />
+					<Add library="libwxmsw28ud_html.a" />
+					<Add library="libwxmsw28ud_core.a" />
+					<Add library="libwxbase28ud_net.a" />
+					<Add library="libwxbase28ud.a" />
+					<Add library="libwxtiff.a" />
+					<Add library="libwxjpeg.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxregexu.a" />
+					<Add library="libwinmm.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libwsock32.a" />
+					<Add library="liboleacc.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add library="libshlwapi.a" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../../build/WinDebug/" />
+				</Linker>
+			</Target>
+			<Target title="WinRelease">
+				<Option platforms="Windows;" />
+				<Option output="../../build/WinRelease/myrulib" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../build/WinRelease/" />
+				<Option object_output="../../build/WinRelease/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-pipe" />
+					<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="../build" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="libwxmsw28u_adv.a" />
+					<Add library="libwxmsw28u_aui.a" />
+					<Add library="libwxmsw28u_html.a" />
+					<Add library="libwxmsw28u_core.a" />
+					<Add library="libwxbase28u_net.a" />
+					<Add library="libwxbase28u.a" />
+					<Add library="libwxtiff.a" />
+					<Add library="libwxjpeg.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxregexu.a" />
+					<Add library="libwinmm.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libwsock32.a" />
+					<Add library="liboleacc.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add library="libshlwapi.a" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../../build/WinRelease/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DFB_PARSE_FAXPP" />
+			<Add directory="../../3rdparty/wxbzipstream" />
+			<Add directory="../../3rdparty/wxsqlite3/include" />
+			<Add directory="../../3rdparty/faxpp/include" />
+			<Add directory="../../3rdparty/sqlite3" />
+			<Add directory="../Expat" />
+			<Add directory="../build" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="libWxBZipStream.a" />
+			<Add library="libWxSQLite3.a" />
+			<Add library="libSQLite3.a" />
+			<Add library="libExpat.a" />
+			<Add library="libFaxpp.a" />
+		</Linker>
+		<Unit filename="../MyRuLib/BaseThread.cpp" />
+		<Unit filename="../MyRuLib/BaseThread.h" />
+		<Unit filename="../MyRuLib/FbAboutDlg.cpp" />
+		<Unit filename="../MyRuLib/FbAboutDlg.h" />
+		<Unit filename="../MyRuLib/FbAlphabet.cpp" />
+		<Unit filename="../MyRuLib/FbAlphabet.h" />
+		<Unit filename="../MyRuLib/FbAuthList.cpp" />
+		<Unit filename="../MyRuLib/FbAuthList.h" />
+		<Unit filename="../MyRuLib/FbAuthorDlg.cpp" />
+		<Unit filename="../MyRuLib/FbAuthorDlg.h" />
+		<Unit filename="../MyRuLib/FbBookData.cpp" />
+		<Unit filename="../MyRuLib/FbBookData.h" />
+		<Unit filename="../MyRuLib/FbBookEvent.cpp" />
+		<Unit filename="../MyRuLib/FbBookEvent.h" />
+		<Unit filename="../MyRuLib/FbBookList.cpp" />
+		<Unit filename="../MyRuLib/FbBookList.h" />
+		<Unit filename="../MyRuLib/FbBookMenu.cpp" />
+		<Unit filename="../MyRuLib/FbBookMenu.h" />
+		<Unit filename="../MyRuLib/FbBookPanel.cpp" />
+		<Unit filename="../MyRuLib/FbBookPanel.h" />
+		<Unit filename="../MyRuLib/FbBookTree.cpp" />
+		<Unit filename="../MyRuLib/FbBookTree.h" />
+		<Unit filename="../MyRuLib/FbBookTypes.h" />
+		<Unit filename="../MyRuLib/FbCacheBook.cpp" />
+		<Unit filename="../MyRuLib/FbCacheBook.h" />
+		<Unit filename="../MyRuLib/FbClientData.h" />
+		<Unit filename="../MyRuLib/FbCollection.cpp" />
+		<Unit filename="../MyRuLib/FbCollection.h" />
+		<Unit filename="../MyRuLib/FbColumnDlg.cpp" />
+		<Unit filename="../MyRuLib/FbColumnDlg.h" />
+		<Unit filename="../MyRuLib/FbColumns.cpp" />
+		<Unit filename="../MyRuLib/FbColumns.h" />
+		<Unit filename="../MyRuLib/FbConfigDlg.cpp" />
+		<Unit filename="../MyRuLib/FbConfigDlg.h" />
+		<Unit filename="../MyRuLib/FbConst.cpp" />
+		<Unit filename="../MyRuLib/FbConst.h" />
+		<Unit filename="../MyRuLib/FbConvertDlg.cpp" />
+		<Unit filename="../MyRuLib/FbConvertDlg.h" />
+		<Unit filename="../MyRuLib/FbCounter.cpp" />
+		<Unit filename="../MyRuLib/FbCounter.h" />
+		<Unit filename="../MyRuLib/FbDataOpenDlg.cpp" />
+		<Unit filename="../MyRuLib/FbDataOpenDlg.h" />
+		<Unit filename="../MyRuLib/FbDataPath.cpp" />
+		<Unit filename="../MyRuLib/FbDataPath.h" />
+		<Unit filename="../MyRuLib/FbDatabase.cpp" />
+		<Unit filename="../MyRuLib/FbDatabase.h" />
+		<Unit filename="../MyRuLib/FbDateTime.cpp" />
+		<Unit filename="../MyRuLib/FbDateTime.h" />
+		<Unit filename="../MyRuLib/FbDateTree.cpp" />
+		<Unit filename="../MyRuLib/FbDateTree.h" />
+		<Unit filename="../MyRuLib/FbDeleteThread.cpp" />
+		<Unit filename="../MyRuLib/FbDeleteThread.h" />
+		<Unit filename="../MyRuLib/FbDownList.cpp" />
+		<Unit filename="../MyRuLib/FbDownList.h" />
+		<Unit filename="../MyRuLib/FbDownloader.cpp" />
+		<Unit filename="../MyRuLib/FbDownloader.h" />
+		<Unit filename="../MyRuLib/FbEditBook.cpp" />
+		<Unit filename="../MyRuLib/FbEditBook.h" />
+		<Unit filename="../MyRuLib/FbExportDlg.cpp" />
+		<Unit filename="../MyRuLib/FbExportDlg.h" />
+		<Unit filename="../MyRuLib/FbExportTree.cpp" />
+		<Unit filename="../MyRuLib/FbExportTree.h" />
+		<Unit filename="../MyRuLib/FbExtractInfo.cpp" />
+		<Unit filename="../MyRuLib/FbExtractInfo.h" />
+		<Unit filename="../MyRuLib/FbFilterDlg.cpp" />
+		<Unit filename="../MyRuLib/FbFilterDlg.h" />
+		<Unit filename="../MyRuLib/FbFilterObj.cpp" />
+		<Unit filename="../MyRuLib/FbFilterObj.h" />
+		<Unit filename="../MyRuLib/FbFilterTree.cpp" />
+		<Unit filename="../MyRuLib/FbFilterTree.h" />
+		<Unit filename="../MyRuLib/FbFldrTree.cpp" />
+		<Unit filename="../MyRuLib/FbFldrTree.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameAuth.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameAuth.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameBase.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameBase.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameDate.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameDate.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameDown.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameDown.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameFind.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameFind.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameFldr.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameFldr.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameGenr.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameGenr.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameHtml.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameHtml.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameInfo.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameInfo.h" />
+		<Unit filename="../MyRuLib/frames/FbFrameSeqn.cpp" />
+		<Unit filename="../MyRuLib/frames/FbFrameSeqn.h" />
+		<Unit filename="../MyRuLib/FbGenrTree.cpp" />
+		<Unit filename="../MyRuLib/FbGenrTree.h" />
+		<Unit filename="../MyRuLib/FbGenreThread.cpp" />
+		<Unit filename="../MyRuLib/FbGenreThread.h" />
+		<Unit filename="../MyRuLib/FbGenres.cpp" />
+		<Unit filename="../MyRuLib/FbGenres.h" />
+		<Unit filename="../MyRuLib/FbImportThread.cpp" />
+		<Unit filename="../MyRuLib/FbImportThread.h" />
+		<Unit filename="../MyRuLib/FbInternetBook.cpp" />
+		<Unit filename="../MyRuLib/FbInternetBook.h" />
+		<Unit filename="../MyRuLib/FbLocale.cpp" />
+		<Unit filename="../MyRuLib/FbLocale.h" />
+		<Unit filename="../MyRuLib/FbLogStream.cpp" />
+		<Unit filename="../MyRuLib/FbLogStream.h" />
+		<Unit filename="../MyRuLib/FbLogoBitmap.h" />
+		<Unit filename="../MyRuLib/FbMainFrame.cpp" />
+		<Unit filename="../MyRuLib/FbMainFrame.h" />
+		<Unit filename="../MyRuLib/FbMainMenu.cpp" />
+		<Unit filename="../MyRuLib/FbMainMenu.h" />
+		<Unit filename="../MyRuLib/FbMasterInfo.cpp" />
+		<Unit filename="../MyRuLib/FbMasterInfo.h" />
+		<Unit filename="../MyRuLib/FbMasterThread.cpp" />
+		<Unit filename="../MyRuLib/FbMasterThread.h" />
+		<Unit filename="../MyRuLib/FbMasterTypes.cpp" />
+		<Unit filename="../MyRuLib/FbMasterTypes.h" />
+		<Unit filename="../MyRuLib/FbMenu.cpp" />
+		<Unit filename="../MyRuLib/FbMenu.h" />
+		<Unit filename="../MyRuLib/FbParams.cpp" />
+		<Unit filename="../MyRuLib/FbParams.h" />
+		<Unit filename="../MyRuLib/FbParamsDlg.cpp" />
+		<Unit filename="../MyRuLib/FbParamsDlg.h" />
+		<Unit filename="../MyRuLib/FbParsingCtx.cpp" />
+		<Unit filename="../MyRuLib/FbParsingCtx.h" />
+		<Unit filename="../MyRuLib/FbPreviewReader.cpp" />
+		<Unit filename="../MyRuLib/FbPreviewReader.h" />
+		<Unit filename="../MyRuLib/FbPreviewThread.cpp" />
+		<Unit filename="../MyRuLib/FbPreviewThread.h" />
+		<Unit filename="../MyRuLib/FbPreviewWindow.cpp" />
+		<Unit filename="../MyRuLib/FbPreviewWindow.h" />
+		<Unit filename="../MyRuLib/FbProgressDlg.cpp" />
+		<Unit filename="../MyRuLib/FbProgressDlg.h" />
+		<Unit filename="../MyRuLib/FbScanerThread.cpp" />
+		<Unit filename="../MyRuLib/FbScanerThread.h" />
+		<Unit filename="../MyRuLib/FbSeqnList.cpp" />
+		<Unit filename="../MyRuLib/FbSeqnList.h" />
+		<Unit filename="../MyRuLib/FbSequenDlg.cpp" />
+		<Unit filename="../MyRuLib/FbSequenDlg.h" />
+		<Unit filename="../MyRuLib/FbServiceDlg.cpp" />
+		<Unit filename="../MyRuLib/FbServiceDlg.h" />
+		<Unit filename="../MyRuLib/FbServiceThread.cpp" />
+		<Unit filename="../MyRuLib/FbServiceThread.h" />
+		<Unit filename="../MyRuLib/FbStringHash.h" />
+		<Unit filename="../MyRuLib/FbThread.cpp" />
+		<Unit filename="../MyRuLib/FbThread.h" />
+		<Unit filename="../MyRuLib/FbTitleDlg.cpp" />
+		<Unit filename="../MyRuLib/FbTitleDlg.h" />
+		<Unit filename="../MyRuLib/FbUpdateThread.cpp" />
+		<Unit filename="../MyRuLib/FbUpdateThread.h" />
+		<Unit filename="../MyRuLib/FbViewContext.cpp" />
+		<Unit filename="../MyRuLib/FbViewContext.h" />
+		<Unit filename="../MyRuLib/FbViewData.cpp" />
+		<Unit filename="../MyRuLib/FbViewData.h" />
+		<Unit filename="../MyRuLib/FbViewReader.cpp" />
+		<Unit filename="../MyRuLib/FbViewReader.h" />
+		<Unit filename="../MyRuLib/FbViewThread.cpp" />
+		<Unit filename="../MyRuLib/FbViewThread.h" />
+		<Unit filename="../MyRuLib/FbViewerDlg.cpp" />
+		<Unit filename="../MyRuLib/FbViewerDlg.h" />
+		<Unit filename="../MyRuLib/FbWindow.cpp" />
+		<Unit filename="../MyRuLib/FbWindow.h" />
+		<Unit filename="../MyRuLib/ImpContext.cpp" />
+		<Unit filename="../MyRuLib/ImpContext.h" />
+		<Unit filename="../MyRuLib/MyRuLibApp.cpp" />
+		<Unit filename="../MyRuLib/MyRuLibApp.h" />
+		<Unit filename="../MyRuLib/ParseCtx.cpp" />
+		<Unit filename="../MyRuLib/ParseCtx.h" />
+		<Unit filename="../MyRuLib/VacuumThread.cpp" />
+		<Unit filename="../MyRuLib/VacuumThread.h" />
+		<Unit filename="../MyRuLib/ZipReader.cpp" />
+		<Unit filename="../MyRuLib/ZipReader.h" />
+		<Unit filename="../MyRuLib/controls/FbChoiceFormat.cpp" />
+		<Unit filename="../MyRuLib/controls/FbChoiceFormat.h" />
+		<Unit filename="../MyRuLib/controls/FbComboBox.cpp" />
+		<Unit filename="../MyRuLib/controls/FbComboBox.h" />
+		<Unit filename="../MyRuLib/controls/FbCustomCombo.h" />
+		<Unit filename="../MyRuLib/controls/FbHtmlWindow.cpp" />
+		<Unit filename="../MyRuLib/controls/FbHtmlWindow.h" />
+		<Unit filename="../MyRuLib/controls/FbNotebook.cpp" />
+		<Unit filename="../MyRuLib/controls/FbNotebook.h" />
+		<Unit filename="../MyRuLib/controls/FbSearchCombo.cpp" />
+		<Unit filename="../MyRuLib/controls/FbSearchCombo.h" />
+		<Unit filename="../MyRuLib/controls/FbToolBar.cpp" />
+		<Unit filename="../MyRuLib/controls/FbToolBar.h" />
+		<Unit filename="../MyRuLib/controls/FbTreeModel.cpp" />
+		<Unit filename="../MyRuLib/controls/FbTreeModel.h" />
+		<Unit filename="../MyRuLib/controls/FbTreeView.cpp" />
+		<Unit filename="../MyRuLib/controls/FbTreeView.h" />
+		<Unit filename="../MyRuLib/controls/FbURL.cpp" />
+		<Unit filename="../MyRuLib/controls/FbURL.h" />
+		<Unit filename="../MyRuLib/controls/FbViewItem.cpp" />
+		<Unit filename="../MyRuLib/controls/FbViewItem.h" />
+		<Unit filename="../MyRuLib/controls/LimitedTextCtrl.cpp" />
+		<Unit filename="../MyRuLib/controls/LimitedTextCtrl.h" />
+		<Unit filename="../MyRuLib/controls/ProgressBar.cpp" />
+		<Unit filename="../MyRuLib/controls/ProgressBar.h" />
+		<Unit filename="../MyRuLib/locale/be.po" />
+		<Unit filename="../MyRuLib/locale/cs.po" />
+		<Unit filename="../MyRuLib/locale/ru.po" />
+		<Unit filename="../MyRuLib/locale/uk.po" />
+		<Unit filename="../MyRuLib/polarssl/md5.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../MyRuLib/res/checked.xpm" />
+		<Unit filename="../MyRuLib/res/checkout.xpm" />
+		<Unit filename="../MyRuLib/res/nocheck.xpm" />
+		<Unit filename="../MyRuLib/res/resource.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="WinDebug" />
+			<Option target="WinRelease" />
+		</Unit>
+		<Unit filename="../MyRuLib/sha1/sha1.h" />
+		<Unit filename="../MyRuLib/wx/base64.cpp" />
+		<Unit filename="../MyRuLib/wx/base64.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
