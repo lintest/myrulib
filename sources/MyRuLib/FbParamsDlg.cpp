@@ -2,6 +2,7 @@
 #include <wx/settings.h>
 #include <wx/spinctrl.h>
 #include <wx/listbook.h>
+#include <wx/aui/auibar.h>
 #include "FbParams.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
@@ -16,6 +17,12 @@
 #include "controls/FbToolBar.h"
 #include "controls/FbTreeView.h"
 #include "FbLogoBitmap.h"
+
+static const char * blank_xpm[] = {
+"1 1 2 1",
+"X c Red",
+"  c None",
+" "};
 
 //-----------------------------------------------------------------------------
 //  FbParamsDlg::LoadThread
@@ -123,19 +130,16 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 		_("File name extension"),
 	};
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER );
-	FbToolBarImages images(*toolbar, wxT("%m"));
-	{
-		size_t length = m_letters.Length();
-		for (size_t i = 0; i < length; i++) {
-			int btnid = ID_LETTERS + i;
-			wxString title = wxT('%'); title += m_letters[i];
-			wxString help = helps[i];
-			toolbar->AddTool(btnid, title, images[title], help);
-			this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(ScriptDlg::OnLetterClicked));
-		}
-	}
-	toolbar->Realize();
+	wxAuiToolBar * toolbar = new wxAuiToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT );
+	toolbar->SetToolBitmapSize(wxSize(1, 1));
+	size_t length = m_letters.Length();
+	for (size_t i = 0; i < length; i++) {
+		int btnid = ID_LETTERS + i;
+		wxString title = (wxString)wxT('%') << m_letters[i];
+		toolbar->AddTool(btnid, title, wxBitmap(blank_xpm), (wxString)helps[i]);
+		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(ScriptDlg::OnLetterClicked));
+ 	}
+ 	toolbar->Realize();
 
 	SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -447,19 +451,16 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 		_("File name extension"),
 	};
 
-	wxToolBar * toolbar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER );
-	FbToolBarImages images(*toolbar, wxT("%m"));
-	{
-		size_t length = letters.Length();
-		for (size_t i = 0; i < length; i++) {
-			int btnid = ID_LETTERS + i;
-			wxString title = wxT('%'); title += letters[i];
-			wxString help = helps[i];
-			toolbar->AddTool(btnid, title, images[title], help);
-			parent->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(FbParamsDlg::OnLetterClicked));
-		}
-	}
-	toolbar->Realize();
+	wxAuiToolBar * toolbar = new wxAuiToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT );
+	toolbar->SetToolBitmapSize(wxSize(1, 1));
+	size_t length = letters.Length();
+	for (size_t i = 0; i < length; i++) {
+		int btnid = ID_LETTERS + i;
+		wxString title = (wxString)wxT('%') << letters[i];
+		toolbar->AddTool(btnid, title, wxBitmap(blank_xpm), (wxString)helps[i]);
+		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(FbParamsDlg::OnLetterClicked));
+ 	}
+ 	toolbar->Realize();
 	bSizerMain->Add(toolbar, 0, wxEXPAND|wxALL, 5);
 
 	wxCheckBox * checkbox;
@@ -977,4 +978,3 @@ void FbParamsDlg::SaveTypes(wxSQLite3Database &database)
 		}
 	}
 }
-
