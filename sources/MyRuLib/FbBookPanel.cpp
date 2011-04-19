@@ -167,6 +167,7 @@ void FbBookPanel::ResetPreview()
 	if (!IsSplit()) return;
 
 	FbViewContext ctx;
+	ctx.vertical = GetSplitMode() == wxSPLIT_VERTICAL;
 	FbModelItem item = m_BookList->GetCurrent();
 	if (item) m_BookInfo->Reset(ctx, (&item)->GetView());
 }

@@ -61,18 +61,34 @@ wxString FbViewData::GetImage(const wxString &filename) const
 
 void FbViewData::Push(const wxString &filename, const wxImage &image)
 {
+	double scale = 1;
+	int w = image.GetWidth();
+	int h = image.GetHeight();
+	if (w > MAX_IMAGE_WIDTH) {
+		w = MAX_IMAGE_WIDTH;
+		h = image.GetHeight() * MAX_IMAGE_WIDTH / image.GetWidth();
+		scale = double(MAX_IMAGE_WIDTH) / image.GetWidth();
+	}
+	w += 2;
+	h += 2;
+
 	wxBitmap bitmap(image);
-	int w = MAX_IMAGE_WIDTH;
-	int h = bitmap.GetHeight() * MAX_IMAGE_WIDTH / bitmap.GetWidth();
-	double scale = double(MAX_IMAGE_WIDTH) / bitmap.GetWidth();
 	wxMemoryDC srcDC;
 	srcDC.SelectObject(bitmap);
 
 	wxBitmap result(w, h);
 	wxMemoryDC memDC;
 	memDC.SelectObject(result);
-	memDC.SetUserScale(scale, scale);
-	memDC.Blit(0, 0, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
+
+	if (scale != 1) memDC.SetUserScale(scale, scale);
+	memDC.Blit(1, 1, bitmap.GetWidth(), bitmap.GetHeight(), &srcDC, 0, 0, wxCOPY, true);
+
+	wxPen pen( *wxBLACK, 1, wxSOLID );
+	memDC.SetPen(pen);
+	memDC.SetBrush(*wxTRANSPARENT_BRUSH);
+	memDC.SetUserScale(1, 1);
+	memDC.DrawRectangle(0, 0, w, h);
+
 	memDC.SelectObject(wxNullBitmap);
 	srcDC.SelectObject(wxNullBitmap);
 
@@ -82,20 +98,18 @@ void FbViewData::Push(const wxString &filename, const wxImage &image)
 void FbViewData::AddImage(wxString &filename, wxString &imagedata)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
+	m_images.Add(filename);
+
 	wxString imagename = GetImage(filename);
 	wxMemoryBuffer buffer = wxBase64Decode(imagedata, wxBase64DecodeMode_SkipWS);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
 	wxImage image(stream);
-	if (image.GetWidth() <= MAX_IMAGE_WIDTH) {
-		wxMemoryFSHandler::AddFile(imagename, buffer.GetData(), buffer.GetDataLen());
-	} else {
-		#ifdef __WXMSW__
-		Push(imagename, image);
-		#else
-		FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
-		#endif // __WXMSW__
-	}
-	m_images.Add(filename);
+
+	#ifdef __WXMSW__
+	Push(imagename, image);
+	#else
+	FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
+	#endif // __WXMSW__
 }
 
 wxString FbViewData::GetComments(const FbViewContext &ctx, const FbCacheBook &book) const
@@ -174,11 +188,7 @@ wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) 
 		for (size_t i=0; i<m_images.GetCount(); i++) {
 			wxString image = GetImage(m_images[i]);
 			html << wxT("<tr><td align=center>");
-			html << wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
-			html << wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
 			html << wxString::Format(wxT("<img src=\"memory:%s\">"), image.c_str());
-			html << wxT("</td></tr></table>");
-			html << wxT("</td></tr></table>");
 			html << wxT("</td></tr>");
 		}
 		if (!isbn.IsEmpty()) {
@@ -192,14 +202,12 @@ wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) 
 		html << wxT("</td></tr>");
 	} else {
 		html << wxT("<td rowspan=4 align=right valign=top width=1>");
-		html << wxT("<table width=100%><tr><td align=center>");
+		html << wxT("<table width=100%>");
 		for (size_t i=0; i<m_images.GetCount(); i++) {
 			wxString image = GetImage(m_images[i]);
-			html << wxT("<table border=0 cellspacing=0 cellpadding=0 bgcolor=#000000><tr><td>");
-			html << wxT("<table border=0 cellspacing=1 cellpadding=0 width=100%><tr><td bgcolor=#FFFFFF>");
+			html << wxT("<tr><td align=center>");
 			html << wxString::Format(wxT("<img src=\"memory:%s\">"), image.c_str());
-			html << wxT("</td></tr></table>");
-			html << wxT("</td></tr></table>");
+			html << wxT("</td></tr>");
 		}
 		html << wxT("</td></tr>");
 		if (!isbn.IsEmpty()) html << wxString::Format(wxT("<tr><td align=center>ISBN:&nbsp;%s</td></tr>"), isbn.c_str());
