@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -125,7 +125,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\faxpp&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite&quot;;&quot;$(SolutionDir)\Expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -188,391 +188,383 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\BaseThread.cpp"
+				RelativePath="..\MyRuLib\BaseThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAboutDlg.cpp"
+				RelativePath="..\MyRuLib\FbAboutDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAlphabet.cpp"
+				RelativePath="..\MyRuLib\FbAlphabet.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAuthList.cpp"
+				RelativePath="..\MyRuLib\FbAuthList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAuthorDlg.cpp"
+				RelativePath="..\MyRuLib\FbAuthorDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookData.cpp"
+				RelativePath="..\MyRuLib\FbBookData.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookEvent.cpp"
+				RelativePath="..\MyRuLib\FbBookEvent.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookList.cpp"
+				RelativePath="..\MyRuLib\FbBookList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookMenu.cpp"
+				RelativePath="..\MyRuLib\FbBookMenu.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookPanel.cpp"
+				RelativePath="..\MyRuLib\FbBookPanel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookTree.cpp"
+				RelativePath="..\MyRuLib\FbBookTree.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbCacheBook.cpp"
+				RelativePath="..\MyRuLib\FbCacheBook.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbChoiceFormat.cpp"
+				RelativePath="..\MyRuLib\controls\FbChoiceFormat.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbCollection.cpp"
+				RelativePath="..\MyRuLib\FbCollection.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbColumnDlg.cpp"
+				RelativePath="..\MyRuLib\FbColumnDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbColumns.cpp"
+				RelativePath="..\MyRuLib\FbColumns.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbComboBox.cpp"
+				RelativePath="..\MyRuLib\controls\FbComboBox.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbConfigDlg.cpp"
+				RelativePath="..\MyRuLib\FbConfigDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbConst.cpp"
+				RelativePath="..\MyRuLib\FbConst.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbConvertDlg.cpp"
+				RelativePath="..\MyRuLib\FbConvertDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbCounter.cpp"
+				RelativePath="..\MyRuLib\FbCounter.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDatabase.cpp"
+				RelativePath="..\MyRuLib\FbDatabase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDataOpenDlg.cpp"
+				RelativePath="..\MyRuLib\FbDataOpenDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDataPath.cpp"
+				RelativePath="..\MyRuLib\FbDataPath.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDateTime.cpp"
+				RelativePath="..\MyRuLib\FbDateTime.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDateTree.cpp"
+				RelativePath="..\MyRuLib\FbDateTree.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDeleteThread.cpp"
+				RelativePath="..\MyRuLib\FbDeleteThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDownList.cpp"
+				RelativePath="..\MyRuLib\FbDownList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDownloader.cpp"
+				RelativePath="..\MyRuLib\FbDownloader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbEditBook.cpp"
+				RelativePath="..\MyRuLib\FbEditBook.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbExportDlg.cpp"
+				RelativePath="..\MyRuLib\FbExportDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbExportTree.cpp"
+				RelativePath="..\MyRuLib\FbExportTree.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbExtractInfo.cpp"
+				RelativePath="..\MyRuLib\FbExtractInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFilterDlg.cpp"
+				RelativePath="..\MyRuLib\FbFilterDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFilterObj.cpp"
+				RelativePath="..\MyRuLib\FbFilterObj.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFilterTree.cpp"
+				RelativePath="..\MyRuLib\FbFilterTree.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFldrTree.cpp"
+				RelativePath="..\MyRuLib\FbFldrTree.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameAuth.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameAuth.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameBase.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameDate.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameDate.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameDown.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameDown.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameFind.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameFind.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameFldr.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameFldr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameGenr.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameGenr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameHtml.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameHtml.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameInfo.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameSeqn.cpp"
+				RelativePath="..\MyRuLib\frames\FbFrameSeqn.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbGenres.cpp"
+				RelativePath="..\MyRuLib\FbGenres.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbGenreThread.cpp"
+				RelativePath="..\MyRuLib\FbGenreThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbGenrTree.cpp"
+				RelativePath="..\MyRuLib\FbGenrTree.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbHtmlWindow.cpp"
+				RelativePath="..\MyRuLib\controls\FbHtmlWindow.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbImportReader.cpp"
+				RelativePath="..\MyRuLib\FbImportCtx.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbImportThread.cpp"
+				RelativePath="..\MyRuLib\FbImportReader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbInternetBook.cpp"
+				RelativePath="..\MyRuLib\FbImportThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbLocale.cpp"
+				RelativePath="..\MyRuLib\FbInternetBook.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbLogStream.cpp"
+				RelativePath="..\MyRuLib\FbLocale.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMainFrame.cpp"
+				RelativePath="..\MyRuLib\FbLogStream.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMainMenu.cpp"
+				RelativePath="..\MyRuLib\FbMainFrame.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterInfo.cpp"
+				RelativePath="..\MyRuLib\FbMainMenu.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterThread.cpp"
+				RelativePath="..\MyRuLib\FbMasterInfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterTypes.cpp"
+				RelativePath="..\MyRuLib\FbMasterThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMenu.cpp"
+				RelativePath="..\MyRuLib\FbMasterTypes.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbNotebook.cpp"
+				RelativePath="..\MyRuLib\FbMenu.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbParams.cpp"
+				RelativePath="..\MyRuLib\controls\FbNotebook.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbParamsDlg.cpp"
+				RelativePath="..\MyRuLib\FbParams.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbParsingCtx.cpp"
+				RelativePath="..\MyRuLib\FbParamsDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbPreviewReader.cpp"
+				RelativePath="..\MyRuLib\FbParsingCtx.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbPreviewThread.cpp"
+				RelativePath="..\MyRuLib\FbPreviewReader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbPreviewWindow.cpp"
+				RelativePath="..\MyRuLib\FbPreviewThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbProgressDlg.cpp"
+				RelativePath="..\MyRuLib\FbPreviewWindow.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbScanerThread.cpp"
+				RelativePath="..\MyRuLib\FbProgressDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbSearchCombo.cpp"
+				RelativePath="..\MyRuLib\FbScanerThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbSeqnList.cpp"
+				RelativePath="..\MyRuLib\controls\FbSearchCombo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbSequenDlg.cpp"
+				RelativePath="..\MyRuLib\FbSeqnList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbServiceDlg.cpp"
+				RelativePath="..\MyRuLib\FbSequenDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbServiceThread.cpp"
+				RelativePath="..\MyRuLib\FbServiceDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbThread.cpp"
+				RelativePath="..\MyRuLib\FbServiceThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbTitleDlg.cpp"
+				RelativePath="..\MyRuLib\FbThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbToolBar.cpp"
+				RelativePath="..\MyRuLib\FbTitleDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbTreeModel.cpp"
+				RelativePath="..\MyRuLib\controls\FbToolBar.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbTreeView.cpp"
+				RelativePath="..\MyRuLib\controls\FbTreeModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbUpdateThread.cpp"
+				RelativePath="..\MyRuLib\controls\FbTreeView.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbURL.cpp"
+				RelativePath="..\MyRuLib\FbUpdateThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewContext.cpp"
+				RelativePath="..\MyRuLib\controls\FbURL.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewData.cpp"
+				RelativePath="..\MyRuLib\FbViewContext.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewerDlg.cpp"
+				RelativePath="..\MyRuLib\FbViewData.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbViewItem.cpp"
+				RelativePath="..\MyRuLib\FbViewerDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewReader.cpp"
+				RelativePath="..\MyRuLib\controls\FbViewItem.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewThread.cpp"
+				RelativePath="..\MyRuLib\FbViewThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FbWindow.cpp"
+				RelativePath="..\MyRuLib\FbWindow.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ImpContext.cpp"
+				RelativePath="..\MyRuLib\controls\LimitedTextCtrl.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\LimitedTextCtrl.cpp"
+				RelativePath="..\MyRuLib\MyRuLibApp.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\MyRuLibApp.cpp"
+				RelativePath="..\MyRuLib\controls\ProgressBar.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ParseCtx.cpp"
+				RelativePath="..\MyRuLib\VacuumThread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\ProgressBar.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\VacuumThread.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ZipReader.cpp"
+				RelativePath="..\MyRuLib\ZipReader.cpp"
 				>
 			</File>
 		</Filter>
@@ -590,15 +582,11 @@
 			Name="SQLite"
 			>
 			<File
-				RelativePath=".\wx\base64.cpp"
+				RelativePath="..\MyRuLib\wx\base64.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\wx\base64.h"
-				>
-			</File>
-			<File
-				RelativePath=".\polarssl\md5.c"
+				RelativePath="..\MyRuLib\polarssl\md5.c"
 				>
 			</File>
 			<File
@@ -620,423 +608,427 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\BaseThread.h"
+				RelativePath="..\MyRuLib\BaseThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAboutDlg.h"
+				RelativePath="..\MyRuLib\FbAboutDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAlphabet.h"
+				RelativePath="..\MyRuLib\FbAlphabet.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAuthList.h"
+				RelativePath="..\MyRuLib\FbAuthList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbAuthorDlg.h"
+				RelativePath="..\MyRuLib\FbAuthorDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookData.h"
+				RelativePath="..\MyRuLib\FbBookData.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookEvent.h"
+				RelativePath="..\MyRuLib\FbBookEvent.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookList.h"
+				RelativePath="..\MyRuLib\FbBookList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookMenu.h"
+				RelativePath="..\MyRuLib\FbBookMenu.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookPanel.h"
+				RelativePath="..\MyRuLib\FbBookPanel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookTree.h"
+				RelativePath="..\MyRuLib\FbBookTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbBookTypes.h"
+				RelativePath="..\MyRuLib\FbBookTypes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbCacheBook.h"
+				RelativePath="..\MyRuLib\FbCacheBook.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbChoiceFormat.h"
+				RelativePath="..\MyRuLib\controls\FbChoiceFormat.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbClientData.h"
+				RelativePath="..\MyRuLib\FbClientData.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbCollection.h"
+				RelativePath="..\MyRuLib\FbCollection.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbColumnDlg.h"
+				RelativePath="..\MyRuLib\FbColumnDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbColumns.h"
+				RelativePath="..\MyRuLib\FbColumns.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbComboBox.h"
+				RelativePath="..\MyRuLib\controls\FbComboBox.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbConfigDlg.h"
+				RelativePath="..\MyRuLib\FbConfigDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbConst.h"
+				RelativePath="..\MyRuLib\FbConst.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbConvertDlg.h"
+				RelativePath="..\MyRuLib\FbConvertDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbCounter.h"
+				RelativePath="..\MyRuLib\FbCounter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbCustomCombo.h"
+				RelativePath="..\MyRuLib\controls\FbCustomCombo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDatabase.h"
+				RelativePath="..\MyRuLib\FbDatabase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDataOpenDlg.h"
+				RelativePath="..\MyRuLib\FbDataOpenDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDataPath.h"
+				RelativePath="..\MyRuLib\FbDataPath.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDateTime.h"
+				RelativePath="..\MyRuLib\FbDateTime.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDateTree.h"
+				RelativePath="..\MyRuLib\FbDateTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDeleteThread.h"
+				RelativePath="..\MyRuLib\FbDeleteThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDownList.h"
+				RelativePath="..\MyRuLib\FbDownList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbDownloader.h"
+				RelativePath="..\MyRuLib\FbDownloader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbEditBook.h"
+				RelativePath="..\MyRuLib\FbEditBook.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbExportDlg.h"
+				RelativePath="..\MyRuLib\FbExportDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbExportTree.h"
+				RelativePath="..\MyRuLib\FbExportTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbExtractInfo.h"
+				RelativePath="..\MyRuLib\FbExtractInfo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFilterDlg.h"
+				RelativePath="..\MyRuLib\FbFilterDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFilterObj.h"
+				RelativePath="..\MyRuLib\FbFilterObj.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFilterTree.h"
+				RelativePath="..\MyRuLib\FbFilterTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbFldrTree.h"
+				RelativePath="..\MyRuLib\FbFldrTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameAuth.h"
+				RelativePath="..\MyRuLib\frames\FbFrameAuth.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameBase.h"
+				RelativePath="..\MyRuLib\frames\FbFrameBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameDate.h"
+				RelativePath="..\MyRuLib\frames\FbFrameDate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameDown.h"
+				RelativePath="..\MyRuLib\frames\FbFrameDown.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameFind.h"
+				RelativePath="..\MyRuLib\frames\FbFrameFind.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameFldr.h"
+				RelativePath="..\MyRuLib\frames\FbFrameFldr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameGenr.h"
+				RelativePath="..\MyRuLib\frames\FbFrameGenr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameHtml.h"
+				RelativePath="..\MyRuLib\frames\FbFrameHtml.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameInfo.h"
+				RelativePath="..\MyRuLib\frames\FbFrameInfo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\frames\FbFrameSeqn.h"
+				RelativePath="..\MyRuLib\frames\FbFrameSeqn.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbGenres.h"
+				RelativePath="..\MyRuLib\FbGenres.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbGenreThread.h"
+				RelativePath="..\MyRuLib\FbGenreThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbGenrTree.h"
+				RelativePath="..\MyRuLib\FbGenrTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbHtmlWindow.h"
+				RelativePath="..\MyRuLib\controls\FbHtmlWindow.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbImportReader.h"
+				RelativePath="..\MyRuLib\FbImportCtx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbImportThread.h"
+				RelativePath="..\MyRuLib\FbImportReader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbInternetBook.h"
+				RelativePath="..\MyRuLib\FbImportThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbLocale.h"
+				RelativePath="..\MyRuLib\FbInternetBook.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbLogoBitmap.h"
+				RelativePath="..\MyRuLib\FbLocale.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbLogStream.h"
+				RelativePath="..\MyRuLib\FbLogoBitmap.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMainFrame.h"
+				RelativePath="..\MyRuLib\FbLogStream.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMainMenu.h"
+				RelativePath="..\MyRuLib\FbMainFrame.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterInfo.h"
+				RelativePath="..\MyRuLib\FbMainMenu.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterThread.h"
+				RelativePath="..\MyRuLib\FbMasterInfo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMasterTypes.h"
+				RelativePath="..\MyRuLib\FbMasterThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbMenu.h"
+				RelativePath="..\MyRuLib\FbMasterTypes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbNotebook.h"
+				RelativePath="..\MyRuLib\FbMenu.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbParams.h"
+				RelativePath="..\MyRuLib\controls\FbNotebook.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbParamsDlg.h"
+				RelativePath="..\MyRuLib\FbParams.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbParsingCtx.h"
+				RelativePath="..\MyRuLib\FbParamsDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbPreviewReader.h"
+				RelativePath="..\MyRuLib\FbParsingCtx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbPreviewThread.h"
+				RelativePath="..\MyRuLib\FbPreviewReader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbPreviewWindow.h"
+				RelativePath="..\MyRuLib\FbPreviewThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbProgressDlg.h"
+				RelativePath="..\MyRuLib\FbPreviewWindow.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbScanerThread.h"
+				RelativePath="..\MyRuLib\FbProgressDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbSearchCombo.h"
+				RelativePath="..\MyRuLib\FbScanerThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbSeqnList.h"
+				RelativePath="..\MyRuLib\controls\FbSearchCombo.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbSequenDlg.h"
+				RelativePath="..\MyRuLib\FbSeqnList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbServiceDlg.h"
+				RelativePath="..\MyRuLib\FbSequenDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbServiceThread.h"
+				RelativePath="..\MyRuLib\FbServiceDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbThread.h"
+				RelativePath="..\MyRuLib\FbServiceThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbTitleDlg.h"
+				RelativePath="..\MyRuLib\FbThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbTitleDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbTreeModel.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbTreeView.h"
+				RelativePath="..\MyRuLib\controls\FbTreeModel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbUpdateThread.h"
+				RelativePath="..\MyRuLib\controls\FbTreeView.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbURL.h"
+				RelativePath="..\MyRuLib\FbUpdateThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewContext.h"
+				RelativePath="..\MyRuLib\controls\FbURL.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewData.h"
+				RelativePath="..\MyRuLib\FbViewContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewerDlg.h"
+				RelativePath="..\MyRuLib\FbViewData.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\FbViewItem.h"
+				RelativePath="..\MyRuLib\FbViewerDlg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewReader.h"
+				RelativePath="..\MyRuLib\controls\FbViewItem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbViewThread.h"
+				RelativePath="..\MyRuLib\FbViewReader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FbWindow.h"
+				RelativePath="..\MyRuLib\FbViewThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ImpContext.h"
+				RelativePath="..\MyRuLib\FbWindow.h"
 				>
 			</File>
 			<File
-				RelativePath=".\InfoCash.h"
+				RelativePath="..\MyRuLib\ImpContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\InfoThread.h"
+				RelativePath="..\MyRuLib\InfoCash.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\LimitedTextCtrl.h"
+				RelativePath="..\MyRuLib\InfoThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MyRuLibApp.h"
+				RelativePath="..\MyRuLib\controls\LimitedTextCtrl.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ParseCtx.h"
+				RelativePath="..\MyRuLib\MyRuLibApp.h"
 				>
 			</File>
 			<File
-				RelativePath=".\controls\ProgressBar.h"
+				RelativePath="..\MyRuLib\ParseCtx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\TitleThread.h"
+				RelativePath="..\MyRuLib\controls\ProgressBar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\VacuumThread.h"
+				RelativePath="..\MyRuLib\TitleThread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ZipReader.h"
+				RelativePath="..\MyRuLib\VacuumThread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\ZipReader.h"
 				>
 			</File>
 		</Filter>

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="expat_static"
+	Name="expat"
 	ProjectGUID="{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}"
 	TargetFrameworkVersion="0"
 	>
@@ -161,104 +161,24 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="xmlparse.c"
+				RelativePath="..\..\3rdparty\expat\xmlparse.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="xmlrole.c"
+				RelativePath="..\..\3rdparty\expat\xmlrole.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="xmltok.c"
+				RelativePath="..\..\3rdparty\expat\xmltok.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="xmltok_impl.c"
+				RelativePath="..\..\3rdparty\expat\xmltok_impl.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="xmltok_ns.c"
+				RelativePath="..\..\3rdparty\expat\xmltok_ns.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -266,51 +186,63 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="ascii.h"
+				RelativePath="..\..\3rdparty\expat\amigaconfig.h"
 				>
 			</File>
 			<File
-				RelativePath="asciitab.h"
+				RelativePath="..\..\3rdparty\expat\ascii.h"
 				>
 			</File>
 			<File
-				RelativePath="expat.h"
+				RelativePath="..\..\3rdparty\expat\asciitab.h"
 				>
 			</File>
 			<File
-				RelativePath="expat_external.h"
+				RelativePath="..\..\3rdparty\expat\expat.h"
 				>
 			</File>
 			<File
-				RelativePath="iasciitab.h"
+				RelativePath="..\..\3rdparty\expat\expat_external.h"
 				>
 			</File>
 			<File
-				RelativePath="internal.h"
+				RelativePath="..\..\3rdparty\expat\iasciitab.h"
 				>
 			</File>
 			<File
-				RelativePath="latin1tab.h"
+				RelativePath="..\..\3rdparty\expat\internal.h"
 				>
 			</File>
 			<File
-				RelativePath="nametab.h"
+				RelativePath="..\..\3rdparty\expat\latin1tab.h"
 				>
 			</File>
 			<File
-				RelativePath="utf8tab.h"
+				RelativePath="..\..\3rdparty\expat\macconfig.h"
 				>
 			</File>
 			<File
-				RelativePath="xmlrole.h"
+				RelativePath="..\..\3rdparty\expat\nametab.h"
 				>
 			</File>
 			<File
-				RelativePath="xmltok.h"
+				RelativePath="..\..\3rdparty\expat\utf8tab.h"
 				>
 			</File>
 			<File
-				RelativePath="xmltok_impl.h"
+				RelativePath="..\..\3rdparty\expat\winconfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\3rdparty\expat\xmlrole.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\3rdparty\expat\xmltok.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\3rdparty\expat\xmltok_impl.h"
 				>
 			</File>
 		</Filter>
