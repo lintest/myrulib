@@ -850,6 +850,13 @@ void FbParamsDlg::OnTypeActivated( wxTreeEvent & event )
 	wxCommandEvent cmdEvent;
 	OnModifyType(cmdEvent);
 }
+
+void FbParamsDlg::SetColour(wxWindowID id, wxColour colour)
+{
+	wxColourPickerCtrl * control = (wxColourPickerCtrl*) FindWindowById(id);
+	if (control) control->SetColour(colour);
+}
+
 void FbParamsDlg::SetFont(wxWindowID id, wxFont font)
 {
 	wxFontPickerCtrl * control = (wxFontPickerCtrl*) FindWindowById(id);
@@ -863,6 +870,12 @@ void FbParamsDlg::OnFontClear( wxCommandEvent& event )
 	SetFont(ID_FONT_TOOL, font);
 	SetFont(ID_FONT_HTML, font);
 	SetFont(ID_FONT_DLG, font);
+
+	wxColour colour = * wxBLACK;
+	SetColour(ID_COLOUR_MAIN, colour);
+	SetColour(ID_COLOUR_TOOL, colour);
+	SetColour(ID_COLOUR_HTML, colour);
+	SetColour(ID_COLOUR_DLG, colour);
 }
 
 void FbParamsDlg::OnLetterClicked(wxCommandEvent& event)

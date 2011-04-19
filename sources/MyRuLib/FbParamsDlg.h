@@ -159,6 +159,7 @@ class FbParamsDlg : private FbDialog
 	private:
 		void Assign(bool write);
 		void SetFont( wxWindowID id, wxFont font );
+		void SetColour( wxWindowID id, wxColour colour );
 		void SelectApplication();
 		void SaveData();
 		void DeleteTypes(wxSQLite3Database &database);
