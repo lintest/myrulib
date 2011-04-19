@@ -114,6 +114,11 @@ wxFont FbParams::GetFont(int param)
 	return font;
 }
 
+wxColour FbParams::GetColour(int param)
+{
+	return wxColour(GetStr(param));
+}
+
 void FbParams::AddRecent(const wxString &text, const wxString &title)
 {
 	int i = 0;

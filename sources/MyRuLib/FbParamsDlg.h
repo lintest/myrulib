@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/dialog.h>
 #include <wx/fontpicker.h>
+#include <wx/clrpicker.h>
 #include <wx/wxsqlite3.h>
 #include "FbWindow.h"
 #include "controls/FbTreeModel.h"
@@ -50,6 +51,10 @@ class FbParamsDlg : private FbDialog
 			ID_FONT_HTML,
 			ID_FONT_TOOL,
 			ID_FONT_DLG,
+			ID_COLOUR_MAIN,
+			ID_COLOUR_HTML,
+			ID_COLOUR_TOOL,
+			ID_COLOUR_DLG,
 			ID_REMOVE_FILES,
 			ID_CLEAR_LOG,
 			ID_GRAY_FONT,
@@ -77,7 +82,7 @@ class FbParamsDlg : private FbDialog
 			public:
 				PanelFont(wxWindow *parent);
 			private:
-				void AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid = wxID_ANY);
+				void AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID idFont, wxWindowID idColour);
 		};
 		class PanelInternet: public wxPanel
 		{

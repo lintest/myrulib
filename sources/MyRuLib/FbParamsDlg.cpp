@@ -213,15 +213,15 @@ FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* fgSizerList;
-	fgSizerList = new wxFlexGridSizer(2, 0, 0 );
+	fgSizerList = new wxFlexGridSizer(3, 0, 0 );
 	fgSizerList->AddGrowableCol( 1 );
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	AppendItem(fgSizerList, _("List of authors and books:"), ID_FONT_MAIN);
-	AppendItem(fgSizerList, _("Toolbar:"), ID_FONT_TOOL);
-	AppendItem(fgSizerList, _("Information:"), ID_FONT_HTML);
-	AppendItem(fgSizerList, _("Dialog windows:"), ID_FONT_DLG);
+	AppendItem(fgSizerList, _("List of authors and books:"), ID_FONT_MAIN, ID_COLOUR_MAIN);
+	AppendItem(fgSizerList, _("Toolbar:"), ID_FONT_TOOL, ID_COLOUR_TOOL);
+	AppendItem(fgSizerList, _("Information:"), ID_FONT_HTML, ID_COLOUR_HTML);
+	AppendItem(fgSizerList, _("Dialog windows:"), ID_FONT_DLG, ID_COLOUR_DLG);
 
 	bSizerMain->Add( fgSizerList, 0, wxEXPAND, 5 );
 
@@ -234,7 +234,7 @@ FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	SetMinSize(GetBestSize());
 }
 
-void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID winid)
+void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString& name, wxWindowID idFont, wxWindowID idColour)
 {
 	wxStaticText * stTitle;
 	stTitle = new wxStaticText( this, wxID_ANY, name, wxDefaultPosition, wxDefaultSize, 0 );
@@ -242,9 +242,13 @@ void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString
 	fgSizer->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxFontPickerCtrl * fpValue;
-	fpValue = new wxFontPickerCtrl( this, winid, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE|wxFNTP_USE_TEXTCTRL );
+	fpValue = new wxFontPickerCtrl( this, idFont, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE|wxFNTP_USE_TEXTCTRL );
 	fpValue->SetMaxPointSize( 100 );
 	fgSizer->Add( fpValue, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
+
+	wxColourPickerCtrl * cpValue;
+	cpValue = new wxColourPickerCtrl( this, idColour);
+	fgSizer->Add( cpValue, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
 }
 
 //-----------------------------------------------------------------------------
@@ -628,6 +632,10 @@ void FbParamsDlg::Assign(bool write)
 		{FB_FONT_HTML, ID_FONT_HTML},
 		{FB_FONT_TOOL, ID_FONT_TOOL},
 		{FB_FONT_DLG, ID_FONT_DLG},
+		{FB_COLOUR_MAIN, ID_COLOUR_MAIN},
+		{FB_COLOUR_HTML, ID_COLOUR_HTML},
+		{FB_COLOUR_TOOL, ID_COLOUR_TOOL},
+		{FB_COLOUR_DLG, ID_COLOUR_DLG},
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES},
 		{FB_REMOVE_FILES, ID_REMOVE_FILES},
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH},

@@ -4,6 +4,7 @@
 #include "controls/FbChoiceFormat.h"
 #include <wx/combo.h>
 #include <wx/fontpicker.h>
+#include <wx/clrpicker.h>
 #include <wx/spinctrl.h>
 
 //-----------------------------------------------------------------------------
@@ -14,12 +15,16 @@ FbDialog::FbDialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	:wxDialog( parent, id, title, pos, size, style, name )
 {
 	SetFont( FbParams::GetFont(FB_FONT_DLG) );
+	wxColour colour = FbParams::GetColour(FB_COLOUR_DLG);
+	if (colour.IsOk()) SetForegroundColour(colour);
 }
 
 bool FbDialog::Create( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name )
 {
 	bool res = wxDialog::Create( parent, id, title, pos, size, style, name );
 	SetFont( FbParams::GetFont(FB_FONT_DLG) );
+	wxColour colour = FbParams::GetColour(FB_COLOUR_DLG);
+	if (colour.IsOk()) SetForegroundColour(colour);
 	return res;
 }
 
@@ -63,6 +68,11 @@ void FbDialog::Assign(long winid, int param, bool write)
 			FbParams::Set(param, control->GetSelectedFont().GetNativeFontInfoDesc());
 		else
 			control->SetSelectedFont(FbParams::GetFont(param) );
+	} else if (wxColourPickerCtrl * control = wxDynamicCast(window, wxColourPickerCtrl)) {
+		if (write)
+			FbParams::Set(param, control->GetColour().GetAsString(wxC2S_HTML_SYNTAX));
+		else
+			control->SetColour(FbParams::GetColour(param));
 	} else if (FbChoiceFormat * control = wxDynamicCast(window, FbChoiceFormat)) {
 		if (write) {
 			int format = control->GetCurrentData();

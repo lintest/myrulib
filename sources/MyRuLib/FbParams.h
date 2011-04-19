@@ -77,6 +77,11 @@ enum FbParamKey {
 	FB_FONT_TOOL = 162,
 	FB_FONT_DLG  = 163,
 
+	FB_COLOUR_MAIN = 165,
+	FB_COLOUR_HTML = 166,
+	FB_COLOUR_TOOL = 167,
+	FB_COLOUR_DLG  = 168,
+
 	FB_FRAME_MAXIMIZE = 170,
 	FB_FRAME_WIDTH    = 171,
 	FB_FRAME_HEIGHT   = 172,
@@ -120,6 +125,7 @@ class FbParams {
 		static wxString GetPath(int param);
 		static wxString GetStr(wxWindowID winid, int param);
 		static wxFont GetFont(int param);
+		static wxColour GetColour(int param);
 		static void Set(int param, int value);
 		static void Set(wxWindowID winid, int param, int value);
 		static void Set(int param, const wxString &text);

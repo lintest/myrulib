@@ -332,7 +332,7 @@ FbConvertDlg::FbConvertDlg( wxWindow* parent, wxWindowID id, const wxString& tit
 
 	m_text.Create( this, wxID_ANY);
 	bSizerMain->Add( &m_text, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
-    wxFont font(8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    wxFont font(GetFont().GetPointSize(), wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     if (font.Ok()) m_text.SetFont(font);
 
 	wxBoxSizer* bSizerBottom = new wxBoxSizer( wxHORIZONTAL );
