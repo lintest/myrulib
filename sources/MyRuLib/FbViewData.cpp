@@ -2,6 +2,7 @@
 #include "FbColumns.h"
 #include "FbDatabase.h"
 #include "FbGenres.h"
+#include "FbParams.h"
 #include "FbCollection.h"
 #include "FbBookEvent.h"
 #include "MyRuLibApp.h"
@@ -61,13 +62,14 @@ wxString FbViewData::GetImage(const wxString &filename) const
 
 void FbViewData::Push(const wxString &filename, const wxImage &image)
 {
+	int max = FbParams::GetInt(FB_IMAGE_WIDTH);
 	double scale = 1;
 	int w = image.GetWidth();
 	int h = image.GetHeight();
-	if (w > MAX_IMAGE_WIDTH) {
-		w = MAX_IMAGE_WIDTH;
-		h = image.GetHeight() * MAX_IMAGE_WIDTH / image.GetWidth();
-		scale = double(MAX_IMAGE_WIDTH) / image.GetWidth();
+	if (w > max) {
+		w = max;
+		h = image.GetHeight() * max / image.GetWidth();
+		scale = double(max) / image.GetWidth();
 	}
 	w += 2;
 	h += 2;

@@ -8,8 +8,6 @@
 #include "FbDownloader.h"
 #include "FbBookEvent.h"
 
-#define MAX_IMAGE_WIDTH 200
-
 class FbLocale;
 
 class FbCollection;

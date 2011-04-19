@@ -402,6 +402,17 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_GRAY_FONT, _("Use a gray font for missing books"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
+	wxBoxSizer* bSizerImage = new wxBoxSizer( wxHORIZONTAL );
+
+	wxStaticText * imageText = new wxStaticText( this, wxID_ANY, _("Maximum width of the cover image"), wxDefaultPosition, wxDefaultSize, 0 );
+	typeText->Wrap( -1 );
+	bSizerImage->Add( imageText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxSpinCtrl * number = new wxSpinCtrl( this, ID_IMAGE_WIDTH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 999, 0 );
+	bSizerImage->Add( number, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	bSizerMain->Add( bSizerImage, 0, wxALL, 5 );
+
 	SetSizer( bSizerMain );
 	bSizerMain->Fit( this );
 	Layout();
@@ -626,7 +637,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_LANG_LOCALE, ID_LANG_LOCALE},
 		{FB_WEB_TIMEOUT, ID_WEB_TIMEOUT},
 		{FB_WEB_ATTEMPT, ID_WEB_ATTEMPT},
-
+		{FB_IMAGE_WIDTH, ID_IMAGE_WIDTH},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
