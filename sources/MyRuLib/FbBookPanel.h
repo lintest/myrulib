@@ -79,6 +79,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnSystemDownload(wxCommandEvent & event);
 		void OnSubmenu(wxCommandEvent& event);
 		void OnContextMenu(wxTreeEvent& event);
+		void OnCopy(wxCommandEvent& event);
 		void OnSelectAll(wxCommandEvent& event);
 		void OnUnselectAll(wxCommandEvent& event);
 		void OnChangeRating(wxCommandEvent& event);

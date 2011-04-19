@@ -1513,7 +1513,7 @@ wxString FbTreeViewCtrl::GetCurrentText() const
 	if (model) {
 		size_t position = model->GetPosition();
 	    FbModelItem item = model->GetData(position);
-	    if (item) return item;
+	    if (item) return item[0];
 	}
 	return wxEmptyString;
 }

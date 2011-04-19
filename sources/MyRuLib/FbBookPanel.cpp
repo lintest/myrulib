@@ -25,6 +25,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
+	EVT_MENU(wxID_COPY, FbBookPanel::OnCopy)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
@@ -206,6 +207,11 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 	FbBookMenu menu(this, m_BookList->GetCurrent(), m_BookList->GetBook());
 	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
 	PopupMenu(&menu, pos.x, pos.y);
+}
+
+void FbBookPanel::OnCopy(wxCommandEvent& event)
+{
+//	m_BookList->SelectAll(true);
 }
 
 void FbBookPanel::OnSelectAll(wxCommandEvent& event)
