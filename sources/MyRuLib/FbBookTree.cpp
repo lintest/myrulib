@@ -110,7 +110,7 @@ size_t FbBookTreeModel::GetChecked(FbBookTraverser & traverser, FbModelItem &par
 {
 	size_t result = 0;
 
-	if (parent.GetState() == 1) {
+	if (parent.GetState() > 0) {
 		traverser.OnBook(parent, level);
 		result++;
 	}
