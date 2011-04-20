@@ -211,7 +211,6 @@ wxString FbViewData::GetHTML(const FbViewContext &ctx, const FbCacheBook &book) 
 			html << wxString::Format(wxT("<img src=\"memory:%s\">"), image.c_str());
 			html << wxT("</td></tr>");
 		}
-		html << wxT("</td></tr>");
 		if (!isbn.IsEmpty()) html << wxString::Format(wxT("<tr><td align=center>ISBN:&nbsp;%s</td></tr>"), isbn.c_str());
 		html << wxT("</table></td></tr>");
 		html << wxString::Format(wxT("<tr><td valign=top>%s</td></tr>"), annt.c_str());

@@ -177,7 +177,6 @@
 		<depends>faxpp_static</depends>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
-		<library>wxcurl_static</library>
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>

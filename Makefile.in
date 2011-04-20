@@ -381,8 +381,8 @@ cs.inc: bin2c$(EXEEXT) cs.mo
 sv.inc: bin2c$(EXEEXT) sv.mo
 	./bin2c ./sv.mo ./sv.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__wxcurl_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__wxcurl_static___depname) $(__myrulib___win32rc)
-	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static -lwxcurl_static $(WX_LIBS) $(LIBS)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__wxcurl_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__myrulib___win32rc)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
