@@ -1,4 +1,5 @@
 #include "FbBookPanel.h"
+#include <wx/clipbrd.h>
 #include "FbConst.h"
 #include "frames/FbFrameHtml.h"
 #include "FbBookMenu.h"
@@ -25,9 +26,6 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
-	EVT_MENU(wxID_COPY, FbBookPanel::OnCopy)
-	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
-	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
 	EVT_MENU(ID_BOOK_PAGE, FbBookPanel::OnBookPage)
 	EVT_MENU(ID_DOWNLOAD_BOOK, FbBookPanel::OnDownloadBook)
@@ -36,6 +34,9 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
 	EVT_MENU(ID_EDIT_BOOK, FbBookPanel::OnEditBook)
+	EVT_MENU(wxID_COPY, FbBookPanel::OnCopy)
+	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
+	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_RATING_5, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_4, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_3, FbBookPanel::OnChangeRating)
@@ -207,21 +208,6 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 	FbBookMenu menu(this, m_BookList->GetCurrent(), m_BookList->GetBook());
 	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
 	PopupMenu(&menu, pos.x, pos.y);
-}
-
-void FbBookPanel::OnCopy(wxCommandEvent& event)
-{
-//	m_BookList->SelectAll(true);
-}
-
-void FbBookPanel::OnSelectAll(wxCommandEvent& event)
-{
-	m_BookList->SelectAll(true);
-}
-
-void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
-{
-	m_BookList->SelectAll(false);
 }
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
@@ -564,3 +550,25 @@ void FbBookPanel::OnEditBook(wxCommandEvent & event)
 	int book = m_BookList->GetBook();
 	if (book) FbTitleDlg::Execute(book);
 }
+
+void FbBookPanel::OnCopy(wxCommandEvent& event)
+{
+	wxString text = m_BookList->GetText();
+	if (text.IsEmpty()) return;
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData( new wxTextDataObject(text) );
+		wxTheClipboard->Close();
+	}
+}
+
+void FbBookPanel::OnSelectAll(wxCommandEvent& event)
+{
+	m_BookList->SelectAll(true);
+}
+
+void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
+{
+	m_BookList->SelectAll(false);
+}
+

@@ -6,6 +6,7 @@
 #include "FbCollection.h"
 #include "FbThread.h"
 #include "FbMasterInfo.h"
+#include "FbBookTraverser.h"
 
 class FbAuthParentData: public FbParentData
 {
@@ -101,10 +102,12 @@ class FbBookTreeModel: public FbTreeModel
 		virtual FbViewItem GetView();
 		virtual void Delete();
 		int GetBookCount();
+		wxString GetText(wxArrayInt &columns);
 	private:
+		void DoTraverse(FbBookTraverser & traverser);
+		size_t GetChecked(FbBookTraverser & traverser, FbModelItem &parent, int level);
+		size_t GetSelected(FbBookTraverser & traverser, FbModelItem &parent, int level, size_t max, size_t &row);
 		void GetBooks(FbModelItem &parent, FbSortedArrayInt &items);
-		void GetChecked(FbModelItem &parent, wxArrayInt &items);
-		void GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items);
 		bool DoDelete(FbModelItem &parent, size_t &row);
 		DECLARE_CLASS(FbBookTreeModel);
 };

@@ -82,32 +82,54 @@ void FbBookListModel::SelectAll(bool value)
 size_t FbBookListModel::GetSelected(wxArrayInt &items)
 {
 	items.Empty();
+	FbBookArrayTraverser traverser(items);
+	DoTraverse(traverser);
+	return items.Count();
+}
+
+wxString FbBookListModel::GetText(wxArrayInt &columns)
+{
+	FbBookTextTraverser traverser(columns);
+	DoTraverse(traverser);
+	return traverser.GetText();
+}
+
+FbModelItem FbBookListModel::Items(size_t index)
+{
+	FbBookListData data = m_items[index];
+	return FbModelItem(*this, &data);
+}
+
+void FbBookListModel::DoTraverse(FbBookTraverser & traverser)
+{
 	size_t count = m_items.Count();
-	if (count == 0) return 0;
+	if (count == 0) return;
 
 	size_t check_count = m_check.Count();
 	for (size_t i = 0; i < check_count; i++) {
-		items.Add(m_check[i]);
+		FbBookListData data = m_check[i];
+		FbModelItem item(*this, &data);
+		traverser.OnBook(item);
 	}
-	if (check_count) return check_count;
+	if (check_count) return;
 
-	if (m_position == 0) return 0;
+	if (m_position == 0) return;
+
 	if (m_shift) {
 		size_t min = m_shift < m_position ? m_shift : m_position;
 		size_t max = m_shift > m_position ? m_shift : m_position;
-		for (size_t i = min; i <= max; i++) items.Add(m_items[i - 1]);
+		for (size_t i = min; i <= max; i++) traverser.OnBook(Items(i - 1));
 	} else {
 		size_t ctrls_count = m_ctrls.Count();
 		if (ctrls_count) {
 			for (size_t i = 0; i < ctrls_count; i++) {
 				size_t index = m_ctrls[i] - 1;
-				if (0 <= index && index < count) items.Add(m_items[index]);
+				if (0 <= index && index < count) traverser.OnBook(Items(index));
 			}
 		} else {
-			items.Add(m_items[m_position - 1]);
+			traverser.OnBook(Items(m_position - 1));
 		}
 	}
-	return items.Count();
 }
 
 int FbBookListModel::GetBook()

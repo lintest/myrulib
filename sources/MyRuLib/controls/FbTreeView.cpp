@@ -1523,6 +1523,18 @@ void FbTreeViewCtrl::EmptyColumns()
     if (m_header_win) m_header_win->EmptyColumns();
 }
 
+wxString FbTreeViewCtrl::GetText()
+{
+	FbModel * model = GetModel();
+	if (model) {
+		wxArrayInt columns;
+		GetColumns(columns);
+		return model->GetText(columns);
+	} else {
+		return wxEmptyString;
+	}
+}
+
 void FbTreeViewCtrl::SelectAll(bool value)
 {
 	FbModel * model = GetModel();

@@ -110,6 +110,8 @@ class FbModelItem: public wxObject
 			{ return m_data ? m_data->GetState(*m_model) : 0; }
 		void SetState(bool state)
 			{ if (m_data) m_data->SetState(*m_model, state); }
+		int GetBook() const 
+			{ return m_data ? m_data->GetBook() : 0; }
 	private:
 		FbModel * m_model;
 		FbModelData * m_data;
@@ -239,6 +241,9 @@ class FbModel: public wxObject
 		virtual void MultiplyCheck() {}
 
 		virtual void SelectAll(bool value) {}
+
+		virtual wxString GetText(wxArrayInt &columns) 
+			{ return wxEmptyString; }
 
 		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); }

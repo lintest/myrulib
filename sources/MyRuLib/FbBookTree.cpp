@@ -71,15 +71,28 @@ IMPLEMENT_CLASS(FbBookTreeModel, FbTreeModel)
 size_t FbBookTreeModel::GetSelected(wxArrayInt &items)
 {
 	items.Empty();
-	FbModelItem root = GetRoot();
-	if (!root) return 0;
+	FbBookArrayTraverser traverser(items);
+	DoTraverse(traverser);
+	return items.Count();
+}
 
-	GetChecked(root, items);
-	size_t count = items.Count();
-	if (count) return count;
+wxString FbBookTreeModel::GetText(wxArrayInt &columns)
+{
+	FbBookTextTraverser traverser(columns);
+	DoTraverse(traverser);
+	return traverser.GetText();
+}
+
+void FbBookTreeModel::DoTraverse(FbBookTraverser & traverser)
+{
+	FbModelItem root = GetRoot();
+	if (!root) return;
+
+	size_t count = GetChecked(traverser, root, 0);
+	if (count) return;
 
 	size_t pos = GetPosition();
-	if (pos == 0) return 0;
+	if (pos == 0) return;
 
 	size_t max;
 	if (m_shift) {
@@ -90,35 +103,43 @@ size_t FbBookTreeModel::GetSelected(wxArrayInt &items)
 	}
 
 	size_t row = m_root->HiddenRoot() ? 0 : 1;
-	GetSelected(root, max, row, items);
-	return items.Count();
+	GetSelected(traverser, root, 0, max, row);
 }
 
-void FbBookTreeModel::GetChecked(FbModelItem &parent, wxArrayInt &items)
+size_t FbBookTreeModel::GetChecked(FbBookTraverser & traverser, FbModelItem &parent, int level)
 {
+	size_t result = 0;
+
 	if (parent.GetState() == 1) {
-		FbBookChildData * book = wxDynamicCast(&parent, FbBookChildData);
-		if (book) items.Add(book->GetCode());
+		traverser.OnBook(parent, level);
+		result++;
 	}
 
 	size_t count = parent.Count();
 	for (size_t i = 0; i < count; i++) {
 		FbModelItem child = parent.Items(i);
-		GetChecked(child, items);
+		result += GetChecked(traverser, child, level + 1);
 	}
+
+	return result;
 }
 
-void FbBookTreeModel::GetSelected(FbModelItem &parent, size_t max, size_t &row, wxArrayInt &items)
+size_t FbBookTreeModel::GetSelected(FbBookTraverser & traverser, FbModelItem &parent, int level, size_t max, size_t &row)
 {
+	size_t result = 0;
+
 	if (IsSelected(row++)) {
-		FbBookChildData * book = wxDynamicCast(&parent, FbBookChildData);
-		if (book) items.Add(book->GetCode());
+		traverser.OnBook(parent, level);
+		result++;
 	}
+
 	size_t count = parent.Count();
 	for (size_t i = 0; i < count && row <= max; i++) {
 		FbModelItem child = parent.Items(i);
-		GetSelected(child, max, row, items);
+		result += GetSelected(traverser, child, level + 1, max, row);
 	}
+
+	return result;
 }
 
 int FbBookTreeModel::GetBook()
@@ -139,7 +160,7 @@ void FbBookTreeModel::Delete()
 	if (m_root == NULL) return;
 	FbModelItem item(*this, m_root);
 	wxArrayInt items;
-	GetChecked(item, items);
+	GetSelected(items);
 	if (items.Count() == 0) MultiplyCheck();
 	size_t row = GetRowCount();
 	DoDelete(item, row);

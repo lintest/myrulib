@@ -6,6 +6,7 @@
 #include "FbCollection.h"
 #include "FbThread.h"
 #include "FbMasterInfo.h"
+#include "FbBookTraverser.h"
 
 class FbBookListData: public FbModelData
 {
@@ -43,6 +44,7 @@ class FbBookListModel: public FbListModel
 		int GetState(int code) const;
 		virtual size_t GetSelected(wxArrayInt &items);
 		void Modify(int book, bool add);
+		virtual wxString GetText(wxArrayInt &columns);
 
 	public:
 		virtual size_t GetRowCount() const
@@ -58,8 +60,12 @@ class FbBookListModel: public FbListModel
 
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level);
+		FbModelItem Items(size_t index);
+
 	private:
         wxString GetSQL(const wxString & order, const wxString & condition);
+		void DoTraverse(FbBookTraverser & traverser);
+
 	private:
 		wxArrayInt m_items;
 		FbSortedArrayInt m_check;

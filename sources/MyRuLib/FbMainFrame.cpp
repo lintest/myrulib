@@ -182,10 +182,8 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 void FbMainFrame::SetAccelerators()
 {
 	wxAcceleratorEntry entries[] = {
-		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('X'), wxID_EXIT),
 		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('W'), ID_WINDOW_CLOSE),
-//		wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F11, ID_FULLSCREEN),
-//		wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F12, ID_LOG_TEXTCTRL),
+		wxAcceleratorEntry(wxACCEL_CTRL, (int) WXK_INSERT, wxID_COPY),
 	};
 	wxAcceleratorTable accel(sizeof(entries) / sizeof(wxAcceleratorEntry), entries);
 	SetAcceleratorTable(accel);

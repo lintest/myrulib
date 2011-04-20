@@ -135,6 +135,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbBookList.o \
 	myrulib_FbBookMenu.o \
 	myrulib_FbBookPanel.o \
+	myrulib_FbBookTraverser.o \
 	myrulib_FbBookTree.o \
 	myrulib_FbCacheBook.o \
 	myrulib_FbColumnDlg.o \
@@ -563,6 +564,9 @@ myrulib_FbBookMenu.o: $(srcdir)/sources/MyRuLib/FbBookMenu.cpp $(MYRULIB_ODEP)
 
 myrulib_FbBookPanel.o: $(srcdir)/sources/MyRuLib/FbBookPanel.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookPanel.cpp
+
+myrulib_FbBookTraverser.o: $(srcdir)/sources/MyRuLib/FbBookTraverser.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookTraverser.cpp
 
 myrulib_FbBookTree.o: $(srcdir)/sources/MyRuLib/FbBookTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbBookTree.cpp

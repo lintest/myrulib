@@ -2003,3 +2003,6 @@ msgstr "Свойства"
 
 msgid "Maximum width of the cover image"
 msgstr "Максимальная ширина картинки с обложки"
+
+msgid "Copy"
+msgstr "Копировать"

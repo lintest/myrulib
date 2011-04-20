@@ -88,6 +88,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
 		bool FindAt(const wxPoint &point, bool select = false);
 
+		wxString GetText();
 		void SelectAll(bool value);
 		void Append(FbModelData * data);
 		void Replace(FbModelData * data);

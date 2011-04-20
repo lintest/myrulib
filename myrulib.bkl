@@ -199,6 +199,7 @@
 		<sources>sources/MyRuLib/FbBookList.cpp</sources>
 		<sources>sources/MyRuLib/FbBookMenu.cpp</sources>
 		<sources>sources/MyRuLib/FbBookPanel.cpp</sources>
+		<sources>sources/MyRuLib/FbBookTraverser.cpp</sources>
 		<sources>sources/MyRuLib/FbBookTree.cpp</sources>
 		<sources>sources/MyRuLib/FbCacheBook.cpp</sources>
 		<sources>sources/MyRuLib/FbColumnDlg.cpp</sources>

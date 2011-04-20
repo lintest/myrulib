@@ -8,8 +8,8 @@ FbMenuBar::MenuFrame::MenuFrame()
 	Append(ID_FRAME_AUTH, _("Authors"));
 	Append(ID_FRAME_GENR, _("Genres"));
 	Append(ID_FRAME_SEQN, _("Series"));
-	Append(ID_FRAME_DATE,   _("Calendar"));
-	Append(ID_FRAME_ARCH,   _("Archive"));
+	Append(ID_FRAME_DATE, _("Calendar"));
+	Append(ID_FRAME_ARCH, _("Archive"));
 	AppendSeparator();
 	Append(ID_FRAME_FLDR, _("My folders"));
 	Append(ID_FRAME_DOWN, _("Downloads"));
@@ -77,6 +77,7 @@ FbFrameMenu::MenuFile::MenuFile()
 
 FbFrameMenu::MenuBook::MenuBook()
 {
+	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"));
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	AppendSeparator();

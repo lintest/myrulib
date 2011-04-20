@@ -79,9 +79,6 @@ class FbBookPanel: public wxSplitterWindow
 		void OnSystemDownload(wxCommandEvent & event);
 		void OnSubmenu(wxCommandEvent& event);
 		void OnContextMenu(wxTreeEvent& event);
-		void OnCopy(wxCommandEvent& event);
-		void OnSelectAll(wxCommandEvent& event);
-		void OnUnselectAll(wxCommandEvent& event);
 		void OnChangeRating(wxCommandEvent& event);
 		void OnDeleteBooks(wxCommandEvent& event);
 		void OnModifyBooks(wxCommandEvent& event);
@@ -91,6 +88,9 @@ class FbBookPanel: public wxSplitterWindow
 		void OnListModel( FbArrayEvent& event );
 		void OnListArray( FbArrayEvent& event );
 		void OnTreeModel( FbModelEvent& event );
+		void OnCopy(wxCommandEvent& event);
+		void OnSelectAll(wxCommandEvent& event);
+		void OnUnselectAll(wxCommandEvent& event);
 		DECLARE_CLASS(FbBookPanel)
 		DECLARE_EVENT_TABLE()
 };
