@@ -95,6 +95,11 @@ WXBZIP2_STATIC_OBJECTS =  \
 	wxbzip2_static_huffman.o \
 	wxbzip2_static_randtable.o \
 	wxbzip2_static_bzipstream.o
+WXCURL_STATIC_CXXFLAGS = -I3rdparty/wxcurl $(WX_CXXFLAGS) $(CPPFLAGS) \
+	$(CXXFLAGS)
+WXCURL_STATIC_OBJECTS =  \
+	wxcurl_static_base.o \
+	wxcurl_static_http.o
 ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
@@ -225,6 +230,8 @@ MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 @COND_USE_FAXPP_builtin@	$(LIBPREFIX)faxpp_static$(LIBEXT)
 @COND_USE_SQLITE_builtin@__sqlite3_static___depname \
 @COND_USE_SQLITE_builtin@	= $(LIBPREFIX)sqlite3_static$(LIBEXT)
+@COND_USE_CURL_yes@__wxcurl_static___depname = \
+@COND_USE_CURL_yes@	$(LIBPREFIX)wxcurl_static$(LIBEXT)
 @COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__zipscan___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL zipscan$(EXEEXT)
@@ -241,7 +248,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat_static___depname) $(__faxpp_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__expat_static___depname) $(__faxpp_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__wxcurl_static___depname) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -283,6 +290,7 @@ clean:
 	rm -f ./wxsqlite3.cpp
 	rm -f $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxbzip2_static$(LIBEXT)
+	rm -f $(LIBPREFIX)wxcurl_static$(LIBEXT)
 	rm -f zipscan$(EXEEXT)
 	rm -f bin2c$(EXEEXT)
 	rm -f ./ru.mo
@@ -328,6 +336,11 @@ $(LIBPREFIX)wxbzip2_static$(LIBEXT): $(WXBZIP2_STATIC_OBJECTS)
 	$(AR) $(AROPTIONS) $@ $(WXBZIP2_STATIC_OBJECTS)
 	$(RANLIB) $@
 
+@COND_USE_CURL_yes@$(LIBPREFIX)wxcurl_static$(LIBEXT): $(WXCURL_STATIC_OBJECTS)
+@COND_USE_CURL_yes@	rm -f $@
+@COND_USE_CURL_yes@	$(AR) $(AROPTIONS) $@ $(WXCURL_STATIC_OBJECTS)
+@COND_USE_CURL_yes@	$(RANLIB) $@
+
 zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
 	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lwxsqlite3_static $(WX_LIBS) $(LIBS)
 	
@@ -368,8 +381,8 @@ cs.inc: bin2c$(EXEEXT) cs.mo
 sv.inc: bin2c$(EXEEXT) sv.mo
 	./bin2c ./sv.mo ./sv.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__myrulib___win32rc)
-	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static $(WX_LIBS) $(LIBS)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__wxcurl_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__wxcurl_static___depname) $(__myrulib___win32rc)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static -lwxcurl_static $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
@@ -489,6 +502,12 @@ wxbzip2_static_randtable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
 
 wxbzip2_static_bzipstream.o: $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
 	$(CXXC) -c -o $@ $(WXBZIP2_STATIC_CXXFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
+
+wxcurl_static_base.o: $(srcdir)/3rdparty/wxcurl/base.cpp
+	$(CXXC) -c -o $@ $(WXCURL_STATIC_CXXFLAGS) $(srcdir)/3rdparty/wxcurl/base.cpp
+
+wxcurl_static_http.o: $(srcdir)/3rdparty/wxcurl/http.cpp
+	$(CXXC) -c -o $@ $(WXCURL_STATIC_CXXFLAGS) $(srcdir)/3rdparty/wxcurl/http.cpp
 
 zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
 	$(CXXC) -c -o $@ $(ZIPSCAN_CXXFLAGS) $(srcdir)/sources/ZipScaner/ZipScan.cpp

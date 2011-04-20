@@ -2,6 +2,7 @@
 <makefile>
 
 	<set var="PREFIX">/usr</set>
+	<option name="USE_CURL"/>
 	<option name="USE_FAXPP"/>
 	<option name="USE_EXPAT"/>
 	<option name="USE_SQLITE"/>
@@ -79,6 +80,12 @@
 		<sources>3rdparty/wxbzipstream/bzip/huffman.c</sources>
 		<sources>3rdparty/wxbzipstream/bzip/randtable.c</sources>
 		<sources>3rdparty/wxbzipstream/bzipstream.cpp</sources>
+	</lib>
+
+	<lib id="wxcurl_static" template="wx-lib" cond="USE_CURL=='yes'">
+		<include>3rdparty/wxcurl</include>
+		<sources>3rdparty/wxcurl/base.cpp</sources>
+		<sources>3rdparty/wxcurl/http.cpp</sources>
 	</lib>
 
 	<exe id="zipscan" template="wxconsole">
@@ -166,9 +173,11 @@
 	<exe id="myrulib" template="wxgui">
 		<depends>expat_static</depends>
 		<depends>sqlite3_static</depends>
+		<depends>wxcurl_static</depends>
 		<depends>faxpp_static</depends>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
+		<library>wxcurl_static</library>
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
