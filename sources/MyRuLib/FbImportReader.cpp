@@ -64,8 +64,13 @@ FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxStr
 	m_archive(0),
 	m_ok(false)
 {
-	wxLogMessage(_("Import file %s"), m_filename.c_str());
-	m_ok = Parse(in, true);
+	m_filetype = m_filename.AfterLast(wxT('.')).Lower();
+	m_parse = m_filetype == wxT("fb2");
+	m_ok = in.IsOk();
+	if (m_ok && m_parse) {
+		m_parse = Parse(in, true);
+		wxLogMessage(_("Import file %s"), m_filename.c_str());
+	}
 }
 
 FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
@@ -74,25 +79,27 @@ FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
 	m_message(owner->m_filename + wxT(": ") + m_filename),
 	m_filesize(entry->GetSize()),
 	m_archive(owner->m_id),
+	m_parse(false),
 	m_ok(false)
 {
-	wxString md5sum;
-	if (m_filename.Right(4).Lower() == wxT(".fb2")) {
-		owner->OpenEntry(*entry);
-	} else {
+	m_filetype = m_filename.AfterLast(wxT('.')).Lower();
+	if (m_filetype == wxT("fbd")) return;
+
+	m_ok = owner->OpenEntry(*entry);
+	if (!m_ok) return;
+
+	m_parse = m_filetype == wxT("fb2");
+	if (!m_parse) {
+		m_md5sum = CalcMd5(owner->m_zip);
 		wxZipEntry * info = owner->GetInfo(m_filename);
-		if (info) {
-			owner->OpenEntry(*entry);
-			md5sum = CalcMd5(owner->m_zip);
-			owner->OpenEntry(*info);
-		} else {
-			wxLogWarning(_("Skip entry %s"), m_filename.c_str());
-			m_ok = false;
-			return;
-		}
+		if (m_parse = info) m_ok = owner->OpenEntry(*info);
+		if (!m_ok) return;
 	}
-	wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
-	m_ok = Parse(owner->m_zip, true);
+
+	if (m_parse) {
+		wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
+		m_parse = Parse(owner->m_zip, m_md5sum.IsEmpty());
+	}
 }
 
 wxString FbImportBook::CalcMd5(wxInputStream& stream)
@@ -255,9 +262,17 @@ bool FbImportBook::AppendFile(int id_book)
 
 bool FbImportBook::Save()
 {
+	if (!m_ok) return false;
+	
 	FbAutoCommit transaction(m_database);
 	int id_book = FindByMD5();
 	if (!id_book) id_book = FindBySize();
-	return id_book ? AppendFile(id_book) : AppendBook();
+
+	if (m_parse) {
+		return id_book ? AppendFile(id_book) : AppendBook();
+	} else {
+		if (id_book == 0) wxLogMessage(_("Skip entry %s"), m_filename.c_str());
+		return id_book && AppendFile(id_book);
+	}
 }
 

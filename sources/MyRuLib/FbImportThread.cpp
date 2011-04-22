@@ -103,11 +103,8 @@ void FbImpotrZip::Make(FbImportThread *owner)
 	for (size_t i=0; i<existed; i++) {
 		wxZipEntry * entry = m_list[i];
 		if (owner) owner->DoStep(entry->GetInternalName());
-		FbImportBook book(this, entry);
-		if (book.IsOk()) {
-			book.Save();
-			processed++;
-		} else skipped++;
+		bool ok = FbImportBook(this, entry).Save();
+		if (ok) processed++; else skipped++;
 	}
 
 	if ( existed && processed == 0 ) {
@@ -180,8 +177,7 @@ void FbZipImportThread::ImportFile(const wxString & zipname)
 	DoStart(0, zipname);
 
 	if (zipname.Right(4).Lower() == wxT(".fb2")) {
-		FbImportBook book(this, in, zipname);
-		if (book.IsOk()) book.Save();
+		FbImportBook(this, in, zipname).Save();
 		DoFinish();
 	} else {
 		FbImpotrZip zip(this, in, zipname);
@@ -201,8 +197,8 @@ class CountTraverser : public wxDirTraverser
 public:
 	CountTraverser() : m_count(0) { }
 	virtual wxDirTraverseResult OnFile(const wxString& filename) {
-		wxString ext = filename.Right(4).Lower();
-		if (ext==wxT(".fb2") || ext==wxT(".zip")) m_count++;
+		wxString ext = filename.AfterLast(wxT('.')).Lower();
+		if (ext == wxT("fb2") || ext == wxT("zip")) m_count++;
 		return wxDIR_CONTINUE;
 	}
 	virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
@@ -218,12 +214,14 @@ class FolderTraverser : public wxDirTraverser
 public:
 	FolderTraverser(FbDirImportThread* thread) : m_thread(thread), m_progress(0) { };
 
-	virtual wxDirTraverseResult OnFile(const wxString& filename) {
-		wxString ext = filename.Right(4).Lower();
-		if (ext == wxT(".fb2")) {
+	virtual wxDirTraverseResult OnFile(const wxString& filename) 
+	{
+		wxString ext = filename.AfterLast(wxT('.')).Lower();
+		if (ext == wxT("fb2")) {
 			Progress(filename);
-			m_thread->ParseXml(filename);
-		} else if (ext == wxT(".zip")) {
+			wxFFileInputStream in(filename);
+			FbImportBook(m_thread, in, filename).Save();
+		} else if (ext == wxT("zip")) {
 			Progress(filename);
 			m_thread->ParseZip(filename);
 		} else {
@@ -232,7 +230,8 @@ public:
 		return wxDIR_CONTINUE;
 	}
 
-	virtual wxDirTraverseResult OnDir(const wxString& dirname)  {
+	virtual wxDirTraverseResult OnDir(const wxString& dirname)  
+	{
 		wxLogMessage(_("Import subdirectory %s"), dirname.c_str());
 		return wxDIR_CONTINUE;
 	}
@@ -272,17 +271,6 @@ void *FbDirImportThread::Entry()
 	wxLogMessage(_("Finish import directory %s"), m_dirname.c_str());
 
 	return NULL;
-}
-
-void FbDirImportThread::ParseXml(const wxString &filename)
-{
-	wxFFileInputStream in(filename);
-	if ( in.IsOk() ) {
-		FbImportBook book(this, in, filename);
-		if (book.IsOk()) book.Save();
-	} else {
-		wxLogError(_("File read error %s"), filename.c_str());
-	}
 }
 
 void FbDirImportThread::ParseZip(const wxString &zipname)

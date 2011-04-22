@@ -41,9 +41,11 @@ class FbImportBook: public FbParsingContext
 		FbDatabase &m_database;
 		wxString m_filename;
 		wxString m_filepath;
+		wxString m_filetype;
 		wxString m_message;
 		wxFileOffset m_filesize;
 		int m_archive;
+		bool m_parse;
 		bool m_ok;
 };
 

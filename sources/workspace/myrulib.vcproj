@@ -408,6 +408,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\FbImportWizard.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbInternetBook.cpp"
 				>
 			</File>
@@ -844,6 +848,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\FbImportWizard.h"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbInternetBook.h"
 				>
 			</File>
@@ -948,11 +956,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
