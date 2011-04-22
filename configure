@@ -5087,6 +5087,10 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SQLITE" >&5
 $as_echo "$USE_SQLITE" >&6; }
 
+if test "x$USE_SQLITE" == "xyes" ; then
+    USE_SQLITE="builtin"
+fi
+
 if test "x$USE_SQLITE" != "xbuiltin" ; then
 
 
