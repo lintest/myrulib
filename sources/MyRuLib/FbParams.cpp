@@ -43,8 +43,8 @@ int FbParams::DefaultInt(int param)
 			case FB_FRAME_HEIGHT: return 480;
 			case FB_ALPHABET_RU: return 1;
 			case FB_ALPHABET_EN: return 1;
-			case FB_WEB_TIMEOUT: return 3;
-			case FB_WEB_ATTEMPT: return 1;
+			case FB_WEB_TIMEOUT: return 600;
+			case FB_WEB_ATTEMPT: return 10;
 			case FB_IMAGE_WIDTH: return 200;
 			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
 			default: return 0;
