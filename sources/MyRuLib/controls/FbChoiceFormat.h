@@ -39,7 +39,7 @@ class FbChoiceFormat : public wxChoice
 
 		int GetClientData(unsigned int index) const
 		{
-			if (index <= GetCount()) return 0;
+			if (index >= GetCount()) return 0;
 			IntData * data = (IntData*) wxChoice::GetClientObject(index);
 			return data ? data->GetData() : 0;
 		}

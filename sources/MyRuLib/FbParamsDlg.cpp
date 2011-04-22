@@ -360,7 +360,6 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	typeText->Wrap( -1 );
 	bSizerLocale->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxString filename = _("filename");
 	FbChoiceFormat * localeChoice = new FbChoiceFormat( this, ID_LANG_LOCALE);
 	FbLocale::Fill(localeChoice, FbParams::GetInt(FB_LANG_LOCALE));
 	bSizerLocale->Add( localeChoice, 1, wxALL, 5 );
