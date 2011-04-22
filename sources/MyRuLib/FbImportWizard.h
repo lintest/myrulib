@@ -35,4 +35,4 @@ private:
 
 };
 
-#endif __FBIMPORTWIZARD_H__
+#endif // __FBIMPORTWIZARD_H__

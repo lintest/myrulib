@@ -37,6 +37,9 @@ class FbLogoBitmap: public wxBitmap
 			wxUnusedVar(nocheck_xpm);
 			wxUnusedVar(checked_xpm);
 			wxUnusedVar(checkout_xpm);
+			wxUnusedVar(add_xpm);
+			wxUnusedVar(mod_xpm);
+			wxUnusedVar(del_xpm);
 		};
 };
 
