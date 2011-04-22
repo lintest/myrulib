@@ -191,7 +191,7 @@ bool FbImportBook::AppendBook()
 			stmt.Bind(6, m_filename);
 			stmt.Bind(7, m_filepath);
 			stmt.Bind(8, (wxLongLong)m_filesize);
-			stmt.Bind(9, wxFileName(m_filename).GetExt().Lower());
+			stmt.Bind(9, m_filetype);
 			stmt.Bind(10, m_lang);
 			stmt.Bind(11, today);
 			stmt.Bind(12, m_md5sum);
