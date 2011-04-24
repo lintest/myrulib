@@ -46,8 +46,8 @@ void FbImportBook::EndNode(const wxString &name)
 	} else if (*this == wxT("/fictionbook/description/title-info/author")) {
 		m_text.Trim(false).Trim(true);
 		if (name == wxT("last-name"))   m_author->last   = m_text; else
-		if (name == wxT("first-name"))  m_author->first  = m_text; else 
-		if (name == wxT("middle-name")) m_author->middle = m_text; 
+		if (name == wxT("first-name"))  m_author->first  = m_text; else
+		if (name == wxT("middle-name")) m_author->middle = m_text;
 	} else if (*this == wxT("/fictionbook/description/publish-info/")) {
 		if (name == wxT("isbn")) m_isbn = m_text.Trim(true).Trim(false);
 	} else if (*this == wxT("/fictionbook/description")) {
@@ -55,34 +55,44 @@ void FbImportBook::EndNode(const wxString &name)
 	}
 }
 
+wxString FbImportBook::GetFiletype(const wxString &filename)
+{
+	return filename.AfterLast(wxT('.')).Lower();
+}
+
 FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxString &filename):
 	m_database(owner->m_database),
 	m_filename(owner->GetRelative(filename)),
 	m_filepath(owner->GetAbsolute(filename)),
+	m_filetype(GetFiletype(m_filename)),
 	m_message(filename),
 	m_filesize(in.GetLength()),
 	m_archive(0),
+	m_parse(false),
 	m_ok(false)
 {
-	m_filetype = m_filename.AfterLast(wxT('.')).Lower();
-	m_parse = m_filetype == wxT("fb2");
 	m_ok = in.IsOk();
-	if (m_ok && m_parse) {
+	if (!m_ok) return;
+
+	m_parse = m_filetype == wxT("fb2");
+	if (m_parse) {
 		m_parse = Parse(in, true);
 		wxLogMessage(_("Import file %s"), m_filename.c_str());
+	} else {
+		m_md5sum = CalcMd5(in);
 	}
 }
 
 FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
 	m_database(owner->m_database),
 	m_filename(entry->GetInternalName()),
+	m_filetype(m_filename),
 	m_message(owner->m_filename + wxT(": ") + m_filename),
 	m_filesize(entry->GetSize()),
 	m_archive(owner->m_id),
 	m_parse(false),
 	m_ok(false)
 {
-	m_filetype = m_filename.AfterLast(wxT('.')).Lower();
 	if (m_filetype == wxT("fbd")) return;
 
 	m_ok = owner->OpenEntry(*entry);
@@ -263,7 +273,7 @@ bool FbImportBook::AppendFile(int id_book)
 bool FbImportBook::Save()
 {
 	if (!m_ok) return false;
-	
+
 	FbAutoCommit transaction(m_database);
 	int id_book = FindByMD5();
 	if (!id_book) id_book = FindBySize();

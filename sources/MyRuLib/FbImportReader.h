@@ -18,6 +18,7 @@ class FbImportBook: public FbParsingContext
 		bool Save();
 		bool IsOk() { return m_ok; };
 	protected:
+		static wxString GetFiletype(const wxString &filename);
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
 		virtual void TxtNode(const wxString &text);
 		virtual void EndNode(const wxString &name);
