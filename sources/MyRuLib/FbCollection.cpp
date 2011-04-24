@@ -477,29 +477,6 @@ void FbCollection::AddIcon(wxString extension, wxBitmap bitmap)
 	sm_icons.Add(extension);
 }
 
-wxFileName FbCollection::FindZip(const wxString &dirname, const wxString &filename)
-{
-	FbCommonDatabase database;
-
-	wxString sql = wxT("SELECT file FROM zip_books WHERE book=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, filename);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	while (result.NextRow())  {
-		wxString sql = wxT("SELECT path FROM zip_files WHERE file=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, result.GetInt(0));
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) {
-			wxFileName zip_file = result.GetString(0);
-			zip_file.SetPath(dirname);
-			if (zip_file.FileExists()) return zip_file.GetFullPath();
-		}
-	}
-	return wxFileName();
-}
-
 void FbCollection::LoadConfig()
 {
 	FbConfigDatabase database;

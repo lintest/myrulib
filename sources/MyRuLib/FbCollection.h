@@ -103,7 +103,6 @@ class FbCollection: public wxObject
 		static void ResetBook(const wxArrayInt &books);
 		static void LoadIcon(const wxString &extension);
 		static void AddIcon(wxString extension, wxBitmap bitmap);
-		static wxFileName FindZip(const wxString &dirname, const wxString &filename);
 		static wxString GetIcon(const wxString &extension);
 		static void EmptyInfo();
 		static int GetParamInt(int param);

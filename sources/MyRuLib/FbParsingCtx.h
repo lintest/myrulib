@@ -8,7 +8,7 @@
 class FbParsingContextBase: public wxObject
 {
 	public:
-		FbParsingContextBase() : m_section(fbsNone), m_md5calc(false) {}
+		FbParsingContextBase() : m_md5calc(false), m_section(fbsNone) {}
 		virtual ~FbParsingContextBase() {}
 		bool Parse(wxInputStream & stream, bool md5 = false);
 		wxString GetMd5() const { return m_md5sum; };

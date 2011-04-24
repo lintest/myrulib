@@ -475,9 +475,6 @@ void FbMainDatabase::DoUpgrade(int version)
 	switch (version) {
 
 		case 2: {
-			ExecuteUpdate(wxT("CREATE TABLE zip_books(book varchar(99), file integer)"));
-			ExecuteUpdate(wxT("CREATE TABLE zip_files(file integer primary key, path text)"));
-			ExecuteUpdate(wxT("CREATE INDEX zip_books_name ON zip_books(book)"));
 		} break;
 
 		case 3: {

@@ -32,13 +32,9 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), file_name);
 		} else if (item.librusec) {
 			if (FbParams::IsGenesis()) {
-				wxFileName book_file = sLibraryDir + wxFileName::GetPathSeparator() + file_name;
+				wxFileName book_file = sLibraryDir + wxT('/') + file_name;
 				m_zipOk = book_file.IsOk() && book_file.FileExists();
 				if (m_zipOk) OpenFile(book_file.GetFullPath());
-			} else {
-				wxFileName zip_file = FbCollection::FindZip(sLibraryDir, file_name);
-				m_zipOk = zip_file.IsOk();
-				if (m_zipOk) OpenZip(zip_file.GetFullPath(), file_name);
 			}
 		} else {
 			wxFileName book_file;
