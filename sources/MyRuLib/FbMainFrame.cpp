@@ -131,13 +131,13 @@ void FbMainFrame::SaveFrameList()
 	for (size_t i = 0; i < count; ++i) {
 		wxWindowID id = GetNotebook()->GetPage(i)->GetId();
 		if (ID_FRAME_AUTH <= id && id < ID_FRAME_FIND) {
-			if (!frames.IsEmpty()) frames << wxT(",");
+			if (!frames.IsEmpty()) frames << wxT(',');
 			frames << (id - ID_FRAME_AUTH);
 			if (i == 0 || i == index) selected = id;
 			last_id = id;
 		}
 	}
-	if (selected && selected != last_id) frames << wxT(",") << (selected - ID_FRAME_AUTH);
+	if (selected && selected != last_id) frames << wxT(',') << (selected - ID_FRAME_AUTH);
 	FbParams::Set(FB_FRAME_LIST, frames);
 }
 
