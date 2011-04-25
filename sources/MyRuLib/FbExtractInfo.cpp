@@ -1,4 +1,5 @@
 #include "FbExtractInfo.h"
+#include "FbImportReader.h"
 #include "FbParams.h"
 #include "FbConst.h"
 #include <wx/zipstrm.h>
@@ -35,7 +36,7 @@ FbExtractItem::FbExtractItem(const FbExtractItem & item):
 
 bool FbExtractItem::NotFb2() const
 {
-	return book_name.Right(4).Lower() != wxT(".fb2");
+	return Ext(book_name) != wxT("fb2");
 }
 
 wxString FbExtractItem::InfoName() const
@@ -118,7 +119,7 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 		size_t count = 0;
 		while (wxZipEntry * entry = zip.GetNextEntry()) {
 			if (entry->GetSize()) {
-				if (entry->GetInternalName().Right(4).Lower() != wxT(".fbd")) count++;
+				if (Ext(entry->GetInternalName()) != wxT("fbd")) count++;
 				delete entry;
 				if (count>1) return;
 			}

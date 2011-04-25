@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28ud_adv.lib wxmsw28ud_aui.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud_net.lib wxbase28ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
+				AdditionalDependencies="wxmsw28ud_adv.lib wxmsw28ud_aui.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud_net.lib wxbase28ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
 				IgnoreDefaultLibraryNames="libcmt"
@@ -582,7 +582,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\res\resource.rc"
+				RelativePath="..\MyRuLib\res\resource.rc"
 				>
 			</File>
 		</Filter>
@@ -956,11 +956,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File

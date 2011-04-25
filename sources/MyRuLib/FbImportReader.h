@@ -3,29 +3,62 @@
 
 #include <wx/wx.h>
 #include <wx/zipstrm.h>
+#include <wx/dynarray.h>
 #include "FbImportCtx.h"
 #include "FbParsingCtx.h"
 
+wxString Ext(const wxString &filename);
+
+wxString Md5(md5_context & md5);
+
 class FbImportThread;
 
-class FbImpotrZip;
+WX_DECLARE_STRING_HASH_MAP(wxZipEntry*, FbZipEntryMap);
 
-class FbImportBook: public FbParsingContext
+WX_DECLARE_OBJARRAY(wxZipEntry*, FbZipEntryList);
+
+class FbImportZip
+	: public wxObject
 {
 	public:
-		FbImportBook(FbImportThread * owner, wxInputStream &in, const wxString &filename);
-		FbImportBook(FbImpotrZip * owner, wxZipEntry *entry);
+		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname);
+		int Save(bool progress);
+	public:
+		bool IsOk() { return m_ok; };
+	private:
+		void Make(bool progress);
+		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
+		wxZipEntry * GetInfo(const wxString & filename);
+	private:
+		FbImportThread & m_owner;
+		FbDatabase &m_database;
+		FbZipEntryList m_list;
+		FbZipEntryMap m_map;
+		wxCSConv m_conv;
+		wxZipInputStream m_zip;
+		wxString m_filename;
+		wxString m_filepath;
+		wxFileOffset m_filesize;
+		friend class FbImportBook;
+		bool m_ok;
+		int m_id;
+};
+
+class FbImportBook
+	: public FbParsingContext
+{
+	public:
+		FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename);
+		FbImportBook(FbImportZip & owner, wxZipEntry & entry);
 		bool Save();
 		bool IsOk() { return m_ok; };
 	protected:
-		static wxString GetFiletype(const wxString &filename);
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
 		virtual void TxtNode(const wxString &text);
 		virtual void EndNode(const wxString &name);
 	private:
 		static wxString CalcMd5(wxInputStream& stream);
 		int FindByMD5();
-		int FindBySize();
 		bool AppendBook();
 		bool AppendFile(int id_book);
 		void Convert();

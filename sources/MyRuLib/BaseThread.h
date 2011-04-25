@@ -20,7 +20,7 @@ class BaseThread : public wxThread
 	protected:
 		static wxCriticalSection sm_queue;
 	private:
-		int m_progress;
+		int m_pos;
 		int m_max;
 };
 

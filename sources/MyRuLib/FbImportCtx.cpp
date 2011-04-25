@@ -1,6 +1,8 @@
 #include "FbImportCtx.h"
 #include "FbConst.h"
 
+#include <wx/arrimpl.cpp>
+
 WX_DEFINE_OBJARRAY(SequenceArray);
 
 WX_DEFINE_OBJARRAY(AuthorArray);

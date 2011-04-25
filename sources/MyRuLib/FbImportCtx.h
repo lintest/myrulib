@@ -2,8 +2,8 @@
 #define __FBIMPORTCTX_H__
 
 #include <wx/wx.h>
-#include <wx/arrimpl.cpp>
 #include <wx/thread.h>
+#include <wx/dynarray.h>
 #include "FbDatabase.h"
 #include "FbStringHash.h"
 

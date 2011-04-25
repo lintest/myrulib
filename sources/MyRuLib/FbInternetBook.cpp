@@ -1,4 +1,5 @@
 #include "FbInternetBook.h"
+#include "FbImportReader.h"
 #include "BaseThread.h"
 #include "MyRuLibApp.h"
 #include "FbBookEvent.h"
@@ -172,7 +173,7 @@ bool FbInternetBook::CheckFile()
 		}
 	} while (count);
 
-	wxString md5sum = BaseThread::CalcMd5(md5);
+	wxString md5sum = Md5(md5);
 	if ( md5sum == m_md5sum ) {
 		return true;
 	} else if ( zipped ) {
@@ -190,7 +191,7 @@ bool FbInternetBook::CheckZip()
 
 	bool bNotFound = true;
 	while (wxZipEntry * entry = zip.GetNextEntry()) {
-		bool ok = (entry->GetInternalName().Right(4).Lower() != wxT(".fbd"));
+		bool ok = (Ext(entry->GetInternalName()) != wxT("fbd"));
 		if (ok) bNotFound = ! zip.OpenEntry(*entry);
 		delete entry;
 		if (ok) break;
@@ -210,7 +211,7 @@ bool FbInternetBook::CheckZip()
 		if (count) md5_update( &md5, buf, (int) count );
 	} while (count);
 
-	wxString md5sum = BaseThread::CalcMd5(md5);
+	wxString md5sum = Md5(md5);
 	if ( md5sum == m_md5sum ) {
 		m_zipped = true;
 	} else {

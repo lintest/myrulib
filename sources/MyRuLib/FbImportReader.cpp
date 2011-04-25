@@ -11,6 +11,122 @@
 #include "polarssl/md5.h"
 #include "wx/base64.h"
 
+wxString Ext(const wxString &filename)
+{
+	return filename.AfterLast(wxT('.')).Lower();
+}
+
+wxString Md5(md5_context & md5)
+{
+	wxString md5sum;
+	unsigned char output[16];
+	md5_finish( &md5, output );
+	for (size_t i = 0; i < 16; i++)
+		md5sum << wxString::Format(wxT("%02x"), output[i]);
+	return md5sum;
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportZip
+//-----------------------------------------------------------------------------
+
+WX_DEFINE_OBJARRAY(FbZipEntryList);
+
+FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname):
+	m_owner(owner),
+	m_database(owner.m_database),
+	m_conv(wxT("cp866")),
+	m_zip(in, m_conv),
+	m_filename(owner.GetRelative(zipname)),
+	m_filepath(owner.GetAbsolute(zipname)),
+	m_filesize(in.GetLength()),
+	m_ok(m_zip.IsOk())
+{
+	if (!m_ok) {
+		wxLogError(_("Zip read error %s"), zipname.c_str());
+		return;
+	}
+	wxLogMessage(_("Import zip %s"), m_filename.c_str());
+
+    while (wxZipEntry * entry = m_zip.GetNextEntry()) {
+		if (entry->GetSize()) {
+			wxString filename = entry->GetInternalName();
+			if (Ext(filename) == wxT("fbd")) {
+				wxString infoname = filename.BeforeLast(wxT('.'));
+				wxZipEntry*& current = m_map[infoname];
+				delete current;
+				current = entry;
+			} else {
+				m_list.Add(entry);
+			}
+		}
+    }
+}
+
+wxZipEntry * FbImportZip::GetInfo(const wxString & filename)
+{
+	wxString infoname = filename.BeforeLast(wxT('.'));
+	FbZipEntryMap::iterator it = m_map.find(infoname);
+	return (it == m_map.end()) ? NULL : it->second;
+}
+
+int FbImportZip::Save(bool progress)
+{
+	{
+		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_filename);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		m_id = result.NextRow() ? result.GetInt(0) : 0;
+	}
+
+	wxString sql = m_id ?
+		wxT("UPDATE archives SET file_name=?,file_path=?,file_size=?,file_count=? WHERE id=?") :
+		wxT("INSERT INTO archives(file_name,file_path,file_size,file_count,id) VALUES (?,?,?,?,?)") ;
+
+	if (!m_id) m_id = - m_database.NewId(DB_NEW_ARCHIVE);
+
+	{
+		wxLongLong count = m_zip.GetTotalEntries();
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, m_filename);
+		stmt.Bind(2, m_filepath);
+		stmt.Bind(3, (wxLongLong)m_filesize);
+		stmt.Bind(4, count);
+		stmt.Bind(5, m_id);
+		stmt.ExecuteUpdate();
+	}
+
+	Make(progress);
+
+	return m_id;
+}
+
+void FbImportZip::Make(bool progress)
+{
+	size_t skipped = 0;
+	size_t existed = m_list.Count();
+	if (progress) m_owner.DoStart(existed, m_filename);
+
+	size_t processed = 0;
+	for (size_t i=0; i<existed; i++) {
+		wxZipEntry * entry = m_list[i];
+		if (progress) m_owner.DoStep(entry->GetInternalName());
+		bool ok = FbImportBook(*this, *entry).Save();
+		if (ok) processed++; else skipped++;
+	}
+
+	if ( existed && processed == 0 ) {
+		wxLogWarning(_("FB2 and FBD not found %s"), m_filename.c_str());
+	}
+
+	if ( existed == 0 ) {
+		wxLogError(_("Zip read error %s"), m_filename.c_str());
+	}
+
+	if (progress) m_owner.DoFinish();
+}
+
 //-----------------------------------------------------------------------------
 //  FbImportBook
 //-----------------------------------------------------------------------------
@@ -55,60 +171,54 @@ void FbImportBook::EndNode(const wxString &name)
 	}
 }
 
-wxString FbImportBook::GetFiletype(const wxString &filename)
-{
-	return filename.AfterLast(wxT('.')).Lower();
-}
-
-FbImportBook::FbImportBook(FbImportThread *owner, wxInputStream &in, const wxString &filename):
-	m_database(owner->m_database),
-	m_filename(owner->GetRelative(filename)),
-	m_filepath(owner->GetAbsolute(filename)),
-	m_filetype(GetFiletype(m_filename)),
+FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename):
+	m_database(owner.m_database),
+	m_filename(owner.GetRelative(filename)),
+	m_filepath(owner.GetAbsolute(filename)),
+	m_filetype(Ext(m_filename)),
 	m_message(filename),
 	m_filesize(in.GetLength()),
 	m_archive(0),
 	m_parse(false),
 	m_ok(false)
 {
+	wxLogMessage(_("Import file %s"), m_filename.c_str());
 	m_ok = in.IsOk();
 	if (!m_ok) return;
 
 	m_parse = m_filetype == wxT("fb2");
 	if (m_parse) {
 		m_parse = Parse(in, true);
-		wxLogMessage(_("Import file %s"), m_filename.c_str());
 	} else {
 		m_md5sum = CalcMd5(in);
 	}
 }
 
-FbImportBook::FbImportBook(FbImpotrZip *owner, wxZipEntry *entry):
-	m_database(owner->m_database),
-	m_filename(entry->GetInternalName()),
-	m_filetype(m_filename),
-	m_message(owner->m_filename + wxT(": ") + m_filename),
-	m_filesize(entry->GetSize()),
-	m_archive(owner->m_id),
+FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
+	m_database(owner.m_database),
+	m_filename(entry.GetInternalName()),
+	m_filetype(Ext(m_filename)),
+	m_message(owner.m_filename + wxT(": ") + m_filename),
+	m_filesize(entry.GetSize()),
+	m_archive(owner.m_id),
 	m_parse(false),
 	m_ok(false)
 {
 	if (m_filetype == wxT("fbd")) return;
 
-	m_ok = owner->OpenEntry(*entry);
+	wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
+	m_ok = owner.OpenEntry(entry);
 	if (!m_ok) return;
 
 	m_parse = m_filetype == wxT("fb2");
 	if (!m_parse) {
-		m_md5sum = CalcMd5(owner->m_zip);
-		wxZipEntry * info = owner->GetInfo(m_filename);
-		if (m_parse = info) m_ok = owner->OpenEntry(*info);
-		if (!m_ok) return;
+		m_md5sum = CalcMd5(owner.m_zip);
+		wxZipEntry * info = owner.GetInfo(m_filename);
+		if (m_parse = info) m_ok = owner.OpenEntry(*info);
 	}
 
-	if (m_parse) {
-		wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
-		m_parse = Parse(owner->m_zip, m_md5sum.IsEmpty());
+	if (m_ok && m_parse) {
+		m_parse = Parse(owner.m_zip, m_md5sum.IsEmpty());
 	}
 }
 
@@ -127,7 +237,7 @@ wxString FbImportBook::CalcMd5(wxInputStream& stream)
 		md5_update( &md5, buf, (int) len );
 	} while (!eof);
 
-	return BaseThread::CalcMd5(md5);
+	return Md5(md5);
 }
 
 void FbImportBook::Convert()
@@ -152,31 +262,6 @@ int FbImportBook::FindByMD5()
 	stmt.Bind(1, m_md5sum);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0) : 0;
-}
-
-int FbImportBook::FindBySize()
-{
-	wxArrayInt books;
-	{
-		wxString sql = wxT("SELECT DISTINCT id FROM books WHERE file_size=? AND (md5sum='' OR md5sum IS NULL)");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, (wxLongLong)m_filesize);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		while (result.NextRow()) books.Add(result.GetInt(0));
-	}
-	for (size_t i=0; i<books.Count(); i++) {
-		int id = books[i];
-		ZipReader book(id);
-		if (!book.IsOk()) continue;
-		wxString md5sum = FbImportBook::CalcMd5(book.GetZip());
-		wxString sql = wxT("UPDATE books SET md5sum=? WHERE id=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, md5sum);
-		stmt.Bind(2, id);
-		stmt.ExecuteUpdate();
-		if (m_md5sum == md5sum) return id;
-	}
-	return 0;
 }
 
 bool FbImportBook::AppendBook()
@@ -274,9 +359,7 @@ bool FbImportBook::Save()
 {
 	if (!m_ok) return false;
 
-	FbAutoCommit transaction(m_database);
 	int id_book = FindByMD5();
-	if (!id_book) id_book = FindBySize();
 
 	if (m_parse) {
 		return id_book ? AppendFile(id_book) : AppendBook();
