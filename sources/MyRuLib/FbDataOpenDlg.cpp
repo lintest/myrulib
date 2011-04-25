@@ -1,6 +1,7 @@
 #include "FbDataOpenDlg.h"
 #include <wx/artprov.h>
 #include <wx/wxsqlite3.h>
+#include "FbDataPath.h"
 #include "FbLogoBitmap.h"
 #include "FbDatabase.h"
 #include "FbParams.h"
@@ -9,6 +10,7 @@
 #include "FbScanerThread.h"
 
 BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
+	EVT_CHOICE(ID_ACTION, FbDataOpenDlg::OnActionChoise)
 	EVT_COMBOBOX( ID_FILE_TXT, FbDataOpenDlg::OnFileCombo )
 	EVT_BUTTON( ID_FILE_BTN, FbDataOpenDlg::OnSelectFileClick )
 	EVT_BUTTON( ID_FOLDER_BTN, FbDataOpenDlg::OnSelectFolderClick )
@@ -18,6 +20,14 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	: FbDialog( parent, wxID_ANY, GetTitle(), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER )
 {
 	wxStaticText * info;
+
+	wxString download = _("Download collection");
+	wxString choices[] = {
+		_("Flibusta"),
+		_("LibRusEc"),
+		_("Genesis"),
+	};
+	size_t choices_num = sizeof( choices ) / sizeof( wxString );
 
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -30,6 +40,19 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	wxBoxSizer* bSizerCtrl;
 	bSizerCtrl = new wxBoxSizer( wxVERTICAL );
 
+	info = new wxStaticText( this, wxID_ANY, _("Select action:"), wxDefaultPosition, wxDefaultSize, 0 );
+	info->Wrap( -1 );
+	bSizerCtrl->Add( info, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxLEFT|wxRIGHT, 5 );
+
+	m_action.Create( this, ID_ACTION);
+	m_action.Append(_("Open (or create) collection"));
+	m_action.SetSelection( 0 );
+	for (size_t i = 0; i < choices_num; i++) {
+		m_action.Append(download + wxT(": ") + choices[i]);
+		m_choises.Add(choices[i].Lower());
+	}
+	bSizerCtrl->Add( &m_action, 0, wxALL|wxEXPAND, 5 );
+
 	info = new wxStaticText( this, wxID_ANY, _("File name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	info->Wrap( -1 );
 	bSizerCtrl->Add( info, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxLEFT|wxRIGHT, 5 );
@@ -37,7 +60,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	wxBoxSizer* bSizerFile;
 	bSizerFile = new wxBoxSizer( wxHORIZONTAL );
 
-	m_file.Create( this, ID_FILE_TXT, wxEmptyString, wxDefaultPosition, wxSize( 300,-1 ), 0, NULL, 0 );
+	m_file.Create( this, ID_FILE_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	bSizerFile->Add( &m_file, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
 	for (size_t i = 0; i<=5; i++) {
 		wxString filename = FbParams::GetStr(i + FB_RECENT_0);
@@ -66,31 +89,51 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	bSizerTop->Add( bSizerCtrl, 1, wxEXPAND, 5 );
 	bSizerMain->Add( bSizerTop, 0, wxEXPAND, 5 );
 
-	m_scaner.Create( this, wxID_ANY, _("Update zip files catalog") );
-	m_scaner.SetValue(true);
+	m_scaner.Create( this, wxID_ANY, _("Run a full scan for library files") );
+	m_scaner.SetValue(false);
 	bSizerCtrl->Add( &m_scaner, 0, wxALL|wxEXPAND, 5 );
-/*
-	m_import.Create( this, wxID_ANY, _("Run a full scan for library files") );
-	m_import.SetValue(false);
-	bSizerCtrl->Add( &m_import, 0, wxALL|wxEXPAND, 5 );
-*/
+
 	m_only.Create( this, wxID_ANY, _("Process only new files") );
-	m_only.SetValue(true);
+	m_scaner.SetValue(false);
 	bSizerCtrl->Add( &m_only, 0, wxALL|wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
+	SetDefaultNames();
+
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
 
-	m_file.SetFocus();
+	m_action.SetFocus();
 }
 
 wxString FbDataOpenDlg::GetTitle() const
 {
 	return strProgramName + wxT(" - ") + _("Open (or create) collection");
+}
+
+void FbDataOpenDlg::OnActionChoise( wxCommandEvent& event )
+{
+	SetDefaultNames();
+}
+
+void FbDataOpenDlg::SetDefaultNames()
+{
+	FbStandardPaths paths;
+	wxFileName filename = paths.GetDefaultName();
+	wxFileName filepath = (wxString) _("Books");
+	filepath.SetPath(paths.GetDocumentsDir());
+
+	int sel = m_action.GetCurrentSelection() - 1;
+	if (sel >= 0) {
+		wxString name = m_choises[sel];
+		filename.SetName(name);
+		filepath.SetName(name);
+	}
+	m_file.SetValue(filename.GetFullPath());
+	m_folder.SetValue(filepath.GetFullPath());
 }
 
 void FbDataOpenDlg::OnSelectFileClick( wxCommandEvent& event )

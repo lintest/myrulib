@@ -2006,3 +2006,12 @@ msgstr "Максимальная ширина картинки с обложки
 
 msgid "Copy"
 msgstr "Копировать"
+
+msgid "Select action:"
+msgstr "Выберите действие:"
+
+msgid "Run a full scan for library files"
+msgstr "Выполнить полное сканирование файлов библиотеки"
+
+msgid "Download collection"
+msgstr "Скачать коллекцию"

@@ -8,6 +8,7 @@
 class FbStandardPaths: public wxStandardPaths
 {
 	public:
+		wxString GetDefaultName() const;
 		virtual wxString GetConfigFile() const;
 		virtual wxString GetUserConfigDir() const;
 		static wxString MakeRelative(const wxString &fullname, const wxString &basefile);
