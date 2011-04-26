@@ -19,8 +19,9 @@ class FbProgressDlg: public FbDialog
 		wxTimer m_timer;
 	private:
 		void OnTimer(wxTimerEvent& event);
-		void OnProgress(FbProgressEvent & event);
-		void OnPulseGauge(FbProgressEvent & event);
+		void OnGaugeStart(FbProgressEvent & event);
+		void OnGaugeUpdate(FbProgressEvent & event);
+		void OnGaugePulse(FbProgressEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 

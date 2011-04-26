@@ -7,8 +7,9 @@
 
 BEGIN_EVENT_TABLE(FbProgressDlg, FbDialog)
 	EVT_TIMER(wxID_ANY, FbProgressDlg::OnTimer)
-	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbProgressDlg::OnProgress)
-	EVT_FB_PROGRESS(ID_PROGRESS_PULSE, FbProgressDlg::OnPulseGauge)
+	EVT_FB_PROGRESS(ID_PROGRESS_START,  FbProgressDlg::OnGaugeStart)
+	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbProgressDlg::OnGaugeUpdate)
+	EVT_FB_PROGRESS(ID_PROGRESS_PULSE, FbProgressDlg::OnGaugePulse)
 END_EVENT_TABLE()
 
 
@@ -57,15 +58,20 @@ void FbProgressDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
 	m_gauge.Pulse();
 }
 
-void FbProgressDlg::OnProgress(FbProgressEvent & event)
+void FbProgressDlg::OnGaugeStart(FbProgressEvent & event)
 {
 	m_timer.Stop();
-	m_text.SetLabel(event.GetString());
-	m_gauge.SetValue(event.GetInt());
+	m_text.SetLabel(event.m_str);
+	m_gauge.SetRange(event.m_pos);
 }
 
-void FbProgressDlg::OnPulseGauge(FbProgressEvent & event)
+void FbProgressDlg::OnGaugeUpdate(FbProgressEvent & event)
 {
-	m_text.SetLabel(event.GetString());
+	m_gauge.SetValue(event.m_pos);
+}
+
+void FbProgressDlg::OnGaugePulse(FbProgressEvent & event)
+{
+	m_text.SetLabel(event.m_str);
 	m_timer.Start(100);
 }

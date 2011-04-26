@@ -9,7 +9,7 @@
 #include "FbCounter.h"
 #include "FbDatabase.h"
 
-class FbImportThread 
+class FbImportThread
 	: public FbProgressThread
 {
 public:
@@ -43,7 +43,7 @@ class FbDirImportThread
 	: public FbImportThread
 {
 public:
-	FbDirImportThread(wxEvtHandler * owner, const wxString &dirname, wxThreadKind kind = wxTHREAD_DETACHED) 
+	FbDirImportThread(wxEvtHandler * owner, const wxString &dirname, wxThreadKind kind = wxTHREAD_DETACHED)
 		: FbImportThread(owner, kind), m_dirname(dirname) {};
 	virtual void DoParse();
 private:
@@ -59,6 +59,8 @@ public:
 protected:
 	virtual void * Entry();
 	virtual void OnExit();
+private:
+	bool Download();
 private:
 	wxString m_file;
 	wxString m_lib;

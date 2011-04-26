@@ -175,8 +175,6 @@
 			<Add library="libExpat.a" />
 			<Add library="libFaxpp.a" />
 		</Linker>
-		<Unit filename="../MyRuLib/BaseThread.cpp" />
-		<Unit filename="../MyRuLib/BaseThread.h" />
 		<Unit filename="../MyRuLib/FbAboutDlg.cpp" />
 		<Unit filename="../MyRuLib/FbAboutDlg.h" />
 		<Unit filename="../MyRuLib/FbAlphabet.cpp" />
@@ -296,8 +294,6 @@
 		<Unit filename="../MyRuLib/FbPreviewWindow.h" />
 		<Unit filename="../MyRuLib/FbProgressDlg.cpp" />
 		<Unit filename="../MyRuLib/FbProgressDlg.h" />
-		<Unit filename="../MyRuLib/FbScanerThread.cpp" />
-		<Unit filename="../MyRuLib/FbScanerThread.h" />
 		<Unit filename="../MyRuLib/FbSeqnList.cpp" />
 		<Unit filename="../MyRuLib/FbSeqnList.h" />
 		<Unit filename="../MyRuLib/FbSequenDlg.cpp" />

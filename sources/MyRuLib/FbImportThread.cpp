@@ -12,13 +12,14 @@
 #include "MyRuLibApp.h"
 #include "polarssl/md5.h"
 #include "wx/base64.h"
+#include "controls/FbURL.h"
 
 //-----------------------------------------------------------------------------
 //  FbImportThread
 //-----------------------------------------------------------------------------
 
 FbImportThread::FbImportThread(wxEvtHandler * owner, wxThreadKind kind)
-	: FbProgressThread(owner, kind), 
+	: FbProgressThread(owner, kind),
 		m_database(NULL),
 		m_basepath(wxGetApp().GetLibPath()),
 		m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH))
@@ -93,8 +94,8 @@ public:
 	virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
 		return wxDIR_CONTINUE;
 	}
-	unsigned int GetCount() { 
-		return m_count; 
+	unsigned int GetCount() {
+		return m_count;
 	}
 private:
 	unsigned int m_count;
@@ -105,14 +106,14 @@ class FbImportTraverser : public wxDirTraverser
 public:
 	FbImportTraverser(FbDirImportThread* thread) : m_thread(thread), m_progress(0) { };
 
-	virtual wxDirTraverseResult OnFile(const wxString& filename) 
+	virtual wxDirTraverseResult OnFile(const wxString& filename)
 	{
 		m_thread->DoStep( wxFileName(filename).GetFullName() );
 		m_thread->OnFile(filename, false);
 		return wxDIR_CONTINUE;
 	}
 
-	virtual wxDirTraverseResult OnDir(const wxString& dirname)  
+	virtual wxDirTraverseResult OnDir(const wxString& dirname)
 	{
 		wxLogMessage(_("Import subdirectory %s"), dirname.c_str());
 		return wxDIR_CONTINUE;
@@ -155,21 +156,90 @@ void FbDirImportThread::DoParse()
 //  FbLibImportThread
 //-----------------------------------------------------------------------------
 
-FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import) 
-	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_lib(lib), m_import(import) 
+FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import)
+	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_lib(lib), m_import(import)
 {
 	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
+}
+
+bool FbLibImportThread::Download()
+{
+	const size_t BUFSIZE = 1024;
+	unsigned char buf[BUFSIZE];
+
+	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
+	wxString addr = strHomePage; addr << wxT('/') << m_lib << wxT(".zip");
+
+	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
+
+	{
+		FbURL url(addr);
+		wxHTTP & http = (wxHTTP&)url.GetProtocol();
+		http.SetFlags(wxSOCKET_WAITALL);
+		if (timeout > 0) http.SetTimeout(timeout);
+		http.SetHeader(wxT("User-Agent"), strProgramInfo);
+
+		wxInputStream * in = url.GetInputStream();
+		if (in == NULL) {
+			FbLogError(_("Download error"), addr);
+			return false;
+		}
+
+		wxFileOutputStream out(tempfile);
+
+		size_t pos = 0;
+		size_t size = in->GetSize();
+		wxString msg = _("Download collection"); msg << wxT(": ") << m_lib;
+		FbProgressEvent(ID_PROGRESS_START, msg, size).Post(GetOwner());
+
+		while (true) {
+			if (IsClosed()) break;
+			FbProgressEvent(ID_PROGRESS_UPDATE, wxEmptyString, pos).Post(GetOwner());
+			size_t count = in->Read(buf, BUFSIZE).LastRead();
+			if ( count ) {
+				out.Write(buf, count);
+				pos += count;
+			} else break;
+		}
+		out.Close();
+	}
+
+	if (IsClosed()) {
+		wxRemoveFile(tempfile);
+		return false;
+	};
+
+
+	{
+		wxFFileInputStream in(tempfile);
+		wxZipInputStream zip(in);
+
+		bool ok = zip.IsOk();
+		if (!ok) return false;
+
+		if (wxZipEntry * entry = zip.GetNextEntry()) {
+			ok = zip.OpenEntry(*entry);
+			delete entry;
+		} else ok = false;
+
+		if (!ok) return false;
+
+		wxFileOutputStream out(m_file);
+		out.Write(zip);
+		return out.IsOk();
+	}
 }
 
 void * FbLibImportThread::Entry()
 {
 	if (!m_lib.IsEmpty()) {
-		wxString addr = strHomePage; addr << wxT('/') << m_lib << wxT(".zip");
-		bool ok = FbInternetBook::Download(GetOwner(), addr, m_file);
+		bool ok = Download();
 		if (!ok) return NULL;
 	}
 
 	if (IsClosed()) return NULL;
+
+	FbProgressEvent(ID_PROGRESS_PULSE, _("Create full text search index")).Post(GetOwner());
 
 	FbMainDatabase database;
 	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
