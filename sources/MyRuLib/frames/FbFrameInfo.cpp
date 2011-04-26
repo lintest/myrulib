@@ -38,23 +38,27 @@ void FbFrameInfo::CreateControls()
 	Layout();
 }
 
-class FrameInfoThread: public FbProgressThread
+class FbFrameInfoThread
+	: public FbProgressThread
 {
-	protected:
-		virtual void * Entry();
-	private:
-		wxString CreateRow(const wxString &info, const wxString &text);
-		void WriteTitle();
-		void WriteCount();
-		void WriteTypes();
-		wxString GetDate(const int number);
-		wxString F(const wxLongLong &number);
-	private:
-		FbCommonDatabase m_database;
-		wxString m_html;
+public:
+    FbFrameInfoThread(wxEvtHandler * owner) 
+		: FbProgressThread(owner) {}
+protected:
+	virtual void * Entry();
+private:
+	wxString CreateRow(const wxString &info, const wxString &text);
+	void WriteTitle();
+	void WriteCount();
+	void WriteTypes();
+	wxString GetDate(const int number);
+	wxString F(const wxLongLong &number);
+private:
+	FbCommonDatabase m_database;
+	wxString m_html;
 };
 
-void FrameInfoThread::WriteTitle()
+void FbFrameInfoThread::WriteTitle()
 {
 	m_html += wxT("<CENTER>");
 
@@ -70,7 +74,7 @@ void FrameInfoThread::WriteTitle()
 	m_html += wxT("</TABLE>");
 }
 
-wxString FrameInfoThread::GetDate(const int number)
+wxString FbFrameInfoThread::GetDate(const int number)
 {
 	int dd = number % 100;
 	int mm = number / 100 % 100;
@@ -78,7 +82,7 @@ wxString FrameInfoThread::GetDate(const int number)
 	return wxString::Format(wxT("%02d.%02d.%04d"), dd, mm, yyyy);
 }
 
-wxString FrameInfoThread::F(const wxLongLong &number)
+wxString FbFrameInfoThread::F(const wxLongLong &number)
 {
 	wxLongLong hi = number / 1000;
 	long lo = (number % 1000).ToLong();
@@ -88,13 +92,13 @@ wxString FrameInfoThread::F(const wxLongLong &number)
 		return wxString::Format(wxT("%d"), lo);
 }
 
-wxString FrameInfoThread::CreateRow(const wxString &info, const wxString &text)
+wxString FbFrameInfoThread::CreateRow(const wxString &info, const wxString &text)
 {
 	const wxString row = wxT("<TR><TD>%s</TD><TD align=right>%s</TD></TR>");
 	return wxString::Format(row, info.c_str(), text.c_str());
 }
 
-void FrameInfoThread::WriteCount()
+void FbFrameInfoThread::WriteCount()
 {
 	m_html += wxT("<TABLE>");
 
@@ -133,7 +137,7 @@ void FrameInfoThread::WriteCount()
 	m_html << wxT("</TABLE>");
 }
 
-void FrameInfoThread::WriteTypes()
+void FbFrameInfoThread::WriteTypes()
 {
 	wxString colourBack = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW).GetAsString(wxC2S_HTML_SYNTAX);
 	wxString colourGrid = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW).GetAsString(wxC2S_HTML_SYNTAX);
@@ -174,7 +178,7 @@ void FrameInfoThread::WriteTypes()
 	m_html += wxT("</TD></TR></TABLE>");
 }
 
-void * FrameInfoThread::Entry()
+void * FbFrameInfoThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
@@ -193,10 +197,9 @@ void * FrameInfoThread::Entry()
 	return NULL;
 }
 
-void FbFrameInfo::Execute()
+void FbFrameInfo::Execute(wxEvtHandler * owner)
 {
-	wxThread * thread = new FrameInfoThread;
-	if ( thread->Create() == wxTHREAD_NO_ERROR ) thread->Run();
+	(new FbFrameInfoThread(owner))->Execute();
 }
 
 void FbFrameInfo::OnSave(wxCommandEvent& event)

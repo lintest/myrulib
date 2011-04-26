@@ -1,8 +1,7 @@
 #ifndef __FBTHREAD_H__
 #define __FBTHREAD_H__
 
-#include <wx/thread.h>
-#include <wx/object.h>
+#include <wx/wx.h>
 
 class FbCondition
 	: public wxCondition
@@ -31,6 +30,9 @@ private:
 class FbProgressThread
 	: public FbThread
 {
+public:
+    FbProgressThread(wxEvtHandler * owner, wxThreadKind kind = wxTHREAD_DETACHED)
+		: FbThread(kind), m_owner(owner) {}
 protected:
 	static wxCriticalSection sm_queue;
 	void SetInfo(const wxString & info) { m_info = info; }
@@ -38,6 +40,7 @@ protected:
 	void DoStep(const wxString & msg);
 	void DoFinish();
 private:
+	wxEvtHandler * m_owner;
 	wxString m_info;
 	wxString m_text;
 	int m_pos;

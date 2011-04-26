@@ -355,7 +355,7 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
-		(new FbZipImportThread(paths))->Execute();
+		(new FbZipImportThread(this, paths))->Execute();
 	}
 }
 
@@ -371,7 +371,7 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		wxString path = dlg.GetPath();
-		(new FbDirImportThread(path))->Execute();
+		(new FbDirImportThread(this, path))->Execute();
 	}
 }
 
@@ -519,7 +519,7 @@ void FbMainFrame::OnMenuNothing(wxCommandEvent& event)
 
 void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)
 {
-	FbFrameInfo::Execute();
+	FbFrameInfo::Execute(this);
 }
 
 void FbMainFrame::OnVacuum(wxCommandEvent & event)

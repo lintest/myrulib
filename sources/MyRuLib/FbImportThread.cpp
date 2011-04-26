@@ -15,10 +15,11 @@
 //  FbImportThread
 //-----------------------------------------------------------------------------
 
-FbImportThread::FbImportThread():
-	m_counter(m_database),
-	m_basepath(wxGetApp().GetLibPath()),
-	m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH))
+FbImportThread::FbImportThread(wxEvtHandler * owner)
+	: FbProgressThread(owner), 
+		m_counter(m_database),
+		m_basepath(wxGetApp().GetLibPath()),
+		m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH))
 {
 }
 

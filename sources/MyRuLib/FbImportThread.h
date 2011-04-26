@@ -12,7 +12,7 @@ class FbImportThread
 	: public FbProgressThread
 {
 public:
-	FbImportThread();
+	FbImportThread(wxEvtHandler * owner);
 	virtual void * Entry();
 	virtual void OnExit();
 	bool OnFile(const wxString &filename, bool progress);
@@ -33,7 +33,8 @@ class FbZipImportThread
 	: public FbImportThread
 {
 public:
-	FbZipImportThread(const wxArrayString &filelist): FbImportThread(), m_filelist(filelist) {};
+	FbZipImportThread(wxEvtHandler * owner, const wxArrayString &filelist)
+		: FbImportThread(owner), m_filelist(filelist) {};
 	virtual void DoParse();
 private:
 	const wxArrayString m_filelist;
@@ -43,7 +44,8 @@ class FbDirImportThread
 	: public FbImportThread
 {
 public:
-	FbDirImportThread(const wxString &dirname): m_dirname(dirname) {};
+	FbDirImportThread(wxEvtHandler * owner, const wxString &dirname) 
+		: FbImportThread(owner), m_dirname(dirname) {};
 	virtual void DoParse();
 private:
 	wxString m_dirname;

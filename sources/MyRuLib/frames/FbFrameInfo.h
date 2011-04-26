@@ -14,7 +14,7 @@ class FbFrameInfo: public FbAuiMDIChildFrame
 		FbFrameInfo(wxAuiMDIParentFrame * parent);
 		virtual wxString GetTitle() const { return _("Information"); };
 		void Load(const wxString & html);
-		static void Execute();
+		static void Execute(wxEvtHandler * owner);
 		virtual void UpdateFonts(bool refresh = true);
 		virtual wxMenuBar * CreateMenuBar();
 	protected:
