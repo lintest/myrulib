@@ -4,7 +4,6 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbMainMenu.h"
-#include "BaseThread.h"
 #include "MyRuLibApp.h"
 #include "FbBookEvent.h"
 #include "FbViewThread.h"

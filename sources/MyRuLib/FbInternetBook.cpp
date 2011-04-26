@@ -1,6 +1,5 @@
 #include "FbInternetBook.h"
 #include "FbImportReader.h"
-#include "BaseThread.h"
 #include "MyRuLibApp.h"
 #include "FbBookEvent.h"
 #include "FbCollection.h"

@@ -7,7 +7,6 @@
 #include <wx/filename.h>
 #include <wx/process.h>
 #include <wx/timer.h>
-#include "BaseThread.h"
 #include "FbWindow.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
