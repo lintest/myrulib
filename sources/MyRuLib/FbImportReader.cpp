@@ -34,7 +34,7 @@ WX_DEFINE_OBJARRAY(FbZipEntryList);
 
 FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname):
 	m_owner(owner),
-	m_database(owner.m_database),
+	m_database(*owner.m_database),
 	m_conv(wxT("cp866")),
 	m_zip(in, m_conv),
 	m_filename(owner.GetRelative(zipname)),
@@ -172,7 +172,7 @@ void FbImportBook::EndNode(const wxString &name)
 }
 
 FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename):
-	m_database(owner.m_database),
+	m_database(*owner.m_database),
 	m_filename(owner.GetRelative(filename)),
 	m_filepath(owner.GetAbsolute(filename)),
 	m_filetype(Ext(m_filename)),

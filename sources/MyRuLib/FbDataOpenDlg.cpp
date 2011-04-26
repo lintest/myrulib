@@ -7,7 +7,7 @@
 #include "FbParams.h"
 #include "FbConst.h"
 #include "FbProgressDlg.h"
-#include "FbScanerThread.h"
+#include "FbImportThread.h"
 
 BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_CHOICE(ID_ACTION, FbDataOpenDlg::OnActionChoise)
@@ -119,6 +119,12 @@ void FbDataOpenDlg::OnActionChoise( wxCommandEvent& event )
 	SetDefaultNames();
 }
 
+wxString FbDataOpenDlg::GetLibrary()
+{
+	int sel = m_action.GetCurrentSelection() - 1;
+	return (sel >= 0) ? m_choises[sel] : wxString();
+}
+
 void FbDataOpenDlg::SetDefaultNames()
 {
 	FbStandardPaths paths;
@@ -126,12 +132,12 @@ void FbDataOpenDlg::SetDefaultNames()
 	wxFileName filepath = (wxString) _("Books");
 	filepath.SetPath(paths.GetDocumentsDir());
 
-	int sel = m_action.GetCurrentSelection() - 1;
-	if (sel >= 0) {
-		wxString name = m_choises[sel];
-		filename.SetName(name);
-		filepath.SetName(name);
+	wxString library = GetLibrary();
+	if (!library.IsEmpty()) {
+		filename.SetName(library);
+		filepath.SetName(library);
 	}
+
 	m_file.SetValue(filename.GetFullPath());
 	m_folder.SetValue(filepath.GetFullPath());
 }
@@ -230,12 +236,12 @@ bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
 	if (dlg.ShowModal() != wxID_OK) return false;
 
 	filename = dlg.GetFilename();
+	wxString dir = dlg.GetDirname();
+	wxString lib = dlg.GetLibrary();
+	bool import = dlg.m_scaner.GetValue();
 
-	if (dlg.m_scaner.GetValue()) {
-		FbProgressDlg scaner(dlg.GetParent());
-		FbThread * thread = new FbScanerThread(&scaner, filename, dlg.GetDirname(), dlg.m_only.GetValue());
-		scaner.RunThread(thread);
-		return scaner.ShowModal() == wxID_OK;
-	}
-	return true;
+	FbProgressDlg scaner(dlg.GetParent());
+	FbThread * thread = new FbLibImportThread(&scaner, filename, dir, lib, import);
+	scaner.RunThread(thread);
+	return scaner.ShowModal() == wxID_OK;
 }

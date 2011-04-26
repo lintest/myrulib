@@ -10,7 +10,8 @@ class FbInternetBook
 {
 	public:
 		static wxString GetURL(const int id, const wxString& md5sum = wxEmptyString);
-		static bool Download(const wxString & addr, wxString & file, const wxString &cookie = wxEmptyString);
+		static bool Download(wxEvtHandler * owner, const wxString & address, const wxString & filename, const wxString &cookie = wxEmptyString);
+		static bool Download(const wxString & address, wxString & filename, const wxString &cookie = wxEmptyString);
 		FbInternetBook(FbDownloader * owner, const wxString& md5sum);
 		bool Execute();
 	private:

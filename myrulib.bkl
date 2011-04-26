@@ -264,7 +264,6 @@
 		<sources>sources/MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbPreviewWindow.cpp</sources>
 		<sources>sources/MyRuLib/FbProgressDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbScanerThread.cpp</sources>
 		<sources>sources/MyRuLib/FbSeqnList.cpp</sources>
 		<sources>sources/MyRuLib/FbSequenDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbServiceDlg.cpp</sources>

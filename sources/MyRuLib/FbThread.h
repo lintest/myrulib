@@ -33,6 +33,7 @@ class FbProgressThread
 public:
     FbProgressThread(wxEvtHandler * owner, wxThreadKind kind = wxTHREAD_DETACHED)
 		: FbThread(kind), m_owner(owner) {}
+	wxEvtHandler * GetOwner() { return m_owner; }
 protected:
 	static wxCriticalSection sm_queue;
 	void SetInfo(const wxString & info) { m_info = info; }

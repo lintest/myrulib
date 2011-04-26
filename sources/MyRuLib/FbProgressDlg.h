@@ -4,6 +4,7 @@
 #include <wx/timer.h>
 #include "FbWindow.h"
 #include "FbThread.h"
+#include "FbBookEvent.h"
 
 class FbProgressDlg: public FbDialog
 {
@@ -14,14 +15,12 @@ class FbProgressDlg: public FbDialog
 	private:
 		FbThread * m_thread;
 		wxStaticText m_text;
-		wxGauge m_gauge1;
-		wxGauge m_gauge2;
+		wxGauge m_gauge;
 		wxTimer m_timer;
 	private:
-		void OnProgress1(wxCommandEvent & event);
-		void OnProgress2(wxCommandEvent & event);
-		void OnPulseGauge(wxCommandEvent & event);
 		void OnTimer(wxTimerEvent& event);
+		void OnProgress(FbProgressEvent & event);
+		void OnPulseGauge(FbProgressEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 

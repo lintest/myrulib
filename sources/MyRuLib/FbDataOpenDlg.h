@@ -24,6 +24,7 @@ class FbDataOpenDlg : public FbDialog
 		wxString GetTitle() const;
 		void UpdateFolder();
 		wxString CheckExt(const wxString &filename);
+		wxString GetLibrary();
 		void SetDefaultNames();
 	private:
 		wxArrayString m_choises;

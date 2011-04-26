@@ -476,10 +476,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbScanerThread.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\controls\FbSearchCombo.cpp"
 				>
 			</File>
@@ -916,10 +912,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbScanerThread.h"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\controls\FbSearchCombo.h"
 				>
 			</File>
@@ -948,11 +940,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File

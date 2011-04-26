@@ -27,13 +27,18 @@ wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 	}
 }
 
-bool FbInternetBook::Download(const wxString & address, wxString & file, const wxString &cookie)
+bool FbInternetBook::Download(const wxString & address, wxString & filename, const wxString &cookie)
+{
+	filename = wxFileName::CreateTempFileName(wxT("fb"));
+	return Download(wxGetApp().GetTopWindow(), address, filename, cookie);
+}
+
+bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, const wxString & filename, const wxString &cookie)
 {
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
 
 	bool ok = false;
-	file = wxFileName::CreateTempFileName(wxT("fb"));
 	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
 
 	wxString addr = address;
@@ -71,9 +76,9 @@ bool FbInternetBook::Download(const wxString & address, wxString & file, const w
 
 		size_t offset = 0;
 		size_t size = in->GetSize();
-		wxFileOutputStream out(file);
+		wxFileOutputStream out(filename);
 		while (true) {
-			FbProgressEvent(ID_PROGRESS_UPDATE, addr, offset * 1000 / size, _("File download")).Post();
+			FbProgressEvent(ID_PROGRESS_UPDATE, addr, offset * 1000 / size, _("File download")).Post(owner);
 			size_t count = in->Read(buf, BUFSIZE).LastRead();
 			if ( count ) {
 				out.Write(buf, count);
@@ -84,7 +89,7 @@ bool FbInternetBook::Download(const wxString & address, wxString & file, const w
 		addr = address;
 	} 
 
-	FbProgressEvent(ID_PROGRESS_UPDATE).Post();
+	FbProgressEvent(ID_PROGRESS_UPDATE).Post(owner);
 
 	return ok;
 }
