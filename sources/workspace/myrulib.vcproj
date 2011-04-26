@@ -188,10 +188,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\MyRuLib\BaseThread.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbAboutDlg.cpp"
 				>
 			</File>
@@ -616,10 +612,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\MyRuLib\BaseThread.h"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbAboutDlg.h"
 				>
 			</File>
@@ -956,11 +948,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File

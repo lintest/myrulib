@@ -4,7 +4,7 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbMainMenu.h"
-#include "BaseThread.h"
+#include "FbThread.h"
 #include "MyRuLibApp.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
@@ -38,7 +38,7 @@ void FbFrameInfo::CreateControls()
 	Layout();
 }
 
-class FrameInfoThread: public BaseThread
+class FrameInfoThread: public FbProgressThread
 {
 	protected:
 		virtual void * Entry();
@@ -178,7 +178,7 @@ void * FrameInfoThread::Entry()
 {
 	wxCriticalSectionLocker enter(sm_queue);
 
-	DoStart(3, _("Collection info"));
+	DoStart(_("Collection info"), 3);
 
 	WriteTitle();
 	WriteCount();

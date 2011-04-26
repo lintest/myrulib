@@ -22,6 +22,12 @@ FbImportThread::FbImportThread():
 {
 }
 
+void * FbImportThread::Entry()
+{
+	DoParse();
+	return NULL;
+}
+
 void FbImportThread::OnExit()
 {
 	m_counter.Execute();
@@ -55,8 +61,9 @@ bool FbImportThread::OnFile(const wxString &filename, bool progress)
 //  FbZipImportThread
 //-----------------------------------------------------------------------------
 
-void * FbZipImportThread::Entry()
+void FbZipImportThread::DoParse()
 {
+	SetInfo(_("Processing file:"));
 	wxCriticalSectionLocker enter(sm_queue);
 
 	size_t count = m_filelist.Count();
@@ -65,17 +72,16 @@ void * FbZipImportThread::Entry()
 		OnFile(m_filelist[i], true);
 	}
 	wxLogMessage(_("Finish import %d file(s)"), count);
-	return NULL;
 }
 
 //-----------------------------------------------------------------------------
 //  FbDirImportThread
 //-----------------------------------------------------------------------------
 
-class CountTraverser : public wxDirTraverser
+class FbImportCounter : public wxDirTraverser
 {
 public:
-	CountTraverser() : m_count(0) { }
+	FbImportCounter() : m_count(0) { }
 	virtual wxDirTraverseResult OnFile(const wxString& filename) {
 		m_count++;
 		return wxDIR_CONTINUE;
@@ -83,15 +89,17 @@ public:
 	virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
 		return wxDIR_CONTINUE;
 	}
-	unsigned int GetCount() { return m_count; }
+	unsigned int GetCount() { 
+		return m_count; 
+	}
 private:
 	unsigned int m_count;
 };
 
-class FolderTraverser : public wxDirTraverser
+class FbImportTraverser : public wxDirTraverser
 {
 public:
-	FolderTraverser(FbDirImportThread* thread) : m_thread(thread), m_progress(0) { };
+	FbImportTraverser(FbDirImportThread* thread) : m_thread(thread), m_progress(0) { };
 
 	virtual wxDirTraverseResult OnFile(const wxString& filename) 
 	{
@@ -111,8 +119,9 @@ private:
 	unsigned int m_progress;
 };
 
-void * FbDirImportThread::Entry()
+void FbDirImportThread::DoParse()
 {
+	SetInfo(_("Processing folder:"));
 	wxCriticalSectionLocker enter(sm_queue);
 
 	wxLogMessage(_("Start import directory %s"), m_dirname.c_str());
@@ -120,22 +129,20 @@ void * FbDirImportThread::Entry()
 	wxDir dir(m_dirname);
 	if ( !dir.IsOpened() ) {
 		wxLogError(_("Can't open directory %s"), m_dirname.c_str());
-		return NULL;
+		return;
 	}
 
 	{
-		DoStart(0, m_dirname);
-		CountTraverser counter;
+		DoStart(m_dirname);
+		FbImportCounter counter;
 		dir.Traverse(counter);
-		DoStart(counter.GetCount(), m_dirname);
+		DoStart(m_dirname, counter.GetCount());
 	}
 
-	FolderTraverser traverser(this);
+	FbImportTraverser traverser(this);
 	dir.Traverse(traverser);
 
 	DoFinish();
 
 	wxLogMessage(_("Finish import directory %s"), m_dirname.c_str());
-
-	return NULL;
 }

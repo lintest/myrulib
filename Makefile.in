@@ -130,7 +130,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbViewItem.o \
 	myrulib_LimitedTextCtrl.o \
 	myrulib_ProgressBar.o \
-	myrulib_BaseThread.o \
 	myrulib_FbAboutDlg.o \
 	myrulib_FbAlphabet.o \
 	myrulib_FbAuthList.o \
@@ -553,9 +552,6 @@ myrulib_LimitedTextCtrl.o: $(srcdir)/sources/MyRuLib/controls/LimitedTextCtrl.cp
 
 myrulib_ProgressBar.o: $(srcdir)/sources/MyRuLib/controls/ProgressBar.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/ProgressBar.cpp
-
-myrulib_BaseThread.o: $(srcdir)/sources/MyRuLib/BaseThread.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/BaseThread.cpp
 
 myrulib_FbAboutDlg.o: $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbAboutDlg.cpp

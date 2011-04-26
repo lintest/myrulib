@@ -106,7 +106,7 @@ void FbImportZip::Make(bool progress)
 {
 	size_t skipped = 0;
 	size_t existed = m_list.Count();
-	if (progress) m_owner.DoStart(existed, m_filename);
+	if (progress) m_owner.DoStart(m_filename, existed);
 
 	size_t processed = 0;
 	for (size_t i=0; i<existed; i++) {

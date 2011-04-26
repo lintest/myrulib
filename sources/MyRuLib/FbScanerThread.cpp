@@ -9,26 +9,6 @@
 //  FbZipTraverser
 //-----------------------------------------------------------------------------
 
-class FbCountTraverser : public wxDirTraverser
-{
-	public:
-		FbCountTraverser(): m_count(0) { }
-		virtual wxDirTraverseResult OnFile(const wxString& filename) {
-			m_count++;
-			return wxDIR_CONTINUE;
-		}
-		virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname)) {
-			return wxDIR_IGNORE;
-		}
-		unsigned int GetCount() { return m_count; }
-	private:
-		unsigned int m_count;
-};
-
-//-----------------------------------------------------------------------------
-//  FbZipTraverser
-//-----------------------------------------------------------------------------
-
 class FbZipTraverser : public wxDirTraverser
 {
 	public:
@@ -172,27 +152,6 @@ void * FbScanerThread::Entry()
 
 	if (IsClosed()) return NULL;
 	SavePath();
-
-	wxString dirname = m_dirname.GetFullPath();
-
-	wxLogMessage(_("Start scan directory %s"), dirname.c_str());
-
-	wxDir dir(dirname);
-	if ( !dir.IsOpened() ) {
-		wxLogError(_("Can't open directory %s"), dirname.c_str());
-		return NULL;
-	}
-
-	wxString mask = wxT("*.zip");
-
-	FbCountTraverser counter;
-	m_max = dir.Traverse(counter, mask, wxDIR_FILES);
-	m_pos = 0;
-
-	FbZipTraverser traverser(*this, m_only_new);
-	dir.Traverse(traverser, mask, wxDIR_FILES);
-
-	wxLogMessage(_("Finish scan directory %s"), dirname.c_str());
 
 	return NULL;
 }

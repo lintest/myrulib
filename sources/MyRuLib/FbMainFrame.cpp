@@ -355,14 +355,7 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
-
-		FbImportThread *thread = new FbZipImportThread(paths);
-		thread->m_info = _("Processing file:");
-		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-			wxLogError(_("Can't create thread!"));
-			return;
-		}
-		thread->Run();
+		(new FbZipImportThread(paths))->Execute();
 	}
 }
 
@@ -377,14 +370,8 @@ void FbMainFrame::OnFolder( wxCommandEvent& event ) {
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		FbImportThread *thread = new FbDirImportThread(dlg.GetPath());
-		thread->m_info = _("Processing folder:");
-
-		if ( thread->Create() != wxTHREAD_NO_ERROR ) {
-			wxLogError(_("Can't create thread!"));
-			return;
-		}
-		thread->Run();
+		wxString path = dlg.GetPath();
+		(new FbDirImportThread(path))->Execute();
 	}
 }
 

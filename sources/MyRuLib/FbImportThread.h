@@ -4,18 +4,20 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include <wx/zipstrm.h>
-#include "BaseThread.h"
+#include "FbThread.h"
 #include "FbDatabase.h"
 #include "FbCounter.h"
 
 class FbImportThread 
-	: public BaseThread
+	: public FbProgressThread
 {
 public:
 	FbImportThread();
+	virtual void * Entry();
 	virtual void OnExit();
 	bool OnFile(const wxString &filename, bool progress);
 protected:
+	virtual void DoParse() = 0;
 	wxString GetRelative(const wxString &filename);
 	wxString GetAbsolute(const wxString &filename);
 protected:
@@ -32,7 +34,7 @@ class FbZipImportThread
 {
 public:
 	FbZipImportThread(const wxArrayString &filelist): FbImportThread(), m_filelist(filelist) {};
-	virtual void * Entry();
+	virtual void DoParse();
 private:
 	const wxArrayString m_filelist;
 };
@@ -42,10 +44,10 @@ class FbDirImportThread
 {
 public:
 	FbDirImportThread(const wxString &dirname): m_dirname(dirname) {};
-	virtual void * Entry();
+	virtual void DoParse();
 private:
 	wxString m_dirname;
-	friend class FolderTraverser;
+	friend class FbImportTraverser;
 };
 
 #endif // __FBIMPORTTHREAD_H__
