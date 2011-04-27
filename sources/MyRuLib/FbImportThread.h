@@ -61,13 +61,15 @@ protected:
 	virtual void * Entry();
 	virtual void OnExit();
 private:
-	bool Download();
+	bool CreateLib();
+	bool SaveTo(wxInputStream &in, const wxString &filename, const wxString &msg);
+	bool Download(const wxString &filename);
+	bool Extract(const wxString &filename);
 private:
 	wxString m_file;
 	wxString m_dir;
 	wxString m_lib;
 	bool m_import;
-	friend class FbImportTraverser;
 };
 
 #endif // __FBIMPORTTHREAD_H__

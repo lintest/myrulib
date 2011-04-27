@@ -3,6 +3,7 @@
 #include "FbInternetBook.h"
 #include <wx/dir.h>
 #include <wx/list.h>
+#include <wx/wfstream.h>
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbDateTime.h"
@@ -172,81 +173,74 @@ FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file,
 	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
 }
 
-bool FbLibImportThread::Download()
+bool FbLibImportThread::Download(const wxString &filename)
+{
+	wxString addr = strHomePage; addr << wxT('/') << m_lib << wxT(".zip");
+
+	FbURL url(addr);
+	wxInputStream * in = url.GetInputStream();
+	if (in == NULL) {
+		FbLogError(_("Download error"), addr);
+		return false;
+	}
+
+	wxString msg = _("Download collection"); msg << wxT(": ") << m_lib;
+	return SaveTo(*in, filename, msg);
+}
+
+bool FbLibImportThread::Extract(const wxString &filename)
+{
+	wxFFileInputStream in(filename);
+	wxZipInputStream zip(in);
+
+	bool ok = zip.IsOk();
+	if (!ok) return false;
+
+	if (wxZipEntry * entry = zip.GetNextEntry()) {
+		ok = zip.OpenEntry(*entry);
+		delete entry;
+	} else ok = false;
+	if (!ok) return false;
+
+	wxString msg = _("Extract file"); msg << wxT(": ") << m_lib;
+	return SaveTo(zip, m_file, msg);
+}
+
+bool FbLibImportThread::SaveTo(wxInputStream &in, const wxString &filename, const wxString &msg)
 {
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
 
-	wxString addr = strHomePage; addr << wxT('/') << m_lib << wxT(".zip");
+	size_t pos = 0;
+	size_t size = in.GetSize();
+	FbProgressEvent(ID_PROGRESS_START, msg, size).Post(GetOwner());
 
+	wxTempFileOutputStream out(filename);
+	while (!IsClosed()) {
+		FbProgressEvent(ID_PROGRESS_UPDATE, wxEmptyString, pos).Post(GetOwner());
+		size_t count = in.Read(buf, BUFSIZE).LastRead();
+		if ( count ) {
+			out.Write(buf, count);
+			pos += count;
+		} else break;
+	}
+	return out.Commit();
+}
+
+bool FbLibImportThread::CreateLib()
+{
 	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
-
-	{
-		FbURL url(addr);
-
-		wxInputStream * in = url.GetInputStream();
-		if (in == NULL) {
-			FbLogError(_("Download error"), addr);
-			return false;
-		}
-
-		wxFileOutputStream out(tempfile);
-
-		size_t pos = 0;
-		size_t size = in->GetSize();
-		wxString msg = _("Download collection"); msg << wxT(": ") << m_lib;
-		FbProgressEvent(ID_PROGRESS_START, msg, size).Post(GetOwner());
-
-		while (true) {
-			if (IsClosed()) break;
-			FbProgressEvent(ID_PROGRESS_UPDATE, wxEmptyString, pos).Post(GetOwner());
-			size_t count = in->Read(buf, BUFSIZE).LastRead();
-			if ( count ) {
-				out.Write(buf, count);
-				pos += count;
-			} else break;
-		}
-		out.Close();
-		if (pos != size) {
-			wxRemoveFile(tempfile);
-			return false;
-		}
-	}
-
-	if (IsClosed()) {
-		wxRemoveFile(tempfile);
-		return false;
-	};
-
-	{
-		wxFFileInputStream in(tempfile);
-		wxZipInputStream zip(in);
-
-		bool ok = zip.IsOk();
-		if (!ok) return false;
-
-		if (wxZipEntry * entry = zip.GetNextEntry()) {
-			ok = zip.OpenEntry(*entry);
-			delete entry;
-		} else ok = false;
-
-		if (!ok) return false;
-
-		wxFileOutputStream out(m_file);
-		out.Write(zip);
-		return out.IsOk();
-	}
-
+	bool ok = Download(tempfile) && Extract(tempfile);
 	wxRemoveFile(tempfile);
+	return ok;
 }
 
 void * FbLibImportThread::Entry()
 {
 	if (!m_lib.IsEmpty()) {
-		bool ok = Download();
+		bool ok = CreateLib();
 		if (!ok) return NULL;
 	}
-
 	if (IsClosed()) return NULL;
 
 	FbProgressEvent(ID_PROGRESS_PULSE, _("Create full text search index")).Post(GetOwner());
@@ -274,11 +268,13 @@ void * FbLibImportThread::Entry()
 		counter.Execute();
 	}
 
+	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK).Post(GetOwner());
+
 	return NULL;
 }
 
 void FbLibImportThread::OnExit()
 {
-	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK).Post(GetOwner());
+	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL).Post(GetOwner());
 }
 

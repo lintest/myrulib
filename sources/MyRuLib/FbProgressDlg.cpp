@@ -35,7 +35,7 @@ FbProgressDlg::FbProgressDlg(wxWindow* parent)
 	wxStdDialogButtonSizer * buttons = CreateStdDialogButtonSizer( wxCANCEL );
 	bSizerCtrl->Add( buttons, 0, wxEXPAND|wxALL, 5 );
 
-	bSizerMain->Add( bSizerCtrl, 0, wxEXPAND);
+	bSizerMain->Add( bSizerCtrl, 1, wxEXPAND);
 
 	SetSizer( bSizerMain );
 	Layout();
