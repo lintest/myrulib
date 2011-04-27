@@ -33,7 +33,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbBookPanel::OnDeleteDownload)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
-	EVT_MENU(ID_EDIT_BOOK, FbBookPanel::OnEditBook)
+	EVT_MENU(wxID_PROPERTIES, FbBookPanel::OnEditBook)
 	EVT_MENU(wxID_COPY, FbBookPanel::OnCopy)
 	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
@@ -116,14 +116,15 @@ int FbBookPanel::GetOrderID()
 {
 	int col = abs(m_BookList->GetSortedColumn()) - 1;
 	switch (col) {
-		case BF_NAME: return ID_ORDER_TITLE;
+		case BF_NAME: return wxID_VIEW_SORTNAME;
 		case BF_AUTH: return ID_ORDER_AUTHOR;
 		case BF_GENR: return ID_ORDER_GENRE;
 		case BF_RATE: return ID_ORDER_RATING;
 		case BF_LANG: return ID_ORDER_LANG;
-		case BF_TYPE: return ID_ORDER_TYPE;
-		case BF_SIZE: return ID_ORDER_SIZE;
-		default: return ID_ORDER_TITLE;
+		case BF_TYPE: return wxID_VIEW_SORTTYPE;
+		case BF_SIZE: return wxID_VIEW_SORTSIZE;
+		case BF_DATE: return wxID_VIEW_SORTDATE;
+		default: return wxID_VIEW_SORTNAME;
 	}
 }
 
@@ -131,13 +132,14 @@ void FbBookPanel::SetOrderID(int id)
 {
 	int col = 0;
 	switch (id) {
-		case ID_ORDER_TITLE:  col = BF_NAME; break;
-		case ID_ORDER_AUTHOR: col = BF_AUTH; break;
-		case ID_ORDER_GENRE:  col = BF_GENR; break;
-		case ID_ORDER_RATING: col = BF_RATE; break;
-		case ID_ORDER_LANG:   col = BF_LANG; break;
-		case ID_ORDER_TYPE:   col = BF_TYPE; break;
-		case ID_ORDER_SIZE:   col = BF_SIZE; break;
+		case wxID_VIEW_SORTNAME: col = BF_NAME; break;
+		case ID_ORDER_AUTHOR:    col = BF_AUTH; break;
+		case ID_ORDER_GENRE:     col = BF_GENR; break;
+		case ID_ORDER_RATING:    col = BF_RATE; break;
+		case ID_ORDER_LANG:      col = BF_LANG; break;
+		case wxID_VIEW_SORTTYPE: col = BF_TYPE; break;
+		case wxID_VIEW_SORTSIZE: col = BF_SIZE; break;
+		case wxID_VIEW_SORTDATE: col = BF_DATE; break;
 		default: col = 1;
 	}
 	col++;

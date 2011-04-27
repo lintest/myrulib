@@ -325,8 +325,8 @@
 		<Unit filename="../MyRuLib/VacuumThread.h" />
 		<Unit filename="../MyRuLib/ZipReader.cpp" />
 		<Unit filename="../MyRuLib/ZipReader.h" />
-		<Unit filename="../MyRuLib/controls/FbChoiceFormat.cpp" />
-		<Unit filename="../MyRuLib/controls/FbChoiceFormat.h" />
+		<Unit filename="../MyRuLib/controls/FbChoiceCtrl.cpp" />
+		<Unit filename="../MyRuLib/controls/FbChoiceCtrl.h" />
 		<Unit filename="../MyRuLib/controls/FbComboBox.cpp" />
 		<Unit filename="../MyRuLib/controls/FbComboBox.h" />
 		<Unit filename="../MyRuLib/controls/FbCustomCombo.h" />
