@@ -49,9 +49,6 @@ bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, co
 
 		wxHTTP & http = (wxHTTP&)url.GetProtocol();
 		if ( !cookie.IsEmpty() ) http.SetHeader(wxT("Cookie"), cookie);
-		http.SetFlags(wxSOCKET_WAITALL);
-		if (timeout > 0) http.SetTimeout(timeout);
-		http.SetHeader(wxT("User-Agent"), strProgramInfo);
 
 		wxInputStream * in = url.GetInputStream();
 		switch ( http.GetResponse() / 100 ) {
@@ -62,7 +59,7 @@ bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, co
 			} break;
 			case 4: {
 				FbLogError(_("File is missing"), addr);
-				continue;
+				return false;
 			} break;
 			case 5: {
 				FbLogError(_("Server error"), addr);
@@ -85,11 +82,10 @@ bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, co
 				offset += count;
 			} else break;
 		} 
+		FbProgressEvent(ID_PROGRESS_UPDATE).Post(owner);
 		if (ok = offset == size) break;
 		addr = address;
 	} 
-
-	FbProgressEvent(ID_PROGRESS_UPDATE).Post(owner);
 
 	return ok;
 }

@@ -1,5 +1,6 @@
 #include "FbProgressDlg.h"
 #include "FbConst.h"
+#include "FbLogoBitmap.h"
 
 //-----------------------------------------------------------------------------
 //  FbDialog
@@ -17,19 +18,24 @@ FbProgressDlg::FbProgressDlg(wxWindow* parent)
 	: FbDialog( parent, wxID_ANY, _("Processing collection"), wxDefaultPosition, wxDefaultSize),
 		m_thread(NULL), m_timer(this)
 {
-	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer * bSizerCtrl = new wxBoxSizer( wxVERTICAL );
+
+	wxStaticBitmap * m_bitmap = new wxStaticBitmap( this, wxID_ANY, FbLogoBitmap(), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( m_bitmap, 0, wxALL|wxALIGN_TOP, 10 );
 
 	m_text.Create( this, wxID_ANY, wxEmptyString );
 	m_text.Wrap( -1 );
-	bSizerMain->Add( &m_text, 0, wxALL|wxEXPAND, 5 );
+	bSizerCtrl->Add( &m_text, 0, wxALL|wxEXPAND, 5 );
 
-	m_gauge.Create( this, wxID_ANY, 100 );
-	m_gauge.SetMinSize( wxSize(300, -1) );
-	m_gauge.SetRange(1000);
-	bSizerMain->Add( &m_gauge, 0, wxALL|wxEXPAND, 5 );
+	m_gauge.Create(this, wxID_ANY, 1000, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+	m_gauge.SetMinSize(wxSize(300, -1));
+	bSizerCtrl->Add( &m_gauge, 0, wxALL|wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * buttons = CreateStdDialogButtonSizer( wxCANCEL );
-	bSizerMain->Add( buttons, 0, wxEXPAND|wxALL, 5 );
+	bSizerCtrl->Add( buttons, 0, wxEXPAND|wxALL, 5 );
+
+	bSizerMain->Add( bSizerCtrl, 0, wxEXPAND);
 
 	SetSizer( bSizerMain );
 	Layout();

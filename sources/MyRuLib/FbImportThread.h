@@ -15,6 +15,7 @@ class FbImportThread
 public:
 	FbImportThread(wxEvtHandler * owner, wxThreadKind kind = wxTHREAD_DETACHED);
 	bool OnFile(const wxString &filename, bool progress);
+	void SetRoot(const wxString & dir);
 protected:
 	virtual void * Entry();
 	virtual void DoParse() = 0;
@@ -63,6 +64,7 @@ private:
 	bool Download();
 private:
 	wxString m_file;
+	wxString m_dir;
 	wxString m_lib;
 	bool m_import;
 	friend class FbImportTraverser;

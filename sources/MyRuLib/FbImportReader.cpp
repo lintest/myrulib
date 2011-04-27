@@ -60,6 +60,7 @@ FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxStri
 				m_list.Add(entry);
 			}
 		}
+		if (m_owner.IsClosed()) break;
     }
 }
 

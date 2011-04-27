@@ -26,8 +26,15 @@ FbImportThread::FbImportThread(wxEvtHandler * owner, wxThreadKind kind)
 {
 }
 
+void FbImportThread::SetRoot(const wxString & dir)
+{
+	m_basepath = dir;
+}
+
 void * FbImportThread::Entry()
 {
+	SetRoot(wxGetApp().GetLibPath());
+
 	FbCommonDatabase database;
 	m_database = &database;
 
@@ -74,6 +81,7 @@ void FbZipImportThread::DoParse()
 	size_t count = m_filelist.Count();
 	wxLogMessage(_("Start import %d file(s)"), count);
 	for (size_t i = 0; i < count; i++) {
+		if (IsClosed()) break;
 		OnFile(m_filelist[i], true);
 	}
 	wxLogMessage(_("Finish import %d file(s)"), count);
@@ -108,6 +116,7 @@ public:
 
 	virtual wxDirTraverseResult OnFile(const wxString& filename)
 	{
+		if (m_thread->IsClosed()) return wxDIR_STOP;
 		m_thread->DoStep( wxFileName(filename).GetFullName() );
 		m_thread->OnFile(filename, false);
 		return wxDIR_CONTINUE;
@@ -115,6 +124,7 @@ public:
 
 	virtual wxDirTraverseResult OnDir(const wxString& dirname)
 	{
+		if (m_thread->IsClosed()) return wxDIR_STOP;
 		wxLogMessage(_("Import subdirectory %s"), dirname.c_str());
 		return wxDIR_CONTINUE;
 	}
@@ -157,7 +167,7 @@ void FbDirImportThread::DoParse()
 //-----------------------------------------------------------------------------
 
 FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import)
-	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_lib(lib), m_import(import)
+	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import)
 {
 	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
 }
@@ -167,17 +177,12 @@ bool FbLibImportThread::Download()
 	const size_t BUFSIZE = 1024;
 	unsigned char buf[BUFSIZE];
 
-	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
 	wxString addr = strHomePage; addr << wxT('/') << m_lib << wxT(".zip");
 
 	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 
 	{
 		FbURL url(addr);
-		wxHTTP & http = (wxHTTP&)url.GetProtocol();
-		http.SetFlags(wxSOCKET_WAITALL);
-		if (timeout > 0) http.SetTimeout(timeout);
-		http.SetHeader(wxT("User-Agent"), strProgramInfo);
 
 		wxInputStream * in = url.GetInputStream();
 		if (in == NULL) {
@@ -202,13 +207,16 @@ bool FbLibImportThread::Download()
 			} else break;
 		}
 		out.Close();
+		if (pos != size) {
+			wxRemoveFile(tempfile);
+			return false;
+		}
 	}
 
 	if (IsClosed()) {
 		wxRemoveFile(tempfile);
 		return false;
 	};
-
 
 	{
 		wxFFileInputStream in(tempfile);
@@ -228,6 +236,8 @@ bool FbLibImportThread::Download()
 		out.Write(zip);
 		return out.IsOk();
 	}
+
+	wxRemoveFile(tempfile);
 }
 
 void * FbLibImportThread::Entry()
@@ -247,7 +257,18 @@ void * FbLibImportThread::Entry()
 	if (!database.IsOpen()) return NULL;
 	m_database = &database;
 
+	{
+		wxString sql = wxT("INSERT OR REPLACE INTO params(id, text) VALUES(?,?)");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, DB_LIBRARY_DIR);
+		stmt.Bind(2, m_dir);
+		stmt.ExecuteUpdate();
+	}	
+
+	SetRoot(m_dir);
+
 	if (m_import) {
+		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
 		FbCounter counter(database);
 		DoParse();
 		counter.Execute();

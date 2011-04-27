@@ -15,16 +15,12 @@ FbDialog::FbDialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	:wxDialog( parent, id, title, pos, size, style, name )
 {
 	SetFont( FbParams::GetFont(FB_FONT_DLG) );
-	wxColour colour = FbParams::GetColour(FB_COLOUR_DLG);
-	if (colour.IsOk()) SetForegroundColour(colour);
 }
 
 bool FbDialog::Create( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name )
 {
 	bool res = wxDialog::Create( parent, id, title, pos, size, style, name );
 	SetFont( FbParams::GetFont(FB_FONT_DLG) );
-	wxColour colour = FbParams::GetColour(FB_COLOUR_DLG);
-	if (colour.IsOk()) SetForegroundColour(colour);
 	return res;
 }
 
