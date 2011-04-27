@@ -49,7 +49,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_action.SetSelection( 0 );
 	for (size_t i = 0; i < choices_num; i++) {
 		wxString str = download + wxT(": ") + choices[i];
-		m_action.Append(str, choices[i]);
+		m_action.Append(str, choices[i].Lower());
 	}
 	bSizerCtrl->Add( &m_action, 0, wxALL|wxEXPAND, 5 );
 
@@ -92,11 +92,11 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_scaner.Create( this, wxID_ANY, _("Run a full scan for library files") );
 	m_scaner.SetValue(false);
 	bSizerCtrl->Add( &m_scaner, 0, wxALL|wxEXPAND, 5 );
-
+/*
 	m_only.Create( this, wxID_ANY, _("Process only new files") );
 	m_scaner.SetValue(false);
 	bSizerCtrl->Add( &m_only, 0, wxALL|wxEXPAND, 5 );
-
+*/
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
