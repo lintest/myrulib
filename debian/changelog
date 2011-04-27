@@ -1,3 +1,9 @@
+myrulib (0.27.3-natty1) natty; urgency=low
+
+  * Update release
+
+ -- Denis Kandrashin <mail@lintest.ru>  Wed, 27 Apr 2011 21:17:20 +0400
+
 myrulib (0.26.9-maverick1) maverick; urgency=low
 
   * Update release
