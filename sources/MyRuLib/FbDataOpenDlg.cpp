@@ -49,7 +49,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_action.SetSelection( 0 );
 	for (size_t i = 0; i < choices_num; i++) {
 		wxString str = download + wxT(": ") + choices[i];
-		m_action.Append(str, choices[i].Lower());
+		m_action.Append(str, choices[i]);
 	}
 	bSizerCtrl->Add( &m_action, 0, wxALL|wxEXPAND, 5 );
 
@@ -123,12 +123,12 @@ void FbDataOpenDlg::SetDefaultNames()
 {
 	FbStandardPaths paths;
 	wxFileName filename = paths.GetDefaultName();
-	wxFileName filepath = (wxString) _("Books");
+	wxFileName filepath = (wxString) wxT("Books");
 	filepath.SetPath(paths.GetDocumentsDir());
 
 	wxString library = m_action.GetCurrentData();
 	if (!library.IsEmpty()) {
-		filename.SetName(library);
+		filename.SetName(library.Lower());
 		filepath.SetName(library);
 	}
 
