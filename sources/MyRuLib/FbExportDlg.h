@@ -23,7 +23,7 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbWindow.h"
-#include "controls/FbChoiceFormat.h"
+#include "controls/FbChoiceCtrl.h"
 
 class FbBookPanel;
 
@@ -65,7 +65,7 @@ class FbExportDlg : public FbDialog
 		};
 		wxTextCtrl * m_textDir;
 		FbTreeViewCtrl * m_books;
-		FbChoiceFormat * m_format;
+		FbChoiceInt * m_format;
 		wxCheckBox * m_checkAuthor;
 	private:
 		void OnSelectDir( wxCommandEvent& event );

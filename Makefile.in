@@ -118,7 +118,7 @@ MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
-	myrulib_FbChoiceFormat.o \
+	myrulib_FbChoiceCtrl.o \
 	myrulib_FbComboBox.o \
 	myrulib_FbHtmlWindow.o \
 	myrulib_FbNotebook.o \
@@ -516,8 +516,8 @@ zipscan_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c
 bin2c_bin2c.o: $(srcdir)/3rdparty/bin2c/bin2c.c
 	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/3rdparty/bin2c/bin2c.c
 
-myrulib_FbChoiceFormat.o: $(srcdir)/sources/MyRuLib/controls/FbChoiceFormat.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbChoiceFormat.cpp
+myrulib_FbChoiceCtrl.o: $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp
 
 myrulib_FbComboBox.o: $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp

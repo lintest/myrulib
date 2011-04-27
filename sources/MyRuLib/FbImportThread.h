@@ -59,8 +59,8 @@ public:
 	FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import);
 protected:
 	virtual void * Entry();
-	virtual void OnExit();
 private:
+	bool Execute();
 	bool CreateLib();
 	bool SaveTo(wxInputStream &in, const wxString &filename, const wxString &msg);
 	bool Download(const wxString &filename);

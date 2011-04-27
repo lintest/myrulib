@@ -45,11 +45,11 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	bSizerCtrl->Add( info, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxLEFT|wxRIGHT, 5 );
 
 	m_action.Create( this, ID_ACTION);
-	m_action.Append(_("Open (or create) collection"));
+	m_action.Append(_("Open (or create) local collection"));
 	m_action.SetSelection( 0 );
 	for (size_t i = 0; i < choices_num; i++) {
-		m_action.Append(download + wxT(": ") + choices[i]);
-		m_choises.Add(choices[i].Lower());
+		wxString str = download + wxT(": ") + choices[i];
+		m_action.Append(str, choices[i]);
 	}
 	bSizerCtrl->Add( &m_action, 0, wxALL|wxEXPAND, 5 );
 
@@ -119,12 +119,6 @@ void FbDataOpenDlg::OnActionChoise( wxCommandEvent& event )
 	SetDefaultNames();
 }
 
-wxString FbDataOpenDlg::GetLibrary()
-{
-	int sel = m_action.GetCurrentSelection() - 1;
-	return (sel >= 0) ? m_choises[sel] : wxString();
-}
-
 void FbDataOpenDlg::SetDefaultNames()
 {
 	FbStandardPaths paths;
@@ -132,7 +126,7 @@ void FbDataOpenDlg::SetDefaultNames()
 	wxFileName filepath = (wxString) _("Books");
 	filepath.SetPath(paths.GetDocumentsDir());
 
-	wxString library = GetLibrary();
+	wxString library = m_action.GetCurrentData();
 	if (!library.IsEmpty()) {
 		filename.SetName(library);
 		filepath.SetName(library);
@@ -237,7 +231,7 @@ bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
 
 	filename = dlg.GetFilename();
 	wxString dir = dlg.GetDirname();
-	wxString lib = dlg.GetLibrary();
+	wxString lib = dlg.m_action.GetCurrentData();
 	bool import = dlg.m_scaner.GetValue();
 
 	FbProgressDlg scaner(dlg.GetParent());

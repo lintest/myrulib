@@ -12,7 +12,7 @@
 #include "FbViewerDlg.h"
 #include "FbLocale.h"
 #include "FbDatabase.h"
-#include "controls/FbChoiceFormat.h"
+#include "controls/FbChoiceCtrl.h"
 #include "controls/FbCustomCombo.h"
 #include "controls/FbToolBar.h"
 #include "controls/FbTreeView.h"
@@ -360,7 +360,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	typeText->Wrap( -1 );
 	bSizerLocale->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
-	FbChoiceFormat * localeChoice = new FbChoiceFormat( this, ID_LANG_LOCALE);
+	FbChoiceInt * localeChoice = new FbChoiceInt( this, ID_LANG_LOCALE);
 	FbLocale::Fill(localeChoice, FbParams::GetInt(FB_LANG_LOCALE));
 	bSizerLocale->Add( localeChoice, 1, wxALL, 5 );
 
@@ -495,7 +495,7 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 	bSizerFormat->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxString filename = _("filename");
-	FbChoiceFormat * typeChoice = new FbChoiceFormat( this, ID_FILE_FORMAT);
+	FbChoiceInt * typeChoice = new FbChoiceInt( this, ID_FILE_FORMAT);
 	typeChoice->Append(filename << wxT(".fb2"), 0);
 	typeChoice->Append(filename + wxT(".zip"), -1);
 	typeChoice->Append(filename + wxT(".gz"),  -2);
@@ -687,7 +687,7 @@ void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 	treeview->SetFocus();
 
 	wxString label = _("filename"); label << wxT('.') << name;
-	FbChoiceFormat * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceFormat);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
 	if (typelist) typelist->Append(label, code);
 }
 
@@ -712,7 +712,7 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 	treeview->Replace(new ScriptData(code, name, text));
 	treeview->SetFocus();
 
-	FbChoiceFormat * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceFormat);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
 	if (typelist) {
 		int index = typelist->GetSelection();
 		size_t count = typelist->GetCount();
@@ -751,7 +751,7 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 	EnableTool(ID_SCRIPT_LIST, model->GetRowCount());
 	treeview->SetFocus();
 
-	FbChoiceFormat * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceFormat);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
 	if (typelist) {
 		size_t index = (size_t) typelist->GetSelection();
 		size_t count = typelist->GetCount();
@@ -916,7 +916,7 @@ void FbParamsDlg::OnModel( FbModelEvent& event )
 
 void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 {
-	FbChoiceFormat * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceFormat);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
 	if (!typelist) return;
 
 	int format = FbParams::GetInt(FB_FILE_FORMAT);

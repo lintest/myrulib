@@ -10,7 +10,7 @@
 #include <wx/wfstream.h>
 #include "FbDatabase.h"
 #include "FbConst.h"
-#include "controls/FbChoiceFormat.h"
+#include "controls/FbChoiceCtrl.h"
 
 #ifdef __WXMSW__
 
@@ -115,7 +115,7 @@ bool FbLocale::Save(const wxFileName &filename, const void *data, size_t size)
     return true;
 }
 
-void FbLocale::Fill(FbChoiceFormat * choise, int value)
+void FbLocale::Fill(FbChoiceInt * choise, int value)
 {
 	choise->Append(wxT("Default"), wxLANGUAGE_DEFAULT);
 	choise->SetSelection(0);

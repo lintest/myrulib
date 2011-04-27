@@ -66,7 +66,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	m_staticTextFormat->Wrap( -1 );
 	bSizerFormat->Add( m_staticTextFormat, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_format = new FbChoiceFormat( this, ID_FORMAT, wxDefaultPosition, wxDefaultSize);
+	m_format = new FbChoiceInt( this, ID_FORMAT, wxDefaultPosition, wxDefaultSize);
 	bSizerFormat->Add( m_format, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );

@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include "FbWindow.h"
+#include "controls/FbChoiceCtrl.h"
 
 class FbDataOpenDlg : public FbDialog
 {
@@ -24,12 +25,9 @@ class FbDataOpenDlg : public FbDialog
 		wxString GetTitle() const;
 		void UpdateFolder();
 		wxString CheckExt(const wxString &filename);
-		wxString GetLibrary();
 		void SetDefaultNames();
 	private:
-		wxArrayString m_choises;
-	private:
-		wxChoice   m_action;
+		FbChoiceStr m_action;
 		wxComboBox m_file;
 		wxTextCtrl m_folder;
 		wxCheckBox m_scaner;

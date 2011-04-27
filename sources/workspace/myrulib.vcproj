@@ -236,7 +236,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbChoiceFormat.cpp"
+				RelativePath="..\MyRuLib\controls\FbChoiceCtrl.cpp"
 				>
 			</File>
 			<File
@@ -660,7 +660,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbChoiceFormat.h"
+				RelativePath="..\MyRuLib\controls\FbChoiceCtrl.h"
 				>
 			</File>
 			<File
@@ -940,11 +940,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File

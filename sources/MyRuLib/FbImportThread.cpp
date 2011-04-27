@@ -22,7 +22,6 @@
 FbImportThread::FbImportThread(wxEvtHandler * owner, wxThreadKind kind)
 	: FbProgressThread(owner, kind),
 		m_database(NULL),
-		m_basepath(wxGetApp().GetLibPath()),
 		m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH))
 {
 }
@@ -229,52 +228,45 @@ bool FbLibImportThread::SaveTo(wxInputStream &in, const wxString &filename, cons
 
 bool FbLibImportThread::CreateLib()
 {
+	if (m_lib.IsEmpty()) return true;
 	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 	bool ok = Download(tempfile) && Extract(tempfile);
 	wxRemoveFile(tempfile);
 	return ok;
 }
 
-void * FbLibImportThread::Entry()
+bool FbLibImportThread::Execute()
 {
-	if (!m_lib.IsEmpty()) {
-		bool ok = CreateLib();
-		if (!ok) return NULL;
-	}
-	if (IsClosed()) return NULL;
+	if (!CreateLib()) return false;
+
+	if (IsClosed()) return false;
 
 	FbProgressEvent(ID_PROGRESS_PULSE, _("Create full text search index")).Post(GetOwner());
 
 	FbMainDatabase database;
 	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
 	database.Open(m_file, wxEmptyString, flags);
-	if (!database.IsOpen()) return NULL;
+	if (!database.IsOpen()) return false;
+	database.SetText(DB_LIBRARY_DIR, m_dir);
 	m_database = &database;
 
-	{
-		wxString sql = wxT("INSERT OR REPLACE INTO params(id, text) VALUES(?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, DB_LIBRARY_DIR);
-		stmt.Bind(2, m_dir);
-		stmt.ExecuteUpdate();
-	}	
-
-	SetRoot(m_dir);
+	if (IsClosed()) return false;
 
 	if (m_import) {
+		SetRoot(m_dir);
 		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
 		FbCounter counter(database);
 		DoParse();
 		counter.Execute();
 	}
 
-	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK).Post(GetOwner());
-
-	return NULL;
+	return true;
 }
 
-void FbLibImportThread::OnExit()
+void * FbLibImportThread::Entry()
 {
-	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL).Post(GetOwner());
+	int result = Execute() ? wxID_OK : wxID_CANCEL;
+	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, result).Post(GetOwner());
+	return NULL;
 }
 

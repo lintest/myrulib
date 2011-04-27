@@ -185,7 +185,7 @@
 		<objects-depend>be.inc</objects-depend>
 		<objects-depend>cs.inc</objects-depend>
 		<objects-depend>sv.inc</objects-depend>
-		<sources>sources/MyRuLib/controls/FbChoiceFormat.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbChoiceCtrl.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbNotebook.cpp</sources>
