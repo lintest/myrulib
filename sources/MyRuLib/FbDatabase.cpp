@@ -375,7 +375,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 	int old_version = GetVersion();
 	if (old_version != new_version) {
 	    wxString msg = _("Database version mismatch");
-		wxMessageBox(msg, strProgramName, wxOK | wxICON_ERROR);
+		wxMessageBox(msg, MyRuLib::ProgramName(), wxOK | wxICON_ERROR);
 		wxLogError(msg);
 		wxLogFatalError(_("Need a new version %d, but used the old %d."), new_version, old_version);
 	}

@@ -56,13 +56,13 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_MENU(ID_TITLE_BTN, FbMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_TITLE_TXT, FbMainFrame::OnFindTitleEnter)
 
-	EVT_MENU(ID_RECENT_1, FbMainFrame::OnMenuRecent)
-	EVT_MENU(ID_RECENT_2, FbMainFrame::OnMenuRecent)
-	EVT_MENU(ID_RECENT_3, FbMainFrame::OnMenuRecent)
-	EVT_MENU(ID_RECENT_4, FbMainFrame::OnMenuRecent)
-	EVT_MENU(ID_RECENT_5, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE1, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE2, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE3, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE4, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE5, FbMainFrame::OnMenuRecent)
 
-	EVT_UPDATE_UI(ID_RECENT_ALL, FbMainFrame::OnRecentUpdate)
+	EVT_UPDATE_UI(wxID_FILE, FbMainFrame::OnRecentUpdate)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
@@ -87,8 +87,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_UPDATE_UI(ID_FULLSCREEN,  FbMainFrame::OnFullScreenUpdate)
 	EVT_UPDATE_UI(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLogUpdate)
 
-	EVT_MENU(ID_WINDOW_CLOSE, FbMainFrame::OnWindowClose)
-	EVT_MENU(ID_WINDOW_CLOSEALL, FbMainFrame::OnWindowCloseAll)
+	EVT_MENU(wxID_CLOSE, FbMainFrame::OnWindowClose)
+	EVT_MENU(wxID_CLOSE_ALL, FbMainFrame::OnWindowCloseAll)
 	EVT_MENU(ID_WINDOW_NEXT, FbMainFrame::OnWindowNext)
 	EVT_MENU(ID_WINDOW_PREV, FbMainFrame::OnWindowPrev)
 
@@ -103,7 +103,7 @@ END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
 {
-	return FbParams::GetStr(DB_LIBRARY_TITLE) + wxT(" - ") + strProgramName;
+	return FbParams::GetStr(DB_LIBRARY_TITLE) + wxT(" - ") + MyRuLib::ProgramName();
 }
 
 FbMainFrame::FbMainFrame()
@@ -182,8 +182,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 void FbMainFrame::SetAccelerators()
 {
 	wxAcceleratorEntry entries[] = {
-		wxAcceleratorEntry(wxACCEL_CTRL, (int) WXK_F4, ID_WINDOW_CLOSE),
-		wxAcceleratorEntry(wxACCEL_CTRL, (int) wxT('W'), ID_WINDOW_CLOSE),
+		wxAcceleratorEntry(wxACCEL_CTRL, (int) WXK_F4, wxID_CLOSE),
 		wxAcceleratorEntry(wxACCEL_CTRL, (int) WXK_INSERT, wxID_COPY),
 	};
 	wxAcceleratorTable accel(sizeof(entries) / sizeof(wxAcceleratorEntry), entries);
@@ -277,7 +276,7 @@ void FbMainFrame::OnMenuConfig(wxCommandEvent& event)
 
 void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 {
-	wxLaunchDefaultBrowser(strHomePage);
+	wxLaunchDefaultBrowser(MyRuLib::HomePage());
 }
 
 void FbMainFrame::OnAbout(wxCommandEvent & event)
@@ -638,7 +637,7 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
 {
-	int param = event.GetId() - ID_RECENT_0 + FB_RECENT_0;
+	int param = event.GetId() - wxID_FILE + FB_RECENT_0;
 	wxString filename = FbParams::GetStr(param);
 	if (filename.IsEmpty()) return;
 
@@ -655,7 +654,7 @@ void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
 	wxMenuBar * menubar = GetMenuBar();
 	if (!menubar) return;
 
-	wxMenuItem * menuitem = menubar->FindItem(ID_RECENT_ALL);
+	wxMenuItem * menuitem = menubar->FindItem(wxID_FILE);
 	if (!menuitem) return;
 
 	wxMenu * submenu = menuitem->GetSubMenu();
@@ -670,7 +669,7 @@ void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
 		wxString filename = FbParams::GetStr(i + FB_RECENT_0);
 		if (filename.IsEmpty()) continue;
 		wxString fileinfo = FbParams::GetStr(i + FB_TITLE_0);
-		submenu->Append(ID_RECENT_0 + i, filename, fileinfo);
+		submenu->Append(wxID_FILE + i, filename, fileinfo);
 	}
 }
 

@@ -1,14 +1,35 @@
 #include "FbConst.h"
+#include <wx/utils.h>
 
 #include "../version.inc"
 
 #define TXT(text) wxT(wxSTRINGIZE(text))
 
-const wxString strProgramName = (wxString) TXT(PROGRAM_NAME) + wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR);
-const wxString strProgramInfo = strProgramName + wxT('.') + TXT(VERSION_BUILD);
-const wxString strHomePage = wxT("http://myrulib.lintest.ru");
-const wxString strMailAddr = wxT("mail@lintest.ru");
-const wxString strVersionInfo = strHomePage +  wxT("\n") + strMailAddr;
+wxString MyRuLib::ProgramName()
+{
+	return (wxString)TXT(PROGRAM_NAME) + wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR);
+}
+
+wxString MyRuLib::ProgramInfo()
+{
+	return ProgramName() + wxT('.') + TXT(VERSION_BUILD);
+	return TXT(PROGRAM_HOMEPAGE);
+}
+
+wxString MyRuLib::HomePage()
+{
+	return TXT(PROGRAM_HOMEPAGE);
+}
+
+wxString MyRuLib::MailAddr()
+{
+	return TXT(PROGRAM_MAILADDR);
+}
+
+wxString MyRuLib::UserAgent()
+{
+	return (wxString)TXT(PROGRAM_NAME) + wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR) + TXT(VERSION_BUILD) + wxT('/') + ::wxGetOsDescription(); 
+}
 
 static wxString GetRussianAlphabet()
 {
@@ -24,15 +45,11 @@ static wxString GetRussianAlphabet()
 const wxString alphabetRu = GetRussianAlphabet();
 const wxString alphabetEn = wxT("#ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 const wxString strAlphabet = alphabetRu + alphabetEn;
-const wxString strNobody = _("(no Author)");
 const wxString strRusJE = (wxChar)0x0415;
 const wxString strRusJO = (wxChar)0x0416;
-const wxString strOtherSequence = wxT("(Misc.)");
 
 const wxString strUpdateAuthorCount = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
 const wxString strUpdateSequenCount = wxT("UPDATE sequences SET number=(SELECT COUNT(DISTINCT id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id)");
-
-const int ciMaxImageWidth = 200;
 
 wxString GetRatingText(int index)
 {

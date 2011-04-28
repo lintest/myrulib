@@ -111,7 +111,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 
 wxString FbDataOpenDlg::GetTitle() const
 {
-	return strProgramName + wxT(" - ") + _("Open (or create) collection");
+	return MyRuLib::ProgramName() + wxT(" - ") + _("Open (or create) collection");
 }
 
 void FbDataOpenDlg::OnActionChoise( wxCommandEvent& event )

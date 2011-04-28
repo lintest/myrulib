@@ -169,12 +169,12 @@ void FbDirImportThread::DoParse()
 FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import)
 	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import)
 {
-	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
+	wxURL(MyRuLib::HomePage()).GetProtocol();
 }
 
 bool FbLibImportThread::Download(const wxString &filename)
 {
-	wxString addr = strHomePage; addr << wxT('/') << m_lib << wxT(".zip");
+	wxString addr = MyRuLib::HomePage(); addr << wxT('/') << m_lib << wxT(".zip");
 
 	FbURL url(addr);
 	wxInputStream * in = url.GetInputStream();

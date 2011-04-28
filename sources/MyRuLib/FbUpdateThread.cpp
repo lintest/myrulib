@@ -15,7 +15,7 @@
 
 FbUpdateThread::FbUpdateThread()
 {
-	wxURL(strHomePage).GetProtocol().SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
+	wxURL(MyRuLib::HomePage()).GetProtocol();
 }
 
 void * FbUpdateThread::Entry()
@@ -54,7 +54,7 @@ IMPLEMENT_CLASS(FbUpdateItem, wxObject)
 
 wxString FbUpdateItem::GetAddr(int date, const wxString &type)
 {
-	return wxString::Format(wxT("%s/%s/%d/%d.zip"), strHomePage.c_str(), type.c_str(), date / 10000, date);
+	return wxString::Format(wxT("%s/%s/%d/%d.zip"), MyRuLib::HomePage().c_str(), type.c_str(), date / 10000, date);
 }
 
 FbUpdateItem::FbUpdateItem(wxSQLite3Database & database, int code, const wxString &type)

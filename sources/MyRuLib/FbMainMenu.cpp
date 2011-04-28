@@ -26,7 +26,7 @@ FbMenuBar::MenuFile::MenuFile()
 FbMenuBar::MenuLib::MenuLib()
 {
 	Append(ID_MENU_DB_OPEN, _("Open (or create) collection"));
-	Append(ID_RECENT_ALL, _("Open recent"), new MenuRecent());
+	Append(wxID_FILE, _("Open recent"), new MenuRecent());
 	AppendSeparator();
 	Append(ID_MENU_DB_INFO,  _("Information about collection"));
 	Append(ID_MENU_GENLIST,  _("Rebuild the list of genres"));
@@ -131,8 +131,8 @@ FbMenuBar::MenuPreview::MenuPreview()
 
 FbMenuBar::MenuWindow::MenuWindow()
 {
-	Append(ID_WINDOW_CLOSE,    _("Close window"));
-	Append(ID_WINDOW_CLOSEALL, _("Close all"));
+	Append(wxID_CLOSE,    _("Close window") + (wxString)wxT("\tCtrl+W"));
+	Append(wxID_CLOSE_ALL, _("Close all"));
 	AppendSeparator();
 	Append(ID_WINDOW_NEXT,     _("Next"));
 	Append(ID_WINDOW_PREV,     _("Previous"));

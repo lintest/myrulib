@@ -106,13 +106,6 @@ enum {
 	ID_RATING_3,
 	ID_RATING_4,
 	ID_RATING_5,
-	ID_RECENT_ALL,
-	ID_RECENT_0,
-	ID_RECENT_1,
-	ID_RECENT_2,
-	ID_RECENT_3,
-	ID_RECENT_4,
-	ID_RECENT_5,
 	ID_ART_DEFAULT,
 	ID_ART_COMPACT,
 	ID_ART_STANDART,
@@ -120,8 +113,6 @@ enum {
 	ID_ART_TOOLBAR,
 	ID_ART_VSTUDIO,
 	ID_ART_MOZILLA,
-	ID_WINDOW_CLOSE,
-	ID_WINDOW_CLOSEALL,
 	ID_WINDOW_NEXT,
 	ID_WINDOW_PREV,
 	ID_DIRECTION,
@@ -139,19 +130,22 @@ enum {
 	ID_FAVORITES_ADD, // Always the last !!!
 };
 
-extern const wxString strProgramName;
-extern const wxString strProgramInfo;
-extern const wxString strVersionInfo;
-extern const wxString strHomePage;
+class MyRuLib
+{
+public:
+	static wxString ProgramName();
+	static wxString ProgramInfo();
+	static wxString VersionInfo();
+	static wxString HomePage();
+	static wxString MailAddr();
+	static wxString UserAgent();
+};
 
 extern const wxString alphabetRu;
 extern const wxString alphabetEn;
 extern const wxString strAlphabet;
-extern const wxString strNobody;
 extern const wxString strRusJE;
 extern const wxString strRusJO;
-
-extern const int ciMaxImageWidth;
 
 extern const wxString strUpdateAuthorCount;
 extern const wxString strUpdateSequenCount;

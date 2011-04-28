@@ -1,7 +1,6 @@
 #include "FbURL.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include <wx/utils.h>
 
 FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 {
@@ -12,12 +11,5 @@ FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 	http.SetFlags(wxSOCKET_WAITALL);
 	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
 	if (timeout > 0) http.SetTimeout(timeout);
-	http.SetHeader(wxT("User-Agent"), GetUserAgent());
-}
-
-wxString FbURL::GetUserAgent()
-{
-	wxString result = strProgramInfo;
-	result << wxT(' ') << wxT('(') << ::wxGetOsDescription() << wxT(')'); 
-	return result;
+	http.SetHeader(wxT("User-Agent"), MyRuLib::UserAgent());
 }
