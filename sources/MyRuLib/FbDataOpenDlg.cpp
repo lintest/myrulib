@@ -212,6 +212,13 @@ wxString FbDataOpenDlg::GetDirname()
 	return dirname;
 }
 
+FbThread * FbDataOpenDlg::CreateThread(wxEvtHandler * owner)
+{
+	wxString lib = m_action.GetCurrentData().Lower();
+	bool import = m_scaner.GetValue();
+	return new FbLibImportThread(owner, GetFilename(), GetDirname(), lib, import);
+}
+
 wxString FbDataOpenDlg::CheckExt(const wxString &filename)
 {
 	wxString result = filename;
@@ -229,13 +236,7 @@ bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
 	FbDataOpenDlg dlg(parent);
 	if (dlg.ShowModal() != wxID_OK) return false;
 
-	filename = dlg.GetFilename();
-	wxString dir = dlg.GetDirname();
-	wxString lib = dlg.m_action.GetCurrentData();
-	bool import = dlg.m_scaner.GetValue();
-
 	FbProgressDlg scaner(dlg.GetParent());
-	FbThread * thread = new FbLibImportThread(&scaner, filename, dir, lib, import);
-	scaner.RunThread(thread);
+	scaner.RunThread(dlg.CreateThread(&scaner));
 	return scaner.ShowModal() == wxID_OK;
 }

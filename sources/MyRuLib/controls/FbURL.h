@@ -7,6 +7,8 @@ class FbURL: public wxURL
 {
 	public:
 		FbURL(const wxString& sUrl = wxEmptyString);
+	private:
+		static wxString GetUserAgent();
 };
 
 #endif // __FBURL_H__

@@ -5,13 +5,14 @@
 #include "FbWindow.h"
 #include "controls/FbChoiceCtrl.h"
 
+class FbThread;
+
 class FbDataOpenDlg : public FbDialog
 {
 	public:
 		static bool Execute(wxWindow * parent, wxString & filename);
 		FbDataOpenDlg( wxWindow * parent);
-		wxString GetFilename();
-		wxString GetDirname();
+		FbThread * CreateThread(wxEvtHandler * owner);
 	private:
 		enum
 		{
@@ -26,6 +27,9 @@ class FbDataOpenDlg : public FbDialog
 		void UpdateFolder();
 		wxString CheckExt(const wxString &filename);
 		void SetDefaultNames();
+	private:
+		wxString GetFilename();
+		wxString GetDirname();
 	private:
 		FbChoiceStr m_action;
 		wxComboBox m_file;
