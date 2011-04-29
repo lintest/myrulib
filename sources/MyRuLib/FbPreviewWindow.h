@@ -28,12 +28,14 @@ class FbPreviewWindow: public FbHtmlWindow
 		);
 		~FbPreviewWindow();
 		void Reset(const FbViewContext &ctx, const FbViewItem &item);
+		void Empty();
 	private:
 		class ContextMenu: public FbMenu {
-			public: ContextMenu();
+			public: ContextMenu(int book);
 		};
 		FbPreviewThread * m_thread;
 		FbViewItem m_view;
+		int m_book;
 	private:
 		void OnRightUp(wxMouseEvent& event);
 		void OnInfoUpdate(wxCommandEvent& event);

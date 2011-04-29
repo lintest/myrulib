@@ -156,7 +156,7 @@ void FbBookPanel::RevertOrder()
 void FbBookPanel::SetViewMode(int mode)
 {
 	Unsplit(m_BookInfo);
-	m_BookInfo->SetPage(wxEmptyString);
+	m_BookInfo->Empty();
 
 	switch (mode) {
 		case FB2_VIEW_NOTHING: return;
@@ -167,7 +167,7 @@ void FbBookPanel::SetViewMode(int mode)
 
 void FbBookPanel::ResetPreview()
 {
-	m_BookInfo->SetPage(wxEmptyString);
+	m_BookInfo->Empty();
 	if (!IsSplit()) return;
 
 	FbViewContext ctx;
@@ -315,7 +315,7 @@ void FbBookPanel::OnEditComments(wxCommandEvent & event)
 void FbBookPanel::EmptyBooks(const int selected)
 {
 	m_BookList->AssignModel(NULL);
-	m_BookInfo->SetPage(wxEmptyString);
+	m_BookInfo->Empty();
 }
 
 void FbBookPanel::OnSystemDownload(wxCommandEvent & event)
@@ -341,7 +341,7 @@ void FbBookPanel::UpdateFonts(bool refresh)
 {
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 	if (refresh) m_BookList->Update();
-	if (refresh) m_BookInfo->SetPage(wxEmptyString);
+	if (refresh) m_BookInfo->Empty();
 	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
 	if (refresh) ResetPreview();
 }
@@ -441,7 +441,7 @@ void FbBookPanel::Reset(const FbMasterInfo &master, const FbFilterObj &filter)
 {
 	m_master = master;
 
-	m_BookInfo->SetPage(wxEmptyString);
+	m_BookInfo->Empty();
 	if (m_master) {
 		m_BookList->AssignModel(NULL);
 		m_master.SetOrder(m_BookList->GetSortedColumn());
