@@ -15,10 +15,9 @@ FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 	http.SetHeader(wxT("User-Agent"), MyRuLib::UserAgent());
 
 	if (use_proxy) {
-		wxString user = FbParams::GetStr(FB_PROXY_USER);
-		wxString pass = FbParams::GetStr(FB_PROXY_PASS);
-		if (!user.IsEmpty() && !pass.IsEmpty()) {
-			wxString auth = user + wxT(':') + pass;
+		wxString auth = FbParams::GetStr(FB_PROXY_USER);
+		if (!auth.IsEmpty()) {
+			auth << wxT(':') << FbParams::GetStr(FB_PROXY_PASS);
 			wxCharBuffer buff = auth.mb_str(wxConvUTF8);
 			wxString text = wxT("Basic"); 
 			text << wxT(' ') << wxBase64Encode(buff, strlen(buff));
