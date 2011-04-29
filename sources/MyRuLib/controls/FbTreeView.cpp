@@ -16,37 +16,37 @@ const wxChar* FbTreeViewCtrlNameStr = _T("treelistctrl");
 
 class FbTreeViewColumnInfo: public wxObject
 {
-    public:
+	public:
 		FbTreeViewColumnInfo() {}
 
-        FbTreeViewColumnInfo(
-            size_t model_column,
-            const wxString &text = wxEmptyString,
-            int width = DEFAULT_COL_WIDTH,
-            int flag = wxALIGN_LEFT
-        ) : m_text(text), m_index(model_column), m_width(width), m_flag(flag) {};
+		FbTreeViewColumnInfo(
+			size_t model_column,
+			const wxString &text = wxEmptyString,
+			int width = DEFAULT_COL_WIDTH,
+			int flag = wxALIGN_LEFT
+		) : m_text(text), m_index(model_column), m_width(width), m_flag(flag) {};
 
-        FbTreeViewColumnInfo(const FbTreeViewColumnInfo &info)
-            : m_text(info.m_text), m_index(info.m_index), m_width(info.m_width), m_flag(info.m_flag) {};
+		FbTreeViewColumnInfo(const FbTreeViewColumnInfo &info)
+			: m_text(info.m_text), m_index(info.m_index), m_width(info.m_width), m_flag(info.m_flag) {};
 
-        void Assign(FbTreeViewHeaderWindow * header, wxHeaderButtonParams &params) const;
+		void Assign(FbTreeViewHeaderWindow * header, wxHeaderButtonParams &params) const;
 
-        int GetIndex() const { return m_index; };
+		int GetIndex() const { return m_index; };
 
-        int GetWidth() const { return m_width; };
+		int GetWidth() const { return m_width; };
 
-        int GetFlag() const { return m_flag; };
+		int GetFlag() const { return m_flag; };
 
-        void SetWidth(int value) { m_width = value; };
+		void SetWidth(int value) { m_width = value; };
 
-    private:
-        wxString m_text;
-        size_t m_index;
-        int m_width;
-        int m_flag;
+	private:
+		wxString m_text;
+		size_t m_index;
+		int m_width;
+		int m_flag;
 
-    private:
-        friend class FbTreeViewMainWindow;
+	private:
+		friend class FbTreeViewMainWindow;
 		DECLARE_CLASS(FbTreeViewColumnInfo);
 };
 
@@ -97,28 +97,28 @@ class  FbTreeViewHeaderWindow : public wxWindow
 
 		void DrawCurrent();
 
-        void AddColumn(const FbTreeViewColumnInfo & info) { m_columns.Add(info); };
+		void AddColumn(const FbTreeViewColumnInfo & info) { m_columns.Add(info); };
 
-        size_t GetColumnCount() const { return m_columns.Count(); };
+		size_t GetColumnCount() const { return m_columns.Count(); };
 
-        void EmptyColumns() { m_columns.Empty(); }
+		void EmptyColumns() { m_columns.Empty(); }
 
-        const FbTreeViewColumnInfo & GetColumn (size_t column) const {
-            wxCHECK_MSG (column < GetColumnCount(), wxInvalidTreeListColumnInfo, _T("Invalid column"));
-            return m_columns[column];
-        }
+		const FbTreeViewColumnInfo & GetColumn (size_t column) const {
+			wxCHECK_MSG (column < GetColumnCount(), wxInvalidTreeListColumnInfo, _T("Invalid column"));
+			return m_columns[column];
+		}
 
-        int GetColumnWidth(size_t column) { return GetColumn(column).GetWidth(); };
+		int GetColumnWidth(size_t column) { return GetColumn(column).GetWidth(); };
 
-        int GetColumnIndex(size_t column) { return GetColumn(column).GetIndex(); };
+		int GetColumnIndex(size_t column) { return GetColumn(column).GetIndex(); };
 
-        int GetFullWidth();
+		int GetFullWidth();
 
-        int XToCol(int x);
+		int XToCol(int x);
 
-        int GetSortedColumn() { return m_sorted; }
+		int GetSortedColumn() { return m_sorted; }
 
-        void SetSortedColumn(int column) { m_sorted = column; }
+		void SetSortedColumn(int column) { m_sorted = column; }
 
 		void GetColumnInfo(FbColumnArray &columns, int width = 0);
 
@@ -129,7 +129,7 @@ class  FbTreeViewHeaderWindow : public wxWindow
 
 	private:
 		void Init();
-        void SendListEvent(wxEventType type, wxPoint pos, int colunm);
+		void SendListEvent(wxEventType type, wxPoint pos, int colunm);
 
 	private:
 		void OnPaint( wxPaintEvent &event );
@@ -155,7 +155,7 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 		virtual bool SetForegroundColour (const wxColour& colour);
 
 		virtual void SetFocus();
-        virtual bool SetFont(const wxFont& font);
+		virtual bool SetFont(const wxFont& font);
 
 	public:
 		bool SendEvent(wxEventType type, FbTreeViewItem *item = NULL, wxTreeEvent *event = NULL);  // returns true if processed
@@ -169,17 +169,17 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 
 	private:
 		size_t GetClientCount();
-        void AdjustMyScrollbars();
+		void AdjustMyScrollbars();
 
 	private:
 		FbTreeViewCtrl* m_owner;
-        FbModel * m_model;
-        wxPen m_dottedPen;
+		FbModel * m_model;
+		wxPen m_dottedPen;
 		int m_current;
-        bool m_dirty;
-        int m_rowHeight;
-        bool m_focused;
-        size_t m_count;
+		bool m_dirty;
+		int m_rowHeight;
+		bool m_focused;
+		size_t m_count;
 
 	private:
 		void OnPaint( wxPaintEvent &event );
@@ -202,10 +202,10 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 
 void FbTreeViewColumnInfo::Assign(FbTreeViewHeaderWindow * header, wxHeaderButtonParams &params) const
 {
-    params.m_labelFont = header->GetFont();
-    params.m_labelText = m_text;
-    params.m_labelAlignment = wxALIGN_LEFT;
-    params.m_labelColour = wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT );
+	params.m_labelFont = header->GetFont();
+	params.m_labelText = m_text;
+	params.m_labelAlignment = wxALIGN_LEFT;
+	params.m_labelColour = wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT );
 }
 
 //-----------------------------------------------------------------------------
@@ -213,22 +213,22 @@ void FbTreeViewColumnInfo::Assign(FbTreeViewHeaderWindow * header, wxHeaderButto
 //-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(FbTreeViewHeaderWindow,wxWindow)
-    EVT_ERASE_BACKGROUND(FbTreeViewHeaderWindow::OnEraseBackground)
-    EVT_PAINT(FbTreeViewHeaderWindow::OnPaint)
-    EVT_MOUSE_EVENTS  (FbTreeViewHeaderWindow::OnMouse)
-    EVT_SET_FOCUS     (FbTreeViewHeaderWindow::OnSetFocus)
+	EVT_ERASE_BACKGROUND(FbTreeViewHeaderWindow::OnEraseBackground)
+	EVT_PAINT(FbTreeViewHeaderWindow::OnPaint)
+	EVT_MOUSE_EVENTS  (FbTreeViewHeaderWindow::OnMouse)
+	EVT_SET_FOCUS     (FbTreeViewHeaderWindow::OnSetFocus)
 END_EVENT_TABLE()
 
 FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbTreeViewMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
-    : wxWindow(win, id, pos, size, style, name), m_owner(owner), m_sorted(0)
+	: wxWindow(win, id, pos, size, style, name), m_owner(owner), m_sorted(0)
 {
-    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-    SetBackgroundColour(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
+	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+	SetBackgroundColour(wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
 
-    m_resizeCursor = new wxCursor(wxCURSOR_SIZEWE);
-    m_currentCursor = (wxCursor *) NULL;
-    m_isDragging = false;
-    m_dirty = false;
+	m_resizeCursor = new wxCursor(wxCURSOR_SIZEWE);
+	m_currentCursor = (wxCursor *) NULL;
+	m_isDragging = false;
+	m_dirty = false;
 }
 
 FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
@@ -237,48 +237,48 @@ FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 
 int FbTreeViewHeaderWindow::GetFullWidth()
 {
-    int ww = 0;
-    size_t count = m_columns.Count();
-    for ( size_t i = 0; i < count; i++ ) ( ww += m_columns[i].GetWidth() );
-    if (!ww) ww = 1;
-    return ww;
+	int ww = 0;
+	size_t count = m_columns.Count();
+	for ( size_t i = 0; i < count; i++ ) ( ww += m_columns[i].GetWidth() );
+	if (!ww) ww = 1;
+	return ww;
 }
 
 void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 {
-    wxAutoBufferedPaintDC dc( this );
-    dc.SetBackgroundMode(wxTRANSPARENT);
-    dc.SetFont(GetFont());
+	wxAutoBufferedPaintDC dc( this );
+	dc.SetBackgroundMode(wxTRANSPARENT);
+	dc.SetFont(GetFont());
 
-    int www, h;
-    GetClientSize( &www, &h );
+	int www, h;
+	GetClientSize( &www, &h );
 	int w = www;
 	if (m_owner && m_owner->ShowScrollbar())
 		w -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 
-    int x = 0;
-    int ww = GetFullWidth();
-    size_t count = GetColumnCount();
-    for ( size_t i = 0; i < count && x < www; i++ ) {
-        wxHeaderButtonParams params;
-        GetColumn(i).Assign(this, params);
+	int x = 0;
+	int ww = GetFullWidth();
+	size_t count = GetColumnCount();
+	for ( size_t i = 0; i < count && x < www; i++ ) {
+		wxHeaderButtonParams params;
+		GetColumn(i).Assign(this, params);
 		int index = GetColumn(i).GetIndex();
 
-        int wCol = GetColumnWidth(i) * w / ww;
-        if (i == count - 1) wCol = w - x;
-        wxRect rect(x, 0, wCol, h);
-        x += wCol;
+		int wCol = GetColumnWidth(i) * w / ww;
+		if (i == count - 1) wCol = w - x;
+		wxRect rect(x, 0, wCol, h);
+		x += wCol;
 
 		wxHeaderSortIconType sort = wxHDR_SORT_ICON_NONE;
 		if (abs(m_sorted) == index + 1) sort = m_sorted > 0 ? wxHDR_SORT_ICON_DOWN : wxHDR_SORT_ICON_UP;
 
-        wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
-    }
+		wxRendererNative::Get().DrawHeaderButton(this, dc, rect, 0, sort, &params);
+	}
 
-    if (x < www) {
-        wxRect rect(x, 0, www-x, h);
-        wxRendererNative::Get().DrawHeaderButton(this, dc, rect);
-    }
+	if (x < www) {
+		wxRect rect(x, 0, www-x, h);
+		wxRendererNative::Get().DrawHeaderButton(this, dc, rect);
+	}
 }
 
 void FbTreeViewHeaderWindow::GetColumnInfo(FbColumnArray &columns, int ww)
@@ -289,29 +289,29 @@ void FbTreeViewHeaderWindow::GetColumnInfo(FbColumnArray &columns, int ww)
 			ww -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 	}
 
-    int x = 0;
-    int www = GetFullWidth();
-    size_t count = GetColumnCount();
-    for ( size_t i = 0; i < count; i++ ) {
-        FbTreeViewColumnInfo & col = m_columns[i];
+	int x = 0;
+	int www = GetFullWidth();
+	size_t count = GetColumnCount();
+	for ( size_t i = 0; i < count; i++ ) {
+		FbTreeViewColumnInfo & col = m_columns[i];
 		int w = col.GetWidth() * ww / www;
 		if (i == count - 1) w = ww - x;
 		columns.Add(FbColumnInfo(col.GetIndex(), w, col.GetFlag()));
-        x += w;
+		x += w;
 	}
 }
 
 int FbTreeViewHeaderWindow::XToCol(int x)
 {
-    int w, left = 0;
-    m_owner->GetClientSize( &w, NULL );
-    int ww = GetFullWidth();
-    size_t count = GetColumnCount();
-    for ( size_t col = 0; col < count; col++ ) {
-        left += GetColumnWidth(col) * w / ww;
-        if (x < left) return col;
-    }
-    return count - 1;
+	int w, left = 0;
+	m_owner->GetClientSize( &w, NULL );
+	int ww = GetFullWidth();
+	size_t count = GetColumnCount();
+	for ( size_t col = 0; col < count; col++ ) {
+		left += GetColumnWidth(col) * w / ww;
+		if (x < left) return col;
+	}
+	return count - 1;
 }
 
 void FbTreeViewHeaderWindow::RefreshColLabel(int col)
@@ -322,100 +322,100 @@ void FbTreeViewHeaderWindow::RefreshColLabel(int col)
 	if (col < 0) return;
 	if (col >= columns.Count()) return;
 
-    int x = 0;
-    int width = 0;
-    int idx = 0;
-    do {
-    	FbColumnInfo & column = columns[idx];
-        x += width;
-        width = column.GetWidth();
-    } while (++idx <= col);
+	int x = 0;
+	int width = 0;
+	int idx = 0;
+	do {
+		FbColumnInfo & column = columns[idx];
+		x += width;
+		width = column.GetWidth();
+	} while (++idx <= col);
 
-    RefreshRect(wxRect(x, 0, width, GetSize().GetHeight()));
+	RefreshRect(wxRect(x, 0, width, GetSize().GetHeight()));
 }
 
 void FbTreeViewHeaderWindow::DrawCurrent()
 {
-    int x1 = m_currentX;
-    int y1 = 0;
-    ClientToScreen (&x1, &y1);
+	int x1 = m_currentX;
+	int y1 = 0;
+	ClientToScreen (&x1, &y1);
 
-    int x2 = m_currentX-1;
+	int x2 = m_currentX-1;
 #ifdef __WXMSW__
-    ++x2; // but why ????
+	++x2; // but why ????
 #endif
-    int y2 = 0;
-    m_owner->GetClientSize( NULL, &y2 );
-    m_owner->ClientToScreen( &x2, &y2 );
+	int y2 = 0;
+	m_owner->GetClientSize( NULL, &y2 );
+	m_owner->ClientToScreen( &x2, &y2 );
 
-    wxScreenDC dc;
-    dc.SetLogicalFunction (wxINVERT);
-    dc.SetPen (wxPen (*wxBLACK, 2, wxSOLID));
-    dc.SetBrush (*wxTRANSPARENT_BRUSH);
+	wxScreenDC dc;
+	dc.SetLogicalFunction (wxINVERT);
+	dc.SetPen (wxPen (*wxBLACK, 2, wxSOLID));
+	dc.SetBrush (*wxTRANSPARENT_BRUSH);
 
-    dc.DrawLine (x1, y1, x2, y2);
-    dc.SetLogicalFunction (wxCOPY);
-    dc.SetPen (wxNullPen);
-    dc.SetBrush (wxNullBrush);
+	dc.DrawLine (x1, y1, x2, y2);
+	dc.SetLogicalFunction (wxCOPY);
+	dc.SetPen (wxNullPen);
+	dc.SetBrush (wxNullBrush);
 }
 
 void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
 {
-    int x = event.GetX();
+	int x = event.GetX();
 
-    if (m_isDragging) {
+	if (m_isDragging) {
 
-        // we don't draw the line beyond our window, but we allow dragging it there
-        int w = 0;
-        m_owner->GetClientSize( &w, NULL );
-        w -= 6;
+		// we don't draw the line beyond our window, but we allow dragging it there
+		int w = 0;
+		m_owner->GetClientSize( &w, NULL );
+		w -= 6;
 
-        // erase the line if it was drawn
-        if (m_currentX < w) DrawCurrent();
+		// erase the line if it was drawn
+		if (m_currentX < w) DrawCurrent();
 
-        if (event.ButtonUp()) {
-            m_isDragging = false;
-            if (HasCapture()) ReleaseMouse();
-            m_dirty = true;
-            SetColumnWidth (m_column, m_currentX - m_minX);
-            Refresh();
-        } else {
-            m_currentX = wxMax (m_minX + 7, x);
+		if (event.ButtonUp()) {
+			m_isDragging = false;
+			if (HasCapture()) ReleaseMouse();
+			m_dirty = true;
+			SetColumnWidth (m_column, m_currentX - m_minX);
+			Refresh();
+		} else {
+			m_currentX = wxMax (m_minX + 7, x);
 
-            // draw in the new location
-            if (m_currentX < w) DrawCurrent();
-        }
+			// draw in the new location
+			if (m_currentX < w) DrawCurrent();
+		}
 
-    } else { // not dragging
+	} else { // not dragging
 
-        m_minX = 0;
-        bool hit_border = false;
+		m_minX = 0;
+		bool hit_border = false;
 
-        // end of the current column
-        int xpos = 0;
+		// end of the current column
+		int xpos = 0;
 
 		FbColumnArray columns;
 		GetColumnInfo(columns);
 
-        // find the column where this event occured
-        size_t count = columns.Count() - 1;
+		// find the column where this event occured
+		size_t count = columns.Count() - 1;
 		for (size_t i = 0; i < count; i++){
 			FbColumnInfo & column = columns[i];
-            xpos += column.GetWidth();
-            m_column = i;
+			xpos += column.GetWidth();
+			m_column = i;
 
-            if (abs (x-xpos) < 3) {
-                // near the column border
-                hit_border = true;
-                break;
-            }
+			if (abs (x-xpos) < 3) {
+				// near the column border
+				hit_border = true;
+				break;
+			}
 
-            if (x < xpos) {
-                // inside the column
-                break;
-            }
+			if (x < xpos) {
+				// inside the column
+				break;
+			}
 
-            m_minX = xpos;
+			m_minX = xpos;
 		}
 
 		m_maxX = 0;
@@ -431,44 +431,44 @@ void FbTreeViewHeaderWindow::OnMouse (wxMouseEvent &event)
 			m_sorted = (abs(m_sorted) == index + 1) ? - m_sorted : index + 1;
 			SendListEvent(wxEVT_COMMAND_LIST_COL_CLICK, event.GetPosition(), col);
 			Refresh();
-        } else if (event.Moving()) {
-            bool setCursor;
-            if (hit_border) {
-                setCursor = m_currentCursor == wxSTANDARD_CURSOR;
-                m_currentCursor = m_resizeCursor;
-            } else {
-                setCursor = m_currentCursor != wxSTANDARD_CURSOR;
-                m_currentCursor = wxSTANDARD_CURSOR;
-            }
-            if (setCursor) SetCursor (*m_currentCursor);
-        }
-    }
+		} else if (event.Moving()) {
+			bool setCursor;
+			if (hit_border) {
+				setCursor = m_currentCursor == wxSTANDARD_CURSOR;
+				m_currentCursor = m_resizeCursor;
+			} else {
+				setCursor = m_currentCursor != wxSTANDARD_CURSOR;
+				m_currentCursor = wxSTANDARD_CURSOR;
+			}
+			if (setCursor) SetCursor (*m_currentCursor);
+		}
+	}
 }
 
 void FbTreeViewHeaderWindow::OnSetFocus (wxFocusEvent &WXUNUSED(event))
 {
-    m_owner->SetFocus();
+	m_owner->SetFocus();
 }
 
 void FbTreeViewHeaderWindow::SendListEvent (wxEventType type, wxPoint pos, int colunm)
 {
-    wxWindow *parent = GetParent();
-    wxListEvent le (type, parent->GetId());
-    le.SetEventObject (parent);
-    le.m_pointDrag = pos;
+	wxWindow *parent = GetParent();
+	wxListEvent le (type, parent->GetId());
+	le.SetEventObject (parent);
+	le.m_pointDrag = pos;
 
-    // the position should be relative to the parent window, not
-    // this one for compatibility with MSW and common sense: the
-    // user code doesn't know anything at all about this header
-    // window, so why should it get positions relative to it?
-    le.m_pointDrag.y -= GetSize().y;
-    le.m_col = colunm;
-    parent->GetEventHandler()->ProcessEvent (le);
+	// the position should be relative to the parent window, not
+	// this one for compatibility with MSW and common sense: the
+	// user code doesn't know anything at all about this header
+	// window, so why should it get positions relative to it?
+	le.m_pointDrag.y -= GetSize().y;
+	le.m_col = colunm;
+	parent->GetEventHandler()->ProcessEvent (le);
 }
 
 void FbTreeViewHeaderWindow::SetColumnWidth (int column, int width)
 {
-    wxCHECK_RET ((column >= 0) && (column < GetColumnCount()), _T("Invalid column"));
+	wxCHECK_RET ((column >= 0) && (column < GetColumnCount()), _T("Invalid column"));
 
 	int ww = 0;
 	int www = 0;
@@ -497,7 +497,7 @@ void FbTreeViewHeaderWindow::SetColumnWidth (int column, int width)
 		m_columns[i].SetWidth(w);
 	}
 
-    m_owner->Refresh();
+	m_owner->Refresh();
 }
 
 // ---------------------------------------------------------------------------
@@ -505,15 +505,15 @@ void FbTreeViewHeaderWindow::SetColumnWidth (int column, int width)
 // ---------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(FbTreeViewMainWindow, wxScrolledWindow)
-    EVT_PAINT          (FbTreeViewMainWindow::OnPaint)
-    EVT_ERASE_BACKGROUND(FbTreeViewMainWindow::OnEraseBackground) // to reduce flicker
-    EVT_MOUSE_EVENTS   (FbTreeViewMainWindow::OnMouse)
-    EVT_CHAR           (FbTreeViewMainWindow::OnChar)
-    EVT_SET_FOCUS      (FbTreeViewMainWindow::OnSetFocus)
-    EVT_KILL_FOCUS     (FbTreeViewMainWindow::OnKillFocus)
-    EVT_IDLE           (FbTreeViewMainWindow::OnIdle)
-    EVT_SCROLLWIN      (FbTreeViewMainWindow::OnScroll)
-    EVT_MOUSE_CAPTURE_LOST(FbTreeViewMainWindow::OnCaptureLost)
+	EVT_PAINT          (FbTreeViewMainWindow::OnPaint)
+	EVT_ERASE_BACKGROUND(FbTreeViewMainWindow::OnEraseBackground) // to reduce flicker
+	EVT_MOUSE_EVENTS   (FbTreeViewMainWindow::OnMouse)
+	EVT_CHAR           (FbTreeViewMainWindow::OnChar)
+	EVT_SET_FOCUS      (FbTreeViewMainWindow::OnSetFocus)
+	EVT_KILL_FOCUS     (FbTreeViewMainWindow::OnKillFocus)
+	EVT_IDLE           (FbTreeViewMainWindow::OnIdle)
+	EVT_SCROLLWIN      (FbTreeViewMainWindow::OnScroll)
+	EVT_MOUSE_CAPTURE_LOST(FbTreeViewMainWindow::OnCaptureLost)
 END_EVENT_TABLE()
 
 // ---------------------------------------------------------------------------
@@ -536,46 +536,46 @@ FbTreeViewMainWindow::FbTreeViewMainWindow(
 {
 	m_current = -1;
 
-    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 
 #if wxUSE_VALIDATORS
-    SetValidator(validator);
+	SetValidator(validator);
 #endif
 
-    SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_LISTBOX));
+	SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_LISTBOX));
 
-    SetFont(wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT));
+	SetFont(wxSystemSettings::GetFont (wxSYS_DEFAULT_GUI_FONT));
 
-    SetCursor(*wxHOURGLASS_CURSOR);
+	SetCursor(*wxHOURGLASS_CURSOR);
 
 #ifdef __WXMSW__
-    {
-        int i, j;
-        wxBitmap bmp(8, 8);
-        wxMemoryDC bdc;
-        bdc.SelectObject(bmp);
-        bdc.SetPen(*wxGREY_PEN);
-        bdc.DrawRectangle(-1, -1, 10, 10);
-        for (i = 0; i < 8; i++) {
-            for (j = 0; j < 8; j++) {
-                if (!((i + j) & 1)) {
-                    bdc.DrawPoint(i, j);
-                }
-            }
-        }
+	{
+		int i, j;
+		wxBitmap bmp(8, 8);
+		wxMemoryDC bdc;
+		bdc.SelectObject(bmp);
+		bdc.SetPen(*wxGREY_PEN);
+		bdc.DrawRectangle(-1, -1, 10, 10);
+		for (i = 0; i < 8; i++) {
+			for (j = 0; j < 8; j++) {
+				if (!((i + j) & 1)) {
+					bdc.DrawPoint(i, j);
+				}
+			}
+		}
 
-        m_dottedPen = wxPen(bmp, 1);
-    }
+		m_dottedPen = wxPen(bmp, 1);
+	}
 #else
 //?    m_dottedPen = wxPen( *wxGREY_PEN, 1, wxDOT );  // too slow under XFree86
-    m_dottedPen = wxPen( _T("grey"), 0, 0 ); // Bitmap based pen is not supported by GTK!
+	m_dottedPen = wxPen( _T("grey"), 0, 0 ); // Bitmap based pen is not supported by GTK!
 #endif
 
-    m_owner = parent;
+	m_owner = parent;
 
-    m_dirty = true;
+	m_dirty = true;
 
-    AdjustMyScrollbars();
+	AdjustMyScrollbars();
 }
 
 FbTreeViewMainWindow::~FbTreeViewMainWindow()
@@ -585,15 +585,15 @@ FbTreeViewMainWindow::~FbTreeViewMainWindow()
 
 bool FbTreeViewMainWindow::SetFont(const wxFont& font)
 {
-    bool ok = wxScrolledWindow::SetFont(font);
-    if (ok) {
-        wxClientDC dc (this);
-        dc.SetFont(font);
-        int h = dc.GetCharHeight();
-        m_rowHeight = h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
-        m_rowHeight += 4;
-    }
-    return ok;
+	bool ok = wxScrolledWindow::SetFont(font);
+	if (ok) {
+		wxClientDC dc (this);
+		dc.SetFont(font);
+		int h = dc.GetCharHeight();
+		m_rowHeight = h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
+		m_rowHeight += 4;
+	}
+	return ok;
 }
 
 void FbTreeViewMainWindow::AdjustMyScrollbars()
@@ -603,25 +603,25 @@ void FbTreeViewMainWindow::AdjustMyScrollbars()
 
 size_t FbTreeViewMainWindow::GetClientCount()
 {
-    int hh, h = GetRowHeight();
-    GetClientSize(NULL, &hh);
-    return (size_t)(hh / h);
+	int hh, h = GetRowHeight();
+	GetClientSize(NULL, &hh);
+	return (size_t)(hh / h);
 }
 
 void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 {
-    wxAutoBufferedPaintDC dc (this);
-    DoPrepareDC (dc);
-    wxBrush brush(GetBackgroundColour(), wxSOLID);
-    dc.SetFont(GetFont());
-    dc.SetBackground(brush);
-    dc.Clear();
+	wxAutoBufferedPaintDC dc (this);
+	DoPrepareDC (dc);
+	wxBrush brush(GetBackgroundColour(), wxSOLID);
+	dc.SetFont(GetFont());
+	dc.SetBackground(brush);
+	dc.Clear();
 
-    int pos = GetScrollPos(wxVERTICAL);
+	int pos = GetScrollPos(wxVERTICAL);
 
-    int ww, hh, yy;
-    int h = GetRowHeight();
-    GetClientSize(&ww, &hh);
+	int ww, hh, yy;
+	int h = GetRowHeight();
+	GetClientSize(&ww, &hh);
 	CalcUnscrolledPosition(0, 0, NULL, &yy);
 	wxRect rect(0, yy, ww, hh);
 
@@ -641,313 +641,313 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 
 void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 {
-    if (!m_model) { event.Skip(); return; }
+	if (!m_model) { event.Skip(); return; }
 
-    int pos = GetScrollPos (wxVERTICAL);
-   	int hhh = GetClientCount();
+	int pos = GetScrollPos (wxVERTICAL);
+	int hhh = GetClientCount();
 
-    if (event.m_controlDown) {
-        bool ok = true;
-        switch (event.GetKeyCode()) {
-            case WXK_UP: {
-                pos -= 1;
-            } break;
-            case WXK_DOWN: {
-                pos += 1;
-            } break;
-            case WXK_HOME: {
-                pos = 0;
-            } break;
-            case WXK_END: {
-                pos = GetRowCount();
-            } break;
-            case WXK_PAGEUP: {
-                pos -= hhh;
-            } break;
-            // <WXK_PAGEDOWN>: go to the next page
-            case WXK_PAGEDOWN: {
-                pos += hhh;
-            } break;
-            default: {
-                ok = false;
-            }
-        }
-        if (ok) {
-            SetScrollPos(wxVERTICAL, pos);
-            Repaint();
-            return;
-        }
-    }
-
-    // remember item at shift down
-    if (HasFlag(fbTR_MULTIPLE) && event.GetKeyCode() != ' ') {
-		m_model->SetShift(event.ShiftDown());
-    }
-
-   	int old = m_model->GetPosition();
-   	int row = 0;
-    switch (event.GetKeyCode()) {
-        case WXK_UP: {
-            row = m_model->GoPriorRow();
-        } break;
-        case WXK_DOWN: {
-            row = m_model->GoNextRow();
-        } break;
-        case WXK_HOME: {
-        	row = m_model->GoFirstRow();
-        } break;
-        case WXK_END: {
-        	row = m_model->GoLastRow();
-        } break;
-        case WXK_PAGEUP: {
-        	row = m_model->GoPriorRow(hhh);
-        } break;
-        case WXK_PAGEDOWN: {
-        	row = m_model->GoNextRow(hhh);
-        } break;
-        case WXK_RETURN: {
-            SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
-        } break;
-        case ' ': {
-        	if (HasFlag(fbTR_CHECKBOX)) {
-        		if (HasFlag(fbTR_MULTIPLE)) {
-					m_model->MultiplyCheck();
-        		} else {
-					m_model->SingleCheck();
-        		}
-				Repaint();
-        	} else {
-        		event.Skip();
+	if (event.m_controlDown) {
+		bool ok = true;
+		switch (event.GetKeyCode()) {
+			case WXK_UP: {
+				pos -= 1;
+			} break;
+			case WXK_DOWN: {
+				pos += 1;
+			} break;
+			case WXK_HOME: {
+				pos = 0;
+			} break;
+			case WXK_END: {
+				pos = GetRowCount();
+			} break;
+			case WXK_PAGEUP: {
+				pos -= hhh;
+			} break;
+			// <WXK_PAGEDOWN>: go to the next page
+			case WXK_PAGEDOWN: {
+				pos += hhh;
+			} break;
+			default: {
+				ok = false;
 			}
-            return;
-        }break;
-        default: {
-            event.Skip();
-            return;
-        }
-    }
+		}
+		if (ok) {
+			SetScrollPos(wxVERTICAL, pos);
+			Repaint();
+			return;
+		}
+	}
+
+	// remember item at shift down
+	if (HasFlag(fbTR_MULTIPLE) && event.GetKeyCode() != ' ') {
+		m_model->SetShift(event.ShiftDown());
+	}
+
+	int old = m_model->GetPosition();
+	int row = 0;
+	switch (event.GetKeyCode()) {
+		case WXK_UP: {
+			row = m_model->GoPriorRow();
+		} break;
+		case WXK_DOWN: {
+			row = m_model->GoNextRow();
+		} break;
+		case WXK_HOME: {
+			row = m_model->GoFirstRow();
+		} break;
+		case WXK_END: {
+			row = m_model->GoLastRow();
+		} break;
+		case WXK_PAGEUP: {
+			row = m_model->GoPriorRow(hhh);
+		} break;
+		case WXK_PAGEDOWN: {
+			row = m_model->GoNextRow(hhh);
+		} break;
+		case WXK_RETURN: {
+			SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
+		} break;
+		case ' ': {
+			if (HasFlag(fbTR_CHECKBOX)) {
+				if (HasFlag(fbTR_MULTIPLE)) {
+					m_model->MultiplyCheck();
+				} else {
+					m_model->SingleCheck();
+				}
+				Repaint();
+			} else {
+				event.Skip();
+			}
+			return;
+		}break;
+		default: {
+			event.Skip();
+			return;
+		}
+	}
 
 	if (row) {
-        if (row <= pos) {
-            SetScrollPos(wxVERTICAL, row - 1);
-        } else {
-            if (row > pos + hhh) {
-                int pos = row > hhh ? row - hhh : 0;
-                SetScrollPos(wxVERTICAL, pos);
-            }
-        }
-        if (row != old) SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
-        Repaint();
+		if (row <= pos) {
+			SetScrollPos(wxVERTICAL, row - 1);
+		} else {
+			if (row > pos + hhh) {
+				int pos = row > hhh ? row - hhh : 0;
+				SetScrollPos(wxVERTICAL, pos);
+			}
+		}
+		if (row != old) SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
+		Repaint();
 		return ;
-    }
+	}
 
 /*
 
-    // if no item current, select root
-    bool curItemSet = false;
-    if (!m_curItem) {
-        if (! GetRootItem().IsOk()) return;
-        m_curItem = (FbTreeViewItem*)GetRootItem().m_pItem;
-        if (HasFlag(wxTR_HIDE_ROOT)) {
+	// if no item current, select root
+	bool curItemSet = false;
+	if (!m_curItem) {
+		if (! GetRootItem().IsOk()) return;
+		m_curItem = (FbTreeViewItem*)GetRootItem().m_pItem;
+		if (HasFlag(wxTR_HIDE_ROOT)) {
 #if !wxCHECK_VERSION(2, 5, 0)
-            long cookie = 0;
+			long cookie = 0;
 #else
-            wxTreeItemIdValue cookie = 0;
+			wxTreeItemIdValue cookie = 0;
 #endif
-            m_curItem = (FbTreeViewItem*)GetFirstChild (m_curItem, cookie).m_pItem;
-        }
-        SelectItem(m_curItem, 0L, true);  // unselect others
-        curItemSet = true;
-    }
+			m_curItem = (FbTreeViewItem*)GetFirstChild (m_curItem, cookie).m_pItem;
+		}
+		SelectItem(m_curItem, 0L, true);  // unselect others
+		curItemSet = true;
+	}
 
-    // remember item at shift down
-    if (HasFlag(wxTR_MULTIPLE) && event.ShiftDown()) {
-        if (!m_shiftItem) m_shiftItem = m_curItem;
-    }else{
-        m_shiftItem = (FbTreeViewItem*)NULL;
-    }
+	// remember item at shift down
+	if (HasFlag(wxTR_MULTIPLE) && event.ShiftDown()) {
+		if (!m_shiftItem) m_shiftItem = m_curItem;
+	}else{
+		m_shiftItem = (FbTreeViewItem*)NULL;
+	}
 
-    if (curItemSet) return;  // if no item was current until now, do nothing more
+	if (curItemSet) return;  // if no item was current until now, do nothing more
 
-    // process all cases
-    wxTreeItemId newItem = (wxTreeItemId*)NULL;
-    switch (event.GetKeyCode()) {
+	// process all cases
+	wxTreeItemId newItem = (wxTreeItemId*)NULL;
+	switch (event.GetKeyCode()) {
 
-        // '+': Expand subtree
-        case '+':
-        case WXK_ADD: {
-            if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) Expand (m_curItem);
-        }break;
+		// '+': Expand subtree
+		case '+':
+		case WXK_ADD: {
+			if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) Expand (m_curItem);
+		}break;
 
-        // '-': collapse subtree
-        case '-':
-        case WXK_SUBTRACT: {
-            if (m_curItem->HasPlus() && IsExpanded (m_curItem)) Collapse (m_curItem);
-        }break;
+		// '-': collapse subtree
+		case '-':
+		case WXK_SUBTRACT: {
+			if (m_curItem->HasPlus() && IsExpanded (m_curItem)) Collapse (m_curItem);
+		}break;
 
-        // '*': expand/collapse all subtrees // TODO: Mak it more useful
-        case '*':
-        case WXK_MULTIPLY: {
-            if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
-                ExpandAll (m_curItem);
-            }else if (m_curItem->HasPlus()) {
-                Collapse (m_curItem); // TODO: CollapseAll
-            }
-        }break;
+		// '*': expand/collapse all subtrees // TODO: Mak it more useful
+		case '*':
+		case WXK_MULTIPLY: {
+			if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
+				ExpandAll (m_curItem);
+			}else if (m_curItem->HasPlus()) {
+				Collapse (m_curItem); // TODO: CollapseAll
+			}
+		}break;
 
-        // ' ': toggle current item
-        case ' ': {
-            SelectItem (m_curItem, (FbTreeViewItem*)NULL, false);
-        }break;
+		// ' ': toggle current item
+		case ' ': {
+			SelectItem (m_curItem, (FbTreeViewItem*)NULL, false);
+		}break;
 
-        // <RETURN>: activate current item
-        case WXK_RETURN: {
-            if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, m_curItem)) {
+		// <RETURN>: activate current item
+		case WXK_RETURN: {
+			if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, m_curItem)) {
 
-                // if the user code didn't process the activate event,
-                // handle it ourselves by toggling the item when it is
-                // double clicked
-                if (m_curItem && m_curItem->HasPlus()) Toggle(m_curItem);
-            }
-        }break;
+				// if the user code didn't process the activate event,
+				// handle it ourselves by toggling the item when it is
+				// double clicked
+				if (m_curItem && m_curItem->HasPlus()) Toggle(m_curItem);
+			}
+		}break;
 
-        // <BKSP>: go to the parent without collapsing
-        case WXK_BACK: {
-            newItem = GetItemParent (m_curItem);
-            if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
-                newItem = GetPrevSibling (m_curItem); // get sibling instead of root
-            }
-        }break;
+		// <BKSP>: go to the parent without collapsing
+		case WXK_BACK: {
+			newItem = GetItemParent (m_curItem);
+			if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
+				newItem = GetPrevSibling (m_curItem); // get sibling instead of root
+			}
+		}break;
 
-        // <UP>: go to the previous sibling or for the last of its children, to the parent
-        case WXK_UP: {
-            newItem = GetPrevSibling (m_curItem);
-            if (newItem) {
+		// <UP>: go to the previous sibling or for the last of its children, to the parent
+		case WXK_UP: {
+			newItem = GetPrevSibling (m_curItem);
+			if (newItem) {
 #if !wxCHECK_VERSION(2, 5, 0)
-                long cookie = 0;
+				long cookie = 0;
 #else
-                wxTreeItemIdValue cookie = 0;
-#endif
-                while (IsExpanded (newItem) && HasChildren (newItem)) {
-                    newItem = GetLastChild (newItem, cookie);
-                }
-            }else {
-                newItem = GetItemParent (m_curItem);
-                if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
-                    newItem = (wxTreeItemId*)NULL; // don't go to root if it is hidden
-                }
-            }
-        }break;
-
-        // <LEFT>: if expanded collapse subtree, else go to the parent
-        case WXK_LEFT: {
-            if (IsExpanded (m_curItem)) {
-                Collapse (m_curItem);
-            }else{
-                newItem = GetItemParent (m_curItem);
-                if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
-                    newItem = GetPrevSibling (m_curItem); // go to sibling if it is hidden
-                }
-            }
-        }break;
-
-        // <RIGHT>: if possible expand subtree, else go go to the first child
-        case WXK_RIGHT: {
-            if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
-                Expand (m_curItem);
-            }else{
-                if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-                    long cookie = 0;
-#else
-                    wxTreeItemIdValue cookie = 0;
-#endif
-                    newItem = GetFirstChild (m_curItem, cookie);
-                }
-            }
-        }break;
-
-        // <DOWN>: if expanded go to the first child, else to the next sibling, ect
-        case WXK_DOWN: {
-            if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-                long cookie = 0;
-#else
-                wxTreeItemIdValue cookie = 0;
-#endif
-                newItem = GetFirstChild( m_curItem, cookie );
-            }
-            if (!newItem) {
-                wxTreeItemId parent = m_curItem;
-                do {
-                    newItem = GetNextSibling (parent);
-                    parent = GetItemParent (parent);
-                } while (!newItem && parent);
-            }
-        }break;
-
-        // <END>: go to last item of the root
-        case WXK_END: {
-#if !wxCHECK_VERSION(2, 5, 0)
-            long cookie = 0;
-#else
-            wxTreeItemIdValue cookie = 0;
-#endif
-            newItem = GetLastChild (GetRootItem(), cookie);
-			//DENIS KANDRASHIN 2009-10-07 - BEGIN - Change keyboard press END key for last child
-            wxTreeItemId child = newItem;
-            while (child.IsOk()) {
-            	newItem = child;
 				wxTreeItemIdValue cookie = 0;
-            	child = GetLastChild(newItem, cookie);
-            }
-            // DENIS - END
-        }break;
-
-        // <HOME>: go to root
-        case WXK_HOME: {
-            newItem = GetRootItem();
-            if (HasFlag(wxTR_HIDE_ROOT)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-                long cookie = 0;
-#else
-                wxTreeItemIdValue cookie = 0;
 #endif
-                newItem = GetFirstChild (newItem, cookie);
-            }
-        }break;
+				while (IsExpanded (newItem) && HasChildren (newItem)) {
+					newItem = GetLastChild (newItem, cookie);
+				}
+			}else {
+				newItem = GetItemParent (m_curItem);
+				if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
+					newItem = (wxTreeItemId*)NULL; // don't go to root if it is hidden
+				}
+			}
+		}break;
 
-        // any char: go to the next matching string
-        default:
-            if (event.GetKeyCode() >= (int)' ') {
-                if (!m_findTimer->IsRunning()) m_findStr.Clear();
-                m_findStr.Append ((char)event.GetKeyCode());
-                m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
-                wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
-                while (true) {
-                    newItem = FindItem (prev, m_findStr, wxTL_MODE_NAV_EXPANDED |
-                                                         wxTL_MODE_FIND_PARTIAL |
-                                                         wxTL_MODE_FIND_NOCASE);
-                    if (newItem || (m_findStr.Length() <= 1)) break;
-                    m_findStr.RemoveLast();
-                };
-            }
-            event.Skip();
+		// <LEFT>: if expanded collapse subtree, else go to the parent
+		case WXK_LEFT: {
+			if (IsExpanded (m_curItem)) {
+				Collapse (m_curItem);
+			}else{
+				newItem = GetItemParent (m_curItem);
+				if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
+					newItem = GetPrevSibling (m_curItem); // go to sibling if it is hidden
+				}
+			}
+		}break;
 
-    }
+		// <RIGHT>: if possible expand subtree, else go go to the first child
+		case WXK_RIGHT: {
+			if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
+				Expand (m_curItem);
+			}else{
+				if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+					long cookie = 0;
+#else
+					wxTreeItemIdValue cookie = 0;
+#endif
+					newItem = GetFirstChild (m_curItem, cookie);
+				}
+			}
+		}break;
 
-    // select and show the new item
-    if (newItem) {
-        if (!event.ControlDown()) {
-            bool unselect_others = !((event.ShiftDown() || event.ControlDown()) &&
-                                      HasFlag(wxTR_MULTIPLE));
-            SelectItem (newItem, m_shiftItem, unselect_others);
-        }
-        EnsureVisible (newItem);
-        FbTreeViewItem *oldItem = m_curItem;
-        m_curItem = (FbTreeViewItem*)newItem.m_pItem; // make the new item the current item
-        RefreshLine (oldItem);
-    }
+		// <DOWN>: if expanded go to the first child, else to the next sibling, ect
+		case WXK_DOWN: {
+			if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+				long cookie = 0;
+#else
+				wxTreeItemIdValue cookie = 0;
+#endif
+				newItem = GetFirstChild( m_curItem, cookie );
+			}
+			if (!newItem) {
+				wxTreeItemId parent = m_curItem;
+				do {
+					newItem = GetNextSibling (parent);
+					parent = GetItemParent (parent);
+				} while (!newItem && parent);
+			}
+		}break;
+
+		// <END>: go to last item of the root
+		case WXK_END: {
+#if !wxCHECK_VERSION(2, 5, 0)
+			long cookie = 0;
+#else
+			wxTreeItemIdValue cookie = 0;
+#endif
+			newItem = GetLastChild (GetRootItem(), cookie);
+			//DENIS KANDRASHIN 2009-10-07 - BEGIN - Change keyboard press END key for last child
+			wxTreeItemId child = newItem;
+			while (child.IsOk()) {
+				newItem = child;
+				wxTreeItemIdValue cookie = 0;
+				child = GetLastChild(newItem, cookie);
+			}
+			// DENIS - END
+		}break;
+
+		// <HOME>: go to root
+		case WXK_HOME: {
+			newItem = GetRootItem();
+			if (HasFlag(wxTR_HIDE_ROOT)) {
+#if !wxCHECK_VERSION(2, 5, 0)
+				long cookie = 0;
+#else
+				wxTreeItemIdValue cookie = 0;
+#endif
+				newItem = GetFirstChild (newItem, cookie);
+			}
+		}break;
+
+		// any char: go to the next matching string
+		default:
+			if (event.GetKeyCode() >= (int)' ') {
+				if (!m_findTimer->IsRunning()) m_findStr.Clear();
+				m_findStr.Append ((char)event.GetKeyCode());
+				m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
+				wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
+				while (true) {
+					newItem = FindItem (prev, m_findStr, wxTL_MODE_NAV_EXPANDED |
+														 wxTL_MODE_FIND_PARTIAL |
+														 wxTL_MODE_FIND_NOCASE);
+					if (newItem || (m_findStr.Length() <= 1)) break;
+					m_findStr.RemoveLast();
+				};
+			}
+			event.Skip();
+
+	}
+
+	// select and show the new item
+	if (newItem) {
+		if (!event.ControlDown()) {
+			bool unselect_others = !((event.ShiftDown() || event.ControlDown()) &&
+									  HasFlag(wxTR_MULTIPLE));
+			SelectItem (newItem, m_shiftItem, unselect_others);
+		}
+		EnsureVisible (newItem);
+		FbTreeViewItem *oldItem = m_curItem;
+		m_curItem = (FbTreeViewItem*)newItem.m_pItem; // make the new item the current item
+		RefreshLine (oldItem);
+	}
 */
 }
 
@@ -973,15 +973,15 @@ bool FbTreeViewMainWindow::FindAt(const wxPoint &point, bool select)
 
 void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 {
-    if (!m_model) { event.Skip(); return; }
+	if (!m_model) { event.Skip(); return; }
 
-    // send event to user code
-    if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
+	// send event to user code
+	if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
 
-    // set focus if window clicked
-    if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
+	// set focus if window clicked
+	if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
 
-    if (event.Dragging()) {
+	if (event.Dragging()) {
 		event.Skip();
 		return;
 	}
@@ -991,14 +991,14 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 		return;
 	}
 
-    // remember item at shift down
-    if (HasFlag(fbTR_MULTIPLE) && event.LeftDown()) {
-    	if (event.ControlDown()) {
+	// remember item at shift down
+	if (HasFlag(fbTR_MULTIPLE) && event.LeftDown()) {
+		if (event.ControlDown()) {
 			m_model->InitCtrls();
-    	} else {
+		} else {
 			m_model->SetShift(event.ShiftDown());
-    	}
-    }
+		}
+	}
 
 	int x = event.GetX();
 	int y = event.GetY();
@@ -1030,18 +1030,18 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 		}
 	}
 
-    // generate click & menu events
-    if (event.MiddleDown()) {
-        SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK);
-    }
-    if (event.RightDown()) {
-        SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK);
-    }
-    if (event.RightUp()) {
-        wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
-        nevent.SetPoint(wxPoint(event.GetX(), event.GetY()));
-        SendEvent(0, NULL, &nevent);
-    }
+	// generate click & menu events
+	if (event.MiddleDown()) {
+		SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK);
+	}
+	if (event.RightDown()) {
+		SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK);
+	}
+	if (event.RightUp()) {
+		wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
+		nevent.SetPoint(wxPoint(event.GetX(), event.GetY()));
+		SendEvent(0, NULL, &nevent);
+	}
 
 	event.Skip();
 
@@ -1053,40 +1053,40 @@ bool mayClick = true;  // may process DOWN clicks to expand, send click events
 bool mayDoubleClick = true;  // implies mayClick
 bool bSkip = true;
 
-    // send event to user code
-    if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
-    if (!m_rootItem) return;
+	// send event to user code
+	if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
+	if (!m_rootItem) return;
 
-    // set focus if window clicked
-    if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
+	// set focus if window clicked
+	if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
 
 
 // ---------- DETERMINE EVENT ----------
 
 	wxPoint p = wxPoint (event.GetX(), event.GetY());
-    int flags = 0;
-    wxTreeListItem *item = m_rootItem->HitTest (CalcUnscrolledPosition (p),
-                                                this, flags, m_curColumn, 0);
-    bool bCrosshair = (item && item->HasPlus() && (flags & wxTREE_HITTEST_ONITEMBUTTON));
-    // we were dragging
-    if (m_isDragging) {
-        maySelect = mayDoubleClick = false;
-    }
-    // we are starting or continuing to drag
-    if (event.Dragging()) {
-        maySelect = mayDoubleClick = mayClick = false;
-    }
-    // crosshair area is special
-    if (bCrosshair) {
-        // left click does not select
-        if (event.LeftDown()) maySelect = false;
-        // double click is ignored
-        mayDoubleClick = false;
-    }
+	int flags = 0;
+	wxTreeListItem *item = m_rootItem->HitTest (CalcUnscrolledPosition (p),
+												this, flags, m_curColumn, 0);
+	bool bCrosshair = (item && item->HasPlus() && (flags & wxTREE_HITTEST_ONITEMBUTTON));
+	// we were dragging
+	if (m_isDragging) {
+		maySelect = mayDoubleClick = false;
+	}
+	// we are starting or continuing to drag
+	if (event.Dragging()) {
+		maySelect = mayDoubleClick = mayClick = false;
+	}
+	// crosshair area is special
+	if (bCrosshair) {
+		// left click does not select
+		if (event.LeftDown()) maySelect = false;
+		// double click is ignored
+		mayDoubleClick = false;
+	}
 
 
 // HANDLE SIMPLE-CLICKS (selection change, contextual menu)
-    if (mayClick) {
+	if (mayClick) {
 
 		//DENIS KANDRASHIN 2009-06-10 - BEGIN - Mouse click on image
 		int X = CalcUnscrolledPosition (p).x;
@@ -1096,273 +1096,273 @@ bool bSkip = true;
 		}
 		//DENIS - END
 
-        // left-click on haircross is expand (and no select)
-        if (bCrosshair && event.LeftDown()) {
+		// left-click on haircross is expand (and no select)
+		if (bCrosshair && event.LeftDown()) {
 
-            bSkip = false;
+			bSkip = false;
 
-            // note that we only toggle the item for a single click, double
-            // click on the button doesn't do anything
-            Toggle (item);
-        }
+			// note that we only toggle the item for a single click, double
+			// click on the button doesn't do anything
+			Toggle (item);
+		}
 
-        // is there a selection change ? normally left and right down-click
-        //  change selection, but there are special cases:
-        if (maySelect && (
-            // click on already selected item: to allow drag of multiple items,
-            //  change selection on button up
-            ((event.LeftUp() || event.RightUp()) && item != NULL && item->IsSelected() && item != m_curItem)
-            // normal clicks, act already on button down
-         || ((event.LeftDown() || event.RightDown()) && (item == NULL || ! item->IsSelected()))
-        )) {
+		// is there a selection change ? normally left and right down-click
+		//  change selection, but there are special cases:
+		if (maySelect && (
+			// click on already selected item: to allow drag of multiple items,
+			//  change selection on button up
+			((event.LeftUp() || event.RightUp()) && item != NULL && item->IsSelected() && item != m_curItem)
+			// normal clicks, act already on button down
+		 || ((event.LeftDown() || event.RightDown()) && (item == NULL || ! item->IsSelected()))
+		)) {
 
-            bSkip = false;
+			bSkip = false;
 
-            // set / remember item at shift down before current item gets changed
-            if (event.LeftDown() && HasFlag(wxTR_MULTIPLE) && event.ShiftDown())  {
-                if (!m_shiftItem) m_shiftItem = m_curItem;
-            }else{
-                m_shiftItem = (wxTreeListItem*)NULL;
-            }
+			// set / remember item at shift down before current item gets changed
+			if (event.LeftDown() && HasFlag(wxTR_MULTIPLE) && event.ShiftDown())  {
+				if (!m_shiftItem) m_shiftItem = m_curItem;
+			}else{
+				m_shiftItem = (wxTreeListItem*)NULL;
+			}
 
-            // how is selection altered
-            // keep or discard already selected ?
-            bool unselect_others = ! (HasFlag(wxTR_MULTIPLE) && (
-                event.ShiftDown()
-             || event.ControlDown()
-            ));
+			// how is selection altered
+			// keep or discard already selected ?
+			bool unselect_others = ! (HasFlag(wxTR_MULTIPLE) && (
+				event.ShiftDown()
+			 || event.ControlDown()
+			));
 
-            // check is selection change is not vetoed
-            if (SelectItem(item, m_shiftItem, unselect_others)) {
+			// check is selection change is not vetoed
+			if (SelectItem(item, m_shiftItem, unselect_others)) {
 
-                // make the new item the current item
-                EnsureVisible (item);
-                m_curItem = item;
-            }
+				// make the new item the current item
+				EnsureVisible (item);
+				m_curItem = item;
+			}
 
-        // no selection change, then we might edit
-        } else {
-            if (event.LeftDown())
-                m_lastOnSame = (item == m_curItem);
-        }
+		// no selection change, then we might edit
+		} else {
+			if (event.LeftDown())
+				m_lastOnSame = (item == m_curItem);
+		}
 
-        // generate click & menu events
-        if (event.MiddleDown()) {
-            bSkip = false;
-            SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK, item);
-        }
-        if (event.RightDown()) {
-            bSkip = false;
-            SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, item);
-        }
-        if (event.RightUp()) {
-            wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
-            nevent.SetPoint(p);
-            nevent.SetInt(m_curColumn);
-            SendEvent(0, item, &nevent);
-        }
+		// generate click & menu events
+		if (event.MiddleDown()) {
+			bSkip = false;
+			SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK, item);
+		}
+		if (event.RightDown()) {
+			bSkip = false;
+			SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, item);
+		}
+		if (event.RightUp()) {
+			wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
+			nevent.SetPoint(p);
+			nevent.SetInt(m_curColumn);
+			SendEvent(0, item, &nevent);
+		}
 
-        // if 2nd left click finishes on same item, will edit it
-        if (m_lastOnSame && event.LeftUp()) {
-            if ((item == m_curItem) && (m_curColumn != -1) &&
-                (m_owner->GetHeaderWindow()->IsColumnEditable (m_curColumn)) &&
-                (flags & (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMCOLUMN))
-            ){
-                m_editTimer->Start (RENAME_TIMER_TICKS, wxTIMER_ONE_SHOT);
-                bSkip = false;
-            }
-            m_lastOnSame = false;
-        }
-    }
+		// if 2nd left click finishes on same item, will edit it
+		if (m_lastOnSame && event.LeftUp()) {
+			if ((item == m_curItem) && (m_curColumn != -1) &&
+				(m_owner->GetHeaderWindow()->IsColumnEditable (m_curColumn)) &&
+				(flags & (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMCOLUMN))
+			){
+				m_editTimer->Start (RENAME_TIMER_TICKS, wxTIMER_ONE_SHOT);
+				bSkip = false;
+			}
+			m_lastOnSame = false;
+		}
+	}
 
 
 // ----------  HANDLE DOUBLE-CLICKS  ----------
-    if (mayClick && mayDoubleClick && event.LeftDClick()) {
+	if (mayClick && mayDoubleClick && event.LeftDClick()) {
 
-        bSkip = false;
+		bSkip = false;
 
-        // double clicking should not start editing the item label
-        m_editTimer->Stop();
-        m_lastOnSame = false;
+		// double clicking should not start editing the item label
+		m_editTimer->Stop();
+		m_lastOnSame = false;
 
-        // selection reset to that single item which was double-clicked
-        if (SelectItem(item, 0L, true)) {  // unselect others --return false if vetoed
+		// selection reset to that single item which was double-clicked
+		if (SelectItem(item, 0L, true)) {  // unselect others --return false if vetoed
 
-            // selection change not vetoed, send activate event
-            if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, item)) {
+			// selection change not vetoed, send activate event
+			if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, item)) {
 
-                // if the user code didn't process the activate event,
-                // handle it ourselves by toggling the item when it is
-                // double clicked
-                if (item && item->HasPlus()) Toggle(item);
-            }
-        }
-    }
+				// if the user code didn't process the activate event,
+				// handle it ourselves by toggling the item when it is
+				// double clicked
+				if (item && item->HasPlus()) Toggle(item);
+			}
+		}
+	}
 
 
 // ----------  HANDLE DRAGGING  ----------
 // NOTE: drag itself makes no change to selection
-    if (mayDrag) {  // actually this is always true
+	if (mayDrag) {  // actually this is always true
 
-        // CASE 1: we were dragging => continue, end, abort
-        if (m_isDragging) {
+		// CASE 1: we were dragging => continue, end, abort
+		if (m_isDragging) {
 
-            // CASE 1.1: click aborts drag:
-            if (event.LeftDown() || event.MiddleDown() || event.RightDown()) {
+			// CASE 1.1: click aborts drag:
+			if (event.LeftDown() || event.MiddleDown() || event.RightDown()) {
 
-                bSkip = false;
+				bSkip = false;
 
-                // stop dragging
-                m_isDragStarted = m_isDragging = false;
-                if (HasCapture()) ReleaseMouse();
-                RefreshSelected();
+				// stop dragging
+				m_isDragStarted = m_isDragging = false;
+				if (HasCapture()) ReleaseMouse();
+				RefreshSelected();
 
-            // CASE 1.2: still dragging
-            } else if (event.Dragging()) {
+			// CASE 1.2: still dragging
+			} else if (event.Dragging()) {
 
-                ;; // nothing to do
+				;; // nothing to do
 
-            // CASE 1.3: dragging now ends normally
-            } else {
+			// CASE 1.3: dragging now ends normally
+			} else {
 
-                bSkip = false;
+				bSkip = false;
 
-                // stop dragging
-                m_isDragStarted = m_isDragging = false;
-                if (HasCapture()) ReleaseMouse();
-                RefreshSelected();
+				// stop dragging
+				m_isDragStarted = m_isDragging = false;
+				if (HasCapture()) ReleaseMouse();
+				RefreshSelected();
 
-                // send drag end event
-                wxTreeEvent event(wxEVT_COMMAND_TREE_END_DRAG, 0);
-                event.SetPoint(p);
-                event.SetInt(m_curColumn);
-                SendEvent(0, item, &event);
-            }
+				// send drag end event
+				wxTreeEvent event(wxEVT_COMMAND_TREE_END_DRAG, 0);
+				event.SetPoint(p);
+				event.SetInt(m_curColumn);
+				SendEvent(0, item, &event);
+			}
 
-        // CASE 2: not were not dragging => continue, start
-        } else if (event.Dragging()) {
+		// CASE 2: not were not dragging => continue, start
+		} else if (event.Dragging()) {
 
-            // We will really start dragging if we've moved beyond a few pixels
-            if (m_isDragStarted) {
-                const int tolerance = 3;
-                int dx = abs(p.x - m_dragStartPos.x);
-                int dy = abs(p.y - m_dragStartPos.y);
-                if (dx <= tolerance && dy <= tolerance)
-                    return;
-            // determine drag start
-            } else {
-                m_dragStartPos = p;
-                m_dragCol = m_curColumn;
-                m_dragItem = item;
-                m_isDragStarted = true;
-                return;
-            }
+			// We will really start dragging if we've moved beyond a few pixels
+			if (m_isDragStarted) {
+				const int tolerance = 3;
+				int dx = abs(p.x - m_dragStartPos.x);
+				int dy = abs(p.y - m_dragStartPos.y);
+				if (dx <= tolerance && dy <= tolerance)
+					return;
+			// determine drag start
+			} else {
+				m_dragStartPos = p;
+				m_dragCol = m_curColumn;
+				m_dragItem = item;
+				m_isDragStarted = true;
+				return;
+			}
 
-            bSkip = false;
+			bSkip = false;
 
-            // we are now dragging
-            m_isDragging = true;
-            RefreshSelected();
-            CaptureMouse(); // TODO: usefulness unclear
+			// we are now dragging
+			m_isDragging = true;
+			RefreshSelected();
+			CaptureMouse(); // TODO: usefulness unclear
 
-            wxTreeEvent nevent(event.LeftIsDown()
-                                  ? wxEVT_COMMAND_TREE_BEGIN_DRAG
-                                  : wxEVT_COMMAND_TREE_BEGIN_RDRAG, 0);
-            nevent.SetPoint(p);
-            nevent.SetInt(m_dragCol);
-            nevent.Veto();
-            SendEvent(0, m_dragItem, &nevent);
-        }
-    }
+			wxTreeEvent nevent(event.LeftIsDown()
+								  ? wxEVT_COMMAND_TREE_BEGIN_DRAG
+								  : wxEVT_COMMAND_TREE_BEGIN_RDRAG, 0);
+			nevent.SetPoint(p);
+			nevent.SetInt(m_dragCol);
+			nevent.Veto();
+			SendEvent(0, m_dragItem, &nevent);
+		}
+	}
 
 
-    if (bSkip) event.Skip();
+	if (bSkip) event.Skip();
 */
 }
 
 void FbTreeViewMainWindow::OnSetFocus (wxFocusEvent &event)
 {
 /*
-    m_hasFocus = true;
-    RefreshSelected();
-    if (m_curItem) RefreshLine (m_curItem);
+	m_hasFocus = true;
+	RefreshSelected();
+	if (m_curItem) RefreshLine (m_curItem);
 */
 	m_focused = true;
-    event.Skip();
-    Repaint();
+	event.Skip();
+	Repaint();
 }
 
 void FbTreeViewMainWindow::OnKillFocus( wxFocusEvent &event )
 {
 /*
-    m_hasFocus = false;
-    RefreshSelected();
-    if (m_curItem) RefreshLine (m_curItem);
+	m_hasFocus = false;
+	RefreshSelected();
+	if (m_curItem) RefreshLine (m_curItem);
 */
 	m_focused = false;
-    event.Skip();
-    Repaint();
+	event.Skip();
+	Repaint();
 }
 
 void FbTreeViewMainWindow::OnIdle (wxIdleEvent &WXUNUSED(event))
 {
-    if (!m_dirty) return;
-    m_dirty = false;
+	if (!m_dirty) return;
+	m_dirty = false;
 
-    AdjustMyScrollbars();
-    Refresh();
+	AdjustMyScrollbars();
+	Refresh();
 }
 
 void FbTreeViewMainWindow::OnScroll (wxScrollWinEvent& event)
 {
 	#if defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
-    wxScrolledWindow::OnScroll(event);
+	wxScrolledWindow::OnScroll(event);
 	#else
-    HandleOnScroll( event );
+	HandleOnScroll( event );
 	#endif
 	Repaint();
 }
 
 bool FbTreeViewMainWindow::SetBackgroundColour (const wxColour& colour)
 {
-    if (!wxWindow::SetBackgroundColour(colour)) return false;
+	if (!wxWindow::SetBackgroundColour(colour)) return false;
 
-    Refresh();
-    return true;
+	Refresh();
+	return true;
 }
 
 bool FbTreeViewMainWindow::SetForegroundColour (const wxColour& colour)
 {
-    if (!wxWindow::SetForegroundColour(colour)) return false;
+	if (!wxWindow::SetForegroundColour(colour)) return false;
 
-    Refresh();
-    return true;
+	Refresh();
+	return true;
 }
 
 bool FbTreeViewMainWindow::SendEvent(wxEventType type, FbTreeViewItem *item, wxTreeEvent *event)
 {
 	wxTreeEvent nevent(type, 0);
 
-    if (event == NULL) {
-        event = &nevent;
-        event->SetInt(0);
-    }
+	if (event == NULL) {
+		event = &nevent;
+		event->SetInt(0);
+	}
 
-    event->SetEventObject(m_owner);
-    event->SetId(m_owner->GetId());
-    if (item) event->SetItem(item);
+	event->SetEventObject(m_owner);
+	event->SetId(m_owner->GetId());
+	if (item) event->SetItem(item);
 
-    return m_owner->GetEventHandler()->ProcessEvent (*event);
+	return m_owner->GetEventHandler()->ProcessEvent (*event);
 }
 
 void FbTreeViewMainWindow::SetFocus()
 {
-    wxWindow::SetFocus();
+	wxWindow::SetFocus();
 }
 
 void FbTreeViewMainWindow::AssignModel(FbModel * model)
 {
-    SetCursor(model ? *wxSTANDARD_CURSOR : *wxHOURGLASS_CURSOR);
+	SetCursor(model ? *wxSTANDARD_CURSOR : *wxHOURGLASS_CURSOR);
 	wxDELETE(m_model);
 	m_model = model;
 	Repaint();
@@ -1375,74 +1375,74 @@ void FbTreeViewMainWindow::AssignModel(FbModel * model)
 IMPLEMENT_DYNAMIC_CLASS(FbTreeViewCtrl, wxControl);
 
 BEGIN_EVENT_TABLE(FbTreeViewCtrl, wxControl)
-    EVT_SIZE(FbTreeViewCtrl::OnSize)
+	EVT_SIZE(FbTreeViewCtrl::OnSize)
 END_EVENT_TABLE();
 
 bool FbTreeViewCtrl::Create(wxWindow *parent, wxWindowID id,
-                            const wxPoint& pos,
-                            const wxSize& size,
-                            long style, const wxValidator &validator,
-                            const wxString& name)
+							const wxPoint& pos,
+							const wxSize& size,
+							long style, const wxValidator &validator,
+							const wxString& name)
 {
-    long main_style = style & ~(wxSIMPLE_BORDER|wxSUNKEN_BORDER|wxDOUBLE_BORDER|wxRAISED_BORDER|wxSTATIC_BORDER);
+	long main_style = style & ~(wxSIMPLE_BORDER|wxSUNKEN_BORDER|wxDOUBLE_BORDER|wxRAISED_BORDER|wxSTATIC_BORDER);
 	main_style |= wxWANTS_CHARS;
 
-    long ctrl_style = style & ~(wxVSCROLL|wxHSCROLL);
-    ctrl_style |= wxTAB_TRAVERSAL;
+	long ctrl_style = style & ~(wxVSCROLL|wxHSCROLL);
+	ctrl_style |= wxTAB_TRAVERSAL;
 
-    if (!wxControl::Create(parent, id, pos, size, ctrl_style, validator, name)) {
-       return false;
-    }
+	if (!wxControl::Create(parent, id, pos, size, ctrl_style, validator, name)) {
+	   return false;
+	}
 
-    m_main_win = new FbTreeViewMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
+	m_main_win = new FbTreeViewMainWindow (this, -1, wxPoint(0, 0), size, main_style, validator);
 
-   	if (HasFlag(fbTR_NO_HEADER )) {
-   		m_header_win = NULL;
-   	} else {
-   		m_header_win = new FbTreeViewHeaderWindow (this, -1, m_main_win, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL);
-   	}
+	if (HasFlag(fbTR_NO_HEADER )) {
+		m_header_win = NULL;
+	} else {
+		m_header_win = new FbTreeViewHeaderWindow (this, -1, m_main_win, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL);
+	}
 
-    DoHeaderLayout();
+	DoHeaderLayout();
 
-    return true;
+	return true;
 }
 
 void FbTreeViewCtrl::DoHeaderLayout()
 {
-    int x, y;
-    GetClientSize(&x, &y);
-    int h = 0;
-    if (m_header_win) {
-        h = wxRendererNative::Get().GetHeaderButtonHeight(m_header_win);
-        #ifdef __WXMSW__
-        h = h * 4 / 5 + 2;
-        #endif
-    }
-    if (m_main_win) {
+	int x, y;
+	GetClientSize(&x, &y);
+	int h = 0;
+	if (m_header_win) {
+		h = wxRendererNative::Get().GetHeaderButtonHeight(m_header_win);
+		#ifdef __WXMSW__
+		h = h * 4 / 5 + 2;
+		#endif
+	}
+	if (m_main_win) {
 		m_main_win->Repaint();
-        m_main_win->SetSize (0, h, x, y - h);
-    }
-    if (m_header_win) {
-        m_header_win->SetSize (0, 0, x, h);
-        m_header_win->Refresh();
-    }
+		m_main_win->SetSize (0, h, x, y - h);
+	}
+	if (m_header_win) {
+		m_header_win->SetSize (0, 0, x, h);
+		m_header_win->Refresh();
+	}
 }
 
 void FbTreeViewCtrl::OnSize(wxSizeEvent& WXUNUSED(event))
 {
-    DoHeaderLayout();
+	DoHeaderLayout();
 }
 
 bool FbTreeViewCtrl::SetBackgroundColour(const wxColour& colour)
 {
-    if (!m_main_win) return false;
-    return m_main_win->SetBackgroundColour(colour);
+	if (!m_main_win) return false;
+	return m_main_win->SetBackgroundColour(colour);
 }
 
 bool FbTreeViewCtrl::SetForegroundColour(const wxColour& colour)
 {
-    if (!m_main_win) return false;
-    return m_main_win->SetForegroundColour(colour);
+	if (!m_main_win) return false;
+	return m_main_win->SetForegroundColour(colour);
 }
 
 void FbTreeViewCtrl::SetFocus()
@@ -1458,41 +1458,41 @@ void FbTreeViewCtrl::Refresh(bool erase, const wxRect* rect)
 
 bool FbTreeViewCtrl::SetFont(const wxFont& font)
 {
-    if (m_header_win) {
-        m_header_win->SetFont(font);
-        DoHeaderLayout();
-        m_header_win->Refresh();
-    }
-    if (m_main_win) {
-        return m_main_win->SetFont(font);
-    }else{
-        return false;
-    }
+	if (m_header_win) {
+		m_header_win->SetFont(font);
+		DoHeaderLayout();
+		m_header_win->Refresh();
+	}
+	if (m_main_win) {
+		return m_main_win->SetFont(font);
+	}else{
+		return false;
+	}
 }
 
 void FbTreeViewCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag)
 {
-    if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag));
+	if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag));
 }
 
 void FbTreeViewCtrl::SetSortedColumn(int column)
 {
-    if (m_header_win) m_header_win->SetSortedColumn(column);
+	if (m_header_win) m_header_win->SetSortedColumn(column);
 }
 
 int FbTreeViewCtrl::GetSortedColumn()
 {
-    return m_header_win ? m_header_win->GetSortedColumn() : 0;
+	return m_header_win ? m_header_win->GetSortedColumn() : 0;
 }
 
 void FbTreeViewCtrl::AssignModel(FbModel * model)
 {
-    if (m_main_win) {
+	if (m_main_win) {
 		if (model) model->SetOwner(this);
-        m_main_win->AssignModel(model);
-        m_main_win->SetScrollPos(wxVERTICAL, 0);
+		m_main_win->AssignModel(model);
+		m_main_win->SetScrollPos(wxVERTICAL, 0);
 		m_main_win->SendEvent(wxEVT_COMMAND_TREE_SEL_CHANGED);
-    }
+	}
 	Refresh();
 }
 
@@ -1512,15 +1512,15 @@ wxString FbTreeViewCtrl::GetCurrentText() const
 	FbModel * model = GetModel();
 	if (model) {
 		size_t position = model->GetPosition();
-	    FbModelItem item = model->GetData(position);
-	    if (item) return item[0];
+		FbModelItem item = model->GetData(position);
+		if (item) return item[0];
 	}
 	return wxEmptyString;
 }
 
 void FbTreeViewCtrl::EmptyColumns()
 {
-    if (m_header_win) m_header_win->EmptyColumns();
+	if (m_header_win) m_header_win->EmptyColumns();
 }
 
 wxString FbTreeViewCtrl::GetText()
@@ -1579,13 +1579,13 @@ int FbTreeViewCtrl::GetBook() const
 void FbTreeViewCtrl::GetColumns(wxArrayInt &columns) const
 {
 	columns.Empty();
-    if (m_header_win) {
-    	size_t count = m_header_win->GetColumnCount();
-    	for (size_t i = 0; i < count; i++) {
-    		size_t index = m_header_win->GetColumnIndex(i);
-    		columns.Add(index);
+	if (m_header_win) {
+		size_t count = m_header_win->GetColumnCount();
+		for (size_t i = 0; i < count; i++) {
+			size_t index = m_header_win->GetColumnIndex(i);
+			columns.Add(index);
 		}
-    }
+	}
 }
 
 bool FbTreeViewCtrl::FindAt(const wxPoint &point, bool select)

@@ -60,16 +60,16 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
 		virtual void SetFocus();
 
-        virtual bool SetFont(const wxFont& font);
+		virtual bool SetFont(const wxFont& font);
 
-        void AddColumn (size_t model_column,
-                        const wxString& text = wxEmptyString,
-                        int width = DEFAULT_COL_WIDTH,
-                        int flag = wxALIGN_LEFT);
+		void AddColumn (size_t model_column,
+						const wxString& text = wxEmptyString,
+						int width = DEFAULT_COL_WIDTH,
+						int flag = wxALIGN_LEFT);
 
-        void EmptyColumns();
+		void EmptyColumns();
 
-        void GetColumns(wxArrayInt &columns) const;
+		void GetColumns(wxArrayInt &columns) const;
 
 		void AssignModel(FbModel * model);
 

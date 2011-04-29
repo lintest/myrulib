@@ -172,7 +172,7 @@ class FbParamsDlg : private FbDialog
 		void EnableTool(wxWindowID id, bool enable);
 		void FillFormats(FbTreeViewCtrl * treeview, FbModel * model);
 	private:
-        void OnClose( wxCloseEvent& event );
+		void OnClose( wxCloseEvent& event );
 		void OnSelectFolderClick( wxCommandEvent& event );
 		void OnAppendType( wxCommandEvent& event );
 		void OnModifyType( wxCommandEvent& event );

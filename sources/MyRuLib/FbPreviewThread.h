@@ -12,7 +12,7 @@ class FbPreviewThread : public FbThread
 		FbPreviewThread(wxEvtHandler * owner);
 		virtual ~FbPreviewThread();
 		void Reset(const FbViewContext &ctx, const FbViewItem &view);
-	    virtual void Close();
+		virtual void Close();
 	protected:
 		virtual void * Entry();
 	private:

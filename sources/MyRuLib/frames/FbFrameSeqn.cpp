@@ -13,7 +13,7 @@
 IMPLEMENT_CLASS(FbFrameSeqn, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
-    EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSeqn::OnColClick)
+	EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSeqn::OnColClick)
 	EVT_TEXT_ENTER(ID_SEQUENCE_FIND, FbFrameSeqn::OnFindEnter )
 	EVT_BUTTON(ID_SEQUENCE_FIND, FbFrameSeqn::OnFindEnter )
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameSeqn::OnContextMenu)

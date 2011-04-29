@@ -36,7 +36,7 @@ class FbAlphabetCombo : public wxOwnerDrawnComboBox
 		virtual wxCoord OnMeasureItemWidth( size_t WXUNUSED(item) ) const
 			{ return -1; }
 
-        virtual bool SetFont(const wxFont& font);
+		virtual bool SetFont(const wxFont& font);
 
 		void SetText(const wxString &text = wxEmptyString)
 			{ m_text = text; Refresh(); }

@@ -17,7 +17,7 @@ class FbCounter: public wxObject
 		void Add(int book);
 		void Execute();
 	private:
-	    bool HasFlag(int flag) const
+		bool HasFlag(int flag) const
 			{ return (m_style & flag) != 0; }
 		void CreateTable(const wxString & name);
 	private:

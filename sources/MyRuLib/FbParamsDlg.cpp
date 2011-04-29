@@ -138,8 +138,8 @@ FbParamsDlg::ScriptDlg::ScriptDlg( wxWindow* parent, wxWindowID id, const wxStri
 		wxString title = (wxString)wxT('%') << m_letters[i];
 		toolbar->AddTool(btnid, title, wxBitmap(blank_xpm), (wxString)helps[i]);
 		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(ScriptDlg::OnLetterClicked));
- 	}
- 	toolbar->Realize();
+	}
+	toolbar->Realize();
 
 	SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -494,8 +494,8 @@ FbParamsDlg::PanelExport::PanelExport(wxWindow *parent, wxString &letters)
 		wxString title = (wxString)wxT('%') << letters[i];
 		toolbar->AddTool(btnid, title, wxBitmap(blank_xpm), (wxString)helps[i]);
 		this->Connect(btnid, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(FbParamsDlg::OnLetterClicked));
- 	}
- 	toolbar->Realize();
+	}
+	toolbar->Realize();
 	bSizerMain->Add(toolbar, 0, wxEXPAND|wxALL, 5);
 
 	wxCheckBox * checkbox;

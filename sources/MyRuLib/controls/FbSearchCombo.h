@@ -32,8 +32,8 @@ class FbSearchCombo: public wxComboCtrl
 
 		virtual void OnButtonClick()
 		{
-    		wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED,  GetId());
-    		wxPostEvent(this, event);
+			wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED,  GetId());
+			wxPostEvent(this, event);
 		}
 
 		virtual void DoSetPopupControl(wxComboPopup* WXUNUSED(popup)) {}

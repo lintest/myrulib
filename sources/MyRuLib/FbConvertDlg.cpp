@@ -264,26 +264,26 @@ void * FbConvertDlg::DelThread::Entry()
 
 void FbConvertDlg::ExportProcess::OnTerminate(int pid, int status)
 {
-    FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_RUN).Post(m_parent);
+	FbCommandEvent(fbEVT_EXPORT_ACTION, ID_SCRIPT_RUN).Post(m_parent);
 }
 
 bool FbConvertDlg::ExportProcess::HasInput()
 {
 	bool hasInput = false;
 
-    if (IsInputAvailable()) {
-    	wxString info = ReadLine(GetInputStream());
+	if (IsInputAvailable()) {
+		wxString info = ReadLine(GetInputStream());
 		if (!info.IsEmpty()) wxLogMessage(info);
 		hasInput = true;
-    }
+	}
 
-    if (IsErrorAvailable()) {
-    	wxString info = ReadLine(GetErrorStream());
+	if (IsErrorAvailable()) {
+		wxString info = ReadLine(GetErrorStream());
 		if (!info.IsEmpty()) wxLogError(info);
 		hasInput = true;
-    }
+	}
 
-    return hasInput;
+	return hasInput;
 }
 
 wxString FbConvertDlg::ExportProcess::ReadLine(wxInputStream * stream)
@@ -316,7 +316,7 @@ BEGIN_EVENT_TABLE( FbConvertDlg, FbDialog )
 	EVT_COMMAND( ID_SCRIPT_ERROR, fbEVT_EXPORT_ACTION, FbConvertDlg::OnScriptError )
 	EVT_COMMAND( ID_SCRIPT_EXIT, fbEVT_EXPORT_ACTION, FbConvertDlg::OnScriptExit )
 	EVT_CLOSE( FbConvertDlg::OnCloseDlg )
-    EVT_IDLE( FbConvertDlg::OnIdle )
+	EVT_IDLE( FbConvertDlg::OnIdle )
 END_EVENT_TABLE()
 
 FbConvertDlg::FbConvertDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
@@ -332,8 +332,8 @@ FbConvertDlg::FbConvertDlg( wxWindow* parent, wxWindowID id, const wxString& tit
 
 	m_text.Create( this, wxID_ANY);
 	bSizerMain->Add( &m_text, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
-    wxFont font(GetFont().GetPointSize(), wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    if (font.Ok()) m_text.SetFont(font);
+	wxFont font(GetFont().GetPointSize(), wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+	if (font.Ok()) m_text.SetFont(font);
 
 	wxBoxSizer* bSizerBottom = new wxBoxSizer( wxHORIZONTAL );
 
@@ -517,7 +517,7 @@ void FbConvertDlg::ExecScript(size_t index, const FbConvertItem &item)
 
 void FbConvertDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
 {
-    wxWakeUpIdle();
+	wxWakeUpIdle();
 }
 
 void FbConvertDlg::OnIdle(wxIdleEvent& event)

@@ -16,12 +16,12 @@ class FbThread
 	: public wxThread
 {
 public:
-    FbThread(wxThreadKind kind = wxTHREAD_DETACHED)
+	FbThread(wxThreadKind kind = wxTHREAD_DETACHED)
 		: wxThread(kind), m_closed(false) {}
 	void Execute()
 		{ if ( Create() == wxTHREAD_NO_ERROR ) Run(); }
-    bool IsClosed();
-    virtual void Close();
+	bool IsClosed();
+	virtual void Close();
 private:
 	static wxCriticalSection sm_section;
 	bool m_closed;
@@ -31,7 +31,7 @@ class FbProgressThread
 	: public FbThread
 {
 public:
-    FbProgressThread(wxEvtHandler * owner, wxThreadKind kind = wxTHREAD_DETACHED)
+	FbProgressThread(wxEvtHandler * owner, wxThreadKind kind = wxTHREAD_DETACHED)
 		: FbThread(kind), m_owner(owner) {}
 	wxEvtHandler * GetOwner() { return m_owner; }
 protected:

@@ -48,7 +48,7 @@ FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxStri
 	}
 	wxLogMessage(_("Import zip %s"), m_filename.c_str());
 
-    while (wxZipEntry * entry = m_zip.GetNextEntry()) {
+	while (wxZipEntry * entry = m_zip.GetNextEntry()) {
 		if (entry->GetSize()) {
 			wxString filename = entry->GetInternalName();
 			if (Ext(filename) == wxT("fbd")) {
@@ -61,7 +61,7 @@ FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxStri
 			}
 		}
 		if (m_owner.IsClosed()) break;
-    }
+	}
 }
 
 wxZipEntry * FbImportZip::GetInfo(const wxString & filename)
@@ -295,15 +295,15 @@ bool FbImportBook::AppendBook()
 		}
 	}
 
-    for (size_t i = 0; i < m_sequences.Count(); i++) {
+	for (size_t i = 0; i < m_sequences.Count(); i++) {
 		SequenceItem &sequence = m_sequences[i];
-        wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
-        wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-        stmt.Bind(1, id_book);
-        stmt.Bind(2, sequence.GetId());
-        stmt.Bind(3, sequence.GetNumber());
+		wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, id_book);
+		stmt.Bind(2, sequence.GetId());
+		stmt.Bind(3, sequence.GetNumber());
 		ok = stmt.ExecuteUpdate() && ok;
-    }
+	}
 
 	{
 		wxString content = m_title;

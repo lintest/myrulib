@@ -732,9 +732,9 @@ void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
 
 void FbMainFrame::Localize(int language)
 {
-    wxToolBar * toolbar = m_toolbar;
+	wxToolBar * toolbar = m_toolbar;
 	SetToolBar(CreateToolBar());
-    wxDELETE(toolbar);
+	wxDELETE(toolbar);
 
 	size_t count = GetNotebook()->GetPageCount();
 	size_t index = GetNotebook()->GetSelection();

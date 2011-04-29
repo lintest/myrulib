@@ -121,7 +121,7 @@ void FbFrameHtml::CreateControls()
 void FbFrameHtml::Localize(bool bUpdateMenu)
 {
 	SetTitle(GetTitle());
-    FbAuiMDIChildFrame::Localize(bUpdateMenu);
+	FbAuiMDIChildFrame::Localize(bUpdateMenu);
 }
 
 void FbFrameHtml::OnSave(wxCommandEvent& event)
@@ -136,7 +136,7 @@ void FbFrameHtml::OnSave(wxCommandEvent& event)
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-   		wxString html = * m_info.GetParser()->GetSource();
+		wxString html = * m_info.GetParser()->GetSource();
 		wxFileOutputStream stream(dlg.GetPath());
 		wxTextOutputStream text(stream);
 		text.WriteString(html);

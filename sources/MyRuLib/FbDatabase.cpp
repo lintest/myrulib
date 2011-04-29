@@ -374,7 +374,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 
 	int old_version = GetVersion();
 	if (old_version != new_version) {
-	    wxString msg = _("Database version mismatch");
+		wxString msg = _("Database version mismatch");
 		wxMessageBox(msg, MyRuLib::ProgramName(), wxOK | wxICON_ERROR);
 		wxLogError(msg);
 		wxLogFatalError(_("Need a new version %d, but used the old %d."), new_version, old_version);
@@ -463,7 +463,7 @@ void FbMainDatabase::CreateDatabase()
 
 	/** TABLE genres **/
 	ExecuteUpdate(wxT("CREATE TABLE genres(id_book integer, id_genre CHAR(2), PRIMARY KEY(id_book, id_genre));"));
-  	ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
+	ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
 
 	trans.Commit();
 

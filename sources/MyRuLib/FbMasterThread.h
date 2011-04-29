@@ -13,7 +13,7 @@ class FbMasterThread : public FbThread
 		FbMasterThread(wxEvtHandler * owner);
 		virtual ~FbMasterThread();
 		void Reset(const FbMasterInfo &info, const FbFilterObj &filter);
-	    virtual void Close();
+		virtual void Close();
 	protected:
 		virtual void * Entry();
 	private:

@@ -10,7 +10,7 @@
 IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
 
 BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
-    EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
+	EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExportBooks)
@@ -53,7 +53,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_LANG, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_RATING, FbFrameBase::OnChangeOrderUpdateUI)
-    EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
+	EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
 	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameBase::OnBooksCount)
 END_EVENT_TABLE()
@@ -94,15 +94,15 @@ void FbFrameBase::CreateControls()
 void FbFrameBase::Localize(bool bUpdateMenu)
 {
 	SetTitle(GetTitle());
-    FbAuiMDIChildFrame::Localize(bUpdateMenu);
-    if (bUpdateMenu) UpdateStatus();
+	FbAuiMDIChildFrame::Localize(bUpdateMenu);
+	if (bUpdateMenu) UpdateStatus();
 
 	if (m_MasterList) {
 		m_MasterList->EmptyColumns();
 		CreateColumns();
 		m_MasterList->Refresh();
 	}
-    m_BooksPanel->Localize();
+	m_BooksPanel->Localize();
 }
 
 void FbFrameBase::CreateBooksPanel(wxWindow * parent)

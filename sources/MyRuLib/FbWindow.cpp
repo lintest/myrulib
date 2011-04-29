@@ -95,11 +95,11 @@ FbAuiMDIParentFrame::~FbAuiMDIParentFrame()
 void FbAuiMDIParentFrame::SetMainMenu(wxMenuBar * menubar)
 {
 	if (m_menubar) {
-	    DetachMenuBar();
+		DetachMenuBar();
 		delete m_menubar;
 	}
 
-    if (menubar) this->AttachMenuBar(menubar);
+	if (menubar) this->AttachMenuBar(menubar);
 	m_menubar = menubar;
 }
 
@@ -141,7 +141,7 @@ void FbAuiMDIChildFrame::UpdateFont(wxHtmlWindow * html, bool refresh)
 
 wxMenuBar * FbAuiMDIChildFrame::CreateMenuBar()
 {
-    return new FbMainMenu;
+	return new FbMainMenu;
 }
 
 void FbAuiMDIChildFrame::Localize(bool bUpdateMenu)

@@ -130,10 +130,10 @@ bool FbInternetBook::DoDownload()
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
-    http.SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
-    http.SetHeader(wxT("Content-type"), wxT("application/x-www-form-urlencoded"));
-    wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
-    http.SetPostBuffer(buffer);
+	http.SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
+	http.SetHeader(wxT("Content-type"), wxT("application/x-www-form-urlencoded"));
+	wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
+	http.SetPostBuffer(buffer);
 
 	if (m_owner->IsClosed()) return false;
 

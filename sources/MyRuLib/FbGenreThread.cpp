@@ -13,7 +13,7 @@ void * FbGenreThread::Entry()
 	database.ExecuteUpdate(wxT("DROP TABLE genres"));
 	database.ExecuteUpdate(wxT("CREATE TABLE genres(id_book integer, id_genre CHAR(2));"));
 	database.ExecuteUpdate(wxT("CREATE INDEX genres_book ON genres(id_book);"));
-  	database.ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
+	database.ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
 
 	int count = database.ExecuteScalar(wxT("SELECT count(DISTINCT id) FROM books"));
 	if (count == 0) return NULL;

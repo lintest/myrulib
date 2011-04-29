@@ -42,7 +42,7 @@ class FbFrameInfoThread
 	: public FbProgressThread
 {
 public:
-    FbFrameInfoThread(wxEvtHandler * owner) 
+	FbFrameInfoThread(wxEvtHandler * owner) 
 		: FbProgressThread(owner) {}
 protected:
 	virtual void * Entry();
@@ -214,7 +214,7 @@ void FbFrameInfo::OnSave(wxCommandEvent& event)
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-   		wxString html = * m_info.GetParser()->GetSource();
+		wxString html = * m_info.GetParser()->GetSource();
 		wxFileOutputStream stream(dlg.GetPath());
 		wxTextOutputStream text(stream);
 		text.WriteString(html);

@@ -12,7 +12,7 @@ FbDateTime::FbDateTime(int code)
 
 wxDateTime::Month FbDateTime::GetMonth(int month)
 {
-    return wxDateTime::Month((month - 1) % 12 + wxDateTime::Jan);
+	return wxDateTime::Month((month - 1) % 12 + wxDateTime::Jan);
 }
 
 FbDateTime FbDateTime::Today()

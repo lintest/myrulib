@@ -93,29 +93,29 @@ void FbPreviewReader::EndNode(const wxString &name)
 void FbPreviewReader::AppendImg(const FbStringHash &atts)
 {
 	FbStringHash::const_iterator it;
-    for( it = atts.begin(); it != atts.end(); ++it ) {
-        wxString name = it->first;
+	for( it = atts.begin(); it != atts.end(); ++it ) {
+		wxString name = it->first;
 		if (name.Right(4) == wxT("href")) {
 			wxString value = it->second;
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			m_images.Add(value);
 			break;
 		}
-    }
+	}
 }
 
 void FbPreviewReader::StartImg(const FbStringHash &atts)
 {
-    FbStringHash::const_iterator it;
-    for( it = atts.begin(); it != atts.end(); ++it ) {
-        wxString name = it->first;
+	FbStringHash::const_iterator it;
+	for( it = atts.begin(); it != atts.end(); ++it ) {
+		wxString name = it->first;
 		if (name == wxT("id")) {
 			wxString value = it->second;
 			if (value.Left(1) == wxT("#")) value = value.Mid(1);
 			m_saveimage = (m_images.Index(value) != wxNOT_FOUND);
 			if (m_saveimage) {
-			    m_imagename = value;
-			    m_imagedata.Empty();
+				m_imagename = value;
+				m_imagedata.Empty();
 			}
 			break;
 		}

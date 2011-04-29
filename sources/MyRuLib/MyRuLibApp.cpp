@@ -21,7 +21,7 @@ END_EVENT_TABLE()
 wxCriticalSection MyRuLibApp::sm_section;
 
 MyRuLibApp::MyRuLibApp()
-    :m_locale(NULL), m_collection(NULL), m_downloader(NULL)
+	:m_locale(NULL), m_collection(NULL), m_downloader(NULL)
 {
 }
 
@@ -52,11 +52,11 @@ void MyRuLibApp::Localize()
 	if (m_locale && m_locale->GetLanguage() == language) return;
 
 	wxDELETE(m_locale);
-    m_locale = new FbLocale;
-    m_locale->Init(language);
+	m_locale = new FbLocale;
+	m_locale->Init(language);
 
-    FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
-    if (frame) frame->Localize(language);
+	FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
+	if (frame) frame->Localize(language);
 
 	FbGenres::Init();
 }
@@ -64,7 +64,7 @@ void MyRuLibApp::Localize()
 bool MyRuLibApp::OnInit()
 {
 	FbCollection::LoadConfig();
-    Localize();
+	Localize();
 
 	OpenLog();
 	#ifdef __WXDEBUG__
@@ -137,7 +137,7 @@ wxFileName MyRuLibApp::GetDatabaseFile()
 int MyRuLibApp::OnExit()
 {
 	StopDownload();
-    wxDELETE(m_locale);
+	wxDELETE(m_locale);
 	wxDELETE(m_collection);
 	return wxApp::OnExit();
 }

@@ -64,7 +64,7 @@ void * FbAlphabetThread::Entry()
 //-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(FbAlphabetCombo, wxOwnerDrawnComboBox)
-    EVT_FB_LETTERS(wxID_ANY, FbAlphabetCombo::OnLetters)
+	EVT_FB_LETTERS(wxID_ANY, FbAlphabetCombo::OnLetters)
 END_EVENT_TABLE()
 
 void FbAlphabetCombo::OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const
@@ -118,13 +118,13 @@ wxCoord FbAlphabetCombo::OnMeasureItem( size_t item ) const
 
 bool FbAlphabetCombo::SetFont(const wxFont& font)
 {
-    bool ok = wxOwnerDrawnComboBox::SetFont(font);
-    if (ok) {
+	bool ok = wxOwnerDrawnComboBox::SetFont(font);
+	if (ok) {
 		wxClientDC dc(this);
 		dc.SetFont(font);
 		m_rowHeight = dc.GetCharHeight() + 4;
-    }
-    return ok;
+	}
+	return ok;
 }
 
 void FbAlphabetCombo::OnLetters(FbLettersEvent &event)

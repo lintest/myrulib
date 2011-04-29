@@ -136,8 +136,8 @@ int SequenceItem::Convert(FbDatabase & database)
 SequenceItem::SequenceItem(const FbStringHash &atts)
 	: m_id(0), m_number(0)
 {
-    FbStringHash::const_iterator it;
-    for( it = atts.begin(); it != atts.end(); ++it ) {
+	FbStringHash::const_iterator it;
+	for( it = atts.begin(); it != atts.end(); ++it ) {
 		wxString attr = it->first;
 		wxString text = it->second;
 		if (attr == wxT("name")) m_name = text; else 

@@ -63,7 +63,7 @@ class FbBookListModel: public FbListModel
 		FbModelItem Items(size_t index);
 
 	private:
-        wxString GetSQL(const wxString & order, const wxString & condition);
+		wxString GetSQL(const wxString & order, const wxString & condition);
 		void DoTraverse(FbBookTraverser & traverser);
 
 	private:

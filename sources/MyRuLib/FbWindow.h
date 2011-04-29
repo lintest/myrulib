@@ -48,7 +48,7 @@ class FbAuiMDIParentFrame
 		virtual void SetMenuBar(wxMenuBar *pMenuBar)
 			{}
 
-	    virtual wxMenuBar * GetMenuBar() const
+		virtual wxMenuBar * GetMenuBar() const
 			{ return m_menubar; }
 
 		void SetMainMenu(wxMenuBar * menubar);
@@ -64,7 +64,7 @@ class FbAuiMDIChildFrame
 	public:
 		FbAuiMDIChildFrame(
 			wxAuiMDIParentFrame *parent,
-            wxWindowID winid,
+			wxWindowID winid,
 			const wxString& title,
 			const wxPoint& pos = wxDefaultPosition,
 			const wxSize& size = wxDefaultSize,
@@ -74,7 +74,7 @@ class FbAuiMDIChildFrame
 
 		bool Create(
 			wxAuiMDIParentFrame *parent,
-            wxWindowID winid,
+			wxWindowID winid,
 			const wxString& title,
 			const wxPoint& pos = wxDefaultPosition,
 			const wxSize& size = wxDefaultSize,
@@ -96,7 +96,7 @@ class FbAuiMDIChildFrame
 		void UpdateMenu();
 
 	private:
-        void OnActivated(wxActivateEvent & event);
+		void OnActivated(wxActivateEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 

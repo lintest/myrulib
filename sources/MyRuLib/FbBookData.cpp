@@ -27,36 +27,36 @@ void FbTempEraser::Add(const wxString &filename)
 BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
 	m_id(0), file_size(0), number(0), rating(0)
 {
-    Assign(res, wxT("id"), m_id);
-    Assign(res, wxT("title"), title);
-    Assign(res, wxT("file_size"), file_size);
-    Assign(res, wxT("file_type"), file_type);
-    Assign(res, wxT("lang"), language);
-    Assign(res, wxT("genres"), genres);
-    Assign(res, wxT("number"), number);
+	Assign(res, wxT("id"), m_id);
+	Assign(res, wxT("title"), title);
+	Assign(res, wxT("file_size"), file_size);
+	Assign(res, wxT("file_type"), file_type);
+	Assign(res, wxT("lang"), language);
+	Assign(res, wxT("genres"), genres);
+	Assign(res, wxT("number"), number);
 
-    Assign(res, wxT("rating"), rating);
+	Assign(res, wxT("rating"), rating);
 	if ( rating<0 || 5<rating ) rating = 0;
 }
 
 void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, int &value)
 {
-    for (int i=0; i<res.GetColumnCount(); i++) {
-        if (res.GetColumnName(i).CmpNoCase(column)==0) {
-            value = res.GetInt(i);
-            return;
-        }
-    }
+	for (int i=0; i<res.GetColumnCount(); i++) {
+		if (res.GetColumnName(i).CmpNoCase(column)==0) {
+			value = res.GetInt(i);
+			return;
+		}
+	}
 }
 
 void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, wxString &value)
 {
-    for (int i=0; i<res.GetColumnCount(); i++) {
-        if (res.GetColumnName(i).CmpNoCase(column)==0) {
-            value = res.GetString(i);
-            return;
-        }
-    }
+	for (int i=0; i<res.GetColumnCount(); i++) {
+		if (res.GetColumnName(i).CmpNoCase(column)==0) {
+			value = res.GetString(i);
+			return;
+		}
+	}
 }
 
 wxString FbBookData::GetExt() const
@@ -81,10 +81,10 @@ void FbBookData::LoadIcon() const
 
 void FbBookData::SaveFile(wxInputStream & in, const wxString &filepath) const
 {
-    FbTempEraser::Add(filepath);
-    wxFileOutputStream out(filepath);
-    out.Write(in);
-    out.Close();
+	FbTempEraser::Add(filepath);
+	wxFileOutputStream out(filepath);
+	out.Write(in);
+	out.Close();
 }
 
 bool FbBookData::GetUserCommand(wxSQLite3Database &database, const wxString &filetype, wxString &command) const
@@ -94,20 +94,20 @@ bool FbBookData::GetUserCommand(wxSQLite3Database &database, const wxString &fil
 	stmt.Bind(1, filetype);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (result.NextRow()) {
-	    command = result.GetString(0);
-	    return !command.IsEmpty();
-    }
-    return false;
+		command = result.GetString(0);
+		return !command.IsEmpty();
+	}
+	return false;
 }
 
 bool FbBookData::GetSystemCommand(const wxString &filepath, const wxString &filetype, wxString &command) const
 {
 	wxFileType * ft = wxTheMimeTypesManager->GetFileTypeFromExtension(filetype);
 	if ( ft ) {
-	    bool res = ft->GetOpenCommand(&command, wxFileType::MessageParameters(filepath, wxEmptyString));
-        delete ft;
-        return res;
-    }
+		bool res = ft->GetOpenCommand(&command, wxFileType::MessageParameters(filepath, wxEmptyString));
+		delete ft;
+		return res;
+	}
 	return false;
 }
 

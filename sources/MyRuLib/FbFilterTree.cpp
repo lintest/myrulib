@@ -42,11 +42,11 @@ FbFilterTreeModel::FbFilterTreeModel(const wxString & list, const wxString &sel)
 {
 	FbFilterParentData * root = new FbFilterParentData(*this);
 
-    wxStringTokenizer tokenizer(list, wxT(','));
-    while ( tokenizer.HasMoreTokens() ) {
-        wxString token = tokenizer.GetNextToken();
-        new FbFilterChildData(*this, root, token);
-    }
+	wxStringTokenizer tokenizer(list, wxT(','));
+	while ( tokenizer.HasMoreTokens() ) {
+		wxString token = tokenizer.GetNextToken();
+		new FbFilterChildData(*this, root, token);
+	}
 
 	SetRoot(root);
 	SetSel(sel);
@@ -55,12 +55,12 @@ FbFilterTreeModel::FbFilterTreeModel(const wxString & list, const wxString &sel)
 void FbFilterTreeModel::SetSel(const wxString &sel)
 {
 	wxSortedArrayString strings;
-    wxStringTokenizer tokenizer(sel, wxT(','));
-    while ( tokenizer.HasMoreTokens() ) {
-        wxString token = tokenizer.GetNextToken();
-        token.Replace(wxT("'"), wxEmptyString);
-        strings.Add(token);
-    }
+	wxStringTokenizer tokenizer(sel, wxT(','));
+	while ( tokenizer.HasMoreTokens() ) {
+		wxString token = tokenizer.GetNextToken();
+		token.Replace(wxT("'"), wxEmptyString);
+		strings.Add(token);
+	}
 
 	FbModelItem root = GetRoot();
 	size_t count = root.Count();
