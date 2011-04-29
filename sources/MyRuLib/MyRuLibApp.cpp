@@ -73,9 +73,8 @@ bool MyRuLibApp::OnInit()
 
 	wxFileName filename = GetDatabaseFile();
 	if (!filename.IsOk()) {
-		wxString datafile;
-		bool ok = FbDataOpenDlg::Execute(NULL, datafile);
-		if (!ok) return false;
+		wxString datafile = FbDataOpenDlg::Execute(NULL);
+		if (!datafile) return false;
 		filename = datafile;
 	}
 

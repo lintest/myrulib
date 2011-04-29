@@ -18,12 +18,12 @@ wxString MyRuLib::ProgramInfo()
 
 wxString MyRuLib::HomePage()
 {
-	return TXT(PROGRAM_HOMEPAGE);
+	return wxT(PROGRAM_HOMEPAGE);
 }
 
 wxString MyRuLib::MailAddr()
 {
-	return TXT(PROGRAM_MAILADDR);
+	return wxT(PROGRAM_MAILADDR);
 }
 
 wxString MyRuLib::UserAgent()

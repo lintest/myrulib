@@ -1,15 +1,28 @@
 #include "FbURL.h"
 #include "FbConst.h"
 #include "FbParams.h"
+#include "wx/base64.h"
 
 FbURL::FbURL(const wxString& sUrl): wxURL(sUrl)
 {
-	if (FbParams::GetInt(FB_USE_PROXY))
-		SetProxy(FbParams::GetStr(FB_PROXY_ADDR));
+	bool use_proxy = FbParams::GetInt(FB_USE_PROXY);
+	if (use_proxy) SetProxy(FbParams::GetStr(FB_PROXY_ADDR));
 
 	wxHTTP & http = (wxHTTP&)GetProtocol();
 	http.SetFlags(wxSOCKET_WAITALL);
 	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
 	if (timeout > 0) http.SetTimeout(timeout);
 	http.SetHeader(wxT("User-Agent"), MyRuLib::UserAgent());
+
+	if (use_proxy) {
+		wxString user = FbParams::GetStr(FB_PROXY_USER);
+		wxString pass = FbParams::GetStr(FB_PROXY_PASS);
+		if (!user.IsEmpty() && !pass.IsEmpty()) {
+			wxString auth = user + wxT(':') + pass;
+			wxCharBuffer buff = auth.mb_str(wxConvUTF8);
+			wxString text = wxT("Basic"); 
+			text << wxT(' ') << wxBase64Encode(buff, strlen(buff));
+			http.SetHeader(wxT("Proxy-Authorization"), text);
+		}
+	}
 }

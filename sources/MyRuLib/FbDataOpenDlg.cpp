@@ -231,12 +231,12 @@ wxString FbDataOpenDlg::CheckExt(const wxString &filename)
 	return result;
 }
 
-bool FbDataOpenDlg::Execute(wxWindow * parent, wxString & filename)
+wxString FbDataOpenDlg::Execute(wxWindow * parent)
 {
 	FbDataOpenDlg dlg(parent);
-	if (dlg.ShowModal() != wxID_OK) return false;
+	if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
 
 	FbProgressDlg scaner(dlg.GetParent());
 	scaner.RunThread(dlg.CreateThread(&scaner));
-	return scaner.ShowModal() == wxID_OK;
+	return (scaner.ShowModal() == wxID_OK) ? dlg.GetFilename() : wxString();
 }

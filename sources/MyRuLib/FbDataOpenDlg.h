@@ -10,7 +10,7 @@ class FbThread;
 class FbDataOpenDlg : public FbDialog
 {
 	public:
-		static bool Execute(wxWindow * parent, wxString & filename);
+		static wxString Execute(wxWindow * parent);
 		FbDataOpenDlg( wxWindow * parent);
 		FbThread * CreateThread(wxEvtHandler * owner);
 	private:

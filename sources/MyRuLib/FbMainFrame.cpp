@@ -621,9 +621,8 @@ void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
 
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 {
-	wxString filename;
-	bool ok = FbDataOpenDlg::Execute(this, filename);
-	if (ok) OpenDatabase(filename);
+	wxString filename = FbDataOpenDlg::Execute(this);
+	if (!filename.IsEmpty()) OpenDatabase(filename);
 }
 
 void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
