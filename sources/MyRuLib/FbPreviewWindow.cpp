@@ -5,6 +5,7 @@
 IMPLEMENT_CLASS(FbPreviewWindow, FbHtmlWindow)
 
 BEGIN_EVENT_TABLE(FbPreviewWindow, FbHtmlWindow)
+	EVT_RIGHT_UP(FbPreviewWindow::OnRightUp)
 	EVT_MENU(ID_BOOK_PREVIEW, FbPreviewWindow::OnInfoUpdate)
 	EVT_MENU(ID_AUTH_PREVIEW, FbPreviewWindow::OnInfoUpdate)
 END_EVENT_TABLE()
@@ -48,3 +49,17 @@ void FbPreviewWindow::OnInfoUpdate(wxCommandEvent& event)
 	SetPage(event.GetString());
 }
 
+void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
+{
+	SetFocus();
+	ContextMenu menu;
+	PopupMenu( &menu, event.GetPosition() );
+}
+
+FbPreviewWindow::ContextMenu::ContextMenu()
+{
+	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
+	AppendSeparator();
+	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
+	Append(ID_UNSELECTALL, _("Undo selection"));
+}

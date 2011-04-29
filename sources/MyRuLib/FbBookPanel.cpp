@@ -209,7 +209,7 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 	if (!m_master) return;
 	FbBookMenu menu(this, m_BookList->GetCurrent(), m_BookList->GetBook());
 	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
-	PopupMenu(&menu, pos.x, pos.y);
+	PopupMenu(&menu, pos);
 }
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
@@ -555,7 +555,13 @@ void FbBookPanel::OnEditBook(wxCommandEvent & event)
 
 void FbBookPanel::OnCopy(wxCommandEvent& event)
 {
-	wxString text = m_BookList->GetText();
+	wxString text;
+	wxWindow * focus = FindFocus();
+	if (focus && focus->GetId() == ID_BOOKS_INFO_PANEL) {
+		text = m_BookInfo->SelectionToText();
+	} else {
+		text = m_BookList->GetText();
+	}
 	if (text.IsEmpty()) return;
 
 	if (wxTheClipboard->Open()) {
@@ -566,11 +572,22 @@ void FbBookPanel::OnCopy(wxCommandEvent& event)
 
 void FbBookPanel::OnSelectAll(wxCommandEvent& event)
 {
-	m_BookList->SelectAll(true);
+	wxWindow * focus = FindFocus();
+	if (focus && focus->GetId() == ID_BOOKS_INFO_PANEL) {
+		m_BookInfo->SelectAll();
+	} else {
+		m_BookList->SelectAll(true);
+	}
 }
 
 void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 {
-	m_BookList->SelectAll(false);
+	wxWindow * focus = FindFocus();
+	if (focus && focus->GetId() == ID_BOOKS_INFO_PANEL) {
+		m_BookInfo->UnselectALL();
+		m_BookInfo->Refresh();
+	} else {
+		m_BookList->SelectAll(false);
+	}
 }
 

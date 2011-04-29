@@ -48,4 +48,3 @@ wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxStrin
 
 	return wxHTML_OPEN;
 }
-

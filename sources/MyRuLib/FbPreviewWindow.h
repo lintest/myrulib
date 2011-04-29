@@ -6,6 +6,7 @@
 #include "FbViewContext.h"
 #include "FbPreviewThread.h"
 #include "FbThread.h"
+#include "FbMenu.h"
 
 class FbPreviewWindow: public FbHtmlWindow
 {
@@ -28,9 +29,13 @@ class FbPreviewWindow: public FbHtmlWindow
 		~FbPreviewWindow();
 		void Reset(const FbViewContext &ctx, const FbViewItem &item);
 	private:
+		class ContextMenu: public FbMenu {
+			public: ContextMenu();
+		};
 		FbPreviewThread * m_thread;
 		FbViewItem m_view;
 	private:
+		void OnRightUp(wxMouseEvent& event);
 		void OnInfoUpdate(wxCommandEvent& event);
 		DECLARE_CLASS(FbPreviewWindow)
 		DECLARE_EVENT_TABLE();
