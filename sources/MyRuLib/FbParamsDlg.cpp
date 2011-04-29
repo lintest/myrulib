@@ -263,18 +263,39 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	wxCheckBox * checkbox = new wxCheckBox( this, ID_AUTO_DOWNLD, _("Automatically begin files downloading"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxEXPAND|wxALL, 5 );
 
-	wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer * bSizerProxy = new wxBoxSizer( wxHORIZONTAL );
 
-	checkbox = new wxCheckBox( this, ID_USE_PROXY, _("Use proxy-server"), wxDefaultPosition, wxDefaultSize, 0 );
-	sizer->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
+	checkbox = new wxCheckBox( this, ID_USE_PROXY, _("Use proxy-server") );
+	bSizerProxy->Add( checkbox, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
-	wxComboBox * combobox = new wxComboBox( this, ID_PROXY_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	wxComboBox * combobox = new wxComboBox( this, ID_PROXY_ADDR );
 	combobox->Append( wxT("192.168.0.1:3128") );
 	combobox->Append( wxT("172.16.0.1:3128") );
 	combobox->Append( wxT("10.0.0.1:3128") );
-	sizer->Add( combobox, 1, wxALL, 5 );
+	bSizerProxy->Add( combobox, 1, wxALL|wxEXPAND, 5 );
 
-	bSizerMain->Add( sizer, 0, wxEXPAND, 5 );
+	bSizerMain->Add( bSizerProxy, 0, wxEXPAND, 5 );
+
+	wxFlexGridSizer* fSizerProxy = new wxFlexGridSizer( 2, 0, 0 );
+//	fSizerProxy->AddGrowableCol( 1 );
+	fSizerProxy->SetFlexibleDirection( wxBOTH );
+	fSizerProxy->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxStaticText * textUser = new wxStaticText( this, wxID_ANY, _("User name:") );
+	textUser->Wrap( -1 );
+	fSizerProxy->Add( textUser, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 20 );
+
+	wxTextCtrl * editUser = new wxTextCtrl( this, ID_PROXY_USER );
+	fSizerProxy->Add( editUser, 0, wxALL|wxEXPAND, 5 );
+
+	wxStaticText * textPass = new wxStaticText( this, wxID_ANY, _("Password:") );
+	textPass->Wrap( -1 );
+	fSizerProxy->Add( textPass, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 20 );
+
+	wxTextCtrl * editPass = new wxTextCtrl( this, ID_PROXY_PASS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD );
+	fSizerProxy->Add( editPass, 0, wxALL|wxEXPAND, 5 );
+
+	bSizerMain->Add( fSizerProxy, 0, wxEXPAND, 5 );
 
 	checkbox = new wxCheckBox( this, ID_HTTP_IMAGES, _("Load images for author's description"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
@@ -617,6 +638,8 @@ void FbParamsDlg::Assign(bool write)
 		{FB_AUTO_DOWNLD, ID_AUTO_DOWNLD},
 		{FB_USE_PROXY, ID_USE_PROXY},
 		{FB_PROXY_ADDR, ID_PROXY_ADDR},
+		{FB_PROXY_USER, ID_PROXY_USER},
+		{FB_PROXY_PASS, ID_PROXY_PASS},
 		{FB_TEMP_DEL, ID_TEMP_DEL},
 		{FB_TEMP_DIR, ID_TEMP_DIR},
 		{FB_WINE_DIR, ID_WINE_DIR},

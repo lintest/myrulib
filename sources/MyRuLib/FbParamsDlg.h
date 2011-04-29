@@ -25,6 +25,8 @@ class FbParamsDlg : private FbDialog
 			ID_DOWNLOAD_DIR,
 			ID_USE_PROXY,
 			ID_PROXY_ADDR,
+			ID_PROXY_USER,
+			ID_PROXY_PASS,
 			ID_HTTP_IMAGES,
 			ID_LIBRUSEC_URL,
 			ID_EXTERNAL_DIR,
