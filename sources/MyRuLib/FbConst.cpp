@@ -28,7 +28,7 @@ wxString MyRuLib::MailAddr()
 
 wxString MyRuLib::UserAgent()
 {
-	return (wxString)TXT(PROGRAM_NAME) + wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR) + TXT(VERSION_BUILD) + wxT('/') + ::wxGetOsDescription(); 
+	return (wxString)TXT(PROGRAM_NAME) + wxT('/') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR) + wxT('.') + TXT(VERSION_BUILD) + wxT(' ') + ::wxGetOsDescription();
 }
 
 static wxString GetRussianAlphabet()
