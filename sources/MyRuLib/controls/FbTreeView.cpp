@@ -528,7 +528,7 @@ FbTreeViewMainWindow::FbTreeViewMainWindow(
 		long style,
 		const wxValidator &validator,
 		const wxString& name) :
-	wxScrolledWindow(parent, id, pos, size, style|wxVSCROLL, name),
+	wxScrolledWindow(parent, id, pos, size, style|wxVSCROLL|wxFULL_REPAINT_ON_RESIZE, name),
 	m_model(NULL),
 	m_rowHeight(0),
 	m_focused(false),
