@@ -760,13 +760,14 @@ wxMenuBar * FbMainFrame::CreateMenuBar(wxWindow * child)
 {
 	if (child == NULL) return new FbMainMenu;
 	switch ( child->GetId() ) {
-		case ID_FRAME_AUTH: return FbFrameAuth::CreateMenuBar(); 
-		case ID_FRAME_GENR: return FbFrameGenr::CreateMenuBar(); 
-		case ID_FRAME_FLDR: return FbFrameFldr::CreateMenuBar(); 
-		case ID_FRAME_DOWN: return FbFrameDown::CreateMenuBar(); 
-		case ID_FRAME_SEQN: return FbFrameSeqn::CreateMenuBar(); 
-		case ID_FRAME_DATE: return FbFrameDate::CreateMenuBar(); 
-		case ID_FRAME_INFO: return FbFrameInfo::CreateMenuBar(); 
+		case ID_FRAME_AUTH: return FbFrameAuth::CreateMenuBar();
+		case ID_FRAME_GENR: return FbFrameGenr::CreateMenuBar();
+		case ID_FRAME_FLDR: return FbFrameFldr::CreateMenuBar();
+		case ID_FRAME_DOWN: return FbFrameDown::CreateMenuBar();
+		case ID_FRAME_SEQN: return FbFrameSeqn::CreateMenuBar();
+		case ID_FRAME_DATE: return FbFrameDate::CreateMenuBar();
+		case ID_FRAME_INFO: return FbFrameInfo::CreateMenuBar();
+		case ID_FRAME_FIND: return FbFrameFind::CreateMenuBar();
 		default: return new FbMainMenu;
 	}
 }

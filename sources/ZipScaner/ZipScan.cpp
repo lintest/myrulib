@@ -83,9 +83,8 @@ void FbZipTraverser::AddZip(wxFileName filename)
 		return;
 	}
 
-	wxString sql_find = wxT("SELECT zip FROM zip WHERE file=?");
-
 	{
+		wxString sql_find = wxT("SELECT zip FROM zip WHERE file=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql_find);
 		stmt.Bind(1, fullname);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -99,14 +98,7 @@ void FbZipTraverser::AddZip(wxFileName filename)
 		stmt.ExecuteUpdate();
 	}
 
-	int id = 0;
-	{
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql_find);
-		stmt.Bind(1, fullname);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) id = result.GetInt(0);
-	}
-	if (id == 0) return;
+	wxLongLong id = m_database.GetLastRowId();
 
 	wxLogMessage(fullname.c_str());
 	wxFFileInputStream in(filename.GetFullPath());

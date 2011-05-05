@@ -277,7 +277,7 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	bSizerMain->Add( bSizerProxy, 0, wxEXPAND, 5 );
 
 	wxFlexGridSizer* fSizerProxy = new wxFlexGridSizer( 2, 0, 0 );
-//	fSizerProxy->AddGrowableCol( 1 );
+	fSizerProxy->AddGrowableCol( 1 );
 	fSizerProxy->SetFlexibleDirection( wxBOTH );
 	fSizerProxy->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
