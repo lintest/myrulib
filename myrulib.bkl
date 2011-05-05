@@ -232,7 +232,6 @@
 		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
 		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
-		<sources>sources/MyRuLib/frames/FbChildFrame.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameAuth.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameBase.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameDate.cpp</sources>
