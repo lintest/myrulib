@@ -99,6 +99,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, FbAuiMDIParentFrame)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
 	EVT_COMMAND(ID_UPDATE_BOOK, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateBook)
+	EVT_AUINOTEBOOK_ALLOW_DND(wxID_ANY, FbMainFrame::OnAllowNotebookDnD)
 END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
@@ -747,4 +748,9 @@ void FbMainFrame::Localize(int language)
 void FbMainFrame::OnDatabaseGenres(wxCommandEvent & event)
 {
 	(new FbGenreThread)->Execute();
+}
+
+void FbMainFrame::OnAllowNotebookDnD(wxAuiNotebookEvent& event)
+{
+	event.Allow();
 }

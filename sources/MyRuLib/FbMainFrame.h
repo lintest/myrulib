@@ -93,6 +93,7 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnWindowCloseAll(wxCommandEvent & event);
 		void OnWindowNext(wxCommandEvent & event);
 		void OnWindowPrev(wxCommandEvent & event);
+		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 
