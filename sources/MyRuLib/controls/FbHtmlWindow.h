@@ -23,6 +23,7 @@ class FbHtmlWindow: public wxHtmlWindow
 		);
 		virtual bool SetPage(const wxString& source);
 		void UnselectALL() { wxDELETE(m_selection); }
+		void UpdateFont(bool refresh);
 	protected:
 		virtual wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const;
 	private:

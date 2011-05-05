@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
+#include <wx/splitter.h>
 #include <wx/aui/tabmdi.h>
 #include "FbBookPanel.h"
 #include "FbBookEvent.h"
@@ -13,13 +14,19 @@
 #include "FbFilterObj.h"
 #include "controls/FbTreeView.h"
 
-class FbFrameBase : public FbAuiMDIChildFrame
+class FbFrameBase : 
+	public wxSplitterWindow
 {
+public:
+	static wxMenuBar * CreateMenuBar();
+
+	FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxString & caption, bool select = false);
+
+	virtual ~FbFrameBase();
+
+	virtual wxString GetTitle() { return _("Authors"); }
+
 	public:
-		FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-		~FbFrameBase();
-		virtual bool Create(wxAuiMDIParentFrame * parent, wxWindowID id = wxID_ANY, const wxString & title = wxEmptyString);
-		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString) { return NULL; }
 		void UpdateMaster(FbMasterEvent & event);
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
@@ -31,9 +38,8 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
 		void RefreshBooks() { if (m_BooksPanel && m_BooksPanel->m_BookList) m_BooksPanel->m_BookList->Refresh(); }
 	protected:
-		virtual void CreateControls();
+		virtual void CreateControls(bool select = false);
 		virtual void CreateColumns() = 0;
-		virtual wxMenuBar * CreateMenuBar();
 		void OnSubmenu(wxCommandEvent& event);
 		void CreateBooksPanel(wxWindow * parent);
 		int GetColOrder(int col);
@@ -67,7 +73,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 		void OnEmptyBooks(wxCommandEvent& event);
 		void OnHandleMenu(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
-		DECLARE_CLASS(FbFrameBase)
+		DECLARE_DYNAMIC_CLASS(FbDoubleFrame)
 
 	private:
 		class MenuBar: public FbFrameMenu
@@ -75,6 +81,7 @@ class FbFrameBase : public FbAuiMDIChildFrame
 			public:
 				MenuBar();
 		};
+		void OnIdleSplitter( wxIdleEvent& );
 };
 
 #endif //__FBFRAMEBASE_H__

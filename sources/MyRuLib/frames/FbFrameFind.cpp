@@ -17,11 +17,13 @@ BEGIN_EVENT_TABLE(FbFrameFind, FbFrameBase)
 	EVT_COMMAND(ID_INIT_SEARCH, fbEVT_BOOK_ACTION, FbFrameFind::OnInitSearch)
 END_EVENT_TABLE()
 
-FbFrameFind::FbFrameFind(wxAuiMDIParentFrame * parent, const FbMasterInfo &info, const wxString &title)
-	:FbFrameBase(parent, ID_FRAME_FIND, wxEmptyString), m_info(info)
+FbFrameFind::FbFrameFind(wxAuiNotebook * parent, const FbMasterInfo &info, const wxString &title)
+	: FbFrameBase(parent, ID_FRAME_FIND, title), 
+		m_info(info), m_title(title)
 {
-	SetTitle(title);
-	CreateControls();
+	CreateBooksPanel(this);
+	Initialize(m_BooksPanel);
+	FbFrameBase::CreateControls(select);
 
 	if (!info.IsKindOf(CLASSINFO(FbMasterFindInfo))) {
 		m_BooksPanel->SetListMode(FB2_MODE_TREE);
@@ -30,26 +32,6 @@ FbFrameFind::FbFrameFind(wxAuiMDIParentFrame * parent, const FbMasterInfo &info,
 	Update();
 
 	FbCommandEvent(fbEVT_BOOK_ACTION, ID_INIT_SEARCH).Post(this);
-}
-/*
-wxString FbFrameFind::GetTitle() const
-{
-	return _("Search") + COLON + m_title;
-}
-*/
-void FbFrameFind::CreateControls()
-{
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	CreateBooksPanel(this);
-	bSizer1->Add( m_BooksPanel, 1, wxEXPAND, 5 );
-
-	SetSizer( bSizer1 );
-
-	FbFrameBase::CreateControls();
 }
 
 void FbFrameFind::OnFoundNothing(wxCommandEvent& event)

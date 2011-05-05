@@ -6,16 +6,15 @@
 class FbFrameFind : public FbFrameBase
 {
 	public:
-		FbFrameFind(wxAuiMDIParentFrame * parent, const FbMasterInfo &info, const wxString &title);
+		FbFrameFind(wxAuiNotebook * parent, const FbMasterInfo &info, const wxString &title);
 		virtual FbMasterInfo GetInfo() { return m_info; }
-	protected:
-		virtual void CreateControls();
 		virtual void CreateColumns() {}
 	private:
 		void CreateBookInfo();
 		void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
 	private:
 		FbMasterInfo m_info;
+		wxString m_title;
 	private:
 		void OnFoundNothing(wxCommandEvent& event);
 		void OnInitSearch(wxCommandEvent& event);

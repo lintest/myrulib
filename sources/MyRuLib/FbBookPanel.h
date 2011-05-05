@@ -91,6 +91,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnCopy(wxCommandEvent& event);
 		void OnSelectAll(wxCommandEvent& event);
 		void OnUnselectAll(wxCommandEvent& event);
+		void OnIdleSplitter( wxIdleEvent& );
 		DECLARE_CLASS(FbBookPanel)
 		DECLARE_EVENT_TABLE()
 };

@@ -20,14 +20,11 @@ enum FbAuthorListMode
 class FbFrameAuth : public FbFrameBase
 {
 	public:
-		FbFrameAuth(wxAuiMDIParentFrame * parent);
-		virtual wxString GetTitle() const { return _("Authors"); };
+		static wxMenuBar * CreateMenuBar();
+		FbFrameAuth(wxAuiNotebook * parent, bool select = false);
 		void FindAuthor(const wxString &text);
 		void ActivateAuthors();
 		virtual void UpdateFonts(bool refresh);
-	protected:
-		virtual void CreateControls();
-		virtual wxMenuBar * CreateMenuBar();
 	private:
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void CreateMasterThread();

@@ -7,9 +7,9 @@
 #include "FbColumnDlg.h"
 #include "FbMasterTypes.h"
 
-IMPLEMENT_CLASS(FbFrameBase, FbAuiMDIChildFrame)
+IMPLEMENT_ABSTRACT_CLASS(FbFrameBase, wxSplitterWindow)
 
-BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
@@ -58,11 +58,15 @@ BEGIN_EVENT_TABLE(FbFrameBase, FbAuiMDIChildFrame)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameBase::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameBase::FbFrameBase(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title) :
-	FbAuiMDIChildFrame(parent, id, title),
-	m_MasterList(NULL), m_BooksPanel(NULL), m_MasterThread(NULL), m_BookCount(0)
+FbFrameBase::FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxString & caption, bool select)
+	: wxSplitterWindow(parent, winid, wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxTAB_TRAVERSAL),
+		m_MasterList(NULL),
+		m_BooksPanel(NULL),
+		m_MasterThread(NULL),
+		m_BookCount(0)
 {
-	m_filter.Load();
+	parent->AddPage( this, caption, select );
+	Connect( wxEVT_IDLE, wxIdleEventHandler( FbFrameBase::OnIdleSplitter ), NULL, this );
 }
 
 FbFrameBase::~FbFrameBase()
@@ -71,30 +75,26 @@ FbFrameBase::~FbFrameBase()
 	wxDELETE(m_MasterThread);
 }
 
-bool FbFrameBase::Create(wxAuiMDIParentFrame * parent, wxWindowID id, const wxString & title)
+void FbFrameBase::CreateControls(bool select)
 {
-	bool res = wxAuiMDIChildFrame::Create(parent, id, title);
-	if (res) CreateControls();
-	return res;
-}
-
-void FbFrameBase::CreateControls()
-{
-	UpdateMenu();
 	UpdateFonts(false);
 	ShowFullScreen(IsFullScreen());
 	Layout();
 
-	if (m_MasterList)
-		m_MasterList->SetFocus();
-	else
-		m_BooksPanel->SetFocus();
+	if (select) {
+		if (m_MasterList) {
+			m_MasterList->SetFocus();
+		} else {
+			m_BooksPanel->SetFocus();
+		}
+	}
+
+	SetMinimumPaneSize(50);
 }
 
 void FbFrameBase::Localize(bool bUpdateMenu)
 {
-	SetTitle(GetTitle());
-	FbAuiMDIChildFrame::Localize(bUpdateMenu);
+//	FbAuiMDIChildFrame::Localize(bUpdateMenu);
 	if (bUpdateMenu) UpdateStatus();
 
 	if (m_MasterList) {
@@ -207,6 +207,7 @@ void FbFrameBase::OnBooksCount(FbCountEvent& event)
 
 void FbFrameBase::UpdateStatus()
 {
+/*
 	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
 	if (frame == NULL) return;
 	if (m_BookCount) {
@@ -214,6 +215,7 @@ void FbFrameBase::UpdateStatus()
 		msg << wxPLURAL("book", "books", m_BookCount);
 		frame->SetStatus(msg);
 	} else frame->SetStatus();
+*/
 }
 
 void FbFrameBase::ShowFullScreen(bool show)
@@ -315,3 +317,10 @@ void FbFrameBase::UpdateMaster(FbMasterEvent & event)
 	if (m_BooksPanel && GetInfo() == event.m_info) m_BooksPanel->UpdateMaster(event);
 }
 
+void FbFrameBase::OnIdleSplitter( wxIdleEvent& )
+{
+	Disconnect( wxEVT_IDLE, wxIdleEventHandler( FbFrameBase::OnIdleSplitter ), NULL, this );
+	SetSashPosition( GetWindowSize() / 3 );
+	SetSashGravity( 0.333 );
+	m_lastSize = GetSize();
+}

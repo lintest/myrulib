@@ -2,25 +2,20 @@
 #define __FBFRAMEINFO_H__
 
 #include <wx/wx.h>
-#include <wx/toolbar.h>
 #include <wx/aui/tabmdi.h>
-#include "FbWindow.h"
-#include "FbFrameHtml.h"
 #include "FbMainMenu.h"
+#include "controls/FbHtmlWindow.h"
 
-class FbFrameInfo: public FbAuiMDIChildFrame
+class FbFrameInfo
+	: public FbHtmlWindow
 {
 	public:
-		FbFrameInfo(wxAuiMDIParentFrame * parent);
+		static void Execute(wxEvtHandler * owner);
+		static wxMenuBar * CreateMenuBar();
+		FbFrameInfo(wxAuiNotebook * parent);
 		virtual wxString GetTitle() const { return _("Information"); };
 		void Load(const wxString & html);
-		static void Execute(wxEvtHandler * owner);
 		virtual void UpdateFonts(bool refresh = true);
-		virtual wxMenuBar * CreateMenuBar();
-	protected:
-		virtual void CreateControls();
-	private:
-		FbHtmlWindow m_info;
 	private:
 		void OnSave(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()

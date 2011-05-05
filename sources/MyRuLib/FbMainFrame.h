@@ -12,7 +12,7 @@
 #include "FbMasterInfo.h"
 #include "FbWindow.h"
 
-class FbMainFrame: public FbAuiMDIParentFrame
+class FbMainFrame : public wxFrame
 {
 	public:
 		FbMainFrame();
@@ -20,8 +20,11 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		virtual wxString GetTitle() const;
 		void SetStatus(const wxString &text = wxEmptyString);
 		void Localize(int language);
+		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
+		wxMenuBar * CreateMenuBar(wxWindow * child = NULL);
+		wxWindow * GetActiveChild();
 		void CreateControls();
 		void LoadIcon();
 		wxToolBar * CreateToolBar();
@@ -36,12 +39,14 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void SaveFrameList();
 		void RestoreFrameList();
 		void OpenInfo(const FbMasterInfo & info, const wxString & text);
+		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
 		wxTextCtrl * m_FindAuthor;
 		wxTextCtrl * m_FindTitle;
 		ProgressBar m_ProgressBar;
 		wxAuiManager m_FrameManager;
-		LimitedTextCtrl m_LOGTextCtrl;
+		wxAuiNotebook m_FrameNotebook;
+		LimitedTextCtrl m_LogTextCtrl;
 		wxToolBar * m_toolbar;
 	private:
 		void OnExit(wxCommandEvent & event);
@@ -94,6 +99,8 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnWindowNext(wxCommandEvent & event);
 		void OnWindowPrev(wxCommandEvent & event);
 		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
+		void OnNotebookChanged(wxAuiNotebookEvent& event);
+		void OnNotebookClosed(wxAuiNotebookEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 

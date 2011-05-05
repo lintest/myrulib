@@ -940,11 +940,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File

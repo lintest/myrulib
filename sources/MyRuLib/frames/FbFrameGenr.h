@@ -15,10 +15,8 @@
 class FbFrameGenr : public FbFrameBase
 {
 	public:
-		FbFrameGenr(wxAuiMDIParentFrame * parent);
+		FbFrameGenr(wxAuiNotebook * parent, bool select = false);
 		virtual wxString GetTitle() const { return _("Genres"); };
-	protected:
-		virtual void CreateControls();
 	private:
 		void CreateBookInfo();
 		void CreateColumns();

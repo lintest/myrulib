@@ -28,23 +28,11 @@ BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameAuth::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameAuth::FbFrameAuth(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_AUTH, GetTitle())
+FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_AUTH, GetTitle(), select)
+
 {
-	CreateControls();
-}
-
-void FbFrameAuth::CreateControls()
-{
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
 
 	m_LetterList = new FbAlphabetCombo();
@@ -60,10 +48,10 @@ void FbFrameAuth::CreateControls()
 	panel->Layout();
 	bsMasterList->Fit( panel );
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(panel, m_BooksPanel, 160);
+	CreateBooksPanel(this);
+	SplitVertically(panel, m_BooksPanel);
 
-	FbFrameBase::CreateControls();
+	FbFrameBase::CreateControls(select);
 }
 
 void FbFrameAuth::CreateColumns()

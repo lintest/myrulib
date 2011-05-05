@@ -19,23 +19,10 @@ BEGIN_EVENT_TABLE(FbFrameDown, FbFrameBase)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbFrameDown::OnSubmenu)
 END_EVENT_TABLE()
 
-FbFrameDown::FbFrameDown(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_DOWN, GetTitle())
+FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_DOWN, GetTitle(), select)
 {
-	CreateControls();
-}
-
-void FbFrameDown::CreateControls()
-{
-	wxBoxSizer* sizer;
-	sizer = new wxBoxSizer( wxVERTICAL );
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
 
 	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
@@ -58,12 +45,10 @@ void FbFrameDown::CreateControls()
 	panel->Layout();
 	bsMasterList->Fit( panel );
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(panel, m_BooksPanel, 160);
+	CreateBooksPanel(this);
+	SplitVertically(panel, m_BooksPanel);
 
-	SetSizer( sizer );
-
-	FbFrameBase::CreateControls();
+	FbFrameBase::CreateControls(select);
 	FillFolders();
 }
 

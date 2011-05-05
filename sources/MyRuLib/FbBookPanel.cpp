@@ -2,6 +2,7 @@
 #include <wx/clipbrd.h>
 #include "FbConst.h"
 #include "frames/FbFrameHtml.h"
+#include "FbMainFrame.h"
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
 #include "FbDownloader.h"
@@ -54,8 +55,8 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
 		m_BookInfo(NULL), m_selected(0), m_thread(new FbMasterThread(this)), m_owner(id)
 {
+	Connect( wxEVT_IDLE, wxIdleEventHandler( FbBookPanel::OnIdleSplitter ), NULL, this );
 	SetMinimumPaneSize(50);
-	SetSashGravity(0.5);
 
 	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
 	m_BookList = new FbTreeViewCtrl(this, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, substyle);
@@ -309,7 +310,7 @@ void FbBookPanel::OnDeleteDownload(wxCommandEvent & event)
 void FbBookPanel::OnEditComments(wxCommandEvent & event)
 {
 	int id = m_BookList->GetBook();
-	if (id) new FbFrameHtml((wxAuiMDIParentFrame*)wxGetApp().GetTopWindow(), id);
+	if (id) new FbFrameHtml(((FbMainFrame*)wxGetApp().GetTopWindow())->GetNotebook(), id);
 }
 
 void FbBookPanel::EmptyBooks(const int selected)
@@ -342,7 +343,7 @@ void FbBookPanel::UpdateFonts(bool refresh)
 	m_BookList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
 	if (refresh) m_BookList->Update();
 	if (refresh) m_BookInfo->Empty();
-	FbAuiMDIChildFrame::UpdateFont(m_BookInfo, refresh);
+	m_BookInfo->UpdateFont(refresh);
 	if (refresh) ResetPreview();
 }
 
@@ -591,3 +592,10 @@ void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 	}
 }
 
+void FbBookPanel::OnIdleSplitter( wxIdleEvent& )
+{
+	Disconnect( wxEVT_IDLE, wxIdleEventHandler( FbBookPanel::OnIdleSplitter ), NULL, this );
+	SetSashPosition( GetWindowSize() / 2 );
+	SetSashGravity( 0.5 );
+	m_lastSize = GetSize();
+}

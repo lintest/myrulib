@@ -10,19 +10,19 @@
 #include "FbWindow.h"
 #include "controls/FbHtmlWindow.h"
 
-class FbFrameHtml: public FbAuiMDIChildFrame
+class FbFrameHtml :
+	public wxSplitterWindow
 {
 	public:
-		FbFrameHtml(wxAuiMDIParentFrame * parent, int id);
+		FbFrameHtml(wxAuiNotebook * parent, int id);
 		virtual ~FbFrameHtml();
 		virtual wxString GetTitle() const { return _("Comments"); };
 		void Load(const wxString & html);
 		static void Execute();
 		virtual void UpdateFonts(bool refresh = true);
 		virtual void Localize(bool bUpdateMenu);
-	protected:
-		virtual void CreateControls();
 	private:
+		void CreateControls();
 		static wxString GetMd5sum(const int id);
 		void DoModify();
 		void DoSubmit();

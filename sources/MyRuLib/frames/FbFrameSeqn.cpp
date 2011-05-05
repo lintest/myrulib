@@ -25,23 +25,11 @@ BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameSeqn::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameSeqn::FbFrameSeqn(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_SEQN, GetTitle()), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
+FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_SEQN, GetTitle(), select), 
+		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
-	CreateControls();
-}
-
-void FbFrameSeqn::CreateControls()
-{
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 
 	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
 	m_FindText = new FbSearchCombo( panel, ID_SEQUENCE_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
@@ -57,10 +45,11 @@ void FbFrameSeqn::CreateControls()
 	panel->Layout();
 	bsMasterList->Fit( panel );
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(panel, m_BooksPanel, 160);
+	CreateBooksPanel(this);
 
-	FbFrameBase::CreateControls();
+	SplitVertically(panel, m_BooksPanel);
+
+	FbFrameBase::CreateControls(select);
 
 	FindSequence(wxEmptyString);
 }
