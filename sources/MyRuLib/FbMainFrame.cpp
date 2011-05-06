@@ -319,8 +319,7 @@ void FbMainFrame::OnSetup(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuConfig(wxCommandEvent& event)
 {
-	FbConfigDlg::Execute(this);
-	SetTitle(GetTitle());
+	if (FbConfigDlg::Execute(this)) SetTitle(GetTitle());
 }
 
 void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
@@ -330,8 +329,7 @@ void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 
 void FbMainFrame::OnAbout(wxCommandEvent & event)
 {
-	FbAboutDlg about(this);
-	about.ShowModal();
+	FbAboutDlg(this).ShowModal();
 }
 
 wxToolBar * FbMainFrame::CreateToolBar()

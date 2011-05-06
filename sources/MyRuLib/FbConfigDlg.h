@@ -17,7 +17,7 @@ class FbConfigDlg : private FbDialog
 	public:
 		FbConfigDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
 		virtual ~FbConfigDlg();
-		static void Execute(wxWindow* parent);
+		static bool Execute(wxWindow* parent);
 	private:
 		enum ID {
 			ID_LIBRARY_TITLE = 1000,
