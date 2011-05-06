@@ -70,7 +70,6 @@ public:
 		void OnChangeViewUpdateUI(wxUpdateUIEvent & event);
 		void OnMasterSelected(wxTreeEvent & event);
 		void OnExportBooks(wxCommandEvent& event);
-		void OnEmptyBooks(wxCommandEvent& event);
 		void OnHandleMenu(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_DYNAMIC_CLASS(FbDoubleFrame)

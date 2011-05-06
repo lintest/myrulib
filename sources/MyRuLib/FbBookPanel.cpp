@@ -20,10 +20,10 @@ IMPLEMENT_CLASS(FbBookPanel, wxSplitterWindow)
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbBookPanel::OnAuthorInfo)
-	EVT_TREE_SEL_CHANGED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListViewSelected)
-	EVT_TREE_ITEM_ACTIVATED(ID_BOOKS_LISTCTRL, FbBookPanel::OnBooksListActivated)
-	EVT_TREE_ITEM_MENU(ID_BOOKS_LISTCTRL, FbBookPanel::OnContextMenu)
-	EVT_HTML_LINK_CLICKED(ID_BOOKS_INFO_PANEL, FbBookPanel::OnLinkClicked)
+	EVT_TREE_SEL_CHANGED(ID_BOOKLIST_CTRL, FbBookPanel::OnBooksListViewSelected)
+	EVT_TREE_ITEM_ACTIVATED(ID_BOOKLIST_CTRL, FbBookPanel::OnBooksListActivated)
+	EVT_TREE_ITEM_MENU(ID_BOOKLIST_CTRL, FbBookPanel::OnContextMenu)
+	EVT_HTML_LINK_CLICKED(ID_PREVIEW_CTRL, FbBookPanel::OnLinkClicked)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
@@ -59,8 +59,8 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	SetMinimumPaneSize(50);
 
 	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
-	m_BookList = new FbTreeViewCtrl(this, ID_BOOKS_LISTCTRL, wxDefaultPosition, wxDefaultSize, substyle);
-	m_BookInfo = new FbPreviewWindow(this, ID_BOOKS_INFO_PANEL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
+	m_BookList = new FbTreeViewCtrl(this, ID_BOOKLIST_CTRL, wxDefaultPosition, wxDefaultSize, substyle);
+	m_BookInfo = new FbPreviewWindow(this, ID_PREVIEW_CTRL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 
 	int viewmode = FbParams::GetInt(m_owner, FB_VIEW_MODE);
 	if (viewmode == FB2_VIEW_NOTHING) {
@@ -558,7 +558,7 @@ void FbBookPanel::OnCopy(wxCommandEvent& event)
 {
 	wxString text;
 	wxWindow * focus = FindFocus();
-	if (focus && focus->GetId() == ID_BOOKS_INFO_PANEL) {
+	if (focus && focus->GetId() == ID_PREVIEW_CTRL) {
 		text = m_BookInfo->SelectionToText();
 	} else {
 		text = m_BookList->GetText();
@@ -574,7 +574,7 @@ void FbBookPanel::OnCopy(wxCommandEvent& event)
 void FbBookPanel::OnSelectAll(wxCommandEvent& event)
 {
 	wxWindow * focus = FindFocus();
-	if (focus && focus->GetId() == ID_BOOKS_INFO_PANEL) {
+	if (focus && focus->GetId() == ID_PREVIEW_CTRL) {
 		m_BookInfo->SelectAll();
 	} else {
 		m_BookList->SelectAll(true);
@@ -584,7 +584,7 @@ void FbBookPanel::OnSelectAll(wxCommandEvent& event)
 void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
 {
 	wxWindow * focus = FindFocus();
-	if (focus && focus->GetId() == ID_BOOKS_INFO_PANEL) {
+	if (focus && focus->GetId() == ID_PREVIEW_CTRL) {
 		m_BookInfo->UnselectALL();
 		m_BookInfo->Refresh();
 	} else {

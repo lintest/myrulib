@@ -24,7 +24,7 @@ BEGIN_EVENT_TABLE(FbFrameHtml, wxSplitterWindow)
 	EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
 	EVT_MENU(ID_BOOK_PREVIEW, FbFrameHtml::OnInfoUpdate)
 	EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
-	EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
+	EVT_HTML_LINK_CLICKED(ID_PREVIEW_CTRL, FbFrameHtml::OnLinkClicked)
 	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)
 END_EVENT_TABLE()
 
@@ -73,7 +73,7 @@ void FbFrameHtml::CreateControls()
 	SetMinimumPaneSize(80);
 	SetSashGravity(1);
 
-	m_info.Create(this, ID_HTML_DOCUMENT);
+	m_info.Create(this, ID_PREVIEW_CTRL);
 
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize(-1, 80), wxTAB_TRAVERSAL );
 	wxBoxSizer * bSizerComment = new wxBoxSizer( wxVERTICAL );

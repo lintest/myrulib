@@ -39,8 +39,6 @@ bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, co
 	unsigned char buf[BUFSIZE];
 
 	bool ok = false;
-	int timeout = FbParams::GetInt(FB_WEB_TIMEOUT);
-
 	wxString addr = address;
 	int step = FbParams::GetInt(FB_WEB_ATTEMPT);
 	while (step--) {
@@ -81,11 +79,11 @@ bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, co
 				out.Write(buf, count);
 				offset += count;
 			} else break;
-		} 
+		}
 		FbProgressEvent(ID_PROGRESS_UPDATE).Post(owner);
 		if (ok = offset == size) break;
 		addr = address;
-	} 
+	}
 
 	return ok;
 }

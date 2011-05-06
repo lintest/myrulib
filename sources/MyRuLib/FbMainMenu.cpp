@@ -29,7 +29,7 @@ FbMenuBar::MenuLib::MenuLib()
 	Append(wxID_FILE, _("Open recent"), new MenuRecent());
 	AppendSeparator();
 	Append(ID_MENU_DB_INFO,  _("Information about collection"));
-	Append(ID_MENU_GENLIST,  _("Rebuild the list of genres"));
+	Append(ID_MENU_GENRES,  _("Rebuild the list of genres"));
 	Append(ID_MENU_OPTIMIZE, _("Clear empty variables"));
 	Append(ID_MENU_VACUUM,   _("Optimize DB"));
 	Append(ID_MENU_UPDATE,   _("Online update database"));
@@ -47,7 +47,7 @@ FbMenuBar::MenuView::MenuView()
 	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	AppendSeparator();
 	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	AppendCheckItem(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	AppendCheckItem(ID_TEXTLOG_CTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 FbMenuBar::MenuHelp::MenuHelp()
 {
@@ -96,7 +96,7 @@ FbFrameMenu::MenuView::MenuView()
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
 	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	AppendCheckItem(ID_LOG_TEXTCTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	AppendCheckItem(ID_TEXTLOG_CTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()

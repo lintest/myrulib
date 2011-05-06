@@ -14,8 +14,8 @@ IMPLEMENT_CLASS(FbFrameSeqn, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 	EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSeqn::OnColClick)
-	EVT_TEXT_ENTER(ID_SEQUENCE_FIND, FbFrameSeqn::OnFindEnter )
-	EVT_BUTTON(ID_SEQUENCE_FIND, FbFrameSeqn::OnFindEnter )
+	EVT_TEXT_ENTER(ID_MASTER_FIND, FbFrameSeqn::OnFindEnter )
+	EVT_BUTTON(ID_MASTER_FIND, FbFrameSeqn::OnFindEnter )
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameSeqn::OnContextMenu)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameSeqn::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameSeqn::OnMasterModify)
@@ -31,21 +31,22 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 
-	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
-	m_FindText = new FbSearchCombo( panel, ID_SEQUENCE_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
-	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-	bsMasterList->Add( m_FindText, 0, wxEXPAND, 0 );
+	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
-	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
-
-	panel->SetSizer( bsMasterList );
-	panel->Layout();
-	bsMasterList->Fit( panel );
 
 	CreateBooksPanel(this);
+
+	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
+	m_FindText->SetMinSize( wxSize( 200,-1 ) );
+
+	sizer->Add( m_FindText, 0, wxEXPAND, 0 );
+	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+	panel->SetSizer( sizer );
+	panel->Layout();
+	sizer->Fit( panel );
 
 	SplitVertically(panel, m_BooksPanel);
 
@@ -74,7 +75,7 @@ wxToolBar * FbFrameSeqn::CreateToolBar(long style, wxWindowID winid, const wxStr
 	m_FindInfo->SetFont(font);
 	toolbar->AddControl( m_FindInfo );
 
-	m_FindText = new FbSearchCombo( toolbar, ID_SEQUENCE_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
+	m_FindText = new FbSearchCombo( toolbar, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
 	m_FindText->SetFont(font);
 	toolbar->AddControl( m_FindText );

@@ -23,7 +23,7 @@ FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 	: FbFrameBase(parent, ID_FRAME_DOWN, GetTitle(), select)
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
@@ -35,15 +35,15 @@ FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 	m_ToolBar.AddSeparator();
 	m_ToolBar.AddTool(ID_DELETE_DOWNLOAD, _("Delete"), wxArtProvider::GetBitmap(wxART_DELETE), _("Remove download"));
 	m_ToolBar.Realize();
-	bsMasterList->Add( &m_ToolBar, 0, wxEXPAND, 0 );
+	sizer->Add( &m_ToolBar, 0, wxEXPAND, 0 );
 
 	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
-	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
 
-	panel->SetSizer( bsMasterList );
+	panel->SetSizer( sizer );
 	panel->Layout();
-	bsMasterList->Fit( panel );
+	sizer->Fit( panel );
 
 	CreateBooksPanel(this);
 	SplitVertically(panel, m_BooksPanel);

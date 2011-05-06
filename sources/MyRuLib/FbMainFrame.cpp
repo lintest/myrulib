@@ -31,9 +31,58 @@
 #include "FbLocale.h"
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
+
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
 	EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
 	EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
+	EVT_MENU(wxID_FILE1, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE2, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE3, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE4, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_FILE5, FbMainFrame::OnMenuRecent)
+	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
+	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
+
+	EVT_UPDATE_UI(wxID_FILE, FbMainFrame::OnRecentUpdate)
+
+	EVT_MENU(wxID_SAVE, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnSubmenu)
+
+	EVT_MENU(ID_DIRECTION, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTNAME, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTDATE, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTSIZE, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTTYPE, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_ORDER_AUTHOR, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_ORDER_RATING, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_ORDER_LANG, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SHOW_COLUMNS, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_FILTER_SET, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_FILTER_USE, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_EDIT_COMMENTS, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SPLIT_NOTHING, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_MODE_TREE, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_MODE_LIST, FbMainFrame::OnSubmenu)
+
+	EVT_UPDATE_UI(ID_DIRECTION, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_MENU, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTNAME, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTDATE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTSIZE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTTYPE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_LANG, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_RATING, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_USE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_LIST, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_TREE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbMainFrame::OnSubmenuUpdateUI)
+
 	EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuTitle)
 	EVT_MENU(ID_FRAME_AUTH, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_GENR, FbMainFrame::OnMenuFrame)
@@ -42,32 +91,24 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_FRAME_SEQN, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
+
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
 	EVT_MENU(ID_MENU_DB_OPEN, FbMainFrame::OnDatabaseOpen)
-	EVT_MENU(ID_MENU_GENLIST, FbMainFrame::OnDatabaseGenres)
+	EVT_MENU(ID_MENU_GENRES, FbMainFrame::OnDatabaseGenres)
 	EVT_MENU(ID_MENU_VACUUM, FbMainFrame::OnVacuum)
 	EVT_MENU(ID_MENU_UPDATE, FbMainFrame::OnUpdate)
 	EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
-	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
 	EVT_MENU(ID_OPEN_WEB, FbMainFrame::OnOpenWeb)
-	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
 
 	EVT_MENU(ID_AUTHOR_BTN, FbMainFrame::OnFindAuthor)
 	EVT_TEXT_ENTER(ID_AUTHOR_TXT, FbMainFrame::OnFindAuthorEnter)
 	EVT_MENU(ID_TITLE_BTN, FbMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_TITLE_TXT, FbMainFrame::OnFindTitleEnter)
 
-	EVT_MENU(wxID_FILE1, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE2, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE3, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE4, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE5, FbMainFrame::OnMenuRecent)
-
-	EVT_UPDATE_UI(wxID_FILE, FbMainFrame::OnRecentUpdate)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
-	EVT_MENU(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLog)
+	EVT_MENU(ID_TEXTLOG_CTRL, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
 	EVT_MENU(ID_ART_DEFAULT, FbMainFrame::OnTabArt)
@@ -77,6 +118,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_ART_BUTTONS, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_VSTUDIO, FbMainFrame::OnTabArt)
 	EVT_MENU(ID_ART_MOZILLA, FbMainFrame::OnTabArt)
+
 	EVT_UPDATE_UI(ID_MENU_UPDATE, FbMainFrame::OnUpdateUpdate)
 	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_COMPACT, FbMainFrame::OnTabArtUpdate)
@@ -86,7 +128,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_UPDATE_UI(ID_ART_VSTUDIO, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_ART_MOZILLA, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN,  FbMainFrame::OnFullScreenUpdate)
-	EVT_UPDATE_UI(ID_LOG_TEXTCTRL, FbMainFrame::OnHideLogUpdate)
+	EVT_UPDATE_UI(ID_TEXTLOG_CTRL, FbMainFrame::OnHideLogUpdate)
 
 	EVT_MENU(wxID_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(wxID_CLOSE_ALL, FbMainFrame::OnWindowCloseAll)
@@ -221,7 +263,7 @@ void FbMainFrame::CreateControls()
 	m_ProgressBar.SetStatusWidths(4, widths);
 	SetStatusBar(&m_ProgressBar);
 
-	m_LogTextCtrl.Create(this, ID_LOG_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
+	m_LogTextCtrl.Create(this, ID_TEXTLOG_CTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
 
 	m_FrameManager.SetManagedWindow(this);
 	m_FrameNotebook.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxTAB_TRAVERSAL | wxNO_BORDER );
@@ -676,7 +718,7 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 	if (wxGetApp().OpenDatabase(filename)) {
 		SetTitle(GetTitle());
 		SaveFrameList();
-		while (GetNotebook()->GetPageCount()) delete GetNotebook()->GetPage(0);
+		while (m_FrameNotebook.GetPageCount()) m_FrameNotebook.DeletePage(0);
 		RestoreFrameList();
 	}
 }
@@ -711,7 +753,7 @@ void FbMainFrame::OnWindowClose(wxCommandEvent & event)
 
 void FbMainFrame::OnWindowCloseAll(wxCommandEvent & event)
 {
-	while (GetActiveChild()) GetActiveChild()->Close();
+	while (m_FrameNotebook.GetPageCount()) m_FrameNotebook.DeletePage(0);
 }
 
 void FbMainFrame::OnWindowNext(wxCommandEvent & event)
@@ -794,4 +836,14 @@ wxWindow * FbMainFrame::GetActiveChild()
 {
 	int index = m_FrameNotebook.GetSelection();
 	return index == wxNOT_FOUND ? NULL : m_FrameNotebook.GetPage(index);
+}
+
+void FbMainFrame::OnSubmenu(wxCommandEvent& event)
+{
+	if (GetActiveChild()) GetActiveChild()->ProcessEvent(event);
+}
+
+void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
+{
+	if (GetActiveChild()) GetActiveChild()->ProcessEvent(event);
 }

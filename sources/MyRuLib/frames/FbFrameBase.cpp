@@ -10,15 +10,15 @@
 IMPLEMENT_ABSTRACT_CLASS(FbFrameBase, wxSplitterWindow)
 
 BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
-	EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
+	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnSubmenu)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
+	EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
 	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExportBooks)
 	EVT_MENU(wxID_COPY, FbFrameBase::OnSubmenu)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
-	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenu)
@@ -40,9 +40,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbFrameBase::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
-	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
@@ -53,8 +50,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_LANG, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(ID_ORDER_RATING, FbFrameBase::OnChangeOrderUpdateUI)
-	EVT_LIST_COL_CLICK(ID_BOOKS_LISTCTRL, FbFrameBase::OnColClick)
-	EVT_COMMAND(ID_EMPTY_BOOKS, fbEVT_BOOK_ACTION, FbFrameBase::OnEmptyBooks)
+	EVT_LIST_COL_CLICK(ID_BOOKLIST_CTRL, FbFrameBase::OnColClick)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameBase::OnBooksCount)
 END_EVENT_TABLE()
 
@@ -120,13 +116,6 @@ void FbFrameBase::OnExportBooks(wxCommandEvent& event)
 	FbMasterInfo info = GetInfo();
 	FbMasterAuthInfo * auth = wxDynamicCast(&info, FbMasterAuthInfo);
 	FbExportDlg::Execute(this, m_BooksPanel, auth ? auth->GetId() : 0);
-}
-
-void FbFrameBase::OnEmptyBooks(wxCommandEvent& event)
-{
-	m_BooksPanel->EmptyBooks();
-	m_BookCount = 0;
-	UpdateStatus();
 }
 
 void FbFrameBase::OnMasterSelected(wxTreeEvent & event)

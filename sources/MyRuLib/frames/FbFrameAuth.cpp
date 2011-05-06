@@ -14,7 +14,7 @@ IMPLEMENT_CLASS(FbFrameAuth, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_COMBOBOX( ID_INIT_LETTER, FbFrameAuth::OnChoiceLetter )
-	EVT_COMBOBOX( ID_CHOICE_LETTER, FbFrameAuth::OnChoiceLetter )
+	EVT_COMBOBOX( ID_MASTER_FIND, FbFrameAuth::OnChoiceLetter )
 	EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuth::OnColClick)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuth::OnContextMenu)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameAuth::OnMasterAppend)
@@ -33,22 +33,23 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
-
-	m_LetterList = new FbAlphabetCombo();
-	m_LetterList->Create(panel, ID_CHOICE_LETTER, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
-	bsMasterList->Add( m_LetterList, 0, wxEXPAND, 0 );
+	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
-	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
-
-	panel->SetSizer( bsMasterList );
-	panel->Layout();
-	bsMasterList->Fit( panel );
 
 	CreateBooksPanel(this);
+
+	m_LetterList = new FbAlphabetCombo();
+	m_LetterList->Create(panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
+
+	sizer->Add( m_LetterList, 0, wxEXPAND, 0 );
+	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+	panel->SetSizer( sizer );
+	panel->Layout();
+	sizer->Fit( panel );
+
 	SplitVertically(panel, m_BooksPanel);
 
 	FbFrameBase::CreateControls(select);

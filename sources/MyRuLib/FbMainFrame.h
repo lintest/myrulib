@@ -101,6 +101,8 @@ class FbMainFrame : public wxFrame
 		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
 		void OnNotebookChanged(wxAuiNotebookEvent& event);
 		void OnNotebookClosed(wxAuiNotebookEvent& event);
+		void OnSubmenu(wxCommandEvent& event);
+		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		DECLARE_EVENT_TABLE()
 };
 
