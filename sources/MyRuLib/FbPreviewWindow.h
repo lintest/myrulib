@@ -39,6 +39,9 @@ class FbPreviewWindow: public FbHtmlWindow
 	private:
 		void OnRightUp(wxMouseEvent& event);
 		void OnInfoUpdate(wxCommandEvent& event);
+		void OnCopy(wxCommandEvent& event);
+		void OnSelectAll(wxCommandEvent& event);
+		void OnUnselectAll(wxCommandEvent& event);
 		DECLARE_CLASS(FbPreviewWindow)
 		DECLARE_EVENT_TABLE();
 };

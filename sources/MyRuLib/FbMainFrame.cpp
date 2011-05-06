@@ -154,6 +154,7 @@ wxString FbMainFrame::GetTitle() const
 }
 
 FbMainFrame::FbMainFrame()
+	: m_LastEvent(NULL)
 {
 	Create(NULL, wxID_ANY, GetTitle());
 }
@@ -167,7 +168,28 @@ FbMainFrame::~FbMainFrame()
 	SaveFrameList();
 	m_FrameManager.UnInit();
 }
+/*
+bool FbMainFrame::ProcessEvent(wxEvent& event)
+{
+	// Check for infinite recursion
+	if (& event == m_LastEvent)	return false;
 
+	if (event.IsCommandEvent() &&
+			!event.IsKindOf(CLASSINFO(wxChildFocusEvent)) &&
+			!event.IsKindOf(CLASSINFO(wxContextMenuEvent)))
+	{
+		bool ok = false;
+		m_LastEvent = & event;
+		wxControl * focused = wxDynamicCast(FindFocus(), wxControl);
+		if (focused) ok = focused->GetEventHandler()->ProcessEvent(event);
+		if (!ok) ok = wxFrame::ProcessEvent(event);
+		m_LastEvent = NULL;
+		return ok;
+	} else {
+		return wxFrame::ProcessEvent(event);
+	}
+}
+*/
 void FbMainFrame::SaveFrameList()
 {
 	wxString frames;
@@ -716,7 +738,9 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 	if (wxGetApp().OpenDatabase(filename)) {
 		SetTitle(GetTitle());
 		SaveFrameList();
-		while (m_FrameNotebook.GetPageCount()) m_FrameNotebook.DeletePage(0);
+		while (m_FrameNotebook.GetPageCount()) {
+			m_FrameNotebook.DeletePage(0);
+		}
 		RestoreFrameList();
 	}
 }
@@ -746,12 +770,17 @@ void FbMainFrame::OnHideLogUpdate(wxUpdateUIEvent& event)
 
 void FbMainFrame::OnWindowClose(wxCommandEvent & event)
 {
-	if (GetActiveChild()) GetActiveChild()->Close();
+	int index = m_FrameNotebook.GetSelection();
+	if (index != wxNOT_FOUND) {
+		m_FrameNotebook.DeletePage(index);
+	}
 }
 
 void FbMainFrame::OnWindowCloseAll(wxCommandEvent & event)
 {
-	while (m_FrameNotebook.GetPageCount()) m_FrameNotebook.DeletePage(0);
+	while (m_FrameNotebook.GetPageCount()) {
+		m_FrameNotebook.DeletePage(0);
+	}
 }
 
 void FbMainFrame::OnWindowNext(wxCommandEvent & event)

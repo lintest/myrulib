@@ -21,6 +21,8 @@ class FbMainFrame : public wxFrame
 		void SetStatus(const wxString &text = wxEmptyString);
 		void Localize(int language);
 		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
+	protected:
+//		virtual bool ProcessEvent(wxEvent& event);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		wxMenuBar * CreateMenuBar(wxWindow * child = NULL);
@@ -41,6 +43,7 @@ class FbMainFrame : public wxFrame
 		void OpenInfo(const FbMasterInfo & info, const wxString & text);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
+		wxEvent * m_LastEvent;
 		wxTextCtrl * m_FindAuthor;
 		wxTextCtrl * m_FindTitle;
 		ProgressBar m_ProgressBar;

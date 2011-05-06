@@ -1,4 +1,5 @@
 #include "FbPreviewWindow.h"
+#include <wx/clipbrd.h>
 #include "FbConst.h"
 #include "FbBookData.h"
 #include "FbBookEvent.h"
@@ -10,8 +11,10 @@ BEGIN_EVENT_TABLE(FbPreviewWindow, FbHtmlWindow)
 	EVT_RIGHT_UP(FbPreviewWindow::OnRightUp)
 	EVT_COMMAND(ID_BOOK_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
 	EVT_COMMAND(ID_AUTH_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
+	EVT_MENU(wxID_COPY, FbPreviewWindow::OnCopy)
+	EVT_MENU(wxID_SELECTALL, FbPreviewWindow::OnSelectAll)
+	EVT_MENU(ID_UNSELECTALL, FbPreviewWindow::OnUnselectAll)
 END_EVENT_TABLE()
-
 
 FbPreviewWindow::FbPreviewWindow()
 	: m_thread(new FbPreviewThread(this)), m_book(0)
@@ -72,3 +75,23 @@ void FbPreviewWindow::Empty()
 	SetPage(wxEmptyString);
 	m_book = 0;
 }
+
+void FbPreviewWindow::OnCopy(wxCommandEvent& event)
+{
+	wxString text = SelectionToText();
+	wxClipboardLocker locker;
+	if (!locker) return;
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
+void FbPreviewWindow::OnSelectAll(wxCommandEvent& event)
+{
+	SelectAll();
+}
+
+void FbPreviewWindow::OnUnselectAll(wxCommandEvent& event)
+{
+	UnselectALL();
+	Refresh();
+}
+

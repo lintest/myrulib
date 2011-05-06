@@ -565,10 +565,10 @@ void FbBookPanel::OnCopy(wxCommandEvent& event)
 	}
 	if (text.IsEmpty()) return;
 
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData( new wxTextDataObject(text) );
-		wxTheClipboard->Close();
-	}
+	wxClipboardLocker locker;
+	if (!locker) return;
+
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
 }
 
 void FbBookPanel::OnSelectAll(wxCommandEvent& event)
