@@ -21,7 +21,7 @@ FbFrameGenr::FbFrameGenr(wxAuiNotebook * parent, bool select)
 	CreateBooksPanel(this);
 	SplitVertically(m_MasterList, m_BooksPanel);
 
-	FbFrameBase::CreateControls(select);
+	CreateControls(select);
 	CreateColumns();
 
 	m_MasterThread = new FbGenrListThread(this);

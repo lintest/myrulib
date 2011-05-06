@@ -20,9 +20,9 @@
 IMPLEMENT_CLASS(FbFrameHtml, wxSplitterWindow)
 
 BEGIN_EVENT_TABLE(FbFrameHtml, wxSplitterWindow)
+	EVT_COMMAND(ID_BOOK_PREVIEW, fbEVT_BOOK_ACTION, FbFrameHtml::OnInfoUpdate)
 	EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
 	EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
-	EVT_MENU(ID_BOOK_PREVIEW, FbFrameHtml::OnInfoUpdate)
 	EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
 	EVT_HTML_LINK_CLICKED(ID_PREVIEW_CTRL, FbFrameHtml::OnLinkClicked)
 	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)

@@ -840,10 +840,12 @@ wxWindow * FbMainFrame::GetActiveChild()
 
 void FbMainFrame::OnSubmenu(wxCommandEvent& event)
 {
-	if (GetActiveChild()) GetActiveChild()->ProcessEvent(event);
+	if (wxWindow * window = GetActiveChild()) window->ProcessEvent(event);
 }
 
 void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 {
-	if (GetActiveChild()) GetActiveChild()->ProcessEvent(event);
+	if (wxWindow * window = GetActiveChild()) {
+		if (wxIsKindOf(window, FbFrameBase)) window->ProcessEvent(event);
+	}
 }

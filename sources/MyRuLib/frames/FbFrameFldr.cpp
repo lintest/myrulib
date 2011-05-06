@@ -46,7 +46,7 @@ FbFrameFldr::FbFrameFldr(wxAuiNotebook * parent, bool select)
 	CreateBooksPanel(this);
 	SplitVertically(panel, m_BooksPanel);
 
-	FbFrameBase::CreateControls(select);
+	CreateControls(select);
 	FillFolders();
 }
 

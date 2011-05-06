@@ -52,7 +52,7 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 
 	SplitVertically(panel, m_BooksPanel);
 
-	FbFrameBase::CreateControls(select);
+	CreateControls(select);
 }
 
 void FbFrameAuth::CreateColumns()

@@ -135,7 +135,7 @@ bool FbInternetBook::DoDownload()
 
 	if (m_owner->IsClosed()) return false;
 
-	wxInputStream * in = url.GetInputStream();
+	url.GetInputStream();
 	if (url.GetError() != wxURL_NOERR) {
 		FbLogError(_("Connect error"), m_url);
 		return false;

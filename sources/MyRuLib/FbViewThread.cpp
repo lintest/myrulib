@@ -83,7 +83,7 @@ void FbViewThread::SendHTML(const FbViewData &info)
 
 void FbViewThread::SendHTML(wxWindowID winid, const wxString &html)
 {
-	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, winid, m_view.GetCode(), html).Post(m_frame);
+	FbCommandEvent(fbEVT_BOOK_ACTION, winid, m_view.GetCode(), html).Post(m_frame);
 }
 
 wxString FbViewThread::GetDescr(wxSQLite3Database &database)

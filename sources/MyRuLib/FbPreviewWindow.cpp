@@ -1,14 +1,15 @@
 #include "FbPreviewWindow.h"
 #include "FbConst.h"
 #include "FbBookData.h"
+#include "FbBookEvent.h"
 #include "FbCollection.h"
 
 IMPLEMENT_CLASS(FbPreviewWindow, FbHtmlWindow)
 
 BEGIN_EVENT_TABLE(FbPreviewWindow, FbHtmlWindow)
 	EVT_RIGHT_UP(FbPreviewWindow::OnRightUp)
-	EVT_MENU(ID_BOOK_PREVIEW, FbPreviewWindow::OnInfoUpdate)
-	EVT_MENU(ID_AUTH_PREVIEW, FbPreviewWindow::OnInfoUpdate)
+	EVT_COMMAND(ID_BOOK_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
+	EVT_COMMAND(ID_AUTH_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
 END_EVENT_TABLE()
 
 

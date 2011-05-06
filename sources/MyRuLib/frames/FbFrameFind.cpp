@@ -18,12 +18,12 @@ BEGIN_EVENT_TABLE(FbFrameFind, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFind::FbFrameFind(wxAuiNotebook * parent, const FbMasterInfo &info, const wxString &title)
-	: FbFrameBase(parent, ID_FRAME_FIND, title), 
+	: FbFrameBase(parent, ID_FRAME_FIND, title),
 		m_info(info), m_title(title)
 {
 	CreateBooksPanel(this);
 	Initialize(m_BooksPanel);
-	FbFrameBase::CreateControls(select);
+	CreateControls(true);
 
 	if (!info.IsKindOf(CLASSINFO(FbMasterFindInfo))) {
 		m_BooksPanel->SetListMode(FB2_MODE_TREE);

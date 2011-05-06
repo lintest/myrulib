@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_SEQN, GetTitle(), select), 
+	: FbFrameBase(parent, ID_FRAME_SEQN, GetTitle(), select),
 		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -50,7 +50,7 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 
 	SplitVertically(panel, m_BooksPanel);
 
-	FbFrameBase::CreateControls(select);
+	CreateControls(select);
 
 	FindSequence(wxEmptyString);
 }

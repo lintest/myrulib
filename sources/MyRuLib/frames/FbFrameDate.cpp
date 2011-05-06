@@ -16,7 +16,7 @@ BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_DATE, GetTitle(), select), 
+	: FbFrameBase(parent, ID_FRAME_DATE, GetTitle(), select),
 		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
 	m_MasterList = new FbTreeViewCtrl(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
@@ -25,7 +25,7 @@ FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
 	CreateBooksPanel(this);
 	SplitVertically(m_MasterList, m_BooksPanel);
 
-	FbFrameBase::CreateControls(select);
+	CreateControls(select);
 
 	m_MasterThread = new FbDateTreeThread(this);
 	m_MasterThread->Execute();

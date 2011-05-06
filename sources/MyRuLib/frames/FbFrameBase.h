@@ -14,7 +14,7 @@
 #include "FbFilterObj.h"
 #include "controls/FbTreeView.h"
 
-class FbFrameBase : 
+class FbFrameBase :
 	public wxSplitterWindow
 {
 public:
@@ -38,7 +38,7 @@ public:
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
 		void RefreshBooks() { if (m_BooksPanel && m_BooksPanel->m_BookList) m_BooksPanel->m_BookList->Refresh(); }
 	protected:
-		virtual void CreateControls(bool select = false);
+		void CreateControls(bool select);
 		virtual void CreateColumns() = 0;
 		void OnSubmenu(wxCommandEvent& event);
 		void CreateBooksPanel(wxWindow * parent);

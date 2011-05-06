@@ -36,26 +36,6 @@ FbModelItem & FbModelItem::operator =(const FbModelItem &item)
 
 IMPLEMENT_CLASS(FbModelData, wxObject)
 
-static void Assign(wxSQLite3ResultSet &res, const wxString& column, int &value)
-{
-	for (int i=0; i<res.GetColumnCount(); i++) {
-		if (res.GetColumnName(i).CmpNoCase(column)==0) {
-			value = res.GetInt(i);
-			return;
-		}
-	}
-}
-
-static void Assign(wxSQLite3ResultSet &res, const wxString& column, wxString &value)
-{
-	for (int i=0; i<res.GetColumnCount(); i++) {
-		if (res.GetColumnName(i).CmpNoCase(column)==0) {
-			value = res.GetString(i);
-			return;
-		}
-	}
-}
-
 wxString FbModelData::Format(int number)
 {
 	int hi = number / 1000;
