@@ -22,7 +22,7 @@ class FbMainFrame : public wxFrame
 		void Localize(int language);
 		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
 	protected:
-//		virtual bool ProcessEvent(wxEvent& event);
+		virtual bool ProcessEvent(wxEvent& event);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		wxMenuBar * CreateMenuBar(wxWindow * child = NULL);
@@ -107,6 +107,7 @@ class FbMainFrame : public wxFrame
 		void OnSubmenu(wxCommandEvent& event);
 		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		DECLARE_EVENT_TABLE()
+		friend class FbEventLocker;
 };
 
 #endif // __FBMAINFRAME_H__
