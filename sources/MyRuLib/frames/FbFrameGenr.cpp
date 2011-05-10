@@ -36,11 +36,24 @@ void FbFrameGenr::CreateColumns()
 	m_MasterList->AssignModel(model);
 }
 
+template <class T>
+class FbAutoPtr
+{
+public:
+	FbAutoPtr(T * ptr): m_ptr(ptr) {}
+	virtual ~FbAutoPtr() { wxDELETE(m_ptr); }
+	T * operator->() { return m_ptr; }
+	bool operator ! () { return ! m_ptr; }
+	operator bool () { return m_ptr; }
+private:
+	T * m_ptr;
+};
+
 void FbFrameGenr::OnModel( FbModelEvent & event )
 {
+	FbAutoPtr<FbListStore> list = wxDynamicCast(event.GetModel(), FbListStore);
 	FbTreeModel * tree = wxDynamicCast(m_MasterList->GetModel(), FbTreeModel);
-	FbListStore * list = wxDynamicCast(event.GetModel(), FbListStore);
-	if (!tree || !list) return ;
+	if (!tree || !list) return;
 
 	FbModelItem root = tree->GetRoot();
 	if (!root) return;
