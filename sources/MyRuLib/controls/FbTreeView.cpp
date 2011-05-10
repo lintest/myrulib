@@ -233,6 +233,7 @@ FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbT
 
 FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 {
+	wxDELETE(m_resizeCursor);
 }
 
 int FbTreeViewHeaderWindow::GetFullWidth()
