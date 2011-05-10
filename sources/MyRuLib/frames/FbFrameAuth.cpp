@@ -220,6 +220,7 @@ FbFrameAuth::MasterMenu::MasterMenu(int id)
 FbFrameAuth::MenuBar::MenuBar()
 {
 	Append(new MenuFile,   _("&File"));
+	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
 	Append(new MenuMaster, _("&Authors"));

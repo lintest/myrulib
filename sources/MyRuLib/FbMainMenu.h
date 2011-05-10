@@ -11,6 +11,10 @@ class FbMenuBar: public wxMenuBar
 			public: MenuFile();
 		};
 
+		class MenuEdit: public FbMenu {
+			public: MenuEdit();
+		};
+
 		class MenuFrame: public FbMenu {
 			public: MenuFrame();
 		};

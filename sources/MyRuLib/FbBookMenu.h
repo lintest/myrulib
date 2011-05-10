@@ -2,8 +2,7 @@
 #define __FBBOOKMENU_H__
 
 #include <wx/wx.h>
-#include <wx/menu.h>
-#include <wx/arrimpl.cpp>
+#include "FbMenu.h"
 #include "controls/FbTreeModel.h"
 
 class FbMasterInfo;
@@ -11,7 +10,7 @@ class FbMasterInfo;
 #include <wx/hashmap.h>
 WX_DECLARE_HASH_MAP(int, int, wxIntegerHash, wxIntegerEqual, FbMenuMap);
 
-class FbBookMenu: public wxMenu
+class FbBookMenu: public FbMenu
 {
 	public:
 		enum FbMenuType {

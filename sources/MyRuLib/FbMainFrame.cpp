@@ -158,13 +158,14 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 			!event.IsKindOf(CLASSINFO(wxContextMenuEvent)))
 	{
 		FbEventLocker locker(*this, event);
-		if (wxFrame::ProcessEvent(event)) return true;
 
-		wxControl * focused = wxDynamicCast(FindFocus(), wxControl);
+		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
 		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;
 
 		wxWindow * window = GetActiveChild();
 		if (window && window->ProcessEvent(event)) return true;
+
+		if (wxFrame::ProcessEvent(event)) return true;
 
 		return false;
 	} else {

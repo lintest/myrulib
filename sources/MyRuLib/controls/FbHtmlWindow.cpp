@@ -2,6 +2,7 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include <wx/uri.h>
+#include <wx/clipbrd.h>
 
 class FbURI: public wxURI
 {
@@ -11,6 +12,17 @@ class FbURI: public wxURI
 };
 
 IMPLEMENT_CLASS(FbHtmlWindow, wxHtmlWindow)
+
+BEGIN_EVENT_TABLE(FbHtmlWindow, wxHtmlWindow)
+	EVT_MENU(wxID_COPY, FbHtmlWindow::OnCopy)
+	EVT_MENU(wxID_SELECTALL, FbHtmlWindow::OnSelect)
+	EVT_MENU(ID_UNSELECTALL, FbHtmlWindow::OnUnselect)
+	EVT_UPDATE_UI(wxID_CUT, FbHtmlWindow::OnDisableUI)
+	EVT_UPDATE_UI(wxID_COPY, FbHtmlWindow::OnEnableUI)
+	EVT_UPDATE_UI(wxID_PASTE, FbHtmlWindow::OnDisableUI)
+	EVT_UPDATE_UI(wxID_SELECTALL, FbHtmlWindow::OnEnableUI)
+	EVT_UPDATE_UI(ID_UNSELECTALL, FbHtmlWindow::OnEnableUI)
+END_EVENT_TABLE()
 
 FbHtmlWindow::FbHtmlWindow(wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
 	: wxHtmlWindow(parent, id, pos, size, style)
@@ -67,3 +79,34 @@ void FbHtmlWindow::UpdateFont(bool refresh)
 	SetFonts(font.GetFaceName(), font.GetFaceName(), fontsizes);
 }
 
+void FbHtmlWindow::OnCopy(wxCommandEvent& event)
+{
+	wxString text = SelectionToText();
+	if (text.IsEmpty()) return;
+
+	wxClipboardLocker locker;
+	if (!locker) return;
+
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
+void FbHtmlWindow::OnSelect(wxCommandEvent& event)
+{
+	SelectAll();
+}
+
+void FbHtmlWindow::OnUnselect(wxCommandEvent& event)
+{
+	UnselectALL();
+	Refresh();
+}
+
+void FbHtmlWindow::OnEnableUI(wxUpdateUIEvent & event)
+{
+	event.Enable(true);
+}
+
+void FbHtmlWindow::OnDisableUI(wxUpdateUIEvent & event)
+{
+	event.Enable(false);
+}

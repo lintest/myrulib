@@ -58,6 +58,7 @@ FbMenuBar::MenuHelp::MenuHelp()
 FbMainMenu::FbMainMenu(): FbMenuBar()
 {
 	Append(new MenuFile,   _("&File"));
+	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
 	Append(new MenuView,   _("&View"));
@@ -75,12 +76,18 @@ FbFrameMenu::MenuFile::MenuFile()
 	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
-FbFrameMenu::MenuBook::MenuBook()
+FbFrameMenu::MenuEdit::MenuEdit()
 {
-	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"));
+	AppendImg(wxID_CUT, _("Cut") + (wxString)wxT("\tCtrl+X"), wxART_CUT);
+	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
+	AppendImg(wxID_PASTE, _("Paste") + (wxString)wxT("\tCtrl+V"), wxART_PASTE);
+	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
-	AppendSeparator();
+}
+
+FbFrameMenu::MenuBook::MenuBook()
+{
 	Append(ID_ORDER_MENU, _("Sort by"), new FbMenuSort());
 	Append(ID_FILTER_SET, _("Filter setup"));
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
