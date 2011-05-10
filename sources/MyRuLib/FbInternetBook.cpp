@@ -249,15 +249,5 @@ void FbInternetBook::SaveFile(const bool success)
 		FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, m_id).Post();
 		FbLogMessage(_("Download finished"), m_url);
 	}
-
-	{
-		FbMasterDownInfo info = FbMasterDownInfo::DT_WAIT;
-		FbMasterEvent(ID_UPDATE_MASTER, info, m_id, false).Post();
-	}
-
-	{
-		FbMasterDownInfo info = success ? FbMasterDownInfo::DT_READY : FbMasterDownInfo::DT_ERROR;
-		FbMasterEvent(ID_UPDATE_MASTER, info, m_id, true).Post();
-	}
 }
 

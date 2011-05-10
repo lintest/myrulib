@@ -176,10 +176,10 @@ void FbMainFrame::SaveFrameList()
 	wxString frames;
 	wxWindowID selected = 0;
 	wxWindowID last_id = 0;
-	size_t index = GetNotebook()->GetSelection();
-	size_t count = GetNotebook()->GetPageCount();
+	size_t index = m_FrameNotebook.GetSelection();
+	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-		wxWindowID id = GetNotebook()->GetPage(i)->GetId();
+		wxWindowID id = m_FrameNotebook.GetPage(i)->GetId();
 		if (ID_FRAME_AUTH <= id && id < ID_FRAME_FIND) {
 			if (!frames.IsEmpty()) frames << wxT(',');
 			frames << (id - ID_FRAME_AUTH);
@@ -310,9 +310,9 @@ void FbMainFrame::SetTabArt(int id)
 		case ID_ART_MOZILLA:  art = new FbMozillaTabArt; break;
 		default: art = new FbDefaultTabArt;
 	}
-	GetNotebook()->SetTabCtrlHeight(0);
-	GetNotebook()->SetArtProvider(art);
-	GetNotebook()->SetTabCtrlHeight(-1);
+	m_FrameNotebook.SetTabCtrlHeight(0);
+	m_FrameNotebook.SetArtProvider(art);
+	m_FrameNotebook.SetTabCtrlHeight(-1);
 }
 
 void FbMainFrame::OnSetup(wxCommandEvent & event)
@@ -497,8 +497,8 @@ void FbMainFrame::FindAuthor(const wxString &text)
 {
 	FbFrameAuth * authors = wxDynamicCast(FindFrameById(ID_FRAME_AUTH, true), FbFrameAuth);
 	if (!authors) {
-		authors = new FbFrameAuth(GetNotebook());
-		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		authors = new FbFrameAuth(&m_FrameNotebook);
+		m_FrameNotebook.SetSelection( m_FrameNotebook.GetPageCount() - 1 );
 		authors->Update();
 	}
 	authors->FindAuthor(text);
@@ -528,23 +528,23 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 wxWindow * FbMainFrame::CreateFrame(wxWindowID id, bool select)
 {
 	switch ( id ) {
-		case ID_FRAME_AUTH: return new FbFrameAuth(GetNotebook(), select);
-		case ID_FRAME_GENR: return new FbFrameGenr(GetNotebook(), select);
-		case ID_FRAME_FLDR: return new FbFrameFldr(GetNotebook(), select);
-		case ID_FRAME_DOWN: return new FbFrameDown(GetNotebook(), select);
-		case ID_FRAME_SEQN: return new FbFrameSeqn(GetNotebook(), select);
-		case ID_FRAME_DATE: return new FbFrameDate(GetNotebook(), select);
+		case ID_FRAME_AUTH: return new FbFrameAuth(&m_FrameNotebook, select);
+		case ID_FRAME_GENR: return new FbFrameGenr(&m_FrameNotebook, select);
+		case ID_FRAME_FLDR: return new FbFrameFldr(&m_FrameNotebook, select);
+		case ID_FRAME_DOWN: return new FbFrameDown(&m_FrameNotebook, select);
+		case ID_FRAME_SEQN: return new FbFrameSeqn(&m_FrameNotebook, select);
+		case ID_FRAME_DATE: return new FbFrameDate(&m_FrameNotebook, select);
 		default: return NULL;
 	}
 }
 
 wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 {
-	size_t count = GetNotebook()->GetPageCount();
+	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-		if (GetNotebook()->GetPage(i)->GetId() == id) {
-			wxWindow * result = GetNotebook()->GetPage(i);
-			if (bActivate) GetNotebook()->SetSelection(i);
+		if (m_FrameNotebook.GetPage(i)->GetId() == id) {
+			wxWindow * result = m_FrameNotebook.GetPage(i);
+			if (bActivate) m_FrameNotebook.SetSelection(i);
 			return result;
 		}
 	}
@@ -585,9 +585,9 @@ void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 		FbFrameDown * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWN, false), FbFrameDown);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 
-		size_t count = GetNotebook()->GetPageCount();
+		size_t count = m_FrameNotebook.GetPageCount();
 		for (size_t i = 0; i < count; ++i) {
-			FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+			FbFrameBase * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameBase);
 			if (frame) frame->RefreshBooks();
 		}
 	} else {
@@ -598,9 +598,9 @@ void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 
 void FbMainFrame::OnUpdateMaster(FbMasterEvent & event)
 {
-	size_t count = GetNotebook()->GetPageCount();
+	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		FbFrameBase * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameBase);
 		if (frame) frame->UpdateMaster(event);
 	}
 }
@@ -621,23 +621,23 @@ void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
 
 void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & text)
 {
-	size_t count = GetNotebook()->GetPageCount();
+	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-		FbFrameFind * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameFind);
+		FbFrameFind * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameFind);
 		if (frame && info == frame->GetInfo()) {
-			GetNotebook()->SetSelection(i);
+			m_FrameNotebook.SetSelection(i);
 			return;
 		}
 	}
-	new FbFrameFind(GetNotebook(), info, text);
+	new FbFrameFind(&m_FrameNotebook, info, text);
 }
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
 {
 	FbFrameInfo * frame = wxDynamicCast(FindFrameById(ID_FRAME_INFO, true), FbFrameInfo);
 	if (!frame) {
-		frame = new FbFrameInfo(GetNotebook());
-		GetNotebook()->SetSelection( GetNotebook()->GetPageCount() - 1 );
+		frame = new FbFrameInfo(&m_FrameNotebook);
+		m_FrameNotebook.SetSelection( m_FrameNotebook.GetPageCount() - 1 );
 		frame->Update();
 	}
 	frame->Load(event.GetString());
@@ -652,9 +652,9 @@ void FbMainFrame::OnProgress(FbProgressEvent & event)
 
 void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
 {
-	size_t count = GetNotebook()->GetPageCount();
+	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
-		FbFrameBase * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbFrameBase);
+		FbFrameBase * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameBase);
 		if (frame) frame->UpdateInfo(event.GetInt());
 	}
 }
@@ -667,10 +667,10 @@ void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 {
-	size_t count = GetNotebook()->GetPageCount();
+	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 /*
-		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
+		FbAuiMDIChildFrame * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbAuiMDIChildFrame);
 		if (frame) frame->UpdateFonts();
 */
 	}
@@ -786,11 +786,11 @@ void FbMainFrame::Localize(int language)
 	SetToolBar(CreateToolBar());
 	wxDELETE(toolbar);
 
-	size_t count = GetNotebook()->GetPageCount();
-	size_t index = GetNotebook()->GetSelection();
+	size_t count = m_FrameNotebook.GetPageCount();
+	size_t index = m_FrameNotebook.GetSelection();
 	for (size_t i = 0; i < count; ++i) {
 /*
-		FbAuiMDIChildFrame * frame = wxDynamicCast(GetNotebook()->GetPage(i), FbAuiMDIChildFrame);
+		FbAuiMDIChildFrame * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbAuiMDIChildFrame);
 		if (frame) frame->Localize(i == index);
 */
 	}
