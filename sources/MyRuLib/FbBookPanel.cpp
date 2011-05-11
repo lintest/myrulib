@@ -16,6 +16,89 @@
 #include "FbDeleteThread.h"
 #include "FbTitleDlg.h"
 
+//-----------------------------------------------------------------------------
+//  FbBookViewCtrl
+//-----------------------------------------------------------------------------
+
+class FbBookViewCtrl
+	: public FbTreeViewCtrl
+{
+public:
+	FbBookViewCtrl() { Init(); }
+
+	FbBookViewCtrl(wxWindow *parent, wxWindowID id = -1,
+			   const wxPoint& pos = wxDefaultPosition,
+			   const wxSize& size = wxDefaultSize,
+			   long style = fbTR_DEFAULT_STYLE,
+			   const wxValidator &validator = wxDefaultValidator,
+			   const wxString& name = FbTreeViewCtrlNameStr )
+	{
+		Init();
+		Create(parent, id, pos, size, style);
+	}
+
+	virtual ~FbBookViewCtrl() {}
+
+	bool Create(wxWindow *parent, wxWindowID id = -1,
+				const wxPoint& pos = wxDefaultPosition,
+				const wxSize& size = wxDefaultSize,
+				long style = fbTR_DEFAULT_STYLE,
+				const wxValidator &validator = wxDefaultValidator,
+				const wxString& name = FbTreeViewCtrlNameStr )
+	{
+		return FbTreeViewCtrl::Create(parent, id, pos, size, style);
+	}
+
+private:
+	void Init() {}
+
+private:
+	void OnCopy(wxCommandEvent & event);
+
+	void OnSelect(wxCommandEvent & event) {
+		SelectAll(true);
+	}
+	void OnUnselect(wxCommandEvent & event) {
+		SelectAll(false);
+	}
+	void OnEnableUI(wxUpdateUIEvent & event) {
+		event.Enable(GetModel());
+	}
+	void OnDisableUI(wxUpdateUIEvent & event) {
+		event.Enable(false);
+	}
+	DECLARE_CLASS(FbBookViewCtrl)
+	DECLARE_EVENT_TABLE()
+};
+
+IMPLEMENT_CLASS(FbBookViewCtrl, FbTreeViewCtrl)
+
+BEGIN_EVENT_TABLE(FbBookViewCtrl, FbTreeViewCtrl)
+	EVT_MENU(wxID_COPY, FbBookViewCtrl::OnCopy)
+	EVT_MENU(wxID_SELECTALL, FbBookViewCtrl::OnSelect)
+	EVT_MENU(ID_UNSELECTALL, FbBookViewCtrl::OnUnselect)
+	EVT_UPDATE_UI(wxID_CUT, FbBookViewCtrl::OnDisableUI)
+	EVT_UPDATE_UI(wxID_COPY, FbBookViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(wxID_PASTE, FbBookViewCtrl::OnDisableUI)
+	EVT_UPDATE_UI(wxID_SELECTALL, FbBookViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(ID_UNSELECTALL, FbBookViewCtrl::OnEnableUI)
+END_EVENT_TABLE()
+
+void FbBookViewCtrl::OnCopy(wxCommandEvent& event)
+{
+	wxString text = GetText();
+	if (text.IsEmpty()) return;
+
+	wxClipboardLocker locker;
+	if (!locker) return;
+
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
+//-----------------------------------------------------------------------------
+//  FbBookPanel
+//-----------------------------------------------------------------------------
+
 IMPLEMENT_CLASS(FbBookPanel, wxSplitterWindow)
 
 BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
@@ -35,9 +118,6 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_FAVORITES_ADD, FbBookPanel::OnFavoritesAdd)
 	EVT_MENU(ID_EDIT_COMMENTS, FbBookPanel::OnEditComments)
 	EVT_MENU(wxID_PROPERTIES, FbBookPanel::OnEditBook)
-	EVT_MENU(wxID_COPY, FbBookPanel::OnCopy)
-	EVT_MENU(wxID_SELECTALL, FbBookPanel::OnSelectAll)
-	EVT_MENU(ID_UNSELECTALL, FbBookPanel::OnUnselectAll)
 	EVT_MENU(ID_RATING_5, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_4, FbBookPanel::OnChangeRating)
 	EVT_MENU(ID_RATING_3, FbBookPanel::OnChangeRating)
@@ -59,7 +139,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	SetMinimumPaneSize(50);
 
 	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
-	m_BookList = new FbTreeViewCtrl(this, ID_BOOKLIST_CTRL, wxDefaultPosition, wxDefaultSize, substyle);
+	m_BookList = new FbBookViewCtrl(this, ID_BOOKLIST_CTRL, wxDefaultPosition, wxDefaultSize, substyle);
 	m_BookInfo = new FbPreviewWindow(this, ID_PREVIEW_CTRL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 
 	int viewmode = FbParams::GetInt(m_owner, FB_VIEW_MODE);
@@ -564,44 +644,6 @@ void FbBookPanel::OnEditBook(wxCommandEvent & event)
 {
 	int book = m_BookList->GetBook();
 	if (book) FbTitleDlg::Execute(book);
-}
-
-void FbBookPanel::OnCopy(wxCommandEvent& event)
-{
-	wxString text;
-	wxWindow * focus = FindFocus();
-	if (focus && focus->GetId() == ID_PREVIEW_CTRL) {
-		text = m_BookInfo->SelectionToText();
-	} else {
-		text = m_BookList->GetText();
-	}
-	if (text.IsEmpty()) return;
-
-	wxClipboardLocker locker;
-	if (!locker) return;
-
-	wxTheClipboard->SetData( new wxTextDataObject(text) );
-}
-
-void FbBookPanel::OnSelectAll(wxCommandEvent& event)
-{
-	wxWindow * focus = FindFocus();
-	if (focus && focus->GetId() == ID_PREVIEW_CTRL) {
-		m_BookInfo->SelectAll();
-	} else {
-		m_BookList->SelectAll(true);
-	}
-}
-
-void FbBookPanel::OnUnselectAll(wxCommandEvent& event)
-{
-	wxWindow * focus = FindFocus();
-	if (focus && focus->GetId() == ID_PREVIEW_CTRL) {
-		m_BookInfo->UnselectALL();
-		m_BookInfo->Refresh();
-	} else {
-		m_BookList->SelectAll(false);
-	}
 }
 
 void FbBookPanel::OnIdleSplitter( wxIdleEvent& )

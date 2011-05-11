@@ -98,7 +98,6 @@ void FbHtmlWindow::OnSelect(wxCommandEvent& event)
 void FbHtmlWindow::OnUnselect(wxCommandEvent& event)
 {
 	UnselectALL();
-	Refresh();
 }
 
 void FbHtmlWindow::OnEnableUI(wxUpdateUIEvent & event)
