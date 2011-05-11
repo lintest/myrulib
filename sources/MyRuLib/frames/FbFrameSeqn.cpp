@@ -61,30 +61,6 @@ void FbFrameSeqn::CreateColumns()
 	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 }
 
-wxToolBar * FbFrameSeqn::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	return NULL;
-
-	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
-
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->SetFont(font);
-
-	m_FindInfo = new wxStaticText( toolbar, wxID_ANY, (wxString)_("Ser.") + wxT(':'), wxDefaultPosition, wxDefaultSize, 0 );
-	m_FindInfo->Wrap( -1 );
-	m_FindInfo->SetFont(font);
-	toolbar->AddControl( m_FindInfo );
-
-	m_FindText = new FbSearchCombo( toolbar, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
-	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-	m_FindText->SetFont(font);
-	toolbar->AddControl( m_FindText );
-
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
-	toolbar->Realize();
-	return toolbar;
-}
-
 void FbFrameSeqn::CreateMasterThread()
 {
 	m_MasterList->AssignModel(NULL);

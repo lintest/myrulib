@@ -19,6 +19,14 @@ BEGIN_EVENT_TABLE(FbFrameDown, FbFrameBase)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbFrameDown::OnSubmenu)
 END_EVENT_TABLE()
 
+#ifdef __WXGTK__
+	#define fbART_START wxT("gtk-media-play")
+	#define fbART_PAUSE wxT("gtk-media-pause")
+#else
+	#define fbART_START wxBitmap(start_xpm)
+	#define fbART_PAUSE wxBitmap(pause_xpm)
+#endif
+
 FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 	: FbFrameBase(parent, ID_FRAME_DOWN, GetTitle(), select)
 {
@@ -27,13 +35,13 @@ FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 
 	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar.AddTool(ID_START, _("Start"), wxBitmap(start_xpm), _("Start downloading"));
-	m_ToolBar.AddTool(ID_PAUSE, _("Stop"), wxBitmap(pause_xpm), _("Stop downloading"));
+	m_ToolBar.AddTool(ID_START, _("Start"), fbART_START, _("Start downloading"));
+	m_ToolBar.AddTool(ID_PAUSE, _("Stop"), fbART_PAUSE, _("Stop downloading"));
 	m_ToolBar.AddSeparator();
-	m_ToolBar.AddTool(wxID_UP, _("Up"), wxArtProvider::GetBitmap(wxART_GO_UP), _("Move up in queue"));
-	m_ToolBar.AddTool(wxID_DOWN, _("Down"), wxArtProvider::GetBitmap(wxART_GO_DOWN), _("Move down in queue"));
+	m_ToolBar.AddTool(wxID_UP, _("Up"), wxART_GO_UP, _("Move up in queue"));
+	m_ToolBar.AddTool(wxID_DOWN, _("Down"), wxART_GO_DOWN, _("Move down in queue"));
 	m_ToolBar.AddSeparator();
-	m_ToolBar.AddTool(ID_DELETE_DOWNLOAD, _("Delete"), wxArtProvider::GetBitmap(wxART_DELETE), _("Remove download"));
+	m_ToolBar.AddTool(ID_DELETE_DOWNLOAD, _("Delete"), wxART_DELETE, _("Remove download"));
 	m_ToolBar.Realize();
 	sizer->Add( &m_ToolBar, 0, wxEXPAND, 0 );
 

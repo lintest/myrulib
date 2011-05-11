@@ -29,9 +29,9 @@ FbFrameFldr::FbFrameFldr(wxAuiNotebook * parent, bool select)
 
 	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar.AddTool( ID_APPEND_FOLDER, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
-	m_ToolBar.AddTool( ID_MODIFY_FOLDER, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
-	m_ToolBar.AddTool( ID_DELETE_FOLDER, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
+	m_ToolBar.AddTool( ID_APPEND_FOLDER, _("Append"), wxART_ADD_BOOKMARK);
+	m_ToolBar.AddTool( ID_MODIFY_FOLDER, _("Modify"), wxART_FILE_OPEN);
+	m_ToolBar.AddTool( ID_DELETE_FOLDER, _("Delete"), wxART_DEL_BOOKMARK);
 	m_ToolBar.Realize();
 	sizer->Add( &m_ToolBar, 0, wxEXPAND, 0 );
 

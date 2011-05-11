@@ -5,6 +5,7 @@
 #include <wx/dialog.h>
 #include <wx/aui/tabmdi.h>
 #include <wx/html/htmlwin.h>
+#include <wx/artprov.h>
 
 class FbDialog
 	: public wxDialog
@@ -34,6 +35,18 @@ class FbDialog
 		);
 	protected:
 		void Assign(long winid, int param, bool write);
+};
+
+class FbToolBar
+	: public wxToolBar
+{
+public:
+	wxToolBarToolBase * AddTool(int itemid, const wxString& text, const wxArtID& art, const wxString& help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL) {
+		return wxToolBar::AddTool(itemid, text, wxArtProvider::GetBitmap(art, wxART_TOOLBAR), help);
+	}
+	wxToolBarToolBase * AddTool(int itemid, const wxString& text, const wxBitmap& bitmap, const wxString& help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL) {
+		return wxToolBar::AddTool(itemid, text, bitmap, help);
+	}
 };
 
 #endif // __FBWINDOW_H__

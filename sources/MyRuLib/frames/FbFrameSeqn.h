@@ -19,7 +19,6 @@ class FbFrameSeqn : public FbFrameBase
 		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
-		virtual wxToolBar * CreateToolBar(long style = wxTB_FLAT|wxTB_NODIVIDER|wxTB_HORZ_TEXT, wxWindowID winid = wxID_ANY, const wxString& name = wxEmptyString);
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);

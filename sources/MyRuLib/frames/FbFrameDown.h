@@ -14,7 +14,7 @@ class FbFrameDown : public FbFrameBase
 		void CreateBookInfo();
 		void FillFolders(const int iCurrent = 0);
 		void DeleteItems(const wxTreeItemId &root, wxArrayInt &items);
-		wxToolBar m_ToolBar;
+		FbToolBar m_ToolBar;
 	private:
 		void OnFavoritesDel(wxCommandEvent & event);
 		void OnFolderAppend(wxCommandEvent & event);

@@ -3,7 +3,6 @@
 #include <wx/dirdlg.h>
 #include <wx/stattext.h>
 #include <wx/dcclient.h>
-#include <wx/artprov.h>
 #include <wx/tokenzr.h>
 #include "FbConst.h"
 #include "MyRuLibApp.h"
@@ -340,46 +339,55 @@ void FbMainFrame::OnAbout(wxCommandEvent & event)
 	FbAboutDlg(this).ShowModal();
 }
 
+#ifdef __WXGTK__
+	#define fbART_LIST_VIEW wxT("gtk-justify-fill")
+	#define fbART_REPORT_VIEW wxT("gtk-justify-left")
+#else
+	#define fbART_LIST_VIEW wxART_LIST_VIEW
+	#define fbART_REPORT_VIEW wxART_REPORT_VIEW
+#endif
+
 wxToolBar * FbMainFrame::CreateToolBar()
 {
-	m_toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
+	FbToolBar * toolbar = new FbToolBar;
+	toolbar->Create(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
 	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
 
-	m_toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
-	m_toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
-	m_toolbar->AddSeparator();
+	toolbar->AddTool(wxID_NEW, _("Import file"), wxART_NEW, _("Import files to the library"));
+	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxART_FILE_OPEN, _("Import folder to the library"));
+	toolbar->AddSeparator();
 
-	wxStaticText * text1 = new wxStaticText( m_toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
-	m_toolbar->AddControl( text1 );
+	toolbar->AddControl( text1 );
 
-	m_FindAuthor = new wxTextCtrl(m_toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindAuthor = new wxTextCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor->SetFont(font);
-	m_toolbar->AddControl( m_FindAuthor );
-	m_toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
-	m_toolbar->AddSeparator();
+	toolbar->AddControl( m_FindAuthor );
+	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxART_FIND, _("Find author"));
+	toolbar->AddSeparator();
 
-	wxStaticText * text2 = new wxStaticText( m_toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text2 = new wxStaticText(toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	text2->SetFont(font);
-	m_toolbar->AddControl( text2 );
+	toolbar->AddControl( text2 );
 
-	m_FindTitle = new wxTextCtrl(m_toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindTitle = new wxTextCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindTitle->SetFont(font);
-	m_toolbar->AddControl( m_FindTitle );
-	m_toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
-	m_toolbar->AddSeparator();
+	toolbar->AddControl( m_FindTitle );
+	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxART_FIND, _("Find book by title"));
+	toolbar->AddSeparator();
 
-	m_toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_LIST_VIEW), _("Hierarchy of authors and series"));
-	m_toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW), _("Simple list"));
-	m_toolbar->AddSeparator();
-	m_toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
-	m_toolbar->Realize();
+	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), fbART_REPORT_VIEW, _("Hierarchy of authors and series"));
+	toolbar->AddTool(ID_MODE_LIST, _("List"), fbART_LIST_VIEW, _("Simple list"));
+	toolbar->AddSeparator();
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxART_FILE_SAVE, _("Export to external device"));
+	toolbar->Realize();
 
-	m_toolbar->SetFont(font);
+	toolbar->SetFont(font);
 
-	return m_toolbar;
+	return toolbar;
 }
 
 void FbMainFrame::OnExit(wxCommandEvent & event)

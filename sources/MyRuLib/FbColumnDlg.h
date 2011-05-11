@@ -23,7 +23,7 @@ class FbColumnDlg : public FbDialog
 		void DoSelected();
 	private:
 		FbTreeViewCtrl m_fields;
-		wxToolBar m_toolbar;
+		FbToolBar m_toolbar;
 		FbColumnModel * m_model;
 	private:
 		void OnItemSelected(wxTreeEvent & event);
