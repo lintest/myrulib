@@ -110,6 +110,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
 	EVT_COMMAND(ID_DATABASE_INFO, fbEVT_BOOK_ACTION, FbMainFrame::OnInfoCommand)
 	EVT_COMMAND(ID_UPDATE_BOOK, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateBook)
+	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbMainFrame::OnFoundNothing)
 
     EVT_AUINOTEBOOK_ALLOW_DND(wxID_ANY, FbMainFrame::OnAllowNotebookDnD)
 	EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, FbMainFrame::OnNotebookChanged)
@@ -481,7 +482,7 @@ void FbMainFrame::FindTitle(const wxString &title, const wxString &author)
 	if (!title.IsEmpty()) {
 		FbMasterFindInfo info(title, author);
 		wxString text = _("Search"); text << COLON << title;
-		OpenInfo(info, text);
+		OpenInfo(info, text, ID_FRAME_FIND);
 	}
 }
 
@@ -611,17 +612,17 @@ void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
 {
 	FbMasterAuthInfo info(event.m_author);
 	wxString text = FbCollection::GetAuth(event.m_author, 0);
-	OpenInfo(info, text);
+	OpenInfo(info, text, ID_FRAME_NODE);
 }
 
 void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
 {
 	FbMasterSeqnInfo info(event.m_author);
 	wxString text = FbCollection::GetSeqn(event.m_author, 0);
-	OpenInfo(info, text);
+	OpenInfo(info, text, ID_FRAME_NODE);
 }
 
-void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & text)
+void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & text, wxWindowID winid)
 {
 	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
@@ -631,7 +632,7 @@ void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & text)
 			return;
 		}
 	}
-	new FbFrameFind(&m_FrameNotebook, info, text);
+	new FbFrameFind(&m_FrameNotebook, winid, info, text);
 }
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
@@ -865,5 +866,13 @@ void FbMainFrame::OnIdle( wxIdleEvent & event)
 		msg << wxPLURAL("book", "books", count);
 	}
 	m_ProgressBar.SetStatusText(msg, 2);
+}
+
+void FbMainFrame::OnFoundNothing(wxCommandEvent & event)
+{
+	wxString msg = wxString::Format(_("Nothing was found on pattern \"%s\""), event.GetString().c_str());
+	wxMessageBox(msg, _("Searching"));
+	int index = m_FrameNotebook.GetPageIndex((wxWindow*)event.GetEventObject());
+	if (index != wxNOT_FOUND) m_FrameNotebook.DeletePage(index);
 }
 

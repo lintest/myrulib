@@ -6,7 +6,7 @@
 class FbFrameFind : public FbFrameBase
 {
 	public:
-		FbFrameFind(wxAuiNotebook * parent, const FbMasterInfo &info, const wxString &title);
+		FbFrameFind(wxAuiNotebook * parent, wxWindowID winid, const FbMasterInfo &info, const wxString &title);
 		virtual FbMasterInfo GetInfo() { return m_info; }
 		virtual void CreateColumns() {}
 	private:

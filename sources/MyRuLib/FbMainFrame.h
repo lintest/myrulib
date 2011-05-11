@@ -39,7 +39,7 @@ class FbMainFrame : public wxFrame
 		void SetTabArt(int id);
 		void SaveFrameList();
 		void RestoreFrameList();
-		void OpenInfo(const FbMasterInfo & info, const wxString & text);
+		void OpenInfo(const FbMasterInfo & info, const wxString & text, wxWindowID winid);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
 		wxEvent * m_LastEvent;
@@ -100,6 +100,7 @@ class FbMainFrame : public wxFrame
 		void OnWindowCloseAll(wxCommandEvent & event);
 		void OnWindowNext(wxCommandEvent & event);
 		void OnWindowPrev(wxCommandEvent & event);
+		void OnFoundNothing(wxCommandEvent & event);
 		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
 		void OnNotebookChanged(wxAuiNotebookEvent& event);
 		void OnNotebookClosed(wxAuiNotebookEvent& event);

@@ -70,9 +70,21 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 		SetViewMode(viewmode);
 	}
 
-	m_listmode = (bool) FbParams::GetInt(m_owner, FB_LIST_MODE) ? FB2_MODE_TREE : FB2_MODE_LIST;
-	int order = (m_listmode == FB2_MODE_TREE ? BF_NUMB : BF_NAME) + 1;
-	m_BookList->SetSortedColumn(order);
+	switch (m_owner) {
+		case ID_FRAME_FIND: {
+			m_listmode = FB2_MODE_LIST;
+			m_BookList->SetSortedColumn(BF_NAME);
+		} break;
+		case ID_FRAME_NODE: {
+			m_listmode = FB2_MODE_TREE;
+			m_BookList->SetSortedColumn(BF_NUMB);
+		} break;
+		default: {
+			m_listmode = (bool) FbParams::GetInt(m_owner, FB_LIST_MODE) ? FB2_MODE_TREE : FB2_MODE_LIST;
+			int order = (m_listmode == FB2_MODE_TREE ? BF_NUMB : BF_NAME) + 1;
+			m_BookList->SetSortedColumn(order);
+		}
+	}
 
 	wxString codes = FbParams::GetStr(m_owner, FB_BOOK_COLUMNS);
 	wxArrayInt columns;
