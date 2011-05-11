@@ -22,11 +22,11 @@ class FbImportZip
 {
 	public:
 		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname);
-		int Save(bool progress, bool update);
+		int Save(bool progress, bool only_new);
 	public:
 		bool IsOk() { return m_ok; };
 	private:
-		void Make(bool progress);
+		void Make(bool progress, bool only_new);
 		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
 		wxZipEntry * GetInfo(const wxString & filename);
 	private:
@@ -50,7 +50,7 @@ class FbImportBook
 	public:
 		FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename);
 		FbImportBook(FbImportZip & owner, wxZipEntry & entry);
-		bool Save();
+		bool Save(bool only_new);
 		bool IsOk() { return m_ok; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);

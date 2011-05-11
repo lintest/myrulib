@@ -71,7 +71,7 @@ wxZipEntry * FbImportZip::GetInfo(const wxString & filename)
 	return (it == m_map.end()) ? NULL : it->second;
 }
 
-int FbImportZip::Save(bool progress, bool update)
+int FbImportZip::Save(bool progress, bool only_new)
 {
 	{
 		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
@@ -81,7 +81,7 @@ int FbImportZip::Save(bool progress, bool update)
 		m_id = result.NextRow() ? result.GetInt(0) : 0;
 	}
 
-	if (m_id && !update) return 0;
+	if (m_id && only_new) return 0;
 
 	wxString sql = m_id ?
 		wxT("UPDATE archives SET file_name=?,file_path=?,file_size=?,file_count=? WHERE id=?") :
@@ -100,12 +100,12 @@ int FbImportZip::Save(bool progress, bool update)
 		stmt.ExecuteUpdate();
 	}
 
-	Make(progress);
+	Make(progress, only_new);
 
 	return m_id;
 }
 
-void FbImportZip::Make(bool progress)
+void FbImportZip::Make(bool progress, bool only_new)
 {
 	size_t skipped = 0;
 	size_t existed = m_list.Count();
@@ -115,7 +115,7 @@ void FbImportZip::Make(bool progress)
 	for (size_t i=0; i<existed; i++) {
 		wxZipEntry * entry = m_list[i];
 		if (progress) m_owner.DoStep(entry->GetInternalName());
-		bool ok = FbImportBook(*this, *entry).Save();
+		bool ok = FbImportBook(*this, *entry).Save(only_new);
 		if (ok) processed++; else skipped++;
 	}
 
@@ -358,7 +358,7 @@ bool FbImportBook::AppendFile(int id_book)
 	return stmt.ExecuteUpdate();
 }
 
-bool FbImportBook::Save()
+bool FbImportBook::Save(bool only_new)
 {
 	if (!m_ok) return false;
 

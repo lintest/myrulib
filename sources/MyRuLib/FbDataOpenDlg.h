@@ -30,14 +30,14 @@ class FbDataOpenDlg : public FbDialog
 	private:
 		wxString GetFilename();
 		wxString GetDirname();
-		bool GetUpdate();
+		bool GetOnlyNew();
 	private:
 		FbChoiceStr m_action;
 		wxComboBox m_file;
 		wxTextCtrl m_folder;
 		wxCheckBox m_scaner;
 		wxCheckBox m_import;
-		wxCheckBox m_only;
+		wxCheckBox m_only_new;
 	private:
 		void OnActionChoise( wxCommandEvent& event );
 		void OnSelectFileClick( wxCommandEvent& event );

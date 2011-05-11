@@ -93,9 +93,9 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_scaner.SetValue(false);
 	bSizerCtrl->Add( &m_scaner, 0, wxALL|wxEXPAND, 5 );
 
-	m_only.Create( this, wxID_ANY, _("Process only new files") );
+	m_only_new.Create( this, wxID_ANY, _("Process only new files") );
 	m_scaner.SetValue(false);
-	bSizerCtrl->Add( &m_only, 0, wxALL|wxEXPAND, 5 );
+	bSizerCtrl->Add( &m_only_new, 0, wxALL|wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -212,16 +212,16 @@ wxString FbDataOpenDlg::GetDirname()
 	return dirname;
 }
 
-bool FbDataOpenDlg::GetUpdate()
+bool FbDataOpenDlg::GetOnlyNew()
 {
-	return ! m_only.GetValue();
+	return m_only_new.GetValue();
 }
 
 FbThread * FbDataOpenDlg::CreateThread(wxEvtHandler * owner)
 {
 	wxString lib = m_action.GetCurrentData().Lower();
 	bool import = m_scaner.GetValue();
-	return new FbLibImportThread(owner, GetFilename(), GetDirname(), lib, import, GetUpdate());
+	return new FbLibImportThread(owner, GetFilename(), GetDirname(), lib, import, GetOnlyNew());
 }
 
 wxString FbDataOpenDlg::CheckExt(const wxString &filename)

@@ -59,14 +59,14 @@ wxString FbImportThread::GetAbsolute(const wxString &filename)
 	return m_fullpath ? filename : (wxString)wxEmptyString;
 }
 
-bool FbImportThread::OnFile(const wxString &filename, bool progress, bool update)
+bool FbImportThread::OnFile(const wxString &filename, bool progress, bool only_new)
 {
 	FbAutoCommit transaction(*m_database);
 	wxFFileInputStream in(filename);
 	if (Ext(filename) == wxT("zip")) {
-		return FbImportZip(*this, in, filename).Save(progress, update);
+		return FbImportZip(*this, in, filename).Save(progress, only_new);
 	} else {
-		return FbImportBook(*this, in, filename).Save();
+		return FbImportBook(*this, in, filename).Save(only_new);
 	}
 }
 
@@ -74,7 +74,7 @@ bool FbImportThread::OnFile(const wxString &filename, bool progress, bool update
 //  FbZipImportThread
 //-----------------------------------------------------------------------------
 
-void FbZipImportThread::DoParse(bool update)
+void FbZipImportThread::DoParse(bool only_new)
 {
 	SetInfo(_("Processing file:"));
 	wxCriticalSectionLocker enter(sm_queue);
@@ -113,14 +113,14 @@ private:
 class FbImportTraverser : public wxDirTraverser
 {
 public:
-	FbImportTraverser(FbDirImportThread * thread, bool update) 
-		: m_thread(thread), m_progress(0), m_update(update) {}
+	FbImportTraverser(FbDirImportThread * thread, bool only_new)
+		: m_thread(thread), m_progress(0), m_only_new(only_new) {}
 
 	virtual wxDirTraverseResult OnFile(const wxString& filename)
 	{
 		if (m_thread->IsClosed()) return wxDIR_STOP;
 		m_thread->DoStep( wxFileName(filename).GetFullName() );
-		m_thread->OnFile(filename, false, m_update);
+		m_thread->OnFile(filename, false, m_only_new);
 		return wxDIR_CONTINUE;
 	}
 
@@ -134,10 +134,10 @@ public:
 private:
 	FbDirImportThread * m_thread;
 	unsigned int m_progress;
-	bool m_update;
+	bool m_only_new;
 };
 
-void FbDirImportThread::DoParse(bool update)
+void FbDirImportThread::DoParse(bool only_new)
 {
 	SetInfo(_("Processing folder:"));
 	wxCriticalSectionLocker enter(sm_queue);
@@ -157,7 +157,7 @@ void FbDirImportThread::DoParse(bool update)
 		DoStart(m_dirname, counter.GetCount());
 	}
 
-	FbImportTraverser traverser(this, update);
+	FbImportTraverser traverser(this, only_new);
 	dir.Traverse(traverser);
 
 	DoFinish();
@@ -169,8 +169,8 @@ void FbDirImportThread::DoParse(bool update)
 //  FbLibImportThread
 //-----------------------------------------------------------------------------
 
-FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import, bool update)
-	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import), m_update(update)
+FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import, bool only_new)
+	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import), m_only_new(only_new)
 {
 	wxURL(MyRuLib::HomePage()).GetProtocol();
 }
@@ -261,7 +261,7 @@ bool FbLibImportThread::Execute()
 		SetRoot(m_dir);
 		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
 		FbCounter counter(database);
-		DoParse(m_update);
+		DoParse(m_only_new);
 		counter.Execute();
 	}
 
