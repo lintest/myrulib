@@ -114,6 +114,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
     EVT_AUINOTEBOOK_ALLOW_DND(wxID_ANY, FbMainFrame::OnAllowNotebookDnD)
 	EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, FbMainFrame::OnNotebookChanged)
 	EVT_AUINOTEBOOK_PAGE_CLOSED(wxID_ANY, FbMainFrame::OnNotebookClosed)
+	EVT_IDLE(FbMainFrame::OnIdle)
 END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
@@ -727,11 +728,6 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 	}
 }
 
-void FbMainFrame::SetStatus(const wxString &text)
-{
-	m_ProgressBar.SetStatusText(text, 2);
-}
-
 void FbMainFrame::OnFullScreen(wxCommandEvent& event)
 {
 	bool show = !IsFullScreen();
@@ -858,3 +854,16 @@ void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 		if (wxIsKindOf(window, FbFrameBase)) window->ProcessEvent(event);
 	}
 }
+
+void FbMainFrame::OnIdle( wxIdleEvent & event)
+{
+	FbFrameBase * child = wxDynamicCast(GetActiveChild(), FbFrameBase);
+	int count = child ? child->GetBookCount(): 0;
+	wxString msg;
+	if (count) {
+		msg = wxString::Format(wxT(" %d "), count);
+		msg << wxPLURAL("book", "books", count);
+	}
+	m_ProgressBar.SetStatusText(msg, 2);
+}
+

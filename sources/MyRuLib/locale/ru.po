@@ -2004,8 +2004,17 @@ msgstr "Свойства"
 msgid "Maximum width of the cover image"
 msgstr "Максимальная ширина картинки с обложки"
 
+msgid "&Edit"
+msgstr "&Правка"
+
+msgid "Cut"
+msgstr "Вырезать"
+
 msgid "Copy"
 msgstr "Копировать"
+
+msgid "Paste"
+msgstr "Вставить"
 
 msgid "Select action:"
 msgstr "Выберите действие:"

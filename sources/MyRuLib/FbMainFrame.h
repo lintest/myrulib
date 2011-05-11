@@ -18,7 +18,6 @@ class FbMainFrame : public wxFrame
 		FbMainFrame();
 		virtual ~FbMainFrame();
 		virtual wxString GetTitle() const;
-		void SetStatus(const wxString &text = wxEmptyString);
 		void Localize(int language);
 		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
 	protected:
@@ -106,6 +105,7 @@ class FbMainFrame : public wxFrame
 		void OnNotebookClosed(wxAuiNotebookEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
 		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
+		void OnIdle( wxIdleEvent & event);
 		DECLARE_EVENT_TABLE()
 		friend class FbEventLocker;
 };

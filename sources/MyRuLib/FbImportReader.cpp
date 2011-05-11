@@ -71,7 +71,7 @@ wxZipEntry * FbImportZip::GetInfo(const wxString & filename)
 	return (it == m_map.end()) ? NULL : it->second;
 }
 
-int FbImportZip::Save(bool progress)
+int FbImportZip::Save(bool progress, bool update)
 {
 	{
 		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
@@ -80,6 +80,8 @@ int FbImportZip::Save(bool progress)
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		m_id = result.NextRow() ? result.GetInt(0) : 0;
 	}
+
+	if (m_id && !update) return 0;
 
 	wxString sql = m_id ?
 		wxT("UPDATE archives SET file_name=?,file_path=?,file_size=?,file_count=? WHERE id=?") :

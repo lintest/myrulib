@@ -32,11 +32,11 @@ public:
 		virtual void UpdateFonts(bool refresh = true);
 		wxString GetFilterSQL() { return m_filter.GetSQL(); };
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
-		void UpdateStatus();
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
 		void RefreshBooks() { if (m_BooksPanel && m_BooksPanel->m_BookList) m_BooksPanel->m_BookList->Refresh(); }
+		int GetBookCount() { return m_BookCount; }
 	protected:
 		void CreateControls(bool select);
 		virtual void CreateColumns() = 0;
@@ -53,7 +53,6 @@ public:
 		FbFilterObj m_filter;
 		int m_BookCount;
 	private:
-		void OnActivated(wxActivateEvent & event);
 		void OnBooksCount(FbCountEvent& event);
 		void OnDirection(wxCommandEvent& event);
 		void OnChangeOrder(wxCommandEvent& event);

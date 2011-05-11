@@ -9,7 +9,7 @@ FbMenuBar::MenuFrame::MenuFrame()
 	Append(ID_FRAME_GENR, _("Genres"));
 	Append(ID_FRAME_SEQN, _("Series"));
 	Append(ID_FRAME_DATE, _("Calendar"));
-	Append(ID_FRAME_ARCH, _("Archive"));
+	Append(ID_FRAME_ARCH, _("Archive"))->Enable(false);
 	AppendSeparator();
 	Append(ID_FRAME_FLDR, _("My folders"));
 	Append(ID_FRAME_DOWN, _("Downloads"));
@@ -81,6 +81,7 @@ FbFrameMenu::MenuEdit::MenuEdit()
 	AppendImg(wxID_CUT, _("Cut") + (wxString)wxT("\tCtrl+X"), wxART_CUT);
 	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
 	AppendImg(wxID_PASTE, _("Paste") + (wxString)wxT("\tCtrl+V"), wxART_PASTE);
+	AppendImg(wxID_DELETE, _("Delete") + (wxString)wxT("\tDel"), wxART_DELETE);
 	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));

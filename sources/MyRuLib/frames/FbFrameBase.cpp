@@ -13,7 +13,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_COMMAND(ID_AUTHOR_INFO, fbEVT_BOOK_ACTION, FbFrameBase::OnSubmenu)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
-	EVT_ACTIVATE(FbFrameBase::OnActivated)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExportBooks)
 	EVT_MENU(wxID_COPY, FbFrameBase::OnSubmenu)
 	EVT_MENU(wxID_SELECTALL, FbFrameBase::OnSubmenu)
@@ -94,8 +93,6 @@ void FbFrameBase::CreateControls(bool select)
 void FbFrameBase::Localize(bool bUpdateMenu)
 {
 //	FbAuiMDIChildFrame::Localize(bUpdateMenu);
-	if (bUpdateMenu) UpdateStatus();
-
 	if (m_MasterList) {
 		m_MasterList->EmptyColumns();
 		CreateColumns();
@@ -146,12 +143,6 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 	UpdateBooklist();
 }
 
-void FbFrameBase::OnActivated(wxActivateEvent & event)
-{
-	UpdateStatus();
-	event.Skip();
-}
-
 void FbFrameBase::UpdateFonts(bool refresh)
 {
 	if (m_MasterList) {
@@ -192,22 +183,12 @@ void FbFrameBase::OnBooksCount(FbCountEvent& event)
 {
 	if (event.GetInfo() == GetInfo()) {
 		m_BookCount = event.GetCount();
-		if (m_BookCount == 0) FbCommandEvent(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING).Post(this);
+		if (m_BookCount == 0 && GetId() == ID_FRAME_FIND) {
+			FbCommandEvent event(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING);
+			event.SetEventObject(this);
+			event.Post(this);
+		}
 	}
-	UpdateStatus();
-}
-
-void FbFrameBase::UpdateStatus()
-{
-/*
-	FbMainFrame * frame = wxDynamicCast(GetMDIParentFrame(), FbMainFrame);
-	if (frame == NULL) return;
-	if (m_BookCount) {
-		wxString msg = wxString::Format(wxT(" %d "), m_BookCount);
-		msg << wxPLURAL("book", "books", m_BookCount);
-		frame->SetStatus(msg);
-	} else frame->SetStatus();
-*/
 }
 
 void FbFrameBase::ShowFullScreen(bool show)
@@ -317,3 +298,4 @@ void FbFrameBase::OnIdleSplitter( wxIdleEvent& )
 	SetSashGravity( 0.333 );
 	m_lastSize = GetSize();
 }
+

@@ -30,6 +30,7 @@ class FbDataOpenDlg : public FbDialog
 	private:
 		wxString GetFilename();
 		wxString GetDirname();
+		bool GetUpdate();
 	private:
 		FbChoiceStr m_action;
 		wxComboBox m_file;

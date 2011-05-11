@@ -22,7 +22,7 @@ class FbImportZip
 {
 	public:
 		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname);
-		int Save(bool progress);
+		int Save(bool progress, bool update);
 	public:
 		bool IsOk() { return m_ok; };
 	private:
