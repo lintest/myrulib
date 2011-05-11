@@ -31,6 +31,7 @@ static const char * blank_xpm[] = {
 void * FbParamsDlg::LoadThread::Entry()
 {
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	database.AttachConfig();
 	LoadScripts(database);
 	LoadTypes(database);
@@ -53,6 +54,7 @@ void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 		ORDER BY key, b.file_type \
 	 ");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
 		wxString type = result.GetString(0);
@@ -67,6 +69,7 @@ void FbParamsDlg::LoadThread::LoadScripts(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, name, text FROM script ORDER BY id");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
 		model->Append(new ScriptData(result));
@@ -609,6 +612,7 @@ FbParamsDlg::FbParamsDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 FbParamsDlg::~FbParamsDlg()
 {
+	m_thread.Close();
 	m_thread.Wait();
 }
 

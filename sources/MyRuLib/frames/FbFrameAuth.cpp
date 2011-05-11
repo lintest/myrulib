@@ -77,7 +77,10 @@ void FbFrameAuth::OnChoiceLetter(wxCommandEvent& event)
 void FbFrameAuth::CreateMasterThread()
 {
 	m_MasterList->AssignModel(NULL);
-	if (m_MasterThread) m_MasterThread->Wait();
+	if (m_MasterThread) {
+		m_MasterThread->Close();
+		m_MasterThread->Wait();
+	}
 	wxDELETE(m_MasterThread);
 	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn());
 	m_MasterThread->Execute();

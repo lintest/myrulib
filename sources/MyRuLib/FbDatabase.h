@@ -4,6 +4,8 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 
+class FbThread;
+
 wxString Lower(const wxString & input);
 
 wxString Upper(const wxString & input);
@@ -94,6 +96,7 @@ class FbDatabase: public wxSQLite3Database
 		static const wxString & GetConfigName();
 		static wxString GetConfigPath();
 		void AttachConfig();
+		void JoinThread(FbThread * thread);
 	protected:
 		static FbCyrillicCollation sm_collation;
 	private:

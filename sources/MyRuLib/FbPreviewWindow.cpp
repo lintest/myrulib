@@ -37,7 +37,7 @@ FbPreviewWindow::~FbPreviewWindow()
 {
 	m_thread->Close();
 	m_thread->Wait();
-	delete m_thread;
+	wxDELETE(m_thread);
 }
 
 void FbPreviewWindow::Reset(const FbViewContext &ctx, const FbViewItem &item)

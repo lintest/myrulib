@@ -4,6 +4,7 @@
 #include "FbDataPath.h"
 #include "FbGenres.h"
 #include <wx/tokenzr.h>
+#include <sqlite3.h>
 
 #define DB_DATABASE_VERSION 12
 #define DB_CONFIG_VERSION 4
@@ -313,6 +314,16 @@ void FbDatabase::AttachConfig()
 	wxSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, GetConfigName());
 	stmt.ExecuteUpdate();
+}
+
+static int DatabaseThreadCallback(void * data)
+{
+	return data && ((FbThread*)data)->IsClosed();
+}
+
+void FbDatabase::JoinThread(FbThread * thread)
+{
+	sqlite3_progress_handler( (sqlite3*) GetDatabaseHandle(), 100, DatabaseThreadCallback, thread);
 }
 
 //-----------------------------------------------------------------------------

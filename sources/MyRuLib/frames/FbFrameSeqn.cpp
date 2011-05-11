@@ -88,8 +88,11 @@ wxToolBar * FbFrameSeqn::CreateToolBar(long style, wxWindowID winid, const wxStr
 void FbFrameSeqn::CreateMasterThread()
 {
 	m_MasterList->AssignModel(NULL);
-	if (m_MasterThread) m_MasterThread->Wait();
-	wxDELETE(m_MasterThread);
+	if (m_MasterThread) {
+		m_MasterThread->Close();
+		m_MasterThread->Wait();
+		wxDELETE(m_MasterThread);
+	}
 	m_MasterThread = new FbSeqnListThread(this, m_info, m_MasterList->GetSortedColumn());
 	m_MasterThread->Execute();
 }

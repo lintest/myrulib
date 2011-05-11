@@ -11,6 +11,7 @@
 +#else
 +    void wxSQLite3_Error(int errorCode, const wxString& errorMsg)
 +    {
++        if (errorCode == 9) return;
 +        wxString m_errorMessage =
 +            wxSQLite3Exception::ErrorCodeAsString(errorCode) + wxT("[") +
 +            wxString::Format(wxT("%d"), errorCode) + wxT("]: ") +

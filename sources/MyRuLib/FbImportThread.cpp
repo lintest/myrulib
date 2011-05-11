@@ -36,6 +36,7 @@ void * FbImportThread::Entry()
 	SetRoot(wxGetApp().GetLibPath());
 
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	m_database = &database;
 
 	FbCounter counter(database);

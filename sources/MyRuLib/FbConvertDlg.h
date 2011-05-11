@@ -41,11 +41,11 @@ class FbConvertDlg : public FbDialog
 				wxLog * m_old;
 				DECLARE_NO_COPY_CLASS(ExportLog)
 		};
-		class JoinedThread: public wxThread
+		class JoinedThread: public FbThread
 		{
 			public:
 				JoinedThread(FbConvertDlg * parent)
-					: wxThread(wxTHREAD_JOINABLE), m_parent(parent) {}
+					: FbThread(wxTHREAD_JOINABLE), m_parent(parent) {}
 				void Execute();
 			protected:
 				virtual void OnExit();

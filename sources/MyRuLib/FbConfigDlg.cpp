@@ -17,6 +17,7 @@
 void * FbConfigDlg::LoadThread::Entry()
 {
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	LoadTypes(database);
 	return NULL;
 }
@@ -38,6 +39,7 @@ void FbConfigDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 	 ");
 
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
 		wxString type = result.GetString(0);
@@ -217,6 +219,7 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 FbConfigDlg::~FbConfigDlg()
 {
+	m_thread.Close();
 	m_thread.Wait();
 }
 

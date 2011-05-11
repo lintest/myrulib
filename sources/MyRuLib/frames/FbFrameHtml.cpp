@@ -47,6 +47,7 @@ FbFrameHtml::FbFrameHtml(wxAuiNotebook * parent, int id)
 FbFrameHtml::~FbFrameHtml()
 {
 	if (m_thread) {
+		m_thread->Close();
 		m_thread->Wait();
 		wxDELETE(m_thread);
 	}

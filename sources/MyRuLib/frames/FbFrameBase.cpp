@@ -67,7 +67,10 @@ FbFrameBase::FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxStrin
 
 FbFrameBase::~FbFrameBase()
 {
-	if (m_MasterThread) m_MasterThread->Wait();
+	if (m_MasterThread) {
+		m_MasterThread->Close();
+		m_MasterThread->Wait();
+	}
 	wxDELETE(m_MasterThread);
 }
 

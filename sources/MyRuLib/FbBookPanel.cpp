@@ -86,7 +86,7 @@ FbBookPanel::~FbBookPanel()
 {
 	m_thread->Close();
 	m_thread->Wait();
-	delete m_thread;
+	wxDELETE(m_thread);
 }
 
 void FbBookPanel::Localize()

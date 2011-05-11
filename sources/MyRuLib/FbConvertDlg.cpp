@@ -355,8 +355,11 @@ FbConvertDlg::FbConvertDlg( wxWindow* parent, wxWindowID id, const wxString& tit
 FbConvertDlg::~FbConvertDlg()
 {
 	wxSafeYield(this);
-	if (m_thread) m_thread->Wait();
-	wxDELETE(m_thread);
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
 	wxSafeYield(this);
 }
 
@@ -544,8 +547,11 @@ void FbConvertDlg::OnScriptRun(wxCommandEvent& event)
 
 void FbConvertDlg::OnScriptExit(wxCommandEvent& event)
 {
-	if (m_thread) m_thread->Wait();
-	wxDELETE(m_thread);
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
 	Start();
 }
 

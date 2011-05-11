@@ -48,11 +48,11 @@ class FbConfigDlg : private FbDialog
 			public:
 				PanelTypes(wxWindow *parent);
 		};
-		class LoadThread: public wxThread
+		class LoadThread: public FbThread
 		{
 			public:
 				LoadThread(wxEvtHandler * frame)
-					:wxThread(wxTHREAD_JOINABLE), m_frame(frame) {}
+					: FbThread(wxTHREAD_JOINABLE), m_frame(frame) {}
 			protected:
 				virtual void * Entry();
 			private:

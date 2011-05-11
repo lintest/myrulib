@@ -24,6 +24,7 @@ void * FbAlphabetThread::Entry()
 	wxArrayString items;
 	wxString sql = wxT("SELECT distinct letter, count(id) FROM authors GROUP BY letter ORDER BY letter");
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	wxSQLite3ResultSet set = database.ExecuteQuery(sql);
 	while (set.NextRow()) {
 		pos++;
