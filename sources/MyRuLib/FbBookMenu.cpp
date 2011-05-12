@@ -80,7 +80,7 @@ void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
 
-	Append(wxID_DELETE, _("Delete book"));
+	AppendImg(wxID_DELETE, _("Delete book"), wxART_DELETE);
 	AppendSeparator();
 
 	if (bShowOrder) Append(wxID_ANY, _("Sort by"), new FbMenuSort);
