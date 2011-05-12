@@ -251,7 +251,7 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 	if (!m_master) return;
 	FbBookMenu menu(this, m_BookList.GetCurrent(), m_BookList.GetBook());
 	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
-	PopupMenu(&menu, pos);
+	m_BookList.PopupMenu(&menu, pos);
 }
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)

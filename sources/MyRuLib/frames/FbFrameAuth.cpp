@@ -141,7 +141,7 @@ void FbFrameAuth::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
-	PopupMenu(&menu, pos.x, pos.y);
+	m_MasterList->PopupMenu(&menu, pos.x, pos.y);
 }
 
 void FbFrameAuth::OnMasterAppend(wxCommandEvent& event)

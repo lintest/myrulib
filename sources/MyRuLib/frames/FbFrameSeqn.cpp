@@ -136,7 +136,7 @@ void FbFrameSeqn::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
-	PopupMenu(&menu, pos.x, pos.y);
+	m_MasterList->PopupMenu(&menu, pos.x, pos.y);
 }
 
 void FbFrameSeqn::OnMasterAppend(wxCommandEvent& event)
