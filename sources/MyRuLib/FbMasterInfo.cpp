@@ -20,6 +20,7 @@ void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread, const 
 	if (thread->IsClosed()) return NULL;
 
 	FbCommonDatabase database;
+	database.JoinThread(thread);
 	FbGenreFunction func_genre;
 	FbAggregateFunction func_aggregate;
 	database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
@@ -37,7 +38,7 @@ void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread, const 
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	Bind(stmt);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (thread->IsClosed()) return NULL;
+	if (!result.IsOk()) return NULL;
 
 	switch (GetMode()) {
 		case FB2_MODE_LIST: MakeList(owner, thread, result); break;

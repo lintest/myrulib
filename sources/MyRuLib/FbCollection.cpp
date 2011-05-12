@@ -140,6 +140,7 @@ FbCollection::FbCollection(const wxString &filename)
 	m_database.Open(filename);
 	m_database.AttachConfig();
 	m_database.CreateFunction(wxT("AGGREGATE"), 1, m_aggregate);
+	m_database.CreateFullText();
 	LoadParams();
 }
 

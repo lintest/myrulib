@@ -17,6 +17,31 @@ class FbMasterData;
 
 class FbMasterThread;
 
+class FbBookViewCtrl
+	: public FbTreeViewCtrl
+{
+private:
+	void Init() {}
+
+private:
+	void OnCopy(wxCommandEvent & event);
+
+	void OnSelect(wxCommandEvent & event) {
+		SelectAll(true);
+	}
+	void OnUnselect(wxCommandEvent & event) {
+		SelectAll(false);
+	}
+	void OnEnableUI(wxUpdateUIEvent & event) {
+		event.Enable(GetModel());
+	}
+	void OnDisableUI(wxUpdateUIEvent & event) {
+		event.Enable(false);
+	}
+	DECLARE_CLASS(FbBookViewCtrl)
+	DECLARE_EVENT_TABLE()
+};
+
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
@@ -33,8 +58,8 @@ class FbBookPanel: public wxSplitterWindow
 		wxString GetSelected();
 		const FbMasterInfo & GetInfo() const { return m_master; };
 		void DoPopupMenu(wxWindowID id);
+		FbTreeViewCtrl & GetBookList() { return m_BookList; }
 	public:
-		FbTreeViewCtrl * m_BookList;
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
@@ -49,18 +74,15 @@ class FbBookPanel: public wxSplitterWindow
 		size_t GetSelected(wxArrayInt &items);
 		void ResetPreview();
 	private:
-		FbPreviewWindow * m_BookInfo;
+		FbBookViewCtrl m_BookList;
+		FbPreviewWindow m_BookInfo;
 		void SetViewMode(int mode);
 		void DoFolderAdd(const int folder);
 		static void DoDeleteDownload(const wxString &sel, const int folder);
 		static void DoCreateDownload(const wxString &sel, int count = 1);
 		int GetRatingColumn();
 		void ShowContextMenu(const wxPoint& pos);
-		wxString m_AuthorName;
 		FbListMode m_listmode;
-		wxTreeItemId m_AuthorItem;
-		wxTreeItemId m_SequenceItem;
-		int m_selected;
 		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
 		wxWindowID m_owner;
@@ -88,9 +110,7 @@ class FbBookPanel: public wxSplitterWindow
 		void OnListModel( FbArrayEvent& event );
 		void OnListArray( FbArrayEvent& event );
 		void OnTreeModel( FbModelEvent& event );
-		void OnCopy(wxCommandEvent& event);
-		void OnSelectAll(wxCommandEvent& event);
-		void OnUnselectAll(wxCommandEvent& event);
+		void OnIdleSplitter( wxIdleEvent& );
 		DECLARE_CLASS(FbBookPanel)
 		DECLARE_EVENT_TABLE()
 };

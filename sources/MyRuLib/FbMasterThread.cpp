@@ -71,12 +71,12 @@ void * FbMasterThread::Entry()
 		}
 
 		if (m_thread) {
+			m_thread->Close();
 			m_thread->Wait();
 			wxDELETE(m_thread);
 		}
 
-		m_thread = new FbBooksThread(m_owner, info, filter);
-		if (m_thread) m_thread->Execute();
+		(m_thread = new FbBooksThread(m_owner, info, filter))->Execute();
 	}
 	return NULL;
 }

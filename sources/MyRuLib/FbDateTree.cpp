@@ -16,8 +16,10 @@ void * FbDateTreeThread::Entry()
 	model->SetRoot(root);
 
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	wxString sql = wxT("SELECT id, lib_min, lib_max, lib_num, usr_min, usr_max, usr_num FROM dates ORDER BY id DESC");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (!result.IsOk()) return NULL;
 
 	FbDateYearData * year = NULL;
 	FbDateMonthData * mnth = NULL;

@@ -36,10 +36,11 @@ void * FbImportThread::Entry()
 	SetRoot(wxGetApp().GetLibPath());
 
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	m_database = &database;
 
 	FbCounter counter(database);
-	DoParse();
+	DoParse(true);
 	counter.Execute();
 
 	return NULL;
@@ -58,13 +59,15 @@ wxString FbImportThread::GetAbsolute(const wxString &filename)
 	return m_fullpath ? filename : (wxString)wxEmptyString;
 }
 
-bool FbImportThread::OnFile(const wxString &filename, bool progress)
+bool FbImportThread::OnFile(const wxString &filename, bool progress, bool only_new)
 {
 	FbAutoCommit transaction(*m_database);
 	wxFFileInputStream in(filename);
 	if (Ext(filename) == wxT("zip")) {
+		if (only_new && FbImportZip::Exists(*m_database, GetRelative(filename))) return false;
 		return FbImportZip(*this, in, filename).Save(progress);
 	} else {
+		if (only_new && FbImportBook::Exists(*m_database, GetRelative(filename))) return false;
 		return FbImportBook(*this, in, filename).Save();
 	}
 }
@@ -73,7 +76,7 @@ bool FbImportThread::OnFile(const wxString &filename, bool progress)
 //  FbZipImportThread
 //-----------------------------------------------------------------------------
 
-void FbZipImportThread::DoParse()
+void FbZipImportThread::DoParse(bool only_new)
 {
 	SetInfo(_("Processing file:"));
 	wxCriticalSectionLocker enter(sm_queue);
@@ -82,7 +85,7 @@ void FbZipImportThread::DoParse()
 	wxLogMessage(_("Start import %d file(s)"), count);
 	for (size_t i = 0; i < count; i++) {
 		if (IsClosed()) break;
-		OnFile(m_filelist[i], true);
+		OnFile(m_filelist[i], true, true);
 	}
 	wxLogMessage(_("Finish import %d file(s)"), count);
 }
@@ -112,13 +115,14 @@ private:
 class FbImportTraverser : public wxDirTraverser
 {
 public:
-	FbImportTraverser(FbDirImportThread* thread) : m_thread(thread), m_progress(0) { };
+	FbImportTraverser(FbDirImportThread * thread, bool only_new)
+		: m_thread(thread), m_progress(0), m_only_new(only_new) {}
 
 	virtual wxDirTraverseResult OnFile(const wxString& filename)
 	{
 		if (m_thread->IsClosed()) return wxDIR_STOP;
 		m_thread->DoStep( wxFileName(filename).GetFullName() );
-		m_thread->OnFile(filename, false);
+		m_thread->OnFile(filename, false, m_only_new);
 		return wxDIR_CONTINUE;
 	}
 
@@ -130,11 +134,12 @@ public:
 	}
 
 private:
-	FbDirImportThread *m_thread;
+	FbDirImportThread * m_thread;
 	unsigned int m_progress;
+	bool m_only_new;
 };
 
-void FbDirImportThread::DoParse()
+void FbDirImportThread::DoParse(bool only_new)
 {
 	SetInfo(_("Processing folder:"));
 	wxCriticalSectionLocker enter(sm_queue);
@@ -154,7 +159,7 @@ void FbDirImportThread::DoParse()
 		DoStart(m_dirname, counter.GetCount());
 	}
 
-	FbImportTraverser traverser(this);
+	FbImportTraverser traverser(this, only_new);
 	dir.Traverse(traverser);
 
 	DoFinish();
@@ -166,8 +171,8 @@ void FbDirImportThread::DoParse()
 //  FbLibImportThread
 //-----------------------------------------------------------------------------
 
-FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import)
-	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import)
+FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import, bool only_new)
+	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import), m_only_new(only_new)
 {
 	wxURL(MyRuLib::HomePage()).GetProtocol();
 }
@@ -247,6 +252,8 @@ bool FbLibImportThread::Execute()
 	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
 	database.Open(m_file, wxEmptyString, flags);
 	if (!database.IsOpen()) return false;
+	database.JoinThread(this);
+	database.CreateFullText(false, this);
 	database.SetText(DB_LIBRARY_DIR, m_dir);
 	m_database = &database;
 
@@ -256,7 +263,7 @@ bool FbLibImportThread::Execute()
 		SetRoot(m_dir);
 		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
 		FbCounter counter(database);
-		DoParse();
+		DoParse(m_only_new);
 		counter.Execute();
 	}
 

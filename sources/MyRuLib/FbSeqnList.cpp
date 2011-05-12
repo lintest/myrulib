@@ -16,6 +16,7 @@ bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
 void * FbSeqnListThread::Entry()
 {
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	if (!m_string.IsEmpty() && IsFullText(database)) {
 		DoFullText(database);
 	} else {
@@ -47,6 +48,7 @@ void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 
 void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
 {
+	if (!result.IsOk()) return;
 	wxWindowID id = ID_MODEL_CREATE;
 	size_t length = fbLIST_CACHE_SIZE;
 	size_t count = 0;

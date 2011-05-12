@@ -14,8 +14,8 @@ IMPLEMENT_CLASS(FbFrameSeqn, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 	EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameSeqn::OnColClick)
-	EVT_TEXT_ENTER(ID_SEQUENCE_FIND, FbFrameSeqn::OnFindEnter )
-	EVT_BUTTON(ID_SEQUENCE_FIND, FbFrameSeqn::OnFindEnter )
+	EVT_TEXT_ENTER(ID_MASTER_FIND, FbFrameSeqn::OnFindEnter )
+	EVT_BUTTON(ID_MASTER_FIND, FbFrameSeqn::OnFindEnter )
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameSeqn::OnContextMenu)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameSeqn::OnMasterAppend)
 	EVT_MENU(ID_MASTER_MODIFY, FbFrameSeqn::OnMasterModify)
@@ -25,42 +25,33 @@ BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameSeqn::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameSeqn::FbFrameSeqn(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_SEQN, GetTitle()), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
+FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_SEQN, GetTitle(), select),
+		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
-	CreateControls();
-}
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 
-void FbFrameSeqn::CreateControls()
-{
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
+	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-
-	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
-	m_FindText = new FbSearchCombo( panel, ID_SEQUENCE_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
-	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-	bsMasterList->Add( m_FindText, 0, wxEXPAND, 0 );
-
-	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
-	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
 
-	panel->SetSizer( bsMasterList );
+	CreateBooksPanel(this);
+
+	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
+	m_FindText->SetMinSize( wxSize( 200,-1 ) );
+
+	sizer->Add( m_FindText, 0, wxEXPAND, 0 );
+	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+	panel->SetSizer( sizer );
 	panel->Layout();
-	bsMasterList->Fit( panel );
+	sizer->Fit( panel );
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(panel, m_BooksPanel, 160);
+	SplitVertically(panel, m_BooksPanel);
 
-	FbFrameBase::CreateControls();
+	CreateControls(select);
 
 	FindSequence(wxEmptyString);
 }
@@ -71,35 +62,14 @@ void FbFrameSeqn::CreateColumns()
 	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 }
 
-wxToolBar * FbFrameSeqn::CreateToolBar(long style, wxWindowID winid, const wxString& name)
-{
-	return NULL;
-
-	wxFont font = FbParams::GetFont(FB_FONT_TOOL);
-
-	wxToolBar * toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style, name);
-	toolbar->SetFont(font);
-
-	m_FindInfo = new wxStaticText( toolbar, wxID_ANY, (wxString)_("Ser.") + wxT(':'), wxDefaultPosition, wxDefaultSize, 0 );
-	m_FindInfo->Wrap( -1 );
-	m_FindInfo->SetFont(font);
-	toolbar->AddControl( m_FindInfo );
-
-	m_FindText = new FbSearchCombo( toolbar, ID_SEQUENCE_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
-	m_FindText->SetMinSize( wxSize( 200,-1 ) );
-	m_FindText->SetFont(font);
-	toolbar->AddControl( m_FindText );
-
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
-	toolbar->Realize();
-	return toolbar;
-}
-
 void FbFrameSeqn::CreateMasterThread()
 {
 	m_MasterList->AssignModel(NULL);
-	if (m_MasterThread) m_MasterThread->Wait();
-	wxDELETE(m_MasterThread);
+	if (m_MasterThread) {
+		m_MasterThread->Close();
+		m_MasterThread->Wait();
+		wxDELETE(m_MasterThread);
+	}
 	m_MasterThread = new FbSeqnListThread(this, m_info, m_MasterList->GetSortedColumn());
 	m_MasterThread->Execute();
 }
@@ -166,7 +136,7 @@ void FbFrameSeqn::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 	FbSeqnListData * data = wxDynamicCast(&item, FbSeqnListData);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
-	PopupMenu(&menu, pos.x, pos.y);
+	m_MasterList->PopupMenu(&menu, pos.x, pos.y);
 }
 
 void FbFrameSeqn::OnMasterAppend(wxCommandEvent& event)
@@ -222,12 +192,11 @@ void FbFrameSeqn::OnMasterDelete(wxCommandEvent& event)
 FbFrameSeqn::MenuBar::MenuBar()
 {
 	Append(new MenuFile,   _("&File"));
+	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
 	Append(new MenuMaster, _("&Series"));
 	Append(new MenuBook,   _("&Books"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }

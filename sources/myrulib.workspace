@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
-		<Project filename="workspace/expat.cbp" />
+		<Project filename="workspace/faxpp.cbp" />
 		<Project filename="workspace/sqlite3.cbp" />
 		<Project filename="workspace/wxbzipstream.cbp" />
 		<Project filename="workspace/wxsqlite3.cbp" />

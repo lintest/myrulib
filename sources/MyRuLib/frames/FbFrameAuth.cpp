@@ -14,7 +14,7 @@ IMPLEMENT_CLASS(FbFrameAuth, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_COMBOBOX( ID_INIT_LETTER, FbFrameAuth::OnChoiceLetter )
-	EVT_COMBOBOX( ID_CHOICE_LETTER, FbFrameAuth::OnChoiceLetter )
+	EVT_COMBOBOX( ID_MASTER_FIND, FbFrameAuth::OnChoiceLetter )
 	EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuth::OnColClick)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuth::OnContextMenu)
 	EVT_MENU(ID_MASTER_APPEND, FbFrameAuth::OnMasterAppend)
@@ -28,42 +28,32 @@ BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameAuth::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameAuth::FbFrameAuth(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_AUTH, GetTitle())
+FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_AUTH, GetTitle(), select)
+
 {
-	CreateControls();
-}
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
-void FbFrameAuth::CreateControls()
-{
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
-
-	m_LetterList = new FbAlphabetCombo();
-	m_LetterList->Create(panel, ID_CHOICE_LETTER, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
-	bsMasterList->Add( m_LetterList, 0, wxEXPAND, 0 );
-
-	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
-	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
 
-	panel->SetSizer( bsMasterList );
+	CreateBooksPanel(this);
+
+	m_LetterList = new FbAlphabetCombo();
+	m_LetterList->Create(panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
+
+	sizer->Add( m_LetterList, 0, wxEXPAND, 0 );
+	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+	panel->SetSizer( sizer );
 	panel->Layout();
-	bsMasterList->Fit( panel );
+	sizer->Fit( panel );
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(panel, m_BooksPanel, 160);
+	SplitVertically(panel, m_BooksPanel);
 
-	FbFrameBase::CreateControls();
+	CreateControls(select);
 }
 
 void FbFrameAuth::CreateColumns()
@@ -88,7 +78,10 @@ void FbFrameAuth::OnChoiceLetter(wxCommandEvent& event)
 void FbFrameAuth::CreateMasterThread()
 {
 	m_MasterList->AssignModel(NULL);
-	if (m_MasterThread) m_MasterThread->Wait();
+	if (m_MasterThread) {
+		m_MasterThread->Close();
+		m_MasterThread->Wait();
+	}
 	wxDELETE(m_MasterThread);
 	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn());
 	m_MasterThread->Execute();
@@ -148,7 +141,7 @@ void FbFrameAuth::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
-	PopupMenu(&menu, pos.x, pos.y);
+	m_MasterList->PopupMenu(&menu, pos.x, pos.y);
 }
 
 void FbFrameAuth::OnMasterAppend(wxCommandEvent& event)
@@ -231,12 +224,11 @@ FbFrameAuth::MasterMenu::MasterMenu(int id)
 FbFrameAuth::MenuBar::MenuBar()
 {
 	Append(new MenuFile,   _("&File"));
+	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
 	Append(new MenuMaster, _("&Authors"));
 	Append(new MenuBook,   _("&Books"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }

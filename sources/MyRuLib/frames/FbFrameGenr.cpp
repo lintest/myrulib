@@ -13,32 +13,16 @@ BEGIN_EVENT_TABLE(FbFrameGenr, FbFrameBase)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameGenr::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameGenr::FbFrameGenr(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_GENR, GetTitle())
+FbFrameGenr::FbFrameGenr(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_GENR, GetTitle(), select)
 {
-	CreateControls();
-}
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 
-void FbFrameGenr::CreateControls()
-{
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	CreateBooksPanel(this);
+	SplitVertically(m_MasterList, m_BooksPanel);
 
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	bSizer1->Add(splitter, 1, wxEXPAND);
-
-	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
-
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
-
-	SetSizer( bSizer1 );
-
-	FbFrameBase::CreateControls();
+	CreateControls(select);
 	CreateColumns();
 
 	m_MasterThread = new FbGenrListThread(this);
@@ -53,11 +37,24 @@ void FbFrameGenr::CreateColumns()
 	m_MasterList->AssignModel(model);
 }
 
+template <class T>
+class FbAutoPtr
+{
+public:
+	FbAutoPtr(T * ptr): m_ptr(ptr) {}
+	virtual ~FbAutoPtr() { wxDELETE(m_ptr); }
+	T * operator->() { return m_ptr; }
+	bool operator ! () { return ! m_ptr; }
+	operator bool () { return m_ptr; }
+private:
+	T * m_ptr;
+};
+
 void FbFrameGenr::OnModel( FbModelEvent & event )
 {
+	FbAutoPtr<FbListStore> list = wxDynamicCast(event.GetModel(), FbListStore);
 	FbTreeModel * tree = wxDynamicCast(m_MasterList->GetModel(), FbTreeModel);
-	FbListStore * list = wxDynamicCast(event.GetModel(), FbListStore);
-	if (!tree || !list) return ;
+	if (!tree || !list) return;
 
 	FbModelItem root = tree->GetRoot();
 	if (!root) return;

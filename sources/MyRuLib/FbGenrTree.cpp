@@ -52,10 +52,11 @@ FbGenrListData::FbGenrListData(wxSQLite3ResultSet &result)
 void * FbGenrListThread::Entry()
 {
 	FbCommonDatabase database;
+	database.JoinThread(this);
 
 	wxString sql = wxT("SELECT id_genre, COUNT(DISTINCT id_book) FROM genres GROUP BY id_genre");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-
+	if (!result.IsOk()) return NULL;
 	if (IsClosed()) return NULL;
 
 	FbModel * model = new FbListStore;

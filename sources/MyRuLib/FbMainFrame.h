@@ -12,16 +12,20 @@
 #include "FbMasterInfo.h"
 #include "FbWindow.h"
 
-class FbMainFrame: public FbAuiMDIParentFrame
+class FbMainFrame : public wxFrame
 {
 	public:
 		FbMainFrame();
 		virtual ~FbMainFrame();
 		virtual wxString GetTitle() const;
-		void SetStatus(const wxString &text = wxEmptyString);
 		void Localize(int language);
+		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
+	protected:
+		virtual bool ProcessEvent(wxEvent& event);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
+		wxMenuBar * CreateMenuBar(wxWindow * child = NULL);
+		wxWindow * GetActiveChild();
 		void CreateControls();
 		void LoadIcon();
 		wxToolBar * CreateToolBar();
@@ -35,14 +39,16 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void SetTabArt(int id);
 		void SaveFrameList();
 		void RestoreFrameList();
-		void OpenInfo(const FbMasterInfo & info, const wxString & text);
+		void OpenInfo(const FbMasterInfo & info, const wxString & text, wxWindowID winid);
+		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
+		wxEvent * m_LastEvent;
 		wxTextCtrl * m_FindAuthor;
 		wxTextCtrl * m_FindTitle;
 		ProgressBar m_ProgressBar;
 		wxAuiManager m_FrameManager;
-		LimitedTextCtrl m_LOGTextCtrl;
-		wxToolBar * m_toolbar;
+		wxAuiNotebook m_FrameNotebook;
+		LimitedTextCtrl m_LogTextCtrl;
 	private:
 		void OnExit(wxCommandEvent & event);
 		void OnSetup(wxCommandEvent & event);
@@ -93,8 +99,15 @@ class FbMainFrame: public FbAuiMDIParentFrame
 		void OnWindowCloseAll(wxCommandEvent & event);
 		void OnWindowNext(wxCommandEvent & event);
 		void OnWindowPrev(wxCommandEvent & event);
+		void OnFoundNothing(wxCommandEvent & event);
 		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
+		void OnNotebookChanged(wxAuiNotebookEvent& event);
+		void OnNotebookClosed(wxAuiNotebookEvent& event);
+		void OnSubmenu(wxCommandEvent& event);
+		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
+		void OnIdle( wxIdleEvent & event);
 		DECLARE_EVENT_TABLE()
+		friend class FbEventLocker;
 };
 
 #endif // __FBMAINFRAME_H__

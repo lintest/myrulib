@@ -2,6 +2,7 @@
 #include "FbFrameHtml.h"
 #include "FbDatabase.h"
 #include "FbConst.h"
+#include "FbMainMenu.h"
 #include "FbParams.h"
 #include "FbMainMenu.h"
 #include "MyRuLibApp.h"
@@ -16,21 +17,22 @@
 #include "res/modify.xpm"
 #include "res/delete.xpm"
 
-IMPLEMENT_CLASS(FbFrameHtml, FbAuiMDIChildFrame)
+IMPLEMENT_CLASS(FbFrameHtml, wxSplitterWindow)
 
-BEGIN_EVENT_TABLE(FbFrameHtml, FbAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameHtml, wxSplitterWindow)
+	EVT_COMMAND(ID_BOOK_PREVIEW, fbEVT_BOOK_ACTION, FbFrameHtml::OnInfoUpdate)
 	EVT_MENU(ID_HTML_SUBMIT, FbFrameHtml::OnSubmit)
 	EVT_MENU(ID_HTML_MODIFY, FbFrameHtml::OnModify)
-	EVT_MENU(ID_BOOK_PREVIEW, FbFrameHtml::OnInfoUpdate)
 	EVT_MENU(wxID_SAVE, FbFrameHtml::OnSave)
-	EVT_HTML_LINK_CLICKED(ID_HTML_DOCUMENT, FbFrameHtml::OnLinkClicked)
+	EVT_HTML_LINK_CLICKED(ID_PREVIEW_CTRL, FbFrameHtml::OnLinkClicked)
 	EVT_TEXT_ENTER(ID_HTML_CAPTION, FbFrameHtml::OnEnter)
 END_EVENT_TABLE()
 
-FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id):
-	FbAuiMDIChildFrame(parent, ID_FRAME_HTML, GetTitle()),
-	m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id)), m_thread(NULL)
+FbFrameHtml::FbFrameHtml(wxAuiNotebook * parent, int id)
+	: wxSplitterWindow(parent, ID_FRAME_HTML, wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxTAB_TRAVERSAL),
+		m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id)), m_thread(NULL)
 {
+	parent->AddPage( this, GetTitle(), true );
 	static bool bNotLoaded = true;
 	if (bNotLoaded) {
 		wxMemoryFSHandler::AddFile(wxT("modify"), wxBitmap(modify_xpm), wxBITMAP_TYPE_PNG);
@@ -45,6 +47,7 @@ FbFrameHtml::FbFrameHtml(wxAuiMDIParentFrame * parent, int id):
 FbFrameHtml::~FbFrameHtml()
 {
 	if (m_thread) {
+		m_thread->Close();
 		m_thread->Wait();
 		wxDELETE(m_thread);
 	}
@@ -68,23 +71,15 @@ void FbFrameHtml::Load(const wxString & html)
 
 void FbFrameHtml::CreateControls()
 {
-	UpdateMenu();
+	SetMinimumPaneSize(80);
+	SetSashGravity(1);
 
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
+	m_info.Create(this, ID_PREVIEW_CTRL);
 
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_3D);
-	splitter->SetMinimumPaneSize(80);
-	splitter->SetSashGravity(1);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	m_info.Create(splitter, ID_HTML_DOCUMENT);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxSize(-1, 80), wxTAB_TRAVERSAL );
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize(-1, 80), wxTAB_TRAVERSAL );
 	wxBoxSizer * bSizerComment = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizerSubject;
-	bSizerSubject = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer * bSizerSubject = new wxBoxSizer( wxHORIZONTAL );
 
 	wxStaticText * staticText = new wxStaticText( panel, wxID_ANY, _("Comment:"), wxDefaultPosition, wxDefaultSize, 0 );
 	staticText->Wrap( -1 );
@@ -111,17 +106,14 @@ void FbFrameHtml::CreateControls()
 	panel->Layout();
 	bSizerComment->Fit( panel );
 
-	splitter->SplitHorizontally(&m_info, panel, GetClientRect().y - 150);
+	SplitHorizontally(&m_info, panel, GetClientRect().y - 150);
 	m_Caption.SetFocus();
-
-	SetSizer(sizer);
-	Layout();
 }
 
 void FbFrameHtml::Localize(bool bUpdateMenu)
 {
-	SetTitle(GetTitle());
-	FbAuiMDIChildFrame::Localize(bUpdateMenu);
+//	SetTitle(GetTitle());
+//	FbAuiMDIChildFrame::Localize(bUpdateMenu);
 }
 
 void FbFrameHtml::OnSave(wxCommandEvent& event)
@@ -274,6 +266,7 @@ void FbFrameHtml::DoUpdate()
 void FbFrameHtml::UpdateFonts(bool refresh)
 {
 	if (refresh) m_info.SetPage(wxEmptyString);
-	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
+	m_info.UpdateFont(refresh);
 	Reset();
 }
+

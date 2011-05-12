@@ -11,6 +11,10 @@ class FbMenuBar: public wxMenuBar
 			public: MenuFile();
 		};
 
+		class MenuEdit: public FbMenu {
+			public: MenuEdit();
+		};
+
 		class MenuFrame: public FbMenu {
 			public: MenuFrame();
 		};
@@ -18,11 +22,6 @@ class FbMenuBar: public wxMenuBar
 		class MenuLib: public FbMenu {
 			public:
 				MenuLib();
-		};
-
-		class MenuSetup: public FbMenu {
-			public:
-				MenuSetup();
 		};
 
 		class MenuHelp: public FbMenu {
@@ -49,9 +48,6 @@ class FbMenuBar: public wxMenuBar
 			public: MenuPreview();
 		};
 
-		class MenuView: public FbMenu {
-			public: MenuView();
-		};
 };
 
 class FbMainMenu: public FbMenuBar
@@ -73,10 +69,6 @@ class FbFrameMenu: public FbMenuBar
 
 		class MenuBook: public FbMenu {
 			public: MenuBook();
-		};
-
-		class MenuView: public FbMenu {
-			public: MenuView();
 		};
 };
 

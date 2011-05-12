@@ -32,21 +32,30 @@ wxString Md5(md5_context & md5)
 
 WX_DEFINE_OBJARRAY(FbZipEntryList);
 
-FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname):
+int FbImportZip::Exists(wxSQLite3Database &database, const wxString &filename)
+{
+	wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, filename);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return result.NextRow() ? result.GetInt(0) : 0;
+}
+
+FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &filename):
 	m_owner(owner),
 	m_database(*owner.m_database),
 	m_conv(wxT("cp866")),
 	m_zip(in, m_conv),
-	m_filename(owner.GetRelative(zipname)),
-	m_filepath(owner.GetAbsolute(zipname)),
+	m_filename(owner.GetRelative(filename)),
+	m_filepath(owner.GetAbsolute(filename)),
 	m_filesize(in.GetLength()),
 	m_ok(m_zip.IsOk())
 {
 	if (!m_ok) {
-		wxLogError(_("Zip read error %s"), zipname.c_str());
+		wxLogError(_("Zip read error %s"), filename.c_str());
 		return;
 	}
-	wxLogMessage(_("Import zip %s"), m_filename.c_str());
+	wxLogMessage(_("Import zip %s"), filename.c_str());
 
 	while (wxZipEntry * entry = m_zip.GetNextEntry()) {
 		if (entry->GetSize()) {
@@ -131,6 +140,15 @@ void FbImportZip::Make(bool progress)
 //-----------------------------------------------------------------------------
 //  FbImportBook
 //-----------------------------------------------------------------------------
+
+int FbImportBook::Exists(wxSQLite3Database &database, const wxString &filename)
+{
+	wxString sql = wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, filename);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return result.NextRow() ? result.GetInt(0) : 0;
+}
 
 void FbImportBook::NewNode(const wxString &name, const FbStringHash &atts)
 {
@@ -332,12 +350,10 @@ bool FbImportBook::AppendBook()
 }
 bool FbImportBook::AppendFile(int id_book)
 {
-	wxString sql = wxT("SELECT file_name FROM books WHERE id=? AND id_archive=? UNION SELECT file_name FROM files WHERE id_book=? AND id_archive=?");
+	wxString sql = wxT("SELECT file_name FROM books WHERE id=?1 AND id_archive=?2 UNION SELECT file_name FROM files WHERE id_book=?1 AND id_archive=?2");
 	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, id_book);
 	stmt.Bind(2, m_archive);
-	stmt.Bind(3, id_book);
-	stmt.Bind(4, m_archive);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	while (result.NextRow()) {
 		if (result.GetString(0) == m_filename) {

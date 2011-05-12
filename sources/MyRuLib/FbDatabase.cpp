@@ -4,6 +4,7 @@
 #include "FbDataPath.h"
 #include "FbGenres.h"
 #include <wx/tokenzr.h>
+#include <sqlite3.h>
 
 #define DB_DATABASE_VERSION 12
 #define DB_CONFIG_VERSION 4
@@ -315,6 +316,17 @@ void FbDatabase::AttachConfig()
 	stmt.ExecuteUpdate();
 }
 
+static int DatabaseThreadCallback(void * data)
+{
+	return data && ((FbThread*)data)->IsClosed();
+}
+
+void FbDatabase::JoinThread(FbThread * thread)
+{
+	sqlite3 * db = (sqlite3*) GetDatabaseHandle();
+	if (db) sqlite3_progress_handler( db, 100, DatabaseThreadCallback, thread);
+}
+
 //-----------------------------------------------------------------------------
 //  FbCommonDatabase
 //-----------------------------------------------------------------------------
@@ -395,7 +407,6 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 
 	if (!bExists) CreateDatabase();
 	UpgradeDatabase(DB_DATABASE_VERSION);
-	CreateFullText();
 }
 
 void FbMainDatabase::CreateDatabase()
@@ -528,7 +539,7 @@ void FbMainDatabase::DoUpgrade(int version)
 	}
 }
 
-void FbMainDatabase::CreateFullText(bool force)
+void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 {
 	if ( !force && TableExists(wxT("fts_book_content")) ) return;
 
@@ -545,9 +556,16 @@ void FbMainDatabase::CreateFullText(bool force)
 
 	FbLowerFunction	lower;
 	CreateFunction(wxT("LOW"), 1, lower);
+	if (thread && thread->IsClosed()) return;
+
 	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(full_name) FROM authors"));
+	if (thread && thread->IsClosed()) return;
+
 	ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
+	if (thread && thread->IsClosed()) return;
+
 	ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
+	if (thread && thread->IsClosed()) return;
 
 	trans.Commit();
 }

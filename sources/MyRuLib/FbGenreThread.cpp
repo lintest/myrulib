@@ -6,6 +6,7 @@
 void * FbGenreThread::Entry()
 {
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	wxSQLite3Transaction trans(&database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	wxString msg = _("Rebuild the list of genres");

@@ -74,13 +74,13 @@ void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 	if ( m_book > 0 ) Append(ID_BOOK_PAGE, _("Online books page"));
 	AppendSeparator();
 
-	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"));
+	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	AppendSeparator();
 
-	Append(wxID_DELETE, _("Delete book"));
+	AppendImg(wxID_DELETE, _("Delete book"), wxART_DELETE);
 	AppendSeparator();
 
 	if (bShowOrder) Append(wxID_ANY, _("Sort by"), new FbMenuSort);

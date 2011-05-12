@@ -280,9 +280,21 @@ void FbMasterFindInfo::Bind(wxSQLite3Statement &stmt) const
 
 void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)
 {
-	if (thread->IsClosed()) return NULL;
+	if (!DoFind(owner, thread, filter)) {
+		FbCommandEvent event(fbEVT_BOOK_ACTION, ID_FOUND_NOTHING, m_title);
+		wxWindow * frame = ((wxWindow*)owner)->GetParent();
+		event.SetEventObject(frame);
+		event.Post();
+	}
+	return NULL;
+}
+
+bool FbMasterFindInfo::DoFind(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)
+{
+	if (thread->IsClosed()) return false;
 
 	FbCommonDatabase database;
+	database.JoinThread(thread);
 	FbGenreFunction func_genre;
 	FbAggregateFunction func_aggregate;
 	FbSearchFunction func_title(m_title);
@@ -290,7 +302,7 @@ void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread, const 
 	database.CreateFunction(wxT("AGGREGATE"), 1, func_aggregate);
 	database.CreateFunction(wxT("GENRE"), 1, func_genre);
 	database.AttachConfig();
-	if (thread->IsClosed()) return NULL;
+	if (thread->IsClosed()) return false;
 
 	m_auth = !m_author.IsEmpty();
 	m_full = database.TableExists(wxT("fts_book"));
@@ -312,12 +324,14 @@ void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread, const 
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_full) Bind(stmt);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (thread->IsClosed()) return NULL;
+	if (!result.IsOk()) return false;
+
+	bool ok = !result.Eof();
 
 	switch (GetMode()) {
 		case FB2_MODE_LIST: MakeList(owner, thread, result); break;
 		case FB2_MODE_TREE: MakeTree(owner, thread, result); break;
 	}
 
-	return NULL;
+	return ok;
 }

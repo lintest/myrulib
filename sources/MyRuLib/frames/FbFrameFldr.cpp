@@ -21,47 +21,33 @@ BEGIN_EVENT_TABLE(FbFrameFldr, FbFrameBase)
 	EVT_MENU(ID_DELETE_FOLDER, FbFrameFldr::OnFolderDelete)
 END_EVENT_TABLE()
 
-FbFrameFldr::FbFrameFldr(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_FLDR, GetTitle())
+FbFrameFldr::FbFrameFldr(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_FLDR, GetTitle(), select)
 {
-	CreateControls();
-}
-
-void FbFrameFldr::CreateControls()
-{
-	wxBoxSizer* sizer;
-	sizer = new wxBoxSizer( wxVERTICAL );
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	wxPanel * panel = new wxPanel( splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer * bsMasterList = new wxBoxSizer( wxVERTICAL );
+	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
 	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
-	m_ToolBar.AddTool( ID_APPEND_FOLDER, _("Append"), wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK));
-	m_ToolBar.AddTool( ID_MODIFY_FOLDER, _("Modify"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
-	m_ToolBar.AddTool( ID_DELETE_FOLDER, _("Delete"), wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK));
+	m_ToolBar.AddTool( ID_APPEND_FOLDER, _("Append"), wxART_ADD_BOOKMARK);
+	m_ToolBar.AddTool( ID_MODIFY_FOLDER, _("Modify"), wxART_FILE_OPEN);
+	m_ToolBar.AddTool( ID_DELETE_FOLDER, _("Delete"), wxART_DEL_BOOKMARK);
 	m_ToolBar.Realize();
-	bsMasterList->Add( &m_ToolBar, 0, wxEXPAND, 0 );
+	sizer->Add( &m_ToolBar, 0, wxEXPAND, 0 );
 
-	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
-	bsMasterList->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
+	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
 
-	panel->SetSizer( bsMasterList );
+	panel->SetSizer( sizer );
 	panel->Layout();
-	bsMasterList->Fit( panel );
+	sizer->Fit( panel );
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(panel, m_BooksPanel, 160);
+	CreateBooksPanel(this);
+	SplitVertically(panel, m_BooksPanel);
 
-	SetSizer( sizer );
-
-	FbFrameBase::CreateControls();
+	CreateControls(select);
 	FillFolders();
 }
 
@@ -122,7 +108,7 @@ void FbFrameFldr::OnFavoritesDel(wxCommandEvent & event)
 	database.AttachConfig();
 	database.ExecuteUpdate(sql);
 
-	m_BooksPanel->m_BookList->Delete();
+	m_BooksPanel->GetBookList().Delete();
 }
 
 void FbFrameFldr::OnFolderAppend(wxCommandEvent & event)

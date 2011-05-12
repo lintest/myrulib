@@ -15,29 +15,18 @@ BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameDate::OnBooksCount)
 END_EVENT_TABLE()
 
-FbFrameDate::FbFrameDate(wxAuiMDIParentFrame * parent)
-	:FbFrameBase(parent, ID_FRAME_DATE, GetTitle()), m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
+FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
+	: FbFrameBase(parent, ID_FRAME_DATE, GetTitle(), select),
+		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
-	CreateControls();
-}
-
-void FbFrameDate::CreateControls()
-{
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	SetSizer(sizer);
-
-	wxSplitterWindow * splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxSP_NOBORDER);
-	splitter->SetMinimumPaneSize(50);
-	splitter->SetSashGravity(0.33);
-	sizer->Add(splitter, 1, wxEXPAND);
-
-	m_MasterList = new FbTreeViewCtrl(splitter, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	CreateColumns();
 
-	CreateBooksPanel(splitter);
-	splitter->SplitVertically(m_MasterList, m_BooksPanel, 160);
+	CreateBooksPanel(this);
+	SplitVertically(m_MasterList, m_BooksPanel);
 
-	FbFrameBase::CreateControls();
+	CreateControls(select);
 
 	m_MasterThread = new FbDateTreeThread(this);
 	m_MasterThread->Execute();

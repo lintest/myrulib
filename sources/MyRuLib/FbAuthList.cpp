@@ -11,6 +11,7 @@
 void * FbAuthListThread::Entry()
 {
 	FbCommonDatabase database;
+	database.JoinThread(this);
 	if (m_info.m_string.IsEmpty()) {
 		DoLetter(database);
 	} else if (m_info.IsFullText()) {
@@ -54,6 +55,7 @@ void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 
 void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 {
+	if (!result.IsOk()) return;
 	wxWindowID id = ID_MODEL_CREATE;
 	size_t length = fbLIST_CACHE_SIZE;
 	size_t count = 0;

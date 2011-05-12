@@ -67,11 +67,11 @@ class FbParamsDlg : private FbDialog
 			ID_WEB_ATTEMPT,
 			ID_IMAGE_WIDTH,
 		};
-		class LoadThread: public wxThread
+		class LoadThread: public FbThread
 		{
 			public:
 				LoadThread(wxEvtHandler * frame)
-					:wxThread(wxTHREAD_JOINABLE), m_frame(frame) {}
+					: FbThread(wxTHREAD_JOINABLE), m_frame(frame) {}
 			protected:
 				virtual void * Entry();
 			private:

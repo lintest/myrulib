@@ -12,11 +12,10 @@
 class FbFrameDate : public FbFrameBase
 {
 	public:
-		FbFrameDate(wxAuiMDIParentFrame * parent);
+		FbFrameDate(wxAuiNotebook * parent, bool select = false);
 		virtual wxString GetTitle() const { return _("Calendar"); };
 		void ActivateAuthors();
 	protected:
-		virtual void CreateControls();
 		void CreateColumns();
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);

@@ -9,40 +9,30 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
-IMPLEMENT_CLASS(FbFrameInfo, FbAuiMDIChildFrame)
+IMPLEMENT_ABSTRACT_CLASS(FbFrameInfo, FbHtmlWindow)
 
-BEGIN_EVENT_TABLE(FbFrameInfo, FbAuiMDIChildFrame)
+BEGIN_EVENT_TABLE(FbFrameInfo, FbHtmlWindow)
 	EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
 END_EVENT_TABLE()
 
-FbFrameInfo::FbFrameInfo(wxAuiMDIParentFrame * parent)
-	: FbAuiMDIChildFrame(parent, ID_FRAME_INFO, GetTitle())
+FbFrameInfo::FbFrameInfo(wxAuiNotebook * parent)
+	: FbHtmlWindow(parent, ID_FRAME_INFO)
 {
-	CreateControls();
 	UpdateFonts(false);
+	parent->AddPage( this, GetTitle(), false );
 }
 
 void FbFrameInfo::Load(const wxString & html)
 {
-	m_info.SetPage(html);
-	m_info.SetFocus();
-}
-
-void FbFrameInfo::CreateControls()
-{
-	UpdateMenu();
-	m_info.Create(this);
-	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add( &m_info, 1, wxEXPAND, 5 );
-	SetSizer(sizer);
-	Layout();
+	SetPage(html);
+	SetFocus();
 }
 
 class FbFrameInfoThread
 	: public FbProgressThread
 {
 public:
-	FbFrameInfoThread(wxEvtHandler * owner) 
+	FbFrameInfoThread(wxEvtHandler * owner)
 		: FbProgressThread(owner) {}
 protected:
 	virtual void * Entry();
@@ -214,7 +204,7 @@ void FbFrameInfo::OnSave(wxCommandEvent& event)
 	);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		wxString html = * m_info.GetParser()->GetSource();
+		wxString html = * GetParser()->GetSource();
 		wxFileOutputStream stream(dlg.GetPath());
 		wxTextOutputStream text(stream);
 		text.WriteString(html);
@@ -224,16 +214,15 @@ void FbFrameInfo::OnSave(wxCommandEvent& event)
 
 void FbFrameInfo::UpdateFonts(bool refresh)
 {
-	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
+//	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
 }
 
 FbFrameInfo::MainMenu::MainMenu()
 {
 	Append(new MenuFile,   _("&File"));
+	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }

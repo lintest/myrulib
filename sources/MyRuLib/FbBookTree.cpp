@@ -157,13 +157,17 @@ FbViewItem FbBookTreeModel::GetView()
 
 void FbBookTreeModel::Delete()
 {
-	if (m_root == NULL) return;
-	FbModelItem item(*this, m_root);
+	FbModelItem root = GetRoot();
+	if (!root) return;
+
 	wxArrayInt items;
-	GetSelected(items);
-	if (items.Count() == 0) MultiplyCheck();
+	FbBookArrayTraverser traverser(items);
+	DoTraverse(traverser);
+	size_t count = GetChecked(traverser, root, 0);
+	if (!count) MultiplyCheck();
+
 	size_t row = GetRowCount();
-	DoDelete(item, row);
+	DoDelete(root, row);
 	m_ctrls.Empty();
 	m_shift = 0;
 }
