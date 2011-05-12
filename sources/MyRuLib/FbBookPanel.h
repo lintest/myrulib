@@ -33,8 +33,8 @@ class FbBookPanel: public wxSplitterWindow
 		wxString GetSelected();
 		const FbMasterInfo & GetInfo() const { return m_master; };
 		void DoPopupMenu(wxWindowID id);
+		FbTreeViewCtrl & GetBookList() { return m_BookList; }
 	public:
-		FbTreeViewCtrl * m_BookList;
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
@@ -49,18 +49,15 @@ class FbBookPanel: public wxSplitterWindow
 		size_t GetSelected(wxArrayInt &items);
 		void ResetPreview();
 	private:
-		FbPreviewWindow * m_BookInfo;
+		FbTreeViewCtrl m_BookList;
+		FbPreviewWindow m_BookInfo;
 		void SetViewMode(int mode);
 		void DoFolderAdd(const int folder);
 		static void DoDeleteDownload(const wxString &sel, const int folder);
 		static void DoCreateDownload(const wxString &sel, int count = 1);
 		int GetRatingColumn();
 		void ShowContextMenu(const wxPoint& pos);
-		wxString m_AuthorName;
 		FbListMode m_listmode;
-		wxTreeItemId m_AuthorItem;
-		wxTreeItemId m_SequenceItem;
-		int m_selected;
 		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
 		wxWindowID m_owner;

@@ -107,7 +107,7 @@ void FbFrameFldr::OnFavoritesDel(wxCommandEvent & event)
 	database.AttachConfig();
 	database.ExecuteUpdate(sql);
 
-	m_BooksPanel->m_BookList->Delete();
+	m_BooksPanel->GetBookList().Delete();
 }
 
 void FbFrameFldr::OnFolderAppend(wxCommandEvent & event)

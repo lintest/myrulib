@@ -35,7 +35,7 @@ public:
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
-		void RefreshBooks() { if (m_BooksPanel && m_BooksPanel->m_BookList) m_BooksPanel->m_BookList->Refresh(); }
+		void RefreshBooks() { m_BooksPanel->GetBookList().Refresh(); }
 		int GetBookCount() { return m_BookCount; }
 	protected:
 		void CreateControls(bool select);

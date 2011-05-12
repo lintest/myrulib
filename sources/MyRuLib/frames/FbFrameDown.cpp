@@ -94,7 +94,7 @@ void FbFrameDown::OnPause(wxCommandEvent & event)
 void FbFrameDown::OnMoveUp(wxCommandEvent& event)
 {
 /*
-	wxString sel = m_BooksPanel->m_BookList->GetSelected();
+	wxString sel = m_BooksPanel->m_BookList.GetSelected();
 	if (sel.IsEmpty()) return;
 
 	wxString sql = wxString::Format(wxT("\
@@ -109,7 +109,7 @@ void FbFrameDown::OnMoveUp(wxCommandEvent& event)
 void FbFrameDown::OnMoveDown(wxCommandEvent& event)
 {
 /*
-	wxString sel = m_BooksPanel->m_BookList->GetSelected();
+	wxString sel = m_BooksPanel->m_BookList.GetSelected();
 	if (sel.IsEmpty()) return;
 
 	wxString sql = wxString::Format(wxT("\

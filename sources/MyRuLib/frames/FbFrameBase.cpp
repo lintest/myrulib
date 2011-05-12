@@ -160,7 +160,7 @@ void FbFrameBase::UpdateInfo(int id)
 
 void FbFrameBase::OnDirectionUpdateUI(wxUpdateUIEvent & event)
 {
-	event.Check( m_BooksPanel->m_BookList->GetSortedColumn() < 0 );
+	event.Check( m_BooksPanel->GetBookList().GetSortedColumn() < 0 );
 }
 
 void FbFrameBase::OnChangeOrderUpdateUI(wxUpdateUIEvent & event)
@@ -247,7 +247,7 @@ void FbFrameBase::OnChangeViewUpdateUI(wxUpdateUIEvent & event)
 void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 {
 	wxArrayInt columns;
-	m_BooksPanel->m_BookList->GetColumns(columns);
+	m_BooksPanel->GetBookList().GetColumns(columns);
 	bool ok = FbColumnDlg::Execute(this, columns);
 	if (ok) {
 		m_BooksPanel->CreateColumns(columns);
