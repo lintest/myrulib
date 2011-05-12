@@ -340,11 +340,11 @@ void FbMainFrame::OnAbout(wxCommandEvent & event)
 }
 
 #ifdef __WXGTK__
-	#define fbART_LIST_VIEW wxT("gtk-justify-fill")
-	#define fbART_REPORT_VIEW wxT("gtk-justify-left")
+	#define fbART_REPORT_VIEW wxT("gtk-justify-right")
+	#define fbART_LIST_VIEW wxT("gtk-justify-left")
 #else
-	#define fbART_LIST_VIEW wxART_LIST_VIEW
 	#define fbART_REPORT_VIEW wxART_REPORT_VIEW
+	#define fbART_LIST_VIEW wxART_LIST_VIEW
 #endif
 
 wxToolBar * FbMainFrame::CreateToolBar()
