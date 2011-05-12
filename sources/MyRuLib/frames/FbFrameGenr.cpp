@@ -16,7 +16,8 @@ END_EVENT_TABLE()
 FbFrameGenr::FbFrameGenr(wxAuiNotebook * parent, bool select)
 	: FbFrameBase(parent, ID_FRAME_GENR, GetTitle(), select)
 {
-	m_MasterList = new FbTreeViewCtrl(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 
 	CreateBooksPanel(this);
 	SplitVertically(m_MasterList, m_BooksPanel);

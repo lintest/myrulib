@@ -1,4 +1,5 @@
 #include "FbFrameBase.h"
+#include <wx/clipbrd.h>
 #include "FbConst.h"
 #include "FbExportDlg.h"
 #include "FbMainFrame.h"
@@ -6,6 +7,38 @@
 #include "FbFilterDlg.h"
 #include "FbColumnDlg.h"
 #include "FbMasterTypes.h"
+
+//-----------------------------------------------------------------------------
+//  FbMasterViewCtrl
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbMasterViewCtrl, FbTreeViewCtrl)
+
+BEGIN_EVENT_TABLE(FbMasterViewCtrl, FbTreeViewCtrl)
+	EVT_MENU(wxID_COPY, FbMasterViewCtrl::OnCopy)
+	EVT_MENU(wxID_SELECTALL, FbMasterViewCtrl::OnSelect)
+	EVT_MENU(ID_UNSELECTALL, FbMasterViewCtrl::OnSelect)
+	EVT_UPDATE_UI(wxID_CUT, FbMasterViewCtrl::OnDisableUI)
+	EVT_UPDATE_UI(wxID_COPY, FbMasterViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(wxID_PASTE, FbMasterViewCtrl::OnDisableUI)
+	EVT_UPDATE_UI(wxID_SELECTALL, FbMasterViewCtrl::OnDisableUI)
+	EVT_UPDATE_UI(ID_UNSELECTALL, FbMasterViewCtrl::OnDisableUI)
+END_EVENT_TABLE()
+
+void FbMasterViewCtrl::OnCopy(wxCommandEvent& event)
+{
+	wxString text = this->GetCurrentText();
+	if (text.IsEmpty()) return;
+
+	wxClipboardLocker locker;
+	if (!locker) return;
+
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
+//-----------------------------------------------------------------------------
+//  FbFrameBase
+//-----------------------------------------------------------------------------
 
 IMPLEMENT_ABSTRACT_CLASS(FbFrameBase, wxSplitterWindow)
 

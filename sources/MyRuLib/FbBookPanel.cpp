@@ -20,31 +20,6 @@
 //  FbBookViewCtrl
 //-----------------------------------------------------------------------------
 
-class FbBookViewCtrl
-	: public FbTreeViewCtrl
-{
-private:
-	void Init() {}
-
-private:
-	void OnCopy(wxCommandEvent & event);
-
-	void OnSelect(wxCommandEvent & event) {
-		SelectAll(true);
-	}
-	void OnUnselect(wxCommandEvent & event) {
-		SelectAll(false);
-	}
-	void OnEnableUI(wxUpdateUIEvent & event) {
-		event.Enable(GetModel());
-	}
-	void OnDisableUI(wxUpdateUIEvent & event) {
-		event.Enable(false);
-	}
-	DECLARE_CLASS(FbBookViewCtrl)
-	DECLARE_EVENT_TABLE()
-};
-
 IMPLEMENT_CLASS(FbBookViewCtrl, FbTreeViewCtrl)
 
 BEGIN_EVENT_TABLE(FbBookViewCtrl, FbTreeViewCtrl)

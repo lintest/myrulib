@@ -17,6 +17,31 @@ class FbMasterData;
 
 class FbMasterThread;
 
+class FbBookViewCtrl
+	: public FbTreeViewCtrl
+{
+private:
+	void Init() {}
+
+private:
+	void OnCopy(wxCommandEvent & event);
+
+	void OnSelect(wxCommandEvent & event) {
+		SelectAll(true);
+	}
+	void OnUnselect(wxCommandEvent & event) {
+		SelectAll(false);
+	}
+	void OnEnableUI(wxUpdateUIEvent & event) {
+		event.Enable(GetModel());
+	}
+	void OnDisableUI(wxUpdateUIEvent & event) {
+		event.Enable(false);
+	}
+	DECLARE_CLASS(FbBookViewCtrl)
+	DECLARE_EVENT_TABLE()
+};
+
 class FbBookPanel: public wxSplitterWindow
 {
 	public:
@@ -49,7 +74,7 @@ class FbBookPanel: public wxSplitterWindow
 		size_t GetSelected(wxArrayInt &items);
 		void ResetPreview();
 	private:
-		FbTreeViewCtrl m_BookList;
+		FbBookViewCtrl m_BookList;
 		FbPreviewWindow m_BookInfo;
 		void SetViewMode(int mode);
 		void DoFolderAdd(const int folder);

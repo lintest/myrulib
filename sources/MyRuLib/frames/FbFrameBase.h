@@ -14,6 +14,29 @@
 #include "FbFilterObj.h"
 #include "controls/FbTreeView.h"
 
+class FbMasterViewCtrl
+	: public FbTreeViewCtrl
+{
+private:
+	void Init() {}
+
+private:
+	void OnCopy(wxCommandEvent & event);
+
+	void OnSelect(wxCommandEvent & event) {}
+
+	void OnEnableUI(wxUpdateUIEvent & event) {
+		event.Enable(GetModel());
+	}
+
+	void OnDisableUI(wxUpdateUIEvent & event) {
+		event.Enable(false);
+	}
+
+	DECLARE_CLASS(FbBookViewCtrl)
+	DECLARE_EVENT_TABLE()
+};
+
 class FbFrameBase :
 	public wxSplitterWindow
 {

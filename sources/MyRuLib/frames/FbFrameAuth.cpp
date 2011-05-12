@@ -35,7 +35,8 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
-	m_MasterList = new FbTreeViewCtrl(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
