@@ -32,7 +32,7 @@ class FbFrameInfoThread
 	: public FbProgressThread
 {
 public:
-	FbFrameInfoThread(wxEvtHandler * owner) 
+	FbFrameInfoThread(wxEvtHandler * owner)
 		: FbProgressThread(owner) {}
 protected:
 	virtual void * Entry();
@@ -223,8 +223,6 @@ FbFrameInfo::MainMenu::MainMenu()
 	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }

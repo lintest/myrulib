@@ -228,8 +228,6 @@ FbFrameAuth::MenuBar::MenuBar()
 	Append(new MenuFrame,  _("&Catalog"));
 	Append(new MenuMaster, _("&Authors"));
 	Append(new MenuBook,   _("&Books"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }

@@ -41,7 +41,6 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
-	EVT_UPDATE_UI(ID_ORDER_MENU, FbFrameBase::OnMenuOrderUpdateUI)
 	EVT_UPDATE_UI(wxID_VIEW_SORTNAME, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(wxID_VIEW_SORTDATE, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(wxID_VIEW_SORTSIZE, FbFrameBase::OnChangeOrderUpdateUI)
@@ -164,11 +163,6 @@ void FbFrameBase::OnDirectionUpdateUI(wxUpdateUIEvent & event)
 	event.Check( m_BooksPanel->m_BookList->GetSortedColumn() < 0 );
 }
 
-void FbFrameBase::OnMenuOrderUpdateUI(wxUpdateUIEvent & event)
-{
-	event.Enable( m_BooksPanel->GetListMode() == FB2_MODE_LIST );
-}
-
 void FbFrameBase::OnChangeOrderUpdateUI(wxUpdateUIEvent & event)
 {
 	if (event.GetId() == m_BooksPanel->GetOrderID()) event.Check(true);
@@ -204,8 +198,6 @@ FbFrameBase::MenuBar::MenuBar()
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
 	Append(new MenuBook,   _("&Books"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }

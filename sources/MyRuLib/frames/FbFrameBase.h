@@ -62,7 +62,6 @@ public:
 		void OnFilterSet(wxCommandEvent& event);
 		void OnFilterUse(wxCommandEvent& event);
 		void OnFilterUseUpdateUI(wxUpdateUIEvent & event);
-		void OnMenuOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnDirectionUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);

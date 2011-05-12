@@ -37,18 +37,6 @@ FbMenuBar::MenuLib::MenuLib()
 	Append(ID_MENU_CONFIG, _("Options"));
 }
 
-FbMenuBar::MenuSetup::MenuSetup()
-{
-	Append(wxID_PREFERENCES, _("Settings"));
-}
-
-FbMenuBar::MenuView::MenuView()
-{
-	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
-	AppendSeparator();
-	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	AppendCheckItem(ID_TEXTLOG_CTRL, _("Show log window") + (wxString)wxT("\tF12"));
-}
 FbMenuBar::MenuHelp::MenuHelp()
 {
 	Append(ID_OPEN_WEB, _("Website"));
@@ -61,8 +49,6 @@ FbMainMenu::FbMainMenu(): FbMenuBar()
 	Append(new MenuEdit,   _("&Edit"));
 	Append(new MenuLib,    _("&Library"));
 	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuView,   _("&View"));
-	Append(new MenuSetup,  _("&Tools"));
 	Append(new MenuWindow, _("&Window"));
 	Append(new MenuHelp,   _("&?"));
 }
@@ -85,26 +71,21 @@ FbFrameMenu::MenuEdit::MenuEdit()
 	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
+	AppendSeparator();
+	Append(wxID_PREFERENCES, _("Settings"));
 }
 
 FbFrameMenu::MenuBook::MenuBook()
 {
+	Append(ID_SHOW_COLUMNS, _("Table columns"));
+	Append(wxID_ANY, _("List of books"), new MenuListMode());
 	Append(ID_ORDER_MENU, _("Sort by"), new FbMenuSort());
+	Append(wxID_ANY, _("Preview area"), new MenuPreview());
+	AppendSeparator();
 	Append(ID_FILTER_SET, _("Filter setup"));
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
 	AppendSeparator();
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
-}
-
-FbFrameMenu::MenuView::MenuView()
-{
-	Append(wxID_ANY, _("List of books"), new MenuListMode());
-	Append(wxID_ANY, _("Preview area"), new MenuPreview());
-	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
-	Append(ID_SHOW_COLUMNS, _("Table columns"));
-	AppendSeparator();
-	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	AppendCheckItem(ID_TEXTLOG_CTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
 
 FbMenuBar::MenuRecent::MenuRecent()
@@ -144,4 +125,8 @@ FbMenuBar::MenuWindow::MenuWindow()
 	AppendSeparator();
 	Append(ID_WINDOW_NEXT,     _("Next"));
 	Append(ID_WINDOW_PREV,     _("Previous"));
+	AppendSeparator();
+	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
+	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
+	AppendCheckItem(ID_TEXTLOG_CTRL, _("Show log window") + (wxString)wxT("\tF12"));
 }
