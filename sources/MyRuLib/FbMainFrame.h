@@ -49,7 +49,6 @@ class FbMainFrame : public wxFrame
 		wxAuiManager m_FrameManager;
 		wxAuiNotebook m_FrameNotebook;
 		LimitedTextCtrl m_LogTextCtrl;
-		wxToolBar * m_toolbar;
 	private:
 		void OnExit(wxCommandEvent & event);
 		void OnSetup(wxCommandEvent & event);

@@ -64,9 +64,11 @@ bool FbImportThread::OnFile(const wxString &filename, bool progress, bool only_n
 	FbAutoCommit transaction(*m_database);
 	wxFFileInputStream in(filename);
 	if (Ext(filename) == wxT("zip")) {
-		return FbImportZip(*this, in, filename).Save(progress, only_new);
+		if (only_new && FbImportZip::Exists(*m_database, GetRelative(filename))) return false;
+		return FbImportZip(*this, in, filename).Save(progress);
 	} else {
-		return FbImportBook(*this, in, filename).Save(only_new);
+		if (only_new && FbImportBook::Exists(*m_database, GetRelative(filename))) return false;
+		return FbImportBook(*this, in, filename).Save();
 	}
 }
 

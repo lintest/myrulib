@@ -21,12 +21,13 @@ class FbImportZip
 	: public wxObject
 {
 	public:
-		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &zipname);
-		int Save(bool progress, bool only_new);
+		static int Exists(wxSQLite3Database &database, const wxString &filename);
+		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &filename);
+		int Save(bool progress);
 	public:
 		bool IsOk() { return m_ok; };
 	private:
-		void Make(bool progress, bool only_new);
+		void Make(bool progress);
 		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
 		wxZipEntry * GetInfo(const wxString & filename);
 	private:
@@ -48,9 +49,10 @@ class FbImportBook
 	: public FbParsingContext
 {
 	public:
+		static int Exists(wxSQLite3Database &database, const wxString &filename);
 		FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename);
 		FbImportBook(FbImportZip & owner, wxZipEntry & entry);
-		bool Save(bool only_new);
+		bool Save();
 		bool IsOk() { return m_ok; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);

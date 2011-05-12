@@ -790,7 +790,7 @@ void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
 
 void FbMainFrame::Localize(int language)
 {
-	wxToolBar * toolbar = m_toolbar;
+	wxToolBar * toolbar = GetToolBar();
 	SetToolBar(CreateToolBar());
 	wxDELETE(toolbar);
 
