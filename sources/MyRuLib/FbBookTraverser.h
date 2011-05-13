@@ -13,11 +13,11 @@ public:
 
 	virtual ~FbBookTraverser() {}
 
-	void OnBook(FbModelItem item, int level = 0)
-		{ DoBook(item, level); }
+	void OnBook(FbModelItem item, int level, size_t row)
+		{ DoBook(item, level, row); }
 
 protected:
-	virtual void DoBook(FbModelItem & item, int level) = 0;
+	virtual void DoBook(FbModelItem & item, int level, size_t row) = 0;
 
 protected:
 	DECLARE_DYNAMIC_CLASS(FbBookTraverser)
@@ -30,7 +30,7 @@ public:
 	FbBookArrayTraverser(wxArrayInt &items)
 		: m_items(items) {}
 protected:
-	virtual void DoBook(FbModelItem & item, int level);
+	virtual void DoBook(FbModelItem & item, int level, size_t row);
 
 private:
 	wxArrayInt & m_items;
@@ -47,7 +47,7 @@ public:
 		{ return m_text; }
 
 protected:
-	virtual void DoBook(FbModelItem & item, int level);
+	virtual void DoBook(FbModelItem & item, int level, size_t row);
 
 private:
 	wxArrayInt m_columns;
