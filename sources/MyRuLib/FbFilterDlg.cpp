@@ -1,5 +1,7 @@
 #include "FbFilterDlg.h"
 #include "FbFilterTree.h"
+#include "FbFilterThread.h"
+#include "FbProgressDlg.h"
 #include <wx/imaglist.h>
 
 BEGIN_EVENT_TABLE( FbFilterDlg, wxDialog )
@@ -114,6 +116,11 @@ bool FbFilterDlg::Execute(FbFilterObj & filter)
 		dlg.Assign(filter);
 		filter.m_enabled = true;
 		filter.Save();
+
+		FbProgressDlg progress(NULL);
+		FbThread * thread = new FbFilterThread(&progress, filter);
+		progress.RunThread(thread);
+		return (progress.ShowModal() == wxID_OK);
 	}
 	return res;
 }

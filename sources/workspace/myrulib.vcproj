@@ -328,6 +328,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\FbFilterThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbFilterTree.cpp"
 				>
 			</File>
@@ -760,6 +764,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\FbFilterThread.h"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbFilterTree.h"
 				>
 			</File>
@@ -940,11 +948,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
