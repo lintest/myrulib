@@ -230,6 +230,7 @@
 		<sources>sources/MyRuLib/FbDownloader.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterThread.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
 		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameAuth.cpp</sources>

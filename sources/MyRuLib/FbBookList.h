@@ -64,7 +64,7 @@ class FbBookListModel: public FbListModel
 
 	private:
 		wxString GetSQL(const wxString & order, const wxString & condition);
-		void DoTraverse(FbBookTraverser & traverser);
+		size_t DoTraverse(FbBookTraverser & traverser);
 
 	private:
 		wxArrayInt m_items;

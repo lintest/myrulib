@@ -104,9 +104,9 @@ class FbBookTreeModel: public FbTreeModel
 		int GetBookCount();
 		wxString GetText(wxArrayInt &columns);
 	private:
-		void DoTraverse(FbBookTraverser & traverser);
-		size_t GetChecked(FbBookTraverser & traverser, FbModelItem &parent, int level);
-		size_t GetSelected(FbBookTraverser & traverser, FbModelItem &parent, int level, size_t max, size_t &row);
+		size_t DoTraverse(FbBookTraverser & traverser);
+		size_t GetChecked(FbBookTraverser & traverser, FbModelItem &parent, int level, size_t &row);
+		size_t GetSelected(FbBookTraverser & traverser, FbModelItem &parent, int level, size_t &row);
 		void GetBooks(FbModelItem &parent, FbSortedArrayInt &items);
 		bool DoDelete(FbModelItem &parent, size_t &row);
 		DECLARE_CLASS(FbBookTreeModel);
