@@ -2027,3 +2027,7 @@ msgstr "Скачать коллекцию"
 
 msgid "Open (or create) local collection"
 msgstr "Открыть (создать) локальную коллекцию"
+
+msgid "Exclude files missing from the collection"
+msgstr "Исключить файлы, отсутствующие в коллекции"
+

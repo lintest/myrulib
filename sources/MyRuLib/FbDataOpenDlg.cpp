@@ -37,8 +37,7 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	wxStaticBitmap * m_bitmap = new wxStaticBitmap( this, wxID_ANY, FbLogoBitmap(), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerTop->Add( m_bitmap, 0, wxALL|wxALIGN_TOP, 10 );
 
-	wxBoxSizer* bSizerCtrl;
-	bSizerCtrl = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer * bSizerCtrl = new wxBoxSizer( wxVERTICAL );
 
 	info = new wxStaticText( this, wxID_ANY, _("Select action:"), wxDefaultPosition, wxDefaultSize, 0 );
 	info->Wrap( -1 );
@@ -93,9 +92,17 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	m_scaner.SetValue(false);
 	bSizerCtrl->Add( &m_scaner, 0, wxALL|wxEXPAND, 5 );
 
+	wxBoxSizer * bSizerFlags = new wxBoxSizer( wxVERTICAL );
+
 	m_only_new.Create( this, wxID_ANY, _("Process only new files") );
-	m_scaner.SetValue(false);
-	bSizerCtrl->Add( &m_only_new, 0, wxALL|wxEXPAND, 5 );
+	m_only_new.SetValue(false);
+	bSizerFlags->Add( &m_only_new, 0, wxALL|wxEXPAND, 5 );
+
+	m_only_md5.Create( this, wxID_ANY, _("Exclude files missing from the collection") );
+	m_only_md5.SetValue(false);
+	bSizerFlags->Add( &m_only_md5, 0, wxALL|wxEXPAND, 5 );
+
+	bSizerCtrl->Add( bSizerFlags, 0, wxLEFT|wxEXPAND, 20 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -212,16 +219,15 @@ wxString FbDataOpenDlg::GetDirname()
 	return dirname;
 }
 
-bool FbDataOpenDlg::GetOnlyNew()
-{
-	return m_only_new.GetValue();
-}
-
 FbThread * FbDataOpenDlg::CreateThread(wxEvtHandler * owner)
 {
 	wxString lib = m_action.GetCurrentData().Lower();
 	bool import = m_scaner.GetValue();
-	return new FbLibImportThread(owner, GetFilename(), GetDirname(), lib, import, GetOnlyNew());
+	long flags = 0;
+	if (m_scaner.GetValue()) flags = flags | fbIMP_IMPORT;
+	if (m_only_new.GetValue()) flags = flags | fbIMP_ONLY_NEW;
+	if (m_only_md5.GetValue()) flags = flags | fbIMP_ONLY_MD5;
+	return new FbLibImportThread(owner, GetFilename(), GetDirname(), lib, flags);
 }
 
 wxString FbDataOpenDlg::CheckExt(const wxString &filename)

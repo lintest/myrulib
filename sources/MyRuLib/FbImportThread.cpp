@@ -19,10 +19,11 @@
 //  FbImportThread
 //-----------------------------------------------------------------------------
 
-FbImportThread::FbImportThread(wxEvtHandler * owner, wxThreadKind kind)
+FbImportThread::FbImportThread(wxEvtHandler * owner, wxThreadKind kind, long flags)
 	: FbProgressThread(owner, kind),
 		m_database(NULL),
-		m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH))
+		m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH)),
+		m_flags(flags)
 {
 }
 
@@ -171,8 +172,8 @@ void FbDirImportThread::DoParse(bool only_new)
 //  FbLibImportThread
 //-----------------------------------------------------------------------------
 
-FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, bool import, bool only_new)
-	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE), m_file(file), m_dir(dir), m_lib(lib), m_import(import), m_only_new(only_new)
+FbLibImportThread::FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, long flags)
+	: FbDirImportThread(owner, dir, wxTHREAD_JOINABLE, flags), m_file(file), m_dir(dir), m_lib(lib)
 {
 	wxURL(MyRuLib::HomePage()).GetProtocol();
 }
@@ -259,11 +260,11 @@ bool FbLibImportThread::Execute()
 
 	if (IsClosed()) return false;
 
-	if (m_import) {
+	if (HasFlag(fbIMP_IMPORT)) {
 		SetRoot(m_dir);
 		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
 		FbCounter counter(database);
-		DoParse(m_only_new);
+		DoParse(HasFlag(fbIMP_ONLY_NEW));
 		counter.Execute();
 	}
 
