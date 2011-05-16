@@ -223,6 +223,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
+		SetMinSize(wxSize(400,300));
 		if (maximized) Maximize();
 		CreateControls();
 		SetAccelerators();

@@ -172,7 +172,6 @@
 			<Add library="libWxBZipStream.a" />
 			<Add library="libWxSQLite3.a" />
 			<Add library="libSQLite3.a" />
-			<Add library="libExpat.a" />
 			<Add library="libFaxpp.a" />
 		</Linker>
 		<Unit filename="../MyRuLib/FbAboutDlg.cpp" />
@@ -243,6 +242,7 @@
 		<Unit filename="../MyRuLib/FbFilterDlg.h" />
 		<Unit filename="../MyRuLib/FbFilterObj.cpp" />
 		<Unit filename="../MyRuLib/FbFilterObj.h" />
+		<Unit filename="../MyRuLib/FbFilterThread.cpp" />
 		<Unit filename="../MyRuLib/FbFilterTree.cpp" />
 		<Unit filename="../MyRuLib/FbFilterTree.h" />
 		<Unit filename="../MyRuLib/FbFldrTree.cpp" />
