@@ -778,18 +778,21 @@ void FbMainFrame::OnWindowCloseAll(wxCommandEvent & event)
 
 void FbMainFrame::OnWindowNext(wxCommandEvent & event)
 {
+	int count = (int) m_FrameNotebook.GetPageCount();
+	if (count == 0) return;
 	int index = m_FrameNotebook.GetSelection() + 1;
-	if (index < (int)m_FrameNotebook.GetPageCount()) {
-		m_FrameNotebook.SetSelection(index);
-	}
+	if (index >= count) index = 0;
+	m_FrameNotebook.SetSelection(index);
 }
 
 void FbMainFrame::OnWindowPrev(wxCommandEvent & event)
 {
 	int index = m_FrameNotebook.GetSelection() - 1;
-	if (index >= 0) {
-		m_FrameNotebook.SetSelection(index);
+	if (index < 0) {
+		index = m_FrameNotebook.GetPageCount() - 1;
+		if (index < 0) return;
 	}
+	m_FrameNotebook.SetSelection(index);
 }
 
 void FbMainFrame::Localize(int language)

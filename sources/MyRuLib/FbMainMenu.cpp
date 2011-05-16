@@ -120,11 +120,11 @@ FbMenuBar::MenuPreview::MenuPreview()
 
 FbMenuBar::MenuWindow::MenuWindow()
 {
-	Append(wxID_CLOSE,    _("Close window") + (wxString)wxT("\tCtrl+W"));
+	Append(wxID_CLOSE, _("Close window") + (wxString)wxT("\tCtrl+W"));
 	Append(wxID_CLOSE_ALL, _("Close all"));
 	AppendSeparator();
-	Append(ID_WINDOW_NEXT,     _("Next"));
-	Append(ID_WINDOW_PREV,     _("Previous"));
+	Append(ID_WINDOW_NEXT, _("Next") + (wxString)wxT("\tCtrl+Tab"));
+	Append(ID_WINDOW_PREV, _("Previous") + (wxString)wxT("\tCtrl+Shift+Tab"));
 	AppendSeparator();
 	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
