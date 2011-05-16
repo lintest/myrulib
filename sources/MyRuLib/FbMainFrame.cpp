@@ -4,6 +4,7 @@
 #include <wx/stattext.h>
 #include <wx/dcclient.h>
 #include <wx/tokenzr.h>
+#include <wx/wupdlock.h>
 #include "FbConst.h"
 #include "MyRuLibApp.h"
 #include "FbParamsDlg.h"
@@ -834,20 +835,21 @@ wxMenuBar * FbMainFrame::CreateMenuBar(wxWindow * child)
 
 void FbMainFrame::OnNotebookChanged(wxAuiNotebookEvent& event)
 {
-	wxMenuBar * oldmenu = GetMenuBar();
-	wxMenuBar * menubar = CreateMenuBar(m_FrameNotebook.GetPage(event.selection));
-	if (menubar == NULL) menubar = new FbMainMenu;
-	SetMenuBar(menubar);
-	wxDELETE(oldmenu);
+	ReplaceMenu(CreateMenuBar(m_FrameNotebook.GetPage(event.selection)));
 }
 
 void FbMainFrame::OnNotebookClosed(wxAuiNotebookEvent& event)
 {
-	if (m_FrameNotebook.GetPageCount() == 0) {
-		wxMenuBar * oldmenu = GetMenuBar();
-		SetMenuBar(new FbMainMenu);
-		wxDELETE(oldmenu);
-	}
+	if (m_FrameNotebook.GetPageCount() == 0) ReplaceMenu();
+}
+
+void FbMainFrame::ReplaceMenu(wxMenuBar * newMenu)
+{
+	wxWindowUpdateLocker locker(this);
+	if (!newMenu) newMenu = new FbMainMenu;
+	wxMenuBar * oldMenu = GetMenuBar();
+	SetMenuBar(newMenu);
+	wxDELETE(oldMenu);
 }
 
 wxWindow * FbMainFrame::GetActiveChild()

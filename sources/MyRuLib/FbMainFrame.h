@@ -41,6 +41,7 @@ class FbMainFrame : public wxFrame
 		void RestoreFrameList();
 		void OpenInfo(const FbMasterInfo & info, const wxString & text, wxWindowID winid);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
+		void ReplaceMenu(wxMenuBar * newMenu = NULL);
 	private:
 		wxEvent * m_LastEvent;
 		wxTextCtrl * m_FindAuthor;
