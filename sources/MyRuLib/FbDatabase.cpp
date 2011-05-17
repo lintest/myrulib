@@ -334,6 +334,7 @@ void FbDatabase::JoinThread(FbThread * thread)
 FbCommonDatabase::FbCommonDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetLibFile());
+	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
 	SetCollation(wxT("CYR"), &sm_collation);
 }
 
@@ -354,6 +355,7 @@ wxString FbCommonDatabase::GetMd5(int id)
 FbLocalDatabase::FbLocalDatabase()
 {
 	FbDatabase::Open(GetConfigName());
+	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
 	SetCollation(wxT("CYR"), &sm_collation);
 }
 
@@ -400,6 +402,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 void FbMainDatabase::Open(const wxString& filename, const wxString& key, int flags)
 {
 	FbDatabase::Open(filename, key, flags);
+	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
 	bool bExists = TableExists(GetMaster());
 
 	wxString message = bExists ? _("Open database") : _("Create database");
@@ -579,6 +582,7 @@ void FbConfigDatabase::Open()
 	wxString filename = GetConfigName();
 	bool bExists = wxFileExists(filename);
 	FbDatabase::Open(filename, wxEmptyString, WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
+	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
 	if (!bExists) CreateDatabase();
 	UpgradeDatabase(DB_CONFIG_VERSION);
 }
