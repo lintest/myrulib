@@ -1,3 +1,18 @@
+myrulib (0.27.5-oneiric1) oneiric; urgency=low
+
+  * Исправлена ошибка удаления книги в древовидном списке
+  * Реализовано перетаскивание вкладок
+  * Изменилась иконка приложения
+
+ -- Denis Kandrashin <mail@lintest.ru>  12 May 2011 22:21:04 +0400
+
+myrulib (0.27.4-natty1) natty; urgency=low
+
+  * Контекстное меню и копирование текста в буфер обмена в окне предварительного просмотра
+  * Поддержка базовой авторизации на прокси-сервере
+
+ -- Denis Kandrashin <mail@lintest.ru>  Fri, 29 Apr 2011 21:56:29 +0400
+
 myrulib (0.27.3-natty1) natty; urgency=low
 
   * Update release
