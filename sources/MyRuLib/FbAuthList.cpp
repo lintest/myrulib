@@ -126,14 +126,13 @@ void FbAuthListThread::CreateCounter(wxSQLite3Database &database)
 
 	m_counter = wxFileName::CreateTempFileName(wxT("fb"));
 	AttachCounter(database, m_counter);
-	wxArrayString sql;
-	sql.Add(wxT("CREATE TABLE cnt.a(aid INTEGER PRIMARY KEY, num INTEGER)"));
-	sql.Add(wxT("INSERT INTO cnt.a(aid, num) SELECT id_author, COUNT(id) FROM books GROUP BY id_author"));
-	size_t count = sql.Count();
-	for (size_t i = 0; i < count; i++) {
-		if (IsClosed()) break;
-		database.ExecuteUpdate(sql[i]);
-	}
+
+	wxString sql = wxT("CREATE TABLE cnt.a(aid INTEGER PRIMARY KEY, num INTEGER)");
+	database.ExecuteUpdate(sql);
+
+	sql = wxT("INSERT INTO cnt.a(aid, num) SELECT id_author, COUNT(id) FROM books GROUP BY id_author");
+	database.ExecuteUpdate(sql);
+
 	if (IsClosed()) {
 		wxRemoveFile(m_counter);
 		m_counter = wxEmptyString;

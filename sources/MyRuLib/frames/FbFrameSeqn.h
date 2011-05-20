@@ -45,6 +45,7 @@ class FbFrameSeqn : public FbFrameBase
 		void OnAppendSequence(wxCommandEvent& event);
 		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );
+		void OnNumber(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameSeqn)
 	protected:

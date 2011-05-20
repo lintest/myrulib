@@ -23,6 +23,7 @@ BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameSeqn::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameSeqn::OnArray)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameSeqn::OnBooksCount)
+	EVT_COMMAND(ID_MODEL_NUMBER, fbEVT_BOOK_ACTION, FbFrameSeqn::OnNumber)
 END_EVENT_TABLE()
 
 FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
@@ -70,7 +71,7 @@ void FbFrameSeqn::CreateMasterThread()
 		m_MasterThread->Wait();
 		wxDELETE(m_MasterThread);
 	}
-	m_MasterThread = new FbSeqnListThread(this, m_info, m_MasterList->GetSortedColumn());
+	m_MasterThread = new FbSeqnListThread(this, m_info, m_MasterList->GetSortedColumn(), m_MasterFile);
 	m_MasterThread->Execute();
 }
 
@@ -216,6 +217,7 @@ wxMenuBar * FbFrameSeqn::CreateMenuBar()
 void FbFrameSeqn::OnModel( FbArrayEvent& event )
 {
 	FbSeqnListModel * model = new FbSeqnListModel(event.GetArray());
+	model->SetCounter(m_MasterFile);
 	m_MasterList->AssignModel(model);
 }
 
@@ -223,5 +225,13 @@ void FbFrameSeqn::OnArray( FbArrayEvent& event )
 {
 	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
 	if (model) model->Append(event.GetArray());
+	m_MasterList->Refresh();
+}
+
+void FbFrameSeqn::OnNumber(wxCommandEvent& event)
+{
+	m_MasterFile = event.GetString();
+	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
+	if (model) model->SetCounter(m_MasterFile);
 	m_MasterList->Refresh();
 }

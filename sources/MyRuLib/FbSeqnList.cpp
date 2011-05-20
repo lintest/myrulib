@@ -8,6 +8,13 @@
 //  FbSeqnListThread
 //-----------------------------------------------------------------------------
 
+static void AttachCounter(wxSQLite3Database &database, const wxString &filename)
+{
+	wxSQLite3Statement stmt = database.PrepareStatement(wxT("ATTACH ? AS cnt"));
+	stmt.Bind(1, filename);
+	stmt.ExecuteUpdate();
+}
+
 bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
 {
 	return FbSearchFunction::IsFullText(m_string) && database.TableExists(wxT("fts_seqn"));
@@ -17,33 +24,48 @@ void * FbSeqnListThread::Entry()
 {
 	FbCommonDatabase database;
 	database.JoinThread(this);
+
+	if (abs(m_order) > 1) {
+		if (m_counter.IsEmpty()) {
+			CreateCounter(database);
+		} else {
+			AttachCounter(database, m_counter);
+		}
+	}
+
 	if (!m_string.IsEmpty() && IsFullText(database)) {
 		DoFullText(database);
 	} else {
 		DoString(database);
 	}
+
 	return NULL;
 }
 
 void FbSeqnListThread::DoString(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, value, number FROM sequences");
-	if (!m_string.IsEmpty()) sql << wxT(" WHERE SEARCH(value)");
-	sql << GetOrder(m_order);
+	wxString sql = wxT("SELECT id, value, 0 FROM sequences");
+	sql << GetJoin();
+	if (!m_string.IsEmpty()) sql << wxT("WHERE SEARCH(value)");
+	sql << GetOrder();
 	FbSearchFunction search(m_string);
 	if (!m_string.IsEmpty()) database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	MakeModel(result);
+	CreateCounter(database);
 }
 
 void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT docid, value, number FROM fts_seqn INNER JOIN sequences ON id=docid WHERE fts_seqn MATCH ?");
-	sql << GetOrder(m_order);
+	wxString sql = wxT("SELECT docid, value, 0 FROM fts_seqn INNER JOIN sequences ON id=docid");
+	sql << GetJoin();
+	sql << wxT("WHERE fts_seqn MATCH ?");
+	sql << GetOrder();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_string));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
+	CreateCounter(database);
 }
 
 void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
@@ -70,10 +92,15 @@ void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
 	FbArrayEvent(id, items).Post(m_frame);
 }
 
-wxString FbSeqnListThread::GetOrder(int column)
+wxString FbSeqnListThread::GetJoin()
 {
-	wxString fields = wxT("value COLLATE CYR,number");
-	int number = column == 0 ? 1 : abs(column);
+	return abs(m_order) > 1 ? wxT(" LEFT JOIN cnt.s ON sid=id ") : wxString(wxT(' '));
+}
+
+wxString FbSeqnListThread::GetOrder()
+{
+	wxString fields = wxT("value COLLATE CYR,s.num");
+	int number = m_order == 0 ? 1 : abs(m_order);
 	wxString result = wxT(" ORDER BY ");
 	wxString first;
 	wxStringTokenizer tkz(fields, wxT(','));
@@ -81,12 +108,33 @@ wxString FbSeqnListThread::GetOrder(int column)
 	while (tkz.HasMoreTokens()) {
 		i++;
 		wxString token = tkz.GetNextToken();
-		if (column < 0) token << wxT(" desc");
+		if (m_order < 0) token << wxT(" desc");
 		if (i == number) result << token;
 		if (i == 1) first = token;
 	}
 	if (number != 1) result << wxT(',') << first;
 	return result;
+}
+
+void FbSeqnListThread::CreateCounter(wxSQLite3Database &database)
+{
+	if (!m_counter.IsEmpty()) return;
+
+	m_counter = wxFileName::CreateTempFileName(wxT("fb"));
+	AttachCounter(database, m_counter);
+
+	wxString sql = wxT("CREATE TABLE cnt.s(sid INTEGER PRIMARY KEY, num INTEGER)");
+	database.ExecuteUpdate(sql);
+
+	sql = wxT("INSERT INTO cnt.s(sid, num) SELECT id_seq, COUNT(DISTINCT id_book) FROM bookseq GROUP BY id_seq");
+	database.ExecuteUpdate(sql);
+
+	if (IsClosed()) {
+		wxRemoveFile(m_counter);
+		m_counter = wxEmptyString;
+	} else {
+		FbCommandEvent(fbEVT_BOOK_ACTION, ID_MODEL_NUMBER, m_counter).Post(m_frame);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +145,16 @@ IMPLEMENT_CLASS(FbSeqnListData, FbModelData)
 
 wxString FbSeqnListData::GetValue(FbModel & model, size_t col) const
 {
-	return FbCollection::GetSeqn(m_code, col);
+	if (col == 1) {
+		FbSeqnListModel * master = wxDynamicCast(&model, FbSeqnListModel);
+		if (master) {
+			int count = master->GetCount(m_code);
+			if (count != wxNOT_FOUND) return FbCollection::Format(count);
+		}
+		return wxEmptyString;
+	} else {
+		return FbCollection::GetSeqn(m_code, col);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -168,6 +225,13 @@ void FbSeqnListModel::SetCount(int code, int count)
 
 int FbSeqnListModel::GetCount(int code)
 {
-	return m_counter.count(code) ? m_counter[code] : wxNOT_FOUND;
+	if (m_counter.count(code)) return m_counter[code];
+	if (!m_database.IsOpen()) return wxNOT_FOUND;
+
+	wxString sql = wxT("SELECT num FROM s WHERE sid="); sql << code;
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	int count = result.NextRow() ? result.GetInt(0) : 0;
+	m_counter[code] = count;
+	return count;
 }
 
