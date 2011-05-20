@@ -62,7 +62,7 @@ FbListModel * FbTitleDlg::AuthSubPanel::CreateModel()
 	wxArrayInt items;
 	while (result.NextRow()) {
 		int code = result.GetInt(0);
-		FbCollection::AddAuth(new FbCacheData(result));
+		FbCollection::AddAuth(code, result.GetString(1));
 		items.Add(code);
 	}
 	return new FbAuthListModel(items);

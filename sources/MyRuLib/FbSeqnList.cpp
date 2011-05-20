@@ -44,7 +44,7 @@ void * FbSeqnListThread::Entry()
 
 void FbSeqnListThread::DoString(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, value, 0 FROM sequences");
+	wxString sql = wxT("SELECT id, value FROM sequences");
 	sql << GetJoin();
 	if (!m_string.IsEmpty()) sql << wxT("WHERE SEARCH(value)");
 	sql << GetOrder();
@@ -57,7 +57,7 @@ void FbSeqnListThread::DoString(wxSQLite3Database &database)
 
 void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT docid, value, 0 FROM fts_seqn INNER JOIN sequences ON id=docid");
+	wxString sql = wxT("SELECT docid, value FROM fts_seqn INNER JOIN sequences ON id=docid");
 	sql << GetJoin();
 	sql << wxT("WHERE fts_seqn MATCH ?");
 	sql << GetOrder();
@@ -78,7 +78,7 @@ void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
 	while (result.NextRow()) {
 		if (IsClosed()) return;
 		int code = result.GetInt(0);
-		if (id == ID_MODEL_CREATE) FbCollection::AddSeqn(new FbCacheData(result));
+		if (id == ID_MODEL_CREATE) FbCollection::AddSeqn(code, result.GetString(1));
 		items.Add(code);
 		count++;
 		if (count == length) {

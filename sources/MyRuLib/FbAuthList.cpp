@@ -26,6 +26,7 @@ void * FbAuthListThread::Entry()
 		} else {
 			AttachCounter(database, m_counter);
 		}
+		if (IsClosed()) return NULL;
 	}
 
 	if (m_info.m_string.IsEmpty()) {
@@ -41,8 +42,10 @@ void * FbAuthListThread::Entry()
 
 void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, full_name, 0 FROM authors");
-	sql << GetJoin() << wxT("WHERE letter=?") << GetOrder();
+	wxString sql = wxT("SELECT id, full_name FROM authors");
+	sql << GetJoin();
+	if (m_info.m_letter) sql << wxT("WHERE letter=?");
+	sql << GetOrder();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_info.m_letter) stmt.Bind(1, (wxString)m_info.m_letter);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -52,8 +55,10 @@ void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 
 void FbAuthListThread::DoString(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, full_name, 0 FROM authors");
-	sql << GetJoin() << wxT("WHERE SEARCH(search_name)") << GetOrder();
+	wxString sql = wxT("SELECT id, full_name FROM authors");
+	sql << GetJoin();
+	sql << wxT("WHERE SEARCH(search_name)");
+	sql << GetOrder();
 	FbSearchFunction search(m_info.m_string);
 	database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -63,8 +68,10 @@ void FbAuthListThread::DoString(wxSQLite3Database &database)
 
 void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT docid, full_name, 0 FROM fts_auth INNER JOIN authors ON id=docid");
-	sql << GetJoin() << wxT("WHERE fts_auth MATCH ?") << GetOrder();
+	wxString sql = wxT("SELECT docid, full_name FROM fts_auth INNER JOIN authors ON id=docid");
+	sql << GetJoin();
+	sql << wxT("WHERE fts_auth MATCH ?");
+	sql << GetOrder();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -82,7 +89,7 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 	while (result.NextRow()) {
 		if (IsClosed()) return;
 		int code = result.GetInt(0);
-		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(new FbCacheData(result));
+		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(code, result.GetString(1));
 		items.Add(code);
 		count++;
 		if (count == length) {

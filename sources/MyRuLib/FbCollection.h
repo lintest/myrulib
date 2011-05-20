@@ -13,24 +13,6 @@ class FbModel;
 #define DATA_CACHE_SIZE 128
 #define HTML_CACHE_SIZE  16
 
-class FbCacheData: public wxObject
-{
-	public:
-		FbCacheData(wxSQLite3ResultSet &result);
-		FbCacheData(int code, wxSQLite3ResultSet &result);
-		FbCacheData(int code, const wxString &name = wxEmptyString, int count = 0);
-		int GetCode() const { return m_code; }
-		wxString GetValue(size_t col) const;
-	private:
-		int m_code;
-		wxString m_name;
-		int m_count;
-		DECLARE_CLASS(FbCacheData)
-};
-
-#include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY(FbCacheData, FbCasheDataArray);
-
 class FbBookAuths: public wxObject
 {
 	public:
@@ -77,6 +59,7 @@ class FbParamData: public wxObject
 
 #include <wx/hashmap.h>
 WX_DECLARE_HASH_MAP( int, FbParamData, wxIntegerHash, wxIntegerEqual, FbParamHash);
+WX_DECLARE_HASH_MAP( int, wxString, wxIntegerHash, wxIntegerEqual, FbNameHash);
 
 class FbCollection: public wxObject
 {
@@ -93,8 +76,8 @@ class FbCollection: public wxObject
 		static wxString GetBook(int code, size_t col);
 		static wxString GetBookHTML(const FbViewContext &ctx, const FbCacheBook &book, int code);
 		static FbCacheBook GetBookData(int code);
-		static void AddSeqn(FbCacheData * data);
-		static void AddAuth(FbCacheData * data);
+		static void AddSeqn(int code, const wxString &name);
+		static void AddAuth(int code, const wxString &name);
 		static void AddInfo(FbViewData * info);
 		static void ResetSeqn(int code);
 		static void ResetAuth(int code);
@@ -111,11 +94,10 @@ class FbCollection: public wxObject
 		static void SetParamStr(int param, const wxString &value);
 		static void ResetParam(int param);
 	protected:
-		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
-		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
+//		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
+//		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
 		FbCacheBook AddBook(const FbCacheBook &book);
 		void AddBookInfo(FbViewData * info);
-		void ResetData(FbCasheDataArray &items, int code);
 		void DoResetBook(const wxArrayInt &books);
 		void DoResetBook(int code);
 		void DoResetInfo(int code);
@@ -131,8 +113,8 @@ class FbCollection: public wxObject
 		static FbParamHash sm_params;
 		FbMainDatabase m_database;
 		FbAggregateFunction m_aggregate;
-		FbCasheDataArray m_auths;
-		FbCasheDataArray m_seqns;
+		FbNameHash m_auths;
+		FbNameHash m_seqns;
 		FbCasheBookArray m_books;
 		FbBookAuthsArray m_book_auth;
 		FbBookSeqnsArray m_book_seqn;
