@@ -8,10 +8,26 @@
 //  FbAuthListThread
 //-----------------------------------------------------------------------------
 
+static void AttachCounter(wxSQLite3Database &database, const wxString &filename)
+{
+	wxSQLite3Statement stmt = database.PrepareStatement(wxT("ATTACH ? AS cnt"));
+	stmt.Bind(1, filename);
+	stmt.ExecuteUpdate();
+}
+
 void * FbAuthListThread::Entry()
 {
 	FbCommonDatabase database;
 	database.JoinThread(this);
+
+	if (abs(m_order) > 1) {
+		if (m_counter.IsEmpty()) {
+			CreateCounter(database);
+		} else {
+			AttachCounter(database, m_counter);
+		}
+	}
+
 	if (m_info.m_string.IsEmpty()) {
 		DoLetter(database);
 	} else if (m_info.IsFullText()) {
@@ -19,38 +35,41 @@ void * FbAuthListThread::Entry()
 	} else {
 		DoString(database);
 	}
+
 	return NULL;
 }
 
 void FbAuthListThread::DoLetter(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, full_name, number FROM authors");
-	if (m_info.m_letter) sql << wxT(' ') << wxT("WHERE letter=?");
-	sql << GetOrder(m_order);
+	wxString sql = wxT("SELECT id, full_name, 0 FROM authors");
+	sql << GetJoin() << wxT("WHERE letter=?") << GetOrder();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_info.m_letter) stmt.Bind(1, (wxString)m_info.m_letter);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
+	CreateCounter(database);
 }
 
 void FbAuthListThread::DoString(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT id, full_name, number FROM authors WHERE SEARCH(search_name)");
-	sql << GetOrder(m_order);
+	wxString sql = wxT("SELECT id, full_name, 0 FROM authors");
+	sql << GetJoin() << wxT("WHERE SEARCH(search_name)") << GetOrder();
 	FbSearchFunction search(m_info.m_string);
 	database.CreateFunction(wxT("SEARCH"), 1, search);
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	MakeModel(result);
+	CreateCounter(database);
 }
 
 void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ?");
-	sql << GetOrder(m_order);
+	wxString sql = wxT("SELECT docid, full_name, 0 FROM fts_auth INNER JOIN authors ON id=docid");
+	sql << GetJoin() << wxT("WHERE fts_auth MATCH ?") << GetOrder();
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
+	CreateCounter(database);
 }
 
 void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
@@ -77,10 +96,15 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 	FbArrayEvent(id, items).Post(m_frame);
 }
 
-wxString FbAuthListThread::GetOrder(int column)
+wxString FbAuthListThread::GetJoin()
 {
-	wxString fields = wxT("full_name COLLATE CYR,number");
-	int number = column == 0 ? 1 : abs(column);
+	return abs(m_order) > 1 ? wxT(" LEFT JOIN cnt.a ON aid=id ") : wxString(wxT(' '));
+}
+
+wxString FbAuthListThread::GetOrder()
+{
+	wxString fields = wxT("full_name COLLATE CYR,a.num");
+	int number = m_order == 0 ? 1 : abs(m_order);
 	wxString result = wxT(" ORDER BY ");
 	wxString first;
 	wxStringTokenizer tkz(fields, wxT(','));
@@ -88,12 +112,34 @@ wxString FbAuthListThread::GetOrder(int column)
 	while (tkz.HasMoreTokens()) {
 		i++;
 		wxString token = tkz.GetNextToken();
-		if (column < 0) token << wxT(" desc");
+		if (m_order < 0) token << wxT(" desc");
 		if (i == number) result << token;
 		if (i == 1) first = token;
 	}
 	if (number != 1) result << wxT(',') << first;
 	return result;
+}
+
+void FbAuthListThread::CreateCounter(wxSQLite3Database &database)
+{
+	if (!m_counter.IsEmpty()) return;
+
+	m_counter = wxFileName::CreateTempFileName(wxT("fb"));
+	AttachCounter(database, m_counter);
+	wxArrayString sql;
+	sql.Add(wxT("CREATE TABLE cnt.a(aid INTEGER PRIMARY KEY, num INTEGER)"));
+	sql.Add(wxT("INSERT INTO cnt.a(aid, num) SELECT id_author, COUNT(id) FROM books GROUP BY id_author"));
+	size_t count = sql.Count();
+	for (size_t i = 0; i < count; i++) {
+		if (IsClosed()) break;
+		database.ExecuteUpdate(sql[i]);
+	}
+	if (IsClosed()) {
+		wxRemoveFile(m_counter);
+		m_counter = wxEmptyString;
+	} else {
+		FbCommandEvent(fbEVT_BOOK_ACTION, ID_MODEL_NUMBER, m_counter).Post(m_frame);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -110,8 +156,10 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 			int count = master->GetCount(m_code);
 			if (count != wxNOT_FOUND) return FbCollection::Format(count);
 		}
+		return wxEmptyString;
+	} else {
+		return FbCollection::GetAuth(m_code, col);
 	}
-	return FbCollection::GetAuth(m_code, col);
 }
 
 //-----------------------------------------------------------------------------
@@ -182,6 +230,13 @@ void FbAuthListModel::SetCount(int code, int count)
 
 int FbAuthListModel::GetCount(int code)
 {
-	return m_counter.count(code) ? m_counter[code] : wxNOT_FOUND;
+	if (m_counter.count(code)) return m_counter[code];
+	if (!m_database.IsOpen()) return wxNOT_FOUND;
+
+	wxString sql = wxT("SELECT num FROM a WHERE aid="); sql << code;
+	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	int count = result.NextRow() ? result.GetInt(0) : 0;
+	m_counter[code] = count;
+	return count;
 }
 

@@ -13,7 +13,7 @@ class FbAuthorReplaceDlg : public FbDialog
 	public:
 		FbAuthorReplaceDlg(const wxString& title, int id);
 		virtual ~FbAuthorReplaceDlg();
-		static int Execute(int author, wxString& newname);
+		static int Execute(int author, wxString& newname, const wxString& counter);
 		static bool Delete(FbModel &model);
 	protected:
 		virtual void EndModal(int retCode);
@@ -28,7 +28,7 @@ class FbAuthorReplaceDlg : public FbDialog
 		wxTextCtrl* m_Text;
 		wxTextCtrl* m_FindText;
 		wxBitmapButton* m_FindBtn;
-		FbTreeViewCtrl * m_FindList;
+		FbTreeViewCtrl * m_MasterList;
 	private:
 		void Init();
 		int GetSelected();
@@ -38,10 +38,12 @@ class FbAuthorReplaceDlg : public FbDialog
 		FbCommonDatabase m_database;
 		int m_id;
 		FbThread * m_thread;
+		wxString m_MasterFile;
 	private:
 		void OnFindEnter( wxCommandEvent& event );
 		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );
+		void OnNumber(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 

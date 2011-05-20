@@ -103,6 +103,8 @@ FbFrameBase::~FbFrameBase()
 		m_MasterThread->Wait();
 	}
 	wxDELETE(m_MasterThread);
+
+	if (!m_MasterFile.IsEmpty()) wxRemoveFile(m_MasterFile);
 }
 
 void FbFrameBase::CreateControls(bool select)
@@ -124,7 +126,6 @@ void FbFrameBase::CreateControls(bool select)
 
 void FbFrameBase::Localize(bool bUpdateMenu)
 {
-//	FbAuiMDIChildFrame::Localize(bUpdateMenu);
 	if (m_MasterList) {
 		m_MasterList->EmptyColumns();
 		CreateColumns();

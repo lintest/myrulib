@@ -73,6 +73,7 @@ public:
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		FbThread * m_MasterThread;
+		wxString m_MasterFile;
 		FbFilterObj m_filter;
 		int m_BookCount;
 	private:

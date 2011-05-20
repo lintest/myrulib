@@ -29,20 +29,23 @@ class FbAuthListInfo: public wxObject
 class FbAuthListThread: public FbThread
 {
 	public:
-		FbAuthListThread(wxEvtHandler * frame, const FbAuthListInfo &info, int order = 0)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_order(order) {}
+		FbAuthListThread(wxEvtHandler * frame, const FbAuthListInfo &info, int order, const wxString & filename)
+			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_order(order), m_counter(filename) {}
 	protected:
 		virtual void * Entry();
 	private:
-		static wxString GetOrder(int column);
+		wxString GetJoin();
+		wxString GetOrder();
 		void DoAuthor(wxSQLite3Database &database);
 		void DoLetter(wxSQLite3Database &database);
 		void DoString(wxSQLite3Database &database);
 		void DoFullText(wxSQLite3Database &database);
 		void MakeModel(wxSQLite3ResultSet &result);
+		void CreateCounter(wxSQLite3Database &database);
 		wxEvtHandler * m_frame;
 		FbAuthListInfo m_info;
-		int m_order;
+		const int m_order;
+		wxString m_counter;
 };
 
 class FbAuthListData: public FbModelData
@@ -76,11 +79,14 @@ class FbAuthListModel: public FbListModel
 			{ return m_items.Count(); }
 		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); };
+		void SetCounter(const wxString & filename)
+			{ if (!filename.IsEmpty()) m_database.Open(filename); }
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:
 		wxArrayInt m_items;
 		FbIntegerHash m_counter;
+		wxSQLite3Database m_database;
 		DECLARE_CLASS(FbAuthListModel);
 };
 

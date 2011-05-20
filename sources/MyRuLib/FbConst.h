@@ -128,6 +128,7 @@ enum {
 	ID_SCRIPT_EXIT,
 	ID_MODEL_CREATE,
 	ID_MODEL_APPEND,
+	ID_MODEL_NUMBER,
 	ID_FAVORITES_ADD, // Always the last !!!
 };
 

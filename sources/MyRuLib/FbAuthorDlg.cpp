@@ -200,6 +200,7 @@ BEGIN_EVENT_TABLE( FbAuthorReplaceDlg, wxDialog )
 	EVT_BUTTON( ID_FIND_BTN, FbAuthorReplaceDlg::OnFindEnter )
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbAuthorReplaceDlg::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbAuthorReplaceDlg::OnArray)
+	EVT_COMMAND(ID_MODEL_NUMBER, fbEVT_BOOK_ACTION, FbAuthorReplaceDlg::OnNumber)
 END_EVENT_TABLE()
 
 FbAuthorReplaceDlg::FbAuthorReplaceDlg( const wxString& title, int id )
@@ -246,10 +247,10 @@ FbAuthorReplaceDlg::FbAuthorReplaceDlg( const wxString& title, int id )
 
 	bSizerMain->Add( fgSizerGrid, 0, wxEXPAND, 5 );
 
-	m_FindList = new FbTreeViewCtrl(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
-	bSizerMain->Add( m_FindList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
-	m_FindList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);
-	m_FindList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
+	m_MasterList = new FbTreeViewCtrl(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	bSizerMain->Add( m_MasterList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	m_MasterList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -266,6 +267,7 @@ FbAuthorReplaceDlg::~FbAuthorReplaceDlg()
 		m_thread->Close();
 		m_thread->Delete();
 	}
+	if (!m_MasterFile.IsEmpty()) wxRemoveFile(m_MasterFile);
 }
 
 bool FbAuthorReplaceDlg::Load()
@@ -278,7 +280,7 @@ bool FbAuthorReplaceDlg::Load()
 	if (result.NextRow()) {
 		m_Text->SetValue(result.GetAsString(0));
 		wxString last_name = result.GetAsString(1);
-		if (!last_name.IsEmpty()) (m_thread = new FbAuthListThread(this, last_name))->Execute();
+		if (!last_name.IsEmpty()) (m_thread = new FbAuthListThread(this, last_name, 0, m_MasterFile))->Execute();
 		return true;
 	}
 	return false;
@@ -292,12 +294,12 @@ void FbAuthorReplaceDlg::OnFindEnter( wxCommandEvent& event )
 		m_thread->Delete();
 		m_thread = NULL;
 	}
-	if (!text.IsEmpty()) (m_thread = new FbAuthListThread(this, text))->Execute();
+	if (!text.IsEmpty()) (m_thread = new FbAuthListThread(this, text, 0, m_MasterFile))->Execute();
 }
 
 int FbAuthorReplaceDlg::GetSelected()
 {
-	FbModelItem item = m_FindList->GetCurrent();
+	FbModelItem item = m_MasterList->GetCurrent();
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	return data ? data->GetCode() : 0;
 }
@@ -328,12 +330,13 @@ int FbAuthorReplaceDlg::DoUpdate()
 
 wxString FbAuthorReplaceDlg::GetFullName()
 {
-	return m_FindList->GetCurrent();
+	return m_MasterList->GetCurrent();
 }
 
-int FbAuthorReplaceDlg::Execute(int author, wxString& newname)
+int FbAuthorReplaceDlg::Execute(int author, wxString& newname, const wxString& counter)
 {
 	FbAuthorReplaceDlg dlg(_("Replace author"), author);
+	dlg.m_MasterFile = counter;
 	bool ok = dlg.Load() && dlg.ShowModal() == wxID_OK;
 	if (ok) newname = dlg.GetFullName();
 	return ok ? dlg.DoUpdate() : 0;
@@ -346,7 +349,8 @@ void FbAuthorReplaceDlg::OnModel( FbArrayEvent& event )
 	if (index != wxNOT_FOUND) array.RemoveAt(index);
 
 	FbAuthListModel * model = new FbAuthListModel(array);
-	m_FindList->AssignModel(model);
+	model->SetCounter(m_MasterFile);
+	m_MasterList->AssignModel(model);
 }
 
 void FbAuthorReplaceDlg::OnArray( FbArrayEvent& event )
@@ -355,9 +359,9 @@ void FbAuthorReplaceDlg::OnArray( FbArrayEvent& event )
 	int index = array.Index(m_id);
 	if (index != wxNOT_FOUND) array.RemoveAt(index);
 
-	FbAuthListModel * model = wxDynamicCast(m_FindList->GetModel(), FbAuthListModel);
+	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
 	if (model) model->Append(array);
-	m_FindList->Refresh();
+	m_MasterList->Refresh();
 }
 
 bool FbAuthorReplaceDlg::Delete(FbModel &model)
@@ -388,4 +392,12 @@ bool FbAuthorReplaceDlg::Delete(FbModel &model)
 		database.ExecuteUpdate(sql2);
 	}
 	return ok;
+}
+
+void FbAuthorReplaceDlg::OnNumber(wxCommandEvent& event)
+{
+	m_MasterFile = event.GetString();
+	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
+	if (model) model->SetCounter(m_MasterFile);
+	m_MasterList->Refresh();
 }

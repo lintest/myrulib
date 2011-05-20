@@ -13,8 +13,7 @@ void * FbFilterThread::Entry()
 
 bool FbFilterThread::Execute()
 {
-//	m_tempfile = wxFileName::CreateTempFileName(wxT("fb"));
-	m_tempfile = wxT("D:\\FILTER.DB");
+	m_tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 	wxRemoveFile(m_tempfile);
 	FbCommonDatabase database;
 

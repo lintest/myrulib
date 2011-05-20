@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameAuth::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameAuth::OnArray)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameAuth::OnBooksCount)
+	EVT_COMMAND(ID_MODEL_NUMBER, fbEVT_BOOK_ACTION, FbFrameAuth::OnNumber)
 END_EVENT_TABLE()
 
 FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
@@ -83,7 +84,8 @@ void FbFrameAuth::CreateMasterThread()
 		m_MasterThread->Wait();
 	}
 	wxDELETE(m_MasterThread);
-	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn());
+
+	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn(), m_MasterFile);
 	m_MasterThread->Execute();
 }
 
@@ -181,7 +183,7 @@ void FbFrameAuth::OnMasterReplace(wxCommandEvent& event)
 
 	wxString newname;
 	int old_id = current->GetCode();
-	int new_id = FbAuthorReplaceDlg::Execute(old_id, newname);
+	int new_id = FbAuthorReplaceDlg::Execute(old_id, newname, m_MasterFile);
 	if (new_id == 0) return;
 
 	if (new_id != old_id) model->Delete(new_id);
@@ -258,6 +260,7 @@ void FbFrameAuth::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 void FbFrameAuth::OnModel( FbArrayEvent& event )
 {
 	FbAuthListModel * model = new FbAuthListModel(event.GetArray());
+	model->SetCounter(m_MasterFile);
 	m_MasterList->AssignModel(model);
 }
 
@@ -268,3 +271,10 @@ void FbFrameAuth::OnArray( FbArrayEvent& event )
 	m_MasterList->Refresh();
 }
 
+void FbFrameAuth::OnNumber(wxCommandEvent& event)
+{
+	m_MasterFile = event.GetString();
+	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
+	if (model) model->SetCounter(m_MasterFile);
+	m_MasterList->Refresh();
+}

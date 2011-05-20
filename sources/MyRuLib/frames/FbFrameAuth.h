@@ -30,11 +30,8 @@ class FbFrameAuth : public FbFrameBase
 		void CreateMasterThread();
 		void CreateColumns();
 	private:
-		wxSplitterWindow * m_BooksSplitter;
 		FbAlphabetCombo * m_LetterList;
-	private:
 		FbAuthListInfo m_info;
-		wxString letters;
 	private:
 		void OnBooksCount(FbCountEvent& event);
 		void OnColClick(wxListEvent& event);
@@ -50,6 +47,7 @@ class FbFrameAuth : public FbFrameBase
 		void OnMasterPage(wxCommandEvent& event);
 		void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
 		void OnContextMenu(wxTreeEvent& event);
+		void OnNumber(wxCommandEvent& event);
 		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );
 		DECLARE_EVENT_TABLE()
