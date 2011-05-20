@@ -4,7 +4,6 @@
 #include "FbDateTime.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include "FbCounter.h"
 #include "MyRuLibApp.h"
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
@@ -26,7 +25,6 @@ void * FbUpdateThread::Entry()
 	if (date == 0) return NULL;
 
 	FbCommonDatabase database;
-	FbCounter counter(database);
 
 	bool ok = false;
 	while (date && date < today) {
@@ -38,10 +36,7 @@ void * FbUpdateThread::Entry()
 		}
 	}
 
-	if (ok) {
-		counter.Execute();
-		wxLogWarning(_("Database successfully updated"));
-	}
+	if (ok) wxLogWarning(_("Database successfully updated"));
 
 	return NULL;
 }

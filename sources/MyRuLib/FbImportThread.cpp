@@ -40,9 +40,7 @@ void * FbImportThread::Entry()
 	database.JoinThread(this);
 	m_database = &database;
 
-	FbCounter counter(database);
 	DoParse(true);
-	counter.Execute();
 
 	return NULL;
 }
@@ -263,9 +261,7 @@ bool FbLibImportThread::Execute()
 	if (HasFlag(fbIMP_IMPORT)) {
 		SetRoot(m_dir);
 		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
-		FbCounter counter(database);
 		DoParse(HasFlag(fbIMP_ONLY_NEW));
-		counter.Execute();
 	}
 
 	return true;

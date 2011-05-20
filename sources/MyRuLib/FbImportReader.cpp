@@ -344,8 +344,6 @@ bool FbImportBook::AppendBook()
 		}
 	}
 
-	FbCounter::AddBook(m_database, id_book);
-
 	return ok;
 }
 bool FbImportBook::AppendFile(int id_book)

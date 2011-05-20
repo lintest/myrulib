@@ -2,24 +2,21 @@
 #include "FbExtractInfo.h"
 #include "FbParams.h"
 #include "MyRuLibApp.h"
-#include "FbCounter.h"
 
 void * FbDeleteThread::Entry()
 {
 	FbCommonDatabase database;
-	FbCounter counter(database);
-	counter.Add(m_sel);
 
 	if (FbParams::GetInt(FB_REMOVE_FILES)) DoDelete(database);
 
 	wxString sql;
 
 	const wxChar * tables[][2] = {
-		{ wxT("books"),    wxT("id") }, 
-		{ wxT("bookseq"),  wxT("id_book") }, 
-		{ wxT("files"),    wxT("id_book") }, 
-		{ wxT("genres"),   wxT("id_book") }, 
-		{ wxT("fts_book"), wxT("docid") }, 
+		{ wxT("books"),    wxT("id") },
+		{ wxT("bookseq"),  wxT("id_book") },
+		{ wxT("files"),    wxT("id_book") },
+		{ wxT("genres"),   wxT("id_book") },
+		{ wxT("fts_book"), wxT("docid") },
 	};
 
 	size_t count = sizeof(tables) / sizeof(wxChar*) / 2;
@@ -27,8 +24,6 @@ void * FbDeleteThread::Entry()
 		wxString sql = wxString::Format(wxT("DELETE FROM %s WHERE %s IN (%s)"), tables[i][0], tables[i][1], m_sel.c_str());
 		database.ExecuteUpdate(sql);
 	}
-
-	counter.Execute();
 
 	return NULL;
 }

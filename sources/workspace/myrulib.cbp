@@ -212,8 +212,6 @@
 		<Unit filename="../MyRuLib/FbConst.h" />
 		<Unit filename="../MyRuLib/FbConvertDlg.cpp" />
 		<Unit filename="../MyRuLib/FbConvertDlg.h" />
-		<Unit filename="../MyRuLib/FbCounter.cpp" />
-		<Unit filename="../MyRuLib/FbCounter.h" />
 		<Unit filename="../MyRuLib/FbDataOpenDlg.cpp" />
 		<Unit filename="../MyRuLib/FbDataOpenDlg.h" />
 		<Unit filename="../MyRuLib/FbDataPath.cpp" />

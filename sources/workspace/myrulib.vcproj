@@ -268,10 +268,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbCounter.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbDatabase.cpp"
 				>
 			</File>
@@ -701,10 +697,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbConvertDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbCounter.h"
 				>
 			</File>
 			<File

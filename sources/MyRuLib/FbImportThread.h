@@ -6,7 +6,6 @@
 #include <wx/zipstrm.h>
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
-#include "FbCounter.h"
 #include "FbDatabase.h"
 
 #define fbIMP_IMPORT   0x01

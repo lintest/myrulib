@@ -213,7 +213,6 @@
 		<sources>sources/MyRuLib/FbColumns.cpp</sources>
 		<sources>sources/MyRuLib/FbCollection.cpp</sources>
 		<sources>sources/MyRuLib/FbConvertDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbCounter.cpp</sources>
 		<sources>sources/MyRuLib/FbConfigDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbConst.cpp</sources>
 		<sources>sources/MyRuLib/FbDatabase.cpp</sources>
