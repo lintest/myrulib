@@ -241,10 +241,13 @@
 		<Unit filename="../MyRuLib/FbFilterObj.cpp" />
 		<Unit filename="../MyRuLib/FbFilterObj.h" />
 		<Unit filename="../MyRuLib/FbFilterThread.cpp" />
+		<Unit filename="../MyRuLib/FbFilterThread.h" />
 		<Unit filename="../MyRuLib/FbFilterTree.cpp" />
 		<Unit filename="../MyRuLib/FbFilterTree.h" />
 		<Unit filename="../MyRuLib/FbFldrTree.cpp" />
 		<Unit filename="../MyRuLib/FbFldrTree.h" />
+		<Unit filename="../MyRuLib/FbFrameThread.cpp" />
+		<Unit filename="../MyRuLib/FbFrameThread.h" />
 		<Unit filename="../MyRuLib/FbGenrTree.cpp" />
 		<Unit filename="../MyRuLib/FbGenrTree.h" />
 		<Unit filename="../MyRuLib/FbGenreThread.cpp" />

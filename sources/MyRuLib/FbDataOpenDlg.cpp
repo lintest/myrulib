@@ -222,7 +222,6 @@ wxString FbDataOpenDlg::GetDirname()
 FbThread * FbDataOpenDlg::CreateThread(wxEvtHandler * owner)
 {
 	wxString lib = m_action.GetCurrentData().Lower();
-	bool import = m_scaner.GetValue();
 	long flags = 0;
 	if (m_scaner.GetValue()) flags = flags | fbIMP_IMPORT;
 	if (m_only_new.GetValue()) flags = flags | fbIMP_ONLY_NEW;

@@ -110,12 +110,6 @@ int FbSequenDlg::DoReplace()
 		stmt.Bind(1, m_id);
 		stmt.ExecuteUpdate();
 	}
-	{
-		wxString sql = strUpdateSequenCount + wxT("WHERE id=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, m_exists);
-		stmt.ExecuteUpdate();
-	}
 	trans.Commit();
 
 	FbCollection::ResetSeqn(m_exists);

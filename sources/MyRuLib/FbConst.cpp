@@ -48,9 +48,6 @@ const wxString strAlphabet = alphabetRu + alphabetEn;
 const wxString strRusJE = (wxChar)0x0415;
 const wxString strRusJO = (wxChar)0x0416;
 
-const wxString strUpdateAuthorCount = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id)");
-const wxString strUpdateSequenCount = wxT("UPDATE sequences SET number=(SELECT COUNT(DISTINCT id_book) FROM bookseq WHERE bookseq.id_seq=sequences.id)");
-
 wxString GetRatingText(int index)
 {
 	const wxChar * text[] = {

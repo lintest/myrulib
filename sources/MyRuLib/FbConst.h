@@ -149,9 +149,6 @@ extern const wxString strAlphabet;
 extern const wxString strRusJE;
 extern const wxString strRusJO;
 
-extern const wxString strUpdateAuthorCount;
-extern const wxString strUpdateSequenCount;
-
 #define COLON wxString(wxT(": "))
 
 void FbLogMessage(const wxString &info, const wxString &text);
