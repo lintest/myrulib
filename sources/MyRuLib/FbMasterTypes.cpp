@@ -17,23 +17,19 @@
 
 FbMasterInfo FbDateDayData::GetInfo() const
 {
-	return FbMasterDateInfo(this->GetCode(), m_lib_min, m_lib_max, m_usr_min, m_usr_max);
+	return FbMasterDateInfo(this->GetCode());
 }
 
 IMPLEMENT_CLASS(FbMasterDateInfo, FbMasterInfoBase)
 
 wxString FbMasterDateInfo::GetWhere(wxSQLite3Database &database) const
 {
-	return wxT("((books.id BETWEEN ? AND ?)OR(books.id BETWEEN ? AND ?))AND(books.created=?)");
+	return wxT("books.created=?");
 }
 
 void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
 {
-	stmt.Bind(1, m_lib_min);
-	stmt.Bind(2, m_lib_max);
-	stmt.Bind(3, m_usr_min);
-	stmt.Bind(4, m_usr_max);
-	stmt.Bind(5, m_id);
+	stmt.Bind(1, m_id);
 }
 
 //-----------------------------------------------------------------------------

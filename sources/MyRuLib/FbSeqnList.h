@@ -3,28 +3,25 @@
 
 #include "controls/FbTreeModel.h"
 #include "FbCollection.h"
-#include "FbThread.h"
+#include "FbFrameThread.h"
 
-class FbSeqnListThread: public FbThread
+class FbSeqnListThread: public FbFrameThread
 {
 	public:
 		FbSeqnListThread(wxEvtHandler * frame, const wxString &string, int order, const wxString & filename)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_string(string), m_order(order), m_counter(filename) {}
+			: FbFrameThread(frame, filename), m_string(string), m_order(order) {}
 	protected:
 		virtual void * Entry();
+		void MakeModel(wxSQLite3ResultSet &result);
 	private:
 		wxString GetJoin();
 		wxString GetOrder();
 		void DoString(wxSQLite3Database &database);
 		void DoFullText(wxSQLite3Database &database);
 		bool IsFullText(wxSQLite3Database &database) const;
-		void MakeModel(wxSQLite3ResultSet &result);
-		void CreateCounter(wxSQLite3Database &database);
 	private:
-		wxEvtHandler * m_frame;
 		wxString m_string;
 		const int m_order;
-		wxString m_counter;
 };
 
 class FbSeqnListData: public FbModelData

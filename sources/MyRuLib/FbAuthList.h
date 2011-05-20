@@ -3,7 +3,7 @@
 
 #include "controls/FbTreeModel.h"
 #include "FbCollection.h"
-#include "FbThread.h"
+#include "FbFrameThread.h"
 
 class FbAuthListInfo: public wxObject
 {
@@ -26,13 +26,14 @@ class FbAuthListInfo: public wxObject
 		friend class FbAuthListThread;
 };
 
-class FbAuthListThread: public FbThread
+class FbAuthListThread : public FbFrameThread
 {
 	public:
 		FbAuthListThread(wxEvtHandler * frame, const FbAuthListInfo &info, int order, const wxString & filename)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_info(info), m_order(order), m_counter(filename) {}
+			: FbFrameThread(frame, filename), m_info(info), m_order(order) {}
 	protected:
 		virtual void * Entry();
+		void MakeModel(wxSQLite3ResultSet &result);
 	private:
 		wxString GetJoin();
 		wxString GetOrder();
@@ -40,12 +41,8 @@ class FbAuthListThread: public FbThread
 		void DoLetter(wxSQLite3Database &database);
 		void DoString(wxSQLite3Database &database);
 		void DoFullText(wxSQLite3Database &database);
-		void MakeModel(wxSQLite3ResultSet &result);
-		void CreateCounter(wxSQLite3Database &database);
-		wxEvtHandler * m_frame;
 		FbAuthListInfo m_info;
 		const int m_order;
-		wxString m_counter;
 };
 
 class FbAuthListData: public FbModelData

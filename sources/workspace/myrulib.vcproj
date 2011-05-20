@@ -380,6 +380,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\FbFrameThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbGenres.cpp"
 				>
 			</File>
@@ -813,6 +817,10 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\frames\FbFrameSeqn.h"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\FbFrameThread.h"
 				>
 			</File>
 			<File

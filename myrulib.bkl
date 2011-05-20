@@ -243,6 +243,7 @@
 		<sources>sources/MyRuLib/frames/FbFrameHtml.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameGenr.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameSeqn.cpp</sources>
+		<sources>sources/MyRuLib/FbFrameThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenrTree.cpp</sources>

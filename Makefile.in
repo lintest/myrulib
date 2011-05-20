@@ -176,6 +176,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbFrameHtml.o \
 	myrulib_FbFrameGenr.o \
 	myrulib_FbFrameSeqn.o \
+	myrulib_FbFrameThread.o \
 	myrulib_FbGenres.o \
 	myrulib_FbGenreThread.o \
 	myrulib_FbGenrTree.o \
@@ -690,6 +691,9 @@ myrulib_FbFrameGenr.o: $(srcdir)/sources/MyRuLib/frames/FbFrameGenr.cpp $(MYRULI
 
 myrulib_FbFrameSeqn.o: $(srcdir)/sources/MyRuLib/frames/FbFrameSeqn.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/frames/FbFrameSeqn.cpp
+
+myrulib_FbFrameThread.o: $(srcdir)/sources/MyRuLib/FbFrameThread.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameThread.cpp
 
 myrulib_FbGenres.o: $(srcdir)/sources/MyRuLib/FbGenres.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbGenres.cpp

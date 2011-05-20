@@ -11,19 +11,33 @@
 
 void * FbDateTreeThread::Entry()
 {
-	FbTreeModel * model = new FbTreeModel();
-	FbParentData * root = new FbParentData(*model);
-	model->SetRoot(root);
-
 	FbCommonDatabase database;
 	database.JoinThread(this);
-	wxString sql = wxT("SELECT id, lib_min, lib_max, lib_num, usr_min, usr_max, usr_num FROM dates ORDER BY id DESC");
+
+	wxString sql = wxT("SELECT DISTINCT created FROM books ORDER BY 1 DESC");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
-	if (!result.IsOk()) return NULL;
+	if (result.IsOk()) MakeModel(result);
+
+	if (m_counter.IsEmpty()) {
+		wxString sql = wxT("SELECT created, COUNT(DISTINCT id) FROM books GROUP BY created");
+		CreateCounter(database, sql);
+	}
+
+	return NULL;
+}
+
+void FbDateTreeThread::MakeModel(wxSQLite3ResultSet &result)
+{
+	bool ok = true;
+
+	FbTreeModel * model = new FbDateTreeModel;
+	FbParentData * root = new FbParentData(*model);
+	model->SetRoot(root);
 
 	FbDateYearData * year = NULL;
 	FbDateMonthData * mnth = NULL;
 	while (result.NextRow()) {
+		if (IsClosed()) { ok = false; break; }
 		int day = result.GetInt(0);
 		int new_year = day / 10000;
 		int new_mnth = day / 100;
@@ -34,11 +48,14 @@ void * FbDateTreeThread::Entry()
 		if (mnth == NULL || mnth->GetCode() != new_mnth) {
 			mnth = new FbDateMonthData(*model, year, new_mnth);
 		}
-		new FbDateDayData(*model, mnth, day, result);
+		new FbDateDayData(*model, mnth, day);
 	}
-	FbModelEvent(ID_MODEL_CREATE, model).Post(m_frame);
 
-	return NULL;
+	if (ok) {
+		FbModelEvent(ID_MODEL_CREATE, model).Post(m_frame);
+	} else {
+		delete model;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -84,21 +101,21 @@ wxString FbDateDayData::GetValue(FbModel & model, size_t col) const
 	switch (col) {
 		case 0:
 			return FbDateTime(m_code).FormatDate();
-		case 1:
-			return Format(m_count);
+		case 1: {
+			FbDateTreeModel * master = wxDynamicCast(&model, FbDateTreeModel);
+			if (master) {
+				int count = master->GetCount(m_code);
+				if (count != wxNOT_FOUND) return FbCollection::Format(count);
+			}
+			return wxEmptyString;
+		}
 		default:
 			return wxEmptyString;
 	}
 }
 
-FbDateDayData::FbDateDayData(FbModel & model, FbParentData * parent, int code, wxSQLite3ResultSet &result)
-	: FbChildData(model, parent),
-		m_code(code),
-		m_count(result.GetInt(3) + result.GetInt(6)),
-		m_lib_min(result.GetInt(1)),
-		m_lib_max(result.GetInt(2)),
-		m_usr_min(result.GetInt(4)),
-		m_usr_max(result.GetInt(5))
+FbDateDayData::FbDateDayData(FbModel & model, FbParentData * parent, int code)
+	: FbChildData(model, parent), m_code(code), m_count(0)
 {
 }
 
@@ -106,5 +123,20 @@ bool FbDateDayData::operator==(const FbMasterInfo & info) const
 {
 	FbMasterDateInfo * data = wxDynamicCast(&info, FbMasterDateInfo);
 	return data && data->GetId() == m_code;
+}
+
+//-----------------------------------------------------------------------------
+//  FbDateTreeModel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbDateTreeModel, FbTreeModel)
+
+int FbDateTreeModel::GetCount(int code)
+{
+	if (m_counter.count(code)) return m_counter[code];
+	int count = FbFrameThread::GetCount(m_database, code);
+	if (count == wxNOT_FOUND) return wxNOT_FOUND;
+	m_counter[code] = count;
+	return count;
 }
 

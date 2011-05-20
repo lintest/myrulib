@@ -31,6 +31,7 @@ class FbFrameDate : public FbFrameBase
 	private:
 		void OnBooksCount(FbCountEvent & event);
 		void OnModel(FbModelEvent & event);
+		void OnNumber(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 

@@ -5,18 +5,16 @@
 #include "controls/FbTreeModel.h"
 #include "FbDatabase.h"
 #include "FbCollection.h"
-#include "FbThread.h"
+#include "FbFrameThread.h"
 
-class FbDateTreeThread: public FbThread
+class FbDateTreeThread : public FbFrameThread
 {
 	public:
-		FbDateTreeThread(wxEvtHandler * frame)
-			:FbThread(wxTHREAD_JOINABLE), m_frame(frame) {}
+		FbDateTreeThread(wxEvtHandler * frame, const wxString &counter)
+			: FbFrameThread(frame, counter) {}
 	protected:
 		virtual void * Entry();
-	private:
-		wxEvtHandler * m_frame;
-		int m_order;
+		void MakeModel(wxSQLite3ResultSet &result);
 };
 
 class FbDateYearData: public FbParentData
@@ -46,7 +44,7 @@ class FbDateMonthData: public FbParentData
 class FbDateDayData: public FbChildData
 {
 	public:
-		FbDateDayData(FbModel & model, FbParentData * parent, int code, wxSQLite3ResultSet &result);
+		FbDateDayData(FbModel & model, FbParentData * parent, int code);
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		int GetCode() const { return m_code; }
 		FbMasterInfo GetInfo() const;
@@ -55,11 +53,19 @@ class FbDateDayData: public FbChildData
 	private:
 		int m_code;
 		int m_count;
-		int m_lib_min;
-		int m_lib_max;
-		int m_usr_min;
-		int m_usr_max;
 		DECLARE_CLASS(FbDateDayData);
+};
+
+class FbDateTreeModel: public FbTreeModel
+{
+	public:
+		void SetCounter(const wxString & filename)
+			{ if (!filename.IsEmpty()) m_database.Open(filename); }
+		int GetCount(int code);
+	private:
+		FbIntegerHash m_counter;
+		wxSQLite3Database m_database;
+		DECLARE_CLASS(FbDateTreeModel);
 };
 
 #endif // __FBDATETREE_H__
