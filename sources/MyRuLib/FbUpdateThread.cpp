@@ -234,18 +234,6 @@ void FbUpdateItem::ExecInsert()
 			wxT("fts_seqn"),  wxT("docid,content"),
 			wxT("sequences"), wxT("id,LOW(value)"),
 			},
-		{
-			wxT("tmp_a"), wxT("id"),
-			wxT("books"), wxT("id"),
-		},
-		{
-			wxT("tmp_s"), wxT("id"),
-			wxT("sequences"), wxT("id"),
-		},
-		{
-			wxT("tmp_d"), wxT("id"),
-			wxT("books"), wxT("created"),
-		},
 	};
 
 	size_t size = sizeof( list ) / sizeof( wxChar * ) / 4;
