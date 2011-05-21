@@ -29,6 +29,7 @@ void FbFrameThread::CreateCounter(wxSQLite3Database &database, const wxString &s
 	database.ExecuteUpdate(wxT("INSERT INTO cnt.numb(key, num)") + sql);
 
 	if (IsClosed()) {
+		database.Close();
 		wxRemoveFile(m_counter);
 		m_counter = wxEmptyString;
 	} else {
