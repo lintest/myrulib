@@ -20,6 +20,7 @@ class FbFilterObj: public wxObject
 		bool m_enabled;
 		bool m_lib;
 		bool m_usr;
+		bool m_del;
 		wxString m_lang;
 		wxString m_type;
 		DECLARE_CLASS(FbFilterTreeModel)

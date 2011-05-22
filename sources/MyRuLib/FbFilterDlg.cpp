@@ -26,6 +26,10 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	m_checkLib->SetValue( filter.m_lib );
 	sbSizerOwner->Add( m_checkLib, 0, wxALL|wxEXPAND, 5 );
 
+	m_checkDel = new wxCheckBox( this, ID_CHECK_DEL, _("Deleted books"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_checkDel->SetValue( filter.m_del );
+	sbSizerOwner->Add( m_checkDel, 0, wxALL|wxEXPAND, 5 );
+
 	m_checkUsr = new wxCheckBox( this, ID_CHECK_USR, _("Local books"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_checkUsr->SetValue( filter.m_usr );
 	sbSizerOwner->Add( m_checkUsr, 0, wxALL|wxEXPAND, 5 );
@@ -83,6 +87,7 @@ void FbFilterDlg::Assign(FbFilterObj & filter)
 {
 	filter.m_lib = m_checkLib->GetValue();
 	filter.m_usr = m_checkUsr->GetValue();
+	filter.m_del = m_checkDel->GetValue();
 
 	FbFilterTreeModel * model;
 
