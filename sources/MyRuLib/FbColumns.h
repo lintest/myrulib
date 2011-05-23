@@ -30,6 +30,7 @@ class FbColumns
 		static wxString GetName(int field);
 		static int GetSize(int field);
 		static wxAlignment GetAlign(int field);
+		static int GetFixed(int field);
 		static wxString Get(const wxArrayInt & columns);
 		static void Set(const wxString &text, wxArrayInt & columns);
 		static void Create(const wxArrayInt & columns, FbListMode mode, FbTreeViewCtrl & ctrl);

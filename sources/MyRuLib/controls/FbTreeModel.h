@@ -163,17 +163,19 @@ class FbChildData: public FbModelData
 class FbColumnInfo: public wxObject
 {
 	public:
-		FbColumnInfo(size_t column, int width, int alignment)
-			: m_column(column), m_width(width), m_alignment(alignment) {}
+		FbColumnInfo(size_t column, int width, int alignment, int fixed = 0)
+			: m_column(column), m_width(width), m_alignment(alignment), m_fixed(fixed) {}
 		FbColumnInfo(const FbColumnInfo &info)
-			: m_column(info.m_column), m_width(info.m_width), m_alignment(info.m_alignment) {}
+			: m_column(info.m_column), m_width(info.m_width), m_alignment(info.m_alignment), m_fixed(info.m_fixed) {}
 		size_t GetColumn() const { return m_column; }
 		int GetWidth() const { return m_width; }
 		int GetAlignment() const { return m_alignment; }
+		int GetFixed() const { return m_fixed; }
 	private:
 		size_t m_column;
 		int m_width;
 		int m_alignment;
+		int m_fixed;
 		DECLARE_CLASS(FbColumnInfo);
 };
 

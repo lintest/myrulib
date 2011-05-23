@@ -159,8 +159,8 @@ void FbUpdateItem::ExecDelete()
 			wxT("books"), wxT("id"),
 		},
 		{
-			wxT("files"), wxT("id_archive"),
-			wxT("archives"), wxT("id"),
+			wxT("files"), wxT("id_book"),
+			wxT("books"), wxT("id"),
 		},
 		{
 			wxT("fts_auth"), wxT("docid"),

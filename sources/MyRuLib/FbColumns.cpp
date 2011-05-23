@@ -67,6 +67,22 @@ wxAlignment FbColumns::GetAlign(int field)
 	}
 }
 
+int FbColumns::GetFixed(int field)
+{
+	switch (field) {
+		case BF_NUMB: return  3;
+		case BF_CODE: return  7;
+		case BF_RATE: return  9;
+		case BF_LANG: return  2;
+		case BF_TYPE: return  4;
+		case BF_DATE: return 10;
+		case BF_SIZE: return 10;
+		case BF_BITE: return 14;
+		case BF_DOWN: return 10;
+		default: return 0;
+	}
+}
+
 wxChar FbColumns::GetChar(int field)
 {
 	if (BF_AUTH <= field && field < BF_LAST)
