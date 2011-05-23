@@ -646,6 +646,17 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 
 void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 {
+	if (event.GetKeyCode() == WXK_TAB) {
+		wxWindow * owner = GetParent()->GetParent();
+		wxNavigationKeyEvent nevent;
+		nevent.SetWindowChange( event.ControlDown() );
+		nevent.SetDirection( !event.ShiftDown() );
+		nevent.SetEventObject( owner );
+		nevent.SetCurrentFocus( GetParent() );
+		if (!owner->GetEventHandler()->ProcessEvent( nevent )) event.Skip();
+		return;
+	} 
+
 	if (!m_model) { event.Skip(); return; }
 
 	int pos = GetScrollPos (wxVERTICAL);
