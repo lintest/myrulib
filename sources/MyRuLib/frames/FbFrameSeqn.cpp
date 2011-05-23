@@ -34,15 +34,15 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
+	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
+	m_FindText->SetMinSize( wxSize( 200,-1 ) );
+
 	m_MasterList = new FbMasterViewCtrl;
 	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
 	CreateBooksPanel(this);
-
-	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
-	m_FindText->SetMinSize( wxSize( 200,-1 ) );
 
 	sizer->Add( m_FindText, 0, wxEXPAND, 0 );
 	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );

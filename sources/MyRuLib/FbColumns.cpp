@@ -124,10 +124,7 @@ void FbColumns::Create(const wxArrayInt & columns, FbListMode mode, FbTreeViewCt
 	for (size_t i = 0; i < count; i++) {
 		int index = columns[i];
 		if (BF_AUTH <= index && index < BF_LAST) {
-			int size = GetSize(index);
-			wxString name = GetName(index);
-			wxAlignment align = GetAlign(index);
-			ctrl.AddColumn(index, name, size, align);
+			ctrl.AddColumn(index, GetName(index), GetSize(index), GetAlign(index), GetFixed(index));
 		}
 	}
 	ctrl.Refresh();

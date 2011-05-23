@@ -65,7 +65,8 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		void AddColumn (size_t model_column,
 						const wxString& text = wxEmptyString,
 						int width = DEFAULT_COL_WIDTH,
-						int flag = wxALIGN_LEFT);
+						int flag = wxALIGN_LEFT,
+						int fixed = 0);
 
 		void EmptyColumns();
 

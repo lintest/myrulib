@@ -23,11 +23,12 @@ class FbTreeViewColumnInfo: public wxObject
 			size_t model_column,
 			const wxString &text = wxEmptyString,
 			int width = DEFAULT_COL_WIDTH,
-			int flag = wxALIGN_LEFT
-		) : m_text(text), m_index(model_column), m_width(width), m_flag(flag) {};
+			int flag = wxALIGN_LEFT,
+			int fixed = 0
+		) : m_text(text), m_index(model_column), m_width(width), m_flag(flag), m_fixed(fixed) {};
 
 		FbTreeViewColumnInfo(const FbTreeViewColumnInfo &info)
-			: m_text(info.m_text), m_index(info.m_index), m_width(info.m_width), m_flag(info.m_flag) {};
+			: m_text(info.m_text), m_index(info.m_index), m_width(info.m_width), m_flag(info.m_flag), m_fixed(info.m_fixed) {};
 
 		void Assign(FbTreeViewHeaderWindow * header, wxHeaderButtonParams &params) const;
 
@@ -37,6 +38,8 @@ class FbTreeViewColumnInfo: public wxObject
 
 		int GetFlag() const { return m_flag; };
 
+		int GetFixed() const { return m_fixed; };
+
 		void SetWidth(int value) { m_width = value; };
 
 	private:
@@ -44,6 +47,7 @@ class FbTreeViewColumnInfo: public wxObject
 		size_t m_index;
 		int m_width;
 		int m_flag;
+		int m_fixed;
 
 	private:
 		friend class FbTreeViewMainWindow;
@@ -688,6 +692,16 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 	int old = m_model->GetPosition();
 	int row = 0;
 	switch (event.GetKeyCode()) {
+		case WXK_TAB: {
+			wxWindow * owner = GetParent()->GetParent();
+			wxNavigationKeyEvent nevent;
+			nevent.SetWindowChange( event.ControlDown() );
+			nevent.SetDirection( !event.ShiftDown() );
+			nevent.SetEventObject( owner );
+			nevent.SetCurrentFocus( GetParent() );
+			if (owner->GetEventHandler()->ProcessEvent( nevent )) return;
+			event.Skip();
+		} break;
 		case WXK_UP: {
 			row = m_model->GoPriorRow();
 		} break;
@@ -741,215 +755,6 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 		Repaint();
 		return ;
 	}
-
-/*
-
-	// if no item current, select root
-	bool curItemSet = false;
-	if (!m_curItem) {
-		if (! GetRootItem().IsOk()) return;
-		m_curItem = (FbTreeViewItem*)GetRootItem().m_pItem;
-		if (HasFlag(wxTR_HIDE_ROOT)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-			long cookie = 0;
-#else
-			wxTreeItemIdValue cookie = 0;
-#endif
-			m_curItem = (FbTreeViewItem*)GetFirstChild (m_curItem, cookie).m_pItem;
-		}
-		SelectItem(m_curItem, 0L, true);  // unselect others
-		curItemSet = true;
-	}
-
-	// remember item at shift down
-	if (HasFlag(wxTR_MULTIPLE) && event.ShiftDown()) {
-		if (!m_shiftItem) m_shiftItem = m_curItem;
-	}else{
-		m_shiftItem = (FbTreeViewItem*)NULL;
-	}
-
-	if (curItemSet) return;  // if no item was current until now, do nothing more
-
-	// process all cases
-	wxTreeItemId newItem = (wxTreeItemId*)NULL;
-	switch (event.GetKeyCode()) {
-
-		// '+': Expand subtree
-		case '+':
-		case WXK_ADD: {
-			if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) Expand (m_curItem);
-		}break;
-
-		// '-': collapse subtree
-		case '-':
-		case WXK_SUBTRACT: {
-			if (m_curItem->HasPlus() && IsExpanded (m_curItem)) Collapse (m_curItem);
-		}break;
-
-		// '*': expand/collapse all subtrees // TODO: Mak it more useful
-		case '*':
-		case WXK_MULTIPLY: {
-			if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
-				ExpandAll (m_curItem);
-			}else if (m_curItem->HasPlus()) {
-				Collapse (m_curItem); // TODO: CollapseAll
-			}
-		}break;
-
-		// ' ': toggle current item
-		case ' ': {
-			SelectItem (m_curItem, (FbTreeViewItem*)NULL, false);
-		}break;
-
-		// <RETURN>: activate current item
-		case WXK_RETURN: {
-			if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, m_curItem)) {
-
-				// if the user code didn't process the activate event,
-				// handle it ourselves by toggling the item when it is
-				// double clicked
-				if (m_curItem && m_curItem->HasPlus()) Toggle(m_curItem);
-			}
-		}break;
-
-		// <BKSP>: go to the parent without collapsing
-		case WXK_BACK: {
-			newItem = GetItemParent (m_curItem);
-			if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
-				newItem = GetPrevSibling (m_curItem); // get sibling instead of root
-			}
-		}break;
-
-		// <UP>: go to the previous sibling or for the last of its children, to the parent
-		case WXK_UP: {
-			newItem = GetPrevSibling (m_curItem);
-			if (newItem) {
-#if !wxCHECK_VERSION(2, 5, 0)
-				long cookie = 0;
-#else
-				wxTreeItemIdValue cookie = 0;
-#endif
-				while (IsExpanded (newItem) && HasChildren (newItem)) {
-					newItem = GetLastChild (newItem, cookie);
-				}
-			}else {
-				newItem = GetItemParent (m_curItem);
-				if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
-					newItem = (wxTreeItemId*)NULL; // don't go to root if it is hidden
-				}
-			}
-		}break;
-
-		// <LEFT>: if expanded collapse subtree, else go to the parent
-		case WXK_LEFT: {
-			if (IsExpanded (m_curItem)) {
-				Collapse (m_curItem);
-			}else{
-				newItem = GetItemParent (m_curItem);
-				if ((newItem == GetRootItem()) && HasFlag(wxTR_HIDE_ROOT)) {
-					newItem = GetPrevSibling (m_curItem); // go to sibling if it is hidden
-				}
-			}
-		}break;
-
-		// <RIGHT>: if possible expand subtree, else go go to the first child
-		case WXK_RIGHT: {
-			if (m_curItem->HasPlus() && !IsExpanded (m_curItem)) {
-				Expand (m_curItem);
-			}else{
-				if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-					long cookie = 0;
-#else
-					wxTreeItemIdValue cookie = 0;
-#endif
-					newItem = GetFirstChild (m_curItem, cookie);
-				}
-			}
-		}break;
-
-		// <DOWN>: if expanded go to the first child, else to the next sibling, ect
-		case WXK_DOWN: {
-			if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-				long cookie = 0;
-#else
-				wxTreeItemIdValue cookie = 0;
-#endif
-				newItem = GetFirstChild( m_curItem, cookie );
-			}
-			if (!newItem) {
-				wxTreeItemId parent = m_curItem;
-				do {
-					newItem = GetNextSibling (parent);
-					parent = GetItemParent (parent);
-				} while (!newItem && parent);
-			}
-		}break;
-
-		// <END>: go to last item of the root
-		case WXK_END: {
-#if !wxCHECK_VERSION(2, 5, 0)
-			long cookie = 0;
-#else
-			wxTreeItemIdValue cookie = 0;
-#endif
-			newItem = GetLastChild (GetRootItem(), cookie);
-			//DENIS KANDRASHIN 2009-10-07 - BEGIN - Change keyboard press END key for last child
-			wxTreeItemId child = newItem;
-			while (child.IsOk()) {
-				newItem = child;
-				wxTreeItemIdValue cookie = 0;
-				child = GetLastChild(newItem, cookie);
-			}
-			// DENIS - END
-		}break;
-
-		// <HOME>: go to root
-		case WXK_HOME: {
-			newItem = GetRootItem();
-			if (HasFlag(wxTR_HIDE_ROOT)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-				long cookie = 0;
-#else
-				wxTreeItemIdValue cookie = 0;
-#endif
-				newItem = GetFirstChild (newItem, cookie);
-			}
-		}break;
-
-		// any char: go to the next matching string
-		default:
-			if (event.GetKeyCode() >= (int)' ') {
-				if (!m_findTimer->IsRunning()) m_findStr.Clear();
-				m_findStr.Append ((char)event.GetKeyCode());
-				m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
-				wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
-				while (true) {
-					newItem = FindItem (prev, m_findStr, wxTL_MODE_NAV_EXPANDED |
-														 wxTL_MODE_FIND_PARTIAL |
-														 wxTL_MODE_FIND_NOCASE);
-					if (newItem || (m_findStr.Length() <= 1)) break;
-					m_findStr.RemoveLast();
-				};
-			}
-			event.Skip();
-
-	}
-
-	// select and show the new item
-	if (newItem) {
-		if (!event.ControlDown()) {
-			bool unselect_others = !((event.ShiftDown() || event.ControlDown()) &&
-									  HasFlag(wxTR_MULTIPLE));
-			SelectItem (newItem, m_shiftItem, unselect_others);
-		}
-		EnsureVisible (newItem);
-		FbTreeViewItem *oldItem = m_curItem;
-		m_curItem = (FbTreeViewItem*)newItem.m_pItem; // make the new item the current item
-		RefreshLine (oldItem);
-	}
-*/
 }
 
 bool FbTreeViewMainWindow::FindAt(const wxPoint &point, bool select)
@@ -1045,249 +850,10 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 	}
 
 	event.Skip();
-
-/*
-void wxTreeListMainWindow::OnMouse (wxMouseEvent &event) {
-bool mayDrag = true;
-bool maySelect = true;  // may change selection
-bool mayClick = true;  // may process DOWN clicks to expand, send click events
-bool mayDoubleClick = true;  // implies mayClick
-bool bSkip = true;
-
-	// send event to user code
-	if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
-	if (!m_rootItem) return;
-
-	// set focus if window clicked
-	if (event.LeftDown() || event.MiddleDown() || event.RightDown()) SetFocus();
-
-
-// ---------- DETERMINE EVENT ----------
-
-	wxPoint p = wxPoint (event.GetX(), event.GetY());
-	int flags = 0;
-	wxTreeListItem *item = m_rootItem->HitTest (CalcUnscrolledPosition (p),
-												this, flags, m_curColumn, 0);
-	bool bCrosshair = (item && item->HasPlus() && (flags & wxTREE_HITTEST_ONITEMBUTTON));
-	// we were dragging
-	if (m_isDragging) {
-		maySelect = mayDoubleClick = false;
-	}
-	// we are starting or continuing to drag
-	if (event.Dragging()) {
-		maySelect = mayDoubleClick = mayClick = false;
-	}
-	// crosshair area is special
-	if (bCrosshair) {
-		// left click does not select
-		if (event.LeftDown()) maySelect = false;
-		// double click is ignored
-		mayDoubleClick = false;
-	}
-
-
-// HANDLE SIMPLE-CLICKS (selection change, contextual menu)
-	if (mayClick) {
-
-		//DENIS KANDRASHIN 2009-06-10 - BEGIN - Mouse click on image
-		int X = CalcUnscrolledPosition (p).x;
-		if (item && event.LeftDown() &&  X < item->GetX() + MARGIN + 8) {
-			SendEvent(wxEVT_COMMAND_TREE_STATE_IMAGE_CLICK, item);
-			return;
-		}
-		//DENIS - END
-
-		// left-click on haircross is expand (and no select)
-		if (bCrosshair && event.LeftDown()) {
-
-			bSkip = false;
-
-			// note that we only toggle the item for a single click, double
-			// click on the button doesn't do anything
-			Toggle (item);
-		}
-
-		// is there a selection change ? normally left and right down-click
-		//  change selection, but there are special cases:
-		if (maySelect && (
-			// click on already selected item: to allow drag of multiple items,
-			//  change selection on button up
-			((event.LeftUp() || event.RightUp()) && item != NULL && item->IsSelected() && item != m_curItem)
-			// normal clicks, act already on button down
-		 || ((event.LeftDown() || event.RightDown()) && (item == NULL || ! item->IsSelected()))
-		)) {
-
-			bSkip = false;
-
-			// set / remember item at shift down before current item gets changed
-			if (event.LeftDown() && HasFlag(wxTR_MULTIPLE) && event.ShiftDown())  {
-				if (!m_shiftItem) m_shiftItem = m_curItem;
-			}else{
-				m_shiftItem = (wxTreeListItem*)NULL;
-			}
-
-			// how is selection altered
-			// keep or discard already selected ?
-			bool unselect_others = ! (HasFlag(wxTR_MULTIPLE) && (
-				event.ShiftDown()
-			 || event.ControlDown()
-			));
-
-			// check is selection change is not vetoed
-			if (SelectItem(item, m_shiftItem, unselect_others)) {
-
-				// make the new item the current item
-				EnsureVisible (item);
-				m_curItem = item;
-			}
-
-		// no selection change, then we might edit
-		} else {
-			if (event.LeftDown())
-				m_lastOnSame = (item == m_curItem);
-		}
-
-		// generate click & menu events
-		if (event.MiddleDown()) {
-			bSkip = false;
-			SendEvent(wxEVT_COMMAND_TREE_ITEM_MIDDLE_CLICK, item);
-		}
-		if (event.RightDown()) {
-			bSkip = false;
-			SendEvent(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, item);
-		}
-		if (event.RightUp()) {
-			wxTreeEvent nevent(wxEVT_COMMAND_TREE_ITEM_MENU, 0);
-			nevent.SetPoint(p);
-			nevent.SetInt(m_curColumn);
-			SendEvent(0, item, &nevent);
-		}
-
-		// if 2nd left click finishes on same item, will edit it
-		if (m_lastOnSame && event.LeftUp()) {
-			if ((item == m_curItem) && (m_curColumn != -1) &&
-				(m_owner->GetHeaderWindow()->IsColumnEditable (m_curColumn)) &&
-				(flags & (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMCOLUMN))
-			){
-				m_editTimer->Start (RENAME_TIMER_TICKS, wxTIMER_ONE_SHOT);
-				bSkip = false;
-			}
-			m_lastOnSame = false;
-		}
-	}
-
-
-// ----------  HANDLE DOUBLE-CLICKS  ----------
-	if (mayClick && mayDoubleClick && event.LeftDClick()) {
-
-		bSkip = false;
-
-		// double clicking should not start editing the item label
-		m_editTimer->Stop();
-		m_lastOnSame = false;
-
-		// selection reset to that single item which was double-clicked
-		if (SelectItem(item, 0L, true)) {  // unselect others --return false if vetoed
-
-			// selection change not vetoed, send activate event
-			if (! SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, item)) {
-
-				// if the user code didn't process the activate event,
-				// handle it ourselves by toggling the item when it is
-				// double clicked
-				if (item && item->HasPlus()) Toggle(item);
-			}
-		}
-	}
-
-
-// ----------  HANDLE DRAGGING  ----------
-// NOTE: drag itself makes no change to selection
-	if (mayDrag) {  // actually this is always true
-
-		// CASE 1: we were dragging => continue, end, abort
-		if (m_isDragging) {
-
-			// CASE 1.1: click aborts drag:
-			if (event.LeftDown() || event.MiddleDown() || event.RightDown()) {
-
-				bSkip = false;
-
-				// stop dragging
-				m_isDragStarted = m_isDragging = false;
-				if (HasCapture()) ReleaseMouse();
-				RefreshSelected();
-
-			// CASE 1.2: still dragging
-			} else if (event.Dragging()) {
-
-				;; // nothing to do
-
-			// CASE 1.3: dragging now ends normally
-			} else {
-
-				bSkip = false;
-
-				// stop dragging
-				m_isDragStarted = m_isDragging = false;
-				if (HasCapture()) ReleaseMouse();
-				RefreshSelected();
-
-				// send drag end event
-				wxTreeEvent event(wxEVT_COMMAND_TREE_END_DRAG, 0);
-				event.SetPoint(p);
-				event.SetInt(m_curColumn);
-				SendEvent(0, item, &event);
-			}
-
-		// CASE 2: not were not dragging => continue, start
-		} else if (event.Dragging()) {
-
-			// We will really start dragging if we've moved beyond a few pixels
-			if (m_isDragStarted) {
-				const int tolerance = 3;
-				int dx = abs(p.x - m_dragStartPos.x);
-				int dy = abs(p.y - m_dragStartPos.y);
-				if (dx <= tolerance && dy <= tolerance)
-					return;
-			// determine drag start
-			} else {
-				m_dragStartPos = p;
-				m_dragCol = m_curColumn;
-				m_dragItem = item;
-				m_isDragStarted = true;
-				return;
-			}
-
-			bSkip = false;
-
-			// we are now dragging
-			m_isDragging = true;
-			RefreshSelected();
-			CaptureMouse(); // TODO: usefulness unclear
-
-			wxTreeEvent nevent(event.LeftIsDown()
-								  ? wxEVT_COMMAND_TREE_BEGIN_DRAG
-								  : wxEVT_COMMAND_TREE_BEGIN_RDRAG, 0);
-			nevent.SetPoint(p);
-			nevent.SetInt(m_dragCol);
-			nevent.Veto();
-			SendEvent(0, m_dragItem, &nevent);
-		}
-	}
-
-
-	if (bSkip) event.Skip();
-*/
 }
 
 void FbTreeViewMainWindow::OnSetFocus (wxFocusEvent &event)
 {
-/*
-	m_hasFocus = true;
-	RefreshSelected();
-	if (m_curItem) RefreshLine (m_curItem);
-*/
 	m_focused = true;
 	event.Skip();
 	Repaint();
@@ -1295,11 +861,6 @@ void FbTreeViewMainWindow::OnSetFocus (wxFocusEvent &event)
 
 void FbTreeViewMainWindow::OnKillFocus( wxFocusEvent &event )
 {
-/*
-	m_hasFocus = false;
-	RefreshSelected();
-	if (m_curItem) RefreshLine (m_curItem);
-*/
 	m_focused = false;
 	event.Skip();
 	Repaint();
@@ -1471,9 +1032,9 @@ bool FbTreeViewCtrl::SetFont(const wxFont& font)
 	}
 }
 
-void FbTreeViewCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag)
+void FbTreeViewCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag, int fixed)
 {
-	if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag));
+	if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag, fixed));
 }
 
 void FbTreeViewCtrl::SetSortedColumn(int column)

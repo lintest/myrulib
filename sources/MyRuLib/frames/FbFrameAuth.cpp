@@ -36,15 +36,15 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
+	m_LetterList = new FbAlphabetCombo();
+	m_LetterList->Create(panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
+
 	m_MasterList = new FbMasterViewCtrl;
 	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 
 	CreateBooksPanel(this);
-
-	m_LetterList = new FbAlphabetCombo();
-	m_LetterList->Create(panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
 
 	sizer->Add( m_LetterList, 0, wxEXPAND, 0 );
 	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );

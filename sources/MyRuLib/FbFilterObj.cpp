@@ -52,14 +52,15 @@ void FbFilterObj::Save() const
 wxString FbFilterObj::GetSQL() const
 {
 	const wxString addin = wxT(" AND books.");
+	const wxString not_del = wxT("AND ((books.deleted IS NULL)OR(books.deleted<>1))");
 
-	if (!m_enabled) return addin + wxT("deleted IS NULL");
+	if (!m_enabled) return not_del;
 
 	wxString sql;
+	if (!m_del) sql << not_del;
 	if (m_lib && !m_usr) sql << addin << wxT("id>0");
 	if (!m_lib && m_usr) sql << addin << wxT("id<0");
 	if (!m_lib && m_del) sql << addin << wxT("id<0");
-	if (!m_del) sql << addin << wxT("deleted IS NULL");
 	if (!m_lang.IsEmpty()) sql << addin << wxT("lang in (") << m_lang << wxT(')');
 	if (!m_type.IsEmpty()) sql << addin << wxT("file_type in (") << m_type << wxT(')');
 
