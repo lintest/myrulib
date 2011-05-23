@@ -112,6 +112,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_COMMAND(ID_UPDATE_BOOK, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateBook)
 	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbMainFrame::OnFoundNothing)
 
+    EVT_NAVIGATION_KEY(FbMainFrame::OnNavigationKey)
+
     EVT_AUINOTEBOOK_ALLOW_DND(wxID_ANY, FbMainFrame::OnAllowNotebookDnD)
 	EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, FbMainFrame::OnNotebookChanged)
 	EVT_AUINOTEBOOK_PAGE_CLOSED(wxID_ANY, FbMainFrame::OnNotebookClosed)
@@ -366,7 +368,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	text1->SetFont(font);
 	toolbar->AddControl( text1 );
 
-	m_FindAuthor = new wxTextCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindAuthor = new wxTextCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL);
 	m_FindAuthor->SetFont(font);
 	toolbar->AddControl( m_FindAuthor );
 	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxART_FIND, _("Find author"));
@@ -377,7 +379,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	text2->SetFont(font);
 	toolbar->AddControl( text2 );
 
-	m_FindTitle = new wxTextCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindTitle = new wxTextCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL);
 	m_FindTitle->SetFont(font);
 	toolbar->AddControl( m_FindTitle );
 	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxART_FIND, _("Find book by title"));
@@ -894,3 +896,7 @@ void FbMainFrame::OnFoundNothing(wxCommandEvent & event)
 	if (index != wxNOT_FOUND) m_FrameNotebook.DeletePage(index);
 }
 
+void FbMainFrame::OnNavigationKey(wxNavigationKeyEvent& event)
+{
+	event.Skip();
+}

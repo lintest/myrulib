@@ -322,4 +322,3 @@ void FbFrameBase::OnIdleSplitter( wxIdleEvent& )
 	SetSashGravity( 0.333 );
 	m_lastSize = GetSize();
 }
-

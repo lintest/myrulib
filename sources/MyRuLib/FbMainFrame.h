@@ -107,6 +107,7 @@ class FbMainFrame : public wxFrame
 		void OnSubmenu(wxCommandEvent& event);
 		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		void OnIdle( wxIdleEvent & event);
+		void OnNavigationKey(wxNavigationKeyEvent& event);
 		DECLARE_EVENT_TABLE()
 		friend class FbEventLocker;
 };
