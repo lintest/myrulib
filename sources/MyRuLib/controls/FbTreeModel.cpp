@@ -211,8 +211,6 @@ const wxBitmap & FbModel::GetBitmap(int state)
 
 void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols)
 {
-    wxPen dottedPen = wxPen( wxT("grey"), 0, 0 );
-
 	if (ctx.m_selected) {
 		dc.SetBrush(m_focused ? ctx.m_hilightBrush : ctx.m_unfocusBrush);
 		dc.SetTextForeground(ctx.m_hilightColour);
@@ -221,7 +219,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 		dc.SetTextForeground(data.IsGray() ? ctx.m_graytextColour : ctx.m_normalColour);
 	}
 	if (ctx.m_current) {
-		dc.SetPen(dottedPen);
+		dc.SetPen(ctx.m_borderPen);
 	} else {
 		dc.SetPen(*wxTRANSPARENT_PEN);
 	}
@@ -341,10 +339,11 @@ void FbListModel::DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, co
 		row++;
 		wxRect rect(0, y, ww, h);
 		FbModelItem item = GetData(row);
-		ctx.m_current = m_position == row;
 		if (ctx.m_multuply) {
+			ctx.m_current = m_position == row;
 			ctx.m_selected = IsSelected(row);
 		} else {
+			ctx.m_current = false;
 			ctx.m_selected = m_position == row;
 		}
 		if (item) DrawItem(item, dc, ctx, rect, cols);
