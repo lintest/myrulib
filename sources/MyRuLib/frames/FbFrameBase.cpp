@@ -104,7 +104,10 @@ FbFrameBase::~FbFrameBase()
 	}
 	wxDELETE(m_MasterThread);
 
-	if (!m_MasterFile.IsEmpty()) wxRemoveFile(m_MasterFile);
+	if (!m_MasterFile.IsEmpty()) {
+		if (m_MasterList) m_MasterList->AssignModel(NULL);
+		wxRemoveFile(m_MasterFile);
+	}
 }
 
 void FbFrameBase::CreateControls(bool select)
