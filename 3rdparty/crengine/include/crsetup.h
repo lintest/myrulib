@@ -15,8 +15,6 @@
 
 #define CR_EMULATE_GETTEXT 1
 #define CHM_SUPPORT_ENABLED 0
-#define USE_WIN32_FONTS 1
-#define USE_FREETYPE 0
 
 // features set for LBOOK
 #if (LBOOK==1)
@@ -70,7 +68,7 @@
 #define GRAY_INVERSE                         0
 #define USE_FREETYPE                         1
 #ifndef ANDROID
-#define USE_FONTCONFIG						 1
+#define USE_FONTCONFIG                       1
 #endif
 #define ALLOW_KERNING                        1
 #define GLYPH_CACHE_SIZE                     0x40000
@@ -87,15 +85,12 @@
 #ifndef COLOR_BACKBUFFER
 #define COLOR_BACKBUFFER                     1
 #endif
-#define GRAY_INVERSE						 0
+#define GRAY_INVERSE                         0
 #ifndef MAX_IMAGE_SCALE_MUL
 #define MAX_IMAGE_SCALE_MUL                  1
 #endif
-#if defined(CYGWIN)
+#define USE_WIN32_FONTS                      1
 #define USE_FREETYPE                         0
-#else
-#define USE_FREETYPE                         0
-#endif
 #define USE_UNRAR                            0
 #define ALLOW_KERNING                        1
 #define GLYPH_CACHE_SIZE                     0x20000

@@ -6,6 +6,7 @@
 	<option name="USE_FAXPP"/>
 	<option name="USE_EXPAT"/>
 	<option name="USE_SQLITE"/>
+	<option name="USE_READER"/>
 	<option name="USE_LOCALE"/>
 	<option name="STRIP_COMMAND"/>
 
@@ -54,6 +55,45 @@
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>$(SRCDIR)/3rdparty/sqlite3</include>
 		<sources>3rdparty/sqlite3/sqlite3.c</sources>
+	</lib>
+
+	<lib id="crengine_static" cond="USE_READER=='yes'">
+		<include>3rdparty/crengine/include</include>
+		<sources>3rdparty/crengine/src/chmfmt.cpp</sources>
+		<sources>3rdparty/crengine/src/cp_stats.cpp</sources>
+		<sources>3rdparty/crengine/src/crgui.cpp</sources>
+		<sources>3rdparty/crengine/src/cri18n.cpp</sources>
+		<sources>3rdparty/crengine/src/crskin.cpp</sources>
+		<sources>3rdparty/crengine/src/crtest.cpp</sources>
+		<sources>3rdparty/crengine/src/crtxtenc.cpp</sources>
+		<sources>3rdparty/crengine/src/epubfmt.cpp</sources>
+		<sources>3rdparty/crengine/src/hist.cpp</sources>
+		<sources>3rdparty/crengine/src/hyphman.cpp</sources>
+		<sources>3rdparty/crengine/src/lstridmap.cpp</sources>
+		<sources>3rdparty/crengine/src/lvbmpbuf.cpp</sources>
+		<sources>3rdparty/crengine/src/lvdocview.cpp</sources>
+		<sources>3rdparty/crengine/src/lvdrawbuf.cpp</sources>
+		<sources>3rdparty/crengine/src/lvfnt.cpp</sources>
+		<sources>3rdparty/crengine/src/lvfntman.cpp</sources>
+		<sources>3rdparty/crengine/src/lvimg.cpp</sources>
+		<sources>3rdparty/crengine/src/lvmemman.cpp</sources>
+		<sources>3rdparty/crengine/src/lvpagesplitter.cpp</sources>
+		<sources>3rdparty/crengine/src/lvrend.cpp</sources>
+		<sources>3rdparty/crengine/src/lvstream.cpp</sources>
+		<sources>3rdparty/crengine/src/lvstring.cpp</sources>
+		<sources>3rdparty/crengine/src/lvstsheet.cpp</sources>
+		<sources>3rdparty/crengine/src/lvstyles.cpp</sources>
+		<sources>3rdparty/crengine/src/lvtextfm.cpp</sources>
+		<sources>3rdparty/crengine/src/lvtinydom.cpp</sources>
+		<sources>3rdparty/crengine/src/lvxml.cpp</sources>
+		<sources>3rdparty/crengine/src/props.cpp</sources>
+		<sources>3rdparty/crengine/src/rtfimp.cpp</sources>
+		<sources>3rdparty/crengine/src/s32utils.cpp</sources>
+		<sources>3rdparty/crengine/src/txtselector.cpp</sources>
+		<sources>3rdparty/crengine/src/w32utils.cpp</sources>
+		<sources>3rdparty/crengine/src/wolutil.cpp</sources>
+		<sources>3rdparty/crengine/src/wordfmt.cpp</sources>
+		<sources>3rdparty/crengine/src/xutils.cpp</sources>
 	</lib>
 
 	<action id="wxsqlite3.cpp">
@@ -177,6 +217,7 @@
 		<depends>faxpp_static</depends>
 		<library>wxsqlite3_static</library>
 		<library>wxbzip2_static</library>
+		<depends>crengine_static</depends>
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
@@ -186,6 +227,7 @@
 		<objects-depend>cs.inc</objects-depend>
 		<objects-depend>sv.inc</objects-depend>
 		<sources>sources/MyRuLib/controls/FbChoiceCtrl.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbCoolReader.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbNotebook.cpp</sources>
@@ -283,6 +325,7 @@
 		<sources>sources/MyRuLib/wx/base64.cpp</sources>
 		<win32-res>sources/MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/sources/MyRuLib</include>
+		<include>$(SRCDIR)/3rdparty/crengine/include</include>
 		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
 		<include>$(SRCDIR)/3rdparty/wxbzipstream</include>

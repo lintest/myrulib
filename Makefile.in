@@ -80,6 +80,43 @@ SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 \
 	$(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
+CRENGINE_STATIC_CXXFLAGS = -I3rdparty/crengine/include $(CPPFLAGS) $(CXXFLAGS)
+CRENGINE_STATIC_OBJECTS =  \
+	crengine_static_chmfmt.o \
+	crengine_static_cp_stats.o \
+	crengine_static_crgui.o \
+	crengine_static_cri18n.o \
+	crengine_static_crskin.o \
+	crengine_static_crtest.o \
+	crengine_static_crtxtenc.o \
+	crengine_static_epubfmt.o \
+	crengine_static_hist.o \
+	crengine_static_hyphman.o \
+	crengine_static_lstridmap.o \
+	crengine_static_lvbmpbuf.o \
+	crengine_static_lvdocview.o \
+	crengine_static_lvdrawbuf.o \
+	crengine_static_lvfnt.o \
+	crengine_static_lvfntman.o \
+	crengine_static_lvimg.o \
+	crengine_static_lvmemman.o \
+	crengine_static_lvpagesplitter.o \
+	crengine_static_lvrend.o \
+	crengine_static_lvstream.o \
+	crengine_static_lvstring.o \
+	crengine_static_lvstsheet.o \
+	crengine_static_lvstyles.o \
+	crengine_static_lvtextfm.o \
+	crengine_static_lvtinydom.o \
+	crengine_static_lvxml.o \
+	crengine_static_props.o \
+	crengine_static_rtfimp.o \
+	crengine_static_s32utils.o \
+	crengine_static_txtselector.o \
+	crengine_static_w32utils.o \
+	crengine_static_wolutil.o \
+	crengine_static_wordfmt.o \
+	crengine_static_xutils.o
 WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/sqlite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
@@ -112,13 +149,16 @@ BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
 BIN2C_OBJECTS =  \
 	bin2c_bin2c.o
 MYRULIB_CFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
-	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+	-I$(srcdir)/3rdparty/crengine/include -I$(srcdir)/3rdparty/faxpp/include \
+	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
+	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/3rdparty/faxpp/include -I$(srcdir)/3rdparty/wxsqlite3/include \
-	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/3rdparty/crengine/include -I$(srcdir)/3rdparty/faxpp/include \
+	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceCtrl.o \
+	myrulib_FbCoolReader.o \
 	myrulib_FbComboBox.o \
 	myrulib_FbHtmlWindow.o \
 	myrulib_FbNotebook.o \
@@ -229,6 +269,8 @@ MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 @COND_USE_FAXPP_builtin@	$(LIBPREFIX)faxpp_static$(LIBEXT)
 @COND_USE_SQLITE_builtin@__sqlite3_static___depname \
 @COND_USE_SQLITE_builtin@	= $(LIBPREFIX)sqlite3_static$(LIBEXT)
+@COND_USE_READER_yes@__crengine_static___depname = \
+@COND_USE_READER_yes@	$(LIBPREFIX)crengine_static$(LIBEXT)
 @COND_USE_CURL_yes@__wxcurl_static___depname = \
 @COND_USE_CURL_yes@	$(LIBPREFIX)wxcurl_static$(LIBEXT)
 @COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
@@ -247,7 +289,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat_static___depname) $(__faxpp_static___depname) $(__sqlite3_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__wxcurl_static___depname) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__expat_static___depname) $(__faxpp_static___depname) $(__sqlite3_static___depname) $(__crengine_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__wxcurl_static___depname) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -286,6 +328,7 @@ clean:
 	rm -f $(LIBPREFIX)expat_static$(LIBEXT)
 	rm -f $(LIBPREFIX)faxpp_static$(LIBEXT)
 	rm -f $(LIBPREFIX)sqlite3_static$(LIBEXT)
+	rm -f $(LIBPREFIX)crengine_static$(LIBEXT)
 	rm -f ./wxsqlite3.cpp
 	rm -f $(LIBPREFIX)wxsqlite3_static$(LIBEXT)
 	rm -f $(LIBPREFIX)wxbzip2_static$(LIBEXT)
@@ -321,6 +364,11 @@ distclean: clean
 @COND_USE_SQLITE_builtin@	rm -f $@
 @COND_USE_SQLITE_builtin@	$(AR) $(AROPTIONS) $@ $(SQLITE3_STATIC_OBJECTS)
 @COND_USE_SQLITE_builtin@	$(RANLIB) $@
+
+@COND_USE_READER_yes@$(LIBPREFIX)crengine_static$(LIBEXT): $(CRENGINE_STATIC_OBJECTS)
+@COND_USE_READER_yes@	rm -f $@
+@COND_USE_READER_yes@	$(AR) $(AROPTIONS) $@ $(CRENGINE_STATIC_OBJECTS)
+@COND_USE_READER_yes@	$(RANLIB) $@
 
 wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp < $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
@@ -380,7 +428,7 @@ cs.inc: bin2c$(EXEEXT) cs.mo
 sv.inc: bin2c$(EXEEXT) sv.mo
 	./bin2c ./sv.mo ./sv.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__wxcurl_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__myrulib___win32rc)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat_static___depname) $(__sqlite3_static___depname) $(__wxcurl_static___depname) $(__faxpp_static___depname) $(LIBPREFIX)wxsqlite3_static$(LIBEXT) $(LIBPREFIX)wxbzip2_static$(LIBEXT) $(__crengine_static___depname) $(__myrulib___win32rc)
 	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxsqlite3_static -lwxbzip2_static $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
@@ -475,6 +523,111 @@ faxpp_static_xml_tokenizer.o: $(srcdir)/3rdparty/faxpp/src/xml_tokenizer.c
 sqlite3_static_sqlite3.o: $(srcdir)/3rdparty/sqlite3/sqlite3.c
 	$(CCC) -c -o $@ $(SQLITE3_STATIC_CFLAGS) $(srcdir)/3rdparty/sqlite3/sqlite3.c
 
+crengine_static_chmfmt.o: $(srcdir)/3rdparty/crengine/src/chmfmt.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/chmfmt.cpp
+
+crengine_static_cp_stats.o: $(srcdir)/3rdparty/crengine/src/cp_stats.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/cp_stats.cpp
+
+crengine_static_crgui.o: $(srcdir)/3rdparty/crengine/src/crgui.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crgui.cpp
+
+crengine_static_cri18n.o: $(srcdir)/3rdparty/crengine/src/cri18n.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/cri18n.cpp
+
+crengine_static_crskin.o: $(srcdir)/3rdparty/crengine/src/crskin.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crskin.cpp
+
+crengine_static_crtest.o: $(srcdir)/3rdparty/crengine/src/crtest.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crtest.cpp
+
+crengine_static_crtxtenc.o: $(srcdir)/3rdparty/crengine/src/crtxtenc.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crtxtenc.cpp
+
+crengine_static_epubfmt.o: $(srcdir)/3rdparty/crengine/src/epubfmt.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/epubfmt.cpp
+
+crengine_static_hist.o: $(srcdir)/3rdparty/crengine/src/hist.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/hist.cpp
+
+crengine_static_hyphman.o: $(srcdir)/3rdparty/crengine/src/hyphman.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/hyphman.cpp
+
+crengine_static_lstridmap.o: $(srcdir)/3rdparty/crengine/src/lstridmap.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lstridmap.cpp
+
+crengine_static_lvbmpbuf.o: $(srcdir)/3rdparty/crengine/src/lvbmpbuf.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvbmpbuf.cpp
+
+crengine_static_lvdocview.o: $(srcdir)/3rdparty/crengine/src/lvdocview.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvdocview.cpp
+
+crengine_static_lvdrawbuf.o: $(srcdir)/3rdparty/crengine/src/lvdrawbuf.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvdrawbuf.cpp
+
+crengine_static_lvfnt.o: $(srcdir)/3rdparty/crengine/src/lvfnt.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvfnt.cpp
+
+crengine_static_lvfntman.o: $(srcdir)/3rdparty/crengine/src/lvfntman.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvfntman.cpp
+
+crengine_static_lvimg.o: $(srcdir)/3rdparty/crengine/src/lvimg.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvimg.cpp
+
+crengine_static_lvmemman.o: $(srcdir)/3rdparty/crengine/src/lvmemman.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvmemman.cpp
+
+crengine_static_lvpagesplitter.o: $(srcdir)/3rdparty/crengine/src/lvpagesplitter.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvpagesplitter.cpp
+
+crengine_static_lvrend.o: $(srcdir)/3rdparty/crengine/src/lvrend.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvrend.cpp
+
+crengine_static_lvstream.o: $(srcdir)/3rdparty/crengine/src/lvstream.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstream.cpp
+
+crengine_static_lvstring.o: $(srcdir)/3rdparty/crengine/src/lvstring.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstring.cpp
+
+crengine_static_lvstsheet.o: $(srcdir)/3rdparty/crengine/src/lvstsheet.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstsheet.cpp
+
+crengine_static_lvstyles.o: $(srcdir)/3rdparty/crengine/src/lvstyles.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstyles.cpp
+
+crengine_static_lvtextfm.o: $(srcdir)/3rdparty/crengine/src/lvtextfm.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvtextfm.cpp
+
+crengine_static_lvtinydom.o: $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
+
+crengine_static_lvxml.o: $(srcdir)/3rdparty/crengine/src/lvxml.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvxml.cpp
+
+crengine_static_props.o: $(srcdir)/3rdparty/crengine/src/props.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/props.cpp
+
+crengine_static_rtfimp.o: $(srcdir)/3rdparty/crengine/src/rtfimp.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/rtfimp.cpp
+
+crengine_static_s32utils.o: $(srcdir)/3rdparty/crengine/src/s32utils.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/s32utils.cpp
+
+crengine_static_txtselector.o: $(srcdir)/3rdparty/crengine/src/txtselector.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/txtselector.cpp
+
+crengine_static_w32utils.o: $(srcdir)/3rdparty/crengine/src/w32utils.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/w32utils.cpp
+
+crengine_static_wolutil.o: $(srcdir)/3rdparty/crengine/src/wolutil.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/wolutil.cpp
+
+crengine_static_wordfmt.o: $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
+
+crengine_static_xutils.o: $(srcdir)/3rdparty/crengine/src/xutils.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/xutils.cpp
+
 wxsqlite3_static_wxsqlite3.o: wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) wxsqlite3.cpp
 
@@ -519,6 +672,9 @@ bin2c_bin2c.o: $(srcdir)/3rdparty/bin2c/bin2c.c
 
 myrulib_FbChoiceCtrl.o: $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp
+
+myrulib_FbCoolReader.o: $(srcdir)/sources/MyRuLib/controls/FbCoolReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbCoolReader.cpp
 
 myrulib_FbComboBox.o: $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp
@@ -806,7 +962,7 @@ myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
 myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/faxpp/include --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/crengine/include --include-dir $(srcdir)/3rdparty/faxpp/include --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
 
 
 # Include dependency info, if present:
