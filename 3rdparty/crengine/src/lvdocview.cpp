@@ -3154,6 +3154,7 @@ bool LVDocView::LoadDocument(LVStreamRef stream) {
 			}
 		}
 
+#if CHM_SUPPORT_ENABLED==1
 		if ( DetectCHMFormat( m_stream ) ) {
 			// CHM
 			CRLog::info("CHM format detected");
@@ -3184,6 +3185,7 @@ bool LVDocView::LoadDocument(LVStreamRef stream) {
 				return true;
 			}
 		}
+#endif // CHM_SUPPORT_ENABLED==1
 
 		m_arc = LVOpenArchieve( m_stream );
 		if (!m_arc.isNull())

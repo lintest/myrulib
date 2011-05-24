@@ -281,7 +281,7 @@ public:
     }
     
     /// returns font height
-    virtual int getHeight()
+    virtual int getHeight() const
     {
         return _height;
     }
@@ -316,7 +316,27 @@ public:
     virtual bool Create( const LOGFONTA & lf );
 
     virtual bool Create(int size, int weight, bool italic, css_font_family_t family, lString8 typeface );
-    
+
+	virtual int getWeight() const 
+	{
+		return _logfont.lfWeight;
+	}
+
+	virtual int getItalic() const
+	{
+		return _logfont.lfItalic;
+	}
+
+	virtual lString8 getTypeFace() const
+	{
+		return lString8();
+	}
+
+    virtual css_font_family_t getFontFamily() const
+	{
+		return css_ff_inherit;
+	}
+
 };
 
 

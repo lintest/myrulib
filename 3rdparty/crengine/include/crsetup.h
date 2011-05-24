@@ -13,6 +13,11 @@
 #ifndef CRSETUP_H_INCLUDED
 #define CRSETUP_H_INCLUDED
 
+#define CR_EMULATE_GETTEXT 1
+#define CHM_SUPPORT_ENABLED 0
+#define USE_WIN32_FONTS 1
+#define USE_FREETYPE 0
+
 // features set for LBOOK
 #if (LBOOK==1)
 #ifndef LDOM_USE_OWN_MEM_MAN
@@ -89,7 +94,7 @@
 #if defined(CYGWIN)
 #define USE_FREETYPE                         0
 #else
-#define USE_FREETYPE                         1
+#define USE_FREETYPE                         0
 #endif
 #define USE_UNRAR                            0
 #define ALLOW_KERNING                        1
@@ -268,7 +273,5 @@
 #ifndef DOCUMENT_CACHING_SIZE_THRESHOLD
 #define DOCUMENT_CACHING_SIZE_THRESHOLD 0x100000 // 1Mb
 #endif
-
-#define CR_EMULATE_GETTEXT 1
 
 #endif//CRSETUP_H_INCLUDED

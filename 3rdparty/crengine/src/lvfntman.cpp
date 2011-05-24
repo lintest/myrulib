@@ -2218,6 +2218,7 @@ int CALLBACK LVWin32FontEnumFontFamExProc(
     //
     if (FontType == TRUETYPE_FONTTYPE)
     {
+        lChar16 def_char = 0;
         LVWin32FontManager * fontman = (LVWin32FontManager *)lParam;
         LVWin32Font fnt;
         //if (strcmp(lf->lfFaceName, "Courier New"))
