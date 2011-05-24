@@ -6,26 +6,56 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myrulib", "workspace\myruli
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D} = {31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat_static", "workspace\expat.vcproj", "{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat", "workspace\expat.vcproj", "{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "crengine", "workspace\crengine.vcproj", "{230674E1-3392-4A62-B749-5D73D586F12F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
+		Unicode Debug Lite|Win32 = Unicode Debug Lite|Win32
+		Unicode Debug|Win32 = Unicode Debug|Win32
+		Unicode Release Lite|Win32 = Unicode Release Lite|Win32
+		Unicode Release|Win32 = Unicode Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug|Win32.Build.0 = Debug|Win32
 		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Release|Win32.ActiveCfg = Release|Win32
 		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Release|Win32.Build.0 = Release|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Debug Lite|Win32.ActiveCfg = Debug|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Debug Lite|Win32.Build.0 = Debug|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Release Lite|Win32.ActiveCfg = Release|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Release Lite|Win32.Build.0 = Release|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Unicode Release|Win32.Build.0 = Release|Win32
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug|Win32.Build.0 = Debug|Win32
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Release|Win32.ActiveCfg = Release|Win32
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Release|Win32.Build.0 = Release|Win32
-		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Debug|Win32.Build.0 = Debug|Win32
-		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Release|Win32.ActiveCfg = Release|Win32
-		{4F7CCF32-6141-46DB-B3C1-C07AFB9C62CF}.Release|Win32.Build.0 = Release|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Debug Lite|Win32.ActiveCfg = Debug|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Debug Lite|Win32.Build.0 = Debug|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Release Lite|Win32.ActiveCfg = Release|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Release Lite|Win32.Build.0 = Release|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Unicode Release|Win32.Build.0 = Release|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug|Win32.Build.0 = Debug|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Release|Win32.ActiveCfg = Release|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Release|Win32.Build.0 = Release|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Debug Lite|Win32.ActiveCfg = Debug|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Debug Lite|Win32.Build.0 = Debug|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Release Lite|Win32.ActiveCfg = Release|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Release Lite|Win32.Build.0 = Release|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Unicode Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -900,3 +900,4 @@ void FbMainFrame::OnNavigationKey(wxNavigationKeyEvent& event)
 {
 	event.Skip();
 }
+
