@@ -57,8 +57,11 @@
 		<sources>3rdparty/sqlite3/sqlite3.c</sources>
 	</lib>
 
-	<lib id="crengine_static" cond="USE_READER=='yes'">
+	<lib id="crengine_static" template="wx-lib" cond="USE_READER=='yes'">
 		<include>3rdparty/crengine/include</include>
+		<include>$(SRCDIR)/../wxWidgets/src/jpeg</include>
+		<include>$(SRCDIR)/../wxWidgets/src/png</include>
+		<include>$(SRCDIR)/3rdparty/crengine/png</include>
 		<sources>3rdparty/crengine/src/chmfmt.cpp</sources>
 		<sources>3rdparty/crengine/src/cp_stats.cpp</sources>
 		<sources>3rdparty/crengine/src/crgui.cpp</sources>
@@ -94,6 +97,7 @@
 		<sources>3rdparty/crengine/src/wolutil.cpp</sources>
 		<sources>3rdparty/crengine/src/wordfmt.cpp</sources>
 		<sources>3rdparty/crengine/src/xutils.cpp</sources>
+		<sources>3rdparty/crengine/res/cr3_def_cover.cpp</sources>
 	</lib>
 
 	<action id="wxsqlite3.cpp">
@@ -227,7 +231,6 @@
 		<objects-depend>cs.inc</objects-depend>
 		<objects-depend>sv.inc</objects-depend>
 		<sources>sources/MyRuLib/controls/FbChoiceCtrl.cpp</sources>
-		<sources>sources/MyRuLib/controls/FbCoolReader.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbNotebook.cpp</sources>
@@ -284,6 +287,7 @@
 		<sources>sources/MyRuLib/frames/FbFrameHtml.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameGenr.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameSeqn.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbCoolReader.cpp</sources>
 		<sources>sources/MyRuLib/FbFrameThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>

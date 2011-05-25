@@ -2,8 +2,6 @@
 #ifndef _CR3VIEW_H_
 #define _CR3VIEW_H_
 
-#define CR_WX_SUPPORT
-
 #include <crgui.h>
 /**
  * @short XML Document View window

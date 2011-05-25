@@ -13,8 +13,11 @@
 #ifndef CRSETUP_H_INCLUDED
 #define CRSETUP_H_INCLUDED
 
+#define CR_WX_SUPPORT 1
 #define CR_EMULATE_GETTEXT 1
 #define CHM_SUPPORT_ENABLED 0
+
+#include <wx/wx.h>
 
 // features set for LBOOK
 #if (LBOOK==1)

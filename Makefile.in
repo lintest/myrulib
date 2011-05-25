@@ -80,7 +80,9 @@ SQLITE3_STATIC_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 \
 	$(CPPFLAGS) $(CFLAGS)
 SQLITE3_STATIC_OBJECTS =  \
 	sqlite3_static_sqlite3.o
-CRENGINE_STATIC_CXXFLAGS = -I3rdparty/crengine/include $(CPPFLAGS) $(CXXFLAGS)
+CRENGINE_STATIC_CXXFLAGS = -I3rdparty/crengine/include \
+	-I$(srcdir)/../wxWidgets/src/jpeg -I$(srcdir)/../wxWidgets/src/png \
+	-I$(srcdir)/3rdparty/crengine/png $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 CRENGINE_STATIC_OBJECTS =  \
 	crengine_static_chmfmt.o \
 	crengine_static_cp_stats.o \
@@ -116,7 +118,8 @@ CRENGINE_STATIC_OBJECTS =  \
 	crengine_static_w32utils.o \
 	crengine_static_wolutil.o \
 	crengine_static_wordfmt.o \
-	crengine_static_xutils.o
+	crengine_static_xutils.o \
+	crengine_static_cr3_def_cover.o
 WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
 	-I$(srcdir)/3rdparty/sqlite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
@@ -627,6 +630,9 @@ crengine_static_wordfmt.o: $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
 
 crengine_static_xutils.o: $(srcdir)/3rdparty/crengine/src/xutils.cpp
 	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/xutils.cpp
+
+crengine_static_cr3_def_cover.o: $(srcdir)/3rdparty/crengine/res/cr3_def_cover.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/res/cr3_def_cover.cpp
 
 wxsqlite3_static_wxsqlite3.o: wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(WXSQLITE3_STATIC_CXXFLAGS) wxsqlite3.cpp
