@@ -10,6 +10,10 @@
 #define CLOCK_TIMER_ID   124
 #define CURSOR_TIMER_ID  125
 
+BEGIN_EVENT_TABLE( cr3scroll, wxScrollBar )
+    EVT_SET_FOCUS( cr3scroll::OnSetFocus )
+END_EVENT_TABLE()
+
 BEGIN_EVENT_TABLE( cr3view, wxPanel )
     EVT_PAINT( cr3view::OnPaint )
     EVT_SIZE    ( cr3view::OnSize )
@@ -22,7 +26,6 @@ BEGIN_EVENT_TABLE( cr3view, wxPanel )
     EVT_TIMER(RENDER_TIMER_ID, cr3view::OnTimer)
     EVT_TIMER(CLOCK_TIMER_ID, cr3view::OnTimer)
     EVT_TIMER(CURSOR_TIMER_ID, cr3view::OnTimer)
-    EVT_INIT_DIALOG(cr3view::OnInitDialog)
 END_EVENT_TABLE()
 
 wxColour cr3view::getBackgroundColour()
@@ -58,11 +61,6 @@ int propsToPageHeaderFlags( CRPropRef props )
 	return flags;
 }
 
-
-void cr3view::OnInitDialog(wxInitDialogEvent& event)
-{
-	_isFullscreen = _props->getBoolDef(PROP_WINDOW_FULLSCREEN);
-}
 
 lString16 cr3view::GetLastRecentFileName()
 {
@@ -384,10 +382,11 @@ void cr3view::UpdateScrollBar()
         lvsi->pagesize, //int pageSize, 
         true//const bool refresh = true
     );
-    wxStatusBar * sb = ((wxFrame*)GetParent())->GetStatusBar();
+/*
+    wxStatusBar * sb = ((wxControl*)GetParent())->GetStatusBar();
     if ( sb )
         sb->SetStatusText( wxString( lvsi->posText.c_str() ), 1 );
-
+*/
 }
 
 void cr3view::OnMouseMotion(wxMouseEvent& event)
@@ -403,11 +402,6 @@ void cr3view::OnMouseMotion(wxMouseEvent& event)
         SetCursor(_normalCursor);
     } else {
         SetCursor(_linkCursor);
-    }
-
-    if ( _isFullscreen ) {
-        _cursorTimer->Stop();
-        _cursorTimer->Start( 3 * 1000, wxTIMER_ONE_SHOT );
     }
 
     SetCursor( wxNullCursor );
@@ -470,7 +464,7 @@ void cr3view::OnMouseRDown( wxMouseEvent & event )
     pm.AppendSeparator();
     pm.Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
 
-    ((wxFrame*)GetParent())->PopupMenu(&pm);
+    ((wxControl*)GetParent())->PopupMenu(&pm);
 }
 
 void cr3view::SetPageHeaderFlags()
@@ -740,11 +734,6 @@ void cr3view::Resize(int dx, int dy)
     _clockTimer->Stop();
     _clockTimer->Start( 10 * 1000, wxTIMER_CONTINUOUS );
 
-    if ( _isFullscreen ) {
-        _cursorTimer->Stop();
-        _cursorTimer->Start( 3 * 1000, wxTIMER_ONE_SHOT );
-    }
-
     SetCursor( wxNullCursor );
 }
 
@@ -793,6 +782,487 @@ void cr3view::OnExternalLink( lString16 url, ldomNode * node )
 void cr3view::OnSetFocus( wxFocusEvent& event )
 {
     GetParent()->SetFocus();
+}
+
+BEGIN_EVENT_TABLE( FbCoolReader, wxControl )
+	EVT_SIZE(FbCoolReader::OnSize)
+    EVT_MENU( Menu_File_Quit, FbCoolReader::OnQuit )
+    EVT_MENU( Menu_File_About, FbCoolReader::OnAbout )
+    EVT_MENU( wxID_OPEN, FbCoolReader::OnFileOpen )
+    EVT_MENU( wxID_SAVE, FbCoolReader::OnFileSave )
+    EVT_MENU( Menu_View_TOC, FbCoolReader::OnShowTOC )
+    EVT_MENU( Menu_File_Options, FbCoolReader::OnShowOptions )
+    EVT_MENU( Menu_View_History, FbCoolReader::OnShowHistory )
+    EVT_MENU( Menu_View_Rotate, FbCoolReader::OnRotate )
+    
+    EVT_MENU_RANGE( 0, 0xFFFF, FbCoolReader::OnCommand )
+//    EVT_UPDATE_UI_RANGE( 0, 0xFFFF, FbCoolReader::OnUpdateUI )
+    EVT_COMMAND_SCROLL( Window_Id_Scrollbar, FbCoolReader::OnScroll )
+    EVT_CLOSE( FbCoolReader::OnClose )
+    EVT_MOUSEWHEEL( FbCoolReader::OnMouseWheel )
+    EVT_INIT_DIALOG( FbCoolReader::OnInitDialog )
+//    EVT_LIST_ITEM_ACTIVATED(Window_Id_HistList, FbCoolReader::OnHistItemActivated)
+END_EVENT_TABLE()
+
+void testHyphen( const char * str )
+{
+    lString16 s16 = Utf8ToUnicode( lString8(str) );
+    lUInt16 widths[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    lUInt8 flags[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    HyphMan::hyphenate( s16.c_str(), s16.length(), widths, flags, 1, 15 );
+    lString8 buf( str );
+    buf << " = ";
+    for ( unsigned i=0; i<s16.length(); i++ ) {
+        buf << str[i];
+        if ( flags[i] & LCHAR_ALLOW_HYPH_WRAP_AFTER )
+            buf << '-';
+    }
+    printf("%s\n", buf.c_str());
+}
+
+void testFormatting()
+{
+    //
+    static char * words[] = {
+        "audition",
+        "helper",
+        "automation",
+        "constant",
+        "culture",
+        "hyphenation",
+        NULL,
+    };
+    for ( int w=0; words[w]; w++ )
+        testHyphen(words[w]);
+    class Tester {
+        public:
+            LFormattedText txt;
+            void addLine( const lChar16 * str, int flags, LVFontRef font )
+            {
+                lString16 s( str );
+                txt.AddSourceLine(
+                        s.c_str(),        /* pointer to unicode text string */
+                s.length(),         /* number of chars in text, 0 for auto(strlen) */
+                0x000000,       /* text color */
+                0xFFFFFF,     /* background color */
+                font.get(),        /* font to draw string */
+                flags,
+                16,    /* interline space, *16 (16=single, 32=double) */
+                30,    /* first line margin */
+                NULL,
+                0
+                                 );
+            }
+            void dump()
+            {
+                formatted_text_fragment_t * buf = txt.GetBuffer();
+                for ( unsigned i=0; i<buf->frmlinecount; i++ ) {
+                    formatted_line_t   * frmline = buf->frmlines[i];
+                    printf("line[%d]\t ", i);
+                    for ( unsigned j=0; j<frmline->word_count; j++ ) {
+                        formatted_word_t * word = &frmline->words[j];
+                        if ( word->flags & LTEXT_WORD_IS_OBJECT ) {
+                            // object
+                            printf("{%d..%d} object\t", (int)word->x, (int)(word->x + word->width) );
+                        } else {
+                            // dump text
+                            src_text_fragment_t * src = &buf->srctext[word->src_text_index];
+                            lString16 txt = lString16( src->t.text, word->t.start, word->t.len );
+                            lString8 txt8 = UnicodeToUtf8( txt );
+                            printf("{%d..%d} \"%s\"\t", (int)word->x, (int)(word->x + word->width), (const char *)txt8.c_str() );
+                        }
+                    }
+                    printf("\n");
+                }
+            }
+    };
+    LVFontRef font1 = fontMan->GetFont(20, 300, false, css_ff_sans_serif, lString8("Arial") );
+    LVFontRef font2 = fontMan->GetFont(20, 300, false, css_ff_serif, lString8("Times New Roman") );
+    Tester t;
+    t.addLine( L"   Testing preformatted\ntext wrapping.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"\nNewline.", LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"\n\n2 Newlines.", LTEXT_FLAG_OWNTEXT, font1 );
+#if 0
+    t.addLine( L"Testing thisislonglongwordto", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"Testing", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"several", LTEXT_ALIGN_LEFT|LTEXT_FLAG_OWNTEXT, font2 );
+    t.addLine( L" short", LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"words!", LTEXT_FLAG_OWNTEXT, font2 );
+    t.addLine( L"Testing thisislonglongwordtohyphenate simple paragraph formatting. Just a test. ", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"There is seldom reason to tag a file in isolation. A more common use is to tag all the files that constitute a module with the same tag at strategic points in the development life-cycle, such as when a release is made.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"There is seldom reason to tag a file in isolation. A more common use is to tag all the files that constitute a module with the same tag at strategic points in the development life-cycle, such as when a release is made.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"There is seldom reason to tag a file in isolation. A more common use is to tag all the files that constitute a module with the same tag at strategic points in the development life-cycle, such as when a release is made.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"Next paragraph: left-aligned. Blabla bla blabla blablabla hdjska hsdjkasld hsdjka sdjaksdl hasjkdl ahklsd hajklsdh jaksd hajks dhjksdhjshd sjkdajsh hasjdkh ajskd hjkhjksajshd hsjkadh sjk.", LTEXT_ALIGN_LEFT|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"Testing thisislonglongwordtohyphenate simple paragraph formatting. Just a test. ", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"Another fragment of text. ", LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"And the last one written with another font", LTEXT_FLAG_OWNTEXT, font2 );
+    t.addLine( L"Next paragraph: left-aligned. ", LTEXT_ALIGN_LEFT|LTEXT_FLAG_OWNTEXT, font1 );
+    t.addLine( L"One more sentence. Second sentence.", LTEXT_FLAG_OWNTEXT, font1 );
+    int i;
+#endif
+    t.txt.FormatNew( 300, 400 );
+    t.dump();
+#if 0
+    printf("Running performance test\n");
+    time_t start1 = time((time_t*)0);
+    for ( i=0; i<2000; i++ )
+        t.txt.FormatNew( 600, 800 );
+    //for ( int i=0; i<100000; i++ )
+    //    t.txt.FormatNew( 400, 300 );
+    time_t end1 = time((time_t*)0);
+#endif
+#if 0
+    time_t start2 = time((time_t*)0);
+    for ( i=0; i<2000; i++ )
+        t.txt.FormatOld( 600, 800 );
+    //for ( int i=0; i<100000; i++ )
+    //    t.txt.FormatOld( 400, 300 );
+    time_t end2 = time((time_t*)0);
+#endif
+#if 0
+    int time1 = (int)(end1-start1);
+    int time2 = (int)(end2-start2);
+    printf("\nNew time = %d, old time = %d, gain=%d%%\n", time1, time2, (time2-time1)*100/time2);
+#endif
+    exit(0);
+}
+
+void FbCoolReader::OnUpdateUI( wxUpdateUIEvent& event )
+{
+}
+
+void FbCoolReader::OnClose( wxCloseEvent& event )
+{
+    SaveOptions();
+    _view->CloseDocument();
+    Destroy();
+}
+
+/*
+void FbCoolReader::OnHistItemActivated( wxListEvent& event )
+{
+    long index = event.GetIndex();
+    if ( index == 0 && _view->getDocView()->isDocumentOpened()) {
+        SetActiveMode( am_book );
+        return;
+    }
+    if ( index>=0 && index<_view->getDocView()->getHistory()->getRecords().length() ) {
+        lString16 pathname = _view->getDocView()->getHistory()->getRecords()[index]->getFilePath() + 
+            _view->getDocView()->getHistory()->getRecords()[index]->getFileName();
+        if ( !pathname.empty() ) {
+            Update();
+            SetActiveMode( am_book );
+            _view->LoadDocument( wxString( pathname.c_str()) );
+            UpdateToolbar();
+        }
+    }
+}
+*/
+
+void FbCoolReader::OnCommand( wxCommandEvent& event )
+{
+    _view->OnCommand( event );
+}
+
+void FbCoolReader::OnMouseWheel(wxMouseEvent& event)
+{
+    _view->OnMouseWheel(event);
+}
+
+bool initHyph(const char * fname)
+{
+    //HyphMan hyphman;
+    //return;
+
+    //LVStreamRef stream = LVOpenFileStream( fname, LVOM_READ);
+    //if (!stream)
+   // {
+    //    printf("Cannot load hyphenation file %s\n", fname);
+    //    return false;
+   // }
+    // stream.get()
+    return HyphMan::initDictionaries( lString16(fname) );
+}
+
+lString8 readFileToString( const char * fname )
+{
+    lString8 buf;
+    LVStreamRef stream = LVOpenFileStream(fname, LVOM_READ);
+    if (!stream)
+        return buf;
+    int sz = stream->GetSize();
+    if (sz>0)
+    {
+        buf.insert( 0, sz, ' ' );
+        stream->Read( buf.modify(), sz, NULL );
+    }
+    return buf;
+}
+
+void FbCoolReader::SetMenu( bool visible )
+{
+    wxMenu *menuFile = new wxMenu;
+
+    menuFile->Append( wxID_OPEN, wxT( "&Open...\tCtrl+O" ) );
+    menuFile->Append( Menu_View_History, wxT( "Recent books list\tF4" ) );
+    menuFile->Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
+    menuFile->AppendSeparator();
+    menuFile->Append( Menu_File_Options, wxT( "&Options...\tF9" ) );
+    menuFile->AppendSeparator();
+    menuFile->Append( Menu_File_About, wxT( "&About...\tF1" ) );
+    menuFile->AppendSeparator();
+    menuFile->Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
+    
+    wxMenu *menuView = new wxMenu;
+
+    menuView->Append( Menu_View_TOC, wxT( "Table of Contents\tF5" ) );
+    menuView->Append( Menu_View_History, wxT( "Recent Books\tF4" ) );
+    menuView->Append( Menu_View_Rotate, wxT( "Rotate\tCtrl+R" ) );
+
+    menuView->AppendSeparator();
+    menuView->Append( Menu_View_ZoomIn, wxT( "Zoom In" ) );
+    menuView->Append( Menu_View_ZoomOut, wxT( "Zoom Out" ) );
+    menuView->AppendSeparator();
+    menuView->Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
+    menuView->Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
+    menuView->Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
+    
+    wxMenuBar *menuBar = new wxMenuBar;
+    menuBar->Append( menuFile, wxT( "&File" ) );
+    menuBar->Append( menuView, wxT( "&View" ) );
+}
+
+void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
+{
+    _scrollBar = new cr3scroll(_view);
+	_view->SetScrollBar( _scrollBar );
+    _view->Create(this, Window_Id_View, wxDefaultPosition, wxDefaultSize, 0, wxT("cr3view"));
+    _scrollBar->Create(this, Window_Id_Scrollbar, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
+
+    _sizer = new wxBoxSizer( wxHORIZONTAL );
+    _sizer->Add( _view,
+        1,
+        wxALL | wxEXPAND,
+        0);
+    _sizer->Add( _scrollBar,
+        0,
+        wxALIGN_RIGHT | wxEXPAND,
+        0);
+
+//    SetSizer( _sizer );
+//	Layout();
+//	_sizer->Fit( this );
+
+    _view->SetBackgroundColour( _view->getBackgroundColour() );
+    //_scrollBar->Show( true );
+    SetBackgroundColour( _view->getBackgroundColour() );
+
+    // stylesheet can be placed to file fb2.css
+    // if not found, default stylesheet will be used
+    //char cssfn[1024];
+    //sprintf( cssfn, "fb2.css"); //, exedir
+    //lString8 css = readFileToString( (UnicodeToLocal(_appDir) + cssfn).c_str() );
+    lString8 css;
+    LVLoadStylesheetFile( _appDir + L"fb2.css", css );
+#ifdef _LINUX
+    if ( css.empty() )
+        LVLoadStylesheetFile( L"/usr/share/cr3/fb2.css", css );
+        //css = readFileToString( "/usr/share/crengine/fb2.css" );
+    if ( css.empty() )
+        LVLoadStylesheetFile( L"/usr/local/share/cr3/fb2.css", css );
+        //css = readFileToString( "/usr/local/share/crengine/fb2.css" );
+#endif
+    if (css.length() > 0)
+    {
+        printf("Style sheet file found.\n");
+        _view->getDocView()->setStyleSheet( css );
+    }
+
+    wxAcceleratorEntry entries[40];
+    int a=0;
+    entries[a++].Set(wxACCEL_CTRL,  (int) 'O',     wxID_OPEN);
+    entries[a++].Set(wxACCEL_CTRL,  (int) 'S',     wxID_SAVE);
+    entries[a++].Set(wxACCEL_CTRL,  (int) 'P',     Menu_View_TogglePages);
+    entries[a++].Set(wxACCEL_CTRL,  (int) 'H',     Menu_View_TogglePageHeader);
+    entries[a++].Set(wxACCEL_CTRL,  (int) 'R',     Menu_View_Rotate);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_F3,      wxID_OPEN);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_F2,      wxID_SAVE);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_UP,      Menu_View_PrevLine);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_DOWN,    Menu_View_NextLine);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_SPACE,    Menu_View_NextLine);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_NUMPAD_ADD,      Menu_View_ZoomIn);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_NUMPAD_SUBTRACT, Menu_View_ZoomOut);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_ADD,      Menu_View_ZoomIn);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_SUBTRACT, Menu_View_ZoomOut);
+    entries[a++].Set(wxACCEL_CTRL,    WXK_NUMPAD_ADD,      Menu_View_ZoomIn);
+    entries[a++].Set(wxACCEL_CTRL,    WXK_NUMPAD_SUBTRACT, Menu_View_ZoomOut);
+    entries[a++].Set(wxACCEL_NORMAL,  (int) '+',     Menu_View_ZoomIn);
+    entries[a++].Set(wxACCEL_NORMAL,  (int) '-',     Menu_View_ZoomOut);
+    entries[a++].Set(wxACCEL_NORMAL,  (int) '=',     Menu_View_ZoomIn);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_PAGEUP,    Menu_View_PrevPage);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_PAGEDOWN,  Menu_View_NextPage);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_HOME,      Menu_View_Begin);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_END,       Menu_View_End);
+    entries[a++].Set(wxACCEL_CTRL,    (int) 'T',     Menu_View_Text_Format);
+    entries[a++].Set(wxACCEL_ALT,     WXK_RETURN,     Menu_View_ToggleFullScreen);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_F5,      Menu_View_TOC);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_F4,      Menu_View_History);
+
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_F9,      Menu_File_Options);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_F12,      Menu_File_Quit);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_BACK,      Menu_Link_Back);
+    entries[a++].Set(wxACCEL_SHIFT,   WXK_BACK,      Menu_Link_Forward);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_TAB,      Menu_Link_Next);
+    entries[a++].Set(wxACCEL_NORMAL,  WXK_RETURN,      Menu_Link_Go);
+    entries[a++].Set(wxACCEL_SHIFT,   WXK_TAB,      Menu_Link_Prev);
+    
+    wxAcceleratorTable accel(a, entries);
+    SetAcceleratorTable(accel);
+
+    _view->Show( true );
+    //_view->UpdateScrollBar();
+
+    RestoreOptions();
+	_view->LoadDocument(wxT("d:\\test.fb2"));
+}
+
+FbCoolReader::FbCoolReader(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size )
+    : wxControl(parent, -1, pos, size), _activeMode(am_none), _toolbarSize(false)
+{
+    //wxStandardPaths::GetUserDataDir();
+
+    InitFontManager( lString8() );
+
+    _props = LVCreatePropsContainer();
+
+/*
+    {
+        // load options from file
+        LVStreamRef stream = LVOpenFileStream( GetConfigFileName().c_str(), LVOM_READ );
+        if ( !stream.isNull() )
+            _props->loadFromStream(stream.get());
+    }
+*/
+    _view = new cr3view( _props, _appDir );
+
+    InitDialog();
+}
+
+void FbCoolReader::SaveOptions()
+{
+}
+
+void FbCoolReader::RestoreOptions()
+{
+    fontMan->SetAntialiasMode( _props->getIntDef( PROP_FONT_ANTIALIASING, 2 ) );
+    _view->getDocView()->setDefaultFontFace( UnicodeToUtf8(_props->getStringDef(PROP_FONT_FACE, "Arial" )) );
+    _view->getDocView()->setTextColor( _props->getIntDef(PROP_FONT_COLOR, 0x000060 ) );
+    _view->getDocView()->setBackgroundColor( _props->getIntDef(PROP_BACKGROUND_COLOR, 0xFFFFE0 ) );
+    _view->getDocView()->setFontSize( _props->getIntDef( PROP_CRENGINE_FONT_SIZE, 28 ) );
+    _view->SetPageHeaderFlags();
+
+    //_view->SetPageHeaderFlags();
+
+    int mode = _props->getIntDef( PROP_PAGE_VIEW_MODE, 2 );
+    _view->getDocView()->setViewMode( mode>0 ? DVM_PAGES : DVM_SCROLL, mode>0 ? mode : -1 );
+}
+
+void 
+FbCoolReader::OnQuit( wxCommandEvent& WXUNUSED( event ) )
+{
+    //SaveOptions();
+    Close(TRUE);
+}
+
+void FbCoolReader::OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed )
+{
+    if ( changed->getCount()>0 ) {
+        _props->set( newprops );
+        SaveOptions();
+        RestoreOptions();
+    }
+    ///
+}
+
+void FbCoolReader::OnShowOptions( wxCommandEvent& event )
+{
+}
+
+void FbCoolReader::OnRotate( wxCommandEvent& event )
+{
+    _view->Rotate();
+    SaveOptions();
+}
+
+void FbCoolReader::OnShowTOC( wxCommandEvent& event )
+{
+}
+
+
+void 
+FbCoolReader::OnFileOpen( wxCommandEvent& WXUNUSED( event ) )
+{
+    wxFileDialog dlg( this, wxT( "Choose a file to open" ), 
+        wxT( "" ),
+        wxT( "" ),//const wxString& defaultFile = "", 
+        wxT("All supported files|*.fb2;*.fbz;*.txt;*.zip;*.rtf;*.epub;*.tcr;*.html;*.htm;*.shtml;*.xhtml|FictionBook files (*.fb2)|*.fb2;*.fbz|RTF files (*.rtf)|*.rtf|Text files (*.txt, *.tcr)|*.txt;*.tcr|HTML files|*.html;*.htm;*.shtml;*.xhtml|EPUB files (*.epub)|*.epub|ZIP archieves (*.zip)|*.zip"), //const wxString& wildcard = "*.*", 
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST //long style = wxFD_DEFAULT_STYLE, 
+        //const wxPoint& pos = wxDefaultPosition, 
+        //const wxSize& sz = wxDefaultSize, 
+        //const wxString& name = "filedlg"
+    );
+
+    if ( dlg.ShowModal() == wxID_OK ) {
+        //
+        Update();
+        wxCursor hg( wxCURSOR_WAIT );
+        this->SetCursor( hg );
+        wxSetCursor( hg );
+        _view->getDocView()->savePosition();
+        _view->LoadDocument( dlg.GetPath() );
+        _view->getDocView()->restorePosition();
+        _view->UpdateScrollBar();
+        //Invalidate();
+        Refresh();
+        Update();
+        wxSetCursor( wxNullCursor );
+        this->SetCursor( wxNullCursor );
+    }
+
+}
+
+void FbCoolReader::OnFileSave( wxCommandEvent& WXUNUSED( event ) )
+{
+}
+
+void FbCoolReader::OnAbout( wxCommandEvent& WXUNUSED( event ) )
+{
+}
+
+void FbCoolReader::OnScroll(wxScrollEvent& event)
+{
+    _view->OnScroll( event );
+}
+
+void FbCoolReader::OnKeyDown(wxKeyEvent& event)
+{
+    if ( _activeMode==am_book )
+        _view->OnKeyDown( event );
+    else
+        event.Skip();
+}
+
+void FbCoolReader::OnShowHistory( wxCommandEvent& event )
+{
+}
+
+void FbCoolReader::OnSize(wxSizeEvent& event)
+{
+	int x, y;
+	GetClientSize(&x, &y);
+	int w = wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	_scrollBar->SetSize (x - w, 0, x, y);
+	_view->SetSize(0, 0, x - w, y);
 }
 
 #endif // FB_INCLUDE_READER

@@ -19,6 +19,7 @@
 #include "frames/FbFrameDown.h"
 #include "frames/FbFrameSeqn.h"
 #include "frames/FbFrameHtml.h"
+#include "frames/FbCoolReader.h"
 #include "FbMainMenu.h"
 #include "FbConfigDlg.h"
 #include "FbDownloader.h"
@@ -35,13 +36,9 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
 	EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
 	EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
-	EVT_MENU(wxID_FILE1, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE2, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE3, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE4, FbMainFrame::OnMenuRecent)
-	EVT_MENU(wxID_FILE5, FbMainFrame::OnMenuRecent)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
 	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
+	EVT_MENU_RANGE(wxID_FILE1, wxID_FILE5, FbMainFrame::OnMenuRecent)
 
 	EVT_UPDATE_UI(wxID_FILE, FbMainFrame::OnRecentUpdate)
 
@@ -52,12 +49,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_UPDATE_UI(wxID_COPY, FbMainFrame::OnSubmenuUpdateUI)
 
 	EVT_MENU(ID_MENU_SEARCH, FbMainFrame::OnMenuTitle)
-	EVT_MENU(ID_FRAME_AUTH, FbMainFrame::OnMenuFrame)
-	EVT_MENU(ID_FRAME_GENR, FbMainFrame::OnMenuFrame)
-	EVT_MENU(ID_FRAME_FLDR, FbMainFrame::OnMenuFrame)
-	EVT_MENU(ID_FRAME_DOWN, FbMainFrame::OnMenuFrame)
-	EVT_MENU(ID_FRAME_SEQN, FbMainFrame::OnMenuFrame)
-	EVT_MENU(ID_FRAME_DATE, FbMainFrame::OnMenuFrame)
+	EVT_MENU_RANGE(ID_FRAME_AUTH, ID_FRAME_DATE, FbMainFrame::OnMenuFrame)
 	EVT_MENU(ID_FRAME_ARCH, FbMainFrame::OnMenuNothing)
 
 	EVT_MENU(ID_MENU_DB_INFO, FbMainFrame::OnDatabaseInfo)
@@ -79,24 +71,12 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_TEXTLOG_CTRL, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
-	EVT_MENU(ID_ART_DEFAULT, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_COMPACT, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_STANDART, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_TOOLBAR, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_BUTTONS, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_VSTUDIO, FbMainFrame::OnTabArt)
-	EVT_MENU(ID_ART_MOZILLA, FbMainFrame::OnTabArt)
+	EVT_MENU_RANGE(ID_ART_DEFAULT, ID_ART_MOZILLA, FbMainFrame::OnTabArt)
 
 	EVT_UPDATE_UI(ID_MENU_UPDATE, FbMainFrame::OnUpdateUpdate)
-	EVT_UPDATE_UI(ID_ART_DEFAULT, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_COMPACT, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_STANDART, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_TOOLBAR, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_BUTTONS, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_VSTUDIO, FbMainFrame::OnTabArtUpdate)
-	EVT_UPDATE_UI(ID_ART_MOZILLA, FbMainFrame::OnTabArtUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN,  FbMainFrame::OnFullScreenUpdate)
 	EVT_UPDATE_UI(ID_TEXTLOG_CTRL, FbMainFrame::OnHideLogUpdate)
+	EVT_UPDATE_UI_RANGE(ID_ART_DEFAULT, ID_ART_MOZILLA, FbMainFrame::OnTabArtUpdate)
 
 	EVT_MENU(wxID_CLOSE, FbMainFrame::OnWindowClose)
 	EVT_MENU(wxID_CLOSE_ALL, FbMainFrame::OnWindowCloseAll)
@@ -342,7 +322,9 @@ void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 
 void FbMainFrame::OnAbout(wxCommandEvent & event)
 {
-	FbAboutDlg(this).ShowModal();
+//	FbAboutDlg(this).ShowModal();
+	FbCoolReader * reader = new FbCoolReader(&m_FrameNotebook, -1, wxDefaultPosition, wxDefaultSize);
+	m_FrameNotebook.AddPage(reader, wxT("Reader"));
 }
 
 #ifdef __WXGTK__

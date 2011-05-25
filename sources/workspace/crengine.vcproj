@@ -42,10 +42,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\..\freetype2\include&quot;;&quot;$(WXWIN)\src\jpeg&quot;;&quot;$(WXWIN)\src&quot;;&quot;$(WXWIN)\src\png&quot;;&quot;$(WXWIN)\include\&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\src\zlib&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\src\jpeg&quot;;&quot;$(WXWIN)\src\zlib&quot;;&quot;$(WXWIN)\src\png&quot;;&quot;$(WXWIN)\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;COMPILED_FROM_DSP;_LIB"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"

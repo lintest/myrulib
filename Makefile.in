@@ -161,7 +161,6 @@ MYRULIB_CXXFLAGS = -I. -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceCtrl.o \
-	myrulib_FbCoolReader.o \
 	myrulib_FbComboBox.o \
 	myrulib_FbHtmlWindow.o \
 	myrulib_FbNotebook.o \
@@ -218,6 +217,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbFrameHtml.o \
 	myrulib_FbFrameGenr.o \
 	myrulib_FbFrameSeqn.o \
+	myrulib_FbCoolReader.o \
 	myrulib_FbFrameThread.o \
 	myrulib_FbGenres.o \
 	myrulib_FbGenreThread.o \
@@ -679,9 +679,6 @@ bin2c_bin2c.o: $(srcdir)/3rdparty/bin2c/bin2c.c
 myrulib_FbChoiceCtrl.o: $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp
 
-myrulib_FbCoolReader.o: $(srcdir)/sources/MyRuLib/controls/FbCoolReader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbCoolReader.cpp
-
 myrulib_FbComboBox.o: $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp
 
@@ -849,6 +846,9 @@ myrulib_FbFrameGenr.o: $(srcdir)/sources/MyRuLib/frames/FbFrameGenr.cpp $(MYRULI
 
 myrulib_FbFrameSeqn.o: $(srcdir)/sources/MyRuLib/frames/FbFrameSeqn.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/frames/FbFrameSeqn.cpp
+
+myrulib_FbCoolReader.o: $(srcdir)/sources/MyRuLib/frames/FbCoolReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/frames/FbCoolReader.cpp
 
 myrulib_FbFrameThread.o: $(srcdir)/sources/MyRuLib/FbFrameThread.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFrameThread.cpp

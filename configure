@@ -8441,6 +8441,7 @@ fi
 
 if test "x$USE_READER" = "xyes" ; then
   WX_LIBS="$WX_LIBS -lcrengine_static"
+  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER"
 fi
 
 

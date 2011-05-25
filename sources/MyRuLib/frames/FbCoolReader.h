@@ -1,5 +1,5 @@
-#ifndef _CR3VIEW_H_
-#define _CR3VIEW_H_
+#ifndef __FBCOOLREADER_H__
+#define __FBCOOLREADER_H__
 
 #ifdef FB_INCLUDE_READER
 
@@ -64,6 +64,20 @@ enum
     Menu_View_Rotate,
 };
 
+enum active_mode_t {
+    am_none,
+    am_book,
+    am_history
+};
+
+enum
+{
+	Window_Id_Scrollbar = 1000,
+	Window_Id_View,
+    Window_Id_HistList,
+	Window_Id_Options,
+};
+
 class cr3view 
 	: public wxPanel, public LVDocViewCallback
 {
@@ -94,7 +108,6 @@ class cr3view
         void OnMouseRDown( wxMouseEvent & event );
         void OnMouseMotion(wxMouseEvent& event);
         void OnTimer(wxTimerEvent& event);
-        void OnInitDialog(wxInitDialogEvent& event);
         void ToggleViewMode();
 		void SetFullScreenState(bool fullscreenState) { _isFullscreen = fullscreenState; }
         lString16 GetHistoryFileName();
@@ -127,9 +140,69 @@ class cr3view
         DECLARE_EVENT_TABLE()
 };
 
+class cr3scroll
+	: public wxScrollBar
+{
+private:
+	cr3view *  m_view;
+public:
+	cr3scroll( cr3view * view )
+		: m_view( view ) {}
+    void OnSetFocus( wxFocusEvent& event )
+		{ m_view->SetFocus(); }
+private:
+	DECLARE_EVENT_TABLE()
+};
+
+class FbCoolReader
+	: public wxControl
+{
+    private:
+        bool _isFullscreen;
+        active_mode_t _activeMode;
+        int  _toolbarSize;
+	public:
+		FbCoolReader( wxWindow* parent, wxWindowID id, const wxPoint& p, const wxSize& sz );
+
+        void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
+
+		void OnQuit( wxCommandEvent& event );
+		void OnAbout( wxCommandEvent& event );
+        void OnScroll( wxScrollEvent& event );
+        void OnKeyDown( wxKeyEvent& event );
+        void OnSetFocus( wxFocusEvent& event );
+        void OnFileOpen( wxCommandEvent& event );
+        void OnFileSave( wxCommandEvent& event );
+        void OnCommand( wxCommandEvent& event );
+        void OnRotate( wxCommandEvent& event );
+        void OnShowOptions( wxCommandEvent& event );
+        void OnShowTOC( wxCommandEvent& event );
+        void OnShowHistory( wxCommandEvent& event );
+        void OnUpdateUI( wxUpdateUIEvent& event );
+        void OnClose( wxCloseEvent& event );
+        void OnMouseWheel( wxMouseEvent& event);
+        void OnSize( wxSizeEvent& event);
+        void OnInitDialog( wxInitDialogEvent& event);
+
+        CRPropRef getProps() { return _props; }
+        void SaveOptions();
+        void RestoreOptions();
+        void SetMenu( bool visible );
+
+        wxBitmap getIcon16x16( const lChar16 * name );
+	protected:
+    	cr3scroll * _scrollBar;
+		cr3view * _view;
+        wxBoxSizer * _sizer;
+        lString16 _appDir;
+        CRPropRef _props;
+	private:
+		DECLARE_EVENT_TABLE()
+};
+
 int propsToPageHeaderFlags( CRPropRef props );
 
 #endif // FB_INCLUDE_READER
 
-#endif // _CR3VIEW_H_
+#endif // __FBCOOLREADER_H__
 

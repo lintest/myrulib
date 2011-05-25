@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myrulib", "workspace\myrulib.vcproj", "{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D} = {31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}
+		{230674E1-3392-4A62-B749-5D73D586F12F} = {230674E1-3392-4A62-B749-5D73D586F12F}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "expat", "workspace\expat.vcproj", "{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}"
