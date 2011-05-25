@@ -4,6 +4,8 @@
 #include <wx/stdpaths.h>
 #include <crengine.h>
 
+#ifdef FB_INCLUDE_READER
+
 #define RENDER_TIMER_ID  123
 #define CLOCK_TIMER_ID   124
 #define CURSOR_TIMER_ID  125
@@ -792,3 +794,5 @@ void cr3view::OnSetFocus( wxFocusEvent& event )
 {
     GetParent()->SetFocus();
 }
+
+#endif // FB_INCLUDE_READER

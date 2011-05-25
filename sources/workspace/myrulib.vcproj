@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_READER;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -72,88 +72,6 @@
 				IgnoreDefaultLibraryNames="libcmt"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
-			ConfigurationType="1"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__"
-				AdditionalIncludeDirectories="$(WXWIN)\lib\vc_dll\mswu;$(WXWIN)\include"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;&quot;$(WXWIN)\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="C4800"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(SolutionDir)\..\build&quot;"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28u_adv.lib wxmsw28u_aui.lib wxmsw28u_html.lib wxmsw28u_core.lib wxbase28u_net.lib wxbase28u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat_static.lib"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
-				IgnoreDefaultLibraryNames="libcmt"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -268,7 +186,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbCoolReader.cpp"
+				RelativePath="..\MyRuLib\frames\FbCoolReader.cpp"
 				>
 			</File>
 			<File
@@ -704,7 +622,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbCoolReader.h"
+				RelativePath="..\MyRuLib\frames\FbCoolReader.h"
 				>
 			</File>
 			<File
@@ -956,11 +874,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\FbToolBar.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbToolBar.h"
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File

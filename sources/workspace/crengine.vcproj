@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\..\freetype2\include&quot;;&quot;$(WXWIN)\src\jpeg&quot;;&quot;$(WXWIN)\src&quot;;&quot;$(WXWIN)\src\png&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\src\zlib&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\..\freetype2\include&quot;;&quot;$(WXWIN)\src\jpeg&quot;;&quot;$(WXWIN)\src&quot;;&quot;$(WXWIN)\src\png&quot;;&quot;$(WXWIN)\include\&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\src\zlib&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;COMPILED_FROM_DSP;_LIB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -57,75 +57,6 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName).lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_LIB;COMPILED_FROM_DSP"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
 			/>
 			<Tool

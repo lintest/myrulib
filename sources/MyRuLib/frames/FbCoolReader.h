@@ -1,6 +1,7 @@
-
 #ifndef _CR3VIEW_H_
 #define _CR3VIEW_H_
+
+#ifdef FB_INCLUDE_READER
 
 #include <crgui.h>
 /**
@@ -128,4 +129,7 @@ class cr3view
 
 int propsToPageHeaderFlags( CRPropRef props );
 
+#endif // FB_INCLUDE_READER
+
 #endif // _CR3VIEW_H_
+
