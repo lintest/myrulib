@@ -13,33 +13,6 @@
  * @version 0.1
  */
 
-#define PROP_CRENGINE_FONT_SIZE     "crengine.font.size"
-#define PROP_WINDOW_RECT            "window.rect"
-#define PROP_WINDOW_FULLSCREEN      "window.fullscreen"
-#define PROP_WINDOW_MINIMIZED       "window.minimized"
-#define PROP_WINDOW_MAXIMIZED       "window.maximized"
-#define PROP_WINDOW_SHOW_MENU       "window.menu.show"
-#define PROP_WINDOW_ROTATE_ANGLE    "window.rotate.angle"
-#define PROP_WINDOW_TOOLBAR_SIZE    "window.toolbar.size"
-#define PROP_WINDOW_TOOLBAR_POSITION "window.toolbar.position"
-#define PROP_WINDOW_SHOW_STATUSBAR  "window.statusbar.show"
-
-#define PROP_PAGE_HEADER_ENABLED     "page.header.enabled"
-#define PROP_PAGE_HEADER_PAGE_NUMBER "page.header.pagenumber"
-#define PROP_PAGE_HEADER_PAGE_COUNT  "page.header.pagecount"
-#define PROP_PAGE_HEADER_CLOCK       "page.header.clock"
-#define PROP_PAGE_HEADER_BATTERY     "page.header.battery"
-#define PROP_PAGE_HEADER_AUTHOR      "page.header.author"
-#define PROP_PAGE_HEADER_TITLE       "page.header.title"
-
-//#define PROP_PAGE_VIEW_MODE          "page.view.mode"
-#define PROP_FONT_ANTIALIASING       "font.antialiasing.mode"
-#define PROP_FONT_COLOR              "font.color.default"
-#define PROP_BACKGROUND_COLOR        "background.color.default"
-#define PROP_FONT_FACE               "font.face.default"
-
-#define PROP_APP_OPEN_LAST_BOOK      "app.init.open-recent"
-
 enum
 {
 	Menu_File_Quit = 100,

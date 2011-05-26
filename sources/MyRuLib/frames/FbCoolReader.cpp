@@ -2,6 +2,8 @@
 #include <wx/power.h>
 #include <wx/mstream.h>
 #include <wx/stdpaths.h>
+#include <wx/filename.h>
+#include <wx/wfstream.h>
 #include <crengine.h>
 #include "FbConst.h"
 
@@ -40,6 +42,18 @@ lString16 FbCoolReader::GetLastRecentFileName()
     return lString16();
 }
 
+#include "../res/fb2_css.h"
+
+void LoadStylesheet(lString8 &css)
+{
+	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
+	wxFileOutputStream out(tempfile);
+	out.Write(fb2_css, sizeof(fb2_css));
+	out.Close();
+	LVLoadStylesheetFile(tempfile.c_str(), css);
+	wxRemoveFile(tempfile);
+}
+
 FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, bool select)
 	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
     , _renderTimer( this, RENDER_TIMER_ID )
@@ -62,7 +76,7 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, boo
     getDocView()->setCallback( this );
     IMAGE_SOURCE_FROM_BYTES(defCover, cr3_def_cover_gif);
     getDocView()->setDefaultCover( defCover );
-    getDocView()->setPageMargins( lvRect(14, 30, 14, 10) );
+    getDocView()->setPageMargins( lvRect(14, 5, 14, 5) );
 
     static int fontSizes[] = {14, 16, 18, 20, 24, 28, 32, 36};
     LVArray<int> sizes( fontSizes, sizeof(fontSizes)/sizeof(int) );
@@ -80,7 +94,7 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, boo
     getDocView()->setViewMode(DVM_PAGES);
 
     lString8 css;
-    LVLoadStylesheetFile(L"d:\\fb2.css", css );
+	LoadStylesheet(css);
     getDocView()->setStyleSheet( css );
 
 	parent->AddPage(this, _("Reader"), select );
@@ -717,113 +731,6 @@ void testHyphen( const char * str )
             buf << '-';
     }
     printf("%s\n", buf.c_str());
-}
-
-void testFormatting()
-{
-    //
-    static char * words[] = {
-        "audition",
-        "helper",
-        "automation",
-        "constant",
-        "culture",
-        "hyphenation",
-        NULL,
-    };
-    for ( int w=0; words[w]; w++ )
-        testHyphen(words[w]);
-    class Tester {
-        public:
-            LFormattedText txt;
-            void addLine( const lChar16 * str, int flags, LVFontRef font )
-            {
-                lString16 s( str );
-                txt.AddSourceLine(
-                        s.c_str(),        /* pointer to unicode text string */
-                s.length(),         /* number of chars in text, 0 for auto(strlen) */
-                0x000000,       /* text color */
-                0xFFFFFF,     /* background color */
-                font.get(),        /* font to draw string */
-                flags,
-                16,    /* interline space, *16 (16=single, 32=double) */
-                30,    /* first line margin */
-                NULL,
-                0
-                                 );
-            }
-            void dump()
-            {
-                formatted_text_fragment_t * buf = txt.GetBuffer();
-                for ( unsigned i=0; i<buf->frmlinecount; i++ ) {
-                    formatted_line_t   * frmline = buf->frmlines[i];
-                    printf("line[%d]\t ", i);
-                    for ( unsigned j=0; j<frmline->word_count; j++ ) {
-                        formatted_word_t * word = &frmline->words[j];
-                        if ( word->flags & LTEXT_WORD_IS_OBJECT ) {
-                            // object
-                            printf("{%d..%d} object\t", (int)word->x, (int)(word->x + word->width) );
-                        } else {
-                            // dump text
-                            src_text_fragment_t * src = &buf->srctext[word->src_text_index];
-                            lString16 txt = lString16( src->t.text, word->t.start, word->t.len );
-                            lString8 txt8 = UnicodeToUtf8( txt );
-                            printf("{%d..%d} \"%s\"\t", (int)word->x, (int)(word->x + word->width), (const char *)txt8.c_str() );
-                        }
-                    }
-                    printf("\n");
-                }
-            }
-    };
-    LVFontRef font1 = fontMan->GetFont(20, 300, false, css_ff_sans_serif, lString8("Arial") );
-    LVFontRef font2 = fontMan->GetFont(20, 300, false, css_ff_serif, lString8("Times New Roman") );
-    Tester t;
-    t.addLine( L"   Testing preformatted\ntext wrapping.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"\nNewline.", LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"\n\n2 Newlines.", LTEXT_FLAG_OWNTEXT, font1 );
-#if 0
-    t.addLine( L"Testing thisislonglongwordto", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"Testing", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"several", LTEXT_ALIGN_LEFT|LTEXT_FLAG_OWNTEXT, font2 );
-    t.addLine( L" short", LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"words!", LTEXT_FLAG_OWNTEXT, font2 );
-    t.addLine( L"Testing thisislonglongwordtohyphenate simple paragraph formatting. Just a test. ", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"There is seldom reason to tag a file in isolation. A more common use is to tag all the files that constitute a module with the same tag at strategic points in the development life-cycle, such as when a release is made.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"There is seldom reason to tag a file in isolation. A more common use is to tag all the files that constitute a module with the same tag at strategic points in the development life-cycle, such as when a release is made.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"There is seldom reason to tag a file in isolation. A more common use is to tag all the files that constitute a module with the same tag at strategic points in the development life-cycle, such as when a release is made.", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"Next paragraph: left-aligned. Blabla bla blabla blablabla hdjska hsdjkasld hsdjka sdjaksdl hasjkdl ahklsd hajklsdh jaksd hajks dhjksdhjshd sjkdajsh hasjdkh ajskd hjkhjksajshd hsjkadh sjk.", LTEXT_ALIGN_LEFT|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"Testing thisislonglongwordtohyphenate simple paragraph formatting. Just a test. ", LTEXT_ALIGN_WIDTH|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"Another fragment of text. ", LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"And the last one written with another font", LTEXT_FLAG_OWNTEXT, font2 );
-    t.addLine( L"Next paragraph: left-aligned. ", LTEXT_ALIGN_LEFT|LTEXT_FLAG_OWNTEXT, font1 );
-    t.addLine( L"One more sentence. Second sentence.", LTEXT_FLAG_OWNTEXT, font1 );
-    int i;
-#endif
-    t.txt.FormatNew( 300, 400 );
-    t.dump();
-#if 0
-    printf("Running performance test\n");
-    time_t start1 = time((time_t*)0);
-    for ( i=0; i<2000; i++ )
-        t.txt.FormatNew( 600, 800 );
-    //for ( int i=0; i<100000; i++ )
-    //    t.txt.FormatNew( 400, 300 );
-    time_t end1 = time((time_t*)0);
-#endif
-#if 0
-    time_t start2 = time((time_t*)0);
-    for ( i=0; i<2000; i++ )
-        t.txt.FormatOld( 600, 800 );
-    //for ( int i=0; i<100000; i++ )
-    //    t.txt.FormatOld( 400, 300 );
-    time_t end2 = time((time_t*)0);
-#endif
-#if 0
-    int time1 = (int)(end1-start1);
-    int time2 = (int)(end2-start2);
-    printf("\nNew time = %d, old time = %d, gain=%d%%\n", time1, time2, (time2-time1)*100/time2);
-#endif
-    exit(0);
 }
 
 /*
