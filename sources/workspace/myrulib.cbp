@@ -160,7 +160,9 @@
 		</Build>
 		<Compiler>
 			<Add option="-DFB_PARSE_FAXPP" />
+			<Add option="-DFB_INCLUDE_READER" />
 			<Add directory="../MyRuLib" />
+			<Add directory="../../3rdparty/crengine/include" />
 			<Add directory="../../3rdparty/wxbzipstream" />
 			<Add directory="../../3rdparty/wxsqlite3/include" />
 			<Add directory="../../3rdparty/faxpp/include" />
@@ -171,6 +173,7 @@
 			<Add option="`wx-config --libs`" />
 			<Add library="libWxBZipStream.a" />
 			<Add library="libWxSQLite3.a" />
+			<Add library="libCrEngine.a" />
 			<Add library="libSQLite3.a" />
 			<Add library="libFaxpp.a" />
 		</Linker>
@@ -351,6 +354,8 @@
 		<Unit filename="../MyRuLib/controls/LimitedTextCtrl.h" />
 		<Unit filename="../MyRuLib/controls/ProgressBar.cpp" />
 		<Unit filename="../MyRuLib/controls/ProgressBar.h" />
+		<Unit filename="../MyRuLib/frames/FbCoolReader.cpp" />
+		<Unit filename="../MyRuLib/frames/FbCoolReader.h" />
 		<Unit filename="../MyRuLib/frames/FbFrameAuth.cpp" />
 		<Unit filename="../MyRuLib/frames/FbFrameAuth.h" />
 		<Unit filename="../MyRuLib/frames/FbFrameBase.cpp" />

@@ -106,12 +106,12 @@ class FbCoolReader
         void Paint();
         void Resize(int dx, int dy);
     private:
-        wxCursor _normalCursor;
-        wxCursor _linkCursor;
-
         wxTimer _renderTimer;
         wxTimer _cursorTimer;
         wxTimer _clockTimer;
+
+        wxCursor _normalCursor;
+        wxCursor _linkCursor;
 
         bool _firstRender;
         bool _allowRender;

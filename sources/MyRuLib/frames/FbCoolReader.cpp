@@ -16,7 +16,7 @@
 IMPLEMENT_CLASS(FbCoolReader, wxWindow)
 
 BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
-	EVT_ERASE_BACKGROUND(FbCoolReader::OnEraseBackground) 
+	EVT_ERASE_BACKGROUND(FbCoolReader::OnEraseBackground)
     EVT_PAINT( FbCoolReader::OnPaint )
     EVT_SIZE( FbCoolReader::OnSize )
     EVT_KEY_DOWN( FbCoolReader::OnKeyDown )
@@ -380,10 +380,10 @@ void FbCoolReader::UpdateScrollBar()
 		(range != lvsi->maxpos + lvsi->pagesize)
 		) {
 		SetScrollbar(
-			wxVERTICAL, 
-			lvsi->pos,      //int position, 
-			lvsi->pagesize, //int thumbSize, 
-			lvsi->maxpos + lvsi->pagesize,   //int range, 
+			wxVERTICAL,
+			lvsi->pos,      //int position,
+			lvsi->pagesize, //int thumbSize,
+			lvsi->maxpos + lvsi->pagesize,   //int range,
 			true//const bool refresh = true
 		);
 	}
@@ -742,7 +742,7 @@ void FbCoolReader::OnHistItemActivated( wxListEvent& event )
         return;
     }
     if ( index>=0 && index<_view->getDocView()->getHistory()->getRecords().length() ) {
-        lString16 pathname = _view->getDocView()->getHistory()->getRecords()[index]->getFilePath() + 
+        lString16 pathname = _view->getDocView()->getHistory()->getRecords()[index]->getFilePath() +
             _view->getDocView()->getHistory()->getRecords()[index]->getFileName();
         if ( !pathname.empty() ) {
             Update();
@@ -797,7 +797,7 @@ void FbCoolReader::SetMenu( bool visible )
     menuFile->Append( Menu_File_About, wxT( "&About...\tF1" ) );
     menuFile->AppendSeparator();
     menuFile->Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
-    
+
     wxMenu *menuView = new wxMenu;
 
     menuView->Append( Menu_View_TOC, wxT( "Table of Contents\tF5" ) );
@@ -811,7 +811,7 @@ void FbCoolReader::SetMenu( bool visible )
     menuView->Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
     menuView->Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
     menuView->Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
-    
+
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append( menuFile, wxT( "&File" ) );
     menuBar->Append( menuView, wxT( "&View" ) );
@@ -877,7 +877,7 @@ void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
     entries[a++].Set(wxACCEL_NORMAL,  WXK_TAB,      Menu_Link_Next);
     entries[a++].Set(wxACCEL_NORMAL,  WXK_RETURN,      Menu_Link_Go);
     entries[a++].Set(wxACCEL_SHIFT,   WXK_TAB,      Menu_Link_Prev);
-    
+
 //    wxAcceleratorTable accel(a, entries);
 //    SetAcceleratorTable(accel);
 }
@@ -889,13 +889,13 @@ void FbCoolReader::OnRotate( wxCommandEvent& event )
 
 void FbCoolReader::OnFileOpen( wxCommandEvent& WXUNUSED( event ) )
 {
-    wxFileDialog dlg( this, wxT( "Choose a file to open" ), 
+    wxFileDialog dlg( this, wxT( "Choose a file to open" ),
         wxT( "" ),
-        wxT( "" ),//const wxString& defaultFile = "", 
-        wxT("All supported files|*.fb2;*.fbz;*.txt;*.zip;*.rtf;*.epub;*.tcr;*.html;*.htm;*.shtml;*.xhtml|FictionBook files (*.fb2)|*.fb2;*.fbz|RTF files (*.rtf)|*.rtf|Text files (*.txt, *.tcr)|*.txt;*.tcr|HTML files|*.html;*.htm;*.shtml;*.xhtml|EPUB files (*.epub)|*.epub|ZIP archieves (*.zip)|*.zip"), //const wxString& wildcard = "*.*", 
-        wxFD_OPEN | wxFD_FILE_MUST_EXIST //long style = wxFD_DEFAULT_STYLE, 
-        //const wxPoint& pos = wxDefaultPosition, 
-        //const wxSize& sz = wxDefaultSize, 
+        wxT( "" ),//const wxString& defaultFile = "",
+        wxT("All supported files|*.fb2;*.fbz;*.txt;*.zip;*.rtf;*.epub;*.tcr;*.html;*.htm;*.shtml;*.xhtml|FictionBook files (*.fb2)|*.fb2;*.fbz|RTF files (*.rtf)|*.rtf|Text files (*.txt, *.tcr)|*.txt;*.tcr|HTML files|*.html;*.htm;*.shtml;*.xhtml|EPUB files (*.epub)|*.epub|ZIP archieves (*.zip)|*.zip"), //const wxString& wildcard = "*.*",
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST //long style = wxFD_DEFAULT_STYLE,
+        //const wxPoint& pos = wxDefaultPosition,
+        //const wxSize& sz = wxDefaultSize,
         //const wxString& name = "filedlg"
     );
 
