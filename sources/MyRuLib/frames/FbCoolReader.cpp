@@ -49,7 +49,6 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, bool select)
 	, _linkCursor(wxCURSOR_HAND)
 	, _firstRender(false)
 	, _allowRender(true)
-	, _props(LVCreatePropsContainer())
 	, _screen(300,400)
 	, _wm(&_screen)
 {
@@ -68,9 +67,7 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, bool select)
     static int fontSizes[] = {14, 16, 18, 20, 24, 28, 32, 36};
     LVArray<int> sizes( fontSizes, sizeof(fontSizes)/sizeof(int) );
     getDocView()->setFontSizes( sizes, false );
-
-    cr_rotate_angle_t angle = (cr_rotate_angle_t)(_props->getIntDef( PROP_WINDOW_ROTATE_ANGLE, 0 ) & 3);
-    getDocView()->SetRotateAngle( angle );
+    getDocView()->SetRotateAngle( CR_ROTATE_ANGLE_0 );
 
 	SetHeaderIcons();
 	SetBatteryIcons();
@@ -461,9 +458,8 @@ void FbCoolReader::OnMouseRDown( wxMouseEvent & event )
 
 void FbCoolReader::ToggleViewMode()
 {
-    int mode = _props->getIntDef( PROP_PAGE_VIEW_MODE, 2 ) ? 0 : 2;
-    _props->setInt( PROP_PAGE_VIEW_MODE, mode );
-    getDocView()->setViewMode( mode>0 ? DVM_PAGES : DVM_SCROLL, mode>0 ? mode : -1 );
+	LVDocViewMode new_mode = getDocView()->getViewMode() == DVM_PAGES ? DVM_SCROLL : DVM_PAGES;
+    getDocView()->setViewMode( new_mode );
     UpdateScrollBar();
     Paint();
 }
@@ -628,7 +624,6 @@ void FbCoolReader::goToBookmark(ldomXPointer bm)
 void FbCoolReader::SetRotate( cr_rotate_angle_t angle )
 {
     getDocView()->SetRotateAngle( angle );
-    _props->setInt( PROP_WINDOW_ROTATE_ANGLE, angle );
     UpdateScrollBar();
     Paint();
 }
