@@ -40,7 +40,7 @@ lString16 FbCoolReader::GetLastRecentFileName()
     return lString16();
 }
 
-FbCoolReader::FbCoolReader(wxAuiNotebook * parent, bool select)
+FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, bool select)
 	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
     , _renderTimer( this, RENDER_TIMER_ID )
     , _cursorTimer( this, CURSOR_TIMER_ID )
@@ -62,17 +62,14 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, bool select)
     getDocView()->setCallback( this );
     IMAGE_SOURCE_FROM_BYTES(defCover, cr3_def_cover_gif);
     getDocView()->setDefaultCover( defCover );
-    getDocView()->setPageMargins( lvRect(14, 5, 14, 5) );
+    getDocView()->setPageMargins( lvRect(14, 30, 14, 10) );
 
     static int fontSizes[] = {14, 16, 18, 20, 24, 28, 32, 36};
     LVArray<int> sizes( fontSizes, sizeof(fontSizes)/sizeof(int) );
     getDocView()->setFontSizes( sizes, false );
     getDocView()->SetRotateAngle( CR_ROTATE_ANGLE_0 );
 
-	SetHeaderIcons();
-	SetBatteryIcons();
-
-    int flags = PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CLOCK | PGHDR_BATTERY;
+    int flags = PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CHAPTER_MARKS;
     getDocView()->setPageHeaderInfo( flags );
 
     fontMan->SetAntialiasMode( 2 );
@@ -82,8 +79,13 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, bool select)
     getDocView()->setFontSize(28);
     getDocView()->setViewMode(DVM_PAGES);
 
+    lString8 css;
+    LVLoadStylesheetFile(L"d:\\fb2.css", css );
+    getDocView()->setStyleSheet( css );
+
 	parent->AddPage(this, _("Reader"), select );
-	LoadDocument(wxT("d:\\test.fb2"));
+
+	LoadDocument(filename);
 }
 
 FbCoolReader::~FbCoolReader()

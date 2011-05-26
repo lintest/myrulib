@@ -6,6 +6,8 @@
 #include "FbColumns.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
+#include "FbMainFrame.h"
+#include "frames/FbCoolReader.h"
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
 
@@ -114,14 +116,6 @@ bool FbBookData::GetSystemCommand(const wxString &filepath, const wxString &file
 void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 {
 	wxString filetype = GetExt();
-	wxFileName filename = md5sum;
-	filename.SetPath( FbParams::GetPath(FB_TEMP_DIR) );
-	filename.SetExt(filetype);
-
-	if ( !filename.DirExists()) filename.Mkdir(0755, wxPATH_MKDIR_FULL);
-
-	wxString filepath = filename.GetFullPath();
-	if (!filename.FileExists()) SaveFile(in, filepath);
 	wxString command;
 	bool ok = false;
 
@@ -133,6 +127,30 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		FbCommonDatabase database;
 		ok = GetUserCommand(database, filetype, command);
 	}
+
+#ifdef FB_INCLUDE_READER
+	if (!ok) {
+		FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
+		if (frame) {
+			wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
+			SaveFile(in, tempfile);
+			new FbCoolReader(frame->GetNotebook(), tempfile, true);
+			wxRemoveFile(tempfile);
+			return;
+		}
+	}
+#endif
+
+	wxFileName filename = md5sum;
+	filename.SetPath( FbParams::GetPath(FB_TEMP_DIR) );
+	filename.SetExt(filetype);
+
+	if ( !filename.DirExists()) 
+		filename.Mkdir(0755, wxPATH_MKDIR_FULL);
+
+	wxString filepath = filename.GetFullPath();
+	if (!filename.FileExists()) SaveFile(in, filepath);
+
 	if (ok) {
 		filepath.Prepend(wxT('"')).Append(wxT('"'));
 		#ifdef __WXMSW__
