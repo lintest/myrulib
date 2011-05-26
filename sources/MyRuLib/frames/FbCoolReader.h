@@ -4,6 +4,9 @@
 #ifdef FB_INCLUDE_READER
 
 #include <crgui.h>
+#include <wx/splitter.h>
+#include <wx/aui/tabmdi.h>
+
 /**
  * @short XML Document View window
  * @author Vadim Lopatin <vadim.lopatin@coolreader.org>
@@ -82,32 +85,22 @@ class FbCoolReader
 	: public wxWindow, public LVDocViewCallback
 {
 	public:
-		FbCoolReader( wxWindow* parent, wxWindowID id, const wxPoint& p, const wxSize& sz );
+		FbCoolReader(wxAuiNotebook * parent, bool select = false);
 		virtual ~FbCoolReader();
 
         void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
 
-		void OnQuit( wxCommandEvent& event );
 		void OnAbout( wxCommandEvent& event );
         void OnScroll( wxScrollWinEvent& event );
         void OnFileOpen( wxCommandEvent& event );
         void OnFileSave( wxCommandEvent& event );
         void OnCommand( wxCommandEvent& event );
         void OnRotate( wxCommandEvent& event );
-        void OnShowOptions( wxCommandEvent& event );
-        void OnShowTOC( wxCommandEvent& event );
         void OnShowHistory( wxCommandEvent& event );
         void OnUpdateUI( wxUpdateUIEvent& event );
-        void OnClose( wxCloseEvent& event );
         void OnMouseWheel( wxMouseEvent& event);
         void OnInitDialog( wxInitDialogEvent& event);
-
-        CRPropRef getProps() { return _props; }
-        void SaveOptions();
-        void RestoreOptions();
         void SetMenu( bool visible );
-
-        wxBitmap getIcon16x16( const lChar16 * name );
 	public:
         void ScheduleRender() { Resize(0, 0); }
         bool LoadDocument( const wxString & fname );
@@ -117,7 +110,6 @@ class FbCoolReader
         void doCommand( LVDocCmd cmd, int param );
         void goToBookmark(ldomXPointer bm);
         wxColour getBackgroundColour();
-        void SetPageHeaderFlags();
         void SetRotate( cr_rotate_angle_t angle );
         void Rotate( bool ccw = false );
         // event handlers
@@ -135,6 +127,8 @@ class FbCoolReader
         // LVDocViewCallback override
         virtual void OnExternalLink( lString16 url, ldomNode * node );
     protected:
+		void SetHeaderIcons();
+		void SetBatteryIcons();
 
         void Paint();
         void Resize(int dx, int dy);
@@ -142,9 +136,10 @@ class FbCoolReader
         wxCursor _normalCursor;
         wxCursor _linkCursor;
 
-        wxTimer * _renderTimer;
-        wxTimer * _clockTimer;
-        wxTimer * _cursorTimer;
+        wxTimer _renderTimer;
+        wxTimer _cursorTimer;
+        wxTimer _clockTimer;
+
         bool _firstRender;
         bool _allowRender;
 
@@ -155,10 +150,9 @@ class FbCoolReader
         lString16 _appDir;
         CRPropRef _props;
 	private:
+		DECLARE_DYNAMIC_CLASS(FbCoolReader)
 		DECLARE_EVENT_TABLE()
 };
-
-int propsToPageHeaderFlags( CRPropRef props );
 
 #endif // FB_INCLUDE_READER
 

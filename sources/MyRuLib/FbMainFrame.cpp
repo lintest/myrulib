@@ -322,9 +322,11 @@ void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
 
 void FbMainFrame::OnAbout(wxCommandEvent & event)
 {
-//	FbAboutDlg(this).ShowModal();
-	FbCoolReader * reader = new FbCoolReader(&m_FrameNotebook, -1, wxDefaultPosition, wxDefaultSize);
-	m_FrameNotebook.AddPage(reader, wxT("Reader"));
+#ifdef FB_INCLUDE_READER
+	FbCoolReader * reader = new FbCoolReader(&m_FrameNotebook, true);
+#else
+	FbAboutDlg(this).ShowModal();
+#endif
 }
 
 #ifdef __WXGTK__

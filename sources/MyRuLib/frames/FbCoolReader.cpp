@@ -3,6 +3,7 @@
 #include <wx/mstream.h>
 #include <wx/stdpaths.h>
 #include <crengine.h>
+#include "FbConst.h"
 
 #ifdef FB_INCLUDE_READER
 
@@ -10,53 +11,27 @@
 #define CLOCK_TIMER_ID   124
 #define CURSOR_TIMER_ID  125
 
+IMPLEMENT_CLASS(FbCoolReader, wxWindow)
+
 BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_ERASE_BACKGROUND(FbCoolReader::OnEraseBackground) 
     EVT_PAINT( FbCoolReader::OnPaint )
     EVT_SIZE( FbCoolReader::OnSize )
+    EVT_KEY_DOWN( FbCoolReader::OnKeyDown )
     EVT_MOUSEWHEEL( FbCoolReader::OnMouseWheel )
     EVT_LEFT_DOWN( FbCoolReader::OnMouseLDown )
     EVT_RIGHT_DOWN( FbCoolReader::OnMouseRDown )
     EVT_MOTION( FbCoolReader::OnMouseMotion )
-    EVT_MENU_RANGE( 0, 0xFFFF, FbCoolReader::OnCommand )
     EVT_TIMER(RENDER_TIMER_ID, FbCoolReader::OnTimer)
     EVT_TIMER(CLOCK_TIMER_ID, FbCoolReader::OnTimer)
     EVT_TIMER(CURSOR_TIMER_ID, FbCoolReader::OnTimer)
-    EVT_MENU( Menu_File_Quit, FbCoolReader::OnQuit )
     EVT_MENU( Menu_File_About, FbCoolReader::OnAbout )
     EVT_MENU( wxID_OPEN, FbCoolReader::OnFileOpen )
     EVT_MENU( wxID_SAVE, FbCoolReader::OnFileSave )
-    EVT_MENU( Menu_View_TOC, FbCoolReader::OnShowTOC )
-    EVT_MENU( Menu_File_Options, FbCoolReader::OnShowOptions )
-    EVT_MENU( Menu_View_History, FbCoolReader::OnShowHistory )
     EVT_MENU( Menu_View_Rotate, FbCoolReader::OnRotate )
-    EVT_CLOSE( FbCoolReader::OnClose )
     EVT_INIT_DIALOG( FbCoolReader::OnInitDialog )
 	EVT_SCROLLWIN( FbCoolReader::OnScroll )
 END_EVENT_TABLE()
-
-int propsToPageHeaderFlags( CRPropRef props )
-{
-    int flags = 0;
-
-	if ( props->getBoolDef( PROP_PAGE_HEADER_ENABLED, true ) ) {
-        if ( props->getBoolDef( PROP_PAGE_HEADER_PAGE_NUMBER, true ) )
-            flags |= PGHDR_PAGE_NUMBER;
-        if ( props->getBoolDef( PROP_PAGE_HEADER_PAGE_COUNT, true ) )
-            flags |= PGHDR_PAGE_COUNT;
-        if ( props->getBoolDef( PROP_PAGE_HEADER_CLOCK, true ) )
-            flags |= PGHDR_CLOCK;
-        if ( props->getBoolDef( PROP_PAGE_HEADER_BATTERY, true ) )
-            flags |= PGHDR_BATTERY;
-        if ( props->getBoolDef( PROP_PAGE_HEADER_AUTHOR, true ) )
-            flags |= PGHDR_AUTHOR;
-        if ( props->getBoolDef( PROP_PAGE_HEADER_TITLE, true ) )
-            flags |= PGHDR_TITLE;
-    }
-
-	return flags;
-}
-
 
 lString16 FbCoolReader::GetLastRecentFileName()
 {
@@ -65,8 +40,11 @@ lString16 FbCoolReader::GetLastRecentFileName()
     return lString16();
 }
 
-FbCoolReader::FbCoolReader(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size )
-	: wxWindow(parent, id, pos, size, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE)
+FbCoolReader::FbCoolReader(wxAuiNotebook * parent, bool select)
+	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
+    , _renderTimer( this, RENDER_TIMER_ID )
+    , _cursorTimer( this, CURSOR_TIMER_ID )
+    , _clockTimer ( this, CLOCK_TIMER_ID )
 	, _normalCursor(wxCURSOR_ARROW)
 	, _linkCursor(wxCURSOR_HAND)
 	, _firstRender(false)
@@ -84,73 +62,76 @@ FbCoolReader::FbCoolReader(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 
     getDocView()->setCallback( this );
     IMAGE_SOURCE_FROM_BYTES(defCover, cr3_def_cover_gif);
-	LVImageSourceRef cover = LVCreateFileCopyImageSource( _appDir + L"cr3_def_cover.png" );
-    if ( !cover.isNull() )
-        getDocView()->setDefaultCover( cover );
-    else
-        getDocView()->setDefaultCover( defCover );
+    getDocView()->setDefaultCover( defCover );
     getDocView()->setPageMargins( lvRect(14, 5, 14, 5) );
 
     static int fontSizes[] = {14, 16, 18, 20, 24, 28, 32, 36};
     LVArray<int> sizes( fontSizes, sizeof(fontSizes)/sizeof(int) );
     getDocView()->setFontSizes( sizes, false );
-    //_docview->setBackgroundColor(0x000000);
-    //_docview->setTextColor(0xFFFFFF);
 
     cr_rotate_angle_t angle = (cr_rotate_angle_t)(_props->getIntDef( PROP_WINDOW_ROTATE_ANGLE, 0 ) & 3);
     getDocView()->SetRotateAngle( angle );
 
-    {
-        LVStreamRef stream = LVOpenFileStream( GetHistoryFileName().c_str(), LVOM_READ );
-        if ( !stream.isNull() ) {
-            getDocView()->getHistory()->loadFromStream( stream );
-            stream = NULL;
-        }
-    }
+	SetHeaderIcons();
+	SetBatteryIcons();
 
+    int flags = PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CLOCK | PGHDR_BATTERY;
+    getDocView()->setPageHeaderInfo( flags );
 
+    fontMan->SetAntialiasMode( 2 );
+    getDocView()->setDefaultFontFace( UnicodeToUtf8(L"Arial") );
+    getDocView()->setTextColor(0x000060);
+    getDocView()->setBackgroundColor(0xFFFFE0);
+    getDocView()->setFontSize(28);
+    getDocView()->setViewMode(DVM_PAGES);
 
-    _renderTimer = new wxTimer( this, RENDER_TIMER_ID );
-    _clockTimer = new wxTimer( this, CLOCK_TIMER_ID );
-    _cursorTimer = new wxTimer( this, CURSOR_TIMER_ID );
+	parent->AddPage(this, _("Reader"), select );
+	LoadDocument(wxT("d:\\test.fb2"));
+}
 
-    //SetBackgroundColour( getBackgroundColour() );
-    InitDialog();
-    //int width, height;
-    //GetClientSize( &width, &height );
-	//Resize( 300, 300 );	
+FbCoolReader::~FbCoolReader()
+{
+}
 
-#if 0
-    //TEST ICONS
-    LVRefVec<LVImageSource> icons;
-    static const char * icon1[] = {
-        "8 8 3 1",
-        "* c #000000",
-        ". c #FFFFFF",
-        "  c None",
-        " ****** ",
-        "*......*",
-        "*.*..*.*",
-        "*......*",
-        "*. ** .*",
-        "*......*",
-        " **..** ",
-        "   **   ",
-    };
-    static const char * icon2[] = {
-        "8 8 3 1",
-        "* c #00C000",
-        ". c #FF80FF",
-        "  c None",
-        " ****** ",
-        "*..**..*",
-        "*.*..*.*",
-        "*.*..*.*",
-        "*. ** .*",
-        "**.  .**",
-        " **..** ",
-        "   **   ",
-    };
+void FbCoolReader::SetHeaderIcons()
+{
+	static const char * icon1[] = {
+		"8 8 3 1",
+		"* c #000000",
+		". c #FFFFFF",
+		"  c None",
+		" ****** ",
+		"*......*",
+		"*.*..*.*",
+		"*......*",
+		"*. ** .*",
+		"*......*",
+		" **..** ",
+		"   **   ",
+	};
+	static const char * icon2[] = {
+		"8 8 3 1",
+		"* c #00C000",
+		". c #FF80FF",
+		"  c None",
+		" ****** ",
+		"*..**..*",
+		"*.*..*.*",
+		"*.*..*.*",
+		"*. ** .*",
+		"**.  .**",
+		" **..** ",
+		"   **   ",
+	};
+
+	LVRefVec<LVImageSource> icons;
+    icons.add( LVCreateXPMImageSource( icon1 ) );
+    icons.add( LVCreateXPMImageSource( icon2 ) );
+    getDocView()->setHeaderIcons( icons );
+}
+
+void FbCoolReader::SetBatteryIcons()
+{
     static const char * battery4[] = {
         "24 13 4 1",
         "0 c #000000",
@@ -251,26 +232,14 @@ FbCoolReader::FbCoolReader(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
         "   .0000000000000000000.",
         "   .....................",
     };
-    icons.add( LVCreateXPMImageSource( icon1 ) );
-    icons.add( LVCreateXPMImageSource( icon2 ) );
-    _docview->setHeaderIcons( icons );
-    icons.clear();
+
+    LVRefVec<LVImageSource> icons;
     icons.add( LVCreateXPMImageSource( battery0 ) );
     icons.add( LVCreateXPMImageSource( battery1 ) );
     icons.add( LVCreateXPMImageSource( battery2 ) );
     icons.add( LVCreateXPMImageSource( battery3 ) );
     icons.add( LVCreateXPMImageSource( battery4 ) );
-    _docview->setBatteryIcons( icons );
-#endif
-
-    InitDialog();
-}
-
-FbCoolReader::~FbCoolReader()
-{
-    delete _renderTimer;
-    delete _clockTimer;
-    delete _cursorTimer;
+    getDocView()->setBatteryIcons( icons );
 }
 
 wxColour FbCoolReader::getBackgroundColour()
@@ -487,18 +456,7 @@ void FbCoolReader::OnMouseRDown( wxMouseEvent & event )
     pm.AppendSeparator();
     pm.Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
 
-    ((wxControl*)GetParent())->PopupMenu(&pm);
-}
-
-void FbCoolReader::SetPageHeaderFlags()
-{
-    int newflags = propsToPageHeaderFlags( _props );
-    int oldflags = getDocView()->getPageHeaderInfo();
-    if ( oldflags==newflags )
-        return;
-    getDocView()->setPageHeaderInfo( newflags );
-    UpdateScrollBar();
-    Paint();
+	PopupMenu(&pm);
 }
 
 void FbCoolReader::ToggleViewMode()
@@ -577,10 +535,6 @@ void FbCoolReader::OnCommand(wxCommandEvent& event)
     case Menu_View_TogglePages:
         ToggleViewMode();
         break;
-    case Menu_View_TogglePageHeader:
-        _props->setBool( PROP_PAGE_HEADER_ENABLED, !_props->getBoolDef(PROP_PAGE_HEADER_ENABLED, true) );
-        SetPageHeaderFlags();
-        break;
     case Menu_View_Text_Format:
 		doCommand( DCMD_TOGGLE_TEXT_FORMAT, 0 );
         break;
@@ -589,34 +543,24 @@ void FbCoolReader::OnCommand(wxCommandEvent& event)
 
 void FbCoolReader::OnScroll(wxScrollWinEvent& event)
 {
-    int id = event.GetEventType();
-    //printf("Scroll event: %d\n", id);
-    if (id == wxEVT_SCROLLWIN_TOP)
-        doCommand( DCMD_BEGIN, 0 );
-    else if (id == wxEVT_SCROLLWIN_BOTTOM )
-        doCommand( DCMD_BEGIN, 0 );
-    else if (id == wxEVT_SCROLLWIN_LINEUP )
-        doCommand( DCMD_LINEUP, 0 );
-    else if (id == wxEVT_SCROLLWIN_LINEDOWN )
-        doCommand( DCMD_LINEDOWN, 0 );
-    else if (id == wxEVT_SCROLLWIN_PAGEUP )
-        doCommand( DCMD_PAGEUP, 0 );
-    else if (id == wxEVT_SCROLLWIN_PAGEDOWN )
-        doCommand( DCMD_PAGEDOWN, 0 );
-    else if (id == wxEVT_SCROLLWIN_THUMBRELEASE || id == wxEVT_SCROLLWIN_THUMBTRACK)
-    {
-        doCommand( DCMD_GO_POS,
-                   getDocView()->scrollPosToDocPos( event.GetPosition() ) );
-    }
+	wxEventType type = event.GetEventType();
+	if (type == wxEVT_SCROLLWIN_TOP      ) doCommand( DCMD_BEGIN,    0 ); else
+	if (type == wxEVT_SCROLLWIN_BOTTOM   ) doCommand( DCMD_END,      0 ); else
+	if (type == wxEVT_SCROLLWIN_LINEUP   ) doCommand( DCMD_LINEUP,   0 ); else
+	if (type == wxEVT_SCROLLWIN_LINEDOWN ) doCommand( DCMD_LINEDOWN, 0 ); else
+	if (type == wxEVT_SCROLLWIN_PAGEUP   ) doCommand( DCMD_PAGEUP,   0 ); else
+	if (type == wxEVT_SCROLLWIN_PAGEDOWN ) doCommand( DCMD_PAGEDOWN, 0 ); else
+
+	if ((type == wxEVT_SCROLLWIN_THUMBTRACK)||(type == wxEVT_SCROLLWIN_THUMBRELEASE)) {
+        doCommand( DCMD_GO_POS, getDocView()->scrollPosToDocPos(event.GetPosition()) );
+	}
 }
 
 void FbCoolReader::OnMouseWheel(wxMouseEvent& event)
 {
     int rotation = event.GetWheelRotation();
-    if ( rotation > 0 )
-        doCommand( DCMD_LINEUP, 3 );
-    else if ( rotation < 0 )
-        doCommand( DCMD_LINEDOWN, 3 );
+    if ( rotation > 0 ) doCommand( DCMD_LINEUP, 3 ); else
+    if ( rotation < 0 ) doCommand( DCMD_LINEDOWN, 3 );
 }
 
 void FbCoolReader::OnKeyDown(wxKeyEvent& event)
@@ -626,25 +570,27 @@ void FbCoolReader::OnKeyDown(wxKeyEvent& event)
 		case WXK_NUMPAD_SUBTRACT: doCommand( DCMD_ZOOM_OUT, 0 ); break;
 		case WXK_UP:              doCommand( DCMD_LINEUP,   1 ); break;
 		case WXK_DOWN:            doCommand( DCMD_LINEDOWN, 1 ); break;
+		case WXK_BACK:
 		case WXK_PAGEUP:          doCommand( DCMD_PAGEUP,   1 ); break;
+		case WXK_SPACE:
 		case WXK_PAGEDOWN:        doCommand( DCMD_PAGEDOWN, 1 ); break;
 		case WXK_HOME:            doCommand( DCMD_BEGIN,    0 ); break;
 		case WXK_END:             doCommand( DCMD_END,      0 ); break;
+		default: event.Skip();
 	}
 }
 
 bool FbCoolReader::LoadDocument( const wxString & fname )
 {
     //printf("FbCoolReader::LoadDocument()\n");
-    _renderTimer->Stop();
-    _clockTimer->Stop();
+    _renderTimer.Stop();
+    _clockTimer.Stop();
     CloseDocument();
 
 	wxCursor hg( wxCURSOR_WAIT );
 	this->SetCursor( hg );
 	wxSetCursor( hg );
     //===========================================
-    GetParent()->Update();
     //printf("   loading...  ");
     bool res = getDocView()->LoadDocument( fname.c_str() );
     //printf("   done. \n");
@@ -657,7 +603,6 @@ bool FbCoolReader::LoadDocument( const wxString & fname )
     if ( !title.empty() && !getDocView()->getTitle().empty() )
         title << L". ";
     title << getDocView()->getTitle();
-    GetParent()->SetLabel( wxString( title.c_str() ) );
 
     //UpdateScrollBar();
     _firstRender = true;
@@ -667,7 +612,6 @@ bool FbCoolReader::LoadDocument( const wxString & fname )
 	//_docview->Render();
 	//UpdateScrollBar();
 	//Paint();
-    GetParent()->SetFocus();
     //===========================================
 	wxSetCursor( wxNullCursor );
 	this->SetCursor( wxNullCursor );
@@ -715,10 +659,10 @@ void FbCoolReader::Resize(int dx, int dy)
         return;
     }
 
-	_renderTimer->Stop();
-    _renderTimer->Start( 100, wxTIMER_ONE_SHOT );
-    _clockTimer->Stop();
-    _clockTimer->Start( 10 * 1000, wxTIMER_CONTINUOUS );
+	_renderTimer.Stop();
+    _renderTimer.Start( 100, wxTIMER_ONE_SHOT );
+    _clockTimer.Stop();
+    _clockTimer.Start( 10 * 1000, wxTIMER_CONTINUOUS );
 
     SetCursor( wxNullCursor );
 }
@@ -885,17 +829,6 @@ void testFormatting()
     exit(0);
 }
 
-void FbCoolReader::OnUpdateUI( wxUpdateUIEvent& event )
-{
-}
-
-void FbCoolReader::OnClose( wxCloseEvent& event )
-{
-    SaveOptions();
-    CloseDocument();
-    Destroy();
-}
-
 /*
 void FbCoolReader::OnHistItemActivated( wxListEvent& event )
 {
@@ -1041,68 +974,16 @@ void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
     entries[a++].Set(wxACCEL_NORMAL,  WXK_RETURN,      Menu_Link_Go);
     entries[a++].Set(wxACCEL_SHIFT,   WXK_TAB,      Menu_Link_Prev);
     
-    wxAcceleratorTable accel(a, entries);
-    SetAcceleratorTable(accel);
-
-    Show( true );
-
-    RestoreOptions();
-	LoadDocument(wxT("d:\\test.fb2"));
-}
-
-void FbCoolReader::SaveOptions()
-{
-}
-
-void FbCoolReader::RestoreOptions()
-{
-    fontMan->SetAntialiasMode( _props->getIntDef( PROP_FONT_ANTIALIASING, 2 ) );
-    getDocView()->setDefaultFontFace( UnicodeToUtf8(_props->getStringDef(PROP_FONT_FACE, "Arial" )) );
-    getDocView()->setTextColor( _props->getIntDef(PROP_FONT_COLOR, 0x000060 ) );
-    getDocView()->setBackgroundColor( _props->getIntDef(PROP_BACKGROUND_COLOR, 0xFFFFE0 ) );
-    getDocView()->setFontSize( _props->getIntDef( PROP_CRENGINE_FONT_SIZE, 28 ) );
-    SetPageHeaderFlags();
-
-    //_view->SetPageHeaderFlags();
-
-    int mode = _props->getIntDef( PROP_PAGE_VIEW_MODE, 2 );
-    getDocView()->setViewMode( mode>0 ? DVM_PAGES : DVM_SCROLL, mode>0 ? mode : -1 );
-}
-
-void 
-FbCoolReader::OnQuit( wxCommandEvent& WXUNUSED( event ) )
-{
-    //SaveOptions();
-    Close(TRUE);
-}
-
-void FbCoolReader::OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed )
-{
-    if ( changed->getCount()>0 ) {
-        _props->set( newprops );
-        SaveOptions();
-        RestoreOptions();
-    }
-    ///
-}
-
-void FbCoolReader::OnShowOptions( wxCommandEvent& event )
-{
+//    wxAcceleratorTable accel(a, entries);
+//    SetAcceleratorTable(accel);
 }
 
 void FbCoolReader::OnRotate( wxCommandEvent& event )
 {
     Rotate();
-    SaveOptions();
 }
 
-void FbCoolReader::OnShowTOC( wxCommandEvent& event )
-{
-}
-
-
-void 
-FbCoolReader::OnFileOpen( wxCommandEvent& WXUNUSED( event ) )
+void FbCoolReader::OnFileOpen( wxCommandEvent& WXUNUSED( event ) )
 {
     wxFileDialog dlg( this, wxT( "Choose a file to open" ), 
         wxT( "" ),
