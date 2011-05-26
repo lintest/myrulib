@@ -78,16 +78,40 @@ enum
 	Window_Id_Options,
 };
 
-class cr3view 
-	: public wxPanel, public LVDocViewCallback
+class FbCoolReader
+	: public wxWindow, public LVDocViewCallback
 {
-    public:
-        cr3view(CRPropRef props, lString16 exeDirPath );
-        virtual ~cr3view();
+	public:
+		FbCoolReader( wxWindow* parent, wxWindowID id, const wxPoint& p, const wxSize& sz );
+		virtual ~FbCoolReader();
+
+        void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
+
+		void OnQuit( wxCommandEvent& event );
+		void OnAbout( wxCommandEvent& event );
+        void OnScroll( wxScrollWinEvent& event );
+        void OnFileOpen( wxCommandEvent& event );
+        void OnFileSave( wxCommandEvent& event );
+        void OnCommand( wxCommandEvent& event );
+        void OnRotate( wxCommandEvent& event );
+        void OnShowOptions( wxCommandEvent& event );
+        void OnShowTOC( wxCommandEvent& event );
+        void OnShowHistory( wxCommandEvent& event );
+        void OnUpdateUI( wxUpdateUIEvent& event );
+        void OnClose( wxCloseEvent& event );
+        void OnMouseWheel( wxMouseEvent& event);
+        void OnInitDialog( wxInitDialogEvent& event);
+
+        CRPropRef getProps() { return _props; }
+        void SaveOptions();
+        void RestoreOptions();
+        void SetMenu( bool visible );
+
+        wxBitmap getIcon16x16( const lChar16 * name );
+	public:
         void ScheduleRender() { Resize(0, 0); }
         bool LoadDocument( const wxString & fname );
         void CloseDocument();
-        void SetScrollBar( wxScrollBar * sb ) { _scrollbar = sb; }
         void UpdateScrollBar();
         LVDocView * getDocView() { return _docwin->getDocView(); }
         void doCommand( LVDocCmd cmd, int param );
@@ -100,16 +124,12 @@ class cr3view
         void OnPaint(wxPaintEvent& event);
         void OnSize(wxSizeEvent& event);
         void OnKeyDown(wxKeyEvent& event);
-        void OnMouseWheel(wxMouseEvent& event);
-        void OnScroll(wxScrollEvent& event);
-        void OnCommand( wxCommandEvent& event );
-        void OnSetFocus( wxFocusEvent& event );
         void OnMouseLDown( wxMouseEvent & event );
         void OnMouseRDown( wxMouseEvent & event );
         void OnMouseMotion(wxMouseEvent& event);
         void OnTimer(wxTimerEvent& event);
+		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
         void ToggleViewMode();
-		void SetFullScreenState(bool fullscreenState) { _isFullscreen = fullscreenState; }
         lString16 GetHistoryFileName();
         lString16 GetLastRecentFileName();
         // LVDocViewCallback override
@@ -121,79 +141,17 @@ class cr3view
     private:
         wxCursor _normalCursor;
         wxCursor _linkCursor;
-        //LVDocView * _docview;
-        wxScrollBar * _scrollbar;
 
         wxTimer * _renderTimer;
         wxTimer * _clockTimer;
         wxTimer * _cursorTimer;
         bool _firstRender;
         bool _allowRender;
-        CRPropRef _props;
 
-        bool _isFullscreen;
-
+	protected:
         CRWxScreen _screen;
         CRGUIWindowManager _wm;
         CRDocViewWindow * _docwin;
-
-        DECLARE_EVENT_TABLE()
-};
-
-class cr3scroll
-	: public wxScrollBar
-{
-private:
-	cr3view *  m_view;
-public:
-	cr3scroll( cr3view * view )
-		: m_view( view ) {}
-    void OnSetFocus( wxFocusEvent& event )
-		{ m_view->SetFocus(); }
-private:
-	DECLARE_EVENT_TABLE()
-};
-
-class FbCoolReader
-	: public wxControl
-{
-    private:
-        bool _isFullscreen;
-        active_mode_t _activeMode;
-        int  _toolbarSize;
-	public:
-		FbCoolReader( wxWindow* parent, wxWindowID id, const wxPoint& p, const wxSize& sz );
-
-        void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
-
-		void OnQuit( wxCommandEvent& event );
-		void OnAbout( wxCommandEvent& event );
-        void OnScroll( wxScrollEvent& event );
-        void OnKeyDown( wxKeyEvent& event );
-        void OnSetFocus( wxFocusEvent& event );
-        void OnFileOpen( wxCommandEvent& event );
-        void OnFileSave( wxCommandEvent& event );
-        void OnCommand( wxCommandEvent& event );
-        void OnRotate( wxCommandEvent& event );
-        void OnShowOptions( wxCommandEvent& event );
-        void OnShowTOC( wxCommandEvent& event );
-        void OnShowHistory( wxCommandEvent& event );
-        void OnUpdateUI( wxUpdateUIEvent& event );
-        void OnClose( wxCloseEvent& event );
-        void OnMouseWheel( wxMouseEvent& event);
-        void OnSize( wxSizeEvent& event);
-        void OnInitDialog( wxInitDialogEvent& event);
-
-        CRPropRef getProps() { return _props; }
-        void SaveOptions();
-        void RestoreOptions();
-        void SetMenu( bool visible );
-
-        wxBitmap getIcon16x16( const lChar16 * name );
-	protected:
-    	cr3scroll * _scrollBar;
-		cr3view * _view;
-        wxBoxSizer * _sizer;
         lString16 _appDir;
         CRPropRef _props;
 	private:
