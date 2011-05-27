@@ -46,6 +46,183 @@ void LoadStylesheet(lString8 &css)
 	wxRemoveFile(tempfile);
 }
 
+#if (USE_FREETYPE==1)
+bool getDirectoryFonts( lString16Collection & pathList, lString16Collection & ext, lString16Collection & fonts, bool absPath )
+{
+    int foundCount = 0;
+    lString16 path;
+    for ( unsigned di=0; di<pathList.length();di++ ) {
+        path = pathList[di];
+        LVContainerRef dir = LVOpenDirectory(path.c_str());
+        if ( !dir.isNull() ) {
+            CRLog::trace("Checking directory %s", UnicodeToUtf8(path).c_str() );
+            for ( int i=0; i < dir->GetObjectCount(); i++ ) {
+                const LVContainerItemInfo * item = dir->GetObjectInfo(i);
+                lString16 fileName = item->GetName();
+                lString8 fn = UnicodeToLocal(fileName);
+                    //printf(" test(%s) ", fn.c_str() );
+                if ( !item->IsContainer() ) {
+                    bool found = false;
+                    lString16 lc = fileName;
+                    lc.lowercase();
+                    for ( unsigned j=0; j<ext.length(); j++ ) {
+                        if ( lc.endsWith(ext[j]) ) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if ( !found )
+                        continue;
+                    lString16 fn;
+                    if ( absPath ) {
+                        fn = path;
+                        if ( !fn.empty() && fn[fn.length()-1]!=PATH_SEPARATOR_CHAR)
+                            fn << PATH_SEPARATOR_CHAR;
+                    }
+                    fn << fileName;
+                    foundCount++;
+                    fonts.add( fn );
+                }
+            }
+        }
+    }
+    return foundCount > 0;
+}
+#endif
+
+bool InitCREngine( const char * exename, lString16Collection & fontDirs )
+{
+	fontDirs.add( lString16(L"/usr/share/fonts/truetype") );
+	fontDirs.add( lString16(L"/usr/share/fonts/truetype/liberation") );
+	fontDirs.add( lString16(L"/usr/share/fonts/truetype/freefont") );
+	fontDirs.add( lString16(L"/usr/share/fonts/truetype/msttcorefonts") );
+
+	CRLog::trace("InitCREngine(%s)", exename);
+#ifdef _WIN32
+    lString16 appname( exename );
+    int lastSlash=-1;
+    lChar16 slashChar = '/';
+    for ( int p=0; p<(int)appname.length(); p++ ) {
+        if ( appname[p]=='\\' ) {
+            slashChar = '\\';
+            lastSlash = p;
+        } else if ( appname[p]=='/' ) {
+            slashChar = '/';
+            lastSlash=p;
+        }
+    }
+
+    lString16 appPath;
+    if ( lastSlash>=0 )
+        appPath = appname.substr( 0, lastSlash+1 );
+	InitCREngineLog(UnicodeToUtf8(appPath).c_str());
+    lString16 datadir = appPath;
+#endif
+
+    InitFontManager( lString8() );
+
+#ifdef _WIN32
+    lChar16 sysdir[MAX_PATH+1];
+    GetWindowsDirectoryW(sysdir, MAX_PATH);
+    lString16 fontdir( sysdir );
+    fontdir << L"\\Fonts\\";
+    lString8 fontdir8( UnicodeToUtf8(fontdir) );
+    const char * fontnames[] = {
+        "arial.ttf",
+        "ariali.ttf",
+        "arialb.ttf",
+        "arialbi.ttf",
+        "arialn.ttf",
+        "arialni.ttf",
+        "arialnb.ttf",
+        "arialnbi.ttf",
+        "cour.ttf",
+        "couri.ttf",
+        "courbd.ttf",
+        "courbi.ttf",
+        "times.ttf",
+        "timesi.ttf",
+        "timesb.ttf",
+        "timesbi.ttf",
+        "comic.ttf",
+        "comicbd.ttf",
+        "verdana.ttf",
+        "verdanai.ttf",
+        "verdanab.ttf",
+        "verdanaz.ttf",
+        "bookos.ttf",
+        "bookosi.ttf",
+        "bookosb.ttf",
+        "bookosbi.ttf",
+       "calibri.ttf",
+        "calibrii.ttf",
+        "calibrib.ttf",
+        "calibriz.ttf",
+        "cambria.ttf",
+        "cambriai.ttf",
+        "cambriab.ttf",
+        "cambriaz.ttf",
+        "georgia.ttf",
+        "georgiai.ttf",
+        "georgiab.ttf",
+        "georgiaz.ttf",
+        NULL
+    };
+    for ( int fi = 0; fontnames[fi]; fi++ ) {
+        fontMan->RegisterFont( fontdir8 + fontnames[fi] );
+    }
+#endif
+    // Load font definitions into font manager
+    // fonts are in files font1.lbf, font2.lbf, ... font32.lbf
+    // use fontconfig
+
+    lString16Collection fontExt;
+    fontExt.add(lString16(L".ttf"));
+    fontExt.add(lString16(L".otf"));
+    fontExt.add(lString16(L".pfa"));
+    fontExt.add(lString16(L".pfb"));
+    lString16Collection fonts;
+
+    getDirectoryFonts( fontDirs, fontExt, fonts, true );
+
+    // load fonts from file
+    CRLog::debug("%d font files found", fonts.length());
+    //if (!fontMan->GetFontCount()) {
+	for ( unsigned fi=0; fi<fonts.length(); fi++ ) {
+	    lString8 fn = UnicodeToLocal(fonts[fi]);
+	    CRLog::trace("loading font: %s", fn.c_str());
+	    if ( !fontMan->RegisterFont(fn) ) {
+		CRLog::trace("    failed\n");
+	    }
+	}
+    //}
+
+    // init hyphenation manager
+    //char hyphfn[1024];
+    //sprintf(hyphfn, "Russian_EnUS_hyphen_(Alan).pdb" );
+    //if ( !initHyph( (UnicodeToLocal(appPath) + hyphfn).c_str() ) ) {
+#ifdef _LINUX
+    //    initHyph( "/usr/share/crengine/hyph/Russian_EnUS_hyphen_(Alan).pdb" );
+#endif
+    //}
+
+    if (!fontMan->GetFontCount())
+    {
+        //error
+#if (USE_FREETYPE==1)
+        printf("Fatal Error: Cannot open font file(s) .ttf \nCannot work without font\n" );
+#else
+        printf("Fatal Error: Cannot open font file(s) font#.lbf \nCannot work without font\nUse FontConv utility to generate .lbf fonts from TTF\n" );
+#endif
+        return false;
+    }
+
+    printf("%d fonts loaded.\n", fontMan->GetFontCount());
+
+    return true;
+
+}
+
 FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, bool select)
 	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
     , _renderTimer( this, RENDER_TIMER_ID )
@@ -58,7 +235,8 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, boo
 	, _screen(300,400)
 	, _wm(&_screen)
 {
-	InitFontManager( lString8() );
+    lString16Collection fontDirs;
+    InitCREngine( wxStandardPaths().GetExecutablePath().mb_str(), fontDirs );
 
     _wm.activateWindow( (_docwin = new CRDocViewWindow(&_wm)) );
 
