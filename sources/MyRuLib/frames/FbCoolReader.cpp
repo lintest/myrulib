@@ -92,6 +92,9 @@ bool getDirectoryFonts( lString16Collection & pathList, lString16Collection & ex
 
 bool InitCREngine( const char * exename, lString16Collection & fontDirs )
 {
+
+    if ( fontMan ) return false;
+
 	fontDirs.add( lString16(L"/usr/share/fonts/truetype") );
 	fontDirs.add( lString16(L"/usr/share/fonts/truetype/liberation") );
 	fontDirs.add( lString16(L"/usr/share/fonts/truetype/freefont") );
