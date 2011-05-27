@@ -35,21 +35,13 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_SCROLLWIN( FbCoolReader::OnScroll )
 END_EVENT_TABLE()
 
-lString16 FbCoolReader::GetLastRecentFileName()
-{
-    if ( getDocView() && getDocView()->getHistory()->getRecords().length()>0 )
-        return getDocView()->getHistory()->getRecords()[0]->getFilePathName();
-    return lString16();
-}
-
 #include "../res/fb2_css.h"
 
 void LoadStylesheet(lString8 &css)
 {
 	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 	wxFileOutputStream out(tempfile);
-	out.Write(fb2_css, sizeof(fb2_css));
-	out.Close();
+	out.Write(fb2_css, sizeof(fb2_css)).Close();
 	LVLoadStylesheetFile(tempfile.c_str(), css);
 	wxRemoveFile(tempfile);
 }
@@ -333,38 +325,6 @@ void FbCoolReader::Paint()
     Refresh( FALSE );
 }
 
-static lChar16 detectSlash( lString16 path )
-{
-    for ( unsigned i=0; i<path.length(); i++ )
-        if ( path[i]=='\\' || path[i]=='/' )
-            return path[i];
-#ifdef _WIN32
-    return '\\';
-#else
-    return '/';
-#endif
-}
-
-lString16 FbCoolReader::GetHistoryFileName()
-{
-    lString16 cfgdir( wxStandardPaths::Get().GetUserDataDir().c_str() );
-    if ( !wxDirExists( cfgdir.c_str() ) )
-        ::wxMkdir( wxString( cfgdir.c_str() ) );
-    lChar16 slash = detectSlash( cfgdir );
-    cfgdir << slash;
-    return cfgdir + L"cr3hist.bmk";
-}
-
-void FbCoolReader::CloseDocument()
-{
-    //printf("FbCoolReader::CloseDocument()  \n");
-    getDocView()->savePosition();
-    getDocView()->Clear();
-    LVStreamRef stream = LVOpenFileStream( GetHistoryFileName().c_str(), LVOM_WRITE );
-    if ( !stream.isNull() )
-        getDocView()->getHistory()->saveToStream( stream.get() );
-}
-
 void FbCoolReader::UpdateScrollBar()
 {
     if ( !getDocView()->IsRendered() ) return;
@@ -594,10 +554,11 @@ void FbCoolReader::OnKeyDown(wxKeyEvent& event)
 
 bool FbCoolReader::LoadDocument( const wxString & fname )
 {
-    //printf("FbCoolReader::LoadDocument()\n");
     _renderTimer.Stop();
     _clockTimer.Stop();
-    CloseDocument();
+
+    getDocView()->savePosition();
+    getDocView()->Clear();
 
 	wxCursor hg( wxCURSOR_WAIT );
 	this->SetCursor( hg );

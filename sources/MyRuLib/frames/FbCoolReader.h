@@ -77,7 +77,6 @@ class FbCoolReader
 	public:
         void ScheduleRender() { Resize(0, 0); }
         bool LoadDocument( const wxString & fname );
-        void CloseDocument();
         void UpdateScrollBar();
         LVDocView * getDocView() { return _docwin->getDocView(); }
         void doCommand( LVDocCmd cmd, int param );
@@ -95,9 +94,6 @@ class FbCoolReader
         void OnTimer(wxTimerEvent& event);
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
         void ToggleViewMode();
-        lString16 GetHistoryFileName();
-        lString16 GetLastRecentFileName();
-        // LVDocViewCallback override
         virtual void OnExternalLink( lString16 url, ldomNode * node );
     protected:
 		void SetHeaderIcons();
