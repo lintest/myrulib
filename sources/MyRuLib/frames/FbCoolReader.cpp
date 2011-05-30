@@ -88,7 +88,6 @@ bool getDirectoryFonts( lString16Collection & pathList, lString16Collection & ex
     }
     return foundCount > 0;
 }
-#endif
 
 bool InitCREngine( const char * exename, lString16Collection & fontDirs )
 {
@@ -118,7 +117,6 @@ bool InitCREngine( const char * exename, lString16Collection & fontDirs )
     lString16 appPath;
     if ( lastSlash>=0 )
         appPath = appname.substr( 0, lastSlash+1 );
-	InitCREngineLog(UnicodeToUtf8(appPath).c_str());
     lString16 datadir = appPath;
 #endif
 
@@ -211,12 +209,7 @@ bool InitCREngine( const char * exename, lString16Collection & fontDirs )
 
     if (!fontMan->GetFontCount())
     {
-        //error
-#if (USE_FREETYPE==1)
         printf("Fatal Error: Cannot open font file(s) .ttf \nCannot work without font\n" );
-#else
-        printf("Fatal Error: Cannot open font file(s) font#.lbf \nCannot work without font\nUse FontConv utility to generate .lbf fonts from TTF\n" );
-#endif
         return false;
     }
 
@@ -225,6 +218,12 @@ bool InitCREngine( const char * exename, lString16Collection & fontDirs )
     return true;
 
 }
+#else
+bool InitCREngine( const char * exename, lString16Collection & fontDirs )
+{
+    return InitFontManager( lString8() );
+}
+#endif
 
 FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, bool select)
 	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
