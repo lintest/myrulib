@@ -170,6 +170,8 @@ FbExportTreeContext::FbExportTreeContext()
 	m_translit_file = FbParams::GetInt(FB_TRANSLIT_FILE);
 	m_template = FbParams::GetStr(FB_FOLDER_FORMAT);
 	m_underscores = FbParams::GetInt(FB_USE_UNDERSCORE);
+	m_digits_count = FbParams::GetInt(FB_NUMBER_FORMAT);
+	if (m_digits_count < 1) m_digits_count = 1;
 
 	if (m_template.IsEmpty()) m_template = FbParams::DefaultStr(FB_FOLDER_FORMAT);
 }
@@ -275,8 +277,10 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 					text = Get(result, wxT("sequence"));
 				} break;
 				case wxT('n'): {
+					wxString format = wxT("%0");
+					format << m_digits_count << wxT('d');
 					int number = result.GetInt(wxT("number"));
-					if (number) text << number;
+					if (number) text << wxString::Format(format, number);
 				} break;
 				case wxT('i'): {
 					int id = result.GetInt(wxT("id"));

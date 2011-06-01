@@ -47,6 +47,7 @@ int FbParams::DefaultInt(int param)
 			case FB_WEB_ATTEMPT: return 10;
 			case FB_IMAGE_WIDTH: return 200;
 			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
+			case FB_NUMBER_FORMAT: return 3;
 			default: return 0;
 		}
 	else {

@@ -53,6 +53,7 @@ class FbExportTreeContext
 		bool m_translit_folder;
 		bool m_translit_file;
 		bool m_underscores;
+		int m_digits_count;
 		wxString m_template;
 };
 

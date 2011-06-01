@@ -113,25 +113,25 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticText * m_staticText1 = new wxStaticText( this, wxID_ANY, _("Library name:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText1 = new wxStaticText( this, wxID_ANY, _("Library name:"));
 	m_staticText1->Wrap( -1 );
 	bSizerMain->Add( m_staticText1, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	wxTextCtrl * m_textCtrl1 = new wxTextCtrl( this, ID_LIBRARY_TITLE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	wxTextCtrl * m_textCtrl1 = new wxTextCtrl( this, ID_LIBRARY_TITLE);
 	m_textCtrl1->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizerMain->Add( m_textCtrl1, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxALL, 5 );
 
-	wxStaticText * m_staticText2 = new wxStaticText( this, wxID_ANY, _("Library folder:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText2 = new wxStaticText( this, wxID_ANY, _("Library folder:"));
 	m_staticText2->Wrap( -1 );
 	bSizerMain->Add( m_staticText2, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	FbCustomCombo * m_comboDir = new FbCustomCombo( this, ID_LIBRARY_DIR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	FbCustomCombo * m_comboDir = new FbCustomCombo( this, ID_LIBRARY_DIR);
 	m_comboDir->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizerMain->Add( m_comboDir, 0, wxEXPAND|wxALL, 5 );
 
-	wxStaticText * m_staticText4 = new wxStaticText( this, wxID_ANY, _("Short description:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticText4 = new wxStaticText( this, wxID_ANY, _("Short description:"));
 	m_staticText4->Wrap( -1 );
 	bSizerMain->Add( m_staticText4, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
@@ -152,7 +152,7 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	fgSizerMain->SetFlexibleDirection( wxBOTH );
 	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxStaticText * text1 = new wxStaticText( this, wxID_ANY, _("Host name:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( this, wxID_ANY, _("Host name:"));
 	text1->Wrap( -1 );
 	fgSizerMain->Add( text1, 0, wxALL, 5 );
 
@@ -162,7 +162,7 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	comboHost->Append( wxT("lib.ololo.cc") );
 	fgSizerMain->Add( comboHost, 0, wxALL|wxEXPAND, 5 );
 
-	wxStaticText * text4 = new wxStaticText( this, wxID_ANY, _("Address:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text4 = new wxStaticText( this, wxID_ANY, _("Address:"));
 	text4->Wrap( -1 );
 	fgSizerMain->Add( text4, 0, wxALL, 5 );
 
@@ -171,14 +171,14 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	comboAddr->Append( wxT("http://%h/get?nametype=orig&md5=&m") );
 	fgSizerMain->Add( comboAddr, 0, wxALL|wxEXPAND, 5 );
 
-	wxStaticText * text2 = new wxStaticText( this, wxID_ANY, _("User name:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text2 = new wxStaticText( this, wxID_ANY, _("User name:"));
 	text2->Wrap( -1 );
 	fgSizerMain->Add( text2, 0, wxALL, 5 );
 
-	wxTextCtrl * editUser = new wxTextCtrl( this, ID_DOWNLOAD_USER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	wxTextCtrl * editUser = new wxTextCtrl( this, ID_DOWNLOAD_USER);
 	fgSizerMain->Add( editUser, 0, wxALL|wxEXPAND, 5 );
 
-	wxStaticText * text3 = new wxStaticText( this, wxID_ANY, _("Password:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text3 = new wxStaticText( this, wxID_ANY, _("Password:"));
 	text3->Wrap( -1 );
 	fgSizerMain->Add( text3, 0, wxALL, 5 );
 

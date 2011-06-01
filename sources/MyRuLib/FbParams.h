@@ -104,6 +104,7 @@ enum FbParamKey {
 
 	FB_GRAY_FONT     = 211,
 	FB_CLEAR_LOG     = 212,
+	FB_NUMBER_FORMAT = 213,
 
 	FB_TITLE_0 = 220,
 	FB_TITLE_1 = 221,

@@ -31,11 +31,11 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	wxBoxSizer* bSizerDir;
 	bSizerDir = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * m_staticTextDir = new wxStaticText( this, wxID_ANY, _("Destination folder:"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticTextDir = new wxStaticText( this, wxID_ANY, _("Destination folder:"));
 	m_staticTextDir->Wrap( -1 );
 	bSizerDir->Add( m_staticTextDir, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_textDir = new wxTextCtrl( this, ID_DIR_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textDir = new wxTextCtrl( this, ID_DIR_TXT);
 	m_textDir->SetMinSize( wxSize( 300,-1 ) );
 
 	bSizerDir->Add( m_textDir, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
@@ -46,7 +46,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 
 	if (iAuthor) {
-		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Use Author (without co-Authors)"), wxDefaultPosition, wxDefaultSize, 0 );
+		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Use Author (without co-Authors)"));
 		bSizerMain->Add( m_checkAuthor, 0, wxALL, 5 );
 		m_checkAuthor->SetValue(1);
 	}
@@ -62,7 +62,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	wxBoxSizer* bSizerFormat;
 	bSizerFormat = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * m_staticTextFormat = new wxStaticText( this, wxID_ANY, _("Export As..."), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_staticTextFormat = new wxStaticText( this, wxID_ANY, _("Export As..."));
 	m_staticTextFormat->Wrap( -1 );
 	bSizerFormat->Add( m_staticTextFormat, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
