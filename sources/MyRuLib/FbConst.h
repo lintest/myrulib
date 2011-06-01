@@ -6,6 +6,8 @@
 #define fbLIST_CACHE_SIZE   64
 #define fbLIST_ARRAY_SIZE 1024
 
+#define fbCOLLATE_CYR wxString(wxT(" COLLATE CYR"))
+
 enum {
 	// Controls
 	ID_MYRULIB = wxID_HIGHEST + 1,

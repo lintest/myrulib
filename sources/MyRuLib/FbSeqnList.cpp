@@ -96,7 +96,7 @@ wxString FbSeqnListThread::GetJoin()
 
 wxString FbSeqnListThread::GetOrder()
 {
-	return FbFrameThread::GetOrder(m_order, wxT("value COLLATE CYR"));
+	return FbFrameThread::GetOrder(m_order, wxT("value") + fbCOLLATE_CYR);
 }
 
 //-----------------------------------------------------------------------------

@@ -106,7 +106,7 @@ wxString FbAuthListThread::GetJoin()
 
 wxString FbAuthListThread::GetOrder()
 {
-	return FbFrameThread::GetOrder(m_order, wxT("full_name COLLATE CYR"));
+	return FbFrameThread::GetOrder(m_order, wxT("full_name") + fbCOLLATE_CYR);
 }
 
 //-----------------------------------------------------------------------------
