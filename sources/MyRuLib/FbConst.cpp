@@ -7,7 +7,11 @@
 
 wxString MyRuLib::ProgramName()
 {
-	return (wxString)TXT(PROGRAM_NAME) + wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR);
+	return (wxString)TXT(PROGRAM_NAME)
+#ifdef FB_INCLUDE_READER
+		+ wxT("CR")
+#endif
+		+ wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR);
 }
 
 wxString MyRuLib::ProgramInfo()
