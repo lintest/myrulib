@@ -657,14 +657,14 @@ AROPTIONS
 AR
 MAKE_SET
 SET_MAKE
+FT2_LIBS
+FT2_CFLAGS
+FT2_CONFIG
 SQLITE_LIBS
 SQLITE_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
-FT2_LIBS
-FT2_CFLAGS
-FT2_CONFIG
 EGREP
 GREP
 CPP
@@ -760,11 +760,11 @@ with_expat
 with_sqlite
 with_reader
 with_syslog
+with_locale
+with_strip
 with_ft_prefix
 with_ft_exec_prefix
 enable_freetypetest
-with_locale
-with_strip
 enable_omf
 enable_dependency_tracking
 '
@@ -1422,11 +1422,11 @@ Optional Packages:
   --with-sqlite           Use builtin SQLite3 library
   --with-reader           Use Cool Reader Engine
   --with-syslog           Use system logger: syslog
+  --with-locale           Include locale files into executable
+  --with-strip            Discard debug symbols from the executable file.
        --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
        --with-ft-exec-prefix=PREFIX
                           Exec prefix where FreeType is installed (optional)
-  --with-locale           Include locale files into executable
-  --with-strip            Discard debug symbols from the executable file.
 
 Some influential environment variables:
   CC          C compiler command
@@ -4655,258 +4655,6 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SYSLOG" >&5
 $as_echo "$USE_SYSLOG" >&6; }
 
-if test "x$USE_READER" == "xyes" ; then
-  # Get the cflags and libraries from the freetype-config script
-   #
-
-# Check whether --with-ft-prefix was given.
-if test "${with_ft_prefix+set}" = set; then :
-  withval=$with_ft_prefix; ft_config_prefix="$withval"
-else
-  ft_config_prefix=""
-fi
-
-
-
-# Check whether --with-ft-exec-prefix was given.
-if test "${with_ft_exec_prefix+set}" = set; then :
-  withval=$with_ft_exec_prefix; ft_config_exec_prefix="$withval"
-else
-  ft_config_exec_prefix=""
-fi
-
-
-   # Check whether --enable-freetypetest was given.
-if test "${enable_freetypetest+set}" = set; then :
-  enableval=$enable_freetypetest;
-else
-  enable_fttest=yes
-fi
-
-
-   if test x$ft_config_exec_prefix != x ; then
-     ft_config_args="$ft_config_args --exec-prefix=$ft_config_exec_prefix"
-     if test x${FT2_CONFIG+set} != xset ; then
-       FT2_CONFIG=$ft_config_exec_prefix/bin/freetype-config
-     fi
-   fi
-
-   if test x$ft_config_prefix != x ; then
-     ft_config_args="$ft_config_args --prefix=$ft_config_prefix"
-     if test x${FT2_CONFIG+set} != xset ; then
-       FT2_CONFIG=$ft_config_prefix/bin/freetype-config
-     fi
-   fi
-
-   if test "x$FT2_CONFIG" = x ; then
-     # Extract the first word of "freetype-config", so it can be a program name with args.
-set dummy freetype-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_path_FT2_CONFIG+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $FT2_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_FT2_CONFIG="$FT2_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_FT2_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_FT2_CONFIG" && ac_cv_path_FT2_CONFIG="no"
-  ;;
-esac
-fi
-FT2_CONFIG=$ac_cv_path_FT2_CONFIG
-if test -n "$FT2_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $FT2_CONFIG" >&5
-$as_echo "$FT2_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-   fi
-
-   min_ft_version=2.3.0
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType -- version >= $min_ft_version" >&5
-$as_echo_n "checking for FreeType -- version >= $min_ft_version... " >&6; }
-   no_ft=""
-   if test "$FT2_CONFIG" = "no" ; then
-     no_ft=yes
-   else
-     FT2_CFLAGS=`$FT2_CONFIG $ft_config_args --cflags`
-     FT2_LIBS=`$FT2_CONFIG $ft_config_args --libs`
-     ft_config_major_version=`$FT2_CONFIG $ft_config_args --version | \
-       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
-     ft_config_minor_version=`$FT2_CONFIG $ft_config_args --version | \
-       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
-     ft_config_micro_version=`$FT2_CONFIG $ft_config_args --version | \
-       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
-     ft_min_major_version=`echo $min_ft_version | \
-       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
-     ft_min_minor_version=`echo $min_ft_version | \
-       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
-     ft_min_micro_version=`echo $min_ft_version | \
-       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
-     if test x$enable_fttest = xyes ; then
-       ft_config_is_lt=""
-       if test $ft_config_major_version -lt $ft_min_major_version ; then
-         ft_config_is_lt=yes
-       else
-         if test $ft_config_major_version -eq $ft_min_major_version ; then
-           if test $ft_config_minor_version -lt $ft_min_minor_version ; then
-             ft_config_is_lt=yes
-           else
-             if test $ft_config_minor_version -eq $ft_min_minor_version ; then
-               if test $ft_config_micro_version -lt $ft_min_micro_version ; then
-                 ft_config_is_lt=yes
-               fi
-             fi
-           fi
-         fi
-       fi
-       if test x$ft_config_is_lt = xyes ; then
-         no_ft=yes
-       else
-         ac_save_CFLAGS="$CFLAGS"
-         ac_save_LIBS="$LIBS"
-         CFLAGS="$CFLAGS $FT2_CFLAGS"
-         LIBS="$FT2_LIBS $LIBS"
-
-         #
-         # Sanity checks for the results of freetype-config to some extent.
-         #
-         if test "$cross_compiling" = yes; then :
-  echo $ECHO_N "cross compiling; assuming OK... $ECHO_C"
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include <stdio.h>
-#include <stdlib.h>
-
-int
-main()
-{
-  FT_Library library;
-  FT_Error  error;
-
-  error = FT_Init_FreeType(&library);
-
-  if (error)
-    return 1;
-  else
-  {
-    FT_Done_FreeType(library);
-    return 0;
-  }
-}
-
-
-
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-
-else
-  no_ft=yes
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-
-         CFLAGS="$ac_save_CFLAGS"
-         LIBS="$ac_save_LIBS"
-       fi             # test $ft_config_version -lt $ft_min_version
-     fi               # test x$enable_fttest = xyes
-   fi                 # test "$FT2_CONFIG" = "no"
-
-   if test x$no_ft = x ; then
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-     FOUND_FT2="yes"
-   else
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-     if test "$FT2_CONFIG" = "no" ; then
-       { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
-
-  The freetype-config script installed by FreeType 2 could not be found.
-  If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in
-  your path, or set the FT2_CONFIG environment variable to the
-  full path to freetype-config.
-       " >&5
-$as_echo "$as_me: WARNING:
-
-  The freetype-config script installed by FreeType 2 could not be found.
-  If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in
-  your path, or set the FT2_CONFIG environment variable to the
-  full path to freetype-config.
-       " >&2;}
-     else
-       if test x$ft_config_is_lt = xyes ; then
-         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
-
-  Your installed version of the FreeType 2 library is too old.
-  If you have different versions of FreeType 2, make sure that
-  correct values for --with-ft-prefix or --with-ft-exec-prefix
-  are used, or set the FT2_CONFIG environment variable to the
-  full path to freetype-config.
-         " >&5
-$as_echo "$as_me: WARNING:
-
-  Your installed version of the FreeType 2 library is too old.
-  If you have different versions of FreeType 2, make sure that
-  correct values for --with-ft-prefix or --with-ft-exec-prefix
-  are used, or set the FT2_CONFIG environment variable to the
-  full path to freetype-config.
-         " >&2;}
-       else
-         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
-
-  The FreeType test program failed to run.  If your system uses
-  shared libraries and they are installed outside the normal
-  system library path, make sure the variable LD_LIBRARY_PATH
-  (or whatever is appropriate for your system) is correctly set.
-         " >&5
-$as_echo "$as_me: WARNING:
-
-  The FreeType test program failed to run.  If your system uses
-  shared libraries and they are installed outside the normal
-  system library path, make sure the variable LD_LIBRARY_PATH
-  (or whatever is appropriate for your system) is correctly set.
-         " >&2;}
-       fi
-     fi
-
-     FT2_CFLAGS=""
-     FT2_LIBS=""
-     :
-   fi
-
-
-
-fi
-
 if test "x$USE_SQLITE" == "xyes" ; then
     USE_SQLITE="builtin"
 fi
@@ -5172,6 +4920,258 @@ fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_STRIP" >&5
 $as_echo "$USE_STRIP" >&6; }
+
+if test "x$USE_READER" == "xyes" ; then
+  # Get the cflags and libraries from the freetype-config script
+   #
+
+# Check whether --with-ft-prefix was given.
+if test "${with_ft_prefix+set}" = set; then :
+  withval=$with_ft_prefix; ft_config_prefix="$withval"
+else
+  ft_config_prefix=""
+fi
+
+
+
+# Check whether --with-ft-exec-prefix was given.
+if test "${with_ft_exec_prefix+set}" = set; then :
+  withval=$with_ft_exec_prefix; ft_config_exec_prefix="$withval"
+else
+  ft_config_exec_prefix=""
+fi
+
+
+   # Check whether --enable-freetypetest was given.
+if test "${enable_freetypetest+set}" = set; then :
+  enableval=$enable_freetypetest;
+else
+  enable_fttest=yes
+fi
+
+
+   if test x$ft_config_exec_prefix != x ; then
+     ft_config_args="$ft_config_args --exec-prefix=$ft_config_exec_prefix"
+     if test x${FT2_CONFIG+set} != xset ; then
+       FT2_CONFIG=$ft_config_exec_prefix/bin/freetype-config
+     fi
+   fi
+
+   if test x$ft_config_prefix != x ; then
+     ft_config_args="$ft_config_args --prefix=$ft_config_prefix"
+     if test x${FT2_CONFIG+set} != xset ; then
+       FT2_CONFIG=$ft_config_prefix/bin/freetype-config
+     fi
+   fi
+
+   if test "x$FT2_CONFIG" = x ; then
+     # Extract the first word of "freetype-config", so it can be a program name with args.
+set dummy freetype-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_FT2_CONFIG+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $FT2_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_FT2_CONFIG="$FT2_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_FT2_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_FT2_CONFIG" && ac_cv_path_FT2_CONFIG="no"
+  ;;
+esac
+fi
+FT2_CONFIG=$ac_cv_path_FT2_CONFIG
+if test -n "$FT2_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $FT2_CONFIG" >&5
+$as_echo "$FT2_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+   fi
+
+   min_ft_version=2.3.0
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType -- version >= $min_ft_version" >&5
+$as_echo_n "checking for FreeType -- version >= $min_ft_version... " >&6; }
+   no_ft=""
+   if test "$FT2_CONFIG" = "no" ; then
+     no_ft=yes
+   else
+     FT2_CFLAGS=`$FT2_CONFIG $ft_config_args --cflags`
+     FT2_LIBS=`$FT2_CONFIG $ft_config_args --libs`
+     ft_config_major_version=`$FT2_CONFIG $ft_config_args --version | \
+       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
+     ft_config_minor_version=`$FT2_CONFIG $ft_config_args --version | \
+       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
+     ft_config_micro_version=`$FT2_CONFIG $ft_config_args --version | \
+       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
+     ft_min_major_version=`echo $min_ft_version | \
+       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
+     ft_min_minor_version=`echo $min_ft_version | \
+       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
+     ft_min_micro_version=`echo $min_ft_version | \
+       sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
+     if test x$enable_fttest = xyes ; then
+       ft_config_is_lt=""
+       if test $ft_config_major_version -lt $ft_min_major_version ; then
+         ft_config_is_lt=yes
+       else
+         if test $ft_config_major_version -eq $ft_min_major_version ; then
+           if test $ft_config_minor_version -lt $ft_min_minor_version ; then
+             ft_config_is_lt=yes
+           else
+             if test $ft_config_minor_version -eq $ft_min_minor_version ; then
+               if test $ft_config_micro_version -lt $ft_min_micro_version ; then
+                 ft_config_is_lt=yes
+               fi
+             fi
+           fi
+         fi
+       fi
+       if test x$ft_config_is_lt = xyes ; then
+         no_ft=yes
+       else
+         ac_save_CFLAGS="$CFLAGS"
+         ac_save_LIBS="$LIBS"
+         CFLAGS="$CFLAGS $FT2_CFLAGS"
+         LIBS="$FT2_LIBS $LIBS"
+
+         #
+         # Sanity checks for the results of freetype-config to some extent.
+         #
+         if test "$cross_compiling" = yes; then :
+  echo $ECHO_N "cross compiling; assuming OK... $ECHO_C"
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <stdio.h>
+#include <stdlib.h>
+
+int
+main()
+{
+  FT_Library library;
+  FT_Error  error;
+
+  error = FT_Init_FreeType(&library);
+
+  if (error)
+    return 1;
+  else
+  {
+    FT_Done_FreeType(library);
+    return 0;
+  }
+}
+
+
+
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+
+else
+  no_ft=yes
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+
+         CFLAGS="$ac_save_CFLAGS"
+         LIBS="$ac_save_LIBS"
+       fi             # test $ft_config_version -lt $ft_min_version
+     fi               # test x$enable_fttest = xyes
+   fi                 # test "$FT2_CONFIG" = "no"
+
+   if test x$no_ft = x ; then
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     FOUND_FT2="yes"
+   else
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+     if test "$FT2_CONFIG" = "no" ; then
+       { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
+
+  The freetype-config script installed by FreeType 2 could not be found.
+  If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in
+  your path, or set the FT2_CONFIG environment variable to the
+  full path to freetype-config.
+       " >&5
+$as_echo "$as_me: WARNING:
+
+  The freetype-config script installed by FreeType 2 could not be found.
+  If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in
+  your path, or set the FT2_CONFIG environment variable to the
+  full path to freetype-config.
+       " >&2;}
+     else
+       if test x$ft_config_is_lt = xyes ; then
+         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
+
+  Your installed version of the FreeType 2 library is too old.
+  If you have different versions of FreeType 2, make sure that
+  correct values for --with-ft-prefix or --with-ft-exec-prefix
+  are used, or set the FT2_CONFIG environment variable to the
+  full path to freetype-config.
+         " >&5
+$as_echo "$as_me: WARNING:
+
+  Your installed version of the FreeType 2 library is too old.
+  If you have different versions of FreeType 2, make sure that
+  correct values for --with-ft-prefix or --with-ft-exec-prefix
+  are used, or set the FT2_CONFIG environment variable to the
+  full path to freetype-config.
+         " >&2;}
+       else
+         { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
+
+  The FreeType test program failed to run.  If your system uses
+  shared libraries and they are installed outside the normal
+  system library path, make sure the variable LD_LIBRARY_PATH
+  (or whatever is appropriate for your system) is correctly set.
+         " >&5
+$as_echo "$as_me: WARNING:
+
+  The FreeType test program failed to run.  If your system uses
+  shared libraries and they are installed outside the normal
+  system library path, make sure the variable LD_LIBRARY_PATH
+  (or whatever is appropriate for your system) is correctly set.
+         " >&2;}
+       fi
+     fi
+
+     FT2_CFLAGS=""
+     FT2_LIBS=""
+     :
+   fi
+
+
+
+fi
 
 
 
