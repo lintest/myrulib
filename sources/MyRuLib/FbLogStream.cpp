@@ -94,10 +94,19 @@ void FbLogSyslog::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
 
 #else // FB_SYSLOG_LOGGING
 
+#include "FbDatabase.h"
+
 wxCriticalSection FbLogStream::sm_queue;
 
-FbLogStream::FbLogStream(const wxString & filename)
-	: m_stream(filename), m_text(m_stream)
+static wxString GetLogFile()
+{
+	wxFileName logname = FbDatabase::GetConfigName();
+	logname.SetExt(wxT("log"));
+	return logname.GetFullPath();
+}
+
+FbLogStream::FbLogStream()
+	: m_stream(GetLogFile()), m_text(m_stream)
 {
 }
 

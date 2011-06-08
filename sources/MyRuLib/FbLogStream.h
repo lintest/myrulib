@@ -26,7 +26,7 @@ class FbLogSyslog: public wxLog
 class FbLogStream: public wxLog
 {
 	public:
-		FbLogStream(const wxString & filename);
+		FbLogStream();
 	protected:
 		virtual void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
 		virtual void DoLogString(const wxChar *szString, time_t t);

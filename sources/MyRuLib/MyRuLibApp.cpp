@@ -63,10 +63,17 @@ void MyRuLibApp::Localize()
 
 bool MyRuLibApp::OnInit()
 {
+	#ifdef FB_SYSLOG_LOGGING
+	wxLog::SetActiveTarget(new FbLogSyslog);
+	#endif // FB_SYSLOG_LOGGING
+
 	FbCollection::LoadConfig();
 	Localize();
 
-	OpenLog();
+	#ifndef FB_SYSLOG_LOGGING
+	wxLog::SetActiveTarget(new FbLogStream);
+	#endif // FB_SYSLOG_LOGGING
+
 	#ifdef __WXDEBUG__
 	wxLog::SetVerbose(true);
 	#endif // __WXDEBUG__
@@ -140,18 +147,6 @@ int MyRuLibApp::OnExit()
 	wxDELETE(m_locale);
 	wxDELETE(m_collection);
 	return wxApp::OnExit();
-}
-
-void MyRuLibApp::OpenLog()
-{
-#ifdef FB_SYSLOG_LOGGING
-	wxLog * logger = new FbLogSyslog;
-#else
-	wxFileName logname = FbDatabase::GetConfigName();
-	logname.SetExt(wxT("log"));
-	wxLog * logger = new FbLogStream(logname.GetFullPath());
-#endif // FB_SYSLOG_LOGGING
-	wxLog::SetActiveTarget(logger);
 }
 
 bool MyRuLibApp::OpenDatabase(const wxString &filename)

@@ -33,7 +33,6 @@ class MyRuLibApp : public wxApp
 		virtual bool OnExceptionInMainLoop() { return false; }
 	private:
 		void SetLibFile(const wxString & filename);
-		void OpenLog();
 		wxFileName GetDatabaseFile();
 		void SetAppData(const wxString &filename);
 		void LoadBlankImage();
