@@ -2,6 +2,98 @@
 #include "MyRuLibApp.h"
 #include "FbConst.h"
 
+#ifdef FB_SYSLOG_LOGGING
+
+#include "../version.inc"
+
+extern "C" {
+#include <syslog.h>
+}
+
+FbLogSyslog::FbLogSyslog()
+{
+	openlog(wxSTRINGIZE(PROGRAM_NAME), LOG_PID, LOG_USER);
+}
+
+FbLogSyslog::~FbLogSyslog()
+{
+	closelog();
+}
+
+void FbLogSyslog::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
+{
+	wxWindow * frame = wxGetApp().GetTopWindow();
+	if (!frame) return;
+
+	wxString prefix;
+	switch ( level ) {
+		case wxLOG_Error:
+			prefix = wxT("E> ");
+			break;
+		case wxLOG_Warning:
+			prefix = wxT("!> ");
+			break;
+		case wxLOG_Info:
+			prefix = wxT("i> ");
+			break;
+		default:
+			prefix = wxEmptyString;
+			break;
+	}
+
+	wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_ERROR );
+	event.SetInt(level);
+	event.SetTimestamp(t);
+	event.SetString(prefix + szString);
+	wxPostEvent(frame, event);
+}
+
+void FbLogSyslog::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
+{
+	switch ( level ) {
+		case wxLOG_FatalError: {
+			wxString msg = wxString(_("Fatal error")) + COLON + szString;
+			syslog(LOG_EMERG, msg.mb_str());
+			Flush();
+			#ifdef __WXWINCE__
+			ExitThread(3);
+			#else
+			abort();
+			#endif
+			} break;
+
+		case wxLOG_Error:
+			syslog(LOG_ERR, wxString(szString).mb_str());
+			PostMsg(level, szString, t);
+			break;
+
+		case wxLOG_Warning:
+			syslog(LOG_WARNING, wxString(szString).mb_str());
+			PostMsg(level, szString, t);
+			break;
+
+		case wxLOG_Info:
+			syslog(LOG_INFO, wxString(szString).mb_str());
+			PostMsg(level, szString, t);
+			break;
+
+		case wxLOG_Trace:
+		case wxLOG_Debug:
+			#ifdef __WXDEBUG__
+			syslog(LOG_DEBUG, wxString(szString).mb_str());
+			#endif // Debug
+			break;
+
+		case wxLOG_Message:
+		case wxLOG_Status:
+		default:	// log unknown log levels too
+			syslog(LOG_NOTICE, wxString(szString).mb_str());
+			break;
+	}
+}
+
+#else // FB_SYSLOG_LOGGING
+
 wxCriticalSection FbLogStream::sm_queue;
 
 FbLogStream::FbLogStream(const wxString & filename)
@@ -84,11 +176,6 @@ void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
 			DoLogString(wxString(wxT("> ")) + szString, t);
 			break;
 
-		case wxLOG_Status:
-		default:	// log unknown log levels too
-				DoLogString(szString, t);
-			break;
-
 		case wxLOG_Trace:
 		case wxLOG_Debug:
 			#ifdef __WXDEBUG__
@@ -99,6 +186,13 @@ void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
 			}
 			#endif // Debug
 			break;
+
+		case wxLOG_Status:
+		default:	// log unknown log levels too
+				DoLogString(szString, t);
+			break;
+
 	}
 }
 
+#endif // FB_SYSLOG_LOGGING

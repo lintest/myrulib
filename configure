@@ -759,6 +759,7 @@ with_faxpp
 with_expat
 with_sqlite
 with_reader
+with_syslog
 with_ft_prefix
 with_ft_exec_prefix
 enable_freetypetest
@@ -1420,6 +1421,7 @@ Optional Packages:
   --with-expat            Use Expat XML parser library
   --with-sqlite           Use builtin SQLite3 library
   --with-reader           Use Cool Reader Engine
+  --with-syslog           Use system logger: syslog
        --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
        --with-ft-exec-prefix=PREFIX
                           Exec prefix where FreeType is installed (optional)
@@ -4639,6 +4641,19 @@ fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_READER" >&5
 $as_echo "$USE_READER" >&6; }
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-syslog" >&5
+$as_echo_n "checking for --with-syslog... " >&6; }
+
+# Check whether --with-syslog was given.
+if test "${with_syslog+set}" = set; then :
+  withval=$with_syslog; USE_SYSLOG="$withval"
+else
+  USE_SYSLOG="no"
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SYSLOG" >&5
+$as_echo "$USE_SYSLOG" >&6; }
 
 if test "x$USE_READER" == "xyes" ; then
   # Get the cflags and libraries from the freetype-config script
@@ -8714,6 +8729,11 @@ if test "x$USE_READER" = "xyes" ; then
 fi
 
 
+if test "x$USE_SYSLOG" = "xyes" ; then
+  CXXFLAGS="$CXXFLAGS -DFB_SYSLOG_LOGGING"
+fi
+
+
 if test "x$USE_LOCALE" = "xyes" ; then
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
 fi
@@ -10021,6 +10041,7 @@ echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
+echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
 echo "  Include locale files into executable?         ${USE_LOCALE}"
 echo "  Strip the executable file?                    ${USE_STRIP}"
 echo "  Link wxWidgets as a static library?           ${USE_WX_STATIC}"

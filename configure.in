@@ -73,6 +73,10 @@ AC_MSG_CHECKING([for --with-reader])
 AC_ARG_WITH([reader], [AS_HELP_STRING([--with-reader], [Use Cool Reader Engine])], USE_READER="$withval", USE_READER="no")
 AC_MSG_RESULT([$USE_READER])
 
+AC_MSG_CHECKING([for --with-syslog])
+AC_ARG_WITH([syslog], [AS_HELP_STRING([--with-syslog], [Use system logger: syslog])], USE_SYSLOG="$withval", USE_SYSLOG="no")
+AC_MSG_RESULT([$USE_SYSLOG])
+
 if test "x$USE_READER" == "xyes" ; then 
   AC_CHECK_FT2( 2.3.0 , FOUND_FT2="yes")
 fi
@@ -198,6 +202,14 @@ if test "x$USE_READER" = "xyes" ; then
 fi
 
 dnl ==================
+dnl === USE_SYSLOG ===
+dnl ==================
+
+if test "x$USE_SYSLOG" = "xyes" ; then 
+  CXXFLAGS="$CXXFLAGS -DFB_SYSLOG_LOGGING"
+fi
+
+dnl ==================
 dnl === USE_LOCALE ===
 dnl ==================
 
@@ -236,6 +248,7 @@ echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
+echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
 echo "  Include locale files into executable?         ${USE_LOCALE}"
 echo "  Strip the executable file?                    ${USE_STRIP}"
 echo "  Link wxWidgets as a static library?           ${USE_WX_STATIC}"
