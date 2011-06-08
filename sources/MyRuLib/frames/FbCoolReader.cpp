@@ -98,6 +98,8 @@ bool InitCREngine( const char * exename, lString16Collection & fontDirs )
 	fontDirs.add( lString16(L"/usr/share/fonts/truetype/liberation") );
 	fontDirs.add( lString16(L"/usr/share/fonts/truetype/freefont") );
 	fontDirs.add( lString16(L"/usr/share/fonts/truetype/msttcorefonts") );
+	fontDirs.add( lString16(L"~/.fonts") );
+	fontDirs.add( lString16(L"~/fonts") );
 
 	CRLog::trace("InitCREngine(%s)", exename);
 #ifdef _WIN32
