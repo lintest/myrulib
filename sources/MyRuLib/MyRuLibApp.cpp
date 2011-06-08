@@ -144,11 +144,11 @@ int MyRuLibApp::OnExit()
 
 void MyRuLibApp::OpenLog()
 {
-	wxFileName logname = FbDatabase::GetConfigName();
-	logname.SetExt(wxT("log"));
 #ifdef FB_SYSLOG_LOGGING
 	wxLog * logger = new FbLogSyslog;
 #else
+	wxFileName logname = FbDatabase::GetConfigName();
+	logname.SetExt(wxT("log"));
 	wxLog * logger = new FbLogStream(logname.GetFullPath());
 #endif // FB_SYSLOG_LOGGING
 	wxLog::SetActiveTarget(logger);
