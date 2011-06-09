@@ -89,6 +89,7 @@
 		<sources>3rdparty/crengine/src/lvtextfm.cpp</sources>
 		<sources>3rdparty/crengine/src/lvtinydom.cpp</sources>
 		<sources>3rdparty/crengine/src/lvxml.cpp</sources>
+		<sources>3rdparty/crengine/src/pdbfmt.cpp</sources>
 		<sources>3rdparty/crengine/src/props.cpp</sources>
 		<sources>3rdparty/crengine/src/rtfimp.cpp</sources>
 		<sources>3rdparty/crengine/src/s32utils.cpp</sources>

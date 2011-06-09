@@ -111,6 +111,7 @@ CRENGINE_STATIC_OBJECTS =  \
 	crengine_static_lvtextfm.o \
 	crengine_static_lvtinydom.o \
 	crengine_static_lvxml.o \
+	crengine_static_pdbfmt.o \
 	crengine_static_props.o \
 	crengine_static_rtfimp.o \
 	crengine_static_s32utils.o \
@@ -606,6 +607,9 @@ crengine_static_lvtinydom.o: $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
 
 crengine_static_lvxml.o: $(srcdir)/3rdparty/crengine/src/lvxml.cpp
 	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvxml.cpp
+
+crengine_static_pdbfmt.o: $(srcdir)/3rdparty/crengine/src/pdbfmt.cpp
+	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/pdbfmt.cpp
 
 crengine_static_props.o: $(srcdir)/3rdparty/crengine/src/props.cpp
 	$(CXXC) -c -o $@ $(CRENGINE_STATIC_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/props.cpp
