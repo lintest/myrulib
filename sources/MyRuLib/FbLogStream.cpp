@@ -2,6 +2,43 @@
 #include "MyRuLibApp.h"
 #include "FbConst.h"
 
+wxCriticalSection FbLog::sm_queue;
+
+wxArrayString FbLog::sm_lines;
+
+void FbLog::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
+{
+	wxString prefix;
+	switch ( level ) {
+		case wxLOG_Error:
+			prefix = wxT("E> ");
+			break;
+		case wxLOG_Warning:
+			prefix = wxT("!> ");
+			break;
+		case wxLOG_Info:
+			prefix = wxT("i> ");
+			break;
+		default:
+			prefix = wxEmptyString;
+			break;
+	}
+	wxCriticalSectionLocker enter(sm_queue);
+	sm_lines.Add(prefix + szString);
+}
+
+bool FbLog::Update(wxArrayString &lines)
+{
+	wxCriticalSectionLocker enter(sm_queue);
+	size_t count = sm_lines.Count();
+	for (size_t i = 0; i < count; i++) {
+		lines.Add(sm_lines[i]);
+	}
+	sm_lines.Empty();
+	return count;
+}
+
+
 #ifdef FB_SYSLOG_LOGGING
 
 #include "../version.inc"
@@ -18,34 +55,6 @@ FbLogSyslog::FbLogSyslog()
 FbLogSyslog::~FbLogSyslog()
 {
 	closelog();
-}
-
-void FbLogSyslog::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
-{
-	wxWindow * frame = wxGetApp().GetTopWindow();
-	if (!frame) return;
-
-	wxString prefix;
-	switch ( level ) {
-		case wxLOG_Error:
-			prefix = wxT("E> ");
-			break;
-		case wxLOG_Warning:
-			prefix = wxT("!> ");
-			break;
-		case wxLOG_Info:
-			prefix = wxT("i> ");
-			break;
-		default:
-			prefix = wxEmptyString;
-			break;
-	}
-
-	wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_ERROR );
-	event.SetInt(level);
-	event.SetTimestamp(t);
-	event.SetString(prefix + szString);
-	wxPostEvent(frame, event);
 }
 
 void FbLogSyslog::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
@@ -96,8 +105,6 @@ void FbLogSyslog::DoLog(wxLogLevel level, const wxChar *szString, time_t t)
 
 #include "FbDatabase.h"
 
-wxCriticalSection FbLogStream::sm_queue;
-
 static wxString GetLogFile()
 {
 	wxFileName logname = FbDatabase::GetConfigName();
@@ -122,34 +129,6 @@ void FbLogStream::DoLogString(const wxChar *szString, time_t t)
 
 	wxCriticalSectionLocker enter(sm_queue);
 	m_text.WriteString(text);
-}
-
-void FbLogStream::PostMsg(wxLogLevel level, const wxChar *szString, time_t t)
-{
-	wxWindow * frame = wxGetApp().GetTopWindow();
-	if (!frame) return;
-
-	wxString prefix;
-	switch ( level ) {
-		case wxLOG_Error:
-			prefix = wxT("E> ");
-			break;
-		case wxLOG_Warning:
-			prefix = wxT("!> ");
-			break;
-		case wxLOG_Info:
-			prefix = wxT("i> ");
-			break;
-		default:
-			prefix = wxEmptyString;
-			break;
-	}
-
-	wxCommandEvent event( wxEVT_COMMAND_MENU_SELECTED, ID_ERROR );
-	event.SetInt(level);
-	event.SetTimestamp(t);
-	event.SetString(prefix + szString);
-	wxPostEvent(frame, event);
 }
 
 void FbLogStream::DoLog(wxLogLevel level, const wxChar *szString, time_t t)

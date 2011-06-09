@@ -603,7 +603,13 @@ bool FbTreeViewMainWindow::SetFont(const wxFont& font)
 
 void FbTreeViewMainWindow::AdjustMyScrollbars()
 {
-	SetScrollbars(0, GetRowHeight(), 0, GetRowCount(), 0, GetScrollPos(wxVERTICAL));
+	int pos = m_owner->GetScrollPos();
+	if (pos) {
+		m_owner->SetScrollPos(0);
+	} else {
+		pos = GetScrollPos(wxVERTICAL);
+	}
+	SetScrollbars(0, GetRowHeight(), 0, GetRowCount(), 0, pos);
 }
 
 size_t FbTreeViewMainWindow::GetClientCount()

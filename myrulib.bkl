@@ -234,6 +234,7 @@
 		<sources>sources/MyRuLib/controls/FbChoiceCtrl.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbLogModel.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbNotebook.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbSearchCombo.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbToolBar.cpp</sources>

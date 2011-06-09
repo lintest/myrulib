@@ -336,6 +336,8 @@
 		<Unit filename="../MyRuLib/controls/FbCustomCombo.h" />
 		<Unit filename="../MyRuLib/controls/FbHtmlWindow.cpp" />
 		<Unit filename="../MyRuLib/controls/FbHtmlWindow.h" />
+		<Unit filename="../MyRuLib/controls/FbLogModel.cpp" />
+		<Unit filename="../MyRuLib/controls/FbLogModel.h" />
 		<Unit filename="../MyRuLib/controls/FbNotebook.cpp" />
 		<Unit filename="../MyRuLib/controls/FbNotebook.h" />
 		<Unit filename="../MyRuLib/controls/FbSearchCombo.cpp" />

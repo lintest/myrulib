@@ -49,7 +49,7 @@ class FbMainFrame : public wxFrame
 		ProgressBar m_ProgressBar;
 		wxAuiManager m_FrameManager;
 		wxAuiNotebook m_FrameNotebook;
-		LimitedTextCtrl m_LogTextCtrl;
+		FbTreeViewCtrl * m_LogCtrl;
 	private:
 		void OnExit(wxCommandEvent & event);
 		void OnSetup(wxCommandEvent & event);

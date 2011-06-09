@@ -28,7 +28,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 {
 	public:
 		FbTreeViewCtrl()
-			: m_header_win(0), m_main_win(0)
+			: m_header_win(0), m_main_win(0), m_position(0)
 		{}
 
 		FbTreeViewCtrl(wxWindow *parent, wxWindowID id = -1,
@@ -37,7 +37,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 				   long style = fbTR_DEFAULT_STYLE,
 				   const wxValidator &validator = wxDefaultValidator,
 				   const wxString& name = FbTreeViewCtrlNameStr )
-			: m_header_win(0), m_main_win(0)
+			: m_header_win(0), m_main_win(0), m_position(0)
 		{
 			Create(parent, id, pos, size, style);
 		}
@@ -52,6 +52,9 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 					const wxString& name = FbTreeViewCtrlNameStr );
 
 		void Refresh(bool erase=TRUE, const wxRect* rect=NULL);
+		
+		void SetScrollPos(int position) { m_position = position; }
+		int GetScrollPos() { return m_position; }
 
 		// overridden base class virtuals
 		virtual bool SetBackgroundColour (const wxColour& colour);
@@ -115,6 +118,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 		int GetSortedColumn();
 
 	private:
+		int m_position;
 		DECLARE_DYNAMIC_CLASS(FbTreeViewCtrl)
 		DECLARE_EVENT_TABLE()
 };

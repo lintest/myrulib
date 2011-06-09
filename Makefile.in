@@ -164,6 +164,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceCtrl.o \
 	myrulib_FbComboBox.o \
 	myrulib_FbHtmlWindow.o \
+	myrulib_FbLogModel.o \
 	myrulib_FbNotebook.o \
 	myrulib_FbSearchCombo.o \
 	myrulib_FbToolBar.o \
@@ -688,6 +689,9 @@ myrulib_FbComboBox.o: $(srcdir)/sources/MyRuLib/controls/FbComboBox.cpp $(MYRULI
 
 myrulib_FbHtmlWindow.o: $(srcdir)/sources/MyRuLib/controls/FbHtmlWindow.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbHtmlWindow.cpp
+
+myrulib_FbLogModel.o: $(srcdir)/sources/MyRuLib/controls/FbLogModel.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbLogModel.cpp
 
 myrulib_FbNotebook.o: $(srcdir)/sources/MyRuLib/controls/FbNotebook.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbNotebook.cpp

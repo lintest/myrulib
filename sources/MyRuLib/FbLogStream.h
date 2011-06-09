@@ -7,32 +7,38 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
+class FbLog: public wxLog
+{
+	public:
+		static bool Update(wxArrayString &lines);
+	protected:
+		void PostMsg(wxLogLevel level, const wxChar *szString, time_t t);
+	protected:
+		static wxCriticalSection sm_queue;
+		static wxArrayString sm_lines;
+};
+
 #ifdef FB_SYSLOG_LOGGING
 
-class FbLogSyslog: public wxLog
+class FbLogSyslog: public FbLog
 {
 	public:
 		FbLogSyslog();
 		virtual ~FbLogSyslog();
 	protected:
 		virtual void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
-		virtual void PostMsg(wxLogLevel level, const wxChar *szString, time_t t);
-	private:
-		static wxCriticalSection sm_queue;
 };
 
 #else // FB_SYSLOG_LOGGING
 
-class FbLogStream: public wxLog
+class FbLogStream: public FbLog
 {
 	public:
 		FbLogStream();
 	protected:
 		virtual void DoLog(wxLogLevel level, const wxChar *szString, time_t t);
 		virtual void DoLogString(const wxChar *szString, time_t t);
-		virtual void PostMsg(wxLogLevel level, const wxChar *szString, time_t t);
 	private:
-		static wxCriticalSection sm_queue;
 		wxFileOutputStream m_stream;
 		wxTextOutputStream m_text;
 };

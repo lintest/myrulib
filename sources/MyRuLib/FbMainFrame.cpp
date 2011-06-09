@@ -28,6 +28,7 @@
 #include "FbMasterTypes.h"
 #include "FbAboutDlg.h"
 #include "controls/FbNotebook.h"
+#include "controls/FbLogModel.h"
 #include "FbDateTime.h"
 #include "FbLocale.h"
 
@@ -257,7 +258,8 @@ void FbMainFrame::CreateControls()
 	m_ProgressBar.SetStatusWidths(4, widths);
 	SetStatusBar(&m_ProgressBar);
 
-	m_LogTextCtrl.Create(this, ID_TEXTLOG_CTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 100), wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxTE_DONTWRAP);
+	m_LogCtrl = new FbTreeViewCtrl(this, ID_TEXTLOG_CTRL, wxDefaultPosition, wxSize(-1, 100), fbTR_MULTIPLE | fbTR_NO_HEADER);
+	m_LogCtrl->AssignModel(new FbLogModel);
 
 	m_FrameManager.SetManagedWindow(this);
 	m_FrameNotebook.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxTAB_TRAVERSAL | wxNO_BORDER );
@@ -265,7 +267,7 @@ void FbMainFrame::CreateControls()
 	SetTabArt(FbParams::GetInt(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
 
 	m_FrameManager.AddPane(&m_FrameNotebook, wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane().PaneBorder(false));
-	m_FrameManager.AddPane(&m_LogTextCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Info messages")).Show(false));
+	m_FrameManager.AddPane(m_LogCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Info messages")).Show(false));
 	m_FrameManager.Update();
 
 	m_FindAuthor->SetFocus();
@@ -433,8 +435,8 @@ void FbMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
 
 void FbMainFrame::OnError(wxCommandEvent& event)
 {
-	ShowLog(true);
-	m_LogTextCtrl.AppendText(event.GetString() + wxT("\n"));
+//	ShowLog(true);
+//	m_LogTextCtrl.AppendText(event.GetString() + wxT("\n"));
 }
 
 wxAuiPaneInfo * FbMainFrame::FindLog()
@@ -453,7 +455,7 @@ void FbMainFrame::ShowLog(bool forced)
 	wxAuiPaneInfo * info = FindLog();
 	if (info) {
 		bool show = forced || !info->IsShown();
-		if (show != info->IsShown() && FbParams::GetInt(FB_CLEAR_LOG)) m_LogTextCtrl.Clear();
+		if (show != info->IsShown() && FbParams::GetInt(FB_CLEAR_LOG)) m_LogCtrl->AssignModel(new FbLogModel);
 		info->Show(show);
 		m_FrameManager.Update();
 	}
@@ -867,6 +869,9 @@ void FbMainFrame::OnIdle( wxIdleEvent & event)
 		msg << wxPLURAL("book", "books", count);
 	}
 	m_ProgressBar.SetStatusText(msg, 2);
+	
+	FbLogModel * model = wxDynamicCast(m_LogCtrl->GetModel(), FbLogModel);
+	if (model && model->Update()) ShowLog(true);
 }
 
 void FbMainFrame::OnFoundNothing(wxCommandEvent & event)
