@@ -14,6 +14,7 @@
 #define CRSETUP_H_INCLUDED
 
 
+#include "../crsetup.inc"
 
 // features set for LBOOK
 #if (LBOOK==1)

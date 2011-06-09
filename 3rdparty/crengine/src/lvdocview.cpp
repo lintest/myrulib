@@ -3287,6 +3287,7 @@ bool LVDocView::LoadDocument(LVStreamRef stream) {
 			}
 		}
 
+#if CHM_SUPPORT_ENABLED
 		if ( DetectCHMFormat( m_stream ) ) {
 			// CHM
 			CRLog::info("CHM format detected");
@@ -3317,6 +3318,7 @@ bool LVDocView::LoadDocument(LVStreamRef stream) {
 				return true;
 			}
 		}
+#endif // CHM_SUPPORT_ENABLED
 
 #if ENABLE_ANTIWORD==1
         if ( DetectWordFormat( m_stream ) ) {
