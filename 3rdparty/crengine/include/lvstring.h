@@ -20,9 +20,9 @@
 #include "lvmemman.h"
 
 /// soft hyphen code
-#define UNICODE_SOFT_HYPHEN_CODE 0x00AD
-#define UNICODE_ZERO_WIDTH_SPACE 0x200B
-#define UNICODE_NO_BREAK_SPACE   0x00A0
+#define UNICODE_SOFT_HYPHEN_CODE 0x00ad
+#define UNICODE_ZERO_WIDTH_SPACE 0x200b
+#define UNICODE_NO_BREAK_SPACE   0x00a0
 
 
 
@@ -67,8 +67,14 @@ void lStr_lowercase( lChar16 * str, int len );
 /// calculates CRC32 for buffer contents
 lUInt32 lStr_crc32( lUInt32 prevValue, const void * buf, int size );
 
+// converts 0..15 to 0..f
+char toHexDigit( int c );
 // returns 0..15 if c is hex digit, -1 otherwise
 int hexDigit( int c );
+// decode LEN hex digits, return decoded number, -1 if invalid
+int decodeHex( const lChar16 * str, int len );
+// decode LEN decimal digits, return decoded number, -1 if invalid
+int decodeDecimal( const lChar16 * str, int len );
 
 
 #define CH_PROP_UPPER       0x0001 ///< uppercase alpha character flag
@@ -152,6 +158,8 @@ private:
 public:
     /// default constrictor
     explicit lString8() : pchunk(EMPTY_STR_8) { addref(); }
+    /// constructor of empty string with buffer of specified size
+    explicit lString8( int size ) : pchunk(EMPTY_STR_8) { addref(); reserve(size); }
     /// copy constructor
     lString8(const lString8 & str) : pchunk(str.pchunk) { addref(); }
     /// constructor from C string
@@ -304,6 +312,9 @@ public:
     /// append single character
     lString8 & operator += ( value_type ch ) { return append(1, ch); }
 
+    /// returns true if string ends with specified substring
+    bool endsWith( const lChar8 * substring ) const;
+
     /// constructs string representation of integer
     static lString8 itoa( int i );
     /// constructs string representation of unsigned integer
@@ -438,6 +449,8 @@ public:
 
     /// returns true if string starts with specified substring
     bool startsWith ( const lString16 & substring ) const;
+    /// returns true if string ends with specified substring
+    bool endsWith( const lChar16 * substring ) const;
     /// returns true if string ends with specified substring
     bool endsWith ( const lString16 & substring ) const;
     /// returns true if string starts with specified substring, case insensitive

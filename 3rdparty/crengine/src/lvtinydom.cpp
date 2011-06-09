@@ -12,7 +12,7 @@
 *******************************************************/
 
 /// change in case of incompatible changes in swap/cache file format
-#define CACHE_FILE_FORMAT_VERSION "3.03.04"
+#define CACHE_FILE_FORMAT_VERSION "3.03.10"
 
 #ifndef DOC_DATA_COMPRESSION_LEVEL
 /// data compression level (0=no compression, 1=fast compressions, 3=normal compression)
@@ -262,6 +262,7 @@ lUInt32 calcGlobalSettingsHash()
     lUInt32 hash = 0;
     if ( fontMan->getKerning() )
         hash += 127365;
+    hash = hash * 31 + fontMan->GetFontListHash();
     if ( LVRendGetFontEmbolden() )
         hash = hash * 75 + 2384761;
     if ( gFlgFloatingPunctuationEnabled )
@@ -1932,7 +1933,7 @@ void ldomDataStorageManager::compact( int reservedSpace )
         int sumsize = reservedSpace;
         for ( ldomTextStorageChunk * p = _recentChunk; p; p = p->_nextRecent ) {
             if ( p->_bufsize >= 0 ) {
-                if ( p->_bufsize + sumsize < _maxUncompressedSize || (p==_activeChunk && reservedSpace<0xFFFFFFF)) {
+                if ( (int)p->_bufsize + sumsize < _maxUncompressedSize || (p==_activeChunk && reservedSpace<0xFFFFFFF)) {
                     // fits
                     sumsize += p->_bufsize;
                 } else {
@@ -2391,7 +2392,7 @@ public:
         if (_len>=_size)
         {
             _size += 4;
-            _list = (lxmlAttribute*) realloc( _list, _size*sizeof(lxmlAttribute) );
+            _list = cr_realloc( _list, _size );
         }
         _list[ _len++ ].setData(nsId, attrId, valueIndex);
     }
@@ -2401,7 +2402,7 @@ public:
         if (_len>=_size)
         {
             _size += 4;
-            _list = (lxmlAttribute*) realloc( _list, _size*sizeof(lxmlAttribute) );
+            _list = cr_realloc( _list, _size );
         }
         _list[ _len++ ].setData(nsId, attrId, valueIndex);
     }
@@ -2411,7 +2412,7 @@ public:
         if (_len>=_size)
         {
             _size += 4;
-            _list = (lxmlAttribute*) realloc( _list, _size*sizeof(lxmlAttribute) );
+            _list = cr_realloc( _list, _size );
         }
         _list[ _len++ ] = *v;
     }
@@ -4437,39 +4438,39 @@ bool ldomXPointer::getRect(lvRect & rect) const
 
         ldomNode * node = getNode();
         int offset = getOffset();
-//        ldomXPointerEx xp(node, offset);
-//        if ( !node->isText() ) {
-//            //ldomXPointerEx xp(node, offset);
-//            xp.nextVisibleText();
-//            node = xp.getNode();
-//            offset = xp.getOffset();
+////        ldomXPointerEx xp(node, offset);
+////        if ( !node->isText() ) {
+////            //ldomXPointerEx xp(node, offset);
+////            xp.nextVisibleText();
+////            node = xp.getNode();
+////            offset = xp.getOffset();
+////        }
+//        if ( node->isElement() ) {
+//            if ( offset>=0 ) {
+//                //
+//                if ( offset>= (int)node->getChildCount() ) {
+//                    node = node->getLastTextChild();
+//                    if ( node )
+//                        offset = node->getText().length();
+//                    else
+//                        return false;
+//                } else {
+//                    for ( int ci=offset; ci<(int)node->getChildCount(); ci++ ) {
+//                        ldomNode * child = node->getChildNode( offset );
+//                        ldomNode * txt = txt = child->getFirstTextChild( true );
+//                        if ( txt ) {
+//                            node = txt;
+////                            lString16 s = txt->getText();
+////                            CRLog::debug("text: [%d] '%s'", s.length(), LCSTR(s));
+//                            break;
+//                        }
+//                    }
+//                    if ( !node->isText() )
+//                        return false;
+//                    offset = 0;
+//                }
+//            }
 //        }
-        if ( node->isElement() ) {
-            if ( offset>=0 ) {
-                //
-                if ( offset>= (int)node->getChildCount() ) {
-                    node = node->getLastTextChild();
-                    if ( node )
-                        offset = node->getText().length();
-                    else
-                        return false;
-                } else {
-                    for ( int ci=offset; ci<(int)node->getChildCount(); ci++ ) {
-                        ldomNode * child = node->getChildNode( offset );
-                        ldomNode * txt = txt = child->getFirstTextChild( true );
-                        if ( txt ) {
-                            node = txt;
-//                            lString16 s = txt->getText();
-//                            CRLog::debug("text: [%d] '%s'", s.length(), LCSTR(s));
-                            break;
-                        }
-                    }
-                    if ( !node->isText() )
-                        return false;
-                    offset = 0;
-                }
-            }
-        }
 
         // text node
         int srcIndex = -1;
@@ -4480,7 +4481,7 @@ bool ldomXPointer::getRect(lvRect & rect) const
         ldomXPointerEx xp(node, offset);
         for ( int i=0; i<txtform->GetSrcCount(); i++ ) {
             const src_text_fragment_t * src = txtform->GetSrcInfo(i);
-            bool isObject = src->flags&LTEXT_SRC_IS_OBJECT;
+            bool isObject = (src->flags&LTEXT_SRC_IS_OBJECT)!=0;
             if ( src->object == node ) {
                 srcIndex = i;
                 srcLen = isObject ? 0 : src->t.len;
@@ -4508,9 +4509,10 @@ bool ldomXPointer::getRect(lvRect & rect) const
             const formatted_line_t * frmline = txtform->GetLineInfo(l);
             for ( int w=0; w<(int)frmline->word_count; w++ ) {
                 const formatted_word_t * word = &frmline->words[w];
-                if ( word->src_text_index==srcIndex ) {
+                bool lastWord = (l==txtform->GetLineCount()-1 && w==frmline->word_count-1);
+                if ( word->src_text_index>=srcIndex || lastWord ) {
                     // found word from same src line
-                    if ( offset<=word->t.start ) {
+                    if ( word->src_text_index>srcIndex || offset<=word->t.start ) {
                         // before this word
                         rect.left = word->x + rc.left + frmline->x;
                         //rect.top = word->y + rc.top + frmline->y + frmline->baseline;
@@ -4532,9 +4534,15 @@ bool ldomXPointer::getRect(lvRect & rect) const
                         rect.right = rect.left + 1;
                         rect.bottom = rect.top + frmline->height;
                         return true;
+                    } else if (lastWord) {
+                        // after last word
+                        rect.left = word->x + rc.left + frmline->x + word->width;
+                        //rect.top = word->y + rc.top + frmline->y + frmline->baseline;
+                        rect.top = rc.top + frmline->y;
+                        rect.right = rect.left + 1;
+                        rect.bottom = rect.top + frmline->height;
+                        return true;
                     }
-                } else if ( word->src_text_index>srcIndex ) {
-                    return false;
                 }
             }
         }
@@ -5288,7 +5296,11 @@ void ldomXRangeList::getRanges( ldomMarkedRangeList &dst )
         return;
     for ( int i=0; i<length(); i++ ) {
         ldomXRange * range = get(i);
-        ldomMarkedRange * item = new ldomMarkedRange( range->getStart().toPoint(), range->getEnd().toPoint(), range->getFlags() );
+        lvPoint ptStart = range->getStart().toPoint();
+        lvPoint ptEnd = range->getEnd().toPoint();
+//        // LVE:DEBUG
+//        CRLog::trace("selectRange( %d,%d : %d,%d : %s, %s )", ptStart.x, ptStart.y, ptEnd.x, ptEnd.y, LCSTR(range->getStart().toString()), LCSTR(range->getEnd().toString()) );
+        ldomMarkedRange * item = new ldomMarkedRange( ptStart, ptEnd, range->getFlags() );
         if ( !item->empty() )
             dst.add( item );
         else
@@ -6013,46 +6025,296 @@ void ldomXRange::forEach( ldomNodeCallback * callback )
     }
 }
 
+class ldomWordsCollector : public ldomNodeCallback {
+    LVArray<ldomWord> & _list;
+public:
+    ldomWordsCollector( LVArray<ldomWord> & list )
+        : _list( list )
+    {
+    }
+    /// called for each found text fragment in range
+    virtual void onText( ldomXRange * nodeRange )
+    {
+        ldomNode * node = nodeRange->getStart().getNode();
+        lString16 text = node->getText();
+        int len = text.length();
+        int end = nodeRange->getEnd().getOffset();
+        if ( len>end )
+            len = end;
+        int beginOfWord = -1;
+        for ( int i=nodeRange->getStart().getOffset(); i <= len; i++ ) {
+            int alpha = lGetCharProps(text[i]) & CH_PROP_ALPHA;
+            if (alpha && beginOfWord<0 ) {
+                beginOfWord = i;
+            }
+            if ( !alpha && beginOfWord>=0) {
+                _list.add( ldomWord( node, beginOfWord, i ) );
+                beginOfWord = -1;
+            }
+        }
+    }
+    /// called for each found node in range
+    virtual bool onElement( ldomXPointerEx * ptr )
+    {
+        ldomNode * elem = ptr->getNode();
+        if ( elem->getRendMethod()==erm_invisible )
+            return false;
+        return true;
+    }
+};
+
 /// get all words from specified range
 void ldomXRange::getRangeWords( LVArray<ldomWord> & list )
 {
-    class ldomWordsCollector : public ldomNodeCallback {
-        LVArray<ldomWord> & _list;
-    public:
-        ldomWordsCollector( LVArray<ldomWord> & list )
-            : _list( list )
-        {
-        }
-        /// called for each found text fragment in range
-        virtual void onText( ldomXRange * nodeRange )
-        {
-            ldomNode * node = nodeRange->getStart().getNode();
-            lString16 text = node->getText();
-            int len = text.length();
-            int beginOfWord = -1;
-            for ( int i=0; i <= len; i++ ) {
-                int alpha = lGetCharProps(text[i]) & CH_PROP_ALPHA;
-                if (alpha && beginOfWord<0 ) {
-                    beginOfWord = i;
-                }
-                if ( !alpha && beginOfWord>=0) {
-                    _list.add( ldomWord( node, beginOfWord, i ) );
-                    beginOfWord = -1;
-                }
-            }
-        }
-        /// called for each found node in range
-        virtual bool onElement( ldomXPointerEx * ptr )
-        {
-            ldomNode * elem = ptr->getNode();
-            if ( elem->getRendMethod()==erm_invisible )
-                return false;
-            return true;
-        }
-    };
     ldomWordsCollector collector( list );
     forEach( &collector );
 }
+
+/// adds all visible words from range, returns number of added words
+int ldomWordExList::addRangeWords( ldomXRange & range, bool trimPunctuation ) {
+    LVArray<ldomWord> list;
+    range.getRangeWords( list );
+    for ( int i=0; i<list.length(); i++ )
+        add( new ldomWordEx(list[i]) );
+    init();
+    return list.length();
+}
+
+lvPoint ldomMarkedRange::getMiddlePoint() {
+    if ( start.y==end.y ) {
+        return lvPoint( ((start.x + end.x)>>1), start.y );
+    } else {
+        return start;
+    }
+}
+
+/// returns distance (dx+dy) from specified point to middle point
+int ldomMarkedRange::calcDistance( int x, int y, MoveDirection dir ) {
+    lvPoint middle = getMiddlePoint();
+    int dx = middle.x - x;
+    int dy = middle.y - y;
+    if ( dx<0 ) dx = -dx;
+    if ( dy<0 ) dy = -dy;
+    switch (dir) {
+    case DIR_LEFT:
+    case DIR_RIGHT:
+        return dx + dy;
+    case DIR_UP:
+    case DIR_DOWN:
+        return dx + dy*100;
+    }
+
+
+    return dx + dy;
+}
+
+/// select word
+void ldomWordExList::selectWord( ldomWordEx * word, MoveDirection dir )
+{
+    selWord = word;
+    if ( selWord ) {
+        lvPoint middle = word->getMark().getMiddlePoint();
+        if ( x==-1 || (dir!=DIR_UP && dir!=DIR_DOWN) )
+            x = middle.x;
+        y = middle.y;
+    } else {
+        x = y = -1;
+    }
+}
+
+/// select next word in specified direction
+ldomWordEx * ldomWordExList::selectNextWord( MoveDirection dir, int moveBy )
+{
+    if ( !selWord )
+        return selectMiddleWord();
+    pattern.clear();
+    for ( int i=0; i<moveBy; i++ ) {
+        ldomWordEx * word = findNearestWord( x, y, dir );
+        if ( word )
+            selectWord( word, dir );
+    }
+    return selWord;
+}
+
+/// select middle word in range
+ldomWordEx * ldomWordExList::selectMiddleWord() {
+    if ( minx==-1 )
+        init();
+    ldomWordEx * word = findNearestWord( (maxx+minx)/2, (miny+maxy)/2, DIR_ANY );
+    selectWord(word, DIR_ANY);
+    return word;
+}
+
+ldomWordEx * ldomWordExList::findWordByPattern()
+{
+    ldomWordEx * lastBefore = NULL;
+    ldomWordEx * firstAfter = NULL;
+    bool selReached = false;
+    for ( int i=0; i<length(); i++ ) {
+        ldomWordEx * item = get(i);
+        if ( item==selWord )
+            selReached = true;
+        lString16 text = item->getText();
+        text.lowercase();
+        bool flg = true;
+        for ( unsigned j=0; j<pattern.length(); j++ ) {
+            if ( j>=text.length() ) {
+                flg = false;
+                break;
+            }
+            lString16 chars = pattern[j];
+            chars.lowercase();
+            bool charFound = false;
+            for ( unsigned k=0; k<chars.length(); k++ ) {
+                if ( chars[k]==text[j] ) {
+                    charFound = true;
+                    break;
+                }
+            }
+            if ( !charFound ) {
+                flg = false;
+                break;
+            }
+        }
+        if ( !flg )
+            continue;
+        if ( selReached ) {
+            if ( firstAfter==NULL )
+                firstAfter = item;
+        } else {
+            lastBefore = item;
+        }
+    }
+
+    if ( firstAfter )
+        return firstAfter;
+    else
+        return lastBefore;
+}
+
+/// try append search pattern and find word
+ldomWordEx * ldomWordExList::appendPattern(lString16 chars)
+{
+    pattern.add(chars);
+    ldomWordEx * foundWord = findWordByPattern();
+
+    if ( foundWord ) {
+        selectWord(foundWord, DIR_ANY);
+    } else {
+        pattern.erase(pattern.length()-1, 1);
+    }
+    return foundWord;
+}
+
+/// remove last character from pattern and try to search
+ldomWordEx * ldomWordExList::reducePattern()
+{
+    if ( pattern.length()==0 )
+        return NULL;
+    pattern.erase(pattern.length()-1, 1);
+    ldomWordEx * foundWord = findWordByPattern();
+
+    if ( foundWord )
+        selectWord(foundWord, DIR_ANY);
+    return foundWord;
+}
+
+/// find word nearest to specified point
+ldomWordEx * ldomWordExList::findNearestWord( int x, int y, MoveDirection dir ) {
+    if ( !length() )
+        return NULL;
+    int bestDistance = -1;
+    ldomWordEx * bestWord = NULL;
+    ldomWordEx * defWord = (dir==DIR_LEFT || dir==DIR_UP) ? get(length()-1) : get(0);
+    int i;
+    if ( dir==DIR_LEFT || dir==DIR_RIGHT ) {
+        int thisLineY = -1;
+        int thisLineDy = -1;
+        for ( i=0; i<length(); i++ ) {
+            ldomWordEx * item = get(i);
+            lvPoint middle = item->getMark().getMiddlePoint();
+            int dy = middle.y - y;
+            if ( dy<0 ) dy = -dy;
+            if ( thisLineY==-1 || thisLineDy>dy ) {
+                thisLineY = middle.y;
+                thisLineDy = dy;
+            }
+        }
+        ldomWordEx * nextLineWord = NULL;
+        for ( i=0; i<length(); i++ ) {
+            ldomWordEx * item = get(i);
+            if ( dir!=DIR_ANY && item==selWord )
+                continue;
+            ldomMarkedRange * mark = &item->getMark();
+            lvPoint middle = mark->getMiddlePoint();
+            switch ( dir ) {
+            case DIR_LEFT:
+                if ( middle.y<thisLineY )
+                    nextLineWord = item; // last word of prev line
+                if ( middle.x>=x )
+                    continue;
+                break;
+            case DIR_RIGHT:
+                if ( nextLineWord==NULL && middle.y>thisLineY )
+                    nextLineWord = item; // first word of next line
+                if ( middle.x<=x )
+                    continue;
+                break;
+            }
+            if ( middle.y!=thisLineY )
+                continue;
+            int dist = mark->calcDistance(x, y, dir);
+            if ( bestDistance==-1 || dist<bestDistance ) {
+                bestWord = item;
+                bestDistance = dist;
+            }
+        }
+        if ( bestWord!=NULL )
+            return bestWord; // found in the same line
+        if ( nextLineWord!=NULL  )
+            return nextLineWord;
+        return defWord;
+    }
+    for ( i=0; i<length(); i++ ) {
+        ldomWordEx * item = get(i);
+        if ( dir!=DIR_ANY && item==selWord )
+            continue;
+        ldomMarkedRange * mark = &item->getMark();
+        lvPoint middle = mark->getMiddlePoint();
+        if ( dir==DIR_UP && middle.y >= y )
+            continue;
+        if ( dir==DIR_DOWN && middle.y <= y )
+            continue;
+
+        int dist = mark->calcDistance(x, y, dir);
+        if ( bestDistance==-1 || dist<bestDistance ) {
+            bestWord = item;
+            bestDistance = dist;
+        }
+    }
+    if ( bestWord!=NULL )
+        return bestWord;
+    return defWord;
+}
+
+void ldomWordExList::init()
+{
+    if ( !length() )
+        return;
+    for ( int i=0; i<length(); i++ ) {
+        ldomWordEx * item = get(i);
+        lvPoint middle = item->getMark().getMiddlePoint();
+        if ( i==0 || minx > middle.x )
+            minx = middle.x;
+        if ( i==0 || maxx < middle.x )
+            maxx = middle.x;
+        if ( i==0 || miny > middle.y )
+            miny = middle.y;
+        if ( i==0 || maxy < middle.y )
+            maxy = middle.y;
+    }
+}
+
 
 class ldomTextCollector : public ldomNodeCallback
 {
@@ -6857,7 +7119,7 @@ bool ldomDocument::loadCacheFileContent(CacheLoadingCallback * formatCallback)
         if ( formatCallback ) {
             int fmt = getProps()->getIntDef(DOC_PROP_FILE_FORMAT_ID,
                     doc_format_fb2);
-            if (fmt < doc_format_fb2 || fmt > doc_format_txt_bookmark)
+            if (fmt < doc_format_fb2 || fmt > doc_format_max)
                 fmt = doc_format_fb2;
             // notify about format detection, to allow setting format-specific CSS
             formatCallback->OnCacheFileFormatDetected((doc_format_t)fmt);
@@ -8533,13 +8795,13 @@ lString16 ldomNode::getText( lChar16 blockDelimiter, int maxSize ) const
             for ( unsigned i=0; i<cc; i++ ) {
                 ldomNode * child = getChildNode(i);
                 txt += child->getText(blockDelimiter, maxSize);
-                if ( maxSize!=0 && txt.length()>maxSize )
+                if ( maxSize!=0 && txt.length()>(unsigned)maxSize )
                     break;
                 if ( i>=cc-1 )
                     break;
 #if BUILD_LITE!=1
                 if ( blockDelimiter && child->isElement() ) {
-                    if ( child->getStyle()->display == css_d_block )
+                    if ( !child->getStyle().isNull() && child->getStyle()->display == css_d_block )
                         txt << blockDelimiter;
                 }
 #endif
@@ -8571,7 +8833,7 @@ lString8 ldomNode::getText8( lChar8 blockDelimiter, int maxSize ) const
             for ( unsigned i=0; i<cc; i++ ) {
                 ldomNode * child = getChildNode(i);
                 txt += child->getText8(blockDelimiter, maxSize);
-                if ( maxSize!=0 && txt.length()>maxSize )
+                if ( maxSize!=0 && txt.length()>(unsigned)maxSize )
                     break;
                 if ( i>=getChildCount()-1 )
                     break;
@@ -8818,7 +9080,7 @@ ldomNode * ldomNode::getFirstTextChild(bool skipEmpty)
             return this;
         lString16 txt = getText();
         bool nonSpaceFound = false;
-        for ( int i=0; i<txt.length(); i++ ) {
+        for ( unsigned i=0; i<txt.length(); i++ ) {
             lChar16 ch = txt[i];
             if ( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' ) {
                 nonSpaceFound = true;
@@ -9572,6 +9834,20 @@ LVStreamRef ldomDocument::getObjectImageStream( lString16 refName )
             if ( !getCodeBase().empty() )
                 name = getCodeBase() + refName;
             ref = getContainer()->OpenStream(name.c_str(), LVOM_READ);
+            if ( ref.isNull() ) {
+                lString16 fname = getProps()->getStringDef( DOC_PROP_FILE_NAME, "" );
+                fname = LVExtractFilenameWithoutExtension(fname);
+                if ( !fname.empty() ) {
+                    lString16 fn = fname + L"_img";
+//                    if ( getContainer()->GetObjectInfo(fn) ) {
+
+//                    }
+                    lString16 name = fn + L"/" + refName;
+                    if ( !getCodeBase().empty() )
+                        name = getCodeBase() + name;
+                    ref = getContainer()->OpenStream(name.c_str(), LVOM_READ);
+                }
+            }
             if ( ref.isNull() )
                 CRLog::error("Cannot open stream by name %s", LCSTR(name));
         }
@@ -10277,7 +10553,7 @@ void runBasicTinyDomUnitTests()
 
 void runCHMUnitTest()
 {
-#if CHM_SUPPORT_ENABLED==1
+#if BUILD_LITE!=1
     LVStreamRef stream = LVOpenFileStream("/home/lve/src/test/mysql.chm", LVOM_READ);
     MYASSERT ( !stream.isNull(), "container stream opened" );
     CRLog::trace("runCHMUnitTest() -- file stream opened ok");
@@ -10314,7 +10590,7 @@ static void makeTestFile( const char * fname, int size )
         seed = seed * 31 + 14323;
     }
     MYASSERT( s->Write(buf, size, NULL)==LVERR_OK, "makeTestFile write" );
-    delete buf;
+    delete[] buf;
 }
 
 void runBlockWriteCacheTest()

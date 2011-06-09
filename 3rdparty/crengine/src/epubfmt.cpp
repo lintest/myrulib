@@ -129,12 +129,8 @@ void ReadEpubToc( ldomDocument * doc, ldomNode * mapRoot, LVTocItem * baseToc, l
     }
 }
 
-bool ImportEpubDocument( LVStreamRef stream, ldomDocument * m_doc, LVDocViewCallback * progressCallback, CacheLoadingCallback * formatCallback )
+lString16 EpubGetRootFilePath( LVContainerRef m_arc )
 {
-    LVContainerRef m_arc = LVOpenArchieve( stream );
-    if ( m_arc.isNull() )
-        return false; // not a ZIP archive
-
     // check root media type
     lString16 rootfilePath;
     lString16 rootfileMediaType;
@@ -155,7 +151,20 @@ bool ImportEpubDocument( LVStreamRef stream, ldomDocument * m_doc, LVDocViewCall
     }
 
     if ( rootfilePath.empty() || rootfileMediaType!=L"application/oebps-package+xml" )
-        return false;
+        return lString16::empty_str;
+    return rootfilePath;
+}
+
+bool ImportEpubDocument( LVStreamRef stream, ldomDocument * m_doc, LVDocViewCallback * progressCallback, CacheLoadingCallback * formatCallback )
+{
+    LVContainerRef m_arc = LVOpenArchieve( stream );
+    if ( m_arc.isNull() )
+        return false; // not a ZIP archive
+
+    // check root media type
+    lString16 rootfilePath = EpubGetRootFilePath(m_arc);
+    if ( rootfilePath.empty() )
+    	return false;
 
     m_doc->setContainer(m_arc);
 
@@ -178,6 +187,7 @@ bool ImportEpubDocument( LVStreamRef stream, ldomDocument * m_doc, LVDocViewCall
 
 
     lString16 ncxHref;
+    lString16 coverId;
 
     // reading content stream
     {
@@ -191,6 +201,19 @@ bool ImportEpubDocument( LVStreamRef stream, ldomDocument * m_doc, LVDocViewCall
         m_doc_props->setString(DOC_PROP_TITLE, title);
         m_doc_props->setString(DOC_PROP_AUTHORS, author );
         CRLog::info("Author: %s Title: %s", LCSTR(author), LCSTR(title));
+        for ( int i=1; i<20; i++ ) {
+            ldomNode * item = doc->nodeFromXPath( lString16(L"package/metadata/meta[") + lString16::itoa(i) + L"]" );
+            if ( !item )
+                break;
+            lString16 name = item->getAttributeValue(L"name");
+            lString16 content = item->getAttributeValue(L"content");
+            if ( name == L"cover" )
+                coverId = content;
+            else if ( name==L"calibre:series" )
+                m_doc_props->setString(DOC_PROP_SERIES_NAME, content );
+            else if ( name==L"calibre:series_index" )
+                m_doc_props->setInt(DOC_PROP_SERIES_NUMBER, content.atoi() );
+        }
 
         // items
         for ( int i=1; i<50000; i++ ) {
@@ -201,6 +224,20 @@ bool ImportEpubDocument( LVStreamRef stream, ldomDocument * m_doc, LVDocViewCall
             lString16 mediaType = item->getAttributeValue(L"media-type");
             lString16 id = item->getAttributeValue(L"id");
             if ( !href.empty() && !id.empty() ) {
+                if ( id==coverId ) {
+                    // coverpage file
+                    lString16 coverFileName = codeBase + href;
+                    CRLog::info("EPUB coverpage file: %s", LCSTR(coverFileName));
+                    LVStreamRef stream = m_arc->OpenStream(coverFileName.c_str(), LVOM_READ);
+                    if ( !stream.isNull() ) {
+                        LVImageSourceRef img = LVCreateStreamImageSource(stream);
+                        if ( !img.isNull() ) {
+                            CRLog::info("EPUB coverpage image is correct: %d x %d", img->GetWidth(), img->GetHeight() );
+                            m_doc_props->setString(DOC_PROP_COVER_FILE, coverFileName);
+                            m_doc_props->setString("test.prop", coverFileName);
+                        }
+                    }
+                }
                 EpubItem * epubItem = new EpubItem;
                 epubItem->href = href;
                 epubItem->id = id;

@@ -458,7 +458,14 @@ static struct {
     {"cp737", __cp737, CRENC_ID_CP737},
     {"cp1250", __cp1250, CRENC_ID_CP1250},
     {"cp1251", __cp1251, CRENC_ID_CP1251},
+    {"iso-8859-5", __cp1251, CRENC_ID_CP1251},
+    {"iso_8859-5", __cp1251, CRENC_ID_CP1251},
+    {"iso8859-5", __cp1251, CRENC_ID_CP1251},
     {"cp1252", __cp1252, CRENC_ID_CP1252},
+    {"iso-8859-1", __cp1252, CRENC_ID_CP1252},
+    {"iso_8859-1", __cp1252, CRENC_ID_CP1252},
+    {"iso8859-1", __cp1252, CRENC_ID_CP1252},
+    {"latin-1", __cp1252, CRENC_ID_CP1252},
     {"cp1253", __cp1253, CRENC_ID_CP1253},
     {"cp1257", __cp1257, CRENC_ID_CP1257},
     {"cp866", __cp866, CRENC_ID_CP866},
@@ -468,6 +475,7 @@ static struct {
     {"koi-8r", __koi8r, CRENC_ID_KOI8R},
     {"koi8r", __koi8r, CRENC_ID_KOI8R},
     {"iso8859-2", __iso8859_2, CRENC_ID_ISO8859_2},
+    {"iso-8859-2", __iso8859_2, CRENC_ID_ISO8859_2},
     {"iso8859_2", __iso8859_2, CRENC_ID_ISO8859_2},
     {"latin-2", __iso8859_2, CRENC_ID_ISO8859_2},
     {"latin-5", __iso8859_2, CRENC_ID_ISO8859_2},
@@ -1536,6 +1544,7 @@ int AutodetectCodePage( const unsigned char * buf, int buf_size, char * cp_name,
    }
    strcpy(cp_name, cp_stat_table[bestn].cp_name);
    strcpy(lang_name, cp_stat_table[bestn].lang_name);
+   CRLog::debug("Detected codepage:%s lang:%s", cp_name, lang_name);
    return 1;
 }
 void MakeStatsForFile( const char * fname, const char * cp_name, const char * lang_name, int index, FILE * f, lString8 & list )
@@ -1576,6 +1585,6 @@ void MakeStatsForFile( const char * fname, const char * cp_name, const char * la
    sprintf(str, "{ch_stat_%s_%s%d,dbl_ch_stat_%s_%s%d,\"%s\",\"%s\"}, \n", cp_name, lang_name, index, cp_name, lang_name, index, cp_name, lang_name );
    list += str;
    fprintf(f, "};\n\n" );
-   delete buf;
+   delete [] buf;
    fclose(in);
 }

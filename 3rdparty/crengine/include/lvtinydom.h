@@ -87,6 +87,7 @@
 #define DOC_PROP_FILE_FORMAT_ID  "doc.file.format.id"
 #define DOC_PROP_FILE_CRC32      "doc.file.crc32"
 #define DOC_PROP_CODE_BASE       "doc.file.code.base"
+#define DOC_PROP_COVER_FILE      "doc.cover.file"
 
 //#if BUILD_LITE!=1
 /// final block cache
@@ -124,6 +125,8 @@ typedef enum {
     doc_format_html,
     doc_format_txt_bookmark, // coolreader TXT format bookmark
     doc_format_chm,
+    doc_format_doc,
+    doc_format_max = doc_format_doc
     // don't forget update getDocFormatName() when changing this enum
 } doc_format_t;
 
@@ -1501,6 +1504,14 @@ public:
 
 typedef LVPtrVector<ldomMarkedText> ldomMarkedTextList;
 
+enum MoveDirection {
+    DIR_ANY,
+    DIR_LEFT,
+    DIR_RIGHT,
+    DIR_UP,
+    DIR_DOWN,
+};
+
 /// range in document, marked with specified flags
 class ldomMarkedRange
 {
@@ -1515,6 +1526,10 @@ public:
     {
         return ( start.y>end.y || ( start.y == end.y && start.x >= end.x ) );
     }
+    /// returns mark middle point for single line mark, or start point for multiline mark
+    lvPoint getMiddlePoint();
+    /// returns distance (dx+dy) from specified point to middle point
+    int calcDistance( int x, int y, MoveDirection dir );
     /// returns true if intersects specified line rectangle
     bool intersects( lvRect & rc, lvRect & intersection );
     /// constructor
@@ -1522,12 +1537,75 @@ public:
     : start(_start), end(_end), flags(_flags)
     {
     }
+    /// constructor
+    ldomMarkedRange( ldomWord & word ) {
+        ldomXPointer startPos(word.getNode(), word.getStart() );
+        ldomXPointer endPos(word.getNode(), word.getEnd() );
+        start = startPos.toPoint();
+        end = endPos.toPoint();
+    }
+
     /// copy constructor
     ldomMarkedRange( const ldomMarkedRange & v )
     : start(v.start), end(v.end), flags(v.flags)
     {
     }
 };
+
+class ldomWordEx : public ldomWord
+{
+    ldomWord _word;
+    ldomMarkedRange _mark;
+    ldomXRange _range;
+    lString16 _text;
+public:
+    ldomWordEx( ldomWord & word )
+        :  _word(word), _range(word), _mark(word)
+    {
+        _text = _word.getText();
+    }
+    ldomWord & getWord() { return _word; }
+    ldomXRange & getRange() { return _range; }
+    ldomMarkedRange & getMark() { return _mark; }
+    lString16 & getText() { return _text; }
+};
+
+/// list of extended words
+class ldomWordExList : public LVPtrVector<ldomWordEx>
+{
+    int minx;
+    int maxx;
+    int miny;
+    int maxy;
+    int x;
+    int y;
+    ldomWordEx * selWord;
+    lString16Collection pattern;
+    void init();
+    ldomWordEx * findWordByPattern();
+public:
+    ldomWordExList()
+        : minx(-1), maxx(-1), miny(-1), maxy(-1), x(-1), y(-1), selWord(NULL)
+    {
+    }
+    /// adds all visible words from range, returns number of added words
+    int addRangeWords( ldomXRange & range, bool trimPunctuation );
+    /// find word nearest to specified point
+    ldomWordEx * findNearestWord( int x, int y, MoveDirection dir );
+    /// select word
+    void selectWord( ldomWordEx * word, MoveDirection dir );
+    /// select next word in specified direction
+    ldomWordEx * selectNextWord( MoveDirection dir, int moveBy = 1 );
+    /// select middle word in range
+    ldomWordEx * selectMiddleWord();
+    /// get selected word
+    ldomWordEx * getSelWord() { return selWord; }
+    /// try append search pattern and find word
+    ldomWordEx * appendPattern(lString16 chars);
+    /// remove last character from pattern and try to search
+    ldomWordEx * reducePattern();
+};
+
 
 /// list of marked ranges
 class ldomMarkedRangeList : public LVPtrVector<ldomMarkedRange>

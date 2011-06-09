@@ -561,6 +561,13 @@ public:
             return m_list[index];
         return NULL;
     }
+    virtual const LVContainerItemInfo * GetObjectInfo(lString16 name)
+    {
+        for ( int i=0; i<m_list.length(); i++ )
+            if (m_list[i]->GetName()==name )
+                return m_list[i];
+        return NULL;
+    }
     virtual int GetObjectCount() const
     {
         return m_list.length();
@@ -760,8 +767,8 @@ lString16 LVCombinePaths( lString16 basePath, lString16 newPath );
 bool LVSplitArcName( lString16 fullPathName, lString16 & arcPathName, lString16 & arcItemPathName );
 
 /// returns true if specified file exists
-bool LVFileExists( lString16 pathName );
+bool LVFileExists( const lString16 & pathName );
 /// returns true if specified directory exists
-bool LVDirectoryExists( lString16 pathName );
+bool LVDirectoryExists( const lString16 & pathName );
 
 #endif // __LVSTREAM_H_INCLUDED__

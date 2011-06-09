@@ -33,6 +33,7 @@
 #define PROP_LOG_LEVEL               "crengine.log.level"
 #define PROP_LOG_AUTOFLUSH           "crengine.log.autoflush"
 #define PROP_FONT_SIZE               "crengine.font.size"
+#define PROP_FALLBACK_FONT_FACE      "crengine.font.fallback.face"
 #define PROP_STATUS_FONT_COLOR       "crengine.page.header.font.color"
 #define PROP_STATUS_FONT_FACE        "crengine.page.header.font.face"
 #define PROP_STATUS_FONT_SIZE        "crengine.page.header.font.size"
@@ -207,6 +208,28 @@ class LVDocViewImageCache
         }
 };
 #endif
+
+class LVPageWordSelector {
+    LVDocView * _docview;
+    ldomWordExList _words;
+    void updateSelection();
+public:
+    // selects middle word of current page
+    LVPageWordSelector( LVDocView * docview );
+    // clears selection
+    ~LVPageWordSelector();
+    // move current word selection in specified direction, (distance) times
+    void moveBy( MoveDirection dir, int distance = 1 );
+    // returns currently selected word
+    ldomWordEx * getSelectedWord() { return _words.getSelWord(); }
+    // access to words
+    ldomWordExList & getWords() { return _words; }
+    // append chars to search pattern
+    ldomWordEx * appendPattern( lString16 chars );
+    // remove last item from pattern
+    ldomWordEx * reducePattern();
+};
+
 
 #define LVDOCVIEW_COMMANDS_START 100
 /// LVDocView commands

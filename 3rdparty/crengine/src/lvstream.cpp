@@ -1287,6 +1287,9 @@ public:
         lString8 fn8 = UnicodeToUtf8(fname);
         m_fd = open( fn8.c_str(), flags, (mode_t)0666);
         if (m_fd == -1) {
+#ifndef ANDROID
+            CRLog::error( "Error opening file %s for %s, errno=%d, msg=%s", fn8.c_str(), (mode==LVOM_READ) ? "reading" : "read/write",  (int)errno, strerror(errno) );
+#endif
             return LVERR_FAIL;
         }
         struct stat stat;
@@ -3440,7 +3443,7 @@ public:
 			return LVERR_FAIL; // cannot resize foreign buffer
 		//
 		int newbufsize = (int)(new_size * 2 + 4096);
-		m_pBuffer = (lUInt8*) realloc( m_pBuffer, newbufsize );
+        m_pBuffer = cr_realloc( m_pBuffer, newbufsize );
 		m_bufsize = newbufsize;
 		return LVERR_OK;
 	}
@@ -3675,7 +3678,7 @@ lvsize_t LVPumpStream( LVStream * out, LVStream * in )
     lvsize_t bytesToRead = in->GetSize();
     while ( bytesToRead>0 )
     {
-        int blockSize = 5000;
+        unsigned blockSize = 5000;
         if (blockSize > bytesToRead)
             blockSize = bytesToRead;
         bytesRead = 0;
@@ -3773,7 +3776,7 @@ class LVTCRStream : public LVNamedStream
                 _decoded[_decodedLen++] = item->str[j];
             if ( _decodedLen >= _decodedSize - 256 ) {
                 _decodedSize += TCR_READ_BUF_SIZE / 2;
-                _decoded = (lUInt8*)realloc( _decoded, _decodedSize );
+                _decoded = cr_realloc( _decoded, _decodedSize );
             }
         }
         _decodedStart = _index[index];
@@ -4248,7 +4251,7 @@ void LVRemovePathDelimiter( lString16 & pathName )
 
 
 /// returns true if specified file exists
-bool LVFileExists( lString16 pathName )
+bool LVFileExists( const lString16 & pathName )
 {
 #ifdef _WIN32
 	LVStreamRef stream = LVOpenFileStream( pathName.c_str(), LVOM_READ );
@@ -4264,7 +4267,7 @@ bool LVFileExists( lString16 pathName )
 }
 
 /// returns true if specified directory exists
-bool LVDirectoryExists( lString16 pathName )
+bool LVDirectoryExists( const lString16 & pathName )
 {
 	// TODO: optimize
     LVContainerRef dir = LVOpenDirectory( pathName.c_str() );
@@ -4768,3 +4771,7 @@ LVStreamRef LVCreateBlockWriteStream( LVStreamRef baseStream, int blockSize, int
         return baseStream;
     return LVStreamRef( new LVBlockWriteStream(baseStream, blockSize, blockCount) );
 }
+
+
+
+

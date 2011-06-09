@@ -741,7 +741,7 @@ void LVGrayDrawBuf::Resize( int dx, int dy )
     }
     if ( dx && dy )
     {
-        _data = (lUInt8 *) realloc(_data, _rowsize * _dy);
+        _data = cr_realloc(_data, _rowsize * _dy);
     }
     else if (_data)
     {
@@ -876,7 +876,7 @@ void LVGrayDrawBuf::Draw( int x, int y, const lUInt8 * bitmap, int width, int he
 
         if ( _bpp==2 ) {
             // foreground color
-            lUInt8 cl = rgbToGray(GetTextColor()) >> 6; // 0..3
+            lUInt8 cl = (lUInt8)(rgbToGray(GetTextColor()) >> 6); // 0..3
             //cl ^= 0x03;
             for (xx = width; xx>0; --xx)
             {
@@ -1167,7 +1167,7 @@ void LVColorDrawBuf::Resize( int dx, int dy )
     	//CRLog::trace("LVColorDrawBuf::Resize : no resize, own data");
         return;
     }
-	CRLog::trace("LVColorDrawBuf::Resize : resizing %d x %d to %d x %d", _dx, _dy, dx, dy);
+    //CRLog::trace("LVColorDrawBuf::Resize : resizing %d x %d to %d x %d", _dx, _dy, dx, dy);
     // delete old bitmap
     if ( _dx>0 && _dy>0 && _data )
     {

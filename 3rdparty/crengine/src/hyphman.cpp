@@ -361,14 +361,16 @@ public:
         bool found = false;
         while ( p ) {
             bool res = true;
-            for ( int i=0; p->word[i]; i++ )
+            for ( int i=2; p->word[i]; i++ )
                 if ( p->word[i]!=s[i] ) {
                     res = false;
                     break;
                 }
             if ( res ) {
-                apply(mask);
-                found = true;
+                if ( p->word[0]==s[0] && p->word[1]==s[1] ) {
+                    p->apply(mask);
+                    found = true;
+                }
             }
             p = p->next;
         }
@@ -592,6 +594,26 @@ bool TexHyph::match( const lChar16 * str, char * mask )
     return found;
 }
 
+/// returns false if there is rule disabling hyphenation at specified point
+static bool checkHyphenRules( const lChar16 * str, int len, int pos )
+{
+    if ( pos<1 || pos>len-3 )
+        return false;
+    lUInt16 props[2] = { 0, 0 };
+    lStr_getCharProps( str+pos+1, 1, props);
+    if ( props[0]&CH_PROP_ALPHA_SIGN )
+        return false;
+    if ( pos==len-3 ) {
+        lStr_getCharProps( str+len-2, 2, props);
+        return (props[0]&CH_PROP_VOWEL) || (props[1]&CH_PROP_VOWEL);
+    }
+    if ( pos==1 ) {
+        lStr_getCharProps( str, 2, props);
+        return (props[0]&CH_PROP_VOWEL) || (props[1]&CH_PROP_VOWEL);
+    }
+    return true;
+}
+
 bool TexHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8 * flags, lUInt16 hyphCharWidth, lUInt16 maxWidth )
 {
     if ( len<=3 )
@@ -611,28 +633,58 @@ bool TexHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8 
     mask[len+3] = 0;
     bool found = false;
     for ( int i=0; i<len-1; i++ ) {
-        found = match( word + i, mask + i ) | found;
+        found = match( word + i, mask + i ) || found;
     }
     if ( !found )
         return false;
+
+#define DUMP_HYPHENATION_WORDS 0
+#if DUMP_HYPHENATION_WORDS==1
+    lString16 buf;
+    lString16 buf2;
+    bool boundFound = false;
+    for ( int i=0; i<len; i++ ) {
+        buf << str[i];
+        buf2 << str[i];
+        buf2 << (lChar16)mask[i+2];
+        int nw = widths[i]+hyphCharWidth;
+        if ( (mask[i+2]&1) ) {
+            buf << (lChar16)'-';
+            buf2 << (lChar16)'-';
+        }
+        if ( nw>maxWidth && !boundFound ) {
+            buf << (lChar16)'|';
+            buf2 << (lChar16)'|';
+            boundFound = true;
+//            buf << (lChar16)'-';
+//            buf2 << (lChar16)'-';
+        }
+    }
+    CRLog::trace("Hyphenate: %s  %s", LCSTR(buf), LCSTR(buf2) );
+#endif
+
     int p=0;
+    int bestp = -1;
+    int bestm = '0';
     for ( p=len-3; p>=1; p-- ) {
         // hyphenate
         //00010030100
         int nw = widths[p]+hyphCharWidth;
-        int bestp = -1;
-        int bestm = '0';
         if ( (mask[p+2]&1) && nw <= maxWidth ) {
-            if ( bestp<0 || mask[p+2]>bestm ) {
-                bestp = p;
-                bestm = mask[p+2];
+            if ( checkHyphenRules( word+1, len, p ) ) {
+                widths[p] += hyphCharWidth;
+                flags[p] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
+                if ( bestp<0 || mask[p+2]>bestm ) {
+                    bestp = p;
+                    bestm = mask[p+2];
+                }
             }
         }
-        if ( bestp>=0 ) {
-            widths[bestp] = nw;
-            flags[bestp] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
-            return true;
-        }
+    }
+    if ( bestp>=0 ) {
+//        widths[bestp] += hyphCharWidth;
+//        flags[bestp] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
+        return true;
     }
     return false;
 }

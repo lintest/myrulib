@@ -13,18 +13,7 @@
 #ifndef CRSETUP_H_INCLUDED
 #define CRSETUP_H_INCLUDED
 
-#define CR_WX_SUPPORT 1
-#define CR_EMULATE_GETTEXT 1
-#define CHM_SUPPORT_ENABLED 0
-#define USE_BITMAP_FONTS 0
 
-#ifdef _WIN32
-#define USE_FREETYPE 0
-#else
-#define USE_FREETYPE 1
-#endif
-
-#include <wx/wx.h>
 
 // features set for LBOOK
 #if (LBOOK==1)
@@ -78,7 +67,7 @@
 #define GRAY_INVERSE                         0
 #define USE_FREETYPE                         1
 #ifndef ANDROID
-#define USE_FONTCONFIG                       1
+#define USE_FONTCONFIG						 1
 #endif
 #define ALLOW_KERNING                        1
 #define GLYPH_CACHE_SIZE                     0x40000
@@ -95,12 +84,15 @@
 #ifndef COLOR_BACKBUFFER
 #define COLOR_BACKBUFFER                     1
 #endif
-#define GRAY_INVERSE                         0
+#define GRAY_INVERSE						 0
 #ifndef MAX_IMAGE_SCALE_MUL
 #define MAX_IMAGE_SCALE_MUL                  1
 #endif
-#define USE_WIN32_FONTS                      1
+#if defined(CYGWIN)
 #define USE_FREETYPE                         0
+#else
+#define USE_FREETYPE                         1
+#endif
 #define USE_UNRAR                            0
 #define ALLOW_KERNING                        1
 #define GLYPH_CACHE_SIZE                     0x20000
@@ -277,6 +269,10 @@
 /// Document caching file size threshold (bytes). For longer documents, swapping to disk should occur
 #ifndef DOCUMENT_CACHING_SIZE_THRESHOLD
 #define DOCUMENT_CACHING_SIZE_THRESHOLD 0x100000 // 1Mb
+#endif
+
+#ifndef ENABLE_ANTIWORD
+#define ENABLE_ANTIWORD 1
 #endif
 
 #endif//CRSETUP_H_INCLUDED

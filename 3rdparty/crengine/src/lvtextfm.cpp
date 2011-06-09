@@ -173,7 +173,7 @@ void lvtextAddSourceLine( formatted_text_fragment_t * pbuffer,
     {
         pline->t.text = text;
     }
-    pline->index = pbuffer->srctextlen-1;
+    pline->index = (lUInt16)(pbuffer->srctextlen-1);
     pline->object = object;
     pline->t.len = (lUInt16)len;
     pline->margin = margin;
@@ -203,7 +203,7 @@ void lvtextAddSourceObject(
         pbuffer->srctext = (src_text_fragment_t*)realloc( pbuffer->srctext, sizeof(src_text_fragment_t)*(srctextsize) );
     }
     src_text_fragment_t * pline = &pbuffer->srctext[ pbuffer->srctextlen++ ];
-    pline->index = pbuffer->srctextlen-1;
+    pline->index = (lUInt16)(pbuffer->srctextlen-1);
     pline->o.width = width;
     pline->o.height = height;
     pline->object = object;
@@ -351,8 +351,8 @@ lUInt32 lvtextFormat( formatted_text_fragment_t * pbuffer )
         if (!flgObject && (int)widths_buf_size < (int)srcline->t.len + 64) //
         {
             widths_buf_size = srcline->t.len + 64;
-            widths_buf = (lUInt16 *) realloc( widths_buf, widths_buf_size * sizeof(lUInt16) );
-            flags_buf  = (lUInt8 *) realloc( flags_buf, widths_buf_size * sizeof(lUInt8) );
+            widths_buf = cr_realloc( widths_buf, widths_buf_size );
+            flags_buf  = cr_realloc( flags_buf, widths_buf_size );
         }
 
         int textWrapped = 0;
@@ -708,7 +708,7 @@ void lvtextDraw( formatted_text_fragment_t * text, draw_buf_t * buf, int x, int 
 
 #define DUMMY_IMAGE_SIZE 16
 
-int gFlgFloatingPunctuationEnabled = 1;
+bool gFlgFloatingPunctuationEnabled = true;
 
 void LFormattedText::AddSourceObject(
             lUInt16         flags,    /* flags */
@@ -1239,6 +1239,7 @@ public:
                         space_left, //pbuffer->width,
                         '?',
                         letter_spacing);
+//                CRLog::trace("measure text: %d chars measured", chars_measured);
                 int j;
                 int last_fit = -1;
                 int last_hyph = -1;
@@ -1249,15 +1250,23 @@ public:
                         flags_buf[chars_left-1] |= LCHAR_ALLOW_WRAP_AFTER;
                 for (j = 0; j<chars_left && j<chars_measured; j++)
                 {
-                    if (widths_buf[j] > space_left)
+                    if (widths_buf[j] > space_left) {
+//                        if (flags_buf[j] & LCHAR_ALLOW_HYPH_WRAP_AFTER) {
+//                            CRLog::trace("Hyphenation char doesn't fit!");
+//                        }
+//                        CRLog::("Break on char %d, chars_measured=%d, width=%d, space_left=%d", j, chars_measured, widths_buf[j], space_left);
                         break;
+                    }
                     if (flags_buf[j] & LCHAR_ALLOW_WRAP_AFTER) {
                         last_fit = j;
                         if ( flags_buf[j] & LCHAR_IS_EOL )
                             break;
                     }
-                    if (flags_buf[j] & LCHAR_ALLOW_HYPH_WRAP_AFTER)
+                    if (flags_buf[j] & LCHAR_ALLOW_HYPH_WRAP_AFTER) {
                         last_hyph = j;
+//                        if ( widths_buf[j]>space_left)
+//                            CRLog::trace("Hyphenation outside line bounds!");
+                    }
                 }
 
                 if ( last_hyph!=-1 ) {
@@ -1265,7 +1274,16 @@ public:
                         last_fit = last_hyph; // always hyphenate if enabled
                     else if ( last_fit==-1 && !frmline->word_count )
                         last_fit = last_hyph; // try to hyphenate if single word only
+                    {
+                        lString16 s;
+                        for ( int i=0; i<=last_hyph; i++ )
+                            s += srcline->t.text[ text_offset + i];
+                        s << L"-";
+//                        CRLog::trace("%s  width=%d space_left=%d", LCSTR(s), widths_buf[last_hyph], space_left);
+                    }
                 }
+
+//                CRLog::trace("lastFit=%d, lastHyph=%d", last_fit, last_hyph);
 
                 if ( last_fit==-1 ) {
 
@@ -1307,6 +1325,8 @@ public:
                             setSrcLine( srcIndex+1, 0 );
                     }
                 } else {
+//                    if ( last_hyph!=-1 && last_fit !=last_hyph )
+//                        CRLog::trace("Hyphenation not used");
                     // add words
                     if ( align == LTEXT_ALIGN_WIDTH ) {
                         //
@@ -1317,7 +1337,12 @@ public:
                             if (flags_buf[j] & LCHAR_IS_SPACE || j==last_fit) /* LCHAR_ALLOW_WRAP_AFTER */
                             {
                                 formatted_word_t * w = addWord( wstart, j );
-                                if ( w->flags & LTEXT_WORD_MUST_BREAK_LINE_AFTER ) {
+//                                if ( j==last_fit && j>0 && j<chars_left) {
+//                                    commit();
+//                                    eol = true;
+//                                    break;
+//                                }
+                                if ( w->flags & LTEXT_WORD_MUST_BREAK_LINE_AFTER) {
                                     commit();
                                     eol = true;
                                     break;
@@ -1424,7 +1449,7 @@ public:
     void allocate()
     {
         int pos = 0;
-        int i;
+        unsigned i;
         // PASS 1: calculate total length (characters + objects)
         for ( i=0; i<m_pbuffer->srctextlen; i++ ) {
             src_text_fragment_t * src = &m_pbuffer->srctext[i];
@@ -1466,7 +1491,7 @@ public:
     void copyText()
     {
         int pos = 0;
-        int i;
+        unsigned i;
         for ( i=0; i<m_pbuffer->srctextlen; i++ ) {
             src_text_fragment_t * src = &m_pbuffer->srctext[i];
             if ( src->flags & LTEXT_SRC_IS_OBJECT ) {
@@ -1573,7 +1598,7 @@ public:
         int maxWidth = m_pbuffer->width;
         int w0 = start>0 ? m_widths[start-1] : 0;
         int align = para->flags & LTEXT_FLAG_NEWLINE;
-        bool addHyph = m_flags[end] & LCHAR_ALLOW_HYPH_WRAP_AFTER;
+        bool addHyph = (m_flags[end] & LCHAR_ALLOW_HYPH_WRAP_AFTER)!=0;
         int hyphWidth = 0;
         if ( addHyph )
             hyphWidth = ((LVFont*)m_srcs[end]->t.font)->getCharWidth(UNICODE_SOFT_HYPHEN_CODE);
@@ -1618,8 +1643,8 @@ public:
         for ( int i=start+1; i<=end; i++ ) {
             src_text_fragment_t * newSrc = i<end ? m_srcs[start] : 0;
             if ( i<end ) {
-                isObject = (m_flags[i] & LCHAR_IS_OBJECT);
-                isSpace = (m_flags[i] & LCHAR_IS_SPACE);
+                isObject = (m_flags[i] & LCHAR_IS_OBJECT)!=0;
+                isSpace = (m_flags[i] & LCHAR_IS_SPACE)!=0;
                 nextIsSpace = i<end-1 && (m_flags[i+1] & LCHAR_IS_SPACE);
                 space = addSpace && lastIsSpace && !isSpace && i<lastnonspace;
             } else {
