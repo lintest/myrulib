@@ -253,6 +253,7 @@
 		<sources>sources/MyRuLib/dialogs/FbFilterDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbParamsDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbProgressDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbReaderDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbSequenDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbServiceDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbTitleDlg.cpp</sources>

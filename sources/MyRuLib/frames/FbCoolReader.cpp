@@ -6,6 +6,7 @@
 #include <wx/wfstream.h>
 #include <crengine.h>
 #include "FbConst.h"
+#include "FbParams.h"
 
 #ifdef FB_INCLUDE_READER
 
@@ -261,10 +262,14 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, boo
     getDocView()->setPageHeaderInfo( flags );
 
     fontMan->SetAntialiasMode( 2 );
-    getDocView()->setDefaultFontFace( UnicodeToUtf8(L"Arial") );
-    getDocView()->setTextColor(0x000060);
+
+	wxFont font = FbParams::GetFont(FB_READER_FONT_DEFAULT);
+    getDocView()->setDefaultFontFace( UnicodeToUtf8(font.GetFaceName().c_str()) );
+//    getDocView()->setTextColor(FbParams::GetColour(FB_READER_FONT_COLOUR).GetPixel());
+//    getDocView()->setBackgroundColor(FbParams::GetColour(FB_READER_FONT_COLOUR).GetPixel());
+    getDocView()->setTextColor(0x000000);
     getDocView()->setBackgroundColor(0xFFFFE0);
-    getDocView()->setFontSize(28);
+    getDocView()->setFontSize(font.GetPointSize());
     getDocView()->setViewMode(DVM_PAGES);
 
     lString8 css;

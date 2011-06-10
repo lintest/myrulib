@@ -11,6 +11,7 @@
 #include "dialogs/FbDataOpenDlg.h"
 #include "dialogs/FbConfigDlg.h"
 #include "dialogs/FbAboutDlg.h"
+#include "dialogs/FbReaderDlg.h"
 #include "FbImportThread.h"
 #include "frames/FbFrameAuth.h"
 #include "frames/FbFrameFind.h"
@@ -38,6 +39,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
 	EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
+	EVT_MENU(ID_READER_OPTIONS, FbMainFrame::OnReader)
 	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
 	EVT_MENU_RANGE(wxID_FILE1, wxID_FILE5, FbMainFrame::OnMenuRecent)
 
@@ -311,6 +313,13 @@ void FbMainFrame::SetTabArt(int id)
 void FbMainFrame::OnSetup(wxCommandEvent & event)
 {
 	FbParamsDlg::Execute(this);
+}
+
+void FbMainFrame::OnReader(wxCommandEvent & event)
+{
+	#ifdef FB_INCLUDE_READER
+	FbReaderDlg::Execute(this);
+	#endif // FB_INCLUDE_READER	
 }
 
 void FbMainFrame::OnMenuConfig(wxCommandEvent& event)

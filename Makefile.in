@@ -183,6 +183,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbFilterDlg.o \
 	myrulib_FbParamsDlg.o \
 	myrulib_FbProgressDlg.o \
+	myrulib_FbReaderDlg.o \
 	myrulib_FbSequenDlg.o \
 	myrulib_FbServiceDlg.o \
 	myrulib_FbTitleDlg.o \
@@ -745,6 +746,9 @@ myrulib_FbParamsDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbParamsDlg.cpp $(MYRUL
 
 myrulib_FbProgressDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbProgressDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/dialogs/FbProgressDlg.cpp
+
+myrulib_FbReaderDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbReaderDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/dialogs/FbReaderDlg.cpp
 
 myrulib_FbSequenDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbSequenDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/dialogs/FbSequenDlg.cpp

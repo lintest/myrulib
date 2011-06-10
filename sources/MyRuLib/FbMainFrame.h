@@ -52,6 +52,7 @@ class FbMainFrame : public wxFrame
 	private:
 		void OnExit(wxCommandEvent & event);
 		void OnSetup(wxCommandEvent & event);
+		void OnReader(wxCommandEvent & event);
 		void OnOpenWeb(wxCommandEvent & event);
 		void OnAbout(wxCommandEvent & event);
 		void OnDatabaseInfo(wxCommandEvent & event);

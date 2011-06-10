@@ -72,6 +72,9 @@ FbFrameMenu::MenuEdit::MenuEdit()
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	AppendSeparator();
+	#ifdef FB_INCLUDE_READER
+	Append(ID_READER_OPTIONS, _("Cool Reader options"));
+	#endif // FB_INCLUDE_READER	
 	Append(wxID_PREFERENCES, _("Settings"));
 }
 
