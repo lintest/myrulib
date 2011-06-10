@@ -455,7 +455,7 @@ void FbMainFrame::ShowLog(bool forced)
 	wxAuiPaneInfo * info = FindLog();
 	if (info) {
 		bool show = forced || !info->IsShown();
-		if (show != info->IsShown() && FbParams::GetInt(FB_CLEAR_LOG)) m_LogCtrl->AssignModel(new FbLogModel);
+		if (!show && FbParams::GetInt(FB_CLEAR_LOG)) m_LogCtrl->AssignModel(new FbLogModel);
 		info->Show(show);
 		m_FrameManager.Update();
 	}

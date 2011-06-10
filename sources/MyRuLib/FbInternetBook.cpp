@@ -178,7 +178,7 @@ bool FbInternetBook::CheckFile()
 		return CheckZip();
 	}
 
-	FbLogError(_("Download error"), m_url);
+	FbLogError(_("Wrong MD5 sum"), m_url);
 	return false;
 }
 
