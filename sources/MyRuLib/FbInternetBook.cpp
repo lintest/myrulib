@@ -157,19 +157,17 @@ bool FbInternetBook::CheckFile()
 	unsigned char buf[BUFSIZE];
 
 	size_t pos = 0;
-	size_t count = 0;
 	bool zipped = false;
 
 	md5_context md5;
 	md5_starts( &md5 );
-	do {
+	while (true) {
 		size_t count = in.Read(buf, BUFSIZE).LastRead();
-		if ( count ) {
-			md5_update( &md5, buf, (int) count );
-			if ( pos == 0 && count > 1 && memcmp(buf, "PK", 2) == 0) zipped = true;
-			pos += count;
-		}
-	} while (count);
+		if ( count == 0) break; 
+		md5_update( &md5, buf, (int) count );
+		if ( pos == 0 && count > 1 && memcmp(buf, "PK", 2) == 0) zipped = true;
+		pos += count;
+	}
 
 	wxString md5sum = Md5(md5);
 	if ( md5sum == m_md5sum ) {
