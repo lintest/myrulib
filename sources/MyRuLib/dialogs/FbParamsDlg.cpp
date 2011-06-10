@@ -216,7 +216,7 @@ FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxFlexGridSizer* fgSizerList;
-	fgSizerList = new wxFlexGridSizer(3, 0, 0 );
+	fgSizerList = new wxFlexGridSizer(2, 0, 0 );
 	fgSizerList->AddGrowableCol( 1 );
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -248,10 +248,11 @@ void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString
 	fpValue = new wxFontPickerCtrl( this, idFont, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE|wxFNTP_USE_TEXTCTRL );
 	fpValue->SetMaxPointSize( 100 );
 	fgSizer->Add( fpValue, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
-
+/*
 	wxColourPickerCtrl * cpValue;
 	cpValue = new wxColourPickerCtrl( this, idColour);
 	fgSizer->Add( cpValue, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
+*/	
 }
 
 //-----------------------------------------------------------------------------

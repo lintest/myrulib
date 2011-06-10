@@ -4,7 +4,7 @@
 #include "FbDatabase.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include "FbFilterDlg.h"
+#include "dialogs/FbFilterDlg.h"
 
 //-----------------------------------------------------------------------------
 //  FbFilterParentData

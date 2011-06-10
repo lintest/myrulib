@@ -14,7 +14,7 @@
 #include "FbBookTree.h"
 #include "FbInternetBook.h"
 #include "FbDeleteThread.h"
-#include "FbTitleDlg.h"
+#include "dialogs/FbTitleDlg.h"
 
 //-----------------------------------------------------------------------------
 //  FbBookViewCtrl

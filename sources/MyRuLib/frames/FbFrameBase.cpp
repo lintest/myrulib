@@ -1,12 +1,12 @@
 #include "FbFrameBase.h"
 #include <wx/clipbrd.h>
 #include "FbConst.h"
-#include "FbExportDlg.h"
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
-#include "FbFilterDlg.h"
-#include "FbColumnDlg.h"
 #include "FbMasterTypes.h"
+#include "dialogs/FbExportDlg.h"
+#include "dialogs/FbFilterDlg.h"
+#include "dialogs/FbColumnDlg.h"
 
 //-----------------------------------------------------------------------------
 //  FbMasterViewCtrl

@@ -3,7 +3,7 @@
 #include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbConst.h"
-#include "FbConvertDlg.h"
+#include "dialogs/FbConvertDlg.h"
 #include <wx/encconv.h>
 
 #define fbMAX_FILENAME_LENGTH 100

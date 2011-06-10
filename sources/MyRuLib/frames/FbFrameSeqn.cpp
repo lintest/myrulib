@@ -3,11 +3,11 @@
 #include <wx/splitter.h>
 #include "FbConst.h"
 #include "FbClientData.h"
-#include "FbExportDlg.h"
+#include "dialogs/FbExportDlg.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
 #include "FbParams.h"
-#include "FbSequenDlg.h"
+#include "dialogs/FbSequenDlg.h"
 #include "FbMasterTypes.h"
 
 IMPLEMENT_CLASS(FbFrameSeqn, FbFrameBase)

@@ -9,7 +9,7 @@
 #include "FbParams.h"
 #include "FbGenres.h"
 #include "ZipReader.h"
-#include "FbDataOpenDlg.h"
+#include "dialogs/FbDataOpenDlg.h"
 #include "FbCollection.h"
 
 IMPLEMENT_APP(MyRuLibApp)

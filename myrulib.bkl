@@ -243,41 +243,20 @@
 		<sources>sources/MyRuLib/controls/FbURL.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbViewItem.cpp</sources>
 		<sources>sources/MyRuLib/controls/ProgressBar.cpp</sources>
-		<sources>sources/MyRuLib/FbAboutDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbAlphabet.cpp</sources>
-		<sources>sources/MyRuLib/FbAuthList.cpp</sources>
-		<sources>sources/MyRuLib/FbAuthorDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbBookData.cpp</sources>
-		<sources>sources/MyRuLib/FbBookEvent.cpp</sources>
-		<sources>sources/MyRuLib/FbBookList.cpp</sources>
-		<sources>sources/MyRuLib/FbBookMenu.cpp</sources>
-		<sources>sources/MyRuLib/FbBookPanel.cpp</sources>
-		<sources>sources/MyRuLib/FbBookTraverser.cpp</sources>
-		<sources>sources/MyRuLib/FbBookTree.cpp</sources>
-		<sources>sources/MyRuLib/FbCacheBook.cpp</sources>
-		<sources>sources/MyRuLib/FbColumnDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbColumns.cpp</sources>
-		<sources>sources/MyRuLib/FbCollection.cpp</sources>
-		<sources>sources/MyRuLib/FbConvertDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbConfigDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbConst.cpp</sources>
-		<sources>sources/MyRuLib/FbDatabase.cpp</sources>
-		<sources>sources/MyRuLib/FbDataOpenDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbDataPath.cpp</sources>
-		<sources>sources/MyRuLib/FbDateTime.cpp</sources>
-		<sources>sources/MyRuLib/FbDateTree.cpp</sources>
-		<sources>sources/MyRuLib/FbDeleteThread.cpp</sources>
-		<sources>sources/MyRuLib/FbDownList.cpp</sources>
-		<sources>sources/MyRuLib/FbEditBook.cpp</sources>
-		<sources>sources/MyRuLib/FbExportDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbExportTree.cpp</sources>
-		<sources>sources/MyRuLib/FbExtractInfo.cpp</sources>
-		<sources>sources/MyRuLib/FbDownloader.cpp</sources>
-		<sources>sources/MyRuLib/FbFilterDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
-		<sources>sources/MyRuLib/FbFilterThread.cpp</sources>
-		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
-		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbAboutDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbAuthorDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbColumnDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbConvertDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbConfigDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbDataOpenDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbExportDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbFilterDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbParamsDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbProgressDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbSequenDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbServiceDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbTitleDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbViewerDlg.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameAuth.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameBase.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameDate.cpp</sources>
@@ -289,6 +268,33 @@
 		<sources>sources/MyRuLib/frames/FbFrameGenr.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameSeqn.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbCoolReader.cpp</sources>
+		<sources>sources/MyRuLib/FbAlphabet.cpp</sources>
+		<sources>sources/MyRuLib/FbAuthList.cpp</sources>
+		<sources>sources/MyRuLib/FbBookData.cpp</sources>
+		<sources>sources/MyRuLib/FbBookEvent.cpp</sources>
+		<sources>sources/MyRuLib/FbBookList.cpp</sources>
+		<sources>sources/MyRuLib/FbBookMenu.cpp</sources>
+		<sources>sources/MyRuLib/FbBookPanel.cpp</sources>
+		<sources>sources/MyRuLib/FbBookTraverser.cpp</sources>
+		<sources>sources/MyRuLib/FbBookTree.cpp</sources>
+		<sources>sources/MyRuLib/FbCacheBook.cpp</sources>
+		<sources>sources/MyRuLib/FbColumns.cpp</sources>
+		<sources>sources/MyRuLib/FbCollection.cpp</sources>
+		<sources>sources/MyRuLib/FbConst.cpp</sources>
+		<sources>sources/MyRuLib/FbDatabase.cpp</sources>
+		<sources>sources/MyRuLib/FbDataPath.cpp</sources>
+		<sources>sources/MyRuLib/FbDateTime.cpp</sources>
+		<sources>sources/MyRuLib/FbDateTree.cpp</sources>
+		<sources>sources/MyRuLib/FbDeleteThread.cpp</sources>
+		<sources>sources/MyRuLib/FbDownList.cpp</sources>
+		<sources>sources/MyRuLib/FbEditBook.cpp</sources>
+		<sources>sources/MyRuLib/FbExportTree.cpp</sources>
+		<sources>sources/MyRuLib/FbExtractInfo.cpp</sources>
+		<sources>sources/MyRuLib/FbDownloader.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterThread.cpp</sources>
+		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
+		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
 		<sources>sources/MyRuLib/FbFrameThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
@@ -306,23 +312,17 @@
 		<sources>sources/MyRuLib/FbMasterTypes.cpp</sources>
 		<sources>sources/MyRuLib/FbMenu.cpp</sources>
 		<sources>sources/MyRuLib/FbParams.cpp</sources>
-		<sources>sources/MyRuLib/FbParamsDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbParsingCtx.cpp</sources>  
 		<sources>sources/MyRuLib/FbPreviewReader.cpp</sources> 
 		<sources>sources/MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbPreviewWindow.cpp</sources>
-		<sources>sources/MyRuLib/FbProgressDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbSeqnList.cpp</sources>
-		<sources>sources/MyRuLib/FbSequenDlg.cpp</sources>
-		<sources>sources/MyRuLib/FbServiceDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbServiceThread.cpp</sources>
 		<sources>sources/MyRuLib/FbThread.cpp</sources>
-		<sources>sources/MyRuLib/FbTitleDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbUpdateThread.cpp</sources>
 		<sources>sources/MyRuLib/FbViewContext.cpp</sources>
 		<sources>sources/MyRuLib/FbViewData.cpp</sources>
 		<sources>sources/MyRuLib/FbViewThread.cpp</sources>
-		<sources>sources/MyRuLib/FbViewerDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbWindow.cpp</sources>
 		<sources>sources/MyRuLib/MyRuLibApp.cpp</sources>
 		<sources>sources/MyRuLib/ZipReader.cpp</sources>

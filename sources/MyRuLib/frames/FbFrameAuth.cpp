@@ -3,10 +3,10 @@
 #include <wx/splitter.h>
 #include "FbConst.h"
 #include "FbClientData.h"
-#include "FbExportDlg.h"
+#include "dialogs/FbExportDlg.h"
+#include "dialogs/FbAuthorDlg.h"
 #include "FbMainMenu.h"
 #include "FbWindow.h"
-#include "FbAuthorDlg.h"
 #include "FbMasterTypes.h"
 #include "controls/FbToolBar.h"
 
