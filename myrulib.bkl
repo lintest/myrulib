@@ -242,7 +242,6 @@
 		<sources>sources/MyRuLib/controls/FbTreeView.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbURL.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbViewItem.cpp</sources>
-		<sources>sources/MyRuLib/controls/LimitedTextCtrl.cpp</sources>
 		<sources>sources/MyRuLib/controls/ProgressBar.cpp</sources>
 		<sources>sources/MyRuLib/FbAboutDlg.cpp</sources>
 		<sources>sources/MyRuLib/FbAlphabet.cpp</sources>

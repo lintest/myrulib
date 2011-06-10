@@ -6,7 +6,6 @@
 #include <wx/toolbar.h>
 #include <wx/textctrl.h>
 #include "controls/ProgressBar.h"
-#include "controls/LimitedTextCtrl.h"
 #include "FbLogoBitmap.h"
 #include "FbBookEvent.h"
 #include "FbMasterInfo.h"

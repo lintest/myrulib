@@ -172,7 +172,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbTreeView.o \
 	myrulib_FbURL.o \
 	myrulib_FbViewItem.o \
-	myrulib_LimitedTextCtrl.o \
 	myrulib_ProgressBar.o \
 	myrulib_FbAboutDlg.o \
 	myrulib_FbAlphabet.o \
@@ -713,9 +712,6 @@ myrulib_FbURL.o: $(srcdir)/sources/MyRuLib/controls/FbURL.cpp $(MYRULIB_ODEP)
 
 myrulib_FbViewItem.o: $(srcdir)/sources/MyRuLib/controls/FbViewItem.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbViewItem.cpp
-
-myrulib_LimitedTextCtrl.o: $(srcdir)/sources/MyRuLib/controls/LimitedTextCtrl.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/LimitedTextCtrl.cpp
 
 myrulib_ProgressBar.o: $(srcdir)/sources/MyRuLib/controls/ProgressBar.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/ProgressBar.cpp
