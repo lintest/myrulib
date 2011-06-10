@@ -79,7 +79,6 @@ class FbMainFrame : public wxFrame
 		void OnRegZip( wxCommandEvent& event );
 		void OnFolder( wxCommandEvent& event );
 		void OnProgressUpdate(wxUpdateUIEvent& event);
-		void OnError(wxCommandEvent& event);
 		void OnHideLog(wxCommandEvent& event);
 		void OnUpdateFolder(FbFolderEvent & event);
 		void OnUpdateMaster(FbMasterEvent & event);

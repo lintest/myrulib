@@ -68,7 +68,6 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
-	EVT_MENU(ID_ERROR, FbMainFrame::OnError)
 	EVT_MENU(ID_TEXTLOG_CTRL, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
@@ -258,7 +257,8 @@ void FbMainFrame::CreateControls()
 	m_ProgressBar.SetStatusWidths(4, widths);
 	SetStatusBar(&m_ProgressBar);
 
-	m_LogCtrl = new FbTreeViewCtrl(this, ID_TEXTLOG_CTRL, wxDefaultPosition, wxSize(-1, 100), fbTR_MULTIPLE | fbTR_NO_HEADER);
+	m_LogCtrl = new FbLogViewCtrl;
+	m_LogCtrl->Create(this, ID_TEXTLOG_CTRL, wxDefaultPosition, wxSize(-1, 100), fbTR_MULTIPLE | fbTR_NO_HEADER);
 	m_LogCtrl->AssignModel(new FbLogModel);
 
 	m_FrameManager.SetManagedWindow(this);
@@ -431,12 +431,6 @@ void FbMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)
 	m_ProgressBar.SetProgress(event.GetInt());
 	m_ProgressBar.SetStatusText(event.GetText(), 0);
 	m_ProgressBar.SetStatusText(event.GetString(), 2);
-}
-
-void FbMainFrame::OnError(wxCommandEvent& event)
-{
-//	ShowLog(true);
-//	m_LogTextCtrl.AppendText(event.GetString() + wxT("\n"));
 }
 
 wxAuiPaneInfo * FbMainFrame::FindLog()

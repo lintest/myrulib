@@ -33,7 +33,7 @@ private:
 		event.Enable(false);
 	}
 
-	DECLARE_CLASS(FbBookViewCtrl)
+	DECLARE_CLASS(FbMasterViewCtrl)
 	DECLARE_EVENT_TABLE()
 };
 
