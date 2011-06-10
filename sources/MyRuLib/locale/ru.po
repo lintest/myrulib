@@ -538,45 +538,35 @@ msgstr "Страница автора"
 #: FbFrameAuth.cpp:233 FbFrameBase.cpp:231 FbFrameInfo.cpp:229
 #: FbFrameSeqn.cpp:224 FbMainMenu.cpp:60
 msgid "&File"
-msgstr "Файл"
+msgstr "&Файл"
 
 #: FbFrameAuth.cpp:234 FbFrameBase.cpp:232 FbFrameInfo.cpp:230
 #: FbFrameSeqn.cpp:225 FbMainMenu.cpp:61
 msgid "&Library"
-msgstr "Библиотека"
+msgstr "&Библиотека"
 
 #: FbFrameAuth.cpp:235 FbFrameBase.cpp:233 FbFrameInfo.cpp:231
 #: FbFrameSeqn.cpp:226 FbMainMenu.cpp:62
 msgid "&Catalog"
-msgstr "Картотека"
+msgstr "&Картотека"
 
 #: FbFrameAuth.cpp:236
 msgid "&Authors"
-msgstr "Авторы"
+msgstr "&Авторы"
 
 #: FbFrameAuth.cpp:237 FbFrameBase.cpp:234 FbFrameSeqn.cpp:228
 msgid "&Books"
-msgstr "Книги"
-
-#: FbFrameAuth.cpp:238 FbFrameBase.cpp:235 FbFrameInfo.cpp:232
-#: FbFrameSeqn.cpp:229 FbMainMenu.cpp:63
-msgid "&View"
-msgstr "Вид"
-
-#: FbFrameAuth.cpp:239 FbFrameBase.cpp:236 FbFrameInfo.cpp:233
-#: FbFrameSeqn.cpp:230 FbMainMenu.cpp:64
-msgid "&Tools"
-msgstr "Сервис"
+msgstr "К&ниги"
 
 #: FbFrameAuth.cpp:240 FbFrameBase.cpp:237 FbFrameInfo.cpp:234
 #: FbFrameSeqn.cpp:231 FbMainMenu.cpp:65
 msgid "&Window"
-msgstr "Окно"
+msgstr "&Окно"
 
 #: FbFrameAuth.cpp:241 FbFrameBase.cpp:238 FbFrameInfo.cpp:235
 #: FbFrameSeqn.cpp:232 FbMainMenu.cpp:66
 msgid "&?"
-msgstr "?"
+msgstr "&?"
 
 #: FbFrameAuth.h:24 FbMainMenu.cpp:8
 msgid "Authors"
@@ -785,7 +775,7 @@ msgstr "Удалить серию «%s»?"
 
 #: FbFrameSeqn.cpp:227
 msgid "&Series"
-msgstr "Серии"
+msgstr "&Серии"
 
 #: FbGenreThread.cpp:11 FbMainMenu.cpp:32
 msgid "Rebuild the list of genres"

@@ -408,6 +408,20 @@ void FbBookPanel::OnDeleteBooks(wxCommandEvent& event)
 
 	(new FbDeleteThread(sel))->Execute();
 	m_BookList.Delete();
+	UpdateBookCount();
+}
+
+void FbBookPanel::UpdateBookCount()
+{
+	int count = wxNOT_FOUND;
+	FbBookTreeModel * model = wxDynamicCast(m_BookList.GetModel(), FbBookTreeModel);
+	if (model) {
+		count = model->GetBookCount();
+	} else {
+		FbListModel * model = wxDynamicCast(m_BookList.GetModel(), FbListModel);
+		if (model) count = model->GetRowCount();
+	}
+	if (count != wxNOT_FOUND) FbCountEvent(ID_BOOKS_COUNT, GetInfo(), count).Post(this);
 }
 
 void FbBookPanel::OnModifyBooks(wxCommandEvent& event)

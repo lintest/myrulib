@@ -73,6 +73,7 @@ class FbBookPanel: public wxSplitterWindow
 		size_t GetSelected(wxString &selections);
 		size_t GetSelected(wxArrayInt &items);
 		void ResetPreview();
+		void UpdateBookCount();
 	private:
 		FbBookViewCtrl m_BookList;
 		FbPreviewWindow m_BookInfo;
