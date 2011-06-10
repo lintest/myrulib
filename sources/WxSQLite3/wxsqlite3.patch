@@ -129,7 +129,7 @@
    if (m_stmt == 0)
    {
 -    throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOSTMT);
-+    WXSQLITE3_ERROR(WXSQLITE_ERROR, wxERRMSG_NOSTMT, );
++    return;
    }
  }
  
@@ -467,7 +467,7 @@
    if (m_stmt == 0)
    {
 -    throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOSTMT);
-+    WXSQLITE3_ERROR(WXSQLITE_ERROR, wxERRMSG_NOSTMT, );
++    return;
    }
  }
  
