@@ -346,6 +346,8 @@
 		<Unit filename="../MyRuLib/dialogs/FbParamsDlg.h" />
 		<Unit filename="../MyRuLib/dialogs/FbProgressDlg.cpp" />
 		<Unit filename="../MyRuLib/dialogs/FbProgressDlg.h" />
+		<Unit filename="../MyRuLib/dialogs/FbReaderDlg.cpp" />
+		<Unit filename="../MyRuLib/dialogs/FbReaderDlg.h" />
 		<Unit filename="../MyRuLib/dialogs/FbSequenDlg.cpp" />
 		<Unit filename="../MyRuLib/dialogs/FbSequenDlg.h" />
 		<Unit filename="../MyRuLib/dialogs/FbServiceDlg.cpp" />

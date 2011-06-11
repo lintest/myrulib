@@ -65,10 +65,15 @@ void FbDialog::Assign(long winid, int param, bool write)
 		else
 			control->SetSelectedFont(FbParams::GetFont(param) );
 	} else if (wxColourPickerCtrl * control = wxDynamicCast(window, wxColourPickerCtrl)) {
-		if (write)
-			FbParams::Set(param, control->GetColour().GetAsString(wxC2S_HTML_SYNTAX));
-		else
-			control->SetColour(FbParams::GetColour(param));
+		if (write) {
+			wxColor colour = control->GetColour();
+			unsigned int rgb = colour.Red() * 0x10000 + colour.Green() * 0x100 + colour.Blue();
+			FbParams::Set(param, rgb);
+		} else {
+			wxString text = wxString::Format(wxT("#%06x"), FbParams::GetInt(param));
+			wxColor colour(text); 
+			control->SetColour(colour);
+		}
 	} else if (FbChoiceInt * control = wxDynamicCast(window, FbChoiceInt)) {
 		if (write) {
 			int format = control->GetCurrentData();

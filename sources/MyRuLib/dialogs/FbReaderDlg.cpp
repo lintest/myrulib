@@ -30,7 +30,7 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent)
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxFontPickerCtrl * fpMainFont = new wxFontPickerCtrl( this, ID_FONT_DEFAULT );
+	wxFontPickerCtrl * fpMainFont = new wxFontPickerCtrl( this, ID_FONT_DEFAULT, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE|wxFNTP_USE_TEXTCTRL  );
 	fpMainFont->SetMaxPointSize( 100 );
 	fgSizerList->Add( fpMainFont, 0, wxALL|wxEXPAND, 5 );
 	

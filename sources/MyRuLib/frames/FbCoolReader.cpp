@@ -265,10 +265,8 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent, const wxString &filename, boo
 
 	wxFont font = FbParams::GetFont(FB_READER_FONT_DEFAULT);
     getDocView()->setDefaultFontFace( UnicodeToUtf8(font.GetFaceName().c_str()) );
-//    getDocView()->setTextColor(FbParams::GetColour(FB_READER_FONT_COLOUR).GetPixel());
-//    getDocView()->setBackgroundColor(FbParams::GetColour(FB_READER_FONT_COLOUR).GetPixel());
-    getDocView()->setTextColor(0x000000);
-    getDocView()->setBackgroundColor(0xFFFFE0);
+    getDocView()->setTextColor(FbParams::GetInt(FB_READER_FONT_COLOUR));
+    getDocView()->setBackgroundColor(FbParams::GetInt(FB_READER_BACK_COLOUR));
     getDocView()->setFontSize(font.GetPointSize());
     getDocView()->setViewMode(DVM_PAGES);
 
