@@ -1,0 +1,19 @@
+Source: myrulib
+Section: x11
+Priority: optional
+Maintainer: Kandrashin Denis <mail@lintest.ru>
+Build-Depends: debhelper (>= 7), libwxgtk2.8-dev (>=2.8.10), libsqlite3-dev
+Standards-Version: 3.8.0
+Homepage: http://myrulib.lintest.ru
+
+Package: myrulib
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: myrulib-cr
+Conflicts: myrulib-cr
+Description: Create your own collection of e-books
+ MyRuLib — свободная (бесплатная и открытая) программа 
+ для организации домашней библиотеки (коллекции) 
+ электронных книг формата fb2.
+ .
+ http://myrulib.lintest.ru

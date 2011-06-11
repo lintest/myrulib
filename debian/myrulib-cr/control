@@ -6,9 +6,11 @@ Build-Depends: debhelper (>= 7), libwxgtk2.8-dev (>=2.8.10), libsqlite3-dev
 Standards-Version: 3.8.0
 Homepage: http://myrulib.lintest.ru
 
-Package: myrulib
+Package: myrulib-cr
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: myrulib
+Conflicts: myrulib
 Description: Create your own collection of e-books
  MyRuLib — свободная (бесплатная и открытая) программа 
  для организации домашней библиотеки (коллекции) 
