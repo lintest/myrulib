@@ -23,6 +23,7 @@ class FbReaderDlg : private FbDialog
 			ID_FONT_COLOUR,
 			ID_BACK_COLOUR,
 			ID_FONT_HEADER,
+			ID_HEAD_COLOUR,
 		};
 		class PanelMain: public wxPanel
 		{

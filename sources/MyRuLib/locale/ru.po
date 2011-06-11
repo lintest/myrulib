@@ -2026,3 +2026,24 @@ msgstr "Удаленные"
 
 msgid "Number of digits in the number"
 msgstr "Количество цифр в номере книги"
+
+msgid "Cool Reader options"
+msgstr "Настройки Cool Reader"
+
+msgid "Main font"
+msgstr "Основной шрифт"
+
+msgid "Font colour"
+msgstr "Цвет текста"
+
+msgid "Background colour"
+msgstr "Цвет фона"
+
+msgid "Page"
+msgstr "Страница"
+
+msgid "Header font"
+msgstr "Шрифт колонтитула"
+
+msgid "Header colour"
+msgstr "Цвет колонтитула"
