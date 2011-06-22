@@ -338,6 +338,8 @@
 		<Unit filename="../MyRuLib/dialogs/FbConvertDlg.h" />
 		<Unit filename="../MyRuLib/dialogs/FbDataOpenDlg.cpp" />
 		<Unit filename="../MyRuLib/dialogs/FbDataOpenDlg.h" />
+		<Unit filename="../MyRuLib/dialogs/FbDirImportDlg.cpp" />
+		<Unit filename="../MyRuLib/dialogs/FbDirImportDlg.h" />
 		<Unit filename="../MyRuLib/dialogs/FbExportDlg.cpp" />
 		<Unit filename="../MyRuLib/dialogs/FbExportDlg.h" />
 		<Unit filename="../MyRuLib/dialogs/FbFilterDlg.cpp" />

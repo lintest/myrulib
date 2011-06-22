@@ -41,8 +41,6 @@ class FbFrameBase :
 	public wxSplitterWindow
 {
 public:
-	static wxMenuBar * CreateMenuBar();
-
 	FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxString & caption, bool select = false);
 
 	virtual ~FbFrameBase();
@@ -97,11 +95,6 @@ public:
 		DECLARE_DYNAMIC_CLASS(FbDoubleFrame)
 
 	private:
-		class MenuBar: public FbFrameMenu
-		{
-			public:
-				MenuBar();
-		};
 		void OnIdleSplitter( wxIdleEvent& );
 };
 

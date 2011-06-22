@@ -209,6 +209,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
+		SetMenuBar(new FbMenuBar);
 		SetMinSize(wxSize(400,300));
 		if (maximized) Maximize();
 		CreateControls();
@@ -799,39 +800,17 @@ void FbMainFrame::OnAllowNotebookDnD(wxAuiNotebookEvent& event)
 	event.Allow();
 }
 
-wxMenuBar * FbMainFrame::CreateMenuBar(wxWindow * child)
-{
-	if (child == NULL) return new FbMainMenu;
-	switch ( child->GetId() ) {
-		case ID_FRAME_AUTH: return FbFrameAuth::CreateMenuBar();
-		case ID_FRAME_GENR: return FbFrameGenr::CreateMenuBar();
-		case ID_FRAME_FLDR: return FbFrameFldr::CreateMenuBar();
-		case ID_FRAME_DOWN: return FbFrameDown::CreateMenuBar();
-		case ID_FRAME_SEQN: return FbFrameSeqn::CreateMenuBar();
-		case ID_FRAME_DATE: return FbFrameDate::CreateMenuBar();
-		case ID_FRAME_INFO: return FbFrameInfo::CreateMenuBar();
-		case ID_FRAME_FIND: return FbFrameFind::CreateMenuBar();
-		default: return new FbMainMenu;
-	}
-}
-
 void FbMainFrame::OnNotebookChanged(wxAuiNotebookEvent& event)
 {
-	ReplaceMenu(CreateMenuBar(m_FrameNotebook.GetPage(event.selection)));
+	wxMenuBar * menubar = GetMenuBar();
+	wxWindow * window = FbMainFrame::GetActiveChild();
+	if (menubar) menubar->EnableTop(4, window && wxIsKindOf(window, FbFrameBase));
 }
 
 void FbMainFrame::OnNotebookClosed(wxAuiNotebookEvent& event)
 {
-	if (m_FrameNotebook.GetPageCount() == 0) ReplaceMenu();
-}
-
-void FbMainFrame::ReplaceMenu(wxMenuBar * newMenu)
-{
-	wxWindowUpdateLocker locker(this);
-	if (!newMenu) newMenu = new FbMainMenu;
-	wxMenuBar * oldMenu = GetMenuBar();
-	SetMenuBar(newMenu);
-	wxDELETE(oldMenu);
+	wxMenuBar * menubar = GetMenuBar();
+	if (menubar && m_FrameNotebook.GetPageCount() == 0) menubar->EnableTop(4, false); 
 }
 
 wxWindow * FbMainFrame::GetActiveChild()

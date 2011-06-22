@@ -223,33 +223,6 @@ FbFrameAuth::MasterMenu::MasterMenu(int id)
 	}
 }
 
-FbFrameAuth::MenuBar::MenuBar()
-{
-	Append(new MenuFile,   _("&File"));
-	Append(new MenuEdit,   _("&Edit"));
-	Append(new MenuLib,    _("&Library"));
-	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuMaster, _("&Authors"));
-	Append(new MenuBook,   _("&Books"));
-	Append(new MenuWindow, _("&Window"));
-	Append(new MenuHelp,   _("&?"));
-}
-
-FbFrameAuth::MenuMaster::MenuMaster()
-{
-	Append(ID_MASTER_APPEND,  _("Append"));
-	Append(ID_MASTER_MODIFY,  _("Modify"));
-	Append(ID_MASTER_REPLACE, _("Replace"));
-	Append(ID_MASTER_DELETE,  _("Delete"));
-	AppendSeparator();
-	Append(ID_MASTER_PAGE, _("Online authors page"));
-}
-
-wxMenuBar * FbFrameAuth::CreateMenuBar()
-{
-	return new MenuBar;
-}
-
 void FbFrameAuth::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
 {
 	FbModelItem item = m_MasterList->GetCurrent();

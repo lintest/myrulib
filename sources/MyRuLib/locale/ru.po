@@ -1631,10 +1631,6 @@ msgstr "Окно сообщений"
 msgid "Website"
 msgstr "Официальный сайт"
 
-#: FbMainMenu.cpp:74
-msgid "Export books"
-msgstr "Экспорт книг"
-
 #: FbMainMenu.cpp:92
 msgid "List of books"
 msgstr "Список книг"

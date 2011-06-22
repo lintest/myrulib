@@ -228,22 +228,6 @@ bool FbFrameBase::IsFullScreen()
 	return frame->IsFullScreen();
 }
 
-FbFrameBase::MenuBar::MenuBar()
-{
-	Append(new MenuFile,   _("&File"));
-	Append(new MenuEdit,   _("&Edit"));
-	Append(new MenuLib,    _("&Library"));
-	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuBook,   _("&Books"));
-	Append(new MenuWindow, _("&Window"));
-	Append(new MenuHelp,   _("&?"));
-}
-
-wxMenuBar * FbFrameBase::CreateMenuBar()
-{
-	return new MenuBar;
-}
-
 void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
 {
 	event.Check(m_filter.IsEnabled());

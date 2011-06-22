@@ -14,7 +14,6 @@
 class FbFrameSeqn : public FbFrameBase
 {
 	public:
-		static wxMenuBar * CreateMenuBar();
 		FbFrameSeqn(wxAuiNotebook * parent, bool select = false);
 		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
@@ -55,11 +54,6 @@ class FbFrameSeqn : public FbFrameBase
 				MasterMenu(int id);
 		};
 	private:
-		class MenuBar: public FbFrameMenu
-		{
-			public:
-				MenuBar();
-		};
 		class MenuMaster: public FbMenu {
 			public: MenuMaster();
 		};

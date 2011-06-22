@@ -20,7 +20,6 @@ enum FbAuthorListMode
 class FbFrameAuth : public FbFrameBase
 {
 	public:
-		static wxMenuBar * CreateMenuBar();
 		FbFrameAuth(wxAuiNotebook * parent, bool select = false);
 		void FindAuthor(const wxString &text);
 		void ActivateAuthors();
@@ -57,15 +56,6 @@ class FbFrameAuth : public FbFrameBase
 		{
 			public:
 				MasterMenu(int id);
-		};
-	private:
-		class MenuBar: public FbFrameMenu
-		{
-			public:
-				MenuBar();
-		};
-		class MenuMaster: public FbMenu {
-			public: MenuMaster();
 		};
 };
 

@@ -1,6 +1,43 @@
 #include "FbMainMenu.h"
 #include "FbConst.h"
 
+FbMenuBar::FbMenuBar()
+{
+	Append(new MenuFile,   _("&File"));
+	Append(new MenuEdit,   _("&Edit"));
+	Append(new MenuLib,    _("&Library"));
+	Append(new MenuFrame,  _("&Catalog"));
+	Append(new MenuBook,   _("&Books"));
+	Append(new MenuWindow, _("&Window"));
+	Append(new MenuHelp,   _("&?"));
+}
+
+FbMenuBar::MenuFile::MenuFile()
+{
+	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
+	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
+	AppendSeparator();
+	AppendImg(wxID_SAVE, _("Export") + (wxString)wxT("\tCtrl+S"), wxART_FILE_SAVE);
+	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
+}
+
+FbMenuBar::MenuEdit::MenuEdit()
+{
+	AppendImg(wxID_CUT, _("Cut") + (wxString)wxT("\tCtrl+X"), wxART_CUT);
+	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
+	AppendImg(wxID_PASTE, _("Paste") + (wxString)wxT("\tCtrl+V"), wxART_PASTE);
+	AppendSeparator();
+	AppendImg(wxID_DELETE, _("Delete") + (wxString)wxT("\tDel"), wxART_DELETE);
+	AppendSeparator();
+	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
+	Append(ID_UNSELECTALL, _("Undo selection"));
+	AppendSeparator();
+	#ifdef FB_INCLUDE_READER
+	Append(ID_READER_OPTIONS, _("Cool Reader options"));
+	#endif // FB_INCLUDE_READER	
+	Append(wxID_PREFERENCES, _("Settings"));
+}
+
 FbMenuBar::MenuFrame::MenuFrame()
 {
 	AppendImg(ID_MENU_SEARCH, _("Search"), wxART_FIND);
@@ -13,14 +50,6 @@ FbMenuBar::MenuFrame::MenuFrame()
 	AppendSeparator();
 	Append(ID_FRAME_FLDR, _("My folders"));
 	Append(ID_FRAME_DOWN, _("Downloads"));
-}
-
-FbMenuBar::MenuFile::MenuFile()
-{
-	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
-	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
-	AppendSeparator();
-	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
 FbMenuBar::MenuLib::MenuLib()
@@ -43,42 +72,7 @@ FbMenuBar::MenuHelp::MenuHelp()
 	AppendImg(wxID_ABOUT, _("About"), wxART_HELP_PAGE);
 }
 
-FbMainMenu::FbMainMenu(): FbMenuBar()
-{
-	Append(new MenuFile,   _("&File"));
-	Append(new MenuEdit,   _("&Edit"));
-	Append(new MenuLib,    _("&Library"));
-	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuWindow, _("&Window"));
-	Append(new MenuHelp,   _("&?"));
-}
-
-FbFrameMenu::MenuFile::MenuFile()
-{
-	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
-	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
-	AppendSeparator();
-	AppendImg(wxID_SAVE, _("Export books") + (wxString)wxT("\tCtrl+S"), wxART_FILE_SAVE);
-	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
-}
-
-FbFrameMenu::MenuEdit::MenuEdit()
-{
-	AppendImg(wxID_CUT, _("Cut") + (wxString)wxT("\tCtrl+X"), wxART_CUT);
-	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
-	AppendImg(wxID_PASTE, _("Paste") + (wxString)wxT("\tCtrl+V"), wxART_PASTE);
-	AppendImg(wxID_DELETE, _("Delete") + (wxString)wxT("\tDel"), wxART_DELETE);
-	AppendSeparator();
-	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
-	Append(ID_UNSELECTALL, _("Undo selection"));
-	AppendSeparator();
-	#ifdef FB_INCLUDE_READER
-	Append(ID_READER_OPTIONS, _("Cool Reader options"));
-	#endif // FB_INCLUDE_READER	
-	Append(wxID_PREFERENCES, _("Settings"));
-}
-
-FbFrameMenu::MenuBook::MenuBook()
+FbMenuBar::MenuBook::MenuBook()
 {
 	Append(ID_SHOW_COLUMNS, _("Table columns"));
 	Append(wxID_ANY, _("List of books"), new MenuListMode());

@@ -11,7 +11,6 @@ class FbFrameInfo
 {
 	public:
 		static void Execute(wxEvtHandler * owner);
-		static wxMenuBar * CreateMenuBar();
 		FbFrameInfo(wxAuiNotebook * parent);
 		virtual wxString GetTitle() const { return _("Information"); };
 		void Load(const wxString & html);

@@ -236,9 +236,3 @@ FbFrameInfo::MainMenu::MenuFile::MenuFile()
 	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
 }
 
-wxMenuBar * FbFrameInfo::CreateMenuBar()
-{
-	return new MainMenu;
-}
-
-

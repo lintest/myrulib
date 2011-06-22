@@ -6,6 +6,9 @@
 
 class FbMenuBar: public wxMenuBar
 {
+	public:
+		FbMenuBar();
+		
 	protected:
 		class MenuFile: public FbMenu {
 			public: MenuFile();
@@ -22,6 +25,10 @@ class FbMenuBar: public wxMenuBar
 		class MenuLib: public FbMenu {
 			public:
 				MenuLib();
+		};
+
+		class MenuBook: public FbMenu {
+			public: MenuBook();
 		};
 
 		class MenuHelp: public FbMenu {
@@ -48,28 +55,6 @@ class FbMenuBar: public wxMenuBar
 			public: MenuPreview();
 		};
 
-};
-
-class FbMainMenu: public FbMenuBar
-{
-	public:
-		FbMainMenu();
-};
-
-class FbFrameMenu: public FbMenuBar
-{
-	public:
-		FbFrameMenu() {};
-
-	protected:
-
-		class MenuFile: public FbMenu {
-			public: MenuFile();
-		};
-
-		class MenuBook: public FbMenu {
-			public: MenuBook();
-		};
 };
 
 #endif // __FBMAINMENU_H__

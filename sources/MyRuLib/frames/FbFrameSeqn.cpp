@@ -190,28 +190,11 @@ void FbFrameSeqn::OnMasterDelete(wxCommandEvent& event)
 	}
 }
 
-FbFrameSeqn::MenuBar::MenuBar()
-{
-	Append(new MenuFile,   _("&File"));
-	Append(new MenuEdit,   _("&Edit"));
-	Append(new MenuLib,    _("&Library"));
-	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuMaster, _("&Series"));
-	Append(new MenuBook,   _("&Books"));
-	Append(new MenuWindow, _("&Window"));
-	Append(new MenuHelp,   _("&?"));
-}
-
 FbFrameSeqn::MenuMaster::MenuMaster()
 {
 	Append(ID_MASTER_APPEND,  _("Append"));
 	Append(ID_MASTER_MODIFY,  _("Modify"));
 	Append(ID_MASTER_DELETE,  _("Delete"));
-}
-
-wxMenuBar * FbFrameSeqn::CreateMenuBar()
-{
-	return new MenuBar;
 }
 
 void FbFrameSeqn::OnModel( FbArrayEvent& event )
