@@ -56,7 +56,7 @@ FbLogViewCtrl::ContextMenu::ContextMenu()
 	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
-	Append(ID_TEXTLOG_CTRL, _("Hide log window") + (wxString)wxT("\tF12"));
+	Append(ID_TEXTLOG_HIDE, _("Hide log window") + (wxString)wxT("\tF12"));
 }
 
 //-----------------------------------------------------------------------------

@@ -72,6 +72,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_TEXTLOG_CTRL, FbMainFrame::OnHideLog)
+	EVT_MENU(ID_TEXTLOG_HIDE, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
 	EVT_MENU_RANGE(ID_ART_DEFAULT, ID_ART_MOZILLA, FbMainFrame::OnTabArt)
