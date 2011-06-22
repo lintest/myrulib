@@ -125,5 +125,5 @@ FbMenuBar::MenuWindow::MenuWindow()
 	AppendSeparator();
 	Append(wxID_ANY, _("Tabs"), new MenuTabArt());
 	AppendCheckItem(ID_FULLSCREEN, _("Fullscreen mode") + (wxString)wxT("\tF11"));
-	AppendCheckItem(ID_TEXTLOG_CTRL, _("Show log window") + (wxString)wxT("\tF12"));
+	AppendCheckItem(ID_TEXTLOG_SHOW, _("Show log window") + (wxString)wxT("\tF12"));
 }
