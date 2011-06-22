@@ -17,7 +17,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Reader|Win32"
 			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -96,6 +96,86 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Simple|Win32"
+			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__"
+				AdditionalIncludeDirectories="$(WXWIN)\lib\vc_dll\mswu;$(WXWIN)\include"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4800"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_UNICODE;UNICODE;wxUSE_NO_MANIFEST"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(SolutionDir)\..\build&quot;"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="wxmsw28ud_adv.lib wxmsw28ud_aui.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud_net.lib wxbase28ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
+				IgnoreDefaultLibraryNames="libcmt"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -106,7 +186,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\MyRuLib\FbAboutDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbAboutDlg.cpp"
 				>
 			</File>
 			<File
@@ -118,7 +198,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbAuthorDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbAuthorDlg.cpp"
 				>
 			</File>
 			<File
@@ -162,7 +242,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbColumnDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbColumnDlg.cpp"
 				>
 			</File>
 			<File
@@ -174,7 +254,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbConfigDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbConfigDlg.cpp"
 				>
 			</File>
 			<File
@@ -182,7 +262,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbConvertDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbConvertDlg.cpp"
 				>
 			</File>
 			<File
@@ -194,7 +274,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbDataOpenDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbDataOpenDlg.cpp"
 				>
 			</File>
 			<File
@@ -226,7 +306,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbExportDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbExportDlg.cpp"
 				>
 			</File>
 			<File
@@ -238,7 +318,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbFilterDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbFilterDlg.cpp"
 				>
 			</File>
 			<File
@@ -342,6 +422,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\controls\FbLogModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbLogStream.cpp"
 				>
 			</File>
@@ -378,7 +462,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbParamsDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbParamsDlg.cpp"
 				>
 			</File>
 			<File
@@ -398,7 +482,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbProgressDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbProgressDlg.cpp"
 				>
 			</File>
 			<File
@@ -410,11 +494,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbSequenDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbSequenDlg.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbServiceDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbServiceDlg.cpp"
 				>
 			</File>
 			<File
@@ -426,7 +510,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbTitleDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbTitleDlg.cpp"
 				>
 			</File>
 			<File
@@ -458,7 +542,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbViewerDlg.cpp"
+				RelativePath="..\MyRuLib\dialogs\FbViewerDlg.cpp"
 				>
 			</File>
 			<File
@@ -471,10 +555,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbWindow.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\controls\LimitedTextCtrl.cpp"
 				>
 			</File>
 			<File
@@ -534,7 +614,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\MyRuLib\FbAboutDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbAboutDlg.h"
 				>
 			</File>
 			<File
@@ -546,7 +626,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbAuthorDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbAuthorDlg.h"
 				>
 			</File>
 			<File
@@ -598,7 +678,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbColumnDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbColumnDlg.h"
 				>
 			</File>
 			<File
@@ -610,7 +690,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbConfigDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbConfigDlg.h"
 				>
 			</File>
 			<File
@@ -618,7 +698,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbConvertDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbConvertDlg.h"
 				>
 			</File>
 			<File
@@ -634,7 +714,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbDataOpenDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbDataOpenDlg.h"
 				>
 			</File>
 			<File
@@ -666,7 +746,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbExportDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbExportDlg.h"
 				>
 			</File>
 			<File
@@ -678,7 +758,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbFilterDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbFilterDlg.h"
 				>
 			</File>
 			<File
@@ -782,6 +862,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\controls\FbLogModel.h"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbLogoBitmap.h"
 				>
 			</File>
@@ -822,7 +906,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbParamsDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbParamsDlg.h"
 				>
 			</File>
 			<File
@@ -842,7 +926,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbProgressDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbProgressDlg.h"
 				>
 			</File>
 			<File
@@ -854,11 +938,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbSequenDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbSequenDlg.h"
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbServiceDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbServiceDlg.h"
 				>
 			</File>
 			<File
@@ -870,15 +954,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbTitleDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\controls\FbToolBar.h"
+				RelativePath="..\MyRuLib\dialogs\FbTitleDlg.h"
 				>
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbToolBar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\controls\FbToolBar.h"
 				>
 			</File>
 			<File
@@ -906,7 +990,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbViewerDlg.h"
+				RelativePath="..\MyRuLib\dialogs\FbViewerDlg.h"
 				>
 			</File>
 			<File
@@ -935,10 +1019,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\InfoThread.h"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\controls\LimitedTextCtrl.h"
 				>
 			</File>
 			<File

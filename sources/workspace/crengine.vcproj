@@ -193,11 +193,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\crengine\src\lvtinydom.cpp"
+				RelativePath="..\..\3rdparty\crengine\src\lvxml.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\crengine\src\lvxml.cpp"
+				RelativePath="..\..\3rdparty\crengine\src\pdbfmt.cpp"
 				>
 			</File>
 			<File
