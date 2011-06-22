@@ -140,7 +140,8 @@ private:
 
 void FbDirImportThread::DoParse(bool only_new)
 {
-	SetInfo(_("Processing folder:"));
+	FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
+
 	wxCriticalSectionLocker enter(sm_queue);
 
 	wxLogMessage(_("Start import directory %s"), m_dirname.c_str());
@@ -164,6 +165,33 @@ void FbDirImportThread::DoParse(bool only_new)
 	DoFinish();
 
 	wxLogMessage(_("Finish import directory %s"), m_dirname.c_str());
+}
+
+bool FbDirImportThread::Execute()
+{
+	FbProgressEvent(ID_PROGRESS_PULSE, _("Processing folder:")).Post(GetOwner());
+
+	SetRoot(wxGetApp().GetLibPath());
+
+	FbCommonDatabase database;
+	database.JoinThread(this);
+	m_database = &database;
+
+	if (IsClosed()) return false;
+
+	if (HasFlag(fbIMP_IMPORT)) {
+		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
+		DoParse(HasFlag(fbIMP_ONLY_NEW));
+	}
+
+	return true;
+}
+
+void * FbDirImportThread::Entry()
+{
+	int result = Execute() ? wxID_OK : wxID_CANCEL;
+	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, result).Post(GetOwner());
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -265,12 +293,5 @@ bool FbLibImportThread::Execute()
 	}
 
 	return true;
-}
-
-void * FbLibImportThread::Entry()
-{
-	int result = Execute() ? wxID_OK : wxID_CANCEL;
-	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, result).Post(GetOwner());
-	return NULL;
 }
 

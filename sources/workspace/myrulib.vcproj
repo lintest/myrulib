@@ -294,6 +294,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\dialogs\FbDirImportDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbDownList.cpp"
 				>
 			</File>
@@ -731,6 +735,10 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbDeleteThread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\dialogs\FbDirImportDlg.h"
 				>
 			</File>
 			<File

@@ -52,6 +52,9 @@ public:
 	FbDirImportThread(wxEvtHandler * owner, const wxString &dirname, wxThreadKind kind = wxTHREAD_DETACHED, long flags = fbIMP_IMPORT)
 		: FbImportThread(owner, kind, flags), m_dirname(dirname) {};
 	virtual void DoParse(bool only_new);
+protected:
+	virtual void * Entry();
+	virtual bool Execute();
 private:
 	wxString m_dirname;
 	friend class FbImportTraverser;
@@ -63,9 +66,8 @@ class FbLibImportThread
 public:
 	FbLibImportThread(wxEvtHandler * owner, const wxString &file, const wxString &dir, const wxString &lib, long flags);
 protected:
-	virtual void * Entry();
+	virtual bool Execute();
 private:
-	bool Execute();
 	bool CreateLib();
 	bool SaveTo(wxInputStream &in, const wxString &filename, const wxString &msg);
 	bool Download(const wxString &filename);

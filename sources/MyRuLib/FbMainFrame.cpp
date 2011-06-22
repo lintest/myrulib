@@ -9,6 +9,7 @@
 #include "MyRuLibApp.h"
 #include "dialogs/FbParamsDlg.h"
 #include "dialogs/FbDataOpenDlg.h"
+#include "dialogs/FbDirImportDlg.h"
 #include "dialogs/FbConfigDlg.h"
 #include "dialogs/FbAboutDlg.h"
 #include "dialogs/FbReaderDlg.h"
@@ -419,20 +420,9 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 	}
 }
 
-void FbMainFrame::OnFolder( wxCommandEvent& event ) {
-
-	wxDirDialog dlg (
-		this,
-		_("Select folder to recursive import"),
-		wxEmptyString,
-		wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST,
-		wxDefaultPosition
-	);
-
-	if (dlg.ShowModal() == wxID_OK) {
-		wxString path = dlg.GetPath();
-		(new FbDirImportThread(this, path))->Execute();
-	}
+void FbMainFrame::OnFolder( wxCommandEvent& event ) 
+{
+	FbDirImportDlg::Execute(this);
 }
 
 void FbMainFrame::OnProgressUpdate(wxUpdateUIEvent& event)

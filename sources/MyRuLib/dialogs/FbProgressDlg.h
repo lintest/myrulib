@@ -9,7 +9,7 @@
 class FbProgressDlg: public FbDialog
 {
 	public:
-		FbProgressDlg(wxWindow* parent);
+		FbProgressDlg(wxWindow* parent, const wxString &title);
 		virtual ~FbProgressDlg(void);
 		void RunThread(FbThread * thread);
 	private:

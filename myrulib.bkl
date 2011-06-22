@@ -249,6 +249,7 @@
 		<sources>sources/MyRuLib/dialogs/FbConvertDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbConfigDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbDataOpenDlg.cpp</sources>
+		<sources>sources/MyRuLib/dialogs/FbDirImportDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbExportDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbFilterDlg.cpp</sources>
 		<sources>sources/MyRuLib/dialogs/FbParamsDlg.cpp</sources>

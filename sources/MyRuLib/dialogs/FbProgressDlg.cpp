@@ -14,8 +14,8 @@ BEGIN_EVENT_TABLE(FbProgressDlg, FbDialog)
 END_EVENT_TABLE()
 
 
-FbProgressDlg::FbProgressDlg(wxWindow* parent)
-	: FbDialog( parent, wxID_ANY, _("Processing collection"), wxDefaultPosition, wxDefaultSize),
+FbProgressDlg::FbProgressDlg(wxWindow* parent, const wxString &title)
+	: FbDialog( parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize),
 		m_thread(NULL), m_timer(this)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );

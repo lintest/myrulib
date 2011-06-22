@@ -179,6 +179,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbConvertDlg.o \
 	myrulib_FbConfigDlg.o \
 	myrulib_FbDataOpenDlg.o \
+	myrulib_FbDirImportDlg.o \
 	myrulib_FbExportDlg.o \
 	myrulib_FbFilterDlg.o \
 	myrulib_FbParamsDlg.o \
@@ -734,6 +735,9 @@ myrulib_FbConfigDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbConfigDlg.cpp $(MYRUL
 
 myrulib_FbDataOpenDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbDataOpenDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/dialogs/FbDataOpenDlg.cpp
+
+myrulib_FbDirImportDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbDirImportDlg.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/dialogs/FbDirImportDlg.cpp
 
 myrulib_FbExportDlg.o: $(srcdir)/sources/MyRuLib/dialogs/FbExportDlg.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/dialogs/FbExportDlg.cpp

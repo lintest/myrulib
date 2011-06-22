@@ -246,7 +246,7 @@ wxString FbDataOpenDlg::Execute(wxWindow * parent)
 	FbDataOpenDlg dlg(parent);
 	if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
 
-	FbProgressDlg scaner(dlg.GetParent());
+	FbProgressDlg scaner(dlg.GetParent(), _("Processing collection"));
 	scaner.RunThread(dlg.CreateThread(&scaner));
 	return (scaner.ShowModal() == wxID_OK) ? dlg.GetFilename() : wxString();
 }
