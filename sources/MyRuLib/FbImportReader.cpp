@@ -114,9 +114,10 @@ int FbImportZip::Save(bool progress)
 
 void FbImportZip::Make(bool progress)
 {
+	wxString info = _("Processing file:"); info << wxT(' ');
 	size_t skipped = 0;
 	size_t existed = m_list.Count();
-	if (progress) m_owner.DoStart(m_filename, existed);
+	if (progress) m_owner.DoStart(info + m_filename, existed);
 
 	size_t processed = 0;
 	for (size_t i=0; i<existed; i++) {

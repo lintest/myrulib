@@ -12,6 +12,7 @@
 #include "dialogs/FbDirImportDlg.h"
 #include "dialogs/FbConfigDlg.h"
 #include "dialogs/FbAboutDlg.h"
+#include "dialogs/FbProgressDlg.h"
 #include "dialogs/FbReaderDlg.h"
 #include "FbImportThread.h"
 #include "frames/FbFrameAuth.h"
@@ -419,7 +420,9 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 	if (dlg.ShowModal() == wxID_OK) {
 		wxArrayString paths;
 		dlg.GetPaths(paths);
-		(new FbZipImportThread(this, paths))->Execute();
+		FbProgressDlg scaner(dlg.GetParent(), _("Add file"));
+		scaner.RunThread(new FbZipImportThread(&scaner, paths));
+		scaner.ShowModal();
 	}
 }
 

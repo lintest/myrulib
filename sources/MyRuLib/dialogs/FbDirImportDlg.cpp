@@ -67,7 +67,7 @@ FbThread * FbDirImportDlg::CreateThread(wxEvtHandler * owner)
 	long flags = fbIMP_IMPORT;
 	if (m_only_new.GetValue()) flags = flags | fbIMP_ONLY_NEW;
 	if (m_only_md5.GetValue()) flags = flags | fbIMP_ONLY_MD5;
-	return new FbDirImportThread(owner, GetDirname(), wxTHREAD_JOINABLE, flags);
+	return new FbDirImportThread(owner, GetDirname(), flags);
 }
 
 bool FbDirImportDlg::Execute(wxWindow * parent)

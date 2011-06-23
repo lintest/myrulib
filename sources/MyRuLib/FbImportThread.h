@@ -16,11 +16,12 @@ class FbImportThread
 	: public FbProgressThread
 {
 public:
-	FbImportThread(wxEvtHandler * owner, wxThreadKind kind, long flags);
+	FbImportThread(wxEvtHandler * owner, long flags);
 	bool OnFile(const wxString &filename, bool progress, bool only_new);
 	void SetRoot(const wxString & dir);
 protected:
 	virtual void * Entry();
+	virtual bool Execute();
 	virtual void DoParse(bool only_new) = 0;
 	wxString GetRelative(const wxString &filename);
 	wxString GetAbsolute(const wxString &filename);
@@ -38,8 +39,8 @@ class FbZipImportThread
 	: public FbImportThread
 {
 public:
-	FbZipImportThread(wxEvtHandler * owner, const wxArrayString &filelist, wxThreadKind kind = wxTHREAD_DETACHED, long flags = fbIMP_IMPORT)
-		: FbImportThread(owner, kind, flags), m_filelist(filelist) {};
+	FbZipImportThread(wxEvtHandler * owner, const wxArrayString &filelist, long flags = fbIMP_IMPORT)
+		: FbImportThread(owner, flags), m_filelist(filelist) {};
 	virtual void DoParse(bool only_new);
 private:
 	const wxArrayString m_filelist;
@@ -49,12 +50,9 @@ class FbDirImportThread
 	: public FbImportThread
 {
 public:
-	FbDirImportThread(wxEvtHandler * owner, const wxString &dirname, wxThreadKind kind = wxTHREAD_DETACHED, long flags = fbIMP_IMPORT)
-		: FbImportThread(owner, kind, flags), m_dirname(dirname) {};
+	FbDirImportThread(wxEvtHandler * owner, const wxString &dirname, long flags = fbIMP_IMPORT)
+		: FbImportThread(owner, flags), m_dirname(dirname) {};
 	virtual void DoParse(bool only_new);
-protected:
-	virtual void * Entry();
-	virtual bool Execute();
 private:
 	wxString m_dirname;
 	friend class FbImportTraverser;
