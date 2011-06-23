@@ -38,12 +38,12 @@ protected:
 	static wxCriticalSection sm_queue;
 	void SetInfo(const wxString & info) { m_info = info; }
 	void DoStart(const wxString & msg, int max = 0);
+	void DoPulse(const wxString & msg);
 	void DoStep(const wxString & msg);
 	void DoFinish();
 private:
 	wxEvtHandler * m_owner;
 	wxString m_info;
-	wxString m_text;
 	int m_pos;
 	int m_max;
 };

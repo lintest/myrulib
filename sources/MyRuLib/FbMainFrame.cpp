@@ -98,6 +98,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 
     EVT_NAVIGATION_KEY(FbMainFrame::OnNavigationKey)
 
+    EVT_AUI_PANE_CLOSE(FbMainFrame::OnPaneClose)
     EVT_AUINOTEBOOK_ALLOW_DND(wxID_ANY, FbMainFrame::OnAllowNotebookDnD)
 	EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, FbMainFrame::OnNotebookChanged)
 	EVT_AUINOTEBOOK_PAGE_CLOSED(wxID_ANY, FbMainFrame::OnNotebookClosed)
@@ -450,7 +451,9 @@ void FbMainFrame::ShowLog(bool forced)
 	wxAuiPaneInfo * info = FindLog();
 	if (info) {
 		bool show = forced || !info->IsShown();
-		if (!show && FbParams::GetInt(FB_CLEAR_LOG)) m_LogCtrl->AssignModel(new FbLogModel);
+		if (!show && FbParams::GetInt(FB_CLEAR_LOG)) {
+			m_LogCtrl->AssignModel(new FbLogModel);
+		}
 		info->Show(show);
 		m_FrameManager.Update();
 	}
@@ -844,7 +847,10 @@ void FbMainFrame::OnIdle( wxIdleEvent & event)
 	m_ProgressBar.SetStatusText(msg, 2);
 	
 	FbLogModel * model = wxDynamicCast(m_LogCtrl->GetModel(), FbLogModel);
-	if (model && model->Update()) ShowLog(true);
+	if (model && model->Update()) {
+		ShowLog(true);
+		m_LogCtrl->Refresh();
+	}
 }
 
 void FbMainFrame::OnFoundNothing(wxCommandEvent & event)
@@ -860,3 +866,9 @@ void FbMainFrame::OnNavigationKey(wxNavigationKeyEvent& event)
 	event.Skip();
 }
 
+void FbMainFrame::OnPaneClose(wxAuiManagerEvent& event)
+{
+	if (event.pane->name == wxT("Log")) {
+		m_LogCtrl->AssignModel(new FbLogModel);
+	}
+}

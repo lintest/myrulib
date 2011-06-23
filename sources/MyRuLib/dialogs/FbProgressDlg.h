@@ -14,6 +14,7 @@ class FbProgressDlg: public FbDialog
 		void RunThread(FbThread * thread);
 	private:
 		FbThread * m_thread;
+		wxStaticText m_info;
 		wxStaticText m_text;
 		wxGauge m_gauge;
 		wxTimer m_timer;

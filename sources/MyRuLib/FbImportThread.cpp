@@ -140,8 +140,6 @@ private:
 
 void FbDirImportThread::DoParse(bool only_new)
 {
-	FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
-
 	wxCriticalSectionLocker enter(sm_queue);
 
 	wxLogMessage(_("Start import directory %s"), m_dirname.c_str());
@@ -153,10 +151,12 @@ void FbDirImportThread::DoParse(bool only_new)
 	}
 
 	{
-		DoStart(m_dirname);
+		wxString msg = _("Processing folder:");
+		msg << wxT(' ') << m_dirname;
+		DoPulse(msg);
 		FbImportCounter counter;
 		dir.Traverse(counter);
-		DoStart(m_dirname, counter.GetCount());
+		DoStart(msg, counter.GetCount());
 	}
 
 	FbImportTraverser traverser(this, only_new);
@@ -169,8 +169,6 @@ void FbDirImportThread::DoParse(bool only_new)
 
 bool FbDirImportThread::Execute()
 {
-	FbProgressEvent(ID_PROGRESS_PULSE, _("Processing folder:")).Post(GetOwner());
-
 	SetRoot(wxGetApp().GetLibPath());
 
 	FbCommonDatabase database;
@@ -179,10 +177,7 @@ bool FbDirImportThread::Execute()
 
 	if (IsClosed()) return false;
 
-	if (HasFlag(fbIMP_IMPORT)) {
-		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
-		DoParse(HasFlag(fbIMP_ONLY_NEW));
-	}
+	DoParse(HasFlag(fbIMP_ONLY_NEW));
 
 	return true;
 }
@@ -270,10 +265,9 @@ bool FbLibImportThread::CreateLib()
 bool FbLibImportThread::Execute()
 {
 	if (!CreateLib()) return false;
-
 	if (IsClosed()) return false;
 
-	FbProgressEvent(ID_PROGRESS_PULSE, _("Create full text search index")).Post(GetOwner());
+	DoPulse(_("Create full text search index"));
 
 	FbMainDatabase database;
 	int flags = WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX;
@@ -288,7 +282,6 @@ bool FbLibImportThread::Execute()
 
 	if (HasFlag(fbIMP_IMPORT)) {
 		SetRoot(m_dir);
-		FbProgressEvent(ID_PROGRESS_START, _("Processing folder:"), 1000).Post(GetOwner());
 		DoParse(HasFlag(fbIMP_ONLY_NEW));
 	}
 

@@ -24,6 +24,10 @@ FbProgressDlg::FbProgressDlg(wxWindow* parent, const wxString &title)
 	wxStaticBitmap * m_bitmap = new wxStaticBitmap( this, wxID_ANY, FbLogoBitmap(), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( m_bitmap, 0, wxALL|wxALIGN_TOP, 10 );
 
+	m_info.Create( this, wxID_ANY, wxEmptyString );
+	m_info.Wrap( -1 );
+	bSizerCtrl->Add( &m_info, 0, wxALL|wxEXPAND, 5 );
+
 	m_text.Create( this, wxID_ANY, wxEmptyString );
 	m_text.Wrap( -1 );
 	bSizerCtrl->Add( &m_text, 0, wxALL|wxEXPAND, 5 );
@@ -67,17 +71,20 @@ void FbProgressDlg::OnTimer(wxTimerEvent& WXUNUSED(event))
 void FbProgressDlg::OnGaugeStart(FbProgressEvent & event)
 {
 	m_timer.Stop();
-	m_text.SetLabel(event.m_str);
+	m_info.SetLabel(event.m_str);
+	m_text.SetLabel(wxEmptyString);
 	m_gauge.SetRange(event.m_pos);
 }
 
 void FbProgressDlg::OnGaugeUpdate(FbProgressEvent & event)
 {
+	m_text.SetLabel(event.m_str);
 	m_gauge.SetValue(event.m_pos);
 }
 
 void FbProgressDlg::OnGaugePulse(FbProgressEvent & event)
 {
-	m_text.SetLabel(event.m_str);
+	m_info.SetLabel(event.m_str);
+	m_text.SetLabel(wxEmptyString);
 	m_timer.Start(100);
 }

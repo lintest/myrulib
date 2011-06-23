@@ -99,6 +99,7 @@ class FbMainFrame : public wxFrame
 		void OnWindowPrev(wxCommandEvent & event);
 		void OnFoundNothing(wxCommandEvent & event);
 		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
+		void OnPaneClose(wxAuiManagerEvent& event);
 		void OnNotebookChanged(wxAuiNotebookEvent& event);
 		void OnNotebookClosed(wxAuiNotebookEvent& event);
 		void OnSubmenu(wxCommandEvent& event);

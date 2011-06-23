@@ -27,19 +27,27 @@ void FbThread::Close()
 
 wxCriticalSection FbProgressThread::sm_queue;
 
+void FbProgressThread::DoPulse(const wxString & msg)
+{
+	FbProgressEvent(ID_PROGRESS_PULSE, msg).Post(m_owner);
+}
+
 void FbProgressThread::DoStart(const wxString & msg, int max)
 {
-	m_text = m_info + wxT(' ') + msg;
+	wxString text = msg;
+	if (!m_info.IsEmpty()) {
+		text.Prepend(m_info + wxT(' '));
+	}
 	m_max = max;
 	m_pos = 0;
 
-	FbProgressEvent(ID_PROGRESS_UPDATE, m_text).Post(m_owner);
+	FbProgressEvent(ID_PROGRESS_START, text, 1000).Post(m_owner);
 }
 
 void FbProgressThread::DoStep(const wxString & msg)
 {
 	int pos = m_max ? (++m_pos * 1000 / m_max) : 0;
-	FbProgressEvent(ID_PROGRESS_UPDATE, m_text, pos, msg).Post(m_owner);
+	FbProgressEvent(ID_PROGRESS_UPDATE, msg, pos).Post(m_owner);
 }
 
 void FbProgressThread::DoFinish()
