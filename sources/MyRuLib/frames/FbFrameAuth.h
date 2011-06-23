@@ -10,11 +10,17 @@
 #include "FbAuthList.h"
 #include "FbAlphabet.h"
 
-enum FbAuthorListMode
+class FbAuthViewCtrl
+	: public FbMasterViewCtrl
 {
-	FB_AUTHOR_MODE_CHAR,
-	FB_AUTHOR_MODE_TEXT,
-	FB_AUTHOR_MODE_CODE,
+private:
+	void OnMasterReplace(wxCommandEvent& event);
+	void OnMasterAppend(wxCommandEvent& event);
+	void OnMasterModify(wxCommandEvent& event);
+	void OnMasterDelete(wxCommandEvent& event);
+	void OnMasterPage(wxCommandEvent& event);
+	void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
+	DECLARE_EVENT_TABLE()
 };
 
 class FbFrameAuth : public FbFrameBase
@@ -39,12 +45,6 @@ class FbFrameAuth : public FbFrameBase
 		void OnChoiceLetter(wxCommandEvent& event);
 		void OnViewAlphavet(wxCommandEvent& event);
 		void OnViewAlphavetUpdateUI(wxUpdateUIEvent & event);
-		void OnMasterAppend(wxCommandEvent& event);
-		void OnMasterModify(wxCommandEvent& event);
-		void OnMasterDelete(wxCommandEvent& event);
-		void OnMasterReplace(wxCommandEvent& event);
-		void OnMasterPage(wxCommandEvent& event);
-		void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
 		void OnContextMenu(wxTreeEvent& event);
 		void OnNumber(wxCommandEvent& event);
 		void OnModel( FbArrayEvent& event );

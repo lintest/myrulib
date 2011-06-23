@@ -17,10 +17,7 @@
 class FbMasterViewCtrl
 	: public FbTreeViewCtrl
 {
-private:
-	void Init() {}
-
-private:
+protected:
 	void OnCopy(wxCommandEvent & event);
 
 	void OnSelect(wxCommandEvent & event) {}
@@ -58,6 +55,7 @@ public:
 		FbBookPanel * GetBooks() { return m_BooksPanel; }
 		void RefreshBooks() { m_BooksPanel->GetBookList().Refresh(); }
 		int GetBookCount() { return m_BookCount; }
+		const wxString & GetMasterFile() const { return m_MasterFile; }
 	protected:
 		void CreateControls(bool select);
 		virtual void CreateColumns() = 0;

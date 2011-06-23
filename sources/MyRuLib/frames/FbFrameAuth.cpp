@@ -10,6 +10,98 @@
 #include "FbMasterTypes.h"
 #include "controls/FbToolBar.h"
 
+//-----------------------------------------------------------------------------
+//  FbAuthViewCtrl
+//-----------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(FbAuthViewCtrl, FbMasterViewCtrl)
+	EVT_MENU(wxID_DELETE, FbAuthViewCtrl::OnMasterDelete)
+	EVT_MENU(ID_MASTER_REPLACE, FbAuthViewCtrl::OnMasterReplace)
+	EVT_MENU(ID_MASTER_APPEND, FbAuthViewCtrl::OnMasterAppend)
+	EVT_MENU(ID_MASTER_MODIFY, FbAuthViewCtrl::OnMasterModify)
+	EVT_MENU(ID_MASTER_PAGE, FbAuthViewCtrl::OnMasterPage)
+	EVT_UPDATE_UI(ID_MASTER_REPLACE, FbMasterViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(ID_MASTER_APPEND, FbMasterViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(ID_MASTER_MODIFY, FbMasterViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(ID_MASTER_PAGE, FbAuthViewCtrl::OnMasterPageUpdateUI)
+END_EVENT_TABLE()
+
+void FbAuthViewCtrl::OnMasterAppend(wxCommandEvent& event)
+{
+	wxString newname;
+	int id = FbAuthorModifyDlg::Append(newname);
+	if (id == 0) return;
+	Append(new FbAuthListData(id));
+}
+
+void FbAuthViewCtrl::OnMasterModify(wxCommandEvent& event)
+{
+	FbAuthListModel * model = wxDynamicCast(GetModel(), FbAuthListModel);
+	if (model == NULL) return;
+
+	FbModelItem item = GetCurrent();
+	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+	if (current == NULL) return;
+
+	wxString newname;
+	int old_id = current->GetCode();
+	int new_id = FbAuthorModifyDlg::Modify(old_id, newname);
+	if (new_id == 0) return;
+
+	if (new_id != old_id) model->Delete(new_id);
+	Replace(new FbAuthListData(new_id));
+}
+
+void FbAuthViewCtrl::OnMasterDelete(wxCommandEvent& event)
+{
+	FbModel * model = GetModel();
+	if (model) {
+		bool ok = FbAuthorReplaceDlg::Delete(*model);
+		if (ok) Delete();
+	}
+}
+
+void FbAuthViewCtrl::OnMasterPage(wxCommandEvent& event)
+{
+	FbModelItem item = GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
+	if (data && data->GetCode() > 0) {
+		wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
+		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetCode());
+		wxLaunchDefaultBrowser(url);
+	}
+}
+
+void FbAuthViewCtrl::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
+{
+	FbModelItem item = GetCurrent();
+	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
+	event.Enable( data && data->GetCode()>0 );
+}
+
+void FbAuthViewCtrl::OnMasterReplace(wxCommandEvent& event)
+{
+	FbAuthListModel * model = wxDynamicCast(GetModel(), FbAuthListModel);
+	if (model == NULL) return;
+
+	FbModelItem item = GetCurrent();
+	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+	if (current == NULL) return;
+
+	FbFrameBase * frame = wxDynamicCast(GetParent()->GetParent(), FbFrameBase);
+	wxString newname;
+	int old_id = current->GetCode();
+	int new_id = FbAuthorReplaceDlg::Execute(old_id, newname, frame->GetMasterFile());
+	if (new_id == 0) return;
+
+	if (new_id != old_id) model->Delete(new_id);
+	Replace(new FbAuthListData(new_id));
+}
+
+//-----------------------------------------------------------------------------
+//  FbFrameAuth
+//-----------------------------------------------------------------------------
+
 IMPLEMENT_CLASS(FbFrameAuth, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
@@ -17,12 +109,6 @@ BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 	EVT_COMBOBOX( ID_MASTER_FIND, FbFrameAuth::OnChoiceLetter )
 	EVT_LIST_COL_CLICK(ID_MASTER_LIST, FbFrameAuth::OnColClick)
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameAuth::OnContextMenu)
-	EVT_MENU(ID_MASTER_APPEND, FbFrameAuth::OnMasterAppend)
-	EVT_MENU(ID_MASTER_MODIFY, FbFrameAuth::OnMasterModify)
-	EVT_MENU(ID_MASTER_REPLACE, FbFrameAuth::OnMasterReplace)
-	EVT_MENU(ID_MASTER_DELETE, FbFrameAuth::OnMasterDelete)
-	EVT_MENU(ID_MASTER_PAGE, FbFrameAuth::OnMasterPage)
-	EVT_UPDATE_UI(ID_MASTER_PAGE, FbFrameAuth::OnMasterPageUpdateUI)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameAuth::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameAuth::OnArray)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameAuth::OnBooksCount)
@@ -39,7 +125,7 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 	m_LetterList = new FbAlphabetCombo();
 	m_LetterList->Create(panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
 
-	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList = new FbAuthViewCtrl;
 	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
@@ -146,88 +232,17 @@ void FbFrameAuth::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 	m_MasterList->PopupMenu(&menu, pos.x, pos.y);
 }
 
-void FbFrameAuth::OnMasterAppend(wxCommandEvent& event)
-{
-	wxString newname;
-	int id = FbAuthorModifyDlg::Append(newname);
-	if (id == 0) return;
-	m_MasterList->Append(new FbAuthListData(id));
-}
-
-void FbFrameAuth::OnMasterModify(wxCommandEvent& event)
-{
-	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
-	if (model == NULL) return;
-
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
-	if (current == NULL) return;
-
-	wxString newname;
-	int old_id = current->GetCode();
-	int new_id = FbAuthorModifyDlg::Modify(old_id, newname);
-	if (new_id == 0) return;
-
-	if (new_id != old_id) model->Delete(new_id);
-	m_MasterList->Replace(new FbAuthListData(new_id));
-}
-
-void FbFrameAuth::OnMasterReplace(wxCommandEvent& event)
-{
-	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
-	if (model == NULL) return;
-
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
-	if (current == NULL) return;
-
-	wxString newname;
-	int old_id = current->GetCode();
-	int new_id = FbAuthorReplaceDlg::Execute(old_id, newname, m_MasterFile);
-	if (new_id == 0) return;
-
-	if (new_id != old_id) model->Delete(new_id);
-	m_MasterList->Replace(new FbAuthListData(new_id));
-}
-
-void FbFrameAuth::OnMasterDelete(wxCommandEvent& event)
-{
-	FbModel * model = m_MasterList->GetModel();
-	if (model) {
-		bool ok = FbAuthorReplaceDlg::Delete(*model);
-		if (ok) m_MasterList->Delete();
-	}
-}
-
-void FbFrameAuth::OnMasterPage(wxCommandEvent& event)
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	if (data && data->GetCode() > 0) {
-		wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
-		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetCode());
-		wxLaunchDefaultBrowser(url);
-	}
-}
-
 FbFrameAuth::MasterMenu::MasterMenu(int id)
 {
 	Append(ID_MASTER_APPEND,  _("Append"));
 	if (id == 0) return;
 	Append(ID_MASTER_MODIFY,  _("Modify"));
 	Append(ID_MASTER_REPLACE, _("Replace"));
-	Append(ID_MASTER_DELETE,  _("Delete"));
+	Append(wxID_DELETE,       _("Delete"));
 	if (id > 0) {
 		AppendSeparator();
 		Append(ID_MASTER_PAGE, _("Online authors page"));
 	}
-}
-
-void FbFrameAuth::OnMasterPageUpdateUI(wxUpdateUIEvent & event)
-{
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
-	event.Enable( data && data->GetCode()>0 );
 }
 
 void FbFrameAuth::OnModel( FbArrayEvent& event )

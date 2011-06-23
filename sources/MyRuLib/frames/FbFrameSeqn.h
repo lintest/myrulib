@@ -11,6 +11,18 @@
 #include "FbSeqnList.h"
 #include "controls/FbSearchCombo.h"
 
+class FbSeqnViewCtrl
+	: public FbMasterViewCtrl
+{
+private:
+	void OnMasterAppend(wxCommandEvent& event);
+	void OnMasterModify(wxCommandEvent& event);
+	void OnMasterDelete(wxCommandEvent& event);
+	void OnMasterPage(wxCommandEvent& event);
+	void OnMasterPageUpdateUI(wxUpdateUIEvent & event);
+	DECLARE_EVENT_TABLE()
+};
+
 class FbFrameSeqn : public FbFrameBase
 {
 	public:
@@ -53,11 +65,6 @@ class FbFrameSeqn : public FbFrameBase
 			public:
 				MasterMenu(int id);
 		};
-	private:
-		class MenuMaster: public FbMenu {
-			public: MenuMaster();
-		};
-
 };
 
 #endif // __FBFRAMESEQN_H__

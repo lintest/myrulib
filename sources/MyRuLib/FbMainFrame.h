@@ -48,6 +48,10 @@ class FbMainFrame : public wxFrame
 		wxAuiNotebook m_FrameNotebook;
 		FbTreeViewCtrl * m_LogCtrl;
 	private:
+		void OnDisableUI(wxUpdateUIEvent & event) {
+			event.Enable(false);
+		}
+	private:
 		void OnExit(wxCommandEvent & event);
 		void OnSetup(wxCommandEvent & event);
 		void OnReader(wxCommandEvent & event);

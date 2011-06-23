@@ -27,6 +27,9 @@ FbMenuBar::MenuEdit::MenuEdit()
 	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
 	AppendImg(wxID_PASTE, _("Paste") + (wxString)wxT("\tCtrl+V"), wxART_PASTE);
 	AppendSeparator();
+	Append(ID_MASTER_APPEND,  _("Append"));
+	Append(ID_MASTER_MODIFY,  _("Modify"));
+	Append(ID_MASTER_REPLACE, _("Replace"));
 	AppendImg(wxID_DELETE, _("Delete") + (wxString)wxT("\tDel"), wxART_DELETE);
 	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));

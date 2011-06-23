@@ -10,6 +10,72 @@
 #include "dialogs/FbSequenDlg.h"
 #include "FbMasterTypes.h"
 
+//-----------------------------------------------------------------------------
+//  FbSeqnViewCtrl
+//-----------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(FbSeqnViewCtrl, FbMasterViewCtrl)
+	EVT_MENU(wxID_DELETE, FbSeqnViewCtrl::OnMasterDelete)
+	EVT_MENU(ID_MASTER_APPEND, FbSeqnViewCtrl::OnMasterAppend)
+	EVT_MENU(ID_MASTER_MODIFY, FbSeqnViewCtrl::OnMasterModify)
+	EVT_UPDATE_UI(ID_MASTER_APPEND, FbMasterViewCtrl::OnEnableUI)
+	EVT_UPDATE_UI(ID_MASTER_MODIFY, FbMasterViewCtrl::OnEnableUI)
+END_EVENT_TABLE()
+
+void FbSeqnViewCtrl::OnMasterAppend(wxCommandEvent& event)
+{
+	wxString newname;
+	int id = FbSequenDlg::Append(newname);
+	if (id == 0) return;
+
+	Append(new FbSeqnListData(id));
+}
+
+void FbSeqnViewCtrl::OnMasterModify(wxCommandEvent& event)
+{
+	FbSeqnListModel * model = wxDynamicCast(GetModel(), FbSeqnListModel);
+	if (model == NULL) return;
+
+	FbModelItem item = GetCurrent();
+	FbSeqnListData * current = wxDynamicCast(&item, FbSeqnListData);
+	if (current == NULL) return;
+
+	wxString newname;
+	int old_id = current->GetCode();
+	int new_id = FbSequenDlg::Modify(old_id, newname);
+	if (new_id == 0) return;
+
+	if (new_id != old_id) model->Delete(new_id);
+	Replace(new FbSeqnListData(new_id));
+}
+
+void FbSeqnViewCtrl::OnMasterDelete(wxCommandEvent& event)
+{
+	FbModel * model = GetModel();
+	if (model == NULL) return;
+
+	FbModelItem item = model->GetCurrent();
+	FbSeqnListData * current = wxDynamicCast(&item, FbSeqnListData);
+	if (current == NULL) return;
+
+	int id = current->GetCode();
+
+	wxString msg = wxString::Format(_("Delete series \"%s\"?"), current->GetValue(*model).c_str());
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (ok) {
+		FbCommonDatabase database;
+		FbAutoCommit commit(database);
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM s WHERE sid=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM bs WHERE sid=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM fts_s WHERE docid=%d"), id));
+		Delete();
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbAuthViewCtrl
+//-----------------------------------------------------------------------------
+
 IMPLEMENT_CLASS(FbFrameSeqn, FbFrameBase)
 
 BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
@@ -17,9 +83,6 @@ BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 	EVT_TEXT_ENTER(ID_MASTER_FIND, FbFrameSeqn::OnFindEnter )
 	EVT_BUTTON(ID_MASTER_FIND, FbFrameSeqn::OnFindEnter )
 	EVT_TREE_ITEM_MENU(ID_MASTER_LIST, FbFrameSeqn::OnContextMenu)
-	EVT_MENU(ID_MASTER_APPEND, FbFrameSeqn::OnMasterAppend)
-	EVT_MENU(ID_MASTER_MODIFY, FbFrameSeqn::OnMasterModify)
-	EVT_MENU(ID_MASTER_DELETE, FbFrameSeqn::OnMasterDelete)
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbFrameSeqn::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbFrameSeqn::OnArray)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameSeqn::OnBooksCount)
@@ -37,7 +100,7 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
 
-	m_MasterList = new FbMasterViewCtrl;
+	m_MasterList = new FbSeqnViewCtrl;
 	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
@@ -117,7 +180,7 @@ FbFrameSeqn::MasterMenu::MasterMenu(int id)
 	Append(ID_MASTER_APPEND,  _("Append"));
 	if (id == 0) return;
 	Append(ID_MASTER_MODIFY,  _("Modify"));
-	Append(ID_MASTER_DELETE,  _("Delete"));
+	Append(wxID_DELETE,       _("Delete"));
 }
 
 void FbFrameSeqn::OnContextMenu(wxTreeEvent& event)
@@ -138,63 +201,6 @@ void FbFrameSeqn::ShowContextMenu(const wxPoint& pos, wxTreeItemId)
 	int id = data ? data->GetCode() : 0;
 	MasterMenu menu(id);
 	m_MasterList->PopupMenu(&menu, pos.x, pos.y);
-}
-
-void FbFrameSeqn::OnMasterAppend(wxCommandEvent& event)
-{
-	wxString newname;
-	int id = FbSequenDlg::Append(newname);
-	if (id == 0) return;
-
-	m_MasterList->Append(new FbSeqnListData(id));
-}
-
-void FbFrameSeqn::OnMasterModify(wxCommandEvent& event)
-{
-	FbSeqnListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbSeqnListModel);
-	if (model == NULL) return;
-
-	FbModelItem item = m_MasterList->GetCurrent();
-	FbSeqnListData * current = wxDynamicCast(&item, FbSeqnListData);
-	if (current == NULL) return;
-
-	wxString newname;
-	int old_id = current->GetCode();
-	int new_id = FbSequenDlg::Modify(old_id, newname);
-	if (new_id == 0) return;
-
-	if (new_id != old_id) model->Delete(new_id);
-	m_MasterList->Replace(new FbSeqnListData(new_id));
-}
-
-void FbFrameSeqn::OnMasterDelete(wxCommandEvent& event)
-{
-	FbModel * model = m_MasterList->GetModel();
-	if (model == NULL) return;
-
-	FbModelItem item = model->GetCurrent();
-	FbSeqnListData * current = wxDynamicCast(&item, FbSeqnListData);
-	if (current == NULL) return;
-
-	int id = current->GetCode();
-
-	wxString msg = wxString::Format(_("Delete series \"%s\"?"), current->GetValue(*model).c_str());
-	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
-	if (ok) {
-		FbCommonDatabase database;
-		FbAutoCommit commit(database);
-		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM s WHERE sid=%d"), id));
-		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM bs WHERE sid=%d"), id));
-		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM fts_s WHERE docid=%d"), id));
-		m_MasterList->Delete();
-	}
-}
-
-FbFrameSeqn::MenuMaster::MenuMaster()
-{
-	Append(ID_MASTER_APPEND,  _("Append"));
-	Append(ID_MASTER_MODIFY,  _("Modify"));
-	Append(ID_MASTER_DELETE,  _("Delete"));
 }
 
 void FbFrameSeqn::OnModel( FbArrayEvent& event )
