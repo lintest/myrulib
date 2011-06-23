@@ -25,8 +25,6 @@ void FbThread::Close()
 //  FbProgressThread
 //-----------------------------------------------------------------------------
 
-wxCriticalSection FbProgressThread::sm_queue;
-
 void FbProgressThread::DoPulse(const wxString & msg)
 {
 	FbProgressEvent(ID_PROGRESS_PULSE, msg).Post(m_owner);

@@ -30,7 +30,7 @@ function convert_auth($sqlite_db, $min)
 	if(empty($buffer{0})) continue;
 	$fields = explode(chr(9), $buffer);
 	$id = $fields[0];
-	$names = explode(",", $fields[1]); 
+	$names = explode(",", $fields[1].","); 
 	$last_name = utf(trim($names[0]));
 	$first_name = utf(trim($names[1]));
 	$middle_name = utf(trim($fields[2]));
@@ -167,13 +167,12 @@ function convert_info($sqlite_db, $min)
   $handle = fopen("db/bookanno", "r");
   while (true) {
 	if (feof($handle)) {
-		$book = 0;
+		$book = -1;
 	} else {
 		$buffer = Trim(fgets($handle, 4096),"\n\r");
 		if(empty($buffer{0})) continue;
 		$fields = explode(chr(9), $buffer);
 		$book = $fields[0];
-		$text = $text."\\n".utf(trim($fields[1]));
 	}
 	if ($prior && $book != $prior) {
 		while (substr($text, 0, 2)=="\\n") $text=substr($text, 2);
@@ -185,7 +184,9 @@ function convert_info($sqlite_db, $min)
 		$sql = "UPDATE books SET description=? where id=?";
 		$insert = $sqlite_db->prepare($sql);
 		$insert->execute(array($text, $prior));
-		$text = "";
+		$text = utf(trim($fields[1]));
+	} else if ($book) {
+		$text = $text."\\n".utf(trim($fields[1]));
 	}
 	if (feof($handle)) break;
 	$prior = $book;

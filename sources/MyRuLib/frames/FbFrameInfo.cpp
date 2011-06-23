@@ -170,8 +170,6 @@ void FbFrameInfoThread::WriteTypes()
 
 void * FbFrameInfoThread::Entry()
 {
-	wxCriticalSectionLocker enter(sm_queue);
-
 	DoStart(_("Collection info"), 3);
 
 	WriteTitle();
@@ -216,23 +214,3 @@ void FbFrameInfo::UpdateFonts(bool refresh)
 {
 //	FbAuiMDIChildFrame::UpdateFont(&m_info, refresh);
 }
-
-FbFrameInfo::MainMenu::MainMenu()
-{
-	Append(new MenuFile,   _("&File"));
-	Append(new MenuEdit,   _("&Edit"));
-	Append(new MenuLib,    _("&Library"));
-	Append(new MenuFrame,  _("&Catalog"));
-	Append(new MenuWindow, _("&Window"));
-	Append(new MenuHelp,   _("&?"));
-}
-
-FbFrameInfo::MainMenu::MenuFile::MenuFile()
-{
-	AppendImg(wxID_NEW,  _("Add file") + (wxString)wxT("\tCtrl+N"), wxART_NEW);
-	AppendImg(wxID_OPEN, _("Add folder") + (wxString)wxT("\tCtrl+O"), wxART_FOLDER_OPEN);
-	AppendImg(wxID_SAVE, _("Save report as...") + (wxString)wxT("\tCtrl+S"), wxART_FILE_SAVE_AS);
-	AppendSeparator();
-	AppendImg(wxID_EXIT, _("Exit") + (wxString)wxT("\tAlt-F4"), wxART_QUIT);
-}
-

@@ -146,8 +146,6 @@ private:
 
 void FbDirImportThread::DoParse(bool only_new)
 {
-	wxCriticalSectionLocker enter(sm_queue);
-
 	wxLogMessage(_("Start import directory %s"), m_dirname.c_str());
 
 	wxDir dir(m_dirname);

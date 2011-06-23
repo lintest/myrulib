@@ -19,16 +19,6 @@ class FbFrameInfo
 		void OnSave(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameInfo)
-	private:
-		class MainMenu: public FbMenuBar
-		{
-			public:
-				MainMenu();
-			protected:
-				class MenuFile: public FbMenu {
-					public: MenuFile();
-				};
-		};
 };
 
 #endif // __FBFRAMEINFO_H__

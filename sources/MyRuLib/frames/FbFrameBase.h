@@ -17,7 +17,7 @@
 class FbMasterViewCtrl
 	: public FbTreeViewCtrl
 {
-protected:
+public:
 	void OnCopy(wxCommandEvent & event);
 
 	void OnSelect(wxCommandEvent & event) {}
@@ -29,7 +29,7 @@ protected:
 	void OnDisableUI(wxUpdateUIEvent & event) {
 		event.Enable(false);
 	}
-
+protected:
 	DECLARE_CLASS(FbMasterViewCtrl)
 	DECLARE_EVENT_TABLE()
 };

@@ -35,7 +35,6 @@ public:
 		: FbThread(kind), m_owner(owner) {}
 	wxEvtHandler * GetOwner() { return m_owner; }
 protected:
-	static wxCriticalSection sm_queue;
 	void SetInfo(const wxString & info) { m_info = info; }
 	void DoStart(const wxString & msg, int max = 0);
 	void DoPulse(const wxString & msg);
