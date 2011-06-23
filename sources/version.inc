@@ -4,4 +4,4 @@
 #define PROGRAM_NAME MyRuLib
 #define VERSION_MAJOR      0
 #define VERSION_MINOR     28
-#define VERSION_BUILD      4
+#define VERSION_BUILD      5
