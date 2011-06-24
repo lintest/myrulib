@@ -1,4 +1,7 @@
 #include "FbCoolReader.h"
+
+#ifdef FB_INCLUDE_READER
+
 #include <wx/power.h>
 #include <wx/mstream.h>
 #include <wx/stdpaths.h>
@@ -7,8 +10,6 @@
 #include <crengine.h>
 #include "FbConst.h"
 #include "FbParams.h"
-
-#ifdef FB_INCLUDE_READER
 
 #define RENDER_TIMER_ID  123
 #define CLOCK_TIMER_ID   124
