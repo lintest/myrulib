@@ -2203,6 +2203,8 @@ WXWIDGETS_VERSION=2.8.10
 
 ac_config_headers="$ac_config_headers faxpp/config.h:3rdparty/faxpp/src/config.h.in"
 
+ac_config_headers="$ac_config_headers version.h:sources/version.h.in"
+
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
@@ -9449,6 +9451,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "faxpp/config.h") CONFIG_HEADERS="$CONFIG_HEADERS faxpp/config.h:3rdparty/faxpp/src/config.h.in" ;;
+    "version.h") CONFIG_HEADERS="$CONFIG_HEADERS version.h:sources/version.h.in" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;
