@@ -10044,7 +10044,7 @@ fi
 
 
 echo
-echo "Configured MyRuLib 0.28.5 for \`${host}' wxWidgets ${WX_VERSION}"
+echo "Configured ${PACKAGE_STRING} for \`${host}' wxWidgets ${WX_VERSION}"
 echo
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
