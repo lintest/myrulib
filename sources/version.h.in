@@ -1,4 +1,5 @@
-/* config.h.in.  Generated from configure.in by autoheader.  */
+#ifndef __VERSION_H__
+#define __VERSION_H__
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
@@ -21,5 +22,4 @@
 /* Define extended version information for W32. */
 #undef BUILD_VERSION
 
-/* Define to 1 if you have the ANSI C header files. */
-#undef STDC_HEADERS
+#endif // __VERSION_H__

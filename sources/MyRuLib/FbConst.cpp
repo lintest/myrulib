@@ -3,15 +3,13 @@
 
 #include "version.h"
 
-#define TXT(text) wxT(wxSTRINGIZE(text))
-
 wxString MyRuLib::ProgramName()
 {
-	return (wxString)TXT(PACKAGE_NAME)
+	return (wxString)wxT(PACKAGE_NAME)
 #ifdef FB_INCLUDE_READER
 		+ wxT("CR")
 #endif
-		+ wxT(PACKAGE_VERSION);
+	+ wxT(' ') + wxT(PACKAGE_VERSION);
 }
 
 wxString MyRuLib::HomePage()
@@ -26,7 +24,7 @@ wxString MyRuLib::MailAddr()
 
 wxString MyRuLib::UserAgent()
 {
-	return (wxString)TXT(PACKAGE_NAME) + wxT('/') + TXT(PACKAGE_VERSION) + wxT(' ') + ::wxGetOsDescription();
+	return (wxString)wxT(PACKAGE_NAME) + wxT('/') + wxT(PACKAGE_VERSION) + wxT(' ') + ::wxGetOsDescription();
 }
 
 static wxString GetRussianAlphabet()
@@ -87,4 +85,3 @@ void FbMessageBox(const wxString &info, const wxString &text)
 {
 	wxMessageBox(CreateMessage(info, text));
 }
-

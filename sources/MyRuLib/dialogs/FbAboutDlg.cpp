@@ -3,6 +3,7 @@
 #include "FbLogoBitmap.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
+#include "version.h"
 
 FbAboutDlg::FbAboutDlg( wxWindow* parent )
 	: FbDialog(parent, wxID_ANY, (wxString)_("About"))
@@ -21,7 +22,7 @@ FbAboutDlg::FbAboutDlg( wxWindow* parent )
 	wxBoxSizer* bSizerCtrl;
 	bSizerCtrl = new wxBoxSizer( wxVERTICAL );
 
-	wxStaticText * m_text1 = new wxStaticText( this, wxID_ANY, MyRuLib::ProgramInfo() );
+	wxStaticText * m_text1 = new wxStaticText( this, wxID_ANY, MyRuLib::ProgramName() );
 	m_text1->Wrap( -1 );
 	wxFont font;
 	font.SetWeight(wxFONTWEIGHT_BOLD);
