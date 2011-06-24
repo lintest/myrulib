@@ -48,6 +48,7 @@ int FbParams::DefaultInt(int param)
 			case FB_IMAGE_WIDTH: return 200;
 			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
 			case FB_NUMBER_FORMAT: return 3;
+			case FB_STATUS_SHOW: return 0;
 			case FB_READER_FONT_COLOUR: return 0x000000;
 			case FB_READER_BACK_COLOUR: return 0xFFFFE0;
 			default: return 0;

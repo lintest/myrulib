@@ -80,11 +80,13 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_TEXTLOG_HIDE, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
 	EVT_MENU(ID_FULLSCREEN, FbMainFrame::OnFullScreen)
+	EVT_MENU(ID_STATUS_SHOW, FbMainFrame::OnStatusBar)
 	EVT_MENU_RANGE(ID_ART_DEFAULT, ID_ART_MOZILLA, FbMainFrame::OnTabArt)
 
 	EVT_UPDATE_UI(ID_MENU_UPDATE, FbMainFrame::OnUpdateUpdate)
 	EVT_UPDATE_UI(ID_FULLSCREEN,  FbMainFrame::OnFullScreenUpdate)
 	EVT_UPDATE_UI(ID_TEXTLOG_SHOW, FbMainFrame::OnHideLogUpdate)
+	EVT_UPDATE_UI(ID_STATUS_SHOW, FbMainFrame::OnStatusBarUpdate)
 	EVT_UPDATE_UI_RANGE(ID_ART_DEFAULT, ID_ART_MOZILLA, FbMainFrame::OnTabArtUpdate)
 
 	EVT_MENU(wxID_CLOSE, FbMainFrame::OnWindowClose)
@@ -266,6 +268,7 @@ void FbMainFrame::CreateControls()
 	m_ProgressBar.Create(this, ID_PROGRESSBAR);
 	m_ProgressBar.SetFieldsCount(4);
 	m_ProgressBar.SetStatusWidths(4, widths);
+	m_ProgressBar.Show(FbParams::GetInt(FB_STATUS_SHOW));
 	SetStatusBar(&m_ProgressBar);
 
 	m_LogCtrl = new FbLogViewCtrl;
@@ -878,4 +881,18 @@ void FbMainFrame::OnPaneClose(wxAuiManagerEvent& event)
 	if (event.pane->name == wxT("Log")) {
 		m_LogCtrl->AssignModel(new FbLogModel);
 	}
+}
+
+void FbMainFrame::OnStatusBar(wxCommandEvent & event)
+{
+	bool show = !m_ProgressBar.IsShown();
+	m_ProgressBar.Show(show);
+	FbParams::Set(FB_STATUS_SHOW, show ? 1 : 0);
+	Layout();
+}
+
+void FbMainFrame::OnStatusBarUpdate(wxUpdateUIEvent  & event)
+{
+	event.Enable(!IsFullScreen());
+	event.Check(m_ProgressBar.IsShown());
 }

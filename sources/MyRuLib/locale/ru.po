@@ -2043,3 +2043,6 @@ msgstr "Шрифт колонтитула"
 
 msgid "Header colour"
 msgstr "Цвет колонтитула"
+
+msgid "Show status bar"
+msgstr "Строка состояния"

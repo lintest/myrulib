@@ -101,12 +101,14 @@ class FbMainFrame : public wxFrame
 		void OnWindowCloseAll(wxCommandEvent & event);
 		void OnWindowNext(wxCommandEvent & event);
 		void OnWindowPrev(wxCommandEvent & event);
+		void OnStatusBar(wxCommandEvent & event);
 		void OnFoundNothing(wxCommandEvent & event);
 		void OnAllowNotebookDnD(wxAuiNotebookEvent& event);
 		void OnPaneClose(wxAuiManagerEvent& event);
 		void OnNotebookChanged(wxAuiNotebookEvent& event);
 		void OnNotebookClosed(wxAuiNotebookEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
+		void OnStatusBarUpdate(wxUpdateUIEvent  & event);
 		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		void OnIdle( wxIdleEvent & event);
 		void OnNavigationKey(wxNavigationKeyEvent& event);
