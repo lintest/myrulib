@@ -143,7 +143,6 @@ class MyRuLib
 {
 public:
 	static wxString ProgramName();
-	static wxString ProgramInfo();
 	static wxString VersionInfo();
 	static wxString HomePage();
 	static wxString MailAddr();

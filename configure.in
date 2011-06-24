@@ -239,6 +239,8 @@ else
   USE_WX_STATIC=yes
 fi
 
+BUILD_VERSION=`echo "$PACKAGE_VERSION" | sed -e 's/\./,/g'`,0
+
 AC_OUTPUT
 
 dnl report how we have been configured

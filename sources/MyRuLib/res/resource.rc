@@ -12,8 +12,8 @@ cs_CZ RC_DATA "cs.mo"
 sv_SE RC_DATA "sv.mo"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD, 0
-PRODUCTVERSION VERSION_MAJOR, VERSION_MINOR, 0, 0
+FILEVERSION BUILD_VERSION
+PRODUCTVERSION BUILD_VERSION
 FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
 FILEFLAGS 0x1L
@@ -29,13 +29,13 @@ BEGIN
     BLOCK "040904B0"
     BEGIN
       VALUE "CompanyName", "\0"
-      VALUE "FileDescription", "MyRuLib Application\0"
-      VALUE "FileVersion", wxSTRINGIZE(VERSION_MAJOR) "." wxSTRINGIZE(VERSION_MINOR) "." wxSTRINGIZE(VERSION_BUILD) "." wxSTRINGIZE(0) "\0"
-      VALUE "InternalName", "myrulib\0"
+      VALUE "FileDescription", PACKAGE_NAME " Application\0"
+      VALUE "FileVersion", PACKAGE_VERSION ".0\0"
+      VALUE "InternalName", PACKAGE_TARNAME "\0"
       VALUE "LegalCopyright", "Copyright © Kandrashin Denis, 2010\0"
-      VALUE "OriginalFilename", "myrulib.exe\0"
+      VALUE "OriginalFilename", PACKAGE_TARNAME ".exe\0"
       VALUE "ProductName", "MyRuLib E-Book Library Manager\0"
-      VALUE "ProductVersion", wxSTRINGIZE(VERSION_MAJOR) "." wxSTRINGIZE(VERSION_MINOR) "." wxSTRINGIZE(0) "." wxSTRINGIZE(0) "\0"
+      VALUE "ProductVersion", PACKAGE_VERSION ".0\0"
     END
   END
   BLOCK "VarFileInfo"

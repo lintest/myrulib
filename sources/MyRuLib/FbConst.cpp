@@ -1,38 +1,32 @@
 #include "FbConst.h"
 #include <wx/utils.h>
 
-#include "../version.inc"
+#include "version.h"
 
 #define TXT(text) wxT(wxSTRINGIZE(text))
 
 wxString MyRuLib::ProgramName()
 {
-	return (wxString)TXT(PROGRAM_NAME)
+	return (wxString)TXT(PACKAGE_NAME)
 #ifdef FB_INCLUDE_READER
 		+ wxT("CR")
 #endif
-		+ wxT(' ') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR);
-}
-
-wxString MyRuLib::ProgramInfo()
-{
-	return ProgramName() + wxT('.') + TXT(VERSION_BUILD);
-	return TXT(PROGRAM_HOMEPAGE);
+		+ wxT(PACKAGE_VERSION);
 }
 
 wxString MyRuLib::HomePage()
 {
-	return wxT(PROGRAM_HOMEPAGE);
+	return wxT(PACKAGE_URL);
 }
 
 wxString MyRuLib::MailAddr()
 {
-	return wxT(PROGRAM_MAILADDR);
+	return wxT(PACKAGE_BUGREPORT);
 }
 
 wxString MyRuLib::UserAgent()
 {
-	return (wxString)TXT(PROGRAM_NAME) + wxT('/') + TXT(VERSION_MAJOR) + wxT('.') + TXT(VERSION_MINOR) + wxT('.') + TXT(VERSION_BUILD) + wxT(' ') + ::wxGetOsDescription();
+	return (wxString)TXT(PACKAGE_NAME) + wxT('/') + TXT(PACKAGE_VERSION) + wxT(' ') + ::wxGetOsDescription();
 }
 
 static wxString GetRussianAlphabet()
