@@ -53,6 +53,7 @@ int FbParams::DefaultInt(int param)
 			case FB_READER_BACK_COLOUR: return 0xFFFFE0;
 			case FB_READER_FONT_SIZE: return 20;
 			case FB_HEADER_FONT_SIZE: return 14;
+			case FB_READER_INTERLINE: return 100;
 			default: return 0;
 		}
 	else {

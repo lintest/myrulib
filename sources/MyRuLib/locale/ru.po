@@ -2049,3 +2049,6 @@ msgstr "Строка состояния"
 
 msgid "Font size"
 msgstr "Размер шрифта"
+
+msgid "Interline space"
+msgstr "Межстрочный интервал"

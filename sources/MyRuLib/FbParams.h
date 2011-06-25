@@ -121,6 +121,7 @@ enum FbParamKey {
 	FB_HEADER_FONT_NAME    = 905,
 	FB_HEADER_FONT_SIZE    = 906,
 	FB_HEADER_FONT_COLOUR  = 907,
+	FB_READER_INTERLINE    = 908,
 };
 
 enum FbFrameKey {

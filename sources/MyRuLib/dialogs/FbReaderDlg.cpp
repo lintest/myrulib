@@ -57,6 +57,13 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent, wxArrayString & fonts)
 	wxColourPickerCtrl * cpBack = new wxColourPickerCtrl( this, ID_READER_BACK_COLOUR);
 	fgSizerList->Add( cpBack, 0, wxALL, 5 );
 	
+	stTitle = new wxStaticText( this, wxID_ANY, _("Interline space"));
+	stTitle->Wrap( -1 );
+	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxSpinCtrl * scInterline = new wxSpinCtrl( this, ID_READER_INTERLINE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 50, 200, 100 );
+	fgSizerList->Add( scInterline, 0, wxALL, 5 );
+
 	this->SetSizer( fgSizerList );
 	this->Layout();
 }
@@ -151,6 +158,7 @@ void FbReaderDlg::Assign(bool write)
 		{FB_READER_FONT_SIZE,  FbReaderDlg::ID_READER_FONT_SIZE},
 		{FB_HEADER_FONT_NAME,  FbReaderDlg::ID_HEADER_FONT_NAME},
 		{FB_HEADER_FONT_SIZE,  FbReaderDlg::ID_HEADER_FONT_SIZE},
+		{FB_READER_INTERLINE,  FbReaderDlg::ID_READER_INTERLINE},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

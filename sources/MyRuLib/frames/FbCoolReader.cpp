@@ -193,6 +193,7 @@ void FbCoolReader::Setup(bool refresh)
     getDocView()->setTextColor(FbParams::GetInt(FB_READER_FONT_COLOUR));
     getDocView()->setBackgroundColor(FbParams::GetInt(FB_READER_BACK_COLOUR));
     getDocView()->setStatusColor(FbParams::GetInt(FB_HEADER_FONT_COLOUR));
+    getDocView()->setDefaultInterlineSpace(FbParams::GetInt(FB_READER_INTERLINE));
     getDocView()->setViewMode(DVM_PAGES);
 	SetBackgroundColour(getBackgroundColour());
 
