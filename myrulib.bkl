@@ -13,7 +13,7 @@
 	<include file="./3rdparty/bakefile/wx.bkl"/>
 	<include file="datafiles.bkl"/>
 
-	<lib id="expat_static" cond="USE_EXPAT=='builtin'">
+	<lib id="expat" cond="USE_EXPAT=='builtin'">
 		<define>XML_STATIC</define>
 		<define>HAVE_MEMMOVE</define> 
 		<include>$(SRCDIR)/3rdparty/expat</include>
@@ -24,7 +24,7 @@
 		<sources>3rdparty/expat/xmltok_ns.c</sources>
 	</lib>
 
-	<lib id="faxpp_static" cond="USE_FAXPP=='builtin'">
+	<lib id="faxpp" cond="USE_FAXPP=='builtin'">
 		<define>HAVE_CONFIG</define>
 		<include>$(BUILDDIR)</include>
 		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
@@ -51,13 +51,13 @@
 		<sources>3rdparty/faxpp/src/xml_tokenizer.c</sources>
 	</lib>
 
-	<lib id="sqlite3_static" cond="USE_SQLITE=='builtin'">
+	<lib id="sqlite3" cond="USE_SQLITE=='builtin'">
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>$(SRCDIR)/3rdparty/sqlite3</include>
 		<sources>3rdparty/sqlite3/sqlite3.c</sources>
 	</lib>
 
-	<lib id="crengine_static" template="wx-lib" cond="USE_READER=='yes'">
+	<lib id="crengine" template="wx-lib" cond="USE_READER=='yes'">
 		<include>3rdparty/crengine/include</include>
 		<include>$(SRCDIR)/../wxWidgets/src/jpeg</include>
 		<include>$(SRCDIR)/../wxWidgets/src/png</include>
@@ -108,13 +108,13 @@
 		<clean-files>$(BUILDDIR)/wxsqlite3.cpp</clean-files>
 	</action>
 
-	<lib id="wxsqlite3_static" template="wx-lib">
+	<lib id="wxsqlite3" template="wx-lib">
 		<define>NDEBUG</define>
 		<sources>sources/wxsqlite3.cpp</sources>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
 	</lib>
 
-	<lib id="wxbzip2_static" template="wx-lib">
+	<lib id="wxbzip2" template="wx-lib">
 		<define>NDEBUG</define>
 		<sources>3rdparty/wxbzipstream/bzip/blocksort.c</sources>
 		<sources>3rdparty/wxbzipstream/bzip/bzlib.c</sources>
@@ -126,20 +126,14 @@
 		<sources>3rdparty/wxbzipstream/bzipstream.cpp</sources>
 	</lib>
 
-	<lib id="wxcurl_static" template="wx-lib" cond="USE_CURL=='yes'">
-		<include>3rdparty/wxcurl</include>
-		<sources>3rdparty/wxcurl/base.cpp</sources>
-		<sources>3rdparty/wxcurl/http.cpp</sources>
-	</lib>
-
 	<exe id="zipscan" template="wxconsole">
-		<depends>sqlite3_static</depends>
+		<depends>sqlite3</depends>
 		<define>NDEBUG</define>
 		<sources>sources/ZipScaner/ZipScan.cpp</sources>
 		<sources>sources/MyRuLib/polarssl/md5.c</sources>
 		<include>$(SRCDIR)/sources/MyRuLib</include>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
-		<library>wxsqlite3_static</library>
+		<library>wxsqlite3</library>
 		<wx-lib>core</wx-lib>
 		<wx-lib>base</wx-lib>
 		<threading>single</threading>
@@ -215,13 +209,12 @@
 	</action>
 	
 	<exe id="myrulib" template="wxgui">
-		<depends>expat_static</depends>
-		<depends>sqlite3_static</depends>
-		<depends>wxcurl_static</depends>
-		<depends>faxpp_static</depends>
-		<library>wxsqlite3_static</library>
-		<library>wxbzip2_static</library>
-		<depends>crengine_static</depends>
+		<depends>expat</depends>
+		<depends>faxpp</depends>
+		<depends>sqlite3</depends>
+		<depends>crengine</depends>
+		<library>wxbzip2</library>
+		<library>wxsqlite3</library>
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
@@ -331,8 +324,6 @@
 		<sources>sources/MyRuLib/wx/base64.cpp</sources>
 		<win32-res>sources/MyRuLib/res/resource.rc</win32-res>
 		<include>$(SRCDIR)/sources/MyRuLib</include>
-		<include>$(SRCDIR)/3rdparty/crengine/include</include>
-		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
 		<include>$(SRCDIR)/3rdparty/wxbzipstream</include>
 		<wx-lib>aui</wx-lib>

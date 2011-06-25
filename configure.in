@@ -149,7 +149,7 @@ dnl =================
 
 if test "x$USE_FAXPP" = "xbuiltin" ; then 
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
-  WX_LIBS="$WX_LIBS -lfaxpp_static"
+  WX_LIBS="$WX_LIBS -lfaxpp"
 fi
 
 if test "x$USE_FAXPP" = "xyes" ; then 
@@ -163,7 +163,7 @@ dnl =================
 
 if test "x$USE_EXPAT" = "xbuiltin" ; then 
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
-  WX_LIBS="$WX_LIBS -lexpat_static"
+  WX_LIBS="$WX_LIBS -lexpat"
 fi
 
 if test "x$USE_EXPAT" = "xyes" ; then 
@@ -177,14 +177,14 @@ dnl ==================
 
 if test "x$USE_SQLITE" = "xbuiltin" ; then 
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
-  WX_LIBS="$WX_LIBS -lsqlite3_static"
+  WX_LIBS="$WX_LIBS -lsqlite3"
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
   WX_LIBS="$WX_LIBS $SQLITE_LIBS"
 fi
 
 dnl ==================
-dnl === USE_SQLITE ===
+dnl === USE_READER ===
 dnl ==================
 
 if test "x$FOUND_FT2" == "xyes" ; then 
@@ -192,13 +192,9 @@ if test "x$FOUND_FT2" == "xyes" ; then
   WX_LIBS="$WX_LIBS $FT2_LIBS"
 fi
 
-dnl ==================
-dnl === USE_READER ===
-dnl ==================
-
 if test "x$USE_READER" = "xyes" ; then 
-  WX_LIBS="$WX_LIBS -lcrengine_static"
-  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER"
+  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I$DOLLAR(srcdir)/3rdparty/crengine/include"
+  WX_LIBS="$WX_LIBS -lcrengine"
 fi
 
 dnl ==================

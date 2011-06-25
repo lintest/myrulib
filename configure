@@ -605,7 +605,6 @@ COND_USE_SQLITE_builtin
 COND_USE_READER_yes
 COND_USE_FAXPP_builtin
 COND_USE_EXPAT_builtin
-COND_USE_CURL_yes
 COND_PLATFORM_WIN32_1
 COND_PLATFORM_OS2_1
 COND_PLATFORM_MAC_1
@@ -8627,11 +8626,6 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.9"
         COND_PLATFORM_WIN32_1=""
     fi
 
-    COND_USE_CURL_yes="#"
-    if test "x$USE_CURL" = "xyes" ; then
-        COND_USE_CURL_yes=""
-    fi
-
     COND_USE_EXPAT_builtin="#"
     if test "x$USE_EXPAT" = "xbuiltin" ; then
         COND_USE_EXPAT_builtin=""
@@ -8688,7 +8682,7 @@ WX_LIBS=`echo $WX_LIBS | sed "s|-mthreads||g"`
 
 if test "x$USE_FAXPP" = "xbuiltin" ; then
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
-  WX_LIBS="$WX_LIBS -lfaxpp_static"
+  WX_LIBS="$WX_LIBS -lfaxpp"
 fi
 
 if test "x$USE_FAXPP" = "xyes" ; then
@@ -8699,7 +8693,7 @@ fi
 
 if test "x$USE_EXPAT" = "xbuiltin" ; then
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
-  WX_LIBS="$WX_LIBS -lexpat_static"
+  WX_LIBS="$WX_LIBS -lexpat"
 fi
 
 if test "x$USE_EXPAT" = "xyes" ; then
@@ -8710,7 +8704,7 @@ fi
 
 if test "x$USE_SQLITE" = "xbuiltin" ; then
   CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
-  WX_LIBS="$WX_LIBS -lsqlite3_static"
+  WX_LIBS="$WX_LIBS -lsqlite3"
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
   WX_LIBS="$WX_LIBS $SQLITE_LIBS"
@@ -8722,10 +8716,9 @@ if test "x$FOUND_FT2" == "xyes" ; then
   WX_LIBS="$WX_LIBS $FT2_LIBS"
 fi
 
-
 if test "x$USE_READER" = "xyes" ; then
-  WX_LIBS="$WX_LIBS -lcrengine_static"
-  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER"
+  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I$DOLLAR(srcdir)/3rdparty/crengine/include"
+  WX_LIBS="$WX_LIBS -lcrengine"
 fi
 
 
