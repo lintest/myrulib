@@ -3,7 +3,6 @@
 #include "FbLogoBitmap.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
-#include "version.h"
 
 FbAboutDlg::FbAboutDlg( wxWindow* parent )
 	: FbDialog(parent, wxID_ANY, (wxString)_("About"))

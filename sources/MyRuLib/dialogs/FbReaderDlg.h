@@ -19,21 +19,23 @@ class FbReaderDlg : private FbDialog
 		static bool Execute(wxWindow* parent);
 	private:
 		enum ID {
-			ID_FONT_DEFAULT = 1000,
-			ID_FONT_COLOUR,
-			ID_BACK_COLOUR,
-			ID_FONT_HEADER,
-			ID_HEAD_COLOUR,
+			ID_READER_FONT_NAME = 1000,
+			ID_READER_FONT_SIZE,
+			ID_READER_FONT_COLOUR,
+			ID_READER_BACK_COLOUR,
+			ID_HEADER_FONT_NAME,
+			ID_HEADER_FONT_SIZE,
+			ID_HEADER_FONT_COLOUR,
 		};
 		class PanelMain: public wxPanel
 		{
 			public:
-				PanelMain(wxWindow *parent);
+				PanelMain(wxWindow *parent, wxArrayString & fonts);
 		};
 		class PanelPage: public wxPanel
 		{
 			public:
-				PanelPage(wxWindow *parent);
+				PanelPage(wxWindow *parent, wxArrayString & fonts);
 		};
 	private:
 		void Assign(bool write);

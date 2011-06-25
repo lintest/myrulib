@@ -134,9 +134,9 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		if (frame) {
 			wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 			SaveFile(in, tempfile);
-			new FbCoolReader(frame->GetNotebook(), tempfile, true);
+			bool ok = FbCoolReader::Open(frame->GetNotebook(), tempfile, true);
 			wxRemoveFile(tempfile);
-			return;
+			if (ok) return;
 		}
 	}
 #endif

@@ -1,4 +1,5 @@
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #include "FbReaderDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
@@ -7,6 +8,7 @@
 #include "FbCollection.h"
 #include "FbDataPath.h"
 #include "controls/FbCustomCombo.h"
+#include "frames/FbCoolReader.h"
 #include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
 
@@ -16,7 +18,7 @@
 //  FbReaderDlg::PanelMain
 //-----------------------------------------------------------------------------
 
-FbReaderDlg::PanelMain::PanelMain(wxWindow *parent)
+FbReaderDlg::PanelMain::PanelMain(wxWindow *parent, wxArrayString & fonts)
 	: wxPanel(parent)
 {
 	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer(2, 0, 0 );
@@ -30,22 +32,29 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent)
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxFontPickerCtrl * fpMainFont = new wxFontPickerCtrl( this, ID_FONT_DEFAULT, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE|wxFNTP_USE_TEXTCTRL  );
-	fpMainFont->SetMaxPointSize( 100 );
-	fgSizerList->Add( fpMainFont, 0, wxALL|wxEXPAND, 5 );
+	wxComboBox * cbFontName = new wxComboBox( this, ID_READER_FONT_NAME );
+	cbFontName->Append(fonts);
+	fgSizerList->Add( cbFontName, 0, wxALL|wxEXPAND, 5 );
 	
+	stTitle = new wxStaticText( this, wxID_ANY, _("Font size"));
+	stTitle->Wrap( -1 );
+	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxSpinCtrl * scFontSize = new wxSpinCtrl( this, ID_READER_FONT_SIZE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99, 0 );
+	fgSizerList->Add( scFontSize, 0, wxALL, 5 );
+
 	stTitle = new wxStaticText( this, wxID_ANY, _("Font colour"));
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxColourPickerCtrl * cpFont = new wxColourPickerCtrl( this, ID_FONT_COLOUR);
+	wxColourPickerCtrl * cpFont = new wxColourPickerCtrl( this, ID_READER_FONT_COLOUR);
 	fgSizerList->Add( cpFont, 0, wxALL, 5 );
 	
 	stTitle = new wxStaticText( this, wxID_ANY, _("Background colour"));
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxColourPickerCtrl * cpBack = new wxColourPickerCtrl( this, ID_BACK_COLOUR);
+	wxColourPickerCtrl * cpBack = new wxColourPickerCtrl( this, ID_READER_BACK_COLOUR);
 	fgSizerList->Add( cpBack, 0, wxALL, 5 );
 	
 	this->SetSizer( fgSizerList );
@@ -56,7 +65,7 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent)
 //  FbReaderDlg::PanelPage
 //-----------------------------------------------------------------------------
 
-FbReaderDlg::PanelPage::PanelPage(wxWindow *parent)
+FbReaderDlg::PanelPage::PanelPage(wxWindow *parent, wxArrayString & fonts)
 	: wxPanel(parent)
 {
 	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer(2, 0, 0 );
@@ -70,15 +79,22 @@ FbReaderDlg::PanelPage::PanelPage(wxWindow *parent)
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxFontPickerCtrl * fpMainFont = new wxFontPickerCtrl( this, ID_FONT_HEADER, wxNullFont, wxDefaultPosition, wxDefaultSize, wxFNTP_DEFAULT_STYLE|wxFNTP_USE_TEXTCTRL  );
-	fpMainFont->SetMaxPointSize( 100 );
-	fgSizerList->Add( fpMainFont, 0, wxALL|wxEXPAND, 5 );
+	wxComboBox * cbFontName = new wxComboBox( this, ID_HEADER_FONT_NAME );
+	cbFontName->Append(fonts);
+	fgSizerList->Add( cbFontName, 0, wxALL|wxEXPAND, 5 );
 	
+	stTitle = new wxStaticText( this, wxID_ANY, _("Font size"));
+	stTitle->Wrap( -1 );
+	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxSpinCtrl * scFontSize = new wxSpinCtrl( this, ID_HEADER_FONT_SIZE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99, 0 );
+	fgSizerList->Add( scFontSize, 0, wxALL, 5 );
+
 	stTitle = new wxStaticText( this, wxID_ANY, _("Header colour"));
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxColourPickerCtrl * cpFont = new wxColourPickerCtrl( this, ID_HEAD_COLOUR);
+	wxColourPickerCtrl * cpFont = new wxColourPickerCtrl( this, ID_HEADER_FONT_COLOUR);
 	fgSizerList->Add( cpFont, 0, wxALL, 5 );
 	
 	this->SetSizer( fgSizerList );
@@ -99,10 +115,13 @@ FbReaderDlg::FbReaderDlg( wxWindow* parent, wxWindowID id, const wxString& title
 
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
+	
+	wxArrayString fonts;
+	FbCoolReader::GetFonts(fonts);
 
 	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
-	notebook->AddPage( new PanelMain(notebook), _("General"), true );
-	notebook->AddPage( new PanelPage(notebook), _("Page"), false );
+	notebook->AddPage( new PanelMain(notebook, fonts), _("General"), true );
+	notebook->AddPage( new PanelPage(notebook, fonts), _("Page"), false );
 	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
@@ -125,11 +144,13 @@ void FbReaderDlg::Assign(bool write)
 	};
 
 	const Struct ids[] = {
-		{FB_READER_FONT_DEFAULT, FbReaderDlg::ID_FONT_DEFAULT},
-		{FB_READER_FONT_COLOUR,  FbReaderDlg::ID_FONT_COLOUR},
-		{FB_READER_BACK_COLOUR,  FbReaderDlg::ID_BACK_COLOUR},
-		{FB_READER_FONT_HEADER,  FbReaderDlg::ID_FONT_HEADER},
-		{FB_READER_HEAD_COLOUR,  FbReaderDlg::ID_HEAD_COLOUR},
+		{FB_READER_FONT_COLOUR,  FbReaderDlg::ID_READER_FONT_COLOUR},
+		{FB_READER_BACK_COLOUR,  FbReaderDlg::ID_READER_BACK_COLOUR},
+		{FB_HEADER_FONT_COLOUR,  FbReaderDlg::ID_HEADER_FONT_COLOUR},
+		{FB_READER_FONT_NAME,  FbReaderDlg::ID_READER_FONT_NAME},
+		{FB_READER_FONT_SIZE,  FbReaderDlg::ID_READER_FONT_SIZE},
+		{FB_HEADER_FONT_NAME,  FbReaderDlg::ID_HEADER_FONT_NAME},
+		{FB_HEADER_FONT_SIZE,  FbReaderDlg::ID_HEADER_FONT_SIZE},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
@@ -141,7 +162,8 @@ void FbReaderDlg::Assign(bool write)
 
 bool FbReaderDlg::Execute(wxWindow* parent)
 {
-	FbReaderDlg dlg(parent, wxID_ANY, _("Cool Reader options"), wxDefaultPosition, wxDefaultSize);
+	if (!FbCoolReader::InitCREngine()) return false;
+	FbReaderDlg dlg(parent, wxID_ANY, _("Cool Reader options"));
 	dlg.Assign(false);
 	bool ok = dlg.ShowModal() == wxID_OK;
 	if (ok) dlg.Assign(true);

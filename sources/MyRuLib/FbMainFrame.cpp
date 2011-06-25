@@ -15,6 +15,7 @@
 #include "dialogs/FbProgressDlg.h"
 #include "dialogs/FbReaderDlg.h"
 #include "FbImportThread.h"
+#include "frames/FbCoolReader.h"
 #include "frames/FbFrameAuth.h"
 #include "frames/FbFrameFind.h"
 #include "frames/FbFrameFldr.h"
@@ -24,7 +25,6 @@
 #include "frames/FbFrameDown.h"
 #include "frames/FbFrameSeqn.h"
 #include "frames/FbFrameHtml.h"
-#include "frames/FbCoolReader.h"
 #include "FbMainMenu.h"
 #include "FbDownloader.h"
 #include "FbGenreThread.h"
@@ -330,7 +330,12 @@ void FbMainFrame::OnSetup(wxCommandEvent & event)
 void FbMainFrame::OnReader(wxCommandEvent & event)
 {
 	#ifdef FB_INCLUDE_READER
-	FbReaderDlg::Execute(this);
+	if (!FbReaderDlg::Execute(this)) return;
+	size_t count = m_FrameNotebook.GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbCoolReader * reader = wxDynamicCast(m_FrameNotebook.GetPage(i), FbCoolReader);
+		if (reader) reader->Setup(true);
+	}
 	#endif // FB_INCLUDE_READER	
 }
 
