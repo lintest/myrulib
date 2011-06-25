@@ -26,7 +26,7 @@
 
 	<lib id="faxpp_static" cond="USE_FAXPP=='builtin'">
 		<define>HAVE_CONFIG</define>
-		<include>$(BUILDDIR)/faxpp</include>
+		<include>$(BUILDDIR)</include>
 		<include>$(SRCDIR)/3rdparty/faxpp/include</include>
 		<sources>3rdparty/faxpp/src/attlistdecl.c</sources>
 		<sources>3rdparty/faxpp/src/buffer.c</sources>
@@ -112,7 +112,6 @@
 		<define>NDEBUG</define>
 		<sources>sources/wxsqlite3.cpp</sources>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
-		<include>$(SRCDIR)/3rdparty/sqlite3</include>
 	</lib>
 
 	<lib id="wxbzip2_static" template="wx-lib">

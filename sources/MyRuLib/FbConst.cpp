@@ -1,7 +1,7 @@
 #include "FbConst.h"
 #include <wx/utils.h>
 
-#include "version.h"
+#include "config.h"
 
 wxString MyRuLib::ProgramName()
 {

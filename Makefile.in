@@ -52,8 +52,8 @@ EXPAT_STATIC_OBJECTS =  \
 	expat_static_xmltok.o \
 	expat_static_xmltok_impl.o \
 	expat_static_xmltok_ns.o
-FAXPP_STATIC_CFLAGS = -DHAVE_CONFIG -I./faxpp \
-	-I$(srcdir)/3rdparty/faxpp/include $(CPPFLAGS) $(CFLAGS)
+FAXPP_STATIC_CFLAGS = -DHAVE_CONFIG -I. -I$(srcdir)/3rdparty/faxpp/include \
+	$(CPPFLAGS) $(CFLAGS)
 FAXPP_STATIC_OBJECTS =  \
 	faxpp_static_attlistdecl.o \
 	faxpp_static_buffer.o \
@@ -122,7 +122,7 @@ CRENGINE_STATIC_OBJECTS =  \
 	crengine_static_xutils.o \
 	crengine_static_cr3_def_cover.o
 WXSQLITE3_STATIC_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
-	-I$(srcdir)/3rdparty/sqlite3 $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXSQLITE3_STATIC_OBJECTS =  \
 	wxsqlite3_static_wxsqlite3.o
 WXBZIP2_STATIC_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
