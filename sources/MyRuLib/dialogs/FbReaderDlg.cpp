@@ -43,6 +43,13 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent, wxArrayString & fonts)
 	wxSpinCtrl * scFontSize = new wxSpinCtrl( this, ID_READER_FONT_SIZE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99, 0 );
 	fgSizerList->Add( scFontSize, 0, wxALL, 5 );
 
+	stTitle = new wxStaticText( this, wxID_ANY, _("Interline space"));
+	stTitle->Wrap( -1 );
+	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxSpinCtrl * scInterline = new wxSpinCtrl( this, ID_READER_INTERLINE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 50, 200, 100 );
+	fgSizerList->Add( scInterline, 0, wxALL, 5 );
+
 	stTitle = new wxStaticText( this, wxID_ANY, _("Font colour"));
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
@@ -57,13 +64,6 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent, wxArrayString & fonts)
 	wxColourPickerCtrl * cpBack = new wxColourPickerCtrl( this, ID_READER_BACK_COLOUR);
 	fgSizerList->Add( cpBack, 0, wxALL, 5 );
 	
-	stTitle = new wxStaticText( this, wxID_ANY, _("Interline space"));
-	stTitle->Wrap( -1 );
-	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	wxSpinCtrl * scInterline = new wxSpinCtrl( this, ID_READER_INTERLINE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 50, 200, 100 );
-	fgSizerList->Add( scInterline, 0, wxALL, 5 );
-
 	this->SetSizer( fgSizerList );
 	this->Layout();
 }

@@ -70,7 +70,7 @@ void FbDialog::Assign(long winid, int param, bool write)
 			unsigned int rgb = colour.Red() * 0x10000 + colour.Green() * 0x100 + colour.Blue();
 			FbParams::Set(param, rgb);
 		} else {
-			wxString text = wxString::Format(wxT("#%06x"), FbParams(param));
+			wxString text = wxString::Format(wxT("#%06x"), (int)FbParams(param));
 			wxColor colour(text); 
 			control->SetColour(colour);
 		}
