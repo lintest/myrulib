@@ -33,6 +33,8 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
     EVT_MENU( Menu_File_About, FbCoolReader::OnAbout )
     EVT_MENU( wxID_OPEN, FbCoolReader::OnFileOpen )
     EVT_MENU( wxID_SAVE, FbCoolReader::OnFileSave )
+    EVT_MENU( ID_READER_ZOOM_IN, FbCoolReader::OnCommand )
+    EVT_MENU( ID_READER_ZOOM_OUT, FbCoolReader::OnCommand )
     EVT_MENU( Menu_View_Rotate, FbCoolReader::OnRotate )
     EVT_INIT_DIALOG( FbCoolReader::OnInitDialog )
 	EVT_SCROLLWIN( FbCoolReader::OnScroll )
@@ -526,8 +528,8 @@ void FbCoolReader::OnMouseRDown( wxMouseEvent & event )
     pm.Append( Menu_View_TOC, wxT( "Table of Contents\tF5" ) );
     pm.Append( Menu_File_About, wxT( "&About...\tF1" ) );
     pm.AppendSeparator();
-    pm.Append( Menu_View_ZoomIn, wxT( "Zoom In" ) );
-    pm.Append( Menu_View_ZoomOut, wxT( "Zoom Out" ) );
+    pm.Append( ID_READER_ZOOM_IN, wxT( "Zoom In" ) );
+    pm.Append( ID_READER_ZOOM_OUT, wxT( "Zoom Out" ) );
     pm.AppendSeparator();
     pm.Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
     pm.Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
@@ -549,7 +551,7 @@ void FbCoolReader::ToggleViewMode()
 void FbCoolReader::OnCommand(wxCommandEvent& event)
 {
 	switch ( event.GetId() ) {
-	case Menu_View_ZoomIn:
+	case ID_READER_ZOOM_IN:
         {
 	        wxCursor hg( wxCURSOR_WAIT );
 	        this->SetCursor( hg );
@@ -561,7 +563,7 @@ void FbCoolReader::OnCommand(wxCommandEvent& event)
 	        wxSetCursor( wxNullCursor );
         }
 		break;
-	case Menu_View_ZoomOut:
+	case ID_READER_ZOOM_OUT:
         {
 	        wxCursor hg( wxCURSOR_WAIT );
 	        this->SetCursor( hg );
@@ -849,39 +851,6 @@ lString8 readFileToString( const char * fname )
         stream->Read( buf.modify(), sz, NULL );
     }
     return buf;
-}
-
-void FbCoolReader::SetMenu( bool visible )
-{
-    wxMenu *menuFile = new wxMenu;
-
-    menuFile->Append( wxID_OPEN, wxT( "&Open...\tCtrl+O" ) );
-    menuFile->Append( Menu_View_History, wxT( "Recent books list\tF4" ) );
-    menuFile->Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
-    menuFile->AppendSeparator();
-    menuFile->Append( ID_READER_OPTIONS, wxT( "&Options...\tF9" ) );
-    menuFile->AppendSeparator();
-    menuFile->Append( Menu_File_About, wxT( "&About...\tF1" ) );
-    menuFile->AppendSeparator();
-    menuFile->Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
-
-    wxMenu *menuView = new wxMenu;
-
-    menuView->Append( Menu_View_TOC, wxT( "Table of Contents\tF5" ) );
-    menuView->Append( Menu_View_History, wxT( "Recent Books\tF4" ) );
-    menuView->Append( Menu_View_Rotate, wxT( "Rotate\tCtrl+R" ) );
-
-    menuView->AppendSeparator();
-    menuView->Append( Menu_View_ZoomIn, wxT( "Zoom In" ) );
-    menuView->Append( Menu_View_ZoomOut, wxT( "Zoom Out" ) );
-    menuView->AppendSeparator();
-    menuView->Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
-    menuView->Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
-    menuView->Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
-
-    wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append( menuFile, wxT( "&File" ) );
-    menuBar->Append( menuView, wxT( "&View" ) );
 }
 
 void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)

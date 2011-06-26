@@ -902,7 +902,7 @@ void FbMainFrame::OnStatusBar(wxCommandEvent & event)
 {
 	if (!m_ProgressBar) CreateStatusBar(false);
 	bool show = !m_ProgressBar->IsShown();
-	FbParams(FB_STATUS_SHOW) = show ? 1 : 0;
+	FbParams(FB_STATUS_SHOW) = show;
 	m_ProgressBar->Show(show);
 	PositionStatusBar();
 }

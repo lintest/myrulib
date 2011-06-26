@@ -78,7 +78,6 @@ class FbCoolReader
         void OnUpdateUI( wxUpdateUIEvent& event );
         void OnMouseWheel( wxMouseEvent& event);
         void OnInitDialog( wxInitDialogEvent& event);
-        void SetMenu( bool visible );
 	public:
         void ScheduleRender() { Resize(0, 0); }
         bool LoadDocument( const wxString & fname );
