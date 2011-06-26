@@ -7,59 +7,76 @@
 #include "FbCollection.h"
 #include "FbConst.h"
 
-int FbParams::Int() const
+FbParamList FbParams;
+
+int FbParamItem::Int() const
 {
 	return FbCollection::GetParamInt(m_param);
 }
 
-wxString FbParams::Str() const
+wxString FbParamItem::Str() const
 {
 	return FbCollection::GetParamStr(m_param);
 }
 
-FbParams::operator int () const
+FbParamItem::operator int () const
 {
 	return Int();
 }
 
-FbParams::operator wxString () const
+FbParamItem::operator wxFont () const
+{
+	wxString info = Str();
+	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxFont font;
+	font.SetNativeFontInfo(info);
+	return font;
+}
+
+FbParamItem::operator wxString () const
 {
 	return Str();
 }
 
-FbParams & FbParams::operator = (int value)
+FbParamItem & FbParamItem::operator = (int value)
 {
 	FbCollection::SetParamInt(m_param, value);
 	return * this;
 }
 
-FbParams & FbParams::operator = (const wxString & value)
+FbParamItem & FbParamItem::operator = (bool value)
+{
+	FbCollection::SetParamInt(m_param, value ? 1 : 0);
+	return * this;
+}
+
+FbParamItem & FbParamItem::operator = (const wxString & value)
 {
 	FbCollection::SetParamStr(m_param, value);
 	return * this;
 }
 
-int FbParams::GetInt(int param)
+int FbParamItem::GetInt(int param)
 {
 	return FbCollection::GetParamInt(param);
 };
 
-wxString FbParams::GetStr(int param)
+wxString FbParamItem::GetStr(int param)
 {
 	return FbCollection::GetParamStr(param);
 };
 
-void FbParams::Set(int param, int value)
+void FbParamItem::Set(int param, int value)
 {
 	return FbCollection::SetParamInt(param, value);
 }
 
-void FbParams::Set(int param, const wxString &text)
+void FbParamItem::Set(int param, const wxString &text)
 {
 	return FbCollection::SetParamStr(param, text);
 }
 
-int FbParams::DefaultInt(int param)
+int FbParamItem::DefaultInt(int param)
 {
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
@@ -98,7 +115,7 @@ int FbParams::DefaultInt(int param)
 	}
 };
 
-wxString FbParams::DefaultStr(int param)
+wxString FbParamItem::DefaultStr(int param)
 {
 	if (param < FB_FRAME_OFFSET)
 		switch (param) {
@@ -144,21 +161,12 @@ wxString FbParams::DefaultStr(int param)
 	}
 };
 
-wxFont FbParams::GetFont(int param)
-{
-	wxString info = GetStr(param);
-	if (info.IsEmpty()) return wxSystemSettingsNative::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	wxFont font;
-	font.SetNativeFontInfo(info);
-	return font;
-}
-
-wxColour FbParams::GetColour(int param)
+wxColour FbParamItem::GetColour(int param)
 {
 	return wxColour(GetStr(param));
 }
 
-void FbParams::AddRecent(const wxString &text, const wxString &title)
+void FbParamItem::AddRecent(const wxString &text, const wxString &title)
 {
 	int i = 0;
 
@@ -180,39 +188,38 @@ void FbParams::AddRecent(const wxString &text, const wxString &title)
 	Set(FB_TITLE_0 + i, title);
 }
 
-void FbParams::Reset(int param)
+void FbParamItem::Reset(int param)
 {
 	FbCollection::ResetParam(param);
 }
 
-int FbParams::Param(wxWindowID winid, int param)
+int FbParamItem::Param(wxWindowID winid, int param)
 {
 	bool ok = (ID_FRAME_AUTH <= winid && winid <= ID_FRAME_FIND && 0 <= param && param < FB_FRAME_OFFSET);
 	int delta = winid - ID_FRAME_AUTH + 1;
 	return ok ? (param + FB_FRAME_OFFSET * delta) : 0;
 }
 
-wxString FbParams::GetPath(int param)
+wxString FbParamItem::GetPath(int param)
 {
 	wxFileName path = GetStr(param);
 	if (path.IsRelative()) path.MakeAbsolute(FbDatabase::GetConfigPath());
 	return path.GetFullPath();
 }
 
-void FbParams::Set(wxWindowID winid, int param, int value)
+void FbParamItem::Set(wxWindowID winid, int param, int value)
 {
 	int id = Param(winid, param);
 	if (id) Set(id, value);
 }
 
-void FbParams::Set(wxWindowID winid, int param, const wxString &text)
+void FbParamItem::Set(wxWindowID winid, int param, const wxString &text)
 {
 	int id = Param(winid, param);
 	if (id) Set(id, text);
 }
 
-bool FbParams::IsGenesis()
+bool FbParamItem::IsGenesis()
 {
-	return FbParams(DB_LIBRARY_TYPE) == wxT("GENESIS");
+	return FbParamItem(DB_LIBRARY_TYPE) == wxT("GENESIS");
 }
-

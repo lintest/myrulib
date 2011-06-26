@@ -78,7 +78,7 @@ FbColumnDlg::FbColumnDlg(wxWindow* parent, const wxArrayInt & columns)
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	m_toolbar.Create(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | wxTB_HORZ_TEXT);
-	m_toolbar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	m_toolbar.SetFont(FbParams(FB_FONT_TOOL));
 	m_toolbar.AddTool(wxID_UP, _("Up"), wxART_GO_UP, _("Move field up"));
 	m_toolbar.AddTool(wxID_DOWN, _("Down"), wxART_GO_DOWN, _("Move field down"));
 	m_toolbar.Realize();

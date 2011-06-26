@@ -142,7 +142,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 #endif
 
 	wxFileName filename = md5sum;
-	filename.SetPath( FbParams::GetPath(FB_TEMP_DIR) );
+	filename.SetPath( FbParamItem::GetPath(FB_TEMP_DIR) );
 	filename.SetExt(filetype);
 
 	if ( !filename.DirExists()) 

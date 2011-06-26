@@ -162,7 +162,7 @@ bool MyRuLibApp::OpenDatabase(const wxString &filename)
 		delete collection;
 	}
 	if (ok) {
-		FbParams::AddRecent(filename, FbParams(DB_LIBRARY_TITLE));
+		FbParamItem::AddRecent(filename, FbParams(DB_LIBRARY_TITLE));
 		UpdateLibPath();
 	}
 	return ok;

@@ -458,7 +458,7 @@ int FbCollection::GetParamInt(int param)
 		if (collection && collection->m_params.count(param))
 			return collection->m_params[param].m_int;
 	}
-	return FbParams::DefaultInt(param);
+	return FbParamItem::DefaultInt(param);
 }
 
 wxString FbCollection::GetParamStr(int param)
@@ -471,7 +471,7 @@ wxString FbCollection::GetParamStr(int param)
 		if (collection && collection->m_params.count(param))
 			return collection->m_params[param].m_str;
 	}
-	return FbParams::DefaultStr(param);
+	return FbParamItem::DefaultStr(param);
 }
 
 void FbCollection::SetParamInt(int param, int value)
@@ -490,7 +490,7 @@ void FbCollection::SetParamInt(int param, int value)
 	if (collection == NULL) return;
 
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
-	if (value == FbParams::DefaultInt(param)) {
+	if (value == FbParamItem::DefaultInt(param)) {
 		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
 		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
@@ -518,7 +518,7 @@ void FbCollection::SetParamStr(int param, const wxString &value)
 	if (collection == NULL) return;
 
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
-	if (value == FbParams::DefaultStr(param)) {
+	if (value == FbParamItem::DefaultStr(param)) {
 		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
 		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);

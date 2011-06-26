@@ -31,7 +31,7 @@ void * FbUpdateThread::Entry()
 		FbUpdateItem item(database, date, type);
 		date = item.Execute();
 		if (date) {
-			FbParams::Set(DB_DATAFILE_DATE, date);
+			FbParams(DB_DATAFILE_DATE) = date;
 			ok = true;
 		}
 	}

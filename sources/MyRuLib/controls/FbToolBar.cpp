@@ -7,7 +7,7 @@ FbToolBarImages::FbToolBarImages(wxToolBar & toolbar, const wxString &sample)
 	m_font_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
 	m_tool_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 	m_brush = wxBrush(m_tool_colour, wxSOLID);
-	m_font = FbParams::GetFont(FB_FONT_TOOL);
+	m_font = FbParams(FB_FONT_TOOL);
 
 	wxBitmap bitmap(10, 10);
 	wxMemoryDC dc;

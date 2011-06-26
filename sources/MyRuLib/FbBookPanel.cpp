@@ -381,7 +381,7 @@ void FbBookPanel::OnBookPage(wxCommandEvent & event)
 
 void FbBookPanel::UpdateFonts(bool refresh)
 {
-	m_BookList.SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+	m_BookList.SetFont( FbParams(FB_FONT_MAIN) );
 	if (refresh) m_BookList.Update();
 	if (refresh) m_BookInfo.Empty();
 	m_BookInfo.UpdateFont(refresh);
@@ -444,7 +444,7 @@ void FbBookPanel::OnChangeView(wxCommandEvent & event)
 		case ID_SPLIT_NOTHING: viewmode = FB2_VIEW_NOTHING; break;
 	}
 	SetViewMode(viewmode);
-	FbParams::Set(m_owner, FB_VIEW_MODE, viewmode);
+	FbParams(m_owner, FB_VIEW_MODE) = viewmode;
 	ResetPreview();
 }
 

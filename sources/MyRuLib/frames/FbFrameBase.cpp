@@ -174,7 +174,7 @@ void FbFrameBase::OnDirection(wxCommandEvent& event)
 void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 {
 	FbListMode listmode = event.GetId() == ID_MODE_TREE ? FB2_MODE_TREE : FB2_MODE_LIST;
-	FbParams::Set(GetId(), FB_LIST_MODE, listmode);
+	FbParams(GetId(), FB_LIST_MODE) = listmode;
 	m_BooksPanel->SetListMode(listmode);
 	UpdateBooklist();
 }
@@ -182,7 +182,7 @@ void FbFrameBase::OnChangeMode(wxCommandEvent& event)
 void FbFrameBase::UpdateFonts(bool refresh)
 {
 	if (m_MasterList) {
-		m_MasterList->SetFont( FbParams::GetFont(FB_FONT_MAIN) );
+		m_MasterList->SetFont( FbParams(FB_FONT_MAIN) );
 		if (refresh) m_MasterList->Update();
 	}
 	if (m_BooksPanel) {
@@ -241,8 +241,9 @@ void FbFrameBase::OnFilterSet(wxCommandEvent& event)
 
 void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 {
-	FbParams::Set(FB_USE_FILTER, 0);
-	m_filter.Enable(!m_filter.IsEnabled());
+	bool use = !m_filter.IsEnabled();
+	FbParams(FB_USE_FILTER) = use;
+	m_filter.Enable(use);
 	UpdateBooklist();
 }
 
@@ -273,7 +274,7 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 	if (ok) {
 		m_BooksPanel->CreateColumns(columns);
 		wxString text = FbColumns::Get(columns);
-		FbParams::Set(GetId(), FB_BOOK_COLUMNS, text);
+		FbParams(GetId(), FB_BOOK_COLUMNS) = text;
 	}
 }
 

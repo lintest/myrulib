@@ -17,7 +17,7 @@
 wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 {
 	wxString host = FbParams(DB_DOWNLOAD_HOST);
-	if (FbParams::IsGenesis()) {
+	if (FbParamItem::IsGenesis()) {
 		wxString key = md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum;
 		wxString addr = wxT("http://%s/get?nametype=orig&md5=%s");
 		return wxString::Format(addr, host.c_str(), key.c_str());

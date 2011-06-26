@@ -34,7 +34,7 @@ FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_ToolBar.Create(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_NODIVIDER);
-	m_ToolBar.SetFont(FbParams::GetFont(FB_FONT_TOOL));
+	m_ToolBar.SetFont(FbParams(FB_FONT_TOOL));
 	m_ToolBar.AddTool(ID_START, _("Start"), fbART_START, _("Start downloading"));
 	m_ToolBar.AddTool(ID_PAUSE, _("Stop"), fbART_PAUSE, _("Stop downloading"));
 	m_ToolBar.AddSeparator();

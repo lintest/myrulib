@@ -41,12 +41,12 @@ void FbFilterObj::Load()
 
 void FbFilterObj::Save() const
 {
-	FbParams::Set(FB_USE_FILTER, m_enabled);
-	FbParams::Set(FB_FILTER_LIB, m_lib);
-	FbParams::Set(FB_FILTER_USR, m_usr);
-	FbParams::Set(FB_FILTER_DEL, m_del);
-	FbParams::Set(FB_FILTER_LANG, m_lang);
-	FbParams::Set(FB_FILTER_TYPE, m_type);
+	FbParams(FB_USE_FILTER) = m_enabled;
+	FbParams(FB_FILTER_LIB) = m_lib;
+	FbParams(FB_FILTER_USR) = m_usr;
+	FbParams(FB_FILTER_DEL) = m_del;
+	FbParams(FB_FILTER_LANG) = m_lang;
+	FbParams(FB_FILTER_TYPE) = m_type;
 }
 
 wxString FbFilterObj::GetSQL() const

@@ -6,7 +6,6 @@ BEGIN_EVENT_TABLE(ProgressBar, wxStatusBar)
 END_EVENT_TABLE()
 
 ProgressBar::ProgressBar(wxWindow *parent, wxWindowID id, long style, const wxString &name)
-	: wxStatusBar(parent, id, style, name)
 {
 	Create(parent, id, style, name);
 }

@@ -25,6 +25,7 @@ class FbMainFrame : public wxFrame
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		wxWindow * GetActiveChild();
 		void CreateControls();
+		void CreateStatusBar(bool show);
 		void LoadIcon();
 		wxToolBar * CreateToolBar();
 		wxAuiPaneInfo * FindLog();
@@ -43,7 +44,7 @@ class FbMainFrame : public wxFrame
 		wxEvent * m_LastEvent;
 		wxTextCtrl * m_FindAuthor;
 		wxTextCtrl * m_FindTitle;
-		ProgressBar m_ProgressBar;
+		ProgressBar * m_ProgressBar;
 		wxAuiManager m_FrameManager;
 		wxAuiNotebook m_FrameNotebook;
 		FbTreeViewCtrl * m_LogCtrl;

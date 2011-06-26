@@ -63,7 +63,7 @@ wxString FbDownloader::GetBook()
 
 wxString FbDownloader::GetFilename(const wxString &md5sum, bool bCreateFolder)
 {
-	wxString path = FbParams::GetPath(FB_DOWNLOAD_DIR);
+	wxString path = FbParamItem::GetPath(FB_DOWNLOAD_DIR);
 
 	wxString name = md5sum;
 	for (int i=1; i<=3; i++) {

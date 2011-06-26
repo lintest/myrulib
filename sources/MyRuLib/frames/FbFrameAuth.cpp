@@ -156,7 +156,7 @@ void FbFrameAuth::OnChoiceLetter(wxCommandEvent& event)
 	if (event.GetId() == ID_INIT_LETTER && m_info) return;
 	wxString letter = m_LetterList->GetString(selection).Left(1);
 	if (letter.IsEmpty()) return;
-	FbParams::Set(FB_LAST_LETTER, letter);
+	FbParams(FB_LAST_LETTER) = letter;
 	m_info = (wxChar)letter[0];
 	CreateMasterThread();
 	m_LetterList->SetText();
@@ -177,7 +177,7 @@ void FbFrameAuth::CreateMasterThread()
 
 void FbFrameAuth::UpdateFonts(bool refresh)
 {
-	m_LetterList->SetFont(FbParams::GetFont(FB_FONT_MAIN));
+	m_LetterList->SetFont(FbParams(FB_FONT_MAIN));
 	FbFrameBase::UpdateFonts(refresh);
 }
 

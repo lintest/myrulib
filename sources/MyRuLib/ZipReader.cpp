@@ -31,7 +31,7 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 			m_zipOk = item.FindZip(sLibraryDir, zip_file);
 			if (m_zipOk) OpenZip(zip_file.GetFullPath(), file_name);
 		} else if (item.librusec) {
-			if (FbParams::IsGenesis()) {
+			if (FbParamItem::IsGenesis()) {
 				wxFileName book_file = sLibraryDir + wxT('/') + file_name;
 				m_zipOk = book_file.IsOk() && book_file.FileExists();
 				if (m_zipOk) OpenFile(book_file.GetFullPath());

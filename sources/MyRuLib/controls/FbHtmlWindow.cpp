@@ -63,7 +63,7 @@ wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxStrin
 
 void FbHtmlWindow::UpdateFont(bool refresh)
 {
-	wxFont font = FbParams::GetFont(FB_FONT_HTML);
+	wxFont font = FbParams(FB_FONT_HTML);
 
 	int fontsizes[7] = {6, 8, 9, 10, 12, 16, 18};
 	int size = font.GetPointSize();

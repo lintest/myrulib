@@ -130,14 +130,17 @@ enum FbFrameKey {
 	FB_BOOK_COLUMNS,
 };
 
-class FbParams {
+class FbParamItem {
 	public:
-		FbParams(int param): m_param(param) {}
-		FbParams(wxWindowID winid, int param): m_param(Param(winid, param)) {}
+		FbParamItem(const FbParamItem & item): m_param(item.m_param) {}
+		FbParamItem(int param): m_param(param) {}
+		FbParamItem(wxWindowID winid, int param): m_param(Param(winid, param)) {}
 		operator int () const;
+		operator wxFont () const;
 		operator wxString () const;
-		FbParams & operator = (int value);
-		FbParams & operator = (const wxString & value);
+		FbParamItem & operator = (int value);
+		FbParamItem & operator = (bool value);
+		FbParamItem & operator = (const wxString & value);
 		int Int() const;
 		wxString Str() const;
 	public:
@@ -161,5 +164,16 @@ class FbParams {
 		static int Param(wxWindowID winid, int param);
 		const int m_param;
 };
+
+class FbParamList {
+	public:
+		FbParamList() {}
+		FbParamItem operator()(int param)
+			{ return FbParamItem(param); }
+		FbParamItem operator()(wxWindowID winid, int param)
+			{ return FbParamItem(winid, param); }
+};
+
+extern FbParamList FbParams;
 
 #endif // __FBPARAMS_H__

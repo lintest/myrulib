@@ -173,7 +173,7 @@ FbExportTreeContext::FbExportTreeContext()
 	m_digits_count = FbParams(FB_NUMBER_FORMAT);
 	if (m_digits_count < 1) m_digits_count = 1;
 
-	if (m_template.IsEmpty()) m_template = FbParams::DefaultStr(FB_FOLDER_FORMAT);
+	if (m_template.IsEmpty()) m_template = FbParamItem::DefaultStr(FB_FOLDER_FORMAT);
 }
 
 wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
