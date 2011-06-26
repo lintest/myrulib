@@ -114,7 +114,7 @@ END_EVENT_TABLE()
 
 wxString FbMainFrame::GetTitle() const
 {
-	return FbParams::GetStr(DB_LIBRARY_TITLE) + wxT(" - ") + MyRuLib::ProgramName();
+	return FbParams(DB_LIBRARY_TITLE).Str() + wxT(" - ") + MyRuLib::ProgramName();
 }
 
 FbMainFrame::FbMainFrame()
@@ -192,7 +192,7 @@ void FbMainFrame::SaveFrameList()
 void FbMainFrame::RestoreFrameList()
 {
 	bool exists = false;
-	wxString frames = FbParams::GetStr(FB_FRAME_LIST);
+	wxString frames = FbParams(FB_FRAME_LIST);
 	if (frames.IsEmpty()) frames = wxT('0');
 	wxString active = frames.AfterLast(wxT(','));
 	wxStringTokenizer tkz(frames, wxT(','), wxTOKEN_STRTOK);
@@ -209,11 +209,11 @@ void FbMainFrame::RestoreFrameList()
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
 	wxSize size;
-	bool maximized = FbParams::GetInt(FB_FRAME_MAXIMIZE);
+	bool maximized = FbParams(FB_FRAME_MAXIMIZE);
 	if (maximized) {
 		size = wxSize( FbParams::DefaultInt(FB_FRAME_WIDTH), FbParams::DefaultInt(FB_FRAME_HEIGHT) );
 	} else {
-		size = wxSize( FbParams::GetInt(FB_FRAME_WIDTH), FbParams::GetInt(FB_FRAME_HEIGHT) );
+		size = wxSize( FbParams(FB_FRAME_WIDTH), FbParams(FB_FRAME_HEIGHT) );
 	}
 
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
@@ -268,7 +268,7 @@ void FbMainFrame::CreateControls()
 	m_ProgressBar.Create(this, ID_PROGRESSBAR);
 	m_ProgressBar.SetFieldsCount(4);
 	m_ProgressBar.SetStatusWidths(4, widths);
-	m_ProgressBar.Show(FbParams::GetInt(FB_STATUS_SHOW));
+	m_ProgressBar.Show(FbParams(FB_STATUS_SHOW));
 	SetStatusBar(&m_ProgressBar);
 
 	m_LogCtrl = new FbLogViewCtrl;
@@ -278,7 +278,7 @@ void FbMainFrame::CreateControls()
 	m_FrameManager.SetManagedWindow(this);
 	m_FrameNotebook.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxTAB_TRAVERSAL | wxNO_BORDER );
 
-	SetTabArt(FbParams::GetInt(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
+	SetTabArt(FbParams(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
 
 	m_FrameManager.AddPane(&m_FrameNotebook, wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane().PaneBorder(false));
 	m_FrameManager.AddPane(m_LogCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Info messages")).Show(false));
@@ -301,7 +301,7 @@ void FbMainFrame::OnTabArt(wxCommandEvent & event)
 
 void FbMainFrame::OnTabArtUpdate(wxUpdateUIEvent& event)
 {
-	int id = FbParams::GetInt(FB_NOTEBOOK_ART) + ID_ART_DEFAULT;
+	int id = FbParams(FB_NOTEBOOK_ART) + ID_ART_DEFAULT;
 	if ( event.GetId() == id ) event.Check(true);
 }
 
@@ -466,7 +466,7 @@ void FbMainFrame::ShowLog(bool forced)
 	wxAuiPaneInfo * info = FindLog();
 	if (info) {
 		bool show = forced || !info->IsShown();
-		if (!show && FbParams::GetInt(FB_CLEAR_LOG)) {
+		if (!show && FbParams(FB_CLEAR_LOG)) {
 			m_LogCtrl->AssignModel(new FbLogModel);
 		}
 		info->Show(show);
@@ -589,14 +589,14 @@ void FbMainFrame::OnUpdate(wxCommandEvent & event)
 
 void FbMainFrame::OnUpdateUpdate(wxUpdateUIEvent& event)
 {
-	int code = FbParams::GetInt(DB_DATAFILE_DATE);
+	int code = FbParams(DB_DATAFILE_DATE);
 	event.Enable(code && code < FbDateTime::Today().Code() + 20000000);
 }
 
 void FbMainFrame::OnUpdateFolder(FbFolderEvent & event)
 {
 	if (event.m_type == FT_DOWNLOAD) {
-		if (FbParams::GetInt(FB_AUTO_DOWNLD)) wxGetApp().StartDownload();
+		if (FbParams(FB_AUTO_DOWNLD)) wxGetApp().StartDownload();
 		FbFrameDown * frame = wxDynamicCast(FindFrameById(ID_FRAME_DOWN, false), FbFrameDown);
 		if (frame) frame->UpdateFolder(event.m_folder, event.m_type);
 
@@ -694,7 +694,7 @@ void FbMainFrame::OnUpdateFonts(wxCommandEvent & event)
 void FbMainFrame::OnMenuRecent(wxCommandEvent & event)
 {
 	int param = event.GetId() - wxID_FILE + FB_RECENT_0;
-	wxString filename = FbParams::GetStr(param);
+	wxString filename = FbParams(param);
 	if (filename.IsEmpty()) return;
 
 	if (wxFileName::FileExists(filename)) {
@@ -722,9 +722,9 @@ void FbMainFrame::OnRecentUpdate(wxUpdateUIEvent& event)
 	}
 
 	for (size_t i = 1; i<=5; i++) {
-		wxString filename = FbParams::GetStr(i + FB_RECENT_0);
+		wxString filename = FbParams(i + FB_RECENT_0);
 		if (filename.IsEmpty()) continue;
-		wxString fileinfo = FbParams::GetStr(i + FB_TITLE_0);
+		wxString fileinfo = FbParams(i + FB_TITLE_0);
 		submenu->Append(wxID_FILE + i, filename, fileinfo);
 	}
 }

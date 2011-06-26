@@ -93,7 +93,7 @@ FbExportDlg::~FbExportDlg()
 void FbExportDlg::LoadFormats()
 {
 	wxString filename = _("filename");
-	int format = FbParams::GetInt(FB_FILE_FORMAT);
+	int format = FbParams(FB_FILE_FORMAT);
 	m_format->Append(filename << wxT(".fb2"), 0);
 	m_format->Append(filename + wxT(".zip"), -1);
 	m_format->Append(filename + wxT(".gz"),  -2);

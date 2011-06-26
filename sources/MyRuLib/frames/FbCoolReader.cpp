@@ -174,6 +174,10 @@ FbCoolReader::~FbCoolReader()
 
 void FbCoolReader::Setup(bool refresh)
 {
+    lString8 css;
+	LoadStylesheet(css);
+    getDocView()->setStyleSheet( css );
+
     getDocView()->setPageMargins( lvRect(14, 5, 14, 5) );
 
     static int fontSizes[] = {14, 16, 18, 20, 24, 28, 32, 36};
@@ -186,21 +190,17 @@ void FbCoolReader::Setup(bool refresh)
 
     fontMan->SetAntialiasMode( 2 );
 
-    getDocView()->setDefaultFontFace( UnicodeToUtf8(FbParams::GetStr(FB_READER_FONT_NAME).c_str()) );
-    getDocView()->setFontSize( FbParams::GetInt(FB_READER_FONT_SIZE) );
-    getDocView()->setStatusFontFace( UnicodeToUtf8(FbParams::GetStr(FB_HEADER_FONT_NAME).c_str()) );
-    getDocView()->setStatusFontSize( FbParams::GetInt(FB_HEADER_FONT_SIZE) );
-    getDocView()->setTextColor(FbParams::GetInt(FB_READER_FONT_COLOUR));
-    getDocView()->setBackgroundColor(FbParams::GetInt(FB_READER_BACK_COLOUR));
-    getDocView()->setStatusColor(FbParams::GetInt(FB_HEADER_FONT_COLOUR));
-    getDocView()->setDefaultInterlineSpace(FbParams::GetInt(FB_READER_INTERLINE));
+    getDocView()->setDefaultFontFace( UnicodeToUtf8(FbParams(FB_READER_FONT_NAME).Str().c_str()) );
+    getDocView()->setStatusFontFace ( UnicodeToUtf8(FbParams(FB_HEADER_FONT_NAME).Str().c_str()) );
+    getDocView()->setFontSize       ( FbParams(FB_READER_FONT_SIZE) );
+    getDocView()->setStatusFontSize ( FbParams(FB_HEADER_FONT_SIZE) );
+    getDocView()->setTextColor      ( (int)FbParams(FB_READER_FONT_COLOUR) );
+    getDocView()->setBackgroundColor( (int)FbParams(FB_READER_BACK_COLOUR) );
+    getDocView()->setStatusColor    ( (int)FbParams(FB_HEADER_FONT_COLOUR) );
+    getDocView()->setDefaultInterlineSpace(FbParams(FB_READER_INTERLINE));
     getDocView()->setViewMode(DVM_PAGES);
 	SetBackgroundColour(getBackgroundColour());
-
-    lString8 css;
-	LoadStylesheet(css);
-    getDocView()->setStyleSheet( css );
-    
+  
     if (refresh) Refresh();
 }
 

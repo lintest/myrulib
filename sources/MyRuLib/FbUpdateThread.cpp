@@ -19,9 +19,9 @@ FbUpdateThread::FbUpdateThread()
 
 void * FbUpdateThread::Entry()
 {
-	int date = FbParams::GetInt(DB_DATAFILE_DATE);
+	int date = FbParams(DB_DATAFILE_DATE);
 	int today = FbDateTime::Today().Code() + 20000000;
-	wxString type = Lower(FbParams::GetStr(DB_LIBRARY_TYPE));
+	wxString type = Lower(FbParams(DB_LIBRARY_TYPE));
 	if (date == 0) return NULL;
 
 	FbCommonDatabase database;

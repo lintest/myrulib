@@ -166,11 +166,11 @@ wxFileName FbExportChildData::GetPath(FbModel &model) const
 
 FbExportTreeContext::FbExportTreeContext()
 {
-	m_translit_folder = FbParams::GetInt(FB_TRANSLIT_FOLDER);
-	m_translit_file = FbParams::GetInt(FB_TRANSLIT_FILE);
-	m_template = FbParams::GetStr(FB_FOLDER_FORMAT);
-	m_underscores = FbParams::GetInt(FB_USE_UNDERSCORE);
-	m_digits_count = FbParams::GetInt(FB_NUMBER_FORMAT);
+	m_translit_folder = FbParams(FB_TRANSLIT_FOLDER);
+	m_translit_file = FbParams(FB_TRANSLIT_FILE);
+	m_template = FbParams(FB_FOLDER_FORMAT).Str();
+	m_underscores = FbParams(FB_USE_UNDERSCORE);
+	m_digits_count = FbParams(FB_NUMBER_FORMAT);
 	if (m_digits_count < 1) m_digits_count = 1;
 
 	if (m_template.IsEmpty()) m_template = FbParams::DefaultStr(FB_FOLDER_FORMAT);

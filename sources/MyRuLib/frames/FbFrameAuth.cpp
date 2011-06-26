@@ -66,7 +66,7 @@ void FbAuthViewCtrl::OnMasterPage(wxCommandEvent& event)
 	FbModelItem item = GetCurrent();
 	FbAuthListData * data = wxDynamicCast(&item, FbAuthListData);
 	if (data && data->GetCode() > 0) {
-		wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
+		wxString host = FbParams(DB_DOWNLOAD_HOST);
 		wxString url = wxString::Format(wxT("http://%s/a/%d"), host.c_str(), data->GetCode());
 		wxLaunchDefaultBrowser(url);
 	}

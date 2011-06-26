@@ -31,12 +31,12 @@ FbFilterObj & FbFilterObj::operator=(const FbFilterObj & object)
 
 void FbFilterObj::Load()
 {
-	m_enabled = FbParams::GetInt(FB_USE_FILTER);
-	m_lib = FbParams::GetInt(FB_FILTER_LIB);
-	m_usr = FbParams::GetInt(FB_FILTER_USR);
-	m_del = FbParams::GetInt(FB_FILTER_DEL);
-	m_lang = FbParams::GetStr(FB_FILTER_LANG);
-	m_type = FbParams::GetStr(FB_FILTER_TYPE);
+	m_enabled = FbParams(FB_USE_FILTER);
+	m_lib = FbParams(FB_FILTER_LIB);
+	m_usr = FbParams(FB_FILTER_USR);
+	m_del = FbParams(FB_FILTER_DEL);
+	m_lang = FbParams(FB_FILTER_LANG).Str();
+	m_type = FbParams(FB_FILTER_TYPE).Str();
 }
 
 void FbFilterObj::Save() const

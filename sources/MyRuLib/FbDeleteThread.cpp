@@ -7,7 +7,7 @@ void * FbDeleteThread::Entry()
 {
 	FbCommonDatabase database;
 
-	if (FbParams::GetInt(FB_REMOVE_FILES)) DoDelete(database);
+	if (FbParams(FB_REMOVE_FILES)) DoDelete(database);
 
 	wxString sql;
 
@@ -47,7 +47,7 @@ void * FbDeleteThread::Entry()
 	FbCounter counter(database);
 	counter.Add(m_sel);
 
-	if (FbParams::GetInt(FB_REMOVE_FILES)) DoDelete(database);
+	if (FbParams(FB_REMOVE_FILES)) DoDelete(database);
 
 	wxString sql;
 

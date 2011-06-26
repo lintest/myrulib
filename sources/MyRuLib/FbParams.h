@@ -132,9 +132,16 @@ enum FbFrameKey {
 
 class FbParams {
 	public:
-		static int GetInt(int param);
+		FbParams(int param): m_param(param) {}
+		FbParams(wxWindowID winid, int param): m_param(Param(winid, param)) {}
+		operator int () const;
+		operator wxString () const;
+		FbParams & operator = (int value);
+		FbParams & operator = (const wxString & value);
+		int Int() const;
+		wxString Str() const;
+	public:
 		static int GetInt(wxWindowID winid, int param);
-		static wxString GetStr(int param);
 		static wxString GetPath(int param);
 		static wxString GetStr(wxWindowID winid, int param);
 		static wxFont GetFont(int param);
@@ -149,7 +156,10 @@ class FbParams {
 		static void AddRecent(const wxString &text, const wxString &title);
 		static bool IsGenesis();
 	private:
+		static wxString GetStr(int param);
+		static int GetInt(int param);
 		static int Param(wxWindowID winid, int param);
+		const int m_param;
 };
 
 #endif // __FBPARAMS_H__

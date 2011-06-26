@@ -386,7 +386,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	bSizerLocale->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
 	FbChoiceInt * localeChoice = new FbChoiceInt( this, ID_LANG_LOCALE);
-	FbLocale::Fill(localeChoice, FbParams::GetInt(FB_LANG_LOCALE));
+	FbLocale::Fill(localeChoice, FbParams(FB_LANG_LOCALE));
 	bSizerLocale->Add( localeChoice, 1, wxALL, 5 );
 
 	bSizerMain->Add(bSizerLocale, 0, wxEXPAND);
@@ -710,7 +710,7 @@ void FbParamsDlg::Execute(wxWindow* parent)
 	if (ok) {
 		dlg.Assign(true);
 		dlg.SaveData();
-		FbTempEraser::sm_erase = FbParams::GetInt(FB_TEMP_DEL);
+		FbTempEraser::sm_erase = FbParams(FB_TEMP_DEL);
 		wxGetApp().Localize();
 	}
 };
@@ -965,7 +965,7 @@ void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
 	if (!typelist) return;
 
-	int format = FbParams::GetInt(FB_FILE_FORMAT);
+	int format = FbParams(FB_FILE_FORMAT);
 	size_t count = model->GetRowCount();
 	for (size_t i=1; i<=count; i++) {
 		FbModelItem item = model->GetData(i);

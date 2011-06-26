@@ -22,7 +22,7 @@
 FbImportThread::FbImportThread(wxEvtHandler * owner, long flags)
 	: FbProgressThread(owner, wxTHREAD_JOINABLE),
 		m_database(NULL),
-		m_fullpath(FbParams::GetInt(FB_SAVE_FULLPATH)),
+		m_fullpath(FbParams(FB_SAVE_FULLPATH)),
 		m_flags(flags)
 {
 }

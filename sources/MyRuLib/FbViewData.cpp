@@ -62,7 +62,7 @@ wxString FbViewData::GetImage(const wxString &filename) const
 
 void FbViewData::Push(const wxString &filename, const wxImage &image)
 {
-	int max = FbParams::GetInt(FB_IMAGE_WIDTH);
+	int max = FbParams(FB_IMAGE_WIDTH);
 	double scale = 1;
 	int w = image.GetWidth();
 	int h = image.GetHeight();

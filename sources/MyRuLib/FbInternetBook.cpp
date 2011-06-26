@@ -16,7 +16,7 @@
 
 wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 {
-	wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
+	wxString host = FbParams(DB_DOWNLOAD_HOST);
 	if (FbParams::IsGenesis()) {
 		wxString key = md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum;
 		wxString addr = wxT("http://%s/get?nametype=orig&md5=%s");
@@ -40,7 +40,7 @@ bool FbInternetBook::Download(wxEvtHandler * owner, const wxString & address, co
 
 	bool ok = false;
 	wxString addr = address;
-	int step = FbParams::GetInt(FB_WEB_ATTEMPT);
+	int step = FbParams(FB_WEB_ATTEMPT);
 	while (step--) {
 
 		FbURL url(addr);
@@ -114,11 +114,11 @@ bool FbInternetBook::Execute()
 
 bool FbInternetBook::DoDownload()
 {
-	wxString user = FbParams::GetStr(DB_DOWNLOAD_USER);
+	wxString user = FbParams(DB_DOWNLOAD_USER);
 	if ( user.IsEmpty() ) return Download(m_url, m_filename);
 
-	wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
-	wxString pass = FbParams::GetStr(DB_DOWNLOAD_PASS);
+	wxString host = FbParams(DB_DOWNLOAD_HOST);
+	wxString pass = FbParams(DB_DOWNLOAD_PASS);
 	wxString addr = wxString::Format(wxT("http://%s/b/%d/get?destination=b/%d/get"), host.c_str(), m_id, m_id);
 	FbLogMessage(_("Download"), addr);
 
@@ -128,7 +128,7 @@ bool FbInternetBook::DoDownload()
 		return false;
 	}
 	wxHTTP & http = (wxHTTP&)url.GetProtocol();
-	http.SetTimeout(FbParams::GetInt(FB_WEB_TIMEOUT));
+	http.SetTimeout(FbParams(FB_WEB_TIMEOUT));
 	http.SetHeader(wxT("Content-type"), wxT("application/x-www-form-urlencoded"));
 	wxString buffer = wxString::Format(wxT("form_id=user_login_block&name=%s&pass=%s"), user.c_str(), pass.c_str());
 	http.SetPostBuffer(buffer);

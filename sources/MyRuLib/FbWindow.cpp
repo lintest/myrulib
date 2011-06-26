@@ -33,32 +33,32 @@ void FbDialog::Assign(long winid, int param, bool write)
 		if (write)
 			FbParams::Set(param, control->GetValue());
 		else
-			control->SetValue(FbParams::GetStr(param));
+			control->SetValue(FbParams(param));
 	} else if (wxCheckBox * control = wxDynamicCast(window, wxCheckBox)) {
 		if (write)
 			FbParams::Set(param, control->GetValue());
 		else
-			control->SetValue(FbParams::GetInt(param) != 0);
+			control->SetValue(FbParams(param) != 0);
 	} else if (wxRadioBox * control = wxDynamicCast(window, wxRadioBox)) {
 		if (write)
 			FbParams::Set(param, control->GetSelection());
 		else
-			control->SetSelection(FbParams::GetInt(param));
+			control->SetSelection(FbParams(param));
 	} else if (wxComboBox * control = wxDynamicCast(window, wxComboBox)) {
 		if (write)
 			FbParams::Set(param, control->GetValue());
 		else
-			control->SetValue(FbParams::GetStr(param));
+			control->SetValue(FbParams(param));
 	} else if (wxComboCtrl * control = wxDynamicCast(window, wxComboCtrl)) {
 		if (write)
 			FbParams::Set(param, control->GetValue());
 		else
-			control->SetValue(FbParams::GetStr(param));
+			control->SetValue(FbParams(param));
 	} else if (wxSpinCtrl * control = wxDynamicCast(window, wxSpinCtrl)) {
 		if (write)
 			FbParams::Set(param, control->GetValue());
 		else
-			control->SetValue(FbParams::GetInt(param));
+			control->SetValue((int)FbParams(param));
 	} else if (wxFontPickerCtrl * control = wxDynamicCast(window, wxFontPickerCtrl)) {
 		if (write)
 			FbParams::Set(param, control->GetSelectedFont().GetNativeFontInfoDesc());
@@ -70,7 +70,7 @@ void FbDialog::Assign(long winid, int param, bool write)
 			unsigned int rgb = colour.Red() * 0x10000 + colour.Green() * 0x100 + colour.Blue();
 			FbParams::Set(param, rgb);
 		} else {
-			wxString text = wxString::Format(wxT("#%06x"), FbParams::GetInt(param));
+			wxString text = wxString::Format(wxT("#%06x"), FbParams(param));
 			wxColor colour(text); 
 			control->SetColour(colour);
 		}
@@ -79,7 +79,7 @@ void FbDialog::Assign(long winid, int param, bool write)
 			int format = control->GetCurrentData();
 			FbParams::Set(param, format);
 		} else {
-			int format = FbParams::GetInt(param);
+			int format = FbParams(param);
 			size_t count = control->GetCount();
 			for (size_t i = 0; i <= count; i++)
 				if (control->GetClientData(i) == format) control->SetSelection(i);

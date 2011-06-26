@@ -91,7 +91,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	m_BookList.Create(this, ID_BOOKLIST_CTRL, wxDefaultPosition, wxDefaultSize, substyle);
 	m_BookInfo.Create(this, ID_PREVIEW_CTRL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 
-	int viewmode = FbParams::GetInt(m_owner, FB_VIEW_MODE);
+	int viewmode = FbParams(m_owner, FB_VIEW_MODE);
 	if (viewmode == FB2_VIEW_NOTHING) {
 		Initialize(&m_BookList);
 		m_BookInfo.Show(false);
@@ -109,13 +109,13 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 			m_BookList.SetSortedColumn(BF_NUMB);
 		} break;
 		default: {
-			m_listmode = (bool) FbParams::GetInt(m_owner, FB_LIST_MODE) ? FB2_MODE_TREE : FB2_MODE_LIST;
+			m_listmode = FbParams(m_owner, FB_LIST_MODE) ? FB2_MODE_TREE : FB2_MODE_LIST;
 			int order = (m_listmode == FB2_MODE_TREE ? BF_NUMB : BF_NAME) + 1;
 			m_BookList.SetSortedColumn(order);
 		}
 	}
 
-	wxString codes = FbParams::GetStr(m_owner, FB_BOOK_COLUMNS);
+	wxString codes = FbParams(m_owner, FB_BOOK_COLUMNS);
 	wxArrayInt columns;
 	FbColumns::Set(codes, columns);
 	CreateColumns(columns);
@@ -373,7 +373,7 @@ void FbBookPanel::OnBookPage(wxCommandEvent & event)
 {
 	int id = m_BookList.GetBook();
 	if (id > 0) {
-		wxString host = FbParams::GetStr(DB_DOWNLOAD_HOST);
+		wxString host = FbParams(DB_DOWNLOAD_HOST);
 		wxString url = wxString::Format(wxT("http://%s/b/%d"), host.c_str(), id);
 		wxLaunchDefaultBrowser(url);
 	}

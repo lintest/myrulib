@@ -120,7 +120,7 @@ wxString FbCacheBook::GetValue(size_t field) const
 
 bool FbCacheBook::IsGray() const 
 { 
-	return m_gray && FbParams::GetInt(FB_GRAY_FONT);
+	return m_gray && FbParams(FB_GRAY_FONT);
 }
 			
 #include <wx/arrimpl.cpp>

@@ -93,7 +93,7 @@ bool FbExtractItem::FindBook(const wxString &basepath, wxFileName &filename) con
 wxString FbExtractItem::ErrorName() const
 {
 	if (librusec) {
-		return wxString::Format(wxT("$(%s)/%s"), FbParams::GetStr(FB_CONFIG_TYPE).c_str(), book_name.c_str());
+		return wxString::Format(wxT("$(%s)/%s"), FbParams(FB_CONFIG_TYPE).Str().c_str(), book_name.c_str());
 	} else if ( id_archive ) {
 		if ( wxFileName(zip_name).GetName() == book_name )
 			return zip_name.c_str();

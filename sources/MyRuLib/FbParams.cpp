@@ -7,6 +7,38 @@
 #include "FbCollection.h"
 #include "FbConst.h"
 
+int FbParams::Int() const
+{
+	return FbCollection::GetParamInt(m_param);
+}
+
+wxString FbParams::Str() const
+{
+	return FbCollection::GetParamStr(m_param);
+}
+
+FbParams::operator int () const
+{
+	return Int();
+}
+
+FbParams::operator wxString () const
+{
+	return Str();
+}
+
+FbParams & FbParams::operator = (int value)
+{
+	FbCollection::SetParamInt(m_param, value);
+	return * this;
+}
+
+FbParams & FbParams::operator = (const wxString & value)
+{
+	FbCollection::SetParamStr(m_param, value);
+	return * this;
+}
+
 int FbParams::GetInt(int param)
 {
 	return FbCollection::GetParamInt(param);
@@ -160,18 +192,6 @@ int FbParams::Param(wxWindowID winid, int param)
 	return ok ? (param + FB_FRAME_OFFSET * delta) : 0;
 }
 
-int FbParams::GetInt(wxWindowID winid, int param)
-{
-	int id = Param(winid, param);
-	return id ? GetInt(id) : 0;
-}
-
-wxString FbParams::GetStr(wxWindowID winid, int param)
-{
-	int id = Param(winid, param);
-	return id ? GetStr(id) : wxString();
-}
-
 wxString FbParams::GetPath(int param)
 {
 	wxFileName path = GetStr(param);
@@ -193,6 +213,6 @@ void FbParams::Set(wxWindowID winid, int param, const wxString &text)
 
 bool FbParams::IsGenesis()
 {
-	return FbParams::GetStr(DB_LIBRARY_TYPE) == wxT("GENESIS");
+	return FbParams(DB_LIBRARY_TYPE) == wxT("GENESIS");
 }
 

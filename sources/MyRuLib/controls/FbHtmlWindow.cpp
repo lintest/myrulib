@@ -52,7 +52,7 @@ wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxStrin
 
 	FbURI uri = url;
 	if (uri.GetScheme() == wxT("http")) {
-		if ( !FbParams::GetInt(FB_HTTP_IMAGES) ) {
+		if ( !FbParams(FB_HTTP_IMAGES) ) {
 			*redirect = wxT("memory:blank");
 			return wxHTML_REDIRECT;
 		}
