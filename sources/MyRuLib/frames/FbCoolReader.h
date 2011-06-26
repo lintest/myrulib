@@ -6,6 +6,7 @@
 #include <crgui.h>
 #include <wx/splitter.h>
 #include <wx/aui/tabmdi.h>
+#include "FbMenu.h"
 
 /**
  * @short XML Document View window
@@ -58,6 +59,7 @@ class FbCoolReader
 	: public wxWindow, public LVDocViewCallback
 {
 	public:
+		class MenuBook: public FbMenu { public: MenuBook(); };
 		static bool InitCREngine();
 		static void GetFonts(wxArrayString & fonts);
 		static FbCoolReader * Open(wxAuiNotebook * parent, const wxString &filename, bool select = false);

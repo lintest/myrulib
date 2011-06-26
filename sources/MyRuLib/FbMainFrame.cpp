@@ -832,14 +832,21 @@ void FbMainFrame::OnAllowNotebookDnD(wxAuiNotebookEvent& event)
 void FbMainFrame::OnNotebookChanged(wxAuiNotebookEvent& event)
 {
 	wxMenuBar * menubar = GetMenuBar();
+	if (!menubar) return;
+
 	wxWindow * window = FbMainFrame::GetActiveChild();
-	if (menubar) menubar->EnableTop(4, window && wxIsKindOf(window, FbFrameBase));
+	bool enable = window && wxIsKindOf(window, FbFrameBase);
+	menubar->EnableTop(fbBOOK_MENU_POSITION, enable);
 }
 
 void FbMainFrame::OnNotebookClosed(wxAuiNotebookEvent& event)
 {
 	wxMenuBar * menubar = GetMenuBar();
-	if (menubar && m_FrameNotebook.GetPageCount() == 0) menubar->EnableTop(4, false); 
+	if (!menubar) return;
+
+	if (m_FrameNotebook.GetPageCount() == 0) {
+		menubar->EnableTop(fbBOOK_MENU_POSITION, false); 
+	}
 }
 
 wxWindow * FbMainFrame::GetActiveChild()

@@ -516,28 +516,31 @@ void FbCoolReader::OnMouseLDown( wxMouseEvent & event )
     printf("  (%d, %d)  ->  (%d, %d)\n", x, y+getDocView()->GetPos(), pt2.x, pt2.y);
 }
 
+FbCoolReader::MenuBook::MenuBook()
+{ 
+    Append( wxID_OPEN, wxT( "&Open...\tCtrl+O" ) );
+    Append( Menu_View_History, wxT( "Recent books list\tF4" ) );
+    Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
+    AppendSeparator();
+    Append( ID_READER_OPTIONS, wxT( "Options...\tF9" ) );
+    AppendSeparator();
+    Append( Menu_View_TOC, wxT( "Table of Contents\tF5" ) );
+    Append( Menu_File_About, wxT( "&About...\tF1" ) );
+    AppendSeparator();
+    Append( ID_READER_ZOOM_IN, wxT( "Zoom In" ) );
+    Append( ID_READER_ZOOM_OUT, wxT( "Zoom Out" ) );
+    AppendSeparator();
+    Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
+    Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
+    Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
+    AppendSeparator();
+    Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
+};
+
 void FbCoolReader::OnMouseRDown( wxMouseEvent & event )
 {
-    wxMenu pm;
-    pm.Append( wxID_OPEN, wxT( "&Open...\tCtrl+O" ) );
-    pm.Append( Menu_View_History, wxT( "Recent books list\tF4" ) );
-    pm.Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
-    pm.AppendSeparator();
-    pm.Append( ID_READER_OPTIONS, wxT( "Options...\tF9" ) );
-    pm.AppendSeparator();
-    pm.Append( Menu_View_TOC, wxT( "Table of Contents\tF5" ) );
-    pm.Append( Menu_File_About, wxT( "&About...\tF1" ) );
-    pm.AppendSeparator();
-    pm.Append( ID_READER_ZOOM_IN, wxT( "Zoom In" ) );
-    pm.Append( ID_READER_ZOOM_OUT, wxT( "Zoom Out" ) );
-    pm.AppendSeparator();
-    pm.Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
-    pm.Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
-    pm.Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
-    pm.AppendSeparator();
-    pm.Append( Menu_File_Quit, wxT( "E&xit\tAlt+X" ) );
-
-	PopupMenu(&pm);
+    MenuBook menu;
+	PopupMenu(&menu);
 }
 
 void FbCoolReader::ToggleViewMode()
