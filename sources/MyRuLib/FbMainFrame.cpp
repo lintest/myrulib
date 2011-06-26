@@ -268,7 +268,7 @@ void FbMainFrame::CreateControls()
 	m_ProgressBar.Create(this, ID_PROGRESSBAR);
 	m_ProgressBar.SetFieldsCount(4);
 	m_ProgressBar.SetStatusWidths(4, widths);
-	m_ProgressBar.Show(FbParams(FB_STATUS_SHOW));
+	m_ProgressBar.Show(false);
 	SetStatusBar(&m_ProgressBar);
 
 	m_LogCtrl = new FbLogViewCtrl;
@@ -893,7 +893,7 @@ void FbMainFrame::OnStatusBar(wxCommandEvent & event)
 	bool show = !m_ProgressBar.IsShown();
 	m_ProgressBar.Show(show);
 	FbParams::Set(FB_STATUS_SHOW, show ? 1 : 0);
-	Layout();
+	PositionStatusBar();
 }
 
 void FbMainFrame::OnStatusBarUpdate(wxUpdateUIEvent  & event)
