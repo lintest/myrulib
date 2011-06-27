@@ -7,7 +7,7 @@
 #define ENABLE_ANTIWORD 0
 
 #ifdef _WIN32
-#define CYGWIN 1
+#define USE_FREETYPE 1
 #else
 #define USE_FREETYPE 1
 #endif

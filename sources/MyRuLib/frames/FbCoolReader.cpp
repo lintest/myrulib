@@ -110,11 +110,15 @@ bool FbCoolReader::InitCREngine()
     InitFontManager( lString8() );
 	
 	FbFontRegistrator registrator;
+
+#ifdef __WXMSW__
+	wxDir(wxGetOSDirectory() + wxT("\\Fonts\\")).Traverse(registrator);
+#else // __WXMSW__
 	wxDir(wxT("/usr/local/share/fonts/")).Traverse(registrator);
 	wxDir(wxT("/usr/share/fonts/")).Traverse(registrator);
 	wxDir(wxT("~/.fonts")).Traverse(registrator);
 	wxDir(wxT("~/fonts")).Traverse(registrator);
-	
+#endif // __WXMSW__
 	int count = fontMan->GetFontCount();
 
 	if (count) {
@@ -197,7 +201,7 @@ FbCoolReader::~FbCoolReader()
 
 void FbCoolReader::Setup(bool refresh)
 {
-    getDocView()->setPageMargins( lvRect(12, 24, 12, 6) );
+    getDocView()->setPageMargins( lvRect(12, 12, 12, 6) );
 
 	lString8 css;
 	LoadStylesheet(css);

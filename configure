@@ -8711,14 +8711,14 @@ else
 fi
 
 
-if test "x$FOUND_FT2" == "xyes" ; then
-  CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
-  WX_LIBS="$WX_LIBS $FT2_LIBS"
-fi
-
 if test "x$USE_READER" = "xyes" ; then
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I$DOLLAR(srcdir)/3rdparty/crengine/include"
   WX_LIBS="$WX_LIBS -lcrengine"
+fi
+
+if test "x$FOUND_FT2" == "xyes" ; then
+  CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
+  WX_LIBS="$WX_LIBS $FT2_LIBS"
 fi
 
 
