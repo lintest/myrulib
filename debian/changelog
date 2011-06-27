@@ -1,3 +1,11 @@
+myrulib (0.28.6-oneiric2) oneiric; urgency=low
+
+  Исправление ошибок:
+  * Инициализация и настройка шрифтов встроенного CoolReader3
+  * Ошибка при показе статус-строки
+
+ -- Denis Kandrashin <mail@lintest.ru>  26 Jun 2011 16:00:00 +0400
+
 myrulib (0.28.5-oneiric1) oneiric; urgency=low
 
   Доработки и расширение функционала:

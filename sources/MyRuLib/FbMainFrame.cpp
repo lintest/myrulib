@@ -912,6 +912,7 @@ void FbMainFrame::OnStatusBar(wxCommandEvent & event)
 	FbParams(FB_STATUS_SHOW) = show;
 	m_ProgressBar->Show(show);
 	PositionStatusBar();
+	Layout();
 }
 
 void FbMainFrame::OnStatusBarUpdate(wxUpdateUIEvent  & event)

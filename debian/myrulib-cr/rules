@@ -43,7 +43,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/myrulib.
-	$(MAKE) DESTDIR=$(CURDIR)/debian/myrulib install
+	$(MAKE) DESTDIR=$(CURDIR)/debian/myrulib-cr install
 
 
 # Build architecture-independent files here.
