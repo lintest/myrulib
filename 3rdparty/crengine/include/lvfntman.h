@@ -266,7 +266,7 @@ public:
     /// get fallback font face (returns empty string if no fallback font is set)
     virtual lString8 GetFallbackFontFace() { return lString8::empty_str; }
     /// returns fallback font for specified size
-    virtual LVFontRef GetFallbackFont(int size) { }
+    virtual LVFontRef GetFallbackFont(int size) { return LVFontRef(); }
     /// registers font by name
     virtual bool RegisterFont( lString8 name ) = 0;
     /// initializes font manager
@@ -433,7 +433,10 @@ public:
         { return lString8(); }
 
     virtual css_font_family_t getFontFamily() const
-    { return css_ff_inherit; }
+        { return css_ff_inherit; }
+
+	virtual LVFontGlyphCacheItem * getGlyph(lUInt16 ch, lChar16 def_char=0)
+        { return NULL; }
 
 };
 

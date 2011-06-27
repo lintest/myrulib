@@ -254,7 +254,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_md5.o \
 	myrulib_base64.o \
 	$(__myrulib___win32rc)
-MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
+MYRULIB_ODEP = ru.inc uk.inc be.inc cs.inc sv.inc $(__fb2_css_inc___depname)
 
 ### Conditionally set variables: ###
 
@@ -272,6 +272,7 @@ MYRULIB_ODEP =  ru.inc uk.inc be.inc cs.inc sv.inc
 @COND_PLATFORM_MAC_0@__bin2c___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__bin2c___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL bin2c$(EXEEXT)
+@COND_USE_READER_yes@__fb2_css_inc___depname = fb2_css.inc
 @COND_PLATFORM_MAC_0@__myrulib___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__myrulib___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL myrulib$(EXEEXT)
@@ -337,6 +338,7 @@ clean:
 	rm -f ./be.inc
 	rm -f ./cs.inc
 	rm -f ./sv.inc
+	rm -f ./fb2_css.inc
 	rm -f myrulib$(EXEEXT)
 
 distclean: clean
@@ -414,6 +416,9 @@ cs.inc: bin2c$(EXEEXT) cs.mo
 
 sv.inc: bin2c$(EXEEXT) sv.mo
 	./bin2c ./sv.mo ./sv.inc file
+
+@COND_USE_READER_yes@fb2_css.inc: bin2c$(EXEEXT) $(srcdir)/3rdparty/crengine/res/fb2.css
+@COND_USE_READER_yes@	./bin2c $(srcdir)/3rdparty/crengine/res/fb2.css ./fb2_css.inc file
 
 myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat___depname) $(__faxpp___depname) $(__sqlite3___depname) $(__crengine___depname) $(LIBPREFIX)wxbzip2$(LIBEXT) $(LIBPREFIX)wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
 	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxbzip2 -lwxsqlite3 $(WX_LIBS) $(LIBS)

@@ -40,18 +40,45 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_SCROLLWIN( FbCoolReader::OnScroll )
 END_EVENT_TABLE()
 
-#include "../res/fb2_css.h"
+#ifdef __WXMSW__
+
+#include <wx/msw/private.h>
 
 void LoadStylesheet(lString8 &css)
 {
+	HRSRC hResource = ::FindResource(wxGetInstance(), wxT("fb2_css"), wxT("RC_DATA"));
+	if ( !hResource ) return;
+
+	HGLOBAL hData = ::LoadResource(wxGetInstance(), hResource);
+	if ( !hData ) return;
+
+	void * data = ::LockResource(hData);
+	if ( !data ) return;
+
+	unsigned long size = ::SizeofResource(wxGetInstance(), hResource);
+
 	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 	wxFileOutputStream out(tempfile);
-	out.Write(fb2_css, sizeof(fb2_css)).Close();
+	out.Write(data, size).Close();
 	LVLoadStylesheetFile(tempfile.c_str(), css);
 	wxRemoveFile(tempfile);
 }
 
-#if (USE_FREETYPE==1)
+#else
+
+void LoadStylesheet(lString8 &css)
+{
+	#include "fb2_css.inc"
+	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
+	wxFileOutputStream out(tempfile);
+	out.Write(locale_binary_file, sizeof(locale_binary_file)).Close();
+	LVLoadStylesheetFile(tempfile.c_str(), css);
+	wxRemoveFile(tempfile);
+}
+
+#endif
+
+#if USE_FREETYPE
 
 class FbFontRegistrator: public wxDirTraverser
 {
@@ -77,6 +104,8 @@ bool FbCoolReader::InitCREngine()
 	if ( fontMan ) return true;
 
 	CRLog::trace("InitCREngine");
+
+	HyphMan::initDictionaries( lString16() );
 	
     InitFontManager( lString8() );
 	
@@ -93,28 +122,20 @@ bool FbCoolReader::InitCREngine()
 	} else {
         printf("Fatal Error: Cannot open font file(s) .ttf \nCannot work without font\n" );
 	}
-	
+
     return count;
-	
-    // init hyphenation manager
-    //char hyphfn[1024];
-    //sprintf(hyphfn, "Russian_EnUS_hyphen_(Alan).pdb" );
-    //if ( !initHyph( (UnicodeToLocal(appPath) + hyphfn).c_str() ) ) {
-#ifdef _LINUX
-    //    initHyph( "/usr/share/crengine/hyph/Russian_EnUS_hyphen_(Alan).pdb" );
-#endif
-    //}
 }
 
-#else // (USE_FREETYPE==1)
+#else // USE_FREETYPE
 
 bool FbCoolReader::InitCREngine()
 {
     if ( fontMan ) return true;
-    return InitFontManager( lString8() );
+	HyphMan::initDictionaries( lString16() );
+	return InitFontManager( lString8() );
 }
 
-#endif // (USE_FREETYPE==1)
+#endif // USE_FREETYPE
 
 void FbCoolReader::GetFonts(wxArrayString & fonts)
 {
@@ -176,11 +197,11 @@ FbCoolReader::~FbCoolReader()
 
 void FbCoolReader::Setup(bool refresh)
 {
-    lString8 css;
+    getDocView()->setPageMargins( lvRect(12, 24, 12, 6) );
+
+	lString8 css;
 	LoadStylesheet(css);
     getDocView()->setStyleSheet( css );
-
-    getDocView()->setPageMargins( lvRect(14, 5, 14, 5) );
 
     static int fontSizes[] = {14, 16, 18, 20, 24, 28, 32, 36};
     LVArray<int> sizes( fontSizes, sizeof(fontSizes)/sizeof(int) );
@@ -825,21 +846,6 @@ void FbCoolReader::OnHistItemActivated( wxListEvent& event )
     }
 }
 */
-
-bool initHyph(const char * fname)
-{
-    //HyphMan hyphman;
-    //return;
-
-    //LVStreamRef stream = LVOpenFileStream( fname, LVOM_READ);
-    //if (!stream)
-   // {
-    //    printf("Cannot load hyphenation file %s\n", fname);
-    //    return false;
-   // }
-    // stream.get()
-    return HyphMan::initDictionaries( lString16(fname) );
-}
 
 lString8 readFileToString( const char * fname )
 {

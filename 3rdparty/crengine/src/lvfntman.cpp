@@ -2369,6 +2369,10 @@ public:
         
         return res!=0;
     }
+    virtual void getFaceList( lString16Collection & list )
+    {
+        _cache.getFaceList(list);
+    }
 };
 
 // definition
@@ -2395,7 +2399,7 @@ int CALLBACK LVWin32FontEnumFontFamExProc(
             for (int i=0; chars[i]; i++)
             {
                 LVFont::glyph_info_t glyph;
-                if (!fnt.getGlyphInfo( chars[i], &glyph, def_char ))
+                if (!fnt.getGlyphInfo( chars[i], &glyph, L' ' ))
                     return 1;
             }
             fontman->RegisterFont( lf ); //&lpelfe->elfLogFont

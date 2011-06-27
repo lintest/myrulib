@@ -208,6 +208,13 @@
 		<bin2c>sv</bin2c>
 	</action>
 	
+	<action id="fb2_css.inc" cond="USE_READER=='yes'"> 
+		<depends>bin2c</depends>
+		<depends-on-file>$(SRCDIR)/3rdparty/crengine/res/fb2.css</depends-on-file>
+		<clean-files>$(BUILDDIR)/fb2_css.inc</clean-files>
+		<command>$(BUILDDIR)/bin2c $(SRCDIR)/3rdparty/crengine/res/fb2.css $(BUILDDIR)/fb2_css.inc file</command>
+	</action>
+	
 	<exe id="myrulib" template="wxgui">
 		<depends>expat</depends>
 		<depends>faxpp</depends>
@@ -223,6 +230,7 @@
 		<objects-depend>be.inc</objects-depend>
 		<objects-depend>cs.inc</objects-depend>
 		<objects-depend>sv.inc</objects-depend>
+		<objects-depend>fb2_css.inc</objects-depend>
 		<sources>sources/MyRuLib/controls/FbChoiceCtrl.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbComboBox.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbHtmlWindow.cpp</sources>

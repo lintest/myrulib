@@ -11,6 +11,8 @@ uk_UA RC_DATA "uk.mo"
 cs_CZ RC_DATA "cs.mo"
 sv_SE RC_DATA "sv.mo"
 
+fb2_css RC_DATA "../../../3rdparty/crengine/res/fb2.css"
+
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION BUILD_VERSION
 PRODUCTVERSION BUILD_VERSION
