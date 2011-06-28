@@ -19,39 +19,39 @@ enum
 	Menu_File_Quit = 100,
 	Menu_File_About,
 	Menu_File_Options,
-    Menu_View_ZoomIn,
-    Menu_View_ZoomOut,
-    Menu_View_NextPage,
-    Menu_View_PrevPage,
-    Menu_View_NextLine,
-    Menu_View_PrevLine,
-    Menu_View_Text_Format,
-    Menu_Link_Back,
-    Menu_Link_Forward,
-    Menu_Link_Next,
-    Menu_Link_Prev,
-    Menu_Link_Go,
-    Menu_View_Begin,
-    Menu_View_End,
-    Menu_View_ToggleFullScreen,
-    Menu_View_TogglePages,
-    Menu_View_TogglePageHeader,
-    Menu_View_TOC,
-    Menu_View_History,
-    Menu_View_Rotate,
+	Menu_View_ZoomIn,
+	Menu_View_ZoomOut,
+	Menu_View_NextPage,
+	Menu_View_PrevPage,
+	Menu_View_NextLine,
+	Menu_View_PrevLine,
+	Menu_View_Text_Format,
+	Menu_Link_Back,
+	Menu_Link_Forward,
+	Menu_Link_Next,
+	Menu_Link_Prev,
+	Menu_Link_Go,
+	Menu_View_Begin,
+	Menu_View_End,
+	Menu_View_ToggleFullScreen,
+	Menu_View_TogglePages,
+	Menu_View_TogglePageHeader,
+	Menu_View_TOC,
+	Menu_View_History,
+	Menu_View_Rotate,
 };
 
 enum active_mode_t {
-    am_none,
-    am_book,
-    am_history
+	am_none,
+	am_book,
+	am_history
 };
 
 enum
 {
 	Window_Id_Scrollbar = 1000,
 	Window_Id_View,
-    Window_Id_HistList,
+	Window_Id_HistList,
 	Window_Id_Options,
 };
 
@@ -68,61 +68,61 @@ class FbCoolReader
 		
 		void Setup(bool refresh);
 
-        void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
+		void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
 
 		void OnAbout( wxCommandEvent& event );
-        void OnScroll( wxScrollWinEvent& event );
-        void OnFileOpen( wxCommandEvent& event );
-        void OnFileSave( wxCommandEvent& event );
-        void OnCommand( wxCommandEvent& event );
-        void OnRotate( wxCommandEvent& event );
-        void OnShowHistory( wxCommandEvent& event );
-        void OnUpdateUI( wxUpdateUIEvent& event );
-        void OnMouseWheel( wxMouseEvent& event);
-        void OnInitDialog( wxInitDialogEvent& event);
+		void OnScroll( wxScrollWinEvent& event );
+		void OnFileOpen( wxCommandEvent& event );
+		void OnFileSave( wxCommandEvent& event );
+		void OnCommand( wxCommandEvent& event );
+		void OnRotate( wxCommandEvent& event );
+		void OnShowHistory( wxCommandEvent& event );
+		void OnUpdateUI( wxUpdateUIEvent& event );
+		void OnMouseWheel( wxMouseEvent& event);
+		void OnInitDialog( wxInitDialogEvent& event);
 	public:
-        void ScheduleRender() { Resize(0, 0); }
-        bool LoadDocument( const wxString & fname );
-        void UpdateScrollBar();
-        LVDocView * getDocView() { return _docwin->getDocView(); }
-        void doCommand( LVDocCmd cmd, int param );
-        void goToBookmark(ldomXPointer bm);
-        wxColour getBackgroundColour();
-        void SetRotate( cr_rotate_angle_t angle );
-        void Rotate( bool ccw = false );
-        // event handlers
-        void OnPaint(wxPaintEvent& event);
-        void OnSize(wxSizeEvent& event);
-        void OnKeyDown(wxKeyEvent& event);
-        void OnMouseLDown( wxMouseEvent & event );
-        void OnMouseRDown( wxMouseEvent & event );
-        void OnMouseMotion(wxMouseEvent& event);
-        void OnTimer(wxTimerEvent& event);
+		void ScheduleRender() { Resize(0, 0); }
+		bool LoadDocument( const wxString & fname );
+		void UpdateScrollBar();
+		LVDocView * getDocView() { return _docwin->getDocView(); }
+		void doCommand( LVDocCmd cmd, int param );
+		void goToBookmark(ldomXPointer bm);
+		wxColour getBackgroundColour();
+		void SetRotate( cr_rotate_angle_t angle );
+		void Rotate( bool ccw = false );
+		// event handlers
+		void OnPaint(wxPaintEvent& event);
+		void OnSize(wxSizeEvent& event);
+		void OnKeyDown(wxKeyEvent& event);
+		void OnMouseLDown( wxMouseEvent & event );
+		void OnMouseRDown( wxMouseEvent & event );
+		void OnMouseMotion(wxMouseEvent& event);
+		void OnTimer(wxTimerEvent& event);
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
-        void ToggleViewMode();
-        virtual void OnExternalLink( lString16 url, ldomNode * node );
-    protected:
+		void ToggleViewMode();
+		virtual void OnExternalLink( lString16 url, ldomNode * node );
+	protected:
 		void SetHeaderIcons();
 		void SetBatteryIcons();
 
-        void Paint();
-        void Resize(int dx, int dy);
-    private:
-        wxTimer _renderTimer;
-        wxTimer _cursorTimer;
-        wxTimer _clockTimer;
+		void Paint();
+		void Resize(int dx, int dy);
+	private:
+		wxTimer _renderTimer;
+		wxTimer _cursorTimer;
+		wxTimer _clockTimer;
 
-        wxCursor _normalCursor;
-        wxCursor _linkCursor;
+		wxCursor _normalCursor;
+		wxCursor _linkCursor;
 
-        bool _firstRender;
-        bool _allowRender;
+		bool _firstRender;
+		bool _allowRender;
 
 	protected:
-        CRWxScreen _screen;
-        CRGUIWindowManager _wm;
-        CRDocViewWindow * _docwin;
-        lString16 _appDir;
+		CRWxScreen _screen;
+		CRGUIWindowManager _wm;
+		CRDocViewWindow * _docwin;
+		lString16 _appDir;
 	private:
 		DECLARE_DYNAMIC_CLASS(FbCoolReader)
 		DECLARE_EVENT_TABLE()
