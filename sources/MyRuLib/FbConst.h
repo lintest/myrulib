@@ -109,8 +109,8 @@ enum {
 	ID_HTML_SUBMIT,
 	ID_HTML_MODIFY,
 	ID_BOOK_PAGE,
-	ID_BOOK_AUTHOR,
-	ID_BOOK_SEQUENCE,
+	ID_BOOK_AUTH,
+	ID_BOOK_SEQN,
 	ID_DOWNLOAD_BOOK,
 	ID_SYSTEM_DOWNLOAD,
 	ID_DELETE_DOWNLOAD,
@@ -168,5 +168,7 @@ void FbLogWarning(const wxString &info, const wxString &text);
 void FbMessageBox(const wxString &info, const wxString &text);
 
 wxString GetRatingText(int index);
+
+wxString TrimTitle(const wxString &title);
 
 #endif // __FBCONST_H__

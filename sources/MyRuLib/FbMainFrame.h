@@ -38,7 +38,7 @@ class FbMainFrame : public wxFrame
 		void SetTabArt(int id);
 		void SaveFrameList();
 		void RestoreFrameList();
-		void OpenInfo(const FbMasterInfo & info, const wxString & text, wxWindowID winid);
+		void OpenInfo(const FbMasterInfo & info, const wxString & title, wxWindowID winid);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
 		wxEvent * m_LastEvent;
@@ -85,8 +85,8 @@ class FbMainFrame : public wxFrame
 		void OnHideLog(wxCommandEvent& event);
 		void OnUpdateFolder(FbFolderEvent & event);
 		void OnUpdateMaster(FbMasterEvent & event);
-		void OnOpenAuthor(FbOpenEvent & event);
-		void OnOpenSequence(FbOpenEvent & event);
+		void OnOpenAuth(FbOpenEvent & event);
+		void OnOpenSeqn(FbOpenEvent & event);
 		void OnTabArt(wxCommandEvent & event);
 		void OnTabArtUpdate(wxUpdateUIEvent& event);
 		void OnHideLogUpdate(wxUpdateUIEvent& event);

@@ -161,6 +161,7 @@
 		<Compiler>
 			<Add option="-DFB_PARSE_FAXPP" />
 			<Add option="-DFB_INCLUDE_READER" />
+			<Add option="-D_MYRULIB" />
 			<Add directory="../MyRuLib" />
 			<Add directory="../../3rdparty/crengine/include" />
 			<Add directory="../../3rdparty/wxbzipstream" />

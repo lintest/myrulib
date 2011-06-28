@@ -94,8 +94,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_WINDOW_NEXT, FbMainFrame::OnWindowNext)
 	EVT_MENU(ID_WINDOW_PREV, FbMainFrame::OnWindowPrev)
 
-	EVT_FB_OPEN(ID_BOOK_AUTHOR, FbMainFrame::OnOpenAuthor)
-	EVT_FB_OPEN(ID_BOOK_SEQUENCE, FbMainFrame::OnOpenSequence)
+	EVT_FB_OPEN(ID_BOOK_AUTH, FbMainFrame::OnOpenAuth)
+	EVT_FB_OPEN(ID_BOOK_SEQN, FbMainFrame::OnOpenSeqn)
 	EVT_FB_FOLDER(ID_UPDATE_FOLDER, FbMainFrame::OnUpdateFolder)
 	EVT_FB_MASTER(ID_UPDATE_MASTER, FbMainFrame::OnUpdateMaster)
 	EVT_FB_PROGRESS(ID_PROGRESS_UPDATE, FbMainFrame::OnProgress)
@@ -628,21 +628,21 @@ void FbMainFrame::OnUpdateMaster(FbMasterEvent & event)
 	}
 }
 
-void FbMainFrame::OnOpenAuthor(FbOpenEvent & event)
+void FbMainFrame::OnOpenAuth(FbOpenEvent & event)
 {
 	FbMasterAuthInfo info(event.m_author);
-	wxString text = FbCollection::GetAuth(event.m_author, 0);
-	OpenInfo(info, text, ID_FRAME_NODE);
+	wxString title = FbCollection::GetAuth(event.m_author, 0);
+	OpenInfo(info, title, ID_FRAME_NODE);
 }
 
-void FbMainFrame::OnOpenSequence(FbOpenEvent & event)
+void FbMainFrame::OnOpenSeqn(FbOpenEvent & event)
 {
 	FbMasterSeqnInfo info(event.m_author);
-	wxString text = FbCollection::GetSeqn(event.m_author, 0);
-	OpenInfo(info, text, ID_FRAME_NODE);
+	wxString title = FbCollection::GetSeqn(event.m_author, 0);
+	OpenInfo(info, title, ID_FRAME_NODE);
 }
 
-void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & text, wxWindowID winid)
+void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & title, wxWindowID winid)
 {
 	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
@@ -652,7 +652,7 @@ void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & text, wxW
 			return;
 		}
 	}
-	new FbFrameFind(&m_FrameNotebook, winid, info, text);
+	new FbFrameFind(&m_FrameNotebook, winid, info, TrimTitle(title));
 }
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)

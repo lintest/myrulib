@@ -5,3 +5,7 @@
 #define CHM_SUPPORT_ENABLED 0
 #define USE_BITMAP_FONTS 0
 
+#ifndef _WIN32
+#define USE_FREETYPE 1
+#endif
+

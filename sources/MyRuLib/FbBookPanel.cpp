@@ -225,8 +225,26 @@ void FbBookPanel::OnBooksListViewSelected(wxTreeEvent & event)
 
 void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 {
-	int id = m_BookList.GetBook();
-	if (id) FbBookData(id).Open();
+	FbModelItem item = m_BookList.GetCurrent();
+
+	int book = item.GetBook();
+	if (book) {
+		FbBookData(book).Open();
+		return;
+	} 
+	
+	FbAuthParentData * auth = wxDynamicCast(&item, FbAuthParentData);
+	if (auth) {
+		FbOpenEvent(ID_BOOK_AUTH, auth->GetCode()).Post();
+		return;
+	}
+		
+	FbSeqnParentData * seqn = wxDynamicCast(&item, FbSeqnParentData);
+	if (seqn) {
+		FbOpenEvent(ID_BOOK_SEQN, seqn->GetCode()).Post();
+		return;
+	}
+		
 }
 
 void FbBookPanel::OnSubmenu(wxCommandEvent& event)
@@ -581,10 +599,10 @@ void FbBookPanel::DoPopupMenu(wxWindowID id)
 
 	switch (type) {
 		case FbBookMenu::MenuAuth: {
-			FbOpenEvent(ID_BOOK_AUTHOR, key, book).Post();
+			FbOpenEvent(ID_BOOK_AUTH, key, book).Post();
 		} break;
 		case FbBookMenu::MenuSeqn: {
-			FbOpenEvent(ID_BOOK_SEQUENCE, key, book).Post();
+			FbOpenEvent(ID_BOOK_SEQN, key, book).Post();
 		} break;
 		case FbBookMenu::MenuFldr: {
 			DoFolderAdd( key );
