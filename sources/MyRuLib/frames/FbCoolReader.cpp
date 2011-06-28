@@ -163,7 +163,7 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 		bool ok = reader->LoadDocument(filename);
 		if (ok) {
 			wxString title = reader->getDocView()->getTitle().c_str();
-			if (title.Len() > 40) title = title.Left(30) << wxChar(0x2026);
+			if (title.Len() > 32) title = title.Left(32).BeforeLast(wxT(' ')) << wxChar(0x2026);
 			parent->AddPage(reader, title, select );
 		} else {
 			wxDELETE(reader);
