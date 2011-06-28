@@ -11,7 +11,11 @@ uk_UA RC_DATA "uk.mo"
 cs_CZ RC_DATA "cs.mo"
 sv_SE RC_DATA "sv.mo"
 
+#include "config.h"
+
+#ifdef FB_INCLUDE_READER
 fb2_css RC_DATA "../../../3rdparty/crengine/res/fb2.css"
+#endif // FB_INCLUDE_READER
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION BUILD_VERSION

@@ -190,6 +190,7 @@ dnl ==================
 if test "x$USE_READER" = "xyes" ; then 
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I$DOLLAR(srcdir)/3rdparty/crengine/include"
   WX_LIBS="$WX_LIBS -lcrengine"
+  AC_DEFINE(FB_INCLUDE_READER)
 fi
 
 if test "x$FOUND_FT2" == "xyes" ; then 
