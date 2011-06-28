@@ -225,6 +225,7 @@
 		<include>$(BUILDDIR)</include>
 		<res-include>$(BUILDDIR)</res-include>
 		<define>NDEBUG</define>
+		<define>_MYRULIB</define>
 		<objects-depend>ru.inc</objects-depend>
 		<objects-depend>uk.inc</objects-depend>
 		<objects-depend>be.inc</objects-depend>

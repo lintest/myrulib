@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="dataview" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="LinDebug">
+				<Option platforms="Unix;" />
+				<Option output="../build/LinDebug/dataview" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinDebug/" />
+				<Option object_output="../build/LinDebug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+					<Add directory="../build/LinDebug" />
+				</Linker>
+			</Target>
+			<Target title="LinRelease">
+				<Option platforms="Unix;" />
+				<Option output="../build/LinRelease/dataview" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../build/LinRelease/" />
+				<Option object_output="../build/LinRelease/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="`wx-config --libs`" />
+					<Add directory="../build/LinRelease" />
+				</Linker>
+			</Target>
+			<Target title="WinDebug">
+				<Option output="../build/WinDebug/dataview" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/WinDebug/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__WXDEBUG__" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswud" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
+					<Add directory="../WxSQLite3" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libwxmsw28ud_aui.a" />
+					<Add library="libwxmsw28ud_adv.a" />
+					<Add library="libwxmsw28ud_html.a" />
+					<Add library="libwxmsw28ud_core.a" />
+					<Add library="libwxbase28ud_net.a" />
+					<Add library="libwxbase28ud.a" />
+					<Add library="libwxtiff.a" />
+					<Add library="libwxjpeg.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxregexu.a" />
+					<Add library="libwinmm.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libwsock32.a" />
+					<Add library="liboleacc.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add library="libshlwapi.a" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinDebug/" />
+				</Linker>
+			</Target>
+			<Target title="WinRelease">
+				<Option output="../build/WinRelease/dataview" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/WinRelease/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option='[[if (PLATFORM == PLATFORM_MSW &amp;&amp; (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;))) print(_T(&quot;-Wno-attributes&quot;));]]' />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DNDEBUG" />
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+					<Add directory="$(WXWIN)/include" />
+					<Add directory="$(WXWIN)/contrib/include" />
+					<Add directory="../WxSQLite3" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="$(WXWIN)/lib/gcc_lib/mswu" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="libwxmsw28u_adv.a" />
+					<Add library="libwxmsw28u_aui.a" />
+					<Add library="libwxmsw28u_html.a" />
+					<Add library="libwxmsw28u_core.a" />
+					<Add library="libwxbase28u_net.a" />
+					<Add library="libwxbase28u.a" />
+					<Add library="libwxtiff.a" />
+					<Add library="libwxjpeg.a" />
+					<Add library="libwxpng.a" />
+					<Add library="libwxzlib.a" />
+					<Add library="libwxregexu.a" />
+					<Add library="libwinmm.a" />
+					<Add library="libcomctl32.a" />
+					<Add library="librpcrt4.a" />
+					<Add library="libwsock32.a" />
+					<Add library="liboleacc.a" />
+					<Add library="libkernel32.a" />
+					<Add library="libuser32.a" />
+					<Add library="libgdi32.a" />
+					<Add library="libwinspool.a" />
+					<Add library="libcomdlg32.a" />
+					<Add library="libadvapi32.a" />
+					<Add library="libshell32.a" />
+					<Add library="libole32.a" />
+					<Add library="liboleaut32.a" />
+					<Add library="libuuid.a" />
+					<Add library="libshlwapi.a" />
+					<Add directory="$(WXWIN)/lib/gcc_lib" />
+					<Add directory="../build/WinRelease/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="../WxSQLite3" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="libWxSQLite3.a" />
+			<Add library="libSQLite3.a" />
+		</Linker>
+		<Unit filename="FbDatabase.h" />
+		<Unit filename="FbTreeModel.cpp" />
+		<Unit filename="FbTreeModel.h" />
+		<Unit filename="FbTreeView.cpp" />
+		<Unit filename="FbTreeView.h" />
+		<Unit filename="MiniDatabase.cpp" />
+		<Unit filename="TestApp.cpp" />
+		<Unit filename="TestApp.h" />
+		<Unit filename="TestMain.cpp" />
+		<Unit filename="TestMain.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
