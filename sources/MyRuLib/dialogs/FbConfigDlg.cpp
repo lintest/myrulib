@@ -10,6 +10,61 @@
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
+//  FbDirectoryDlg
+//-----------------------------------------------------------------------------
+
+FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title ) 
+	: FbDialog( parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
+{
+	m_sizer = new wxGridBagSizer( 0, 0 );
+	m_sizer->AddGrowableCol( 1 );
+	m_sizer->SetFlexibleDirection( wxBOTH );
+	m_sizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	int row = 0;
+	Append( row, ID_TITLE, wxT("Title") );
+	Append( row, _("Table of directory contents") );
+	Append( row, ID_DIR_FILE, wxT("File name") );
+	Append( row, ID_DIR_BASE, wxT("Table") );
+	Append( row, ID_DIR_CODE, wxT("Code") );
+	Append( row, ID_DIR_NAME, wxT("Name") );
+	Append( row, ID_DIR_KEYS, wxT("Parent") );
+	Append( row, _("Table of detailed records") );
+	Append( row, ID_REF_FILE, wxT("File name") );
+	Append( row, ID_REF_BASE, wxT("Table") );
+	Append( row, ID_REF_CODE, wxT("Code") );
+	Append( row, ID_REF_BOOK, wxT("Book") );
+	
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	m_sizer->Add( sdbSizerBtn, wxGBPosition( row, 0 ), wxGBSpan( 1, 2 ), wxALL|wxEXPAND, 5 );
+
+	SetSizer( m_sizer );
+	Layout();
+	m_sizer->Fit( this );
+}
+
+void FbDirectoryDlg::Append( int & row, wxWindowID id, const wxString & title )
+{
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, title );
+	info->Wrap( -1 );
+	m_sizer->Add( info, wxGBPosition( row, 0 ), wxGBSpan( 1, 1 ), wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	wxTextCtrl * text = new wxTextCtrl( this, id );
+	m_sizer->Add( text, wxGBPosition( row, 1 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
+
+	row++;
+}
+
+void FbDirectoryDlg::Append( int & row, const wxString & title )
+{
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, title );
+	info->Wrap( -1 );
+	m_sizer->Add( info, wxGBPosition( row, 0 ), wxGBSpan( 1, 2 ), wxALL|wxEXPAND, 5 );
+
+	row++;
+}
+
+//-----------------------------------------------------------------------------
 //  FbConfigDlg::PanelTool
 //-----------------------------------------------------------------------------
 
@@ -250,6 +305,8 @@ FbConfigDlg::PanelRefs::PanelRefs(wxWindow * parent)
 
 void FbConfigDlg::PanelRefs::OnAppend( wxCommandEvent& event )
 {
+	FbDirectoryDlg dlg(NULL, wxEmptyString);
+	dlg.ShowModal();
 /*
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
@@ -475,8 +532,8 @@ FbConfigDlg::PanelInet::PanelInet(wxWindow *parent)
 //  FbConfigDlg
 //-----------------------------------------------------------------------------
 
-FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog( parent, id, title, pos, size, style )
+FbConfigDlg::FbConfigDlg( wxWindow * parent )
+	: FbDialog( parent, wxID_ANY, _("Library options"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -493,8 +550,8 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
-	this->SetSizer( bSizerMain );
-	this->Layout();
+	SetSizer( bSizerMain );
+	Layout();
 	bSizerMain->Fit( this );
 }
 
@@ -550,7 +607,9 @@ void FbConfigDlg::Assign(bool write)
 
 bool FbConfigDlg::Execute(wxWindow* parent)
 {
-	FbConfigDlg dlg(parent, wxID_ANY, _("Library options"), wxDefaultPosition, wxDefaultSize);
+	FbDirectoryDlg(NULL, wxEmptyString).ShowModal();
+
+	FbConfigDlg dlg(parent);
 	dlg.Assign(false);
 	bool ok = dlg.ShowModal() == wxID_OK;
 	if (ok) {
