@@ -134,4 +134,7 @@
 /* Define if used Cool Reader Engine. */
 #undef FB_INCLUDE_READER
 
+/* Define if include locale files into executable. */
+#undef FB_INCLUDE_LOCALE
+
 #endif // __CONFIG_H__

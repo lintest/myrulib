@@ -212,6 +212,7 @@ dnl ==================
 
 if test "x$USE_LOCALE" = "xyes" ; then 
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
+  AC_DEFINE(FB_INCLUDE_LOCALE)
 fi
 
 dnl =================

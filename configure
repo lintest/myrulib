@@ -8731,6 +8731,7 @@ fi
 
 if test "x$USE_LOCALE" = "xyes" ; then
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_LOCALE"
+  $as_echo "#define FB_INCLUDE_LOCALE 1" >>confdefs.h
 fi
 
 

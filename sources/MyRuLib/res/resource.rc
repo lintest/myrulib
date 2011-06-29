@@ -5,13 +5,15 @@ aaaa ICON "home.ico"
 
 #include "wx/msw/wx.rc"
 
+#include "config.h"
+
+#ifdef FB_INCLUDE_LOCALE
 ru_RU RC_DATA "ru.mo"
 be_BY RC_DATA "be.mo"
 uk_UA RC_DATA "uk.mo"
 cs_CZ RC_DATA "cs.mo"
 sv_SE RC_DATA "sv.mo"
-
-#include "config.h"
+#endif // FB_INCLUDE_READER
 
 #ifdef FB_INCLUDE_READER
 fb2_css RC_DATA "../../../3rdparty/crengine/res/fb2.css"

@@ -262,6 +262,11 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 			x += w;
 		}
 	}
+/*
+            wxRect rect (x-m_btnWidth2, y_mid-m_btnHeight2, m_btnWidth, m_btnHeight);
+            int flag = item->IsExpanded()? wxCONTROL_EXPANDED: 0;
+            wxRendererNative::GetDefault().DrawTreeItemButton (this, dc, rect, flag);
+*/
 }
 
 void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)

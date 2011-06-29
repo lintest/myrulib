@@ -46,6 +46,12 @@ class FbModelData: public wxObject
 			{ return NULL; }
 		virtual int GetType() const
 			{ return 0; }
+		virtual bool HasChildren(FbModel & model) const
+			{ return 0; }
+		virtual bool Expand(FbModel & model, bool expand) const
+			{ return false; }
+		virtual bool Expanded(FbModel & model) const
+			{ return false; }
 	public:
 #ifdef _MYRULIB
 		virtual FbMasterInfo GetInfo() const;
@@ -113,6 +119,12 @@ class FbModelItem: public wxObject
 			{ if (m_data) m_data->SetState(*m_model, state); }
 		int GetBook() const 
 			{ return m_data ? m_data->GetBook() : 0; }
+		bool HasChildren(FbModel & model) const
+			{ return m_data ? m_data->HasChildren(model) : false; }
+		bool Expand(FbModel & model, bool expand) const
+			{ return m_data ? m_data->Expand(model, expand) : false; }
+		bool Expanded(FbModel & model) const
+			{ return m_data ? m_data->Expanded(model) : false; }
 	private:
 		FbModel * m_model;
 		FbModelData * m_data;
