@@ -740,6 +740,31 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 		case WXK_RETURN: {
 			SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
 		} break;
+        case '*':
+        case '+':
+		case WXK_NUMPAD_MULTIPLY:
+        case WXK_MULTIPLY:
+		case WXK_NUMPAD_ADD:
+        case WXK_ADD: {
+			if (HasFlag(fbTR_DIRECTORY)) {
+				bool ok = m_model->GetCurrent().Expand(true);
+				if (ok) {
+					AdjustMyScrollbars();
+					Repaint();
+				}
+			}
+        } break;
+        case '-':
+		case WXK_NUMPAD_SUBTRACT:
+        case WXK_SUBTRACT: {
+			if (HasFlag(fbTR_DIRECTORY)) {
+				bool ok = m_model->GetCurrent().Expand(false);
+				if (ok) {
+					AdjustMyScrollbars();
+					Repaint();
+				}
+			}
+        } break;
 		case ' ': {
 			if (HasFlag(fbTR_CHECKBOX)) {
 				if (HasFlag(fbTR_MULTIPLE)) {

@@ -169,6 +169,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	SetToolBar(toolbar);
 
 	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_HRULES | fbTR_MULTIPLE | fbTR_DIRECTORY;
+	substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_DIRECTORY;
 	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, substyle);
 	m_dataview->AddColumn(0, _("title"), 200);
 	m_dataview->AddColumn(1, _("author"), 150);
@@ -314,6 +315,8 @@ void DataViewFrame::OnTypeActivated(wxTreeEvent & event)
 
 bool FbTreeModelData::Expand(FbModel & model, bool expand) 
 {
+	if (m_expanded == expand) return false;
+
 	m_expanded = expand;
 	if (expand) {
 		for (int j = 0; j < FB_TREE_COUNT; j++) {
