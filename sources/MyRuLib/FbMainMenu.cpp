@@ -31,6 +31,7 @@ FbMenuBar::MenuEdit::MenuEdit()
 	Append(ID_MASTER_MODIFY,  _("Modify"));
 	Append(ID_MASTER_REPLACE, _("Replace"));
 	AppendImg(wxID_DELETE, _("Delete"), wxART_DELETE);
+	Append(ID_DELETE_LINK, _("Delete link"));
 	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
