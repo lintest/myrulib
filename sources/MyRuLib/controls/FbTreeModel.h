@@ -46,6 +46,12 @@ class FbModelData: public wxObject
 			{ return NULL; }
 		virtual int GetType() const
 			{ return 0; }
+		virtual bool HasChildren(FbModel & model) const
+			{ return 0; }
+		virtual bool IsExpanded(FbModel & model) const
+			{ return false; }
+		virtual bool Expand(FbModel & model, bool expand) 
+			{ return false; }
 	public:
 #ifdef _MYRULIB
 		virtual FbMasterInfo GetInfo() const;
@@ -113,6 +119,12 @@ class FbModelItem: public wxObject
 			{ if (m_data) m_data->SetState(*m_model, state); }
 		int GetBook() const 
 			{ return m_data ? m_data->GetBook() : 0; }
+		bool HasChildren(FbModel & model) const
+			{ return m_data ? m_data->HasChildren(model) : false; }
+		bool IsExpanded() const
+			{ return m_data ? m_data->IsExpanded(*m_model) : false; }
+		bool Expand(bool expand) 
+			{ return m_data ? m_data->Expand(*m_model, expand) : false; }
 	private:
 		FbModel * m_model;
 		FbModelData * m_data;
@@ -194,6 +206,7 @@ class FbModel: public wxObject
 		class PaintContext{
 			public:
 				PaintContext(FbModel &mode, wxDC &dc);
+				wxWindow * m_window;
 				wxBrush m_normalBrush;
 				wxBrush m_hilightBrush;
 				wxBrush m_unfocusBrush;
@@ -203,6 +216,7 @@ class FbModel: public wxObject
 				wxFont m_normalFont;
 				wxFont m_boldFont;
 				wxPen m_borderPen;
+				bool m_directory;
 				bool m_current;
 				bool m_selected;
 				bool m_multuply;
@@ -217,6 +231,7 @@ class FbModel: public wxObject
 		virtual ~FbModel() {}
 
 		void DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h);
+
 		void SetFocused(bool focused)
 			{ m_focused = focused; }
 		FbModelItem GetData(size_t row)
@@ -264,6 +279,7 @@ class FbModel: public wxObject
 	protected:
 		const wxBitmap & GetBitmap(int state);
 		void DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
+		void DrawButton(wxWindow * window, wxDC &dc, wxRect &rect, bool expand);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 		virtual FbModelItem DoGetData(size_t row, int &level) = 0;
 		bool IsSelected(size_t row);

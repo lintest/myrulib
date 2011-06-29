@@ -514,7 +514,7 @@ unsigned int FbComboPopup::GetCount() const
 BEGIN_EVENT_TABLE(FbComboBox, wxComboCtrl)
 END_EVENT_TABLE()
 
-IMPLEMENT_DYNAMIC_CLASS(FbComboBox, wxComboCtrl)
+IMPLEMENT_CLASS(FbComboBox, wxComboCtrl)
 
 void FbComboBox::Init()
 {

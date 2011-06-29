@@ -740,6 +740,31 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 		case WXK_RETURN: {
 			SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
 		} break;
+        case '*':
+        case '+':
+		case WXK_NUMPAD_MULTIPLY:
+        case WXK_MULTIPLY:
+		case WXK_NUMPAD_ADD:
+        case WXK_ADD: {
+			if (HasFlag(fbTR_DIRECTORY)) {
+				bool ok = m_model->GetCurrent().Expand(true);
+				if (ok) {
+					AdjustMyScrollbars();
+					Repaint();
+				}
+			}
+        } break;
+        case '-':
+		case WXK_NUMPAD_SUBTRACT:
+        case WXK_SUBTRACT: {
+			if (HasFlag(fbTR_DIRECTORY)) {
+				bool ok = m_model->GetCurrent().Expand(false);
+				if (ok) {
+					AdjustMyScrollbars();
+					Repaint();
+				}
+			}
+        } break;
 		case ' ': {
 			if (HasFlag(fbTR_CHECKBOX)) {
 				if (HasFlag(fbTR_MULTIPLE)) {
@@ -841,6 +866,10 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 			if (HasFlag(fbTR_CHECKBOX) && left <= x && x <= right) {
 				size_t pos = m_model->FindRow(row, false);
 				m_model->SingleCheck(pos);
+			} else if (HasFlag(fbTR_DIRECTORY) && left <= x && x <= right) {
+				size_t pos = m_model->FindRow(row, false);
+				bool ok = item.Expand(!item.IsExpanded());
+				if (ok) AdjustMyScrollbars();
 			} else {
 				size_t old_pos = m_model->GetPosition();
 				size_t new_pos = m_model->FindRow(row, true);
@@ -951,7 +980,7 @@ void FbTreeViewMainWindow::AssignModel(FbModel * model)
 //  FbTreeViewCtrl
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(FbTreeViewCtrl, wxControl);
+IMPLEMENT_CLASS(FbTreeViewCtrl, wxControl);
 
 BEGIN_EVENT_TABLE(FbTreeViewCtrl, wxControl)
 	EVT_SIZE(FbTreeViewCtrl::OnSize)

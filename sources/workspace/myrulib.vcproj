@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_READER;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC;CYGWIN"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_READER;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC;CYGWIN;_MYRULIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

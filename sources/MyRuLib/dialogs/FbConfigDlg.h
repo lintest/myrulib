@@ -6,6 +6,7 @@
 #include <wx/arrimpl.cpp>
 #include "FbBookEvent.h"
 #include "controls/FbTreeModel.h"
+#include "controls/FbTreeView.h"
 #include "FbWindow.h"
 #include "FbDatabase.h"
 
@@ -15,9 +16,9 @@
 class FbConfigDlg : private FbDialog
 {
 	public:
-		FbConfigDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
-		virtual ~FbConfigDlg();
 		static bool Execute(wxWindow* parent);
+		FbConfigDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER);
+
 	private:
 		enum ID {
 			ID_LIBRARY_TITLE = 1000,
@@ -28,26 +29,13 @@ class FbConfigDlg : private FbDialog
 			ID_DOWNLOAD_USER,
 			ID_DOWNLOAD_PASS,
 			ID_TYPE_LIST,
-			ID_TYPE_TOOLBAR,
-			ID_APPEND_TYPE,
-			ID_MODIFY_TYPE,
-			ID_DELETE_TYPE,
+			ID_REFS_LIST,
+			ID_TOOLBAR,
+			ID_APPEND,
+			ID_MODIFY,
+			ID_DELETE,
 		};
-		class PanelMain: public wxPanel
-		{
-			public:
-				PanelMain(wxWindow *parent);
-		};
-		class PanelInternet: public wxPanel
-		{
-			public:
-				PanelInternet(wxWindow *parent);
-		};
-		class PanelTypes: public wxPanel
-		{
-			public:
-				PanelTypes(wxWindow *parent);
-		};
+
 		class LoadThread: public FbThread
 		{
 			public:
@@ -59,6 +47,55 @@ class FbConfigDlg : private FbDialog
 				void LoadTypes(wxSQLite3Database &database);
 				wxEvtHandler * m_frame;
 		};
+		
+		class PanelTool: public wxPanel { 
+			public: 
+				PanelTool(wxWindow * parent); 
+				virtual void Save(wxSQLite3Database &database) = 0;
+			protected: 
+				wxToolBar * CreateToolBar();
+				void EnableTool(bool enable);
+				DECLARE_CLASS(PanelTool)
+		};
+		
+		class PanelMain: public wxPanel { 
+			public: PanelMain(wxWindow *parent); 
+		};
+
+		class PanelInet: public wxPanel { 
+			public: PanelInet(wxWindow *parent); 
+		};
+
+		class PanelType: public PanelTool { 
+			public: 
+				PanelType(wxWindow *parent); 
+				virtual ~PanelType();
+				virtual void Save(wxSQLite3Database &database);
+			private:
+				LoadThread m_thread;
+				wxArrayString m_del_type;
+				FbTreeViewCtrl m_treeview;
+			private:
+				void OnModel( FbModelEvent& event );
+				void OnAppend( wxCommandEvent& event );
+				void OnModify( wxCommandEvent& event );
+				void OnDelete( wxCommandEvent& event );
+				void OnActivated( wxTreeEvent & event );
+				DECLARE_EVENT_TABLE()
+		};
+
+		class PanelRefs: public PanelTool { 
+			public: 
+				PanelRefs(wxWindow *parent); 
+				virtual void Save(wxSQLite3Database &database);
+			private:
+				void OnAppend( wxCommandEvent& event );
+				void OnModify( wxCommandEvent& event );
+				void OnDelete( wxCommandEvent& event );
+				void OnActivated( wxTreeEvent & event );
+				DECLARE_EVENT_TABLE()
+		};
+
 		class TypeData: public FbModelData
 		{
 			public:
@@ -76,18 +113,12 @@ class FbConfigDlg : private FbDialog
 		};
 	private:
 		void SaveTypes(wxSQLite3Database &database);
-		void EnableTool(wxWindowID id, bool enable);
 		void Assign(bool write);
 	private:
 		FbCommonDatabase m_database;
-		LoadThread m_thread;
-		wxArrayString m_del_type;
+		 wxNotebook m_notebook;
 	private:
 		void OnSelectFolderClick( wxCommandEvent& event );
-		void OnAppendType( wxCommandEvent& event );
-		void OnModifyType( wxCommandEvent& event );
-		void OnDeleteType( wxCommandEvent& event );
-		void OnTypeActivated( wxTreeEvent & event );
 		void OnModel( FbModelEvent& event );
 		DECLARE_EVENT_TABLE()
 };

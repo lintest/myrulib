@@ -2,13 +2,43 @@
 #include "FbConfigDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
-#include "controls/FbTreeView.h"
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
 #include "controls/FbCustomCombo.h"
 #include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
+
+//-----------------------------------------------------------------------------
+//  FbConfigDlg::PanelTool
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbConfigDlg::PanelTool, wxPanel)
+
+FbConfigDlg::PanelTool::PanelTool(wxWindow * parent)
+	: wxPanel(parent)
+{
+}
+
+wxToolBar * FbConfigDlg::PanelTool::CreateToolBar()
+{
+	wxToolBar * toolbar = new wxToolBar( this, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
+	toolbar->AddTool( ID_APPEND, _("Append"), wxBitmap(add_xpm))->Enable(false);
+	toolbar->AddTool( ID_MODIFY, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
+	toolbar->AddTool( ID_DELETE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
+	toolbar->Realize();
+	return toolbar;
+}
+
+void FbConfigDlg::PanelTool::EnableTool(bool enable)
+{
+	wxToolBar * toolbar = wxDynamicCast(FindWindowById(ID_TOOLBAR), wxToolBar);
+	if (toolbar) {
+		toolbar->EnableTool(ID_APPEND, true);
+		toolbar->EnableTool(ID_MODIFY, enable);
+		toolbar->EnableTool(ID_DELETE, enable);
+	}
+}
 
 //-----------------------------------------------------------------------------
 //  FbConfigDlg::LoadThread
@@ -50,23 +80,165 @@ void FbConfigDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 }
 
 //-----------------------------------------------------------------------------
-//  FbConfigDlg::PanelTypes
+//  FbConfigDlg::PanelType
 //-----------------------------------------------------------------------------
 
-FbConfigDlg::PanelTypes::PanelTypes(wxWindow *parent)
-	:wxPanel(parent)
+BEGIN_EVENT_TABLE( FbConfigDlg::PanelType, FbConfigDlg::PanelTool )
+	EVT_TOOL( ID_APPEND, FbConfigDlg::PanelType::OnAppend )
+	EVT_TOOL( ID_MODIFY, FbConfigDlg::PanelType::OnModify )
+	EVT_TOOL( ID_DELETE, FbConfigDlg::PanelType::OnDelete )
+	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbConfigDlg::PanelType::OnActivated)
+	EVT_FB_MODEL(ID_TYPE_LIST, FbConfigDlg::PanelType::OnModel)
+END_EVENT_TABLE()
+
+FbConfigDlg::PanelType::PanelType(wxWindow * parent)
+	: PanelTool(parent), m_thread(this)
 {
 	wxBoxSizer * bSizer;
 	bSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxToolBar * toolbar = new wxToolBar( this, ID_TYPE_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
-	toolbar->AddTool( ID_APPEND_TYPE, _("Append"), wxBitmap(add_xpm))->Enable(false);
-	toolbar->AddTool( ID_MODIFY_TYPE, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
-	toolbar->AddTool( ID_DELETE_TYPE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
-	toolbar->Realize();
-	bSizer->Add( toolbar, 0, wxALL|wxEXPAND, 5 );
+	bSizer->Add( CreateToolBar(), 0, wxALL|wxEXPAND, 5 );
 
-	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_treeview.Create( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_treeview.AddColumn(0, _("Extension"), 50);
+	m_treeview.AddColumn(1, _("Program"), 300);
+	bSizer->Add( &m_treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	SetSizer( bSizer );
+	Layout();
+	bSizer->Fit( this );
+
+	if (m_thread.Create() == wxTHREAD_NO_ERROR) m_thread.Run();
+}
+
+FbConfigDlg::PanelType::~PanelType()
+{
+	m_thread.Close();
+	m_thread.Wait();
+}
+
+void FbConfigDlg::PanelType::OnModel( FbModelEvent& event )
+{
+	FbModel * model = event.GetModel();
+	EnableTool(model->GetRowCount());
+	m_treeview.AssignModel(model);
+}
+
+void FbConfigDlg::PanelType::OnAppend( wxCommandEvent& event )
+{
+	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
+	if (!model) return;
+
+	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
+	filetype = filetype.Trim(false).Trim(true).Lower();
+	if (filetype.IsEmpty()) return;
+
+	size_t count = model->GetRowCount();
+	for (size_t i = 1; i <= count; i++) {
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
+		if (data && data->GetValue(*model, 0) == filetype) {
+			model->FindRow(i, true);
+			return;
+		}
+	}
+	m_treeview.Append(new TypeData(filetype));
+	m_treeview.SetFocus();
+	EnableTool(true);
+}
+
+void FbConfigDlg::PanelType::OnModify( wxCommandEvent& event )
+{
+	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
+	if (!model) return;
+
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
+	if (!data) return;
+
+	wxString title = _("Select the application to view files");
+	wxString type = data->GetValue(*model, 0);
+	wxString command = data->GetValue(*model, 1);
+
+	bool ok = FbViewerDlg::Execute( this, type, command, true);
+	if (ok) m_treeview.Replace(new TypeData(type, command));
+	m_treeview.SetFocus();
+}
+
+void FbConfigDlg::PanelType::OnDelete( wxCommandEvent& event )
+{
+	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
+	if (!model) return;
+
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
+	if (!data) return;
+
+	wxString type = data->GetValue(*model, 0);
+	wxString msg = _("Delete file type") + COLON + type;
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (!ok) return;
+
+	m_del_type.Add(type);
+
+	m_treeview.Delete();
+	m_treeview.SetFocus();
+	EnableTool(model->GetRowCount());
+}
+
+void FbConfigDlg::PanelType::OnActivated( wxTreeEvent & event )
+{
+	wxCommandEvent cmdEvent;
+	OnModify(cmdEvent);
+}
+
+void FbConfigDlg::PanelType::Save(wxSQLite3Database &database)
+{
+	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
+	if (!model) return;
+
+	size_t count = m_del_type.Count();
+	for (size_t i = 0; i < count; i++) {
+		wxString sql = wxT("DELETE FROM types WHERE file_type=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_del_type[i]);
+		stmt.ExecuteUpdate();
+	}
+
+	count = model->GetRowCount();
+	for (size_t i = 1; i <= count; i++) {
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
+		if (data && data->IsModified()) {
+			wxString sql = wxT("INSERT OR REPLACE INTO types(file_type, command) values(?,?)");
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			stmt.Bind(1, data->GetValue(*model, 0));
+			stmt.Bind(2, data->GetValue(*model, 1));
+			stmt.ExecuteUpdate();
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbConfigDlg::PanelRefs
+//-----------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE( FbConfigDlg::PanelRefs, FbConfigDlg::PanelTool )
+	EVT_TOOL( ID_APPEND, FbConfigDlg::PanelRefs::OnAppend )
+	EVT_TOOL( ID_MODIFY, FbConfigDlg::PanelRefs::OnModify )
+	EVT_TOOL( ID_DELETE, FbConfigDlg::PanelRefs::OnDelete )
+	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbConfigDlg::PanelRefs::OnActivated)
+END_EVENT_TABLE()
+
+FbConfigDlg::PanelRefs::PanelRefs(wxWindow * parent)
+	: PanelTool(parent)
+{
+	wxBoxSizer * bSizer;
+	bSizer = new wxBoxSizer( wxVERTICAL );
+
+	bSizer->Add( CreateToolBar(), 0, wxALL|wxEXPAND, 5 );
+
+	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_REFS_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	treeview->AddColumn(0, _("Extension"), 50);
 	treeview->AddColumn(1, _("Program"), 300);
 	bSizer->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
@@ -74,6 +246,119 @@ FbConfigDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	SetSizer( bSizer );
 	Layout();
 	bSizer->Fit( this );
+}
+
+void FbConfigDlg::PanelRefs::OnAppend( wxCommandEvent& event )
+{
+/*
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
+	filetype = filetype.Trim(false).Trim(true).Lower();
+	if (filetype.IsEmpty()) return;
+
+	size_t count = model->GetRowCount();
+	for (size_t i = 1; i <= count; i++) {
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
+		if (data && data->GetValue(*model, 0) == filetype) {
+			model->FindRow(i, true);
+			return;
+		}
+	}
+
+	treeview->Append(new TypeData(filetype));
+	EnableTool(true);
+	treeview->SetFocus();
+*/
+}
+
+void FbConfigDlg::PanelRefs::OnModify( wxCommandEvent& event )
+{
+/*
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
+	if (!data) return;
+
+	wxString title = _("Select the application to view files");
+	wxString type = data->GetValue(*model, 0);
+	wxString command = data->GetValue(*model, 1);
+
+	bool ok = FbViewerDlg::Execute( this, type, command, true);
+	if (ok) treeview->Replace(new TypeData(type, command));
+	treeview->SetFocus();
+*/
+}
+
+void FbConfigDlg::PanelRefs::OnDelete( wxCommandEvent& event )
+{
+/*
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	if (!treeview) return;
+
+	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	if (!model) return;
+
+	FbModelItem item = model->GetCurrent();
+	TypeData * data = wxDynamicCast(&item, TypeData);
+	if (!data) return;
+
+	wxString type = data->GetValue(*model, 0);
+	wxString msg = _("Delete file type") + COLON + type;
+	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
+	if (!ok) return;
+
+	m_del_type.Add(type);
+	treeview->Delete();
+
+	EnableTool(model->GetRowCount());
+	treeview->SetFocus();
+*/
+}
+
+void FbConfigDlg::PanelRefs::OnActivated( wxTreeEvent & event )
+{
+	wxCommandEvent cmdEvent;
+	OnModify(cmdEvent);
+}
+
+void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
+{
+/*
+	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
+	if (!model) return;
+
+	size_t count = m_del_type.Count();
+	for (size_t i = 0; i < count; i++) {
+		wxString sql = wxT("DELETE FROM types WHERE file_type=?");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, m_del_type[i]);
+		stmt.ExecuteUpdate();
+	}
+
+	count = model->GetRowCount();
+	for (size_t i = 1; i <= count; i++) {
+		FbModelItem item = model->GetData(i);
+		TypeData * data = wxDynamicCast(&item, TypeData);
+		if (data && data->IsModified()) {
+			wxString sql = wxT("INSERT OR REPLACE INTO types(file_type, command) values(?,?)");
+			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			stmt.Bind(1, data->GetValue(*model, 0));
+			stmt.Bind(2, data->GetValue(*model, 1));
+			stmt.ExecuteUpdate();
+		}
+	}
+*/
 }
 
 //-----------------------------------------------------------------------------
@@ -96,15 +381,12 @@ wxString FbConfigDlg::TypeData::GetValue(FbModel & model, size_t col) const
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
+//  FbConfigDlg
+//-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE( FbConfigDlg, wxDialog )
 	EVT_BUTTON( ID_LIBRARY_DIR, FbConfigDlg::OnSelectFolderClick )
-	EVT_TOOL( ID_APPEND_TYPE, FbConfigDlg::OnAppendType )
-	EVT_TOOL( ID_MODIFY_TYPE, FbConfigDlg::OnModifyType )
-	EVT_TOOL( ID_DELETE_TYPE, FbConfigDlg::OnDeleteType )
-	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbConfigDlg::OnTypeActivated)
-	EVT_FB_MODEL(ID_TYPE_LIST, FbConfigDlg::OnModel)
 END_EVENT_TABLE()
 
 FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
@@ -143,7 +425,7 @@ FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
 	this->Layout();
 }
 
-FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
+FbConfigDlg::PanelInet::PanelInet(wxWindow *parent)
 	:wxPanel(parent)
 {
 	wxFlexGridSizer* fgSizerMain;
@@ -194,18 +476,19 @@ FbConfigDlg::PanelInternet::PanelInternet(wxWindow *parent)
 //-----------------------------------------------------------------------------
 
 FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
-	: FbDialog( parent, id, title, pos, size, style ), m_thread(this)
+	: FbDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxNotebook * notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
-	notebook->AddPage( new PanelMain(notebook), _("General"), true );
-	notebook->AddPage( new PanelInternet(notebook), _("Network"), false );
-	notebook->AddPage( new PanelTypes(notebook), _("File types"), false );
-	bSizerMain->Add( notebook, 1, wxEXPAND | wxALL, 5 );
+	m_notebook.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
+	m_notebook.AddPage( new PanelMain(&m_notebook), _("General"),    true );
+	m_notebook.AddPage( new PanelInet(&m_notebook), _("Network"),    false );
+	m_notebook.AddPage( new PanelType(&m_notebook), _("File types"), false );
+	m_notebook.AddPage( new PanelRefs(&m_notebook), _("Tables"), false );
+	bSizerMain->Add( &m_notebook, 1, wxEXPAND | wxALL, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -213,14 +496,6 @@ FbConfigDlg::FbConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
-
-	if (m_thread.Create() == wxTHREAD_NO_ERROR) m_thread.Run();
-}
-
-FbConfigDlg::~FbConfigDlg()
-{
-	m_thread.Close();
-	m_thread.Wait();
 }
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
@@ -260,11 +535,17 @@ void FbConfigDlg::Assign(bool write)
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
 
-	for (size_t i=0; i<idsCount; i++) {
+	for (size_t i = 0; i < idsCount; i++) {
 		FbDialog::Assign(ids[i].control, ids[i].param, write);
 	}
 
-	if (write) SaveTypes(m_database);
+	if (write) {
+		size_t count = m_notebook.GetPageCount(); 
+		for (size_t i = 0; i < count; i++) {
+			PanelTool * panel = wxDynamicCast(m_notebook.GetPage(i), PanelTool);
+			if (panel) panel->Save(m_database);
+		}
+	}
 }
 
 bool FbConfigDlg::Execute(wxWindow* parent)
@@ -279,127 +560,3 @@ bool FbConfigDlg::Execute(wxWindow* parent)
 	}
 	return ok;
 }
-
-void FbConfigDlg::SaveTypes(wxSQLite3Database &database)
-{
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
-	if (!treeview) return;
-
-	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
-	if (!model) return;
-
-	wxString sql = wxT("INSERT OR REPLACE INTO types(file_type, command) values(?,?)");
-
-	size_t count = model->GetRowCount();
-	for (size_t i = 1; i <= count; i++) {
-		FbModelItem item = model->GetData(i);
-		TypeData * data = wxDynamicCast(&item, TypeData);
-		if (data && data->IsModified()) {
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			stmt.Bind(1, data->GetValue(*model, 0));
-			stmt.Bind(2, data->GetValue(*model, 1));
-			stmt.ExecuteUpdate();
-		}
-	}
-}
-
-void FbConfigDlg::OnAppendType( wxCommandEvent& event )
-{
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
-	if (!treeview) return;
-
-	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
-	if (!model) return;
-
-	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
-	filetype = filetype.Trim(false).Trim(true).Lower();
-	if (filetype.IsEmpty()) return;
-
-	size_t count = model->GetRowCount();
-	for (size_t i = 1; i <= count; i++) {
-		FbModelItem item = model->GetData(i);
-		TypeData * data = wxDynamicCast(&item, TypeData);
-		if (data && data->GetValue(*model, 0) == filetype) {
-			model->FindRow(i, true);
-			return;
-		}
-	}
-
-	treeview->Append(new TypeData(filetype));
-	EnableTool(ID_TYPE_LIST, true);
-	treeview->SetFocus();
-}
-
-void FbConfigDlg::OnModifyType( wxCommandEvent& event )
-{
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
-	if (!treeview) return;
-
-	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
-	if (!model) return;
-
-	FbModelItem item = model->GetCurrent();
-	TypeData * data = wxDynamicCast(&item, TypeData);
-	if (!data) return;
-
-	wxString title = _("Select the application to view files");
-	wxString type = data->GetValue(*model, 0);
-	wxString command = data->GetValue(*model, 1);
-
-	bool ok = FbViewerDlg::Execute( this, type, command, true);
-	if (ok) treeview->Replace(new TypeData(type, command));
-	treeview->SetFocus();
-}
-
-void FbConfigDlg::OnDeleteType( wxCommandEvent& event )
-{
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
-	if (!treeview) return;
-
-	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
-	if (!model) return;
-
-	FbModelItem item = model->GetCurrent();
-	TypeData * data = wxDynamicCast(&item, TypeData);
-	if (!data) return;
-
-	wxString type = data->GetValue(*model, 0);
-	wxString msg = _("Delete file type") + COLON + type;
-	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
-	if (!ok) return;
-
-	m_del_type.Add(type);
-	treeview->Delete();
-
-	EnableTool(ID_TYPE_LIST, model->GetRowCount());
-	treeview->SetFocus();
-}
-
-void FbConfigDlg::OnTypeActivated( wxTreeEvent & event )
-{
-	wxCommandEvent cmdEvent;
-	OnModifyType(cmdEvent);
-}
-
-void FbConfigDlg::OnModel( FbModelEvent& event )
-{
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
-	if (treeview) {
-		FbModel * model = event.GetModel();
-		EnableTool(event.GetId(), model->GetRowCount());
-		treeview->AssignModel(model);
-	} else {
-		delete event.GetModel();
-	}
-}
-
-void FbConfigDlg::EnableTool(wxWindowID id, bool enable)
-{
-	wxToolBar * toolbar = wxDynamicCast(FindWindowById(++id), wxToolBar);
-	if (toolbar) {
-		toolbar->EnableTool(++id, true);
-		toolbar->EnableTool(++id, enable);
-		toolbar->EnableTool(++id, enable);
-	}
-}
-

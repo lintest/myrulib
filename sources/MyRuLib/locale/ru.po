@@ -2052,3 +2052,6 @@ msgstr "Размер шрифта"
 
 msgid "Interline space"
 msgstr "Межстрочный интервал"
+
+msgid "Tables"
+msgstr "Таблицы"

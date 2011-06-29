@@ -13,6 +13,7 @@
 #define fbTR_MULTIPLE   0x0004
 #define fbTR_CHECKBOX   0x0008
 #define fbTR_NO_HEADER  0x0010
+#define fbTR_DIRECTORY  0x0020
 
 #define fbTR_DEFAULT_STYLE (fbTR_VRULES)
 

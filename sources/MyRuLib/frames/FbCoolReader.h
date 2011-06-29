@@ -124,7 +124,7 @@ class FbCoolReader
 		CRDocViewWindow * _docwin;
 		lString16 _appDir;
 	private:
-		DECLARE_DYNAMIC_CLASS(FbCoolReader)
+		DECLARE_CLASS(FbCoolReader)
 		DECLARE_EVENT_TABLE()
 };
 

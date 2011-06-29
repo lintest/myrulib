@@ -1,5 +1,5 @@
 #include "FbChoiceCtrl.h"
 
-IMPLEMENT_DYNAMIC_CLASS(FbChoiceInt, wxChoice)
+IMPLEMENT_CLASS(FbChoiceInt, wxChoice)
 
-IMPLEMENT_DYNAMIC_CLASS(FbChoiceStr, wxChoice)
+IMPLEMENT_CLASS(FbChoiceStr, wxChoice)
