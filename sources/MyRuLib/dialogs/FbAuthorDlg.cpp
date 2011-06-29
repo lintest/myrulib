@@ -80,13 +80,13 @@ bool FbAuthorModifyDlg::Load(int id)
 
 wxString FbAuthorModifyDlg::GetValue(wxWindowID id)
 {
-	wxTextCtrl * control = (wxTextCtrl*) FindWindowById(id);
+	wxTextCtrl * control = (wxTextCtrl*) FindWindow(id);
 	return control ? control->GetValue() : wxString(wxEmptyString);
 }
 
 void FbAuthorModifyDlg::SetValue(wxWindowID id, const wxString &text)
 {
-	wxTextCtrl * control = (wxTextCtrl*) FindWindowById(id);
+	wxTextCtrl * control = (wxTextCtrl*) FindWindow(id);
 	if (control) control->SetValue(text);
 }
 

@@ -15,20 +15,28 @@ class FbDirectoryDlg: public FbDialog
 {
 public:
 	FbDirectoryDlg( wxWindow * parent, const wxString& title ); 
+	void Set(const FbModelItem & item);
+	void Get(FbModelItem & item);
 
 private:
 	enum ID {
 		ID_TITLE = 1000,
 		ID_DIR_FILE,
 		ID_DIR_DATA,
+		ID_DIR_TYPE,
 		ID_DIR_CODE,
 		ID_DIR_NAME,
-		ID_DIR_KEYS,
+		ID_DIR_INFO,
+		ID_DIR_PRNT,
 		ID_REF_FILE,
 		ID_REF_DATA,
 		ID_REF_TYPE,
 		ID_REF_CODE,
 		ID_REF_BOOK,
+		ID_FB2_CODE,
+		ID_LAST,
+		ID_DIR_BOX,
+		ID_REF_BOX,
 	};
 	void Append( wxFlexGridSizer * sizer, wxControl * control, const wxString & title );
 private:
@@ -166,9 +174,10 @@ private:
 			RefsData(const wxArrayString & values);
 			int GetCode() const { return m_code; }
 			int Assign(wxSQLite3Statement & stmt);
-		public:
-			virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 			bool IsModified() { return m_modified; }
+		public:
+			virtual void SetValue(FbModel & model, size_t col, const wxString &value);
+			virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 		protected:
 			int m_code;
 			wxArrayString m_values;

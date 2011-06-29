@@ -7,6 +7,7 @@
 #include "FbCollection.h"
 #include "FbDataPath.h"
 #include "controls/FbCustomCombo.h"
+#include "controls/FbChoiceCtrl.h"
 #include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
 
@@ -39,11 +40,19 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerDir->SetFlexibleDirection( wxBOTH );
 	sizerDir->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	Append( sizerDir, new FbCustomCombo( this, ID_DIR_FILE), wxT("File name") );
-	Append( sizerDir, new FbCustomCombo( this, ID_DIR_DATA), wxT("Table") );
-	Append( sizerDir, new FbCustomCombo( this, ID_DIR_CODE), wxT("Code") );
-	Append( sizerDir, new FbCustomCombo( this, ID_DIR_NAME), wxT("Name") );
-	Append( sizerDir, new FbCustomCombo( this, ID_DIR_KEYS), wxT("Parent") );
+	FbChoiceStr * choiseDirType = new FbChoiceStr(this, ID_DIR_TYPE);
+	choiseDirType->Append(_("Autoincrement"), wxT("AUTOINCREMENT"));
+	choiseDirType->Append(_("Integer"), wxT("INTEGER"));
+	choiseDirType->Append(_("Text"), wxT("TEXT"));
+	choiseDirType->SetSelection(0);
+	
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), wxT("Table name") );
+	Append( sizerDir, choiseDirType                     , wxT("Key type") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_CODE), wxT("Field: code") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), wxT("Field: name") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), wxT("Field: info") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_PRNT), wxT("Field: parent") );
 	
 	boxDir->Add( sizerDir, 1, wxEXPAND, 5 );
 	
@@ -56,11 +65,16 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerRef->SetFlexibleDirection( wxBOTH );
 	sizerRef->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	Append( sizerRef, new FbCustomCombo( this, ID_REF_FILE), wxT("File name") );
-	Append( sizerRef, new FbCustomCombo( this, ID_REF_DATA), wxT("Table") );
-	Append( sizerRef, new FbCustomCombo( this, ID_REF_TYPE), wxT("Key field") );
-	Append( sizerRef, new FbCustomCombo( this, ID_REF_CODE), wxT("Code") );
-	Append( sizerRef, new FbCustomCombo( this, ID_REF_BOOK), wxT("Book") );
+	FbChoiceStr * choiseRefType = new FbChoiceStr(this, ID_REF_TYPE);
+	choiseRefType->Append(_("Book Id"), wxT("ID"));
+	choiseRefType->Append(_("MD5 Sum"), wxT("MD5SUM"));
+	choiseRefType->SetSelection(0);
+	
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
+	Append( sizerRef, choiseRefType                     , wxT("Key type") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), wxT("Field: code") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), wxT("Field: book") );
 	
 	boxRef->Add( sizerRef, 1, wxEXPAND, 5 );
 	
@@ -83,6 +97,45 @@ void FbDirectoryDlg::Append( wxFlexGridSizer * sizer, wxControl * control, const
 	sizer->Add( caption, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	sizer->Add( control, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
 }
+
+void FbDirectoryDlg::Set(const FbModelItem & item)
+{
+	size_t count = ID_LAST - ID_TITLE;
+	for (size_t i = 0; i < count; i++) {
+		wxString value = item[i];
+		wxWindow * window = FindWindow(ID_TITLE + i);
+		if (window == NULL) {
+			continue;
+		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
+			control->SetValue(value);
+		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
+			size_t count = control->GetCount();
+			for (size_t j = 0; j <= count; j++)
+				if (control->GetClientData(j) == value) {
+					control->SetSelection(j);
+					break;
+				}
+		}
+	}
+}
+
+void FbDirectoryDlg::Get(FbModelItem & item) 
+{
+	size_t count = ID_LAST - ID_TITLE;
+	for (size_t i = 0; i < count; i++) {
+		wxString value;
+		wxWindow * window = FindWindow(ID_TITLE + i);
+		if (window == NULL) {
+			continue;
+		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
+			value = control->GetValue();
+		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
+			value = control->GetCurrentData();
+		}
+		item.SetValue(i, value);
+	}
+}
+
 
 //-----------------------------------------------------------------------------
 //  FbConfigDlg::PanelTool
@@ -317,7 +370,7 @@ BEGIN_EVENT_TABLE( FbConfigDlg::PanelRefs, FbConfigDlg::PanelTool )
 	EVT_TOOL( ID_APPEND, FbConfigDlg::PanelRefs::OnAppend )
 	EVT_TOOL( ID_MODIFY, FbConfigDlg::PanelRefs::OnModify )
 	EVT_TOOL( ID_DELETE, FbConfigDlg::PanelRefs::OnDelete )
-	EVT_TREE_ITEM_ACTIVATED(ID_TYPE_LIST, FbConfigDlg::PanelRefs::OnActivated)
+	EVT_TREE_ITEM_ACTIVATED(ID_REFS_LIST, FbConfigDlg::PanelRefs::OnActivated)
 END_EVENT_TABLE()
 
 FbConfigDlg::PanelRefs::PanelRefs(wxWindow * parent, FbDatabase & database)
@@ -389,14 +442,17 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 	values.Add( title );
 	values.Add( wxEmptyString );
 	values.Add( wxString(wxT("dir")) << num );
+	values.Add( wxT("AUTOINCREMENT") );
 	values.Add( wxT("code") );
 	values.Add( wxT("name") );
+	values.Add( wxT("info") );
 	values.Add( wxT("parent") );
 	values.Add( wxEmptyString );
 	values.Add( wxString(wxT("ref")) << num );
-	values.Add( wxT("id") );
+	values.Add( wxT("ID") );
 	values.Add( wxT("code") );
 	values.Add( wxT("book") );
+	values.Add( wxEmptyString );
 	
 	m_treeview.Append(new RefsData(values));
 	m_treeview.SetFocus();
@@ -408,7 +464,7 @@ void FbConfigDlg::PanelRefs::OnAppend( wxCommandEvent& event )
 	FbDirectoryDlg dlg(NULL, wxEmptyString);
 	dlg.ShowModal();
 /*
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -436,8 +492,17 @@ void FbConfigDlg::PanelRefs::OnAppend( wxCommandEvent& event )
 
 void FbConfigDlg::PanelRefs::OnModify( wxCommandEvent& event )
 {
+	FbModelItem item = m_treeview.GetCurrent();
+	if (!item) return;
+	
+	FbDirectoryDlg dlg(NULL, wxT("Modify directory"));
+	dlg.Set(item);
+	if (dlg.ShowModal() == wxID_OK) {
+		dlg.Get(item);
+	}
+	
 /*
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -504,16 +569,23 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 	}
 	
 	wxString values;
+	wxString params;
 	{
+		bool next = false;
 		wxStringTokenizer tkz(GetFields(), wxT(','), wxTOKEN_STRTOK);
 		while (tkz.HasMoreTokens()) {
-			if (!values.IsEmpty()) values << wxT(',');
+			if (next) {
+				values << wxT(',');
+				params << wxT(',');
+			}
 			values << tkz.GetNextToken() << wxT("=?");
+			params << wxT("?");
+			next = true;
 		}
 	}
 	
-	wxString insert = wxString::Format(wxT("INSERT INTO tables(%s)VALUES(?,?,?,?,?,?,?,?,?,?,?)"), GetFields().c_str());
-	wxString update = wxString::Format(wxT("UPDATE tables SET %s WHERE id=?"), values.c_str());
+	wxString insert = wxString::Format(wxT("INSERT INTO tables(%s)VALUES(%s)"), GetFields().c_str(), params.c_str());
+	wxString update = wxString::Format(wxT("UPDATE tables SET %s WHERE id="), values.c_str());
 
 	count = model->GetRowCount();
 	for (size_t i = 1; i <= count; i++) {
@@ -522,9 +594,9 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 		if (data && data->IsModified()) {
 			int code = data->GetCode();
 			wxString sql = code ? update : insert;
+			if (code) sql << code;
 			wxSQLite3Statement stmt = database.PrepareStatement(sql);
-			size_t pos = data->Assign(stmt);
-			if (code) stmt.Bind(pos, code);
+			data->Assign(stmt);
 			stmt.ExecuteUpdate();
 		}
 	}
@@ -584,6 +656,11 @@ int FbConfigDlg::RefsData::Assign(wxSQLite3Statement & stmt)
 	return count;
 }
 
+void FbConfigDlg::RefsData::SetValue(FbModel & model, size_t col, const wxString &value)
+{
+	while (col >= m_values.Count()) m_values.Add(wxEmptyString);
+	m_values[col] = value;
+}
 
 //-----------------------------------------------------------------------------
 //  FbConfigDlg
@@ -595,7 +672,7 @@ END_EVENT_TABLE()
 
 wxString FbConfigDlg::GetFields()
 {
-	return wxT("title,dir_file,dir_data,dir_code,dir_name,dir_parent,ref_file,ref_data,ref_type,ref_code,ref_book");
+	return wxT("title,dir_file,dir_data,dir_type,dir_code,dir_name,dir_info,dir_prnt,ref_file,ref_data,ref_type,ref_code,ref_book,fb2_code");
 }
 
 FbConfigDlg::PanelMain::PanelMain(wxWindow *parent)
@@ -709,7 +786,7 @@ FbConfigDlg::FbConfigDlg( wxWindow * parent )
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
-	wxComboCtrl * control = wxDynamicCast(FindWindowById(event.GetId()), wxComboCtrl);
+	wxComboCtrl * control = wxDynamicCast(FindWindow(event.GetId()), wxComboCtrl);
 	if (!control) return;
 
 	wxDirDialog dlg(

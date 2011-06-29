@@ -101,7 +101,7 @@ void FbFilterDlg::Assign(FbFilterObj & filter)
 void FbFilterDlg::OnTreeModel( FbModelEvent& event )
 {
 	FbFilterTreeModel * model = wxDynamicCast(event.GetModel(), FbFilterTreeModel);
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(event.GetId()), FbTreeViewCtrl);
 	if (model && treeview) {
 		switch (event.GetId()) {
 			case ID_TREE_LANG: model->SetSel(m_filter.m_lang); break;

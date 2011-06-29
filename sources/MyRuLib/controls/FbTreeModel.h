@@ -22,7 +22,7 @@ class FbModelData: public wxObject
 			{}
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return wxEmptyString; }
-		virtual void SetValue(FbModel & model, size_t col, const wxString &name)
+		virtual void SetValue(FbModel & model, size_t col, const wxString &value)
 			{}
 		virtual bool FullRow(FbModel & model) const
 			{ return false; }
@@ -111,8 +111,8 @@ class FbModelItem: public wxObject
 			{ return m_data ? FbModelItem(*m_model, m_data->Items(*m_model, index)) : FbModelItem(); }
 		FbModelItem GetParent()
 			{ return m_data ? FbModelItem(*m_model, m_data->GetParent(*m_model)) : FbModelItem(); }
-		void SetValue(size_t col, const wxString &name)
-			{ if (m_data) m_data->SetValue(*m_model, col, name); }
+		void SetValue(size_t col, const wxString &value)
+			{ if (m_data) m_data->SetValue(*m_model, col, value); }
 		int GetState() const
 			{ return m_data ? m_data->GetState(*m_model) : 0; }
 		void SetState(bool state)

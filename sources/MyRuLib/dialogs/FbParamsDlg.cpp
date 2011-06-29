@@ -636,7 +636,7 @@ FbParamsDlg::~FbParamsDlg()
 
 void FbParamsDlg::OnSelectFolderClick( wxCommandEvent& event )
 {
-	wxComboCtrl * control = wxDynamicCast(FindWindowById(event.GetId()), wxComboCtrl);
+	wxComboCtrl * control = wxDynamicCast(FindWindow(event.GetId()), wxComboCtrl);
 	if (!control) return;
 
 	wxDirDialog dlg(
@@ -717,7 +717,7 @@ void FbParamsDlg::Execute(wxWindow* parent)
 
 void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -733,13 +733,13 @@ void FbParamsDlg::OnAppendScript( wxCommandEvent& event )
 	treeview->SetFocus();
 
 	wxString label = _("filename"); label << wxT('.') << name;
-	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindow(ID_FILE_FORMAT), FbChoiceInt);
 	if (typelist) typelist->Append(label, code);
 }
 
 void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -758,7 +758,7 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 	treeview->Replace(new ScriptData(code, name, text));
 	treeview->SetFocus();
 
-	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindow(ID_FILE_FORMAT), FbChoiceInt);
 	if (typelist) {
 		int index = typelist->GetSelection();
 		size_t count = typelist->GetCount();
@@ -776,7 +776,7 @@ void FbParamsDlg::OnModifyScript( wxCommandEvent& event )
 
 void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -797,7 +797,7 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 	EnableTool(ID_SCRIPT_LIST, model->GetRowCount());
 	treeview->SetFocus();
 
-	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindow(ID_FILE_FORMAT), FbChoiceInt);
 	if (typelist) {
 		size_t index = (size_t) typelist->GetSelection();
 		size_t count = typelist->GetCount();
@@ -814,7 +814,7 @@ void FbParamsDlg::OnDeleteScript( wxCommandEvent& event )
 
 void FbParamsDlg::OnAppendType( wxCommandEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -841,7 +841,7 @@ void FbParamsDlg::OnAppendType( wxCommandEvent& event )
 
 void FbParamsDlg::OnModifyType( wxCommandEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -862,7 +862,7 @@ void FbParamsDlg::OnModifyType( wxCommandEvent& event )
 
 void FbParamsDlg::OnDeleteType( wxCommandEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -898,13 +898,13 @@ void FbParamsDlg::OnTypeActivated( wxTreeEvent & event )
 
 void FbParamsDlg::SetColour(wxWindowID id, wxColour colour)
 {
-	wxColourPickerCtrl * control = (wxColourPickerCtrl*) FindWindowById(id);
+	wxColourPickerCtrl * control = (wxColourPickerCtrl*) FindWindow(id);
 	if (control) control->SetColour(colour);
 }
 
 void FbParamsDlg::SetFont(wxWindowID id, wxFont font)
 {
-	wxFontPickerCtrl * control = (wxFontPickerCtrl*) FindWindowById(id);
+	wxFontPickerCtrl * control = (wxFontPickerCtrl*) FindWindow(id);
 	if (control) control->SetSelectedFont(font);
 }
 
@@ -939,7 +939,7 @@ void FbParamsDlg::OnLetterClicked(wxCommandEvent& event)
 
 void FbParamsDlg::EnableTool(wxWindowID id, bool enable)
 {
-	wxToolBar * toolbar = wxDynamicCast(FindWindowById(++id), wxToolBar);
+	wxToolBar * toolbar = wxDynamicCast(FindWindow(++id), wxToolBar);
 	if (toolbar) {
 		toolbar->EnableTool(++id, true);
 		toolbar->EnableTool(++id, enable);
@@ -949,7 +949,7 @@ void FbParamsDlg::EnableTool(wxWindowID id, bool enable)
 
 void FbParamsDlg::OnModel( FbModelEvent& event )
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(event.GetId()), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(event.GetId()), FbTreeViewCtrl);
 	if (treeview) {
 		FbModel * model = event.GetModel();
 		EnableTool(event.GetId(), model->GetRowCount());
@@ -962,7 +962,7 @@ void FbParamsDlg::OnModel( FbModelEvent& event )
 
 void FbParamsDlg::FillFormats(FbTreeViewCtrl * treeview, FbModel * model)
 {
-	FbChoiceInt * typelist = wxDynamicCast(FindWindowById(ID_FILE_FORMAT), FbChoiceInt);
+	FbChoiceInt * typelist = wxDynamicCast(FindWindow(ID_FILE_FORMAT), FbChoiceInt);
 	if (!typelist) return;
 
 	int format = FbParams(FB_FILE_FORMAT);
@@ -1011,7 +1011,7 @@ void FbParamsDlg::DeleteScripts(wxSQLite3Database &database)
 
 void FbParamsDlg::SaveScripts(wxSQLite3Database &database)
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_SCRIPT_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
@@ -1035,7 +1035,7 @@ void FbParamsDlg::SaveScripts(wxSQLite3Database &database)
 
 void FbParamsDlg::SaveTypes(wxSQLite3Database &database)
 {
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindowById(ID_TYPE_LIST), FbTreeViewCtrl);
+	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
 
 	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);

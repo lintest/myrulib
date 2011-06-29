@@ -26,7 +26,7 @@ bool FbDialog::Create( wxWindow* parent, wxWindowID id, const wxString& title, c
 
 void FbDialog::Assign(long winid, int param, bool write)
 {
-	wxWindow * window = FindWindowById(winid);
+	wxWindow * window = FindWindow(winid);
 	if (window == NULL) {
 		return;
 	} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
