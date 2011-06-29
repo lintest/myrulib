@@ -60,7 +60,7 @@ class FbTreeModelData: public FbParentData
 {
 	public:
 		FbTreeModelData(FbModel & model, FbParentData * parent, int i)
-			: FbParentData(model, parent), m_code(i), m_state(0) {}
+			: FbParentData(model, parent), m_code(i), m_state(0), m_selected(false), m_expanded(false) {}
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const;
 		virtual int DoGetState(FbModel & model) const
@@ -68,11 +68,15 @@ class FbTreeModelData: public FbParentData
 		virtual void DoSetState(FbModel & model, int state)
 			{ m_state = state; }
 		virtual bool IsBold(FbModel & model) const
-			{ return Count(model); }
+			{ return false; }
+		virtual bool IsExpanded(FbModel & model) const
+			{ return m_expanded; }
+		virtual bool Expand(FbModel & model, bool expand);
 	protected:
 		int m_code;
 		int m_state;
 		bool m_selected;
+		bool m_expanded;
 		DECLARE_CLASS(FbTestModelData);
 };
 
@@ -164,7 +168,7 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	toolbar->Realize();
 	SetToolBar(toolbar);
 
-	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_HRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
+	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_HRULES | fbTR_MULTIPLE | fbTR_DIRECTORY;
 	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, substyle);
 	m_dataview->AddColumn(0, _("title"), 200);
 	m_dataview->AddColumn(1, _("author"), 150);
@@ -308,15 +312,25 @@ void DataViewFrame::OnTypeActivated(wxTreeEvent & event)
 	wxLogMessage(wxT("DataViewFrame::OnTypeActivated"));
 }
 
+bool FbTreeModelData::Expand(FbModel & model, bool expand) 
+{
+	m_expanded = expand;
+	if (expand) {
+		for (int j = 0; j < FB_TREE_COUNT; j++) {
+			new FbTreeModelData(model, this, j);
+		}
+	} else {
+		m_items.Empty();
+	}
+	return true;
+}
+
 void DataViewFrame::CreateTreeModel()
 {
 	FbTreeModel * model = new FbTreeModel();
 	FbTreeModelData * root = new FbTreeModelData(*model, NULL, 0);
 	for (int i = 0; i < FB_TREE_COUNT; i++) {
 		FbTreeModelData * parent = new FbTreeModelData(*model, root, i);
-		for (int j = 0; j < FB_TREE_COUNT; j++) {
-			new FbTreeModelData(*model, parent, j);
-		}
 	}
 	model->SetRoot(root);
 	m_dataview->AssignModel(model);

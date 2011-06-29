@@ -1,6 +1,7 @@
 #include "FbTreeModel.h"
 #include "FbTreeView.h"
 #include <wx/listbase.h>
+#include <wx/renderer.h>
 
 #include "FbLogoBitmap.h"
 
@@ -153,6 +154,7 @@ static wxColour MiddleColour(wxColour text, wxColour back)
 }
 
 FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
+	m_window(model.GetOwner()), 
 	// Set brush colour
 	m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
 	m_hilightBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID),
@@ -163,6 +165,7 @@ FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
 	m_graytextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT)),
 	// Set pen for borders
 	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
+	m_directory(model.GetOwner()->HasFlag(fbTR_DIRECTORY)),
 	// Current item flags
 	m_current(false),
 	m_selected(false),
@@ -208,6 +211,16 @@ const wxBitmap & FbModel::GetBitmap(int state)
 	return bitmaps[state % 3];
 }
 
+void FbModel::DrawButton(wxWindow * window, wxDC &dc, wxRect &rect, bool expand)
+{
+	int h = rect.height; if (h / 2) h--;
+	wxRect r(rect.x, rect.y, h, h);
+	r.Deflate(1);
+    int flag = expand ? wxCONTROL_EXPANDED: 0;
+	wxRendererNative::GetDefault().DrawTreeItemButton(window, dc, r, flag);
+	rect.x += rect.height + 2;
+}
+
 void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols)
 {
 	if (ctx.m_selected) {
@@ -240,6 +253,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 		rect.Deflate(3, 2);
 		wxString text = data[0];
 		dc.SetClippingRegion(rect);
+		if (ctx.m_directory) DrawButton(ctx.m_window, dc, rect, data.IsExpanded());
 		dc.DrawLabel(text, bitmap, rect, wxALIGN_CENTRE_VERTICAL);
 		dc.DestroyClippingRegion();
 	} else {
@@ -257,16 +271,12 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 			rect.Deflate(3, 2);
 			wxString text = data[col.GetColumn()];
 			dc.SetClippingRegion(rect);
+			if (ctx.m_directory && i == 0) DrawButton(ctx.m_window, dc, rect, data.IsExpanded());
 			dc.DrawLabel(text, i ? wxNullBitmap : bitmap, rect, col.GetAlignment() | wxALIGN_CENTRE_VERTICAL);
 			dc.DestroyClippingRegion();
 			x += w;
 		}
 	}
-/*
-            wxRect rect (x-m_btnWidth2, y_mid-m_btnHeight2, m_btnWidth, m_btnHeight);
-            int flag = item->IsExpanded()? wxCONTROL_EXPANDED: 0;
-            wxRendererNative::GetDefault().DrawTreeItemButton (this, dc, rect, flag);
-*/
 }
 
 void FbModel::DrawTree(wxDC &dc, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h)

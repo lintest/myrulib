@@ -841,6 +841,10 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 			if (HasFlag(fbTR_CHECKBOX) && left <= x && x <= right) {
 				size_t pos = m_model->FindRow(row, false);
 				m_model->SingleCheck(pos);
+			} else if (HasFlag(fbTR_DIRECTORY) && left <= x && x <= right) {
+				size_t pos = m_model->FindRow(row, false);
+				bool ok = item.Expand(!item.IsExpanded());
+				if (ok) AdjustMyScrollbars();
 			} else {
 				size_t old_pos = m_model->GetPosition();
 				size_t new_pos = m_model->FindRow(row, true);
