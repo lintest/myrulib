@@ -41,7 +41,7 @@ bool FbLog::Update(wxArrayString &lines)
 
 #ifdef FB_SYSLOG_LOGGING
 
-#include "../version.inc"
+#include "config.h"
 
 extern "C" {
 #include <syslog.h>
@@ -49,7 +49,7 @@ extern "C" {
 
 FbLogSyslog::FbLogSyslog()
 {
-	openlog(wxSTRINGIZE(PROGRAM_NAME), LOG_PID, LOG_USER);
+	openlog(PACKAGE_NAME, LOG_PID, LOG_USER);
 }
 
 FbLogSyslog::~FbLogSyslog()
