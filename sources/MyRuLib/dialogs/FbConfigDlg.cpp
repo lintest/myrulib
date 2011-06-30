@@ -44,12 +44,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), wxT("Table name") );
-	FbChoiceStr * choiseDirType = new FbChoiceStr(this, ID_DIR_TYPE);
-	choiseDirType->Append(wxT("Autoincrement"), wxT("AUTOINCREMENT"));
-	choiseDirType->Append(wxT("Integer"), wxT("INTEGER"));
-	choiseDirType->Append(wxT("Text"), wxT("TEXT"));
-	choiseDirType->SetSelection(0);
-	Append( sizerDir, choiseDirType, wxT("Key type") );
+	Append( sizerDir, CreateDirType()                   , wxT("Key type") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_CODE), wxT("Field: code") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), wxT("Field: name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), wxT("Field: info") );
@@ -68,11 +63,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
-	FbChoiceStr * choiseRefType = new FbChoiceStr(this, ID_REF_TYPE);
-	choiseRefType->Append(wxT("Book ID"), wxT("ID"));
-	choiseRefType->Append(wxT("MD5 sum"), wxT("MD5SUM"));
-	choiseRefType->SetSelection(0);
-	Append( sizerRef, choiseRefType, wxT("Key type") );
+	Append( sizerRef, CreateRefType()                   , wxT("Key type") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), wxT("Field: code") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), wxT("Field: book") );
 	
@@ -101,6 +92,25 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	this->SetSizer( sizerMain );
 	this->Layout();
 	sizerMain->Fit( this );
+}
+
+wxControl * FbDirectoryDlg::CreateDirType()
+{
+	FbChoiceStr * choise = new FbChoiceStr(this, ID_DIR_TYPE);
+	choise->Append(wxT("Autoincrement"), wxT("AUTOINCREMENT"));
+	choise->Append(wxT("Integer"), wxT("INTEGER"));
+	choise->Append(wxT("Text"), wxT("TEXT"));
+	choise->SetSelection(0);
+	return choise;
+}
+
+wxControl * FbDirectoryDlg::CreateRefType()
+{
+	FbChoiceStr * choise = new FbChoiceStr(this, ID_REF_TYPE);
+	choise->Append(wxT("Book ID"), wxT("ID"));
+	choise->Append(wxT("MD5 sum"), wxT("MD5SUM"));
+	choise->SetSelection(0);
+	return choise;
 }
 
 void FbDirectoryDlg::Append( wxFlexGridSizer * sizer, wxControl * control, const wxString & title )

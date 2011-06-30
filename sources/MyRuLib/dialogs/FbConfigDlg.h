@@ -40,6 +40,8 @@ private:
 	};
 	void Append( wxFlexGridSizer * sizer, wxControl * control, const wxString & title );
 private:
+	wxControl * CreateDirType();
+	wxControl * CreateRefType();
 	wxGridBagSizer * m_sizer;
 };
 
