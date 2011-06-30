@@ -6,8 +6,6 @@
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
-#include "controls/FbComboBox.h"
-#include "controls/FbChoiceCtrl.h"
 #include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
 
@@ -20,18 +18,17 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 {
 	wxBoxSizer * sizerMain = new wxBoxSizer( wxVERTICAL );
 
-	{
-		wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
-		
-		wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Directory name"));
-		info->Wrap( -1 );
-		sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-		
-		wxTextCtrl * text = new wxTextCtrl( this, ID_TITLE);
-		sizer->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-		
-		sizerMain->Add( sizer, 0, wxEXPAND, 5 );
-	}
+	wxTextCtrl * name;
+	wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Directory name"));
+	info->Wrap( -1 );
+	sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	name = new wxTextCtrl( this, ID_TITLE);
+	sizer->Add( name, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	sizerMain->Add( sizer, 0, wxEXPAND, 5 );
 	
 	wxBoxSizer * sizerTable = new wxBoxSizer( wxHORIZONTAL );
 	
@@ -44,7 +41,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), wxT("Table name") );
-	Append( sizerDir, CreateDirType()                   , wxT("Key type") );
+	Append( sizerDir, CreateDirType ( this, ID_DIR_TYPE), wxT("Key type") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_CODE), wxT("Field: code") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), wxT("Field: name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), wxT("Field: info") );
@@ -63,7 +60,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
-	Append( sizerRef, CreateRefType()                   , wxT("Key type") );
+	Append( sizerDir, CreateRefType ( this, ID_REF_TYPE), wxT("Key type") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), wxT("Field: code") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), wxT("Field: book") );
 	
@@ -73,18 +70,16 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	sizerMain->Add( sizerTable, 1, wxEXPAND, 5 );
 
-	{
-		wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
+	sizer = new wxBoxSizer( wxHORIZONTAL );
 		
-		wxStaticText * info = new wxStaticText( this, wxID_ANY, wxT("<custom-info>"));
-		info->Wrap( -1 );
-		sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-		
-		wxTextCtrl * text = new wxTextCtrl( this, ID_FB2_CODE);
-		sizer->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-		
-		sizerMain->Add( sizer, 0, wxEXPAND, 5 );
-	}
+	info = new wxStaticText( this, wxID_ANY, wxT("<custom-info>"));
+	info->Wrap( -1 );
+	sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	wxTextCtrl * text = new wxTextCtrl( this, ID_FB2_CODE);
+	sizer->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	sizerMain->Add( sizer, 0, wxEXPAND, 5 );
 	
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -92,11 +87,15 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	this->SetSizer( sizerMain );
 	this->Layout();
 	sizerMain->Fit( this );
+
+	name->SetFocus();
+
+	this->Centre( wxBOTH );
 }
 
-wxControl * FbDirectoryDlg::CreateDirType()
+FbChoiceStr * FbDirectoryDlg::CreateDirType(wxWindow *parent, wxWindowID winid)
 {
-	FbChoiceStr * choise = new FbChoiceStr(this, ID_DIR_TYPE);
+	FbChoiceStr * choise = new FbChoiceStr(parent, winid);
 	choise->Append(wxT("Autoincrement"), wxT("AUTOINCREMENT"));
 	choise->Append(wxT("Integer"), wxT("INTEGER"));
 	choise->Append(wxT("Text"), wxT("TEXT"));
@@ -104,9 +103,9 @@ wxControl * FbDirectoryDlg::CreateDirType()
 	return choise;
 }
 
-wxControl * FbDirectoryDlg::CreateRefType()
+FbChoiceStr * FbDirectoryDlg::CreateRefType(wxWindow *parent, wxWindowID winid)
 {
-	FbChoiceStr * choise = new FbChoiceStr(this, ID_REF_TYPE);
+	FbChoiceStr * choise = new FbChoiceStr(parent, winid);
 	choise->Append(wxT("Book ID"), wxT("ID"));
 	choise->Append(wxT("MD5 sum"), wxT("MD5SUM"));
 	choise->SetSelection(0);
@@ -159,6 +158,64 @@ void FbDirectoryDlg::Get(FbModelItem & item)
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  FbDirectoryDlg::CreateDlg
+//-----------------------------------------------------------------------------
+
+bool FbDirectoryDlg::CreateDlg::Execute(wxWindow * parent, wxString & name, wxString & type)
+{
+	CreateDlg dlg(parent);
+	bool ok = dlg.ShowModal() == wxID_OK;
+	if (ok) {
+		name = dlg.m_name->GetValue();
+		type = dlg.m_type->GetValue();
+	}
+	return ok;
+}
+
+FbDirectoryDlg::CreateDlg::CreateDlg( wxWindow * parent ) 
+	: FbDialog( parent, wxID_ANY, _("Create new directory"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer * sizerMain = new wxBoxSizer( wxVERTICAL );
+	
+	wxFlexGridSizer* sizerText;
+	sizerText = new wxFlexGridSizer( 2 );
+	sizerText->AddGrowableCol( 1 );
+	sizerText->SetFlexibleDirection( wxBOTH );
+	sizerText->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxStaticText * info;
+	
+	info = new wxStaticText( this, wxID_ANY, _("Directory name") );
+	info->Wrap( -1 );
+	sizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_name = new wxTextCtrl( this, wxID_ANY );
+	m_name->SetMinSize(wxSize(200, -1));
+	sizerText->Add( m_name, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	
+	info = new wxStaticText( this, wxID_ANY, _("Key type") );
+	info->Wrap( -1 );
+	sizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_type = CreateDirType( this, wxID_ANY );
+	sizerText->Add( m_type, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
+	
+	sizerMain->Add( sizerText, 1, wxEXPAND, 5 );
+	
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	sizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
+	
+	this->SetSizer( sizerMain );
+	this->Layout();
+	sizerMain->Fit( this );
+
+	m_name->SetFocus();
+	
+	this->Centre( wxBOTH );
+}
 
 //-----------------------------------------------------------------------------
 //  FbConfigDlg::PanelTool
@@ -430,10 +487,10 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 {
 	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
-	
-	wxString title = wxGetTextFromUser(_("Create new directory"), _("Settings"));
-	title = title.Trim(false).Trim(true).Lower();
-	if (title.IsEmpty()) return;
+
+	wxString name, type;
+	if (!FbDirectoryDlg::CreateDlg::Execute(this, name, type)) return ;
+	if (name.IsEmpty()) return;
 	
 	size_t num = 0;
 	while (true) {
@@ -442,19 +499,27 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 		if (m_database.TableExists(wxString(wxT("ref")) << num)) continue;
 		break;
 	}
-	
+
+	wxString pkey = type;
+	if (type != wxT("TEXT")) pkey = wxT("INTEGER");
+	pkey << wxT(' ') << wxT("PRIMARY KEY");
+	if (type == wxT("AUTOINCREMENT")) pkey << wxT(' ') << wxT("AUTOINCREMENT");
+
 	wxString sql;
 	
-	sql = wxT("CREATE TABLE dir%d(code INTEGER PRIMARY KEY,name VARCHAR(128),info TEXT,parent INTEGER NOT NULL)");
-	sql = wxString::Format(sql, num);
+	sql = wxT("CREATE TABLE dir%d(code %s,name VARCHAR(128),info TEXT,parent INTEGER NOT NULL)");
+	sql = wxString::Format(sql, num, pkey.c_str());
 	m_database.ExecuteUpdate(sql);
 	
 	sql = wxT("CREATE INDEX dir%d_parent ON dir%d(parent)");
 	sql = wxString::Format(sql, num, num);
 	m_database.ExecuteUpdate(sql);
 
-	sql = wxT("CREATE TABLE ref%d(code INTEGER, book INTEGER, PRIMARY KEY(code, book))");
-	sql = wxString::Format(sql, num);
+	wxString code = type;
+	if (type != wxT("TEXT")) code = wxT("INTEGER");
+		
+	sql = wxT("CREATE TABLE ref%d(code %s, book INTEGER, PRIMARY KEY(code, book))");
+	sql = wxString::Format(sql, num, code.c_str());
 	m_database.ExecuteUpdate(sql);
 	
 	sql = wxT("CREATE INDEX ref%d_book ON ref%d(book)");
@@ -462,10 +527,10 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 	m_database.ExecuteUpdate(sql);
 	
 	wxArrayString values;
-	values.Add( title );
+	values.Add( name );
 	values.Add( wxEmptyString );
 	values.Add( wxString(wxT("dir")) << num );
-	values.Add( wxT("AUTOINCREMENT") );
+	values.Add( type );
 	values.Add( wxT("code") );
 	values.Add( wxT("name") );
 	values.Add( wxT("info") );
@@ -766,6 +831,8 @@ FbConfigDlg::FbConfigDlg( wxWindow * parent )
 	SetSizer( bSizerMain );
 	Layout();
 	bSizerMain->Fit( this );
+
+	this->Centre( wxBOTH );
 }
 
 void FbConfigDlg::OnSelectFolderClick( wxCommandEvent& event )
