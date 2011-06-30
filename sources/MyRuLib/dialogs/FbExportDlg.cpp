@@ -156,7 +156,7 @@ void FbExportDlg::ChangeFormat()
 	FbExportTreeModel * model = wxDynamicCast(m_books->GetModel(), FbExportTreeModel);
 	if (!model) return;
 
-	int format = m_format->GetCurrentData();
+	int format = m_format->GetValue();
 	int scale = format < 0 ? 43 : 100;
 	wxString arc, ext;
 	switch (format) {
@@ -189,7 +189,7 @@ bool FbExportDlg::ExportBooks()
 	dlg->m_root = m_textDir->GetValue();
 	dlg->SetSize(GetSize());
 	dlg->SetPosition(GetPosition());
-	dlg->m_format = m_format->GetCurrentData();
+	dlg->m_format = m_format->GetValue();
 	dlg->Execute();
 
 	return true;

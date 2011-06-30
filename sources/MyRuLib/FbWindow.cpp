@@ -75,15 +75,15 @@ void FbDialog::Assign(long winid, int param, bool write)
 			control->SetColour(colour);
 		}
 	} else if (FbChoiceInt * control = wxDynamicCast(window, FbChoiceInt)) {
-		if (write) {
-			int format = control->GetCurrentData();
-			FbParams(param) = format;
-		} else {
-			int format = FbParams(param);
-			size_t count = control->GetCount();
-			for (size_t i = 0; i <= count; i++)
-				if (control->GetClientData(i) == format) control->SetSelection(i);
-		}
+		if (write) 
+			FbParams(param) = control->GetValue();
+		else
+			control->SetValue((int)FbParams(param));
+	} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
+		if (write) 
+			FbParams(param) = control->GetValue();
+		else
+			control->SetValue(FbParams(param));
 	}
 }
 

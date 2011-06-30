@@ -26,15 +26,26 @@ class FbChoiceInt : public wxChoice
 
 		virtual ~FbChoiceInt() {}
 
-		int Append(const wxString &item, int data)
-		{
-			return wxChoice::Append(item, new IntData(data));
-		}
-
-		int GetCurrentData() const
+	    virtual int GetValue() const
 		{
 			int index = GetCurrentSelection();
 			return (index == wxNOT_FOUND) ? 0 : GetClientData(index);
+		}
+
+		virtual void SetValue(int value)
+		{
+			size_t count = GetCount();
+			for (size_t i = 0; i <= count; i++) {
+				if (GetClientData(i) == value) {
+					SetSelection(i);
+					break;
+				}
+			}
+		}
+
+		int Append(const wxString &item, int data)
+		{
+			return wxChoice::Append(item, new IntData(data));
 		}
 
 		int GetClientData(unsigned int index) const
@@ -81,15 +92,26 @@ class FbChoiceStr : public wxChoice
 
 		virtual ~FbChoiceStr() {}
 
-		int Append(const wxString &item, const wxString &data = wxEmptyString)
-		{
-			return wxChoice::Append(item, new StrData(data));
-		}
-
-		wxString GetCurrentData() const
+	    virtual wxString GetValue() const
 		{
 			int index = GetCurrentSelection();
 			return (index == wxNOT_FOUND) ? wxString() : GetClientData(index);
+		}
+
+		virtual void SetValue(const wxString& value)
+		{
+			size_t count = GetCount();
+			for (size_t i = 0; i <= count; i++) {
+				if (GetClientData(i) == value) {
+					SetSelection(i);
+					break;
+				}
+			}
+		}
+
+		int Append(const wxString &item, const wxString &data = wxEmptyString)
+		{
+			return wxChoice::Append(item, new StrData(data));
 		}
 
 		wxString GetClientData(unsigned int index) const

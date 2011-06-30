@@ -41,9 +41,9 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerDir->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	FbChoiceStr * choiseDirType = new FbChoiceStr(this, ID_DIR_TYPE);
-	choiseDirType->Append(_("Autoincrement"), wxT("AUTOINCREMENT"));
-	choiseDirType->Append(_("Integer"), wxT("INTEGER"));
-	choiseDirType->Append(_("Text"), wxT("TEXT"));
+	choiseDirType->Append(wxT("Autoincrement"), wxT("AUTOINCREMENT"));
+	choiseDirType->Append(wxT("Integer"), wxT("INTEGER"));
+	choiseDirType->Append(wxT("Text"), wxT("TEXT"));
 	choiseDirType->SetSelection(0);
 	
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
@@ -66,8 +66,8 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerRef->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
 	FbChoiceStr * choiseRefType = new FbChoiceStr(this, ID_REF_TYPE);
-	choiseRefType->Append(_("Book Id"), wxT("ID"));
-	choiseRefType->Append(_("MD5 Sum"), wxT("MD5SUM"));
+	choiseRefType->Append(wxT("Book ID"), wxT("ID"));
+	choiseRefType->Append(wxT("MD5 sum"), wxT("MD5SUM"));
 	choiseRefType->SetSelection(0);
 	
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
@@ -109,12 +109,7 @@ void FbDirectoryDlg::Set(const FbModelItem & item)
 		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
 			control->SetValue(value);
 		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
-			size_t count = control->GetCount();
-			for (size_t j = 0; j <= count; j++)
-				if (control->GetClientData(j) == value) {
-					control->SetSelection(j);
-					break;
-				}
+			control->SetValue(value);
 		}
 	}
 }
@@ -130,7 +125,7 @@ void FbDirectoryDlg::Get(FbModelItem & item)
 		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
 			value = control->GetValue();
 		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
-			value = control->GetCurrentData();
+			value = control->GetValue();
 		}
 		item.SetValue(i, value);
 	}
@@ -325,7 +320,7 @@ void FbConfigDlg::PanelType::OnDelete( wxCommandEvent& event )
 
 	m_treeview.Delete();
 	m_treeview.SetFocus();
-	EnableTool(model->GetRowCount());
+	EnableTool(m_treeview.GetCurrent());
 }
 
 void FbConfigDlg::PanelType::OnActivated( wxTreeEvent & event )
@@ -379,7 +374,7 @@ FbConfigDlg::PanelRefs::PanelRefs(wxWindow * parent, FbDatabase & database)
 	wxBoxSizer * bSizer;
 	bSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT );
+	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_TEXT|wxTB_NODIVIDER );
 	m_toolbar.AddTool( ID_CREATE, _("Create"), wxBitmap(add_xpm))->Enable(false);
 	m_toolbar.AddTool( ID_APPEND, _("Append"), wxBitmap(add_xpm))->Enable(false);
 	m_toolbar.AddTool( ID_MODIFY, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
@@ -461,33 +456,16 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 
 void FbConfigDlg::PanelRefs::OnAppend( wxCommandEvent& event )
 {
-	FbDirectoryDlg dlg(NULL, wxEmptyString);
-	dlg.ShowModal();
-/*
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
-	if (!treeview) return;
-
-	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
+	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
 
-	wxString filetype = wxGetTextFromUser(_("Input new filetype"), _("Settings"));
-	filetype = filetype.Trim(false).Trim(true).Lower();
-	if (filetype.IsEmpty()) return;
-
-	size_t count = model->GetRowCount();
-	for (size_t i = 1; i <= count; i++) {
-		FbModelItem item = model->GetData(i);
-		TypeData * data = wxDynamicCast(&item, TypeData);
-		if (data && data->GetValue(*model, 0) == filetype) {
-			model->FindRow(i, true);
-			return;
-		}
+	FbDirectoryDlg dlg(NULL, _("Append directory"));
+	if (dlg.ShowModal() == wxID_OK) {
+		RefsData * data = new RefsData(wxArrayString());
+		FbModelItem item(*model, data);
+		dlg.Get(item);
+		m_treeview.Append(data);
 	}
-
-	treeview->Append(new TypeData(filetype));
-	EnableTool(true);
-	treeview->SetFocus();
-*/
 }
 
 void FbConfigDlg::PanelRefs::OnModify( wxCommandEvent& event )
@@ -499,39 +477,17 @@ void FbConfigDlg::PanelRefs::OnModify( wxCommandEvent& event )
 	dlg.Set(item);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Get(item);
+		m_treeview.Refresh();
 	}
-	
-/*
-	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
-	if (!treeview) return;
-
-	FbListStore * model = wxDynamicCast(treeview->GetModel(), FbListStore);
-	if (!model) return;
-
-	FbModelItem item = model->GetCurrent();
-	TypeData * data = wxDynamicCast(&item, TypeData);
-	if (!data) return;
-
-	wxString title = _("Select the application to view files");
-	wxString type = data->GetValue(*model, 0);
-	wxString command = data->GetValue(*model, 1);
-
-	bool ok = FbViewerDlg::Execute( this, type, command, true);
-	if (ok) treeview->Replace(new TypeData(type, command));
-	treeview->SetFocus();
-*/
 }
 
 void FbConfigDlg::PanelRefs::OnDelete( wxCommandEvent& event )
 {
-	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
-	if (!model) return;
-
-	FbModelItem item = model->GetCurrent();
+	FbModelItem item = m_treeview.GetCurrent();
 	RefsData * data = wxDynamicCast(&item, RefsData);
 	if (!data) return;
 
-	wxString msg = _("Delete directory") + COLON + data->GetValue(*model, 0);
+	wxString msg = _("Delete directory") + COLON + item[0];
 	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (!ok) return;
 
@@ -540,7 +496,7 @@ void FbConfigDlg::PanelRefs::OnDelete( wxCommandEvent& event )
 
 	m_treeview.Delete();
 	m_treeview.SetFocus();
-	EnableTool(model->GetRowCount());
+	EnableTool(m_treeview.GetCurrent());
 }
 
 void FbConfigDlg::PanelRefs::OnActivated( wxTreeEvent & event )

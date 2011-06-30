@@ -133,7 +133,7 @@ void FbDataOpenDlg::SetDefaultNames()
 	wxFileName filepath = (wxString) wxT("Books");
 	filepath.SetPath(paths.GetDocumentsDir());
 
-	wxString library = m_action.GetCurrentData();
+	wxString library = m_action.GetValue();
 	if (!library.IsEmpty()) {
 		filename.SetName(library.Lower());
 		filepath.SetName(library);
@@ -221,7 +221,7 @@ wxString FbDataOpenDlg::GetDirname()
 
 FbThread * FbDataOpenDlg::CreateThread(wxEvtHandler * owner)
 {
-	wxString lib = m_action.GetCurrentData().Lower();
+	wxString lib = m_action.GetValue().Lower();
 	long flags = 0;
 	if (m_scaner.GetValue()) flags = flags | fbIMP_IMPORT;
 	if (m_only_new.GetValue()) flags = flags | fbIMP_ONLY_NEW;
