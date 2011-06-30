@@ -7,7 +7,7 @@
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
-#include "controls/FbCustomCombo.h"
+#include "controls/FbComboBox.h"
 #include "frames/FbCoolReader.h"
 #include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
