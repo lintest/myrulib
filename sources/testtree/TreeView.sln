@@ -1,18 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TreeView", "TreeView.vcproj", "{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestTree", "TreeView.vcproj", "{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DebugTv|Win32 = DebugTv|Win32
-		ReleaseTv|Win32 = ReleaseTv|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.DebugTv|Win32.ActiveCfg = DebugTv|Win32
 		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.DebugTv|Win32.Build.0 = DebugTv|Win32
-		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.ReleaseTv|Win32.ActiveCfg = ReleaseTv|Win32
-		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.ReleaseTv|Win32.Build.0 = ReleaseTv|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
