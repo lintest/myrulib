@@ -60,7 +60,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
-	Append( sizerDir, CreateRefType ( this, ID_REF_TYPE), wxT("Key type") );
+	Append( sizerRef, CreateRefType ( this, ID_REF_TYPE), wxT("Key type") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), wxT("Field: code") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), wxT("Field: book") );
 	
