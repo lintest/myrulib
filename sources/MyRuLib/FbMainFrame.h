@@ -37,6 +37,7 @@ class FbMainFrame : public wxFrame
 		void SetAccelerators();
 		void SetTabArt(int id);
 		void SaveFrameList();
+		void UpdateMenuRefs();
 		void RestoreFrameList();
 		void OpenInfo(const FbMasterInfo & info, const wxString & title, wxWindowID winid);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);

@@ -44,7 +44,10 @@ FbMenuBar::MenuEdit::MenuEdit()
 
 FbMenuBar::MenuFrame::MenuFrame()
 {
+	wxMenuItem * submenu = FbMenuRefs::Create(this);
+
 	AppendImg(ID_MENU_SEARCH, _("Search"), wxART_FIND);
+	if (submenu) Append(submenu);
 	AppendSeparator();
 	Append(ID_FRAME_AUTH, _("Authors"));
 	Append(ID_FRAME_GENR, _("Genres"));

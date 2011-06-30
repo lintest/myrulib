@@ -27,4 +27,11 @@ class FbMenuRating: public FbMenu
 		FbMenuRating();
 };
 
+class FbMenuRefs: public FbMenu
+{
+	public:
+		static wxMenuItem * Create(wxMenu * menu);
+		FbMenuRefs() {}
+};
+
 #endif // __FBMENU_H__

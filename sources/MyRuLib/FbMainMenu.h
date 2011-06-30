@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include "FbMenu.h"
 
+#define fbFIND_MENU_POSITION 3
 #define fbBOOK_MENU_POSITION 4
 
 class FbMenuBar: public wxMenuBar
@@ -21,7 +22,6 @@ class FbMenuBar: public wxMenuBar
 		class MenuListMode: public FbMenu { public: MenuListMode(); };
 		class MenuTabArt:   public FbMenu { public: MenuTabArt(); };
 		class MenuPreview:  public FbMenu { public: MenuPreview(); };
-
 };
 
 #endif // __FBMAINMENU_H__

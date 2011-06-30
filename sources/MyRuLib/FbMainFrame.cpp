@@ -347,7 +347,25 @@ void FbMainFrame::OnReader(wxCommandEvent & event)
 
 void FbMainFrame::OnMenuConfig(wxCommandEvent& event)
 {
-	if (FbConfigDlg::Execute(this)) SetTitle(GetTitle());
+	if (FbConfigDlg::Execute(this)) {
+		SetTitle(GetTitle());
+		UpdateMenuRefs();
+	}
+}
+
+void FbMainFrame::UpdateMenuRefs()
+{
+	wxMenuBar * menubar = GetMenuBar();
+	if (!menubar) return;
+
+	wxMenu * menu = menubar->GetMenu(fbFIND_MENU_POSITION);
+	if (!menu) return;
+
+	wxMenuItem * item = menu->FindItem(ID_FRAME_REFS);
+	if (item) menu->Delete(item);
+
+	wxMenuItem * submenu = FbMenuRefs::Create(menu);
+	if (submenu) menu->Insert(1, submenu);
 }
 
 void FbMainFrame::OnOpenWeb(wxCommandEvent & event)
