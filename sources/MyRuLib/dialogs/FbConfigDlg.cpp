@@ -42,15 +42,14 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerDir->SetFlexibleDirection( wxBOTH );
 	sizerDir->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), wxT("Table name") );
 	FbChoiceStr * choiseDirType = new FbChoiceStr(this, ID_DIR_TYPE);
 	choiseDirType->Append(wxT("Autoincrement"), wxT("AUTOINCREMENT"));
 	choiseDirType->Append(wxT("Integer"), wxT("INTEGER"));
 	choiseDirType->Append(wxT("Text"), wxT("TEXT"));
 	choiseDirType->SetSelection(0);
-	
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), wxT("Table name") );
-	Append( sizerDir, choiseDirType                     , wxT("Key type") );
+	Append( sizerDir, choiseDirType, wxT("Key type") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_CODE), wxT("Field: code") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), wxT("Field: name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), wxT("Field: info") );
@@ -67,14 +66,13 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerRef->SetFlexibleDirection( wxBOTH );
 	sizerRef->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
 	FbChoiceStr * choiseRefType = new FbChoiceStr(this, ID_REF_TYPE);
 	choiseRefType->Append(wxT("Book ID"), wxT("ID"));
 	choiseRefType->Append(wxT("MD5 sum"), wxT("MD5SUM"));
 	choiseRefType->SetSelection(0);
-	
-	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
-	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
-	Append( sizerRef, choiseRefType                     , wxT("Key type") );
+	Append( sizerRef, choiseRefType, wxT("Key type") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), wxT("Field: code") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), wxT("Field: book") );
 	
@@ -123,9 +121,9 @@ void FbDirectoryDlg::Set(const FbModelItem & item)
 			wxLogError(wxT("Control not found: %d"), winid);
 			continue;
 		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
-			control->SetValue(control->GetValue());
+			control->SetValue(item[i]);
 		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
-			control->SetValue(control->GetValue());
+			control->SetValue(item[i]);
 		} else {
 			wxLogError(wxT("Control not found: %d"), winid);
 		}
