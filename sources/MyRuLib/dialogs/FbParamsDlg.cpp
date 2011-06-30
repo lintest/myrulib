@@ -13,7 +13,7 @@
 #include "FbLocale.h"
 #include "FbDatabase.h"
 #include "controls/FbChoiceCtrl.h"
-#include "controls/FbCustomCombo.h"
+#include "controls/FbComboBox.h"
 #include "controls/FbToolBar.h"
 #include "controls/FbTreeView.h"
 #include "FbLogoBitmap.h"
@@ -664,7 +664,9 @@ void FbParamsDlg::Assign(bool write)
 		{FB_PROXY_PASS, ID_PROXY_PASS},
 		{FB_TEMP_DEL, ID_TEMP_DEL},
 		{FB_TEMP_DIR, ID_TEMP_DIR},
+		#ifdef __WXGTK__
 		{FB_WINE_DIR, ID_WINE_DIR},
+		#endif // __WXGTK__
 		{FB_DOWNLOAD_DIR, ID_DOWNLOAD_DIR},
 		{FB_DEL_DOWNLOAD, ID_DEL_DOWNLOAD},
 		{FB_EXTERNAL_DIR, ID_EXTERNAL_DIR},
@@ -677,10 +679,6 @@ void FbParamsDlg::Assign(bool write)
 		{FB_FONT_HTML, ID_FONT_HTML},
 		{FB_FONT_TOOL, ID_FONT_TOOL},
 		{FB_FONT_DLG, ID_FONT_DLG},
-		{FB_COLOUR_MAIN, ID_COLOUR_MAIN},
-		{FB_COLOUR_HTML, ID_COLOUR_HTML},
-		{FB_COLOUR_TOOL, ID_COLOUR_TOOL},
-		{FB_COLOUR_DLG, ID_COLOUR_DLG},
 		{FB_HTTP_IMAGES, ID_HTTP_IMAGES},
 		{FB_REMOVE_FILES, ID_REMOVE_FILES},
 		{FB_SAVE_FULLPATH, ID_SAVE_FULLPATH},

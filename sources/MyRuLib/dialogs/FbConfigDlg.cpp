@@ -6,7 +6,7 @@
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
-#include "controls/FbCustomCombo.h"
+#include "controls/FbComboBox.h"
 #include "controls/FbChoiceCtrl.h"
 #include "FbLogoBitmap.h"
 #include "MyRuLibApp.h"
@@ -19,17 +19,19 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	: FbDialog( parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
 {
 	wxBoxSizer * sizerMain = new wxBoxSizer( wxVERTICAL );
-	
-	wxBoxSizer * sizerTitle = new wxBoxSizer( wxHORIZONTAL );
-	
-	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Directory name"));
-	info->Wrap( -1 );
-	sizerTitle->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	wxTextCtrl * text = new wxTextCtrl( this, ID_TITLE);
-	sizerTitle->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	sizerMain->Add( sizerTitle, 0, wxEXPAND, 5 );
+
+	{
+		wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
+		
+		wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Directory name"));
+		info->Wrap( -1 );
+		sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+		
+		wxTextCtrl * text = new wxTextCtrl( this, ID_TITLE);
+		sizer->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+		
+		sizerMain->Add( sizer, 0, wxEXPAND, 5 );
+	}
 	
 	wxBoxSizer * sizerTable = new wxBoxSizer( wxHORIZONTAL );
 	
@@ -81,6 +83,19 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerTable->Add( boxRef, 1, wxEXPAND|wxALL, 5 );
 	
 	sizerMain->Add( sizerTable, 1, wxEXPAND, 5 );
+
+	{
+		wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
+		
+		wxStaticText * info = new wxStaticText( this, wxID_ANY, wxT("<custom-info>"));
+		info->Wrap( -1 );
+		sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+		
+		wxTextCtrl * text = new wxTextCtrl( this, ID_FB2_CODE);
+		sizer->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+		
+		sizerMain->Add( sizer, 0, wxEXPAND, 5 );
+	}
 	
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
@@ -102,14 +117,17 @@ void FbDirectoryDlg::Set(const FbModelItem & item)
 {
 	size_t count = ID_LAST - ID_TITLE;
 	for (size_t i = 0; i < count; i++) {
-		wxString value = item[i];
-		wxWindow * window = FindWindow(ID_TITLE + i);
+		wxWindowID winid = ID_TITLE + i;
+		wxWindow * window = FindWindow(winid);
 		if (window == NULL) {
+			wxLogError(wxT("Control not found: %d"), winid);
 			continue;
 		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
-			control->SetValue(value);
+			control->SetValue(control->GetValue());
 		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
-			control->SetValue(value);
+			control->SetValue(control->GetValue());
+		} else {
+			wxLogError(wxT("Control not found: %d"), winid);
 		}
 	}
 }
@@ -118,16 +136,18 @@ void FbDirectoryDlg::Get(FbModelItem & item)
 {
 	size_t count = ID_LAST - ID_TITLE;
 	for (size_t i = 0; i < count; i++) {
-		wxString value;
-		wxWindow * window = FindWindow(ID_TITLE + i);
+		wxWindowID winid = ID_TITLE + i;
+		wxWindow * window = FindWindow(winid);
 		if (window == NULL) {
+			wxLogError(wxT("Control not found: %d"), winid);
 			continue;
 		} else if (wxTextCtrl * control = wxDynamicCast(window, wxTextCtrl)) {
-			value = control->GetValue();
+			item.SetValue(i, control->GetValue());
 		} else if (FbChoiceStr * control = wxDynamicCast(window, FbChoiceStr)) {
-			value = control->GetValue();
+			item.SetValue(i, control->GetValue());
+		} else {
+			wxLogError(wxT("Control not found: %d"), winid);
 		}
-		item.SetValue(i, value);
 	}
 }
 
@@ -770,7 +790,6 @@ void FbConfigDlg::Assign(bool write)
 		{DB_LIBRARY_DIR,   FbConfigDlg::ID_LIBRARY_DIR},
 		{DB_LIBRARY_DESCR, FbConfigDlg::ID_LIBRARY_DESCR},
 		{DB_DOWNLOAD_HOST, FbConfigDlg::ID_DOWNLOAD_HOST},
-		{DB_DOWNLOAD_ADDR, FbConfigDlg::ID_DOWNLOAD_ADDR},
 		{DB_DOWNLOAD_USER, FbConfigDlg::ID_DOWNLOAD_USER},
 		{DB_DOWNLOAD_PASS, FbConfigDlg::ID_DOWNLOAD_PASS},
 	};

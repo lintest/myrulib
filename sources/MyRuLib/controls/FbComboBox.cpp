@@ -6,6 +6,12 @@
 #include "FbTreeModel.h"
 
 //-----------------------------------------------------------------------------
+//  FbCustomCombo
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbCustomCombo, wxComboCtrl)
+
+//-----------------------------------------------------------------------------
 //  FbComboPopup
 //-----------------------------------------------------------------------------
 
@@ -511,10 +517,10 @@ unsigned int FbComboPopup::GetCount() const
 // ----------------------------------------------------------------------------
 
 
+IMPLEMENT_CLASS(FbComboBox, wxComboCtrl)
+
 BEGIN_EVENT_TABLE(FbComboBox, wxComboCtrl)
 END_EVENT_TABLE()
-
-IMPLEMENT_CLASS(FbComboBox, wxComboCtrl)
 
 void FbComboBox::Init()
 {

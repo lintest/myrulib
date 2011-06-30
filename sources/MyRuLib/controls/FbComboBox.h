@@ -13,7 +13,7 @@ class FbListModel;
 class FbCustomCombo : public wxComboCtrl
 {
 public:
-	FbCustomCombo() : wxComboCtrl() { Init(); }
+	FbCustomCombo() : wxComboCtrl() { }
 
 	FbCustomCombo(wxWindow *parent,
 						wxWindowID id = wxID_ANY,
@@ -25,7 +25,6 @@ public:
 						const wxString& name = wxComboBoxNameStr)
 		: wxComboCtrl()
 	{
-		Init();
 		Create(parent, id, value, pos, size, style | wxCC_STD_BUTTON, validator, name);
 	}
 
@@ -81,11 +80,7 @@ public:
 	{
 	}
 
-private:
-	// Initialize member variables here
-	void Init()
-	{
-	}
+	DECLARE_CLASS(FbComboBox)
 };
 
 // ----------------------------------------------------------------------------
@@ -303,7 +298,7 @@ private:
 
 	DECLARE_EVENT_TABLE()
 
-	DECLARE_DYNAMIC_CLASS(FbComboBox)
+	DECLARE_CLASS(FbComboBox)
 
 public:
 	void AssignModel(FbListModel * m_model);
