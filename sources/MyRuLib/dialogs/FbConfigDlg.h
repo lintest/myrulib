@@ -46,8 +46,6 @@ class FbDirectoryDlg: public FbDialog
 			ID_REF_BOOK,
 			ID_FB2_CODE,
 			ID_LAST,
-			ID_DIR_BOX,
-			ID_REF_BOX,
 		};
 		void Append( wxFlexGridSizer * sizer, wxControl * control, const wxString & title );
 	private:
