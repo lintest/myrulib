@@ -57,11 +57,7 @@ void LoadStylesheet(lString8 &css)
 
 	unsigned long size = ::SizeofResource(wxGetInstance(), hResource);
 
-	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
-	wxFileOutputStream out(tempfile);
-	out.Write(data, size).Close();
-	LVLoadStylesheetFile(tempfile.c_str(), css);
-	wxRemoveFile(tempfile);
+	css = lString8( (lString8::value_type*) data, size );
 }
 
 #else
@@ -69,11 +65,7 @@ void LoadStylesheet(lString8 &css)
 void LoadStylesheet(lString8 &css)
 {
 	#include "fb2_css.inc"
-	wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
-	wxFileOutputStream out(tempfile);
-	out.Write(locale_binary_file, sizeof(locale_binary_file)).Close();
-	LVLoadStylesheetFile(tempfile.c_str(), css);
-	wxRemoveFile(tempfile);
+	css = lString8( (lString8::value_type*) locale_binary_file, sizeof(locale_binary_file) );
 }
 
 #endif
