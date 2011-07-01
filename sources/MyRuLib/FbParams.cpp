@@ -146,15 +146,15 @@ wxString FbParamItem::DefaultStr(int param)
 	else {
 		switch (param) {
 			case (FB_FRAME_OFFSET + FB_BOOK_COLUMNS):
-				return wxT("CEFH");
+				return wxT("CEF");
 			case (FB_FRAME_OFFSET * 3 + FB_BOOK_COLUMNS):
-				return wxT("AEFH");
+				return wxT("AEF");
 			case (FB_FRAME_OFFSET * 5 + FB_BOOK_COLUMNS):
-				return wxT("ALEFH");
+				return wxT("ALEF");
 		}
 		switch (param % FB_FRAME_OFFSET) {
 			case FB_BOOK_COLUMNS:
-				return wxT("ACEFH");
+				return wxT("ACEF");
 			default:
 				return wxEmptyString;
 		}

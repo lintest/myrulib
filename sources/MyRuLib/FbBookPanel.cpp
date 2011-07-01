@@ -135,6 +135,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	}
 
 	wxString codes = FbParams(m_owner, FB_BOOK_COLUMNS);
+	if (codes.IsEmpty()) codes = wxT("AEF");
 	wxArrayInt columns;
 	FbColumns::Set(codes, columns);
 	CreateColumns(columns);
