@@ -30,7 +30,7 @@ FbBookMenu::FbBookMenu(FbModelItem item, int book)
 	}
 }
 
-wxMenu * FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
+void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 {
 	Append(ID_OPEN_BOOK, _("Open book") + (wxString)wxT("\tEnter"));
 
@@ -74,8 +74,6 @@ wxMenu * FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 
 	Append(ID_EDIT_COMMENTS, _("Add comments"));
 	Append(wxID_PROPERTIES, _("Properties"));
-
-	return this;
 }
 
 void FbBookMenu::AppendAuth()

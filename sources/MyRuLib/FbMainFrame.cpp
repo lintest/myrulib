@@ -109,9 +109,9 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
     EVT_NAVIGATION_KEY(FbMainFrame::OnNavigationKey)
 
     EVT_AUI_PANE_CLOSE(FbMainFrame::OnPaneClose)
-    EVT_AUINOTEBOOK_ALLOW_DND(wxID_ANY, FbMainFrame::OnAllowNotebookDnD)
-	EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, FbMainFrame::OnNotebookChanged)
-	EVT_AUINOTEBOOK_PAGE_CLOSED(wxID_ANY, FbMainFrame::OnNotebookClosed)
+    EVT_AUINOTEBOOK_ALLOW_DND(ID_AUI_NOTEBOOK, FbMainFrame::OnAllowNotebookDnD)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(ID_AUI_NOTEBOOK, FbMainFrame::OnNotebookChanged)
+	EVT_AUINOTEBOOK_PAGE_CLOSED(ID_AUI_NOTEBOOK, FbMainFrame::OnNotebookClosed)
 	EVT_IDLE(FbMainFrame::OnIdle)
 END_EVENT_TABLE()
 
@@ -294,7 +294,7 @@ void FbMainFrame::CreateControls()
 	m_LogCtrl->AssignModel(new FbLogModel);
 
 	m_FrameManager.SetManagedWindow(this);
-	m_FrameNotebook.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxTAB_TRAVERSAL | wxNO_BORDER );
+	m_FrameNotebook.Create( this, ID_AUI_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxTAB_TRAVERSAL | wxNO_BORDER );
 
 	SetTabArt(FbParams(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
 

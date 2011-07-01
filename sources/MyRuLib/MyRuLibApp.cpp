@@ -2,6 +2,7 @@
 #include <wx/app.h>
 #include <wx/fs_inet.h>
 #include <wx/fs_mem.h>
+#include "FbConst.h"
 #include "FbDataPath.h"
 #include "FbMainFrame.h"
 #include "FbLogStream.h"
@@ -63,6 +64,8 @@ void MyRuLibApp::Localize()
 
 bool MyRuLibApp::OnInit()
 {
+	wxRegisterId(ID_MENU_HIGHEST);
+	
 	#ifdef FB_SYSLOG_LOGGING
 	wxLog::SetActiveTarget(new FbLogSyslog);
 	#endif // FB_SYSLOG_LOGGING

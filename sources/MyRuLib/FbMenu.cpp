@@ -20,8 +20,7 @@ FbMenuHash FbMenuItem::m_hash;
 
 wxWindowID FbMenuItem::NewId(FbMenu::Type type, int code)
 {
-	wxWindowID id = ID_MENU_HIGHEST;
-	while (m_hash.count(id)) id++;
+	wxWindowID id = wxNewId();
 	FbMenuData & data = m_hash[id];
 	data.code = code;
 	data.type = type;

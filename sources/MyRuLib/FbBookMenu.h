@@ -11,7 +11,7 @@ class FbBookMenu: public FbMenu
 {
 	public:
 		FbBookMenu(FbModelItem item, int book);
-		wxMenu * Init(const FbMasterInfo &master, bool bShowOrder);
+		void Init(const FbMasterInfo &master, bool bShowOrder);
 	private:
 		void AppendAuth();
 		void AppendSeqn();

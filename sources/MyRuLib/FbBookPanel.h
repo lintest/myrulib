@@ -78,7 +78,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
 		wxWindowID m_owner;
-		wxMenu * m_menu;
+		static wxMenu * sm_menu;
 	private:
 		void OnAuthorInfo(wxCommandEvent& event);
 		void OnBooksListViewSelected(wxTreeEvent & event);

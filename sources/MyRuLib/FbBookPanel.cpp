@@ -97,11 +97,12 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_FB_MODEL(ID_MODEL_CREATE, FbBookPanel::OnTreeModel)
 END_EVENT_TABLE()
 
+wxMenu * FbBookPanel::sm_menu = NULL;
+
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"))
 	, m_thread(new FbMasterThread(this))
 	, m_owner(id)
-	, m_menu(NULL)
 {
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbBookPanel::OnIdleSplitter ), NULL, this );
 	SetMinimumPaneSize(50);
@@ -148,7 +149,7 @@ FbBookPanel::~FbBookPanel()
 	m_thread->Close();
 	m_thread->Wait();
 	wxDELETE(m_thread);
-	wxDELETE(m_menu);
+	wxDELETE(sm_menu);
 }
 
 void FbBookPanel::Localize()
@@ -287,10 +288,11 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 
 void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 {
+	wxDELETE(sm_menu);
 	if (!m_master) return;
 	FbBookMenu * menu = new FbBookMenu(m_BookList.GetCurrent(), m_BookList.GetBook());
-	m_menu = menu->Init(m_master, GetListMode()==FB2_MODE_LIST);
-	m_BookList.PopupMenu(m_menu, pos);
+	menu->Init(m_master, GetListMode()==FB2_MODE_LIST);
+	m_BookList.PopupMenu(sm_menu = menu, pos);
 }
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
