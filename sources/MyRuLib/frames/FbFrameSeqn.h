@@ -8,7 +8,7 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
-#include "FbSeqnList.h"
+#include "models/FbSeqnList.h"
 #include "controls/FbSearchCombo.h"
 
 class FbSeqnViewCtrl

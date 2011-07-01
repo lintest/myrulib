@@ -1,5 +1,5 @@
 #include "FbAuthorDlg.h"
-#include "FbAuthList.h"
+#include "models/FbAuthList.h"
 #include "FbCollection.h"
 #include "FbConst.h"
 #include <wx/artprov.h>

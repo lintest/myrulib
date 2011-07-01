@@ -5,8 +5,8 @@
 #include "FbBookEvent.h"
 #include "FbMasterInfo.h"
 #include "FbMasterTypes.h"
-#include "FbBookList.h"
-#include "FbBookTree.h"
+#include "models/FbBookList.h"
+#include "models/FbBookTree.h"
 
 FbBookMenu::FbBookMenu(FbModelItem item, int book)
 	: m_auth(0), m_seqn(0), m_book(book)

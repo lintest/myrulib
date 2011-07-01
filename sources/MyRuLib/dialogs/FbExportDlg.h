@@ -17,7 +17,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/dialog.h>
-#include "FbBookList.h"
+#include "models/FbBookList.h"
 #include "controls/FbTreeView.h"
 #include "FbBookData.h"
 #include "FbConst.h"

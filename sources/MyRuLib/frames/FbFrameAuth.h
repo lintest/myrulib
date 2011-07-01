@@ -7,7 +7,7 @@
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
-#include "FbAuthList.h"
+#include "models/FbAuthList.h"
 #include "FbAlphabet.h"
 
 class FbAuthViewCtrl

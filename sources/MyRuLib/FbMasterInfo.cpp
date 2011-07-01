@@ -2,8 +2,8 @@
 #include "FbDatabase.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
-#include "FbBookList.h"
-#include "FbBookTree.h"
+#include "models/FbBookList.h"
+#include "models/FbBookTree.h"
 #include "controls/FbTreeView.h"
 #include "FbGenres.h"
 

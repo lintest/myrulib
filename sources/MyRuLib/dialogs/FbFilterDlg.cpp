@@ -1,5 +1,5 @@
 #include "FbFilterDlg.h"
-#include "FbFilterTree.h"
+#include "models/FbFilterTree.h"
 #include "FbFilterThread.h"
 #include "FbProgressDlg.h"
 #include <wx/imaglist.h>

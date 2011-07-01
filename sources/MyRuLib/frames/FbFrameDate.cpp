@@ -6,7 +6,7 @@
 #include "dialogs/FbExportDlg.h"
 #include "FbMainMenu.h"
 #include "FbMasterTypes.h"
-#include "FbDateTree.h"
+#include "models/FbDateTree.h"
 #include "FbWindow.h"
 #include "FbParams.h"
 

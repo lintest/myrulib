@@ -271,15 +271,22 @@
 		<sources>sources/MyRuLib/frames/FbFrameGenr.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameSeqn.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbCoolReader.cpp</sources>
+		<sources>sources/MyRuLib/models/FbAuthList.cpp</sources>
+		<sources>sources/MyRuLib/models/FbBookList.cpp</sources>
+		<sources>sources/MyRuLib/models/FbBookTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbDateTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbDownList.cpp</sources>
+		<sources>sources/MyRuLib/models/FbExportTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbFilterTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbFldrTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbGenrTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbSeqnList.cpp</sources>
 		<sources>sources/MyRuLib/FbAlphabet.cpp</sources>
-		<sources>sources/MyRuLib/FbAuthList.cpp</sources>
 		<sources>sources/MyRuLib/FbBookData.cpp</sources>
 		<sources>sources/MyRuLib/FbBookEvent.cpp</sources>
-		<sources>sources/MyRuLib/FbBookList.cpp</sources>
 		<sources>sources/MyRuLib/FbBookMenu.cpp</sources>
 		<sources>sources/MyRuLib/FbBookPanel.cpp</sources>
 		<sources>sources/MyRuLib/FbBookTraverser.cpp</sources>
-		<sources>sources/MyRuLib/FbBookTree.cpp</sources>
 		<sources>sources/MyRuLib/FbCacheBook.cpp</sources>
 		<sources>sources/MyRuLib/FbColumns.cpp</sources>
 		<sources>sources/MyRuLib/FbCollection.cpp</sources>
@@ -287,21 +294,15 @@
 		<sources>sources/MyRuLib/FbDatabase.cpp</sources>
 		<sources>sources/MyRuLib/FbDataPath.cpp</sources>
 		<sources>sources/MyRuLib/FbDateTime.cpp</sources>
-		<sources>sources/MyRuLib/FbDateTree.cpp</sources>
 		<sources>sources/MyRuLib/FbDeleteThread.cpp</sources>
-		<sources>sources/MyRuLib/FbDownList.cpp</sources>
 		<sources>sources/MyRuLib/FbEditBook.cpp</sources>
-		<sources>sources/MyRuLib/FbExportTree.cpp</sources>
 		<sources>sources/MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>sources/MyRuLib/FbDownloader.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterThread.cpp</sources>
-		<sources>sources/MyRuLib/FbFilterTree.cpp</sources>
-		<sources>sources/MyRuLib/FbFldrTree.cpp</sources>
 		<sources>sources/MyRuLib/FbFrameThread.cpp</sources>
 		<sources>sources/MyRuLib/FbGenres.cpp</sources>
 		<sources>sources/MyRuLib/FbGenreThread.cpp</sources>
-		<sources>sources/MyRuLib/FbGenrTree.cpp</sources>
 		<sources>sources/MyRuLib/FbImportCtx.cpp</sources>
 		<sources>sources/MyRuLib/FbImportReader.cpp</sources>
 		<sources>sources/MyRuLib/FbImportThread.cpp</sources>
@@ -319,7 +320,6 @@
 		<sources>sources/MyRuLib/FbPreviewReader.cpp</sources> 
 		<sources>sources/MyRuLib/FbPreviewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbPreviewWindow.cpp</sources>
-		<sources>sources/MyRuLib/FbSeqnList.cpp</sources>
 		<sources>sources/MyRuLib/FbServiceThread.cpp</sources>
 		<sources>sources/MyRuLib/FbThread.cpp</sources>
 		<sources>sources/MyRuLib/FbUpdateThread.cpp</sources>

@@ -5,7 +5,7 @@
 #include "FbParams.h"
 #include "FbConst.h"
 #include "MyRuLibApp.h"
-#include "FbExportTree.h"
+#include "models/FbExportTree.h"
 #include "FbBookPanel.h"
 #include "FbConvertDlg.h"
 

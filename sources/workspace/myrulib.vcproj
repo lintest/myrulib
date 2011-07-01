@@ -116,6 +116,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\frames\FbFrameClss.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\frames\FbFrameDate.cpp"
 				>
 			</File>
@@ -190,19 +194,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbAuthList.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbBookData.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbBookEvent.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbBookList.cpp"
 				>
 			</File>
 			<File
@@ -215,10 +211,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbBookTraverser.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbBookTree.cpp"
 				>
 			</File>
 			<File
@@ -250,15 +242,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbDateTree.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbDeleteThread.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbDownList.cpp"
 				>
 			</File>
 			<File
@@ -267,10 +251,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbEditBook.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbExportTree.cpp"
 				>
 			</File>
 			<File
@@ -286,14 +266,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbFilterTree.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbFldrTree.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbFrameThread.cpp"
 				>
 			</File>
@@ -303,10 +275,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbGenreThread.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbGenrTree.cpp"
 				>
 			</File>
 			<File
@@ -379,10 +347,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\FbPreviewWindow.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\FbSeqnList.cpp"
 				>
 			</File>
 			<File
@@ -591,6 +555,50 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\controls\ProgressBar.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Models"
+			>
+			<File
+				RelativePath="..\MyRuLib\models\FbAuthList.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbBookList.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbBookTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbDateTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbDownList.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbExportTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbFilterTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbFldrTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbGenrTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\MyRuLib\models\FbSeqnList.cpp"
 				>
 			</File>
 		</Filter>

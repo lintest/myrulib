@@ -3,7 +3,7 @@
 #include "FbBookMenu.h"
 #include "FbMainMenu.h"
 #include "FbConst.h"
-#include "FbFldrTree.h"
+#include "models/FbFldrTree.h"
 #include "FbDatabase.h"
 #include "FbDownloader.h"
 

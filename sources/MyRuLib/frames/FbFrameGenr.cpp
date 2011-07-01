@@ -3,7 +3,7 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbGenres.h"
-#include "FbGenrTree.h"
+#include "models/FbGenrTree.h"
 #include "FbMainMenu.h"
 
 IMPLEMENT_CLASS(FbFrameGenr, FbFrameBase)

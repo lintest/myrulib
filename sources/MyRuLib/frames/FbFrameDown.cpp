@@ -4,7 +4,7 @@
 #include "FbMainMenu.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
-#include "FbDownList.h"
+#include "models/FbDownList.h"
 #include "MyRuLibApp.h"
 #include "res/start.xpm"
 #include "res/pause.xpm"
