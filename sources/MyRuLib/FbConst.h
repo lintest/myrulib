@@ -141,6 +141,7 @@ enum {
 	ID_MODEL_APPEND,
 	ID_MODEL_NUMBER,
 	ID_FAVORITES_ADD, // Always the last !!!
+	ID_MENU_HIGHEST, // Always the last !!!
 };
 
 class MyRuLib

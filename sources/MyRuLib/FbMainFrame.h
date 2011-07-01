@@ -115,6 +115,7 @@ class FbMainFrame : public wxFrame
 		void OnIdle( wxIdleEvent & event);
 		void OnNavigationKey(wxNavigationKeyEvent& event);
 		DECLARE_EVENT_TABLE()
+		DECLARE_CLASS(FbMainFrame);
 		friend class FbEventLocker;
 };
 

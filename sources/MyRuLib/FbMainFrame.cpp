@@ -35,6 +35,8 @@
 #include "FbDateTime.h"
 #include "FbLocale.h"
 
+IMPLEMENT_CLASS(FbMainFrame, wxFrame)
+
 BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 
 	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
@@ -156,6 +158,12 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 	{
 		FbEventLocker locker(*this, event);
 
+		if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED && event.GetId() >= ID_MENU_HIGHEST) {
+			FbMenu::Type type; int code;
+			if (!FbMenuItem::Get(event.GetId(), type, code)) return false;
+			if (type == FbMenu::CLSS) ;
+		}
+
 		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
 		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;
 
@@ -169,6 +177,7 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 		return wxFrame::ProcessEvent(event);
 	}
 }
+
 void FbMainFrame::SaveFrameList()
 {
 	wxString frames;
@@ -648,15 +657,15 @@ void FbMainFrame::OnUpdateMaster(FbMasterEvent & event)
 
 void FbMainFrame::OnOpenAuth(FbOpenEvent & event)
 {
-	FbMasterAuthInfo info(event.m_author);
-	wxString title = FbCollection::GetAuth(event.m_author, 0);
+	FbMasterAuthInfo info(event.m_code);
+	wxString title = FbCollection::GetAuth(event.m_code, 0);
 	OpenInfo(info, title, ID_FRAME_NODE);
 }
 
 void FbMainFrame::OnOpenSeqn(FbOpenEvent & event)
 {
-	FbMasterSeqnInfo info(event.m_author);
-	wxString title = FbCollection::GetSeqn(event.m_author, 0);
+	FbMasterSeqnInfo info(event.m_code);
+	wxString title = FbCollection::GetSeqn(event.m_code, 0);
 	OpenInfo(info, title, ID_FRAME_NODE);
 }
 

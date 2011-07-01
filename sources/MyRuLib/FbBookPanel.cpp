@@ -23,6 +23,7 @@
 IMPLEMENT_CLASS(FbBookViewCtrl, FbTreeViewCtrl)
 
 BEGIN_EVENT_TABLE(FbBookViewCtrl, FbTreeViewCtrl)
+	EVT_MENU(wxID_ANY, FbBookViewCtrl::OnMenu)
 	EVT_MENU(wxID_COPY, FbBookViewCtrl::OnCopy)
 	EVT_MENU(wxID_SELECTALL, FbBookViewCtrl::OnSelect)
 	EVT_MENU(ID_UNSELECTALL, FbBookViewCtrl::OnUnselect)
@@ -42,6 +43,22 @@ void FbBookViewCtrl::OnCopy(wxCommandEvent& event)
 	if (!locker) return;
 
 	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
+void FbBookViewCtrl::OnMenu(wxCommandEvent& event)
+{
+	if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED && event.GetId() >= ID_MENU_HIGHEST) {
+		FbMenu::Type type; int code;
+		if (!FbMenuItem::Get(event.GetId(), type, code)) return;
+		switch (type) {
+			case FbMenu::FLDR: {
+				FbBookPanel * panel = wxDynamicCast(GetParent(), FbBookPanel);
+				if (panel) panel->DoFolderAdd(code);
+			} break;
+			case FbMenu::AUTH: FbOpenEvent(ID_BOOK_AUTH, code, GetBook()).Post(); break;
+			case FbMenu::SEQN: FbOpenEvent(ID_BOOK_SEQN, code, GetBook()).Post(); break;
+		}
+	}  else event.Skip();
 }
 
 //-----------------------------------------------------------------------------
@@ -81,8 +98,10 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 END_EVENT_TABLE()
 
 FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
-	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel")),
-		m_thread(new FbMasterThread(this)), m_owner(id)
+	: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, size, wxSP_NOBORDER, wxT("bookspanel"))
+	, m_thread(new FbMasterThread(this))
+	, m_owner(id)
+	, m_menu(NULL)
 {
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbBookPanel::OnIdleSplitter ), NULL, this );
 	SetMinimumPaneSize(50);
@@ -128,6 +147,7 @@ FbBookPanel::~FbBookPanel()
 	m_thread->Close();
 	m_thread->Wait();
 	wxDELETE(m_thread);
+	wxDELETE(m_menu);
 }
 
 void FbBookPanel::Localize()
@@ -267,9 +287,9 @@ void FbBookPanel::OnContextMenu(wxTreeEvent& event)
 void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 {
 	if (!m_master) return;
-	FbBookMenu menu(this, m_BookList.GetCurrent(), m_BookList.GetBook());
-	menu.Init(m_master, GetListMode()==FB2_MODE_LIST);
-	m_BookList.PopupMenu(&menu, pos);
+	FbBookMenu * menu = new FbBookMenu(m_BookList.GetCurrent(), m_BookList.GetBook());
+	m_menu = menu->Init(m_master, GetListMode()==FB2_MODE_LIST);
+	m_BookList.PopupMenu(m_menu, pos);
 }
 
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
@@ -556,7 +576,7 @@ void FbBookPanel::CreateColumns(const wxArrayInt &columns)
 	FbColumns::Create(columns, m_listmode, m_BookList);
 }
 
-void FbBookPanel::DoFolderAdd(const int folder)
+void FbBookPanel::DoFolderAdd(int folder)
 {
 	wxString sel = GetSelected();
 	wxString sql = wxString::Format(wxT("\
@@ -569,29 +589,10 @@ void FbBookPanel::DoFolderAdd(const int folder)
 	database.ExecuteUpdate(sql);
 	FbFolderEvent(ID_UPDATE_FOLDER, folder, FT_FOLDER).Post();
 }
-/*
-void FbBookPanel::OnOpenAuthor(wxCommandEvent& event)
-{
-	int key = FbBookMenu::GetKey(event.GetId());
-	int id = m_BookList.GetBook();
-	if (id) FbOpenEvent(ID_BOOK_AUTHOR, key, id).Post();
-}
 
-void FbBookPanel::OnOpenSeries(wxCommandEvent& event)
-{
-	int key = FbBookMenu::GetKey(event.GetId());
-	int id = m_BookList.GetBook();
-	if (id) FbOpenEvent(ID_BOOK_SEQUENCE, key, id).Post();
-}
-
-void FbBookPanel::OnFolderAdd(wxCommandEvent& event)
-{
-	int key = FbBookMenu::GetKey(event.GetId());
-	DoFolderAdd( key );
-}
-*/
 void FbBookPanel::DoPopupMenu(wxWindowID id)
 {
+/*
 	int book = m_BookList.GetBook();
 
 	int key; FbBookMenu::FbMenuType type;
@@ -609,6 +610,7 @@ void FbBookPanel::DoPopupMenu(wxWindowID id)
 		} break;
 		default: break;
 	}
+*/
 }
 
 void FbBookPanel::UpdateMaster(FbMasterEvent & event)

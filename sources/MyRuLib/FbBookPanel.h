@@ -20,26 +20,17 @@ class FbMasterThread;
 class FbBookViewCtrl
 	: public FbTreeViewCtrl
 {
-private:
-	void Init() {}
-
-private:
-	void OnCopy(wxCommandEvent & event);
-
-	void OnSelect(wxCommandEvent & event) {
-		SelectAll(true);
-	}
-	void OnUnselect(wxCommandEvent & event) {
-		SelectAll(false);
-	}
-	void OnEnableUI(wxUpdateUIEvent & event) {
-		event.Enable(GetModel());
-	}
-	void OnDisableUI(wxUpdateUIEvent & event) {
-		event.Enable(false);
-	}
-	DECLARE_CLASS(FbBookViewCtrl)
-	DECLARE_EVENT_TABLE()
+	private:
+		void DoFolderAdd(int folder);
+	private:
+		void OnMenu(wxCommandEvent& event);
+		void OnCopy(wxCommandEvent & event);
+		void OnSelect(wxCommandEvent & event) { SelectAll(true); }
+		void OnUnselect(wxCommandEvent & event) { SelectAll(false); }
+		void OnEnableUI(wxUpdateUIEvent & event) { event.Enable(GetModel()); }
+		void OnDisableUI(wxUpdateUIEvent & event) { event.Enable(false); }
+		DECLARE_CLASS(FbBookViewCtrl)
+		DECLARE_EVENT_TABLE()
 };
 
 class FbBookPanel: public wxSplitterWindow
@@ -59,6 +50,7 @@ class FbBookPanel: public wxSplitterWindow
 		const FbMasterInfo & GetInfo() const { return m_master; };
 		void DoPopupMenu(wxWindowID id);
 		FbTreeViewCtrl & GetBookList() { return m_BookList; }
+		void DoFolderAdd(int folder);
 	public:
 		void EmptyBooks(const int selected  = 0);
 		void AppendBook(BookTreeItemData & data, const wxString & authors = wxEmptyString);
@@ -78,7 +70,6 @@ class FbBookPanel: public wxSplitterWindow
 		FbBookViewCtrl m_BookList;
 		FbPreviewWindow m_BookInfo;
 		void SetViewMode(int mode);
-		void DoFolderAdd(const int folder);
 		static void DoDeleteDownload(const wxString &sel, const int folder);
 		static void DoCreateDownload(const wxString &sel, int count = 1);
 		int GetRatingColumn();
@@ -87,6 +78,7 @@ class FbBookPanel: public wxSplitterWindow
 		FbMasterInfo m_master;
 		FbMasterThread * m_thread;
 		wxWindowID m_owner;
+		wxMenu * m_menu;
 	private:
 		void OnAuthorInfo(wxCommandEvent& event);
 		void OnBooksListViewSelected(wxTreeEvent & event);

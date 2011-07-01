@@ -2055,3 +2055,9 @@ msgstr "Межстрочный интервал"
 
 msgid "Tables"
 msgstr "Таблицы"
+
+msgid "Classifier"
+msgstr "Классификатор"
+
+msgid "Classifiers"
+msgstr "Классификаторы"

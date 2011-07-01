@@ -21,7 +21,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	wxTextCtrl * name;
 	wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Directory name"));
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Classifier name"));
 	info->Wrap( -1 );
 	sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -32,7 +32,7 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	
 	wxBoxSizer * sizerTable = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxStaticBoxSizer * boxDir = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Directory contents") ), wxVERTICAL );
+	wxStaticBoxSizer * boxDir = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Classifier contents") ), wxVERTICAL );
 	
 	wxFlexGridSizer * sizerDir = new wxFlexGridSizer( 2 );
 	sizerDir->AddGrowableCol( 1 );
@@ -174,7 +174,7 @@ bool FbDirectoryDlg::CreateDlg::Execute(wxWindow * parent, wxString & name, wxSt
 }
 
 FbDirectoryDlg::CreateDlg::CreateDlg( wxWindow * parent ) 
-	: FbDialog( parent, wxID_ANY, _("Create new directory"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
+	: FbDialog( parent, wxID_ANY, _("Create new classifier"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
@@ -188,7 +188,7 @@ FbDirectoryDlg::CreateDlg::CreateDlg( wxWindow * parent )
 
 	wxStaticText * info;
 	
-	info = new wxStaticText( this, wxID_ANY, _("Directory name") );
+	info = new wxStaticText( this, wxID_ANY, _("Classifier name") );
 	info->Wrap( -1 );
 	sizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
@@ -552,7 +552,7 @@ void FbConfigDlg::PanelRefs::OnAppend( wxCommandEvent& event )
 	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
 
-	FbDirectoryDlg dlg(NULL, _("Append directory"));
+	FbDirectoryDlg dlg(NULL, _("Append classifier"));
 	if (dlg.ShowModal() == wxID_OK) {
 		RefsData * data = new RefsData(wxArrayString());
 		FbModelItem item(*model, data);
@@ -566,7 +566,7 @@ void FbConfigDlg::PanelRefs::OnModify( wxCommandEvent& event )
 	FbModelItem item = m_treeview.GetCurrent();
 	if (!item) return;
 	
-	FbDirectoryDlg dlg(NULL, wxT("Modify directory"));
+	FbDirectoryDlg dlg(NULL, wxT("Modify classifier"));
 	dlg.Set(item);
 	if (dlg.ShowModal() == wxID_OK) {
 		dlg.Get(item);
@@ -580,7 +580,7 @@ void FbConfigDlg::PanelRefs::OnDelete( wxCommandEvent& event )
 	RefsData * data = wxDynamicCast(&item, RefsData);
 	if (!data) return;
 
-	wxString msg = _("Delete directory") + COLON + item[0];
+	wxString msg = _("Delete classifier") + COLON + item[0];
 	bool ok = wxMessageBox(msg, _("Removing"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK;
 	if (!ok) return;
 

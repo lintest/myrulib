@@ -98,16 +98,16 @@ class FbMasterEvent: public FbCommandEvent
 class FbOpenEvent: public FbCommandEvent
 {
 	public:
-		FbOpenEvent(wxWindowID id, int author, int book = 0)
-			: FbCommandEvent(fbEVT_OPEN_ACTION, id), m_author(author), m_book(book) {};
+		FbOpenEvent(wxWindowID id, int code, int book = 0)
+			: FbCommandEvent(fbEVT_OPEN_ACTION, id), m_code(code), m_book(book) {};
 
 		FbOpenEvent(const FbOpenEvent & event)
-			: FbCommandEvent(event), m_author(event.m_author), m_book(event.m_book) {};
+			: FbCommandEvent(event), m_code(event.m_code), m_book(event.m_book) {};
 
 		virtual wxEvent *Clone() const { return new FbOpenEvent(*this); }
 
 	public:
-		int m_author;
+		int m_code;
 		int m_book;
 };
 
