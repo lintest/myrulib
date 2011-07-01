@@ -370,7 +370,7 @@ void FbMainFrame::UpdateMenuRefs()
 	wxMenu * menu = menubar->GetMenu(fbFIND_MENU_POSITION);
 	if (!menu) return;
 
-	wxMenuItem * item = menu->FindItem(ID_FRAME_REFS);
+	wxMenuItem * item = menu->FindItem(ID_FRAME_CLSS);
 	if (item) menu->Delete(item);
 
 	wxMenuItem * submenu = FbMenuRefs::Create(menu);

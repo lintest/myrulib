@@ -22,8 +22,8 @@ class FbFrameFldr : public FbFrameBase
 		void OnFolderModify(wxCommandEvent & event);
 		void OnFolderDelete(wxCommandEvent & event);
 		void OnFolderSelected(wxTreeEvent & event);
-		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameFldr)
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBFRAMEFLDR_H__

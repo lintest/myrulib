@@ -17,8 +17,8 @@ class FbFrameInfo
 		virtual void UpdateFonts(bool refresh = true);
 	private:
 		void OnSave(wxCommandEvent& event);
-		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameInfo)
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBFRAMEINFO_H__

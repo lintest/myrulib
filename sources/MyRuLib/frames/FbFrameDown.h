@@ -25,8 +25,8 @@ class FbFrameDown : public FbFrameBase
 		void OnFolderSelected(wxTreeEvent & event);
 		void OnMoveUp(wxCommandEvent& event);
 		void OnMoveDown(wxCommandEvent& event);
-		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameDown)
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBFRAMEDOWN_H__

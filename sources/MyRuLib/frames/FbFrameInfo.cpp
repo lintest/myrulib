@@ -9,7 +9,7 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 
-IMPLEMENT_ABSTRACT_CLASS(FbFrameInfo, FbHtmlWindow)
+IMPLEMENT_CLASS(FbFrameInfo, FbHtmlWindow)
 
 BEGIN_EVENT_TABLE(FbFrameInfo, FbHtmlWindow)
 	EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)

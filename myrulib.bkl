@@ -262,6 +262,7 @@
 		<sources>sources/MyRuLib/dialogs/FbViewerDlg.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameAuth.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameBase.cpp</sources>
+		<sources>sources/MyRuLib/frames/FbFrameClss.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameDate.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameDown.cpp</sources>
 		<sources>sources/MyRuLib/frames/FbFrameFind.cpp</sources>
@@ -274,6 +275,7 @@
 		<sources>sources/MyRuLib/models/FbAuthList.cpp</sources>
 		<sources>sources/MyRuLib/models/FbBookList.cpp</sources>
 		<sources>sources/MyRuLib/models/FbBookTree.cpp</sources>
+		<sources>sources/MyRuLib/models/FbClssTree.cpp</sources>
 		<sources>sources/MyRuLib/models/FbDateTree.cpp</sources>
 		<sources>sources/MyRuLib/models/FbDownList.cpp</sources>
 		<sources>sources/MyRuLib/models/FbExportTree.cpp</sources>

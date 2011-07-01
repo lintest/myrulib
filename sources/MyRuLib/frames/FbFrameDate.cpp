@@ -10,6 +10,8 @@
 #include "FbWindow.h"
 #include "FbParams.h"
 
+IMPLEMENT_CLASS(FbFrameDate, FbFrameBase)
+
 BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 	EVT_FB_MODEL(ID_MODEL_CREATE, FbFrameDate::OnModel)
 	EVT_FB_COUNT(ID_BOOKS_COUNT, FbFrameDate::OnBooksCount)
@@ -17,8 +19,7 @@ BEGIN_EVENT_TABLE(FbFrameDate, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_DATE, GetTitle(), select),
-		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
+	: FbFrameBase(parent, ID_FRAME_DATE, GetTitle(), select)
 {
 	m_MasterList = new FbMasterViewCtrl;
 	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);

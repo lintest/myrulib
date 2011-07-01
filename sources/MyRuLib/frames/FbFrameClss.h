@@ -1,5 +1,5 @@
-#ifndef __FBFRAMEDATE_H__
-#define __FBFRAMEDATE_H__
+#ifndef __FBFRAMECLSS_H__
+#define __FBFRAMECLSS_H__
 
 #include <wx/wx.h>
 #include <wx/toolbar.h>
@@ -9,26 +9,27 @@
 #include <wx/html/htmlwin.h>
 #include "FbFrameBase.h"
 
-class FbFrameDate : public FbFrameBase
+class FbFrameClss : public FbFrameBase
 {
 	public:
-		FbFrameDate(wxAuiNotebook * parent, bool select = false);
-		virtual wxString GetTitle() const { return _("Calendar"); };
+		static FbFrameClss * Create(wxAuiNotebook * parent, int code, bool select = false);
+		FbFrameClss(wxAuiNotebook * parent, wxSQLite3ResultSet & result, bool select = false);
+		int GetCode() const { return m_code; } ;
 	protected:
 		void CreateColumns();
 	private:
+		void CreateModel(wxSQLite3ResultSet & result);
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void SelectFirstAuthor(const int book = 0);
 		void AppendAttay(FbTreeModel &model, const wxArrayInt &items);
 	private:
+		const int m_code; 
 		wxSplitterWindow * m_BooksSplitter;
 	private:
 		void OnBooksCount(FbCountEvent & event);
-		void OnModel(FbModelEvent & event);
-		void OnNumber(wxCommandEvent& event);
-		DECLARE_CLASS(FbFrameDate)
+		DECLARE_CLASS(FbFrameClss)
 		DECLARE_EVENT_TABLE()
 };
 
-#endif // __FBFRAMEDATE_H__
+#endif // __FBFRAMECLSS_H__

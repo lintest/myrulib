@@ -57,8 +57,8 @@ class FbFrameSeqn : public FbFrameBase
 		void OnModel( FbArrayEvent& event );
 		void OnArray( FbArrayEvent& event );
 		void OnNumber(wxCommandEvent& event);
-		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameSeqn)
+		DECLARE_EVENT_TABLE()
 	protected:
 		class MasterMenu: public wxMenu
 		{

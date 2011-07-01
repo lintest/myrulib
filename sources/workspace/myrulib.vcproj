@@ -574,6 +574,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\models\FbClssTree.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\models\FbDateTree.cpp"
 				>
 			</File>

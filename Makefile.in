@@ -184,6 +184,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbViewerDlg.o \
 	myrulib_FbFrameAuth.o \
 	myrulib_FbFrameBase.o \
+	myrulib_FbFrameClss.o \
 	myrulib_FbFrameDate.o \
 	myrulib_FbFrameDown.o \
 	myrulib_FbFrameFind.o \
@@ -196,6 +197,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbAuthList.o \
 	myrulib_FbBookList.o \
 	myrulib_FbBookTree.o \
+	myrulib_FbClssTree.o \
 	myrulib_FbDateTree.o \
 	myrulib_FbDownList.o \
 	myrulib_FbExportTree.o \
@@ -758,6 +760,9 @@ myrulib_FbFrameAuth.o: $(srcdir)/sources/MyRuLib/frames/FbFrameAuth.cpp $(MYRULI
 myrulib_FbFrameBase.o: $(srcdir)/sources/MyRuLib/frames/FbFrameBase.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/frames/FbFrameBase.cpp
 
+myrulib_FbFrameClss.o: $(srcdir)/sources/MyRuLib/frames/FbFrameClss.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/frames/FbFrameClss.cpp
+
 myrulib_FbFrameDate.o: $(srcdir)/sources/MyRuLib/frames/FbFrameDate.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/frames/FbFrameDate.cpp
 
@@ -793,6 +798,9 @@ myrulib_FbBookList.o: $(srcdir)/sources/MyRuLib/models/FbBookList.cpp $(MYRULIB_
 
 myrulib_FbBookTree.o: $(srcdir)/sources/MyRuLib/models/FbBookTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/models/FbBookTree.cpp
+
+myrulib_FbClssTree.o: $(srcdir)/sources/MyRuLib/models/FbClssTree.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/models/FbClssTree.cpp
 
 myrulib_FbDateTree.o: $(srcdir)/sources/MyRuLib/models/FbDateTree.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/models/FbDateTree.cpp

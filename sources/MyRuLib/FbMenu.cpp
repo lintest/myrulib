@@ -94,5 +94,5 @@ wxMenuItem * FbMenuRefs::Create(wxMenu * menu)
 		if (!submenu) submenu = new FbMenuRefs();
 		submenu->AppendSub(FbMenu::CLSS, res.GetInt(0), res.GetString(1));
 	}
-	return submenu ? new wxMenuItem(menu, ID_FRAME_REFS, _("Classifiers"), wxEmptyString, wxITEM_NORMAL, submenu) : NULL;
+	return submenu ? new wxMenuItem(menu, ID_FRAME_CLSS, _("Classifiers"), wxEmptyString, wxITEM_NORMAL, submenu) : NULL;
 }

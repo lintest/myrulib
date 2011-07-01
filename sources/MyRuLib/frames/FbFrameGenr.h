@@ -23,8 +23,8 @@ class FbFrameGenr : public FbFrameBase
 	private:
 		void OnBooksCount(FbCountEvent& event);
 		void OnModel( FbModelEvent & event );
-		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameGenr)
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBFRAMEGENR_H__

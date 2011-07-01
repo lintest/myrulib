@@ -46,8 +46,8 @@ class FbFrameHtml :
 		void OnInfoUpdate(wxCommandEvent& event);
 		void OnSave(wxCommandEvent& event);
 		void OnLinkClicked(wxHtmlLinkEvent& event);
-		DECLARE_EVENT_TABLE()
 		DECLARE_CLASS(FbFrameHtml)
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBFRAMEHTML_H__
