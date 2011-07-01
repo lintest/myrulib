@@ -354,12 +354,39 @@
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
 		<data-files cond="USE_READER=='yes'">
 			<srcdir>$(SRCDIR)/3rdparty/crengine/css</srcdir>
-			<files>*.css</files>
+			<files>doc.css</files>
+			<files>epub.css</files>
+			<files>fb2.css</files>
+			<files>htm.css</files>
+			<files>rtf.css</files>
+			<files>txt.css</files>
 			<install-to>$(DATADIR)/myrulib/css</install-to>
 		</data-files>
 		<data-files cond="USE_READER=='yes'">
 			<srcdir>$(SRCDIR)/3rdparty/crengine/hyph</srcdir>
-			<files>*.pdb</files>
+			<files>Bulgarian_hyphen_(Alan).pdb</files>
+			<files>Czech_hyphen_(Alan).pdb</files>
+			<files>Danish_hyphen_(Alan).pdb</files>
+			<files>English_GB_hyphen_(Alan).pdb</files>
+			<files>English_US_hyphen_(Alan).pdb</files>
+			<files>Finnish_hyphen_(Alan).pdb</files>
+			<files>French_hyphen_(Alan).pdb</files>
+			<files>German_hyphen_(Alan).pdb</files>
+			<files>Hungarian_hyphen_(Alan).pdb</files>
+			<files>Icelandic_hyphen_(Alan).pdb</files>
+			<files>Irish_hyphen_(Alan).pdb</files>
+			<files>Italian_hyphen_(Alan).pdb</files>
+			<files>Polish_hyphen_(Alan).pdb</files>
+			<files>Portuguese_hyphen_(Alan).pdb</files>
+			<files>Roman_hyphen_(Alan).pdb</files>
+			<files>Russian_EnGB_hyphen_(Alan).pdb</files>
+			<files>Russian_EnUS_hyphen_(Alan).pdb</files>
+			<files>Russian_hyphen_(Alan).pdb</files>
+			<files>Slovak_hyphen_(Alan).pdb</files>
+			<files>Slovenian_hyphen_(Alan).pdb</files>
+			<files>Spanish_hyphen_(Alan).pdb</files>
+			<files>Swedish_hyphen_(Alan).pdb</files>
+			<files>Ukrain_hyphen_(Alan).pdb</files>
 			<install-to>$(DATADIR)/myrulib/hyph</install-to>
 		</data-files>
 		<data-files> 
