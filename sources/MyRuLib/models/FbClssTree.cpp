@@ -30,7 +30,7 @@ FbClssTreeModel::FbClssTreeModel(wxSQLite3ResultSet & result)
 		const wxString book = result.GetString(wxT("ref_book"));
 
 		wxString sql = wxT("books.%s IN(SELECT %s FROM %s WHERE %s=?)");
-		m_ItemSQL = wxString::Format(sql, type.c_str(), book.c_str(), data.c_str(), code.c_str());
+		m_BookSQL = wxString::Format(sql, type.c_str(), book.c_str(), data.c_str(), code.c_str());
 	}
 }
 
@@ -39,6 +39,15 @@ FbClssTreeModel::FbClssTreeModel(wxSQLite3ResultSet & result)
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(FbClssModelData, FbParentData)
+
+FbClssModelData::FbClssModelData(FbModel & model, const wxString & name)
+	: FbParentData(model, NULL)
+	, m_code(wxT("0"))
+	, m_name(name)
+	, m_expanded(false) 
+	, m_count(0)
+{
+}
 
 FbClssModelData::FbClssModelData(FbModel & model, FbParentData * parent, wxSQLite3ResultSet & result)
 	: FbParentData(model, parent)
@@ -53,7 +62,7 @@ wxString FbClssModelData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
 		case  0: return m_name;
-		case  1: return Format(m_count);
+		case  1: return m_count ? Format(m_count) : wxString();
 		default: return wxEmptyString;
 	}
 }
@@ -61,6 +70,8 @@ wxString FbClssModelData::GetValue(FbModel & model, size_t col) const
 bool FbClssModelData::Expand(FbModel & model, bool expand) 
 {
 	if (m_expanded == expand) return false;
+	
+	m_expanded = expand;
 
 	if (!expand) {
 		m_items.Empty();
@@ -74,12 +85,10 @@ bool FbClssModelData::Expand(FbModel & model, bool expand)
 	wxSQLite3Statement stmt = database.PrepareStatement(tree->GetItemSQL());
 	stmt.Bind(1, m_code);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	bool ok = false;
-	while (!result.NextRow()) {
+	while (result.NextRow()) {
 		new FbClssModelData(model, this, result);
-		ok = true;
 	}
-	return ok;
+	return true;
 }
 
 bool FbClssModelData::operator==(const FbMasterInfo & info) const

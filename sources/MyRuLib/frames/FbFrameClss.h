@@ -27,6 +27,7 @@ class FbFrameClss : public FbFrameBase
 		const int m_code; 
 		wxSplitterWindow * m_BooksSplitter;
 	private:
+		void OnItemActivated(wxTreeEvent & event);
 		void OnBooksCount(FbCountEvent & event);
 		DECLARE_CLASS(FbFrameClss)
 		DECLARE_EVENT_TABLE()

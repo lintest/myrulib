@@ -20,8 +20,7 @@ class FbClssTreeModel: public FbTreeModel
 class FbClssModelData: public FbParentData
 {
 	public:
-		FbClssModelData(FbModel & model, const wxString & name = wxEmptyString)
-			: FbParentData(model, NULL), m_code(wxT("0")), m_name(name), m_expanded(false) {}
+		FbClssModelData(FbModel & model, const wxString & name = wxEmptyString);
 		FbClssModelData(FbModel & model, FbParentData * parent, wxSQLite3ResultSet & result);
 		void SetCount(int count) { m_count = count; }
 	public:

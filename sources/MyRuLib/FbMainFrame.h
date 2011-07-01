@@ -40,6 +40,7 @@ class FbMainFrame : public wxFrame
 		void UpdateMenuRefs();
 		void RestoreFrameList();
 		void OpenInfo(const FbMasterInfo & info, const wxString & title, wxWindowID winid);
+		void OpenClss(int code, bool select = true);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
 		wxEvent * m_LastEvent;

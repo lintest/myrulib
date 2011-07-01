@@ -17,6 +17,7 @@
 #include "FbImportThread.h"
 #include "frames/FbCoolReader.h"
 #include "frames/FbFrameAuth.h"
+#include "frames/FbFrameClss.h"
 #include "frames/FbFrameFind.h"
 #include "frames/FbFrameFldr.h"
 #include "frames/FbFrameGenr.h"
@@ -160,8 +161,10 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 
 		if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED && event.GetId() >= ID_MENU_HIGHEST) {
 			FbMenu::Type type; int code;
-			if (!FbMenuItem::Get(event.GetId(), type, code)) return false;
-			if (type == FbMenu::CLSS) ;
+			if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
+				OpenClss(code);
+				return true;
+			}
 		}
 
 		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
@@ -674,12 +677,25 @@ void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & title, wx
 	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 		FbFrameFind * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameFind);
-		if (frame && info == frame->GetInfo()) {
+		if (frame && frame->GetInfo() == info) {
 			m_FrameNotebook.SetSelection(i);
 			return;
 		}
 	}
 	new FbFrameFind(&m_FrameNotebook, winid, info, TrimTitle(title));
+}
+
+void FbMainFrame::OpenClss(int code, bool select)
+{
+	size_t count = m_FrameNotebook.GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbFrameClss * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameClss);
+		if (frame && frame->GetCode() == code) {
+			m_FrameNotebook.SetSelection(i);
+			return;
+		}
+	}
+	FbFrameClss::Create(&m_FrameNotebook, code, select);
 }
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
