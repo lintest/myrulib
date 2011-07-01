@@ -301,7 +301,7 @@ install: install_myrulib
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/myrulib/css
 	(cd $(srcdir)/3rdparty/crengine/css ; $(INSTALL_DATA)  doc.css epub.css fb2.css htm.css rtf.css txt.css $(DESTDIR)$(datadir)/myrulib/css)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/myrulib/hyph
-	(cd $(srcdir)/3rdparty/crengine/hyph ; $(INSTALL_DATA)  Bulgarian_hyphen_(Alan).pdb Czech_hyphen_(Alan).pdb Danish_hyphen_(Alan).pdb English_GB_hyphen_(Alan).pdb English_US_hyphen_(Alan).pdb Finnish_hyphen_(Alan).pdb French_hyphen_(Alan).pdb German_hyphen_(Alan).pdb Hungarian_hyphen_(Alan).pdb Icelandic_hyphen_(Alan).pdb Irish_hyphen_(Alan).pdb Italian_hyphen_(Alan).pdb Polish_hyphen_(Alan).pdb Portuguese_hyphen_(Alan).pdb Roman_hyphen_(Alan).pdb Russian_EnGB_hyphen_(Alan).pdb Russian_EnUS_hyphen_(Alan).pdb Russian_hyphen_(Alan).pdb Slovak_hyphen_(Alan).pdb Slovenian_hyphen_(Alan).pdb Spanish_hyphen_(Alan).pdb Swedish_hyphen_(Alan).pdb Ukrain_hyphen_(Alan).pdb $(DESTDIR)$(datadir)/myrulib/hyph)
+	(cd $(srcdir)/3rdparty/crengine/hyph ; $(INSTALL_DATA)  Bulgarian.pdb Czech.pdb Danish.pdb English_GB.pdb English_US.pdb Finnish.pdb French.pdb German.pdb Hungarian.pdb Icelandic.pdb Irish.pdb Italian.pdb Polish.pdb Portuguese.pdb Roman.pdb Russian_EnGB.pdb Russian_EnUS.pdb Russian.pdb Slovak.pdb Slovenian.pdb Spanish.pdb Swedish.pdb Ukrain.pdb $(DESTDIR)$(datadir)/myrulib/hyph)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
 	(cd $(srcdir)/sources/MyRuLib/desktop ; $(INSTALL_DATA)  myrulib.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps)
 	$(INSTALL_DIR) $(DESTDIR)$(datadir)/applications
@@ -316,7 +316,7 @@ uninstall: uninstall_myrulib
 	(cd $(DESTDIR)$(datadir)/locale/cs/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)$(datadir)/locale/sv/LC_MESSAGES ; rm -f myrulib.mo)
 	(cd $(DESTDIR)$(datadir)/myrulib/css ; rm -f doc.css epub.css fb2.css htm.css rtf.css txt.css)
-	(cd $(DESTDIR)$(datadir)/myrulib/hyph ; rm -f Bulgarian_hyphen_(Alan).pdb Czech_hyphen_(Alan).pdb Danish_hyphen_(Alan).pdb English_GB_hyphen_(Alan).pdb English_US_hyphen_(Alan).pdb Finnish_hyphen_(Alan).pdb French_hyphen_(Alan).pdb German_hyphen_(Alan).pdb Hungarian_hyphen_(Alan).pdb Icelandic_hyphen_(Alan).pdb Irish_hyphen_(Alan).pdb Italian_hyphen_(Alan).pdb Polish_hyphen_(Alan).pdb Portuguese_hyphen_(Alan).pdb Roman_hyphen_(Alan).pdb Russian_EnGB_hyphen_(Alan).pdb Russian_EnUS_hyphen_(Alan).pdb Russian_hyphen_(Alan).pdb Slovak_hyphen_(Alan).pdb Slovenian_hyphen_(Alan).pdb Spanish_hyphen_(Alan).pdb Swedish_hyphen_(Alan).pdb Ukrain_hyphen_(Alan).pdb)
+	(cd $(DESTDIR)$(datadir)/myrulib/hyph ; rm -f Bulgarian.pdb Czech.pdb Danish.pdb English_GB.pdb English_US.pdb Finnish.pdb French.pdb German.pdb Hungarian.pdb Icelandic.pdb Irish.pdb Italian.pdb Polish.pdb Portuguese.pdb Roman.pdb Russian_EnGB.pdb Russian_EnUS.pdb Russian.pdb Slovak.pdb Slovenian.pdb Spanish.pdb Swedish.pdb Ukrain.pdb)
 	(cd $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps ; rm -f myrulib.png)
 	(cd $(DESTDIR)$(datadir)/applications ; rm -f myrulib.desktop)
 	(cd $(DESTDIR)$(datadir)/pixmaps ; rm -f myrulib.png)

@@ -366,29 +366,29 @@
 		</data-files>
 		<data-files cond="USE_READER=='yes'">
 			<srcdir>$(SRCDIR)/3rdparty/crengine/hyph</srcdir>
-			<files>Bulgarian_hyphen_(Alan).pdb</files>
-			<files>Czech_hyphen_(Alan).pdb</files>
-			<files>Danish_hyphen_(Alan).pdb</files>
-			<files>English_GB_hyphen_(Alan).pdb</files>
-			<files>English_US_hyphen_(Alan).pdb</files>
-			<files>Finnish_hyphen_(Alan).pdb</files>
-			<files>French_hyphen_(Alan).pdb</files>
-			<files>German_hyphen_(Alan).pdb</files>
-			<files>Hungarian_hyphen_(Alan).pdb</files>
-			<files>Icelandic_hyphen_(Alan).pdb</files>
-			<files>Irish_hyphen_(Alan).pdb</files>
-			<files>Italian_hyphen_(Alan).pdb</files>
-			<files>Polish_hyphen_(Alan).pdb</files>
-			<files>Portuguese_hyphen_(Alan).pdb</files>
-			<files>Roman_hyphen_(Alan).pdb</files>
-			<files>Russian_EnGB_hyphen_(Alan).pdb</files>
-			<files>Russian_EnUS_hyphen_(Alan).pdb</files>
-			<files>Russian_hyphen_(Alan).pdb</files>
-			<files>Slovak_hyphen_(Alan).pdb</files>
-			<files>Slovenian_hyphen_(Alan).pdb</files>
-			<files>Spanish_hyphen_(Alan).pdb</files>
-			<files>Swedish_hyphen_(Alan).pdb</files>
-			<files>Ukrain_hyphen_(Alan).pdb</files>
+			<files>Bulgarian.pdb</files>
+			<files>Czech.pdb</files>
+			<files>Danish.pdb</files>
+			<files>English_GB.pdb</files>
+			<files>English_US.pdb</files>
+			<files>Finnish.pdb</files>
+			<files>French.pdb</files>
+			<files>German.pdb</files>
+			<files>Hungarian.pdb</files>
+			<files>Icelandic.pdb</files>
+			<files>Irish.pdb</files>
+			<files>Italian.pdb</files>
+			<files>Polish.pdb</files>
+			<files>Portuguese.pdb</files>
+			<files>Roman.pdb</files>
+			<files>Russian_EnGB.pdb</files>
+			<files>Russian_EnUS.pdb</files>
+			<files>Russian.pdb</files>
+			<files>Slovak.pdb</files>
+			<files>Slovenian.pdb</files>
+			<files>Spanish.pdb</files>
+			<files>Swedish.pdb</files>
+			<files>Ukrain.pdb</files>
 			<install-to>$(DATADIR)/myrulib/hyph</install-to>
 		</data-files>
 		<data-files> 
