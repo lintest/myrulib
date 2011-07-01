@@ -16,6 +16,9 @@ class FbFrameClss : public FbFrameBase
 		FbFrameClss(wxAuiNotebook * parent, wxSQLite3ResultSet & result, bool select = false);
 		int GetCode() const { return m_code; } ;
 	protected:
+		class MasterMenu: public wxMenu { 
+			public: MasterMenu(const wxString & code);
+		};
 		void CreateColumns();
 	private:
 		void CreateModel(wxSQLite3ResultSet & result);
@@ -27,6 +30,7 @@ class FbFrameClss : public FbFrameBase
 		const int m_code; 
 		wxSplitterWindow * m_BooksSplitter;
 	private:
+		void OnContextMenu(wxTreeEvent& event);
 		void OnItemActivated(wxTreeEvent & event);
 		void OnBooksCount(FbCountEvent & event);
 		DECLARE_CLASS(FbFrameClss)

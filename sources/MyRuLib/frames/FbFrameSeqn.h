@@ -30,11 +30,15 @@ class FbFrameSeqn : public FbFrameBase
 		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
+	protected:
+		class MasterMenu: public wxMenu { 
+			public: MasterMenu(int id);
+		};
+		void CreateColumns();
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void CreateMasterThread();
-		void CreateColumns();
 	private:
 		wxSplitterWindow * m_BooksSplitter;
 		FbSearchCombo * m_FindText;
@@ -59,12 +63,6 @@ class FbFrameSeqn : public FbFrameBase
 		void OnNumber(wxCommandEvent& event);
 		DECLARE_CLASS(FbFrameSeqn)
 		DECLARE_EVENT_TABLE()
-	protected:
-		class MasterMenu: public wxMenu
-		{
-			public:
-				MasterMenu(int id);
-		};
 };
 
 #endif // __FBFRAMESEQN_H__

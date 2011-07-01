@@ -23,6 +23,7 @@ class FbClssModelData: public FbParentData
 		FbClssModelData(FbModel & model, const wxString & name = wxEmptyString);
 		FbClssModelData(FbModel & model, FbParentData * parent, wxSQLite3ResultSet & result);
 		void SetCount(int count) { m_count = count; }
+		const wxString & GetCode() const { return m_code; }
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const;
 		virtual bool IsExpanded(FbModel & model) const { return m_expanded; }
