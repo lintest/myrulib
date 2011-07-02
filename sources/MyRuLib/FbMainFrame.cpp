@@ -40,7 +40,7 @@ IMPLEMENT_CLASS(FbMainFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 
-	EVT_TOOL(wxID_NEW, FbMainFrame::OnNewZip)
+	EVT_MENU(wxID_NEW, FbMainFrame::OnNewZip)
 	EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
 	EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
 	EVT_MENU(wxID_PREFERENCES, FbMainFrame::OnSetup)
@@ -151,6 +151,14 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 {
 	// Check for infinite recursion
 	if (& event == m_LastEvent)	return false;
+	
+	if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
+		FbMenu::Type type; int code;
+		if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
+			OpenClss(code);
+			return true;
+		}
+	}
 
 	if (event.IsCommandEvent() &&
 			!event.IsKindOf(CLASSINFO(wxKeyEvent)) &&
@@ -158,14 +166,6 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 			!event.IsKindOf(CLASSINFO(wxContextMenuEvent)))
 	{
 		FbEventLocker locker(*this, event);
-
-		if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED && event.GetId() >= ID_MENU_HIGHEST) {
-			FbMenu::Type type; int code;
-			if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
-				OpenClss(code);
-				return true;
-			}
-		}
 
 		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
 		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;

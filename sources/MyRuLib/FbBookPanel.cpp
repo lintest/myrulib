@@ -47,18 +47,14 @@ void FbBookViewCtrl::OnCopy(wxCommandEvent& event)
 
 void FbBookViewCtrl::OnMenu(wxCommandEvent& event)
 {
-	if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED && event.GetId() >= ID_MENU_HIGHEST) {
-		FbMenu::Type type; int code;
-		if (!FbMenuItem::Get(event.GetId(), type, code)) return;
+	FbMenu::Type type; int code;
+	if (FbMenuItem::Get(event.GetId(), type, code)) {
 		switch (type) {
-			case FbMenu::FLDR: {
-				FbBookPanel * panel = wxDynamicCast(GetParent(), FbBookPanel);
-				if (panel) panel->DoFolderAdd(code);
-			} break;
 			case FbMenu::AUTH: FbOpenEvent(ID_BOOK_AUTH, code, GetBook()).Post(); break;
 			case FbMenu::SEQN: FbOpenEvent(ID_BOOK_SEQN, code, GetBook()).Post(); break;
+			case FbMenu::FLDR: ((FbBookPanel*)GetParent())->DoFolderAdd(code); break;
 		}
-	}  else event.Skip();
+	} else event.Skip();
 }
 
 //-----------------------------------------------------------------------------
