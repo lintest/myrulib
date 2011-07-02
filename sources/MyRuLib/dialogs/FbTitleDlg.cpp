@@ -2,6 +2,7 @@
 #include "FbTitleDlg.h"
 #include "controls/FbTreeView.h"
 #include "models/FbAuthList.h"
+#include "FbGenres.h"
 #include "res/add.xpm"
 #include "res/del.xpm"
 
@@ -123,6 +124,31 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 }
 
 //-----------------------------------------------------------------------------
+//  FbTitleDlg::GenrSubPanel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS( FbTitleDlg::GenrSubPanel, FbTitleDlg::SubPanel )
+
+FbTitleDlg::GenrSubPanel::GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code, const wxString & text)
+	: SubPanel( parent, owner )
+{
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
+
+	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
+	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+
+	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
+	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_toolbar.AddTool( wxID_DELETE, _("Delete"), wxBitmap(del_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
+	m_toolbar.Realize();
+	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
+
+	this->SetSizer( bSizerMain );
+	this->Layout();
+	bSizerMain->Fit( this );
+}
+
+//-----------------------------------------------------------------------------
 //  FbTitleDlg::TitlePanel
 //-----------------------------------------------------------------------------
 
@@ -209,8 +235,22 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
 	m_genres = new wxBoxSizer(wxVERTICAL);
-	m_genres->Add( new AuthSubPanel(this, m_genres), 1, wxEXPAND, 5 );
-	m_genres->Add( new AuthSubPanel(this, m_genres), 1, wxEXPAND, 5 );
+	{
+		FbGenreFunction func_genre;
+		database.CreateFunction(wxT("GENRE"), 1, func_genre);
+		wxString sql = wxT("SELECT id_genre, GENRE(id_genre) FROM genres WHERE id_book=? ORDER BY 2");
+		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		stmt.Bind(1, book);
+		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		if (result.Eof()) {
+			m_genres->Add( new GenrSubPanel(this, m_genres), 1, wxEXPAND, 5 );
+		} else {
+			while (result.NextRow()) {
+				SubPanel * panel = new GenrSubPanel(this, m_genres, result.GetString(0), result.GetString(1));
+				m_genres->Add( panel, 1, wxEXPAND, 5 );
+			}
+		}
+	}
 	fgSizerMain->Add( m_genres, 1, wxEXPAND | wxRIGHT, 5 );
 
 	this->SetSizer( fgSizerMain );

@@ -222,16 +222,6 @@ bool FbComboPopup::HandleKey( int keycode, bool saturate, wxChar keychar )
 		value-=10;
 		StopPartialCompletion();
 	}
-	else if ( keycode == WXK_HOME || keycode == WXK_NUMPAD_HOME )
-	{
-		value=0;
-		StopPartialCompletion();
-	}
-	else if ( keycode == WXK_END || keycode == WXK_NUMPAD_END )
-	{
-		value=itemCount-1;
-		StopPartialCompletion();
-	}
 	else if ( keychar && (comboStyle & wxCB_READONLY) )
 	{
 		// Try partial completion

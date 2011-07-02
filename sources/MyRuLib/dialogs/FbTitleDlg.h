@@ -77,6 +77,21 @@ class FbTitleDlg : public FbDialog
 				DECLARE_CLASS(SeqnSubPanel);
 		};
 
+		class GenrSubPanel: public SubPanel
+		{
+			public:
+				GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code = wxEmptyString, const wxString & text = wxEmptyString);
+				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
+					{ return new GenrSubPanel(parent, owner); }
+				virtual void Empty()
+					{}
+			private:
+				wxToolBar m_toolbar;
+				FbComboBox m_text;
+				wxTextCtrl m_numb;
+				DECLARE_CLASS(GenrSubPanel);
+		};
+
 	public:
 		static bool Execute(int book);
 		FbTitleDlg( wxWindow* parent, int book );
