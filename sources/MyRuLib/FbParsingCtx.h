@@ -61,6 +61,7 @@ class FbParsingContextFaxpp: public FbParsingContextBase
 		virtual bool DoParse(wxInputStream & stream);
 		virtual void Stop() { m_stop = true; }
 	private:
+		static FAXPP_DecodeFunction StrToDecode(const wxString & encoding);
 		static wxString Str(const FAXPP_Text & text);
 		static wxString Low(const FAXPP_Text & text);
 		static void GetAtts(const FAXPP_Event & event, FbStringHash &hash);

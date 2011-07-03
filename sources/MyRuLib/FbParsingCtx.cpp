@@ -115,36 +115,30 @@ wxString FbParsingContextBase::Path() const
 //  FbParsingContextFaxpp
 //-----------------------------------------------------------------------------
 
-static const wxUint16 encoding_table__CP1251[128] = {
-	0x0402, 0x0403, 0x201A, 0x0453, 0x201E, 0x2026, 0x2020, 0x2021,
-	0x20AC, 0x2030, 0x0409, 0x2039, 0x040A, 0x040C, 0x040B, 0x040F,
-	0x0452, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
-	0x0000, 0x2122, 0x0459, 0x203A, 0x045A, 0x045C, 0x045B, 0x045F,
-	0x00A0, 0x040E, 0x045E, 0x0408, 0x00A4, 0x0490, 0x00A6, 0x00A7,
-	0x0401, 0x00A9, 0x0404, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x0407,
-	0x00B0, 0x00B1, 0x0406, 0x0456, 0x0491, 0x00B5, 0x00B6, 0x00B7,
-	0x0451, 0x2116, 0x0454, 0x00BB, 0x0458, 0x0405, 0x0455, 0x0457,
-	0x0410, 0x0411, 0x0412, 0x0413, 0x0414, 0x0415, 0x0416, 0x0417,
-	0x0418, 0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E, 0x041F,
-	0x0420, 0x0421, 0x0422, 0x0423, 0x0424, 0x0425, 0x0426, 0x0427,
-	0x0428, 0x0429, 0x042A, 0x042B, 0x042C, 0x042D, 0x042E, 0x042F,
-	0x0430, 0x0431, 0x0432, 0x0433, 0x0434, 0x0435, 0x0436, 0x0437,
-	0x0438, 0x0439, 0x043A, 0x043B, 0x043C, 0x043D, 0x043E, 0x043F,
-	0x0440, 0x0441, 0x0442, 0x0443, 0x0444, 0x0445, 0x0446, 0x0447,
-	0x0448, 0x0449, 0x044A, 0x044B, 0x044C, 0x044D, 0x044E, 0x044F
- };
+#include "wx/unictabl.inc"
 
-unsigned int FAXPP_cp1251_decode(const void *buffer, const void *buffer_end, Char32 *ch)
-{
-	uint8_t *buf = (uint8_t*)buffer;
-	if (*buf < 0x80) {
-		*ch = *buf;
-	} else {
-		unsigned char i = (unsigned char)(*buf) - 0x80;
-		*ch = encoding_table__CP1251[i];
-	}
-	return 1;
+#define FAXPP_define_decode(name, table)                                      \
+unsigned int name(const void *buffer, const void *buffer_end, Char32 *ch) {   \
+  uint8_t *buf = (uint8_t*)buffer;                                            \
+    if (*buf < 0x80) {                                                        \
+      *ch = *buf;                                                             \
+    } else {                                                                  \
+      unsigned char i = (unsigned char)(*buf) - 0x80;                         \
+      *ch = table[i];                                                         \
+    }                                                                         \
+  return 1;                                                                   \
 }
+
+FAXPP_define_decode(FAXPP_cp1251_decode, encoding_table__CP1251);
+FAXPP_define_decode(FAXPP_cp1252_decode, encoding_table__CP1252);
+FAXPP_define_decode(FAXPP_cp1253_decode, encoding_table__CP1253);
+FAXPP_define_decode(FAXPP_cp1254_decode, encoding_table__CP1254);
+FAXPP_define_decode(FAXPP_cp1255_decode, encoding_table__CP1255);
+FAXPP_define_decode(FAXPP_cp1256_decode, encoding_table__CP1256);
+FAXPP_define_decode(FAXPP_cp1257_decode, encoding_table__CP1257);
+FAXPP_define_decode(FAXPP_cp1250_decode, encoding_table__CP1250);
+FAXPP_define_decode(FAXPP_koi8r_decode , encoding_table__KOI8  );
+FAXPP_define_decode(FAXPP_koi8u_decode , encoding_table__KOI8_U);
 
 class FbFaxppStreamReader {
 	public:
@@ -194,6 +188,24 @@ FbParsingContextFaxpp::~FbParsingContextFaxpp()
 	if (m_parser) FAXPP_free_parser(m_parser);
 }
 
+FAXPP_DecodeFunction FbParsingContextFaxpp::StrToDecode(const wxString & encoding)
+{
+	FAXPP_DecodeFunction decode = FAXPP_string_to_decode(encoding.mb_str());
+	if (decode) return decode;
+	if (encoding == wxT("windows-1251")) return FAXPP_cp1251_decode;
+	if (encoding == wxT("windows-1252")) return FAXPP_cp1252_decode;
+	if (encoding == wxT("windows-1253")) return FAXPP_cp1253_decode;
+	if (encoding == wxT("windows-1254")) return FAXPP_cp1254_decode;
+	if (encoding == wxT("windows-1255")) return FAXPP_cp1255_decode;
+	if (encoding == wxT("windows-1256")) return FAXPP_cp1256_decode;
+	if (encoding == wxT("windows-1257")) return FAXPP_cp1257_decode;
+	if (encoding == wxT("windows-1250")) return FAXPP_cp1250_decode;
+	if (encoding == wxT("koi8")) return FAXPP_koi8r_decode;
+	if (encoding == wxT("koi8-r")) return FAXPP_koi8r_decode;
+	if (encoding == wxT("koi8-u")) return FAXPP_koi8u_decode;
+	wxLogError(_("Unknown encoding: %s"), encoding.c_str());
+}
+
 bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 {
 	FbFaxppStreamReader reader(stream, *this);
@@ -203,9 +215,9 @@ bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 		const FAXPP_Event * event = FAXPP_get_current_event(m_parser);
 		switch (event->type) {
 			case START_DOCUMENT_EVENT: {
-				if (Low(event->encoding) == wxT("windows-1251")) {
-					FAXPP_set_decode(m_parser, FAXPP_cp1251_decode);
-				}
+				wxString encoding = Low(event->encoding);
+				FAXPP_DecodeFunction decode = StrToDecode(encoding);
+				if (decode) FAXPP_set_decode(m_parser, decode);
 			} break;
 			case END_DOCUMENT_EVENT: {
 				Stop();
