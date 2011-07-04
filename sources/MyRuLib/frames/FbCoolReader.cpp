@@ -67,7 +67,9 @@ FbContentData::FbContentData(FbModel & model, FbParentData * parent, LVTocItem *
 
 	int count = item->getChildCount();
     for ( int i = 0; i < count; i++ ) {
-		new FbContentData(model, this, item->getChild(i));
+		LVTocItem * child = item->getChild(i);
+		if (child->getName().empty()) continue;
+		new FbContentData(model, this, child);
     }
 }
 
