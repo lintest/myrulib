@@ -4,9 +4,11 @@
 #ifdef FB_INCLUDE_READER
 
 #include <crgui.h>
+#include <wx/dialog.h>
 #include <wx/splitter.h>
 #include <wx/aui/tabmdi.h>
 #include "FbMenu.h"
+#include "controls/FbTreeView.h"
 
 /**
  * @short XML Document View window
@@ -55,11 +57,25 @@ enum
 	Window_Id_Options,
 };
 
-class FbCoolReader
-	: public wxWindow, public LVDocViewCallback
+class FbCoolReader: public wxWindow, public LVDocViewCallback
 {
+	public: 
+		class ContentDlg: public wxDialog {
+			public: 
+				ContentDlg( wxWindow* parent, const wxString& title = wxEmptyString );
+				void Assign( LVDocView * docView );
+		        LVTocItem * GetSelection();
+			private:
+				FbTreeViewCtrl m_treeview;
+			private:
+				void OnActivated( wxTreeEvent & event );
+				DECLARE_EVENT_TABLE()
+		};
+		class MenuBook: public FbMenu { 
+			public: 
+				MenuBook(); 
+		};
 	public:
-		class MenuBook: public FbMenu { public: MenuBook(); };
 		static bool InitCREngine();
 		static void GetFonts(wxArrayString & fonts);
 		static FbCoolReader * Open(wxAuiNotebook * parent, const wxString &filename, bool select = false);
@@ -77,6 +93,7 @@ class FbCoolReader
 		void OnCommand( wxCommandEvent& event );
 		void OnRotate( wxCommandEvent& event );
 		void OnShowHistory( wxCommandEvent& event );
+		void OnShowContent( wxCommandEvent& event );
 		void OnUpdateUI( wxUpdateUIEvent& event );
 		void OnMouseWheel( wxMouseEvent& event);
 		void OnInitDialog( wxInitDialogEvent& event);
@@ -84,7 +101,7 @@ class FbCoolReader
 		void ScheduleRender() { Resize(0, 0); }
 		bool LoadDocument( const wxString & fname );
 		void UpdateScrollBar();
-		LVDocView * getDocView() { return _docwin->getDocView(); }
+		LVDocView * GetDocView() { return _docwin->getDocView(); }
 		void doCommand( LVDocCmd cmd, int param );
 		void goToBookmark(ldomXPointer bm);
 		wxColour getBackgroundColour();
@@ -102,9 +119,7 @@ class FbCoolReader
 		void ToggleViewMode();
 		virtual void OnExternalLink( lString16 url, ldomNode * node );
 	protected:
-		void SetHeaderIcons();
 		void SetBatteryIcons();
-
 		void Paint();
 		void Resize(int dx, int dy);
 	private:

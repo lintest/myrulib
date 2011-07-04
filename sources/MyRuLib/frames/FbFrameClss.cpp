@@ -72,7 +72,7 @@ void FbFrameClss::OnBooksCount(FbCountEvent& event)
 void FbFrameClss::OnItemActivated(wxTreeEvent & event)
 {
 	FbModelItem item = m_MasterList->GetCurrent();
-	item.Expand(not item.IsExpanded());
+	item.Expand(!item.IsExpanded());
 }
 
 void FbFrameClss::OnContextMenu(wxTreeEvent& event)
