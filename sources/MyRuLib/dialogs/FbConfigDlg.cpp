@@ -603,8 +603,8 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
 
-	if (!m_database.TableExists(wxT("tables"))) {
-		wxString sql  = wxT("CREATE TABLE tables(id INTEGER PRIMARY KEY AUTOINCREMENT, %s)");
+	{	
+		wxString sql  = wxT("CREATE TABLE IF NOT EXISTS tables(id INTEGER PRIMARY KEY AUTOINCREMENT, %s)");
 		sql = wxString::Format(sql, GetFields().c_str());
 		database.ExecuteUpdate(sql);
 	}
