@@ -791,6 +791,7 @@ void FbMainFrame::OpenDatabase(const wxString &filename)
 			m_FrameNotebook.DeletePage(0);
 		}
 		RestoreFrameList();
+		UpdateMenuRefs();
 	}
 }
 

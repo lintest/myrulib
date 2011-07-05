@@ -741,13 +741,26 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 			SendEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED);
 		} break;
         case '*':
-        case '+':
 		case WXK_NUMPAD_MULTIPLY:
-        case WXK_MULTIPLY:
-		case WXK_NUMPAD_ADD:
+        case WXK_MULTIPLY:{
+			if (HasFlag(fbTR_DIRECTORY)) {
+				FbModelItem item = m_model->GetCurrent();
+				bool ok = item.Expand();
+				size_t count = item.Count();
+				for (size_t i = 0; i < count; i++) {
+					ok = item.Items(i).Expand() || ok;
+				}
+				if (ok) {
+					AdjustMyScrollbars();
+					Repaint();
+				}
+			}
+        } break;
+        case '+':
+        case WXK_NUMPAD_ADD:
         case WXK_ADD: {
 			if (HasFlag(fbTR_DIRECTORY)) {
-				bool ok = m_model->GetCurrent().Expand(true);
+				bool ok = m_model->GetCurrent().Expand();
 				if (ok) {
 					AdjustMyScrollbars();
 					Repaint();

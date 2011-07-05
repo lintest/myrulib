@@ -75,7 +75,7 @@ bool FbClssModelData::Expand(FbModel & model, bool expand)
 
 	if (!expand) {
 		m_items.Empty();
-		return false;
+		return true;
 	}
 
 	FbClssTreeModel * tree = wxDynamicCast(&model, FbClssTreeModel);

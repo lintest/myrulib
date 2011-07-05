@@ -123,7 +123,7 @@ class FbModelItem: public wxObject
 			{ return m_data ? m_data->HasChildren(model) : false; }
 		bool IsExpanded() const
 			{ return m_data ? m_data->IsExpanded(*m_model) : false; }
-		bool Expand(bool expand) 
+		bool Expand(bool expand = true) 
 			{ return m_data ? m_data->Expand(*m_model, expand) : false; }
 	private:
 		FbModel * m_model;
