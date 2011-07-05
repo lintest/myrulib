@@ -284,6 +284,11 @@ int FbImportBook::FindByMD5()
 	return result.NextRow() ? result.GetInt(0) : 0;
 }
 
+static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)
+{
+	return (*n1)->GetId() - (*n2)->GetId();
+}
+
 bool FbImportBook::AppendBook()
 {
 	bool ok = true;
@@ -293,25 +298,30 @@ bool FbImportBook::AppendBook()
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	int today = FbDateTime::Today().Code();
 
+	int prior;
+	m_authors.Sort(CompareAuthors);
 	for (size_t i = 0; i < m_authors.Count(); i++) {
 		int author = m_authors[i].GetId();
-		{
-			wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-			stmt.Bind(1, id_book);
-			stmt.Bind(2, m_archive);
-			stmt.Bind(3, author);
-			stmt.Bind(4, m_title);
-			stmt.Bind(5, m_genres);
-			stmt.Bind(6, m_filename);
-			stmt.Bind(7, m_filepath);
-			stmt.Bind(8, (wxLongLong)m_filesize);
-			stmt.Bind(9, m_filetype);
-			stmt.Bind(10, m_lang);
-			stmt.Bind(11, today);
-			stmt.Bind(12, m_md5sum);
-			ok = stmt.ExecuteUpdate() && ok;
-		}
+		if (i && prior == author) {
+			wxLogWarning(_("Dublicate author: %s %s"), m_authors[i].GetFullName().c_str(), m_message.c_str());
+			continue; 
+		} 
+		prior = author;
+		wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, id_book);
+		stmt.Bind(2, m_archive);
+		stmt.Bind(3, author);
+		stmt.Bind(4, m_title);
+		stmt.Bind(5, m_genres);
+		stmt.Bind(6, m_filename);
+		stmt.Bind(7, m_filepath);
+		stmt.Bind(8, (wxLongLong)m_filesize);
+		stmt.Bind(9, m_filetype);
+		stmt.Bind(10, m_lang);
+		stmt.Bind(11, today);
+		stmt.Bind(12, m_md5sum);
+		ok = stmt.ExecuteUpdate() && ok;
 	}
 
 	for (size_t i = 0; i < m_sequences.Count(); i++) {
@@ -384,4 +394,3 @@ bool FbImportBook::Save()
 		return id_book && AppendFile(id_book);
 	}
 }
-

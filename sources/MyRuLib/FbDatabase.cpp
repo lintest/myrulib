@@ -421,38 +421,38 @@ void FbMainDatabase::CreateDatabase()
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	/** TABLE authors **/
-	ExecuteUpdate(wxT("\
-		CREATE TABLE authors(\
-			id integer primary key,\
-			letter char(1),\
-			search_name varchar(255),\
-			full_name varchar(255),\
-			first_name varchar(128),\
-			middle_name varchar(128),\
-			last_name varchar(128),\
-			newid integer,\
-			description text);\
-	"));
+	ExecuteUpdate(wxT(
+		"CREATE TABLE authors("
+			"id INTEGER PRIMARY KEY,"
+			"letter,"
+			"search_name,"
+			"full_name,"
+			"first_name,"
+			"middle_name,"
+			"last_name,"
+			"newid,"
+			"description)"
+	));
 	ExecuteUpdate(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '(empty)')"));
 	ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter)"));
 	ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name)"));
 
 	/** TABLE books **/
-	ExecuteUpdate(wxT("\
-		CREATE TABLE books(\
-			id integer not null,\
-			id_author integer,\
-			title text not null,\
-			annotation text,\
-			genres text,\
-			deleted boolean,\
-			id_archive integer,\
-			file_name text,\
-			file_size integer,\
-			file_type varchar(20),\
-			description text, \
-			PRIMARY KEY(id, id_author));\
-	"));
+	ExecuteUpdate(wxT(
+		"CREATE TABLE books("
+			"id integer not null,"
+			"id_author integer not null,"
+			"title,"
+			"annotation,"
+			"genres,"
+			"deleted,"
+			"id_archive,"
+			"file_name,"
+			"file_size,"
+			"file_type,"
+			"description, "
+			"PRIMARY KEY(id, id_author))"
+	));
 	ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author)"));
 	ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive)"));
 
