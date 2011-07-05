@@ -18,8 +18,8 @@ FbClssTreeModel::FbClssTreeModel(wxSQLite3ResultSet & result)
 		const wxString info = result.GetString(wxT("dir_info"));
 		const wxString prnt = result.GetString(wxT("dir_prnt"));
 
-		wxString sql = wxT("SELECT %s, %s FROM %s WHERE %s=? ORDER BY 2");
-		m_ItemSQL = wxString::Format(sql, code.c_str(), name.c_str(), data.c_str(), prnt.c_str());
+		wxString sql = wxT("SELECT DISTINCT a.%s, a.%s, b.%s FROM %s a LEFT JOIN %s b ON a.%s=b.%s WHERE a.%s=? ORDER BY 2");
+		m_ItemSQL = wxString::Format(sql, code.c_str(), name.c_str(), prnt.c_str(), data.c_str(), data.c_str(), code.c_str(), prnt.c_str(), prnt.c_str());
 	}
 
 	{
@@ -44,6 +44,7 @@ FbClssModelData::FbClssModelData(FbModel & model, const wxString & name)
 	: FbParentData(model, NULL)
 	, m_code(wxT("0"))
 	, m_name(name)
+	, m_children(false)
 	, m_expanded(false) 
 	, m_count(0)
 {
@@ -53,6 +54,7 @@ FbClssModelData::FbClssModelData(FbModel & model, FbParentData * parent, wxSQLit
 	: FbParentData(model, parent)
 	, m_code(result.GetString(0))
 	, m_name(result.GetString(1))
+	, m_children(result.GetInt(2))
 	, m_expanded(false) 
 	, m_count(0)
 {

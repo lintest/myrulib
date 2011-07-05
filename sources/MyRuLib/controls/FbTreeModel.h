@@ -119,8 +119,8 @@ class FbModelItem: public wxObject
 			{ if (m_data) m_data->SetState(*m_model, state); }
 		int GetBook() const 
 			{ return m_data ? m_data->GetBook() : 0; }
-		bool HasChildren(FbModel & model) const
-			{ return m_data ? m_data->HasChildren(model) : false; }
+		bool HasChildren() const
+			{ return m_data ? m_data->HasChildren(*m_model) : false; }
 		bool IsExpanded() const
 			{ return m_data ? m_data->IsExpanded(*m_model) : false; }
 		bool Expand(bool expand = true) 
@@ -279,7 +279,7 @@ class FbModel: public wxObject
 	protected:
 		const wxBitmap & GetBitmap(int state);
 		void DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols);
-		void DrawButton(wxWindow * window, wxDC &dc, wxRect &rect, bool expand);
+		void DrawButton(const FbModelItem &data, wxWindow * window, wxDC &dc, wxRect &rect);
 		virtual void DoDrawTree(wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols, size_t pos, int h) = 0;
 		virtual FbModelItem DoGetData(size_t row, int &level) = 0;
 		bool IsSelected(size_t row);
