@@ -113,6 +113,75 @@ bool FbBookData::GetSystemCommand(const wxString &filepath, const wxString &file
 	return false;
 }
 
+#ifdef __WXGTK__
+
+// helper class for storing arguments as char** array suitable for passing to
+// execvp(), whatever form they were passed to us
+class FbArgsArray
+{
+public:
+    FbArgsArray(const wxArrayString& args)
+    {
+        Init(args.size());
+
+        for ( int i = 0; i < m_argc; i++ )
+        {
+            wxWX2MBbuf arg = wxSafeConvertWX2MB(args[i]);
+            m_argv[i] = strdup(arg);
+        }
+    }
+
+    ~FbArgsArray()
+    {
+        for ( int i = 0; i < m_argc; i++ )
+        {
+            free(m_argv[i]);
+        }
+
+        delete [] m_argv;
+    }
+
+    operator char**() const { return m_argv; }
+
+private:
+    void Init(int argc)
+    {
+        m_argc = argc;
+        m_argv = new char *[m_argc + 1];
+        m_argv[m_argc] = NULL;
+    }
+
+    int m_argc;
+    char **m_argv;
+};
+
+static void FbExecute(wxString & command, wxFileName & filename)
+{
+    wxArrayString args;
+    args.Add(command);
+    if (command.BeforeFirst(wxT(' ')) == wxT("wine")) {
+        args.Add(wxT("wine"));
+        args.Add(command.AfterFirst(wxT(' ')));
+        filename.SetPath( FbParams(FB_WINE_DIR));
+    }
+    args.Add(filename.GetFullPath());
+
+    FbArgsArray argv(args);
+    if (fork() == 0) execvp(*argv, argv);
+}
+
+#else // __WXGTK__
+
+static void FbExecute(wxString & command, wxFileName & filename)
+{
+	wxString filepath = filename.GetFullPath();
+	filepath.Prepend(wxT('"')).Append(wxT('"'));
+    command << wxT(' ') << filepath;
+    wxExecute(command);
+}
+
+#endif // __WXGTK__
+
 void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 {
 	wxString filetype = GetExt();
@@ -128,7 +197,7 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		ok = GetUserCommand(database, filetype, command);
 	}
 
-#ifdef FB_INCLUDE_READER
+    #ifdef FB_INCLUDE_READER
 	if (!ok) {
 		FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
 		if (frame) {
@@ -139,13 +208,17 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 			if (ok) return;
 		}
 	}
-#endif
+    #endif
+
+	#ifdef __WXGTK__
+	if (!ok) { command = wxT("xdg-open"); ok = true; }
+    #endif
 
 	wxFileName filename = md5sum;
 	filename.SetPath( FbParamItem::GetPath(FB_TEMP_DIR) );
 	filename.SetExt(filetype);
 
-	if ( !filename.DirExists()) 
+	if ( !filename.DirExists())
 		filename.Mkdir(0755, wxPATH_MKDIR_FULL);
 
 	wxString filepath = filename.GetFullPath();
@@ -156,25 +229,14 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		#ifdef __WXMSW__
 		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 		#else
-		if (command.Left(5) == wxT("wine ")) {
-			filename.SetPath( FbParams(FB_WINE_DIR));
-			filepath = filename.GetFullPath();
-		}
-		command << wxT(' ') << filepath;
-		wxExecute(command);
+		FbExecute(command, filename);
 		#endif
 	} else {
-		#ifdef __WXGTK__
-		filepath.Prepend(wxT('"')).Append(wxT('"'));
-		command << wxT("xdg-open") << wxT(' ') << filepath;
-		wxExecute(command);
-		#else
 		if (GetSystemCommand(filepath, filetype, command)) {
 			wxExecute(command);
 		} else {
 			FbMessageBox(_("Associated application not found"), filetype);
 		}
-		#endif
 	}
 }
 
