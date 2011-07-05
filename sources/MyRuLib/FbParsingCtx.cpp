@@ -204,6 +204,7 @@ FAXPP_DecodeFunction FbParsingContextFaxpp::StrToDecode(const wxString & encodin
 	if (encoding == wxT("koi8-r")) return FAXPP_koi8r_decode;
 	if (encoding == wxT("koi8-u")) return FAXPP_koi8u_decode;
 	wxLogError(_("Unknown encoding: %s"), encoding.c_str());
+	return NULL;
 }
 
 bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
