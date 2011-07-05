@@ -75,10 +75,12 @@ function AppendTopic($mysql, $sqlite, $topic, $book)
 {
 	if (strlen($topic) == 0) return 0; 
 	$code = 0;
-	$names = explode("/", $topic); 
+	$topic = str_replace(array(" -- ", " - ","'"), "", $topic);
+	$names = split('[/\\.,]', $topic);
 	foreach($names as $name){
-		if (strlen($name) == 0) continue; 
-		$code = GetTopicId($mysql, $name, $code);
+		$n = trim($name);
+		if (strlen($n) == 0) continue; 
+		$code = GetTopicId($mysql, $n, $code);
 	}
 	if ($code) {
 		$sql = "INSERT INTO ref0(book, code) VALUES(?,?)";
@@ -119,7 +121,7 @@ function convert_books($mysql_db, $sqlite_db)
 		Id, Title, VolumeInfo, Series, Periodical, Author, Language, Topic, Filesize, 
 		Extension, DATE_FORMAT(TimeLastModified,'%y%m%d') As Time, identifier, md5, coverurl, Topic
 	FROM updated
-	ORDER BY Id
+	ORDER BY Id 
   ";
 
   $auth = 0;
