@@ -235,14 +235,14 @@ bool FbMasterInfo::operator ==(const FbMasterInfo &info) const
 	} else return (*this->m_data) == (*info.m_data);
 }
 
-FbMasterInfo FbModelData::GetInfo() const
+FbMasterInfo FbModelData::GetInfo(FbModel & model) const
 {
 	return FbMasterInfo();
 }
 
 FbMasterInfo FbModelItem::GetInfo() const
 {
-	return m_data ? m_data->GetInfo() : FbMasterInfo();
+	return m_data ? m_data->GetInfo(*m_model) : FbMasterInfo();
 }
 
 FbMasterInfo FbTreeViewCtrl::GetInfo() const
@@ -250,7 +250,7 @@ FbMasterInfo FbTreeViewCtrl::GetInfo() const
 	FbModel * model = GetModel();
 	if (model) {
 		FbModelItem item = model->GetCurrent();
-		if (item) return (&item)->GetInfo();
+		if (item) return (&item)->GetInfo(*model);
 	}
 	return FbMasterInfo();
 }

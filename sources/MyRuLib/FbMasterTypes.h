@@ -219,4 +219,28 @@ class FbMasterFindInfo: public FbMasterInfoBase
 		DECLARE_CLASS(FbMasterFindInfo);
 };
 
+class FbMasterClssInfo: public FbMasterInfoBase
+{
+	public:
+		FbMasterClssInfo(const wxString &sql, const wxString &id)
+			: m_sql(sql), m_id(id) {}
+		FbMasterClssInfo(const FbMasterClssInfo & info)
+			: FbMasterInfoBase(info), m_sql(info.m_sql), m_id(info.m_id) {}
+		virtual FbMasterClssInfo * Clone() const
+			{ return new FbMasterClssInfo(*this); }
+		wxString GetId() const
+			{ return m_id; }
+		virtual bool operator==(const FbMasterInfoBase & info) {
+			const FbMasterClssInfo * data = wxDynamicCast(&info, FbMasterClssInfo);
+			return data && data->m_sql == m_sql && data->m_id == m_id;
+		}
+	protected:
+		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual void Bind(wxSQLite3Statement &stmt) const;
+	private:
+		const wxString m_sql;
+		const wxString m_id;
+		DECLARE_CLASS(FbMasterClssInfo);
+};
+
 #endif // __FBMASTERTYPES_H__

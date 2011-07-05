@@ -28,7 +28,7 @@ class FbFolderChildData: public FbChildData
 			{ return m_code; }
 		void SetName(const wxString &name)
 			{ m_name = name; }
-		FbMasterInfo GetInfo() const;
+		FbMasterInfo GetInfo(FbModel & model) const;
 	private:
 		int m_code;
 		wxString m_name;
@@ -41,7 +41,7 @@ class FbCommChildData: public FbChildData
 		FbCommChildData(FbModel & model, FbParentData * parent);
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return col == 0 ? m_name : wxString(); }
-		FbMasterInfo GetInfo() const;
+		FbMasterInfo GetInfo(FbModel & model) const;
 	private:
 		wxString m_name;
 		DECLARE_CLASS(FbCommChildData);
@@ -55,7 +55,7 @@ class FbRateChildData: public FbChildData
 			{ return m_code; }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const
 			{ return col == 0 ? m_name : wxString(); }
-		FbMasterInfo GetInfo() const;
+		FbMasterInfo GetInfo(FbModel & model) const;
 	private:
 		int m_code;
 		wxString m_name;

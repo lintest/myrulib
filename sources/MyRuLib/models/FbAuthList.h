@@ -53,7 +53,7 @@ class FbAuthListData: public FbModelData
 		int GetCode() const { return m_code; }
 		virtual FbModelData * Clone() const
 			 { return new FbAuthListData(m_code); }
-		FbMasterInfo GetInfo() const;
+		FbMasterInfo GetInfo(FbModel & model) const;
 	private:
 		int m_code;
 		DECLARE_CLASS(FbAuthListData);

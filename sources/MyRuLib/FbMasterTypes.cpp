@@ -2,6 +2,7 @@
 #include "models/FbBookList.h"
 #include "models/FbBookTree.h"
 #include "models/FbAuthList.h"
+#include "models/FbClssTree.h"
 #include "models/FbDateTree.h"
 #include "models/FbDownList.h"
 #include "models/FbFldrTree.h"
@@ -15,7 +16,7 @@
 //  FbMasterDateInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbDateDayData::GetInfo() const
+FbMasterInfo FbDateDayData::GetInfo(FbModel & model) const
 {
 	return FbMasterDateInfo(this->GetCode());
 }
@@ -36,7 +37,7 @@ void FbMasterDateInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterAuthInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbAuthListData::GetInfo() const
+FbMasterInfo FbAuthListData::GetInfo(FbModel & model) const
 {
 	return FbMasterAuthInfo(this->GetCode());
 }
@@ -99,7 +100,7 @@ void FbMasterAuthInfo::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite
 //  FbMasterSeqnInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbSeqnListData::GetInfo() const
+FbMasterInfo FbSeqnListData::GetInfo(FbModel & model) const
 {
 	return FbMasterSeqnInfo(this->GetCode());
 }
@@ -143,7 +144,7 @@ void FbMasterSeqnInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterGenrInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbGenrChildData::GetInfo() const
+FbMasterInfo FbGenrChildData::GetInfo(FbModel & model) const
 {
 	return FbMasterGenrInfo(this->GetCode());
 }
@@ -165,7 +166,7 @@ void FbMasterGenrInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterDownInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbDownListData::GetInfo() const
+FbMasterInfo FbDownListData::GetInfo(FbModel & model) const
 {
 	return FbMasterDownInfo(this->GetCode());
 }
@@ -191,7 +192,7 @@ void FbMasterDownInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterCommInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbCommChildData::GetInfo() const
+FbMasterInfo FbCommChildData::GetInfo(FbModel & model) const
 {
 	return FbMasterCommInfo();
 }
@@ -211,7 +212,7 @@ void FbMasterCommInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterRateInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbRateChildData::GetInfo() const
+FbMasterInfo FbRateChildData::GetInfo(FbModel & model) const
 {
 	return FbMasterRateInfo(this->GetCode());
 }
@@ -232,7 +233,7 @@ void FbMasterRateInfo::Bind(wxSQLite3Statement &stmt) const
 //  FbMasterFldrInfo
 //-----------------------------------------------------------------------------
 
-FbMasterInfo FbFolderChildData::GetInfo() const
+FbMasterInfo FbFolderChildData::GetInfo(FbModel & model) const
 {
 	return FbMasterFldrInfo(this->GetCode());
 }
@@ -330,4 +331,26 @@ bool FbMasterFindInfo::DoFind(wxEvtHandler * owner, FbThread * thread, const FbF
 	}
 
 	return ok;
+}
+
+//-----------------------------------------------------------------------------
+//  FbMasterClssInfo
+//-----------------------------------------------------------------------------
+
+FbMasterInfo FbClssModelData::GetInfo(FbModel & model) const
+{
+	FbClssTreeModel & owner = (FbClssTreeModel&) model;
+	return FbMasterClssInfo(owner.GetBookSQL(), this->GetCode());
+}
+
+IMPLEMENT_CLASS(FbMasterClssInfo, FbMasterInfoBase)
+
+wxString FbMasterClssInfo::GetWhere(wxSQLite3Database &database) const
+{
+	return m_sql;
+}
+
+void FbMasterClssInfo::Bind(wxSQLite3Statement &stmt) const
+{
+	stmt.Bind(1, m_id);
 }

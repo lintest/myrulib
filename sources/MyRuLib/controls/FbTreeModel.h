@@ -54,7 +54,7 @@ class FbModelData: public wxObject
 			{ return false; }
 	public:
 #ifdef _MYRULIB
-		virtual FbMasterInfo GetInfo() const;
+		virtual FbMasterInfo GetInfo(FbModel & model) const;
 		virtual FbViewItem GetView() const { return FbViewItem::None; }
 #endif // _MYRULIB
 		virtual int GetBook() const { return 0; }

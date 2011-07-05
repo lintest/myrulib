@@ -13,7 +13,7 @@ class FbDownListData: public FbModelData
 			{ return col == 0 ? m_name : (wxString)wxEmptyString; }
 		FbMasterDownInfo::DownType GetCode() const
 			{ return m_code; }
-		FbMasterInfo GetInfo() const;
+		FbMasterInfo GetInfo(FbModel & model) const;
 	private:
 		FbMasterDownInfo::DownType m_code;
 		wxString m_name;

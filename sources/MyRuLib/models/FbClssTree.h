@@ -29,6 +29,7 @@ class FbClssModelData: public FbParentData
 		virtual bool IsExpanded(FbModel & model) const { return m_expanded; }
 		virtual bool Expand(FbModel & model, bool expand);
 		virtual bool HiddenRoot() const { return false; }
+		virtual FbMasterInfo GetInfo(FbModel & model) const;
 		bool operator==(const FbMasterInfo & info) const;
 	protected:
 		const wxString m_code;

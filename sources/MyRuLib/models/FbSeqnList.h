@@ -32,7 +32,7 @@ class FbSeqnListData: public FbModelData
 		int GetCode() const { return m_code; }
 		virtual FbModelData * Clone() const
 			 { return new FbSeqnListData(m_code); }
-		virtual FbMasterInfo GetInfo() const;
+		virtual FbMasterInfo GetInfo(FbModel & model) const;
 	private:
 		int m_code;
 		DECLARE_CLASS(FbSeqnListData);
