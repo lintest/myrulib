@@ -157,17 +157,25 @@ private:
 
 static void FbExecute(wxString & command, wxFileName & filename)
 {
-    wxArrayString args;
-    args.Add(command);
-    if (command.BeforeFirst(wxT(' ')) == wxT("wine")) {
-        args.Add(wxT("wine"));
-        args.Add(command.AfterFirst(wxT(' ')));
-        filename.SetPath( FbParams(FB_WINE_DIR));
-    }
-    args.Add(filename.GetFullPath());
+	wxArrayString args;
+	args.Add(command);
+	if (command.BeforeFirst(wxT(' ')) == wxT("wine")) {
+		args.Add(wxT("wine"));
+		args.Add(command.AfterFirst(wxT(' ')));
+		filename.SetPath( FbParams(FB_WINE_DIR));
+	}
+	args.Add(filename.GetFullPath());
 
-    FbArgsArray argv(args);
-    if (fork() == 0) execvp(*argv, argv);
+	FbArgsArray argv(args);
+	if (fork() == 0) execvp(*argv, argv);
+}
+
+static void FbExecute(wxString & command)
+{
+	wxArrayString args;
+	args.Add(command);
+	FbArgsArray argv(args);
+	if (fork() == 0) execvp(*argv, argv);
 }
 
 #else // __WXGTK__
@@ -176,8 +184,13 @@ static void FbExecute(wxString & command, wxFileName & filename)
 {
 	wxString filepath = filename.GetFullPath();
 	filepath.Prepend(wxT('"')).Append(wxT('"'));
-    command << wxT(' ') << filepath;
-    wxExecute(command);
+	command << wxT(' ') << filepath;
+	wxExecute(command);
+}
+
+static void FbExecute(wxString & command)
+{
+	wxExecute(command);
 }
 
 #endif // __WXGTK__
@@ -225,15 +238,15 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 	if (!filename.FileExists()) SaveFile(in, filepath);
 
 	if (ok) {
-		filepath.Prepend(wxT('"')).Append(wxT('"'));
 		#ifdef __WXMSW__
+		filepath.Prepend(wxT('"')).Append(wxT('"'));
 		ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 		#else
 		FbExecute(command, filename);
 		#endif
 	} else {
 		if (GetSystemCommand(filepath, filetype, command)) {
-			wxExecute(command);
+			FbExecute(command);
 		} else {
 			FbMessageBox(_("Associated application not found"), filetype);
 		}
