@@ -11,6 +11,10 @@ function InitDatabase($mysql)
 
 	$mysql->query("DROP TABLE book");
 	$mysql->query("CREATE TABLE book(bid integer PRIMARY KEY, aid integer)");
+
+	$mysql->query("DROP TABLE topic");
+	$mysql->query("CREATE TABLE topic(code integer primary key AUTO_INCREMENT, parent INTEGER, name VARCHAR(300)) DEFAULT CHARACTER SET utf8");
+	$mysql->query("CREATE INDEX topic_name ON auth(parent, name)");
 }
 
 function GetAuthId($mysql, $name)
@@ -39,15 +43,49 @@ function GetAuthId($mysql, $name)
 	return $mysql->insert_id;
 }
 
-function AppendBook($mysql, $aid, $bid)
+function GetTopicId($mysql, $name, $parent)
 {
-	$stmt = $mysql->stmt_init();
-	$stmt->prepare("INSERT INTO book(aid, bid) VALUES(?,?)");
-	$stmt->bind_param("ii", $param_aid, $param_bid);
-	$param_aid = $aid;
-	$param_bid = $bid;
-	$stmt->execute();
-	$stmt->close();
+	if (strlen($name) == 0) return 0; 
+
+	$stmt1 = $mysql->stmt_init();
+	$stmt1->prepare("SELECT code FROM topic WHERE name=? AND parent=?");
+	$stmt1->bind_param("si", $param1, $param2);
+	$param1 = $name;
+	$param2 = $parent;
+	$stmt1->execute();
+	$stmt1->bind_result($code1);
+	if ($stmt1->fetch()) {
+		$code = $code1;
+		$stmt1->close();
+		return $code;
+	}
+	$stmt1->close();
+
+	$stmt2 = $mysql->stmt_init();
+	$stmt2->prepare("INSERT INTO topic(name, parent) VALUES(?,?)");
+	$stmt2->bind_param("si", $param3, $param4);
+	$param3 = $name;
+	$param4 = $parent;
+	$stmt2->execute();
+	
+	return $mysql->insert_id;
+}
+
+function AppendTopic($mysql, $sqlite, $topic, $book)
+{
+	if (strlen($topic) == 0) return 0; 
+	$code = 0;
+	$names = explode("/", $topic); 
+	foreach($names as $name){
+		if (strlen($name) == 0) continue; 
+		$code = GetTopicId($mysql, $name, $code);
+	}
+	if ($code) {
+		$sql = "INSERT INTO ref0(book, code) VALUES(?,?)";
+		$insert = $sqlite->prepare($sql);
+		$insert->execute(array($book, $code));
+		$insert->closeCursor();
+	}
 }
 
 function GetDescr($mysql, $md5sum)
@@ -77,9 +115,11 @@ function convert_books($mysql_db, $sqlite_db)
   $mysql_db->real_query("DELETE FROM authors");
 
   $sqltest = "
-	SELECT Id, Title, VolumeInfo, Series, Periodical, Author, Language, Topic, Filesize, Extension, DATE_FORMAT(TimeLastModified,'%y%m%d') As Time, identifier, md5, coverurl
+	SELECT 
+		Id, Title, VolumeInfo, Series, Periodical, Author, Language, Topic, Filesize, 
+		Extension, DATE_FORMAT(TimeLastModified,'%y%m%d') As Time, identifier, md5, coverurl, Topic
 	FROM updated
-	ORDER BY Id 
+	ORDER BY Id
   ";
 
   $auth = 0;
@@ -99,7 +139,7 @@ function convert_books($mysql_db, $sqlite_db)
 	if (strlen($title) == 0) $title = trim($row['Periodical']);
 	if (strlen($title) == 0) $title = trim($row['Series']);
 
-    echo $row['Time']." - ".$book." - ".$row['Extension']." - ".$row['Author']." - ".$title."\n";
+	echo $row['Time']." - ".$book." - ".$row['Extension']." - ".$row['Author']." - ".$title."\n";
 	$next = trim($row['Author']);
 	if ($name != $next) {
 	  $auth = GetAuthId($mysql_db, $next);
@@ -123,6 +163,8 @@ function convert_books($mysql_db, $sqlite_db)
 	$param_aid = $auth;
 	$param_bid = $book;
 	$stmt_book->execute();
+
+	AppendTopic($mysql_db, $sqlite_db, $row['Topic'], $book);
   }
 
   $stmt_book->close();
@@ -135,14 +177,10 @@ function convert_books($mysql_db, $sqlite_db)
 
 function convert_auth($mysql_db, $sqlite_db)
 {
-
-  $char_list = 'А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ы Э Ю Я A B C D E F G H I J K L M N O P Q R S T U V W X Y Z';
-
-  if (strpos($char_list, $letter) === false) { $letter = "#"; };
-
   $sqlite_db->query("begin transaction");
 
-  $sqltest = "SELECT auth.aid, auth.name, book.num FROM auth INNER JOIN (SELECT aid, COUNT(bid) AS num FROM book GROUP BY aid) AS book ON book.aid=auth.aid";
+  $sqltest = "SELECT auth.aid, auth.name, book.num FROM auth 
+		INNER JOIN (SELECT aid, COUNT(bid) AS num FROM book GROUP BY aid) AS book ON book.aid=auth.aid";
 
   $query = $mysql_db->query($sqltest);
   while ($row = $query->fetch_array()) {
@@ -154,6 +192,25 @@ function convert_auth($mysql_db, $sqlite_db)
     $sql = "INSERT INTO authors (id, number, letter, full_name, last_name, search_name) VALUES(?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     $insert->execute(array($row['aid'], $row['num'], $letter, $full_name, $full_name, $search_name));
+    $insert->closeCursor();
+  }
+  $query->close(); 
+
+  $sqlite_db->query("commit");
+}  
+
+function convert_topics($mysql_db, $sqlite_db)
+{
+  $sqlite_db->query("begin transaction");
+
+  $sqltest = "SELECT code, name, parent FROM topic ORDER BY code";
+
+  $query = $mysql_db->query($sqltest);
+  while ($row = $query->fetch_array()) {
+    echo $row['code']." - ".$row['name']."\n";
+    $sql = "INSERT INTO dir0(code, name, parent) VALUES(?,?,?)";
+    $insert = $sqlite_db->prepare($sql);
+    $insert->execute(array($row['code'], $row['name'], $row['parent']));
     $insert->closeCursor();
   }
   $query->close(); 
@@ -205,11 +262,28 @@ function FullImport($mysql_db, $file, $date)
   
   create_tables($sqlite_db);
   setup_params($sqlite_db, $date, "FULL");
+
+  $sqlite_db->query("DROP TABLE tables");
+  $sqlite_db->query("DROP TABLE dir0");
+  $sqlite_db->query("DROP TABLE ref0");
+
+  $sqlite_db->query("CREATE TABLE dir0(code INTEGER PRIMARY KEY, name, info, parent INTEGER NOT NULL)");
+  $sqlite_db->query("CREATE TABLE ref0(code INTEGER, book INTEGER, PRIMARY KEY(code, book))");
+  $sqlite_db->query("CREATE INDEX dir0_parent ON dir0(parent)");
+  $sqlite_db->query("CREATE INDEX ref0_book ON ref0(book)");
+
+  $sqlite_db->query("CREATE TABLE tables(id INTEGER PRIMARY KEY AUTOINCREMENT,title,
+	dir_file,dir_data,dir_type,dir_code,dir_name,dir_info,dir_prnt,
+	ref_file,ref_data,ref_type,ref_code,ref_book,fb2_code)");
+  
+  $sqlite_db->query("INSERT INTO tables(title,dir_data,dir_type,dir_code,dir_name,dir_prnt,ref_data,ref_type,ref_code,ref_book)
+	VALUES ('Тематический рубрикатор','dir0','INTEGER','code','name','parent','ref0','id','code','book')");
   
   convert_books($mysql_db, $sqlite_db);
   convert_auth($mysql_db, $sqlite_db);
   convert_dates($mysql_db, $sqlite_db);
-  
+  convert_topics($mysql_db, $sqlite_db);
+
   create_indexes($sqlite_db);
 }
 
