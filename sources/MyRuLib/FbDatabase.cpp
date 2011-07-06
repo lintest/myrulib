@@ -421,50 +421,18 @@ void FbMainDatabase::CreateDatabase()
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	/** TABLE authors **/
-	ExecuteUpdate(wxT(
-		"CREATE TABLE authors("
-			"id INTEGER PRIMARY KEY,"
-			"letter,"
-			"search_name,"
-			"full_name,"
-			"first_name,"
-			"middle_name,"
-			"last_name,"
-			"newid,"
-			"description)"
-	));
+	ExecuteUpdate(wxT("CREATE TABLE authors(id INTEGER PRIMARY KEY,letter,search_name,full_name,first_name,middle_name,last_name,newid,description)"));
 	ExecuteUpdate(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '(empty)')"));
 	ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter)"));
 	ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name)"));
 
 	/** TABLE books **/
-	ExecuteUpdate(wxT(
-		"CREATE TABLE books("
-			"id integer not null,"
-			"id_author integer not null,"
-			"title,"
-			"annotation,"
-			"genres,"
-			"deleted,"
-			"id_archive,"
-			"file_name,"
-			"file_size,"
-			"file_type,"
-			"description, "
-			"PRIMARY KEY(id, id_author))"
-	));
+	ExecuteUpdate(wxT("CREATE TABLE books(id INTEGER,id_author INTEGER,title,annotation,genres,deleted,id_archive,file_name,file_size,file_type,description,PRIMARY KEY(id,id_author))"));
 	ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author)"));
 	ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive)"));
 
 	/** TABLE archives **/
-	ExecuteUpdate(wxT("\
-		CREATE TABLE archives(\
-			id integer primary key,\
-			file_name text,\
-			file_path text,\
-			file_size integer,\
-			file_count integer);\
-	"));
+	ExecuteUpdate(wxT("CREATE TABLE archives(id INTEGER PRIMARY KEY,file_name,file_path,file_size,file_count)"));
 
 	/** TABLE sequences **/
 	ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null)"));
