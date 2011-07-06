@@ -23,9 +23,9 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 
 	wxString download = _("Download collection");
 	wxString choices[] = {
-		_("Flibusta"),
-		_("LibRusEc"),
-		_("Genesis"),
+		wxT("Flibusta"),
+		wxT("LibRusEc"),
+		wxT("Genesis"),
 	};
 	size_t choices_num = sizeof( choices ) / sizeof( wxString );
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-26 22:24+0300\n"
+"POT-Creation-Date: 2011-07-06 21:53+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,254 +23,1010 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: FbAboutDlg.cpp:8 FbMainMenu.cpp:55
+#: controls/FbLogModel.cpp:55 FbBookMenu.cpp:49 FbMainMenu.cpp:27
+#: FbPreviewWindow.cpp:67
+msgid "Copy"
+msgstr ""
+
+#: controls/FbLogModel.cpp:57 FbBookMenu.cpp:50 FbMainMenu.cpp:36
+#: FbPreviewWindow.cpp:69
+msgid "Select all"
+msgstr ""
+
+#: controls/FbLogModel.cpp:58 FbBookMenu.cpp:51 FbMainMenu.cpp:37
+#: FbPreviewWindow.cpp:70
+msgid "Undo selection"
+msgstr ""
+
+#: controls/FbLogModel.cpp:59
+msgid "Hide log window"
+msgstr ""
+
+#: dialogs/FbAboutDlg.cpp:8 FbMainMenu.cpp:79
 msgid "About"
 msgstr ""
 
-#: FbAuthorDlg.cpp:21
+#: dialogs/FbAuthorDlg.cpp:21
 msgid "Surname"
 msgstr ""
 
-#: FbAuthorDlg.cpp:22
+#: dialogs/FbAuthorDlg.cpp:22
 msgid "Name"
 msgstr ""
 
-#: FbAuthorDlg.cpp:23
+#: dialogs/FbAuthorDlg.cpp:23
 msgid "Middle-Name"
 msgstr ""
 
-#: FbAuthorDlg.cpp:50
+#: dialogs/FbAuthorDlg.cpp:50
 msgid "Add author"
 msgstr ""
 
-#: FbAuthorDlg.cpp:58
+#: dialogs/FbAuthorDlg.cpp:58
 msgid "Change author"
 msgstr ""
 
-#: FbAuthorDlg.cpp:177
+#: dialogs/FbAuthorDlg.cpp:177
 msgid "\"Surname\" field is empty"
 msgstr ""
 
-#: FbAuthorDlg.cpp:182
+#: dialogs/FbAuthorDlg.cpp:182
 msgid "Autor with same details aleready exists"
 msgstr ""
 
-#: FbAuthorDlg.cpp:186 FbAuthorDlg.cpp:310
+#: dialogs/FbAuthorDlg.cpp:186 dialogs/FbAuthorDlg.cpp:312
 msgid "Merge authors?"
 msgstr ""
 
-#: FbAuthorDlg.cpp:220 FbFrameAuth.cpp:223 FbFrameAuth.cpp:248
+#: dialogs/FbAuthorDlg.cpp:221 frames/FbFrameAuth.cpp:240 FbMainMenu.cpp:32
 msgid "Replace"
 msgstr ""
 
-#: FbAuthorDlg.cpp:230 FbMainFrame.cpp:308 FbMainFrame.cpp:319
+#: dialogs/FbAuthorDlg.cpp:231 FbMainFrame.cpp:419 FbMainFrame.cpp:430
 msgid "Find"
 msgstr ""
 
-#: FbAuthorDlg.cpp:251 FbColumns.cpp:8 FbEditBook.cpp:36 FbFrameAuth.cpp:71
-#: FbMenu.cpp:7
+#: dialogs/FbAuthorDlg.cpp:252 frames/FbFrameAuth.cpp:148 FbColumns.cpp:8
+#: FbEditBook.cpp:36 FbMenu.cpp:58
 msgid "Author"
 msgstr ""
 
-#: FbAuthorDlg.cpp:252 FbFrameAuth.cpp:72 FbFrameDate.cpp:49
-#: FbFrameGenr.cpp:51 FbFrameSeqn.cpp:71
+#: dialogs/FbAuthorDlg.cpp:253 frames/FbFrameAuth.cpp:149
+#: frames/FbFrameClss.cpp:59 frames/FbFrameDate.cpp:40
+#: frames/FbFrameGenr.cpp:35 frames/FbFrameSeqn.cpp:126
 msgid "Num."
 msgstr ""
 
-#: FbAuthorDlg.cpp:315
+#: dialogs/FbAuthorDlg.cpp:317
 msgid "Author not selected by replacement."
 msgstr ""
 
-#: FbAuthorDlg.cpp:337
+#: dialogs/FbAuthorDlg.cpp:338
 msgid "Replace author"
 msgstr ""
 
-#: FbAuthorDlg.cpp:381
+#: dialogs/FbAuthorDlg.cpp:384
 msgid "Delete author"
 msgstr ""
 
-#: FbAuthorDlg.cpp:382
+#: dialogs/FbAuthorDlg.cpp:385
 #, c-format
 msgid "and all of author's books (%d pcs.)?"
 msgstr ""
 
-#: FbAuthorDlg.cpp:383 FbConfigDlg.cpp:378 FbFrameSeqn.cpp:211
-#: FbParamsDlg.cpp:724 FbParamsDlg.cpp:811
+#: dialogs/FbAuthorDlg.cpp:386 dialogs/FbConfigDlg.cpp:401
+#: dialogs/FbConfigDlg.cpp:584 dialogs/FbParamsDlg.cpp:788
+#: dialogs/FbParamsDlg.cpp:875 frames/FbFrameSeqn.cpp:64
 msgid "Removing"
 msgstr ""
 
-#: FbBookData.cpp:73 FbBookPanel.cpp:367 FbFrameHtml.cpp:232
+#: dialogs/FbColumnDlg.cpp:73
+msgid "Columns"
+msgstr ""
+
+#: dialogs/FbColumnDlg.cpp:82
+msgid "Move field up"
+msgstr ""
+
+#: dialogs/FbColumnDlg.cpp:82 frames/FbFrameDown.cpp:41
+msgid "Up"
+msgstr ""
+
+#: dialogs/FbColumnDlg.cpp:83 frames/FbFrameDown.cpp:42
+msgid "Down"
+msgstr ""
+
+#: dialogs/FbColumnDlg.cpp:83
+msgid "Move field down"
+msgstr ""
+
+#: dialogs/FbColumnDlg.cpp:88
+msgid "Column"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:24 dialogs/FbConfigDlg.cpp:191
+msgid "Classifier name"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:35
+msgid "Classifier contents"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:54
+msgid "Detailed records"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:177
+msgid "Create new classifier"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:199
+msgid "Key type"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:325 dialogs/FbConfigDlg.cpp:464
+#: dialogs/FbParamsDlg.cpp:355 dialogs/FbParamsDlg.cpp:566
+#: dialogs/FbTitleDlg.cpp:36 dialogs/FbTitleDlg.cpp:115
+#: dialogs/FbTitleDlg.cpp:141 frames/FbFrameAuth.cpp:237
+#: frames/FbFrameClss.cpp:100 frames/FbFrameFldr.cpp:32
+#: frames/FbFrameHtml.cpp:93 frames/FbFrameSeqn.cpp:180 FbMainMenu.cpp:30
+msgid "Append"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:326 dialogs/FbConfigDlg.cpp:465
+#: dialogs/FbParamsDlg.cpp:356 dialogs/FbParamsDlg.cpp:567
+#: frames/FbFrameAuth.cpp:239 frames/FbFrameClss.cpp:102
+#: frames/FbFrameFldr.cpp:33 frames/FbFrameHtml.cpp:94
+#: frames/FbFrameSeqn.cpp:182 FbMainMenu.cpp:31
+msgid "Modify"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:327 dialogs/FbConfigDlg.cpp:466
+#: dialogs/FbParamsDlg.cpp:357 dialogs/FbParamsDlg.cpp:568
+#: dialogs/FbTitleDlg.cpp:37 dialogs/FbTitleDlg.cpp:116
+#: dialogs/FbTitleDlg.cpp:142 frames/FbFrameAuth.cpp:241
+#: frames/FbFrameClss.cpp:103 frames/FbFrameDown.cpp:44
+#: frames/FbFrameFldr.cpp:34 frames/FbFrameSeqn.cpp:183 FbExtractInfo.cpp:129
+#: FbMainMenu.cpp:33
+msgid "Delete"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:332 dialogs/FbParamsDlg.cpp:153
+#: dialogs/FbParamsDlg.cpp:362 dialogs/FbParamsDlg.cpp:573 FbColumns.cpp:12
+#: FbMenu.cpp:61
+msgid "Extension"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:333 dialogs/FbParamsDlg.cpp:363
+msgid "Program"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:354 dialogs/FbParamsDlg.cpp:821
+msgid "Input new filetype"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:354 dialogs/FbParamsDlg.cpp:821 FbMainMenu.cpp:42
+msgid "Settings"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:381 dialogs/FbParamsDlg.cpp:852
+#: dialogs/FbViewerDlg.cpp:19 dialogs/FbViewerDlg.cpp:44
+msgid "Select the application to view files"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:400 dialogs/FbParamsDlg.cpp:874
+msgid "Delete file type"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:463
+msgid "Create"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:555
+msgid "Append classifier"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:583
+msgid "Delete classifier"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:733
+msgid "Library name:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:742 dialogs/FbDataOpenDlg.cpp:74
+msgid "Library folder:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:751
+msgid "Short description:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:772
+msgid "Host name:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:782
+msgid "Address:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:791 dialogs/FbParamsDlg.cpp:288
+msgid "User name:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:798 dialogs/FbParamsDlg.cpp:295
+msgid "Password:"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:814
+msgid "Library options"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:822 dialogs/FbParamsDlg.cpp:611
+#: dialogs/FbReaderDlg.cpp:130 dialogs/FbTitleDlg.cpp:336
+msgid "General"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:823 dialogs/FbParamsDlg.cpp:612
+msgid "Network"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:824 dialogs/FbParamsDlg.cpp:613
+#: frames/FbFrameInfo.cpp:149
+msgid "File types"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:825
+msgid "Tables"
+msgstr ""
+
+#: dialogs/FbConfigDlg.cpp:845 dialogs/FbDataOpenDlg.cpp:172
+#: dialogs/FbDirImportDlg.cpp:51 dialogs/FbParamsDlg.cpp:644
+msgid "Select folder"
+msgstr ""
+
+#: dialogs/FbConvertDlg.cpp:256
+#, c-format
+msgid "can't delete file %s"
+msgstr ""
+
+#: dialogs/FbConvertDlg.cpp:343
+msgid "Cancel"
+msgstr ""
+
+#: dialogs/FbConvertDlg.cpp:468
+msgid "Close"
+msgstr ""
+
+#: dialogs/FbConvertDlg.cpp:473
+#, c-format
+msgid "Export completed with %d errors"
+msgstr ""
+
+#: dialogs/FbConvertDlg.cpp:474
+msgid "Export completed successfully"
+msgstr ""
+
+#: dialogs/FbConvertDlg.cpp:475
+msgid "Export aborted by user"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:24 FbImportThread.cpp:195
+msgid "Download collection"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:42
+msgid "Select action:"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:47
+msgid "Open (or create) local collection"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:55
+msgid "File name:"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:91
+msgid "Run a full scan for library files"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:97 dialogs/FbDirImportDlg.cpp:29
+msgid "Process only new files"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:101 dialogs/FbDirImportDlg.cpp:33
+msgid "Exclude files missing from the collection"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:121 FbMainMenu.cpp:64
+msgid "Open (or create) collection"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:150
+msgid "Enter collection filename"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:153
+msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
+msgstr ""
+
+#: dialogs/FbDataOpenDlg.cpp:249
+msgid "Processing collection"
+msgstr ""
+
+#: dialogs/FbDirImportDlg.cpp:22
+msgid "Select folder to recursive import"
+msgstr ""
+
+#: dialogs/FbDirImportDlg.cpp:75 dialogs/FbDirImportDlg.cpp:78
+#: FbMainMenu.cpp:18
+msgid "Add folder"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:21
+msgid "Export to external storage"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:34 dialogs/FbParamsDlg.cpp:459
+msgid "Destination folder:"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:49
+msgid "Use Author (without co-Authors)"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:56
+msgid "File name"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:57 frames/FbFrameInfo.cpp:138 FbColumns.cpp:13
+msgid "Size, Kb"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:65
+msgid "Export As..."
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:95 dialogs/FbExportDlg.cpp:116
+#: dialogs/FbParamsDlg.cpp:539 dialogs/FbParamsDlg.cpp:733
+#: dialogs/FbParamsDlg.cpp:766 dialogs/FbParamsDlg.cpp:972
+msgid "filename"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:141
+msgid "Select a destination folder"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:176
+msgid "Destination folder not found"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:180
+msgid "Unable write files to destination folder"
+msgstr ""
+
+#: dialogs/FbExportDlg.cpp:203
+msgid "Not selected any book"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:14
+msgid "Filter settings"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:23
+msgid "Show books by allocation"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:25
+msgid "Library books (web)"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:29
+msgid "Deleted books"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:33
+msgid "Local books"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:43 dialogs/FbParamsDlg.cpp:384 FbColumns.cpp:11
+#: FbMenu.cpp:60
+msgid "Language"
+msgstr ""
+
+#: dialogs/FbFilterDlg.cpp:47 frames/FbFrameInfo.cpp:136
+msgid "File extension"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:129
+msgid "Full file path with name and extension"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:130
+msgid "Full file path without extension"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:131
+msgid "File name without path and extension"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:132
+msgid "Target directory"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:133 dialogs/FbParamsDlg.cpp:490
+msgid "File name extension"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:224
+msgid "List of authors and books:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:225
+msgid "Toolbar:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:226
+msgid "Information:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:227
+msgid "Dialog windows:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:231
+msgid "Reset fonts settings"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:267
+msgid "Automatically begin files downloading"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:272
+msgid "Use proxy-server"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:304
+msgid "Load images for author's description"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:307
+msgid "Folder to save downloads:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:315
+msgid "Delete downloaded files when download query removed"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:323
+msgid "Download timout (seconds):"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:330
+msgid "Number of attempts:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:394
+msgid "Save full path of the file when importing"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:397
+msgid "Temporary folder:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:409
+msgid "Wine temp folder:"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:421
+msgid "Delete temporary files when you exit the program"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:424
+msgid "Delete files when you delete a book"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:427
+msgid "Clear the log window when it closes"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:430
+msgid "Use a gray font for missing books"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:435
+msgid "Maximum width of the cover image"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:467
+msgid "Exported collection structure"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:481
+msgid "First letter of author name"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:482
+msgid "Full author name"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:483
+msgid "Short-cut author name"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:484
+msgid "Sequence name"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:485
+msgid "Number in sequence"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:486
+msgid "Internal book code"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:487 dialogs/FbTitleDlg.cpp:175
+msgid "Book title"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:488
+msgid "Book language"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:489
+msgid "Book file MD5 sum"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:507
+msgid "Transliterate folder name"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:510
+msgid "Transliterate filename"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:513
+msgid "Replace spaces by underscores"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:518
+msgid "Number of digits in the number"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:535
+msgid "Format of exporting collection"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:574
+msgid "Export script"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:614 FbMainFrame.cpp:436 FbMainMenu.cpp:20
+msgid "Export"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:615
+msgid "Scripts"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:616
+msgid "Fonts"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:705
+msgid "Program settings"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:725
+msgid "Append export script"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:752
+msgid "Modify export script"
+msgstr ""
+
+#: dialogs/FbParamsDlg.cpp:787
+msgid "Delete export script"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:31
+msgid "Main font"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:39 dialogs/FbReaderDlg.cpp:93
+msgid "Font size"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:46
+msgid "Interline space"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:53
+msgid "Font colour"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:60
+msgid "Background colour"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:85
+msgid "Header font"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:100
+msgid "Header colour"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:131 frames/FbCoolReader.cpp:101
+msgid "Page"
+msgstr ""
+
+#: dialogs/FbReaderDlg.cpp:174 frames/FbCoolReader.cpp:631 FbMainMenu.cpp:40
+msgid "Cool Reader options"
+msgstr ""
+
+#: dialogs/FbSequenDlg.cpp:13
+msgid "Series name:"
+msgstr ""
+
+#: dialogs/FbSequenDlg.cpp:34
+msgid "Append series"
+msgstr ""
+
+#: dialogs/FbSequenDlg.cpp:42
+msgid "Modify series"
+msgstr ""
+
+#: dialogs/FbSequenDlg.cpp:129
+msgid "\"Series name\" field is empty"
+msgstr ""
+
+#: dialogs/FbSequenDlg.cpp:134
+msgid "Series aleready exists"
+msgstr ""
+
+#: dialogs/FbSequenDlg.cpp:137
+msgid "Merge series?"
+msgstr ""
+
+#: dialogs/FbTitleDlg.cpp:106 FbColumns.cpp:9
+msgid "#"
+msgstr ""
+
+#: dialogs/FbTitleDlg.cpp:191 frames/FbFrameBase.h:45 FbMainMenu.cpp:52
+msgid "Authors"
+msgstr ""
+
+#: dialogs/FbTitleDlg.cpp:212 frames/FbFrameSeqn.h:30 FbEditBook.cpp:37
+#: FbMainMenu.cpp:54
+msgid "Series"
+msgstr ""
+
+#: dialogs/FbTitleDlg.cpp:233 frames/FbFrameGenr.h:19 FbMainMenu.cpp:53
+msgid "Genres"
+msgstr ""
+
+#: dialogs/FbTitleDlg.cpp:326 FbBookMenu.cpp:76
+msgid "Properties"
+msgstr ""
+
+#: dialogs/FbViewerDlg.cpp:13
+msgid "Customize"
+msgstr ""
+
+#: dialogs/FbViewerDlg.cpp:46
+msgid "Executable files"
+msgstr ""
+
+#: frames/FbCoolReader.cpp:100 FbColumns.cpp:7 FbColumns.cpp:122
+#: FbEditBook.cpp:67 FbMenu.cpp:57
+msgid "Title"
+msgstr ""
+
+#: frames/FbCoolReader.cpp:630
+msgid "Table of Contents"
+msgstr ""
+
+#: frames/FbFrameAuth.cpp:244
+msgid "Online authors page"
+msgstr ""
+
+#: frames/FbFrameClss.cpp:58
+msgid "Classifier"
+msgstr ""
+
+#: frames/FbFrameDate.cpp:39 FbColumns.cpp:16 FbMenu.cpp:63
+msgid "Date"
+msgstr ""
+
+#: frames/FbFrameDate.h:16 FbMainMenu.cpp:55
+msgid "Calendar"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:38
+msgid "Start"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:38
+msgid "Start downloading"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:39
+msgid "Stop"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:39
+msgid "Stop downloading"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:41
+msgid "Move up in queue"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:42
+msgid "Move down in queue"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:44
+msgid "Remove download"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:66 frames/FbFrameFldr.cpp:56
+msgid "Folders"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:72
+msgid "Queue"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:73
+msgid "Ready"
+msgstr ""
+
+#: frames/FbFrameDown.cpp:74
+msgid "Fault"
+msgstr ""
+
+#: frames/FbFrameDown.h:10 FbMainMenu.cpp:59
+msgid "Downloads"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:64
+msgid "Bookmarks"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:65
+msgid "Favorites"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:78
+msgid "Remarks"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:119
+msgid "Add folder?"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:119
+msgid "Input name of new folder:"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:149
+msgid "Change folder?"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:149
+msgid "Input new folder name:"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:175
+#, c-format
+msgid "Delete folder \"%s\"?"
+msgstr ""
+
+#: frames/FbFrameFldr.cpp:176
+msgid "Delete folder?"
+msgstr ""
+
+#: frames/FbFrameFldr.h:10 FbMainMenu.cpp:58
+msgid "My folders"
+msgstr ""
+
+#: frames/FbFrameGenr.cpp:34
+msgid "List of genres"
+msgstr ""
+
+#: frames/FbFrameHtml.cpp:84
+msgid "Comment:"
+msgstr ""
+
+#: frames/FbFrameHtml.cpp:123 frames/FbFrameInfo.cpp:197
+msgid "Select a file to export report"
+msgstr ""
+
+#: frames/FbFrameHtml.cpp:126 frames/FbFrameInfo.cpp:200
+msgid ""
+"HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
+msgstr ""
+
+#: frames/FbFrameHtml.cpp:224 FbBookData.cpp:75 FbBookPanel.cpp:443
 msgid "Confirmation"
 msgstr ""
 
-#: FbBookData.cpp:73
+#: frames/FbFrameHtml.cpp:224
+msgid "Remove comment?"
+msgstr ""
+
+#: frames/FbFrameHtml.h:19 models/FbFldrTree.cpp:23
+msgid "Comments"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:55 FbMainMenu.cpp:67
+msgid "Information about collection"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:97
+msgid "Total quantity"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:106
+msgid "Total books count:"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:110
+msgid "Authors counting"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:117
+msgid "Authors count:"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:121
+msgid "Total files size, Mb:"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:123
+msgid "First reciept:"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:125
+msgid "Last reciept:"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:137
+msgid "Count"
+msgstr ""
+
+#: frames/FbFrameInfo.cpp:173
+msgid "Collection info"
+msgstr ""
+
+#: frames/FbFrameInfo.h:15
+msgid "Information"
+msgstr ""
+
+#: frames/FbFrameSeqn.cpp:63
+#, c-format
+msgid "Delete series \"%s\"?"
+msgstr ""
+
+#: frames/FbFrameSeqn.cpp:125 FbColumns.cpp:18
+msgid "Ser."
+msgstr ""
+
+#: models/FbFilterTree.h:11
+msgid "All"
+msgstr ""
+
+#: FbBookData.cpp:75
 msgid "Download book file?"
 msgstr ""
 
-#: FbBookData.cpp:157
+#: FbBookData.cpp:251
 msgid "Associated application not found"
 msgstr ""
 
-#: FbBookMenu.cpp:63
+#: FbBookMenu.cpp:35
 msgid "Open book"
 msgstr ""
 
-#: FbBookMenu.cpp:67
+#: FbBookMenu.cpp:39
 msgid "Delete download query"
 msgstr ""
 
-#: FbBookMenu.cpp:68
-msgid "Retry rownload"
+#: FbBookMenu.cpp:40
+msgid "Retry download"
 msgstr ""
 
-#: FbBookMenu.cpp:70
+#: FbBookMenu.cpp:42
 msgid "Download a file"
 msgstr ""
 
-#: FbBookMenu.cpp:73
+#: FbBookMenu.cpp:45
 msgid "Download via browser"
 msgstr ""
 
-#: FbBookMenu.cpp:74
+#: FbBookMenu.cpp:46
 msgid "Online books page"
 msgstr ""
 
-#: FbBookMenu.cpp:77 FbMainMenu.cpp:80
-msgid "Select all"
-msgstr ""
-
-#: FbBookMenu.cpp:78 FbMainMenu.cpp:81
-msgid "Undo selection"
-msgstr ""
-
-#: FbBookMenu.cpp:79 FbMainMenu.cpp:95
+#: FbBookMenu.cpp:52 FbMainMenu.cpp:84
 msgid "Table columns"
 msgstr ""
 
-#: FbBookMenu.cpp:82
+#: FbBookMenu.cpp:55
 msgid "Delete book"
 msgstr ""
 
-#: FbBookMenu.cpp:85 FbMainMenu.cpp:83
+#: FbBookMenu.cpp:58 FbMainMenu.cpp:86
 msgid "Sort by"
 msgstr ""
 
-#: FbBookMenu.cpp:86 FbMainMenu.cpp:84
+#: FbBookMenu.cpp:59 FbMainMenu.cpp:89
 msgid "Filter setup"
 msgstr ""
 
-#: FbBookMenu.cpp:87 FbMainMenu.cpp:85
+#: FbBookMenu.cpp:60 FbMainMenu.cpp:90
 msgid "Use filter"
 msgstr ""
 
-#: FbBookMenu.cpp:96
+#: FbBookMenu.cpp:69
 msgid "Add to favourites"
 msgstr ""
 
-#: FbBookMenu.cpp:98
+#: FbBookMenu.cpp:71
 msgid "Rate this book"
 msgstr ""
 
-#: FbBookMenu.cpp:99
+#: FbBookMenu.cpp:72
 msgid "Delete bookmark"
 msgstr ""
 
-#: FbBookMenu.cpp:102 FbMainMenu.cpp:87
+#: FbBookMenu.cpp:75 FbMainMenu.cpp:92
 msgid "Add comments"
 msgstr ""
 
-#: FbBookMenu.cpp:107
+#: FbBookMenu.cpp:81
 msgid "Jump to author"
 msgstr ""
 
-#: FbBookMenu.cpp:136
+#: FbBookMenu.cpp:109
 msgid "Jump to series"
 msgstr ""
 
-#: FbBookMenu.cpp:165
+#: FbBookMenu.cpp:137
 msgid "Add to folders"
 msgstr ""
 
-#: FbBookPanel.cpp:366
+#: FbBookPanel.cpp:442
 #, c-format
 msgid "Delete selected books (%d pcs)?"
 msgstr ""
 
-#: FbCollection.cpp:165
+#: FbCollection.cpp:141
 msgid "(Misc.)"
 msgstr ""
 
-#: FbCollection.cpp:177 FbConst.cpp:27
+#: FbCollection.cpp:160
 msgid "(no Author)"
-msgstr ""
-
-#: FbColumnDlg.cpp:73
-msgid "Columns"
-msgstr ""
-
-#: FbColumnDlg.cpp:82
-msgid "Move field up"
-msgstr ""
-
-#: FbColumnDlg.cpp:82 FbFrameDown.cpp:46
-msgid "Up"
-msgstr ""
-
-#: FbColumnDlg.cpp:83 FbFrameDown.cpp:47
-msgid "Down"
-msgstr ""
-
-#: FbColumnDlg.cpp:83
-msgid "Move field down"
-msgstr ""
-
-#: FbColumnDlg.cpp:88
-msgid "Column"
-msgstr ""
-
-#: FbColumns.cpp:7 FbColumns.cpp:106 FbEditBook.cpp:67 FbMenu.cpp:6
-msgid "Title"
-msgstr ""
-
-#: FbColumns.cpp:9
-msgid "#"
 msgstr ""
 
 #: FbColumns.cpp:10 FbEditBook.cpp:38
 msgid "Genre"
 msgstr ""
 
-#: FbColumns.cpp:11 FbFilterDlg.cpp:37 FbMenu.cpp:9 FbParamsDlg.cpp:346
-msgid "Language"
-msgstr ""
-
-#: FbColumns.cpp:12 FbConfigDlg.cpp:83 FbMenu.cpp:10 FbParamsDlg.cpp:160
-#: FbParamsDlg.cpp:324 FbParamsDlg.cpp:512
-msgid "Extension"
-msgstr ""
-
-#: FbColumns.cpp:13 FbExportDlg.cpp:57 FbFrameInfo.cpp:144
-msgid "Size, Kb"
-msgstr ""
-
 #: FbColumns.cpp:14
 msgid "Code"
 msgstr ""
 
-#: FbColumns.cpp:15 FbMenu.cpp:8
+#: FbColumns.cpp:15 FbMenu.cpp:59
 msgid "Rating"
-msgstr ""
-
-#: FbColumns.cpp:16 FbFrameDate.cpp:48 FbMenu.cpp:12
-msgid "Date"
 msgstr ""
 
 #: FbColumns.cpp:17
 msgid "Size, byte"
-msgstr ""
-
-#: FbColumns.cpp:18 FbFrameSeqn.cpp:70 FbFrameSeqn.cpp:83
-msgid "Ser."
 msgstr ""
 
 #: FbColumns.cpp:19
@@ -281,512 +1037,49 @@ msgstr ""
 msgid "Downloaded"
 msgstr ""
 
-#: FbConfigDlg.cpp:76 FbFrameAuth.cpp:220 FbFrameAuth.cpp:246
-#: FbFrameFldr.cpp:45 FbFrameHtml.cpp:98 FbFrameSeqn.cpp:146
-#: FbFrameSeqn.cpp:237 FbParamsDlg.cpp:317 FbParamsDlg.cpp:505
-msgid "Append"
-msgstr ""
-
-#: FbConfigDlg.cpp:77 FbFrameAuth.cpp:222 FbFrameAuth.cpp:247
-#: FbFrameFldr.cpp:46 FbFrameHtml.cpp:99 FbFrameSeqn.cpp:148
-#: FbFrameSeqn.cpp:238 FbParamsDlg.cpp:318 FbParamsDlg.cpp:506
-msgid "Modify"
-msgstr ""
-
-#: FbConfigDlg.cpp:78 FbExtractInfo.cpp:128 FbFrameAuth.cpp:224
-#: FbFrameAuth.cpp:249 FbFrameDown.cpp:49 FbFrameFldr.cpp:47
-#: FbFrameSeqn.cpp:149 FbFrameSeqn.cpp:239 FbParamsDlg.cpp:319
-#: FbParamsDlg.cpp:507
-msgid "Delete"
-msgstr ""
-
-#: FbConfigDlg.cpp:84 FbParamsDlg.cpp:325
-msgid "Program"
-msgstr ""
-
-#: FbConfigDlg.cpp:129
-msgid "Library name:"
-msgstr ""
-
-#: FbConfigDlg.cpp:138 FbDataOpenDlg.cpp:52
-msgid "Library folder:"
-msgstr ""
-
-#: FbConfigDlg.cpp:147
-msgid "Short description:"
-msgstr ""
-
-#: FbConfigDlg.cpp:168
-msgid "Host name:"
-msgstr ""
-
-#: FbConfigDlg.cpp:178
-msgid "Address:"
-msgstr ""
-
-#: FbConfigDlg.cpp:187
-msgid "User name:"
-msgstr ""
-
-#: FbConfigDlg.cpp:194
-msgid "Password:"
-msgstr ""
-
-#: FbConfigDlg.cpp:218 FbParamsDlg.cpp:556
-msgid "General"
-msgstr ""
-
-#: FbConfigDlg.cpp:219 FbParamsDlg.cpp:557
-msgid "Network"
-msgstr ""
-
-#: FbConfigDlg.cpp:220 FbFrameInfo.cpp:155 FbParamsDlg.cpp:558
-msgid "File types"
-msgstr ""
-
-#: FbConfigDlg.cpp:245 FbDataOpenDlg.cpp:122 FbParamsDlg.cpp:588
-msgid "Select folder"
-msgstr ""
-
-#: FbConfigDlg.cpp:284
-msgid "Library options"
-msgstr ""
-
-#: FbConfigDlg.cpp:324 FbParamsDlg.cpp:757
-msgid "Input new filetype"
-msgstr ""
-
-#: FbConfigDlg.cpp:324 FbMainMenu.cpp:42 FbParamsDlg.cpp:757
-msgid "Settings"
-msgstr ""
-
-#: FbConfigDlg.cpp:355 FbParamsDlg.cpp:788 FbViewerDlg.cpp:19
-#: FbViewerDlg.cpp:44
-msgid "Select the application to view files"
-msgstr ""
-
-#: FbConfigDlg.cpp:377 FbParamsDlg.cpp:810
-msgid "Delete file type"
-msgstr ""
-
-#: FbConst.cpp:40
+#: FbConst.cpp:50
 msgid "Clear"
 msgstr ""
 
-#: FbConvertDlg.cpp:256
-#, c-format
-msgid "can't delete file %s"
-msgstr ""
-
-#: FbConvertDlg.cpp:343
-msgid "Cancel"
-msgstr ""
-
-#: FbConvertDlg.cpp:465
-msgid "Close"
-msgstr ""
-
-#: FbConvertDlg.cpp:470
-#, c-format
-msgid "Export completed with %d errors"
-msgstr ""
-
-#: FbConvertDlg.cpp:471
-msgid "Export completed successfully"
-msgstr ""
-
-#: FbConvertDlg.cpp:472
-msgid "Export aborted by user"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:33
-msgid "File name:"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:69
-msgid "Update zip files catalog"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:77
-msgid "Process only new files"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:93 FbMainMenu.cpp:28
-msgid "Open (or create) collection"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:100
-msgid "Enter collection filename"
-msgstr ""
-
-#: FbDataOpenDlg.cpp:103
-msgid "Database file (*.db)|*.db|All files (*.*)|*.*"
-msgstr ""
-
-#: FbDatabase.cpp:138
+#: FbDatabase.cpp:140
 msgid "Search template"
 msgstr ""
 
-#: FbDatabase.cpp:368
+#: FbDatabase.cpp:387
 #, c-format
 msgid "Upgrade database to version %d"
 msgstr ""
 
-#: FbDatabase.cpp:377
+#: FbDatabase.cpp:396
 msgid "Database version mismatch"
 msgstr ""
 
-#: FbDatabase.cpp:380
+#: FbDatabase.cpp:399
 #, c-format
 msgid "Need a new version %d, but used the old %d."
 msgstr ""
 
-#: FbDatabase.cpp:393
+#: FbDatabase.cpp:413
 msgid "Create database"
 msgstr ""
 
-#: FbDatabase.cpp:393
+#: FbDatabase.cpp:413
 msgid "Open database"
 msgstr ""
 
-#: FbDatabase.cpp:591
+#: FbDatabase.cpp:577
 msgid "The best"
 msgstr ""
 
-#: FbDatabase.cpp:592 FbGenres.cpp:263
+#: FbDatabase.cpp:578 FbGenres.cpp:263
 msgid "Other"
 msgstr ""
 
-#: FbEditBook.cpp:37 FbFrameSeqn.h:18 FbMainMenu.cpp:10
-msgid "Series"
+#: FbFilterThread.cpp:20
+msgid "Create filter"
 msgstr ""
 
-#: FbExportDlg.cpp:21
-msgid "Export to external storage"
-msgstr ""
-
-#: FbExportDlg.cpp:34 FbParamsDlg.cpp:411
-msgid "Destination folder:"
-msgstr ""
-
-#: FbExportDlg.cpp:49
-msgid "Use Author (without co-Authors)"
-msgstr ""
-
-#: FbExportDlg.cpp:56
-msgid "File name"
-msgstr ""
-
-#: FbExportDlg.cpp:65
-msgid "Export As..."
-msgstr ""
-
-#: FbExportDlg.cpp:95 FbExportDlg.cpp:116 FbParamsDlg.cpp:350
-#: FbParamsDlg.cpp:477 FbParamsDlg.cpp:669 FbParamsDlg.cpp:702
-#: FbParamsDlg.cpp:895
-msgid "filename"
-msgstr ""
-
-#: FbExportDlg.cpp:141
-msgid "Select a destination folder"
-msgstr ""
-
-#: FbExportDlg.cpp:176
-msgid "Destination folder not found"
-msgstr ""
-
-#: FbExportDlg.cpp:180
-msgid "Unable write files to destination folder"
-msgstr ""
-
-#: FbExportDlg.cpp:203
-msgid "Not selected any book"
-msgstr ""
-
-#: FbFilterDlg.cpp:12
-msgid "Filter settings"
-msgstr ""
-
-#: FbFilterDlg.cpp:21
-msgid "Show books by allocation"
-msgstr ""
-
-#: FbFilterDlg.cpp:23
-msgid "Library books (web)"
-msgstr ""
-
-#: FbFilterDlg.cpp:27
-msgid "Local books"
-msgstr ""
-
-#: FbFilterDlg.cpp:41 FbFrameInfo.cpp:142
-msgid "File extension"
-msgstr ""
-
-#: FbFilterTree.h:11
-msgid "All"
-msgstr ""
-
-#: FbFldrTree.cpp:23 FbFrameHtml.h:18
-msgid "Comments"
-msgstr ""
-
-#: FbFrameAuth.cpp:227 FbFrameAuth.cpp:251
-msgid "Online authors page"
-msgstr ""
-
-#: FbFrameAuth.cpp:233 FbFrameBase.cpp:231 FbFrameInfo.cpp:229
-#: FbFrameSeqn.cpp:224 FbMainMenu.cpp:60
-msgid "&File"
-msgstr ""
-
-#: FbFrameAuth.cpp:234 FbFrameBase.cpp:232 FbFrameInfo.cpp:230
-#: FbFrameSeqn.cpp:225 FbMainMenu.cpp:61
-msgid "&Library"
-msgstr ""
-
-#: FbFrameAuth.cpp:235 FbFrameBase.cpp:233 FbFrameInfo.cpp:231
-#: FbFrameSeqn.cpp:226 FbMainMenu.cpp:62
-msgid "&Catalog"
-msgstr ""
-
-#: FbFrameAuth.cpp:236
-msgid "&Authors"
-msgstr ""
-
-#: FbFrameAuth.cpp:237 FbFrameBase.cpp:234 FbFrameSeqn.cpp:228
-msgid "&Books"
-msgstr ""
-
-#: FbFrameAuth.cpp:238 FbFrameBase.cpp:235 FbFrameInfo.cpp:232
-#: FbFrameSeqn.cpp:229 FbMainMenu.cpp:63
-msgid "&View"
-msgstr ""
-
-#: FbFrameAuth.cpp:239 FbFrameBase.cpp:236 FbFrameInfo.cpp:233
-#: FbFrameSeqn.cpp:230 FbMainMenu.cpp:64
-msgid "&Tools"
-msgstr ""
-
-#: FbFrameAuth.cpp:240 FbFrameBase.cpp:237 FbFrameInfo.cpp:234
-#: FbFrameSeqn.cpp:231 FbMainMenu.cpp:65
-msgid "&Window"
-msgstr ""
-
-#: FbFrameAuth.cpp:241 FbFrameBase.cpp:238 FbFrameInfo.cpp:235
-#: FbFrameSeqn.cpp:232 FbMainMenu.cpp:66
-msgid "&?"
-msgstr ""
-
-#: FbFrameAuth.h:24 FbMainMenu.cpp:8
-msgid "Authors"
-msgstr ""
-
-#: FbFrameDate.h:16 FbMainMenu.cpp:11
-msgid "Calendar"
-msgstr ""
-
-#: FbFrameDown.cpp:43
-msgid "Start"
-msgstr ""
-
-#: FbFrameDown.cpp:43
-msgid "Start downloading"
-msgstr ""
-
-#: FbFrameDown.cpp:44
-msgid "Stop"
-msgstr ""
-
-#: FbFrameDown.cpp:44
-msgid "Stop downloading"
-msgstr ""
-
-#: FbFrameDown.cpp:46
-msgid "Move up in queue"
-msgstr ""
-
-#: FbFrameDown.cpp:47
-msgid "Move down in queue"
-msgstr ""
-
-#: FbFrameDown.cpp:49
-msgid "Remove download"
-msgstr ""
-
-#: FbFrameDown.cpp:72 FbFrameFldr.cpp:70
-msgid "Folders"
-msgstr ""
-
-#: FbFrameDown.cpp:78
-msgid "Queue"
-msgstr ""
-
-#: FbFrameDown.cpp:79
-msgid "Ready"
-msgstr ""
-
-#: FbFrameDown.cpp:80
-msgid "Fault"
-msgstr ""
-
-#: FbFrameDown.h:10 FbMainMenu.cpp:15
-msgid "Downloads"
-msgstr ""
-
-#: FbFrameFind.cpp:57
-#, c-format
-msgid "Nothing was found on pattern \"%s\""
-msgstr ""
-
-#: FbFrameFind.cpp:58
-msgid "Searching"
-msgstr ""
-
-#: FbFrameFldr.cpp:78
-msgid "Bookmarks"
-msgstr ""
-
-#: FbFrameFldr.cpp:79
-msgid "Favorites"
-msgstr ""
-
-#: FbFrameFldr.cpp:92
-msgid "Remarks"
-msgstr ""
-
-#: FbFrameFldr.cpp:133
-msgid "Add folder?"
-msgstr ""
-
-#: FbFrameFldr.cpp:133
-msgid "Input name of new folder:"
-msgstr ""
-
-#: FbFrameFldr.cpp:163
-msgid "Change folder?"
-msgstr ""
-
-#: FbFrameFldr.cpp:163
-msgid "Input new folder name:"
-msgstr ""
-
-#: FbFrameFldr.cpp:189
-#, c-format
-msgid "Delete folder \"%s\"?"
-msgstr ""
-
-#: FbFrameFldr.cpp:190
-msgid "Delete folder?"
-msgstr ""
-
-#: FbFrameFldr.h:10 FbMainMenu.cpp:14
-msgid "My folders"
-msgstr ""
-
-#: FbFrameGenr.cpp:50
-msgid "List of genres"
-msgstr ""
-
-#: FbFrameGenr.h:19 FbMainMenu.cpp:9
-msgid "Genres"
-msgstr ""
-
-#: FbFrameHtml.cpp:89
-msgid "Comment:"
-msgstr ""
-
-#: FbFrameHtml.cpp:131 FbFrameInfo.cpp:206
-msgid "Select a file to export report"
-msgstr ""
-
-#: FbFrameHtml.cpp:134 FbFrameInfo.cpp:209
-msgid ""
-"HTML files (*.html; *.htm)|*.html;*.HTML;*.HTM;*.htm|All files (*.*)|*.*"
-msgstr ""
-
-#: FbFrameHtml.cpp:232
-msgid "Remove comment?"
-msgstr ""
-
-#: FbFrameInfo.cpp:61 FbMainMenu.cpp:31
-msgid "Information about collection"
-msgstr ""
-
-#: FbFrameInfo.cpp:103
-msgid "Total quantity"
-msgstr ""
-
-#: FbFrameInfo.cpp:112
-msgid "Total books count:"
-msgstr ""
-
-#: FbFrameInfo.cpp:116
-msgid "Authors counting"
-msgstr ""
-
-#: FbFrameInfo.cpp:123
-msgid "Authors count:"
-msgstr ""
-
-#: FbFrameInfo.cpp:127
-msgid "Total files size, Mb:"
-msgstr ""
-
-#: FbFrameInfo.cpp:129
-msgid "First reciept:"
-msgstr ""
-
-#: FbFrameInfo.cpp:131
-msgid "Last reciept:"
-msgstr ""
-
-#: FbFrameInfo.cpp:143
-msgid "Count"
-msgstr ""
-
-#: FbFrameInfo.cpp:181
-msgid "Collection info"
-msgstr ""
-
-#: FbFrameInfo.cpp:240 FbMainMenu.cpp:20 FbMainMenu.cpp:71
-msgid "Add file"
-msgstr ""
-
-#: FbFrameInfo.cpp:241 FbMainMenu.cpp:21 FbMainMenu.cpp:72
-msgid "Add folder"
-msgstr ""
-
-#: FbFrameInfo.cpp:242
-msgid "Save report as..."
-msgstr ""
-
-#: FbFrameInfo.cpp:244 FbMainMenu.cpp:23 FbMainMenu.cpp:75
-msgid "Exit"
-msgstr ""
-
-#: FbFrameInfo.h:15
-msgid "Information"
-msgstr ""
-
-#: FbFrameSeqn.cpp:93 FbMainFrame.cpp:325 FbParamsDlg.cpp:559
-msgid "Export"
-msgstr ""
-
-#: FbFrameSeqn.cpp:93 FbMainFrame.cpp:325
-msgid "Export to external device"
-msgstr ""
-
-#: FbFrameSeqn.cpp:210
-#, c-format
-msgid "Delete series \"%s\"?"
-msgstr ""
-
-#: FbFrameSeqn.cpp:227
-msgid "&Series"
-msgstr ""
-
-#: FbGenreThread.cpp:11 FbMainMenu.cpp:32
+#: FbGenreThread.cpp:12 FbMainMenu.cpp:68
 msgid "Rebuild the list of genres"
 msgstr ""
 
@@ -1354,645 +1647,468 @@ msgstr ""
 msgid "No genre"
 msgstr ""
 
-#: FbImportThread.cpp:93 FbImportThread.cpp:491
-#, c-format
-msgid "Import file %s"
-msgstr ""
-
-#: FbImportThread.cpp:115
-#, c-format
-msgid "Skip entry %s"
-msgstr ""
-
-#: FbImportThread.cpp:120
-#, c-format
-msgid "Import zip entry %s"
-msgstr ""
-
-#: FbImportThread.cpp:153
-#, c-format
-msgid "XML parsing error: '%s' at line %d file %s"
-msgstr ""
-
-#: FbImportThread.cpp:310
-#, c-format
-msgid "File already exists %s"
-msgstr ""
-
-#: FbImportThread.cpp:315
-#, c-format
-msgid "Add alternative %s"
-msgstr ""
-
-#: FbImportThread.cpp:349 FbImportThread.cpp:437 FbScanerThread.cpp:145
+#: FbImportReader.cpp:55 FbImportReader.cpp:135
 #, c-format
 msgid "Zip read error %s"
 msgstr ""
 
-#: FbImportThread.cpp:352
+#: FbImportReader.cpp:58
 #, c-format
 msgid "Import zip %s"
 msgstr ""
 
-#: FbImportThread.cpp:433
+#: FbImportReader.cpp:117
+msgid "Processing file:"
+msgstr ""
+
+#: FbImportReader.cpp:131
 #, c-format
 msgid "FB2 and FBD not found %s"
 msgstr ""
 
-#: FbImportThread.cpp:481
+#: FbImportReader.cpp:205
+#, c-format
+msgid "Import file %s"
+msgstr ""
+
+#: FbImportReader.cpp:229
+#, c-format
+msgid "Import zip entry %s"
+msgstr ""
+
+#: FbImportReader.cpp:306
+#, c-format
+msgid "Dublicate author: %s %s"
+msgstr ""
+
+#: FbImportReader.cpp:369
+#, c-format
+msgid "File already exists %s"
+msgstr ""
+
+#: FbImportReader.cpp:374
+#, c-format
+msgid "Add alternative %s"
+msgstr ""
+
+#: FbImportReader.cpp:393
+#, c-format
+msgid "Skip entry %s"
+msgstr ""
+
+#: FbImportThread.cpp:90
 #, c-format
 msgid "Start import %d file(s)"
 msgstr ""
 
-#: FbImportThread.cpp:485
+#: FbImportThread.cpp:95
 #, c-format
 msgid "Finish import %d file(s)"
 msgstr ""
 
-#: FbImportThread.cpp:495 FbImportThread.cpp:603 FbImportThread.cpp:617
-#, c-format
-msgid "File read error %s"
-msgstr ""
-
-#: FbImportThread.cpp:549
-#, c-format
-msgid "Skip file %s"
-msgstr ""
-
-#: FbImportThread.cpp:555
+#: FbImportThread.cpp:137
 #, c-format
 msgid "Import subdirectory %s"
 msgstr ""
 
-#: FbImportThread.cpp:571
+#: FbImportThread.cpp:149
 #, c-format
 msgid "Start import directory %s"
 msgstr ""
 
-#: FbImportThread.cpp:575 FbScanerThread.cpp:182
+#: FbImportThread.cpp:153
 #, c-format
 msgid "Can't open directory %s"
 msgstr ""
 
-#: FbImportThread.cpp:591
+#: FbImportThread.cpp:158
+msgid "Processing folder:"
+msgstr ""
+
+#: FbImportThread.cpp:171
 #, c-format
 msgid "Finish import directory %s"
 msgstr ""
 
-#: FbInternetBook.cpp:61
-msgid "Download"
-msgstr ""
-
-#: FbInternetBook.cpp:65 FbInternetBook.cpp:100
-msgid "URL error"
-msgstr ""
-
-#: FbInternetBook.cpp:78 FbInternetBook.cpp:108
-msgid "Connect error"
-msgstr ""
-
-#: FbInternetBook.cpp:85 FbInternetBook.cpp:113
-msgid "Redirect"
-msgstr ""
-
-#: FbInternetBook.cpp:90
-msgid "Authentication failure"
-msgstr ""
-
-#: FbInternetBook.cpp:135 FbUpdateThread.cpp:113
-msgid "File download"
-msgstr ""
-
-#: FbInternetBook.cpp:147
-#, c-format
-msgid "HTTP read error, read %d of %d bytes: %s"
-msgstr ""
-
-#: FbInternetBook.cpp:157 FbUpdateThread.cpp:92
+#: FbImportThread.cpp:191 FbInternetBook.cpp:67
 msgid "Download error"
 msgstr ""
 
-#: FbInternetBook.cpp:174
-msgid "Can't open zip"
+#: FbImportThread.cpp:213
+msgid "Extract file"
 msgstr ""
 
-#: FbInternetBook.cpp:192
-msgid "Wrong MD5 sum"
-msgstr ""
-
-#: FbInternetBook.cpp:226
-msgid "Download finished"
-msgstr ""
-
-#: FbLogStream.cpp:58
-msgid "Fatal error"
-msgstr ""
-
-#: FbLogStream.cpp:59
-msgid "Program aborted."
-msgstr ""
-
-#: FbMainFrame.cpp:228
-msgid "Info messages"
-msgstr ""
-
-#: FbMainFrame.cpp:296
-msgid "Import file"
-msgstr ""
-
-#: FbMainFrame.cpp:296
-msgid "Import files to the library"
-msgstr ""
-
-#: FbMainFrame.cpp:297
-msgid "Import folder"
-msgstr ""
-
-#: FbMainFrame.cpp:297
-msgid "Import folder to the library"
-msgstr ""
-
-#: FbMainFrame.cpp:300
-msgid " Author: "
-msgstr ""
-
-#: FbMainFrame.cpp:308
-msgid "Find author"
-msgstr ""
-
-#: FbMainFrame.cpp:311
-msgid " Book: "
-msgstr ""
-
-#: FbMainFrame.cpp:319
-msgid "Find book by title"
-msgstr ""
-
-#: FbMainFrame.cpp:322
-msgid "Hierarchy"
-msgstr ""
-
-#: FbMainFrame.cpp:322
-msgid "Hierarchy of authors and series"
-msgstr ""
-
-#: FbMainFrame.cpp:323
-msgid "List"
-msgstr ""
-
-#: FbMainFrame.cpp:323 FbMainMenu.cpp:108
-msgid "Simple list"
-msgstr ""
-
-#: FbMainFrame.cpp:342
-msgid "Digital books and archives"
-msgstr ""
-
-#: FbMainFrame.cpp:343
-msgid "Digital books in FB2"
-msgstr ""
-
-#: FbMainFrame.cpp:344
-msgid "ZIP archives"
-msgstr ""
-
-#: FbMainFrame.cpp:345
-msgid "All files"
-msgstr ""
-
-#: FbMainFrame.cpp:349
-msgid "Select archive to add to the library"
-msgstr ""
-
-#: FbMainFrame.cpp:362
-msgid "Processing file:"
-msgstr ""
-
-#: FbMainFrame.cpp:364 FbMainFrame.cpp:386
-msgid "Can't create thread!"
-msgstr ""
-
-#: FbMainFrame.cpp:375
-msgid "Select folder to recursive import"
-msgstr ""
-
-#: FbMainFrame.cpp:383
-msgid "Processing folder:"
-msgstr ""
-
-#: FbMainFrame.cpp:447 FbMainMenu.cpp:6
-msgid "Search"
-msgstr ""
-
-#: FbMainFrame.cpp:481
-msgid "Find title"
-msgstr ""
-
-#: FbMainFrame.cpp:481
-msgid "Input search string:"
-msgstr ""
-
-#: FbMainFrame.cpp:532
-msgid "This function is not available yet in this version."
-msgstr ""
-
-#: FbMainFrame.cpp:663
-msgid "File not found: "
-msgstr ""
-
-#: FbMainMenu.cpp:12
-msgid "Archive"
-msgstr ""
-
-#: FbMainMenu.cpp:29
-msgid "Open recent"
-msgstr ""
-
-#: FbMainMenu.cpp:33
-msgid "Clear empty variables"
-msgstr ""
-
-#: FbMainMenu.cpp:34
-msgid "Optimize DB"
-msgstr ""
-
-#: FbMainMenu.cpp:35
-msgid "Online update database"
-msgstr ""
-
-#: FbMainMenu.cpp:37
-msgid "Options"
-msgstr ""
-
-#: FbMainMenu.cpp:47 FbMainMenu.cpp:94
-msgid "Tabs"
-msgstr ""
-
-#: FbMainMenu.cpp:49 FbMainMenu.cpp:97
-msgid "Fullscreen mode"
-msgstr ""
-
-#: FbMainMenu.cpp:50 FbMainMenu.cpp:98
-msgid "Show log window"
-msgstr ""
-
-#: FbMainMenu.cpp:54
-msgid "Website"
-msgstr ""
-
-#: FbMainMenu.cpp:74
-msgid "Export books"
-msgstr ""
-
-#: FbMainMenu.cpp:92
-msgid "List of books"
-msgstr ""
-
-#: FbMainMenu.cpp:93
-msgid "Preview area"
-msgstr ""
-
-#: FbMainMenu.cpp:107
-msgid "Hierarchical"
-msgstr ""
-
-#: FbMainMenu.cpp:113
-msgid "Standart"
-msgstr ""
-
-#: FbMainMenu.cpp:114
-msgid "Compact"
-msgstr ""
-
-#: FbMainMenu.cpp:115
-msgid "Convex"
-msgstr ""
-
-#: FbMainMenu.cpp:116
-msgid "Buttons"
-msgstr ""
-
-#: FbMainMenu.cpp:118
-msgid "Light"
-msgstr ""
-
-#: FbMainMenu.cpp:120
-msgid "Studio"
-msgstr ""
-
-#: FbMainMenu.cpp:121
-msgid "Mozilla"
-msgstr ""
-
-#: FbMainMenu.cpp:126
-msgid "Right"
-msgstr ""
-
-#: FbMainMenu.cpp:127
-msgid "Bottom"
-msgstr ""
-
-#: FbMainMenu.cpp:128
-msgid "Not specified"
-msgstr ""
-
-#: FbMainMenu.cpp:133
-msgid "Close window"
-msgstr ""
-
-#: FbMainMenu.cpp:134
-msgid "Close all"
-msgstr ""
-
-#: FbMainMenu.cpp:136
-msgid "Next"
-msgstr ""
-
-#: FbMainMenu.cpp:137
-msgid "Previous"
-msgstr ""
-
-#: FbMenu.cpp:11
-msgid "Size"
-msgstr ""
-
-#: FbMenu.cpp:14
-msgid "Reverse order"
-msgstr ""
-
-#: FbParamsDlg.cpp:133
-msgid "Full file path with name and extension"
-msgstr ""
-
-#: FbParamsDlg.cpp:134
-msgid "Full file path without extension"
-msgstr ""
-
-#: FbParamsDlg.cpp:135
-msgid "File name without path and extension"
-msgstr ""
-
-#: FbParamsDlg.cpp:136
-msgid "Target directory"
-msgstr ""
-
-#: FbParamsDlg.cpp:137 FbParamsDlg.cpp:442
-msgid "File name extension"
-msgstr ""
-
-#: FbParamsDlg.cpp:231
-msgid "List of authors and books:"
-msgstr ""
-
-#: FbParamsDlg.cpp:232
-msgid "Toolbar:"
-msgstr ""
-
-#: FbParamsDlg.cpp:233
-msgid "Information:"
-msgstr ""
-
-#: FbParamsDlg.cpp:234
-msgid "Dialog windows:"
-msgstr ""
-
-#: FbParamsDlg.cpp:238
-msgid "Reset fonts settings"
-msgstr ""
-
-#: FbParamsDlg.cpp:269
-msgid "Automatically begin files downloading"
-msgstr ""
-
-#: FbParamsDlg.cpp:275
-msgid "Use proxy-server"
-msgstr ""
-
-#: FbParamsDlg.cpp:286
-msgid "Load images for author's description"
-msgstr ""
-
-#: FbParamsDlg.cpp:289
-msgid "Folder to save downloads:"
-msgstr ""
-
-#: FbParamsDlg.cpp:297
-msgid "Delete downloaded files when download query removed"
-msgstr ""
-
-#: FbParamsDlg.cpp:357
-msgid "Save full path of the file when importing"
-msgstr ""
-
-#: FbParamsDlg.cpp:360
-msgid "Temporary folder:"
-msgstr ""
-
-#: FbParamsDlg.cpp:372
-msgid "Wine temp folder:"
-msgstr ""
-
-#: FbParamsDlg.cpp:384
-msgid "Delete temporary files when you exit the program"
-msgstr ""
-
-#: FbParamsDlg.cpp:387
-msgid "Delete files when you delete a book"
-msgstr ""
-
-#: FbParamsDlg.cpp:390
-msgid "Clear the log window when it closes"
-msgstr ""
-
-#: FbParamsDlg.cpp:393
-msgid "Use a gray font for missing books"
-msgstr ""
-
-#: FbParamsDlg.cpp:419
-msgid "Exported collection structure"
-msgstr ""
-
-#: FbParamsDlg.cpp:433
-msgid "First letter of author name"
-msgstr ""
-
-#: FbParamsDlg.cpp:434
-msgid "Full author name"
-msgstr ""
-
-#: FbParamsDlg.cpp:435
-msgid "Short-cut author name"
-msgstr ""
-
-#: FbParamsDlg.cpp:436
-msgid "Sequence name"
-msgstr ""
-
-#: FbParamsDlg.cpp:437
-msgid "Number in sequence"
-msgstr ""
-
-#: FbParamsDlg.cpp:438
-msgid "Internal book code"
-msgstr ""
-
-#: FbParamsDlg.cpp:439
-msgid "Book title"
-msgstr ""
-
-#: FbParamsDlg.cpp:440
-msgid "Book language"
-msgstr ""
-
-#: FbParamsDlg.cpp:441
-msgid "Book file MD5 sum"
-msgstr ""
-
-#: FbParamsDlg.cpp:462
-msgid "Transliterate folder name"
-msgstr ""
-
-#: FbParamsDlg.cpp:465
-msgid "Transliterate filename"
-msgstr ""
-
-#: FbParamsDlg.cpp:468
-msgid "Replace spaces by underscores"
-msgstr ""
-
-#: FbParamsDlg.cpp:473
-msgid "Format of exporting collection"
-msgstr ""
-
-#: FbParamsDlg.cpp:513
-msgid "Export script"
-msgstr ""
-
-#: FbParamsDlg.cpp:560
-msgid "Scripts"
-msgstr ""
-
-#: FbParamsDlg.cpp:561
-msgid "Fonts"
-msgstr ""
-
-#: FbParamsDlg.cpp:641
-msgid "Program settings"
-msgstr ""
-
-#: FbParamsDlg.cpp:661
-msgid "Append export script"
-msgstr ""
-
-#: FbParamsDlg.cpp:688
-msgid "Modify export script"
-msgstr ""
-
-#: FbParamsDlg.cpp:723
-msgid "Delete export script"
-msgstr ""
-
-#: FbProgressDlg.cpp:17
-msgid "Processing collection"
-msgstr ""
-
-#: FbScanerThread.cpp:108
-#, c-format
-msgid "Invalid zip offset %s"
-msgstr ""
-
-#: FbScanerThread.cpp:112
-#, c-format
-msgid "Scan zip %s"
-msgstr ""
-
-#: FbScanerThread.cpp:166
+#: FbImportThread.cpp:252
 msgid "Create full text search index"
 msgstr ""
 
-#: FbScanerThread.cpp:178
+#: FbInternetBook.cpp:55 FbInternetBook.cpp:147
+msgid "Redirect"
+msgstr ""
+
+#: FbInternetBook.cpp:59
+msgid "File is missing"
+msgstr ""
+
+#: FbInternetBook.cpp:63
+msgid "Server error"
+msgstr ""
+
+#: FbInternetBook.cpp:76
+msgid "File download"
+msgstr ""
+
+#: FbInternetBook.cpp:123
+msgid "Download"
+msgstr ""
+
+#: FbInternetBook.cpp:127
+msgid "URL error"
+msgstr ""
+
+#: FbInternetBook.cpp:140
+msgid "Connect error"
+msgstr ""
+
+#: FbInternetBook.cpp:179 FbInternetBook.cpp:214
+msgid "Wrong MD5 sum"
+msgstr ""
+
+#: FbInternetBook.cpp:196
+msgid "Can't open zip"
+msgstr ""
+
+#: FbInternetBook.cpp:248
+msgid "Download finished"
+msgstr ""
+
+#: FbLogStream.cpp:64 FbLogStream.cpp:138
+msgid "Fatal error"
+msgstr ""
+
+#: FbLogStream.cpp:139
+msgid "Program aborted."
+msgstr ""
+
+#: FbMainFrame.cpp:302
+msgid "Info messages"
+msgstr ""
+
+#: FbMainFrame.cpp:407
+msgid "Import file"
+msgstr ""
+
+#: FbMainFrame.cpp:407
+msgid "Import files to the library"
+msgstr ""
+
+#: FbMainFrame.cpp:408
+msgid "Import folder"
+msgstr ""
+
+#: FbMainFrame.cpp:408
+msgid "Import folder to the library"
+msgstr ""
+
+#: FbMainFrame.cpp:411
+msgid " Author: "
+msgstr ""
+
+#: FbMainFrame.cpp:419
+msgid "Find author"
+msgstr ""
+
+#: FbMainFrame.cpp:422
+msgid " Book: "
+msgstr ""
+
+#: FbMainFrame.cpp:430
+msgid "Find book by title"
+msgstr ""
+
+#: FbMainFrame.cpp:433
+msgid "Hierarchy"
+msgstr ""
+
+#: FbMainFrame.cpp:433
+msgid "Hierarchy of authors and series"
+msgstr ""
+
+#: FbMainFrame.cpp:434
+msgid "List"
+msgstr ""
+
+#: FbMainFrame.cpp:434 FbMainMenu.cpp:102
+msgid "Simple list"
+msgstr ""
+
+#: FbMainFrame.cpp:436
+msgid "Export to external device"
+msgstr ""
+
+#: FbMainFrame.cpp:453
+msgid "Digital books and archives"
+msgstr ""
+
+#: FbMainFrame.cpp:454
+msgid "Digital books in FB2"
+msgstr ""
+
+#: FbMainFrame.cpp:455
+msgid "ZIP archives"
+msgstr ""
+
+#: FbMainFrame.cpp:456
+msgid "All files"
+msgstr ""
+
+#: FbMainFrame.cpp:460
+msgid "Select archive to add to the library"
+msgstr ""
+
+#: FbMainFrame.cpp:471 FbMainMenu.cpp:17
+msgid "Add file"
+msgstr ""
+
+#: FbMainFrame.cpp:534 FbMainMenu.cpp:49
+msgid "Search"
+msgstr ""
+
+#: FbMainFrame.cpp:568
+msgid "Find title"
+msgstr ""
+
+#: FbMainFrame.cpp:568
+msgid "Input search string:"
+msgstr ""
+
+#: FbMainFrame.cpp:609
+msgid "This function is not available yet in this version."
+msgstr ""
+
+#: FbMainFrame.cpp:756
+msgid "File not found: "
+msgstr ""
+
+#: FbMainFrame.cpp:934
 #, c-format
-msgid "Start scan directory %s"
+msgid "Nothing was found on pattern \"%s\""
 msgstr ""
 
-#: FbScanerThread.cpp:195
+#: FbMainFrame.cpp:935
+msgid "Searching"
+msgstr ""
+
+#: FbMainMenu.cpp:6
+msgid "&File"
+msgstr ""
+
+#: FbMainMenu.cpp:7
+msgid "&Edit"
+msgstr ""
+
+#: FbMainMenu.cpp:8
+msgid "&Library"
+msgstr ""
+
+#: FbMainMenu.cpp:9
+msgid "&Catalog"
+msgstr ""
+
+#: FbMainMenu.cpp:10
+msgid "&Books"
+msgstr ""
+
+#: FbMainMenu.cpp:11
+msgid "&Window"
+msgstr ""
+
+#: FbMainMenu.cpp:12
+msgid "&?"
+msgstr ""
+
+#: FbMainMenu.cpp:21
+msgid "Exit"
+msgstr ""
+
+#: FbMainMenu.cpp:26
+msgid "Cut"
+msgstr ""
+
+#: FbMainMenu.cpp:28
+msgid "Paste"
+msgstr ""
+
+#: FbMainMenu.cpp:34
+msgid "Delete link"
+msgstr ""
+
+#: FbMainMenu.cpp:56
+msgid "Archive"
+msgstr ""
+
+#: FbMainMenu.cpp:65
+msgid "Open recent"
+msgstr ""
+
+#: FbMainMenu.cpp:69
+msgid "Clear empty variables"
+msgstr ""
+
+#: FbMainMenu.cpp:70
+msgid "Optimize DB"
+msgstr ""
+
+#: FbMainMenu.cpp:71
+msgid "Online update database"
+msgstr ""
+
+#: FbMainMenu.cpp:73
+msgid "Options"
+msgstr ""
+
+#: FbMainMenu.cpp:78
+msgid "Website"
+msgstr ""
+
+#: FbMainMenu.cpp:85
+msgid "List of books"
+msgstr ""
+
+#: FbMainMenu.cpp:87
+msgid "Preview area"
+msgstr ""
+
+#: FbMainMenu.cpp:101
+msgid "Hierarchical"
+msgstr ""
+
+#: FbMainMenu.cpp:107
+msgid "Standart"
+msgstr ""
+
+#: FbMainMenu.cpp:108
+msgid "Compact"
+msgstr ""
+
+#: FbMainMenu.cpp:109
+msgid "Convex"
+msgstr ""
+
+#: FbMainMenu.cpp:110
+msgid "Buttons"
+msgstr ""
+
+#: FbMainMenu.cpp:112
+msgid "Light"
+msgstr ""
+
+#: FbMainMenu.cpp:114
+msgid "Studio"
+msgstr ""
+
+#: FbMainMenu.cpp:115
+msgid "Mozilla"
+msgstr ""
+
+#: FbMainMenu.cpp:120
+msgid "Right"
+msgstr ""
+
+#: FbMainMenu.cpp:121
+msgid "Bottom"
+msgstr ""
+
+#: FbMainMenu.cpp:122
+msgid "Not specified"
+msgstr ""
+
+#: FbMainMenu.cpp:127
+msgid "Close window"
+msgstr ""
+
+#: FbMainMenu.cpp:128
+msgid "Close all"
+msgstr ""
+
+#: FbMainMenu.cpp:130
+msgid "Next"
+msgstr ""
+
+#: FbMainMenu.cpp:131
+msgid "Previous"
+msgstr ""
+
+#: FbMainMenu.cpp:133
+msgid "Tabs"
+msgstr ""
+
+#: FbMainMenu.cpp:134
+msgid "Fullscreen mode"
+msgstr ""
+
+#: FbMainMenu.cpp:135
+msgid "Show log window"
+msgstr ""
+
+#: FbMainMenu.cpp:136
+msgid "Show status bar"
+msgstr ""
+
+#: FbMenu.cpp:62
+msgid "Size"
+msgstr ""
+
+#: FbMenu.cpp:65
+msgid "Reverse order"
+msgstr ""
+
+#: FbMenu.cpp:96
+msgid "Classifiers"
+msgstr ""
+
+#: FbParsingCtx.cpp:206
 #, c-format
-msgid "Finish scan directory %s"
+msgid "Unknown encoding: %s"
 msgstr ""
 
-#: FbSequenDlg.cpp:13
-msgid "Series name:"
-msgstr ""
-
-#: FbSequenDlg.cpp:34
-msgid "Append series"
-msgstr ""
-
-#: FbSequenDlg.cpp:42
-msgid "Modify series"
-msgstr ""
-
-#: FbSequenDlg.cpp:135
-msgid "\"Series name\" field is empty"
-msgstr ""
-
-#: FbSequenDlg.cpp:140
-msgid "Series aleready exists"
-msgstr ""
-
-#: FbSequenDlg.cpp:143
-msgid "Merge series?"
-msgstr ""
-
-#: FbUpdateThread.cpp:42
-msgid "Database successfully updated"
-msgstr ""
-
-#: FbUpdateThread.cpp:85
-msgid "The update file is missing"
-msgstr ""
-
-#: FbUpdateThread.cpp:89
-msgid "Update collection"
-msgstr ""
-
-#: FbUpdateThread.cpp:171
-msgid "Wrong update library type"
-msgstr ""
-
-#: FbUpdateThread.cpp:193
-#, c-format
-msgid "Loaded new %d books"
-msgstr ""
-
-#: FbViewReader.cpp:184
+#: FbParsingCtx.cpp:246 FbParsingCtx.cpp:434
 #, c-format
 msgid "XML parsing error: '%s' at line %d"
 msgstr ""
 
-#: FbViewerDlg.cpp:13
-msgid "Customize"
+#: FbUpdateThread.cpp:39
+msgid "Database successfully updated"
 msgstr ""
 
-#: FbViewerDlg.cpp:46
-msgid "Executable files"
+#: FbUpdateThread.cpp:68
+msgid "Update collection"
+msgstr ""
+
+#: FbUpdateThread.cpp:121
+msgid "Wrong update library type"
+msgstr ""
+
+#: FbUpdateThread.cpp:143
+#, c-format
+msgid "Loaded new %d books"
 msgstr ""
 
 #: VacuumThread.cpp:11
 msgid "Start SQLite VACUUM"
 msgstr ""
 
-#: ZipReader.cpp:50
+#: ZipReader.cpp:46
 #, c-format
 msgid "Book not found %s"
 msgstr ""
 
-#: ZipReader.cpp:126
+#: ZipReader.cpp:122
 #, c-format
 msgid "Not found an archive (%s), containing file (%s)."
 msgstr ""
 
-#: ZipReader.cpp:140
+#: ZipReader.cpp:136
 #, c-format
 msgid "Not found file %s"
 msgstr ""
