@@ -3,6 +3,7 @@
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbGenres.h"
+#include "FbString.h"
 #include <wx/tokenzr.h>
 #include <sqlite3.h>
 
@@ -338,7 +339,7 @@ void FbDatabase::JoinThread(FbThread * thread)
 FbCommonDatabase::FbCommonDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetLibFile());
-	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
+	ExecuteUpdate(fbS("PRAGMA temp_store=2"));
 	SetCollation(wxT("CYR"), &sm_collation);
 }
 
@@ -359,7 +360,7 @@ wxString FbCommonDatabase::GetMd5(int id)
 FbLocalDatabase::FbLocalDatabase()
 {
 	FbDatabase::Open(GetConfigName());
-	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
+	ExecuteUpdate(fbS("PRAGMA temp_store=2"));
 	SetCollation(wxT("CYR"), &sm_collation);
 }
 
@@ -406,7 +407,7 @@ void FbMasterDatabase::UpgradeDatabase(int new_version)
 void FbMainDatabase::Open(const wxString& filename, const wxString& key, int flags)
 {
 	FbDatabase::Open(filename, key, flags);
-	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
+	ExecuteUpdate(fbS("PRAGMA temp_store=2"));
 	bool bExists = TableExists(GetMaster());
 
 	wxString message = bExists ? _("Open database") : _("Create database");
@@ -421,35 +422,35 @@ void FbMainDatabase::CreateDatabase()
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	/** TABLE authors **/
-	ExecuteUpdate(wxT("CREATE TABLE authors(id INTEGER PRIMARY KEY,letter,search_name,full_name,first_name,middle_name,last_name,newid,description)"));
-	ExecuteUpdate(wxT("INSERT INTO authors(id, letter, full_name) values(0, '#', '(empty)')"));
-	ExecuteUpdate(wxT("CREATE INDEX author_letter ON authors(letter)"));
-	ExecuteUpdate(wxT("CREATE INDEX author_name ON authors(search_name)"));
+	ExecuteUpdate(fbS("CREATE TABLE authors(id INTEGER PRIMARY KEY,letter,search_name,full_name,first_name,middle_name,last_name,newid,description)"));
+	ExecuteUpdate(fbS("INSERT INTO authors(id, letter, full_name) values(0, '#', '(empty)')"));
+	ExecuteUpdate(fbS("CREATE INDEX author_letter ON authors(letter)"));
+	ExecuteUpdate(fbS("CREATE INDEX author_name ON authors(search_name)"));
 
 	/** TABLE books **/
-	ExecuteUpdate(wxT("CREATE TABLE books(id INTEGER,id_author INTEGER,title,annotation,genres,deleted,id_archive,file_name,file_size,file_type,description,PRIMARY KEY(id,id_author))"));
-	ExecuteUpdate(wxT("CREATE INDEX book_author ON books(id_author)"));
-	ExecuteUpdate(wxT("CREATE INDEX book_archive ON books(id_archive)"));
+	ExecuteUpdate(fbS("CREATE TABLE books(id INTEGER,id_author INTEGER,title,annotation,genres,deleted,id_archive,file_name,file_size,file_type,description,PRIMARY KEY(id,id_author))"));
+	ExecuteUpdate(fbS("CREATE INDEX book_author ON books(id_author)"));
+	ExecuteUpdate(fbS("CREATE INDEX book_archive ON books(id_archive)"));
 
 	/** TABLE archives **/
-	ExecuteUpdate(wxT("CREATE TABLE archives(id INTEGER PRIMARY KEY,file_name,file_path,file_size,file_count)"));
+	ExecuteUpdate(fbS("CREATE TABLE archives(id INTEGER PRIMARY KEY,file_name,file_path,file_size,file_count)"));
 
 	/** TABLE sequences **/
-	ExecuteUpdate(wxT("CREATE TABLE sequences(id integer primary key, value varchar(255) not null)"));
-	ExecuteUpdate(wxT("CREATE INDEX sequences_name ON sequences(value)"));
+	ExecuteUpdate(fbS("CREATE TABLE sequences(id integer primary key, value varchar(255) not null)"));
+	ExecuteUpdate(fbS("CREATE INDEX sequences_name ON sequences(value)"));
 
 	/** TABLE bookseq **/
-	ExecuteUpdate(wxT("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer, PRIMARY KEY(id_book, id_seq))"));
-	ExecuteUpdate(wxT("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
+	ExecuteUpdate(fbS("CREATE TABLE bookseq(id_book integer, id_seq integer, number integer, level integer, id_author integer, PRIMARY KEY(id_book, id_seq))"));
+	ExecuteUpdate(fbS("CREATE INDEX bookseq_seq ON bookseq(id_seq)"));
 
 	/** TABLE params **/
-	ExecuteUpdate(wxT("CREATE TABLE params(id integer primary key, value integer, text text)"));
-	ExecuteUpdate(wxT("INSERT INTO params(id, text)  VALUES (1, 'My own Library')"));
-	ExecuteUpdate(wxT("INSERT INTO params(id, value) VALUES (2, 1)"));
+	ExecuteUpdate(fbS("CREATE TABLE params(id integer primary key, value integer, text text)"));
+	ExecuteUpdate(fbS("INSERT INTO params(id, text)  VALUES (1, 'My own Library')"));
+	ExecuteUpdate(fbS("INSERT INTO params(id, value) VALUES (2, 1)"));
 
 	/** TABLE genres **/
-	ExecuteUpdate(wxT("CREATE TABLE genres(id_book integer, id_genre CHAR(2), PRIMARY KEY(id_book, id_genre));"));
-	ExecuteUpdate(wxT("CREATE INDEX genres_genre ON genres(id_genre);"));
+	ExecuteUpdate(fbS("CREATE TABLE genres(id_book integer, id_genre CHAR(2), PRIMARY KEY(id_book, id_genre));"));
+	ExecuteUpdate(fbS("CREATE INDEX genres_genre ON genres(id_genre);"));
 
 	trans.Commit();
 
@@ -464,45 +465,45 @@ void FbMainDatabase::DoUpgrade(int version)
 		} break;
 
 		case 3: {
-			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS files(id_book integer, id_archive integer, file_name text, file_path text)"));
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS files_book ON files(id_book)"));
+			ExecuteUpdate(fbS("CREATE TABLE IF NOT EXISTS files(id_book integer, id_archive integer, file_name text, file_path text)"));
+			ExecuteUpdate(fbS("CREATE INDEX IF NOT EXISTS files_book ON files(id_book)"));
 		} break;
 
 		case 4: {
 			wxLogNull log;
-			ExecuteUpdate(wxT("ALTER TABLE books ADD file_path TEXT"));
+			ExecuteUpdate(fbS("ALTER TABLE books ADD file_path TEXT"));
 		} break;
 
 		case 5: {
 			wxLogNull log;
-			ExecuteUpdate(wxT("ALTER TABLE books ADD md5sum CHAR(32)"));
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
+			ExecuteUpdate(fbS("ALTER TABLE books ADD md5sum CHAR(32)"));
+			ExecuteUpdate(fbS("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 		} break;
 
 		case 6: {
 			wxLogNull log;
-			ExecuteUpdate(wxT("ALTER TABLE books ADD created INTEGER"));
-			ExecuteUpdate(wxT("CREATE INDEX IF NOT EXISTS book_created ON books(created)"));
+			ExecuteUpdate(fbS("ALTER TABLE books ADD created INTEGER"));
+			ExecuteUpdate(fbS("CREATE INDEX IF NOT EXISTS book_created ON books(created)"));
 		} break;
 
 		case 7: {
 			wxLogNull log;
-			ExecuteUpdate(wxT("ALTER TABLE authors ADD number INTEGER"));
+			ExecuteUpdate(fbS("ALTER TABLE authors ADD number INTEGER"));
 		} break;
 
 		case 8: {
 			wxLogNull log;
-			ExecuteUpdate(wxT("ALTER TABLE sequences ADD number INTEGER"));
+			ExecuteUpdate(fbS("ALTER TABLE sequences ADD number INTEGER"));
 		} break;
 
 		case 9: {
 			wxLogNull log;
-			ExecuteUpdate(wxT("ALTER TABLE books ADD lang CHAR(2)"));
-			ExecuteUpdate(wxT("ALTER TABLE books ADD year INTEGER"));
+			ExecuteUpdate(fbS("ALTER TABLE books ADD lang CHAR(2)"));
+			ExecuteUpdate(fbS("ALTER TABLE books ADD year INTEGER"));
 		} break;
 
 		case 11: {
-			ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS types(file_type varchar(99) PRIMARY KEY, command text, convert text)"));
+			ExecuteUpdate(fbS("CREATE TABLE IF NOT EXISTS types(file_type varchar(99) PRIMARY KEY, command text, convert text)"));
 		} break;
 
 		case 12: {
@@ -516,26 +517,26 @@ void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
-	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_auth"));
-	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
+	ExecuteUpdate(fbS("DROP TABLE IF EXISTS fts_auth"));
+	ExecuteUpdate(fbS("CREATE VIRTUAL TABLE fts_auth USING fts3"));
 
-	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_book"));
-	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_book USING fts3"));
+	ExecuteUpdate(fbS("DROP TABLE IF EXISTS fts_book"));
+	ExecuteUpdate(fbS("CREATE VIRTUAL TABLE fts_book USING fts3"));
 
-	ExecuteUpdate(wxT("DROP TABLE IF EXISTS fts_seqn"));
-	ExecuteUpdate(wxT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
+	ExecuteUpdate(fbS("DROP TABLE IF EXISTS fts_seqn"));
+	ExecuteUpdate(fbS("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
 
 	FbLowerFunction	lower;
 	CreateFunction(wxT("LOW"), 1, lower);
 	if (thread && thread->IsClosed()) return;
 
-	ExecuteUpdate(wxT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(full_name) FROM authors"));
+	ExecuteUpdate(fbS("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(full_name) FROM authors"));
 	if (thread && thread->IsClosed()) return;
 
-	ExecuteUpdate(wxT("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
+	ExecuteUpdate(fbS("INSERT INTO fts_book(docid, content) SELECT DISTINCT id, LOW(title) FROM books"));
 	if (thread && thread->IsClosed()) return;
 
-	ExecuteUpdate(wxT("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
+	ExecuteUpdate(fbS("INSERT INTO fts_seqn(docid, content) SELECT DISTINCT id, LOW(value) FROM sequences"));
 	if (thread && thread->IsClosed()) return;
 
 	trans.Commit();
@@ -550,7 +551,7 @@ void FbConfigDatabase::Open()
 	wxString filename = GetConfigName();
 	bool bExists = wxFileExists(filename);
 	FbDatabase::Open(filename, wxEmptyString, WXSQLITE_OPEN_READWRITE | WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_FULLMUTEX);
-	ExecuteUpdate(wxT("PRAGMA temp_store=2"));
+	ExecuteUpdate(fbS("PRAGMA temp_store=2"));
 	if (!bExists) CreateDatabase();
 	UpgradeDatabase(DB_CONFIG_VERSION);
 }
@@ -560,25 +561,25 @@ void FbConfigDatabase::CreateDatabase()
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	/** TABLE params **/
-	ExecuteUpdate(wxT("CREATE TABLE config(id integer primary key, value integer, text text)"));
-	ExecuteUpdate(wxT("INSERT INTO config(id, text)  VALUES (1, 'MyRuLib local config')"));
-	ExecuteUpdate(wxT("INSERT INTO config(id, value) VALUES (2, 1)"));
+	ExecuteUpdate(fbS("CREATE TABLE config(id integer primary key, value integer, text text)"));
+	ExecuteUpdate(fbS("INSERT INTO config(id, text)  VALUES (1, 'MyRuLib local config')"));
+	ExecuteUpdate(fbS("INSERT INTO config(id, value) VALUES (2, 1)"));
 
 	/** TABLE types **/
-	ExecuteUpdate(wxT("CREATE TABLE types(file_type varchar(99) primary key, command text, convert text)"));
+	ExecuteUpdate(fbS("CREATE TABLE types(file_type varchar(99) primary key, command text, convert text)"));
 
 	/** TABLE comments **/
-	ExecuteUpdate(wxT("CREATE TABLE comments(id integer primary key, md5sum CHAR(32), rating integer, posted datetime, caption text, comment text)"));
-	ExecuteUpdate(wxT("CREATE INDEX comments_book ON comments(md5sum)"));
+	ExecuteUpdate(fbS("CREATE TABLE comments(id integer primary key, md5sum CHAR(32), rating integer, posted datetime, caption text, comment text)"));
+	ExecuteUpdate(fbS("CREATE INDEX comments_book ON comments(md5sum)"));
 
 	/** TABLE folders **/
-	ExecuteUpdate(wxT("CREATE TABLE folders(id integer primary key, value text not null)"));
+	ExecuteUpdate(fbS("CREATE TABLE folders(id integer primary key, value text not null)"));
 	ExecuteUpdate(wxString::Format(wxT("INSERT INTO folders(id,value) VALUES (-1, '%s')"), _("The best")));
 	ExecuteUpdate(wxString::Format(wxT("INSERT INTO folders(id,value) VALUES (-2, '%s')"), _("Other")));
 
 	/** TABLE favorites **/
-	ExecuteUpdate(wxT("CREATE TABLE favorites(md5sum CHAR(32), id_folder integer, PRIMARY KEY(md5sum, id_folder))"));
-	ExecuteUpdate(wxT("CREATE INDEX favorites_folder ON favorites(id_folder)"));
+	ExecuteUpdate(fbS("CREATE TABLE favorites(md5sum CHAR(32), id_folder integer, PRIMARY KEY(md5sum, id_folder))"));
+	ExecuteUpdate(fbS("CREATE INDEX favorites_folder ON favorites(id_folder)"));
 
 	trans.Commit();
 }
@@ -588,19 +589,18 @@ void FbConfigDatabase::DoUpgrade(int version)
 	switch (version) {
 		case 2: {
 			/** TABLE states **/
-			ExecuteUpdate(wxT("CREATE TABLE states(md5sum CHAR(32) primary key, rating INTEGER, download INTEGER)"));
-			ExecuteUpdate(wxT("CREATE INDEX states_rating ON states(rating)"));
+			ExecuteUpdate(fbS("CREATE TABLE states(md5sum CHAR(32) primary key, rating INTEGER, download INTEGER)"));
+			ExecuteUpdate(fbS("CREATE INDEX states_rating ON states(rating)"));
 		} break;
 		case 3: {
 			/** TABLE script **/
-			ExecuteUpdate(wxT("CREATE TABLE script(id INTEGER PRIMARY KEY, name TEXT, text TEXT)"));
+			ExecuteUpdate(fbS("CREATE TABLE script(id INTEGER PRIMARY KEY, name TEXT, text TEXT)"));
 		} break;
 		case 4: {
 			/** TABLE script **/
-			ExecuteUpdate(wxT("UPDATE states SET download = - 2 - download WHERE download>0"));
-			ExecuteUpdate(wxT("UPDATE states SET download = 1 WHERE download=-2"));
-			ExecuteUpdate(wxT("UPDATE states SET download = 101 WHERE download=-1"));
+			ExecuteUpdate(fbS("UPDATE states SET download = - 2 - download WHERE download>0"));
+			ExecuteUpdate(fbS("UPDATE states SET download = 1 WHERE download=-2"));
+			ExecuteUpdate(fbS("UPDATE states SET download = 101 WHERE download=-1"));
 		} break;
 	}
 }
-
