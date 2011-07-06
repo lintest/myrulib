@@ -39,13 +39,13 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerDir->SetFlexibleDirection( wxBOTH );
 	sizerDir->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), wxT("File name") );
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), wxT("Table name") );
-	Append( sizerDir, CreateDirType ( this, ID_DIR_TYPE), wxT("Key type") );
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_CODE), wxT("Field: code") );
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), wxT("Field: name") );
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), wxT("Field: info") );
-	Append( sizerDir, new wxTextCtrl( this, ID_DIR_PRNT), wxT("Field: parent") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), _("File name") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), _("Table name") );
+	Append( sizerDir, CreateDirType ( this, ID_DIR_TYPE), _("Key type") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_CODE), _("Field: code") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), _("Field: name") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), _("Field: info") );
+	Append( sizerDir, new wxTextCtrl( this, ID_DIR_PRNT), _("Field: parent") );
 	
 	boxDir->Add( sizerDir, 1, wxEXPAND, 5 );
 	
@@ -58,11 +58,11 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	sizerRef->SetFlexibleDirection( wxBOTH );
 	sizerRef->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), wxT("File name") );
-	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), wxT("Table name") );
-	Append( sizerRef, CreateRefType ( this, ID_REF_TYPE), wxT("Key type") );
-	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), wxT("Field: code") );
-	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), wxT("Field: book") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), _("File name") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), _("Table name") );
+	Append( sizerRef, CreateRefType ( this, ID_REF_TYPE), _("Key type") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), _("Field: code") );
+	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), _("Field: book") );
 	
 	boxRef->Add( sizerRef, 1, wxEXPAND, 5 );
 	

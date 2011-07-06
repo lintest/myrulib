@@ -152,17 +152,47 @@ msgstr "Имя рубрикатора"
 msgid "Classifier contents"
 msgstr "Содержимое рубрикатора"
 
+#: dialogs/FbConfigDlg.cpp:42 dialogs/FbConfigDlg.cpp:61
+#: dialogs/FbExportDlg.cpp:56
+msgid "File name"
+msgstr "Имя файла"
+
+#: dialogs/FbConfigDlg.cpp:43 dialogs/FbConfigDlg.cpp:62
+msgid "Table name"
+msgstr "Имя таблицы"
+
+#: dialogs/FbConfigDlg.cpp:44 dialogs/FbConfigDlg.cpp:63
+#: dialogs/FbConfigDlg.cpp:199
+msgid "Key type"
+msgstr "Тип ключа"
+
+#: dialogs/FbConfigDlg.cpp:45 dialogs/FbConfigDlg.cpp:64
+msgid "Field: code"
+msgstr "Поле: код"
+
+#: dialogs/FbConfigDlg.cpp:46
+msgid "Field: name"
+msgstr "Поле: имя"
+
+#: dialogs/FbConfigDlg.cpp:47
+msgid "Field: info"
+msgstr "Поле: описание"
+
+#: dialogs/FbConfigDlg.cpp:48
+msgid "Field: parent"
+msgstr "Поле: родитель"
+
 #: dialogs/FbConfigDlg.cpp:54
 msgid "Detailed records"
 msgstr "Подчиненные записи"
 
+#: dialogs/FbConfigDlg.cpp:65
+msgid "Field: book"
+msgstr "Поле: книга"
+
 #: dialogs/FbConfigDlg.cpp:177
 msgid "Create new classifier"
 msgstr "Создать новый рубрикатор"
-
-#: dialogs/FbConfigDlg.cpp:199
-msgid "Key type"
-msgstr "Тип ключа"
 
 #: dialogs/FbConfigDlg.cpp:325 dialogs/FbConfigDlg.cpp:464
 #: dialogs/FbParamsDlg.cpp:355 dialogs/FbParamsDlg.cpp:566
@@ -375,10 +405,6 @@ msgstr "Папка внешнего устройства:"
 #: dialogs/FbExportDlg.cpp:49
 msgid "Use Author (without co-Authors)"
 msgstr "Использовать текущего автора (без соавторов)"
-
-#: dialogs/FbExportDlg.cpp:56
-msgid "File name"
-msgstr "Имя файла"
 
 #: dialogs/FbExportDlg.cpp:57 frames/FbFrameInfo.cpp:138 FbColumns.cpp:13
 msgid "Size, Kb"
