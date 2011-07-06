@@ -1,22 +1,27 @@
 #
-# spec file for package myrulib (Version 0.27)
+# spec file for package myrulib-cr (Version 0.28)
 #
 # Copyright (c) 2009-2011 Denis Kandrashin, Kyrill Detinov
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
 
-Name:           myrulib
+Name:           myrulib-cr
 Version:        0.28.6
 Release:        0
-License:        GPL-3.0
+License:        GPLv3
 Summary:        E-Book Library Manager
 URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/%{name}-%{version}.tar.bz2
+# PATCH-FIX-UPSTREAM myrulib-0.28-cregine_png14.patch lazy.kent@opensuse.org -- fix build against libpng 1.4
+Patch0:         myrulib-0.28-crengine_png14.patch
+# PATCH-FIX-UPSTREAM myrulib-0.28-crengine_lvfntman.patch mail@lintest.ru -- fix build crengine lvfntman
+Patch1:         myrulib-0.28-crengine_lvfntman.patch
 BuildRequires:  gcc-c++
 BuildRequires:  libfaxpp-devel
-Conflicts:      myrulib-cr
+BuildRequires:  libjpeg-devel
+Conflicts:      myrulib
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %if 0%{?suse_version}
@@ -34,8 +39,8 @@ BuildRequires:  libwxgtku2.8-devel >= 2.8.10
 %endif
 
 %if 0%{?fedora_version}
-BuildRequires:  wxGTK-devel >= 2.8.10
 BuildRequires:  desktop-file-utils
+BuildRequires:  wxGTK-devel >= 2.8.10
 %if 0%{?fedora_version} >= 15
 BuildRequires:  libsqlite3x-devel
 %endif
@@ -43,6 +48,8 @@ BuildRequires:  libsqlite3x-devel
 
 %description
 MyRuLib is an application for organizing your own collection of e-books.
+
+This package includes built-in CoolReader3 engine.
 
 
 
@@ -52,33 +59,36 @@ Authors:
 
 %prep
 %setup -q
-[ ! -x configure ] && %{__chmod} +x configure
+%patch0
+%patch1
+[ ! -x configure ] && %__chmod +x configure
 
 %build
 %configure \
-    --with-faxpp=yes \
-    --without-strip
+            --with-faxpp=yes \
+            --with-reader \
+            --without-strip
 
 %if 0%{?fedora_version} >= 13
-make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
+%__make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
 %else
-make %{?_smp_mflags}
+%__make %{?_smp_mflags}
 %endif
 
 %install
 %if 0%{?fedora_version} || 0%{?mandriva_version}
-rm -rf %{buildroot}
+%{?buildroot:%__rm -rf "%{buildroot}"}
 %endif
 
-make DESTDIR=%{buildroot} install
-%find_lang %{name}
+%__make DESTDIR=%{buildroot} install
+%find_lang myrulib
 
 %if 0%{?suse_version}
-%suse_update_desktop_file %{name}
+%suse_update_desktop_file myrulib
 %endif
 
 %if 0%{?fedora_version}
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/myrulib.desktop
 %endif
 
 %if 0%{?suse_version} >= 1140
@@ -100,13 +110,14 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %endif
 
 %clean
-rm -rf %{buildroot}
+%{?buildroot:%__rm -rf "%{buildroot}"}
 
-%files -f %{name}.lang
-%defattr(-,root,root)
-%{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/*/*/%{name}.png
-%{_datadir}/pixmaps/%{name}.png
+%files -f myrulib.lang
+%defattr(-,root,root,-)
+%doc AUTHORS ChangeLog LICENSE README
+%{_bindir}/myrulib
+%{_datadir}/applications/myrulib.desktop
+%{_datadir}/icons/hicolor/*/*/myrulib.png
+%{_datadir}/pixmaps/myrulib.png
 
 %changelog
