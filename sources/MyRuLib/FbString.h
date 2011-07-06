@@ -6,11 +6,13 @@
 class FbString: public wxString  {
 	public: 
 		FbString(const char * psz): wxString(psz, wxConvUTF8) {}
-		wxString static T(const char * psz) { return wxGetTranslation(FbString(psz)); }
+		wxString Translate() { return wxGetTranslation(*this); }
 };
 
-#define fbS(str) (FbString(str))
+wxString FbTransl(const char * psz);
 
-#define fbT(str) (FbString::T(str))
+#define fbT(str) (FbString(str))
+
+#define T(str) (FbTransl(str))
 
 #endif // __FBSTRING_H__
