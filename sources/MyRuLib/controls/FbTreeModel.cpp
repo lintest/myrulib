@@ -213,7 +213,7 @@ const wxBitmap & FbModel::GetBitmap(int state)
 
 void FbModel::DrawButton(const FbModelItem &data, wxWindow * window, wxDC &dc, wxRect &rect)
 {
-	int h = rect.height; if (h % 2) h--;
+	int h = rect.height; if (h % 2 == 0) h--;
 	wxRect r(rect.x, rect.y, h, h);
 	rect.x += h + 2;
 	if (!data.HasChildren()) return;
