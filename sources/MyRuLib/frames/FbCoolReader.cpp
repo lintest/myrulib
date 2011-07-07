@@ -216,16 +216,13 @@ public:
 
 bool FbCoolReader::InitCREngine()
 {
-	if ( fontMan ) return true;
-
+	if ( fontMan ) return fontMan->GetFontCount();
+	CRLog::setStdoutLogger();
 	CRLog::trace("InitCREngine");
-
 	HyphMan::initDictionaries( lString16() );
-	
 	InitFontManager( lString8() );
 	
 	FbFontRegistrator registrator;
-
 #ifdef __WXMSW__
 	wxDir(wxGetOSDirectory() + wxT("\\Fonts\\")).Traverse(registrator);
 #else // __WXMSW__
@@ -234,8 +231,8 @@ bool FbCoolReader::InitCREngine()
 	wxDir(wxT("~/.fonts")).Traverse(registrator);
 	wxDir(wxT("~/fonts")).Traverse(registrator);
 #endif // __WXMSW__
-	int count = fontMan->GetFontCount();
 
+	int count = fontMan->GetFontCount();
 	if (count) {
 		printf("%d fonts loaded.\n", count);
 	} else {
@@ -249,7 +246,9 @@ bool FbCoolReader::InitCREngine()
 
 bool FbCoolReader::InitCREngine()
 {
-	if ( fontMan ) return true;
+	if ( fontMan ) return fontMan->GetFontCount();
+	CRLog::setStdoutLogger();
+	CRLog::trace("InitCREngine");
 	HyphMan::initDictionaries( lString16() );
 	return InitFontManager( lString8() );
 }
