@@ -98,7 +98,6 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnMouseWheel( wxMouseEvent& event);
 		void OnInitDialog( wxInitDialogEvent& event);
 	public:
-		void ScheduleRender() { Resize(0, 0); }
 		bool LoadDocument( const wxString & fname );
 		void UpdateScrollBar();
 		LVDocView * GetDocView() { return _docwin->getDocView(); }
@@ -114,16 +113,15 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnMouseLDown( wxMouseEvent & event );
 		void OnMouseRDown( wxMouseEvent & event );
 		void OnMouseMotion(wxMouseEvent& event);
+		void OnIdle( wxIdleEvent &event );
 		void OnTimer(wxTimerEvent& event);
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void ToggleViewMode();
 		virtual void OnExternalLink( lString16 url, ldomNode * node );
 	protected:
-		void Paint();
-		void Resize(int dx, int dy);
+		void Repaint() { m_dirty = true; }
 	private:
-		wxTimer _renderTimer;
-		wxTimer _cursorTimer;
+		bool m_dirty;
 
 		wxCursor _normalCursor;
 		wxCursor _linkCursor;
