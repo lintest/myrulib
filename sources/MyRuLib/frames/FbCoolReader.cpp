@@ -274,7 +274,6 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 		FbCoolReader * reader = new FbCoolReader(parent);
 		bool ok = reader->LoadDocument(filename);
 		if (ok) {
-			reader->Setup(false);
 			wxString title = reader->GetDocView()->getTitle().c_str();
 			parent->AddPage(reader, TrimTitle(title), select );
 		} else {
@@ -300,6 +299,7 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent)
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	SetScrollbar(wxVERTICAL, 0, 1, 100, false);
 	_wm.activateWindow( _docwin );
+	Setup(false);
 }
 
 FbCoolReader::~FbCoolReader()
@@ -388,12 +388,6 @@ void FbCoolReader::OnIdle (wxIdleEvent &WXUNUSED(event))
 	GetClientSize( &dx, &dy );
 	if (dx<50 || dy<50 || dx>3000 || dy>3000) return;
 	
-	if ( _firstRender ) {
-		GetDocView()->restorePosition();
-		_firstRender = false;
-		_allowRender = true;
-	}
-
 	_wm.reconfigure( dx, dy, CR_ROTATE_ANGLE_0 );
 
 	UpdateScrollBar();
@@ -697,10 +691,6 @@ void FbCoolReader::OnPaint(wxPaintEvent& event)
 	int dx, dy;
 	GetClientSize( &dx, &dy );
 	if ( !GetDocView()->IsRendered() && (GetDocView()->GetWidth() != dx || GetDocView()->GetHeight() != dy) ) {
-		if ( _firstRender ) {
-			GetDocView()->restorePosition();
-			_firstRender = false;
-		}
 		GetDocView()->Resize( dx, dy );
 		return;
 	}
