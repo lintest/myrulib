@@ -1,5 +1,5 @@
 body { text-align: left; text-indent: 0px }
-p { text-align: justify; text-indent: 1.2em; margin-top:0em; margin-bottom: 0em }
+p { text-align: justify; text-indent: 1.2em; margin-top: 0.2em; margin-bottom: 0.2em }
 
 empty-line { height: 1em }
 
@@ -32,8 +32,8 @@ cite { font-style: italic; margin-left: 5%; margin-right: 5%; text-align: justif
 
 title, h1, h2 { text-align: center; text-indent: 0px; font-weight: bold; hyphenate: none; page-break-before: always; page-break-inside: avoid; page-break-after: avoid; }
 subtitle, h3, h4, h5, h6 { text-align: center; text-indent: 0px; font-weight: bold; hyphenate: none; page-break-inside: avoid; page-break-after: avoid; }
-title { font-size: 110%; margin-top: 0.7em; margin-bottom: 0.5em }
-subtitle { font-style: italic; margin-top: 0.3em; margin-bottom: 0.3em }
+title { color: #C00; font-size: 110%; margin-top: 0.7em; margin-bottom: 0.5em }
+subtitle { color: #800; font-style: italic; margin-top: 0.3em; margin-bottom: 0.3em }
 h1 { font-size: 150% }
 h2 { font-size: 140% }
 h3 { font-size: 130% }

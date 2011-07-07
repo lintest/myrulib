@@ -119,13 +119,11 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void ToggleViewMode();
 		virtual void OnExternalLink( lString16 url, ldomNode * node );
 	protected:
-		void SetBatteryIcons();
 		void Paint();
 		void Resize(int dx, int dy);
 	private:
 		wxTimer _renderTimer;
 		wxTimer _cursorTimer;
-		wxTimer _clockTimer;
 
 		wxCursor _normalCursor;
 		wxCursor _linkCursor;

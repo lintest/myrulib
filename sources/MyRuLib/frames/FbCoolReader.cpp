@@ -14,7 +14,6 @@
 #include "MyRuLibApp.h"
 
 #define RENDER_TIMER_ID  123
-#define CLOCK_TIMER_ID   124
 #define CURSOR_TIMER_ID  125
 
 //-----------------------------------------------------------------------------
@@ -150,7 +149,6 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_RIGHT_DOWN( FbCoolReader::OnMouseRDown )
 	EVT_MOTION( FbCoolReader::OnMouseMotion )
 	EVT_TIMER(RENDER_TIMER_ID, FbCoolReader::OnTimer)
-	EVT_TIMER(CLOCK_TIMER_ID, FbCoolReader::OnTimer)
 	EVT_TIMER(CURSOR_TIMER_ID, FbCoolReader::OnTimer)
 	EVT_MENU( Menu_File_About, FbCoolReader::OnAbout )
 	EVT_MENU( wxID_OPEN, FbCoolReader::OnFileOpen )
@@ -276,6 +274,7 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 		FbCoolReader * reader = new FbCoolReader(parent);
 		bool ok = reader->LoadDocument(filename);
 		if (ok) {
+			reader->_wm.activateWindow( reader->_docwin );
 			wxString title = reader->GetDocView()->getTitle().c_str();
 			parent->AddPage(reader, TrimTitle(title), select );
 		} else {
@@ -289,25 +288,17 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent)
 	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
 	, _renderTimer( this, RENDER_TIMER_ID )
 	, _cursorTimer( this, CURSOR_TIMER_ID )
-	, _clockTimer ( this, CLOCK_TIMER_ID )
 	, _normalCursor(wxCURSOR_ARROW)
 	, _linkCursor(wxCURSOR_HAND)
 	, _firstRender(false)
 	, _allowRender(true)
 	, _screen(300,400)
 	, _wm(&_screen)
+	, _docwin(new CRDocViewWindow(&_wm))
 {
-	_wm.activateWindow( (_docwin = new CRDocViewWindow(&_wm)) );
-
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-
-	GetDocView()->setCallback( this );
-	IMAGE_SOURCE_FROM_BYTES(defCover, cr3_def_cover_gif);
-	GetDocView()->setDefaultCover( defCover );
-
-	Setup(false);
-
 	SetScrollbar(wxVERTICAL, 0, 1, 100, false);
+	Setup(false);
 }
 
 FbCoolReader::~FbCoolReader()
@@ -327,9 +318,8 @@ void FbCoolReader::Setup(bool refresh)
 	GetDocView()->setFontSizes( sizes, false );
 	GetDocView()->SetRotateAngle( CR_ROTATE_ANGLE_0 );
 
-	int flags = PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CHAPTER_MARKS | PGHDR_BATTERY;
+	int flags = PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CHAPTER_MARKS;
 	GetDocView()->setPageHeaderInfo( flags );
-	SetBatteryIcons();
 
 	fontMan->SetAntialiasMode( 2 );
 
@@ -345,118 +335,6 @@ void FbCoolReader::Setup(bool refresh)
 	SetBackgroundColour(getBackgroundColour());
   
 	if (refresh) Refresh();
-}
-
-void FbCoolReader::SetBatteryIcons()
-{
-	static const char * battery4[] = {
-		"24 13 4 1",
-		"0 c #000000",
-		"o c #AAAAAA",
-		". c #FFFFFF",
-		"  c None",
-		"   .....................",
-		"   .0000000000000000000.",
-		"....0.................0.",
-		".0000.000.000.000.000.0.",
-		".0..0.000.000.000.000.0.",
-		".0..0.000.000.000.000.0.",
-		".0..0.000.000.000.000.0.",
-		".0..0.000.000.000.000.0.",
-		".0..0.000.000.000.000.0.",
-		".0000.000.000.000.000.0.",
-		"....0.................0.",
-		"   .0000000000000000000.",
-		"   .....................",
-	};
-	static const char * battery3[] = {
-		"24 13 4 1",
-		"0 c #000000",
-		"o c #AAAAAA",
-		". c #FFFFFF",
-		"  c None",
-		"   .....................",
-		"   .0000000000000000000.",
-		"....0.................0.",
-		".0000.ooo.000.000.000.0.",
-		".0..0.ooo.000.000.000.0.",
-		".0..0.ooo.000.000.000.0.",
-		".0..0.ooo.000.000.000.0.",
-		".0..0.ooo.000.000.000.0.",
-		".0..0.ooo.000.000.000.0.",
-		".0000.ooo.000.000.000.0.",
-		"....0.................0.",
-		"   .0000000000000000000.",
-		"   .....................",
-	};
-	static const char * battery2[] = {
-		"24 13 4 1",
-		"0 c #000000",
-		"o c #AAAAAA",
-		". c #FFFFFF",
-		"  c None",
-		"   .....................",
-		"   .0000000000000000000.",
-		"....0.................0.",
-		".0000.ooo.ooo.000.000.0.",
-		".0..0.ooo.ooo.000.000.0.",
-		".0..0.ooo.ooo.000.000.0.",
-		".0..0.ooo.ooo.000.000.0.",
-		".0..0.ooo.ooo.000.000.0.",
-		".0..0.ooo.ooo.000.000.0.",
-		".0000.ooo.ooo.000.000.0.",
-		"....0.................0.",
-		"   .0000000000000000000.",
-		"   .....................",
-	};
-	static const char * battery1[] = {
-		"24 13 4 1",
-		"0 c #000000",
-		"o c #AAAAAA",
-		". c #FFFFFF",
-		"  c None",
-		"   .....................",
-		"   .0000000000000000000.",
-		"....0.................0.",
-		".0000.ooo.ooo.ooo.000.0.",
-		".0..0.ooo.ooo.ooo.000.0.",
-		".0..0.ooo.ooo.ooo.000.0.",
-		".0..0.ooo.ooo.ooo.000.0.",
-		".0..0.ooo.ooo.ooo.000.0.",
-		".0..0.ooo.ooo.ooo.000.0.",
-		".0000.ooo.ooo.ooo.000.0.",
-		"....0.................0.",
-		"   .0000000000000000000.",
-		"   .....................",
-	};
-	static const char * battery0[] = {
-		"24 13 4 1",
-		"0 c #000000",
-		"o c #AAAAAA",
-		". c #FFFFFF",
-		"  c None",
-		"   .....................",
-		"   .0000000000000000000.",
-		"....0.................0.",
-		".0000.ooo.ooo.ooo.ooo.0.",
-		".0..0.ooo.ooo.ooo.ooo.0.",
-		".0..0.ooo.ooo.ooo.ooo.0.",
-		".0..0.ooo.ooo.ooo.ooo.0.",
-		".0..0.ooo.ooo.ooo.ooo.0.",
-		".0..0.ooo.ooo.ooo.ooo.0.",
-		".0000.ooo.ooo.ooo.ooo.0.",
-		"....0.................0.",
-		"   .0000000000000000000.",
-		"   .....................",
-	};
-
-	LVRefVec<LVImageSource> icons;
-	icons.add( LVCreateXPMImageSource( battery0 ) );
-	icons.add( LVCreateXPMImageSource( battery1 ) );
-	icons.add( LVCreateXPMImageSource( battery2 ) );
-	icons.add( LVCreateXPMImageSource( battery3 ) );
-	icons.add( LVCreateXPMImageSource( battery4 ) );
-	GetDocView()->setBatteryIcons( icons );
 }
 
 wxColour FbCoolReader::getBackgroundColour()
@@ -497,42 +375,11 @@ void FbCoolReader::OnTimer(wxTimerEvent& event)
 		UpdateScrollBar();
 	} else if ( event.GetId() == CURSOR_TIMER_ID ) {
 		SetCursor( wxCursor( wxCURSOR_BLANK ) );
-	} else if ( event.GetId() == CLOCK_TIMER_ID ) {
-		if ( IsShownOnScreen() ) {
-			if ( GetDocView()->IsRendered() && GetDocView()->isTimeChanged() )
-				Paint();
-		}
 	}
 }
 
 void FbCoolReader::Paint()
 {
-	//printf("FbCoolReader::Paint() \n");
-	int battery_state = -1;
-#ifdef _WIN32
-	SYSTEM_POWER_STATUS bstatus;
-	BOOL pow = GetSystemPowerStatus(&bstatus);
-	if (bstatus.BatteryFlag & 128)
-		pow = FALSE;
-	if (bstatus.ACLineStatus!=0 || bstatus.BatteryLifePercent==255)
-		pow = FALSE;
-	if ( pow )
-		battery_state = bstatus.BatteryLifePercent;
-#else
-	if ( ::wxGetPowerType() == wxPOWER_BATTERY ) {
-		int n = ::wxGetBatteryState();
-		if ( n == wxBATTERY_NORMAL_STATE )
-			battery_state = 100;
-		else if ( n == wxBATTERY_LOW_STATE )
-			battery_state = 50;
-		else if ( n == wxBATTERY_CRITICAL_STATE )
-			battery_state = 0;
-		else if ( n == wxBATTERY_SHUTDOWN_STATE )
-			battery_state = 0;
-	};
-#endif
-	GetDocView()->setBatteryState( battery_state );
-	//_docview->Draw();
 	UpdateScrollBar();
 	Refresh( FALSE );
 }
@@ -766,7 +613,6 @@ void FbCoolReader::OnKeyDown(wxKeyEvent& event)
 bool FbCoolReader::LoadDocument( const wxString & fname )
 {
 	_renderTimer.Stop();
-	_clockTimer.Stop();
 
 	GetDocView()->savePosition();
 	GetDocView()->Clear();
@@ -844,8 +690,6 @@ void FbCoolReader::Resize(int dx, int dy)
 
 	_renderTimer.Stop();
 	_renderTimer.Start( 100, wxTIMER_ONE_SHOT );
-	_clockTimer.Stop();
-	_clockTimer.Start( 10 * 1000, wxTIMER_CONTINUOUS );
 
 	SetCursor( wxNullCursor );
 }

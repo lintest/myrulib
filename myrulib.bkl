@@ -98,7 +98,6 @@
 		<sources>3rdparty/crengine/src/wolutil.cpp</sources>
 		<sources>3rdparty/crengine/src/wordfmt.cpp</sources>
 		<sources>3rdparty/crengine/src/xutils.cpp</sources>
-		<sources>3rdparty/crengine/res/cr3_def_cover.cpp</sources>
 	</lib>
 
 	<action id="wxsqlite3.cpp">
@@ -210,9 +209,9 @@
 	
 	<action id="fb2_css.inc" cond="USE_READER=='yes'"> 
 		<depends>bin2c</depends>
-		<depends-on-file>$(SRCDIR)/3rdparty/crengine/res/fb2.css</depends-on-file>
+		<depends-on-file>$(SRCDIR)/3rdparty/crengine/css/fb2.css</depends-on-file>
 		<clean-files>$(BUILDDIR)/fb2_css.inc</clean-files>
-		<command>$(BUILDDIR)/bin2c $(SRCDIR)/3rdparty/crengine/res/fb2.css $(BUILDDIR)/fb2_css.inc file</command>
+		<command>$(BUILDDIR)/bin2c $(SRCDIR)/3rdparty/crengine/css/fb2.css $(BUILDDIR)/fb2_css.inc file</command>
 	</action>
 	
 	<exe id="myrulib" template="wxgui">
