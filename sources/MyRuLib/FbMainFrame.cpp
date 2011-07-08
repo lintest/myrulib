@@ -121,7 +121,11 @@ wxString FbMainFrame::GetTitle() const
 }
 
 FbMainFrame::FbMainFrame()
-	: m_LastEvent(NULL), m_ProgressBar(NULL)
+	: m_LastEvent(NULL)
+	, m_ProgressBar(NULL)
+	, m_MenuBook(NULL)
+	, m_MenuTree(NULL)
+	, m_MenuRead(NULL)
 {
 	Create(NULL, wxID_ANY, GetTitle());
 }
@@ -134,6 +138,7 @@ FbMainFrame::~FbMainFrame()
 	FbParams(FB_FRAME_HEIGHT) = size.y;
 	SaveFrameList();
 	m_FrameManager.UnInit();
+	wxDELETE(m_MenuBook);
 }
 
 class FbEventLocker
@@ -230,7 +235,9 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{
-		SetMenuBar(new FbMenuBar);
+		wxMenuBar * menubar = new FbMenuBar;
+		m_MenuTree = menubar->GetMenu(fbBOOK_MENU_POSITION);
+		SetMenuBar(menubar);
 		SetMinSize(wxSize(400,300));
 		if (maximized) Maximize();
 		CreateControls();
@@ -298,7 +305,7 @@ void FbMainFrame::CreateControls()
 
 	SetTabArt(FbParams(FB_NOTEBOOK_ART) + ID_ART_DEFAULT);
 
-	m_FrameManager.AddPane(&m_FrameNotebook, wxAuiPaneInfo().Name(wxT("CenterPane")).CenterPane().PaneBorder(false));
+	m_FrameManager.AddPane(&m_FrameNotebook, wxAuiPaneInfo().Name(wxT("Main")).CenterPane().PaneBorder(false));
 	m_FrameManager.AddPane(m_LogCtrl, wxAuiPaneInfo().Bottom().Name(wxT("Log")).Caption(_("Info messages")).Show(false));
 	m_FrameManager.Update();
 
@@ -880,6 +887,21 @@ void FbMainFrame::OnNotebookChanged(wxAuiNotebookEvent& event)
 
 	wxWindow * window = FbMainFrame::GetActiveChild();
 	bool enable = window && wxIsKindOf(window, FbFrameBase);
+
+#ifdef FB_INCLUDE_READER
+	wxMenu * menu = m_MenuTree;
+	wxString title = _("&Books");
+	if (window && window->GetId() == ID_FRAME_READ) {
+		if (!m_MenuRead) m_MenuBook = m_MenuRead = new FbMenuBar::MenuRead();
+		menu = m_MenuRead;
+		title = _("&Book");
+		enable = true;
+	}
+	if (m_MenuBook == menu) {
+		m_MenuBook = menubar->Replace(fbBOOK_MENU_POSITION, menu, title);
+	}
+#endif // FB_INCLUDE_READER
+
 	menubar->EnableTop(fbBOOK_MENU_POSITION, enable);
 }
 

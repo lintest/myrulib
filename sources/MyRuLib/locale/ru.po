@@ -1946,6 +1946,9 @@ msgstr "&Картотека"
 msgid "&Books"
 msgstr "К&ниги"
 
+msgid "&Book"
+msgstr "К&ниги"
+
 #: FbMainMenu.cpp:11
 msgid "&Window"
 msgstr "&Окно"
@@ -2151,3 +2154,4 @@ msgstr "Отображать колонтитул"
 
 msgid "Page header"
 msgstr "Колонтитул"
+
