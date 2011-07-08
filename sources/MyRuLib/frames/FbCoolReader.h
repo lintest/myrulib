@@ -27,7 +27,7 @@ enum
 	Menu_View_PrevPage,
 	Menu_View_NextLine,
 	Menu_View_PrevLine,
-	Menu_View_Text_Format,
+	Menu_View_Text,
 	Menu_Link_Back,
 	Menu_Link_Forward,
 	Menu_Link_Next,
@@ -36,7 +36,7 @@ enum
 	Menu_View_Begin,
 	Menu_View_End,
 	Menu_View_ToggleFullScreen,
-	Menu_View_TogglePages,
+	Menu_View_Scroll,
 	Menu_View_TogglePageHeader,
 	Menu_View_TOC,
 	Menu_View_History,
@@ -62,8 +62,10 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 	public: 
 		class ContentDlg: public wxDialog {
 			public: 
+				static bool Execute( LVDocView * view );
 				ContentDlg( wxWindow* parent, const wxString& title = wxEmptyString );
-				void Assign( LVDocView * docView );
+			private:
+				ContentDlg * Assign( LVDocView * view );
 		        LVTocItem * GetSelection();
 			private:
 				FbTreeViewCtrl m_treeview;
@@ -114,7 +116,6 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnMouseRDown( wxMouseEvent & event );
 		void OnMouseMotion(wxMouseEvent& event);
 		void OnIdle( wxIdleEvent &event );
-		void OnTimer(wxTimerEvent& event);
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void ToggleViewMode();
 		virtual void OnExternalLink( lString16 url, ldomNode * node );
@@ -122,9 +123,6 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void Repaint() { m_dirty = true; }
 	private:
 		bool m_dirty;
-
-		wxCursor _normalCursor;
-		wxCursor _linkCursor;
 
 		bool _firstRender;
 		bool _allowRender;

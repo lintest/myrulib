@@ -101,10 +101,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\crengine\res\cr3_def_cover.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\3rdparty\crengine\src\crgui.cpp"
 				>
 			</File>

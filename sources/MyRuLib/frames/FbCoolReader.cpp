@@ -14,9 +14,6 @@
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 
-#define RENDER_TIMER_ID  123
-#define CURSOR_TIMER_ID  125
-
 //-----------------------------------------------------------------------------
 //  FbContentModel
 //-----------------------------------------------------------------------------
@@ -26,7 +23,7 @@ class FbContentData;
 class FbContentModel: public FbTreeModel
 {
 	public: 
-		FbContentModel( LVDocView * docView );
+		FbContentModel( LVTocItem * toc, int page );
 	private: 
 		int m_page;
 		friend class FbContentData;
@@ -46,10 +43,10 @@ class FbContentData: public FbParentData
 		DECLARE_CLASS(FbContentData);
 };
 
-FbContentModel::FbContentModel( LVDocView * docView )
-	: m_page(docView->getCurPage())
+FbContentModel::FbContentModel( LVTocItem * toc, int page )
+	: m_page(page)
 {
-	m_root = new FbContentData(*this, NULL, docView->getToc());
+	m_root = new FbContentData(*this, NULL, toc);
 	if (!m_position && m_root->Count(*this)) m_position = 1;
 }
 
@@ -90,6 +87,21 @@ BEGIN_EVENT_TABLE( FbCoolReader::ContentDlg, wxDialog )
 	EVT_TREE_ITEM_ACTIVATED(wxID_ANY, FbCoolReader::ContentDlg::OnActivated)
 END_EVENT_TABLE()
 
+bool FbCoolReader::ContentDlg::Execute( LVDocView * view )
+{
+    LVTocItem * toc = view->getToc();
+    if ( !toc || !toc->getChildCount() ) return false;
+
+	static ContentDlg * dlg = new ContentDlg( wxGetApp().GetTopWindow() );
+    if ( dlg->Assign(view)->ShowModal() == wxID_OK ) {
+		if ( LVTocItem * sel = dlg->GetSelection() ) {
+			view->goToBookmark( sel->getXPointer() );
+			return true;
+		}
+    }
+	return false;
+}
+
 FbCoolReader::ContentDlg::ContentDlg( wxWindow* parent, const wxString& title )
 	: wxDialog( parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
 {
@@ -113,13 +125,14 @@ FbCoolReader::ContentDlg::ContentDlg( wxWindow* parent, const wxString& title )
 	this->Centre( wxBOTH );
 }
 
-void FbCoolReader::ContentDlg::Assign( LVDocView * docView )
+FbCoolReader::ContentDlg * FbCoolReader::ContentDlg::Assign( LVDocView * view )
 {
-	SetTitle(docView->getTitle().c_str());
-	FbContentModel * model = new FbContentModel(docView);
+	SetTitle(view->getTitle().c_str());
+	FbContentModel * model = new FbContentModel(view->getToc(), view->getCurPage());
 	m_treeview.AssignModel(model);
 	int pos = model->GetPosition() > 2 ? model->GetPosition() - 2 : 0;
 	m_treeview.SetScrollPos(pos);
+	return this;
 }
 
 LVTocItem * FbCoolReader::ContentDlg::GetSelection()
@@ -286,8 +299,6 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 FbCoolReader::FbCoolReader(wxAuiNotebook * parent)
 	: wxWindow(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS)
 	, m_dirty(true)
-	, _normalCursor(wxCURSOR_ARROW)
-	, _linkCursor(wxCURSOR_HAND)
 	, _firstRender(false)
 	, _allowRender(true)
 	, _screen(300,400)
@@ -349,36 +360,6 @@ wxColour FbCoolReader::getBackgroundColour()
 	return wxcl;
 }
 
-void FbCoolReader::OnTimer(wxTimerEvent& event)
-{
-	//printf("FbCoolReader::OnTimer() \n");
-	if ( event.GetId() == RENDER_TIMER_ID ) {
-		int dx;
-		int dy;
-		GetClientSize( &dx, &dy );
-		//if ( _docview->IsRendered() && dx == _docview->GetWidth()
-		//        && dy == _docview->GetHeight() )
-		//    return; // no resize
-		if (dx<50 || dy<50 || dx>3000 || dy>3000)
-		{
-			return;
-		}
-
-		if ( _firstRender ) {
-			GetDocView()->restorePosition();
-			_firstRender = false;
-			_allowRender = true;
-		}
-
-		_wm.reconfigure( dx, dy, CR_ROTATE_ANGLE_0 );
-
-		Repaint();
-		UpdateScrollBar();
-	} else if ( event.GetId() == CURSOR_TIMER_ID ) {
-		SetCursor( wxCursor( wxCURSOR_BLANK ) );
-	}
-}
-
 void FbCoolReader::OnIdle (wxIdleEvent &WXUNUSED(event))
 {
 	if (!m_dirty) return;
@@ -416,7 +397,6 @@ void FbCoolReader::UpdateScrollBar()
 			true//const bool refresh = true
 		);
 	}
-	wxSetCursor( wxNullCursor );
 }
 
 void FbCoolReader::OnMouseMotion(wxMouseEvent& event)
@@ -428,13 +408,6 @@ void FbCoolReader::OnMouseMotion(wxMouseEvent& event)
 		return;
 	}
 	lString16 href = ptr.getHRef();
-	if ( href.empty() ) {
-		SetCursor(_normalCursor);
-	} else {
-		SetCursor(_linkCursor);
-	}
-
-	SetCursor( wxNullCursor );
 }
 
 void FbCoolReader::OnMouseLDown( wxMouseEvent & event )
@@ -484,7 +457,7 @@ FbCoolReader::MenuBook::MenuBook()
 	Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
 	AppendSeparator();
 	Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
-	Append( Menu_View_TogglePages, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
+	Append( Menu_View_Scroll, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
 	Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
 	AppendSeparator();
 	Append( ID_READER_OPTIONS, (wxString)_("Cool Reader options") + wxT( "\tF9" ) );
@@ -507,73 +480,29 @@ void FbCoolReader::ToggleViewMode()
 void FbCoolReader::OnCommand(wxCommandEvent& event)
 {
 	switch ( event.GetId() ) {
-	case ID_READER_ZOOM_IN:
-		{
-			wxCursor hg( wxCURSOR_WAIT );
-			this->SetCursor( hg );
-			wxSetCursor( hg );
-			//===========================================
-			doCommand( DCMD_ZOOM_IN, 0 );
-			//===========================================
-			this->SetCursor( wxNullCursor );
-			wxSetCursor( wxNullCursor );
-		}
-		break;
-	case ID_READER_ZOOM_OUT:
-		{
-			wxCursor hg( wxCURSOR_WAIT );
-			this->SetCursor( hg );
-			wxSetCursor( hg );
-			//===========================================
-			doCommand( DCMD_ZOOM_OUT, 0 );
-			//===========================================
-			this->SetCursor( wxNullCursor );
-			wxSetCursor( wxNullCursor );
-		}
-		break;
-	case Menu_View_NextPage:
-		doCommand( DCMD_PAGEDOWN, 1 );
-		GetDocView()->cachePageImage( 0 );
-		GetDocView()->cachePageImage( 1 );
-		break;
-	case Menu_Link_Forward:
-		doCommand( DCMD_LINK_FORWARD, 1 );
-		break;
-	case Menu_Link_Back:
-		doCommand( DCMD_LINK_BACK, 1 );
-		break;
-	case Menu_Link_Next:
-		doCommand( DCMD_LINK_NEXT, 1 );
-		break;
-	case Menu_Link_Prev:
-		doCommand( DCMD_LINK_PREV, 1 );
-		break;
-	case Menu_Link_Go:
-		doCommand( DCMD_LINK_GO, 1 );
-		break;
-	case Menu_View_PrevPage:
-		doCommand( DCMD_PAGEUP, 1 );
-		GetDocView()->cachePageImage( 0 );
-		GetDocView()->cachePageImage( -1 );
-		break;
-	case Menu_View_NextLine:
-		doCommand( DCMD_LINEDOWN, 1 );
-		break;
-	case Menu_View_PrevLine:
-		doCommand( DCMD_LINEUP, 1 );
-		break;
-	case Menu_View_Begin:
-		doCommand( DCMD_BEGIN, 0 );
-		break;
-	case Menu_View_End:
-		doCommand( DCMD_END, 0 );
-		break;
-	case Menu_View_TogglePages:
-		ToggleViewMode();
-		break;
-	case Menu_View_Text_Format:
-		doCommand( DCMD_TOGGLE_TEXT_FORMAT, 0 );
-		break;
+		case ID_READER_ZOOM_IN:  doCommand( DCMD_ZOOM_IN            , 0 );  break;
+		case ID_READER_ZOOM_OUT: doCommand( DCMD_ZOOM_OUT           , 0 ); break;
+		case Menu_Link_Forward:  doCommand( DCMD_LINK_FORWARD       , 1 ); break;
+		case Menu_Link_Back:     doCommand( DCMD_LINK_BACK          , 1 ); ; break;
+		case Menu_Link_Next:     doCommand( DCMD_LINK_NEXT          , 1 ); break;
+		case Menu_Link_Prev:     doCommand( DCMD_LINK_PREV          , 1 ); break;
+		case Menu_Link_Go:       doCommand( DCMD_LINK_GO            , 1 ); break;
+		case Menu_View_NextLine: doCommand( DCMD_LINEDOWN           , 1 ); break;
+		case Menu_View_PrevLine: doCommand( DCMD_LINEUP             , 1 ); break;
+		case Menu_View_Begin:    doCommand( DCMD_BEGIN              , 0 ); break;
+		case Menu_View_End:	     doCommand( DCMD_END                , 0 ); break;
+		case Menu_View_Text:     doCommand( DCMD_TOGGLE_TEXT_FORMAT , 0 ); break;
+		case Menu_View_Scroll:   ToggleViewMode(); break;
+		case Menu_View_NextPage: 
+			doCommand( DCMD_PAGEDOWN, 1 );
+			GetDocView()->cachePageImage( 0 );
+			GetDocView()->cachePageImage( 1 );
+			break;
+		case Menu_View_PrevPage:
+			doCommand( DCMD_PAGEUP, 1 );
+			GetDocView()->cachePageImage( 0 );
+			GetDocView()->cachePageImage( -1 );
+			break;
 	}
 }
 
@@ -739,7 +668,7 @@ void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
 	int a=0;
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'O',     wxID_OPEN);
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'S',     wxID_SAVE);
-	entries[a++].Set(wxACCEL_CTRL,  (int) 'P',     Menu_View_TogglePages);
+	entries[a++].Set(wxACCEL_CTRL,  (int) 'P',     Menu_View_Scroll);
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'H',     Menu_View_TogglePageHeader);
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'R',     Menu_View_Rotate);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F3,      wxID_OPEN);
@@ -760,7 +689,7 @@ void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_PAGEDOWN,  Menu_View_NextPage);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_HOME,      Menu_View_Begin);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_END,       Menu_View_End);
-	entries[a++].Set(wxACCEL_CTRL,    (int) 'T',     Menu_View_Text_Format);
+	entries[a++].Set(wxACCEL_CTRL,    (int) 'T',     Menu_View_Text);
 	entries[a++].Set(wxACCEL_ALT,     WXK_RETURN,     Menu_View_ToggleFullScreen);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F5,      Menu_View_TOC);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F4,      Menu_View_History);
@@ -827,18 +756,7 @@ void FbCoolReader::OnShowHistory( wxCommandEvent& event )
 
 void FbCoolReader::OnShowContent( wxCommandEvent& event )
 {
-    LVTocItem * toc = GetDocView()->getToc();
-    if ( !toc || !toc->getChildCount() ) return;
-
-	static ContentDlg * dlg = new ContentDlg( wxGetApp().GetTopWindow() );
-	dlg->Assign(GetDocView());
-    if ( dlg->ShowModal() == wxID_OK ) {
-        LVTocItem * sel = dlg->GetSelection();
-        if ( sel ) {
-            GetDocView()->goToBookmark( sel->getXPointer() );
-            Refresh();
-        }
-    }
+	if ( ContentDlg::Execute(GetDocView()) ) Refresh();
 }
 
 #endif // FB_INCLUDE_READER

@@ -16,7 +16,7 @@ sv_SE RC_DATA "sv.mo"
 #endif // FB_INCLUDE_READER
 
 #ifdef FB_INCLUDE_READER
-fb2_css RC_DATA "../../../3rdparty/crengine/res/fb2.css"
+fb2_css RC_DATA "../../../3rdparty/crengine/css/fb2.css"
 #endif // FB_INCLUDE_READER
 
 VS_VERSION_INFO VERSIONINFO
