@@ -1,3 +1,12 @@
+myrulib (0.28.7-oneiric1) oneiric; urgency=low
+
+  Доработки и расширение функционала:
+  * Древовидный рубрикатор для библиотеки Genesis
+  * Отдельный пункт для CoolReader3 в главном меню
+  * Поддержка кодировок Windows-1250..1257, KOI8 при импорте FB2
+
+ -- Denis Kandrashin <mail@lintest.ru>  08 Jul 2011 16:00:00 +0400
+
 myrulib (0.28.6-oneiric2) oneiric; urgency=low
 
   Исправление ошибок:

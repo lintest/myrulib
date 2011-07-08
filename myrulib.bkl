@@ -353,43 +353,6 @@
 	</modify-target>
 
 	<if cond="FORMAT_HAS_MAKE_INSTALL=='1'">
-		<data-files cond="USE_READER=='yes'">
-			<srcdir>$(SRCDIR)/3rdparty/crengine/css</srcdir>
-			<files>doc.css</files>
-			<files>epub.css</files>
-			<files>fb2.css</files>
-			<files>htm.css</files>
-			<files>rtf.css</files>
-			<files>txt.css</files>
-			<install-to>$(DATADIR)/myrulib/css</install-to>
-		</data-files>
-		<data-files cond="USE_READER=='yes'">
-			<srcdir>$(SRCDIR)/3rdparty/crengine/hyph</srcdir>
-			<files>Bulgarian.pdb</files>
-			<files>Czech.pdb</files>
-			<files>Danish.pdb</files>
-			<files>English_GB.pdb</files>
-			<files>English_US.pdb</files>
-			<files>Finnish.pdb</files>
-			<files>French.pdb</files>
-			<files>German.pdb</files>
-			<files>Hungarian.pdb</files>
-			<files>Icelandic.pdb</files>
-			<files>Irish.pdb</files>
-			<files>Italian.pdb</files>
-			<files>Polish.pdb</files>
-			<files>Portuguese.pdb</files>
-			<files>Roman.pdb</files>
-			<files>Russian_EnGB.pdb</files>
-			<files>Russian_EnUS.pdb</files>
-			<files>Russian.pdb</files>
-			<files>Slovak.pdb</files>
-			<files>Slovenian.pdb</files>
-			<files>Spanish.pdb</files>
-			<files>Swedish.pdb</files>
-			<files>Ukrain.pdb</files>
-			<install-to>$(DATADIR)/myrulib/hyph</install-to>
-		</data-files>
 		<data-files> 
 			<srcdir>$(SRCDIR)/sources/MyRuLib/desktop</srcdir>
 			<files>myrulib.png</files>
