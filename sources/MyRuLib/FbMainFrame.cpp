@@ -156,7 +156,7 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 {
 	// Check for infinite recursion
 	if (& event == m_LastEvent)	return false;
-	
+
 	if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
 		FbMenu::Type type; int code;
 		if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
@@ -361,7 +361,7 @@ void FbMainFrame::OnReader(wxCommandEvent & event)
 		FbCoolReader * reader = wxDynamicCast(m_FrameNotebook.GetPage(i), FbCoolReader);
 		if (reader) reader->Setup(true);
 	}
-	#endif // FB_INCLUDE_READER	
+	#endif // FB_INCLUDE_READER
 }
 
 void FbMainFrame::OnMenuConfig(wxCommandEvent& event)
@@ -481,7 +481,7 @@ void FbMainFrame::OnNewZip( wxCommandEvent& event )
 	}
 }
 
-void FbMainFrame::OnFolder( wxCommandEvent& event ) 
+void FbMainFrame::OnFolder( wxCommandEvent& event )
 {
 	FbDirImportDlg::Execute(this);
 }
@@ -911,7 +911,7 @@ void FbMainFrame::OnNotebookClosed(wxAuiNotebookEvent& event)
 	if (!menubar) return;
 
 	if (m_FrameNotebook.GetPageCount() == 0) {
-		menubar->EnableTop(fbBOOK_MENU_POSITION, false); 
+		menubar->EnableTop(fbBOOK_MENU_POSITION, false);
 	}
 }
 
@@ -943,7 +943,7 @@ void FbMainFrame::OnIdle( wxIdleEvent & event)
 		msg << wxPLURAL("book", "books", count);
 	}
 	if (m_ProgressBar) m_ProgressBar->SetStatusText(msg, 2);
-	
+
 	FbLogModel * model = wxDynamicCast(m_LogCtrl->GetModel(), FbLogModel);
 	if (model && model->Update()) {
 		ShowLog(true);

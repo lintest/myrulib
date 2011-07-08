@@ -1947,7 +1947,7 @@ msgid "&Books"
 msgstr "К&ниги"
 
 msgid "&Book"
-msgstr "К&ниги"
+msgstr "К&нига"
 
 #: FbMainMenu.cpp:11
 msgid "&Window"
