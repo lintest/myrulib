@@ -82,6 +82,13 @@ FbReaderDlg::PanelPage::PanelPage(wxWindow *parent, wxArrayString & fonts)
 	
 	wxStaticText * stTitle;
 	
+	stTitle = new wxStaticText( this, wxID_ANY, _("Page header"));
+	stTitle->Wrap( -1 );
+	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxCheckBox * checkbox = new wxCheckBox( this, ID_HEADER_SHOW_HEADER, _("Show page header"));
+	fgSizerList->Add( checkbox, 0, wxEXPAND|wxALL, 5 );
+
 	stTitle = new wxStaticText( this, wxID_ANY, _("Header font"));
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
@@ -97,13 +104,13 @@ FbReaderDlg::PanelPage::PanelPage(wxWindow *parent, wxArrayString & fonts)
 	wxSpinCtrl * scFontSize = new wxSpinCtrl( this, ID_HEADER_FONT_SIZE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 99, 0 );
 	fgSizerList->Add( scFontSize, 0, wxALL, 5 );
 
-	stTitle = new wxStaticText( this, wxID_ANY, _("Header colour"));
+	stTitle = new wxStaticText( this, wxID_ANY, _("Font colour"));
 	stTitle->Wrap( -1 );
 	fgSizerList->Add( stTitle, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxColourPickerCtrl * cpFont = new wxColourPickerCtrl( this, ID_HEADER_FONT_COLOUR);
 	fgSizerList->Add( cpFont, 0, wxALL, 5 );
-	
+
 	this->SetSizer( fgSizerList );
 	this->Layout();
 }
@@ -151,19 +158,19 @@ void FbReaderDlg::Assign(bool write)
 	};
 
 	const Struct ids[] = {
-		{FB_READER_FONT_COLOUR,  FbReaderDlg::ID_READER_FONT_COLOUR},
-		{FB_READER_BACK_COLOUR,  FbReaderDlg::ID_READER_BACK_COLOUR},
-		{FB_HEADER_FONT_COLOUR,  FbReaderDlg::ID_HEADER_FONT_COLOUR},
-		{FB_READER_FONT_NAME,  FbReaderDlg::ID_READER_FONT_NAME},
-		{FB_READER_FONT_SIZE,  FbReaderDlg::ID_READER_FONT_SIZE},
-		{FB_HEADER_FONT_NAME,  FbReaderDlg::ID_HEADER_FONT_NAME},
-		{FB_HEADER_FONT_SIZE,  FbReaderDlg::ID_HEADER_FONT_SIZE},
-		{FB_READER_INTERLINE,  FbReaderDlg::ID_READER_INTERLINE},
+		{ FB_READER_FONT_COLOUR  , FbReaderDlg::ID_READER_FONT_COLOUR },
+		{ FB_READER_BACK_COLOUR  , FbReaderDlg::ID_READER_BACK_COLOUR },
+		{ FB_HEADER_FONT_COLOUR  , FbReaderDlg::ID_HEADER_FONT_COLOUR },
+		{ FB_READER_FONT_NAME    , FbReaderDlg::ID_READER_FONT_NAME   },
+		{ FB_READER_FONT_SIZE    , FbReaderDlg::ID_READER_FONT_SIZE   },
+		{ FB_HEADER_FONT_NAME    , FbReaderDlg::ID_HEADER_FONT_NAME   },
+		{ FB_HEADER_FONT_SIZE    , FbReaderDlg::ID_HEADER_FONT_SIZE   },
+		{ FB_READER_SHOW_HEADER  , FbReaderDlg::ID_HEADER_SHOW_HEADER },
+		{ FB_READER_INTERLINE    , FbReaderDlg::ID_READER_INTERLINE   },
 	};
 
-	const size_t idsCount = sizeof(ids) / sizeof(Struct);
-
-	for (size_t i=0; i<idsCount; i++) {
+	const size_t count = sizeof(ids) / sizeof(Struct);
+	for (size_t i = 0; i < count; i++) {
 		FbDialog::Assign(ids[i].control, ids[i].param, write);
 	}
 }

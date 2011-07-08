@@ -2139,3 +2139,15 @@ msgstr "Не найден архив (%s), содержащий файл (%s)."
 #, c-format
 msgid "Not found file %s"
 msgstr "Файл не найден %s"
+
+msgid "Zoom In"
+msgstr "Увеличить масштаб"
+
+msgid "Zoom Out"
+msgstr "Уменьшить масштаб"
+
+msgid "Show page header"
+msgstr "Отображать колонтитул"
+
+msgid "Page header"
+msgstr "Колонтитул"

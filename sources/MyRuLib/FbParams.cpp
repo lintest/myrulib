@@ -98,11 +98,12 @@ int FbParamItem::DefaultInt(int param)
 			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
 			case FB_NUMBER_FORMAT: return 3;
 			case FB_STATUS_SHOW: return 0;
-			case FB_READER_FONT_COLOUR: return 0x000000;
-			case FB_READER_BACK_COLOUR: return 0xFFFFE0;
-			case FB_READER_FONT_SIZE: return 20;
-			case FB_HEADER_FONT_SIZE: return 14;
-			case FB_READER_INTERLINE: return 100;
+			case FB_READER_FONT_COLOUR : return 0x000000;
+			case FB_READER_BACK_COLOUR : return 0xFFFFE0;
+			case FB_READER_FONT_SIZE   : return 20;
+			case FB_HEADER_FONT_SIZE   : return 14;
+			case FB_READER_SHOW_HEADER : return 1;
+			case FB_READER_INTERLINE   : return 100;
 			default: return 0;
 		}
 	else {

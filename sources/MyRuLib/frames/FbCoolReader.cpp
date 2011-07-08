@@ -168,6 +168,10 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_MENU( ID_READER_CONTENT, FbCoolReader::OnShowContent )
 	EVT_MENU( ID_READER_ZOOM_IN, FbCoolReader::OnCommand )
 	EVT_MENU( ID_READER_ZOOM_OUT, FbCoolReader::OnCommand )
+	EVT_MENU( ID_READER_HEADER, FbCoolReader::OnShowHeader )
+	EVT_UPDATE_UI(ID_READER_HEADER, FbCoolReader::OnShowHeaderUI )
+	EVT_MENU(ID_MODE_TREE, FbCoolReader::OnShowContent)
+	EVT_MENU(ID_MODE_LIST, FbCoolReader::OnShowContent)
 	EVT_MENU( Menu_View_Rotate, FbCoolReader::OnRotate )
 	EVT_INIT_DIALOG( FbCoolReader::OnInitDialog )
 	EVT_SCROLLWIN( FbCoolReader::OnScroll )
@@ -340,11 +344,9 @@ void FbCoolReader::Setup(bool refresh)
 	GetDocView()->setFontSizes( sizes, false );
 	GetDocView()->SetRotateAngle( CR_ROTATE_ANGLE_0 );
 
-	int flags = PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CHAPTER_MARKS;
-	GetDocView()->setPageHeaderInfo( flags );
-
 	fontMan->SetAntialiasMode( 2 );
 
+	SetupPageHeader();
 	GetDocView()->setDefaultFontFace( UnicodeToUtf8(FbParams(FB_READER_FONT_NAME).Str().c_str()) );
 	GetDocView()->setStatusFontFace ( UnicodeToUtf8(FbParams(FB_HEADER_FONT_NAME).Str().c_str()) );
 	GetDocView()->setFontSize       ( FbParams(FB_READER_FONT_SIZE) );
@@ -357,6 +359,27 @@ void FbCoolReader::Setup(bool refresh)
 	SetBackgroundColour(getBackgroundColour());
 
 	if (refresh) Refresh();
+}
+
+void FbCoolReader::SetupPageHeader()
+{
+	int flags = FbParams(FB_READER_SHOW_HEADER) 
+		? PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CHAPTER_MARKS
+		: 0;
+	GetDocView()->setPageHeaderInfo( flags );
+}
+
+void FbCoolReader::OnShowHeader( wxCommandEvent& event )
+{
+	int flags = GetDocView()->getPageHeaderInfo();
+	FbParams(FB_READER_SHOW_HEADER) = !flags;
+	SetupPageHeader();
+	Repaint();
+}
+
+void FbCoolReader::OnShowHeaderUI( wxUpdateUIEvent& event )
+{
+	event.Check(GetDocView()->getPageHeaderInfo());
 }
 
 wxColour FbCoolReader::getBackgroundColour()
@@ -458,17 +481,14 @@ void FbCoolReader::OnMouseLDown( wxMouseEvent & event )
 
 FbCoolReader::MenuBook::MenuBook()
 {
-	Append( ID_READER_CONTENT, (wxString)_("Table of Contents") + wxT("\tF5" ) );
+	Append( ID_READER_CONTENT, _("Table of Contents") );
 	AppendSeparator();
-	Append( ID_READER_ZOOM_IN, wxT( "Zoom In" ) );
-	Append( ID_READER_ZOOM_OUT, wxT( "Zoom Out" ) );
+	Append( ID_READER_ZOOM_IN, _( "Zoom In" ) );
+	Append( ID_READER_ZOOM_OUT, _( "Zoom Out" ) );
+	AppendCheckItem( ID_READER_HEADER, _("Show page header") );
 	AppendSeparator();
 	Append( wxID_OPEN, wxT( "&Open...\tCtrl+O" ) );
 	Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
-	AppendSeparator();
-	Append( Menu_View_ToggleFullScreen, wxT( "Toggle Fullscreen\tAlt+Enter" ) );
-	Append( Menu_View_Scroll, wxT( "Toggle Pages/Scroll\tCtrl+P" ) );
-	Append( Menu_View_TogglePageHeader, wxT( "Toggle page heading\tCtrl+H" ) );
 	AppendSeparator();
 	Append( ID_READER_OPTIONS, (wxString)_("Cool Reader options") + wxT( "\tF9" ) );
 };
@@ -674,7 +694,7 @@ void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'O',     wxID_OPEN);
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'S',     wxID_SAVE);
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'P',     Menu_View_Scroll);
-	entries[a++].Set(wxACCEL_CTRL,  (int) 'H',     Menu_View_TogglePageHeader);
+	entries[a++].Set(wxACCEL_CTRL,  (int) 'H',     Menu_View_Header);
 	entries[a++].Set(wxACCEL_CTRL,  (int) 'R',     Menu_View_Rotate);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F3,      wxID_OPEN);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F2,      wxID_SAVE);
@@ -695,7 +715,6 @@ void FbCoolReader::OnInitDialog(wxInitDialogEvent& event)
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_HOME,      Menu_View_Begin);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_END,       Menu_View_End);
 	entries[a++].Set(wxACCEL_CTRL,    (int) 'T',     Menu_View_Text);
-	entries[a++].Set(wxACCEL_ALT,     WXK_RETURN,     Menu_View_ToggleFullScreen);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F5,      Menu_View_TOC);
 	entries[a++].Set(wxACCEL_NORMAL,  WXK_F4,      Menu_View_History);
 

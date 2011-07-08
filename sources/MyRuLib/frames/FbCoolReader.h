@@ -35,9 +35,8 @@ enum
 	Menu_Link_Go,
 	Menu_View_Begin,
 	Menu_View_End,
-	Menu_View_ToggleFullScreen,
 	Menu_View_Scroll,
-	Menu_View_TogglePageHeader,
+	Menu_View_Header,
 	Menu_View_TOC,
 	Menu_View_History,
 	Menu_View_Rotate,
@@ -47,14 +46,6 @@ enum active_mode_t {
 	am_none,
 	am_book,
 	am_history
-};
-
-enum
-{
-	Window_Id_Scrollbar = 1000,
-	Window_Id_View,
-	Window_Id_HistList,
-	Window_Id_Options,
 };
 
 class FbCoolReader: public wxWindow, public LVDocViewCallback
@@ -101,7 +92,10 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnUpdateUI( wxUpdateUIEvent& event );
 		void OnMouseWheel( wxMouseEvent& event);
 		void OnInitDialog( wxInitDialogEvent& event);
-	public:
+		void OnShowHeader( wxCommandEvent& event );
+		void OnShowHeaderUI( wxUpdateUIEvent& event );
+	private:
+		void SetupPageHeader();
 		bool LoadDocument( const wxString & fname );
 		void UpdateScrollBar();
 		LVDocView * GetDocView() { return _docwin->getDocView(); }
