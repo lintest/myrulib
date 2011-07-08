@@ -81,8 +81,11 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		static bool InitCREngine();
 		static void GetFonts(wxArrayString & fonts);
 		static FbCoolReader * Open(wxAuiNotebook * parent, const wxString &filename, bool select = false);
+
+		FbCoolReader();
 		FbCoolReader(wxAuiNotebook * parent);
 		virtual ~FbCoolReader();
+		bool Create(wxAuiNotebook * parent);
 		
 		void Setup(bool refresh);
 

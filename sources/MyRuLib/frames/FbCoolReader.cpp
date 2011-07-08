@@ -284,9 +284,10 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 	if (!InitCREngine()) {
 		return NULL;
 	} else {
-		FbCoolReader * reader = new FbCoolReader(parent);
+		FbCoolReader * reader = new FbCoolReader();
 		bool ok = reader->LoadDocument(filename);
 		if (ok) {
+			reader->Create(parent);
 			wxString title = reader->GetDocView()->getTitle().c_str();
 			parent->AddPage(reader, TrimTitle(title), select );
 		} else {
@@ -294,6 +295,18 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 		}
 		return reader;
 	}
+}
+
+FbCoolReader::FbCoolReader()
+	: wxWindow()
+	, m_dirty(true)
+	, _firstRender(false)
+	, _allowRender(true)
+	, _screen(300,400)
+	, _wm(&_screen)
+	, _docwin(new CRDocViewWindow(&_wm))
+{
+	Setup(false);
 }
 
 FbCoolReader::FbCoolReader(wxAuiNotebook * parent)
@@ -316,6 +329,21 @@ FbCoolReader::FbCoolReader(wxAuiNotebook * parent)
 FbCoolReader::~FbCoolReader()
 {
 }
+
+bool FbCoolReader::Create(wxAuiNotebook * parent)
+{
+	bool ok = wxWindow::Create(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS);
+	if (ok) {
+		GetDocView()->setBackgroundColor( (int)FbParams(FB_READER_BACK_COLOUR) );
+		SetBackgroundColour(getBackgroundColour());
+		SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+		SetScrollbar(wxVERTICAL, 0, 1, 100, false);
+		_wm.activateWindow( _docwin );
+		Refresh();
+	}
+	return ok;
+}
+
 
 void FbCoolReader::Setup(bool refresh)
 {
@@ -345,7 +373,7 @@ void FbCoolReader::Setup(bool refresh)
 	GetDocView()->setDefaultInterlineSpace(FbParams(FB_READER_INTERLINE));
 	GetDocView()->setViewMode(DVM_PAGES);
 	SetBackgroundColour(getBackgroundColour());
-  
+
 	if (refresh) Refresh();
 }
 
