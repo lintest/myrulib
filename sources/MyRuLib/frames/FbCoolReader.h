@@ -59,9 +59,9 @@ enum
 
 class FbCoolReader: public wxWindow, public LVDocViewCallback
 {
-	public: 
+	public:
 		class ContentDlg: public wxDialog {
-			public: 
+			public:
 				static bool Execute( LVDocView * view );
 				ContentDlg( wxWindow* parent, const wxString& title = wxEmptyString );
 			private:
@@ -73,9 +73,9 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 				void OnActivated( wxTreeEvent & event );
 				DECLARE_EVENT_TABLE()
 		};
-		class MenuBook: public FbMenu { 
-			public: 
-				MenuBook(); 
+		class MenuBook: public FbMenu {
+			public:
+				MenuBook();
 		};
 	public:
 		static bool InitCREngine();
@@ -83,10 +83,9 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		static FbCoolReader * Open(wxAuiNotebook * parent, const wxString &filename, bool select = false);
 
 		FbCoolReader();
-		FbCoolReader(wxAuiNotebook * parent);
 		virtual ~FbCoolReader();
 		bool Create(wxAuiNotebook * parent);
-		
+
 		void Setup(bool refresh);
 
 		void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );

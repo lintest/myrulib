@@ -124,7 +124,6 @@
 		<Unit filename="../../3rdparty/crengine/include/wolutil.h" />
 		<Unit filename="../../3rdparty/crengine/include/wordfmt.h" />
 		<Unit filename="../../3rdparty/crengine/include/xutils.h" />
-		<Unit filename="../../3rdparty/crengine/res/cr3_def_cover.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/chmfmt.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/cp_stats.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/crgui.cpp" />
@@ -152,6 +151,7 @@
 		<Unit filename="../../3rdparty/crengine/src/lvtextfm.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/lvtinydom.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/lvxml.cpp" />
+		<Unit filename="../../3rdparty/crengine/src/pdbfmt.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/props.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/rtfimp.cpp" />
 		<Unit filename="../../3rdparty/crengine/src/s32utils.cpp" />
