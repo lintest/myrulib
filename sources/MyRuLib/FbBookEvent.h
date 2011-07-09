@@ -38,21 +38,6 @@ class FbCommandEvent: public wxCommandEvent
 		void Post();
 };
 
-class FbBookEvent: public FbCommandEvent
-{
-	public:
-		FbBookEvent(wxWindowID id, BookTreeItemData * data, const wxString &sting = wxEmptyString)
-			: FbCommandEvent(fbEVT_BOOK_ACTION, id, sting), m_data(data) {};
-
-		FbBookEvent(const FbBookEvent & event)
-			: FbCommandEvent(event), m_data(event.m_data) {};
-
-		virtual wxEvent *Clone() const { return new FbBookEvent(*this); }
-
-	public:
-		BookTreeItemData m_data;
-};
-
 class FbModelEvent: public FbCommandEvent
 {
 	public:
@@ -246,8 +231,6 @@ class FbLettersEvent: public FbCommandEvent
 		int m_position;
 		int m_divider;
 };
-
-typedef void (wxEvtHandler::*FbBookEventFunction)(FbBookEvent&);
 
 typedef void (wxEvtHandler::*FbModelEventFunction)(FbModelEvent&);
 

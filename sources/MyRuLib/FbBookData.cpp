@@ -5,6 +5,7 @@
 #include "FbCollection.h"
 #include "FbColumns.h"
 #include "FbConst.h"
+#include "FbSmartPtr.h"
 #include "MyRuLibApp.h"
 #include "FbMainFrame.h"
 #include "frames/FbCoolReader.h"
@@ -26,41 +27,6 @@ void FbTempEraser::Add(const wxString &filename)
 	eraser.filelist.Add(filename);
 }
 
-BookTreeItemData::BookTreeItemData(wxSQLite3ResultSet & res):
-	m_id(0), file_size(0), number(0), rating(0)
-{
-	Assign(res, wxT("id"), m_id);
-	Assign(res, wxT("title"), title);
-	Assign(res, wxT("file_size"), file_size);
-	Assign(res, wxT("file_type"), file_type);
-	Assign(res, wxT("lang"), language);
-	Assign(res, wxT("genres"), genres);
-	Assign(res, wxT("number"), number);
-
-	Assign(res, wxT("rating"), rating);
-	if ( rating<0 || 5<rating ) rating = 0;
-}
-
-void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, int &value)
-{
-	for (int i=0; i<res.GetColumnCount(); i++) {
-		if (res.GetColumnName(i).CmpNoCase(column)==0) {
-			value = res.GetInt(i);
-			return;
-		}
-	}
-}
-
-void BookTreeItemData::Assign(wxSQLite3ResultSet &res, const wxString& column, wxString &value)
-{
-	for (int i=0; i<res.GetColumnCount(); i++) {
-		if (res.GetColumnName(i).CmpNoCase(column)==0) {
-			value = res.GetString(i);
-			return;
-		}
-	}
-}
-
 wxString FbBookData::GetExt() const
 {
 	return FbCollection::GetBook(m_id, BF_TYPE);
@@ -70,7 +36,7 @@ void FbBookData::Open() const
 {
 	ZipReader reader(m_id, m_id<0);
 	if ( reader.IsOk() ) {
-		DoOpen( reader.GetZip(), reader.GetMd5() );
+		DoOpen( &reader.GetZip(), reader.GetMd5() );
 	} else if ( m_id>0 ) {
 		if ( wxMessageBox(_("Download book file?"), _("Confirmation"), wxOK | wxCANCEL) == wxOK) DoDownload();
 	}
@@ -195,7 +161,9 @@ static void FbExecute(wxString & command)
 
 #endif // __WXGTK__
 
-void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
+//class FbTempInputStream: public wxFileInputStream
+
+void FbBookData::DoOpen(wxInputStream * in, const wxString &md5sum) const
 {
 	wxString filetype = GetExt();
 	wxString command;
@@ -209,16 +177,22 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		FbCommonDatabase database;
 		ok = GetUserCommand(database, filetype, command);
 	}
-
+	
+	wxString tempfile;
     #ifdef FB_INCLUDE_READER
+    FbSmartPtr<wxInputStream> file;
 	if (!ok) {
 		FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
 		if (frame) {
-			wxString tempfile = wxFileName::CreateTempFileName(wxT("fb"));
-			SaveFile(in, tempfile);
+			tempfile = wxFileName::CreateTempFileName(wxT("fb"));
+			SaveFile(*in, tempfile);
 			bool ok = FbCoolReader::Open(frame->GetNotebook(), tempfile, true);
-			wxRemoveFile(tempfile);
-			if (ok) return;
+			if (ok) {
+				wxRemoveFile(tempfile);
+				return;
+			} else {
+				in = file = new wxFileInputStream(tempfile);
+			}
 		}
 	}
     #endif
@@ -235,7 +209,8 @@ void FbBookData::DoOpen(wxInputStream & in, const wxString &md5sum) const
 		filename.Mkdir(0755, wxPATH_MKDIR_FULL);
 
 	wxString filepath = filename.GetFullPath();
-	if (!filename.FileExists()) SaveFile(in, filepath);
+	if (!filename.FileExists()) SaveFile(*in, filepath);
+	if (!tempfile.IsEmpty()) wxRemoveFile(tempfile);
 
 	if (ok) {
 		#ifdef __WXMSW__

@@ -1,5 +1,6 @@
 #include "FbUpdateThread.h"
 #include "FbInternetBook.h"
+#include "FbSmartPtr.h"
 #include "FbDatabase.h"
 #include "FbDateTime.h"
 #include "FbConst.h"
@@ -77,14 +78,8 @@ bool FbUpdateItem::OpenZip()
 	wxFFileInputStream in(m_filename);
 	wxZipInputStream zip(in);
 
-	bool ok = zip.IsOk();
-	if (!ok) return false;
-
-	if (wxZipEntry * entry = zip.GetNextEntry()) {
-		ok = zip.OpenEntry(*entry);
-		delete entry;
-	} else ok = false;
-
+    FbSmartPtr<wxZipEntry> entry;
+    bool ok = zip.IsOk() && (entry = zip.GetNextEntry()) && zip.OpenEntry(*entry);
 	if (!ok) return false;
 
 	m_dataname = wxFileName::CreateTempFileName(wxT("~"));

@@ -1,6 +1,7 @@
 #include "FbImportThread.h"
 #include "FbImportReader.h"
 #include "FbInternetBook.h"
+#include "FbSmartPtr.h"
 #include <wx/dir.h>
 #include <wx/list.h>
 #include <wx/wfstream.h>
@@ -201,13 +202,8 @@ bool FbLibImportThread::Extract(const wxString &filename)
 	wxFFileInputStream in(filename);
 	wxZipInputStream zip(in);
 
-	bool ok = zip.IsOk();
-	if (!ok) return false;
-
-	if (wxZipEntry * entry = zip.GetNextEntry()) {
-		ok = zip.OpenEntry(*entry);
-		delete entry;
-	} else ok = false;
+    FbSmartPtr<wxZipEntry> entry;
+    bool ok = zip.IsOk() && (entry = zip.GetNextEntry()) && zip.OpenEntry(*entry);
 	if (!ok) return false;
 
 	wxString msg = _("Extract file"); msg << wxT(": ") << m_lib;

@@ -3,6 +3,7 @@
 #include "FbConst.h"
 #include "FbExtractInfo.h"
 #include "FbDatabase.h"
+#include "FbSmartPtr.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
 #include "FbDownloader.h"
@@ -96,23 +97,20 @@ void ZipReader::OpenDownload(FbDatabase &database, bool bInfoOnly)
 	}
 }
 
-void ZipReader::OpenEntry(bool bInfoOnly)
+bool ZipReader::OpenEntry(bool bInfoOnly)
 {
-	m_zip = new wxZipInputStream(*m_file, conv);
-	m_result = m_zip;
-	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
+	m_result = m_zip = new wxZipInputStream(*m_file, conv);
+    FbSmartPtr<wxZipEntry> entry;
+	while (entry = m_zip->GetNextEntry()) {
 		bool ok = (entry->GetInternalName().Right(4).Lower() == wxT(".fbd")) == bInfoOnly;
-		if (ok) m_fileOk = m_zip->OpenEntry(*entry);
-		delete entry;
-		if (ok) break;
+		if (ok) return m_fileOk = m_zip->OpenEntry(*entry);
 	}
 }
 
 void ZipReader::OpenZip(const wxString &zipname, const wxString &filename)
 {
 	m_file = new wxFFileInputStream(zipname);
-	m_zip = new wxZipInputStream(*m_file, conv);
-	m_result = m_zip;
+	m_result = m_zip = new wxZipInputStream(*m_file, conv);
 
 	m_zipOk  = m_file->IsOk();
 	m_fileOk = m_zipOk && FindEntry(filename);
@@ -138,15 +136,11 @@ void ZipReader::OpenFile(const wxString &filename)
 
 bool ZipReader::FindEntry(const wxString &file_name)
 {
-	bool find_ok = false;
-	bool open_ok = false;
-	while (wxZipEntry * entry = m_zip->GetNextEntry()) {
-		find_ok = (entry->GetInternalName() == file_name);
-		if (find_ok) open_ok = m_zip->OpenEntry(*entry);
-		delete entry;
-		if (find_ok) break;
+    FbSmartPtr<wxZipEntry> entry;
+	while (entry = m_zip->GetNextEntry()) {
+		if (entry->GetInternalName() == file_name) return m_zip->OpenEntry(*entry);
 	}
-	return find_ok && open_ok;
+	return false;
 }
 
 void ZipReader::ShowError()

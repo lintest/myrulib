@@ -1,5 +1,6 @@
 #include "FbExtractInfo.h"
 #include "FbImportReader.h"
+#include "FbSmartPtr.h"
 #include "FbParams.h"
 #include "FbConst.h"
 #include <wx/zipstrm.h>
@@ -117,11 +118,11 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 		wxFFileInputStream file(filename.GetFullPath());
 		wxZipInputStream zip(file, conv);
 		size_t count = 0;
-		while (wxZipEntry * entry = zip.GetNextEntry()) {
+		FbSmartPtr<wxZipEntry> entry;
+		while (entry = zip.GetNextEntry()) {
 			if (entry->GetSize()) {
 				if (Ext(entry->GetInternalName()) != wxT("fbd")) count++;
-				delete entry;
-				if (count>1) return;
+				if (count > 1) return;
 			}
 		}
 	}

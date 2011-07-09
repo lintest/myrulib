@@ -263,6 +263,7 @@
 		<Unit filename="../MyRuLib/FbPreviewWindow.h" />
 		<Unit filename="../MyRuLib/FbServiceThread.cpp" />
 		<Unit filename="../MyRuLib/FbServiceThread.h" />
+		<Unit filename="../MyRuLib/FbSmartPtr.h" />
 		<Unit filename="../MyRuLib/FbStringHash.h" />
 		<Unit filename="../MyRuLib/FbThread.cpp" />
 		<Unit filename="../MyRuLib/FbThread.h" />

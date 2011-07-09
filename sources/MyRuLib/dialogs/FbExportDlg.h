@@ -42,7 +42,6 @@ class FbExportDlg : public FbDialog
 		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
-		void AppendBook(const wxTreeItemId &parent, BookTreeItemData &data);
 		void ChangeFilesExt(const wxTreeItemId &parent);
 		void FillFilelist(const wxTreeItemId &parent, FbConvertArray &filelist, const wxString &dir = wxEmptyString);
 		bool ExportBooks();
