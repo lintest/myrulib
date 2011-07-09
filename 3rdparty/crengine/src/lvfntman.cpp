@@ -1497,8 +1497,8 @@ public:
             if ( !item )
                 face.clear();
             _fallbackFontFace = face;
-            return !_fallbackFontFace.empty();
         }
+        return !_fallbackFontFace.empty();
     }
 
     /// get fallback font face (returns empty string if no fallback font is set)

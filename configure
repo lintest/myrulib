@@ -8673,7 +8673,6 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.9"
 
 
 
-DOLLAR="$"
 WX_CFLAGS=`echo $WX_CFLAGS | sed "s|-mthreads||g"`
 WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed "s|-mthreads||g"`
 WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed "s|-mthreads||g"`
@@ -8681,7 +8680,7 @@ WX_LIBS=`echo $WX_LIBS | sed "s|-mthreads||g"`
 
 
 if test "x$USE_FAXPP" = "xbuiltin" ; then
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
+  CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
   WX_LIBS="$WX_LIBS -lfaxpp"
 fi
 
@@ -8692,7 +8691,7 @@ fi
 
 
 if test "x$USE_EXPAT" = "xbuiltin" ; then
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
+  CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
   WX_LIBS="$WX_LIBS -lexpat"
 fi
 
@@ -8703,7 +8702,7 @@ fi
 
 
 if test "x$USE_SQLITE" = "xbuiltin" ; then
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
+  CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/sqlite3"
   WX_LIBS="$WX_LIBS -lsqlite3"
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
@@ -8712,7 +8711,7 @@ fi
 
 
 if test "x$USE_READER" = "xyes" ; then
-  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I$DOLLAR(srcdir)/3rdparty/crengine/include"
+  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I\$(srcdir)/3rdparty/crengine/include"
   WX_LIBS="$WX_LIBS -lcrengine"
   $as_echo "#define FB_INCLUDE_READER 1" >>confdefs.h
 
@@ -8737,7 +8736,7 @@ fi
 
 
 if test "x$USE_STRIP" = "xyes" ; then
-  STRIP_COMMAND="$DOLLAR(STRIP) ./myrulib$DOLLAR(EXEEXT)"
+  STRIP_COMMAND="\$(STRIP) ./myrulib\$(EXEEXT)"
 else
   STRIP_COMMAND=""
 fi

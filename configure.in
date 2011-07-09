@@ -137,7 +137,6 @@ AC_BAKEFILE([m4_include(autoconf_inc.m4)])
 dnl   NB: After the wxMSW configuration use the following command.
 dnl   $ sed -i 's/-mthreads//g' Makefile"
 
-DOLLAR="$"
 WX_CFLAGS=`echo $WX_CFLAGS | sed "s|-mthreads||g"`
 WX_CXXFLAGS=`echo $WX_CXXFLAGS | sed "s|-mthreads||g"`
 WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed "s|-mthreads||g"`
@@ -148,7 +147,7 @@ dnl === USE_FAXPP ===
 dnl =================
 
 if test "x$USE_FAXPP" = "xbuiltin" ; then 
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
+  CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
   WX_LIBS="$WX_LIBS -lfaxpp"
 fi
 
@@ -162,7 +161,7 @@ dnl === USE_EXPAT ===
 dnl =================
 
 if test "x$USE_EXPAT" = "xbuiltin" ; then 
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
+  CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
   WX_LIBS="$WX_LIBS -lexpat"
 fi
 
@@ -176,7 +175,7 @@ dnl === USE_SQLITE ===
 dnl ==================
 
 if test "x$USE_SQLITE" = "xbuiltin" ; then 
-  CXXFLAGS="$CXXFLAGS -I$DOLLAR(srcdir)/3rdparty/sqlite3"
+  CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/sqlite3"
   WX_LIBS="$WX_LIBS -lsqlite3"
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
@@ -188,7 +187,7 @@ dnl === USE_READER ===
 dnl ==================
 
 if test "x$USE_READER" = "xyes" ; then 
-  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I$DOLLAR(srcdir)/3rdparty/crengine/include"
+  CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I\$(srcdir)/3rdparty/crengine/include"
   WX_LIBS="$WX_LIBS -lcrengine"
   AC_DEFINE(FB_INCLUDE_READER)
 fi
@@ -220,7 +219,7 @@ dnl === USE_STRIP ===
 dnl =================
 
 if test "x$USE_STRIP" = "xyes" ; then 
-  STRIP_COMMAND="$DOLLAR(STRIP) ./myrulib$DOLLAR(EXEEXT)"
+  STRIP_COMMAND="\$(STRIP) ./myrulib\$(EXEEXT)"
 else
   STRIP_COMMAND=""
 fi
