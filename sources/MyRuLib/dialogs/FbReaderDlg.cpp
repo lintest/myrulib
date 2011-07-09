@@ -21,7 +21,7 @@
 FbReaderDlg::PanelMain::PanelMain(wxWindow *parent, wxArrayString & fonts)
 	: wxPanel(parent)
 {
-	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer(2, 0, 0 );
+	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer( 2 );
 	fgSizerList->AddGrowableCol( 1 );
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -75,7 +75,7 @@ FbReaderDlg::PanelMain::PanelMain(wxWindow *parent, wxArrayString & fonts)
 FbReaderDlg::PanelPage::PanelPage(wxWindow *parent, wxArrayString & fonts)
 	: wxPanel(parent)
 {
-	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer(2, 0, 0 );
+	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer( 2 );
 	fgSizerList->AddGrowableCol( 1 );
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );

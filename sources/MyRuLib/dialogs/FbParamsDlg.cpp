@@ -215,8 +215,7 @@ FbParamsDlg::PanelFont::PanelFont(wxWindow *parent)
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxFlexGridSizer* fgSizerList;
-	fgSizerList = new wxFlexGridSizer(2, 0, 0 );
+	wxFlexGridSizer * fgSizerList = new wxFlexGridSizer( 2 );
 	fgSizerList->AddGrowableCol( 1 );
 	fgSizerList->SetFlexibleDirection( wxBOTH );
 	fgSizerList->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -280,7 +279,7 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 
 	bSizerMain->Add( bSizerProxy, 0, wxEXPAND, 5 );
 
-	wxFlexGridSizer* fSizerProxy = new wxFlexGridSizer( 2, 0, 0 );
+	wxFlexGridSizer * fSizerProxy = new wxFlexGridSizer( 2 );
 	fSizerProxy->AddGrowableCol( 1 );
 	fSizerProxy->SetFlexibleDirection( wxBOTH );
 	fSizerProxy->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -315,8 +314,7 @@ FbParamsDlg::PanelInternet::PanelInternet(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_DEL_DOWNLOAD, _("Delete downloaded files when download query removed"));
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	wxFlexGridSizer* fgSizer;
-	fgSizer = new wxFlexGridSizer(2, 0, 0 );
+	wxFlexGridSizer * fgSizer = new wxFlexGridSizer( 2 );
 	fgSizer->SetFlexibleDirection( wxBOTH );
 	fgSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 

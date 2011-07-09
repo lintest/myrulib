@@ -7,6 +7,7 @@
 #include "FbBookEvent.h"
 #include "FbThread.h"
 #include "FbImportCtx.h"
+#include "controls/FbSearchCombo.h"
 
 class FbAuthorReplaceDlg : public FbDialog
 {
@@ -22,12 +23,10 @@ class FbAuthorReplaceDlg : public FbDialog
 		{
 			ID_TEXT = 1000,
 			ID_FIND_TXT,
-			ID_FIND_BTN,
 			ID_FIND_LIST,
 		};
-		wxTextCtrl* m_Text;
-		wxTextCtrl* m_FindText;
-		wxBitmapButton* m_FindBtn;
+		wxTextCtrl * m_Text;
+		FbSearchCombo * m_FindText;
 		FbTreeViewCtrl * m_MasterList;
 	private:
 		void Init();
@@ -39,6 +38,7 @@ class FbAuthorReplaceDlg : public FbDialog
 		int m_id;
 		FbThread * m_thread;
 		wxString m_MasterFile;
+		wxString m_MasterTemp;
 	private:
 		void OnFindEnter( wxCommandEvent& event );
 		void OnModel( FbArrayEvent& event );

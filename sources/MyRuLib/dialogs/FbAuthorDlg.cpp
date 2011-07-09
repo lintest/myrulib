@@ -12,8 +12,7 @@ FbAuthorModifyDlg::FbAuthorModifyDlg( const wxString& title, int id )
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxFlexGridSizer* bSizerGrid;
-	bSizerGrid = new wxFlexGridSizer( 2, 0, 0 );
+	wxFlexGridSizer * bSizerGrid = new wxFlexGridSizer( 2 );
 	bSizerGrid->AddGrowableCol( 1 );
 	bSizerGrid->SetFlexibleDirection( wxBOTH );
 	bSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -144,13 +143,6 @@ void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	{
-		wxString sql = wxT("UPDATE authors SET number=(SELECT COUNT(id) FROM books WHERE books.id_author=authors.id) WHERE id=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, new_id);
-		stmt.ExecuteUpdate();
-	}
-
-	{
 		wxString sql = wxT("DELETE FROM authors WHERE id=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
@@ -197,7 +189,7 @@ void FbAuthorModifyDlg::EndModal(int retCode)
 
 BEGIN_EVENT_TABLE( FbAuthorReplaceDlg, wxDialog )
 	EVT_TEXT_ENTER( ID_FIND_TXT, FbAuthorReplaceDlg::OnFindEnter )
-	EVT_BUTTON( ID_FIND_BTN, FbAuthorReplaceDlg::OnFindEnter )
+	EVT_BUTTON( ID_FIND_TXT, FbAuthorReplaceDlg::OnFindEnter )
 	EVT_FB_ARRAY(ID_MODEL_CREATE, FbAuthorReplaceDlg::OnModel)
 	EVT_FB_ARRAY(ID_MODEL_APPEND, FbAuthorReplaceDlg::OnArray)
 	EVT_COMMAND(ID_MODEL_NUMBER, fbEVT_BOOK_ACTION, FbAuthorReplaceDlg::OnNumber)
@@ -212,38 +204,28 @@ FbAuthorReplaceDlg::FbAuthorReplaceDlg( const wxString& title, int id )
 	wxBoxSizer* bSizerMain;
 	bSizerMain = new wxBoxSizer( wxVERTICAL );
 
-	wxFlexGridSizer* fgSizerGrid;
-	fgSizerGrid = new wxFlexGridSizer( 2, 0, 0 );
+	wxFlexGridSizer * fgSizerGrid = new wxFlexGridSizer( 2 );
 	fgSizerGrid->AddGrowableCol( 1 );
 	fgSizerGrid->SetFlexibleDirection( wxBOTH );
 	fgSizerGrid->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxStaticText * m_static1 = new wxStaticText( this, wxID_ANY, _("Replace") + COLON, wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_static1 = new wxStaticText( this, wxID_ANY, _("Replace") + COLON );
 	m_static1->Wrap( -1 );
 	fgSizerGrid->Add( m_static1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_Text = new wxTextCtrl( this, ID_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_Text = new wxTextCtrl( this, ID_TEXT );
 	m_Text->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
 	m_Text->SetMinSize( wxSize( 300,-1 ) );
 
 	fgSizerGrid->Add( m_Text, 0, wxEXPAND|wxTOP|wxBOTTOM|wxRIGHT, 5 );
 
-	wxStaticText * m_static2 = new wxStaticText( this, wxID_ANY, _("Find") + COLON, wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * m_static2 = new wxStaticText( this, wxID_ANY, _("Find") + COLON );
 	m_static2->Wrap( -1 );
 	fgSizerGrid->Add( m_static2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	wxBoxSizer* bSizerFind;
-	bSizerFind = new wxBoxSizer( wxHORIZONTAL );
-
-	m_FindText = new wxTextCtrl( this, ID_FIND_TXT, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_PROCESS_ENTER );
+	m_FindText = new FbSearchCombo( this, ID_FIND_TXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 250,-1 ) );
-
-	bSizerFind->Add( m_FindText, 1, wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_FindBtn = new wxBitmapButton( this, ID_FIND_BTN, wxArtProvider::GetBitmap(wxART_FIND), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-	bSizerFind->Add( m_FindBtn, 0, wxRIGHT|wxLEFT, 5 );
-
-	fgSizerGrid->Add( bSizerFind, 0, wxEXPAND, 5 );
+	fgSizerGrid->Add( m_FindText, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxTOP|wxBOTTOM|wxRIGHT, 5 );
 
 	bSizerMain->Add( fgSizerGrid, 0, wxEXPAND, 5 );
 
@@ -267,7 +249,7 @@ FbAuthorReplaceDlg::~FbAuthorReplaceDlg()
 		m_thread->Close();
 		m_thread->Delete();
 	}
-	if (!m_MasterFile.IsEmpty()) wxRemoveFile(m_MasterFile);
+	if (!m_MasterTemp.IsEmpty()) wxRemoveFile(m_MasterTemp);
 }
 
 bool FbAuthorReplaceDlg::Load()
@@ -388,7 +370,7 @@ bool FbAuthorReplaceDlg::Delete(FbModel &model)
 
 void FbAuthorReplaceDlg::OnNumber(wxCommandEvent& event)
 {
-	m_MasterFile = event.GetString();
+	m_MasterTemp = m_MasterFile = event.GetString();
 	FbAuthListModel * model = wxDynamicCast(m_MasterList->GetModel(), FbAuthListModel);
 	if (model) model->SetCounter(m_MasterFile);
 	m_MasterList->Refresh();

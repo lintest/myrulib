@@ -5,6 +5,7 @@
 #include "FbGenres.h"
 #include "res/add.xpm"
 #include "res/del.xpm"
+#include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
 //  FbTitleDlg::SubPanel
@@ -30,7 +31,7 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 
 	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
-	m_text.AssignModel(CreateModel());
+//	m_text.AssignModel(CreateModel());
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
 	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
@@ -164,8 +165,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 {
 	FbCommonDatabase database;
 
-	wxFlexGridSizer* fgSizerMain;
-	fgSizerMain = new wxFlexGridSizer( 2, 0, 0 );
+	wxFlexGridSizer * fgSizerMain = new wxFlexGridSizer( 2 );
 	fgSizerMain->AddGrowableCol( 1 );
 	fgSizerMain->SetFlexibleDirection( wxBOTH );
 	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
@@ -251,7 +251,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	fgSizerMain->Fit( this );
 }
 
-void FbTitleDlg::TitlePanel::ArrangeControls()
+void FbTitleDlg::TitlePanel::ArrangeControls(int height)
 {
 	wxWindow * notebook = GetParent();
 	if (notebook == NULL) return;
@@ -259,7 +259,7 @@ void FbTitleDlg::TitlePanel::ArrangeControls()
 	FbTitleDlg * dialog = wxDynamicCast(notebook->GetParent(), FbTitleDlg);
 	if (dialog == NULL) return;
 
-	dialog->ArrangeControls();
+	dialog->ArrangeControls(height);
 }
 
 void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
@@ -273,12 +273,14 @@ void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
 	wxBoxSizer * owner = panel->GetOwner();
 	if (owner == NULL) return;
 
+	int height; panel->GetSize(NULL, &height);
+
 	wxWindow * prior = owner->GetChildren().GetLast()->GetData()->GetWindow();
 	panel = panel->New(this, owner);
 	panel->MoveAfterInTabOrder(prior);
 	owner->Add( panel, 1, wxEXPAND, 5 );
 
-	ArrangeControls();
+	ArrangeControls(height);
 }
 
 void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
@@ -291,6 +293,8 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 
 	wxBoxSizer * owner = panel->GetOwner();
 	if (owner == NULL) return;
+	
+	int height; panel->GetSize(NULL, &height);
 
 	wxSizerItem * item = owner->GetItem(panel);
 	if (item) {
@@ -299,7 +303,7 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 		} else {
 			owner->Detach(panel);
 			panel->Destroy();
-			ArrangeControls();
+			ArrangeControls(-height);
 		}
 	}
 }
@@ -310,16 +314,13 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 
 bool FbTitleDlg::Execute(int book)
 {
-	FbTitleDlg dlg(NULL, book);
-	dlg.Init();
+	FbTitleDlg dlg(wxGetApp().GetTopWindow(), book);
 	return dlg.ShowModal() == wxID_OK;
 }
 
 FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
 	: FbDialog( parent, wxID_ANY, _("Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER | wxTAB_TRAVERSAL )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
@@ -327,56 +328,41 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
 
 	wxPanel * panel = new TitlePanel( m_notebook, book );
 	m_notebook->AddPage( panel, _("General"), false );
-
+	
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizer->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
-	this->SetSizer( sizer );
-	this->Layout();
-	this->Centre( wxBOTH );
+	SetSizer( sizer );
+	Layout();
+	
+	int h;
+	parent->GetSize(NULL, &h);
+	wxSize size = GetBestSize();
+	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	size.y += 2;
+	if (size.y > h) size.y = h; 
+	SetSize(size);
+	
+	Centre( wxBOTH );
+	
+	size_t count = m_notebook->GetPageCount();
+	for (size_t i = 0; i < count; i++) {
+		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
+		if (window) {
+			window->SetScrollbars(20, 20, 50, 50);
+			window->Layout();
+		}
+	}
 }
 
 FbTitleDlg::~FbTitleDlg()
 {
 }
 
-void FbTitleDlg::Init()
+void FbTitleDlg::ArrangeControls(int height)
 {
-	ArrangeControls();
-	size_t count = m_notebook->GetPageCount();
-	for (size_t i = 0; i < count; i++) {
-		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
-		if (window) window->SetScrollbars(20, 20, 50, 50);
-	}
-}
-
-void FbTitleDlg::ArrangeControls()
-{
-	size_t count = m_notebook->GetPageCount();
-	for (size_t i = 0; i < count; i++) {
-		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
-		if (window) {
-			window->Layout();
-			wxSize size = window->GetSizer()->ComputeFittingClientSize(window);
-			size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
-			window->SetScrollbars(0, 0, 0, 0);
-			window->SetMinSize(size);
-			window->SetSize(size);
-		}
-	}
-
-	wxSize size = GetBestSize();
-	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+	wxSize size = GetSize();
+	size.y += height;
 	SetSize(size);
-
-	for (size_t i = 0; i < count; i++) {
-		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);
-		if (window) {
-			window->SetScrollbars(20, 20, 50, 50);
-			window->SetMinSize(wxSize(-1, -1));
-			window->Layout();
-		}
-	}
-
 	Layout();
 }

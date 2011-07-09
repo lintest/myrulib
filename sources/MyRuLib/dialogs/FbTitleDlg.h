@@ -17,7 +17,7 @@ class FbTitleDlg : public FbDialog
 			public:
 				TitlePanel( wxWindow* parent, int book );
 			protected:
-				void ArrangeControls();
+				void ArrangeControls(int height);
 			private:
 				wxBoxSizer * m_authors;
 				wxBoxSizer * m_series;
@@ -55,7 +55,7 @@ class FbTitleDlg : public FbDialog
 				FbListModel * CreateModel();
 			private:
 				wxToolBar m_toolbar;
-				FbComboBox m_text;
+				FbCustomCombo m_text;
 			private:
 				void OnChar( wxKeyEvent& event );
 				void OnText( wxCommandEvent& event );
@@ -72,7 +72,7 @@ class FbTitleDlg : public FbDialog
 					{}
 			private:
 				wxToolBar m_toolbar;
-				FbComboBox m_text;
+				FbCustomCombo m_text;
 				wxTextCtrl m_numb;
 				DECLARE_CLASS(SeqnSubPanel);
 		};
@@ -96,7 +96,7 @@ class FbTitleDlg : public FbDialog
 		static bool Execute(int book);
 		FbTitleDlg( wxWindow* parent, int book );
 		~FbTitleDlg();
-		void ArrangeControls();
+		void ArrangeControls(int height);
 
 	protected:
 		wxNotebook * m_notebook;

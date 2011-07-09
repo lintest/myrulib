@@ -97,7 +97,7 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
-	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER );
+	m_FindText = new FbSearchCombo( panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
 
 	m_MasterList = new FbSeqnViewCtrl;
