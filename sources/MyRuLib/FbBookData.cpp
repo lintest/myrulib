@@ -55,19 +55,6 @@ void FbBookData::SaveFile(wxInputStream & in, const wxString &filepath) const
 	out.Close();
 }
 
-bool FbBookData::GetUserCommand(wxSQLite3Database &database, const wxString &filetype, wxString &command) const
-{
-	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, filetype);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) {
-		command = result.GetString(0);
-		return !command.IsEmpty();
-	}
-	return false;
-}
-
 bool FbBookData::GetSystemCommand(const wxString &filepath, const wxString &filetype, wxString &command) const
 {
 	wxFileType * ft = wxTheMimeTypesManager->GetFileTypeFromExtension(filetype);
@@ -169,14 +156,9 @@ void FbBookData::DoOpen(wxInputStream * in, const wxString &md5sum) const
 	wxString command;
 	bool ok = false;
 
-	if (!ok) {
-		FbLocalDatabase database;
-		ok = GetUserCommand(database, filetype, command);
-	}
-	if (!ok) {
-		FbCommonDatabase database;
-		ok = GetUserCommand(database, filetype, command);
-	}
+	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
+	if (!ok) ok = !(command = FbLocalDatabase().Str(filetype, sql)).IsEmpty();
+	if (!ok) ok = !(command = FbCommonDatabase().Str(filetype, sql)).IsEmpty();
 	
 	wxString tempfile;
     #ifdef FB_INCLUDE_READER
@@ -186,7 +168,7 @@ void FbBookData::DoOpen(wxInputStream * in, const wxString &md5sum) const
 		if (frame) {
 			tempfile = wxFileName::CreateTempFileName(wxT("fb"));
 			SaveFile(*in, tempfile);
-			bool ok = FbCoolReader::Open(frame->GetNotebook(), tempfile, true);
+			bool ok = FbCoolReader::Open(frame->GetNotebook(), GetId(), tempfile);
 			if (ok) {
 				wxRemoveFile(tempfile);
 				return;
@@ -276,12 +258,8 @@ void FbAuthorData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) co
 
 void * FbAuthorData::ShowThread::Entry()
 {
-	FbCommonDatabase database;
-	wxString sql = wxT("SELECT description FROM authors WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_author);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, result.GetString(0)).Post(m_frame);
+	wxString info = FbCommonDatabase().Str(m_author, wxT("SELECT description FROM authors WHERE id=?"));
+	if (!info.IsEmpty()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, info).Post(m_frame);
 	return NULL;
 }
 

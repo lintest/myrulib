@@ -26,15 +26,8 @@ void * FbViewThread::Entry()
 
 void FbViewThread::OpenAuth()
 {
-	wxString sql = wxT("SELECT description FROM authors WHERE id=? AND description IS NOT NULL");
-	FbCommonDatabase database;
-	database.JoinThread(this);
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_view.GetCode());
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.IsOk() && result.NextRow()) {
-		SendHTML(ID_AUTH_PREVIEW, result.GetString(0));
-	}
+	wxString info = FbCommonDatabase().Str(m_view.GetCode(), wxT("SELECT description FROM authors WHERE id=? AND description IS NOT NULL"));
+	if (!info.IsEmpty()) SendHTML(ID_AUTH_PREVIEW, info);
 }
 
 void FbViewThread::OpenBook()
@@ -90,29 +83,19 @@ void FbViewThread::SendHTML(wxWindowID winid, const wxString &html)
 	FbCommandEvent(fbEVT_BOOK_ACTION, winid, m_view.GetCode(), html).Post(m_frame);
 }
 
-wxString FbViewThread::GetDescr(wxSQLite3Database &database)
+wxString FbViewThread::GetDescr(FbDatabase & database)
 {
-	wxString sql = wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, m_view.GetCode());
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.IsOk() && result.NextRow()) {
-		return result.GetString(0);
-	} else {
-		return wxEmptyString;
-	}
+	return database.Str(m_view.GetCode(), wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL"));
 }
 
-wxString FbViewThread::GetFiles(wxSQLite3Database &database)
+wxString FbViewThread::GetFiles(FbDatabase & database)
 {
 	FbExtractArray items(database, m_view.GetCode());
 
 	wxString html;
-
-	for (size_t i = 0; i<items.Count(); i++) {
+	for (size_t i = 0; i < items.Count(); i++) {
 		html << wxString::Format(wxT("<p>%s</p>"), items[i].ErrorName().c_str());
 	}
-
 	return html;
 }
 

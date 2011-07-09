@@ -371,15 +371,7 @@ bool FbAuthorReplaceDlg::Delete(FbModel &model)
 	if (current == NULL) return false;
 
 	int id = current->GetCode();
-	int count = 0;
-	{
-		wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM books WHERE id_author=?");
-		FbCommonDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, id);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		count = result.NextRow() ? result.GetInt(0) : 0;
-	}
+	int count = FbCommonDatabase().Int(id, wxT("SELECT COUNT(DISTINCT id) FROM books WHERE id_author=?"));
 
 	wxString msg = _("Delete author") + COLON + current->GetValue(model);
 	if (count) msg << (wxString)wxT("\n") <<  wxString::Format(_("and all of author's books (%d pcs.)?"), count);

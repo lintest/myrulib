@@ -105,13 +105,7 @@ int SequenceItem::Convert(FbDatabase & database)
 {
 	if (m_name.IsEmpty()) return m_id = 0;
 
-	{
-		wxString sql = wxT("SELECT id FROM sequences WHERE value=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, m_name);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return m_id = result.GetInt(0);
-	}
+	if (m_id = database.Int(m_name, wxT("SELECT id FROM sequences WHERE value=?"))) return m_id;
 
 	m_id = - database.NewId(DB_NEW_SEQUENCE);
 	{

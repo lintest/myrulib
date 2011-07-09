@@ -71,9 +71,9 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 	public:
 		static bool InitCREngine();
 		static void GetFonts(wxArrayString & fonts);
-		static FbCoolReader * Open(wxAuiNotebook * parent, const wxString &filename, bool select = false);
+		static FbCoolReader * Open(wxAuiNotebook * parent, int book, const wxString &filename);
 
-		FbCoolReader();
+		FbCoolReader(int book);
 		virtual ~FbCoolReader();
 		bool Create(wxAuiNotebook * parent);
 
@@ -118,6 +118,7 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 	protected:
 		void Repaint() { m_dirty = true; }
 	private:
+		int m_book;
 		bool m_dirty;
 
 		bool _firstRender;

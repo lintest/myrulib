@@ -408,14 +408,7 @@ wxString FbConvertDlg::GetCommand(const wxString &script, const wxFileName &file
 
 wxString FbConvertDlg::GetScript(int format)
 {
-	wxString sql = wxT("SELECT text FROM script WHERE id=?");
-	FbLocalDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, format);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow())
-		return result.GetString(0);
-	else return wxEmptyString;
+	return FbLocalDatabase().Str(format, wxT("SELECT text FROM script WHERE id=?"));
 }
 
 void FbConvertDlg::Execute()

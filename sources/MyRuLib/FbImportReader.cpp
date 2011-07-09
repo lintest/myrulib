@@ -32,13 +32,9 @@ wxString Md5(md5_context & md5)
 
 WX_DEFINE_OBJARRAY(FbZipEntryList);
 
-int FbImportZip::Exists(wxSQLite3Database &database, const wxString &filename)
+int FbImportZip::Exists(FbDatabase & database, const wxString & filename)
 {
-	wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, filename);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetInt(0) : 0;
+	return database.Int(filename, wxT("SELECT id FROM archives WHERE file_name=?"));
 }
 
 FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &filename):
@@ -82,13 +78,7 @@ wxZipEntry * FbImportZip::GetInfo(const wxString & filename)
 
 int FbImportZip::Save(bool progress)
 {
-	{
-		wxString sql = wxT("SELECT id FROM archives WHERE file_name=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, m_filename);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		m_id = result.NextRow() ? result.GetInt(0) : 0;
-	}
+	m_id = m_database.Int(m_filename, wxT("SELECT id FROM archives WHERE file_name=?"));
 
 	wxString sql = m_id ?
 		wxT("UPDATE archives SET file_name=?,file_path=?,file_size=?,file_count=? WHERE id=?") :
@@ -142,13 +132,9 @@ void FbImportZip::Make(bool progress)
 //  FbImportBook
 //-----------------------------------------------------------------------------
 
-int FbImportBook::Exists(wxSQLite3Database &database, const wxString &filename)
+int FbImportBook::Exists(FbDatabase & database, const wxString & filename)
 {
-	wxString sql = wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, filename);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetInt(0) : 0;
+	return database.Int(filename, wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1"));
 }
 
 void FbImportBook::NewNode(const wxString &name, const FbStringHash &atts)
@@ -277,11 +263,7 @@ void FbImportBook::Convert()
 
 int FbImportBook::FindByMD5()
 {
-	wxString sql = wxT("SELECT id FROM books WHERE md5sum=?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-	stmt.Bind(1, m_md5sum);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetInt(0) : 0;
+	return m_database.Int(m_md5sum, wxT("SELECT id FROM books WHERE md5sum=?"));
 }
 
 static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)

@@ -105,6 +105,7 @@ bool ZipReader::OpenEntry(bool bInfoOnly)
 		bool ok = (entry->GetInternalName().Right(4).Lower() == wxT(".fbd")) == bInfoOnly;
 		if (ok) return m_fileOk = m_zip->OpenEntry(*entry);
 	}
+	return false;
 }
 
 void ZipReader::OpenZip(const wxString &zipname, const wxString &filename)

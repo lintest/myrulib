@@ -47,22 +47,14 @@ int FbSequenDlg::Modify(int id, wxString &newname)
 
 bool FbSequenDlg::Load(int id)
 {
-	wxString sql = wxT("SELECT value FROM sequences WHERE id=?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	bool ok = result.NextRow();
-	if (ok) m_edit.SetValue(result.GetString(0));
-	return ok;
+	wxString name = m_database.Str(id, wxT("SELECT value FROM sequences WHERE id=?"));
+	m_edit.SetValue(name);
+	return true;
 }
 
 int FbSequenDlg::Find()
 {
-	wxString sql = wxT("SELECT id FROM sequences WHERE value=?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-	stmt.Bind(1, m_edit.GetValue());
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetInt(0) : 0;
+	return m_database.Int(m_edit.GetValue(), wxT("SELECT id FROM sequences WHERE value=?"));
 }
 
 int FbSequenDlg::DoAppend()

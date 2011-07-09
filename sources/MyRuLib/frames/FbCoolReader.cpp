@@ -12,6 +12,7 @@
 #include <crengine.h>
 #include "FbConst.h"
 #include "FbParams.h"
+#include "FbDatabase.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
@@ -283,12 +284,12 @@ void FbCoolReader::GetFonts(wxArrayString & fonts)
 	}
 }
 
-FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filename, bool select)
+FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, int book, const wxString &filename)
 {
 	if (!InitCREngine()) {
 		return NULL;
 	} else {
-		FbCoolReader * reader = new FbCoolReader();
+		FbCoolReader * reader = new FbCoolReader(book);
 		bool ok = reader->LoadDocument(filename);
 		if (ok) {
 			reader->Create(parent);
@@ -299,8 +300,9 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, const wxString &filena
 	}
 }
 
-FbCoolReader::FbCoolReader()
-	: m_dirty(true)
+FbCoolReader::FbCoolReader(int book)
+	: m_book(book)
+	, m_dirty(true)
 	, _firstRender(false)
 	, _allowRender(true)
 	, _screen(300,400)
@@ -324,7 +326,8 @@ bool FbCoolReader::Create(wxAuiNotebook * parent)
 		_wm.activateWindow( _docwin );
 
 		wxString title = GetDocView()->getTitle().c_str();
-		parent->AddPage(this, TrimTitle(title), select );
+		if (title.IsEmpty()) title = FbCommonDatabase().Str(m_book, wxT("SELECT title FROM books WHERE id=?"));
+		parent->AddPage(this, TrimTitle(title), true);
 		Repaint();
 	}
 	return ok;

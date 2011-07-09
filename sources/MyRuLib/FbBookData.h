@@ -39,7 +39,6 @@ class FbBookData: public FbItemData
 		void DoDownload() const;
 		void DoOpen(wxInputStream * in, const wxString &md5sum) const;
 		void SaveFile(wxInputStream & in, const wxString &filepath) const;
-		bool GetUserCommand(wxSQLite3Database &database, const wxString &filetype, wxString &command) const;
 		bool GetSystemCommand(const wxString &filepath, const wxString &filetype, wxString &command) const;
 		wxString GetExt() const;
 	private:

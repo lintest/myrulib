@@ -16,7 +16,7 @@ class FbModel;
 class FbBookAuths: public wxObject
 {
 	public:
-		FbBookAuths(int code, wxSQLite3Database &database);
+		FbBookAuths(int code, FbDatabase & database);
 		int GetCode() const { return m_code; }
 		wxString operator[](size_t col) const;
 	private:

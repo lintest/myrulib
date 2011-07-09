@@ -97,6 +97,11 @@ class FbDatabase: public wxSQLite3Database
 		static wxString GetConfigPath();
 		void AttachConfig();
 		void JoinThread(FbThread * thread);
+	public:
+		wxString Str(int id, const wxString & sql);
+		wxString Str(const wxString & id, const wxString & sql);
+		int Int(int id, const wxString & sql);
+		int Int(const wxString & id, const wxString & sql);
 	protected:
 		static FbCyrillicCollation sm_collation;
 	private:

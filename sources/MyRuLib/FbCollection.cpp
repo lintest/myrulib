@@ -22,16 +22,10 @@
 
 IMPLEMENT_CLASS(FbBookAuths, wxObject)
 
-FbBookAuths::FbBookAuths(int code, wxSQLite3Database &database)
+FbBookAuths::FbBookAuths(int code, FbDatabase & database)
 	: m_code(code)
 {
-	wxString sql = wxT("SELECT AGGREGATE(DISTINCT full_name) FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=?)");
-
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, code);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	if (result.NextRow()) m_name = result.GetString(0);
+	m_name = database.Str(code, wxT("SELECT AGGREGATE(DISTINCT full_name) FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=?)"));
 }
 
 wxString FbBookAuths::operator[](size_t col) const
@@ -55,11 +49,9 @@ FbBookSeqns::FbBookSeqns(int code, wxSQLite3Database &database)
 	: m_code(code)
 {
 	wxString sql = wxT("SELECT AGGREGATE(DISTINCT value), MAX(bookseq.number) FROM bookseq LEFT JOIN sequences ON id_seq=id WHERE id_book=?");
-
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, code);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
 	if (result.NextRow()) {
 		m_name = result.GetString(0);
 		m_numb = result.GetInt(1);

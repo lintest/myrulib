@@ -122,16 +122,7 @@ void FbExportDlg::LoadFormats()
 
 wxString FbExportDlg::GetExt(int format)
 {
-	if (format > 0) {
-		wxString sql = wxT("SELECT name FROM script WHERE id=?");
-		FbLocalDatabase database;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, format);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) return result.GetString(0);
-	}
-
-	return wxEmptyString;
+	return format > 0 ? FbLocalDatabase().Str(format, wxT("SELECT name FROM script WHERE id=?")) : wxString();
 }
 
 void FbExportDlg::OnSelectDir( wxCommandEvent& event )

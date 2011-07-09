@@ -21,7 +21,7 @@ class FbImportZip
 	: public wxObject
 {
 	public:
-		static int Exists(wxSQLite3Database &database, const wxString &filename);
+		static int Exists(FbDatabase & database, const wxString & filename);
 		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &filename);
 		int Save(bool progress);
 	public:
@@ -49,7 +49,7 @@ class FbImportBook
 	: public FbParsingContext
 {
 	public:
-		static int Exists(wxSQLite3Database &database, const wxString &filename);
+		static int Exists(FbDatabase & database, const wxString & filename);
 		FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename);
 		FbImportBook(FbImportZip & owner, wxZipEntry & entry);
 		bool Save();

@@ -176,14 +176,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
-	wxString title;
-	{
-		wxSQLite3Statement stmt = database.PrepareStatement(wxT("SELECT title FROM books WHERE id=?"));
-		stmt.Bind(1, book);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.NextRow()) title = result.GetString(0);
-	}
-
+	wxString title = database.Str(book, wxT("SELECT title FROM books WHERE id=?"));
 	m_title.Create( this, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
 	m_title.SetMinSize( wxSize( 300, -1 ) );

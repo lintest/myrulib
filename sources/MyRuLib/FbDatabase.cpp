@@ -299,8 +299,7 @@ wxString FbDatabase::GetText(int param)
 	wxSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, param);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) return result.GetString(0);
-	return wxEmptyString;
+	return result.NextRow() ? result.GetString(0) : wxString();
 }
 
 void FbDatabase::SetText(int param, const wxString & text)
@@ -332,6 +331,38 @@ void FbDatabase::JoinThread(FbThread * thread)
 	if (db) sqlite3_progress_handler( db, 100, DatabaseThreadCallback, thread);
 }
 
+wxString FbDatabase::Str(int id, const wxString & sql)
+{
+	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return result.NextRow() ? result.GetString(0) : wxString();
+}
+
+wxString FbDatabase::Str(const wxString & id, const wxString & sql)
+{
+	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return result.NextRow() ? result.GetString(0) : wxString();
+}
+
+int FbDatabase::Int(int id, const wxString & sql)
+{
+	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return result.NextRow() ? result.GetInt(0) : 0;
+}
+
+int FbDatabase::Int(const wxString & id, const wxString & sql)
+{
+	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	return result.NextRow() ? result.GetInt(0) : 0;
+}
+
 //-----------------------------------------------------------------------------
 //  FbCommonDatabase
 //-----------------------------------------------------------------------------
@@ -345,12 +376,7 @@ FbCommonDatabase::FbCommonDatabase()
 
 wxString FbCommonDatabase::GetMd5(int id)
 {
-	wxString sql = wxT("SELECT md5sum FROM books WHERE id=?");
-	wxSQLite3Statement stmt = PrepareStatement(sql);
-	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	if (result.NextRow()) return result.GetAsString(0);
-	return wxEmptyString;
+	return Str(id, wxT("SELECT md5sum FROM books WHERE id=?"));
 }
 
 //-----------------------------------------------------------------------------
