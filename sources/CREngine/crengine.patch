@@ -1,0 +1,124 @@
+diff --git a/crengine/include/lvfntman.h b/crengine/include/lvfntman.h
+index 4affde2..aabcb8c 100644
+--- a/crengine/include/lvfntman.h
++++ b/crengine/include/lvfntman.h
+@@ -266,7 +266,7 @@ public:
+     /// get fallback font face (returns empty string if no fallback font is set)
+     virtual lString8 GetFallbackFontFace() { return lString8::empty_str; }
+     /// returns fallback font for specified size
+-    virtual LVFontRef GetFallbackFont(int size) { }
++    virtual LVFontRef GetFallbackFont(int size) { return LVFontRef(); }
+     /// registers font by name
+     virtual bool RegisterFont( lString8 name ) = 0;
+     /// initializes font manager
+@@ -387,7 +387,7 @@ public:
+     }
+     
+     /// returns font height
+-    virtual int getHeight()
++    virtual int getHeight() const
+     {
+         return _height;
+     }
+@@ -423,6 +423,21 @@ public:
+ 
+     virtual bool Create(int size, int weight, bool italic, css_font_family_t family, lString8 typeface );
+     
++    virtual int getWeight() const 
++        { return _logfont.lfWeight; }
++
++    virtual int getItalic() const
++        { return _logfont.lfItalic; }
++
++    virtual lString8 getTypeFace() const
++        { return lString8(); }
++
++    virtual css_font_family_t getFontFamily() const
++        { return css_ff_inherit; }
++
++	virtual LVFontGlyphCacheItem * getGlyph(lUInt16 ch, lChar16 def_char=0)
++        { return NULL; }
++
+ };
+ 
+ 
+diff --git a/crengine/src/lvfntman.cpp b/crengine/src/lvfntman.cpp
+index a7f87cb..31ac8ac 100644
+--- a/crengine/src/lvfntman.cpp
++++ b/crengine/src/lvfntman.cpp
+@@ -1497,8 +1497,8 @@ public:
+             if ( !item )
+                 face.clear();
+             _fallbackFontFace = face;
+-            return !_fallbackFontFace.empty();
+         }
++        return !_fallbackFontFace.empty();
+     }
+ 
+     /// get fallback font face (returns empty string if no fallback font is set)
+@@ -2369,6 +2369,10 @@ public:
+         
+         return res!=0;
+     }
++    virtual void getFaceList( lString16Collection & list )
++    {
++        _cache.getFaceList(list);
++    }
+ };
+ 
+ // definition
+@@ -2395,7 +2399,7 @@ int CALLBACK LVWin32FontEnumFontFamExProc(
+             for (int i=0; chars[i]; i++)
+             {
+                 LVFont::glyph_info_t glyph;
+-                if (!fnt.getGlyphInfo( chars[i], &glyph, def_char ))
++                if (!fnt.getGlyphInfo( chars[i], &glyph, L' ' ))
+                     return 1;
+             }
+             fontman->RegisterFont( lf ); //&lpelfe->elfLogFont
+diff --git a/crengine/src/lvimg.cpp b/crengine/src/lvimg.cpp
+index 442b70e..13fe3ed 100644
+--- a/crengine/src/lvimg.cpp
++++ b/crengine/src/lvimg.cpp
+@@ -704,7 +704,7 @@ bool LVPngImageSource::Decode( LVImageDecoderCallback * callback )
+             png_set_palette_to_rgb(png_ptr);
+ 
+         if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+-#if PNG_LIBPNG_VER_RELEASE==7
++#if (PNG_LIBPNG_VER_MAJOR == 1) && (PNG_LIBPNG_VER_MINOR < 4)
+             png_set_gray_1_2_4_to_8(png_ptr);
+ #else
+             png_set_expand_gray_1_2_4_to_8(png_ptr);
+diff --git a/crengine/src/lvstream.cpp b/crengine/src/lvstream.cpp
+index cc834ba..9b5d0fc 100644
+--- a/crengine/src/lvstream.cpp
++++ b/crengine/src/lvstream.cpp
+@@ -1288,7 +1288,7 @@ public:
+         m_fd = open( fn8.c_str(), flags, (mode_t)0666);
+         if (m_fd == -1) {
+ #ifndef ANDROID
+-            CRLog::error( "Error opening file %s for %s, errno=%d, msg=%s", fn8.c_str(), (mode==LVOM_READ) ? "reading" : "read/write",  (int)errno, strerror(errno) );
++            CRLog::error( "Error opening file %s for %s", fn8.c_str(), (mode==LVOM_READ) ? "reading" : "read/write" );
+ #endif
+             return LVERR_FAIL;
+         }
+diff --git a/crengine/src/lvtinydom.cpp b/crengine/src/lvtinydom.cpp
+index db00703..5a06d49 100644
+--- a/crengine/src/lvtinydom.cpp
++++ b/crengine/src/lvtinydom.cpp
+@@ -10553,6 +10553,7 @@ void runBasicTinyDomUnitTests()
+ 
+ void runCHMUnitTest()
+ {
++#if CHM_SUPPORT_ENABLED
+ #if BUILD_LITE!=1
+     LVStreamRef stream = LVOpenFileStream("/home/lve/src/test/mysql.chm", LVOM_READ);
+     MYASSERT ( !stream.isNull(), "container stream opened" );
+@@ -10577,6 +10578,7 @@ void runCHMUnitTest()
+     buf[999] = 0;
+     CRLog::trace("CHM/index.html Contents 0: %s", buf);
+ #endif
++#endif // CHM_SUPPORT_ENABLED
+ }
+ 
+ static void makeTestFile( const char * fname, int size )
