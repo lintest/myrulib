@@ -161,8 +161,8 @@ void FbBookData::DoOpen(wxInputStream * in, const wxString &md5sum) const
 	if (!ok) ok = !(command = FbCommonDatabase().Str(filetype, sql)).IsEmpty();
 	
 	wxString tempfile;
-    #ifdef FB_INCLUDE_READER
-    FbSmartPtr<wxInputStream> file;
+	#ifdef FB_INCLUDE_READER
+	FbSmartPtr<wxInputStream> file;
 	if (!ok) {
 		FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
 		if (frame) {
@@ -177,7 +177,7 @@ void FbBookData::DoOpen(wxInputStream * in, const wxString &md5sum) const
 			}
 		}
 	}
-    #endif
+	#endif
 
 	#ifdef __WXGTK__
 	if (!ok) { command = wxT("xdg-open"); ok = true; }
@@ -249,17 +249,5 @@ void FbBookData::DoDownload() const
 
 void FbBookData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
 {
-}
-
-void FbAuthorData::Show(wxEvtHandler * frame, bool bVertical, bool bEditable) const
-{
-	if (frame) (new ShowThread(frame, m_author))->Execute();
-}
-
-void * FbAuthorData::ShowThread::Entry()
-{
-	wxString info = FbCommonDatabase().Str(m_author, wxT("SELECT description FROM authors WHERE id=?"));
-	if (!info.IsEmpty()) FbCommandEvent(fbEVT_BOOK_ACTION, ID_AUTHOR_INFO, m_author, info).Post(m_frame);
-	return NULL;
 }
 

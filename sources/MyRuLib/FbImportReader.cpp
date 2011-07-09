@@ -220,7 +220,8 @@ FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
 	if (!m_parse) {
 		m_md5sum = CalcMd5(owner.m_zip);
 		wxZipEntry * info = owner.GetInfo(m_filename);
-		if (m_parse = info) m_ok = owner.OpenEntry(*info);
+		if (info) m_ok = owner.OpenEntry(*info);
+		m_parse = info;
 	}
 
 	if (m_ok && m_parse) {

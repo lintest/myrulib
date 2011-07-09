@@ -6,8 +6,6 @@
 #include "FbDatabase.h"
 #include "models/FbDownList.h"
 #include "MyRuLibApp.h"
-#include "res/start.xpm"
-#include "res/pause.xpm"
 
 IMPLEMENT_CLASS(FbFrameDown, FbFrameBase)
 
@@ -23,6 +21,8 @@ END_EVENT_TABLE()
 	#define fbART_START wxT("gtk-media-play")
 	#define fbART_PAUSE wxT("gtk-media-pause")
 #else
+	#include "res/start.xpm"
+	#include "res/pause.xpm"
 	#define fbART_START wxBitmap(start_xpm)
 	#define fbART_PAUSE wxBitmap(pause_xpm)
 #endif
