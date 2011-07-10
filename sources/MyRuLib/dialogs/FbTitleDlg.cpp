@@ -31,7 +31,6 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 
 	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
-//	m_text.AssignModel(CreateModel());
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
 	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
@@ -51,23 +50,6 @@ FbTitleDlg::AuthSubPanel::~AuthSubPanel()
 {
 //	m_text.Disconnect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
 	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
-}
-
-FbListModel * FbTitleDlg::AuthSubPanel::CreateModel()
-{
-	FbCommonDatabase database;
-	wxString sql = wxT("SELECT docid, full_name, number FROM fts_auth INNER JOIN authors ON id=docid WHERE fts_auth MATCH ? ORDER BY full_name");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, wxT("a*"));
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	wxArrayInt items;
-	while (result.NextRow()) {
-		int code = result.GetInt(0);
-		FbCollection::AddAuth(code, result.GetString(1));
-		items.Add(code);
-	}
-	return new FbAuthListModel(items);
 }
 
 void FbTitleDlg::AuthSubPanel::OnChar( wxKeyEvent& event )
@@ -137,6 +119,7 @@ FbTitleDlg::GenrSubPanel::GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, co
 
 	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+	m_text.AssignModel(FbGenres::CreateModel());
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
 	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );

@@ -52,8 +52,6 @@ class FbTitleDlg : public FbDialog
 				virtual void Empty()
 					{}
 			private:
-				FbListModel * CreateModel();
-			private:
 				wxToolBar m_toolbar;
 				FbCustomCombo m_text;
 			private:

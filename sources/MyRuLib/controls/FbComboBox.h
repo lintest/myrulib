@@ -8,7 +8,7 @@
 #include <wx/wx.h>
 #include <wx/odcombo.h>
 
-class FbListModel;
+class FbModel;
 
 class FbCustomCombo : public wxComboCtrl
 {
@@ -209,8 +209,8 @@ private:
 	DECLARE_EVENT_TABLE()
 
 protected:
-	void AssignModel(FbListModel * model);
-	FbListModel * m_model;
+	void AssignModel(FbModel * model);
+	FbModel * m_model;
 };
 
 
@@ -301,11 +301,11 @@ private:
 	DECLARE_CLASS(FbComboBox)
 
 public:
-	void AssignModel(FbListModel * m_model);
+	void AssignModel(FbModel * m_model);
 
 private:
 	// temporary storage for the initial model
-	FbListModel * m_initModel;
+	FbModel * m_initModel;
 };
 
 #endif // __FBCOMBOBOX_H__

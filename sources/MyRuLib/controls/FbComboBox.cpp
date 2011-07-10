@@ -142,14 +142,20 @@ void FbComboPopup::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) cons
 }
 
 // This is called from FbComboPopup::OnDrawItem, with text colour and font prepared
-void FbComboPopup::OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const
+void FbComboPopup::OnDrawItem( wxDC& dc, const wxRect& rect, int index, int flags ) const
 {
-	FbComboBox* combo = (FbComboBox*) m_combo;
+	if (!m_model) return;
 
-	wxASSERT_MSG( combo->IsKindOf(CLASSINFO(FbComboBox)),
-				  wxT("you must subclass FbComboPopup for drawing and measuring methods") );
-
-	combo->OnDrawItem(dc,rect,item,flags);
+	FbModelItem item = m_model->GetData(index + 1);
+	if (item) {
+		int x = rect.x + 2; 
+		FbModelItem parent = item.GetParent();
+		while (parent) {
+			parent = parent.GetParent();
+			if (parent) x += rect.height;
+		}
+		dc.DrawText( item[0], x, rect.y );
+	}
 }
 
 void FbComboPopup::DismissWithEvent()
@@ -488,7 +494,7 @@ wxSize FbComboPopup::GetAdjustedSize( int minWidth, int prefHeight, int maxHeigh
 	return wxSize(minWidth, height + 2);
 }
 
-void FbComboPopup::AssignModel(FbListModel * model)
+void FbComboPopup::AssignModel(FbModel * model)
 {
 	wxDELETE(m_model);
 	m_model = model;
@@ -580,7 +586,7 @@ void FbComboBox::OnDrawBackground(wxDC& dc,
 	}
 }
 
-void FbComboBox::AssignModel(FbListModel * model)
+void FbComboBox::AssignModel(FbModel * model)
 {
 	FbComboPopup * popup = GetVListBoxComboPopup();
 	if (popup) {
