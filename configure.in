@@ -148,7 +148,7 @@ dnl =================
 
 if test "x$USE_FAXPP" = "xbuiltin" ; then 
   CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/faxpp/include -DFB_PARSE_FAXPP"
-  WX_LIBS="$WX_LIBS -lfaxpp"
+  WX_LIBS="$WX_LIBS -lmrl_faxpp"
 fi
 
 if test "x$USE_FAXPP" = "xyes" ; then 
@@ -162,7 +162,7 @@ dnl =================
 
 if test "x$USE_EXPAT" = "xbuiltin" ; then 
   CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/expat -DFB_PARSE_EXPAT"
-  WX_LIBS="$WX_LIBS -lexpat"
+  WX_LIBS="$WX_LIBS -lmrl_expat"
 fi
 
 if test "x$USE_EXPAT" = "xyes" ; then 
@@ -176,7 +176,7 @@ dnl ==================
 
 if test "x$USE_SQLITE" = "xbuiltin" ; then 
   CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/sqlite3"
-  WX_LIBS="$WX_LIBS -lsqlite3"
+  WX_LIBS="$WX_LIBS -lmrl_sqlite3"
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
   WX_LIBS="$WX_LIBS $SQLITE_LIBS"
@@ -188,7 +188,7 @@ dnl ==================
 
 if test "x$USE_READER" = "xyes" ; then 
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I\$(srcdir)/3rdparty/crengine/include"
-  WX_LIBS="$WX_LIBS -lcrengine"
+  WX_LIBS="$WX_LIBS -lmrl_crengine"
   AC_DEFINE(FB_INCLUDE_READER)
 fi
 

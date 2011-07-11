@@ -44,97 +44,97 @@ WX_RESCOMP = @WX_RESCOMP@
 ### Variables: ###
 
 DESTDIR = 
-EXPAT_CFLAGS = -DXML_STATIC -DHAVE_MEMMOVE -I$(srcdir)/3rdparty/expat \
+MRL_EXPAT_CFLAGS = -DXML_STATIC -DHAVE_MEMMOVE -I$(srcdir)/3rdparty/expat \
 	$(CPPFLAGS) $(CFLAGS)
-EXPAT_OBJECTS =  \
-	expat_xmlparse.o \
-	expat_xmlrole.o \
-	expat_xmltok.o \
-	expat_xmltok_impl.o \
-	expat_xmltok_ns.o
-FAXPP_CFLAGS = -DHAVE_CONFIG -I. -I$(srcdir)/3rdparty/faxpp/include $(CPPFLAGS) \
-	$(CFLAGS)
-FAXPP_OBJECTS =  \
-	faxpp_attlistdecl.o \
-	faxpp_buffer.o \
-	faxpp_cdata.o \
-	faxpp_char_classes.o \
-	faxpp_comment.o \
-	faxpp_conditional.o \
-	faxpp_doctype.o \
-	faxpp_element.o \
-	faxpp_elementdecl.o \
-	faxpp_entitydecl.o \
-	faxpp_error.o \
-	faxpp_event.o \
-	faxpp_notationdecl.o \
-	faxpp_pi.o \
-	faxpp_reference.o \
-	faxpp_token.o \
-	faxpp_tokenizer_states.o \
-	faxpp_transcode.o \
-	faxpp_xmldecl.o \
-	faxpp_xml_parser.o \
-	faxpp_xml_tokenizer.o
-SQLITE3_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 $(CPPFLAGS) \
-	$(CFLAGS)
-SQLITE3_OBJECTS =  \
-	sqlite3_sqlite3.o
-CRENGINE_CXXFLAGS = -I3rdparty/crengine/include \
+MRL_EXPAT_OBJECTS =  \
+	mrl_expat_xmlparse.o \
+	mrl_expat_xmlrole.o \
+	mrl_expat_xmltok.o \
+	mrl_expat_xmltok_impl.o \
+	mrl_expat_xmltok_ns.o
+MRL_FAXPP_CFLAGS = -DHAVE_CONFIG -I. -I$(srcdir)/3rdparty/faxpp/include \
+	$(CPPFLAGS) $(CFLAGS)
+MRL_FAXPP_OBJECTS =  \
+	mrl_faxpp_attlistdecl.o \
+	mrl_faxpp_buffer.o \
+	mrl_faxpp_cdata.o \
+	mrl_faxpp_char_classes.o \
+	mrl_faxpp_comment.o \
+	mrl_faxpp_conditional.o \
+	mrl_faxpp_doctype.o \
+	mrl_faxpp_element.o \
+	mrl_faxpp_elementdecl.o \
+	mrl_faxpp_entitydecl.o \
+	mrl_faxpp_error.o \
+	mrl_faxpp_event.o \
+	mrl_faxpp_notationdecl.o \
+	mrl_faxpp_pi.o \
+	mrl_faxpp_reference.o \
+	mrl_faxpp_token.o \
+	mrl_faxpp_tokenizer_states.o \
+	mrl_faxpp_transcode.o \
+	mrl_faxpp_xmldecl.o \
+	mrl_faxpp_xml_parser.o \
+	mrl_faxpp_xml_tokenizer.o
+MRL_SQLITE3_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 \
+	$(CPPFLAGS) $(CFLAGS)
+MRL_SQLITE3_OBJECTS =  \
+	mrl_sqlite3_sqlite3.o
+MRL_CRENGINE_CXXFLAGS = -I3rdparty/crengine/include \
 	-I$(srcdir)/../wxWidgets/src/jpeg -I$(srcdir)/../wxWidgets/src/png \
 	-I$(srcdir)/3rdparty/crengine/png $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
-CRENGINE_OBJECTS =  \
-	crengine_chmfmt.o \
-	crengine_cp_stats.o \
-	crengine_crgui.o \
-	crengine_cri18n.o \
-	crengine_crskin.o \
-	crengine_crtest.o \
-	crengine_crtxtenc.o \
-	crengine_epubfmt.o \
-	crengine_hist.o \
-	crengine_hyphman.o \
-	crengine_lstridmap.o \
-	crengine_lvbmpbuf.o \
-	crengine_lvdocview.o \
-	crengine_lvdrawbuf.o \
-	crengine_lvfnt.o \
-	crengine_lvfntman.o \
-	crengine_lvimg.o \
-	crengine_lvmemman.o \
-	crengine_lvpagesplitter.o \
-	crengine_lvrend.o \
-	crengine_lvstream.o \
-	crengine_lvstring.o \
-	crengine_lvstsheet.o \
-	crengine_lvstyles.o \
-	crengine_lvtextfm.o \
-	crengine_lvtinydom.o \
-	crengine_lvxml.o \
-	crengine_pdbfmt.o \
-	crengine_props.o \
-	crengine_rtfimp.o \
-	crengine_s32utils.o \
-	crengine_txtselector.o \
-	crengine_w32utils.o \
-	crengine_wolutil.o \
-	crengine_wordfmt.o \
-	crengine_xutils.o
-WXSQLITE3_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
+MRL_CRENGINE_OBJECTS =  \
+	mrl_crengine_chmfmt.o \
+	mrl_crengine_cp_stats.o \
+	mrl_crengine_crgui.o \
+	mrl_crengine_cri18n.o \
+	mrl_crengine_crskin.o \
+	mrl_crengine_crtest.o \
+	mrl_crengine_crtxtenc.o \
+	mrl_crengine_epubfmt.o \
+	mrl_crengine_hist.o \
+	mrl_crengine_hyphman.o \
+	mrl_crengine_lstridmap.o \
+	mrl_crengine_lvbmpbuf.o \
+	mrl_crengine_lvdocview.o \
+	mrl_crengine_lvdrawbuf.o \
+	mrl_crengine_lvfnt.o \
+	mrl_crengine_lvfntman.o \
+	mrl_crengine_lvimg.o \
+	mrl_crengine_lvmemman.o \
+	mrl_crengine_lvpagesplitter.o \
+	mrl_crengine_lvrend.o \
+	mrl_crengine_lvstream.o \
+	mrl_crengine_lvstring.o \
+	mrl_crengine_lvstsheet.o \
+	mrl_crengine_lvstyles.o \
+	mrl_crengine_lvtextfm.o \
+	mrl_crengine_lvtinydom.o \
+	mrl_crengine_lvxml.o \
+	mrl_crengine_pdbfmt.o \
+	mrl_crengine_props.o \
+	mrl_crengine_rtfimp.o \
+	mrl_crengine_s32utils.o \
+	mrl_crengine_txtselector.o \
+	mrl_crengine_w32utils.o \
+	mrl_crengine_wolutil.o \
+	mrl_crengine_wordfmt.o \
+	mrl_crengine_xutils.o
+MRL_WXSQLITE3_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
 	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
-WXSQLITE3_OBJECTS =  \
-	wxsqlite3_wxsqlite3.o
-WXBZIP2_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
-WXBZIP2_CXXFLAGS =  -DNDEBUG  $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
-WXBZIP2_OBJECTS =  \
-	wxbzip2_blocksort.o \
-	wxbzip2_bzlib.o \
-	wxbzip2_compress.o \
-	wxbzip2_crctable.o \
-	wxbzip2_decompress.o \
-	wxbzip2_huffman.o \
-	wxbzip2_randtable.o \
-	wxbzip2_bzipstream.o
+MRL_WXSQLITE3_OBJECTS =  \
+	mrl_wxsqlite3_wxsqlite3.o
+MRL_WXBZIP2_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+MRL_WXBZIP2_CXXFLAGS =  -DNDEBUG  $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+MRL_WXBZIP2_OBJECTS =  \
+	mrl_wxbzip2_blocksort.o \
+	mrl_wxbzip2_bzlib.o \
+	mrl_wxbzip2_compress.o \
+	mrl_wxbzip2_crctable.o \
+	mrl_wxbzip2_decompress.o \
+	mrl_wxbzip2_huffman.o \
+	mrl_wxbzip2_randtable.o \
+	mrl_wxbzip2_bzipstream.o
 ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
@@ -263,10 +263,14 @@ MYRULIB_ODEP = ru.inc uk.inc be.inc cs.inc sv.inc $(__fb2_css_inc___depname)
 @COND_DEPS_TRACKING_1@CCC = $(BK_DEPS) $(CC)
 @COND_DEPS_TRACKING_0@CXXC = $(CXX)
 @COND_DEPS_TRACKING_1@CXXC = $(BK_DEPS) $(CXX)
-@COND_USE_EXPAT_builtin@__expat___depname = $(LIBPREFIX)expat$(LIBEXT)
-@COND_USE_FAXPP_builtin@__faxpp___depname = $(LIBPREFIX)faxpp$(LIBEXT)
-@COND_USE_SQLITE_builtin@__sqlite3___depname = $(LIBPREFIX)sqlite3$(LIBEXT)
-@COND_USE_READER_yes@__crengine___depname = $(LIBPREFIX)crengine$(LIBEXT)
+@COND_USE_EXPAT_builtin@__mrl_expat___depname = \
+@COND_USE_EXPAT_builtin@	$(LIBPREFIX)mrl_expat$(LIBEXT)
+@COND_USE_FAXPP_builtin@__mrl_faxpp___depname = \
+@COND_USE_FAXPP_builtin@	$(LIBPREFIX)mrl_faxpp$(LIBEXT)
+@COND_USE_SQLITE_builtin@__mrl_sqlite3___depname = \
+@COND_USE_SQLITE_builtin@	$(LIBPREFIX)mrl_sqlite3$(LIBEXT)
+@COND_USE_READER_yes@__mrl_crengine___depname = \
+@COND_USE_READER_yes@	$(LIBPREFIX)mrl_crengine$(LIBEXT)
 @COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__zipscan___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL zipscan$(EXEEXT)
@@ -284,7 +288,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__expat___depname) $(__faxpp___depname) $(__sqlite3___depname) $(__crengine___depname) $(LIBPREFIX)wxsqlite3$(LIBEXT) $(LIBPREFIX)wxbzip2$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -320,13 +324,13 @@ install-strip: install
 clean: 
 	rm -rf ./.deps ./.pch
 	rm -f ./*.o
-	rm -f $(LIBPREFIX)expat$(LIBEXT)
-	rm -f $(LIBPREFIX)faxpp$(LIBEXT)
-	rm -f $(LIBPREFIX)sqlite3$(LIBEXT)
-	rm -f $(LIBPREFIX)crengine$(LIBEXT)
+	rm -f $(LIBPREFIX)mrl_expat$(LIBEXT)
+	rm -f $(LIBPREFIX)mrl_faxpp$(LIBEXT)
+	rm -f $(LIBPREFIX)mrl_sqlite3$(LIBEXT)
+	rm -f $(LIBPREFIX)mrl_crengine$(LIBEXT)
 	rm -f ./wxsqlite3.cpp
-	rm -f $(LIBPREFIX)wxsqlite3$(LIBEXT)
-	rm -f $(LIBPREFIX)wxbzip2$(LIBEXT)
+	rm -f $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
+	rm -f $(LIBPREFIX)mrl_wxbzip2$(LIBEXT)
 	rm -f zipscan$(EXEEXT)
 	rm -f bin2c$(EXEEXT)
 	rm -f ./ru.mo
@@ -345,41 +349,41 @@ clean:
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
 
-@COND_USE_EXPAT_builtin@$(LIBPREFIX)expat$(LIBEXT): $(EXPAT_OBJECTS)
+@COND_USE_EXPAT_builtin@$(LIBPREFIX)mrl_expat$(LIBEXT): $(MRL_EXPAT_OBJECTS)
 @COND_USE_EXPAT_builtin@	rm -f $@
-@COND_USE_EXPAT_builtin@	$(AR) $(AROPTIONS) $@ $(EXPAT_OBJECTS)
+@COND_USE_EXPAT_builtin@	$(AR) $(AROPTIONS) $@ $(MRL_EXPAT_OBJECTS)
 @COND_USE_EXPAT_builtin@	$(RANLIB) $@
 
-@COND_USE_FAXPP_builtin@$(LIBPREFIX)faxpp$(LIBEXT): $(FAXPP_OBJECTS)
+@COND_USE_FAXPP_builtin@$(LIBPREFIX)mrl_faxpp$(LIBEXT): $(MRL_FAXPP_OBJECTS)
 @COND_USE_FAXPP_builtin@	rm -f $@
-@COND_USE_FAXPP_builtin@	$(AR) $(AROPTIONS) $@ $(FAXPP_OBJECTS)
+@COND_USE_FAXPP_builtin@	$(AR) $(AROPTIONS) $@ $(MRL_FAXPP_OBJECTS)
 @COND_USE_FAXPP_builtin@	$(RANLIB) $@
 
-@COND_USE_SQLITE_builtin@$(LIBPREFIX)sqlite3$(LIBEXT): $(SQLITE3_OBJECTS)
+@COND_USE_SQLITE_builtin@$(LIBPREFIX)mrl_sqlite3$(LIBEXT): $(MRL_SQLITE3_OBJECTS)
 @COND_USE_SQLITE_builtin@	rm -f $@
-@COND_USE_SQLITE_builtin@	$(AR) $(AROPTIONS) $@ $(SQLITE3_OBJECTS)
+@COND_USE_SQLITE_builtin@	$(AR) $(AROPTIONS) $@ $(MRL_SQLITE3_OBJECTS)
 @COND_USE_SQLITE_builtin@	$(RANLIB) $@
 
-@COND_USE_READER_yes@$(LIBPREFIX)crengine$(LIBEXT): $(CRENGINE_OBJECTS)
+@COND_USE_READER_yes@$(LIBPREFIX)mrl_crengine$(LIBEXT): $(MRL_CRENGINE_OBJECTS)
 @COND_USE_READER_yes@	rm -f $@
-@COND_USE_READER_yes@	$(AR) $(AROPTIONS) $@ $(CRENGINE_OBJECTS)
+@COND_USE_READER_yes@	$(AR) $(AROPTIONS) $@ $(MRL_CRENGINE_OBJECTS)
 @COND_USE_READER_yes@	$(RANLIB) $@
 
 wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp < $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 
-$(LIBPREFIX)wxsqlite3$(LIBEXT): $(WXSQLITE3_OBJECTS)
+$(LIBPREFIX)mrl_wxsqlite3$(LIBEXT): $(MRL_WXSQLITE3_OBJECTS)
 	rm -f $@
-	$(AR) $(AROPTIONS) $@ $(WXSQLITE3_OBJECTS)
+	$(AR) $(AROPTIONS) $@ $(MRL_WXSQLITE3_OBJECTS)
 	$(RANLIB) $@
 
-$(LIBPREFIX)wxbzip2$(LIBEXT): $(WXBZIP2_OBJECTS)
+$(LIBPREFIX)mrl_wxbzip2$(LIBEXT): $(MRL_WXBZIP2_OBJECTS)
 	rm -f $@
-	$(AR) $(AROPTIONS) $@ $(WXBZIP2_OBJECTS)
+	$(AR) $(AROPTIONS) $@ $(MRL_WXBZIP2_OBJECTS)
 	$(RANLIB) $@
 
-zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__sqlite3___depname) $(LIBPREFIX)wxsqlite3$(LIBEXT)
-	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lwxsqlite3 $(WX_LIBS) $(LIBS)
+zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_sqlite3___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
+	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
 	
 	$(__zipscan___mac_setfilecmd)
 
@@ -421,8 +425,8 @@ sv.inc: bin2c$(EXEEXT) sv.mo
 @COND_USE_READER_yes@fb2_css.inc: bin2c$(EXEEXT) $(srcdir)/3rdparty/crengine/css/fb2.css
 @COND_USE_READER_yes@	./bin2c $(srcdir)/3rdparty/crengine/css/fb2.css ./fb2_css.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__expat___depname) $(__faxpp___depname) $(__sqlite3___depname) $(__crengine___depname) $(LIBPREFIX)wxbzip2$(LIBEXT) $(LIBPREFIX)wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
-	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lwxbzip2 -lwxsqlite3 $(WX_LIBS) $(LIBS)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lmrl_wxbzip2 -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
@@ -435,221 +439,221 @@ install_myrulib: myrulib$(EXEEXT)
 uninstall_myrulib: 
 	rm -f $(DESTDIR)$(bindir)/myrulib$(EXEEXT)
 
-expat_xmlparse.o: $(srcdir)/3rdparty/expat/xmlparse.c
-	$(CCC) -c -o $@ $(EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmlparse.c
+mrl_expat_xmlparse.o: $(srcdir)/3rdparty/expat/xmlparse.c
+	$(CCC) -c -o $@ $(MRL_EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmlparse.c
 
-expat_xmlrole.o: $(srcdir)/3rdparty/expat/xmlrole.c
-	$(CCC) -c -o $@ $(EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmlrole.c
+mrl_expat_xmlrole.o: $(srcdir)/3rdparty/expat/xmlrole.c
+	$(CCC) -c -o $@ $(MRL_EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmlrole.c
 
-expat_xmltok.o: $(srcdir)/3rdparty/expat/xmltok.c
-	$(CCC) -c -o $@ $(EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmltok.c
+mrl_expat_xmltok.o: $(srcdir)/3rdparty/expat/xmltok.c
+	$(CCC) -c -o $@ $(MRL_EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmltok.c
 
-expat_xmltok_impl.o: $(srcdir)/3rdparty/expat/xmltok_impl.c
-	$(CCC) -c -o $@ $(EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmltok_impl.c
+mrl_expat_xmltok_impl.o: $(srcdir)/3rdparty/expat/xmltok_impl.c
+	$(CCC) -c -o $@ $(MRL_EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmltok_impl.c
 
-expat_xmltok_ns.o: $(srcdir)/3rdparty/expat/xmltok_ns.c
-	$(CCC) -c -o $@ $(EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmltok_ns.c
+mrl_expat_xmltok_ns.o: $(srcdir)/3rdparty/expat/xmltok_ns.c
+	$(CCC) -c -o $@ $(MRL_EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmltok_ns.c
 
-faxpp_attlistdecl.o: $(srcdir)/3rdparty/faxpp/src/attlistdecl.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/attlistdecl.c
+mrl_faxpp_attlistdecl.o: $(srcdir)/3rdparty/faxpp/src/attlistdecl.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/attlistdecl.c
 
-faxpp_buffer.o: $(srcdir)/3rdparty/faxpp/src/buffer.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/buffer.c
+mrl_faxpp_buffer.o: $(srcdir)/3rdparty/faxpp/src/buffer.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/buffer.c
 
-faxpp_cdata.o: $(srcdir)/3rdparty/faxpp/src/cdata.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/cdata.c
+mrl_faxpp_cdata.o: $(srcdir)/3rdparty/faxpp/src/cdata.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/cdata.c
 
-faxpp_char_classes.o: $(srcdir)/3rdparty/faxpp/src/char_classes.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/char_classes.c
+mrl_faxpp_char_classes.o: $(srcdir)/3rdparty/faxpp/src/char_classes.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/char_classes.c
 
-faxpp_comment.o: $(srcdir)/3rdparty/faxpp/src/comment.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/comment.c
+mrl_faxpp_comment.o: $(srcdir)/3rdparty/faxpp/src/comment.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/comment.c
 
-faxpp_conditional.o: $(srcdir)/3rdparty/faxpp/src/conditional.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/conditional.c
+mrl_faxpp_conditional.o: $(srcdir)/3rdparty/faxpp/src/conditional.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/conditional.c
 
-faxpp_doctype.o: $(srcdir)/3rdparty/faxpp/src/doctype.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/doctype.c
+mrl_faxpp_doctype.o: $(srcdir)/3rdparty/faxpp/src/doctype.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/doctype.c
 
-faxpp_element.o: $(srcdir)/3rdparty/faxpp/src/element.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/element.c
+mrl_faxpp_element.o: $(srcdir)/3rdparty/faxpp/src/element.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/element.c
 
-faxpp_elementdecl.o: $(srcdir)/3rdparty/faxpp/src/elementdecl.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/elementdecl.c
+mrl_faxpp_elementdecl.o: $(srcdir)/3rdparty/faxpp/src/elementdecl.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/elementdecl.c
 
-faxpp_entitydecl.o: $(srcdir)/3rdparty/faxpp/src/entitydecl.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/entitydecl.c
+mrl_faxpp_entitydecl.o: $(srcdir)/3rdparty/faxpp/src/entitydecl.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/entitydecl.c
 
-faxpp_error.o: $(srcdir)/3rdparty/faxpp/src/error.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/error.c
+mrl_faxpp_error.o: $(srcdir)/3rdparty/faxpp/src/error.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/error.c
 
-faxpp_event.o: $(srcdir)/3rdparty/faxpp/src/event.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/event.c
+mrl_faxpp_event.o: $(srcdir)/3rdparty/faxpp/src/event.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/event.c
 
-faxpp_notationdecl.o: $(srcdir)/3rdparty/faxpp/src/notationdecl.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/notationdecl.c
+mrl_faxpp_notationdecl.o: $(srcdir)/3rdparty/faxpp/src/notationdecl.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/notationdecl.c
 
-faxpp_pi.o: $(srcdir)/3rdparty/faxpp/src/pi.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/pi.c
+mrl_faxpp_pi.o: $(srcdir)/3rdparty/faxpp/src/pi.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/pi.c
 
-faxpp_reference.o: $(srcdir)/3rdparty/faxpp/src/reference.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/reference.c
+mrl_faxpp_reference.o: $(srcdir)/3rdparty/faxpp/src/reference.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/reference.c
 
-faxpp_token.o: $(srcdir)/3rdparty/faxpp/src/token.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/token.c
+mrl_faxpp_token.o: $(srcdir)/3rdparty/faxpp/src/token.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/token.c
 
-faxpp_tokenizer_states.o: $(srcdir)/3rdparty/faxpp/src/tokenizer_states.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/tokenizer_states.c
+mrl_faxpp_tokenizer_states.o: $(srcdir)/3rdparty/faxpp/src/tokenizer_states.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/tokenizer_states.c
 
-faxpp_transcode.o: $(srcdir)/3rdparty/faxpp/src/transcode.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/transcode.c
+mrl_faxpp_transcode.o: $(srcdir)/3rdparty/faxpp/src/transcode.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/transcode.c
 
-faxpp_xmldecl.o: $(srcdir)/3rdparty/faxpp/src/xmldecl.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/xmldecl.c
+mrl_faxpp_xmldecl.o: $(srcdir)/3rdparty/faxpp/src/xmldecl.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/xmldecl.c
 
-faxpp_xml_parser.o: $(srcdir)/3rdparty/faxpp/src/xml_parser.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/xml_parser.c
+mrl_faxpp_xml_parser.o: $(srcdir)/3rdparty/faxpp/src/xml_parser.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/xml_parser.c
 
-faxpp_xml_tokenizer.o: $(srcdir)/3rdparty/faxpp/src/xml_tokenizer.c
-	$(CCC) -c -o $@ $(FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/xml_tokenizer.c
+mrl_faxpp_xml_tokenizer.o: $(srcdir)/3rdparty/faxpp/src/xml_tokenizer.c
+	$(CCC) -c -o $@ $(MRL_FAXPP_CFLAGS) $(srcdir)/3rdparty/faxpp/src/xml_tokenizer.c
 
-sqlite3_sqlite3.o: $(srcdir)/3rdparty/sqlite3/sqlite3.c
-	$(CCC) -c -o $@ $(SQLITE3_CFLAGS) $(srcdir)/3rdparty/sqlite3/sqlite3.c
+mrl_sqlite3_sqlite3.o: $(srcdir)/3rdparty/sqlite3/sqlite3.c
+	$(CCC) -c -o $@ $(MRL_SQLITE3_CFLAGS) $(srcdir)/3rdparty/sqlite3/sqlite3.c
 
-crengine_chmfmt.o: $(srcdir)/3rdparty/crengine/src/chmfmt.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/chmfmt.cpp
+mrl_crengine_chmfmt.o: $(srcdir)/3rdparty/crengine/src/chmfmt.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/chmfmt.cpp
 
-crengine_cp_stats.o: $(srcdir)/3rdparty/crengine/src/cp_stats.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/cp_stats.cpp
+mrl_crengine_cp_stats.o: $(srcdir)/3rdparty/crengine/src/cp_stats.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/cp_stats.cpp
 
-crengine_crgui.o: $(srcdir)/3rdparty/crengine/src/crgui.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crgui.cpp
+mrl_crengine_crgui.o: $(srcdir)/3rdparty/crengine/src/crgui.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crgui.cpp
 
-crengine_cri18n.o: $(srcdir)/3rdparty/crengine/src/cri18n.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/cri18n.cpp
+mrl_crengine_cri18n.o: $(srcdir)/3rdparty/crengine/src/cri18n.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/cri18n.cpp
 
-crengine_crskin.o: $(srcdir)/3rdparty/crengine/src/crskin.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crskin.cpp
+mrl_crengine_crskin.o: $(srcdir)/3rdparty/crengine/src/crskin.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crskin.cpp
 
-crengine_crtest.o: $(srcdir)/3rdparty/crengine/src/crtest.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crtest.cpp
+mrl_crengine_crtest.o: $(srcdir)/3rdparty/crengine/src/crtest.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crtest.cpp
 
-crengine_crtxtenc.o: $(srcdir)/3rdparty/crengine/src/crtxtenc.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crtxtenc.cpp
+mrl_crengine_crtxtenc.o: $(srcdir)/3rdparty/crengine/src/crtxtenc.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/crtxtenc.cpp
 
-crengine_epubfmt.o: $(srcdir)/3rdparty/crengine/src/epubfmt.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/epubfmt.cpp
+mrl_crengine_epubfmt.o: $(srcdir)/3rdparty/crengine/src/epubfmt.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/epubfmt.cpp
 
-crengine_hist.o: $(srcdir)/3rdparty/crengine/src/hist.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/hist.cpp
+mrl_crengine_hist.o: $(srcdir)/3rdparty/crengine/src/hist.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/hist.cpp
 
-crengine_hyphman.o: $(srcdir)/3rdparty/crengine/src/hyphman.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/hyphman.cpp
+mrl_crengine_hyphman.o: $(srcdir)/3rdparty/crengine/src/hyphman.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/hyphman.cpp
 
-crengine_lstridmap.o: $(srcdir)/3rdparty/crengine/src/lstridmap.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lstridmap.cpp
+mrl_crengine_lstridmap.o: $(srcdir)/3rdparty/crengine/src/lstridmap.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lstridmap.cpp
 
-crengine_lvbmpbuf.o: $(srcdir)/3rdparty/crengine/src/lvbmpbuf.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvbmpbuf.cpp
+mrl_crengine_lvbmpbuf.o: $(srcdir)/3rdparty/crengine/src/lvbmpbuf.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvbmpbuf.cpp
 
-crengine_lvdocview.o: $(srcdir)/3rdparty/crengine/src/lvdocview.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvdocview.cpp
+mrl_crengine_lvdocview.o: $(srcdir)/3rdparty/crengine/src/lvdocview.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvdocview.cpp
 
-crengine_lvdrawbuf.o: $(srcdir)/3rdparty/crengine/src/lvdrawbuf.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvdrawbuf.cpp
+mrl_crengine_lvdrawbuf.o: $(srcdir)/3rdparty/crengine/src/lvdrawbuf.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvdrawbuf.cpp
 
-crengine_lvfnt.o: $(srcdir)/3rdparty/crengine/src/lvfnt.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvfnt.cpp
+mrl_crengine_lvfnt.o: $(srcdir)/3rdparty/crengine/src/lvfnt.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvfnt.cpp
 
-crengine_lvfntman.o: $(srcdir)/3rdparty/crengine/src/lvfntman.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvfntman.cpp
+mrl_crengine_lvfntman.o: $(srcdir)/3rdparty/crengine/src/lvfntman.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvfntman.cpp
 
-crengine_lvimg.o: $(srcdir)/3rdparty/crengine/src/lvimg.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvimg.cpp
+mrl_crengine_lvimg.o: $(srcdir)/3rdparty/crengine/src/lvimg.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvimg.cpp
 
-crengine_lvmemman.o: $(srcdir)/3rdparty/crengine/src/lvmemman.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvmemman.cpp
+mrl_crengine_lvmemman.o: $(srcdir)/3rdparty/crengine/src/lvmemman.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvmemman.cpp
 
-crengine_lvpagesplitter.o: $(srcdir)/3rdparty/crengine/src/lvpagesplitter.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvpagesplitter.cpp
+mrl_crengine_lvpagesplitter.o: $(srcdir)/3rdparty/crengine/src/lvpagesplitter.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvpagesplitter.cpp
 
-crengine_lvrend.o: $(srcdir)/3rdparty/crengine/src/lvrend.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvrend.cpp
+mrl_crengine_lvrend.o: $(srcdir)/3rdparty/crengine/src/lvrend.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvrend.cpp
 
-crengine_lvstream.o: $(srcdir)/3rdparty/crengine/src/lvstream.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstream.cpp
+mrl_crengine_lvstream.o: $(srcdir)/3rdparty/crengine/src/lvstream.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstream.cpp
 
-crengine_lvstring.o: $(srcdir)/3rdparty/crengine/src/lvstring.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstring.cpp
+mrl_crengine_lvstring.o: $(srcdir)/3rdparty/crengine/src/lvstring.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstring.cpp
 
-crengine_lvstsheet.o: $(srcdir)/3rdparty/crengine/src/lvstsheet.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstsheet.cpp
+mrl_crengine_lvstsheet.o: $(srcdir)/3rdparty/crengine/src/lvstsheet.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstsheet.cpp
 
-crengine_lvstyles.o: $(srcdir)/3rdparty/crengine/src/lvstyles.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstyles.cpp
+mrl_crengine_lvstyles.o: $(srcdir)/3rdparty/crengine/src/lvstyles.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvstyles.cpp
 
-crengine_lvtextfm.o: $(srcdir)/3rdparty/crengine/src/lvtextfm.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvtextfm.cpp
+mrl_crengine_lvtextfm.o: $(srcdir)/3rdparty/crengine/src/lvtextfm.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvtextfm.cpp
 
-crengine_lvtinydom.o: $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
+mrl_crengine_lvtinydom.o: $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvtinydom.cpp
 
-crengine_lvxml.o: $(srcdir)/3rdparty/crengine/src/lvxml.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvxml.cpp
+mrl_crengine_lvxml.o: $(srcdir)/3rdparty/crengine/src/lvxml.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/lvxml.cpp
 
-crengine_pdbfmt.o: $(srcdir)/3rdparty/crengine/src/pdbfmt.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/pdbfmt.cpp
+mrl_crengine_pdbfmt.o: $(srcdir)/3rdparty/crengine/src/pdbfmt.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/pdbfmt.cpp
 
-crengine_props.o: $(srcdir)/3rdparty/crengine/src/props.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/props.cpp
+mrl_crengine_props.o: $(srcdir)/3rdparty/crengine/src/props.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/props.cpp
 
-crengine_rtfimp.o: $(srcdir)/3rdparty/crengine/src/rtfimp.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/rtfimp.cpp
+mrl_crengine_rtfimp.o: $(srcdir)/3rdparty/crengine/src/rtfimp.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/rtfimp.cpp
 
-crengine_s32utils.o: $(srcdir)/3rdparty/crengine/src/s32utils.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/s32utils.cpp
+mrl_crengine_s32utils.o: $(srcdir)/3rdparty/crengine/src/s32utils.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/s32utils.cpp
 
-crengine_txtselector.o: $(srcdir)/3rdparty/crengine/src/txtselector.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/txtselector.cpp
+mrl_crengine_txtselector.o: $(srcdir)/3rdparty/crengine/src/txtselector.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/txtselector.cpp
 
-crengine_w32utils.o: $(srcdir)/3rdparty/crengine/src/w32utils.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/w32utils.cpp
+mrl_crengine_w32utils.o: $(srcdir)/3rdparty/crengine/src/w32utils.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/w32utils.cpp
 
-crengine_wolutil.o: $(srcdir)/3rdparty/crengine/src/wolutil.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/wolutil.cpp
+mrl_crengine_wolutil.o: $(srcdir)/3rdparty/crengine/src/wolutil.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/wolutil.cpp
 
-crengine_wordfmt.o: $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
+mrl_crengine_wordfmt.o: $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
 
-crengine_xutils.o: $(srcdir)/3rdparty/crengine/src/xutils.cpp
-	$(CXXC) -c -o $@ $(CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/xutils.cpp
+mrl_crengine_xutils.o: $(srcdir)/3rdparty/crengine/src/xutils.cpp
+	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/xutils.cpp
 
-wxsqlite3_wxsqlite3.o: wxsqlite3.cpp
-	$(CXXC) -c -o $@ $(WXSQLITE3_CXXFLAGS) wxsqlite3.cpp
+mrl_wxsqlite3_wxsqlite3.o: wxsqlite3.cpp
+	$(CXXC) -c -o $@ $(MRL_WXSQLITE3_CXXFLAGS) wxsqlite3.cpp
 
-wxbzip2_blocksort.o: $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
+mrl_wxbzip2_blocksort.o: $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
 
-wxbzip2_bzlib.o: $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
+mrl_wxbzip2_bzlib.o: $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
 
-wxbzip2_compress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
+mrl_wxbzip2_compress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
 
-wxbzip2_crctable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
+mrl_wxbzip2_crctable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
 
-wxbzip2_decompress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
+mrl_wxbzip2_decompress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
 
-wxbzip2_huffman.o: $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
+mrl_wxbzip2_huffman.o: $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
 
-wxbzip2_randtable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
-	$(CCC) -c -o $@ $(WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
+mrl_wxbzip2_randtable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
+	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
 
-wxbzip2_bzipstream.o: $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
-	$(CXXC) -c -o $@ $(WXBZIP2_CXXFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
+mrl_wxbzip2_bzipstream.o: $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
+	$(CXXC) -c -o $@ $(MRL_WXBZIP2_CXXFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
 
 zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
 	$(CXXC) -c -o $@ $(ZIPSCAN_CXXFLAGS) $(srcdir)/sources/ZipScaner/ZipScan.cpp
