@@ -307,6 +307,7 @@ private:
 
 public:
 	void AssignModel(FbModel * m_model);
+	FbModel * GetModel() const;
 
 private:
 	// temporary storage for the initial model

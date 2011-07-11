@@ -128,12 +128,24 @@ bool FbAlphabetCombo::SetFont(const wxFont& font)
 	}
 	return ok;
 }
-/*
-void FbAlphabetCombo::OnLetters(FbLettersEvent &event)
-{
-	Append(event.GetLetters());
-	SetSelection(event.GetPosition());
-	m_divider = event.GetDivider();
-	FbCommandEvent(wxEVT_COMMAND_COMBOBOX_SELECTED, ID_INIT_LETTER).Post(this);
+
+void FbAlphabetCombo::SetText(const wxString &text)
+{ 
+	FbModel * model = GetModel();
+	if (model && text.Len() == 1) { 
+		wxString letter = Upper(text);
+		size_t count = model->GetRowCount();
+		for (size_t i = 1; i <= count; i++) {
+			if (model->GetData(i)[0] == letter) {
+				model->FindRow(i, true);
+				FbComboPopup * popup = GetVListBoxComboPopup();
+				if (popup) popup->SetSelection(i - 1);
+				m_text.Empty(); 
+				Refresh(); 
+				return;
+			}
+		}
+	}
+	m_text = text; 
+	Refresh(); 
 }
-*/

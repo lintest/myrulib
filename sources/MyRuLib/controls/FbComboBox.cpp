@@ -601,7 +601,12 @@ void FbComboBox::AssignModel(FbModel * model)
 
 FbModelItem FbComboBox::GetCurrent()
 {
-	FbComboPopup * popup = GetVListBoxComboPopup();
-	FbModel * model = popup ? popup->GetModel() : m_initModel;
+	FbModel * model = GetModel();
 	return model ? model->GetCurrent() : FbModelItem();
+}
+
+FbModel * FbComboBox::GetModel() const
+{
+	FbComboPopup * popup = GetVListBoxComboPopup();
+	return popup ? popup->GetModel() : m_initModel;
 }

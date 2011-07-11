@@ -13,7 +13,7 @@ class FbAuthListInfo: public wxObject
 				{ if (letter == wxT('*')) m_letter = 0; }
 		FbAuthListInfo(const wxString &string)
 			: m_letter(0), m_string(string)
-				{ if (string.Len() == 1) { m_letter = string[0]; m_string.Empty(); } }
+				{ if (string.Len() == 1) { m_letter = Upper(string)[0]; m_string.Empty(); } }
 		FbAuthListInfo(const FbAuthListInfo & info)
 			: m_letter(info.m_letter), m_string(info.m_string) {}
 		bool IsFullText() const

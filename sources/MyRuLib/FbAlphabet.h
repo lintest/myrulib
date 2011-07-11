@@ -53,8 +53,7 @@ class FbAlphabetCombo : public FbComboBox
 
 		virtual bool SetFont(const wxFont& font);
 
-		void SetText(const wxString &text = wxEmptyString)
-			{ m_text = text; Refresh(); }
+		void SetText(const wxString &text = wxEmptyString);
 
 	private:
 		int m_rowHeight;
