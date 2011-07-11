@@ -128,21 +128,13 @@ void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
 //  FbSearchFunction
 //-----------------------------------------------------------------------------
 
-static void Decompose(const wxString &text, wxArrayString &list)
-{
-	wxStringTokenizer tkz(Lower(text), wxT(' '), wxTOKEN_STRTOK);
-	while (tkz.HasMoreTokens()) list.Add(tkz.GetNextToken());
-}
-
 FbSearchFunction::FbSearchFunction(const wxString & input)
 {
-	Decompose(input, m_masks);
-	wxString log = _("Search template"); log << wxT(": ");
-	size_t count = m_masks.Count();
-	for (size_t i=0; i<count; i++) {
-		log << wxString::Format(wxT("<%s> "), m_masks[i].c_str());
+	FbLogMessage(_("Search template"), input);
+	wxStringTokenizer tkz(Lower(input), wxT(' '), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) {
+		m_masks.Add(tkz.GetNextToken());
 	}
-	wxLogMessage(log);
 }
 
 void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
@@ -153,8 +145,12 @@ void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
 		return;
 	}
 
+	wxString input = ctx.GetString(0);
 	wxArrayString words;
-	Decompose(ctx.GetString(0), words);
+	wxStringTokenizer tkz(Lower(input), wxT(' '), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) {
+		words.Add(tkz.GetNextToken());
+	}
 
 	size_t count = m_masks.Count();
 	for (size_t i = 0; i < count; i++) {
@@ -186,12 +182,10 @@ bool FbSearchFunction::IsFullText(const wxString &text)
 void FbSQLite3Statement::BindFTS(int index, const wxString& value)
 {
 	wxString result;
-	wxArrayString list;
-	Decompose(value, list);
-	size_t count = list.Count();
-	for (size_t i = 0; i < count; i++) {
-		if (i) result << wxT(' ');
-		result << list[i] << wxT('*');
+	wxStringTokenizer tkz(Lower(value), wxT(' '), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) {
+		if (!result.IsEmpty()) result << wxT(' ');
+		result << tkz.GetNextToken() << wxT('*');
 	}
 	wxSQLite3Statement::Bind(index, result);
 }
