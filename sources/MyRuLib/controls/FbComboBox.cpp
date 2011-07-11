@@ -144,18 +144,9 @@ void FbComboPopup::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) cons
 // This is called from FbComboPopup::OnDrawItem, with text colour and font prepared
 void FbComboPopup::OnDrawItem( wxDC& dc, const wxRect& rect, int index, int flags ) const
 {
-	if (!m_model) return;
-
+	FbComboBox * combo = wxDynamicCast(m_combo, FbComboBox);
 	FbModelItem item = m_model->GetData(index + 1);
-	if (item) {
-		int x = rect.x + 2; 
-		FbModelItem parent = item.GetParent();
-		while (parent) {
-			parent = parent.GetParent();
-			if (parent) x += rect.height;
-		}
-		dc.DrawText( item[0], x, rect.y );
-	}
+	if (m_model && combo && item) combo->OnDrawItem(dc, rect, index, item, flags);
 }
 
 void FbComboPopup::DismissWithEvent()
@@ -169,6 +160,8 @@ void FbComboPopup::DismissWithEvent()
 	wxString valStr = GetString(selection);
 
 	m_value = selection;
+	
+	if (m_model) m_model->FindRow(selection + 1, true);
 
 	if ( valStr != m_combo->GetValue() )
 		m_combo->SetValueWithEvent(valStr);
@@ -445,8 +438,17 @@ void FbComboPopup::SetSelection( int item )
 
 	m_value = item;
 
-	if ( IsCreated() )
+	if ( IsCreated() ) {
 		wxVListBox::SetSelection(item);
+		if (m_model) m_model->FindRow(item + 1, true);
+	}
+}
+
+wxCoord FbComboPopup::OnMeasureItem(size_t n) const
+{
+    FbComboBox * combo = wxDynamicCast(m_combo, FbComboBox);
+	wxCoord h = combo ? combo->OnMeasureItem(n) : -1;
+	return h > 0 ? h : m_itemHeight;
 }
 
 int FbComboPopup::GetSelection() const
@@ -501,6 +503,8 @@ void FbComboPopup::AssignModel(FbModel * model)
 
 	if (m_itemHeight)
 		wxVListBox::SetItemCount(GetCount());
+
+	m_value = model ? model->GetPosition() - 1 : -1;
 }
 
 unsigned int FbComboPopup::GetCount() const
@@ -548,10 +552,7 @@ void FbComboBox::DoSetPopupControl(wxComboPopup* popup)
 // FbComboBox item drawing and measuring default implementations
 // ----------------------------------------------------------------------------
 
-void FbComboBox::OnDrawItem( wxDC& dc,
-									   const wxRect& rect,
-									   int item,
-									   int flags ) const
+void FbComboBox::OnDrawItem( wxDC& dc, const wxRect& rect, int index, FbModelItem item, int flags ) const
 {
 	if ( flags & wxODCB_PAINTING_CONTROL )
 	{
@@ -561,7 +562,8 @@ void FbComboBox::OnDrawItem( wxDC& dc,
 	}
 	else
 	{
-		dc.DrawText( GetVListBoxComboPopup()->GetString(item), rect.x + 2, rect.y );
+		int x = rect.x + 2 + rect.height * item.Level(); 
+		dc.DrawText( item[0], x, rect.y );
 	}
 }
 
@@ -595,4 +597,11 @@ void FbComboBox::AssignModel(FbModel * model)
 		wxDELETE(m_initModel);
 		m_initModel = model;
 	}
+}
+
+FbModelItem FbComboBox::GetCurrent()
+{
+	FbComboPopup * popup = GetVListBoxComboPopup();
+	FbModel * model = popup ? popup->GetModel() : m_initModel;
+	return model ? model->GetCurrent() : FbModelItem();
 }

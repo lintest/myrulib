@@ -125,6 +125,7 @@ class FbModelItem: public wxObject
 			{ return m_data ? m_data->IsExpanded(*m_model) : false; }
 		bool Expand(bool expand = true) 
 			{ return m_data ? m_data->Expand(*m_model, expand) : false; }
+		int Level();
 	private:
 		FbModel * m_model;
 		FbModelData * m_data;
@@ -310,6 +311,7 @@ class FbListModel: public FbModel
 class FbListStore: public FbListModel
 {
 	public:
+		virtual void Insert(FbModelData * data, size_t pos);
 		virtual void Append(FbModelData * data);
 		virtual void Replace(FbModelData * data);
 		virtual void Delete();

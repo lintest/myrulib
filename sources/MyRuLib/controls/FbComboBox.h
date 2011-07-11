@@ -8,7 +8,7 @@
 #include <wx/wx.h>
 #include <wx/odcombo.h>
 
-class FbModel;
+#include "controls/FbTreeModel.h"
 
 class FbCustomCombo : public wxComboCtrl
 {
@@ -155,10 +155,7 @@ protected:
 	virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const;
 
 	// This is same as in wxVListBox
-	virtual wxCoord OnMeasureItem( size_t item ) const
-	{
-		return m_itemHeight;
-	}
+	virtual wxCoord OnMeasureItem( size_t item ) const;
 
 	// Return item width, or -1 for calculating from text extent (default)
 	virtual wxCoord OnMeasureItemWidth( size_t item ) const
@@ -210,6 +207,7 @@ private:
 
 protected:
 	void AssignModel(FbModel * model);
+	FbModel * GetModel() { return m_model; };
 	FbModel * m_model;
 };
 
@@ -272,6 +270,13 @@ public:
 		wxComboCtrl::SetSelection(from, to);
 	}
 
+	virtual wxCoord OnMeasureItem( size_t item ) const
+	{
+		return -1;
+	}
+
+	FbModelItem GetCurrent();
+
 protected:
 
 	// Callback for drawing. Font, background and text colour have been
@@ -279,7 +284,7 @@ protected:
 	// item: item index to be drawn, may be wxNOT_FOUND when painting combo control itself
 	//       and there is no valid selection
 	// flags: wxODCB_PAINTING_CONTROL is set if painting to combo control instead of list
-	virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const;
+	virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int index, FbModelItem item, int flags ) const;
 
 	// Callback for background drawing. Flags are same as with
 	// OnDrawItem.

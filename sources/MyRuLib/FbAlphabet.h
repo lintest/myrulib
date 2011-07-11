@@ -1,11 +1,26 @@
 #ifndef __FBALPHABET_H__
 #define __FBALPHABET_H__
 
-#include <wx/dcmemory.h>
-#include <wx/combo.h>
-#include <wx/odcombo.h>
+#include "controls/FbComboBox.h"
+#include "controls/FbTreeModel.h"
 #include "FbBookEvent.h"
 #include "FbThread.h"
+
+class FbAlphabetData: public FbModelData
+{
+	public:
+		FbAlphabetData(const wxString & letter, int count = 0)
+			: m_letter(letter), m_count(Format(count)) {}
+		FbAlphabetData(const wxString & letter, const wxString & count)
+			: m_letter(letter), m_count(count) {}
+		virtual FbModelData * Clone() const
+			{ return new FbAlphabetData(m_letter, m_count); }
+		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
+	private:
+		wxString m_letter;
+		wxString m_count;
+		DECLARE_CLASS(FbAlphabetData);
+};
 
 class FbAlphabetThread: public FbThread
 {
@@ -20,7 +35,7 @@ class FbAlphabetThread: public FbThread
 		wxEvtHandler * m_owner;
 };
 
-class FbAlphabetCombo : public wxOwnerDrawnComboBox
+class FbAlphabetCombo : public FbComboBox
 {
 	public:
 		FbAlphabetCombo()
@@ -29,7 +44,7 @@ class FbAlphabetCombo : public wxOwnerDrawnComboBox
 		virtual ~FbAlphabetCombo()
 			{ m_thread.Close(); m_thread.Wait(); }
 
-		virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const;
+		virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int index, FbModelItem item, int flags ) const;
 
 		virtual wxCoord OnMeasureItem( size_t item ) const;
 
@@ -48,7 +63,7 @@ class FbAlphabetCombo : public wxOwnerDrawnComboBox
 		int m_divider;
 
 	private:
-		void OnLetters(FbLettersEvent &event);
+		void OnModel( FbModelEvent& event );
 		DECLARE_EVENT_TABLE()
 };
 

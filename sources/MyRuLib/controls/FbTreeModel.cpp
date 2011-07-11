@@ -30,6 +30,17 @@ FbModelItem & FbModelItem::operator =(const FbModelItem &item)
 	return *this;
 }
 
+int FbModelItem::Level() 
+{ 
+	int level = 0;
+	FbModelItem parent = GetParent();
+	while (parent) {
+		parent = parent.GetParent();
+		if (parent) level++;
+	}
+	return level;
+}
+
 //-----------------------------------------------------------------------------
 //  FbModelData
 //-----------------------------------------------------------------------------
@@ -459,6 +470,23 @@ IMPLEMENT_CLASS(FbListStore, FbListModel)
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(FbModelDataArray)
+
+void FbListStore::Insert(FbModelData * data, size_t pos)
+{
+	m_list.Insert(data, pos);
+	size_t count = m_list.Count();
+
+	if (count == 1) {
+		m_position = 1; 
+	} else {
+		if (m_position >= pos) m_position++;
+	}
+
+	if (m_owner) {
+		m_position = count;
+		m_owner->Refresh();
+	}
+}
 
 void FbListStore::Append(FbModelData * data)
 {

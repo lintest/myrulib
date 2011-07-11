@@ -151,10 +151,10 @@ void FbFrameAuth::CreateColumns()
 
 void FbFrameAuth::OnChoiceLetter(wxCommandEvent& event)
 {
-	int selection = m_LetterList->GetSelection();
-	if (selection == wxNOT_FOUND) return;
+	FbModelItem selection = m_LetterList->GetCurrent();
+	if (!selection) return;
 	if (event.GetId() == ID_INIT_LETTER && m_info) return;
-	wxString letter = m_LetterList->GetString(selection).Left(1);
+	wxString letter = selection[0];
 	if (letter.IsEmpty()) return;
 	FbParams(FB_LAST_LETTER) = letter;
 	m_info = (wxChar)letter[0];

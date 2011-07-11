@@ -5,6 +5,7 @@
 #include <wx/dialog.h>
 #include <wx/fontpicker.h>
 #include <wx/clrpicker.h>
+#include <wx/treebase.h>
 #include <wx/wxsqlite3.h>
 #include "FbWindow.h"
 #include "controls/FbTreeModel.h"
