@@ -128,9 +128,9 @@ void FbIncrementFunction::Execute(wxSQLite3FunctionContext& ctx)
 //  FbSearchFunction
 //-----------------------------------------------------------------------------
 
-void FbSearchFunction::Decompose(const wxString &text, wxArrayString &list)
+static void Decompose(const wxString &text, wxArrayString &list)
 {
-	wxStringTokenizer tkz(text, wxT(" "), wxTOKEN_STRTOK);
+	wxStringTokenizer tkz(Lower(text), wxT(' '), wxTOKEN_STRTOK);
 	while (tkz.HasMoreTokens()) list.Add(tkz.GetNextToken());
 }
 
@@ -152,24 +152,21 @@ void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
 		ctx.SetResultError(wxString::Format(wxT("SEARCH called with wrong number of arguments: %d."), argCount));
 		return;
 	}
-	wxString text = Lower(ctx.GetString(0));
 
 	wxArrayString words;
-	Decompose(text, words);
+	Decompose(ctx.GetString(0), words);
 
-	size_t maskCount = m_masks.Count();
-	size_t wordCount = words.Count();
-
-	for (size_t i=0; i<maskCount; i++) {
-		bool bNotFound = true;
-		wxString mask = m_masks[i] + wxT("*");
-		for (size_t j=0; j<wordCount; j++) {
-			if ( words[j].Matches(mask) ) {
-				bNotFound = false;
+	size_t count = m_masks.Count();
+	for (size_t i = 0; i < count; i++) {
+		bool not_found = true;
+		size_t count = words.Count();
+		for (size_t j = 0; j < count; j++) {
+			if ( words[j].Matches(m_masks[i]) ) {
+				not_found = false;
 				break;
 			}
 		}
-		if (bNotFound) {
+		if (not_found) {
 			ctx.SetResult(false);
 			return;
 		}
@@ -179,24 +176,24 @@ void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
 
 bool FbSearchFunction::IsFullText(const wxString &text)
 {
-	return ( text.Find(wxT("*")) == wxNOT_FOUND ) && ( text.Find(wxT("?")) == wxNOT_FOUND );
+	return ( text.Find(wxT('*')) == wxNOT_FOUND ) && ( text.Find(wxT('?')) == wxNOT_FOUND );
 }
 
-wxString FbSearchFunction::AddAsterisk(const wxString &text)
+//-----------------------------------------------------------------------------
+//  FbSQLite3Statement
+//-----------------------------------------------------------------------------
+
+void FbSQLite3Statement::BindFTS(int index, const wxString& value)
 {
-	wxString str = Lower(text);
 	wxString result;
-	int i = wxNOT_FOUND;
-	do {
-		str.Trim(false);
-		i = str.find(wxT(' '));
-		if (i == wxNOT_FOUND) break;
-		result += str.Left(i) + wxT("* ");
-		str = str.Mid(i);
-	} while (true);
-	str.Trim(true);
-	if (!str.IsEmpty()) result += str.Left(i) + wxT("*");
-	return result;
+	wxArrayString list;
+	Decompose(value, list);
+	size_t count = list.Count();
+	for (size_t i = 0; i < count; i++) {
+		if (i) result << wxT(' ');
+		result << list[i] << wxT('*');
+	}
+	wxSQLite3Statement::Bind(index, result);
 }
 
 //-----------------------------------------------------------------------------

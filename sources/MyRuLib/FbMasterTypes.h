@@ -2,6 +2,7 @@
 #define __FBMASTERTYPES_H__
 
 #include "FbMasterInfo.h"
+#include "FbDatabase.h"
 
 class FbMasterAuthInfo: public FbMasterInfoBase
 {
@@ -22,7 +23,7 @@ class FbMasterAuthInfo: public FbMasterInfoBase
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
 		virtual wxString GetOrderTable() const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 	private:
 		int m_id;
@@ -47,7 +48,7 @@ class FbMasterSeqnInfo: public FbMasterInfoBase
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
 	private:
 		int m_id;
@@ -71,7 +72,7 @@ class FbMasterGenrInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		const wxString m_id;
 		DECLARE_CLASS(FbMasterGenrInfo);
@@ -99,7 +100,7 @@ class FbMasterDownInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		DownType m_id;
 		DECLARE_CLASS(FbMasterDownInfo);
@@ -122,7 +123,7 @@ class FbMasterDateInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		int m_id;
 		DECLARE_CLASS(FbMasterDateInfo);
@@ -145,7 +146,7 @@ class FbMasterFldrInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		int m_id;
 		DECLARE_CLASS(FbMasterFldrInfo);
@@ -165,7 +166,7 @@ class FbMasterCommInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		DECLARE_CLASS(FbMasterCommInfo);
 };
@@ -187,7 +188,7 @@ class FbMasterRateInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		int m_id;
 		DECLARE_CLASS(FbMasterRateInfo);
@@ -209,7 +210,7 @@ class FbMasterFindInfo: public FbMasterInfoBase
 	protected:
 		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 		bool DoFind(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 	private:
 		wxString m_title;
@@ -236,7 +237,7 @@ class FbMasterClssInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual void Bind(wxSQLite3Statement &stmt) const;
+		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		const wxString m_sql;
 		const wxString m_id;

@@ -69,8 +69,8 @@ void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 	sql << GetJoin();
 	sql << wxT("WHERE fts_auth MATCH ?");
 	sql << GetOrder();
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, FbSearchFunction::AddAsterisk(m_info.m_string));
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.BindFTS(1, m_info.m_string);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
 }

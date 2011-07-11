@@ -35,7 +35,7 @@ void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread, const 
 	}
 	sql = FormatSQL(sql, GetWhere(database), filter);
 
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	Bind(stmt);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (!result.IsOk()) return NULL;

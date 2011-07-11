@@ -2,11 +2,11 @@
 #define __FBMASTERINFO_H__
 
 #include <wx/wx.h>
-#include <wx/wxsqlite3.h>
 #include "FbThread.h"
 #include "FbColumns.h"
 #include "FbBookTypes.h"
 #include "FbFilterObj.h"
+#include "FbDatabase.h"
 
 class FbBookTreeModel;
 
@@ -30,7 +30,7 @@ class FbMasterInfoBase: public wxObject
 		virtual bool operator==(const FbMasterInfoBase & info) = 0;
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const = 0;
-		virtual void Bind(wxSQLite3Statement &stmt) const {}
+		virtual void Bind(FbSQLite3Statement &stmt) const {}
 		virtual wxString GetOrderTable() const;
 		virtual wxString GetOrderColumn() const;
 		virtual wxString GetOrderFields() const;

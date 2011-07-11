@@ -73,11 +73,9 @@ class FbSearchFunction: public wxSQLite3ScalarFunction
 	public:
 		FbSearchFunction(const wxString & input);
 		static bool IsFullText(const wxString &text);
-		static wxString AddAsterisk(const wxString &text);
 	protected:
 		virtual void Execute(wxSQLite3FunctionContext& ctx);
 	private:
-		static void Decompose(const wxString &text, wxArrayString &list);
 		wxArrayString m_masks;
 };
 
@@ -117,6 +115,14 @@ class FbAutoCommit
 			{ m_database.Commit(); }
 	private:
 		wxSQLite3Database & m_database;
+};
+
+class FbSQLite3Statement: public wxSQLite3Statement
+{
+	public:
+		FbSQLite3Statement(const wxSQLite3Statement& statement)	
+			: wxSQLite3Statement(statement) {}
+		void BindFTS(int index, const wxString& value);
 };
 
 class FbCommonDatabase: public FbDatabase
