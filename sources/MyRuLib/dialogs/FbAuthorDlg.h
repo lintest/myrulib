@@ -1,13 +1,36 @@
-#ifndef __FbAuthorModifyDlg_H__
-#define __FbAuthorModifyDlg_H__
+#ifndef __FBAUTHORDLG_H__
+#define __FBAUTHORDLG_H__
 
 #include "FbWindow.h"
-#include "controls/FbTreeView.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
 #include "FbThread.h"
 #include "FbImportCtx.h"
+#include "FbAlphabet.h"
+#include "controls/FbTreeView.h"
 #include "controls/FbSearchCombo.h"
+
+class FbAuthorSelectDlg : public wxDialog 
+{
+	private:
+		enum ID {
+			ID_ALPHABET = 1000,
+			ID_FIND_TEXT,
+			ID_TREE_VIEW,
+			ID_APPEND,
+			ID_MODIFY,
+			ID_DELETE,
+		};
+	public:
+		static int Execute( wxWindow* parent, int id );
+		FbAuthorSelectDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 329,321 ), long style = wxDEFAULT_DIALOG_STYLE );
+		~FbAuthorSelectDlg();
+	private:
+		wxTextCtrl m_text;
+		FbAlphabetCombo m_alphabet;
+		wxToolBar m_toolbar;
+		FbTreeViewCtrl m_treeview;
+};
 
 class FbAuthorReplaceDlg : public FbDialog
 {
@@ -79,4 +102,4 @@ class FbAuthorModifyDlg : public FbDialog
 		int m_exists;
 };
 
-#endif //__FbAuthorModifyDlg_H__
+#endif // __FBAUTHORDLG_H__
