@@ -2,7 +2,62 @@
 #include "models/FbAuthList.h"
 #include "FbCollection.h"
 #include "FbConst.h"
+#include "FbLogoBitmap.h"
 #include <wx/artprov.h>
+
+//-----------------------------------------------------------------------------
+//  FbAuthorSelectDlg
+//-----------------------------------------------------------------------------
+
+FbAuthorSelectDlg::FbAuthorSelectDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style )
+	: wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer * bSizerText = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Find"), wxDefaultPosition, wxDefaultSize, 0 );
+	info->Wrap( -1 );
+	bSizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerText->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	bSizerMain->Add( bSizerText, 0, wxEXPAND, 5 );
+	
+	m_alphabet.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizerMain->Add( &m_alphabet, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_HORZ_TEXT|wxTB_NODIVIDER ); 
+	m_toolbar.AddTool( ID_APPEND, _("Append"), wxBitmap(add_xpm))->Enable(false);
+	m_toolbar.AddTool( ID_MODIFY, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
+	m_toolbar.AddTool( ID_DELETE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
+	m_toolbar.Realize();
+	
+	bSizerMain->Add( &m_toolbar, 0, wxEXPAND|wxALL, 5 );
+	
+	m_treeview.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON );
+	bSizerMain->Add( &m_treeview, 1, wxALL|wxEXPAND, 5 );
+	
+	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
+	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
+
+	SetSizer( bSizerMain );
+	Layout();
+	SetSize(GetBestSize());
+
+	m_text.SetFocus();
+}
+
+FbAuthorSelectDlg::~FbAuthorSelectDlg()
+{
+}
+
+//-----------------------------------------------------------------------------
+//  FbAuthorModifyDlg
+//-----------------------------------------------------------------------------
 
 FbAuthorModifyDlg::FbAuthorModifyDlg( const wxString& title, int id )
 	: FbDialog ( NULL, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ), m_id(id)
@@ -186,6 +241,10 @@ void FbAuthorModifyDlg::EndModal(int retCode)
 	}
 	FbDialog::EndModal(retCode);
 }
+
+//-----------------------------------------------------------------------------
+//  FbAuthorReplaceDlg
+//-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE( FbAuthorReplaceDlg, wxDialog )
 	EVT_TEXT_ENTER( ID_FIND_TXT, FbAuthorReplaceDlg::OnFindEnter )
