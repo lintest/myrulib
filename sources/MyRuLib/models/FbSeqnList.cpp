@@ -60,7 +60,7 @@ void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 	sql << wxT("WHERE fts_seqn MATCH ?");
 	sql << GetOrder();
 	FbSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.BindFTS(1, m_string);
+	stmt.FTS(1, m_string);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
 }

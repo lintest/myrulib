@@ -271,8 +271,8 @@ wxString FbMasterFindInfo::GetWhere(wxSQLite3Database &database) const
 
 void FbMasterFindInfo::Bind(FbSQLite3Statement &stmt) const
 {
-	stmt.BindFTS(1, m_title);
-	if (!m_author.IsEmpty()) stmt.BindFTS(2, m_author);
+	stmt.FTS(1, m_title);
+	if (!m_author.IsEmpty()) stmt.FTS(2, m_author);
 }
 
 void * FbMasterFindInfo::Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)

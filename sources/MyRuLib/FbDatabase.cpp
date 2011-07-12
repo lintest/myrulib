@@ -179,13 +179,25 @@ bool FbSearchFunction::IsFullText(const wxString &text)
 //  FbSQLite3Statement
 //-----------------------------------------------------------------------------
 
-void FbSQLite3Statement::BindFTS(int index, const wxString& value)
+void FbSQLite3Statement::FTS(int index, const wxString& value)
 {
 	wxString result;
-	wxStringTokenizer tkz(Lower(value), wxT(' '), wxTOKEN_STRTOK);
+	wxString keywords = wxT("OR AND NOT");
+	wxStringTokenizer tkz(value, wxT(' '), wxTOKEN_STRTOK);
 	while (tkz.HasMoreTokens()) {
 		if (!result.IsEmpty()) result << wxT(' ');
-		result << tkz.GetNextToken() << wxT('*');
+		wxString word = tkz.GetNextToken();
+		if (keywords.Find(word) != wxNOT_FOUND) {
+		} else if (word.Left(4) == wxT("NEAR")) {
+		} else {
+			word = Lower(word);
+			if (word.Right(1) == wxT('"')) {
+				word.insert(word.Len() - 1, wxT('*'));
+			} else {
+				word << wxT('*');
+			}
+		}
+		result << word;
 	}
 	wxSQLite3Statement::Bind(index, result);
 }

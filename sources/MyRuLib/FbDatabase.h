@@ -122,7 +122,7 @@ class FbSQLite3Statement: public wxSQLite3Statement
 	public:
 		FbSQLite3Statement(const wxSQLite3Statement& statement)	
 			: wxSQLite3Statement(statement) {}
-		void BindFTS(int index, const wxString& value);
+		void FTS(int index, const wxString& value);
 };
 
 class FbCommonDatabase: public FbDatabase
