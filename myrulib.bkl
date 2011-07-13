@@ -52,7 +52,6 @@
 	</lib>
 
 	<lib id="mrl_sqlite3" cond="USE_SQLITE=='builtin'">
-		<define>SQLITE_ENABLE_ICU</define>
 		<define>SQLITE_ENABLE_FTS3</define>
 		<include>$(SRCDIR)/3rdparty/sqlite3</include>
 		<sources>3rdparty/sqlite3/sqlite3.c</sources>

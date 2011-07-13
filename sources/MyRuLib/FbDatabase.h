@@ -83,6 +83,13 @@ class FbCyrillicCollation: public wxSQLite3Collation
 {
 	public:
 		virtual int Compare(const wxString& text1, const wxString& text2);
+#ifdef SQLITE_ENABLE_ICU
+	public:
+		FbCyrillicCollation();
+		virtual ~FbCyrillicCollation();
+	private:
+		void * m_collator;
+#endif
 };
 
 class FbDatabase: public wxSQLite3Database
@@ -120,7 +127,7 @@ class FbAutoCommit
 class FbSQLite3Statement: public wxSQLite3Statement
 {
 	public:
-		FbSQLite3Statement(const wxSQLite3Statement& statement)	
+		FbSQLite3Statement(const wxSQLite3Statement& statement)
 			: wxSQLite3Statement(statement) {}
 		void FTS(int index, const wxString& value);
 };

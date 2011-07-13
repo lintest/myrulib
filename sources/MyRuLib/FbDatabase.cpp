@@ -240,15 +240,63 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 //  wxSQLite3Collation
 //-----------------------------------------------------------------------------
 
+#ifdef SQLITE_ENABLE_ICU
+
+#ifdef SQLITE_ENABLE_ICU
+	/* Include ICU headers */
+	#include <unicode/utypes.h>
+	#include <unicode/uregex.h>
+	#include <unicode/ustring.h>
+	#include <unicode/ucol.h>
+#endif
+
+FbCyrillicCollation::FbCyrillicCollation()
+	: m_collator(NULL)
+{
+	UErrorCode status = U_ZERO_ERROR;
+	m_collator = ucol_open("ru_RU", &status);
+	if (U_FAILURE(status)) {
+		UCollator * p = (UCollator *)m_collator;
+		ucol_close(p);
+		m_collator = NULL;
+		printf("ucol_open");
+	}
+}
+
+FbCyrillicCollation::~FbCyrillicCollation()
+{
+	UCollator * p = (UCollator *)m_collator;
+	if (m_collator) ucol_close(p);
+}
+
+int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
+{
+/*
+	if (m_collator) {
+		UCollator * p = (UCollator *)m_collator;
+		int res = ucol_strcoll(p, ut1[0], -1, ut2[0], -1);
+		printf(text1.mb_str());
+		printf(" = %d = ", res);
+		printf(text2.mb_str());
+		printf("\n");
+		return res;
+	}
+*/
+	return text1.CmpNoCase(text2);
+}
+
+#else // SQLITE_ENABLE_ICU
+
 int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
 {
 #ifdef wxHAVE_TCHAR_SUPPORT
-	if (info) wxSetlocale(LC_COLLATE, wxT("Russian"));
 	return wxStrcoll(text1, text2);
 #else
 	return text1.CmpNoCase(text2);
 #endif
 }
+
+#endif // SQLITE_ENABLE_ICU
 
 //-----------------------------------------------------------------------------
 //  FbDatabase
@@ -375,7 +423,11 @@ FbCommonDatabase::FbCommonDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetLibFile());
 	ExecuteUpdate(fbT("PRAGMA temp_store=2"));
+#ifdef SQLITE_ENABLE_ICU
 	ExecuteUpdate(fbT("SELECT icu_load_collation('ru_RU', 'CYR')"));
+#else
+	SetCollation(wxT("CYR"), &sm_collation);
+#endif
 }
 
 wxString FbCommonDatabase::GetMd5(int id)

@@ -69,6 +69,10 @@ AC_MSG_CHECKING([for --with-sqlite])
 AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 library])], USE_SQLITE="$withval", USE_SQLITE="no")
 AC_MSG_RESULT([$USE_SQLITE])
 
+AC_MSG_CHECKING([for --with-icu])
+AC_ARG_WITH(icu, AS_HELP_STRING([--with-icu],[Use ICU for unicode collation (default=no)]), USE_LIBICU="$withval", USE_LIBICU="no")
+AC_MSG_RESULT([$USE_SQLITE])
+
 AC_MSG_CHECKING([for --with-reader])
 AC_ARG_WITH([reader], [AS_HELP_STRING([--with-reader], [Use Cool Reader Engine])], USE_READER="$withval", USE_READER="no")
 AC_MSG_RESULT([$USE_READER])
@@ -183,6 +187,22 @@ else
 fi
 
 dnl ==================
+dnl === USE_LIBICU ===
+dnl ==================
+
+if test "x$USE_LIBICU" = "xyes" ; then 
+  AC_PATH_PROG(ICU_CONFIG, icu-config, no)
+  if test "$ICU_CONFIG" = "no" ; then
+    WX_LIBS="$WX_LIBS -licui18n -licuuc -licudata"
+  else
+    ICU_LIBS=`$ICU_CONFIG --ldflags`
+    WX_LIBS="$WX_LIBS $ICU_LIBS"
+  fi
+  CFLAGS="$CXXFLAGS -DSQLITE_ENABLE_ICU"
+  CXXFLAGS="$CXXFLAGS -DSQLITE_ENABLE_ICU"
+fi
+
+dnl ==================
 dnl === USE_READER ===
 dnl ==================
 
@@ -247,6 +267,7 @@ echo
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
 echo "  Include locale files into executable?         ${USE_LOCALE}"

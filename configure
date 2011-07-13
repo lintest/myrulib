@@ -598,6 +598,7 @@ ac_includes_default="\
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 STRIP_COMMAND
+ICU_CONFIG
 COND_WX_DEBUG_1_WX_UNICODE_1
 COND_WX_DEBUG_1_WX_UNICODE_0
 COND_WX_DEBUG_0_WX_UNICODE_1
@@ -757,6 +758,7 @@ with_wx_exec_prefix
 with_faxpp
 with_expat
 with_sqlite
+with_icu
 with_reader
 with_syslog
 with_locale
@@ -1419,6 +1421,7 @@ Optional Packages:
   --with-faxpp            Use FAXPP (Fast XML Pull Parser) library
   --with-expat            Use Expat XML parser library
   --with-sqlite           Use builtin SQLite3 library
+  --with-icu              Use ICU for unicode collation (default=no)
   --with-reader           Use Cool Reader Engine
   --with-syslog           Use system logger: syslog
   --with-locale           Include locale files into executable
@@ -4623,6 +4626,19 @@ if test "${with_sqlite+set}" = set; then :
   withval=$with_sqlite; USE_SQLITE="$withval"
 else
   USE_SQLITE="no"
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SQLITE" >&5
+$as_echo "$USE_SQLITE" >&6; }
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-icu" >&5
+$as_echo_n "checking for --with-icu... " >&6; }
+
+# Check whether --with-icu was given.
+if test "${with_icu+set}" = set; then :
+  withval=$with_icu; USE_LIBICU="$withval"
+else
+  USE_LIBICU="no"
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SQLITE" >&5
@@ -8710,6 +8726,59 @@ else
 fi
 
 
+if test "x$USE_LIBICU" = "xyes" ; then
+  # Extract the first word of "icu-config", so it can be a program name with args.
+set dummy icu-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_ICU_CONFIG+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ICU_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ICU_CONFIG="$ICU_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ICU_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_ICU_CONFIG" && ac_cv_path_ICU_CONFIG="no"
+  ;;
+esac
+fi
+ICU_CONFIG=$ac_cv_path_ICU_CONFIG
+if test -n "$ICU_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ICU_CONFIG" >&5
+$as_echo "$ICU_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test "$ICU_CONFIG" = "no" ; then
+    WX_LIBS="$WX_LIBS -licui18n -licuuc -licudata"
+  else
+    ICU_LIBS=`$ICU_CONFIG --ldflags`
+    WX_LIBS="$WX_LIBS $ICU_LIBS"
+  fi
+  CFLAGS="$CXXFLAGS -DSQLITE_ENABLE_ICU"
+  CXXFLAGS="$CXXFLAGS -DSQLITE_ENABLE_ICU"
+fi
+
+
 if test "x$USE_READER" = "xyes" ; then
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I\$(srcdir)/3rdparty/crengine/include"
   WX_LIBS="$WX_LIBS -lmrl_crengine"
@@ -10042,6 +10111,7 @@ echo
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
 echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
 echo "  Include locale files into executable?         ${USE_LOCALE}"
