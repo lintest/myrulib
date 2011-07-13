@@ -614,13 +614,13 @@ void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_auth"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_auth USING fts3(tokenize=icu ru_RU)"));
+	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_book"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_book USING fts3(tokenize=icu ru_RU)"));
+	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_book USING fts3"));
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_seqn"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_seqn USING fts3(tokenize=icu ru_RU)"));
+	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
 
 	FbLowerFunction	lower;
 	CreateFunction(wxT("LOW"), 1, lower);
