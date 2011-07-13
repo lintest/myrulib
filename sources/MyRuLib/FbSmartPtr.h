@@ -15,12 +15,17 @@ public:
    
 	wxtype * operator&() { return m_object; }
    
+	operator bool() { return m_object; }
+
+	bool operator !() { return !m_object; }
+
 	wxtype * operator=(wxtype * object)
 	{
 		if (m_object == object) return object;
 		wxDELETE(m_object);
 		return m_object = object;
 	}
+	
 private:	
 	wxtype * m_object;
 };

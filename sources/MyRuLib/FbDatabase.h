@@ -14,6 +14,8 @@ wxString & MakeLower(wxString & data);
 
 wxString & MakeUpper(wxString & data);
 
+int FbCompare(const wxString& text1, const wxString& text2);
+
 enum FbDatabaseKey {
 	DB_LIBRARY_TITLE = 1,
 	DB_LIBRARY_VERSION = 2,
@@ -83,18 +85,17 @@ class FbCyrillicCollation: public wxSQLite3Collation
 {
 	public:
 		virtual int Compare(const wxString& text1, const wxString& text2);
-#ifdef SQLITE_ENABLE_ICU
 	public:
 		FbCyrillicCollation();
 		virtual ~FbCyrillicCollation();
 	private:
 		void * m_collator;
-#endif
 };
 
 class FbDatabase: public wxSQLite3Database
 {
 	public:
+		static FbCyrillicCollation sm_collation;
 		int NewId(const int iParam, int iIncrement = 1);
 		wxString GetText(int param);
 		void SetText(int param, const wxString & text);
@@ -107,8 +108,6 @@ class FbDatabase: public wxSQLite3Database
 		wxString Str(const wxString & id, const wxString & sql);
 		int Int(int id, const wxString & sql);
 		int Int(const wxString & id, const wxString & sql);
-	protected:
-		static FbCyrillicCollation sm_collation;
 	private:
 		static wxCriticalSection sm_queue;
 };

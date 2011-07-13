@@ -2347,7 +2347,7 @@ dnl Author:          wxWidgets development team,
 dnl                  Francesco Montorsi,
 dnl                  Bob McCown (Mac-testing)
 dnl Creation date:   24/11/2001
-dnl RCS-ID:          $Id$
+dnl RCS-ID:          $Id: wxwin.m4 64334 2010-05-18 10:29:58Z VZ $
 dnl ---------------------------------------------------------------------------
 
 dnl ===========================================================================

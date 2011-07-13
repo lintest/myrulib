@@ -1421,7 +1421,7 @@ Optional Packages:
   --with-faxpp            Use FAXPP (Fast XML Pull Parser) library
   --with-expat            Use Expat XML parser library
   --with-sqlite           Use builtin SQLite3 library
-  --with-icu              Use ICU for unicode collation (default=no)
+  --with-icu              Use ICU for unicode collation
   --with-reader           Use Cool Reader Engine
   --with-syslog           Use system logger: syslog
   --with-locale           Include locale files into executable

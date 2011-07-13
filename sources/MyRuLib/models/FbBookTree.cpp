@@ -1,6 +1,7 @@
 #include "FbBookTree.h"
 #include "FbBookData.h"
 #include "FbBookEvent.h"
+#include "FbDatabase.h"
 #include "FbConst.h"
 
 //-----------------------------------------------------------------------------
@@ -32,11 +33,7 @@ void FbAuthParentData::SortItems()
 
 int FbAuthParentData::Compare(const FbAuthParentData &data) const
 {
-#ifdef wxHAVE_TCHAR_SUPPORT
-	return wxStrcoll(GetTitle(), GetTitle());
-#else
-	return GetTitle().CmpNoCase(GetTitle());
-#endif
+	return ::FbCompare(GetTitle(), GetTitle());
 }
 
 //-----------------------------------------------------------------------------
@@ -49,11 +46,7 @@ int FbSeqnParentData::Compare(const FbSeqnParentData &data) const
 {
 	if (GetCode() == 0) return +1;
 	if (data.GetCode() == 0) return -1;
-#ifdef wxHAVE_TCHAR_SUPPORT
-	return wxStrcoll(GetTitle(), GetTitle());
-#else
-	return GetTitle().CmpNoCase(GetTitle());
-#endif
+	return FbCompare(GetTitle(), GetTitle());
 }
 
 //-----------------------------------------------------------------------------

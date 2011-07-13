@@ -70,7 +70,7 @@ AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 libr
 AC_MSG_RESULT([$USE_SQLITE])
 
 AC_MSG_CHECKING([for --with-icu])
-AC_ARG_WITH(icu, AS_HELP_STRING([--with-icu],[Use ICU for unicode collation (default=no)]), USE_LIBICU="$withval", USE_LIBICU="no")
+AC_ARG_WITH(icu, AS_HELP_STRING([--with-icu],[Use ICU for unicode collation]), USE_LIBICU="$withval", USE_LIBICU="no")
 AC_MSG_RESULT([$USE_SQLITE])
 
 AC_MSG_CHECKING([for --with-reader])

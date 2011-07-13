@@ -240,54 +240,67 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 //  wxSQLite3Collation
 //-----------------------------------------------------------------------------
 
-#ifdef SQLITE_ENABLE_ICU
 
 #ifdef SQLITE_ENABLE_ICU
-	/* Include ICU headers */
-	#include <unicode/utypes.h>
-	#include <unicode/uregex.h>
-	#include <unicode/ustring.h>
-	#include <unicode/ucol.h>
-#endif
+
+#include <unicode/coll.h>
 
 FbCyrillicCollation::FbCyrillicCollation()
 	: m_collator(NULL)
 {
 	UErrorCode status = U_ZERO_ERROR;
-	m_collator = ucol_open("ru_RU", &status);
-	if (U_FAILURE(status)) {
-		UCollator * p = (UCollator *)m_collator;
-		ucol_close(p);
-		m_collator = NULL;
-		printf("ucol_open");
+	icu::Collator * collator = icu::Collator::createInstance(icu::Locale("ru", "RU"), status);
+	if (U_FAILURE(status)) { 
+		delete collator; 
+	} else {
+		m_collator = collator;
 	}
 }
 
 FbCyrillicCollation::~FbCyrillicCollation()
 {
-	UCollator * p = (UCollator *)m_collator;
-	if (m_collator) ucol_close(p);
+	icu::Collator * collator = (icu::Collator*) m_collator;
+	if (collator) delete collator;
 }
 
 int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
 {
-/*
-	if (m_collator) {
-		UCollator * p = (UCollator *)m_collator;
-		int res = ucol_strcoll(p, ut1[0], -1, ut2[0], -1);
-		printf(text1.mb_str());
-		printf(" = %d = ", res);
-		printf(text2.mb_str());
-		printf("\n");
-		return res;
+	icu::Collator * collator = (icu::Collator*) m_collator;
+	if (collator) {
+		UErrorCode status = U_ZERO_ERROR;
+		wxCharBuffer buf1 = text1.mb_str();
+		wxCharBuffer buf2 = text2.mb_str();
+		return collator->compareUTF8(buf1.data(), buf2.data(), status);
+	} else {
+		return text1.CmpNoCase(text2);
 	}
-*/
-	return text1.CmpNoCase(text2);
+}
+
+int FbCompare(const wxString& text1, const wxString& text2)
+{
+	return FbDatabase::sm_collation.Compare(text1, text2);
 }
 
 #else // SQLITE_ENABLE_ICU
 
+FbCyrillicCollation::FbCyrillicCollation()
+{
+}
+
+FbCyrillicCollation::~FbCyrillicCollation()
+{
+}
+
 int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
+{
+#ifdef wxHAVE_TCHAR_SUPPORT
+	return wxStrcoll(text1, text2);
+#else
+	return text1.CmpNoCase(text2);
+#endif
+}
+
+int FbCompare(const wxString& text1, const wxString& text2)
 {
 #ifdef wxHAVE_TCHAR_SUPPORT
 	return wxStrcoll(text1, text2);
@@ -424,10 +437,11 @@ FbCommonDatabase::FbCommonDatabase()
 	FbDatabase::Open(wxGetApp().GetLibFile());
 	ExecuteUpdate(fbT("PRAGMA temp_store=2"));
 #ifdef SQLITE_ENABLE_ICU
-	ExecuteUpdate(fbT("SELECT icu_load_collation('ru_RU', 'CYR')"));
-#else
-	SetCollation(wxT("CYR"), &sm_collation);
+	if (sqlite3_compileoption_used("SQLITE_ENABLE_ICU")) {
+		ExecuteUpdate(fbT("SELECT icu_load_collation('ru_RU', 'CYR')"));
+	} else 
 #endif
+	SetCollation(wxT("CYR"), &sm_collation);
 }
 
 wxString FbCommonDatabase::GetMd5(int id)
