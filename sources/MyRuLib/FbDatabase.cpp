@@ -243,6 +243,7 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
 {
 #ifdef wxHAVE_TCHAR_SUPPORT
+	if (info) wxSetlocale(LC_COLLATE, wxT("Russian"));
 	return wxStrcoll(text1, text2);
 #else
 	return text1.CmpNoCase(text2);
@@ -374,7 +375,7 @@ FbCommonDatabase::FbCommonDatabase()
 {
 	FbDatabase::Open(wxGetApp().GetLibFile());
 	ExecuteUpdate(fbT("PRAGMA temp_store=2"));
-	SetCollation(wxT("CYR"), &sm_collation);
+	ExecuteUpdate(fbT("SELECT icu_load_collation('ru_RU', 'CYR')"));
 }
 
 wxString FbCommonDatabase::GetMd5(int id)
@@ -547,13 +548,13 @@ void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_auth"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
+	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_auth USING fts3(tokenize=icu ru_RU)"));
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_book"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_book USING fts3"));
+	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_book USING fts3(tokenize=icu ru_RU)"));
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_seqn"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
+	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_seqn USING fts3(tokenize=icu ru_RU)"));
 
 	FbLowerFunction	lower;
 	CreateFunction(wxT("LOW"), 1, lower);
@@ -613,7 +614,7 @@ void FbConfigDatabase::CreateDatabase()
 	trans.Commit();
 }
 
-wxString FbTransl(const char * psz) 
+wxString FbTransl(const char * psz)
 {
 	return FbString(psz).Translate();
 }

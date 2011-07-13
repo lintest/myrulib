@@ -76,8 +76,8 @@ MRL_FAXPP_OBJECTS =  \
 	mrl_faxpp_xmldecl.o \
 	mrl_faxpp_xml_parser.o \
 	mrl_faxpp_xml_tokenizer.o
-MRL_SQLITE3_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 \
-	$(CPPFLAGS) $(CFLAGS)
+MRL_SQLITE3_CFLAGS = -DSQLITE_ENABLE_ICU -DSQLITE_ENABLE_FTS3 \
+	-I$(srcdir)/3rdparty/sqlite3 $(CPPFLAGS) $(CFLAGS)
 MRL_SQLITE3_OBJECTS =  \
 	mrl_sqlite3_sqlite3.o
 MRL_CRENGINE_CXXFLAGS = -I3rdparty/crengine/include \
