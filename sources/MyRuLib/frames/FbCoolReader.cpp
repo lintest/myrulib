@@ -667,10 +667,10 @@ void FbCoolReader::OnPaint(wxPaintEvent& event)
 
 	if (m_dirty) return;
 
-	int dx, dy;
-	GetClientSize( &dx, &dy );
-	if ( !GetDocView()->IsRendered() && (GetDocView()->GetWidth() != dx || GetDocView()->GetHeight() != dy) ) {
-		GetDocView()->Resize( dx, dy );
+	wxSize cs = GetClientSize();
+	wxSize vs(GetDocView()->GetWidth(), GetDocView()->GetHeight());
+	if ( !GetDocView()->IsRendered() && cs != vs ) {
+		GetDocView()->Resize( cs.x, cs.y );
 		return;
 	}
 
