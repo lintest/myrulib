@@ -65,7 +65,8 @@ int AuthorItem::Save(FbDatabase & database)
 	search_name.Replace(strRusJO, strRusJE);
 
 	wxString letter = Upper(full_name.Left(1));
-	if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT("#");
+	if (letter == wxChar(0x401)) letter = wxChar(0x415);
+	if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT('#');
 
 	wxString sql_data;
 	wxString sql_fts3;
