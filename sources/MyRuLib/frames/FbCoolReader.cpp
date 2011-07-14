@@ -9,6 +9,7 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/dcbuffer.h>
+#include <wx/clipbrd.h>
 #include <crengine.h>
 #include "FbConst.h"
 #include "FbParams.h"
@@ -155,12 +156,19 @@ void FbCoolReader::ContentDlg::OnActivated( wxTreeEvent & event )
 IMPLEMENT_CLASS(FbCoolReader, wxWindow)
 
 BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
+	EVT_MENU(wxID_COPY, FbCoolReader::OnCopy)
+	EVT_UPDATE_UI(wxID_COPY, FbCoolReader::OnCopuUpdateUI)
+	EVT_UPDATE_UI(wxID_CUT, FbCoolReader::OnDisableUI)
+	EVT_UPDATE_UI(wxID_PASTE, FbCoolReader::OnDisableUI)
+	EVT_UPDATE_UI(wxID_SELECTALL, FbCoolReader::OnDisableUI)
+	EVT_UPDATE_UI(ID_UNSELECTALL, FbCoolReader::OnDisableUI)
 	EVT_ERASE_BACKGROUND(FbCoolReader::OnEraseBackground)
 	EVT_PAINT( FbCoolReader::OnPaint )
 	EVT_SIZE( FbCoolReader::OnSize )
 	EVT_KEY_DOWN( FbCoolReader::OnKeyDown )
 	EVT_MOUSEWHEEL( FbCoolReader::OnMouseWheel )
 	EVT_LEFT_DOWN( FbCoolReader::OnMouseLDown )
+	EVT_LEFT_DCLICK( FbCoolReader::OnMouseLDClick )
 	EVT_RIGHT_DOWN( FbCoolReader::OnMouseRDown )
 	EVT_MOTION( FbCoolReader::OnMouseMotion )
 	EVT_MENU( Menu_File_About, FbCoolReader::OnAbout )
@@ -435,51 +443,64 @@ void FbCoolReader::UpdateScrollBar()
 	}
 }
 
-void FbCoolReader::OnMouseMotion(wxMouseEvent& event)
-{
-	int x = event.GetX();
-	int y = event.GetY();
-	ldomXPointer ptr = GetDocView()->getNodeByPoint( lvPoint( x, y ) );
-	if ( ptr.isNull() ) {
-		return;
-	}
-	lString16 href = ptr.getHRef();
-}
-
 void FbCoolReader::OnMouseLDown( wxMouseEvent & event )
 {
-	int x = event.GetX();
-	int y = event.GetY();
-	//lString16 txt = _docview->getPageText( true );
-	//CRLog::debug( "getPageText : %s", UnicodeToUtf8(txt).c_str() );
-	ldomXPointer ptr = GetDocView()->getNodeByPoint( lvPoint( x, y ) );
-	if ( ptr.isNull() ) {
-		CRLog::debug( "FbCoolReader::OnMouseLDown() : node not found!\n");
-		return;
-	}
+    lvPoint pt ( event.GetX(), event.GetY() );
+	ldomXPointer ptr = GetDocView()->getNodeByPoint( pt );
+	if ( ptr.isNull() ) return;
+
 	lString16 href = ptr.getHRef();
-	if ( ptr.getNode()->isText() ) {
-		lString8 s = UnicodeToUtf8( ptr.toString() );
-		CRLog::debug("Text node clicked (%d, %d): %s", x, y, s.c_str() );
-		ldomXRange * wordRange = new ldomXRange();
-		if ( ldomXRange::getWordRange( *wordRange, ptr ) ) {
-			wordRange->setFlags( 0x10000 );
-			GetDocView()->getDocument()->getSelections().clear();
-			GetDocView()->getDocument()->getSelections().add( wordRange );
-			GetDocView()->updateSelections();
-		} else {
-			delete wordRange;
-		}
-		if ( !href.empty() ) {
-			GetDocView()->goLink( href );
-		}
-		Repaint();
-		printf("text : %s     \t", s.c_str() );
+	if ( href.empty() ) {
+		m_sel_pos = ptr.getNode()->isText() ? ptr : ldomXPointer();
+		GetDocView()->clearSelection();
+		m_sel_text = wxEmptyString;
 	} else {
-		printf("element : %s  \t", UnicodeToUtf8( ptr.toString() ).c_str() );
+		GetDocView()->goLink( href );
 	}
-	lvPoint pt2 = ptr.toPoint();
-	printf("  (%d, %d)  ->  (%d, %d)\n", x, y+GetDocView()->GetPos(), pt2.x, pt2.y);
+	Refresh();
+}
+
+void FbCoolReader::OnMouseMotion(wxMouseEvent& event)
+{
+	if (event.Dragging()) {
+		lvPoint pt ( event.GetX(), event.GetY() );
+		ldomXPointer ptr = GetDocView()->getNodeByPoint( pt );
+		if ( !m_sel_pos.isNull() && !ptr.isNull() && ptr.getNode()->isText() ) {
+			ldomXRange r( m_sel_pos, ptr );
+			if ( !r.getStart().isVisibleWordStart() ) r.getStart().prevVisibleWordStart();
+			if ( !r.getEnd().isVisibleWordEnd() ) r.getEnd().nextVisibleWordEnd();
+			r.setFlags(1);
+		    GetDocView()->selectRange( r );
+			m_sel_text = r.getRangeText( '\n', 10000 ).c_str();
+			Refresh();
+		}
+	}
+}
+
+void FbCoolReader::OnMouseLDClick( wxMouseEvent & event )
+{
+    lvPoint pt ( event.GetX(), event.GetY() );
+	ldomXPointer ptr = GetDocView()->getNodeByPoint( pt );
+	if ( ptr.isNull() ) return;
+
+	if ( ptr.getHRef().empty() && ptr.getNode()->isText() ) {
+		ldomXRange r;
+		if ( ldomXRange::getWordRange( r, ptr ) ) {
+			r.setFlags( 0x10000 );
+		    GetDocView()->selectRange( r );
+			m_sel_pos = ldomXPointer();
+		    m_sel_text = r.getRangeText( '\n', 10000 ).c_str();
+		}
+		Refresh();
+	}
+}
+
+void FbCoolReader::OnCopy( wxCommandEvent& event )
+{
+	if (m_sel_text.IsEmpty()) return;
+	wxClipboardLocker locker;
+	if (!locker) return;
+	wxTheClipboard->SetData( new wxTextDataObject(m_sel_text) );
 }
 
 FbCoolReader::MenuBook::MenuBook()

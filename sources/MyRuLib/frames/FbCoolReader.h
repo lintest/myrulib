@@ -94,6 +94,7 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnInitDialog( wxInitDialogEvent& event);
 		void OnShowHeader( wxCommandEvent& event );
 		void OnShowHeaderUI( wxUpdateUIEvent& event );
+		void OnCopy( wxCommandEvent& event );
 	private:
 		void SetupPageHeader();
 		bool LoadDocument( const wxString & fname );
@@ -110,16 +111,27 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnKeyDown(wxKeyEvent& event);
 		void OnMouseLDown( wxMouseEvent & event );
 		void OnMouseRDown( wxMouseEvent & event );
+		void OnMouseLDClick( wxMouseEvent & event );
 		void OnMouseMotion(wxMouseEvent& event);
 		void OnIdle( wxIdleEvent &event );
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void ToggleViewMode();
 		virtual void OnExternalLink( lString16 url, ldomNode * node );
+
+	private:
+		void OnCopuUpdateUI(wxUpdateUIEvent & event) { 
+			event.Enable(!m_sel_text.IsEmpty()); 
+		}
+		void OnDisableUI(wxUpdateUIEvent & event) { 
+			event.Enable(false); 
+		}
 	protected:
 		void Repaint() { m_dirty = true; }
 	private:
 		int m_book;
 		bool m_dirty;
+		ldomXPointer m_sel_pos;
+		wxString m_sel_text;
 
 		bool _firstRender;
 		bool _allowRender;
