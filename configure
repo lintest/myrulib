@@ -4641,8 +4641,8 @@ else
   USE_LIBICU="no"
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SQLITE" >&5
-$as_echo "$USE_SQLITE" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_LIBICU" >&5
+$as_echo "$USE_LIBICU" >&6; }
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-reader" >&5
 $as_echo_n "checking for --with-reader... " >&6; }

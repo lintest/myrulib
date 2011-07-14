@@ -71,7 +71,7 @@ AC_MSG_RESULT([$USE_SQLITE])
 
 AC_MSG_CHECKING([for --with-icu])
 AC_ARG_WITH(icu, AS_HELP_STRING([--with-icu],[Use ICU for unicode collation]), USE_LIBICU="$withval", USE_LIBICU="no")
-AC_MSG_RESULT([$USE_SQLITE])
+AC_MSG_RESULT([$USE_LIBICU])
 
 AC_MSG_CHECKING([for --with-reader])
 AC_ARG_WITH([reader], [AS_HELP_STRING([--with-reader], [Use Cool Reader Engine])], USE_READER="$withval", USE_READER="no")
