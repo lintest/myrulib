@@ -1,6 +1,7 @@
 #include "FbBookMenu.h"
 #include "FbMenu.h"
 #include "FbConst.h"
+#include "FbString.h"
 #include "FbDatabase.h"
 #include "FbBookEvent.h"
 #include "FbMasterInfo.h"
@@ -81,7 +82,7 @@ void FbBookMenu::AppendAuth()
 	wxString text = _("Jump to author");
 	FbMenu * submenu = NULL;
 
-	wxString sql = wxT("SELECT id, full_name FROM authors WHERE %s ORDER BY search_name");
+	wxString sql = fbT("SELECT id, full_name FROM authors WHERE %s ORDER BY 2") << fbCOLLATE_CYR;
 	if (m_book) {
 		sql = wxString::Format(sql, wxT("id IN (SELECT id_author FROM books WHERE id=%d)"));
 		sql = wxString::Format(sql, m_book);

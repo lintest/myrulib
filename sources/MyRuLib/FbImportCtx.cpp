@@ -31,7 +31,7 @@ void AuthorItem::Bind(wxSQLite3Statement &stmt, int param, const wxString &value
 
 int AuthorItem::Find(FbDatabase & database)
 {
-	wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? AND id<>? ORDER BY search_name");
+	wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? AND id<>?");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	Bind(stmt, 1, first);
 	Bind(stmt, 2, middle);
@@ -61,9 +61,6 @@ int AuthorItem::Save(FbDatabase & database)
 	wxString full_name = GetFullName();
 	if (full_name.IsEmpty()) { return m_id = 0; }
 
-	wxString search_name = Lower(full_name);
-	search_name.Replace(strRusJO, strRusJE);
-
 	wxString letter = Upper(full_name.Left(1));
 	if (letter == wxChar(0x401)) letter = wxChar(0x415);
 	if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT('#');
@@ -71,28 +68,27 @@ int AuthorItem::Save(FbDatabase & database)
 	wxString sql_data;
 	wxString sql_fts3;
 	if (m_id) {
-		sql_data = wxT("UPDATE authors SET letter=?, search_name=?, full_name=?, first_name=?, middle_name=?, last_name=? WHERE id=?");
+		sql_data = wxT("UPDATE authors SET letter=?, full_name=?, first_name=?, middle_name=?, last_name=? WHERE id=?");
 		sql_fts3 = wxT("UPDATE fts_auth SET content=? WHERE docid=?");
 	} else {
 		m_id = - database.NewId(DB_NEW_AUTHOR);
-		sql_data = wxT("INSERT INTO authors(letter, search_name, full_name, first_name, middle_name, last_name, id) VALUES(?,?,?,?,?,?,?)");
+		sql_data = wxT("INSERT INTO authors(letter, full_name, first_name, middle_name, last_name, id) VALUES(?,?,?,?,?,?)");
 		sql_fts3 = wxT("INSERT INTO fts_auth(content, docid) VALUES(?,?)");
 	}
 
 	{
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_data);
 		Bind(stmt, 1, letter);
-		Bind(stmt, 2, search_name);
-		Bind(stmt, 3, full_name);
-		Bind(stmt, 4, first);
-		Bind(stmt, 5, middle);
-		Bind(stmt, 6, last);
-		stmt.Bind(7, m_id);
+		Bind(stmt, 2, full_name);
+		Bind(stmt, 3, first);
+		Bind(stmt, 4, middle);
+		Bind(stmt, 5, last);
+		stmt.Bind(6, m_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
-		wxString content = Lower(search_name);
+		wxString content = Lower(full_name);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_fts3);
 		stmt.Bind(1, content);
 		stmt.Bind(2, m_id);

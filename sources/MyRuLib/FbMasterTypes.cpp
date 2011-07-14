@@ -132,7 +132,7 @@ wxString FbMasterSeqnInfo::GetWhere(wxSQLite3Database &database) const
 
 wxString FbMasterSeqnInfo::GetTreeSQL(wxSQLite3Database &database) const
 {
-	return wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.search_name, books.id_author, %s");
+	return wxT("SELECT DISTINCT books.id_author, books.id, bookseq.number FROM bookseq INNER JOIN books ON bookseq.id_book=books.id LEFT JOIN authors ON authors.id=books.id_author %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.full_name COLLATE CYR, books.id_author, %s");
 }
 
 void FbMasterSeqnInfo::Bind(FbSQLite3Statement  &stmt) const
@@ -264,7 +264,7 @@ wxString FbMasterFindInfo::GetWhere(wxSQLite3Database &database) const
 		return sql;
 	} else {
 		wxString sql = wxT("SEARCH_T(books.title)");
-		if (m_auth) sql << wxT("AND books.id_author IN (SELECT id FROM authors WHERE SEARCH_A(authors.search_name))");
+		if (m_auth) sql << wxT("AND books.id_author IN (SELECT id FROM authors WHERE SEARCH_A(authors.fill_name))");
 		return sql;
 	}
 }

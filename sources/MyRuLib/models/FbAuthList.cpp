@@ -55,7 +55,7 @@ void FbAuthListThread::DoString(wxSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name FROM authors");
 	sql << GetJoin();
-	sql << wxT("WHERE SEARCH(search_name)");
+	sql << wxT("WHERE SEARCH(full_name)");
 	sql << GetOrder();
 	FbSearchFunction search(m_info.m_string);
 	database.CreateFunction(wxT("SEARCH"), 1, search);

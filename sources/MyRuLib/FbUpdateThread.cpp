@@ -182,8 +182,8 @@ void FbUpdateItem::ExecInsert()
 			wxT("books"), wxT("id,id_author,title,file_name,file_size,file_type,md5sum,genres,lang,created,year,annotation,description"),
 		},
 		{
-			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,search_name,letter"),
-			wxT("authors"), wxT("id,last_name,first_name,middle_name,AUTH(last_name,first_name,middle_name),LOW(AUTH(last_name,first_name,middle_name)),LTTR(AUTH(last_name,first_name,middle_name))"),
+			wxT("authors"), wxT("id,last_name,first_name,middle_name,full_name,letter"),
+			wxT("authors"), wxT("id,last_name,first_name,middle_name,AUTH(last_name,first_name,middle_name),LTTR(AUTH(last_name,first_name,middle_name))"),
 		},
 		{
 			wxT("sequences"), wxT("id,value"),

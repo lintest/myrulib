@@ -1,5 +1,7 @@
 #include <wx/artprov.h>
 #include "FbTitleDlg.h"
+#include "FbString.h"
+#include "FbConst.h"
 #include "controls/FbTreeView.h"
 #include "models/FbAuthList.h"
 #include "FbGenres.h"
@@ -170,7 +172,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 
 	m_authors = new wxBoxSizer(wxVERTICAL);
 	{
-		wxString sql = wxT("SELECT id, full_name FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=? AND id_author<>0) ORDER BY search_name");
+		wxString sql = fbT("SELECT id, full_name FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=? AND id_author<>0) ORDER BY 2") << fbCOLLATE_CYR;
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, book);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
