@@ -268,15 +268,15 @@ void FbMainFrame::SetAccelerators()
 
 void FbMainFrame::LoadIcon()
 {
-	#ifdef __WIN32__
+	#ifdef __WXMSW__
 	wxIcon icon(wxT("aaaa"));
 	SetIcon(icon);
-	#else
+	#else  // __WXMSW__
 	FbLogoBitmap bitmap;
 	wxIcon icon;
 	icon.CopyFromBitmap(bitmap);
 	SetIcon(icon);
-	#endif
+	#endif // __WXMSW__
 }
 
 void FbMainFrame::CreateStatusBar(bool show)

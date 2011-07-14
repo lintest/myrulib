@@ -12,14 +12,10 @@
 
 wxString Lower(const wxString & input)
 {
-#if defined(__WIN32__)
-	int len = input.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, input.c_str());
-	CharLower(buf);
-	wxString output = buf;
-	delete [] buf;
-	return output;
+#ifdef __WXMSW__
+	wxWCharBuffer buf = input.c_str(); 
+	CharLower(buf.data());
+	return buf;
 #else
 	return input.Lower();
 #endif
@@ -27,14 +23,10 @@ wxString Lower(const wxString & input)
 
 wxString Upper(const wxString & input)
 {
-#if defined(__WIN32__)
-	int len = input.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, input.c_str());
-	CharUpper(buf);
-	wxString output = buf;
-	delete [] buf;
-	return output;
+#ifdef __WXMSW__
+	wxWCharBuffer buf = input.c_str(); 
+	CharUpper(buf.data());
+	return buf;
 #else
 	return input.Upper();
 #endif
@@ -42,32 +34,24 @@ wxString Upper(const wxString & input)
 
 wxString & MakeLower(wxString & data)
 {
-#if defined(__WIN32__)
-	int len = data.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, data.c_str());
-	CharLower(buf);
-	data = buf;
-	delete [] buf;
+#ifdef __WXMSW__
+	wxWCharBuffer buf = data.c_str(); 
+	CharLower(buf.data());
+	return data = buf;
 #else
-	data.MakeLower();
+	return data.MakeLower();
 #endif
-	return data;
 }
 
 wxString & MakeUpper(wxString & data)
 {
-#if defined(__WIN32__)
-	int len = data.length() + 1;
-	wxChar * buf = new wxChar[len];
-	wxStrcpy(buf, data.c_str());
-	CharUpper(buf);
-	data = buf;
-	delete [] buf;
+#ifdef __WXMSW__
+	wxWCharBuffer buf = data.c_str(); 
+	CharUpper(buf.data());
+	return data = buf;
 #else
-	data.MakeUpper();
+	return data.MakeUpper();
 #endif
-	return data;
 }
 
 //-----------------------------------------------------------------------------
@@ -76,11 +60,11 @@ wxString & MakeUpper(wxString & data)
 
 void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
-	int argCount = ctx.GetArgCount();
-	if (argCount == 1) {
+	int argc = ctx.GetArgCount();
+	if (argc == 1) {
 		ctx.SetResult(Lower(ctx.GetString(0)));
 	} else {
-		ctx.SetResultError(wxString::Format(wxT("LOWER called with wrong number of arguments: %d."), argCount));
+		ctx.SetResultError(wxString::Format(fbT("Wrong LOWER argc: %d."), argc));
 	}
 }
 
@@ -139,9 +123,9 @@ FbSearchFunction::FbSearchFunction(const wxString & input)
 
 void FbSearchFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
-	int argCount = ctx.GetArgCount();
-	if (argCount != 1) {
-		ctx.SetResultError(wxString::Format(wxT("SEARCH called with wrong number of arguments: %d."), argCount));
+	int argc = ctx.GetArgCount();
+	if (argc != 1) {
+		ctx.SetResultError(wxString::Format(fbT("Wrong SEARCH argc: %d."), argc));
 		return;
 	}
 
@@ -284,6 +268,7 @@ int FbCompare(const wxString& text1, const wxString& text2)
 #else // SQLITE_ENABLE_ICU
 
 FbCyrillicCollation::FbCyrillicCollation()
+	: m_collator(NULL)
 {
 }
 
@@ -291,14 +276,15 @@ FbCyrillicCollation::~FbCyrillicCollation()
 {
 }
 
-int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
+#ifdef __WXMSW__
+
+int FbCompare(const wxString& text1, const wxString& text2)
 {
-#ifdef wxHAVE_TCHAR_SUPPORT
-	return wxStrcoll(text1, text2);
-#else
-	return text1.CmpNoCase(text2);
-#endif
+   LCID locale = MAKELCID(MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), SORT_DEFAULT);
+   return CompareString(locale, NORM_IGNORECASE, text1.c_str(), text1.Len(), text2.c_str(), text2.Len()) - 2;
 }
+
+#else  // __WXMSW__
 
 int FbCompare(const wxString& text1, const wxString& text2)
 {
@@ -307,6 +293,13 @@ int FbCompare(const wxString& text1, const wxString& text2)
 #else
 	return text1.CmpNoCase(text2);
 #endif
+}
+
+#endif // __WXMSW__
+
+int FbCyrillicCollation::Compare(const wxString& text1, const wxString& text2)
+{
+	return FbCompare(text1, text2);
 }
 
 #endif // SQLITE_ENABLE_ICU

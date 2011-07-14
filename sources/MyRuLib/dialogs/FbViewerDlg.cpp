@@ -42,7 +42,7 @@ FbViewerDlg::FbViewerDlg( wxWindow* parent, const wxString& type, const wxString
 void FbViewerDlg::OnBtnClick( wxCommandEvent& event )
 {
 	wxString title = _("Select the application to view files");
-	#ifdef __WIN32__
+	#ifdef __WXMSW__
 	wxString wildCard = _("Executable files") + (wxString)wxT(" (*.exe)|*.exe");
 	#else
 	wxString wildCard;

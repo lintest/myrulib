@@ -17,11 +17,11 @@ wxString FbStandardPaths::GetDefaultName() const
 
 wxString FbStandardPaths::GetUserConfigDir() const
 {
-#if defined(__WIN32__)
+#ifdef __WXMSW__
 	wxString result = wxStandardPaths::GetUserConfigDir();
-#else
+#else  // __WXMSW__
 	wxString result = wxStandardPaths::GetUserConfigDir() + wxT("/.config/");
-#endif
+#endif // __WXMSW__
 
 	if (!wxFileName::DirExists(result)) wxFileName::Mkdir(result);
 
