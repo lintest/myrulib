@@ -467,6 +467,7 @@ void FbCoolReader::OnMouseMotion(wxMouseEvent& event)
 		ldomXPointer ptr = GetDocView()->getNodeByPoint( pt );
 		if ( !m_sel_pos.isNull() && !ptr.isNull() && ptr.getNode()->isText() ) {
 			ldomXRange r( m_sel_pos, ptr );
+			r.sort();
 			if ( !r.getStart().isVisibleWordStart() ) r.getStart().prevVisibleWordStart();
 			if ( !r.getEnd().isVisibleWordEnd() ) r.getEnd().nextVisibleWordEnd();
 			r.setFlags(1);
