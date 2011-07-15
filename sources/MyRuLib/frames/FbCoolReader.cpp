@@ -326,7 +326,7 @@ FbCoolReader::~FbCoolReader()
 
 bool FbCoolReader::Create(wxAuiNotebook * parent)
 {
-	bool ok = wxWindow::Create(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxTAB_TRAVERSAL | wxWANTS_CHARS);
+	bool ok = wxWindow::Create(parent, ID_FRAME_READ, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxFULL_REPAINT_ON_RESIZE | wxWANTS_CHARS);
 	if (ok) {
 		SetBackgroundColour(getBackgroundColour());
 		SetBackgroundStyle(wxBG_STYLE_CUSTOM);
@@ -445,6 +445,7 @@ void FbCoolReader::UpdateScrollBar()
 
 void FbCoolReader::OnMouseLDown( wxMouseEvent & event )
 {
+	SetFocus();
     lvPoint pt ( event.GetX(), event.GetY() );
 	ldomXPointer ptr = GetDocView()->getNodeByPoint( pt );
 	if ( ptr.isNull() ) return;

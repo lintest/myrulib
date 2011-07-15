@@ -213,3 +213,35 @@ void MyRuLibApp::OnImageEvent(FbImageEvent & event)
 {
 	FbViewData::Push(event.GetString(), event.GetImage());
 }
+
+#ifdef __WXMSW__
+
+static bool Wheel(wxEvent & event)
+{
+	wxMouseEvent * mouse = wxDynamicCast(&event, wxMouseEvent);
+	if (!mouse) return false;
+
+	wxWindow * object = wxDynamicCast(mouse->GetEventObject(), wxWindow);
+	if (!object) return false;
+
+	wxPoint pt = object->ClientToScreen(mouse->GetPosition());
+	wxWindow * window = wxFindWindowAtPoint(pt);
+	if (!window || window == object) return false;
+
+	if (window->HasScrollbar(wxVERTICAL)) {
+		int delta = mouse->GetLinesPerAction();
+		if (mouse->GetWheelRotation() > 0 ) delta *= -1;
+		window->ScrollLines(delta);
+		return true;
+	}
+
+	return false;
+}
+
+int MyRuLibApp::FilterEvent(wxEvent & event)
+{
+	if (event.GetEventType() == wxEVT_MOUSEWHEEL && Wheel(event)) return 1;
+	return wxApp::FilterEvent(event);
+}
+
+#endif // __WXMSW__

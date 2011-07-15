@@ -29,6 +29,9 @@ class MyRuLibApp : public wxApp
 		void UpdateLibPath();
 		FbCollection * GetCollection();
 	protected:
+		#ifdef __WXMSW__
+		virtual int FilterEvent(wxEvent & event);
+		#endif // __WXMSW__
 		virtual void OnUnhandledException() {}
 		virtual bool OnExceptionInMainLoop() { return false; }
 	private:
