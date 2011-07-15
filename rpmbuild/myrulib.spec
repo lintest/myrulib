@@ -7,7 +7,7 @@
 #
 
 Name:           myrulib
-Version:        0.28.6
+Version:        0.28.8
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
@@ -16,6 +16,7 @@ Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/%{name}-%{version}.tar.bz2
 BuildRequires:  gcc-c++
 BuildRequires:  libfaxpp-devel
+BuildRequires:  libicu-devel
 Conflicts:      myrulib-cr
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -57,6 +58,7 @@ Authors:
 %build
 %configure \
     --with-faxpp=yes \
+    --with-icu \
     --without-strip
 
 %if 0%{?fedora_version} >= 13

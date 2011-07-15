@@ -7,7 +7,7 @@
 #
 
 Name:           myrulib-cr
-Version:        0.28.6
+Version:        0.28.8
 Release:        0
 License:        GPLv3
 Summary:        E-Book Library Manager
@@ -15,11 +15,10 @@ URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/%{name}-%{version}.tar.bz2
 # PATCH-FIX-UPSTREAM myrulib-0.28-cregine_png14.patch lazy.kent@opensuse.org -- fix build against libpng 1.4
-Patch0:         myrulib-0.28-crengine_png14.patch
-# PATCH-FIX-UPSTREAM myrulib-0.28-crengine_lvfntman.patch mail@lintest.ru -- fix build crengine lvfntman
-Patch1:         myrulib-0.28-crengine_lvfntman.patch
+Patch0:         myrulib-0.28-cregine_png14.patch
 BuildRequires:  gcc-c++
 BuildRequires:  libfaxpp-devel
+BuildRequires:  libicu-devel
 BuildRequires:  libjpeg-devel
 Conflicts:      myrulib
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -60,12 +59,12 @@ Authors:
 %prep
 %setup -q
 %patch0
-%patch1
 [ ! -x configure ] && %__chmod +x configure
 
 %build
 %configure \
             --with-faxpp=yes \
+            --with-icu \
             --with-reader \
             --without-strip
 
