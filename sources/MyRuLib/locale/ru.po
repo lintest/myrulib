@@ -2160,3 +2160,9 @@ msgstr "Перенос слов"
 
 msgid "Use algorithmic hyphenation"
 msgstr "Алгоритмические переносы"
+
+msgid "View mode"
+msgstr "Режим просмотра"
+
+msgid "Display two pages"
+msgstr "Отображать две страницы"

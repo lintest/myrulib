@@ -29,6 +29,7 @@ class FbReaderDlg : private FbDialog
 			ID_HEADER_SHOW_HEADER,
 			ID_READER_INTERLINE,
 			ID_READER_HYPHENATION, 
+			ID_READER_PAGE_COUNT, 
 		};
 		class PanelMain: public wxPanel
 		{

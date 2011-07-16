@@ -104,6 +104,7 @@ int FbParamItem::DefaultInt(int param)
 			case FB_HEADER_FONT_SIZE   : return 14;
 			case FB_READER_SHOW_HEADER : return 1;
 			case FB_READER_INTERLINE   : return 100;
+			case FB_READER_PAGE_COUNT  : return 1;
 			default: return 0;
 		}
 	else {

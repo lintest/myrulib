@@ -223,13 +223,10 @@ class FbFontRegistrator: public wxDirTraverser
 {
 public:
 	virtual wxDirTraverseResult OnFile(const wxString& filename) {
-		wxString ext = filename.AfterLast(wxT('.')).Lower();
-		if (ext == wxT("ttf") || ext == wxT("otf") || ext == wxT("pfa") || ext == wxT("pfb")) {
-			lString8 fn = UnicodeToLocal(filename.c_str());
-			CRLog::trace("loading font: %s", fn.c_str());
-			if ( !fontMan->RegisterFont(fn) ) {
-				CRLog::trace("    failed\n");
-			}
+		lString8 fn = UnicodeToLocal(filename.c_str());
+		CRLog::trace("loading font: %s", fn.c_str());
+		if ( !fontMan->RegisterFont(fn) ) {
+			CRLog::trace("    failed\n");
 		}
 		return wxDIR_CONTINUE;
 	}
@@ -368,10 +365,11 @@ void FbCoolReader::Setup(bool refresh)
 	GetDocView()->setBackgroundColor( (int)FbParams(FB_READER_BACK_COLOUR) );
 	GetDocView()->setStatusColor    ( (int)FbParams(FB_HEADER_FONT_COLOUR) );
 	GetDocView()->setDefaultInterlineSpace(FbParams(FB_READER_INTERLINE));
-	GetDocView()->setViewMode(DVM_PAGES);
+	GetDocView()->setViewMode(DVM_PAGES, FbParams(FB_READER_PAGE_COUNT) ? 2 : 1);
 	SetBackgroundColour(getBackgroundColour());
+	_wm.reconfigure( 1, 1, CR_ROTATE_ANGLE_0 );
 
-	if (refresh) Refresh();
+	if (refresh) Repaint();
 }
 
 void FbCoolReader::SetupPageHeader()
