@@ -2155,3 +2155,8 @@ msgstr "Отображать колонтитул"
 msgid "Page header"
 msgstr "Колонтитул"
 
+msgid "Hyphenation"
+msgstr "Перенос слов"
+
+msgid "Use algorithmic hyphenation"
+msgstr "Алгоритмические переносы"
