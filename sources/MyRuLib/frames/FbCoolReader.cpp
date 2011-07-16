@@ -356,6 +356,8 @@ void FbCoolReader::Setup(bool refresh)
 	GetDocView()->SetRotateAngle( CR_ROTATE_ANGLE_0 );
 
 	fontMan->SetAntialiasMode( 2 );
+	
+    HyphMan::activateDictionary( FbParams(FB_READER_HYPHENATION) ? HYPH_DICT_ID_ALGORITHM : HYPH_DICT_ID_NONE );
 
 	SetupPageHeader();
 	GetDocView()->setDefaultFontFace( UnicodeToUtf8(FbParams(FB_READER_FONT_NAME).Str().c_str()) );

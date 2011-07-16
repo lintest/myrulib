@@ -28,6 +28,7 @@ class FbReaderDlg : private FbDialog
 			ID_HEADER_FONT_COLOUR,
 			ID_HEADER_SHOW_HEADER,
 			ID_READER_INTERLINE,
+			ID_READER_HYPHENATION, 
 		};
 		class PanelMain: public wxPanel
 		{
