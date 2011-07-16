@@ -230,6 +230,7 @@ static bool Wheel(wxEvent & event)
 
 	if (window->HasScrollbar(wxVERTICAL)) {
 		int delta = mouse->GetLinesPerAction();
+		if (window->GetId() == ID_FRAME_READ) delta = 1;
 		if (mouse->GetWheelRotation() > 0 ) delta *= -1;
 		window->ScrollLines(delta);
 		return true;
