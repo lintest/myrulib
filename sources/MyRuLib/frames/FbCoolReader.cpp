@@ -157,6 +157,7 @@ IMPLEMENT_CLASS(FbCoolReader, wxWindow)
 
 BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_MENU(wxID_COPY, FbCoolReader::OnCopy)
+	EVT_MENU(wxID_FIND, FbCoolReader::OnFind)
 	EVT_UPDATE_UI(wxID_COPY, FbCoolReader::OnCopuUpdateUI)
 	EVT_UPDATE_UI(wxID_CUT, FbCoolReader::OnDisableUI)
 	EVT_UPDATE_UI(wxID_PASTE, FbCoolReader::OnDisableUI)
@@ -185,6 +186,9 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_INIT_DIALOG( FbCoolReader::OnInitDialog )
 	EVT_SCROLLWIN( FbCoolReader::OnScroll )
 	EVT_IDLE( FbCoolReader::OnIdle )
+	EVT_FIND(wxID_ANY, FbCoolReader::OnFindFirst)
+	EVT_FIND_NEXT(wxID_ANY, FbCoolReader::OnFindNext)
+	EVT_FIND_CLOSE(wxID_ANY, FbCoolReader::OnFindClose)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -308,6 +312,8 @@ FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, int book, const wxStri
 FbCoolReader::FbCoolReader(int book)
 	: m_book(book)
 	, m_dirty(true)
+	, m_findData(NULL)
+	, m_findDlg(NULL)
 	, _firstRender(false)
 	, _allowRender(true)
 	, _screen(300,400)
@@ -319,6 +325,8 @@ FbCoolReader::FbCoolReader(int book)
 
 FbCoolReader::~FbCoolReader()
 {
+	wxDELETE(m_findDlg);
+	wxDELETE(m_findData);
 }
 
 bool FbCoolReader::Create(wxAuiNotebook * parent)
@@ -508,6 +516,7 @@ void FbCoolReader::OnCopy( wxCommandEvent& event )
 FbCoolReader::MenuBook::MenuBook()
 {
 	Append( ID_READER_CONTENT, _("Table of Contents") );
+	Append( wxID_FIND, _("Find text...") );
 	AppendSeparator();
 	Append( ID_READER_ZOOM_IN, _( "Zoom In" ) );
 	Append( ID_READER_ZOOM_OUT, _( "Zoom Out" ) );
@@ -804,4 +813,103 @@ void FbCoolReader::OnShowContent( wxCommandEvent& event )
 	if ( ContentDlg::Execute(GetDocView()) ) Refresh();
 }
 
+void FbCoolReader::OnFind( wxCommandEvent& event )
+{
+	wxDELETE(m_findDlg);
+	wxDELETE(m_findData);
+	m_findData = new wxFindReplaceData;
+	m_findDlg = new wxFindReplaceDialog(this, m_findData, _("Find"), 0);
+	m_findDlg->Show();
+}
+
+void FbCoolReader::OnFindFirst( wxFindDialogEvent& event )
+{
+	wxLogWarning(wxT("OnFindFirst"));
+}
+
+void FbCoolReader::OnFindNext( wxFindDialogEvent& event )
+{
+	wxLogWarning(wxT("OnFindNext"));
+}
+
+void FbCoolReader::OnFindClose( wxFindDialogEvent& event )
+{
+}
+
+/*
+bool SearchDialog::findText( lString16 pattern, int origin, bool reverse, bool caseInsensitive )
+{
+    if ( pattern.empty() )
+        return false;
+    if ( pattern!=_lastPattern && origin==1 )
+        origin = 0;
+    _lastPattern = pattern;
+    LVArray<ldomWord> words;
+    lvRect rc;
+    _docview->getDocView()->GetPos( rc );
+    int pageHeight = rc.height();
+    int start = -1;
+    int end = -1;
+    if ( reverse ) {
+        // reverse
+        if ( origin == 0 ) {
+            // from end current page to first page
+            end = rc.bottom;
+        } else if ( origin == -1 ) {
+            // from last page to end of current page
+            start = rc.bottom;
+        } else { // origin == 1
+            // from prev page to first page
+            end = rc.top;
+        }
+    } else {
+        // forward
+        if ( origin == 0 ) {
+            // from current page to last page
+            start = rc.top;
+        } else if ( origin == -1 ) {
+            // from first page to current page
+            end = rc.top;
+        } else { // origin == 1
+            // from next page to last
+            start = rc.bottom;
+        }
+    }
+    CRLog::debug("CRViewDialog::findText: Current page: %d .. %d", rc.top, rc.bottom);
+    CRLog::debug("CRViewDialog::findText: searching for text '%s' from %d to %d origin %d", LCSTR(pattern), start, end, origin );
+    if ( _docview->getDocView()->getDocument()->findText( pattern, caseInsensitive, reverse, start, end, words, 200, pageHeight ) ) {
+        CRLog::debug("CRViewDialog::findText: pattern found");
+        _docview->getDocView()->clearSelection();
+        _docview->getDocView()->selectWords( words );
+        ldomMarkedRangeList * ranges = _docview->getDocView()->getMarkedRanges();
+        if ( ranges ) {
+            if ( ranges->length()>0 ) {
+                int pos = ranges->get(0)->start.y;
+                _docview->getDocView()->SetPos(pos);
+            }
+        }
+        return true;
+    }
+    CRLog::debug("CRViewDialog::findText: pattern not found");
+    return false;
+}
+
+void SearchDialog::on_btnFindNext_clicked()
+{
+    bool found = false;
+    QString pattern = ui->edPattern->text();
+    lString16 p16 = qt2cr(pattern);
+    bool reverse = ui->rbBackward->isChecked();
+    bool caseInsensitive = ui->cbCaseSensitive->checkState()!=Qt::Checked;
+    found = findText(p16, 1, reverse , caseInsensitive);
+    if ( !found )
+        found = findText(p16, -1, reverse, caseInsensitive);
+    if ( !found ) {
+        QMessageBox * mb = new QMessageBox( QMessageBox::Information, tr("Not found"), tr("Search pattern is not found in document"), QMessageBox::Close, this );
+        mb->exec();
+    } else {
+        _docview->update();
+    }
+}
+*/
 #endif // FB_INCLUDE_READER

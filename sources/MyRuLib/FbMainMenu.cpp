@@ -97,6 +97,7 @@ FbMenuBar::MenuTree::MenuTree()
 FbMenuBar::MenuRead::MenuRead()
 {
 	Append( ID_READER_CONTENT, _("Table of Contents") );
+	Append( wxID_FIND, _("Find text...") );
 	AppendSeparator();
 	Append( ID_READER_ZOOM_IN, _( "Zoom In" ) );
 	Append( ID_READER_ZOOM_OUT, _( "Zoom Out" ) );

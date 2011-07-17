@@ -255,11 +255,12 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 void FbMainFrame::SetAccelerators()
 {
 	wxAcceleratorEntry entries[] = {
-		wxAcceleratorEntry(wxACCEL_CTRL,  (int) WXK_F4,     wxID_CLOSE),
-		wxAcceleratorEntry(wxACCEL_SHIFT, (int) WXK_DELETE, wxID_CUT),
-		wxAcceleratorEntry(wxACCEL_CTRL,  (int) WXK_INSERT, wxID_COPY),
-		wxAcceleratorEntry(wxACCEL_SHIFT, (int) WXK_INSERT, wxID_PASTE),
-		wxAcceleratorEntry(wxACCEL_CTRL, (int) WXK_TAB, ID_WINDOW_NEXT),
+		wxAcceleratorEntry(wxACCEL_CTRL , (int) wxT('F')   , wxID_FIND      ),
+		wxAcceleratorEntry(wxACCEL_CTRL , (int) WXK_F4     , wxID_CLOSE     ),
+		wxAcceleratorEntry(wxACCEL_SHIFT, (int) WXK_DELETE , wxID_CUT       ),
+		wxAcceleratorEntry(wxACCEL_CTRL , (int) WXK_INSERT , wxID_COPY      ),
+		wxAcceleratorEntry(wxACCEL_SHIFT, (int) WXK_INSERT , wxID_PASTE     ),
+		wxAcceleratorEntry(wxACCEL_CTRL , (int) WXK_TAB    , ID_WINDOW_NEXT ),
 		wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, (int) WXK_TAB, ID_WINDOW_PREV),
 	};
 	wxAcceleratorTable accel(sizeof(entries) / sizeof(wxAcceleratorEntry), entries);

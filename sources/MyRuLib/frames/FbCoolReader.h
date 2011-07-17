@@ -6,6 +6,7 @@
 #include <crgui.h>
 #include <wx/dialog.h>
 #include <wx/splitter.h>
+#include <wx/fdrepdlg.h>
 #include <wx/aui/tabmdi.h>
 #include "FbMenu.h"
 #include "controls/FbTreeView.h"
@@ -95,6 +96,10 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnShowHeader( wxCommandEvent& event );
 		void OnShowHeaderUI( wxUpdateUIEvent& event );
 		void OnCopy( wxCommandEvent& event );
+		void OnFind( wxCommandEvent& event );
+		void OnFindFirst( wxFindDialogEvent& event );
+		void OnFindNext( wxFindDialogEvent& event );
+		void OnFindClose( wxFindDialogEvent& event );
 	private:
 		void SetupPageHeader();
 		bool LoadDocument( const wxString & fname );
@@ -130,6 +135,9 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 	private:
 		int m_book;
 		bool m_dirty;
+		wxFindReplaceData * m_findData;
+		wxFindReplaceDialog * m_findDlg; 
+		
 		ldomXPointer m_sel_pos;
 		wxString m_sel_text;
 
