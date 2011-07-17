@@ -817,14 +817,33 @@ void FbCoolReader::OnFind( wxCommandEvent& event )
 {
 	wxDELETE(m_findDlg);
 	wxDELETE(m_findData);
-	m_findData = new wxFindReplaceData;
-	m_findDlg = new wxFindReplaceDialog(this, m_findData, _("Find"), 0);
+	m_findData = new FindReplaceData;
+	m_findDlg = new wxFindReplaceDialog(this, m_findData, _("Find text..."), wxFR_NOWHOLEWORD);
 	m_findDlg->Show();
 }
 
 void FbCoolReader::OnFindFirst( wxFindDialogEvent& event )
 {
-	wxLogWarning(wxT("OnFindFirst"));
+	int flags = event.GetFlags();
+	wxString pattern = event.GetFindString();
+
+	lvRect rc;
+	LVArray<ldomWord> words;
+	LVDocView * view = GetDocView();
+	view->GetPos( rc );
+	int start  = (flags & wxFR_DOWN) ? rc.top : -1;
+	int finish = (flags & wxFR_DOWN) ? -1 : rc.top;
+   	
+	if ( view->getDocument()->findText( pattern.c_str(), flags & wxFR_MATCHCASE, flags & wxFR_DOWN, start, finish, words, 200, rc.height() ) ) {
+		view->clearSelection();
+		view->selectWords( words );
+		ldomMarkedRangeList * ranges = view->getMarkedRanges();
+		if ( ranges && ranges->length()>0 ) {
+			int pos = ranges->get(0)->start.y;
+			view->SetPos(pos);
+		}
+		Repaint();
+	}
 }
 
 void FbCoolReader::OnFindNext( wxFindDialogEvent& event )

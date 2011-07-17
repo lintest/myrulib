@@ -69,6 +69,11 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 			public:
 				MenuBook();
 		};
+	protected:
+		class FindReplaceData: public wxFindReplaceData { 
+			public: 
+				int m_position; 
+		};
 	public:
 		static bool InitCREngine();
 		static void GetFonts(wxArrayString & fonts);
@@ -135,7 +140,7 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 	private:
 		int m_book;
 		bool m_dirty;
-		wxFindReplaceData * m_findData;
+		FindReplaceData * m_findData;
 		wxFindReplaceDialog * m_findDlg; 
 		
 		ldomXPointer m_sel_pos;
