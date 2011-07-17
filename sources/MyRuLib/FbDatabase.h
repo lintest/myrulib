@@ -104,10 +104,10 @@ class FbDatabase: public wxSQLite3Database
 		void AttachConfig();
 		void JoinThread(FbThread * thread);
 	public:
-		wxString Str(int id, const wxString & sql);
-		wxString Str(const wxString & id, const wxString & sql);
-		int Int(int id, const wxString & sql);
-		int Int(const wxString & id, const wxString & sql);
+		wxString Str(int id, const wxString & sql, const wxString & null = wxEmptyString);
+		wxString Str(const wxString & id, const wxString & sql, const wxString & null = wxEmptyString);
+		int Int(int id, const wxString & sql, int null = 0);
+		int Int(const wxString & id, const wxString & sql, int null = 0);
 	private:
 		static wxCriticalSection sm_queue;
 };

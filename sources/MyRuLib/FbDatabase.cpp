@@ -389,36 +389,36 @@ void FbDatabase::JoinThread(FbThread * thread)
 	if (db) sqlite3_progress_handler( db, 100, DatabaseThreadCallback, thread);
 }
 
-wxString FbDatabase::Str(int id, const wxString & sql)
+wxString FbDatabase::Str(int id, const wxString & sql, const wxString & null)
 {
 	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetString(0) : wxString();
+	return result.NextRow() ? result.GetString(0, null) : null;
 }
 
-wxString FbDatabase::Str(const wxString & id, const wxString & sql)
+wxString FbDatabase::Str(const wxString & id, const wxString & sql, const wxString & null)
 {
 	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetString(0) : wxString();
+	return result.NextRow() ? result.GetString(0, null) : null;
 }
 
-int FbDatabase::Int(int id, const wxString & sql)
+int FbDatabase::Int(int id, const wxString & sql, int null)
 {
 	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetInt(0) : 0;
+	return result.NextRow() ? result.GetInt(0, null) : null;
 }
 
-int FbDatabase::Int(const wxString & id, const wxString & sql)
+int FbDatabase::Int(const wxString & id, const wxString & sql, int null)
 {
 	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-	return result.NextRow() ? result.GetInt(0) : 0;
+	return result.NextRow() ? result.GetInt(0, null) : null;
 }
 
 //-----------------------------------------------------------------------------
