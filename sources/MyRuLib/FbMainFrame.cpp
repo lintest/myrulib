@@ -176,7 +176,7 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;
 
 		wxWindow * window = GetActiveChild();
-		if (window && window->ProcessEvent(event)) return true;
+		if (window && window->GetEventHandler()->ProcessEvent(event)) return true;
 
 		if (wxFrame::ProcessEvent(event)) return true;
 
@@ -924,13 +924,13 @@ wxWindow * FbMainFrame::GetActiveChild()
 
 void FbMainFrame::OnSubmenu(wxCommandEvent& event)
 {
-	if (wxWindow * window = GetActiveChild()) window->ProcessEvent(event);
+	if (wxWindow * window = GetActiveChild()) window->GetEventHandler()->ProcessEvent(event);
 }
 
 void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 {
 	if (wxWindow * window = GetActiveChild()) {
-		if (wxIsKindOf(window, FbFrameBase)) window->ProcessEvent(event);
+		if (wxIsKindOf(window, FbFrameBase)) window->GetEventHandler()->ProcessEvent(event);
 	}
 }
 

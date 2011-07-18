@@ -2166,3 +2166,6 @@ msgstr "Режим просмотра"
 
 msgid "Display two pages"
 msgstr "Отображать две страницы"
+
+msgid "Find text..."
+msgstr "Найти текст..."

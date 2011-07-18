@@ -227,7 +227,7 @@ class FbFontRegistrator: public wxDirTraverser
 {
 public:
 	virtual wxDirTraverseResult OnFile(const wxString& filename) {
-		lString8 fn = UnicodeToLocal(filename.c_str());
+		lString8 fn = UnicodeToLocal(filename.wc_str());
 		CRLog::trace("loading font: %s", fn.c_str());
 		if ( !fontMan->RegisterFont(fn) ) {
 			CRLog::trace("    failed\n");
@@ -365,8 +365,8 @@ void FbCoolReader::Setup(bool refresh)
     HyphMan::activateDictionary( FbParams(FB_READER_HYPHENATION) ? HYPH_DICT_ID_ALGORITHM : HYPH_DICT_ID_NONE );
 
 	SetupPageHeader();
-	GetDocView()->setDefaultFontFace( UnicodeToUtf8(FbParams(FB_READER_FONT_NAME).Str().c_str()) );
-	GetDocView()->setStatusFontFace ( UnicodeToUtf8(FbParams(FB_HEADER_FONT_NAME).Str().c_str()) );
+	GetDocView()->setDefaultFontFace( UnicodeToUtf8(FbParams(FB_READER_FONT_NAME).Str().wc_str()) );
+	GetDocView()->setStatusFontFace ( UnicodeToUtf8(FbParams(FB_HEADER_FONT_NAME).Str().wc_str()) );
 	GetDocView()->setFontSize       ( FbParams(FB_READER_FONT_SIZE) );
 	GetDocView()->setStatusFontSize ( FbParams(FB_HEADER_FONT_SIZE) );
 	GetDocView()->setTextColor      ( (int)FbParams(FB_READER_FONT_COLOUR) );
@@ -617,13 +617,13 @@ bool FbCoolReader::LoadDocument( const wxString & fname )
 
 	//===========================================
 	//printf("   loading...  ");
-	bool res = GetDocView()->LoadDocument( fname.c_str() );
+	bool res = GetDocView()->LoadDocument( fname.wc_str() );
 	//printf("   done. \n");
 	//DEBUG
 	//_docview->exportWolFile( "test.wol", true );
 	//_docview->SetPos(0);
 	if ( !res )
-		GetDocView()->createDefaultDocument(lString16(L"File open error"), lString16(L"Cannot open file ") + fname.c_str() );
+		GetDocView()->createDefaultDocument(lString16(L"File open error"), lString16(L"Cannot open file ") + fname.wc_str() );
 	lString16 title = GetDocView()->getAuthors();
 	if ( !title.empty() && !GetDocView()->getTitle().empty() )
 		title << L". ";
@@ -825,7 +825,7 @@ void FbCoolReader::OnFind( wxCommandEvent& event )
 void FbCoolReader::OnFindFirst( wxFindDialogEvent& event )
 {
 	int flags = event.GetFlags();
-	wxString pattern = event.GetFindString();
+	lString16 pattern = event.GetFindString().wc_str();
 
 	lvRect rc;
 	LVArray<ldomWord> words;
@@ -834,7 +834,7 @@ void FbCoolReader::OnFindFirst( wxFindDialogEvent& event )
 	int start  = (flags & wxFR_DOWN) ? rc.top : -1;
 	int finish = (flags & wxFR_DOWN) ? -1 : rc.top;
    	
-	if ( view->getDocument()->findText( pattern.c_str(), flags & wxFR_MATCHCASE, flags & wxFR_DOWN, start, finish, words, 200, rc.height() ) ) {
+	if ( view->getDocument()->findText( pattern, flags & wxFR_MATCHCASE, flags & wxFR_DOWN, start, finish, words, 200, rc.height() ) ) {
 		view->clearSelection();
 		view->selectWords( words );
 		ldomMarkedRangeList * ranges = view->getMarkedRanges();
