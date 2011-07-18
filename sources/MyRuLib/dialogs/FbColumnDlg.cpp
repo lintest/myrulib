@@ -85,7 +85,7 @@ FbColumnDlg::FbColumnDlg(wxWindow* parent, const wxArrayInt & columns)
 	bSizerMain->Add( &m_toolbar, 0, wxALL|wxEXPAND, 5 );
 
 	m_fields.Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | fbTR_VRULES | fbTR_CHECKBOX);
-	m_fields.AddColumn(0, _("Column"), 40, wxALIGN_LEFT);
+	m_fields.AddColumn(0, _("Column"), -10, wxALIGN_LEFT);
 	m_fields.SetMinSize(wxSize(200, 200));
 	m_fields.AssignModel(CreateModel(columns));
 	bSizerMain->Add( &m_fields, 1, wxEXPAND | wxALL, 5 );

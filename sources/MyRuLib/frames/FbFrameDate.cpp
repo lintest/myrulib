@@ -36,8 +36,8 @@ FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
 
 void FbFrameDate::CreateColumns()
 {
-	m_MasterList->AddColumn(0, _("Date"), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(0, _("Date"), -10, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
 }
 
 void FbFrameDate::OnBooksCount(FbCountEvent& event)

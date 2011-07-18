@@ -30,6 +30,17 @@ FbModelItem & FbModelItem::operator =(const FbModelItem &item)
 	return *this;
 }
 
+int FbModelItem::Level() 
+{ 
+	int level = 0;
+	FbModelItem parent = GetParent();
+	while (parent) {
+		parent = parent.GetParent();
+		if (parent) level++;
+	}
+	return level;
+}
+
 //-----------------------------------------------------------------------------
 //  FbModelData
 //-----------------------------------------------------------------------------
@@ -211,14 +222,15 @@ const wxBitmap & FbModel::GetBitmap(int state)
 	return bitmaps[state % 3];
 }
 
-void FbModel::DrawButton(wxWindow * window, wxDC &dc, wxRect &rect, bool expand)
+void FbModel::DrawButton(const FbModelItem &data, wxWindow * window, wxDC &dc, wxRect &rect)
 {
-	int h = rect.height; if (h / 2) h--;
+	int h = rect.height; if (h % 2 == 0) h--;
 	wxRect r(rect.x, rect.y, h, h);
+	rect.x += h + 2;
+	if (!data.HasChildren()) return;
 	r.Deflate(1);
-    int flag = expand ? wxCONTROL_EXPANDED: 0;
+    int flag = data.IsExpanded() ? wxCONTROL_EXPANDED: 0;
 	wxRendererNative::GetDefault().DrawTreeItemButton(window, dc, r, flag);
-	rect.x += rect.height + 2;
 }
 
 void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols)
@@ -253,7 +265,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 		rect.Deflate(3, 2);
 		wxString text = data[0];
 		dc.SetClippingRegion(rect);
-		if (ctx.m_directory) DrawButton(ctx.m_window, dc, rect, data.IsExpanded());
+		if (ctx.m_directory) DrawButton(data, ctx.m_window, dc, rect);
 		dc.DrawLabel(text, bitmap, rect, wxALIGN_CENTRE_VERTICAL);
 		dc.DestroyClippingRegion();
 	} else {
@@ -271,7 +283,7 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 			rect.Deflate(3, 2);
 			wxString text = data[col.GetColumn()];
 			dc.SetClippingRegion(rect);
-			if (ctx.m_directory && i == 0) DrawButton(ctx.m_window, dc, rect, data.IsExpanded());
+			if (ctx.m_directory && i == 0) DrawButton(data, ctx.m_window, dc, rect);
 			dc.DrawLabel(text, i ? wxNullBitmap : bitmap, rect, col.GetAlignment() | wxALIGN_CENTRE_VERTICAL);
 			dc.DestroyClippingRegion();
 			x += w;
@@ -458,6 +470,23 @@ IMPLEMENT_CLASS(FbListStore, FbListModel)
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(FbModelDataArray)
+
+void FbListStore::Insert(FbModelData * data, size_t pos)
+{
+	m_list.Insert(data, pos);
+	size_t count = m_list.Count();
+
+	if (count == 1) {
+		m_position = 1; 
+	} else {
+		if (m_position >= pos) m_position++;
+	}
+
+	if (m_owner) {
+		m_position = count;
+		m_owner->Refresh();
+	}
+}
 
 void FbListStore::Append(FbModelData * data)
 {

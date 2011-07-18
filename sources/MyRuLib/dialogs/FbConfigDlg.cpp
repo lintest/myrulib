@@ -328,8 +328,8 @@ FbConfigDlg::PanelType::PanelType(wxWindow * parent)
 	bSizer->Add( &m_toolbar, 0, wxALL|wxEXPAND, 5 );
 
 	m_treeview.Create( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
-	m_treeview.AddColumn(0, _("Extension"), 50);
-	m_treeview.AddColumn(1, _("Program"), 300);
+	m_treeview.AddColumn(0, _("Extension"), 4);
+	m_treeview.AddColumn(1, _("Program"), -10);
 	bSizer->Add( &m_treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	SetSizer( bSizer );

@@ -290,8 +290,8 @@ FbAuthorReplaceDlg::FbAuthorReplaceDlg( const wxString& title, int id )
 
 	m_MasterList = new FbTreeViewCtrl(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	bSizerMain->Add( m_MasterList, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
-	m_MasterList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(0, _("Author"), -10, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );

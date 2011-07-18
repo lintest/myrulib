@@ -122,8 +122,8 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 
 void FbFrameSeqn::CreateColumns()
 {
-	m_MasterList->AddColumn(0, _("Ser."), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(0, _("Ser."), -10, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
 }
 
 void FbFrameSeqn::CreateMasterThread()

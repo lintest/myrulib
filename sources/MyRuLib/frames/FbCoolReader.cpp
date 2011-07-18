@@ -111,8 +111,8 @@ FbCoolReader::ContentDlg::ContentDlg( wxWindow* parent, const wxString& title )
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_treeview.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
-	m_treeview.AddColumn(0, _("Title"), 300, wxALIGN_LEFT);
-	m_treeview.AddColumn(1, _("Page"), 50, wxALIGN_RIGHT);
+	m_treeview.AddColumn(0, _("Title"), -10, wxALIGN_LEFT);
+	m_treeview.AddColumn(1, _("Page"), 6, wxALIGN_RIGHT);
 	sizer->Add( &m_treeview, 1, wxALL|wxEXPAND, 5 );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );

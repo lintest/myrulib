@@ -26,21 +26,21 @@ wxString FbColumns::GetName(int field)
 int FbColumns::GetSize(int field)
 {
 	switch (field) {
-		case BF_NAME: return 15;
-		case BF_AUTH: return 10;
-		case BF_NUMB: return  3;
-		case BF_CODE: return  4;
-		case BF_GENR: return  6;
-		case BF_RATE: return  4;
-		case BF_LANG: return  2;
-		case BF_TYPE: return  3;
-		case BF_DATE: return  6;
-		case BF_SIZE: return  4;
-		case BF_BITE: return  6;
-		case BF_SEQN: return  6;
-		case BF_MD5S: return 10;
-		case BF_DOWN: return  6;
-		case BF_LAST: return  4;
+		case BF_NAME: return -15;
+		case BF_AUTH: return -10;
+		case BF_NUMB: return   4;
+		case BF_CODE: return   7;
+		case BF_GENR: return -10;
+		case BF_RATE: return   6;
+		case BF_LANG: return   2;
+		case BF_TYPE: return   4;
+		case BF_DATE: return   8;
+		case BF_SIZE: return   6;
+		case BF_BITE: return  10;
+		case BF_SEQN: return -10;
+		case BF_MD5S: return  32;
+		case BF_DOWN: return   8;
+		case BF_LAST: return   8;
 		default: return 4;
 	}
 }
@@ -119,7 +119,7 @@ void FbColumns::Set(const wxString &text, wxArrayInt & columns)
 void FbColumns::Create(const wxArrayInt & columns, FbListMode mode, FbTreeViewCtrl & ctrl)
 {
 	ctrl.EmptyColumns();
-	ctrl.AddColumn(BF_NAME, _("Title"), 15, wxALIGN_LEFT);
+	ctrl.AddColumn(BF_NAME, _("Title"), -15, wxALIGN_LEFT);
 	size_t count = columns.Count();
 	for (size_t i = 0; i < count; i++) {
 		int index = columns[i];

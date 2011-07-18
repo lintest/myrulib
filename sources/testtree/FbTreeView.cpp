@@ -668,13 +668,13 @@ FbTreeViewMainWindow::~FbTreeViewMainWindow()
 bool FbTreeViewMainWindow::SetFont(const wxFont& font)
 {
 	bool ok = wxScrolledWindow::SetFont(font);
-	if (ok) {
-		wxClientDC dc (this);
-		dc.SetFont(font);
-		int h = dc.GetCharHeight();
-		m_rowHeight = h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
-		m_rowHeight += 4;
-	}
+
+	wxClientDC dc (this);
+	dc.SetFont(font);
+	int h = dc.GetCharHeight();
+	m_rowHeight = h > FB_CHECKBOX_HEIGHT ? h : FB_CHECKBOX_HEIGHT;
+	m_rowHeight += 4;
+
 	return ok;
 }
 

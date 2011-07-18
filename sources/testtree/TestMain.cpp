@@ -71,6 +71,8 @@ class FbTreeModelData: public FbParentData
 			{ return false; }
 		virtual bool IsExpanded(FbModel & model) const
 			{ return m_expanded; }
+		virtual bool HasChildren(FbModel & model) const
+			{ return true; }
 		virtual bool Expand(FbModel & model, bool expand);
 	protected:
 		int m_code;

@@ -63,7 +63,7 @@ FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 
 void FbFrameDown::CreateColumns()
 {
-	m_MasterList->AddColumn (0, _("Folders"), 100, wxALIGN_LEFT);
+	m_MasterList->AddColumn (0, _("Folders"), -10, wxALIGN_LEFT);
 }
 
 void FbFrameDown::FillFolders(const int iCurrent)

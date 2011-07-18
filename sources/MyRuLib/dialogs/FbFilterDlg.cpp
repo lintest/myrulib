@@ -40,11 +40,11 @@ FbFilterDlg::FbFilterDlg(FbFilterObj & filter)
 	bSizerList = new wxBoxSizer( wxHORIZONTAL );
 
 	m_treeLang = new FbTreeViewCtrl(this, ID_TREE_LANG, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | fbTR_CHECKBOX);
-	m_treeLang->AddColumn(0, _("Language"), 1);
+	m_treeLang->AddColumn(0, _("Language"), -10);
 	bSizerList->Add( m_treeLang, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	m_treeType = new FbTreeViewCtrl(this, ID_TREE_TYPE, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN | fbTR_CHECKBOX);
-	m_treeType->AddColumn(0, _("File extension"), 1);
+	m_treeType->AddColumn(0, _("File extension"), -10);
 	bSizerList->Add( m_treeType, 1, wxEXPAND|wxALL, 5 );
 
 	bSizerMain->Add( bSizerList, 1, wxEXPAND, 5 );

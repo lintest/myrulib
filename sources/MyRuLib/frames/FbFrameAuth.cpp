@@ -145,8 +145,8 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 
 void FbFrameAuth::CreateColumns()
 {
-	m_MasterList->AddColumn(0, _("Author"), 40, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 10, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(0, _("Author"), -10, wxALIGN_LEFT);
+	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
 }
 
 void FbFrameAuth::OnChoiceLetter(wxCommandEvent& event)
