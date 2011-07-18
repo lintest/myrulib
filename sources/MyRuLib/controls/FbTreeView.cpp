@@ -250,7 +250,8 @@ FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 
 void FbTreeViewHeaderWindow::OnSize(wxSizeEvent& WXUNUSED(event))
 {
-	CheckSize(wxClientDC(this));
+	wxClientDC dc(this);
+	CheckSize(dc);
 }
 
 void FbTreeViewHeaderWindow::CheckSize(wxDC & dc)
@@ -284,7 +285,7 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc)
 	}
 
 	// Get the char width and minimum columns width
-	int cw = dc.GetCharWidth() * 2;
+	int cw = dc.GetCharWidth();
 	int fixedWidth = 0, fixedCount = 0, fixedSize = 0;
 	int floatWidth = 0, floatCount = 0, floatSize = 0;
 
@@ -577,8 +578,9 @@ void FbTreeViewHeaderWindow::SetColumnWidth (int column, int delta)
 
 	info.SetSize( new_size );
 	info.SetWidth(-100);
-
-	CheckSize(wxClientDC(this));
+	
+	wxClientDC dc(this);
+	CheckSize(dc);
 	m_owner->Refresh();
 }
 
@@ -1168,9 +1170,9 @@ bool FbTreeViewCtrl::SetFont(const wxFont& font)
 	return ok;
 }
 
-void FbTreeViewCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag, int fixed)
+void FbTreeViewCtrl::AddColumn(size_t model_column, const wxString& text, int width, int flag)
 {
-	if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag, fixed));
+	if (m_header_win) m_header_win->AddColumn(FbTreeViewColumnInfo(model_column, text, width, flag));
 }
 
 void FbTreeViewCtrl::SetSortedColumn(int column)
