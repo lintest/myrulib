@@ -120,7 +120,7 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 
 	private:
 		int m_position;
-		DECLARE_DYNAMIC_CLASS(FbTreeViewCtrl)
+		DECLARE_CLASS(FbTreeViewCtrl)
 		DECLARE_EVENT_TABLE()
 };
 
