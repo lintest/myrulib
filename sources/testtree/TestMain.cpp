@@ -8,7 +8,7 @@
  **************************************************************/
 
 #define FB_LIST_COUNT 20
-#define FB_TREE_COUNT 5
+#define FB_TREE_COUNT 20
 
 #include "TestMain.h"
 #include "TestMain.h"
@@ -85,10 +85,12 @@ IMPLEMENT_CLASS(FbTreeModelData, FbParentData)
 wxString FbTreeModelData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
-		case 1:
-			return Format(m_code * m_code * 100);
-		default:
-			return wxString::Format(wxT("Cell (%d, %d)"), m_code, col);
+		case  0: return wxString::Format(wxT("Cell (%d, %d)"), m_code, col); 
+		case  1: return Format(m_code * m_code * 100);
+		case  2: return wxT("fb2");
+		case  3: return wxT("ru");
+		case  4: return Format(m_code * m_code * 1000);
+		default: return wxEmptyString;
 	}
 }
 
@@ -171,11 +173,12 @@ DataViewFrame::DataViewFrame( wxWindow* parent, wxWindowID id, const wxString& t
 	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_HRULES | fbTR_MULTIPLE | fbTR_DIRECTORY;
 	substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_DIRECTORY;
 	m_dataview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, substyle);
-	m_dataview->AddColumn(0, _("title"), 200);
-	m_dataview->AddColumn(1, _("author"), 150);
-	m_dataview->AddColumn(2, _("type"), 50);
-	m_dataview->AddColumn(3, _("lang"), 50, wxALIGN_CENTER_HORIZONTAL);
-	m_dataview->AddColumn(4, _("size"), 50, wxALIGN_RIGHT);
+	m_dataview->AddColumn(0, _("title"), -10);
+	m_dataview->AddColumn(1, _("author"), -10);
+	m_dataview->AddColumn(2, _("type"), 3);
+	m_dataview->AddColumn(3, _("lang"), -5, wxALIGN_CENTER_HORIZONTAL);
+	m_dataview->AddColumn(4, _("size"), 6, wxALIGN_RIGHT);
+	m_dataview->AddColumn(4, _("size"), 3, wxALIGN_RIGHT);
 	m_dataview->SetFocus();
 	m_dataview->SetSortedColumn(2);
 	bSizer1->Add( m_dataview, 1, wxEXPAND, 5 );
