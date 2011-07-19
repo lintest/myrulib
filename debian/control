@@ -23,7 +23,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libjpeg-dev, libpng-dev, libfreetype6-dev
 Replaces: myrulib
 Conflicts: myrulib
-Description: Create your own collection of e-books, read them by CoolReader3
+Description: Create your own collection of e-books (builtin CoolReader3)
  MyRuLib-CR — свободная (бесплатная и открытая) программа 
  для организации домашней библиотеки (коллекции) 
  электронных книг формата fb2. Позволяет также читать 
