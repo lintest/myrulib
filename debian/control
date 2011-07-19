@@ -11,7 +11,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: myrulib-cr
 Conflicts: myrulib-cr
-Description: MyRuLib is an application for organizing your own collection of e-books.
+Description: Create your own collection of e-books
  MyRuLib — свободная (бесплатная и открытая) программа 
  для организации домашней библиотеки (коллекции) 
  электронных книг формата fb2.
@@ -23,7 +23,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libjpeg-dev, libpng-dev, libfreetype6-dev
 Replaces: myrulib
 Conflicts: myrulib
-Description: MyRuLib-CR is an application for organizing your own collection of e-books, contains builtin e-book reader.
+Description: Create your own collection of e-books, read them by CoolReader3
  MyRuLib-CR — свободная (бесплатная и открытая) программа 
  для организации домашней библиотеки (коллекции) 
  электронных книг формата fb2. Позволяет также читать 
