@@ -419,6 +419,7 @@ void LVDocView::clearImageCache() {
 #if CR_ENABLE_PAGE_IMAGE_CACHE==1
 	m_imageCache.clear();
 #endif
+    m_section_bounds_valid = false;
 	if (m_callback != NULL)
 		m_callback->OnImageCacheClear();
 }
@@ -1284,6 +1285,7 @@ LVArray<int> & LVDocView::getSectionBounds() {
 	ldomNode * body = m_doc->nodeFromXPath(lString16(L"/FictionBook/body[1]"));
 	lUInt16 section_id = m_doc->getElementNameIndex(L"section");
 	int fh = GetFullHeight();
+    int pc = getVisiblePageCount();
 	if (body && fh > 0) {
 		int cnt = body->getChildCount();
 		for (int i = 0; i < cnt; i++) {
@@ -1291,10 +1293,21 @@ LVArray<int> & LVDocView::getSectionBounds() {
             ldomNode * l1section = body->getChildElementNode(i, section_id);
             if (!l1section)
 				continue;
-			lvRect rc;
-			l1section->getAbsRect(rc);
-			int p = (int) (((lInt64) rc.top * 10000) / fh);
-			m_section_bounds.add(p);
+
+            lvRect rc;
+            l1section->getAbsRect(rc);
+            if (getViewMode() == DVM_SCROLL) {
+                int p = (int) (((lInt64) rc.top * 10000) / fh);
+                m_section_bounds.add(p);
+            } else {
+                int fh = m_pages.length();
+                if ( (pc==2 && (fh&1)) )
+                    fh++;
+                int p = m_pages.FindNearestPage(rc.top, 0);
+                if (fh > 1)
+                    m_section_bounds.add((int) (((lInt64) p * 10000) / fh));
+            }
+
 		}
 	}
 	m_section_bounds.add(10000);
@@ -1313,8 +1326,12 @@ int LVDocView::getPosPercent() {
 		else
 			return 0;
 	} else {
-		int fh = getPageCount();
-		int p = getCurPage() + 1;
+        int fh = m_pages.length();
+        if ( (getVisiblePageCount()==2 && (fh&1)) )
+            fh++;
+        int p = getCurPage();// + 1;
+//        if ( getVisiblePageCount()>1 )
+//            p++;
 		if (fh > 0)
 			return (int) (((lInt64) p * 10000) / fh);
 		else
@@ -1425,34 +1442,73 @@ void LVDocView::drawPageHeader(LVDrawBuf * drawbuf, const lvRect & headerRc,
 		//pal[0] = cl1;
 	}
 	//drawbuf->FillRect(info.left, gpos-gh, info.left+percent_pos, gpos-gh+1, cl1 );
-	drawbuf->FillRect(info.left, gpos - 2, info.left + percent_pos, gpos - 2
-			+ 1, cl1);
+    if ( leftPage )
+        drawbuf->FillRect(info.left, gpos - 2, info.right, gpos - 2	+ 1, cl1);
 	//drawbuf->FillRect(info.left+percent_pos, gpos-gh, info.right, gpos-gh+1, cl1 ); //cl3
-	drawbuf->FillRect(info.left + percent_pos, gpos - 2, info.right, gpos - 2
-			+ 1, cl1); // cl3
+//	drawbuf->FillRect(info.left + percent_pos, gpos - 2, info.right, gpos - 2
+//			+ 1, cl1); // cl3
+
+	int sbound_index = 0;
+	bool enableMarks = !leftPage && (phi & PGHDR_CHAPTER_MARKS) && sbounds.length()<info.width()/5;
+	for ( int x = info.left; x<info.right; x++ ) {
+		int cl = -1;
+		int sz = 1;
+		int boundCategory = 0;
+		while ( enableMarks && sbound_index<sbounds.length() ) {
+			int sx = info.left + sbounds[sbound_index] * (info.width() - 1) / 10000;
+			if ( sx<x ) {
+				sbound_index++;
+				continue;
+			}
+			if ( sx==x ) {
+				boundCategory = 1;
+			}
+			break;
+		}
+		if ( leftPage ) {
+			cl = cl1;
+			sz = 1;
+		} else {
+            if ( x < info.left + percent_pos ) {
+				sz = 3;
+				if ( boundCategory==0 )
+					cl = cl1;
+                else
+                    sz = 0;
+            } else {
+				if ( boundCategory!=0 )
+					sz = 3;
+				cl = cl1;
+			}
+		}
+        if ( cl!=-1 && sz>0 )
+			drawbuf->FillRect(x, gpos - 2 - sz/2, x+1, gpos - 2
+					+ sz/2 + 1, cl);
+	}
 
 	lString16 text;
-	int iy = info.top; // + (info.height() - m_infoFont->getHeight()) * 2 / 3;
+	//int iy = info.top; // + (info.height() - m_infoFont->getHeight()) * 2 / 3;
+	int iy = info.top + /*m_infoFont->getHeight() +*/ (info.height() - m_infoFont->getHeight()) / 2;
 
 	if (!m_pageHeaderOverride.empty()) {
 		text = m_pageHeaderOverride;
 	} else {
 
-		if (!leftPage) {
-			drawbuf->FillRect(info.left, gpos - 3, info.left + percent_pos,
-					gpos - 3 + 1, cl1);
-			drawbuf->FillRect(info.left, gpos - 1, info.left + percent_pos,
-					gpos - 1 + 1, cl1);
-		}
+//		if (!leftPage) {
+//			drawbuf->FillRect(info.left, gpos - 3, info.left + percent_pos,
+//					gpos - 3 + 1, cl1);
+//			drawbuf->FillRect(info.left, gpos - 1, info.left + percent_pos,
+//					gpos - 1 + 1, cl1);
+//		}
 
 		// disable section marks for left page, and for too many marks
-		if (!leftPage && (phi & PGHDR_CHAPTER_MARKS) && sbounds.length()<info.width()/5 ) {
-			for (int i = 0; i < sbounds.length(); i++) {
-				int x = info.left + sbounds[i] * (info.width() - 1) / 10000;
-				lUInt32 c = x < info.left + percent_pos ? cl2 : cl1;
-				drawbuf->FillRect(x, gpos - 4, x + 1, gpos - 0 + 2, c);
-			}
-		}
+//		if (!leftPage && (phi & PGHDR_CHAPTER_MARKS) && sbounds.length()<info.width()/5 ) {
+//			for (int i = 0; i < sbounds.length(); i++) {
+//				int x = info.left + sbounds[i] * (info.width() - 1) / 10000;
+//				lUInt32 c = x < info.left + percent_pos ? cl2 : cl1;
+//				drawbuf->FillRect(x, gpos - 4, x + 1, gpos - 0 + 2, c);
+//			}
+//		}
 
 		if (getVisiblePageCount() == 1 || !(pageIndex & 1)) {
 			int dwIcons = 0;
@@ -1467,23 +1523,27 @@ void LVDocView::drawPageHeader(LVDrawBuf * drawbuf, const lvRect & headerRc,
 			info.left += dwIcons;
 		}
 
+		bool batteryPercentNormalFont = false; // PROP_SHOW_BATTERY_PERCENT
 		if ((phi & PGHDR_BATTERY) && m_battery_state >= -1) {
-			lvRect brc = info;
-			brc.right -= 2;
-			//brc.top += 1;
-			//brc.bottom -= 2;
-			int h = brc.height();
-			int batteryIconWidth = 32;
-			if (m_batteryIcons.length() > 0)
-				batteryIconWidth = m_batteryIcons[0]->GetWidth();
-			bool isVertical = (h > 30);
-			//if ( isVertical )
-			//    brc.left = brc.right - brc.height()/2;
-			//else
-			brc.left = brc.right - batteryIconWidth - 2;
-			brc.bottom -= 5;
-			drawBatteryState(drawbuf, brc, isVertical);
-			info.right = brc.left - info.height() / 2;
+			batteryPercentNormalFont = m_props->getBoolDef(PROP_SHOW_BATTERY_PERCENT, true) || m_batteryIcons.size()<=2;
+			if ( !batteryPercentNormalFont ) {
+				lvRect brc = info;
+				brc.right -= 2;
+				//brc.top += 1;
+				//brc.bottom -= 2;
+				int h = brc.height();
+				int batteryIconWidth = 32;
+				if (m_batteryIcons.length() > 0)
+					batteryIconWidth = m_batteryIcons[0]->GetWidth();
+				bool isVertical = (h > 30);
+				//if ( isVertical )
+				//    brc.left = brc.right - brc.height()/2;
+				//else
+				brc.left = brc.right - batteryIconWidth - 2;
+				brc.bottom -= 5;
+				drawBatteryState(drawbuf, brc, isVertical);
+				info.right = brc.left - info.height() / 2;
+			}
 		}
 		lString16 pageinfo;
 		if (pageCount > 0) {
@@ -1497,7 +1557,19 @@ void LVDocView::drawPageHeader(LVDrawBuf * drawbuf, const lvRect & headerRc,
             if (phi & PGHDR_PERCENT) {
                 if ( !pageinfo.empty() )
                     pageinfo += L"  ";
-                pageinfo += lString16::itoa(percent/100)+L"%"; //+L"."+lString16::itoa(percent/10%10)+L"%";
+                //pageinfo += lString16::itoa(percent/100)+L"%"; //+L"."+lString16::itoa(percent/10%10)+L"%";
+                pageinfo += lString16::itoa(percent/100);
+                pageinfo += L",";
+                int pp = percent%100;
+                if ( pp<10 )
+                	pageinfo += L"0";
+                pageinfo += lString16::itoa(pp);
+                pageinfo += L"%";
+            }
+            if ( batteryPercentNormalFont && m_battery_state>=0 ) {
+            	pageinfo += L"  [";
+                pageinfo += lString16::itoa(m_battery_state)+L"%";
+            	pageinfo += L"]";
             }
 		}
 		int piw = 0;
@@ -3234,8 +3306,8 @@ bool LVDocView::LoadDocument(LVStreamRef stream) {
 			}
 		}
 
-#if CHM_SUPPORT_ENABLED
-		if ( DetectCHMFormat( m_stream ) ) {
+#if CHM_SUPPORT_ENABLED==1
+        if ( DetectCHMFormat( m_stream ) ) {
 			// CHM
 			CRLog::info("CHM format detected");
 			createEmptyDocument();
@@ -3265,7 +3337,7 @@ bool LVDocView::LoadDocument(LVStreamRef stream) {
 				return true;
 			}
 		}
-#endif // CHM_SUPPORT_ENABLED
+#endif
 
 #if ENABLE_ANTIWORD==1
         if ( DetectWordFormat( m_stream ) ) {

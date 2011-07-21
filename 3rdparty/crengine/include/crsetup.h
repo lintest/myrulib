@@ -14,7 +14,6 @@
 #define CRSETUP_H_INCLUDED
 
 
-#include "../crsetup.inc"
 
 // features set for LBOOK
 #if (LBOOK==1)
@@ -272,6 +271,8 @@
 #define DOCUMENT_CACHING_SIZE_THRESHOLD 0x100000 // 1Mb
 #endif
 
-
+#ifndef ENABLE_ANTIWORD
+#define ENABLE_ANTIWORD 1
+#endif
 
 #endif//CRSETUP_H_INCLUDED
