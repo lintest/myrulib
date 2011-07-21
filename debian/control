@@ -2,7 +2,7 @@ Source: myrulib
 Section: x11
 Priority: optional
 Maintainer: Kandrashin Denis <mail@lintest.ru>
-Build-Depends: debhelper (>= 7), libwxgtk2.8-dev (>=2.8.10), libsqlite3-dev, libicu-dev
+Build-Depends: debhelper (>= 7), libwxgtk2.8-dev (>=2.8.10), libsqlite3-dev, libicu-dev, libjpeg-dev, libpng-dev, libfreetype6-dev
 Standards-Version: 3.9.1
 Homepage: http://myrulib.lintest.ru
 
@@ -11,16 +11,17 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: myrulib-cr
 Conflicts: myrulib-cr
-Description: Create your own collection of e-books
+Description: Create your own collection of e-books (without reader)
  MyRuLib — свободная (бесплатная и открытая) программа 
  для организации домашней библиотеки (коллекции) 
- электронных книг формата fb2.
+ электронных книг формата fb2. Для чтения книг 
+ используются внешние программы.
  .
  http://myrulib.lintest.ru
 
 Package: myrulib-cr
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libjpeg-dev, libpng-dev, libfreetype6-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: myrulib
 Conflicts: myrulib
 Description: Create your own collection of e-books (builtin CoolReader3)
@@ -30,4 +31,3 @@ Description: Create your own collection of e-books (builtin CoolReader3)
  электронные книги, используя встроенный CoolReader3.
  .
  http://myrulib.lintest.ru
-

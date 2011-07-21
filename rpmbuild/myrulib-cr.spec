@@ -14,8 +14,6 @@ Summary:        E-Book Library Manager
 URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/%{name}-%{version}.tar.bz2
-# PATCH-FIX-UPSTREAM myrulib-0.28-cregine_png14.patch lazy.kent@opensuse.org -- fix build against libpng 1.4
-Patch0:         myrulib-0.28-cregine_png14.patch
 BuildRequires:  gcc-c++
 BuildRequires:  libfaxpp-devel
 BuildRequires:  libicu-devel
@@ -58,7 +56,6 @@ Authors:
 
 %prep
 %setup -q
-%patch0
 [ ! -x configure ] && %__chmod +x configure
 
 %build
