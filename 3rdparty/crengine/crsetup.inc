@@ -9,3 +9,4 @@
 #define USE_FREETYPE 1
 #endif
 
+#define ENABLE_ANTIWORD 0
