@@ -94,6 +94,7 @@ FbFrameBase::FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxStrin
 {
 	parent->AddPage( this, caption, select );
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbFrameBase::OnIdleSplitter ), NULL, this );
+	m_filter.Load();
 }
 
 FbFrameBase::~FbFrameBase()
