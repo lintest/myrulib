@@ -86,13 +86,46 @@ void FbAuthorFunction::Execute(wxSQLite3FunctionContext& ctx)
 //  FbLetterFunction
 //-----------------------------------------------------------------------------
 
+#include "unicode/uchar.h"
+
+bool IsAlpha(wxChar ch)
+{
+#ifdef __WXMSW__
+	return IsCharAlpha(ch);
+#else // __WXMSW__
+	return u_isalpha(ch);
+#endif // __WXMSW__	
+}
+
+bool IsNumeric(wxChar ch)
+{
+#ifdef __WXMSW__
+	return IsCharAlphaNumeric(ch);
+#else // __WXMSW__
+	return u_isdigit(ch);
+#endif // __WXMSW__	
+}
+
+wxString Letter(const wxString & text)
+{
+	size_t count = text.Len();
+	for (size_t i = 0; i < count; i++) {
+		wxChar ch = text[i];
+		if (IsAlpha(ch)) { // WXMSW = IsCharAlpha
+			wxString res = Upper(ch);
+			if (res == wxChar(0x401)) res = wxChar(0x415);
+			return res;
+		} else if (IsNumeric(ch)) {
+			return wxT('#');
+		}
+	}
+	return wxT('#');
+}
+
 void FbLetterFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	if (ctx.GetArgCount() == 1) {
-		wxString res = Upper(ctx.GetString(0).Left(1));
-		if (res == wxChar(0x401)) res = wxChar(0x415);
-		if (res.IsEmpty() || strAlphabet.Find(res) == wxNOT_FOUND) res = wxT('#');
-		ctx.SetResult(res);
+		ctx.SetResult(Letter(ctx.GetString(0)));
 	}
 }
 
@@ -614,6 +647,10 @@ void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 
 	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_seqn"));
 	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
+	
+	FbLetterFunction letter;
+	CreateFunction(wxT("LTTR"), 1, letter);
+	ExecuteUpdate(fbT("UPDATE authors SET letter=LTTR(full_name) WHERE id"));
 
 	FbLowerFunction	lower;
 	CreateFunction(wxT("LOW"), 1, lower);
