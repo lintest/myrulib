@@ -86,32 +86,44 @@ void FbAuthorFunction::Execute(wxSQLite3FunctionContext& ctx)
 //  FbLetterFunction
 //-----------------------------------------------------------------------------
 
+#ifdef SQLITE_ENABLE_ICU
+
 #include "unicode/uchar.h"
 
-bool IsAlpha(wxChar ch)
+static bool IsAlpha(wxChar ch)
 {
-#ifdef __WXMSW__
-	return IsCharAlpha(ch);
-#else // __WXMSW__
 	return u_isalpha(ch);
-#endif // __WXMSW__	
 }
 
-bool IsNumeric(wxChar ch)
+static bool IsNumeric(wxChar ch)
 {
-#ifdef __WXMSW__
-	return IsCharAlphaNumeric(ch);
-#else // __WXMSW__
 	return u_isdigit(ch);
-#endif // __WXMSW__	
 }
+
+#else  // SQLITE_ENABLE_ICU
+
+#ifdef __WXMSW__
+
+static bool IsAlpha(wxChar ch)
+{
+	return IsCharAlpha(ch);
+}
+
+static bool IsNumeric(wxChar ch)
+{
+	return IsCharAlphaNumeric(ch);
+}
+
+#endif // __WXMSW__
+
+#endif // SQLITE_ENABLE_ICU
 
 wxString Letter(const wxString & text)
 {
 	size_t count = text.Len();
 	for (size_t i = 0; i < count; i++) {
 		wxChar ch = text[i];
-		if (IsAlpha(ch)) { // WXMSW = IsCharAlpha
+		if (IsAlpha(ch)) { 
 			wxString res = Upper(ch);
 			if (res == wxChar(0x401)) res = wxChar(0x415);
 			return res;
