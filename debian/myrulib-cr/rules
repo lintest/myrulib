@@ -10,14 +10,7 @@
 #export DH_VERBOSE=1
 
 configure: configure-stamp
-
-configure-stamp/myrulib:
-	dh_testdir
-	# Add here commands to configure the package.
-	./configure --with-icu --prefix=/usr 
-	touch configure-stamp
-
-configure-stamp/myrulib-cr:
+configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-icu --with-reader --prefix=/usr 
