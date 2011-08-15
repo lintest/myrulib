@@ -83,7 +83,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
       CASE WHEN aid IS NULL THEN 0 ELSE aid END AS aid,
       CONCAT(libbook.bid, '.', libbook.FileType) AS FileName
     FROM libbook 
-      LEFT JOIN libavtor ON libbook.bid = libavtor.bid
+      LEFT JOIN libavtor ON libbook.bid = libavtor.bid AND aid<>0
     WHERE libbook.Deleted<>1 AND libbook.bid>$min
   ";
 

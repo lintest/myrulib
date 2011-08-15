@@ -85,7 +85,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
       CASE WHEN AvtorId IS NULL THEN 0 ELSE AvtorId END AS AvtorId,
       CONCAT(libbook.BookId, '.', libbook.FileType) AS FileName
     FROM libbook 
-      LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId
+      LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId AND AvtorId<>0
     WHERE libbook.Deleted<>1 AND libbook.BookId>$min
   ";
 
