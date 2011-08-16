@@ -114,6 +114,18 @@ static bool IsNumeric(wxChar ch)
 	return IsCharAlphaNumeric(ch);
 }
 
+#else  // __WXMSW__
+
+static bool IsAlpha(wxChar ch)
+{
+	return ch >= 0x41;
+}
+
+static bool IsNumeric(wxChar ch)
+{
+	return 0x30 <= ch && ch <= 0x39;
+}
+
 #endif // __WXMSW__
 
 #endif // SQLITE_ENABLE_ICU
