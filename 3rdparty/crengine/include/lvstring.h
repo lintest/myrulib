@@ -23,6 +23,8 @@
 #define UNICODE_SOFT_HYPHEN_CODE 0x00ad
 #define UNICODE_ZERO_WIDTH_SPACE 0x200b
 #define UNICODE_NO_BREAK_SPACE   0x00a0
+#define UNICODE_HYPHEN   0x2010
+#define UNICODE_NB_HYPHEN   0x2011
 
 
 
@@ -88,6 +90,7 @@ int decodeDecimal( const lChar16 * str, int len );
 #define CH_PROP_CONSONANT   0x0080 ///< consonant character flag
 #define CH_PROP_SIGN        0x0100 ///< sign character flag
 #define CH_PROP_ALPHA_SIGN  0x0200 ///< alpha sign character flag
+#define CH_PROP_DASH        0x0400 ///< minus, emdash, endash, ... (- signs)
 
 /// retrieve character properties mask array for wide c-string
 void lStr_getCharProps( const lChar16 * str, int sz, lUInt16 * props );

@@ -13,9 +13,14 @@
 
 */
 
-// set to 0 for old hyphenation, 1 for new algorithm
-#define NEW_HYPHENATION 1
-
+// set to 1 for debug dump
+#if defined(_DEBUG) && 0
+#define DUMP_HYPHENATION_WORDS 1
+#define DUMP_PATTERNS 1
+#else
+#define DUMP_HYPHENATION_WORDS 0
+#define DUMP_PATTERNS 0
+#endif
 
 #include "../include/crsetup.h"
 
@@ -251,7 +256,7 @@ bool HyphDictionaryList::open( lString16 hyphDirectory )
 	if ( !container.isNull() ) {
 		int len = container->GetObjectCount();
         int count = 0;
-        CRLog::info("%d items found in hyph directory");
+        CRLog::info("%d items found in hyph directory", len);
 		for ( int i=0; i<len; i++ ) {
 			const LVContainerItemInfo * item = container->GetObjectInfo( i );
 			lString16 name = item->GetName();
@@ -277,8 +282,10 @@ bool HyphDictionaryList::open( lString16 hyphDirectory )
 			_list.add( new HyphDictionary( t, title, id, filename ) );
             count++;
 		}
-        CRLog::info("%d dictionaries added to list");
+		CRLog::info("%d dictionaries added to list", _list.length());
 		return true;
+	} else {
+        CRLog::info("no hyphenation dictionary items found in hyph directory %s", LCSTR(hyphDirectory));
 	}
 	return false;
 }
@@ -350,6 +357,11 @@ public:
         return (((s[0] *31 + s[1])*31 + 0) * 31 + 0) % PATTERN_HASH_SIZE;
     }
 
+    static int hash1( const lChar16 * s )
+    {
+        return (((s[0] *31 + 0)*31 + 0) * 31 + 0) % PATTERN_HASH_SIZE;
+    }
+
     int hash()
     {
         return (((word[0] *31 + word[1])*31 + word[2]) * 31 + word[3]) % PATTERN_HASH_SIZE;
@@ -367,7 +379,10 @@ public:
                     break;
                 }
             if ( res ) {
-                if ( p->word[0]==s[0] && p->word[1]==s[1] ) {
+                if ( p->word[0]==s[0] && (p->word[1]==0 || p->word[1]==s[1]) ) {
+#if DUMP_PATTERNS==1
+                    CRLog::debug("Pattern matched: %s %s on %s %s", LCSTR(lString16(p->word)), p->attr, LCSTR(lString16(s)), mask);
+#endif
                     p->apply(mask);
                     found = true;
                 }
@@ -450,6 +465,9 @@ public:
         if ( insidePatternTag )
             data.add( lString16(text, len) );
     }
+    /// add named BLOB data to document
+    virtual bool OnBlob(lString16 name, const lUInt8 * data, int size) { return false; }
+
 };
 
 TexHyph::TexHyph()
@@ -515,6 +533,21 @@ bool TexHyph::load( LVStreamRef stream )
             cnv.msf( hyph.wu );
             charMap[ (unsigned char)hyph.al ] = hyph.wl;
             charMap[ (unsigned char)hyph.au ] = hyph.wu;
+//            lChar16 ch = hyph.wl;
+//            CRLog::debug("wl=%s mask=%c%c", LCSTR(lString16(&ch, 1)), hyph.mask0[0], hyph.mask0[1]);
+            if (hyph.mask0[0]!='0'||hyph.mask0[1]!='0') {
+                unsigned char pat[4];
+                pat[0] = hyph.al;
+                pat[1] = hyph.mask0[0];
+                pat[2] = hyph.mask0[1];
+                pat[3] = 0;
+                TexPattern * pattern = new TexPattern(pat, 1, charMap);
+#if DUMP_PATTERNS==1
+                CRLog::debug("Pattern: '%s' - %s", LCSTR(lString16(pattern->word)), pattern->attr );
+#endif
+                addPattern( pattern );
+                patternCount++;
+            }
         }
 
         if ( stream->SetPos(p)!=p )
@@ -538,7 +571,9 @@ bool TexHyph::load( LVStreamRef stream )
                 if ( p + sz > end_p )
                     break;
                 TexPattern * pattern = new TexPattern( p, sz, charMap );
-                //CRLog::debug("Pattern: '%s' - %s", LCSTR(lString16(pattern->word)), pattern->attr );
+#if DUMP_PATTERNS==1
+                CRLog::debug("Pattern: '%s' - %s", LCSTR(lString16(pattern->word)), pattern->attr);
+#endif
                 addPattern( pattern );
                 patternCount++;
                 p += sz + sz + 1;
@@ -559,7 +594,9 @@ bool TexHyph::load( LVStreamRef stream )
             return false;
         for ( int i=0; i<(int)data.length(); i++ ) {
             TexPattern * pattern = new TexPattern( data[i] );
-            //CRLog::debug("Pattern: '%s' - %s", LCSTR(lString16(pattern->word)), pattern->attr );
+#if DUMP_PATTERNS==1
+            CRLog::debug("Pattern: '%s' - %s", LCSTR(lString16(pattern->word)), pattern->attr);
+#endif
             addPattern( pattern );
             patternCount++;
         }
@@ -588,6 +625,10 @@ bool TexHyph::match( const lChar16 * str, char * mask )
         found = res->match( str, mask ) || found;
     }
     res = table[ TexPattern::hash2( str ) ];
+    if ( res ) {
+        found = res->match( str, mask ) || found;
+    }
+    res = table[ TexPattern::hash1( str ) ];
     if ( res ) {
         found = res->match( str, mask ) || found;
     }
@@ -624,7 +665,7 @@ bool TexHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8 
     char mask[WORD_LENGTH+3];
     word[0] = ' ';
     lStr_memcpy( word+1, str, len );
-    lStr_lowercase( word+1, len );
+    lStr_lowercase(word+1, len);
     word[len+1] = ' ';
     word[len+2] = 0;
     word[len+3] = 0;
@@ -632,20 +673,19 @@ bool TexHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8 
     memset( mask, '0', len+3 );
     mask[len+3] = 0;
     bool found = false;
-    for ( int i=0; i<len-1; i++ ) {
+    for ( int i=0; i<len; i++ ) {
         found = match( word + i, mask + i ) || found;
     }
     if ( !found )
         return false;
 
-#define DUMP_HYPHENATION_WORDS 0
 #if DUMP_HYPHENATION_WORDS==1
     lString16 buf;
     lString16 buf2;
     bool boundFound = false;
     for ( int i=0; i<len; i++ ) {
-        buf << str[i];
-        buf2 << str[i];
+        buf << word[i+1];
+        buf2 << word[i+1];
         buf2 << (lChar16)mask[i+2];
         int nw = widths[i]+hyphCharWidth;
         if ( (mask[i+2]&1) ) {
@@ -672,8 +712,8 @@ bool TexHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8 
         int nw = widths[p]+hyphCharWidth;
         if ( (mask[p+2]&1) && nw <= maxWidth ) {
             if ( checkHyphenRules( word+1, len, p ) ) {
-                widths[p] += hyphCharWidth;
-                flags[p] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
+                //widths[p] += hyphCharWidth; // don't add hyph width
+                //flags[p] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
                 if ( bestp<0 || mask[p+2]>bestm ) {
                     bestp = p;
                     bestm = mask[p+2];
@@ -681,9 +721,15 @@ bool TexHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8 
             }
         }
     }
+//#if DUMP_HYPHENATION_WORDS==1
+//    CRLog::trace("bestp=%d", bestp);
+//#endif
     if ( bestp>=0 ) {
 //        widths[bestp] += hyphCharWidth;
-//        flags[bestp] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
+        flags[bestp] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
+#if DUMP_HYPHENATION_WORDS==1
+        CRLog::trace("bestp=%d  %s-%s", bestp, LCSTR(lString16(str, bestp+1)), LCSTR(lString16(str+bestp+1, len-bestp-1)));
+#endif
         return true;
     }
     return false;
@@ -719,8 +765,18 @@ bool AlgoHyph::hyphenate( const lChar16 * str, int len, lUInt16 * widths, lUInt8
                                 lUInt16 nw = widths[i] + hyphCharWidth;
                                 if ( nw<maxWidth )
                                 {
-                                    flags[i] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
-                                    widths[i] = nw;
+                                    bool disabled = false;
+                                    const char * dblSequences[] = {
+                                        "sh", "th", "ph", "ch", NULL
+                                    };
+                                    for (int k=0; dblSequences[k]; k++)
+                                        if (str[i]==dblSequences[k][0] && str[i+1]==dblSequences[k][1]) {
+                                            disabled = true;
+                                            break;
+                                        }
+                                    if (!disabled)
+                                        flags[i] |= LCHAR_ALLOW_HYPH_WRAP_AFTER;
+                                    //widths[i] = nw; // don't add hyph width
                                 }
                             }
                             break;

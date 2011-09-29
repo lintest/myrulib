@@ -856,288 +856,13 @@ LVFontRef getFont( css_style_rec_t * style )
     return fnt;
 }
 
-#if 0
-void initFormatData( ldomNode * node )
-{
-    //lvdomElementFormatRec * fmt = new lvdomElementFormatRec;
-    //node->setRenderData( fmt );
-    if ( node->isRoot() || node->getParentNode()->isRoot() )
-    {
-        setNodeStyle( node,
-            node->getDocument()->getDefaultStyle(),
-            node->getDocument()->getDefaultFont()
-        );
-    }
-    else
-    {
-        ldomNode * parent = node->getParentNode();
-        //lvdomElementFormatRec * parent_fmt = node->getParentNode()->getRenderData();
-        css_style_ref_t style = parent->getStyle();
-        LVFontRef font = parent->getFont();
-        if ( style.isNull() ) {
-            // for debugging
-            style = parent->getStyle();
-        }
-        setNodeStyle( node,
-            style,
-            font
-            );
-    }
-}
-
-bool isInvisibleItem( ldomNode * node )
-{
-    if ( node->isElement() ) {
-        if ( node->getRendMethod() == erm_invisible )
-            return true;
-        if ( node->getStyle()->display == css_d_none )
-            return true;
-    }
-    return false;
-}
-
-bool isInlineItem( ldomNode * node )
-{
-    if ( node->isElement() )
-    {
-        //lvdomElementFormatRec * childfmt = child->getRenderData();
-        switch( node->getStyle()->display )
-        {
-        case css_d_inline:
-            if ( node->getRendMethod() != erm_invisible )
-                return true;
-            break;
-        case css_d_run_in:
-            if ( node->getRendMethod() != erm_invisible )
-                return true;
-            break;
-        default:
-            return false;
-        }
-    }
-    else if ( node->isText() )
-    {
-        return true;
-    }
-    return false;
-}
-#endif
-
-#if 0
-// init element render method
-int initRendMethod( ldomNode * enode, bool recurseChildren, bool allowAutoboxing )
-{
-    int res = 0;
-    if ( enode->isElement() )
-    {
-        if (enode->getStyle()->display == css_d_none)
-        {
-            enode->setRendMethod( erm_invisible );
-            return 0;
-        }
-        if (enode->getStyle()->display == css_d_table)
-        {
-            initTableRendMethods( enode, 0 );
-            return 0;
-        }
-        int cnt = enode->getChildCount();
-        int textCount = 0;
-        int inlineCount = 0;
-        int blockCount = 0;
-        int runinCount = 0;
-        if (enode->getNodeId() == el_empty_line)
-            cnt = cnt;
-        int i;
-        for (i=0; i<cnt; i++)
-        {
-            ldomNode * child = enode->getChildNode( i );
-            if ( child->isElement() )
-            {
-                if ( recurseChildren )
-                    res += initRendMethod( child, recurseChildren, allowAutoboxing );
-                // may be modified
-                //child = enode->getChildNode( i );
-                //lvdomElementFormatRec * childfmt = child->getRenderData();
-                switch( child->getStyle()->display )
-                {
-                case css_d_inline:
-                    if ( child->getRendMethod() != erm_invisible )
-                        inlineCount++; // count visible inline elements only
-                    break;
-                case css_d_none:
-                    break;
-                case css_d_run_in:
-                    if ( child->getRendMethod() != erm_invisible )
-                        runinCount++;
-                    break;
-                default:
-                    if ( child->getRendMethod() != erm_invisible )
-                    {
-                        blockCount++; // count visible blocks only
-                    }
-                    break;
-                }
-            }
-            else if ( child->isText() )
-            {
-                textCount++;
-            }
-        }
-        //======= AUTOBOXING =================================================
-        if ( allowAutoboxing && (textCount || inlineCount || runinCount) && blockCount ) {
-            // Mixed inline and block items! Autoboxing is necessary!
-            int firstInline = -1;
-            bool lastInline = false;
-            for (i=cnt-1; i>=0; i--) {
-                ldomNode * child = enode->getChildNode( i );
-                if ( child->isText() ) {
-                    lString16 s = child->getText();
-                    if ( IsEmptySpace( s.c_str(), s.length() ) ) {
-                        enode = enode->modify();
-                        enode->removeChild( i )->destroy();
-                        cnt--;
-                        textCount--;
-                    }
-                }
-            }
-            cnt = enode->getChildCount();
-            if ( textCount || inlineCount ) {
-                for (i=cnt-1; i>=0; i--)
-                {
-                    ldomNode * child = enode->getChildNode( i );
-                    bool isInvisible = isInvisibleItem( child );
-                    bool isInline = isInvisible ? lastInline : isInlineItem( child );
-                    if ( isInline ) {
-                        if ( firstInline==-1 )
-                            firstInline = i;
-                    }
-                    if ( !isInline || i==0 ) {
-                        if ( firstInline>=0 ) {
-                            int lastInline = isInline ? i : i+1;
-/*#ifdef _DEBUG
-                            if ( !enode->getDocument()->checkConsistency( false ) )
-                                CRLog::error("before modify");
-#endif*/
-                            enode = enode->modify();
-/*#ifdef _DEBUG
-                            if ( !enode->getDocument()->checkConsistency( false ) )
-                                CRLog::error("after modify, before insert child");
-#endif*/
-                            ldomNode * abox = enode->insertChildElement( lastInline, LXML_NS_NONE, el_autoBoxing )->modify();
-/*#ifdef _DEBUG
-                            if ( !enode->getDocument()->checkConsistency( false ) )
-                                CRLog::error("after insert child");
-#endif*/
-                            CRLog::trace("Autoboxing applied to node <%s>", LCSTR(enode->getNodeName()) );
-                            enode->moveItemsTo( abox, lastInline+1, firstInline+1 );
-                            setNodeStyle( abox,
-                                enode->getStyle(),
-                                enode->getFont()
-                                );
-                            abox->setRendMethod( erm_final );
-                            res++;
-                            //initRendMethod( abox );
-                            firstInline = -1;
-                            blockCount++;
-                        }
-                    }
-                    lastInline = isInline;
-                }
-                runinCount = 0;
-                inlineCount = 0;
-            }
-            textCount = 0;
-        }
-
-#ifdef DEBUG_DUMP_ENABLED
-      for (i=0; i<enode->getNodeLevel(); i++)
-        logfile << " . ";
-#endif
-#ifdef DEBUG_DUMP_ENABLED
-        lvRect rect;
-        enode->getAbsRect( rect );
-        logfile << "<" << enode->getNodeName() << ">     text:"
-            << textCount << " inline: " << inlineCount
-            << " block: " << blockCount << "   rendMethod: ";
-#endif
-
-        const css_elem_def_props_t * ntype = enode->getElementTypePtr();
-        if ( textCount || inlineCount || runinCount )
-        {
-            // if there are inline or text in block, make it final
-            if ( blockCount ) {
-                CRLog::warn("FINAL element <%s> contains %d text, %d inline, %d runin, %d blocks", LCSTR(enode->getNodeName()), textCount, inlineCount, runinCount, blockCount);
-                for ( int i=0; i<enode->getChildCount(); i++ )
-                    if ( enode->getChildNode(i)->isText() ) {
-                        lString16 s = enode->getChildNode(i)->getText();
-                        CRLog::warn("text: '%s' first ch=%04x", LCSTR(s), s[0]);
-                    }
-            } else {
-                CRLog::trace("FINAL element <%s> contains %d text, %d inline, %d runin", LCSTR(enode->getNodeName()), textCount, inlineCount, runinCount);
-            }
-            enode->setRendMethod( erm_final );
-            res++;
-#ifdef DEBUG_DUMP_ENABLED
-            logfile << "final";
-#endif
-        }
-        else if ( blockCount )
-        {
-            // if there are blocks only inside element, treat it as block too
-            enode->setRendMethod( erm_block );
-            CRLog::trace("BLOCK element <%s> contains %d blocks", LCSTR(enode->getNodeName()), blockCount);
-#ifdef DEBUG_DUMP_ENABLED
-            logfile << "block";
-#endif
-        }
-        else if (ntype && ntype->is_object)
-        {
-            switch ( enode->getStyle()->display )
-            {
-            case css_d_block:
-            case css_d_inline:
-            case css_d_run_in:
-                enode->setRendMethod( erm_final );
-                res++;
-#ifdef DEBUG_DUMP_ENABLED
-                logfile << "object final";
-#endif
-                break;
-            default:
-                enode->setRendMethod( erm_invisible );
-                break;
-            }
-        }
-        else if (enode->getStyle()->display != css_d_none )
-        {
-            // empty element: may be visible (i.e. <empty-line>)
-            enode->setRendMethod( erm_block );
-#ifdef DEBUG_DUMP_ENABLED
-            logfile << "block";
-#endif
-        }
-        else
-        {
-            // empty element: make it invisible
-            enode->setRendMethod( erm_invisible );
-#ifdef DEBUG_DUMP_ENABLED
-            logfile << "invisible";
-#endif
-        }
-#ifdef DEBUG_DUMP_ENABLED
-        logfile << "\n";
-#endif
-    }
-    return res;
-}
-#endif
-
 int styleToTextFmtFlags( const css_style_ref_t & style, int oldflags )
 {
     int flg = oldflags;
     if ( style->display == css_d_run_in ) {
         flg |= LTEXT_RUNIN_FLAG;
-    } else if (style->display != css_d_inline) {
+    } //else
+    if (style->display != css_d_inline) {
         // text alignment flags
         flg = oldflags & ~LTEXT_FLAG_NEWLINE;
         if ( !(oldflags & LTEXT_RUNIN_FLAG) ) {
@@ -1413,27 +1138,23 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
             logfile << "+BLOCK [" << cnt << "]";
 #endif
             // usual elements
-            int runin_count = 0;
+            bool thisIsRunIn = enode->getStyle()->display==css_d_run_in;
+            if ( thisIsRunIn )
+                flags |= LTEXT_RUNIN_FLAG;
             for (int i=0; i<cnt; i++)
             {
                 ldomNode * child = enode->getChildNode( i );
                 renderFinalBlock( child, txform, fmt, flags, ident, line_h );
-                //flags &= ~LTEXT_FLAG_NEWLINE; // clear newline flag
-                if ( flags & LTEXT_RUNIN_FLAG ) {
-                    runin_count++;
-                    if ( runin_count>1 ) {
-                        runin_count = 0;
-                        flags &= ~LTEXT_RUNIN_FLAG;
-                    } else if ( i<cnt-1 && child->isElement() && child->getStyle()->display==css_d_run_in ) {
-                        // append space to run-in object
-                        LVFont * font = enode->getFont().get();
-                        css_style_ref_t style = enode->getStyle();
-                        lUInt32 cl = style->color.type!=css_val_color ? 0xFFFFFFFF : style->color.value;
-                        lUInt32 bgcl = style->background_color.type!=css_val_color ? 0xFFFFFFFF : style->background_color.value;
-                        lChar16 delimiter[] = {160, 160}; //160
-                        txform->AddSourceLine( delimiter, sizeof(delimiter)/sizeof(lChar16), cl, bgcl, font, LTEXT_FLAG_OWNTEXT, line_h, 0, NULL );
-                    }
-                }
+            }
+            if ( thisIsRunIn ) {
+                // append space to run-in object
+                LVFont * font = enode->getFont().get();
+                css_style_ref_t style = enode->getStyle();
+                lUInt32 cl = style->color.type!=css_val_color ? 0xFFFFFFFF : style->color.value;
+                lUInt32 bgcl = style->background_color.type!=css_val_color ? 0xFFFFFFFF : style->background_color.value;
+                lChar16 delimiter[] = {UNICODE_NO_BREAK_SPACE, UNICODE_NO_BREAK_SPACE}; //160
+                txform->AddSourceLine( delimiter, sizeof(delimiter)/sizeof(lChar16), cl, bgcl, font, LTEXT_FLAG_OWNTEXT | LTEXT_RUNIN_FLAG, line_h, 0, NULL );
+                flags &= ~LTEXT_RUNIN_FLAG;
             }
         }
 
@@ -1878,7 +1599,8 @@ int renderBlockElement( LVRendPageContext & context, ldomNode * enode, int x, in
     return 0;
 }
 
-void DrawDocument( LVDrawBuf & drawbuf, ldomNode * enode, int x0, int y0, int dx, int dy, int doc_x, int doc_y, int page_height, ldomMarkedRangeList * marks )
+void DrawDocument( LVDrawBuf & drawbuf, ldomNode * enode, int x0, int y0, int dx, int dy, int doc_x, int doc_y, int page_height, ldomMarkedRangeList * marks,
+                   ldomMarkedRangeList *bookmarks)
 {
     if ( enode->isElement() )
     {
@@ -1913,9 +1635,9 @@ void DrawDocument( LVDrawBuf & drawbuf, ldomNode * enode, int x0, int y0, int dx
         static lUInt32 const colors2[] = { 0x555555, 0xAAAAAA, 0x555555, 0xAAAAAA, 0x555555, 0xAAAAAA, 0x555555, 0xAAAAAA };
         static lUInt32 const colors4[] = { 0x555555, 0xFF4040, 0x40FF40, 0x4040FF, 0xAAAAAA, 0xFF8000, 0xC0C0C0, 0x808080 };
         if (drawbuf.GetBitsPerPixel()>=16)
-            color = colors4[node->getNodeLevel() & 7];
+            color = colors4[enode->getNodeLevel() & 7];
         else
-            color = colors2[node->getNodeLevel() & 7];
+            color = colors2[enode->getNodeLevel() & 7];
 #endif
         switch( enode->getRendMethod() )
         {
@@ -1931,13 +1653,13 @@ void DrawDocument( LVDrawBuf & drawbuf, ldomNode * enode, int x0, int y0, int dx
                 for (int i=0; i<cnt; i++)
                 {
                     ldomNode * child = enode->getChildNode( i );
-                    DrawDocument( drawbuf, child, x0, y0, dx, dy, doc_x, doc_y, page_height, marks ); //+fmt->getX() +fmt->getY()
+                    DrawDocument( drawbuf, child, x0, y0, dx, dy, doc_x, doc_y, page_height, marks, bookmarks ); //+fmt->getX() +fmt->getY()
                 }
 #if (DEBUG_TREE_DRAW!=0)
-                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+fmt->getWidth(), doc_y+y0+1, color );
-                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+1, doc_y+y0+fmt->getHeight(), color );
-                drawbuf.FillRect( doc_x+x0+fmt->getWidth()-1, doc_y+y0, doc_x+x0+fmt->getWidth(), doc_y+y0+fmt->getHeight(), color );
-                drawbuf.FillRect( doc_x+x0, doc_y+y0+fmt->getHeight()-1, doc_x+x0+fmt->getWidth(), doc_y+y0+fmt->getHeight(), color );
+                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+fmt.getWidth(), doc_y+y0+1, color );
+                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+1, doc_y+y0+fmt.getHeight(), color );
+                drawbuf.FillRect( doc_x+x0+fmt.getWidth()-1, doc_y+y0, doc_x+x0+fmt.getWidth(), doc_y+y0+fmt.getHeight(), color );
+                drawbuf.FillRect( doc_x+x0, doc_y+y0+fmt.getHeight()-1, doc_x+x0+fmt.getWidth(), doc_y+y0+fmt.getHeight(), color );
 #endif
                 lUInt32 tableBorderColor = 0xAAAAAA;
                 lUInt32 tableBorderColorDark = 0x555555;
@@ -1963,25 +1685,30 @@ void DrawDocument( LVDrawBuf & drawbuf, ldomNode * enode, int x0, int y0, int dx
                 enode->renderFinalBlock( txform, &fmt, fmt.getWidth() - padding_left - padding_right );
                 fmt.push();
                 {
+                    lvRect rc;
+                    enode->getAbsRect( rc );
+                    ldomMarkedRangeList *nbookmarks = NULL;
+                    if ( bookmarks && bookmarks->length()) {
+                        nbookmarks = new ldomMarkedRangeList( bookmarks, rc );
+                    }
                     if ( marks && marks->length() ) {
-                        lvRect rc;
-                        enode->getAbsRect( rc );
                         //rc.left -= doc_x;
                         //rc.right -= doc_x;
                         //rc.top -= doc_y;
                         //rc.bottom -= doc_y;
                         ldomMarkedRangeList nmarks( marks, rc );
-                        txform->Draw( &drawbuf, doc_x+x0 + padding_left, doc_y+y0 + padding_top, &nmarks );
-
+                        txform->Draw( &drawbuf, doc_x+x0 + padding_left, doc_y+y0 + padding_top, &nmarks, nbookmarks );
                     } else {
-                        txform->Draw( &drawbuf, doc_x+x0 + padding_left, doc_y+y0 + padding_top, marks );
+                        txform->Draw( &drawbuf, doc_x+x0 + padding_left, doc_y+y0 + padding_top, marks, nbookmarks );
                     }
+                    if (nbookmarks)
+                        delete nbookmarks;
                 }
 #if (DEBUG_TREE_DRAW!=0)
-                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+fmt->getWidth(), doc_y+y0+1, color );
-                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+1, doc_y+y0+fmt->getHeight(), color );
-                drawbuf.FillRect( doc_x+x0+fmt->getWidth()-1, doc_y+y0, doc_x+x0+fmt->getWidth(), doc_y+y0+fmt->getHeight(), color );
-                drawbuf.FillRect( doc_x+x0, doc_y+y0+fmt->getHeight()-1, doc_x+x0+fmt->getWidth(), doc_y+y0+fmt->getHeight(), color );
+                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+fmt.getWidth(), doc_y+y0+1, color );
+                drawbuf.FillRect( doc_x+x0, doc_y+y0, doc_x+x0+1, doc_y+y0+fmt.getHeight(), color );
+                drawbuf.FillRect( doc_x+x0+fmt.getWidth()-1, doc_y+y0, doc_x+x0+fmt.getWidth(), doc_y+y0+fmt.getHeight(), color );
+                drawbuf.FillRect( doc_x+x0, doc_y+y0+fmt.getHeight()-1, doc_x+x0+fmt.getWidth(), doc_y+y0+fmt.getHeight(), color );
 #endif
                 lUInt32 tableBorderColor = 0x555555;
                 lUInt32 tableBorderColorDark = 0xAAAAAA;

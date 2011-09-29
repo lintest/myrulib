@@ -151,7 +151,15 @@ typedef struct
    lUInt32               frmlinecount;  /**< formatted lines count*/
    lUInt32               height;        /**< height of text fragment */
    lUInt16               width;         /**< width of text fragment */
-   lUInt16               page_height;   /**< width of text fragment */
+   lUInt16               page_height;   /**< max page height */
+   lInt32                img_zoom_in_mode_block; /**< can zoom in block images: 0=disabled, 1=integer scale, 2=free scale */
+   lInt32                img_zoom_in_scale_block; /**< max scale for block images zoom in: 1, 2, 3 */
+   lInt32                img_zoom_in_mode_inline; /**< can zoom in inline images: 0=disabled, 1=integer scale, 2=free scale */
+   lInt32                img_zoom_in_scale_inline; /**< max scale for inline images zoom in: 1, 2, 3 */
+   lInt32                img_zoom_out_mode_block; /**< can zoom out block images: 0=disabled, 1=integer scale, 2=free scale */
+   lInt32                img_zoom_out_scale_block; /**< max scale for block images zoom out: 1, 2, 3 */
+   lInt32                img_zoom_out_mode_inline; /**< can zoom out inline images: 0=disabled, 1=integer scale, 2=free scale */
+   lInt32                img_zoom_out_scale_inline; /**< max scale for inline images zoom out: 1, 2, 3 */
 } formatted_text_fragment_t;
 
 /**  Alloc & init formatted text buffer
@@ -202,26 +210,13 @@ void lvtextAddSourceObject(
    lInt8           letter_spacing
                          );
 
-/** Formats source lines stored in buffer into formatted lines
-
-   \return height (in pixels) of formatted text
-*/
-lUInt32 lvtextFormat( formatted_text_fragment_t * pbuffer );
-
-/** Reformats source lines stored in buffer into formatted lines
-
-   \return height (in pixels) of formatted text
-*/
-lUInt32 lvtextResize( formatted_text_fragment_t * pbuffer, int width, int page_height );
-
-/** \brief Draws formatted text to draw buffer (C API) */
-void lvtextDraw( formatted_text_fragment_t * text, draw_buf_t * buf, int x, int y );
 
 #ifdef __cplusplus
 }
 
 class LVDrawBuf;
 class ldomMarkedRangeList;
+struct img_scaling_options_t;
 
 /* C++ wrapper class */
 class LFormattedText
@@ -231,6 +226,8 @@ private:
     formatted_text_fragment_t * m_pbuffer;
 public:
     formatted_text_fragment_t * GetBuffer() { return m_pbuffer; }
+
+    void setImageScalingOptions( img_scaling_options_t * options );
 
     void Clear()
     { 
@@ -294,7 +291,7 @@ public:
         return m_pbuffer->frmlines[index];
     }
 
-    void Draw( LVDrawBuf * buf, int x, int y, ldomMarkedRangeList * marks );
+    void Draw( LVDrawBuf * buf, int x, int y, ldomMarkedRangeList * marks,  ldomMarkedRangeList *bookmarks = NULL );
 
     LFormattedText() { m_pbuffer = lvtextAllocFormatter( 0 ); }
 
