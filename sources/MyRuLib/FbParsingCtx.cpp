@@ -129,6 +129,20 @@ unsigned int name(const void *buffer, const void *buffer_end, Char32 *ch) {   \
   return 1;                                                                   \
 }
 
+FAXPP_define_decode(FAXPP_ISO8859_1_decode, encoding_table__ISO8859_1);
+FAXPP_define_decode(FAXPP_ISO8859_2_decode, encoding_table__ISO8859_2);
+FAXPP_define_decode(FAXPP_ISO8859_3_decode, encoding_table__ISO8859_3);
+FAXPP_define_decode(FAXPP_ISO8859_4_decode, encoding_table__ISO8859_4);
+FAXPP_define_decode(FAXPP_ISO8859_5_decode, encoding_table__ISO8859_5);
+FAXPP_define_decode(FAXPP_ISO8859_6_decode, encoding_table__ISO8859_6);
+FAXPP_define_decode(FAXPP_ISO8859_7_decode, encoding_table__ISO8859_7);
+FAXPP_define_decode(FAXPP_ISO8859_8_decode, encoding_table__ISO8859_8);
+FAXPP_define_decode(FAXPP_ISO8859_9_decode, encoding_table__ISO8859_9);
+FAXPP_define_decode(FAXPP_ISO8859_10_decode, encoding_table__ISO8859_10);
+FAXPP_define_decode(FAXPP_ISO8859_13_decode, encoding_table__ISO8859_13);
+FAXPP_define_decode(FAXPP_ISO8859_14_decode, encoding_table__ISO8859_14);
+FAXPP_define_decode(FAXPP_ISO8859_15_decode, encoding_table__ISO8859_15);
+
 FAXPP_define_decode(FAXPP_cp1251_decode, encoding_table__CP1251);
 FAXPP_define_decode(FAXPP_cp1252_decode, encoding_table__CP1252);
 FAXPP_define_decode(FAXPP_cp1253_decode, encoding_table__CP1253);
@@ -192,6 +206,7 @@ FAXPP_DecodeFunction FbParsingContextFaxpp::StrToDecode(const wxString & encodin
 {
 	FAXPP_DecodeFunction decode = FAXPP_string_to_decode(encoding.mb_str());
 	if (decode) return decode;
+
 	if (encoding == wxT("windows-1251")) return FAXPP_cp1251_decode;
 	if (encoding == wxT("windows-1252")) return FAXPP_cp1252_decode;
 	if (encoding == wxT("windows-1253")) return FAXPP_cp1253_decode;
@@ -203,8 +218,23 @@ FAXPP_DecodeFunction FbParsingContextFaxpp::StrToDecode(const wxString & encodin
 	if (encoding == wxT("koi8")) return FAXPP_koi8r_decode;
 	if (encoding == wxT("koi8-r")) return FAXPP_koi8r_decode;
 	if (encoding == wxT("koi8-u")) return FAXPP_koi8u_decode;
+
+	if (encoding == wxT("iso-8859-1")) return FAXPP_ISO8859_1_decode;
+	if (encoding == wxT("iso-8859-2")) return FAXPP_ISO8859_2_decode;
+	if (encoding == wxT("iso-8859-3")) return FAXPP_ISO8859_3_decode;
+	if (encoding == wxT("iso-8859-4")) return FAXPP_ISO8859_4_decode;
+	if (encoding == wxT("iso-8859-5")) return FAXPP_ISO8859_5_decode;
+	if (encoding == wxT("iso-8859-6")) return FAXPP_ISO8859_6_decode;
+	if (encoding == wxT("iso-8859-7")) return FAXPP_ISO8859_7_decode;
+	if (encoding == wxT("iso-8859-8")) return FAXPP_ISO8859_8_decode;
+	if (encoding == wxT("iso-8859-9")) return FAXPP_ISO8859_9_decode;
+	if (encoding == wxT("iso-8859-10")) return FAXPP_ISO8859_10_decode;
+	if (encoding == wxT("iso-8859-13")) return FAXPP_ISO8859_13_decode;
+	if (encoding == wxT("iso-8859-14")) return FAXPP_ISO8859_14_decode;
+	if (encoding == wxT("iso-8859-15")) return FAXPP_ISO8859_15_decode;
+
 	wxLogError(_("Unknown encoding: %s"), encoding.c_str());
-	return NULL;
+	return FAXPP_utf8_decode;
 }
 
 bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
