@@ -44,6 +44,15 @@ WX_RESCOMP = @WX_RESCOMP@
 ### Variables: ###
 
 DESTDIR = 
+MRL_BZIP2_CFLAGS =  -DNDEBUG  $(CPPFLAGS) $(CFLAGS)
+MRL_BZIP2_OBJECTS =  \
+	mrl_bzip2_blocksort.o \
+	mrl_bzip2_bzlib.o \
+	mrl_bzip2_compress.o \
+	mrl_bzip2_crctable.o \
+	mrl_bzip2_decompress.o \
+	mrl_bzip2_huffman.o \
+	mrl_bzip2_randtable.o
 MRL_EXPAT_CFLAGS = -DXML_STATIC -DHAVE_MEMMOVE -I$(srcdir)/3rdparty/expat \
 	$(CPPFLAGS) $(CFLAGS)
 MRL_EXPAT_OBJECTS =  \
@@ -124,16 +133,8 @@ MRL_WXSQLITE3_CXXFLAGS = -DNDEBUG -I$(srcdir)/3rdparty/wxsqlite3/include \
 	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MRL_WXSQLITE3_OBJECTS =  \
 	mrl_wxsqlite3_wxsqlite3.o
-MRL_WXBZIP2_CFLAGS =  -DNDEBUG  $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 MRL_WXBZIP2_CXXFLAGS =  -DNDEBUG  $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MRL_WXBZIP2_OBJECTS =  \
-	mrl_wxbzip2_blocksort.o \
-	mrl_wxbzip2_bzlib.o \
-	mrl_wxbzip2_compress.o \
-	mrl_wxbzip2_crctable.o \
-	mrl_wxbzip2_decompress.o \
-	mrl_wxbzip2_huffman.o \
-	mrl_wxbzip2_randtable.o \
 	mrl_wxbzip2_bzipstream.o
 ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
@@ -263,6 +264,8 @@ MYRULIB_ODEP = ru.inc uk.inc be.inc cs.inc sv.inc $(__fb2_css_inc___depname)
 @COND_DEPS_TRACKING_1@CCC = $(BK_DEPS) $(CC)
 @COND_DEPS_TRACKING_0@CXXC = $(CXX)
 @COND_DEPS_TRACKING_1@CXXC = $(BK_DEPS) $(CXX)
+@COND_USE_BZIP2_builtin@__mrl_bzip2___depname = \
+@COND_USE_BZIP2_builtin@	$(LIBPREFIX)mrl_bzip2$(LIBEXT)
 @COND_USE_EXPAT_builtin@__mrl_expat___depname = \
 @COND_USE_EXPAT_builtin@	$(LIBPREFIX)mrl_expat$(LIBEXT)
 @COND_USE_FAXPP_builtin@__mrl_faxpp___depname = \
@@ -288,7 +291,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -324,6 +327,7 @@ install-strip: install
 clean: 
 	rm -rf ./.deps ./.pch
 	rm -f ./*.o
+	rm -f $(LIBPREFIX)mrl_bzip2$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_expat$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_faxpp$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_sqlite3$(LIBEXT)
@@ -348,6 +352,11 @@ clean:
 
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
+
+@COND_USE_BZIP2_builtin@$(LIBPREFIX)mrl_bzip2$(LIBEXT): $(MRL_BZIP2_OBJECTS)
+@COND_USE_BZIP2_builtin@	rm -f $@
+@COND_USE_BZIP2_builtin@	$(AR) $(AROPTIONS) $@ $(MRL_BZIP2_OBJECTS)
+@COND_USE_BZIP2_builtin@	$(RANLIB) $@
 
 @COND_USE_EXPAT_builtin@$(LIBPREFIX)mrl_expat$(LIBEXT): $(MRL_EXPAT_OBJECTS)
 @COND_USE_EXPAT_builtin@	rm -f $@
@@ -382,7 +391,7 @@ $(LIBPREFIX)mrl_wxbzip2$(LIBEXT): $(MRL_WXBZIP2_OBJECTS)
 	$(AR) $(AROPTIONS) $@ $(MRL_WXBZIP2_OBJECTS)
 	$(RANLIB) $@
 
-zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_sqlite3___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
+zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_sqlite3___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
 	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
 	
 	$(__zipscan___mac_setfilecmd)
@@ -425,7 +434,7 @@ sv.inc: bin2c$(EXEEXT) sv.mo
 @COND_USE_READER_yes@fb2_css.inc: bin2c$(EXEEXT) $(srcdir)/3rdparty/crengine/css/fb2.css
 @COND_USE_READER_yes@	./bin2c $(srcdir)/3rdparty/crengine/css/fb2.css ./fb2_css.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
 	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lmrl_wxbzip2 -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
@@ -438,6 +447,27 @@ install_myrulib: myrulib$(EXEEXT)
 
 uninstall_myrulib: 
 	rm -f $(DESTDIR)$(bindir)/myrulib$(EXEEXT)
+
+mrl_bzip2_blocksort.o: $(srcdir)/3rdparty/bzip2/blocksort.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/blocksort.c
+
+mrl_bzip2_bzlib.o: $(srcdir)/3rdparty/bzip2/bzlib.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/bzlib.c
+
+mrl_bzip2_compress.o: $(srcdir)/3rdparty/bzip2/compress.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/compress.c
+
+mrl_bzip2_crctable.o: $(srcdir)/3rdparty/bzip2/crctable.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/crctable.c
+
+mrl_bzip2_decompress.o: $(srcdir)/3rdparty/bzip2/decompress.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/decompress.c
+
+mrl_bzip2_huffman.o: $(srcdir)/3rdparty/bzip2/huffman.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/huffman.c
+
+mrl_bzip2_randtable.o: $(srcdir)/3rdparty/bzip2/randtable.c
+	$(CCC) -c -o $@ $(MRL_BZIP2_CFLAGS) $(srcdir)/3rdparty/bzip2/randtable.c
 
 mrl_expat_xmlparse.o: $(srcdir)/3rdparty/expat/xmlparse.c
 	$(CCC) -c -o $@ $(MRL_EXPAT_CFLAGS) $(srcdir)/3rdparty/expat/xmlparse.c
@@ -630,27 +660,6 @@ mrl_crengine_xutils.o: $(srcdir)/3rdparty/crengine/src/xutils.cpp
 
 mrl_wxsqlite3_wxsqlite3.o: wxsqlite3.cpp
 	$(CXXC) -c -o $@ $(MRL_WXSQLITE3_CXXFLAGS) wxsqlite3.cpp
-
-mrl_wxbzip2_blocksort.o: $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/blocksort.c
-
-mrl_wxbzip2_bzlib.o: $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/bzlib.c
-
-mrl_wxbzip2_compress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/compress.c
-
-mrl_wxbzip2_crctable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/crctable.c
-
-mrl_wxbzip2_decompress.o: $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/decompress.c
-
-mrl_wxbzip2_huffman.o: $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/huffman.c
-
-mrl_wxbzip2_randtable.o: $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
-	$(CCC) -c -o $@ $(MRL_WXBZIP2_CFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzip/randtable.c
 
 mrl_wxbzip2_bzipstream.o: $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
 	$(CXXC) -c -o $@ $(MRL_WXBZIP2_CXXFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp

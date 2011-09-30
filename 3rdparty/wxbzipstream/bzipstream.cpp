@@ -27,7 +27,7 @@
 #include "bzipstream.h"
 
 #define BZ_NO_STDIO
-#include "bzip/bzlib.h"
+#include "bzlib.h"
 
 #ifndef BZ_MAX_UNUSED
 #define BZ_MAX_UNUSED 5000

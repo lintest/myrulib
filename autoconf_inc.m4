@@ -42,6 +42,12 @@ dnl ### begin block 20_COND_PLATFORM_WIN32_1[myrulib.bkl] ###
         COND_PLATFORM_WIN32_1=""
     fi
     AC_SUBST(COND_PLATFORM_WIN32_1)
+dnl ### begin block 20_COND_USE_BZIP2_builtin[myrulib.bkl] ###
+    COND_USE_BZIP2_builtin="#"
+    if test "x$USE_BZIP2" = "xbuiltin" ; then
+        COND_USE_BZIP2_builtin=""
+    fi
+    AC_SUBST(COND_USE_BZIP2_builtin)
 dnl ### begin block 20_COND_USE_EXPAT_builtin[myrulib.bkl] ###
     COND_USE_EXPAT_builtin="#"
     if test "x$USE_EXPAT" = "xbuiltin" ; then

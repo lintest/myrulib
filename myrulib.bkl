@@ -2,7 +2,7 @@
 <makefile>
 
 	<set var="PREFIX">/usr</set>
-	<option name="USE_CURL"/>
+	<option name="USE_BZIP2"/>
 	<option name="USE_FAXPP"/>
 	<option name="USE_EXPAT"/>
 	<option name="USE_SQLITE"/>
@@ -12,6 +12,17 @@
 
 	<include file="./3rdparty/bakefile/wx.bkl"/>
 	<include file="datafiles.bkl"/>
+
+	<lib id="mrl_bzip2" cond="USE_BZIP2=='builtin'">
+		<define>NDEBUG</define>
+		<sources>3rdparty/bzip2/blocksort.c</sources>
+		<sources>3rdparty/bzip2/bzlib.c</sources>
+		<sources>3rdparty/bzip2/compress.c</sources>
+		<sources>3rdparty/bzip2/crctable.c</sources>
+		<sources>3rdparty/bzip2/decompress.c</sources>
+		<sources>3rdparty/bzip2/huffman.c</sources>
+		<sources>3rdparty/bzip2/randtable.c</sources>
+	</lib>
 
 	<lib id="mrl_expat" cond="USE_EXPAT=='builtin'">
 		<define>XML_STATIC</define>
@@ -115,17 +126,11 @@
 
 	<lib id="mrl_wxbzip2" template="wx-lib">
 		<define>NDEBUG</define>
-		<sources>3rdparty/wxbzipstream/bzip/blocksort.c</sources>
-		<sources>3rdparty/wxbzipstream/bzip/bzlib.c</sources>
-		<sources>3rdparty/wxbzipstream/bzip/compress.c</sources>
-		<sources>3rdparty/wxbzipstream/bzip/crctable.c</sources>
-		<sources>3rdparty/wxbzipstream/bzip/decompress.c</sources>
-		<sources>3rdparty/wxbzipstream/bzip/huffman.c</sources>
-		<sources>3rdparty/wxbzipstream/bzip/randtable.c</sources>
 		<sources>3rdparty/wxbzipstream/bzipstream.cpp</sources>
 	</lib>
 
 	<exe id="zipscan" template="wxconsole">
+		<depends>mrl_bzip2</depends>
 		<depends>mrl_sqlite3</depends>
 		<define>NDEBUG</define>
 		<sources>sources/ZipScaner/ZipScan.cpp</sources>
@@ -215,6 +220,7 @@
 	</action>
 	
 	<exe id="myrulib" template="wxgui">
+		<depends>mrl_bzip2</depends>
 		<depends>mrl_expat</depends>
 		<depends>mrl_faxpp</depends>
 		<depends>mrl_sqlite3</depends>
