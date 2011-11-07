@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\3rdparty\bzip2&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_READER;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC;CYGWIN;_MYRULIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -394,7 +394,7 @@
 			Name="WxBZip2"
 			>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\blocksort.c"
+				RelativePath="..\..\3rdparty\bzip2\blocksort.c"
 				>
 			</File>
 			<File
@@ -406,35 +406,35 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\bzlib.c"
+				RelativePath="..\..\3rdparty\bzip2\bzlib.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\bzlib.h"
+				RelativePath="..\..\3rdparty\bzip2\bzlib.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\bzlib_private.h"
+				RelativePath="..\..\3rdparty\bzip2\bzlib_private.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\compress.c"
+				RelativePath="..\..\3rdparty\bzip2\compress.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\crctable.c"
+				RelativePath="..\..\3rdparty\bzip2\crctable.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\decompress.c"
+				RelativePath="..\..\3rdparty\bzip2\decompress.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\huffman.c"
+				RelativePath="..\..\3rdparty\bzip2\huffman.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\3rdparty\wxbzipstream\bzip\randtable.c"
+				RelativePath="..\..\3rdparty\bzip2\randtable.c"
 				>
 			</File>
 		</Filter>
