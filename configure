@@ -4628,7 +4628,7 @@ $as_echo_n "checking for --with-bzip2... " >&6; }
 if test "${with_bzip2+set}" = set; then :
   withval=$with_bzip2; USE_BZIP2="$withval"
 else
-  USE_BZIP2="builtin"
+  USE_BZIP2="no"
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_BZIP2" >&5
@@ -4688,6 +4688,63 @@ $as_echo "$USE_SYSLOG" >&6; }
 
 if test "x$USE_BZIP2" == "xyes" ; then
     USE_BZIP2="builtin"
+fi
+
+if test "x$USE_SQLITE" != "xbuiltin" ; then
+  ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
+if test "x$ac_cv_header_bzlib_h" = x""yes; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzwrite in -lbz2" >&5
+$as_echo_n "checking for BZ2_bzwrite in -lbz2... " >&6; }
+if test "${ac_cv_lib_bz2_BZ2_bzwrite+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lbz2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char BZ2_bzwrite ();
+int
+main ()
+{
+return BZ2_bzwrite ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_bz2_BZ2_bzwrite=yes
+else
+  ac_cv_lib_bz2_BZ2_bzwrite=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_BZ2_bzwrite" >&5
+$as_echo "$ac_cv_lib_bz2_BZ2_bzwrite" >&6; }
+if test "x$ac_cv_lib_bz2_BZ2_bzwrite" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBBZ2 1
+_ACEOF
+
+  LIBS="-lbz2 $LIBS"
+
+else
+  USE_BZIP2="builtin"
+fi
+
+else
+  USE_BZIP2="builtin"
+fi
+
+
 fi
 
 if test "x$USE_SQLITE" == "xyes" ; then
@@ -8720,70 +8777,6 @@ WX_CPPFLAGS=`echo $WX_CPPFLAGS | sed "s|-mthreads||g"`
 WX_LIBS=`echo $WX_LIBS | sed "s|-mthreads||g"`
 
 
-ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_bzlib_h" = x""yes; then :
-  USE_BZIP2="no"
-else
-  USE_BZIP2="builtin"
-fi
-
-
-if test "x$USE_BZIP2" != "xbuiltin"; then
-    ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_bzlib_h" = x""yes; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzwrite in -lbz2" >&5
-$as_echo_n "checking for BZ2_bzwrite in -lbz2... " >&6; }
-if test "${ac_cv_lib_bz2_BZ2_bzwrite+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbz2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char BZ2_bzwrite ();
-int
-main ()
-{
-return BZ2_bzwrite ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_bz2_BZ2_bzwrite=yes
-else
-  ac_cv_lib_bz2_BZ2_bzwrite=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_BZ2_bzwrite" >&5
-$as_echo "$ac_cv_lib_bz2_BZ2_bzwrite" >&6; }
-if test "x$ac_cv_lib_bz2_BZ2_bzwrite" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBBZ2 1
-_ACEOF
-
-  LIBS="-lbz2 $LIBS"
-
-else
-  USE_BZIP2="builtin"
-fi
-
-else
-  USE_BZIP2="builtin"
-fi
-
-
-fi
 if test "x$USE_BZIP2" = "xbuiltin"; then
   CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/bzip2"
   WX_LIBS="$WX_LIBS -lmrl_bzip2"
@@ -10205,8 +10198,8 @@ echo "Configured ${PACKAGE_STRING} for \`${host}' wxWidgets ${WX_VERSION}"
 echo
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
-echo "  Use buildin BZip2 library?                    ${USE_BZIP2}"
-echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Use builtin BZip2 library?                    ${USE_BZIP2}"
+echo "  Use builtin SQLite3 library?                  ${USE_SQLITE}"
 echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"

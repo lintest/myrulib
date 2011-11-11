@@ -66,7 +66,7 @@ if test "x$USE_EXPAT" = "xyes" ; then
 fi
 
 AC_MSG_CHECKING([for --with-bzip2])
-AC_ARG_WITH([bzip2], [AS_HELP_STRING([--with-bzip2], [Use builtin BZip2 library])], USE_BZIP2="$withval", USE_BZIP2="builtin")
+AC_ARG_WITH([bzip2], [AS_HELP_STRING([--with-bzip2], [Use builtin BZip2 library])], USE_BZIP2="$withval", USE_BZIP2="no")
 AC_MSG_RESULT([$USE_BZIP2])
 
 AC_MSG_CHECKING([for --with-sqlite])
@@ -87,6 +87,10 @@ AC_MSG_RESULT([$USE_SYSLOG])
 
 if test "x$USE_BZIP2" == "xyes" ; then 
     USE_BZIP2="builtin"
+fi
+
+if test "x$USE_SQLITE" != "xbuiltin" ; then 
+  AC_CHECK_HEADER(bzlib.h, [AC_CHECK_LIB(bz2, BZ2_bzwrite, , USE_BZIP2="builtin")], USE_BZIP2="builtin")
 fi
 
 if test "x$USE_SQLITE" == "xyes" ; then 
@@ -158,10 +162,6 @@ dnl =================
 dnl === USE_BZIP2 ===
 dnl =================
 
-AC_CHECK_HEADER(bzlib.h, USE_BZIP2="no", USE_BZIP2="builtin")
-if test "x$USE_BZIP2" != "xbuiltin"; then
-    AC_CHECK_HEADER(bzlib.h, [AC_CHECK_LIB(bz2, BZ2_bzwrite, , USE_BZIP2="builtin")], USE_BZIP2="builtin")
-fi
 if test "x$USE_BZIP2" = "xbuiltin"; then
   CXXFLAGS="$CXXFLAGS -I\$(srcdir)/3rdparty/bzip2"
   WX_LIBS="$WX_LIBS -lmrl_bzip2"
@@ -287,8 +287,8 @@ echo "Configured ${PACKAGE_STRING} for \`${host}' wxWidgets ${WX_VERSION}"
 echo 
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use Expat XML parser library?                 ${USE_EXPAT}"
-echo "  Use buildin BZip2 library?                    ${USE_BZIP2}"
-echo "  Use buildin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Use builtin BZip2 library?                    ${USE_BZIP2}"
+echo "  Use builtin SQLite3 library?                  ${USE_SQLITE}"
 echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
