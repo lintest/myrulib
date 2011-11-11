@@ -108,8 +108,12 @@ class FbDatabase: public wxSQLite3Database
 		wxString Str(const wxString & id, const wxString & sql, const wxString & null = wxEmptyString);
 		int Int(int id, const wxString & sql, int null = 0);
 		int Int(const wxString & id, const wxString & sql, int null = 0);
+	protected:
+		void InitFunctions();
 	private:
 		static wxCriticalSection sm_queue;
+		FbLetterFunction m_letter_func;
+		FbLowerFunction	m_lower_func;
 };
 
 class FbAutoCommit
@@ -178,6 +182,7 @@ class FbMainDatabase: public FbMasterDatabase
 		virtual wxString GetMaster() { return wxT("params"); };
 	private:
 		void CreateDatabase();
+		void CreateTableFTS(const wxString & name);
 };
 
 #endif // __FBDATABASE_H__

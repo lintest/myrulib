@@ -13,7 +13,7 @@
 wxString Lower(const wxString & input)
 {
 #ifdef __WXMSW__
-	wxWCharBuffer buf = input.c_str(); 
+	wxWCharBuffer buf = input.c_str();
 	CharLower(buf.data());
 	return buf;
 #else
@@ -24,7 +24,7 @@ wxString Lower(const wxString & input)
 wxString Upper(const wxString & input)
 {
 #ifdef __WXMSW__
-	wxWCharBuffer buf = input.c_str(); 
+	wxWCharBuffer buf = input.c_str();
 	CharUpper(buf.data());
 	return buf;
 #else
@@ -35,7 +35,7 @@ wxString Upper(const wxString & input)
 wxString & MakeLower(wxString & data)
 {
 #ifdef __WXMSW__
-	wxWCharBuffer buf = data.c_str(); 
+	wxWCharBuffer buf = data.c_str();
 	CharLower(buf.data());
 	return data = buf;
 #else
@@ -46,26 +46,12 @@ wxString & MakeLower(wxString & data)
 wxString & MakeUpper(wxString & data)
 {
 #ifdef __WXMSW__
-	wxWCharBuffer buf = data.c_str(); 
+	wxWCharBuffer buf = data.c_str();
 	CharUpper(buf.data());
 	return data = buf;
 #else
 	return data.MakeUpper();
 #endif
-}
-
-//-----------------------------------------------------------------------------
-//  FbLowerFunction
-//-----------------------------------------------------------------------------
-
-void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
-{
-	int argc = ctx.GetArgCount();
-	if (argc == 1) {
-		ctx.SetResult(Lower(ctx.GetString(0)));
-	} else {
-		ctx.SetResultError(wxString::Format(fbT("Wrong LOWER argc: %d."), argc));
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -135,7 +121,7 @@ wxString Letter(const wxString & text)
 	size_t count = text.Len();
 	for (size_t i = 0; i < count; i++) {
 		wxChar ch = text[i];
-		if (IsAlpha(ch)) { 
+		if (IsAlpha(ch)) {
 			wxString res = Upper(ch);
 			if (res == wxChar(0x401)) res = wxChar(0x415);
 			return res;
@@ -150,6 +136,29 @@ void FbLetterFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	if (ctx.GetArgCount() == 1) {
 		ctx.SetResult(Letter(ctx.GetString(0)));
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbLowerFunction
+//-----------------------------------------------------------------------------
+
+void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
+{
+	int argc = ctx.GetArgCount();
+	if (argc == 1) {
+		#ifdef SQLITE_ENABLE_ICU
+			ctx.SetResult(Lower(ctx.GetString(0)));
+		#else
+			wxString str = Lower(ctx.GetString(0));
+			size_t len = str.Len();
+			for (size_t i = 0; i < len; i++) {
+				if (!IsAlpha(str[i])) str[i] = 0x20;
+			}
+			ctx.SetResult(str);
+		#endif
+	} else {
+		ctx.SetResultError(wxString::Format(fbT("Wrong LOWER argc: %d."), argc));
 	}
 }
 
@@ -291,8 +300,8 @@ FbCyrillicCollation::FbCyrillicCollation()
 {
 	UErrorCode status = U_ZERO_ERROR;
 	icu::Collator * collator = icu::Collator::createInstance(icu::Locale("ru", "RU"), status);
-	if (U_FAILURE(status)) { 
-		delete collator; 
+	if (U_FAILURE(status)) {
+		delete collator;
 	} else {
 		m_collator = collator;
 	}
@@ -478,6 +487,12 @@ int FbDatabase::Int(const wxString & id, const wxString & sql, int null)
 	return result.NextRow() ? result.GetInt(0, null) : null;
 }
 
+void FbDatabase::InitFunctions()
+{
+	CreateFunction(wxT("LTTR"), 1, m_letter_func);
+	CreateFunction(wxT("LOW"), 1, m_lower_func);
+}
+
 //-----------------------------------------------------------------------------
 //  FbCommonDatabase
 //-----------------------------------------------------------------------------
@@ -489,9 +504,10 @@ FbCommonDatabase::FbCommonDatabase()
 #ifdef SQLITE_ENABLE_ICU
 	if (sqlite3_compileoption_used("SQLITE_ENABLE_ICU")) {
 		ExecuteUpdate(fbT("SELECT icu_load_collation('ru_RU', 'CYR')"));
-	} else 
+	} else
 #endif
 	SetCollation(wxT("CYR"), &sm_collation);
+	InitFunctions();
 }
 
 wxString FbCommonDatabase::GetMd5(int id)
@@ -555,6 +571,7 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 	FbDatabase::Open(filename, key, flags);
 	ExecuteUpdate(fbT("PRAGMA temp_store=2"));
 	bool bExists = TableExists(GetMaster());
+	InitFunctions();
 
 	wxString message = bExists ? _("Open database") : _("Create database");
 	FbLogMessage(message, filename);
@@ -657,27 +674,30 @@ void FbMainDatabase::DoUpgrade(int version)
 	}
 }
 
+void FbMainDatabase::CreateTableFTS(const wxString & name)
+{
+	ExecuteUpdate(wxString::Format(wxT("DROP TABLE IF EXISTS fts_%s"), name.c_str()));
+	wxString sql = wxString::Format(wxT("CREATE VIRTUAL TABLE fts_%s USING fts3"), name.c_str());
+	#ifdef SQLITE_ENABLE_ICU
+		sql << wxT("(tokenize=icu ru_RU)");
+	#else
+		sql << wxT("(tokenize=porter)");
+	#endif
+	ExecuteUpdate(sql);
+}
+
 void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 {
 	if ( !force && TableExists(wxT("fts_book_content")) ) return;
 
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
-	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_auth"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_auth USING fts3"));
+	CreateTableFTS(wxT("auth"));
+	CreateTableFTS(wxT("book"));
+	CreateTableFTS(wxT("seqn"));
 
-	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_book"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_book USING fts3"));
-
-	ExecuteUpdate(fbT("DROP TABLE IF EXISTS fts_seqn"));
-	ExecuteUpdate(fbT("CREATE VIRTUAL TABLE fts_seqn USING fts3"));
-	
-	FbLetterFunction letter;
-	CreateFunction(wxT("LTTR"), 1, letter);
 	ExecuteUpdate(fbT("UPDATE authors SET letter=LTTR(full_name) WHERE id"));
 
-	FbLowerFunction	lower;
-	CreateFunction(wxT("LOW"), 1, lower);
 	if (thread && thread->IsClosed()) return;
 
 	ExecuteUpdate(fbT("INSERT INTO fts_auth(docid, content) SELECT DISTINCT id, LOW(full_name) FROM authors"));

@@ -318,11 +318,9 @@ bool FbImportBook::AppendBook()
 	}
 
 	{
-		wxString content = m_title;
-		MakeLower(content);
-		wxString sql = wxT("INSERT INTO fts_book(content,docid) VALUES(?,?)");
+		wxString sql = wxT("INSERT INTO fts_book(content,docid) VALUES(LOW(?),?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, content);
+		stmt.Bind(1, m_title);
 		stmt.Bind(2, id_book);
 		ok = stmt.ExecuteUpdate() && ok;
 	}

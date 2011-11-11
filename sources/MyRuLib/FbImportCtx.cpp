@@ -61,24 +61,20 @@ int AuthorItem::Save(FbDatabase & database)
 	wxString full_name = GetFullName();
 	if (full_name.IsEmpty()) { return m_id = 0; }
 
-	wxString letter = Upper(full_name.Left(1));
-	if (letter == wxChar(0x401)) letter = wxChar(0x415);
-	if (strAlphabet.Find(letter) == wxNOT_FOUND) letter = wxT('#');
-
 	wxString sql_data;
 	wxString sql_fts3;
 	if (m_id) {
-		sql_data = wxT("UPDATE authors SET letter=?, full_name=?, first_name=?, middle_name=?, last_name=? WHERE id=?");
-		sql_fts3 = wxT("UPDATE fts_auth SET content=? WHERE docid=?");
+		sql_data = wxT("UPDATE authors SET letter=LTTR(?), full_name=?, first_name=?, middle_name=?, last_name=? WHERE id=?");
+		sql_fts3 = wxT("UPDATE fts_auth SET content=LOW(?) WHERE docid=?");
 	} else {
 		m_id = - database.NewId(DB_NEW_AUTHOR);
-		sql_data = wxT("INSERT INTO authors(letter, full_name, first_name, middle_name, last_name, id) VALUES(?,?,?,?,?,?)");
-		sql_fts3 = wxT("INSERT INTO fts_auth(content, docid) VALUES(?,?)");
+		sql_data = wxT("INSERT INTO authors(letter, full_name, first_name, middle_name, last_name, id) VALUES(LTTR(?),?,?,?,?,?)");
+		sql_fts3 = wxT("INSERT INTO fts_auth(content, docid) VALUES(LOW(?),?)");
 	}
 
 	{
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_data);
-		Bind(stmt, 1, letter);
+		Bind(stmt, 1, full_name);
 		Bind(stmt, 2, full_name);
 		Bind(stmt, 3, first);
 		Bind(stmt, 4, middle);
@@ -88,9 +84,8 @@ int AuthorItem::Save(FbDatabase & database)
 	}
 
 	{
-		wxString content = Lower(full_name);
 		wxSQLite3Statement stmt = database.PrepareStatement(sql_fts3);
-		stmt.Bind(1, content);
+		stmt.Bind(1, full_name);
 		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
 	}
@@ -114,9 +109,9 @@ int SequenceItem::Convert(FbDatabase & database)
 	}
 
 	{
-		wxString sql = wxT("INSERT INTO fts_seqn(content, docid) VALUES(?,?)");
+		wxString sql = wxT("INSERT INTO fts_seqn(content, docid) VALUES(LOW(?),?)");
 		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, Lower(m_name));
+		stmt.Bind(1, m_name);
 		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
 	}
