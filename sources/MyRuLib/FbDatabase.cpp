@@ -86,6 +86,11 @@ static bool IsNumeric(wxChar ch)
 	return u_isdigit(ch);
 }
 
+bool IsAlphaNumeric(wxChar ch)
+{
+	return u_isalnum(ch);
+}
+
 #else  // SQLITE_ENABLE_ICU
 
 #ifdef __WXMSW__
@@ -96,6 +101,11 @@ static bool IsAlpha(wxChar ch)
 }
 
 static bool IsNumeric(wxChar ch)
+{
+	return IsCharAlphaNumeric(ch) && !IsCharAlphaNumeric(ch);
+}
+
+bool IsAlphaNumeric(wxChar ch)
 {
 	return IsCharAlphaNumeric(ch);
 }
@@ -110,6 +120,12 @@ static bool IsAlpha(wxChar ch)
 static bool IsNumeric(wxChar ch)
 {
 	return 0x30 <= ch && ch <= 0x39;
+}
+
+bool IsAlphaNumeric(wxChar ch)
+{
+	forbidden = wxT("*?\\/:\"<>|«».,");
+	return ch >= 0x30 && (forbidden.Find(ch) == wxNOT_FOUND);
 }
 
 #endif // __WXMSW__

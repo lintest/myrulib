@@ -190,8 +190,10 @@ wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 		wxChar ch = oldname[i];
 		if (0 <= ch && ch < 0x20) continue;
 		if (forbidden.Find(ch) != wxNOT_FOUND) continue;
+		if (ch == (wxChar)0x2116) ch = (wxChar)0x004E;
 		if (ch == (wxChar)0x0401) ch = (wxChar)0x0415;
 		if (ch == (wxChar)0x0451) ch = (wxChar)0x0435;
+		if (!IsAlphaNumeric(ch)) ch = 0x20;
 		space = ch == 0x20;
 		if (m_underscores && space) ch = (wxChar)0x5F;
 		newname << ch;

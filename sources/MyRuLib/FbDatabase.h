@@ -16,6 +16,8 @@ wxString & MakeUpper(wxString & data);
 
 int FbCompare(const wxString& text1, const wxString& text2);
 
+bool IsAlphaNumeric(wxChar ch);
+
 enum FbDatabaseKey {
 	DB_LIBRARY_TITLE = 1,
 	DB_LIBRARY_VERSION = 2,
