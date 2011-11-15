@@ -100,4 +100,20 @@ class FbImportParserFB2
 		virtual void EndNode(const wxString &name);
 };
 
+class FbRootReaderEPUB
+	: public FbParsingContext
+{
+	public:
+		FbRootReaderEPUB(wxInputStream & in);
+		wxString GetRoot() const { return m_rootfile; };
+	protected:
+		virtual void NewNode(const wxString &name, const FbStringHash &atts);
+		virtual void TxtNode(const wxString &text) {};
+		virtual void EndNode(const wxString &name);
+	private:
+		wxZipInputStream m_zip;
+		wxString m_rootfile;
+		bool m_ok;
+};
+
 #endif // __FBIMPORTREADER_H__

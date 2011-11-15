@@ -6,6 +6,7 @@
 #include "FbDateTime.h"
 #include "FbGenres.h"
 #include "FbParams.h"
+#include "FbSmartPtr.h"
 #include "ZipReader.h"
 #include "MyRuLibApp.h"
 #include "polarssl/md5.h"
@@ -227,6 +228,12 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	if (m_filetype == wxT("fb2")) {
 		m_parser = new FbImportParserFB2;
 		m_parse = m_parser->Parse(in, true);
+	} else if (m_filetype == wxT("epub")) {
+		m_md5sum = CalcMd5(in);
+		in.SeekI(0);
+		wxString rootfile = FbRootReaderEPUB(in).GetRoot();
+//		m_parser = new FbImportParserEPUB;
+//		m_parse = m_parser->Parse(in);
 	} else {
 		m_md5sum = CalcMd5(in);
 	}
@@ -398,3 +405,43 @@ bool FbImportBook::Save()
 		return id_book && AppendFile(id_book);
 	}
 }
+//-----------------------------------------------------------------------------
+//  FbRootReaderEPUB
+//-----------------------------------------------------------------------------
+
+FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
+	: m_zip(in), m_ok(false)
+{
+    FbSmartPtr<wxZipEntry> entry;
+	while (entry = m_zip.GetNextEntry()) {
+		wxLogError(entry->GetInternalName());
+		if (entry->GetInternalName() == wxT("META-INF/container.xml")) {
+			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
+		}
+	}
+}
+
+void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (*this == wxT("/container/rootfiles")) {
+		if (name == wxT("rootfile")) {
+			FbStringHash::const_iterator it;
+			for ( it = atts.begin(); it != atts.end(); ++it ) {
+				wxString attr = it->first;
+				wxString text = it->second;
+				if (it->first == wxT("full-path")) {
+					m_rootfile = it->second; 
+					break;
+				}
+			}
+			Stop();
+		}
+	}
+	Inc(name);
+}
+
+void FbRootReaderEPUB::EndNode(const wxString &name)
+{
+	Dec(name);
+}
+
