@@ -45,26 +45,12 @@ class FbImportZip
 		int m_id;
 };
 
-class FbImportBook
+class FbImportParser
 	: public FbParsingContext
 {
-	public:
-		static int Exists(FbDatabase & database, const wxString & filename);
-		FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename);
-		FbImportBook(FbImportZip & owner, wxZipEntry & entry);
-		bool Save();
-		bool IsOk() { return m_ok; };
 	protected:
-		virtual void NewNode(const wxString &name, const FbStringHash &atts);
-		virtual void TxtNode(const wxString &text);
-		virtual void EndNode(const wxString &name);
-	private:
-		static wxString CalcMd5(wxInputStream& stream);
-		int FindByMD5();
-		bool AppendBook();
-		bool AppendFile(int id_book);
-		void Convert();
-	private:
+		void Convert(FbDatabase & database);
+	protected:
 		wxString m_title;
 		wxString m_isbn;
 		wxString m_lang;
@@ -73,16 +59,45 @@ class FbImportBook
 		wxString m_genres;
 		AuthorItem * m_author;
 		wxString m_text;
+		friend class FbImportBook;
+};
+
+class FbImportBook
+	: public wxObject
+{
+	public:
+		static int Exists(FbDatabase & database, const wxString & filename);
+		FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename);
+		FbImportBook(FbImportZip & owner, wxZipEntry & entry);
+		virtual ~FbImportBook();
+		bool Save();
+		bool IsOk() { return m_ok; };
 	private:
-		FbDatabase &m_database;
+		static wxString CalcMd5(wxInputStream& stream);
+		int FindByMD5();
+		bool AppendBook();
+		bool AppendFile(int id_book);
+	private:
+		FbImportParser * m_parser;
+		FbDatabase & m_database;
 		wxString m_filename;
 		wxString m_filepath;
 		wxString m_filetype;
 		wxString m_message;
+		wxString m_md5sum;
 		wxFileOffset m_filesize;
 		int m_archive;
 		bool m_parse;
 		bool m_ok;
+};
+
+class FbImportParserFB2
+	: public FbImportParser
+{
+	protected:
+		virtual void NewNode(const wxString &name, const FbStringHash &atts);
+		virtual void TxtNode(const wxString &text);
+		virtual void EndNode(const wxString &name);
 };
 
 #endif // __FBIMPORTREADER_H__

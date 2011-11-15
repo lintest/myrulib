@@ -36,8 +36,8 @@ class SequenceItem
 		SequenceItem(const FbStringHash &atts);
 	public:
 		int Convert(FbDatabase & database);
-		int GetId() { return m_id; }
-		int GetNumber() { return m_number; }
+		int GetId() const { return m_id; }
+		int GetNumber() const { return m_number; }
 	private:
 		int FindSequence(FbDatabase & database);
 		int m_id;

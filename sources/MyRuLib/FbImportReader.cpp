@@ -129,15 +129,37 @@ void FbImportZip::Make(bool progress)
 }
 
 //-----------------------------------------------------------------------------
-//  FbImportBook
+//  FbImportParser
 //-----------------------------------------------------------------------------
 
-int FbImportBook::Exists(FbDatabase & database, const wxString & filename)
+static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)
 {
-	return database.Int(filename, wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1"));
+	return (*n1)->GetId() - (*n2)->GetId();
 }
 
-void FbImportBook::NewNode(const wxString &name, const FbStringHash &atts)
+void FbImportParser::Convert(FbDatabase & database)
+{
+	for (size_t i = 0; i < m_authors.Count(); i++)
+		m_authors[i].Convert(database);
+
+	if (m_authors.Count()) {
+		m_authors.Sort(CompareAuthors);
+	} else {
+		m_authors.Add(new AuthorItem);
+	}
+
+	for (size_t i = 0; i < m_sequences.Count(); i++)
+		m_sequences[i].Convert(database);
+
+	if (m_sequences.Count() == 0)
+		m_sequences.Add(new SequenceItem);
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportParserFB2
+//-----------------------------------------------------------------------------
+
+void FbImportParserFB2::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (*this == wxT("/fictionbook/description/title-info")) {
 		if (name == wxT("author")) {
@@ -152,12 +174,12 @@ void FbImportBook::NewNode(const wxString &name, const FbStringHash &atts)
 	Inc(name);
 }
 
-void FbImportBook::TxtNode(const wxString &text)
+void FbImportParserFB2::TxtNode(const wxString &text)
 {
 	if (Section() == fbsDescr) m_text << text;
 }
 
-void FbImportBook::EndNode(const wxString &name)
+void FbImportParserFB2::EndNode(const wxString &name)
 {
 	Dec(name);
 	if (*this == wxT("/fictionbook/description/title-info")) {
@@ -177,7 +199,17 @@ void FbImportBook::EndNode(const wxString &name)
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  FbImportBook
+//-----------------------------------------------------------------------------
+
+int FbImportBook::Exists(FbDatabase & database, const wxString & filename)
+{
+	return database.Int(filename, wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1"));
+}
+
 FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename):
+	m_parser(NULL),
 	m_database(*owner.m_database),
 	m_filename(owner.GetRelative(filename)),
 	m_filepath(owner.GetAbsolute(filename)),
@@ -192,15 +224,16 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	m_ok = in.IsOk();
 	if (!m_ok) return;
 
-	m_parse = m_filetype == wxT("fb2");
-	if (m_parse) {
-		m_parse = Parse(in, true);
+	if (m_filetype == wxT("fb2")) {
+		m_parser = new FbImportParserFB2;
+		m_parse = m_parser->Parse(in, true);
 	} else {
 		m_md5sum = CalcMd5(in);
 	}
 }
 
 FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
+	m_parser(NULL),
 	m_database(owner.m_database),
 	m_filename(entry.GetInternalName()),
 	m_filetype(Ext(m_filename)),
@@ -225,8 +258,14 @@ FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
 	}
 
 	if (m_ok && m_parse) {
-		m_parse = Parse(owner.m_zip, m_md5sum.IsEmpty());
+		m_parser = new FbImportParserFB2;
+		m_parse = m_parser->Parse(owner.m_zip, m_md5sum.IsEmpty());
 	}
+}
+
+FbImportBook::~FbImportBook()
+{
+	wxDELETE(m_parser);
 }
 
 wxString FbImportBook::CalcMd5(wxInputStream& stream)
@@ -247,46 +286,28 @@ wxString FbImportBook::CalcMd5(wxInputStream& stream)
 	return Md5(md5);
 }
 
-void FbImportBook::Convert()
-{
-	for (size_t i = 0; i < m_authors.Count(); i++)
-		m_authors[i].Convert(m_database);
-
-	if (m_authors.Count() == 0)
-		m_authors.Add(new AuthorItem);
-
-	for (size_t i = 0; i < m_sequences.Count(); i++)
-		m_sequences[i].Convert(m_database);
-
-	if (m_sequences.Count() == 0)
-		m_sequences.Add(new SequenceItem);
-}
-
 int FbImportBook::FindByMD5()
 {
 	return m_database.Int(m_md5sum, wxT("SELECT id FROM books WHERE md5sum=?"));
 }
 
-static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)
-{
-	return (*n1)->GetId() - (*n2)->GetId();
-}
-
 bool FbImportBook::AppendBook()
 {
-	bool ok = true;
+	if (!m_parser) return false;
 
-	Convert();
+	m_parser->Convert(m_database);
+
+	bool ok = true;
 
 	int id_book = - m_database.NewId(DB_NEW_BOOK);
 	int today = FbDateTime::Today().Code();
 
 	int prior;
-	m_authors.Sort(CompareAuthors);
-	for (size_t i = 0; i < m_authors.Count(); i++) {
-		int author = m_authors[i].GetId();
+	const AuthorArray & authors = m_parser->m_authors;
+	for (size_t i = 0; i < authors.Count(); i++) {
+		int author = authors[i].GetId();
 		if (i && prior == author) {
-			wxLogWarning(_("Dublicate author: %s %s"), m_authors[i].GetFullName().c_str(), m_message.c_str());
+			wxLogWarning(_("Dublicate author: %s %s"), authors[i].GetFullName().c_str(), m_message.c_str());
 			continue; 
 		} 
 		prior = author;
@@ -295,20 +316,21 @@ bool FbImportBook::AppendBook()
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, m_archive);
 		stmt.Bind(3, author);
-		stmt.Bind(4, m_title);
-		stmt.Bind(5, m_genres);
+		stmt.Bind(4, m_parser->m_title);
+		stmt.Bind(5, m_parser->m_genres);
 		stmt.Bind(6, m_filename);
 		stmt.Bind(7, m_filepath);
 		stmt.Bind(8, (wxLongLong)m_filesize);
 		stmt.Bind(9, m_filetype);
-		stmt.Bind(10, m_lang);
+		stmt.Bind(10, m_parser->m_lang);
 		stmt.Bind(11, today);
 		stmt.Bind(12, m_md5sum);
 		ok = stmt.ExecuteUpdate() && ok;
 	}
 
-	for (size_t i = 0; i < m_sequences.Count(); i++) {
-		SequenceItem &sequence = m_sequences[i];
+	const SequenceArray & sequences = m_parser->m_sequences;
+	for (size_t i = 0; i < sequences.Count(); i++) {
+		const SequenceItem & sequence = sequences[i];
 		wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
@@ -320,18 +342,19 @@ bool FbImportBook::AppendBook()
 	{
 		wxString sql = wxT("INSERT INTO fts_book(content,docid) VALUES(LOW(?),?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
-		stmt.Bind(1, m_title);
+		stmt.Bind(1, m_parser->m_title);
 		stmt.Bind(2, id_book);
 		ok = stmt.ExecuteUpdate() && ok;
 	}
 
+	const wxString & genres = m_parser->m_genres;
 	if (m_database.TableExists(wxT("genres"))) {
-		size_t count = m_genres.Length() / 2;
+		size_t count = genres.Length() / 2;
 		for (size_t i = 0; i < count; i++) {
 			wxString sql = wxT("INSERT INTO genres(id_book, id_genre) VALUES(?,?)");
 			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
-			stmt.Bind(2, m_genres.Mid(i*2, 2));
+			stmt.Bind(2, genres.Mid(i*2, 2));
 			ok = stmt.ExecuteUpdate() && ok;
 		}
 	}
