@@ -280,20 +280,23 @@ bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 
 void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 {
+	wxString name = Low(event.name);
 	switch (event.type) {
 		case SELF_CLOSING_ELEMENT_EVENT: {
 			FbStringHash hash;
 			GetAtts(event, hash);
-			NewNode(Low(event.name), hash);
-			EndNode(Low(event.name));
+			NewNode(name, hash);
+			EndNode(name);
 		} break;
 		case START_ELEMENT_EVENT: {
 			FbStringHash hash;
 			GetAtts(event, hash);
-			NewNode(Low(event.name), hash);
+			NewNode(name, hash);
+			Inc(name);
 		} break;
 		case END_ELEMENT_EVENT: {
-			EndNode(Low(event.name));
+			Dec(name);
+			EndNode(name);
 		} break;
 		case CHARACTERS_EVENT: {
 			TxtNode(Str(event.value));
@@ -322,11 +325,11 @@ class FbExpatEventMaker {
 		FbExpatEventMaker(void * data)
 			: m_context((FbParsingContextExpat*)data) {}
 		void NewNode(const wxString &name, const FbStringHash &atts)
-			{ m_context->NewNode(name, atts); }
+			{ m_context->NewNode(name, atts); m_context->Inc(name); }
 		void TxtNode(const wxString &text)
 			{ m_context->TxtNode(text); }
 		void EndNode(const wxString &name)
-			{ m_context->EndNode(name); }
+			{ m_context->Dec(name); m_context->EndNode(name); }
 	private:
 		FbParsingContextExpat * m_context;
 };

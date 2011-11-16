@@ -108,8 +108,6 @@ class FbRootReaderEPUB
 		wxString GetRoot() const { return m_rootfile; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
-		virtual void TxtNode(const wxString &text) {};
-		virtual void EndNode(const wxString &name);
 	private:
 		wxZipInputStream m_zip;
 		wxString m_rootfile;

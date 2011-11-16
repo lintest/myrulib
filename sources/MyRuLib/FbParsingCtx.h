@@ -14,9 +14,9 @@ class FbParsingContextBase: public wxObject
 		wxString GetMd5() const { return m_md5sum; };
 	protected:
 		virtual bool DoParse(wxInputStream & stream) = 0;
-		virtual void NewNode(const wxString &name, const FbStringHash &atts) = 0;
-		virtual void TxtNode(const wxString &text) = 0;
-		virtual void EndNode(const wxString &name) = 0;
+		virtual void NewNode(const wxString &name, const FbStringHash &atts) {}
+		virtual void TxtNode(const wxString &text) {}
+		virtual void EndNode(const wxString &name) {}
 		virtual void Stop() = 0;
 	protected:
 		enum FbSectionEnum {

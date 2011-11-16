@@ -172,7 +172,6 @@ void FbImportParserFB2::NewNode(const wxString &name, const FbStringHash &atts)
 		}
 	}
 	m_text.Empty();
-	Inc(name);
 }
 
 void FbImportParserFB2::TxtNode(const wxString &text)
@@ -182,7 +181,6 @@ void FbImportParserFB2::TxtNode(const wxString &text)
 
 void FbImportParserFB2::EndNode(const wxString &name)
 {
-	Dec(name);
 	if (*this == wxT("/fictionbook/description/title-info")) {
 		m_text.Trim(false).Trim(true);
 		if (name == wxT("book-title")) m_title = m_text; else
@@ -228,6 +226,7 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	if (m_filetype == wxT("fb2")) {
 		m_parser = new FbImportParserFB2;
 		m_parse = m_parser->Parse(in, true);
+		m_md5sum = m_parser->GetMd5();
 	} else if (m_filetype == wxT("epub")) {
 		m_md5sum = CalcMd5(in);
 		in.SeekI(0);
@@ -267,6 +266,7 @@ FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
 	if (m_ok && m_parse) {
 		m_parser = new FbImportParserFB2;
 		m_parse = m_parser->Parse(owner.m_zip, m_md5sum.IsEmpty());
+		m_md5sum = m_parser->GetMd5();
 	}
 }
 
@@ -437,11 +437,5 @@ void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 			Stop();
 		}
 	}
-	Inc(name);
-}
-
-void FbRootReaderEPUB::EndNode(const wxString &name)
-{
-	Dec(name);
 }
 

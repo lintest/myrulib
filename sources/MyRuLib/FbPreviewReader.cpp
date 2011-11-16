@@ -8,24 +8,23 @@
 
 void FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	Inc(name);
 	switch (Section()) {
 		case fbsDescr: {
-			if (*this > wxT("fictionbook/description/title-info/annotation")) {
+			if (*this >= wxT("fictionbook/description/title-info/annotation")) {
 				m_annt << wxString::Format(wxT("<%s>"), name.c_str());
-			} else if (*this == wxT("fictionbook/description/title-info/coverpage/image")) {
-				AppendImg(atts);
-			} else if (*this == wxT("fictionbook/description/publish-info/isbn")) {
-				m_isbn.Empty();
+			} else if (*this == wxT("fictionbook/description/title-info/coverpage")) {
+				if (name == wxT("image")) AppendImg(atts);
+			} else if (*this == wxT("fictionbook/description/publish-info")) {
+				if (name == wxT("isbn")) m_isbn.Empty();
 			}
 		} break;
 		case fbsBody: {
 			if (m_parsebody) m_annt << wxString::Format(wxT("<%s>"), name.c_str());
 		} break;
 		case fbsBinary: {
-			StartImg(atts);
 		} break;
 		case fbsNone: {
+			if (name == wxT("binary")) StartImg(atts);
 		} break;
 	}
 }
@@ -55,16 +54,8 @@ void FbPreviewReader::EndNode(const wxString &name)
 {
 	switch (Section()) {
 		case fbsDescr: {
-			if (*this > wxT("fictionbook/description/title-info/annotation")) {
+			if (*this >= wxT("fictionbook/description/title-info/annotation")) {
 				m_annt << wxString::Format(wxT("</%s>"), name.c_str());
-			} else if (*this == wxT("fictionbook/description")) {
-				m_parsebody = m_annt.IsEmpty();
-				if (!m_parsebody) {
-					m_data.SetText(FbViewData::ANNT, m_annt);
-					if (m_images.Count() == 0) Stop();
-				}
-				m_data.SetText(FbViewData::ISBN, m_isbn);
-				m_thread.SendHTML(m_data);
 			}
 		} break;
 		case fbsBody: {
@@ -79,15 +70,24 @@ void FbPreviewReader::EndNode(const wxString &name)
 			}
 		} break;
 		case fbsBinary: {
-			if (m_saveimage) {
-				m_data.AddImage(m_imagename, m_imagedata);
-				m_thread.SendHTML(m_data);
-			}
 		} break;
 		case fbsNone: {
+			if (name == wxT("description")) {
+				m_parsebody = m_annt.IsEmpty();
+				if (!m_parsebody) {
+					m_data.SetText(FbViewData::ANNT, m_annt);
+					if (m_images.Count() == 0) Stop();
+				}
+				m_data.SetText(FbViewData::ISBN, m_isbn);
+				m_thread.SendHTML(m_data);
+			} else if (name == wxT("binary")) {
+				if (m_saveimage) {
+					m_data.AddImage(m_imagename, m_imagedata);
+					m_thread.SendHTML(m_data);
+				}
+			}
 		} break;
 	}
-	Dec(name);
 }
 
 void FbPreviewReader::AppendImg(const FbStringHash &atts)

@@ -124,7 +124,7 @@ static bool IsNumeric(wxChar ch)
 
 bool IsAlphaNumeric(wxChar ch)
 {
-	forbidden = wxT("*?\\/:\"<>|«».,");
+	wxString forbidden = fbT("*?\\/:\"<>.,|") << (wxChar)0xAB << (wxChar)0xBB;
 	return ch >= 0x30 && (forbidden.Find(ch) == wxNOT_FOUND);
 }
 
