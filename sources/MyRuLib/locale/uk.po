@@ -1563,6 +1563,10 @@ msgstr "Електронні книги та архіви"
 msgid "Digital books in FB2"
 msgstr "Електронні книги FB2"
 
+#: FbMainFrame.cpp:337
+msgid "Digital books in EPUB"
+msgstr "Електронні книги EPUB"
+
 #: FbMainFrame.cpp:338
 msgid "ZIP archives"
 msgstr "Архіви ZIP"

@@ -498,6 +498,9 @@ msgstr "Elektronické knihy a archívy"
 msgid "Digital books in FB2"
 msgstr "Elektronické knihy FB2"
 
+msgid "Digital books in EPUB"
+msgstr "Elektronické knihy EPUB"
+
 msgid "Directories"
 msgstr "Seznamy"
 

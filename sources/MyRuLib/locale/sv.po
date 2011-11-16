@@ -1692,6 +1692,10 @@ msgstr "E-böcker och arkiv"
 msgid "Digital books in FB2"
 msgstr "E-böcker i FB2-format"
 
+#: MyRuLib/FbMainFrame.cpp:311
+msgid "Digital books in EPUB"
+msgstr "E-böcker i EPUB-format"
+
 #: MyRuLib/FbMainFrame.cpp:312
 msgid "ZIP archives"
 msgstr "zip-filer"

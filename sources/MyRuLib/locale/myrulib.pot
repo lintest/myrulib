@@ -1880,6 +1880,10 @@ msgstr ""
 msgid "Digital books in FB2"
 msgstr ""
 
+#: FbMainFrame.cpp:454
+msgid "Digital books in EPUB"
+msgstr ""
+
 #: FbMainFrame.cpp:455
 msgid "ZIP archives"
 msgstr ""

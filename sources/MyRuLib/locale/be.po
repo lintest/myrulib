@@ -1399,6 +1399,10 @@ msgid "Digital books in FB2"
 msgstr "Электронныі кнігі FB2"
 
 #: FbMainFrame.cpp:312
+msgid "Digital books in EPUB"
+msgstr "Электронныі кнігі EPUB"
+
+#: FbMainFrame.cpp:312
 msgid "ZIP archives"
 msgstr "Архівы ZIP"
 
