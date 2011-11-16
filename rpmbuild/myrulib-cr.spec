@@ -7,13 +7,17 @@
 #
 
 Name:           myrulib-cr
-Version:        0.28.8
+Version:        0.28.11
 Release:        0
-License:        GPLv3
+License:        GPL-3.0
 Summary:        E-Book Library Manager
 URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
-Source0:        http://www.lintest.ru/pub/%{name}-%{version}.tar.bz2
+Source0:        http://www.lintest.ru/pub/myrulib_%{version}.orig.tar.bz2
+# Need to build debian packages.
+Source90:       myrulib_0.28.11-squeeze1.debian.tar.gz
+Source91:       myrulib_0.28.11-squeeze1.dsc
+Source92:       myrulib_0.28.11-squeeze1_source.changes
 BuildRequires:  gcc-c++
 BuildRequires:  libfaxpp-devel
 BuildRequires:  libicu-devel
@@ -43,6 +47,18 @@ BuildRequires:  libsqlite3x-devel
 %endif
 %endif
 
+%if 0%{?fedora_version}
+BuildRequires:  bzip2-devel
+%endif
+
+%if 0%{?mandriva_version}
+BuildRequires:  libbzip2-devel
+%endif
+
+%if 0%{?suse_version}
+BuildRequires:  libbz2-devel
+%endif
+
 %description
 MyRuLib is an application for organizing your own collection of e-books.
 
@@ -55,7 +71,7 @@ Authors:
     Denis Kandrashin <mail@lintest.ru>
 
 %prep
-%setup -q
+%setup -qn myrulib-%{version}
 [ ! -x configure ] && %__chmod +x configure
 
 %build
@@ -65,7 +81,7 @@ Authors:
             --with-reader \
             --without-strip
 
-%if 0%{?fedora_version} >= 13
+%if 0%{?fedora_version} >= 13 || 0%{?suse_version} >= 1210
 %__make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
 %else
 %__make %{?_smp_mflags}

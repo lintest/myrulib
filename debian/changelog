@@ -1,3 +1,10 @@
+myrulib (0.28.11-squeeze1) stable; urgency=low
+
+  * Экспериментальная поддержка импорта файлов EPUB.
+  * В полнотекстовом поиске игнорируются знаки препинания, кавычки.
+
+ -- Denis Kandrashin <mail@lintest.ru>  Wed, 16 Nov 2011 14:24:05 +0400
+
 myrulib (0.28.10-squeeze1) stable; urgency=low
 
   * Исправлена ошибка SQL при построении иерархического списка.

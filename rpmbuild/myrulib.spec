@@ -7,13 +7,13 @@
 #
 
 Name:           myrulib
-Version:        0.28.8
+Version:        0.28.11
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
 URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
-Source0:        http://www.lintest.ru/pub/%{name}-%{version}.tar.bz2
+Source0:        http://www.lintest.ru/pub/%{name}_%{version}.orig.tar.bz2
 BuildRequires:  gcc-c++
 BuildRequires:  libfaxpp-devel
 BuildRequires:  libicu-devel
@@ -40,6 +40,18 @@ BuildRequires:  desktop-file-utils
 %if 0%{?fedora_version} >= 15
 BuildRequires:  libsqlite3x-devel
 %endif
+%endif
+
+%if 0%{?fedora_version}
+BuildRequires:  bzip2-devel
+%endif
+
+%if 0%{?mandriva_version}
+BuildRequires:  libbzip2-devel
+%endif
+
+%if 0%{?suse_version}
+BuildRequires:  libbz2-devel
 %endif
 
 %description
