@@ -1769,6 +1769,9 @@ msgstr "Распаковка файла"
 msgid "Create full text search index"
 msgstr "Создание индекса полнотекстового поиска"
 
+msgid "Update full-text search index?"
+msgstr "Обновить индекс полнотекстового поиска?"
+
 #: FbInternetBook.cpp:55 FbInternetBook.cpp:147
 msgid "Redirect"
 msgstr "Переадресация"

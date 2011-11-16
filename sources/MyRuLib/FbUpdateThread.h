@@ -38,4 +38,13 @@ class FbUpdateItem: public wxObject
 		DECLARE_CLASS(FbUpdateItem);
 };
 
+class FbFulltextThread: public FbProgressThread
+{
+	public:
+		FbFulltextThread(wxEvtHandler * owner)
+			: FbProgressThread(owner, wxTHREAD_JOINABLE) {}
+	protected:
+		virtual void * Entry();
+};
+
 #endif // __FBUPDATETHREAD_H__

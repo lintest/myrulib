@@ -226,3 +226,17 @@ void FbUpdateItem::ExecInsert()
 	}
 }
 
+//-----------------------------------------------------------------------------
+//  FbFulltextThread
+//-----------------------------------------------------------------------------
+
+void * FbFulltextThread::Entry()
+{
+	FbMainDatabase database;
+	database.Open(wxGetApp().GetLibFile());
+	DoPulse(_("Create full text search index"));
+	database.ExecuteUpdate("VACUUM");
+	database.CreateFullText(true, this);
+	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK).Post(GetOwner());
+	return NULL;
+}
