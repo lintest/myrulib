@@ -204,6 +204,8 @@ FbParsingContextFaxpp::~FbParsingContextFaxpp()
 
 FAXPP_DecodeFunction FbParsingContextFaxpp::StrToDecode(const wxString & encoding)
 {
+	if (encoding.IsEmpty()) return FAXPP_utf8_decode;
+
 	FAXPP_DecodeFunction decode = FAXPP_string_to_decode(encoding.mb_str());
 	if (decode) return decode;
 
