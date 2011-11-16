@@ -229,10 +229,11 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 		m_md5sum = m_parser->GetMd5();
 	} else if (m_filetype == wxT("epub")) {
 		m_md5sum = CalcMd5(in);
-		in.SeekI(0);
+		in.SeekI(0); 
 		wxString rootfile = FbRootReaderEPUB(in).GetRoot();
-//		m_parser = new FbImportParserEPUB;
-//		m_parse = m_parser->Parse(in);
+		in.SeekI(0);
+		m_parser = new FbDataReaderEPUB(in, rootfile);
+		m_parse = m_parser->Parse(in);
 	} else {
 		m_md5sum = CalcMd5(in);
 	}
@@ -405,6 +406,7 @@ bool FbImportBook::Save()
 		return id_book && AppendFile(id_book);
 	}
 }
+
 //-----------------------------------------------------------------------------
 //  FbRootReaderEPUB
 //-----------------------------------------------------------------------------
@@ -412,9 +414,7 @@ bool FbImportBook::Save()
 FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
 	: m_zip(in), m_ok(false)
 {
-    FbSmartPtr<wxZipEntry> entry;
-	while (entry = m_zip.GetNextEntry()) {
-		wxLogError(entry->GetInternalName());
+	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
 		if (entry->GetInternalName() == wxT("META-INF/container.xml")) {
 			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
 		}
@@ -425,10 +425,7 @@ void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (*this == wxT("/container/rootfiles")) {
 		if (name == wxT("rootfile")) {
-			FbStringHash::const_iterator it;
-			for ( it = atts.begin(); it != atts.end(); ++it ) {
-				wxString attr = it->first;
-				wxString text = it->second;
+			for ( FbStringHash::const_iterator it = atts.begin(); it != atts.end(); it++ ) {
 				if (it->first == wxT("full-path")) {
 					m_rootfile = it->second; 
 					break;
@@ -437,5 +434,51 @@ void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 			Stop();
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbDataReaderEPUB
+//-----------------------------------------------------------------------------
+
+FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile)
+	: m_zip(in), m_text(NULL), m_ok(false)
+{
+	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
+		if (entry->GetInternalName() == rootfile) {
+			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
+		}
+	}
+}
+
+void FbDataReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (*this == wxT("/package/metadata")) {
+		if (name == wxT("dc:title")) {
+			m_text = &m_title;
+		} else if (name == wxT("dc:title")) {
+			for (FbStringHash::const_iterator it = atts.begin(); it != atts.end(); ++it ) {
+				wxString attr = it->first;
+				wxString text = it->second;
+				if (it->first == wxT("full-path")) {
+					m_rootfile = it->second; 
+					break;
+				}
+			}
+		}
+		if (name == wxT("dc:creator")) {
+//		<dc:creator role="aut">Джоанн Кэтлин Роулинг</dc:creator>
+//		<dc:language>ru</dc:language><dc:description>
+		}
+	}
+}
+
+void FbDataReaderEPUB::TxtNode(const wxString &text)
+{
+	if (m_text) *m_text << text;
+}
+
+void FbDataReaderEPUB::EndNode(const wxString &name)
+{
+	m_text = NULL;
 }
 

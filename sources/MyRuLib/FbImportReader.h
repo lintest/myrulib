@@ -114,4 +114,17 @@ class FbRootReaderEPUB
 		bool m_ok;
 };
 
+class FbDataReaderEPUB
+	: public FbImportParser
+{
+	public:
+		FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
+	protected:
+		virtual void NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		wxZipInputStream m_zip;
+		wxString * m_text;
+		bool m_ok;
+};
+
 #endif // __FBIMPORTREADER_H__
