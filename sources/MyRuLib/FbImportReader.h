@@ -48,12 +48,15 @@ class FbImportZip
 class FbImportParser
 	: public FbParsingContext
 {
+	public:
+		virtual bool IsOk() { return true; };
 	protected:
 		void Convert(FbDatabase & database);
 	protected:
 		wxString m_title;
 		wxString m_isbn;
 		wxString m_lang;
+		wxString m_dscr;
 		AuthorArray m_authors;
 		SequenceArray m_sequences;
 		wxString m_genres;
@@ -119,11 +122,21 @@ class FbDataReaderEPUB
 {
 	public:
 		FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
+		bool IsOk() { return m_ok; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
+		virtual void TxtNode(const wxString &text);
+		virtual void EndNode(const wxString &name);
 	private:
+		enum Mode {
+			TITLE,
+			AUTH,
+			LANG,
+			DSCR,
+			NONE,
+		};
 		wxZipInputStream m_zip;
-		wxString * m_text;
+		Mode m_mode;
 		bool m_ok;
 };
 

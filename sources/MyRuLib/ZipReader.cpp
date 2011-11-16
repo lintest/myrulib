@@ -40,7 +40,13 @@ ZipReader::ZipReader(int id, bool bShowError, bool bInfoOnly)
 		} else {
 			wxFileName book_file;
 			m_zipOk = item.FindBook(sLibraryDir, book_file);
-			if (m_zipOk) OpenFile(book_file.GetFullPath());
+			if (m_zipOk) {
+				if (bInfoOnly && book_file.GetExt().Lower() != wxT("fb2")) {
+					m_zipOk = false;
+				} else {
+					OpenFile(book_file.GetFullPath());
+				}
+			}
 		}
 		if (IsOk()) return;
 	}

@@ -162,7 +162,7 @@ void FbImportParser::Convert(FbDatabase & database)
 
 void FbImportParserFB2::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (*this == wxT("/fictionbook/description/title-info")) {
+	if (*this == wxT("fictionbook/description/title-info")) {
 		if (name == wxT("author")) {
 			m_author = new AuthorItem;
 			m_authors.Add(m_author);
@@ -181,19 +181,19 @@ void FbImportParserFB2::TxtNode(const wxString &text)
 
 void FbImportParserFB2::EndNode(const wxString &name)
 {
-	if (*this == wxT("/fictionbook/description/title-info")) {
+	if (*this == wxT("fictionbook/description/title-info")) {
 		m_text.Trim(false).Trim(true);
 		if (name == wxT("book-title")) m_title = m_text; else
 		if (name == wxT("genre")) m_genres += FbGenres::Char(m_text); else
 		if (name == wxT("lang")) m_lang = m_text.Lower();
-	} else if (*this == wxT("/fictionbook/description/title-info/author")) {
+	} else if (*this == wxT("fictionbook/description/title-info/author")) {
 		m_text.Trim(false).Trim(true);
 		if (name == wxT("last-name"))   m_author->last   = m_text; else
 		if (name == wxT("first-name"))  m_author->first  = m_text; else
 		if (name == wxT("middle-name")) m_author->middle = m_text;
-	} else if (*this == wxT("/fictionbook/description/publish-info/")) {
+	} else if (*this == wxT("fictionbook/description/publish-info/")) {
 		if (name == wxT("isbn")) m_isbn = m_text.Trim(true).Trim(false);
-	} else if (*this == wxT("/fictionbook/description")) {
+	} else if (*this == wxT("fictionbook/description")) {
 		if (name == wxT("title-info")) Stop();
 	}
 }
@@ -233,7 +233,7 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 		wxString rootfile = FbRootReaderEPUB(in).GetRoot();
 		in.SeekI(0);
 		m_parser = new FbDataReaderEPUB(in, rootfile);
-		m_parse = m_parser->Parse(in);
+		m_parse = m_parser->IsOk();
 	} else {
 		m_md5sum = CalcMd5(in);
 	}
@@ -319,7 +319,7 @@ bool FbImportBook::AppendBook()
 			continue; 
 		} 
 		prior = author;
-		wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+		wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,description,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, m_archive);
@@ -331,8 +331,9 @@ bool FbImportBook::AppendBook()
 		stmt.Bind(8, (wxLongLong)m_filesize);
 		stmt.Bind(9, m_filetype);
 		stmt.Bind(10, m_parser->m_lang);
-		stmt.Bind(11, today);
-		stmt.Bind(12, m_md5sum);
+		stmt.Bind(11, m_parser->m_dscr);
+		stmt.Bind(12, today);
+		stmt.Bind(13, m_md5sum);
 		ok = stmt.ExecuteUpdate() && ok;
 	}
 
@@ -417,6 +418,7 @@ FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
 	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
 		if (entry->GetInternalName() == wxT("META-INF/container.xml")) {
 			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
+			break;
 		}
 	}
 }
@@ -441,44 +443,74 @@ void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 //-----------------------------------------------------------------------------
 
 FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile)
-	: m_zip(in), m_text(NULL), m_ok(false)
+	: m_zip(in), m_mode(NONE), m_ok(false)
 {
 	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
 		if (entry->GetInternalName() == rootfile) {
 			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
+			break;
 		}
 	}
 }
 
 void FbDataReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (*this == wxT("/package/metadata")) {
-		if (name == wxT("dc:title")) {
-			m_text = &m_title;
-		} else if (name == wxT("dc:title")) {
+	if (*this == wxT("package/metadata")) {
+		m_mode = NONE;
+		m_text.Empty();
+		wxString code = name.AfterLast(wxT(':'));
+		if (code == wxT("title")) {
+			m_mode = TITLE;
+		} else if (code == wxT("language")) {
+			m_mode = LANG;
+		} else if (code == wxT("description")) {
+			m_mode = DSCR;
+		} else if (code == wxT("creator")) {
+			m_mode = AUTH;
 			for (FbStringHash::const_iterator it = atts.begin(); it != atts.end(); ++it ) {
-				wxString attr = it->first;
-				wxString text = it->second;
-				if (it->first == wxT("full-path")) {
-					m_rootfile = it->second; 
+				wxString attr = it->first.AfterLast(wxT(':'));
+				if (attr == wxT("role")) {
+					if (it->second != wxT("aut")) m_mode = NONE;
 					break;
 				}
 			}
-		}
-		if (name == wxT("dc:creator")) {
-//		<dc:creator role="aut">Джоанн Кэтлин Роулинг</dc:creator>
-//		<dc:language>ru</dc:language><dc:description>
 		}
 	}
 }
 
 void FbDataReaderEPUB::TxtNode(const wxString &text)
 {
-	if (m_text) *m_text << text;
+	if (m_mode != NONE) m_text << text;
 }
 
 void FbDataReaderEPUB::EndNode(const wxString &name)
 {
-	m_text = NULL;
+	if (m_mode != NONE) m_text = m_text.Trim(true).Trim(false); 
+
+	switch (m_mode) {
+		case TITLE: { 
+			m_title = m_text; 
+		} break;
+		case LANG: { 
+			m_lang  = m_text; 
+		} break;
+		case DSCR: { 
+			m_dscr  = m_text; 
+		} break;
+		case AUTH: { 
+			AuthorItem * author = new AuthorItem;
+			size_t pos = m_text.find_last_of(wxT(' '));
+			if (pos == wxNOT_FOUND) {
+				author->last = m_text;
+			} else {
+				author->last = m_text.Mid(pos + 1);
+				author->first = m_text.Left(pos);
+			}
+			m_authors.Add(author);
+		} break;
+	}
+
+	if (*this == wxT("package") && name == wxT("metadata")) Stop();
+	m_text.Empty();
 }
 
