@@ -159,6 +159,7 @@ void FbBookData::DoOpen(wxInputStream * in, const wxString &md5sum) const
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
 	if (!ok) ok = !(command = FbLocalDatabase().Str(filetype, sql)).IsEmpty();
 	if (!ok) ok = !(command = FbCommonDatabase().Str(filetype, sql)).IsEmpty();
+	if (command == wxT('*')) { command.Empty(); ok = false; }
 	
 	wxString tempfile;
 	#ifdef FB_INCLUDE_READER

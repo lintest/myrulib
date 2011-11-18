@@ -37,8 +37,10 @@ class FbViewerDlg : public FbDialog
 		enum
 		{
 			ID_FILENAME = 1000,
+			ID_COOLREADER,
 		};
 		wxComboCtrl * m_filename;
+		wxCheckBox * m_coolreader;
 		bool m_relative;
 	private:
 		void OnTextEnter( wxCommandEvent& event );

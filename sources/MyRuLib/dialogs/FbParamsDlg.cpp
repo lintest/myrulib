@@ -11,6 +11,7 @@
 #include "MyRuLibApp.h"
 #include "FbViewerDlg.h"
 #include "FbLocale.h"
+#include "FbString.h"
 #include "FbDatabase.h"
 #include "controls/FbChoiceCtrl.h"
 #include "controls/FbComboBox.h"
@@ -93,6 +94,7 @@ wxString FbParamsDlg::TypeData::GetValue(FbModel & model, size_t col) const
 	switch (col) {
 		case 0: return m_type;
 		case 1: return m_command;
+		case 2: return (m_command == wxT('*')) ? fbT("~CR3") : m_command;
 		default: return wxEmptyString;
 	}
 }
@@ -358,7 +360,7 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 
 	FbTreeViewCtrl * treeview = new FbTreeViewCtrl( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	treeview->AddColumn(0, _("Extension"), 6);
-	treeview->AddColumn(1, _("Program"), -10);
+	treeview->AddColumn(2, _("Program"), -10);
 	bSizerMain->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	SetSizer( bSizerMain );

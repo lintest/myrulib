@@ -3,6 +3,7 @@
 #include "FbConfigDlg.h"
 #include "FbConst.h"
 #include "FbParams.h"
+#include "FbString.h"
 #include "FbViewerDlg.h"
 #include "FbCollection.h"
 #include "FbDataPath.h"
@@ -329,7 +330,7 @@ FbConfigDlg::PanelType::PanelType(wxWindow * parent)
 
 	m_treeview.Create( this, ID_TYPE_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
 	m_treeview.AddColumn(0, _("Extension"), 4);
-	m_treeview.AddColumn(1, _("Program"), -10);
+	m_treeview.AddColumn(2, _("Program"), -10);
 	bSizer->Add( &m_treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	SetSizer( bSizer );
@@ -666,6 +667,7 @@ wxString FbConfigDlg::TypeData::GetValue(FbModel & model, size_t col) const
 	switch (col) {
 		case 0: return m_type;
 		case 1: return m_command;
+		case 2: return (m_command == wxT('*')) ? fbT("~CR3") : m_command;
 		default: return wxEmptyString;
 	}
 }

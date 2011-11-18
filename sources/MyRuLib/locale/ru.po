@@ -2176,3 +2176,6 @@ msgstr "Отображать две страницы"
 
 msgid "Find text..."
 msgstr "Найти текст..."
+
+msgid "Use builtin CoolReader3"
+msgstr "Использовать встроенный CoolReader3"
