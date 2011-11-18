@@ -25,6 +25,7 @@ class FbImportZip
 		FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &filename);
 		int Save(bool progress);
 	public:
+		operator wxInputStream & () { return m_zip; }
 		bool IsOk() { return m_ok; };
 	private:
 		void Make(bool progress);
@@ -49,10 +50,12 @@ class FbImportParser
 	: public FbParsingContext
 {
 	public:
-		virtual bool IsOk() { return true; };
+		FbImportParser(): m_ok(false) {}
+		bool IsOk() { return m_ok; };
 	protected:
 		void Convert(FbDatabase & database);
 	protected:
+		bool m_ok;
 		wxString m_title;
 		wxString m_isbn;
 		wxString m_lang;
@@ -90,13 +93,14 @@ class FbImportBook
 		wxString m_md5sum;
 		wxFileOffset m_filesize;
 		int m_archive;
-		bool m_parse;
 		bool m_ok;
 };
 
 class FbImportParserFB2
 	: public FbImportParser
 {
+	public:
+		FbImportParserFB2(wxInputStream & stream, bool md5 = false);
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
 		virtual void TxtNode(const wxString &text);
@@ -109,6 +113,7 @@ class FbRootReaderEPUB
 	public:
 		FbRootReaderEPUB(wxInputStream & in);
 		wxString GetRoot() const { return m_rootfile; };
+		bool IsOk() { return m_ok; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
 	private:
@@ -122,7 +127,6 @@ class FbDataReaderEPUB
 {
 	public:
 		FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
-		bool IsOk() { return m_ok; };
 	protected:
 		virtual void NewNode(const wxString &name, const FbStringHash &atts);
 		virtual void TxtNode(const wxString &text);
@@ -137,7 +141,6 @@ class FbDataReaderEPUB
 		};
 		wxZipInputStream m_zip;
 		Mode m_mode;
-		bool m_ok;
 };
 
 #endif // __FBIMPORTREADER_H__

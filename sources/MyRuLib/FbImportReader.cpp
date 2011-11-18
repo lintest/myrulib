@@ -160,6 +160,11 @@ void FbImportParser::Convert(FbDatabase & database)
 //  FbImportParserFB2
 //-----------------------------------------------------------------------------
 
+FbImportParserFB2::FbImportParserFB2(wxInputStream & stream, bool md5)
+{ 
+	m_ok = Parse(stream, md5); 
+}
+
 void FbImportParserFB2::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (*this == wxT("fictionbook/description/title-info")) {
@@ -216,7 +221,6 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	m_message(filename),
 	m_filesize(in.GetLength()),
 	m_archive(0),
-	m_parse(false),
 	m_ok(false)
 {
 	wxLogMessage(_("Import file %s"), m_filename.c_str());
@@ -224,8 +228,7 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	if (!m_ok) return;
 
 	if (m_filetype == wxT("fb2")) {
-		m_parser = new FbImportParserFB2;
-		m_parse = m_parser->Parse(in, true);
+		m_parser = new FbImportParserFB2(in, true);
 		m_md5sum = m_parser->GetMd5();
 	} else if (m_filetype == wxT("epub")) {
 		m_md5sum = CalcMd5(in);
@@ -233,7 +236,6 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 		wxString rootfile = FbRootReaderEPUB(in).GetRoot();
 		in.SeekI(0);
 		m_parser = new FbDataReaderEPUB(in, rootfile);
-		m_parse = m_parser->IsOk();
 	} else {
 		m_md5sum = CalcMd5(in);
 	}
@@ -247,27 +249,28 @@ FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
 	m_message(owner.m_filename + wxT(": ") + m_filename),
 	m_filesize(entry.GetSize()),
 	m_archive(owner.m_id),
-	m_parse(false),
 	m_ok(false)
 {
 	if (m_filetype == wxT("fbd")) return;
 
 	wxLogMessage(_("Import zip entry %s"), m_filename.c_str());
-	m_ok = owner.OpenEntry(entry);
-	if (!m_ok) return;
+	if (!(m_ok = owner.OpenEntry(entry))) return;
 
-	m_parse = m_filetype == wxT("fb2");
-	if (!m_parse) {
-		m_md5sum = CalcMd5(owner.m_zip);
-		wxZipEntry * info = owner.GetInfo(m_filename);
-		if (info) m_ok = owner.OpenEntry(*info);
-		m_parse = info;
-	}
-
-	if (m_ok && m_parse) {
-		m_parser = new FbImportParserFB2;
-		m_parse = m_parser->Parse(owner.m_zip, m_md5sum.IsEmpty());
+	if (m_filetype == wxT("fb2")) {
+		m_parser = new FbImportParserFB2(owner, m_md5sum.IsEmpty());
 		m_md5sum = m_parser->GetMd5();
+	} else if (m_filetype == wxT("epub")) {
+		m_md5sum = CalcMd5(owner);
+		if (!owner.OpenEntry(entry)) return;
+		wxString rootfile = FbRootReaderEPUB(owner).GetRoot();
+		if (!owner.OpenEntry(entry)) return;
+		m_parser = new FbDataReaderEPUB(owner, rootfile);
+	} else {
+		m_md5sum = CalcMd5(owner);
+		wxZipEntry * info = owner.GetInfo(m_filename);
+		if (info && owner.OpenEntry(*info)) {
+			m_parser = new FbImportParserFB2(owner);
+		}
 	}
 }
 
@@ -396,11 +399,11 @@ bool FbImportBook::AppendFile(int id_book)
 
 bool FbImportBook::Save()
 {
-	if (!m_ok) return false;
+	if (!m_ok || m_md5sum.IsEmpty()) return false;
 
 	int id_book = FindByMD5();
 
-	if (m_parse) {
+	if (m_parser && m_parser->IsOk()) {
 		return id_book ? AppendFile(id_book) : AppendBook();
 	} else {
 		if (id_book == 0) wxLogMessage(_("Skip entry %s"), m_filename.c_str());
@@ -425,7 +428,7 @@ FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
 
 void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (*this == wxT("/container/rootfiles")) {
+	if (*this == wxT("container/rootfiles")) {
 		if (name == wxT("rootfile")) {
 			for ( FbStringHash::const_iterator it = atts.begin(); it != atts.end(); it++ ) {
 				if (it->first == wxT("full-path")) {
@@ -443,7 +446,7 @@ void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 //-----------------------------------------------------------------------------
 
 FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile)
-	: m_zip(in), m_mode(NONE), m_ok(false)
+	: m_zip(in), m_mode(NONE)
 {
 	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
 		if (entry->GetInternalName() == rootfile) {
@@ -513,4 +516,3 @@ void FbDataReaderEPUB::EndNode(const wxString &name)
 	if (*this == wxT("package") && name == wxT("metadata")) Stop();
 	m_text.Empty();
 }
-
