@@ -19,19 +19,18 @@ public:
 	FbImportThread(wxEvtHandler * owner, long flags);
 	bool OnFile(const wxString &filename, bool progress, bool only_new);
 	void SetRoot(const wxString & dir);
+	FbDatabase * GetDatabase() { return m_database; }
+	wxString GetRelative(const wxString &filename);
+	wxString GetAbsolute(const wxString &filename);
 protected:
 	virtual void * Entry();
 	virtual bool Execute();
 	virtual void DoParse(bool only_new) = 0;
-	wxString GetRelative(const wxString &filename);
-	wxString GetAbsolute(const wxString &filename);
     bool HasFlag(long flag) const { return (m_flags & flag) != 0; }
 protected:
 	FbDatabase * m_database;
 	wxString m_basepath;
 	bool m_fullpath;
-	friend class FbImportZip;
-	friend class FbImportBook;
 	const long m_flags;
 };
 

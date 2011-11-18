@@ -40,7 +40,7 @@ int FbImportZip::Exists(FbDatabase & database, const wxString & filename)
 
 FbImportZip::FbImportZip(FbImportThread & owner, wxInputStream &in, const wxString &filename):
 	m_owner(owner),
-	m_database(*owner.m_database),
+	m_database(*owner.GetDatabase()),
 	m_conv(wxT("cp866")),
 	m_zip(in, m_conv),
 	m_filename(owner.GetRelative(filename)),
@@ -209,19 +209,19 @@ void FbImportParserFB2::EndNode(const wxString &name)
 
 int FbImportBook::Exists(FbDatabase & database, const wxString & filename)
 {
-	return database.Int(filename, wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1"));
+	return database.Int(filename, wxT("SELECT id FROM books WHERE file_name=?1 AND id_archive=0 UNION SELECT id_book FROM files WHERE file_name=?1 AND id_archive=0"));
 }
 
-FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename):
-	m_parser(NULL),
-	m_database(*owner.m_database),
-	m_filename(owner.GetRelative(filename)),
-	m_filepath(owner.GetAbsolute(filename)),
-	m_filetype(Ext(m_filename)),
-	m_message(filename),
-	m_filesize(in.GetLength()),
-	m_archive(0),
-	m_ok(false)
+FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxString & filename)
+	: m_parser(NULL)
+	, m_database(*owner.GetDatabase())
+	, m_filename(owner.GetRelative(filename))
+	, m_filepath(owner.GetAbsolute(filename))
+	, m_filetype(Ext(m_filename))
+	, m_message(filename)
+	, m_filesize(in.GetLength())
+	, m_archive(0)
+	, m_ok(false)
 {
 	wxLogMessage(_("Import file %s"), m_filename.c_str());
 	m_ok = in.IsOk();
@@ -241,15 +241,15 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	}
 }
 
-FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry):
-	m_parser(NULL),
-	m_database(owner.m_database),
-	m_filename(entry.GetInternalName()),
-	m_filetype(Ext(m_filename)),
-	m_message(owner.m_filename + wxT(": ") + m_filename),
-	m_filesize(entry.GetSize()),
-	m_archive(owner.m_id),
-	m_ok(false)
+FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry)
+	: m_parser(NULL)
+	, m_database(owner.GetDatabase())
+	, m_filename(entry.GetInternalName())
+	, m_filetype(Ext(m_filename))
+	, m_message(owner.GetFilename() + wxT(": ") + m_filename)
+	, m_filesize(entry.GetSize())
+	, m_archive(owner.GetId())
+	, m_ok(false)
 {
 	if (m_filetype == wxT("fbd")) return;
 

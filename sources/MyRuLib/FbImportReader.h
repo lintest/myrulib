@@ -26,14 +26,17 @@ class FbImportZip
 		int Save(bool progress);
 	public:
 		operator wxInputStream & () { return m_zip; }
-		bool IsOk() { return m_ok; };
+		wxZipEntry * GetInfo(const wxString & filename);
+		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); }
+		FbDatabase & GetDatabase() { return m_database; }
+		wxString GetFilename() { return m_filename; }
+		bool IsOk() { return m_ok; }
+		int GetId() { return m_id; }
 	private:
 		void Make(bool progress);
-		bool OpenEntry(wxZipEntry &entry) { return m_zip.OpenEntry(entry); };
-		wxZipEntry * GetInfo(const wxString & filename);
 	private:
 		FbImportThread & m_owner;
-		FbDatabase &m_database;
+		FbDatabase & m_database;
 		FbZipEntryList m_list;
 		FbZipEntryMap m_map;
 		wxCSConv m_conv;
@@ -41,7 +44,6 @@ class FbImportZip
 		wxString m_filename;
 		wxString m_filepath;
 		wxFileOffset m_filesize;
-		friend class FbImportBook;
 		bool m_ok;
 		int m_id;
 };
