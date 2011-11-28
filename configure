@@ -4690,7 +4690,7 @@ if test "x$USE_BZIP2" == "xyes" ; then
     USE_BZIP2="builtin"
 fi
 
-if test "x$USE_SQLITE" != "xbuiltin" ; then
+if test "x$USE_BZIP2" != "xbuiltin" ; then
   ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_bzlib_h" = x""yes; then :
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzwrite in -lbz2" >&5
@@ -4985,6 +4985,53 @@ $as_echo "$ac_cv_sqlite_enable_fts3" >&6; }
     if test "x$ac_cv_sqlite_enable_fts3" = "xno"; then
         USE_SQLITE="builtin"
     fi
+fi
+
+if test "x$USE_SQLITE" != "xbuiltin" ; then
+  if test "x$USE_LIBICU" == "xyes" ; then
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SQLITE_ENABLE_ICU support in system SQLite" >&5
+$as_echo_n "checking for SQLITE_ENABLE_ICU support in system SQLite... " >&6; }
+    _SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $SQLITE_CFLAGS"
+    _SAVE_LIBS="$LIBS"
+    LIBS="$LIBS $SQLITE_LIBS"
+    if test "${ac_cv_sqlite_enable_icu+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        if test "$cross_compiling" = yes; then :
+  ac_cv_sqlite_enable_icu=no
+
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+            #include "sqlite3.h"
+
+            int main(int argc, char **argv){
+              return !sqlite3_compileoption_used("SQLITE_ENABLE_ICU");
+            }
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+  ac_cv_sqlite_enable_icu=yes
+else
+  ac_cv_sqlite_enable_icu=no
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sqlite_enable_icu" >&5
+$as_echo "$ac_cv_sqlite_enable_icu" >&6; }
+    CFLAGS="$_SAVE_CFLAGS"
+    LIBS="$_SAVE_LIBS"
+    if test "x$ac_cv_sqlite_enable_icu" = "xno"; then
+        USE_SQLITE="builtin"
+    fi
+  fi
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-locale" >&5

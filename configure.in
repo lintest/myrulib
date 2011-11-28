@@ -89,7 +89,7 @@ if test "x$USE_BZIP2" == "xyes" ; then
     USE_BZIP2="builtin"
 fi
 
-if test "x$USE_SQLITE" != "xbuiltin" ; then 
+if test "x$USE_BZIP2" != "xbuiltin" ; then 
   AC_CHECK_HEADER(bzlib.h, [AC_CHECK_LIB(bz2, BZ2_bzwrite, , USE_BZIP2="builtin")], USE_BZIP2="builtin")
 fi
 
@@ -134,6 +134,39 @@ if test "x$USE_SQLITE" != "xbuiltin" ; then
     if test "x$ac_cv_sqlite_enable_fts3" = "xno"; then
         USE_SQLITE="builtin"
     fi
+fi
+
+if test "x$USE_SQLITE" != "xbuiltin" ; then 
+  if test "x$USE_LIBICU" == "xyes" ; then 
+    dnl ===============================
+    dnl === SQLITE_ENABLE_ICU check ===
+    dnl ===============================
+    dnl check to see if the system SQLite package is compiled with
+    dnl SQLITE_ENABLE_ICU enabled.
+    AC_MSG_CHECKING(for SQLITE_ENABLE_ICU support in system SQLite)
+    _SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $SQLITE_CFLAGS"
+    _SAVE_LIBS="$LIBS"
+    LIBS="$LIBS $SQLITE_LIBS"
+    AC_CACHE_VAL(ac_cv_sqlite_enable_icu,[
+        AC_TRY_RUN([
+            #include "sqlite3.h"
+
+            int main(int argc, char **argv){
+              return !sqlite3_compileoption_used("SQLITE_ENABLE_ICU");
+            }],
+            ac_cv_sqlite_enable_icu=yes,
+            ac_cv_sqlite_enable_icu=no,
+            ac_cv_sqlite_enable_icu=no
+        )
+    ])
+    AC_MSG_RESULT($ac_cv_sqlite_enable_icu)
+    CFLAGS="$_SAVE_CFLAGS"
+    LIBS="$_SAVE_LIBS"
+    if test "x$ac_cv_sqlite_enable_icu" = "xno"; then
+        USE_SQLITE="builtin"
+    fi
+  fi
 fi
 
 AC_MSG_CHECKING([for --with-locale])
