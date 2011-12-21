@@ -12,7 +12,7 @@ function convert_authors($mysql_db, $sqlite_db, $min)
 
   $sqltest = "
 	SELECT libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.bid) as Number
-	FROM libavtorname INNER JOIN (
+	FROM libavtors AS libavtorname INNER JOIN (
 	  SELECT DISTINCT libavtor.aid, libavtor.bid
 	  FROM libavtor INNER JOIN libbook ON libbook.bid=libavtor.bid AND libbook.Deleted<>1 
 	) AS libavtor ON libavtorname.aid=libavtor.aid 
@@ -149,7 +149,7 @@ function convert_seqnames($mysql_db, $sqlite_db, $min)
 
   $sqltest = "
 	SELECT libseqname.sid, libseqname.seqname, COUNT(libseq.bid) as Number
-	FROM libseqname INNER JOIN (
+	FROM libseqs AS libseqname INNER JOIN (
 	  SELECT DISTINCT libseq.sid, libseq.bid 
 	  FROM libseq INNER JOIN libbook ON libbook.bid=libseq.bid AND libbook.Deleted<>1 
 	) AS libseq ON libseqname.sid=libseq.sid AND libseq.sid<>0

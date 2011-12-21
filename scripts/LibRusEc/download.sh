@@ -7,7 +7,7 @@
 
 rm *.sql.gz
 rm *.sql.gz.*
-for t in libavtoraliase libavtorname libavtor libbook libfilename libgenrelist libgenre libjoinedbooks libseqname libseq libsrclang libtranslator;
+for t in libavtor libavtoraliase libavtors libbook libgenre libgenrelist libgenremeta libgenres libjoinedbooks libmag libmags libquality librate libseq libseqs libsrclang ;
 do
     wget -c http://lib.rus.ec/sql/$t.sql.gz;
     zcat $t.sql.gz | sed -e 's/USING BTREE//g' | mysql librusec -u root;
