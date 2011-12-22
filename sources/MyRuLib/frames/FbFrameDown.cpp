@@ -46,7 +46,7 @@ FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
 	sizer->Add( &m_ToolBar, 0, wxEXPAND, 0 );
 
 	m_MasterList = new FbMasterViewCtrl;
-	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, FbParams.Style());
 	CreateColumns();
 	sizer->Add( m_MasterList, 1, wxTOP|wxEXPAND, 2 );
 

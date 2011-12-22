@@ -103,7 +103,8 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbBookPanel::OnIdleSplitter ), NULL, this );
 	SetMinimumPaneSize(50);
 
-	long substyle = wxBORDER_SUNKEN | fbTR_VRULES | fbTR_MULTIPLE | fbTR_CHECKBOX;
+	
+	long substyle = FbParams.Style(wxBORDER_SUNKEN | fbTR_MULTIPLE | fbTR_CHECKBOX);
 	m_BookList.Create(this, ID_BOOKLIST_CTRL, wxDefaultPosition, wxDefaultSize, substyle);
 	m_BookInfo.Create(this, ID_PREVIEW_CTRL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
 

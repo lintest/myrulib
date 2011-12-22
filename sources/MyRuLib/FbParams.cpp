@@ -6,6 +6,7 @@
 #include "FbBookData.h"
 #include "FbCollection.h"
 #include "FbConst.h"
+#include "controls/FbTreeView.h"
 
 FbParamList FbParams;
 
@@ -98,6 +99,8 @@ int FbParamItem::DefaultInt(int param)
 			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
 			case FB_NUMBER_FORMAT: return 3;
 			case FB_STATUS_SHOW: return 0;
+			case FB_GRID_HRULES: return 0;
+			case FB_GRID_VRULES: return 1;
 			case FB_READER_FONT_COLOUR : return 0x000000;
 			case FB_READER_BACK_COLOUR : return 0xFFFFE0;
 			case FB_READER_FONT_SIZE   : return 20;
@@ -224,4 +227,12 @@ void FbParamItem::Set(wxWindowID winid, int param, const wxString &text)
 bool FbParamItem::IsGenesis()
 {
 	return FbParamItem(DB_LIBRARY_TYPE) == wxT("GENESIS");
+}
+
+long FbParamList::Style(long style) const
+{
+	return style 
+		| (FbParams(FB_GRID_VRULES) ? fbTR_VRULES : 0) 
+		| (FbParams(FB_GRID_HRULES) ? fbTR_HRULES : 0)
+	;
 }

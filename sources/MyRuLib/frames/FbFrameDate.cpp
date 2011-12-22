@@ -22,7 +22,7 @@ FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
 	: FbFrameBase(parent, ID_FRAME_DATE, GetTitle(), select)
 {
 	m_MasterList = new FbMasterViewCtrl;
-	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, FbParams.Style());
 	CreateColumns();
 
 	CreateBooksPanel(this);

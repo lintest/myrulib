@@ -32,7 +32,7 @@ FbFrameClss::FbFrameClss(wxAuiNotebook * parent, wxSQLite3ResultSet & result, bo
 	, m_code(result.GetInt(wxT("id")))
 {
 	m_MasterList = new FbMasterViewCtrl;
-	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES|fbTR_DIRECTORY);
+	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, FbParams.Style(wxBORDER_SUNKEN | fbTR_DIRECTORY));
 	CreateColumns();
 
 	CreateBooksPanel(this);

@@ -430,6 +430,12 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_GRAY_FONT, _("Use a gray font for missing books"));
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
+	checkbox = new wxCheckBox( this, ID_GRID_HRULES, _("Draws light horizontal rules between rows"));
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
+
+	checkbox = new wxCheckBox( this, ID_GRID_VRULES, _("Draws light vertical rules between columns"));
+	bSizerMain->Add( checkbox, 0, wxALL, 5 );
+
 	wxBoxSizer* bSizerImage = new wxBoxSizer( wxHORIZONTAL );
 
 	wxStaticText * imageText = new wxStaticText( this, wxID_ANY, _("Maximum width of the cover image"));
@@ -689,6 +695,8 @@ void FbParamsDlg::Assign(bool write)
 		{FB_WEB_TIMEOUT, ID_WEB_TIMEOUT},
 		{FB_WEB_ATTEMPT, ID_WEB_ATTEMPT},
 		{FB_IMAGE_WIDTH, ID_IMAGE_WIDTH},
+		{FB_GRID_HRULES, ID_GRID_HRULES},
+		{FB_GRID_VRULES, ID_GRID_VRULES},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

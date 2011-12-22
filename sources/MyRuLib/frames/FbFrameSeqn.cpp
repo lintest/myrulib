@@ -101,7 +101,7 @@ FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
 	m_FindText->SetMinSize( wxSize( 200,-1 ) );
 
 	m_MasterList = new FbSeqnViewCtrl;
-	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, FbParams.Style());
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 

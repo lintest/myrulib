@@ -126,7 +126,7 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 	m_LetterList->Create(panel, ID_MASTER_FIND, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
 
 	m_MasterList = new FbAuthViewCtrl;
-	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN|fbTR_VRULES);
+	m_MasterList->Create(panel, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, FbParams.Style());
 	m_MasterList->SetSortedColumn(1);
 	CreateColumns();
 

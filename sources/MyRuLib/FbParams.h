@@ -106,6 +106,8 @@ enum FbParamKey {
 	FB_GRAY_FONT     = 211,
 	FB_CLEAR_LOG     = 212,
 	FB_NUMBER_FORMAT = 213,
+	FB_GRID_HRULES   = 214,
+	FB_GRID_VRULES   = 215,
 
 	FB_TITLE_0 = 220,
 	FB_TITLE_1 = 221,
@@ -175,6 +177,8 @@ class FbParamList {
 			{ return FbParamItem(param); }
 		FbParamItem operator()(wxWindowID winid, int param)
 			{ return FbParamItem(winid, param); }
+	public:
+		long Style(long style = wxBORDER_SUNKEN) const;
 };
 
 extern FbParamList FbParams;
