@@ -582,8 +582,8 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 {
 	bool select = event.GetInt() == 0;
-	wxWindow * frame = FindFrameById(event.GetId(), true);
-	if (frame == NULL) frame = CreateFrame(event.GetId(), select);
+	wxWindow * frame = wxGetKeyState(WXK_CONTROL) ? NULL : FindFrameById(event.GetId(), true);
+	if (!frame) frame = CreateFrame(event.GetId(), select);
 	if (select && frame) frame->Update();
 }
 
@@ -602,6 +602,11 @@ wxWindow * FbMainFrame::CreateFrame(wxWindowID id, bool select)
 
 wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 {
+	int sel = m_FrameNotebook.GetSelection();
+	if (sel != wxNOT_FOUND && m_FrameNotebook.GetPage(sel)->GetId() == id) {
+		return m_FrameNotebook.GetPage(sel);
+	}
+
 	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 		if (m_FrameNotebook.GetPage(i)->GetId() == id) {
@@ -610,6 +615,7 @@ wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 			return result;
 		}
 	}
+
 	return NULL;
 }
 
