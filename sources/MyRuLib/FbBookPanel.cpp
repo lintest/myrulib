@@ -119,11 +119,11 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	switch (m_owner) {
 		case ID_FRAME_FIND: {
 			m_listmode = FB2_MODE_LIST;
-			m_BookList.SetSortedColumn(BF_NAME);
+			m_BookList.SetSortedColumn(BF_NAME + 1);
 		} break;
 		case ID_FRAME_NODE: {
 			m_listmode = FB2_MODE_TREE;
-			m_BookList.SetSortedColumn(BF_NUMB);
+			m_BookList.SetSortedColumn(BF_NUMB + 1);
 		} break;
 		default: {
 			m_listmode = FbParams(m_owner, FB_LIST_MODE) ? FB2_MODE_TREE : FB2_MODE_LIST;
