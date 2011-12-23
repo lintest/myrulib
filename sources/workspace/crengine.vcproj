@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="crengine"
 	ProjectGUID="{230674E1-3392-4A62-B749-5D73D586F12F}"
+	RootNamespace="crengine"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -15,7 +16,77 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug28|Win32"
+			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN)\src\jpeg&quot;;&quot;$(WXWIN)\src\zlib&quot;;&quot;$(WXWIN)\src\png&quot;;&quot;$(WXWIN)\src&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;COMPILED_FROM_DSP;_LIB;CYGWIN"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug29|Win32"
 			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
 			ConfigurationType="4"

@@ -83,7 +83,7 @@ void FbViewerDlg::OnBtnClick( wxCommandEvent& event )
 
 wxString FbViewerDlg::GetValue()
 {
-	return m_coolreader && m_coolreader->GetValue() ? wxT('*') : m_filename->GetValue();
+	return m_coolreader && m_coolreader->GetValue() ? wxString(wxT('*')) : m_filename->GetValue();
 }
 
 void FbViewerDlg::OnTextEnter( wxCommandEvent& event )

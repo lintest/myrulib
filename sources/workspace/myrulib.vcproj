@@ -17,7 +17,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Debug28|Win32"
 			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
 			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -69,6 +69,86 @@
 				AdditionalDependencies="wxmsw28ud_adv.lib wxmsw28ud_aui.lib wxmsw28ud_html.lib wxmsw28ud_core.lib wxbase28ud_net.lib wxbase28ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat.lib crengine.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN)\lib\vc_lib&quot;"
+				IgnoreDefaultLibraryNames="libcmt"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug29|Win32"
+			OutputDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\..\build\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__"
+				AdditionalIncludeDirectories="$(WXWIN3)\lib\vc_dll\mswu;$(WXWIN3)\include"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\MyRuLib&quot;;&quot;$(SolutionDir)\..\build&quot;;&quot;$(SolutionDir)\..\3rdparty\crengine\include&quot;;&quot;$(SolutionDir)\..\3rdparty\bzip2&quot;;&quot;$(SolutionDir)\..\3rdparty\wxbzipstream&quot;;&quot;$(SolutionDir)\..\3rdparty\wxsqlite3\include&quot;;&quot;$(SolutionDir)\..\3rdparty\sqlite3&quot;;&quot;$(SolutionDir)\..\3rdparty\expat&quot;;&quot;$(WXWIN3)\lib\vc_lib\mswud&quot;;&quot;$(WXWIN3)\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WXDEBUG__;__WXMSW__;FB_INCLUDE_READER;FB_INCLUDE_LOCALE;SQLITE_ENABLE_FTS3;XML_STATIC;CYGWIN;_MYRULIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4800"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_UNICODE;UNICODE;wxUSE_NO_MANIFEST"
+				AdditionalIncludeDirectories="&quot;$(WXWIN3)\include&quot;;&quot;$(SolutionDir)\..\build&quot;"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="wxmsw29ud_adv.lib wxmsw29ud_aui.lib wxmsw29ud_html.lib wxmsw29ud_core.lib wxbase29ud_net.lib wxbase29ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib expat.lib crengine.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\build\$(ConfigurationName)&quot;;&quot;$(WXWIN3)\lib\vc_lib&quot;"
 				IgnoreDefaultLibraryNames="libcmt"
 				GenerateDebugInformation="true"
 				SubSystem="2"

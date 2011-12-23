@@ -24,7 +24,7 @@ FbDirImportDlg::FbDirImportDlg( wxWindow* parent, const wxString &title )
 	bSizerMain->Add( info, 0, wxTOP|wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	m_folder.Create( this, ID_FOLDER, wxGetApp().GetLibPath() );
-	bSizerMain->Add( &m_folder, 1, wxEXPAND|wxALL, 5 );
+	bSizerMain->Add( &m_folder, 0, wxEXPAND|wxALL, 5 );
 
 	m_only_new.Create( this, wxID_ANY, _("Process only new files") );
 	m_only_new.SetValue(false);

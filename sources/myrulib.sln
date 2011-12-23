@@ -13,15 +13,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "crengine", "workspace\creng
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
+		Debug28|Win32 = Debug28|Win32
+		Debug29|Win32 = Debug29|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug|Win32.Build.0 = Debug|Win32
-		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug|Win32.Build.0 = Debug|Win32
-		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug|Win32.Build.0 = Debug|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug28|Win32.ActiveCfg = Debug28|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug28|Win32.Build.0 = Debug28|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug29|Win32.ActiveCfg = Debug29|Win32
+		{F088C1BE-436A-42D4-96F0-18EDC62DB8B3}.Debug29|Win32.Build.0 = Debug29|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug28|Win32.ActiveCfg = Debug28|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug28|Win32.Build.0 = Debug28|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug29|Win32.ActiveCfg = Debug29|Win32
+		{31C68256-9ADF-4B7A-BDC9-34A4C55ACB1D}.Debug29|Win32.Build.0 = Debug29|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug28|Win32.ActiveCfg = Debug28|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug28|Win32.Build.0 = Debug28|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug29|Win32.ActiveCfg = Debug29|Win32
+		{230674E1-3392-4A62-B749-5D73D586F12F}.Debug29|Win32.Build.0 = Debug29|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
