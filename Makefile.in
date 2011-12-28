@@ -391,8 +391,8 @@ $(LIBPREFIX)mrl_wxbzip2$(LIBEXT): $(MRL_WXBZIP2_OBJECTS)
 	$(AR) $(AROPTIONS) $@ $(MRL_WXBZIP2_OBJECTS)
 	$(RANLIB) $@
 
-zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_sqlite3___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
-	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
+zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
+	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L. -L. -L.     $(LDFLAGS)  -lmrl_wxbzip2 -lmrl_wxsqlite3 -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
 	
 	$(__zipscan___mac_setfilecmd)
 

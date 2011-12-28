@@ -131,7 +131,12 @@
 
 	<exe id="zipscan" template="wxconsole">
 		<depends>mrl_bzip2</depends>
+		<depends>mrl_expat</depends>
+		<depends>mrl_faxpp</depends>
 		<depends>mrl_sqlite3</depends>
+		<depends>mrl_crengine</depends>
+		<library>mrl_wxbzip2</library>
+		<library>mrl_wxsqlite3</library>
 		<define>NDEBUG</define>
 		<sources>sources/ZipScaner/ZipScan.cpp</sources>
 		<sources>sources/MyRuLib/polarssl/md5.c</sources>
