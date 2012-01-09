@@ -28,7 +28,6 @@ cp -rf ../../3rdparty        .
 
 mkdir sources
 
-cp -rf ../../sources/CREngine    sources
 cp -rf ../../sources/MyRuLib     sources
 cp -rf ../../sources/WxSQLite3   sources
 cp -rf ../../sources/ZipScaner   sources

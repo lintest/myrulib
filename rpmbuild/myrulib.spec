@@ -7,7 +7,7 @@
 #
 
 Name:           myrulib
-Version:        0.28.11
+Version:        0.28.12
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
@@ -15,7 +15,6 @@ URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/%{name}_%{version}.orig.tar.bz2
 BuildRequires:  gcc-c++
-BuildRequires:  libfaxpp-devel
 BuildRequires:  libicu-devel
 Conflicts:      myrulib-cr
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -69,7 +68,7 @@ Authors:
 
 %build
 %configure \
-    --with-faxpp=yes \
+    --with-expat \
     --with-icu \
     --without-strip
 
