@@ -6,11 +6,11 @@
 //-----------------------------------------------------------------------------
 
 bool FbParsingContextBase::Parse(wxInputStream & stream, bool md5calc)
-{ 
+{
 	m_md5calc = md5calc;
 	if (m_md5calc) md5_starts( &m_md5cont );
 
-	bool ok = DoParse(stream); 
+	bool ok = DoParse(stream);
 
 	if (ok && m_md5calc) {
 		m_md5sum.Empty();
@@ -166,7 +166,7 @@ class FbFaxppStreamReader {
 };
 
 unsigned int FbFaxppStreamReader::Read(void * buffer, unsigned int length)
-{ 
+{
 	size_t count = m_stream.Read((char*)buffer, length).LastRead();
 	if (m_md5calc) md5_update(&m_md5cont, (unsigned char*)buffer, (int)count);
 	return count;
@@ -487,3 +487,122 @@ void FbParsingContextExpat::GetAtts(const XML_Char **atts, FbStringHash &hash)
 }
 
 #endif // FB_PARSE_EXPAT
+
+#ifdef FB_PARSE_LIBXML2
+
+//-----------------------------------------------------------------------------
+//  FbParsingContextLibxml2
+//-----------------------------------------------------------------------------
+
+//! Converts from wxStrings to xmlChars.
+//! Libxml2 takes sequences of xmlChar (which is defined to be *always* unsigned char)
+//! which are asupposed to be always in UTF8: thus WX2XML converts wxStrings to UTF8.
+#define WX2XML(str)        ((xmlChar *)(str.mb_str(wxConvUTF8)))
+
+//! Converts from xmlChars to wxStrings.
+//! Libxml2 always outputs a sequence of xmlChar which are encoded in UTF8:
+//! this macro creates a wxString which converts the given string from UTF8
+//! to the format internally used by wxString (whatever it is).
+#define XML2WX(str)        (wxString((const char *)str, wxConvUTF8))
+
+static int InputReadXML(void * context, char * buffer, int len)
+{
+	return ((FbParsingContextLibxml2*)context)->Read(buffer, len);
+}
+
+static int InputCloseXML(void * context)
+{
+	return 0;
+}
+
+FbParsingContextLibxml2::FbParsingContextLibxml2()
+	: m_stream(NULL), m_stop(false)
+{
+}
+
+FbParsingContextLibxml2::~FbParsingContextLibxml2()
+{
+}
+
+int FbParsingContextLibxml2::Read(void * buffer, int length)
+{
+	size_t count = m_stream->Read((char*)buffer, length).LastRead();
+	if (m_md5calc) md5_update(&m_md5cont, (unsigned char*)buffer, (int)count);
+	return count;
+}
+
+wxString FbParsingContextLibxml2::Low(const xmlChar * text)
+{
+	wxString data = XML2WX(text);
+	data.MakeLower();
+	data.Trim(false).Trim(true);
+	return data;
+}
+
+void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
+{
+	switch (xmlTextReaderNodeType(reader)) {
+		case  1: { // START
+			wxString name = Low(xmlTextReaderConstName(reader));
+
+			FbStringHash hash;
+			while (xmlTextReaderMoveToNextAttribute(reader)) {
+				wxString name = Low(xmlTextReaderConstName(reader));
+				wxString value = XML2WX(xmlTextReaderConstValue(reader));
+				hash[name] = value;
+			}
+
+			NewNode(name, hash);
+
+			if (xmlTextReaderIsEmptyElement(reader)) {
+				EndNode(name);
+			} else {
+				Inc(name);
+			}
+		} break;
+
+		case  3: { // TEXT
+			wxString value = XML2WX(xmlTextReaderConstValue(reader));
+			TxtNode(value);
+		} break;
+
+		case 15: { // END
+			wxString name = Low(xmlTextReaderConstName(reader));
+			Dec(name);
+			EndNode(name);
+		} break;
+	}
+}
+
+bool FbParsingContextLibxml2::DoParse(wxInputStream & stream)
+{
+	m_stream = &stream;
+
+	int options = XML_PARSE_RECOVER | XML_PARSE_NOERROR |  XML_PARSE_NOWARNING | XML_PARSE_NONET;
+	xmlTextReaderPtr reader = xmlReaderForIO(InputReadXML, InputCloseXML, this, NULL, NULL, options);
+
+    int ret = 1;
+	if (reader != NULL) {
+        while ((ret = xmlTextReaderRead(reader)) == 1) {
+            ProcessNode(reader);
+        	if (m_stop) { ret = 0; break; }
+        }
+        xmlFreeTextReader(reader);
+//        if (ret) wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
+	}
+
+	if (m_md5calc) {
+		const size_t BUFSIZE = 1024;
+		unsigned char buf[BUFSIZE];
+		bool eof = false;
+		do {
+			size_t len = stream.Read(buf, BUFSIZE).LastRead();
+			md5_update( &m_md5cont, buf, (int) len );
+			eof = (len < BUFSIZE);
+		} while (!eof);
+	}
+
+	return ret == 0;
+}
+
+#endif // FB_PARSE_LIBXML2

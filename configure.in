@@ -42,20 +42,33 @@ if test "$WXFOUND" != 1; then
     ])
 fi
 
+AM_PATH_XML2(2.5.0, USE_LIBXML2="yes", USE_LIBXML2="no")
+
 AC_MSG_CHECKING([for --with-expat])
-AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use Expat XML parser library (default)])], USE_EXPAT="$withval", USE_EXPAT="no")
+AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use Expat XML parser instead of Libxml2])], USE_EXPAT="$withval", USE_EXPAT="no")
 AC_MSG_RESULT([$USE_EXPAT])
 
 AC_MSG_CHECKING([for --with-faxpp])
 AC_ARG_WITH([faxpp], [AS_HELP_STRING([--with-faxpp], [Use FAXPP (Fast XML Pull Parser) library])], USE_FAXPP="$withval", USE_FAXPP="no")
 AC_MSG_RESULT([$USE_FAXPP])
 
-if test "x.$USE_EXPAT.$USE_FAXPP" = "x.no.no" ; then 
+if test "$USE_EXPAT.$USE_FAXPP" = "no.no" ; then 
+  if test "x$USE_LIBXML2" = "xyes" ; then 
+    CXXFLAGS="$CXXFLAGS $XML_CPPFLAGS -DFB_PARSE_LIBXML2"
+    LIBS="$WX_LIBS $XML_LIBS"
+  else
     USE_EXPAT="yes"
+  fi
 fi
 
 if test "x$USE_EXPAT" != "xno" ; then 
+    USE_LIBXML2="no"
     USE_FAXPP="no"
+fi
+
+if test "x$USE_FAXPP" != "xno" ; then 
+    USE_LIBXML2="no"
+    USE_EXPAT="no"
 fi
 
 if test "x$USE_EXPAT" = "xyes" ; then 
@@ -321,7 +334,8 @@ dnl report how we have been configured
 echo
 echo "Configured ${PACKAGE_STRING} for \`${host}' wxWidgets ${WX_VERSION}"
 echo 
-echo "  Use Expat XML parser library (default)?       ${USE_EXPAT}"
+echo "  Use Libxml2 parser library (default)?         ${USE_LIBXML2}"
+echo "  Use Expat XML parser instead of Libxml2?      ${USE_EXPAT}"
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use builtin BZip2 library?                    ${USE_BZIP2}"
 echo "  Use builtin SQLite3 library?                  ${USE_SQLITE}"
