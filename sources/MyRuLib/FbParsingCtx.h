@@ -5,6 +5,14 @@
 #include "polarssl/md5.h"
 #include "FbStringHash.h"
 
+#ifndef FB_PARSE_LIBXML2
+	#ifndef FB_PARSE_EXPAT
+		#ifndef FB_PARSE_FAXPP
+			#define FB_PARSE_EXPAT
+		#endif // FB_PARSE_FAXPP
+	#endif // FB_PARSE_EXPAT
+#endif // FB_PARSE_LIBXML2
+
 class FbParsingContextBase: public wxObject
 {
 	public:
@@ -74,10 +82,6 @@ class FbParsingContextFaxpp: public FbParsingContextBase
 
 typedef FbParsingContextFaxpp FbParsingContext;
 
-#else
-	#ifndef FB_PARSE_EXPAT
-		#define FB_PARSE_EXPAT
-	#endif // FB_PARSE_EXPAT
 #endif // FB_PARSE_FAXPP
 
 #ifdef FB_PARSE_EXPAT
@@ -105,5 +109,30 @@ class FbParsingContextExpat: public FbParsingContextBase
 typedef FbParsingContextExpat FbParsingContext;
 
 #endif // FB_PARSE_EXPAT
+
+#ifdef FB_PARSE_LIBXML2
+
+#include <libxml/xmlreader.h>
+
+class FbParsingContextLibxml2: public FbParsingContextBase
+{
+	public:
+		FbParsingContextLibxml2();
+		virtual ~FbParsingContextLibxml2();
+		int Read(void * buffer, int length);
+	protected:
+		virtual bool DoParse(wxInputStream & stream);
+		virtual void Stop() { m_stop = true; }
+	private:
+		void ProcessNode(xmlTextReaderPtr & reader);
+		wxString Low(const xmlChar * text);
+	private:
+		wxInputStream * m_stream;
+		bool m_stop;
+};
+
+typedef FbParsingContextLibxml2 FbParsingContext;
+
+#endif // FB_PARSE_LIBXML2
 
 #endif // __FBPARSINGCTX_H__
