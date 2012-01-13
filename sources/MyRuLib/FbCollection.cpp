@@ -5,6 +5,7 @@
 #include "FbParams.h"
 #include "FbGenres.h"
 #include "FbDateTime.h"
+#include "FbFileReader.h"
 
 #include <wx/filename.h>
 #include <wx/fs_mem.h>

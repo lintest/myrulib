@@ -222,6 +222,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbEditBook.o \
 	myrulib_FbExtractInfo.o \
 	myrulib_FbDownloader.o \
+	myrulib_FbFileReader.o \
 	myrulib_FbFilterObj.o \
 	myrulib_FbFilterThread.o \
 	myrulib_FbFrameThread.o \
@@ -252,7 +253,6 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbViewThread.o \
 	myrulib_FbWindow.o \
 	myrulib_MyRuLibApp.o \
-	myrulib_ZipReader.o \
 	myrulib_md5.o \
 	myrulib_base64.o \
 	$(__myrulib___win32rc)
@@ -877,6 +877,9 @@ myrulib_FbExtractInfo.o: $(srcdir)/sources/MyRuLib/FbExtractInfo.cpp $(MYRULIB_O
 myrulib_FbDownloader.o: $(srcdir)/sources/MyRuLib/FbDownloader.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbDownloader.cpp
 
+myrulib_FbFileReader.o: $(srcdir)/sources/MyRuLib/FbFileReader.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFileReader.cpp
+
 myrulib_FbFilterObj.o: $(srcdir)/sources/MyRuLib/FbFilterObj.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/FbFilterObj.cpp
 
@@ -966,9 +969,6 @@ myrulib_FbWindow.o: $(srcdir)/sources/MyRuLib/FbWindow.cpp $(MYRULIB_ODEP)
 
 myrulib_MyRuLibApp.o: $(srcdir)/sources/MyRuLib/MyRuLibApp.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/MyRuLibApp.cpp
-
-myrulib_ZipReader.o: $(srcdir)/sources/MyRuLib/ZipReader.cpp $(MYRULIB_ODEP)
-	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/ZipReader.cpp
 
 myrulib_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c $(MYRULIB_ODEP)
 	$(CCC) -c -o $@ $(MYRULIB_CFLAGS) $(srcdir)/sources/MyRuLib/polarssl/md5.c

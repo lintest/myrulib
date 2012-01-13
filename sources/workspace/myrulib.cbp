@@ -214,6 +214,8 @@
 		<Unit filename="../MyRuLib/FbEditBook.h" />
 		<Unit filename="../MyRuLib/FbExtractInfo.cpp" />
 		<Unit filename="../MyRuLib/FbExtractInfo.h" />
+		<Unit filename="../MyRuLib/FbFileReader.cpp" />
+		<Unit filename="../MyRuLib/FbFileReader.h" />
 		<Unit filename="../MyRuLib/FbFilterObj.cpp" />
 		<Unit filename="../MyRuLib/FbFilterObj.h" />
 		<Unit filename="../MyRuLib/FbFilterThread.cpp" />
@@ -281,8 +283,6 @@
 		<Unit filename="../MyRuLib/MyRuLibApp.h" />
 		<Unit filename="../MyRuLib/VacuumThread.cpp" />
 		<Unit filename="../MyRuLib/VacuumThread.h" />
-		<Unit filename="../MyRuLib/ZipReader.cpp" />
-		<Unit filename="../MyRuLib/ZipReader.h" />
 		<Unit filename="../MyRuLib/controls/FbChoiceCtrl.cpp" />
 		<Unit filename="../MyRuLib/controls/FbChoiceCtrl.h" />
 		<Unit filename="../MyRuLib/controls/FbComboBox.cpp" />

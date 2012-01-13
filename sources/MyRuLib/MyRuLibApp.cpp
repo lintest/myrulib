@@ -9,7 +9,6 @@
 #include "FbLocale.h"
 #include "FbParams.h"
 #include "FbGenres.h"
-#include "ZipReader.h"
 #include "dialogs/FbDataOpenDlg.h"
 #include "FbCollection.h"
 

@@ -14,6 +14,7 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbDatabase.h"
+#include "FbMainFrame.h"
 #include "MyRuLibApp.h"
 
 //-----------------------------------------------------------------------------
@@ -293,20 +294,20 @@ void FbCoolReader::GetFonts(wxArrayString & fonts)
 	}
 }
 
-FbCoolReader * FbCoolReader::Open(wxAuiNotebook * parent, int book, const wxString &filename)
+FbCoolReader * FbCoolReader::Open(int book, const wxString &filename)
 {
-	if (!InitCREngine()) {
-		return NULL;
-	} else {
+	FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
+	if (frame && InitCREngine()) {
 		FbCoolReader * reader = new FbCoolReader(book);
 		bool ok = reader->LoadDocument(filename);
 		if (ok) {
-			reader->Create(parent);
+			reader->Create(frame->GetNotebook());
 		} else {
 			wxDELETE(reader);
 		}
 		return reader;
 	}
+	return NULL;
 }
 
 FbCoolReader::FbCoolReader(int book)

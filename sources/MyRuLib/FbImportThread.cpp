@@ -10,7 +10,6 @@
 #include "FbDateTime.h"
 #include "FbGenres.h"
 #include "FbParams.h"
-#include "ZipReader.h"
 #include "MyRuLibApp.h"
 #include "polarssl/md5.h"
 #include "wx/base64.h"

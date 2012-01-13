@@ -338,6 +338,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\MyRuLib\FbFileReader.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\MyRuLib\FbFilterObj.cpp"
 				>
 			</File>
@@ -463,10 +467,6 @@
 			</File>
 			<File
 				RelativePath="..\MyRuLib\VacuumThread.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\MyRuLib\ZipReader.cpp"
 				>
 			</File>
 		</Filter>

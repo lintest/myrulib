@@ -1,6 +1,6 @@
 #include "FbConvertDlg.h"
+#include "FbFileReader.h"
 #include "FbParams.h"
-#include "ZipReader.h"
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h>
 #include <wx/dialog.h>
@@ -82,13 +82,13 @@ FbConvertDlg::ExportThread::ExportThread(FbConvertDlg * parent, int format, int 
 
 void * FbConvertDlg::ExportThread::Entry()
 {
-	wxString fullpath = m_filename.GetFullPath();
-	ZipReader reader(m_id);
+	FbFileReader reader(m_id);
 	if (!reader.IsOk()) {
-		wxLogError(fullpath);
+		reader.ShowError();
 		return NULL;
 	}
 
+	wxString fullpath = m_filename.GetFullPath();
 	switch (m_format) {
 		case -1: fullpath << wxT(".zip"); break;
 		case -2: fullpath << wxT(".gz"); break;
@@ -107,21 +107,21 @@ void * FbConvertDlg::ExportThread::Entry()
 			wxCSConv conv(wxT("cp866"));
 			wxZipOutputStream zip(out, 9, conv);
 			zip.PutNextEntry(m_filename.GetFullName());
-			zip.Write(reader.GetZip());
+			zip.Write(reader.GetStream());
 			zip.Close();
 		} break;
 		case -2: {
 			wxZlibOutputStream zip(out, 9, wxZLIB_GZIP);
-			zip.Write(reader.GetZip());
+			zip.Write(reader.GetStream());
 			zip.Close();
 		} break;
 		case -3: {
 			wxBZipOutputStream zip(out, 9);
-			zip.Write(reader.GetZip());
+			zip.Write(reader.GetStream());
 			zip.Close();
 		} break;
 		default: {
-			out.Write(reader.GetZip());
+			out.Write(reader.GetStream());
 			out.Close();
 		} break;
 	}
