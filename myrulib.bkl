@@ -310,6 +310,7 @@
 		<sources>sources/MyRuLib/FbEditBook.cpp</sources>
 		<sources>sources/MyRuLib/FbExtractInfo.cpp</sources>
 		<sources>sources/MyRuLib/FbDownloader.cpp</sources>
+		<sources>sources/MyRuLib/FbFileReader.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterObj.cpp</sources>
 		<sources>sources/MyRuLib/FbFilterThread.cpp</sources>
 		<sources>sources/MyRuLib/FbFrameThread.cpp</sources>
@@ -340,7 +341,6 @@
 		<sources>sources/MyRuLib/FbViewThread.cpp</sources>
 		<sources>sources/MyRuLib/FbWindow.cpp</sources>
 		<sources>sources/MyRuLib/MyRuLibApp.cpp</sources>
-		<sources>sources/MyRuLib/ZipReader.cpp</sources>
 		<sources>sources/MyRuLib/polarssl/md5.c</sources>
 		<sources>sources/MyRuLib/wx/base64.cpp</sources>
 		<win32-res>sources/MyRuLib/res/resource.rc</win32-res>

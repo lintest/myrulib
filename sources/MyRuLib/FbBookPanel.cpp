@@ -3,11 +3,11 @@
 #include "FbConst.h"
 #include "frames/FbFrameHtml.h"
 #include "FbMainFrame.h"
+#include "FbFileReader.h"
 #include "FbBookMenu.h"
 #include "MyRuLibApp.h"
 #include "FbDownloader.h"
 #include "FbEditBook.h"
-#include "ZipReader.h"
 #include "controls/FbHtmlWindow.h"
 #include "FbMasterThread.h"
 #include "models/FbBookList.h"
@@ -246,9 +246,8 @@ void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 {
 	FbModelItem item = m_BookList.GetCurrent();
 
-	int book = item.GetBook();
-	if (book) {
-		FbBookData(book).Open();
+	if (int book = item.GetBook()) {
+		FbFileReader(book).Open();
 		return;
 	} 
 	
