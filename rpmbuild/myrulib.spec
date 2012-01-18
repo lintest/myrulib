@@ -7,15 +7,18 @@
 #
 
 Name:           myrulib
-Version:        0.28.12
+Version:        0.28.13
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
 URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/%{name}_%{version}.orig.tar.bz2
+Source90:       %{name}_%{version}-squeeze1.debian.tar.gz
+Source91:       %{name}_%{version}-squeeze1.dsc
 BuildRequires:  gcc-c++
 BuildRequires:  libicu-devel
+BuildRequires:  libxml2-devel
 Conflicts:      myrulib-cr
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -68,7 +71,6 @@ Authors:
 
 %build
 %configure \
-    --with-expat \
     --with-icu \
     --without-strip
 
