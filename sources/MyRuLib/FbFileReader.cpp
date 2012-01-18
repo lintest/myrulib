@@ -125,8 +125,8 @@ FbFileReader::FbFileReader(int id, bool info)
 
 	wxString root = wxGetApp().GetLibPath();
 	wxString sql;
-	if (id < 0) sql = wxT("SELECT DISTINCT id_archive,file_name,file_path FROM books WHERE id=?1 UNION ");
-	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path FROM files WHERE id_book=?1 ORDER BY 1");
+	if (id < 0) sql = wxT("SELECT DISTINCT id_archive,file_name,file_path,id_archive*id_archive FROM books WHERE id=?1 UNION ");
+	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path,id_archive*id_archive FROM files WHERE id_book=?1 ORDER BY 1,4 desc");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql); 
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
@@ -216,7 +216,7 @@ private:
     char **m_argv;
 };
 
-static void FbExecute(wxString & command, wxString & filepath)
+static void FbExecute(const wxString & command, const wxString & filepath)
 {
 	wxFileName filename = filepath;
 	
@@ -233,7 +233,7 @@ static void FbExecute(wxString & command, wxString & filepath)
 	if (fork() == 0) execvp(*argv, argv);
 }
 
-static void FbExecute(wxString & command)
+static void FbExecute(const wxString & command)
 {
 	wxArrayString args;
 	args.Add(command);
@@ -243,12 +243,9 @@ static void FbExecute(wxString & command)
 
 #else // __WXGTK__
 
-static void FbExecute(wxString & command, wxS & filename)
+static void FbExecute(const wxString & command, const wxString & filename)
 {
-	wxString filepath = filename.GetFullPath();
-	filepath.Prepend(wxT('"')).Append(wxT('"'));
-	command << wxT(' ') << filepath;
-	wxExecute(command);
+	wxExecute(command + wxT(' ') + wxT('"') + filename + wxT('"'));
 }
 
 static void FbExecute(wxString & command)
