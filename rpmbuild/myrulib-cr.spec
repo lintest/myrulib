@@ -7,7 +7,7 @@
 #
 
 Name:           myrulib-cr
-Version:        0.28.12
+Version:        0.28.13
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
@@ -15,11 +15,12 @@ URL:            http://myrulib.lintest.ru
 Group:          Productivity/Other
 Source0:        http://www.lintest.ru/pub/myrulib_%{version}.orig.tar.bz2
 # Need to build debian packages.
-Source90:       myrulib_0.28.12-squeeze1.debian.tar.gz
-Source91:       myrulib_0.28.12-squeeze1.dsc
-Source92:       myrulib_0.28.12-squeeze1_source.changes
+Source90:       myrulib_%{version}-squeeze1.debian.tar.gz
+Source91:       myrulib_%{version}-squeeze1.dsc
+Source92:       myrulib_%{version}-squeeze1_source.changes
 BuildRequires:  gcc-c++
 BuildRequires:  libicu-devel
+BuildRequires:  libxml2-devel
 BuildRequires:  libjpeg-devel
 Conflicts:      myrulib
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -75,7 +76,6 @@ Authors:
 
 %build
 %configure \
-            --with-expat \
             --with-icu \
             --with-reader \
             --without-strip
