@@ -82,8 +82,7 @@ static wxString FildFile(const wxString & name, const wxString & path, const wxS
 	filename.Normalize(wxPATH_NORM_ALL, root);
 	if (filename.FileExists()) return filename.GetFullPath();
 
-	filename.Normalize(wxPATH_NORM_ALL, path);
-	if (filename.FileExists()) return filename.GetFullPath();
+	if (!path.IsEmpty() && wxFileName::FileExists(path)) return path;
 
 	return wxEmptyString;
 }
@@ -137,8 +136,10 @@ FbFileReader::FbFileReader(int id, bool info)
 			wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 			if (result.NextRow()) {
 				wxString arch_name = FildFile(result.GetString(0), result.GetString(1), root);
-				m_stream = new FbZipInputStream(arch_name, file_name);
-				if (m_stream->IsOk()) return; else wxDELETE(m_stream);
+				if (!arch_name.IsEmpty()) {
+					m_stream = new FbZipInputStream(arch_name, file_name);
+					if (m_stream->IsOk()) return; else wxDELETE(m_stream);
+				}
 			}
 		} else {
 			wxString file_name = FildFile(result.GetString(1), result.GetString(2), root);
