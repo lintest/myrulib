@@ -30,6 +30,7 @@ protected:
 protected:
 	FbDatabase * m_database;
 	wxString m_basepath;
+	wxString m_volume;
 	bool m_fullpath;
 	const long m_flags;
 };

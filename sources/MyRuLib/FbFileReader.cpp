@@ -142,8 +142,8 @@ FbFileReader::FbFileReader(int id, bool info)
 				}
 			}
 		} else {
-			wxString file_name = FildFile(result.GetString(1), result.GetString(2), root);
-			if (!file_name.IsEmpty()) {
+			wxString filename = FildFile(result.GetString(1), result.GetString(2), root);
+			if (!filename.IsEmpty()) {
 				m_stream = new wxFFileInputStream(filename);
 				if (m_stream->IsOk()) {
 					m_filename = filename;
@@ -270,6 +270,11 @@ public:
 	}
 };
 
+static bool NotEqualExt(const wxString & filename, const wxString & filetype)
+{
+	return filename.Right(filetype.Length() + 1).Lower() != wxString(wxT('.')) + filetype;
+}
+
 #include "frames/FbCoolReader.h"
 
 void FbFileReader::Open() const
@@ -308,7 +313,7 @@ void FbFileReader::Open() const
     #endif
 
 	wxString filename = GetFileName();
-	if (filename.IsEmpty()) {
+	if (filename.IsEmpty() || NotEqualExt(filename, m_filetype)) {
 		wxFileName filepath = m_md5sum;
 		filepath.SetPath(FbParamItem::GetPath(FB_TEMP_DIR));
 		filepath.SetExt(m_filetype);
