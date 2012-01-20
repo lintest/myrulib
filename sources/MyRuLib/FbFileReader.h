@@ -7,7 +7,7 @@
 #include "FbDatabase.h"
 #include "FbSmartPtr.h"
 
-class FbTempEraser 
+class FbTempEraser
 {
 public:
 	static void Add(const wxString &filename);
@@ -23,10 +23,9 @@ class FbZipInputStream : public wxZipInputStream
 public:
 	FbZipInputStream(const wxString & archname, const wxString & filename = wxEmptyString);
 	FbZipInputStream(const wxString & archname, bool info);
-    virtual wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart);
-
+	virtual wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart);
 private:
-    FbZipInputStream(wxInputStream * stream);
+	FbZipInputStream(wxInputStream * stream);
 	FbSmartPtr<wxZipEntry> m_entry;
 };
 
@@ -44,7 +43,7 @@ public:
 
 	bool IsOk() const
 		{ return m_stream && m_stream->IsOk(); }
-		
+
 	const wxString & GetFileName() const
 		{ return m_filename; }
 

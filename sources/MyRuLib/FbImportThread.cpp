@@ -52,6 +52,9 @@ bool FbImportThread::Execute()
 void FbImportThread::SetRoot(const wxString & dir)
 {
 	m_basepath = dir;
+#ifdef __WXMSW__
+	m_volume = wxFileName(dir).GetVolume();
+#endif
 }
 
 wxString FbImportThread::GetRelative(const wxString &filename)
@@ -64,7 +67,11 @@ wxString FbImportThread::GetRelative(const wxString &filename)
 
 wxString FbImportThread::GetAbsolute(const wxString &filename)
 {
+#ifdef __WXMSW__
+	if (m_fullpath || wxFileName(filename).GetVolume() != m_volume) return filename;
+#else
 	return m_fullpath ? filename : (wxString)wxEmptyString;
+#endif
 }
 
 bool FbImportThread::OnFile(const wxString &filename, bool progress, bool only_new)

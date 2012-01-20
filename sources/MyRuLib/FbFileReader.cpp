@@ -63,7 +63,7 @@ FbZipInputStream::FbZipInputStream(const wxString & archname, bool info)
 }
 
 wxFileOffset FbZipInputStream::SeekI(wxFileOffset pos, wxSeekMode mode)
-{ 
+{
 	if (m_entry && pos == 0 && mode == wxFromStart) {
 		return OpenEntry(*m_entry) ? 0 : wxInvalidOffset;
 	} else {
@@ -82,8 +82,7 @@ static wxString FildFile(const wxString & name, const wxString & path, const wxS
 	filename.Normalize(wxPATH_NORM_ALL, root);
 	if (filename.FileExists()) return filename.GetFullPath();
 
-	filename.Normalize(wxPATH_NORM_ALL, path);
-	if (filename.FileExists()) return filename.GetFullPath();
+	if (!path.IsEmpty() && wxFileName::FileExists(path)) return path;
 
 	return wxEmptyString;
 }
@@ -106,28 +105,29 @@ FbFileReader::FbFileReader(int id, bool info)
 		if  (m_filetype == wxT("fb2")) info = false;
 	}
 
-	wxString filename = FbDownloader::GetFilename(m_md5sum);
-	if (wxFileName::FileExists(filename)) {
-		m_stream = new wxFFileInputStream(filename);
-		if (m_stream->IsOk()) {
-			m_filename = filename;
-			return; 
-		} else { 
-			wxDELETE(m_stream);
+	{
+		wxString filename = FbDownloader::GetFilename(m_md5sum);
+		if (wxFileName::FileExists(filename)) {
+			m_stream = new wxFFileInputStream(filename);
+			if (m_stream->IsOk()) {
+				m_filename = filename;
+				return;
+			} else {
+				wxDELETE(m_stream);
+			}
 		}
-	}
-
-	filename << wxT(".zip");
-	if (wxFileName::FileExists(filename)) {
-		m_stream = new FbZipInputStream(filename, info);
-		if (m_stream->IsOk()) return; else wxDELETE(m_stream);
+		filename << wxT(".zip");
+		if (wxFileName::FileExists(filename)) {
+			m_stream = new FbZipInputStream(filename, info);
+			if (m_stream->IsOk()) return; else wxDELETE(m_stream);
+		}
 	}
 
 	wxString root = wxGetApp().GetLibPath();
 	wxString sql;
-	if (id < 0) sql = wxT("SELECT DISTINCT id_archive,file_name,file_path FROM books WHERE id=?1 UNION ");
-	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path FROM files WHERE id_book=?1 ORDER BY 1");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql); 
+	if (id < 0) sql = wxT("SELECT DISTINCT id_archive,file_name,file_path,id_archive*id_archive FROM books WHERE id=?1 UNION ");
+	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path,id_archive*id_archive FROM files WHERE id_book=?1 ORDER BY 1,4 desc");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	while ( result.NextRow() ) {
@@ -137,17 +137,19 @@ FbFileReader::FbFileReader(int id, bool info)
 			wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 			if (result.NextRow()) {
 				wxString arch_name = FildFile(result.GetString(0), result.GetString(1), root);
-				m_stream = new FbZipInputStream(arch_name, file_name);
-				if (m_stream->IsOk()) return; else wxDELETE(m_stream);
+				if (!arch_name.IsEmpty()) {
+					m_stream = new FbZipInputStream(arch_name, file_name);
+					if (m_stream->IsOk()) return; else wxDELETE(m_stream);
+				}
 			}
 		} else {
-			wxString file_name = FildFile(result.GetString(1), result.GetString(2), root);
-			if (!file_name.IsEmpty()) {
+			wxString filename = FildFile(result.GetString(1), result.GetString(2), root);
+			if (!filename.IsEmpty()) {
 				m_stream = new wxFFileInputStream(filename);
 				if (m_stream->IsOk()) {
 					m_filename = filename;
-					return; 
-				} else { 
+					return;
+				} else {
 					wxDELETE(m_stream);
 				}
 			}
@@ -168,7 +170,7 @@ static void SaveFile(wxInputStream & in, const wxString &filepath)
 	out.Close();
 }
 
-static bool GetSystemCommand(const wxString &filename, const wxString &filetype, wxString &command) 
+static bool GetSystemCommand(const wxString &filename, const wxString &filetype, wxString &command)
 {
 	FbSmartPtr<wxFileType> ft = wxTheMimeTypesManager->GetFileTypeFromExtension(filetype);
 	return ft && ft->GetOpenCommand(&command, wxFileType::MessageParameters(filename, wxEmptyString));
@@ -216,10 +218,10 @@ private:
     char **m_argv;
 };
 
-static void FbExecute(wxString & command, wxString & filepath)
+static void FbExecute(const wxString & command, const wxString & filepath)
 {
 	wxFileName filename = filepath;
-	
+
 	wxArrayString args;
 	args.Add(command);
 	if (command.BeforeFirst(wxT(' ')) == wxT("wine")) {
@@ -233,7 +235,7 @@ static void FbExecute(wxString & command, wxString & filepath)
 	if (fork() == 0) execvp(*argv, argv);
 }
 
-static void FbExecute(wxString & command)
+static void FbExecute(const wxString & command)
 {
 	wxArrayString args;
 	args.Add(command);
@@ -243,12 +245,9 @@ static void FbExecute(wxString & command)
 
 #else // __WXGTK__
 
-static void FbExecute(wxString & command, wxS & filename)
+static void FbExecute(const wxString & command, const wxString & filename)
 {
-	wxString filepath = filename.GetFullPath();
-	filepath.Prepend(wxT('"')).Append(wxT('"'));
-	command << wxT(' ') << filepath;
-	wxExecute(command);
+	wxExecute(command + wxT(' ') + wxT('"') + filename + wxT('"'));
 }
 
 static void FbExecute(wxString & command)
@@ -271,6 +270,11 @@ public:
 		return * this;
 	}
 };
+
+static bool NotEqualExt(const wxString & filename, const wxString & filetype)
+{
+	return filename.Right(filetype.Length() + 1).Lower() != wxString(wxT('.')) + filetype;
+}
 
 #include "frames/FbCoolReader.h"
 
@@ -299,7 +303,7 @@ void FbFileReader::Open() const
 	FbSmartPtr<wxInputStream> file;
 	if (!ok) {
 		wxString filename = GetFileName();
-		if (filename.IsEmpty()) filename = tempfile.Init(*m_stream); 
+		if (filename.IsEmpty()) filename = tempfile.Init(*m_stream);
 		if (FbCoolReader::Open(m_id, filename)) return;
 		m_stream->Reset();
 	}
@@ -310,7 +314,7 @@ void FbFileReader::Open() const
     #endif
 
 	wxString filename = GetFileName();
-	if (filename.IsEmpty()) {
+	if (filename.IsEmpty() || NotEqualExt(filename, m_filetype)) {
 		wxFileName filepath = m_md5sum;
 		filepath.SetPath(FbParamItem::GetPath(FB_TEMP_DIR));
 		filepath.SetExt(m_filetype);

@@ -37,4 +37,6 @@ cd ..
 
 tar -cvjf myrulib-$VERSION.tar.bz2 myrulib-$VERSION
 cp myrulib-$VERSION.tar.bz2 myrulib_$VERSION.orig.tar.bz2
-cd ..
+
+cp -rf myrulib-$VERSION myrulib-cr-$VERSION
+tar -cvjf myrulib-cr_$VERSION.orig.tar.bz2 myrulib-cr-$VERSION

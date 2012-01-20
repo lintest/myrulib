@@ -770,11 +770,6 @@ void FbConfigDatabase::CreateDatabase()
 	trans.Commit();
 }
 
-wxString FbTransl(const char * psz)
-{
-	return FbString(psz).Translate();
-}
-
 void FbConfigDatabase::DoUpgrade(int version)
 {
 	switch (version) {
