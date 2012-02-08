@@ -256,27 +256,6 @@ bool FbImportReaderFB2::NewNode(const wxString &name, const FbStringHash &atts)
 	}
 }
 
-/*
-bool FbImportReaderFB2::EndNode(const wxString &name)
-{
-	if (*this == wxT("fictionbook/description/title-info")) {
-		m_text.Trim(false).Trim(true);
-		if (name == wxT("book-title")) m_title = m_text; else
-		if (name == wxT("genre")) m_genres += FbGenres::Char(m_text); else
-		if (name == wxT("lang")) m_lang = m_text.Lower();
-	} else if (*this == wxT("fictionbook/description/title-info/author")) {
-		m_text.Trim(false).Trim(true);
-		if (name == wxT("last-name"))   m_author->last   = m_text; else
-		if (name == wxT("first-name"))  m_author->first  = m_text; else
-		if (name == wxT("middle-name")) m_author->middle = m_text;
-	} else if (*this == wxT("fictionbook/description/publish-info/")) {
-		if (name == wxT("isbn")) m_isbn = m_text.Trim(true).Trim(false);
-	} else if (*this == wxT("fictionbook/description")) {
-		if (name == wxT("title-info")) Stop();
-	}
-}
-*/
-
 //-----------------------------------------------------------------------------
 //  FbImportBook
 //-----------------------------------------------------------------------------
@@ -486,6 +465,29 @@ bool FbImportBook::Save()
 }
 
 //-----------------------------------------------------------------------------
+//  FbRootReaderEPUB::RootHandler
+//-----------------------------------------------------------------------------
+
+bool FbRootReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (m_handler || name != wxT("rootfiles")) return BaseHandler::NewNode(name, atts);
+	return m_handler = new FileHandler(m_reader, name);
+}
+
+//-----------------------------------------------------------------------------
+//  FbRootReaderEPUB::FileHandler
+//-----------------------------------------------------------------------------
+
+bool FbRootReaderEPUB::FileHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (name == wxT("rootfile")) {
+		m_reader.m_rootfile = Value(atts, wxT("full-path"));
+		m_reader.Stop();
+	}
+	return BaseHandler::NewNode(name, atts);
+}
+
+//-----------------------------------------------------------------------------
 //  FbRootReaderEPUB
 //-----------------------------------------------------------------------------
 
@@ -502,18 +504,13 @@ FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
 
 bool FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (*this == wxT("container/rootfiles")) {
-		if (name == wxT("rootfile")) {
-			for ( FbStringHash::const_iterator it = atts.begin(); it != atts.end(); it++ ) {
-				if (it->first == wxT("full-path")) {
-					m_rootfile = it->second;
-					break;
-				}
-			}
-			Stop();
-		}
+	if (m_handler) return m_handler->NewNode(name, atts);
+
+	if (name == wxT("container")) {
+		return m_handler = new RootHandler(*this, name);
+	} else {
+		return false;
 	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -51,6 +51,8 @@ protected:
 		virtual bool TxtNode(const wxString &text);
 		virtual bool EndNode(const wxString &name, bool &skip);
 	protected:
+		wxString Value(const FbStringHash &atts, const wxString &name);
+	protected:
 		BaseHandler * m_handler;
 		const wxString m_name;
 		bool m_closed;
@@ -59,7 +61,7 @@ protected:
 	class TextHandler : public BaseHandler
 	{
 	public:
-		explicit TextHandler(const wxString &name, wxString &text) 
+		explicit TextHandler(const wxString &name, wxString &text)
 			: BaseHandler(name), m_text(text) { m_text.Empty(); }
 		virtual ~TextHandler()
 			{ m_text.Trim(false).Trim(true); }

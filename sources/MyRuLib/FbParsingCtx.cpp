@@ -42,6 +42,12 @@ bool FbParserXML::BaseHandler::EndNode(const wxString &name, bool &skip)
 	return true;
 }
 
+wxString FbParserXML::BaseHandler::Value(const FbStringHash &atts, const wxString &name)
+{
+	FbStringHash::const_iterator i = atts.find(name);
+	return i == atts.end() ? wxString() : i->second;
+}
+
 //-----------------------------------------------------------------------------
 //  FbParserXML
 //-----------------------------------------------------------------------------

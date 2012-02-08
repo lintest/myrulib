@@ -157,19 +157,39 @@ protected:
 	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 };
 
-class FbRootReaderEPUB
-	: public FbParsingContext
+class FbRootReaderEPUB : public FbParsingContext
 {
+private:
+	class RootHandler : public BaseHandler
+	{
 	public:
-		FbRootReaderEPUB(wxInputStream & in);
-		wxString GetRoot() const { return m_rootfile; };
-		bool IsOk() { return m_ok; };
-	protected:
+		explicit RootHandler(FbRootReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
 		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 	private:
-		wxZipInputStream m_zip;
-		wxString m_rootfile;
-		bool m_ok;
+		FbRootReaderEPUB & m_reader;
+	};
+
+	class FileHandler : public BaseHandler
+	{
+	public:
+		explicit FileHandler(FbRootReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		FbRootReaderEPUB & m_reader;
+	};
+
+public:
+	FbRootReaderEPUB(wxInputStream & in);
+	wxString GetRoot() const { return m_rootfile; };
+	bool IsOk() { return m_ok; };
+
+protected:
+	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+
+private:
+	wxZipInputStream m_zip;
+	wxString m_rootfile;
+	bool m_ok;
 };
 
 class FbDataReaderEPUB
