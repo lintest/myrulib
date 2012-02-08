@@ -48,16 +48,23 @@ class FbImportZip
 		int m_id;
 };
 
-class FbImportParser
+class FbImportReader
 	: public FbParsingContext
 {
+	protected:
+		class BookHandler : public BaseHandler
+		{
+		public:
+			explicit BookHandler(FbImportReader &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
+		protected:
+			FbImportReader &m_reader;
+		};
 	public:
-		FbImportParser(): m_ok(false) {}
+		FbImportReader(): m_ok(false) {}
 		bool IsOk() { return m_ok; };
-	protected:
 		void Convert(FbDatabase & database);
-	protected:
 		bool m_ok;
+	public:
 		wxString m_title;
 		wxString m_isbn;
 		wxString m_lang;
@@ -86,7 +93,7 @@ class FbImportBook
 		bool AppendBook();
 		bool AppendFile(int id_book);
 	private:
-		FbImportParser * m_parser;
+		FbImportReader * m_parser;
 		FbDatabase & m_database;
 		wxString m_filename;
 		wxString m_filepath;
@@ -98,15 +105,42 @@ class FbImportBook
 		bool m_ok;
 };
 
-class FbImportParserFB2
-	: public FbImportParser
+class FbImportReaderFB2 : public FbImportReader
 {
+private:
+	class RootHandler : public BookHandler
+	{
 	public:
-		FbImportParserFB2(wxInputStream & stream, bool md5 = false);
-	protected:
-		virtual void NewNode(const wxString &name, const FbStringHash &atts);
-		virtual void TxtNode(const wxString &text);
-		virtual void EndNode(const wxString &name);
+		explicit RootHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+	};
+
+	class DscrHandler : public BookHandler
+	{
+	public:
+		explicit DscrHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool EndNode(const wxString &name, bool &skip);
+	};
+
+	class TitleHandler : public BookHandler
+	{
+		FB2_BEGIN_KEYLIST
+			Author,
+			Title,
+			Genre,
+			Lang,
+		FB2_END_KEYLIST
+	public:
+		explicit TitleHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool EndNode(const wxString &name, bool &skip);
+	};
+
+public:
+	FbImportReaderFB2(wxInputStream & stream, bool md5 = false);
+protected:
+	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 };
 
 class FbRootReaderEPUB
@@ -117,7 +151,7 @@ class FbRootReaderEPUB
 		wxString GetRoot() const { return m_rootfile; };
 		bool IsOk() { return m_ok; };
 	protected:
-		virtual void NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		wxZipInputStream m_zip;
 		wxString m_rootfile;
@@ -125,14 +159,14 @@ class FbRootReaderEPUB
 };
 
 class FbDataReaderEPUB
-	: public FbImportParser
+	: public FbImportReader
 {
 	public:
 		FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
 	protected:
-		virtual void NewNode(const wxString &name, const FbStringHash &atts);
-		virtual void TxtNode(const wxString &text);
-		virtual void EndNode(const wxString &name);
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool TxtNode(const wxString &text);
+		virtual bool EndNode(const wxString &name);
 	private:
 		enum Mode {
 			TITLE,

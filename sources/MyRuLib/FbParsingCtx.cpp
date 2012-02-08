@@ -2,10 +2,51 @@
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
-//  FbParsingContextBase
+//  FbParserXML::BaseHandler
 //-----------------------------------------------------------------------------
 
-bool FbParsingContextBase::Parse(wxInputStream & stream, bool md5calc)
+FbParserXML::BaseHandler::~BaseHandler()
+{
+    if (m_handler) delete m_handler;
+}
+
+bool FbParserXML::BaseHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+    if (m_handler) return m_handler->NewNode(name, atts);
+    m_handler = new BaseHandler(name);
+    return true;
+}
+
+bool FbParserXML::BaseHandler::TxtNode(const wxString &text)
+{
+    if (m_handler) return m_handler->TxtNode(text);
+    return true;
+}
+
+bool FbParserXML::BaseHandler::EndNode(const wxString &name, bool &skip)
+{
+    if (m_handler) {
+		if (skip && name == m_name) skip = false;
+        bool ok = m_handler->EndNode(name, skip);
+		if (m_handler->m_closed) {
+            delete m_handler;
+            m_handler = NULL;
+        }
+		if (skip) return ok;
+    } else {
+		bool not_found = name != m_name;
+		if (not_found && skip) return true;
+		skip = not_found;
+		m_closed = true;
+    }
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+//  FbParserXML
+//-----------------------------------------------------------------------------
+
+bool FbParserXML::Parse(wxInputStream & stream, bool md5calc)
 {
 	m_md5calc = md5calc;
 	if (m_md5calc) md5_starts( &m_md5cont );
@@ -24,89 +65,20 @@ bool FbParsingContextBase::Parse(wxInputStream & stream, bool md5calc)
 	return ok;
 }
 
-void FbParsingContextBase::Inc(const wxString &tag)
+bool FbParserXML::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (m_tags.Count() == 1) {
-		if (tag == wxT("body")) {
-			m_section = fbsBody;
-		} else if (tag == wxT("description")) {
-			m_section = fbsDescr;
-		} else if (tag == wxT("binary")) {
-			m_section = fbsBinary;
-		} else {
-			m_section = fbsNone;
-		}
-	}
-	m_tags.Add(tag);
-	m_name = tag;
+	return m_handler && m_handler->NewNode(name.Lower(), atts);
 }
 
-void FbParsingContextBase::Dec(const wxString &tag)
+bool FbParserXML::TxtNode(const wxString &text)
 {
-	size_t count = m_tags.Count();
-	size_t index = count;
-	while (index > 0) {
-		index--;
-		if (m_tags[index] == tag) {
-			m_tags.RemoveAt(index, count - index);
-			break;
-		}
-	}
-	if (m_tags.Count() == 1) m_section = fbsNone;
+	return m_handler && m_handler->TxtNode(text);
 }
 
-bool FbParsingContextBase::operator == (const wxString & tags)
+bool FbParserXML::EndNode(const wxString &name)
 {
-	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
-	size_t index = 0;
-	size_t count = m_tags.Count();
-	while (tkz.HasMoreTokens()) {
-		if (index >= count) return false;
-		wxString token = tkz.GetNextToken();
-		if (m_tags[index] != token) return false;
-		index++;
-	}
-
-	return (count == index);
-}
-
-bool FbParsingContextBase::operator >= (const wxString & tags)
-{
-	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
-	size_t index = 0;
-	size_t count = m_tags.Count();
-	while (tkz.HasMoreTokens()) {
-		if (index >= count) return false;
-		wxString token = tkz.GetNextToken();
-		if (m_tags[index] != token) return false;
-		index++;
-	}
-	return (count >= index);
-}
-
-bool FbParsingContextBase::operator > (const wxString & tags)
-{
-	wxStringTokenizer tkz(tags, wxT("/"), wxTOKEN_STRTOK);
-	size_t index = 0;
-	size_t count = m_tags.Count();
-	while (tkz.HasMoreTokens()) {
-		if (index >= count) return false;
-		wxString token = tkz.GetNextToken();
-		if (m_tags[index] != token) return false;
-		index++;
-	}
-
-	return (count > index);
-}
-
-wxString FbParsingContextBase::Path() const
-{
-	wxString result;
-	size_t count = m_tags.Count();
-	for (size_t i = 0; i < count; i++) {
-		result << wxT("/") << m_tags[i];
-	}
-	return result;
+	bool exit = false;
+	return m_handler && m_handler->EndNode(name.Lower(), exit);
 }
 
 #ifdef FB_PARSE_FAXPP

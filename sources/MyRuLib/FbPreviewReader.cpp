@@ -6,7 +6,7 @@
 //  FbPreviewReader
 //-----------------------------------------------------------------------------
 
-void FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
+bool FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (Section()) {
 		case fbsDescr: {
@@ -27,9 +27,10 @@ void FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
 			if (name == wxT("binary")) StartImg(atts);
 		} break;
 	}
+	return true;
 }
 
-void FbPreviewReader::TxtNode(const wxString &text)
+bool FbPreviewReader::TxtNode(const wxString &text)
 {
 	switch (Section()) {
 		case fbsDescr: {
@@ -48,9 +49,10 @@ void FbPreviewReader::TxtNode(const wxString &text)
 		case fbsNone: {
 		} break;
 	}
+	return true;
 }
 
-void FbPreviewReader::EndNode(const wxString &name)
+bool FbPreviewReader::EndNode(const wxString &name)
 {
 	switch (Section()) {
 		case fbsDescr: {
@@ -88,6 +90,7 @@ void FbPreviewReader::EndNode(const wxString &name)
 			}
 		} break;
 	}
+	return true;
 }
 
 void FbPreviewReader::AppendImg(const FbStringHash &atts)

@@ -137,7 +137,7 @@ static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)
 	return (*n1)->GetId() - (*n2)->GetId();
 }
 
-void FbImportParser::Convert(FbDatabase & database)
+void FbImportReader::Convert(FbDatabase & database)
 {
 	for (size_t i = 0; i < m_authors.Count(); i++)
 		m_authors[i].Convert(database);
@@ -156,34 +156,81 @@ void FbImportParser::Convert(FbDatabase & database)
 }
 
 //-----------------------------------------------------------------------------
-//  FbImportParserFB2
+//  FbImportReaderFB2::RootHandler
 //-----------------------------------------------------------------------------
 
-FbImportParserFB2::FbImportParserFB2(wxInputStream & stream, bool md5)
+bool FbImportReaderFB2::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (m_handler || name != wxT("description")) return BaseHandler::NewNode(name, atts);
+	return m_handler = new DscrHandler(m_reader, name);
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportReaderFB2::DscrHandler
+//-----------------------------------------------------------------------------
+
+bool FbImportReaderFB2::DscrHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (m_handler || name != wxT("title-info")) return BaseHandler::NewNode(name, atts);
+	return m_handler = new TitleHandler(m_reader, name);
+}
+
+bool FbImportReaderFB2::DscrHandler::EndNode(const wxString &name, bool &skip)
+{
+	bool ok = BaseHandler::EndNode(name, skip);
+	if (m_closed) m_reader.Stop();
+	return ok;
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportReaderFB2::TitleHandler
+//-----------------------------------------------------------------------------
+
+FB2_BEGIN_KEYHASH(FbImportReaderFB2::TitleHandler)
+	KEY( "book-title"   , Title   );
+	KEY( "author"       , Author  );
+	KEY( "genre"        , Genre   );
+	KEY( "lang"         , Lang    );
+FB2_END_KEYHASH
+
+bool FbImportReaderFB2::TitleHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (!m_handler) switch (toKeyword(name)) {
+		case Title   : return m_handler = new TextHandler(name, m_reader.m_title);
+		case Lang    : return m_handler = new TextHandler(name, m_reader.m_lang);
+	}
+	return BaseHandler::NewNode(name, atts);
+}
+
+bool FbImportReaderFB2::TitleHandler::EndNode(const wxString &name, bool &skip)
+{
+	bool ok = BaseHandler::EndNode(name, skip);
+	if (m_closed) m_reader.Stop();
+	return ok;
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportReaderFB2
+//-----------------------------------------------------------------------------
+
+FbImportReaderFB2::FbImportReaderFB2(wxInputStream & stream, bool md5)
 { 
 	m_ok = Parse(stream, md5); 
 }
 
-void FbImportParserFB2::NewNode(const wxString &name, const FbStringHash &atts)
+bool FbImportReaderFB2::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (*this == wxT("fictionbook/description/title-info")) {
-		if (name == wxT("author")) {
-			m_author = new AuthorItem;
-			m_authors.Add(m_author);
-		} else if (name == wxT("sequence")) {
-			SequenceItem * seqitem = new SequenceItem(atts);
-			m_sequences.Add(seqitem);
-		}
+	if (m_handler) return m_handler->NewNode(name, atts);
+
+	if (name == wxT("fictionbook")) {
+		return m_handler = new RootHandler(*this, name);
+	} else {
+		return false;
 	}
-	m_text.Empty();
 }
 
-void FbImportParserFB2::TxtNode(const wxString &text)
-{
-	if (Section() == fbsDescr) m_text << text;
-}
-
-void FbImportParserFB2::EndNode(const wxString &name)
+/*
+bool FbImportReaderFB2::EndNode(const wxString &name)
 {
 	if (*this == wxT("fictionbook/description/title-info")) {
 		m_text.Trim(false).Trim(true);
@@ -201,6 +248,7 @@ void FbImportParserFB2::EndNode(const wxString &name)
 		if (name == wxT("title-info")) Stop();
 	}
 }
+*/
 
 //-----------------------------------------------------------------------------
 //  FbImportBook
@@ -227,7 +275,7 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 	if (!m_ok) return;
 
 	if (m_filetype == wxT("fb2")) {
-		m_parser = new FbImportParserFB2(in, true);
+		m_parser = new FbImportReaderFB2(in, true);
 		m_md5sum = m_parser->GetMd5();
 	} else if (m_filetype == wxT("epub")) {
 		m_md5sum = CalcMd5(in);
@@ -256,7 +304,7 @@ FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry)
 	if (!(m_ok = owner.OpenEntry(entry))) return;
 
 	if (m_filetype == wxT("fb2")) {
-		m_parser = new FbImportParserFB2(owner, m_md5sum.IsEmpty());
+		m_parser = new FbImportReaderFB2(owner, m_md5sum.IsEmpty());
 		m_md5sum = m_parser->GetMd5();
 	} else if (m_filetype == wxT("epub")) {
 		m_md5sum = CalcMd5(owner);
@@ -268,7 +316,7 @@ FbImportBook::FbImportBook(FbImportZip & owner, wxZipEntry & entry)
 		m_md5sum = CalcMd5(owner);
 		wxZipEntry * info = owner.GetInfo(m_filename);
 		if (info && owner.OpenEntry(*info)) {
-			m_parser = new FbImportParserFB2(owner);
+			m_parser = new FbImportReaderFB2(owner);
 		}
 	}
 }
@@ -425,7 +473,7 @@ FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
 	}
 }
 
-void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
+bool FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (*this == wxT("container/rootfiles")) {
 		if (name == wxT("rootfile")) {
@@ -438,6 +486,7 @@ void FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 			Stop();
 		}
 	}
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -455,7 +504,7 @@ FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile
 	}
 }
 
-void FbDataReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
+bool FbDataReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (*this == wxT("package/metadata")) {
 		m_mode = NONE;
@@ -478,14 +527,16 @@ void FbDataReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 			}
 		}
 	}
+	return true;
 }
 
-void FbDataReaderEPUB::TxtNode(const wxString &text)
+bool FbDataReaderEPUB::TxtNode(const wxString &text)
 {
 	if (m_mode != NONE) m_text << text;
+	return true;
 }
 
-void FbDataReaderEPUB::EndNode(const wxString &name)
+bool FbDataReaderEPUB::EndNode(const wxString &name)
 {
 	if (m_mode != NONE) m_text = m_text.Trim(true).Trim(false); 
 
@@ -514,4 +565,5 @@ void FbDataReaderEPUB::EndNode(const wxString &name)
 
 	if (*this == wxT("package") && name == wxT("metadata")) Stop();
 	m_text.Empty();
+	return true;
 }

@@ -69,6 +69,7 @@ wxString FbImportThread::GetAbsolute(const wxString &filename)
 {
 #ifdef __WXMSW__
 	if (m_fullpath || wxFileName(filename).GetVolume() != m_volume) return filename;
+	return wxEmptyString;
 #else
 	return m_fullpath ? filename : (wxString)wxEmptyString;
 #endif

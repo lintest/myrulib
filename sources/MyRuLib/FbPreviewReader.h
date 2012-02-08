@@ -14,9 +14,9 @@ class FbPreviewReader: public FbParsingContext
 		FbPreviewReader(FbViewThread & thread, FbViewData & data)
 			: m_thread(thread), m_data(data) {}
 	protected:
-		virtual void NewNode(const wxString &name, const FbStringHash &atts);
-		virtual void TxtNode(const wxString &text);
-		virtual void EndNode(const wxString &name);
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool TxtNode(const wxString &text);
+		virtual bool EndNode(const wxString &name);
 	private:
 		void AppendImg(const FbStringHash &atts);
 		void StartImg(const FbStringHash &atts);
