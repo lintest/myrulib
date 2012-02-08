@@ -196,6 +196,7 @@ FB2_END_KEYHASH
 bool FbImportReaderFB2::TitleHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (!m_handler) switch (toKeyword(name)) {
+		case Author  : return m_handler = new AuthorHandler(m_reader, name);
 		case Title   : return m_handler = new TextHandler(name, m_reader.m_title);
 		case Lang    : return m_handler = new TextHandler(name, m_reader.m_lang);
 	}
@@ -210,12 +211,38 @@ bool FbImportReaderFB2::TitleHandler::EndNode(const wxString &name, bool &skip)
 }
 
 //-----------------------------------------------------------------------------
+//  FbImportReaderFB2::AuthorHandler
+//-----------------------------------------------------------------------------
+
+FB2_BEGIN_KEYHASH(FbImportReaderFB2::AuthorHandler)
+	KEY( "last-name"    , Last   );
+	KEY( "first-name"   , First  );
+	KEY( "middle-name"  , Middle );
+FB2_END_KEYHASH
+
+FbImportReaderFB2::AuthorHandler::AuthorHandler(FbImportReader &reader, const wxString &name)
+	: BaseHandler(name), m_author(new AuthorItem)
+{
+	reader.m_authors.Add(m_author);
+}
+
+bool FbImportReaderFB2::AuthorHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (!m_handler) switch (toKeyword(name)) {
+		case Last   : return m_handler = new TextHandler(name, m_author->last);
+		case First  : return m_handler = new TextHandler(name, m_author->first);
+		case Middle : return m_handler = new TextHandler(name, m_author->middle);
+	}
+	return BaseHandler::NewNode(name, atts);
+}
+
+//-----------------------------------------------------------------------------
 //  FbImportReaderFB2
 //-----------------------------------------------------------------------------
 
 FbImportReaderFB2::FbImportReaderFB2(wxInputStream & stream, bool md5)
-{ 
-	m_ok = Parse(stream, md5); 
+{
+	m_ok = Parse(stream, md5);
 }
 
 bool FbImportReaderFB2::NewNode(const wxString &name, const FbStringHash &atts)
@@ -279,7 +306,7 @@ FbImportBook::FbImportBook(FbImportThread & owner, wxInputStream & in, const wxS
 		m_md5sum = m_parser->GetMd5();
 	} else if (m_filetype == wxT("epub")) {
 		m_md5sum = CalcMd5(in);
-		in.SeekI(0); 
+		in.SeekI(0);
 		wxString rootfile = FbRootReaderEPUB(in).GetRoot();
 		in.SeekI(0);
 		m_parser = new FbDataReaderEPUB(in, rootfile);
@@ -366,8 +393,8 @@ bool FbImportBook::AppendBook()
 		int author = authors[i].GetId();
 		if (i && prior == author) {
 			wxLogWarning(_("Dublicate author: %s %s"), authors[i].GetFullName().c_str(), m_message.c_str());
-			continue; 
-		} 
+			continue;
+		}
 		prior = author;
 		wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,description,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
@@ -453,7 +480,7 @@ bool FbImportBook::Save()
 	if (m_parser && m_parser->IsOk()) {
 		return id_book ? AppendFile(id_book) : AppendBook();
 	} else {
-		if (id_book == 0) wxLogMessage(_("Skip entry %s"), m_filename.c_str());
+		if (id_book == 0) wxLogMessage(_("Skip entry: %s"), m_filename.c_str());
 		return id_book && AppendFile(id_book);
 	}
 }
@@ -479,7 +506,7 @@ bool FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 		if (name == wxT("rootfile")) {
 			for ( FbStringHash::const_iterator it = atts.begin(); it != atts.end(); it++ ) {
 				if (it->first == wxT("full-path")) {
-					m_rootfile = it->second; 
+					m_rootfile = it->second;
 					break;
 				}
 			}
@@ -538,22 +565,22 @@ bool FbDataReaderEPUB::TxtNode(const wxString &text)
 
 bool FbDataReaderEPUB::EndNode(const wxString &name)
 {
-	if (m_mode != NONE) m_text = m_text.Trim(true).Trim(false); 
+	if (m_mode != NONE) m_text = m_text.Trim(true).Trim(false);
 
 	switch (m_mode) {
-		case TITLE: { 
-			m_title = m_text; 
+		case TITLE: {
+			m_title = m_text;
 		} break;
-		case LANG: { 
-			m_lang  = m_text; 
+		case LANG: {
+			m_lang  = m_text;
 		} break;
-		case DSCR: { 
-			m_dscr  = m_text; 
+		case DSCR: {
+			m_dscr  = m_text;
 		} break;
-		case AUTH: { 
+		case AUTH: {
 			AuthorItem * author = new AuthorItem;
 			size_t pos = m_text.find_last_of(wxT(' '));
-			if (pos == wxNOT_FOUND) {
+			if (pos == (size_t)wxNOT_FOUND) {
 				author->last = m_text;
 			} else {
 				author->last = m_text.Mid(pos + 1);

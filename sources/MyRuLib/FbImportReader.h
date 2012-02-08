@@ -137,6 +137,20 @@ private:
 		virtual bool EndNode(const wxString &name, bool &skip);
 	};
 
+	class AuthorHandler : public BaseHandler
+	{
+		FB2_BEGIN_KEYLIST
+			Last,
+			First,
+			Middle,
+		FB2_END_KEYLIST
+	public:
+		explicit AuthorHandler(FbImportReader &reader, const wxString &name);
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		AuthorItem * m_author;
+	};
+
 public:
 	FbImportReaderFB2(wxInputStream & stream, bool md5 = false);
 protected:
