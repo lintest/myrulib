@@ -14,7 +14,7 @@ function convert_authors($mysql_db, $sqlite_db, $min)
 	SELECT libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.bid) as Number
 	FROM libavtors AS libavtorname INNER JOIN (
 	  SELECT DISTINCT libavtor.aid, libavtor.bid
-	  FROM libavtor INNER JOIN libbook ON libbook.bid=libavtor.bid AND libbook.Deleted<>1 
+	  FROM libavtor INNER JOIN libbook ON libbook.bid=libavtor.bid AND libbook.Deleted<>1 AND libavtor.role = 'a'
 	) AS libavtor ON libavtorname.aid=libavtor.aid 
     WHERE libavtorname.aid>$min
 	GROUP BY libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
@@ -83,7 +83,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
       CASE WHEN aid IS NULL THEN 0 ELSE aid END AS aid,
       CONCAT(libbook.bid, '.', libbook.FileType) AS FileName
     FROM libbook 
-      LEFT JOIN libavtor ON libbook.bid = libavtor.bid AND aid<>0
+      LEFT JOIN libavtor ON libbook.bid = libavtor.bid AND libavtor.role = 'a' AND libavtor.aid<>0
     WHERE libbook.Deleted<>1 AND libbook.bid>$min
   ";
 
