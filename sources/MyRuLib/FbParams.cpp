@@ -230,13 +230,13 @@ void FbParamItem::Set(wxWindowID winid, int param, const wxString &text)
 
 bool FbParamItem::IsGenesis()
 {
-	return FbParamItem(DB_LIBRARY_TYPE) == wxT("GENESIS");
+	return FbParamItem(DB_LIBRARY_TYPE).Str() == wxT("GENESIS");
 }
 
 long FbParamList::Style(long style) const
 {
-	return style 
-		| (FbParams(FB_GRID_VRULES) ? fbTR_VRULES : 0) 
+	return style
+		| (FbParams(FB_GRID_VRULES) ? fbTR_VRULES : 0)
 		| (FbParams(FB_GRID_HRULES) ? fbTR_HRULES : 0)
 	;
 }
