@@ -443,26 +443,34 @@ void FbCollection::LoadParams()
 
 int FbCollection::GetParamInt(int param)
 {
-	wxCriticalSectionLocker locker(sm_section);
 	if (param >= 100) {
-		if (sm_params.count(param)) return sm_params[param].m_int;
+		wxCriticalSectionLocker locker(sm_section);
+		FbParamHash::const_iterator it = sm_params.find(param);
+		if (it != sm_params.end()) return it->second.m_int;
 	} else {
+		wxCriticalSectionLocker locker(sm_section);
 		FbCollection * collection = GetCollection();
-		if (collection && collection->m_params.count(param))
-			return collection->m_params[param].m_int;
+		if (collection) {
+			FbParamHash::const_iterator it = collection->m_params.find(param);
+			if (it != collection->m_params.end()) return it->second.m_int;
+		}
 	}
 	return FbParamItem::DefaultInt(param);
 }
 
 wxString FbCollection::GetParamStr(int param)
 {
-	wxCriticalSectionLocker locker(sm_section);
 	if (param >= 100) {
-		if (sm_params.count(param)) return sm_params[param].m_str;
+		wxCriticalSectionLocker locker(sm_section);
+		FbParamHash::const_iterator it = sm_params.find(param);
+		if (it != sm_params.end()) return it->second.m_str;
 	} else {
+		wxCriticalSectionLocker locker(sm_section);
 		FbCollection * collection = GetCollection();
-		if (collection && collection->m_params.count(param))
-			return collection->m_params[param].m_str;
+		if (collection) {
+			FbParamHash::const_iterator it = collection->m_params.find(param);
+			if (it != collection->m_params.end()) return it->second.m_str;
+		}
 	}
 	return FbParamItem::DefaultStr(param);
 }

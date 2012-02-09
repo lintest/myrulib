@@ -1,3 +1,10 @@
+myrulib (0.28.15-squeeze1) oneiric; urgency=low
+
+  Доработки и исправление ошибок:
+  * Исправлена ошибка в параметрах библиотеки. 
+
+ -- Denis Kandrashin <mail@lintest.ru>  Fri, 10 Feb 2012 00:45:55 +0400
+
 myrulib (0.28.14-squeeze1) oneiric; urgency=low
 
   Доработки и исправление ошибок:
