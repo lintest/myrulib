@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([MyRuLib],[0.29.1],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
+AC_INIT([MyRuLib],[0.28.13],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
 
 dnl Set the minimum version of toolkit libs
 dnl ========================================================
@@ -332,7 +332,7 @@ AC_OUTPUT
 
 dnl report how we have been configured
 echo
-echo "Configured ${PACKAGE_STRING} for \`${target}' wxWidgets ${WX_VERSION}"
+echo "Configured ${PACKAGE_STRING} for \`${host}' wxWidgets ${WX_VERSION}"
 echo 
 echo "  Use Libxml2 parser library (default)?         ${USE_LIBXML2}"
 echo "  Use Expat XML parser instead of Libxml2?      ${USE_EXPAT}"

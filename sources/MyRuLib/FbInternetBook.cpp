@@ -16,15 +16,35 @@
 
 wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 {
-	wxString host = FbParams(DB_DOWNLOAD_HOST);
-	if (FbParamItem::IsGenesis()) {
-		wxString key = md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum;
-		wxString addr = wxT("http://%s/get?nametype=orig&md5=%s");
-		return wxString::Format(addr, host.c_str(), key.c_str());
-	} else {
-		wxString addr = wxT("http://%s/b/%d/download");
-		return wxString::Format(addr, host.c_str(), id);
+	wxString addr = FbParams(DB_DOWNLOAD_ADDR);
+	wxString result;
+	bool param = false;
+	size_t length = addr.Length();
+	for (size_t i = 0; i < length; i++) {
+		wxChar ch = addr[i];
+		if (param) {
+			switch (ch) {
+				case wxT('h'): 
+					result += FbParams(DB_DOWNLOAD_HOST).Str(); 
+					break;
+				case wxT('i'): 
+				case wxT('n'): 
+					result << id; 
+					break;
+				case wxT('m'): 
+				case wxT('s'): 
+					result += md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum; 
+					break;
+				default: 
+					result += ch;
+			}
+			param = false;
+		} else {
+			param = ch == wxT('%');
+			if (!param) result << ch;
+		}
 	}
+	return result;
 }
 
 bool FbInternetBook::Download(const wxString & address, wxString & filename, const wxString &cookie)

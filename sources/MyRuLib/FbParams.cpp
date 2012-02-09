@@ -129,7 +129,11 @@ wxString FbParamItem::DefaultStr(int param)
 			case DB_DOWNLOAD_HOST:
 				return wxT("flibusta.net");
 			case DB_DOWNLOAD_ADDR:
-				return wxT("http://%h/b/%i/download");
+				if (IsGenesis()) {
+					return wxT("http://%h/get?nametype=orig&md5=%s");
+				} else {
+					return wxT("http://%h/b/%i/download");
+				}
 			case FB_DOWNLOAD_DIR:
 				return FbDatabase::GetConfigPath() + wxFileName::GetPathSeparator() + wxT("download");
 			case FB_TEMP_DIR:
