@@ -274,11 +274,11 @@ msgstr "Краткое описание:"
 
 #: dialogs/FbConfigDlg.cpp:772
 msgid "Host name:"
-msgstr "Интернет адрес:"
+msgstr "Интернет сайт:"
 
 #: dialogs/FbConfigDlg.cpp:782
 msgid "Address:"
-msgstr "Адрес:"
+msgstr "Адресная строка:"
 
 #: dialogs/FbConfigDlg.cpp:791 dialogs/FbParamsDlg.cpp:288
 msgid "User name:"

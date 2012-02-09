@@ -783,9 +783,9 @@ FbConfigDlg::PanelInet::PanelInet(wxWindow *parent)
 	text4->Wrap( -1 );
 	fgSizerMain->Add( text4, 0, wxALL, 5 );
 
-	wxComboBox * comboAddr = new wxComboBox( this, ID_DOWNLOAD_HOST, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	wxComboBox * comboAddr = new wxComboBox( this, ID_DOWNLOAD_ADDR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
 	comboAddr->Append( wxT("http://%h/b/%i/download") );
-	comboAddr->Append( wxT("http://%h/get?nametype=orig&md5=&m") );
+	comboAddr->Append( wxT("http://%h/get?nametype=orig&md5=%s") );
 	fgSizerMain->Add( comboAddr, 0, wxALL|wxEXPAND, 5 );
 
 	wxStaticText * text2 = new wxStaticText( this, wxID_ANY, _("User name:"));
@@ -867,6 +867,7 @@ void FbConfigDlg::Assign(bool write)
 		{DB_DOWNLOAD_HOST, FbConfigDlg::ID_DOWNLOAD_HOST},
 		{DB_DOWNLOAD_USER, FbConfigDlg::ID_DOWNLOAD_USER},
 		{DB_DOWNLOAD_PASS, FbConfigDlg::ID_DOWNLOAD_PASS},
+		{DB_DOWNLOAD_ADDR, FbConfigDlg::ID_DOWNLOAD_ADDR},
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);
