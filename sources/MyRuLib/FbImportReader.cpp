@@ -153,6 +153,8 @@ void FbImportReader::Convert(FbDatabase & database)
 
 	if (m_sequences.Count() == 0)
 		m_sequences.Add(new SequenceItem);
+
+	m_lang = Lower(m_lang);
 }
 
 //-----------------------------------------------------------------------------
@@ -492,11 +494,12 @@ bool FbRootReaderEPUB::FileHandler::NewNode(const wxString &name, const FbString
 //-----------------------------------------------------------------------------
 
 FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
-	: m_zip(in), m_ok(false)
+	: m_ok(false)
 {
-	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
+	wxZipInputStream zip(in);
+	while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
 		if (entry->GetInternalName() == wxT("META-INF/container.xml")) {
-			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
+			m_ok = zip.OpenEntry(*entry) && Parse(zip);
 			break;
 		}
 	}
@@ -514,15 +517,88 @@ bool FbRootReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 }
 
 //-----------------------------------------------------------------------------
+//  FbDataReaderEPUB::RootHandler
+//-----------------------------------------------------------------------------
+
+bool FbDataReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (m_handler || name != wxT("metadata")) return BaseHandler::NewNode(name, atts);
+	return m_handler = new MetaHandler(m_reader, name);
+}
+
+//-----------------------------------------------------------------------------
+//  FbDataReaderEPUB::MetaHandler
+//-----------------------------------------------------------------------------
+
+FB2_BEGIN_KEYHASH(FbDataReaderEPUB::MetaHandler)
+	KEY( "creator"     , Author );
+	KEY( "title"       , Title  );
+	KEY( "description" , Descr  );
+	KEY( "language"    , Lang   );
+FB2_END_KEYHASH
+
+static bool IsAut(const FbStringHash &atts) 
+{
+	for (FbStringHash::const_iterator it = atts.begin(); it != atts.end(); ++it ) {
+		wxString attr = it->first.AfterLast(wxT(':'));
+		if (attr == wxT("role")) return it->second == wxT("aut");
+	}
+	return true;
+}
+
+bool FbDataReaderEPUB::MetaHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (!m_handler) {
+		wxString code = name.AfterLast(wxT(':'));
+		switch (toKeyword(code)) {
+			case Title  : return m_handler = new TextHandler( name, m_reader.m_title );
+			case Descr  : return m_handler = new TextHandler( name, m_reader.m_dscr  );
+			case Lang   : return m_handler = new TextHandler( name, m_reader.m_lang  );
+			case Author : if (IsAut(atts)) return m_handler = new AuthorHandler(m_reader, name); break;
+		}
+	}
+	return BaseHandler::NewNode(name, atts);
+}
+
+bool FbDataReaderEPUB::MetaHandler::EndNode(const wxString &name, bool &skip)
+{
+	bool ok = BaseHandler::EndNode(name, skip);
+	if (m_closed) m_reader.Stop();
+	return ok;
+}
+
+//-----------------------------------------------------------------------------
+//  FbDataReaderEPUB::AuthorHandler
+//-----------------------------------------------------------------------------
+
+FbDataReaderEPUB::AuthorHandler::AuthorHandler(FbImportReader &reader, const wxString &name)
+	: BaseHandler(name), m_author(new AuthorItem)
+{
+	reader.m_authors.Add(m_author);
+}
+
+FbDataReaderEPUB::AuthorHandler::~AuthorHandler()
+{
+	m_text.Trim(false).Trim(true);
+	size_t pos = m_text.find_last_of(wxT(' '));
+	if (pos == (size_t)wxNOT_FOUND) {
+		m_author->last = m_text;
+	} else {
+		m_author->last = m_text.Mid(pos + 1);
+		m_author->first = m_text.Left(pos);
+	}
+}
+
+//-----------------------------------------------------------------------------
 //  FbDataReaderEPUB
 //-----------------------------------------------------------------------------
 
 FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile)
-	: m_zip(in), m_mode(NONE)
 {
-	while (FbSmartPtr<wxZipEntry> entry = m_zip.GetNextEntry()) {
+	wxZipInputStream zip(in);
+	while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
 		if (entry->GetInternalName() == rootfile) {
-			m_ok = m_zip.OpenEntry(*entry) && Parse(m_zip);
+			m_ok = zip.OpenEntry(*entry) && Parse(zip);
 			break;
 		}
 	}
@@ -530,64 +606,11 @@ FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile
 
 bool FbDataReaderEPUB::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (*this == wxT("package/metadata")) {
-		m_mode = NONE;
-		m_text.Empty();
-		wxString code = name.AfterLast(wxT(':'));
-		if (code == wxT("title")) {
-			m_mode = TITLE;
-		} else if (code == wxT("language")) {
-			m_mode = LANG;
-		} else if (code == wxT("description")) {
-			m_mode = DSCR;
-		} else if (code == wxT("creator")) {
-			m_mode = AUTH;
-			for (FbStringHash::const_iterator it = atts.begin(); it != atts.end(); ++it ) {
-				wxString attr = it->first.AfterLast(wxT(':'));
-				if (attr == wxT("role")) {
-					if (it->second != wxT("aut")) m_mode = NONE;
-					break;
-				}
-			}
-		}
+	if (m_handler) return m_handler->NewNode(name, atts);
+
+	if (name == wxT("package")) {
+		return m_handler = new RootHandler(*this, name);
+	} else {
+		return false;
 	}
-	return true;
-}
-
-bool FbDataReaderEPUB::TxtNode(const wxString &text)
-{
-	if (m_mode != NONE) m_text << text;
-	return true;
-}
-
-bool FbDataReaderEPUB::EndNode(const wxString &name)
-{
-	if (m_mode != NONE) m_text = m_text.Trim(true).Trim(false);
-
-	switch (m_mode) {
-		case TITLE: {
-			m_title = m_text;
-		} break;
-		case LANG: {
-			m_lang  = m_text;
-		} break;
-		case DSCR: {
-			m_dscr  = m_text;
-		} break;
-		case AUTH: {
-			AuthorItem * author = new AuthorItem;
-			size_t pos = m_text.find_last_of(wxT(' '));
-			if (pos == (size_t)wxNOT_FOUND) {
-				author->last = m_text;
-			} else {
-				author->last = m_text.Mid(pos + 1);
-				author->first = m_text.Left(pos);
-			}
-			m_authors.Add(author);
-		} break;
-	}
-
-	if (*this == wxT("package") && name == wxT("metadata")) Stop();
-	m_text.Empty();
-	return true;
 }
