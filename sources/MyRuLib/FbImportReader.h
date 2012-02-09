@@ -187,30 +187,54 @@ protected:
 	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 
 private:
-	wxZipInputStream m_zip;
 	wxString m_rootfile;
 	bool m_ok;
 };
 
-class FbDataReaderEPUB
-	: public FbImportReader
+class FbDataReaderEPUB : public FbImportReader
 {
+private:
+	class RootHandler : public BaseHandler
+	{
 	public:
-		FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
-	protected:
+		explicit RootHandler(FbDataReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
 		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
-		virtual bool TxtNode(const wxString &text);
-		virtual bool EndNode(const wxString &name);
 	private:
-		enum Mode {
-			TITLE,
-			AUTH,
-			LANG,
-			DSCR,
-			NONE,
-		};
-		wxZipInputStream m_zip;
-		Mode m_mode;
+		FbDataReaderEPUB & m_reader;
+	};
+
+	class MetaHandler : public BaseHandler
+	{
+		FB2_BEGIN_KEYLIST
+			Author,
+			Descr,
+			Title,
+			Lang,
+		FB2_END_KEYLIST
+	public:
+		explicit MetaHandler(FbDataReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
+		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool EndNode(const wxString &name, bool &skip);
+	private:
+		FbDataReaderEPUB & m_reader;
+	};
+
+	class AuthorHandler : public BaseHandler
+	{
+	public:
+		explicit AuthorHandler(FbImportReader &reader, const wxString &name);
+		virtual ~AuthorHandler();
+		virtual bool TxtNode(const wxString &text) { m_text << text; return true; }
+	private:
+		AuthorItem * m_author;
+		wxString m_text;
+	};
+
+public:
+	FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
+
+protected:
+	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 };
 
 #endif // __FBIMPORTREADER_H__
