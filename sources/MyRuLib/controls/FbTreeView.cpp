@@ -90,7 +90,7 @@ class  FbTreeViewHeaderWindow : public wxWindow
 
 		void RefreshColLabel(int col);
 		void SetColumnWidth (int column, int width);
-		void CheckSize(wxDC & dc);
+		void CheckSize(wxDC & dc, int x);
 
 	public:
 		FbTreeViewHeaderWindow( wxWindow *win,
@@ -142,7 +142,6 @@ class  FbTreeViewHeaderWindow : public wxWindow
 		void SendListEvent(wxEventType type, wxPoint pos, int colunm);
 
 	protected:
-		void OnSize( wxSizeEvent& event );
 		void OnPaint( wxPaintEvent &event );
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void OnMouse( wxMouseEvent &event );
@@ -228,7 +227,6 @@ BEGIN_EVENT_TABLE(FbTreeViewHeaderWindow,wxWindow)
 	EVT_PAINT(FbTreeViewHeaderWindow::OnPaint)
 	EVT_MOUSE_EVENTS  (FbTreeViewHeaderWindow::OnMouse)
 	EVT_SET_FOCUS     (FbTreeViewHeaderWindow::OnSetFocus)
-	EVT_SIZE(FbTreeViewHeaderWindow::OnSize)
 END_EVENT_TABLE()
 
 FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbTreeViewMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
@@ -248,34 +246,26 @@ FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 	wxDELETE(m_resizeCursor);
 }
 
-void FbTreeViewHeaderWindow::OnSize(wxSizeEvent& WXUNUSED(event))
-{
-	wxClientDC dc(this);
-	CheckSize(dc);
-}
-
-void FbTreeViewHeaderWindow::CheckSize(wxDC & dc)
+void FbTreeViewHeaderWindow::CheckSize(wxDC & dc, int width)
 {
 	int count = m_columns.Count();
 	if (!count) return;
 
 	// Get client width
-	int www;
-	GetClientSize( &www, NULL );
 	if (m_owner && m_owner->ShowScrollbar())
-		www -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
+		width -= wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 
 	// Check: if width don't change, then exit
-	int ww = www;
+	int ww = width;
 	for ( int i = 0; i < count; i++ ) {
 		ww -= m_columns[i].GetWidth();
 	}
 	if (-2 < ww && ww < 2) return;
 
 	// Check if width is too small
-	if (www <= 4 * count) {
-		int x = www / count; 
-		int w = www; 
+	if (width <= 4 * count) {
+		int x = width / count; 
+		int w = width; 
 		for ( int i = 1; i < count; i++ ) { 
 			m_columns[i].SetWidth(x);
 			w -= x;
@@ -285,7 +275,7 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc)
 	}
 
 	// Get the char width and minimum columns width
-	int cw = dc.GetCharWidth();
+	int cw = dc.GetCharWidth() * 3 / 2;
 	int fixedWidth = 0, fixedCount = 0, fixedSize = 0;
 	int floatWidth = 0, floatCount = 0, floatSize = 0;
 
@@ -303,16 +293,16 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc)
 	}
 
 	double fixed_x, float_x;
-	if (www < fixedWidth + floatWidth) {
-		fixed_x = (double) www / (fixedSize + floatSize);
+	if (width < fixedWidth + floatWidth) {
+		fixed_x = (double) width / (fixedSize + floatSize);
 		float_x = fixed_x;
 	} else {
 		fixed_x = cw;
-		float_x = (double) (www - fixedWidth) / floatSize;
+		float_x = (double) (width - fixedWidth) / floatSize;
 	}
 
 	// Define new column width
-	int w = www; 
+	int w = width; 
 	for ( int i = 1; i < count; i++ ) { 
 		int s = m_columns[i].GetSize();
 		int x = s > 0 ? fixed_x * s : - float_x * s;
@@ -321,6 +311,7 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc)
 	}
 	m_columns[0].SetWidth(w);
 }
+
 
 int FbTreeViewHeaderWindow::GetFullWidth()
 {
@@ -337,11 +328,10 @@ void FbTreeViewHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 	dc.SetBackgroundMode(wxTRANSPARENT);
 	dc.SetFont(GetFont());
 
-	CheckSize(dc);
-
 	int x = 0;
 	int h, www;
 	GetClientSize(&www, &h);
+	CheckSize(dc, www);
 	size_t count = GetColumnCount();
 	for ( size_t i = 0; i < count; i++ ) {
 		wxHeaderButtonParams params;
@@ -580,7 +570,8 @@ void FbTreeViewHeaderWindow::SetColumnWidth (int column, int delta)
 	info.SetWidth(-100);
 	
 	wxClientDC dc(this);
-	CheckSize(dc);
+	dc.SetFont(GetFont());
+	CheckSize(dc, GetClientSize().x);
 	m_owner->Refresh();
 }
 
