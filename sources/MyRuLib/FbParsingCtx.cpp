@@ -22,20 +22,18 @@ void FbHandlerXML::OnTxtNode(const wxString &text)
 	if (m_handler) m_handler->OnTxtNode(text); else TxtNode(text);
 }
 
-void FbHandlerXML::OnEndNode(const wxString &name, bool &skip)
+void FbHandlerXML::OnEndNode(const wxString &name, bool &exists)
 {
     if (m_handler) {
-		if (skip && name == m_name) skip = false;
-        m_handler->OnEndNode(name, skip);
+    	bool found = exists || name == m_name;
+        m_handler->OnEndNode(name, found);
 		if (m_handler->m_closed) wxDELETE(m_handler);
-		if (skip) return;
-    } else {
-		bool not_found = name != m_name;
-		if (not_found && skip) return;
-		skip = not_found;
-		m_closed = true;
-		EndNode(name);
+		if (found) return;
     }
+    bool found = name == m_name;
+	m_closed = found || exists;
+	if (m_closed) EndNode(m_name);
+	exists = found;
 }
 
 wxString FbHandlerXML::Value(const FbStringHash &atts, const wxString &name)
@@ -80,8 +78,8 @@ void FbParserXML::OnTxtNode(const wxString &text)
 
 void FbParserXML::OnEndNode(const wxString &name)
 {
-	bool skip = true;
-	if (m_handler) m_handler->OnEndNode(name.Lower(), skip);
+	bool exists = false;
+	if (m_handler) m_handler->OnEndNode(name.Lower(), exists);
 }
 
 #ifdef FB_PARSE_FAXPP
@@ -553,12 +551,16 @@ bool FbParsingContextLibxml2::DoParse(wxInputStream & stream)
 
     int ret = 1;
 	if (reader != NULL) {
-        while ((ret = xmlTextReaderRead(reader)) == 1) {
+        while ((ret = xmlTextReaderRead(reader)) == 0) {
             ProcessNode(reader);
         	if (m_stop) { ret = 0; break; }
         }
+		if (ret == -1) {
+//	        wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
+			wxLogError(_("XML parsing error"));
+			xmlCtxtResetLastError(reader);
+		}
         xmlFreeTextReader(reader);
-//        if (ret) wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
 	}
 
 	if (m_md5calc) {

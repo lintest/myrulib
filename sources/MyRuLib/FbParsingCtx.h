@@ -46,7 +46,7 @@ public:
 	virtual ~FbHandlerXML();
 	void OnNewNode(const wxString &name, const FbStringHash &atts);
 	void OnTxtNode(const wxString &text);
-	void OnEndNode(const wxString &name, bool &skip);
+	void OnEndNode(const wxString &name, bool &exists);
 protected:
 	static wxString Value(const FbStringHash &atts, const wxString &name);
 	virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
