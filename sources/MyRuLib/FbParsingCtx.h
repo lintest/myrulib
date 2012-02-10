@@ -47,12 +47,14 @@ protected:
 	public:
 		explicit BaseHandler(const wxString &name) : m_handler(NULL), m_name(name), m_closed(false) {}
 		virtual ~BaseHandler();
-		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
-		virtual bool TxtNode(const wxString &text);
-		virtual bool EndNode(const wxString &name, bool &skip);
+		void OnNewNode(const wxString &name, const FbStringHash &atts);
+		void OnTxtNode(const wxString &text);
+		void OnEndNode(const wxString &name, bool &skip);
 	protected:
-		wxString Value(const FbStringHash &atts, const wxString &name);
-	protected:
+		static wxString Value(const FbStringHash &atts, const wxString &name);
+		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
+		virtual bool TxtNode(const wxString &text) { return true; }
+	private:
 		BaseHandler * m_handler;
 		const wxString m_name;
 		bool m_closed;
@@ -80,30 +82,16 @@ public:
 
 protected:
 	virtual bool DoParse(wxInputStream & stream) = 0;
-	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
-	virtual bool TxtNode(const wxString &text);
-	virtual bool EndNode(const wxString &name);
+	virtual BaseHandler * CreateHandler(const wxString &name) = 0;
+	void OnNewNode(const wxString &name, const FbStringHash &atts);
+	void OnTxtNode(const wxString &text);
+	void OnEndNode(const wxString &name);
 
 protected:
 	BaseHandler * m_handler;
 	md5_context m_md5cont;
 	wxString m_md5sum;
 	bool m_md5calc;
-
-protected:
-	enum FbSectionEnum {
-		fbsNone,
-		fbsBody,
-		fbsDescr,
-		fbsBinary,
-	};
-	void Inc(const wxString &tag) {}
-	void Dec(const wxString &tag) {}
-	bool operator == (const wxString & tags) { return false; }
-	bool operator >= (const wxString & tags) { return false; }
-	bool operator > (const wxString & tags) { return false; }
-	FbSectionEnum Section() { return fbsNone; }
-	wxString Path() const { return wxEmptyString; }
 };
 
 #ifdef FB_PARSE_FAXPP

@@ -27,7 +27,7 @@ private:
 		FB2_END_KEYLIST
 	public:
 		explicit RootHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
-		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class DescrHandler : public BookHandler
@@ -38,7 +38,7 @@ private:
 		FB2_END_KEYLIST
 	public:
 		explicit DescrHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
-		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
+		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class ImageHandler : public BookHandler
@@ -53,9 +53,7 @@ public:
 	FbPreviewReader(FbViewThread & thread, FbViewData & data)
 		: m_thread(thread), m_data(data) {}
 protected:
-	virtual bool NewNode(const wxString &name, const FbStringHash &atts);
-	virtual bool TxtNode(const wxString &text);
-	virtual bool EndNode(const wxString &name);
+	BaseHandler * CreateHandler(const wxString &name);
 private:
 	void AppendImg(const FbStringHash &atts);
 	void StartImg(const FbStringHash &atts);

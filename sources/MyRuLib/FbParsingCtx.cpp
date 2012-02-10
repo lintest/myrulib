@@ -7,39 +7,34 @@
 
 FbParserXML::BaseHandler::~BaseHandler()
 {
-    if (m_handler) delete m_handler;
+    wxDELETE(m_handler);
 }
 
-bool FbParserXML::BaseHandler::NewNode(const wxString &name, const FbStringHash &atts)
+void FbParserXML::BaseHandler::OnNewNode(const wxString &name, const FbStringHash &atts)
 {
-    if (m_handler) return m_handler->NewNode(name, atts);
-    m_handler = new BaseHandler(name);
-    return true;
+    if (m_handler) return m_handler->OnNewNode(name, atts);
+	m_handler = NewNode(name, atts);
+	if (!m_handler) m_handler = new BaseHandler(name);
 }
 
-bool FbParserXML::BaseHandler::TxtNode(const wxString &text)
+void FbParserXML::BaseHandler::OnTxtNode(const wxString &text)
 {
-    if (m_handler) return m_handler->TxtNode(text);
-    return true;
+	if (m_handler) m_handler->OnTxtNode(text); else TxtNode(text);
 }
 
-bool FbParserXML::BaseHandler::EndNode(const wxString &name, bool &skip)
+void FbParserXML::BaseHandler::OnEndNode(const wxString &name, bool &skip)
 {
     if (m_handler) {
 		if (skip && name == m_name) skip = false;
-        bool ok = m_handler->EndNode(name, skip);
-		if (m_handler->m_closed) {
-            delete m_handler;
-            m_handler = NULL;
-        }
-		if (skip) return ok;
+        m_handler->OnEndNode(name, skip);
+		if (m_handler->m_closed) wxDELETE(m_handler);
+		if (skip) return;
     } else {
 		bool not_found = name != m_name;
-		if (not_found && skip) return true;
+		if (not_found && skip) return;
 		skip = not_found;
 		m_closed = true;
     }
-	return true;
 }
 
 wxString FbParserXML::BaseHandler::Value(const FbStringHash &atts, const wxString &name)
@@ -71,20 +66,21 @@ bool FbParserXML::Parse(wxInputStream & stream, bool md5calc)
 	return ok;
 }
 
-bool FbParserXML::NewNode(const wxString &name, const FbStringHash &atts)
+void FbParserXML::OnNewNode(const wxString &name, const FbStringHash &atts)
 {
-	return m_handler && m_handler->NewNode(name.Lower(), atts);
+	if (m_handler) return m_handler->OnNewNode(name.Lower(), atts);
+	m_handler = CreateHandler(name.Lower());
 }
 
-bool FbParserXML::TxtNode(const wxString &text)
+void FbParserXML::OnTxtNode(const wxString &text)
 {
-	return m_handler && m_handler->TxtNode(text);
+	if (m_handler) m_handler->OnTxtNode(text);
 }
 
-bool FbParserXML::EndNode(const wxString &name)
+void FbParserXML::OnEndNode(const wxString &name)
 {
-	bool exit = false;
-	return m_handler && m_handler->EndNode(name.Lower(), exit);
+	bool skip = true;
+	if (m_handler) m_handler->OnEndNode(name.Lower(), skip);
 }
 
 #ifdef FB_PARSE_FAXPP
@@ -265,21 +261,19 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 		case SELF_CLOSING_ELEMENT_EVENT: {
 			FbStringHash hash;
 			GetAtts(event, hash);
-			NewNode(name, hash);
-			EndNode(name);
+			OnNewNode(name, hash);
+			OnEndNode(name);
 		} break;
 		case START_ELEMENT_EVENT: {
 			FbStringHash hash;
 			GetAtts(event, hash);
-			NewNode(name, hash);
-			Inc(name);
+			OnNewNode(name, hash);
 		} break;
 		case END_ELEMENT_EVENT: {
-			Dec(name);
-			EndNode(name);
+			OnEndNode(name);
 		} break;
 		case CHARACTERS_EVENT: {
-			TxtNode(Str(event.value));
+			OnTxtNode(Str(event.value));
 		} break;
 	}
 }
@@ -304,12 +298,12 @@ class FbExpatEventMaker {
 	public:
 		FbExpatEventMaker(void * data)
 			: m_context((FbParsingContextExpat*)data) {}
-		void NewNode(const wxString &name, const FbStringHash &atts)
-			{ m_context->NewNode(name, atts); m_context->Inc(name); }
-		void TxtNode(const wxString &text)
-			{ m_context->TxtNode(text); }
-		void EndNode(const wxString &name)
-			{ m_context->Dec(name); m_context->EndNode(name); }
+		void OnNewNode(const wxString &name, const FbStringHash &atts)
+			{ m_context->OnNewNode(name, atts); }
+		void OnTxtNode(const wxString &text)
+			{ m_context->OnTxtNode(text); }
+		void OnEndNode(const wxString &name)
+			{ m_context->OnEndNode(name); }
 	private:
 		FbParsingContextExpat * m_context;
 };
@@ -389,18 +383,18 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 {
 	FbStringHash hash;
 	FbParsingContextExpat::GetAtts(atts, hash);
-	FbExpatEventMaker(userData).NewNode(Low(name), hash);
+	FbExpatEventMaker(userData).OnNewNode(Low(name), hash);
 }
 
 static void TextHnd(void *userData, const XML_Char *text, int len)
 {
 	wxString str = Str(text, len);
-	if (!IsWhiteOnly(str)) FbExpatEventMaker(userData).TxtNode(str);
+	if (!IsWhiteOnly(str)) FbExpatEventMaker(userData).OnTxtNode(str);
 }
 
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
-	FbExpatEventMaker(userData).EndNode(Low(name));
+	FbExpatEventMaker(userData).OnEndNode(Low(name));
 }
 
 FbParsingContextExpat::FbParsingContextExpat()
@@ -530,24 +524,21 @@ void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 				hash[name] = value;
 			}
 
-			NewNode(name, hash);
+			OnNewNode(name, hash);
 
 			if (xmlTextReaderIsEmptyElement(reader)) {
-				EndNode(name);
-			} else {
-				Inc(name);
+				OnEndNode(name);
 			}
 		} break;
 
 		case  3: { // TEXT
 			wxString value = XML2WX(xmlTextReaderConstValue(reader));
-			TxtNode(value);
+			OnTxtNode(value);
 		} break;
 
 		case 15: { // END
 			wxString name = Low(xmlTextReaderConstName(reader));
-			Dec(name);
-			EndNode(name);
+			OnEndNode(name);
 		} break;
 	}
 }

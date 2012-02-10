@@ -11,20 +11,19 @@ FB2_BEGIN_KEYHASH(FbPreviewReader::RootHandler)
 	KEY( "binary"      , Binary );
 FB2_END_KEYHASH
 
-bool FbPreviewReader::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+FbParserXML::BaseHandler * FbPreviewReader::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (m_handler) return BookHandler::NewNode(name, atts);
-
 	switch (toKeyword(name)) {
-		case Descr  : 
-			return m_handler = new DescrHandler(m_reader, name);
-		case Binary : 
+		case Descr: 
+			new DescrHandler(m_reader, name);
+		case Binary: {
 			wxString file = Value(atts, wxT("id"));
 			if (m_reader.m_images.Index(file) != wxNOT_FOUND)
-				return m_handler = new ImageHandler(m_reader, name, file);
+				return new ImageHandler(m_reader, name, file);
+			} return NULL;
+		default: 
+			return NULL;
 	}
-
-	return m_handler = new BaseHandler(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -36,33 +35,25 @@ FB2_BEGIN_KEYHASH(FbPreviewReader::DescrHandler)
 	KEY( "publish-info" , Publish );
 FB2_END_KEYHASH
 
-bool FbPreviewReader::DescrHandler::NewNode(const wxString &name, const FbStringHash &atts)
+FbParserXML::BaseHandler * FbPreviewReader::DescrHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (m_handler) return BookHandler::NewNode(name, atts);
-
 	switch (toKeyword(name)) {
 		case Title : 
-		case Publish : ;
+		case Publish : 
+		default: return NULL;
 	}
-
-	return m_handler = new BaseHandler(name);
 }
 
 //-----------------------------------------------------------------------------
 //  FbPreviewReader
 //-----------------------------------------------------------------------------
 
-bool FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
+FbParserXML::BaseHandler * FbPreviewReader::CreateHandler(const wxString &name)
 {
-	if (m_handler) return m_handler->NewNode(name, atts);
+	return name == wxT("fictionbook") ? new RootHandler(*this, name) : NULL;
+}
 
-	if (name == wxT("fictionbook")) {
-		return m_handler = new RootHandler(*this, name);
-	} else {
-		return false;
-	}
-
-
+/*
 	switch (Section()) {
 		case fbsDescr: {
 			if (*this >= wxT("fictionbook/description/title-info/annotation")) {
@@ -83,7 +74,6 @@ bool FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
 		} break;
 	}
 	return true;
-}
 
 bool FbPreviewReader::TxtNode(const wxString &text)
 {
@@ -147,6 +137,8 @@ bool FbPreviewReader::EndNode(const wxString &name)
 	}
 	return true;
 }
+
+*/
 
 void FbPreviewReader::AppendImg(const FbStringHash &atts)
 {
