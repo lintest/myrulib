@@ -52,10 +52,10 @@ class FbImportReader
 	: public FbParsingContext
 {
 	protected:
-		class BookHandler : public BaseHandler
+		class BookHandler : public FbHandlerXML
 		{
 		public:
-			explicit BookHandler(FbImportReader &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
+			explicit BookHandler(FbImportReader &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
 		protected:
 			FbImportReader &m_reader;
 		};
@@ -110,7 +110,7 @@ private:
 	{
 	public:
 		explicit RootHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class DscrHandler : public BookHandler
@@ -118,7 +118,7 @@ private:
 	public:
 		explicit DscrHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
 		virtual ~DscrHandler() { m_reader.Stop(); }
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class TitleHandler : public BookHandler
@@ -133,10 +133,10 @@ private:
 	public:
 		explicit TitleHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
 		virtual ~TitleHandler() { m_reader.Stop(); }
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
-	class AuthorHandler : public BaseHandler
+	class AuthorHandler : public FbHandlerXML
 	{
 		FB2_BEGIN_KEYLIST
 			Last,
@@ -145,12 +145,12 @@ private:
 		FB2_END_KEYLIST
 	public:
 		explicit AuthorHandler(FbImportReader &reader, const wxString &name);
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		AuthorItem * m_author;
 	};
 
-	class SeqnHandler : public BaseHandler
+	class SeqnHandler : public FbHandlerXML
 	{
 	public:
 		explicit SeqnHandler(FbImportReader &reader, const wxString &name, const FbStringHash &atts);
@@ -160,26 +160,26 @@ public:
 	FbImportReaderFB2(wxInputStream & stream, bool md5 = false);
 
 protected:
-	virtual BaseHandler * CreateHandler(const wxString &name);
+	virtual FbHandlerXML * CreateHandler(const wxString &name);
 };
 
 class FbRootReaderEPUB : public FbParsingContext
 {
 private:
-	class RootHandler : public BaseHandler
+	class RootHandler : public FbHandlerXML
 	{
 	public:
-		explicit RootHandler(FbRootReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		explicit RootHandler(FbRootReaderEPUB &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		FbRootReaderEPUB & m_reader;
 	};
 
-	class FileHandler : public BaseHandler
+	class FileHandler : public FbHandlerXML
 	{
 	public:
-		explicit FileHandler(FbRootReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		explicit FileHandler(FbRootReaderEPUB &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		FbRootReaderEPUB & m_reader;
 	};
@@ -190,7 +190,7 @@ public:
 	bool IsOk() { return m_ok; };
 
 protected:
-	virtual BaseHandler * CreateHandler(const wxString &name);
+	virtual FbHandlerXML * CreateHandler(const wxString &name);
 
 private:
 	wxString m_rootfile;
@@ -200,16 +200,16 @@ private:
 class FbDataReaderEPUB : public FbImportReader
 {
 private:
-	class RootHandler : public BaseHandler
+	class RootHandler : public FbHandlerXML
 	{
 	public:
-		explicit RootHandler(FbDataReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
-		virtual BaseHandler *  NewNode(const wxString &name, const FbStringHash &atts);
+		explicit RootHandler(FbDataReaderEPUB &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
+		virtual FbHandlerXML *  NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		FbDataReaderEPUB & m_reader;
 	};
 
-	class MetaHandler : public BaseHandler
+	class MetaHandler : public FbHandlerXML
 	{
 		FB2_BEGIN_KEYLIST
 			Author,
@@ -218,14 +218,14 @@ private:
 			Lang,
 		FB2_END_KEYLIST
 	public:
-		explicit MetaHandler(FbDataReaderEPUB &reader, const wxString &name) : BaseHandler(name), m_reader(reader) {}
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts);
+		explicit MetaHandler(FbDataReaderEPUB &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 		virtual ~MetaHandler() { m_reader.Stop(); }
 	private:
 		FbDataReaderEPUB & m_reader;
 	};
 
-	class AuthorHandler : public BaseHandler
+	class AuthorHandler : public FbHandlerXML
 	{
 	public:
 		explicit AuthorHandler(FbImportReader &reader, const wxString &name);
@@ -240,7 +240,7 @@ public:
 	FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile);
 
 protected:
-	virtual BaseHandler * CreateHandler(const wxString &name);
+	virtual FbHandlerXML * CreateHandler(const wxString &name);
 };
 
 #endif // __FBIMPORTREADER_H__

@@ -2,27 +2,27 @@
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
-//  FbParserXML::BaseHandler
+//  FbHandlerXML
 //-----------------------------------------------------------------------------
 
-FbParserXML::BaseHandler::~BaseHandler()
+FbHandlerXML::~FbHandlerXML()
 {
     wxDELETE(m_handler);
 }
 
-void FbParserXML::BaseHandler::OnNewNode(const wxString &name, const FbStringHash &atts)
+void FbHandlerXML::OnNewNode(const wxString &name, const FbStringHash &atts)
 {
     if (m_handler) return m_handler->OnNewNode(name, atts);
 	m_handler = NewNode(name, atts);
-	if (!m_handler) m_handler = new BaseHandler(name);
+	if (!m_handler) m_handler = new FbHandlerXML(name);
 }
 
-void FbParserXML::BaseHandler::OnTxtNode(const wxString &text)
+void FbHandlerXML::OnTxtNode(const wxString &text)
 {
 	if (m_handler) m_handler->OnTxtNode(text); else TxtNode(text);
 }
 
-void FbParserXML::BaseHandler::OnEndNode(const wxString &name, bool &skip)
+void FbHandlerXML::OnEndNode(const wxString &name, bool &skip)
 {
     if (m_handler) {
 		if (skip && name == m_name) skip = false;
@@ -37,7 +37,7 @@ void FbParserXML::BaseHandler::OnEndNode(const wxString &name, bool &skip)
     }
 }
 
-wxString FbParserXML::BaseHandler::Value(const FbStringHash &atts, const wxString &name)
+wxString FbHandlerXML::Value(const FbStringHash &atts, const wxString &name)
 {
 	FbStringHash::const_iterator i = atts.find(name);
 	return i == atts.end() ? wxString() : i->second;

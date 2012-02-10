@@ -39,32 +39,32 @@
 #define FB2_END_KEYHASH \
 	}
 
+class FbHandlerXML: public wxObject
+{
+public:
+	explicit FbHandlerXML(const wxString &name) : m_handler(NULL), m_name(name), m_closed(false) {}
+	virtual ~FbHandlerXML();
+	void OnNewNode(const wxString &name, const FbStringHash &atts);
+	void OnTxtNode(const wxString &text);
+	void OnEndNode(const wxString &name, bool &skip);
+protected:
+	static wxString Value(const FbStringHash &atts, const wxString &name);
+	virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
+	virtual bool TxtNode(const wxString &text) { return true; }
+private:
+	FbHandlerXML * m_handler;
+	const wxString m_name;
+	bool m_closed;
+};
+
 class FbParserXML: public wxObject
 {
 protected:
-	class BaseHandler: public wxObject
-	{
-	public:
-		explicit BaseHandler(const wxString &name) : m_handler(NULL), m_name(name), m_closed(false) {}
-		virtual ~BaseHandler();
-		void OnNewNode(const wxString &name, const FbStringHash &atts);
-		void OnTxtNode(const wxString &text);
-		void OnEndNode(const wxString &name, bool &skip);
-	protected:
-		static wxString Value(const FbStringHash &atts, const wxString &name);
-		virtual BaseHandler * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
-		virtual bool TxtNode(const wxString &text) { return true; }
-	private:
-		BaseHandler * m_handler;
-		const wxString m_name;
-		bool m_closed;
-	};
-
-	class TextHandler : public BaseHandler
+	class TextHandler : public FbHandlerXML
 	{
 	public:
 		explicit TextHandler(const wxString &name, wxString &text)
-			: BaseHandler(name), m_text(text) { m_text.Empty(); }
+			: FbHandlerXML(name), m_text(text) { m_text.Empty(); }
 		virtual ~TextHandler()
 			{ m_text.Trim(false).Trim(true); }
 		virtual bool TxtNode(const wxString &text)
@@ -82,13 +82,13 @@ public:
 
 protected:
 	virtual bool DoParse(wxInputStream & stream) = 0;
-	virtual BaseHandler * CreateHandler(const wxString &name) = 0;
+	virtual FbHandlerXML * CreateHandler(const wxString &name) = 0;
 	void OnNewNode(const wxString &name, const FbStringHash &atts);
 	void OnTxtNode(const wxString &text);
 	void OnEndNode(const wxString &name);
 
 protected:
-	BaseHandler * m_handler;
+	FbHandlerXML * m_handler;
 	md5_context m_md5cont;
 	wxString m_md5sum;
 	bool m_md5calc;

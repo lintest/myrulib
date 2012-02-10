@@ -11,17 +11,17 @@ FB2_BEGIN_KEYHASH(FbPreviewReader::RootHandler)
 	KEY( "binary"      , Binary );
 FB2_END_KEYHASH
 
-FbParserXML::BaseHandler * FbPreviewReader::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+FbHandlerXML * FbPreviewReader::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (toKeyword(name)) {
-		case Descr: 
+		case Descr:
 			new DescrHandler(m_reader, name);
 		case Binary: {
 			wxString file = Value(atts, wxT("id"));
 			if (m_reader.m_images.Index(file) != wxNOT_FOUND)
 				return new ImageHandler(m_reader, name, file);
 			} return NULL;
-		default: 
+		default:
 			return NULL;
 	}
 }
@@ -35,11 +35,11 @@ FB2_BEGIN_KEYHASH(FbPreviewReader::DescrHandler)
 	KEY( "publish-info" , Publish );
 FB2_END_KEYHASH
 
-FbParserXML::BaseHandler * FbPreviewReader::DescrHandler::NewNode(const wxString &name, const FbStringHash &atts)
+FbHandlerXML * FbPreviewReader::DescrHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (toKeyword(name)) {
-		case Title : 
-		case Publish : 
+		case Title :
+		case Publish :
 		default: return NULL;
 	}
 }
@@ -48,7 +48,7 @@ FbParserXML::BaseHandler * FbPreviewReader::DescrHandler::NewNode(const wxString
 //  FbPreviewReader
 //-----------------------------------------------------------------------------
 
-FbParserXML::BaseHandler * FbPreviewReader::CreateHandler(const wxString &name)
+FbHandlerXML * FbPreviewReader::CreateHandler(const wxString &name)
 {
 	return name == wxT("fictionbook") ? new RootHandler(*this, name) : NULL;
 }
