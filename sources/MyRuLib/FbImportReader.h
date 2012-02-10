@@ -117,8 +117,8 @@ private:
 	{
 	public:
 		explicit DscrHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
-		virtual ~DscrHandler() { m_reader.Stop(); }
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool EndNode() { m_reader.Stop(); return true; }
 	};
 
 	class TitleHandler : public BookHandler
@@ -132,8 +132,8 @@ private:
 		FB2_END_KEYLIST
 	public:
 		explicit TitleHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
-		virtual ~TitleHandler() { m_reader.Stop(); }
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual bool EndNode() { m_reader.Stop(); return true; }
 	};
 
 	class AuthorHandler : public FbHandlerXML
@@ -220,7 +220,7 @@ private:
 	public:
 		explicit MetaHandler(FbDataReaderEPUB &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
-		virtual ~MetaHandler() { m_reader.Stop(); }
+		virtual bool EndNode() { m_reader.Stop(); return true; }
 	private:
 		FbDataReaderEPUB & m_reader;
 	};
@@ -229,8 +229,8 @@ private:
 	{
 	public:
 		explicit AuthorHandler(FbImportReader &reader, const wxString &name);
-		virtual ~AuthorHandler();
 		virtual bool TxtNode(const wxString &text) { m_text << text; return true; }
+		virtual bool EndNode();
 	private:
 		AuthorItem * m_author;
 		wxString m_text;

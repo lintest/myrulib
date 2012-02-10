@@ -34,6 +34,7 @@ void FbHandlerXML::OnEndNode(const wxString &name, bool &skip)
 		if (not_found && skip) return;
 		skip = not_found;
 		m_closed = true;
+		EndNode(name);
     }
 }
 

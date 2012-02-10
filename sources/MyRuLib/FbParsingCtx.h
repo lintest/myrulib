@@ -51,6 +51,7 @@ protected:
 	static wxString Value(const FbStringHash &atts, const wxString &name);
 	virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
 	virtual bool TxtNode(const wxString &text) { return true; }
+	virtual bool EndNode(const wxString &name) { return true; }
 private:
 	FbHandlerXML * m_handler;
 	const wxString m_name;
@@ -65,10 +66,10 @@ protected:
 	public:
 		explicit TextHandler(const wxString &name, wxString &text)
 			: FbHandlerXML(name), m_text(text) { m_text.Empty(); }
-		virtual ~TextHandler()
-			{ m_text.Trim(false).Trim(true); }
 		virtual bool TxtNode(const wxString &text)
 			{ m_text << text; return true; }
+		virtual bool EndNode()
+			{ m_text.Trim(false).Trim(true); return true; }
 	private:
 		wxString & m_text;
 	};

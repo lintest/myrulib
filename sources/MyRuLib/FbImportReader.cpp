@@ -551,7 +551,7 @@ FbDataReaderEPUB::AuthorHandler::AuthorHandler(FbImportReader &reader, const wxS
 	reader.m_authors.Add(m_author);
 }
 
-FbDataReaderEPUB::AuthorHandler::~AuthorHandler()
+bool FbDataReaderEPUB::AuthorHandler::EndNode()
 {
 	m_text.Trim(false).Trim(true);
 	size_t pos = m_text.find_last_of(wxT(' '));
@@ -561,6 +561,7 @@ FbDataReaderEPUB::AuthorHandler::~AuthorHandler()
 		m_author->last = m_text.Mid(pos + 1);
 		m_author->first = m_text.Left(pos);
 	}
+	return true;
 }
 
 //-----------------------------------------------------------------------------
