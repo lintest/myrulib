@@ -3,11 +3,66 @@
 #include "FbViewData.h"
 
 //-----------------------------------------------------------------------------
+//  FbPreviewReader::RootHandler
+//-----------------------------------------------------------------------------
+
+FB2_BEGIN_KEYHASH(FbPreviewReader::RootHandler)
+	KEY( "description" , Descr  );
+	KEY( "binary"      , Binary );
+FB2_END_KEYHASH
+
+bool FbPreviewReader::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (m_handler) return BookHandler::NewNode(name, atts);
+
+	switch (toKeyword(name)) {
+		case Descr  : 
+			return m_handler = new DescrHandler(m_reader, name);
+		case Binary : 
+			wxString file = Value(atts, wxT("id"));
+			if (m_reader.m_images.Index(file) != wxNOT_FOUND)
+				return m_handler = new ImageHandler(m_reader, name, file);
+	}
+
+	return m_handler = new BaseHandler(name);
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReader::DescrHandler
+//-----------------------------------------------------------------------------
+
+FB2_BEGIN_KEYHASH(FbPreviewReader::DescrHandler)
+	KEY( "title-info"   , Title   );
+	KEY( "publish-info" , Publish );
+FB2_END_KEYHASH
+
+bool FbPreviewReader::DescrHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (m_handler) return BookHandler::NewNode(name, atts);
+
+	switch (toKeyword(name)) {
+		case Title : 
+		case Publish : ;
+	}
+
+	return m_handler = new BaseHandler(name);
+}
+
+//-----------------------------------------------------------------------------
 //  FbPreviewReader
 //-----------------------------------------------------------------------------
 
 bool FbPreviewReader::NewNode(const wxString &name, const FbStringHash &atts)
 {
+	if (m_handler) return m_handler->NewNode(name, atts);
+
+	if (name == wxT("fictionbook")) {
+		return m_handler = new RootHandler(*this, name);
+	} else {
+		return false;
+	}
+
+
 	switch (Section()) {
 		case fbsDescr: {
 			if (*this >= wxT("fictionbook/description/title-info/annotation")) {

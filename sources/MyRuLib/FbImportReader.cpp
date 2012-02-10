@@ -189,18 +189,20 @@ bool FbImportReaderFB2::DscrHandler::EndNode(const wxString &name, bool &skip)
 //-----------------------------------------------------------------------------
 
 FB2_BEGIN_KEYHASH(FbImportReaderFB2::TitleHandler)
-	KEY( "book-title"   , Title   );
-	KEY( "author"       , Author  );
-	KEY( "genre"        , Genre   );
-	KEY( "lang"         , Lang    );
+	KEY( "book-title"   , Title    );
+	KEY( "author"       , Author   );
+	KEY( "sequence"     , Sequence );
+	KEY( "genre"        , Genre    );
+	KEY( "lang"         , Lang     );
 FB2_END_KEYHASH
 
 bool FbImportReaderFB2::TitleHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	if (!m_handler) switch (toKeyword(name)) {
-		case Author  : return m_handler = new AuthorHandler(m_reader, name);
-		case Title   : return m_handler = new TextHandler(name, m_reader.m_title);
-		case Lang    : return m_handler = new TextHandler(name, m_reader.m_lang);
+		case Author   : return m_handler = new AuthorHandler(m_reader, name);
+		case Title    : return m_handler = new TextHandler(name, m_reader.m_title);
+		case Sequence : return m_handler = new SeqnHandler(m_reader, name, atts);
+		case Lang     : return m_handler = new TextHandler(name, m_reader.m_lang);
 	}
 	return BaseHandler::NewNode(name, atts);
 }
@@ -236,6 +238,16 @@ bool FbImportReaderFB2::AuthorHandler::NewNode(const wxString &name, const FbStr
 		case Middle : return m_handler = new TextHandler(name, m_author->middle);
 	}
 	return BaseHandler::NewNode(name, atts);
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportReaderFB2::SeqnHandler
+//-----------------------------------------------------------------------------
+
+FbImportReaderFB2::SeqnHandler::SeqnHandler(FbImportReader &reader, const wxString &name, const FbStringHash &atts) 
+	: BaseHandler(name) 
+{
+	reader.m_sequences.Add(new SequenceItem(atts));
 }
 
 //-----------------------------------------------------------------------------

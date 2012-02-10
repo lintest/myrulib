@@ -72,8 +72,6 @@ class FbImportReader
 		AuthorArray m_authors;
 		SequenceArray m_sequences;
 		wxString m_genres;
-		AuthorItem * m_author;
-		wxString m_text;
 		friend class FbImportBook;
 };
 
@@ -128,6 +126,7 @@ private:
 		FB2_BEGIN_KEYLIST
 			Author,
 			Title,
+			Sequence,
 			Genre,
 			Lang,
 		FB2_END_KEYLIST
@@ -149,6 +148,12 @@ private:
 		virtual bool NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		AuthorItem * m_author;
+	};
+
+	class SeqnHandler : public BaseHandler
+	{
+	public:
+		explicit SeqnHandler(FbImportReader &reader, const wxString &name, const FbStringHash &atts);
 	};
 
 public:
