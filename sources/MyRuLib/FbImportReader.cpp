@@ -240,10 +240,9 @@ FbImportReaderFB2::SeqnHandler::SeqnHandler(FbImportReader &reader, const wxStri
 //  FbImportReaderFB2::GenrHandler
 //-----------------------------------------------------------------------------
 
-bool FbImportReaderFB2::GenrHandler::EndNode(const wxString &name)
+void FbImportReaderFB2::GenrHandler::EndNode(const wxString &name)
 {
 	m_reader.m_genres += FbGenres::Char(m_text);
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -562,7 +561,7 @@ FbDataReaderEPUB::AuthorHandler::AuthorHandler(FbImportReader &reader, const wxS
 	reader.m_authors.Add(m_author);
 }
 
-bool FbDataReaderEPUB::AuthorHandler::EndNode()
+void FbDataReaderEPUB::AuthorHandler::EndNode()
 {
 	m_text.Trim(false).Trim(true);
 	size_t pos = m_text.find_last_of(wxT(' '));
@@ -572,7 +571,6 @@ bool FbDataReaderEPUB::AuthorHandler::EndNode()
 		m_author->last = m_text.Mid(pos + 1);
 		m_author->first = m_text.Left(pos);
 	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------

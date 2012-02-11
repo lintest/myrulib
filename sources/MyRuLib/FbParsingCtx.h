@@ -47,11 +47,12 @@ public:
 	void OnNewNode(const wxString &name, const FbStringHash &atts);
 	void OnTxtNode(const wxString &text);
 	void OnEndNode(const wxString &name, bool &exists);
+	bool IsOk() const { return !m_closed; }
 protected:
 	static wxString Value(const FbStringHash &atts, const wxString &name);
 	virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
-	virtual bool TxtNode(const wxString &text) { return true; }
-	virtual bool EndNode(const wxString &name) { return true; }
+	virtual void TxtNode(const wxString &text) { }
+	virtual void EndNode(const wxString &name) { }
 private:
 	FbHandlerXML * m_handler;
 	const wxString m_name;
@@ -66,10 +67,10 @@ protected:
 	public:
 		explicit TextHandler(const wxString &name, wxString &text)
 			: FbHandlerXML(name), m_text(text) { m_text.Empty(); }
-		virtual bool TxtNode(const wxString &text)
-			{ m_text << text; return true; }
-		virtual bool EndNode()
-			{ m_text.Trim(false).Trim(true); return true; }
+		virtual void TxtNode(const wxString &text)
+			{ m_text << text; }
+		virtual void EndNode()
+			{ m_text.Trim(false).Trim(true);  }
 	private:
 		wxString & m_text;
 	};

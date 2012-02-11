@@ -12,7 +12,7 @@ FbHandlerXML::~FbHandlerXML()
 
 void FbHandlerXML::OnNewNode(const wxString &name, const FbStringHash &atts)
 {
-    if (m_handler) return m_handler->OnNewNode(name, atts);
+    if (m_handler && m_handler->IsOk()) return m_handler->OnNewNode(name, atts);
 	m_handler = NewNode(name, atts);
 	if (!m_handler) m_handler = new FbHandlerXML(name);
 }
@@ -542,24 +542,29 @@ void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 	}
 }
 
+static void Fb2TextReaderErrorFunc(void * arg, const char * msg, xmlParserSeverities severity, xmlTextReaderLocatorPtr locator)
+{
+	int line = xmlTextReaderLocatorLineNumber(locator);
+	wxString err(msg, wxConvUTF8);
+	err.Replace(wxT('\n'), ' ');
+	err.Replace(wxT('\r'), ' ');
+	wxLogError(_("XML parsing error: '%s' at line %d"), err.c_str(), line);
+}
+
 bool FbParsingContextLibxml2::DoParse(wxInputStream & stream)
 {
 	m_stream = &stream;
 
-	int options = XML_PARSE_RECOVER | XML_PARSE_NOERROR |  XML_PARSE_NOWARNING | XML_PARSE_NONET;
+	int options = XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET;
 	xmlTextReaderPtr reader = xmlReaderForIO(InputReadXML, InputCloseXML, this, NULL, NULL, options);
+	if (reader) xmlTextReaderSetErrorHandler(reader, Fb2TextReaderErrorFunc, NULL);
 
     int ret = 1;
-	if (reader != NULL) {
-        while ((ret = xmlTextReaderRead(reader)) == 0) {
+	if (reader) {
+        while ((ret = xmlTextReaderRead(reader)) == 1) {
             ProcessNode(reader);
         	if (m_stop) { ret = 0; break; }
         }
-		if (ret == -1) {
-//	        wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
-			wxLogError(_("XML parsing error"));
-			xmlCtxtResetLastError(reader);
-		}
         xmlFreeTextReader(reader);
 	}
 
