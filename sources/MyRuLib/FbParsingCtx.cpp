@@ -551,6 +551,13 @@ static void Fb2TextReaderErrorFunc(void * arg, const char * msg, xmlParserSeveri
 	wxLogError(_("XML parsing error: '%s' at line %d"), err.c_str(), line);
 }
 
+/////////////////////////////////////////////////
+//
+//  How to use error handler:
+//    http://adobkin.com/?p=956
+//
+/////////////////////////////////////////////////
+
 bool FbParsingContextLibxml2::DoParse(wxInputStream & stream)
 {
 	m_stream = &stream;
