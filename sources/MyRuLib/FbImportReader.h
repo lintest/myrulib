@@ -156,6 +156,16 @@ private:
 		explicit SeqnHandler(FbImportReader &reader, const wxString &name, const FbStringHash &atts);
 	};
 
+	class GenrHandler : public BookHandler
+	{
+	public:
+		explicit GenrHandler(FbImportReader &reader, const wxString &name): BookHandler(reader, name) {}
+		virtual bool TxtNode(const wxString &text) { m_text << text; return true; }
+		virtual bool EndNode(const wxString &name);
+	private:
+		wxString m_text;
+	};
+
 public:
 	FbImportReaderFB2(wxInputStream & stream, bool md5 = false);
 

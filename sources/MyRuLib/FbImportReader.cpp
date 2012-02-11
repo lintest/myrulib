@@ -193,6 +193,7 @@ FbHandlerXML * FbImportReaderFB2::TitleHandler::NewNode(const wxString &name, co
 		case Author   : return new AuthorHandler(m_reader, name);
 		case Title    : return new TextHandler(name, m_reader.m_title);
 		case Sequence : return new SeqnHandler(m_reader, name, atts);
+		case Genre    : return new GenrHandler(m_reader, name);
 		case Lang     : return new TextHandler(name, m_reader.m_lang);
 		default       : return NULL;
 	}
@@ -233,6 +234,16 @@ FbImportReaderFB2::SeqnHandler::SeqnHandler(FbImportReader &reader, const wxStri
 	: FbHandlerXML(name)
 {
 	reader.m_sequences.Add(new SequenceItem(atts));
+}
+
+//-----------------------------------------------------------------------------
+//  FbImportReaderFB2::GenrHandler
+//-----------------------------------------------------------------------------
+
+bool FbImportReaderFB2::GenrHandler::EndNode(const wxString &name)
+{
+	m_reader.m_genres += FbGenres::Char(m_text);
+	return true;
 }
 
 //-----------------------------------------------------------------------------
