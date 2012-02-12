@@ -95,3 +95,13 @@ void FbPreviewWindow::OnUnselectAll(wxCommandEvent& event)
 	Refresh();
 }
 
+void FbPreviewWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
+{
+	wxString addr = link.GetHref();
+	if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
+		wxLogWarning(addr);
+		return;
+	}
+	wxHtmlWindow::OnLinkClicked(link);
+}
+

@@ -17,6 +17,7 @@ class FbExtractItem
 		void DeleteFile(const wxString &basepath) const;
 		bool FindZip(const wxString &basepath, wxFileName &filename) const;
 		bool FindBook(const wxString &basepath, wxFileName &filename) const;
+		wxString GetURL() const;
 	public:
 		int id_book;
 		int id_archive;

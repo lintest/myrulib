@@ -29,6 +29,8 @@ class FbPreviewWindow: public FbHtmlWindow
 		~FbPreviewWindow();
 		void Reset(const FbViewContext &ctx, const FbViewItem &item);
 		void Empty();
+	protected:
+		void OnLinkClicked(const wxHtmlLinkInfo &link);
 	private:
 		class ContextMenu: public FbMenu {
 			public: ContextMenu(int book);

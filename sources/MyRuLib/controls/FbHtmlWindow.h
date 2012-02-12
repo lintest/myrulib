@@ -28,9 +28,9 @@ public:
 
 	void UpdateFont(bool refresh);
 
-	void UnselectALL() { 
-		wxDELETE(m_selection); 
-		Refresh(); 
+	void UnselectALL() {
+		wxDELETE(m_selection);
+		Refresh();
 	}
 
 protected:
