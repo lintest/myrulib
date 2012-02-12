@@ -12,7 +12,7 @@ FbHandlerXML::~FbHandlerXML()
 
 void FbHandlerXML::OnNewNode(const wxString &name, const FbStringHash &atts)
 {
-    if (m_handler && m_handler->IsOk()) return m_handler->OnNewNode(name, atts);
+    if (m_handler) return m_handler->OnNewNode(name, atts);
 	m_handler = NewNode(name, atts);
 	if (!m_handler) m_handler = new FbHandlerXML(name);
 }
@@ -28,7 +28,7 @@ void FbHandlerXML::OnEndNode(const wxString &name, bool &exists)
     	bool found = exists || name == m_name;
         m_handler->OnEndNode(name, found);
 		if (m_handler->m_closed) wxDELETE(m_handler);
-		if (found) return;
+		if (found) { exists = true; return; }
     }
     bool found = name == m_name;
 	m_closed = found || exists;
