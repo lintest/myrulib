@@ -14,6 +14,7 @@ class FbViewData: public wxObject
 			ISBN,
 			ICON,
 			FILE,
+			SEQN,
 			LAST_FIELD,
 		};
 	public:

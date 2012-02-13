@@ -56,6 +56,7 @@ void FbViewThread::OpenBook()
 		database.JoinThread(this);
 		info->SetText(FbViewData::DSCR, GetDescr(database));
 		info->SetText(FbViewData::FILE, GetFiles(database));
+		info->SetText(FbViewData::SEQN, GetSeqns(database));
 		info->SetText(FbViewData::ICON, FbCollection::GetIcon(filetype));
 		SendHTML(*info);
 	}
@@ -99,4 +100,18 @@ wxString FbViewThread::GetFiles(FbDatabase & database)
 	return html;
 }
 
+wxString FbViewThread::GetSeqns(FbDatabase & database)
+{
+	wxString html;
+	wxString sql = wxT("select s.value, b.number FROM bookseq b INNER JOIN sequences s ON s.id=b.id_seq WHERE b.id_book="); 
+	sql << m_view.GetCode();
+	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+	while (res.NextRow()) {
+		wxString numb = res.GetString(1);
+		html << wxT("<br>") << wxT("<font size=3>") << res.GetString(0);
+		if (numb != wxT('0')) html << wxT(' ') << wxT('(') << numb << wxT(')');
+		html << wxT("</font>");
+	}
+	return html;
+}
 
