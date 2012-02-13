@@ -546,8 +546,8 @@ static void Fb2TextReaderErrorFunc(void * arg, const char * msg, xmlParserSeveri
 {
 	int line = xmlTextReaderLocatorLineNumber(locator);
 	wxString err(msg, wxConvUTF8);
-	err.Replace(wxT('\n'), ' ');
-	err.Replace(wxT('\r'), ' ');
+	err.Replace(wxT('\n'), wxT(' '));
+	err.Replace(wxT('\r'), wxT(' '));
 	wxLogError(_("XML parsing error: '%s' at line %d"), err.c_str(), line);
 }
 
