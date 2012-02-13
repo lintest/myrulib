@@ -11,23 +11,33 @@ class FbViewData;
 class FbPreviewReader: public FbParsingContext
 {
 private:
-	class BookHandler : public FbHandlerXML
-	{
-	public:
-		explicit BookHandler(FbPreviewReader &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
-	protected:
-		FbPreviewReader &m_reader;
-	};
-
-	class RootHandler : public BookHandler
+	class RootHandler : public FbHandlerXML
 	{
 		FB2_BEGIN_KEYLIST
 			Descr,
 			Binary,
 		FB2_END_KEYLIST
 	public:
-		explicit RootHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		explicit RootHandler(FbPreviewReader &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+		FbHandlerXML * NewImage(const wxString &name, const FbStringHash &atts);
+		FbPreviewReader & Reader() { return m_reader; }
+		void AppendImg(const FbStringHash &atts);
+	private:
+		FbPreviewReader &m_reader;
+		wxArrayString m_images;
+		wxString m_isbn;
+		wxString m_annt;
+		bool m_parsebody;
+	};
+
+	class BookHandler : public FbHandlerXML
+	{
+	public:
+		explicit BookHandler(RootHandler &root, const wxString &name) : FbHandlerXML(name), m_root(root) {}
+	protected:
+		FbPreviewReader & Reader() { return m_root.Reader(); }
+		RootHandler &m_root;
 	};
 
 	class DescrHandler : public BookHandler
@@ -37,7 +47,7 @@ private:
 			Publish,
 		FB2_END_KEYLIST
 	public:
-		explicit DescrHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		explicit DescrHandler(RootHandler &root, const wxString &name) : BookHandler(root, name) {}
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
@@ -48,28 +58,28 @@ private:
 			Cover,
 		FB2_END_KEYLIST
 	public:
-		explicit TitleHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		explicit TitleHandler(RootHandler &root, const wxString &name) : BookHandler(root, name) {}
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class AnnotHandler : public BookHandler
 	{
 	public:
-		explicit AnnotHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		explicit AnnotHandler(RootHandler &root, const wxString &name) : BookHandler(root, name) {}
 //		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class CoverHandler : public BookHandler
 	{
 	public:
-		explicit CoverHandler(FbPreviewReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		explicit CoverHandler(RootHandler &root, const wxString &name) : BookHandler(root, name) {}
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
 	class ImageHandler : public BookHandler
 	{
 	public:
-		explicit ImageHandler(FbPreviewReader &reader, const wxString &name, const wxString &file) : BookHandler(reader, name), m_file(file) {}
+		explicit ImageHandler(RootHandler &root, const wxString &name, const wxString &file) : BookHandler(root, name), m_file(file) {}
 		virtual void TxtNode(const wxString &text) { m_data << text; }
 		virtual void EndNode(const wxString &text);
 	private:
@@ -80,10 +90,8 @@ private:
 public:
 	FbPreviewReader(FbViewThread & thread, FbViewData & data)
 		: m_thread(thread), m_data(data) {}
-	void AppendImg(const FbStringHash &atts);
-	bool ExistsImg(const FbStringHash &atts);
-	void ImageData(const wxString &file, const wxString &data);
-	wxArrayString m_images;
+
+	void AppendImage(const wxString &file, const wxString &data);
 
 protected:
 	FbHandlerXML * CreateHandler(const wxString &name);
@@ -91,14 +99,6 @@ protected:
 private:
 	FbViewThread & m_thread;
 	FbViewData & m_data;
-
-private:
-	wxString m_isbn;
-	wxString m_annt;
-	wxString m_imagedata;
-	wxString m_imagename;
-	bool m_saveimage;
-	bool m_parsebody;
 };
 
 #endif // __FBPREVIEWREADER_H__

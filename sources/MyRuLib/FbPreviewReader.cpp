@@ -14,18 +14,33 @@ FB2_END_KEYHASH
 FbHandlerXML * FbPreviewReader::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (toKeyword(name)) {
-		case Descr: 
-			return new DescrHandler(m_reader, name);
-		case Binary: {
-			wxString file = Value(atts, wxT("id"));
-			if (int index = m_reader.m_images.Index(file) != wxNOT_FOUND) {
-				m_reader.m_images.RemoveAt(index);
-				return new ImageHandler(m_reader, name, file);
-			} else return NULL; 
-		} break;
-		default:
-			return NULL;
+		case Descr  : return new DescrHandler(*this, name);
+		case Binary : return NewImage(name, atts);
+		default: return NULL;
 	}
+}
+
+void FbPreviewReader::RootHandler::AppendImg(const FbStringHash &atts)
+{
+	FbStringHash::const_iterator it;
+	for( it = atts.begin(); it != atts.end(); ++it ) {
+		wxString name = it->first;
+		if (name.AfterLast(wxT(':')) == wxT("href")) {
+			wxString value = it->second;
+			if (value.Left(1) == wxT("#")) value = value.Mid(1);
+			m_images.Add(value);
+			break;
+		}
+	}
+}
+
+FbHandlerXML * FbPreviewReader::RootHandler::NewImage(const wxString &name, const FbStringHash &atts)
+{
+	wxString file = Value(atts, wxT("id"));
+	int index = m_images.Index(file);
+	if (index == wxNOT_FOUND) return NULL;
+	m_images.RemoveAt(index);
+	return new ImageHandler(*this, name, file);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,7 +55,7 @@ FB2_END_KEYHASH
 FbHandlerXML * FbPreviewReader::DescrHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (toKeyword(name)) {
-		case Title   : return new TitleHandler(m_reader, name);
+		case Title   : return new TitleHandler(m_root, name);
 		case Publish :
 		default: return NULL;
 	}
@@ -58,8 +73,8 @@ FB2_END_KEYHASH
 FbHandlerXML * FbPreviewReader::TitleHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (toKeyword(name)) {
-		case Annot: return new AnnotHandler(m_reader, name);
-		case Cover: return new CoverHandler(m_reader, name);
+		case Annot: return new AnnotHandler(m_root, name);
+		case Cover: return new CoverHandler(m_root, name);
 		default: return NULL;
 	}
 }
@@ -70,7 +85,7 @@ FbHandlerXML * FbPreviewReader::TitleHandler::NewNode(const wxString &name, cons
 
 FbHandlerXML * FbPreviewReader::CoverHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (name == wxT("image")) m_reader.AppendImg(atts);
+	if (name == wxT("image")) m_root.AppendImg(atts);
 	return NULL;
 }
 
@@ -80,7 +95,7 @@ FbHandlerXML * FbPreviewReader::CoverHandler::NewNode(const wxString &name, cons
 
 void FbPreviewReader::ImageHandler::EndNode(const wxString &name)
 {
-	m_reader.ImageData(m_file, m_data);
+	Reader().AppendImage(m_file, m_data);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,21 +194,7 @@ bool FbPreviewReader::EndNode(const wxString &name)
 
 */
 
-void FbPreviewReader::AppendImg(const FbStringHash &atts)
-{
-	FbStringHash::const_iterator it;
-	for( it = atts.begin(); it != atts.end(); ++it ) {
-		wxString name = it->first;
-		if (name.Right(4) == wxT("href")) {
-			wxString value = it->second;
-			if (value.Left(1) == wxT("#")) value = value.Mid(1);
-			m_images.Add(value);
-			break;
-		}
-	}
-}
-
-void FbPreviewReader::ImageData(const wxString &file, const wxString &data)
+void FbPreviewReader::AppendImage(const wxString &file, const wxString &data)
 {
 	m_data.AddImage(file, data);
 	m_thread.SendHTML(m_data);
