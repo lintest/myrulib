@@ -26,6 +26,7 @@ class FbViewThread: public FbThread
 		void SendHTML(wxWindowID winid, const wxString &html);
 		wxString GetDescr(FbDatabase & database);
 		wxString GetFiles(FbDatabase & database);
+		wxString GetSeqns(FbDatabase & database);
 	private:
 		wxEvtHandler * m_frame;
 		FbViewContext m_ctx;

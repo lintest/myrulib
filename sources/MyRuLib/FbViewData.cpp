@@ -156,10 +156,11 @@ wxString FbViewData::GetTitle(const FbCacheBook &book) const
 {
 	wxString html = wxString::Format(wxT("<font size=4><b>%s</b></font>"), HTML(book.GetValue(BF_AUTH)).c_str());
 
+	html << wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTML(book.GetValue(BF_NAME)).c_str());
+	html << GetText(SEQN);
+
 	wxString genres = book.GetValue(BF_GENR);
 	if (!genres.IsEmpty()) html << wxString::Format(wxT("<br><font size=3>%s</font>"), HTML(genres).c_str());
-
-	html << wxString::Format(wxT("<br><font size=5><b>%s</b></font>"), HTML(book.GetValue(BF_NAME)).c_str());
 
 	return html;
 }
