@@ -61,6 +61,19 @@ FbHandlerXML * FbPreviewReader::DescrHandler::NewNode(const wxString &name, cons
 	}
 }
 
+void FbPreviewReader::DescrHandler::EndNode(const wxString &name)
+{
+	m_root.SendDescr();
+}
+
+void FbPreviewReader::RootHandler::SendDescr()
+{
+	m_reader.m_data.SetText(FbViewData::ANNT, m_annt);
+	if (!m_annt.IsEmpty() && m_images.Count() == 0) m_reader.Stop();
+	m_reader.m_data.SetText(FbViewData::ISBN, m_isbn);
+	m_reader.m_thread.SendHTML(m_reader.m_data);
+}
+
 //-----------------------------------------------------------------------------
 //  FbPreviewReader::TitleHandler
 //-----------------------------------------------------------------------------
@@ -73,9 +86,28 @@ FB2_END_KEYHASH
 FbHandlerXML * FbPreviewReader::TitleHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	switch (toKeyword(name)) {
-		case Annot: return new AnnotHandler(m_root, name);
+		case Annot: return new AnnotHandler(m_root, name, m_root.m_annt);
 		case Cover: return new CoverHandler(m_root, name);
 		default: return NULL;
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReader::AnnotHandler
+//-----------------------------------------------------------------------------
+
+FbHandlerXML * FbPreviewReader::AnnotHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (name == wxT("p")) {
+		m_text << wxT('<') << name << wxT('>');
+	}
+	return new AnnotHandler(*this, name);
+}
+
+void FbPreviewReader::AnnotHandler::EndNode(const wxString &name)
+{
+	if (name == wxT("p")) {
+		m_text << wxT('<') << wxT('/') << name << wxT('>');
 	}
 }
 
