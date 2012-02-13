@@ -131,6 +131,11 @@ void FbExtractItem::DeleteFile(const wxString &basepath) const
 	wxRemoveFile(filename.GetFullPath());
 }
 
+wxString FbExtractItem::GetURL() const
+{
+	return id_archive ? zip_name : book_name;
+}
+
 FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 	:FbExtractArrayBase(), m_id(id)
 {

@@ -95,7 +95,7 @@ wxString FbViewThread::GetFiles(FbDatabase & database)
 
 	wxString html;
 	for (size_t i = 0; i < items.Count(); i++) {
-		html << wxString::Format(wxT("<p>%s</p>"), items[i].ErrorName().c_str());
+		html << wxString::Format(wxT("<p><a href=\"book:%s\">%s</a></p>"), items[i].GetURL().c_str(), items[i].ErrorName().c_str());
 	}
 	return html;
 }

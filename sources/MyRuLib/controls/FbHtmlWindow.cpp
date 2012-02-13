@@ -48,16 +48,12 @@ bool FbHtmlWindow::SetPage(const wxString& source)
 
 wxHtmlOpeningStatus FbHtmlWindow::OnOpeningURL(wxHtmlURLType type, const wxString& url, wxString * redirect) const
 {
-	if (type != wxHTML_URL_IMAGE) return wxHTML_OPEN;
-
-	FbURI uri = url;
-	if (uri.GetScheme() == wxT("http")) {
+	if (type == wxHTML_URL_IMAGE && FbURI(url).GetScheme() == wxT("http")) {
 		if ( !FbParams(FB_HTTP_IMAGES) ) {
 			*redirect = wxT("memory:blank");
 			return wxHTML_REDIRECT;
 		}
 	}
-
 	return wxHTML_OPEN;
 }
 
