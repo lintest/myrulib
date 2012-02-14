@@ -486,7 +486,7 @@ FbHandlerXML * FbRootReaderEPUB::FileHandler::NewNode(const wxString &name, cons
 		m_reader.m_rootfile = Value(atts, wxT("full-path"));
 		m_reader.Stop();
 	}
-	return FbHandlerXML::NewNode(name, atts);
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -496,13 +496,16 @@ FbHandlerXML * FbRootReaderEPUB::FileHandler::NewNode(const wxString &name, cons
 FbRootReaderEPUB::FbRootReaderEPUB(wxInputStream & in)
 	: m_ok(false)
 {
-	wxZipInputStream zip(in);
-	while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
-		if (entry->GetInternalName() == wxT("META-INF/container.xml")) {
-			m_ok = zip.OpenEntry(*entry) && Parse(zip);
-			break;
+	{
+		wxZipInputStream zip(in);
+		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+			if (entry->GetInternalName() == wxT("META-INF/container.xml")) {
+				m_ok = zip.OpenEntry(*entry) && Parse(zip);
+				break;
+			}
 		}
 	}
+	in.SeekI(0);
 }
 
 FbHandlerXML * FbRootReaderEPUB::CreateHandler(const wxString &name)
@@ -561,7 +564,7 @@ FbDataReaderEPUB::AuthorHandler::AuthorHandler(FbImportReader &reader, const wxS
 	reader.m_authors.Add(m_author);
 }
 
-void FbDataReaderEPUB::AuthorHandler::EndNode()
+void FbDataReaderEPUB::AuthorHandler::EndNode(const wxString &name)
 {
 	m_text.Trim(false).Trim(true);
 	size_t pos = m_text.find_last_of(wxT(' '));

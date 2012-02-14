@@ -64,7 +64,14 @@ void FbViewThread::OpenBook()
 	if (IsClosed()) { delete info; return; }
 
 	FbFileReader file(id, true);
-	if (file.IsOk()) FbPreviewReader(*this, *info).Parse(file.GetStream());
+	if (file.IsOk()) {
+		wxInputStream & in = file.GetStream();
+		if (file.GetFileType() == wxT("epub")) {
+			FbPreviewReaderEPUB(*this, *info).Preview(in);
+		} else {
+			FbPreviewReader(*this, *info).Parse(in);
+		}
+	}
 	FbCollection::AddInfo(info);
 }
 

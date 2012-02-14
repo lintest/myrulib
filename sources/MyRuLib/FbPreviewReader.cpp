@@ -1,6 +1,10 @@
 #include "FbPreviewReader.h"
+#include "FbImportReader.h"
 #include "FbViewThread.h"
 #include "FbViewData.h"
+#include "FbSmartPtr.h"
+#include <wx/zipstrm.h>
+#include <wx/mstream.h>
 
 //-----------------------------------------------------------------------------
 //  FbPreviewReader::RootHandler
@@ -178,4 +182,120 @@ void FbPreviewReader::BodyHandler::EndNode(const wxString &name)
 FbHandlerXML * FbPreviewReader::CreateHandler(const wxString &name)
 {
 	return name == wxT("fictionbook") ? new RootHandler(*this, m_thread, m_data, name) : NULL;
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReaderEPUB::RootHandler
+//-----------------------------------------------------------------------------
+
+FB2_BEGIN_KEYHASH(FbPreviewReaderEPUB::RootHandler)
+	KEY( "metadata" , Metadata );
+	KEY( "manifest" , Manifest );
+FB2_END_KEYHASH
+
+FbHandlerXML * FbPreviewReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	switch (toKeyword(name)) {
+		case Metadata: return new MetadataHandler(*this, name);
+		case Manifest: return new ManifestHandler(*this, name);
+		default: return NULL;
+	}
+}
+
+void FbPreviewReaderEPUB::RootHandler::AppendCover(const FbStringHash &atts)
+{
+	wxString value = Value(atts, wxT("content"));
+	if (value.IsEmpty()) return;
+	m_covers.Add(value);
+}
+
+bool FbPreviewReaderEPUB::RootHandler::CheckCover(const FbStringHash &atts)
+{
+	wxString value = Value(atts, wxT("id"));
+	if (value.IsEmpty()) return false;
+	int index = m_covers.Index(value);
+	if (index == wxNOT_FOUND) return false;
+	m_covers.RemoveAt(index);
+	return true;
+}
+
+void FbPreviewReaderEPUB::RootHandler::AppendFile(const FbStringHash &atts)
+{
+	if (m_covers.Count() == 0) m_reader.Stop();
+	wxString value = Value(atts, wxT("href"));
+	if (value.IsEmpty()) return;
+
+	if (!m_path.IsEmpty()) {
+		wxFileName filename = value;
+		filename.MakeAbsolute(m_path, wxPATH_UNIX);
+		value = filename.GetFullPath(wxPATH_UNIX); 
+	}
+	m_files.Add(value);
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReaderEPUB::MetadataHandler
+//-----------------------------------------------------------------------------
+
+FbHandlerXML * FbPreviewReaderEPUB::MetadataHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (name == wxT("meta")) {
+		wxString value =  Value(atts, wxT("name")).Lower();
+		if (value == wxT("cover")) m_root.AppendCover(atts);
+	}
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReaderEPUB::ManifestHandler
+//-----------------------------------------------------------------------------
+
+FbHandlerXML * FbPreviewReaderEPUB::ManifestHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	if (name == wxT("item") && m_root.CheckCover(atts)) m_root.AppendFile(atts);
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReaderEPUB
+//-----------------------------------------------------------------------------
+
+void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
+{
+	wxString rootfile = FbRootReaderEPUB(stream).GetRoot(); 
+	m_path = wxFileName(rootfile).GetPath();
+
+	{
+		wxZipInputStream zip(stream);
+		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+			if (entry->GetInternalName() == rootfile) {
+				bool ok = zip.OpenEntry(*entry) && Parse(zip);
+				break;
+			}
+		}
+	}
+
+	if (m_files.IsEmpty()) return;
+	stream.SeekI(0);
+
+	{
+		wxZipInputStream zip(stream);
+		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+			wxString filename = entry->GetName(wxPATH_UNIX);
+			int index = m_files.Index(filename);
+			if (index == wxNOT_FOUND) continue;
+			zip.OpenEntry(*entry);
+			wxMemoryBuffer buffer; 
+			zip.Read(buffer.GetWriteBuf(entry->GetSize()), entry->GetSize());
+			wxMemoryInputStream in(buffer.GetData(), buffer.GetBufSize());
+			m_data.AddImage(filename, in);
+			m_thread.SendHTML(m_data);
+			break;
+		}
+	}
+}
+
+FbHandlerXML * FbPreviewReaderEPUB::CreateHandler(const wxString &name)
+{
+	return name == wxT("package") ? new RootHandler(*this, m_files, m_path, name) : NULL;
 }

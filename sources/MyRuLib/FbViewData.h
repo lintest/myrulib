@@ -25,6 +25,7 @@ class FbViewData: public wxObject
 		void SetText(size_t index, const wxString &text);
 		wxString GetHTML(const FbViewContext &ctx, const FbCacheBook &book) const;
 		void AddImage(const wxString &filename, const wxString &imagedata);
+		void AddImage(const wxString &filename, wxInputStream &stream);
 		void Reset();
 	private:
 		wxString GetTitle(const FbCacheBook &book) const;

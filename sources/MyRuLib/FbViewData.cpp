@@ -114,6 +114,21 @@ void FbViewData::AddImage(const wxString &filename, const wxString &imagedata)
 	#endif // __WXMSW__
 }
 
+void FbViewData::AddImage(const wxString &filename, wxInputStream &stream)
+{
+	if (m_images.Index(filename) != wxNOT_FOUND) return;
+	m_images.Add(filename);
+
+	wxString imagename = GetImage(filename);
+	wxImage image(stream);
+
+	#ifdef __WXMSW__
+	Push(imagename, image);
+	#else
+	FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
+	#endif // __WXMSW__
+}
+
 wxString FbViewData::GetComments(const FbViewContext &ctx, const FbCacheBook &book) const
 {
 	wxString md5sum = book.GetValue(BF_MD5S);

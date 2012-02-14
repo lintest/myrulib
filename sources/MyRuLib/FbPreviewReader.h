@@ -128,4 +128,64 @@ private:
 
 };
 
+class FbPreviewReaderEPUB: public FbParsingContext
+{
+private:
+	class RootHandler : public FbHandlerXML
+	{
+		FB2_BEGIN_KEYLIST
+			Metadata,
+			Manifest,
+		FB2_END_KEYLIST
+	public:
+		explicit RootHandler(FbPreviewReaderEPUB &reader, wxArrayString &files, const wxString &path, const wxString &name) 
+			: FbHandlerXML(name), m_reader(reader), m_files(files), m_path(path) {}
+		void AppendCover(const FbStringHash &atts);
+		bool CheckCover(const FbStringHash &atts);
+		void AppendFile(const FbStringHash &atts);
+	protected:
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		FbPreviewReaderEPUB & m_reader;
+		wxArrayString m_covers;
+		wxArrayString & m_files;
+		const wxString m_path;
+	};
+
+	class MetadataHandler : public FbHandlerXML
+	{
+	public:
+		explicit MetadataHandler(RootHandler &root, const wxString &name) : FbHandlerXML(name), m_root(root) {}
+	protected:
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		RootHandler & m_root;
+	};
+
+	class ManifestHandler : public FbHandlerXML
+	{
+	public:
+		explicit ManifestHandler(RootHandler &root, const wxString &name) : FbHandlerXML(name), m_root(root) {}
+	protected:
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		RootHandler & m_root;
+	};
+
+public:
+	FbPreviewReaderEPUB(FbViewThread &thread, FbViewData &data)
+		: m_thread(thread), m_data(data) {}
+
+	void Preview(wxInputStream &stream);
+
+private:
+	FbHandlerXML * CreateHandler(const wxString &name);
+
+private:
+	FbViewThread & m_thread;
+	FbViewData & m_data;
+	wxArrayString m_files;
+	wxString m_path;
+};
+
 #endif // __FBPREVIEWREADER_H__

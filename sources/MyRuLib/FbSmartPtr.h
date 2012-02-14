@@ -19,13 +19,20 @@ public:
 
 	bool operator !() { return !m_object; }
 
+	wxtype * Reset() 
+	{ 
+		wxtype * result = m_object; 
+		m_object = NULL; 
+		return result;
+	}
+	
 	wxtype * operator=(wxtype * object)
 	{
 		if (m_object == object) return object;
 		wxDELETE(m_object);
 		return m_object = object;
 	}
-	
+
 private:	
 	wxtype * m_object;
 };

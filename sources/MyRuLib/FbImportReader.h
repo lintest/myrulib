@@ -240,7 +240,7 @@ private:
 	public:
 		explicit AuthorHandler(FbImportReader &reader, const wxString &name);
 		virtual void TxtNode(const wxString &text) { m_text << text; }
-		virtual void EndNode();
+		virtual void EndNode(const wxString &name);
 	private:
 		AuthorItem * m_author;
 		wxString m_text;
