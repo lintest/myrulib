@@ -519,7 +519,8 @@ FbHandlerXML * FbRootReaderEPUB::CreateHandler(const wxString &name)
 
 FbHandlerXML * FbDataReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	return name == wxT("metadata") ? new MetaHandler(m_reader, name) : NULL;
+	wxString code = name.AfterLast(wxT(':'));
+	return code == wxT("metadata") ? new MetaHandler(m_reader, name) : NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -593,5 +594,6 @@ FbDataReaderEPUB::FbDataReaderEPUB(wxInputStream & in, const wxString & rootfile
 
 FbHandlerXML * FbDataReaderEPUB::CreateHandler(const wxString &name)
 {
-	return name == wxT("package") ? new RootHandler(*this, name) : NULL;
+	wxString code = name.AfterLast(wxT(':'));
+	return code == wxT("package") ? new RootHandler(*this, name) : NULL;
 }

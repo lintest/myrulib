@@ -195,7 +195,8 @@ FB2_END_KEYHASH
 
 FbHandlerXML * FbPreviewReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	switch (toKeyword(name)) {
+	wxString code = name.AfterLast(wxT(':'));
+	switch (toKeyword(code)) {
 		case Metadata: return new MetadataHandler(*this, name);
 		case Manifest: return new ManifestHandler(*this, name);
 		default: return NULL;
@@ -297,5 +298,6 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 
 FbHandlerXML * FbPreviewReaderEPUB::CreateHandler(const wxString &name)
 {
-	return name == wxT("package") ? new RootHandler(*this, m_files, m_path, name) : NULL;
+	wxString code = name.AfterLast(wxT(':'));
+	return code == wxT("package") ? new RootHandler(*this, m_files, m_path, name) : NULL;
 }
