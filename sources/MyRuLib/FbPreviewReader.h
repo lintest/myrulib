@@ -65,6 +65,13 @@ private:
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	};
 
+	class PublishHandler : public BookHandler
+	{
+	public:
+		explicit PublishHandler(RootHandler &root, const wxString &name) : BookHandler(root, name) {}
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+	};
+
 	class AnnotHandler : public BookHandler
 	{
 	public:

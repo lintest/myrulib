@@ -56,7 +56,7 @@ FbHandlerXML * FbPreviewReader::DescrHandler::NewNode(const wxString &name, cons
 {
 	switch (toKeyword(name)) {
 		case Title   : return new TitleHandler(m_root, name);
-		case Publish :
+		case Publish : return new PublishHandler(m_root, name);
 		default: return NULL;
 	}
 }
@@ -90,6 +90,15 @@ FbHandlerXML * FbPreviewReader::TitleHandler::NewNode(const wxString &name, cons
 		case Cover: return new CoverHandler(m_root, name);
 		default: return NULL;
 	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbPreviewReader::PublishHandler
+//-----------------------------------------------------------------------------
+
+FbHandlerXML * FbPreviewReader::PublishHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	return name == wxT("isbn") ? new TextHandler(name, m_root.m_isbn) : NULL;
 }
 
 //-----------------------------------------------------------------------------
