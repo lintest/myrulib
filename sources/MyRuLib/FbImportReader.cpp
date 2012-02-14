@@ -547,7 +547,10 @@ static bool IsAut(const FbStringHash &atts)
 {
 	for (FbStringHash::const_iterator it = atts.begin(); it != atts.end(); ++it ) {
 		wxString attr = it->first.AfterLast(wxT(':'));
-		if (attr == wxT("role")) return it->second == wxT("aut");
+		if (attr == wxT("role")) {
+			wxString role = it->second.Lower();
+			return role == wxT("aut") || role == wxT("author");
+		}
 	}
 	return true;
 }
