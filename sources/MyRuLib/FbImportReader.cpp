@@ -517,10 +517,18 @@ FbHandlerXML * FbRootReaderEPUB::CreateHandler(const wxString &name)
 //  FbDataReaderEPUB::RootHandler
 //-----------------------------------------------------------------------------
 
+FB2_BEGIN_KEYHASH(FbDataReaderEPUB::RootHandler)
+	KEY( "dc-metadata" , Metadata );
+	KEY( "metadata"    , Metadata );
+FB2_END_KEYHASH
+
 FbHandlerXML * FbDataReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
 	wxString code = name.AfterLast(wxT(':'));
-	return code == wxT("metadata") ? new MetaHandler(m_reader, name) : NULL;
+	switch (toKeyword(code)) {
+		case Metadata: return new MetaHandler(m_reader, name);
+		default: return NULL;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -528,6 +536,7 @@ FbHandlerXML * FbDataReaderEPUB::RootHandler::NewNode(const wxString &name, cons
 //-----------------------------------------------------------------------------
 
 FB2_BEGIN_KEYHASH(FbDataReaderEPUB::MetaHandler)
+	KEY( "metadata"    , Metadata );
 	KEY( "creator"     , Author );
 	KEY( "title"       , Title  );
 	KEY( "description" , Descr  );
@@ -547,10 +556,11 @@ FbHandlerXML * FbDataReaderEPUB::MetaHandler::NewNode(const wxString &name, cons
 {
 	wxString code = name.AfterLast(wxT(':'));
 	switch (toKeyword(code)) {
-		case Title  : return new TextHandler( name, m_reader.m_title );
-		case Descr  : return new TextHandler( name, m_reader.m_dscr  );
-		case Lang   : return new TextHandler( name, m_reader.m_lang  );
-		case Author : return IsAut(atts) ? new AuthorHandler(m_reader, name) : NULL;
+		case Metadata : return new MetaHandler( m_reader, name );
+		case Title    : return new TextHandler( name, m_reader.m_title );
+		case Descr    : return new TextHandler( name, m_reader.m_dscr  );
+		case Lang     : return new TextHandler( name, m_reader.m_lang  );
+		case Author   : return IsAut(atts) ? new AuthorHandler(m_reader, name) : NULL;
 		default: return NULL;
 	}
 }

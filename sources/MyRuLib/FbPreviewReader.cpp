@@ -132,9 +132,9 @@ FbHandlerXML * FbPreviewReader::AnnotHandler::NewNode(const wxString &name, cons
 	return new AnnotHandler(*this, name);
 }
 
-void FbPreviewReader::AnnotHandler::TxtNode(const wxString &text) 
-{ 
-	m_root.m_annt << text; 
+void FbPreviewReader::AnnotHandler::TxtNode(const wxString &text)
+{
+	m_root.m_annt << text;
 }
 
 void FbPreviewReader::AnnotHandler::EndNode(const wxString &name)
@@ -163,9 +163,9 @@ FbHandlerXML * FbPreviewReader::BodyHandler::NewNode(const wxString &name, const
 	return new BodyHandler(*this, name);
 }
 
-void FbPreviewReader::BodyHandler::TxtNode(const wxString &text) 
-{ 
-	if (m_root.m_parsebody) m_root.m_annt << text; 
+void FbPreviewReader::BodyHandler::TxtNode(const wxString &text)
+{
+	if (m_root.m_parsebody) m_root.m_annt << text;
 }
 
 
@@ -189,8 +189,9 @@ FbHandlerXML * FbPreviewReader::CreateHandler(const wxString &name)
 //-----------------------------------------------------------------------------
 
 FB2_BEGIN_KEYHASH(FbPreviewReaderEPUB::RootHandler)
-	KEY( "metadata" , Metadata );
-	KEY( "manifest" , Manifest );
+	KEY( "dc-metadata" , Metadata );
+	KEY( "metadata"    , Metadata );
+	KEY( "manifest"    , Manifest );
 FB2_END_KEYHASH
 
 FbHandlerXML * FbPreviewReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
@@ -229,7 +230,7 @@ void FbPreviewReaderEPUB::RootHandler::AppendFile(const FbStringHash &atts)
 	if (!m_path.IsEmpty()) {
 		wxFileName filename = value;
 		filename.MakeAbsolute(m_path, wxPATH_UNIX);
-		value = filename.GetFullPath(wxPATH_UNIX); 
+		value = filename.GetFullPath(wxPATH_UNIX);
 	}
 	m_files.Add(value);
 }
@@ -238,11 +239,21 @@ void FbPreviewReaderEPUB::RootHandler::AppendFile(const FbStringHash &atts)
 //  FbPreviewReaderEPUB::MetadataHandler
 //-----------------------------------------------------------------------------
 
+FB2_BEGIN_KEYHASH(FbPreviewReaderEPUB::MetadataHandler)
+	KEY( "metadata"    , Metadata );
+	KEY( "meta"        , Meta     );
+FB2_END_KEYHASH
+
 FbHandlerXML * FbPreviewReaderEPUB::MetadataHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	if (name == wxT("meta")) {
-		wxString value =  Value(atts, wxT("name")).Lower();
-		if (value == wxT("cover")) m_root.AppendCover(atts);
+	wxString code = name.AfterLast(wxT(':'));
+	switch (toKeyword(code)) {
+		case Meta: {
+			wxString value =  Value(atts, wxT("name")).Lower();
+			if (value == wxT("cover")) m_root.AppendCover(atts);
+			return NULL;
+		}
+		case Metadata: return new MetadataHandler(m_root, name);
 	}
 	return NULL;
 }
@@ -263,19 +274,21 @@ FbHandlerXML * FbPreviewReaderEPUB::ManifestHandler::NewNode(const wxString &nam
 
 void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 {
-	wxString rootfile = FbRootReaderEPUB(stream).GetRoot(); 
+	wxString rootfile = FbRootReaderEPUB(stream).GetRoot();
 	m_path = wxFileName(rootfile).GetPath();
+	bool ok = false;
 
 	{
 		wxZipInputStream zip(stream);
 		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
 			if (entry->GetInternalName() == rootfile) {
-				bool ok = zip.OpenEntry(*entry) && Parse(zip);
+				ok = zip.OpenEntry(*entry) && Parse(zip);
 				break;
 			}
 		}
 	}
 
+	if (!ok) return;
 	if (m_files.IsEmpty()) return;
 	stream.SeekI(0);
 
@@ -286,7 +299,7 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 			int index = m_files.Index(filename);
 			if (index == wxNOT_FOUND) continue;
 			zip.OpenEntry(*entry);
-			wxMemoryBuffer buffer; 
+			wxMemoryBuffer buffer;
 			zip.Read(buffer.GetWriteBuf(entry->GetSize()), entry->GetSize());
 			wxMemoryInputStream in(buffer.GetData(), buffer.GetBufSize());
 			m_data.AddImage(filename, in);

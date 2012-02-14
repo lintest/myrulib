@@ -515,6 +515,7 @@ void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 	switch (xmlTextReaderNodeType(reader)) {
 		case  1: { // START
 			wxString name = Low(xmlTextReaderConstName(reader));
+			bool empty = xmlTextReaderIsEmptyElement(reader);
 
 			FbStringHash hash;
 			while (xmlTextReaderMoveToNextAttribute(reader)) {
@@ -524,10 +525,7 @@ void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 			}
 
 			OnNewNode(name, hash);
-
-			if (xmlTextReaderIsEmptyElement(reader)) {
-				OnEndNode(name);
-			}
+			if (empty) OnEndNode(name);
 		} break;
 
 		case  3: { // TEXT

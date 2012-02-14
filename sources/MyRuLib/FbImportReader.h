@@ -212,6 +212,9 @@ class FbDataReaderEPUB : public FbImportReader
 private:
 	class RootHandler : public FbHandlerXML
 	{
+		FB2_BEGIN_KEYLIST
+			Metadata,
+		FB2_END_KEYLIST
 	public:
 		explicit RootHandler(FbDataReaderEPUB &reader, const wxString &name) : FbHandlerXML(name), m_reader(reader) {}
 		virtual FbHandlerXML *  NewNode(const wxString &name, const FbStringHash &atts);
@@ -222,6 +225,7 @@ private:
 	class MetaHandler : public FbHandlerXML
 	{
 		FB2_BEGIN_KEYLIST
+			Metadata,
 			Author,
 			Descr,
 			Title,

@@ -19,8 +19,8 @@ private:
 			Binary,
 		FB2_END_KEYLIST
 	public:
-		explicit RootHandler(FbPreviewReader &reader, FbViewThread & thread, FbViewData & data, const wxString &name) 
-			: FbHandlerXML(name), m_reader(reader), m_thread(thread), m_data(data), m_parsebody(false) {}
+		explicit RootHandler(FbPreviewReader &reader, FbViewThread & thread, FbViewData & data, const wxString &name)
+			: FbHandlerXML(name), m_parsebody(false), m_reader(reader), m_thread(thread), m_data(data) {}
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	public:
 		FbHandlerXML * NewImage(const wxString &name, const FbStringHash &atts);
@@ -138,7 +138,7 @@ private:
 			Manifest,
 		FB2_END_KEYLIST
 	public:
-		explicit RootHandler(FbPreviewReaderEPUB &reader, wxArrayString &files, const wxString &path, const wxString &name) 
+		explicit RootHandler(FbPreviewReaderEPUB &reader, wxArrayString &files, const wxString &path, const wxString &name)
 			: FbHandlerXML(name), m_reader(reader), m_files(files), m_path(path) {}
 		void AppendCover(const FbStringHash &atts);
 		bool CheckCover(const FbStringHash &atts);
@@ -154,6 +154,10 @@ private:
 
 	class MetadataHandler : public FbHandlerXML
 	{
+		FB2_BEGIN_KEYLIST
+			Metadata,
+			Meta,
+		FB2_END_KEYLIST
 	public:
 		explicit MetadataHandler(RootHandler &root, const wxString &name) : FbHandlerXML(name), m_root(root) {}
 	protected:
