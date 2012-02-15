@@ -362,7 +362,7 @@ void FbCoolReader::Setup(bool refresh)
 	GetDocView()->SetRotateAngle( CR_ROTATE_ANGLE_0 );
 
 	fontMan->SetAntialiasMode( 2 );
-	
+
     HyphMan::activateDictionary( FbParams(FB_READER_HYPHENATION) ? HYPH_DICT_ID_ALGORITHM : HYPH_DICT_ID_NONE );
 
 	SetupPageHeader();
@@ -383,7 +383,7 @@ void FbCoolReader::Setup(bool refresh)
 
 void FbCoolReader::SetupPageHeader()
 {
-	int flags = FbParams(FB_READER_SHOW_HEADER) 
+	int flags = FbParams(FB_READER_SHOW_HEADER)
 		? PGHDR_AUTHOR | PGHDR_TITLE | PGHDR_PAGE_NUMBER | PGHDR_PAGE_COUNT | PGHDR_CHAPTER_MARKS
 		: 0;
 	GetDocView()->setPageHeaderInfo( flags );
@@ -834,7 +834,7 @@ void FbCoolReader::OnFindFirst( wxFindDialogEvent& event )
 	view->GetPos( rc );
 	int start  = (flags & wxFR_DOWN) ? rc.top : -1;
 	int finish = (flags & wxFR_DOWN) ? -1 : rc.top;
-   	
+
 	if ( view->getDocument()->findText( pattern, flags & wxFR_MATCHCASE, flags & wxFR_DOWN, start, finish, words, 200, rc.height() ) ) {
 		view->clearSelection();
 		view->selectWords( words );

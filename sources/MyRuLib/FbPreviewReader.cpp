@@ -272,32 +272,33 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 {
 	wxString rootfile = FbRootReaderEPUB(stream).GetRoot();
 	m_path = wxFileName(rootfile).GetPath();
-	bool ok = false;
 
 	{
 		wxZipInputStream zip(stream);
 		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
 			if (entry->GetInternalName() == rootfile) {
-				ok = zip.OpenEntry(*entry) && Parse(zip);
+                if (!zip.OpenEntry(*entry)) return;
+                if (!Parse(zip)) return;
 				break;
 			}
 		}
 	}
 
-	if (!ok) return;
 	if (m_files.IsEmpty()) return;
 	stream.SeekI(0);
 
 	{
 		wxZipInputStream zip(stream);
 		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+			int size = entry->GetSize();
+			if (size <= 0) continue;
 			wxString filename = entry->GetName(wxPATH_UNIX);
 			int index = m_files.Index(filename);
 			if (index == wxNOT_FOUND) continue;
-			zip.OpenEntry(*entry);
+			if (!zip.OpenEntry(*entry)) return;
 			wxMemoryBuffer buffer;
-			zip.Read(buffer.GetWriteBuf(entry->GetSize()), entry->GetSize());
-			wxMemoryInputStream in(buffer.GetData(), buffer.GetBufSize());
+			zip.Read(buffer.GetWriteBuf(size), size);
+			wxMemoryInputStream in(buffer.GetData(), size);
 			m_data.AddImage(filename, in);
 			m_thread.SendHTML(m_data);
 			break;

@@ -739,13 +739,18 @@ void FbMainFrame::OnProgress(FbProgressEvent & event)
 	}
 }
 
-void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
+void FbMainFrame::UpdateBook(int id)
 {
 	size_t count = m_FrameNotebook.GetPageCount();
 	for (size_t i = 0; i < count; ++i) {
 		FbFrameBase * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameBase);
-		if (frame) frame->UpdateInfo(event.GetInt());
+		if (frame) frame->UpdateInfo(id);
 	}
+}
+
+void FbMainFrame::OnUpdateBook(wxCommandEvent & event)
+{
+	UpdateBook(event.GetInt());
 }
 
 void FbMainFrame::OnDatabaseOpen(wxCommandEvent & event)

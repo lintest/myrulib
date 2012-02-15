@@ -34,7 +34,7 @@ class FbViewData: public wxObject
 		wxString GetComments(const FbViewContext &ctx, const FbCacheBook &book) const;
 		static wxString HTML(const wxString &value, const bool bSingleQuotes = false, const bool bDoubleQuotes = true);
 	public:
-		int m_id;
+		const int m_id;
 		wxString m_text[LAST_FIELD];
 		wxArrayString m_images;
 };

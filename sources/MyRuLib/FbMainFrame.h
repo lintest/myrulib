@@ -19,6 +19,7 @@ class FbMainFrame : public wxFrame
 		virtual wxString GetTitle() const;
 		void Localize(int language);
 		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
+        void UpdateBook(int id);
 	protected:
 		virtual bool ProcessEvent(wxEvent& event);
 	private:

@@ -70,9 +70,9 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 				MenuBook();
 		};
 	protected:
-		class FindReplaceData: public wxFindReplaceData { 
-			public: 
-				int m_position; 
+		class FindReplaceData: public wxFindReplaceData {
+			public:
+				int m_position;
 		};
 	public:
 		static bool InitCREngine();
@@ -129,11 +129,11 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		virtual void OnExternalLink( lString16 url, ldomNode * node );
 
 	private:
-		void OnCopuUpdateUI(wxUpdateUIEvent & event) { 
-			event.Enable(!m_sel_text.IsEmpty()); 
+		void OnCopuUpdateUI(wxUpdateUIEvent & event) {
+			event.Enable(!m_sel_text.IsEmpty());
 		}
-		void OnDisableUI(wxUpdateUIEvent & event) { 
-			event.Enable(false); 
+		void OnDisableUI(wxUpdateUIEvent & event) {
+			event.Enable(false);
 		}
 	protected:
 		void Repaint() { m_dirty = true; }
@@ -141,8 +141,8 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		int m_book;
 		bool m_dirty;
 		FindReplaceData * m_findData;
-		wxFindReplaceDialog * m_findDlg; 
-		
+		wxFindReplaceDialog * m_findDlg;
+
 		ldomXPointer m_sel_pos;
 		wxString m_sel_text;
 

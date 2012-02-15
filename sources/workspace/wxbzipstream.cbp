@@ -83,29 +83,6 @@
 			<Add directory="." />
 			<Add directory="../SQLite3" />
 		</Compiler>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/blocksort.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/bzlib.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/bzlib.h" />
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/bzlib_private.h" />
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/compress.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/crctable.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/decompress.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/huffman.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../3rdparty/wxbzipstream/bzip/randtable.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="../../3rdparty/wxbzipstream/bzipstream.cpp" />
 		<Unit filename="../../3rdparty/wxbzipstream/bzipstream.h" />
 		<Extensions>

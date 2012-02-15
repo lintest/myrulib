@@ -160,7 +160,6 @@
 		</Build>
 		<Compiler>
 			<Add option="-DFB_PARSE_FAXPP" />
-			<Add option="-DFB_INCLUDE_READER" />
 			<Add option="-D_MYRULIB" />
 			<Add directory="../MyRuLib" />
 			<Add directory="../../3rdparty/crengine/include" />
@@ -177,6 +176,7 @@
 			<Add library="libCrEngine.a" />
 			<Add library="libSQLite3.a" />
 			<Add library="libFaxpp.a" />
+			<Add library="libbz2.a" />
 		</Linker>
 		<Unit filename="../MyRuLib/FbAlphabet.cpp" />
 		<Unit filename="../MyRuLib/FbAlphabet.h" />

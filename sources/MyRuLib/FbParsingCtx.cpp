@@ -46,9 +46,9 @@ wxString FbHandlerXML::Value(const FbStringHash &atts, const wxString &name)
 //  FbParserXML
 //-----------------------------------------------------------------------------
 
-wxString FbParserXML::Local(const wxString &name)
-{ 
-	return wxString(name).AfterLast(wxT(':')).Lower(); 
+static wxString Local(const wxString &name)
+{
+	return wxString(name).AfterLast(wxT(':')).Lower();
 }
 
 bool FbParserXML::Parse(wxInputStream & stream, bool md5calc)
@@ -262,20 +262,20 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 {
 	switch (event.type) {
 		case SELF_CLOSING_ELEMENT_EVENT: {
-			wxString name = Local(event.name);
+			wxString name = Local(Str(event.name));
 			FbStringHash hash;
 			GetAtts(event, hash);
 			OnNewNode(name, hash);
 			OnEndNode(name);
 		} break;
 		case START_ELEMENT_EVENT: {
-			wxString name = Local(event.name);
+			wxString name = Local(Str(event.name));
 			FbStringHash hash;
 			GetAtts(event, hash);
 			OnNewNode(name, hash);
 		} break;
 		case END_ELEMENT_EVENT: {
-			wxString name = Local(event.name);
+			wxString name = Local(Str(event.name));
 			OnEndNode(name);
 		} break;
 		case CHARACTERS_EVENT: {
@@ -305,11 +305,11 @@ class FbExpatEventMaker {
 		FbExpatEventMaker(void * data)
 			: m_context((FbParsingContextExpat*)data) {}
 		void OnNewNode(const wxString &name, const FbStringHash &atts)
-			{ m_context->OnNewNode(FbParserXML::Local(name), atts); }
+			{ m_context->OnNewNode(Local(name), atts); }
 		void OnTxtNode(const wxString &text)
 			{ m_context->OnTxtNode(text); }
 		void OnEndNode(const wxString &name)
-			{ m_context->OnEndNode(FbParserXML::Local(name)); }
+			{ m_context->OnEndNode(Local(name)); }
 	private:
 		FbParsingContextExpat * m_context;
 };
@@ -381,7 +381,7 @@ static void StartElementHnd(void *userData, const XML_Char *name, const XML_Char
 {
 	FbStringHash hash;
 	FbParsingContextExpat::GetAtts(atts, hash);
-	wxString code = FbParserXML::Local(Str(name));
+	wxString code = Local(Str(name));
 	FbExpatEventMaker(userData).OnNewNode(code, hash);
 }
 
@@ -393,7 +393,7 @@ static void TextHnd(void *userData, const XML_Char *text, int len)
 
 static void EndElementHnd(void *userData, const XML_Char* name)
 {
-	wxString code = FbParserXML::Local(Str(name));
+	wxString code = Local(Str(name));
 	FbExpatEventMaker(userData).OnEndNode(code);
 }
 

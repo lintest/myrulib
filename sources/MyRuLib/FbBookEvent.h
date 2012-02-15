@@ -192,8 +192,8 @@ class FbImageEvent: public FbCommandEvent
 		FbImageEvent(const FbImageEvent & event)
 			: FbCommandEvent(event), m_image(event.m_image) {}
 
-		FbImageEvent(wxWindowID winid, const wxImage & image, const wxString &str = wxEmptyString)
-			: FbCommandEvent(fbEVT_IMAGE_ACTION, winid, str), m_image(image) {}
+		FbImageEvent(wxWindowID winid, const wxImage & image, int id, const wxString &str = wxEmptyString)
+			: FbCommandEvent(fbEVT_IMAGE_ACTION, winid, id, str), m_image(image) {}
 
 		virtual wxEvent *Clone() const
 			{ return new FbImageEvent(*this); }

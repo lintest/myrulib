@@ -55,7 +55,7 @@ void MyRuLibApp::Localize()
 	m_locale = new FbLocale;
 	m_locale->Init(language);
 
-	FbMainFrame * frame = wxDynamicCast(wxGetApp().GetTopWindow(), FbMainFrame);
+	FbMainFrame * frame = wxDynamicCast(GetTopWindow(), FbMainFrame);
 	if (frame) frame->Localize(language);
 
 	FbGenres::Init();
@@ -64,7 +64,7 @@ void MyRuLibApp::Localize()
 bool MyRuLibApp::OnInit()
 {
 	wxRegisterId(ID_MENU_HIGHEST);
-	
+
 	#ifdef FB_SYSLOG_LOGGING
 	wxLog::SetActiveTarget(new FbLogSyslog);
 	#endif // FB_SYSLOG_LOGGING
@@ -211,6 +211,8 @@ void MyRuLibApp::UpdateLibPath()
 void MyRuLibApp::OnImageEvent(FbImageEvent & event)
 {
 	FbViewData::Push(event.GetString(), event.GetImage());
+	FbMainFrame * frame = wxDynamicCast(GetTopWindow(), FbMainFrame);
+	if (frame) frame->UpdateBook(event.GetInt());
 }
 
 #ifdef __WXMSW__

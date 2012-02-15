@@ -99,19 +99,9 @@ void FbViewData::Push(const wxString &filename, const wxImage &image)
 
 void FbViewData::AddImage(const wxString &filename, const wxString &imagedata)
 {
-	if (m_images.Index(filename) != wxNOT_FOUND) return;
-	m_images.Add(filename);
-
-	wxString imagename = GetImage(filename);
 	wxMemoryBuffer buffer = wxBase64Decode(imagedata, wxBase64DecodeMode_SkipWS);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
-	wxImage image(stream);
-
-	#ifdef __WXMSW__
-	Push(imagename, image);
-	#else
-	FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
-	#endif // __WXMSW__
+    AddImage(filename, stream);
 }
 
 void FbViewData::AddImage(const wxString &filename, wxInputStream &stream)
@@ -125,7 +115,7 @@ void FbViewData::AddImage(const wxString &filename, wxInputStream &stream)
 	#ifdef __WXMSW__
 	Push(imagename, image);
 	#else
-	FbImageEvent(wxID_ANY, image, imagename).Post(&wxGetApp());
+	FbImageEvent(wxID_ANY, image, m_id, imagename).Post(&wxGetApp());
 	#endif // __WXMSW__
 }
 

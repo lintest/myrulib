@@ -76,7 +76,6 @@ protected:
 	};
 
 public:
-	static wxString Local(const wxString &name);
 	explicit FbParserXML() : m_handler(NULL), m_md5calc(false) {}
 	virtual ~FbParserXML() {}
 	bool Parse(wxInputStream & stream, bool md5 = false);
