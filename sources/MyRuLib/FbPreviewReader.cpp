@@ -213,12 +213,17 @@ void FbPreviewReaderEPUB::RootHandler::AppendCover(const FbStringHash &atts)
 
 bool FbPreviewReaderEPUB::RootHandler::CheckCover(const FbStringHash &atts)
 {
-	wxString value = Value(atts, wxT("id"));
-	if (value.IsEmpty()) return false;
-	int index = m_covers.Index(value);
-	if (index == wxNOT_FOUND) return false;
-	m_covers.RemoveAt(index);
-	return true;
+	wxString name = Value(atts, wxT("id"));
+	if (name.IsEmpty()) return false;
+	if (m_covers.Count()) {
+		int index = m_covers.Index(name);
+		if (index == wxNOT_FOUND) return false;
+		m_covers.RemoveAt(index);
+		return true;
+	} else {
+		wxString type = Value(atts, wxT("media-type")).Lower().BeforeFirst(wxT('/'));
+		return type == wxT("image");
+	}
 }
 
 void FbPreviewReaderEPUB::RootHandler::AppendFile(const FbStringHash &atts)
