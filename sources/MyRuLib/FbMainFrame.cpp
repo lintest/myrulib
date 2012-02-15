@@ -583,7 +583,11 @@ void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 {
 	bool select = event.GetInt() == 0;
 	wxWindow * frame = wxGetKeyState(WXK_CONTROL) ? NULL : FindFrameById(event.GetId(), true);
-	if (!frame) frame = CreateFrame(event.GetId(), select);
+	if (!frame) {
+		size_t count = m_FrameNotebook.GetPageCount();
+		frame = CreateFrame(event.GetId(), select);
+		m_FrameNotebook.SetSelection(count);
+	}
 	if (select && frame) frame->Update();
 }
 
@@ -704,6 +708,7 @@ void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & title, wx
 		}
 	}
 	new FbFrameFind(&m_FrameNotebook, winid, info, TrimTitle(title));
+	m_FrameNotebook.SetSelection(count);
 }
 
 void FbMainFrame::OpenClss(int code, bool select)
@@ -717,14 +722,16 @@ void FbMainFrame::OpenClss(int code, bool select)
 		}
 	}
 	FbFrameClss::Create(&m_FrameNotebook, code, select);
+	m_FrameNotebook.SetSelection(count);
 }
 
 void FbMainFrame::OnInfoCommand(wxCommandEvent & event)
 {
 	FbFrameInfo * frame = wxDynamicCast(FindFrameById(ID_FRAME_INFO, true), FbFrameInfo);
 	if (!frame) {
+		size_t count = m_FrameNotebook.GetPageCount();
 		frame = new FbFrameInfo(&m_FrameNotebook);
-		m_FrameNotebook.SetSelection( m_FrameNotebook.GetPageCount() - 1 );
+		m_FrameNotebook.SetSelection(count);
 		frame->Update();
 	}
 	frame->Load(event.GetString());
