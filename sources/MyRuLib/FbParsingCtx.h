@@ -42,6 +42,7 @@
 class FbHandlerXML: public wxObject
 {
 public:
+	static wxString Value(const FbStringHash &atts, const wxString &name);
 	explicit FbHandlerXML(const wxString &name) : m_handler(NULL), m_name(name), m_closed(false) {}
 	virtual ~FbHandlerXML();
 	void OnNewNode(const wxString &name, const FbStringHash &atts);
@@ -49,7 +50,6 @@ public:
 	void OnEndNode(const wxString &name, bool &exists);
 	bool IsOk() const { return !m_closed; }
 protected:
-	static wxString Value(const FbStringHash &atts, const wxString &name);
 	virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts) { return NULL; }
 	virtual void TxtNode(const wxString &text) { }
 	virtual void EndNode(const wxString &name) { }
@@ -76,6 +76,7 @@ protected:
 	};
 
 public:
+	static wxString Local(const wxString &name);
 	explicit FbParserXML() : m_handler(NULL), m_md5calc(false) {}
 	virtual ~FbParserXML() {}
 	bool Parse(wxInputStream & stream, bool md5 = false);

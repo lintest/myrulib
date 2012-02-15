@@ -182,7 +182,7 @@ public:
 
 	void Preview(wxInputStream &stream);
 
-private:
+protected:
 	FbHandlerXML * CreateHandler(const wxString &name);
 
 private:

@@ -28,16 +28,9 @@ FbHandlerXML * FbPreviewReader::RootHandler::NewNode(const wxString &name, const
 
 void FbPreviewReader::RootHandler::AppendImg(const FbStringHash &atts)
 {
-	FbStringHash::const_iterator it;
-	for( it = atts.begin(); it != atts.end(); ++it ) {
-		wxString name = it->first;
-		if (name.AfterLast(wxT(':')) == wxT("href")) {
-			wxString value = it->second;
-			if (value.Left(1) == wxT('#')) value = value.Mid(1);
-			m_images.Add(value);
-			break;
-		}
-	}
+	wxString value = Value(atts, wxT("href"));
+	if (value.Left(1) == wxT('#')) value = value.Mid(1);
+	m_images.Add(value);
 }
 
 FbHandlerXML * FbPreviewReader::RootHandler::NewImage(const wxString &name, const FbStringHash &atts)
@@ -196,8 +189,7 @@ FB2_END_KEYHASH
 
 FbHandlerXML * FbPreviewReaderEPUB::RootHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	wxString code = name.AfterLast(wxT(':'));
-	switch (toKeyword(code)) {
+	switch (toKeyword(name)) {
 		case Metadata: return new MetadataHandler(*this, name);
 		case Manifest: return new ManifestHandler(*this, name);
 		default: return NULL;
@@ -251,8 +243,7 @@ FB2_END_KEYHASH
 
 FbHandlerXML * FbPreviewReaderEPUB::MetadataHandler::NewNode(const wxString &name, const FbStringHash &atts)
 {
-	wxString code = name.AfterLast(wxT(':'));
-	switch (toKeyword(code)) {
+	switch (toKeyword(name)) {
 		case Meta: {
 			wxString value =  Value(atts, wxT("name")).Lower();
 			if (value == wxT("cover")) m_root.AppendCover(atts);
@@ -316,6 +307,6 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 
 FbHandlerXML * FbPreviewReaderEPUB::CreateHandler(const wxString &name)
 {
-	wxString code = name.AfterLast(wxT(':'));
-	return code == wxT("package") ? new RootHandler(*this, m_files, m_path, name) : NULL;
+	return name == wxT("package") ? new RootHandler(*this, m_files, m_path, name) : NULL;
 }
+
