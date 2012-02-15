@@ -61,6 +61,7 @@ class FbImportReader
 		};
 	public:
 		FbImportReader(): m_ok(false) {}
+		virtual void OnError(wxLogLevel level, const wxString &msg, int line);
 		bool IsOk() { return m_ok; };
 		void Convert(FbDatabase & database);
 		bool m_ok;

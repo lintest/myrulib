@@ -253,7 +253,7 @@ bool FbParsingContextFaxpp::DoParse(wxInputStream & stream)
 	if (err != NO_ERROR) {
 		wxString text(FAXPP_err_to_string(err), wxConvUTF8);
 		unsigned int line = FAXPP_get_error_line (m_parser);
-		wxLogError(_("XML parsing error: '%s' at line %d"), text.c_str(), line);
+		OnError(wxLOG_Error, text, line);
 	}
 	return err == NO_ERROR;
 }
@@ -281,6 +281,7 @@ void FbParsingContextFaxpp::OnProcessEvent(const FAXPP_Event & event)
 		case CHARACTERS_EVENT: {
 			OnTxtNode(Str(event.value));
 		} break;
+		default: ;
 	}
 }
 
@@ -438,7 +439,7 @@ bool FbParsingContextExpat::DoParse(wxInputStream& stream)
 			if ( error_code != XML_ERROR_ABORTED ) {
 				wxString error(XML_ErrorString(error_code), *wxConvCurrent);
 				XML_Size line = XML_GetCurrentLineNumber(m_parser);
-				wxLogError(_("XML parsing error: '%s' at line %d"), error.c_str(), line);
+				OnError(wxLOG_Error, error, line);
 				ok = false;
 			}
 			parse = false;
@@ -513,7 +514,7 @@ wxString FbParsingContextLibxml2::Low(const xmlChar * text)
 void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 {
 	switch (xmlTextReaderNodeType(reader)) {
-		case  1: { // START
+		case XML_READER_TYPE_ELEMENT: {
 			wxString name = Low(xmlTextReaderConstLocalName(reader));
 			bool empty = xmlTextReaderIsEmptyElement(reader);
 
@@ -528,12 +529,12 @@ void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 			if (empty) OnEndNode(name);
 		} break;
 
-		case  3: { // TEXT
+		case XML_READER_TYPE_TEXT: {
 			wxString value = XML2WX(xmlTextReaderConstValue(reader));
 			OnTxtNode(value);
 		} break;
 
-		case 15: { // END
+		case XML_READER_TYPE_END_ELEMENT: {
 			wxString name = Low(xmlTextReaderConstLocalName(reader));
 			OnEndNode(name);
 		} break;
@@ -542,11 +543,18 @@ void FbParsingContextLibxml2::ProcessNode(xmlTextReaderPtr & reader)
 
 static void Fb2TextReaderErrorFunc(void * arg, const char * msg, xmlParserSeverities severity, xmlTextReaderLocatorPtr locator)
 {
+	wxLogLevel level = wxLOG_Info;
+	switch (severity) {
+		case XML_PARSER_SEVERITY_VALIDITY_WARNING: level = wxLOG_Warning;
+		case XML_PARSER_SEVERITY_VALIDITY_ERROR: level = wxLOG_Error;
+		case XML_PARSER_SEVERITY_WARNING: level = wxLOG_Warning;
+		case XML_PARSER_SEVERITY_ERROR: level = wxLOG_Error;
+	}
 	int line = xmlTextReaderLocatorLineNumber(locator);
 	wxString err(msg, wxConvUTF8);
 	err.Replace(wxT("\n"), wxT(" "));
 	err.Replace(wxT("\r"), wxT(" "));
-	wxLogError(_("XML parsing error: '%s' at line %d"), err.c_str(), line);
+	((FbParsingContextLibxml2*)arg)->OnError(level, err, line);
 }
 
 /////////////////////////////////////////////////
@@ -562,7 +570,7 @@ bool FbParsingContextLibxml2::DoParse(wxInputStream & stream)
 
 	int options = XML_PARSE_RECOVER | XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET;
 	xmlTextReaderPtr reader = xmlReaderForIO(InputReadXML, InputCloseXML, this, NULL, NULL, options);
-	if (reader) xmlTextReaderSetErrorHandler(reader, Fb2TextReaderErrorFunc, NULL);
+	if (reader) xmlTextReaderSetErrorHandler(reader, Fb2TextReaderErrorFunc, this);
 
     int ret = 1;
 	if (reader) {

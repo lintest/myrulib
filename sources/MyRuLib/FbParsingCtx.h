@@ -79,6 +79,7 @@ public:
 	explicit FbParserXML() : m_handler(NULL), m_md5calc(false) {}
 	virtual ~FbParserXML() {}
 	bool Parse(wxInputStream & stream, bool md5 = false);
+	virtual void OnError(wxLogLevel level, const wxString &msg, int line) {}
 	wxString GetMd5() const { return m_md5sum; };
 	virtual void Stop() = 0;
 

@@ -129,7 +129,7 @@ void FbImportZip::Make(bool progress)
 }
 
 //-----------------------------------------------------------------------------
-//  FbImportParser
+//  FbImportReader
 //-----------------------------------------------------------------------------
 
 static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)
@@ -155,6 +155,11 @@ void FbImportReader::Convert(FbDatabase & database)
 		m_sequences.Add(new SequenceItem);
 
 	m_lang = Lower(m_lang);
+}
+
+void FbImportReader::OnError(wxLogLevel level, const wxString &msg, int line)
+{
+	wxLogError(_("XML parsing error: '%s' at line %d"), msg.c_str(), line);
 }
 
 //-----------------------------------------------------------------------------
