@@ -536,6 +536,7 @@ FbHandlerXML * FbDataReaderEPUB::RootHandler::NewNode(const wxString &name, cons
 //-----------------------------------------------------------------------------
 
 FB2_BEGIN_KEYHASH(FbDataReaderEPUB::MetaHandler)
+	KEY( "dc-metadata"    , Metadata );
 	KEY( "metadata"    , Metadata );
 	KEY( "creator"     , Author );
 	KEY( "title"       , Title  );
