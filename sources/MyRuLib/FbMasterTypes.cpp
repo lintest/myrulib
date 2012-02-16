@@ -264,7 +264,7 @@ wxString FbMasterFindInfo::GetWhere(wxSQLite3Database &database) const
 		return sql;
 	} else {
 		wxString sql = wxT("SEARCH_T(books.title)");
-		if (m_auth) sql << wxT("AND books.id_author IN (SELECT id FROM authors WHERE SEARCH_A(authors.fill_name))");
+		if (m_auth) sql << wxT("AND books.id_author IN (SELECT id FROM authors WHERE SEARCH_A(authors.full_name))");
 		return sql;
 	}
 }

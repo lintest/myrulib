@@ -379,8 +379,7 @@ void FbTreeViewHeaderWindow::RefreshColLabel(int col)
 	FbColumnArray columns;
 	GetColumnInfo(columns);
 
-	if (col < 0) return;
-	if (col >= columns.Count()) return;
+	if (col < 0 || columns.Count() <= (size_t)col) return;
 
 	int x = 0;
 	int width = 0;

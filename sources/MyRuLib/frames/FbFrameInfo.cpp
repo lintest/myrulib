@@ -15,11 +15,12 @@ BEGIN_EVENT_TABLE(FbFrameInfo, FbHtmlWindow)
 	EVT_MENU(wxID_SAVE, FbFrameInfo::OnSave)
 END_EVENT_TABLE()
 
-FbFrameInfo::FbFrameInfo(wxAuiNotebook * parent)
+FbFrameInfo::FbFrameInfo(wxAuiNotebook * parent, bool select)
 	: FbHtmlWindow(parent, ID_FRAME_INFO)
 {
 	UpdateFonts(false);
-	parent->AddPage( this, GetTitle(), false );
+	parent->AddPage( this, GetTitle(), select );
+	Update();
 }
 
 void FbFrameInfo::Load(const wxString & html)

@@ -11,7 +11,7 @@ class FbFrameInfo
 {
 	public:
 		static void Execute(wxEvtHandler * owner);
-		FbFrameInfo(wxAuiNotebook * parent);
+		FbFrameInfo(wxAuiNotebook * parent, bool select);
 		virtual wxString GetTitle() const { return _("Information"); };
 		void Load(const wxString & html);
 		virtual void UpdateFonts(bool refresh = true);
