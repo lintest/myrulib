@@ -45,8 +45,7 @@ FbHandlerXML * FbPreviewReader::RootHandler::NewImage(const wxString &name, cons
 void FbPreviewReader::RootHandler::EndImg(const wxString &file, const wxString &data)
 {
 	if (m_images.Count() == 0) m_reader.Stop();
-	m_data.AddImage(file, data);
-	m_thread.SendHTML(m_data);
+	m_data.AddImage(m_thread, file, data);
 }
 
 void FbPreviewReader::RootHandler::SendDescr()
@@ -299,8 +298,7 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 			wxMemoryBuffer buffer(size);
 			zip.Read(buffer.GetWriteBuf(size), size);
 			wxMemoryInputStream in(buffer.GetData(), size);
-			m_data.AddImage(filename, in);
-			m_thread.SendHTML(m_data);
+			m_data.AddImage(m_thread, filename, in);
 			break;
 		}
 	}

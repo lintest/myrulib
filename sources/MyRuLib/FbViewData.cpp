@@ -1,4 +1,5 @@
 #include "FbViewData.h"
+#include "FbViewThread.h"
 #include "FbColumns.h"
 #include "FbDatabase.h"
 #include "FbGenres.h"
@@ -97,14 +98,14 @@ void FbViewData::Push(const wxString &filename, const wxImage &image)
 	wxMemoryFSHandler::AddFile(filename, result, wxBITMAP_TYPE_PNG);
 }
 
-void FbViewData::AddImage(const wxString &filename, const wxString &imagedata)
+void FbViewData::AddImage(FbViewThread &thread, const wxString &filename, const wxString &imagedata)
 {
 	wxMemoryBuffer buffer = wxBase64Decode(imagedata, wxBase64DecodeMode_SkipWS);
 	wxMemoryInputStream stream(buffer.GetData(), buffer.GetDataLen());
-    AddImage(filename, stream);
+	AddImage(thread, filename, stream);
 }
 
-void FbViewData::AddImage(const wxString &filename, wxInputStream &stream)
+void FbViewData::AddImage(FbViewThread &thread, const wxString &filename, wxInputStream &stream)
 {
 	if (m_images.Index(filename) != wxNOT_FOUND) return;
 	m_images.Add(filename);
@@ -112,11 +113,12 @@ void FbViewData::AddImage(const wxString &filename, wxInputStream &stream)
 	wxString imagename = GetImage(filename);
 	wxImage image(stream);
 
-	#ifdef __WXMSW__
+#ifdef __WXMSW__
 	Push(imagename, image);
-	#else
+	thread.SendHTML(*this);
+#else
 	FbImageEvent(wxID_ANY, image, m_id, imagename).Post(&wxGetApp());
-	#endif // __WXMSW__
+#endif // __WXMSW__
 }
 
 wxString FbViewData::GetComments(const FbViewContext &ctx, const FbCacheBook &book) const
