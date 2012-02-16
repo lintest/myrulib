@@ -57,13 +57,22 @@ void FbPreviewWindow::OnInfoUpdate(wxCommandEvent& event)
 
 void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 {
+	wxPoint p = event.GetPosition();
+	wxHtmlCell * cell = m_Cell ? m_Cell->FindCellByPos(p.x, p.y) : NULL;
+	wxHtmlLinkInfo * link = cell ? cell->GetLink() : NULL;
+
 	SetFocus();
-	ContextMenu menu(m_book);
+	ContextMenu menu(m_book, link);
 	PopupMenu( &menu, event.GetPosition() );
 }
 
-FbPreviewWindow::ContextMenu::ContextMenu(int book)
+FbPreviewWindow::ContextMenu::ContextMenu(int book, wxHtmlLinkInfo * link)
 {
+	if (link) { 
+		Append(wxID_ANY, wxT("Copy link address"));
+		AppendSeparator();
+	}
+
 	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
 	AppendSeparator();
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));

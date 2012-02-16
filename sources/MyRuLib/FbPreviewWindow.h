@@ -33,7 +33,7 @@ class FbPreviewWindow: public FbHtmlWindow
 		void OnLinkClicked(const wxHtmlLinkInfo &link);
 	private:
 		class ContextMenu: public FbMenu {
-			public: ContextMenu(int book);
+			public: ContextMenu(int book, wxHtmlLinkInfo * link);
 		};
 		FbPreviewThread * m_thread;
 		FbViewItem m_view;
