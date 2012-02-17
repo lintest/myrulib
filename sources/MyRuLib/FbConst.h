@@ -175,6 +175,4 @@ void FbMessageBox(const wxString &info, const wxString &text);
 
 wxString GetRatingText(int index);
 
-wxString TrimTitle(const wxString &title);
-
 #endif // __FBCONST_H__

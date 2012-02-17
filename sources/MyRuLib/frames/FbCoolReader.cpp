@@ -16,6 +16,7 @@
 #include "FbDatabase.h"
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
+#include "FbString.h"
 
 //-----------------------------------------------------------------------------
 //  FbContentModel
@@ -339,9 +340,9 @@ bool FbCoolReader::Create(wxAuiNotebook * parent)
 		SetScrollbar(wxVERTICAL, 0, 1, 100, false);
 		_wm.activateWindow( _docwin );
 
-		wxString title = GetDocView()->getTitle().c_str();
+		FbString title = GetDocView()->getTitle().c_str();
 		if (title.IsEmpty()) title = FbCommonDatabase().Str(m_book, wxT("SELECT title FROM books WHERE id=?"));
-		parent->AddPage(this, TrimTitle(title), true);
+		parent->AddPage(this, title.Shorten(), true);
 		Repaint();
 	}
 	return ok;

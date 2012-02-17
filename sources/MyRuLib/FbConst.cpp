@@ -86,11 +86,3 @@ void FbMessageBox(const wxString &info, const wxString &text)
 	wxMessageBox(CreateMessage(info, text));
 }
 
-wxString TrimTitle(const wxString &title)
-{
-	if (title.Len() > 32) {
-		return title.Left(32).BeforeLast(wxT(' ')) << wxChar(0x2026);
-	} else {
-		return title;
-	}
-}

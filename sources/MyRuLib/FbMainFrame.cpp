@@ -35,6 +35,7 @@
 #include "controls/FbLogModel.h"
 #include "FbDateTime.h"
 #include "FbLocale.h"
+#include "FbString.h"
 
 IMPLEMENT_CLASS(FbMainFrame, wxFrame)
 
@@ -699,7 +700,7 @@ void FbMainFrame::OpenInfo(const FbMasterInfo & info, const wxString & title, wx
 			return;
 		}
 	}
-	new FbFrameFind(&m_FrameNotebook, winid, info, TrimTitle(title));
+	new FbFrameFind(&m_FrameNotebook, winid, info, FbString(title).Shorten());
 }
 
 void FbMainFrame::OpenClss(int code, bool select)
