@@ -30,8 +30,8 @@ FbModelItem & FbModelItem::operator =(const FbModelItem &item)
 	return *this;
 }
 
-int FbModelItem::Level() 
-{ 
+int FbModelItem::Level()
+{
 	int level = 0;
 	FbModelItem parent = GetParent();
 	while (parent) {
@@ -165,7 +165,7 @@ static wxColour MiddleColour(wxColour text, wxColour back)
 }
 
 FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
-	m_window(model.GetOwner()), 
+	m_window(model.GetOwner()),
 	// Set brush colour
 	m_normalBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX), wxSOLID),
 	m_hilightBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT), wxSOLID),
@@ -176,6 +176,7 @@ FbModel::PaintContext::PaintContext(FbModel &model, wxDC &dc):
 	m_graytextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT)),
 	// Set pen for borders
 	m_borderPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxSOLID),
+	m_strikePen(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT), 1, wxSOLID),
 	m_directory(model.GetOwner()->HasFlag(fbTR_DIRECTORY)),
 	// Current item flags
 	m_current(false),
@@ -235,6 +236,10 @@ void FbModel::DrawButton(const FbModelItem &data, wxWindow * window, wxDC &dc, w
 
 void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxRect &rect, const FbColumnArray &cols)
 {
+	int x = ctx.m_level * FB_CHECKBOX_WIDTH;
+	const int y = rect.GetTop();
+	const int h = rect.GetHeight();
+
 	if (ctx.m_selected) {
 		dc.SetBrush(m_focused ? ctx.m_hilightBrush : ctx.m_unfocusBrush);
 		dc.SetTextForeground(ctx.m_hilightColour);
@@ -252,11 +257,16 @@ void FbModel::DrawItem(FbModelItem &data, wxDC &dc, PaintContext &ctx, const wxR
 	dc.DrawRectangle(rect);
 	dc.SetPen(ctx.m_borderPen);
 	if (ctx.m_hrules) dc.DrawLine(rect.GetBottomLeft(), rect.GetBottomRight());
+	if (data.IsStrike()) {
+		int xx = x + 2;
+		if (ctx.m_checkbox) xx += FB_CHECKBOX_WIDTH + 2;
+		int yy = y + h / 2;
+		dc.SetPen(ctx.m_strikePen);
+		dc.DrawLine(xx, yy, rect.GetRight() - 2, yy);
+		dc.SetPen(ctx.m_borderPen);
+	}
 	dc.DestroyClippingRegion();
 
-	int x = ctx.m_level * FB_CHECKBOX_WIDTH;
-	const int y = rect.GetTop();
-	const int h = rect.GetHeight();
 	const wxBitmap & bitmap = ctx.m_checkbox ? GetBitmap(data.GetState()) : wxNullBitmap;
 
 	if (data.FullRow()) {
@@ -477,7 +487,7 @@ void FbListStore::Insert(FbModelData * data, size_t pos)
 	size_t count = m_list.Count();
 
 	if (count == 1) {
-		m_position = 1; 
+		m_position = 1;
 	} else {
 		if (m_position >= pos) m_position++;
 	}

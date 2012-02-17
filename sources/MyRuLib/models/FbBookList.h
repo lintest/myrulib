@@ -25,6 +25,8 @@ class FbBookListData: public FbModelData
 			{ return m_code; }
 		virtual bool IsGray(FbModel & model) const
 			{ return FbCollection::GetBookData(m_code).IsGray(); }
+		virtual bool IsStrike(FbModel & model) const
+			{ return FbCollection::GetBookData(m_code).IsDeleted(); }
 	protected:
 		virtual void DoSetState(FbModel & model, int state);
 		virtual int DoGetState(FbModel & model) const;

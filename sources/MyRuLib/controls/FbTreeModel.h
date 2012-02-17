@@ -30,6 +30,8 @@ class FbModelData: public wxObject
 			{ return false; }
 		virtual bool IsGray(FbModel & model) const
 			{ return false; }
+		virtual bool IsStrike(FbModel & model) const
+			{ return false; }
 		virtual int Compare(FbModel & model, const FbModelData &data) const
 			{ return GetValue(model, 0).CmpNoCase(data.GetValue(model, 0)); }
 		virtual size_t Count(FbModel & model) const
@@ -50,7 +52,7 @@ class FbModelData: public wxObject
 			{ return 0; }
 		virtual bool IsExpanded(FbModel & model) const
 			{ return false; }
-		virtual bool Expand(FbModel & model, bool expand) 
+		virtual bool Expand(FbModel & model, bool expand)
 			{ return false; }
 	public:
 #ifdef _MYRULIB
@@ -107,6 +109,8 @@ class FbModelItem: public wxObject
 			{ return m_data ? m_data->IsBold(*m_model) : false; }
 		bool IsGray()
 			{ return m_data ? m_data->IsGray(*m_model) : false; }
+		bool IsStrike()
+			{ return m_data ? m_data->IsStrike(*m_model) : false; }
 		FbModelItem Items(size_t index)
 			{ return m_data ? FbModelItem(*m_model, m_data->Items(*m_model, index)) : FbModelItem(); }
 		FbModelItem GetParent()
@@ -117,13 +121,13 @@ class FbModelItem: public wxObject
 			{ return m_data ? m_data->GetState(*m_model) : 0; }
 		void SetState(bool state)
 			{ if (m_data) m_data->SetState(*m_model, state); }
-		int GetBook() const 
+		int GetBook() const
 			{ return m_data ? m_data->GetBook() : 0; }
 		bool HasChildren() const
 			{ return m_data ? m_data->HasChildren(*m_model) : false; }
 		bool IsExpanded() const
 			{ return m_data ? m_data->IsExpanded(*m_model) : false; }
-		bool Expand(bool expand = true) 
+		bool Expand(bool expand = true)
 			{ return m_data ? m_data->Expand(*m_model, expand) : false; }
 		int Level();
 	private:
@@ -217,6 +221,7 @@ class FbModel: public wxObject
 				wxFont m_normalFont;
 				wxFont m_boldFont;
 				wxPen m_borderPen;
+				wxPen m_strikePen;
 				bool m_directory;
 				bool m_current;
 				bool m_selected;
@@ -261,7 +266,7 @@ class FbModel: public wxObject
 
 		virtual void SelectAll(bool value) {}
 
-		virtual wxString GetText(wxArrayInt &columns) 
+		virtual wxString GetText(wxArrayInt &columns)
 			{ return wxEmptyString; }
 
 		virtual FbModelItem GetCurrent()

@@ -80,6 +80,8 @@ class FbBookChildData: public FbChildData
 			{ return FbViewItem(FbViewItem::Book, m_code); }
 		virtual bool IsGray(FbModel & model) const
 			{ return FbCollection::GetBookData(m_code).IsGray(); }
+		virtual bool IsStrike(FbModel & model) const
+			{ return FbCollection::GetBookData(m_code).IsDeleted(); }
 		virtual wxString GetValue(FbModel & model, size_t col = 0) const;
 	protected:
 		virtual void DoSetState(FbModel & model, int state)
