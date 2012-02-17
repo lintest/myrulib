@@ -16,7 +16,7 @@ function convert_authors($mysql_db, $sqlite_db, $min)
 	SELECT libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.BookId) as Number
 	FROM libavtorname INNER JOIN (
 	  SELECT DISTINCT libavtor.AvtorId, libavtor.BookId 
-	  FROM libavtor INNER JOIN libbook ON libbook.BookId=libavtor.BookId AND libbook.Deleted<>1 
+	  FROM libavtor INNER JOIN libbook ON libbook.BookId=libavtor.BookId
 	) AS libavtor ON libavtorname.AvtorId=libavtor.AvtorId 
     WHERE libavtorname.AvtorId>$min
 	GROUP BY libavtorname.AvtorId, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
@@ -56,7 +56,7 @@ function convert_genres($mysql_db, $sqlite_db, $min)
 	SELECT DISTINCT libgenre.BookId, GenreCode 
 	FROM libgenre 
 		LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId 
-		INNER JOIN libbook ON libbook.BookId=libgenre.BookId AND libbook.Deleted<>1 
+		INNER JOIN libbook ON libbook.BookId=libgenre.BookId
 	WHERE libgenre.BookId>$min
 	ORDER BY GenreCode
   ";
@@ -86,7 +86,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
       CONCAT(libbook.BookId, '.', libbook.FileType) AS FileName
     FROM libbook 
       LEFT JOIN libavtor ON libbook.BookId = libavtor.BookId AND AvtorId<>0
-    WHERE libbook.Deleted<>1 AND libbook.BookId>$min
+    WHERE libbook.BookId>$min
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -99,6 +99,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
     while ($subrow = $subquery->fetch_array()) {
       $genres = $genres.GenreCode($subrow['GenreCode']);
     }
+    $deleted = NULL; if ($row['Deleted'] == 1) $deleted = 1;
     $file_type = trim($row['FileType']);
     $file_type = trim($file_type, ".");
     $file_type = strtolower($file_type);
@@ -109,7 +110,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], trim($row['Title']), $row['Deleted'], $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
+    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -126,7 +127,7 @@ function convert_dates($mysql_db, $sqlite_db, $min)
   $sqltest = "
     SELECT DATE_FORMAT(Time,'%y%m%d') as Time, MAX(BookId) as Max, MIN(BookId) as Min, COUNT(BookId) AS Num
     FROM libbook 
-	WHERE Deleted<>1 AND libbook.BookId>$min
+	WHERE libbook.BookId>$min
 	GROUP BY DATE_FORMAT(libbook.Time,'%y%m%d')
   ";
 
@@ -153,7 +154,7 @@ function convert_seqnames($mysql_db, $sqlite_db, $min)
 	SELECT libseqname.SeqId, libseqname.SeqName, COUNT(libseq.BookId) as Number
 	FROM libseqname INNER JOIN (
 	  SELECT DISTINCT libseq.SeqId, libseq.BookId 
-	  FROM libseq INNER JOIN libbook ON libbook.BookId=libseq.BookId AND libbook.Deleted<>1 
+	  FROM libseq INNER JOIN libbook ON libbook.BookId=libseq.BookId
 	) AS libseq ON libseqname.SeqId=libseq.SeqId AND libseq.SeqId<>0
 	WHERE libseq.SeqId>$min
 	GROUP BY libseqname.SeqId, libseqname.SeqName
@@ -201,7 +202,7 @@ function convert_files($mysql_db, $sqlite_db, $zid, $bid)
 
   $sqlmain = "
     SELECT myrulib_entry.zid, myrulib_entry.name, libbook.BookId AS bid
-    FROM libbook INNER JOIN myrulib_entry ON myrulib_entry.md5 = libbook.md5 AND libbook.Deleted<>1
+    FROM libbook INNER JOIN myrulib_entry ON myrulib_entry.md5 = libbook.md5
 	WHERE libbook.BookId>$bid OR myrulib_entry.zid>$zid 
   ";
 
@@ -226,7 +227,7 @@ function convert_sequences($mysql_db, $sqlite_db, $min)
   $sqltest = "
     SELECT libseq.BookId, libseq.SeqId, libseq.SeqNumb, libseq.Level
     FROM libseq 
-	  INNER JOIN libbook ON libseq.BookId = libbook.BookId AND libbook.Deleted<>1
+	  INNER JOIN libbook ON libseq.BookId = libbook.BookId 
 	WHERE libseq.BookId>$min
   ";
 

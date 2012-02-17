@@ -14,7 +14,7 @@ function convert_authors($mysql_db, $sqlite_db, $min)
 	SELECT libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName, COUNT(libavtor.bid) as Number
 	FROM libavtors AS libavtorname INNER JOIN (
 	  SELECT DISTINCT libavtor.aid, libavtor.bid
-	  FROM libavtor INNER JOIN libbook ON libbook.bid=libavtor.bid AND libbook.Deleted<>1 AND libavtor.role = 'a'
+	  FROM libavtor INNER JOIN libbook ON libbook.bid=libavtor.bid AND libavtor.role = 'a'
 	) AS libavtor ON libavtorname.aid=libavtor.aid 
     WHERE libavtorname.aid>$min
 	GROUP BY libavtorname.aid, libavtorname.FirstName, libavtorname.LastName, libavtorname.MiddleName
@@ -54,7 +54,7 @@ function convert_genres($mysql_db, $sqlite_db, $min)
 	SELECT DISTINCT libgenre.bid, code
 	FROM libgenre 
 		LEFT JOIN libgenrelist ON libgenre.gid = libgenrelist.gid
-		INNER JOIN libbook ON libbook.bid=libgenre.bid AND libbook.Deleted<>1 
+		INNER JOIN libbook ON libbook.bid=libgenre.bid
 	WHERE libgenre.bid>$min
 	ORDER BY code
   ";
@@ -84,7 +84,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
       CONCAT(libbook.bid, '.', libbook.FileType) AS FileName
     FROM libbook 
       LEFT JOIN libavtor ON libbook.bid = libavtor.bid AND libavtor.role = 'a' AND libavtor.aid<>0
-    WHERE libbook.Deleted<>1 AND libbook.bid>$min
+    WHERE libbook.bid>$min
   ";
 
   $query = $mysql_db->query($sqltest);
@@ -97,6 +97,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
     while ($subrow = $subquery->fetch_array()) {
       $genres = $genres.GenreCode($subrow['code']);
     }
+    $deleted = NULL; if ($row['Deleted'] == 1) $deleted = 1;
     $file_type = trim($row['FileType']);
     $file_type = trim($file_type, ".");
     $file_type = strtolower($file_type);
@@ -107,7 +108,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['bid'], $row['aid'], trim($row['Title']), $row['Deleted'], $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
+    $err= $insert->execute(array($row['bid'], $row['aid'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
@@ -124,7 +125,7 @@ function convert_dates($mysql_db, $sqlite_db, $min)
   $sqltest = "
     SELECT DATE_FORMAT(Time,'%y%m%d') as Time, MAX(bid) as Max, MIN(bid) as Min, COUNT(bid) AS Num
     FROM libbook 
-	WHERE Deleted<>1 AND libbook.bid>$min
+	WHERE libbook.bid>$min
 	GROUP BY DATE_FORMAT(Time,'%y%m%d')
   ";
 
@@ -151,7 +152,7 @@ function convert_seqnames($mysql_db, $sqlite_db, $min)
 	SELECT libseqname.sid, libseqname.seqname, COUNT(libseq.bid) as Number
 	FROM libseqs AS libseqname INNER JOIN (
 	  SELECT DISTINCT libseq.sid, libseq.bid 
-	  FROM libseq INNER JOIN libbook ON libbook.bid=libseq.bid AND libbook.Deleted<>1 
+	  FROM libseq INNER JOIN libbook ON libbook.bid=libseq.bid
 	) AS libseq ON libseqname.sid=libseq.sid AND libseq.sid<>0
 	WHERE libseq.sid>$min
 	GROUP BY libseqname.sid, libseqname.seqname
@@ -199,7 +200,7 @@ function convert_files($mysql_db, $sqlite_db, $zid, $bid)
 
   $sqlmain = "
     SELECT myrulib_entry.zid, myrulib_entry.name, libbook.bid AS bid
-    FROM libbook INNER JOIN myrulib_entry ON myrulib_entry.md5 = libbook.md5 AND libbook.Deleted<>1
+    FROM libbook INNER JOIN myrulib_entry ON myrulib_entry.md5 = libbook.md5
 	WHERE libbook.bid>$bid OR myrulib_entry.zid>$zid 
   ";
 
@@ -224,7 +225,7 @@ function convert_sequences($mysql_db, $sqlite_db, $min)
   $sqltest = "
     SELECT libseq.bid, libseq.sid, libseq.sn
     FROM libseq 
-	INNER JOIN libbook ON libseq.bid = libbook.bid AND libbook.Deleted<>1
+	INNER JOIN libbook ON libseq.bid = libbook.bid
 	WHERE libseq.bid>$min
   ";
 
