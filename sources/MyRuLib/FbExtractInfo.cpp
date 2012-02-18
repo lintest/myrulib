@@ -2,6 +2,7 @@
 #include "FbImportReader.h"
 #include "FbSmartPtr.h"
 #include "FbParams.h"
+#include "FbString.h"
 #include "FbConst.h"
 #include <wx/zipstrm.h>
 #include <wx/wfstream.h>
@@ -98,8 +99,20 @@ wxString FbExtractItem::ErrorName() const
 	} else if ( id_archive ) {
 		if ( wxFileName(zip_name).GetName() == book_name )
 			return zip_name.c_str();
-		else
-			return wxString::Format(wxT("%s: %s"), zip_name.c_str(), book_name.c_str());
+		else {
+			wxString result = zip_name;
+			result << wxT(": ");
+			FbString filename = book_name;
+			if (filename.Len() > 0x24) {
+				wxString ext;
+				int pos = filename.Find(wxT('.'), true);
+				if (pos != wxNOT_FOUND) ext = filename.Mid(pos);
+				filename.Truncate(pos);
+				filename = filename.AfterLast(wxT('/'));
+				filename.Shorten() << ext;
+			}
+			return result << filename;
+		}
 	} else {
 		return book_name.c_str();
 	}
