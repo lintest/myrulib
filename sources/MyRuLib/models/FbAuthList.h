@@ -76,8 +76,7 @@ class FbAuthListModel: public FbListModel
 			{ return m_items.Count(); }
 		virtual FbModelItem GetCurrent()
 			{ return GetData(m_position); };
-		void SetCounter(const wxString & filename)
-			{ if (!filename.IsEmpty()) m_database.Open(filename); }
+		void SetCounter(const wxString & filename);
 	protected:
 		virtual FbModelItem DoGetData(size_t row, int &level);
 	private:

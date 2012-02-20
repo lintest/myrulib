@@ -236,8 +236,10 @@ void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
 
 void FbFrameBase::OnFilterSet(wxCommandEvent& event)
 {
-	bool ok = FbFilterDlg::Execute(m_filter);
-	if (ok) UpdateBooklist();
+	if (FbFilterDlg::Execute(m_filter)) {
+		UpdateBooklist();
+		UpdateCounter();
+	}
 }
 
 void FbFrameBase::OnFilterUse(wxCommandEvent& event)
@@ -246,6 +248,7 @@ void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 	FbParams(FB_USE_FILTER) = use;
 	m_filter.Enable(use);
 	UpdateBooklist();
+	UpdateCounter();
 }
 
 void FbFrameBase::OnChangeModeUpdateUI(wxUpdateUIEvent & event)
@@ -282,6 +285,19 @@ void FbFrameBase::OnShowColumns(wxCommandEvent& event)
 void FbFrameBase::UpdateBooklist()
 {
 	m_BooksPanel->Reset(GetInfo(), m_filter);
+}
+
+void FbFrameBase::UpdateCounter()
+{
+	wxString sql = GetCountSQL();
+	if (sql.IsEmpty()) return;
+
+	if (m_MasterThread) m_MasterThread->Wait();
+	wxDELETE(m_MasterThread);
+
+	m_MasterThread = new FbCountThread(this);
+	m_MasterThread->SetCountSQL(sql, GetFilterSQL());
+	m_MasterThread->Execute();
 }
 
 FbMasterInfo FbFrameBase::GetInfo()

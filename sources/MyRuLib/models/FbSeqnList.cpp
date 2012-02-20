@@ -15,14 +15,12 @@ bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
 
 void * FbSeqnListThread::Entry()
 {
-	wxString sql = wxT("SELECT id_seq, COUNT(DISTINCT id_book) FROM bookseq GROUP BY id_seq");
-
 	FbCommonDatabase database;
 	database.JoinThread(this);
 
 	if (abs(m_order) > 1) {
 		if (m_counter.IsEmpty()) {
-			CreateCounter(database, sql);
+			CreateCounter(database, m_sql);
 		} else {
 			AttachCounter(database, m_counter);
 		}
@@ -35,7 +33,7 @@ void * FbSeqnListThread::Entry()
 	}
 
 	if (m_counter.IsEmpty()) {
-		CreateCounter(database, sql);
+		CreateCounter(database, m_sql);
 	}
 
 	return NULL;
@@ -194,3 +192,8 @@ int FbSeqnListModel::GetCount(int code)
 	return count;
 }
 
+void FbSeqnListModel::SetCounter(const wxString & filename)
+{ 
+	if (!filename.IsEmpty()) m_database.Open(filename); 
+	m_counter.clear(); 
+}

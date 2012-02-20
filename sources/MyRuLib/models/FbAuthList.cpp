@@ -10,14 +10,12 @@
 
 void * FbAuthListThread::Entry()
 {
-	wxString sql = wxT("SELECT id_author, COUNT(id) FROM books GROUP BY id_author");
-
 	FbCommonDatabase database;
 	database.JoinThread(this);
 
 	if (abs(m_order) > 1) {
 		if (m_counter.IsEmpty()) {
-			CreateCounter(database, sql);
+			CreateCounter(database, m_sql);
 		} else {
 			AttachCounter(database, m_counter);
 		}
@@ -33,7 +31,7 @@ void * FbAuthListThread::Entry()
 	}
 
 	if (m_counter.IsEmpty()) {
-		CreateCounter(database, sql);
+		CreateCounter(database, m_sql);
 	}
 
 	return NULL;
@@ -204,3 +202,8 @@ int FbAuthListModel::GetCount(int code)
 	return count;
 }
 
+void FbAuthListModel::SetCounter(const wxString & filename)
+{ 
+	if (!filename.IsEmpty()) m_database.Open(filename); 
+	m_counter.clear(); 
+}

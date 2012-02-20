@@ -12,6 +12,7 @@
 #include "FbThread.h"
 #include "FbMainMenu.h"
 #include "FbFilterObj.h"
+#include "FbFrameThread.h"
 #include "controls/FbTreeView.h"
 
 class FbMasterViewCtrl
@@ -65,10 +66,12 @@ public:
 		bool IsFullScreen();
 		virtual void UpdateBooklist();
 		virtual FbMasterInfo GetInfo();
+		virtual wxString GetCountSQL() { return wxEmptyString; }
+		void UpdateCounter();
 	protected:
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
-		FbThread * m_MasterThread;
+		FbFrameThread * m_MasterThread;
 		wxString m_MasterFile;
 		FbFilterObj m_filter;
 		int m_BookCount;

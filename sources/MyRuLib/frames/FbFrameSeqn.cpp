@@ -126,6 +126,11 @@ void FbFrameSeqn::CreateColumns()
 	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
 }
 
+wxString FbFrameSeqn::GetCountSQL()
+{
+	return wxT("SELECT id_seq, COUNT(DISTINCT id) FROM books INNER JOIN bookseq ON books.id=bookseq.id_book WHERE 1 %s GROUP BY id_seq");
+}
+
 void FbFrameSeqn::CreateMasterThread()
 {
 	m_MasterList->AssignModel(NULL);
@@ -135,6 +140,7 @@ void FbFrameSeqn::CreateMasterThread()
 		wxDELETE(m_MasterThread);
 	}
 	m_MasterThread = new FbSeqnListThread(this, m_info, m_MasterList->GetSortedColumn(), m_MasterFile);
+	m_MasterThread->SetCountSQL(GetCountSQL(), GetFilterSQL());
 	m_MasterThread->Execute();
 }
 

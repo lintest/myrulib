@@ -3,6 +3,10 @@
 #include "FbBookEvent.h"
 #include "FbConst.h"
 
+//-----------------------------------------------------------------------------
+//  FbFrameThread
+//-----------------------------------------------------------------------------
+
 void FbFrameThread::AttachCounter(wxSQLite3Database &database, const wxString &filename)
 {
 	wxSQLite3Statement stmt = database.PrepareStatement(wxT("ATTACH ? AS cnt"));
@@ -20,13 +24,13 @@ int FbFrameThread::GetCount(wxSQLite3Database &database, int code)
 
 void FbFrameThread::CreateCounter(wxSQLite3Database &database, const wxString &sql)
 {
-	if (!m_counter.IsEmpty()) return ;
+//	if (!reset && !m_counter.IsEmpty()) return ;
 
 	m_counter = wxFileName::CreateTempFileName(wxT("fb"));
 	AttachCounter(database, m_counter);
 
 	database.ExecuteUpdate(wxT("CREATE TABLE cnt.numb(key INTEGER PRIMARY KEY, num INTEGER)"));
-	database.ExecuteUpdate(wxT("INSERT INTO cnt.numb(key, num)") + sql);
+	database.ExecuteUpdate(wxT("INSERT INTO cnt.numb(key, num)") + m_sql);
 
 	if (IsClosed()) {
 		database.Close();
@@ -46,3 +50,15 @@ wxString FbFrameThread::GetOrder(int order, const wxString &standart)
 	return sql;
 }
 
+//-----------------------------------------------------------------------------
+//  FbCountThread
+//-----------------------------------------------------------------------------
+
+void * FbCountThread::Entry()
+{
+	if (m_sql.IsEmpty()) return NULL;
+	FbCommonDatabase database;
+	database.JoinThread(this);
+	CreateCounter(database, m_sql);
+	return NULL;
+}

@@ -31,6 +31,7 @@ class FbFrameSeqn : public FbFrameBase
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
 	protected:
+		virtual wxString GetCountSQL();
 		class MasterMenu: public wxMenu { 
 			public: MasterMenu(int id);
 		};

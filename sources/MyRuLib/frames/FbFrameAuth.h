@@ -30,6 +30,8 @@ class FbFrameAuth : public FbFrameBase
 		void FindAuthor(const wxString &text);
 		void ActivateAuthors();
 		virtual void UpdateFonts(bool refresh);
+	protected:
+		virtual wxString GetCountSQL();
 	private:
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);
 		void CreateMasterThread();

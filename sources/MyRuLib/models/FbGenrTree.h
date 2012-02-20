@@ -2,7 +2,7 @@
 #define __FBGENRTREE_H__
 
 #include "controls/FbTreeModel.h"
-#include "FbThread.h"
+#include "FbFrameThread.h"
 
 class wxSQLite3ResultSet;
 
@@ -52,15 +52,14 @@ class FbGenrChildData: public FbChildData
 		DECLARE_CLASS(FbGenrChildData);
 };
 
-class FbGenrListThread: public FbThread
+class FbGenrListThread: public FbFrameThread
 {
 	public:
 		FbGenrListThread(wxEvtHandler * frame)
-			: FbThread(wxTHREAD_JOINABLE), m_frame(frame) {}
+			: FbFrameThread(frame, wxEmptyString) {}
 	protected:
 		virtual void * Entry();
-	private:
-		wxEvtHandler * m_frame;
+		virtual void MakeModel(wxSQLite3ResultSet &result) {}
 };
 
 #endif // __FBGENRTREE_H__
