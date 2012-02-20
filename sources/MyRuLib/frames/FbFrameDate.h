@@ -16,6 +16,7 @@ class FbFrameDate : public FbFrameBase
 		virtual wxString GetTitle() const { return _("Calendar"); };
 	protected:
 		void CreateColumns();
+		virtual wxString GetCountSQL();
 	private:
 		void ReplaceData(int old_id, int new_id, wxTreeItemId selected, const wxString &newname);
 		void ShowContextMenu(const wxPoint& pos, wxTreeItemId item);

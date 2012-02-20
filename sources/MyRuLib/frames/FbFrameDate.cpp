@@ -31,7 +31,13 @@ FbFrameDate::FbFrameDate(wxAuiNotebook * parent, bool select)
 	CreateControls(select);
 
 	m_MasterThread = new FbDateTreeThread(this, m_MasterFile);
+	m_MasterThread->SetCountSQL(GetCountSQL(), GetFilterSQL());
 	m_MasterThread->Execute();
+}
+
+wxString FbFrameDate::GetCountSQL()
+{
+	return wxT("SELECT created, COUNT(DISTINCT id) FROM books WHERE 1 %s GROUP BY created");
 }
 
 void FbFrameDate::CreateColumns()

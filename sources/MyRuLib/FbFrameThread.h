@@ -19,7 +19,7 @@ public:
 		{}
 
 	void SetCountSQL(const wxString &sql, const wxString &filter)
-		{ m_sql = wxString::Format(sql, filter.c_str()); wxLogError(m_sql); }
+		{ m_sql = wxString::Format(sql, filter.c_str()); wxLogWarning(m_sql); }
 
 protected:
 	static wxString GetOrder(int order, const wxString &standart);

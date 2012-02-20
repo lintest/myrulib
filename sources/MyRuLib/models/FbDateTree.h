@@ -59,8 +59,7 @@ class FbDateDayData: public FbChildData
 class FbDateTreeModel: public FbTreeModel
 {
 	public:
-		void SetCounter(const wxString & filename)
-			{ if (!filename.IsEmpty()) m_database.Open(filename); }
+		void SetCounter(const wxString & filename);
 		int GetCount(int code);
 	private:
 		FbIntegerHash m_counter;

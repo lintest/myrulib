@@ -177,7 +177,6 @@ void FbFrameAuth::CreateMasterThread()
 	}
 	wxDELETE(m_MasterThread);
 
-	wxString sql = wxT("SELECT id_author, COUNT(DISTINCT id) FROM books WHERE 1 %s GROUP BY id_author");
 	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn(), m_MasterFile);
 	m_MasterThread->SetCountSQL(GetCountSQL(), GetFilterSQL());
 	m_MasterThread->Execute();

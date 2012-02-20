@@ -630,7 +630,7 @@ void FbMainFrame::OnVacuum(wxCommandEvent & event)
 {
 	wxString msg = _("Update full-text search index?");
 	int answer = wxMessageBox(msg, MyRuLib::ProgramName(), wxOK | wxCANCEL);
-	if (answer = wxOK) {
+	if (answer == wxOK) {
 		FbProgressDlg dlg(this, _("Processing collection"));
 		dlg.RunThread(new FbFulltextThread(&dlg));
 		dlg.ShowModal();
