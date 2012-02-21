@@ -96,7 +96,6 @@ FbFrameBase::FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxStrin
 	, m_BookCount(0)
 {
 	parent->AddPage( this, caption, select );
-	if (select) parent->SetSelection(parent->GetPageCount());
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbFrameBase::OnIdleSplitter ), NULL, this );
 	m_filter.Load();
 }

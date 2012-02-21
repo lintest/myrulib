@@ -98,7 +98,7 @@ void FbFrameInfoThread::WriteCount()
 	DoStep(_("Total quantity"));
 
 	{
-		wxString sql = (wxT("SELECT COUNT(id), MIN(created), MAX(created), SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, created, file_size FROM books) AS books"));
+		wxString sql = (wxT("SELECT COUNT(id), MIN(created), MAX(created), SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, created, file_size FROM books WHERE deleted IS NULL) AS books"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			min = GetDate(result.GetInt(1));
@@ -151,7 +151,7 @@ void FbFrameInfoThread::WriteTypes()
 	{
 		wxString sql = (wxT("\
 			SELECT file_type, COUNT(id) AS id, SUM(file_size)/1024 \
-			FROM (SELECT DISTINCT id, file_type, file_size FROM books) AS books \
+			FROM (SELECT DISTINCT id, file_type, file_size FROM books WHERE deleted IS NULL) AS books \
 			GROUP BY file_type ORDER BY id DESC \
 		"));
 		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);

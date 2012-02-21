@@ -712,6 +712,8 @@ void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 	CreateTableFTS(wxT("book"));
 	CreateTableFTS(wxT("seqn"));
 
+	ExecuteUpdate(fbT("UPDATE books SET deleted=NULL WHERE deleted=0"));
+
 	ExecuteUpdate(fbT("UPDATE authors SET letter=LTTR(full_name) WHERE id"));
 
 	if (thread && thread->IsClosed()) return;

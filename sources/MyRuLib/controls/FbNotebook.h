@@ -1,7 +1,7 @@
 #ifndef __FBNOTEBOOK_H__
 #define __FBNOTEBOOK_H__
 
-#include "wx/aui/auibook.h"
+#include <wx/aui/auibook.h>
 
 class WXDLLIMPEXP_AUI WxAuiDefaultTabArt : public wxAuiTabArt
 {

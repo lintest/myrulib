@@ -17,8 +17,9 @@ BEGIN_EVENT_TABLE(FbFrameFind, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFind::FbFrameFind(wxAuiNotebook * parent, wxWindowID winid, const FbMasterInfo &info, const wxString &title)
-	: FbFrameBase(parent, winid, title),
-		m_info(info), m_title(title)
+	: FbFrameBase(parent, winid, title, true)
+	, m_info(info)
+	, m_title(title)
 {
 	CreateBooksPanel(this);
 	Initialize(m_BooksPanel);

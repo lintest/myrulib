@@ -219,7 +219,7 @@ void FbMainFrame::RestoreFrameList()
 		wxString text = tkz.GetNextToken();
 		if (exists && text == active) break;
 		if (text.ToLong(&id) && 0 <= id && id < ID_FRAME_FIND - ID_FRAME_AUTH)
-			FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTH + id, text != active).Post(this);
+			FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_FRAME_AUTH + id, text == active).Post(this);
 		if (!exists) exists = (text == active);
 	}
 }
@@ -578,7 +578,7 @@ void FbMainFrame::OnMenuTitle(wxCommandEvent& event)
 
 void FbMainFrame::OnMenuFrame(wxCommandEvent & event)
 {
-	bool select = event.GetInt() == 0;
+	bool select = event.GetInt();
 	wxWindow * frame = wxGetKeyState(WXK_CONTROL) ? NULL : FindFrameById(event.GetId(), true);
 	if (!frame) frame = CreateFrame(event.GetId(), select);
 	if (select && frame) frame->Update();
