@@ -155,6 +155,9 @@ private:
 	{
 	public:
 		explicit SeqnHandler(FbImportReader &reader, const wxString &name, const FbStringHash &atts);
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+	private:
+		FbImportReader & m_reader;
 	};
 
 	class GenrHandler : public BookHandler

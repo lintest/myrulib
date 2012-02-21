@@ -237,8 +237,14 @@ FbHandlerXML * FbImportReaderFB2::AuthorHandler::NewNode(const wxString &name, c
 
 FbImportReaderFB2::SeqnHandler::SeqnHandler(FbImportReader &reader, const wxString &name, const FbStringHash &atts)
 	: FbHandlerXML(name)
+	, m_reader(reader)
 {
 	reader.m_sequences.Add(new SequenceItem(atts));
+}
+
+FbHandlerXML * FbImportReaderFB2::SeqnHandler::NewNode(const wxString &name, const FbStringHash &atts)
+{
+	return name == wxT("sequence") ? new SeqnHandler(m_reader, name, atts) : NULL;
 }
 
 //-----------------------------------------------------------------------------

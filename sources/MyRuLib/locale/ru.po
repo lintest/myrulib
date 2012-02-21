@@ -992,8 +992,8 @@ msgid "Sort by"
 msgstr "Сортировка"
 
 #: FbBookMenu.cpp:59 FbMainMenu.cpp:89
-msgid "Filter setup"
-msgstr "Настройка фильтра"
+msgid "Filter setup..."
+msgstr "Настройка фильтра..."
 
 #: FbBookMenu.cpp:60 FbMainMenu.cpp:90
 msgid "Use filter"
@@ -2185,3 +2185,6 @@ msgstr "Отображать горизонтальные линии сетки"
 
 msgid "Draws light vertical rules between columns"
 msgstr "Отображать вертикальные линии сетки"
+
+msgid "Show deleted"
+msgstr "Показывать удаленные"

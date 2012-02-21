@@ -991,7 +991,7 @@ msgid "Sort by"
 msgstr ""
 
 #: FbBookMenu.cpp:59 FbMainMenu.cpp:89
-msgid "Filter setup"
+msgid "Filter setup..."
 msgstr ""
 
 #: FbBookMenu.cpp:60 FbMainMenu.cpp:90

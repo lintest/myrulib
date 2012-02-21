@@ -86,8 +86,9 @@ FbMenuBar::MenuTree::MenuTree()
 	Append(ID_ORDER_MENU   , _("Sort by")       , new FbMenuSort );
 	Append(wxID_ANY        , _("Preview area")  , new MenuPreview);
 	AppendSeparator();
-	Append(ID_FILTER_SET   , _("Filter setup")  );
+	Append(ID_FILTER_SET   , _("Filter setup...")  );
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
+	AppendCheckItem(ID_FILTER_DEL, _("Show deleted"));
 	AppendSeparator();
 	Append(ID_EDIT_COMMENTS , _("Add comments"));
 }

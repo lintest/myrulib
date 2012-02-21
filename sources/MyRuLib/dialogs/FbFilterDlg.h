@@ -19,7 +19,6 @@ class FbFilterDlg : public FbDialog
 		enum {
 			ID_CHECK_LIB = 1000,
 			ID_CHECK_USR,
-			ID_CHECK_DEL,
 			ID_TREE_LANG,
 			ID_TREE_TYPE,
 		};
@@ -30,7 +29,6 @@ class FbFilterDlg : public FbDialog
 	private:
 		wxCheckBox* m_checkLib;
 		wxCheckBox* m_checkUsr;
-		wxCheckBox* m_checkDel;
 		FbTreeViewCtrl * m_treeLang;
 		FbTreeViewCtrl * m_treeType;
 

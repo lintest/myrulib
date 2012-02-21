@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_FILTER_SET, FbFrameBase::OnFilterSet)
 	EVT_MENU(ID_FILTER_USE, FbFrameBase::OnFilterUse)
+	EVT_MENU(ID_FILTER_DEL, FbFrameBase::OnFilterDel)
 	EVT_MENU(ID_DIRECTION, FbFrameBase::OnDirection)
 	EVT_MENU(wxID_VIEW_SORTNAME, FbFrameBase::OnChangeOrder)
 	EVT_MENU(wxID_VIEW_SORTDATE, FbFrameBase::OnChangeOrder)
@@ -73,6 +74,7 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbFrameBase::OnChangeViewUpdateUI)
 	EVT_UPDATE_UI(ID_FILTER_USE, FbFrameBase::OnFilterUseUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_DEL, FbFrameBase::OnFilterDelUpdateUI)
 	EVT_UPDATE_UI(ID_DIRECTION, FbFrameBase::OnDirectionUpdateUI)
 	EVT_UPDATE_UI(wxID_VIEW_SORTNAME, FbFrameBase::OnChangeOrderUpdateUI)
 	EVT_UPDATE_UI(wxID_VIEW_SORTDATE, FbFrameBase::OnChangeOrderUpdateUI)
@@ -86,13 +88,15 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 END_EVENT_TABLE()
 
 FbFrameBase::FbFrameBase(wxAuiNotebook * parent, wxWindowID winid, const wxString & caption, bool select)
-	: wxSplitterWindow(parent, winid, wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxTAB_TRAVERSAL),
-		m_MasterList(NULL),
-		m_BooksPanel(NULL),
-		m_MasterThread(NULL),
-		m_BookCount(0)
+	: wxSplitterWindow(parent, winid, wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxTAB_TRAVERSAL)
+	, m_MasterList(NULL)
+	, m_BooksPanel(NULL)
+	, m_MasterThread(NULL)
+	, m_CountThread(NULL)
+	, m_BookCount(0)
 {
 	parent->AddPage( this, caption, select );
+	if (select) parent->SetSelection(parent->GetPageCount());
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbFrameBase::OnIdleSplitter ), NULL, this );
 	m_filter.Load();
 }
@@ -102,9 +106,13 @@ FbFrameBase::~FbFrameBase()
 	if (m_MasterThread) {
 		m_MasterThread->Close();
 		m_MasterThread->Wait();
+		wxDELETE(m_MasterThread);
 	}
-	wxDELETE(m_MasterThread);
-
+	if (m_CountThread) {
+		m_CountThread->Close();
+		m_CountThread->Wait();
+		wxDELETE(m_CountThread);
+	}
 	if (!m_MasterFile.IsEmpty()) {
 		if (m_MasterList) m_MasterList->AssignModel(NULL);
 		wxRemoveFile(m_MasterFile);
@@ -234,6 +242,11 @@ void FbFrameBase::OnFilterUseUpdateUI(wxUpdateUIEvent & event)
 	event.Check(m_filter.IsEnabled());
 }
 
+void FbFrameBase::OnFilterDelUpdateUI(wxUpdateUIEvent & event)
+{
+	event.Check(m_filter.GetDeleted());
+}
+
 void FbFrameBase::OnFilterSet(wxCommandEvent& event)
 {
 	if (FbFilterDlg::Execute(m_filter)) {
@@ -247,6 +260,15 @@ void FbFrameBase::OnFilterUse(wxCommandEvent& event)
 	bool use = !m_filter.IsEnabled();
 	FbParams(FB_USE_FILTER) = use;
 	m_filter.Enable(use);
+	UpdateBooklist();
+	UpdateCounter();
+}
+
+void FbFrameBase::OnFilterDel(wxCommandEvent& event)
+{
+	bool del = !m_filter.GetDeleted();
+	FbParams(FB_FILTER_DEL) = del;
+	m_filter.SetDeleted(del);
 	UpdateBooklist();
 	UpdateCounter();
 }
@@ -292,12 +314,20 @@ void FbFrameBase::UpdateCounter()
 	wxString sql = GetCountSQL();
 	if (sql.IsEmpty()) return;
 
-	if (m_MasterThread) m_MasterThread->Wait();
-	wxDELETE(m_MasterThread);
+	if (m_MasterThread) {
+		m_MasterThread->Wait();
+		wxDELETE(m_MasterThread);
+	}
 
-	m_MasterThread = new FbCountThread(this);
-	m_MasterThread->SetCountSQL(sql, GetFilterSQL());
-	m_MasterThread->Execute();
+	if (m_CountThread) {
+		m_CountThread->Close();
+		m_CountThread->Wait();
+		wxDELETE(m_CountThread);
+	}
+
+	m_CountThread = new FbCountThread(this);
+	m_CountThread->SetCountSQL(sql, m_filter);
+	m_CountThread->Execute();
 }
 
 FbMasterInfo FbFrameBase::GetInfo()

@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
+#include "FbFilterObj.h"
 
 class FbFrameThread : public FbThread
 {
@@ -18,8 +19,7 @@ public:
 	virtual ~FbFrameThread(void)
 		{}
 
-	void SetCountSQL(const wxString &sql, const wxString &filter)
-		{ m_sql = wxString::Format(sql, filter.c_str()); wxLogWarning(m_sql); }
+	void SetCountSQL(const wxString &sql, const FbFilterObj &filter);
 
 protected:
 	static wxString GetOrder(int order, const wxString &standart);

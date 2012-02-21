@@ -34,7 +34,7 @@ bool FbFilterThread::Execute()
 	sql.Add(wxT("CREATE TABLE f.fs(s INTEGER PRIMARY KEY, n INTEGER)"));
 	sql.Add(wxT("CREATE TABLE f.fg(g CHAR(2), n INTEGER)"));
 
-	sql.Add(wxT("INSERT INTO tb(b, a, d) SELECT DISTINCT id, id_author, created FROM books WHERE 1") + m_filter.GetSQL());
+	sql.Add(wxT("INSERT INTO tb(b, a, d) SELECT DISTINCT id, id_author, created FROM books WHERE 1") + m_filter.GetFilterSQL());
 	sql.Add(wxT("INSERT INTO f.fa(a, n) SELECT a, COUNT(b) FROM tb GROUP BY a"));
 	sql.Add(wxT("INSERT INTO f.fd(d, n) SELECT d, COUNT(b) FROM tb GROUP BY d"));
 	sql.Add(wxT("INSERT INTO f.fs(s, n) SELECT id_seq, COUNT(DISTINCT b) FROM tb INNER JOIN bookseq ON b=id_book GROUP BY id_seq"));

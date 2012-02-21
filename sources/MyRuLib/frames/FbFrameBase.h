@@ -49,7 +49,6 @@ public:
 		void UpdateMaster(FbMasterEvent & event);
 		void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
-		wxString GetFilterSQL() { return m_filter.GetSQL(); };
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
@@ -72,6 +71,7 @@ public:
 		FbTreeViewCtrl * m_MasterList;
 		FbBookPanel * m_BooksPanel;
 		FbFrameThread * m_MasterThread;
+		FbFrameThread * m_CountThread;
 		wxString m_MasterFile;
 		FbFilterObj m_filter;
 		int m_BookCount;
@@ -84,7 +84,9 @@ public:
 		void OnColClick(wxListEvent& event);
 		void OnFilterSet(wxCommandEvent& event);
 		void OnFilterUse(wxCommandEvent& event);
+		void OnFilterDel(wxCommandEvent& event);
 		void OnFilterUseUpdateUI(wxUpdateUIEvent & event);
+		void OnFilterDelUpdateUI(wxUpdateUIEvent & event);
 		void OnDirectionUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeOrderUpdateUI(wxUpdateUIEvent & event);
 		void OnChangeModeUpdateUI(wxUpdateUIEvent & event);
@@ -100,4 +102,3 @@ public:
 };
 
 #endif //__FBFRAMEBASE_H__
-

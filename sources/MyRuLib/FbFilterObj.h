@@ -11,9 +11,11 @@ class FbFilterObj: public wxObject
 		FbFilterObj();
 		FbFilterObj(const FbFilterObj & object);
 		FbFilterObj & operator=(const FbFilterObj & object);
-		wxString GetSQL() const;
+		wxString GetFilterSQL() const;
 		bool IsEnabled() const { return m_enabled; };
 		void Enable(bool value) { m_enabled = value; };
+		bool GetDeleted() const { return m_del; };
+		void SetDeleted(bool value) { m_del = value; };
 		void Load();
 		void Save() const;
 	private:

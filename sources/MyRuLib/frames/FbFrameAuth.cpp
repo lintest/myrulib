@@ -147,7 +147,7 @@ FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
 void FbFrameAuth::CreateColumns()
 {
 	m_MasterList->AddColumn(0, _("Author"), -10, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(1, _("Num."), 6, wxALIGN_RIGHT);
 }
 
 void FbFrameAuth::OnChoiceLetter(wxCommandEvent& event)
@@ -178,7 +178,7 @@ void FbFrameAuth::CreateMasterThread()
 	wxDELETE(m_MasterThread);
 
 	m_MasterThread = new FbAuthListThread(this, m_info, m_MasterList->GetSortedColumn(), m_MasterFile);
-	m_MasterThread->SetCountSQL(GetCountSQL(), GetFilterSQL());
+	m_MasterThread->SetCountSQL(GetCountSQL(), m_filter);
 	m_MasterThread->Execute();
 }
 

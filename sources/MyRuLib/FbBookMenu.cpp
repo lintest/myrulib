@@ -59,6 +59,7 @@ void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 	if (bShowOrder) Append(wxID_ANY, _("Sort by"), new FbMenuSort);
 	Append(ID_FILTER_SET, _("Filter setup"));
 	AppendCheckItem(ID_FILTER_USE, _("Use filter"));
+	AppendCheckItem(ID_FILTER_DEL, _("Show deleted"));
 	AppendSeparator();
 
 	AppendAuth();

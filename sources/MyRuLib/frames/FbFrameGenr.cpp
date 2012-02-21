@@ -32,7 +32,7 @@ FbFrameGenr::FbFrameGenr(wxAuiNotebook * parent, bool select)
 void FbFrameGenr::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("List of genres"), -10, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(1, _("Num."), 6, wxALIGN_RIGHT);
 	FbModel * model = FbGenres::CreateModel();
 	m_MasterList->AssignModel(model);
 }

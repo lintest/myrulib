@@ -56,7 +56,7 @@ void FbFrameClss::CreateModel(wxSQLite3ResultSet & result)
 void FbFrameClss::CreateColumns()
 {
 	m_MasterList->AddColumn(0, _("Classifier"), -10, wxALIGN_LEFT);
-	m_MasterList->AddColumn(1, _("Num."), 5, wxALIGN_RIGHT);
+	m_MasterList->AddColumn(1, _("Num."), 6, wxALIGN_RIGHT);
 }
 
 void FbFrameClss::OnBooksCount(FbCountEvent& event)

@@ -22,9 +22,15 @@ int FbFrameThread::GetCount(wxSQLite3Database &database, int code)
 	return result.NextRow() ? result.GetInt(0) : 0;
 }
 
+void FbFrameThread::SetCountSQL(const wxString &sql, const FbFilterObj &filter)
+{ 
+	m_sql = wxString::Format(sql, filter.GetFilterSQL().c_str()); 
+}
+
+
 void FbFrameThread::CreateCounter(wxSQLite3Database &database, const wxString &sql)
 {
-//	if (!reset && !m_counter.IsEmpty()) return ;
+	if (!m_counter.IsEmpty()) return ;
 
 	m_counter = wxFileName::CreateTempFileName(wxT("fb"));
 	AttachCounter(database, m_counter);

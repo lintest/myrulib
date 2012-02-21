@@ -210,7 +210,7 @@ wxString FbMasterInfoBase::FormatSQL(const wxString &sql, const wxString &cond, 
 	wxString table = GetOrderTable();
 	wxString fields = GetOrderFields();
 	wxString where = cond;
-	where << filter.GetSQL();
+	where << filter.GetFilterSQL();
 	wxString result = wxString::Format(sql, table.c_str(), where.c_str(), fields.c_str());
 	return result;
 }

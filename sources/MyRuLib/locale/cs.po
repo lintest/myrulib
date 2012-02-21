@@ -699,8 +699,8 @@ msgstr "Soubor nebyl nalezen"
 msgid "File types"
 msgstr "Typy souborů"
 
-msgid "Filter setup"
-msgstr "Nastavení filtru"
+msgid "Filter setup..."
+msgstr "Nastavení filtru..."
 
 msgid "Filter settings"
 msgstr "Nastavení filtru"
