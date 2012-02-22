@@ -4,7 +4,6 @@
 #include "FbConst.h"
 #include "FbParams.h"
 #include "FbMainMenu.h"
-#include "FbThread.h"
 #include "MyRuLibApp.h"
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>

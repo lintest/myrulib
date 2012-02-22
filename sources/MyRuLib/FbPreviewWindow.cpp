@@ -1,7 +1,6 @@
 #include "FbPreviewWindow.h"
 #include <wx/clipbrd.h>
 #include "FbConst.h"
-#include "FbBookData.h"
 #include "FbBookEvent.h"
 #include "FbCollection.h"
 
@@ -43,8 +42,7 @@ FbPreviewWindow::~FbPreviewWindow()
 void FbPreviewWindow::Reset(const FbViewContext &ctx, const FbViewItem &item)
 {
 	if (item.GetType() == FbViewItem::Book) {
-		int id = item.GetCode();
-		if (id) FbBookData(id).LoadIcon();
+		FbCollection::LoadIcon(item.GetCode());
 	}
 	m_thread->Reset(ctx, item);
 }

@@ -294,7 +294,7 @@ void FbBookPanel::ShowContextMenu(const wxPoint& pos)
 void FbBookPanel::OnOpenBook(wxCommandEvent & event)
 {
 	int id = m_BookList.GetBook();
-	if (id) FbBookData(id).Open();
+	if (id) FbFileReader(id).Open();
 }
 
 void FbBookPanel::OnFavoritesAdd(wxCommandEvent & event)

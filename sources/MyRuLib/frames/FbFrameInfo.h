@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/aui/tabmdi.h>
 #include "FbMainMenu.h"
+#include "FbThread.h"
 #include "controls/FbHtmlWindow.h"
 
 class FbFrameInfo

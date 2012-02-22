@@ -3,7 +3,6 @@
 
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
-#include "FbBookData.h"
 #include "FbBookTypes.h"
 #include "FbMasterInfo.h"
 #include "FbMasterTypes.h"

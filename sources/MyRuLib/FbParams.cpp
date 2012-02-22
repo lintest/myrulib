@@ -3,7 +3,6 @@
 #include "FbParams.h"
 #include "MyRuLibApp.h"
 #include "FbDataPath.h"
-#include "FbBookData.h"
 #include "FbCollection.h"
 #include "FbConst.h"
 #include "controls/FbTreeView.h"

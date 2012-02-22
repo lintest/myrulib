@@ -366,8 +366,12 @@ wxArrayString FbCollection::sm_icons;
 
 wxArrayString FbCollection::sm_noico;
 
-void FbCollection::LoadIcon(const wxString &extension)
+void FbCollection::LoadIcon(int book)
 {
+	if (!book) return;
+
+	wxString ext = GetBook(book, BF_TYPE);
+
 	wxCriticalSectionLocker locker(sm_section);
 
 	if (!sm_icons.Count()) {
@@ -375,29 +379,29 @@ void FbCollection::LoadIcon(const wxString &extension)
 		AddIcon((wxString)wxT("pdf"), wxBitmap(ico_pdf_xpm));
 	}
 
-	if (extension.IsEmpty() || extension == wxT("fb2")) return;
-	if (sm_icons.Index(extension) != wxNOT_FOUND) return;
-	if (sm_noico.Index(extension) != wxNOT_FOUND) return;
+	if (ext.IsEmpty() || ext == wxT("fb2")) return;
+	if (sm_icons.Index(ext) != wxNOT_FOUND) return;
+	if (sm_noico.Index(ext) != wxNOT_FOUND) return;
 
 	#ifdef __WXMSW__
-	wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
+	wxFileType * ft = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
 	if ( ft ) {
-		wxIconLocation location;
-		if ( ft->GetIcon(&location) && location.IsOk() ) {
+		wxIconLocation loc;
+		if ( ft->GetIcon(&loc) && loc.IsOk() ) {
 			wxLogNull log;
-			wxIcon icon(location);
+			wxIcon icon(loc);
 			if (icon.IsOk()) {
 				wxBitmap bitmap;
 				bitmap.CopyFromIcon(icon);
-				wxString filename = wxT("icon.") + extension;
+				wxString filename = wxT("icon.") + ext;
 				wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
-				sm_icons.Add(extension);
+				sm_icons.Add(ext);
 				return;
 			}
 		}
 	}
 	#endif // __WXMSW__
-	sm_noico.Add(extension);
+	sm_noico.Add(ext);
 }
 
 wxString FbCollection::GetIcon(const wxString &extension)

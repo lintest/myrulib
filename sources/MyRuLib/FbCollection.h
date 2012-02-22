@@ -84,7 +84,7 @@ class FbCollection: public wxObject
 		static void ResetInfo(int code);
 		static void ResetBook(int code);
 		static void ResetBook(const wxArrayInt &books);
-		static void LoadIcon(const wxString &extension);
+		static void LoadIcon(int book);
 		static void AddIcon(wxString extension, wxBitmap bitmap);
 		static wxString GetIcon(const wxString &extension);
 		static void EmptyInfo();

@@ -19,7 +19,6 @@
 #include <wx/dialog.h>
 #include "models/FbBookList.h"
 #include "controls/FbTreeView.h"
-#include "FbBookData.h"
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbWindow.h"

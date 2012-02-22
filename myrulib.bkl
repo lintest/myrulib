@@ -294,7 +294,6 @@
 		<sources>sources/MyRuLib/models/FbGenrTree.cpp</sources>
 		<sources>sources/MyRuLib/models/FbSeqnList.cpp</sources>
 		<sources>sources/MyRuLib/FbAlphabet.cpp</sources>
-		<sources>sources/MyRuLib/FbBookData.cpp</sources>
 		<sources>sources/MyRuLib/FbBookEvent.cpp</sources>
 		<sources>sources/MyRuLib/FbBookMenu.cpp</sources>
 		<sources>sources/MyRuLib/FbBookPanel.cpp</sources>

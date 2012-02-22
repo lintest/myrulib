@@ -274,10 +274,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\MyRuLib\FbBookData.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\MyRuLib\FbBookEvent.cpp"
 				>
 			</File>

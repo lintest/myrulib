@@ -6,7 +6,7 @@
 #include <wx/aui/tabmdi.h>
 #include <wx/splitter.h>
 #include <wx/html/htmlwin.h>
-#include "FbBookData.h"
+#include "FbThread.h"
 #include "FbWindow.h"
 #include "controls/FbHtmlWindow.h"
 
