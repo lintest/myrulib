@@ -25,7 +25,7 @@ public:
 	FbZipInputStream(const wxString & archname, bool info);
 	FbZipInputStream(wxInputStream * stream, bool info);
 	virtual wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart);
-	virtual bool IsOk() const { return m_ok && wxZipInputStream::IsOk(); }
+	virtual bool IsOk() const { return m_ok && &m_entry && wxZipInputStream::IsOk(); }
 private:
 	FbSmartPtr<wxZipEntry> m_entry;
 	bool m_ok;
@@ -55,6 +55,7 @@ public:
 	void ShowError() const {}
 
 private:
+	wxString GetError(const wxString &name, const wxString &path = wxEmptyString);
 	void DoDownload() const;
 
 private:
