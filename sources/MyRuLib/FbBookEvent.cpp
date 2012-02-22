@@ -23,6 +23,8 @@ DEFINE_LOCAL_EVENT_TYPE( fbEVT_IMAGE_ACTION )
 
 DEFINE_LOCAL_EVENT_TYPE( fbEVT_LETTERS_ACTION )
 
+DEFINE_LOCAL_EVENT_TYPE( fbEVT_INIT_FRAMES )
+
 void FbCommandEvent::Post(wxEvtHandler *dest)
 {
 	wxPostEvent(dest, *this);

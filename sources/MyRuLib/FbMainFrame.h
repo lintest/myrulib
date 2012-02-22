@@ -75,6 +75,7 @@ class FbMainFrame : public wxFrame
 		void OnFindTitleEnter(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
+		void OnInitFrame(wxCommandEvent& event);
 		void OnMenuFrame(wxCommandEvent& event);
 		void OnMenuNothing(wxCommandEvent& event);
 		void OnMenuAuthor(wxCommandEvent& event);
