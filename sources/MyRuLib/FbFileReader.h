@@ -23,10 +23,12 @@ class FbZipInputStream : public wxZipInputStream
 public:
 	FbZipInputStream(const wxString & archname, const wxString & filename = wxEmptyString);
 	FbZipInputStream(const wxString & archname, bool info);
+	FbZipInputStream(wxInputStream * stream, bool info);
 	virtual wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart);
+	virtual bool IsOk() const { return m_ok && wxZipInputStream::IsOk(); }
 private:
-	FbZipInputStream(wxInputStream * stream);
 	FbSmartPtr<wxZipEntry> m_entry;
+	bool m_ok;
 };
 
 class FbFileReader : public wxObject

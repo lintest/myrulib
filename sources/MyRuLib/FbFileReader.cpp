@@ -43,22 +43,31 @@ static wxCSConv & GetConv866()
 }
 
 FbZipInputStream::FbZipInputStream(const wxString & archname, const wxString & filename)
-	: wxZipInputStream(new wxFFileInputStream(archname), GetConv866())
+	: wxZipInputStream(new wxFFileInputStream(archname), GetConv866()), m_ok(true)
 {
-	if (!IsOk()) return;
 	while (m_entry = GetNextEntry()) {
 		bool ok = (m_entry->GetInternalName() == filename);
-		if (ok) { OpenEntry(*m_entry); break; }
+		if (ok) { m_ok = OpenEntry(*m_entry); break; }
 	}
 }
 
 FbZipInputStream::FbZipInputStream(const wxString & archname, bool info)
-	: wxZipInputStream(new wxFFileInputStream(archname), GetConv866())
+	: wxZipInputStream(new wxFFileInputStream(archname), GetConv866()), m_ok(true)
 {
-	if (!IsOk()) return;
 	while (m_entry = GetNextEntry()) {
 		bool ok = (m_entry->GetInternalName().Right(4).Lower() == wxT(".fbd")) == info;
-		if (ok) { OpenEntry(*m_entry); break; }
+		if (ok) { m_ok = OpenEntry(*m_entry); break; }
+	}
+}
+
+FbZipInputStream::FbZipInputStream(wxInputStream * stream, bool info)
+	: wxZipInputStream(stream, GetConv866()), m_ok(true)
+{
+	while (m_entry = GetNextEntry()) {
+		wxString name = m_entry->GetInternalName();
+		if (name == wxT("mimetype")) { m_ok = false; return; } // Check EPUB
+		bool found = (name.Right(4).Lower() == wxT(".fbd")) == info;
+		if (found) { m_ok = OpenEntry(*m_entry); break; }
 	}
 }
 
@@ -108,13 +117,24 @@ FbFileReader::FbFileReader(int id, bool info)
 	{
 		wxString filename = FbDownloader::GetFilename(m_md5sum);
 		if (wxFileName::FileExists(filename)) {
+			bool zipped = false;
 			m_stream = new wxFFileInputStream(filename);
 			if (m_stream->IsOk()) {
+				if ( m_filetype != wxT("zip") ) {
+					unsigned char buf[2] = {0, 0};
+					m_stream->Read(buf, 2);
+					m_stream->SeekI(0);
+					if (memcmp(buf, "PK", 2) == 0) {
+						m_stream = new FbZipInputStream(m_stream, info);
+						if (m_stream->IsOk()) return;
+						wxDELETE(m_stream);
+						m_stream = new wxFFileInputStream(filename);
+					}
+				}
 				m_filename = filename;
 				return;
-			} else {
-				wxDELETE(m_stream);
 			}
+			wxDELETE(m_stream);
 		}
 		filename << wxT(".zip");
 		if (wxFileName::FileExists(filename)) {
