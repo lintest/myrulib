@@ -25,8 +25,7 @@ FbFrameGenr::FbFrameGenr(wxAuiNotebook * parent, bool select)
 	CreateControls(select);
 	CreateColumns();
 
-	m_MasterThread = new FbGenrListThread(this);
-	m_MasterThread->Execute();
+	UpdateCounter();
 }
 
 void FbFrameGenr::CreateColumns()
@@ -37,40 +36,40 @@ void FbFrameGenr::CreateColumns()
 	m_MasterList->AssignModel(model);
 }
 
-template <class T>
-class FbAutoPtr
+wxString FbFrameGenr::GetCountSQL()
 {
-public:
-	FbAutoPtr(T * ptr): m_ptr(ptr) {}
-	virtual ~FbAutoPtr() { wxDELETE(m_ptr); }
-	T * operator->() { return m_ptr; }
-	bool operator ! () { return ! m_ptr; }
-	operator bool () { return m_ptr; }
-private:
-	T * m_ptr;
-};
+    return wxT("SELECT IFNULL(id_genre,''),COUNT(DISTINCT id) FROM books LEFT JOIN genres ON books.id=genres.id_book WHERE 1 %s GROUP BY IFNULL(id_genre,'')");
+}
+
+FbFrameThread * FbFrameGenr::CreateCounter()
+{
+	FbFrameThread * thread = new FbGenrListThread(this);
+	thread->SetCountSQL(GetCountSQL(), m_filter);
+	return thread;
+}
 
 void FbFrameGenr::OnModel( FbModelEvent & event )
 {
-	FbAutoPtr<FbListStore> list = wxDynamicCast(event.GetModel(), FbListStore);
+	FbSmartPtr<FbListStore> list = wxDynamicCast(event.GetModel(), FbListStore);
 	FbTreeModel * tree = wxDynamicCast(m_MasterList->GetModel(), FbTreeModel);
 	if (!tree || !list) return;
 
 	FbModelItem root = tree->GetRoot();
 	if (!root) return;
 
-	size_t count = list->GetRowCount();
-	for (size_t i = 1; i <= count; i++) {
-		FbModelItem item = list->GetData(i);
-		FbGenrListData * data = wxDynamicCast(&item, FbGenrListData);
-		if (!data) continue;
-		size_t count = root.Count();
-		for (size_t j = 0; j < count; j++) {
-			FbModelItem parent = root.Items(j);
-			size_t count = parent.Count();
-			for (size_t k = 0; k < count; k++) {
-				FbGenrChildData * child = wxDynamicCast(&parent.Items(k), FbGenrChildData);
-				if (child && *child == *data) *child = *data;
+	size_t count = root.Count();
+	for (size_t j = 0; j < count; j++) {
+		FbModelItem parent = root.Items(j);
+		size_t count = parent.Count();
+		for (size_t k = 0; k < count; k++) {
+			FbGenrChildData * child = wxDynamicCast(&parent.Items(k), FbGenrChildData);
+			if (!child) continue;
+			child->SetCount(0);
+			size_t count = list->GetRowCount();
+			for (size_t i = 1; i <= count; i++) {
+				FbModelItem item = list->GetData(i);
+				FbGenrListData * data = wxDynamicCast(&item, FbGenrListData);
+				if (data && *child == *data) { *child = *data; break; }
 			}
 		}
 	}

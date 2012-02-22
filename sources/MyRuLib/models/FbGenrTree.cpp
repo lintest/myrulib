@@ -19,9 +19,9 @@ IMPLEMENT_CLASS(FbGenrChildData, FbChildData)
 wxString FbGenrChildData::GetValue(FbModel & model, size_t col) const
 {
 	switch (col) {
-		case 0: 
+		case 0:
 			return m_name;
-		case 1: 
+		case 1:
 			return m_count ? Format(m_count) : wxString();
 		default:
 			return wxEmptyString ;
@@ -41,7 +41,7 @@ bool FbGenrChildData::operator==(const FbMasterInfo & info) const
 IMPLEMENT_CLASS(FbGenrListData, FbModelData)
 
 FbGenrListData::FbGenrListData(wxSQLite3ResultSet &result)
-	: m_code(result.GetString(0)), m_count(result.GetInt(1)) 
+	: m_code(result.GetString(0)), m_count(result.GetInt(1))
 {
 }
 
@@ -54,8 +54,7 @@ void * FbGenrListThread::Entry()
 	FbCommonDatabase database;
 	database.JoinThread(this);
 
-	wxString sql = wxT("SELECT id_genre, COUNT(DISTINCT id_book) FROM genres GROUP BY id_genre");
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	wxSQLite3ResultSet result = database.ExecuteQuery(m_sql);
 	if (!result.IsOk()) return NULL;
 	if (IsClosed()) return NULL;
 

@@ -23,10 +23,9 @@ int FbFrameThread::GetCount(wxSQLite3Database &database, int code)
 }
 
 void FbFrameThread::SetCountSQL(const wxString &sql, const FbFilterObj &filter)
-{ 
-	m_sql = wxString::Format(sql, filter.GetFilterSQL().c_str()); 
+{
+	m_sql = wxString::Format(sql, filter.GetFilterSQL().c_str());
 }
-
 
 void FbFrameThread::CreateCounter(wxSQLite3Database &database, const wxString &sql)
 {

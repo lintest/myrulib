@@ -66,6 +66,7 @@ public:
 		virtual void UpdateBooklist();
 		virtual FbMasterInfo GetInfo();
 		virtual wxString GetCountSQL() { return wxEmptyString; }
+		virtual FbFrameThread * CreateCounter();
 		void UpdateCounter();
 	protected:
 		FbTreeViewCtrl * m_MasterList;

@@ -310,8 +310,8 @@ void FbFrameBase::UpdateBooklist()
 
 void FbFrameBase::UpdateCounter()
 {
-	wxString sql = GetCountSQL();
-	if (sql.IsEmpty()) return;
+	FbFrameThread * thread = CreateCounter();
+	if (!thread) return;
 
 	if (m_MasterThread) {
 		m_MasterThread->Wait();
@@ -324,9 +324,16 @@ void FbFrameBase::UpdateCounter()
 		wxDELETE(m_CountThread);
 	}
 
-	m_CountThread = new FbCountThread(this);
-	m_CountThread->SetCountSQL(sql, m_filter);
-	m_CountThread->Execute();
+	(m_CountThread = thread)->Execute();
+}
+
+FbFrameThread * FbFrameBase::CreateCounter()
+{
+	wxString sql = GetCountSQL();
+	if (sql.IsEmpty()) return NULL;
+	FbCountThread * thread = new FbCountThread(this);
+	thread->SetCountSQL(sql, m_filter);
+	return thread;
 }
 
 FbMasterInfo FbFrameBase::GetInfo()
