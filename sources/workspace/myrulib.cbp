@@ -179,8 +179,6 @@
 		</Linker>
 		<Unit filename="../MyRuLib/FbAlphabet.cpp" />
 		<Unit filename="../MyRuLib/FbAlphabet.h" />
-		<Unit filename="../MyRuLib/FbBookData.cpp" />
-		<Unit filename="../MyRuLib/FbBookData.h" />
 		<Unit filename="../MyRuLib/FbBookEvent.cpp" />
 		<Unit filename="../MyRuLib/FbBookEvent.h" />
 		<Unit filename="../MyRuLib/FbBookMenu.cpp" />
