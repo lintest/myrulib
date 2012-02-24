@@ -20,4 +20,15 @@ class FbDownListData: public FbModelData
 		DECLARE_CLASS(FbDownListData);
 };
 
+class FbDownList: public FbListModel
+{
+	public:
+		virtual void Delete();
+		virtual size_t GetRowCount() const;
+	protected:
+		virtual FbModelItem DoGetData(size_t row, int &level);
+	protected:
+		DECLARE_CLASS(FbDownList);
+};
+
 #endif // __FBDOWNLIST_H__

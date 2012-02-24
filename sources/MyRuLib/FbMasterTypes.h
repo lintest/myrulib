@@ -98,9 +98,11 @@ class FbMasterDownInfo: public FbMasterInfoBase
 			const FbMasterDownInfo * data = wxDynamicCast(&info, FbMasterDownInfo);
 			return data && data->m_id == m_id;
 		}
+		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 	protected:
 		virtual wxString GetWhere(wxSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
+		void * GetDownloads(wxEvtHandler * owner, FbThread * thread);
 	private:
 		DownType m_id;
 		DECLARE_CLASS(FbMasterDownInfo);

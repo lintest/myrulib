@@ -188,6 +188,30 @@ void FbMasterDownInfo::Bind(FbSQLite3Statement  &stmt) const
 {
 }
 
+void * FbMasterDownInfo::Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter)
+{
+	return m_id == DT_WAIT ? GetDownloads(owner, thread) : FbMasterInfoBase::Execute(owner, thread, filter);
+}
+
+void * FbMasterDownInfo::GetDownloads(wxEvtHandler * owner, FbThread * thread)
+{
+	wxArrayInt items;
+	FbCommonDatabase database;
+	database.AttachConfig();
+	wxString sql = wxT("SELECT DISTINCT id,download FROM states INNER JOIN books ON books.md5sum=states.md5sum WHERE download<0 ORDER BY 2 DESC");
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	while (result.NextRow()) items.Add(result.GetInt(0));
+	FbArrayEvent(ID_MODEL_CREATE, items, GetIndex()).Post(owner);
+	FbCountEvent(ID_BOOKS_COUNT, *this, items.Count()).Post(owner);
+/*
+	FbBookTreeModel * model = new FbBookTreeModel;
+	FbDownRootData * root = new FbDownRootData(*model, NULL, m_id);
+	model->SetRoot(root);
+	SendTree(owner, thread, model);
+*/
+	return NULL;
+}
+
 //-----------------------------------------------------------------------------
 //  FbMasterCommInfo
 //-----------------------------------------------------------------------------

@@ -96,6 +96,7 @@ FbParamHash FbCollection::sm_params;
 
 FbCollection::FbCollection(const wxString &filename)
 	: m_thread(NULL)
+	, m_downs(NULL)
 {
 	m_database.Open(filename);
 	m_database.AttachConfig();
@@ -107,6 +108,7 @@ FbCollection::FbCollection(const wxString &filename)
 FbCollection::~FbCollection()
 {
 	if (m_thread) m_thread->Close();
+	wxDELETE(m_downs);
 }
 
 bool FbCollection::IsOk() const
@@ -555,4 +557,39 @@ void FbCollection::ResetParam(int param)
 	wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 	stmt.Bind(1, param);
 	stmt.ExecuteUpdate();
+}
+
+void FbCollection::GetDown(wxArrayInt & items)
+{
+	items.Clear();
+	{
+		wxCriticalSectionLocker locker(sm_section);
+		FbCollection * collection = GetCollection();
+		if (collection == NULL) return;
+		if (collection->m_downs) {
+			WX_APPEND_ARRAY(items, *(collection->m_downs))
+			return;
+		}
+	}
+	FbSmartPtr<wxArrayInt> downs = new wxArrayInt;
+	{
+		FbCommonDatabase database;
+		database.AttachConfig();
+		wxString sql = wxT("SELECT DISTINCT id,download FROM states INNER JOIN books ON books.md5sum=states.md5sum WHERE download<0 ORDER BY 2 DESC");
+		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		while (result.NextRow()) downs->Add(result.GetInt(0));
+	}
+	WX_APPEND_ARRAY(items, *downs);
+	{
+		wxCriticalSectionLocker locker(sm_section);
+		FbCollection * collection = GetCollection();
+		if (collection == NULL) return;
+		if (collection->m_downs) wxDELETE(collection->m_downs);
+		collection->m_downs = downs.Reset();
+	}
+}
+
+int FbCollection::GetDown(size_t index)
+{
+	return 0;
 }

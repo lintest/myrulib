@@ -142,6 +142,7 @@ class  FbTreeViewHeaderWindow : public wxWindow
 		void SendListEvent(wxEventType type, wxPoint pos, int colunm);
 
 	protected:
+		void OnSize( wxSizeEvent& event );
 		void OnPaint( wxPaintEvent &event );
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // reduce flicker
 		void OnMouse( wxMouseEvent &event );
@@ -227,6 +228,7 @@ BEGIN_EVENT_TABLE(FbTreeViewHeaderWindow,wxWindow)
 	EVT_PAINT(FbTreeViewHeaderWindow::OnPaint)
 	EVT_MOUSE_EVENTS  (FbTreeViewHeaderWindow::OnMouse)
 	EVT_SET_FOCUS     (FbTreeViewHeaderWindow::OnSetFocus)
+	EVT_SIZE          (FbTreeViewHeaderWindow::OnSize)
 END_EVENT_TABLE()
 
 FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbTreeViewMainWindow *owner, const wxPoint& pos, const wxSize& size, long style, const wxString &name)
@@ -244,6 +246,12 @@ FbTreeViewHeaderWindow::FbTreeViewHeaderWindow(wxWindow *win, wxWindowID id, FbT
 FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 {
 	wxDELETE(m_resizeCursor);
+}
+
+void FbTreeViewHeaderWindow::OnSize(wxSizeEvent& event)
+{
+	wxClientDC dc(this);
+	CheckSize(dc, event.GetSize().x);
 }
 
 void FbTreeViewHeaderWindow::CheckSize(wxDC & dc, int width)

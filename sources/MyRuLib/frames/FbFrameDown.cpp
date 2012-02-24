@@ -82,6 +82,25 @@ void FbFrameDown::UpdateFolder(const int folder, const FbFolderType type)
 	if (data) UpdateBooklist();
 }
 
+void FbFrameDown::UpdateBooklist()
+{
+	FbTreeViewCtrl & booklist = m_BooksPanel->GetBookList();
+	FbMasterDownInfo info = FbMasterDownInfo::DT_WAIT;
+	if (GetInfo() == info) {
+		booklist.SetSortedColumn(0);
+		m_ToolBar.EnableTool(wxID_UP, true);
+		m_ToolBar.EnableTool(wxID_DOWN, true);
+	} else {
+		m_ToolBar.EnableTool(wxID_UP, false);
+		m_ToolBar.EnableTool(wxID_DOWN, false);
+		if (booklist.GetSortedColumn() == 0) {
+			int order = m_BooksPanel->GetListMode() == FB2_MODE_TREE ? BF_NUMB : BF_NAME;
+			booklist.SetSortedColumn(order + 1);
+		}
+	}
+	FbFrameBase::UpdateBooklist();
+}
+
 void FbFrameDown::OnStart(wxCommandEvent & event)
 {
 	wxGetApp().StartDownload();

@@ -9,6 +9,8 @@ class FbFrameDown : public FbFrameBase
 		FbFrameDown(wxAuiNotebook * parent, bool select = false);
 		wxString GetTitle() const { return _("Downloads"); };
 		void UpdateFolder(const int iFolder, const FbFolderType type);
+	protected:
+		virtual void UpdateBooklist();
 	private:
 		void CreateColumns();
 		void CreateBookInfo();

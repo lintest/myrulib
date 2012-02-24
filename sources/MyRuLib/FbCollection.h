@@ -93,6 +93,11 @@ class FbCollection: public wxObject
 		static void SetParamInt(int param, int value);
 		static void SetParamStr(int param, const wxString &value);
 		static void ResetParam(int param);
+		static void GetDown(wxArrayInt &items);
+		static void DownMove(int code, int direction);
+		static void DownDelete(int code);
+		static size_t DownCount();
+		static int GetDown(size_t index);
 	protected:
 //		FbCacheData * GetData(int code, FbCasheDataArray &items, const wxString &sql);
 //		FbCacheData * AddData(FbCasheDataArray &items, FbCacheData * data);
@@ -121,6 +126,7 @@ class FbCollection: public wxObject
 		FbViewDataArray m_infos;
 		FbParamHash m_params;
 		FbThread * m_thread;
+		wxArrayInt * m_downs;
 		DECLARE_CLASS(FbCollection)
 };
 

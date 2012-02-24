@@ -230,9 +230,8 @@ FbMasterInfo & FbMasterInfo::operator =(const FbMasterInfo &info)
 
 bool FbMasterInfo::operator ==(const FbMasterInfo &info) const
 {
-	if (this->m_data == NULL) {
-		return m_data == NULL;
-	} else return (*this->m_data) == (*info.m_data);
+	if (this->m_data == NULL) return m_data == NULL;
+	return (*this->m_data) == (*info.m_data);
 }
 
 FbMasterInfo FbModelData::GetInfo(FbModel & model) const
