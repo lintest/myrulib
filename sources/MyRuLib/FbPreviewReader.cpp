@@ -295,9 +295,7 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
 			int index = m_files.Index(filename);
 			if (index == wxNOT_FOUND) continue;
 			if (!zip.OpenEntry(*entry)) return;
-			wxMemoryBuffer buffer(size);
-			zip.Read(buffer.GetWriteBuf(size), size);
-			wxMemoryInputStream in(buffer.GetData(), size);
+			FbMemoryInputStream in(zip, size);
 			m_data.AddImage(m_thread, filename, in);
 			break;
 		}

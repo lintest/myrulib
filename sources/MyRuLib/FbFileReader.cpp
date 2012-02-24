@@ -7,6 +7,7 @@
 #include "FbDataPath.h"
 #include "FbDownloader.h"
 #include "FbCollection.h"
+#include "FbParsingCtx.h"
 
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
@@ -98,6 +99,8 @@ static wxString FildFile(const wxString & name, const wxString & path, const wxS
 	return wxEmptyString;
 }
 
+wxString Ext(const wxString &filename);
+
 FbFileReader::FbFileReader(int id, bool info)
 	: m_id(id), m_stream(NULL)
 {
@@ -119,7 +122,6 @@ FbFileReader::FbFileReader(int id, bool info)
 	{
 		wxString filename = FbDownloader::GetFilename(m_md5sum);
 		if (wxFileName::FileExists(filename)) {
-			bool zipped = false;
 			m_stream = new wxFFileInputStream(filename);
 			if (m_stream->IsOk()) {
 				if ( m_filetype != wxT("zip") ) {
@@ -168,7 +170,12 @@ FbFileReader::FbFileReader(int id, bool info)
 				arch_name = FildFile(arch_name, arch_path, root);
 				if (arch_name.IsEmpty()) continue;
 				m_stream = new FbZipInputStream(arch_name, file_name);
-				if (m_stream->IsOk()) return; 
+				if (m_stream->IsOk()) {
+					if (m_filetype == wxT("zip") || Ext(file_name) != wxT("zip")) return;
+					m_stream = new FbMemoryInputStream(m_stream, m_stream->GetLength());
+					m_stream = new FbZipInputStream(m_stream, info);
+					if (m_stream->IsOk()) return;
+				}
 				wxDELETE(m_stream);
 			}
 		} else {

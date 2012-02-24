@@ -2,6 +2,7 @@
 #define __FBPARSINGCTX_H__
 
 #include <wx/wx.h>
+#include <wx/mstream.h>
 #include "polarssl/md5.h"
 #include "FbStringHash.h"
 
@@ -38,6 +39,13 @@
 
 #define FB2_END_KEYHASH \
 	}
+
+class FbMemoryInputStream : private wxMemoryBuffer, public wxMemoryInputStream
+{
+public:
+	FbMemoryInputStream(wxInputStream & in, size_t size);
+	FbMemoryInputStream(wxInputStream * in, size_t size);
+};
 
 class FbHandlerXML: public wxObject
 {

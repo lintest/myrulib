@@ -2,6 +2,23 @@
 #include <wx/tokenzr.h>
 
 //-----------------------------------------------------------------------------
+//  FbMemoryInputStream
+//-----------------------------------------------------------------------------
+
+FbMemoryInputStream::FbMemoryInputStream(wxInputStream & in, size_t size)
+	: wxMemoryBuffer(size), wxMemoryInputStream(wxMemoryBuffer::GetData(), size)
+{
+	in.Read(GetWriteBuf(size), size);
+}
+
+FbMemoryInputStream::FbMemoryInputStream(wxInputStream * in, size_t size)
+	: wxMemoryBuffer(size), wxMemoryInputStream(wxMemoryBuffer::GetData(), size)
+{
+	in->Read(GetWriteBuf(size), size);
+	delete in;
+}
+
+//-----------------------------------------------------------------------------
 //  FbHandlerXML
 //-----------------------------------------------------------------------------
 
