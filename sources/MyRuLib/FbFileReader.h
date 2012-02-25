@@ -49,7 +49,7 @@ public:
 	const wxString & GetFileName() const
 		{ return m_filename; }
 
-	const wxString & GetFileType() const 
+	const wxString & GetFileType() const
 		{ return m_filetype; }
 
 	void ShowError() const {}

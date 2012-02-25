@@ -107,16 +107,12 @@ FbFileReader::FbFileReader(int id, bool info)
 	FbCommonDatabase database;
 	bool show_error = !info;
 	{
-		wxString sql = wxT("SELECT md5sum, file_name, file_type FROM books WHERE id="); sql << id;
+		wxString sql = wxT("SELECT md5sum, file_type FROM books WHERE id="); sql << id;
 		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 		if (!result.NextRow()) return;
-		m_md5sum = result.GetString(0);
-		m_message = result.GetString(1);
-		m_filetype = result.GetString(2).Lower();
-		if (m_message.IsEmpty()) {
-			m_message << id << wxT('.') << m_filetype;
-		}
-		if  (m_filetype == wxT("fb2")) info = false;
+		m_md5sum = result.GetString(0).Lower();
+		m_filetype = result.GetString(1).Lower();
+		if (m_filetype == wxT("fb2")) info = false;
 	}
 
 	{
@@ -148,26 +144,24 @@ FbFileReader::FbFileReader(int id, bool info)
 	}
 
 	wxString sql;
-	wxString error;
 	wxString root = wxGetApp().GetLibPath();
-	if (id < 0) sql = wxT("SELECT DISTINCT id_archive,file_name,file_path,1,id_archive*id_archive FROM books WHERE id=?1 UNION ");
-	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path,2,id_archive*id_archive FROM files WHERE id_book=?1 ORDER BY 1,4,5 desc");
+	if (id < 0) sql = wxT("SELECT DISTINCT id_archive,file_name,file_path,1,id_archive FROM books WHERE id=?1 UNION ");
+	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path,2,id_archive FROM files WHERE id_book=?1 ORDER BY 1,4,5");
 	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	while ( result.NextRow() ) {
-		bool primamy = result.GetInt(4) == 1;
+		bool primary = result.GetInt(3) == 1;
 		wxString file_name = result.GetString(1);
-		wxString file_path = result.GetString(0);
-		if (show_error && primamy) error = GetError(file_name);
+		if (primary) m_message = GetError(file_name);
+		if (file_name.IsEmpty()) continue;
 		if (int arch = result.GetInt(0)) {
 			wxString sql = wxT("SELECT id, file_name, file_path FROM archives WHERE id="); sql << arch;
 			wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 			if (result.NextRow()) {
 				wxString arch_name = result.GetString(1);
-				wxString arch_path = result.GetString(2);
-				if (show_error && primamy) error = GetError(arch_name, file_name);
-				arch_name = FildFile(arch_name, arch_path, root);
+				if (show_error && primary) m_message = GetError(file_name, arch_name);
+				arch_name = FildFile(arch_name, result.GetString(2), root);
 				if (arch_name.IsEmpty()) continue;
 				m_stream = new FbZipInputStream(arch_name, file_name);
 				if (m_stream->IsOk()) {
@@ -179,14 +173,15 @@ FbFileReader::FbFileReader(int id, bool info)
 				wxDELETE(m_stream);
 			}
 		} else {
-			file_name = FildFile(file_name, file_path, root);
+			if (file_name.IsEmpty()) file_name << m_id / 1000 * 1000 << wxT('/') << m_md5sum;
+			file_name = FildFile(file_name, result.GetString(2), root);
 			if (file_name.IsEmpty()) continue;
 			m_stream = new wxFFileInputStream(file_name);
 			if (m_stream->IsOk()) { m_filename = file_name; return; }
 			wxDELETE(m_stream);
 		}
 	}
-	if (show_error) wxLogError(_("Book not found %s"), error.c_str());
+	if (show_error) wxLogError(_("Book not found %s"), m_message.c_str());
 }
 
 FbFileReader::~FbFileReader()
@@ -202,7 +197,7 @@ wxString FbFileReader::GetError(const wxString &name, const wxString &path)
 		return wxString::Format(wxT("$(%s)/%s"), path.c_str(), file.c_str());
 	} else {
 		if (path.IsEmpty()) return name;
-		return path + wxT('/') + name;
+		return path + wxT(':') + wxT(' ') + name;
 	}
 }
 
@@ -328,8 +323,6 @@ void FbFileReader::Open() const
 		if ( m_id > 0 ) {
 			bool ok = wxMessageBox(_("Download book file?"), _("Confirmation"), wxOK | wxCANCEL) == wxOK;
 			if ( ok ) DoDownload();
-		} else {
-			wxLogError(_("Book not found %s"), m_message.c_str());
 		}
 		return;
 	}
