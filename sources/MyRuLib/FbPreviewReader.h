@@ -139,7 +139,7 @@ private:
 		FB2_END_KEYLIST
 	public:
 		explicit RootHandler(FbPreviewReaderEPUB &reader, wxArrayString &files, const wxString &path, const wxString &name)
-			: FbHandlerXML(name), m_reader(reader), m_files(files), m_path(path) {}
+			: FbHandlerXML(name), m_reader(reader), m_files(files), m_path(path), m_annt(reader.m_annt) {}
 		void AppendCover(const FbStringHash &atts);
 		bool CheckCover(const FbStringHash &atts);
 		void AppendFile(const FbStringHash &atts);
@@ -150,6 +150,8 @@ private:
 		wxArrayString m_covers;
 		wxArrayString & m_files;
 		const wxString m_path;
+	public:
+		wxString & m_annt;
 	};
 
 	class MetadataHandler : public FbHandlerXML
@@ -157,6 +159,7 @@ private:
 		FB2_BEGIN_KEYLIST
 			Metadata,
 			Meta,
+			Descr,
 		FB2_END_KEYLIST
 	public:
 		explicit MetadataHandler(RootHandler &root, const wxString &name) : FbHandlerXML(name), m_root(root) {}
@@ -181,6 +184,8 @@ public:
 		: m_thread(thread), m_data(data) {}
 
 	void Preview(wxInputStream &stream);
+
+	wxString m_annt;
 
 protected:
 	FbHandlerXML * CreateHandler(const wxString &name);

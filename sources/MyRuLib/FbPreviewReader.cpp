@@ -238,6 +238,7 @@ void FbPreviewReaderEPUB::RootHandler::AppendFile(const FbStringHash &atts)
 FB2_BEGIN_KEYHASH(FbPreviewReaderEPUB::MetadataHandler)
 	KEY( "metadata"    , Metadata );
 	KEY( "meta"        , Meta     );
+	KEY( "description" , Descr  );
 FB2_END_KEYHASH
 
 FbHandlerXML * FbPreviewReaderEPUB::MetadataHandler::NewNode(const wxString &name, const FbStringHash &atts)
@@ -248,7 +249,8 @@ FbHandlerXML * FbPreviewReaderEPUB::MetadataHandler::NewNode(const wxString &nam
 			if (value == wxT("cover")) m_root.AppendCover(atts);
 			return NULL;
 		}
-		case Metadata: return new MetadataHandler(m_root, name);
+		case Metadata : return new MetadataHandler(m_root, name);
+		case Descr    : return new TextHandler(name, m_root.m_annt);
 	}
 	return NULL;
 }
@@ -280,6 +282,10 @@ void FbPreviewReaderEPUB::Preview(wxInputStream &stream)
                 if (!Parse(zip)) return;
 				break;
 			}
+		}
+		if (!m_annt.IsEmpty()) {
+			m_data.SetText(FbViewData::ANNT, m_annt);
+			m_thread.SendHTML(m_data);
 		}
 	}
 
