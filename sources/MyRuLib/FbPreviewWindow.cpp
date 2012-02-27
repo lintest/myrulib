@@ -1,15 +1,21 @@
 #include "FbPreviewWindow.h"
 #include <wx/clipbrd.h>
+#include <wx/zipstrm.h>
 #include "FbConst.h"
 #include "FbBookEvent.h"
 #include "FbCollection.h"
+#include "FbFileReader.h"
+#include "MyRuLibApp.h"
 
 IMPLEMENT_CLASS(FbPreviewWindow, FbHtmlWindow)
 
 BEGIN_EVENT_TABLE(FbPreviewWindow, FbHtmlWindow)
 	EVT_RIGHT_UP(FbPreviewWindow::OnRightUp)
+	EVT_HTML_CELL_HOVER(wxID_ANY, FbPreviewWindow::OnCellHover)
 	EVT_COMMAND(ID_BOOK_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
 	EVT_COMMAND(ID_AUTH_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
+	EVT_MENU(ID_SAVE_FILE, FbPreviewWindow::OnSaveFile)
+	EVT_MENU(ID_COPY_URL, FbPreviewWindow::OnCopyUrl)
 	EVT_MENU(wxID_COPY, FbPreviewWindow::OnCopy)
 	EVT_MENU(wxID_SELECTALL, FbPreviewWindow::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbPreviewWindow::OnUnselectAll)
@@ -58,6 +64,7 @@ void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 	wxPoint p = event.GetPosition();
 	wxHtmlCell * cell = m_Cell ? m_Cell->FindCellByPos(p.x, p.y) : NULL;
 	wxHtmlLinkInfo * link = cell ? cell->GetLink() : NULL;
+	m_link = link ? *link : wxHtmlLinkInfo();
 
 	SetFocus();
 	ContextMenu menu(m_book, link);
@@ -67,9 +74,13 @@ void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 FbPreviewWindow::ContextMenu::ContextMenu(int book, wxHtmlLinkInfo * link)
 {
 	if (link) { 
-		Append(wxID_ANY, wxT("Copy link address"));
+		wxString addr = link->GetHref();
+		if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
+			Append(ID_SAVE_FILE, _("Save file as..."));
+		}
+		Append(ID_COPY_URL, wxT("Copy link address"));
 		AppendSeparator();
-	}
+	} 
 
 	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
 	AppendSeparator();
@@ -102,13 +113,93 @@ void FbPreviewWindow::OnUnselectAll(wxCommandEvent& event)
 	Refresh();
 }
 
+static wxString FildFile(const wxString & name, const wxString & root)
+{
+	if (root.IsEmpty()) return name;
+	if (name.IsEmpty()) return wxEmptyString;
+	wxFileName filename = name;
+	filename.Normalize(wxPATH_NORM_ALL, root);
+	if (filename.FileExists()) return filename.GetFullPath();
+	return wxEmptyString;
+}
+
+void FbPreviewWindow::OnCellHover(wxHtmlCellEvent& event)
+{
+	wxHtmlCell * cell = event.GetCell();
+	wxHtmlLinkInfo * link = cell ? cell->GetLink() : NULL;
+	wxString text = link ? link->GetHref() : wxString();
+	event.Skip();
+}
+
 void FbPreviewWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 {
 	wxString addr = link.GetHref();
 	if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
-		wxLogWarning(addr);
+		wxString name = addr.AfterFirst(wxT(':'));
+		wxString root = wxGetApp().GetLibPath();
+		wxString file = FildFile(name, root);
+		if (file.IsEmpty()) {
+			wxLogWarning(_("File not found: ") + name);
+		} else {
+			FbFileReader::ShellExecute(file);
+		}
 		return;
 	}
 	wxHtmlWindow::OnLinkClicked(link);
+}
+
+void FbPreviewWindow::OnSaveFile(wxCommandEvent& event)
+{
+	wxString addr = m_link.GetHref();
+	if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
+		wxString name = addr.AfterFirst(wxT(':'));
+		wxString root = wxGetApp().GetLibPath();
+		wxString file = FildFile(name, root);
+		if (file.IsEmpty()) {
+			wxLogWarning(_("File not found: ") + name);
+		} else {
+			wxFileInputStream in(file);
+			wxString targ = m_link.GetTarget();
+			if (!targ.IsEmpty()) {
+				bool ok = false;
+				wxZipInputStream zip(in);
+				while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+					if (entry->GetInternalName() == targ) {
+						ok = zip.OpenEntry(*entry);
+						break;
+					}
+				}
+				if (ok) return SaveFile(zip, targ);
+			}
+			return SaveFile(in, name);
+		}
+		return;
+	}
+}
+
+void FbPreviewWindow::OnCopyUrl(wxCommandEvent& event)
+{
+	wxString text = m_link.GetHref();
+	wxClipboardLocker locker;
+	if (!locker) return;
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
+void FbPreviewWindow::SaveFile(wxInputStream &stream, const wxString &filename)
+{
+	wxFileDialog dlg (
+		this,
+		_("Save file as..."),
+		wxEmptyString,
+		wxFileName(filename).GetFullName(),
+		_("All files (*.*)|*.*"),
+		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+	);
+
+	if (dlg.ShowModal() == wxID_OK) {
+		wxString html = * GetParser()->GetSource();
+		wxFileOutputStream out(dlg.GetPath());
+		out.Write(stream);
+	}
 }
 

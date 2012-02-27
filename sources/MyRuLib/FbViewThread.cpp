@@ -1,4 +1,5 @@
 #include "FbViewThread.h"
+#include "FbInternetBook.h"
 #include "FbFileReader.h"
 #include "FbPreviewReader.h"
 #include "FbExtractInfo.h"
@@ -6,6 +7,8 @@
 #include "FbCollection.h"
 #include "FbColumns.h"
 #include "FbDatabase.h"
+#include "FbString.h"
+#include "FbParams.h"
 #include "FbConst.h"
 
 //-----------------------------------------------------------------------------
@@ -96,13 +99,60 @@ wxString FbViewThread::GetDescr(FbDatabase & database)
 	return database.Str(m_view.GetCode(), wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL"));
 }
 
+static wxString Shorten(const wxString &filename)
+{
+	if (filename.Len() <= 0x24) return filename;
+
+	wxString ext;
+	int pos = filename.Find(wxT('.'), true);
+	if (pos != wxNOT_FOUND) ext = filename.Mid(pos);
+
+	FbString result = filename;
+	result.Truncate(pos);
+	result = result.AfterLast(wxT('/'));
+	return result.Shorten() << ext;
+}
+
 wxString FbViewThread::GetFiles(FbDatabase & database)
 {
-	FbExtractArray items(database, m_view.GetCode());
-
+	int id = m_view.GetCode();
 	wxString html;
-	for (size_t i = 0; i < items.Count(); i++) {
-		html << wxString::Format(wxT("<p><a href=\"book:%s\">%s</a></p>"), items[i].GetURL().c_str(), items[i].ErrorName().c_str());
+	wxString sql = wxT("SELECT DISTINCT id_archive,file_name,1,id_archive*id_archive,file_type,md5sum FROM books WHERE id=?1 UNION ");
+	sql << wxT("SELECT DISTINCT id_archive,file_name,2,id_archive*id_archive,NULL,NULL FROM files WHERE id_book=?1 ORDER BY 3,4");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql); 
+	stmt.Bind(1, id);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	while (result.NextRow()) {
+		html << wxT("<p>");
+		if (id > 0 && result.GetInt(2) == 1) {
+			wxString lib = FbParams(FB_CONFIG_TYPE);
+			wxString md5 = result.GetAsString(wxT("md5sum"));
+			wxString ext = result.GetAsString(wxT("file_type"));
+			wxString str = wxString::Format(wxT("$(%s)/%d.%s"), lib.c_str(), id, ext.c_str());
+			wxString url = FbInternetBook::GetURL(id, md5);
+			html << wxString::Format(wxT("<a href=\"%s\">%s</a>"), url.c_str(), str.c_str());
+		} else {
+			html << wxT("<p>");
+			if (int arch = result.GetInt(0)) {
+				wxString url;
+				wxString trg = result.GetString(1);
+				wxString str = Shorten(result.GetString(1));
+				wxString sql = wxT("SELECT file_name FROM archives WHERE id="); sql << arch;
+				wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+				if (result.NextRow()) {
+					url = wxT("book:") + result.GetString(0);
+					wxString str = Shorten(result.GetString(0));
+					html << wxString::Format(wxT("<a href=\"%s\">%s</a>"), url.c_str(), str.c_str());
+					html << wxT(": ");
+				} 
+				html << wxString::Format(wxT("<a href=\"%s\" target=\"%s\">%s</a>"), url.c_str(), trg.c_str(), str.c_str());
+			} else {
+				wxString url = wxT("book:") + result.GetString(1);
+				wxString str = Shorten(result.GetString(1));
+				html << wxString::Format(wxT("<a href=\"%s\">%s</a>"), url.c_str(), str.c_str());
+			}
+		}
+		html << wxT("</p>");
 	}
 	return html;
 }

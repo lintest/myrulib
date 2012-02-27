@@ -34,7 +34,7 @@ private:
 class FbFileReader : public wxObject
 {
 public:
-	FbFileReader(int book, bool info = false);
+	FbFileReader(int book, bool info = false, bool full = false);
 
 	virtual ~FbFileReader();
 
@@ -52,7 +52,9 @@ public:
 	const wxString & GetFileType() const
 		{ return m_filetype; }
 
-	void ShowError() const {}
+	void ShowError() const;
+
+	static void ShellExecute(const wxString &filename);
 
 private:
 	wxString GetError(const wxString &name, const wxString &path = wxEmptyString);
@@ -65,34 +67,6 @@ private:
 	wxString m_filetype;
 	wxString m_message;
 	wxInputStream * m_stream;
-};
-
-class ZipReader
-{
-public:
-	ZipReader(int id, bool bShowError = true, bool bInfoOnly = false);
-	virtual ~ZipReader();
-	bool IsOk() { return m_zipOk && m_fileOk; }
-	void ShowError();
-	wxString GetErrorText() {return m_info;};
-	wxInputStream & GetZip() {return *m_result;};
-	wxString GetMd5() {return m_md5sum;};
-private:
-	bool FindEntry(const wxString &file_name);
-	void OpenZip(const wxString &archname, const wxString &filename);
-	void OpenFile(const wxString &filename);
-	void OpenDownload(FbDatabase &database, bool bInfoOnly);
-	bool OpenEntry(bool bInfoOnly);
-private:
-	wxCSConv conv;
-	wxFFileInputStream *m_file;
-	wxZipInputStream *m_zip;
-	wxInputStream *m_result;
-	bool m_zipOk;
-	bool m_fileOk;
-	int m_id;
-	wxString m_info;
-	wxString m_md5sum;
 };
 
 #endif // __ZIPREADER_H__
