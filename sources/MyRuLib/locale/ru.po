@@ -2188,3 +2188,9 @@ msgstr "Отображать вертикальные линии сетки"
 
 msgid "Show deleted"
 msgstr "Показывать удаленные"
+
+msgid "Save file as..."
+msgstr "Сохранить файл как..."
+
+msgid "Copy link address"
+msgstr "Скопировать адрес ссылки"

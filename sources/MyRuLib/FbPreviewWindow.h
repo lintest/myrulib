@@ -37,6 +37,8 @@ class FbPreviewWindow: public FbHtmlWindow
 			public: ContextMenu(int book, wxHtmlLinkInfo * link);
 		};
 		void SaveFile(wxInputStream &stream, const wxString &filename);
+		static wxString GetName(const wxHtmlLinkInfo &link);
+		static wxString FindFile(const wxString & name);
 		FbPreviewThread * m_thread;
 		FbViewItem m_view;
 		int m_book;

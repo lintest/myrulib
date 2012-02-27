@@ -41,7 +41,6 @@ void FbBookViewCtrl::OnCopy(wxCommandEvent& event)
 
 	wxClipboardLocker locker;
 	if (!locker) return;
-
 	wxTheClipboard->SetData( new wxTextDataObject(text) );
 }
 
@@ -103,7 +102,7 @@ FbBookPanel::FbBookPanel(wxWindow *parent, const wxSize& size, wxWindowID id)
 	Connect( wxEVT_IDLE, wxIdleEventHandler( FbBookPanel::OnIdleSplitter ), NULL, this );
 	SetMinimumPaneSize(50);
 
-	
+
 	long substyle = FbParams.Style(wxBORDER_SUNKEN | fbTR_MULTIPLE | fbTR_CHECKBOX);
 	m_BookList.Create(this, ID_BOOKLIST_CTRL, wxDefaultPosition, wxDefaultSize, substyle);
 	m_BookInfo.Create(this, ID_PREVIEW_CTRL, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
@@ -249,20 +248,20 @@ void FbBookPanel::OnBooksListActivated(wxTreeEvent & event)
 	if (int book = item.GetBook()) {
 		FbFileReader(book).Open();
 		return;
-	} 
-	
+	}
+
 	FbAuthParentData * auth = wxDynamicCast(&item, FbAuthParentData);
 	if (auth) {
 		FbOpenEvent(ID_BOOK_AUTH, auth->GetCode()).Post();
 		return;
 	}
-		
+
 	FbSeqnParentData * seqn = wxDynamicCast(&item, FbSeqnParentData);
 	if (seqn) {
 		FbOpenEvent(ID_BOOK_SEQN, seqn->GetCode()).Post();
 		return;
 	}
-		
+
 }
 
 void FbBookPanel::OnSubmenu(wxCommandEvent& event)

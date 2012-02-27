@@ -85,7 +85,7 @@ wxFileOffset FbZipInputStream::SeekI(wxFileOffset pos, wxSeekMode mode)
 //  FbFileReader
 //-----------------------------------------------------------------------------
 
-static wxString FildFile(const wxString & name, const wxString & path, const wxString & root)
+static wxString FindFile(const wxString & name, const wxString & path, const wxString & root)
 {
 	if (root.IsEmpty()) return name;
 	if (name.IsEmpty()) return wxEmptyString;
@@ -156,7 +156,7 @@ FbFileReader::FbFileReader(int id, bool info, bool full)
 			if (result.NextRow()) {
 				wxString arch_name = result.GetString(1);
 				if (primary) m_message = GetError(file_name, arch_name);
-				arch_name = FildFile(arch_name, result.GetString(2), root);
+				arch_name = FindFile(arch_name, result.GetString(2), root);
 				if (arch_name.IsEmpty()) continue;
 				m_stream = new FbZipInputStream(arch_name, file_name);
 				if (m_stream->IsOk()) {
@@ -169,7 +169,7 @@ FbFileReader::FbFileReader(int id, bool info, bool full)
 			}
 		} else {
 			if (file_name.IsEmpty()) file_name << m_id / 1000 * 1000 << wxT('/') << m_md5sum;
-			file_name = FildFile(file_name, result.GetString(2), root);
+			file_name = FindFile(file_name, result.GetString(2), root);
 			if (file_name.IsEmpty()) continue;
 			m_stream = new wxFFileInputStream(file_name);
 			if (m_stream->IsOk()) { m_filename = file_name; return; }
@@ -312,7 +312,7 @@ static bool NotEqualExt(const wxString & filename, const wxString & filetype)
 #include "frames/FbCoolReader.h"
 
 void FbFileReader::ShowError() const
-{ 
+{
 	wxLogError(_("Book not found %s"), m_message.c_str());
 }
 
@@ -332,12 +332,17 @@ void FbFileReader::ShellExecute(const wxString &filename)
 		FbMessageBox(_("Associated application not found"), filetype);
 	}
 #else
+	#ifdef __WXGTK__
+	command = wxT("xdg-open");
+	FbExecute(command, filename);
+	#else
 	bool ok = GetSystemCommand(filename, filetype, command);
 	if (ok) {
 		FbExecute(command);
 	} else {
-		FbMessageBox(_("Associated application not found"), m_filetype);
+		FbMessageBox(_("Associated application not found"), filetype);
 	}
+    #endif // __WXGTK__
 #endif // __WXMSW__
 }
 

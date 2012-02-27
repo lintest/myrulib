@@ -73,14 +73,14 @@ void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 
 FbPreviewWindow::ContextMenu::ContextMenu(int book, wxHtmlLinkInfo * link)
 {
-	if (link) { 
+	if (link) {
 		wxString addr = link->GetHref();
 		if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
 			Append(ID_SAVE_FILE, _("Save file as..."));
 		}
-		Append(ID_COPY_URL, wxT("Copy link address"));
+		Append(ID_COPY_URL, _("Copy link address"));
 		AppendSeparator();
-	} 
+	}
 
 	Append(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
 	AppendSeparator();
@@ -113,16 +113,6 @@ void FbPreviewWindow::OnUnselectAll(wxCommandEvent& event)
 	Refresh();
 }
 
-static wxString FildFile(const wxString & name, const wxString & root)
-{
-	if (root.IsEmpty()) return name;
-	if (name.IsEmpty()) return wxEmptyString;
-	wxFileName filename = name;
-	filename.Normalize(wxPATH_NORM_ALL, root);
-	if (filename.FileExists()) return filename.GetFullPath();
-	return wxEmptyString;
-}
-
 void FbPreviewWindow::OnCellHover(wxHtmlCellEvent& event)
 {
 	wxHtmlCell * cell = event.GetCell();
@@ -131,58 +121,68 @@ void FbPreviewWindow::OnCellHover(wxHtmlCellEvent& event)
 	event.Skip();
 }
 
-void FbPreviewWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
+wxString FbPreviewWindow::GetName(const wxHtmlLinkInfo &link)
 {
 	wxString addr = link.GetHref();
-	if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
-		wxString name = addr.AfterFirst(wxT(':'));
-		wxString root = wxGetApp().GetLibPath();
-		wxString file = FildFile(name, root);
-		if (file.IsEmpty()) {
-			wxLogWarning(_("File not found: ") + name);
-		} else {
-			FbFileReader::ShellExecute(file);
-		}
-		return;
-	}
-	wxHtmlWindow::OnLinkClicked(link);
+	if (addr.BeforeFirst(wxT(':')) != wxT("book")) return wxEmptyString;
+	return addr.AfterFirst(wxT(':'));
+}
+
+wxString FbPreviewWindow::FindFile(const wxString & name)
+{
+	wxString root = wxGetApp().GetLibPath();
+	if (root.IsEmpty()) return name;
+	if (name.IsEmpty()) return wxEmptyString;
+	wxFileName filename = name;
+	filename.Normalize(wxPATH_NORM_ALL, root);
+	if (filename.FileExists()) return filename.GetFullPath();
+	return wxEmptyString;
+}
+
+void FbPreviewWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
+{
+	wxString name = GetName(link);
+	if (name.IsEmpty()) { wxHtmlWindow::OnLinkClicked(link); return; }
+
+	wxString file = FindFile(name);
+	if (file.IsEmpty()) { wxLogWarning(_("File not found: ") + name); return; }
+
+	FbFileReader::ShellExecute(file);
 }
 
 void FbPreviewWindow::OnSaveFile(wxCommandEvent& event)
 {
-	wxString addr = m_link.GetHref();
-	if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
-		wxString name = addr.AfterFirst(wxT(':'));
-		wxString root = wxGetApp().GetLibPath();
-		wxString file = FildFile(name, root);
-		if (file.IsEmpty()) {
-			wxLogWarning(_("File not found: ") + name);
-		} else {
-			wxFileInputStream in(file);
-			wxString targ = m_link.GetTarget();
-			if (!targ.IsEmpty()) {
-				bool ok = false;
-				wxZipInputStream zip(in);
-				while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
-					if (entry->GetInternalName() == targ) {
-						ok = zip.OpenEntry(*entry);
-						break;
-					}
-				}
-				if (ok) return SaveFile(zip, targ);
+	wxString name = GetName(m_link);
+	if (name.IsEmpty()) return;
+
+	wxString file = FindFile(name);
+	if (file.IsEmpty()) {wxLogWarning(_("File not found: ") + name); return; }
+
+	wxFileInputStream in(file);
+	wxString targ = m_link.GetTarget();
+	if (!targ.IsEmpty()) {
+		bool ok = false;
+		wxZipInputStream zip(in);
+		while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+			if (entry->GetInternalName() == targ) {
+				ok = zip.OpenEntry(*entry);
+				break;
 			}
-			return SaveFile(in, name);
 		}
-		return;
+		if (ok) return SaveFile(zip, targ);
 	}
+	return SaveFile(in, name);
 }
 
 void FbPreviewWindow::OnCopyUrl(wxCommandEvent& event)
 {
-	wxString text = m_link.GetHref();
+	wxString name = GetName(m_link);
+	if (name.IsEmpty()) return;
+	wxString file = FindFile(name);
+	if (file.IsEmpty()) file = name;
 	wxClipboardLocker locker;
 	if (!locker) return;
-	wxTheClipboard->SetData( new wxTextDataObject(text) );
+	wxTheClipboard->SetData( new wxTextDataObject(file) );
 }
 
 void FbPreviewWindow::SaveFile(wxInputStream &stream, const wxString &filename)
@@ -192,7 +192,7 @@ void FbPreviewWindow::SaveFile(wxInputStream &stream, const wxString &filename)
 		_("Save file as..."),
 		wxEmptyString,
 		wxFileName(filename).GetFullName(),
-		_("All files (*.*)|*.*"),
+		wxString(_("All files")) + wxT(" (*.*)|*.*"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT
 	);
 
@@ -202,4 +202,3 @@ void FbPreviewWindow::SaveFile(wxInputStream &stream, const wxString &filename)
 		out.Write(stream);
 	}
 }
-

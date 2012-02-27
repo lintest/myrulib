@@ -82,7 +82,6 @@ void FbHtmlWindow::OnCopy(wxCommandEvent& event)
 
 	wxClipboardLocker locker;
 	if (!locker) return;
-
 	wxTheClipboard->SetData( new wxTextDataObject(text) );
 }
 
