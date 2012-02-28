@@ -367,7 +367,7 @@ void FbFileReader::Open() const
 
 	FbTempFileName tempfile;
 
-	#ifdef FB_INCLUDE_READER__
+	#ifdef FB_INCLUDE_READER
 	FbSmartPtr<wxInputStream> file;
 	if (!ok) {
 		wxString filename = GetFileName();
