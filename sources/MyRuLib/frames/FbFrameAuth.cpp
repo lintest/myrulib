@@ -188,6 +188,12 @@ void FbFrameAuth::UpdateFonts(bool refresh)
 	FbFrameBase::UpdateFonts(refresh);
 }
 
+void FbFrameAuth::UpdateMaster()
+{
+	if (m_LetterList) m_LetterList->UpdateModel();
+	FbFrameBase::UpdateMaster();
+}
+
 void FbFrameAuth::ActivateAuthors()
 {
 	m_MasterList->SetFocus();

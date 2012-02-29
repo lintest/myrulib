@@ -67,12 +67,41 @@ BEGIN_EVENT_TABLE(FbAlphabetCombo, FbComboBox)
 	EVT_FB_MODEL(ID_MASTER_FIND, FbAlphabetCombo::OnModel)
 END_EVENT_TABLE()
 
+FbAlphabetCombo::FbAlphabetCombo()
+	: m_rowHeight(0)
+	, m_thread(NULL)
+	, m_divider(-1)
+{
+	(m_thread = new FbAlphabetThread(this))->Execute();
+}
+
+FbAlphabetCombo::~FbAlphabetCombo()
+{
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+}
+
+void FbAlphabetCombo::UpdateModel()
+{
+	FbModelItem selection = GetCurrent();
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+	(m_thread = new FbAlphabetThread(this))->Execute();
+}
+
 void FbAlphabetCombo::OnModel( FbModelEvent& event )
 {
+	int id = m_divider < 0 ? ID_INIT_LETTER : ID_MASTER_FIND;
 	m_divider = event.GetInt();
-	AssignModel(event.GetModel());
 	SetPopupControl(NULL);
-	FbCommandEvent(wxEVT_COMMAND_COMBOBOX_SELECTED, ID_INIT_LETTER).Post(this);
+	AssignModel(event.GetModel());
+	FbCommandEvent(wxEVT_COMMAND_COMBOBOX_SELECTED, id).Post(this);
 }
 
 void FbAlphabetCombo::OnDrawItem( wxDC& dc, const wxRect& rect, int index, FbModelItem item, int flags ) const
@@ -130,9 +159,9 @@ bool FbAlphabetCombo::SetFont(const wxFont& font)
 }
 
 void FbAlphabetCombo::SetText(const wxString &text)
-{ 
+{
 	FbModel * model = GetModel();
-	if (model && text.Len() == 1) { 
+	if (model && text.Len() == 1) {
 		wxString letter = Upper(text);
 		size_t count = model->GetRowCount();
 		for (size_t i = 1; i <= count; i++) {
@@ -140,12 +169,12 @@ void FbAlphabetCombo::SetText(const wxString &text)
 				model->FindRow(i, true);
 				FbComboPopup * popup = GetVListBoxComboPopup();
 				if (popup) popup->SetSelection(i - 1);
-				m_text.Empty(); 
-				Refresh(); 
+				m_text.Empty();
+				Refresh();
 				return;
 			}
 		}
 	}
-	m_text = text; 
-	Refresh(); 
+	m_text = text;
+	Refresh();
 }

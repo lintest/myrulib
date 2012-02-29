@@ -31,6 +31,7 @@ void * FbImportThread::Entry()
 {
 	int result = Execute() ? wxID_OK : wxID_CANCEL;
 	FbCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, result).Post(GetOwner());
+	FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, ID_PROGRESS_FINISH).Post();
 	return NULL;
 }
 

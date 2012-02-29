@@ -79,6 +79,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_TITLE_BTN, FbMainFrame::OnFindTitle)
 	EVT_TEXT_ENTER(ID_TITLE_TXT, FbMainFrame::OnFindTitleEnter)
 
+	EVT_MENU(ID_PROGRESS_FINISH, FbMainFrame::OnImportFinish)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
 	EVT_MENU(ID_TEXTLOG_SHOW, FbMainFrame::OnHideLog)
@@ -1004,4 +1005,13 @@ void FbMainFrame::OnStatusBarUpdate(wxUpdateUIEvent  & event)
 {
 	event.Enable(!IsFullScreen());
 	event.Check(m_ProgressBar && m_ProgressBar->IsShown());
+}
+
+void FbMainFrame::OnImportFinish(wxCommandEvent& event)
+{
+	size_t count = m_FrameNotebook.GetPageCount();
+	for (size_t i = 0; i < count; ++i) {
+		FbFrameBase * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbFrameBase);
+		if (frame) frame->UpdateMaster();
+	}
 }

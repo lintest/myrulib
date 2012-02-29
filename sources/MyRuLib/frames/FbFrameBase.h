@@ -46,8 +46,9 @@ public:
 	virtual wxString GetTitle() { return _("Authors"); }
 
 	public:
-		void UpdateMaster(FbMasterEvent & event);
-		void UpdateInfo(int id);
+		virtual void UpdateMaster();
+		virtual void UpdateMaster(FbMasterEvent & event);
+		virtual void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
 		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
 		virtual void ShowFullScreen(bool show);

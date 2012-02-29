@@ -38,18 +38,17 @@ class FbAlphabetThread: public FbThread
 class FbAlphabetCombo : public FbComboBox
 {
 	public:
-		FbAlphabetCombo()
-			: m_rowHeight(0), m_thread(this), m_divider(-1) { m_thread.Execute(); }
+		FbAlphabetCombo();
 
-		virtual ~FbAlphabetCombo()
-			{ m_thread.Close(); m_thread.Wait(); }
+		virtual ~FbAlphabetCombo();
+
+		void UpdateModel();
 
 		virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int index, FbModelItem item, int flags ) const;
 
 		virtual wxCoord OnMeasureItem( size_t item ) const;
 
-		virtual wxCoord OnMeasureItemWidth( size_t WXUNUSED(item) ) const
-			{ return -1; }
+		virtual wxCoord OnMeasureItemWidth( size_t WXUNUSED(item) ) const { return -1; }
 
 		virtual bool SetFont(const wxFont& font);
 
@@ -57,7 +56,7 @@ class FbAlphabetCombo : public FbComboBox
 
 	private:
 		int m_rowHeight;
-		FbAlphabetThread m_thread;
+		FbAlphabetThread * m_thread;
 		wxString m_text;
 		int m_divider;
 
