@@ -251,6 +251,7 @@ FbTreeViewHeaderWindow::~FbTreeViewHeaderWindow()
 void FbTreeViewHeaderWindow::OnSize(wxSizeEvent& event)
 {
 	wxClientDC dc(this);
+	dc.SetFont(GetFont());
 	CheckSize(dc, event.GetSize().x);
 }
 
@@ -272,9 +273,9 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc, int width)
 
 	// Check if width is too small
 	if (width <= 4 * count) {
-		int x = width / count; 
-		int w = width; 
-		for ( int i = 1; i < count; i++ ) { 
+		int x = width / count;
+		int w = width;
+		for ( int i = 1; i < count; i++ ) {
 			m_columns[i].SetWidth(x);
 			w -= x;
 		}
@@ -290,7 +291,7 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc, int width)
 	for ( int i = 0; i < count; i++ ) {
 		int s = m_columns[i].GetSize();
 		if (s > 0) {
-			fixedWidth += s * cw; 
+			fixedWidth += s * cw;
 			fixedSize += s;
 			fixedCount++;
 		} else {
@@ -310,8 +311,8 @@ void FbTreeViewHeaderWindow::CheckSize(wxDC & dc, int width)
 	}
 
 	// Define new column width
-	int w = width; 
-	for ( int i = 1; i < count; i++ ) { 
+	int w = width;
+	for ( int i = 1; i < count; i++ ) {
 		int s = m_columns[i].GetSize();
 		int x = s > 0 ? fixed_x * s : - float_x * s;
 		m_columns[i].SetWidth(x);
@@ -575,7 +576,7 @@ void FbTreeViewHeaderWindow::SetColumnWidth (int column, int delta)
 
 	info.SetSize( new_size );
 	info.SetWidth(-100);
-	
+
 	wxClientDC dc(this);
 	dc.SetFont(GetFont());
 	CheckSize(dc, GetClientSize().x);
@@ -738,7 +739,7 @@ void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 		nevent.SetCurrentFocus( GetParent() );
 		if (!owner->GetEventHandler()->ProcessEvent( nevent )) event.Skip();
 		return;
-	} 
+	}
 
 	if (!m_model) { event.Skip(); return; }
 
