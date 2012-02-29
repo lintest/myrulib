@@ -363,6 +363,11 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 	treeview->AddColumn(2, _("Program"), -10);
 	bSizerMain->Add( treeview, 1, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
+	#ifdef FB_INCLUDE_READER
+	wxCheckBox * checkbox = new wxCheckBox( this, ID_USE_COOLREADER, _("Use builtin CoolReader3"));
+	bSizerMain->Add( checkbox, 0, wxEXPAND|wxALL, 5 );
+	#endif // FB_INCLUDE_READER
+
 	SetSizer( bSizerMain );
 	bSizerMain->Fit( this );
 	Layout();
@@ -697,6 +702,9 @@ void FbParamsDlg::Assign(bool write)
 		{FB_IMAGE_WIDTH, ID_IMAGE_WIDTH},
 		{FB_GRID_HRULES, ID_GRID_HRULES},
 		{FB_GRID_VRULES, ID_GRID_VRULES},
+		#ifdef FB_INCLUDE_READER
+		{FB_USE_COOLREADER, ID_USE_COOLREADER},
+		#endif // FB_INCLUDE_READER
 	};
 
 	const size_t idsCount = sizeof(ids) / sizeof(Struct);

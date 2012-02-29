@@ -42,6 +42,7 @@ class FbParamsDlg : private FbDialog
 			ID_USE_SYMLINKS,
 			ID_TYPE_LIST,
 			ID_TYPE_TOOLBAR,
+			ID_USE_COOLREADER,
 			ID_APPEND_TYPE,
 			ID_MODIFY_TYPE,
 			ID_DELETE_TYPE,

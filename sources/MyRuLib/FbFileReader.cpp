@@ -321,12 +321,12 @@ void FbFileReader::ShellExecute(const wxString &filename)
 	wxString command;
 	wxString filetype = Ext(filename);
 #ifdef __WXMSW__
+	wxString filepath = filename;
+	filepath.Prepend(wxT('"')).Append(wxT('"'));
 	wxChar * buffer = command.GetWriteBuf(MAX_PATH);
-	bool ok = (int) FindExecutable(filename, NULL, buffer) > 32;
+	bool ok = (int) FindExecutable(filepath, NULL, buffer) > 32;
 	command.UngetWriteBuf();
 	if (ok) {
-		wxString filepath = filename;
-		filepath.Prepend(wxT('"')).Append(wxT('"'));
 		::ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 	} else {
 		FbMessageBox(_("Associated application not found"), filetype);
@@ -363,13 +363,12 @@ void FbFileReader::Open() const
 	wxString sql = wxT("SELECT command FROM types WHERE file_type=?");
 	if (!ok) ok = !(command = FbLocalDatabase().Str(m_filetype, sql)).IsEmpty();
 	if (!ok) ok = !(command = FbCommonDatabase().Str(m_filetype, sql)).IsEmpty();
-	if (command == wxT('*')) { command.Empty(); ok = false; }
-
+	bool coolreader = !ok && FbParams(FB_USE_COOLREADER);
+	if (command == wxT('*')) { coolreader = true; command.Empty(); ok = false; }
+	
 	FbTempFileName tempfile;
-
 	#ifdef FB_INCLUDE_READER
-	FbSmartPtr<wxInputStream> file;
-	if (!ok) {
+	if (coolreader) {
 		wxString filename = GetFileName();
 		if (filename.IsEmpty()) filename = tempfile.Init(*m_stream);
 		if (FbCoolReader::Open(m_id, filename)) return;
