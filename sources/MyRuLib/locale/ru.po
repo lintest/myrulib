@@ -2194,3 +2194,6 @@ msgstr "Сохранить файл как..."
 
 msgid "Copy link address"
 msgstr "Скопировать адрес ссылки"
+
+msgid "Show in folder"
+msgstr "Показать в папке"

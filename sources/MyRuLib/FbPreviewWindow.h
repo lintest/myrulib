@@ -51,6 +51,7 @@ class FbPreviewWindow: public FbHtmlWindow
 		void OnSelectAll(wxCommandEvent& event);
 		void OnUnselectAll(wxCommandEvent& event);
 		void OnSaveFile(wxCommandEvent& event);
+		void OnShowFile(wxCommandEvent& event);
 		void OnCopyUrl(wxCommandEvent& event);
 		DECLARE_CLASS(FbPreviewWindow)
 		DECLARE_EVENT_TABLE();

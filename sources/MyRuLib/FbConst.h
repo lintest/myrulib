@@ -94,6 +94,7 @@ enum {
 	ID_OPEN_BOOK,
 	ID_OPEN_FILE,
 	ID_SAVE_FILE,
+	ID_SHOW_FILE,
 	ID_COPY_URL,
 
 	// Master menu
