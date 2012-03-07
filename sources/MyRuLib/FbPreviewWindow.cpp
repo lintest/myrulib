@@ -62,7 +62,7 @@ void FbPreviewWindow::OnInfoUpdate(wxCommandEvent& event)
 
 void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 {
-	wxPoint p = event.GetPosition();
+	wxPoint p = CalcUnscrolledPosition(event.GetPosition());
 	wxHtmlCell * cell = m_Cell ? m_Cell->FindCellByPos(p.x, p.y) : NULL;
 	wxHtmlLinkInfo * link = cell ? cell->GetLink() : NULL;
 	m_link = link ? *link : wxHtmlLinkInfo();
