@@ -151,7 +151,7 @@ void FbPreviewWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 	wxString file = FindFile(name);
 	if (file.IsEmpty()) { wxLogWarning(_("File not found: ") + name); return; }
 
-	FbFileReader::ShellExecute(file);
+	FbFileReader::ShellExecute(file, link.GetTarget());
 }
 
 void FbPreviewWindow::OnSaveFile(wxCommandEvent& event)
@@ -184,6 +184,12 @@ void FbPreviewWindow::OnCopyUrl(wxCommandEvent& event)
 	if (name.IsEmpty()) return;
 	wxString file = FindFile(name);
 	if (file.IsEmpty()) file = name;
+	wxFileName filename;
+	if (!m_link.GetTarget().IsEmpty()) {
+		filename = m_link.GetTarget();
+		filename.MakeAbsolute(file);
+	}
+	file = filename.GetFullPath();
 	wxClipboardLocker locker;
 	if (!locker) return;
 	wxTheClipboard->SetData( new wxTextDataObject(file) );
@@ -223,7 +229,7 @@ void FbPreviewWindow::OnShowFile(wxCommandEvent& event)
     ULONG chEaten, dwFlags = SFGAO_FILESYSTEM;
 	typedef HRESULT (WINAPI * LPSHOpen) (LPCITEMIDLIST pidlFolder, UINT cidl, LPCITEMIDLIST *apidl, DWORD dwFlags);
 
-    HMODULE hModule = GetModuleHandle(wxT("shell32.dll"));
+    HMODULE hModule = LoadLibrary(wxT("shell32.dll"));
 	if ( !hModule ) return;
 
     LPSHOpen pProc = (LPSHOpen) GetProcAddress( hModule, "SHOpenFolderAndSelectItems");

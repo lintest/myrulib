@@ -46,9 +46,6 @@ public:
 	bool IsOk() const
 		{ return m_stream && m_stream->IsOk(); }
 
-	const wxString & GetFileName() const
-		{ return m_filename; }
-
 	const wxString & GetFileType() const
 		{ return m_filetype; }
 
@@ -56,9 +53,15 @@ public:
 
 	static void ShellExecute(const wxString &filename);
 
+	static void ShellExecute(const wxString &archname, const wxString &filename);
+
 private:
+	wxString GetFileName() const;
+	wxString CreateDataFile(const wxString &tempfile) const;
+	wxString CreateTempFile(const wxString &tempfile) const;
 	wxString GetError(const wxString &name, const wxString &path = wxEmptyString);
 	void DoDownload() const;
+	bool WrongExt() const;
 
 private:
 	const int m_id;

@@ -183,6 +183,12 @@ FbFileReader::~FbFileReader()
 	wxDELETE(m_stream);
 }
 
+wxString FbFileReader::GetFileName() const
+{
+	if (!m_filename.IsEmpty()) return m_filename;
+	return wxString() << m_id << wxT('.') << m_filetype;
+}
+
 wxString FbFileReader::GetError(const wxString &name, const wxString &path)
 {
 	if (name.IsEmpty()) {
@@ -304,9 +310,9 @@ public:
 	}
 };
 
-static bool NotEqualExt(const wxString & filename, const wxString & filetype)
+bool FbFileReader::WrongExt() const
 {
-	return filename.Right(filetype.Length() + 1).Lower() != wxString(wxT('.')) + filetype;
+	return m_filename.Right(m_filetype.Length() + 1).Lower() != wxString(wxT('.')) + m_filetype;
 }
 
 #include "frames/FbCoolReader.h"
@@ -369,7 +375,7 @@ void FbFileReader::Open() const
 	FbTempFileName tempfile;
 	#ifdef FB_INCLUDE_READER
 	if (coolreader) {
-		wxString filename = GetFileName();
+		wxString filename = m_filename;
 		if (filename.IsEmpty()) filename = tempfile.Init(*m_stream);
 		if (FbCoolReader::Open(m_id, filename)) return;
 		m_stream->Reset();
@@ -380,20 +386,7 @@ void FbFileReader::Open() const
 	if (!ok) { command = wxT("xdg-open"); ok = true; }
     #endif
 
-	wxString filename = GetFileName();
-	if (filename.IsEmpty() || NotEqualExt(filename, m_filetype)) {
-		wxFileName filepath = m_md5sum;
-		filepath.SetPath(FbParamItem::GetPath(FB_TEMP_DIR));
-		filepath.SetExt(m_filetype);
-		filename = filepath.GetFullPath();
-		FbTempEraser::Add(filename);
-		if (!filepath.DirExists()) filepath.Mkdir(0755, wxPATH_MKDIR_FULL);
-		if (tempfile.IsEmpty()) {
-			SaveFile(*m_stream, filename);
-		} else {
-			wxCopyFile(tempfile, filename);
-		}
-	}
+	wxString filename = CreateDataFile(tempfile);
 
 	if (ok) {
 		#ifdef __WXMSW__
@@ -405,6 +398,106 @@ void FbFileReader::Open() const
 	} else {
 		ShellExecute(filename);
 	}
+}
+
+#ifdef __WXMSW__
+
+#include "config.h"
+#include <wininet.h>
+
+static wxString CreateCacheFile(const wxString &url, const wxString &ext, wxInputStream &stream, const wxString &tempfile)
+{
+	HMODULE hModule = LoadLibrary(wxT("wininet.dll"));
+	if (!hModule) return wxEmptyString;
+
+	typedef BOOL (WINAPI * LPCreateUrl)(LPCWSTR lpszUrlName, DWORD dwExpectedFileSize, LPCWSTR lpszFileExtension, LPWSTR lpszFileName, DWORD dwReserved);
+    LPCreateUrl pCreateProc = (LPCreateUrl) GetProcAddress( hModule, "CreateUrlCacheEntryW");
+
+	typedef BOOL (WINAPI * LPCommitUrl) (LPCWSTR lpszUrlName, LPCWSTR lpszLocalFileName, FILETIME ExpireTime, FILETIME LastModifiedTime, DWORD CacheEntryType, LPWSTR lpszHeaderInfo, DWORD dwHeaders, LPCWSTR lpszFileExtension, LPCWSTR lpszOriginalUrl);
+	LPCommitUrl pCommitProc = (LPCommitUrl) GetProcAddress( hModule, "CommitUrlCacheEntryW");
+
+	if (!pCreateProc || !pCommitProc) return wxEmptyString;
+
+	wxString filename;
+	wxChar * buffer = filename.GetWriteBuf(MAX_PATH);
+	bool ok = pCreateProc(url.c_str(), 0, ext.c_str(), buffer, 0);
+	filename.UngetWriteBuf();
+
+	if (tempfile.IsEmpty()) {
+		SaveFile(stream, filename);
+	} else {
+		wxCopyFile(tempfile, filename);
+	}
+
+	FILETIME time = { 0, 0 };
+	pCommitProc(url.c_str(), ext.c_str(), time, time, NORMAL_CACHE_ENTRY, NULL, 0, 0, NULL);
+
+	return filename;
+}
+
+wxString FbFileReader::CreateDataFile(const wxString &tempfile) const
+{
+	if (m_filename.IsEmpty() || WrongExt()) {
+		wxString url = wxT(PACKAGE_NAME);
+		url << wxT(':') << m_md5sum << wxT('/') << GetFileName();
+		wxString filename = CreateCacheFile(url, m_filetype, *m_stream, tempfile);
+		if (filename.IsEmpty()) return CreateTempFile(tempfile);
+		FbTempEraser::Add(filename);
+		return filename;
+	}
+	return m_filename;
+}
+
+void FbFileReader::ShellExecute(const wxString &archname, const wxString &filename)
+{
+	if (filename.IsEmpty()) return ShellExecute(archname);
+
+	wxFFileInputStream in(archname);
+	wxZipInputStream zip(in, GetConv866());
+	while (FbSmartPtr<wxZipEntry> entry = zip.GetNextEntry()) {
+		if (entry->GetInternalName() != filename) continue;
+		if (!zip.OpenEntry(*entry)) break;
+		wxString url = wxT(PACKAGE_NAME);
+		url << wxT(':') << archname << wxT('/') << filename;
+		wxString tempfile = CreateCacheFile(url, Ext(filename), zip, wxEmptyString);
+		FbTempEraser::Add(tempfile);
+		return ShellExecute(tempfile);
+	}
+
+	ShellExecute(archname);
+}
+
+#else
+
+wxString FbFileReader::CreateDataFile(const wxString &tempfile) const
+{
+	if (m_filename.IsEmpty() || WrongExt()) {
+		return CreateTempFile(tempfile);
+	}
+	return m_filename;
+}
+
+void FbFileReader::ShellExecute(const wxString &archname, const wxString &filename)
+{
+	return ShellExecute(archname);
+}
+
+#endif // __WXMSW__
+
+wxString FbFileReader::CreateTempFile(const wxString &tempfile) const
+{
+	wxFileName filepath = m_md5sum;
+	filepath.SetPath(FbParamItem::GetPath(FB_TEMP_DIR));
+	filepath.SetExt(m_filetype);
+	wxString filename = filepath.GetFullPath();
+	if (!filepath.DirExists()) filepath.Mkdir(0755, wxPATH_MKDIR_FULL);
+	if (tempfile.IsEmpty()) {
+		SaveFile(*m_stream, filename);
+	} else {
+		wxCopyFile(tempfile, filename);
+	}
+	FbTempEraser::Add(filename);
+	return filename;
 }
 
 void FbFileReader::DoDownload() const
