@@ -185,7 +185,7 @@ class FbMainDatabase: public FbMasterDatabase
 		virtual wxString GetMaster() { return wxT("params"); };
 	private:
 		void CreateDatabase();
-		void CreateTableFTS(const wxString & name);
+		void CreateTableFTS(const wxString & name, const wxString & table, const wxString & field);
 };
 
 #endif // __FBDATABASE_H__
