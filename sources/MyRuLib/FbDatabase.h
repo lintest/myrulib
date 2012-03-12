@@ -103,6 +103,7 @@ class FbDatabase: public wxSQLite3Database
 		void SetText(int param, const wxString & text);
 		static const wxString & GetConfigName();
 		static wxString GetConfigPath();
+		void AttachCommon();
 		void AttachConfig();
 		void JoinThread(FbThread * thread);
 	public:

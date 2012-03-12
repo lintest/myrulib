@@ -4,13 +4,18 @@
 #include <wx/wx.h>
 #include <wx/wxsqlite3.h>
 #include "FbThread.h"
+#include "FbDatabase.h"
 #include "FbFilterObj.h"
+
+class FbFrameDatabase : public FbDatabase
+{
+public:
+	FbFrameDatabase(FbThread * thread, wxString &filename);
+};
 
 class FbFrameThread : public FbThread
 {
 public:
-	static void AttachCounter(wxSQLite3Database &database, const wxString &filename);
-
 	static int GetCount(wxSQLite3Database &database, int code);
 
 	FbFrameThread(wxEvtHandler * frame, const wxString &counter)

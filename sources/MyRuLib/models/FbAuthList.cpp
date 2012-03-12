@@ -10,16 +10,13 @@
 
 void * FbAuthListThread::Entry()
 {
-	FbCommonDatabase database;
-	database.JoinThread(this);
+	bool calculate = m_counter.IsEmpty();
+	FbFrameDatabase database(this, m_counter);
 
-	if (abs(m_order) > 1) {
-		if (m_counter.IsEmpty()) {
-			CreateCounter(database, m_sql);
-		} else {
-			AttachCounter(database, m_counter);
-		}
+	if (calculate && abs(m_order) > 1) {
+		CreateCounter(database, m_sql);
 		if (IsClosed()) return NULL;
+		calculate = false;
 	}
 
 	if (m_info.m_string.IsEmpty()) {
@@ -30,7 +27,7 @@ void * FbAuthListThread::Entry()
 		DoString(database);
 	}
 
-	if (m_counter.IsEmpty()) {
+	if (calculate) {
 		CreateCounter(database, m_sql);
 	}
 
@@ -99,7 +96,7 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 
 wxString FbAuthListThread::GetJoin()
 {
-	return abs(m_order) > 1 ? wxT(" LEFT JOIN cnt.numb ON id=numb.key ") : wxString(wxT(' '));
+	return abs(m_order) > 1 ? wxT(" LEFT JOIN numb ON id=numb.key ") : wxString(wxT(' '));
 }
 
 wxString FbAuthListThread::GetOrder()

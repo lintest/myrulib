@@ -15,15 +15,13 @@ bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
 
 void * FbSeqnListThread::Entry()
 {
-	FbCommonDatabase database;
-	database.JoinThread(this);
+	bool calculate = m_counter.IsEmpty();
+	FbFrameDatabase database(this, m_counter);
 
-	if (abs(m_order) > 1) {
-		if (m_counter.IsEmpty()) {
-			CreateCounter(database, m_sql);
-		} else {
-			AttachCounter(database, m_counter);
-		}
+	if (calculate && abs(m_order) > 1) {
+		CreateCounter(database, m_sql);
+		if (IsClosed()) return NULL;
+		calculate = false;
 	}
 
 	if (!m_string.IsEmpty() && IsFullText(database)) {
@@ -32,7 +30,7 @@ void * FbSeqnListThread::Entry()
 		DoString(database);
 	}
 
-	if (m_counter.IsEmpty()) {
+	if (calculate) {
 		CreateCounter(database, m_sql);
 	}
 

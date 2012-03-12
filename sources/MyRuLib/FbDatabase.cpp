@@ -452,6 +452,15 @@ void FbDatabase::SetText(int param, const wxString & text)
 	stmt.ExecuteUpdate();
 }
 
+void FbDatabase::AttachCommon()
+{
+	SetCollation(wxT("CYR"), &sm_collation);
+	wxString sql = wxT("ATTACH ? AS config");
+	wxSQLite3Statement stmt = PrepareStatement(sql);
+	stmt.Bind(1, wxGetApp().GetLibFile());
+	stmt.ExecuteUpdate();
+}
+
 void FbDatabase::AttachConfig()
 {
 	wxString sql = wxT("ATTACH ? AS config");

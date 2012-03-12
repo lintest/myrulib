@@ -11,17 +11,11 @@
 
 void * FbDateTreeThread::Entry()
 {
-	FbCommonDatabase database;
-	database.JoinThread(this);
-
+	FbFrameDatabase database(this, m_counter);
 	wxString sql = wxT("SELECT DISTINCT created FROM books ORDER BY 1 DESC");
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (result.IsOk()) MakeModel(result);
-
-	if (m_counter.IsEmpty()) {
-		CreateCounter(database, m_sql);
-	}
-
+	CreateCounter(database, m_sql);
 	return NULL;
 }
 

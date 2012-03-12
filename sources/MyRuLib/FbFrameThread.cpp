@@ -7,12 +7,19 @@
 //  FbFrameThread
 //-----------------------------------------------------------------------------
 
-void FbFrameThread::AttachCounter(wxSQLite3Database &database, const wxString &filename)
+FbFrameDatabase::FbFrameDatabase(FbThread * thread, wxString &filename)
 {
-	wxSQLite3Statement stmt = database.PrepareStatement(wxT("ATTACH ? AS cnt"));
-	stmt.Bind(1, filename);
-	stmt.ExecuteUpdate();
+	bool create = filename.IsEmpty();
+	if (create) filename = wxFileName::CreateTempFileName(wxT("fb"));
+	int flags = create ? (WXSQLITE_OPEN_CREATE | WXSQLITE_OPEN_READWRITE) : WXSQLITE_OPEN_READONLY;
+	Open(filename, wxEmptyString, flags);
+	JoinThread(thread);
+	AttachCommon();
 }
+
+//-----------------------------------------------------------------------------
+//  FbFrameThread
+//-----------------------------------------------------------------------------
 
 int FbFrameThread::GetCount(wxSQLite3Database &database, int code)
 {
@@ -29,14 +36,9 @@ void FbFrameThread::SetCountSQL(const wxString &sql, const FbFilterObj &filter)
 
 void FbFrameThread::CreateCounter(wxSQLite3Database &database, const wxString &sql)
 {
-	if (!m_counter.IsEmpty()) return ;
-
-	m_counter = wxFileName::CreateTempFileName(wxT("fb"));
-	AttachCounter(database, m_counter);
-
-	database.ExecuteUpdate(wxT("CREATE TABLE cnt.numb(key INTEGER PRIMARY KEY, num INTEGER)"));
-	database.ExecuteUpdate(wxT("INSERT INTO cnt.numb(key, num)") + m_sql);
-
+	if (IsClosed()) return;
+	database.ExecuteUpdate(wxT("CREATE TABLE numb(key INTEGER PRIMARY KEY, num INTEGER)"));
+	database.ExecuteUpdate(wxT("INSERT INTO numb(key, num)") + m_sql);
 	if (IsClosed()) {
 		database.Close();
 		wxRemoveFile(m_counter);
@@ -62,8 +64,7 @@ wxString FbFrameThread::GetOrder(int order, const wxString &standart)
 void * FbCountThread::Entry()
 {
 	if (m_sql.IsEmpty()) return NULL;
-	FbCommonDatabase database;
-	database.JoinThread(this);
+	FbFrameDatabase database(this, m_counter);
 	CreateCounter(database, m_sql);
 	return NULL;
 }
