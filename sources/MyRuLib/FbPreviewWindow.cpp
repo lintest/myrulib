@@ -7,6 +7,32 @@
 #include "FbFileReader.h"
 #include "MyRuLibApp.h"
 
+static wxString GetLinkName(const wxHtmlLinkInfo &link)
+{
+	wxString addr = link.GetHref();
+	if (addr.BeforeFirst(wxT(':')) != wxT("book")) return wxEmptyString;
+	return addr.AfterFirst(wxT(':'));
+}
+
+static wxString FindLinkFile(const wxString & name)
+{
+	if (name.IsEmpty()) return name;
+	wxString root = wxGetApp().GetLibPath();
+	if (root.IsEmpty()) return name;
+	wxFileName filename = name;
+	filename.Normalize(wxPATH_NORM_ALL, root);
+	if (filename.FileExists()) return filename.GetFullPath();
+	return wxEmptyString;
+}
+
+static wxString GetLinkFile(const wxHtmlLinkInfo &link)
+{
+	const wxString name = GetLinkName(link);
+	const wxString file = FindLinkFile(name);
+	if (file.IsEmpty()) wxLogWarning(_("File not found: ") + name); 
+	return file;
+}
+
 IMPLEMENT_CLASS(FbPreviewWindow, FbHtmlWindow)
 
 BEGIN_EVENT_TABLE(FbPreviewWindow, FbHtmlWindow)
@@ -16,7 +42,7 @@ BEGIN_EVENT_TABLE(FbPreviewWindow, FbHtmlWindow)
 	EVT_COMMAND(ID_AUTH_PREVIEW, fbEVT_BOOK_ACTION, FbPreviewWindow::OnInfoUpdate)
 	EVT_MENU(ID_SAVE_FILE, FbPreviewWindow::OnSaveFile)
 	EVT_MENU(ID_SHOW_FILE, FbPreviewWindow::OnShowFile)
-	EVT_MENU(ID_COPY_URL, FbPreviewWindow::OnCopyUrl)
+	EVT_MENU(ID_COPY_LINK, FbPreviewWindow::OnCopyUrl)
 	EVT_MENU(wxID_COPY, FbPreviewWindow::OnCopy)
 	EVT_MENU(wxID_SELECTALL, FbPreviewWindow::OnSelectAll)
 	EVT_MENU(ID_UNSELECTALL, FbPreviewWindow::OnUnselectAll)
@@ -60,6 +86,81 @@ void FbPreviewWindow::OnInfoUpdate(wxCommandEvent& event)
 	SetPage(event.GetString());
 }
 
+#ifdef __WXMSW__
+
+#include <shellapi.h>
+#include <shlobj.h>
+
+static bool ShellContextMenu(wxWindow * window, const wxString &filename)
+{
+	if (filename.IsEmpty()) return false;
+
+	HWND hwnd = (HWND) window->GetHWND();
+
+	HMODULE hModule = LoadLibrary(wxT("shell32.dll"));
+	if ( !hModule ) return false;
+
+	typedef HRESULT (WINAPI * LPSHParse) (PCWSTR, IBindCtx*, LPITEMIDLIST*, SFGAOF, SFGAOF*);
+	LPSHParse pProcParse = (LPSHParse) GetProcAddress(hModule, "SHParseDisplayName");
+	if ( !pProcParse ) return false;
+
+	LPITEMIDLIST target;
+	if (FAILED(pProcParse((LPWSTR)filename.wc_str(), NULL, &target, 0, NULL))) return false;
+
+	typedef HRESULT (WINAPI * LPSHBind) (LPCITEMIDLIST, REFIID, void**, LPCITEMIDLIST*);
+	LPSHBind pProcBind = (LPSHBind) GetProcAddress(hModule, "SHBindToParent");
+	if ( !pProcBind ) return false;
+
+	LPSHELLFOLDER psf;
+	LPCITEMIDLIST pidl;
+	if (FAILED(pProcBind(target, IID_IShellFolder, (void**)&psf, &pidl))) return false;
+
+	LPCONTEXTMENU cm;
+	if (FAILED(psf->GetUIObjectOf(0, 1, &pidl, IID_IContextMenu, NULL, (void**)&cm))) return false;
+
+	HMENU hMenu = CreatePopupMenu();
+	AppendMenu(hMenu, MFT_STRING, 0x7001, _("Save file as..."));
+	AppendMenu(hMenu, MFT_STRING, 0x7002, _("Show in folder"));
+	AppendMenu(hMenu, MFT_STRING, 0x7003, _("Copy link address"));
+	AppendMenu(hMenu, MFT_SEPARATOR, 0, NULL);
+
+	cm->QueryContextMenu(hMenu, 4, 1, 0x6FFF, CMF_EXPLORE);
+
+	POINT pt;
+	GetCursorPos(&pt);
+	UINT uFlags = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON | TPM_RETURNCMD;
+	int cmd = TrackPopupMenu(hMenu, uFlags, pt.x, pt.y, 0, hwnd, 0);
+
+	if (cmd && cmd <= 0x6FFF) {
+		CMINVOKECOMMANDINFO ci;
+		ZeroMemory(&ci, sizeof(ci));
+		ci.cbSize = sizeof(CMINVOKECOMMANDINFO);
+		ci.lpVerb = MAKEINTRESOURCEA(cmd - 1);
+		ci.nShow = SW_SHOWNORMAL;
+		cm->InvokeCommand(&ci);
+	} else {
+		wxWindowID id = 0;
+		switch (cmd) {
+			case 0x7001: id = ID_SAVE_FILE; break;
+			case 0x7002: id = ID_SHOW_FILE; break;
+			case 0x7003: id = ID_COPY_LINK; break;
+		}
+		if (id) FbCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id).Post(window);
+	}
+
+	DestroyMenu(hMenu);
+	return true;
+}
+
+#else
+
+static bool ShellContextMenu(wxWindow * window, const wxString &filename)
+{
+	return false;
+}
+
+#endif // __WXMSW__
+
 void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 {
 	wxPoint p = CalcUnscrolledPosition(event.GetPosition());
@@ -68,6 +169,16 @@ void FbPreviewWindow::OnRightUp(wxMouseEvent& event)
 	m_link = link ? *link : wxHtmlLinkInfo();
 
 	SetFocus();
+
+	if (link) {
+		wxString addr = link->GetHref();
+		if (addr.BeforeFirst(wxT(':')) == wxT("book")) {
+			const wxString name = GetLinkName(*link);
+			const wxString file = FindLinkFile(name);
+			if (ShellContextMenu(this, file)) return;
+		}
+	}
+
 	ContextMenu menu(m_book, link);
 	PopupMenu( &menu, event.GetPosition() );
 }
@@ -82,7 +193,7 @@ FbPreviewWindow::ContextMenu::ContextMenu(int book, wxHtmlLinkInfo * link)
 			Append(ID_SHOW_FILE, _("Show in folder"));
 			#endif // __WXMSW__
 		}
-		Append(ID_COPY_URL, _("Copy link address"));
+		Append(ID_COPY_LINK, _("Copy link address"));
 		AppendSeparator();
 	}
 
@@ -91,6 +202,7 @@ FbPreviewWindow::ContextMenu::ContextMenu(int book, wxHtmlLinkInfo * link)
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 }
+
 
 void FbPreviewWindow::Empty()
 {
@@ -125,44 +237,19 @@ void FbPreviewWindow::OnCellHover(wxHtmlCellEvent& event)
 	event.Skip();
 }
 
-wxString FbPreviewWindow::GetName(const wxHtmlLinkInfo &link)
-{
-	wxString addr = link.GetHref();
-	if (addr.BeforeFirst(wxT(':')) != wxT("book")) return wxEmptyString;
-	return addr.AfterFirst(wxT(':'));
-}
-
-wxString FbPreviewWindow::FindFile(const wxString & name)
-{
-	wxString root = wxGetApp().GetLibPath();
-	if (root.IsEmpty()) return name;
-	if (name.IsEmpty()) return wxEmptyString;
-	wxFileName filename = name;
-	filename.Normalize(wxPATH_NORM_ALL, root);
-	if (filename.FileExists()) return filename.GetFullPath();
-	return wxEmptyString;
-}
-
 void FbPreviewWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 {
-	wxString name = GetName(link);
-	if (name.IsEmpty()) { wxHtmlWindow::OnLinkClicked(link); return; }
-
-	wxString file = FindFile(name);
-	if (file.IsEmpty()) { wxLogWarning(_("File not found: ") + name); return; }
-
-	FbFileReader::ShellExecute(file, link.GetTarget());
+	wxString filename = GetLinkFile(link);
+	if (filename.IsEmpty()) { wxHtmlWindow::OnLinkClicked(link); return; }
+	FbFileReader::ShellExecute(filename, link.GetTarget());
 }
 
 void FbPreviewWindow::OnSaveFile(wxCommandEvent& event)
 {
-	wxString name = GetName(m_link);
-	if (name.IsEmpty()) return;
+	wxString filename = GetLinkFile(m_link);
+	if (filename.IsEmpty()) return;
 
-	wxString file = FindFile(name);
-	if (file.IsEmpty()) {wxLogWarning(_("File not found: ") + name); return; }
-
-	wxFileInputStream in(file);
+	wxFileInputStream in(filename);
 	wxString targ = m_link.GetTarget();
 	if (!targ.IsEmpty()) {
 		bool ok = false;
@@ -175,21 +262,24 @@ void FbPreviewWindow::OnSaveFile(wxCommandEvent& event)
 		}
 		if (ok) return SaveFile(zip, targ);
 	}
-	return SaveFile(in, name);
+	return SaveFile(in, filename);
 }
 
 void FbPreviewWindow::OnCopyUrl(wxCommandEvent& event)
 {
-	wxString name = GetName(m_link);
+	wxString name = GetLinkName(m_link);
 	if (name.IsEmpty()) return;
-	wxString file = FindFile(name);
+
+	wxString file = FindLinkFile(name);
 	if (file.IsEmpty()) file = name;
-	wxFileName filename;
+
+	wxFileName filename = file;
 	if (!m_link.GetTarget().IsEmpty()) {
 		filename = m_link.GetTarget();
 		filename.MakeAbsolute(file);
 	}
 	file = filename.GetFullPath();
+
 	wxClipboardLocker locker;
 	if (!locker) return;
 	wxTheClipboard->SetData( new wxTextDataObject(file) );
@@ -219,27 +309,23 @@ void FbPreviewWindow::SaveFile(wxInputStream &stream, const wxString &filename)
 
 void FbPreviewWindow::OnShowFile(wxCommandEvent& event)
 {
-	wxString name = GetName(m_link);
-	if (name.IsEmpty()) return;
-	wxString file = FindFile(name);
-	if (file.IsEmpty()) {wxLogWarning(_("File not found: ") + name); return; }
+	wxString filename = GetLinkFile(m_link);
+	if (filename.IsEmpty()) return;
 
-    LPSHELLFOLDER desktop;
-    LPITEMIDLIST  target;
-    ULONG chEaten, dwFlags = SFGAO_FILESYSTEM;
-	typedef HRESULT (WINAPI * LPSHOpen) (LPCITEMIDLIST pidlFolder, UINT cidl, LPCITEMIDLIST *apidl, DWORD dwFlags);
-
-    HMODULE hModule = LoadLibrary(wxT("shell32.dll"));
+	HMODULE hModule = LoadLibrary(wxT("shell32.dll"));
 	if ( !hModule ) return;
 
-    LPSHOpen pProc = (LPSHOpen) GetProcAddress( hModule, "SHOpenFolderAndSelectItems");
-	if ( !pProc ) return;
+	typedef HRESULT (WINAPI * LPSHParse) (PCWSTR, IBindCtx*, LPITEMIDLIST*, SFGAOF, SFGAOF*);
+	LPSHParse pProcParse = (LPSHParse) GetProcAddress(hModule, "SHParseDisplayName");
+	if ( !pProcParse ) return;
 
-	if (SUCCEEDED(SHGetDesktopFolder(&desktop))) {
-		if (SUCCEEDED(desktop->ParseDisplayName(NULL, 0, (LPWSTR)file.wc_str(), &chEaten, &target, &dwFlags))) {
-			pProc(target, 0, NULL, NULL);
-		}
-		desktop->Release();
+	typedef HRESULT (WINAPI * LPSHOpen) (LPCITEMIDLIST, UINT, LPCITEMIDLIST*, DWORD);
+	LPSHOpen pProcOpen = (LPSHOpen) GetProcAddress(hModule, "SHOpenFolderAndSelectItems");
+	if ( !pProcOpen ) return;
+
+	LPITEMIDLIST  target;
+	if (SUCCEEDED(pProcParse((LPWSTR)filename.wc_str(), NULL, &target, 0, NULL))) {
+		pProcOpen(target, 0, NULL, NULL);
 	}
 }
 
