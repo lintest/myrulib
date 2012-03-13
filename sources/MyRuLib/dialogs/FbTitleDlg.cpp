@@ -88,7 +88,7 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.SetMinSize( wxSize( 200, -1 ) );
 
-	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("#"), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("#") );
 	bSizerMain->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxString number;
@@ -157,16 +157,20 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 
 	wxStaticText * info;
 
-	info = new wxStaticText( this, wxID_ANY, _("Book title"), wxDefaultPosition, wxDefaultSize, 0 );
+	info = new wxStaticText( this, wxID_ANY, _("Book title") );
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
-	wxString title = database.Str(book, wxT("SELECT title FROM books WHERE id=?"));
-	m_title.Create( this, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxString sql = fbT("SELECT title, lang, file_type FROM books WHERE id=?");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, book);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	m_title.Create( this, wxID_ANY, result.GetString(0), wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
 	m_title.SetMinSize( wxSize( 300, -1 ) );
 
-	info = new wxStaticText( this, wxID_ANY, _("Authors"), wxDefaultPosition, wxDefaultSize, 0 );
+	info = new wxStaticText( this, wxID_ANY, _("Authors") );
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
@@ -187,7 +191,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	}
 	fgSizerMain->Add( m_authors, 1, wxEXPAND | wxRIGHT, 5 );
 
-	info = new wxStaticText( this, wxID_ANY, _("Series"), wxDefaultPosition, wxDefaultSize, 0 );
+	info = new wxStaticText( this, wxID_ANY, _("Series") );
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
@@ -208,7 +212,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	}
 	fgSizerMain->Add( m_series, 1, wxEXPAND | wxRIGHT, 5 );
 
-	info = new wxStaticText( this, wxID_ANY, _("Genres"), wxDefaultPosition, wxDefaultSize, 0 );
+	info = new wxStaticText( this, wxID_ANY, _("Genres") );
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
@@ -230,6 +234,24 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 		}
 	}
 	fgSizerMain->Add( m_genres, 1, wxEXPAND | wxRIGHT, 5 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Language") );
+	info->Wrap( -1 );
+	fgSizerMain->Add( info, 0, wxALL, 5 );
+
+	wxBoxSizer * bSizerFile = new wxBoxSizer( wxHORIZONTAL );
+
+	m_lang.Create( this, wxID_ANY, result.GetString(1) );
+	bSizerFile->Add( &m_lang, 1, wxALL, 5 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Extension") );
+	info->Wrap( -1 );
+	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+
+	m_type.Create( this, wxID_ANY, result.GetString(2) );
+	bSizerFile->Add( &m_type, 1, wxALL, 5 );
+
+	fgSizerMain->Add( bSizerFile, 0, wxEXPAND, 0 );
 
 	this->SetSizer( fgSizerMain );
 	this->Layout();
@@ -278,7 +300,7 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 
 	wxBoxSizer * owner = panel->GetOwner();
 	if (owner == NULL) return;
-	
+
 	int height; panel->GetSize(NULL, &height);
 
 	wxSizerItem * item = owner->GetItem(panel);
@@ -313,23 +335,23 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
 
 	wxPanel * panel = new TitlePanel( m_notebook, book );
 	m_notebook->AddPage( panel, _("General"), false );
-	
+
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizer->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
 
 	SetSizer( sizer );
 	Layout();
-	
+
 	int h;
 	parent->GetSize(NULL, &h);
 	wxSize size = GetBestSize();
 	size.x += wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
 	size.y += 2;
-	if (size.y > h) size.y = h; 
+	if (size.y > h) size.y = h;
 	SetSize(size);
-	
+
 	Centre( wxBOTH );
-	
+
 	size_t count = m_notebook->GetPageCount();
 	for (size_t i = 0; i < count; i++) {
 		wxScrolledWindow * window = wxDynamicCast(m_notebook->GetPage(i), wxScrolledWindow);

@@ -23,6 +23,8 @@ class FbTitleDlg : public FbDialog
 				wxBoxSizer * m_series;
 				wxBoxSizer * m_genres;
 				wxTextCtrl m_title;
+				wxTextCtrl m_lang;
+				wxTextCtrl m_type;
 			protected:
 				void OnToolAdd( wxCommandEvent& event );
 				void OnToolDel( wxCommandEvent& event );
