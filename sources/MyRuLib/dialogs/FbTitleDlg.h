@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/combo.h>
+#include <wx/datectrl.h>
 #include <wx/wxsqlite3.h>
 #include "FbWindow.h"
 #include "controls/FbComboBox.h"
@@ -15,7 +16,7 @@ class FbTitleDlg : public FbDialog
 		class TitlePanel: public wxScrolledWindow
 		{
 			public:
-				TitlePanel( wxWindow* parent, int book );
+				TitlePanel( wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result );
 			protected:
 				void ArrangeControls(int height);
 			private:
@@ -25,11 +26,22 @@ class FbTitleDlg : public FbDialog
 				wxTextCtrl m_title;
 				wxTextCtrl m_lang;
 				wxTextCtrl m_type;
+				wxDatePickerCtrl m_date;
 			protected:
 				void OnToolAdd( wxCommandEvent& event );
 				void OnToolDel( wxCommandEvent& event );
 				DECLARE_EVENT_TABLE()
 				DECLARE_CLASS(TitlePanel);
+		};
+
+		class DescrPanel: public wxPanel
+		{
+			public:
+				DescrPanel( wxWindow* parent, int book, wxSQLite3ResultSet &result );
+			private:
+				wxTextCtrl m_text;
+			protected:
+				DECLARE_CLASS(DescrPanel);
 		};
 
 		class SubPanel: public wxPanel
@@ -100,6 +112,8 @@ class FbTitleDlg : public FbDialog
 
 	protected:
 		wxNotebook * m_notebook;
+		TitlePanel * m_title;
+		DescrPanel * m_descr;
 		void Init();
 };
 

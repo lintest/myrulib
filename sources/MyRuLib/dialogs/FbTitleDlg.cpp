@@ -2,6 +2,7 @@
 #include "FbTitleDlg.h"
 #include "FbString.h"
 #include "FbConst.h"
+#include "FbDateTime.h"
 #include "controls/FbTreeView.h"
 #include "models/FbAuthList.h"
 #include "FbGenres.h"
@@ -16,7 +17,7 @@
 IMPLEMENT_CLASS( FbTitleDlg::SubPanel, wxPanel )
 
 FbTitleDlg::SubPanel::SubPanel( wxWindow* parent, wxBoxSizer * owner )
-	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 ), m_owner(owner)
+	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL ), m_owner(owner)
 {
 }
 
@@ -31,7 +32,7 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
+	m_text.Create( this, wxID_ANY, text );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
@@ -84,7 +85,7 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
+	m_text.Create( this, wxID_ANY, text );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.SetMinSize( wxSize( 200, -1 ) );
 
@@ -93,7 +94,7 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 
 	wxString number;
 	if (numb) number = wxString::Format(wxT("%d"), numb);
-	m_numb.Create( this, wxID_ANY, number, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxTE_RIGHT );
+	m_numb.Create( this, wxID_ANY, number, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT );
 	bSizerMain->Add( &m_numb, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
@@ -119,7 +120,7 @@ FbTitleDlg::GenrSubPanel::GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, co
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER | wxTAB_TRAVERSAL );
+	m_text.Create( this, wxID_ANY, text );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.AssignModel(FbGenres::CreateModel());
 
@@ -140,16 +141,14 @@ FbTitleDlg::GenrSubPanel::GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, co
 
 IMPLEMENT_CLASS( FbTitleDlg::TitlePanel, wxScrolledWindow )
 
-BEGIN_EVENT_TABLE( FbTitleDlg::TitlePanel, wxPanel )
+BEGIN_EVENT_TABLE( FbTitleDlg::TitlePanel, wxScrolledWindow )
 	EVT_TOOL( wxID_ADD, FbTitleDlg::TitlePanel::OnToolAdd )
 	EVT_TOOL( wxID_DELETE, FbTitleDlg::TitlePanel::OnToolDel )
 END_EVENT_TABLE()
 
-FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
-	: wxScrolledWindow( parent )
+FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result)
+	: wxScrolledWindow( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL | wxTAB_TRAVERSAL )
 {
-	FbCommonDatabase database;
-
 	wxFlexGridSizer * fgSizerMain = new wxFlexGridSizer( 2 );
 	fgSizerMain->AddGrowableCol( 1 );
 	fgSizerMain->SetFlexibleDirection( wxBOTH );
@@ -161,12 +160,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
-	wxString sql = fbT("SELECT title, lang, file_type FROM books WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
-	stmt.Bind(1, book);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
-
-	m_title.Create( this, wxID_ANY, result.GetString(0), wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_title.Create( this, wxID_ANY, result.GetString(0) );
 	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
 	m_title.SetMinSize( wxSize( 300, -1 ) );
 
@@ -242,14 +236,22 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book)
 	wxBoxSizer * bSizerFile = new wxBoxSizer( wxHORIZONTAL );
 
 	m_lang.Create( this, wxID_ANY, result.GetString(1) );
-	bSizerFile->Add( &m_lang, 1, wxALL, 5 );
+	bSizerFile->Add( &m_lang, 1, wxALL, 3 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Extension") );
 	info->Wrap( -1 );
 	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_type.Create( this, wxID_ANY, result.GetString(2) );
-	bSizerFile->Add( &m_type, 1, wxALL, 5 );
+	bSizerFile->Add( &m_type, 1, wxALL, 3 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Date") );
+	info->Wrap( -1 );
+	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+
+	FbDateTime date = result.GetInt(3);
+	m_date.Create( this, wxID_ANY, date );
+	bSizerFile->Add( &m_date, 1, wxALL, 3 );
 
 	fgSizerMain->Add( bSizerFile, 0, wxEXPAND, 0 );
 
@@ -316,6 +318,24 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 }
 
 //-----------------------------------------------------------------------------
+//  FbTitleDlg::DescrPanel
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS( FbTitleDlg::DescrPanel, wxPanel )
+
+FbTitleDlg::DescrPanel::DescrPanel( wxWindow* parent, int book, wxSQLite3ResultSet &result )
+	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 )
+{
+	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
+	
+	m_text.Create( this, wxID_ANY, result.GetString(4), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
+	bSizerMain->Add( &m_text, 1, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( bSizerMain );
+	this->Layout();
+}
+
+//-----------------------------------------------------------------------------
 //  FbTitleDlg
 //-----------------------------------------------------------------------------
 
@@ -326,15 +346,21 @@ bool FbTitleDlg::Execute(int book)
 }
 
 FbTitleDlg::FbTitleDlg( wxWindow* parent, int book )
-	: FbDialog( parent, wxID_ANY, _("Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER | wxTAB_TRAVERSAL )
+	: FbDialog( parent, wxID_ANY, _("Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
 {
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
 	sizer->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
-	wxPanel * panel = new TitlePanel( m_notebook, book );
-	m_notebook->AddPage( panel, _("General"), false );
+	FbCommonDatabase database;
+	wxString sql = fbT("SELECT title, lang, file_type, created, description FROM books WHERE id=? LIMIT 1");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	stmt.Bind(1, book);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	m_notebook->AddPage( m_title = new TitlePanel( m_notebook, book, database, result ), _("General"), true );
+	m_notebook->AddPage( m_descr = new DescrPanel( m_notebook, book, result ), _("Annotation"), false );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizer->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );

@@ -2197,3 +2197,6 @@ msgstr "Скопировать адрес ссылки"
 
 msgid "Show in folder"
 msgstr "Показать в папке"
+
+msgid "Annotation"
+msgstr "Аннотация"
