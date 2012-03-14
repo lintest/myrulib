@@ -282,13 +282,12 @@ void FbTitleDlg::TitlePanel::OnToolAdd( wxCommandEvent& event )
 	wxBoxSizer * owner = panel->GetOwner();
 	if (owner == NULL) return;
 
-	int height; panel->GetSize(NULL, &height);
-
 	wxWindow * prior = owner->GetChildren().GetLast()->GetData()->GetWindow();
 	panel = panel->New(this, owner);
 	panel->MoveAfterInTabOrder(prior);
 	owner->Add( panel, 1, wxEXPAND, 5 );
 
+	int height = panel->GetSize().y;
 	ArrangeControls(height);
 }
 
@@ -303,13 +302,12 @@ void FbTitleDlg::TitlePanel::OnToolDel( wxCommandEvent& event )
 	wxBoxSizer * owner = panel->GetOwner();
 	if (owner == NULL) return;
 
-	int height; panel->GetSize(NULL, &height);
-
 	wxSizerItem * item = owner->GetItem(panel);
 	if (item) {
 		if (owner->GetChildren().GetCount() == 1) {
 			panel->Empty();
 		} else {
+			int height = panel->GetSize().y;
 			owner->Detach(panel);
 			panel->Destroy();
 			ArrangeControls(-height);
@@ -327,10 +325,10 @@ FbTitleDlg::DescrPanel::DescrPanel( wxWindow* parent, int book, wxSQLite3ResultS
 	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_text.Create( this, wxID_ANY, result.GetString(4), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_WORDWRAP );
 	bSizerMain->Add( &m_text, 1, wxALL|wxEXPAND, 5 );
-	
+
 	this->SetSizer( bSizerMain );
 	this->Layout();
 }
