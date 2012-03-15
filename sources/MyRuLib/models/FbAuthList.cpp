@@ -80,7 +80,7 @@ void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
 	while (result.NextRow()) {
 		if (IsClosed()) return;
 		int code = result.GetInt(0);
-		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(code, result.GetString(1));
+		if (id == ID_MODEL_CREATE) FbCollection::AddAuth(code, result.GetString(1).Trim(true));
 		items.Add(code);
 		count++;
 		if (count == length) {

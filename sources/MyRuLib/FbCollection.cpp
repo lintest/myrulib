@@ -144,7 +144,7 @@ wxString FbCollection::GetSeqn(int code, size_t col)
 	} else {
 		wxString sql = wxT("SELECT value FROM sequences WHERE id="); sql << code;
 		wxSQLite3ResultSet result = collection->m_database.ExecuteQuery(sql);
-		wxString name = result.NextRow() ? result.GetString(0) : wxString();
+		wxString name = result.NextRow() ? result.GetString(0).Trim(true) : wxString();
 		collection->m_seqns[code] = name;
 		return name;
 	}
@@ -163,7 +163,7 @@ wxString FbCollection::GetAuth(int code, size_t col)
 	} else {
 		wxString sql = wxT("SELECT full_name, number FROM authors WHERE id="); sql << code;
 		wxSQLite3ResultSet result = collection->m_database.ExecuteQuery(sql);
-		wxString name = result.NextRow() ? result.GetString(0) : wxString();
+		wxString name = result.NextRow() ? result.GetString(0).Trim(true) : wxString();
 		collection->m_auths[code] = name;
 		return name;
 	}

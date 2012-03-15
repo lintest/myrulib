@@ -22,17 +22,26 @@ FbTitleDlg::SubPanel::SubPanel( wxWindow* parent, wxBoxSizer * owner )
 }
 
 //-----------------------------------------------------------------------------
-//  FbTitleDlg::AuthSubPanel
+//  FbTitleDlg::AuthPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::AuthSubPanel, FbTitleDlg::SubPanel )
+IMPLEMENT_CLASS( FbTitleDlg::AuthPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, int book, const wxString & text )
+BEGIN_EVENT_TABLE(FbTitleDlg::AuthPanel, FbTitleDlg::SubPanel)
+	EVT_TEXT_ENTER(ID_MASTER_FIND, FbTitleDlg::AuthPanel::OnTextEnter)
+	EVT_FB_ARRAY(ID_MODEL_CREATE, FbTitleDlg::AuthPanel::OnModel)
+	EVT_TIMER(ID_MASTER_LIST, FbTitleDlg::AuthPanel::OnTimer)
+END_EVENT_TABLE()
+
+FbTitleDlg::AuthPanel::AuthPanel( wxWindow* parent, wxBoxSizer * owner, int code, const wxString & text )
 	: SubPanel( parent, owner )
+	, m_timer(this, ID_MASTER_LIST)
+	, m_thread(NULL)
+	, m_code(code)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text );
+	m_text.Create( this, ID_MASTER_FIND, text.Strip(), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
@@ -41,46 +50,81 @@ FbTitleDlg::AuthSubPanel::AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 	m_toolbar.Realize();
 	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
 
-//	m_text.Connect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
-	m_text.Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
+	m_text.Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthPanel::OnText ), NULL, this );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
 }
 
-FbTitleDlg::AuthSubPanel::~AuthSubPanel()
+FbTitleDlg::AuthPanel::~AuthPanel()
 {
-//	m_text.Disconnect( wxEVT_CHAR, wxKeyEventHandler( AuthSubPanel::OnChar ), NULL, this );
-	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthSubPanel::OnText ), NULL, this );
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthPanel::OnText ), NULL, this );
 }
 
-void FbTitleDlg::AuthSubPanel::OnChar( wxKeyEvent& event )
+void FbTitleDlg::AuthPanel::OnTextEnter( wxCommandEvent& event )
 {
-	event.Skip();
-	if (m_text.IsPopupShown()) {
-		wxLogWarning(wxT("key"));
-	} else {
-		switch (event.GetKeyCode()) {
-			case WXK_DOWN:
-				m_text.ShowPopup(); break;
-		}
+	m_timer.Stop();
+	StartThread();
+}
+
+void FbTitleDlg::AuthPanel::OnText( wxCommandEvent& event )
+{
+	m_timer.Start(1000, true);
+}
+
+void FbTitleDlg::AuthPanel::OnTimer( wxTimerEvent& event )
+{
+	StartThread();
+}
+
+void FbTitleDlg::AuthPanel::StartThread()
+{
+	wxString text = m_text.GetValue();
+	if (text.IsEmpty() || wxString(m_text.GetCurrent()) == text) return;
+
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+
+	m_thread = new AuthThread(this, text);
+	m_thread->Execute();
+}
+
+void FbTitleDlg::AuthPanel::OnModel( FbArrayEvent& event )
+{
+	FbAuthListModel * model = new FbAuthListModel(event.GetArray());
+	m_text.AssignModel(model);
+	switch (size_t count = model->GetRowCount()) {
+		case 0: {
+			m_code = 0; 
+		} break;
+		case 1: {
+			FbModelItem item = m_text.GetCurrent();
+			FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+			if (current) m_code = current->GetCode();
+			m_text.SetValue(item);
+		} break;
+		default: {
+			m_text.ShowPopup(); 
+		} break;
 	}
 }
 
-void FbTitleDlg::AuthSubPanel::OnText( wxCommandEvent& event )
-{
-	wxLogWarning(m_text.GetValue());
-	event.Skip();
-}
-
 //-----------------------------------------------------------------------------
-//  FbTitleDlg::SeqnSubPanel
+//  FbTitleDlg::SeqnPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::SeqnSubPanel, FbTitleDlg::SubPanel )
+IMPLEMENT_CLASS( FbTitleDlg::SeqnPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, int code, const wxString & text, int numb )
+FbTitleDlg::SeqnPanel::SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code, const wxString & text, int numb )
 	: SubPanel( parent, owner )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
@@ -110,17 +154,17 @@ FbTitleDlg::SeqnSubPanel::SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, in
 }
 
 //-----------------------------------------------------------------------------
-//  FbTitleDlg::GenrSubPanel
+//  FbTitleDlg::GenrPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::GenrSubPanel, FbTitleDlg::SubPanel )
+IMPLEMENT_CLASS( FbTitleDlg::GenrPanel, FbTitleDlg::SubPanel )
 
-FbTitleDlg::GenrSubPanel::GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code, const wxString & text)
+FbTitleDlg::GenrPanel::GenrPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code, const wxString & text)
 	: SubPanel( parent, owner )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text );
+	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.AssignModel(FbGenres::CreateModel());
 
@@ -175,10 +219,10 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Databas
 		stmt.Bind(1, book);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.Eof()) {
-			m_authors->Add( new AuthSubPanel(this, m_authors), 1, wxEXPAND, 5 );
+			m_authors->Add( new AuthPanel(this, m_authors), 1, wxEXPAND, 5 );
 		} else {
 			while (result.NextRow()) {
-				SubPanel * panel = new AuthSubPanel(this, m_authors, result.GetInt(0), result.GetString(1));
+				SubPanel * panel = new AuthPanel(this, m_authors, result.GetInt(0), result.GetString(1));
 				m_authors->Add( panel, 1, wxEXPAND, 5 );
 			}
 		}
@@ -196,10 +240,10 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Databas
 		stmt.Bind(1, book);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.Eof()) {
-			m_series->Add( new SeqnSubPanel(this, m_series), 1, wxEXPAND, 5 );
+			m_series->Add( new SeqnPanel(this, m_series), 1, wxEXPAND, 5 );
 		} else {
 			while (result.NextRow()) {
-				SubPanel * panel = new SeqnSubPanel(this, m_series, result.GetInt(0), result.GetString(1), result.GetInt(2));
+				SubPanel * panel = new SeqnPanel(this, m_series, result.GetInt(0), result.GetString(1), result.GetInt(2));
 				m_series->Add( panel, 1, wxEXPAND, 5 );
 			}
 		}
@@ -219,10 +263,10 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Databas
 		stmt.Bind(1, book);
 		wxSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.Eof()) {
-			m_genres->Add( new GenrSubPanel(this, m_genres), 1, wxEXPAND, 5 );
+			m_genres->Add( new GenrPanel(this, m_genres), 1, wxEXPAND, 5 );
 		} else {
 			while (result.NextRow()) {
-				SubPanel * panel = new GenrSubPanel(this, m_genres, result.GetString(0), result.GetString(1));
+				SubPanel * panel = new GenrPanel(this, m_genres, result.GetString(0), result.GetString(1));
 				m_genres->Add( panel, 1, wxEXPAND, 5 );
 			}
 		}
@@ -331,6 +375,30 @@ FbTitleDlg::DescrPanel::DescrPanel( wxWindow* parent, int book, wxSQLite3ResultS
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
+}
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::AuthThread
+//-----------------------------------------------------------------------------
+
+void * FbTitleDlg::AuthThread::Entry()
+{
+	wxString text = m_name.Strip();
+	MakeLower(text) << wxT('*');
+
+	FbCommonDatabase database;
+	wxString sql = wxT("SELECT docid FROM fts_auth WHERE fts_auth MATCH ? ORDER BY content");
+	wxSQLite3Statement stmt = database.PrepareStatement(sql); stmt.Bind(1, text);
+	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+
+	wxArrayInt items;
+	while (result.NextRow()) {
+		if (IsClosed()) return NULL;
+		items.Add(result.GetInt(0));
+	}
+	FbArrayEvent(ID_MODEL_CREATE, items).Post(m_frame);
+
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------

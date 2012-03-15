@@ -5,6 +5,9 @@
 #include <wx/combo.h>
 #include <wx/datectrl.h>
 #include <wx/wxsqlite3.h>
+#include "FbConst.h"
+#include "FbBookEvent.h"
+#include "FbThread.h"
 #include "FbWindow.h"
 #include "controls/FbComboBox.h"
 
@@ -56,52 +59,71 @@ class FbTitleDlg : public FbDialog
 				DECLARE_CLASS(SubPanel);
 		};
 
-		class AuthSubPanel: public SubPanel
+		class AuthPanel: public SubPanel
 		{
 			public:
-				AuthSubPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString );
-				virtual ~AuthSubPanel();
+				AuthPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString );
+				virtual ~AuthPanel();
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
-					{ return new AuthSubPanel(parent, owner); }
+					{ return new AuthPanel(parent, owner); }
 				virtual void Empty()
 					{}
 			private:
+				void StartThread();
 				wxToolBar m_toolbar;
-				FbCustomCombo m_text;
+				FbComboBox m_text;
+				wxTimer m_timer;
+				FbThread * m_thread;
+				int m_code;
 			private:
-				void OnChar( wxKeyEvent& event );
 				void OnText( wxCommandEvent& event );
-				DECLARE_CLASS(AuthSubPanel);
+				void OnTextEnter( wxCommandEvent& event );
+				void OnTimer( wxTimerEvent& event );
+				void OnModel( FbArrayEvent& event );
+				DECLARE_CLASS(AuthPanel)
+				DECLARE_EVENT_TABLE()
 		};
 
-		class SeqnSubPanel: public SubPanel
+		class SeqnPanel: public SubPanel
 		{
 			public:
-				SeqnSubPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString, int numb = 0);
+				SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString, int numb = 0);
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
-					{ return new SeqnSubPanel(parent, owner); }
+					{ return new SeqnPanel(parent, owner); }
 				virtual void Empty()
 					{}
 			private:
 				wxToolBar m_toolbar;
 				FbCustomCombo m_text;
 				wxTextCtrl m_numb;
-				DECLARE_CLASS(SeqnSubPanel);
+				DECLARE_CLASS(SeqnPanel);
 		};
 
-		class GenrSubPanel: public SubPanel
+		class GenrPanel: public SubPanel
 		{
 			public:
-				GenrSubPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code = wxEmptyString, const wxString & text = wxEmptyString);
+				GenrPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code = wxEmptyString, const wxString & text = wxEmptyString);
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
-					{ return new GenrSubPanel(parent, owner); }
+					{ return new GenrPanel(parent, owner); }
 				virtual void Empty()
 					{}
 			private:
 				wxToolBar m_toolbar;
 				FbComboBox m_text;
 				wxTextCtrl m_numb;
-				DECLARE_CLASS(GenrSubPanel);
+				DECLARE_CLASS(GenrPanel);
+		};
+
+		class AuthThread : public FbThread
+		{
+			public:
+				AuthThread(wxEvtHandler * frame, const wxString & name)
+					: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_name(name) {}
+			protected:
+				virtual void * Entry();
+			private:
+				wxEvtHandler * m_frame;
+				const wxString m_name;
 		};
 
 	public:
