@@ -5,6 +5,7 @@
 #include "FbDateTime.h"
 #include "controls/FbTreeView.h"
 #include "models/FbAuthList.h"
+#include "models/FbSeqnList.h"
 #include "FbGenres.h"
 #include "res/add.xpm"
 #include "res/del.xpm"
@@ -94,7 +95,7 @@ void FbTitleDlg::AuthPanel::StartThread()
 		wxDELETE(m_thread);
 	}
 
-	m_thread = new AuthThread(this, text);
+	m_thread = new SearchThread(this, wxT("fts_auth"), text);
 	m_thread->Execute();
 }
 
@@ -124,12 +125,21 @@ void FbTitleDlg::AuthPanel::OnModel( FbArrayEvent& event )
 
 IMPLEMENT_CLASS( FbTitleDlg::SeqnPanel, FbTitleDlg::SubPanel )
 
+BEGIN_EVENT_TABLE(FbTitleDlg::SeqnPanel, FbTitleDlg::SubPanel)
+	EVT_TEXT_ENTER(ID_MASTER_FIND, FbTitleDlg::SeqnPanel::OnTextEnter)
+	EVT_FB_ARRAY(ID_MODEL_CREATE, FbTitleDlg::SeqnPanel::OnModel)
+	EVT_TIMER(ID_MASTER_LIST, FbTitleDlg::SeqnPanel::OnTimer)
+END_EVENT_TABLE()
+
 FbTitleDlg::SeqnPanel::SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code, const wxString & text, int numb )
 	: SubPanel( parent, owner )
+	, m_timer(this, ID_MASTER_LIST)
+	, m_thread(NULL)
+	, m_code(code)
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text );
+	m_text.Create( this, ID_MASTER_FIND, text.Strip(), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.SetMinSize( wxSize( 200, -1 ) );
 
@@ -145,12 +155,74 @@ FbTitleDlg::SeqnPanel::SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code
 	m_toolbar.AddTool( wxID_ADD, _("Append"), wxBitmap(add_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 	m_toolbar.AddTool( wxID_DELETE, _("Delete"), wxBitmap(del_xpm), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxEmptyString, NULL );
 	m_toolbar.Realize();
-
 	bSizerMain->Add( &m_toolbar, 0, wxALIGN_CENTER_VERTICAL, 3 );
+
+	m_text.Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SeqnPanel::OnText ), NULL, this );
 
 	this->SetSizer( bSizerMain );
 	this->Layout();
 	bSizerMain->Fit( this );
+}
+
+FbTitleDlg::SeqnPanel::~SeqnPanel()
+{
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SeqnPanel::OnText ), NULL, this );
+}
+
+void FbTitleDlg::SeqnPanel::OnTextEnter( wxCommandEvent& event )
+{
+	m_timer.Stop();
+	StartThread();
+}
+
+void FbTitleDlg::SeqnPanel::OnText( wxCommandEvent& event )
+{
+	m_timer.Start(1000, true);
+}
+
+void FbTitleDlg::SeqnPanel::OnTimer( wxTimerEvent& event )
+{
+	StartThread();
+}
+
+void FbTitleDlg::SeqnPanel::StartThread()
+{
+	wxString text = m_text.GetValue();
+	if (text.IsEmpty() || wxString(m_text.GetCurrent()) == text) return;
+
+	if (m_thread) {
+		m_thread->Close();
+		m_thread->Wait();
+		wxDELETE(m_thread);
+	}
+
+	m_thread = new SearchThread(this, wxT("fts_seqn"), text);
+	m_thread->Execute();
+}
+
+void FbTitleDlg::SeqnPanel::OnModel( FbArrayEvent& event )
+{
+	FbSeqnListModel * model = new FbSeqnListModel(event.GetArray());
+	m_text.AssignModel(model);
+	switch (size_t count = model->GetRowCount()) {
+		case 0: {
+			m_code = 0; 
+		} break;
+		case 1: {
+			FbModelItem item = m_text.GetCurrent();
+			FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+			if (current) m_code = current->GetCode();
+			m_text.SetValue(item);
+		} break;
+		default: {
+			m_text.ShowPopup(); 
+		} break;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -378,16 +450,17 @@ FbTitleDlg::DescrPanel::DescrPanel( wxWindow* parent, int book, wxSQLite3ResultS
 }
 
 //-----------------------------------------------------------------------------
-//  FbTitleDlg::AuthThread
+//  FbTitleDlg::SearchThread
 //-----------------------------------------------------------------------------
 
-void * FbTitleDlg::AuthThread::Entry()
+void * FbTitleDlg::SearchThread::Entry()
 {
-	wxString text = m_name.Strip();
+	wxString text = m_text.Strip();
 	MakeLower(text) << wxT('*');
 
 	FbCommonDatabase database;
-	wxString sql = wxT("SELECT docid FROM fts_auth WHERE fts_auth MATCH ? ORDER BY content");
+	wxString sql = wxT("SELECT docid FROM %s WHERE %s MATCH ? ORDER BY content");
+	sql = wxString::Format(sql, m_table.c_str(), m_table.c_str());
 	wxSQLite3Statement stmt = database.PrepareStatement(sql); stmt.Bind(1, text);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 

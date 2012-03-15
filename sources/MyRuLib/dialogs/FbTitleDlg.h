@@ -88,15 +88,26 @@ class FbTitleDlg : public FbDialog
 		{
 			public:
 				SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code = 0, const wxString & text = wxEmptyString, int numb = 0);
+				virtual ~SeqnPanel();
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new SeqnPanel(parent, owner); }
 				virtual void Empty()
 					{}
 			private:
+				void StartThread();
 				wxToolBar m_toolbar;
-				FbCustomCombo m_text;
+				FbComboBox m_text;
+				wxTimer m_timer;
+				FbThread * m_thread;
 				wxTextCtrl m_numb;
+				int m_code;
+			private:
+				void OnText( wxCommandEvent& event );
+				void OnTextEnter( wxCommandEvent& event );
+				void OnTimer( wxTimerEvent& event );
+				void OnModel( FbArrayEvent& event );
 				DECLARE_CLASS(SeqnPanel);
+				DECLARE_EVENT_TABLE()
 		};
 
 		class GenrPanel: public SubPanel
@@ -114,16 +125,17 @@ class FbTitleDlg : public FbDialog
 				DECLARE_CLASS(GenrPanel);
 		};
 
-		class AuthThread : public FbThread
+		class SearchThread : public FbThread
 		{
 			public:
-				AuthThread(wxEvtHandler * frame, const wxString & name)
-					: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_name(name) {}
+				SearchThread(wxEvtHandler * frame, const wxString & table, const wxString & text)
+					: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_table(table), m_text(text) {}
 			protected:
 				virtual void * Entry();
 			private:
 				wxEvtHandler * m_frame;
-				const wxString m_name;
+				const wxString m_table;
+				const wxString m_text;
 		};
 
 	public:
