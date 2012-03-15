@@ -610,3 +610,8 @@ FbModel * FbComboBox::GetModel() const
 	FbComboPopup * popup = GetVListBoxComboPopup();
 	return popup ? popup->GetModel() : m_initModel;
 }
+
+wxString FbComboBox::GetText()
+{
+	return GetCurrent()[0];
+}

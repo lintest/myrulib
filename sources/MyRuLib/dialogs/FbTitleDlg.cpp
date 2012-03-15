@@ -87,7 +87,7 @@ void FbTitleDlg::AuthPanel::OnTimer( wxTimerEvent& event )
 void FbTitleDlg::AuthPanel::StartThread()
 {
 	wxString text = m_text.GetValue();
-	if (text.IsEmpty() || wxString(m_text.GetCurrent()) == text) return;
+	if (text.IsEmpty() || m_text.GetText() == text) return;
 
 	if (m_thread) {
 		m_thread->Close();
@@ -193,7 +193,7 @@ void FbTitleDlg::SeqnPanel::OnTimer( wxTimerEvent& event )
 void FbTitleDlg::SeqnPanel::StartThread()
 {
 	wxString text = m_text.GetValue();
-	if (text.IsEmpty() || wxString(m_text.GetCurrent()) == text) return;
+	if (text.IsEmpty() || m_text.GetText() == text) return;
 
 	if (m_thread) {
 		m_thread->Close();

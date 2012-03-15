@@ -277,6 +277,8 @@ public:
 
 	FbModelItem GetCurrent();
 
+	wxString GetText();
+
 protected:
 
 	// Callback for drawing. Font, background and text colour have been
