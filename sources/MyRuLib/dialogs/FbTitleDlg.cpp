@@ -148,7 +148,7 @@ FbTitleDlg::SeqnPanel::SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code
 
 	wxString number;
 	if (numb) number = wxString::Format(wxT("%d"), numb);
-	m_numb.Create( this, wxID_ANY, number, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT );
+	m_numb.Create( this, wxID_ANY, number, wxDefaultPosition, wxDefaultSize, wxTE_RIGHT | wxTE_PROCESS_ENTER );
 	bSizerMain->Add( &m_numb, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
@@ -236,7 +236,7 @@ FbTitleDlg::GenrPanel::GenrPanel( wxWindow* parent, wxBoxSizer * owner, const wx
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxHORIZONTAL );
 
-	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxCB_READONLY);
+	m_text.Create( this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, wxCB_READONLY | wxTE_PROCESS_ENTER );
 	bSizerMain->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 	m_text.AssignModel(FbGenres::CreateModel());
 
@@ -276,7 +276,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Databas
 	info->Wrap( -1 );
 	fgSizerMain->Add( info, 0, wxALL, 5 );
 
-	m_title.Create( this, wxID_ANY, result.GetString(0) );
+	m_title.Create( this, wxID_ANY, result.GetString(0), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
 	m_title.SetMinSize( wxSize( 300, -1 ) );
 
@@ -351,14 +351,14 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Databas
 
 	wxBoxSizer * bSizerFile = new wxBoxSizer( wxHORIZONTAL );
 
-	m_lang.Create( this, wxID_ANY, result.GetString(1) );
+	m_lang.Create( this, wxID_ANY, result.GetString(1), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerFile->Add( &m_lang, 1, wxALL, 3 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Extension") );
 	info->Wrap( -1 );
 	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
-	m_type.Create( this, wxID_ANY, result.GetString(2) );
+	m_type.Create( this, wxID_ANY, result.GetString(2), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerFile->Add( &m_type, 1, wxALL, 3 );
 
 	info = new wxStaticText( this, wxID_ANY, _("Date") );
@@ -366,7 +366,7 @@ FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Databas
 	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
 
 	FbDateTime date = result.GetInt(3);
-	m_date.Create( this, wxID_ANY, date );
+	m_date.Create( this, wxID_ANY, date, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizerFile->Add( &m_date, 1, wxALL, 3 );
 
 	fgSizerMain->Add( bSizerFile, 0, wxEXPAND, 0 );
