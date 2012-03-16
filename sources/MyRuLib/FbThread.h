@@ -16,12 +16,18 @@ class FbThread
 	: public wxThread
 {
 public:
+	static void DeleteRef(FbThread * thread);
+
 	FbThread(wxThreadKind kind = wxTHREAD_DETACHED)
 		: wxThread(kind), m_closed(false) {}
+
 	void Execute()
 		{ if ( Create() == wxTHREAD_NO_ERROR ) Run(); }
+
 	bool IsClosed();
+
 	virtual void Close();
+
 private:
 	static wxCriticalSection sm_section;
 	bool m_closed;

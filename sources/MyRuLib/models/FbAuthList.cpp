@@ -130,10 +130,14 @@ wxString FbAuthListData::GetValue(FbModel & model, size_t col) const
 
 IMPLEMENT_CLASS(FbAuthListModel, FbListModel)
 
-FbAuthListModel::FbAuthListModel(const wxArrayInt &items)
+FbAuthListModel::FbAuthListModel(const wxArrayInt &items, int code)
 {
-	m_position = items.Count() == 0 ? 0 : 1;
+	m_position = items.Count() ? 1 : 0;
 	Append(items);
+	if (code) {
+		int i = items.Index(code);
+		if (i != wxNOT_FOUND) m_position = (size_t)i + 1;
+	}
 }
 
 FbAuthListModel::~FbAuthListModel(void)

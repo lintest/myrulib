@@ -60,12 +60,8 @@ FbTitleDlg::AuthPanel::AuthPanel( wxWindow* parent, wxBoxSizer * owner, int code
 
 FbTitleDlg::AuthPanel::~AuthPanel()
 {
-	if (m_thread) {
-		m_thread->Close();
-		m_thread->Wait();
-		wxDELETE(m_thread);
-	}
 	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( AuthPanel::OnText ), NULL, this );
+	FbThread::DeleteRef(m_thread);
 }
 
 void FbTitleDlg::AuthPanel::OnTextEnter( wxCommandEvent& event )
@@ -88,34 +84,23 @@ void FbTitleDlg::AuthPanel::StartThread()
 {
 	wxString text = m_text.GetValue();
 	if (text.IsEmpty() || m_text.GetText() == text) return;
-
-	if (m_thread) {
-		m_thread->Close();
-		m_thread->Wait();
-		wxDELETE(m_thread);
-	}
-
-	m_thread = new SearchThread(this, wxT("fts_auth"), text);
+	FbThread::DeleteRef(m_thread);
+	m_thread = new SearchThread(this, ID_MODEL_CREATE, wxT("fts_auth"), text);
 	m_thread->Execute();
 }
 
 void FbTitleDlg::AuthPanel::OnModel( FbArrayEvent& event )
 {
-	FbAuthListModel * model = new FbAuthListModel(event.GetArray());
+	int m_code = event.GetInt();
+	FbAuthListModel * model = new FbAuthListModel(event.GetArray(), m_code);
 	m_text.AssignModel(model);
-	switch (size_t count = model->GetRowCount()) {
-		case 0: {
-			m_code = 0; 
-		} break;
-		case 1: {
-			FbModelItem item = m_text.GetCurrent();
-			FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
-			if (current) m_code = current->GetCode();
-			m_text.SetValue(item);
-		} break;
-		default: {
-			m_text.ShowPopup(); 
-		} break;
+	if (m_code) {
+		FbModelItem item = m_text.GetCurrent();
+		FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+		if (current) m_code = current->GetCode();
+		m_text.SetValue(item);
+	} else {
+		if (model->GetRowCount()) m_text.ShowPopup(); 
 	}
 }
 
@@ -166,12 +151,8 @@ FbTitleDlg::SeqnPanel::SeqnPanel( wxWindow* parent, wxBoxSizer * owner, int code
 
 FbTitleDlg::SeqnPanel::~SeqnPanel()
 {
-	if (m_thread) {
-		m_thread->Close();
-		m_thread->Wait();
-		wxDELETE(m_thread);
-	}
 	m_text.Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( SeqnPanel::OnText ), NULL, this );
+	FbThread::DeleteRef(m_thread);
 }
 
 void FbTitleDlg::SeqnPanel::OnTextEnter( wxCommandEvent& event )
@@ -194,34 +175,23 @@ void FbTitleDlg::SeqnPanel::StartThread()
 {
 	wxString text = m_text.GetValue();
 	if (text.IsEmpty() || m_text.GetText() == text) return;
-
-	if (m_thread) {
-		m_thread->Close();
-		m_thread->Wait();
-		wxDELETE(m_thread);
-	}
-
-	m_thread = new SearchThread(this, wxT("fts_seqn"), text);
+	FbThread::DeleteRef(m_thread);
+	m_thread = new SearchThread(this, ID_MODEL_CREATE, wxT("fts_seqn"), text);
 	m_thread->Execute();
 }
 
 void FbTitleDlg::SeqnPanel::OnModel( FbArrayEvent& event )
 {
-	FbSeqnListModel * model = new FbSeqnListModel(event.GetArray());
+	int m_code = event.GetInt();
+	FbSeqnListModel * model = new FbSeqnListModel(event.GetArray(), m_code);
 	m_text.AssignModel(model);
-	switch (size_t count = model->GetRowCount()) {
-		case 0: {
-			m_code = 0; 
-		} break;
-		case 1: {
-			FbModelItem item = m_text.GetCurrent();
-			FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
-			if (current) m_code = current->GetCode();
-			m_text.SetValue(item);
-		} break;
-		default: {
-			m_text.ShowPopup(); 
-		} break;
+	if (m_code) {
+		FbModelItem item = m_text.GetCurrent();
+		FbAuthListData * current = wxDynamicCast(&item, FbAuthListData);
+		if (current) m_code = current->GetCode();
+		m_text.SetValue(item);
+	} else {
+		if (model->GetRowCount()) m_text.ShowPopup(); 
 	}
 }
 
@@ -464,12 +434,34 @@ void * FbTitleDlg::SearchThread::Entry()
 	wxSQLite3Statement stmt = database.PrepareStatement(sql); stmt.Bind(1, text);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 
+	int code = 0;
 	wxArrayInt items;
 	while (result.NextRow()) {
 		if (IsClosed()) return NULL;
-		items.Add(result.GetInt(0));
+		code = result.GetInt(0);
+		items.Add(code);
 	}
-	FbArrayEvent(ID_MODEL_CREATE, items).Post(m_frame);
+
+	switch (size_t count = items.Count()) {
+		case 1: {
+			wxString text = m_text.BeforeFirst(wxT(' '));
+			if (text == m_text) break;
+			MakeLower(text) << wxT('*');
+			items.Clear();
+			stmt.Reset();
+			stmt.Bind(1, text);
+			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			while (result.NextRow()) {
+				if (IsClosed()) return NULL;
+				items.Add(result.GetInt(0));
+			}
+		} break;
+		case 0:
+		default:
+			code = 0; 
+	}
+
+	FbArrayEvent(m_id, items, code).Post(m_frame);
 
 	return NULL;
 }

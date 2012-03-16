@@ -8,6 +8,15 @@
 
 wxCriticalSection FbThread::sm_section;
 
+void FbThread::DeleteRef(FbThread * thread)
+{
+	if (thread) {
+		thread->Close();
+		thread->Wait();
+		wxDELETE(thread);
+	}
+}
+
 bool FbThread::IsClosed()
 {
 	wxCriticalSectionLocker locker(sm_section);

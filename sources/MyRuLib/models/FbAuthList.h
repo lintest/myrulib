@@ -62,7 +62,7 @@ class FbAuthListData: public FbModelData
 class FbAuthListModel: public FbListModel
 {
 	public:
-		FbAuthListModel(const wxArrayInt &items);
+		FbAuthListModel(const wxArrayInt &items, int code = 0);
 		virtual ~FbAuthListModel(void);
 		virtual void Append(FbModelData * data);
 		virtual void Replace(FbModelData * data);

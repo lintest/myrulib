@@ -128,14 +128,15 @@ class FbTitleDlg : public FbDialog
 		class SearchThread : public FbThread
 		{
 			public:
-				SearchThread(wxEvtHandler * frame, const wxString & table, const wxString & text)
-					: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_table(table), m_text(text) {}
+				SearchThread(wxEvtHandler * frame, wxWindowID id,  const wxString & table, const wxString & text)
+					: FbThread(wxTHREAD_JOINABLE), m_frame(frame), m_table(table), m_text(text), m_id(id) {}
 			protected:
 				virtual void * Entry();
 			private:
 				wxEvtHandler * m_frame;
 				const wxString m_table;
 				const wxString m_text;
+				int m_id;
 		};
 
 	public:
