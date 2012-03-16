@@ -42,9 +42,9 @@ class FbTitleDlg : public FbDialog
 			protected:
 				void ArrangeControls(int height);
 			private:
-				wxBoxSizer m_authors;
-				wxBoxSizer m_series;
-				wxBoxSizer m_genres;
+				wxBoxSizer * m_authors;
+				wxBoxSizer * m_series;
+				wxBoxSizer * m_genres;
 				wxTextCtrl m_title;
 				wxTextCtrl m_lang;
 				wxTextCtrl m_type;
@@ -86,8 +86,7 @@ class FbTitleDlg : public FbDialog
 				virtual ~AuthPanel();
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new AuthPanel(parent, owner); }
-				virtual void Empty()
-					{}
+				virtual void Empty();
 				int GetCode();
 			private:
 				void StartThread();
@@ -112,8 +111,7 @@ class FbTitleDlg : public FbDialog
 				virtual ~SeqnPanel();
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new SeqnPanel(parent, owner); }
-				virtual void Empty()
-					{}
+				virtual void Empty();
 				int GetCode();
 				int GetNumb();
 			private:
@@ -139,8 +137,7 @@ class FbTitleDlg : public FbDialog
 				GenrPanel( wxWindow* parent, wxBoxSizer * owner, const wxString & code = wxEmptyString, const wxString & text = wxEmptyString);
 				virtual SubPanel * New( wxWindow* parent, wxBoxSizer * owner )
 					{ return new GenrPanel(parent, owner); }
-				virtual void Empty()
-					{}
+				virtual void Empty();
 				wxString GetCode();
 			private:
 				wxToolBar m_toolbar;

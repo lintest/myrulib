@@ -16,7 +16,9 @@ class FbThread
 	: public wxThread
 {
 public:
-	static void DeleteRef(FbThread * thread);
+    typedef FbThread * PFbThread;
+
+	static void DeleteRef(PFbThread & thread);
 
 	FbThread(wxThreadKind kind = wxTHREAD_DETACHED)
 		: wxThread(kind), m_closed(false) {}

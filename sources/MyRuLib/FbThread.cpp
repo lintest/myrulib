@@ -8,12 +8,13 @@
 
 wxCriticalSection FbThread::sm_section;
 
-void FbThread::DeleteRef(FbThread * thread)
+void FbThread::DeleteRef(PFbThread & thread)
 {
 	if (thread) {
 		thread->Close();
 		thread->Wait();
-		wxDELETE(thread);
+		delete thread;
+		thread = NULL;
 	}
 }
 
