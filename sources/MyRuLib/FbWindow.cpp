@@ -59,9 +59,27 @@ void FbDialog::Assign(long winid, int param, bool write)
 			wxColor colour = control->GetColour();
 			FbParams(param) = colour.Red() * 0x10000 + colour.Green() * 0x100 + colour.Blue();
 		} else {
-			wxColor colour(wxString::Format(wxT("#%06x"), (int)FbParams(param))); 
+			wxColor colour(wxString::Format(wxT("#%06x"), (int)FbParams(param)));
 			control->SetColour(colour);
 		}
 	} else wxLogError(wxT("Control not found: %d"), winid);
 }
 
+wxString FbDialog::GetCommandSQL(const wxString &table)
+{
+wxString sql = wxT("\
+SELECT\
+	b.file_type,t.command,CASE WHEN b.file_type='fb2' THEN 1 ELSE 2 END \
+FROM(\
+	SELECT DISTINCT LOWER(file_type) AS file_type FROM books WHERE deleted IS NULL\
+	GROUP BY file_type\
+	UNION SELECT DISTINCT file_type FROM %s.types\
+	UNION SELECT 'fb2'\
+	UNION SELECT 'pdf'\
+	UNION SELECT 'djvu'\
+	UNION SELECT 'txt'\
+)AS b LEFT JOIN %s.types as t ON b.file_type=t.file_type \
+ORDER BY 3,1\
+");
+return wxString::Format(sql, table.c_str(), table.c_str());
+}

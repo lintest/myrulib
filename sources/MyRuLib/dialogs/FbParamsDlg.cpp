@@ -41,19 +41,7 @@ void * FbParamsDlg::LoadThread::Entry()
 
 void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 {
-	wxString sql = wxT("\
-		SELECT \
-			b.file_type, t.command, CASE WHEN b.file_type='fb2' THEN 1 ELSE 2 END AS key\
-		FROM ( \
-			 SELECT DISTINCT LOWER(file_type) AS file_type FROM books GROUP BY file_type \
-			 UNION SELECT DISTINCT file_type FROM config.types \
-			 UNION SELECT 'fb2' \
-			 UNION SELECT 'pdf' \
-			 UNION SELECT 'djvu' \
-			 UNION SELECT 'txt' \
-		) AS b LEFT JOIN config.types as t ON b.file_type = t.file_type \
-		ORDER BY key, b.file_type \
-	 ");
+	wxString sql = GetCommandSQL(wxT("config"));
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
@@ -253,7 +241,7 @@ void FbParamsDlg::PanelFont::AppendItem(wxFlexGridSizer* fgSizer, const wxString
 	wxColourPickerCtrl * cpValue;
 	cpValue = new wxColourPickerCtrl( this, idColour);
 	fgSizer->Add( cpValue, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5 );
-*/	
+*/
 }
 
 //-----------------------------------------------------------------------------

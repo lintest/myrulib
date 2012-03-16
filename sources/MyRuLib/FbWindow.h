@@ -34,6 +34,7 @@ class FbDialog
 			const wxString& name = wxFrameNameStr
 		);
 	protected:
+		static wxString GetCommandSQL(const wxString &table);
 		void Assign(long winid, int param, bool write);
 };
 

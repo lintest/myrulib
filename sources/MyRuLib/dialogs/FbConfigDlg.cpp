@@ -14,32 +14,32 @@
 //  FbDirectoryDlg
 //-----------------------------------------------------------------------------
 
-FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title ) 
+FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	: FbDialog( parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
 {
 	wxBoxSizer * sizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxTextCtrl * name;
 	wxBoxSizer * sizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Classifier name"));
 	info->Wrap( -1 );
 	sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	name = new wxTextCtrl( this, ID_TITLE);
 	sizer->Add( name, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	sizerMain->Add( sizer, 0, wxEXPAND, 5 );
-	
+
 	wxBoxSizer * sizerTable = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	wxStaticBoxSizer * boxDir = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Classifier contents") ), wxVERTICAL );
-	
+
 	wxFlexGridSizer * sizerDir = new wxFlexGridSizer( 2 );
 	sizerDir->AddGrowableCol( 1 );
 	sizerDir->SetFlexibleDirection( wxBOTH );
 	sizerDir->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
+
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_FILE), _("File name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_DATA), _("Table name") );
 	Append( sizerDir, CreateDirType ( this, ID_DIR_TYPE), _("Key type") );
@@ -47,41 +47,41 @@ FbDirectoryDlg::FbDirectoryDlg( wxWindow * parent, const wxString& title )
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_NAME), _("Field: name") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_INFO), _("Field: info") );
 	Append( sizerDir, new wxTextCtrl( this, ID_DIR_PRNT), _("Field: parent") );
-	
+
 	boxDir->Add( sizerDir, 1, wxEXPAND, 5 );
-	
+
 	sizerTable->Add( boxDir, 1, wxEXPAND|wxALL, 5 );
-	
+
 	wxStaticBoxSizer * boxRef = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Detailed records") ), wxVERTICAL );
-	
+
 	wxFlexGridSizer * sizerRef = new wxFlexGridSizer( 2 );
 	sizerRef->AddGrowableCol( 1 );
 	sizerRef->SetFlexibleDirection( wxBOTH );
 	sizerRef->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
+
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_FILE), _("File name") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_DATA), _("Table name") );
 	Append( sizerRef, CreateRefType ( this, ID_REF_TYPE), _("Key type") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_CODE), _("Field: code") );
 	Append( sizerRef, new wxTextCtrl( this, ID_REF_BOOK), _("Field: book") );
-	
+
 	boxRef->Add( sizerRef, 1, wxEXPAND, 5 );
-	
+
 	sizerTable->Add( boxRef, 1, wxEXPAND|wxALL, 5 );
-	
+
 	sizerMain->Add( sizerTable, 1, wxEXPAND, 5 );
 
 	sizer = new wxBoxSizer( wxHORIZONTAL );
-		
+
 	info = new wxStaticText( this, wxID_ANY, wxT("<custom-info>"));
 	info->Wrap( -1 );
 	sizer->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	wxTextCtrl * text = new wxTextCtrl( this, ID_FB2_CODE);
 	sizer->Add( text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	sizerMain->Add( sizer, 0, wxEXPAND, 5 );
-	
+
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
@@ -140,7 +140,7 @@ void FbDirectoryDlg::Set(const FbModelItem & item)
 	}
 }
 
-void FbDirectoryDlg::Get(FbModelItem & item) 
+void FbDirectoryDlg::Get(FbModelItem & item)
 {
 	size_t count = ID_LAST - ID_TITLE;
 	for (size_t i = 0; i < count; i++) {
@@ -174,46 +174,46 @@ bool FbDirectoryDlg::CreateDlg::Execute(wxWindow * parent, wxString & name, wxSt
 	return ok;
 }
 
-FbDirectoryDlg::CreateDlg::CreateDlg( wxWindow * parent ) 
+FbDirectoryDlg::CreateDlg::CreateDlg( wxWindow * parent )
 	: FbDialog( parent, wxID_ANY, _("Create new classifier"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-	
+
 	wxBoxSizer * sizerMain = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxFlexGridSizer * sizerText = new wxFlexGridSizer( 2 );
 	sizerText->AddGrowableCol( 1 );
 	sizerText->SetFlexibleDirection( wxBOTH );
 	sizerText->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	wxStaticText * info;
-	
+
 	info = new wxStaticText( this, wxID_ANY, _("Classifier name") );
 	info->Wrap( -1 );
 	sizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_name = new wxTextCtrl( this, wxID_ANY );
 	m_name->SetMinSize(wxSize(200, -1));
 	sizerText->Add( m_name, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-	
+
 	info = new wxStaticText( this, wxID_ANY, _("Key type") );
 	info->Wrap( -1 );
 	sizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_type = CreateDirType( this, wxID_ANY );
 	sizerText->Add( m_type, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-	
+
 	sizerMain->Add( sizerText, 1, wxEXPAND, 5 );
-	
+
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
-	
+
 	this->SetSizer( sizerMain );
 	this->Layout();
 	sizerMain->Fit( this );
 
 	m_name->SetFocus();
-	
+
 	this->Centre( wxBOTH );
 }
 
@@ -261,8 +261,7 @@ void * FbConfigDlg::TypeThread::Entry()
 
 void FbConfigDlg::TypeThread::LoadTypes(wxSQLite3Database &database)
 {
-	wxString sql = wxT("SELECT b.file_type, t.command, CASE WHEN b.file_type='fb2' THEN 1 ELSE 2 END AS key FROM (SELECT DISTINCT LOWER(file_type) AS file_type FROM books GROUP BY file_type UNION SELECT DISTINCT file_type FROM types UNION SELECT 'fb2' UNION SELECT 'pdf' UNION SELECT 'djvu' UNION SELECT 'txt') AS b LEFT JOIN types as t ON b.file_type = t.file_type ORDER BY key, b.file_type");
-
+	wxString sql = GetCommandSQL(wxT("main"));
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
@@ -292,7 +291,7 @@ void FbConfigDlg::RefsThread::LoadTables(wxSQLite3Database &database)
 		FbModelEvent(ID_TYPE_LIST, new FbListStore).Post(m_frame);
 		return;
 	}
-	
+
 	wxString sql = wxString::Format(wxT("SELECT id, %s from tables ORDER BY 2"), GetFields().c_str());
 
 	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
@@ -491,7 +490,7 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 	wxString name, type;
 	if (!FbDirectoryDlg::CreateDlg::Execute(this, name, type)) return ;
 	if (name.IsEmpty()) return;
-	
+
 	size_t num = 0;
 	while (true) {
 		num++;
@@ -506,26 +505,26 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 	if (type == wxT("AUTOINCREMENT")) pkey << wxT(' ') << wxT("AUTOINCREMENT");
 
 	wxString sql;
-	
+
 	sql = wxT("CREATE TABLE dir%d(code %s,name VARCHAR(128),info TEXT,parent INTEGER NOT NULL)");
 	sql = wxString::Format(sql, num, pkey.c_str());
 	m_database.ExecuteUpdate(sql);
-	
+
 	sql = wxT("CREATE INDEX dir%d_parent ON dir%d(parent)");
 	sql = wxString::Format(sql, num, num);
 	m_database.ExecuteUpdate(sql);
 
 	wxString code = type;
 	if (type != wxT("TEXT")) code = wxT("INTEGER");
-		
+
 	sql = wxT("CREATE TABLE ref%d(code %s, book INTEGER, PRIMARY KEY(code, book))");
 	sql = wxString::Format(sql, num, code.c_str());
 	m_database.ExecuteUpdate(sql);
-	
+
 	sql = wxT("CREATE INDEX ref%d_book ON ref%d(book)");
 	sql = wxString::Format(sql, num, num);
 	m_database.ExecuteUpdate(sql);
-	
+
 	wxArrayString values;
 	values.Add( name );
 	values.Add( wxEmptyString );
@@ -541,7 +540,7 @@ void FbConfigDlg::PanelRefs::OnCreate( wxCommandEvent& event )
 	values.Add( wxT("code") );
 	values.Add( wxT("book") );
 	values.Add( wxEmptyString );
-	
+
 	m_treeview.Append(new RefsData(values));
 	m_treeview.SetFocus();
 	EnableTool(true);
@@ -565,7 +564,7 @@ void FbConfigDlg::PanelRefs::OnModify( wxCommandEvent& event )
 {
 	FbModelItem item = m_treeview.GetCurrent();
 	if (!item) return;
-	
+
 	FbDirectoryDlg dlg(NULL, wxT("Modify classifier"));
 	dlg.Set(item);
 	if (dlg.ShowModal() == wxID_OK) {
@@ -603,7 +602,7 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
 
-	{	
+	{
 		wxString sql  = wxT("CREATE TABLE IF NOT EXISTS tables(id INTEGER PRIMARY KEY AUTOINCREMENT, %s)");
 		sql = wxString::Format(sql, GetFields().c_str());
 		database.ExecuteUpdate(sql);
@@ -616,7 +615,7 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 		stmt.Bind(1, m_deleted[i]);
 		stmt.ExecuteUpdate();
 	}
-	
+
 	wxString values;
 	wxString params;
 	{
@@ -632,7 +631,7 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 			next = true;
 		}
 	}
-	
+
 	wxString insert = wxString::Format(wxT("INSERT INTO tables(%s)VALUES(%s)"), GetFields().c_str(), params.c_str());
 	wxString update = wxString::Format(wxT("UPDATE tables SET %s WHERE id="), values.c_str());
 
@@ -877,7 +876,7 @@ void FbConfigDlg::Assign(bool write)
 	}
 
 	if (write) {
-		size_t count = m_notebook.GetPageCount(); 
+		size_t count = m_notebook.GetPageCount();
 		for (size_t i = 0; i < count; i++) {
 			PanelTool * panel = wxDynamicCast(m_notebook.GetPage(i), PanelTool);
 			if (panel) panel->Save(m_database);
