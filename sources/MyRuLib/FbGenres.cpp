@@ -199,16 +199,17 @@ void FbGenres::Init()
 	const size_t folder_count = sizeof(folder_list) / sizeof(FolderStruct);
 	const size_t genres_count = sizeof(genres_list) / sizeof(GenreStruct);
 
-	for (size_t i=0; i<genres_count; i++) {
+	for (size_t i = 0; i < genres_count; i++) {
 		const GenreStruct & item = genres_list[i];
 		wxString ch; ch << item.hi << item.lo;
 		sm_chars[item.code] = ch;
 		sm_names[ch] = item.name;
 	}
 
-	for (size_t i=0; i<folder_count; i++) {
+	for (size_t i = 0; i < folder_count; i++) {
 		const FolderStruct & folder = folder_list[i];
-		FbGenreGroup * group = new FbGenreGroup(folder.name);
+		wxString code = folder.hi; code << wxT('0');
+		FbGenreGroup * group = new FbGenreGroup(code, folder.name);
 		for (size_t j=0; j<genres_count; j++) {
 			if (genres_list[j].hi == folder.hi) {
 				wxString ch; ch << genres_list[j].hi << genres_list[j].lo;
@@ -243,25 +244,30 @@ wxString FbGenres::DecodeList(const wxString &genres)
 	return result;
 }
 
-FbModel * FbGenres::CreateModel()
+class FbGenreModel : public FbTreeModel { friend class FbGenres; };
+
+FbModel * FbGenres::CreateModel(const wxString &code)
 {
-	FbTreeModel * model = new FbTreeModel;
+	FbGenreModel * model = new FbGenreModel;
 	FbParentData * root = new FbParentData(*model, NULL);
 	model->SetRoot(root);
 
+	bool not_found = true;
 	size_t count = sm_groups.Count();
 	for (size_t i = 0; i < count; i++) {
 		FbGenreGroup & group = sm_groups[i];
-		FbParentData * parent = new FbGenrParentData(*model, root, group.m_name);
+		FbParentData * parent = new FbGenrParentData(*model, root, group.m_code, group.m_name);
 		size_t count = group.m_items.Count();
 		for (size_t j = 0; j < count; j++) {
 			wxString ch = group.m_items[j];
 			new FbGenrChildData(*model, parent, ch, sm_names[ch]);
+			if (ch == code) { model->m_position = model->GetRowCount(); not_found = false; }
 		}
 	}
 
-	FbParentData * parent = new FbGenrParentData(*model, root, _("Other"));
+	FbParentData * parent = new FbGenrParentData(*model, root, wxEmptyString, _("Other"));
 	new FbGenrChildData(*model, parent, wxEmptyString, _("No genre"));
+	if (not_found) model->m_position = model->GetRowCount(); 
 
 	return model;
 }

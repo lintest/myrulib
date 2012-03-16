@@ -18,7 +18,7 @@ class FbTitleDlg : public FbDialog
 	private:
 		typedef struct {
 			wxString title;
-			wxString genre;
+			wxString genr;
 			wxString lang;
 			wxString type;
 			wxString dscr;
@@ -35,13 +35,13 @@ class FbTitleDlg : public FbDialog
 			public:
 				TitlePanel(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
 				void GetAuths(wxArrayInt &list, wxString &text);
-				void SaveSeqn(wxSQLite3Database &database);
-				void SaveGenr(wxSQLite3Database &database);
+				void SaveSeqn(int book, wxSQLite3Database &database);
+				void SaveGenr(int book, wxSQLite3Database &database);
 				void GetData(BookData & data);
+				wxString GetGenr();
 			protected:
 				void ArrangeControls(int height);
 			private:
-				int m_book;
 				wxBoxSizer m_authors;
 				wxBoxSizer m_series;
 				wxBoxSizer m_genres;
@@ -114,6 +114,8 @@ class FbTitleDlg : public FbDialog
 					{ return new SeqnPanel(parent, owner); }
 				virtual void Empty()
 					{}
+				int GetCode();
+				int GetNumb();
 			private:
 				void StartThread();
 				wxToolBar m_toolbar;
@@ -139,6 +141,7 @@ class FbTitleDlg : public FbDialog
 					{ return new GenrPanel(parent, owner); }
 				virtual void Empty()
 					{}
+				wxString GetCode();
 			private:
 				wxToolBar m_toolbar;
 				FbComboBox m_text;

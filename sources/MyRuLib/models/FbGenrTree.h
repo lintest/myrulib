@@ -20,11 +20,14 @@ class FbGenrListData: public FbModelData
 class FbGenrParentData: public FbParentData
 {
 	public:
-		FbGenrParentData(FbModel & model, FbParentData * parent, const wxString &name)
-			: FbParentData(model, parent), m_name(name) {}
+		FbGenrParentData(FbModel & model, FbParentData * parent, const wxString &code, const wxString &name)
+			: FbParentData(model, parent), m_code(code), m_name(name) {}
 		virtual wxString GetValue(FbModel & model, size_t col) const
 			{ return col ? (wxString)wxEmptyString : m_name; }
+		wxString GetCode() const
+			{ return m_code; }
 	private:
+		wxString m_code;
 		wxString m_name;
 		DECLARE_CLASS(FbGenrParentData);
 };

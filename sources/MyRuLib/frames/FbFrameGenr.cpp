@@ -32,7 +32,7 @@ void FbFrameGenr::CreateColumns()
 {
 	m_MasterList->AddColumn (0, _("List of genres"), -10, wxALIGN_LEFT);
 	m_MasterList->AddColumn(1, _("Num."), 6, wxALIGN_RIGHT);
-	FbModel * model = FbGenres::CreateModel();
+	FbModel * model = FbGenres::CreateModel(wxT("11"));
 	m_MasterList->AssignModel(model);
 }
 

@@ -9,11 +9,12 @@
 class FbGenreGroup: public wxObject
 {
 	public:
-		FbGenreGroup(const wxString &name)
-			: m_name(name) {}
+		FbGenreGroup(const wxString &code, const wxString &name)
+			: m_code(code), m_name(name) {}
 		void Add(const wxString &code)
 			{ m_items.Add(code); }
 	private:
+		wxString m_code;
 		wxString m_name;
 		wxArrayString m_items;
 		friend class FbGenres;
@@ -31,7 +32,7 @@ class FbGenres: public wxObject
 		static wxString Name(const wxString &letter);
 		static wxString DecodeList(const wxString &genres);
 		static void GetNames(FbStringHash & names);
-		static FbModel * CreateModel();
+		static FbModel * CreateModel(const wxString &code = wxEmptyString);
 	private:
 		static wxCriticalSection sm_section;
 		static FbGenreArray sm_groups;
