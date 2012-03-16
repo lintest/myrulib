@@ -16,16 +16,35 @@ class FbListModel;
 class FbTitleDlg : public FbDialog
 {
 	private:
+		typedef struct {
+			wxString title;
+			wxString genre;
+			wxString lang;
+			wxString type;
+			wxString dscr;
+			wxString file;
+			wxString path;
+			wxString md5s;
+			int date;
+			int arch;
+			wxLongLong size;
+		} BookData;
+
 		class TitlePanel: public wxScrolledWindow
 		{
 			public:
-				TitlePanel( wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result );
+				TitlePanel(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+				void GetAuths(wxArrayInt &list, wxString &text);
+				void SaveSeqn(wxSQLite3Database &database);
+				void SaveGenr(wxSQLite3Database &database);
+				void GetData(BookData & data);
 			protected:
 				void ArrangeControls(int height);
 			private:
-				wxBoxSizer * m_authors;
-				wxBoxSizer * m_series;
-				wxBoxSizer * m_genres;
+				int m_book;
+				wxBoxSizer m_authors;
+				wxBoxSizer m_series;
+				wxBoxSizer m_genres;
 				wxTextCtrl m_title;
 				wxTextCtrl m_lang;
 				wxTextCtrl m_type;
@@ -41,6 +60,7 @@ class FbTitleDlg : public FbDialog
 		{
 			public:
 				DescrPanel( wxWindow* parent, int book, wxSQLite3ResultSet &result );
+				wxString GetValue() { return m_text.GetValue(); }
 			private:
 				wxTextCtrl m_text;
 			protected:
@@ -68,6 +88,7 @@ class FbTitleDlg : public FbDialog
 					{ return new AuthPanel(parent, owner); }
 				virtual void Empty()
 					{}
+				int GetCode();
 			private:
 				void StartThread();
 				wxToolBar m_toolbar;
@@ -141,15 +162,18 @@ class FbTitleDlg : public FbDialog
 
 	public:
 		static bool Execute(int book);
-		FbTitleDlg( wxWindow* parent, int book );
+		FbTitleDlg(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
 		~FbTitleDlg();
 		void ArrangeControls(int height);
 
-	protected:
+	private:
+		void Save(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+		void Init();
+
+	private:
 		wxNotebook * m_notebook;
 		TitlePanel * m_title;
 		DescrPanel * m_descr;
-		void Init();
 };
 
 #endif // __FBTITLEDLG_H__
