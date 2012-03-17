@@ -189,6 +189,10 @@ AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
 AC_MSG_RESULT([$USE_LOCALE])
 
+AC_MSG_CHECKING([for --with-links])
+AC_ARG_WITH([links], [AS_HELP_STRING([--with-links], [Include links to the online collections])], USE_LINKS="$withval", USE_LINKS="yes")
+AC_MSG_RESULT([USE_LINKS])
+
 AC_MSG_CHECKING([for --with-strip])
 AC_ARG_WITH([strip], [AS_HELP_STRING([--with-strip], [Discard debug symbols from the executable file.])], USE_STRIP="$withval", USE_STRIP="yes")
 AC_MSG_RESULT([$USE_STRIP])
@@ -293,6 +297,14 @@ dnl ==================
 
 if test "x$USE_SYSLOG" = "xyes" ; then 
   CXXFLAGS="$CXXFLAGS -DFB_SYSLOG_LOGGING"
+fi
+
+dnl ==================
+dnl === USE_LINKS  ===
+dnl ==================
+
+if test "x$USE_LINKS" = "xyes" ; then 
+  AC_DEFINE(FB_INCLUDE_LINKS)
 fi
 
 dnl ==================

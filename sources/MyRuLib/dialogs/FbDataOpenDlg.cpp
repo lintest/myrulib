@@ -8,6 +8,7 @@
 #include "FbConst.h"
 #include "FbProgressDlg.h"
 #include "FbImportThread.h"
+#include "config.h"
 
 BEGIN_EVENT_TABLE( FbDataOpenDlg, FbDialog )
 	EVT_CHOICE(ID_ACTION, FbDataOpenDlg::OnActionChoise)
@@ -39,6 +40,8 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 
 	wxBoxSizer * bSizerCtrl = new wxBoxSizer( wxVERTICAL );
 
+#ifdef FB_INCLUDE_LINKS
+
 	info = new wxStaticText( this, wxID_ANY, _("Select action:"), wxDefaultPosition, wxDefaultSize, 0 );
 	info->Wrap( -1 );
 	bSizerCtrl->Add( info, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxLEFT|wxRIGHT, 5 );
@@ -51,6 +54,8 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 		m_action.Append(str, choices[i]);
 	}
 	bSizerCtrl->Add( &m_action, 0, wxALL|wxEXPAND, 5 );
+
+#endif // FB_INCLUDE_LINKS
 
 	info = new wxStaticText( this, wxID_ANY, _("File name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	info->Wrap( -1 );
@@ -113,7 +118,11 @@ FbDataOpenDlg::FbDataOpenDlg( wxWindow* parent )
 	this->Layout();
 	bSizerMain->Fit( this );
 
+#ifdef FB_INCLUDE_LINKS
 	m_action.SetFocus();
+#else
+	m_file.SetFocus();
+#endif // FB_INCLUDE_LINKS
 }
 
 wxString FbDataOpenDlg::GetTitle() const
@@ -133,11 +142,13 @@ void FbDataOpenDlg::SetDefaultNames()
 	wxFileName filepath = (wxString) wxT("Books");
 	filepath.SetPath(paths.GetDocumentsDir());
 
+#ifdef FB_INCLUDE_LINKS
 	wxString library = m_action.GetValue();
 	if (!library.IsEmpty()) {
 		filename.SetName(library.Lower());
 		filepath.SetName(library);
 	}
+#endif // FB_INCLUDE_LINKS
 
 	m_file.SetValue(filename.GetFullPath());
 	m_folder.SetValue(filepath.GetFullPath());
@@ -221,7 +232,11 @@ wxString FbDataOpenDlg::GetDirname()
 
 FbThread * FbDataOpenDlg::CreateThread(wxEvtHandler * owner)
 {
+#ifdef FB_INCLUDE_LINKS
 	wxString lib = m_action.GetValue().Lower();
+#else
+	wxString lib = wxEmptyString;
+#endif // FB_INCLUDE_LINKS
 	long flags = 0;
 	if (m_scaner.GetValue()) flags = flags | fbIMP_IMPORT;
 	if (m_only_new.GetValue()) flags = flags | fbIMP_ONLY_NEW;

@@ -778,6 +778,7 @@ with_icu
 with_reader
 with_syslog
 with_locale
+with_links
 with_strip
 with_ft_prefix
 with_ft_exec_prefix
@@ -1445,6 +1446,7 @@ Optional Packages:
   --with-reader           Use Cool Reader Engine
   --with-syslog           Use system logger: syslog
   --with-locale           Include locale files into executable
+  --with-links            Include links to the online collections
   --with-strip            Discard debug symbols from the executable file.
        --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
        --with-ft-exec-prefix=PREFIX
@@ -5342,6 +5344,19 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_LOCALE" >&5
 $as_echo "$USE_LOCALE" >&6; }
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-links" >&5
+$as_echo_n "checking for --with-links... " >&6; }
+
+# Check whether --with-links was given.
+if test "${with_links+set}" = set; then :
+  withval=$with_links; USE_LINKS="$withval"
+else
+  USE_LINKS="yes"
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: USE_LINKS" >&5
+$as_echo "USE_LINKS" >&6; }
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-strip" >&5
 $as_echo_n "checking for --with-strip... " >&6; }
 
@@ -9224,6 +9239,12 @@ fi
 
 if test "x$USE_SYSLOG" = "xyes" ; then
   CXXFLAGS="$CXXFLAGS -DFB_SYSLOG_LOGGING"
+fi
+
+
+if test "x$USE_LINKS" = "xyes" ; then
+  $as_echo "#define FB_INCLUDE_LINKS 1" >>confdefs.h
+
 fi
 
 
