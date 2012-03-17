@@ -16,8 +16,6 @@
 //  FbTitleDlg::SubPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::SubPanel, wxPanel )
-
 FbTitleDlg::SubPanel::SubPanel( wxWindow* parent, wxBoxSizer * owner )
 	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL ), m_owner(owner)
 {
@@ -278,128 +276,73 @@ void FbTitleDlg::GenrPanel::Empty()
 }
 
 //-----------------------------------------------------------------------------
-//  FbTitleDlg::TitlePanel
+//  FbTitleDlg::AuthSizer
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::TitlePanel, wxScrolledWindow )
+FbTitleDlg::AuthSizer::AuthSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql)
+	: wxBoxSizer(wxVERTICAL)
+{
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (result.Eof()) {
+		Add( new AuthPanel(parent, this), 1, wxEXPAND, 5 );
+	} else {
+		while (result.NextRow()) {
+			SubPanel * panel = new AuthPanel(parent, this, result.GetInt(0), result.GetString(1));
+			Add( panel, 1, wxEXPAND, 5 );
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::SeqnSizer
+//-----------------------------------------------------------------------------
+
+FbTitleDlg::SeqnSizer::SeqnSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql)
+	: wxBoxSizer(wxVERTICAL)
+{
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (result.Eof()) {
+		Add( new SeqnPanel(parent, this), 1, wxEXPAND, 5 );
+	} else {
+		while (result.NextRow()) {
+			SubPanel * panel = new SeqnPanel(parent, this, result.GetInt(0), result.GetString(1), result.GetInt(2));
+			Add( panel, 1, wxEXPAND, 5 );
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::GenrSizer
+//-----------------------------------------------------------------------------
+
+FbTitleDlg::GenrSizer::GenrSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql)
+	: wxBoxSizer(wxVERTICAL)
+{
+	FbGenreFunction func_genre;
+	database.CreateFunction(wxT("GENRE"), 1, func_genre);
+	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	if (result.Eof()) {
+		Add( new GenrPanel(parent, this), 1, wxEXPAND, 5 );
+	} else {
+		while (result.NextRow()) {
+			SubPanel * panel = new GenrPanel(parent, this, result.GetString(0), result.GetString(1));
+			Add( panel, 1, wxEXPAND, 5 );
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+//  FbTitleDlg::TitlePanel
+//-----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE( FbTitleDlg::TitlePanel, wxScrolledWindow )
 	EVT_TOOL( wxID_ADD, FbTitleDlg::TitlePanel::OnToolAdd )
 	EVT_TOOL( wxID_DELETE, FbTitleDlg::TitlePanel::OnToolDel )
 END_EVENT_TABLE()
 
-FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result)
+FbTitleDlg::TitlePanel::TitlePanel( wxWindow* parent)
 	: wxScrolledWindow( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL | wxTAB_TRAVERSAL )
 {
-	wxFlexGridSizer * fgSizerMain = new wxFlexGridSizer( 2 );
-	fgSizerMain->AddGrowableCol( 1 );
-	fgSizerMain->SetFlexibleDirection( wxBOTH );
-	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-	wxStaticText * info;
-
-	info = new wxStaticText( this, wxID_ANY, _("Book title") );
-	info->Wrap( -1 );
-	fgSizerMain->Add( info, 0, wxALL, 5 );
-
-	m_title.Create( this, wxID_ANY, result.GetString(wxT("title")), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
-	m_title.SetMinSize( wxSize( 300, -1 ) );
-
-	info = new wxStaticText( this, wxID_ANY, _("Authors") );
-	info->Wrap( -1 );
-	fgSizerMain->Add( info, 0, wxALL, 5 );
-
-	m_authors = new wxBoxSizer(wxVERTICAL);
-	{
-		wxString sql = fbT("SELECT id, full_name FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=? AND id_author<>0) ORDER BY 2") << fbCOLLATE_CYR;
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, book);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.Eof()) {
-			m_authors->Add( new AuthPanel(this, m_authors), 1, wxEXPAND, 5 );
-		} else {
-			while (result.NextRow()) {
-				SubPanel * panel = new AuthPanel(this, m_authors, result.GetInt(0), result.GetString(1));
-				m_authors->Add( panel, 1, wxEXPAND, 5 );
-			}
-		}
-	}
-	fgSizerMain->Add( m_authors, 1, wxEXPAND | wxRIGHT, 5 );
-
-	info = new wxStaticText( this, wxID_ANY, _("Series") );
-	info->Wrap( -1 );
-	fgSizerMain->Add( info, 0, wxALL, 5 );
-
-	m_series = new wxBoxSizer(wxVERTICAL);
-	{
-		wxString sql = wxT("SELECT b.id_seq, s.value, b.number FROM bookseq AS b INNER JOIN sequences AS s ON b.id_seq=s.id WHERE id_book=? ORDER BY value");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, book);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.Eof()) {
-			m_series->Add( new SeqnPanel(this, m_series), 1, wxEXPAND, 5 );
-		} else {
-			while (result.NextRow()) {
-				SubPanel * panel = new SeqnPanel(this, m_series, result.GetInt(0), result.GetString(1), result.GetInt(2));
-				m_series->Add( panel, 1, wxEXPAND, 5 );
-			}
-		}
-	}
-	fgSizerMain->Add( m_series, 1, wxEXPAND | wxRIGHT, 5 );
-
-	info = new wxStaticText( this, wxID_ANY, _("Genres") );
-	info->Wrap( -1 );
-	fgSizerMain->Add( info, 0, wxALL, 5 );
-
-	m_genres = new wxBoxSizer(wxVERTICAL);
-	{
-		FbGenreFunction func_genre;
-		database.CreateFunction(wxT("GENRE"), 1, func_genre);
-		wxString sql = wxT("SELECT id_genre, GENRE(id_genre) FROM genres WHERE id_book=? ORDER BY 2");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
-		stmt.Bind(1, book);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
-		if (result.Eof()) {
-			m_genres->Add( new GenrPanel(this, m_genres), 1, wxEXPAND, 5 );
-		} else {
-			while (result.NextRow()) {
-				SubPanel * panel = new GenrPanel(this, m_genres, result.GetString(0), result.GetString(1));
-				m_genres->Add( panel, 1, wxEXPAND, 5 );
-			}
-		}
-	}
-	fgSizerMain->Add( m_genres, 1, wxEXPAND | wxRIGHT, 5 );
-
-	info = new wxStaticText( this, wxID_ANY, _("Language") );
-	info->Wrap( -1 );
-	fgSizerMain->Add( info, 0, wxALL, 5 );
-
-	wxBoxSizer * bSizerFile = new wxBoxSizer( wxHORIZONTAL );
-
-	m_lang.Create( this, wxID_ANY, result.GetString(wxT("lang")), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	bSizerFile->Add( &m_lang, 1, wxALL, 3 );
-
-	info = new wxStaticText( this, wxID_ANY, _("Extension") );
-	info->Wrap( -1 );
-	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
-
-	m_type.Create( this, wxID_ANY, result.GetString(wxT("file_type")), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	bSizerFile->Add( &m_type, 1, wxALL, 3 );
-
-	info = new wxStaticText( this, wxID_ANY, _("Date") );
-	info->Wrap( -1 );
-	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
-
-	FbDateTime date = result.GetInt(wxT("created"));
-	m_date.Create( this, wxID_ANY, date, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	bSizerFile->Add( &m_date, 1, wxALL, 3 );
-
-	fgSizerMain->Add( bSizerFile, 0, wxEXPAND, 0 );
-
-	this->SetSizer( fgSizerMain );
-	this->Layout();
-	fgSizerMain->Fit( this );
 }
 
 void FbTitleDlg::TitlePanel::ArrangeControls(int height)
@@ -561,12 +504,10 @@ void FbTitleDlg::TitlePanel::SaveSeqn(int book, wxSQLite3Database &database)
 }
 
 //-----------------------------------------------------------------------------
-//  FbTitleDlg::DescrPanel
+//  FbTitleDlg::DscrPanel
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS( FbTitleDlg::DescrPanel, wxPanel )
-
-FbTitleDlg::DescrPanel::DescrPanel( wxWindow* parent, int book, wxSQLite3ResultSet &result )
+FbTitleDlg::DscrPanel::DscrPanel( wxWindow* parent, int book, wxSQLite3ResultSet &result )
 	: wxPanel( parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 )
 {
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
@@ -601,7 +542,7 @@ void * FbTitleDlg::SearchThread::Entry()
 		items.Add(code);
 	}
 
-	switch (size_t count = items.Count()) {
+	switch (items.Count()) {
 		case 1: {
 			wxString text = m_text.BeforeFirst(wxT(' '));
 			if (text == m_text) break;
@@ -629,7 +570,96 @@ void * FbTitleDlg::SearchThread::Entry()
 //  FbTitleDlg
 //-----------------------------------------------------------------------------
 
-bool FbTitleDlg::Execute(int book)
+FbTitleDlg::FbTitleDlg(wxWindow * parent)
+	: FbDialog( parent, wxID_ANY, _("Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
+{
+}
+
+void FbTitleDlg::ArrangeControls(int height)
+{
+	wxSize size = GetSize();
+	size.y += height;
+	SetSize(size);
+	Layout();
+}
+
+//-----------------------------------------------------------------------------
+//  FbSingleTitleDlg::MainPanel
+//-----------------------------------------------------------------------------
+
+FbSingleTitleDlg::MainPanel::MainPanel(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result)
+	: TitlePanel( parent )
+{
+	wxFlexGridSizer * fgSizerMain = new wxFlexGridSizer( 2 );
+	fgSizerMain->AddGrowableCol( 1 );
+	fgSizerMain->SetFlexibleDirection( wxBOTH );
+	fgSizerMain->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxStaticText * info;
+
+	info = new wxStaticText( this, wxID_ANY, _("Book title") );
+	info->Wrap( -1 );
+	fgSizerMain->Add( info, 0, wxALL, 5 );
+
+	m_title.Create( this, wxID_ANY, result.GetString(wxT("title")), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	fgSizerMain->Add( &m_title, 0, wxALL|wxEXPAND, 3 );
+	m_title.SetMinSize( wxSize( 300, -1 ) );
+
+	info = new wxStaticText( this, wxID_ANY, _("Authors") );
+	info->Wrap( -1 );
+	fgSizerMain->Add( info, 0, wxALL, 5 );
+
+	wxString sql;
+
+	sql = wxString::Format(wxT("SELECT id, full_name FROM authors WHERE id IN(SELECT id_author FROM books WHERE id=%d AND id_author<>0) ORDER BY 2"), book) << fbCOLLATE_CYR;
+	fgSizerMain->Add( m_authors = new AuthSizer(this, database, sql), 1, wxEXPAND | wxRIGHT, 5 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Series") );
+	info->Wrap( -1 );
+	fgSizerMain->Add( info, 0, wxALL, 5 );
+
+	sql = wxString::Format(wxT("SELECT b.id_seq, s.value, b.number FROM bookseq AS b INNER JOIN sequences AS s ON b.id_seq=s.id WHERE id_book=%d ORDER BY value"), book) << fbCOLLATE_CYR;
+	fgSizerMain->Add( m_series = new SeqnSizer(this, database, sql), 1, wxEXPAND | wxRIGHT, 5 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Genres") );
+	info->Wrap( -1 );
+	fgSizerMain->Add( info, 0, wxALL, 5 );
+
+	sql = wxString::Format(wxT("SELECT id_genre, GENRE(id_genre) FROM genres WHERE id_book=%d ORDER BY 2"), book) << fbCOLLATE_CYR;
+	fgSizerMain->Add( m_genres = new GenrSizer(this, database, sql), 1, wxEXPAND | wxRIGHT, 5 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Language") );
+	info->Wrap( -1 );
+	fgSizerMain->Add( info, 0, wxALL, 5 );
+
+	wxBoxSizer * bSizerFile = new wxBoxSizer( wxHORIZONTAL );
+
+	m_lang.Create( this, wxID_ANY, result.GetString(wxT("lang")), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	bSizerFile->Add( &m_lang, 1, wxALL, 3 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Extension") );
+	info->Wrap( -1 );
+	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+
+	m_type.Create( this, wxID_ANY, result.GetString(wxT("file_type")), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	bSizerFile->Add( &m_type, 1, wxALL, 3 );
+
+	info = new wxStaticText( this, wxID_ANY, _("Date") );
+	info->Wrap( -1 );
+	bSizerFile->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3 );
+
+	FbDateTime date = result.GetInt(wxT("created"));
+	m_date.Create( this, wxID_ANY, date, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	bSizerFile->Add( &m_date, 1, wxALL, 3 );
+
+	fgSizerMain->Add( bSizerFile, 0, wxEXPAND, 0 );
+
+	this->SetSizer( fgSizerMain );
+	this->Layout();
+	fgSizerMain->Fit( this );
+}
+
+bool FbSingleTitleDlg::Execute(int book)
 {
 	FbCommonDatabase database;
 	wxString sql = fbT("SELECT * FROM books WHERE id=? LIMIT 1");
@@ -637,22 +667,22 @@ bool FbTitleDlg::Execute(int book)
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (!result.NextRow()) return false;
 
-	FbTitleDlg dlg(wxGetApp().GetTopWindow(), book, database, result);
+	FbSingleTitleDlg dlg(wxGetApp().GetTopWindow(), book, database, result);
 	bool ok = dlg.ShowModal() == wxID_OK;
 	if (ok) dlg.Save(book, database, result);
 	return ok;
 }
 
-FbTitleDlg::FbTitleDlg( wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result )
-	: FbDialog( parent, wxID_ANY, _("Properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE  | wxRESIZE_BORDER )
+FbSingleTitleDlg::FbSingleTitleDlg(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result)
+	: FbTitleDlg(parent)
 {
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );
 
 	m_notebook = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_MULTILINE );
 	sizer->Add( m_notebook, 1, wxEXPAND | wxALL, 5 );
 
-	m_notebook->AddPage( m_title = new TitlePanel( m_notebook, book, database, result ), _("General"), true );
-	m_notebook->AddPage( m_descr = new DescrPanel( m_notebook, book, result ), _("Annotation"), false );
+	m_notebook->AddPage( m_title = new MainPanel( m_notebook, book, database, result ), _("General"), true );
+	m_notebook->AddPage( m_descr = new DscrPanel( m_notebook, book, result ), _("Annotation"), false );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	sizer->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
@@ -680,19 +710,7 @@ FbTitleDlg::FbTitleDlg( wxWindow* parent, int book, wxSQLite3Database &database,
 	}
 }
 
-FbTitleDlg::~FbTitleDlg()
-{
-}
-
-void FbTitleDlg::ArrangeControls(int height)
-{
-	wxSize size = GetSize();
-	size.y += height;
-	SetSize(size);
-	Layout();
-}
-
-void FbTitleDlg::Save(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result)
+void FbSingleTitleDlg::Save(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result)
 {
 	BookData data;
 	wxArrayInt ids; wxString authors;
@@ -748,3 +766,4 @@ void FbTitleDlg::Save(int book, wxSQLite3Database &database, wxSQLite3ResultSet 
 
 	FbCommandEvent(fbEVT_BOOK_ACTION, ID_UPDATE_BOOK, book).Post();
 }
+
