@@ -31,6 +31,25 @@ class FbTitleDlg : public FbDialog
 			wxLongLong size;
 		} BookData;
 
+		class AuthSizer : public wxBoxSizer
+		{
+			public:
+				AuthSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &ids);
+				void Get(wxArrayInt &list, wxString &text);
+		};
+
+		class SeqnSizer : public wxBoxSizer
+		{
+			public:
+				SeqnSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql);
+		};
+
+		class GenrSizer : public wxBoxSizer
+		{
+			public:
+				GenrSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql);
+		};
+
 		class TitlePanel: public wxScrolledWindow
 		{
 			public:
@@ -43,9 +62,9 @@ class FbTitleDlg : public FbDialog
 			protected:
 				void ArrangeControls(int height);
 			protected:
-				wxBoxSizer * m_authors;
-				wxBoxSizer * m_series;
-				wxBoxSizer * m_genres;
+				AuthSizer * m_authors;
+				SeqnSizer * m_series;
+				GenrSizer * m_genres;
 				wxTextCtrl m_title;
 				wxTextCtrl m_lang;
 				wxTextCtrl m_type;
@@ -55,12 +74,6 @@ class FbTitleDlg : public FbDialog
 				void OnToolDel( wxCommandEvent& event );
 				DECLARE_EVENT_TABLE()
 		};
-
-		class AuthSizer : public wxBoxSizer { public: AuthSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql); };
-
-		class SeqnSizer : public wxBoxSizer { public: SeqnSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql); };
-
-		class GenrSizer : public wxBoxSizer { public: GenrSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql); };
 
 		class DscrPanel: public wxPanel
 		{
@@ -208,6 +221,13 @@ public:
 	static bool Execute(const wxArrayInt &items);
 	FbGroupTitleDlg(const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
 	void Save(const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
+
+private:
+	static wxString GetCodes(const wxArrayInt &items);
+
+private:
+	MainPanel * m_title;
+
 };
 
 #endif // __FBTITLEDLG_H__
