@@ -1447,7 +1447,7 @@ Optional Packages:
   --with-syslog           Use system logger: syslog
   --with-locale           Include locale files into executable
   --with-links            Include links to the online collections
-  --with-strip            Discard debug symbols from the executable file.
+  --with-strip            Discard debug symbols from the executable file
        --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
        --with-ft-exec-prefix=PREFIX
                           Exec prefix where FreeType is installed (optional)
@@ -5354,8 +5354,8 @@ else
   USE_LINKS="yes"
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: USE_LINKS" >&5
-$as_echo "USE_LINKS" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_LINKS" >&5
+$as_echo "$USE_LINKS" >&6; }
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-strip" >&5
 $as_echo_n "checking for --with-strip... " >&6; }
@@ -10583,6 +10583,7 @@ echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
 echo "  Include locale files into executable?         ${USE_LOCALE}"
+echo "  Include links to the online collections?      ${USE_LINKS}"
 echo "  Strip the executable file?                    ${USE_STRIP}"
 echo "  Link wxWidgets as a static library?           ${USE_WX_STATIC}"
 echo

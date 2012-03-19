@@ -191,10 +191,10 @@ AC_MSG_RESULT([$USE_LOCALE])
 
 AC_MSG_CHECKING([for --with-links])
 AC_ARG_WITH([links], [AS_HELP_STRING([--with-links], [Include links to the online collections])], USE_LINKS="$withval", USE_LINKS="yes")
-AC_MSG_RESULT([USE_LINKS])
+AC_MSG_RESULT([$USE_LINKS])
 
 AC_MSG_CHECKING([for --with-strip])
-AC_ARG_WITH([strip], [AS_HELP_STRING([--with-strip], [Discard debug symbols from the executable file.])], USE_STRIP="$withval", USE_STRIP="yes")
+AC_ARG_WITH([strip], [AS_HELP_STRING([--with-strip], [Discard debug symbols from the executable file])], USE_STRIP="$withval", USE_STRIP="yes")
 AC_MSG_RESULT([$USE_STRIP])
 
 if test "x$USE_READER" == "xyes" ; then 
@@ -355,6 +355,7 @@ echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
 echo "  Include locale files into executable?         ${USE_LOCALE}"
+echo "  Include links to the online collections?      ${USE_LINKS}"
 echo "  Strip the executable file?                    ${USE_STRIP}"
 echo "  Link wxWidgets as a static library?           ${USE_WX_STATIC}"
 echo
