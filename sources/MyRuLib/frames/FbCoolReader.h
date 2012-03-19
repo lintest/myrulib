@@ -105,6 +105,7 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 		void OnFindFirst( wxFindDialogEvent& event );
 		void OnFindNext( wxFindDialogEvent& event );
 		void OnFindClose( wxFindDialogEvent& event );
+		void OnEditBook( wxCommandEvent & event );
 	private:
 		void SetupPageHeader();
 		bool LoadDocument( const wxString & fname );

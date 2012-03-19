@@ -199,9 +199,9 @@ protected:
 	public:
 		MainPanel(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
 	private:
-		wxCheckBox * m_auth;
-		wxCheckBox * m_seqn;
-		wxCheckBox * m_genr;
+		wxCheckBox * cb_auth;
+		wxCheckBox * cb_seqn;
+		wxCheckBox * cb_genr;
 	};
 
 public:

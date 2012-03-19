@@ -17,6 +17,7 @@
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
 #include "FbString.h"
+#include "dialogs/FbTitleDlg.h"
 
 //-----------------------------------------------------------------------------
 //  FbContentModel
@@ -181,6 +182,7 @@ BEGIN_EVENT_TABLE( FbCoolReader, wxWindow )
 	EVT_MENU( ID_READER_ZOOM_IN, FbCoolReader::OnCommand )
 	EVT_MENU( ID_READER_ZOOM_OUT, FbCoolReader::OnCommand )
 	EVT_MENU( ID_READER_HEADER, FbCoolReader::OnShowHeader )
+	EVT_MENU(wxID_PROPERTIES, FbCoolReader::OnEditBook)
 	EVT_UPDATE_UI(ID_READER_HEADER, FbCoolReader::OnShowHeaderUI )
 	EVT_MENU(ID_MODE_TREE, FbCoolReader::OnShowContent)
 	EVT_MENU(ID_MODE_LIST, FbCoolReader::OnShowContent)
@@ -517,6 +519,7 @@ void FbCoolReader::OnCopy( wxCommandEvent& event )
 
 FbCoolReader::MenuBook::MenuBook()
 {
+	Append( wxID_DOWN, _("Next page") + (wxString)wxT("\tSpace"));
 	Append( ID_READER_CONTENT, _("Table of Contents") );
 	Append( wxID_FIND, _("Find text...") );
 	AppendSeparator();
@@ -528,6 +531,7 @@ FbCoolReader::MenuBook::MenuBook()
 	Append( wxID_SAVE, wxT( "&Save...\tCtrl+S" ) );
 	AppendSeparator();
 	Append( ID_READER_OPTIONS, (wxString)_("Cool Reader options") + wxT( "\tF9" ) );
+	Append(wxID_PROPERTIES, _("Properties"));
 };
 
 void FbCoolReader::OnMouseRDown( wxMouseEvent & event )
@@ -855,6 +859,11 @@ void FbCoolReader::OnFindNext( wxFindDialogEvent& event )
 
 void FbCoolReader::OnFindClose( wxFindDialogEvent& event )
 {
+}
+
+void FbCoolReader::OnEditBook( wxCommandEvent & event )
+{
+	if (m_book) FbSingleTitleDlg::Execute(m_book);
 }
 
 /*

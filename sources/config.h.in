@@ -131,6 +131,9 @@
 /* Define extended version information for W32. */
 #undef BUILD_VERSION
 
+/* Define if include links to the online collections. */
+#undef FB_INCLUDE_LINKS
+
 /* Define if used Cool Reader Engine. */
 #undef FB_INCLUDE_READER
 
