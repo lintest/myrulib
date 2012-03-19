@@ -620,8 +620,13 @@ void FbBookPanel::UpdateMaster(FbMasterEvent & event)
 
 void FbBookPanel::OnEditBook(wxCommandEvent & event)
 {
-	int book = m_BookList.GetBook();
-	if (book) FbSingleTitleDlg::Execute(book);
+	wxArrayInt items;
+	GetSelected(items);
+	switch (items.Count()) {
+		case 0: break;
+		case 1: FbSingleTitleDlg::Execute(items[0]); break;
+		default: FbGroupTitleDlg::Execute(items); break;
+	}
 }
 
 void FbBookPanel::OnIdleSplitter( wxIdleEvent& )

@@ -164,7 +164,7 @@ class FbTitleDlg : public FbDialog
 		};
 
 	public:
-		FbTitleDlg(wxWindow * parent);
+		FbTitleDlg(const wxString &title);
 		void ArrangeControls(int height);
 
 };
@@ -180,7 +180,7 @@ private:
 
 public:
 	static bool Execute(int book);
-	FbSingleTitleDlg(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+	FbSingleTitleDlg(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
 
 private:
 	void Save(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
@@ -197,7 +197,7 @@ protected:
 	class MainPanel: public TitlePanel
 	{
 	public:
-		MainPanel(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+		MainPanel(wxWindow* parent, const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
 	private:
 		wxCheckBox * cb_auth;
 		wxCheckBox * cb_seqn;
@@ -205,7 +205,9 @@ protected:
 	};
 
 public:
-	static bool Execute();
+	static bool Execute(const wxArrayInt &items);
+	FbGroupTitleDlg(const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
+	void Save(const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
 };
 
 #endif // __FBTITLEDLG_H__
