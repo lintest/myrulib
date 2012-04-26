@@ -164,21 +164,29 @@ wxString FbMasterInfoBase::GetOrderTable() const
 
 wxString FbMasterInfoBase::GetOrderColumn() const
 {
+	if (GetMode() == FB2_MODE_LIST) {
+		switch (GetOrderIndex()) {
+			case BF_NUMB: return wxT("MAX(bookseq.number)");
+			case BF_AUTH: return wxT("AGGREGATE(authors.full_name)") + fbCOLLATE_CYR;
+			case BF_SEQN: return wxT("AGGREGATE(value)") + fbCOLLATE_CYR;
+			default: ;
+		}
+	}
 	switch (GetOrderIndex()) {
-		case BF_NUMB: return GetMode() == FB2_MODE_LIST ? wxT("MAX(bookseq.number)") : wxT("bookseq.number");
-		case BF_AUTH: return (GetMode() == FB2_MODE_LIST ? wxT("AGGREGATE(authors.full_name)") : wxT("authors.full_name")) + fbCOLLATE_CYR;
+		case BF_NUMB: return wxT("bookseq.number");
+		case BF_AUTH: return wxT("authors.full_name") + fbCOLLATE_CYR;
 		case BF_CODE: return wxT("books.id");
-		case BF_GENR: return wxT("GENRE(books.genres)" + fbCOLLATE_CYR);
+		case BF_GENR: return wxT("GENRE(books.genres)") + fbCOLLATE_CYR;
 		case BF_RATE: return wxT("states.rating");
 		case BF_LANG: return wxT("books.lang");
 		case BF_TYPE: return wxT("books.file_type");
 		case BF_DATE: return wxT("books.created");
 		case BF_SIZE: return wxT("books.file_size");
 		case BF_BITE: return wxT("books.file_size");
-		case BF_SEQN: return wxT("AGGREGATE(value)" + fbCOLLATE_CYR);
+		case BF_SEQN: return wxT("value") + fbCOLLATE_CYR;
 		case BF_DOWN: return wxT("states.download");
 		case BF_MD5S: return wxT("books.md5sum");
-		default: return wxT("books.title" + fbCOLLATE_CYR);
+		default: return wxT("books.title") + fbCOLLATE_CYR;
 	}
 }
 
