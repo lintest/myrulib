@@ -1360,7 +1360,7 @@ msgstr "Детские стихи"
 
 #: FbGenres.cpp:115
 msgid "Childern prose"
-msgstr "Детскиая проза"
+msgstr "Детская проза"
 
 #: FbGenres.cpp:116
 msgid "Children fiction"
