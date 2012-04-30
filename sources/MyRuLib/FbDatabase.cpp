@@ -163,16 +163,15 @@ void FbLowerFunction::Execute(wxSQLite3FunctionContext& ctx)
 {
 	int argc = ctx.GetArgCount();
 	if (argc == 1) {
-		#ifdef SQLITE_ENABLE_ICU
-			ctx.SetResult(Lower(ctx.GetString(0)));
-		#else
-			wxString str = Lower(ctx.GetString(0));
-			size_t len = str.Len();
-			for (size_t i = 0; i < len; i++) {
-				if (!IsAlpha(str[i])) str[i] = 0x20;
-			}
-			ctx.SetResult(str);
-		#endif
+		wxString str = Lower(ctx.GetString(0));
+		size_t len = str.Len();
+		for (size_t i = 0; i < len; i++) {
+			if (str[i] == 0x0451) str[i] = 0x0435;
+			#ifndef SQLITE_ENABLE_ICU
+			if (!IsAlpha(str[i])) str[i] = 0x20;
+			#endif
+		}
+		ctx.SetResult(str);
 	} else {
 		ctx.SetResultError(wxString::Format(fbT("Wrong LOWER argc: %d."), argc));
 	}
@@ -257,6 +256,10 @@ void FbSQLite3Statement::FTS(int index, const wxString& value)
 		} else if (word.Left(4) == wxT("NEAR")) {
 		} else {
 			word = Lower(word);
+			size_t len = word.Len();
+			for (size_t i = 0; i < len; i++) {
+				if (word[i] == 0x0451) word[i] = 0x0435;
+			}
 			if (word.Right(1) == wxT('"')) {
 				word.insert(word.Len() - 1, wxT('*'));
 			} else {
