@@ -7,9 +7,9 @@
 
 rm *.sql.gz
 rm *.sql.gz.*
-for t in libavtor libavtoraliase libavtors libbook libgenre libgenrelist libgenremeta libgenres libjoinedbooks libmag libmags libquality librate libseq libseqs libsrclang ;
+for t in libavtor libavtors libbook libgenre libgenremeta libgenres libjoinedbooks libmag libmags libquality librate libseq libseqs libsrclang ;
 do
-    wget -c http://lib.rus.ec/sql/$t.sql.gz;
+    n=1000; while ! wget -t0 -c http://lib.rus.ec/sql/$t.sql.gz; do if (n<0) then break; fi; n=$((n-1)); done;
     zcat $t.sql.gz | sed -e 's/USING BTREE//g' | mysql librusec -u root;
 done
 
