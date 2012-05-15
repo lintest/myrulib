@@ -9,7 +9,7 @@ rm *.sql.gz
 for t in libavtor libtranslator libavtoraliase libavtorname libbook libfilename libgenre libgenrelist libjoinedbooks librate libseqname libseq libsrclang reviews b.annotations b.annotations_pics a.annotations a.annotations_pics;
 
 do
-    n=1000; while ! wget -t0 -c http://flibusta.net/sql/lib.$t.sql.gz; do if (n<0) then break; fi; n=$((n-1)); done;
+    n=1000; while ! wget -t0 -c http://flibusta.net/sql/lib.$t.sql.gz; do if (let "$n<0") then break; fi; sleep 10s; n=$((n-1)); done;
     zcat lib.$t.sql.gz | sed -e 's/USING BTREE//g' | mysql flibusta -u root
 done
 
