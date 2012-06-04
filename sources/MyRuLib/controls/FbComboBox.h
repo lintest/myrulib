@@ -51,7 +51,7 @@ public:
 			dc.SelectObject(bmp);
 
 			// Draw transparent background
-			wxColour colour(255, 0, 255);
+			wxColour colour = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 			wxBrush brush(colour);
 			dc.SetBrush(brush);
 			dc.SetPen(*wxTRANSPARENT_PEN);

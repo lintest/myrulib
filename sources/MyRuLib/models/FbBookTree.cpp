@@ -32,7 +32,7 @@ void FbAuthParentData::SortItems()
 
 int FbAuthParentData::Compare(const FbAuthParentData &data) const
 {
-	return ::FbCompare(GetTitle(), GetTitle());
+	return ::FbCompare(GetTitle(), data.GetTitle());
 }
 
 //-----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ int FbSeqnParentData::Compare(const FbSeqnParentData &data) const
 {
 	if (GetCode() == 0) return +1;
 	if (data.GetCode() == 0) return -1;
-	return FbCompare(GetTitle(), GetTitle());
+	return FbCompare(GetTitle(), data.GetTitle());
 }
 
 //-----------------------------------------------------------------------------

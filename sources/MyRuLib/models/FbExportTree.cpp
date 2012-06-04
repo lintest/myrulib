@@ -164,15 +164,14 @@ wxFileName FbExportChildData::GetPath(FbModel &model) const
 //  FbExportTreeContext
 //-----------------------------------------------------------------------------
 
-FbExportTreeContext::FbExportTreeContext()
+FbExportTreeContext::FbExportTreeContext(const wxString &structure)
 {
+	m_template = structure;
 	m_translit_folder = FbParams(FB_TRANSLIT_FOLDER);
 	m_translit_file = FbParams(FB_TRANSLIT_FILE);
-	m_template = FbParams(FB_FOLDER_FORMAT).Str();
 	m_underscores = FbParams(FB_USE_UNDERSCORE);
 	m_digits_count = FbParams(FB_NUMBER_FORMAT);
 	if (m_digits_count < 1) m_digits_count = 1;
-
 	if (m_template.IsEmpty()) m_template = FbParamItem::DefaultStr(FB_FOLDER_FORMAT);
 }
 
@@ -349,7 +348,7 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 
 IMPLEMENT_CLASS(FbExportTreeModel, FbTreeModel)
 
-FbExportTreeModel::FbExportTreeModel(const wxString &books, int author): m_scale(0)
+FbExportTreeModel::FbExportTreeModel(const wxString &books, const wxString &structure, int author): m_scale(0)
 {
 	FbExportParentData * root = new FbExportParentData(*this, NULL, wxT('.'));
 	SetRoot(root);
@@ -370,7 +369,7 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, int author): m_scale
 	if ( author) filter = wxString::Format(wxT("AND (books.id_author=%d)"), author);
 	sql = wxString::Format(sql, books.c_str(), filter.c_str());
 
-	FbExportTreeContext context;
+	FbExportTreeContext context(structure);
 	FbSortedArrayInt items(FbArrayEvent::CompareInt);
 
 	FbCommonDatabase database;

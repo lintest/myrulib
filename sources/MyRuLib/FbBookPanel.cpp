@@ -620,6 +620,10 @@ void FbBookPanel::UpdateMaster(FbMasterEvent & event)
 
 void FbBookPanel::OnEditBook(wxCommandEvent & event)
 {
+    int book = m_BookList.GetBook();
+    if (book) FbTitleDlg::Execute(book);
+    return;
+
 	wxArrayInt items;
 	GetSelected(items);
 	switch (items.Count()) {
