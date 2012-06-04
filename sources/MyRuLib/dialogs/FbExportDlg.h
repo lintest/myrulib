@@ -23,6 +23,7 @@
 #include "FbDatabase.h"
 #include "FbWindow.h"
 #include "controls/FbChoiceCtrl.h"
+#include "controls/FbComboBox.h"
 
 class FbBookPanel;
 
@@ -56,17 +57,18 @@ class FbExportDlg : public FbDialog
 		enum
 		{
 			ID_DIR_TXT = 1000,
-			ID_DIR_BTN,
+			ID_STRUCT,
 			ID_BOOKS,
 			ID_FORMAT,
 			ID_AUTHOR,
 		};
-		wxTextCtrl * m_textDir;
+		FbCustomCombo * m_folder;
+		wxComboBox * m_struct;
 		FbTreeViewCtrl * m_books;
 		FbChoiceInt * m_format;
 		wxCheckBox * m_checkAuthor;
 	private:
-		void OnSelectDir( wxCommandEvent& event );
+        void OnSelectDir( wxCommandEvent& event );
 		void OnBookCollapsing( wxTreeEvent & event );
 		void OnChangeFormat( wxCommandEvent& event );
 		void OnCheckAuthor( wxCommandEvent& event );

@@ -44,7 +44,7 @@ class FbExportChildData: public FbChildData
 class FbExportTreeContext
 {
 	public:
-		FbExportTreeContext();
+		FbExportTreeContext(const wxString &structure);
 		wxFileName GetFilename(wxSQLite3ResultSet &result);
 	private:
 		wxString Get(wxSQLite3ResultSet &result, const wxString &field);
@@ -60,15 +60,15 @@ class FbExportTreeContext
 class FbExportTreeModel: public FbTreeModel
 {
 	public:
-		FbExportTreeModel(const wxString &books, int author = 0);
+		FbExportTreeModel(const wxString &books, const wxString &structure, int author = 0);
 		void GetFiles(FbConvertArray & files);
 		void SetFormat(const wxString & ext, const wxString & arc, int scale = 0)
 			{ m_ext = ext;  m_arc = arc; m_scale = scale; }
-		const wxString & GetExt() const 
+		const wxString & GetExt() const
 			{ return m_ext; }
-		const wxString & GetArc() const 
+		const wxString & GetArc() const
 			{ return m_arc; }
-		int GetScale() const 
+		int GetScale() const
 			{ return m_scale; }
 	private:
 		wxString m_ext;

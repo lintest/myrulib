@@ -569,6 +569,10 @@ msgstr "Максимальная ширина картинки с обложки
 msgid "Exported collection structure"
 msgstr "Организация папок и файлов"
 
+#: dialogs/FbParamsDlg.cpp:467
+msgid "Exported structure:"
+msgstr "Организация папок и файлов:"
+
 #: dialogs/FbParamsDlg.cpp:481
 msgid "First letter of author name"
 msgstr "Первая буква фамилии автора"
