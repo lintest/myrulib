@@ -7,7 +7,7 @@
 #
 
 Name:           myrulib
-Version:        0.29.5
+Version:        0.29.6
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
