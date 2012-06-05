@@ -453,15 +453,17 @@ int FbCollection::GetParamInt(int param)
 		wxCriticalSectionLocker locker(sm_section);
 		FbParamHash::const_iterator it = sm_params.find(param);
 		if (it != sm_params.end()) return it->second.m_int;
+		return FbParamItem::DefaultInt(param);
 	} else {
 		wxCriticalSectionLocker locker(sm_section);
 		FbCollection * collection = GetCollection();
 		if (collection) {
 			FbParamHash::const_iterator it = collection->m_params.find(param);
 			if (it != collection->m_params.end()) return it->second.m_int;
+			return collection->DefaultInt(param);
 		}
+		return 0;
 	}
-	return FbParamItem::DefaultInt(param);
 }
 
 wxString FbCollection::GetParamStr(int param)
@@ -470,15 +472,17 @@ wxString FbCollection::GetParamStr(int param)
 		wxCriticalSectionLocker locker(sm_section);
 		FbParamHash::const_iterator it = sm_params.find(param);
 		if (it != sm_params.end()) return it->second.m_str;
+		return FbParamItem::DefaultStr(param);
 	} else {
 		wxCriticalSectionLocker locker(sm_section);
 		FbCollection * collection = GetCollection();
 		if (collection) {
 			FbParamHash::const_iterator it = collection->m_params.find(param);
 			if (it != collection->m_params.end()) return it->second.m_str;
+			return collection->DefaultStr(param);
 		}
+        return wxEmptyString;
 	}
-	return FbParamItem::DefaultStr(param);
 }
 
 void FbCollection::SetParamInt(int param, int value)
@@ -537,6 +541,38 @@ void FbCollection::SetParamStr(int param, const wxString &value)
 		stmt.Bind(2, value);
 		stmt.ExecuteUpdate();
 	}
+}
+
+int FbCollection::DefaultInt(int param)
+{
+	switch (param) {
+		default: return 0;
+	}
+};
+
+wxString FbCollection::DefaultStr(int param)
+{
+	switch (param) {
+		case DB_LIBRARY_DIR:
+			return wxT('.');
+		case DB_DOWNLOAD_HOST:
+			return wxT("flibusta.net");
+		case DB_DOWNLOAD_ADDR:
+			if (IsGenesis()) {
+				return wxT("http://%h/get?nametype=orig&md5=%s");
+			} else {
+				return wxT("http://%h/b/%i/download");
+			}
+		default:
+			return wxEmptyString;
+	}
+};
+
+bool FbCollection::IsGenesis() const
+{
+	FbParamHash::const_iterator it = sm_params.find(DB_LIBRARY_TYPE);
+	if (it == sm_params.end()) return false;
+	return it->second.m_str == wxT("GENESIS");
 }
 
 void FbCollection::ResetParam(int param)

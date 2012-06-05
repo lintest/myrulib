@@ -111,6 +111,9 @@ class FbCollection: public wxObject
 		wxString GetBookAuths(int code, size_t col);
 		wxString GetBookSeqns(int code, size_t col);
 		void LoadParams();
+		int DefaultInt(int param);
+		wxString DefaultStr(int param);
+		bool IsGenesis() const;
 	private:
 		static wxCriticalSection sm_section;
 		static wxArrayString sm_icons;
