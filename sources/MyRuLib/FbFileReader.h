@@ -21,7 +21,8 @@ private:
 class FbZipInputStream : public wxZipInputStream
 {
 public:
-	FbZipInputStream(const wxString & archname, const wxString & filename = wxEmptyString);
+	FbZipInputStream(const wxString & archname, const wxString & filename, bool info);
+	FbZipInputStream(const wxString & archname, const wxString & filename);
 	FbZipInputStream(const wxString & archname, bool info);
 	FbZipInputStream(wxInputStream * stream, bool info);
 	virtual wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart);
@@ -34,7 +35,7 @@ private:
 class FbFileReader : public wxObject
 {
 public:
-	FbFileReader(int book, bool info = false, bool full = false);
+	FbFileReader(int book, bool info = false);
 
 	virtual ~FbFileReader();
 

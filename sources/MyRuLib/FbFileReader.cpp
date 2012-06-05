@@ -43,6 +43,20 @@ static wxCSConv & GetConv866()
 	return conv;
 }
 
+FbZipInputStream::FbZipInputStream(const wxString & archname, const wxString & filename, bool info)
+	: wxZipInputStream(new wxFFileInputStream(archname), GetConv866()), m_ok(true)
+{
+	FbSmartPtr<wxZipEntry> fileEntry = 0;
+	FbSmartPtr<wxZipEntry> infoEntry = 0;
+	wxString infoname = filename.BeforeLast(wxT('.')) + wxT(".fbd");
+	while (FbSmartPtr<wxZipEntry> entry = GetNextEntry()) {
+		if (entry->GetInternalName() == filename) { fileEntry = entry.Reset(); }
+		else if (entry->GetInternalName() == infoname) { infoEntry = entry.Reset(); }
+	}
+	m_entry = (info && infoEntry) ? infoEntry.Reset() : fileEntry.Reset();
+	m_ok = m_entry && OpenEntry(*m_entry);
+}
+
 FbZipInputStream::FbZipInputStream(const wxString & archname, const wxString & filename)
 	: wxZipInputStream(new wxFFileInputStream(archname), GetConv866()), m_ok(true)
 {
@@ -50,6 +64,7 @@ FbZipInputStream::FbZipInputStream(const wxString & archname, const wxString & f
 		bool ok = (m_entry->GetInternalName() == filename);
 		if (ok) { m_ok = OpenEntry(*m_entry); break; }
 	}
+	m_ok = false;
 }
 
 FbZipInputStream::FbZipInputStream(const wxString & archname, bool info)
@@ -59,6 +74,7 @@ FbZipInputStream::FbZipInputStream(const wxString & archname, bool info)
 		bool ok = (m_entry->GetInternalName().Right(4).Lower() == wxT(".fbd")) == info;
 		if (ok) { m_ok = OpenEntry(*m_entry); break; }
 	}
+	m_ok = false;
 }
 
 FbZipInputStream::FbZipInputStream(wxInputStream * stream, bool info)
@@ -98,7 +114,7 @@ static wxString FindFile(const wxString & name, const wxString & path, const wxS
 
 wxString Ext(const wxString &filename);
 
-FbFileReader::FbFileReader(int id, bool info, bool full)
+FbFileReader::FbFileReader(int id, bool info)
 	: m_id(id), m_stream(NULL)
 {
 	FbCommonDatabase database;
@@ -109,6 +125,7 @@ FbFileReader::FbFileReader(int id, bool info, bool full)
 		m_md5sum = result.GetString(0).Lower();
 		m_filetype = result.GetString(1).Lower();
 		if (m_filetype == wxT("fb2")) info = false;
+		if (m_filetype == wxT("epub")) info = false;
 	}
 
 	{
@@ -158,9 +175,9 @@ FbFileReader::FbFileReader(int id, bool info, bool full)
 				if (primary) m_message = GetError(file_name, arch_name);
 				arch_name = FindFile(arch_name, result.GetString(2), root);
 				if (arch_name.IsEmpty()) continue;
-				m_stream = new FbZipInputStream(arch_name, file_name);
+				m_stream = new FbZipInputStream(arch_name, file_name, info);
 				if (m_stream->IsOk()) {
-					if (full || m_filetype == wxT("zip") || Ext(file_name) != wxT("zip")) return;
+					if ((m_filetype == wxT("zip") || Ext(file_name) != wxT("zip"))) return;
 					m_stream = new FbMemoryInputStream(m_stream, m_stream->GetLength());
 					m_stream = new FbZipInputStream(m_stream, info);
 					if (m_stream->IsOk()) return;
@@ -371,7 +388,7 @@ void FbFileReader::Open() const
 	if (!ok) ok = !(command = FbCommonDatabase().Str(m_filetype, sql)).IsEmpty();
 	bool coolreader = !ok && FbParams(FB_USE_COOLREADER);
 	if (command == wxT('*')) { coolreader = true; command.Empty(); ok = false; }
-	
+
 	FbTempFileName tempfile;
 	#ifdef FB_INCLUDE_READER
 	if (coolreader) {
@@ -380,6 +397,8 @@ void FbFileReader::Open() const
 		if (FbCoolReader::Open(m_id, filename)) return;
 		m_stream->Reset();
 	}
+	#else
+	wxUnusedVar(coolreader);
 	#endif
 
 	#ifdef __WXGTK__
