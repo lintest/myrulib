@@ -1,3 +1,10 @@
+myrulib (0.29.8-squeeze1) stable; urgency=low
+
+  Исправление ошибок:
+  * Повторная закачка при открытии уже скачанной книги.
+
+ -- Denis Kandrashin <mail@lintest.ru>  Thu, 07 Jun 2012 12:02:02 +0400
+
 myrulib (0.29.7-squeeze1) stable; urgency=low
 
   Исправление ошибок:
