@@ -62,7 +62,7 @@ FbZipInputStream::FbZipInputStream(const wxString & archname, const wxString & f
 {
 	while (m_entry = GetNextEntry()) {
 		bool ok = (m_entry->GetInternalName() == filename);
-		if (ok) { m_ok = OpenEntry(*m_entry); break; }
+		if (ok) { m_ok = OpenEntry(*m_entry); return; }
 	}
 	m_ok = false;
 }
@@ -72,7 +72,7 @@ FbZipInputStream::FbZipInputStream(const wxString & archname, bool info)
 {
 	while (m_entry = GetNextEntry()) {
 		bool ok = (m_entry->GetInternalName().Right(4).Lower() == wxT(".fbd")) == info;
-		if (ok) { m_ok = OpenEntry(*m_entry); break; }
+		if (ok) { m_ok = OpenEntry(*m_entry); return; }
 	}
 	m_ok = false;
 }
@@ -83,9 +83,10 @@ FbZipInputStream::FbZipInputStream(wxInputStream * stream, bool info)
 	while (m_entry = GetNextEntry()) {
 		wxString name = m_entry->GetInternalName();
 		if (name == wxT("mimetype")) { m_ok = false; return; } // Check EPUB
-		bool found = (name.Right(4).Lower() == wxT(".fbd")) == info;
-		if (found) { m_ok = OpenEntry(*m_entry); break; }
+		bool ok = (name.Right(4).Lower() == wxT(".fbd")) == info;
+		if (ok) { m_ok = OpenEntry(*m_entry); return; }
 	}
+	m_ok = false;
 }
 
 wxFileOffset FbZipInputStream::SeekI(wxFileOffset pos, wxSeekMode mode)
