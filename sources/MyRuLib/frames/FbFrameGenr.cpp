@@ -3,6 +3,7 @@
 #include "FbConst.h"
 #include "FbDatabase.h"
 #include "FbGenres.h"
+#include "FbBookPanel.h"
 #include "models/FbGenrTree.h"
 #include "FbMainMenu.h"
 

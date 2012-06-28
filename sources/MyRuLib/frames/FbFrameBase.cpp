@@ -1,6 +1,8 @@
 #include "FbFrameBase.h"
 #include <wx/clipbrd.h>
 #include "FbConst.h"
+#include "FbBookPanel.h"
+#include "FbFrameThread.h"
 #include "FbMainFrame.h"
 #include "MyRuLibApp.h"
 #include "FbMasterTypes.h"
@@ -147,6 +149,16 @@ void FbFrameBase::Localize(bool bUpdateMenu)
 void FbFrameBase::CreateBooksPanel(wxWindow * parent)
 {
 	m_BooksPanel = new FbBookPanel(parent, wxSize(500, 400), GetId());
+}
+
+FbListMode FbFrameBase::GetListMode()
+{
+	return m_BooksPanel->GetListMode();
+}
+
+void FbFrameBase::RefreshBooks()
+{
+	m_BooksPanel->GetBookList().Refresh();
 }
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)

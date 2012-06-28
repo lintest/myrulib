@@ -1,5 +1,6 @@
 #include "FbFrameDown.h"
 #include <wx/artprov.h>
+#include "FbBookPanel.h"
 #include "FbBookMenu.h"
 #include "FbMainMenu.h"
 #include "FbConst.h"

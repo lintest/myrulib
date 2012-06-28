@@ -5,15 +5,16 @@
 #include <wx/toolbar.h>
 #include <wx/splitter.h>
 #include <wx/aui/tabmdi.h>
-#include "FbBookPanel.h"
 #include "FbBookEvent.h"
 #include "FbParams.h"
 #include "FbWindow.h"
-#include "FbThread.h"
 #include "FbMainMenu.h"
 #include "FbFilterObj.h"
-#include "FbFrameThread.h"
 #include "controls/FbTreeView.h"
+
+class FbBookPanel;
+
+class FbFrameThread;
 
 class FbMasterViewCtrl
 	: public FbTreeViewCtrl
@@ -50,12 +51,12 @@ public:
 		virtual void UpdateMaster(FbMasterEvent & event);
 		virtual void UpdateInfo(int id);
 		virtual void UpdateFonts(bool refresh = true);
-		FbListMode GetListMode() { return m_BooksPanel->GetListMode(); };
 		virtual void ShowFullScreen(bool show);
 		virtual void Localize(bool bUpdateMenu);
-		FbBookPanel * GetBooks() { return m_BooksPanel; }
-		void RefreshBooks() { m_BooksPanel->GetBookList().Refresh(); }
+		FbListMode GetListMode();
+		void RefreshBooks();
 		int GetBookCount() { return m_BookCount; }
+		FbBookPanel * GetBooks() { return m_BooksPanel; }
 		const wxString & GetMasterFile() const { return m_MasterFile; }
 	protected:
 		void CreateControls(bool select);

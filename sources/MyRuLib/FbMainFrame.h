@@ -5,11 +5,14 @@
 #include <wx/aui/aui.h>
 #include <wx/toolbar.h>
 #include <wx/textctrl.h>
-#include "controls/ProgressBar.h"
-#include "FbLogoBitmap.h"
+#include <wx/srchctrl.h>
 #include "FbBookEvent.h"
-#include "FbMasterInfo.h"
 #include "FbWindow.h"
+
+class FbMasterInfo;
+class FbSearchCtrl;
+class ProgressBar;
+class FbTreeViewCtrl;
 
 class FbMainFrame : public wxFrame
 {
@@ -31,6 +34,8 @@ class FbMainFrame : public wxFrame
 		wxToolBar * CreateToolBar();
 		wxAuiPaneInfo * FindLog();
 		void ShowLog(bool forced = false);
+		void DoFindAuthor();
+		void DoFindTitle();
 		void FindAuthor(const wxString &text);
 		void FindTitle(const wxString &title, const wxString &author);
 		wxWindow * FindFrameById(const int id, bool bActivate = false);
@@ -45,8 +50,8 @@ class FbMainFrame : public wxFrame
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
 		wxEvent * m_LastEvent;
-		wxTextCtrl * m_FindAuthor;
-		wxTextCtrl * m_FindTitle;
+		FbSearchCtrl * m_FindAuthor;
+		FbSearchCtrl * m_FindTitle;
 		ProgressBar * m_ProgressBar;
 		wxAuiManager m_FrameManager;
 		wxAuiNotebook m_FrameNotebook;
@@ -72,10 +77,6 @@ class FbMainFrame : public wxFrame
 		void OnDatabaseOpen(wxCommandEvent & event);
 		void OnDatabaseGenres(wxCommandEvent & event);
 		void OnInfoCommand(wxCommandEvent & event);
-		void OnFindAuthor(wxCommandEvent& event);
-		void OnFindAuthorEnter(wxCommandEvent& event);
-		void OnFindTitle(wxCommandEvent & event);
-		void OnFindTitleEnter(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
 		void OnInitFrame(wxCommandEvent& event);

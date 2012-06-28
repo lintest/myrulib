@@ -2,6 +2,7 @@
 #include <wx/artprov.h>
 #include <wx/splitter.h>
 #include "FbConst.h"
+#include "FbBookPanel.h"
 #include "FbClientData.h"
 #include "dialogs/FbExportDlg.h"
 #include "FbMainMenu.h"

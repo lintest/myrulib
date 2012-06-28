@@ -2,6 +2,7 @@
 #include <wx/artprov.h>
 #include <wx/mimetype.h>
 #include "FbConst.h"
+#include "FbBookPanel.h"
 #include "FbMainMenu.h"
 #include "FbDatabase.h"
 #include "FbMasterTypes.h"

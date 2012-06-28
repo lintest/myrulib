@@ -293,6 +293,8 @@
 		<Unit filename="../MyRuLib/controls/FbNotebook.h" />
 		<Unit filename="../MyRuLib/controls/FbSearchCombo.cpp" />
 		<Unit filename="../MyRuLib/controls/FbSearchCombo.h" />
+		<Unit filename="../MyRuLib/controls/FbSearchCtrl.cpp" />
+		<Unit filename="../MyRuLib/controls/FbSearchCtrl.h" />
 		<Unit filename="../MyRuLib/controls/FbToolBar.cpp" />
 		<Unit filename="../MyRuLib/controls/FbToolBar.h" />
 		<Unit filename="../MyRuLib/controls/FbTreeModel.cpp" />

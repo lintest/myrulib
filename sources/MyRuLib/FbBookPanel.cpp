@@ -52,6 +52,7 @@ void FbBookViewCtrl::OnMenu(wxCommandEvent& event)
 			case FbMenu::AUTH: FbOpenEvent(ID_BOOK_AUTH, code, GetBook()).Post(); break;
 			case FbMenu::SEQN: FbOpenEvent(ID_BOOK_SEQN, code, GetBook()).Post(); break;
 			case FbMenu::FLDR: ((FbBookPanel*)GetParent())->DoFolderAdd(code); break;
+			case FbMenu::CLSS: break;
 		}
 	} else event.Skip();
 }

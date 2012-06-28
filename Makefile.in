@@ -160,6 +160,7 @@ MYRULIB_OBJECTS =  \
 	myrulib_FbLogModel.o \
 	myrulib_FbNotebook.o \
 	myrulib_FbSearchCombo.o \
+	myrulib_FbSearchCtrl.o \
 	myrulib_FbToolBar.o \
 	myrulib_FbTreeModel.o \
 	myrulib_FbTreeView.o \
@@ -689,6 +690,9 @@ myrulib_FbNotebook.o: $(srcdir)/sources/MyRuLib/controls/FbNotebook.cpp $(MYRULI
 
 myrulib_FbSearchCombo.o: $(srcdir)/sources/MyRuLib/controls/FbSearchCombo.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbSearchCombo.cpp
+
+myrulib_FbSearchCtrl.o: $(srcdir)/sources/MyRuLib/controls/FbSearchCtrl.cpp $(MYRULIB_ODEP)
+	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbSearchCtrl.cpp
 
 myrulib_FbToolBar.o: $(srcdir)/sources/MyRuLib/controls/FbToolBar.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbToolBar.cpp

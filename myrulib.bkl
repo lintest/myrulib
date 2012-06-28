@@ -248,6 +248,7 @@
 		<sources>sources/MyRuLib/controls/FbLogModel.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbNotebook.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbSearchCombo.cpp</sources>
+		<sources>sources/MyRuLib/controls/FbSearchCtrl.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbToolBar.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbTreeModel.cpp</sources>
 		<sources>sources/MyRuLib/controls/FbTreeView.cpp</sources>
