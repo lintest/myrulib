@@ -56,6 +56,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSubmenu)
 	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnSubmenu)
 	EVT_UPDATE_UI(wxID_COPY, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_SELECTALL, FbMainFrame::OnEnableUI)
+	EVT_UPDATE_UI(ID_UNSELECTALL, FbMainFrame::OnEnableUI)
 	EVT_UPDATE_UI(ID_MASTER_APPEND, FbMainFrame::OnDisableUI)
 	EVT_UPDATE_UI(ID_MASTER_MODIFY, FbMainFrame::OnDisableUI)
 	EVT_UPDATE_UI(ID_MASTER_REPLACE, FbMainFrame::OnDisableUI)
@@ -176,6 +178,16 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 		FbEventLocker locker(*this, event);
 
 		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
+
+		if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
+			if (event.GetId() == wxID_SELECTALL) {
+				wxTextCtrlBase * text = wxDynamicCast(focused, wxTextCtrlBase);
+				if (text) { text->SelectAll(); return true; }
+				wxComboCtrl * combo = wxDynamicCast(focused, wxComboCtrl);
+				if (combo) { combo->GetTextCtrl()->SelectAll(); return true; }
+			}
+		}
+
 		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;
 
 		wxWindow * window = GetActiveChild();
@@ -879,15 +891,6 @@ void FbMainFrame::Localize(int language)
 	wxToolBar * toolbar = GetToolBar();
 	SetToolBar(CreateToolBar());
 	wxDELETE(toolbar);
-
-	size_t count = m_FrameNotebook.GetPageCount();
-	size_t index = m_FrameNotebook.GetSelection();
-	for (size_t i = 0; i < count; ++i) {
-/*
-		FbAuiMDIChildFrame * frame = wxDynamicCast(m_FrameNotebook.GetPage(i), FbAuiMDIChildFrame);
-		if (frame) frame->Localize(i == index);
-*/
-	}
 }
 
 void FbMainFrame::OnDatabaseGenres(wxCommandEvent & event)

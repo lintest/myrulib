@@ -56,6 +56,9 @@ class FbMainFrame : public wxFrame
 		wxMenu * m_MenuTree;
 		wxMenu * m_MenuRead;
 	private:
+		void OnEnableUI(wxUpdateUIEvent & event) {
+			event.Enable(true);
+		}
 		void OnDisableUI(wxUpdateUIEvent & event) {
 			event.Enable(false);
 		}

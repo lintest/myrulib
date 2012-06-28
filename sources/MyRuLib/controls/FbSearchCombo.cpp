@@ -4,6 +4,8 @@
 //  FbSearchCombo
 //-----------------------------------------------------------------------------
 
+IMPLEMENT_CLASS(FbSearchCombo, wxComboCtrl)
+
 static int GetMultiplier()
 {
 #ifdef __WXWINCE__

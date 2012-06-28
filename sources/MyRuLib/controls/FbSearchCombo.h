@@ -43,6 +43,7 @@ class FbSearchCombo: public wxComboCtrl
 		void Init() {}
 	private:
 		wxBitmap RenderButtonBitmap();
+		DECLARE_CLASS(FbSearchCombo)
 };
 
 #endif // __FBSEARCHCOMBO_H__

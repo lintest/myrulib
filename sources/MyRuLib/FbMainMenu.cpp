@@ -38,7 +38,7 @@ FbMenuBar::MenuEdit::MenuEdit()
 	AppendSeparator();
 	#ifdef FB_INCLUDE_READER
 	Append(ID_READER_OPTIONS , _("Cool Reader options"));
-	#endif // FB_INCLUDE_READER	
+	#endif // FB_INCLUDE_READER
 	Append(wxID_PREFERENCES  , _("Settings"));
 }
 

@@ -193,6 +193,8 @@ class  FbTreeViewMainWindow: public wxScrolledWindow
 		size_t m_count;
 
 	private:
+		void OnSelectAll(wxCommandEvent & event);
+		void OnUpdateSelectAll(wxUpdateUIEvent& event);
 		void OnPaint( wxPaintEvent &event );
 		void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { ;; } // to reduce flicker
 		void OnSetFocus( wxFocusEvent &event );
@@ -588,6 +590,8 @@ void FbTreeViewHeaderWindow::SetColumnWidth (int column, int delta)
 // ---------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(FbTreeViewMainWindow, wxScrolledWindow)
+	EVT_MENU (wxID_SELECTALL, FbTreeViewMainWindow::OnSelectAll)
+	EVT_UPDATE_UI(wxID_SELECTALL, FbTreeViewMainWindow::OnUpdateSelectAll)
 	EVT_PAINT          (FbTreeViewMainWindow::OnPaint)
 	EVT_ERASE_BACKGROUND(FbTreeViewMainWindow::OnEraseBackground) // to reduce flicker
 	EVT_MOUSE_EVENTS   (FbTreeViewMainWindow::OnMouse)
@@ -728,8 +732,19 @@ void FbTreeViewMainWindow::OnPaint (wxPaintEvent &WXUNUSED(event))
 	}
 }
 
+void FbTreeViewMainWindow::OnSelectAll(wxCommandEvent & event)
+{
+	m_owner->SelectAll(true);
+}
+
+void FbTreeViewMainWindow::OnUpdateSelectAll(wxUpdateUIEvent& event)
+{
+    event.Enable( m_model );
+}
+
 void FbTreeViewMainWindow::OnChar(wxKeyEvent &event)
 {
+
 	if (event.GetKeyCode() == WXK_TAB) {
 		wxWindow * owner = GetParent()->GetParent();
 		wxNavigationKeyEvent nevent;
@@ -958,7 +973,7 @@ void FbTreeViewMainWindow::OnMouse (wxMouseEvent &event)
 				size_t pos = m_model->FindRow(row, false);
 				m_model->SingleCheck(pos);
 			} else if (HasFlag(fbTR_DIRECTORY) && left <= x && x <= right) {
-				size_t pos = m_model->FindRow(row, false);
+				m_model->FindRow(row, false);
 				bool ok = item.Expand(!item.IsExpanded());
 				if (ok) AdjustMyScrollbars();
 			} else {
