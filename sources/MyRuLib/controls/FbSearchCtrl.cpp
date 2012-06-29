@@ -10,11 +10,6 @@
 
 #include "FbSearchCtrl.h"
 
-#include "wx/button.h"
-#include "wx/dcclient.h"
-#include "wx/menu.h"
-#include "wx/dcmemory.h"
-
 #include <wx/image.h>
 
 #define WXMAX(a,b) ((a)>(b)?(a):(b))
@@ -87,6 +82,150 @@ static wxColor wxStepColour(const wxColor& c, int ialpha)
 }
 
 #define LIGHT_STEP 160
+
+// icons are rendered at 3-8 times larger than necessary and downscaled for
+// antialiasing
+static int GetMultiplier()
+{
+#ifdef __WXWINCE__
+    // speed up bitmap generation by using a small bitmap
+    return 3;
+#else
+    int depth = ::wxDisplayDepth();
+
+    if  ( depth >= 24 )
+    {
+        return 8;
+    }
+    return 6;
+#endif
+}
+
+#ifdef __WXMSW__
+
+IMPLEMENT_CLASS(FbSearchCtrl, wxOwnerDrawnComboBox)
+
+FbSearchCtrl::FbSearchCtrl()
+{
+    Init();
+}
+
+FbSearchCtrl::FbSearchCtrl(wxWindow *parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name)
+{
+    Init();
+    Create(parent, id, value, pos, size, style, validator, name);
+}
+
+void FbSearchCtrl::Init()
+{
+}
+
+bool FbSearchCtrl::Create(wxWindow *parent, wxWindowID id, const wxString& value, const wxPoint& pos, const wxSize& size, long style, const wxValidator& validator, const wxString& name)
+{
+    if (!wxOwnerDrawnComboBox::Create(parent, id, value, pos, size, style, validator, name)) return false;
+    wxSize sizeText = GetBestSize();
+    int bitmapHeight = sizeText.y - 4 * ICON_MARGIN;
+    int bitmapWidth  = sizeText.y * 20 / 14;
+	wxBitmap bitmap = RenderCancelBitmap(bitmapWidth, bitmapHeight);
+    SetButtonBitmaps(bitmap, false);
+    return true;
+}
+
+FbSearchCtrl::~FbSearchCtrl()
+{
+}
+
+wxBitmap FbSearchCtrl::RenderCancelBitmap( int x, int y )
+{
+    wxColour bg = GetBackgroundColour();
+    wxColour fg = wxStepColour(GetForegroundColour(), LIGHT_STEP);
+
+    //===============================================================================
+    // begin drawing code
+    //===============================================================================
+    // image stats
+
+    // total size 14x14
+    // force 1:1 ratio
+    if ( x > y )
+    {
+        // x is too big
+        x = y;
+    }
+    else
+    {
+        // y is too big
+        y = x;
+    }
+
+    // 14x14 circle
+    // cross line starts (4,4)-(10,10)
+    // drop (13,16)-(19,6)-(16,9)
+
+    int multiplier = GetMultiplier();
+
+    int penWidth = multiplier * x / 14;
+
+    wxBitmap bitmap( multiplier*x, multiplier*y );
+    wxMemoryDC mem;
+    mem.SelectObject(bitmap);
+
+    // clear background
+    mem.SetBrush( wxBrush(bg) );
+    mem.SetPen( wxPen(bg) );
+    mem.DrawRectangle(0,0,bitmap.GetWidth(),bitmap.GetHeight());
+
+    // draw drop glass
+    mem.SetBrush( wxBrush(fg) );
+    mem.SetPen( wxPen(fg) );
+    int radius = multiplier*x/2;
+    mem.DrawCircle(radius,radius,radius);
+
+    // draw cross
+    int lineStartBase = 4 * x / 14;
+    int lineLength = x - 2*lineStartBase;
+
+    mem.SetPen( wxPen(bg) );
+    mem.SetBrush( wxBrush(bg) );
+    int handleCornerShift = penWidth/2;
+    handleCornerShift = WXMAX( handleCornerShift, 1 );
+    wxPoint handlePolygon[] =
+    {
+        wxPoint(-handleCornerShift,+handleCornerShift),
+        wxPoint(+handleCornerShift,-handleCornerShift),
+        wxPoint(multiplier*lineLength+handleCornerShift,multiplier*lineLength-handleCornerShift),
+        wxPoint(multiplier*lineLength-handleCornerShift,multiplier*lineLength+handleCornerShift),
+    };
+    mem.DrawPolygon(WXSIZEOF(handlePolygon),handlePolygon,multiplier*lineStartBase,multiplier*lineStartBase);
+    wxPoint handlePolygon2[] =
+    {
+        wxPoint(+handleCornerShift,+handleCornerShift),
+        wxPoint(-handleCornerShift,-handleCornerShift),
+        wxPoint(multiplier*lineLength-handleCornerShift,-multiplier*lineLength-handleCornerShift),
+        wxPoint(multiplier*lineLength+handleCornerShift,-multiplier*lineLength+handleCornerShift),
+    };
+    mem.DrawPolygon(WXSIZEOF(handlePolygon2),handlePolygon2,multiplier*lineStartBase,multiplier*(x-lineStartBase));
+
+    //===============================================================================
+    // end drawing code
+    //===============================================================================
+
+    if ( multiplier != 1 )
+    {
+        wxImage image = bitmap.ConvertToImage();
+        image.Rescale(x,y);
+        bitmap = wxBitmap( image );
+    }
+
+    return bitmap;
+}
+
+#else
+
+#include "wx/button.h"
+#include "wx/dcclient.h"
+#include "wx/menu.h"
+#include "wx/dcmemory.h"
 
 // ----------------------------------------------------------------------------
 // FbSearchTextCtrl: text control used by search control
@@ -883,24 +1022,6 @@ bool FbSearchCtrl::ShouldInheritColours() const
     return true;
 }
 
-// icons are rendered at 3-8 times larger than necessary and downscaled for
-// antialiasing
-static int GetMultiplier()
-{
-#ifdef __WXWINCE__
-    // speed up bitmap generation by using a small bitmap
-    return 3;
-#else
-    int depth = ::wxDisplayDepth();
-
-    if  ( depth >= 24 )
-    {
-        return 8;
-    }
-    return 6;
-#endif
-}
-
 wxBitmap FbSearchCtrl::RenderSearchBitmap( int x, int y, bool renderDrop )
 {
     wxColour bg = GetBackgroundColour();
@@ -1190,6 +1311,8 @@ void FbSearchCtrl::PopupSearchMenu()
         PopupMenu( m_menu, 0, size.y );
     }
 }
+
+#endif // __WXMSW__
 
 #endif // wxUSE_MENUS
 

@@ -11,7 +11,56 @@
 #ifndef __SEARCHCTRL_H__
 #define __SEARCHCTRL_H__
 
+#include <wx/wx.h>
+#include <wx/odcombo.h>
+
+#ifdef __WXMSW__
+
 #include <wx/srchctrl.h>
+
+class FbSearchCtrl : public wxOwnerDrawnComboBox
+{
+public:
+	FbSearchCtrl();
+
+	FbSearchCtrl(wxWindow *parent, wxWindowID id,
+			   const wxString& value = wxEmptyString,
+			   const wxPoint& pos = wxDefaultPosition,
+			   const wxSize& size = wxDefaultSize,
+			   long style = 0,
+			   const wxValidator& validator = wxDefaultValidator,
+			   const wxString& name = wxSearchCtrlNameStr);
+
+	virtual ~FbSearchCtrl();
+
+	void Init();
+
+	bool Create(wxWindow *parent, wxWindowID id,
+				const wxString& value = wxEmptyString,
+				const wxPoint& pos = wxDefaultPosition,
+				const wxSize& size = wxDefaultSize,
+				long style = 0,
+				const wxValidator& validator = wxDefaultValidator,
+				const wxString& name = wxSearchCtrlNameStr);
+
+	virtual void DoSetPopupControl(wxComboPopup* WXUNUSED(popup)) {}
+
+	virtual void OnButtonClick() {
+		GetTextCtrl()->Clear();
+	}
+
+	virtual void SelectAll() {
+		GetTextCtrl()->SelectAll(); 
+	}
+
+protected:
+	virtual wxBitmap RenderCancelBitmap( int x, int y );
+
+private:
+	DECLARE_CLASS(FbTextCtrl)
+};
+
+#else // __WXMSW__
 
 // ----------------------------------------------------------------------------
 // a search ctrl is a text control with a search button and a cancel button
@@ -292,5 +341,7 @@ private:
 
     DECLARE_EVENT_TABLE()
 };
+
+#endif // __WXMSW__
 
 #endif // __SEARCHCTRL_H__

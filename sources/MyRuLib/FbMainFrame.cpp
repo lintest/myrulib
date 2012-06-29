@@ -80,6 +80,11 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_MENU_CONFIG, FbMainFrame::OnMenuConfig)
 	EVT_MENU(ID_OPEN_WEB, FbMainFrame::OnOpenWeb)
 
+	EVT_MENU(ID_AUTHOR_BTN, FbMainFrame::OnFindAuthor)
+	EVT_MENU(ID_TITLE_BTN, FbMainFrame::OnFindTitle)
+	EVT_TEXT_ENTER(ID_AUTHOR_TXT, FbMainFrame::OnFindAuthor)
+	EVT_TEXT_ENTER(ID_TITLE_TXT, FbMainFrame::OnFindTitle)
+
 	EVT_MENU(ID_PROGRESS_FINISH, FbMainFrame::OnImportFinish)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
@@ -440,30 +445,48 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddTool(wxID_NEW, _("Import file"), wxART_NEW, _("Import files to the library"));
 	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxART_FILE_OPEN, _("Import folder to the library"));
 
-	wxString authorInfo = _(" Author: "); authorInfo.Prepend(wxT("  "));
-	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, authorInfo, wxDefaultPosition, wxDefaultSize, 0 );
+#ifdef __WXMSW__
+	toolbar->AddSeparator();
+#endif // __WXMSW__
+
+	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
 	toolbar->AddControl( text1 );
 
 	m_FindAuthor = new FbSearchCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
-	m_FindAuthor->SetEventHandler(this);
 	m_FindAuthor->SetFont(font);
 	toolbar->AddControl( m_FindAuthor );
 
-	wxString titleInfo = _(" Book: "); titleInfo.Prepend(wxT("  "));
-	wxStaticText * text2 = new wxStaticText(toolbar, wxID_ANY, titleInfo, wxDefaultPosition, wxDefaultSize, 0 );
+#ifdef __WXMSW__
+	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxART_FIND, _("Find author"));
+	toolbar->AddSeparator();
+#endif // __WXMSW__
+
+	wxStaticText * text2 = new wxStaticText(toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	text2->SetFont(font);
 	toolbar->AddControl( text2 );
 
 	m_FindTitle = new FbSearchCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
-	m_FindTitle->SetEventHandler(this);
 	m_FindTitle->SetFont(font);
 	toolbar->AddControl( m_FindTitle );
 
+#ifdef __WXMSW__
+	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxART_FIND, _("Find book by title"));
+	toolbar->AddSeparator();
+#endif // __WXMSW__
+
 	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), fbART_REPORT_VIEW, _("Hierarchy of authors and series"));
 	toolbar->AddTool(ID_MODE_LIST, _("List"), fbART_LIST_VIEW, _("Simple list"));
+
+#ifdef __WXMSW__
+	toolbar->AddSeparator();
+#else
+	m_FindAuthor->SetEventHandler(this);
+	m_FindTitle->SetEventHandler(this);
+#endif // __WXMSW__
+
 	toolbar->AddTool(wxID_SAVE, _("Export"), wxART_FILE_SAVE, _("Export to external device"));
 	toolbar->Realize();
 
@@ -547,6 +570,16 @@ void FbMainFrame::ShowLog(bool forced)
 void FbMainFrame::OnHideLog(wxCommandEvent& event)
 {
 	ShowLog();
+}
+
+void FbMainFrame::OnFindAuthor(wxCommandEvent& event)
+{
+	DoFindAuthor();
+}
+
+void FbMainFrame::OnFindTitle(wxCommandEvent& event)
+{
+	DoFindTitle();
 }
 
 void FbMainFrame::DoFindTitle()
