@@ -95,6 +95,7 @@ int FbParamItem::DefaultInt(int param)
 			case FB_WEB_TIMEOUT: return 600;
 			case FB_WEB_ATTEMPT: return 10;
 			case FB_IMAGE_WIDTH: return 200;
+			case FB_FILE_LENGTH: return 64;
 			case FB_LANG_LOCALE: return wxLANGUAGE_DEFAULT;
 			case FB_NUMBER_FORMAT: return 3;
 			case FB_STATUS_SHOW: return 0;

@@ -5,7 +5,7 @@
 
 class FbString : public wxString
 {
-public: 
+public:
 	FbString(const wxChar * psz) : wxString(psz) {}
 
 	FbString(const wxString & str) : wxString(str) {}
@@ -14,11 +14,11 @@ public:
 
 	FbString Translate() const { return wxGetTranslation(*this); }
 
-	wxString & Shorten() {
-		if (Len() <= 0x20) return *this;
-		Truncate(0x20);
+	wxString & Shorten(int length = 0x20) {
+		if (Len() <= (size_t)length) return *this;
+		Truncate(length);
 		int pos = Find(wxT(' '), true);
-		if (pos >= 0x10) Truncate(pos);
+		if (pos >= length / 2) Truncate(pos);
 		*this += wxChar(0x2026);
 		return *this;
 	}

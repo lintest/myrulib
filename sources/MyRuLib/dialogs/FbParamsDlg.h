@@ -70,6 +70,7 @@ class FbParamsDlg : private FbDialog
 			ID_LETTERS,
 			ID_WEB_TIMEOUT,
 			ID_WEB_ATTEMPT,
+			ID_FILE_LENGTH,
 			ID_IMAGE_WIDTH,
 		};
 		class LoadThread: public FbThread

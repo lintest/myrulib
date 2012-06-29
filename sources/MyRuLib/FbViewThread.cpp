@@ -99,9 +99,9 @@ wxString FbViewThread::GetDescr(FbDatabase & database)
 	return database.Str(m_view.GetCode(), wxT("SELECT description FROM books WHERE id=? AND description IS NOT NULL"));
 }
 
-static wxString Shorten(const wxString &filename)
+static wxString Shorten(const wxString &filename, int length)
 {
-	if (filename.Len() <= 0x24) return filename;
+	if (filename.Len() <= (size_t)length) return filename;
 
 	wxString ext;
 	int pos = filename.Find(wxT('.'), true);
@@ -110,16 +110,17 @@ static wxString Shorten(const wxString &filename)
 	FbString result = filename;
 	result.Truncate(pos);
 	result = result.AfterLast(wxT('/'));
-	return result.Shorten() << ext;
+	return result.Shorten(length) << ext;
 }
 
 wxString FbViewThread::GetFiles(FbDatabase & database)
 {
+	int maxLength = FbParams(FB_FILE_LENGTH);
 	int id = m_view.GetCode();
 	wxString html;
 	wxString sql = wxT("SELECT DISTINCT id_archive,file_name,1,id_archive*id_archive,file_type,md5sum FROM books WHERE id=?1 UNION ");
 	sql << wxT("SELECT DISTINCT id_archive,file_name,2,id_archive*id_archive,NULL,NULL FROM files WHERE id_book=?1 ORDER BY 3,4");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql); 
+	wxSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, id);
 	wxSQLite3ResultSet result = stmt.ExecuteQuery();
 	while (result.NextRow()) {
@@ -136,19 +137,19 @@ wxString FbViewThread::GetFiles(FbDatabase & database)
 			if (int arch = result.GetInt(0)) {
 				wxString url;
 				wxString trg = result.GetString(1);
-				wxString str = Shorten(result.GetString(1));
+				wxString str = Shorten(result.GetString(1), maxLength);
 				wxString sql = wxT("SELECT file_name FROM archives WHERE id="); sql << arch;
 				wxSQLite3ResultSet result = database.ExecuteQuery(sql);
 				if (result.NextRow()) {
 					url = wxT("book:") + result.GetString(0);
-					wxString str = Shorten(result.GetString(0));
+					wxString str = Shorten(result.GetString(0), maxLength);
 					html << wxString::Format(wxT("<a href=\"%s\">%s</a>"), url.c_str(), str.c_str());
 					html << wxT(": ");
-				} 
+				}
 				html << wxString::Format(wxT("<a href=\"%s\" target=\"%s\">%s</a>"), url.c_str(), trg.c_str(), str.c_str());
 			} else {
 				wxString url = wxT("book:") + result.GetString(1);
-				wxString str = Shorten(result.GetString(1));
+				wxString str = Shorten(result.GetString(1), maxLength);
 				html << wxString::Format(wxT("<a href=\"%s\">%s</a>"), url.c_str(), str.c_str());
 			}
 		}
@@ -160,7 +161,7 @@ wxString FbViewThread::GetFiles(FbDatabase & database)
 wxString FbViewThread::GetSeqns(FbDatabase & database)
 {
 	wxString html;
-	wxString sql = wxT("select s.value, b.number FROM bookseq b INNER JOIN sequences s ON s.id=b.id_seq WHERE b.id_book="); 
+	wxString sql = wxT("select s.value, b.number FROM bookseq b INNER JOIN sequences s ON s.id=b.id_seq WHERE b.id_book=");
 	sql << m_view.GetCode();
 	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
 	while (res.NextRow()) {

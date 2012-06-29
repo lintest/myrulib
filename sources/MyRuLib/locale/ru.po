@@ -2204,3 +2204,6 @@ msgstr "Показать в папке"
 
 msgid "Annotation"
 msgstr "Аннотация"
+
+msgid "Maximum length of file information"
+msgstr "Максимальная длина информации о файле"

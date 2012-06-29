@@ -369,14 +369,15 @@ FbParamsDlg::PanelTypes::PanelTypes(wxWindow *parent)
 FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	:wxPanel(parent)
 {
+	wxStaticText * text;
 	wxCheckBox * checkbox;
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizerLocale = new wxBoxSizer( wxHORIZONTAL );
 
-	wxStaticText * typeText = new wxStaticText( this, wxID_ANY, _("Language"));
-	typeText->Wrap( -1 );
-	bSizerLocale->Add( typeText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+	text = new wxStaticText( this, wxID_ANY, _("Language"));
+	text->Wrap( -1 );
+	bSizerLocale->Add( text, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
 	FbChoiceInt * localeChoice = new FbChoiceInt( this, ID_LANG_LOCALE);
 	FbLocale::Fill(localeChoice, FbParams(FB_LANG_LOCALE));
@@ -387,7 +388,7 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_SAVE_FULLPATH, _("Save full path of the file when importing"));
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Temporary folder:"));
+	text = new wxStaticText( this, wxID_ANY, _("Temporary folder:"));
 	text->Wrap( -1 );
 	bSizerMain->Add( text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5 );
 
@@ -396,19 +397,17 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	bSizerMain->Add( combo, 0, wxALL|wxEXPAND, 5 );
 
 	#ifdef __WXGTK__
-	{
-		wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizerDir = new wxBoxSizer( wxHORIZONTAL );
 
-		wxStaticText * text = new wxStaticText( this, wxID_ANY, _("Wine temp folder:"));
-		text->Wrap( -1 );
-		bSizerDir->Add( text, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+	text = new wxStaticText( this, wxID_ANY, _("Wine temp folder:"));
+	text->Wrap( -1 );
+	bSizerDir->Add( text, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
-		wxTextCtrl * edit = new wxTextCtrl( this, ID_WINE_DIR);
-		edit->SetMinSize( wxSize( 200,-1 ) );
-		bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	wxTextCtrl * edit = new wxTextCtrl( this, ID_WINE_DIR);
+	edit->SetMinSize( wxSize( 200,-1 ) );
+	bSizerDir->Add( edit, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-		bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
-	}
+	bSizerMain->Add( bSizerDir, 0, wxEXPAND, 5 );
 	#endif
 
 	checkbox = new wxCheckBox( this, ID_TEMP_DEL, _("Delete temporary files when you exit the program"));
@@ -429,16 +428,27 @@ FbParamsDlg::PanelInterface::PanelInterface(wxWindow *parent)
 	checkbox = new wxCheckBox( this, ID_GRID_VRULES, _("Draws light vertical rules between columns"));
 	bSizerMain->Add( checkbox, 0, wxALL, 5 );
 
-	wxBoxSizer* bSizerImage = new wxBoxSizer( wxHORIZONTAL );
+	wxSpinCtrl * number;
 
-	wxStaticText * imageText = new wxStaticText( this, wxID_ANY, _("Maximum width of the cover image"));
-	typeText->Wrap( -1 );
-	bSizerImage->Add( imageText, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+	wxFlexGridSizer * fgSizer = new wxFlexGridSizer( 2 );
+	fgSizer->SetFlexibleDirection( wxBOTH );
+	fgSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	wxSpinCtrl * number = new wxSpinCtrl( this, ID_IMAGE_WIDTH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 999, 0 );
-	bSizerImage->Add( number, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	text = new wxStaticText( this, wxID_ANY, _("Maximum length of file information"));
+	text->Wrap( -1 );
+	fgSizer->Add( text, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
 
-	bSizerMain->Add( bSizerImage, 0, wxALL, 5 );
+	number = new wxSpinCtrl( this, ID_FILE_LENGTH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 16, 9999, 0 );
+	fgSizer->Add( number, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	text = new wxStaticText( this, wxID_ANY, _("Maximum width of the cover image"));
+	text->Wrap( -1 );
+	fgSizer->Add( text, 0, wxTOP|wxLEFT|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 5 );
+
+	number = new wxSpinCtrl( this, ID_IMAGE_WIDTH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 50, 999, 0 );
+	fgSizer->Add( number, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	bSizerMain->Add( fgSizer);
 
 	SetSizer( bSizerMain );
 	bSizerMain->Fit( this );
@@ -687,6 +697,7 @@ void FbParamsDlg::Assign(bool write)
 		{FB_LANG_LOCALE, ID_LANG_LOCALE},
 		{FB_WEB_TIMEOUT, ID_WEB_TIMEOUT},
 		{FB_WEB_ATTEMPT, ID_WEB_ATTEMPT},
+		{FB_FILE_LENGTH, ID_FILE_LENGTH},
 		{FB_IMAGE_WIDTH, ID_IMAGE_WIDTH},
 		{FB_GRID_HRULES, ID_GRID_HRULES},
 		{FB_GRID_VRULES, ID_GRID_VRULES},
