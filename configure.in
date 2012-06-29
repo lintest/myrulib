@@ -344,7 +344,7 @@ AC_OUTPUT
 
 dnl report how we have been configured
 echo
-echo "Configured ${PACKAGE_STRING} for \`${host}' wxWidgets ${WX_VERSION}"
+echo "Configured ${PACKAGE_STRING} for \`${target}' wxWidgets ${WX_VERSION}"
 echo 
 echo "  Use Libxml2 parser library (default)?         ${USE_LIBXML2}"
 echo "  Use Expat XML parser instead of Libxml2?      ${USE_EXPAT}"

@@ -91,7 +91,8 @@ MRL_SQLITE3_OBJECTS =  \
 	mrl_sqlite3_sqlite3.o
 MRL_CRENGINE_CXXFLAGS = -I3rdparty/crengine/include \
 	-I$(srcdir)/../wxWidgets/src/jpeg -I$(srcdir)/../wxWidgets/src/png \
-	-I$(srcdir)/3rdparty/crengine/png $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/../wxWidgets/src/zlib -I$(srcdir)/3rdparty/crengine/png \
+	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MRL_CRENGINE_OBJECTS =  \
 	mrl_crengine_chmfmt.o \
 	mrl_crengine_cp_stats.o \
@@ -144,9 +145,6 @@ ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
 ZIPSCAN_OBJECTS =  \
 	zipscan_ZipScan.o \
 	zipscan_md5.o
-BIN2C_CFLAGS =   $(CPPFLAGS) $(CFLAGS)
-BIN2C_OBJECTS =  \
-	bin2c_bin2c.o
 MYRULIB_CFLAGS = -I. -DNDEBUG -D_MYRULIB -I$(srcdir)/sources/MyRuLib \
 	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
 	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
@@ -277,9 +275,6 @@ MYRULIB_ODEP = ru.inc uk.inc be.inc cs.inc sv.inc $(__fb2_css_inc___depname)
 @COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__zipscan___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL zipscan$(EXEEXT)
-@COND_PLATFORM_MAC_0@__bin2c___mac_setfilecmd = @true
-@COND_PLATFORM_MAC_1@__bin2c___mac_setfilecmd = \
-@COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL bin2c$(EXEEXT)
 @COND_USE_READER_yes@__fb2_css_inc___depname = fb2_css.inc
 @COND_PLATFORM_MAC_0@__myrulib___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__myrulib___mac_setfilecmd = \
@@ -291,7 +286,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) bin2c$(EXEEXT) myrulib$(EXEEXT)
+all: $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -336,7 +331,8 @@ clean:
 	rm -f $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_wxbzip2$(LIBEXT)
 	rm -f zipscan$(EXEEXT)
-	rm -f bin2c$(EXEEXT)
+	rm -f ./bin2c$(EXEEXT)
+	rm -f ./bin2c$
 	rm -f ./ru.mo
 	rm -f ./uk.mo
 	rm -f ./be.mo
@@ -396,10 +392,8 @@ zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___de
 	
 	$(__zipscan___mac_setfilecmd)
 
-bin2c$(EXEEXT): $(BIN2C_OBJECTS)
-	$(CC) -o $@ $(BIN2C_OBJECTS)  $(LDFLAGS)  $(LIBS)
-	
-	$(__bin2c___mac_setfilecmd)
+bin2c: $(srcdir)/3rdparty/bin2c/bin2c.c
+	gcc -o $@ $(srcdir)/3rdparty/bin2c/bin2c.c
 
 ru.mo: $(srcdir)/sources/MyRuLib/locale/ru.po
 	msgfmt $(srcdir)/sources/MyRuLib/locale/ru.po -o ./ru.mo
@@ -416,22 +410,22 @@ cs.mo: $(srcdir)/sources/MyRuLib/locale/cs.po
 sv.mo: $(srcdir)/sources/MyRuLib/locale/sv.po
 	msgfmt $(srcdir)/sources/MyRuLib/locale/sv.po -o ./sv.mo
 
-ru.inc: bin2c$(EXEEXT) ru.mo
+ru.inc: bin2c ru.mo
 	./bin2c ./ru.mo ./ru.inc file
 
-uk.inc: bin2c$(EXEEXT) uk.mo
+uk.inc: bin2c uk.mo
 	./bin2c ./uk.mo ./uk.inc file
 
-be.inc: bin2c$(EXEEXT) be.mo
+be.inc: bin2c be.mo
 	./bin2c ./be.mo ./be.inc file
 
-cs.inc: bin2c$(EXEEXT) cs.mo
+cs.inc: bin2c cs.mo
 	./bin2c ./cs.mo ./cs.inc file
 
-sv.inc: bin2c$(EXEEXT) sv.mo
+sv.inc: bin2c sv.mo
 	./bin2c ./sv.mo ./sv.inc file
 
-@COND_USE_READER_yes@fb2_css.inc: bin2c$(EXEEXT) $(srcdir)/3rdparty/crengine/css/fb2.css
+@COND_USE_READER_yes@fb2_css.inc: bin2c $(srcdir)/3rdparty/crengine/css/fb2.css
 @COND_USE_READER_yes@	./bin2c $(srcdir)/3rdparty/crengine/css/fb2.css ./fb2_css.inc file
 
 myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
@@ -669,9 +663,6 @@ zipscan_ZipScan.o: $(srcdir)/sources/ZipScaner/ZipScan.cpp
 
 zipscan_md5.o: $(srcdir)/sources/MyRuLib/polarssl/md5.c
 	$(CCC) -c -o $@ $(ZIPSCAN_CFLAGS) $(srcdir)/sources/MyRuLib/polarssl/md5.c
-
-bin2c_bin2c.o: $(srcdir)/3rdparty/bin2c/bin2c.c
-	$(CCC) -c -o $@ $(BIN2C_CFLAGS) $(srcdir)/3rdparty/bin2c/bin2c.c
 
 myrulib_FbChoiceCtrl.o: $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/controls/FbChoiceCtrl.cpp

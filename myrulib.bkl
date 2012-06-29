@@ -72,6 +72,7 @@
 		<include>3rdparty/crengine/include</include>
 		<include>$(SRCDIR)/../wxWidgets/src/jpeg</include>
 		<include>$(SRCDIR)/../wxWidgets/src/png</include>
+		<include>$(SRCDIR)/../wxWidgets/src/zlib</include>
 		<include>$(SRCDIR)/3rdparty/crengine/png</include>
 		<sources>3rdparty/crengine/src/chmfmt.cpp</sources>
 		<sources>3rdparty/crengine/src/cp_stats.cpp</sources>
@@ -166,9 +167,12 @@
 		</if>
 	</define-tag>
 
-	<exe id="bin2c">
-		<sources>3rdparty/bin2c/bin2c.c</sources>
-	</exe>
+	<action id="bin2c">
+		<depends-on-file>$(SRCDIR)/3rdparty/bin2c/bin2c.c</depends-on-file>
+		<command>gcc -o $@ $(SRCDIR)/3rdparty/bin2c/bin2c.c</command>
+		<clean-files>$(BUILDDIR)/bin2c$(EXEEXT)</clean-files>
+		<clean-files>$(BUILDDIR)/bin2c$</clean-files>
+	</action>
 		
 	<define-tag name="bin2c" rules="action">
 		<depends>bin2c</depends>
