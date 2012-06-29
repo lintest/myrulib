@@ -34,8 +34,6 @@ class FbMainFrame : public wxFrame
 		wxToolBar * CreateToolBar();
 		wxAuiPaneInfo * FindLog();
 		void ShowLog(bool forced = false);
-		void DoFindAuthor();
-		void DoFindTitle();
 		void FindAuthor(const wxString &text);
 		void FindTitle(const wxString &title, const wxString &author);
 		wxWindow * FindFrameById(const int id, bool bActivate = false);

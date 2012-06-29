@@ -13,10 +13,13 @@
 
 #include <wx/wx.h>
 #include <wx/odcombo.h>
+#include <wx/srchctrl.h>
 
 #ifdef __WXMSW__
+	#define FB_SEARCH_COMBO_CTRL
+#endif // __WXMSW__
 
-#include <wx/srchctrl.h>
+#ifdef FB_SEARCH_COMBO_CTRL
 
 class FbSearchCtrl : public wxOwnerDrawnComboBox
 {
@@ -50,7 +53,7 @@ public:
 	}
 
 	virtual void SelectAll() {
-		GetTextCtrl()->SelectAll(); 
+		GetTextCtrl()->SelectAll();
 	}
 
 protected:
@@ -60,7 +63,7 @@ private:
 	DECLARE_CLASS(FbTextCtrl)
 };
 
-#else // __WXMSW__
+#else // FB_SEARCH_COMBO_CTRL
 
 // ----------------------------------------------------------------------------
 // a search ctrl is a text control with a search button and a cancel button
@@ -75,12 +78,6 @@ class WXDLLEXPORT FbSearchCtrlBase : public wxTextCtrlBase
 public:
     FbSearchCtrlBase() { }
     virtual ~FbSearchCtrlBase() { }
-
-    // search control
-#if wxUSE_MENUS
-    virtual void SetMenu(wxMenu *menu) = 0;
-    virtual wxMenu *GetMenu() = 0;
-#endif // wxUSE_MENUS
 
     // get/set options
     virtual void ShowSearchButton( bool show ) = 0;
@@ -118,13 +115,6 @@ public:
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxSearchCtrlNameStr);
-
-#if wxUSE_MENUS
-    // get/set search button menu
-    // --------------------------
-    virtual void SetMenu( wxMenu* menu );
-    virtual wxMenu* GetMenu();
-#endif // wxUSE_MENUS
 
     // get/set search options
     // ----------------------
@@ -214,9 +204,7 @@ public:
     // NB: pt is in device coords (not adjusted for the client area origin nor
     //     scrolling)
     virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt, long *pos) const;
-    virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt,
-                                            wxTextCoord *col,
-                                            wxTextCoord *row) const;
+    virtual wxTextCtrlHitTestResult HitTest(const wxPoint& pt, wxTextCoord *col, wxTextCoord *row) const;
 
     // Clipboard operations
     virtual void Copy();
@@ -244,23 +232,6 @@ public:
     virtual void SelectAll();
     virtual void SetEditable(bool editable);
 
-#if 0
-
-    // override streambuf method
-#if wxHAS_TEXT_WINDOW_STREAM
-    int overflow(int i);
-#endif // wxHAS_TEXT_WINDOW_STREAM
-
-    // stream-like insertion operators: these are always available, whether we
-    // were, or not, compiled with streambuf support
-    wxTextCtrl& operator<<(const wxString& s);
-    wxTextCtrl& operator<<(int i);
-    wxTextCtrl& operator<<(long i);
-    wxTextCtrl& operator<<(float f);
-    wxTextCtrl& operator<<(double d);
-    wxTextCtrl& operator<<(const wxChar c);
-#endif
-
     // do the window-specific processing after processing the update event
     virtual void DoUpdateWindowUI(wxUpdateUIEvent& event);
 
@@ -272,9 +243,6 @@ public:
     // search control generic only
     void SetSearchBitmap( const wxBitmap& bitmap );
     void SetCancelBitmap( const wxBitmap& bitmap );
-#if wxUSE_MENUS
-    void SetSearchMenuBitmap( const wxBitmap& bitmap );
-#endif // wxUSE_MENUS
 
 protected:
     virtual void DoSetValue(const wxString& value, int flags = 0);
@@ -297,44 +265,22 @@ protected:
     void OnSetFocus( wxFocusEvent& event );
     void OnSize( wxSizeEvent& event );
 
-    bool HasMenu() const
-    {
-#if wxUSE_MENUS
-        return m_menu != NULL;
-#else // !wxUSE_MENUS
-        return false;
-#endif // wxUSE_MENUS/!wxUSE_MENUS
-    }
-
 private:
     friend class FbSearchButton;
-
-#if wxUSE_MENUS
-    void PopupSearchMenu();
-#endif // wxUSE_MENUS
 
     // the subcontrols
     FbSearchTextCtrl *m_text;
     FbSearchButton *m_searchButton;
     FbSearchButton *m_cancelButton;
-#if wxUSE_MENUS
-    wxMenu *m_menu;
-#endif // wxUSE_MENUS
 
     bool m_searchButtonVisible;
     bool m_cancelButtonVisible;
 
     bool m_searchBitmapUser;
     bool m_cancelBitmapUser;
-#if wxUSE_MENUS
-    bool m_searchMenuBitmapUser;
-#endif // wxUSE_MENUS
 
     wxBitmap m_searchBitmap;
     wxBitmap m_cancelBitmap;
-#if wxUSE_MENUS
-    wxBitmap m_searchMenuBitmap;
-#endif // wxUSE_MENUS
 
 private:
     DECLARE_DYNAMIC_CLASS(FbSearchCtrl)
@@ -342,6 +288,6 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif // __WXMSW__
+#endif // FB_SEARCH_COMBO_CTRL
 
 #endif // __SEARCHCTRL_H__

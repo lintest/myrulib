@@ -101,7 +101,7 @@ static int GetMultiplier()
 #endif
 }
 
-#ifdef __WXMSW__
+#ifdef FB_SEARCH_COMBO_CTRL
 
 IMPLEMENT_CLASS(FbSearchCtrl, wxOwnerDrawnComboBox)
 
@@ -339,14 +339,6 @@ protected:
         GetEventHandler()->ProcessEvent(event);
 
         m_search->SetFocus();
-
-#if wxUSE_MENUS
-        if ( m_eventType == wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN )
-        {
-            // this happens automatically, just like on Mac OS X
-            m_search->PopupSearchMenu();
-        }
-#endif // wxUSE_MENUS
     }
 
     void OnPaint(wxPaintEvent&)
@@ -412,18 +404,12 @@ void FbSearchCtrl::Init()
     m_text = NULL;
     m_searchButton = NULL;
     m_cancelButton = NULL;
-#if wxUSE_MENUS
-    m_menu = NULL;
-#endif // wxUSE_MENUS
 
     m_searchButtonVisible = true;
     m_cancelButtonVisible = false;
 
     m_searchBitmapUser = false;
     m_cancelBitmapUser = false;
-#if wxUSE_MENUS
-    m_searchMenuBitmapUser = false;
-#endif // wxUSE_MENUS
 }
 
 bool FbSearchCtrl::Create(wxWindow *parent, wxWindowID id,
@@ -475,49 +461,7 @@ FbSearchCtrl::~FbSearchCtrl()
     delete m_text;
     delete m_searchButton;
     delete m_cancelButton;
-#if wxUSE_MENUS
-    delete m_menu;
-#endif // wxUSE_MENUS
 }
-
-
-// search control specific interfaces
-#if wxUSE_MENUS
-
-void FbSearchCtrl::SetMenu( wxMenu* menu )
-{
-    if ( menu == m_menu )
-    {
-        // no change
-        return;
-    }
-    bool hadMenu = (m_menu != NULL);
-    delete m_menu;
-    m_menu = menu;
-
-    if ( m_menu && !hadMenu )
-    {
-        m_searchButton->SetBitmapLabel(m_searchMenuBitmap);
-        m_searchButton->Refresh();
-    }
-    else if ( !m_menu && hadMenu )
-    {
-        m_searchButton->SetBitmapLabel(m_searchBitmap);
-        if ( m_searchButtonVisible )
-        {
-            m_searchButton->Refresh();
-        }
-    }
-    wxRect rect = GetRect();
-    LayoutControls(0, 0, rect.GetWidth(), rect.GetHeight());
-}
-
-wxMenu* FbSearchCtrl::GetMenu()
-{
-    return m_menu;
-}
-
-#endif // wxUSE_MENUS
 
 void FbSearchCtrl::ShowSearchButton( bool show )
 {
@@ -581,7 +525,7 @@ wxSize FbSearchCtrl::DoGetBestSize() const
     wxSize sizeCancel(0,0);
     int searchMargin = 0;
     int cancelMargin = 0;
-    if ( m_searchButtonVisible || HasMenu() )
+    if ( m_searchButtonVisible )
     {
         sizeSearch = m_searchButton->GetBestSize();
         searchMargin = MARGIN;
@@ -624,7 +568,7 @@ void FbSearchCtrl::LayoutControls(int x, int y, int width, int height)
     wxSize sizeCancel(0,0);
     int searchMargin = 0;
     int cancelMargin = 0;
-    if ( m_searchButtonVisible || HasMenu() )
+    if ( m_searchButtonVisible )
     {
         sizeSearch = m_searchButton->GetBestSize();
         searchMargin = MARGIN;
@@ -634,7 +578,7 @@ void FbSearchCtrl::LayoutControls(int x, int y, int width, int height)
         sizeCancel = m_cancelButton->GetBestSize();
         cancelMargin = MARGIN;
     }
-    m_searchButton->Show( m_searchButtonVisible || HasMenu() );
+    m_searchButton->Show( m_searchButtonVisible );
     m_cancelButton->Show( m_cancelButtonVisible );
 
     if ( sizeSearch.x + sizeCancel.x > width )
@@ -935,7 +879,7 @@ void FbSearchCtrl::SetSearchBitmap( const wxBitmap& bitmap )
     m_searchBitmapUser = bitmap.Ok();
     if ( m_searchBitmapUser )
     {
-        if ( m_searchButton && !HasMenu() )
+        if ( m_searchButton )
         {
             m_searchButton->SetBitmapLabel( m_searchBitmap );
         }
@@ -946,28 +890,6 @@ void FbSearchCtrl::SetSearchBitmap( const wxBitmap& bitmap )
         RecalcBitmaps();
     }
 }
-
-#if wxUSE_MENUS
-
-void FbSearchCtrl::SetSearchMenuBitmap( const wxBitmap& bitmap )
-{
-    m_searchMenuBitmap = bitmap;
-    m_searchMenuBitmapUser = bitmap.Ok();
-    if ( m_searchMenuBitmapUser )
-    {
-        if ( m_searchButton && m_menu )
-        {
-            m_searchButton->SetBitmapLabel( m_searchMenuBitmap );
-        }
-    }
-    else
-    {
-        // the user bitmap was just cleared, generate one
-        RecalcBitmaps();
-    }
-}
-
-#endif // wxUSE_MENUS
 
 void FbSearchCtrl::SetCancelBitmap( const wxBitmap& bitmap )
 {
@@ -986,23 +908,6 @@ void FbSearchCtrl::SetCancelBitmap( const wxBitmap& bitmap )
         RecalcBitmaps();
     }
 }
-
-#if 0
-
-// override streambuf method
-#if wxHAS_TEXT_WINDOW_STREAM
-int overflow(int i);
-#endif // wxHAS_TEXT_WINDOW_STREAM
-
-// stream-like insertion operators: these are always available, whether we
-// were, or not, compiled with streambuf support
-wxTextCtrl& operator<<(const wxString& s);
-wxTextCtrl& operator<<(int i);
-wxTextCtrl& operator<<(long i);
-wxTextCtrl& operator<<(float f);
-wxTextCtrl& operator<<(double d);
-wxTextCtrl& operator<<(const wxChar c);
-#endif
 
 void FbSearchCtrl::DoSetValue(const wxString& value, int flags)
 {
@@ -1232,32 +1137,10 @@ void FbSearchCtrl::RecalcBitmaps()
             )
         {
             m_searchBitmap = RenderSearchBitmap(bitmapWidth,bitmapHeight,false);
-            if ( !HasMenu() )
-            {
-                m_searchButton->SetBitmapLabel(m_searchBitmap);
-            }
+            m_searchButton->SetBitmapLabel(m_searchBitmap);
         }
         // else this bitmap was set by user, don't alter
     }
-
-#if wxUSE_MENUS
-    if ( !m_searchMenuBitmapUser )
-    {
-        if (
-            !m_searchMenuBitmap.Ok() ||
-            m_searchMenuBitmap.GetHeight() != bitmapHeight ||
-            m_searchMenuBitmap.GetWidth() != bitmapWidth
-            )
-        {
-            m_searchMenuBitmap = RenderSearchBitmap(bitmapWidth,bitmapHeight,true);
-            if ( m_menu )
-            {
-                m_searchButton->SetBitmapLabel(m_searchMenuBitmap);
-            }
-        }
-        // else this bitmap was set by user, don't alter
-    }
-#endif // wxUSE_MENUS
 
     if ( !m_cancelBitmapUser )
     {
@@ -1301,18 +1184,4 @@ void FbSearchCtrl::OnSize( wxSizeEvent& WXUNUSED(event) )
     LayoutControls(0, 0, width, height);
 }
 
-#if wxUSE_MENUS
-
-void FbSearchCtrl::PopupSearchMenu()
-{
-    if ( m_menu )
-    {
-        wxSize size = GetSize();
-        PopupMenu( m_menu, 0, size.y );
-    }
-}
-
-#endif // __WXMSW__
-
-#endif // wxUSE_MENUS
-
+#endif // FB_SEARCH_COMBO_CTRL

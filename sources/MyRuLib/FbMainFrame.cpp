@@ -53,6 +53,9 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
 	EVT_MENU_RANGE(wxID_FILE1, wxID_FILE5, FbMainFrame::OnMenuRecent)
 
+	EVT_SEARCHCTRL_SEARCH_BTN(ID_AUTHOR_TXT, FbMainFrame::OnFindAuthor)
+	EVT_SEARCHCTRL_SEARCH_BTN(ID_TITLE_TXT, FbMainFrame::OnFindTitle)
+
 	EVT_UPDATE_UI(wxID_FILE, FbMainFrame::OnRecentUpdate)
 
 	EVT_MENU(wxID_SAVE, FbMainFrame::OnSubmenu)
@@ -183,24 +186,14 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 
 		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
 
+		if (focused && focused->GetEventHandler() == this) {
+			return wxFrame::ProcessEvent(event);
+		}
+
 		if (event.GetId() == wxID_SELECTALL && event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
 			if (wxTextCtrl * text = wxDynamicCast(focused, wxTextCtrl)) { text->SelectAll(); return true; }
 			if (FbSearchCtrl * text = wxDynamicCast(focused, FbSearchCtrl)) { text->SelectAll(); return true; }
 			if (wxComboCtrl * combo = wxDynamicCast(focused, wxComboCtrl)) { combo->GetTextCtrl()->SelectAll(); return true; }
-		}
-
-		if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN) {
-			switch (event.GetId()) {
-				case ID_AUTHOR_TXT: { DoFindAuthor(); return true; }
-				case ID_TITLE_TXT: { DoFindTitle(); return true; }
-			}
-		}
-
-		if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN) {
-			switch (event.GetId()) {
-				case ID_AUTHOR_TXT: { m_FindAuthor->Clear(); return true; }
-				case ID_TITLE_TXT: { m_FindTitle->Clear(); return true; }
-			}
 		}
 
 		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;
@@ -438,6 +431,9 @@ void FbMainFrame::OnAbout(wxCommandEvent & event)
 
 wxToolBar * FbMainFrame::CreateToolBar()
 {
+	wxString textAuth = _(" Author: ");
+	wxString textBook = _(" Book: ");
+
 	FbToolBar * toolbar = new FbToolBar;
 	toolbar->Create(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
 	wxFont font = FbParams(FB_FONT_TOOL);
@@ -447,9 +443,12 @@ wxToolBar * FbMainFrame::CreateToolBar()
 
 #ifdef __WXMSW__
 	toolbar->AddSeparator();
+#else
+	textAuth.Prepend(wxT("  "));
+	textBook.Prepend(wxT("  "));
 #endif // __WXMSW__
 
-	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, _(" Author: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, textAuth, wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
 	toolbar->AddControl( text1 );
@@ -463,7 +462,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
-	wxStaticText * text2 = new wxStaticText(toolbar, wxID_ANY, _(" Book: "), wxDefaultPosition, wxDefaultSize, 0 );
+	wxStaticText * text2 = new wxStaticText(toolbar, wxID_ANY, textBook, wxDefaultPosition, wxDefaultSize, 0 );
 	text2->Wrap( -1 );
 	text2->SetFont(font);
 	toolbar->AddControl( text2 );
@@ -482,9 +481,6 @@ wxToolBar * FbMainFrame::CreateToolBar()
 
 #ifdef __WXMSW__
 	toolbar->AddSeparator();
-#else
-	m_FindAuthor->SetEventHandler(this);
-	m_FindTitle->SetEventHandler(this);
 #endif // __WXMSW__
 
 	toolbar->AddTool(wxID_SAVE, _("Export"), wxART_FILE_SAVE, _("Export to external device"));
@@ -574,15 +570,10 @@ void FbMainFrame::OnHideLog(wxCommandEvent& event)
 
 void FbMainFrame::OnFindAuthor(wxCommandEvent& event)
 {
-	DoFindAuthor();
+	FindAuthor(m_FindAuthor->GetValue());
 }
 
 void FbMainFrame::OnFindTitle(wxCommandEvent& event)
-{
-	DoFindTitle();
-}
-
-void FbMainFrame::DoFindTitle()
 {
 	FindTitle(m_FindTitle->GetValue(), m_FindAuthor->GetValue());
 }
@@ -594,11 +585,6 @@ void FbMainFrame::FindTitle(const wxString &title, const wxString &author)
 		wxString text = _("Search"); text << COLON << title;
 		OpenInfo(info, text, ID_FRAME_FIND);
 	}
-}
-
-void FbMainFrame::DoFindAuthor()
-{
-	FindAuthor(m_FindAuthor->GetValue());
 }
 
 void FbMainFrame::FindAuthor(const wxString &text)
