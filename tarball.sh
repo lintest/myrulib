@@ -24,6 +24,7 @@ cp -f ../../configure.in     .
 cp -f ../../install-sh       .
 cp -f ../../Makefile.in      .
 cp -f ../../myrulib.bkl      .
+cp -f ../../windows.sh       .
 cp -rf ../../3rdparty        .
 
 mkdir sources
