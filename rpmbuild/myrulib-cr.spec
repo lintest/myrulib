@@ -1,7 +1,7 @@
 #
-# spec file for package myrulib-cr (Version 0.28)
+# spec file for package myrulib-cr
 #
-# Copyright (c) 2009-2011 Denis Kandrashin, Kyrill Detinov
+# Copyright (c) 2009, 2010, 2011, 2012 Denis Kandrashin, Kyrill Detinov
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -22,41 +22,24 @@ BuildRequires:  gcc-c++
 BuildRequires:  libicu-devel
 BuildRequires:  libxml2-devel
 BuildRequires:  libjpeg-devel
-Conflicts:      myrulib
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+Conflicts:      myrulib
 
 %if 0%{?suse_version}
 BuildRequires:  update-desktop-files
-%if 0%{?suse_version} >= 1140
-BuildRequires:  sqlite3-devel
 BuildRequires:  wxWidgets-devel
-%else
-BuildRequires:  wxGTK-devel >= 2.8.10
-%endif
+%define _use_internal_dependency_generator 0
+%define __find_requires %wx_requires
 %endif
 
 %if 0%{?mandriva_version}
+BuildRequires:  libbzip2-devel
 BuildRequires:  libwxgtku2.8-devel >= 2.8.10
 %endif
 
 %if 0%{?fedora_version}
 BuildRequires:  desktop-file-utils
 BuildRequires:  wxGTK-devel >= 2.8.10
-%if 0%{?fedora_version} >= 15
-BuildRequires:  libsqlite3x-devel
-%endif
-%endif
-
-%if 0%{?fedora_version}
-BuildRequires:  bzip2-devel
-%endif
-
-%if 0%{?mandriva_version}
-BuildRequires:  libbzip2-devel
-%endif
-
-%if 0%{?suse_version}
-BuildRequires:  libbz2-devel
 %endif
 
 %description
@@ -76,14 +59,14 @@ Authors:
 
 %build
 %configure \
-            --with-icu \
-            --with-reader \
-            --without-strip
+    --with-icu \
+    --with-reader \
+    --without-strip
 
-%if 0%{?fedora_version} >= 13 || 0%{?suse_version} >= 1210
-%__make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
+%if 0%{?fedora_version} || 0%{?suse_version}
+make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
 %else
-%__make %{?_smp_mflags}
+make %{?_smp_mflags}
 %endif
 
 %install
@@ -91,7 +74,7 @@ Authors:
 %{?buildroot:%__rm -rf "%{buildroot}"}
 %endif
 
-%__make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 %find_lang myrulib
 
 %if 0%{?suse_version}
@@ -119,9 +102,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/myrulib.desktop
 %postun
 %clean_menus
 %endif
-
-%clean
-%{?buildroot:%__rm -rf "%{buildroot}"}
 
 %files -f myrulib.lang
 %defattr(-,root,root,-)

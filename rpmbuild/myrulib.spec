@@ -1,7 +1,7 @@
 #
-# spec file for package myrulib (Version 0.27)
+# spec file for package myrulib
 #
-# Copyright (c) 2009-2011 Denis Kandrashin, Kyrill Detinov
+# Copyright (c) 2009, 2010, 2011, 2012 Denis Kandrashin, Kyrill Detinov
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
@@ -25,36 +25,19 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %if 0%{?suse_version}
 BuildRequires:  update-desktop-files
-%if 0%{?suse_version} >= 1140
-BuildRequires:  sqlite3-devel
 BuildRequires:  wxWidgets-devel
-%else
-BuildRequires:  wxGTK-devel >= 2.8.10
-%endif
+%define _use_internal_dependency_generator 0
+%define __find_requires %wx_requires
 %endif
 
 %if 0%{?mandriva_version}
 BuildRequires:  libwxgtku2.8-devel >= 2.8.10
+BuildRequires:  libbzip2-devel
 %endif
 
 %if 0%{?fedora_version}
 BuildRequires:  wxGTK-devel >= 2.8.10
 BuildRequires:  desktop-file-utils
-%if 0%{?fedora_version} >= 15
-BuildRequires:  libsqlite3x-devel
-%endif
-%endif
-
-%if 0%{?fedora_version}
-BuildRequires:  bzip2-devel
-%endif
-
-%if 0%{?mandriva_version}
-BuildRequires:  libbzip2-devel
-%endif
-
-%if 0%{?suse_version}
-BuildRequires:  libbz2-devel
 %endif
 
 %description
@@ -75,7 +58,7 @@ Authors:
     --with-icu \
     --without-strip
 
-%if 0%{?fedora_version} >= 13
+%if 0%{?fedora_version}
 make LDFLAGS="-Wl,--add-needed" %{?_smp_mflags}
 %else
 make %{?_smp_mflags}
@@ -97,7 +80,7 @@ make DESTDIR=%{buildroot} install
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %endif
 
-%if 0%{?suse_version} >= 1140
+%if 0%{?suse_version}
 %post
 %desktop_database_post
 %icon_theme_cache_post
