@@ -441,7 +441,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddTool(wxID_NEW, _("Import file"), wxART_NEW, _("Import files to the library"));
 	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxART_FILE_OPEN, _("Import folder to the library"));
 
-#ifdef __WXMSW__
+#ifdef FB_SEARCH_COMBO_CTRL
 	toolbar->AddSeparator();
 #else
 	textAuth.Prepend(wxT("  "));
@@ -457,7 +457,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindAuthor->SetFont(font);
 	toolbar->AddControl( m_FindAuthor );
 
-#ifdef __WXMSW__
+#ifdef FB_SEARCH_COMBO_CTRL
 	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxART_FIND, _("Find author"));
 	toolbar->AddSeparator();
 #endif // __WXMSW__
@@ -471,7 +471,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindTitle->SetFont(font);
 	toolbar->AddControl( m_FindTitle );
 
-#ifdef __WXMSW__
+#ifdef FB_SEARCH_COMBO_CTRL
 	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxART_FIND, _("Find book by title"));
 	toolbar->AddSeparator();
 #endif // __WXMSW__
@@ -479,7 +479,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), fbART_REPORT_VIEW, _("Hierarchy of authors and series"));
 	toolbar->AddTool(ID_MODE_LIST, _("List"), fbART_LIST_VIEW, _("Simple list"));
 
-#ifdef __WXMSW__
+#ifdef FB_SEARCH_COMBO_CTRL
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
