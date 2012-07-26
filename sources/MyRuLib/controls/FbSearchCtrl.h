@@ -15,7 +15,7 @@
 #include <wx/odcombo.h>
 #include <wx/srchctrl.h>
 
-#ifdef __WXMSW__
+#ifndef __WXGTK__
 	#define FB_SEARCH_COMBO_CTRL
 #endif // __WXMSW__
 
