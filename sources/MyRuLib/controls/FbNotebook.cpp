@@ -17,6 +17,10 @@
 #define fbSYS_COLOUR_TABCOLOUR wxSYS_COLOUR_WINDOWFRAME
 #endif
 
+#ifdef __WXMAC__
+#include <wx/osx/private.h>
+#endif
+
 /*
 #ifdef __WXMSW__
 #include  "wx/msw/private.h"
