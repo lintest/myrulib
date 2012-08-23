@@ -48,6 +48,7 @@ void FbBookMenu::Init(const FbMasterInfo &master, bool bShowOrder)
 	AppendSeparator();
 
 	AppendImg(wxID_COPY, _("Copy") + (wxString)wxT("\tCtrl+C"), wxART_COPY);
+	Append(ID_COPY_URL, _("Copy URL"));
 	Append(wxID_SELECTALL, _("Select all") + (wxString)wxT("\tCtrl+A"));
 	Append(ID_UNSELECTALL, _("Undo selection"));
 	Append(ID_SHOW_COLUMNS, _("Table columns"));

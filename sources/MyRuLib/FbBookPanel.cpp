@@ -16,6 +16,14 @@
 #include "FbDeleteThread.h"
 #include "dialogs/FbTitleDlg.h"
 
+static void DoCopyText(const wxString &text)
+{
+	if (text.IsEmpty()) return;
+	wxClipboardLocker locker;
+	if (!locker) return;
+	wxTheClipboard->SetData( new wxTextDataObject(text) );
+}
+
 //-----------------------------------------------------------------------------
 //  FbBookViewCtrl
 //-----------------------------------------------------------------------------
@@ -36,12 +44,7 @@ END_EVENT_TABLE()
 
 void FbBookViewCtrl::OnCopy(wxCommandEvent& event)
 {
-	wxString text = GetText();
-	if (text.IsEmpty()) return;
-
-	wxClipboardLocker locker;
-	if (!locker) return;
-	wxTheClipboard->SetData( new wxTextDataObject(text) );
+	DoCopyText(GetText());
 }
 
 void FbBookViewCtrl::OnMenu(wxCommandEvent& event)
@@ -74,6 +77,7 @@ BEGIN_EVENT_TABLE(FbBookPanel, wxSplitterWindow)
 	EVT_MENU(ID_SPLIT_NOTHING, FbBookPanel::OnChangeView)
 	EVT_MENU(ID_OPEN_BOOK, FbBookPanel::OnOpenBook)
 	EVT_MENU(ID_BOOK_PAGE, FbBookPanel::OnBookPage)
+	EVT_MENU(ID_COPY_URL, FbBookPanel::OnCopyUrl)
 	EVT_MENU(ID_DOWNLOAD_BOOK, FbBookPanel::OnDownloadBook)
 	EVT_MENU(ID_SYSTEM_DOWNLOAD, FbBookPanel::OnSystemDownload)
 	EVT_MENU(ID_DELETE_DOWNLOAD, FbBookPanel::OnDeleteDownload)
@@ -587,6 +591,25 @@ void FbBookPanel::DoFolderAdd(int folder)
 	database.AttachConfig();
 	database.ExecuteUpdate(sql);
 	FbFolderEvent(ID_UPDATE_FOLDER, folder, FT_FOLDER).Post();
+}
+
+void FbBookPanel::OnCopyUrl(wxCommandEvent & event)
+{
+	wxString str;
+	wxArrayInt items;
+	GetSelected(items);
+	size_t count = items.Count();
+	for (size_t i = 0; i < count; i++) {
+		int book = items[i];
+		if (book > 0) {
+			str += FbInternetBook::GetURL(book);
+			#ifdef __WXMSW__
+			str << wxT("\r");
+			#endif
+			str << wxT("\n");
+		}
+	}
+	DoCopyText(str);
 }
 
 void FbBookPanel::DoPopupMenu(wxWindowID id)
