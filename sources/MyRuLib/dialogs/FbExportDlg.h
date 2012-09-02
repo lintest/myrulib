@@ -67,6 +67,8 @@ class FbExportDlg : public FbDialog
 		FbTreeViewCtrl * m_books;
 		FbChoiceInt * m_format;
 		wxCheckBox * m_checkAuthor;
+		wxCheckBox * m_transFold;
+		wxCheckBox * m_transFile;
 	private:
         void OnSelectDir( wxCommandEvent& event );
 		void OnBookCollapsing( wxTreeEvent & event );

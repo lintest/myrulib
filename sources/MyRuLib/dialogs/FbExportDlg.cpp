@@ -58,6 +58,16 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	bSizerMain->Add( fgSizerTop, 0, wxEXPAND, 5 );
 
+	wxBoxSizer * bSizerTrans = new wxBoxSizer( wxHORIZONTAL );
+
+	m_transFold = new wxCheckBox( this, wxID_ANY, _("Transliterate folder name"));
+	bSizerTrans->Add( m_transFold, 1, wxALL|wxEXPAND, 5 );
+
+	m_transFile = new wxCheckBox( this, wxID_ANY, _("Transliterate filename"));
+	bSizerTrans->Add( m_transFile, 1, wxALL|wxEXPAND, 5 );
+
+	bSizerMain->Add( bSizerTrans, 0, wxEXPAND, 5 );
+
 	if (iAuthor) {
 		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Use Author (without co-Authors)"));
 		bSizerMain->Add( m_checkAuthor, 0, wxALL, 5 );
@@ -85,6 +95,8 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
 	m_folder->SetValue( FbParamItem::GetPath(FB_EXTERNAL_DIR) );
+	m_transFold->SetValue( FbParamItem::GetPath(FB_TRANSLIT_FOLDER) );
+	m_transFile->SetValue( FbParamItem::GetPath(FB_TRANSLIT_FILE) );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
