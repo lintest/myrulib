@@ -91,6 +91,41 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_PROGRESS_FINISH, FbMainFrame::OnImportFinish)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
+	EVT_MENU(ID_MODE_TREE, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_MODE_LIST, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SPLIT_NOTHING, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_FILTER_SET, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_FILTER_USE, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_FILTER_DEL, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_DIRECTION, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTNAME, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTDATE, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTSIZE, FbMainFrame::OnSubmenu)
+	EVT_MENU(wxID_VIEW_SORTTYPE, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_ORDER_AUTHOR, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_ORDER_RATING, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_ORDER_LANG, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_SHOW_COLUMNS, FbMainFrame::OnSubmenu)
+	EVT_MENU(ID_EDIT_COMMENTS, FbMainFrame::OnSubmenu)
+
+	EVT_UPDATE_UI(ID_MODE_LIST, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_MODE_TREE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_HORIZONTAL, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_VERTICAL, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_SPLIT_NOTHING, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_USE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_FILTER_DEL, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_DIRECTION, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTNAME, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTDATE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTSIZE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(wxID_VIEW_SORTTYPE, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_AUTHOR, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_RATING, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_UPDATE_UI(ID_ORDER_LANG, FbMainFrame::OnSubmenuUpdateUI)
+
 	EVT_MENU(ID_TEXTLOG_SHOW, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_TEXTLOG_HIDE, FbMainFrame::OnHideLog)
 	EVT_MENU(ID_UPDATE_FONTS, FbMainFrame::OnUpdateFonts)
@@ -166,6 +201,8 @@ private:
 
 bool FbMainFrame::ProcessEvent(wxEvent& event)
 {
+	return wxFrame::ProcessEvent(event);
+
 	// Check for infinite recursion
 	if (& event == m_LastEvent)	return false;
 
@@ -963,14 +1000,12 @@ wxWindow * FbMainFrame::GetActiveChild()
 
 void FbMainFrame::OnSubmenu(wxCommandEvent& event)
 {
-	if (wxWindow * window = GetActiveChild()) window->GetEventHandler()->ProcessEvent(event);
+	if (FbFrameBase * window = wxDynamicCast(GetActiveChild(), FbFrameBase)) window->DoEvent(event);
 }
 
 void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 {
-	if (wxWindow * window = GetActiveChild()) {
-		if (wxIsKindOf(window, FbFrameBase)) window->GetEventHandler()->ProcessEvent(event);
-	}
+	if (FbFrameBase * window = wxDynamicCast(GetActiveChild(), FbFrameBase)) window->DoEvent(event);
 }
 
 void FbMainFrame::OnIdle( wxIdleEvent & event)

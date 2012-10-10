@@ -44,6 +44,10 @@ public:
 
 	virtual ~FbFrameBase();
 
+	void DoEvent(wxEvent& event) {
+		GetEventHashTable().HandleEvent(event, this);
+	}
+
 	virtual wxString GetTitle() { return _("Authors"); }
 
 	public:
