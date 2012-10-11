@@ -227,12 +227,6 @@ static void SaveFile(wxInputStream & in, const wxString &filepath)
 	out.Close();
 }
 
-static bool GetSystemCommand(const wxString &filename, const wxString &filetype, wxString &command)
-{
-	FbSmartPtr<wxFileType> ft = wxTheMimeTypesManager->GetFileTypeFromExtension(filetype);
-	return ft && ft->GetOpenCommand(&command, wxFileType::MessageParameters(filename, wxEmptyString));
-}
-
 #ifdef __WXGTK__
 
 // helper class for storing arguments as char** array suitable for passing to
@@ -292,24 +286,17 @@ static void FbExecute(const wxString & command, const wxString & filepath)
 	if (fork() == 0) execvp(*argv, argv);
 }
 
-static void FbExecute(const wxString & command)
-{
-	wxArrayString args;
-	args.Add(command);
-	FbArgsArray argv(args);
-	if (fork() == 0) execvp(*argv, argv);
-}
-
 #else // __WXGTK__
+
+static bool GetSystemCommand(const wxString &filename, const wxString &filetype, wxString &command)
+{
+	FbSmartPtr<wxFileType> ft = wxTheMimeTypesManager->GetFileTypeFromExtension(filetype);
+	return ft && ft->GetOpenCommand(&command, wxFileType::MessageParameters(filename, wxEmptyString));
+}
 
 static void FbExecute(const wxString & command, const wxString & filename)
 {
 	wxExecute(command + wxT(' ') + wxT('"') + filename + wxT('"'));
-}
-
-static void FbExecute(wxString & command)
-{
-	wxExecute(command);
 }
 
 #endif // __WXGTK__

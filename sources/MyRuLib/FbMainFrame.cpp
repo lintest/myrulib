@@ -58,11 +58,15 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 
 	EVT_UPDATE_UI(wxID_FILE, FbMainFrame::OnRecentUpdate)
 
-	EVT_MENU(wxID_SAVE, FbMainFrame::OnSubmenu)
-	EVT_MENU(wxID_COPY, FbMainFrame::OnSubmenu)
-	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnSubmenu)
-	EVT_UPDATE_UI(wxID_COPY, FbMainFrame::OnSubmenuUpdateUI)
+	EVT_MENU(wxID_CUT, FbMainFrame::OnSubCtrl)
+	EVT_MENU(wxID_SAVE, FbMainFrame::OnSubCtrl)
+	EVT_MENU(wxID_COPY, FbMainFrame::OnSubCtrl)
+	EVT_MENU(wxID_PASTE, FbMainFrame::OnSubCtrl)
+	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnUnselect)
+	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSelectAll)
+
+	EVT_UPDATE_UI(wxID_CUT, FbMainFrame::OnEnableUI)
+	EVT_UPDATE_UI(wxID_COPY, FbMainFrame::OnEnableUI)
 	EVT_UPDATE_UI(wxID_SELECTALL, FbMainFrame::OnEnableUI)
 	EVT_UPDATE_UI(ID_UNSELECTALL, FbMainFrame::OnEnableUI)
 	EVT_UPDATE_UI(ID_MASTER_APPEND, FbMainFrame::OnDisableUI)
@@ -91,24 +95,11 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(ID_PROGRESS_FINISH, FbMainFrame::OnImportFinish)
 	EVT_UPDATE_UI(ID_PROGRESS_UPDATE, FbMainFrame::OnProgressUpdate)
 
-	EVT_MENU(ID_MODE_TREE, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_MODE_LIST, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_SPLIT_HORIZONTAL, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_SPLIT_VERTICAL, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_SPLIT_NOTHING, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_FILTER_SET, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_FILTER_USE, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_FILTER_DEL, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_DIRECTION, FbMainFrame::OnSubmenu)
+	EVT_MENU_RANGE(ID_SUBMENU_FIRST, ID_SUBMENU_LAST, FbMainFrame::OnSubmenu)
 	EVT_MENU(wxID_VIEW_SORTNAME, FbMainFrame::OnSubmenu)
 	EVT_MENU(wxID_VIEW_SORTDATE, FbMainFrame::OnSubmenu)
 	EVT_MENU(wxID_VIEW_SORTSIZE, FbMainFrame::OnSubmenu)
 	EVT_MENU(wxID_VIEW_SORTTYPE, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_ORDER_AUTHOR, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_ORDER_RATING, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_ORDER_LANG, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_SHOW_COLUMNS, FbMainFrame::OnSubmenu)
-	EVT_MENU(ID_EDIT_COMMENTS, FbMainFrame::OnSubmenu)
 
 	EVT_UPDATE_UI(ID_MODE_LIST, FbMainFrame::OnSubmenuUpdateUI)
 	EVT_UPDATE_UI(ID_MODE_TREE, FbMainFrame::OnSubmenuUpdateUI)
@@ -153,10 +144,10 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_COMMAND(ID_UPDATE_BOOK, fbEVT_BOOK_ACTION, FbMainFrame::OnUpdateBook)
 	EVT_COMMAND(ID_FOUND_NOTHING, fbEVT_BOOK_ACTION, FbMainFrame::OnFoundNothing)
 
-    EVT_NAVIGATION_KEY(FbMainFrame::OnNavigationKey)
+	EVT_NAVIGATION_KEY(FbMainFrame::OnNavigationKey)
 
-    EVT_AUI_PANE_CLOSE(FbMainFrame::OnPaneClose)
-    EVT_AUINOTEBOOK_ALLOW_DND(ID_AUI_NOTEBOOK, FbMainFrame::OnAllowNotebookDnD)
+	EVT_AUI_PANE_CLOSE(FbMainFrame::OnPaneClose)
+	EVT_AUINOTEBOOK_ALLOW_DND(ID_AUI_NOTEBOOK, FbMainFrame::OnAllowNotebookDnD)
 	EVT_AUINOTEBOOK_PAGE_CHANGED(ID_AUI_NOTEBOOK, FbMainFrame::OnNotebookChanged)
 	EVT_AUINOTEBOOK_PAGE_CLOSED(ID_AUI_NOTEBOOK, FbMainFrame::OnNotebookClosed)
 	EVT_IDLE(FbMainFrame::OnIdle)
@@ -168,8 +159,7 @@ wxString FbMainFrame::GetTitle() const
 }
 
 FbMainFrame::FbMainFrame()
-	: m_LastEvent(NULL)
-	, m_ProgressBar(NULL)
+	: m_ProgressBar(NULL)
 	, m_MenuBook(NULL)
 	, m_MenuTree(NULL)
 	, m_MenuRead(NULL)
@@ -188,24 +178,8 @@ FbMainFrame::~FbMainFrame()
 	wxDELETE(m_MenuBook);
 }
 
-class FbEventLocker
-{
-public:
-	FbEventLocker(FbMainFrame & frame, wxEvent& event): m_frame(frame)
-		{ m_frame.m_LastEvent = & event; }
-	~FbEventLocker()
-		{ m_frame.m_LastEvent = NULL; }
-private:
-	FbMainFrame & m_frame;
-};
-
 bool FbMainFrame::ProcessEvent(wxEvent& event)
 {
-	return wxFrame::ProcessEvent(event);
-
-	// Check for infinite recursion
-	if (& event == m_LastEvent)	return false;
-
 	if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
 		FbMenu::Type type; int code;
 		if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
@@ -213,37 +187,46 @@ bool FbMainFrame::ProcessEvent(wxEvent& event)
 			return true;
 		}
 	}
+	return wxFrame::ProcessEvent(event);
+}
 
-	if (event.IsCommandEvent() &&
-			!event.IsKindOf(CLASSINFO(wxKeyEvent)) &&
-			!event.IsKindOf(CLASSINFO(wxChildFocusEvent)) &&
-			!event.IsKindOf(CLASSINFO(wxContextMenuEvent)))
-	{
-		FbEventLocker locker(*this, event);
-
-		wxWindow * focused = wxDynamicCast(FindFocus(), wxWindow);
-
-		if (focused && focused->GetEventHandler() == this) {
-			return wxFrame::ProcessEvent(event);
-		}
-
-		if (event.GetId() == wxID_SELECTALL && event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
-			if (wxTextCtrl * text = wxDynamicCast(focused, wxTextCtrl)) { text->SelectAll(); return true; }
-			if (FbSearchCtrl * text = wxDynamicCast(focused, FbSearchCtrl)) { text->SelectAll(); return true; }
-			if (wxComboCtrl * combo = wxDynamicCast(focused, wxComboCtrl)) { combo->GetTextCtrl()->SelectAll(); return true; }
-		}
-
-		if (focused && focused->GetEventHandler()->ProcessEvent(event)) return true;
-
-		wxWindow * window = GetActiveChild();
-		if (window && window->GetEventHandler()->ProcessEvent(event)) return true;
-
-		if (wxFrame::ProcessEvent(event)) return true;
-
-		return false;
-	} else {
-		return wxFrame::ProcessEvent(event);
+void FbMainFrame::OnSubmenu(wxCommandEvent& event)
+{
+	if (FbFrameBase * window = wxDynamicCast(GetActiveChild(), FbFrameBase)) {
+		window->DoEvent(event);
 	}
+}
+
+void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
+{
+	if (FbFrameBase * window = wxDynamicCast(GetActiveChild(), FbFrameBase)) {
+		window->DoEvent(event);
+	} else {
+		event.Enable(false);
+	}
+}
+
+void FbMainFrame::OnSubCtrl(wxCommandEvent& event)
+{
+	if (wxWindow * focused = FindFocus()) {
+		wxPostEvent(focused, event);
+		return;
+	}
+}
+
+void FbMainFrame::OnSelectAll(wxCommandEvent& event)
+{
+	wxWindow * focused = FindFocus();
+	if (wxTextCtrl * text = wxDynamicCast(focused, wxTextCtrl)) { text->SelectAll(); return; }
+	if (FbSearchCtrl * text = wxDynamicCast(focused, FbSearchCtrl)) { text->SelectAll(); return; }
+	if (wxComboCtrl * combo = wxDynamicCast(focused, wxComboCtrl)) { combo->GetTextCtrl()->SelectAll(); return; }
+	if (FbTreeViewCtrl * tree = wxDynamicCast(focused->GetParent(), FbTreeViewCtrl)) { tree->SelectAll(true); return; }
+}
+
+void FbMainFrame::OnUnselect(wxCommandEvent& event)
+{
+	wxWindow * focused = FindFocus();
+	if (FbTreeViewCtrl * tree = wxDynamicCast(focused->GetParent(), FbTreeViewCtrl)) { tree->SelectAll(false); return; }
 }
 
 void FbMainFrame::SaveFrameList()
@@ -996,16 +979,6 @@ wxWindow * FbMainFrame::GetActiveChild()
 {
 	int index = m_FrameNotebook.GetSelection();
 	return index == wxNOT_FOUND ? NULL : m_FrameNotebook.GetPage(index);
-}
-
-void FbMainFrame::OnSubmenu(wxCommandEvent& event)
-{
-	if (FbFrameBase * window = wxDynamicCast(GetActiveChild(), FbFrameBase)) window->DoEvent(event);
-}
-
-void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
-{
-	if (FbFrameBase * window = wxDynamicCast(GetActiveChild(), FbFrameBase)) window->DoEvent(event);
 }
 
 void FbMainFrame::OnIdle( wxIdleEvent & event)

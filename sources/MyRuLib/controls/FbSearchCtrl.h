@@ -48,6 +48,10 @@ public:
 
 	virtual void DoSetPopupControl(wxComboPopup* WXUNUSED(popup)) {}
 
+	void DoEvent(wxEvent& event) {
+		GetEventHashTable().HandleEvent(event, this);
+	}
+
 	virtual void OnButtonClick() {
 		GetTextCtrl()->Clear();
 	}
@@ -60,7 +64,7 @@ protected:
 	virtual wxBitmap RenderCancelBitmap( int x, int y );
 
 private:
-	DECLARE_CLASS(FbTextCtrl)
+	DECLARE_CLASS(FbSearchCtrl)
 };
 
 #else // FB_SEARCH_COMBO_CTRL
@@ -115,6 +119,10 @@ public:
                 long style = 0,
                 const wxValidator& validator = wxDefaultValidator,
                 const wxString& name = wxSearchCtrlNameStr);
+
+	void DoEvent(wxEvent& event) {
+		GetEventHashTable().HandleEvent(event, this);
+	}
 
     // get/set search options
     // ----------------------

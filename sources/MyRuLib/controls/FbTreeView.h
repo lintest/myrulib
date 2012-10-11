@@ -53,8 +53,11 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 					const wxString& name = FbTreeViewCtrlNameStr );
 
 		void Refresh(bool erase=TRUE, const wxRect* rect=NULL);
-		
+
+		void DoEvent(wxEvent& event) { GetEventHashTable().HandleEvent(event, this); }
+
 		void SetScrollPos(int position) { m_position = position; }
+
 		int GetScrollPos() { return m_position; }
 
 		// overridden base class virtuals
@@ -124,4 +127,3 @@ class WXDLLEXPORT FbTreeViewCtrl : public wxControl
 };
 
 #endif // __FBTREEVIEW_H__
-

@@ -47,7 +47,6 @@ class FbMainFrame : public wxFrame
 		void OpenClss(int code, bool select = true);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
-		wxEvent * m_LastEvent;
 		FbSearchCtrl * m_FindAuthor;
 		FbSearchCtrl * m_FindTitle;
 		ProgressBar * m_ProgressBar;
@@ -76,7 +75,9 @@ class FbMainFrame : public wxFrame
 		void OnDatabaseGenres(wxCommandEvent & event);
 		void OnInfoCommand(wxCommandEvent & event);
 		void OnFindAuthor(wxCommandEvent& event);
-		void OnFindTitle(wxCommandEvent & event);
+		void OnFindTitle(wxCommandEvent& event);
+		void OnSelectAll(wxCommandEvent& event);
+		void OnUnselect(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
 		void OnInitFrame(wxCommandEvent& event);
@@ -122,6 +123,7 @@ class FbMainFrame : public wxFrame
 		void OnNotebookChanged(wxAuiNotebookEvent& event);
 		void OnNotebookClosed(wxAuiNotebookEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
+		void OnSubCtrl(wxCommandEvent& event);
 		void OnStatusBarUpdate(wxUpdateUIEvent  & event);
 		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		void OnIdle( wxIdleEvent & event);

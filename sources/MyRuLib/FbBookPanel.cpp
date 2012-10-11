@@ -32,6 +32,7 @@ IMPLEMENT_CLASS(FbBookViewCtrl, FbTreeViewCtrl)
 
 BEGIN_EVENT_TABLE(FbBookViewCtrl, FbTreeViewCtrl)
 	EVT_MENU(wxID_ANY, FbBookViewCtrl::OnMenu)
+	EVT_MENU(wxID_CUT, FbBookViewCtrl::OnCopy)
 	EVT_MENU(wxID_COPY, FbBookViewCtrl::OnCopy)
 	EVT_MENU(wxID_SELECTALL, FbBookViewCtrl::OnSelect)
 	EVT_MENU(ID_UNSELECTALL, FbBookViewCtrl::OnUnselect)
