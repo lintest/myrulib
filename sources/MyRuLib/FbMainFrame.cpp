@@ -45,6 +45,8 @@ IMPLEMENT_CLASS(FbMainFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 
+	EVT_MENU(wxID_ANY, FbMainFrame::OnClassMenu)
+
 	EVT_MENU(wxID_NEW, FbMainFrame::OnNewZip)
 	EVT_MENU(wxID_OPEN, FbMainFrame::OnFolder)
 	EVT_MENU(wxID_EXIT, FbMainFrame::OnExit)
@@ -178,16 +180,15 @@ FbMainFrame::~FbMainFrame()
 	wxDELETE(m_MenuBook);
 }
 
-bool FbMainFrame::ProcessEvent(wxEvent& event)
+void FbMainFrame::OnClassMenu(wxCommandEvent& event)
 {
-	if (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED) {
-		FbMenu::Type type; int code;
-		if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
-			OpenClss(code);
-			return true;
-		}
+	int code;
+	FbMenu::Type type;
+	if (FbMenuItem::Get(event.GetId(), type, code) && type == FbMenu::CLSS) {
+		OpenClss(code);
+		return;
 	}
-	return wxFrame::ProcessEvent(event);
+	event.Skip();
 }
 
 void FbMainFrame::OnSubmenu(wxCommandEvent& event)

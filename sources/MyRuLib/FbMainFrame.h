@@ -23,8 +23,6 @@ class FbMainFrame : public wxFrame
 		void Localize(int language);
 		wxAuiNotebook * GetNotebook() { return &m_FrameNotebook; }
         void UpdateBook(int id);
-	protected:
-		virtual bool ProcessEvent(wxEvent& event);
 	private:
 		bool Create(wxWindow * parent, wxWindowID id, const wxString & title);
 		wxWindow * GetActiveChild();
@@ -81,6 +79,7 @@ class FbMainFrame : public wxFrame
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
 		void OnInitFrame(wxCommandEvent& event);
+		void OnClassMenu(wxCommandEvent& event);
 		void OnMenuFrame(wxCommandEvent& event);
 		void OnMenuNothing(wxCommandEvent& event);
 		void OnMenuAuthor(wxCommandEvent& event);

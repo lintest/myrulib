@@ -48,6 +48,10 @@ BEGIN_EVENT_TABLE(FbFrameBase, wxSplitterWindow)
 	EVT_TREE_SEL_CHANGED(ID_MASTER_LIST, FbFrameBase::OnMasterSelected)
 	EVT_MENU(wxID_ANY, FbFrameBase::OnHandleMenu)
 	EVT_MENU(wxID_SAVE, FbFrameBase::OnExportBooks)
+	EVT_MENU(ID_SPLIT_HORIZONTAL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_SPLIT_VERTICAL, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_SPLIT_NOTHING, FbFrameBase::OnSubmenu)
+	EVT_MENU(ID_EDIT_COMMENTS, FbFrameBase::OnSubmenu)
 	EVT_MENU(ID_MODE_TREE, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_MODE_LIST, FbFrameBase::OnChangeMode)
 	EVT_MENU(ID_FILTER_SET, FbFrameBase::OnFilterSet)
@@ -156,7 +160,7 @@ void FbFrameBase::RefreshBooks()
 
 void FbFrameBase::OnSubmenu(wxCommandEvent& event)
 {
-	wxPostEvent(m_BooksPanel, event);
+	m_BooksPanel->DoEvent(event);
 }
 
 void FbFrameBase::OnExportBooks(wxCommandEvent& event)

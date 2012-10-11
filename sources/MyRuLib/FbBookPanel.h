@@ -51,6 +51,10 @@ class FbBookPanel: public wxSplitterWindow
 		FbTreeViewCtrl & GetBookList() { return m_BookList; }
 		void DoFolderAdd(int folder);
 	public:
+        void DoEvent(wxEvent& event) {
+            GetEventHashTable().HandleEvent(event, this);
+        }
+	public:
 		void EmptyBooks(const int selected  = 0);
 		void AppendAuthor(int id, const wxString title, wxTreeItemData * data = NULL);
 		void AppendSequence(int id, const wxString title, wxTreeItemData * data = NULL);
