@@ -329,14 +329,12 @@ void FbFileReader::ShowError() const
 
 void FbFileReader::ShellExecute(const wxString &filename)
 {
-	wxString command;
 	wxString filetype = Ext(filename);
 #ifdef __WXMSW__
 	wxString filepath = filename;
 	filepath.Prepend(wxT('"')).Append(wxT('"'));
-	wxChar * buffer = command.GetWriteBuf(MAX_PATH);
-	bool ok = (int) FindExecutable(filepath, NULL, buffer) > 32;
-	command.UngetWriteBuf();
+	wxChar command[MAX_PATH];
+	bool ok = (int) FindExecutable(filepath, NULL, command) > 32;
 	if (ok) {
 		::ShellExecute(NULL, NULL, command, filepath, NULL, SW_SHOW);
 	} else {
@@ -344,7 +342,7 @@ void FbFileReader::ShellExecute(const wxString &filename)
 	}
 #else
 	#ifdef __WXGTK__
-	command = wxT("xdg-open");
+	wxString command = wxT("xdg-open");
 	FbExecute(command, filename);
 	#else
 	bool ok = GetSystemCommand(filename, filetype, command);
@@ -425,10 +423,8 @@ static wxString CreateCacheFile(const wxString &url, const wxString &ext, wxInpu
 
 	if (!pCreateProc || !pCommitProc) return wxEmptyString;
 
-	wxString filename;
-	wxChar * buffer = filename.GetWriteBuf(MAX_PATH);
-	bool ok = pCreateProc(url.c_str(), 0, ext.c_str(), buffer, 0);
-	filename.UngetWriteBuf();
+	wxChar filename[MAX_PATH];
+	bool ok = pCreateProc(url.c_str(), 0, ext.c_str(), filename, 0);
 
 	if (tempfile.IsEmpty()) {
 		SaveFile(stream, filename);

@@ -95,8 +95,8 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
 	m_folder->SetValue( FbParamItem::GetPath(FB_EXTERNAL_DIR) );
-	m_transFold->SetValue( FbParamItem::GetPath(FB_TRANSLIT_FOLDER) );
-	m_transFile->SetValue( FbParamItem::GetPath(FB_TRANSLIT_FILE) );
+	m_transFold->SetValue( FbParams(FB_TRANSLIT_FOLDER) );
+	m_transFile->SetValue( FbParams(FB_TRANSLIT_FILE) );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT, 5 );
