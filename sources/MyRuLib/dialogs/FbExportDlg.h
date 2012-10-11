@@ -29,6 +29,8 @@ class FbBookPanel;
 
 class FbConvertArray;
 
+class FbExportTreeModel;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Class FbExportDlg
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,14 +41,15 @@ class FbExportDlg : public FbDialog
 		~FbExportDlg();
 		static bool Execute(wxWindow* parent, FbBookPanel * books, int iAuthor = 0);
 	private:
+		FbModel * CreateModel();
 		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
 		void ChangeFilesExt(const wxTreeItemId &parent);
 		void FillFilelist(const wxTreeItemId &parent, FbConvertArray &filelist, const wxString &dir = wxEmptyString);
+		void ChangeFormat(FbExportTreeModel * model);
 		bool ExportBooks();
 		void LoadFormats();
-		void ChangeFormat();
 		wxString GetExt(int format);
 	private:
 		wxString m_selections;
@@ -61,13 +64,15 @@ class FbExportDlg : public FbDialog
 			ID_BOOKS,
 			ID_FORMAT,
 			ID_AUTHOR,
+			ID_DIR,
+			ID_FILE,
 		};
 		FbCustomCombo * m_folder;
 		wxComboBox * m_struct;
 		FbTreeViewCtrl * m_books;
 		FbChoiceInt * m_format;
 		wxCheckBox * m_checkAuthor;
-		wxCheckBox * m_transFold;
+		wxCheckBox * m_transDir;
 		wxCheckBox * m_transFile;
 	private:
         void OnSelectDir( wxCommandEvent& event );

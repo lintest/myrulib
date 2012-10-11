@@ -7,6 +7,8 @@
 
 class FbConvertArray;
 
+class FbExportTreeModel;
+
 class FbExportParentData: public FbParentData
 {
 	public:
@@ -44,7 +46,7 @@ class FbExportChildData: public FbChildData
 class FbExportTreeContext
 {
 	public:
-		FbExportTreeContext(const wxString &structure);
+		FbExportTreeContext(FbExportTreeModel * model);
 		wxFileName GetFilename(wxSQLite3ResultSet &result);
 	private:
 		wxString Get(wxSQLite3ResultSet &result, const wxString &field);
@@ -64,15 +66,23 @@ class FbExportTreeModel: public FbTreeModel
 		void GetFiles(FbConvertArray & files);
 		void SetFormat(const wxString & ext, const wxString & arc, int scale = 0)
 			{ m_ext = ext;  m_arc = arc; m_scale = scale; }
-		const wxString & GetExt() const
-			{ return m_ext; }
-		const wxString & GetArc() const
-			{ return m_arc; }
-		int GetScale() const
-			{ return m_scale; }
+		void SetTransDir(bool transDir) { m_transDir = transDir; }
+		void SetTransFile(bool transFile) { m_transFile = transFile; }
+		bool GetTransDir() const { return m_transDir; }
+		bool GetTransFile() const { return m_transFile; }
+		const wxString & GetStructure() const { return m_structure; }
+		const wxString & GetExt() const { return m_ext; }
+		const wxString & GetArc() const { return m_arc; }
+		int GetScale() const { return m_scale; }
+		void Create();
 	private:
+		wxString m_structure;
+		bool m_transDir;
+		bool m_transFile;
+		wxString m_books;
 		wxString m_ext;
 		wxString m_arc;
+		int m_author;
 		int m_scale;
 		DECLARE_CLASS(FbExportTreeModel)
 };

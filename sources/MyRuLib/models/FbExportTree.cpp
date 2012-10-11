@@ -164,11 +164,11 @@ wxFileName FbExportChildData::GetPath(FbModel &model) const
 //  FbExportTreeContext
 //-----------------------------------------------------------------------------
 
-FbExportTreeContext::FbExportTreeContext(const wxString &structure)
+FbExportTreeContext::FbExportTreeContext(FbExportTreeModel * model)
 {
-	m_template = structure;
-	m_translit_folder = FbParams(FB_TRANSLIT_FOLDER);
-	m_translit_file = FbParams(FB_TRANSLIT_FILE);
+	m_template = model->GetStructure();
+	m_translit_folder = model->GetTransDir();
+	m_translit_file = model->GetTransFile();;
 	m_underscores = FbParams(FB_USE_UNDERSCORE);
 	m_digits_count = FbParams(FB_NUMBER_FORMAT);
 	if (m_digits_count < 1) m_digits_count = 1;
@@ -193,7 +193,9 @@ wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 		if (ch == (wxChar)0x0401) ch = (wxChar)0x0415;
 		if (ch == (wxChar)0x0451) ch = (wxChar)0x0435;
 		if (!IsAlphaNumeric(ch)) ch = 0x20;
+		bool skip = space && ch == 0x20;
 		space = ch == 0x20;
+		if (skip) continue;
 		if (m_underscores && space) ch = (wxChar)0x5F;
 		newname << ch;
 	}
@@ -348,7 +350,17 @@ wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
 
 IMPLEMENT_CLASS(FbExportTreeModel, FbTreeModel)
 
-FbExportTreeModel::FbExportTreeModel(const wxString &books, const wxString &structure, int author): m_scale(0)
+FbExportTreeModel::FbExportTreeModel(const wxString &books, const wxString &structure, int author)
+	: m_structure(structure)
+	, m_transDir(false)
+	, m_transFile(false)
+	, m_books(books)
+	, m_author(author)
+	, m_scale(0)
+{
+}
+
+void FbExportTreeModel::Create()
 {
 	FbExportParentData * root = new FbExportParentData(*this, NULL, wxT('.'));
 	SetRoot(root);
@@ -366,10 +378,10 @@ FbExportTreeModel::FbExportTreeModel(const wxString &books, const wxString &stru
 	");
 
 	wxString filter;
-	if ( author) filter = wxString::Format(wxT("AND (books.id_author=%d)"), author);
-	sql = wxString::Format(sql, books.c_str(), filter.c_str());
+	if ( m_author) filter = wxString::Format(wxT("AND (books.id_author=%d)"), m_author);
+	sql = wxString::Format(sql, m_books.c_str(), filter.c_str());
 
-	FbExportTreeContext context(structure);
+	FbExportTreeContext context(this);
 	FbSortedArrayInt items(FbArrayEvent::CompareInt);
 
 	FbCommonDatabase database;

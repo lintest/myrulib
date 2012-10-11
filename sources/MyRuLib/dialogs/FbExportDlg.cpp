@@ -1,4 +1,5 @@
 #include <wx/filename.h>
+#include <wx/filename.h>
 #include <wx/artprov.h>
 #include <wx/arrimpl.cpp>
 #include "FbExportDlg.h"
@@ -15,6 +16,8 @@ BEGIN_EVENT_TABLE( FbExportDlg, wxDialog )
 	EVT_BUTTON( ID_DIR_TXT, FbExportDlg::OnSelectDir )
 	EVT_CHOICE( wxID_ANY, FbExportDlg::OnChangeFormat )
 	EVT_CHECKBOX( ID_AUTHOR, FbExportDlg::OnCheckAuthor )
+	EVT_CHECKBOX( ID_DIR, FbExportDlg::OnChangeFormat )
+	EVT_CHECKBOX( ID_FILE, FbExportDlg::OnChangeFormat )
 	EVT_TEXT( ID_STRUCT, FbExportDlg::OnCheckAuthor )
 END_EVENT_TABLE()
 
@@ -60,10 +63,10 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	wxBoxSizer * bSizerTrans = new wxBoxSizer( wxHORIZONTAL );
 
-	m_transFold = new wxCheckBox( this, wxID_ANY, _("Transliterate folder name"));
-	bSizerTrans->Add( m_transFold, 1, wxALL|wxEXPAND, 5 );
+	m_transDir = new wxCheckBox( this, ID_DIR, _("Transliterate folder name"));
+	bSizerTrans->Add( m_transDir, 1, wxALL|wxEXPAND, 5 );
 
-	m_transFile = new wxCheckBox( this, wxID_ANY, _("Transliterate filename"));
+	m_transFile = new wxCheckBox( this, ID_FILE, _("Transliterate filename"));
 	bSizerTrans->Add( m_transFile, 1, wxALL|wxEXPAND, 5 );
 
 	bSizerMain->Add( bSizerTrans, 0, wxEXPAND, 5 );
@@ -78,7 +81,6 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	m_books->SetMinSize( wxSize( -1,250 ) );
 	m_books->AddColumn (0, _("File name"), -10, wxALIGN_LEFT);
 	m_books->AddColumn (1, _("Size, Kb"), 6, wxALIGN_RIGHT);
-	m_books->AssignModel(new FbExportTreeModel(m_selections, structure, m_author));
 
 	bSizerMain->Add( m_books, 1, wxALL|wxEXPAND, 5 );
 
@@ -95,7 +97,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	bSizerMain->Add( bSizerFormat, 0, wxEXPAND, 5 );
 
 	m_folder->SetValue( FbParamItem::GetPath(FB_EXTERNAL_DIR) );
-	m_transFold->SetValue( FbParams(FB_TRANSLIT_FOLDER) );
+	m_transDir->SetValue( FbParams(FB_TRANSLIT_FOLDER) );
 	m_transFile->SetValue( FbParams(FB_TRANSLIT_FILE) );
 
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
@@ -109,6 +111,8 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 	SetEscapeId(wxID_CANCEL);
 
 	LoadFormats();
+
+	m_books->AssignModel(CreateModel());
 }
 
 FbExportDlg::~FbExportDlg()
@@ -142,7 +146,6 @@ void FbExportDlg::LoadFormats()
 		int index = m_format->Append(name, code);
 		if (code == format) m_format->SetSelection(index);
 	}
-	ChangeFormat();
 }
 
 wxString FbExportDlg::GetExt(int format)
@@ -167,14 +170,15 @@ void FbExportDlg::OnSelectDir( wxCommandEvent& event )
 
 void FbExportDlg::OnChangeFormat( wxCommandEvent& event )
 {
-	ChangeFormat();
+	if (FbExportTreeModel * model = wxDynamicCast(m_books->GetModel(), FbExportTreeModel))  {
+		ChangeFormat(model);
+		model->Create();
+		m_books->Refresh();
+	}
 }
 
-void FbExportDlg::ChangeFormat()
+void FbExportDlg::ChangeFormat(FbExportTreeModel * model)
 {
-	FbExportTreeModel * model = wxDynamicCast(m_books->GetModel(), FbExportTreeModel);
-	if (!model) return;
-
 	int format = m_format->GetValue();
 	int scale = format < 0 ? 43 : 100;
 	wxString arc, ext;
@@ -183,9 +187,9 @@ void FbExportDlg::ChangeFormat()
 		case -2: arc = wxT("gz"); break;
 		case -3: arc = wxT("bz2"); break;
 	}
-
 	model->SetFormat(GetExt(format), arc, scale);
-	m_books->Refresh();
+	model->SetTransDir(m_transDir->GetValue());
+	model->SetTransFile(m_transFile->GetValue());
 }
 
 bool FbExportDlg::ExportBooks()
@@ -229,9 +233,15 @@ bool FbExportDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
 
 void FbExportDlg::OnCheckAuthor( wxCommandEvent& event )
 {
-	int author = 0;
-	if ( m_checkAuthor && m_checkAuthor->GetValue() ) author = m_author;
-	m_books->AssignModel(new FbExportTreeModel(m_selections, m_struct->GetValue(), author));
-	ChangeFormat();
+	m_books->AssignModel(CreateModel());
 }
 
+FbModel * FbExportDlg::CreateModel()
+{
+	int author = 0;
+	if ( m_checkAuthor && m_checkAuthor->GetValue() ) author = m_author;
+	FbExportTreeModel * model = new FbExportTreeModel(m_selections, m_struct->GetValue(), author);
+	ChangeFormat(model);
+	model->Create();
+	return model;
+}
