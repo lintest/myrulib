@@ -34,6 +34,7 @@ BEGIN_EVENT_TABLE(FbBookViewCtrl, FbTreeViewCtrl)
 	EVT_MENU(wxID_ANY, FbBookViewCtrl::OnMenu)
 	EVT_MENU(wxID_CUT, FbBookViewCtrl::OnCopy)
 	EVT_MENU(wxID_COPY, FbBookViewCtrl::OnCopy)
+	EVT_MENU(wxID_DELETE, FbBookViewCtrl::OnDelete)
 	EVT_MENU(wxID_SELECTALL, FbBookViewCtrl::OnSelect)
 	EVT_MENU(ID_UNSELECTALL, FbBookViewCtrl::OnUnselect)
 	EVT_UPDATE_UI(wxID_CUT, FbBookViewCtrl::OnDisableUI)
@@ -46,6 +47,11 @@ END_EVENT_TABLE()
 void FbBookViewCtrl::OnCopy(wxCommandEvent& event)
 {
 	DoCopyText(GetText());
+}
+
+void FbBookViewCtrl::OnDelete(wxCommandEvent& event)
+{
+	if (FbBookPanel * panel = wxDynamicCast(GetParent(), FbBookPanel)) { panel->DoEvent(event); }
 }
 
 void FbBookViewCtrl::OnMenu(wxCommandEvent& event)

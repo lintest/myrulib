@@ -66,6 +66,7 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(wxID_PASTE, FbMainFrame::OnSubCtrl)
 	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnUnselect)
 	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSelectAll)
+	EVT_MENU(wxID_DELETE, FbMainFrame::OnDelete)
 
 	EVT_UPDATE_UI(wxID_CUT, FbMainFrame::OnEnableUI)
 	EVT_UPDATE_UI(wxID_COPY, FbMainFrame::OnEnableUI)
@@ -228,6 +229,12 @@ void FbMainFrame::OnUnselect(wxCommandEvent& event)
 {
 	wxWindow * focused = FindFocus();
 	if (FbTreeViewCtrl * tree = wxDynamicCast(focused->GetParent(), FbTreeViewCtrl)) { tree->SelectAll(false); return; }
+}
+
+void FbMainFrame::OnDelete(wxCommandEvent& event)
+{
+	wxWindow * focused = FindFocus();
+	if (FbTreeViewCtrl * tree = wxDynamicCast(focused->GetParent(), FbTreeViewCtrl)) { tree->DoEvent(event); return; }
 }
 
 void FbMainFrame::SaveFrameList()

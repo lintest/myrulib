@@ -24,6 +24,7 @@ class FbBookViewCtrl
 	private:
 		void OnMenu(wxCommandEvent& event);
 		void OnCopy(wxCommandEvent & event);
+		void OnDelete(wxCommandEvent& event);
 		void OnSelect(wxCommandEvent & event) { SelectAll(true); }
 		void OnUnselect(wxCommandEvent & event) { SelectAll(false); }
 		void OnEnableUI(wxUpdateUIEvent & event) { event.Enable(GetModel()); }

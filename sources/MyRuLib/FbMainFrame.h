@@ -75,6 +75,7 @@ class FbMainFrame : public wxFrame
 		void OnFindAuthor(wxCommandEvent& event);
 		void OnFindTitle(wxCommandEvent& event);
 		void OnSelectAll(wxCommandEvent& event);
+		void OnDelete(wxCommandEvent& event);
 		void OnUnselect(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);

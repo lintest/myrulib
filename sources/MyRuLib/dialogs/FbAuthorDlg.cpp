@@ -13,34 +13,34 @@ FbAuthorSelectDlg::FbAuthorSelectDlg( wxWindow* parent, wxWindowID id, const wxS
 	: wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-	
+
 	wxBoxSizer * bSizerMain = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer * bSizerText = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	wxStaticText * info = new wxStaticText( this, wxID_ANY, _("Find"), wxDefaultPosition, wxDefaultSize, 0 );
 	info->Wrap( -1 );
 	bSizerText->Add( info, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_text.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerText->Add( &m_text, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	bSizerMain->Add( bSizerText, 0, wxEXPAND, 5 );
-	
+
 	m_alphabet.Create( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizerMain->Add( &m_alphabet, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_HORZ_TEXT|wxTB_NODIVIDER ); 
+
+	m_toolbar.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL|wxTB_HORZ_TEXT|wxTB_NODIVIDER );
 	m_toolbar.AddTool( ID_APPEND, _("Append"), wxBitmap(add_xpm))->Enable(false);
 	m_toolbar.AddTool( ID_MODIFY, _("Modify"), wxBitmap(mod_xpm))->Enable(false);
 	m_toolbar.AddTool( ID_DELETE, _("Delete"), wxBitmap(del_xpm))->Enable(false);
 	m_toolbar.Realize();
-	
+
 	bSizerMain->Add( &m_toolbar, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_treeview.Create( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON );
 	bSizerMain->Add( &m_treeview, 1, wxALL|wxEXPAND, 5 );
-	
+
 	wxStdDialogButtonSizer * sdbSizerBtn = CreateStdDialogButtonSizer( wxOK | wxCANCEL );
 	bSizerMain->Add( sdbSizerBtn, 0, wxEXPAND | wxALL, 5 );
 
@@ -190,10 +190,17 @@ void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 	wxSQLite3Transaction trans(&m_database);
 
 	{
-		wxString sql = wxT("UPDATE books SET id_author=? WHERE id_author=?");
+		wxString sql = wxT("UPDATE books SET id_author=?1 WHERE id_author=?2 AND NOT (id IN (SELECT id FROM books WHERE id_author=?1))");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, new_id);
 		stmt.Bind(2, old_id);
+		stmt.ExecuteUpdate();
+	}
+
+	{
+		wxString sql = wxT("DELETE FROM books WHERE id=?");
+		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
 	}
 
