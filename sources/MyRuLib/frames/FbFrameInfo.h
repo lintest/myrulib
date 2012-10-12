@@ -16,6 +16,10 @@ class FbFrameInfo
 		virtual wxString GetTitle() const { return _("Information"); };
 		void Load(const wxString & html);
 		virtual void UpdateFonts(bool refresh = true);
+	public:
+		void DoEvent(wxEvent& event) {
+			GetEventHashTable().HandleEvent(event, this);
+		}
 	private:
 		void OnSave(wxCommandEvent& event);
 		DECLARE_CLASS(FbFrameInfo)

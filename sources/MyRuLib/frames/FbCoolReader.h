@@ -87,6 +87,10 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 
 		void OnOptionsChange( CRPropRef oldprops, CRPropRef newprops, CRPropRef changed );
 
+		void DoEvent(wxEvent& event) {
+			GetEventHashTable().HandleEvent(event, this);
+		}
+
 		void OnAbout( wxCommandEvent& event );
 		void OnScroll( wxScrollWinEvent& event );
 		void OnFileOpen( wxCommandEvent& event );
@@ -132,6 +136,9 @@ class FbCoolReader: public wxWindow, public LVDocViewCallback
 	private:
 		void OnCopuUpdateUI(wxUpdateUIEvent & event) {
 			event.Enable(!m_sel_text.IsEmpty());
+		}
+		void OnEnableUI(wxUpdateUIEvent & event) {
+			event.Enable(true);
 		}
 		void OnDisableUI(wxUpdateUIEvent & event) {
 			event.Enable(false);

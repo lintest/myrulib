@@ -21,6 +21,10 @@ class FbFrameHtml :
 		static void Execute();
 		virtual void UpdateFonts(bool refresh = true);
 		virtual void Localize(bool bUpdateMenu);
+	public:
+		void DoEvent(wxEvent& event) {
+			GetEventHashTable().HandleEvent(event, this);
+		}
 	private:
 		void CreateControls();
 		static wxString GetMd5sum(const int id);
