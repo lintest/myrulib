@@ -6,6 +6,7 @@
 #include <wx/toolbar.h>
 #include <wx/textctrl.h>
 #include <wx/srchctrl.h>
+#include "controls/FbNotebook.h"
 #include "FbBookEvent.h"
 #include "FbWindow.h"
 
@@ -49,7 +50,7 @@ class FbMainFrame : public wxFrame
 		FbSearchCtrl * m_FindTitle;
 		ProgressBar * m_ProgressBar;
 		wxAuiManager m_FrameManager;
-		wxAuiNotebook m_FrameNotebook;
+		FbAuiNotebook m_FrameNotebook;
 		FbTreeViewCtrl * m_LogCtrl;
 	private:
 		wxMenu * m_MenuBook;
@@ -74,9 +75,6 @@ class FbMainFrame : public wxFrame
 		void OnInfoCommand(wxCommandEvent & event);
 		void OnFindAuthor(wxCommandEvent& event);
 		void OnFindTitle(wxCommandEvent& event);
-		void OnSelectAll(wxCommandEvent& event);
-		void OnDelete(wxCommandEvent& event);
-		void OnUnselect(wxCommandEvent& event);
 		void OnFullScreen(wxCommandEvent& event);
 		void OnFullScreenUpdate(wxUpdateUIEvent& event);
 		void OnInitFrame(wxCommandEvent& event);
@@ -124,6 +122,7 @@ class FbMainFrame : public wxFrame
 		void OnNotebookClosed(wxAuiNotebookEvent& event);
 		void OnSubmenu(wxCommandEvent& event);
 		void OnSubCtrl(wxCommandEvent& event);
+		void OnDelete(wxCommandEvent& event);
 		void OnStatusBarUpdate(wxUpdateUIEvent  & event);
 		void OnSubmenuUpdateUI(wxUpdateUIEvent & event);
 		void OnIdle( wxIdleEvent & event);

@@ -33,7 +33,6 @@
 #include "FbGenreThread.h"
 #include "FbUpdateThread.h"
 #include "FbMasterTypes.h"
-#include "controls/FbNotebook.h"
 #include "controls/FbLogModel.h"
 #include "controls/FbSearchCtrl.h"
 #include "controls/ProgressBar.h"
@@ -66,8 +65,8 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(wxID_CUT, FbMainFrame::OnSubCtrl)
 	EVT_MENU(wxID_COPY, FbMainFrame::OnSubCtrl)
 	EVT_MENU(wxID_PASTE, FbMainFrame::OnSubCtrl)
-	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnUnselect)
-	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSelectAll)
+	EVT_MENU(ID_UNSELECTALL, FbMainFrame::OnSubCtrl)
+	EVT_MENU(wxID_SELECTALL, FbMainFrame::OnSubCtrl)
 	EVT_MENU(wxID_DELETE, FbMainFrame::OnDelete)
 
 	EVT_UPDATE_UI(wxID_CUT, FbMainFrame::OnEnableUI)
@@ -229,24 +228,9 @@ void FbMainFrame::OnSubmenuUpdateUI(wxUpdateUIEvent & event)
 void FbMainFrame::OnSubCtrl(wxCommandEvent& event)
 {
 	if (wxWindow * focused = FindFocus()) {
+		if (focused == this) return;
 		wxPostEvent(focused, event);
-		return;
 	}
-}
-
-void FbMainFrame::OnSelectAll(wxCommandEvent& event)
-{
-	wxWindow * focused = FindFocus(); if (!focused) return;
-	if (wxTextCtrl * text = wxDynamicCast(focused, wxTextCtrl)) { text->SelectAll(); return; }
-	if (FbSearchCtrl * text = wxDynamicCast(focused, FbSearchCtrl)) { text->SelectAll(); return; }
-	if (wxComboCtrl * combo = wxDynamicCast(focused, wxComboCtrl)) { combo->GetTextCtrl()->SelectAll(); return; }
-	if (FbTreeViewCtrl * tree = wxDynamicCast(focused->GetParent(), FbTreeViewCtrl)) { tree->SelectAll(true); return; }
-}
-
-void FbMainFrame::OnUnselect(wxCommandEvent& event)
-{
-	wxWindow * focused = FindFocus(); if (!focused) return;
-	if (FbTreeViewCtrl * tree = wxDynamicCast(focused->GetParent(), FbTreeViewCtrl)) { tree->SelectAll(false); return; }
 }
 
 void FbMainFrame::OnDelete(wxCommandEvent& event)

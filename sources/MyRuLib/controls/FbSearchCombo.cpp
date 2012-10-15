@@ -6,6 +6,10 @@
 
 IMPLEMENT_CLASS(FbSearchCombo, wxComboCtrl)
 
+BEGIN_EVENT_TABLE(FbSearchCombo, wxComboCtrl)
+	EVT_MENU(wxID_SELECTALL, FbSearchCombo::OnSelectAll)
+END_EVENT_TABLE()
+
 static int GetMultiplier()
 {
 #ifdef __WXWINCE__

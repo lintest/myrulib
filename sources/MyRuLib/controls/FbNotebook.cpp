@@ -21,6 +21,18 @@
 #include <wx/osx/private.h>
 #endif
 
+#include "FbConst.h"
+
+IMPLEMENT_CLASS(FbAuiNotebook, wxAuiNotebook)
+
+BEGIN_EVENT_TABLE(FbAuiNotebook, wxAuiNotebook)
+	EVT_MENU(wxID_CUT, FbAuiNotebook::OnSubmenu)
+	EVT_MENU(wxID_COPY, FbAuiNotebook::OnSubmenu)
+	EVT_MENU(wxID_PASTE, FbAuiNotebook::OnSubmenu)
+	EVT_MENU(ID_UNSELECTALL, FbAuiNotebook::OnSubmenu)
+	EVT_MENU(wxID_SELECTALL, FbAuiNotebook::OnSubmenu)
+END_EVENT_TABLE()
+
 /*
 #ifdef __WXMSW__
 #include  "wx/msw/private.h"

@@ -105,6 +105,10 @@ static int GetMultiplier()
 
 IMPLEMENT_CLASS(FbSearchCtrl, wxOwnerDrawnComboBox)
 
+BEGIN_EVENT_TABLE(FbSearchCtrl, wxOwnerDrawnComboBox)
+    EVT_MENU(wxID_SELECTALL, FbSearchTextCtrl::OnSelectAll)
+END_EVENT_TABLE()
+
 FbSearchCtrl::FbSearchCtrl()
 {
     Init();
@@ -293,6 +297,11 @@ protected:
         }
     }
 
+    void OnSelectAll(wxCommandEvent& event)
+    {
+    	SelectAll();
+    }
+
 private:
     FbSearchCtrl* m_search;
     wxString      m_descriptiveText;
@@ -302,6 +311,7 @@ private:
 };
 
 BEGIN_EVENT_TABLE(FbSearchTextCtrl, wxTextCtrl)
+    EVT_MENU(wxID_SELECTALL, FbSearchTextCtrl::OnSelectAll)
     EVT_TEXT(wxID_ANY, FbSearchTextCtrl::OnText)
     EVT_TEXT_ENTER(wxID_ANY, FbSearchTextCtrl::OnTextEnter)
     EVT_IDLE(FbSearchTextCtrl::OnIdle)

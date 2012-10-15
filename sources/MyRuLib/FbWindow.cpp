@@ -7,6 +7,7 @@
 #include <wx/fontpicker.h>
 #include <wx/clrpicker.h>
 #include <wx/spinctrl.h>
+#include "FbConst.h"
 
 //-----------------------------------------------------------------------------
 //  FbDialog
@@ -83,3 +84,18 @@ ORDER BY 3,1\
 ");
 return wxString::Format(sql, table.c_str(), table.c_str());
 }
+
+//-----------------------------------------------------------------------------
+//  FbDialog
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(FbToolBar, wxToolBar)
+
+BEGIN_EVENT_TABLE(FbToolBar, wxToolBar)
+	EVT_MENU(wxID_CUT, FbToolBar::OnSubmenu)
+	EVT_MENU(wxID_COPY, FbToolBar::OnSubmenu)
+	EVT_MENU(wxID_PASTE, FbToolBar::OnSubmenu)
+	EVT_MENU(ID_UNSELECTALL, FbToolBar::OnSubmenu)
+	EVT_MENU(wxID_SELECTALL, FbToolBar::OnSubmenu)
+END_EVENT_TABLE()
+

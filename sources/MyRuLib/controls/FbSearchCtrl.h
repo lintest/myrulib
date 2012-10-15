@@ -24,6 +24,7 @@
 class FbSearchCtrl : public wxOwnerDrawnComboBox
 {
 public:
+public:
 	FbSearchCtrl();
 
 	FbSearchCtrl(wxWindow *parent, wxWindowID id,
@@ -63,8 +64,14 @@ public:
 protected:
 	virtual wxBitmap RenderCancelBitmap( int x, int y );
 
+private
+    void OnSelectAll(wxCommandEvent& event) {}
+		GetTextCtrl()->SelectAll();
+	}
+
 private:
 	DECLARE_CLASS(FbSearchCtrl)
+    DECLARE_EVENT_TABLE()
 };
 
 #else // FB_SEARCH_COMBO_CTRL

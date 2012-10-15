@@ -3,6 +3,16 @@
 
 #include <wx/aui/auibook.h>
 
+class FbAuiNotebook : public wxAuiNotebook
+{
+public:
+	FbAuiNotebook() : wxAuiNotebook() {}
+private:
+	void OnSubmenu(wxCommandEvent & event) { }
+	DECLARE_CLASS(FbAuiNotebook)
+	DECLARE_EVENT_TABLE()
+};
+
 class WXDLLIMPEXP_AUI WxAuiDefaultTabArt : public wxAuiTabArt
 {
 

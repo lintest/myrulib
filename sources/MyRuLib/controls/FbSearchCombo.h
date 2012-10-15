@@ -30,17 +30,19 @@ class FbSearchCombo: public wxComboCtrl
 			SetButtonBitmaps(RenderButtonBitmap(), true);
 		}
 
-		void DoEvent(wxEvent& event) {
-			GetEventHashTable().HandleEvent(event, this);
-		}
+		virtual void DoSetPopupControl(wxComboPopup* WXUNUSED(popup)) {}
 
+	private:
 		virtual void OnButtonClick()
 		{
 			wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED,  GetId());
 			wxPostEvent(this, event);
 		}
 
-		virtual void DoSetPopupControl(wxComboPopup* WXUNUSED(popup)) {}
+		void OnSelectAll(wxCommandEvent& event)
+		{
+			GetTextCtrl()->SelectAll();
+		}
 
 	private:
 		// Initialize member variables here
@@ -48,6 +50,7 @@ class FbSearchCombo: public wxComboCtrl
 	private:
 		wxBitmap RenderButtonBitmap();
 		DECLARE_CLASS(FbSearchCombo)
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // __FBSEARCHCOMBO_H__
