@@ -283,7 +283,7 @@ IMPLEMENT_CLASS(FbMasterFindInfo, FbMasterInfoBase)
 wxString FbMasterFindInfo::GetWhere(wxSQLite3Database &database) const
 {
 	if (m_full) {
-		wxString sql = wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book MATCH ?)");
+		wxString sql = wxT("books.id IN (SELECT docid FROM fts_book WHERE fts_book.content MATCH ?)");
 		if (m_auth) sql << wxT("AND books.id_author IN (SELECT docid FROM fts_auth WHERE fts_auth MATCH ?)");
 		return sql;
 	} else {

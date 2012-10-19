@@ -696,32 +696,33 @@ void FbMainDatabase::DoUpgrade(int version)
 	}
 }
 
-void FbMainDatabase::CreateTableFTS(const wxString & name, const wxString & table, const wxString & field)
+void FbMainDatabase::CreateTableFTS(const wxString & name, const wxString & table, const wxString & source, const wxString & target)
 {
-	ExecuteUpdate(wxString::Format(wxT("DROP TABLE IF EXISTS fts_%s"), name.c_str()));
-	wxString sql = wxString::Format(wxT("CREATE VIRTUAL TABLE fts_%s USING fts3"), name.c_str());
-	#ifdef SQLITE_ENABLE_ICU
-		sql << wxT("(tokenize=icu ru_RU)");
-	#else
-		sql << wxT("(tokenize=porter)");
-	#endif
-	ExecuteUpdate(sql);
-
-	if (name == wxT("book")) {
-		ExecuteUpdate(fbT("ALTER TABLE fts_book ADD dscr TEXT"));
-		sql = wxString::Format(wxT("INSERT INTO fts_%s(docid,content,dscr)SELECT DISTINCT id,LOW(%s),LOW(description)FROM %s"), name.c_str(), field.c_str(), table.c_str());
-	} else {
-		sql = wxString::Format(wxT("INSERT INTO fts_%s(docid,content)SELECT DISTINCT id,LOW(%s)FROM %s"), name.c_str(), field.c_str(), table.c_str());
-	}
-	ExecuteUpdate(sql);
+#ifdef SQLITE_ENABLE_ICU
+	wxString token = wxT("icu ru_RU");
+#else
+	wxString token = wxT("porter)");
+#endif
+	ExecuteUpdate(wxString::Format(
+		wxT("DROP TABLE IF EXISTS fts_%s"),
+		name.c_str())
+	);
+	ExecuteUpdate(wxString::Format(
+		wxT("CREATE VIRTUAL TABLE fts_%s USING fts3(content%s,tokenize=%s)"),
+		name.c_str(), target.c_str(), token.c_str()
+	));
+	ExecuteUpdate(wxString::Format(
+		wxT("INSERT INTO fts_%s(docid,content%s)SELECT DISTINCT id,LOW(%s)FROM %s"),
+		name.c_str(), target.c_str(), source.c_str(), table.c_str()
+	));
 }
 
 void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 {
 	if ( !force && TableExists(wxT("fts_book_content")) ) return;
 	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
+	CreateTableFTS(wxT("book"), wxT("books"), wxT("title),LOW(description"), wxT(",dscr"));
 	CreateTableFTS(wxT("auth"), wxT("authors"), wxT("full_name"));
-	CreateTableFTS(wxT("book"), wxT("books"), wxT("title"));
 	CreateTableFTS(wxT("seqn"), wxT("sequences"), wxT("value"));
 	ExecuteUpdate(fbT("UPDATE books SET deleted=NULL WHERE deleted=0"));
 	ExecuteUpdate(fbT("UPDATE authors SET letter=LTTR(full_name) WHERE id"));
