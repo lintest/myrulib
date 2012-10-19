@@ -210,8 +210,8 @@ void FbUpdateItem::ExecInsert()
 			wxT("authors"), wxT("id,LOW(AUTH(last_name,first_name,middle_name))"),
 		},
 		{
-			wxT("fts_book"), wxT("docid,content"),
-			wxT("books"),     wxT("id,LOW(title)"),
+			wxT("fts_book"), wxT("docid,content,dscr"),
+			wxT("books"),     wxT("id,LOW(title),LOW(description)"),
 		},
 		{
 			wxT("fts_seqn"),  wxT("docid,content"),

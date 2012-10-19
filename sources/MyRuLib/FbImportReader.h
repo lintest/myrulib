@@ -127,6 +127,7 @@ private:
 		FB2_BEGIN_KEYLIST
 			Author,
 			Title,
+			Annot,
 			Sequence,
 			Genre,
 			Lang,
@@ -149,6 +150,16 @@ private:
 		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
 	private:
 		AuthorItem * m_author;
+	};
+
+	class AnnotHandler : public BookHandler
+	{
+	public:
+		explicit AnnotHandler(FbImportReader &reader, const wxString &name) : BookHandler(reader, name) {}
+		explicit AnnotHandler(AnnotHandler &parent, const wxString &name) : BookHandler(parent.m_reader, name) {}
+		virtual FbHandlerXML * NewNode(const wxString &name, const FbStringHash &atts);
+		virtual void TxtNode(const wxString &text);
+		virtual void EndNode(const wxString &name);
 	};
 
 	class SeqnHandler : public FbHandlerXML

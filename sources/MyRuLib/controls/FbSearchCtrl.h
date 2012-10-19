@@ -64,8 +64,8 @@ public:
 protected:
 	virtual wxBitmap RenderCancelBitmap( int x, int y );
 
-private
-    void OnSelectAll(wxCommandEvent& event) {}
+private:
+    void OnSelectAll(wxCommandEvent& event) {
 		GetTextCtrl()->SelectAll();
 	}
 

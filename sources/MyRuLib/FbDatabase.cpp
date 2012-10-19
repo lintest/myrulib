@@ -706,7 +706,13 @@ void FbMainDatabase::CreateTableFTS(const wxString & name, const wxString & tabl
 		sql << wxT("(tokenize=porter)");
 	#endif
 	ExecuteUpdate(sql);
-	sql = wxString::Format(wxT("INSERT INTO fts_%s(docid,content)SELECT DISTINCT id,LOW(%s)FROM %s"), name.c_str(), field.c_str(), table.c_str());
+
+	if (name == wxT("book")) {
+		ExecuteUpdate(fbT("ALTER TABLE fts_book ADD dscr TEXT"));
+		sql = wxString::Format(wxT("INSERT INTO fts_%s(docid,content,dscr)SELECT DISTINCT id,LOW(%s),LOW(description)FROM %s"), name.c_str(), field.c_str(), table.c_str());
+	} else {
+		sql = wxString::Format(wxT("INSERT INTO fts_%s(docid,content)SELECT DISTINCT id,LOW(%s)FROM %s"), name.c_str(), field.c_str(), table.c_str());
+	}
 	ExecuteUpdate(sql);
 }
 

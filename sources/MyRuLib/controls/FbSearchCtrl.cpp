@@ -106,7 +106,7 @@ static int GetMultiplier()
 IMPLEMENT_CLASS(FbSearchCtrl, wxOwnerDrawnComboBox)
 
 BEGIN_EVENT_TABLE(FbSearchCtrl, wxOwnerDrawnComboBox)
-    EVT_MENU(wxID_SELECTALL, FbSearchTextCtrl::OnSelectAll)
+    EVT_MENU(wxID_SELECTALL, FbSearchCtrl::OnSelectAll)
 END_EVENT_TABLE()
 
 FbSearchCtrl::FbSearchCtrl()
