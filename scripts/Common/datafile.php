@@ -38,6 +38,7 @@ function create_tables($sqlite_db)
       lang char(2),
       year integer,
       description text,
+      rate text,
       PRIMARY KEY(id,id_author)
       );
   ");

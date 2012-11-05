@@ -74,6 +74,17 @@ function convert_genres($mysql_db, $sqlite_db, $min)
   $sqlite_db->query("commit;");
 }
 
+function book_rate($mysql_db, $id)
+{
+    $subsql = "SELECT ROUND(AVG(rate),3) AS rate, COUNT(UserId) AS user FROM librate WHERE BookId=$id";
+    $subquery = $mysql_db->query($subsql);
+    while ($subrow = $subquery->fetch_array()) {
+      if ($subrow['user'] == 0) return NULL;
+      return $subrow['rate']."/".$subrow['user'];
+    }
+  return NULL;
+}
+
 function convert_books($mysql_db, $sqlite_db, $min)
 {
   $sqlite_db->query("begin transaction;");
@@ -93,8 +104,9 @@ function convert_books($mysql_db, $sqlite_db, $min)
   while ($row = $query->fetch_array()) {
     echo "Book: ".$row['Time']." - ".$row['BookId']." - ".$row['FileType']." - ".$row['AvtorId']." - ".$row['Title']."\n";
 
+	$id = $row['BookId'];
     $genres = "";
-    $subsql = "SELECT GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId WHERE BookId=".$row['BookId'];
+    $subsql = "SELECT GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId WHERE BookId=$id";
     $subquery = $mysql_db->query($subsql);
     while ($subrow = $subquery->fetch_array()) {
       $genres = $genres.GenreCode($subrow['GenreCode']);
@@ -107,11 +119,12 @@ function convert_books($mysql_db, $sqlite_db, $min)
     $lang = $row['Lang'];
     $lang = strtolower($lang);
     $lang = strtolowerEx($lang);
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+    $rate = book_rate($mysql_db, $id);
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, rate, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($row['BookId'], $row['AvtorId'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
-    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
+    if($insert === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
+    $err= $insert->execute(array($id, $row['AvtorId'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $rate, $row['md5']));
+    if($err === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
   
