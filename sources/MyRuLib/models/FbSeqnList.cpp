@@ -87,7 +87,7 @@ void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
 
 wxString FbSeqnListThread::GetJoin()
 {
-	return abs(m_order) > 1 ? wxT(" LEFT JOIN cnt.numb ON id=numb.key ") : wxString(wxT(' '));
+	return abs(m_order) > 1 ? wxT(" LEFT JOIN numb ON id=numb.key ") : wxString(wxT(' '));
 }
 
 wxString FbSeqnListThread::GetOrder()
@@ -195,7 +195,7 @@ int FbSeqnListModel::GetCount(int code)
 }
 
 void FbSeqnListModel::SetCounter(const wxString & filename)
-{ 
-	if (!filename.IsEmpty()) m_database.Open(filename); 
-	m_counter.clear(); 
+{
+	if (!filename.IsEmpty()) m_database.Open(filename);
+	m_counter.clear();
 }

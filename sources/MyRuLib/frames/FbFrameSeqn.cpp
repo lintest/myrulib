@@ -66,9 +66,9 @@ void FbSeqnViewCtrl::OnMasterDelete(wxCommandEvent& event)
 	if (ok) {
 		FbCommonDatabase database;
 		FbAutoCommit commit(database);
-		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM s WHERE sid=%d"), id));
-		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM bs WHERE sid=%d"), id));
-		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM fts_s WHERE docid=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM sequences WHERE id=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM bookseq WHERE id_seq=%d"), id));
+		database.ExecuteUpdate(wxString::Format(wxT("DELETE FROM fts_seqn WHERE docid=%d"), id));
 		Delete();
 	}
 }
