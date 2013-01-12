@@ -345,9 +345,10 @@ void FbFileReader::ShellExecute(const wxString &filename)
 	wxString command = wxT("xdg-open");
 	FbExecute(command, filename);
 	#else
+    wxString command;
 	bool ok = GetSystemCommand(filename, filetype, command);
 	if (ok) {
-		FbExecute(command);
+		wxExecute(command);
 	} else {
 		FbMessageBox(_("Associated application not found"), filetype);
 	}

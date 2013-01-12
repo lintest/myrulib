@@ -375,7 +375,7 @@ distclean: clean
 @COND_USE_READER_yes@	$(RANLIB) $@
 
 wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
-	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp < $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
+	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 
 $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT): $(MRL_WXSQLITE3_OBJECTS)
 	rm -f $@

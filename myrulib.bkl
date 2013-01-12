@@ -115,7 +115,7 @@
 	<action id="wxsqlite3.cpp">
 		<depends-on-file>$(SRCDIR)/3rdparty/wxsqlite3/src/wxsqlite3.cpp</depends-on-file>
 		<depends-on-file>$(SRCDIR)/sources/WxSQLite3/wxsqlite3.patch</depends-on-file>
-		<command>patch -o $(BUILDDIR)/wxsqlite3.cpp $(SRCDIR)/3rdparty/wxsqlite3/src/wxsqlite3.cpp &lt; $(SRCDIR)/sources/WxSQLite3/wxsqlite3.patch</command>
+		<command>patch -o $(BUILDDIR)/wxsqlite3.cpp $(SRCDIR)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(SRCDIR)/sources/WxSQLite3/wxsqlite3.patch</command>
 		<clean-files>$(BUILDDIR)/wxsqlite3.cpp</clean-files>
 	</action>
 
