@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([MyRuLib],[0.29.11],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
+AC_INIT([MyRuLib],[0.29.12],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
 
 dnl Set the minimum version of toolkit libs
 dnl ========================================================
