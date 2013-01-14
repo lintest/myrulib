@@ -17,6 +17,9 @@ wxString AuthorItem::GetFullName()
 
 void AuthorItem::Convert(FbDatabase & database)
 {
+    last = last.Trim(false).Trim(true);
+    first = first.Trim(false).Trim(true);
+    middle = middle.Trim(false).Trim(true);
 	if (!Find(database)) Save(database);
 }
 
@@ -95,6 +98,8 @@ int AuthorItem::Save(FbDatabase & database)
 
 int SequenceItem::Convert(FbDatabase & database)
 {
+    m_name = m_name.Trim(false).Trim(true);
+
 	if (m_name.IsEmpty()) return m_id = 0;
 
 	if (m_id = database.Int(m_name, wxT("SELECT id FROM sequences WHERE value=?"))) return m_id;
@@ -126,7 +131,7 @@ SequenceItem::SequenceItem(const FbStringHash &atts)
 	for( it = atts.begin(); it != atts.end(); ++it ) {
 		wxString attr = it->first;
 		wxString text = it->second;
-		if (attr == wxT("name")) m_name = text; else 
+		if (attr == wxT("name")) m_name = text; else
 		if (attr == wxT("number")) text.ToLong(&m_number);
 	}
 }

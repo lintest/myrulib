@@ -139,6 +139,11 @@ static int CompareAuthors(AuthorItem ** n1, AuthorItem ** n2)
 
 void FbImportReader::Convert(FbDatabase & database)
 {
+	m_title = m_title.Trim(false).Trim(true);
+	m_lang = Lower(m_lang).Trim(false).Trim(true);
+	m_dscr = m_dscr.Trim(false).Trim(true);
+	m_isbn = m_isbn.Trim(false).Trim(true);
+
 	for (size_t i = 0; i < m_authors.Count(); i++)
 		m_authors[i].Convert(database);
 
@@ -153,8 +158,6 @@ void FbImportReader::Convert(FbDatabase & database)
 
 	if (m_sequences.Count() == 0)
 		m_sequences.Add(new SequenceItem);
-
-	m_lang = Lower(m_lang);
 }
 
 void FbImportReader::OnError(wxLogLevel level, const wxString &msg, int line)
