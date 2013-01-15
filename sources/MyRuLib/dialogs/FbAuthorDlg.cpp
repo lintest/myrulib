@@ -198,7 +198,7 @@ void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 	}
 
 	{
-		wxString sql = wxT("DELETE FROM books WHERE id=?");
+		wxString sql = wxT("DELETE FROM books WHERE id_author=?");
 		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
