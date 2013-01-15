@@ -1,13 +1,13 @@
 #
 # spec file for package myrulib
 #
-# Copyright (c) 2009, 2010, 2011, 2012 Denis Kandrashin, Kyrill Detinov
+# Copyright (c) 2009-2013 Denis Kandrashin, Kyrill Detinov
 # This file and all modifications and additions to the pristine
 # package are under the same license as the package itself.
 #
 
 Name:           myrulib
-Version:        0.29.11
+Version:        0.29.12
 Release:        0
 License:        GPL-3.0
 Summary:        E-Book Library Manager
