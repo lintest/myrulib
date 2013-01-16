@@ -701,7 +701,7 @@ void FbMainDatabase::CreateTableFTS(const wxString & name, const wxString & tabl
 #ifdef SQLITE_ENABLE_ICU
 	wxString token = wxT("icu ru_RU");
 #else
-	wxString token = wxT("porter)");
+	wxString token = wxT("porter");
 #endif
 	ExecuteUpdate(wxString::Format(
 		wxT("DROP TABLE IF EXISTS fts_%s"),
