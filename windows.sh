@@ -6,7 +6,7 @@
 ##################################################################
 
 WXW_VERSION="2.8.12"   # Version wxWidgets
-FT2_VERSION="2.4.10"   # Version FreeType2
+FT2_VERSION="2.4.11"   # Version FreeType2
 
 ##################################################################
 # Detect MyRuLib version
@@ -94,6 +94,7 @@ rm -rf build_msw
 mkdir build_msw
 cd build_msw
 LDFLAGS="-static-libgcc -static-libstdc++" ../configure \
+    --with-expat \
     --with-wx-prefix=$BUILD_DIR \
     --host=i686-w64-mingw32 \
     --with-locale
@@ -105,6 +106,7 @@ rm -rf build_cr3
 mkdir build_cr3
 cd build_cr3
 LDFLAGS="-static-libgcc -static-libstdc++" ../configure \
+    --with-expat \
     --host=i686-w64-mingw32 \
     --with-wx-prefix=$BUILD_DIR \
     --with-ft-prefix=$BUILD_DIR \

@@ -44,6 +44,10 @@ fi
 
 AM_PATH_XML2(2.5.0, USE_LIBXML2="yes", USE_LIBXML2="no")
 
+dnl ---------------------------------------------------------------------------
+dnl     Check compiler options
+dnl ---------------------------------------------------------------------------
+
 AC_MSG_CHECKING([for --with-expat])
 AC_ARG_WITH([expat], [AS_HELP_STRING([--with-expat], [Use Expat XML parser instead of Libxml2])], USE_EXPAT="$withval", USE_EXPAT="no")
 AC_MSG_RESULT([$USE_EXPAT])

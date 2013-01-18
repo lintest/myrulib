@@ -4420,6 +4420,7 @@ rm -f core conftest.err conftest.$ac_objext \
   rm -f conf.xmltest
 
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-expat" >&5
 $as_echo_n "checking for --with-expat... " >&6; }
 

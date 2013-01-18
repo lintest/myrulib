@@ -1166,7 +1166,7 @@ void FbTreeViewCtrl::SetFocus()
 
 void FbTreeViewCtrl::Refresh(bool erase, const wxRect* rect)
 {
-	m_main_win->Repaint();
+	if (m_main_win) m_main_win->Repaint();
 	if (m_header_win) m_header_win->Refresh (erase, rect);
 }
 

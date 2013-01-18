@@ -327,7 +327,6 @@ clean:
 	rm -f $(LIBPREFIX)mrl_faxpp$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_sqlite3$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_crengine$(LIBEXT)
-	rm -f ./wxsqlite3.cpp
 	rm -f $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
 	rm -f $(LIBPREFIX)mrl_wxbzip2$(LIBEXT)
 	rm -f zipscan$(EXEEXT)
@@ -373,9 +372,6 @@ distclean: clean
 @COND_USE_READER_yes@	rm -f $@
 @COND_USE_READER_yes@	$(AR) $(AROPTIONS) $@ $(MRL_CRENGINE_OBJECTS)
 @COND_USE_READER_yes@	$(RANLIB) $@
-
-wxsqlite3.cpp: $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
-	patch -o ./wxsqlite3.cpp $(srcdir)/3rdparty/wxsqlite3/src/wxsqlite3.cpp $(srcdir)/sources/WxSQLite3/wxsqlite3.patch
 
 $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT): $(MRL_WXSQLITE3_OBJECTS)
 	rm -f $@
@@ -652,8 +648,8 @@ mrl_crengine_wordfmt.o: $(srcdir)/3rdparty/crengine/src/wordfmt.cpp
 mrl_crengine_xutils.o: $(srcdir)/3rdparty/crengine/src/xutils.cpp
 	$(CXXC) -c -o $@ $(MRL_CRENGINE_CXXFLAGS) $(srcdir)/3rdparty/crengine/src/xutils.cpp
 
-mrl_wxsqlite3_wxsqlite3.o: wxsqlite3.cpp
-	$(CXXC) -c -o $@ $(MRL_WXSQLITE3_CXXFLAGS) wxsqlite3.cpp
+mrl_wxsqlite3_wxsqlite3.o: $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
+	$(CXXC) -c -o $@ $(MRL_WXSQLITE3_CXXFLAGS) $(srcdir)/sources/WxSQLite3/wxsqlite3.cpp
 
 mrl_wxbzip2_bzipstream.o: $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
 	$(CXXC) -c -o $@ $(MRL_WXBZIP2_CXXFLAGS) $(srcdir)/3rdparty/wxbzipstream/bzipstream.cpp
