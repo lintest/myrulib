@@ -18,7 +18,9 @@ class FbMenu: public wxMenu
 		wxMenuItem * AppendImg(int itemid, const wxString& text, const wxArtID& art, const wxString& help = wxEmptyString, wxItemKind kind = wxITEM_NORMAL)
 		{
 			wxMenuItem * item = new wxMenuItem(this, itemid, text, help, kind);
+			#ifndef __WXMAC__
 			item->SetBitmap( wxArtProvider::GetBitmap(art) );
+			#endif
 			return Append(item);
 		}
 

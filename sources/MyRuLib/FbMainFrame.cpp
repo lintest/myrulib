@@ -451,6 +451,40 @@ void FbMainFrame::OnAbout(wxCommandEvent & event)
 	FbAboutDlg(this).ShowModal();
 }
 
+#ifdef __WXMAC__
+
+wxToolBar * FbMainFrame::CreateToolBar()
+{
+    wxToolBar * toolbar = wxFrame::CreateToolBar(wxTB_FLAT, wxID_ANY);
+    toolbar->SetToolBitmapSize(wxSize(16, 16));
+	wxFont font = FbParams(FB_FONT_TOOL);
+
+	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR), _("Import files to the library"));
+	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR), _("Import folder to the library"));
+
+	m_FindAuthor = new wxSearchCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindAuthor->SetDescriptiveText(_("Author"));
+	m_FindAuthor->ShowCancelButton(true);
+	toolbar->AddControl( m_FindAuthor );
+    
+	m_FindTitle = new wxSearchCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+	m_FindTitle->SetDescriptiveText(_("Title"));
+	m_FindTitle->SetFont(font);
+	toolbar->AddControl( m_FindTitle );
+
+	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR), _("Hierarchy of authors and series"));
+	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR), _("Simple list"));
+
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR), _("Export to external device"));
+
+	toolbar->SetFont(font);
+	toolbar->Realize();
+
+	return toolbar;
+}
+
+#else
+
 #ifdef __WXGTK__
 	#define fbART_REPORT_VIEW wxT("gtk-justify-right")
 	#define fbART_LIST_VIEW wxT("gtk-justify-left")
@@ -464,31 +498,36 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	wxString textAuth = _(" Author: ");
 	wxString textBook = _(" Book: ");
 
-	FbToolBar * toolbar = new FbToolBar;
-	toolbar->Create(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT);
+    wxToolBar * toolbar = wxFrame::CreateToolBar(wxTB_FLAT, wxID_ANY);
+    toolbar->SetToolBitmapSize(wxSize(16, 16));
 	wxFont font = FbParams(FB_FONT_TOOL);
 
-	toolbar->AddTool(wxID_NEW, _("Import file"), wxART_NEW, _("Import files to the library"));
-	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxART_FILE_OPEN, _("Import folder to the library"));
+	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
+	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
 
 #ifdef FB_SEARCH_COMBO_CTRL
-	toolbar->AddSeparator();
+//	toolbar->AddSeparator();
 #else
 	textAuth.Prepend(wxT("  "));
 	textBook.Prepend(wxT("  "));
 #endif // __WXMSW__
-
+    
 	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, textAuth, wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
 	toolbar->AddControl( text1 );
 
+	wxSearchCtrl * search = new wxSearchCtrl(toolbar, wxID_ANY);
+	search->ShowCancelButton(true);
+    search->SetDescriptiveText(_("Author"));
+	toolbar->AddControl( search );
+    
 	m_FindAuthor = new FbSearchCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor->SetFont(font);
 	toolbar->AddControl( m_FindAuthor );
 
 #ifdef FB_SEARCH_COMBO_CTRL
-	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxART_FIND, _("Find author"));
+	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
@@ -502,24 +541,26 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddControl( m_FindTitle );
 
 #ifdef FB_SEARCH_COMBO_CTRL
-	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxART_FIND, _("Find book by title"));
+	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
-	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), fbART_REPORT_VIEW, _("Hierarchy of authors and series"));
-	toolbar->AddTool(ID_MODE_LIST, _("List"), fbART_LIST_VIEW, _("Simple list"));
+	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(fbART_REPORT_VIEW), _("Hierarchy of authors and series"));
+	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(fbART_LIST_VIEW), _("Simple list"));
 
 #ifdef FB_SEARCH_COMBO_CTRL
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxART_FILE_SAVE, _("Export to external device"));
-	toolbar->Realize();
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
 
 	toolbar->SetFont(font);
+	toolbar->Realize();
 
 	return toolbar;
 }
+
+#endif // __WXMAC__
 
 void FbMainFrame::OnExit(wxCommandEvent & event)
 {

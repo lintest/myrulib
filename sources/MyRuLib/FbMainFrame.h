@@ -46,8 +46,13 @@ class FbMainFrame : public wxFrame
 		void OpenClss(int code, bool select = true);
 		wxWindow * CreateFrame(wxWindowID id, bool select = false);
 	private:
-		FbSearchCtrl * m_FindAuthor;
-		FbSearchCtrl * m_FindTitle;
+		#ifdef __WXMAC__
+			wxSearchCtrl * m_FindAuthor;
+			wxSearchCtrl * m_FindTitle;
+		#else
+			FbSearchCtrl * m_FindAuthor;
+			FbSearchCtrl * m_FindTitle;
+		#endif
 		ProgressBar * m_ProgressBar;
 		wxAuiManager m_FrameManager;
 		FbAuiNotebook m_FrameNotebook;
