@@ -12,5 +12,7 @@
 	<string>myrulib</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ru</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 </dict>
 </plist>
