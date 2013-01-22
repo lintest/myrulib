@@ -37,11 +37,11 @@ class FbExportTreeModel;
 class FbExportDlg : public FbDialog
 {
 	public:
-		FbExportDlg(wxWindow* parent, const wxString & selections, int iAuthor);
+		FbExportDlg(wxWindow* parent, const wxString & selections, int author);
 		~FbExportDlg();
-		static bool Execute(wxWindow* parent, FbBookPanel * books, int iAuthor = 0);
+		static bool Execute(wxWindow* parent, FbBookPanel * books, int author = 0);
 	private:
-		FbModel * CreateModel();
+		FbModel * CreateModel(int author, const wxString &structure);
 		void FullBySequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		void FullNoSequences(wxTreeItemId root, const wxString &selections, bool bUseLetter);
 		wxTreeItemId AppendFolder(const wxTreeItemId &parent, const wxString & name);
@@ -59,7 +59,7 @@ class FbExportDlg : public FbDialog
 	private:
 		enum
 		{
-			ID_DIR_TXT = 1000,
+			ID_DIR_TXT = wxID_HIGHEST + 1,
 			ID_STRUCT,
 			ID_BOOKS,
 			ID_FORMAT,

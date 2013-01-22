@@ -14,17 +14,19 @@
 
 BEGIN_EVENT_TABLE( FbExportDlg, wxDialog )
 	EVT_BUTTON( ID_DIR_TXT, FbExportDlg::OnSelectDir )
-	EVT_CHOICE( wxID_ANY, FbExportDlg::OnChangeFormat )
+	EVT_CHOICE( ID_FORMAT, FbExportDlg::OnChangeFormat )
 	EVT_CHECKBOX( ID_AUTHOR, FbExportDlg::OnCheckAuthor )
 	EVT_CHECKBOX( ID_DIR, FbExportDlg::OnChangeFormat )
 	EVT_CHECKBOX( ID_FILE, FbExportDlg::OnChangeFormat )
+	EVT_COMBOBOX( ID_STRUCT, FbExportDlg::OnCheckAuthor )
 	EVT_TEXT( ID_STRUCT, FbExportDlg::OnCheckAuthor )
 END_EVENT_TABLE()
 
-FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAuthor) :
+FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int author) :
 	FbDialog( parent, wxID_ANY, _("Export to external storage"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER ),
 	m_selections(selections),
-	m_author(iAuthor),
+	m_author(author),
+	m_struct(NULL),
 	m_checkAuthor(NULL)
 {
 	SetSizeHints( wxDefaultSize, wxDefaultSize );
@@ -71,7 +73,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	bSizerMain->Add( bSizerTrans, 0, wxEXPAND, 5 );
 
-	if (iAuthor) {
+	if (author) {
 		m_checkAuthor = new wxCheckBox( this, ID_AUTHOR, _("Use Author (without co-Authors)"));
 		bSizerMain->Add( m_checkAuthor, 0, wxALL, 5 );
 		m_checkAuthor->SetValue(1);
@@ -112,7 +114,7 @@ FbExportDlg::FbExportDlg( wxWindow* parent, const wxString & selections, int iAu
 
 	LoadFormats();
 
-	m_books->AssignModel(CreateModel());
+	m_books->AssignModel(CreateModel(author, structure));
 }
 
 FbExportDlg::~FbExportDlg()
@@ -218,7 +220,7 @@ bool FbExportDlg::ExportBooks()
 	return true;
 }
 
-bool FbExportDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
+bool FbExportDlg::Execute(wxWindow* parent, FbBookPanel * books, int author)
 {
 	wxString selections = books->GetSelected();
 
@@ -227,20 +229,22 @@ bool FbExportDlg::Execute(wxWindow* parent, FbBookPanel * books, int iAuthor)
 		return false;
 	}
 
-	FbExportDlg dlg(parent, selections, iAuthor);
+	FbExportDlg dlg(parent, selections, author);
 	return (dlg.ShowModal() == wxID_OK) && dlg.ExportBooks();
 }
 
 void FbExportDlg::OnCheckAuthor( wxCommandEvent& event )
 {
-	m_books->AssignModel(CreateModel());
-}
-
-FbModel * FbExportDlg::CreateModel()
-{
+	if (!m_struct) return;
 	int author = 0;
 	if ( m_checkAuthor && m_checkAuthor->GetValue() ) author = m_author;
-	FbExportTreeModel * model = new FbExportTreeModel(m_selections, m_struct->GetValue(), author);
+	wxString structure = m_struct->GetValue();
+	m_books->AssignModel(CreateModel(author, structure));
+}
+
+FbModel * FbExportDlg::CreateModel(int author, const wxString &structure)
+{
+	FbExportTreeModel * model = new FbExportTreeModel(m_selections, structure, author);
 	ChangeFormat(model);
 	model->Create();
 	return model;
