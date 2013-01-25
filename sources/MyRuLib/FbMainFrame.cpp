@@ -5,6 +5,7 @@
 #include <wx/dcclient.h>
 #include <wx/tokenzr.h>
 #include <wx/wupdlock.h>
+#include <wx/stdpaths.h>
 #include "FbConst.h"
 #include "MyRuLibApp.h"
 #include "dialogs/FbParamsDlg.h"
@@ -458,9 +459,10 @@ wxToolBar * FbMainFrame::CreateToolBar()
     wxToolBar * toolbar = wxFrame::CreateToolBar(wxTB_FLAT, wxID_ANY);
     toolbar->SetToolBitmapSize(wxSize(16, 16));
 	wxFont font = FbParams(FB_FONT_TOOL);
-
-	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR), _("Import files to the library"));
-	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR), _("Import folder to the library"));
+	
+	wxString path = wxStandardPaths::Get().GetResourcesDir() + wxT("/");
+	toolbar->AddTool(wxID_NEW, _("Import file"), wxBitmap(path + wxT("document-new.png"), wxBITMAP_TYPE_PNG), _("Import files to the library"));
+	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxBitmap(path + wxT("document-open.png"), wxBITMAP_TYPE_PNG), _("Import folder to the library"));
 
 	m_FindAuthor = new wxSearchCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor->SetDescriptiveText(_("Author"));
@@ -472,10 +474,10 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindTitle->SetFont(font);
 	toolbar->AddControl( m_FindTitle );
 
-	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR), _("Hierarchy of authors and series"));
-	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR), _("Simple list"));
+	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxBitmap(path + wxT("format-justify-right.png"), wxBITMAP_TYPE_PNG), _("Hierarchy of authors and series"));
+	toolbar->AddTool(ID_MODE_LIST, _("List"), wxBitmap(path + wxT("format-justify-left.png"), wxBITMAP_TYPE_PNG), _("Simple list"));
 
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR), _("Export to external device"));
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxBitmap(path + wxT("document-save.png"), wxBITMAP_TYPE_PNG), _("Export to external device"));
 
 	toolbar->SetFont(font);
 	toolbar->Realize();
