@@ -502,7 +502,7 @@ static LVFontGlyphCacheItem * newItem( LVFontLocalGlyphCache * local_cache, lCha
     lUInt8 w = (lUInt8)(bitmap->width);
     lUInt8 h = (lUInt8)(bitmap->rows);
     LVFontGlyphCacheItem * item = LVFontGlyphCacheItem::newItem(local_cache, ch, w, h );
-    if ( bitmap->pixel_mode==FT_PIXEL_MODE_MONO ) { //drawMonochrome
+    if ( FT_Pixel_Mode(bitmap->pixel_mode)==FT_PIXEL_MODE_MONO ) { //drawMonochrome
         lUInt8 mask = 0x80;
         const lUInt8 * ptr = (const lUInt8 *)bitmap->buffer;
         lUInt8 * dst = item->bmp;
