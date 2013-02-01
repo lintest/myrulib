@@ -101,14 +101,16 @@ typedef struct
    union {
           /// for text word
        struct {
-           lUInt16  start;           /**< \brief 02 position of word in source text */
-           lUInt16  len;             /**< \brief 04 number of chars in word */
+           lUInt16  start;           /**< \brief 12 position of word in source text */
+           lUInt16  len;             /**< \brief 14 number of chars in word */
        } t;
        /// for object
        struct {
-           lUInt16  height;           /**< \brief 02 height of image */
+           lUInt16  height;           /**< \brief 12 height of image */
        } o;
    };
+   lUInt16 min_width;        /**< \brief 16 index of source text line */
+   lUInt16 padding;          /**< \brief 18 not used */
 } formatted_word_t;
 
 /// can add space after this word
@@ -131,7 +133,7 @@ typedef struct
 typedef struct
 {
    formatted_word_t * words;       /**< array of words */
-   lUInt32            word_count;  /**< number of words */
+   lInt32             word_count;  /**< number of words */
    lUInt32            y;           /**< start y position of line */
    lUInt16            x;           /**< start x position */
    lUInt16            width;       /**< width */
@@ -141,14 +143,37 @@ typedef struct
    lUInt8             align;       /**< alignment */
 } formatted_line_t;
 
+/** \brief Bookmark highlight modes.
+*/
+enum {
+    highlight_mode_none = 0,
+    highlight_mode_solid = 1,
+    highlight_mode_underline = 2
+};
+
+/** \brief Text highlight options for selection, bookmarks, etc.
+*/
+struct text_highlight_options_t {
+    lUInt32 selectionColor;    /**< selection color */
+    lUInt32 commentColor;      /**< comment bookmark color */
+    lUInt32 correctionColor;   /**< correction bookmark color */
+    int bookmarkHighlightMode; /**< bookmark highlight mode: 0=no highlight, 1=solid fill, 2=underline */
+    text_highlight_options_t() {
+        selectionColor = 0x80AAAAAA;
+        commentColor = 0xC0FFFF00;
+        correctionColor = 0xC0FF8000;
+        bookmarkHighlightMode = highlight_mode_solid;
+    }
+};
+
 /** \brief Text formatter container
 */
 typedef struct
 {
    src_text_fragment_t * srctext;       /**< source text lines */
-   lUInt32               srctextlen;    /**< number of source text lines */
+   lInt32                srctextlen;    /**< number of source text lines */
    formatted_line_t   ** frmlines;      /**< formatted lines */
-   lUInt32               frmlinecount;  /**< formatted lines count*/
+   lInt32                frmlinecount;  /**< formatted lines count*/
    lUInt32               height;        /**< height of text fragment */
    lUInt16               width;         /**< width of text fragment */
    lUInt16               page_height;   /**< max page height */
@@ -160,6 +185,8 @@ typedef struct
    lInt32                img_zoom_out_scale_block; /**< max scale for block images zoom out: 1, 2, 3 */
    lInt32                img_zoom_out_mode_inline; /**< can zoom out inline images: 0=disabled, 1=integer scale, 2=free scale */
    lInt32                img_zoom_out_scale_inline; /**< max scale for inline images zoom out: 1, 2, 3 */
+   lInt32                min_space_condensing_percent; /**< min size of space (relative to normal size) to allow fitting line by reducing of spaces */
+   text_highlight_options_t highlight_options; /**< options for selection/bookmark highlighting */
 } formatted_text_fragment_t;
 
 /**  Alloc & init formatted text buffer
@@ -227,7 +254,14 @@ private:
 public:
     formatted_text_fragment_t * GetBuffer() { return m_pbuffer; }
 
+    /// set image scaling options
     void setImageScalingOptions( img_scaling_options_t * options );
+
+    /// set space condensing line fitting option (25..100%)
+    void setMinSpaceCondensingPercent(int minSpaceWidthPercent);
+
+    /// set colors for selection and bookmarks
+    void setHighlightOptions(text_highlight_options_t * options);
 
     void Clear()
     { 

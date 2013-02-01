@@ -44,6 +44,9 @@ public:
 		const LVHashTable & _tbl;
 		int index;
 		pair * ptr;
+		iterator & operator = (iterator &) {
+			// no assignment
+		}
 	public:
 		iterator( const LVHashTable & table )
 			: _tbl( table ), index(0), ptr(NULL)
@@ -110,20 +113,20 @@ public:
     {
         pair ** new_table = new pair * [ nsize ];
         memset( new_table, 0, sizeof(pair*) * nsize );
-        for ( int i=0; i<_size; i++ )
-        {
-            pair * p = _table[i];
-            while ( p  )
-            {
-                lUInt32 index = getHash( p->key ) % ( nsize );
-                new_table[index] = new pair( p->key, p->value, new_table[index] );
-                pair * tmp = p;
-                p = p->next;
-                delete tmp;
-            }
-        }
-        if (_table)
+		if (_table) {
+			for ( int i=0; i<_size; i++ ) {
+				pair * p = _table[i];
+				while ( p  )
+				{
+					lUInt32 index = getHash( p->key ) % ( nsize );
+					new_table[index] = new pair( p->key, p->value, new_table[index] );
+					pair * tmp = p;
+					p = p->next;
+					delete tmp;
+				}
+			}
             delete[] _table;
+		}
         _table = new_table;
         _size = nsize;
 

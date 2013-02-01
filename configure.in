@@ -331,6 +331,16 @@ else
 fi
 AC_SUBST(STRIP_COMMAND)
 
+dnl ==================
+dnl === WX_MACPORT ===
+dnl ==================
+
+if test "$WX_MACPORT" != "0"; then 
+  MACOS_COMMAND=""
+else
+  MACOS_COMMAND=""
+fi
+
 dnl =================
 
 AC_CONFIG_FILES([Makefile])

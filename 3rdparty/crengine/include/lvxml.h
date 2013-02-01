@@ -72,7 +72,7 @@ public:
     /// add named BLOB data to document
     virtual bool OnBlob(lString16 name, const lUInt8 * data, int size) = 0;
     /// call to set document property
-    virtual void OnDocProperty(const char * name, lString8 value) { }
+    virtual void OnDocProperty(const char * /*name*/, lString8 /*value*/) { }
     /// destructor
     virtual ~LVXMLParserCallback() {}
 };
@@ -94,6 +94,8 @@ public:
 
 /// converts XML text: decode character entities, convert space chars
 void PreProcessXmlString( lString16 & s, lUInt32 flags, const lChar16 * enc_table=NULL );
+/// converts XML text in-place: decode character entities, convert space chars, returns new length of string
+int PreProcessXmlString(lChar16 * str, int len, lUInt32 flags, const lChar16 * enc_table = NULL);
 
 #define MAX_PERSISTENT_BUF_SIZE 16384
 
@@ -106,7 +108,7 @@ public:
     /// returns pointer to loading progress callback object
     virtual LVDocViewCallback * getProgressCallback() { return NULL; }
     /// sets pointer to loading progress callback object
-    virtual void setProgressCallback( LVDocViewCallback * callback ) { }
+    virtual void setProgressCallback( LVDocViewCallback * /*callback*/ ) { }
     /// returns true if format is recognized by parser
     virtual bool CheckFormat() = 0;
     /// parses input stream
@@ -425,5 +427,7 @@ public:
 lString16 LVReadTextFile( LVStreamRef stream );
 /// read file contents to string
 lString16 LVReadTextFile( lString16 filename );
+
+LVStreamRef GetFB2Coverpage(LVStreamRef stream);
 
 #endif // __LVXML_H_INCLUDED__

@@ -16,11 +16,38 @@
 #include "../include/fb2def.h"
 #include "../include/lvdocview.h"
 
+typedef struct {
+   unsigned short indx; /* index into big table */
+   unsigned short used; /* bitmask of used entries */
+} Summary16;
+
+typedef unsigned int ucs4_t;
+#if GBK_ENCODING_SUPPORT == 1
+#include "../include/encodings/gbkext1.h"
+#include "../include/encodings/gbkext2.h"
+#include "../include/encodings/gb2312.h"
+#include "../include/encodings/cp936ext.h"
+#endif
+#if JIS_ENCODING_SUPPORT == 1
+#include "../include/encodings/jisx0213.h"
+#endif
+#if BIG5_ENCODING_SUPPORT == 1
+#include "../include/encodings/big5.h"
+#include "../include/encodings/big5_2003.h"
+#endif
+#if EUC_KR_ENCODING_SUPPORT == 1
+#include "../include/encodings/ksc5601.h"
+#endif
 
 #define BUF_SIZE_INCREMENT 4096
 #define MIN_BUF_DATA_SIZE 4096
-#define CP_AUTODETECT_BUF_SIZE 0x10000
+#define CP_AUTODETECT_BUF_SIZE 0x20000
 
+
+
+int CalcTabCount(const lChar16 * str, int nlen);
+void ExpandTabs(lString16 & s);
+void ExpandTabs(lString16 & buf, const lChar16 * str, int len);
 
 /// virtual destructor
 LVFileFormatParser::~LVFileFormatParser()
@@ -106,10 +133,10 @@ int LVFileParserBase::getProgressPercent()
 lString16 LVFileParserBase::getFileName()
 {
     if ( m_stream.isNull() )
-        return lString16();
+        return lString16::empty_str;
     lString16 name( m_stream->GetName() );
     int lastPathDelim = -1;
-    for ( unsigned i=0; i<name.length(); i++ ) {
+    for ( int i=0; i<name.length(); i++ ) {
         if ( name[i]=='\\' || name[i]=='/' ) {
             lastPathDelim = i;
         }
@@ -192,66 +219,6 @@ lChar16 LVTextFileBase::ReadRtfChar( int, const lChar16 * conv_table )
     return ' ';
 }
 
-#if 0
-lChar16 LVTextFileBase::ReadChar()
-{
-    lUInt16 ch = m_buf[m_buf_pos++];
-    switch ( m_enc_type ) {
-    case ce_8bit_cp:
-    case ce_utf8:
-        if ( (ch & 0x80) == 0 )
-            return ch;
-        if (m_conv_table)
-        {
-            return m_conv_table[ch&0x7F];
-        }
-        else
-        {
-            // support only 11 and 16 bit UTF8 chars
-            if ( (ch & 0xE0) == 0xC0 )
-            {
-                // 11 bits
-                return ((lUInt16)(ch&0x1F)<<6)
-                    | ((lUInt16)m_buf[m_buf_pos++]&0x3F);
-            } else {
-                // 16 bits
-                ch = (ch&0x0F);
-                lUInt16 ch2 = (m_buf[m_buf_pos++]&0x3F);
-                lUInt16 ch3 = (m_buf[m_buf_pos++]&0x3F);
-                return (ch<<12) | (ch2<<6) | ch3;
-            }
-        }
-    case ce_utf16_be:
-        {
-            lUInt16 ch2 = m_buf[m_buf_pos++];
-            return (ch << 8) | ch2;
-        }
-    case ce_utf16_le:
-        {
-            lUInt16 ch2 = m_buf[m_buf_pos++];
-            return (ch2 << 8) | ch;
-        }
-    case ce_utf32_be:
-        // support 16 bits only
-        m_buf_pos++;
-        {
-            lUInt16 ch3 = m_buf[m_buf_pos++];
-            lUInt16 ch4 = m_buf[m_buf_pos++];
-            return (ch3 << 8) | ch4;
-        }
-    case ce_utf32_le:
-        // support 16 bits only
-        {
-            lUInt16 ch2 = m_buf[m_buf_pos++];
-            m_buf_pos+=2;
-            return (ch << 8) | ch2;
-        }
-    default:
-        return 0;
-    }
-}
-#endif
-
 void LVTextFileBase::checkEof()
 {
     if ( m_buf_fpos+m_buf_len >= this->m_stream_size-4 )
@@ -259,11 +226,165 @@ void LVTextFileBase::checkEof()
         //m_buf_pos = m_buf_len = m_stream_size - (m_buf_fpos+m_buf_len);
 }
 
+#if GBK_ENCODING_SUPPORT == 1
+// based on code from libiconv
+static lChar16 cr3_gb2312_mbtowc(const unsigned char *s)
+{
+    unsigned char c1 = s[0];
+    if ((c1 >= 0x21 && c1 <= 0x29) || (c1 >= 0x30 && c1 <= 0x77)) {
+        unsigned char c2 = s[1];
+        if (c2 >= 0x21 && c2 < 0x7f) {
+            unsigned int i = 94 * (c1 - 0x21) + (c2 - 0x21);
+            if (i < 1410) {
+                if (i < 831)
+                    return gb2312_2uni_page21[i];
+            } else {
+                if (i < 8178)
+                    return gb2312_2uni_page30[i-1410];
+            }
+        }
+    }
+    return 0;
+}
+
+// based on code from libiconv
+static lChar16 cr3_cp936ext_mbtowc (const unsigned char *s)
+{
+    unsigned char c1 = s[0];
+    if ((c1 == 0xa6) || (c1 == 0xa8)) {
+        unsigned char c2 = s[1];
+        if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xff)) {
+            unsigned int i = 190 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
+            if (i < 7410) {
+                if (i >= 7189 && i < 7211)
+                    return cp936ext_2uni_pagea6[i-7189];
+            } else {
+                if (i >= 7532 && i < 7538)
+                    return cp936ext_2uni_pagea8[i-7532];
+            }
+        }
+    }
+    return 0;
+}
+
+// based on code from libiconv
+static lChar16 cr3_gbkext1_mbtowc (lChar16 c1, lChar16 c2)
+{
+    if ((c1 >= 0x81 && c1 <= 0xa0)) {
+        if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xff)) {
+        unsigned int i = 190 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
+        if (i < 6080)
+            return gbkext1_2uni_page81[i];
+        }
+    }
+    return 0;
+}
+
+// based on code from libiconv
+static lChar16 cr3_gbkext2_mbtowc(lChar16 c1, lChar16 c2)
+{
+    if ((c1 >= 0xa8 && c1 <= 0xfe)) {
+        if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xa1)) {
+            unsigned int i = 96 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
+            if (i < 12016)
+                return gbkext2_2uni_pagea8[i-3744];
+        }
+    }
+    return 0;
+}
+#endif
+
+#if JIS_ENCODING_SUPPORT == 1
+// based on code from libiconv
+static lChar16 cr3_jisx0213_to_ucs4(unsigned int row, unsigned int col)
+{
+    lChar16 val;
+
+    if (row >= 0x121 && row <= 0x17e)
+        row -= 289;
+    else if (row == 0x221)
+        row -= 451;
+    else if (row >= 0x223 && row <= 0x225)
+        row -= 452;
+    else if (row == 0x228)
+        row -= 454;
+    else if (row >= 0x22c && row <= 0x22f)
+        row -= 457;
+    else if (row >= 0x26e && row <= 0x27e)
+        row -= 519;
+    else
+        return 0x0000;
+
+    if (col >= 0x21 && col <= 0x7e)
+        col -= 0x21;
+    else
+        return 0x0000;
+
+    val = (lChar16)jisx0213_to_ucs_main[row * 94 + col];
+    val = (lChar16)jisx0213_to_ucs_pagestart[val >> 8] + (val & 0xff);
+    if (val == 0xfffd)
+        val = 0x0000;
+    return val;
+}
+#endif
+
+#if BIG5_ENCODING_SUPPORT == 1
+// based on code from libiconv
+static lUInt16 cr3_big5_mbtowc(lChar16 c1, lChar16 c2)
+{
+    if ((c1 >= 0xa1 && c1 <= 0xc7) || (c1 >= 0xc9 && c1 <= 0xf9)) {
+        if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0xa1 && c2 < 0xff)) {
+            unsigned int i = 157 * (c1 - 0xa1) + (c2 - (c2 >= 0xa1 ? 0x62 : 0x40));
+            unsigned short wc = 0xfffd;
+            if (i < 6280) {
+                if (i < 6121)
+                    wc = big5_2uni_pagea1[i];
+            } else {
+                if (i < 13932)
+                    wc = big5_2uni_pagec9[i-6280];
+            }
+            if (wc != 0xfffd) {
+                return wc;
+            }
+        }
+    }
+    return 0;
+}
+
+#endif
+
+#if EUC_KR_ENCODING_SUPPORT == 1
+// based on code from libiconv
+static lChar16 cr3_ksc5601_mbtowc(lChar16 c1, lChar16 c2)
+{
+    if ((c1 >= 0x21 && c1 <= 0x2c) || (c1 >= 0x30 && c1 <= 0x48) || (c1 >= 0x4a && c1 <= 0x7d)) {
+        if (c2 >= 0x21 && c2 < 0x7f) {
+            unsigned int i = 94 * (c1 - 0x21) + (c2 - 0x21);
+            unsigned short wc = 0xfffd;
+            if (i < 1410) {
+                if (i < 1115)
+                    wc = ksc5601_2uni_page21[i];
+            } else if (i < 3854) {
+                if (i < 3760)
+                    wc = ksc5601_2uni_page30[i-1410];
+            } else {
+                if (i < 8742)
+                    wc = ksc5601_2uni_page4a[i-3854];
+            }
+            if (wc != 0xfffd) {
+                return wc;
+            }
+        }
+    }
+    return 0;
+}
+#endif
+
 
 /// reads several characters from buffer
 int LVTextFileBase::ReadChars( lChar16 * buf, int maxsize )
 {
-    if ( m_buf_pos>=m_buf_len )
+    if (m_buf_pos >= m_buf_len)
         return 0;
     int count = 0;
     switch ( m_enc_type ) {
@@ -276,67 +397,14 @@ int LVTextFileBase::ReadChars( lChar16 * buf, int maxsize )
             }
             return count;
         } else  {
-            for ( ; count<maxsize && m_buf_pos<m_buf_len; count++ ) {
-                lUInt16 ch = m_buf[m_buf_pos];
-                // support only 11 and 16 bit UTF8 chars
-                if ( (ch & 0x80) == 0 ) {
-                    buf[count] = ch;
-                    m_buf_pos++;
-                } else if ( (ch & 0xE0) == 0xC0 ) {
-                    // 11 bits
-                    if ( m_buf_pos+1>=m_buf_len ) {
-                        checkEof();
-                        return count;
-                    }
-                    ch = (ch&0x1F);
-#ifdef _DEBUG
-//#define CHECK_UTF8_CODE 1
-#endif
-#if CHECK_UTF8_CODE==1
-                    if ( (m_buf[m_buf_pos+1] & 0xC0) != 0x80 ) {
-                        CRLog::error("Wrong utf8 character at position %08x", (int)(m_buf_fpos+m_buf_pos));
-                    }
-#endif
-                    m_buf_pos++;
-                    lUInt16 ch2 = m_buf[m_buf_pos++]&0x3F;
-                    buf[count] = (ch<<6) | ch2;
-                    //buf[count] = ((lUInt16)(ch&0x1F)<<6) | ((lUInt16)m_buf[m_buf_pos++]&0x3F);
-                } else if ( (ch & 0xF0) == 0xE0 ) {
-                    // 16 bits
-                    if ( m_buf_pos+2>=m_buf_len ) {
-                        checkEof();
-                        return count;
-                    }
-                    ch = (ch&0x0F);
-#if CHECK_UTF8_CODE==1
-                    if ( (m_buf[m_buf_pos+1] & 0xC0) != 0x80 || (m_buf[m_buf_pos+2] & 0xC0) != 0x80 ) {
-                        CRLog::error("Wrong utf8 character at position %08x", (int)(m_buf_fpos+m_buf_pos));
-                    }
-#endif
-                    m_buf_pos++;
-                    lUInt16 ch2 = m_buf[m_buf_pos++]&0x3F;
-                    lUInt16 ch3 = m_buf[m_buf_pos++]&0x3F;
-                    buf[count] = (ch<<12) | (ch2<<6) | ch3;
-                } else {
-                    // 20 bits
-                    if ( m_buf_pos+3>=m_buf_len ) {
-                        checkEof();
-                        return count;
-                    }
-                    ch = (ch&0x07);
-#if CHECK_UTF8_CODE==1
-                    if ( (m_buf[m_buf_pos+1] & 0xC0) != 0x80 || (m_buf[m_buf_pos+2] & 0xC0) != 0x80  || (m_buf[m_buf_pos+3] & 0xC0) != 0x80 ) {
-                        CRLog::error("Wrong utf8 character at position %08x", (int)(m_buf_fpos+m_buf_pos));
-                    }
-#endif
-                    m_buf_pos++;
-                    lUInt16 ch2 = m_buf[m_buf_pos++]&0x3F;
-                    lUInt16 ch3 = m_buf[m_buf_pos++]&0x3F;
-                    lUInt16 ch4 = m_buf[m_buf_pos++]&0x3F;
-                    buf[count] = ((lChar16)ch<<18) | (ch2<12) | (ch3<<6) | ch4;
-                }
+            int srclen = m_buf_len - m_buf_pos;
+            int dstlen = maxsize;
+            Utf8ToUnicode(m_buf + m_buf_pos, srclen, buf, dstlen);
+            m_buf_pos += srclen;
+            if (dstlen == 0) {
+                checkEof();
             }
-            return count;
+            return dstlen;
         }
     case ce_utf16_be:
         {
@@ -351,6 +419,319 @@ int LVTextFileBase::ReadChars( lChar16 * buf, int maxsize )
             }
             return count;
         }
+
+#if GBK_ENCODING_SUPPORT == 1
+    case ce_gbk:
+    {
+        // based on ICONV code, gbk.h
+        for ( ; count<maxsize; count++ ) {
+            if (m_buf_pos >= m_buf_len) {
+                checkEof();
+                return count;
+            }
+            lUInt16 ch = m_buf[m_buf_pos++];
+            int twoBytes = ch >= 0x81 && ch < 0xFF ? 1 : 0;
+            if ( m_buf_pos + twoBytes>=m_buf_len ) {
+                checkEof();
+                return count;
+            }
+            lUInt16 ch2 = 0;
+            if (twoBytes)
+                ch2 = m_buf[m_buf_pos++];
+            lUInt16 res = twoBytes ? 0 : ch;
+            if (res == 0 && ch >= 0xa1 && ch <= 0xf7) {
+                if (ch == 0xa1) {
+                    if (ch2 == 0xa4) {
+                        res = 0x00b7;
+                    }
+                    if (ch2 == 0xaa) {
+                        res = 0x2014;
+                    }
+                }
+                if (ch2 >= 0xa1 && ch2 < 0xff) {
+                    unsigned char buf[2];
+                    buf[0] = (lUInt8)(ch - 0x80); 
+					buf[1] = (lUInt8)(ch2 - 0x80);
+                    res = cr3_gb2312_mbtowc(buf);
+                    if (!res)
+                        res = cr3_cp936ext_mbtowc(buf);
+                }
+            }
+            if (res == 0 && ch >= 0x81 && ch <= 0xa0)
+                res = cr3_gbkext1_mbtowc(ch, ch2);
+            if (res == 0 && ch >= 0xa8 && ch <= 0xfe)
+                res = cr3_gbkext2_mbtowc(ch, ch2);
+            if (res == 0 && ch == 0xa2) {
+                if (ch2 >= 0xa1 && ch2 <= 0xaa) {
+                    res = 0x2170 + (ch2 - 0xa1);
+                }
+            }
+            if (res == 0)
+                res = '?'; // replace invalid chars with ?
+            buf[count] = res;
+        }
+        return count;
+    }
+#endif
+#if JIS_ENCODING_SUPPORT == 1
+    case ce_shift_jis:
+    {
+        // based on ICONV code, gbk.h
+        for ( ; count < maxsize - 1; count++ ) {
+            if (m_buf_pos >= m_buf_len) {
+                checkEof();
+                return count;
+            }
+            lUInt16 ch = m_buf[m_buf_pos++];
+            lUInt16 res = 0;
+            if (ch < 0x80) {
+                /* Plain ISO646-JP character. */
+                if (ch == 0x5c)
+                    res = 0x00a5;
+                else if (ch == 0x7e)
+                    res = 0x203e;
+                else
+                    res = ch;
+            } else if (ch >= 0xa1 && ch <= 0xdf) {
+                res = ch + 0xfec0;
+            } else {
+                if ((ch >= 0x81 && ch <= 0x9f) || (ch >= 0xe0 && ch <= 0xfc)) {
+                    /* Two byte character. */
+                    if (m_buf_pos + 1 >= m_buf_len) {
+                        checkEof();
+                        return count;
+                    }
+                    lUInt16 ch2 = 0;
+                    ch2 = m_buf[m_buf_pos++];
+                    if ((ch2 >= 0x40 && ch2 <= 0x7e) || (ch2 >= 0x80 && ch2 <= 0xfc)) {
+                        lChar16 ch1;
+                        /* Convert to row and column. */
+                        if (ch < 0xe0)
+                            ch -= 0x81;
+                        else
+                            ch -= 0xc1;
+                        if (ch2 < 0x80)
+                            ch2 -= 0x40;
+                        else
+                            ch2 -= 0x41;
+                        /* Now 0 <= ch <= 0x3b, 0 <= ch2 <= 0xbb. */
+                        ch1 = 2 * ch;
+                        if (ch2 >= 0x5e)
+                            ch2 -= 0x5e, ch1++;
+                        ch2 += 0x21;
+                        if (ch1 >= 0x5e) {
+                            /* Handling of JISX 0213 plane 2 rows. */
+                            if (ch1 >= 0x67)
+                                ch1 += 230;
+                            else if (ch1 >= 0x63 || ch1 == 0x5f)
+                                ch1 += 168;
+                            else
+                                ch1 += 162;
+                        }
+                        lChar16 wc = cr3_jisx0213_to_ucs4(0x121+ch1, ch2);
+                        if (wc) {
+                            if (wc < 0x80) {
+                                /* It's a combining character. */
+                                lChar16 wc1 = jisx0213_to_ucs_combining[wc - 1][0];
+                                lChar16 wc2 = jisx0213_to_ucs_combining[wc - 1][1];
+                                buf[count++] = wc1;
+                                res = wc2;
+                            } else
+                                res = wc;
+                        }
+                    }
+                }
+            }
+
+
+            if (res == 0)
+                res = '?'; // replace invalid chars with ?
+            buf[count] = res;
+        }
+        return count;
+    }
+    case ce_euc_jis:
+    {
+        // based on ICONV code, gbk.h
+        for ( ; count < maxsize-1; count++ ) {
+            lUInt16 ch = m_buf[m_buf_pos++];
+            lUInt16 res = 0;
+            if (ch < 0x80) {
+                /* Plain ASCII character. */
+                res = ch;
+            } else {
+                if ((ch >= 0xa1 && ch <= 0xfe) || ch == 0x8e || ch == 0x8f) {
+                    /* Two byte character. */
+                    if (m_buf_pos + 1 >= m_buf_len) {
+                        checkEof();
+                        return count;
+                    }
+                    lUInt16 ch2 = m_buf[m_buf_pos++];
+                    if (ch2 >= 0xa1 && ch2 <= 0xfe && ch == 0x8f && m_buf_pos + 2 >= m_buf_len) {
+                        checkEof();
+                        return count;
+                    }
+
+                    if (ch2 >= 0xa1 && ch2 <= 0xfe) {
+                        if (ch == 0x8e) {
+                            /* Half-width katakana. */
+                            if (ch2 <= 0xdf) {
+                              res = ch2 + 0xfec0;
+                            }
+                        } else {
+                            lChar16 wc;
+                            if (ch == 0x8f) {
+                                /* JISX 0213 plane 2. */
+                                lUInt16 ch3 = m_buf[m_buf_pos++];
+                                wc = cr3_jisx0213_to_ucs4(0x200-0x80+ch2,ch3^0x80);
+                            } else {
+                                /* JISX 0213 plane 1. */
+                                wc = cr3_jisx0213_to_ucs4(0x100-0x80+ch,ch2^0x80);
+                            }
+                            if (wc) {
+                                if (wc < 0x80) {
+                                    /* It's a combining character. */
+                                    ucs4_t wc1 = jisx0213_to_ucs_combining[wc - 1][0];
+                                    ucs4_t wc2 = jisx0213_to_ucs_combining[wc - 1][1];
+                                    /* We cannot output two Unicode characters at once. So,
+                                       output the first character and buffer the second one. */
+                                    buf[count++] = (lChar16)wc1;
+                                    res = (lChar16)wc2;
+                                } else
+                                    res = (lChar16)wc;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (res == 0)
+                res = '?'; // replace invalid chars with ?
+            buf[count] = res;
+        }
+        return count;
+    }
+#endif
+#if BIG5_ENCODING_SUPPORT == 1
+    case ce_big5:
+    {
+        // based on ICONV code, gbk.h
+        for ( ; count < maxsize - 1; count++ ) {
+            if (m_buf_pos >= m_buf_len) {
+                checkEof();
+                return count;
+            }
+            lUInt16 ch = m_buf[m_buf_pos++];
+            lUInt16 res = 0;
+            /* Code set 0 (ASCII) */
+            if (ch < 0x80) {
+                res = ch;
+            } else if (ch >= 0x81 && ch < 0xff) {
+                /* Code set 1 (BIG5 extended) */
+                {
+                    if (m_buf_pos + 1 >= m_buf_len) {
+                        checkEof();
+                        return count;
+                    }
+                    lUInt16 ch2 = m_buf[m_buf_pos++];
+                    if ((ch2 >= 0x40 && ch2 < 0x7f) || (ch2 >= 0xa1 && ch2 < 0xff)) {
+                        if (ch >= 0xa1) {
+                            if (ch < 0xa3) {
+                                unsigned int i = 157 * (ch - 0xa1) + (ch2 - (ch2 >= 0xa1 ? 0x62 : 0x40));
+                                lChar16 wc = big5_2003_2uni_pagea1[i];
+                                if (wc != 0xfffd) {
+                                    res = wc;
+                                }
+                            }
+                            if (!((ch == 0xc6 && ch2 >= 0xa1) || ch == 0xc7)) {
+                                if (!(ch == 0xc2 && ch2 == 0x55)) {
+                                    res = cr3_big5_mbtowc(ch, ch2);
+                                    if (!res) {
+                                        if (ch == 0xa3) {
+                                            if (ch2 >= 0xc0 && ch2 <= 0xe1) {
+                                                res = (ch2 == 0xe1 ? 0x20ac : ch2 == 0xe0 ? 0x2421 : 0x2340 + ch2);
+                                            }
+                                        } else if (ch == 0xf9) {
+                                            if (ch2 >= 0xd6) {
+                                                res = big5_2003_2uni_pagef9[ch2-0xd6];
+                                            }
+                                        } else if (ch >= 0xfa) {
+                                            res = 0xe000 + 157 * (ch - 0xfa) + (ch2 - (ch2 >= 0xa1 ? 0x62 : 0x40));
+                                        }
+                                    }
+                                } else {
+                                    /* c == 0xc2 && c2 == 0x55. */
+                                    res = 0x5f5e;
+                                }
+                            } else {
+                                /* (c == 0xc6 && c2 >= 0xa1) || c == 0xc7. */
+                                unsigned int i = 157 * (ch - 0xc6) + (ch2 - (ch2 >= 0xa1 ? 0x62 : 0x40));
+                                if (i < 133) {
+                                    /* 63 <= i < 133. */
+                                    lChar16 wc = big5_2003_2uni_pagec6[i-63];
+                                    if (wc != 0xfffd) {
+                                        res = wc;
+                                    }
+                                } else if (i < 216) {
+                                    /* 133 <= i < 216. Hiragana. */
+                                    res = (lChar16)(0x3041 - 133 + i);
+                                } else if (i < 302) {
+                                    /* 216 <= i < 302. Katakana. */
+                                    res = (lChar16)(0x30a1 - 216 + i);
+                                }
+                            }
+                        } else {
+                            /* 0x81 <= c < 0xa1. */
+                            res = (ch >= 0x8e ? 0xdb18 : 0xeeb8) + 157 * (ch - 0x81)
+                                    + (ch2 - (ch2 >= 0xa1 ? 0x62 : 0x40));
+                        }
+                    }
+                }
+            }
+
+
+            if (res == 0)
+                res = '?'; // replace invalid chars with ?
+            buf[count] = res;
+        }
+        return count;
+    }
+#endif
+#if EUC_KR_ENCODING_SUPPORT == 1
+    case ce_euc_kr:
+    {
+        // based on ICONV code, gbk.h
+        for ( ; count < maxsize - 1; count++ ) {
+            if (m_buf_pos >= m_buf_len) {
+                checkEof();
+                return count;
+            }
+            lUInt16 ch = m_buf[m_buf_pos++];
+            lUInt16 res = 0;
+
+            /* Code set 0 (ASCII or KS C 5636-1993) */
+            if (ch < 0x80)
+                res = ch;
+            else if (ch >= 0xa1 && ch < 0xff) {
+                if (m_buf_pos + 1 >= m_buf_len) {
+                    checkEof();
+                    return count;
+                }
+                /* Code set 1 (KS C 5601-1992, now KS X 1001:2002) */
+                lUInt16 ch2 = m_buf[m_buf_pos++];
+                if (ch2 >= 0xa1 && ch2 < 0xff) {
+                    res = cr3_ksc5601_mbtowc(ch-0x80, ch2-0x80);
+                }
+            }
+
+            if (res == 0)
+                res = '?'; // replace invalid chars with ?
+            buf[count] = res;
+        }
+        return count;
+    }
+#endif
+
     case ce_utf16_le:
         {
             for ( ; count<maxsize; count++ ) {
@@ -422,10 +803,11 @@ bool LVTextFileBase::AutodetectEncoding( bool utfOnly )
     }
 
     int res = 0;
+    bool hasTags = hasXmlTags(buf, sz);
     if ( utfOnly )
-        res = AutodetectCodePageUtf( buf, sz, enc_name, lang_name );
+        res = AutodetectCodePageUtf(buf, sz, enc_name, lang_name);
     else
-        res = AutodetectCodePage( buf, sz, enc_name, lang_name );
+        res = AutodetectCodePage(buf, sz, enc_name, lang_name, hasTags);
     delete[] buf;
     m_stream->SetPos( oldpos );
     if ( res) {
@@ -573,25 +955,48 @@ void LVTextFileBase::Reset()
 void LVTextFileBase::SetCharset( const lChar16 * name )
 {
     m_encoding_name = lString16( name );
-    if ( m_encoding_name == L"utf-8" ) {
+    if ( m_encoding_name == "utf-8" ) {
         m_enc_type = ce_utf8;
         SetCharsetTable( NULL );
-    } else if ( m_encoding_name == L"utf-16" ) {
+    } else if ( m_encoding_name == "utf-16" ) {
         m_enc_type = ce_utf16_le;
         SetCharsetTable( NULL );
-    } else if ( m_encoding_name == L"utf-16le" ) {
+#if GBK_ENCODING_SUPPORT == 1
+    } else if ( m_encoding_name == "gbk" || m_encoding_name == "cp936" || m_encoding_name == "cp-936") {
+        m_enc_type = ce_gbk;
+        SetCharsetTable( NULL );
+#endif
+#if JIS_ENCODING_SUPPORT == 1
+    } else if ( m_encoding_name == "shift-jis" || m_encoding_name == "shift_jis" || m_encoding_name == "sjis" || m_encoding_name == "ms_kanji" || m_encoding_name == "csshiftjis" || m_encoding_name == "shift_jisx0213" || m_encoding_name == "shift_jis-2004" || m_encoding_name == "cp932") {
+        m_enc_type = ce_shift_jis;
+        SetCharsetTable( NULL );
+    } else if (m_encoding_name == "euc-jisx0213" ||  m_encoding_name == "euc-jis-2004" ||  m_encoding_name == "euc-jis" ||  m_encoding_name == "euc-jp" ||  m_encoding_name == "eucjp") {
+        m_enc_type = ce_euc_jis;
+        SetCharsetTable( NULL );
+#endif
+#if BIG5_ENCODING_SUPPORT == 1
+    } else if ( m_encoding_name == "big5" || m_encoding_name == "big5-2003" || m_encoding_name == "big-5" || m_encoding_name == "big-five" || m_encoding_name == "bigfive" || m_encoding_name == "cn-big5" || m_encoding_name == "csbig5" || m_encoding_name == "cp950") {
+        m_enc_type = ce_big5;
+        SetCharsetTable( NULL );
+#endif
+#if EUC_KR_ENCODING_SUPPORT == 1
+    } else if ( m_encoding_name == "euc_kr" || m_encoding_name == "euc-kr" || m_encoding_name == "euckr" || m_encoding_name == "cseuckr" || m_encoding_name == "cp51949" || m_encoding_name == "cp949") {
+        m_enc_type = ce_euc_kr;
+        SetCharsetTable( NULL );
+#endif
+    } else if ( m_encoding_name == "utf-16le" ) {
         m_enc_type = ce_utf16_le;
         SetCharsetTable( NULL );
-    } else if ( m_encoding_name == L"utf-16be" ) {
+    } else if ( m_encoding_name == "utf-16be" ) {
         m_enc_type = ce_utf16_be;
         SetCharsetTable( NULL );
-    } else if ( m_encoding_name == L"utf-32" ) {
+    } else if ( m_encoding_name == "utf-32" ) {
         m_enc_type = ce_utf32_le;
         SetCharsetTable( NULL );
-    } else if ( m_encoding_name == L"utf-32le" ) {
+    } else if ( m_encoding_name == "utf-32le" ) {
         m_enc_type = ce_utf32_le;
         SetCharsetTable( NULL );
-    } else if ( m_encoding_name == L"utf-32be" ) {
+    } else if ( m_encoding_name == "utf-32be" ) {
         m_enc_type = ce_utf32_be;
         SetCharsetTable( NULL );
     } else {
@@ -640,7 +1045,7 @@ static const lChar16 * heading_chapter[] = {
     NULL
 };
 
-static bool startsWithOneOf( const lString16 s, const lChar16 * list[] )
+static bool startsWithOneOf( const lString16 & s, const lChar16 * list[] )
 {
     lString16 str = s;
     str.lowercase();
@@ -673,7 +1078,7 @@ int DetectHeadingLevelByText( const lString16 & str )
         return 3;
     lChar16 ch = str[0];
     if ( ch>='0' && ch<='9' ) {
-        unsigned i;
+        int i;
         int point_count = 0;
         for ( i=1; i<str.length(); i++ ) {
             ch = str[i];
@@ -738,9 +1143,9 @@ public:
                     if ( *s != ' ' ) {
                         if ( rpos==0 && p>0 ) {
                             //CRLog::debug("   lpos = %d", p);
-                            lpos = p;
+                            lpos = (lUInt16)p;
                         }
-                        rpos = p + 1;
+                        rpos = (lUInt16)(p + 1);
                     }
                     p++;
                 }
@@ -828,11 +1233,11 @@ public:
         return get(index - first_line_index);
     }
     // remove lines from head of queue
-    void RemoveLines( int lineCount )
+    void RemoveLines(int lineCount)
     {
-        if ( lineCount>length() )
+        if ((unsigned)lineCount > (unsigned)length())
             lineCount = length();
-        erase( 0, lineCount );
+        erase(0, lineCount);
         first_line_index += lineCount;
     }
     // read lines and place to tail of queue
@@ -1051,7 +1456,7 @@ public:
         int ident_lines_percent = ident_lines * 100 / non_empty_lines;
         int center_lines_percent = center_lines * 100 / non_empty_lines;
         int empty_lines_percent = empty_lines * 100 / length();
-        if ( empty_lines_percent > 5 )
+        if ( empty_lines_percent > 5 && max_right < 80)
             formatFlags |= tftEmptyLineDelimPara;
         if ( ident_lines_percent > 5 && ident_lines_percent<55 ) {
             formatFlags |= tftParaIdents;
@@ -1087,18 +1492,18 @@ public:
         bookTitle.clear();
         bookAuthors.clear();
         lString16 firstLine = get(i)->text;
-        lString16 pgPrefix = L"The Project Gutenberg Etext of ";
+        lString16 pgPrefix("The Project Gutenberg Etext of ");
         if ( firstLine.length() < pgPrefix.length() )
             return false;
         if ( firstLine.substr(0, pgPrefix.length()) != pgPrefix )
             return false;
         firstLine = firstLine.substr( pgPrefix.length(), firstLine.length() - pgPrefix.length());
-        int byPos = firstLine.pos(L", by ");
+        int byPos = firstLine.pos(", by ");
         if ( byPos<=0 )
             return false;
         bookTitle = firstLine.substr( 0, byPos );
         bookAuthors = firstLine.substr( byPos + 5, firstLine.length()-byPos-5 );
-        for ( ; i<length() && i<500 && get(i)->text.pos(L"*END*") != 0; i++ )
+        for ( ; i<length() && i<500 && get(i)->text.pos("*END*") != 0; i++ )
             ;
         if ( i<length() && i<500 ) {
             for ( i++; i<length() && i<500 && get(i)->text.empty(); i++ )
@@ -1120,7 +1525,7 @@ public:
         bookAuthors.clear();
         lString16 firstLine = get(i)->text;
         firstLine.trim();
-        int dotPos = firstLine.pos(L". ");
+        int dotPos = firstLine.pos(". ");
         if ( dotPos<=0 )
             return false;
         bookAuthors = firstLine.substr( 0, dotPos );
@@ -1155,7 +1560,7 @@ public:
             }
             //update book description
             if ( i==0 ) {
-                bookTitle = L"no name";
+                bookTitle = "no name";
             } else {
                 bookTitle = s[1];
             }
@@ -1167,7 +1572,7 @@ public:
         if ( !bookAuthors.empty() )
             author_list.parse( bookAuthors, ',', true );
 
-        unsigned i;
+        int i;
         for ( i=0; i<author_list.length(); i++ ) {
             lString16Collection name_list;
             name_list.parse( author_list[i], ' ', true );
@@ -1232,7 +1637,7 @@ public:
             //if ( i==startline )
             //    pos = item->fpos;
             //sz = (item->fpos + item->fsize) - pos;
-            str += item->text + L"\n";
+            str += item->text + "\n";
         }
         bool singleLineFollowedByEmpty = false;
         bool singleLineFollowedByTwoEmpty = false;
@@ -1263,7 +1668,7 @@ public:
                 isHeader = true;
             if ( startline==endline && get(startline)->isHeading() )
                 isHeader = true;
-            if ( startline==endline && (formatFlags & tftCenteredHeaders) && startline==endline && isCentered( get(startline) ) )
+            if ( startline==endline && (formatFlags & tftCenteredHeaders) && isCentered( get(startline) ) )
                 isHeader = true;
             int hlevel = DetectHeadingLevelByText( str );
             if ( hlevel>0 )
@@ -1358,7 +1763,7 @@ public:
         }
 
         int styleTagPos(lChar16 ch) {
-            for ( unsigned i=0; i<styleTags.length(); i++ )
+            for ( int i=0; i<styleTags.length(); i++ )
                 if ( styleTags[i]==ch )
                     return i;
             return -1;
@@ -1397,7 +1802,7 @@ public:
         }
 
         void openStyleTags() {
-            for ( unsigned i=0; i<styleTags.length(); i++ )
+            for ( int i=0; i<styleTags.length(); i++ )
                 openStyleTag(styleTags[i], false);
         }
 
@@ -1417,7 +1822,7 @@ public:
         }
 
         void onImage( lString16 url ) {
-            //url = lString16("book_img/") + url;
+            //url = cs16("book_img/") + url;
             callback->OnTagOpen(L"", L"img");
             callback->OnAttribute(L"", L"src", url.c_str());
             callback->OnTagBody();
@@ -1461,7 +1866,7 @@ public:
                 return;
             sectionId++;
             callback->OnTagOpen(NULL, L"section");
-            callback->OnAttribute(NULL, L"id", (lString16(L"_section") + lString16::itoa(sectionId)).c_str() );
+            callback->OnAttribute(NULL, L"id", (cs16("_section") + fmt::decimal(sectionId)).c_str() );
             callback->OnTagBody();
             inSection = true;
             endOfParagraph();
@@ -1496,7 +1901,7 @@ public:
             }
         }
 
-        void addSeparator( int width ) {
+        void addSeparator( int /*width*/ ) {
             endOfParagraph();
             callback->OnTagOpenAndClose(L"", L"hr");
         }
@@ -1511,7 +1916,7 @@ public:
             callback->OnTagOpenNoAttr(NULL, L"title");
         }
 
-        void addChapterTitle( int level, lString16 title ) {
+        void addChapterTitle( int /*level*/, lString16 title ) {
             // add title, invisible, for TOC only
         }
 
@@ -1538,7 +1943,7 @@ public:
                 callback->OnTagOpen(NULL, L"a");
                 callback->OnAttribute(NULL, L"href", ref.c_str());
                 callback->OnTagBody();
-                styleTags << L"a";
+                styleTags << "a";
                 inLink = true;
             }
         }
@@ -1577,7 +1982,7 @@ public:
                             j+=4;
                             continue;
                         } else if ( n>=1 && n<=255 ) {
-                            addChar( n );
+                            addChar((lChar16)n);
                             j+=4;
                             continue;
                         }
@@ -1585,7 +1990,7 @@ public:
                         // \UXXXX	Insert non-ASCII character whose Unicode code is hexidecimal XXXX.
                         int n = decodeHex( str + j + 2, 4 );
                         if ( n>0 ) {
-                            addChar( n );
+                            addChar((lChar16)n);
                             j+=5;
                             continue;
                         }
@@ -1787,12 +2192,15 @@ public:
         int remainingLines = 0;
         do {
             for ( int i=remainingLines; i<length(); i++ ) {
+                LVTextFileLine * item = get(i);
                 if ( formatFlags & tftDoubleEmptyLineBeforeHeaders ) {
-                    LVTextFileLine * item = get(i);
                     if ( !item->empty() )
                         AddPara( i, i, callback );
                 } else {
-                    AddPara( i, i, callback );
+                    if ( !item->empty() )
+                        AddPara( i, i, callback );
+                    else
+                        AddEmptyLine(callback);
                 }
                 file->updateProgress();
             }
@@ -1835,7 +2243,10 @@ public:
                     }
                 }
             }
-            AddPara( pos, i-1 - (emptyLineFlag?1:0), callback );
+            if (i>pos+1 || !emptyLineFlag)
+                AddPara( pos, i-1 - (emptyLineFlag?1:0), callback );
+            else
+                AddEmptyLine(callback);
             file->updateProgress();
             pos = i;
         }
@@ -1954,7 +2365,7 @@ lString16 LVTextFileBase::ReadLine( int maxLineSize, lUInt32 & flags )
     //FillBuffer( maxLineSize*3 );
 
     lChar16 ch = 0;
-    while ( 1 ) {
+    for (;;) {
         if ( m_eof ) {
             // EOF: treat as EOLN
             flags |= LINE_HAS_EOLN; // EOLN flag
@@ -1963,10 +2374,10 @@ lString16 LVTextFileBase::ReadLine( int maxLineSize, lUInt32 & flags )
         ch = ReadCharFromBuffer();
         //if ( ch==0xFEFF && fpos==0 && res.empty() ) {
         //} else 
-        if ( ch!='\r' && ch!='\n' ) {
+        if (ch != '\r' && ch != '\n') {
             res.append( 1, ch );
-            if ( ch==' ' || ch=='\t' ) {
-                if ( res.length()>=(unsigned)maxLineSize )
+            if (ch == ' ' || ch == '\t') {
+                if (res.length() >= maxLineSize )
                     break;
             }
         } else {
@@ -2001,7 +2412,7 @@ lString16 LVTextFileBase::ReadLine( int maxLineSize, lUInt32 & flags )
             }
         } else if ( ch=='-' || ch=='*' || ch=='=' ) {
             bool sameChars = true;
-            for ( unsigned i=firstNs; i<res.length(); i++ ) {
+            for ( int i=firstNs; i<res.length(); i++ ) {
                 lChar16 ch2 = res[i];
                 if ( ch2!=' ' && ch2!='\t' && ch2!=ch ) {
                     sameChars = false;
@@ -2009,7 +2420,7 @@ lString16 LVTextFileBase::ReadLine( int maxLineSize, lUInt32 & flags )
                 }
             }
             if ( sameChars ) {
-                res = L"* * *"; // hline
+                res = "* * *"; // hline
                 flags |= LINE_IS_HEADER;
             }
         }
@@ -2039,7 +2450,7 @@ bool LVTextBookmarkParser::CheckFormat()
 {
     Reset();
     // encoding test
-    m_lang_name = lString16("en");
+    m_lang_name = cs16("en");
     SetCharset( L"utf8" );
 
     #define TEXT_PARSER_DETECT_SIZE 16384
@@ -2070,11 +2481,16 @@ static bool extractItem( lString16 & dst, const lString16 & src, const char * pr
     return false;
 }
 
-static void postParagraph( LVXMLParserCallback * callback, const char * prefix, lString16 text )
+static void postParagraph(LVXMLParserCallback * callback, const char * prefix, lString16 text, bool allowEmptyLine)
 {
     lString16 title( prefix );
-    if ( text.empty() )
+    if ( text.empty() ) {
+        if (allowEmptyLine) {
+            callback->OnTagOpen( NULL, L"p" );
+            callback->OnTagClose( NULL, L"p" );
+        }
         return;
+    }
     callback->OnTagOpen( NULL, L"p" );
     callback->OnAttribute(NULL, L"style", L"text-indent: 0em");
     callback->OnTagBody();
@@ -2107,13 +2523,13 @@ bool LVTextBookmarkParser::Parse()
         //if ( line.startsWith( lString16() )
     }
     lString16 desc;
-    desc << L"Bookmarks: ";
+    desc << "Bookmarks: ";
     if ( !author.empty() )
-        desc << author << L"  ";
+        desc << author << "  ";
     if ( !title.empty() )
-        desc << title << L"  ";
+        desc << title << "  ";
     else
-        desc << fname << L"  ";
+        desc << fname << "  ";
     //queue.
     // make fb2 document structure
     m_callback->OnTagOpen( NULL, L"?xml" );
@@ -2134,12 +2550,12 @@ bool LVTextBookmarkParser::Parse()
       // BODY
       m_callback->OnTagOpenNoAttr( NULL, L"body" );
           m_callback->OnTagOpenNoAttr( NULL, L"title" );
-              postParagraph( m_callback, "", lString16("CoolReader Bookmarks file") );
+              postParagraph( m_callback, "", cs16("CoolReader Bookmarks file"), false );
           m_callback->OnTagClose( NULL, L"title" );
-          postParagraph( m_callback, "file: ", fname );
-          postParagraph( m_callback, "path: ", path );
-          postParagraph( m_callback, "title: ", title );
-          postParagraph( m_callback, "author: ", author );
+          postParagraph( m_callback, "file: ", fname, false );
+          postParagraph( m_callback, "path: ", path, false );
+          postParagraph( m_callback, "title: ", title, false );
+          postParagraph( m_callback, "author: ", author, false );
           m_callback->OnTagOpenAndClose( NULL, L"empty-line" );
           m_callback->OnTagOpenNoAttr( NULL, L"section" );
           // process text
@@ -2157,12 +2573,12 @@ bool LVTextBookmarkParser::Parse()
                             prefix = txt.substr(0, 3);
                             txt = txt.substr( 3 );
                         }
-                        if ( prefix==L"## " ) {
+                        if (prefix == "## ") {
                             prefix = txt;
-                            txt = L" ";
+                            txt = " ";
                         }
                     }
-                    postParagraph( m_callback, UnicodeToUtf8(prefix).c_str(), txt );
+                    postParagraph( m_callback, UnicodeToUtf8(prefix).c_str(), txt, false );
                 }
             }
         m_callback->OnTagClose( NULL, L"section" );
@@ -2386,7 +2802,7 @@ enum parser_state_t {
     ps_bof,
     ps_lt,
     ps_attr,     // waiting for attributes or end of tag
-    ps_text,
+    ps_text
 };
 
 
@@ -2443,15 +2859,17 @@ bool LVXMLParser::CheckFormat()
     bool res = false;
     if ( charsDecoded > 30 ) {
         lString16 s( chbuf, charsDecoded );
-        bool flg = !m_fb2Only || s.pos(L"<FictionBook") >= 0;
-        if ( flg && (( (s.pos(L"<?xml") >=0 || s.pos(L" xmlns=")>0 )&& s.pos(L"version=") >= 6) ||
-             m_allowHtml && s.pos(L"<html xmlns=\"http://www.w3.org/1999/xhtml\"")>=0 )) {
-            //&& s.pos(L"<FictionBook") >= 0
+        bool flg = !m_fb2Only || s.pos("<FictionBook") >= 0;
+        if ( flg && (
+                 ((s.pos("<?xml") >= 0 || s.pos(" xmlns=") > 0) && s.pos("version=") >= 6) ||
+                 (m_allowHtml && s.pos("<html xmlns=\"http://www.w3.org/1999/xhtml\"") >= 0)
+                 )) {
+            //&& s.pos("<FictionBook") >= 0
             res = true;
-            int encpos=s.pos(L"encoding=\"");
+            int encpos=s.pos("encoding=\"");
             if ( encpos>=0 ) {
                 lString16 encname = s.substr( encpos+10, 20 );
-                int endpos = s.pos(L"\"");
+                int endpos = s.pos("\"");
                 if ( endpos>0 ) {
                     encname.erase( endpos, encname.length() - endpos );
                     SetCharset( encname.c_str() );
@@ -2576,14 +2994,14 @@ bool LVXMLParser::Parse()
 
                 if (qFlag) {
                     tagname.insert(0, 1, '?');
-                    inXmlTag = (tagname==L"?xml");
+                    inXmlTag = (tagname == "?xml");
                 } else {
                     inXmlTag = false;
                 }
                 m_callback->OnTagOpen(tagns.c_str(), tagname.c_str());
 //                if ( dumpActive )
 //                    CRLog::trace("<%s>", LCSTR(tagname) );
-                if ( !bodyStarted && tagname==L"body" )
+                if (!bodyStarted && tagname == "body")
                     bodyStarted = true;
 
                 m_state = ps_attr;
@@ -2623,7 +3041,8 @@ bool LVXMLParser::Parse()
                 if ( ch=='=' )
                 {
                     // read attribute value
-                    ch = PeekNextCharFromBuffer();
+                    //PeekNextCharFromBuffer();
+                    ReadCharFromBuffer(); // skip '='
                     SkipSpaces();
                     lChar16 qChar = 0;
                     ch = PeekCharFromBuffer();
@@ -2658,7 +3077,7 @@ bool LVXMLParser::Parse()
                     PreProcessXmlString( attrvalue, 0, m_conv_table );
                 }
                 m_callback->OnAttribute( attrns.c_str(), attrname.c_str(), attrvalue.c_str());
-                if (inXmlTag && attrname==L"encoding")
+                if (inXmlTag && attrname == "encoding")
                 {
                     SetCharset( attrvalue.c_str() );
                 }
@@ -2960,11 +3379,9 @@ static const ent_def_t def_entity_table[] = {
 {NULL, 0},
 };
 
-// returns new length
-void PreProcessXmlString( lString16 & s, lUInt32 flags, const lChar16 * enc_table )
+/// in-place XML string decoding, don't expand tabs, returns new length (may be less than initial len)
+int PreProcessXmlString(lChar16 * str, int len, lUInt32 flags, const lChar16 * enc_table)
 {
-    lChar16 * str = s.modify();
-    int len = s.length();
     int state = 0;
     lChar16 nch = 0;
     lChar16 lch = 0;
@@ -2974,51 +3391,44 @@ void PreProcessXmlString( lString16 & s, lUInt32 flags, const lChar16 * enc_tabl
     if ( pre_para_splitting )
         pre = false;
     //CRLog::trace("before: '%s' %s", LCSTR(s), pre ? "pre ":" ");
-    int tabCount = 0;
     int j = 0;
-    for (int i=0; i<len; ++i )
-    {
+    for (int i=0; i<len; ++i ) {
         lChar16 ch = str[i];
-        if ( pre && ch=='\t' )
-            tabCount++;
-        if ( !pre && (ch=='\r' || ch=='\n' || ch=='\t') )
-            ch = ' ';
-        if (ch=='\r')
-        {
-            if ((i==0 || lch!='\n') && (i==len-1 || str[i+1]!='\n'))
+        if (pre) {
+            if (ch == '\r') {
+                if ((i==0 || lch!='\n') && (i==len-1 || str[i+1]!='\n')) {
+                    str[j++] = '\n';
+                    lch = '\n';
+                }
+                continue;
+            } else if (ch == '\n') {
                 str[j++] = '\n';
+                lch = ch;
+                continue;
+            }
+        } else {
+            if (ch=='\r' || ch=='\n' || ch=='\t')
+                ch = ' ';
         }
-        else if (ch=='\n')
-        {
-            str[j++] = '\n';
-        }
-        else if (ch=='&')
-        {
+        if (ch == '&') {
             state = 1;
             nch = 0;
-        }
-        else if (state==0)
-        {
-            if (ch==' ')
-            {
+        } else if (state == 0) {
+            if (ch == ' ') {
                 if ( pre || !nsp )
                     str[j++] = ch;
                 nsp++;
-            }
-            else
-            {
+            } else {
                 str[j++] = ch;
                 nsp = 0;
             }
-        }
-        else
-        {
+        } else {
             if (state == 2 && ch=='x')
                 state = 22;
             else if (state == 22 && hexDigit(ch)>=0)
-                nch = (nch << 4) | hexDigit(ch);
+                nch = (lChar16)((nch << 4) | hexDigit(ch));
             else if (state == 2 && ch>='0' && ch<='9')
-                nch = nch * 10 + (ch - '0');
+                nch = (lChar16)(nch * 10 + (ch - '0'));
             else if (ch=='#' && state==1)
                 state = 2;
             else if (state==1 && ((ch>='a' && ch<='z') || (ch>='A' && ch<='Z')) ) {
@@ -3052,48 +3462,76 @@ void PreProcessXmlString( lString16 & s, lUInt32 flags, const lChar16 * enc_tabl
                     state = 0;
                 }
 
-            } else if (ch == ';')
-            {
+            } else if (ch == ';') {
                 if (nch)
                     str[j++] = nch;
                 state = 0;
                 nsp = 0;
-            }
-            else
-            {
+            } else {
                 // error: return to normal mode
                 state = 0;
             }
         }
         lch = ch;
     }
+    return j;
+}
 
+int CalcTabCount(const lChar16 * str, int nlen) {
+    int tabCount = 0;
+    for (int i=0; i<nlen; i++) {
+        if (str[i] == '\t')
+            tabCount++;
+    }
+    return tabCount;
+}
 
-    // remove extra characters from end of line
-    s.limit( j );
+void ExpandTabs(lString16 & buf, const lChar16 * str, int len)
+{
+    // check for tabs
+    int x = 0;
+    for (int i = 0; i < len; i++) {
+        lChar16 ch = str[i];
+        if ( ch=='\r' || ch=='\n' )
+            x = 0;
+        if ( ch=='\t' ) {
+            int delta = 8 - (x & 7);
+            x += delta;
+            while ( delta-- )
+                buf << L' ';
+        } else {
+            buf << ch;
+            x++;
+        }
+    }
+}
 
+void ExpandTabs(lString16 & s)
+{
+    // check for tabs
+    int nlen = s.length();
+    int tabCount = CalcTabCount(s.c_str(), nlen);
     if ( tabCount > 0 ) {
         // expand tabs
         lString16 buf;
-
-        buf.reserve( j + tabCount * 8 );
-        int x = 0;
-        for ( int i=0; i<j; i++ ) {
-            lChar16 ch = str[i];
-            if ( ch=='\r' || ch=='\n' )
-                x = 0;
-            if ( ch=='\t' ) {
-                int delta = 8 - (x & 7);
-                x += delta;
-                while ( delta-- )
-                    buf << L' ';
-            } else {
-                buf << ch;
-                x++;
-            }
-        }
+        buf.reserve(nlen + tabCount * 8);
+        ExpandTabs(buf, s.c_str(), s.length());
         s = buf;
     }
+}
+
+// returns new length
+void PreProcessXmlString( lString16 & s, lUInt32 flags, const lChar16 * enc_table )
+{
+    lChar16 * str = s.modify();
+    int len = s.length();
+    int nlen = PreProcessXmlString(str, len, flags, enc_table);
+    // remove extra characters from end of line
+    if (nlen < len)
+        s.limit(nlen);
+
+    if (flags & TXTFLG_PRE)
+        ExpandTabs(s);
     //CRLog::trace(" after: '%s'", LCSTR(s));
 }
 
@@ -3183,19 +3621,40 @@ bool LVXMLParser::ReadText()
         if ( tlen > TEXT_SPLIT_SIZE || flgBreak || splitParas)
         {
             //=====================================================
-            lString16 nextText = m_txt_buf.substr( last_split_txtlen );
-            m_txt_buf.limit( last_split_txtlen );
+            lChar16 * buf = m_txt_buf.modify();
+
             const lChar16 * enc_table = NULL;
             if ( flags & TXTFLG_CONVERT_8BIT_ENTITY_ENCODING )
                 enc_table = this->m_conv_table;
-            PreProcessXmlString( m_txt_buf, flags, enc_table );
+
+            int nlen = PreProcessXmlString(buf, last_split_txtlen, flags, enc_table);
             if ( (flags & TXTFLG_TRIM) && (!(flags & TXTFLG_PRE) || (flags & TXTFLG_PRE_PARA_SPLITTING)) ) {
-                m_txt_buf.trimDoubleSpaces(
+                nlen = TrimDoubleSpaces(buf, nlen,
                     ((flags & TXTFLG_TRIM_ALLOW_START_SPACE) || pre_para_splitting)?true:false,
                     (flags & TXTFLG_TRIM_ALLOW_END_SPACE)?true:false,
                     (flags & TXTFLG_TRIM_REMOVE_EOL_HYPHENS)?true:false );
             }
-            m_callback->OnText(m_txt_buf.c_str(), m_txt_buf.length(), flags );
+
+            if (flags & TXTFLG_PRE) {
+                // check for tabs
+                int tabCount = CalcTabCount(buf, nlen);
+                if ( tabCount > 0 ) {
+                    // expand tabs
+                    lString16 tmp;
+                    tmp.reserve(nlen + tabCount * 8);
+                    ExpandTabs(tmp, buf, nlen);
+                    m_callback->OnText(tmp.c_str(), tmp.length(), flags);
+                } else {
+                    m_callback->OnText(buf, nlen, flags);
+                }
+            } else {
+                m_callback->OnText(buf, nlen, flags);
+            }
+
+            m_txt_buf.erase(0, last_split_txtlen);
+            tlen = m_txt_buf.length();
+            last_split_txtlen = 0;
+
             //=====================================================
             if (flgBreak)
             {
@@ -3206,11 +3665,8 @@ bool LVXMLParser::ReadText()
                 //    m_read_buffer_pos++;
                 break;
             }
-            m_txt_buf = nextText;
-            tlen = m_txt_buf.length();
             //text_start_pos = last_split_fpos; //m_buf_fpos + m_buf_pos;
             //last_split_fpos = 0;
-            last_split_txtlen = 0;
         }
     }
 
@@ -3297,19 +3753,19 @@ lString16 htmlCharset( lString16 htmlHeader )
 {
     // META HTTP-EQUIV
     htmlHeader.lowercase();
-    lString16 meta(L"meta http-equiv=\"content-type\"");
+    lString16 meta("meta http-equiv=\"content-type\"");
     int p = htmlHeader.pos( meta );
     if ( p<0 )
-        return lString16();
+        return lString16::empty_str;
     htmlHeader = htmlHeader.substr( p + meta.length() );
-    p = htmlHeader.pos(L">");
+    p = htmlHeader.pos(">");
     if ( p<0 )
-        return lString16();
+        return lString16::empty_str;
     htmlHeader = htmlHeader.substr( 0, p );
     CRLog::trace("http-equiv content-type: %s", UnicodeToUtf8(htmlHeader).c_str() );
-    p = htmlHeader.pos(L"charset=");
+    p = htmlHeader.pos("charset=");
     if ( p<0 )
-        return lString16();
+        return lString16::empty_str;
     htmlHeader = htmlHeader.substr( p + 8 ); // skip "charset="
     lString16 enc;
     for ( int i=0; i<(int)htmlHeader.length(); i++ ) {
@@ -3319,8 +3775,8 @@ lString16 htmlCharset( lString16 htmlHeader )
         else
             break;
     }
-    if ( enc==L"utf-16" )
-        return lString16();
+    if (enc == "utf-16")
+        return lString16::empty_str;
     return enc;
 }
 
@@ -3340,20 +3796,20 @@ bool LVHTMLParser::CheckFormat()
     if ( charsDecoded > 30 ) {
         lString16 s( chbuf, charsDecoded );
         s.lowercase();
-        if ( s.pos(L"<html") >=0 && ( s.pos(L"<head") >= 0 || s.pos(L"<body") >=0 ) ) //&& s.pos(L"<FictionBook") >= 0
+        if ( s.pos("<html") >=0 && ( s.pos("<head") >= 0 || s.pos("<body") >=0 ) ) //&& s.pos("<FictionBook") >= 0
             res = true;
         lString16 name=m_stream->GetName();
         name.lowercase();
-        bool html_ext = name.endsWith(lString16(".htm")) || name.endsWith(lString16(".html"))
-                        || name.endsWith(lString16(".hhc"))
-                        || name.endsWith(lString16(".xhtml"));
-        if ( html_ext && (s.pos(L"<!--")>=0 || s.pos(L"UL")>=0
-                           || s.pos(L"<p>")>=0 || s.pos(L"ul")>=0) )
+        bool html_ext = name.endsWith(".htm") || name.endsWith(".html")
+                        || name.endsWith(".hhc")
+                        || name.endsWith(".xhtml");
+        if ( html_ext && (s.pos("<!--")>=0 || s.pos("UL")>=0
+                           || s.pos("<p>")>=0 || s.pos("ul")>=0) )
             res = true;
         lString16 enc = htmlCharset( s );
         if ( !enc.empty() )
             SetCharset( enc.c_str() );
-        //else if ( s.pos(L"<html xmlns=\"http://www.w3.org/1999/xhtml\"") >= 0 )
+        //else if ( s.pos("<html xmlns=\"http://www.w3.org/1999/xhtml\"") >= 0 )
         //    res = true;
     }
     delete[] chbuf;
@@ -3392,7 +3848,7 @@ lString16 LVReadTextFile( lString16 filename )
 lString16 LVReadTextFile( LVStreamRef stream )
 {
 	if ( stream.isNull() )
-		return lString16();
+        return lString16::empty_str;
     lString16 buf;
     LVTextParser reader( stream, NULL, true );
     if ( !reader.AutodetectEncoding() )
@@ -3462,3 +3918,397 @@ HTML_AUTOCLOSE_TABLE[] = {
 };
 
 
+// base64 decode table
+static const signed char base64_decode_table[] = {
+   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, //0..15
+   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, //16..31   10
+   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63, //32..47   20
+   52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-1,-1,-1, //48..63   30
+   -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14, //64..79   40
+   15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1, //80..95   50
+   -1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40, //INDEX2..111  60
+   41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1  //112..127 70
+};
+
+#define BASE64_BUF_SIZE 128
+class LVBase64Stream : public LVNamedStream
+{
+private:
+    lString8    m_curr_text;
+    int         m_text_pos;
+    lvsize_t    m_size;
+    lvpos_t     m_pos;
+
+    int         m_iteration;
+    lUInt32     m_value;
+
+    lUInt8      m_bytes[BASE64_BUF_SIZE];
+    int         m_bytes_count;
+    int         m_bytes_pos;
+
+    int readNextBytes()
+    {
+        int bytesRead = 0;
+        bool flgEof = false;
+        while ( bytesRead == 0 && !flgEof )
+        {
+            while ( m_text_pos >= (int)m_curr_text.length() )
+            {
+                return bytesRead;
+            }
+            int len = m_curr_text.length();
+            const lChar8 * txt = m_curr_text.c_str();
+            for ( ; m_text_pos<len && m_bytes_count < BASE64_BUF_SIZE - 3; m_text_pos++ )
+            {
+                lChar16 ch = txt[ m_text_pos ];
+                if ( ch < 128 )
+                {
+                    if ( ch == '=' )
+                    {
+                        // end of stream
+                        if ( m_iteration == 2 )
+                        {
+                            m_bytes[m_bytes_count++] = (lUInt8)((m_value>>4) & 0xFF);
+                            bytesRead++;
+                        }
+                        else if ( m_iteration == 3 )
+                        {
+                            m_bytes[m_bytes_count++] = (lUInt8)((m_value>>10) & 0xFF);
+                            m_bytes[m_bytes_count++] = (lUInt8)((m_value>>2) & 0xFF);
+                            bytesRead += 2;
+                        }
+                        // stop!!!
+                        //m_text_pos--;
+                        m_iteration = 0;
+                        flgEof = true;
+                        break;
+                    }
+                    else
+                    {
+                        int k = base64_decode_table[ch];
+                        if ( !(k & 0x80) ) {
+                            // next base-64 digit
+                            m_value = (m_value << 6) | (k);
+                            m_iteration++;
+                            if (m_iteration==4)
+                            {
+                                //
+                                m_bytes[m_bytes_count++] = (lUInt8)((m_value>>16) & 0xFF);
+                                m_bytes[m_bytes_count++] = (lUInt8)((m_value>>8) & 0xFF);
+                                m_bytes[m_bytes_count++] = (lUInt8)((m_value>>0) & 0xFF);
+                                m_iteration = 0;
+                                m_value = 0;
+                                bytesRead+=3;
+                            }
+                        } else {
+                            //m_text_pos++;
+                        }
+                    }
+                }
+            }
+        }
+        return bytesRead;
+    }
+
+    int bytesAvailable() { return m_bytes_count - m_bytes_pos; }
+
+    bool rewind()
+    {
+        m_pos = 0;
+        m_bytes_count = 0;
+        m_bytes_pos = 0;
+        m_iteration = 0;
+        m_value = 0;
+        m_text_pos = 0;
+        return m_text_pos < m_curr_text.length();
+    }
+
+    bool skip( lvsize_t count )
+    {
+        while ( count )
+        {
+            if ( m_bytes_pos >= m_bytes_count )
+            {
+                m_bytes_pos = 0;
+                m_bytes_count = 0;
+                int bytesRead = readNextBytes();
+                if ( bytesRead == 0 )
+                    return false;
+            }
+            int diff = (int) (m_bytes_count - m_bytes_pos);
+            if (diff > (int)count)
+                diff = (int)count;
+            m_pos += diff;
+            count -= diff;
+        }
+        return true;
+    }
+
+public:
+    virtual ~LVBase64Stream() { }
+    LVBase64Stream(lString8 data)
+        : m_curr_text(data), m_size(0), m_pos(0)
+    {
+        // calculate size
+        rewind();
+        m_size = bytesAvailable();
+        for (;;) {
+            int bytesRead = readNextBytes();
+            if ( !bytesRead )
+                break;
+            m_bytes_count = 0;
+            m_bytes_pos = 0;
+            m_size += bytesRead;
+        }
+        // rewind
+        rewind();
+    }
+    virtual bool Eof()
+    {
+        return m_pos >= m_size;
+    }
+    virtual lvsize_t  GetSize()
+    {
+        return m_size;
+    }
+
+    virtual lvpos_t GetPos()
+    {
+        return m_pos;
+    }
+
+    virtual lverror_t GetPos( lvpos_t * pos )
+    {
+        if (pos)
+            *pos = m_pos;
+        return LVERR_OK;
+    }
+
+    virtual lverror_t Seek(lvoffset_t offset, lvseek_origin_t origin, lvpos_t* newPos)
+    {
+        lvpos_t npos = 0;
+        lvpos_t currpos = GetPos();
+        switch (origin) {
+        case LVSEEK_SET:
+            npos = offset;
+            break;
+        case LVSEEK_CUR:
+            npos = currpos + offset;
+            break;
+        case LVSEEK_END:
+            npos = m_size + offset;
+            break;
+        }
+        if (npos > m_size)
+            return LVERR_FAIL;
+        if ( npos != currpos )
+        {
+            if (npos < currpos)
+            {
+                if ( !rewind() || !skip(npos) )
+                    return LVERR_FAIL;
+            }
+            else
+            {
+                skip( npos - currpos );
+            }
+        }
+        if (newPos)
+            *newPos = npos;
+        return LVERR_OK;
+    }
+    virtual lverror_t Write(const void*, lvsize_t, lvsize_t*)
+    {
+        return LVERR_NOTIMPL;
+    }
+    virtual lverror_t Read(void* buf, lvsize_t size, lvsize_t* pBytesRead)
+    {
+        lvsize_t bytesRead = 0;
+        //fprintf( stderr, "Read()\n" );
+
+        lUInt8 * out = (lUInt8 *)buf;
+
+        while (size>0)
+        {
+            int sz = bytesAvailable();
+            if (!sz) {
+                m_bytes_pos = m_bytes_count = 0;
+                sz = readNextBytes();
+                if (!sz) {
+                    if ( !bytesRead || m_pos!=m_size) //
+                        return LVERR_FAIL;
+                    break;
+                }
+            }
+            if (sz>(int)size)
+                sz = (int)size;
+            for (int i=0; i<sz; i++)
+                *out++ = m_bytes[m_bytes_pos++];
+            size -= sz;
+            bytesRead += sz;
+            m_pos += sz;
+        }
+
+        if (pBytesRead)
+            *pBytesRead = bytesRead;
+        //fprintf( stderr, "    %d bytes read...\n", (int)bytesRead );
+        return LVERR_OK;
+    }
+    virtual lverror_t SetSize(lvsize_t)
+    {
+        return LVERR_NOTIMPL;
+    }
+};
+
+/// XML parser callback interface
+class FB2CoverpageParserCallback : public LVXMLParserCallback
+{
+protected:
+    LVFileFormatParser * _parser;
+    bool insideFictionBook;
+    bool insideDescription;
+    bool insideTitleInfo;
+    bool insideCoverpage;
+    bool insideImage;
+    bool insideBinary;
+    bool insideCoverBinary;
+    int tagCounter;
+    lString16 binaryId;
+    lString8 data;
+public:
+    ///
+    FB2CoverpageParserCallback()
+    {
+        insideFictionBook = false;
+        insideDescription = false;
+        insideTitleInfo = false;
+        insideCoverpage = false;
+        insideImage = false;
+        insideBinary = false;
+        tagCounter = 0;
+        insideCoverBinary = false;
+    }
+    virtual lUInt32 getFlags() { return TXTFLG_PRE; }
+    /// called on parsing start
+    virtual void OnStart(LVFileFormatParser * parser)
+    {
+        _parser = parser;
+        parser->SetSpaceMode(false);
+    }
+    /// called on parsing end
+    virtual void OnStop()
+    {
+    }
+    /// called on opening tag end
+    virtual void OnTagBody()
+    {
+    }
+    /// add named BLOB data to document
+    virtual bool OnBlob(lString16 /*name*/, const lUInt8 * /*data*/, int /*size*/) { return true; }
+    /// called on opening tag
+    virtual ldomNode * OnTagOpen( const lChar16 * /*nsname*/, const lChar16 * tagname)
+    {
+        tagCounter++;
+        if (!insideFictionBook && tagCounter > 5) {
+            _parser->Stop();
+            return NULL;
+        }
+        if ( lStr_cmp(tagname, "FictionBook")==0) {
+            insideFictionBook = true;
+        } else if ( lStr_cmp(tagname, "description")==0 && insideFictionBook) {
+            insideDescription = true;
+        } else if ( lStr_cmp(tagname, "title-info")==0 && insideDescription) {
+            insideTitleInfo = true;
+        } else if ( lStr_cmp(tagname, "coverpage")==0 && insideTitleInfo) {
+            insideCoverpage =  true;
+        } else if ( lStr_cmp(tagname, "image")==0 && insideCoverpage) {
+            insideImage = true;
+        } else if ( lStr_cmp(tagname, "binary")==0 && insideFictionBook) {
+            insideBinary = true;
+            return NULL;
+        } else if ( lStr_cmp(tagname, "body")==0 && binaryId.empty()) {
+            _parser->Stop();
+            // NO Image ID specified
+            return NULL;
+        }
+        insideCoverBinary = false;
+        return NULL;
+    }
+    /// called on closing
+    virtual void OnTagClose( const lChar16 * nsname, const lChar16 * tagname )
+    {
+        if ( lStr_cmp(nsname, "FictionBook")==0) {
+            insideFictionBook = false;
+        } else if ( lStr_cmp(tagname, "description")==0) {
+            insideDescription = false;
+        } else if ( lStr_cmp(tagname, "title-info")==0) {
+            insideTitleInfo = false;
+        } else if ( lStr_cmp(tagname, "coverpage")==0) {
+            insideCoverpage =  false;
+        } else if ( lStr_cmp(tagname, "image")==0) {
+            insideImage = false;
+        } else if ( lStr_cmp(tagname, "binary")==0) {
+            insideBinary = false;
+            insideCoverBinary = false;
+        }
+    }
+    /// called on element attribute
+    virtual void OnAttribute( const lChar16 * /*nsname*/, const lChar16 * attrname, const lChar16 * attrvalue )
+    {
+        if (lStr_cmp(attrname, "href")==0 && insideImage) {
+            lString16 s(attrvalue);
+            if (s.startsWith("#")) {
+                binaryId = s.substr(1);
+                //CRLog::trace("found FB2 cover ID");
+            }
+        } else if (lStr_cmp(attrname, "id")==0 && insideBinary) {
+            lString16 id(attrvalue);
+            if (!id.empty() && id == binaryId) {
+                insideCoverBinary = true;
+                //CRLog::trace("found FB2 cover data");
+            }
+        } else if (lStr_cmp(attrname, "page")==0) {
+        }
+    }
+    /// called on text
+    virtual void OnText( const lChar16 * text, int len, lUInt32 /*flags*/ )
+    {
+        if (!insideCoverBinary)
+            return;
+        lString16 txt( text, len );
+        data.append(UnicodeToUtf8(txt));
+    }
+    /// destructor
+    virtual ~FB2CoverpageParserCallback()
+    {
+    }
+    LVStreamRef getStream() {
+        static lUInt8 fake_data[1] = {0};
+        if (data.length() == 0)
+            return LVCreateMemoryStream(fake_data, 0, false);
+        CRLog::trace("encoded data: %d bytes", data.length());
+        LVStreamRef stream = LVStreamRef(new LVBase64Stream(data));
+        LVStreamRef res = LVCreateMemoryStream(stream);
+        return res;
+    }
+};
+
+LVStreamRef GetFB2Coverpage(LVStreamRef stream)
+{
+    FB2CoverpageParserCallback callback;
+    LVXMLParser parser(stream, &callback, false, true);
+    if (!parser.CheckFormat()) {
+        stream->SetPos(0);
+		return LVStreamRef();
+	}
+    //CRLog::trace("parsing FB2 file");
+    parser.Parse();
+    LVStreamRef res = callback.getStream();
+    if (res.isNull()) {
+        //CRLog::trace("FB2 Cover stream is NULL");
+    } else {
+        CRLog::trace("FB2 Cover stream size = %d", (int)res->GetSize());
+    }
+    stream->SetPos(0);
+    return res;
+}

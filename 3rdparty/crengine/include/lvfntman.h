@@ -103,8 +103,8 @@ struct LVFontGlyphCacheItem
         LVFontGlyphCacheItem * item = (LVFontGlyphCacheItem *)malloc( sizeof(LVFontGlyphCacheItem)
             + (w*h - 1)*sizeof(lUInt8) );
         item->ch = ch;
-        item->bmp_width = w;
-        item->bmp_height = h;
+        item->bmp_width = (lUInt8)w;
+        item->bmp_height = (lUInt8)h;
         item->origin_x =   0;
         item->origin_y =   0;
         item->advance =    0;
@@ -119,6 +119,13 @@ struct LVFontGlyphCacheItem
     {
         free( item );
     }
+};
+
+
+enum hinting_mode_t {
+    HINTING_MODE_DISABLED,
+    HINTING_MODE_BYTECODE_INTERPRETOR,
+    HINTING_MODE_AUTOHINT
 };
 
 
@@ -231,6 +238,11 @@ public:
     /// get kerning mode: true==ON, false=OFF
     virtual void setKerning( bool ) { }
 
+    /// sets current hinting mode
+    virtual void setHintingMode(hinting_mode_t /*mode*/) { }
+    /// returns current hinting mode
+    virtual hinting_mode_t  getHintingMode() const { return HINTING_MODE_AUTOHINT; }
+
     /// returns true if font is empty
     virtual bool IsNull() const = 0;
     virtual bool operator ! () const = 0;
@@ -252,31 +264,72 @@ enum font_antialiasing_t
     font_aa_all
 };
 
+class LVEmbeddedFontDef {
+    lString16 _url;
+    lString8 _face;
+    bool _bold;
+    bool _italic;
+public:
+    LVEmbeddedFontDef(lString16 url, lString8 face, bool bold, bool italic) :
+        _url(url), _face(face), _bold(bold), _italic(italic)
+    {
+    }
+    LVEmbeddedFontDef() : _bold(false), _italic(false) {
+    }
+
+    const lString16 & getUrl() { return _url; }
+    const lString8 & getFace() { return _face; }
+    bool getBold() { return _bold; }
+    bool getItalic() { return _italic; }
+    void setFace(const lString8 &  face) { _face = face; }
+    void setBold(bool bold) { _bold = bold; }
+    void setItalic(bool italic) { _italic = italic; }
+    bool serialize(SerialBuf & buf);
+    bool deserialize(SerialBuf & buf);
+};
+
+class LVEmbeddedFontList : public LVPtrVector<LVEmbeddedFontDef> {
+public:
+    LVEmbeddedFontDef * findByUrl(lString16 url);
+    void add(LVEmbeddedFontDef * def) { LVPtrVector<LVEmbeddedFontDef>::add(def); }
+    bool add(lString16 url, lString8 face, bool bold, bool italic);
+    bool add(lString16 url) { return add(url, lString8::empty_str, false, false); }
+    bool addAll(LVEmbeddedFontList & list);
+    void set(LVEmbeddedFontList & list) { clear(); addAll(list); }
+    bool serialize(SerialBuf & buf);
+    bool deserialize(SerialBuf & buf);
+};
+
 /// font manager interface class
 class LVFontManager
 {
 protected:
     int _antialiasMode;
     bool _allowKerning;
+    hinting_mode_t _hintingMode;
 public:
     /// garbage collector frees unused fonts
     virtual void gc() = 0;
     /// returns most similar font
-    virtual LVFontRef GetFont(int size, int weight, bool italic, css_font_family_t family, lString8 typeface ) = 0;
+    virtual LVFontRef GetFont(int size, int weight, bool italic, css_font_family_t family, lString8 typeface, int documentId = -1) = 0;
     /// set fallback font face (returns true if specified font is found)
     virtual bool SetFallbackFontFace( lString8 face ) { return false; }
     /// get fallback font face (returns empty string if no fallback font is set)
     virtual lString8 GetFallbackFontFace() { return lString8::empty_str; }
     /// returns fallback font for specified size
-    virtual LVFontRef GetFallbackFont(int size) { return LVFontRef(); }
+    virtual LVFontRef GetFallbackFont(int /*size*/) { return LVFontRef(); }
     /// registers font by name
     virtual bool RegisterFont( lString8 name ) = 0;
+    /// registers document font
+    virtual bool RegisterDocumentFont(int /*documentId*/, LVContainerRef /*container*/, lString16 /*name*/, lString8 /*face*/, bool /*bold*/, bool /*italic*/) { return false; }
+    /// unregisters all document fonts
+    virtual void UnregisterDocumentFonts(int /*documentId*/) { }
     /// initializes font manager
     virtual bool Init( lString8 path ) = 0;
     /// get count of registered fonts
     virtual int GetFontCount() = 0;
     /// get hash of installed fonts and fallback font
-    virtual lUInt32 GetFontListHash() { return 0; }
+    virtual lUInt32 GetFontListHash(int /*documentId*/) { return 0; }
     /// clear glyph cache
     virtual void clearGlyphCache() { }
 
@@ -291,7 +344,7 @@ public:
     virtual void setKerning( bool kerningEnabled ) { _allowKerning = kerningEnabled; gc(); clearGlyphCache(); }
 
     /// constructor
-    LVFontManager() : _antialiasMode(font_aa_all), _allowKerning(false) { }
+    LVFontManager() : _antialiasMode(font_aa_all), _allowKerning(false), _hintingMode(HINTING_MODE_AUTOHINT) { }
     /// destructor
     virtual ~LVFontManager() { }
     /// returns available typefaces
@@ -307,6 +360,12 @@ public:
     double GetGamma();
     /// sets current gamma level
     void SetGamma( double gamma );
+
+    /// sets current hinting mode
+    virtual void SetHintingMode(hinting_mode_t /*mode*/) { }
+    /// returns current hinting mode
+    virtual hinting_mode_t  GetHintingMode() { return HINTING_MODE_AUTOHINT; }
+
 };
 
 class LVBaseFont : public LVFont
@@ -447,7 +506,7 @@ public:
     }
 
     virtual lString8 getTypeFace() const {
-        return lString8();
+        return lString8::empty_str;
     }
 
     virtual css_font_family_t getFontFamily() const {

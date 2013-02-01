@@ -15,7 +15,6 @@
 
 #include "../crsetup.inc"
 
-
 // features set for LBOOK
 #if (LBOOK==1)
 #ifndef LDOM_USE_OWN_MEM_MAN
@@ -39,7 +38,6 @@
 #define GLYPH_CACHE_SIZE                     0x1000
 #define ZIP_STREAM_BUFFER_SIZE               0x1000
 #define FILE_STREAM_BUFFER_SIZE              0x1000
-#define USE_UNRAR                            0
 #else
 #define USE_LIBJPEG                          1
 #define USE_LIBPNG                           1
@@ -60,7 +58,6 @@
 #define USE_LIBPNG                           1
 #define USE_GIF                              1
 #define USE_ZLIB                             1
-#define USE_UNRAR                            0
 #ifndef COLOR_BACKBUFFER
 #define COLOR_BACKBUFFER                     1
 #endif
@@ -68,7 +65,9 @@
 #define GRAY_INVERSE                         0
 #define USE_FREETYPE                         1
 #ifndef ANDROID
+#ifndef MAC
 #define USE_FONTCONFIG						 1
+#endif
 #endif
 #define ALLOW_KERNING                        1
 #define GLYPH_CACHE_SIZE                     0x40000
@@ -94,7 +93,6 @@
 #else
 #define USE_FREETYPE                         1
 #endif
-#define USE_UNRAR                            0
 #define ALLOW_KERNING                        1
 #define GLYPH_CACHE_SIZE                     0x20000
 #define ZIP_STREAM_BUFFER_SIZE               0x80000

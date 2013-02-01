@@ -459,7 +459,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
     wxToolBar * toolbar = wxFrame::CreateToolBar(wxTB_FLAT, wxID_ANY);
     toolbar->SetToolBitmapSize(wxSize(16, 16));
 	wxFont font = FbParams(FB_FONT_TOOL);
-	
+
 	wxString path = wxStandardPaths::Get().GetResourcesDir() + wxT("/");
 	toolbar->AddTool(wxID_NEW, _("Import file"), wxBitmap(path + wxT("document-new.png"), wxBITMAP_TYPE_PNG), _("Import files to the library"));
 	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxBitmap(path + wxT("document-open.png"), wxBITMAP_TYPE_PNG), _("Import folder to the library"));
@@ -468,7 +468,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	m_FindAuthor->SetDescriptiveText(_("Author"));
 	m_FindAuthor->ShowCancelButton(true);
 	toolbar->AddControl( m_FindAuthor );
-    
+
 	m_FindTitle = new wxSearchCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindTitle->SetDescriptiveText(_("Title"));
 	m_FindTitle->SetFont(font);
@@ -513,17 +513,12 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	textAuth.Prepend(wxT("  "));
 	textBook.Prepend(wxT("  "));
 #endif // __WXMSW__
-    
+
 	wxStaticText * text1 = new wxStaticText( toolbar, wxID_ANY, textAuth, wxDefaultPosition, wxDefaultSize, 0 );
 	text1->Wrap( -1 );
 	text1->SetFont(font);
 	toolbar->AddControl( text1 );
 
-	wxSearchCtrl * search = new wxSearchCtrl(toolbar, wxID_ANY);
-	search->ShowCancelButton(true);
-    search->SetDescriptiveText(_("Author"));
-	toolbar->AddControl( search );
-    
 	m_FindAuthor = new FbSearchCtrl(toolbar, ID_AUTHOR_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindAuthor->SetFont(font);
 	toolbar->AddControl( m_FindAuthor );

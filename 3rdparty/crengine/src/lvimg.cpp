@@ -233,7 +233,7 @@ cr_jpeg_src (j_decompress_ptr cinfo, LVStream * stream)
      * manager serially with the same JPEG object.  Caveat programmer.
      */
     if (cinfo->src == NULL) { /* first time for this JPEG object? */
-        src = (cr_jpeg_source_mgr *) new cr_jpeg_source_mgr;
+        src = new cr_jpeg_source_mgr();
         cinfo->src = (struct jpeg_source_mgr *) src;
         src->buffer = new JOCTET[INPUT_BUF_SIZE];
     }
@@ -302,12 +302,11 @@ cr_jpeg_error (j_common_ptr cinfo)
 {
     //fprintf(stderr, "cr_jpeg_error() : fatal error while decoding JPEG image\n");
 
-    //char buffer[JMSG_LENGTH_MAX];
+    char buffer[JMSG_LENGTH_MAX];
 
     /* Create the message */
-    //(*cinfo->err->format_message) (cinfo, buffer);
-
-    //fprintf( stderr, "message: %s\n", buffer );
+    (*cinfo->err->format_message) (cinfo, buffer);
+    CRLog::error("cr_jpeg_error: %s", buffer);
 
     /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
     my_error_ptr myerr = (my_error_ptr) cinfo->err;
@@ -316,8 +315,9 @@ cr_jpeg_error (j_common_ptr cinfo)
     /* We could postpone this until after returning, if we chose. */
     //(*cinfo->err->output_message) (cinfo);
 
+    //CRLog::error("cr_jpeg_error : returning control to setjmp point %08x", &myerr->setjmp_buffer);
     /* Return control to the setjmp point */
-    longjmp(myerr->setjmp_buffer, 1);
+    longjmp(myerr->setjmp_buffer, -1);
 }
 
 #endif
@@ -444,8 +444,8 @@ public:
                 }
                 if ( *src == '#' ) {
                     src++;
-                    int c;
-                    if ( sscanf( src, "%x", &c )!=1 ) {
+                    unsigned c;
+                    if ( sscanf(src, "%x", &c) != 1 ) {
                         err = true;
                         break;
                     }
@@ -517,35 +517,49 @@ LVImageSourceRef LVCreateXPMImageSource( const char * data[] )
 
 class LVJpegImageSource : public LVNodeImageSource
 {
+    my_error_mgr jerr;
+    jpeg_decompress_struct cinfo;
 protected:
 public:
     LVJpegImageSource( ldomNode * node, LVStreamRef stream )
         : LVNodeImageSource(node, stream)
     {
+    	//CRLog::trace("creating LVJpegImageSource");
 
+        // testing setjmp
+
+//        jmp_buf buf;
+//        if (setjmp(buf)) {
+//            CRLog::trace("longjmp is working ok");
+//            return;
+//        }
+//        longjmp(buf, -1);
     }
     virtual ~LVJpegImageSource() {}
     virtual void   Compact() { }
     virtual bool   Decode( LVImageDecoderCallback * callback )
     {
-        struct jpeg_decompress_struct cinfo;
+    	//CRLog::trace("LVJpegImageSource::decode called");
+        memset(&cinfo, 0, sizeof(jpeg_decompress_struct));
         /* Step 1: allocate and initialize JPEG decompression object */
 
-	/* We use our private extension JPEG error handler.
-	 * Note that this struct must live as long as the main JPEG parameter
-	 * struct, to avoid dangling-pointer problems.
-	 */
-	struct my_error_mgr jerr;
+		/* We use our private extension JPEG error handler.
+		 * Note that this struct must live as long as the main JPEG parameter
+		 * struct, to avoid dangling-pointer problems.
+		 */
 
         /* We set up the normal JPEG error routines, then override error_exit. */
-        jpeg_error_mgr errmgr;
-        cinfo.err = jpeg_std_error(&errmgr);
-        errmgr.error_exit = cr_jpeg_error;
+        cinfo.err = jpeg_std_error(&jerr.pub);
+        jerr.pub.error_exit = cr_jpeg_error;
+
+        /* Now we can initialize the JPEG decompression object. */
+        jpeg_create_decompress(&cinfo);
 
         lUInt8 * buffer = NULL;
         lUInt32 * row = NULL;
 
         if (setjmp(jerr.setjmp_buffer)) {
+        	CRLog::error("JPEG setjmp error handling");
 	    /* If we get here, the JPEG code has signaled an error.
 	     * We need to clean up the JPEG object, close the input file, and return.
 	     */
@@ -553,15 +567,13 @@ public:
                 delete[] buffer;
             if ( row )
                 delete[] row;
+        	CRLog::debug("JPEG decoder cleanup");
             cr_jpeg_src_free (&cinfo);
             jpeg_destroy_decompress(&cinfo);
             return false;
-	}
-
+	     }
 
             _stream->SetPos( 0 );
-            /* Now we can initialize the JPEG decompression object. */
-            jpeg_create_decompress(&cinfo);
             /* Step 2: specify data source (eg, a file) */
             cr_jpeg_src( &cinfo, _stream.get() );
             /* Step 3: read file parameters with jpeg_read_header() */
@@ -904,6 +916,21 @@ inline lUInt32 lRGB(lUInt32 r, lUInt32 g, lUInt32 b )
     return (r<<16)|(g<<8)|b;
 }
 
+static bool skipGifExtension(unsigned char *&buf, int buf_size) {
+    unsigned char * endp = buf + buf_size;
+    if (*buf != '!')
+        return false;
+    buf += 2;
+    for (;;) {
+        if (buf >= endp)
+            return false;
+        unsigned blockSize = *buf;
+        buf++;
+        if (blockSize == 0)
+            return true;
+        buf += blockSize;
+    }
+}
 
 int LVGifImageSource::DecodeFromBuffer(unsigned char *buf, int buf_size, LVImageDecoderCallback * callback)
 {
@@ -957,24 +984,42 @@ int LVGifImageSource::DecodeFromBuffer(unsigned char *buf, int buf_size, LVImage
         p+=(m_color_count * 3);
     }
 
-    bool res = false;
-    if (p - buf < buf_size ) {
+    bool found = false;
+    bool res = true;
+    while (res && p - buf < buf_size) {
         // search for delimiter char ','
-        while (*p != ',' && p-buf<buf_size)
-            p++;
-        if (*p==',') {
+        int recordType = *p;
+
+        //            while (*p != ',' && p-buf<buf_size)
+        //                p++;
+        switch (recordType) {
+        case ',': // image descriptor, ','
             // found image descriptor!
-            LVGifFrame * pFrame = new LVGifFrame(this);
-            int cbRead = 0;
-            if (pFrame->DecodeFromBuffer(p, buf_size-(p-buf), cbRead) ) {
-                res = true;
-                pFrame->Draw( callback );
+            {
+                LVGifFrame * pFrame = new LVGifFrame(this);
+                int cbRead = 0;
+                if (pFrame->DecodeFromBuffer(p, buf_size - (p - buf), cbRead) ) {
+                    found = true;
+                    pFrame->Draw( callback );
+                }
+                delete pFrame;
+                res = false; // first frame found, stop!
             }
-            delete pFrame;
+            break;
+        case '!': // extension record
+            {
+                res = skipGifExtension(p, buf_size - (p - buf));
+            }
+            break;
+        case ';': // terminate record
+            res = false;
+            break;
+        default:
+            res = false;
         }
     }
 
-    return res;
+    return found;
 }
 
 void LVGifImageSource::Clear()
@@ -998,6 +1043,7 @@ void LVGifImageSource::Clear()
 }
 
 #define LSWDECODER_MAX_TABLE_SIZE 4096
+#define LSWDECODER_MAX_BITS 12
 class CLZWDecoder
 {
 protected:
@@ -1073,11 +1119,11 @@ public:
         code >>= in_bit_pos;
         code &= (1<<bits)-1;
         in_bit_pos += bits;
-        if (in_bit_pos>8) {
+        if (in_bit_pos >= 8) {
             p_in_stream++;
             in_stream_size--;
             in_bit_pos -= 8;
-            if (in_bit_pos>8) {
+            if (in_bit_pos>=8) {
                 p_in_stream++;
                 in_stream_size--;
                 in_bit_pos -= 8;
@@ -1093,9 +1139,9 @@ public:
         if (lastadd == LSWDECODER_MAX_TABLE_SIZE)
             return -1;
         if (lastadd == (1<<bits)-1) {
-            // increase table size
-            bits++;
-            //ResizeTable(1<<bits);
+            // increase table size, except case when ClearCode is expected
+            if (bits < LSWDECODER_MAX_BITS)
+                bits++;
         }
 
         str_table[lastadd] = NewChar;
@@ -1135,16 +1181,17 @@ public:
         // init table
         Clear();
         //ResizeTable(1<<bits);
-        for (int i=(1<<sizecode)-1; i>=0; i--) {
+        for (int i=(1<<sizecode) + 1; i>=0; i--) {
             str_table[i] = i;
             last_table[i] = i;
             str_nextchar[i] = -1;
         }
         // init codes
-        clearcode = (1<<sizecode);
+        clearcode = (1 << sizecode);
+        eoicode = clearcode + 1;
+
         str_table[clearcode] = 0;
         str_nextchar[clearcode] = -1;
-        eoicode = clearcode + 1;
         str_table[eoicode] = 0;
         str_nextchar[eoicode] = -1;
         //str_table[eoicode] = NULL;
@@ -1167,8 +1214,9 @@ public:
         while (1) { // 3
 
             code = ReadInCode();
+
             if (code<0 || code>lastadd)
-                return 0;
+                return 1; // allow partial image
 
             if (!WriteOutString(code))
                 return 0;
@@ -1178,14 +1226,16 @@ public:
                 oldcode = code;
 
                 code = ReadInCode();
+
                 if (code<0 || code>lastadd)
                     return 0;
 
                 if (CodeExists(code)) {
-                    if (code==eoicode)
+                    if (code == eoicode)
                         return 1;
-                    else if (code==clearcode)
+                    else if (code == clearcode) {
                         break; // clear & goto 3
+                    }
 
                     // write  code
                     if (!WriteOutString(code))
@@ -1227,6 +1277,13 @@ bool LVGifImageSource::Decode( LVImageDecoderCallback * callback )
     _stream->SetPos(0);
     if ( _stream->Read( buf, sz, &bytesRead )!=LVERR_OK || bytesRead!=sz )
         res = false;
+
+//    // for DEBUG
+//    {
+//        LVStreamRef out = LVOpenFileStream("/tmp/test.gif", LVOM_WRITE);
+//        out->Write(buf, sz, NULL);
+//    }
+
     res = res && DecodeFromBuffer( buf, sz, callback );
     delete[] buf;
     return res;
@@ -1241,10 +1298,10 @@ int LVGifFrame::DecodeFromBuffer( unsigned char * buf, int buf_size, int &bytes_
     p++;
 
     // read info
-    m_left = p[0] + (p[1]<<8);
-    m_top = p[2] + (p[3]<<8);
-    m_cx = p[4] + (p[5]<<8);
-    m_cy = p[6] + (p[7]<<8);
+    m_left = p[0] + (((unsigned int)p[1])<<8);
+    m_top = p[2] + (((unsigned int)p[3])<<8);
+    m_cx = p[4] + (((unsigned int)p[5])<<8);
+    m_cy = p[6] + (((unsigned int)p[7])<<8);
 
     if (m_cx<1 || m_cx>4096 ||
         m_cy<1 || m_cy>4096 ||
@@ -1352,6 +1409,7 @@ LVGifFrame::LVGifFrame(LVGifImageSource * pImage)
     m_cy = 0;
     m_flg_ltc = 0; // GTC (gobal table of colors) flag
     m_local_color_table = NULL;
+    m_buffer = NULL;
 }
 
 LVGifFrame::~LVGifFrame()
@@ -1710,7 +1768,7 @@ public:
     virtual bool   Decode( LVImageDecoderCallback * callback )
     {
         callback->OnStartDecode( this );
-        bool res = false;
+        //bool res = false;
         if ( _isGray ) {
             // gray
             LVArray<lUInt32> line;
@@ -1738,7 +1796,7 @@ public:
         } else {
             // color
             for ( int y=0; y<_dy; y++ ) {
-                res = callback->OnLineDecoded( this, y, _colorImage + _dx * y );
+                callback->OnLineDecoded( this, y, _colorImage + _dx * y );
             }
         }
         callback->OnEndDecode( this, false );
@@ -1778,11 +1836,11 @@ public:
     virtual bool   Decode( LVImageDecoderCallback * callback )
     {
         callback->OnStartDecode( this );
-        bool res = false;
+        //bool res = false;
         if ( _buf->GetBitsPerPixel()==32 ) {
             // 32 bpp
             for ( int y=0; y<_dy; y++ ) {
-                res = callback->OnLineDecoded( this, y, (lUInt32 *)_buf->GetScanLine(y) );
+                callback->OnLineDecoded( this, y, (lUInt32 *)_buf->GetScanLine(y) );
             }
         } else {
             // 16 bpp
@@ -1791,7 +1849,7 @@ public:
                 lUInt16 * src = (lUInt16 *)_buf->GetScanLine(y);
                 for ( int x=0; x<_dx; x++ )
                     row[x] = rgb565to888(src[x]);
-                res = callback->OnLineDecoded( this, y, row );
+                callback->OnLineDecoded( this, y, row );
             }
             delete[] row;
         }
@@ -1889,7 +1947,7 @@ void LVDrawBatteryIcon( LVDrawBuf * drawbuf, const lvRect & batteryRc, int perce
         // rc is rectangle to draw text to
         lString16 txt;
         if ( charging )
-            txt = L"+++";
+            txt = "+++";
         else
             txt = lString16::itoa(percent); // + L"%";
         int w = font->getTextWidth(txt.c_str(), txt.length());

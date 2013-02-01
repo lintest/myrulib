@@ -5,7 +5,7 @@
 #include "../include/chmfmt.h"
 #include "../../thirdparty/chmlib/src/chm_lib.h"
 
-//#define DUMP_CHM_DOC 1
+#define DUMP_CHM_DOC 0
 
 struct crChmExternalFileStream : public chmExternalFileStream {
     /** returns file size, in bytes, if opened successfully */
@@ -149,7 +149,7 @@ public:
     }
 
 
-    virtual lverror_t Write( const void * buf, lvsize_t count, lvsize_t * nBytesWritten )
+    virtual lverror_t Write( const void * /*buf*/, lvsize_t /*count*/, lvsize_t * /*nBytesWritten*/ )
     {
         return LVERR_FAIL;
     }
@@ -184,7 +184,7 @@ public:
         LVCHMStream * p = new LVCHMStream(_file);
         lString16 fn(fname);
         if ( fn[0]!='/' )
-            fn = lString16("/") + fn;
+            fn = cs16("/") + fn;
         if ( !p->open( UnicodeToUtf8(lString16(fn)).c_str() )) {
             delete p;
             return stream;
@@ -233,7 +233,7 @@ public:
         Add(item);
     }
 
-    static int CHM_ENUMERATOR_CALLBACK (struct chmFile *h,
+    static int CHM_ENUMERATOR_CALLBACK (struct chmFile * /*h*/,
                               struct chmUnitInfo *ui,
                               void *context)
     {
@@ -285,7 +285,7 @@ public:
     CHMBinaryReader( LVStreamRef stream ) : _stream(stream) {
     }
     bool setPos( int offset ) {
-        return _stream->SetPos(offset) == offset;
+        return (int)_stream->SetPos(offset) == offset;
     }
     bool eof() {
         return _stream->Eof();
@@ -327,9 +327,9 @@ public:
         bytes.clear();
         bytes.reserve(length);
         if ( offset>=0 )
-            if ( _stream->SetPos(offset)!=offset )
+            if ((int)_stream->SetPos(offset) != offset)
                 return false;
-        for ( int i=0; i<length; i++ ) {
+        for (int i = 0; i < length; i++) {
             int b = _stream->ReadByte();
             if ( b==-1 )
                 return false;
@@ -343,7 +343,7 @@ public:
         if ( length==0 )
             return lString8::empty_str;
         if ( offset>=0 )
-            if ( _stream->SetPos(offset)!=offset )
+            if ((int)_stream->SetPos(offset) != offset)
                 return lString8::empty_str;
         lString8 res;
         if ( length>0 )
@@ -351,7 +351,7 @@ public:
         bool zfound = false;
         for ( int i=0; i<length || length==-1; i++ ) {
             int b = _stream->ReadByte();
-            if ( zfound || b==0 && length>=0 ) {
+            if (zfound || (b==0 && length>=0)) {
                 zfound = true;
                 continue;
             }
@@ -366,7 +366,7 @@ public:
         if ( length==0 )
             return lString16::empty_str;
         if ( offset>=0 )
-            if ( _stream->SetPos(offset)!=offset )
+            if ((int)_stream->SetPos(offset) != offset)
                 return lString16::empty_str;
         lString16 res;
         if ( length>0 )
@@ -438,8 +438,10 @@ class CHMUrlStr {
         const lUInt8 * maxdata = ptr + size;
         while ( data + 8 < maxdata ) {
             lUInt32 offset = blockOffset + (data - ptr);
-            lUInt32 urlOffset = readInt32(data);
-            lUInt32 frameOffset = readInt32(data);
+            //lUInt32 urlOffset =
+            readInt32(data);
+            //lUInt32 frameOffset =
+            readInt32(data);
             if ( data < maxdata ) { //urlOffset > offset ) {
                 CHMUrlStrEntry * item = new CHMUrlStrEntry();
                 item->offset = offset;
@@ -637,6 +639,7 @@ class CHMSystem {
     lString8 _indexFile;
     lString8 _defaultTopic;
     lString8 _title;
+    lString8 _language;
     lString8 _defaultFont;
     lUInt32  _lcid;
     bool _dbcs;
@@ -690,6 +693,7 @@ class CHMSystem {
                 int codepage = langToCodepage( _lcid );
                 const lChar16 * enc_name = GetCharsetName( codepage );
                 const lChar16 * table = GetCharsetByte2UnicodeTable( codepage );
+		_language = langToLanguage( _lcid );
                 if ( enc_name!=NULL ) {
                     _enc_table = table;
                     _enc_name = lString16(enc_name);
@@ -769,7 +773,7 @@ class CHMSystem {
         }
         if ( _enc_table==NULL ) {
             _enc_table = GetCharsetByte2UnicodeTable( 1252 );
-            _enc_name = lString16("windows-1252");
+            _enc_name = cs16("windows-1252");
         }
         _urlTable = CHMUrlTable::open(_container);
         return !err;
@@ -801,6 +805,10 @@ public:
         return decodeString(_title);
     }
 
+    lString16 getLanguage() {
+        return decodeString(_language);
+    }
+
     lString16 getDefaultTopic() {
         return decodeString(_defaultTopic);
     }
@@ -826,7 +834,7 @@ public:
                     //CRLog::trace("CHM item: %s", LCSTR(name));
                     lString16 lname = name;
                     lname.lowercase();
-                    if ( lname.endsWith(L".hhc") ) {
+                    if ( lname.endsWith(".hhc") ) {
                         if ( sz > bestSize ) {
                             hhcName = name;
                             bestSize = sz;
@@ -862,7 +870,7 @@ ldomDocument * LVParseCHMHTMLStream( LVStreamRef stream, lString16 defEncodingNa
         if ( node!=NULL ) {
             for ( int i=0; i<node->getChildCount(); i++ ) {
                 ldomNode * child = node->getChildNode(i);
-                if ( child && child->isElement() && child->getNodeName()==L"param" && child->getAttributeValue(L"name")==L"Font") {
+                if (child && child->isElement() && child->getNodeName() == "param" && child->getAttributeValue(L"name") == "Font") {
                     lString16 s = child->getAttributeValue(L"value");
                     lString16 lastDigits;
                     for ( int i=s.length()-1; i>=0; i-- ) {
@@ -911,6 +919,44 @@ ldomDocument * LVParseCHMHTMLStream( LVStreamRef stream, lString16 defEncodingNa
     return doc;
 }
 
+static int filename_comparator(lString16 & _s1, lString16 & _s2) {
+    lString16 s1 = _s1.substr(1);
+    lString16 s2 = _s2.substr(1);
+    if (s1.endsWith(".htm"))
+        s1.erase(s1.length()-4, 4);
+    else if (s1.endsWith(".html"))
+        s1.erase(s1.length()-5, 5);
+    if (s2.endsWith(".htm"))
+        s2.erase(s2.length()-4, 4);
+    else if (s2.endsWith(".html"))
+        s2.erase(s2.length()-5, 5);
+    if (s1 == "index")
+        return -1;
+    else if (s2 == "index")
+        return 1;
+    if (s1 == "header")
+        return -1;
+    else if (s2 == "header")
+        return 1;
+    int d1 = 0;
+    int d2 = 0;
+    s1.atoi(d1);
+    s2.atoi(d2);
+    if (d1 || d2) {
+        if (d1 && d2) {
+            if (d1 < d2)
+                return -1;
+            else if (d1 > d2)
+                return 1;
+            return 0;
+        } else if (d1) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+    return s1.compare(s2);
+}
 
 class CHMTOCReader {
     LVContainerRef _cont;
@@ -933,17 +979,17 @@ public:
             return; // already added
         _fileList.add(v1.c_str());
         CRLog::trace("New source file: %s", LCSTR(v1) );
-        _appender->addPathSubstitution( v1, lString16(L"_doc_fragment_") + lString16::itoa((int)_fileList.length()) );
+        _appender->addPathSubstitution( v1, cs16("_doc_fragment_") + fmt::decimal(_fileList.length()) );
         _appender->setCodeBase( v1 );
     }
 
     void addTocItem( lString16 name, lString16 url, int level )
     {
         //CRLog::trace("CHM toc level %d: '%s' : %s", level, LCSTR(name), LCSTR(url) );
-        if ( url.startsWith(lString16(L"..")) )
+        if (url.startsWith(".."))
             url = LVExtractFilename( url );
         lString16 v1, v2;
-        if ( !url.split2(lString16("#"), v1, v2) )
+        if ( !url.split2(cs16("#"), v1, v2) )
             v1 = url;
         PreProcessXmlString( name, 0 );
         addFile(v1);
@@ -958,20 +1004,20 @@ public:
     {
         lString16 nodeName = node->getNodeName();
         lUInt16 paramElemId = node->getDocument()->getElementNameIndex(L"param");
-        if ( nodeName==L"object" ) {
+        if (nodeName == "object") {
             if ( level>0 ) {
                 // process object
-                if ( node->getAttributeValue(L"type")==L"text/sitemap" ) {
+                if (node->getAttributeValue("type") == "text/sitemap") {
                     lString16 name, local;
                     int cnt = node->getChildCount();
                     for ( int i=0; i<cnt; i++ ) {
                         ldomNode * child = node->getChildElementNode(i, paramElemId);
                         if ( child ) {
-                            lString16 paramName = child->getAttributeValue(L"name");
-                            lString16 paramValue = child->getAttributeValue(L"value");
-                            if ( paramName==L"Name" )
+                            lString16 paramName = child->getAttributeValue("name");
+                            lString16 paramValue = child->getAttributeValue("value");
+                            if (paramName == "Name")
                                 name = paramValue;
-                            else if ( paramName==L"Local" )
+                            else if (paramName == "Local")
                                 local = paramValue;
                         }
                     }
@@ -983,7 +1029,7 @@ public:
             }
             return;
         }
-        if ( nodeName==L"ul" )
+        if (nodeName == "ul")
             level++;
         int cnt = node->getChildCount();
         for ( int i=0; i<cnt; i++ ) {
@@ -996,8 +1042,34 @@ public:
 
     bool init( LVContainerRef cont, lString16 hhcName, lString16 defEncodingName, lString16Collection & urlList, lString16 mainPageName )
     {
-        if ( hhcName.empty() && urlList.length()==0 )
-            return false;
+        if ( hhcName.empty() && urlList.length()==0 ) {
+            lString16Collection htms;
+            for (int i=0; i<cont->GetObjectCount(); i++) {
+                const LVContainerItemInfo * item = cont->GetObjectInfo(i);
+                if (item->IsContainer())
+                    continue;
+                lString16 name = item->GetName();
+                if (name == "/bookindex.htm" || name == "/headerindex.htm")
+                    continue;
+                //CRLog::trace("item %d : %s", i, LCSTR(name));
+                if (name.endsWith(".htm") || name.endsWith(".html"))
+                    htms.add(name);
+            }
+            if (!htms.length())
+                return false;
+//            {
+//                for (int j=0; j<htms.length(); j++) {
+//                    CRLog::trace("unsorted %d : %s", j, LCSTR(htms[j]));
+//                }
+//            }
+            htms.sort(filename_comparator);
+//            {
+//                for (int j=0; j<htms.length(); j++) {
+//                    CRLog::trace("sorted %d : %s", j, LCSTR(htms[j]));
+//                }
+//            }
+            urlList.addAll(htms);
+        }
         _defEncodingName = defEncodingName;
 
         if ( !mainPageName.empty() )
@@ -1005,13 +1077,15 @@ public:
 
         if ( hhcName.empty() ) {
             _fakeToc = true;
-            for ( unsigned i=0; i<urlList.length(); i++ ) {
+            for ( int i=0; i<urlList.length(); i++ ) {
                 //lString16 name = lString16::itoa(i+1);
                 lString16 name = urlList[i];
-                if ( name.endsWith(lString16(L".htm")) )
+                if ( name.endsWith(".htm") )
                     name = name.substr(0, name.length()-4);
-                else if ( name.endsWith(lString16(L".html")) )
+                else if ( name.endsWith(".html") )
                     name = name.substr(0, name.length()-5);
+                if (name.startsWith("/"))
+                    name = name.substr(1);
                 addTocItem( name, urlList[i], 0 );
             }
             return true;
@@ -1034,15 +1108,15 @@ public:
             doc->saveToStream( out, NULL, true );
     #endif
 
-            ldomNode * body = doc->getRootNode(); //doc->createXPointer(lString16("/html[1]/body[1]"));
+            ldomNode * body = doc->getRootNode(); //doc->createXPointer(cs16("/html[1]/body[1]"));
             bool res = false;
             if ( body->isElement() ) {
                 // body element
                 recurseToc( body, 0 );
                 // add rest of pages
-                for ( unsigned i=0; i<urlList.length(); i++ ) {
+                for ( int i=0; i<urlList.length(); i++ ) {
                     lString16 name = urlList[i];
-                    if ( name.endsWith(lString16(L".htm")) || name.endsWith(lString16(L".html")) )
+                    if ( name.endsWith(".htm") || name.endsWith(".html") )
                         addFile(name);
                 }
 
@@ -1121,6 +1195,7 @@ bool ImportCHMDocument( LVStreamRef stream, ldomDocument * doc, LVDocViewCallbac
     lString16 defEncodingName = chm->getEncodingName();
     lString16 mainPageName = chm->getDefaultTopic();
     lString16 title = chm->getTitle();
+    lString16 language = chm->getLanguage();
     CRLog::info("CHM: toc=%s, enc=%s, title=%s", LCSTR(tocFileName), LCSTR(defEncodingName), LCSTR(title));
     //
     lString16Collection urlList;
@@ -1132,13 +1207,15 @@ bool ImportCHMDocument( LVStreamRef stream, ldomDocument * doc, LVDocViewCallbac
     //ldomDocumentWriter writer(doc);
     writer.OnStart(NULL);
     writer.OnTagOpenNoAttr(L"", L"body");
-    ldomDocumentFragmentWriter appender(&writer, lString16(L"body"), lString16(L"DocFragment"), lString16::empty_str );
+    ldomDocumentFragmentWriter appender(&writer, cs16("body"), cs16("DocFragment"), lString16::empty_str );
     CHMTOCReader tocReader(cont, doc, &appender);
     if ( !tocReader.init(cont, tocFileName, defEncodingName, urlList, mainPageName) )
         return false;
 
     if ( !title.empty() )
         doc->getProps()->setString(DOC_PROP_TITLE, title);
+    if ( !language.empty() )
+        doc->getProps()->setString(DOC_PROP_LANGUAGE, language);
 
     fragmentCount = tocReader.appendFragments( progressCallback );
     writer.OnTagClose(L"", L"body");

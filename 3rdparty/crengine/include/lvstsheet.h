@@ -81,6 +81,7 @@ public:
     void apply( css_style_rec_t * style );
     bool empty() { return _data==NULL; }
     bool parse( const char * & decl );
+    lUInt32 getHash();
     LVCssDeclaration() : _data(NULL) { }
     ~LVCssDeclaration() { if (_data) delete[] _data; }
 };
@@ -98,7 +99,7 @@ enum LVCssSelectorRuleType
     cssrt_attrhas,       // E[foo~="value"]
     cssrt_attrstarts,    // E[foo|="value"]
     cssrt_id,            // E#id
-    cssrt_class,         // E.class
+    cssrt_class          // E.class
 };
 
 class LVCssSelectorRule

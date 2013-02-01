@@ -24,6 +24,7 @@
 // standard properties supported by LVDocView
 #define PROP_FONT_GAMMA              "font.gamma" // currently supported: 0.65 .. 1.35, see gammatbl.h
 #define PROP_FONT_ANTIALIASING       "font.antialiasing.mode"
+#define PROP_FONT_HINTING            "font.hinting.mode"
 #define PROP_FONT_COLOR              "font.color.default"
 #define PROP_FONT_FACE               "font.face.default"
 #define PROP_FONT_WEIGHT_EMBOLDEN    "font.face.weight.embolden"
@@ -48,6 +49,7 @@
 #define PROP_ROTATE_ANGLE            "window.rotate.angle"
 #endif
 #define PROP_EMBEDDED_STYLES         "crengine.doc.embedded.styles.enabled"
+#define PROP_EMBEDDED_FONTS          "crengine.doc.embedded.fonts.enabled"
 #define PROP_DISPLAY_INVERSE         "crengine.display.inverse"
 #define PROP_DISPLAY_FULL_UPDATE_INTERVAL "crengine.display.full.update.interval"
 #define PROP_DISPLAY_TURBO_UPDATE_MODE "crengine.display.turbo.update"
@@ -68,6 +70,7 @@
 #define PROP_AUTOSAVE_BOOKMARKS      "crengine.autosave.bookmarks"
 
 #define PROP_FLOATING_PUNCTUATION    "crengine.style.floating.punctuation.enabled"
+#define PROP_FORMAT_MIN_SPACE_CONDENSING_PERCENT "crengine.style.space.condensing.percent"
 
 #define PROP_FILE_PROPS_FONT_SIZE    "cr3.file.props.font.size"
 
@@ -76,6 +79,9 @@
 #define PROP_FORCED_MIN_FILE_SIZE_TO_CACHE  "crengine.cache.forced.filesize.min"
 #define PROP_PROGRESS_SHOW_FIRST_PAGE  "crengine.progress.show.first.page"
 #define PROP_HIGHLIGHT_COMMENT_BOOKMARKS "crengine.highlight.bookmarks"
+#define PROP_HIGHLIGHT_SELECTION_COLOR "crengine.highlight.selection.color"
+#define PROP_HIGHLIGHT_BOOKMARK_COLOR_COMMENT "crengine.highlight.bookmarks.color.comment"
+#define PROP_HIGHLIGHT_BOOKMARK_COLOR_CORRECTION "crengine.highlight.bookmarks.color.correction"
 // image scaling settings
 // mode: 0=disabled, 1=integer scaling factors, 2=free scaling
 // scale: 0=auto based on font size, 1=no zoom, 2=scale up to *2, 3=scale up to *3
@@ -117,6 +123,10 @@ class LVDocImageHolder
 private:
     LVRef<LVDrawBuf> _drawbuf;
     LVMutex & _mutex;
+	LVDocImageHolder & operator = (LVDocImageHolder&) {
+		// no assignment
+        return *this;
+    }
 public:
     LVDrawBuf * getDrawBuf() { return _drawbuf.get(); }
     LVRef<LVDrawBuf> getDrawBufRef() { return _drawbuf; }
@@ -296,6 +306,12 @@ enum LVDocCmd
     DCMD_SELECT_MOVE_LEFT_BOUND_BY_WORDS, // move selection start by words
     DCMD_SELECT_MOVE_RIGHT_BOUND_BY_WORDS, // move selection end by words
 
+    // 136
+    DCMD_SET_TEXT_FORMAT, // set text format, param=1 to autoformat, 0 for preformatted
+    // 137
+    DCMD_SET_DOC_FONTS, // set embedded fonts option (1=enabled, 0=disabled)
+
+
     //=======================================
     DCMD_EDIT_CURSOR_LEFT,
     DCMD_EDIT_CURSOR_RIGHT,
@@ -306,7 +322,7 @@ enum LVDocCmd
     DCMD_EDIT_HOME,
     DCMD_EDIT_END,
     DCMD_EDIT_INSERT_CHAR,
-    DCMD_EDIT_REPLACE_CHAR,
+    DCMD_EDIT_REPLACE_CHAR
 };
 #define LVDOCVIEW_COMMANDS_END DCMD_TOGGLE_BOLD
 
@@ -314,7 +330,7 @@ enum LVDocCmd
 enum LVDocViewMode
 {
     DVM_SCROLL,
-    DVM_PAGES,
+    DVM_PAGES
 };
 
 /// document scroll position info
@@ -342,7 +358,7 @@ enum {
     PGHDR_CLOCK=16,
     PGHDR_BATTERY=32,
     PGHDR_CHAPTER_MARKS=64,
-    PGHDR_PERCENT=128,
+    PGHDR_PERCENT=128
 };
 
 
@@ -409,7 +425,7 @@ private:
     LVImageSourceRef m_backgroundImage;
     LVRef<LVColorDrawBuf> m_backgroundImageScaled;
     bool m_backgroundTiled;
-    bool m_highlightBookmarks;
+    int m_highlightBookmarks;
     LVPtrVector<LVBookMarkPercentInfo> m_bookmarksPercents;
 
 protected:
@@ -490,6 +506,8 @@ private:
     virtual void OnCacheFileFormatDetected( doc_format_t fmt );
     void insertBookmarkPercentInfo(int start_page, int end_y, int percent);
 
+    void updateDocStyleSheet();
+
 protected:
     /// draw to specified buffer by either Y pos or page number (unused param should be -1)
     void Draw( LVDrawBuf & drawbuf, int pageTopPosition, int pageNumber, bool rotate );
@@ -506,8 +524,6 @@ protected:
     int getNextPageOffset();
     /// returns document offset for previous page
     int getPrevPageOffset();
-    /// ensure current position is set to current bookmark value
-    void checkPos();
     /// selects link on page, if any (delta==0 - current, 1-next, -1-previous). returns selected link range, null if no links.
     virtual ldomXRange * selectPageLink( int delta, bool wrapAround);
     /// set status bar and clock mode
@@ -519,6 +535,8 @@ protected:
     /// get screen rectangle for specified cursor position, returns false if not visible
     bool getCursorRect( ldomXPointer ptr, lvRect & rc, bool scrollToCursor = false );
 public:
+    /// ensure current position is set to current bookmark value
+    void checkPos();
     LVFontRef getBatteryFont() { return m_batteryFont; }
     void setBatteryFont( LVFontRef font ) { m_batteryFont=font; }
 
@@ -578,8 +596,12 @@ public:
     CRBookmark * saveCurrentPageBookmark( lString16 comment );
     /// removes bookmark from list, and deletes it, false if not found
     bool removeBookmark( CRBookmark * bm );
+    /// sets new list of bookmarks, removes old values
+    void setBookmarkList(LVPtrVector<CRBookmark> & bookmarks);
     /// restores page using bookmark by numbered shortcut
 	bool goToPageShortcutBookmark( int number );
+    /// find bookmark by window point, return NULL if point doesn't belong to any bookmark
+    CRBookmark * findBookmarkByPoint(lvPoint pt);
     /// returns true if coverpage display is on
     bool getShowCover() { return  m_showCover; }
     /// sets coverpage display flag
@@ -628,6 +650,8 @@ public:
     virtual void selectRange( const ldomXRange & range );
     /// sets selection for list of words, clears previous selection
     virtual void selectWords( const LVArray<ldomWord> & words );
+    /// sets selections for ranges, clears previous selections
+    virtual void selectRanges(ldomXRangeList & ranges);
     /// clears selection
     virtual void clearSelection();
     /// update selection -- command handler
@@ -690,6 +714,10 @@ public:
     LVRef<ldomXRange> getPageDocumentRange( int pageIndex=-1 );
     /// get page text, -1 for current page
     lString16 getPageText( bool wrapWords, int pageIndex=-1 );
+    /// returns number of non-space characters on current page
+    int getCurrentPageCharCount();
+    /// returns number of images on current page
+    int getCurrentPageImageCount();
     /// calculate page header rectangle
     virtual void getPageHeaderRectangle( int pageIndex, lvRect & headerRc );
     /// calculate page header height
@@ -802,6 +830,10 @@ public:
 
     /// returns xpointer for specified window point
     ldomXPointer getNodeByPoint( lvPoint pt );
+    /// returns image source for specified window point, if point is inside image
+    LVImageSourceRef getImageByPoint(lvPoint pt);
+    /// draws scaled image into buffer, clear background according to current settings
+    bool drawImage(LVDrawBuf * buf, LVImageSourceRef img, int x, int y, int dx, int dy);
     /// converts point from window to document coordinates, returns true if success
     bool windowToDocPoint( lvPoint & pt );
     /// converts point from documsnt to window coordinates, returns true if success
@@ -813,6 +845,8 @@ public:
     CRPropRef getDocProps() { return m_doc_props; }
     /// returns book title
     lString16 getTitle() { return m_doc_props->getStringDef(DOC_PROP_TITLE); }
+    /// returns book language
+    lString16 getLanguage() { return m_doc_props->getStringDef(DOC_PROP_LANGUAGE); }
     /// returns book author(s)
     lString16 getAuthors() { return m_doc_props->getStringDef(DOC_PROP_AUTHORS); }
     /// returns book series name and number (series name #1)
@@ -821,8 +855,23 @@ public:
         lString16 name = m_doc_props->getStringDef(DOC_PROP_SERIES_NAME);
         lString16 number = m_doc_props->getStringDef(DOC_PROP_SERIES_NUMBER);
         if ( !name.empty() && !number.empty() )
-            name << L" #" << number;
+            name << " #" << number;
         return name;
+    }
+    /// returns book series name and number (series name #1)
+    lString16 getSeriesName()
+    {
+        lString16 name = m_doc_props->getStringDef(DOC_PROP_SERIES_NAME);
+        return name;
+    }
+    /// returns book series name and number (series name #1)
+    int getSeriesNumber()
+    {
+        lString16 name = m_doc_props->getStringDef(DOC_PROP_SERIES_NAME);
+        lString16 number = m_doc_props->getStringDef(DOC_PROP_SERIES_NUMBER);
+        if (!name.empty() && !number.empty())
+            return number.atoi();
+        return 0;
     }
 
     /// export to WOL format
@@ -913,7 +962,7 @@ public:
     /// get number of current page
     int getCurPage();
     /// move to specified page
-    bool goToPage( int page );
+    bool goToPage(int page, bool updatePosBookmark = true);
     /// returns page count
     int getPageCount();
 
@@ -954,5 +1003,7 @@ public:
     virtual ~LVDocView();
 };
 
+/// draw book cover, either from image, or generated from title/authors
+void LVDrawBookCover(LVDrawBuf & buf, LVImageSourceRef image, lString8 fontFace, lString16 title, lString16 authors, lString16 seriesName, int seriesNumber);
 
 #endif

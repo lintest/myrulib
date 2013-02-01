@@ -70,6 +70,10 @@ static const rtf_control_word * findControlWord( const char * name )
     }
 }
 
+void LVRtfDestination::SetCharsetTable(const lChar16 * table) {
+    m_parser.SetCharsetTable(table);
+}
+
 class LVRtfDefDestination : public LVRtfDestination
 {
 protected:
@@ -80,6 +84,10 @@ protected:
     bool last_space;
     bool last_notitle;
     bool in_subtitle;
+	LVRtfDefDestination & operator = (LVRtfDefDestination&) {
+		// no assignment
+        return *this;
+    }
 public:
     LVRtfDefDestination(  LVRtfParser & parser )
     : LVRtfDestination( parser )
@@ -95,11 +103,12 @@ public:
     // set table state, open/close tags if necessary
     void SetTableState( rtfTblState state )
     {
-        static const lChar16 * tags[4] = {
+        static const lChar16 * tags[5] = {
             NULL,// tbls_none=0,
             L"table", // tbls_intable,
             L"tr", // tbls_inrow,
             L"td", // tbls_incell,
+            NULL
         };
         if ( tblState < state ) {
             for ( int i=tblState+1; i<=state; i++ ) {
@@ -162,7 +171,7 @@ public:
             return;
         }
         bool intbl = m_stack.getInt( pi_intbl )>0;
-        bool asteriskFlag = ( s.compare( L"* * *" )==0 );
+        bool asteriskFlag = (s == "* * *");
         bool titleFlag = m_stack.getInt( pi_align )==ha_center && len<200;
         if ( last_notitle && titleFlag && !asteriskFlag ) {
             OnAction(RA_SECTION);
@@ -257,6 +266,10 @@ public:
 
 class LVRtfNullDestination : public LVRtfDestination
 {
+	LVRtfNullDestination & operator = (LVRtfNullDestination&) {
+		// disabled
+        return *this;
+    }
 public:
     LVRtfNullDestination(  LVRtfParser & parser )
     : LVRtfDestination( parser )
@@ -284,6 +297,10 @@ class LVRtfPictDestination : public LVRtfDestination
     LVArray<lUInt8> _buf;
     int _fmt;
     int _lastDigit;
+	LVRtfPictDestination & operator = (LVRtfPictDestination&) {
+		// no assignment
+        return *this;
+    }
 public:
     LVRtfPictDestination(  LVRtfParser & parser )
     : LVRtfDestination( parser ), _fmt(rtf_img_unknown), _lastDigit(-1)
@@ -292,7 +309,7 @@ public:
     virtual void OnControlWord( const char *, int )
     {
     }
-    virtual void OnText( const lChar16 * text, int len, lUInt32 flags)
+    virtual void OnText( const lChar16 * text, int len, lUInt32)
     {
         int fmt = m_stack.getInt(pi_imgfmt);
         if (!fmt)
@@ -325,13 +342,13 @@ public:
             return;
         // add Image BLOB
         lString16 name(BLOB_NAME_PREFIX); // L"@blob#"
-        name << L"image";
-        name << lString16::itoa(m_parser.nextImageIndex());
-        name << (_fmt==rtf_img_jpeg ? L".jpg" : L".png");
+        name << "image";
+        name << fmt::decimal(m_parser.nextImageIndex());
+        name << (_fmt==rtf_img_jpeg ? ".jpg" : ".png");
         m_callback->OnBlob(name, _buf.get(), _buf.length());
 #if 0
         {
-            LVStreamRef stream = LVOpenFileStream((lString16(L"/tmp/") + name).c_str(), LVOM_WRITE);
+            LVStreamRef stream = LVOpenFileStream((cs16("/tmp/") + name).c_str(), LVOM_WRITE);
             stream->Write(_buf.get(), _buf.length(), NULL);
         }
 #endif
@@ -532,8 +549,7 @@ bool LVRtfParser::Parse()
                 // \uN -- unicode character
                 if ( cwi==1 && cwname[0]=='u' ) {
                     AddChar( (lChar16) (param & 0xFFFF) );
-                    if ( m_stack.getInt( pi_skip_ch_count )==0 )
-                        m_stack.set( pi_skip_ch_count, 1 );
+                    m_stack.set( pi_skip_ch_count, m_stack.getInt(pi_uc_count) );
                 } else {
                     // usual control word
                     OnControlWord( cwname, param, asteriskFlag );
@@ -558,8 +574,8 @@ bool LVRtfParser::Parse()
                 } else {
                     AddChar('\\');
                     AddChar('\'');
-                    AddChar8(digit1);
-                    AddChar8(digit2);
+                    AddChar8((lUInt8)digit1);
+                    AddChar8((lUInt8)digit2);
                     p+=2;
                 }
             } else {

@@ -36,8 +36,8 @@ EXISTS_WXW=`$BUILD_DIR/bin/wx-config --version`
 if test "x$EXISTS_WXW" != "x$WXW_VERSION" ; then 
 
   cd $BUILD_DIR
-  rm $WXW_FILENAME.tar.bz2
   rm -rf $WXW_FILENAME
+  rm $WXW_FILENAME.tar.bz2
   wget http://sourceforge.net/projects/wxwindows/files/$WXW_VERSION/$WXW_FILENAME.tar.bz2
   tar -xvjf $WXW_FILENAME.tar.bz2
   ln -s $WXW_FILENAME wxWidgets
@@ -69,8 +69,8 @@ EXISTS_FT2=`$BUILD_DIR/bin/freetype-config --ftversion`
 if test "x$EXISTS_FT2" != "x$FT2_VERSION" ; then 
 
   cd $BUILD_DIR
-  rm $FT2_FILENAME.tar.bz2
   rm -rf $FT2_FILENAME
+  rm $FT2_FILENAME.tar.bz2
   wget http://sourceforge.net/projects/freetype/files/freetype2/$FT2_VERSION/$FT2_FILENAME.tar.bz2
   tar -xvjf $FT2_FILENAME.tar.bz2
   cd $FT2_FILENAME
@@ -112,6 +112,6 @@ LDFLAGS="-static-libgcc -static-libstdc++" ../configure \
     --with-ft-prefix=$BUILD_DIR \
     --disable-freetypetest \
     --with-locale \
-    --with-reader 
+    --with-reader
 make
 zip $BUILD_DIR/myrulib-cr_$MRL_VERSION-win32.exe.zip myrulib.exe

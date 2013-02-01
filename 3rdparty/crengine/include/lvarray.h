@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include "lvref.h"
 
 /** \brief template which implements vector of pointer
 
@@ -110,7 +111,7 @@ public:
     int length() const { return _count; }
     /// returns true if there are no items in vector
     bool empty() const { return _count==0; }
-    /// clears all items
+    /// clears all items, deallocates storage
     void clear()
     {
         if (_array)
@@ -119,6 +120,11 @@ public:
             _array = NULL;
         }
         _size = 0;
+        _count = 0;
+    }
+    /// clears all items, but unlike clear() does not deallocate storage
+    void reset()
+    {
         _count = 0;
     }
     /// copies range to beginning of array
@@ -287,6 +293,7 @@ public:
     }
 };
 
-
+typedef LVArray<lUInt8> LVByteArray;
+typedef LVRef<LVByteArray> LVByteArrayRef;
 
 #endif

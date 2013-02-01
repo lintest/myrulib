@@ -119,19 +119,7 @@ public:
     { }
 };
 
-class CCRTableRowGroup {
-public:
-    int index;
-    int height;
-    int y;
-    ldomNode * elem;
-    LVPtrVector<CCRTableRow, false> rows;
-    CCRTableRowGroup() : index(0)
-    , height(0)
-    , y(0)
-    , elem(NULL)
-    { }
-};
+class CCRTableRowGroup;
 
 class CCRTableRow {
 public:
@@ -150,6 +138,20 @@ public:
     , linkindex(-1)
     , elem(NULL)
     , rowgroup(NULL)
+    { }
+};
+
+class CCRTableRowGroup {
+public:
+    int index;
+    int height;
+    int y;
+    ldomNode * elem;
+    LVPtrVector<CCRTableRow, false> rows;
+    CCRTableRowGroup() : index(0)
+    , height(0)
+    , y(0)
+    , elem(NULL)
     { }
 };
 
@@ -227,7 +229,7 @@ public:
             return 0;
         int colindex = 0;
         int tdindex = 0;
-        for (unsigned i=0; i<el->getChildCount(); i++) {
+        for (int i=0; i<el->getChildCount(); i++) {
             ldomNode * item = el->getChildElementNode(i);
             if ( item ) {
                 // for each child element
@@ -286,7 +288,7 @@ public:
                         CCRTableCol * col = cols[colindex];
                         col->elem = item;
                         lString16 w = item->getAttributeValue(attr_width);
-                        if (w!=L"") {
+                        if (!w.empty()) {
                             // TODO: px, em, and other length types support
                             int wn = StrToIntPercent(w.c_str(), digitwidth);
                             if (wn<0)
@@ -322,7 +324,7 @@ public:
                         CCRTableCell * cell = new CCRTableCell;
                         cell->elem = item;
                         lString16 w = item->getAttributeValue(attr_width);
-                        if (w!=L"") {
+                        if (!w.empty()) {
                             int wn = StrToIntPercent(w.c_str(), digitwidth);
                             if (wn<0)
                                 cell->percent = -wn;
@@ -343,16 +345,16 @@ public:
                         }
                         // "align"
                         lString16 halign = item->getAttributeValue(attr_align);
-                        if (halign==L"center")
-                            cell->halign=1; // center
-                        else if (halign==L"right")
-                            cell->halign=2; // right
+                        if (halign == "center")
+                            cell->halign = 1; // center
+                        else if (halign == "right")
+                            cell->halign = 2; // right
                         // "valign"
                         lString16 valign = item->getAttributeValue(attr_valign);
-                        if (valign==L"center")
-                            cell->valign=1; // center
-                        else if (valign==L"bottom")
-                            cell->valign=2; // bottom
+                        if (valign == "center")
+                            cell->valign = 1; // center
+                        else if (valign == "bottom")
+                            cell->valign = 2; // bottom
 
                         cell->row = rows[rows.length()-1];
                         cell->row->cells.add( cell );
@@ -366,6 +368,10 @@ public:
                         //TODO
                         caption = item;
                     }
+                    break;
+                case erm_inline:
+                case erm_runin:
+                    // do nothing
                     break;
                 }
             }
@@ -829,7 +835,7 @@ int LVRendGetFontEmbolden()
     return rend_font_embolden;
 }
 
-LVFontRef getFont( css_style_rec_t * style )
+LVFontRef getFont(css_style_rec_t * style, int documentId)
 {
     int sz = style->font_size.value;
     if ( style->font_size.type != css_val_px && style->font_size.type != css_val_percent )
@@ -851,7 +857,8 @@ LVFontRef getFont( css_style_rec_t * style )
         fw,
         style->font_style==css_fs_italic,
         style->font_family,
-        lString8(style->font_name.c_str()) );
+        lString8(style->font_name.c_str()),
+        documentId);
     //fnt = LVCreateFontTransform( fnt, LVFONT_TRANSFORM_EMBOLDEN );
     return fnt;
 }
@@ -940,9 +947,9 @@ void SplitLines( const lString16 & str, lString16Collection & lines )
     for ( ; *s; s++ ) {
         if ( *s=='\r' || *s=='\n' ) {
             //if ( s > start )
-            //    lines.add( lString16("*") + lString16( start, s-start ) + lString16("<") );
+            //    lines.add( cs16("*") + lString16( start, s-start ) + cs16("<") );
             //else
-            //    lines.add( lString16(L"#") );
+            //    lines.add( cs16("#") );
             if ( (s[1] =='\r' || s[1]=='\n') && (s[1]!=s[0]) )
                 s++;
             start = s+1;
@@ -969,7 +976,7 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
         int flags = styleToTextFmtFlags( enode->getStyle(), baseflags );
         int width = fmt->getWidth();
         css_style_rec_t * style = enode->getStyle().get();
-        if (flags & LTEXT_FLAG_NEWLINE)
+        if (flags & LTEXT_FLAG_NEWLINE && rm != erm_inline)
         {
             css_length_t len = style->text_indent;
             switch( len.type )
@@ -1052,7 +1059,7 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
                 int counterValue = 0;
                 ldomNode * parent = enode->getParentNode();
                 int maxWidth = 0;
-                for ( unsigned i=0; i<parent->getChildCount(); i++ ) {
+                for ( int i=0; i<parent->getChildCount(); i++ ) {
                     lString16 marker;
                     int markerWidth = 0;
                     ldomNode * child = parent->getChildElementNode(i);
@@ -1075,7 +1082,7 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
                 int margin = 0;
                 if ( sp==css_lsp_outside )
                     margin = -marker_width;
-                marker += L"\t";
+                marker += "\t";
                 txform->AddSourceLine( marker.c_str(), marker.length(), cl, bgcl, font, flags|LTEXT_FLAG_OWNTEXT, line_h,
                                         margin, NULL );
                 flags &= ~LTEXT_FLAG_NEWLINE;
@@ -1107,23 +1114,23 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
                 title = enode->getAttributeValue(attr_suptitle);
                 if ( !title.empty() ) {
                     lString16Collection lines;
-                    lines.parse(title, lString16("\\n"), true);
-                    for ( unsigned i=0; i<lines.length(); i++ )
+                    lines.parse(title, cs16("\\n"), true);
+                    for ( int i=0; i<lines.length(); i++ )
                         txform->AddSourceLine( lines[i].c_str(), lines[i].length(), cl, bgcl, font, flags|LTEXT_FLAG_OWNTEXT, line_h, 0, NULL );
                 }
                 txform->AddSourceObject(flags, line_h, ident, enode );
                 title = enode->getAttributeValue(attr_subtitle);
                 if ( !title.empty() ) {
                     lString16Collection lines;
-                    lines.parse(title, lString16("\\n"), true);
-                    for ( unsigned i=0; i<lines.length(); i++ )
+                    lines.parse(title, cs16("\\n"), true);
+                    for ( int i=0; i<lines.length(); i++ )
                         txform->AddSourceLine( lines[i].c_str(), lines[i].length(), cl, bgcl, font, flags|LTEXT_FLAG_OWNTEXT, line_h, 0, NULL );
                 }
                 title = enode->getAttributeValue(attr_title);
                 if ( !title.empty() ) {
                     lString16Collection lines;
-                    lines.parse(title, lString16("\\n"), true);
-                    for ( unsigned i=0; i<lines.length(); i++ )
+                    lines.parse(title, cs16("\\n"), true);
+                    for ( int i=0; i<lines.length(); i++ )
                         txform->AddSourceLine( lines[i].c_str(), lines[i].length(), cl, bgcl, font, flags|LTEXT_FLAG_OWNTEXT, line_h, 0, NULL );
                 }
             } else {
@@ -1175,7 +1182,29 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
         //***********************************
         baseflags = f; // to allow blocks in one level with inlines
         if ( enode->getNodeId()==el_br ) {
-            baseflags |= LTEXT_ALIGN_LEFT;
+            // use the same alignment
+            //baseflags |= LTEXT_ALIGN_LEFT;
+            switch (style->text_align) {
+            case css_ta_left:
+                baseflags |= LTEXT_ALIGN_LEFT;
+                break;
+            case css_ta_right:
+                baseflags |= LTEXT_ALIGN_RIGHT;
+                break;
+            case css_ta_center:
+                baseflags |= LTEXT_ALIGN_CENTER;
+                break;
+            case css_ta_justify:
+                baseflags |= LTEXT_ALIGN_WIDTH;
+                ident = 0;
+                break;
+            case css_ta_inherit:
+                break;
+            }
+//            baseflags &= ~LTEXT_FLAG_NEWLINE; // clear newline flag
+//            LVFont * font = enode->getFont().get();
+//            txform->AddSourceLine( L"\n", 1, 0, 0, font, baseflags | LTEXT_FLAG_OWNTEXT,
+//                line_h, 0, enode, 0, 0 );
         } else {
             baseflags &= ~LTEXT_FLAG_NEWLINE; // clear newline flag
         }
@@ -1227,7 +1256,7 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
                 int flags = baseflags | tflags;
                 lString16Collection lines;
                 SplitLines( txt, lines );
-                for ( unsigned k=0; k<lines.length(); k++ ) {
+                for ( int k=0; k<lines.length(); k++ ) {
                     lString16 str = lines[k];
                     txform->AddSourceLine( str.c_str(), str.length(), cl, bgcl,
                         font, flags, line_h, 0, node, 0, letter_spacing );
@@ -1237,15 +1266,15 @@ void renderFinalBlock( ldomNode * enode, LFormattedText * txform, RenderRectAcce
             } else {
             }
             */
-            int offs = 0;
+            //int offs = 0;
             if ( txform->GetSrcCount()==0 && style->white_space!=css_ws_pre ) {
                 // clear leading spaces for first text of paragraph
-                unsigned i=0;
+                int i=0;
                 for ( ;txt.length()>i && (txt[i]==' ' || txt[i]=='\t'); i++ )
                     ;
                 if ( i>0 ) {
                     txt.erase(0, i);
-                    offs = i;
+                    //offs = i;
                 }
             }
             if ( txt.length()>0 )
@@ -1397,7 +1426,7 @@ int renderBlockElement( LVRendPageContext & context, ldomNode * enode, int x, in
             while ( body != NULL && body->getNodeId()!=el_body )
                 body = body->getParentNode();
             if ( body ) {
-                if ( body->getAttributeValue(attr_name)==L"notes" || body->getAttributeValue(attr_name)==L"comments" )
+                if (body->getAttributeValue(attr_name) == "notes" || body->getAttributeValue(attr_name) == "comments")
                     if ( !enode->getAttributeValue(attr_id).empty() )
                         isFootNoteBody = true;
             }
@@ -1534,7 +1563,7 @@ int renderBlockElement( LVRendPageContext & context, ldomNode * enode, int x, in
             if ( context.getPageList() != NULL ) {
 
                 css_page_break_t before, inside, after;
-                before = inside = after = css_pb_auto;
+                //before = inside = after = css_pb_auto;
                 before = getPageBreakBefore( enode );
                 after = getPageBreakAfter( enode );
                 inside = getPageBreakInside( enode );
@@ -1565,7 +1594,7 @@ int renderBlockElement( LVRendPageContext & context, ldomNode * enode, int x, in
 
                     // footnote links analysis
                     if ( !isFootNoteBody && enode->getDocument()->getDocFlag(DOC_FLAG_ENABLE_FOOTNOTES) ) { // disable footnotes for footnotes
-                        for ( unsigned w=0; w<line->word_count; w++ ) {
+                        for ( int w=0; w<line->word_count; w++ ) {
                             // check link start flag for every word
                             if ( line->words[w].flags & LTEXT_WORD_IS_LINK_START ) {
                                 const src_text_fragment_t * src = txform->GetSrcInfo( line->words[w].src_text_index );
@@ -1573,7 +1602,7 @@ int renderBlockElement( LVRendPageContext & context, ldomNode * enode, int x, in
                                     ldomNode * node = (ldomNode*)src->object;
                                     ldomNode * parent = node->getParentNode();
                                     if ( parent->getNodeId()==el_a && parent->hasAttribute(LXML_NS_ANY, attr_href )
-                                            && parent->getAttributeValue(LXML_NS_ANY, attr_type )==L"note") {
+                                            && parent->getAttributeValue(LXML_NS_ANY, attr_type ) == "note") {
                                         lString16 href = parent->getAttributeValue(LXML_NS_ANY, attr_href );
                                         if ( href.length()>0 && href.at(0)=='#' ) {
                                             href.erase(0,1);
@@ -1806,7 +1835,7 @@ void setNodeStyle( ldomNode * enode, css_style_ref_t parent_style, LVFontRef par
     if ( enode->getDocument()->getDocFlag(DOC_FLAG_ENABLE_INTERNAL_STYLES) && enode->hasAttribute( LXML_NS_ANY, attr_style ) ) {
         lString16 nodeStyle = enode->getAttributeValue( LXML_NS_ANY, attr_style );
         if ( !nodeStyle.empty() ) {
-            nodeStyle = lString16(L"{") + nodeStyle + L"}";
+            nodeStyle = cs16("{") + nodeStyle + "}";
             LVCssDeclaration decl;
             lString8 s8 = UnicodeToUtf8(nodeStyle);
             const char * s = s8.c_str();
@@ -1817,9 +1846,11 @@ void setNodeStyle( ldomNode * enode, css_style_ref_t parent_style, LVFontRef par
     }
 
     // update inherited style attributes
-//  #define UPDATE_STYLE_FIELD(fld,inherit_value) \
-//  if (pstyle->fld == inherit_value) \
-//      pstyle->fld = parent_style->fld
+/*
+  #define UPDATE_STYLE_FIELD(fld,inherit_value) \
+  if (pstyle->fld == inherit_value) \
+      pstyle->fld = parent_style->fld
+*/
     #define UPDATE_STYLE_FIELD(fld,inherit_value) \
         if (pstyle->fld == inherit_value) \
             pstyle->fld = parent_style->fld

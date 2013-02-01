@@ -98,6 +98,99 @@ static const lChar16 __cp775[128] = {
   0x00b0, 0x2219, 0x00b7, 0x00b9, 0x00b3, 0x00b2, 0x25a0, 0x00a0,
 };
 
+/*
+ * CP852
+ */
+
+static const lChar16 __cp852[128] = {
+  /* 0x80 */
+  0x00c7, 0x00fc, 0x00e9, 0x00e2, 0x00e4, 0x016f, 0x0107, 0x00e7,
+  0x0142, 0x00eb, 0x0150, 0x0151, 0x00ee, 0x0179, 0x00c4, 0x0106,
+  /* 0x90 */
+  0x00c9, 0x0139, 0x013a, 0x00f4, 0x00f6, 0x013d, 0x013e, 0x015a,
+  0x015b, 0x00d6, 0x00dc, 0x0164, 0x0165, 0x0141, 0x00d7, 0x010d,
+  /* 0xa0 */
+  0x00e1, 0x00ed, 0x00f3, 0x00fa, 0x0104, 0x0105, 0x017d, 0x017e,
+  0x0118, 0x0119, 0x00ac, 0x017a, 0x010c, 0x015f, 0x00ab, 0x00bb,
+  /* 0xb0 */
+  0x2591, 0x2592, 0x2593, 0x2502, 0x2524, 0x00c1, 0x00c2, 0x011a,
+  0x015e, 0x2563, 0x2551, 0x2557, 0x255d, 0x017b, 0x017c, 0x2510,
+  /* 0xc0 */
+  0x2514, 0x2534, 0x252c, 0x251c, 0x2500, 0x253c, 0x0102, 0x0103,
+  0x255a, 0x2554, 0x2569, 0x2566, 0x2560, 0x2550, 0x256c, 0x00a4,
+  /* 0xd0 */
+  0x0111, 0x0110, 0x010e, 0x00cb, 0x010f, 0x0147, 0x00cd, 0x00ce,
+  0x011b, 0x2518, 0x250c, 0x2588, 0x2584, 0x0162, 0x016e, 0x2580,
+  /* 0xe0 */
+  0x00d3, 0x00df, 0x00d4, 0x0143, 0x0144, 0x0148, 0x0160, 0x0161,
+  0x0154, 0x00da, 0x0155, 0x0170, 0x00fd, 0x00dd, 0x0163, 0x00b4,
+  /* 0xf0 */
+  0x00ad, 0x02dd, 0x02db, 0x02c7, 0x02d8, 0x00a7, 0x00f7, 0x00b8,
+  0x00b0, 0x00a8, 0x02d9, 0x0171, 0x0158, 0x0159, 0x25a0, 0x00a0,
+};
+
+/*
+ * ISO-8859-2
+ */
+
+static const lChar16 __iso8859_2[128] = {
+  /* 0x80*/
+  0x0402, 0x0403, 0x201a, 0x0453, 0x201e, 0x2026, 0x2020, 0x2021,
+  0x20ac, 0x2030, 0x0409, 0x2039, 0x040a, 0x040c, 0x040b, 0x040f,
+  /* 0x90*/
+  0x0452, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014,
+  0x0000, 0x2122, 0x0459, 0x203a, 0x045a, 0x045c, 0x045b, 0x045f,
+  /* 0xa0 */
+  0x00a0, 0x0104, 0x02d8, 0x0141, 0x00a4, 0x013d, 0x015a, 0x00a7,
+  0x00a8, 0x0160, 0x015e, 0x0164, 0x0179, 0x00ad, 0x017d, 0x017b,
+  /* 0xb0 */
+  0x00b0, 0x0105, 0x02db, 0x0142, 0x00b4, 0x013e, 0x015b, 0x02c7,
+  0x00b8, 0x0161, 0x015f, 0x0165, 0x017a, 0x02dd, 0x017e, 0x017c,
+  /* 0xc0 */
+  0x0154, 0x00c1, 0x00c2, 0x0102, 0x00c4, 0x0139, 0x0106, 0x00c7,
+  0x010c, 0x00c9, 0x0118, 0x00cb, 0x011a, 0x00cd, 0x00ce, 0x010e,
+  /* 0xd0 */
+  0x0110, 0x0143, 0x0147, 0x00d3, 0x00d4, 0x0150, 0x00d6, 0x00d7,
+  0x0158, 0x016e, 0x00da, 0x0170, 0x00dc, 0x00dd, 0x0162, 0x00df,
+  /* 0xe0 */
+  0x0155, 0x00e1, 0x00e2, 0x0103, 0x00e4, 0x013a, 0x0107, 0x00e7,
+  0x010d, 0x00e9, 0x0119, 0x00eb, 0x011b, 0x00ed, 0x00ee, 0x010f,
+  /* 0xf0 */
+  0x0111, 0x0144, 0x0148, 0x00f3, 0x00f4, 0x0151, 0x00f6, 0x00f7,
+  0x0159, 0x016f, 0x00fa, 0x0171, 0x00fc, 0x00fd, 0x0163, 0x02d9,
+};
+
+/*
+ * ISO-8859-16
+ */
+
+static const lChar16 __iso8859_16[128] = {
+    /* 0x80*/
+    0x0402, 0x0403, 0x201a, 0x0453, 0x201e, 0x2026, 0x2020, 0x2021,
+    0x20ac, 0x2030, 0x0409, 0x2039, 0x040a, 0x040c, 0x040b, 0x040f,
+    /* 0x90*/
+    0x0452, 0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014,
+    0x0000, 0x2122, 0x0459, 0x203a, 0x045a, 0x045c, 0x045b, 0x045f,
+    /* 0xa0 */
+    0x00a0, 0x0104, 0x0105, 0x0141, 0x20ac, 0x201e, 0x0160, 0x00a7,
+    0x0161, 0x00a9, 0x0218, 0x00ab, 0x0179, 0x00ad, 0x017a, 0x017b,
+    /* 0xb0 */
+    0x00b0, 0x00b1, 0x010c, 0x0142, 0x017d, 0x201d, 0x00b6, 0x00b7,
+    0x017e, 0x010d, 0x0219, 0x00bb, 0x0152, 0x0153, 0x0178, 0x017c,
+    /* 0xc0 */
+    0x00c0, 0x00c1, 0x00c2, 0x0102, 0x00c4, 0x0106, 0x00c6, 0x00c7,
+    0x00c8, 0x00c9, 0x00ca, 0x00cb, 0x00cc, 0x00cd, 0x00ce, 0x00cf,
+    /* 0xd0 */
+    0x0110, 0x0143, 0x00d2, 0x00d3, 0x00d4, 0x0150, 0x00d6, 0x015a,
+    0x0170, 0x00d9, 0x00da, 0x00db, 0x00dc, 0x0118, 0x021a, 0x00df,
+    /* 0xe0 */
+    0x00e0, 0x00e1, 0x00e2, 0x0103, 0x00e4, 0x0107, 0x00e6, 0x00e7,
+    0x00e8, 0x00e9, 0x00ea, 0x00eb, 0x00ec, 0x00ed, 0x00ee, 0x00ef,
+    /* 0xf0 */
+    0x0111, 0x0144, 0x00f2, 0x00f3, 0x00f4, 0x0151, 0x00f6, 0x015b,
+    0x0171, 0x00f9, 0x00fa, 0x00fb, 0x00fc, 0x0119, 0x021b, 0x00ff,
+};
+
 static const lChar16 __cp1257[128] = {
   /* 0x80 */
   0x20ac, 0xfffd, 0x201a, 0xfffd, 0x201e, 0x2026, 0x2020, 0x2021,
@@ -211,6 +304,49 @@ static const lChar16 __cp1252[128] = {
     0x00fc, 0x00fd, 0x00fe, 0x00ff,
 };
 
+static const lChar16 __cp1254[128] = {
+    /* 0x80 */
+    0x20ac, 0xfffd, 0x201a, 0x0192,
+    0x201e, 0x2026, 0x2020, 0x2021,
+    0x02c6, 0x2030, 0x0160, 0x2039,
+    0x0152, 0xfffd, 0xfffd, 0xfffd,
+    /* 0x90 */
+    0xfffd, 0x2018, 0x2019, 0x201c,
+    0x201d, 0x2022, 0x2013, 0x2014,
+    0x02dc, 0x2122, 0x0161, 0x203a,
+    0x0153, 0xfffd, 0xfffd, 0x0178,
+    /* 0xa0*/
+    0x00a0, 0x00a1, 0x00a2, 0x00a3,
+    0x00a4, 0x00a5, 0x00a6, 0x00a7,
+    0x00a8, 0x00a9, 0x00aa, 0x00ab,
+    0x00ac, 0x00ad, 0x00ae, 0x00af,
+    /* 0xb0*/
+    0x00b0, 0x00b1, 0x00b2, 0x00b3,
+    0x00b4, 0x00b5, 0x00b6, 0x00b7,
+    0x00b8, 0x00b9, 0x00ba, 0x00bb,
+    0x00bc, 0x00bd, 0x00be, 0x00bf,
+    /* 0xc0*/
+    0x00c0, 0x00c1, 0x00c2, 0x00c3,
+    0x00c4, 0x00c5, 0x00c6, 0x00c7,
+    0x00c8, 0x00c9, 0x00ca, 0x00cb,
+    0x00cc, 0x00cd, 0x00ce, 0x00cf,
+    /* 0xd0 */
+    0x011e, 0x00d1, 0x00d2, 0x00d3,
+    0x00d4, 0x00d5, 0x00d6, 0x00d7,
+    0x00d8, 0x00d9, 0x00da, 0x00db,
+    0x00dc, 0x0130, 0x015e, 0x00df,
+    /* 0xe0*/
+    0x00e0, 0x00e1, 0x00e2, 0x00e3,
+    0x00e4, 0x00e5, 0x00e6, 0x00e7,
+    0x00e8, 0x00e9, 0x00ea, 0x00eb,
+    0x00ec, 0x00ed, 0x00ee, 0x00ef,
+    /* 0xf0 */
+    0x011f, 0x00f1, 0x00f2, 0x00f3,
+    0x00f4, 0x00f5, 0x00f6, 0x00f7,
+    0x00f8, 0x00f9, 0x00fa, 0x00fb,
+    0x00fc, 0x0131, 0x015f, 0x00ff,
+};
+
 static const lChar16 __cp866[128] = {
     /* 0x80*/
     0x0410, 0x0411, 0x0412, 0x0413,
@@ -295,53 +431,6 @@ static const lChar16 __koi8r[128] = {
     0x0422, 0x0423, 0x0416, 0x0412,
     0x042c, 0x042b, 0x0417, 0x0428,
     0x042d, 0x0429, 0x0427, 0x042a,
-};
-
-/*
- * ISO-8859-2
- */
-
-static const lChar16 __iso8859_2[128] = {
-    /* 0x80*/
-    0x20ac, 0x0000, 0x201a, 0x0000,
-    0x201e, 0x2026, 0x2020, 0x2021,
-    0x0000, 0x2030, 0x0160, 0x2039,
-    0x015a, 0x0164, 0x017d, 0x0179,
-    /* 0x90*/
-    0x0000, 0x2018, 0x2019, 0x201c,
-    0x201d, 0x2022, 0x2013, 0x2014,
-    0x0000, 0x2122, 0x0161, 0x203a,
-    0x015b, 0x0165, 0x017e, 0x017a,
-    /* 0xa0 */
-    0x00a0, 0x0104, 0x02d8, 0x0141, 
-    0x00a4, 0x013d, 0x015a, 0x00a7,
-    0x00a8, 0x0160, 0x015e, 0x0164, 
-    0x0179, 0x00ad, 0x017d, 0x017b,
-    /* 0xb0 */
-    0x00b0, 0x0105, 0x02db, 0x0142, 
-    0x00b4, 0x013e, 0x015b, 0x02c7,
-    0x00b8, 0x0161, 0x015f, 0x0165, 
-    0x017a, 0x02dd, 0x017e, 0x017c,
-    /* 0xc0 */
-    0x0154, 0x00c1, 0x00c2, 0x0102, 
-    0x00c4, 0x0139, 0x0106, 0x00c7,
-    0x010c, 0x00c9, 0x0118, 0x00cb, 
-    0x011a, 0x00cd, 0x00ce, 0x010e,
-    /* 0xd0 */
-    0x0110, 0x0143, 0x0147, 0x00d3, 
-    0x00d4, 0x0150, 0x00d6, 0x00d7,
-    0x0158, 0x016e, 0x00da, 0x0170, 
-    0x00dc, 0x00dd, 0x0162, 0x00df,
-    /* 0xe0 */
-    0x0155, 0x00e1, 0x00e2, 0x0103, 
-    0x00e4, 0x013a, 0x0107, 0x00e7,
-    0x010d, 0x00e9, 0x0119, 0x00eb, 
-    0x011b, 0x00ed, 0x00ee, 0x010f,
-    /* 0xf0 */
-    0x0111, 0x0144, 0x0148, 0x00f3, 
-    0x00f4, 0x0151, 0x00f6, 0x00f7,
-    0x0159, 0x016f, 0x00fa, 0x0171, 
-    0x00fc, 0x00fd, 0x0163, 0x02d9,
 };
 
 static const lChar16 __cp1250[128] = {
@@ -441,6 +530,9 @@ static const lChar16 __cp850[128] = {
 #define CRENC_ID_CP850   (CRENC_ID_8BIT_START+9)
 #define CRENC_ID_KOI8R   (CRENC_ID_8BIT_START+10)
 #define CRENC_ID_ISO8859_2 (CRENC_ID_8BIT_START+11)
+#define CRENC_ID_CP1254   (CRENC_ID_8BIT_START+12)
+#define CRENC_ID_CP852   (CRENC_ID_8BIT_START+13)
+#define CRENC_ID_ISO8859_16 (CRENC_ID_8BIT_START+14)
 
 
 /// add other encodings here
@@ -453,11 +545,13 @@ static struct {
     {"windows-1251", __cp1251, CRENC_ID_CP1251},
     {"windows-1252", __cp1252, CRENC_ID_CP1252},
     {"windows-1253", __cp1253, CRENC_ID_CP1253},
+    {"windows-1254", __cp1254, CRENC_ID_CP1254},
     {"windows-1257", __cp1257, CRENC_ID_CP1257},
     {"cp775", __cp775, CRENC_ID_CP775},
     {"cp737", __cp737, CRENC_ID_CP737},
     {"cp1250", __cp1250, CRENC_ID_CP1250},
     {"cp1251", __cp1251, CRENC_ID_CP1251},
+    {"cp1254", __cp1254, CRENC_ID_CP1254},
     {"iso-8859-5", __cp1251, CRENC_ID_CP1251},
     {"iso_8859-5", __cp1251, CRENC_ID_CP1251},
     {"iso8859-5", __cp1251, CRENC_ID_CP1251},
@@ -470,8 +564,10 @@ static struct {
     {"cp1257", __cp1257, CRENC_ID_CP1257},
     {"cp866", __cp866, CRENC_ID_CP866},
     {"cp850", __cp850, CRENC_ID_CP850},
+    {"cp852", __cp852, CRENC_ID_CP852},
     {"windows-866", __cp866, CRENC_ID_CP866},
     {"windows-850", __cp850, CRENC_ID_CP850},
+    {"windows-852", __cp852, CRENC_ID_CP852},
     {"koi-8r", __koi8r, CRENC_ID_KOI8R},
     {"koi8r", __koi8r, CRENC_ID_KOI8R},
     {"iso8859-2", __iso8859_2, CRENC_ID_ISO8859_2},
@@ -479,6 +575,9 @@ static struct {
     {"iso8859_2", __iso8859_2, CRENC_ID_ISO8859_2},
     {"latin-2", __iso8859_2, CRENC_ID_ISO8859_2},
     {"latin-5", __iso8859_2, CRENC_ID_ISO8859_2},
+    {"iso8859-16", __iso8859_16, CRENC_ID_ISO8859_16},
+    {"iso-8859-16", __iso8859_16, CRENC_ID_ISO8859_16},
+    {"iso8859_16", __iso8859_16, CRENC_ID_ISO8859_16},
     {NULL, NULL, 0}
 };
 
@@ -487,19 +586,19 @@ int CREncodingNameToId( const lChar16 * enc_name )
     lString16 s( enc_name );
     s.lowercase();
     const lChar16 * encoding_name = s.c_str();
-    if ( !lStr_cmp(encoding_name, L"utf-8") )
+    if ( !lStr_cmp(encoding_name, "utf-8") )
         return CRENC_ID_UTF8;
-    else if ( !lStr_cmp(encoding_name, L"utf-16") )
+    else if ( !lStr_cmp(encoding_name, "utf-16") )
         return CRENC_ID_UTF16_LE;
-    else if ( !lStr_cmp(encoding_name, L"utf-16le") )
+    else if ( !lStr_cmp(encoding_name, "utf-16le") )
         return CRENC_ID_UTF16_LE;
-    else if ( !lStr_cmp(encoding_name, L"utf-16be") )
+    else if ( !lStr_cmp(encoding_name, "utf-16be") )
         return CRENC_ID_UTF16_BE;
-    else if ( !lStr_cmp(encoding_name, L"utf-32") )
+    else if ( !lStr_cmp(encoding_name, "utf-32") )
         return CRENC_ID_UTF16_LE;
-    else if ( !lStr_cmp(encoding_name, L"utf-32le") )
+    else if ( !lStr_cmp(encoding_name, "utf-32le") )
         return CRENC_ID_UTF16_LE;
-    else if ( !lStr_cmp(encoding_name, L"utf-32be") )
+    else if ( !lStr_cmp(encoding_name, "utf-32be") )
         return CRENC_ID_UTF16_BE;
     for (int i=0; _enc_table[i].name!=NULL; i++)
     {
@@ -842,6 +941,288 @@ int langToCodepage( int lang )
     }
 }
 
+const char* langToLanguage( int lang )
+{
+    switch ( lang )
+    {
+    case	0x0436	: //	Afrikaans
+        return "af";
+    case	0x041c	: //	Albanian
+        return "sq";
+    case	0x0401	: //	Arabic
+    case	0x1401	: //	Arabic Algeria
+    case	0x3c01	: //	Arabic Bahrain
+    case	0x0c01	: //	Arabic Egypt
+    case	0x0001	: //	Arabic General
+    case	0x0801	: //	Arabic Iraq
+    case	0x2c01	: //	Arabic Jordan
+    case	0x3401	: //	Arabic Kuwait
+    case	0x3001	: //	Arabic Lebanon
+    case	0x1001	: //	Arabic Libya
+    case	0x1801	: //	Arabic Morocco
+    case	0x2001	: //	Arabic Oman
+    case	0x4001	: //	Arabic Qatar
+    case	0x2801	: //	Arabic Syria
+    case	0x1c01	: //	Arabic Tunisia
+    case	0x3801	: //	Arabic U.A.E.
+    case	0x2401	: //	Arabic Yemen
+        return "ar";
+    case	0x042b	: //	Armenian
+        return "hy";
+    case	0x044d	: //	Assamese
+        return "as";
+    case	0x082c	: //	Azeri Cyrillic
+    case	0x042c	: //	Azeri Latin
+        return "az";
+    case	0x042d	: //	Basque
+        return "eu";
+    case	0x0445	: //	Bengali
+        return "bn";
+    case	0x101a	: //	Bosnia Herzegovina
+        return "hr";
+    case	0x0402	: //	Bulgarian
+        return "bg";
+    case	0x0455	: //	Burmese
+        return "my";
+    case	0x0423	: //	Byelorussian
+        return "be";
+    case	0x0403	: //	Catalan
+        return "ca";
+    case	0x0804	: //	Chinese China
+    case	0x0004	: //	Chinese General
+    case	0x0c04	: //	Chinese Hong Kong
+    //case	0x0c04	: //	Chinese Macao
+    case	0x1004	: //	Chinese Singapore
+    case	0x0404	: //	Chinese Taiwan
+        return "zh";
+    case	0x041a	: //	Croatian
+        return "hr";
+    case	0x0405	: //	Czech
+        return "cs";
+    case	0x0406	: //	Danish
+        return "da";
+    case	0x0813	: //	Dutch Belgium
+    case	0x0413	: //	Dutch Standard
+        return "nl";
+    case	0x0c09	: //	English Australia
+    case	0x2809	: //	English Belize
+    case	0x0809	: //	English British
+    case	0x1009	: //	English Canada
+    case	0x2409	: //	English Caribbean
+    case	0x0009	: //	English General
+    case	0x1809	: //	English Ireland
+    case	0x2009	: //	English Jamaica
+    case	0x1409	: //	English New Zealand
+    case	0x3409	: //	English Philippines
+    case	0x1c09	: //	English South Africa
+    case	0x2c09	: //	English Trinidad
+    case	0x0409	: //	English United States
+    //case	0x0409	: //	English Zimbabwe
+        return "en";
+    case	0x0425	: //	Estonian
+        return "et";
+    case	0x0438	: //	Faeroese
+        return "fo";
+    case	0x0429	: //	Farsi
+        return "fa";
+    case	0x040b	: //	Finnish
+        return "fi";
+    case	0x040c	: //	French
+    case	0x080c	: //	French Belgium
+    case	0x2c0c	: //	French Cameroon
+    case	0x0c0c	: //	French Canada
+    case	0x300c	: //	French Cote d'Ivoire
+    case	0x140c	: //	French Luxemburg
+    case	0x340c	: //	French Mali
+    case	0x180c	: //	French Monaco
+    case	0x200c	: //	French Reunion
+    case	0x280c	: //	French Senegal
+    case	0x100c	: //	French Swiss
+    case	0x1c0c	: //	French West Indies
+    case	0x240c	: //	French Zaire
+        return "fr";
+    case	0x0462	: //	Frisian
+        return "fy";
+    case	0x043c	: //	Gaelic
+    case	0x083c	: //	Gaelic Ireland
+	return "ga";
+    case	0x0456	: //	Galician
+	return "gl";
+    case	0x0437	: //	Georgian
+        return "ka";
+    case	0x0407	: //	German
+    case	0x0c07	: //	German Austrian
+    case	0x1407	: //	German Liechtenstein
+    case	0x1007	: //	German Luxemburg
+    case	0x0807	: //	German Switzerland
+        return "de";
+    case	0x0408	: //	Greek
+        return "el";
+    case	0x0447	: //	Gujarati
+        return "gu";
+    case	0x040d	: //	Hebrew
+        return "he";
+    case	0x0439	: //	Hindi
+        return "hi";
+    case	0x040e	: //	Hungarian
+        return "hu";
+    case	0x040f	: //	Icelandic
+        return "is";
+    case	0x0421	: //	Indonesian
+        return "id";
+    case	0x0410	: //	Italian
+    case	0x0810	: //	Italian Switzerland
+        return "it";
+    case	0x0411	: //	Japanese
+        return "ja";
+    case	0x044b	: //	Kannada
+        return "kn";
+    case	0x0460	: //	Kashmiri
+    case	0x0860	: //	Kashmiri India
+        return "ks";
+    case	0x043f	: //	Kazakh
+        return "kk";
+    case	0x0453	: //	Khmer
+        return "km";
+    case	0x0440	: //	Kirghiz
+        return "ky";
+    case	0x0457	: //	Konkani
+        return "kok";
+    case	0x0412	: //	Korean
+    case	0x0812	: //	Korean Johab
+        return "ko";
+    case	0x0454	: //	Lao
+        return "lo";
+    case	0x0426	: //	Latvian
+        return "lv";
+    case	0x0427	: //	Lithuanian
+    case	0x0827	: //	Lithuanian Classic
+        return "lt";
+    case	0x043e	: //	Macedonian
+    //case	0x043e	: //	Malay
+    case	0x083e	: //	Malay Brunei Darussalam
+        return "ms";
+    case	0x044c	: //	Malayalam
+        return "ml";
+    case	0x043a	: //	Maltese
+        return "mt";
+    case	0x0458  : //	Manipuri
+        return "mni";
+    case	0x044e	: //	Marathi
+        return "mr";
+    case	0x0450	: //	Mongolian
+        return "mn";
+    case	0x0461	: //	Nepali
+    case	0x0861	: //	Nepali India
+        return "ne";
+    case	0x0414	: //	Norwegian Bokmal
+    case	0x0814	: //	Norwegian Nynorsk
+        return "nb";
+    case	0x0448	: //	Oriya
+        return "or";
+    case	0x0415	: //	Polish
+        return "pl";
+    case	0x0416	: //	Portuguese Brazil
+    case	0x0816	: //	Portuguese Iberian
+        return "pt";
+    case	0x0446	: //	Punjabi
+        return "pa";
+    case	0x0417	: //	Rhaeto-Romanic
+        return "rm";
+    case	0x0418	: //	Romanian
+    case	0x0818	: //	Romanian Moldova
+        return "ro";
+    case	0x0419	: //	Russian
+    case	0x0819	: //	Russian Moldova
+        return "ru";
+    case	0x043b	: //	Sami Lappish
+        return "se";
+    case	0x044f	: //	Sanskrit
+        return "sa";
+    case	0x0c1a	: //	Serbian Cyrillic
+    case	0x081a	: //	Serbian Latin
+        return "hr";
+    case	0x0459	: //	Sindhi
+        return "sd";
+    case	0x041b	: //	Slovak
+        return "sk";
+    case	0x0424	: //	Slovenian
+        return "sl";
+    case	0x042e	: //	Sorbian
+        return "hsb";
+    case	0x2c0a	: //	Spanish Argentina
+    case	0x400a	: //	Spanish Bolivia
+    case	0x340a	: //	Spanish Chile
+    case	0x240a	: //	Spanish Colombia
+    case	0x140a	: //	Spanish Costa Rica
+    case	0x1c0a	: //	Spanish Dominican Republic
+    case	0x300a	: //	Spanish Ecuador
+    case	0x440a	: //	Spanish El Salvador
+    case	0x100a	: //	Spanish Guatemala
+    case	0x480a	: //	Spanish Honduras
+    case	0x080a	: //	Spanish Mexico
+    case	0x0c0a	: //	Spanish Modern
+    case	0x4c0a	: //	Spanish Nicaragua
+    case	0x180a	: //	Spanish Panama
+    case	0x3c0a	: //	Spanish Paraguay
+    case	0x280a	: //	Spanish Peru
+    case	0x500a	: //	Spanish Puerto Rico
+    case	0x040a	: //	Spanish Traditional
+    case	0x380a	: //	Spanish Uruguay
+    case	0x200a	: //	Spanish Venezuela
+        return "es";
+    case	0x0430	: //	Sutu
+        return "st";
+    case	0x0441	: //	Swahili
+        return "sw";
+    case	0x041d	: //	Swedish
+    case	0x081d	: //	Swedish Finland
+        return "sv";
+    case	0x0428	: //	Tajik
+        return "tg";
+    case	0x0449	: //	Tamil
+        return "ta";
+    case	0x0444	: //	Tatar
+        return "tt";
+    case	0x044a	: //	Telugu
+        return "te";
+    case	0x041e	: //	Thai
+        return "th";
+    case	0x0451	: //	Tibetan
+        return "bo";
+    case	0x0431	: //	Tsonga
+        return "ts";
+    case	0x0432	: //	Tswana
+        return "tn";
+    case	0x041f	: //	Turkish
+        return "tr";
+    case	0x0442	: //	Turkmen
+        return "tk";
+    case	0x0422	: //	Ukrainian
+        return "uk";
+    case	0x0420	: //	Urdu
+    case	0x0820	: //	Urdu India
+        return "ur";
+    case	0x0843	: //	Uzbek Cyrillic
+    case	0x0443	: //	Uzbek Latin
+        return "uz";
+    case	0x0433	: //	Venda
+        return "ve";
+    case	0x042a	: //	Vietnamese
+        return "vi";
+    case	0x0452	: //	Welsh
+        return "cy";
+    case	0x0434	: //	Xhosa
+        return "xh";
+    case	0x043d	: //	Yiddish
+        return "yi";
+    case	0x0435	: //	Zulu
+        return "zu";
+    default:
+        return NULL;
+    }
+}
+
 const lChar16 * GetCharsetByte2UnicodeTable( int codepage )
 {
     switch ( codepage )
@@ -856,6 +1237,8 @@ const lChar16 * GetCharsetByte2UnicodeTable( int codepage )
         return __cp1252;
     case 1253:
         return __cp1253;
+    case 1254:
+        return __cp1254;
     case 737:
         return __cp737;
     case 1250: return __cp1250;
@@ -1339,16 +1722,20 @@ public:
 
 bool isValidUtf8Data( const unsigned char * buf, int buf_size )
 {
+    const unsigned char * start = buf;
     const unsigned char * end_buf = buf + buf_size - 5;
     while ( buf < end_buf ) {
         lUInt8 ch = *buf++;
         if ( (ch & 0x80) == 0 ) {
         } else if ( (ch & 0xC0) == 0x80 ) {
+            CRLog::trace("unexpected char %02x at position %x, str=%s", ch, (buf-1-start), lString8((const char *)(buf-1), 32).c_str());
             return false;
         } else if ( (ch & 0xE0) == 0xC0 ) {
             ch = *buf++;
-            if ( (ch & 0xC0) != 0x80 )
+            if ( (ch & 0xC0) != 0x80 ) {
+                CRLog::trace("unexpected char %02x at position %x, str=%s", ch, (buf-1-start), lString8((const char *)(buf-1), 32).c_str());
                 return false;
+            }
         } else if ( (ch & 0xF0) == 0xE0 ) {
             ch = *buf++;
             if ( (ch & 0xC0) != 0x80 )
@@ -1372,14 +1759,28 @@ bool isValidUtf8Data( const unsigned char * buf, int buf_size )
     }
     return true;
 }
-void MakeDblCharStat( const unsigned char * buf, int buf_size, dbl_char_stat_t * stat, int stat_len )
+
+void MakeDblCharStat(const unsigned char * buf, int buf_size, dbl_char_stat_t * stat, int stat_len, bool skipHtml)
 {
    CDoubleCharStat2 maker;
    unsigned char ch1=' ';
    unsigned char ch2=' ';
+   bool insideTag = false;
    for ( int i=1; i<buf_size; i++) {
+      lChar16 ch = buf[i];
+      if (skipHtml) {
+          if (ch == '<') {
+              insideTag = true;
+              continue;
+          } else if (ch == '>') {
+              insideTag = false;
+              ch = ' ';
+          }
+      }
+      if (insideTag)
+          continue;
       ch1 = ch2;
-      ch2 = buf[i];
+      ch2 = ch;
       if ( ch2<128 && ch2!='\'' && !( (ch2>='a' && ch2<='z') || (ch2>='A' && ch2<='Z')) )
          ch2 = ' ';
       //if (i>0)
@@ -1388,14 +1789,27 @@ void MakeDblCharStat( const unsigned char * buf, int buf_size, dbl_char_stat_t *
    maker.GetData( stat, stat_len );
 }
 
-void MakeCharStat( const unsigned char * buf, int buf_size, short stat_table[256] )
+void MakeCharStat(const unsigned char * buf, int buf_size, short stat_table[256], bool skipHtml)
 {
    int stat[256];
    memset( stat, 0, sizeof(int)*256 );
    int total=0;
    unsigned char ch;
+   bool insideTag = false;
    for (int i=0; i<buf_size; i++) {
       ch = buf[i];
+      if (skipHtml) {
+          if (ch == '<') {
+              insideTag = true;
+              continue;
+          }
+          if (ch == '>') {
+              insideTag = false;
+              continue;
+          }
+          if (insideTag)
+              continue;
+      }
       if ( ch>127 || (ch>='a' && ch<='z') || (ch>='A' && ch<='Z') || ch=='\'') {
          stat[ch]++;
          total++;
@@ -1438,19 +1852,21 @@ double CompareDblCharStats( const dbl_char_stat_t * stat1, const dbl_char_stat_t
    while (len1 && len2) {
       //
       if (stat1->ch1==stat2->ch1 && stat1->ch2==stat2->ch2) {
-         // add stat
-         int delta = (stat1->count - stat2->count);
-         if (delta<0)
-            delta = -delta;
-         sum += delta;
-         psum += ( (double)stat1->count * stat2->count / 0x7000 / 0x7000);
-	     if (stat1->ch1>=128 || stat1->ch2>=128)
-		    psum2 += ( (double)stat1->count * stat2->count / 0x7000 / 0x7000);
-         // move both
-         stat1++;
-         len1--;
-         stat2++;
-         len2--;
+          if (stat1->ch1 != ' ' || stat1->ch2 != ' ') {
+             // add stat
+             int delta = (stat1->count - stat2->count);
+             if (delta<0)
+                delta = -delta;
+             sum += delta;
+             psum += ( (double)stat1->count * stat2->count / 0x7000 / 0x7000);
+             if (stat1->ch1>=128 || stat1->ch2>=128)
+                psum2 += ( (double)stat1->count * stat2->count / 0x7000 / 0x7000);
+          }
+          // move both
+          stat1++;
+          len1--;
+          stat2++;
+          len2--;
       } else if ( stat1->ch1<stat2->ch1 || (stat1->ch1==stat2->ch1 && stat1->ch2<stat2->ch2) ) {
          // add stat
          //int delta = (stat1->count);
@@ -1516,7 +1932,87 @@ int AutodetectCodePageUtf( const unsigned char * buf, int buf_size, char * cp_na
    return 0;
 }
 
-int AutodetectCodePage( const unsigned char * buf, int buf_size, char * cp_name, char * lang_name )
+int strincmp(const unsigned char * buf, const char * pattern, int len)
+{
+    for (int i=0; i<len && pattern[i] && buf[i]; i++) {
+        int ch = buf[i];
+        if (ch >= 'A' && ch<='Z')
+            ch += 'a' - 'A';
+        int ch2 = pattern[i];
+        if (ch2 >= 'A' && ch2<='Z')
+            ch2 += 'a' - 'A';
+        if (ch < ch2)
+            return -1;
+        if (ch > ch2)
+            return 1;
+    }
+    return 0;
+}
+
+int strnstr(const unsigned char * buf, int buf_len, const char * pattern)
+{
+    int plen = strlen(pattern);
+    for (int i=0; i<=buf_len - plen; i++) {
+        if (!strincmp(buf + i, pattern, plen)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int rstrnstr(const unsigned char * buf, int buf_len, const char * pattern)
+{
+    int plen = strlen(pattern);
+    for (int i=buf_len - plen; i>=0; i--) {
+        if (!strincmp(buf + i, pattern, plen)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool detectXmlHtmlEncoding(const unsigned char * buf, int buf_len, char * html_enc_name)
+{
+    int xml_p = strnstr(buf, buf_len, "<?xml");
+    int xml_end_p = strnstr(buf, buf_len, "?>");
+    if (xml_p >= 0 && xml_end_p > xml_p) {
+        // XML
+        int enc_p = strnstr(buf, buf_len, "encoding=\"");
+        if (enc_p < xml_p || enc_p > xml_end_p)
+            return false;
+        enc_p += 10;
+        int enc_end_p = strnstr(buf + enc_p, xml_end_p - enc_p, "\"");
+        if (enc_end_p < 0 || enc_end_p > 20)
+            return false;
+        strncpy(html_enc_name, (char *)(buf + enc_p), enc_end_p);
+        html_enc_name[enc_end_p] = 0;
+        CRLog::debug("XML header encoding detected: %s", html_enc_name);
+        return true;
+    }
+    int content_type_p = strnstr(buf, buf_len, "http-equiv=\"Content-Type\"");
+    if (content_type_p >= 0) {
+        int meta_p = rstrnstr(buf, content_type_p, "<meta");
+        if (meta_p < 0)
+            return false;
+        int meta_end_p = strnstr(buf + meta_p, buf_len - meta_p, ">");
+        if (meta_end_p < 0)
+            return false;
+        int charset_p = strnstr(buf + meta_p, meta_end_p, "charset=");
+        if (charset_p < 0)
+            return false;
+        charset_p += 8;
+        int charset_end_p = strnstr(buf + meta_p + charset_p, meta_end_p - charset_p, "\"");
+        if (charset_end_p < 0)
+            return false;
+        strncpy(html_enc_name, (char *)(buf + meta_p + charset_p), charset_end_p);
+        html_enc_name[charset_end_p] = 0;
+        CRLog::debug("HTML header meta encoding detected: %s", html_enc_name);
+        return true;
+    }
+    return false;
+}
+
+int AutodetectCodePage(const unsigned char * buf, int buf_size, char * cp_name, char * lang_name, bool skipHtml)
 {
     int res = AutodetectCodePageUtf( buf, buf_size, cp_name, lang_name );
     if ( res )
@@ -1524,29 +2020,60 @@ int AutodetectCodePage( const unsigned char * buf, int buf_size, char * cp_name,
     // use character statistics
    short char_stat[256];
    dbl_char_stat_t dbl_char_stat[DBL_CHAR_STAT_SIZE];
-   MakeCharStat( buf, buf_size, char_stat );
-   MakeDblCharStat( buf, buf_size, dbl_char_stat, DBL_CHAR_STAT_SIZE );
+   MakeCharStat(buf, buf_size, char_stat, skipHtml);
+   MakeDblCharStat(buf, buf_size, dbl_char_stat, DBL_CHAR_STAT_SIZE, skipHtml);
    int bestn = 0;
-   double bestq = 1000000;
+   double bestq = 0; //1000000;
    for (int i=0; cp_stat_table[i].ch_stat; i++) {
 	   double q12, q11;
 	   double q22, q21;
 	   double q1 = CompareCharStats( cp_stat_table[i].ch_stat, char_stat, q11, q12 );
 	   double q2 = CompareDblCharStats( cp_stat_table[i].dbl_ch_stat, dbl_char_stat, DBL_CHAR_STAT_SIZE, q21, q22 );
-	   double q_1 = q11 + 3*q12;
-	   double q_2 = q21 + 5*q22;
-	   double q_ = q_1 * q_2;
-	   double q = (q_>0) ? (q1*2+q2*7) / (q_) : 1000000;
-	   if (q<bestq) {
+//       double q_1 = q11 + 3*q12;
+//	   double q_2 = q21 + 5*q22;
+//	   double q_ = q_1 * q_2;
+       if (q1 < 0.00001)
+           q1 = 0.00001;
+       if (q2 < 0.00001)
+           q2 = 0.00001;
+       double q = q11 * 0 + q12 * 2 + q21 * 0 + q22 * 6; //(q_>0) ? (q1*2+q2*7) / (q_) : 1000000;
+       q = q / (q1 + q2);
+       //CRLog::debug("%d %10s %4s : %lf %lf %lf - %lf %lf %lf  :  %lf", i, cp_stat_table[i].cp_name, cp_stat_table[i].lang_name, q1, q11, q12, q2, q21, q22, q);
+       if (q > bestq) {
 		   bestn = i;
 		   bestq = q;
 	   }
    }
    strcpy(cp_name, cp_stat_table[bestn].cp_name);
    strcpy(lang_name, cp_stat_table[bestn].lang_name);
-   CRLog::debug("Detected codepage:%s lang:%s", cp_name, lang_name);
+   CRLog::debug("Detected codepage:%s lang:%s index:%d %s", cp_name, lang_name, bestn, skipHtml ? "(skipHtml)" : "");
+   if (skipHtml) {
+       if (detectXmlHtmlEncoding(buf, buf_size, cp_name)) {
+           CRLog::debug("Encoding parsed from XML/HTML: %s", cp_name);
+       }
+   }
    return 1;
 }
+
+bool hasXmlTags(const lUInt8 * buf, int size) {
+    int openCount = 0;
+    int closeCount = 0;
+    for (int i=0; i<size; i++) {
+        if (buf[i]=='<')
+            openCount++;
+        else if (buf[i]=='>')
+            closeCount++;
+    }
+    if (openCount > 2 && closeCount > 2) {
+        int diff = openCount - closeCount;
+        if (diff<0)
+            diff = -diff;
+        if (diff < 2)
+            return true;
+    }
+    return false;
+}
+
 void MakeStatsForFile( const char * fname, const char * cp_name, const char * lang_name, int index, FILE * f, lString8 & list )
 {
    FILE * in = fopen( fname, "rb" );
@@ -1559,8 +2086,9 @@ void MakeStatsForFile( const char * fname, const char * cp_name, const char * la
    fread(buf, 1, buf_size, in);
    short char_stat[256];
    dbl_char_stat_t dbl_char_stat[DBL_CHAR_STAT_SIZE];
-   MakeCharStat( buf, buf_size, char_stat );
-   MakeDblCharStat( buf, buf_size, dbl_char_stat, DBL_CHAR_STAT_SIZE );
+   bool skipHtml = hasXmlTags(buf, buf_size);
+   MakeCharStat(buf, buf_size, char_stat, skipHtml);
+   MakeDblCharStat(buf, buf_size, dbl_char_stat, DBL_CHAR_STAT_SIZE, skipHtml);
    fprintf(f, "\n\nstatic const short ch_stat_%s_%s%d[256]={\n", cp_name, lang_name, index);
    int i;
    for (i=0; i<16; i++)

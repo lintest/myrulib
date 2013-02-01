@@ -28,7 +28,7 @@ enum rtf_control_word_type {
     CWT_IPROP, /// integer property
     CWT_DEST,  /// destination
     CWT_ACT,   /// destination
-    CWT_TPROP, /// table property
+    CWT_TPROP  /// table property
 };
 
 typedef struct  {
@@ -42,7 +42,7 @@ typedef struct  {
 enum rtfImageFormat {
     rtf_img_unknown,
     rtf_img_png,
-    rtf_img_jpeg,
+    rtf_img_jpeg
 };
 
 enum propIndex {
@@ -55,6 +55,7 @@ enum propIndex {
     pi_ch_underline,
     pi_skip_ch_count,
     pi_skip_ansi,
+    pi_uc_count,
     pi_ansicpg,
     pi_lang,
     pi_deflang,
@@ -85,7 +86,7 @@ enum hAlign {
     ha_justified,
     ha_right,
     ha_distributed,
-    ha_thai,
+    ha_thai
 };
 
 enum rtfDestination {
@@ -107,7 +108,7 @@ enum rtfTblState {
     tbls_none=0,
     tbls_intable,
     tbls_inrow,
-    tbls_incell,
+    tbls_incell
 };
 
 enum rtf_cmd_id {
@@ -126,6 +127,7 @@ enum rtf_cmd_id {
 #define RTF_CHR( character, name, index ) \
     RTF_##name,
 #include "../include/rtfcmd.h"
+    RTF_max // to fix 'comma at end of enumerator list' error in pedantic mode
 };
 
 class LVRtfDestination;
@@ -150,18 +152,23 @@ protected:
     LVRtfParser & m_parser;
     LVRtfValueStack & m_stack;
     LVXMLParserCallback * m_callback;
+	LVRtfDestination & operator = (LVRtfDestination&) {
+		// no assignment
+        return *this;
+    }
 public:
     enum rtf_actions {
         RA_PARA,
         RA_PARD,
         RA_PAGE,
-        RA_SECTION,
+        RA_SECTION
     };
     LVRtfDestination( LVRtfParser & parser );
     virtual void OnTblProp( int id, int param ) = 0;
     virtual void OnAction( int action ) = 0;
     virtual void OnControlWord( const char * control, int param ) = 0;
     virtual void OnText( const lChar16 * text, int len, lUInt32 flags ) = 0;
+    virtual void SetCharsetTable(const lChar16 * table);
     virtual ~LVRtfDestination() { }
 };
 
@@ -181,7 +188,7 @@ public:
     {
         sp = 0;
         memset(props, 0, sizeof(props) );
-        props[pi_ansicpg].p = (void*)GetCharsetByte2UnicodeTable( 1251 ); //
+        props[pi_ansicpg].p = (void*)GetCharsetByte2UnicodeTable( 1254 ); //
     }
     ~LVRtfValueStack()
     {
@@ -195,6 +202,7 @@ public:
             props[pi_ch_sub].i = 0;
             props[pi_ch_super].i = 0;
             props[pi_intbl].i = 0;
+            props[pi_uc_count].i = 1;
             props[pi_ch_underline].i = 0;
             props[pi_align].i = ha_left;
             set( pi_lang, props[pi_deflang].i );
@@ -259,14 +267,18 @@ public:
             stack[sp].index = index;
             if ( index==pi_ansicpg ) {
                 stack[sp++].value.p = props[index].p;
-                props[index].p = (void*)GetCharsetByte2UnicodeTable( value );
+                const lChar16 * table = GetCharsetByte2UnicodeTable( value );
+                props[index].p = (void*)table;
+                //this->getDestination()->SetCharsetTable(table);
             } else {
                 stack[sp++].value.i = props[index].i;
                 props[index].i = value;
-                if ( index==pi_lang ) {
-                    set( pi_ansicpg, langToCodepage( value ) );
-                } else if ( index==pi_deflang ) {
-                    set( pi_ansicpg, langToCodepage( value ) );
+                if (value != 1024 && value != 0) {
+                    if ( index==pi_lang ) {
+                        set( pi_ansicpg, langToCodepage( value ) );
+                    } else if ( index==pi_deflang ) {
+                        set( pi_ansicpg, langToCodepage( value ) );
+                    }
                 }
             }
         }
@@ -324,6 +336,10 @@ public:
             } else {
                 sp--;
                 props[i] = stack[sp].value;
+//                if (i == pi_ansicpg) {
+//                    const lChar16 * table = (const lChar16 *)props[i].p;
+//                    this->getDestination()->SetCharsetTable(table);
+//                }
             }
         }
         return !error;

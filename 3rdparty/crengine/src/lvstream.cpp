@@ -31,8 +31,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+//#define USE_UNRAR 1
+
 #if (USE_ZLIB==1)
 #include <zlib.h>
+#endif
+
+#if (USE_UNRAR==1)
+#include <rar.hpp>
 #endif
 
 #if !defined(__SYMBIAN32__) && defined(_WIN32)
@@ -742,7 +748,7 @@ public:
             m_size |= (((lvsize_t)hw)<<32);
 #endif
 
-        if ( minSize>=0 && mode == LVOM_APPEND && m_size < minSize ) {
+        if ( mode == LVOM_APPEND && m_size < minSize ) {
             if ( SetSize( minSize ) != LVERR_OK ) {
                 CRLog::error( "Cannot set file size for %s", fn8.c_str() );
                 return error();
@@ -1227,7 +1233,6 @@ public:
     }
     lverror_t OpenFile( lString16 fname, int mode )
     {
-        bool use_sync = (mode & LVOM_FLAG_SYNC)!=0;
         mode = mode & LVOM_MASK;
 #if defined(_WIN32)
         lUInt32 m = 0;
@@ -1289,6 +1294,7 @@ public:
         if (mode==LVOM_APPEND)
             Seek( 0, LVSEEK_END, NULL );
 #else
+        bool use_sync = (mode & LVOM_FLAG_SYNC)!=0;
         m_fd = -1;
 
         int flags = (mode==LVOM_READ) ? O_RDONLY : O_RDWR | O_CREAT | (use_sync ? O_SYNC : 0) | (mode==LVOM_WRITE ? O_TRUNC : 0);
@@ -1333,9 +1339,9 @@ public:
 /// tries to split full path name into archive name and file name inside archive using separator "@/" or "@\"
 bool LVSplitArcName( lString16 fullPathName, lString16 & arcPathName, lString16 & arcItemPathName )
 {
-    int p = fullPathName.pos(lString16("@/"));
+    int p = fullPathName.pos("@/");
     if ( p<0 )
-        p = fullPathName.pos(lString16("@\\"));
+        p = fullPathName.pos("@\\");
     if ( p<0 )
         return false;
     arcPathName = fullPathName.substr(0, p);
@@ -1538,7 +1544,7 @@ public:
 
         if (unicode) {
             // unicode
-            while (1) {
+            for (;;) {
                 lUInt32 dwAttrs = data.dwFileAttributes;
                 wchar_t * pfn = data.cFileName;
                 for (int i=0; data.cFileName[i]; i++) {
@@ -1574,7 +1580,7 @@ public:
             }
         } else {
             // ANSI
-            while (1) {
+            for (;;) {
                 lUInt32 dwAttrs = dataa.dwFileAttributes;
                 char * pfn = dataa.cFileName;
                 for (int i=0; dataa.cFileName[i]; i++) {
@@ -1759,7 +1765,7 @@ private:
         //if ( m_stream->SetPos( item->start )==(lvpos_t)(~0) )
         if ( m_stream->SetPos( item->start )!=(lvpos_t)item->start )
             return false;
-        int streamSize=m_stream->GetSize(); int bytesLeft = m_stream->GetSize() - m_stream->GetPos();
+        //int streamSize=m_stream->GetSize(); int bytesLeft = m_stream->GetSize() - m_stream->GetPos();
         lvsize_t bytesRead = 0;
         if ( m_stream->Read( item->buf, item->size, &bytesRead )!=LVERR_OK || bytesRead!=item->size )
             return false;
@@ -2445,7 +2451,7 @@ public:
 class LVZipArc : public LVArcContainerBase
 {
 public:
-    virtual LVStreamRef OpenStream( const wchar_t * fname, lvopen_mode_t mode )
+    virtual LVStreamRef OpenStream( const wchar_t * fname, lvopen_mode_t /*mode*/ )
     {
         if ( fname[0]=='/' )
             fname++;
@@ -2491,7 +2497,7 @@ public:
     virtual int ReadContents()
     {
         lvByteOrderConv cnv;
-        bool arcComment = false;
+        //bool arcComment = false;
         bool truncated = false;
 
         m_list.clear();
@@ -2558,7 +2564,7 @@ public:
         unsigned ZipHd1_size = 0x1E; //sizeof(ZipHd1); //sizeof(ZipHd1)
           //lUInt32 ReadSize;
 
-        while (1) {
+        for (;;) {
 
             if (m_stream->Seek( NextPosition, LVSEEK_SET, NULL )!=LVERR_OK)
                 return 0;
@@ -2607,19 +2613,19 @@ public:
             if (ReadSize==0 || ZipHeader.Mark==0x06054b50 ||
                     (truncated && ZipHeader.Mark==0x02014b50) )
             {
-                if (!truncated && *(lUInt16 *)((char *)&ZipHeader+20)!=0)
-                    arcComment=true;
+//                if (!truncated && *(lUInt16 *)((char *)&ZipHeader+20)!=0)
+//                    arcComment=true;
                 break; //(GETARC_EOF);
             }
 
             //const int NM = 513;
-            const int NM = 4096;
-            if ( ZipHeader.NameLen>NM ) {
+            const int max_NM = 4096;
+            if ( ZipHeader.NameLen>max_NM ) {
                 CRLog::error("ZIP entry name length is too big: %d", (int)ZipHeader.NameLen);
                 return 0;
             }
-            lUInt32 SizeToRead=(ZipHeader.NameLen<NM) ? ZipHeader.NameLen : NM;
-            char fnbuf[NM+1];
+            lUInt32 SizeToRead=(ZipHeader.NameLen<max_NM) ? ZipHeader.NameLen : max_NM;
+            char fnbuf[max_NM+1];
             m_stream->Read( fnbuf, SizeToRead, &ReadSize);
 
             if (ReadSize!=SizeToRead) {
@@ -2691,209 +2697,8 @@ public:
 #endif
 
 #if (USE_UNRAR==1)
-
-// unrar dll header
-#define ERAR_END_ARCHIVE     10
-#define ERAR_NO_MEMORY       11
-#define ERAR_BAD_DATA        12
-#define ERAR_BAD_ARCHIVE     13
-#define ERAR_UNKNOWN_FORMAT  14
-#define ERAR_EOPEN           15
-#define ERAR_ECREATE         16
-#define ERAR_ECLOSE          17
-#define ERAR_EREAD           18
-#define ERAR_EWRITE          19
-#define ERAR_SMALL_BUF       20
-#define ERAR_UNKNOWN         21
-
-#define RAR_OM_LIST           0
-#define RAR_OM_EXTRACT        1
-
-#define RAR_SKIP              0
-#define RAR_TEST              1
-#define RAR_EXTRACT           2
-
-#define RAR_VOL_ASK           0
-#define RAR_VOL_NOTIFY        1
-
-#define RAR_DLL_VERSION       4
-
-struct RARHeaderData
-{
-  char         ArcName[260];
-  char         FileName[260];
-  unsigned int Flags;
-  unsigned int PackSize;
-  unsigned int UnpSize;
-  unsigned int HostOS;
-  unsigned int FileCRC;
-  unsigned int FileTime;
-  unsigned int UnpVer;
-  unsigned int Method;
-  unsigned int FileAttr;
-  char         *CmtBuf;
-  unsigned int CmtBufSize;
-  unsigned int CmtSize;
-  unsigned int CmtState;
-};
-
-
-struct RARHeaderDataEx
-{
-  char         ArcName[1024];
-  wchar_t      ArcNameW[1024];
-  char         FileName[1024];
-  wchar_t      FileNameW[1024];
-  unsigned int Flags;
-  unsigned int PackSize;
-  unsigned int PackSizeHigh;
-  unsigned int UnpSize;
-  unsigned int UnpSizeHigh;
-  unsigned int HostOS;
-  unsigned int FileCRC;
-  unsigned int FileTime;
-  unsigned int UnpVer;
-  unsigned int Method;
-  unsigned int FileAttr;
-  char         *CmtBuf;
-  unsigned int CmtBufSize;
-  unsigned int CmtSize;
-  unsigned int CmtState;
-  unsigned int Reserved[1024];
-};
-
-
-struct RAROpenArchiveData
-{
-  char         *ArcName;
-  unsigned int OpenMode;
-  unsigned int OpenResult;
-  char         *CmtBuf;
-  unsigned int CmtBufSize;
-  unsigned int CmtSize;
-  unsigned int CmtState;
-};
-
-struct RAROpenArchiveDataEx
-{
-  char         *ArcName;
-  wchar_t      *ArcNameW;
-  unsigned int OpenMode;
-  unsigned int OpenResult;
-  char         *CmtBuf;
-  unsigned int CmtBufSize;
-  unsigned int CmtSize;
-  unsigned int CmtState;
-  unsigned int Flags;
-  unsigned int Reserved[32];
-};
-
-enum UNRARCALLBACK_MESSAGES {
-  UCM_CHANGEVOLUME,UCM_PROCESSDATA,UCM_NEEDPASSWORD
-};
-
-typedef int (CALLBACK *UNRARCALLBACK)(UINT msg,LONG UserData,LONG P1,LONG P2);
-
-typedef int (PASCAL *CHANGEVOLPROC)(char *ArcName,int Mode);
-typedef int (PASCAL *PROCESSDATAPROC)(unsigned char *Addr,int Size);
-
-#if !defined(__SYMBIAN32__) && defined(_WIN32)
-#undef PASCAL
-#define PASCAL
-#endif
-class LVUnRarDll
-{
-#if !defined(__SYMBIAN32__) && defined(_WIN32)
-    typedef HMODULE libtype;
-#else
-    typedef void libtype;
-#endif
-    libtype _lib;
-    HANDLE _arc;
-    HANDLE PASCAL (*RAROpenArchive)(struct RAROpenArchiveData *ArchiveData);
-    HANDLE PASCAL (*RAROpenArchiveEx)(struct RAROpenArchiveDataEx *ArchiveData);
-    int    PASCAL (*RARCloseArchive)(HANDLE hArcData);
-    int    PASCAL (*RARReadHeader)(HANDLE hArcData,struct RARHeaderData *HeaderData);
-    int    PASCAL (*RARReadHeaderEx)(HANDLE hArcData,struct RARHeaderDataEx *HeaderData);
-    int    PASCAL (*RARProcessFile)(HANDLE hArcData,int Operation,char *DestPath,char  *DestName);
-    int    PASCAL (*RARProcessFileW)(HANDLE hArcData,int Operation,wchar_t *DestPath,wchar_t *DestName);
-    void   PASCAL (*RARSetCallback)(HANDLE hArcData,UNRARCALLBACK Callback,LONG UserData);
-    void   PASCAL (*RARSetChangeVolProc)(HANDLE hArcData,CHANGEVOLPROC ChangeVolProc);
-    void   PASCAL (*RARSetProcessDataProc)(HANDLE hArcData,PROCESSDATAPROC ProcessDataProc);
-    void   PASCAL (*RARSetPassword)(HANDLE hArcData,char *Password);
-    int    PASCAL (*RARGetDllVersion)();
-public:
-    void * getProc( const char * procName )
-    {
-#if !defined(__SYMBIAN32__) && defined(_WIN32)
-        return LoadLibraryA( procName );
-#else
-        return dlsym( _lib, procName );
-#endif
-    }
-    bool OpenArchive( const char * fname )
-    {
-        return false;
-    }
-    bool load( const char * libName )
-    {
-        if ( !_lib ) {
-#if !defined(__SYMBIAN32__) && defined(_WIN32)
-            _lib = LoadLibraryA( libName );
-#else
-            _lib = dlopen( libName, RTLD_NOW | RTLD_LOCAL );
-#endif
-        }
-        if ( _lib ) {
-            RAROpenArchive = (HANDLE PASCAL (*)(struct RAROpenArchiveData *ArchiveData)) getProc( "RAROpenArchive" );
-            RAROpenArchiveEx = (HANDLE PASCAL (*)(struct RAROpenArchiveDataEx *ArchiveData)) getProc( "RAROpenArchiveEx" );
-            RARCloseArchive = (int    PASCAL (*)(HANDLE hArcData)) getProc( "RARCloseArchive" );
-            RARReadHeader = (int    PASCAL (*)(HANDLE hArcData,struct RARHeaderData *HeaderData)) getProc( "RARReadHeader" );
-            RARReadHeaderEx = (int    PASCAL (*)(HANDLE hArcData,struct RARHeaderDataEx *HeaderData)) getProc( "RARReadHeaderEx" );
-            RARProcessFile = (int    PASCAL (*)(HANDLE hArcData,int Operation,char *DestPath,char  *DestName)) getProc( "RARProcessFile" );
-            RARProcessFileW = (int    PASCAL (*)(HANDLE hArcData,int Operation,wchar_t *DestPath,wchar_t *DestName)) getProc( "RARProcessFileW" );
-            RARSetCallback = (void   PASCAL (*)(HANDLE hArcData,UNRARCALLBACK Callback,LONG UserData)) getProc( "RARSetCallback" );
-            RARSetChangeVolProc = (void   PASCAL (*)(HANDLE hArcData,CHANGEVOLPROC ChangeVolProc)) getProc( "RARSetChangeVolProc" );
-            RARSetProcessDataProc = (void   PASCAL (*)(HANDLE hArcData,PROCESSDATAPROC ProcessDataProc)) getProc( "RARSetProcessDataProc" );
-            RARSetPassword = (void   PASCAL (*)(HANDLE hArcData,char *Password)) getProc( "RARSetPassword" );
-            RARGetDllVersion = (int    PASCAL (*)()) getProc( "RARGetDllVersion" );
-            if ( !RAROpenArchive || !RAROpenArchiveEx || !RARCloseArchive
-                || !RARReadHeader || !RARReadHeaderEx || !RARProcessFile
-                || !RARProcessFileW || !RARSetCallback || !RARSetChangeVolProc
-                || !RARSetProcessDataProc || !RARSetPassword || !RARGetDllVersion )
-                // not all functions found in library, fail
-                unload();
-        }
-        return ( _lib!=NULL );
-    }
-    bool unload()
-    {
-        bool res = false;
-        if ( _lib ) {
-#if !defined(__SYMBIAN32__) && defined(_WIN32)
-            FreeLibrary( _lib );
-#else
-            dlclose( _lib );
-#endif
-            res = true;
-        }
-        _lib = NULL;
-        return res;
-    }
-    LVUnRarDll()
-    : _lib(NULL) {
-    }
-    ~LVUnRarDll() {
-        unload();
-    }
-};
-#endif
-
-
-#if 0 //(USE_UNRAR==1)
 class LVRarArc : public LVArcContainerBase
 {
-    LVUnRarDll dll;
 public:
 
     virtual LVStreamRef OpenStream( const wchar_t * fname, lvopen_mode_t mode )
@@ -2938,18 +2743,7 @@ public:
 
     virtual int ReadContents()
     {
-        const char * dllName =
-#if !defined(__SYMBIAN32__) && defined(_WIN32)
-            "unrar.dll";
-#else
-            "unrar.so";
-#endif
-        if ( !dll.load( dllName ) )
-            return 0; // DLL not found!
-
         lvByteOrderConv cnv;
-        bool arcComment = false;
-        bool truncated = false;
 
         m_list.clear();
 
@@ -2958,150 +2752,10 @@ public:
 
         SetName( m_stream->GetName() );
 
-
         lvsize_t sz = 0;
         if (m_stream->GetSize( &sz )!=LVERR_OK)
                 return 0;
         lvsize_t m_FileSize = (unsigned)sz;
-
-        char ReadBuf[1024];
-        lUInt32 NextPosition;
-        lvpos_t CurPos;
-        lvsize_t ReadSize;
-        int Buf;
-        bool found = false;
-        CurPos=NextPosition=(int)m_FileSize;
-        if (CurPos < sizeof(ReadBuf)-18)
-            CurPos = 0;
-        else
-            CurPos -= sizeof(ReadBuf)-18;
-        for ( Buf=0; Buf<64 && !found; Buf++ )
-        {
-            //SetFilePointer(ArcHandle,CurPos,NULL,FILE_BEGIN);
-            m_stream->Seek( CurPos, LVSEEK_SET, NULL );
-            m_stream->Read( ReadBuf, sizeof(ReadBuf), &ReadSize);
-            if (ReadSize==0)
-                break;
-            for (int I=(int)ReadSize-4;I>=0;I--)
-            {
-                if (ReadBuf[I]==0x50 && ReadBuf[I+1]==0x4b && ReadBuf[I+2]==0x05 &&
-                    ReadBuf[I+3]==0x06)
-                {
-                    m_stream->Seek( CurPos+I+16, LVSEEK_SET, NULL );
-                    m_stream->Read( &NextPosition, sizeof(NextPosition), &ReadSize);
-		    		cnv.lsf( &NextPosition );
-                    found=true;
-                    break;
-                }
-            }
-            if (CurPos==0)
-                break;
-            if (CurPos<sizeof(ReadBuf)-4)
-                CurPos=0;
-            else
-                CurPos-=sizeof(ReadBuf)-4;
-        }
-
-        truncated = !found;
-        if (truncated)
-            NextPosition=0;
-
-        //================================================================
-        // get files
-
-
-        ZipLocalFileHdr ZipHd1;
-        ZipHd2 ZipHeader;
-        unsigned ZipHeader_size = 0x2E; //sizeof(ZipHd2); //0x34; //
-        unsigned ZipHd1_size = 0x1E; //sizeof(ZipHd1); //sizeof(ZipHd1)
-          //lUInt32 ReadSize;
-
-        while (1) {
-
-            if (m_stream->Seek( NextPosition, LVSEEK_SET, NULL )!=LVERR_OK)
-                return 0;
-
-            if (truncated)
-            {
-                m_stream->Read( &ZipHd1, ZipHd1_size, &ReadSize);
-                ZipHd1.byteOrderConv();
-
-                //ReadSize = fread(&ZipHd1, 1, sizeof(ZipHd1), f);
-                if (ReadSize != ZipHd1_size) {
-                        //fclose(f);
-                    if (ReadSize==0 && NextPosition==m_FileSize)
-                        return m_list.length();
-                    return 0;
-                }
-
-                memset(&ZipHeader,0,ZipHeader_size);
-
-                ZipHeader.UnpVer=ZipHd1.UnpVer;
-                ZipHeader.UnpOS=ZipHd1.UnpOS;
-                ZipHeader.Flags=ZipHd1.Flags;
-                ZipHeader.ftime=ZipHd1.getftime();
-                ZipHeader.PackSize=ZipHd1.getPackSize();
-                ZipHeader.UnpSize=ZipHd1.getUnpSize();
-                ZipHeader.NameLen=ZipHd1.getNameLen();
-                ZipHeader.AddLen=ZipHd1.getAddLen();
-                ZipHeader.Method=ZipHd1.getMethod();
-            } else {
-
-                m_stream->Read( &ZipHeader, ZipHeader_size, &ReadSize);
-
-                ZipHeader.byteOrderConv();
-                    //ReadSize = fread(&ZipHeader, 1, sizeof(ZipHeader), f);
-                if (ReadSize!=ZipHeader_size) {
-                            if (ReadSize>16 && ZipHeader.Mark==0x06054B50 ) {
-                                    break;
-                            }
-                            //fclose(f);
-                            return 0;
-                }
-            }
-
-            if (ReadSize==0 || ZipHeader.Mark==0x06054b50 ||
-                    truncated && ZipHeader.Mark==0x02014b50)
-            {
-                if (!truncated && *(lUInt16 *)((char *)&ZipHeader+20)!=0)
-                    arcComment=true;
-                break; //(GETARC_EOF);
-            }
-
-            const int NM = 513;
-            lUInt32 SizeToRead=(ZipHeader.NameLen<NM) ? ZipHeader.NameLen : NM;
-            char fnbuf[1025];
-            m_stream->Read( fnbuf, SizeToRead, &ReadSize);
-
-            if (ReadSize!=SizeToRead) {
-                return 0;
-            }
-
-            fnbuf[ZipHeader.NameLen]=0;
-
-            long SeekLen=ZipHeader.AddLen+ZipHeader.CommLen;
-
-            LVCommonContainerItemInfo * item = new LVCommonContainerItemInfo();
-
-            if (truncated)
-                SeekLen+=ZipHeader.PackSize;
-
-            NextPosition = (lUInt32)m_stream->GetPos();
-            NextPosition += SeekLen;
-            m_stream->Seek(NextPosition, LVSEEK_SET, NULL);
-
-	        // {"DOS","Amiga","VAX/VMS","Unix","VM/CMS","Atari ST",
-			//  "OS/2","Mac-OS","Z-System","CP/M","TOPS-20",
-			//  "Win32","SMS/QDOS","Acorn RISC OS","Win32 VFAT","MVS",
-			//  "BeOS","Tandem"};
-            const lChar16 * enc_name = (ZipHeader.PackOS==0) ? L"cp866" : L"cp1251";
-            const lChar16 * table = GetCharsetByte2UnicodeTable( enc_name );
-            lString16 fName = ByteToUnicode( lString8(fnbuf), table );
-
-            item->SetItemInfo(fName.c_str(), ZipHeader.UnpSize, (ZipHeader.getAttr() & 0x3f));
-            item->SetSrc( ZipHeader.getOffset(), ZipHeader.PackSize, ZipHeader.Method );
-            m_list.add(item);
-        }
 
         return m_list.length();
     }
@@ -3114,235 +2768,11 @@ public:
         stream->SetPos(0);
         lvsize_t bytesRead = 0;
         if (stream->Read(hdr, hdrSize, &bytesRead)!=LVERR_OK || bytesRead!=hdrSize)
-                return NULL;
-        stream->SetPos(0);
-        // detect arc type
-        if (hdr[0]!='P' || hdr[1]!='K' || hdr[2]!=3 || hdr[3]!=4)
-                return NULL;
-        LVZipArc * arc = new LVZipArc( stream );
-        int itemCount = arc->ReadContents();
-        if ( itemCount <= 0 )
-        {
-            delete arc;
             return NULL;
-        }
-        return arc;
-    }
-
-};
-
-class LVRarArc : public LVArcContainerBase
-{
-public:
-    virtual LVStreamRef OpenStream( const wchar_t * fname, lvopen_mode_t mode )
-    {
-        int found_index = -1;
-        for (int i=0; i<m_list.length(); i++) {
-            if ( !lStr_cmp( fname, m_list[i]->GetName() ) ) {
-                if ( m_list[i]->IsContainer() ) {
-                    // found directory with same name!!!
-                    return LVStreamRef();
-                }
-                found_index = i;
-                break;
-            }
-        }
-        if (found_index<0)
-            return LVStreamRef(); // not found
-        // make filename
-        lString16 fn = fname;
-        LVStreamRef strm = m_stream; // fix strange arm-linux-g++ bug
-        LVStreamRef stream(
-		LVRarDecodeStream::Create(
-			strm,
-			m_list[found_index]->GetSrcPos(), fn ) );
-        if (!stream.isNull()) {
-            return LVCreateBufferedStream( stream, ZIP_STREAM_BUFFER_SIZE );
-        }
-        stream->SetName(m_list[found_index]->GetName());
-        return stream;
-    }
-    LVRarArc( LVStreamRef stream ) : LVArcContainerBase(stream)
-    {
-    }
-    virtual ~LVRarArc()
-    {
-    }
-
-    virtual int ReadContents()
-    {
-        lvByteOrderConv cnv;
-        bool arcComment = false;
-        bool truncated = false;
-
-        m_list.clear();
-
-        if (!m_stream || m_stream->Seek(0, LVSEEK_SET, NULL)!=LVERR_OK)
-            return 0;
-
-        SetName( m_stream->GetName() );
-
-
-        lvsize_t sz = 0;
-        if (m_stream->GetSize( &sz )!=LVERR_OK)
-                return 0;
-        lvsize_t m_FileSize = (unsigned)sz;
-
-        char ReadBuf[1024];
-        lUInt32 NextPosition;
-        lvpos_t CurPos;
-        lvsize_t ReadSize;
-        int Buf;
-        bool found = false;
-        CurPos=NextPosition=(int)m_FileSize;
-        if (CurPos < sizeof(ReadBuf)-18)
-            CurPos = 0;
-        else
-            CurPos -= sizeof(ReadBuf)-18;
-        for ( Buf=0; Buf<64 && !found; Buf++ )
-        {
-            //SetFilePointer(ArcHandle,CurPos,NULL,FILE_BEGIN);
-            m_stream->Seek( CurPos, LVSEEK_SET, NULL );
-            m_stream->Read( ReadBuf, sizeof(ReadBuf), &ReadSize);
-            if (ReadSize==0)
-                break;
-            for (int I=(int)ReadSize-4;I>=0;I--)
-            {
-                if (ReadBuf[I]==0x50 && ReadBuf[I+1]==0x4b && ReadBuf[I+2]==0x05 &&
-                    ReadBuf[I+3]==0x06)
-                {
-                    m_stream->Seek( CurPos+I+16, LVSEEK_SET, NULL );
-                    m_stream->Read( &NextPosition, sizeof(NextPosition), &ReadSize);
-		    		cnv.lsf( &NextPosition );
-                    found=true;
-                    break;
-                }
-            }
-            if (CurPos==0)
-                break;
-            if (CurPos<sizeof(ReadBuf)-4)
-                CurPos=0;
-            else
-                CurPos-=sizeof(ReadBuf)-4;
-        }
-
-        truncated = !found;
-        if (truncated)
-            NextPosition=0;
-
-        //================================================================
-        // get files
-
-
-        ZipLocalFileHdr ZipHd1;
-        ZipHd2 ZipHeader;
-        unsigned ZipHeader_size = 0x2E; //sizeof(ZipHd2); //0x34; //
-        unsigned ZipHd1_size = 0x1E; //sizeof(ZipHd1); //sizeof(ZipHd1)
-          //lUInt32 ReadSize;
-
-        while (1) {
-
-            if (m_stream->Seek( NextPosition, LVSEEK_SET, NULL )!=LVERR_OK)
-                return 0;
-
-            if (truncated)
-            {
-                m_stream->Read( &ZipHd1, ZipHd1_size, &ReadSize);
-                ZipHd1.byteOrderConv();
-
-                //ReadSize = fread(&ZipHd1, 1, sizeof(ZipHd1), f);
-                if (ReadSize != ZipHd1_size) {
-                        //fclose(f);
-                    if (ReadSize==0 && NextPosition==m_FileSize)
-                        return m_list.length();
-                    return 0;
-                }
-
-                memset(&ZipHeader,0,ZipHeader_size);
-
-                ZipHeader.UnpVer=ZipHd1.UnpVer;
-                ZipHeader.UnpOS=ZipHd1.UnpOS;
-                ZipHeader.Flags=ZipHd1.Flags;
-                ZipHeader.ftime=ZipHd1.getftime();
-                ZipHeader.PackSize=ZipHd1.getPackSize();
-                ZipHeader.UnpSize=ZipHd1.getUnpSize();
-                ZipHeader.NameLen=ZipHd1.getNameLen();
-                ZipHeader.AddLen=ZipHd1.getAddLen();
-                ZipHeader.Method=ZipHd1.getMethod();
-            } else {
-
-                m_stream->Read( &ZipHeader, ZipHeader_size, &ReadSize);
-
-                ZipHeader.byteOrderConv();
-                    //ReadSize = fread(&ZipHeader, 1, sizeof(ZipHeader), f);
-                if (ReadSize!=ZipHeader_size) {
-                            if (ReadSize>16 && ZipHeader.Mark==0x06054B50 ) {
-                                    break;
-                            }
-                            //fclose(f);
-                            return 0;
-                }
-            }
-
-            if (ReadSize==0 || ZipHeader.Mark==0x06054b50 ||
-                    truncated && ZipHeader.Mark==0x02014b50)
-            {
-                if (!truncated && *(lUInt16 *)((char *)&ZipHeader+20)!=0)
-                    arcComment=true;
-                break; //(GETARC_EOF);
-            }
-
-            const int NM = 513;
-            lUInt32 SizeToRead=(ZipHeader.NameLen<NM) ? ZipHeader.NameLen : NM;
-            char fnbuf[1025];
-            m_stream->Read( fnbuf, SizeToRead, &ReadSize);
-
-            if (ReadSize!=SizeToRead) {
-                return 0;
-            }
-
-            fnbuf[ZipHeader.NameLen]=0;
-
-            long SeekLen=ZipHeader.AddLen+ZipHeader.CommLen;
-
-            LVCommonContainerItemInfo * item = new LVCommonContainerItemInfo();
-
-            if (truncated)
-                SeekLen+=ZipHeader.PackSize;
-
-            NextPosition = (lUInt32)m_stream->GetPos();
-            NextPosition += SeekLen;
-            m_stream->Seek(NextPosition, LVSEEK_SET, NULL);
-
-	        // {"DOS","Amiga","VAX/VMS","Unix","VM/CMS","Atari ST",
-			//  "OS/2","Mac-OS","Z-System","CP/M","TOPS-20",
-			//  "Win32","SMS/QDOS","Acorn RISC OS","Win32 VFAT","MVS",
-			//  "BeOS","Tandem"};
-            const lChar16 * enc_name = (ZipHeader.PackOS==0) ? L"cp866" : L"cp1251";
-            const lChar16 * table = GetCharsetByte2UnicodeTable( enc_name );
-            lString16 fName = ByteToUnicode( lString8(fnbuf), table );
-
-            item->SetItemInfo(fName.c_str(), ZipHeader.UnpSize, (ZipHeader.getAttr() & 0x3f));
-            item->SetSrc( ZipHeader.getOffset(), ZipHeader.PackSize, ZipHeader.Method );
-            m_list.add(item);
-        }
-
-        return m_list.length();
-    }
-
-    static LVArcContainerBase * OpenArchieve( LVStreamRef stream )
-    {
-        // read beginning of file
-        const lvsize_t hdrSize = 6;
-        char hdr[hdrSize];
-        stream->SetPos(0);
-        lvsize_t bytesRead = 0;
-        if (stream->Read(hdr, hdrSize, &bytesRead)!=LVERR_OK || bytesRead!=hdrSize)
-                return NULL;
         stream->SetPos(0);
         // detect arc type
-        if (hdr[0]!='R' || hdr[1]!='a' || hdr[2]!='r' || hdr[3]!='!' || hdr[4]!=7 || cdr[5]!=0)
-                return NULL;
+        if (hdr[0]!='R' || hdr[1]!='a' || hdr[2]!='r' || hdr[3]!='!')
+            return NULL;
         LVRarArc * arc = new LVRarArc( stream );
         int itemCount = arc->ReadContents();
         if ( itemCount <= 0 )
@@ -3354,8 +2784,6 @@ public:
     }
 
 };
-
-
 #endif // UNRAR
 
 
@@ -3612,10 +3040,14 @@ LVContainerRef LVOpenArchieve( LVStreamRef stream )
     // try ZIP
     ref = LVZipArc::OpenArchieve( stream );
     if (!ref.isNull())
-            return ref;
+        return ref;
 
-    // try RAR: todo
-
+#if USE_UNRAR==1
+    // try RAR
+    ref = LVRarArc::OpenArchieve( stream );
+    if (!ref.isNull())
+        return ref;
+#endif
     // not found: return null ref
     return ref;
 }
@@ -3705,7 +3137,7 @@ lvsize_t LVPumpStream( LVStream * out, LVStream * in )
 
 LVContainerRef LVOpenDirectory( const wchar_t * path, const wchar_t * mask )
 {
-    LVContainerRef dir( LVDirectoryContainer::OpenDirectory( path ) );
+    LVContainerRef dir(LVDirectoryContainer::OpenDirectory(path, mask));
     return dir;
 }
 
@@ -3862,7 +3294,7 @@ public:
         if ( stream->Read(buf, 9, &bytesRead)!=LVERR_OK
             || bytesRead!=9 )
             return res;
-        if ( memcmp(signature, buf, 9) )
+        if (memcmp(signature, buf, 9) != 0)
             return res;
         LVTCRStream * decoder = new LVTCRStream( stream );
         if ( !decoder->init() ) {
@@ -4040,7 +3472,7 @@ LVStreamRef LVCreateTCRDecoderStream( LVStreamRef stream )
 lString16 LVExtractPath( lString16 pathName, bool appendEmptyPath )
 {
     int last_delim_pos = -1;
-    for ( unsigned i=0; i<pathName.length(); i++ )
+    for ( int i=0; i<pathName.length(); i++ )
         if ( pathName[i]=='/' || pathName[i]=='\\' )
             last_delim_pos = i;
     if ( last_delim_pos==-1 )
@@ -4056,7 +3488,7 @@ lString16 LVExtractPath( lString16 pathName, bool appendEmptyPath )
 lString16 LVExtractFilename( lString16 pathName )
 {
     int last_delim_pos = -1;
-    for ( unsigned i=0; i<pathName.length(); i++ )
+    for ( int i=0; i<pathName.length(); i++ )
         if ( pathName[i]=='/' || pathName[i]=='\\' )
             last_delim_pos = i;
     if ( last_delim_pos==-1 )
@@ -4069,7 +3501,7 @@ lString16 LVExtractFilenameWithoutExtension( lString16 pathName )
 {
     lString16 s = LVExtractFilename( pathName );
     int lastDot = -1;
-    for ( unsigned i=0; i<s.length(); i++ )
+    for ( int i=0; i<s.length(); i++ )
         if ( s[i]=='.' )
             lastDot = i;
     if ( lastDot<=0 || lastDot<(int)s.length()-7 )
@@ -4097,11 +3529,11 @@ bool LVIsAbsolutePath( lString16 pathName )
 lString16 LVExtractFirstPathElement( lString16 & pathName )
 {
     if ( pathName.empty() )
-        return lString16();
+        return lString16::empty_str;
     if ( pathName[0]=='/' || pathName[0]=='\\' )
         pathName.erase(0, 1);
     int first_delim_pos = -1;
-    for ( unsigned i=0; i<pathName.length(); i++ )
+    for ( int i=0; i<pathName.length(); i++ )
         if ( pathName[i]=='/' || pathName[i]=='\\' ) {
             first_delim_pos = i;
             break;
@@ -4141,14 +3573,16 @@ lString16 LVCombinePaths( lString16 basePath, lString16 newPath )
     if ( newPath[0]=='/' || newPath[0]=='\\' || (newPath.length()>0 && newPath[1]==':' && newPath[2]=='\\') )
         return newPath; // absolute path
     lChar16 separator = 0;
-    for ( unsigned i=0; i<basePath.length(); i++ ) {
+    if (!basePath.empty())
+        LVAppendPathDelimiter(basePath);
+    for ( int i=0; i<basePath.length(); i++ ) {
         if ( basePath[i]=='/' || basePath[i]=='\\' ) {
             separator = basePath[i];
             break;
         }
     }
     if ( separator == 0 )
-        for ( unsigned i=0; i<newPath.length(); i++ ) {
+        for ( int i=0; i<newPath.length(); i++ ) {
             if ( newPath[i]=='/' || newPath[i]=='\\' ) {
                 separator = newPath[i];
                 break;
@@ -4162,7 +3596,7 @@ lString16 LVCombinePaths( lString16 basePath, lString16 newPath )
     //LVAppendPathDelimiter( s );
     LVReplacePathSeparator( s, separator );
     lString16 pattern;
-    pattern << separator << L".." << separator;
+    pattern << separator << ".." << separator;
     bool changed;
     do {
         changed = false;
@@ -4195,11 +3629,11 @@ lString16 LVExtractLastPathElement( lString16 & pathName )
 {
     int l = pathName.length();
     if ( l==0 )
-        return lString16();
+        return lString16::empty_str;
     if ( pathName[l-1]=='/' || pathName[l-1]=='\\' )
         pathName.erase(l-1, 1);
     int last_delim_pos = -1;
-    for ( unsigned i=0; i<pathName.length(); i++ )
+    for ( int i=0; i<pathName.length(); i++ )
         if ( pathName[i]=='/' || pathName[i]=='\\' )
             last_delim_pos = i;
     if ( last_delim_pos==-1 ) {
@@ -4215,7 +3649,7 @@ lString16 LVExtractLastPathElement( lString16 & pathName )
 /// returns path delimiter character
 lChar16 LVDetectPathDelimiter( lString16 pathName )
 {
-    for ( unsigned i=0; i<pathName.length(); i++ )
+    for ( int i=0; i<pathName.length(); i++ )
         if ( pathName[i]=='/' || pathName[i]=='\\' )
             return pathName[i];
 #ifdef _LINUX
@@ -4236,9 +3670,9 @@ lString16 LVMakeRelativeFilename( lString16 basePath, lString16 pathName )
     lString16 dstpath = LVExtractPath( pathName );
     while ( !dstpath.empty() ) {
         lString16 element = LVExtractFirstPathElement( dstpath );
-        if ( element==L"." )
+        if (element == ".")
             ;
-        else if ( element==L".." )
+        else if (element == "..")
             LVExtractLastPathElement( path );
         else
             path << element << delim;
@@ -4383,8 +3817,8 @@ class LVBlockWriteStream : public LVNamedStream
                 CRLog::error("buffer allocation failed");
             }
             memset(buf, 0, size);
-            modified_start = 0;
-            modified_end = size;
+//            modified_start = 0;
+//            modified_end = size;
         }
         ~Block()
         {
@@ -4396,13 +3830,12 @@ class LVBlockWriteStream : public LVNamedStream
 #if TRACE_BLOCK_WRITE_STREAM
             CRLog::trace("block %x save %x, %x", (int)block_start, (int)pos, (int)len);
 #endif
-            lvpos_t offset = (int)(pos - block_start);
-            if ( offset>(lvpos_t)size || offset<0 || len > (lvpos_t)size || offset+len > (lvpos_t)size ) {
+            int offset = (int)(pos - block_start);
+            if (offset > size || offset < 0 || (int)len > size || offset + (int)len > size) {
                 CRLog::error("Unaligned access to block %x", (int)block_start);
             }
-            for ( unsigned i=0; i<len; i++ ) {
+            for (unsigned i = 0; i < len; i++ ) {
                 lUInt8 ch1 = buf[offset+i];
-                //lUInt8 ch2 = ptr[i];
                 if ( pos+i>block_end || ch1!=ptr[i] ) {
                     buf[offset+i] = ptr[i];
                     if ( modified_start==(lvpos_t)-1 ) {
@@ -4474,10 +3907,13 @@ class LVBlockWriteStream : public LVNamedStream
             CRLog::trace("WRITE BLOCK %x (%x, %x)", (int)block->block_start, (int)block->modified_start, (int)(block->modified_end-block->modified_start));
 #endif
             _baseStream->SetPos( block->modified_start );
+            if (block->modified_end > _size) {
+                block->modified_end = block->block_end;
+            }
             lvpos_t bytesWritten = 0;
             lverror_t res = _baseStream->Write( block->buf + (block->modified_start-block->block_start), block->modified_end-block->modified_start, &bytesWritten );
             if ( res==LVERR_OK ) {
-                if ( _size<block->modified_end )
+                if (_size < block->modified_end)
                     _size = block->modified_end;
             }
             block->modified_end = block->modified_start = (lvpos_t)-1;

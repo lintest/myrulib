@@ -63,7 +63,7 @@ lvPoint fromSkinPercent( lvPoint pt, lvPoint fullpt )
 int toSkinPercent( const lString16 & value, int defValue, bool * res )
 {
     // "75%" format - in percent
-    int p = value.pos(lString16(L"%"));
+    int p = value.pos("%");
     int pvalue;
     if ( p>0 ) {
         if ( value.substr(0, p).atoi(pvalue) ) {
@@ -73,7 +73,7 @@ int toSkinPercent( const lString16 & value, int defValue, bool * res )
         }
     }
     // "75px" format - in pixels
-    p = value.pos(lString16(L"px"));
+    p = value.pos("px");
     if ( p>0 ) {
         if ( value.substr(0, p).atoi(pvalue) ) {
             if ( res )
@@ -104,7 +104,7 @@ CRPageSkin::CRPageSkin()
 , _leftPageSkin(new CRRectSkin())
 , _rightPageSkin(new CRRectSkin())
 , _singlePageSkin(new CRRectSkin())
-, _name(L"Default")
+, _name("Default")
 {
 
 }
@@ -253,8 +253,8 @@ lString16 CRSkinContainer::getBasePath( const lChar16 * path )
         return res;
     if ( !p.getNode()->isElement() )
         return res;
-    lString16 value = p.getNode()->getAttributeValue( L"base" );
-    if ( value.empty() || value[0]!=L'#' )
+    lString16 value = p.getNode()->getAttributeValue("base");
+    if (value.empty() || value[0] != '#')
         return res;
     res = pathById( value.c_str() + 1 );
     crtrace log;
@@ -512,12 +512,12 @@ lString16 CRSkinContainer::readString( const lChar16 * path, const lChar16 * att
 {
     ldomXPointer ptr = getXPointer( path );
     if ( !ptr )
-        return lString16();
+        return lString16::empty_str;
     if ( !ptr.getNode()->isElement() )
-        return lString16();
+        return lString16::empty_str;
 	//lString16 pnname = ptr.getNode()->getParentNode()->getNodeName();
 	//lString16 nname = ptr.getNode()->getNodeName();
-    lString16 value = ptr.getNode()->getAttributeValue( attrname );
+    lString16 value = ptr.getNode()->getAttributeValue(attrname);
 	if ( res )
 		*res = true;
     return value;
@@ -559,17 +559,17 @@ lvRect CRSkinContainer::readRect( const lChar16 * path, const lChar16 * attrname
     lvRect p = defValue;
     lString16 s1, s2, s3, s4, s;
     s = value;
-    if ( !s.split2(lString16(L","), s1, s2) )
+    if ( !s.split2(",", s1, s2) )
         return p;
     s1.trim();
     s2.trim();
     s = s2;
-    if ( !s.split2(lString16(L","), s2, s3) )
+    if ( !s.split2(",", s2, s3) )
         return p;
     s2.trim();
     s3.trim();
     s = s3;
-    if ( !s.split2(lString16(L","), s3, s4) )
+    if ( !s.split2(",", s3, s4) )
         return p;
     s3.trim();
     s4.trim();
@@ -594,11 +594,11 @@ lvRect CRSkinContainer::readRect( const lChar16 * path, const lChar16 * attrname
 bool CRSkinContainer::readBool( const lChar16 * path, const lChar16 * attrname, bool defValue, bool * res )
 {
     lString16 value = readString( path, attrname );
-    if ( value.empty() )
+    if (value.empty())
         return defValue;
-    if ( value == L"true" || value == L"yes" )
+    if (value == "true" || value == "yes")
         return true;
-    if ( value == L"false" || value == L"no" )
+    if (value == "false" || value == "no")
         return false;
 	if ( res )
 		*res = true;
@@ -612,22 +612,22 @@ ImageTransform CRSkinContainer::readTransform( const lChar16 * path, const lChar
     if ( value.empty() )
         return defValue;
     value.lowercase();
-    if ( value == L"none" ) {
+    if (value == "none") {
         if ( res )
             *res = true;
         return IMG_TRANSFORM_NONE;
     }
-    if ( value == L"split" ) {
+    if (value == "split") {
         if ( res )
             *res = true;
         return IMG_TRANSFORM_SPLIT;
     }
-    if ( value == L"stretch" ) {
+    if (value == "stretch") {
         if ( res )
             *res = true;
         return IMG_TRANSFORM_STRETCH;
     }
-    if ( value == L"tile" ) {
+    if (value == "tile") {
         if ( res )
             *res = true;
         return IMG_TRANSFORM_TILE;
@@ -640,19 +640,19 @@ ImageTransform CRSkinContainer::readTransform( const lChar16 * path, const lChar
 int CRSkinContainer::readHAlign( const lChar16 * path, const lChar16 * attrname, int defValue, bool * res )
 {
     lString16 value = readString( path, attrname );
-    if ( value.empty() )
+    if (value.empty())
         return defValue;
-	if ( value == L"left" ) {
+    if (value == "left") {
 		if ( res )
 			*res = true;
         return SKIN_HALIGN_LEFT;
 	}
-	if ( value == L"center" ) {
+    if (value == "center") {
 		if ( res )
 			*res = true;
         return SKIN_HALIGN_CENTER;
 	}
-	if ( value == L"right" ) {
+    if (value == "right") {
 		if ( res )
 			*res = true;
         return SKIN_HALIGN_RIGHT;
@@ -665,19 +665,19 @@ int CRSkinContainer::readHAlign( const lChar16 * path, const lChar16 * attrname,
 int CRSkinContainer::readVAlign( const lChar16 * path, const lChar16 * attrname, int defValue, bool * res )
 {
     lString16 value = readString( path, attrname );
-    if ( value.empty() )
+    if (value.empty())
         return defValue;
-    if ( value == L"top" ) {
+    if (value == "top") {
 		if ( res )
 			*res = true;
         return SKIN_VALIGN_TOP;
 	}
-	if ( value == L"center" ) {
+    if (value == "center") {
 		if ( res )
 			*res = true;
         return SKIN_VALIGN_CENTER;
 	}
-	if ( value == L"bottom" ) {
+    if (value == "bottom") {
 		if ( res )
 			*res = true;
         return SKIN_VALIGN_BOTTOM;
@@ -704,14 +704,14 @@ lvPoint CRSkinContainer::readSize( const lChar16 * path, const lChar16 * attrnam
         return defValue;
     lvPoint p = defValue;
     lString16 s1, s2;
-    if ( !value.split2(lString16(L","), s1, s2) )
+    if ( !value.split2(",", s1, s2) )
         return p;
     s1.trim();
     s2.trim();
     bool b1=false;
     bool b2=false;
     p.x = toSkinPercent( s1, defValue.x, &b1 );
-    p.y = toSkinPercent( s2, defValue.x, &b2 );
+    p.y = toSkinPercent( s2, defValue.y, &b2 );
     if ( b1 && b2 ) {
         if ( res )
             *res = true;
@@ -749,7 +749,7 @@ CRIconListRef CRSkinContainer::readIcons( const lChar16 * path, bool * r )
 {
     CRIconListRef list = CRIconListRef(new CRIconList() );
     for ( int i=1; i<16; i++ ) {
-        lString16 p = lString16(path) + L"[" + lString16::itoa(i) + L"]";
+        lString16 p = lString16(path) << "[" << fmt::decimal(i) << "]";
         CRIconSkin * icon = new CRIconSkin();
         if ( readIconSkin(p.c_str(), icon ) )
             list->add( CRIconSkinRef(icon) );
@@ -806,7 +806,7 @@ CRSkinRef LVOpenSkin( const lString16 & pathname )
 }
 
 // default parameters
-//LVFontRef CRSkinnedItem::getFont() { return fontMan->GetFont( 24, 300, false, css_ff_sans_serif, lString8("Arial")) }
+//LVFontRef CRSkinnedItem::getFont() { return fontMan->GetFont( 24, 300, false, css_ff_sans_serif, cs8("Arial")) }
 
 void CRSkinnedItem::draw( LVDrawBuf & buf, const lvRect & rc )
 {
@@ -862,7 +862,7 @@ lvPoint CRWindowSkin::getWindowSize( const lvPoint & clientSize )
 
 CRSkinnedItem::CRSkinnedItem()
 :   _textcolor( 0x000000 )
-,   _fontFace(L"Arial")
+,   _fontFace("Arial")
 ,   _fontSize( 24 )
 ,   _fontBold( false )
 ,   _fontItalic( false )
@@ -978,7 +978,7 @@ void CRSkinnedItem::drawText( LVDrawBuf & buf, const lvRect & rc, lString16 text
         return;
     lString16Collection lines;
     lString16 tabText;
-    int tabPos = text.pos(lString16(L"\t"));
+    int tabPos = text.pos("\t");
     if ( tabPos>=0 ) {
         if ( flags & SKIN_EXTEND_TAB ) {
             tabText = text.substr( tabPos+1 );
@@ -996,12 +996,12 @@ void CRSkinnedItem::drawText( LVDrawBuf & buf, const lvRect & rc, lString16 text
             text = s2;
         }
         crlines.add( text );
-        for ( unsigned i=0; i<crlines.length(); i++ ) {
+        for ( int i=0; i<crlines.length(); i++ ) {
             wrapLine( lines, crlines[i], rc.width(), font );
         }
     } else {
         lString16 s = text;
-        while ( s.replace( cr, lString16(L" ") ) )
+        while ( s.replace( cr, cs16(" ") ) )
             ;
         lines.add( s );
     }
@@ -1025,7 +1025,7 @@ void CRSkinnedItem::drawText( LVDrawBuf & buf, const lvRect & rc, lString16 text
     else if ( valign == SKIN_VALIGN_BOTTOM )
         y += dy;
 
-    for ( unsigned i=0; i<lines.length(); i++ ) {
+    for ( int i=0; i<lines.length(); i++ ) {
         lString16 s = lines[i];
         int tw = font->getTextWidth( s.c_str(), s.length() );
         int x = txtrc.left;
@@ -1157,7 +1157,7 @@ void CRScrollSkin::drawScroll( LVDrawBuf & buf, const lvRect & rect, bool vertic
     if ( _hBody.isNull() ) {
         // text label with optional arrows
         lString16 label;
-        label << lString16::itoa(page) + L" / " << lString16::itoa(pages);
+        label << fmt::decimal(page) << " / " << fmt::decimal(pages);
         // calc label width
         int w = getFont()->getTextWidth( label.c_str(), label.length() );
         int margin = 4;
@@ -1236,7 +1236,7 @@ void CRScrollSkin::drawScroll( LVDrawBuf & buf, const lvRect & rect, bool vertic
         buf.Draw( img, sliderRect.left, sliderRect.top, sliderRect.width(), sliderRect.height(), false );
         if ( this->getShowPageNumbers() ) {
             lString16 label;
-            label << lString16::itoa(page) + L" / " << lString16::itoa(pages);
+            label << fmt::decimal(page) << " / " << fmt::decimal(pages);
             drawText( buf, sliderRect, label );
         }
     }
@@ -1498,64 +1498,64 @@ bool CRSkinContainer::readScrollSkin(  const lChar16 * path, CRScrollSkin * res 
 
     res->setAutohide( readBool( (p).c_str(), L"autohide", res->getAutohide()) );
     res->setShowPageNumbers( readBool( (p).c_str(), L"show-page-numbers", res->getShowPageNumbers()) );
-    lString16 l = readString( (p).c_str(), L"location", lString16() );
+    lString16 l = readString( (p).c_str(), L"location", lString16::empty_str );
     if ( !l.empty() ) {
         l.lowercase();
-        if ( l==L"title" )
+        if (l == "title")
             res->setLocation( CRScrollSkin::Title );
     }
     CRButtonSkinRef upButton( new CRButtonSkin() );
-    if ( readButtonSkin(  (p + L"/upbutton").c_str(), upButton.get() ) ) {
+    if ( readButtonSkin(  (p + "/upbutton").c_str(), upButton.get() ) ) {
         res->setUpButton( upButton );
         flg = true;
     }
 
     CRButtonSkinRef downButton( new CRButtonSkin() );
-    if ( readButtonSkin(  (p + L"/downbutton").c_str(), downButton.get() ) ) {
+    if ( readButtonSkin(  (p + "/downbutton").c_str(), downButton.get() ) ) {
         res->setDownButton( downButton );
         flg = true;
     }
 
     CRButtonSkinRef leftButton( new CRButtonSkin() );
-    if ( readButtonSkin(  (p + L"/leftbutton").c_str(), leftButton.get() ) ) {
+    if ( readButtonSkin(  (p + "/leftbutton").c_str(), leftButton.get() ) ) {
         res->setLeftButton( leftButton );
         flg = true;
     }
 
     CRButtonSkinRef rightButton( new CRButtonSkin() );
-    if ( readButtonSkin(  (p + L"/rightbutton").c_str(), rightButton.get() ) ) {
+    if ( readButtonSkin(  (p + "/rightbutton").c_str(), rightButton.get() ) ) {
         res->setRightButton( rightButton );
         flg = true;
     }
 
     CRRectSkinRef tabSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/tab-bottom").c_str(), tabSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/tab-bottom").c_str(), tabSkin.get() ) ) {
         res->setBottomTabSkin( tabSkin );
         flg = true;
     }
 
     CRRectSkinRef tabActiveSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/tab-bottom-active").c_str(), tabActiveSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/tab-bottom-active").c_str(), tabActiveSkin.get() ) ) {
         res->setBottomActiveTabSkin( tabActiveSkin );
         flg = true;
     }
 
     CRRectSkinRef pageBoundSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/page-bound-bottom").c_str(), pageBoundSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/page-bound-bottom").c_str(), pageBoundSkin.get() ) ) {
         res->setBottomPageBoundSkin( pageBoundSkin );
         flg = true;
     }
 
-    LVImageSourceRef hf = readImage( (p + L"/hbody").c_str(), L"frame", &flg );
+    LVImageSourceRef hf = readImage( (p + "/hbody").c_str(), L"frame", &flg );
     if ( !hf.isNull() )
         res->setHBody( hf );
-    LVImageSourceRef hs = readImage( (p + L"/hbody").c_str(), L"slider", &flg );
+    LVImageSourceRef hs = readImage( (p + "/hbody").c_str(), L"slider", &flg );
     if ( !hs.isNull() )
         res->setHSlider( hs );
-    LVImageSourceRef vf = readImage( (p + L"/vbody").c_str(), L"frame", &flg );
+    LVImageSourceRef vf = readImage( (p + "/vbody").c_str(), L"frame", &flg );
     if ( !vf.isNull() )
         res->setVBody( vf );
-    LVImageSourceRef vs = readImage( (p + L"/vbody").c_str(), L"slider", &flg );
+    LVImageSourceRef vs = readImage( (p + "/vbody").c_str(), L"slider", &flg );
     if ( !vs.isNull() )
         res->setVSlider(vs );
 
@@ -1620,10 +1620,10 @@ bool CRSkinContainer::readRectSkin(  const lChar16 * path, CRRectSkin * res )
         return false;
     }
 
-    lString16 bgpath = p + L"/background";
-    lString16 borderpath = p + L"/border";
-    lString16 textpath = p + L"/text";
-    lString16 sizepath = p + L"/size";
+    lString16 bgpath = p + "/background";
+    lString16 borderpath = p + "/border";
+    lString16 textpath = p + "/text";
+    lString16 sizepath = p + "/size";
 
     CRIconListRef icons;
     bool bgIconsFlag = false;
@@ -1685,14 +1685,14 @@ bool CRSkinContainer::readPageSkin(  const lChar16 * path, CRPageSkin * res )
         return false;
     }
 
-    lString16 name = ptr.getNode()->getAttributeValue(ptr.getNode()->getDocument()->getAttrNameIndex(L"name"));
+    lString16 name = ptr.getNode()->getAttributeValue(ptr.getNode()->getDocument()->getAttrNameIndex("name"));
     if ( !name.empty() )
         res->setName(name);
 
-    flg = readRectSkin( (p + L"scroll-skin").c_str(),  res->getSkin( PAGE_SKIN_SCROLL ).get() ) || res;
-    flg = readRectSkin( (p + L"left-page-skin").c_str(),  res->getSkin( PAGE_SKIN_LEFT_PAGE ).get() ) || flg;
-    flg = readRectSkin( (p + L"right-page-skin").c_str(),  res->getSkin( PAGE_SKIN_RIGHT_PAGE ).get() ) || flg;
-    flg = readRectSkin( (p + L"single-page-skin").c_str(),  res->getSkin( PAGE_SKIN_SINGLE_PAGE ).get() ) || flg;
+    flg = readRectSkin( (p + "scroll-skin").c_str(),  res->getSkin( PAGE_SKIN_SCROLL ).get() ) || flg;
+    flg = readRectSkin( (p + "left-page-skin").c_str(),  res->getSkin( PAGE_SKIN_LEFT_PAGE ).get() ) || flg;
+    flg = readRectSkin( (p + "right-page-skin").c_str(),  res->getSkin( PAGE_SKIN_RIGHT_PAGE ).get() ) || flg;
+    flg = readRectSkin( (p + "single-page-skin").c_str(),  res->getSkin( PAGE_SKIN_SINGLE_PAGE ).get() ) || flg;
 
     if ( !flg ) {
         crtrace log;
@@ -1727,31 +1727,31 @@ bool CRSkinContainer::readWindowSkin(  const lChar16 * path, CRWindowSkin * res 
 
     flg = readRectSkin(  path, res ) || flg;
     CRRectSkinRef titleSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/title").c_str(), titleSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/title").c_str(), titleSkin.get() ) ) {
         res->setTitleSkin( titleSkin );
         flg = true;
     }
 
     CRRectSkinRef clientSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/client").c_str(), clientSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/client").c_str(), clientSkin.get() ) ) {
         res->setClientSkin( clientSkin );
         flg = true;
     }
 
     CRRectSkinRef inputSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/input").c_str(), inputSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/input").c_str(), inputSkin.get() ) ) {
         res->setInputSkin( inputSkin );
         flg = true;
     }
 
     CRRectSkinRef statusSkin( new CRRectSkin() );
-    if ( readRectSkin(  (p + L"/status").c_str(), statusSkin.get() ) ) {
+    if ( readRectSkin(  (p + "/status").c_str(), statusSkin.get() ) ) {
         res->setStatusSkin( statusSkin );
         flg = true;
     }
 
     CRScrollSkinRef scrollSkin( new CRScrollSkin() );
-    if ( readScrollSkin(  (p + L"/scroll").c_str(), scrollSkin.get() ) ) {
+    if ( readScrollSkin(  (p + "/scroll").c_str(), scrollSkin.get() ) ) {
         res->setScrollSkin( scrollSkin );
         flg = true;
     }
@@ -1789,57 +1789,57 @@ bool CRSkinContainer::readMenuSkin(  const lChar16 * path, CRMenuSkin * res )
 
     bool b;
     CRRectSkinRef separatorSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/separator").c_str(), separatorSkin.get() );
+    b = readRectSkin(  (p + "/separator").c_str(), separatorSkin.get() );
     flg = flg || b;
     if ( b || res->getSeparatorSkin().isNull() )
         res->setSeparatorSkin( separatorSkin );
 
     CRRectSkinRef valueSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/value").c_str(), valueSkin.get() );
+    b = readRectSkin(  (p + "/value").c_str(), valueSkin.get() );
     flg = flg || b;
     if ( b || res->getValueSkin().isNull() )
         res->setValueSkin( valueSkin );
 
     CRRectSkinRef itemSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/item").c_str(), itemSkin.get() );
+    b = readRectSkin(  (p + "/item").c_str(), itemSkin.get() );
     flg = flg || b;
     if ( b || res->getItemSkin().isNull() )
         res->setItemSkin( itemSkin );
     CRRectSkinRef shortcutSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/shortcut").c_str(), shortcutSkin.get() );
+    b = readRectSkin(  (p + "/shortcut").c_str(), shortcutSkin.get() );
     flg = flg || b;
     if ( b || res->getItemShortcutSkin().isNull() )
         res->setItemShortcutSkin( shortcutSkin );
 
     CRRectSkinRef itemSelSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/selitem").c_str(), itemSelSkin.get() );
+    b = readRectSkin(  (p + "/selitem").c_str(), itemSelSkin.get() );
     flg = flg || b;
     if ( b || res->getSelItemSkin().isNull() )
         res->setSelItemSkin( itemSelSkin );
     CRRectSkinRef shortcutSelSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/selshortcut").c_str(), shortcutSelSkin.get() );
+    b = readRectSkin(  (p + "/selshortcut").c_str(), shortcutSelSkin.get() );
     flg = flg || b;
     if ( b || res->getSelItemShortcutSkin().isNull() )
         res->setSelItemShortcutSkin( shortcutSelSkin );
 
     CRRectSkinRef evenitemSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/item-even").c_str(), evenitemSkin.get() );
+    b = readRectSkin(  (p + "/item-even").c_str(), evenitemSkin.get() );
     flg = flg || b;
     if ( b )
         res->setEvenItemSkin( evenitemSkin );
     CRRectSkinRef evenshortcutSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/shortcut-even").c_str(), evenshortcutSkin.get() );
+    b = readRectSkin(  (p + "/shortcut-even").c_str(), evenshortcutSkin.get() );
     flg = flg || b;
     if ( b )
         res->setEvenItemShortcutSkin( evenshortcutSkin );
 
     CRRectSkinRef evenitemSelSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/selitem-even").c_str(), evenitemSelSkin.get() );
+    b = readRectSkin(  (p + "/selitem-even").c_str(), evenitemSelSkin.get() );
     flg = flg || b;
     if ( b )
         res->setEvenSelItemSkin( evenitemSelSkin );
     CRRectSkinRef evenshortcutSelSkin( new CRRectSkin() );
-    b = readRectSkin(  (p + L"/selshortcut-even").c_str(), evenshortcutSelSkin.get() );
+    b = readRectSkin(  (p + "/selshortcut-even").c_str(), evenshortcutSelSkin.get() );
     flg = flg || b;
     if ( b )
         res->setEvenSelItemShortcutSkin( evenshortcutSelSkin );
@@ -1855,7 +1855,7 @@ CRButtonListRef CRSkinContainer::readButtons( const lChar16 * path, bool * res )
 {
     CRButtonListRef list = CRButtonListRef(new CRButtonList() );
     for ( int i=1; i<64; i++ ) {
-        lString16 p = lString16(path) + L"[" + lString16::itoa(i) + L"]";
+        lString16 p = lString16(path) << "[" << fmt::decimal(i) << "]";
         CRButtonSkin * button = new CRButtonSkin();
         if ( readButtonSkin(p.c_str(), button ) )
             list->add( LVRef<CRButtonSkin>(button) );
@@ -1899,7 +1899,7 @@ bool CRSkinContainer::readToolBarSkin(  const lChar16 * path, CRToolBarSkin * re
     }
     flg = readRectSkin( path, res ) || flg;
 
-    lString16 buttonspath = p + L"/button";
+    lString16 buttonspath = p + "/button";
     bool buttonsFlag = false;
     CRButtonListRef buttons = readButtons( buttonspath.c_str(), &buttonsFlag);
     if ( buttonsFlag ) {
@@ -1913,7 +1913,7 @@ lString16 CRSkinImpl::pathById( const lChar16 * id )
 {
     ldomNode * elem = _doc->getElementById( id );
     if ( !elem )
-        return lString16();
+        return lString16::empty_str;
     return ldomXPointer(elem, -1).toString();
 }
 
@@ -1959,7 +1959,7 @@ CRPageSkinListRef CRSkinImpl::getPageSkinList()
     if ( _pageSkinList.isNull() ) {
         _pageSkinList = CRPageSkinListRef( new CRPageSkinList() );
         for ( int i=0; i<32; i++ ) {
-            lString16 path = L"/CR3Skin/page-skins/page-skin[";
+            lString16 path("/CR3Skin/page-skins/page-skin[");
             path << (i+1) << L"]";
             CRPageSkinRef skin = CRPageSkinRef( new CRPageSkin() );
             if ( readPageSkin(path.c_str(), skin.get() ) ) {

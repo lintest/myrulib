@@ -23,12 +23,15 @@
 
     Automatically deletes objects when vector items are destroyed.
 */
-template < class T, bool ownItems=true >
+template < class T, bool ownItems = true >
 class LVPtrVector
 {
     T * * _list;
     int _size;
     int _count;
+	LVPtrVector & operator = (LVPtrVector&) {
+		// no assignment
+	}
 public:
     /// default constructor
     LVPtrVector() : _list(NULL), _size(0), _count(0) {}
@@ -111,7 +114,7 @@ public:
     /// removes item from vector by index
     T * remove( int pos )
     {
-        if ( pos < 0 || pos > _count )
+        if (pos < 0 || (unsigned)pos > (unsigned)_count)
             crFatalError();
         int i;
         T * item = _list[pos];
@@ -248,12 +251,13 @@ protected:
 public:
     LVMatrix<_Ty> () : numcols(0), numrows(0), rows(NULL) {}
     void Clear() {
-        if (numrows && numcols) {
-            for (int i=0; i<numrows; i++)
-                free( rows[i] );
-        }
-        if (rows)
+        if (rows) {
+			if (numrows && numcols) {
+				for (int i=0; i<numrows; i++)
+					free( rows[i] );
+			}
             free( rows );
+		}
         rows = NULL;
         numrows = 0;
         numcols = 0;
