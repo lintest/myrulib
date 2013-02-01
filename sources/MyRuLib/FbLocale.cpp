@@ -56,7 +56,10 @@ bool FbLocale::Init(int language, int flags)
 bool FbLocale::Init(int language, int flags)
 {
 	const wxLanguageInfo * info = FbLocale::GetLanguageInfo(language);
+
+	#ifdef wxHAVE_TCHAR_SUPPORT
 	if (info) wxSetlocale(LC_COLLATE, info->CanonicalName);
+	#endif
 
 	wxFileName filename = FbConfigDatabase::GetConfigName();
 
