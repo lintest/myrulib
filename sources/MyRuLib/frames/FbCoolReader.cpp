@@ -254,14 +254,22 @@ bool FbCoolReader::InitCREngine()
 	InitFontManager( lString8() );
 
 	FbFontRegistrator registrator;
+	
 	#ifdef __WXMSW__
-	wxDir(wxGetOSDirectory() + wxT("\\Fonts\\")).Traverse(registrator);
-	#else // __WXMSW__
-	wxDir(wxT("/usr/local/share/fonts/")).Traverse(registrator);
-	wxDir(wxT("/usr/share/fonts/")).Traverse(registrator);
-	wxDir(wxT("~/.fonts")).Traverse(registrator);
-	wxDir(wxT("~/fonts")).Traverse(registrator);
+		wxDir(wxGetOSDirectory() + wxT("\\Fonts\\")).Traverse(registrator);
 	#endif // __WXMSW__
+
+	#ifdef __WXGTK__
+		wxDir(wxT("/usr/local/share/fonts")).Traverse(registrator);
+		wxDir(wxT("/usr/share/fonts")).Traverse(registrator);
+		wxDir(wxT("~/.fonts")).Traverse(registrator);
+		wxDir(wxT("~/fonts")).Traverse(registrator);
+	#endif // __WXGTK__
+		
+	#ifdef __WXMAC__
+		wxDir(wxT("/System/Library/Fonts")).Traverse(registrator);
+		wxDir(wxT("/Library/Fonts")).Traverse(registrator);
+	#endif // __WXMAC__
 
 	int count = fontMan->GetFontCount();
 	if (count) {
