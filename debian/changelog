@@ -1,3 +1,12 @@
+myrulib (0.29.13-squeeze1) stable; urgency=low
+
+  Доработки и исправление ошибок:
+  * Простая компиляция программы для MacOS.
+  * Размер кнопок панели инструментов изменен на стандартный.
+  * Исправлена ошибка при открытии вкладок в ArchLinux.
+
+ -- Denis Kandrashin <mail@lintest.ru>  Sun, 21 Jul 2013 14:06:51 +0400
+
 myrulib (0.29.12-squeeze1) stable; urgency=low
 
   Исправление ошибок:
