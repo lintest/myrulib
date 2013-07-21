@@ -504,8 +504,8 @@ wxToolBar * FbMainFrame::CreateToolBar()
     toolbar->SetToolBitmapSize(wxSize(16, 16));
 	wxFont font = FbParams(FB_FONT_TOOL);
 
-	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW), _("Import files to the library"));
-	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN), _("Import folder to the library"));
+	toolbar->AddTool(wxID_NEW, _("Import file"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR), _("Import files to the library"));
+	toolbar->AddTool(wxID_OPEN, _("Import folder"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR), _("Import folder to the library"));
 
 #ifdef FB_SEARCH_COMBO_CTRL
 //	toolbar->AddSeparator();
@@ -524,7 +524,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddControl( m_FindAuthor );
 
 #ifdef FB_SEARCH_COMBO_CTRL
-	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find author"));
+	toolbar->AddTool(ID_AUTHOR_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND, wxART_TOOLBAR), _("Find author"));
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
@@ -538,18 +538,18 @@ wxToolBar * FbMainFrame::CreateToolBar()
 	toolbar->AddControl( m_FindTitle );
 
 #ifdef FB_SEARCH_COMBO_CTRL
-	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND), _("Find book by title"));
+	toolbar->AddTool(ID_TITLE_BTN, _("Find"), wxArtProvider::GetBitmap(wxART_FIND, wxART_TOOLBAR), _("Find book by title"));
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
-	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(fbART_REPORT_VIEW), _("Hierarchy of authors and series"));
-	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(fbART_LIST_VIEW), _("Simple list"));
+	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxArtProvider::GetBitmap(fbART_REPORT_VIEW, wxART_TOOLBAR), _("Hierarchy of authors and series"));
+	toolbar->AddTool(ID_MODE_LIST, _("List"), wxArtProvider::GetBitmap(fbART_LIST_VIEW, wxART_TOOLBAR), _("Simple list"));
 
 #ifdef FB_SEARCH_COMBO_CTRL
 	toolbar->AddSeparator();
 #endif // __WXMSW__
 
-	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE), _("Export to external device"));
+	toolbar->AddTool(wxID_SAVE, _("Export"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR), _("Export to external device"));
 
 	toolbar->SetFont(font);
 	toolbar->Realize();
