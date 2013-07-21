@@ -27,12 +27,11 @@ class FbFrameSeqn : public FbFrameBase
 {
 	public:
 		FbFrameSeqn(wxAuiNotebook * parent, bool select = false);
-		virtual wxString GetTitle() const { return _("Series"); };
 		void FindSequence(const wxString &text);
 		void OpenSequence(const int sequence, const int book);
 	protected:
 		virtual wxString GetCountSQL();
-		class MasterMenu: public wxMenu { 
+		class MasterMenu: public wxMenu {
 			public: MasterMenu(int id);
 		};
 		void CreateColumns();

@@ -15,7 +15,7 @@ BEGIN_EVENT_TABLE(FbFrameGenr, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameGenr::FbFrameGenr(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_GENR, GetTitle(), select)
+	: FbFrameBase(parent, ID_FRAME_GENR, _("Genres"), select)
 {
 	m_MasterList = new FbMasterViewCtrl;
 	m_MasterList->Create(this, ID_MASTER_LIST, wxDefaultPosition, wxDefaultSize, FbParams.Style());

@@ -48,8 +48,6 @@ public:
 		GetEventHashTable().HandleEvent(event, this);
 	}
 
-	virtual wxString GetTitle() { return _("Authors"); }
-
 	public:
 		virtual void UpdateMaster();
 		virtual void UpdateMaster(FbMasterEvent & event);

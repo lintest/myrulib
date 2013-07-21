@@ -29,7 +29,7 @@ END_EVENT_TABLE()
 #endif
 
 FbFrameDown::FbFrameDown(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_DOWN, GetTitle(), select)
+	: FbFrameBase(parent, ID_FRAME_DOWN, _("Downloads"), select)
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );

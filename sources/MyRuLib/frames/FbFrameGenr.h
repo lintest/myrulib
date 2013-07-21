@@ -17,7 +17,6 @@ class FbFrameGenr : public FbFrameBase
 {
 	public:
 		FbFrameGenr(wxAuiNotebook * parent, bool select = false);
-		virtual wxString GetTitle() const { return _("Genres"); };
 	protected:
 		virtual FbFrameThread * CreateCounter();
 		virtual wxString GetCountSQL();

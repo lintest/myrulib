@@ -32,7 +32,7 @@ FbFrameHtml::FbFrameHtml(wxAuiNotebook * parent, int id)
 	: wxSplitterWindow(parent, ID_FRAME_HTML, wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxTAB_TRAVERSAL),
 		m_id(id), m_md5sum( FbCommonDatabase().GetMd5(id)), m_thread(NULL)
 {
-	parent->AddPage( this, GetTitle(), true );
+	parent->AddPage( this, _("Comments"), true );
 	static bool bNotLoaded = true;
 	if (bNotLoaded) {
 		wxMemoryFSHandler::AddFile(wxT("modify"), wxBitmap(modify_xpm), wxBITMAP_TYPE_PNG);
