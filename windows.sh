@@ -40,7 +40,6 @@ if test "x$EXISTS_WXW" != "x$WXW_VERSION" ; then
   rm $WXW_FILENAME.tar.bz2
   wget http://sourceforge.net/projects/wxwindows/files/$WXW_VERSION/$WXW_FILENAME.tar.bz2
   tar -xvjf $WXW_FILENAME.tar.bz2
-  ln -s $WXW_FILENAME wxWidgets
   cd $WXW_FILENAME
   mkdir build_msw
   cd build_msw
@@ -105,7 +104,12 @@ cd $SOURCE_DIR
 rm -rf build_cr3
 mkdir build_cr3
 cd build_cr3
-LDFLAGS="-static-libgcc -static-libstdc++" ../configure \
+CXXFLAGS="-I$BUILD_DIR/$WXW_FILENAME/src/\
+ -I$BUILD_DIR/$WXW_FILENAME/src/jpeg\
+ -I$BUILD_DIR/$WXW_FILENAME/src/png\
+ -I$BUILD_DIR/$WXW_FILENAME/src/zlib" \
+    LDFLAGS="-static-libgcc -static-libstdc++" \
+    ../configure \
     --with-expat \
     --host=i686-w64-mingw32 \
     --with-wx-prefix=$BUILD_DIR \
@@ -115,3 +119,4 @@ LDFLAGS="-static-libgcc -static-libstdc++" ../configure \
     --with-reader
 make
 zip $BUILD_DIR/myrulib-cr_$MRL_VERSION-win32.exe.zip myrulib.exe
+

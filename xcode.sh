@@ -21,7 +21,7 @@ MAC_SDK_PATH="/Developer/SDKs/MacOSX10.6.sdk"
 MAC_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk"
 
 SOURCE_DIR=`pwd`
-
+		
 cd ~
 
 mkdir $MRL_FILENAME
@@ -69,21 +69,6 @@ if test "x$EXISTS_WXW" != "x$WXW_VERSION" ; then
 
 fi
 
-cd $SOURCE_DIR
-rm -rf build_mac
-mkdir build_mac
-cd build_mac
-arch_flags="-arch i386"
-../configure \
-    CFLAGS="$arch_flags" CXXFLAGS="$arch_flags" CPPFLAGS="$arch_flags" \
-    LDFLAGS="$arch_flags" OBJCFLAGS="$arch_flags" OBJCXXFLAGS="$arch_flags" \
-    --with-wx-prefix=$BUILD_DIR \
-    --with-macosx-sdk=$MAC_SDK_PATH \
-    --with-macosx-version-min=10.6 \
-    --with-locale
-make
-make install
-
 ##################################################################
 # FreeType2
 ##################################################################
@@ -100,8 +85,8 @@ if test "x$EXISTS_FT2" != "x$FT2_VERSION" ; then
   curl -LO http://sourceforge.net/projects/freetype/files/freetype2/$FT2_VERSION/$FT2_FILENAME.tar.bz2
   tar -xvjf $FT2_FILENAME.tar.bz2
   cd $FT2_FILENAME
-  mkdir build_msw
-  cd build_msw
+  mkdir build_mac
+  cd build_mac
   ../configure \
     CFLAGS="$arch_flags" CXXFLAGS="$arch_flags" CPPFLAGS="$arch_flags" \
     LDFLAGS="$arch_flags" OBJCFLAGS="$arch_flags" OBJCXXFLAGS="$arch_flags" \
@@ -126,6 +111,7 @@ cd build_mac
 ../configure \
     CFLAGS="$arch_flags" CXXFLAGS="$arch_flags" CPPFLAGS="$arch_flags" \
     LDFLAGS="-static-libgcc -static-libstdc++ $arch_flags" OBJCFLAGS="$arch_flags" OBJCXXFLAGS="$arch_flags" \
+    --with-wx-prefix=$BUILD_DIR \
     --with-expat \
     --with-bzip2 \
     --with-locale
@@ -136,7 +122,11 @@ rm -rf build_cr3
 mkdir build_cr3
 cd build_cr3
 ../configure \
-    CFLAGS="$arch_flags" CXXFLAGS="$arch_flags" CPPFLAGS="$arch_flags" \
+  CXXFLAGS="$arch_flags -I$BUILD_DIR/$WXW_FILENAME/src/\
+  -I$BUILD_DIR/$WXW_FILENAME/src/jpeg\
+  -I$BUILD_DIR/$WXW_FILENAME/src/png\
+  -I$BUILD_DIR/$WXW_FILENAME/src/zlib" \
+    CFLAGS="$arch_flags" CPPFLAGS="$arch_flags" \
     LDFLAGS="-static-libgcc -static-libstdc++ $arch_flags" OBJCFLAGS="$arch_flags" OBJCXXFLAGS="$arch_flags" \
     --with-wx-prefix=$BUILD_DIR \
     --with-ft-prefix=$BUILD_DIR \

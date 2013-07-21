@@ -279,13 +279,18 @@ void FbMainFrame::RestoreFrameList()
 
 bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & title)
 {
-	wxSize size;
-	bool maximized = FbParams(FB_FRAME_MAXIMIZE);
+#ifdef __WXMAC__
+    wxSize size = wxSize(800,600);
+    bool maximized = false;
+#else
+    wxSize size = wxDefaultSize;
+    bool maximized = FbParams(FB_FRAME_MAXIMIZE);
 	if (maximized) {
 		size = wxSize( FbParamItem::DefaultInt(FB_FRAME_WIDTH), FbParamItem::DefaultInt(FB_FRAME_HEIGHT) );
 	} else {
 		size = wxSize( FbParams(FB_FRAME_WIDTH), FbParams(FB_FRAME_HEIGHT) );
 	}
+#endif __WXMAC__
 
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{

@@ -90,9 +90,7 @@ MRL_SQLITE3_CFLAGS = -DSQLITE_ENABLE_FTS3 -I$(srcdir)/3rdparty/sqlite3 \
 MRL_SQLITE3_OBJECTS =  \
 	mrl_sqlite3_sqlite3.o
 MRL_CRENGINE_CXXFLAGS = -I3rdparty/crengine/include \
-	-I$(srcdir)/../wxWidgets/src/jpeg -I$(srcdir)/../wxWidgets/src/png \
-	-I$(srcdir)/../wxWidgets/src/zlib -I$(srcdir)/3rdparty/crengine/png \
-	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/3rdparty/crengine/png $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MRL_CRENGINE_OBJECTS =  \
 	mrl_crengine_chmfmt.o \
 	mrl_crengine_cp_stats.o \

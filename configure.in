@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
 
-AC_INIT([MyRuLib],[0.29.13],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
+AC_INIT([MyRuLib],[0.29.14],[mail@lintest.ru],[myrulib],[http://myrulib.lintest.ru/])
 
 dnl Set the minimum version of toolkit libs
 dnl ========================================================
@@ -285,6 +285,10 @@ dnl === USE_READER ===
 dnl ==================
 
 if test "x$USE_READER" = "xyes" ; then 
+  if test "x$WX_LIBS_STATIC" = "x"; then
+    AC_CHECK_LIB(jpeg, jpeg_std_error, , AC_MSG_ERROR([no jpeglib.h; please install libjpeg62-dev or equivalent]))
+    AC_CHECK_LIB(png, png_sig_cmp, , AC_MSG_ERROR([no png.h; please install libpng12-dev or equivalent]))
+  fi
   CXXFLAGS="$CXXFLAGS -DFB_INCLUDE_READER -I\$(srcdir)/3rdparty/crengine/include"
   WX_LIBS="$WX_LIBS -lmrl_crengine"
   AC_DEFINE(FB_INCLUDE_READER)

@@ -70,9 +70,6 @@
 
 	<lib id="mrl_crengine" template="wx-lib" cond="USE_READER=='yes'">
 		<include>3rdparty/crengine/include</include>
-		<include>$(SRCDIR)/../wxWidgets/src/jpeg</include>
-		<include>$(SRCDIR)/../wxWidgets/src/png</include>
-		<include>$(SRCDIR)/../wxWidgets/src/zlib</include>
 		<include>$(SRCDIR)/3rdparty/crengine/png</include>
 		<sources>3rdparty/crengine/src/chmfmt.cpp</sources>
 		<sources>3rdparty/crengine/src/cp_stats.cpp</sources>
