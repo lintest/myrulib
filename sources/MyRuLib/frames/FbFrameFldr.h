@@ -7,7 +7,6 @@ class FbFrameFldr : public FbFrameBase
 {
 	public:
 		FbFrameFldr(wxAuiNotebook * parent, bool select = false);
-		virtual wxString GetTitle() const { return _("My folders"); };
 		void UpdateFolder(const int iFolder, const FbFolderType type);
 	private:
 		void CreateColumns();

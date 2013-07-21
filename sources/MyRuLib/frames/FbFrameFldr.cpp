@@ -23,7 +23,7 @@ BEGIN_EVENT_TABLE(FbFrameFldr, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameFldr::FbFrameFldr(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_FLDR, GetTitle(), select)
+	: FbFrameBase(parent, ID_FRAME_FLDR, _("My folders"), select)
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer * sizer = new wxBoxSizer( wxVERTICAL );

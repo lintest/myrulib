@@ -18,7 +18,7 @@ FbFrameInfo::FbFrameInfo(wxAuiNotebook * parent, bool select)
 	: FbHtmlWindow(parent, ID_FRAME_INFO)
 {
 	UpdateFonts(false);
-	parent->AddPage( this, GetTitle(), select );
+	parent->AddPage( this, _("Information"), select );
 	Update();
 }
 

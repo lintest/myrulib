@@ -13,7 +13,6 @@ class FbFrameDate : public FbFrameBase
 {
 	public:
 		FbFrameDate(wxAuiNotebook * parent, bool select = false);
-		virtual wxString GetTitle() const { return _("Calendar"); };
 	protected:
 		void CreateColumns();
 		virtual wxString GetCountSQL();

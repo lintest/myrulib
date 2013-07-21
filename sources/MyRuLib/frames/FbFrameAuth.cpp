@@ -117,7 +117,7 @@ BEGIN_EVENT_TABLE(FbFrameAuth, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameAuth::FbFrameAuth(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_AUTH, GetTitle(), select)
+	: FbFrameBase(parent, ID_FRAME_AUTH,  _("Authors"), select)
 
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );

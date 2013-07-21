@@ -91,7 +91,7 @@ BEGIN_EVENT_TABLE(FbFrameSeqn, FbFrameBase)
 END_EVENT_TABLE()
 
 FbFrameSeqn::FbFrameSeqn(wxAuiNotebook * parent, bool select)
-	: FbFrameBase(parent, ID_FRAME_SEQN, GetTitle(), select),
+	: FbFrameBase(parent, ID_FRAME_SEQN, _("Series"), select),
 		m_FindText(NULL), m_FindInfo(NULL), m_SequenceCode(0)
 {
 	wxPanel * panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
