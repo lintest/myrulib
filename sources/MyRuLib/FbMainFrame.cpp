@@ -290,7 +290,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 	} else {
 		size = wxSize( FbParams(FB_FRAME_WIDTH), FbParams(FB_FRAME_HEIGHT) );
 	}
-#endif __WXMAC__
+#endif // __WXMAC__
 
 	bool res = wxFrame::Create(parent, id, title, wxDefaultPosition, size, wxDEFAULT_FRAME_STYLE|wxFRAME_NO_WINDOW_MENU);
 	if(res)	{

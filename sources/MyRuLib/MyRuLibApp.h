@@ -33,7 +33,7 @@ class MyRuLibApp : public wxApp
 		virtual int FilterEvent(wxEvent & event);
 		#endif // __WXMSW__
 		virtual void OnUnhandledException() {}
-		virtual bool OnExceptionInMainLoop() { return false; }
+		virtual bool OnExceptionInMainLoop() { return true; }
 	private:
 		void SetLibFile(const wxString & filename);
 		wxFileName GetDatabaseFile();

@@ -8,6 +8,7 @@ dnl Set the minimum version of toolkit libs
 dnl ========================================================
 SQLITE_VERSION=3.6.0
 WXWIDGETS_VERSION=2.8.10
+WXSQL_VERSION=2.0.0
 
 AC_CONFIG_SRCDIR([MyRuLib/MyRuLibApp.cpp])
 AC_CONFIG_SRCDIR([autoconf_inc.m4])
@@ -93,6 +94,10 @@ AC_MSG_CHECKING([for --with-sqlite])
 AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 library])], USE_SQLITE="$withval", USE_SQLITE="no")
 AC_MSG_RESULT([$USE_SQLITE])
 
+AC_MSG_CHECKING([for --with-wxsqlite])
+AC_ARG_WITH([wxsqlite], [AS_HELP_STRING([--with-wxsqlite], [Use builtin wxSQLite3 library])], USE_WXSQL="$withval", USE_WXSQL="yes")
+AC_MSG_RESULT([$USE_WXSQL])
+
 AC_MSG_CHECKING([for --with-icu])
 AC_ARG_WITH(icu, AS_HELP_STRING([--with-icu],[Use ICU for unicode collation]), USE_LIBICU="$withval", USE_LIBICU="no")
 AC_MSG_RESULT([$USE_LIBICU])
@@ -113,7 +118,7 @@ if test "x$USE_BZIP2" != "xbuiltin" ; then
   AC_CHECK_HEADER(bzlib.h, [AC_CHECK_LIB(bz2, BZ2_bzwrite, , USE_BZIP2="builtin")], USE_BZIP2="builtin")
 fi
 
-if test "x$USE_SQLITE" == "xyes" ; then 
+if test "x$USE_SQLLITE" == "xyes" ; then 
     USE_SQLITE="builtin"
 fi
 
@@ -189,6 +194,14 @@ if test "x$USE_SQLITE" != "xbuiltin" ; then
   fi
 fi
 
+if test "x$USE_WXSQL" == "xyes" ; then 
+    USE_WXSQL="builtin"
+fi
+
+dnl if test "x$USE_WXSQL" != "xbuiltin" ; then 
+dnl   PKG_CHECK_MODULES(wxsqlite3, wxsqlite3A >= $WXSQL_VERSION, , USE_WXSQL="builtin")
+dnl fi
+
 AC_MSG_CHECKING([for --with-locale])
 AC_ARG_WITH([locale], [AS_HELP_STRING([--with-locale], [Include locale files into executable])], USE_LOCALE="$withval", USE_LOCALE="no")
 AC_MSG_RESULT([$USE_LOCALE])
@@ -262,6 +275,17 @@ if test "x$USE_SQLITE" = "xbuiltin" ; then
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
   WX_LIBS="$WX_LIBS $SQLITE_LIBS"
+fi
+
+dnl =================
+dnl === USE_WXSQL ===
+dnl =================
+
+if test "x$USE_WXSQL" = "xbuiltin" ; then 
+  WX_CXXFLAGS="-I\$(srcdir)/3rdparty/wxsqlite3/include $WX_CXXFLAGS"
+  WX_LIBS="-lmrl_wxsqlite3 $WX_LIBS"
+else
+  WX_LIBS="-lwxsqlite3-2.8 $WX_LIBS"
 fi
 
 dnl ==================
@@ -369,6 +393,7 @@ echo "  Use Expat XML parser instead of Libxml2?      ${USE_EXPAT}"
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use builtin BZip2 library?                    ${USE_BZIP2}"
 echo "  Use builtin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Use builtin wxSQLite3 library?                ${USE_WXSQL}"
 echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"

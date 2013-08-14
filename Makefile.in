@@ -135,20 +135,17 @@ MRL_WXSQLITE3_OBJECTS =  \
 MRL_WXBZIP2_CXXFLAGS =  -DNDEBUG  $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MRL_WXBZIP2_OBJECTS =  \
 	mrl_wxbzip2_bzipstream.o
-ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
-ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/3rdparty/wxsqlite3/include $(WX_CXXFLAGS) $(CPPFLAGS) \
-	$(CXXFLAGS)
+ZIPSCAN_CFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib $(WX_CFLAGS) $(CPPFLAGS) \
+	$(CFLAGS)
+ZIPSCAN_CXXFLAGS = -DNDEBUG -I$(srcdir)/sources/MyRuLib $(WX_CXXFLAGS) \
+	$(CPPFLAGS) $(CXXFLAGS)
 ZIPSCAN_OBJECTS =  \
 	zipscan_ZipScan.o \
 	zipscan_md5.o
 MYRULIB_CFLAGS = -I. -DNDEBUG -D_MYRULIB -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
-	$(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
+	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 MYRULIB_CXXFLAGS = -I. -DNDEBUG -D_MYRULIB -I$(srcdir)/sources/MyRuLib \
-	-I$(srcdir)/3rdparty/wxsqlite3/include -I$(srcdir)/3rdparty/wxbzipstream \
-	$(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	-I$(srcdir)/3rdparty/wxbzipstream $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 MYRULIB_OBJECTS =  \
 	myrulib_FbChoiceCtrl.o \
 	myrulib_FbComboBox.o \
@@ -270,6 +267,8 @@ MYRULIB_ODEP = ru.inc uk.inc be.inc cs.inc sv.inc $(__fb2_css_inc___depname)
 @COND_USE_SQLITE_builtin@	$(LIBPREFIX)mrl_sqlite3$(LIBEXT)
 @COND_USE_READER_yes@__mrl_crengine___depname = \
 @COND_USE_READER_yes@	$(LIBPREFIX)mrl_crengine$(LIBEXT)
+@COND_USE_WXSQL_builtin@__mrl_wxsqlite3___depname = \
+@COND_USE_WXSQL_builtin@	$(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
 @COND_PLATFORM_MAC_0@__zipscan___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__zipscan___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL zipscan$(EXEEXT)
@@ -284,7 +283,7 @@ COND_PLATFORM_OS2_1___myrulib___os2_emxbindcmd = $(NM) myrulib$(EXEEXT) | if \
 
 ### Targets: ###
 
-all: $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) myrulib$(EXEEXT)
+all: $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(__mrl_wxsqlite3___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) zipscan$(EXEEXT) myrulib$(EXEEXT)
 
 install: install_myrulib
 	$(INSTALL) -d $(DESTDIR)$(datadir)/locale/ru/LC_MESSAGES
@@ -371,18 +370,18 @@ distclean: clean
 @COND_USE_READER_yes@	$(AR) $(AROPTIONS) $@ $(MRL_CRENGINE_OBJECTS)
 @COND_USE_READER_yes@	$(RANLIB) $@
 
-$(LIBPREFIX)mrl_wxsqlite3$(LIBEXT): $(MRL_WXSQLITE3_OBJECTS)
-	rm -f $@
-	$(AR) $(AROPTIONS) $@ $(MRL_WXSQLITE3_OBJECTS)
-	$(RANLIB) $@
+@COND_USE_WXSQL_builtin@$(LIBPREFIX)mrl_wxsqlite3$(LIBEXT): $(MRL_WXSQLITE3_OBJECTS)
+@COND_USE_WXSQL_builtin@	rm -f $@
+@COND_USE_WXSQL_builtin@	$(AR) $(AROPTIONS) $@ $(MRL_WXSQLITE3_OBJECTS)
+@COND_USE_WXSQL_builtin@	$(RANLIB) $@
 
 $(LIBPREFIX)mrl_wxbzip2$(LIBEXT): $(MRL_WXBZIP2_OBJECTS)
 	rm -f $@
 	$(AR) $(AROPTIONS) $@ $(MRL_WXBZIP2_OBJECTS)
 	$(RANLIB) $@
 
-zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT)
-	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L. -L. -L.     $(LDFLAGS)  -lmrl_wxbzip2 -lmrl_wxsqlite3 -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
+zipscan$(EXEEXT): $(ZIPSCAN_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(__mrl_wxsqlite3___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT)
+	$(CXX) -o $@ $(ZIPSCAN_OBJECTS) -L.     $(LDFLAGS)  -lmrl_wxbzip2 $(WX_LIBS) $(LIBS)
 	
 	$(__zipscan___mac_setfilecmd)
 
@@ -422,8 +421,8 @@ sv.inc: bin2c sv.mo
 @COND_USE_READER_yes@fb2_css.inc: bin2c $(srcdir)/3rdparty/crengine/css/fb2.css
 @COND_USE_READER_yes@	./bin2c $(srcdir)/3rdparty/crengine/css/fb2.css ./fb2_css.inc file
 
-myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(LIBPREFIX)mrl_wxsqlite3$(LIBEXT) $(__myrulib___win32rc)
-	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L. -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lmrl_wxbzip2 -lmrl_wxsqlite3 $(WX_LIBS) $(LIBS)
+myrulib$(EXEEXT): $(MYRULIB_OBJECTS) $(__mrl_bzip2___depname) $(__mrl_expat___depname) $(__mrl_faxpp___depname) $(__mrl_sqlite3___depname) $(__mrl_crengine___depname) $(__mrl_wxsqlite3___depname) $(LIBPREFIX)mrl_wxbzip2$(LIBEXT) $(__myrulib___win32rc)
+	$(CXX) -o $@ $(MYRULIB_OBJECTS) -L.  $(LDFLAGS_GUI)   $(LDFLAGS)  -lmrl_wxbzip2 $(WX_LIBS) $(LIBS)
 	
 	$(__myrulib___mac_setfilecmd)
 	$(__myrulib___os2_emxbindcmd)
@@ -962,7 +961,7 @@ myrulib_base64.o: $(srcdir)/sources/MyRuLib/wx/base64.cpp $(MYRULIB_ODEP)
 	$(CXXC) -c -o $@ $(MYRULIB_CXXFLAGS) $(srcdir)/sources/MyRuLib/wx/base64.cpp
 
 myrulib_resource_rc.o: $(srcdir)/sources/MyRuLib/res/resource.rc $(MYRULIB_ODEP)
-	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --define _MYRULIB --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/wxsqlite3/include --include-dir $(srcdir)/3rdparty/wxbzipstream
+	$(WX_RESCOMP) -i$< -o$@  --include-dir . --include-dir . --define NDEBUG --define _MYRULIB --include-dir $(srcdir)/sources/MyRuLib --include-dir $(srcdir)/3rdparty/wxbzipstream
 
 
 # Include dependency info, if present:

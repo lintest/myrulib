@@ -72,6 +72,12 @@ dnl ### begin block 20_COND_USE_SQLITE_builtin[myrulib.bkl] ###
         COND_USE_SQLITE_builtin=""
     fi
     AC_SUBST(COND_USE_SQLITE_builtin)
+dnl ### begin block 20_COND_USE_WXSQL_builtin[myrulib.bkl] ###
+    COND_USE_WXSQL_builtin="#"
+    if test "x$USE_WXSQL" = "xbuiltin" ; then
+        COND_USE_WXSQL_builtin=""
+    fi
+    AC_SUBST(COND_USE_WXSQL_builtin)
 dnl ### begin block 20_COND_WX_DEBUG_0_WX_UNICODE_1[myrulib.bkl] ###
     COND_WX_DEBUG_0_WX_UNICODE_1="#"
     if test "x$WX_DEBUG" = "x0" -a "x$WX_UNICODE" = "x1" ; then

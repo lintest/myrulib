@@ -630,6 +630,7 @@ ICU_CONFIG
 COND_WX_DEBUG_1_WX_UNICODE_1
 COND_WX_DEBUG_1_WX_UNICODE_0
 COND_WX_DEBUG_0_WX_UNICODE_1
+COND_USE_WXSQL_builtin
 COND_USE_SQLITE_builtin
 COND_USE_READER_yes
 COND_USE_FAXPP_builtin
@@ -794,6 +795,7 @@ with_expat
 with_faxpp
 with_bzip2
 with_sqlite
+with_wxsqlite
 with_icu
 with_reader
 with_syslog
@@ -1460,6 +1462,7 @@ Optional Packages:
   --with-faxpp            Use FAXPP (Fast XML Pull Parser) library
   --with-bzip2            Use builtin BZip2 library
   --with-sqlite           Use builtin SQLite3 library
+  --with-wxsqlite         Use builtin wxSQLite3 library
   --with-icu              Use ICU for unicode collation
   --with-reader           Use Cool Reader Engine
   --with-syslog           Use system logger: syslog
@@ -2286,6 +2289,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 SQLITE_VERSION=3.6.0
 WXWIDGETS_VERSION=2.8.10
+WXSQL_VERSION=2.0.0
 
 
 
@@ -4959,6 +4963,19 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_SQLITE" >&5
 $as_echo "$USE_SQLITE" >&6; }
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-wxsqlite" >&5
+$as_echo_n "checking for --with-wxsqlite... " >&6; }
+
+# Check whether --with-wxsqlite was given.
+if test "${with_wxsqlite+set}" = set; then :
+  withval=$with_wxsqlite; USE_WXSQL="$withval"
+else
+  USE_WXSQL="yes"
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_WXSQL" >&5
+$as_echo "$USE_WXSQL" >&6; }
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-icu" >&5
 $as_echo_n "checking for --with-icu... " >&6; }
 
@@ -5059,7 +5076,7 @@ fi
 
 fi
 
-if test "x$USE_SQLITE" == "xyes" ; then
+if test "x$USE_SQLLITE" == "xyes" ; then
     USE_SQLITE="builtin"
 fi
 
@@ -5348,6 +5365,11 @@ $as_echo "$ac_cv_sqlite_enable_icu" >&6; }
     fi
   fi
 fi
+
+if test "x$USE_WXSQL" == "xyes" ; then
+    USE_WXSQL="builtin"
+fi
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for --with-locale" >&5
 $as_echo_n "checking for --with-locale... " >&6; }
@@ -9119,6 +9141,11 @@ BAKEFILE_AUTOCONF_INC_M4_VERSION="0.2.9"
         COND_USE_SQLITE_builtin=""
     fi
 
+    COND_USE_WXSQL_builtin="#"
+    if test "x$USE_WXSQL" = "xbuiltin" ; then
+        COND_USE_WXSQL_builtin=""
+    fi
+
     COND_WX_DEBUG_0_WX_UNICODE_1="#"
     if test "x$WX_DEBUG" = "x0" -a "x$WX_UNICODE" = "x1" ; then
         COND_WX_DEBUG_0_WX_UNICODE_1=""
@@ -9186,6 +9213,14 @@ if test "x$USE_SQLITE" = "xbuiltin" ; then
 else
   CXXFLAGS="$CXXFLAGS $SQLITE_CFLAGS"
   WX_LIBS="$WX_LIBS $SQLITE_LIBS"
+fi
+
+
+if test "x$USE_WXSQL" = "xbuiltin" ; then
+  WX_CXXFLAGS="-I\$(srcdir)/3rdparty/wxsqlite3/include $WX_CXXFLAGS"
+  WX_LIBS="-lmrl_wxsqlite3 $WX_LIBS"
+else
+  WX_LIBS="-lwxsqlite3-2.8 $WX_LIBS"
 fi
 
 
@@ -10688,6 +10723,7 @@ echo "  Use Expat XML parser instead of Libxml2?      ${USE_EXPAT}"
 echo "  Use FAXPP (Fast XML Pull Parser) library?     ${USE_FAXPP}"
 echo "  Use builtin BZip2 library?                    ${USE_BZIP2}"
 echo "  Use builtin SQLite3 library?                  ${USE_SQLITE}"
+echo "  Use builtin wxSQLite3 library?                ${USE_WXSQL}"
 echo "  Use ICU for unicode collation?                ${USE_LIBICU}"
 echo "  Use Cool Reader Engine?                       ${USE_READER}"
 echo "  Use system logger: syslog?                    ${USE_SYSLOG}"
