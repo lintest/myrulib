@@ -26,6 +26,9 @@
 
 #include "wx/wxsqlite3def.h"
 
+/// wxSQLite3 version string
+#define wxSQLITE3_VERSION_STRING   wxT("wxSQLite3 3.0.3")
+
 #define WXSQLITE_ERROR 1000
 
 #define WXSQLITE_INTEGER  1
@@ -79,10 +82,16 @@ enum wxSQLite3JournalMode
 #define WXSQLITE_OPEN_READONLY         0x00000001
 #define WXSQLITE_OPEN_READWRITE        0x00000002
 #define WXSQLITE_OPEN_CREATE           0x00000004
+#define WXSQLITE_OPEN_URI              0x00000040
+#define WXSQLITE_OPEN_MEMORY           0x00000080
 #define WXSQLITE_OPEN_NOMUTEX          0x00008000
 #define WXSQLITE_OPEN_FULLMUTEX        0x00010000
 #define WXSQLITE_OPEN_SHAREDCACHE      0x00020000
 #define WXSQLITE_OPEN_PRIVATECACHE     0x00040000
+
+#define WXSQLITE_CHECKPOINT_PASSIVE 0
+#define WXSQLITE_CHECKPOINT_FULL    1
+#define WXSQLITE_CHECKPOINT_RESTART 2
 
 inline void operator++(wxSQLite3LimitType& value)
 {
@@ -512,6 +521,10 @@ public:
   static wxString AuthorizationCodeToString(wxSQLite3Authorizer::wxAuthorizationCode type);
 };
 
+class wxSQLite3DatabaseReference;
+class wxSQLite3StatementReference;
+class wxSQLite3BlobReference;
+
 class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3Database;
 
 /// Interface for a user defined hook function
@@ -591,6 +604,29 @@ private:
   wxSQLite3Database* m_db;
 };
 
+/// Interface for a user defined backup progress function
+/**
+*/
+class WXDLLIMPEXP_SQLITE3 wxSQLite3BackupProgress
+{
+public:
+  /// Default constructor
+  wxSQLite3BackupProgress() {}
+
+  /// Virtual destructor
+  virtual ~wxSQLite3BackupProgress() {}
+
+  /// Execute the backup progress callback
+  /**
+  * This method allows an application to display information about the progress of a backup
+  * operation to the user.
+  * \param totalPages total number of pages to copy
+  * \param remainingPages number of pages remaining to be copied
+  * \return TRUE if backup should continue, FALSE otherwise
+  */
+  virtual bool Progress(int WXUNUSED(totalPages), int WXUNUSED(remainingPages)) { return true; }
+};
+
 /// Interface for a user defined collation sequence
 /**
 */
@@ -621,8 +657,9 @@ public:
   wxSQLite3ResultSet(const wxSQLite3ResultSet& resultSet);
 
   /// Constructor for internal use
-  wxSQLite3ResultSet(void* db, void* stmt,
-                     bool eof, bool first = true, bool ownStmt = true);
+  wxSQLite3ResultSet(wxSQLite3DatabaseReference* db, 
+                     wxSQLite3StatementReference* stmt,
+                     bool eof, bool first = true);
 
   /// Assignment constructor
   wxSQLite3ResultSet& operator=(const wxSQLite3ResultSet& resultSet);
@@ -805,6 +842,7 @@ public:
 
   /// Get a column as a date value using the column index
   /**
+  * Date value is expected to be in format 'YYYY-MM-DD'.
   * \param columnIndex index of the column. Indices start with 0.
   * \return value of the column
   */
@@ -812,6 +850,7 @@ public:
 
   /// Get a column as a date value using the column name
   /**
+  * Date value is expected to be in format 'YYYY-MM-DD'.
   * \param columnName name of the column
   * \return value of the column
   */
@@ -819,6 +858,7 @@ public:
 
   /// Get a column as a time value using the column index
   /**
+  * Date value is expected to be in format 'HH:MM:SS'.
   * \param columnIndex index of the column. Indices start with 0.
   * \return value of the column
   */
@@ -826,6 +866,7 @@ public:
 
   /// Get a column as a time value using the column name
   /**
+  * Date value is expected to be in format 'HH:MM:SS'.
   * \param columnName name of the column
   * \return value of the column
   */
@@ -833,6 +874,7 @@ public:
 
   /// Get a column as a date and time value using the column index
   /**
+  * Date value is expected to be in format 'YYYY-MM-DD HH:MM:SS'.
   * \param columnIndex index of the column. Indices start with 0.
   * \return value of the column
   */
@@ -840,6 +882,7 @@ public:
 
   /// Get a column as a date and time value using the column name
   /**
+  * Date value is expected to be in format 'YYYY-MM-DD HH:MM:SS'.
   * \param columnName name of the column
   * \return value of the column
   */
@@ -847,6 +890,7 @@ public:
 
   /// Get a column as a timestamp value using the column index
   /**
+  * Date value is expected to be in format 'YYYY-MM-DD HH:MM:SS.mmm'.
   * \param columnIndex index of the column. Indices start with 0.
   * \return value of the column
   */
@@ -854,6 +898,7 @@ public:
 
   /// Get a column as a timestamp value using the column name
   /**
+  * Date value is expected to be in format 'YYYY-MM-DD HH:MM:SS.mmm'.
   * \param columnName name of the column
   * \return value of the column
   */
@@ -861,7 +906,8 @@ public:
 
   /// Get a column as a date and time value using the column index
   /**
-  * The date/time value is expected to be stored in the database as a numeric value (i.e. int64).
+  * The date/time value is expected to be stored in the database as a numeric value (i.e. int64),
+  * measured in milliseconds since 1970-01-01.
   *
   * \param columnIndex index of the column. Indices start with 0.
   * \return value of the column
@@ -870,12 +916,33 @@ public:
 
   /// Get a column as a date and time value using the column name
   /**
-  * The date/time value is expected to be stored in the database as a numeric value (i.e. int64).
+  * The date/time value is expected to be stored in the database as a numeric value (i.e. int64),
+  * measured in milliseconds since 1970-01-01.
   *
   * \param columnName name of the column
   * \return value of the column
   */
   wxDateTime GetNumericDateTime(const wxString& columnName);
+
+  /// Get a column as a date and time value using the column index
+  /**
+  * The date/time value is expected to be stored in the database as an integer value (i.e. int64),
+  * measured in seconds since 1970-01-01.
+  *
+  * \param columnIndex index of the column. Indices start with 0.
+  * \return value of the column
+  */
+  wxDateTime GetUnixDateTime(int columnIndex);
+
+  /// Get a column as a date and time value using the column name
+  /**
+  * The date/time value is expected to be stored in the database as an integer value (i.e. int64),
+  * measured in seconds since 1970-01-01.
+  *
+  * \param columnName name of the column
+  * \return value of the column
+  */
+  wxDateTime GetUnixDateTime(const wxString& columnName);
 
   /// Get a column as a date and time value using the column index
   /**
@@ -894,6 +961,26 @@ public:
   * \return value of the column
   */
   wxDateTime GetJulianDayNumber(const wxString& columnName);
+
+  /// Get a column as a date and time value using the column index
+  /**
+  * The date/time value is interpreted based on the type of column value.
+  *
+  * \param columnIndex index of the column. Indices start with 0.
+  * \param milliSeconds interpret integer value as milliseconds since 1970-01-01, default: false
+  * \return value of the column
+  */
+  wxDateTime GetAutomaticDateTime(int columnIndex, bool milliSeconds = false);
+
+  /// Get a column as a date and time value using the column name
+  /**
+  * The date/time value is interpreted based on the type of column value.
+  *
+  * \param columnName name of the column
+  * \param milliSeconds interpret integer value as milliseconds since 1970-01-01, default: false
+  * \return value of the column
+  */
+  wxDateTime GetAutomaticDateTime(const wxString& columnName, bool milliSeconds = false);
 
   /// Get a column as a boolean value using the column index
   /**
@@ -929,6 +1016,12 @@ public:
   */
   bool Eof();
 
+  /// Check whether the cursor has been moved
+  /**
+  * \return TRUE if the cursor has been moved using method NextRow, FALSE otherwise
+  */
+  bool CursorMoved();
+
   /// Retrieve next row of the result set
   /**
   * Advances the cursor to the next row.
@@ -959,12 +1052,14 @@ private:
   /// Check the validity of the associated statement
   void CheckStmt();
 
-  void* m_db;       ///< associated database
-  void* m_stmt;     ///< associated statement
+  /// Finalize the result set (internal)
+  void Finalize(wxSQLite3DatabaseReference* db,wxSQLite3StatementReference* stmt);
+
+  wxSQLite3DatabaseReference*  m_db;   ///< associated database
+  wxSQLite3StatementReference* m_stmt; ///< associated statement
   bool  m_eof;      ///< Flag for end of result set
   bool  m_first;    ///< Flag for first row of the result set
   int   m_cols;     ///< Numver of columns in row set
-  bool  m_ownStmt;  ///< Flag for ownership of the associated statement
 };
 
 
@@ -1217,7 +1312,7 @@ public:
   /// Constructor (internal use only)
   /**
   */
-  wxSQLite3Statement(void* db, void* stmt);
+  wxSQLite3Statement(wxSQLite3DatabaseReference* db, wxSQLite3StatementReference* stmt);
 
   /// Destructor
   /**
@@ -1232,16 +1327,17 @@ public:
 
   /// Execute the query represented by this statement
   /**
-  * \param transferStatementOwnership if TRUE the ownership of the underlying SQLite 
-  * statement object is transferred to the created result set (default: FALSE)
   * \return result set instance
-  * \note the transfer of ownership of the underlying SQLite statement object can be
-  * performed only once. If the transfer of ownership has been requested this
-  * wxSQL3Statement instance isn't usable anymore as soon as the result set is destroyed.
-  * If the transfer of ownership isn't requested the created result set can be used to
-  * retrieve the selected data rows only as long as this wxSQLite3Statement instance exists.
   */
-  wxSQLite3ResultSet ExecuteQuery(bool transferStatementOwnership = false);
+  wxSQLite3ResultSet ExecuteQuery();
+
+  /// Execute a scalar SQL query statement given as a wxString
+  /**
+  * Allows to easily retrieve the result of queries returning a single integer result
+  * like SELECT COUNT(*) FROM table WHERE condition.
+  * \return first column of first row as an int
+  */
+  int ExecuteScalar();
 
   /// Get the number of statement parameters
   /**
@@ -1318,6 +1414,7 @@ public:
 
   /// Bind parameter to a date value
   /**
+  * Only the date part is stored in format 'YYYY-MM-DD'.
   * \param paramIndex index of the parameter. The first parameter has an index of 1.
   * \param date value of the parameter
   */
@@ -1325,6 +1422,7 @@ public:
 
   /// Bind parameter to a time value
   /**
+  * Only the time part is stored in format 'HH:MM:SS'.
   * \param paramIndex index of the parameter. The first parameter has an index of 1.
   * \param time value of the parameter
   */
@@ -1332,6 +1430,7 @@ public:
 
   /// Bind parameter to a date and time value
   /**
+  * Date and time are stored in format 'YYYY-MM-DD HH:MM:SS'.
   * \param paramIndex index of the parameter. The first parameter has an index of 1.
   * \param datetime value of the parameter
   */
@@ -1339,6 +1438,7 @@ public:
 
   /// Bind parameter to a timestamp value
   /**
+  * Timestamp is stored in format 'YYYY-MM-DD HH:MM:SS.mmm'.
   * \param paramIndex index of the parameter. The first parameter has an index of 1.
   * \param timestamp value of the parameter
   */
@@ -1347,11 +1447,22 @@ public:
   /// Bind parameter to a date and time value
   /**
   * The date/time value is transferred to the database as a numeric value (i.e. int64).
+  * The value is measured in milliseconds since 1970-01-01.
   *
   * \param paramIndex index of the parameter. The first parameter has an index of 1.
   * \param datetime value of the parameter
   */
   void BindNumericDateTime(int paramIndex, const wxDateTime& datetime);
+
+  /// Bind parameter to a date and time value
+  /**
+  * The date/time value is transferred to the database as an integer value.
+  * The value is measured in seconds since 1970-01-01.
+  *
+  * \param paramIndex index of the parameter. The first parameter has an index of 1.
+  * \param datetime value of the parameter
+  */
+  void BindUnixDateTime(int paramIndex, const wxDateTime& datetime);
 
   /// Bind parameter to a date and time value
   /**
@@ -1423,6 +1534,12 @@ public:
   */
   bool IsOk();
 
+  /// Determine if a prepared statement has been reset
+  /**
+  * \return TRUE if the prepared statement has been stepped at least once but has not run to completion and/or has not been reset, FALSE otherwise
+  */
+  bool IsBusy();
+
 private:
   /// Check for valid database connection
   void CheckDatabase();
@@ -1430,9 +1547,11 @@ private:
   /// Check for valid statement
   void CheckStmt();
 
-  void* m_db;            ///< associated SQLite3 database
-  void* m_stmt;          ///< associated SQLite3 statement
-  bool  m_hasOwnership;  ///< flag whether the associated SQLite3 statement is owned
+  /// Finalize the result set (internal)
+  void Finalize(wxSQLite3DatabaseReference* db,wxSQLite3StatementReference* stmt);
+
+  wxSQLite3DatabaseReference*  m_db;    ///< associated SQLite3 database
+  wxSQLite3StatementReference* m_stmt;  ///< associated SQLite3 statement
 };
 
 
@@ -1458,7 +1577,7 @@ public:
   /// Constructor (internal use only)
   /**
   */
-  wxSQLite3Blob(void* m_db, void* blobHandle, bool writable);
+  wxSQLite3Blob(wxSQLite3DatabaseReference* m_db, wxSQLite3BlobReference* blobHandle, bool writable);
 
   /// Destructor
   /**
@@ -1517,9 +1636,10 @@ private:
   /// Check for valid BLOB
   void CheckBlob();
 
-  void* m_db;       ///< associated SQLite3 database handle
-  void* m_blob;     ///< associated SQLite3 BLOB handle
-  bool  m_ok;       ///< flag whether the BLOB handle is correctly initialized
+  void Finalize(wxSQLite3DatabaseReference* db, wxSQLite3BlobReference* blob);
+
+  wxSQLite3DatabaseReference* m_db;    ///< associated SQLite3 database handle
+  wxSQLite3BlobReference*     m_blob;  ///< associated SQLite3 BLOB handle
   bool  m_writable; ///< flag whether the BLOB is writable or read only
 };
 
@@ -1739,15 +1859,24 @@ public:
   */
   bool IsOpen() const;
 
+  /// Determine whether a database is read-only
+  /**
+  * \param[in] databaseName Name of the database (default "main").
+  * \return TRUE if the database is read-only, FALSE otherwise
+  * \since SQLite3 version 3.7.11
+  * \note For SQLite3 version before version 3.7.11 this method returns always FALSE.
+  */
+  bool IsReadOnly(const wxString& databaseName = wxT("main"));
+
   /// Close a SQLite3 database
   /**
   * Take care that all prepared statements have been finalized!
-  * Starting with version 3.6.0 SQLite has support to finialize all unfinalized
-  * prepared statements. The Close method has been changed to take advantage of
-  * this feature. Nevertheless it is recommended to explicitly finalize all
-  * wxSQLite3Statement instances before closing a database.
   *
-  * NOTE: Finalizing all wxSQLite3Blob instances before closing a database is still required!
+  * NOTE: Starting with version 3.6.0 SQLite has support to finialize all unfinalized
+  * prepared statements. Unfortunately this feature can't be used due to a possible
+  * crash if the RTree module is active.
+  *
+  * NOTE: Finalizing all wxSQLite3Blob instances before closing a database is required!
   *
   */
   void Close();
@@ -1775,7 +1904,11 @@ public:
   * \param[in] key Optional database encryption key for the target database.
   * \param[in] sourceDatabaseName Optional name of the source database (default: 'main').
   */
-  void Backup(const wxString& targetFileName, const wxString& key = wxEmptyString, const wxString& sourceDatabaseName = wxT("main"));
+  void Backup(const wxString& targetFileName, const wxString& key = wxEmptyString, 
+              const wxString& sourceDatabaseName = wxT("main"));
+  void Backup(wxSQLite3BackupProgress* progressCallback, 
+              const wxString& targetFileName, const wxString& key = wxEmptyString, 
+              const wxString& sourceDatabaseName = wxT("main"));
 
   /// Backup a SQLite3 database
   /**
@@ -1800,7 +1933,11 @@ public:
   * \param[in] key Binary database encryption key for the target database.
   * \param[in] sourceDatabaseName Optional name of the source database (default: 'main').
   */
-  void Backup(const wxString& targetFileName, const wxMemoryBuffer& key, const wxString& sourceDatabaseName = wxT("main"));
+  void Backup(const wxString& targetFileName, const wxMemoryBuffer& key, 
+              const wxString& sourceDatabaseName = wxT("main"));
+  void Backup(wxSQLite3BackupProgress* progressCallback,
+              const wxString& targetFileName, const wxMemoryBuffer& key, 
+              const wxString& sourceDatabaseName = wxT("main"));
 
   /// Restore a SQLite3 database
   /**
@@ -1819,7 +1956,11 @@ public:
   * \param[in] key Optional database encryption key for the source database.
   * \param[in] targetDatabaseName Optional name of the target database (default: 'main').
   */
-  void Restore(const wxString& sourceFileName, const wxString& key = wxEmptyString, const wxString& targetDatabaseName = wxT("main"));
+  void Restore(const wxString& sourceFileName, const wxString& key = wxEmptyString, 
+               const wxString& targetDatabaseName = wxT("main"));
+  void Restore(wxSQLite3BackupProgress* progressCallback,
+               const wxString& sourceFileName, const wxString& key = wxEmptyString, 
+               const wxString& targetDatabaseName = wxT("main"));
 
   /// Restore a SQLite3 database
   /**
@@ -1838,7 +1979,26 @@ public:
   * \param[in] key Optional binary database encryption key for the source database.
   * \param[in] targetDatabaseName Optional name of the target database (default: 'main').
   */
-  void Restore(const wxString& sourceFileName, const wxMemoryBuffer& key, const wxString& targetDatabaseName = wxT("main"));
+  void Restore(const wxString& sourceFileName, const wxMemoryBuffer& key, 
+               const wxString& targetDatabaseName = wxT("main"));
+  void Restore(wxSQLite3BackupProgress* progressCallback,
+               const wxString& sourceFileName, const wxMemoryBuffer& key, 
+               const wxString& targetDatabaseName = wxT("main"));
+
+  /// Set the page count for backup or restore operations
+  /**
+  * Backup and restore operations perform in slices of a given number of pages.
+  * This method allows to set the size of a slice. The default size is 10 pages.
+  *
+  * \param[in] pageCount number of pages to be copied in one slice.
+  */
+  void SetBackupRestorePageCount(int pageCount);
+
+  /// Vacuum
+  /**
+  * Performs a VACUUM operation on the database.
+  */
+  void Vacuum();
 
   /// Begin transaction
   /**
@@ -1882,6 +2042,17 @@ public:
   * and reenabled by the next COMMIT or ROLLBACK.
   */
   bool GetAutoCommit();
+
+  /// Query the return code of the last rollback
+  /**
+  * When using the class wxSQLite3Transaction there is the possibility
+  * that the automatic rollback which is executed in case of an exception
+  * fails. This method allows to query the return code of that operation
+  * to check whether the automatic rollback succeeded or not.
+  * \return the return code of the last rollback.
+  * \note In case of a successful rollback the value 0 is returned.
+  */
+  int QueryRollbackState();
 
   /// Set savepoint
   /*
@@ -1930,6 +2101,12 @@ public:
   * \param databaseFiles contains on return the list of the database file names
   */
   void GetDatabaseList(wxArrayString& databaseNames, wxArrayString& databaseFiles);
+
+  /// Return the filename for a database connection
+  /**
+  * \param databaseName contains on return the list of the database names
+  */
+  wxString GetDatabaseFilename(const wxString& databaseName);
 
   /// Enable or disable foreign key support
   /**
@@ -1994,26 +2171,32 @@ public:
   */
   bool CheckSyntax(const char* sql);
 
-  /// Execute a insert, update or delete SQL statement given as a wxString
+  /// Execute a data defining or manipulating SQL statement given as a wxString
   /**
+  * Execute a data defining or manipulating SQL statement given as a wxString,
+  * i.e. create, alter, drop, insert, update, delete and so on
   * \param sql query string
   * \return the number of database rows that were changed (or inserted or deleted)
   */
   int ExecuteUpdate(const wxString& sql);
 
-  /// Execute a insert, update or delete SQL statement given as a statement buffer
+  /// Execute a data defining or manipulating SQL statement given as a statement buffer
   /**
+  * Execute a data defining or manipulating SQL statement given as a statement buffer,
+  * i.e. create, alter, drop, insert, update, delete and so on
   * \param sql query string
   * \return the number of database rows that were changed (or inserted or deleted)
   */
   int ExecuteUpdate(const wxSQLite3StatementBuffer& sql);
 
-  /// Execute a insert, update or delete SQL statement given as a utf-8 character string
+  /// Execute a data defining or manipulating SQL statement given as a utf-8 character string
   /**
+  * Execute a data defining or manipulating SQL statement given as a utf-8 character string,
+  * i.e. create, alter, drop, insert, update, delete and so on
   * \param sql query string
   * \return the number of database rows that were changed (or inserted or deleted)
   */
-  int ExecuteUpdate(const char* sql);
+  int ExecuteUpdate(const char* sql, bool saveRC = false);
 
   /// Execute a SQL query statement given as a wxString
   /**
@@ -2287,8 +2470,15 @@ public:
   * database instance. If the database instance is not in write-ahead log mode then this method
   * is a harmless no-op.
   * \param database name of a database to be checkpointed
+  * \param mode checkpoint mode, allowed values: WXSQLITE_CHECKPOINT_PASSIVE (default),
+  *             WXSQLITE_CHECKPOINT_FULL, WXSQLITE_CHECKPOINT_RESTART
+  *             (see http://www.sqlite.org/c3ref/wal_checkpoint_v2.html)
+  * \param logFrameCount size of write-ahead log in frames
+  * \param ckptFrameCount number of frames actually checkpointed
+  * \note The frame counts are set to zero if the SQLite version is below 3.7.6.
   */
-  void WriteAheadLogCheckpoint(const wxString& database);
+  void WriteAheadLogCheckpoint(const wxString& database, int mode = WXSQLITE_CHECKPOINT_PASSIVE,
+                               int* logFrameCount = NULL, int* ckptFrameCount = NULL);
 
   /// Automatically checkpoint database in write-ahead log mode
   /**
@@ -2386,6 +2576,13 @@ public:
   */
   int SetLimit(wxSQLite3LimitType id, int newValue);
 
+  /// Free memory used by a database connection
+  /**
+  * This method attempts to free as much heap memory as possible from database connection.
+  * Consult the SQLite documentation for further explanation.
+  */
+  void ReleaseMemory();
+
   /// Convert database limit type to string
   /**
   * \param type The database limit type to be converted to string representation.
@@ -2437,6 +2634,12 @@ public:
   * \return TRUE if the SQLite shared cache is enabled, FALSE otherwise
   */
   static bool IsSharedCacheEnabled() { return ms_sharedCacheEnabled; }
+
+  /// Get the version of the wxSQLite3 wrapper
+  /**
+  * \return a string which contains the name and version number of the wxSQLite3 wrapper
+  */
+  static wxString GetWrapperVersion();
 
   /// Get the version of the underlying SQLite3 library
   /**
@@ -2539,7 +2742,7 @@ public:
 
 protected:
   /// Access SQLite's internal database handle
-  void* GetDatabaseHandle() { return m_db; }
+  void* GetDatabaseHandle();
 
   /// Activate the callback for needed collations for this database
   /**
@@ -2577,9 +2780,15 @@ private:
   /// Check for valid database connection
   void CheckDatabase();
 
-  void* m_db;             ///< associated SQLite3 database
-  int   m_busyTimeoutMs;  ///< Timeout in milli seconds
-  bool  m_isEncrypted;    ///< Flag whether the database is encrypted or not
+  /// Close associated database
+  void Close(wxSQLite3DatabaseReference* db);
+
+  wxSQLite3DatabaseReference* m_db;  ///< associated SQLite3 database
+  bool  m_isOpen;          ///< Flag whether the database is opened or not
+  int   m_busyTimeoutMs;   ///< Timeout in milli seconds
+  bool  m_isEncrypted;     ///< Flag whether the database is encrypted or not
+  int   m_lastRollbackRC;  ///< The return code of the last executed rollback operation
+  int   m_backupPageCount; ///< Number of pages per slice for backup and restore operations
 
   static bool  ms_sharedCacheEnabled;        ///< Flag whether SQLite shared cache is enabled
   static bool  ms_hasEncryptionSupport;      ///< Flag whether wxSQLite3 has been compiled with encryption support

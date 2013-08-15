@@ -53,6 +53,13 @@
 //              2010-10-10  - Upgrade to SQLite3 version 3.7.3
 //              2010-12-11  - Upgrade to SQLite3 version 3.7.4
 //              2011-02-09  - Upgrade to SQLite3 version 3.7.5
+//              2011-04-17  - Upgrade to SQLite3 version 3.7.6.1
+//              2011-06-30  - Upgrade to SQLite3 version 3.7.7.1
+//              2011-08-14  - Progress callback for Backup/Restore added
+//              2011-10-25  - Upgrade to SQLite3 version 3.7.8
+//              2012-01-17  - Upgrade to SQLite3 version 3.7.10
+//              2012-10-17  - Upgrade to SQLite3 version 3.7.14.1
+//              2013-03-19  - Upgrade to SQLite3 version 3.7.16
 //
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -95,6 +102,79 @@
 
 <dl>
 
+<dt><b>3.0.3</b> - <i>March 2013</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.16<br>
+
+
+</dd>
+<dt><b>3.0.2</b> - <i>December 2012</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.15.1<br>
+Corrected an internal SQLite data structure to avoid compile time warnings<br>
+Changed method wxSQLite3Exception::ErrorCodeAsString to return the error messages provided by SQLite<br>
+
+
+</dd>
+<dt><b>3.0.1</b> - <i>November 2012</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.14.1<br>
+Cleaned up and optimized Finalize methods<br>
+Modified wxSQLite3Database::Close to avoid potential memory leaks<br>
+Added method wxSQLite3Database::GetWrapperVersion<br>
+Added method wxSQLite3Database::IsReadOnly<br>
+Added method wxSQLite3Statement::BindUnixDateTime<br>
+Added method wxSQLite3ResultSet::GetUnixDateTime<br>
+Added method wxSQLite3ResultSet::GetAutomaticDateTime<br>
+Fixed a potential memory leak in method wxSQLite3Database::ExecuteUpdate<br>
+Added a wxsqlite3.pc file on request of the Fedora Project developers<br>
+Replaced assert by wxASSERT in wxSQLite3Transaction constructor<br>
+
+
+</dd>
+<dt><b>3.0.0</b> - <i>January 2012</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.10<br>
+Added method wxSQLite3Database::Vacuum<br>
+Added method wxSQLite3Database::GetDatabaseFilename<br>
+Added method wxSQLite3Database::ReleaseMemory<br>
+Added method wxSQLite3ResultSet::CursorMoved<br>
+Added method wxSQLite3Statement::IsBusy<br>
+Fixed a bug in method operator= of wxSQLite3StringCollection
+causing an endless recursion on assignment<br>
+Dropped the concept of SQLite3 pointer ownership in favor of reference
+counted pointers allowing much more flexible use of wxSQLite3 classes<br>
+Modified SQLite3 encryption extension (defining int64 datatype
+for SHA2 algorithm)<br>
+Dropped dbadmin sample from build files<br>
+Added Premake support for SQLite3 library with encryption support
+and for wxSQLite3 (experimental)<br>
+
+</dd>
+<dt><b>2.1.3</b> - <i>August 2011</i></dt>
+<dd>
+Corrected default behaviour for attached databases in case of
+an encrypted main database. (Now the attached database uses the same
+encryption key as the main database if no explicit key is given.
+Previously the attached database remained unencrypted.)<br>
+Added an optional progress callback for metheods Backup and Restore<br>
+Added method SetBackupRestorePageCount to set the number of pages
+to be copied in one cycle of the backup/restore process<br>
+
+</dd>
+<dt><b>2.1.2</b> - <i>July 2011</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.7.1<br>
+Modified wxSQLite3Transaction to make it exception safe<br>
+
+</dd>
+<dt><b>2.1.1</b> - <i>April 2011</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.6.1<br>
+Added convenience method wxSQLite3Statement::ExecuteScalar<br>
+Changed write-ahead log checkpoint method to new version (v2)<br>
+
+</dd>
 <dt><b>2.1.0</b> - <i>March 2011</i></dt>
 <dd>
 Upgrade to SQLite version 3.7.5<br>
@@ -404,7 +484,7 @@ The following people have contributed to wxSQLite3:
   __declspec for the classes later declared with it. To hide this
   difference a separate macro for forward declarations is defined:
  */
-#if defined(__WINDOWS__) && defined(__GNUC__)
+#if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
   #define WXDLLIMPEXP_FWD_SQLITE3
 #else
   #define WXDLLIMPEXP_FWD_SQLITE3 WXDLLIMPEXP_SQLITE3

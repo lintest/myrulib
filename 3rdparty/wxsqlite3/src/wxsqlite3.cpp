@@ -26,6 +26,7 @@
 #endif
 
 #include "wx/regex.h"
+#include "wx/thread.h"
 
 #include "wx/wxsqlite3.h"
 #include "wx/wxsqlite3opt.h"
@@ -121,7 +122,6 @@ const char* wxERRMSG_BIND_DATETIME = wxTRANSLATE("Error binding date/time param"
 const char* wxERRMSG_BIND_NULL     = wxTRANSLATE("Error binding NULL param");
 const char* wxERRMSG_BIND_ZEROBLOB = wxTRANSLATE("Error binding zero blob param");
 const char* wxERRMSG_BIND_CLEAR    = wxTRANSLATE("Error clearing bindings");
-const char* wxERRMSG_NOTOWNED      = wxTRANSLATE("Transfer of statement ownership not possible");
 
 const char* wxERRMSG_NOMETADATA    = wxTRANSLATE("Meta data support not available");
 const char* wxERRMSG_NOCODEC       = wxTRANSLATE("Encryption support not available");
@@ -140,7 +140,9 @@ const char* wxERRMSG_SHUTDOWN      = wxTRANSLATE("Shutdown of SQLite failed");
 
 const char* wxERRMSG_SOURCEDB_BUSY = wxTRANSLATE("Source database is busy");
 const char* wxERRMSG_DBOPEN_FAILED = wxTRANSLATE("Database open failed");
+const char* wxERRMSG_DBCLOSE_FAILED = wxTRANSLATE("Database close failed");
 const char* wxERRMSG_DBASSIGN_FAILED = wxTRANSLATE("Database assignment failed");
+const char* wxERRMSG_FINALIZE_FAILED = wxTRANSLATE("Finalize failed");
 #else
 const wxChar* wxERRMSG_NODB          = wxTRANSLATE("No Database opened");
 const wxChar* wxERRMSG_NOSTMT        = wxTRANSLATE("Statement not accessible");
@@ -162,7 +164,6 @@ const wxChar* wxERRMSG_BIND_DATETIME = wxTRANSLATE("Error binding date/time para
 const wxChar* wxERRMSG_BIND_NULL     = wxTRANSLATE("Error binding NULL param");
 const wxChar* wxERRMSG_BIND_ZEROBLOB = wxTRANSLATE("Error binding zero blob param");
 const wxChar* wxERRMSG_BIND_CLEAR    = wxTRANSLATE("Error clearing bindings");
-const wxChar* wxERRMSG_NOTOWNED      = wxTRANSLATE("Transfer of statement ownership not possible");
 
 const wxChar* wxERRMSG_NOMETADATA    = wxTRANSLATE("Meta data support not available");
 const wxChar* wxERRMSG_NOCODEC       = wxTRANSLATE("Encryption support not available");
@@ -181,8 +182,201 @@ const wxChar* wxERRMSG_SHUTDOWN      = wxTRANSLATE("Shutdown of SQLite failed");
 
 const wxChar* wxERRMSG_SOURCEDB_BUSY   = wxTRANSLATE("Source database is busy");
 const wxChar* wxERRMSG_DBOPEN_FAILED   = wxTRANSLATE("Database open failed");
+const wxChar* wxERRMSG_DBCLOSE_FAILED   = wxTRANSLATE("Database close failed");
 const wxChar* wxERRMSG_DBASSIGN_FAILED = wxTRANSLATE("Database assignment failed");
+const wxChar* wxERRMSG_FINALIZE_FAILED = wxTRANSLATE("Finalize failed");
 #endif
+
+// Critical sections are used to make access to it thread safe if necessary.
+#if wxUSE_THREADS
+static wxCriticalSection gs_csDatabase;
+static wxCriticalSection gs_csStatment;
+static wxCriticalSection gs_csBlob;
+#endif
+
+class wxSQLite3DatabaseReference
+{
+public:
+  /// Default constructor
+  wxSQLite3DatabaseReference(sqlite3* db = NULL)
+    : m_db(db)
+  {
+    m_db = db;
+    if (m_db != NULL)
+    {
+      m_isValid = true;
+      m_refCount = 1;
+    }
+    else
+    {
+      m_isValid = false;
+      m_refCount = 0;
+    }
+  }
+
+  /// Default destructor
+  virtual ~wxSQLite3DatabaseReference()
+  {
+  }
+
+private:
+  /// Thread safe increment of the reference count
+  int IncrementRefCount()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csDatabase);
+#endif
+    return ++m_refCount;
+  }
+
+  void Invalidate()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csDatabase);
+#endif
+    m_isValid = false;
+  }
+
+  /// Thread safe decrement of the reference count
+  int DecrementRefCount()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csDatabase);
+#endif
+    if (m_refCount > 0) --m_refCount;
+    return m_refCount;
+  }
+
+  sqlite3* m_db;        ///< SQLite database reference
+  int      m_refCount;  ///< Reference count
+  bool     m_isValid;   ///< SQLite database reference is valid
+
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3Database;
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3ResultSet;
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3Statement;
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3Blob;
+};
+
+class wxSQLite3StatementReference
+{
+public:
+  /// Default constructor
+  wxSQLite3StatementReference(sqlite3_stmt* stmt = NULL)
+    : m_stmt(stmt)
+  {
+    m_stmt = stmt;
+    if (m_stmt != NULL)
+    {
+      m_isValid = true;
+      m_refCount = 0;
+    }
+    else
+    {
+      m_isValid = false;
+      m_refCount = 0;
+    }
+  }
+
+  /// Default destructor
+  virtual ~wxSQLite3StatementReference()
+  {
+  }
+
+private:
+  /// Thread safe increment of the reference count
+  int IncrementRefCount()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csStatment);
+#endif
+    return ++m_refCount;
+  }
+
+  /// Thread safe decrement of the reference count
+  int DecrementRefCount()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csStatment);
+#endif
+    if (m_refCount > 0) --m_refCount;
+    return m_refCount;
+  }
+
+  void Invalidate()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csStatment);
+#endif
+    m_isValid = false;
+  }
+
+  sqlite3_stmt* m_stmt;           ///< SQLite statement reference
+  int           m_refCount;       ///< Reference count
+  bool          m_isValid;        ///< SQLite statement reference is valid
+
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3ResultSet;
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3Statement;
+};
+
+class wxSQLite3BlobReference
+{
+public:
+  /// Default constructor
+  wxSQLite3BlobReference(sqlite3_blob* blob = NULL)
+    : m_blob(blob)
+  {
+    m_blob = blob;
+    if (m_blob != NULL)
+    {
+      m_isValid = true;
+      m_refCount = 0;
+    }
+    else
+    {
+      m_isValid = false;
+      m_refCount = 0;
+    }
+  }
+
+  /// Default destructor
+  virtual ~wxSQLite3BlobReference()
+  {
+  }
+
+private:
+  /// Thread safe increment of the reference count
+  int IncrementRefCount()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csBlob);
+#endif
+    return ++m_refCount;
+  }
+
+  /// Thread safe decrement of the reference count
+  int DecrementRefCount()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csBlob);
+#endif
+    if (m_refCount > 0) --m_refCount;
+    return m_refCount;
+  }
+
+  void Invalidate()
+  {
+#if wxUSE_THREADS
+    wxCriticalSectionLocker locker(gs_csBlob);
+#endif
+    m_isValid = false;
+  }
+
+  sqlite3_blob* m_blob;           ///< SQLite blob reference
+  int           m_refCount;       ///< Reference count
+  bool          m_isValid;        ///< SQLite statement reference is valid
+
+  friend class WXDLLIMPEXP_FWD_SQLITE3 wxSQLite3Blob;
+};
 
 // ----------------------------------------------------------------------------
 // inline conversion from wxString to wxLongLong
@@ -234,6 +428,17 @@ wxSQLite3Exception::wxSQLite3Exception(const wxSQLite3Exception&  e)
 
 const wxString wxSQLite3Exception::ErrorCodeAsString(int errorCode)
 {
+#if SQLITE_VERSION_NUMBER >= 3007015
+  if (errorCode == WXSQLITE_ERROR)
+  {
+    return wxT("WXSQLITE_ERROR");
+  }
+  else
+  {
+    const char* errmsg = sqlite3_errstr(errorCode);
+    return wxString::FromUTF8(errmsg);
+  }
+#else
   switch (errorCode)
   {
     case SQLITE_OK          : return wxT("SQLITE_OK");
@@ -300,11 +505,17 @@ const wxString wxSQLite3Exception::ErrorCodeAsString(int errorCode)
     case SQLITE_LOCKED_SHAREDCACHE : return wxT("SQLITE_LOCKED_SHAREDCACHE");
     case SQLITE_BUSY_RECOVERY      : return wxT("SQLITE_BUSY_RECOVERY");
     case SQLITE_CANTOPEN_NOTEMPDIR : return wxT("SQLITE_CANTOPEN_NOTEMPDIR");
+ #endif
+#if SQLITE_VERSION_NUMBER >= 3007007
+    case SQLITE_CORRUPT_VTAB       : return wxT("SQLITE_CORRUPT_VTAB");
+    case SQLITE_READONLY_RECOVERY  : return wxT("SQLITE_READONLY_RECOVERY");
+    case SQLITE_READONLY_CANTLOCK  : return wxT("SQLITE_READONLY_CANTLOCK");
 #endif
 
     case WXSQLITE_ERROR     : return wxT("WXSQLITE_ERROR");
     default                 : return wxT("UNKNOWN_ERROR");
   }
+#endif
 }
 
 wxSQLite3Exception::~wxSQLite3Exception()
@@ -333,7 +544,6 @@ void wxSQLite3StatementBuffer::Clear()
     sqlite3_free(m_buffer);
     m_buffer = 0;
   }
-
 }
 
 const char* wxSQLite3StatementBuffer::Format(const char* format, ...)
@@ -359,48 +569,74 @@ const char* wxSQLite3StatementBuffer::FormatV(const char* format, va_list va)
 
 wxSQLite3ResultSet::wxSQLite3ResultSet()
 {
-  m_db = 0;
-  m_stmt = 0;
+  m_db = NULL;
+  m_stmt = NULL;
   m_eof = true;
   m_first = true;
   m_cols = 0;
-  m_ownStmt = false;
 }
 
 wxSQLite3ResultSet::wxSQLite3ResultSet(const wxSQLite3ResultSet& resultSet)
 {
   m_db = resultSet.m_db;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
   m_stmt = resultSet.m_stmt;
-  // Only one object can own the statement
-  const_cast<wxSQLite3ResultSet&>(resultSet).m_stmt = 0;
+  if (m_stmt != NULL)
+  {
+    m_stmt->IncrementRefCount();
+  }
   m_eof = resultSet.m_eof;
   m_first = resultSet.m_first;
   m_cols = resultSet.m_cols;
-  m_ownStmt = resultSet.m_ownStmt;
 }
 
-wxSQLite3ResultSet::wxSQLite3ResultSet(void* db,
-                                       void* stmt,
+wxSQLite3ResultSet::wxSQLite3ResultSet(wxSQLite3DatabaseReference* db,
+                                       wxSQLite3StatementReference* stmt,
                                        bool eof,
-                                       bool first,
-                                       bool ownStmt /*=true*/)
+                                       bool first)
 {
   m_db = db;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
   m_stmt = stmt;
+  if (m_stmt != NULL)
+  {
+    m_stmt->IncrementRefCount();
+  }
+  CheckStmt();
   m_eof = eof;
   m_first = first;
-  m_cols = sqlite3_column_count((sqlite3_stmt*) m_stmt);
-  m_ownStmt = ownStmt;
+  m_cols = sqlite3_column_count(m_stmt->m_stmt);
 }
 
 wxSQLite3ResultSet::~wxSQLite3ResultSet()
 {
-  try
+  if (m_stmt != NULL && m_stmt->DecrementRefCount() == 0)
   {
-    Finalize();
+    if (m_stmt->m_isValid)
+    {
+      try
+      {
+        Finalize(m_db, m_stmt);
+      }
+      catch (...)
+      {
+      }
+    }
+    delete m_stmt;
   }
-  catch (...)
+  if (m_db != NULL && m_db->DecrementRefCount() == 0)
   {
+    if (m_db->m_isValid)
+    {
+      sqlite3_close(m_db->m_db);
+    }
+    delete m_db;
   }
 }
 
@@ -408,21 +644,30 @@ wxSQLite3ResultSet& wxSQLite3ResultSet::operator=(const wxSQLite3ResultSet& resu
 {
   if (this != &resultSet)
   {
-    try
-    {
-      Finalize();
-    }
-    catch (...)
-    {
-    }
+    wxSQLite3DatabaseReference* dbPrev = m_db;
+    wxSQLite3StatementReference* stmtPrev = m_stmt;
     m_db = resultSet.m_db;
+    if (m_db != NULL)
+    {
+      m_db->IncrementRefCount();
+    }
     m_stmt = resultSet.m_stmt;
-    // Only one object can own the statement
-    const_cast<wxSQLite3ResultSet&>(resultSet).m_stmt = 0;
+    if (m_stmt != NULL)
+    {
+      m_stmt->IncrementRefCount();
+    }
     m_eof = resultSet.m_eof;
     m_first = resultSet.m_first;
     m_cols = resultSet.m_cols;
-    m_ownStmt = resultSet.m_ownStmt;
+    if (stmtPrev != NULL && stmtPrev->DecrementRefCount() == 0)
+    {
+      Finalize(dbPrev, stmtPrev);
+      delete stmtPrev;
+    }
+    if (dbPrev != NULL && dbPrev->DecrementRefCount() == 0)
+    {
+      delete dbPrev;
+    }
   }
   return *this;
 }
@@ -442,14 +687,14 @@ wxString wxSQLite3ResultSet::GetAsString(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  const char* localValue = (const char*) sqlite3_column_text((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = (const char*) sqlite3_column_text(m_stmt->m_stmt, columnIndex);
   return wxString::FromUTF8(localValue);
 }
 
 wxString wxSQLite3ResultSet::GetAsString(const wxString& columnName)
 {
   int columnIndex = FindColumnIndex(columnName);
-  const char* localValue = (const char*) sqlite3_column_text((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = (const char*) sqlite3_column_text(m_stmt->m_stmt, columnIndex);
   return wxString::FromUTF8(localValue);
 }
 
@@ -461,7 +706,7 @@ int wxSQLite3ResultSet::GetInt(int columnIndex, int nullValue /* = 0 */)
   }
   else
   {
-    return sqlite3_column_int((sqlite3_stmt*) m_stmt, columnIndex);
+    return sqlite3_column_int(m_stmt->m_stmt, columnIndex);
   }
 }
 
@@ -480,7 +725,7 @@ wxLongLong wxSQLite3ResultSet::GetInt64(int columnIndex, wxLongLong nullValue /*
   }
   else
   {
-    return wxLongLong(sqlite3_column_int64((sqlite3_stmt*) m_stmt, columnIndex));
+    return wxLongLong(sqlite3_column_int64(m_stmt->m_stmt, columnIndex));
   }
 }
 
@@ -498,7 +743,7 @@ double wxSQLite3ResultSet::GetDouble(int columnIndex, double nullValue /* = 0.0 
   }
   else
   {
-    return sqlite3_column_double((sqlite3_stmt*) m_stmt, columnIndex);
+    return sqlite3_column_double(m_stmt->m_stmt, columnIndex);
   }
 }
 
@@ -516,7 +761,7 @@ wxString wxSQLite3ResultSet::GetString(int columnIndex, const wxString& nullValu
   }
   else
   {
-    const char* localValue = (const char*) sqlite3_column_text((sqlite3_stmt*) m_stmt, columnIndex);
+    const char* localValue = (const char*) sqlite3_column_text(m_stmt->m_stmt, columnIndex);
     return wxString::FromUTF8(localValue);
   }
 }
@@ -536,8 +781,8 @@ const unsigned char* wxSQLite3ResultSet::GetBlob(int columnIndex, int& len)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  len = sqlite3_column_bytes((sqlite3_stmt*) m_stmt, columnIndex);
-  return (const unsigned char*) sqlite3_column_blob((sqlite3_stmt*) m_stmt, columnIndex);
+  len = sqlite3_column_bytes(m_stmt->m_stmt, columnIndex);
+  return (const unsigned char*) sqlite3_column_blob(m_stmt->m_stmt, columnIndex);
 }
 
 const unsigned char* wxSQLite3ResultSet::GetBlob(const wxString& columnName, int& len)
@@ -555,8 +800,8 @@ wxMemoryBuffer& wxSQLite3ResultSet::GetBlob(int columnIndex, wxMemoryBuffer& buf
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  int len = sqlite3_column_bytes((sqlite3_stmt*) m_stmt, columnIndex);
-  const void* blob = sqlite3_column_blob((sqlite3_stmt*) m_stmt, columnIndex);
+  int len = sqlite3_column_bytes(m_stmt->m_stmt, columnIndex);
+  const void* blob = sqlite3_column_blob(m_stmt->m_stmt, columnIndex);
   buffer.AppendData((void*) blob, (size_t) len);
   return buffer;
 }
@@ -696,6 +941,25 @@ wxDateTime wxSQLite3ResultSet::GetNumericDateTime(const wxString& columnName)
   return GetNumericDateTime(columnIndex);
 }
 
+wxDateTime wxSQLite3ResultSet::GetUnixDateTime(int columnIndex)
+{
+  if (GetColumnType(columnIndex) == SQLITE_NULL)
+  {
+    return wxInvalidDateTime;
+  }
+  else
+  {
+    wxLongLong value = GetInt64(columnIndex);
+    return wxDateTime((time_t) value.GetValue());
+  }
+}
+
+wxDateTime wxSQLite3ResultSet::GetUnixDateTime(const wxString& columnName)
+{
+  int columnIndex = FindColumnIndex(columnName);
+  return GetUnixDateTime(columnIndex);
+}
+
 wxDateTime wxSQLite3ResultSet::GetJulianDayNumber(int columnIndex)
 {
   if (GetColumnType(columnIndex) == SQLITE_NULL)
@@ -718,6 +982,44 @@ wxDateTime wxSQLite3ResultSet::GetJulianDayNumber(const wxString& columnName)
 bool wxSQLite3ResultSet::GetBool(int columnIndex)
 {
   return GetInt(columnIndex) != 0;
+}
+
+wxDateTime wxSQLite3ResultSet::GetAutomaticDateTime(int columnIndex, bool milliSeconds)
+{
+  wxDateTime result;
+  int columnType = GetColumnType(columnIndex);
+  switch (columnType)
+  {
+    case SQLITE3_TEXT:
+      result = GetDateTime(columnIndex);
+      break;
+    case SQLITE_INTEGER:
+      if (milliSeconds)
+      {
+        wxLongLong value = GetInt64(columnIndex);
+        result = wxDateTime(value);
+      }
+      else
+      {
+        time_t value = GetInt64(columnIndex).GetValue();
+        result = wxDateTime(value);
+      }
+      break;
+    case SQLITE_FLOAT:
+      result = GetJulianDayNumber(columnIndex);
+      break;
+    case SQLITE_NULL:
+    default:
+      result = wxInvalidDateTime;
+      break;
+  }
+  return result;
+}
+
+wxDateTime wxSQLite3ResultSet::GetAutomaticDateTime(const wxString& columnName, bool milliSeconds)
+{
+  int columnIndex = FindColumnIndex(columnName);
+  return GetAutomaticDateTime(columnIndex, milliSeconds);
 }
 
 bool wxSQLite3ResultSet::GetBool(const wxString& columnName)
@@ -748,7 +1050,7 @@ int wxSQLite3ResultSet::FindColumnIndex(const wxString& columnName)
   {
     for (int columnIndex = 0; columnIndex < m_cols; columnIndex++)
     {
-      const char* temp = sqlite3_column_name((sqlite3_stmt*) m_stmt, columnIndex);
+      const char* temp = sqlite3_column_name(m_stmt->m_stmt, columnIndex);
 
       if (strcmp(localColumnName, temp) == 0)
       {
@@ -769,7 +1071,7 @@ wxString wxSQLite3ResultSet::GetColumnName(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  const char* localValue = sqlite3_column_name((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = sqlite3_column_name(m_stmt->m_stmt, columnIndex);
   return wxString::FromUTF8(localValue);
 }
 
@@ -782,7 +1084,7 @@ wxString wxSQLite3ResultSet::GetDeclaredColumnType(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  const char* localValue = sqlite3_column_decltype((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = sqlite3_column_decltype(m_stmt->m_stmt, columnIndex);
   return wxString::FromUTF8(localValue);
 }
 
@@ -795,13 +1097,19 @@ int wxSQLite3ResultSet::GetColumnType(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  return sqlite3_column_type((sqlite3_stmt*) m_stmt, columnIndex);
+  return sqlite3_column_type(m_stmt->m_stmt, columnIndex);
 }
 
 bool wxSQLite3ResultSet::Eof()
 {
   CheckStmt();
   return m_eof;
+}
+
+bool wxSQLite3ResultSet::CursorMoved()
+{
+  CheckStmt();
+  return !m_first;
 }
 
 bool wxSQLite3ResultSet::NextRow()
@@ -816,7 +1124,7 @@ bool wxSQLite3ResultSet::NextRow()
   }
   else
   {
-    rc = sqlite3_step((sqlite3_stmt*) m_stmt);
+    rc = sqlite3_step(m_stmt->m_stmt);
   }
 
   if (rc == SQLITE_DONE) // no more rows
@@ -830,23 +1138,49 @@ bool wxSQLite3ResultSet::NextRow()
   }
   else
   {
-    rc = sqlite3_finalize((sqlite3_stmt*) m_stmt);
-    m_stmt = 0;
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    rc = sqlite3_finalize(m_stmt->m_stmt);
+    m_stmt->Invalidate();
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 }
 
 void wxSQLite3ResultSet::Finalize()
 {
-  if (m_stmt && m_ownStmt)
+  Finalize(m_db, m_stmt);
+  if (m_stmt != NULL && m_stmt->DecrementRefCount() == 0)
   {
-    int rc = sqlite3_finalize((sqlite3_stmt*) m_stmt);
-    m_stmt = 0;
+    delete m_stmt;
+  }
+  m_stmt = NULL;
+  if (m_db != NULL && m_db->DecrementRefCount() == 0)
+  {
+    if (m_db->m_isValid)
+    {
+      sqlite3_close(m_db->m_db);
+    }
+    delete m_db;
+  }
+  m_db = NULL;
+}
+
+void wxSQLite3ResultSet::Finalize(wxSQLite3DatabaseReference* db,wxSQLite3StatementReference* stmt)
+{
+  if (stmt != NULL && stmt->m_isValid)
+  {
+    int rc = sqlite3_finalize(stmt->m_stmt);
+    stmt->Invalidate();
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) m_db);
-      throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+      if (db != NULL && db->m_isValid)
+      {
+        const char* localError = sqlite3_errmsg(db->m_db);
+        throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+      }
+      else
+      {
+        throw wxSQLite3Exception(rc, wxERRMSG_FINALIZE_FAILED);
+      }
     }
   }
 }
@@ -856,7 +1190,7 @@ wxString wxSQLite3ResultSet::GetSQL()
   wxString sqlString = wxEmptyString;
 #if SQLITE_VERSION_NUMBER >= 3005003
   CheckStmt();
-  const char* sqlLocal = sqlite3_sql((sqlite3_stmt*) m_stmt);
+  const char* sqlLocal = sqlite3_sql(m_stmt->m_stmt);
   if (sqlLocal != NULL) sqlString = wxString::FromUTF8(sqlLocal);
 #endif
   return sqlString;
@@ -864,12 +1198,12 @@ wxString wxSQLite3ResultSet::GetSQL()
 
 bool wxSQLite3ResultSet::IsOk()
 {
-  return (m_db != 0) && (m_stmt != 0);
+  return (m_db != NULL) && (m_db->m_isValid) && (m_stmt != NULL) && (m_stmt->m_isValid);
 }
 
 void wxSQLite3ResultSet::CheckStmt()
 {
-  if (m_stmt == 0)
+  if (m_stmt == NULL || m_stmt->m_stmt == NULL || !m_stmt->m_isValid)
   {
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOSTMT);
   }
@@ -884,7 +1218,7 @@ wxString wxSQLite3ResultSet::GetDatabaseName(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  const char* localValue = sqlite3_column_database_name((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = sqlite3_column_database_name(m_stmt->m_stmt, columnIndex);
   if (localValue != NULL)
     return wxString::FromUTF8(localValue);
   else
@@ -904,7 +1238,7 @@ wxString wxSQLite3ResultSet::GetTableName(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  const char* localValue = sqlite3_column_table_name((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = sqlite3_column_table_name(m_stmt->m_stmt, columnIndex);
   if (localValue != NULL)
     return wxString::FromUTF8(localValue);
   else
@@ -924,7 +1258,7 @@ wxString wxSQLite3ResultSet::GetOriginName(int columnIndex)
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_INDEX);
   }
 
-  const char* localValue = sqlite3_column_origin_name((sqlite3_stmt*) m_stmt, columnIndex);
+  const char* localValue = sqlite3_column_origin_name(m_stmt->m_stmt, columnIndex);
   if (localValue != NULL)
     return wxString::FromUTF8(localValue);
   else
@@ -1386,33 +1720,59 @@ wxSQLite3Statement::wxSQLite3Statement()
 {
   m_db = 0;
   m_stmt = 0;
-  m_hasOwnership = false;
 }
 
 wxSQLite3Statement::wxSQLite3Statement(const wxSQLite3Statement& statement)
 {
   m_db = statement.m_db;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
   m_stmt = statement.m_stmt;
-  m_hasOwnership = statement.m_hasOwnership;
-  // Only one object can own prepared statement
-  const_cast<wxSQLite3Statement&>(statement).m_hasOwnership = false;
+  if (m_stmt != NULL)
+  {
+    m_stmt->IncrementRefCount();
+  }
 }
 
-wxSQLite3Statement::wxSQLite3Statement(void* db, void* stmt)
+wxSQLite3Statement::wxSQLite3Statement(wxSQLite3DatabaseReference* db, wxSQLite3StatementReference* stmt)
 {
   m_db = db;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
   m_stmt = stmt;
-  m_hasOwnership = true;
+  if (m_stmt != NULL)
+  {
+    m_stmt->IncrementRefCount();
+  }
 }
 
 wxSQLite3Statement::~wxSQLite3Statement()
 {
-  try
+  if (m_stmt != NULL && m_stmt->DecrementRefCount() == 0)
   {
-    Finalize();
+    if (m_stmt->m_isValid)
+    {
+      try
+      {
+        Finalize(m_db, m_stmt);
+      }
+      catch (...)
+      {
+      }
+    }
+    delete m_stmt;
   }
-  catch (...)
+  if (m_db != NULL && m_db->DecrementRefCount() == 0)
   {
+    if (m_db->m_isValid)
+    {
+      sqlite3_close(m_db->m_db);
+    }
+    delete m_db;
   }
 }
 
@@ -1420,18 +1780,27 @@ wxSQLite3Statement& wxSQLite3Statement::operator=(const wxSQLite3Statement& stat
 {
   if (this != &statement)
   {
-    try
-    {
-      Finalize();
-    }
-    catch (...)
-    {
-    }
+    wxSQLite3DatabaseReference* dbPrev = m_db;
+    wxSQLite3StatementReference* stmtPrev = m_stmt;
     m_db = statement.m_db;
+    if (m_db != NULL)
+    {
+      m_db->IncrementRefCount();
+    }
     m_stmt = statement.m_stmt;
-    m_hasOwnership = statement.m_hasOwnership;
-    // Only one object can own prepared statement
-    const_cast<wxSQLite3Statement&>(statement).m_hasOwnership = false;
+    if (m_stmt != NULL)
+    {
+      m_stmt->IncrementRefCount();
+    }
+    if (stmtPrev != NULL && stmtPrev->DecrementRefCount() == 0)
+    {
+      Finalize(dbPrev, stmtPrev);
+      delete stmtPrev;
+    }
+    if (dbPrev != NULL && dbPrev->DecrementRefCount() == 0)
+    {
+      delete dbPrev;
+    }
   }
   return *this;
 }
@@ -1443,17 +1812,17 @@ int wxSQLite3Statement::ExecuteUpdate()
 
   const char* localError=0;
 
-  int rc = sqlite3_step((sqlite3_stmt*) m_stmt);
+  int rc = sqlite3_step(m_stmt->m_stmt);
 
   if (rc == SQLITE_DONE)
   {
-    int rowsChanged = sqlite3_changes((sqlite3*) m_db);
+    int rowsChanged = sqlite3_changes(m_db->m_db);
 
-    rc = sqlite3_reset((sqlite3_stmt*) m_stmt);
+    rc = sqlite3_reset(m_stmt->m_stmt);
 
     if (rc != SQLITE_OK)
     {
-      localError = sqlite3_errmsg((sqlite3*) m_db);
+      localError = sqlite3_errmsg(m_db->m_db);
       throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
     }
 
@@ -1461,50 +1830,53 @@ int wxSQLite3Statement::ExecuteUpdate()
   }
   else
   {
-    rc = sqlite3_reset((sqlite3_stmt*) m_stmt);
-    localError = sqlite3_errmsg((sqlite3*) m_db);
+    rc = sqlite3_reset(m_stmt->m_stmt);
+    localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 }
 
-wxSQLite3ResultSet wxSQLite3Statement::ExecuteQuery(bool transferStatementOwnership)
+wxSQLite3ResultSet wxSQLite3Statement::ExecuteQuery()
 {
   CheckDatabase();
   CheckStmt();
-  if (transferStatementOwnership)
-  {
-    if (m_hasOwnership)
-    {
-      m_hasOwnership = false;
-    }
-    else
-    {
-      throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOTOWNED);
-    }
-  }
 
-  int rc = sqlite3_step((sqlite3_stmt*) m_stmt);
+  int rc = sqlite3_step(m_stmt->m_stmt);
 
   if (rc == SQLITE_DONE)  // no more rows
   {
-    return wxSQLite3ResultSet(m_db, m_stmt, true/*eof*/, true/*first*/, transferStatementOwnership);
+    return wxSQLite3ResultSet(m_db, m_stmt, true/*eof*/, true/*first*/);
   }
   else if (rc == SQLITE_ROW)  // one or more rows
   {
-    return wxSQLite3ResultSet(m_db, m_stmt, false/*eof*/, true/*first*/, transferStatementOwnership);
+    return wxSQLite3ResultSet(m_db, m_stmt, false/*eof*/, true/*first*/);
   }
   else
   {
-    rc = sqlite3_reset((sqlite3_stmt*) m_stmt);
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    rc = sqlite3_reset(m_stmt->m_stmt);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
+}
+
+int wxSQLite3Statement::ExecuteScalar()
+{
+  wxSQLite3ResultSet resultSet = ExecuteQuery();
+
+  if (resultSet.Eof() || resultSet.GetColumnCount() < 1)
+  {
+    throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_QUERY);
+  }
+
+  long value = 0;
+  resultSet.GetAsString(0).ToLong(&value);
+  return (int) value;
 }
 
 int wxSQLite3Statement::GetParamCount()
 {
   CheckStmt();
-  return sqlite3_bind_parameter_count((sqlite3_stmt*) m_stmt);
+  return sqlite3_bind_parameter_count(m_stmt->m_stmt);
 }
 
 int wxSQLite3Statement::GetParamIndex(const wxString& paramName)
@@ -1514,13 +1886,13 @@ int wxSQLite3Statement::GetParamIndex(const wxString& paramName)
   wxCharBuffer strParamName = paramName.ToUTF8();
   const char* localParamName = strParamName;
 
-  return sqlite3_bind_parameter_index((sqlite3_stmt*) m_stmt, localParamName);
+  return sqlite3_bind_parameter_index(m_stmt->m_stmt, localParamName);
 }
 
 wxString wxSQLite3Statement::GetParamName(int paramIndex)
 {
   CheckStmt();
-  const char* localParamName = sqlite3_bind_parameter_name((sqlite3_stmt*) m_stmt, paramIndex);
+  const char* localParamName = sqlite3_bind_parameter_name(m_stmt->m_stmt, paramIndex);
   return wxString::FromUTF8(localParamName);
 }
 
@@ -1531,7 +1903,7 @@ void wxSQLite3Statement::Bind(int paramIndex, const wxString& stringValue)
   wxCharBuffer strStringValue = stringValue.ToUTF8();
   const char* localStringValue = strStringValue;
 
-  int rc = sqlite3_bind_text((sqlite3_stmt*) m_stmt, paramIndex, localStringValue, -1, SQLITE_TRANSIENT);
+  int rc = sqlite3_bind_text(m_stmt->m_stmt, paramIndex, localStringValue, -1, SQLITE_TRANSIENT);
 
   if (rc != SQLITE_OK)
   {
@@ -1542,7 +1914,7 @@ void wxSQLite3Statement::Bind(int paramIndex, const wxString& stringValue)
 void wxSQLite3Statement::Bind(int paramIndex, int intValue)
 {
   CheckStmt();
-  int rc = sqlite3_bind_int((sqlite3_stmt*) m_stmt, paramIndex, intValue);
+  int rc = sqlite3_bind_int(m_stmt->m_stmt, paramIndex, intValue);
 
   if (rc != SQLITE_OK)
   {
@@ -1553,7 +1925,7 @@ void wxSQLite3Statement::Bind(int paramIndex, int intValue)
 void wxSQLite3Statement::Bind(int paramIndex, wxLongLong int64Value)
 {
   CheckStmt();
-  int rc = sqlite3_bind_int64((sqlite3_stmt*) m_stmt, paramIndex, int64Value.GetValue());
+  int rc = sqlite3_bind_int64(m_stmt->m_stmt, paramIndex, int64Value.GetValue());
 
   if (rc != SQLITE_OK)
   {
@@ -1564,7 +1936,7 @@ void wxSQLite3Statement::Bind(int paramIndex, wxLongLong int64Value)
 void wxSQLite3Statement::Bind(int paramIndex, double doubleValue)
 {
   CheckStmt();
-  int rc = sqlite3_bind_double((sqlite3_stmt*) m_stmt, paramIndex, doubleValue);
+  int rc = sqlite3_bind_double(m_stmt->m_stmt, paramIndex, doubleValue);
 
   if (rc != SQLITE_OK)
   {
@@ -1575,7 +1947,7 @@ void wxSQLite3Statement::Bind(int paramIndex, double doubleValue)
 void wxSQLite3Statement::Bind(int paramIndex, const char* charValue)
 {
   CheckStmt();
-  int rc = sqlite3_bind_text((sqlite3_stmt*) m_stmt, paramIndex, charValue, -1, SQLITE_TRANSIENT);
+  int rc = sqlite3_bind_text(m_stmt->m_stmt, paramIndex, charValue, -1, SQLITE_TRANSIENT);
 
   if (rc != SQLITE_OK)
   {
@@ -1586,7 +1958,7 @@ void wxSQLite3Statement::Bind(int paramIndex, const char* charValue)
 void wxSQLite3Statement::Bind(int paramIndex, const unsigned char* blobValue, int blobLen)
 {
   CheckStmt();
-  int rc = sqlite3_bind_blob((sqlite3_stmt*) m_stmt, paramIndex,
+  int rc = sqlite3_bind_blob(m_stmt->m_stmt, paramIndex,
                              (const void*)blobValue, blobLen, SQLITE_TRANSIENT);
 
   if (rc != SQLITE_OK)
@@ -1599,7 +1971,7 @@ void wxSQLite3Statement::Bind(int paramIndex, const wxMemoryBuffer& blobValue)
 {
   CheckStmt();
   int blobLen = (int) blobValue.GetDataLen();
-  int rc = sqlite3_bind_blob((sqlite3_stmt*) m_stmt, paramIndex,
+  int rc = sqlite3_bind_blob(m_stmt->m_stmt, paramIndex,
                              (const void*)blobValue.GetData(), blobLen, SQLITE_TRANSIENT);
 
   if (rc != SQLITE_OK)
@@ -1668,6 +2040,19 @@ void wxSQLite3Statement::BindNumericDateTime(int paramIndex, const wxDateTime& d
   }
 }
 
+void wxSQLite3Statement::BindUnixDateTime(int paramIndex, const wxDateTime& datetime)
+{
+  if (datetime.IsValid())
+  {
+    wxLongLong ticks = datetime.GetTicks();
+    Bind(paramIndex, ticks);
+  }
+  else
+  {
+    throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_BIND_DATETIME);
+  }
+}
+
 void wxSQLite3Statement::BindJulianDayNumber(int paramIndex, const wxDateTime& datetime)
 {
   if (datetime.IsValid())
@@ -1688,7 +2073,7 @@ void wxSQLite3Statement::BindBool(int paramIndex, bool value)
 void wxSQLite3Statement::BindNull(int paramIndex)
 {
   CheckStmt();
-  int rc = sqlite3_bind_null((sqlite3_stmt*) m_stmt, paramIndex);
+  int rc = sqlite3_bind_null(m_stmt->m_stmt, paramIndex);
 
   if (rc != SQLITE_OK)
   {
@@ -1700,7 +2085,7 @@ void wxSQLite3Statement::BindZeroBlob(int paramIndex, int blobSize)
 {
 #if SQLITE_VERSION_NUMBER >= 3004000
   CheckStmt();
-  int rc = sqlite3_bind_zeroblob((sqlite3_stmt*) m_stmt, paramIndex, blobSize);
+  int rc = sqlite3_bind_zeroblob(m_stmt->m_stmt, paramIndex, blobSize);
   if (rc != SQLITE_OK)
   {
     throw wxSQLite3Exception(rc, wxERRMSG_BIND_ZEROBLOB);
@@ -1716,7 +2101,7 @@ void wxSQLite3Statement::ClearBindings()
 {
   CheckStmt();
 #if 0 // missing in SQLite DLL
-  int rc = sqlite3_clear_bindings((sqlite3_stmt*) m_stmt);
+  int rc = sqlite3_clear_bindings(m_stmt->m_stmt);
 
   if (rc != SQLITE_OK)
   {
@@ -1735,7 +2120,7 @@ wxString wxSQLite3Statement::GetSQL()
   wxString sqlString = wxEmptyString;
 #if SQLITE_VERSION_NUMBER >= 3005003
   CheckStmt();
-  const char* sqlLocal = sqlite3_sql((sqlite3_stmt*) m_stmt);
+  const char* sqlLocal = sqlite3_sql(m_stmt->m_stmt);
   if (sqlLocal != NULL) sqlString = wxString::FromUTF8(sqlLocal);
 #endif
   return sqlString;
@@ -1743,13 +2128,13 @@ wxString wxSQLite3Statement::GetSQL()
 
 void wxSQLite3Statement::Reset()
 {
-  if (m_stmt)
+  if (m_stmt != NULL && m_stmt->m_isValid)
   {
-    int rc = sqlite3_reset((sqlite3_stmt*) m_stmt);
+    int rc = sqlite3_reset(m_stmt->m_stmt);
 
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+      const char* localError = sqlite3_errmsg(m_db->m_db);
       throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
     }
   }
@@ -1759,7 +2144,7 @@ bool wxSQLite3Statement::IsReadOnly()
 {
 #if SQLITE_VERSION_NUMBER >= 3007004
   CheckStmt();
-  return sqlite3_stmt_readonly((sqlite3_stmt*) m_stmt) != 0;
+  return sqlite3_stmt_readonly(m_stmt->m_stmt) != 0;
 #else
   return false;
 #endif
@@ -1767,16 +2152,40 @@ bool wxSQLite3Statement::IsReadOnly()
 
 void wxSQLite3Statement::Finalize()
 {
-  if (m_stmt && m_hasOwnership)
+  Finalize(m_db, m_stmt);
+  if (m_stmt != NULL && m_stmt->DecrementRefCount() == 0)
   {
-    int rc = sqlite3_finalize((sqlite3_stmt*) m_stmt);
-    m_stmt = 0;
-    m_hasOwnership = false;
+    delete m_stmt;
+  }
+  m_stmt = NULL;
+  if (m_db != NULL && m_db->DecrementRefCount() == 0)
+  {
+    if (m_db->m_isValid)
+    {
+      sqlite3_close(m_db->m_db);
+    }
+    delete m_db;
+  }
+  m_db = NULL;
+}
 
+void wxSQLite3Statement::Finalize(wxSQLite3DatabaseReference* db,wxSQLite3StatementReference* stmt)
+{
+  if (stmt != NULL && stmt->m_isValid)
+  {
+    int rc = sqlite3_finalize(stmt->m_stmt);
+    stmt->Invalidate();
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) m_db);
-      throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+      if (db != NULL && db->m_isValid)
+      {
+        const char* localError = sqlite3_errmsg(db->m_db);
+        throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+      }
+      else
+      {
+        throw wxSQLite3Exception(rc, wxERRMSG_FINALIZE_FAILED);
+      }
     }
   }
 }
@@ -1786,9 +2195,20 @@ bool wxSQLite3Statement::IsOk()
   return (m_db != 0) && (m_stmt != 0);
 }
 
+bool wxSQLite3Statement::IsBusy()
+{
+#if SQLITE_VERSION_NUMBER >= 3007010
+  CheckStmt();
+  int rc = sqlite3_stmt_busy(m_stmt->m_stmt);
+  return (rc != 0);
+#else
+  return false;
+#endif
+}
+
 void wxSQLite3Statement::CheckDatabase()
 {
-  if (m_db == 0)
+  if (m_db == NULL || m_db->m_db == NULL || !m_db->m_isValid)
   {
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NODB);
   }
@@ -1796,7 +2216,7 @@ void wxSQLite3Statement::CheckDatabase()
 
 void wxSQLite3Statement::CheckStmt()
 {
-  if (m_stmt == 0)
+  if (m_stmt == NULL || m_stmt->m_stmt == NULL || !m_stmt->m_isValid)
   {
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOSTMT);
   }
@@ -1808,15 +2228,21 @@ wxSQLite3Blob::wxSQLite3Blob()
 {
   m_db   = NULL;
   m_blob = NULL;
-  m_ok   = false;
   m_writable = false;
 }
 
 wxSQLite3Blob::wxSQLite3Blob(const wxSQLite3Blob& blob)
 {
   m_db   = blob.m_db;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
   m_blob = blob.m_blob;
-  m_ok   = blob.m_ok;
+  if (m_blob != NULL)
+  {
+    m_blob->IncrementRefCount();
+  }
   m_writable = blob.m_writable;
 }
 
@@ -1824,39 +2250,61 @@ wxSQLite3Blob& wxSQLite3Blob::operator=(const wxSQLite3Blob& blob)
 {
   if (this != &blob)
   {
-    try
-    {
-      Finalize();
-    }
-    catch (...)
-    {
-    }
+    wxSQLite3DatabaseReference* dbPrev = m_db;
+    wxSQLite3BlobReference* blobPrev = m_blob;
     m_db   = blob.m_db;
+    if (m_db != NULL)
+    {
+      m_db->IncrementRefCount();
+    }
     m_blob = blob.m_blob;
-    m_ok   = blob.m_ok;
+    if (m_blob != NULL)
+    {
+      m_blob->IncrementRefCount();
+    }
     m_writable = blob.m_writable;
-    // only one blob can own the blob handle
-    const_cast<wxSQLite3Blob&>(blob).m_ok = false;
+    if (blobPrev != NULL && blobPrev->DecrementRefCount() == 0)
+    {
+      Finalize(dbPrev, blobPrev);
+      delete blobPrev;
+    }
+    if (dbPrev != NULL && dbPrev->DecrementRefCount() == 0)
+    {
+      delete dbPrev;
+    }
   }
   return *this;
 }
 
-wxSQLite3Blob::wxSQLite3Blob(void* db, void* blobHandle, bool writable)
+wxSQLite3Blob::wxSQLite3Blob(wxSQLite3DatabaseReference* db, wxSQLite3BlobReference* blob, bool writable)
 {
   m_db   = db;
-  m_blob = blobHandle;
-  m_ok   = true;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
+  m_blob = blob;
+  if (m_blob != NULL)
+  {
+    m_blob->IncrementRefCount();
+  }
   m_writable = writable;
 }
 
 wxSQLite3Blob::~wxSQLite3Blob()
 {
-  try
+  if (m_blob != NULL && m_blob->DecrementRefCount() == 0)
   {
-    Finalize();
+    Finalize(m_db, m_blob);
+    delete m_blob;
   }
-  catch (...)
+  if (m_db != NULL && m_db->DecrementRefCount() == 0)
   {
+    if (m_db->m_isValid)
+    {
+      sqlite3_close(m_db->m_db);
+    }
+    delete m_db;
   }
 }
 
@@ -1865,11 +2313,11 @@ wxMemoryBuffer& wxSQLite3Blob::Read(wxMemoryBuffer& blobValue, int length, int o
 #if SQLITE_VERSION_NUMBER >= 3004000
   CheckBlob();
   char* localBuffer = (char*) blobValue.GetAppendBuf((size_t) length);
-  int rc = sqlite3_blob_read((sqlite3_blob*) m_blob, localBuffer, length, offset);
+  int rc = sqlite3_blob_read(m_blob->m_blob, localBuffer, length, offset);
 
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 
@@ -1890,12 +2338,12 @@ void wxSQLite3Blob::Write(const wxMemoryBuffer& blobValue, int offset)
   if (m_writable)
   {
     int blobLen = (int) blobValue.GetDataLen();
-    int rc = sqlite3_blob_write((sqlite3_blob*) m_blob,
+    int rc = sqlite3_blob_write(m_blob->m_blob,
                                 (const void*) blobValue.GetData(), blobLen, offset);
 
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+      const char* localError = sqlite3_errmsg(m_db->m_db);
       throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
     }
   }
@@ -1912,7 +2360,7 @@ void wxSQLite3Blob::Write(const wxMemoryBuffer& blobValue, int offset)
 
 bool wxSQLite3Blob::IsOk()
 {
-  return m_ok;
+  return (m_blob != NULL && m_blob->m_isValid);
 }
 
 bool wxSQLite3Blob::IsReadOnly()
@@ -1924,7 +2372,7 @@ int wxSQLite3Blob::GetSize()
 {
 #if SQLITE_VERSION_NUMBER >= 3004000
   CheckBlob();
-  return sqlite3_blob_bytes((sqlite3_blob*) m_blob);
+  return sqlite3_blob_bytes(m_blob->m_blob);
 #else
   throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOINCBLOB);
   return 0;
@@ -1935,10 +2383,10 @@ void wxSQLite3Blob::Rebind(wxLongLong rowid)
 {
 #if SQLITE_VERSION_NUMBER >= 3007004
   CheckBlob();
-  int rc = sqlite3_blob_reopen((sqlite3_blob*) m_blob, rowid.GetValue());
+  int rc = sqlite3_blob_reopen(m_blob->m_blob, rowid.GetValue());
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 #else
@@ -1949,16 +2397,27 @@ void wxSQLite3Blob::Rebind(wxLongLong rowid)
 
 void wxSQLite3Blob::Finalize()
 {
+  Finalize(m_db, m_blob);
+}
+
+void wxSQLite3Blob::Finalize(wxSQLite3DatabaseReference* db, wxSQLite3BlobReference* blob)
+{
 #if SQLITE_VERSION_NUMBER >= 3004000
-  if (m_ok)
+  if (blob != NULL && blob->m_isValid)
   {
-    int rc = sqlite3_blob_close((sqlite3_blob*) m_blob);
-    m_blob = NULL;
-    m_ok = false;
+    int rc = sqlite3_blob_close(blob->m_blob);
+    blob->Invalidate();
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) m_db);
-      throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+      if (db != NULL && db->m_isValid)
+      {
+        const char* localError = sqlite3_errmsg(db->m_db);
+        throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+      }
+      else
+      {
+        throw wxSQLite3Exception(rc, wxERRMSG_FINALIZE_FAILED);
+      }
     }
   }
 #else
@@ -1968,7 +2427,7 @@ void wxSQLite3Blob::Finalize()
 
 void wxSQLite3Blob::CheckBlob()
 {
-  if (!m_ok)
+  if (m_db == NULL || !m_db->m_isValid || m_blob == NULL || !m_blob->m_isValid)
   {
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_INVALID_BLOB);
   }
@@ -2091,33 +2550,61 @@ wxSQLite3Database::HasWriteAheadLogSupport()
 wxSQLite3Database::wxSQLite3Database()
 {
   m_db = 0;
+  m_isOpen = false;
   m_busyTimeoutMs = 60000; // 60 seconds
   m_isEncrypted = false;
+  m_lastRollbackRC = 0;
+  m_backupPageCount = 10;
 }
 
 wxSQLite3Database::wxSQLite3Database(const wxSQLite3Database& db)
 {
   m_db = db.m_db;
+  if (m_db != NULL)
+  {
+    m_db->IncrementRefCount();
+  }
+  m_isOpen = db.m_isOpen;
   m_busyTimeoutMs = 60000; // 60 seconds
-  m_isEncrypted = false;
+  m_isEncrypted = db.m_isEncrypted;
+  m_lastRollbackRC = db.m_lastRollbackRC;
+  m_backupPageCount = db.m_backupPageCount;
 }
 
 wxSQLite3Database::~wxSQLite3Database()
 {
-  Close();
+  if (m_db != NULL && m_db->DecrementRefCount() == 0)
+  {
+    if (m_db->m_isValid)
+    {
+      Close(m_db);
+    }
+    delete m_db;
+  }
 }
 
 wxSQLite3Database& wxSQLite3Database::operator=(const wxSQLite3Database& db)
 {
   if (this != &db)
   {
-    if (m_db == 0)
+    wxSQLite3DatabaseReference* dbPrev = m_db;
+    m_db = db.m_db;
+    if (m_db != NULL)
     {
-      m_db = db.m_db;
+      m_db->IncrementRefCount();
+      m_isOpen = db.m_isOpen;
       m_busyTimeoutMs = 60000; // 60 seconds
       m_isEncrypted = db.m_isEncrypted;
+      m_lastRollbackRC = db.m_lastRollbackRC;
+      m_backupPageCount = db.m_backupPageCount;
     }
-    else
+    if (dbPrev != NULL && dbPrev->DecrementRefCount() == 0)
+    {
+      Close(dbPrev);
+      delete dbPrev;
+    }
+
+    if (m_db == NULL)
     {
       throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_DBASSIGN_FAILED);
     }
@@ -2141,32 +2628,37 @@ void wxSQLite3Database::Open(const wxString& fileName, const wxMemoryBuffer& key
 {
   wxCharBuffer strFileName = fileName.ToUTF8();
   const char* localFileName = strFileName;
+  sqlite3* db;
 
-  int rc = sqlite3_open_v2((const char*) localFileName, (sqlite3**) &m_db, flags, NULL);
+  int rc = sqlite3_open_v2((const char*) localFileName, &db, flags, NULL);
 
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
-    Close();
+    const char* localError = "Out of memory";
+    if (db != NULL)
+    {
+      localError = sqlite3_errmsg(db);
+      sqlite3_close(db);
+    }
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 
-  rc = sqlite3_extended_result_codes((sqlite3*) m_db, 1);
+  rc = sqlite3_extended_result_codes(db, 1);
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
-    Close();
+    const char* localError = sqlite3_errmsg(db);
+    sqlite3_close(db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 
 #if WXSQLITE3_HAVE_CODEC
   if (key.GetDataLen() > 0)
   {
-    rc = sqlite3_key((sqlite3*) m_db, key.GetData(), (int) key.GetDataLen());
+    rc = sqlite3_key(db, key.GetData(), (int) key.GetDataLen());
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) m_db);
-      Close();
+      const char* localError = sqlite3_errmsg(db);
+      sqlite3_close(db);
       throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
     }
     m_isEncrypted = true;
@@ -2175,17 +2667,42 @@ void wxSQLite3Database::Open(const wxString& fileName, const wxMemoryBuffer& key
   wxUnusedVar(key);
 #endif
 
+  wxSQLite3DatabaseReference* dbPrev = m_db;
+  m_db = new wxSQLite3DatabaseReference(db);
+  m_isOpen = true;
   SetBusyTimeout(m_busyTimeoutMs);
+  if (dbPrev != NULL && dbPrev->DecrementRefCount() == 0)
+  {
+    delete dbPrev;
+  }
 }
 
 bool wxSQLite3Database::IsOpen() const
 {
-  return (m_db != NULL);
+  return (m_db != NULL && m_db->m_isValid && m_isOpen);
+}
+
+bool wxSQLite3Database::IsReadOnly(const wxString& databaseName)
+{
+#if SQLITE_VERSION_NUMBER >= 3007011
+  CheckDatabase();
+  wxCharBuffer strDatabaseName = databaseName.ToUTF8();
+  const char* localDatabaseName = strDatabaseName;
+  return sqlite3_db_readonly(m_db->m_db, localDatabaseName) > 0;
+#else
+  return false;
+#endif
 }
 
 void wxSQLite3Database::Close()
 {
-  if (m_db)
+  CheckDatabase();
+  Close(m_db);
+}
+
+void wxSQLite3Database::Close(wxSQLite3DatabaseReference* db)
+{
+  if (db != NULL && db->m_isValid)
   {
 #if SQLITE_VERSION_NUMBER >= 3006000
 // Unfortunately the following code leads to a crash if the RTree module is used
@@ -2193,19 +2710,37 @@ void wxSQLite3Database::Close()
 #if 0
     // Finalize all unfinalized prepared statements
     sqlite3_stmt *pStmt;
-    while( (pStmt = sqlite3_next_stmt((sqlite3*) m_db, 0))!=0 )
+    while( (pStmt = sqlite3_next_stmt(db->m_db, 0))!=0 )
     {
       sqlite3_finalize(pStmt);
     }
 #endif
 #endif
-    sqlite3_close((sqlite3*) m_db);
-    m_db = 0;
-    m_isEncrypted = false;
+    if (db->m_refCount <= 1)
+    {
+      sqlite3_close(db->m_db);
+      db->Invalidate();
+      m_isEncrypted = false;
+    }
+    m_isOpen = false;
   }
 }
 
-void wxSQLite3Database::Backup(const wxString& targetFileName, const wxString& key, const wxString& sourceDatabaseName)
+static bool
+BackupRestoreCallback(int total, int remaining, wxSQLite3BackupProgress* progressCallback)
+{
+  return progressCallback->Progress(total, remaining);
+}
+
+void wxSQLite3Database::Backup(const wxString& targetFileName, const wxString& key, 
+                               const wxString& sourceDatabaseName)
+{
+  Backup(NULL, targetFileName, key, sourceDatabaseName);
+}
+
+void wxSQLite3Database::Backup(wxSQLite3BackupProgress* progressCallback,
+                               const wxString& targetFileName, const wxString& key, 
+                               const wxString& sourceDatabaseName)
 {
   wxCharBuffer strLocalKey = key.ToUTF8();
   const char* localKey = strLocalKey;
@@ -2214,10 +2749,18 @@ void wxSQLite3Database::Backup(const wxString& targetFileName, const wxString& k
   {
     binaryKey.AppendData((void*) localKey, strlen(localKey));
   }
-  Backup(targetFileName, binaryKey, sourceDatabaseName);
+  Backup(progressCallback, targetFileName, binaryKey, sourceDatabaseName);
 }
 
-void wxSQLite3Database::Backup(const wxString& targetFileName, const wxMemoryBuffer& key, const wxString& sourceDatabaseName)
+void wxSQLite3Database::Backup(const wxString& targetFileName, const wxMemoryBuffer& key, 
+                               const wxString& sourceDatabaseName)
+{
+  Backup(NULL, targetFileName, key, sourceDatabaseName);
+}
+
+void wxSQLite3Database::Backup(wxSQLite3BackupProgress* progressCallback,
+                               const wxString& targetFileName, const wxMemoryBuffer& key, 
+                               const wxString& sourceDatabaseName)
 {
 #if SQLITE_VERSION_NUMBER >= 3006011
   CheckDatabase();
@@ -2242,7 +2785,7 @@ void wxSQLite3Database::Backup(const wxString& targetFileName, const wxMemoryBuf
     rc = sqlite3_key(pDest, key.GetData(), (int) key.GetDataLen());
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) pDest);
+      const char* localError = sqlite3_errmsg(pDest);
       sqlite3_close(pDest);
       throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
     }
@@ -2251,7 +2794,7 @@ void wxSQLite3Database::Backup(const wxString& targetFileName, const wxMemoryBuf
   wxUnusedVar(key);
 #endif
 
-  pBackup = sqlite3_backup_init(pDest, "main", (sqlite3*) m_db, localSourceDatabaseName);
+  pBackup = sqlite3_backup_init(pDest, "main", m_db->m_db, localSourceDatabaseName);
   if (pBackup == 0)
   {
     const char* localError = sqlite3_errmsg(pDest);
@@ -2261,7 +2804,16 @@ void wxSQLite3Database::Backup(const wxString& targetFileName, const wxMemoryBuf
 
   do
   {
-    rc = sqlite3_backup_step(pBackup, 10);
+    rc = sqlite3_backup_step(pBackup, m_backupPageCount);
+    if (progressCallback != NULL)
+    {
+      if (!BackupRestoreCallback(sqlite3_backup_pagecount(pBackup),
+                                 sqlite3_backup_remaining(pBackup),
+                                 progressCallback))
+      {
+        rc = SQLITE_DONE;
+      }
+    }
 #if 0
     xProgress(sqlite3_backup_remaining(pBackup),
               sqlite3_backup_pagecount(pBackup));
@@ -2291,7 +2843,15 @@ void wxSQLite3Database::Backup(const wxString& targetFileName, const wxMemoryBuf
 #endif
 }
 
-void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxString& key, const wxString& targetDatabaseName)
+void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxString& key, 
+                                const wxString& targetDatabaseName)
+{
+  Restore(NULL, sourceFileName, key, targetDatabaseName);
+}
+
+void wxSQLite3Database::Restore(wxSQLite3BackupProgress* progressCallback,
+                                const wxString& sourceFileName, const wxString& key, 
+                                const wxString& targetDatabaseName)
 {
   wxCharBuffer strLocalKey = key.ToUTF8();
   const char* localKey = strLocalKey;
@@ -2300,10 +2860,18 @@ void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxString& 
   {
     binaryKey.AppendData((void*) localKey, strlen(localKey));
   }
-  Restore(sourceFileName, binaryKey, targetDatabaseName);
+  Restore(progressCallback, sourceFileName, binaryKey, targetDatabaseName);
 }
 
-void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxMemoryBuffer& key, const wxString& targetDatabaseName)
+void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxMemoryBuffer& key, 
+                                const wxString& targetDatabaseName)
+{
+  Restore(NULL, sourceFileName, key, targetDatabaseName);
+}
+
+void wxSQLite3Database::Restore(wxSQLite3BackupProgress* progressCallback,
+                                const wxString& sourceFileName, const wxMemoryBuffer& key, 
+                                const wxString& targetDatabaseName)
 {
 #if SQLITE_VERSION_NUMBER >= 3006011
   CheckDatabase();
@@ -2330,7 +2898,7 @@ void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxMemoryBu
     rc = sqlite3_key(pSrc, key.GetData(), (int) key.GetDataLen());
     if (rc != SQLITE_OK)
     {
-      const char* localError = sqlite3_errmsg((sqlite3*) pSrc);
+      const char* localError = sqlite3_errmsg(pSrc);
       sqlite3_close(pSrc);
       throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
     }
@@ -2339,21 +2907,37 @@ void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxMemoryBu
   wxUnusedVar(key);
 #endif
 
-  pBackup = sqlite3_backup_init((sqlite3*) m_db, localTargetDatabaseName, pSrc, "main");
+  pBackup = sqlite3_backup_init(m_db->m_db, localTargetDatabaseName, pSrc, "main");
   if (pBackup == 0)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     sqlite3_close(pSrc);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
-  while ((rc = sqlite3_backup_step(pBackup, 100)) == SQLITE_OK || rc == SQLITE_BUSY)
+
+  do
   {
-    if (rc == SQLITE_BUSY)
+    rc = sqlite3_backup_step(pBackup, m_backupPageCount);
+    if (progressCallback != NULL)
     {
-      if (nTimeout++ >= 3) break;
-      sqlite3_sleep(100);
+      if (!BackupRestoreCallback(sqlite3_backup_pagecount(pBackup),
+                                 sqlite3_backup_remaining(pBackup), progressCallback))
+      {
+        rc = SQLITE_DONE;
+      }
+    }
+    if (rc == SQLITE_BUSY || rc == SQLITE_LOCKED)
+    {
+      if (nTimeout++ >= 20) break;
+      sqlite3_sleep(250);
+    }
+    else
+    {
+      nTimeout = 0;
     }
   }
+  while (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED);
+
   sqlite3_backup_finish(pBackup);
   if (rc == SQLITE_DONE)
   {
@@ -2375,6 +2959,16 @@ void wxSQLite3Database::Restore(const wxString& sourceFileName, const wxMemoryBu
   wxUnusedVar(targetDatabaseName);
   throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NOBACKUP);
 #endif
+}
+
+void wxSQLite3Database::SetBackupRestorePageCount(int pageCount)
+{
+  m_backupPageCount = pageCount;
+}
+
+void wxSQLite3Database::Vacuum()
+{
+  ExecuteUpdate("vacuum");
 }
 
 void wxSQLite3Database::Begin(wxSQLite3TransactionType transactionType)
@@ -2422,7 +3016,12 @@ void wxSQLite3Database::Rollback(const wxString& savepointName)
 bool wxSQLite3Database::GetAutoCommit()
 {
   CheckDatabase();
-  return sqlite3_get_autocommit((sqlite3*) m_db) != 0;
+  return sqlite3_get_autocommit(m_db->m_db) != 0;
+}
+
+int wxSQLite3Database::QueryRollbackState()
+{
+  return m_lastRollbackRC;
 }
 
 void wxSQLite3Database::Savepoint(const wxString& savepointName)
@@ -2461,7 +3060,8 @@ wxSQLite3Statement wxSQLite3Database::PrepareStatement(const char* sql)
 {
   CheckDatabase();
   sqlite3_stmt* stmt = (sqlite3_stmt*) Prepare(sql);
-  return wxSQLite3Statement(m_db, stmt);
+  wxSQLite3StatementReference* stmtRef = new wxSQLite3StatementReference(stmt);
+  return wxSQLite3Statement(m_db, stmtRef);
 }
 
 bool wxSQLite3Database::TableExists(const wxString& tableName, const wxString& databaseName)
@@ -2525,6 +3125,20 @@ void wxSQLite3Database::GetDatabaseList(wxArrayString& databaseNames, wxArrayStr
     databaseNames.Add(resultSet.GetString(1));
     databaseFiles.Add(resultSet.GetString(2));
   }
+}
+
+wxString wxSQLite3Database::GetDatabaseFilename(const wxString& databaseName)
+{
+#if SQLITE_VERSION_NUMBER >= 3007010
+  CheckDatabase();
+  wxCharBuffer strDatabaseName = databaseName.ToUTF8();
+  const char* localDatabaseName = strDatabaseName;
+  const char* localFilename = sqlite3_db_filename(m_db->m_db, localDatabaseName);
+  return wxString::FromUTF8(localFilename);
+#else
+  wxUnusedVar(databaseName);
+  return wxEmptyString;
+#endif
 }
 
 bool wxSQLite3Database::EnableForeignKeySupport(bool enable)
@@ -2649,21 +3263,30 @@ int wxSQLite3Database::ExecuteUpdate(const wxSQLite3StatementBuffer& sql)
   return ExecuteUpdate((const char*) sql);
 }
 
-int wxSQLite3Database::ExecuteUpdate(const char* sql)
+int wxSQLite3Database::ExecuteUpdate(const char* sql, bool saveRC)
 {
   CheckDatabase();
 
-  char* localError=0;
+  char* localError = 0;
 
-  int rc = sqlite3_exec((sqlite3*) m_db, sql, 0, 0, &localError);
+  int rc = sqlite3_exec(m_db->m_db, sql, 0, 0, &localError);
+  if (saveRC)
+  {
+    if (strncmp(sql, "rollback transaction", 20) == 0)
+    {
+      m_lastRollbackRC = rc;
+    }
+  }
 
   if (rc == SQLITE_OK)
   {
-    return sqlite3_changes((sqlite3*) m_db);
+    return sqlite3_changes(m_db->m_db);
   }
   else
   {
-    throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+    wxString errmsg = wxString::FromUTF8(localError);
+    sqlite3_free(localError);
+    throw wxSQLite3Exception(rc, errmsg);
   }
 }
 
@@ -2689,16 +3312,18 @@ wxSQLite3ResultSet wxSQLite3Database::ExecuteQuery(const char* sql)
 
   if (rc == SQLITE_DONE) // no rows
   {
-    return wxSQLite3ResultSet(m_db, stmt, true /* eof */);
+    wxSQLite3StatementReference* stmtRef = new wxSQLite3StatementReference(stmt);
+    return wxSQLite3ResultSet(m_db, stmtRef, true /* eof */);
   }
   else if (rc == SQLITE_ROW) // one or more rows
   {
-    return wxSQLite3ResultSet(m_db, stmt, false /* eof */);
+    wxSQLite3StatementReference* stmtRef = new wxSQLite3StatementReference(stmt);
+    return wxSQLite3ResultSet(m_db, stmtRef, false /* eof */);
   }
   else
   {
     rc = sqlite3_finalize(stmt);
-    const char* localError= sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError= sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 }
@@ -2751,7 +3376,7 @@ wxSQLite3Table wxSQLite3Database::GetTable(const char* sql)
   int rows(0);
   int cols(0);
 
-  rc = sqlite3_get_table((sqlite3*) m_db, sql, &results, &rows, &cols, &localError);
+  rc = sqlite3_get_table(m_db->m_db, sql, &results, &rows, &cols, &localError);
 
   if (rc == SQLITE_OK)
   {
@@ -2766,7 +3391,7 @@ wxSQLite3Table wxSQLite3Database::GetTable(const char* sql)
 wxLongLong wxSQLite3Database::GetLastRowId()
 {
   CheckDatabase();
-  return wxLongLong(sqlite3_last_insert_rowid((sqlite3*) m_db));
+  return wxLongLong(sqlite3_last_insert_rowid(m_db->m_db));
 }
 
 wxSQLite3Blob wxSQLite3Database::GetReadOnlyBlob(wxLongLong rowId,
@@ -2801,13 +3426,14 @@ wxSQLite3Blob wxSQLite3Database::GetBlob(wxLongLong rowId,
   int flags = (writable) ? 1 : 0;
   sqlite3_blob* blobHandle;
   CheckDatabase();
-  int rc = sqlite3_blob_open((sqlite3*) m_db, localDbName, localTableName, localColumnName, rowId.GetValue(), flags, &blobHandle);
+  int rc = sqlite3_blob_open(m_db->m_db, localDbName, localTableName, localColumnName, rowId.GetValue(), flags, &blobHandle);
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
-  return wxSQLite3Blob(m_db, (void*) blobHandle, writable);
+  wxSQLite3BlobReference* blobRef = new wxSQLite3BlobReference(blobHandle);
+  return wxSQLite3Blob(m_db, blobRef, writable);
 #else
   wxUnusedVar(rowId);
   wxUnusedVar(columnName);
@@ -2822,14 +3448,19 @@ wxSQLite3Blob wxSQLite3Database::GetBlob(wxLongLong rowId,
 void wxSQLite3Database::Interrupt()
 {
   CheckDatabase();
-  sqlite3_interrupt((sqlite3*) m_db);
+  sqlite3_interrupt(m_db->m_db);
 }
 
 void wxSQLite3Database::SetBusyTimeout(int nMillisecs)
 {
   CheckDatabase();
   m_busyTimeoutMs = nMillisecs;
-  sqlite3_busy_timeout((sqlite3*) m_db, m_busyTimeoutMs);
+  sqlite3_busy_timeout(m_db->m_db, m_busyTimeoutMs);
+}
+
+wxString wxSQLite3Database::GetWrapperVersion()
+{
+  return wxString(wxSQLITE3_VERSION_STRING);
 }
 
 wxString wxSQLite3Database::GetVersion()
@@ -2877,7 +3508,7 @@ bool wxSQLite3Database::CreateFunction(const wxString& funcName, int argCount, w
   CheckDatabase();
   wxCharBuffer strFuncName = funcName.ToUTF8();
   const char* localFuncName = strFuncName;
-  int rc = sqlite3_create_function((sqlite3*) m_db, localFuncName, argCount,
+  int rc = sqlite3_create_function(m_db->m_db, localFuncName, argCount,
                                    SQLITE_UTF8, &function,
                                    (void (*)(sqlite3_context*,int,sqlite3_value**)) wxSQLite3FunctionContext::ExecScalarFunction, NULL, NULL);
   return rc == SQLITE_OK;
@@ -2888,7 +3519,7 @@ bool wxSQLite3Database::CreateFunction(const wxString& funcName, int argCount, w
   CheckDatabase();
   wxCharBuffer strFuncName = funcName.ToUTF8();
   const char* localFuncName = strFuncName;
-  int rc = sqlite3_create_function((sqlite3*) m_db, localFuncName, argCount,
+  int rc = sqlite3_create_function(m_db->m_db, localFuncName, argCount,
                                    SQLITE_UTF8, &function,
                                    NULL,
                                    (void (*)(sqlite3_context*,int,sqlite3_value**)) wxSQLite3FunctionContext::ExecAggregateStep,
@@ -2899,7 +3530,7 @@ bool wxSQLite3Database::CreateFunction(const wxString& funcName, int argCount, w
 bool wxSQLite3Database::SetAuthorizer(wxSQLite3Authorizer& authorizer)
 {
   CheckDatabase();
-  int rc = sqlite3_set_authorizer((sqlite3*) m_db, wxSQLite3FunctionContext::ExecAuthorizer, &authorizer);
+  int rc = sqlite3_set_authorizer(m_db->m_db, wxSQLite3FunctionContext::ExecAuthorizer, &authorizer);
   return rc == SQLITE_OK;
 }
 
@@ -2908,11 +3539,11 @@ void wxSQLite3Database::SetCommitHook(wxSQLite3Hook* commitHook)
   CheckDatabase();
   if (commitHook)
   {
-    sqlite3_commit_hook((sqlite3*) m_db, (int(*)(void*)) wxSQLite3FunctionContext::ExecCommitHook, commitHook);
+    sqlite3_commit_hook(m_db->m_db, (int(*)(void*)) wxSQLite3FunctionContext::ExecCommitHook, commitHook);
   }
   else
   {
-    sqlite3_commit_hook((sqlite3*) m_db, (int(*)(void*)) NULL, NULL);
+    sqlite3_commit_hook(m_db->m_db, (int(*)(void*)) NULL, NULL);
   }
 }
 
@@ -2921,11 +3552,11 @@ void wxSQLite3Database::SetRollbackHook(wxSQLite3Hook* rollbackHook)
   CheckDatabase();
   if (rollbackHook)
   {
-    sqlite3_rollback_hook((sqlite3*) m_db, (void(*)(void*)) wxSQLite3FunctionContext::ExecRollbackHook, rollbackHook);
+    sqlite3_rollback_hook(m_db->m_db, (void(*)(void*)) wxSQLite3FunctionContext::ExecRollbackHook, rollbackHook);
   }
   else
   {
-    sqlite3_rollback_hook((sqlite3*) m_db, (void(*)(void*)) NULL, NULL);
+    sqlite3_rollback_hook(m_db->m_db, (void(*)(void*)) NULL, NULL);
   }
 }
 
@@ -2934,11 +3565,11 @@ void wxSQLite3Database::SetUpdateHook(wxSQLite3Hook* updateHook)
   CheckDatabase();
   if (updateHook)
   {
-    sqlite3_update_hook((sqlite3*) m_db, (void(*)(void*,int,const char*,const char*, wxsqlite_int64)) wxSQLite3FunctionContext::ExecUpdateHook, updateHook);
+    sqlite3_update_hook(m_db->m_db, (void(*)(void*,int,const char*,const char*, wxsqlite_int64)) wxSQLite3FunctionContext::ExecUpdateHook, updateHook);
   }
   else
   {
-    sqlite3_update_hook((sqlite3*) m_db, (void(*)(void*,int,const char*,const char*, wxsqlite_int64)) NULL, NULL);
+    sqlite3_update_hook(m_db->m_db, (void(*)(void*,int,const char*,const char*, wxsqlite_int64)) NULL, NULL);
   }
 }
 
@@ -2949,11 +3580,11 @@ void wxSQLite3Database::SetWriteAheadLogHook(wxSQLite3Hook* walHook)
   if (walHook)
   {
     walHook->SetDatabase(this);
-    sqlite3_wal_hook((sqlite3*) m_db, (int(*)(void *,sqlite3*,const char*,int)) wxSQLite3FunctionContext::ExecWriteAheadLogHook, walHook);
+    sqlite3_wal_hook(m_db->m_db, (int(*)(void *,sqlite3*,const char*,int)) wxSQLite3FunctionContext::ExecWriteAheadLogHook, walHook);
   }
   else
   {
-    sqlite3_wal_hook((sqlite3*) m_db, (int(*)(void *,sqlite3*,const char*,int)) NULL, NULL);
+    sqlite3_wal_hook(m_db->m_db, (int(*)(void *,sqlite3*,const char*,int)) NULL, NULL);
   }
 #else
   wxUnusedVar(walHook);
@@ -2961,17 +3592,24 @@ void wxSQLite3Database::SetWriteAheadLogHook(wxSQLite3Hook* walHook)
 #endif
 }
 
-void wxSQLite3Database::WriteAheadLogCheckpoint(const wxString& database)
+void wxSQLite3Database::WriteAheadLogCheckpoint(const wxString& database, int mode, 
+                                                int* logFrameCount, int* ckptFrameCount)
 {
 #if SQLITE_VERSION_NUMBER >= 3007000
   CheckDatabase();
   wxCharBuffer strDatabase = database.ToUTF8();
   const char* localDatabase = strDatabase;
-  int rc = sqlite3_wal_checkpoint((sqlite3*) m_db, localDatabase);
+#if SQLITE_VERSION_NUMBER >= 3007006
+  int rc = sqlite3_wal_checkpoint_v2(m_db->m_db, localDatabase, mode, logFrameCount, ckptFrameCount);
+#else
+  int rc = sqlite3_wal_checkpoint(m_db->m_db, localDatabase);
+  if (logFrameCount  != NULL) *logFrameCount  = 0;
+  if (ckptFrameCount != NULL) *ckptFrameCount = 0;
+#endif
 
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 #else
@@ -2984,11 +3622,11 @@ void wxSQLite3Database::AutoWriteAheadLogCheckpoint(int frameCount)
 {
 #if SQLITE_VERSION_NUMBER >= 3007000
   CheckDatabase();
-  int rc = sqlite3_wal_autocheckpoint((sqlite3*) m_db, frameCount);
+  int rc = sqlite3_wal_autocheckpoint(m_db->m_db, frameCount);
 
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 #else
@@ -3005,28 +3643,33 @@ void wxSQLite3Database::SetCollation(const wxString& collationName, wxSQLite3Col
   int rc;
   if (collation)
   {
-    rc = sqlite3_create_collation((sqlite3*) m_db, localCollationName, SQLITE_UTF8, collation, (int(*)(void*,int,const void*,int,const void*)) wxSQLite3Database::ExecComparisonWithCollation);
+    rc = sqlite3_create_collation(m_db->m_db, localCollationName, SQLITE_UTF8, collation, (int(*)(void*,int,const void*,int,const void*)) wxSQLite3Database::ExecComparisonWithCollation);
   }
   else
   {
-    rc = sqlite3_create_collation((sqlite3*) m_db, localCollationName, SQLITE_UTF8, NULL, (int(*)(void*,int,const void*,int,const void*)) NULL);
+    rc = sqlite3_create_collation(m_db->m_db, localCollationName, SQLITE_UTF8, NULL, (int(*)(void*,int,const void*,int,const void*)) NULL);
   }
+}
+
+void* wxSQLite3Database::GetDatabaseHandle()
+{
+  return m_db->m_db;
 }
 
 void wxSQLite3Database::SetCollationNeededCallback()
 {
   CheckDatabase();
-  int rc = sqlite3_collation_needed((sqlite3*) m_db, this, (void(*)(void*,sqlite3*,int,const char*)) wxSQLite3Database::ExecCollationNeeded);
+  int rc = sqlite3_collation_needed(m_db->m_db, this, (void(*)(void*,sqlite3*,int,const char*)) wxSQLite3Database::ExecCollationNeeded);
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 }
 
 void wxSQLite3Database::CheckDatabase()
 {
-  if (!m_db)
+  if (m_db == NULL || m_db->m_db == NULL || !m_db->m_isValid || !m_isOpen)
   {
     throw wxSQLite3Exception(WXSQLITE_ERROR, wxERRMSG_NODB);
   }
@@ -3039,11 +3682,11 @@ void* wxSQLite3Database::Prepare(const char* sql)
   const char* tail=0;
   sqlite3_stmt* stmt;
 
-  int rc = sqlite3_prepare_v2((sqlite3*) m_db, sql, -1, &stmt, &tail);
+  int rc = sqlite3_prepare_v2(m_db->m_db, sql, -1, &stmt, &tail);
 
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 
@@ -3070,6 +3713,7 @@ void wxSQLite3Database::GetMetaData(const wxString& databaseName, const wxString
                                     wxString* dataType, wxString* collation, bool* notNull, bool* primaryKey, bool* autoIncrement)
 {
 #if WXSQLITE3_HAVE_METADATA
+  CheckDatabase();
   wxCharBuffer strDatabaseName = databaseName.ToUTF8();
   const char* localDatabaseName = strDatabaseName;
   if (databaseName == wxEmptyString) localDatabaseName = NULL;
@@ -3082,12 +3726,12 @@ void wxSQLite3Database::GetMetaData(const wxString& databaseName, const wxString
   int localNotNull;
   int localPrimaryKey;
   int localAutoIncrement;
-  int rc = sqlite3_table_column_metadata((sqlite3*) m_db, localDatabaseName, localTableName, localColumnName,
+  int rc = sqlite3_table_column_metadata(m_db->m_db, localDatabaseName, localTableName, localColumnName,
                                          &localDataType, &localCollation, &localNotNull, &localPrimaryKey, &localAutoIncrement);
 
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 
@@ -3113,15 +3757,16 @@ void wxSQLite3Database::GetMetaData(const wxString& databaseName, const wxString
 void wxSQLite3Database::LoadExtension(const wxString& fileName, const wxString& entryPoint)
 {
 #if WXSQLITE3_HAVE_LOAD_EXTENSION
+  CheckDatabase();
   wxCharBuffer strFileName = fileName.ToUTF8();
   const char* localFileName = strFileName;
   wxCharBuffer strEntryPoint = entryPoint.ToUTF8();
   const char* localEntryPoint = strEntryPoint;
 
-  int rc = sqlite3_load_extension((sqlite3 *) m_db, localFileName, localEntryPoint, NULL);
+  int rc = sqlite3_load_extension(m_db->m_db, localFileName, localEntryPoint, NULL);
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 #else
@@ -3134,11 +3779,12 @@ void wxSQLite3Database::LoadExtension(const wxString& fileName, const wxString& 
 void wxSQLite3Database::EnableLoadExtension(bool enable)
 {
 #if WXSQLITE3_HAVE_LOAD_EXTENSION
+  CheckDatabase();
   int onoff = (enable) ? 1 : 0;
-  int rc = sqlite3_enable_load_extension((sqlite3 *) m_db, onoff);
+  int rc = sqlite3_enable_load_extension(m_db->m_db, onoff);
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 #else
@@ -3167,10 +3813,11 @@ void wxSQLite3Database::ReKey(const wxString& newKey)
 void wxSQLite3Database::ReKey(const wxMemoryBuffer& newKey)
 {
 #if WXSQLITE3_HAVE_CODEC
-  int rc = sqlite3_rekey((sqlite3*) m_db, newKey.GetData(), (int) newKey.GetDataLen());
+  CheckDatabase();
+  int rc = sqlite3_rekey(m_db->m_db, newKey.GetData(), (int) newKey.GetDataLen());
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
 #else
@@ -3186,7 +3833,7 @@ int wxSQLite3Database::GetLimit(wxSQLite3LimitType id)
   CheckDatabase();
   if (id >= WXSQLITE_LIMIT_LENGTH && id <= WXSQLITE_LIMIT_VARIABLE_NUMBER)
   {
-    value = sqlite3_limit((sqlite3 *) m_db, id, -1);
+    value = sqlite3_limit(m_db->m_db, id, -1);
   }
 #else
   wxUnusedVar(id);
@@ -3201,13 +3848,26 @@ int wxSQLite3Database::SetLimit(wxSQLite3LimitType id, int newValue)
   CheckDatabase();
   if (id >= WXSQLITE_LIMIT_LENGTH && id <= WXSQLITE_LIMIT_VARIABLE_NUMBER)
   {
-    value = sqlite3_limit((sqlite3 *) m_db, id, newValue);
+    value = sqlite3_limit(m_db->m_db, id, newValue);
   }
 #else
   wxUnusedVar(id);
   wxUnusedVar(newValue);
 #endif
   return value;
+}
+
+void wxSQLite3Database::ReleaseMemory()
+{
+#if SQLITE_VERSION_NUMBER >= 3007010
+  CheckDatabase();
+  int rc = sqlite3_db_release_memory(m_db->m_db);
+  if (rc != SQLITE_OK)
+  {
+    const char* localError = sqlite3_errmsg(m_db->m_db);
+    throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
+  }
+#endif
 }
 
 static const wxChar* limitCodeString[] =
@@ -3593,7 +4253,7 @@ wxString wxSQLite3Authorizer::AuthorizationCodeToString(wxSQLite3Authorizer::wxA
 
 wxSQLite3Transaction::wxSQLite3Transaction(wxSQLite3Database* db, wxSQLite3TransactionType transactionType)
 {
-  assert(db != NULL);
+  wxASSERT(db != NULL);
   m_database = db;
   try
   {
@@ -3609,7 +4269,14 @@ wxSQLite3Transaction::~wxSQLite3Transaction()
 {
   if (m_database != NULL)
   {
-    m_database->Rollback();
+    try
+    {
+      m_database->Rollback();
+    }
+    catch (...)
+    {
+	    // Intentionally do nothing
+    }
   }
 }
 
@@ -3817,7 +4484,7 @@ static int intarrayFilter(sqlite3_vtab_cursor* pVtabCursor,
                           int /*idxNum*/, const char* /*idxStr*/,
                           int /*argc*/, sqlite3_value** /*argv*/)
 {
-  intarray_cursor *pCur = (intarray_cursor *)pVtabCursor;
+  intarray_cursor* pCur = (intarray_cursor*) pVtabCursor;
   pCur->i = 0;
   return SQLITE_OK;
 }
@@ -3851,6 +4518,11 @@ static sqlite3_module intarrayModule =
   0,                           // xRollback
   0,                           // xFindMethod
   0,                           // xRename
+#if SQLITE_VERSION_NUMBER >= 3007007
+  0,                           // xSavepoint
+  0,                           // xRelease
+  0                            // xRollbackTo
+#endif
 };
 
 /// Definition of the sqlite3_chararray object (internal)
@@ -3916,10 +4588,10 @@ static int chararrayCreate(sqlite3* db,                  // Database where modul
   if (pVtab)
   {
     memset(pVtab, 0, sizeof(chararray_vtab));
-    pVtab->pContent = (sqlite3_chararray*)pAux;
+    pVtab->pContent = (sqlite3_chararray*) pAux;
     rc = sqlite3_declare_vtab(db, "CREATE TABLE x(value CHAR PRIMARY KEY)");
   }
-  *ppVtab = (sqlite3_vtab*)pVtab;
+  *ppVtab = (sqlite3_vtab*) pVtab;
   return rc;
 }
 
@@ -4019,6 +4691,11 @@ static sqlite3_module chararrayModule =
   0,                           // xRollback
   0,                           // xFindMethod
   0,                           // xRename
+#if SQLITE_VERSION_NUMBER >= 3007007
+  0,                           // xSavepoint
+  0,                           // xRelease
+  0                            // xRollbackTo
+#endif
 };
 
 #endif // WXSQLITE3_USE_NAMED_COLLECTIONS
@@ -4149,6 +4826,7 @@ wxSQLite3IntegerCollection
 wxSQLite3Database::CreateIntegerCollection(const wxString& collectionName)
 {
 #if WXSQLITE3_USE_NAMED_COLLECTIONS
+  CheckDatabase();
   int rc = SQLITE_OK;
   wxCharBuffer strCollectionName = collectionName.ToUTF8();
   const char* zName = strCollectionName;
@@ -4160,16 +4838,16 @@ wxSQLite3Database::CreateIntegerCollection(const wxString& collectionName)
   p->n = 0;
   p->a= NULL;
   p->xFree = NULL;
-  rc = sqlite3_create_module_v2((sqlite3*)m_db, zName, &intarrayModule, p, (void(*)(void*))intarrayFree);
+  rc = sqlite3_create_module_v2(m_db->m_db, zName, &intarrayModule, p, (void(*)(void*))intarrayFree);
   if (rc == SQLITE_OK)
   {
     wxSQLite3StatementBuffer zBuffer;
     const char* zSql = zBuffer.Format("CREATE VIRTUAL TABLE temp.%Q USING %Q", zName, zName);
-    rc = sqlite3_exec((sqlite3*)m_db, zSql, 0, 0, 0);
+    rc = sqlite3_exec(m_db->m_db, zSql, 0, 0, 0);
   }
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
   return wxSQLite3IntegerCollection(collectionName, p);
@@ -4247,6 +4925,7 @@ wxSQLite3StringCollection
 wxSQLite3Database::CreateStringCollection(const wxString& collectionName)
 {
 #if WXSQLITE3_USE_NAMED_COLLECTIONS
+  CheckDatabase();
   int rc = SQLITE_OK;
   wxCharBuffer strCollectionName = collectionName.ToUTF8();
   const char* zName = strCollectionName;
@@ -4258,16 +4937,16 @@ wxSQLite3Database::CreateStringCollection(const wxString& collectionName)
   p->n = 0;
   p->a= NULL;
   p->xFree = NULL;
-  rc = sqlite3_create_module_v2((sqlite3*)m_db, zName, &chararrayModule, p, (void(*)(void*))chararrayFree);
+  rc = sqlite3_create_module_v2(m_db->m_db, zName, &chararrayModule, p, (void(*)(void*))chararrayFree);
   if (rc == SQLITE_OK)
   {
     wxSQLite3StatementBuffer zBuffer;
     const char* zSql = zBuffer.Format("CREATE VIRTUAL TABLE temp.%Q USING %Q", zName, zName);
-    rc = sqlite3_exec((sqlite3*)m_db, zSql, 0, 0, 0);
+    rc = sqlite3_exec(m_db->m_db, zSql, 0, 0, 0);
   }
   if (rc != SQLITE_OK)
   {
-    const char* localError = sqlite3_errmsg((sqlite3*) m_db);
+    const char* localError = sqlite3_errmsg(m_db->m_db);
     throw wxSQLite3Exception(rc, wxString::FromUTF8(localError));
   }
   return wxSQLite3StringCollection(collectionName, p);
