@@ -8,7 +8,7 @@
 //  FbSeqnListThread
 //-----------------------------------------------------------------------------
 
-bool FbSeqnListThread::IsFullText(wxSQLite3Database &database) const
+bool FbSeqnListThread::IsFullText(FbSQLite3Database &database) const
 {
 	return FbSearchFunction::IsFullText(m_string) && database.TableExists(wxT("fts_seqn"));
 }
@@ -37,7 +37,7 @@ void * FbSeqnListThread::Entry()
 	return NULL;
 }
 
-void FbSeqnListThread::DoString(wxSQLite3Database &database)
+void FbSeqnListThread::DoString(FbSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, value FROM sequences");
 	sql << GetJoin();
@@ -45,11 +45,11 @@ void FbSeqnListThread::DoString(wxSQLite3Database &database)
 	sql << GetOrder();
 	FbSearchFunction search(m_string);
 	if (!m_string.IsEmpty()) database.CreateFunction(wxT("SEARCH"), 1, search);
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	MakeModel(result);
 }
 
-void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
+void FbSeqnListThread::DoFullText(FbSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT docid, value FROM fts_seqn INNER JOIN sequences ON id=docid");
 	sql << GetJoin();
@@ -57,11 +57,11 @@ void FbSeqnListThread::DoFullText(wxSQLite3Database &database)
 	sql << GetOrder();
 	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.FTS(1, m_string);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
 }
 
-void FbSeqnListThread::MakeModel(wxSQLite3ResultSet &result)
+void FbSeqnListThread::MakeModel(FbSQLite3ResultSet &result)
 {
 	if (!result.IsOk()) return;
 	wxWindowID id = ID_MODEL_CREATE;

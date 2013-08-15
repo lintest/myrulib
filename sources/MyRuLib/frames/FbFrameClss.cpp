@@ -24,11 +24,11 @@ FbFrameClss * FbFrameClss::Create(wxAuiNotebook * parent, int code, bool select)
 	FbCommonDatabase database;
 	if (!database.TableExists(wxT("tables"))) return NULL;
 	wxString sql = wxT("SELECT * FROM tables WHERE id="); sql << code;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	return result.NextRow() ? new FbFrameClss(parent, result, select) : NULL;
 }
 
-FbFrameClss::FbFrameClss(wxAuiNotebook * parent, wxSQLite3ResultSet & result, bool select)
+FbFrameClss::FbFrameClss(wxAuiNotebook * parent, FbSQLite3ResultSet & result, bool select)
 	: FbFrameBase(parent, ID_FRAME_CLSS, result.GetString(wxT("title")), select)
 	, m_code(result.GetInt(wxT("id")))
 {
@@ -44,7 +44,7 @@ FbFrameClss::FbFrameClss(wxAuiNotebook * parent, wxSQLite3ResultSet & result, bo
 	CreateModel(result);
 }
 
-void FbFrameClss::CreateModel(wxSQLite3ResultSet & result)
+void FbFrameClss::CreateModel(FbSQLite3ResultSet & result)
 {
 	FbTreeModel * model = new FbClssTreeModel(result);
 	FbParentData * root = new FbClssModelData(*model, result.GetString(wxT("title")));

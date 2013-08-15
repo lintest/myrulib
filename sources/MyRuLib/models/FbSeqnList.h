@@ -12,13 +12,13 @@ class FbSeqnListThread: public FbFrameThread
 			: FbFrameThread(frame, filename), m_string(string), m_order(order) {}
 	protected:
 		virtual void * Entry();
-		void MakeModel(wxSQLite3ResultSet &result);
+		void MakeModel(FbSQLite3ResultSet &result);
 	private:
 		wxString GetJoin();
 		wxString GetOrder();
-		void DoString(wxSQLite3Database &database);
-		void DoFullText(wxSQLite3Database &database);
-		bool IsFullText(wxSQLite3Database &database) const;
+		void DoString(FbSQLite3Database &database);
+		void DoFullText(FbSQLite3Database &database);
+		bool IsFullText(FbSQLite3Database &database) const;
 	private:
 		wxString m_string;
 		const int m_order;
@@ -61,7 +61,7 @@ class FbSeqnListModel: public FbListModel
 	private:
 		wxArrayInt m_items;
 		FbIntegerHash m_counter;
-		wxSQLite3Database m_database;
+		FbSQLite3Database m_database;
 		DECLARE_CLASS(FbSeqnListModel);
 };
 

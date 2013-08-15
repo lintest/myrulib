@@ -29,15 +29,15 @@ class FbMasterInfoBase: public wxObject
 		virtual FbMasterInfoBase * Clone() const = 0;
 		virtual bool operator==(const FbMasterInfoBase & info) = 0;
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const = 0;
+		virtual wxString GetWhere(FbSQLite3Database &database) const = 0;
 		virtual void Bind(FbSQLite3Statement &stmt) const {}
 		virtual wxString GetOrderTable() const;
 		virtual wxString GetOrderColumn() const;
 		virtual wxString GetOrderFields() const;
-		virtual wxString GetListSQL(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
-		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
-		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+		virtual wxString GetListSQL(FbSQLite3Database &database) const;
+		virtual wxString GetTreeSQL(FbSQLite3Database &database) const;
+		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, FbSQLite3ResultSet &result) const;
+		virtual void MakeList(wxEvtHandler *owner, FbThread * thread, FbSQLite3ResultSet &result) const;
 		void SendTree(wxEvtHandler *owner, FbThread * thread, FbBookTreeModel * model) const;
 		wxString FormatSQL(const wxString &sql, const wxString &cond, const FbFilterObj &filter) const;
 	protected:

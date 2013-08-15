@@ -1,6 +1,6 @@
 #include "FbDirImportDlg.h"
 #include <wx/artprov.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbDataPath.h"
 #include "FbLogoBitmap.h"
 #include "FbDatabase.h"

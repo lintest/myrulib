@@ -55,6 +55,37 @@ wxString & MakeUpper(wxString & data)
 }
 
 //-----------------------------------------------------------------------------
+//  FbSQLite3Statement
+//-----------------------------------------------------------------------------
+
+void FbSQLite3Statement::FTS(int index, const wxString& value)
+{
+	wxString result;
+	wxString keywords = wxT("OR AND NOT");
+	wxStringTokenizer tkz(value, wxT(' '), wxTOKEN_STRTOK);
+	while (tkz.HasMoreTokens()) {
+		if (!result.IsEmpty()) result << wxT(' ');
+		wxString word = tkz.GetNextToken();
+		if (keywords.Find(word) != wxNOT_FOUND) {
+		} else if (word.Left(4) == wxT("NEAR")) {
+		} else {
+			word = Lower(word);
+			size_t len = word.Len();
+			for (size_t i = 0; i < len; i++) {
+				if (word[i] == 0x0451) word[i] = 0x0435;
+			}
+			if (word.Right(1) == wxT('"')) {
+				word.insert(word.Len() - 1, wxT('*'));
+			} else {
+				word << wxT('*');
+			}
+		}
+		result << word;
+	}
+	FbSQLite3Statement::Bind(index, result);
+}
+
+//-----------------------------------------------------------------------------
 //  FbAuthorFunction
 //-----------------------------------------------------------------------------
 
@@ -241,37 +272,6 @@ bool FbSearchFunction::IsFullText(const wxString &text)
 }
 
 //-----------------------------------------------------------------------------
-//  FbSQLite3Statement
-//-----------------------------------------------------------------------------
-
-void FbSQLite3Statement::FTS(int index, const wxString& value)
-{
-	wxString result;
-	wxString keywords = wxT("OR AND NOT");
-	wxStringTokenizer tkz(value, wxT(' '), wxTOKEN_STRTOK);
-	while (tkz.HasMoreTokens()) {
-		if (!result.IsEmpty()) result << wxT(' ');
-		wxString word = tkz.GetNextToken();
-		if (keywords.Find(word) != wxNOT_FOUND) {
-		} else if (word.Left(4) == wxT("NEAR")) {
-		} else {
-			word = Lower(word);
-			size_t len = word.Len();
-			for (size_t i = 0; i < len; i++) {
-				if (word[i] == 0x0451) word[i] = 0x0435;
-			}
-			if (word.Right(1) == wxT('"')) {
-				word.insert(word.Len() - 1, wxT('*'));
-			} else {
-				word << wxT('*');
-			}
-		}
-		result << word;
-	}
-	wxSQLite3Statement::Bind(index, result);
-}
-
-//-----------------------------------------------------------------------------
 //  FbAggregateFunction
 //-----------------------------------------------------------------------------
 
@@ -306,7 +306,7 @@ void FbAggregateFunction::Finalize(wxSQLite3FunctionContext& ctx)
 }
 
 //-----------------------------------------------------------------------------
-//  wxSQLite3Collation
+//  FbSQLite3Collation
 //-----------------------------------------------------------------------------
 
 
@@ -417,16 +417,16 @@ int FbDatabase::NewId(const int iParam, int iIncrement)
 	int iValue = 0;
 	{
 		wxString sql = wxString::Format(wxT("SELECT value FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = PrepareStatement(sql);
+		FbSQLite3Statement stmt = PrepareStatement(sql);
 		stmt.Bind(1, iParam);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FbSQLite3ResultSet result = stmt.ExecuteQuery();
 		if (result.NextRow()) iValue = result.GetInt(0);
 	}
 
 	if (iIncrement) {
 		iValue += iIncrement;
 		wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(value,id)VALUES(?,?)"), table);
-		wxSQLite3Statement stmt = PrepareStatement(sql);
+		FbSQLite3Statement stmt = PrepareStatement(sql);
 		stmt.Bind(1, iValue);
 		stmt.Bind(2, iParam);
 		stmt.ExecuteUpdate();
@@ -439,9 +439,9 @@ wxString FbDatabase::GetText(int param)
 {
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
 	wxString sql = wxString::Format( wxT("SELECT text FROM %s WHERE id=?"), table);
-	wxSQLite3Statement stmt = PrepareStatement(sql);
+	FbSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, param);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetString(0) : wxString();
 }
 
@@ -449,7 +449,7 @@ void FbDatabase::SetText(int param, const wxString & text)
 {
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
 	wxString sql = wxString::Format(wxT("INSERT OR REPLACE INTO %s(id,text)VALUES(?,?)"), table);
-	wxSQLite3Statement stmt = PrepareStatement(sql);
+	FbSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, param);
 	stmt.Bind(2, text);
 	stmt.ExecuteUpdate();
@@ -459,7 +459,7 @@ void FbDatabase::AttachCommon()
 {
 	SetCollation(wxT("CYR"), &sm_collation);
 	wxString sql = wxT("ATTACH ? AS config");
-	wxSQLite3Statement stmt = PrepareStatement(sql);
+	FbSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, wxGetApp().GetLibFile());
 	stmt.ExecuteUpdate();
 }
@@ -467,7 +467,7 @@ void FbDatabase::AttachCommon()
 void FbDatabase::AttachConfig()
 {
 	wxString sql = wxT("ATTACH ? AS config");
-	wxSQLite3Statement stmt = PrepareStatement(sql);
+	FbSQLite3Statement stmt = PrepareStatement(sql);
 	stmt.Bind(1, GetConfigName());
 	stmt.ExecuteUpdate();
 }
@@ -485,33 +485,33 @@ void FbDatabase::JoinThread(FbThread * thread)
 
 wxString FbDatabase::Str(int id, const wxString & sql, const wxString & null)
 {
-	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	FbSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetString(0, null) : null;
 }
 
 wxString FbDatabase::Str(const wxString & id, const wxString & sql, const wxString & null)
 {
-	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	FbSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetString(0, null) : null;
 }
 
 int FbDatabase::Int(int id, const wxString & sql, int null)
 {
-	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	FbSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0, null) : null;
 }
 
 int FbDatabase::Int(const wxString & id, const wxString & sql, int null)
 {
-	wxSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
+	FbSQLite3Statement stmt = PrepareStatement(sql + wxT(" LIMIT 1"));
 	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	return result.NextRow() ? result.GetInt(0, null) : null;
 }
 
@@ -570,7 +570,7 @@ void FbMasterDatabase::SetVersion(int iValue)
 
 void FbMasterDatabase::UpgradeDatabase(int new_version)
 {
-	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
+	FbSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
 	int version = GetVersion();
 	while ( version < new_version ) {
 		version++;
@@ -609,7 +609,7 @@ void FbMainDatabase::Open(const wxString& filename, const wxString& key, int fla
 
 void FbMainDatabase::CreateDatabase()
 {
-	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
+	FbSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
 
 	/** TABLE authors **/
 	ExecuteUpdate(fbT("CREATE TABLE authors(id INTEGER PRIMARY KEY,letter,search_name,full_name,first_name,middle_name,last_name,newid,description)"));
@@ -649,46 +649,45 @@ void FbMainDatabase::CreateDatabase()
 
 void FbMainDatabase::DoUpgrade(int version)
 {
-	wxLogNull log;
    	switch (version) {
 
 		case 2: {
 		} break;
 
 		case 3: {
-			ExecuteUpdate(fbT("CREATE TABLE IF NOT EXISTS files(id_book INTEGER,id_archive INTEGER,file_name,file_path)"));
-			ExecuteUpdate(fbT("CREATE INDEX IF NOT EXISTS files_book ON files(id_book)"));
+			ExecuteSilent(fbT("CREATE TABLE IF NOT EXISTS files(id_book INTEGER,id_archive INTEGER,file_name,file_path)"));
+			ExecuteSilent(fbT("CREATE INDEX IF NOT EXISTS files_book ON files(id_book)"));
 		} break;
 
 		case 4: {
-			ExecuteUpdate(fbT("ALTER TABLE books ADD file_path TEXT"));
+			ExecuteSilent(fbT("ALTER TABLE books ADD file_path TEXT"));
 		} break;
 
 		case 5: {
-			ExecuteUpdate(fbT("ALTER TABLE books ADD md5sum CHAR(32)"));
-			ExecuteUpdate(fbT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
+			ExecuteSilent(fbT("ALTER TABLE books ADD md5sum CHAR(32)"));
+			ExecuteSilent(fbT("CREATE INDEX IF NOT EXISTS book_md5sum ON books(md5sum)"));
 		} break;
 
 		case 6: {
-			ExecuteUpdate(fbT("ALTER TABLE books ADD created INTEGER"));
-			ExecuteUpdate(fbT("CREATE INDEX IF NOT EXISTS book_created ON books(created)"));
+			ExecuteSilent(fbT("ALTER TABLE books ADD created INTEGER"));
+			ExecuteSilent(fbT("CREATE INDEX IF NOT EXISTS book_created ON books(created)"));
 		} break;
 
 		case 7: {
-			ExecuteUpdate(fbT("ALTER TABLE authors ADD number INTEGER"));
+			ExecuteSilent(fbT("ALTER TABLE authors ADD number INTEGER"));
 		} break;
 
 		case 8: {
-			ExecuteUpdate(fbT("ALTER TABLE sequences ADD number INTEGER"));
+			ExecuteSilent(fbT("ALTER TABLE sequences ADD number INTEGER"));
 		} break;
 
 		case 9: {
-			ExecuteUpdate(fbT("ALTER TABLE books ADD lang CHAR(2)"));
-			ExecuteUpdate(fbT("ALTER TABLE books ADD year INTEGER"));
+			ExecuteSilent(fbT("ALTER TABLE books ADD lang CHAR(2)"));
+			ExecuteSilent(fbT("ALTER TABLE books ADD year INTEGER"));
 		} break;
 
 		case 11: {
-			ExecuteUpdate(fbT("CREATE TABLE IF NOT EXISTS types(file_type varchar(99) PRIMARY KEY,command,convert)"));
+			ExecuteSilent(fbT("CREATE TABLE IF NOT EXISTS types(file_type varchar(99) PRIMARY KEY,command,convert)"));
 		} break;
 
 		case 12: {
@@ -720,7 +719,7 @@ void FbMainDatabase::CreateTableFTS(const wxString & name, const wxString & tabl
 void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 {
 	if ( !force && TableExists(wxT("fts_book_content")) ) return;
-	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
+	FbSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
 	CreateTableFTS(wxT("book"), wxT("books"), wxT("title),LOW(description"), wxT(",dscr"));
 	CreateTableFTS(wxT("auth"), wxT("authors"), wxT("full_name"));
 	CreateTableFTS(wxT("seqn"), wxT("sequences"), wxT("value"));
@@ -745,7 +744,7 @@ void FbConfigDatabase::Open()
 
 void FbConfigDatabase::CreateDatabase()
 {
-	wxSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
+	FbSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
 
 	/** TABLE params **/
 	ExecuteUpdate(fbT("CREATE TABLE config(id INTEGER PRIMARY KEY,value INTEGER,text)"));

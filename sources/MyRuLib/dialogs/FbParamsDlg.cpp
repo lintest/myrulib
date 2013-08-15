@@ -39,10 +39,10 @@ void * FbParamsDlg::LoadThread::Entry()
 	return NULL;
 }
 
-void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
+void FbParamsDlg::LoadThread::LoadTypes(FbSQLite3Database &database)
 {
 	wxString sql = GetCommandSQL(wxT("config"));
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
@@ -54,10 +54,10 @@ void FbParamsDlg::LoadThread::LoadTypes(wxSQLite3Database &database)
 	m_frame->AddPendingEvent(event);
 }
 
-void FbParamsDlg::LoadThread::LoadScripts(wxSQLite3Database &database)
+void FbParamsDlg::LoadThread::LoadScripts(FbSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, name, text FROM script ORDER BY id");
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
@@ -72,7 +72,7 @@ void FbParamsDlg::LoadThread::LoadScripts(wxSQLite3Database &database)
 
 IMPLEMENT_CLASS(FbParamsDlg::TypeData, FbModelData)
 
-FbParamsDlg::TypeData::TypeData(wxSQLite3ResultSet &result)
+FbParamsDlg::TypeData::TypeData(FbSQLite3ResultSet &result)
 	: m_type(result.GetString(0)), m_command(result.GetString(1)), m_modified(false)
 {
 }
@@ -93,7 +93,7 @@ wxString FbParamsDlg::TypeData::GetValue(FbModel & model, size_t col) const
 
 IMPLEMENT_CLASS(FbParamsDlg::ScriptData, FbModelData)
 
-FbParamsDlg::ScriptData::ScriptData(wxSQLite3ResultSet &result)
+FbParamsDlg::ScriptData::ScriptData(FbSQLite3ResultSet &result)
 	: m_code(result.GetInt(0)), m_name(result.GetString(1)), m_text(result.GetString(2)), m_modified(false)
 {
 }
@@ -1000,29 +1000,29 @@ void FbParamsDlg::SaveData()
 	SaveTypes(database);
 }
 
-void FbParamsDlg::DeleteTypes(wxSQLite3Database &database)
+void FbParamsDlg::DeleteTypes(FbSQLite3Database &database)
 {
 	size_t count = m_del_type.Count();
 	for (size_t i = 0; i < count; i++) {
 		wxString sql = wxT("DELETE FROM types WHERE file_type=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_del_type[i]);
 		stmt.ExecuteUpdate();
 	}
 }
 
-void FbParamsDlg::DeleteScripts(wxSQLite3Database &database)
+void FbParamsDlg::DeleteScripts(FbSQLite3Database &database)
 {
 	size_t count = m_del_scr.Count();
 	for (size_t i = 0; i < count; i++) {
 		wxString sql = wxT("DELETE FROM script WHERE id=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_del_scr[i]);
 		stmt.ExecuteUpdate();
 	}
 }
 
-void FbParamsDlg::SaveScripts(wxSQLite3Database &database)
+void FbParamsDlg::SaveScripts(FbSQLite3Database &database)
 {
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_SCRIPT_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
@@ -1037,7 +1037,7 @@ void FbParamsDlg::SaveScripts(wxSQLite3Database &database)
 		FbModelItem item = model->GetData(i);
 		ScriptData * data = wxDynamicCast(&item, ScriptData);
 		if (data && data->IsModified()) {
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, data->GetCode());
 			stmt.Bind(2, data->GetValue(*model, 0));
 			stmt.Bind(3, data->GetValue(*model, 1));
@@ -1046,7 +1046,7 @@ void FbParamsDlg::SaveScripts(wxSQLite3Database &database)
 	}
 }
 
-void FbParamsDlg::SaveTypes(wxSQLite3Database &database)
+void FbParamsDlg::SaveTypes(FbSQLite3Database &database)
 {
 	FbTreeViewCtrl * treeview = wxDynamicCast(FindWindow(ID_TYPE_LIST), FbTreeViewCtrl);
 	if (!treeview) return;
@@ -1061,7 +1061,7 @@ void FbParamsDlg::SaveTypes(wxSQLite3Database &database)
 		FbModelItem item = model->GetData(i);
 		TypeData * data = wxDynamicCast(&item, TypeData);
 		if (data && data->IsModified()) {
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, data->GetValue(*model, 0));
 			stmt.Bind(2, data->GetValue(*model, 1));
 			stmt.ExecuteUpdate();

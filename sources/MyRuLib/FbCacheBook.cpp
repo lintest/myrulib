@@ -12,11 +12,11 @@
 
 IMPLEMENT_CLASS(FbCacheBook, wxObject)
 
-FbCacheBook FbCacheBook::Get(int code, wxSQLite3Database & database)
+FbCacheBook FbCacheBook::Get(int code, FbSQLite3Database & database)
 {
-	wxSQLite3Statement stmt = database.PrepareStatement(GetSQL());
+	FbSQLite3Statement stmt = database.PrepareStatement(GetSQL());
 	stmt.Bind(1, code);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (result.NextRow())
 		return FbCacheBook(code, result);
 	else return 0;
@@ -84,7 +84,7 @@ wxString FbCacheBook::GetSQL()
 	");
 }
 
-FbCacheBook::FbCacheBook(int code, wxSQLite3ResultSet &result)
+FbCacheBook::FbCacheBook(int code, FbSQLite3ResultSet &result)
 	: m_code(code)
 	, m_name(result.GetString(0))
 	, m_auth(result.GetString(9))

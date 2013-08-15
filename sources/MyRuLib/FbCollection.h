@@ -31,7 +31,7 @@ WX_DECLARE_OBJARRAY(FbBookAuths, FbBookAuthsArray);
 class FbBookSeqns: public wxObject
 {
 	public:
-		FbBookSeqns(int code, wxSQLite3Database &database);
+		FbBookSeqns(int code, FbSQLite3Database &database);
 		int GetCode() const { return m_code; }
 		wxString operator[](size_t col) const;
 	private:
@@ -49,7 +49,7 @@ class FbParamData: public wxObject
 	public:
 		FbParamData(int val = 0, const wxString &str = wxEmptyString)
 			: m_int(val), m_str(str) {}
-		FbParamData & operator=(wxSQLite3ResultSet & result);
+		FbParamData & operator=(FbSQLite3ResultSet & result);
 	private:
 		int m_int;
 		wxString m_str;

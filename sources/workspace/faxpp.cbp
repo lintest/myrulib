@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="LinDebug">
-				<Option output="../../build/LinDebug/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/LinDebug/Faxpp" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/LinDebug/" />
 				<Option type="2" />
@@ -19,7 +19,7 @@
 				</Compiler>
 			</Target>
 			<Target title="LinRelease">
-				<Option output="../../build/LinRelease/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/LinRelease/Faxpp" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/LinRelease/" />
 				<Option type="2" />
@@ -34,7 +34,7 @@
 				</Linker>
 			</Target>
 			<Target title="WinDebug">
-				<Option output="../../build/WinDebug/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/WinDebug/Faxpp" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/WinDebug/" />
 				<Option type="2" />
@@ -47,7 +47,7 @@
 				</Compiler>
 			</Target>
 			<Target title="WinRelease">
-				<Option output="../../build/WinRelease/libFaxpp" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/WinRelease/Faxpp" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/WinRelease/" />
 				<Option type="2" />

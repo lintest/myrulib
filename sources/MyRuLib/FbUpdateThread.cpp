@@ -92,7 +92,7 @@ int FbUpdateItem::DoUpdate()
 {
 	{
 		wxString sql = wxT("ATTACH ? AS upd");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_dataname);
 		stmt.ExecuteUpdate();
 	}
@@ -106,7 +106,7 @@ int FbUpdateItem::DoUpdate()
 		return 0;
 	}
 
-	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_EXCLUSIVE);
+	FbSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	ExecDelete();
 	ExecInsert();
@@ -122,7 +122,7 @@ int FbUpdateItem::DoUpdate()
 void FbUpdateItem::CalcCount()
 {
 	wxString sql = wxT("SELECT COUNT(DISTINCT id) FROM upd.books");
-	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 	if (result.NextRow()) wxLogWarning(_("Loaded new %d books"), result.GetInt(0));
 }
 

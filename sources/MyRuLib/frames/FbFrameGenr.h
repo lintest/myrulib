@@ -8,7 +8,7 @@
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
 #include <wx/splitter.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbFrameBase.h"
 #include "FbBookEvent.h"
 #include "FbSmartPtr.h"

@@ -129,9 +129,9 @@ wxString FbViewData::GetComments(const FbViewContext &ctx, const FbCacheBook &bo
 	wxString sql = wxT("SELECT id, posted, caption, comment FROM comments WHERE md5sum=? ORDER BY id");
 
 	FbLocalDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, md5sum);
-	wxSQLite3ResultSet res = stmt.ExecuteQuery();
+	FbSQLite3ResultSet res = stmt.ExecuteQuery();
 
 	wxString html;
 	html += wxT("<TABLE>");

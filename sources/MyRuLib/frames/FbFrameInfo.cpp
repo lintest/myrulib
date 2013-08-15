@@ -98,7 +98,7 @@ void FbFrameInfoThread::WriteCount()
 
 	{
 		wxString sql = (wxT("SELECT COUNT(id), MIN(created), MAX(created), SUM(file_size)/1024/1024 FROM (SELECT DISTINCT id, created, file_size FROM books WHERE deleted IS NULL) AS books"));
-		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			min = GetDate(result.GetInt(1));
 			max = GetDate(result.GetInt(2));
@@ -111,7 +111,7 @@ void FbFrameInfoThread::WriteCount()
 
 	{
 		wxString sql = (wxT("SELECT COUNT(id) FROM authors WHERE id<>0"));
-		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		if (result.NextRow()) {
 			wxString count = F(result.GetInt64(0));
 			m_html << CreateRow(_("Authors count:"), count);
@@ -153,7 +153,7 @@ void FbFrameInfoThread::WriteTypes()
 			FROM (SELECT DISTINCT id, file_type, file_size FROM books WHERE deleted IS NULL) AS books \
 			GROUP BY file_type ORDER BY id DESC \
 		"));
-		wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 		while (result.NextRow()) {
 			const wxString cell = wxT("<TD align=right bgcolor=%s>%s</TD>");
 			m_html += wxT("<TR>");

@@ -3,7 +3,7 @@
 
 #include "controls/FbTreeModel.h"
 #include <wx/filename.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 
 class FbConvertArray;
 
@@ -47,9 +47,9 @@ class FbExportTreeContext
 {
 	public:
 		FbExportTreeContext(FbExportTreeModel * model);
-		wxFileName GetFilename(wxSQLite3ResultSet &result);
+		wxFileName GetFilename(FbSQLite3ResultSet &result);
 	private:
-		wxString Get(wxSQLite3ResultSet &result, const wxString &field);
+		wxString Get(FbSQLite3ResultSet &result, const wxString &field);
 		wxString Normalize(const wxString &filename, bool translit = false);
 	private:
 		bool m_translit_folder;

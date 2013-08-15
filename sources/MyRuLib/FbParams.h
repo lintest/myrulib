@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/arrimpl.cpp>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbDatabase.h"
 
 

@@ -187,11 +187,11 @@ void FbAuthorModifyDlg::DoModify()
 void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 {
 	FbCommonDatabase m_database;
-	wxSQLite3Transaction trans(&m_database);
+	FbSQLite3Transaction trans(&m_database);
 
 	{
 		wxString sql = wxT("UPDATE books SET id_author=?1 WHERE id_author=?2 AND NOT (id IN (SELECT id FROM books WHERE id_author=?1))");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, new_id);
 		stmt.Bind(2, old_id);
 		stmt.ExecuteUpdate();
@@ -199,21 +199,21 @@ void FbAuthorModifyDlg::ReplaceAuthor(int old_id, int new_id)
 
 	{
 		wxString sql = wxT("DELETE FROM books WHERE id_author=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
 		wxString sql = wxT("DELETE FROM authors WHERE id=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
 	}
 
 	{
 		wxString sql = wxT("DELETE FROM fts_auth WHERE docid=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, old_id);
 		stmt.ExecuteUpdate();
 	}
@@ -321,9 +321,9 @@ FbAuthorReplaceDlg::~FbAuthorReplaceDlg()
 bool FbAuthorReplaceDlg::Load()
 {
 	wxString sql = wxT("SELECT full_name, last_name FROM authors WHERE id=?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, m_id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 
 	if (result.NextRow()) {
 		m_Text->SetValue(result.GetAsString(0));

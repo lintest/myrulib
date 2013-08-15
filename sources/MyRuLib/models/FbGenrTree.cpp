@@ -40,7 +40,7 @@ bool FbGenrChildData::operator==(const FbMasterInfo & info) const
 
 IMPLEMENT_CLASS(FbGenrListData, FbModelData)
 
-FbGenrListData::FbGenrListData(wxSQLite3ResultSet &result)
+FbGenrListData::FbGenrListData(FbSQLite3ResultSet &result)
 	: m_code(result.GetString(0)), m_count(result.GetInt(1))
 {
 }
@@ -54,7 +54,7 @@ void * FbGenrListThread::Entry()
 	FbCommonDatabase database;
 	database.JoinThread(this);
 
-	wxSQLite3ResultSet result = database.ExecuteQuery(m_sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(m_sql);
 	if (!result.IsOk()) return NULL;
 	if (IsClosed()) return NULL;
 

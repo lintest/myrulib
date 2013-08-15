@@ -33,14 +33,14 @@ class FbAuthListThread : public FbFrameThread
 			: FbFrameThread(frame, filename), m_info(info), m_order(order) {}
 	protected:
 		virtual void * Entry();
-		void MakeModel(wxSQLite3ResultSet &result);
+		void MakeModel(FbSQLite3ResultSet &result);
 	private:
 		wxString GetJoin();
 		wxString GetOrder();
-		void DoAuthor(wxSQLite3Database &database);
-		void DoLetter(wxSQLite3Database &database);
-		void DoString(wxSQLite3Database &database);
-		void DoFullText(wxSQLite3Database &database);
+		void DoAuthor(FbSQLite3Database &database);
+		void DoLetter(FbSQLite3Database &database);
+		void DoString(FbSQLite3Database &database);
+		void DoFullText(FbSQLite3Database &database);
 		FbAuthListInfo m_info;
 		const int m_order;
 };
@@ -82,7 +82,7 @@ class FbAuthListModel: public FbListModel
 	private:
 		wxArrayInt m_items;
 		FbIntegerHash m_counter;
-		wxSQLite3Database m_database;
+		FbSQLite3Database m_database;
 		DECLARE_CLASS(FbAuthListModel);
 };
 

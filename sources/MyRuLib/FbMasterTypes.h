@@ -20,11 +20,11 @@ class FbMasterAuthInfo: public FbMasterInfoBase
 			return data && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
+		virtual wxString GetTreeSQL(FbSQLite3Database &database) const;
 		virtual wxString GetOrderTable() const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
-		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, FbSQLite3ResultSet &result) const;
 	private:
 		int m_id;
 		DECLARE_CLASS(FbMasterAuthInfo);
@@ -46,10 +46,10 @@ class FbMasterSeqnInfo: public FbMasterInfoBase
 			return data && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
-		virtual wxString GetTreeSQL(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
+		virtual wxString GetTreeSQL(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
-		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const;
+		virtual void MakeTree(wxEvtHandler *owner, FbThread * thread, FbSQLite3ResultSet &result) const;
 	private:
 		int m_id;
 		DECLARE_CLASS(FbMasterSeqnInfo);
@@ -71,7 +71,7 @@ class FbMasterGenrInfo: public FbMasterInfoBase
 			return data && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		const wxString m_id;
@@ -100,7 +100,7 @@ class FbMasterDownInfo: public FbMasterInfoBase
 		}
 		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 		void * GetDownloads(wxEvtHandler * owner, FbThread * thread);
 	private:
@@ -124,7 +124,7 @@ class FbMasterDateInfo: public FbMasterInfoBase
 			return data && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		int m_id;
@@ -147,7 +147,7 @@ class FbMasterFldrInfo: public FbMasterInfoBase
 			return data && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		int m_id;
@@ -167,7 +167,7 @@ class FbMasterCommInfo: public FbMasterInfoBase
 			return IsSameAs(info);
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		DECLARE_CLASS(FbMasterCommInfo);
@@ -189,7 +189,7 @@ class FbMasterRateInfo: public FbMasterInfoBase
 			return data && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		int m_id;
@@ -211,7 +211,7 @@ class FbMasterFindInfo: public FbMasterInfoBase
 		}
 	protected:
 		virtual void * Execute(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 		bool DoFind(wxEvtHandler * owner, FbThread * thread, const FbFilterObj &filter);
 	private:
@@ -238,7 +238,7 @@ class FbMasterClssInfo: public FbMasterInfoBase
 			return data && data->m_sql == m_sql && data->m_id == m_id;
 		}
 	protected:
-		virtual wxString GetWhere(wxSQLite3Database &database) const;
+		virtual wxString GetWhere(FbSQLite3Database &database) const;
 		virtual void Bind(FbSQLite3Statement  &stmt) const;
 	private:
 		const wxString m_sql;

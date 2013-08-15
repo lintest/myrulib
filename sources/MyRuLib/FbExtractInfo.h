@@ -4,12 +4,12 @@
 #include <wx/wx.h>
 #include <wx/filename.h>
 #include <wx/arrimpl.cpp>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 
 class FbExtractItem
 {
 	public:
-		FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext, const wxString & md5);
+		FbExtractItem(FbSQLite3ResultSet & result, int id, const wxString & ext, const wxString & md5);
 		FbExtractItem(const FbExtractItem & item);
 	public:
 		wxString FileName(bool bInfoOnly) const;
@@ -40,7 +40,7 @@ class FbExtractArray
 	: public FbExtractArrayBase
 {
 	public:
-		FbExtractArray(wxSQLite3Database & database, const int id);
+		FbExtractArray(FbSQLite3Database & database, const int id);
 		int GetId() const {return m_id; };
 		void DeleteFiles(const wxString &basepath) const;
 	private:

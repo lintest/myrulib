@@ -46,13 +46,13 @@ WX_DEFINE_OBJARRAY(FbBookAuthsArray);
 
 IMPLEMENT_CLASS(FbBookSeqns, wxObject)
 
-FbBookSeqns::FbBookSeqns(int code, wxSQLite3Database &database)
+FbBookSeqns::FbBookSeqns(int code, FbSQLite3Database &database)
 	: m_code(code)
 {
 	wxString sql = wxT("SELECT AGGREGATE(DISTINCT value), MAX(bookseq.number) FROM bookseq LEFT JOIN sequences ON id_seq=id WHERE id_book=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, code);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (result.NextRow()) {
 		m_name = result.GetString(0);
 		m_numb = result.GetInt(1);
@@ -77,7 +77,7 @@ WX_DEFINE_OBJARRAY(FbBookSeqnsArray);
 
 IMPLEMENT_CLASS(FbParamData, wxObject)
 
-FbParamData & FbParamData::operator=(wxSQLite3ResultSet & result)
+FbParamData & FbParamData::operator=(FbSQLite3ResultSet & result)
 {
 	m_int = result.GetInt(1);
 	m_str = result.GetString(2);
@@ -143,7 +143,7 @@ wxString FbCollection::GetSeqn(int code, size_t col)
 		return collection->m_seqns[code];
 	} else {
 		wxString sql = wxT("SELECT value FROM sequences WHERE id="); sql << code;
-		wxSQLite3ResultSet result = collection->m_database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = collection->m_database.ExecuteQuery(sql);
 		wxString name = result.NextRow() ? result.GetString(0).Trim(true) : wxString();
 		collection->m_seqns[code] = name;
 		return name;
@@ -162,7 +162,7 @@ wxString FbCollection::GetAuth(int code, size_t col)
 		return collection->m_auths[code];
 	} else {
 		wxString sql = wxT("SELECT full_name, number FROM authors WHERE id="); sql << code;
-		wxSQLite3ResultSet result = collection->m_database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = collection->m_database.ExecuteQuery(sql);
 		wxString name = result.NextRow() ? result.GetString(0).Trim(true) : wxString();
 		collection->m_auths[code] = name;
 		return name;
@@ -428,7 +428,7 @@ void FbCollection::LoadConfig()
 	FbConfigDatabase database;
 	database.Open();
 	wxString sql = wxT("SELECT id, value, text FROM config WHERE id>=100");
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		int id = result.GetInt(0);
 		sm_params[id] = result;
@@ -439,7 +439,7 @@ void FbCollection::LoadConfig()
 void FbCollection::LoadParams()
 {
 	wxString sql = wxT("SELECT id, value, text FROM params WHERE id<100");
-	wxSQLite3ResultSet result = m_database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = m_database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		int id = result.GetInt(0);
 		m_params[id] = result;
@@ -503,12 +503,12 @@ void FbCollection::SetParamInt(int param, int value)
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
 	if (value == FbParamItem::DefaultInt(param)) {
 		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
 		stmt.ExecuteUpdate();
 	} else {
 		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (id, value) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
 		stmt.Bind(2, value);
 		stmt.ExecuteUpdate();
@@ -531,12 +531,12 @@ void FbCollection::SetParamStr(int param, const wxString &value)
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
 	if (value == FbParamItem::DefaultStr(param)) {
 		wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
 		stmt.ExecuteUpdate();
 	} else {
 		wxString sql = wxString::Format( wxT("INSERT OR REPLACE INTO %s (id, text) VALUES (?,?)"), table);
-		wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 		stmt.Bind(1, param);
 		stmt.Bind(2, value);
 		stmt.ExecuteUpdate();
@@ -590,7 +590,7 @@ void FbCollection::ResetParam(int param)
 
 	const wxChar * table = param < 100 ? wxT("params") : wxT("config");
 	wxString sql = wxString::Format( wxT("DELETE FROM %s WHERE id=?"), table);
-	wxSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = collection->m_database.PrepareStatement(sql);
 	stmt.Bind(1, param);
 	stmt.ExecuteUpdate();
 }
@@ -612,7 +612,7 @@ void FbCollection::GetDown(wxArrayInt & items)
 		FbCommonDatabase database;
 		database.AttachConfig();
 		wxString sql = wxT("SELECT DISTINCT id,download FROM states INNER JOIN books ON books.md5sum=states.md5sum WHERE download<0 ORDER BY 2 DESC");
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 		while (result.NextRow()) downs->Add(result.GetInt(0));
 	}
 	WX_APPEND_ARRAY(items, *downs);

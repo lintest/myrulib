@@ -2,9 +2,9 @@
 #define __FBIMPORTTHREAD_H__
 
 #include <wx/wx.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include <wx/zipstrm.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbThread.h"
 #include "FbDatabase.h"
 

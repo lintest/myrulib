@@ -122,7 +122,7 @@ void * FbFilterTreeThread::Entry()
 	FbCommonDatabase database;
 	database.JoinThread(this);
 	wxString sql = wxT("SELECT DISTINCT file_type, lang FROM books");
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return NULL;
 	while (result.NextRow()) {
 		Add(types, result.GetString(0));

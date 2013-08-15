@@ -2,7 +2,7 @@
 #define FBGENRES_H
 
 #include <wx/wx.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "controls/FbTreeModel.h"
 #include "FbStringHash.h"
 

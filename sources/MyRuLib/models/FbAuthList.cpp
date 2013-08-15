@@ -34,19 +34,19 @@ void * FbAuthListThread::Entry()
 	return NULL;
 }
 
-void FbAuthListThread::DoLetter(wxSQLite3Database &database)
+void FbAuthListThread::DoLetter(FbSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name FROM authors");
 	sql << GetJoin();
 	if (m_info.m_letter) sql << wxT("WHERE letter=?");
 	sql << GetOrder();
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	if (m_info.m_letter) stmt.Bind(1, (wxString)m_info.m_letter);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
 }
 
-void FbAuthListThread::DoString(wxSQLite3Database &database)
+void FbAuthListThread::DoString(FbSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT id, full_name FROM authors");
 	sql << GetJoin();
@@ -54,11 +54,11 @@ void FbAuthListThread::DoString(wxSQLite3Database &database)
 	sql << GetOrder();
 	FbSearchFunction search(m_info.m_string);
 	database.CreateFunction(wxT("SEARCH"), 1, search);
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	MakeModel(result);
 }
 
-void FbAuthListThread::DoFullText(wxSQLite3Database &database)
+void FbAuthListThread::DoFullText(FbSQLite3Database &database)
 {
 	wxString sql = wxT("SELECT docid, full_name FROM fts_auth INNER JOIN authors ON id=docid");
 	sql << GetJoin();
@@ -66,11 +66,11 @@ void FbAuthListThread::DoFullText(wxSQLite3Database &database)
 	sql << GetOrder();
 	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.FTS(1, m_info.m_string);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	MakeModel(result);
 }
 
-void FbAuthListThread::MakeModel(wxSQLite3ResultSet &result)
+void FbAuthListThread::MakeModel(FbSQLite3ResultSet &result)
 {
 	if (!result.IsOk()) return;
 	wxWindowID id = ID_MODEL_CREATE;
@@ -204,7 +204,7 @@ int FbAuthListModel::GetCount(int code)
 }
 
 void FbAuthListModel::SetCounter(const wxString & filename)
-{ 
-	if (!filename.IsEmpty()) m_database.Open(filename); 
-	m_counter.clear(); 
+{
+	if (!filename.IsEmpty()) m_database.Open(filename);
+	m_counter.clear();
 }

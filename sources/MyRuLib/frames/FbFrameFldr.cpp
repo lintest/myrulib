@@ -68,7 +68,7 @@ void FbFrameFldr::FillFolders(const int current)
 
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
 	FbLocalDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		int code = result.GetInt(0);
 		wxString name = result.GetString(1);
@@ -124,7 +124,7 @@ void FbFrameFldr::OnFolderAppend(wxCommandEvent & event)
 	FbLocalDatabase database;
 	id = database.NewId(FB_NEW_FOLDER);
 	wxString sql = wxT("INSERT INTO folders(value,id) VALUES(?,?)");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, name);
 	stmt.Bind(2, id);
 	bool ok = stmt.ExecuteUpdate();
@@ -152,7 +152,7 @@ void FbFrameFldr::OnFolderModify(wxCommandEvent & event)
 
 	FbLocalDatabase database;
 	wxString sql = wxT("UPDATE folders SET value=? WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, name);
 	stmt.Bind(2, data->GetCode());
 	bool ok = stmt.ExecuteUpdate();
@@ -179,7 +179,7 @@ void FbFrameFldr::OnFolderDelete(wxCommandEvent & event)
 
 	FbLocalDatabase database;
 	wxString sql = wxT("DELETE FROM folders WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, data->GetCode());
 	bool ok = stmt.ExecuteUpdate();
 

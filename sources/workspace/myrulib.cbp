@@ -401,6 +401,7 @@
 			<Option target="WinRelease" />
 		</Unit>
 		<Unit filename="../MyRuLib/sha1/sha1.h" />
+		<Unit filename="../MyRuLib/wx/FbSQLite3.h" />
 		<Unit filename="../MyRuLib/wx/base64.cpp" />
 		<Unit filename="../MyRuLib/wx/base64.h" />
 		<Extensions>

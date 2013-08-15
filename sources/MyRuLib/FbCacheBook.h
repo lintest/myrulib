@@ -2,14 +2,14 @@
 #define __FBCACHEBOOK_H__
 
 #include <wx/wx.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 
 class FbCacheBook: public wxObject
 {
 	public:
-		static FbCacheBook Get(int code, wxSQLite3Database & database);
+		static FbCacheBook Get(int code, FbSQLite3Database & database);
 		FbCacheBook(int code = 0);
-		FbCacheBook(int code, wxSQLite3ResultSet &result);
+		FbCacheBook(int code, FbSQLite3ResultSet &result);
 		FbCacheBook(const FbCacheBook &book);
 		FbCacheBook & operator =(const FbCacheBook &book);
 		operator bool() const { return m_code; }

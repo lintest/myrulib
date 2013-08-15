@@ -11,7 +11,7 @@ class FbFrameFind : public FbFrameBase
 		virtual void CreateColumns() {}
 	private:
 		void CreateBookInfo();
-		void FillBooks(wxSQLite3ResultSet & result, const wxString &caption);
+		void FillBooks(FbSQLite3ResultSet & result, const wxString &caption);
 	private:
 		FbMasterInfo m_info;
 		wxString m_title;

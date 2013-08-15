@@ -7,7 +7,7 @@ void * FbGenreThread::Entry()
 {
 	FbCommonDatabase database;
 	database.JoinThread(this);
-	wxSQLite3Transaction trans(&database, WXSQLITE_TRANSACTION_EXCLUSIVE);
+	FbSQLite3Transaction trans(&database, WXSQLITE_TRANSACTION_EXCLUSIVE);
 
 	wxString msg = _("Rebuild the list of genres");
 
@@ -21,17 +21,17 @@ void * FbGenreThread::Entry()
 
 	int pos = 0;
 	wxString sql = wxT("SELECT id, genres FROM books");
-	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet res = database.ExecuteQuery(sql);
 	while (res.NextRow()) {
 		int id = res.GetInt(0);
 		wxString genres = res.GetString(1);
 		int len = genres.Len();
 		for (int i = 0; i < len; i+=2) {
 			wxString sql = wxT("INSERT INTO genres(id_book, id_genre) VALUES(?,?)");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, id);
 			stmt.Bind(2, genres.Mid(i, 2));
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			FbSQLite3ResultSet result = stmt.ExecuteQuery();
 		}
 		FbProgressEvent(ID_PROGRESS_UPDATE, msg, ++pos * 1000 / count).Post();
 	}

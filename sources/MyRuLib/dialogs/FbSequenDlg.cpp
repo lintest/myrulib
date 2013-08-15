@@ -60,7 +60,7 @@ int FbSequenDlg::Find()
 int FbSequenDlg::DoAppend()
 {
 	wxString sql = wxT("INSERT INTO sequences(value, id) VALUES (?,?)");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	m_id = - m_database.NewId(DB_NEW_SEQUENCE);
 	stmt.Bind(1, GetValue());
 	stmt.Bind(2, m_id);
@@ -71,7 +71,7 @@ int FbSequenDlg::DoAppend()
 int FbSequenDlg::DoModify()
 {
 	wxString sql = wxT("UPDATE sequences SET value=? WHERE id=?");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, GetValue());
 	stmt.Bind(2, m_id);
 	stmt.ExecuteUpdate();
@@ -82,23 +82,23 @@ int FbSequenDlg::DoModify()
 
 int FbSequenDlg::DoReplace()
 {
-	wxSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_DEFERRED);
+	FbSQLite3Transaction trans(&m_database, WXSQLITE_TRANSACTION_DEFERRED);
 	{
 		wxString sql = wxT("UPDATE bookseq SET id_seq=? WHERE id_seq=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_exists);
 		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
 	}
 	{
 		wxString sql = wxT("DELETE FROM sequences WHERE id=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		stmt.ExecuteUpdate();
 	}
 	{
 		wxString sql = wxT("DELETE FROM fts_seqn WHERE docid=?");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_id);
 		stmt.ExecuteUpdate();
 	}

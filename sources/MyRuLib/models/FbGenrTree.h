@@ -4,12 +4,12 @@
 #include "controls/FbTreeModel.h"
 #include "FbFrameThread.h"
 
-class wxSQLite3ResultSet;
+class FbSQLite3ResultSet;
 
 class FbGenrListData: public FbModelData
 {
 	public:
-		FbGenrListData(wxSQLite3ResultSet & result);
+		FbGenrListData(FbSQLite3ResultSet & result);
 	private:
 		wxString m_code;
 		int m_count;
@@ -62,7 +62,7 @@ class FbGenrListThread: public FbFrameThread
 			: FbFrameThread(frame, wxEmptyString) {}
 	protected:
 		virtual void * Entry();
-		virtual void MakeModel(wxSQLite3ResultSet &result) {}
+		virtual void MakeModel(FbSQLite3ResultSet &result) {}
 };
 
 #endif // __FBGENRTREE_H__

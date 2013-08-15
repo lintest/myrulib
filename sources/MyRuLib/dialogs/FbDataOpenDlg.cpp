@@ -1,6 +1,6 @@
 #include "FbDataOpenDlg.h"
 #include <wx/artprov.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbDataPath.h"
 #include "FbLogoBitmap.h"
 #include "FbDatabase.h"
@@ -197,7 +197,7 @@ void FbDataOpenDlg::UpdateFolder()
 		return;
 	}
 
-	wxSQLite3Database database;
+	FbSQLite3Database database;
 	database.Open(filename.GetFullPath(), wxEmptyString, WXSQLITE_OPEN_READWRITE);
 	if (!database.IsOpen()) {
 		m_folder.Clear();
@@ -206,7 +206,7 @@ void FbDataOpenDlg::UpdateFolder()
 
 	wxString text;
 	wxString sql = wxT("SELECT text FROM params WHERE id="); sql << DB_LIBRARY_DIR;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (result.NextRow()) text = result.GetString(0);
 
 	if (text.IsEmpty()) {

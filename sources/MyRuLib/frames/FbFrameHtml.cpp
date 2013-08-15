@@ -154,7 +154,7 @@ void FbFrameHtml::DoSubmit()
 
 	FbLocalDatabase database;
 	int key = database.NewId(FB_NEW_COMMENT);
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, key);
 	stmt.Bind(2, m_md5sum);
 	stmt.Bind(3, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
@@ -200,7 +200,7 @@ void FbFrameHtml::DoModify()
 	wxString sql = wxT("UPDATE comments SET posted=?, caption=?, comment=? WHERE id=?");
 
 	FbLocalDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, wxDateTime::Now().FormatISODate() + wxT(" ") + wxDateTime::Now().FormatISOTime());
 	stmt.Bind(2, caption);
 	stmt.Bind(3, comment);
@@ -234,7 +234,7 @@ void FbFrameHtml::ModifyLink(const wxString &key)
 {
 	FbLocalDatabase database;
 	wxString sql = wxT("SELECT id, caption, comment FROM comments WHERE id=") + key;
-	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet res = database.ExecuteQuery(sql);
 	if (res.NextRow()) {
 		m_key = res.GetString(0);
 		m_Caption.SetValue( res.GetString(1) );

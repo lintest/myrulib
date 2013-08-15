@@ -267,7 +267,7 @@ FbModel * FbGenres::CreateModel(const wxString &code)
 
 	FbParentData * parent = new FbGenrParentData(*model, root, wxEmptyString, _("Other"));
 	new FbGenrChildData(*model, parent, wxEmptyString, _("No genre"));
-	if (not_found) model->m_position = model->GetRowCount(); 
+	if (not_found) model->m_position = model->GetRowCount();
 
 	return model;
 }

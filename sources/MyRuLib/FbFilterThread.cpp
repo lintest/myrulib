@@ -19,11 +19,11 @@ bool FbFilterThread::Execute()
 
 	FbProgressEvent(ID_PROGRESS_PULSE, _("Create filter")).Post(m_owner);
 
-	wxSQLite3Statement stmt = database.PrepareStatement(wxT("ATTACH ? AS f"));
+	FbSQLite3Statement stmt = database.PrepareStatement(wxT("ATTACH ? AS f"));
 	stmt.Bind(1, m_tempfile);
 	stmt.ExecuteUpdate();
 
-	wxSQLite3Transaction trans(&database);
+	FbSQLite3Transaction trans(&database);
 	database.JoinThread(this);
 
 	wxArrayString sql;

@@ -141,7 +141,7 @@ void FbExportDlg::LoadFormats()
 
 	wxString sql = wxT("SELECT id, name FROM script ORDER BY id");
 	FbLocalDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while ( result.NextRow() ) {
 		int code = result.GetInt(0);
 		wxString name = _("filename"); name << wxT('.') << result.GetString(1);

@@ -88,7 +88,7 @@ int FbImportZip::Save(bool progress)
 
 	{
 		wxLongLong count = m_zip.GetTotalEntries();
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_filename);
 		stmt.Bind(2, m_filepath);
 		stmt.Bind(3, (wxLongLong)m_filesize);
@@ -415,7 +415,7 @@ bool FbImportBook::AppendBook()
 		}
 		prior = author;
 		wxString sql = wxT("INSERT INTO books(id,id_archive,id_author,title,genres,file_name,file_path,file_size,file_type,lang,description,created,md5sum) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, m_archive);
 		stmt.Bind(3, author);
@@ -436,7 +436,7 @@ bool FbImportBook::AppendBook()
 	for (size_t i = 0; i < sequences.Count(); i++) {
 		const SequenceItem & sequence = sequences[i];
 		wxString sql = wxT("INSERT INTO bookseq(id_book,id_seq,number) VALUES (?,?,?)");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, id_book);
 		stmt.Bind(2, sequence.GetId());
 		stmt.Bind(3, sequence.GetNumber());
@@ -445,7 +445,7 @@ bool FbImportBook::AppendBook()
 
 	{
 		wxString sql = wxT("INSERT INTO fts_book(content,docid) VALUES(LOW(?),?)");
-		wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 		stmt.Bind(1, m_parser->m_title);
 		stmt.Bind(2, id_book);
 		ok = stmt.ExecuteUpdate() && ok;
@@ -456,7 +456,7 @@ bool FbImportBook::AppendBook()
 		size_t count = genres.Length() / 2;
 		for (size_t i = 0; i < count; i++) {
 			wxString sql = wxT("INSERT INTO genres(id_book, id_genre) VALUES(?,?)");
-			wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 			stmt.Bind(1, id_book);
 			stmt.Bind(2, genres.Mid(i*2, 2));
 			ok = stmt.ExecuteUpdate() && ok;
@@ -468,10 +468,10 @@ bool FbImportBook::AppendBook()
 bool FbImportBook::AppendFile(int id_book)
 {
 	wxString sql = wxT("SELECT file_name FROM books WHERE id=?1 AND id_archive=?2 UNION SELECT file_name FROM files WHERE id_book=?1 AND id_archive=?2");
-	wxSQLite3Statement stmt = m_database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = m_database.PrepareStatement(sql);
 	stmt.Bind(1, id_book);
 	stmt.Bind(2, m_archive);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	while (result.NextRow()) {
 		if (result.GetString(0) == m_filename) {
 			wxLogWarning(_("File already exists %s"), m_message.c_str());

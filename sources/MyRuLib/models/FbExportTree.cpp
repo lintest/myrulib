@@ -234,7 +234,7 @@ wxString FbExportTreeContext::Normalize(const wxString &filename, bool translit)
 	return newname;
 }
 
-wxString FbExportTreeContext::Get(wxSQLite3ResultSet &result, const wxString &field)
+wxString FbExportTreeContext::Get(FbSQLite3ResultSet &result, const wxString &field)
 {
 	wxString res;
 	wxString value = result.GetString(field);
@@ -252,7 +252,7 @@ wxString FbExportTreeContext::Get(wxSQLite3ResultSet &result, const wxString &fi
 	return res;
 }
 
-wxFileName FbExportTreeContext::GetFilename(wxSQLite3ResultSet &result)
+wxFileName FbExportTreeContext::GetFilename(FbSQLite3ResultSet &result)
 {
 	wxString res;
 	bool skip = false;
@@ -385,7 +385,7 @@ void FbExportTreeModel::Create()
 	FbSortedArrayInt items(FbArrayEvent::CompareInt);
 
 	FbCommonDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		int book = result.GetInt(0);
 		int size = result.GetInt(1);

@@ -21,11 +21,11 @@ FbFrameDatabase::FbFrameDatabase(FbThread * thread, wxString &filename)
 //  FbFrameThread
 //-----------------------------------------------------------------------------
 
-int FbFrameThread::GetCount(wxSQLite3Database &database, int code)
+int FbFrameThread::GetCount(FbSQLite3Database &database, int code)
 {
 	if (!database.IsOpen()) return wxNOT_FOUND;
 	wxString sql = wxT("SELECT num FROM numb WHERE key="); sql << code;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	return result.NextRow() ? result.GetInt(0) : 0;
 }
 
@@ -34,7 +34,7 @@ void FbFrameThread::SetCountSQL(const wxString &sql, const FbFilterObj &filter)
 	m_sql = wxString::Format(sql, filter.GetFilterSQL().c_str());
 }
 
-void FbFrameThread::CreateCounter(wxSQLite3Database &database, const wxString &sql)
+void FbFrameThread::CreateCounter(FbSQLite3Database &database, const wxString &sql)
 {
 	if (IsClosed()) return;
 	database.ExecuteUpdate(wxT("CREATE TABLE numb(key INTEGER PRIMARY KEY, num INTEGER)"));

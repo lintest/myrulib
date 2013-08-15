@@ -22,7 +22,7 @@ class AuthorItem
 		wxString last;
 	private:
 		void SetNames();
-		void Bind(wxSQLite3Statement &stmt, int param, const wxString &value);
+		void Bind(FbSQLite3Statement &stmt, int param, const wxString &value);
 	private:
 		int m_id;
 };

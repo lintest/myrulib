@@ -5,7 +5,7 @@
 #include <wx/combo.h>
 #include <wx/checkbox.h>
 #include <wx/datectrl.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbConst.h"
 #include "FbBookEvent.h"
 #include "FbThread.h"
@@ -34,20 +34,20 @@ class FbTitleDlg : public FbDialog
 		class AuthSizer : public wxBoxSizer
 		{
 			public:
-				AuthSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &ids);
+				AuthSizer(wxWindow* parent, FbSQLite3Database &database, const wxString &ids);
 				void Get(wxArrayInt &list, wxString &text);
 		};
 
 		class SeqnSizer : public wxBoxSizer
 		{
 			public:
-				SeqnSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql);
+				SeqnSizer(wxWindow* parent, FbSQLite3Database &database, const wxString &sql);
 		};
 
 		class GenrSizer : public wxBoxSizer
 		{
 			public:
-				GenrSizer(wxWindow* parent, wxSQLite3Database &database, const wxString &sql);
+				GenrSizer(wxWindow* parent, FbSQLite3Database &database, const wxString &sql);
 		};
 
 		class TitlePanel: public wxScrolledWindow
@@ -55,8 +55,8 @@ class FbTitleDlg : public FbDialog
 			public:
 				TitlePanel( wxWindow* parent);
 				void GetAuths(wxArrayInt &list, wxString &text);
-				void SaveSeqn(int book, wxSQLite3Database &database);
-				void SaveGenr(int book, wxSQLite3Database &database);
+				void SaveSeqn(int book, FbSQLite3Database &database);
+				void SaveGenr(int book, FbSQLite3Database &database);
 				void GetData(BookData & data);
 				wxString GetGenr();
 			protected:
@@ -78,7 +78,7 @@ class FbTitleDlg : public FbDialog
 		class DscrPanel: public wxPanel
 		{
 			public:
-				DscrPanel( wxWindow* parent, int book, wxSQLite3ResultSet &result );
+				DscrPanel( wxWindow* parent, int book, FbSQLite3ResultSet &result );
 				wxString GetValue() { return m_text.GetValue(); }
 			private:
 				wxTextCtrl m_text;
@@ -188,15 +188,15 @@ private:
 	class MainPanel: public TitlePanel
 	{
 	public:
-		MainPanel(wxWindow* parent, int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+		MainPanel(wxWindow* parent, int book, FbSQLite3Database &database, FbSQLite3ResultSet &result);
 	};
 
 public:
 	static bool Execute(int book);
-	FbSingleTitleDlg(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+	FbSingleTitleDlg(int book, FbSQLite3Database &database, FbSQLite3ResultSet &result);
 
 private:
-	void Save(int book, wxSQLite3Database &database, wxSQLite3ResultSet &result);
+	void Save(int book, FbSQLite3Database &database, FbSQLite3ResultSet &result);
 
 private:
 	wxNotebook * m_notebook;
@@ -210,7 +210,7 @@ protected:
 	class MainPanel: public TitlePanel
 	{
 	public:
-		MainPanel(wxWindow* parent, const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
+		MainPanel(wxWindow* parent, const wxArrayInt &items, const wxString &codes, FbSQLite3Database &database);
 	private:
 		wxCheckBox * cb_auth;
 		wxCheckBox * cb_seqn;
@@ -219,8 +219,8 @@ protected:
 
 public:
 	static bool Execute(const wxArrayInt &items);
-	FbGroupTitleDlg(const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
-	void Save(const wxArrayInt &items, const wxString &codes, wxSQLite3Database &database);
+	FbGroupTitleDlg(const wxArrayInt &items, const wxString &codes, FbSQLite3Database &database);
+	void Save(const wxArrayInt &items, const wxString &codes, FbSQLite3Database &database);
 
 private:
 	static wxString GetCodes(const wxArrayInt &items);

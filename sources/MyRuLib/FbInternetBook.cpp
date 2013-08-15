@@ -24,18 +24,18 @@ wxString FbInternetBook::GetURL(const int id, const wxString& md5sum)
 		wxChar ch = addr[i];
 		if (param) {
 			switch (ch) {
-				case wxT('h'): 
-					result += FbParams(DB_DOWNLOAD_HOST).Str(); 
+				case wxT('h'):
+					result += FbParams(DB_DOWNLOAD_HOST).Str();
 					break;
-				case wxT('i'): 
-				case wxT('n'): 
-					result << id; 
+				case wxT('i'):
+				case wxT('n'):
+					result << id;
 					break;
-				case wxT('m'): 
-				case wxT('s'): 
-					result += md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum; 
+				case wxT('m'):
+				case wxT('s'):
+					result += md5sum.IsEmpty() ? FbCommonDatabase().GetMd5(id) : md5sum;
 					break;
-				default: 
+				default:
 					result += ch;
 			}
 			param = false;
@@ -114,9 +114,9 @@ FbInternetBook::FbInternetBook(FbDownloader * owner, const wxString& md5sum)
 	wxString sql = wxT("SELECT id, file_type FROM books WHERE md5sum=? AND id>0");
 
 	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, md5sum);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	if ( result.NextRow() ) {
 		m_id = result.GetInt(0);
 		m_filetype = result.GetString(1);
@@ -183,7 +183,7 @@ bool FbInternetBook::CheckFile()
 	md5_starts( &md5 );
 	while (true) {
 		size_t count = in.Read(buf, BUFSIZE).LastRead();
-		if ( count == 0) break; 
+		if ( count == 0) break;
 		md5_update( &md5, buf, (int) count );
 		if ( pos == 0 && count > 1 && memcmp(buf, "PK", 2) == 0) zipped = true;
 		pos += count;
@@ -253,7 +253,7 @@ void FbInternetBook::SaveFile(const bool success)
 
 	int code = success ? FbDateTime::Today().Code() : 1;
 	FbLocalDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, code);
 	stmt.Bind(2, m_md5sum);
 	stmt.ExecuteUpdate();

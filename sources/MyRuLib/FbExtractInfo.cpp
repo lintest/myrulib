@@ -9,7 +9,7 @@
 
 WX_DEFINE_OBJARRAY(FbExtractArrayBase);
 
-FbExtractItem::FbExtractItem(wxSQLite3ResultSet & result, int id, const wxString & ext, const wxString & md5):
+FbExtractItem::FbExtractItem(FbSQLite3ResultSet & result, int id, const wxString & ext, const wxString & md5):
 	id_book(id),
 	id_archive(result.GetInt(wxT("id_archive"))),
 	book_name(result.GetString(wxT("file_name"))),
@@ -149,7 +149,7 @@ wxString FbExtractItem::GetURL() const
 	return id_archive ? zip_name : book_name;
 }
 
-FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
+FbExtractArray::FbExtractArray(FbSQLite3Database & database, const int id)
 	:FbExtractArrayBase(), m_id(id)
 {
 	{
@@ -158,10 +158,10 @@ FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 			SELECT DISTINCT 1 AS file, id_book, id_archive, file_name, file_path, NULL, NULL FROM files WHERE id_book=? \
 			ORDER BY file \
 		");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, id);
 		stmt.Bind(2, id);
-		wxSQLite3ResultSet result = stmt.ExecuteQuery();
+		FbSQLite3ResultSet result = stmt.ExecuteQuery();
 		wxString filetype;
 		wxString md5sum;
 		while ( result.NextRow() ) {
@@ -176,9 +176,9 @@ FbExtractArray::FbExtractArray(wxSQLite3Database & database, const int id)
 		for (size_t i = 0; i<Count(); i++) {
 			FbExtractItem & item = Item(i);
 			if (!item.id_archive) continue;
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, item.id_archive);
-			wxSQLite3ResultSet result = stmt.ExecuteQuery();
+			FbSQLite3ResultSet result = stmt.ExecuteQuery();
 			if (result.NextRow()) {
 				item.zip_name = result.GetString(wxT("file_name"));
 				item.zip_path = result.GetString(wxT("file_path"));

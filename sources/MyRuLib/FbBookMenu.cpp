@@ -97,7 +97,7 @@ void FbBookMenu::AppendAuth()
 	}
 
 	FbCommonDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		wxString name = result.GetString(1);
 		if (name.IsEmpty()) continue;
@@ -125,7 +125,7 @@ void FbBookMenu::AppendSeqn()
 	}
 
 	FbCommonDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		wxString name = result.GetString(1);
 		if (name.IsEmpty()) continue;
@@ -142,7 +142,7 @@ void FbBookMenu::AppendFldr(int folder)
 
 	wxString sql = wxT("SELECT id, value FROM folders ORDER BY value");
 	FbLocalDatabase database;
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 
 	while (result.NextRow()) {
 		int key = result.GetInt(0);

@@ -120,9 +120,9 @@ wxString FbViewThread::GetFiles(FbDatabase & database)
 	wxString html;
 	wxString sql = wxT("SELECT DISTINCT id_archive,file_name,1,id_archive*id_archive,file_type,md5sum FROM books WHERE id=?1 UNION ");
 	sql << wxT("SELECT DISTINCT id_archive,file_name,2,id_archive*id_archive,NULL,NULL FROM files WHERE id_book=?1 ORDER BY 3,4");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	while (result.NextRow()) {
 		html << wxT("<p>");
 		if (id > 0 && result.GetInt(2) == 1) {
@@ -139,7 +139,7 @@ wxString FbViewThread::GetFiles(FbDatabase & database)
 				wxString trg = result.GetString(1);
 				wxString str = Shorten(result.GetString(1), maxLength);
 				wxString sql = wxT("SELECT file_name FROM archives WHERE id="); sql << arch;
-				wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+				FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 				if (result.NextRow()) {
 					url = wxT("book:") + result.GetString(0);
 					wxString str = Shorten(result.GetString(0), maxLength);
@@ -163,7 +163,7 @@ wxString FbViewThread::GetSeqns(FbDatabase & database)
 	wxString html;
 	wxString sql = wxT("select s.value, b.number FROM bookseq b INNER JOIN sequences s ON s.id=b.id_seq WHERE b.id_book=");
 	sql << m_view.GetCode();
-	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet res = database.ExecuteQuery(sql);
 	while (res.NextRow()) {
 		wxString numb = res.GetString(1);
 		html << wxT("<br>") << wxT("<font size=3>") << res.GetString(0);

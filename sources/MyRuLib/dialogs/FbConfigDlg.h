@@ -13,10 +13,10 @@
 #include "FbWindow.h"
 #include "FbDatabase.h"
 
-class FbDirectoryDlg: public FbDialog  
+class FbDirectoryDlg: public FbDialog
 {
 	public:
-		FbDirectoryDlg( wxWindow * parent, const wxString& title ); 
+		FbDirectoryDlg( wxWindow * parent, const wxString& title );
 		void Set(const FbModelItem & item);
 		void Get(FbModelItem & item);
 
@@ -85,10 +85,10 @@ class FbConfigDlg : private FbDialog
 			protected:
 				virtual void * Entry();
 			private:
-				void LoadTypes(wxSQLite3Database &database);
+				void LoadTypes(FbSQLite3Database &database);
 				wxEvtHandler * m_frame;
 		};
-		
+
 		class RefsThread: public FbThread {
 			public:
 				RefsThread(wxEvtHandler * frame)
@@ -96,15 +96,15 @@ class FbConfigDlg : private FbDialog
 			protected:
 				virtual void * Entry();
 			private:
-				void LoadTables(wxSQLite3Database &database);
+				void LoadTables(FbSQLite3Database &database);
 				wxEvtHandler * m_frame;
 		};
-		
-		class PanelTool: public wxPanel { 
-			public: 
-				PanelTool(wxWindow * parent); 
-				virtual void Save(wxSQLite3Database &database) = 0;
-			protected: 
+
+		class PanelTool: public wxPanel {
+			public:
+				PanelTool(wxWindow * parent);
+				virtual void Save(FbSQLite3Database &database) = 0;
+			protected:
 				wxToolBar m_toolbar;
 				FbTreeViewCtrl m_treeview;
 				void EnableTool(bool enable);
@@ -113,20 +113,20 @@ class FbConfigDlg : private FbDialog
 				DECLARE_CLASS(PanelTool)
 				DECLARE_EVENT_TABLE()
 		};
-		
-		class PanelMain: public wxPanel { 
-			public: PanelMain(wxWindow *parent); 
+
+		class PanelMain: public wxPanel {
+			public: PanelMain(wxWindow *parent);
 		};
 
-		class PanelInet: public wxPanel { 
-			public: PanelInet(wxWindow *parent); 
+		class PanelInet: public wxPanel {
+			public: PanelInet(wxWindow *parent);
 		};
 
-		class PanelType: public PanelTool { 
-			public: 
-				PanelType(wxWindow *parent); 
+		class PanelType: public PanelTool {
+			public:
+				PanelType(wxWindow *parent);
 				virtual ~PanelType();
-				virtual void Save(wxSQLite3Database &database);
+				virtual void Save(FbSQLite3Database &database);
 			private:
 				TypeThread m_thread;
 				wxArrayString m_deleted;
@@ -138,11 +138,11 @@ class FbConfigDlg : private FbDialog
 				DECLARE_EVENT_TABLE()
 		};
 
-		class PanelRefs: public PanelTool { 
-			public: 
-				PanelRefs(wxWindow *parent, FbDatabase & database); 
+		class PanelRefs: public PanelTool {
+			public:
+				PanelRefs(wxWindow *parent, FbDatabase & database);
 				virtual ~PanelRefs();
-				virtual void Save(wxSQLite3Database &database);
+				virtual void Save(FbSQLite3Database &database);
 			private:
 				RefsThread m_thread;
 				FbDatabase & m_database;
@@ -159,7 +159,7 @@ class FbConfigDlg : private FbDialog
 		class TypeData: public FbModelData
 		{
 			public:
-				TypeData(wxSQLite3ResultSet &result);
+				TypeData(FbSQLite3ResultSet &result);
 				TypeData(const wxString &type, const wxString &command = wxEmptyString)
 					: m_type(type), m_command(command), m_modified(true) {}
 			public:
@@ -175,10 +175,10 @@ class FbConfigDlg : private FbDialog
 		class RefsData: public FbModelData
 		{
 			public:
-				RefsData(wxSQLite3ResultSet &result);
+				RefsData(FbSQLite3ResultSet &result);
 				RefsData(const wxArrayString & values);
 				int GetCode() const { return m_code; }
-				int Assign(wxSQLite3Statement & stmt);
+				int Assign(FbSQLite3Statement & stmt);
 				bool IsModified() { return m_modified; }
 			public:
 				virtual void SetValue(FbModel & model, size_t col, const wxString &value);
@@ -191,7 +191,7 @@ class FbConfigDlg : private FbDialog
 		};
 
 	private:
-		void SaveTypes(wxSQLite3Database &database);
+		void SaveTypes(FbSQLite3Database &database);
 		void Assign(bool write);
 
 	private:

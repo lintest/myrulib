@@ -112,8 +112,8 @@
 
 	<lib id="mrl_wxsqlite3" template="wx-lib" cond="USE_WXSQL=='builtin'">
 		<define>NDEBUG</define>
-		<sources>sources/WxSQLite3/wxsqlite3.cpp</sources>
 		<include>$(SRCDIR)/3rdparty/wxsqlite3/include</include>
+		<sources>3rdparty/wxsqlite3/src/wxsqlite3.cpp</sources>
 	</lib>
 
 	<lib id="mrl_wxbzip2" template="wx-lib">

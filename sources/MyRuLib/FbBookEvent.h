@@ -2,7 +2,7 @@
 #define __FBBOOKEVENT_H__
 
 #include <wx/wx.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbBookTypes.h"
 #include "FbMasterInfo.h"
 #include "FbMasterTypes.h"

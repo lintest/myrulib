@@ -2,6 +2,7 @@
 #include "FbConst.h"
 
 #include <wx/arrimpl.cpp>
+#include <wx/log.h>
 
 WX_DEFINE_OBJARRAY(SequenceArray);
 
@@ -23,7 +24,7 @@ void AuthorItem::Convert(FbDatabase & database)
 	if (!Find(database)) Save(database);
 }
 
-void AuthorItem::Bind(wxSQLite3Statement &stmt, int param, const wxString &value)
+void AuthorItem::Bind(FbSQLite3Statement &stmt, int param, const wxString &value)
 {
 	if (value.IsEmpty()) {
 		const char empty = 0;
@@ -35,21 +36,21 @@ void AuthorItem::Bind(wxSQLite3Statement &stmt, int param, const wxString &value
 int AuthorItem::Find(FbDatabase & database)
 {
 	wxString sql = wxT("SELECT id FROM authors WHERE first_name=? AND middle_name=? AND last_name=? AND id<>?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	Bind(stmt, 1, first);
 	Bind(stmt, 2, middle);
 	Bind(stmt, 3, last);
 	stmt.Bind(4, m_id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	return m_id = result.NextRow() ? result.GetInt(0) : 0;
 }
 
 int AuthorItem::Load(FbDatabase & database)
 {
 	wxString sql = wxT("SELECT first_name, middle_name, last_name FROM authors WHERE id=?");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, m_id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	if ( result.NextRow() ) {
 		first  = result.GetString(0);
 		middle = result.GetString(1);
@@ -76,7 +77,7 @@ int AuthorItem::Save(FbDatabase & database)
 	}
 
 	{
-		wxSQLite3Statement stmt = database.PrepareStatement(sql_data);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql_data);
 		Bind(stmt, 1, full_name);
 		Bind(stmt, 2, full_name);
 		Bind(stmt, 3, first);
@@ -87,7 +88,7 @@ int AuthorItem::Save(FbDatabase & database)
 	}
 
 	{
-		wxSQLite3Statement stmt = database.PrepareStatement(sql_fts3);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql_fts3);
 		stmt.Bind(1, full_name);
 		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
@@ -107,7 +108,7 @@ int SequenceItem::Convert(FbDatabase & database)
 	m_id = - database.NewId(DB_NEW_SEQUENCE);
 	{
 		wxString sql = wxT("INSERT INTO sequences(value,id) VALUES (?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_name);
 		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();
@@ -115,7 +116,7 @@ int SequenceItem::Convert(FbDatabase & database)
 
 	{
 		wxString sql = wxT("INSERT INTO fts_seqn(content, docid) VALUES(LOW(?),?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_name);
 		stmt.Bind(2, m_id);
 		stmt.ExecuteUpdate();

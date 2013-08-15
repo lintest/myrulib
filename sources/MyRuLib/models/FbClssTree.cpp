@@ -7,7 +7,7 @@
 
 IMPLEMENT_CLASS(FbClssTreeModel, FbTreeModel)
 
-FbClssTreeModel::FbClssTreeModel(wxSQLite3ResultSet & result)
+FbClssTreeModel::FbClssTreeModel(FbSQLite3ResultSet & result)
 {
 	{
 		const wxString file = result.GetString(wxT("dir_file"));
@@ -45,17 +45,17 @@ FbClssModelData::FbClssModelData(FbModel & model, const wxString & name)
 	, m_code(wxT("0"))
 	, m_name(name)
 	, m_children(false)
-	, m_expanded(false) 
+	, m_expanded(false)
 	, m_count(0)
 {
 }
 
-FbClssModelData::FbClssModelData(FbModel & model, FbParentData * parent, wxSQLite3ResultSet & result)
+FbClssModelData::FbClssModelData(FbModel & model, FbParentData * parent, FbSQLite3ResultSet & result)
 	: FbParentData(model, parent)
 	, m_code(result.GetString(0))
 	, m_name(result.GetString(1))
 	, m_children(result.GetInt(2))
-	, m_expanded(false) 
+	, m_expanded(false)
 	, m_count(0)
 {
 }
@@ -69,10 +69,10 @@ wxString FbClssModelData::GetValue(FbModel & model, size_t col) const
 	}
 }
 
-bool FbClssModelData::Expand(FbModel & model, bool expand) 
+bool FbClssModelData::Expand(FbModel & model, bool expand)
 {
 	if (m_expanded == expand) return false;
-	
+
 	m_expanded = expand;
 
 	if (!expand) {
@@ -84,9 +84,9 @@ bool FbClssModelData::Expand(FbModel & model, bool expand)
 	if (!tree) return false;
 
 	FbCommonDatabase database;
-	wxSQLite3Statement stmt = database.PrepareStatement(tree->GetItemSQL());
+	FbSQLite3Statement stmt = database.PrepareStatement(tree->GetItemSQL());
 	stmt.Bind(1, m_code);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	while (result.NextRow()) {
 		new FbClssModelData(model, this, result);
 	}

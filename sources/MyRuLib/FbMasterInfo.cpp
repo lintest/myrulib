@@ -37,7 +37,7 @@ void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread, const 
 
 	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	Bind(stmt);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	if (!result.IsOk()) return NULL;
 
 	switch (GetMode()) {
@@ -47,7 +47,7 @@ void * FbMasterInfoBase::Execute(wxEvtHandler * owner, FbThread * thread, const 
 	return NULL;
 }
 
-void FbMasterInfoBase::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
+void FbMasterInfoBase::MakeList(wxEvtHandler *owner, FbThread * thread, FbSQLite3ResultSet &result) const
 {
 	wxWindowID id = ID_MODEL_CREATE;
 	size_t length = fbLIST_CACHE_SIZE;
@@ -71,7 +71,7 @@ void FbMasterInfoBase::MakeList(wxEvtHandler *owner, FbThread * thread, wxSQLite
 	FbCountEvent(ID_BOOKS_COUNT, *this, count).Post(owner);
 }
 
-void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, wxSQLite3ResultSet &result) const
+void FbMasterInfoBase::MakeTree(wxEvtHandler *owner, FbThread * thread, FbSQLite3ResultSet &result) const
 {
 	FbBookTreeModel * model = new FbBookTreeModel;
 	FbParentData * root = new FbParentData(*model, NULL);
@@ -203,12 +203,12 @@ wxString FbMasterInfoBase::GetOrderFields() const
 	return result;
 }
 
-wxString FbMasterInfoBase::GetListSQL(wxSQLite3Database &database) const
+wxString FbMasterInfoBase::GetListSQL(FbSQLite3Database &database) const
 {
 	return wxT("SELECT DISTINCT books.id FROM books %s WHERE %s GROUP BY books.id ORDER BY %s");
 }
 
-wxString FbMasterInfoBase::GetTreeSQL(wxSQLite3Database &database) const
+wxString FbMasterInfoBase::GetTreeSQL(FbSQLite3Database &database) const
 {
 	return wxT("SELECT DISTINCT books.id_author, bookseq.id_seq, books.id, bookseq.number FROM books LEFT JOIN authors ON authors.id=books.id_author LEFT JOIN bookseq ON bookseq.id_book=books.id  %s WHERE %s ORDER BY (CASE WHEN books.id_author=0 THEN 0 ELSE 1 END), authors.full_name COLLATE CYR, books.id_author, bookseq.id_seq, %s");
 }

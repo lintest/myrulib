@@ -7,7 +7,7 @@
 class FbClssTreeModel: public FbTreeModel
 {
 	public:
-		FbClssTreeModel(wxSQLite3ResultSet & result);
+		FbClssTreeModel(FbSQLite3ResultSet & result);
 		wxString GetItemSQL() const { return m_ItemSQL; }
 		wxString GetBookSQL() const { return m_BookSQL; }
 	private:
@@ -21,13 +21,13 @@ class FbClssModelData: public FbParentData
 {
 	public:
 		FbClssModelData(FbModel & model, const wxString & name = wxEmptyString);
-		FbClssModelData(FbModel & model, FbParentData * parent, wxSQLite3ResultSet & result);
+		FbClssModelData(FbModel & model, FbParentData * parent, FbSQLite3ResultSet & result);
 		void SetCount(int count) { m_count = count; }
 		const wxString & GetCode() const { return m_code; }
 	public:
 		virtual wxString GetValue(FbModel & model, size_t col) const;
 		virtual bool IsExpanded(FbModel & model) const { return m_expanded; }
-		virtual bool HasChildren(FbModel & model) const { return m_children || Count(model); } 
+		virtual bool HasChildren(FbModel & model) const { return m_children || Count(model); }
 		virtual bool HiddenRoot() const { return false; }
 		virtual bool IsBold(FbModel & model) const { return false; }
 		virtual bool Expand(FbModel & model, bool expand);

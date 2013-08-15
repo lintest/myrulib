@@ -13,13 +13,13 @@ void * FbDateTreeThread::Entry()
 {
 	FbFrameDatabase database(this, m_counter);
 	wxString sql = wxT("SELECT DISTINCT created FROM books ORDER BY 1 DESC");
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (result.IsOk()) MakeModel(result);
 	CreateCounter(database, m_sql);
 	return NULL;
 }
 
-void FbDateTreeThread::MakeModel(wxSQLite3ResultSet &result)
+void FbDateTreeThread::MakeModel(FbSQLite3ResultSet &result)
 {
 	bool ok = true;
 

@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="LinDebug">
 				<Option platforms="Unix;" />
-				<Option output="../../build/LinDebug/libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/LinDebug/WxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/LinDebug/" />
 				<Option type="2" />
@@ -25,7 +25,7 @@
 			</Target>
 			<Target title="LinRelease">
 				<Option platforms="Unix;" />
-				<Option output="../../build/LinRelease/libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/LinRelease/WxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/LinRelease/" />
 				<Option type="2" />
@@ -43,7 +43,7 @@
 			</Target>
 			<Target title="WinDebug">
 				<Option platforms="Windows;" />
-				<Option output="../../build/WinDebug/libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/WinDebug/WxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/WinDebug/" />
 				<Option type="2" />
@@ -61,7 +61,7 @@
 			</Target>
 			<Target title="WinRelease">
 				<Option platforms="Windows;" />
-				<Option output="../../build/WinRelease/libWxSQLite3" prefix_auto="1" extension_auto="1" />
+				<Option output="../../build/WinRelease/WxSQLite3" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../build/WinRelease/" />
 				<Option type="2" />
@@ -87,7 +87,7 @@
 		<Unit filename="../../3rdparty/wxsqlite3/include/wx/wxsqlite3def.h" />
 		<Unit filename="../../3rdparty/wxsqlite3/include/wx/wxsqlite3dyn.h" />
 		<Unit filename="../../3rdparty/wxsqlite3/include/wx/wxsqlite3opt.h" />
-		<Unit filename="../../build/wxsqlite3.cpp" />
+		<Unit filename="../../3rdparty/wxsqlite3/src/wxsqlite3.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

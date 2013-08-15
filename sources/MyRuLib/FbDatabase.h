@@ -2,7 +2,7 @@
 #define __FBDATABASE_H__
 
 #include <wx/wx.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 
 class FbThread;
 
@@ -94,7 +94,7 @@ class FbCyrillicCollation: public wxSQLite3Collation
 		void * m_collator;
 };
 
-class FbDatabase: public wxSQLite3Database
+class FbDatabase: public FbSQLite3Database
 {
 	public:
 		static FbCyrillicCollation sm_collation;
@@ -122,20 +122,12 @@ class FbDatabase: public wxSQLite3Database
 class FbAutoCommit
 {
 	public:
-		FbAutoCommit(wxSQLite3Database & database): m_database(database)
+		FbAutoCommit(FbSQLite3Database & database): m_database(database)
 			{ m_database.Begin(WXSQLITE_TRANSACTION_DEFERRED); }
 		virtual ~FbAutoCommit()
 			{ m_database.Commit(); }
 	private:
-		wxSQLite3Database & m_database;
-};
-
-class FbSQLite3Statement: public wxSQLite3Statement
-{
-	public:
-		FbSQLite3Statement(const wxSQLite3Statement& statement)
-			: wxSQLite3Statement(statement) {}
-		void FTS(int index, const wxString& value);
+		FbSQLite3Database & m_database;
 };
 
 class FbCommonDatabase: public FbDatabase

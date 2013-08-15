@@ -259,10 +259,10 @@ void * FbConfigDlg::TypeThread::Entry()
 	return NULL;
 }
 
-void FbConfigDlg::TypeThread::LoadTypes(wxSQLite3Database &database)
+void FbConfigDlg::TypeThread::LoadTypes(FbSQLite3Database &database)
 {
 	wxString sql = GetCommandSQL(wxT("main"));
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
@@ -285,7 +285,7 @@ void * FbConfigDlg::RefsThread::Entry()
 	return NULL;
 }
 
-void FbConfigDlg::RefsThread::LoadTables(wxSQLite3Database &database)
+void FbConfigDlg::RefsThread::LoadTables(FbSQLite3Database &database)
 {
 	if (!database.TableExists(wxT("tables"))) {
 		FbModelEvent(ID_TYPE_LIST, new FbListStore).Post(m_frame);
@@ -294,7 +294,7 @@ void FbConfigDlg::RefsThread::LoadTables(wxSQLite3Database &database)
 
 	wxString sql = wxString::Format(wxT("SELECT id, %s from tables ORDER BY 2"), GetFields().c_str());
 
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	if (!result.IsOk()) return;
 	FbListStore * model = new FbListStore;
 	while ( result.NextRow() ) {
@@ -413,7 +413,7 @@ void FbConfigDlg::PanelType::OnActivated( wxTreeEvent & event )
 	OnModify(cmdEvent);
 }
 
-void FbConfigDlg::PanelType::Save(wxSQLite3Database &database)
+void FbConfigDlg::PanelType::Save(FbSQLite3Database &database)
 {
 	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
@@ -421,7 +421,7 @@ void FbConfigDlg::PanelType::Save(wxSQLite3Database &database)
 	size_t count = m_deleted.Count();
 	for (size_t i = 0; i < count; i++) {
 		wxString sql = wxT("DELETE FROM types WHERE file_type=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_deleted[i]);
 		stmt.ExecuteUpdate();
 	}
@@ -432,7 +432,7 @@ void FbConfigDlg::PanelType::Save(wxSQLite3Database &database)
 		TypeData * data = wxDynamicCast(&item, TypeData);
 		if (data && data->IsModified()) {
 			wxString sql = wxT("INSERT OR REPLACE INTO types(file_type, command) values(?,?)");
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = database.PrepareStatement(sql);
 			stmt.Bind(1, data->GetValue(*model, 0));
 			stmt.Bind(2, data->GetValue(*model, 1));
 			stmt.ExecuteUpdate();
@@ -597,7 +597,7 @@ void FbConfigDlg::PanelRefs::OnActivated( wxTreeEvent & event )
 	OnModify(cmdEvent);
 }
 
-void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
+void FbConfigDlg::PanelRefs::Save(FbSQLite3Database &database)
 {
 	FbListStore * model = wxDynamicCast(m_treeview.GetModel(), FbListStore);
 	if (!model) return;
@@ -611,7 +611,7 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 	size_t count = m_deleted.Count();
 	for (size_t i = 0; i < count; i++) {
 		wxString sql = wxT("DELETE FROM tables WHERE id=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, m_deleted[i]);
 		stmt.ExecuteUpdate();
 	}
@@ -643,7 +643,7 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 			int code = data->GetCode();
 			wxString sql = code ? update : insert;
 			if (code) sql << code;
-			wxSQLite3Statement stmt = database.PrepareStatement(sql);
+			FbSQLite3Statement stmt = database.PrepareStatement(sql);
 			data->Assign(stmt);
 			stmt.ExecuteUpdate();
 		}
@@ -656,7 +656,7 @@ void FbConfigDlg::PanelRefs::Save(wxSQLite3Database &database)
 
 IMPLEMENT_CLASS(FbConfigDlg::TypeData, FbModelData)
 
-FbConfigDlg::TypeData::TypeData(wxSQLite3ResultSet &result)
+FbConfigDlg::TypeData::TypeData(FbSQLite3ResultSet &result)
 	: m_type(result.GetString(0)), m_command(result.GetString(1)), m_modified(false)
 {
 }
@@ -677,7 +677,7 @@ wxString FbConfigDlg::TypeData::GetValue(FbModel & model, size_t col) const
 
 IMPLEMENT_CLASS(FbConfigDlg::RefsData, FbModelData)
 
-FbConfigDlg::RefsData::RefsData(wxSQLite3ResultSet &result)
+FbConfigDlg::RefsData::RefsData(FbSQLite3ResultSet &result)
 	: m_code(result.GetInt(0)), m_modified(false)
 {
 	size_t count = result.GetColumnCount();
@@ -696,7 +696,7 @@ wxString FbConfigDlg::RefsData::GetValue(FbModel & model, size_t col) const
 	return col < m_values.Count() ? m_values[col] : wxString();
 }
 
-int FbConfigDlg::RefsData::Assign(wxSQLite3Statement & stmt)
+int FbConfigDlg::RefsData::Assign(FbSQLite3Statement & stmt)
 {
 	size_t count = m_values.Count();
 	for (size_t i = 0; i < count; i++) {

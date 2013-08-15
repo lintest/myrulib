@@ -88,7 +88,7 @@ wxMenuItem * FbMenuRefs::Create(wxMenu * menu)
 	FbMenu * submenu = NULL;
 
 	wxString sql = wxT("SELECT id, title FROM tables ORDER BY 2");
-	wxSQLite3ResultSet res = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet res = database.ExecuteQuery(sql);
 	while (res.NextRow()) {
 		if (!submenu) submenu = new FbMenuRefs();
 		submenu->AppendSub(FbMenu::CLSS, res.GetInt(0), res.GetString(1));

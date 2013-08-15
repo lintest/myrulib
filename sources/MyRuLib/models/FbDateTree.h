@@ -1,7 +1,7 @@
 #ifndef __FBDATETREE_H__
 #define __FBDATETREE_H__
 
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "controls/FbTreeModel.h"
 #include "FbDatabase.h"
 #include "FbCollection.h"
@@ -14,7 +14,7 @@ class FbDateTreeThread : public FbFrameThread
 			: FbFrameThread(frame, counter) {}
 	protected:
 		virtual void * Entry();
-		void MakeModel(wxSQLite3ResultSet &result);
+		void MakeModel(FbSQLite3ResultSet &result);
 };
 
 class FbDateYearData: public FbParentData
@@ -63,7 +63,7 @@ class FbDateTreeModel: public FbTreeModel
 		int GetCount(int code);
 	private:
 		FbIntegerHash m_counter;
-		wxSQLite3Database m_database;
+		FbSQLite3Database m_database;
 		DECLARE_CLASS(FbDateTreeModel);
 };
 

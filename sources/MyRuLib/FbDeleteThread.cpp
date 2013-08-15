@@ -32,7 +32,7 @@ void FbDeleteThread::DoDelete(FbDatabase &database)
 {
 	wxString basepath = wxGetApp().GetLibPath();
 	wxString sql = wxString::Format(wxT("SELECT id FROM books WHERE books.id IN (%s)"), m_sel.c_str());
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		FbExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
 	}
@@ -72,7 +72,7 @@ void FbDeleteThread::DoDelete(FbDatabase &database)
 {
 	wxString basepath = wxGetApp().GetLibPath();
 	wxString sql = wxString::Format(wxT("SELECT id FROM books WHERE books.id IN (%s)"), m_sel.c_str());
-	wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+	FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 	while (result.NextRow()) {
 		FbExtractArray(database, result.GetInt(0)).DeleteFiles(basepath);
 	}

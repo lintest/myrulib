@@ -6,7 +6,7 @@
 #include <wx/fontpicker.h>
 #include <wx/clrpicker.h>
 #include <wx/treebase.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 #include "FbWindow.h"
 #include "controls/FbTreeModel.h"
 
@@ -81,8 +81,8 @@ class FbParamsDlg : private FbDialog
 			protected:
 				virtual void * Entry();
 			private:
-				void LoadTypes(wxSQLite3Database &database);
-				void LoadScripts(wxSQLite3Database &database);
+				void LoadTypes(FbSQLite3Database &database);
+				void LoadScripts(FbSQLite3Database &database);
 				wxEvtHandler * m_frame;
 		};
 		class PanelFont: public wxPanel
@@ -120,7 +120,7 @@ class FbParamsDlg : private FbDialog
 		class TypeData: public FbModelData
 		{
 			public:
-				TypeData(wxSQLite3ResultSet &result);
+				TypeData(FbSQLite3ResultSet &result);
 				TypeData(const wxString &type, const wxString &command = wxEmptyString)
 					: m_type(type), m_command(command), m_modified(true) {}
 			public:
@@ -135,7 +135,7 @@ class FbParamsDlg : private FbDialog
 		class ScriptData: public FbModelData
 		{
 			public:
-				ScriptData(wxSQLite3ResultSet &result);
+				ScriptData(FbSQLite3ResultSet &result);
 				ScriptData(int code, const wxString &name, const wxString &text)
 					: m_code(code), m_name(name), m_text(text), m_modified(true) {}
 			public:
@@ -170,10 +170,10 @@ class FbParamsDlg : private FbDialog
 		void SetColour( wxWindowID id, wxColour colour );
 		void SelectApplication();
 		void SaveData();
-		void DeleteTypes(wxSQLite3Database &database);
-		void DeleteScripts(wxSQLite3Database &database);
-		void SaveTypes(wxSQLite3Database &database);
-		void SaveScripts(wxSQLite3Database &database);
+		void DeleteTypes(FbSQLite3Database &database);
+		void DeleteScripts(FbSQLite3Database &database);
+		void SaveTypes(FbSQLite3Database &database);
+		void SaveScripts(FbSQLite3Database &database);
 		void SaveScripts();
 		void EnableTool(wxWindowID id, bool enable);
 		void FillFormats(FbTreeViewCtrl * treeview, FbModel * model);

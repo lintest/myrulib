@@ -11,7 +11,7 @@
 
 #include <wx/mimetype.h>
 #include <wx/stdpaths.h>
-#include <wx/wxsqlite3.h>
+#include "wx/FbSQLite3.h"
 
 bool FbTempEraser::sm_erase = true;
 
@@ -121,7 +121,7 @@ FbFileReader::FbFileReader(int id, bool info)
 	FbCommonDatabase database;
 	{
 		wxString sql = wxT("SELECT md5sum, file_type FROM books WHERE id="); sql << id;
-		wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+		FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 		if (!result.NextRow()) return;
 		m_md5sum = result.GetString(0).Lower();
 		m_filetype = result.GetString(1).Lower();
@@ -160,9 +160,9 @@ FbFileReader::FbFileReader(int id, bool info)
 	wxString root = wxGetApp().GetLibPath();
 	wxString sql = wxT("SELECT DISTINCT id_archive,file_name,file_path,1,id_archive*id_archive FROM books WHERE id=?1 UNION ");
 	sql << wxT("SELECT DISTINCT id_archive,file_name,file_path,2,id_archive*id_archive FROM files WHERE id_book=?1 ORDER BY 4,5");
-	wxSQLite3Statement stmt = database.PrepareStatement(sql);
+	FbSQLite3Statement stmt = database.PrepareStatement(sql);
 	stmt.Bind(1, id);
-	wxSQLite3ResultSet result = stmt.ExecuteQuery();
+	FbSQLite3ResultSet result = stmt.ExecuteQuery();
 	while ( result.NextRow() ) {
 		bool primary = result.GetInt(3) == 1;
 		wxString file_name = result.GetString(1);
@@ -170,7 +170,7 @@ FbFileReader::FbFileReader(int id, bool info)
 		if (file_name.IsEmpty()) continue;
 		if (int arch = result.GetInt(0)) {
 			wxString sql = wxT("SELECT id,file_name,file_path FROM archives WHERE id="); sql << arch;
-			wxSQLite3ResultSet result = database.ExecuteQuery(sql);
+			FbSQLite3ResultSet result = database.ExecuteQuery(sql);
 			if (result.NextRow()) {
 				wxString arch_name = result.GetString(1);
 				if (primary) m_message = GetError(file_name, arch_name);
@@ -515,14 +515,14 @@ void FbFileReader::DoDownload() const
 	int folder = - database.NewId(FB_NEW_DOWNLOAD);
 	{
 		wxString sql = wxT("UPDATE states SET download=? WHERE md5sum=?");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, folder);
 		stmt.Bind(2, md5sum);
 		ok = stmt.ExecuteUpdate();
 	}
 	if (!ok) {
 		wxString sql = wxT("INSERT INTO states(download, md5sum) VALUES (?,?)");
-		wxSQLite3Statement stmt = database.PrepareStatement(sql);
+		FbSQLite3Statement stmt = database.PrepareStatement(sql);
 		stmt.Bind(1, folder);
 		stmt.Bind(2, md5sum);
 		stmt.ExecuteUpdate();
