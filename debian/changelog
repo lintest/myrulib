@@ -1,3 +1,10 @@
+myrulib (0.29.16-squeeze1) stable; urgency=low
+
+  Исправление ошибок:
+  * Ошибка сегментирования после применения диалога настроек.
+
+ -- Denis Kandrashin <mail@lintest.ru>  Tue, 03 Sep 2013 22:19:50 +0400
+
 myrulib (0.29.15-squeeze1) stable; urgency=low
 
   Обновления сторонних библиотек:
