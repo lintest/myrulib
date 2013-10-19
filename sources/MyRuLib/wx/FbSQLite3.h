@@ -204,6 +204,12 @@ public:
 		FBSQLITE3_END(false)
 	}
 
+	bool IsReadOnly() {
+		FBSQLITE3_BEGIN
+		return wxSQLite3Database::IsReadOnly();
+		FBSQLITE3_END(true)
+	}
+
 	void Close() {
 		FBSQLITE3_BEGIN
 		return wxSQLite3Database::Close();

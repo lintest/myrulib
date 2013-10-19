@@ -570,6 +570,8 @@ void FbMasterDatabase::SetVersion(int iValue)
 
 void FbMasterDatabase::UpgradeDatabase(int new_version)
 {
+	if (IsReadOnly()) return;
+
 	FbSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
 	int version = GetVersion();
 	while ( version < new_version ) {
@@ -718,6 +720,7 @@ void FbMainDatabase::CreateTableFTS(const wxString & name, const wxString & tabl
 
 void FbMainDatabase::CreateFullText(bool force, FbThread * thread)
 {
+	if (IsReadOnly()) return;
 	if ( !force && TableExists(wxT("fts_book_content")) ) return;
 	FbSQLite3Transaction trans(this, WXSQLITE_TRANSACTION_IMMEDIATE);
 	CreateTableFTS(wxT("book"), wxT("books"), wxT("title),LOW(description"), wxT(",dscr"));
