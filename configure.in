@@ -280,7 +280,7 @@ if test "x$USE_WXSQL" = "xbuiltin" ; then
   WX_CXXFLAGS="-I\$(srcdir)/3rdparty/wxsqlite3/include $WX_CXXFLAGS"
   WX_LIBS="-lmrl_wxsqlite3 $WX_LIBS"
 else
-  WX_LIBS="-lwxsqlite3-2.8 $WX_LIBS"
+  WX_LIBS="-lwxcode_gtk2u_wxsqlite3-2.8 $WX_LIBS"
 fi
 
 dnl ==================
