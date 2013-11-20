@@ -701,6 +701,10 @@ CPP
 XML_LIBS
 XML_CPPFLAGS
 XML2_CONFIG
+WX_PORT
+WX_SHARED
+WX_DEBUG
+WX_UNICODE
 WX_VERSION_MICRO
 WX_VERSION_MINOR
 WX_VERSION_MAJOR
@@ -788,6 +792,11 @@ with_wxdir
 with_wx_config
 with_wx_prefix
 with_wx_exec_prefix
+enable_debug
+enable_unicode
+enable_shared
+with_toolkit
+with_wxshared
 with_xml_prefix
 with_xml_exec_prefix
 enable_xmltest
@@ -1440,6 +1449,9 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-debug          Build in debug mode (default is auto)
+  --enable-unicode        Build in Unicode mode (default is auto)
+  --enable-shared         Build as shared library (default is auto)
   --disable-xmltest       Do not try to compile and run a test LIBXML program
        --disable-freetypetest  Do not try to compile and run a test FreeType
                           program
@@ -1456,6 +1468,10 @@ Optional Packages:
   --with-wx-prefix=PREFIX Prefix where wxWidgets is installed (optional)
   --with-wx-exec-prefix=PREFIX
                           Exec prefix where wxWidgets is installed (optional)
+  --with-toolkit          Build against a specific wxWidgets toolkit (default
+                          is auto)
+  --with-wxshared         Force building against a shared build of wxWidgets,
+                          even if --disable-shared is given (default is auto)
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
   --with-expat            Use Expat XML parser instead of Libxml2
@@ -3855,7 +3871,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
 # Check whether --with-wxdir was given.
 if test "${with_wxdir+set}" = set; then :
   withval=$with_wxdir;  wx_config_name="$withval/wx-config"
@@ -3886,6 +3901,210 @@ fi
 
 
 
+
+
+                # Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug;
+else
+  enableval="auto"
+fi
+
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the --enable-debug option" >&5
+$as_echo_n "checking for the --enable-debug option... " >&6; }
+            if test "$enableval" = "yes" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                DEBUG=1
+
+            elif test "$enableval" = "no" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                DEBUG=0
+            elif test "$enableval" = "auto" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: will be automatically detected" >&5
+$as_echo "will be automatically detected" >&6; }
+                DEBUG="auto"
+            else
+                as_fn_error $? "
+    Unrecognized option value (allowed values: yes, no, auto)
+                " "$LINENO" 5
+            fi
+
+
+        # Check whether --enable-unicode was given.
+if test "${enable_unicode+set}" = set; then :
+  enableval=$enable_unicode;
+else
+  enableval="auto"
+fi
+
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the --enable-unicode option" >&5
+$as_echo_n "checking for the --enable-unicode option... " >&6; }
+            if test "$enableval" = "yes" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                UNICODE=1
+
+            elif test "$enableval" = "no" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                UNICODE=0
+            elif test "$enableval" = "auto" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: will be automatically detected" >&5
+$as_echo "will be automatically detected" >&6; }
+                UNICODE="auto"
+            else
+                as_fn_error $? "
+    Unrecognized option value (allowed values: yes, no, auto)
+                " "$LINENO" 5
+            fi
+
+
+        # Check whether --enable-shared was given.
+if test "${enable_shared+set}" = set; then :
+  enableval=$enable_shared;
+else
+  enableval="auto"
+fi
+
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the --enable-shared option" >&5
+$as_echo_n "checking for the --enable-shared option... " >&6; }
+            if test "$enableval" = "yes" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                SHARED=1
+
+            elif test "$enableval" = "no" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                SHARED=0
+            elif test "$enableval" = "auto" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: will be automatically detected" >&5
+$as_echo "will be automatically detected" >&6; }
+                SHARED="auto"
+            else
+                as_fn_error $? "
+    Unrecognized option value (allowed values: yes, no, auto)
+                " "$LINENO" 5
+            fi
+
+
+
+
+# Check whether --with-toolkit was given.
+if test "${with_toolkit+set}" = set; then :
+  withval=$with_toolkit;
+else
+  withval="auto"
+fi
+
+
+                                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the --with-toolkit option" >&5
+$as_echo_n "checking for the --with-toolkit option... " >&6; }
+                if test "$withval" = "auto" ; then
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: will be automatically detected" >&5
+$as_echo "will be automatically detected" >&6; }
+                    TOOLKIT="auto"
+                else
+                    TOOLKIT="$withval"
+
+                                        if test "$TOOLKIT" != "gtk1" -a "$TOOLKIT" != "gtk2" -a \
+                            "$TOOLKIT" != "msw" -a "$TOOLKIT" != "motif" -a \
+                            "$TOOLKIT" != "osx_carbon" -a "$TOOLKIT" != "osx_cocoa" -a \
+                            "$TOOLKIT" != "dfb" -a "$TOOLKIT" != "x11"; then
+                        as_fn_error $? "
+    Unrecognized option value (allowed values: auto, gtk1, gtk2, msw, motif, osx_carbon, osx_cocoa, dfb, x11)
+                        " "$LINENO" 5
+                    fi
+
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $TOOLKIT" >&5
+$as_echo "$TOOLKIT" >&6; }
+                fi
+
+
+
+
+
+# Check whether --with-wxshared was given.
+if test "${with_wxshared+set}" = set; then :
+  withval=$with_wxshared;
+else
+  withval="auto"
+fi
+
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the --with-wxshared option" >&5
+$as_echo_n "checking for the --with-wxshared option... " >&6; }
+            if test "$withval" = "yes" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                WX_SHARED=1
+
+                                    elif test "1" = "1" -a "$withval" = "no" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                WX_SHARED=0
+            elif test "$withval" = "auto" ; then
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: will be automatically detected" >&5
+$as_echo "will be automatically detected" >&6; }
+                WX_SHARED="auto"
+            else
+                as_fn_error $? "
+    Unrecognized option value (allowed values: yes, auto)
+                " "$LINENO" 5
+            fi
+
+
+
+
+
+
+
+        if test "$WX_DEBUG_CONFIGURE" = "1"; then
+            echo "[dbg] DEBUG: $DEBUG, WX_DEBUG: $WX_DEBUG"
+            echo "[dbg] UNICODE: $UNICODE, WX_UNICODE: $WX_UNICODE"
+            echo "[dbg] SHARED: $SHARED, WX_SHARED: $WX_SHARED"
+            echo "[dbg] TOOLKIT: $TOOLKIT, WX_TOOLKIT: $WX_TOOLKIT"
+            echo "[dbg] VERSION: $VERSION, WX_RELEASE: $WX_RELEASE"
+        fi
+
+WX_UNICODE=yes
+
+        if test "$WX_SHARED" = "1" ; then
+            WXCONFIG_FLAGS="--static=no "
+        elif test "$WX_SHARED" = "0" ; then
+            WXCONFIG_FLAGS="--static=yes "
+        fi
+
+        if test "$WX_DEBUG" = "1" ; then
+            WXCONFIG_FLAGS="$WXCONFIG_FLAGS""--debug=yes "
+        elif test "$WX_DEBUG" = "0" ; then
+            WXCONFIG_FLAGS="$WXCONFIG_FLAGS""--debug=no "
+        fi
+
+                if test "$WX_UNICODE" = "1" ; then
+            WXCONFIG_FLAGS="$WXCONFIG_FLAGS""--unicode=yes "
+        elif test "$WX_UNICODE" = "0" ; then
+            WXCONFIG_FLAGS="$WXCONFIG_FLAGS""--unicode=no "
+        fi
+
+        if test "$TOOLKIT" != "auto" ; then
+            WXCONFIG_FLAGS="$WXCONFIG_FLAGS""--toolkit=$TOOLKIT "
+        fi
+
+        if test "$WX_RELEASE" != "auto" ; then
+            WXCONFIG_FLAGS="$WXCONFIG_FLAGS""--version=$WX_RELEASE "
+        fi
+
+                WXCONFIG_FLAGS=${WXCONFIG_FLAGS% }
+
+        if test "$WX_DEBUG_CONFIGURE" = "1"; then
+            echo "[dbg] WXCONFIG_FLAGS: $WXCONFIG_FLAGS"
+        fi
 
 
     if test x${WX_CONFIG_NAME+set} != xset ; then
@@ -3963,15 +4182,15 @@ fi
     WX_VERSION=""
 
     min_wx_version=$WXWIDGETS_VERSION
-    if test -z "--unicode=yes" ; then
+    if test -z "$WXCONFIG_FLAGS" ; then
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version" >&5
 $as_echo_n "checking for wxWidgets version >= $min_wx_version... " >&6; }
     else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version (--unicode=yes)" >&5
-$as_echo_n "checking for wxWidgets version >= $min_wx_version (--unicode=yes)... " >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version ($WXCONFIG_FLAGS)" >&5
+$as_echo_n "checking for wxWidgets version >= $min_wx_version ($WXCONFIG_FLAGS)... " >&6; }
     fi
 
-            WX_CONFIG_WITH_ARGS="$WX_CONFIG_PATH $wx_config_args --unicode=yes"
+            WX_CONFIG_WITH_ARGS="$WX_CONFIG_PATH $wx_config_args $WXCONFIG_FLAGS"
 
     WX_VERSION=`$WX_CONFIG_WITH_ARGS --version 2>/dev/null`
     wx_config_major_version=`echo $WX_VERSION | \
@@ -4093,12 +4312,12 @@ $as_echo "no (version $WX_VERSION is not new enough)" >&6; }
        WX_LIBS_STATIC=""
        WX_RESCOMP=""
 
-       if test ! -z "--unicode=yes"; then
+       if test ! -z "$WXCONFIG_FLAGS"; then
 
           wx_error_message="
     The configuration you asked for $PACKAGE_NAME requires a wxWidgets
     build with the following settings:
-        --unicode=yes
+        $WXCONFIG_FLAGS
     but such build is not available.
 
     To see the wxWidgets builds available on this system, please use
@@ -4150,6 +4369,210 @@ $as_echo "no (version $WX_VERSION is not new enough)" >&6; }
 
 
 
+
+                        WX_RELEASE="$WX_VERSION_MAJOR""$WX_VERSION_MINOR"
+        if test $WX_RELEASE -lt 26 ; then
+
+            as_fn_error $? "
+    Cannot detect the wxWidgets configuration for the selected wxWidgets build
+    since its version is $WX_VERSION < 2.6.0; please install a newer
+    version of wxWidgets.
+                         " "$LINENO" 5
+        fi
+
+                        WX_SELECTEDCONFIG=$($WX_CONFIG_WITH_ARGS --selected_config)
+
+        if test "$WX_DEBUG_CONFIGURE" = "1"; then
+            echo "[dbg] Using wx-config --selected-config"
+            echo "[dbg] WX_SELECTEDCONFIG: $WX_SELECTEDCONFIG"
+        fi
+
+
+                                                        if test $WX_SHARED = "1"; then
+            STATIC=0
+        elif test $WX_SHARED = "0"; then
+            STATIC=1
+        elif test $WX_SHARED = "auto"; then
+            STATIC="auto"
+        fi
+
+
+        if test "$UNICODE" = "auto" ; then
+
+                                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if wxWidgets was built with UNICODE enabled" >&5
+$as_echo_n "checking if wxWidgets was built with UNICODE enabled... " >&6; }
+
+                                                            WX_UNICODE=$(expr "$WX_SELECTEDCONFIG" : ".*unicode.*")
+
+            if test "$WX_UNICODE" != "0"; then
+                WX_UNICODE=1
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                :
+            else
+                WX_UNICODE=0
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                :
+            fi
+        else
+
+                        WX_UNICODE=$UNICODE
+        fi
+
+
+        if test "$DEBUG" = "auto" ; then
+
+                                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if wxWidgets was built in DEBUG mode" >&5
+$as_echo_n "checking if wxWidgets was built in DEBUG mode... " >&6; }
+
+                                                            WX_DEBUG=$(expr "$WX_SELECTEDCONFIG" : ".*debug.*")
+
+            if test "$WX_DEBUG" != "0"; then
+                WX_DEBUG=1
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                :
+            else
+                WX_DEBUG=0
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                :
+            fi
+        else
+
+                        WX_DEBUG=$DEBUG
+        fi
+
+
+        if test "$STATIC" = "auto" ; then
+
+                                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if wxWidgets was built in STATIC mode" >&5
+$as_echo_n "checking if wxWidgets was built in STATIC mode... " >&6; }
+
+                                                            WX_STATIC=$(expr "$WX_SELECTEDCONFIG" : ".*static.*")
+
+            if test "$WX_STATIC" != "0"; then
+                WX_STATIC=1
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                :
+            else
+                WX_STATIC=0
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                :
+            fi
+        else
+
+                        WX_STATIC=$STATIC
+        fi
+
+
+                if test "$WX_STATIC" != "0"; then
+            WX_SHARED=0
+        else
+            WX_SHARED=1
+        fi
+
+
+
+
+
+                if test "$TOOLKIT" = "auto" ; then
+
+                                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking which wxWidgets toolkit was selected" >&5
+$as_echo_n "checking which wxWidgets toolkit was selected... " >&6; }
+
+            WX_GTKPORT1=$(expr "$WX_SELECTEDCONFIG" : ".*gtk1.*")
+            WX_GTKPORT2=$(expr "$WX_SELECTEDCONFIG" : ".*gtk2.*")
+            WX_MSWPORT=$(expr "$WX_SELECTEDCONFIG" : ".*msw.*")
+            WX_MOTIFPORT=$(expr "$WX_SELECTEDCONFIG" : ".*motif.*")
+            WX_OSXCOCOAPORT=$(expr "$WX_SELECTEDCONFIG" : ".*osx_cocoa.*")
+            WX_OSXCARBONPORT=$(expr "$WX_SELECTEDCONFIG" : ".*osx_carbon.*")
+            WX_X11PORT=$(expr "$WX_SELECTEDCONFIG" : ".*x11.*")
+            WX_DFBPORT=$(expr "$WX_SELECTEDCONFIG" : ".*dfb.*")
+
+            WX_PORT="unknown"
+            if test "$WX_GTKPORT1" != "0"; then WX_PORT="gtk1"; fi
+            if test "$WX_GTKPORT2" != "0"; then WX_PORT="gtk2"; fi
+            if test "$WX_MSWPORT" != "0"; then WX_PORT="msw"; fi
+            if test "$WX_MOTIFPORT" != "0"; then WX_PORT="motif"; fi
+            if test "$WX_OSXCOCOAPORT" != "0"; then WX_PORT="osx_cocoa"; fi
+            if test "$WX_OSXCARBONPORT" != "0"; then WX_PORT="osx_carbon"; fi
+            if test "$WX_X11PORT" != "0"; then WX_PORT="x11"; fi
+            if test "$WX_DFBPORT" != "0"; then WX_PORT="dfb"; fi
+
+                                    WX_MACPORT=$(expr "$WX_SELECTEDCONFIG" : ".*mac.*")
+            if test "$WX_MACPORT" != "0"; then WX_PORT="mac"; fi
+
+
+            if test "$WX_PORT" = "unknown" ; then
+                as_fn_error $? "
+        Cannot detect the currently installed wxWidgets port !
+        Please check your 'wx-config --cxxflags'...
+                            " "$LINENO" 5
+            fi
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WX_PORT" >&5
+$as_echo "$WX_PORT" >&6; }
+        else
+
+                        if test -z "$TOOLKIT" ; then
+                WX_PORT=$TOOLKIT
+            else
+                                WX_PORT=$PORT
+            fi
+        fi
+
+
+
+        if test "$WX_DEBUG_CONFIGURE" = "1"; then
+            echo "[dbg] Values of all WX_* options after final detection:"
+            echo "[dbg] WX_DEBUG: $WX_DEBUG"
+            echo "[dbg] WX_UNICODE: $WX_UNICODE"
+            echo "[dbg] WX_SHARED: $WX_SHARED"
+            echo "[dbg] WX_RELEASE: $WX_RELEASE"
+            echo "[dbg] WX_PORT: $WX_PORT"
+        fi
+
+                                                        if test "$WX_SHARED" = "0" -a "$SHARED" = "1"; then
+            as_fn_error $? "
+    Cannot build shared library against a static build of wxWidgets !
+    This error happens because the wxWidgets build which was selected
+    has been detected as static while you asked to build $PACKAGE_NAME
+    as shared library and this is not possible.
+    Use the '--disable-shared' option to build $PACKAGE_NAME
+    as static library or '--with-wxshared' to use wxWidgets as shared library.
+                         " "$LINENO" 5
+        fi
+
+                        if test "$DEBUG" = "auto"; then
+            DEBUG=$WX_DEBUG
+        fi
+        if test "$UNICODE" = "auto"; then
+            UNICODE=$WX_UNICODE
+        fi
+        if test "$SHARED" = "auto"; then
+            SHARED=$WX_SHARED
+        fi
+        if test "$TOOLKIT" = "auto"; then
+            TOOLKIT=$WX_PORT
+        fi
+
+                if test "$DEBUG" = "1"; then
+            BUILD="debug"
+        elif test "$DEBUG" = "0" -o "$DEBUG" = ""; then
+            BUILD="release"
+        fi
+
+                                if test "$DEBUG" = "1"; then
+            CXXFLAGS="$CXXFLAGS -g -O0"
+            CFLAGS="$CFLAGS -g -O0"
+        else
+            CXXFLAGS="$CXXFLAGS -O2"
+            CFLAGS="$CFLAGS -O2"
+        fi
 
 
 if test "$WXFOUND" != 1; then
@@ -9218,7 +9641,21 @@ if test "x$USE_WXSQL" = "xbuiltin" ; then
   WX_CXXFLAGS="-I\$(srcdir)/3rdparty/wxsqlite3/include $WX_CXXFLAGS"
   WX_LIBS="-lmrl_wxsqlite3 $WX_LIBS"
 else
-  WX_LIBS="-lwxsqlite3-2.8 $WX_LIBS"
+
+        wx_temp="wxcode""_""$WX_PORT"
+
+                if test "$WX_UNICODE" = "1"; then
+            wx_temp="$wx_temp""u"
+        fi
+        if test "$WX_DEBUG" = "1"; then
+            wx_temp="$wx_temp""d"
+        fi
+
+                wx_temp="$wx_temp""_""wxsqlite3""-$WX_VERSION_MAJOR.$WX_VERSION_MINOR"
+
+                WXSQLITE3LIB=$wx_temp
+
+  WX_LIBS="-l$WXSQLITE3LIB $WX_LIBS"
 fi
 
 
@@ -9526,7 +9963,6 @@ DEFS=-DHAVE_CONFIG_H
 
 ac_libobjs=
 ac_ltlibobjs=
-U=
 for ac_i in : $LIBOBJS; do test "x$ac_i" = x: && continue
   # 1. Remove the extension, and $U if already installed.
   ac_script='s/\$U\././;s/\.o$//;s/\.obj$//'

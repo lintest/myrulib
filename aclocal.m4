@@ -1,8 +1,7 @@
-# generated automatically by aclocal 1.11.6 -*- Autoconf -*-
+# generated automatically by aclocal 1.13.3 -*- Autoconf -*-
 
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
-# 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation,
-# Inc.
+# Copyright (C) 1996-2013 Free Software Foundation, Inc.
+
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -12,6 +11,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+m4_ifndef([AC_CONFIG_MACRO_DIRS], [m4_defun([_AM_CONFIG_MACRO_DIRS], [])m4_defun([AC_CONFIG_MACRO_DIRS], [_AM_CONFIG_MACRO_DIRS($@)])])
 AC_DEFUN([AC_BAKEFILE_CREATE_FILE_DLLAR_SH],
 [
 dnl ===================== dllar.sh begins here =====================
@@ -2539,7 +2539,6 @@ dnl Author:          wxWidgets development team,
 dnl                  Francesco Montorsi,
 dnl                  Bob McCown (Mac-testing)
 dnl Creation date:   24/11/2001
-dnl RCS-ID:          $Id$
 dnl ---------------------------------------------------------------------------
 
 dnl ===========================================================================
@@ -3595,15 +3594,32 @@ AC_DEFUN([AM_PATH_WXCONFIG], [
 ])
 AC_DEFUN([AM_PATH_WXRC], [WXRC_CHECK([$1],[$2])])
 
-# Copyright (C) 1996, 1997, 2000, 2001, 2003, 2005
-# Free Software Foundation, Inc.
+#  -*- Autoconf -*-
+# Obsolete and "removed" macros, that must however still report explicit
+# error messages when used, to smooth transition.
+#
+# Copyright (C) 1996-2013 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
 
-# serial 8
+AC_DEFUN([AM_CONFIG_HEADER],
+[AC_DIAGNOSE([obsolete],
+['$0': this macro is obsolete.
+You should use the 'AC][_CONFIG_HEADERS' macro instead.])dnl
+AC_CONFIG_HEADERS($@)])
 
-# AM_CONFIG_HEADER is obsolete.  It has been replaced by AC_CONFIG_HEADERS.
-AU_DEFUN([AM_CONFIG_HEADER], [AC_CONFIG_HEADERS($@)])
+AC_DEFUN([AM_PROG_CC_STDC],
+[AC_PROG_CC
+am_cv_prog_cc_stdc=$ac_cv_prog_cc_stdc
+AC_DIAGNOSE([obsolete],
+['$0': this macro is obsolete.
+You should simply use the 'AC][_PROG_CC' macro instead.
+Also, your code should no longer depend upon 'am_cv_prog_cc_stdc',
+but upon 'ac_cv_prog_cc_stdc'.])])
+
+AC_DEFUN([AM_C_PROTOTYPES],
+         [AC_FATAL([automatic de-ANSI-fication support has been removed])])
+AU_DEFUN([fp_C_PROTOTYPES], [AM_C_PROTOTYPES])
 
