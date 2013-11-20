@@ -116,6 +116,14 @@ bool FbCollection::IsOk() const
 	return m_database.IsOpen();
 }
 
+bool FbCollection::IsReadOnly()
+{
+	wxCriticalSectionLocker locker(sm_section);
+	FbCollection * collection = GetCollection();
+	if (collection == NULL) return true;
+	return collection->m_database.IsReadOnly();
+}
+
 wxString FbCollection::Format(int number)
 {
 	int hi = number / 1000;

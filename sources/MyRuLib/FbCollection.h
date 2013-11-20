@@ -88,6 +88,7 @@ class FbCollection: public wxObject
 		static void AddIcon(wxString extension, wxBitmap bitmap);
 		static wxString GetIcon(const wxString &extension);
 		static void EmptyInfo();
+		static bool IsReadOnly();
 		static int GetParamInt(int param);
 		static wxString GetParamStr(int param);
 		static void SetParamInt(int param, int value);

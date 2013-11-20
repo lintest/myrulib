@@ -55,6 +55,11 @@ BEGIN_EVENT_TABLE(FbMainFrame, wxFrame)
 	EVT_MENU(wxID_ABOUT, FbMainFrame::OnAbout)
 	EVT_MENU_RANGE(wxID_FILE1, wxID_FILE5, FbMainFrame::OnMenuRecent)
 
+	EVT_UPDATE_UI(wxID_NEW, FbMainFrame::OnReadOnlyUpdate)
+	EVT_UPDATE_UI(wxID_OPEN, FbMainFrame::OnReadOnlyUpdate)
+	EVT_UPDATE_UI(ID_MENU_VACUUM, FbMainFrame::OnReadOnlyUpdate)
+	EVT_UPDATE_UI(ID_MENU_UPDATE, FbMainFrame::OnReadOnlyUpdate)
+
 	EVT_SEARCHCTRL_SEARCH_BTN(ID_AUTHOR_TXT, FbMainFrame::OnFindAuthor)
 	EVT_SEARCHCTRL_SEARCH_BTN(ID_TITLE_TXT, FbMainFrame::OnFindTitle)
 
@@ -729,6 +734,11 @@ wxWindow * FbMainFrame::FindFrameById(const int id, bool bActivate)
 void FbMainFrame::OnMenuNothing(wxCommandEvent& event)
 {
 	wxMessageBox(_("This function is not available yet in this version."));
+}
+
+void FbMainFrame::OnReadOnlyUpdate(wxUpdateUIEvent& event)
+{
+	event.Enable(!FbCollection::IsReadOnly());
 }
 
 void FbMainFrame::OnDatabaseInfo(wxCommandEvent & event)

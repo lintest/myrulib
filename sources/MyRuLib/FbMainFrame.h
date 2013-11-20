@@ -74,6 +74,7 @@ class FbMainFrame : public wxFrame
 		void OnReader(wxCommandEvent & event);
 		void OnOpenWeb(wxCommandEvent & event);
 		void OnAbout(wxCommandEvent & event);
+		void OnReadOnlyUpdate(wxUpdateUIEvent& event);
 		void OnDatabaseInfo(wxCommandEvent & event);
 		void OnDatabaseOpen(wxCommandEvent & event);
 		void OnDatabaseGenres(wxCommandEvent & event);
