@@ -32,6 +32,10 @@ public:
     void SetColour(const wxColour& colour);
     void SetActiveColour(const wxColour& colour);
 
+    virtual void DrawBorder(wxDC& dc, wxWindow* wnd, const wxRect& rect) {}
+    virtual int GetAdditionalBorderSpace(wxWindow* wnd) { return 0; }
+    virtual int GetBorderWidth(wxWindow* wnd) { return 0; }
+
     void DrawBackground(
                  wxDC& dc,
                  wxWindow* wnd,
@@ -118,6 +122,10 @@ public:
     void SetMeasuringFont(const wxFont& font);
     void SetColour(const wxColour& colour);
     void SetActiveColour(const wxColour& colour);
+
+    virtual void DrawBorder(wxDC& dc, wxWindow* wnd, const wxRect& rect) {}
+    virtual int GetAdditionalBorderSpace(wxWindow* wnd) { return 0; }
+    virtual int GetBorderWidth(wxWindow* wnd) { return 0; }
 
     void DrawBackground(
                  wxDC& dc,
