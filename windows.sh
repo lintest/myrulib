@@ -5,7 +5,7 @@
 #                                                                #
 ##################################################################
 
-WXW_VERSION="2.8.12"   # Version wxWidgets
+WXW_VERSION="3.0.0"   # Version wxWidgets
 FT2_VERSION="2.4.11"   # Version FreeType2
 
 ##################################################################
@@ -50,6 +50,7 @@ if test "x$EXISTS_WXW" != "x$WXW_VERSION" ; then
 	  --without-expat \
 	  --without-regex \
 	  --without-libtiff \
+	  --without-richtext \
 	  --with-libjpeg=builtin \
 	  --with-libpng=builtin \
 	  --with-zlib=builtin \
