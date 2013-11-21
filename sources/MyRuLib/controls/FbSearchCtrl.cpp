@@ -10,6 +10,8 @@
 
 #include "FbSearchCtrl.h"
 
+#ifdef FB_SEARCH_COMBO_CTRL
+
 #include <wx/image.h>
 
 #define WXMAX(a,b) ((a)>(b)?(a):(b))
@@ -100,8 +102,6 @@ static int GetMultiplier()
     return 6;
 #endif
 }
-
-#ifdef FB_SEARCH_COMBO_CTRL
 
 IMPLEMENT_CLASS(FbSearchCtrl, wxOwnerDrawnComboBox)
 
@@ -223,6 +223,10 @@ wxBitmap FbSearchCtrl::RenderCancelBitmap( int x, int y )
 
     return bitmap;
 }
+
+#else
+
+#if wxABI_VERSION >= 20900
 
 #else
 
@@ -1193,5 +1197,7 @@ void FbSearchCtrl::OnSize( wxSizeEvent& WXUNUSED(event) )
     GetSize(&width, &height);
     LayoutControls(0, 0, width, height);
 }
+
+#endif // wxABI_VERSION
 
 #endif // FB_SEARCH_COMBO_CTRL
