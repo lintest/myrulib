@@ -94,7 +94,7 @@ AC_ARG_WITH([sqlite], [AS_HELP_STRING([--with-sqlite], [Use builtin SQLite3 libr
 AC_MSG_RESULT([$USE_SQLITE])
 
 AC_MSG_CHECKING([for --with-wxsqlite])
-AC_ARG_WITH([wxsqlite], [AS_HELP_STRING([--with-wxsqlite], [Use builtin wxSQLite3 library])], USE_WXSQL="$withval", USE_WXSQL="yes")
+AC_ARG_WITH([wxsqlite], [AS_HELP_STRING([--with-wxsqlite], [Use builtin wxSQLite3 library])], USE_WXSQL="$withval", USE_WXSQL="no")
 AC_MSG_RESULT([$USE_WXSQL])
 
 AC_MSG_CHECKING([for --with-icu])
@@ -276,11 +276,15 @@ dnl =================
 dnl === USE_WXSQL ===
 dnl =================
 
+if test "x$USE_WXSQL" != "xbuiltin" ; then 
+  WX_LIKE_LIBNAME([WXSQLITE3LIB], [wxcode], [wxsqlite3])
+  AC_CHECK_LIB($WXSQLITE3LIB, [main], , [USE_WXSQL="builtin"])
+fi
+
 if test "x$USE_WXSQL" = "xbuiltin" ; then 
   WX_CXXFLAGS="-I\$(srcdir)/3rdparty/wxsqlite3/include $WX_CXXFLAGS"
   WX_LIBS="-lmrl_wxsqlite3 $WX_LIBS"
 else
-  WX_LIKE_LIBNAME([WXSQLITE3LIB], [wxcode], [wxsqlite3])
   WX_LIBS="-l$WXSQLITE3LIB $WX_LIBS"
 fi
 
