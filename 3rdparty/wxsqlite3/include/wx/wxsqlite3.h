@@ -27,7 +27,7 @@
 #include "wx/wxsqlite3def.h"
 
 /// wxSQLite3 version string
-#define wxSQLITE3_VERSION_STRING   wxT("wxSQLite3 3.0.3")
+#define wxSQLITE3_VERSION_STRING   wxT("wxSQLite3 3.0.5")
 
 #define WXSQLITE_ERROR 1000
 
@@ -77,6 +77,15 @@ enum wxSQLite3JournalMode
   WXSQLITE_JOURNALMODE_TRUNCATE   = 3,   // Commit by truncating journal
   WXSQLITE_JOURNALMODE_MEMORY     = 4,   // In-memory journal file
   WXSQLITE_JOURNALMODE_WAL        = 5    // Use write-ahead logging
+};
+
+/// Enumeration of statement status counters
+enum wxSQLite3StatementStatus
+{
+  WXSQLITE_STMTSTATUS_FULLSCAN_STEP = 1,
+  WXSQLITE_STMTSTATUS_SORT          = 2,
+  WXSQLITE_STMTSTATUS_AUTOINDEX     = 3,
+  WXSQLITE_STMTSTATUS_VM_STEP       = 4
 };
 
 #define WXSQLITE_OPEN_READONLY         0x00000001
@@ -1540,6 +1549,16 @@ public:
   */
   bool IsBusy();
 
+  /// Determine internal operation counters of the underlying prepared statement
+  /**
+  * Prepared statements maintain various counters to measure the performance of specific operations.
+  * This method allows to monitor the performance characteristics of the prepared statement.
+  * \param opCode operation code of the operation to be queried
+  * \param resetFlag flag whether the associated counter should be reset to zero (default: false)
+  * \return the counter value for the requested counter
+  */
+  int Status(wxSQLite3StatementStatus opCode, bool resetFlag = false);
+
 private:
   /// Check for valid database connection
   void CheckDatabase();
@@ -2609,10 +2628,23 @@ public:
   */
   static void ShutdownSQLite();
 
+  /// Set temporary directory where SQLite stores temporary files (Windows only)
+  /**
+  * On Windows platforms it is recommended to set the temporary directory before
+  * using any SQLite databases. This method should not be called if you have
+  * currently open database connections.
+  *
+  * \return TRUE if the temporary directory could be set successfully, FALSE otherwise
+  *
+  * \note This method is supported only for Windows platforms and
+  * SQLite versions 3.7.14 or above. For all other platforms FALSE is returned.
+  */
+  static bool SetTemporaryDirectory(const wxString& tempDirectory);
+
   /// Get random bytes
   /**
   * SQLite contains a high-quality pseudo-random number generator.
-  * This method allows to access it for application specofoc purposes.
+  * This method allows to access it for application specific purposes.
   *
   * \param n The amount of random bytes to be created
   * \param random A memory buffer containing the random bytes on return

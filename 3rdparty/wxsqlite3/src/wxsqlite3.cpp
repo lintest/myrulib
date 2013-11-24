@@ -97,6 +97,19 @@ static void InitSQLite3DLL()
 #include "wx/wxsqlite3dyn.h"
 #undef DYNFUNC
 
+#else
+// Define Windows specific SQLite API functions (not defined in sqlite3.h)
+#if SQLITE_VERSION_NUMBER >= 3007014
+#if defined(__WXMSW__)
+#ifdef __cplusplus
+extern "C" {
+#endif
+SQLITE_API int sqlite3_win32_set_directory(DWORD type, LPCWSTR zValue);
+#ifdef __cplusplus
+}
+#endif
+#endif
+#endif
 #endif // wxUSE_DYNAMIC_SQLITE3_LOAD
 
 // Error messages
@@ -137,10 +150,11 @@ const char* wxERRMSG_SHARED_CACHE  = wxTRANSLATE("Setting SQLite shared cache mo
 
 const char* wxERRMSG_INITIALIZE    = wxTRANSLATE("Initialization of SQLite failed");
 const char* wxERRMSG_SHUTDOWN      = wxTRANSLATE("Shutdown of SQLite failed");
+const char* wxERRMSG_TEMPDIR       = wxTRANSLATE("Setting temporary directory failed");
 
-const char* wxERRMSG_SOURCEDB_BUSY = wxTRANSLATE("Source database is busy");
-const char* wxERRMSG_DBOPEN_FAILED = wxTRANSLATE("Database open failed");
-const char* wxERRMSG_DBCLOSE_FAILED = wxTRANSLATE("Database close failed");
+const char* wxERRMSG_SOURCEDB_BUSY   = wxTRANSLATE("Source database is busy");
+const char* wxERRMSG_DBOPEN_FAILED   = wxTRANSLATE("Database open failed");
+const char* wxERRMSG_DBCLOSE_FAILED  = wxTRANSLATE("Database close failed");
 const char* wxERRMSG_DBASSIGN_FAILED = wxTRANSLATE("Database assignment failed");
 const char* wxERRMSG_FINALIZE_FAILED = wxTRANSLATE("Finalize failed");
 #else
@@ -179,10 +193,11 @@ const wxChar* wxERRMSG_SHARED_CACHE  = wxTRANSLATE("Setting SQLite shared cache 
 
 const wxChar* wxERRMSG_INITIALIZE    = wxTRANSLATE("Initialization of SQLite failed");
 const wxChar* wxERRMSG_SHUTDOWN      = wxTRANSLATE("Shutdown of SQLite failed");
+const wxChar* wxERRMSG_TEMPDIR       = wxTRANSLATE("Setting temporary directory failed");
 
 const wxChar* wxERRMSG_SOURCEDB_BUSY   = wxTRANSLATE("Source database is busy");
 const wxChar* wxERRMSG_DBOPEN_FAILED   = wxTRANSLATE("Database open failed");
-const wxChar* wxERRMSG_DBCLOSE_FAILED   = wxTRANSLATE("Database close failed");
+const wxChar* wxERRMSG_DBCLOSE_FAILED  = wxTRANSLATE("Database close failed");
 const wxChar* wxERRMSG_DBASSIGN_FAILED = wxTRANSLATE("Database assignment failed");
 const wxChar* wxERRMSG_FINALIZE_FAILED = wxTRANSLATE("Finalize failed");
 #endif
@@ -2206,6 +2221,16 @@ bool wxSQLite3Statement::IsBusy()
 #endif
 }
 
+int wxSQLite3Statement::Status(wxSQLite3StatementStatus opCode, bool resetFlag)
+{
+  int count = 0;
+#if SQLITE_VERSION_NUMBER >= 3007000
+  CheckStmt();
+  count = sqlite3_stmt_status(m_stmt->m_stmt, (int) opCode, (resetFlag) ? 1 : 0 );
+#endif
+  return count;
+}
+
 void wxSQLite3Statement::CheckDatabase()
 {
   if (m_db == NULL || m_db->m_db == NULL || !m_db->m_isValid)
@@ -3913,6 +3938,31 @@ void wxSQLite3Database::ShutdownSQLite()
     throw wxSQLite3Exception(rc, wxERRMSG_SHUTDOWN);
   }
 #endif
+}
+
+/* static */
+bool wxSQLite3Database::SetTemporaryDirectory(const wxString& tempDirectory)
+{
+  bool ok = false;
+#if SQLITE_VERSION_NUMBER >= 3007014
+#if defined(__WXMSW__)
+  DWORD SQLITE_WIN32_TEMP_DIRECTORY_TYPE = 2; 
+#if wxUSE_UNICODE
+  const wxChar* zValue = tempDirectory.wc_str();
+#else
+  const wxWCharBuffer zValue = tempDirectory.wc_str(wxConvLocal);
+#endif
+  int rc = sqlite3_win32_set_directory(SQLITE_WIN32_TEMP_DIRECTORY_TYPE, zValue);
+  ok = (rc == SQLITE_OK);
+#if 0
+  if (rc != SQLITE_OK)
+  {
+    throw wxSQLite3Exception(rc, wxERRMSG_TEMPDIR);
+  }
+#endif
+#endif
+#endif
+  return ok;
 }
 
 /* static */

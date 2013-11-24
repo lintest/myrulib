@@ -177,6 +177,9 @@ DYNFUNC(return, int,                   sqlite3_stmt_busy,             (sqlite3_s
 #if SQLITE_VERSION_NUMBER >= 3007004
 DYNFUNC(return, int,                   sqlite3_stmt_readonly,         (sqlite3_stmt *pStmt), (pStmt));
 #endif
+#if SQLITE_VERSION_NUMBER >= 3007000
+DYNFUNC(return, int,                   sqlite3_stmt_status,           (sqlite3_stmt* pStmt, int op, int resetFlg), (pStmt, op, resetFlg));
+#endif
 DYNFUNC(return, int,                   sqlite3_threadsafe,            (void), ());
 // DYNFUNC(return, int,                   sqlite3_total_changes,         (sqlite3 *db), (db));
 // DYNFUNC(return, void *,                sqlite3_trace,                 (sqlite3 *db, void(*xTrace)(void*,const char*), void *pArg), (db, xTrace, pArg));
@@ -205,6 +208,11 @@ DYNFUNC(return, int,                   sqlite3_wal_checkpoint,        (sqlite3 *
 DYNFUNC(return, int,                   sqlite3_wal_checkpoint_v2,     (sqlite3 *db, const char *zDb, int mode, int* logFrameCount, int* ckptFrameCount), (db, zDb, mode, logFrameCount, ckptFrameCount));
 #endif
 DYNFUNC(return, void *,                sqlite3_wal_hook,              (sqlite3 *db, int (*xCallback)(void *, sqlite3 *, const char*, int), void *pArg), (db, xCallback, pArg));
+#endif
+#if SQLITE_VERSION_NUMBER >= 3007014
+//#if defined(__WXMSW__)
+DYNFUNC(return, int,                   sqlite3_win32_set_directory,   (DWORD type, LPCWSTR zValue), (type, zValue));
+//#endif
 #endif
 #if WXSQLITE3_HAVE_METADATA
 DYNFUNC(return, const char *,          sqlite3_column_database_name,  (sqlite3_stmt *pStmt, int iCol), (pStmt, iCol));
