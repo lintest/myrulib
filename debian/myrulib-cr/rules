@@ -14,6 +14,7 @@ configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --with-icu --with-reader --without-wxsqlite --prefix=/usr 
+	ln -s /usr/include/freetype2/ 3rdparty/crengine/include/freetype
 	touch configure-stamp
 
 build: build-stamp
