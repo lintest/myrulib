@@ -9641,7 +9641,6 @@ if test "x$USE_WXSQL" = "xbuiltin" ; then
   WX_CXXFLAGS="-I\$(srcdir)/3rdparty/wxsqlite3/include $WX_CXXFLAGS"
   WX_LIBS="-lmrl_wxsqlite3 $WX_LIBS"
 else
-
         wx_temp="wxcode""_""$WX_PORT"
 
                 if test "$WX_UNICODE" = "1"; then
