@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LIST="saucy raring quantal precise"
+LIST="utopic trusty"
 
 NUMBER=1
 

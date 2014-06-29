@@ -319,6 +319,7 @@ bool FbMainFrame::Create(wxWindow * parent, wxWindowID id, const wxString & titl
 void FbMainFrame::SetAccelerators()
 {
 	wxAcceleratorEntry entries[] = {
+		wxAcceleratorEntry(wxACCEL_CTRL , (int) wxT('Q')   , wxID_EXIT      ),
 		wxAcceleratorEntry(wxACCEL_CTRL , (int) wxT('F')   , wxID_FIND      ),
 		wxAcceleratorEntry(wxACCEL_CTRL , (int) WXK_F4     , wxID_CLOSE     ),
 		wxAcceleratorEntry(wxACCEL_SHIFT, (int) WXK_DELETE , wxID_CUT       ),
