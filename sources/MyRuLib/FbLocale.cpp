@@ -8,6 +8,7 @@
 
 #include "FbLocale.h"
 #include <wx/wfstream.h>
+#include <wx/stdpaths.h>
 #include "FbDatabase.h"
 #include "FbConst.h"
 #include "controls/FbChoiceCtrl.h"
@@ -98,8 +99,13 @@ bool FbLocale::Init(int language, int flags)
 	#else
 
 	bool ok = true;
-
+	
 	#endif //FB_INCLUDE_LOCALE
+
+#ifdef __WXMAC__
+	wxString path = wxStandardPaths::Get().GetResourcesDir() + wxT("/locales/");
+	if (ok) AddCatalogLookupPathPrefix(path);
+#endif
 
 	bool res = wxLocale::Init(language, flags);
 

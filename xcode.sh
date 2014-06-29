@@ -121,8 +121,7 @@ cd build_mac
     --with-wx-prefix=$BUILD_DIR \
     --with-wxsqlite \
     --with-expat \
-    --with-bzip2 \
-    --with-locale
+    --with-bzip2
 make
 
 cd $SOURCE_DIR
@@ -145,6 +144,5 @@ cd build_cr3
     --with-wxsqlite \
     --with-expat \
     --with-bzip2 \
-    --with-locale \
     --with-reader
 make
