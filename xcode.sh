@@ -134,7 +134,8 @@ cd build_cr3
   CXXFLAGS="$arch_flags -I$BUILD_DIR/$WXW_FILENAME/src/\
   -I$BUILD_DIR/$WXW_FILENAME/src/jpeg\
   -I$BUILD_DIR/$WXW_FILENAME/src/png\
-  -I$BUILD_DIR/$WXW_FILENAME/src/zlib" \
+  -I$BUILD_DIR/$WXW_FILENAME/src/zlib\
+  -DCR_EMULATE_GETTEXT=1" \
   OBJCFLAGS="$arch_flags" \
   OBJCXXFLAGS="$arch_flags" \
   LDFLAGS="$arch_flags" \
