@@ -12,6 +12,8 @@ do
     n=1000; while ! wget -t0 -c http://flibusta.net/sql/lib.$t.sql.gz; do if (let "$n<0") then break; fi; sleep 10s; n=$((n-1)); done;
     zcat lib.$t.sql.gz | sed -e 's/USING BTREE//g' | mysql flibusta -u root
 done
+echo "create index libaannotations_AvtorId ON libaannotations(AvtorId);" | mysql flibusta -u root
+echo "create index libbannotations_BookId ON libbannotations(BookId);" | mysql flibusta -u root
 
 rm myrulib.db
 php conv_book.php
@@ -20,6 +22,7 @@ rm flibusta.db.zip
 zip flibusta.db.zip myrulib.db
 
 php conv_info.php
+php conv_full.php 
 
 rm flibusta.db.full.zip
 zip flibusta.db.full.zip myrulib.db

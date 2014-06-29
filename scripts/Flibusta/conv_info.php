@@ -4,7 +4,7 @@ require_once 'bbcode/bbcode.lib.php';
 
 function author_info($mysql_db, $sqlite_db, $min)
 {
-  $sqlite_db->query("begin transaction;");
+#  $sqlite_db->query("begin transaction;");
 
   $bb = new bbcode;
   $bb->autolinks = false;
@@ -27,12 +27,12 @@ function author_info($mysql_db, $sqlite_db, $min)
     $insert->closeCursor();
   }
 
-  $sqlite_db->query("commit;");
+#  $sqlite_db->query("commit;");
 }
 
 function book_info($mysql_db, $sqlite_db, $min)
 {
-  $sqlite_db->query("begin transaction;");
+#  $sqlite_db->query("begin transaction;");
 
   $bb = new bbcode;
   $bb->autolinks = false;
@@ -55,7 +55,7 @@ function book_info($mysql_db, $sqlite_db, $min)
     $insert->closeCursor();
   }
 
-  $sqlite_db->query("commit;");
+#  $sqlite_db->query("commit;");
 }
 
 ?>

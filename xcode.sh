@@ -5,7 +5,7 @@
 #                                                                #
 ##################################################################
 
-WXW_VERSION="2.9.4"   # Version wxWidgets
+WXW_VERSION="3.0.0"   # Version wxWidgets
 FT2_VERSION="2.4.11"   # Version FreeType2
 
 ##################################################################
@@ -18,7 +18,7 @@ WXW_FILENAME="wxWidgets-$WXW_VERSION"
 FT2_FILENAME="freetype-$FT2_VERSION"
 MRL_FILENAME="myrulib-$MRL_VERSION"
 MAC_SDK_PATH="/Developer/SDKs/MacOSX10.6.sdk"
-MAC_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk"
+MAC_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk"
 
 SOURCE_DIR=`pwd`
 		
@@ -52,7 +52,7 @@ if test "x$EXISTS_WXW" != "x$WXW_VERSION" ; then
 	LDFLAGS="$arch_flags" OBJCFLAGS="$arch_flags" OBJCXXFLAGS="$arch_flags" \
 	--with-osx_cocoa \
 	--with-macosx-sdk="$MAC_SDK_PATH" \
-	--with-macosx-version-min=10.8 \
+	--with-macosx-version-min=10.9 \
 	--prefix=$BUILD_DIR \
 	--enable-unicode \
 	--disable-shared \
@@ -102,7 +102,8 @@ fi
 # MyRuLib
 ##################################################################
 
-arch_flags="-arch i386 -isysroot $MAC_SDK_PATH -mmacosx-version-min=10.8"
+arch_flags="-arch i386 -isysroot $MAC_SDK_PATH -mmacosx-version-min=10.9"
+arch_flags="-isysroot $MAC_SDK_PATH -mmacosx-version-min=10.9"
 
 cd $SOURCE_DIR
 rm -rf build_mac

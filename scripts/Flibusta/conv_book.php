@@ -87,8 +87,8 @@ function book_rate($mysql_db, $id)
 
 function convert_books($mysql_db, $sqlite_db, $min)
 {
-  $sqlite_db->query("begin transaction;");
-  $sqlite_db->query("DELETE FROM books");
+#  $sqlite_db->query("begin transaction;");
+#  $sqlite_db->query("DELETE FROM books");
 
   $sqltest = "
     SELECT 
@@ -104,7 +104,7 @@ function convert_books($mysql_db, $sqlite_db, $min)
   while ($row = $query->fetch_array()) {
     echo "Book: ".$row['Time']." - ".$row['BookId']." - ".$row['FileType']." - ".$row['AvtorId']." - ".$row['Title']."\n";
 
-	$id = $row['BookId'];
+    $id = $row['BookId'];
     $genres = "";
     $subsql = "SELECT GenreCode FROM libgenre LEFT JOIN libgenrelist ON libgenre.GenreId = libgenrelist.GenreId WHERE BookId=$id";
     $subquery = $mysql_db->query($subsql);
@@ -119,16 +119,15 @@ function convert_books($mysql_db, $sqlite_db, $min)
     $lang = $row['Lang'];
     $lang = strtolower($lang);
     $lang = strtolowerEx($lang);
-    $rate = book_rate($mysql_db, $id);
-    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, rate, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
     if($insert === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
-    $err= $insert->execute(array($id, $row['AvtorId'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $rate, $row['md5']));
+    $err= $insert->execute(array($id, $row['AvtorId'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $row['md5']));
     if($err === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
   
-  $sqlite_db->query("commit;");
+#  $sqlite_db->query("commit;");
 }  
 
 function convert_dates($mysql_db, $sqlite_db, $min)
@@ -321,7 +320,9 @@ function DeltaImport($mysql_db, $date)
 	author_info($mysql_db, $sqlite_db, $row['aid']);
 	book_info($mysql_db, $sqlite_db, $row['bid']);
 
+	$yyyy = date('Y');
 	system("zip $code.zip $code.upd");
+	system("cp $code.zip ./flibusta/$yyyy/");
   }
   
   $mysql_db->query("INSERT INTO myrulib_update(date) VALUES(".$date.")");
@@ -337,7 +338,7 @@ function DeltaImport($mysql_db, $date)
 
 $mysql_srvr = 'localhost';
 $mysql_user = 'root';
-$mysql_pass = '';
+$mysql_pass = '11111111';
 $mysql_base = 'flibusta';
 $sqlitefile = 'myrulib.db';
 
@@ -350,13 +351,8 @@ $mysql_db->query("SET NAMES utf8");
 $date = date('Ymd');
 echo "Today: ".$date."\n";
 
+DeltaImport($mysql_db, $date);
 FullImport($mysql_db, $sqlitefile, $date);
 system("zip flibusta.db.zip $sqlitefile");
-
-author_info($mysql_db, $sqlite_db, 0);
-book_info($mysql_db, $sqlite_db, 0);
-system("zip flibusta.db.full.zip $sqlitefile");
-
-DeltaImport($mysql_db, $date);
 
 ?>
