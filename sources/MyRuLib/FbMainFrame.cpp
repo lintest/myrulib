@@ -482,7 +482,7 @@ wxToolBar * FbMainFrame::CreateToolBar()
 
 	m_FindTitle = new wxSearchCtrl(toolbar, ID_TITLE_TXT, wxEmptyString, wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
 	m_FindTitle->SetDescriptiveText(_("Title"));
-	m_FindTitle->SetFont(font);
+	m_FindTitle->ShowCancelButton(true);
 	toolbar->AddControl( m_FindTitle );
 
 	toolbar->AddTool(ID_MODE_TREE, _("Hierarchy"), wxBitmap(path + wxT("format-justify-right.png"), wxBITMAP_TYPE_PNG), _("Hierarchy of authors and series"));
