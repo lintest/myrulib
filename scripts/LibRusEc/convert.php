@@ -41,6 +41,7 @@ function convert_authors($mysql_db, $sqlite_db, $min)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  $query->free_result();
 
   $sqlite_db->query("commit;");
 }
@@ -69,6 +70,8 @@ function convert_genres($mysql_db, $sqlite_db, $min)
 		$err = $insert->execute(array($row['bid'], $genre));
 	}
   }
+  $query->free_result();
+
   $sqlite_db->query("commit;");
 }
 
@@ -80,7 +83,8 @@ function book_rate($mysql_db, $id)
       if ($subrow['user'] == 0) return NULL;
       return $subrow['rate']."/".$subrow['user'];
     }
-  return NULL;
+    $subquery->free_result();
+    return NULL;
 }
 
 function convert_books($mysql_db, $sqlite_db, $min)
@@ -120,11 +124,12 @@ function convert_books($mysql_db, $sqlite_db, $min)
     $rate = book_rate($mysql_db, $id);
     $sql = "INSERT INTO books (id, id_author, title, deleted, file_name, file_size, file_type, genres, created, lang, year, rate, md5sum) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
     $insert = $sqlite_db->prepare($sql);
-    if($insert === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
+    if($insert === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $err= $insert->execute(array($id, $row['aid'], trim($row['Title']), $deleted, $row['FileName'], $row['FileSize'], $file_type, $genres, $row['Time'], $lang, $row['Year'], $rate, $row['md5']));
-    if($err === false){ $err= $sqlite_db->errorInfo(); die($err[2]); }
+    if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  $query->free_result();
 
   $sqlite_db->query("commit;");
 }
@@ -152,6 +157,8 @@ function convert_dates($mysql_db, $sqlite_db, $min)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  $query->free_result();
+
   $sqlite_db->query("commit;");
 }  
 
@@ -181,6 +188,7 @@ function convert_seqnames($mysql_db, $sqlite_db, $min)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  $query->free_result();
 
   $sqlite_db->query("commit;");
 }
@@ -201,6 +209,7 @@ function convert_zips($mysql_db, $sqlite_db, $min)
     $insert->execute(array($row['zid'], $row['file']));
     $insert->closeCursor();
   }
+  $query->free_result();
 
   $sqlite_db->query("commit;");
 }
@@ -225,6 +234,7 @@ function convert_files($mysql_db, $sqlite_db, $zid, $bid)
     $insert->execute(array($row['bid'], $row['zid'], $row['name']));
     $insert->closeCursor();
   }
+  $query->free_result();
 
   $sqlite_db->query("commit;");
 }
@@ -252,6 +262,7 @@ function convert_sequences($mysql_db, $sqlite_db, $min)
     if($err === false){ $err= $dbh->errorInfo(); die($err[2]); }
     $insert->closeCursor();
   }
+  $query->free_result();
 
   $sqlite_db->query("commit;");
 }
@@ -290,6 +301,7 @@ function FullImport($mysql_db, $file, $date)
   convert_files($mysql_db, $sqlite_db, 0, 0);
   
   create_indexes($sqlite_db);
+  $sqlite_db = NULL;
 }
 
 function DeltaImport($mysql_db, $date)
@@ -316,9 +328,11 @@ function DeltaImport($mysql_db, $date)
 
 	convert_zips($mysql_db, $sqlite_db, $row['zid']);
 	convert_files($mysql_db, $sqlite_db, $row['zid'], $row['bid']);
+	$sqlite_db = NULL;
 
 	system("zip $code.zip $code.upd");
   }
+  $query->free_result();
   
   $mysql_db->query("INSERT INTO myrulib_update(date) VALUES(".$date.")");
 
@@ -333,22 +347,19 @@ function DeltaImport($mysql_db, $date)
 
 $mysql_srvr = 'localhost';
 $mysql_user = 'root';
-$mysql_pass = '';
+$mysql_pass = '11111111';
 $mysql_base = 'librusec';
 $sqlitefile = 'myrulib.db';
 
 include('settings.php');
 
-$sqlite_db = new PDO('sqlite:'.$sqlitefile);
 $mysql_db = new mysqli($mysql_srvr, $mysql_user, $mysql_pass, $mysql_base);
 $mysql_db->query("SET NAMES utf8");
 
 $date = date('Ymd');
 echo "Today: ".$date."\n";
-
+DeltaImport($mysql_db, $date);
 FullImport($mysql_db, $sqlitefile, $date);
 system("zip myrulib.db.zip $sqlitefile");
-
-DeltaImport($mysql_db, $date);
 
 ?>
