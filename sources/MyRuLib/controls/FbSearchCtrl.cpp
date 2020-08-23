@@ -10,9 +10,6 @@
 
 #include "FbSearchCtrl.h"
 
-#ifdef FB_SEARCH_COMBO_CTRL
-
-#include <wx/image.h>
 
 #define WXMAX(a,b) ((a)>(b)?(a):(b))
 
@@ -102,6 +99,10 @@ static int GetMultiplier()
     return 6;
 #endif
 }
+
+#ifdef FB_SEARCH_COMBO_CTRL
+
+#include <wx/image.h>
 
 IMPLEMENT_CLASS(FbSearchCtrl, wxOwnerDrawnComboBox)
 
