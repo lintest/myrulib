@@ -938,6 +938,23 @@ void WxAuiDefaultTabArt::SetActiveColour(const wxColour& colour)
     m_activeColour = colour;
 }
 
+void WxAuiDefaultTabArt::DrawBorder(wxDC& dc,
+                                    wxWindow* wnd,
+                                    const wxRect& rect)
+{
+    return;
+}
+
+int WxAuiDefaultTabArt::GetBorderWidth(wxWindow* wnd)
+{
+    return 2;
+}
+
+int WxAuiDefaultTabArt::GetAdditionalBorderSpace(wxWindow* wnd)
+{
+    return 2;
+}
+
 // -- WxAuiSimpleTabArt class implementation --
 
 WxAuiSimpleTabArt::WxAuiSimpleTabArt()
@@ -1378,6 +1395,23 @@ void WxAuiSimpleTabArt::SetSelectedFont(const wxFont& font)
 void WxAuiSimpleTabArt::SetMeasuringFont(const wxFont& font)
 {
     m_measuringFont = font;
+}
+
+void WxAuiSimpleTabArt::DrawBorder(wxDC& dc,
+                                   wxWindow* wnd,
+                                   const wxRect& rect)
+{
+    return;
+}
+
+int WxAuiSimpleTabArt::GetBorderWidth(wxWindow* wnd)
+{
+    return 2;
+}
+
+int WxAuiSimpleTabArt::GetAdditionalBorderSpace(wxWindow* wnd)
+{
+    return 2;
 }
 
 //-----------------------------------------------------------------------------

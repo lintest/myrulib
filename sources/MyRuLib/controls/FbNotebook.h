@@ -74,6 +74,13 @@ public:
                  const wxAuiNotebookPageArray& pages,
                  const wxSize& requiredBmpSize);
 
+    void DrawBorder(wxDC& dc,
+                    wxWindow* wnd,
+                    const wxRect& rect);
+
+    int GetBorderWidth(wxWindow* wnd);
+    int GetAdditionalBorderSpace(wxWindow* wnd);
+
 protected:
 
     wxFont m_normalFont;
@@ -161,6 +168,13 @@ public:
     int GetBestTabCtrlSize(wxWindow* wnd,
                  const wxAuiNotebookPageArray& pages,
                  const wxSize& requiredBmpSize);
+
+    void DrawBorder(wxDC& dc,
+                    wxWindow* wnd,
+                    const wxRect& rect);
+
+    int GetBorderWidth(wxWindow* wnd);
+    int GetAdditionalBorderSpace(wxWindow* wnd);
 
 protected:
 
