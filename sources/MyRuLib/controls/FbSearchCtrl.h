@@ -298,6 +298,9 @@ private:
     wxBitmap m_cancelBitmap;
 
 private:
+    GtkEditable *GetEditable() const;
+    GtkEntry *GetEntry() const;
+
     DECLARE_DYNAMIC_CLASS(FbSearchCtrl)
 
     DECLARE_EVENT_TABLE()

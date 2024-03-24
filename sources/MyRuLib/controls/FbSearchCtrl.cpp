@@ -1194,4 +1194,14 @@ void FbSearchCtrl::OnSize( wxSizeEvent& WXUNUSED(event) )
     LayoutControls(0, 0, width, height);
 }
 
+GtkEditable *FbSearchCtrl::GetEditable() const
+{
+    return NULL;
+}
+
+GtkEntry *FbSearchCtrl::GetEntry() const
+{
+    return NULL;
+}
+
 #endif // FB_SEARCH_COMBO_CTRL
